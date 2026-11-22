@@ -8,6 +8,7 @@ import sys
 import tempfile
 import time
 import unittest
+from unittest.mock import patch
 
 import run_t5_apple_pair as pair
 
@@ -83,6 +84,51 @@ class OwnedT5CommandControls(unittest.TestCase):
                     process.stderr.close()
                 unrelated.terminate()
                 unrelated.wait(timeout=5)
+
+    def test_outer_timeout_preserves_completed_inner_owned_cleanup(self):
+        import wave15_batch as owned
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            controller = ("import sys; from pathlib import Path; import run_t5_apple_pair as pair\n"
+                "try:\n pair.run_logged([sys.executable,'-c'," + repr(CHILD) + "],Path(" + repr(temporary)
+                + "),Path(" + repr(temporary) + "),'inner',30)\n"
+                "except KeyboardInterrupt:\n sys.exit(77)\n")
+            old_path = os.environ.get("PYTHONPATH")
+            os.environ["PYTHONPATH"] = os.pathsep.join(sys.path)
+            try:
+                with self.assertRaises(subprocess.TimeoutExpired):
+                    owned.run_nested_worker_command([sys.executable, "-c", controller], directory,
+                        directory / "outer.log", 0.5, profile="coherent-heart-release")
+                self.assert_owned_quiet(directory, "inner", "CANCELLED")
+                outer = json.loads((directory / "outer.command.json").read_bytes())
+                self.assertEqual(outer["timeout_seconds"], 0.5)
+                self.assertEqual(outer["outer_term_grace_seconds"], 25)
+                self.assertEqual(outer["owned_group_quiescence"]["status"], "PASS")
+            finally:
+                if old_path is None:
+                    os.environ.pop("PYTHONPATH", None)
+                else:
+                    os.environ["PYTHONPATH"] = old_path
+                # This is only the exact PID emitted by this test's created
+                # native command, never a discovered/unrelated process.
+                log = directory / "inner.log"
+                if log.is_file() and log.read_text().startswith("READY "):
+                    pid = int(log.read_text().split()[1])
+                    try:
+                        os.killpg(pid, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+
+    def test_success_without_original_owned_receipt_is_rejected(self):
+        import wave15_batch as owned
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            with patch.object(owned, "run_worker_command", return_value={"return_code": 0}), \
+                 self.assertRaisesRegex(RuntimeError, "original owned-group receipt"):
+                pair.run_logged(["controller-only-no-process"], directory, directory, "missing", 10)
+            result = json.loads((directory / "missing.command.json").read_bytes())
+            self.assertEqual(result["status"], "FAILED_PROCESS_CLEANUP")
+            self.assertNotIn("owned_group_quiescence", result)
 
 
 if __name__ == "__main__":

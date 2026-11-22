@@ -1,0 +1,23 @@
+test_outer_timeout_preserves_completed_inner_owned_cleanup (test_t5_owned_commands.OwnedT5CommandControls.test_outer_timeout_preserves_completed_inner_owned_cleanup) ... ERROR
+
+======================================================================
+ERROR: test_outer_timeout_preserves_completed_inner_owned_cleanup (test_t5_owned_commands.OwnedT5CommandControls.test_outer_timeout_preserves_completed_inner_owned_cleanup)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/292d7a286e77/combined-release/Tools/PinkhaSimulatorGate/test_t5_owned_commands.py", line 101, in test_outer_timeout_preserves_completed_inner_owned_cleanup
+    self.assert_owned_quiet(directory, "inner", "CANCELLED")
+  File "/workspace/scratch/292d7a286e77/combined-release/Tools/PinkhaSimulatorGate/test_t5_owned_commands.py", line 23, in assert_owned_quiet
+    record = json.loads((directory / (name + ".command.json")).read_bytes())
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1019, in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmp3vd6bikj/inner.command.json'
+
+----------------------------------------------------------------------
+Ran 1 test in 5.523s
+
+FAILED (errors=1)

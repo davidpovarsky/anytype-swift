@@ -462,6 +462,8 @@ def run_logged(argv, cwd, directory, name, timeout, check=True, output=None):
     finally:
         finalizing = True
         try:
+            if outcome is not None:
+                require(command_path.is_file(), "Completed command lacks its original owned-group receipt")
             if command_path.is_file():
                 original = json.loads(command_path.read_bytes())
                 if original.get("worker_pid") is not None:

@@ -736,6 +736,78 @@ def run_worker_command(command, cwd, log, timeout):
     return record
 
 
+def run_nested_worker_command(command, cwd, log, timeout, *, profile):
+    """Only the coherent worker owns commands with their own cleanup groups.
+
+    Its execution cap is unchanged. Teardown reserves inner TERM5 + KILLwait5
+    + quiescence10 + receipt5 before the outer KILL, then final wait5.
+    Ordinary SDK/package workers retain the original executor byte-for-byte.
+    """
+    from run_owned_single_lane import verify_owned_group_stopped
+    require(profile == "coherent-heart-release", "Nested teardown is restricted to the reviewed coherent profile")
+    record = {"status": "FAIL", "started_at": now(), "timeout_seconds": timeout, "argv": command,
+              "termination_profile": profile, "inner_term_seconds": 5, "inner_final_wait_seconds": 5,
+              "inner_quiescence_seconds": 10, "inner_receipt_reserve_seconds": 5,
+              "outer_term_grace_seconds": 25, "outer_final_wait_seconds": 5}
+    process = None
+    failure = cleanup_failure = None
+    try:
+        with log.open("xb") as stream:
+            try:
+                process = subprocess.Popen(command, cwd=cwd, stdout=stream, stderr=subprocess.STDOUT, start_new_session=True)
+                record["worker_pid"] = process.pid
+                record["return_code"] = process.wait(timeout=timeout)
+                record["status"] = "COMPLETE" if process.returncode == 0 else "WORKER_FAILED"
+            except BaseException as error:
+                failure = error
+                record.update(status="CANCELLED" if isinstance(error, KeyboardInterrupt) else
+                              "TIMED_OUT" if isinstance(error, subprocess.TimeoutExpired) else "FAIL",
+                              error_type=type(error).__name__)
+            finally:
+                if process is not None:
+                    try:
+                        require(process.pid != os.getpgrp(), "Refuse the controller's process group")
+                        try:
+                            os.killpg(process.pid, signal.SIGTERM)
+                        except ProcessLookupError:
+                            pass
+                        try:
+                            process.wait(timeout=20)
+                        except subprocess.TimeoutExpired:
+                            pass
+                        # The retained helper supplies the remaining TERM5,
+                        # unconditional owned KILL and final wait5.
+                        terminate_owned(process)
+                        record["owned_group_cleanup"] = "TERM_THEN_KILL"
+                    except BaseException as error:
+                        cleanup_failure = error
+                        record.update(status="FAILED_PROCESS_CLEANUP", cleanup_error_type=type(error).__name__)
+                stream.flush()
+                os.fsync(stream.fileno())
+    except BaseException as error:
+        failure = failure or error
+        if record["status"] in {"COMPLETE", "WORKER_FAILED"}:
+            record.update(status="FAIL", error_type=type(error).__name__)
+    finally:
+        if process is not None:
+            record["return_code"] = process.returncode
+        record["finished_at"] = now()
+        path = log.with_suffix(".command.json")
+        write(path, record)
+        if process is not None and cleanup_failure is None:
+            try:
+                record["owned_group_quiescence"] = verify_owned_group_stopped(path)
+            except BaseException as error:
+                cleanup_failure = error
+                record.update(status="FAILED_PROCESS_CLEANUP", cleanup_error_type=type(error).__name__)
+            write(path, record)
+    if failure is not None:
+        raise failure
+    if cleanup_failure is not None:
+        raise cleanup_failure
+    return record
+
+
 def resolve_cleanup_device(inventory, ownership, baseline_udids, created_receipt=None):
     if "udid" in ownership:
         if not any(item.get("udid", "").lower() == ownership["udid"].lower()
