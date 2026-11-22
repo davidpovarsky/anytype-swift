@@ -1,0 +1,56 @@
+name: Otzaria native archive semantic controls
+
+# Publishing the isolated candidate branch never starts this workflow. The
+# root integration owner may create the exact trigger branch only after review,
+# or explicitly dispatch a registered workflow at the reviewed immutable head.
+on:
+  push:
+    branches: [codex/otzaria-native-body-semantics-run-20261122]
+  workflow_dispatch:
+    inputs:
+      expected_source_sha:
+        description: Full reviewed immutable source commit
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: otzaria-native-body-semantics-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  semantic-controls:
+    if: github.repository == 'davidpovarsky/anytype-swift'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      WORK_ROOT: ${{ github.workspace }}/.native-body-semantics-${{ github.run_id }}-${{ github.run_attempt }}
+      EXPECTED_SOURCE_SHA: ${{ inputs.expected_source_sha || github.sha }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: |
+            OriginalEditorFramework
+            Modules/ProtobufMessages/Sources/Protocol/Models
+            docs/pinkha/torah-integration/native-body-comparison-20261122
+          sparse-checkout-cone-mode: true
+      - name: Compile and run only the new portable semantic closure
+        run: >-
+          python3 docs/pinkha/torah-integration/native-body-comparison-20261122/controls/run_semantic_controls.py
+          --repo-root "$GITHUB_WORKSPACE"
+          --output-root "$WORK_ROOT"
+          --expected-source-sha "$EXPECTED_SOURCE_SHA"
+          --expected-swift-version 6.4.2
+      - name: Retain exact source and execution result
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: native-body-semantics-${{ github.sha }}-${{ github.run_attempt }}
+          path: ${{ env.WORK_ROOT }}/evidence
+          if-no-files-found: error
+          retention-days: 30

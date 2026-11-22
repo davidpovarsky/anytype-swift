@@ -1,0 +1,117 @@
+{
+  "started_at": "2026-11-22T14:28:21.291871+00:00",
+  "source_root": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-body-comparison-20261122\\map-entry-controls-v1",
+  "output_root": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-body-comparison-20261122\\map-entry-controls-v1\\execution",
+  "compiler": "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+  "compiler_sha256": "e1d0a0b20d95a92b22f4906e7ca331a7c8b89be86b2d9a2d215ac24f753e945a",
+  "status": "PASS_NEW_MAP_ENTRY_LOSS_CONTROLS",
+  "commands": [
+    {
+      "name": "compile",
+      "args": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+        "-swift-version",
+        "6",
+        "-parse-as-library",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-body-comparison-20261122\\map-entry-controls-v1\\OriginalAnnotationNativeMapKeyGuard.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-body-comparison-20261122\\map-entry-controls-v1\\NativeBodyMapEntryControls.swift",
+        "-o",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-body-comparison-20261122\\map-entry-controls-v1\\execution\\NativeBodyMapEntryControls.exe"
+      ],
+      "exit": 0,
+      "timed_out": false,
+      "seconds": 17.562,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "21389726e45a36fe46276758a9ebff387bc40f8cfa9ad20bb34d6b74ebc3d7d7"
+    },
+    {
+      "name": "controls",
+      "args": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-body-comparison-20261122\\map-entry-controls-v1\\execution\\NativeBodyMapEntryControls.exe",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-body-comparison-20261122\\map-entry-controls-v1\\map-entry-vectors.json"
+      ],
+      "exit": 0,
+      "timed_out": false,
+      "seconds": 0.485,
+      "stdout_sha256": "77081e4652595838437f9dd5cf2ab46c31f4070fac21dd8a1f58a09a2f43fe4a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "prior_controls_rerun": 0,
+  "native_executions": 0,
+  "sources": [
+    {
+      "path": "OriginalAnnotationNativeMapKeyGuard.swift",
+      "sha256": "2d8f22ac43e67b1f30cdc6ed2e82a4bd3ce5c3da6666d103da19e61baa060125"
+    },
+    {
+      "path": "NativeBodyMapEntryControls.swift",
+      "sha256": "6050f33b7a76785ddb53fdb7687b545baef07125cf2fe95285110051d76daa5e"
+    },
+    {
+      "path": "map-entry-vectors.json",
+      "sha256": "103ebf4b360c4ff97af75cac4da543c1c98a4fc38b26a1552384d6ff49c0d178"
+    }
+  ],
+  "controls": {
+    "native_executions": 0,
+    "scope": "Only new map-entry fields/wire/value loss cases; no replay of prior 40 controls",
+    "status": "PASS_NEW_MAP_ENTRY_LOSS_CONTROLS",
+    "tests": [
+      {
+        "name": "string map refuses unknown varint field",
+        "status": "PASS"
+      },
+      {
+        "name": "string map refuses unknown message field",
+        "status": "PASS"
+      },
+      {
+        "name": "string map refuses wrong-wire key",
+        "status": "PASS"
+      },
+      {
+        "name": "string map refuses wrong-wire value",
+        "status": "PASS"
+      },
+      {
+        "name": "string map refuses repeated value",
+        "status": "PASS"
+      },
+      {
+        "name": "string map retains its supported exact key/value shape",
+        "status": "PASS"
+      },
+      {
+        "name": "Value map refuses unknown varint field",
+        "status": "PASS"
+      },
+      {
+        "name": "Value map refuses unknown message field",
+        "status": "PASS"
+      },
+      {
+        "name": "Value map refuses wrong-wire key",
+        "status": "PASS"
+      },
+      {
+        "name": "Value map refuses wrong-wire value",
+        "status": "PASS"
+      },
+      {
+        "name": "Value map refuses repeated value",
+        "status": "PASS"
+      },
+      {
+        "name": "Value map retains its supported exact key/value shape",
+        "status": "PASS"
+      },
+      {
+        "name": "ordinary nested Value unknown field remains supported",
+        "status": "PASS"
+      }
+    ],
+    "tests_run": 13
+  },
+  "finished_at": "2026-11-22T14:28:39.500736+00:00"
+}

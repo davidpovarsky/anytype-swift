@@ -1,0 +1,141 @@
+{
+  "run_id": "45036034258",
+  "run_attempt": 1,
+  "expected_head": "4a8fcc2a845e130889f38efd12caafe03db731b6",
+  "expected_branch": "codex/otzaria-native-body-semantics-run-20261122",
+  "started_at": "2026-11-22T15:02:25.907795+00:00",
+  "observer_pid": 29508,
+  "status": "TERMINAL_EVIDENCE_RETAINED",
+  "observer_owner": "/root/stageb_auth",
+  "dispatch_owner": "/root",
+  "watch_invocations": 1,
+  "gh_run_watch_invocations": 0,
+  "status_polls": 3,
+  "maximum_watch_seconds": 1800,
+  "transport_retries": 0,
+  "commands": [
+    {
+      "suffix": "",
+      "exit": 0,
+      "at": "2026-11-22T15:02:26.953513+00:00"
+    },
+    {
+      "suffix": "",
+      "exit": 0,
+      "at": "2026-11-22T15:02:57.801806+00:00"
+    },
+    {
+      "suffix": "",
+      "exit": 0,
+      "at": "2026-11-22T15:03:29.369414+00:00"
+    },
+    {
+      "suffix": "",
+      "exit": 0,
+      "at": "2026-11-22T15:04:00.427906+00:00"
+    },
+    {
+      "suffix": "/jobs?per_page=100",
+      "exit": 0,
+      "at": "2026-11-22T15:04:01.411183+00:00"
+    },
+    {
+      "suffix": "/artifacts?per_page=100",
+      "exit": 0,
+      "at": "2026-11-22T15:04:02.261478+00:00"
+    }
+  ],
+  "scope": "sole new portable semantic run; no native, SDK, old-suite watch or dispatch",
+  "run_status": "completed",
+  "run_conclusion": "failure",
+  "jobs": [
+    {
+      "id": 137249875387,
+      "name": "semantic-controls",
+      "conclusion": "failure"
+    }
+  ],
+  "log_download_exit": 0,
+  "matching_artifact_count": 1,
+  "artifact": {
+    "id": 14759169318,
+    "name": "native-body-semantics-4a8fcc2a845e130889f38efd12caafe03db731b6-1",
+    "size_in_bytes": 22835,
+    "digest": "sha256:0e3ea62fbb6a3c920a3050d9d1604e7a9de169cd8909ab5bbb1b28ed315a72f9",
+    "created_at": "2026-11-22T15:03:31Z",
+    "expired": false
+  },
+  "evidence_download_exit": 0,
+  "retained_files": [
+    {
+      "path": "build.stderr.log",
+      "bytes": 30091,
+      "sha256": "aab5c96579dbe5c3b573958f7f265efb95350835f6c81288aa50b7f499ea007e"
+    },
+    {
+      "path": "build.stdout.log",
+      "bytes": 764,
+      "sha256": "886d6ec1d4f8f417d8fa1bab068b37099157ca19c4a9e49617a179bee32373e0"
+    },
+    {
+      "path": "Package.resolved",
+      "bytes": 603,
+      "sha256": "ae82ff237dfd013fedf52d620a5f4110ec90136a4b6b509ed5874d4faaacc9a5"
+    },
+    {
+      "path": "Package.swift",
+      "bytes": 1011,
+      "sha256": "e432bd557ae2e32316231490c6f6d1abc1d6df4baa6e47a785f15a26709cbf52"
+    },
+    {
+      "path": "RESULT.json",
+      "bytes": 61125,
+      "sha256": "fc89a903b59d5408f5d2f8ce6996b0ac1d76195f92db2d2f61e81d230c5b7a7d"
+    },
+    {
+      "path": "source-head.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source-head.stdout.log",
+      "bytes": 41,
+      "sha256": "4eeacc6caf18d9cf865a53b8fa7af9fdfcd02fc4a467c2900553be63c582461a"
+    },
+    {
+      "path": "source-status.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source-status.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "swift-version.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "swift-version.stdout.log",
+      "bytes": 75,
+      "sha256": "7c811e5cb6a9cc03cb630c6ee61c720c37c7b659f4664a7244bd4e7e4b753871"
+    },
+    {
+      "path": "zlib-version.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "zlib-version.stdout.log",
+      "bytes": 4,
+      "sha256": "b6403da9b22abe355ad17208a336e658322c5d1d7ff646ca7b9229237ba4aef4"
+    }
+  ],
+  "semantic_status": "FAILED",
+  "semantic_error": "build failed; preserve diagnostics and do not automatically replay",
+  "tests_run": 0,
+  "result_sha256": "fc89a903b59d5408f5d2f8ce6996b0ac1d76195f92db2d2f61e81d230c5b7a7d",
+  "finished_at": "2026-11-22T15:04:06.862060+00:00"
+}

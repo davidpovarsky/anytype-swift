@@ -1,0 +1,267 @@
+{
+  "base": "b5162d777e3ebc5c4c0d044e02b52347c0c3dd6e",
+  "workflows": [
+    {
+      "path": ".github/workflows/automerge.yaml",
+      "trigger": "on: pull_request_target\n",
+      "job_guards": [
+        "if: github.actor == 'any-association'"
+      ]
+    },
+    {
+      "path": ".github/workflows/branch_build.yaml",
+      "trigger": "on:\n  # Allows you to run this workflow manually from the Actions tab\n  workflow_dispatch:\n    inputs:\n      tf_comment:\n        description: 'TestFlight Comment'\n        default: ''\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/cla.yml",
+      "trigger": "on:\n  issue_comment:\n    types: [created]\n  pull_request_target:\n    types: [opened,closed,synchronize]\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/claude-code-review.yml",
+      "trigger": "on:\n  pull_request:\n    types: [opened, synchronize]\n    # Optional: Only run on specific file changes\n    # paths:\n    #   - \"src/**/*.ts\"\n    #   - \"src/**/*.tsx\"\n    #   - \"src/**/*.js\"\n    #   - \"src/**/*.jsx\"\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/claude.yml",
+      "trigger": "on:\n  issue_comment:\n    types: [created]\n  pull_request_review_comment:\n    types: [created]\n  issues:\n    types: [opened, assigned]\n  pull_request_review:\n    types: [submitted]\n",
+      "job_guards": [
+        "if: |"
+      ]
+    },
+    {
+      "path": ".github/workflows/dev_build.yaml",
+      "trigger": "on:\n  schedule:\n    # 05:00 UTC\n    - cron:  '0 5 * * 1-5'\n  workflow_dispatch:\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/generator_checks.yaml",
+      "trigger": "on:\n  pull_request:\n  workflow_dispatch:\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/ipa.yaml",
+      "trigger": "on:\n  workflow_dispatch:\n    inputs:\n      build_type:\n        description: \"App build type\"\n        required: false\n        default: release\n        type: choice\n        options:\n          - release\n          - dev\n  repository_dispatch:\n    types:\n      - trigger-build\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/license-checks.yml",
+      "trigger": "on:\n  pull_request:\n  workflow_dispatch:\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/link_issue_to_release.yaml",
+      "trigger": "on:\n  pull_request:\n    types: [closed]\n    branches:\n      - develop\n      - release\n",
+      "job_guards": [
+        "if: github.event.pull_request.merged == true"
+      ]
+    },
+    {
+      "path": ".github/workflows/pinkha-fast-ci.yml",
+      "trigger": "on:\n  push:\n    branches:\n      - pinkha/torah-associations-native-ux-persistence-localization-2026-10-20\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-full-acceptance.yml",
+      "trigger": "on:\n  workflow_call:\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-hanlin-journal-probe.yml",
+      "trigger": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        required: true\n  workflow_dispatch:\n    inputs:\n      source_sha:\n        description: Exact immutable reviewed source SHA\n        type: string\n        required: true\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-heart-runtime.yml",
+      "trigger": "on:\n  workflow_call:\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-ipa-only.yml",
+      "trigger": "on:\n  workflow_call:\n    inputs:\n      require_full_acceptance:\n        description: Require Full Acceptance success on the same SHA\n        type: boolean\n        default: true\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-native-derived.yml",
+      "trigger": "on:\n  workflow_call:\n    inputs:\n      heart_source_run_id:\n        type: string\n        default: ''\n      validation_scope:\n        type: string\n        default: all\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-native-diagnostics.yml",
+      "trigger": "on:\n  workflow_call:\n    inputs:\n      source_run_id:\n        required: true\n        type: string\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-native-fast-ipa.yml",
+      "trigger": "on:\n  workflow_dispatch:\n  workflow_call:\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-native-ipa-fast.yml",
+      "trigger": "on:\n  workflow_call:\n    inputs:\n      heart_source_run_id:\n        type: string\n        default: ''\n  workflow_dispatch:\n    inputs:\n      heart_source_run_id:\n        type: string\n        default: ''\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-original-editor-framework.yml",
+      "trigger": "on:\n  push:\n    branches:\n      - codex/otzaria-original-editor-framework-v11-host-reviewed-20261122\n",
+      "job_guards": [
+        "if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-original-editor-framework-v11-host-reviewed-20261122'"
+      ]
+    },
+    {
+      "path": ".github/workflows/pinkha-original-editor.yml",
+      "trigger": "on:\n  workflow_call:\n    inputs:\n      heart_source_run_id:\n        required: true\n        type: string\n      expected_app_branch:\n        required: true\n        type: string\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-sdk06-tests.yml",
+      "trigger": "on:\n  workflow_call:\n    inputs:\n      heart_source_run_id:\n        description: Successful run containing the exact verified universal r14 runtime\n        required: true\n        type: string\n      expected_app_branch:\n        description: Reviewed isolated integration branch; producer branches are not accepted\n        required: true\n        type: string\n      profile:\n        description: Explicit reviewed profile sdk06/editor/wave15-core/wave15-components; no arbitrary test selection\n        required: false\n        type: string\n        default: sdk06\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-simulator-ui27.yml",
+      "trigger": "on:\n  workflow_call:\n    inputs:\n      ui_scope:\n        type: string\n        default: FULL_SMOKE\n      heart_source_run_id:\n        type: string\n        required: true\n      acceptance_lane:\n        type: string\n        default: ''\n      acceptance_device:\n        type: string\n        default: ipad\n      acceptance_language:\n        type: string\n        default: en\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-account-lifecycle.yml",
+      "trigger": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-account-rpc.yml",
+      "trigger": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-native-clients.yml",
+      "trigger": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n      scenario:\n        type: string\n        default: bootstrap\n      crash_after_commit:\n        type: boolean\n        default: false\n      observed_remove_after_reopen:\n        type: boolean\n        default: false\n      concurrent_replace_after_reopen:\n        type: boolean\n        default: false\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-native-operations.yml",
+      "trigger": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-native-rpc.yml",
+      "trigger": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-rpc-lifecycle-races.yml",
+      "trigger": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-rpc-space-close.yml",
+      "trigger": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-account-pairs.yml",
+      "trigger": "on:\n  workflow_call:\n    inputs:\n      include_freshness:\n        description: Run a fifth process with native index mutations after the compatibility sequence\n        type: boolean\n        default: false\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-apple-pair.yml",
+      "trigger": "on:\n  workflow_call:\n    inputs:\n      include_native_ui:\n        description: After five passing native phases reuse the retained r15 App for real Inspector UI on a separate fresh iPad\n        type: boolean\n        default: false\n      include_freshness:\n        description: After four passing compatibility phases run bounded host freshness in a fifth process\n        type: boolean\n        default: false\n      heart_r14_run_id:\n        type: string\n        required: true\n      heart_r15_run_id:\n        type: string\n        required: true\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-compatibility-pairs.yml",
+      "trigger": "on:\n  workflow_call:\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-coverage-proof.yml",
+      "trigger": "on:\n  workflow_call:\n    inputs:\n      component:\n        type: string\n        default: native-index\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-native-attachment.yml",
+      "trigger": "on:\n  workflow_call:\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-native-pagination.yml",
+      "trigger": "on:\n  workflow_call:\n    inputs:\n      heart_r15_run_id:\n        type: string\n        required: true\n      include_account_retry:\n        type: boolean\n        default: false\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-r15-runtime.yml",
+      "trigger": "on:\n  workflow_call:\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-tests.yaml",
+      "trigger": "on:\n  push:\n    branches:\n      - 'pinkha/*'\n    paths:\n      - 'Modules/PinkhaKit/**'\n      - 'Anytype/Sources/Pinkha/**'\n      - '.github/workflows/pinkha-tests.yaml'\n  pull_request:\n    paths:\n      - 'Modules/PinkhaKit/**'\n      - 'Anytype/Sources/Pinkha/**'\n      - '.github/workflows/pinkha-tests.yaml'\n  workflow_dispatch:\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-ui27-release-gate.yml",
+      "trigger": "on:\n  workflow_call:\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha-validation.yml",
+      "trigger": "on:\n  workflow_dispatch:\n    inputs:\n      build_type:\n        description: \"Build type\"\n        required: false\n        default: release\n        type: choice\n        options:\n          - release\n          - dev\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha_t2l_native_probe.yml",
+      "trigger": "on:\n  push:\n    branches:\n      - pinkha/torah-functional-ui-single-device-2026-10-18\n    paths:\n      - Anytype/Sources/Pinkha/Torah/Storage/**\n      - Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationPayloadCodec.swift\n      - Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationRepository.swift\n      - Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahCanonicalAssociations.swift\n      - Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Storage/**\n      - AnyTypeTests/Pinkha/TorahAssociationNativeMiddlewareProbeTests.swift\n      - AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift\n  workflow_dispatch:\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/pinkha_u10_native_tests.yml",
+      "trigger": "on:\n  push:\n    branches:\n      - pinkha/upstream-u10-validation-2026-10-18\n    paths-ignore:\n      - docs/pinkha/torah-integration/UPSTREAM_U10_VALIDATION_2026-10-18.md\n  workflow_dispatch:\n",
+      "job_guards": [
+        "if: github.ref == 'refs/heads/pinkha/upstream-u10-validation-2026-10-18'"
+      ]
+    },
+    {
+      "path": ".github/workflows/pr_tests.yml",
+      "trigger": "on:\n  pull_request:\n  workflow_dispatch:\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/release_build.yaml",
+      "trigger": "on:\n  # Allows you to run this workflow manually from the Actions tab\n  workflow_dispatch:\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/test_fastlane_build.yaml",
+      "trigger": "on:\n  workflow_dispatch:\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/torah-inspector-ipados27.yml",
+      "trigger": "on:\n  workflow_dispatch:\n    inputs:\n      route:\n        description: Stage 1 route to run\n        type: choice\n        required: true\n        options:\n          - full-acceptance\n          - ipa-only\n          - native-derived\n          - native-ipa-fast\n          - native-ipa-repair\n          - native-diagnostics\n          - t5-coverage-proof\n          - t2-native-operations\n          - t2-native-rpc\n          - t2-account-rpc\n          - t2-native-clients\n          - t2-native-clients-offline\n          - t2-native-clients-crash\n          - t2-native-clients-observed-remove\n          - t2-native-clients-concurrent-replace\n          - t2-account-lifecycle\n          - t2-rpc-lifecycle-races\n          - t2-rpc-space-close\n          - simulator-ui27\n          - heart-runtime\n          - t5-r15-runtime\n          - t5-apple-pairs\n          - t5-apple-ui\n          - t5-native-pagination\n          - t5-native-account-retry\n          - t5-native-attachment\n          - sdk06-tests\n          - hanlin-journal-probe\n          - editor-host-tests\n          - otzaria-original-editor\n          - wave15-core-tests\n          - wave15-component-tests\n          - wave15-acceptance\n      t5_component:\n        description: Bounded T5 component; index-freshness also selects the fifth Apple phase\n        type: choice\n        options:\n          - native-index\n          - projection-cache\n          - native-rpc\n          - compatibility-pairs\n          - account-pairs\n          - index-freshness\n        default: native-index\n      ui_scope:\n        description: UI27 focused diagnostic selection; no release or full matrix acceptance\n        type: choice\n        options:\n          - FULL_SMOKE\n          - STARTUP_IPAD_DIAGNOSTIC\n          - NATIVE_CANCELLATION_DIAGNOSTIC\n        default: FULL_SMOKE\n      acceptance_lane:\n        description: Existing Wave-15 lane or six isolated Release lanes after Startup is working\n        type: choice\n        options:\n          - inspector\n          - inspector-search\n          - quote-drop\n          - properties\n          - properties-set\n          - editor\n          - canonical-properties\n          - hanlin-native\n          - hanlin-selection\n          - remaining-release\n        default: inspector\n      acceptance_device:\n        description: Disposable OS27 device family\n        type: choice\n        options:\n          - ipad\n          - iphone\n        default: ipad\n      acceptance_language:\n        description: Actual app language; current non-editor methods require en\n        type: choice\n        options:\n          - en\n          - he\n        default: en\n      source_run_id:\n        description: Verified Heart runtime run, or native evidence source for diagnostics\n        type: string\n        default: ''\n      t5_r15_run_id:\n        description: Original successful r15 runtime build for same-source Apple pairing\n        type: string\n        default: ''\n      native_test_scope:\n        description: Native acceptance scope (failed-ui reuses the accepted app)\n        type: choice\n        options:\n          - all\n          - failed-ui\n          - readonly-startup\n          - t5-wave1\n        default: all\n      require_full_acceptance:\n        description: Require Full Acceptance success before IPA packaging\n        type: boolean\n        default: true\n",
+      "job_guards": [
+        "if: ${{ inputs.route == 'simulator-ui27' }}",
+        "if: ${{ inputs.route == 'wave15-acceptance' }}",
+        "if: ${{ inputs.route == 'otzaria-original-editor' }}",
+        "if: ${{ inputs.route == 'editor-host-tests' }}"
+      ]
+    },
+    {
+      "path": ".github/workflows/update_cache.yaml",
+      "trigger": "on:\n  schedule:\n    - cron:  '0 5 * * 6'\n  workflow_dispatch:\n",
+      "job_guards": []
+    },
+    {
+      "path": ".github/workflows/update_middleware.yaml",
+      "trigger": "on:\n  workflow_dispatch:\n    inputs:\n      middle_version:\n        description: \"Middleware version\"\n        required: true\n        type: string\n      task_name:\n        description: \"Task name (e.g. IOS-123)\"\n        required: false\n        type: string\n  workflow_call:\n    inputs:\n      middle_version:\n        required: true\n        type: string\n      task_name:\n        required: false\n        type: string\n",
+      "job_guards": [
+        "if: ${{ needs.check-version.outputs.same != 'true' }}"
+      ]
+    },
+    {
+      "path": ".github/workflows/update_middleware_nightly.yaml",
+      "trigger": "on:\n  workflow_dispatch:\n  schedule:\n    # Weekdays 03:00 UTC (adjust as needed)\n    - cron: \"0 3 * * 1-5\"\n\n# Parent must grant write permissions so the child can push commits/PRs",
+      "job_guards": []
+    }
+  ]
+}

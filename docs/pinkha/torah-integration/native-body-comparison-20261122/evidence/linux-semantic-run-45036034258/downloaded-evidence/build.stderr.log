@@ -1,0 +1,215 @@
+Fetching https://github.com/apple/swift-protobuf
+[1/57554] Fetching swift-protobuf
+Fetched https://github.com/apple/swift-protobuf (6.72s)
+Fetching https://github.com/weichsel/ZIPFoundation
+[1/7709] Fetching zipfoundation
+Fetched https://github.com/weichsel/ZIPFoundation (0.80s)
+warning: 'zipfoundation': /Package@swift-5.9.swift:23:61: warning: 'v4' is deprecated: watchOS 9.0 is the oldest supported version [#DeprecatedDeclaration]
+21 |     name: "ZIPFoundation",
+22 |     platforms: [
+23 |         .macOS(.v10_13), .iOS(.v12), .tvOS(.v12), .watchOS(.v4), .visionOS(.v1)
+   |                                                             `- warning: 'v4' is deprecated: watchOS 9.0 is the oldest supported version [#DeprecatedDeclaration]
+24 |     ],
+25 |     products: [
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+Creating working copy for https://github.com/apple/swift-protobuf
+Working copy of https://github.com/apple/swift-protobuf resolved at c6fe6442e6a64250495669325044052e113e990c
+Creating working copy for https://github.com/weichsel/ZIPFoundation
+Working copy of https://github.com/weichsel/ZIPFoundation resolved at 22787ffb59de99e5dc1fbfe80b19c97a904ad48d
+warning: 'zipfoundation': /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/.build/checkouts/ZIPFoundation/Package@swift-5.9.swift:23:61: warning: 'v4' is deprecated: watchOS 9.0 is the oldest supported version [#DeprecatedDeclaration]
+21 |     name: "ZIPFoundation",
+22 |     platforms: [
+23 |         .macOS(.v10_13), .iOS(.v12), .tvOS(.v12), .watchOS(.v4), .visionOS(.v1)
+   |                                                             `- warning: 'v4' is deprecated: watchOS 9.0 is the oldest supported version [#DeprecatedDeclaration]
+24 |     ],
+25 |     products: [
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+Downloading binary artifact https://github.com/apple/swift-protobuf/releases/download/protoc-artifactbundle-v32.1/protoc-32.1.artifactbundle.zip
+[0/100] Downloading https://github.com/apple/swift-protobuf/releases/download/protoc-artifactbundle-v32.1/protoc-32.1.artifactbundle.zip (8 KB / 15.7 MB)
+[100/100] Downloading https://github.com/apple/swift-protobuf/releases/download/protoc-artifactbundle-v32.1/protoc-32.1.artifactbundle.zip (15.7 MB / 15.7 MB)
+Downloaded https://github.com/apple/swift-protobuf/releases/download/protoc-artifactbundle-v32.1/protoc-32.1.artifactbundle.zip (2.23s)
+/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeSnapshotWire.swift:23:46: [1;33mwarning: [1;39m'init(dictionaryLiteral:)' is deprecated: Please regenerate your .pb.swift files with the current version of the SwiftProtobuf protoc plugin.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m21 |[0;0m extension OriginalAnnotationNativeSnapshotWire: Message, _MessageImplementationBase, _ProtoNameProviding {
+ [0;36m22 |[0;0m     static let protoMessageName = "anytype.SnapshotWithType"
+ [0;36m23 |[0;0m     static let _protobuf_nameMap: _NameMap = [1: .same(proto: "sbType"), 2: .same(proto: "snapshot")]
+    [0;36m|[0;0m                                              `- [1;33mwarning: [1;39m'init(dictionaryLiteral:)' is deprecated: Please regenerate your .pb.swift files with the current version of the SwiftProtobuf protoc plugin.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m24 |[0;0m     mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+ [0;36m25 |[0;0m         while let field = try decoder.nextFieldNumber() {
+
+/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeSnapshotWire.swift:53:46: [1;33mwarning: [1;39m'init(dictionaryLiteral:)' is deprecated: Please regenerate your .pb.swift files with the current version of the SwiftProtobuf protoc plugin.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m51 |[0;0m extension OriginalAnnotationNativeChangeSnapshotWire: Message, _MessageImplementationBase, _ProtoNameProviding {
+ [0;36m52 |[0;0m     static let protoMessageName = "anytype.Change.Snapshot"
+ [0;36m53 |[0;0m     static let _protobuf_nameMap: _NameMap = [1: .same(proto: "logHeads"), 2: .same(proto: "data"), 3: .same(proto: "fileKeys")]
+    [0;36m|[0;0m                                              `- [1;33mwarning: [1;39m'init(dictionaryLiteral:)' is deprecated: Please regenerate your .pb.swift files with the current version of the SwiftProtobuf protoc plugin.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m54 |[0;0m     mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+ [0;36m55 |[0;0m         while let field = try decoder.nextFieldNumber() {
+
+/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeSnapshotWire.swift:84:46: [1;33mwarning: [1;39m'init(dictionaryLiteral:)' is deprecated: Please regenerate your .pb.swift files with the current version of the SwiftProtobuf protoc plugin.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m82 |[0;0m extension OriginalAnnotationNativeFileKeysWire: Message, _MessageImplementationBase, _ProtoNameProviding {
+ [0;36m83 |[0;0m     static let protoMessageName = "anytype.Change.FileKeys"
+ [0;36m84 |[0;0m     static let _protobuf_nameMap: _NameMap = [1: .same(proto: "hash"), 2: .same(proto: "keys")]
+    [0;36m|[0;0m                                              `- [1;33mwarning: [1;39m'init(dictionaryLiteral:)' is deprecated: Please regenerate your .pb.swift files with the current version of the SwiftProtobuf protoc plugin.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m85 |[0;0m     mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+ [0;36m86 |[0;0m         while let field = try decoder.nextFieldNumber() {
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+error: SwiftCompile normal x86_64 /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeSnapshotWire.swift failed with a nonzero exit code. Command line:     cd /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1
+    builtin-SwiftPerFileCompile OriginalAnnotationNativeSnapshotWire.swift
+/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeSnapshotWire.swift:23:46: [1;33mwarning: [1;39m'init(dictionaryLiteral:)' is deprecated: Please regenerate your .pb.swift files with the current version of the SwiftProtobuf protoc plugin.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m21 |[0;0m extension OriginalAnnotationNativeSnapshotWire: Message, _MessageImplementationBase, _ProtoNameProviding {
+ [0;36m22 |[0;0m     static let protoMessageName = "anytype.SnapshotWithType"
+ [0;36m23 |[0;0m     static let _protobuf_nameMap: _NameMap = [1: .same(proto: "sbType"), 2: .same(proto: "snapshot")]
+    [0;36m|[0;0m                                              `- [1;33mwarning: [1;39m'init(dictionaryLiteral:)' is deprecated: Please regenerate your .pb.swift files with the current version of the SwiftProtobuf protoc plugin.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m24 |[0;0m     mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+ [0;36m25 |[0;0m         while let field = try decoder.nextFieldNumber() {
+
+/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeSnapshotWire.swift:53:46: [1;33mwarning: [1;39m'init(dictionaryLiteral:)' is deprecated: Please regenerate your .pb.swift files with the current version of the SwiftProtobuf protoc plugin.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m51 |[0;0m extension OriginalAnnotationNativeChangeSnapshotWire: Message, _MessageImplementationBase, _ProtoNameProviding {
+ [0;36m52 |[0;0m     static let protoMessageName = "anytype.Change.Snapshot"
+ [0;36m53 |[0;0m     static let _protobuf_nameMap: _NameMap = [1: .same(proto: "logHeads"), 2: .same(proto: "data"), 3: .same(proto: "fileKeys")]
+    [0;36m|[0;0m                                              `- [1;33mwarning: [1;39m'init(dictionaryLiteral:)' is deprecated: Please regenerate your .pb.swift files with the current version of the SwiftProtobuf protoc plugin.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m54 |[0;0m     mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+ [0;36m55 |[0;0m         while let field = try decoder.nextFieldNumber() {
+
+/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeSnapshotWire.swift:84:46: [1;33mwarning: [1;39m'init(dictionaryLiteral:)' is deprecated: Please regenerate your .pb.swift files with the current version of the SwiftProtobuf protoc plugin.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m82 |[0;0m extension OriginalAnnotationNativeFileKeysWire: Message, _MessageImplementationBase, _ProtoNameProviding {
+ [0;36m83 |[0;0m     static let protoMessageName = "anytype.Change.FileKeys"
+ [0;36m84 |[0;0m     static let _protobuf_nameMap: _NameMap = [1: .same(proto: "hash"), 2: .same(proto: "keys")]
+    [0;36m|[0;0m                                              `- [1;33mwarning: [1;39m'init(dictionaryLiteral:)' is deprecated: Please regenerate your .pb.swift files with the current version of the SwiftProtobuf protoc plugin.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m85 |[0;0m     mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+ [0;36m86 |[0;0m         while let field = try decoder.nextFieldNumber() {
+
+/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeSnapshotWire.swift:57:72: [1;31merror: [1;39mcannot find type '_ProtobufString' in scope[0;0m
+ [0;36m55 |[0;0m         while let field = try decoder.nextFieldNumber() {
+ [0;36m56 |[0;0m             switch field {
+ [0;36m57 |[0;0m             case 1: try decoder.decodeMapField(fieldType: _ProtobufMap<[4;39m_ProtobufString[0;0m, _ProtobufString>.self, value: &logHeads)
+    [0;36m|[0;0m                                                                        `- [1;31merror: [1;39mcannot find type '_ProtobufString' in scope[0;0m
+ [0;36m58 |[0;0m             case 2: try decoder.decodeSingularMessageField(value: &data)
+ [0;36m59 |[0;0m             case 3: try decoder.decodeRepeatedMessageField(value: &fileKeys)
+
+/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeSnapshotWire.swift:57:33: [1;31merror: [1;39mgeneric parameter 'KeyType' could not be inferred[0;0m
+ [0;36m55 |[0;0m         while let field = try decoder.nextFieldNumber() {
+ [0;36m56 |[0;0m             switch field {
+ [0;36m57 |[0;0m             case 1: try decoder.decodeMapField(fieldType: _ProtobufMap<_ProtobufString, _ProtobufString>.self, value: &logHeads)
+    [0;36m|[0;0m                                 `- [1;31merror: [1;39mgeneric parameter 'KeyType' could not be inferred[0;0m
+ [0;36m58 |[0;0m             case 2: try decoder.decodeSingularMessageField(value: &data)
+ [0;36m59 |[0;0m             case 3: try decoder.decodeRepeatedMessageField(value: &fileKeys)
+
+/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeSnapshotWire.swift:57:33: [1;31merror: [1;39mgeneric parameter 'ValueType' could not be inferred[0;0m
+ [0;36m55 |[0;0m         while let field = try decoder.nextFieldNumber() {
+ [0;36m56 |[0;0m             switch field {
+ [0;36m57 |[0;0m             case 1: try decoder.decodeMapField(fieldType: _ProtobufMap<_ProtobufString, _ProtobufString>.self, value: &logHeads)
+    [0;36m|[0;0m                                 `- [1;31merror: [1;39mgeneric parameter 'ValueType' could not be inferred[0;0m
+ [0;36m58 |[0;0m             case 2: try decoder.decodeSingularMessageField(value: &data)
+ [0;36m59 |[0;0m             case 3: try decoder.decodeRepeatedMessageField(value: &fileKeys)
+
+/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/.build/checkouts/swift-protobuf/Sources/SwiftProtobuf/Decoder.swift:198:19: [1;39mnote: [1;39min call to function 'decodeMapField(fieldType:value:)'[0;0m
+[0;36m196 |[0;0m 
+[0;36m197 |[0;0m     /// Decode a map whose values are primitive types (including string and bytes)
+[0;36m198 |[0;0m     mutating func decodeMapField<KeyType, ValueType: MapValueType>(
+    [0;36m|[0;0m                   `- [1;39mnote: [1;39min call to function 'decodeMapField(fieldType:value:)'[0;0m
+[0;36m199 |[0;0m         fieldType: _ProtobufMap<KeyType, ValueType>.Type,
+[0;36m200 |[0;0m         value: inout _ProtobufMap<KeyType, ValueType>.BaseType
+
+/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeSnapshotWire.swift:65:82: [1;31merror: [1;39mcannot find type '_ProtobufString' in scope[0;0m
+ [0;36m63 |[0;0m     }
+ [0;36m64 |[0;0m     func traverse<V: Visitor>(visitor: inout V) throws {
+ [0;36m65 |[0;0m         if !logHeads.isEmpty { try visitor.visitMapField(fieldType: _ProtobufMap<[4;39m_ProtobufString[0;0m, _ProtobufString>.self, value: logHeads, fieldNumber: 1) }
+    [0;36m|[0;0m                                                                                  `- [1;31merror: [1;39mcannot find type '_ProtobufString' in scope[0;0m
+ [0;36m66 |[0;0m         if let data { try visitor.visitSingularMessageField(value: data, fieldNumber: 2) }
+ [0;36m67 |[0;0m         if !fileKeys.isEmpty { try visitor.visitRepeatedMessageField(value: fileKeys, fieldNumber: 3) }
+
+/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeSnapshotWire.swift:65:44: [1;31merror: [1;39mgeneric parameter 'KeyType' could not be inferred[0;0m
+ [0;36m63 |[0;0m     }
+ [0;36m64 |[0;0m     func traverse<V: Visitor>(visitor: inout V) throws {
+ [0;36m65 |[0;0m         if !logHeads.isEmpty { try visitor.visitMapField(fieldType: _ProtobufMap<_ProtobufString, _ProtobufString>.self, value: logHeads, fieldNumber: 1) }
+    [0;36m|[0;0m                                            `- [1;31merror: [1;39mgeneric parameter 'KeyType' could not be inferred[0;0m
+ [0;36m66 |[0;0m         if let data { try visitor.visitSingularMessageField(value: data, fieldNumber: 2) }
+ [0;36m67 |[0;0m         if !fileKeys.isEmpty { try visitor.visitRepeatedMessageField(value: fileKeys, fieldNumber: 3) }
+
+/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeSnapshotWire.swift:65:44: [1;31merror: [1;39mgeneric parameter 'ValueType' could not be inferred[0;0m
+ [0;36m63 |[0;0m     }
+ [0;36m64 |[0;0m     func traverse<V: Visitor>(visitor: inout V) throws {
+ [0;36m65 |[0;0m         if !logHeads.isEmpty { try visitor.visitMapField(fieldType: _ProtobufMap<_ProtobufString, _ProtobufString>.self, value: logHeads, fieldNumber: 1) }
+    [0;36m|[0;0m                                            `- [1;31merror: [1;39mgeneric parameter 'ValueType' could not be inferred[0;0m
+ [0;36m66 |[0;0m         if let data { try visitor.visitSingularMessageField(value: data, fieldNumber: 2) }
+ [0;36m67 |[0;0m         if !fileKeys.isEmpty { try visitor.visitRepeatedMessageField(value: fileKeys, fieldNumber: 3) }
+
+/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/.build/checkouts/swift-protobuf/Sources/SwiftProtobuf/Visitor.swift:413:19: [1;39mnote: [1;39min call to function 'visitMapField(fieldType:value:fieldNumber:)'[0;0m
+[0;36m411 |[0;0m     ///
+[0;36m412 |[0;0m     /// There is no default implementation.  This must be implemented.
+[0;36m413 |[0;0m     mutating func visitMapField<KeyType, ValueType: MapValueType>(
+    [0;36m|[0;0m                   `- [1;39mnote: [1;39min call to function 'visitMapField(fieldType:value:fieldNumber:)'[0;0m
+[0;36m414 |[0;0m         fieldType: _ProtobufMap<KeyType, ValueType>.Type,
+[0;36m415 |[0;0m         value: _ProtobufMap<KeyType, ValueType>.BaseType,
+
+/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeSnapshotWire.swift:89:72: [1;31merror: [1;39mcannot find type '_ProtobufString' in scope[0;0m
+ [0;36m87 |[0;0m             switch field {
+ [0;36m88 |[0;0m             case 1: try decoder.decodeSingularStringField(value: &hash)
+ [0;36m89 |[0;0m             case 2: try decoder.decodeMapField(fieldType: _ProtobufMap<[4;39m_ProtobufString[0;0m, _ProtobufString>.self, value: &keys)
+    [0;36m|[0;0m                                                                        `- [1;31merror: [1;39mcannot find type '_ProtobufString' in scope[0;0m
+ [0;36m90 |[0;0m             default: break
+ [0;36m91 |[0;0m             }
+
+/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeSnapshotWire.swift:89:33: [1;31merror: [1;39mgeneric parameter 'KeyType' could not be inferred[0;0m
+ [0;36m87 |[0;0m             switch field {
+ [0;36m88 |[0;0m             case 1: try decoder.decodeSingularStringField(value: &hash)
+ [0;36m89 |[0;0m             case 2: try decoder.decodeMapField(fieldType: _ProtobufMap<_ProtobufString, _ProtobufString>.self, value: &keys)
+    [0;36m|[0;0m                                 `- [1;31merror: [1;39mgeneric parameter 'KeyType' could not be inferred[0;0m
+ [0;36m90 |[0;0m             default: break
+ [0;36m91 |[0;0m             }
+
+/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeSnapshotWire.swift:89:33: [1;31merror: [1;39mgeneric parameter 'ValueType' could not be inferred[0;0m
+ [0;36m87 |[0;0m             switch field {
+ [0;36m88 |[0;0m             case 1: try decoder.decodeSingularStringField(value: &hash)
+ [0;36m89 |[0;0m             case 2: try decoder.decodeMapField(fieldType: _ProtobufMap<_ProtobufString, _ProtobufString>.self, value: &keys)
+    [0;36m|[0;0m                                 `- [1;31merror: [1;39mgeneric parameter 'ValueType' could not be inferred[0;0m
+ [0;36m90 |[0;0m             default: break
+ [0;36m91 |[0;0m             }
+
+/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/.build/checkouts/swift-protobuf/Sources/SwiftProtobuf/Decoder.swift:198:19: [1;39mnote: [1;39min call to function 'decodeMapField(fieldType:value:)'[0;0m
+[0;36m196 |[0;0m 
+[0;36m197 |[0;0m     /// Decode a map whose values are primitive types (including string and bytes)
+[0;36m198 |[0;0m     mutating func decodeMapField<KeyType, ValueType: MapValueType>(
+    [0;36m|[0;0m                   `- [1;39mnote: [1;39min call to function 'decodeMapField(fieldType:value:)'[0;0m
+[0;36m199 |[0;0m         fieldType: _ProtobufMap<KeyType, ValueType>.Type,
+[0;36m200 |[0;0m         value: inout _ProtobufMap<KeyType, ValueType>.BaseType
+
+/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeSnapshotWire.swift:96:78: [1;31merror: [1;39mcannot find type '_ProtobufString' in scope[0;0m
+ [0;36m94 |[0;0m     func traverse<V: Visitor>(visitor: inout V) throws {
+ [0;36m95 |[0;0m         if !hash.isEmpty { try visitor.visitSingularStringField(value: hash, fieldNumber: 1) }
+ [0;36m96 |[0;0m         if !keys.isEmpty { try visitor.visitMapField(fieldType: _ProtobufMap<[4;39m_ProtobufString[0;0m, _ProtobufString>.self, value: keys, fieldNumber: 2) }
+    [0;36m|[0;0m                                                                              `- [1;31merror: [1;39mcannot find type '_ProtobufString' in scope[0;0m
+ [0;36m97 |[0;0m         try unknownFields.traverse(visitor: &visitor)
+ [0;36m98 |[0;0m     }
+
+/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeSnapshotWire.swift:96:40: [1;31merror: [1;39mgeneric parameter 'KeyType' could not be inferred[0;0m
+ [0;36m94 |[0;0m     func traverse<V: Visitor>(visitor: inout V) throws {
+ [0;36m95 |[0;0m         if !hash.isEmpty { try visitor.visitSingularStringField(value: hash, fieldNumber: 1) }
+ [0;36m96 |[0;0m         if !keys.isEmpty { try visitor.visitMapField(fieldType: _ProtobufMap<_ProtobufString, _ProtobufString>.self, value: keys, fieldNumber: 2) }
+    [0;36m|[0;0m                                        `- [1;31merror: [1;39mgeneric parameter 'KeyType' could not be inferred[0;0m
+ [0;36m97 |[0;0m         try unknownFields.traverse(visitor: &visitor)
+ [0;36m98 |[0;0m     }
+
+/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeSnapshotWire.swift:96:40: [1;31merror: [1;39mgeneric parameter 'ValueType' could not be inferred[0;0m
+ [0;36m94 |[0;0m     func traverse<V: Visitor>(visitor: inout V) throws {
+ [0;36m95 |[0;0m         if !hash.isEmpty { try visitor.visitSingularStringField(value: hash, fieldNumber: 1) }
+ [0;36m96 |[0;0m         if !keys.isEmpty { try visitor.visitMapField(fieldType: _ProtobufMap<_ProtobufString, _ProtobufString>.self, value: keys, fieldNumber: 2) }
+    [0;36m|[0;0m                                        `- [1;31merror: [1;39mgeneric parameter 'ValueType' could not be inferred[0;0m
+ [0;36m97 |[0;0m         try unknownFields.traverse(visitor: &visitor)
+ [0;36m98 |[0;0m     }
+
+/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/.build/checkouts/swift-protobuf/Sources/SwiftProtobuf/Visitor.swift:413:19: [1;39mnote: [1;39min call to function 'visitMapField(fieldType:value:fieldNumber:)'[0;0m
+[0;36m411 |[0;0m     ///
+[0;36m412 |[0;0m     /// There is no default implementation.  This must be implemented.
+[0;36m413 |[0;0m     mutating func visitMapField<KeyType, ValueType: MapValueType>(
+    [0;36m|[0;0m                   `- [1;39mnote: [1;39min call to function 'visitMapField(fieldType:value:fieldNumber:)'[0;0m
+[0;36m414 |[0;0m         fieldType: _ProtobufMap<KeyType, ValueType>.Type,
+[0;36m415 |[0;0m         value: _ProtobufMap<KeyType, ValueType>.BaseType,
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+Failed frontend command:
+/usr/share/swift/usr/bin/swift-frontend -frontend -c /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/NativeBodySemanticControls.swift /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeArchiveComparison.swift /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeArchiveLayout.swift /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeMapKeyGuard.swift -primary-file /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/Sources/NativeBodySemanticControls/OriginalAnnotationNativeSnapshotWire.swift -emit-dependencies-path /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/.build/out/Intermediates.noindex/NativeBodySemanticControls.build/Debug-linux-x86_64/NativeBodySemanticControls-p.build/Objects-normal/x86_64/OriginalAnnotationNativeSnapshotWire.d -emit-const-values-path /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/.build/out/Intermediates.noindex/NativeBodySemanticControls.build/Debug-linux-x86_64/NativeBodySemanticControls-p.build/Objects-normal/x86_64/OriginalAnnotationNativeSnapshotWire.swiftconstvalues -emit-reference-dependencies-path /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/.build/out/Intermediates.noindex/NativeBodySemanticControls.build/Debug-linux-x86_64/NativeBodySemanticControls-p.build/Objects-normal/x86_64/OriginalAnnotationNativeSnapshotWire.swiftdeps -serialize-diagnostics-path /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/.build/out/Intermediates.noindex/NativeBodySemanticControls.build/Debug-linux-x86_64/NativeBodySemanticControls-p.build/Objects-normal/x86_64/OriginalAnnotationNativeSnapshotWire.dia -target x86_64-unknown-linux-gnu -disable-objc-interop -I /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/.build/out/Products/Debug-linux-x86_64 -module-cache-path /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/.build/out/ModuleCache.noindex -color-diagnostics -Xcc -fcolor-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=4 -swift-version 6 -Onone -D SWIFT_PACKAGE -D DEBUG -D Xcode -serialize-debugging-options -enable-experimental-feature DebugDescriptionMacro -empty-abi-descriptor -external-plugin-path /usr/share/swift/usr/lib/swift/host/plugins/testing\#/usr/share/swift/usr/bin/swift-plugin-server -validate-clang-modules-once -clang-build-session-file /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/.build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1 -enable-anonymous-context-mangled-names -file-compilation-dir /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1 -Xcc -fmodule-map-file\=/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/.build/checkouts/ZIPFoundation/Sources/CZLib/module.modulemap -Xcc -fno-omit-frame-pointer -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -Xcc -I/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/.build/out/Products/Debug-linux-x86_64/include -Xcc -I/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/.build/out/Intermediates.noindex/NativeBodySemanticControls.build/Debug-linux-x86_64/NativeBodySemanticControls-p.build/DerivedSources-normal/x86_64 -Xcc -I/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/.build/out/Intermediates.noindex/NativeBodySemanticControls.build/Debug-linux-x86_64/NativeBodySemanticControls-p.build/DerivedSources/x86_64 -Xcc -I/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/.build/out/Intermediates.noindex/NativeBodySemanticControls.build/Debug-linux-x86_64/NativeBodySemanticControls-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name NativeBodySemanticControls -package-name package -const-gather-protocols-file /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/.build/out/Intermediates.noindex/NativeBodySemanticControls.build/Debug-linux-x86_64/NativeBodySemanticControls-p.build/Objects-normal/x86_64/NativeBodySemanticControls_const_extract_protocols.json -in-process-plugin-server-path /usr/share/swift/usr/lib/swift/host/libSwiftInProcPluginServer.so -plugin-path /usr/share/swift/usr/lib/swift/host/plugins -plugin-path /usr/share/swift/usr/local/lib/swift/host/plugins -parse-as-library -o /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/package/.build/out/Intermediates.noindex/NativeBodySemanticControls.build/Debug-linux-x86_64/NativeBodySemanticControls-p.build/Objects-normal/x86_64/OriginalAnnotationNativeSnapshotWire.o -index-unit-output-path /NativeBodySemanticControls.build/Debug-linux-x86_64/NativeBodySemanticControls-p.build/Objects-normal/x86_64/OriginalAnnotationNativeSnapshotWire.o
+error: Build failed

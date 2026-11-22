@@ -1,0 +1,141 @@
+{
+  "run_id": "45037906356",
+  "run_attempt": 1,
+  "expected_head": "4d73ccd6c0ff2e744c3abdf0b138779c17e45163",
+  "expected_branch": "codex/otzaria-native-body-semantics-run-20261122",
+  "started_at": "2026-11-22T15:22:45.718859+00:00",
+  "observer_pid": 29676,
+  "status": "TERMINAL_EVIDENCE_RETAINED",
+  "observer_owner": "/root/stageb_auth",
+  "dispatch_owner": "/root",
+  "watch_invocations": 1,
+  "gh_run_watch_invocations": 0,
+  "status_polls": 1,
+  "maximum_watch_seconds": 1800,
+  "transport_retries": 0,
+  "commands": [
+    {
+      "suffix": "",
+      "exit": 0,
+      "at": "2026-11-22T15:22:46.877622+00:00"
+    },
+    {
+      "suffix": "",
+      "exit": 0,
+      "at": "2026-11-22T15:23:18.301183+00:00"
+    },
+    {
+      "suffix": "/jobs?per_page=100",
+      "exit": 0,
+      "at": "2026-11-22T15:23:19.471799+00:00"
+    },
+    {
+      "suffix": "/artifacts?per_page=100",
+      "exit": 0,
+      "at": "2026-11-22T15:23:21.247386+00:00"
+    }
+  ],
+  "scope": "sole new portable semantic run; no native, SDK, old-suite watch or dispatch",
+  "run_status": "completed",
+  "run_conclusion": "success",
+  "jobs": [
+    {
+      "id": 137255622687,
+      "name": "semantic-controls",
+      "conclusion": "success"
+    }
+  ],
+  "log_download_exit": 0,
+  "matching_artifact_count": 1,
+  "artifact": {
+    "id": 14760810820,
+    "name": "native-body-semantics-4d73ccd6c0ff2e744c3abdf0b138779c17e45163-1",
+    "size_in_bytes": 24304,
+    "digest": "sha256:7209c140e4bc4910f46ff145ffa2956685cc131a5990f8e1441e95ef1763cf65",
+    "created_at": "2026-11-22T15:23:04Z",
+    "expired": false
+  },
+  "evidence_download_exit": 0,
+  "retained_files": [
+    {
+      "path": "build.stderr.log",
+      "bytes": 10818,
+      "sha256": "2e5cc312a977620f59129cec21dac16ee7280cdb906ddd2fc830363268fd8f69"
+    },
+    {
+      "path": "build.stdout.log",
+      "bytes": 1053,
+      "sha256": "14b8533420aeb6245dd3c25ae1fb428254b43a1f761528da8ce42b85de9cdc3b"
+    },
+    {
+      "path": "Package.resolved",
+      "bytes": 603,
+      "sha256": "ae82ff237dfd013fedf52d620a5f4110ec90136a4b6b509ed5874d4faaacc9a5"
+    },
+    {
+      "path": "Package.swift",
+      "bytes": 1011,
+      "sha256": "e432bd557ae2e32316231490c6f6d1abc1d6df4baa6e47a785f15a26709cbf52"
+    },
+    {
+      "path": "RESULT.json",
+      "bytes": 65518,
+      "sha256": "23ca9dceda9e4ad0bf6b015eaf8500efb96d51717c02df00043e6ace8a4903f7"
+    },
+    {
+      "path": "semantic-controls.stderr.log",
+      "bytes": 2482,
+      "sha256": "0406942f459b0e5f8bc6269bc53430afadfd9c0e6512fa7e458d0e50c37215d9"
+    },
+    {
+      "path": "semantic-controls.stdout.log",
+      "bytes": 2822,
+      "sha256": "3bb793992c0596fa334ad010d29eb0e6f4d6908259c7d22e6b6805aca70f1d32"
+    },
+    {
+      "path": "source-head.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source-head.stdout.log",
+      "bytes": 41,
+      "sha256": "35e67f134da09650a135a1c6d645f4bd734fad895c4aedb5c7e515ae4273798b"
+    },
+    {
+      "path": "source-status.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source-status.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "swift-version.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "swift-version.stdout.log",
+      "bytes": 75,
+      "sha256": "7c811e5cb6a9cc03cb630c6ee61c720c37c7b659f4664a7244bd4e7e4b753871"
+    },
+    {
+      "path": "zlib-version.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "zlib-version.stdout.log",
+      "bytes": 4,
+      "sha256": "b6403da9b22abe355ad17208a336e658322c5d1d7ff646ca7b9229237ba4aef4"
+    }
+  ],
+  "semantic_status": "PASS_PORTABLE_NATIVE_ARCHIVE_SEMANTICS",
+  "semantic_error": null,
+  "tests_run": 30,
+  "result_sha256": "23ca9dceda9e4ad0bf6b015eaf8500efb96d51717c02df00043e6ace8a4903f7",
+  "finished_at": "2026-11-22T15:23:26.790578+00:00"
+}
