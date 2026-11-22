@@ -1,0 +1,62 @@
+{
+  "base": "b5162d777e3ebc5c4c0d044e02b52347c0c3dd6e",
+  "status": "SOURCE_INTEGRATED_APPLE_VALIDATION_PENDING",
+  "files": [
+    {
+      "path": "OriginalEditorFramework/AnytypeOriginalEditorQualificationRuntime.swift",
+      "sha256": "19bc60eca516c53f128aefffecc285a51977f0bca96b1a82af5438e78eea9bd2",
+      "bytes": 49525,
+      "ownership": "downstream-original-editor-integration"
+    },
+    {
+      "path": "OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+      "sha256": "9ae2c2bb71081877a22666ef30e6eb49440995c7b92f48c43057343f434b3b83",
+      "bytes": 20135,
+      "ownership": "downstream-original-editor-integration"
+    },
+    {
+      "path": "Modules/SecureService/SecureService/KeychainStore/KeychainStore+OriginalEditorQualification.swift",
+      "sha256": "84523ed39f8a6ae5db7e7c050f535a9868e08590002841d50aeaae89735db098",
+      "bytes": 670,
+      "ownership": "upstream-narrow-guarded-forwarding"
+    },
+    {
+      "path": "Modules/Services/Sources/Services/Auth/AuthMiddleService+OriginalEditorQualification.swift",
+      "sha256": "28382b10de2a7ab7442fbf8b3b66e801eb0a516eddc481e5424a81d0759b0d4c",
+      "bytes": 2308,
+      "ownership": "upstream-narrow-guarded-forwarding"
+    },
+    {
+      "path": "Tools/OriginalEditor/public_host_contract.json",
+      "sha256": "bab0f878588b5666c466cbbb2fa02f91f3027bd4f4ac01b5b226bb9b8508bb70",
+      "bytes": 5504,
+      "ownership": "downstream-original-editor-integration"
+    },
+    {
+      "path": "Tools/OriginalEditor/framework_products.py",
+      "sha256": "1f9dee17e4cb7e8d81d7281a7f4ad78c7400b11984cb05f39df17444c70439bb",
+      "bytes": 31282,
+      "ownership": "downstream-original-editor-integration"
+    },
+    {
+      "path": "Tools/OriginalEditor/test_host_framework_contract.py",
+      "sha256": "45b27cbe19368d45b088cd7e22f173296fb1ddba37ba35a10b1bb66893b342ec",
+      "bytes": 8824,
+      "ownership": "downstream-original-editor-integration"
+    },
+    {
+      "path": "Modules/Services/Sources/Services/Workspace/WorkspaceService.swift",
+      "sha256": "2096e1d7e84a4d123f3cd752f2dded4f40adcfbc00ba1003ffefbd95436751c1",
+      "bytes": 12162,
+      "ownership": "upstream-narrow-guarded-forwarding"
+    }
+  ],
+  "actual_public_cases_passed": 4,
+  "actual_collector_cases_passed": 20,
+  "reporting_wrapper": "FAILED_AFTER_20_ASSERTIONS; original raw outcomes retained; no replay",
+  "swift_parse": "NOT_RUN: compiler version timed out before first source, then Windows host stopped responding; compile remains Apple gate",
+  "native_process_relaunch": "NOT_RUN",
+  "passed_tests_replayed": 0,
+  "qualification": "Debug Simulator only; no native body digest or ACK granted",
+  "workspace_forwarding": "Existing original helper default true preserved; explicit false allowed for owned StageB resume; final concrete WorkspaceService dispatch unchanged"
+}
