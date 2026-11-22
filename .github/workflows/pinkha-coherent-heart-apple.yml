@@ -47,10 +47,12 @@ jobs:
         with:
           go-version: '1.26.5'
           cache: false
-      - name: Verify only the new admission and fixture-translation controls
+      - name: Retain passed unchanged controls and verify only the new bind regressions
         run: |
           mkdir -p "$ATTEMPT/evidence/controls"
-          python3 -B "$ATTEMPT/control/Tools/PinkhaNativeDerived/coherent_apple/test_controls.py" -v > "$ATTEMPT/evidence/controls/results.log" 2>&1
+          python3 -B "$ATTEMPT/control/Tools/PinkhaNativeDerived/coherent_apple/retain_controls.py" \
+            --control "$ATTEMPT/control" --output "$ATTEMPT/evidence/controls/retained-original.json"
+          python3 -B "$ATTEMPT/control/Tools/PinkhaNativeDerived/coherent_apple/test_binding_scope.py" -v > "$ATTEMPT/evidence/controls/results.log" 2>&1
           cat "$ATTEMPT/evidence/controls/results.log"
       - name: Build the production slice and a distinct fixture slice from qualified139 source
         run: |

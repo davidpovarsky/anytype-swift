@@ -30,6 +30,31 @@ import coherent_read_runtime as composition
 import run_account_lifecycle as processes
 
 
+def prepare_variant_binding(prepared, bind_work, evidence, heart, kind):
+    """Keep the generated scope beside its immutable dependency contract.
+
+    The unchanged launcher requires that contract to be inside the temporary
+    root's parent. Output frameworks and launcher receipts remain separate for
+    each variant; only the reviewed dependency owner is shared.
+    """
+    contract.require(kind in ("production", "fixture"), "Unknown framework variant")
+    temporary = bind_work / (kind + "-gomobile-tmp")
+    audit = evidence / (kind + "-go-launcher")
+    temporary.mkdir()
+    audit.mkdir()
+    env = dict(prepared["env"], TMPDIR=str(temporary), PINKHA_T5_MOBILE_TMP=str(temporary),
+               PINKHA_T5_GO_AUDIT=str(audit))
+    # Exercise the actual unchanged path/hash/native identity gate before
+    # spending time in gomobile, and again inside every generated Go command.
+    binding.launcher.load_seed_contract(Path(env["PINKHA_T5_GENERATED_CONTRACT"]),
+        env["PINKHA_T5_GENERATED_CONTRACT_SHA256"], heart, temporary)
+    contract.save(evidence / (kind + "-binding-scope.json"), dict(
+        status="PASS_OWNED_BINDING_SCOPE", kind=kind, generated_temporary=str(temporary),
+        contract_path=env["PINKHA_T5_GENERATED_CONTRACT"],
+        contract_sha256=env["PINKHA_T5_GENERATED_CONTRACT_SHA256"], audit=str(audit)))
+    return env, audit
+
+
 def execute(args, receipt, run):
     control, heart, work = args.control, args.heart_source, args.work
     contract.require(platform.system() == "Darwin" and platform.machine() == "arm64", "Actual ARM64 Apple host required")
@@ -77,6 +102,9 @@ def execute(args, receipt, run):
     prepared = binding.prepare_binding(control, heart, bind_work, args.evidence, real_go, env, gowork, helper, run,
                                        binding.CANDIDATE)
     env = prepared["env"]
+    shutil.copyfile(prepared["graph_contract_path"], args.evidence / "generated-bind-contract.json")
+    contract.require(contract.digest(args.evidence / "generated-bind-contract.json") == prepared["graph_contract_sha"],
+                     "Archived binding contract differs")
     _, fixture_hashes, bridge_sha = fixture.source_files(control, qualified["original_fixture_files"])
     receipt.update(native_run=contract.NATIVE_RUN, native_source=contract.NATIVE_SOURCE,
                    patch_sha256=contract.PATCH, inventory_sha256=contract.INVENTORY,
@@ -99,10 +127,7 @@ def execute(args, receipt, run):
             destination = work / kind
             destination.mkdir()
             framework = destination / "Lib.xcframework"
-            temporary, audit = destination / "gomobile-tmp", args.evidence / (kind + "-go-launcher")
-            temporary.mkdir()
-            audit.mkdir()
-            bind_env = dict(env, TMPDIR=str(temporary), PINKHA_T5_MOBILE_TMP=str(temporary), PINKHA_T5_GO_AUDIT=str(audit))
+            bind_env, audit = prepare_variant_binding(prepared, bind_work, args.evidence, heart, kind)
             tags = "nogrpcserver gomobile nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg"
             ldflags = "-X github.com/anyproto/anytype-heart/util/vcs.GitSummary=" + qualified["version"]
             ldflags += " -X github.com/anyproto/anytype-heart/util/vcs.GitCommit=" + contract.HEART
@@ -128,7 +153,8 @@ def execute(args, receipt, run):
             contract.require(("ServicePinkhaCoherentAppleAuthorityFixture" in headers) is is_fixture,
                              "Fixture entry must exist only in the explicitly tagged framework")
             slices = helper.verify_framework_slices(framework, qualified["version"])
-            binding.validate_simulator_framework(plistlib.loads((framework / "Info.plist").read_bytes()), slices)
+            binding.validate_simulator_framework(plistlib.loads((framework / "Info.plist").read_bytes()), slices,
+                                                 expected_version=qualified["version"])
             hashes = {p.relative_to(framework).as_posix(): contract.digest(p) for p in sorted(framework.rglob("*")) if p.is_file()}
             receipt["frameworks"][kind] = dict(fixture_compiled=is_fixture,
                 fixture_tag=contract.FIXTURE_TAG if is_fixture else None,

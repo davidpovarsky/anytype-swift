@@ -286,7 +286,8 @@ def validate_generated_scopes(prepared, heart):
     return {"original": original, "verified": verified}
 
 
-def validate_simulator_framework(info, slices):
+def validate_simulator_framework(info, slices, *, expected_version=VERSION):
+    require(isinstance(expected_version, str) and bool(expected_version), "Exact expected native version required")
     libraries = info.get("AvailableLibraries", [])
     require(len(libraries) == 1, "Only one simulator slice is built for this proof")
     entry = libraries[0]
@@ -295,7 +296,7 @@ def validate_simulator_framework(info, slices):
             and entry.get("SupportedArchitectures") == ["arm64"] and entry.get("LibraryPath") == "Lib.framework",
             "Wrong candidate framework destination")
     require(len(slices) == 1 and slices[0].get("path") == "ios-arm64-simulator/Lib.framework/Lib"
-            and slices[0].get("architecture") == "arm64" and slices[0].get("marker") == VERSION
+            and slices[0].get("architecture") == "arm64" and slices[0].get("marker") == expected_version
             and re.fullmatch(r"[0-9a-f]{64}", slices[0].get("sha256", "")), "Wrong candidate binary identity")
 
 
