@@ -1,0 +1,53 @@
+{
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "/workspace/scratch/22d6326e1023/sdk_include_fix/prepare_and_run.py"
+  ],
+  "errors": [],
+  "expected_ids": [
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_absent_product_include_is_observed_without_fabricated_search_root",
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_absent_product_include_must_remain_absent_through_export",
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_absent_product_include_rejects_an_unowned_export",
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_module_map_cannot_borrow_an_absent_product_include",
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_present_product_include_still_requires_its_export",
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_product_include_file_and_aliases_are_not_treated_as_absent"
+  ],
+  "failures": [],
+  "finished_at": "2026-11-22T15:48:19.405488+00:00",
+  "passed_ids": [
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_absent_product_include_is_observed_without_fabricated_search_root",
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_absent_product_include_must_remain_absent_through_export",
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_absent_product_include_rejects_an_unowned_export",
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_module_map_cannot_borrow_an_absent_product_include",
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_present_product_include_still_requires_its_export",
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_product_include_file_and_aliases_are_not_treated_as_absent"
+  ],
+  "prior_test_bodies_replayed": 0,
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "raw_log_sha256": "d4dc63c8375ba18989b70070c25d64bfb8f6fd871e79bde24de6940dc5442348",
+  "schema": 1,
+  "scope": "New real Git/filesystem source controls only; no Apple or native execution",
+  "skipped": [],
+  "source_files": {
+    "clang_product_closure.py": {
+      "sha256": "ed603a3f91a52a2a2b6298995462f1017a0fc057d57a7e203dcf735e417b547e"
+    },
+    "run_source_controls.py": {
+      "sha256": "ccaac5381c23be9840c84bfcf4ee65ebf955b603cf2d3ba3e5feeced1f2e2584"
+    },
+    "test_clang_product_closure.py": {
+      "sha256": "6921b173e4aabd56c9bdf9aa71a3ae2aeb1d0bb5387bddbf8cebc6e48e8ee981"
+    }
+  },
+  "started_at": "2026-11-22T15:48:18.040056+00:00",
+  "started_ids": [
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_absent_product_include_is_observed_without_fabricated_search_root",
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_absent_product_include_must_remain_absent_through_export",
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_absent_product_include_rejects_an_unowned_export",
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_module_map_cannot_borrow_an_absent_product_include",
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_present_product_include_still_requires_its_export",
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_product_include_file_and_aliases_are_not_treated_as_absent"
+  ],
+  "status": "PASS",
+  "tests_run": 6
+}

@@ -250,7 +250,7 @@ def export_clang_declarations(derived, exported, collection, source, lock_path):
         require('/' not in subpath and subpath not in actual, 'Ambiguous Clang checkout root')
         actual[subpath] = (identity, pins[identity])
     source_packages = set()
-    exported_includes, excluded = [], []
+    exported_includes, excluded, absent_product_includes = [], [], []
     for path in maps:
         if path.is_relative_to(package_root):
             source_packages.add(path.relative_to(package_root).parts[0])
@@ -263,8 +263,19 @@ def export_clang_declarations(derived, exported, collection, source, lock_path):
             unaliased(path, package_root, True)
             exported_includes.append('Clang/Packages/' + path.relative_to(package_root).as_posix())
         elif path == product_include:
-            require((exported / 'Include').is_dir(), 'Original product include directory was not exported')
-            exported_includes.append('Include')
+            unaliased(path.parent, derived, True)
+            if os.path.lexists(path):
+                unaliased(path, derived, True)
+                require((exported / 'Include').is_dir(), 'Original product include directory was not exported')
+                unaliased(exported / 'Include', exported, True)
+                exported_includes.append('Include')
+            else:
+                # Xcode can name this conventional search directory without
+                # creating it. Preserve that observed absence; no declaration
+                # or consumer search root is invented for a nonexistent input.
+                require(not os.path.lexists(exported / 'Include'),
+                        'An absent original product include root has an unowned export')
+                absent_product_includes.append(path)
         else:
             require(path.is_relative_to(target_build)
                     and (path.suffix == '.hmap' or 'DerivedSources' in path.relative_to(target_build).parts
@@ -329,6 +340,9 @@ def export_clang_declarations(derived, exported, collection, source, lock_path):
                                 'path_substitutions': changes})
     for relative in exported_includes:
         require((exported / relative).is_dir(), 'Original Clang include root was not retained')
+    for path in absent_product_includes:
+        require(not os.path.lexists(path) and not os.path.lexists(exported / 'Include'),
+                'An absent original product include root changed during export')
     files = declaration_inventory(exported)
     require(sum(item['bytes'] for item in files.values()) <= 64 * 1024 * 1024,
             'Original Clang declaration closure exceeds reviewed size bound')
@@ -342,6 +356,9 @@ def export_clang_declarations(derived, exported, collection, source, lock_path):
                                   'original_tracked_declarations': package.records}
                            for name, package in packages.items()},
               'excluded_original_target_header_roots': excluded,
+              'absent_original_product_header_roots': [
+                  {'path': str(path), 'observation': 'LEXISTS_FALSE_BEFORE_AND_AFTER_DECLARATION_EXPORT'}
+                  for path in absent_product_includes],
               'files': files, 'implementation_translation_units_exported_or_added': False,
               'consumer_or_native_qualification': False}
     write_new(exported / MANIFEST, (json.dumps(result, indent=2, sort_keys=True) + '\n').encode())

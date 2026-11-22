@@ -71,6 +71,9 @@ EXPECTED_IDS = (
     "test_anycrypto_simulator_signing.AnyCryptoOriginalDriverControls.test_original_driver_requires_strict_signature_before_binary_consumer",
     "test_anycrypto_simulator_signing.AnyCryptoOriginalDriverControls.test_unrelated_distribution_mutation_stops_consumer",
     "test_clang_product_closure.OriginalClangDeclarationControls.test_absent_or_unbuilt_work_cannot_create_retained_acceptance",
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_absent_product_include_is_observed_without_fabricated_search_root",
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_absent_product_include_must_remain_absent_through_export",
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_absent_product_include_rejects_an_unowned_export",
     "test_clang_product_closure.OriginalClangDeclarationControls.test_all_nineteen_maps_and_six_original_bytes_export_without_producer_paths",
     "test_clang_product_closure.OriginalClangDeclarationControls.test_changed_tracked_header_and_untracked_ignored_header_are_refused",
     "test_clang_product_closure.OriginalClangDeclarationControls.test_committed_alias_escape_and_cycle_are_refused",
@@ -83,7 +86,10 @@ EXPECTED_IDS = (
     "test_clang_product_closure.OriginalClangDeclarationControls.test_generated_unsupported_quoted_directive_is_refused_with_raw_evidence",
     "test_clang_product_closure.OriginalClangDeclarationControls.test_git_tracked_alias_chain_is_materialized_and_translation_units_are_absent",
     "test_clang_product_closure.OriginalClangDeclarationControls.test_manifest_traversal_and_missing_root_and_tampered_identity_are_refused",
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_module_map_cannot_borrow_an_absent_product_include",
     "test_clang_product_closure.OriginalClangDeclarationControls.test_pin_drift_or_foreign_actual_compiler_identity_is_refused",
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_present_product_include_still_requires_its_export",
+    "test_clang_product_closure.OriginalClangDeclarationControls.test_product_include_file_and_aliases_are_not_treated_as_absent",
     "test_clang_product_closure.OriginalClangDeclarationControls.test_real_consumer_project_uses_only_exported_maps_headers_and_one_swift_source",
     "test_clang_product_closure.OriginalClangDeclarationControls.test_retention_refuses_source_drift_foreign_attempt_or_failed_build_command",
     "test_compiler_symbolgraphs.CompilerSymbolGraphCollectionControls.test_aliased_graph_is_rejected",
@@ -246,7 +252,7 @@ EXPECTED_IDS = (
     "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_observed_original_context_keeps_all_clang_imports_and_implicit_cache",
     "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_wrong_target_sdk_language_or_cache_is_rejected",
 )
-EXPECTED_COUNT = 239
+EXPECTED_COUNT = 245
 
 
 def cases(suite):

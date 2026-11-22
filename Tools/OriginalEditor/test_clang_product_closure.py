@@ -183,6 +183,80 @@ class OriginalClangDeclarationControls(unittest.TestCase):
     def fixture(self, name='fixture'):
         return Fixture(self.base / name)
 
+    def test_absent_product_include_is_observed_without_fabricated_search_root(self):
+        f = self.fixture()
+        original = f.derived / 'Build/Products/Debug-Anytype-iphonesimulator/include'
+        original.rmdir()
+        (f.exported / 'Include').rmdir()
+        proof = f.export()
+        self.assertEqual(len(proof['module_maps']), 19)
+        self.assertEqual(proof['absent_original_product_header_roots'], [{
+            'path': str(original),
+            'observation': 'LEXISTS_FALSE_BEFORE_AND_AFTER_DECLARATION_EXPORT'}])
+        self.assertNotIn('Include', proof['header_search_paths'])
+        self.assertFalse(os.path.lexists(original))
+        self.assertFalse(os.path.lexists(f.exported / 'Include'))
+        self.assertFalse(any(path.startswith('Include/') for path in proof['files']))
+        self.assertEqual(f.read()['header_search_paths'], proof['header_search_paths'])
+
+    def test_present_product_include_still_requires_its_export(self):
+        f = self.fixture()
+        original = f.derived / 'Build/Products/Debug-Anytype-iphonesimulator/include'
+        write(original / 'EXPLICIT_ACTUAL_PRODUCT.h', b'/* explicit original product fixture */\n')
+        (f.exported / 'Include').rmdir()
+        with self.assertRaisesRegex(ValueError, 'Original product include directory was not exported'):
+            f.export()
+
+    def test_product_include_file_and_aliases_are_not_treated_as_absent(self):
+        for kind in ('file', 'directory-alias', 'broken-alias'):
+            with self.subTest(kind=kind):
+                f = self.fixture(kind)
+                original = f.derived / 'Build/Products/Debug-Anytype-iphonesimulator/include'
+                original.rmdir()
+                if kind == 'file':
+                    original.write_bytes(b'EXPLICIT_NOT_A_DIRECTORY')
+                elif kind == 'directory-alias':
+                    target = original.with_name('EXPLICIT_OTHER_DIRECTORY')
+                    target.mkdir()
+                    original.symlink_to(target, target_is_directory=True)
+                else:
+                    original.symlink_to('EXPLICIT_MISSING_TARGET', target_is_directory=True)
+                self.assertTrue(os.path.lexists(original))
+                with self.assertRaisesRegex(ValueError, 'unexpected alias|wrong kind'):
+                    f.export()
+
+    def test_absent_product_include_rejects_an_unowned_export(self):
+        f = self.fixture()
+        original = f.derived / 'Build/Products/Debug-Anytype-iphonesimulator/include'
+        original.rmdir()
+        with self.assertRaisesRegex(ValueError, 'absent original product include root has an unowned export'):
+            f.export()
+
+    def test_module_map_cannot_borrow_an_absent_product_include(self):
+        f = self.fixture()
+        original = f.derived / 'Build/Products/Debug-Anytype-iphonesimulator/include'
+        original.rmdir()
+        (f.exported / 'Include').rmdir()
+        generated = next(path for path in f.maps if path.parent == f.generated)
+        generated.write_text('module EXPLICIT_ABSENT { umbrella "' + str(original) + '" export * }\n')
+        with self.assertRaisesRegex(ValueError, 'Original module map target was not exported'):
+            f.export()
+
+    def test_absent_product_include_must_remain_absent_through_export(self):
+        f = self.fixture()
+        original = f.derived / 'Build/Products/Debug-Anytype-iphonesimulator/include'
+        original.rmdir()
+        (f.exported / 'Include').rmdir()
+        original_headers = closure.Package.headers
+
+        def create_late_root(package):
+            original_headers(package)
+            original.mkdir(exist_ok=True)
+
+        with patch.object(closure.Package, 'headers', create_late_root):
+            with self.assertRaisesRegex(ValueError, 'absent original product include root changed during export'):
+                f.export()
+
     def test_all_nineteen_maps_and_six_original_bytes_export_without_producer_paths(self):
         f = self.fixture()
         proof = f.export()
