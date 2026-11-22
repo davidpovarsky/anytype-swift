@@ -1,0 +1,138 @@
+[
+  {
+    "label": "base-head",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit_code": 0,
+    "stdout_sha256": "67927099a842c5bb86202b1116b872f152a1d1444be840b5ba9b015723683a13",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "only-source-path",
+    "argv": [
+      "git",
+      "diff",
+      "--name-only"
+    ],
+    "exit_code": 0,
+    "stdout_sha256": "65af87a4a13228a6fe4dfafb992f3642e5de16e94daea11e27bde8a5c6d142e2",
+    "stderr_sha256": "4ab6eccbc4e65b740f2e355f7f62942a3d615f246790786adb1f418e33a1ca74"
+  },
+  {
+    "label": "stage-source",
+    "argv": [
+      "git",
+      "add",
+      "--",
+      "Anytype/Sources/ServiceLayer/Account/EditorAccountWriteTransition.swift"
+    ],
+    "exit_code": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "4ab6eccbc4e65b740f2e355f7f62942a3d615f246790786adb1f418e33a1ca74"
+  },
+  {
+    "label": "source-diff-check",
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--check"
+    ],
+    "exit_code": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "source-only-commit",
+    "argv": [
+      "git",
+      "commit",
+      "-m",
+      "fix: wait for original account transition release effects"
+    ],
+    "exit_code": 0,
+    "stdout_sha256": "91bd42c8c680ac76f499b85bd735ee66e1e64cd8e3b03a9e1d0898d4f042cfc8",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "source-head",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit_code": 0,
+    "stdout_sha256": "6fa79dc4fb63919b2d2ac611695ebf418288d055ce84c06679980271329ab06d",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "source-clean",
+    "argv": [
+      "git",
+      "status",
+      "--porcelain",
+      "--untracked-files=all"
+    ],
+    "exit_code": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "canonical-0",
+    "argv": [
+      "git",
+      "show",
+      "37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteLifetime.swift"
+    ],
+    "exit_code": 0,
+    "stdout_sha256": "451054685e2ff0c30371d384904be831412eec16c2a5e16c660d2f1891921eb4",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "canonical-1",
+    "argv": [
+      "git",
+      "show",
+      "37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOperation.swift"
+    ],
+    "exit_code": 0,
+    "stdout_sha256": "d6a1034809671d7550e21c5da4e46e1065d21ca6438bb66c7e1f9ea869b9dc51",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "canonical-2",
+    "argv": [
+      "git",
+      "show",
+      "37f48119609747c01ee92cf597e4216f63b7bfa4:Modules/ProtobufMessages/Sources/InvocationDispatchBinding.swift"
+    ],
+    "exit_code": 0,
+    "stdout_sha256": "e304f05ed114342795dbc3a603490311142d63f9a6a156bdcdafd68743e710cb",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "canonical-3",
+    "argv": [
+      "git",
+      "show",
+      "37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift"
+    ],
+    "exit_code": 0,
+    "stdout_sha256": "bf619f8e022c99d6f7f5f8e374b7213989639502801d36b754dcd95aedae9873",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "canonical-4",
+    "argv": [
+      "git",
+      "show",
+      "15ea8755a4e1cebf63314ab415fd809fbe9e8e84:Anytype/Sources/ServiceLayer/Account/EditorAccountWriteTransition.swift"
+    ],
+    "exit_code": 0,
+    "stdout_sha256": "65a20edfdacbb8c5a51d647b2746a16f75ca9865984026cca5b6235f4fa4933e",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

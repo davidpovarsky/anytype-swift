@@ -1,0 +1,76 @@
+[
+  {
+    "label": "source-head",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "status": "COMPLETED",
+    "started_at": "2026-11-22T11:00:34.712640+00:00",
+    "pid": 19824,
+    "exit_code": 0,
+    "stdout_sha256": "6fa79dc4fb63919b2d2ac611695ebf418288d055ce84c06679980271329ab06d",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "branch",
+    "argv": [
+      "git",
+      "branch",
+      "--show-current"
+    ],
+    "status": "COMPLETED",
+    "started_at": "2026-11-22T11:00:34.901002+00:00",
+    "pid": 1080,
+    "exit_code": 0,
+    "stdout_sha256": "bb9b38ee576e5f2f255e79feb06cdc99b186e9895f0ce1d84876ffea87efa7a1",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "initial-status",
+    "argv": [
+      "git",
+      "status",
+      "--porcelain",
+      "--untracked-files=all"
+    ],
+    "status": "COMPLETED",
+    "started_at": "2026-11-22T11:00:35.107966+00:00",
+    "pid": 29400,
+    "exit_code": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "stage-evidence-and-exact-attributes",
+    "argv": [
+      "git",
+      "add",
+      "--",
+      "docs/pinkha/torah-integration/original-auth-release-20261122",
+      ".gitattributes"
+    ],
+    "status": "COMPLETED",
+    "started_at": "2026-11-22T11:00:37.954272+00:00",
+    "pid": 13168,
+    "exit_code": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "27c51123b0695a2886e7887d49f40ec1e9681190c0f62ae5e15c1e08b2c4ed22"
+  },
+  {
+    "label": "diff-check",
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--check"
+    ],
+    "status": "COMPLETED",
+    "started_at": "2026-11-22T11:00:39.219026+00:00",
+    "pid": 20024,
+    "exit_code": 2,
+    "stdout_sha256": "d79d2716da0c82658d6d3f0e1595e3e2136742394533f6680e2f8845a37accb9",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

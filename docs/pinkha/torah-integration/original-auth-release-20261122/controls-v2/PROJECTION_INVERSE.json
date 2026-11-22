@@ -1,0 +1,13 @@
+{
+  "status": "EXACT_INVERSE_PASS_NO_EXECUTION",
+  "original_candidate_sha256": "65a20edfdacbb8c5a51d647b2746a16f75ca9865984026cca5b6235f4fa4933e",
+  "prior_compiled_projection_sha256": "ea2f5d4d78d4916f42393db435ebe746286780374ac014a743338d991c80f1ba",
+  "observed_compiled_projection_sha256": "57f4cfe0ca506cc5cde2e1624cfe9d5da006cd90d8068b3e516db0e85347cb27",
+  "inverse_compiled_projection_sha256": "ea2f5d4d78d4916f42393db435ebe746286780374ac014a743338d991c80f1ba",
+  "restored_full_candidate_sha256": "65a20edfdacbb8c5a51d647b2746a16f75ca9865984026cca5b6235f4fa4933e",
+  "outer_fragment": "    // CONTROL PROJECTION ONLY: observe actual queued original continuations.\n    func _controlReleaseWaiterCount() -> Int {\n        state._controlReleaseWaiterCount()\n    }\n\n",
+  "inner_fragment": "        // CONTROL PROJECTION ONLY: no mutation or continuation resumption.\n        func _controlReleaseWaiterCount() -> Int {\n            lock.lock()\n            defer { lock.unlock() }\n            return releaseWaiters.count\n        }\n\n",
+  "original_product_unchanged": true,
+  "old_controls_executed": 0,
+  "new_controls_executed": 0
+}
