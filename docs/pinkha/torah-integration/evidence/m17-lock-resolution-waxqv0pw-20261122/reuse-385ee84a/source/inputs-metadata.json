@@ -1,0 +1,109 @@
+{
+  "application_source_sha": "385ee84a8acb3fbc3c013c0977417b61fd3d8a17",
+  "application_trees": {
+    "Source": "362d3336b0c11a8f428b25252edbb81f9907c2f8",
+    "Vendor": "4065c0e62af325e83a65fe0c70270985229807ae",
+    "Maktabah.xcodeproj": "8c0fa1ccfbcfae01fae3c267512864e00efcf078"
+  },
+  "artifacts": [
+    {
+      "destination": "Vendor/OtzariaSearchEngine",
+      "id": 14596463166,
+      "name": "ios-build-otzaria-xcframework",
+      "producer_attempt": 1,
+      "producer_job": 136041463727,
+      "producer_job_name": "Build or restore Otzaria framework",
+      "producer_required_steps": [
+        "Build Otzaria production semantic XCFramework",
+        "Verify Otzaria framework and semantic host build",
+        "Confirm exact pinned and pristine upstream checkout",
+        "Run actions/upload-artifact@v4"
+      ],
+      "producer_run": 44661774024,
+      "producer_run_conclusion": "failure",
+      "producer_sha": "99f7927e4da72f2463417f5c2de2c4d20c6aa168",
+      "sha256": "efc73de90d74fdd380ffecfa334fe9dcece38519832b89cf3fb2a5741dcc25ad",
+      "size_in_bytes": 201330360,
+      "tar": "OtzariaSearchEngine.xcframework.tar"
+    },
+    {
+      "destination": "Vendor/ZayitSearchPort/build",
+      "id": 14595389912,
+      "name": "ios-build-zayit-xcframework",
+      "producer_attempt": 1,
+      "producer_job": 136041463406,
+      "producer_job_name": "Build or restore Zayit framework",
+      "producer_required_steps": [
+        "Build Zayit XCFramework",
+        "Verify Zayit framework",
+        "Run actions/upload-artifact@v4"
+      ],
+      "producer_run": 44661774024,
+      "producer_run_conclusion": "failure",
+      "producer_sha": "99f7927e4da72f2463417f5c2de2c4d20c6aa168",
+      "sha256": "64f4ba7b8d6cfced525732699fd1958ca0cc5ec836369dcf839d91df855914d7",
+      "size_in_bytes": 123727544,
+      "tar": "MaktabahZayitSearch.xcframework.tar"
+    },
+    {
+      "destination": "build",
+      "id": 12763481138,
+      "name": "ios-build-swift-packages",
+      "producer_run": 40566258679,
+      "sha256": "9c0eb8afe950b93d40ed78507da45a7050babc39945f7fa3ae47d29db1686fdd",
+      "tar": "SourcePackages.tar"
+    },
+    {
+      "id": 13658066283,
+      "name": "sefaria-embedded-validation-manifests",
+      "producer_run": 42577170165,
+      "sha256": "12cc781436c0459acb05060211ef5f3e109791e7f5297d8bf61e1b38c74f8cda"
+    }
+  ],
+  "embedded_js_overlay_paths": [
+    "Vendor/SefariaMobile/Integration/JS/chavrusaRPCFacade.js"
+  ],
+  "engine_producer_sha": "99f7927e4da72f2463417f5c2de2c4d20c6aa168",
+  "engine_trees": {
+    "Vendor/OtzariaSearchEngine": "5a6c6501c021ffadcde31254239617f10cd1a362",
+    "Vendor/ZayitSearchPort": "a121537e72fb10ce7c710ad55f7d084a0427cf2d",
+    "Vendor/ZayitSearchPort/Rust": "13cb3a06c609b05ad6e48c630d8d2cbb18bdfde8",
+    "Vendor/ZayitSearchPort/Upstream": "db6dc60006a51db83ec2c6feed1158e4da1a617b"
+  },
+  "hanlin_gitlink": "e00498e33f106cc43be0476ffa2e09329c8ca300",
+  "otzaria_test_additions_sha256": "ef5d287ee888b306fab1ddf0e75242245f756976370129c433f1276a96b5611e",
+  "rebuild_zayit_framework": false,
+  "resource_bundle_sha256": "9094dbbfd97292abc5329213c5c3476476bff4afe63bcf798a06b1fb77eb9530",
+  "resource_producer_sha": "70810eec46ad1fec6f30d983bf31e5f922dacb61",
+  "resources": {
+    "sources/calendar.json": {
+      "sha256": "9613a13f8ce57d20bb1b5b480dc93acca4b354956e30ac0056d617c997025ca7",
+      "size": 1651059
+    },
+    "sources/hebrew_categories.json": {
+      "sha256": "f3dd97c47a9a4dadb9d2b29d1cceeeb26d25b56b36dbf7518a1b40faaa008f1d",
+      "size": 16121
+    },
+    "sources/packages.json": {
+      "sha256": "3c472a17c8716929c6e0b941f6e2916ae798493a0f29719fd6ff47e7f5ddeaba",
+      "size": 238990
+    },
+    "sources/people.json": {
+      "sha256": "b9befdeea0c67a0a519e49e8ca108f16ab46843a238c667db665bf6095c930c4",
+      "size": 52354
+    },
+    "sources/search_toc.json": {
+      "sha256": "6d90cc6d333333f8f6bd6aeda723a3b3fb8a2733d6b3b518baa808a86c058c05",
+      "size": 829599
+    },
+    "sources/toc.json": {
+      "sha256": "0622b6567fd9e5d1950315007abd9d0e93f8716a9f8c92431b44116eb3a8a963",
+      "size": 4172545
+    },
+    "sources/topic_toc.json": {
+      "sha256": "282603e38c227de9c345c215193de2849ecf66d40c17cf874a63ac068f1a225c",
+      "size": 1810962
+    }
+  },
+  "sefaria_gitlink": "2fd173a5a3bd32d94a9ba1222e4e32a37f6bd23c"
+}

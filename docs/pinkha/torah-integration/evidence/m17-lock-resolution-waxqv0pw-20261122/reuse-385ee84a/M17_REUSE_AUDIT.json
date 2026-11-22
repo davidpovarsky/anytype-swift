@@ -1,0 +1,633 @@
+{
+  "status": "PASS_SOURCE_BOUND_17_PACKAGE_GRAPH_IDENTITY_HISTORICAL_RESOLUTION_REUSABLE",
+  "source": {
+    "historical": "813fbe79c1b325ee21a8c2be78bb86577f44bf6c",
+    "application": "385ee84a8acb3fbc3c013c0977417b61fd3d8a17",
+    "execution_metadata": "46a185242b28b71d4b6d253747f2b8d46e4189a0",
+    "request_asana_story": "1220765861889338"
+  },
+  "historical_evidence": {
+    "run_id": 44976915323,
+    "attempt": 1,
+    "commit": "538b2c9ca153c81a593faa08fab3b6a080d428e8",
+    "artifact_id": 14736187053,
+    "artifact_sha256": "d6a20ad46fdc0ca33d21bd310c0aed9b0b2777ee0f15b70210a04ac0b585ae81",
+    "resolution_receipt_sha256": "6ca7eb543a65ce75c3c4d57eaca7633f99470e3ed13374d5eb3a6c46a488b061",
+    "parent_review_sha256": "145b3946e470862bf030ad0cd9b3c72494ea8c9295bd640f3e6a1251dc8adaa5",
+    "strict_invocations": 1,
+    "automatic_resolution": 0,
+    "strict_replays": 0
+  },
+  "retrieved_source_blobs": [
+    {
+      "label": "project-baseline",
+      "git_blob": "282b75da81da7ee94db39e57c861fe9a0e59e9eb",
+      "url": "https://api.github.com/repos/davidpovarsky/Maktabah/git/blobs/282b75da81da7ee94db39e57c861fe9a0e59e9eb",
+      "characters": 601307,
+      "bytes": 601307,
+      "sha256": "52e2a72f90a3ad70f4517519a35985d1bf20d2bc0b603440a40100d23363aec4",
+      "local_path": "source/project-baseline.pbxproj"
+    },
+    {
+      "label": "project-application",
+      "git_blob": "3261731b3c225ec783b7f7542b53726c71f638c1",
+      "url": "https://api.github.com/repos/davidpovarsky/Maktabah/git/blobs/3261731b3c225ec783b7f7542b53726c71f638c1",
+      "characters": 602399,
+      "bytes": 602399,
+      "sha256": "0013989dc2dda8a9a6c31ea088dc901ab782b6517ad48c7554d57d1f321abf04",
+      "local_path": "source/project-application.pbxproj"
+    },
+    {
+      "label": "inputs-baseline",
+      "git_blob": "b20a3034879d7c666a4b5c04bac61986d3c232f0",
+      "url": "https://api.github.com/repos/davidpovarsky/Maktabah/git/blobs/b20a3034879d7c666a4b5c04bac61986d3c232f0",
+      "characters": 4333,
+      "bytes": 4333,
+      "sha256": "e6567a5509bf30be33fd9c9adfab74c3ea35d7b5dbf2178a27ec5a08f1812bf8",
+      "local_path": "source/inputs-baseline.json"
+    },
+    {
+      "label": "inputs-application",
+      "git_blob": "f8e35a7926152b21a0d583ccdecbb6243f75187e",
+      "url": "https://api.github.com/repos/davidpovarsky/Maktabah/git/blobs/f8e35a7926152b21a0d583ccdecbb6243f75187e",
+      "characters": 4333,
+      "bytes": 4333,
+      "sha256": "683c46844317504a4dc38c8f0a9ee3f76e179e847b281288469ee69b3d39ade8",
+      "local_path": "source/inputs-application.json"
+    },
+    {
+      "label": "inputs-metadata",
+      "git_blob": "1427643353765888170ea0313854ccf1993f4fd3",
+      "url": "https://api.github.com/repos/davidpovarsky/Maktabah/git/blobs/1427643353765888170ea0313854ccf1993f4fd3",
+      "characters": 4333,
+      "bytes": 4333,
+      "sha256": "0cd833f3b7c5323a120aecfb9e824ea21080f1c3a7c2e1f3c03e6decb6b43662",
+      "local_path": "source/inputs-metadata.json"
+    },
+    {
+      "label": "preparation-driver",
+      "git_blob": "ab9164b58c3a64571590220ed8fc558e20279486",
+      "url": "https://api.github.com/repos/davidpovarsky/Maktabah/git/blobs/ab9164b58c3a64571590220ed8fc558e20279486",
+      "characters": 48574,
+      "bytes": 48574,
+      "sha256": "0dbe133b8f0ee188dc2f0d0c375972a210571498ecac928f1174730ebb0e83f5",
+      "local_path": "source/preparation-driver.py"
+    }
+  ],
+  "archived_committed_inputs": {
+    "count": 23,
+    "identical": 21,
+    "changed": [
+      "Maktabah.xcodeproj/project.pbxproj",
+      "Scripts/CI/hq-stage2-focused-apple.inputs.json"
+    ],
+    "files": [
+      {
+        "path": ".gitmodules",
+        "baseline_git_blob": "dbefe3a99b1c267817d7e95a8979554b08d8f9a8",
+        "application_git_blob": "dbefe3a99b1c267817d7e95a8979554b08d8f9a8",
+        "metadata_git_blob": "dbefe3a99b1c267817d7e95a8979554b08d8f9a8",
+        "application_identical": true,
+        "metadata_identical": true
+      },
+      {
+        "path": "Maktabah.xcodeproj/project.pbxproj",
+        "baseline_git_blob": "282b75da81da7ee94db39e57c861fe9a0e59e9eb",
+        "application_git_blob": "3261731b3c225ec783b7f7542b53726c71f638c1",
+        "metadata_git_blob": "3261731b3c225ec783b7f7542b53726c71f638c1",
+        "application_identical": false,
+        "metadata_identical": false
+      },
+      {
+        "path": "Maktabah.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+        "baseline_git_blob": "99a5b952aab40cb3d5ffe03153c9cf8c07ed341b",
+        "application_git_blob": "99a5b952aab40cb3d5ffe03153c9cf8c07ed341b",
+        "metadata_git_blob": "99a5b952aab40cb3d5ffe03153c9cf8c07ed341b",
+        "application_identical": true,
+        "metadata_identical": true
+      },
+      {
+        "path": "Podfile",
+        "baseline_git_blob": "4ebf2a981de4447b1ce98f885eb0a463ee75e692",
+        "application_git_blob": "4ebf2a981de4447b1ce98f885eb0a463ee75e692",
+        "metadata_git_blob": "4ebf2a981de4447b1ce98f885eb0a463ee75e692",
+        "application_identical": true,
+        "metadata_identical": true
+      },
+      {
+        "path": "Scripts/CI/hq-stage2-focused-apple.inputs.json",
+        "baseline_git_blob": "b20a3034879d7c666a4b5c04bac61986d3c232f0",
+        "application_git_blob": "f8e35a7926152b21a0d583ccdecbb6243f75187e",
+        "metadata_git_blob": "1427643353765888170ea0313854ccf1993f4fd3",
+        "application_identical": false,
+        "metadata_identical": false
+      },
+      {
+        "path": "Scripts/CI/hq-stage2-focused-apple.py",
+        "baseline_git_blob": "ab9164b58c3a64571590220ed8fc558e20279486",
+        "application_git_blob": "ab9164b58c3a64571590220ed8fc558e20279486",
+        "metadata_git_blob": "ab9164b58c3a64571590220ed8fc558e20279486",
+        "application_identical": true,
+        "metadata_identical": true
+      },
+      {
+        "path": "Scripts/CI/prepare-hanlin-sdk.py",
+        "baseline_git_blob": "2b3d439abe961e77cf81538043a77d6be50c3904",
+        "application_git_blob": "2b3d439abe961e77cf81538043a77d6be50c3904",
+        "metadata_git_blob": "2b3d439abe961e77cf81538043a77d6be50c3904",
+        "application_identical": true,
+        "metadata_identical": true
+      },
+      {
+        "path": "Scripts/CI/prepare-pinned-sharp-libvips.py",
+        "baseline_git_blob": "4ed75a5f8e661cb3aac6de763dd68f31631d9860",
+        "application_git_blob": "4ed75a5f8e661cb3aac6de763dd68f31631d9860",
+        "metadata_git_blob": "4ed75a5f8e661cb3aac6de763dd68f31631d9860",
+        "application_identical": true,
+        "metadata_identical": true
+      },
+      {
+        "path": "Source/ChavrusaText/Dependencies/CommandPalette/Package.swift",
+        "baseline_git_blob": "29b39d3e69cb0197a099768a7a8dbff793aacfa7",
+        "application_git_blob": "29b39d3e69cb0197a099768a7a8dbff793aacfa7",
+        "metadata_git_blob": "29b39d3e69cb0197a099768a7a8dbff793aacfa7",
+        "application_identical": true,
+        "metadata_identical": true
+      },
+      {
+        "path": "Source/ChavrusaText/UIRoutingHost/Package.swift",
+        "baseline_git_blob": "125ecf527f49830015b68e2ecb59c15a211df61b",
+        "application_git_blob": "125ecf527f49830015b68e2ecb59c15a211df61b",
+        "metadata_git_blob": "125ecf527f49830015b68e2ecb59c15a211df61b",
+        "application_identical": true,
+        "metadata_identical": true
+      },
+      {
+        "path": "Source/Otzaria/Actions/Package.swift",
+        "baseline_git_blob": "6e0f66e23a58df559e2eccdd62c5b894437aada8",
+        "application_git_blob": "6e0f66e23a58df559e2eccdd62c5b894437aada8",
+        "metadata_git_blob": "6e0f66e23a58df559e2eccdd62c5b894437aada8",
+        "application_identical": true,
+        "metadata_identical": true
+      },
+      {
+        "path": "Source/Otzaria/UIRouting/Package.swift",
+        "baseline_git_blob": "1c7d5d67a69d7ec920575a19e00d0118d3611cc8",
+        "application_git_blob": "1c7d5d67a69d7ec920575a19e00d0118d3611cc8",
+        "metadata_git_blob": "1c7d5d67a69d7ec920575a19e00d0118d3611cc8",
+        "application_identical": true,
+        "metadata_identical": true
+      },
+      {
+        "path": "Maktabah.xcodeproj/xcshareddata/xcschemes/Maktabah-Direct.xcscheme",
+        "baseline_git_blob": "3f56ad90329f3a8d36320d3ce3afa20cfc2ee983",
+        "application_git_blob": "3f56ad90329f3a8d36320d3ce3afa20cfc2ee983",
+        "metadata_git_blob": "3f56ad90329f3a8d36320d3ce3afa20cfc2ee983",
+        "application_identical": true,
+        "metadata_identical": true
+      },
+      {
+        "path": "Maktabah.xcodeproj/xcshareddata/xcschemes/Maktabah-iOS.xcscheme",
+        "baseline_git_blob": "214f46a3458a1eb213e3c11e7b3fc1b5d31d9e26",
+        "application_git_blob": "214f46a3458a1eb213e3c11e7b3fc1b5d31d9e26",
+        "metadata_git_blob": "214f46a3458a1eb213e3c11e7b3fc1b5d31d9e26",
+        "application_identical": true,
+        "metadata_identical": true
+      },
+      {
+        "path": "Maktabah.xcodeproj/xcshareddata/xcschemes/Maktabah.xcscheme",
+        "baseline_git_blob": "771d301a3776873d8c3e2120b0c0145a30411bab",
+        "application_git_blob": "771d301a3776873d8c3e2120b0c0145a30411bab",
+        "metadata_git_blob": "771d301a3776873d8c3e2120b0c0145a30411bab",
+        "application_identical": true,
+        "metadata_identical": true
+      },
+      {
+        "path": "Maktabah.xcodeproj/xcshareddata/xcschemes/MaktabahWidgetExtension.xcscheme",
+        "baseline_git_blob": "2822d691805cbee448c2fa70ccb8c92ca0f2bf4e",
+        "application_git_blob": "2822d691805cbee448c2fa70ccb8c92ca0f2bf4e",
+        "metadata_git_blob": "2822d691805cbee448c2fa70ccb8c92ca0f2bf4e",
+        "application_identical": true,
+        "metadata_identical": true
+      },
+      {
+        "path": "Source/ChavrusaText/StudyWorkspace/UI/DuckDuckGoTabsPort/Package.swift",
+        "baseline_git_blob": "bfdc15a8519a6a8d09f0a825c4b2103e0385a17e",
+        "application_git_blob": "bfdc15a8519a6a8d09f0a825c4b2103e0385a17e",
+        "metadata_git_blob": "bfdc15a8519a6a8d09f0a825c4b2103e0385a17e",
+        "application_identical": true,
+        "metadata_identical": true
+      },
+      {
+        "path": "Vendor/OtzariaSearchEngine/Tests/OccurrenceSwift/Package.resolved",
+        "baseline_git_blob": "fffa967e7c69a80859b3b5bdb94333c989d6090a",
+        "application_git_blob": "fffa967e7c69a80859b3b5bdb94333c989d6090a",
+        "metadata_git_blob": "fffa967e7c69a80859b3b5bdb94333c989d6090a",
+        "application_identical": true,
+        "metadata_identical": true
+      },
+      {
+        "path": "Vendor/OtzariaSearchEngine/Tests/OccurrenceSwift/Package.swift",
+        "baseline_git_blob": "2d5d0bfc1742d5d871d4fbca737f92080037226a",
+        "application_git_blob": "2d5d0bfc1742d5d871d4fbca737f92080037226a",
+        "metadata_git_blob": "2d5d0bfc1742d5d871d4fbca737f92080037226a",
+        "application_identical": true,
+        "metadata_identical": true
+      },
+      {
+        "path": "Vendor/OtzariaSearchEngine/Tests/OccurrenceSwift/evidence/repository/actual42/Package.resolved",
+        "baseline_git_blob": "fffa967e7c69a80859b3b5bdb94333c989d6090a",
+        "application_git_blob": "fffa967e7c69a80859b3b5bdb94333c989d6090a",
+        "metadata_git_blob": "fffa967e7c69a80859b3b5bdb94333c989d6090a",
+        "application_identical": true,
+        "metadata_identical": true
+      },
+      {
+        "path": "Vendor/OtzariaSearchEngine/Tests/OccurrenceSwift/evidence/whole-bridge-attempt1/Package.resolved",
+        "baseline_git_blob": "fffa967e7c69a80859b3b5bdb94333c989d6090a",
+        "application_git_blob": "fffa967e7c69a80859b3b5bdb94333c989d6090a",
+        "metadata_git_blob": "fffa967e7c69a80859b3b5bdb94333c989d6090a",
+        "application_identical": true,
+        "metadata_identical": true
+      },
+      {
+        "path": "Vendor/OtzariaSearchEngine/Tests/OccurrenceSwift/evidence/whole-bridge-attempt2/Package.resolved",
+        "baseline_git_blob": "fffa967e7c69a80859b3b5bdb94333c989d6090a",
+        "application_git_blob": "fffa967e7c69a80859b3b5bdb94333c989d6090a",
+        "metadata_git_blob": "fffa967e7c69a80859b3b5bdb94333c989d6090a",
+        "application_identical": true,
+        "metadata_identical": true
+      },
+      {
+        "path": "Source/PrivacyInfo.xcprivacy",
+        "baseline_git_blob": "c86c62cc12e3ceadea279ff9948a8891a0860577",
+        "application_git_blob": "c86c62cc12e3ceadea279ff9948a8891a0860577",
+        "metadata_git_blob": "c86c62cc12e3ceadea279ff9948a8891a0860577",
+        "application_identical": true,
+        "metadata_identical": true
+      }
+    ]
+  },
+  "project_delta": {
+    "added_lines": [
+      "\t\tD53431901967F0A4306B12C9 /* AnnotationCloudImportIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7EA042320763A3F4B6F56 /* AnnotationCloudImportIdentity.swift */; };\n",
+      "\t\tC343FB0FE023FF926FAB63EC /* AnnotationCloudImportIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7EA042320763A3F4B6F56 /* AnnotationCloudImportIdentity.swift */; };\n",
+      "\t\tFAE8ADCCCB37B5DCEDA18660 /* AnnotationCloudImportIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A7EA042320763A3F4B6F56 /* AnnotationCloudImportIdentity.swift */; };\n",
+      "\t\t74A7EA042320763A3F4B6F56 /* AnnotationCloudImportIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = \"Annotations/AnnotationCloudImportIdentity.swift\"; sourceTree = \"<group>\"; };\n",
+      "\t\t\t\t74A7EA042320763A3F4B6F56 /* AnnotationCloudImportIdentity.swift */,\n",
+      "\t\t\t\tD53431901967F0A4306B12C9 /* AnnotationCloudImportIdentity.swift in Sources */,\n",
+      "\t\t\t\tC343FB0FE023FF926FAB63EC /* AnnotationCloudImportIdentity.swift in Sources */,\n",
+      "\t\t\t\tFAE8ADCCCB37B5DCEDA18660 /* AnnotationCloudImportIdentity.swift in Sources */,\n"
+    ],
+    "removed_lines": 0,
+    "meaning": "One original Swift source registered in three existing app targets; no package/project-owner/target-owner/build-settings delta.",
+    "unchanged_sections": [
+      {
+        "section": "XCLocalSwiftPackageReference",
+        "bytes": 1231,
+        "sha256": "158d16a78778ef545ff7ae81fa83881638daa8ee1bd02046155c47fa71f769f8",
+        "entire_section_bytes_identical": true
+      },
+      {
+        "section": "XCRemoteSwiftPackageReference",
+        "bytes": 2260,
+        "sha256": "559224297a52dc379575b26ca388ab69982717c232970d8dc90857ebcf9d590b",
+        "entire_section_bytes_identical": true
+      },
+      {
+        "section": "XCSwiftPackageProductDependency",
+        "bytes": 4125,
+        "sha256": "b32c32e95639b1694793b3f817e7b652a9096e4a8912cfa1e82fc072dde7e216",
+        "entire_section_bytes_identical": true
+      },
+      {
+        "section": "PBXProject",
+        "bytes": 2611,
+        "sha256": "b307d3c8253a1d064f5c4e7ac5309d89dce31e87589944a8f52a8b89549679d3",
+        "entire_section_bytes_identical": true
+      },
+      {
+        "section": "PBXNativeTarget",
+        "bytes": 5786,
+        "sha256": "5a747a949f2fb30b911eedd5b8bfc9dff3e3d245dd7140ed7b506b6fafb867be",
+        "entire_section_bytes_identical": true
+      },
+      {
+        "section": "XCBuildConfiguration",
+        "bytes": 27186,
+        "sha256": "b7b68ca6ec882a27f1f1508023ec81e3d22bb3282e52902a3abf5b7cb2aaddb7",
+        "entire_section_bytes_identical": true
+      },
+      {
+        "section": "XCConfigurationList",
+        "bytes": 2820,
+        "sha256": "710920714d75789534969cae90efa0003b7958504fdb253f154181493e2f43e0",
+        "entire_section_bytes_identical": true
+      }
+    ]
+  },
+  "package_graph": {
+    "references_and_products": 36,
+    "owning_project_and_target_objects": 7,
+    "all_owning_attachment_arrays_identical": true,
+    "local_reference_paths": [
+      "Source/ChavrusaText/Dependencies/CommandPalette",
+      "Source/ChavrusaText/UIRoutingHost",
+      "Source/Otzaria/Actions",
+      "Source/Otzaria/UIRouting",
+      "Vendor/HanlinSDK/Packages/HanlinAgentSDK",
+      "Vendor/HanlinSDK/Packages/HanlinPlatform",
+      "Vendor/HanlinSDK/Packages/HanlinPresentationSDK"
+    ],
+    "source_vendor_manifest_membership": {
+      "Source/ChavrusaText/Dependencies/CommandPalette/Package.swift": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "29b39d3e69cb0197a099768a7a8dbff793aacfa7",
+        "size": 414
+      },
+      "Source/ChavrusaText/StudyWorkspace/UI/DuckDuckGoTabsPort/Package.swift": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "bfdc15a8519a6a8d09f0a825c4b2103e0385a17e",
+        "size": 732
+      },
+      "Source/ChavrusaText/UIRoutingHost/Package.swift": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "125ecf527f49830015b68e2ecb59c15a211df61b",
+        "size": 701
+      },
+      "Source/Otzaria/Actions/Package.swift": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "6e0f66e23a58df559e2eccdd62c5b894437aada8",
+        "size": 446
+      },
+      "Source/Otzaria/UIRouting/Package.swift": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "1c7d5d67a69d7ec920575a19e00d0118d3611cc8",
+        "size": 603
+      },
+      "Vendor/OtzariaSearchEngine/Tests/OccurrenceSwift/Package.resolved": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "fffa967e7c69a80859b3b5bdb94333c989d6090a",
+        "size": 626
+      },
+      "Vendor/OtzariaSearchEngine/Tests/OccurrenceSwift/Package.swift": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "2d5d0bfc1742d5d871d4fbca737f92080037226a",
+        "size": 1374
+      },
+      "Vendor/OtzariaSearchEngine/Tests/OccurrenceSwift/evidence/repository/actual42/Package.resolved": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "fffa967e7c69a80859b3b5bdb94333c989d6090a",
+        "size": 626
+      },
+      "Vendor/OtzariaSearchEngine/Tests/OccurrenceSwift/evidence/whole-bridge-attempt1/Package.resolved": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "fffa967e7c69a80859b3b5bdb94333c989d6090a",
+        "size": 626
+      },
+      "Vendor/OtzariaSearchEngine/Tests/OccurrenceSwift/evidence/whole-bridge-attempt2/Package.resolved": {
+        "mode": "100644",
+        "type": "blob",
+        "sha": "fffa967e7c69a80859b3b5bdb94333c989d6090a",
+        "size": 626
+      }
+    },
+    "four_non_Hanlin_local_package_trees": [
+      {
+        "path": "Source/ChavrusaText/Dependencies/CommandPalette",
+        "baseline_tree": "871a6ce1125b37b778c342e454abba793567b42a",
+        "application_tree": "3d4c6f71ca10a497b161ac271274fbf703880ec1",
+        "entire_tree_identical": false,
+        "file_membership_identical": true
+      },
+      {
+        "path": "Source/ChavrusaText/UIRoutingHost",
+        "baseline_tree": "7390d1ad144be6bd90300205d2504fbf8513a726",
+        "application_tree": "7390d1ad144be6bd90300205d2504fbf8513a726",
+        "entire_tree_identical": true,
+        "file_membership_identical": true
+      },
+      {
+        "path": "Source/Otzaria/Actions",
+        "baseline_tree": "a89104250c1aedf75e6aa95ed3f111a4dc597217",
+        "application_tree": "a89104250c1aedf75e6aa95ed3f111a4dc597217",
+        "entire_tree_identical": true,
+        "file_membership_identical": true
+      },
+      {
+        "path": "Source/Otzaria/UIRouting",
+        "baseline_tree": "9c25ca5c7a78676497b4cde7159a22c92bc9f88b",
+        "application_tree": "9c25ca5c7a78676497b4cde7159a22c92bc9f88b",
+        "entire_tree_identical": true,
+        "file_membership_identical": true
+      }
+    ],
+    "changed_compiled_local_package_source": [
+      {
+        "path": "Source/ChavrusaText/Dependencies/CommandPalette/Sources/CommandPalette/Views/CommandPaletteView.swift",
+        "baseline": {
+          "mode": "100644",
+          "type": "blob",
+          "sha": "b51c924f3215f6042e8df355cb9e8c74b7650e11",
+          "size": 19860
+        },
+        "application": {
+          "mode": "100644",
+          "type": "blob",
+          "sha": "74047510f2f72bccac23c8486a3b69ed41e05a58",
+          "size": 19951
+        }
+      }
+    ],
+    "no_whole_CommandPalette_compiled_source_reuse_claim": true,
+    "lock_git_blob": "99a5b952aab40cb3d5ffe03153c9cf8c07ed341b",
+    "lock_sha256": "722609bb6b71362aee5e7f401246edcd037a2d1815c2fc4704bf93830d9f5530",
+    "lock_version": 2,
+    "exact_pin_count": 17,
+    "all_original_pin_objects_identical": true
+  },
+  "preparation": {
+    "inputs": [
+      {
+        "path": ".gitmodules",
+        "mode": "100644",
+        "type": "blob",
+        "sha": "dbefe3a99b1c267817d7e95a8979554b08d8f9a8",
+        "size": 245,
+        "identical_at_all_three_commits": true
+      },
+      {
+        "path": "Podfile",
+        "mode": "100644",
+        "type": "blob",
+        "sha": "4ebf2a981de4447b1ce98f885eb0a463ee75e692",
+        "size": 4017,
+        "identical_at_all_three_commits": true
+      },
+      {
+        "path": "Source/GoogleService-Info.plist",
+        "mode": "100644",
+        "type": "blob",
+        "sha": "772742497a9b368d84e85315518a866857b5fbd1",
+        "size": 862,
+        "identical_at_all_three_commits": true
+      },
+      {
+        "path": "Source/iOS-Info.plist",
+        "mode": "100644",
+        "type": "blob",
+        "sha": "0e9b422df3c67c09309eaa19279e85705dca341e",
+        "size": 972,
+        "identical_at_all_three_commits": true
+      },
+      {
+        "path": "Source/PrivacyInfo.xcprivacy",
+        "mode": "100644",
+        "type": "blob",
+        "sha": "c86c62cc12e3ceadea279ff9948a8891a0860577",
+        "size": 1132,
+        "identical_at_all_three_commits": true
+      },
+      {
+        "path": "Scripts/CI/hq-stage2-focused-apple.py",
+        "mode": "100644",
+        "type": "blob",
+        "sha": "ab9164b58c3a64571590220ed8fc558e20279486",
+        "size": 48574,
+        "identical_at_all_three_commits": true
+      },
+      {
+        "path": "Scripts/CI/prepare-hanlin-sdk.py",
+        "mode": "100644",
+        "type": "blob",
+        "sha": "2b3d439abe961e77cf81538043a77d6be50c3904",
+        "size": 4117,
+        "identical_at_all_three_commits": true
+      },
+      {
+        "path": "Scripts/CI/prepare-pinned-sharp-libvips.py",
+        "mode": "100644",
+        "type": "blob",
+        "sha": "4ed75a5f8e661cb3aac6de763dd68f31631d9860",
+        "size": 6252,
+        "identical_at_all_three_commits": true
+      },
+      {
+        "path": "Vendor",
+        "mode": "040000",
+        "type": "tree",
+        "sha": "4065c0e62af325e83a65fe0c70270985229807ae",
+        "identical_at_all_three_commits": true
+      },
+      {
+        "path": "Vendor/SefariaMobile",
+        "mode": "040000",
+        "type": "tree",
+        "sha": "1a0e21666586f417186b6218049e03fc1cc232fd",
+        "identical_at_all_three_commits": true
+      },
+      {
+        "path": "Vendor/SefariaMobile/Upstream",
+        "mode": "160000",
+        "type": "commit",
+        "sha": "2fd173a5a3bd32d94a9ba1222e4e32a37f6bd23c",
+        "identical_at_all_three_commits": true
+      },
+      {
+        "path": "Vendor/HanlinSDK",
+        "mode": "160000",
+        "type": "commit",
+        "sha": "e00498e33f106cc43be0476ffa2e09329c8ca300",
+        "identical_at_all_three_commits": true
+      }
+    ],
+    "whole_stage2_driver_identical": true,
+    "functions": [
+      {
+        "name": "prepare_original_hanlin",
+        "bytes": 669,
+        "sha256": "0197f6c214e46215fd4d5786fca377187d7fe69683a6b85e0e9ab1542ce3faf8",
+        "config_keys": [
+          "hanlin_gitlink"
+        ]
+      },
+      {
+        "name": "prepare_react_sources",
+        "bytes": 2347,
+        "sha256": "c46a4ac71858cde33c615f6e3dfcdb3be39e9cf4478f7f50ec5142091588c416",
+        "config_keys": [
+          "sefaria_gitlink"
+        ]
+      },
+      {
+        "name": "install_real_pods",
+        "bytes": 2138,
+        "sha256": "8a6b13370a2e6bf645ef189fc8198849a0ebc13962d1558aedbcb6cf3079e06a",
+        "config_keys": []
+      },
+      {
+        "name": "audit_generated_privacy",
+        "bytes": 2738,
+        "sha256": "ab591a2ca28873e6a344769e3552ebf9d44e14a7c0fa478d9f95d9823a60e463",
+        "config_keys": []
+      }
+    ],
+    "consumed_config_keys": [
+      "hanlin_gitlink",
+      "sefaria_gitlink"
+    ],
+    "consumed_config_values_identical": true,
+    "Podfile_lock_committed": false,
+    "generated_Pods_lock_and_workspace_current_bytes": "NOT_OBSERVED_NO_PREPARATION_EXECUTED"
+  },
+  "metadata": {
+    "changed_keys": [
+      "application_source_sha",
+      "application_trees",
+      "otzaria_test_additions_sha256"
+    ],
+    "application_commit_embedded_source": "5f862ea7d785de813fc28680cfe403a3e082ba22",
+    "execution_metadata_embedded_source": "385ee84a8acb3fbc3c013c0977417b61fd3d8a17",
+    "execution_metadata_trees_match_actual_application": true,
+    "scope": "Use46a as the current execution binding; A's embedded manifest is the preceding5f checkpoint, not a fresh self-binding."
+  },
+  "hanlin": {
+    "source": "e00498e33f106cc43be0476ffa2e09329c8ca300",
+    "exact_files": 424,
+    "membership_and_git_blobs_identical": true,
+    "historical_before_after_final_identical": true,
+    "current_Git_source_verified": true
+  },
+  "reuse_admission": {
+    "historical_strict_17_resolution": "REUSE_WITH_EXACT_SCOPE",
+    "historical_complete_268_workspace_byte_stamp": "NOT_TRANSFERRED",
+    "application_code_equivalence": false,
+    "new_app_build_or_Native_credit": false,
+    "new_preparation_and_build_existing_gates": "STILL_REQUIRED",
+    "conditions": [
+      "Same exact package graph/lock/local manifests/Hanlin and reviewed original preparation route.",
+      "Historical toolchain remains Xcode27.0/Swift6.4, Node22.23.4/Ruby3.3.14/CocoaPods1.17.0; this audit does not observe a new runner.",
+      "Current generated workspace/Podfile.lock/privacy/provider output must be checked by the normal new preparation/build gates.",
+      "Any later SDK distribution, package/pin/manifests/owning-array/preparation change needs its own identity review."
+    ]
+  },
+  "actions": {
+    "Actions_queries": 0,
+    "watchers_created": 0,
+    "secret_reads_or_writes": 0,
+    "Git_mutations": 0,
+    "resolver_runs": 0,
+    "compiler_runs": 0,
+    "test_runs": 0,
+    "application_or_repository_source_edits": 0
+  }
+}

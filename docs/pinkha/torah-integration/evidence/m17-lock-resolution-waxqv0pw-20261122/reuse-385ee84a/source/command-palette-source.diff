@@ -1,0 +1,10 @@
+--- CommandPaletteView.swift@813f
++++ CommandPaletteView.swift@385ee
+@@ -192,6 +192,7 @@
+                                 }
+                                 .buttonStyle(.plain)
+                                 .id(item.id)
++                                .accessibilityIdentifier("command-palette-row-" + item.id)
+                                 .accessibilityAddTraits(item.id == selection.selectedRowID ? .isSelected : [])
+                             }
+                         }
