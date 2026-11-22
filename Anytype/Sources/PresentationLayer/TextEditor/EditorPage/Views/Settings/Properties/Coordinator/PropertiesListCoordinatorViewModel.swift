@@ -187,8 +187,8 @@ final class PropertiesListCoordinatorViewModel:
                         do {
                             try Task.checkCancellation()
                             try withCurrentSource {
-                                preparedTypePropertiesSession = child
-                                objectTypeData = typeData
+                                self.preparedTypePropertiesSession = child
+                                self.objectTypeData = typeData
                                 AnytypeAnalytics.instance().logScreenEditType(route: .object)
                             }
                         } catch {
@@ -201,7 +201,7 @@ final class PropertiesListCoordinatorViewModel:
                         }
                     } catch {
                         try? withCurrentSource {
-                            typePropertiesToast = ToastBarData(Loc.error, type: .failure)
+                            self.typePropertiesToast = ToastBarData(Loc.error, type: .failure)
                         }
                     }
                 }

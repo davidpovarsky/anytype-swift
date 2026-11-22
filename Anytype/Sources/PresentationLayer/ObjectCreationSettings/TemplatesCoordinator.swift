@@ -91,7 +91,7 @@ final class TemplatesCoordinator: TemplatesCoordinatorProtocol, ObjectSettingsCo
             guard (try? documentWriteOwner.performSynchronousOperation(spaceId: data.spaceId, requiresEditing: false) {}) != nil else { return }
         }
         self.onSetAsDefaultTemplate = onSetAsDefaultTemplate
-        let picker = TemplatePickerView(viewModel: .init(data: data, output: self, documentWriteOwner: documentWriteOwner))
+        let picker = TemplatePickerView(viewModel: .init(data: data, output: self, documentWriteOwner: self.documentWriteOwner))
         let hostViewController = UIHostingController(rootView: picker)
         hostViewController.modalPresentationStyle = .fullScreen
         activeNavigationContext.present(hostViewController, animated: true, completion: nil)
