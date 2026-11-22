@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "original_job": "job_3dac0ed96ee4",
+  "original_tool_status": "failed",
+  "actual_process_exit": 0,
+  "actual_tests": 10,
+  "actual_failures": 0,
+  "packaging_assertion": "binary.name in swift-testing-composition.stdout.log",
+  "observed": "SwiftPM emitted the actual Windows .xctest link command to stderr; stdout contains genuine Swift Testing case results.",
+  "correction": "Read the existing immutable stderr link command as well as stdout and verify exact PE x86_64 binary/path. No compiler, test, source, input or assertion rerun.",
+  "reexecuted_commands": 0
+}
