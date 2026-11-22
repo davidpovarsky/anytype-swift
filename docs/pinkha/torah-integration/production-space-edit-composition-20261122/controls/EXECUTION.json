@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "wrapper_pid": 33784,
+  "input_sha256": "74a0bf1c732e7d579814c4658d1f718e3c476b0d817fbf1871c481fc490f3d07",
+  "runner_sha256": "084a737c8dc4e83fee91d23bee4adee311d53af483137f1a76bb4ec8f352127d",
+  "toolchain": [
+    {
+      "path": "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swift.EXE",
+      "sha256": "e1d0a0b20d95a92b22f4906e7ca331a7c8b89be86b2d9a2d215ac24f753e945a",
+      "bytes": 41472
+    },
+    {
+      "path": "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+      "sha256": "e1d0a0b20d95a92b22f4906e7ca331a7c8b89be86b2d9a2d215ac24f753e945a",
+      "bytes": 41472
+    }
+  ],
+  "commands": [
+    {
+      "label": "swift-version",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+        "--version"
+      ],
+      "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-space-bind-20261122",
+      "wrapper_pid": 33784,
+      "started_at": "2026-11-22T07:36:38.117970+00:00",
+      "timeout_seconds": 30,
+      "phase": "TERMINAL",
+      "child_pid": 22420,
+      "returncode": 0,
+      "timed_out": false,
+      "finished_at": "2026-11-22T07:36:38.832951+00:00",
+      "stdout_sha256": "a2aa2d7dcd61b2f3db2c0e6ff30a1f0ab2d45f58a9542e79f6b7fa7111b09dd5",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "all_inputs_unchanged": true
+    },
+    {
+      "label": "new-owner-syntax",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+        "-frontend",
+        "-parse",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-space-bind-20261122\\Owner.candidate.swift"
+      ],
+      "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-space-bind-20261122",
+      "wrapper_pid": 33784,
+      "started_at": "2026-11-22T07:36:38.872864+00:00",
+      "timeout_seconds": 90,
+      "phase": "TERMINAL",
+      "child_pid": 30384,
+      "returncode": 0,
+      "timed_out": false,
+      "finished_at": "2026-11-22T07:36:39.517955+00:00",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "all_inputs_unchanged": true
+    },
+    {
+      "label": "swift-testing-composition",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swift.EXE",
+        "test",
+        "--verbose",
+        "--package-path",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-space-bind-20261122",
+        "--scratch-path",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-space-bind-20261122\\.build",
+        "--enable-swift-testing",
+        "--disable-xctest",
+        "--xunit-output",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-space-bind-20261122\\TEST_RESULTS.xml",
+        "-Xswiftc",
+        "-strict-concurrency=complete"
+      ],
+      "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-space-bind-20261122",
+      "wrapper_pid": 33784,
+      "started_at": "2026-11-22T07:36:39.550422+00:00",
+      "timeout_seconds": 720,
+      "phase": "TERMINAL",
+      "child_pid": 20312,
+      "returncode": 0,
+      "timed_out": false,
+      "finished_at": "2026-11-22T07:41:33.026523+00:00",
+      "stdout_sha256": "e84e1735c2feb7d00add8e93d940f9732d24a2319cf6581b93597053a612e4c8",
+      "stderr_sha256": "dae29facbb8cd31cf84a48058c3bf1c268b358d570fd584a0252a235b3c35ba1",
+      "all_inputs_unchanged": true
+    }
+  ]
+}
