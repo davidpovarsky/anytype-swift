@@ -1,0 +1,27 @@
+{
+  "apple_or_ui_acceptance": "NOT_RUN",
+  "cases": [
+    "actual role state distinguishes native writer/admin/owner from read-only and unknown values",
+    "only the actual active participant status can mint edit-role capture",
+    "first denied or mismatched native record cannot be overridden by a later same-Space record",
+    "display-only change retains capture; owner-to-admin-to-writer retires every earlier security role",
+    "native participant replacement and removal revoke before the returned snapshot",
+    "an equal-string account generation change rejects the old capture and delayed role input",
+    "role capture requires exact original account source/token and byte-exact Space",
+    "stopped or earlier subscription context cannot restore, replace or revoke a later role",
+    "exact actor reserves start before suspension and refuses duplicate cached-state startup",
+    "reviewed start-stop-start interleaving drains owned start before one unsubscribe and never installs stale consumer",
+    "duplicate stop joins one teardown and roles retire before its asynchronous completion",
+    "original startup error settles a concurrent stop drain without stale publication or duplicate cleanup",
+    "cancelled original start settles and cleans up before any consumer or authority can escape",
+    "startup failure without concurrent stop follows the same owned teardown",
+    "failed unsubscribe blocks cached restart until explicit successful stop retry; old role never revives",
+    "actual publication wiring rejects old attempt after restart and actual AccountManager setter invalidates equal ID"
+  ],
+  "executed": 16,
+  "native_decoder_execution": false,
+  "native_rpc_calls": 0,
+  "passed": 16,
+  "prior_suites_rerun": false,
+  "scope": "Exact role/lifecycle regions and complete ParticipantsStorage actor; unchanged actual Lifetime/Capture/AccountManager and native participant value/predicates; explicit portable DI/publisher/subscription/decoded-input probes only"
+}

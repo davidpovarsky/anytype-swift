@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "candidate_sha256": "0f5120fefcafb5763913114142f5ed467a178114d656ca2c01fa40db7c3855ca",
+  "input_manifest_sha256": "5a5cf79cf4661dd0f0dfc098f13308df2162b1dfc64b6f936003179d5b05ddeb",
+  "commands": [
+    {
+      "label": "full-candidate-syntax",
+      "parent_pid": 31032,
+      "child_pid": 29752,
+      "args": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+        "-frontend",
+        "-parse",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\candidate\\Anytype\\Sources\\ServiceLayer\\ParticipantStorage\\ParticipantsStorage.swift"
+      ],
+      "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-lifecycle-controls-await",
+      "timeout_s": 60,
+      "started_at": "2026-11-22T05:59:41.215664+00:00",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_s": 0.531,
+      "finished_at": "2026-11-22T05:59:41.756027+00:00",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "cleanup_invoked": false
+    },
+    {
+      "label": "compile",
+      "parent_pid": 31032,
+      "child_pid": 22108,
+      "args": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+        "-parse-as-library",
+        "-swift-version",
+        "6",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-lifecycle-controls-await\\AccountManager.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-lifecycle-controls-await\\Binding.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-lifecycle-controls-await\\Capture.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-lifecycle-controls-await\\Lifetime.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-lifecycle-controls-await\\ParticipantRoleLifecycleControls.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-lifecycle-controls-await\\ParticipantValues.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-lifecycle-controls-await\\PortableDependencyProbes.swift",
+        "-o",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-lifecycle-controls-await\\participant-role-lifecycle-controls.exe"
+      ],
+      "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-lifecycle-controls-await",
+      "timeout_s": 240,
+      "started_at": "2026-11-22T05:59:41.761323+00:00",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_s": 64.453,
+      "finished_at": "2026-11-22T06:00:46.230370+00:00",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e6a3db862fec389dd4e47f3ab5011c45b2131258fdf7555696a0a51aca994fbb",
+      "cleanup_invoked": false
+    },
+    {
+      "label": "execute",
+      "parent_pid": 31032,
+      "child_pid": 3828,
+      "args": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-lifecycle-controls-await\\participant-role-lifecycle-controls.exe"
+      ],
+      "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-lifecycle-controls-await",
+      "timeout_s": 120,
+      "started_at": "2026-11-22T06:00:48.679891+00:00",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_s": 4.219,
+      "finished_at": "2026-11-22T06:00:52.896476+00:00",
+      "stdout_sha256": "299e932e53c12fef1ea03c6c2e0a929ffb46979d1779426a1302a83ca470e219",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "cleanup_invoked": false
+    }
+  ],
+  "source_after_exact": true,
+  "old_suites_rerun": false,
+  "native_calls": 0,
+  "result": "PASS",
+  "binary_sha256": "70727b2533ca91a83155350e7883ffd909cdf6c2f6d412a2bdf0244e5bf8a115"
+}

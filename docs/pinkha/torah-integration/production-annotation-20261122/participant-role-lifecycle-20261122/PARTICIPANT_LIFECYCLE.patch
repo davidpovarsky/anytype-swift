@@ -1,0 +1,207 @@
+--- a/Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift
++++ b/Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift
+@@ -232,6 +232,95 @@
+ }
+ // ORIGINAL_PARTICIPANT_EDIT_PERMISSION_END
+ 
++// ORIGINAL_PARTICIPANT_SUBSCRIPTION_LIFECYCLE_BEGIN
++/// Identity of one original subscription transition, not an account generation.
++private final class OriginalParticipantSubscriptionAttempt: Sendable {}
++
++/// Used only on ParticipantsStorage's original actor. A stop drains an already
++/// issued start before the original unsubscribe; callbacks cannot revive it.
++private struct OriginalParticipantSubscriptionLifecycle {
++    private enum Phase {
++        case idle
++        case starting(OriginalParticipantSubscriptionAttempt)
++        case active(OriginalParticipantSubscriptionAttempt)
++        case stopping(OriginalParticipantSubscriptionAttempt)
++        case blocked
++    }
++
++    private var phase: Phase = .idle
++    private var pendingStart: OriginalParticipantSubscriptionAttempt?
++    private var startWaiters: [CheckedContinuation<Void, Never>] = []
++    private var stopWaiters: [CheckedContinuation<Void, Never>] = []
++
++    mutating func beginStart() -> OriginalParticipantSubscriptionAttempt? {
++        guard case .idle = phase else { return nil }
++        let attempt = OriginalParticipantSubscriptionAttempt()
++        pendingStart = attempt
++        phase = .starting(attempt)
++        return attempt
++    }
++
++    /// Every original start result settles the drain, including errors and
++    /// cancellation. Only the still-current start may install its consumer.
++    mutating func finishStart(_ attempt: OriginalParticipantSubscriptionAttempt) -> Bool {
++        guard pendingStart === attempt else { return false }
++        pendingStart = nil
++        let mayInstall: Bool
++        if case .starting(let current) = phase, current === attempt {
++            phase = .active(attempt)
++            mayInstall = true
++        } else {
++            mayInstall = false
++        }
++        let waiters = startWaiters
++        startWaiters.removeAll()
++        for waiter in waiters { waiter.resume() }
++        return mayInstall
++    }
++
++    func acceptsPublication(from attempt: OriginalParticipantSubscriptionAttempt) -> Bool {
++        guard case .active(let current) = phase else { return false }
++        return current === attempt
++    }
++
++    mutating func beginStop() -> OriginalParticipantSubscriptionAttempt? {
++        if case .stopping = phase { return nil }
++        let attempt = OriginalParticipantSubscriptionAttempt()
++        phase = .stopping(attempt)
++        return attempt
++    }
++
++    mutating func waitForPendingStart(_ continuation: CheckedContinuation<Void, Never>) {
++        if pendingStart != nil {
++            startWaiters.append(continuation)
++        } else {
++            continuation.resume()
++        }
++    }
++
++    mutating func waitForCurrentStop(_ continuation: CheckedContinuation<Void, Never>) {
++        if case .stopping = phase {
++            stopWaiters.append(continuation)
++        } else {
++            continuation.resume()
++        }
++    }
++
++    /// An unsubscribe failure can leave the native storage's old data live.
++    /// Refuse another start until an explicit stop retry actually succeeds.
++    mutating func finishStop(
++        _ attempt: OriginalParticipantSubscriptionAttempt, succeeded: Bool
++    ) {
++        guard case .stopping(let current) = phase, current === attempt,
++              pendingStart == nil else { return }
++        phase = succeeded ? .idle : .blocked
++        let waiters = stopWaiters
++        stopWaiters.removeAll()
++        for waiter in waiters { waiter.resume() }
++    }
++}
++// ORIGINAL_PARTICIPANT_SUBSCRIPTION_LIFECYCLE_END
++
+ protocol ParticipantsStorageProtocol: AnyObject, Sendable {
+     var participants: [Participant] { get }
+     var participantsSequence: AnyAsyncSequence<[Participant]> { get }
+@@ -265,6 +354,7 @@
+     
+     private let stream = AsyncToManyStream<[Participant]>()
+     private var subscription: Task<Void, Never>?
++    private var subscriptionLifecycle = OriginalParticipantSubscriptionLifecycle()
+     private var channelPinPermissionState = OriginalChannelPinPermissionState()
+     private let channelPinPermissions = AtomicStorage<[String: OriginalChannelPinPermission]>([:])
+     private var participantEditPermissionState = OriginalParticipantEditPermissionState()
+@@ -307,46 +397,81 @@
+     }
+ 
+     func startSubscription() async {
+-        guard subscription.isNil else {
++        guard let attempt = subscriptionLifecycle.beginStart() else {
+             anytypeAssertionFailure("You are trying to start ParticipantsStorage multiple times")
+             return
+         }
+-        
++
+         let channelPinAccountCapture: EditorDocumentWriteCapture?
+         if accountManager is AccountManager, let lifetime = accountManager.editorWriteLifetime {
+             channelPinAccountCapture = try? EditorDocumentWriteCapture(lifetime)
+         } else {
+             channelPinAccountCapture = nil
+         }
++        // Freeze one account value for both the original filter and its role
++        // context; begin validates the capture after reading that value.
++        let accountID = accountManager.account.id
+         let channelPinContext = channelPinPermissionState.begin(
+-            accountID: accountManager.account.id, accountCapture: channelPinAccountCapture
++            accountID: accountID, accountCapture: channelPinAccountCapture
+         )
+         channelPinPermissions.value = [:]
+         participantEditPermissions.value = participantEditPermissionState.begin(from: channelPinContext)
+-        let data = subscriptionBuilder.build(accountId: accountManager.account.id, subId: subscriptionId)
+-        try? await subscriptionStorage.startOrUpdateSubscription(data: data)
+-        
++        let data = subscriptionBuilder.build(accountId: accountID, subId: subscriptionId)
++        let started: Bool
++        do {
++            try await subscriptionStorage.startOrUpdateSubscription(data: data)
++            started = true
++        } catch {
++            started = false
++        }
++
++        // A concurrent stop owns teardown and waits for this exact start.
++        guard subscriptionLifecycle.finishStart(attempt) else { return }
++        guard started, !Task.isCancelled else {
++            await stopSubscription()
++            return
++        }
+         subscription = Task { [weak self, subscriptionStorage] in
+             for await state in subscriptionStorage.statePublisher.values {
++                guard !Task.isCancelled else { return }
+                 let participants = state.items.compactMap { try? Participant(details: $0) }
+-                self?.publishParticipants(participants, channelPinContext: channelPinContext)
++                self?.publishParticipants(
++                    participants, channelPinContext: channelPinContext, attempt: attempt
++                )
+             }
+         }
+     }
+ 
+     func stopSubscription() async {
+-        // Stop pin admissions before the original asynchronous unsubscribe.
++        guard let attempt = subscriptionLifecycle.beginStop() else {
++            // A duplicate stop joins the same original teardown.
++            await withCheckedContinuation { subscriptionLifecycle.waitForCurrentStop($0) }
++            return
++        }
++        // Retire admissions and cancel the consumer before any suspension.
+         channelPinPermissions.value = channelPinPermissionState.stop()
+         participantEditPermissions.value = participantEditPermissionState.stop()
+-        try? await subscriptionStorage.stopSubscription()
+         subscription?.cancel()
+         subscription = nil
++        // The original storage can finish a pending subscribe after stop was
++        // requested. Drain it before issuing the one native unsubscribe.
++        await withCheckedContinuation { subscriptionLifecycle.waitForPendingStart($0) }
++        let stopped: Bool
++        do {
++            try await subscriptionStorage.stopSubscription()
++            stopped = true
++        } catch {
++            stopped = false
++        }
+         stream.clearLastValue()
++        subscriptionLifecycle.finishStop(attempt, succeeded: stopped)
+     }
+ 
+     private func publishParticipants(
+-        _ participants: [Participant], channelPinContext: OriginalChannelPinSubscriptionContext?
++        _ participants: [Participant], channelPinContext: OriginalChannelPinSubscriptionContext?,
++        attempt: OriginalParticipantSubscriptionAttempt
+     ) {
++        guard subscriptionLifecycle.acceptsPublication(from: attempt) else { return }
+         do {
+             channelPinPermissions.value = try channelPinPermissionState.receive(
+                 participants.map { (spaceID: $0.spaceId, isModerator: $0.permission.isModerator) },
+@@ -362,7 +487,7 @@
+         } catch {
+             participantEditPermissions.value = participantEditPermissionState.stop()
+         }
+-        // Preserve the original decoded data and stream behavior unchanged.
++        // Preserve the original decoded data for the current subscription.
+         stream.send(participants)
+     }
+ }

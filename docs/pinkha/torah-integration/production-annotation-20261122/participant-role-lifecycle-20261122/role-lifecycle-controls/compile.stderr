@@ -1,0 +1,22 @@
+C:\Users\DAVID\AppData\Local\Temp\otzaria-original-annotation-authority-20261122\role-lifecycle-controls\ParticipantRoleLifecycleControls.swift:415:23: error: actor-isolated instance method 'publishParticipants(_:channelPinContext:attempt:)' cannot be called from outside of the actor
+413 |                 guard !Task.isCancelled else { return }
+414 |                 let participants = state.items.compactMap { try? Participant(details: $0) }
+415 |                 self?.publishParticipants(
+    |                       `- error: actor-isolated instance method 'publishParticipants(_:channelPinContext:attempt:)' cannot be called from outside of the actor
+416 |                     participants, channelPinContext: channelPinContext, attempt: attempt
+417 |                 )
+
+C:\Users\DAVID\AppData\Local\Temp\otzaria-original-annotation-authority-20261122\role-lifecycle-controls\ParticipantRoleLifecycleControls.swift:513:67: warning: parameter 'file' with default argument '#filePath' passed to parameter 'file', whose default argument is '#file'
+510 | private struct ParticipantRoleLifecycleControls {
+511 |     @MainActor private static var passed: [String] = []
+512 |     private static func check(_ condition: Bool, file: StaticString = #filePath, line: UInt = #line) {
+    |                                                                       `- note: did you mean for parameter 'file' to default to '#file'?
+513 |         precondition(condition, "control condition failed", file: file, line: line)
+    |                                                                   |- warning: parameter 'file' with default argument '#filePath' passed to parameter 'file', whose default argument is '#file'
+    |                                                                   `- note: add parentheses to silence this warning
+514 |     }
+515 |     private static func participant(
+
+Swift.precondition.file:1:1: note: 'file' declared here
+1 | file: StaticString
+  | `- note: 'file' declared here

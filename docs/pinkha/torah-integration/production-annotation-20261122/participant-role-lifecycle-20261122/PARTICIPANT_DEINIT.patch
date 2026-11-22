@@ -1,0 +1,15 @@
+--- a/Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift
++++ b/Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift
+@@ -370,6 +370,12 @@
+     }()
+     
+     private let subscriptionBuilder = AcountParticipantSubscriptionBuilder()
++
++    deinit {
++        for permission in channelPinPermissions.value.values { permission.retire() }
++        for permission in participantEditPermissions.value.values { permission.retire() }
++        subscription?.cancel()
++    }
+     
+     // MARK: - State
+ 
