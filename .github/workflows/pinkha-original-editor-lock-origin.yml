@@ -55,7 +55,9 @@ jobs:
             --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch \
             --app-source "$GITHUB_WORKSPACE" --source-run-id 44203168617 \
             --expected-app-branch "$EXPECTED_APP_BRANCH" --evidence build/original-editor-lock-heart-evidence/install
-      - name: Observe actual resolver metadata and recheck frozen pins
+      - name: Verify strict frozen closure using prior actual resolver evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: python3 Tools/OriginalEditor/refresh_package_origin.py
       - name: Retain exact before after command and source evidence
         if: always()

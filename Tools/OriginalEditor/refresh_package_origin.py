@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Observe an Apple-generated originHash without authorizing any package update.
+"""Verify an observed Apple dependency closure without updating any package.
 
 This is a resolver-only maintenance lane. It cannot qualify a framework or
 Native acceptance. The original build continues to require the committed lock.
@@ -7,6 +7,8 @@ Native acceptance. The original build continues to require the committed lock.
 from pathlib import Path
 import datetime
 import hashlib
+import io
+import zipfile
 import json
 import os
 import subprocess
@@ -112,26 +114,70 @@ try:
         "-scheme", "AnytypeOriginalEditor", "-configuration", "Debug-Anytype",
         "-clonedSourcePackagesDirPath", str(package_dir), "-skipPackageUpdates",
     ]
-    command("observe-resolver", base_command)
+    # Reuse the already successful resolver, including its immutable archive.
+    # Do not repeat it just because its observer incorrectly expected a changed
+    # originHash. The still-missing check is strict resolution on a fresh runner.
+    observed_run = 44973540287
+    artifact_id = 14734653215
+    artifact_sha = "40e34bd2e5549c9bc0dde527c024cbe3d37a6281189c28e0a0e14238c0ff41ff"
+    prior_head = "19babeaafd9c24d2cdd1e514531084a05d83a996"
+    endpoint = "/repos/davidpovarsky/anytype-swift/actions/"
+    def api(path):
+        return subprocess.check_output(["gh", "api", endpoint + path], cwd=root)
+    run = json.loads(api("runs/" + str(observed_run)))
+    artifact = json.loads(api("artifacts/" + str(artifact_id)))
+    if run["head_sha"] != prior_head or run["status"] != "completed" or run["conclusion"] != "failure":
+        raise ValueError("unexpected prior resolver run")
+    if artifact["id"] != artifact_id or artifact["workflow_run"]["id"] != observed_run or artifact["expired"] or artifact["digest"] != "sha256:" + artifact_sha:
+        raise ValueError("unexpected prior resolver artifact")
+    archive_bytes = api("artifacts/" + str(artifact_id) + "/zip")
+    if len(archive_bytes) != 19780 or sha(archive_bytes) != artifact_sha:
+        raise ValueError("prior resolver artifact changed")
+    (evidence / "original-observation-44973540287.zip").write_bytes(archive_bytes)
+    archive = zipfile.ZipFile(io.BytesIO(archive_bytes))
+    if archive.testzip() is not None:
+        raise ValueError("prior resolver artifact failed CRC")
+    prefix = "original-editor-lock-origin-evidence/"
+    prior = json.loads(archive.read(prefix + "observation.json"))
+    prior_command = json.loads(archive.read(prefix + "observe-resolver.command.json"))
+    if prior["base_source"] != BASE or prior["source_sha"] != prior_head or prior["run_id"] != str(observed_run) or prior["error"] != "expected an observed new originHash":
+        raise ValueError("prior observation does not describe this exact source")
+    if prior_command["returncode"] != 0 or prior_command.get("timed_out", False):
+        raise ValueError("prior Apple resolution did not succeed")
+    if prior_command["command"] != [
+        "xcodebuild", "-resolvePackageDependencies",
+        "-project", "/Users/runner/work/anytype-swift/anytype-swift/Anytype.xcodeproj",
+        "-scheme", "AnytypeOriginalEditor", "-configuration", "Debug-Anytype",
+        "-clonedSourcePackagesDirPath", "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-lock-packages-44973540287",
+        "-skipPackageUpdates",
+    ]:
+        raise ValueError("prior resolution used a foreign command")
+    for kind in ("stdout", "stderr"):
+        if sha(archive.read(prefix + "observe-resolver." + kind + ".log")) != prior_command[kind + "_sha256"]:
+            raise ValueError("prior resolver log hash mismatch")
+    if archive.read(prefix + "Package.before.resolved") != before_bytes or archive.read(prefix + "Package.after.resolved") != before_bytes:
+        raise ValueError("candidate differs from the exact observed 51-pin lock")
+    origin = before["originHash"]
+    if not isinstance(origin, str) or len(origin) != 64 or any(c not in "0123456789abcdef" for c in origin):
+        raise ValueError("invalid observed originHash")
+    receipt["reused_successful_resolver"] = {
+        "run_id": observed_run, "artifact_id": artifact_id,
+        "archive_sha256": artifact_sha, "command_returncode": 0,
+        "command_duration_seconds": prior_command["duration_seconds"],
+        "resolution_rerun": False,
+        "correction": "Xcode accepted the complete 51-pin closure without changing originHash; no changed hash is invented or required.",
+    }
+    command("strict-frozen-resolver", base_command + ["-onlyUsePackageVersionsFromResolvedFile"])
     after_bytes = lock.read_bytes()
-    after = json.loads(after_bytes)
     (evidence / "Package.after.resolved").write_bytes(after_bytes)
     receipt["after_sha256"] = sha(after_bytes)
-    receipt["before_originHash"] = before["originHash"]
-    receipt["after_originHash"] = after.get("originHash")
-    if set(after) != set(before) or after["version"] != before["version"] or after["pins"] != before["pins"]:
-        raise ValueError("resolver changed frozen pin identity, location, revision, version, or order")
-    origin = after["originHash"]
-    if not isinstance(origin, str) or len(origin) != 64 or any(c not in "0123456789abcdef" for c in origin) or origin == before["originHash"]:
-        raise ValueError("expected an observed new originHash")
-    if git("diff", "--name-only").splitlines() != [LOCK_PATH] or git("ls-files", "--others", "--exclude-standard"):
-        raise ValueError("resolver mutated a source other than the lock")
-    command("strict-frozen-resolver", base_command + ["-onlyUsePackageVersionsFromResolvedFile"])
-    if lock.read_bytes() != after_bytes:
-        raise ValueError("strict resolver changed observed lock")
-    if git("diff", "--name-only").splitlines() != [LOCK_PATH] or git("ls-files", "--others", "--exclude-standard"):
-        raise ValueError("strict resolver mutated another source")
-    (evidence / "observed-origin-only.patch").write_text(git("diff", "--", LOCK_PATH) + "\n")
+    receipt["before_originHash"] = origin
+    receipt["after_originHash"] = json.loads(after_bytes).get("originHash")
+    receipt["origin_hash_changed"] = after_bytes != before_bytes
+    if after_bytes != before_bytes:
+        raise ValueError("strict resolver changed the exact observed lock")
+    if git("status", "--porcelain", "--untracked-files=all"):
+        raise ValueError("strict resolver mutated source")
     receipt["status"] = "PASS_OBSERVED_51_PIN_CLOSURE_44_ORIGINAL_UNCHANGED_STRICT_RESOLVER_ACCEPTED"
 except Exception as exc:
     receipt["error_type"] = type(exc).__name__
