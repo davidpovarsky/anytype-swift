@@ -1,0 +1,157 @@
+"""Admission and privacy controls only; no native/compiler/simulator execution."""
+from __future__ import annotations
+
+from copy import deepcopy
+import hashlib
+import json
+from pathlib import Path
+import shutil
+import tempfile
+import unittest
+
+import coherent_read_native as gate
+import coherent_read_runtime as source
+
+
+class CoherentReadControls(unittest.TestCase):
+    def test_exact_components_require_named_start_and_terminal_pairs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "events.jsonl"
+            events = []
+            for name in sorted(gate.TERMINALS):
+                events.extend([dict(Action="run", Package=gate.CORE, Test=name), dict(Action="pass", Package=gate.CORE, Test=name)])
+            events.append(dict(Action="pass", Package=gate.CORE))
+            def write(values):
+                path.write_text("\n".join(map(json.dumps, values)) + "\n")
+            write(events)
+            result = gate.qualify_components(path)
+            self.assertEqual((result["top_level_pass"], result["terminal_pass"], result["new_terminals"]), (9, 18, 14))
+            for bad in [[], events[:-1], events[1:], events + events[:1],
+                        events + [dict(Action="pass", Package=gate.CORE, Test="UnselectedPriorMethod")],
+                        [dict(item, Package="wrong/package") for item in events],
+                        events + [dict(Action="skip", Package=gate.CORE, Test=next(iter(gate.TOP_METHODS)))]]:
+                with self.subTest(size=len(bad)):
+                    write(bad)
+                    with self.assertRaises(ValueError):
+                        gate.qualify_components(path)
+
+    def test_account_requires_only_the_new_actual_method(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "native.log"
+            passing = "=== RUN   " + gate.METHOD + "\r\n--- PASS: " + gate.METHOD + " (1.23s)\r\nPASS\r\n"
+            path.write_bytes(passing.encode())
+            self.assertEqual(gate.qualify_account(path)["tests_passed"], 1)
+            for bad in ["PASS\n", passing.replace(gate.METHOD, gate.signed.METHOD),
+                        passing.replace("--- PASS:", "--- FAIL:"), passing.replace("--- PASS:", "--- SKIP:"),
+                        passing + passing, passing.replace("\r\nPASS\r\n", "\r\n")]:
+                path.write_bytes(bad.encode())
+                with self.assertRaises(ValueError):
+                    gate.qualify_account(path)
+
+    def observations(self, private):
+        original = gate.ROOT / source.CURRENT_PROOF / "original/actual/native-observation.json"
+        t5 = json.loads(original.read_bytes())
+        identity = dict(heart_sha=gate.signed.HEART, patch_sha256="a" * 64, runtime_profile=source.VARIANT,
+                        runtime_version=source.version("a" * 64), fixture_sha256="b" * 64)
+        t5.update(runtime_version=identity["runtime_version"], fixture_sha256=identity["fixture_sha256"], nonce="c" * 32, pid=4321)
+        value = dict(protocol=gate.PROTOCOL, nonce=t5["nonce"], pid=t5["pid"], status=gate.PASS,
+            heart_sha=identity["heart_sha"], runtime_version=identity["runtime_version"], fixture_sha256=identity["fixture_sha256"],
+            **{name: t5[name] for name in ("account_id_sha256", "space_id_sha256", "object_id_sha256")},
+            block_id_sha256="d" * 64, canonical_sha256="e" * 64, claim_id_sha256="f" * 64, native_change_id_sha256="1" * 64,
+            same_runtime_account_space_target=True, owner_positive=True, reader_positive=True,
+            exact_signed_bytes_and_provenance=True, removed_error_code=4, removed_has_payload=False, account_stop_verified=True,
+            rpc_calls={"PinkhaTorahOperationsAppend": 1, "PinkhaTorahAuthorizedOperationRead": 3}, stages=["owner", "reader", "removed"],
+            automatic_t2_to_t5_projection="NOT_PROVEN", network_acl_transport="NOT_RUN", ios_acceptance="NOT_RUN")
+        for name, key in gate.RAW_FILES.items():
+            raw = ("synthetic controller " + name).encode()
+            (private / name).write_bytes(raw)
+            value[key] = hashlib.sha256(raw).hexdigest()
+        return value, t5, identity
+
+    def test_observations_require_one_owned_runtime_target_and_raw_payload(self):
+        with tempfile.TemporaryDirectory() as directory:
+            private = Path(directory)
+            value, t5, identity = self.observations(private)
+            result = gate.validate_observations(value, t5, identity, 4321, "c" * 32, private)
+            self.assertEqual(result["actual_account_tests"], 1)
+            value["removed_error_code"] = 9
+            self.assertEqual(gate.validate_observations(value, t5, identity, 4321, "c" * 32, private)["removed_t2_error_code"], 9)
+            changes = {"pid": 4322, "nonce": "a" * 32, "account_id_sha256": "0" * 64,
+                       "removed_error_code": 0, "removed_has_payload": True, "owner_positive": False,
+                       "reader_positive": False, "automatic_t2_to_t5_projection": "PASS",
+                       "owner_wire_sha256": "0" * 64, "rpc_calls": {"PinkhaTorahAuthorizedOperationRead": 3}}
+            for name, changed in changes.items():
+                with self.subTest(field=name):
+                    bad = dict(value, **{name: changed})
+                    with self.assertRaises(ValueError):
+                        gate.validate_observations(bad, t5, identity, 4321, "c" * 32, private)
+
+    def test_standalone_candidate_and_empty_query_cannot_qualify_composed_engine(self):
+        with tempfile.TemporaryDirectory() as directory:
+            private = Path(directory)
+            value, t5, identity = self.observations(private)
+            for profile in ("r15-attachment-v1", "r15-attachment-current-read-v1", "authorized-operation-read-v1"):
+                with self.assertRaises(ValueError):
+                    gate.validate_observations(value, t5, dict(identity, runtime_profile=profile), 4321, "c" * 32, private)
+            bad = dict(t5, object_search_error_code=0, object_search_error_description="", object_search_explicit_denial=False)
+            with self.assertRaises(ValueError):
+                gate.validate_observations(value, bad, identity, 4321, "c" * 32, private)
+
+    def test_new_wire_exports_are_scanned_against_actual_disposable_secrets(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            private = root / "private"
+            private.mkdir()
+            secrets = ["synthetic-disposable-account-key", "synthetic-disposable-mnemonic"]
+            (private / "sensitive-needles.private").write_text(json.dumps(secrets))
+            for name in ("ownership.json", "native-observation.json", "native.log", "coherent-observation.json", *gate.RAW_FILES):
+                (private / name).write_bytes(b"synthetic safe evidence")
+            result = gate.export_private(private, root / "safe")
+            self.assertEqual(set(result["files"]), {"ownership.json", "native-observation.json", "native.log", "coherent-observation.json", *gate.RAW_FILES})
+            (private / "coherent-reader.pb").write_bytes(secrets[0].encode())
+            with self.assertRaises(ValueError):
+                gate.export_private(private, root / "refused")
+            self.assertFalse((root / "refused/coherent-reader.pb").exists())
+
+    def test_fixture_hooks_preserve_the_original_assertions(self):
+        identity, files = gate.fixture_identity(gate.ROOT)
+        self.assertEqual(set(files), gate.FIXTURES)
+        self.assertEqual(len(identity), 64)
+        with tempfile.TemporaryDirectory() as directory:
+            control = Path(directory)
+            for name in [gate.signed.FIXTURE, *[gate.FIXTURE_DIRECTORY + "/" + item for item in gate.FIXTURES]]:
+                destination = control / name
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(gate.ROOT / name, destination)
+            candidate = control / gate.FIXTURE_DIRECTORY / "native_signed_revocation_base_test.go"
+            value = candidate.read_text()
+            self.assertIn("require.True(t, searchDenied,", value)
+            candidate.write_text(value.replace("require.True(t, searchDenied,", "require.True(t, true,"))
+            with self.assertRaises(ValueError):
+                gate.fixture_identity(control)
+
+    def test_source_union_rejects_unknown_paths_and_overlap(self):
+        t2 = {name: "1" * 64 for name in source.REPLACED}
+        t2.update({"t2/" + str(index): "2" * 64 for index in range(83)})
+        current = {"current/" + str(index): "3" * 64 for index in range(52)}
+        self.assertEqual(len(source.validate_union(t2, current)), 137)
+        for bad_t2, bad_current in [(dict(t2, extra="4" * 64), current), (t2, dict(current, **{next(iter(t2)): "5" * 64})),
+                                    ({name: sha for name, sha in t2.items() if name != next(iter(source.REPLACED))}, current)]:
+            with self.assertRaises(ValueError):
+                source.validate_union(bad_t2, bad_current)
+
+    def test_regenerated_sources_and_modules_must_match_original_candidate(self):
+        qualified = dict(status="PASS_PINNED_RPC_GENERATION", heart_sha=gate.signed.HEART,
+            source_sha256={str(index): "1" * 64 for index in range(85)}, generated_sha256={str(index): "2" * 64 for index in range(4)},
+            module_sha256={"go.mod": "3" * 64, "go.sum": "4" * 64}, protobuf_inputs_sha256={"schema": "5" * 64},
+            native_read_inventory_sha256="6" * 64, authorized_read_manifest_sha256="7" * 64, rpc_manifest_sha256="8" * 64)
+        source.validate_t2_generation(deepcopy(qualified), qualified)
+        for field in ("source_sha256", "generated_sha256", "module_sha256", "protobuf_inputs_sha256"):
+            value = deepcopy(qualified)
+            value[field][next(iter(value[field]))] = "9" * 64
+            with self.assertRaises(ValueError):
+                source.validate_t2_generation(value, qualified)
+
+
+if __name__ == "__main__":
+    unittest.main()

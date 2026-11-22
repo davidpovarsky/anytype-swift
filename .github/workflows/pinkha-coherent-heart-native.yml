@@ -1,0 +1,105 @@
+name: Coherent Heart native authority
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  coherent-native-authority:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    env:
+      T5_GO_IMAGE: golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout exact coherent controller and candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: control
+          persist-credentials: false
+      - name: Checkout frozen r15 source approval
+        uses: actions/checkout@v4
+        with:
+          ref: 947fbde24d5657d0e1229f45bb3993648884a8a1
+          path: source
+          persist-credentials: false
+      - name: Checkout clean native base for the original T2 generator
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: heart
+          persist-credentials: false
+      - name: Install the original pinned generator toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache: false
+      - name: Reproduce the original 85 source paths without executing old tests
+        run: |
+          mkdir -p evidence/toolchain evidence/generation
+          python3 -B control/Tools/TorahNativeOperations/run_native_rpc.py generate \
+            --control "$GITHUB_WORKSPACE/control" --heart-source "$GITHUB_WORKSPACE/heart" \
+            --work "$GITHUB_WORKSPACE/generation-work" --evidence "$GITHUB_WORKSPACE/evidence/generation" \
+            --expected-app-sha "$GITHUB_SHA" --rpc-profile authorized-operation-read-v1
+      - name: Restore compatible compiled native dependencies
+        id: cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .t5-cache
+          key: coherent-heart-alpine-111d7915-go1.26.5-${{ hashFiles('heart/go.sum', 'heart/tantivity_sha256.txt') }}-${{ github.sha }}
+          restore-keys: |
+            coherent-heart-alpine-111d7915-go1.26.5-
+            t5-acl-alpine-111d7915-go1.26.5-
+            t5-attachment-alpine-111d7915-go1.26.5-
+      - name: Compose and prove the changed finalization and one real account
+        run: |
+          mkdir -p native-work .t5-cache
+          docker pull --platform linux/amd64 "$T5_GO_IMAGE"
+          docker image inspect "$T5_GO_IMAGE" > evidence/toolchain/image.json
+          docker run --rm --platform linux/amd64 --cpus=2 --memory=6g --pids-limit=512 \
+            --workdir /workspace \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/control,dst=/workspace/control,readonly" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/source,dst=/workspace/source,readonly" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/heart,dst=/workspace/heart" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/native-work,dst=/workspace/work" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/evidence,dst=/workspace/evidence" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/.t5-cache,dst=/cache" \
+            -e T5_GO_IMAGE -e GITHUB_RUN_ID -e GITHUB_RUN_ATTEMPT -e GITHUB_SHA -e GITHUB_WORKFLOW_REF \
+            -e CC=gcc -e CXX=g++ -e GOTOOLCHAIN=local \
+            -e GOMODCACHE=/cache/go-mod -e GOCACHE=/cache/go-build \
+            -e GIT_OPTIONAL_LOCKS=0 -e PYTHONDONTWRITEBYTECODE=1 \
+            "$T5_GO_IMAGE" sh control/Tools/PinkhaNativeDerived/run_coherent_read_container.sh
+      - name: Preserve honest bootstrap status
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          path=Path('evidence/receipt.json')
+          if not path.exists():
+              path.parent.mkdir(parents=True,exist_ok=True)
+              path.write_text(json.dumps(dict(status='NOT_RUN_COHERENT_NATIVE_BOOTSTRAP_FAILED',
+                  run_id=os.environ.get('GITHUB_RUN_ID'),run_attempt=os.environ.get('GITHUB_RUN_ATTEMPT'),
+                  app_sha=os.environ.get('GITHUB_SHA'),native_status='NOT_RUN',
+                  runtime_profile='r15-attachment-authorized-current-read-v1',
+                  ios_acceptance='NOT_RUN',network_acl_transport='NOT_RUN',
+                  automatic_t2_to_t5_projection='NOT_PROVEN'),indent=2)+'\n')
+          PY
+      - name: Preserve source and original secret-scanned evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Coherent-Heart-Native-${{ github.run_id }}-${{ github.run_attempt }}
+          path: evidence/
+          retention-days: 14
+          if-no-files-found: error
+      - name: Preserve compilation cache after completed native compilation
+        if: ${{ always() && steps.cache.outputs.cache-hit != 'true' && (hashFiles('evidence/component-receipt.json') != '' || hashFiles('evidence/build.json') != '') }}
+        uses: actions/cache/save@v4
+        with:
+          path: .t5-cache
+          key: ${{ steps.cache.outputs.cache-primary-key }}

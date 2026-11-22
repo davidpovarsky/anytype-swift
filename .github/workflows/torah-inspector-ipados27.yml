@@ -44,6 +44,7 @@ on:
           - t5-corrected-ui
           - t5-signed-revocation
           - t5-current-read-proof
+          - coherent-heart-native
           - t5-native-pagination
           - t5-native-account-retry
           - t5-native-attachment
@@ -250,6 +251,10 @@ jobs:
     uses: ./.github/workflows/pinkha-t5-signed-revocation.yml
     with:
       runtime_profile: r15-attachment-current-read-v1
+
+  coherent-heart-native:
+    if: ${{ inputs.route == 'coherent-heart-native' }}
+    uses: ./.github/workflows/pinkha-coherent-heart-native.yml
 
   t5-apple-pairs:
     if: ${{ inputs.route == 't5-apple-pairs' || inputs.route == 't5-apple-ui' }}
