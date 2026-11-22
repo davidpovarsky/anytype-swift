@@ -17,22 +17,41 @@ final class PublishToWebCoordinatorModel: ObservableObject, PublishToWebModuleOu
     @Published var safariUrl: URL?
     
     let data: PublishToWebViewData
+    let preparedSession: PreparedEditorPageSession?
     
-    init(data: PublishToWebViewData) {
+    init(data: PublishToWebViewData, preparedSession: PreparedEditorPageSession? = nil) {
         self.data = data
+        self.preparedSession = preparedSession
+    }
+
+    private func publish(_ operation: () throws -> Void) {
+        guard let preparedSession else { try? operation(); return }
+        try? preparedSession.owner.performSynchronousOperation(
+            contextId: data.objectId, spaceId: data.spaceId, requiresEditing: false
+        ) {
+            try preparedSession.owner.validateDocument(preparedSession.document)
+            try operation()
+        }
     }
     
     // MARK: - PublishToWebModuleOutput
     
     func onShowMembership() {
-        showMembership = true
+        publish {
+            // Account membership is a separate original account route; a page
+            // source does not grant purchase or account-management authority.
+            guard preparedSession == nil else {
+                throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+            }
+            showMembership = true
+        }
     }
     
     func onSharePreview(url: URL) {
-        sharedUrl = url
+        publish { sharedUrl = url }
     }
     
     func onOpenPreview(url: URL) {
-        safariUrl = url
+        publish { safariUrl = url }
     }
 }

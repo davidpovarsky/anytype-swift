@@ -51,7 +51,7 @@ struct ObjectSettingsMenuContainer<Label: View, AdditionalMenuItems: View>: View
                 VersionHistoryCoordinatorView(data: $0, output: model, preparedSession: model.preparedSession)
             }
             .sheet(item: $model.publishingData) {
-                PublishToWebCoordinator(data: $0)
+                PublishToWebCoordinator(data: $0, preparedSession: model.preparedSession)
             }
             .sheet(item: $model.chatEditData) { data in
                 ChatCreateView(data: data)

@@ -512,7 +512,6 @@ final class ObjectSettingsViewModel {
     
     func onTapPublishing() {
         do {
-            try requireQualifiedTarget()
             try withCurrentSource(requiredPermissions: [.publish]) {
                 if let details = document.details {
                     AnytypeAnalytics.instance().logClickShareObject(objectType: details.objectType.analyticsType)
