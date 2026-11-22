@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "source_head": "d5df214b50faafbae4b8eb3edcf8b27bcdc930b8",
+  "discovery_sha256": "bb9010784b6db140e14241837648da68cd342021b1232d439e675d0e08bffd4f",
+  "review": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/PropertyValueFlow/PropertyValueCoordinator/OriginalEditorPropertyScope.swift",
+      "sha256": "91b0377cf9ca047d23b85c1e73ae7494e32c121d95c7dbf3a7086ba2037b5dfd",
+      "finding": "Empty closure; no captured actor property access inside the callback."
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Search screen/InternalViewModels/PropertiesSearchViewModel/PropertiesInteractor.swift",
+      "sha256": "dd103b5cba91ff4c6394160631e7f14aa9552c4da83012e5c384e8ca0f1cd218",
+      "finding": "Callback reads the immutable Sendable scope.spaceId String; no owner/computed accessor or synchronous actor method inside it. The original scope declaration was read in full at the relevant boundary."
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/TypePropertiesMoveHandler.swift",
+      "sha256": "96b5167c6d7b60ca91f416beb9922264d345ab90259490397993a121ac2821b7",
+      "finding": "The observed owner computed accessor and validateDocument call are exactly the approved MainActor.run repair."
+    }
+  ],
+  "additional_candidates": 0,
+  "scope": "Bounded static review only; not a full compiler/isolation certification. No additional source edits and no old inventories replayed."
+}

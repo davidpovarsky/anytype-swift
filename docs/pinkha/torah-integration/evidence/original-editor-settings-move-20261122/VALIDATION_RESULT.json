@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "status": "PASS_THREE_CHANGED_SYNTAX_AND_THREE_EXTRACTED_SWIFT_TESTING_BOUNDARIES",
+  "tests_run": 3,
+  "tests": [
+    {
+      "classname": "OriginalBoundaryProbes.OriginalSettingsMoveBoundaryProbes",
+      "name": "exactMovePrefixUsesCapturedScopeOnMainActor()",
+      "time": "0.0026563"
+    },
+    {
+      "classname": "OriginalBoundaryProbes.OriginalSettingsMoveBoundaryProbes",
+      "name": "exactPublicationTypeRetainsDeferredGateAndThrow()",
+      "time": "0.0044265"
+    },
+    {
+      "classname": "OriginalBoundaryProbes.OriginalSettingsMoveBoundaryProbes",
+      "name": "deferredPreparationAtExactlyFiveSites()",
+      "time": "0.0069613"
+    }
+  ],
+  "toolchain": "Swift version 6.3.3 (swift-6.3.3-RELEASE)\nTarget: x86_64-unknown-windows-msvc\nBuild config: +assertions\n",
+  "testing_runtime_output": "\u25ca Test run started.\n\n\u2192 Swift Standard Library Version: 6.3\n\n\u2192 Swift Compiler Version: 6.3\n\n\u2192 Testing Library Version: 6.3.3 (48d727cc1cf4eda)\n\n\u2192 Target Platform: x86_64-unknown-windows-msvc\n\n\u2192 OS Version: 10.0 Build 26300\n\n\u25ca Suite OriginalSettingsMoveBoundaryProbes started.\n\n\u25ca Test deferredPreparationAtExactlyFiveSites() started.\n\n\u221a Test deferredPreparationAtExactlyFiveSites() passed after 0.006 seconds.\n\n\u25ca Test exactPublicationTypeRetainsDeferredGateAndThrow() started.\n\n\u221a Test exactPublicationTypeRetainsDeferredGateAndThrow() passed after 0.004 seconds.\n\n\u25ca Test exactMovePrefixUsesCapturedScopeOnMainActor() started.\n\n\u221a Test exactMovePrefixUsesCapturedScopeOnMainActor() passed after 0.002 seconds.\n\n\u221a Suite OriginalSettingsMoveBoundaryProbes passed after 0.020 seconds.\n\n\u221a Test run with 3 tests in 1 suite passed after 0.025 seconds.\n\n",
+  "probe_sha256": "732896d31c656fcc659e4fa16bb35a21d600a6ed234e66f29424ff535faffa96",
+  "candidate_provenance_sha256": "66250bc1893c972c0f3d07c77fa9ef0b283955fe68e91899c5ffa56ac47bb51e",
+  "xunit_sha256": "03f031dc595a8382050965e209a39d885e8222671cc3a0a568077cafb4a647a9",
+  "binaries": [
+    {
+      "path": "boundary-package\\.build\\x86_64-unknown-windows-msvc\\debug\\OriginalSettingsMoveBoundaryPackageTests.xctest",
+      "sha256": "5d7ba739dfb261d72b58c21119e37c7362e1892b781d71f71e066291b6ab21ff",
+      "bytes": 561664
+    }
+  ],
+  "limits": "Exact extracted changed properties and MainActor.run prefix plus original scope.withCurrent method, with explicit model/owner/document interface probes. Genuine installed Swift Testing. No SwiftUI, original Owner implementation, native RPC, original button tap body, engine, runtime, or UI acceptance; full-file parse is syntax only. Existing passing suites are not included.",
+  "postprocessing_erratum": {
+    "schema": 1,
+    "status": "EVIDENCE_GLOB_CORRECTION_WITHOUT_REPLAY",
+    "original_tool_job": "job_f2a2a022aeae",
+    "original_tool_exit": 1,
+    "all_original_commands_terminal_exit_zero": true,
+    "original_parse_invocations": 1,
+    "original_swift_testing_invocations": 1,
+    "test_replays": 0,
+    "cause": "The original evidence-only glob selected *.exe, but SwiftPM emitted a PE x86_64 executable with .xctest extension.",
+    "actual_runner": "boundary-package\\.build\\x86_64-unknown-windows-msvc\\debug\\OriginalSettingsMoveBoundaryPackageTests.xctest",
+    "pe_machine": "x86_64",
+    "runner_sha256": "5d7ba739dfb261d72b58c21119e37c7362e1892b781d71f71e066291b6ab21ff",
+    "unchanged_candidate_and_probe_inputs": true
+  }
+}

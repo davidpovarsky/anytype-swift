@@ -48,25 +48,38 @@ struct ObjectSettingsMenuView<LabelView: View, AdditionalMenuItems: View>: View 
         }
         .anytypeSheet(isPresented: viewModel.showConflictAlert) {
             ObjectSettingsResolveConflictAlert(
-                prepareAction: viewModel.viewModel.hasPreparedSource ? { viewModel.prepareConflictReset() } : nil,
-                publish: viewModel.viewModel.hasPreparedSource ? { action in
-                    try viewModel.viewModel.withCurrentSource(action)
-                } : nil
+                prepareAction: conflictResetPreparation,
+                publish: currentSourcePublication
             ) {
                 try await viewModel.onTapResolveConflictApprove()
             }
         }
         .anytypeSheet(isPresented: viewModel.showDeleteChatConfirmation) {
             ChatDeleteChatAlert(
-                prepareAction: viewModel.viewModel.hasPreparedSource ? { viewModel.prepareArchiveConfirmation() } : nil,
-                publish: viewModel.viewModel.hasPreparedSource ? { action in
-                    try viewModel.viewModel.withCurrentSource(action)
-                } : nil
+                prepareAction: archiveConfirmationPreparation,
+                publish: currentSourcePublication
             ) {
                 try await viewModel.viewModel.changeArchiveState()
             }
         }
         .snackbar(toastBarData: viewModel.toastData)
+    }
+
+    private var conflictResetPreparation: (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))? {
+        guard viewModel.viewModel.hasPreparedSource else { return nil }
+        return { viewModel.prepareConflictReset() }
+    }
+
+    private var archiveConfirmationPreparation: (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))? {
+        guard viewModel.viewModel.hasPreparedSource else { return nil }
+        return { viewModel.prepareArchiveConfirmation() }
+    }
+
+    private var currentSourcePublication: (@MainActor (@MainActor () -> Void) throws -> Void)? {
+        guard viewModel.viewModel.hasPreparedSource else { return nil }
+        return { action in
+            try viewModel.viewModel.withCurrentSource(action)
+        }
     }
 
     @ViewBuilder

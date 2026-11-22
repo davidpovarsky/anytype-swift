@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "source_head": "d5df214b50faafbae4b8eb3edcf8b27bcdc930b8",
+  "candidate_provenance_sha256": "66250bc1893c972c0f3d07c77fa9ef0b283955fe68e91899c5ffa56ac47bb51e",
+  "candidates": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/TypePropertiesMoveHandler.swift",
+      "base_sha256": "96b5167c6d7b60ca91f416beb9922264d345ab90259490397993a121ac2821b7",
+      "base_blob": "53182a37838ae4a0f45491c156418b7d9df36e85",
+      "candidate_sha256": "963d014fe1292db9d61a2d0738500365ab416df2772bfdc7285c690ffac7dbb0",
+      "patch_sha256": "0d061790f09e6839719fa32a92c17099fd2221f7228ec9b5169a6f768616d0b2",
+      "basis": "observed compiler diagnostic"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuView.swift",
+      "base_sha256": "8b3c495068a5eef2bd8eff16330948bd7a90a90e0fbd7cc8b66618e041dd37cc",
+      "base_blob": "851e43fc8e8ca8a59d9595394fb6d03166ed17f6",
+      "candidate_sha256": "c05646236ce6d23a2ad84a5502084625038bd6673d6f43b4ff83bf1f1f9df24b",
+      "patch_sha256": "232ac2d956fb987a316437a24f270fcb9dea53e7a0195dea1823fb8d719d6506",
+      "basis": "observed compiler diagnostic"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebInternalView.swift",
+      "base_sha256": "12e9acb59175c584060ca871d78992758671b1589c311e0ac155752c426ecbdd",
+      "base_blob": "c653da11229210a3d5f3c2a6c18103800759351b",
+      "candidate_sha256": "cdb31c110295c8598bd6b62346aaa39b63c10ed145351e81baaa677fcc7b265c",
+      "patch_sha256": "3b14b694e6718f3fb9f88f4e1e18ad21a252af731ae362beab9fe62a6eee8df2",
+      "basis": "preventive exact same optional nested MainActor Sendable preparation pattern; no actual diagnostic"
+    }
+  ],
+  "probe_sha256": "732896d31c656fcc659e4fa16bb35a21d600a6ed234e66f29424ff535faffa96",
+  "settings_properties_sha256": "d169e01bea89644be321203f415904165dc3515653c5c1c40421c943b7940c7f",
+  "publishing_properties_sha256": "0d5dd45d0658b7dbdbda8fbfa0b8e1ed8447f5abd5071e04d5cf10bccbd4420a",
+  "move_prefix_sha256": "efb277e8f814b956b9d7f53086d2f84262eab2dc9159f3813cde359cf7269dfa",
+  "scope_withCurrent_method_sha256": "d8e4b21a568783ae5cd85d36721cf2246b4bba9558d54addcd1f33e3ae9981ad",
+  "prepare_type": "(@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))?",
+  "publication_type": "(@MainActor (@MainActor () -> Void) throws -> Void)?",
+  "new_tests": 3,
+  "limits": "Exact extracted changed properties and MainActor.run prefix plus original scope.withCurrent method, with explicit model/owner/document interface probes. Genuine installed Swift Testing. No SwiftUI, original Owner implementation, native RPC, original button tap body, engine, runtime, or UI acceptance; full-file parse is syntax only. Existing passing suites are not included."
+}

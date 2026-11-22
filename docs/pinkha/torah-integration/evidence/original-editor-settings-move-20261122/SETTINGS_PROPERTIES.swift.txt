@@ -1,0 +1,17 @@
+    private var conflictResetPreparation: (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))? {
+        guard viewModel.viewModel.hasPreparedSource else { return nil }
+        return { viewModel.prepareConflictReset() }
+    }
+
+    private var archiveConfirmationPreparation: (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))? {
+        guard viewModel.viewModel.hasPreparedSource else { return nil }
+        return { viewModel.prepareArchiveConfirmation() }
+    }
+
+    private var currentSourcePublication: (@MainActor (@MainActor () -> Void) throws -> Void)? {
+        guard viewModel.viewModel.hasPreparedSource else { return nil }
+        return { action in
+            try viewModel.viewModel.withCurrentSource(action)
+        }
+    }
+

@@ -1,0 +1,19 @@
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/TypePropertiesMoveHandler.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/TypePropertiesMoveHandler.swift
+@@ -22,12 +22,14 @@
+         self.originalEditorScope = originalEditorScope
+     }
+     
+     func onMove(from: Int, to: Int, relationRows: [TypePropertiesRow], document: any BaseDocumentProtocol) async throws {
+         if let originalEditorScope {
+-            try await originalEditorScope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
+-                try originalEditorScope.owner.validateDocument(document)
++            try await MainActor.run {
++                try originalEditorScope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
++                    try originalEditorScope.owner.validateDocument(document)
++                }
+             }
+         }
+         guard let fromRow = relationRows[safe: from], case let .relation(fromRelation) = fromRow else {
+             anytypeAssertionFailure("Wrong data for fromRow", info: ["fromIndex": from.description, "rows": relationRows.description])
+             throw TypePropertiesMoveError.wrongDataForFromRow
