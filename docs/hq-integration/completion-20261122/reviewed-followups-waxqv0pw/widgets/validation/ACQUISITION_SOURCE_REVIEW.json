@@ -1,0 +1,36 @@
+{
+  "scope": "Source-supported acquisition contract only; actual native widget ObjectOpen/permissions/behavior not executed.",
+  "patch_sha256": "9bebdf1044c0e119c256217c8c3ae42402044722e58f15d4848e684cf54b562f",
+  "checks": [
+    "Existing handling factory checks exact original document identity/mode, external-source opening and original edit permission. It contains no editor-layout or mounted-view requirement.",
+    "PreparedEditorPageDocument.validate checks nonempty exact object/Space/mode/opened state; no page-details or layout requirement.",
+    "PreparedEditorPageSession constructs original delegates and same owner without claiming assembly or attaching a controller; direct child acquisition is already supported by PreparedEditorChildPreparation.performMutation.",
+    "Owner read/mutation admission checks exact instance/object/Space/mode/source/account/session lifetimes and original document permissions. Assembly/host claims are separate later methods.",
+    "Original ObjectPermissions.canEditBlocks uses lock/version/archive/participant/restrictions, not resolvedLayout. Actual widget restrictions can still reject; no flags are relaxed.",
+    "Existing-open cached documents remain rejected by bbd external acquisition; no fallback or adoption path introduced."
+  ],
+  "inputs": [
+    {
+      "path": "/workspace/scratch/ab739d619196/anytype_history_owner_qualification/source/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/PreparedEditorPageSessionFactory.swift",
+      "sha256": "2452d111a7d55c1aee62b54cf43bbf20ec7bfea1405fe74c50d1b6bea7425154"
+    },
+    {
+      "path": "/workspace/scratch/ab739d619196/anytype_package_seal/host-readonly/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/PreparedEditorPageDocument.swift",
+      "sha256": "42e595c324e46947d4b964070994a193478d57072931b92be1451f155e2cb32e"
+    },
+    {
+      "path": "/workspace/scratch/ab739d619196/original_editor_common_join_20261122/source/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/PreparedEditorPageSession.swift",
+      "sha256": "bdf10811f06697652871ca87aa5558c6bd2a660cd91375db0abf1e3ac5975104"
+    },
+    {
+      "path": "/workspace/scratch/ab739d619196/original_editor_common_join_20261122/source/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift",
+      "sha256": "6b42034d04d2437fd1fb219c85c485bac4dc57828e3424d2f3ba613117c67695"
+    },
+    {
+      "path": "/workspace/scratch/ab739d619196/anytype_property_settings_writer_qualification/base/Anytype/Sources/Models/ObjectPermissions/ObjectPermissions.swift",
+      "sha256": "3e696ada8ddc0a2d175f6f238d06bf5e3d97c492ae6c10ad5f512fbc8e615968"
+    }
+  ],
+  "native_widget_support": "NOT_RUN",
+  "conditional_result": "A fresh original widget document satisfying unchanged existing identity and permission gates can be acquired without a view mount; actual per-target restrictions are authoritative and may reject."
+}

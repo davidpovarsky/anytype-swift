@@ -1,0 +1,495 @@
+{
+  "schema": 1,
+  "base": "bbd11635598a77d98e7ffcb336fafee9a75eba10",
+  "branch": "codex/otzaria-reviewed-followups-waxqv0pw-20261122",
+  "scope": "Original editor source followups only; reviewed complete patches, immutable syntax receipts reused. Not producer, SDK binary, Apple compile, native UI or release acceptance.",
+  "ordered_steps": [
+    {
+      "key": "history",
+      "files": [
+        {
+          "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/PreparedEditorPageSessionFactory.swift",
+          "before_sha256": "9e62496c31f247e53c2a846866f2fe13b49b4987492c7ed9283169f6c795039c",
+          "after_sha256": "2452d111a7d55c1aee62b54cf43bbf20ec7bfea1405fe74c50d1b6bea7425154",
+          "after_bytes": 12745
+        },
+        {
+          "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/Coordinator/VersionHistoryCoordinatorView.swift",
+          "before_sha256": "3470e1684cbc73ee14b45dd261743ed78b311d8196c9b455bcc0bdf379c2040c",
+          "after_sha256": "5abb8eeac3369f6f9f0c5a4f61e40b3e8b56e92fb3bafc3df0698ad2bb852031",
+          "after_bytes": 835
+        },
+        {
+          "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/Coordinator/VersionHistoryCoordinatorViewModel.swift",
+          "before_sha256": "a5d094a22a6ea17582333e587f46c24b5738906bf6f8fa53be7371dd04cd3f7b",
+          "after_sha256": "b44d3cab5e8062588ea735debb772da14812191ff28d5f3f7d923fe670c9e089",
+          "after_bytes": 1959
+        },
+        {
+          "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/Object/ObjectVersionView.swift",
+          "before_sha256": "a8486bc11c588cc31cf575a61be906071c1033fe4b5b596f1b5aba8f140126b4",
+          "after_sha256": "923552b96560976eb1217bb82125b73dfae0bacccd963f2fa3b210104df82e51",
+          "after_bytes": 2500
+        },
+        {
+          "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/Object/ObjectVersionViewModel.swift",
+          "before_sha256": "87b9ac4f0dd6ac48f227b769e97373ffa3490839dd48385f828c807aa706eb64",
+          "after_sha256": "72b007908d41975c37ff0d1eabf7b7bdfe5e1a7298df610de6114304b0aaa088",
+          "after_bytes": 6313
+        },
+        {
+          "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/VersionHistoryView.swift",
+          "before_sha256": "6cfe5f4c8c1bf90c7bdc9a01d68cf07c9bd819516f2c3b46a9aacab003aaff23",
+          "after_sha256": "8abe777f8f14607c910fbba8d469456d64eb1ee030a57e0fd5aaf5e396df8a83",
+          "after_bytes": 2737
+        },
+        {
+          "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/VersionHistoryViewModel.swift",
+          "before_sha256": "a1d7ef35349a1419eab47b3628e3dd2984321cd42ec1faa26c9034329945d17f",
+          "after_sha256": "f5499ef64e410816df412e0051a18afb0a4a7acc10c5b398e19ed77b467b6c2c",
+          "after_bytes": 6027
+        },
+        {
+          "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettings/ObjectSettingsViewModel.swift",
+          "before_sha256": "a1897017c2abd0ff61a2d9a08728f40d8774c5c7e8544281151586b8190c4ad2",
+          "after_sha256": "1c8d1c96b77f298638490cbcdbc8d45d991cc2fa9703ccd59c36aec57323a89f",
+          "after_bytes": 28331
+        },
+        {
+          "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuContainer.swift",
+          "before_sha256": "113dd79c3c2293a4f88a40e7ade1dd6e0cf8037983a2a796a9c0730b5b3a7321",
+          "after_sha256": "f31213500461e1ab360655270ce736378023498100b8575560b5035a9b1e7f2b",
+          "after_bytes": 3755
+        },
+        {
+          "path": "Anytype/Sources/ServiceLayer/ActiveSpaceParticipantsStorage/ParticipantsSubscription.swift",
+          "before_sha256": "a4d8c583109b63fc8f669818d7bf1f38ff0189f737874b29b495e11fd5052125",
+          "after_sha256": "b698845b2d69be2342df2570c40e72205eb8dd5d337cf88ea94053b46bbf5e59",
+          "after_bytes": 4230
+        },
+        {
+          "path": "Anytype/Sources/ServiceLayer/SubscriptionsToggler/Internals/SubscriptionStorage.swift",
+          "before_sha256": "84c5d40c48ccec1a499dc9f8fdb7edb3df24028a09d2cd271a58f17498e9d7bc",
+          "after_sha256": "6dd4b130d7177dc6e97ad44edca6922d3fdc42d9a47f540eb07222be3ed1b730",
+          "after_bytes": 9632
+        },
+        {
+          "path": "Anytype/Sources/ServiceLayer/SubscriptionsToggler/Internals/SubscriptionStorageProvider.swift",
+          "before_sha256": "3f9d567d9ee5f3789b6fa20ce092f3f75eb4ab66b293d5cd854b2d95fd780594",
+          "after_sha256": "0c61fb0f3bfbc2b42b8992741108179f459240958627afe53b714b027e5edb6c",
+          "after_bytes": 2216
+        },
+        {
+          "path": "Anytype/Sources/ServiceLayer/SubscriptionsToggler/Internals/SubscriptionToggler.swift",
+          "before_sha256": "b7aabc9571ad6f407744ad1c09fed074a462c051eaa6a4c03b0f7bf369c2ac68",
+          "after_sha256": "301bff18109fd7c41fd85cb15c7f62f611fd8f14026b05da1430d6b9348a148a",
+          "after_bytes": 3529
+        },
+        {
+          "path": "Modules/Services/Sources/Services/HistoryVersionsService/HistoryVersionsService.swift",
+          "before_sha256": "a91ee36f0d12c5cfc0bdcaad9dce342a5b5e04accc5cf88f731377b7ea3675a5",
+          "after_sha256": "f719894a2a3748ba517957eb4a9de8dd90087e877ee49e912722a6be45b75216",
+          "after_bytes": 2756
+        },
+        {
+          "path": "Modules/Services/Sources/Services/ObjectSubscriptionService/ObjectSubscriptionService.swift",
+          "before_sha256": "e4b83f6d72bea6f6a59d1ce6795d2efed0077dde77ba50bfe3069d0b0723d085",
+          "after_sha256": "3aa4eec1dc8f81631e81bb256f0656d34df00e32dff92a13c25deb18fed325cd",
+          "after_bytes": 3809
+        }
+      ],
+      "patch_sha256": "6d2f3755cedf1a4b2173036f080abc593ffab0437f55b6ddeee614ed4818c731"
+    },
+    {
+      "key": "widgets",
+      "files": [
+        {
+          "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettings/ObjectSettingsViewModel.swift",
+          "before_sha256": "1c8d1c96b77f298638490cbcdbc8d45d991cc2fa9703ccd59c36aec57323a89f",
+          "after_sha256": "3f893fd54da11b98b0e41ebb628ac831ce4f8c66b0a4201d9c3e9a4a0adc187c",
+          "after_bytes": 34532
+        },
+        {
+          "path": "Anytype/Sources/ServiceLayer/PersonalFavorites/PersonalFavoritesService.swift",
+          "before_sha256": "f7f436077ff25a0a0246e05136e481604a4d28271e2253ab0bd614e8a4592a52",
+          "after_sha256": "6d9a0c09e94475ea3f7eb26f10db2156b76127487b004a6cfba6a4c7f1812c79",
+          "after_bytes": 1988
+        },
+        {
+          "path": "Modules/Services/Sources/Services/BlockWidget/BlockWidgetService.swift",
+          "before_sha256": "490383edc3945974e8056e8488de67e256b19f10e375b8a69131c486e2be5e47",
+          "after_sha256": "0ddd2d1aaca6b7749dd6366b2173c53ccacfe699a47f622c35dd2bd9873f0d61",
+          "after_bytes": 4286
+        },
+        {
+          "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuViewModel.swift",
+          "before_sha256": "1d96c285a927709b4428bd518b8821885d54d9350affc72a307bcfaf0cba6ddb",
+          "after_sha256": "436432ef54b1130cc53a9b027b61a1b8fe3a870cac8703deba900bc960aff7b8",
+          "after_bytes": 7108
+        }
+      ],
+      "patch_sha256": "9bebdf1044c0e119c256217c8c3ae42402044722e58f15d4848e684cf54b562f"
+    },
+    {
+      "key": "type-properties",
+      "files": [
+        {
+          "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesView.swift",
+          "before_sha256": "9682d37fd6047c03e4c1a80ba1cecd3461f10e37105d6f6fec8e6bebd908f4ca",
+          "after_sha256": "c104d37a2e0935166e5a82477307789541d6b13fe6fba1e830977496b13072a9"
+        },
+        {
+          "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesViewModel.swift",
+          "before_sha256": "1c3ddeec6e8743ec6d08152e9ff7bd8a59d423814a7e2f79286fc0397b786552",
+          "after_sha256": "bab724bb8c35ab1051e3def430f0863428778c8cf595328b553150034f641947"
+        },
+        {
+          "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/TypePropertiesDropDelegate.swift",
+          "before_sha256": "b3d47bc2d3db72bfe4d30927c5666ea7ba1eeaffd680654c5e15c730e33d325d",
+          "after_sha256": "f359ad56b6ddec2c789eb34ad319cd02081431e3c16d015bd34522495a9920c3"
+        },
+        {
+          "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/TypePropertiesMoveHandler.swift",
+          "before_sha256": "aa8e1696e58272282745eb4994d88b48c8899ba7f5f4b3f83581179157cfac03",
+          "after_sha256": "96b5167c6d7b60ca91f416beb9922264d345ab90259490397993a121ac2821b7"
+        },
+        {
+          "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Coordinator/PropertiesListCoordinatorView.swift",
+          "before_sha256": "786c503a398ce0575c7d544e1b1f2b64db83abd1182658dcb18387c72ab2f9db",
+          "after_sha256": "67512e02856a99f56325ddc7b07d06597a77b6d34222874712a39e1db552c44e"
+        },
+        {
+          "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Coordinator/PropertiesListCoordinatorViewModel.swift",
+          "before_sha256": "65595cd37869823527090d36c2ae1ed8c03fcdc58f1efb0e66e25dae62b39648",
+          "after_sha256": "a02bc0f84691e430a47011f6b324553ddc28c8ae7b6470359ec68261c2a564c1"
+        },
+        {
+          "path": "Anytype/Sources/ServiceLayer/Extensions/PropertiesServiceProtocolExtensions.swift",
+          "before_sha256": "5b00c1eb024d5fc71d7d4cfdaf1b0e79150a8a83e3fdde499b2423407f688cd6",
+          "after_sha256": "c53c793877254d9dfa70e8c0b98179cacfd463640616412f00fae71fa21b59d6"
+        }
+      ],
+      "patch_sha256": "0a93b302ace640edef150621211cbf46aaacf4e641c942cd6caf1236d1fb4094"
+    },
+    {
+      "key": "shake-undo",
+      "files": [
+        {
+          "after_sha256": "26821e5a7d417c85b6717b2f4c5901413b18c47b7287c707e46caae34ed2f4c9",
+          "base_git_blob": "aaa5090c513caee533d38be1b36bf4f9f882a044",
+          "before_sha256": "307ffbe537f58469f7237ee2d33eb5ddd780e8038ba5790f60926b031fb8a2ca",
+          "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModel.swift"
+        }
+      ],
+      "patch_sha256": "6947afe4d103da2dcb504de7b7cc46851b44ae9f54012959252d1c5ea8edf405"
+    }
+  ],
+  "files": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/PreparedEditorPageSessionFactory.swift",
+      "before_sha256": "9e62496c31f247e53c2a846866f2fe13b49b4987492c7ed9283169f6c795039c",
+      "after_sha256": "2452d111a7d55c1aee62b54cf43bbf20ec7bfea1405fe74c50d1b6bea7425154",
+      "after_bytes": 12745,
+      "syntax_evidence": {
+        "sha256": "2452d111a7d55c1aee62b54cf43bbf20ec7bfea1405fe74c50d1b6bea7425154",
+        "receipt": "history/validation/PARSE_RESULT.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModel.swift",
+      "before_sha256": "307ffbe537f58469f7237ee2d33eb5ddd780e8038ba5790f60926b031fb8a2ca",
+      "after_sha256": "26821e5a7d417c85b6717b2f4c5901413b18c47b7287c707e46caae34ed2f4c9",
+      "after_bytes": 28022,
+      "syntax_evidence": {
+        "sha256": "26821e5a7d417c85b6717b2f4c5901413b18c47b7287c707e46caae34ed2f4c9",
+        "receipt": "shake-undo/validation/PARSE_RESULT.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/Coordinator/VersionHistoryCoordinatorView.swift",
+      "before_sha256": "3470e1684cbc73ee14b45dd261743ed78b311d8196c9b455bcc0bdf379c2040c",
+      "after_sha256": "5abb8eeac3369f6f9f0c5a4f61e40b3e8b56e92fb3bafc3df0698ad2bb852031",
+      "after_bytes": 835,
+      "syntax_evidence": {
+        "sha256": "5abb8eeac3369f6f9f0c5a4f61e40b3e8b56e92fb3bafc3df0698ad2bb852031",
+        "receipt": "history/validation/PARSE_RESULT.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/Coordinator/VersionHistoryCoordinatorViewModel.swift",
+      "before_sha256": "a5d094a22a6ea17582333e587f46c24b5738906bf6f8fa53be7371dd04cd3f7b",
+      "after_sha256": "b44d3cab5e8062588ea735debb772da14812191ff28d5f3f7d923fe670c9e089",
+      "after_bytes": 1959,
+      "syntax_evidence": {
+        "sha256": "b44d3cab5e8062588ea735debb772da14812191ff28d5f3f7d923fe670c9e089",
+        "receipt": "history/validation/PARSE_RESULT.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/Object/ObjectVersionView.swift",
+      "before_sha256": "a8486bc11c588cc31cf575a61be906071c1033fe4b5b596f1b5aba8f140126b4",
+      "after_sha256": "923552b96560976eb1217bb82125b73dfae0bacccd963f2fa3b210104df82e51",
+      "after_bytes": 2500,
+      "syntax_evidence": {
+        "sha256": "923552b96560976eb1217bb82125b73dfae0bacccd963f2fa3b210104df82e51",
+        "receipt": "history/validation/PARSE_RESULT.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/Object/ObjectVersionViewModel.swift",
+      "before_sha256": "87b9ac4f0dd6ac48f227b769e97373ffa3490839dd48385f828c807aa706eb64",
+      "after_sha256": "72b007908d41975c37ff0d1eabf7b7bdfe5e1a7298df610de6114304b0aaa088",
+      "after_bytes": 6313,
+      "syntax_evidence": {
+        "sha256": "72b007908d41975c37ff0d1eabf7b7bdfe5e1a7298df610de6114304b0aaa088",
+        "receipt": "history/validation/PARSE_RESULT.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/VersionHistoryView.swift",
+      "before_sha256": "6cfe5f4c8c1bf90c7bdc9a01d68cf07c9bd819516f2c3b46a9aacab003aaff23",
+      "after_sha256": "8abe777f8f14607c910fbba8d469456d64eb1ee030a57e0fd5aaf5e396df8a83",
+      "after_bytes": 2737,
+      "syntax_evidence": {
+        "sha256": "8abe777f8f14607c910fbba8d469456d64eb1ee030a57e0fd5aaf5e396df8a83",
+        "receipt": "history/validation/PARSE_RESULT.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/VersionHistoryViewModel.swift",
+      "before_sha256": "a1d7ef35349a1419eab47b3628e3dd2984321cd42ec1faa26c9034329945d17f",
+      "after_sha256": "f5499ef64e410816df412e0051a18afb0a4a7acc10c5b398e19ed77b467b6c2c",
+      "after_bytes": 6027,
+      "syntax_evidence": {
+        "sha256": "f5499ef64e410816df412e0051a18afb0a4a7acc10c5b398e19ed77b467b6c2c",
+        "receipt": "history/validation/PARSE_RESULT.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettings/ObjectSettingsViewModel.swift",
+      "before_sha256": "a1897017c2abd0ff61a2d9a08728f40d8774c5c7e8544281151586b8190c4ad2",
+      "after_sha256": "3f893fd54da11b98b0e41ebb628ac831ce4f8c66b0a4201d9c3e9a4a0adc187c",
+      "after_bytes": 34532,
+      "syntax_evidence": {
+        "sha256": "3f893fd54da11b98b0e41ebb628ac831ce4f8c66b0a4201d9c3e9a4a0adc187c",
+        "receipt": "widgets/validation/PARSE_RESULT.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuContainer.swift",
+      "before_sha256": "113dd79c3c2293a4f88a40e7ade1dd6e0cf8037983a2a796a9c0730b5b3a7321",
+      "after_sha256": "f31213500461e1ab360655270ce736378023498100b8575560b5035a9b1e7f2b",
+      "after_bytes": 3755,
+      "syntax_evidence": {
+        "sha256": "f31213500461e1ab360655270ce736378023498100b8575560b5035a9b1e7f2b",
+        "receipt": "history/validation/PARSE_RESULT.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuViewModel.swift",
+      "before_sha256": "1d96c285a927709b4428bd518b8821885d54d9350affc72a307bcfaf0cba6ddb",
+      "after_sha256": "436432ef54b1130cc53a9b027b61a1b8fe3a870cac8703deba900bc960aff7b8",
+      "after_bytes": 7108,
+      "syntax_evidence": {
+        "sha256": "436432ef54b1130cc53a9b027b61a1b8fe3a870cac8703deba900bc960aff7b8",
+        "receipt": "widgets/validation/PARSE_RESULT.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Coordinator/PropertiesListCoordinatorView.swift",
+      "before_sha256": "786c503a398ce0575c7d544e1b1f2b64db83abd1182658dcb18387c72ab2f9db",
+      "after_sha256": "67512e02856a99f56325ddc7b07d06597a77b6d34222874712a39e1db552c44e",
+      "after_bytes": 2113,
+      "syntax_evidence": {
+        "sha256": "67512e02856a99f56325ddc7b07d06597a77b6d34222874712a39e1db552c44e",
+        "receipt": "type-properties/syntax-final-report.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Coordinator/PropertiesListCoordinatorViewModel.swift",
+      "before_sha256": "65595cd37869823527090d36c2ae1ed8c03fcdc58f1efb0e66e25dae62b39648",
+      "after_sha256": "a02bc0f84691e430a47011f6b324553ddc28c8ae7b6470359ec68261c2a564c1",
+      "after_bytes": 7364,
+      "syntax_evidence": {
+        "sha256": "a02bc0f84691e430a47011f6b324553ddc28c8ae7b6470359ec68261c2a564c1",
+        "receipt": "type-properties/syntax-final-report.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/TypePropertiesDropDelegate.swift",
+      "before_sha256": "b3d47bc2d3db72bfe4d30927c5666ea7ba1eeaffd680654c5e15c730e33d325d",
+      "after_sha256": "f359ad56b6ddec2c789eb34ad319cd02081431e3c16d015bd34522495a9920c3",
+      "after_bytes": 1830,
+      "syntax_evidence": {
+        "sha256": "f359ad56b6ddec2c789eb34ad319cd02081431e3c16d015bd34522495a9920c3",
+        "receipt": "type-properties/syntax-final-report.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/TypePropertiesMoveHandler.swift",
+      "before_sha256": "aa8e1696e58272282745eb4994d88b48c8899ba7f5f4b3f83581179157cfac03",
+      "after_sha256": "96b5167c6d7b60ca91f416beb9922264d345ab90259490397993a121ac2821b7",
+      "after_bytes": 16666,
+      "syntax_evidence": {
+        "sha256": "96b5167c6d7b60ca91f416beb9922264d345ab90259490397993a121ac2821b7",
+        "receipt": "type-properties/syntax-final-report.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesView.swift",
+      "before_sha256": "9682d37fd6047c03e4c1a80ba1cecd3461f10e37105d6f6fec8e6bebd908f4ca",
+      "after_sha256": "c104d37a2e0935166e5a82477307789541d6b13fe6fba1e830977496b13072a9",
+      "after_bytes": 7931,
+      "syntax_evidence": {
+        "sha256": "c104d37a2e0935166e5a82477307789541d6b13fe6fba1e830977496b13072a9",
+        "receipt": "type-properties/syntax-final-report.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesViewModel.swift",
+      "before_sha256": "1c3ddeec6e8743ec6d08152e9ff7bd8a59d423814a7e2f79286fc0397b786552",
+      "after_sha256": "bab724bb8c35ab1051e3def430f0863428778c8cf595328b553150034f641947",
+      "after_bytes": 16478,
+      "syntax_evidence": {
+        "sha256": "bab724bb8c35ab1051e3def430f0863428778c8cf595328b553150034f641947",
+        "receipt": "type-properties/syntax-final-report.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/ActiveSpaceParticipantsStorage/ParticipantsSubscription.swift",
+      "before_sha256": "a4d8c583109b63fc8f669818d7bf1f38ff0189f737874b29b495e11fd5052125",
+      "after_sha256": "b698845b2d69be2342df2570c40e72205eb8dd5d337cf88ea94053b46bbf5e59",
+      "after_bytes": 4230,
+      "syntax_evidence": {
+        "sha256": "b698845b2d69be2342df2570c40e72205eb8dd5d337cf88ea94053b46bbf5e59",
+        "receipt": "history/validation/PARSE_RESULT.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Extensions/PropertiesServiceProtocolExtensions.swift",
+      "before_sha256": "5b00c1eb024d5fc71d7d4cfdaf1b0e79150a8a83e3fdde499b2423407f688cd6",
+      "after_sha256": "c53c793877254d9dfa70e8c0b98179cacfd463640616412f00fae71fa21b59d6",
+      "after_bytes": 9584,
+      "syntax_evidence": {
+        "sha256": "c53c793877254d9dfa70e8c0b98179cacfd463640616412f00fae71fa21b59d6",
+        "receipt": "type-properties/syntax-final-report.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/PersonalFavorites/PersonalFavoritesService.swift",
+      "before_sha256": "f7f436077ff25a0a0246e05136e481604a4d28271e2253ab0bd614e8a4592a52",
+      "after_sha256": "6d9a0c09e94475ea3f7eb26f10db2156b76127487b004a6cfba6a4c7f1812c79",
+      "after_bytes": 1988,
+      "syntax_evidence": {
+        "sha256": "6d9a0c09e94475ea3f7eb26f10db2156b76127487b004a6cfba6a4c7f1812c79",
+        "receipt": "widgets/validation/PARSE_RESULT.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/SubscriptionsToggler/Internals/SubscriptionStorage.swift",
+      "before_sha256": "84c5d40c48ccec1a499dc9f8fdb7edb3df24028a09d2cd271a58f17498e9d7bc",
+      "after_sha256": "6dd4b130d7177dc6e97ad44edca6922d3fdc42d9a47f540eb07222be3ed1b730",
+      "after_bytes": 9632,
+      "syntax_evidence": {
+        "sha256": "6dd4b130d7177dc6e97ad44edca6922d3fdc42d9a47f540eb07222be3ed1b730",
+        "receipt": "history/validation/PARSE_RESULT.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/SubscriptionsToggler/Internals/SubscriptionStorageProvider.swift",
+      "before_sha256": "3f9d567d9ee5f3789b6fa20ce092f3f75eb4ab66b293d5cd854b2d95fd780594",
+      "after_sha256": "0c61fb0f3bfbc2b42b8992741108179f459240958627afe53b714b027e5edb6c",
+      "after_bytes": 2216,
+      "syntax_evidence": {
+        "sha256": "0c61fb0f3bfbc2b42b8992741108179f459240958627afe53b714b027e5edb6c",
+        "receipt": "history/validation/PARSE_RESULT.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/SubscriptionsToggler/Internals/SubscriptionToggler.swift",
+      "before_sha256": "b7aabc9571ad6f407744ad1c09fed074a462c051eaa6a4c03b0f7bf369c2ac68",
+      "after_sha256": "301bff18109fd7c41fd85cb15c7f62f611fd8f14026b05da1430d6b9348a148a",
+      "after_bytes": 3529,
+      "syntax_evidence": {
+        "sha256": "301bff18109fd7c41fd85cb15c7f62f611fd8f14026b05da1430d6b9348a148a",
+        "receipt": "history/validation/PARSE_RESULT.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Modules/Services/Sources/Services/BlockWidget/BlockWidgetService.swift",
+      "before_sha256": "490383edc3945974e8056e8488de67e256b19f10e375b8a69131c486e2be5e47",
+      "after_sha256": "0ddd2d1aaca6b7749dd6366b2173c53ccacfe699a47f622c35dd2bd9873f0d61",
+      "after_bytes": 4286,
+      "syntax_evidence": {
+        "sha256": "0ddd2d1aaca6b7749dd6366b2173c53ccacfe699a47f622c35dd2bd9873f0d61",
+        "receipt": "widgets/validation/PARSE_RESULT.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Modules/Services/Sources/Services/HistoryVersionsService/HistoryVersionsService.swift",
+      "before_sha256": "a91ee36f0d12c5cfc0bdcaad9dce342a5b5e04accc5cf88f731377b7ea3675a5",
+      "after_sha256": "f719894a2a3748ba517957eb4a9de8dd90087e877ee49e912722a6be45b75216",
+      "after_bytes": 2756,
+      "syntax_evidence": {
+        "sha256": "f719894a2a3748ba517957eb4a9de8dd90087e877ee49e912722a6be45b75216",
+        "receipt": "history/validation/PARSE_RESULT.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    },
+    {
+      "path": "Modules/Services/Sources/Services/ObjectSubscriptionService/ObjectSubscriptionService.swift",
+      "before_sha256": "e4b83f6d72bea6f6a59d1ce6795d2efed0077dde77ba50bfe3069d0b0723d085",
+      "after_sha256": "3aa4eec1dc8f81631e81bb256f0656d34df00e32dff92a13c25deb18fed325cd",
+      "after_bytes": 3809,
+      "syntax_evidence": {
+        "sha256": "3aa4eec1dc8f81631e81bb256f0656d34df00e32dff92a13c25deb18fed325cd",
+        "receipt": "history/validation/PARSE_RESULT.json",
+        "scope": "Swift syntax only; no Apple module typecheck"
+      }
+    }
+  ],
+  "checks": {
+    "ordered_patch_apply": "PASS",
+    "new_whitespace": "PASS",
+    "final_source_hashes": "PASS",
+    "all_26_final_files_have_exact_retained_syntax_receipts": "PASS",
+    "new_test_executions": 0,
+    "new_CI_runs": 0
+  },
+  "acceptance": {
+    "Apple_typecheck": "NOT_RUN",
+    "native_original_editor": "NOT_RUN",
+    "product_completion": false
+  },
+  "excluded": [
+    "channel pin role extension still separately under review",
+    "publishing source draft not joined",
+    "cached/handling foreign document adoption",
+    "list-version set editor qualification",
+    "foreign property definition create/update/hide/remove and catalog bootstraps"
+  ]
+}

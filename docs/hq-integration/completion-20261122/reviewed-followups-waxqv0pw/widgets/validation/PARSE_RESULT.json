@@ -1,0 +1,57 @@
+{
+  "job_id": "job_1ba736b573f9",
+  "scope": "Four changed Swift files only; syntax parsing with simulator target, no Apple SDK/module typecheck or Native qualification.",
+  "patch_sha256": "9bebdf1044c0e119c256217c8c3ae42402044722e58f15d4848e684cf54b562f",
+  "archive_sha256": "46416ef13da3a29bee3fa6badedb8363c2aee364f63ab93cf658c67f7159daa2",
+  "archive": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\widget-r2-9bebdf10.zip",
+  "checkpoint": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\widget-r2-9bebdf10",
+  "file_count": 4,
+  "compiler_processes": 1,
+  "inputs": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettings/ObjectSettingsViewModel.swift",
+      "before_sha256": "1c8d1c96b77f298638490cbcdbc8d45d991cc2fa9703ccd59c36aec57323a89f",
+      "after_sha256": "3f893fd54da11b98b0e41ebb628ac831ce4f8c66b0a4201d9c3e9a4a0adc187c",
+      "after_bytes": 34532
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/PersonalFavorites/PersonalFavoritesService.swift",
+      "before_sha256": "f7f436077ff25a0a0246e05136e481604a4d28271e2253ab0bd614e8a4592a52",
+      "after_sha256": "6d9a0c09e94475ea3f7eb26f10db2156b76127487b004a6cfba6a4c7f1812c79",
+      "after_bytes": 1988
+    },
+    {
+      "path": "Modules/Services/Sources/Services/BlockWidget/BlockWidgetService.swift",
+      "before_sha256": "490383edc3945974e8056e8488de67e256b19f10e375b8a69131c486e2be5e47",
+      "after_sha256": "0ddd2d1aaca6b7749dd6366b2173c53ccacfe699a47f622c35dd2bd9873f0d61",
+      "after_bytes": 4286
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuViewModel.swift",
+      "before_sha256": "1d96c285a927709b4428bd518b8821885d54d9350affc72a307bcfaf0cba6ddb",
+      "after_sha256": "436432ef54b1130cc53a9b027b61a1b8fe3a870cac8703deba900bc960aff7b8",
+      "after_bytes": 7108
+    }
+  ],
+  "command": [
+    "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+    "-frontend",
+    "-parse",
+    "-target",
+    "arm64-apple-ios27.0-simulator",
+    "-D",
+    "DEBUG",
+    "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\widget-r2-9bebdf10\\source\\Anytype\\Sources\\PresentationLayer\\TextEditor\\EditorPage\\Views\\Settings\\ObjectSettings\\ObjectSettingsViewModel.swift",
+    "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\widget-r2-9bebdf10\\source\\Anytype\\Sources\\ServiceLayer\\PersonalFavorites\\PersonalFavoritesService.swift",
+    "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\widget-r2-9bebdf10\\source\\Modules\\Services\\Sources\\Services\\BlockWidget\\BlockWidgetService.swift",
+    "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\widget-r2-9bebdf10\\source\\Anytype\\Sources\\PresentationLayer\\TextEditor\\EditorPage\\Views\\Settings\\ObjectSettingsMenu\\ObjectSettingsMenuViewModel.swift"
+  ],
+  "started_at": "2026-11-22T01:34:05.565951+00:00",
+  "finished_at": "2026-11-22T01:34:06.640468+00:00",
+  "duration_s": 1.0619999999980791,
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "<unknown>:0: warning: SDK settings were ignored as 'SDKSettings.json' could not be parsed\r\n<unknown>:0: warning: using sysroot for 'Windows' but targeting 'iPhone'\r\n",
+  "native": "NOT_RUN",
+  "apple_typecheck": "NOT_RUN"
+}

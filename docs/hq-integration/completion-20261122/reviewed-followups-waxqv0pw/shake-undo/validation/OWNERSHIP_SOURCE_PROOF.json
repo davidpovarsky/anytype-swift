@@ -1,0 +1,38 @@
+{
+  "base": "bbd11635598a77d98e7ffcb336fafee9a75eba10",
+  "patch_sha256": "6947afe4d103da2dcb504de7b7cc46851b44ae9f54012959252d1c5ea8edf405",
+  "sources": [
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionHandler.swift",
+      "git_blob": "373f30b0f89024169b860a3d9bc9805d956d7b38",
+      "url": "https://github.com/davidpovarsky/anytype-swift/blob/bbd11635598a77d98e7ffcb336fafee9a75eba10/Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionHandler.swift"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionHandlerProtocol.swift",
+      "git_blob": "b2d1f214fd7eef7536e455e1783fb8edc743cae4",
+      "url": "https://github.com/davidpovarsky/anytype-swift/blob/bbd11635598a77d98e7ffcb336fafee9a75eba10/Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionHandlerProtocol.swift"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/DocumentOwnedObjectActionsService.swift",
+      "git_blob": "69c48274c8b5b49bb956b5e0427637c2f879f6da",
+      "url": "https://github.com/davidpovarsky/anytype-swift/blob/bbd11635598a77d98e7ffcb336fafee9a75eba10/Anytype/Sources/ServiceLayer/Block/DocumentOwnedObjectActionsService.swift"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/PreparedEditorPageSession.swift",
+      "git_blob": "7402bdc7d5750925a8bbcbe2b80802e1d320529b",
+      "url": "https://github.com/davidpovarsky/anytype-swift/blob/bbd11635598a77d98e7ffcb336fafee9a75eba10/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/PreparedEditorPageSession.swift"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorPageModuleAssembly.swift",
+      "git_blob": "0e8c7a1983499180c89ddcce4f18414d3eb83a74",
+      "url": "https://github.com/davidpovarsky/anytype-swift/blob/bbd11635598a77d98e7ffcb336fafee9a75eba10/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorPageModuleAssembly.swift"
+    }
+  ],
+  "checks": [
+    "Original prepared session uses one Owner for external blockActionHandler.documentWriteOwner and DocumentOwnedObjectActionsService in viewModel dependencies.",
+    "Original assembly passes that same actionHandler and services.viewModel into EditorPageViewModel.",
+    "scheduleMutationTask delegates to existing synchronous scheduleMutation before constructing the original Task; nil Owner uses the existing plain Task fallback.",
+    "Actual undo still crosses DocumentOwnedObjectActionsService.performMutation with exact document context and .undoRedo permission, then original injected service.undo."
+  ],
+  "conclusion": "No concrete ownership-closure blocker in this one-line change. Source review only; Native undo/save ordering NOT_RUN."
+}

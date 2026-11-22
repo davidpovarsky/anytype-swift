@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "base_commit": "bbd11635598a77d98e7ffcb336fafee9a75eba10",
+  "depends_on_history_patch": "6d2f3755cedf1a4b2173036f080abc593ffab0437f55b6ddeee614ed4818c731",
+  "patch_sha256": "9bebdf1044c0e119c256217c8c3ae42402044722e58f15d4848e684cf54b562f",
+  "patch_bytes": 12671,
+  "files": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettings/ObjectSettingsViewModel.swift",
+      "before_sha256": "1c8d1c96b77f298638490cbcdbc8d45d991cc2fa9703ccd59c36aec57323a89f",
+      "after_sha256": "3f893fd54da11b98b0e41ebb628ac831ce4f8c66b0a4201d9c3e9a4a0adc187c",
+      "after_bytes": 34532
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/PersonalFavorites/PersonalFavoritesService.swift",
+      "before_sha256": "f7f436077ff25a0a0246e05136e481604a4d28271e2253ab0bd614e8a4592a52",
+      "after_sha256": "6d9a0c09e94475ea3f7eb26f10db2156b76127487b004a6cfba6a4c7f1812c79",
+      "after_bytes": 1988
+    },
+    {
+      "path": "Modules/Services/Sources/Services/BlockWidget/BlockWidgetService.swift",
+      "before_sha256": "490383edc3945974e8056e8488de67e256b19f10e375b8a69131c486e2be5e47",
+      "after_sha256": "0ddd2d1aaca6b7749dd6366b2173c53ccacfe699a47f622c35dd2bd9873f0d61",
+      "after_bytes": 4286
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuViewModel.swift",
+      "before_sha256": "1d96c285a927709b4428bd518b8821885d54d9350affc72a307bcfaf0cba6ddb",
+      "after_sha256": "436432ef54b1130cc53a9b027b61a1b8fe3a870cac8703deba900bc960aff7b8",
+      "after_bytes": 7108
+    }
+  ],
+  "checks": {
+    "patch_preimage": "PASS",
+    "whitespace": "PASS",
+    "original_personal_toggle_body_byte_identical": true,
+    "original_BlockWidget_protocol_and_implementation_byte_identical": true
+  },
+  "scope": [
+    "Configured Settings acquires actual foreign channel/personal widget documents only through the existing original child-session factory and external-source open boundary.",
+    "Original nil-route OpenedDocumentsProvider and favorite toggle body are unchanged.",
+    "Favorite UI intent reserves the existing parent owner before original Task. Actual native write uses the independently acquired personal widget owner and exact final original delegate chain.",
+    "Actual target is revalidated against original SpaceViewsStorage mapping, exact Space/document instance and current parent before reads/write/publication.",
+    "Both target session and its original document are retained through actual mutation RPC drain.",
+    "Channel-pin write remains fail-closed until exact moderator-role lifetime and dispatch admission are qualified; no shared Owner changes here.",
+    "Previously opened cached target remains rejected by the existing factory; no adoption or raw fallback."
+  ],
+  "validation": {
+    "swift_syntax": "NOT_RUN_PENDING_REVIEW",
+    "apple_typecheck": "NOT_RUN",
+    "native_favorite_toggle_and_source_retirement": "NOT_RUN",
+    "native_channel_pin": "NOT_QUALIFIED"
+  },
+  "predecessor_patch_sha256": "8b1e5b8a21745f6fd3e33c788fa443d95b20e5dfdb67eab8f397915b66b7b4c6",
+  "r2_delta": "Target identity checks use exact original immutable document.objectId/spaceId plus prepared session and actual owner identity, consistent with PreparedEditorPageDocument; no additional page-details payload requirement is imposed on technical widget documents."
+}

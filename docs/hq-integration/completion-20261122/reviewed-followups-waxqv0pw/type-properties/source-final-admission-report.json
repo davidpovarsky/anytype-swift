@@ -1,0 +1,14 @@
+{
+  "status": "FROZEN_FINAL_SOURCE_ADMISSION_COMPOSED_FROM_EXACT_PRIOR_PLUS_ONE_LINE_CORRECTION",
+  "patch_sha256": "0a93b302ace640edef150621211cbf46aaacf4e641c942cd6caf1236d1fb4094",
+  "prior_source_audit_sha256": "88ac839cc51856e359720810afc31886aff3a162ac9deffb829437907c7cc5ef",
+  "prior_patch_sha256": "b2e35118c56858ddadc36a4c33cdeeadf6c12faf0f4bb9bfc7e33f13f6afdadd",
+  "unchanged_source_files": 6,
+  "changed_source_file": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesView.swift",
+  "exact_one_line_delta": ".disabled(!model.canUseCatalogActions) -> .disabled(model.originalEditorScope != nil)",
+  "purpose": "Preserve original nil-scope menu availability; keep only unqualified external schema action disabled.",
+  "new_admission_check": "PASS",
+  "prior_eight_source_invariants": "RETAINED_WITH_EXACT_DELTA_CHECK_NO_UNCHANGED_EXECUTABLE_RERUN",
+  "native_editor_ui_tests": 0,
+  "swiftui_typecheck": "NOT_RUN"
+}
