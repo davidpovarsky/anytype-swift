@@ -1,0 +1,40 @@
+{
+  "kind": "pinned SwiftProtobuf map field type correction after actual compiler failure",
+  "parent_commit": "4a8fcc2a845e130889f38efd12caafe03db731b6",
+  "run_id": 45036034258,
+  "run_attempt": 1,
+  "semantic_tests_executed": 0,
+  "compiled_before_failure": "Original ProtobufMessages standalone target: 197 Models plus unchanged original export_report.pb.swift",
+  "diagnostic": "cannot find type '_ProtobufString' in scope in SnapshotWire map decode/traverse at four locations",
+  "dependency_commit": "c6fe6442e6a64250495669325044052e113e990c",
+  "primary_sources": [
+    {
+      "path": "Sources/SwiftProtobuf/FieldTypes.swift",
+      "git_blob": "a9bbe3cc1a5010383b5cba39614fd59e86180c24",
+      "fact": "public struct ProtobufString: FieldType, MapKeyType, MapValueType"
+    },
+    {
+      "path": "Sources/SwiftProtobuf/ProtobufMap.swift",
+      "git_blob": "d1181287a05c2b01352da97273ed7529ec655a7e",
+      "fact": "public generic _ProtobufMap uses MapKeyType/FieldType"
+    },
+    {
+      "path": "Sources/SwiftProtobuf/struct.pb.swift",
+      "git_blob": "c4475b0a4b9ac00a1ebe5801c60e31adea8752be",
+      "fact": "generated map uses ProtobufString"
+    }
+  ],
+  "changed_scope": "Four map fieldType expressions only; use SwiftProtobuf.ProtobufString",
+  "unchanged": [
+    "ArchiveComparison",
+    "MapKeyGuard",
+    "ArchiveLayout",
+    "Held-read bridge/adapter",
+    "30 semantic assertions",
+    "Dependency/compiler pins",
+    "Workflow",
+    "Prior passing 40/13 source closures"
+  ],
+  "prior_suites_replayed": 0,
+  "dispatch": "none by candidate author; root review required"
+}

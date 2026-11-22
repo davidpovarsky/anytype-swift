@@ -54,7 +54,7 @@ extension OriginalAnnotationNativeChangeSnapshotWire: Message, _MessageImplement
     mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
         while let field = try decoder.nextFieldNumber() {
             switch field {
-            case 1: try decoder.decodeMapField(fieldType: _ProtobufMap<_ProtobufString, _ProtobufString>.self, value: &logHeads)
+            case 1: try decoder.decodeMapField(fieldType: _ProtobufMap<SwiftProtobuf.ProtobufString, SwiftProtobuf.ProtobufString>.self, value: &logHeads)
             case 2: try decoder.decodeSingularMessageField(value: &data)
             case 3: try decoder.decodeRepeatedMessageField(value: &fileKeys)
             default: break
@@ -62,7 +62,7 @@ extension OriginalAnnotationNativeChangeSnapshotWire: Message, _MessageImplement
         }
     }
     func traverse<V: Visitor>(visitor: inout V) throws {
-        if !logHeads.isEmpty { try visitor.visitMapField(fieldType: _ProtobufMap<_ProtobufString, _ProtobufString>.self, value: logHeads, fieldNumber: 1) }
+        if !logHeads.isEmpty { try visitor.visitMapField(fieldType: _ProtobufMap<SwiftProtobuf.ProtobufString, SwiftProtobuf.ProtobufString>.self, value: logHeads, fieldNumber: 1) }
         if let data { try visitor.visitSingularMessageField(value: data, fieldNumber: 2) }
         if !fileKeys.isEmpty { try visitor.visitRepeatedMessageField(value: fileKeys, fieldNumber: 3) }
         try unknownFields.traverse(visitor: &visitor)
@@ -86,14 +86,14 @@ extension OriginalAnnotationNativeFileKeysWire: Message, _MessageImplementationB
         while let field = try decoder.nextFieldNumber() {
             switch field {
             case 1: try decoder.decodeSingularStringField(value: &hash)
-            case 2: try decoder.decodeMapField(fieldType: _ProtobufMap<_ProtobufString, _ProtobufString>.self, value: &keys)
+            case 2: try decoder.decodeMapField(fieldType: _ProtobufMap<SwiftProtobuf.ProtobufString, SwiftProtobuf.ProtobufString>.self, value: &keys)
             default: break
             }
         }
     }
     func traverse<V: Visitor>(visitor: inout V) throws {
         if !hash.isEmpty { try visitor.visitSingularStringField(value: hash, fieldNumber: 1) }
-        if !keys.isEmpty { try visitor.visitMapField(fieldType: _ProtobufMap<_ProtobufString, _ProtobufString>.self, value: keys, fieldNumber: 2) }
+        if !keys.isEmpty { try visitor.visitMapField(fieldType: _ProtobufMap<SwiftProtobuf.ProtobufString, SwiftProtobuf.ProtobufString>.self, value: keys, fieldNumber: 2) }
         try unknownFields.traverse(visitor: &visitor)
     }
     static func == (lhs: Self, rhs: Self) -> Bool {

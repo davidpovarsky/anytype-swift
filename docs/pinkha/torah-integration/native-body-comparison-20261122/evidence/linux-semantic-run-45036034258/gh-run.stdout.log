@@ -1,0 +1,184 @@
+semantic-controls	Set up job	﻿2026-11-22T15:02:09.6538044Z Current runner version: '2.338.2'
+semantic-controls	Set up job	2026-11-22T15:02:09.6565358Z ##[group]Runner Image Provisioner
+semantic-controls	Set up job	2026-11-22T15:02:09.6566268Z Hosted Compute Agent
+semantic-controls	Set up job	2026-11-22T15:02:09.6566815Z Version: 20261111.635
+semantic-controls	Set up job	2026-11-22T15:02:09.6567998Z Commit: b8a594ea514ff44cadb5342986c68b1eac6e22ed
+semantic-controls	Set up job	2026-11-22T15:02:09.6568760Z Build Date: 2026-11-11T01:49:01Z
+semantic-controls	Set up job	2026-11-22T15:02:09.6569459Z Worker ID: {e8e17c48-c1c9-4a24-88eb-7b3b8933bbf8}
+semantic-controls	Set up job	2026-11-22T15:02:09.6570267Z Region: centralus
+semantic-controls	Set up job	2026-11-22T15:02:09.6570827Z Cloud: Azure
+semantic-controls	Set up job	2026-11-22T15:02:09.6571381Z ##[endgroup]
+semantic-controls	Set up job	2026-11-22T15:02:09.6574269Z ##[group]Operating System
+semantic-controls	Set up job	2026-11-22T15:02:09.6574935Z Ubuntu
+semantic-controls	Set up job	2026-11-22T15:02:09.6575535Z 24.04.5
+semantic-controls	Set up job	2026-11-22T15:02:09.6576051Z LTS
+semantic-controls	Set up job	2026-11-22T15:02:09.6576584Z ##[endgroup]
+semantic-controls	Set up job	2026-11-22T15:02:09.6577149Z ##[group]Runner Image
+semantic-controls	Set up job	2026-11-22T15:02:09.6578037Z Image: ubuntu-24.04
+semantic-controls	Set up job	2026-11-22T15:02:09.6578792Z Version: 20261116.376.1
+semantic-controls	Set up job	2026-11-22T15:02:09.6579843Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261116.376/images/ubuntu/Ubuntu2404-Readme.md
+semantic-controls	Set up job	2026-11-22T15:02:09.6581635Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261116.376
+semantic-controls	Set up job	2026-11-22T15:02:09.6582524Z ##[endgroup]
+semantic-controls	Set up job	2026-11-22T15:02:09.6584010Z ##[group]GITHUB_TOKEN Permissions
+semantic-controls	Set up job	2026-11-22T15:02:09.6586599Z Contents: read
+semantic-controls	Set up job	2026-11-22T15:02:09.6587230Z Metadata: read
+semantic-controls	Set up job	2026-11-22T15:02:09.6587773Z ##[endgroup]
+semantic-controls	Set up job	2026-11-22T15:02:09.6590285Z Secret source: Actions
+semantic-controls	Set up job	2026-11-22T15:02:09.6591201Z Cache mode: write
+semantic-controls	Set up job	2026-11-22T15:02:09.6592127Z Prepare workflow directory
+semantic-controls	Set up job	2026-11-22T15:02:09.7227169Z Prepare all required actions
+semantic-controls	Set up job	2026-11-22T15:02:09.7302785Z Getting action download info
+semantic-controls	Set up job	2026-11-22T15:02:09.9892444Z Download action repository 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' (SHA:11bd71901bbe5b1630ceea73d27597364c9af683)
+semantic-controls	Set up job	2026-11-22T15:02:10.1716336Z Download action repository 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+semantic-controls	Set up job	2026-11-22T15:02:10.4074276Z Complete job name: semantic-controls
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	﻿2026-11-22T15:02:10.4793147Z ##[group]Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.4794716Z with:
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.4795340Z   ref: 4a8fcc2a845e130889f38efd12caafe03db731b6
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.4796047Z   fetch-depth: 1
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.4796564Z   persist-credentials: false
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.4797876Z   sparse-checkout: OriginalEditorFramework
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	Modules/ProtobufMessages/Sources/Protocol/Models
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	docs/pinkha/torah-integration/native-body-comparison-20261122
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.4799272Z   sparse-checkout-cone-mode: true
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.4799913Z   repository: davidpovarsky/anytype-swift
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.4804424Z   token: ***
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.4804922Z   ssh-strict: true
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.4805483Z   ssh-user: git
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.4806004Z   clean: true
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.4806501Z   fetch-tags: false
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.4807033Z   show-progress: true
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.4807548Z   lfs: false
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.4808049Z   submodules: false
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.4808627Z   set-safe-directory: true
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.4809517Z env:
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.4810311Z   WORK_ROOT: /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.4811392Z   EXPECTED_SOURCE_SHA: 4a8fcc2a845e130889f38efd12caafe03db731b6
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.4812144Z ##[endgroup]
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.7640448Z Syncing repository: davidpovarsky/anytype-swift
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.7642461Z ##[group]Getting Git version info
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.7643451Z Working directory is '/home/runner/work/anytype-swift/anytype-swift'
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.7644763Z [command]/usr/bin/git version
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.7900534Z git version 2.56.1
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.7926061Z ##[endgroup]
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.7943871Z Temporarily overriding HOME='/home/runner/work/_temp/1cd9149a-d93c-4a29-bb97-ea6a29484ece' before making global git config changes
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.7945539Z Adding repository directory to the temporary git global config as a safe directory
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.7951163Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/anytype-swift/anytype-swift
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8009575Z Deleting the contents of '/home/runner/work/anytype-swift/anytype-swift'
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8015204Z ##[group]Initializing the repository
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8020912Z [command]/usr/bin/git init /home/runner/work/anytype-swift/anytype-swift
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8154719Z hint: Using 'master' as the name for the initial branch. This default branch name
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8156800Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8158075Z hint: to use in all of your new repositories, which will suppress this warning,
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8159344Z hint: call:
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8160156Z hint:
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8161095Z hint: 	git config --global init.defaultBranch <name>
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8162335Z hint:
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8163710Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8165412Z hint: 'development'. The just-created branch can be renamed via this command:
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8170202Z hint:
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8171153Z hint: 	git branch -m <name>
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8172193Z hint:
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8173651Z hint: Disable this message with "git config set advice.defaultBranchName false"
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8177295Z Initialized empty Git repository in /home/runner/work/anytype-swift/anytype-swift/.git/
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8185490Z [command]/usr/bin/git remote add origin https://github.com/davidpovarsky/anytype-swift
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8254160Z ##[endgroup]
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8255638Z ##[group]Disabling automatic garbage collection
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8257344Z [command]/usr/bin/git config --local gc.auto 0
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8293395Z ##[endgroup]
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8294717Z ##[group]Setting up auth
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8300704Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8339615Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8765619Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.8805743Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.9024533Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.9072363Z ##[endgroup]
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.9074239Z ##[group]Fetching the repository
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:10.9086174Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --filter=blob:none --depth=1 origin 4a8fcc2a845e130889f38efd12caafe03db731b6
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:11.4113827Z From https://github.com/davidpovarsky/anytype-swift
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:11.4116021Z  * branch            4a8fcc2a845e130889f38efd12caafe03db731b6 -> FETCH_HEAD
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:11.4120085Z ##[endgroup]
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:11.4121767Z ##[group]Determining the checkout info
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:11.4123840Z ##[endgroup]
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:11.4125639Z ##[group]Setting up sparse checkout
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:11.4132016Z [command]/usr/bin/git sparse-checkout set OriginalEditorFramework Modules/ProtobufMessages/Sources/Protocol/Models docs/pinkha/torah-integration/native-body-comparison-20261122
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:11.4200227Z ##[endgroup]
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:11.4202207Z ##[group]Checking out the ref
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:11.4204822Z [command]/usr/bin/git checkout --progress --force 4a8fcc2a845e130889f38efd12caafe03db731b6
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0787965Z Note: switching to '4a8fcc2a845e130889f38efd12caafe03db731b6'.
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0789292Z 
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0790227Z You are in 'detached HEAD' state. You can look around, make experimental
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0792398Z changes and commit them, and you can discard any commits you make in this
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0794371Z state without impacting any branches by switching back to a branch.
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0795120Z 
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0795734Z If you want to create a new branch to retain commits you create, you may
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0797255Z do so (now or later) by using -c with the switch command. Example:
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0797902Z 
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0798389Z   git switch -c <new-branch-name>
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0798874Z 
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0799392Z Or undo this operation with:
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0800043Z 
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0800492Z   git switch -
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0801106Z 
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0801777Z Turn off this advice by setting config variable advice.detachedHead to false
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0802648Z 
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0803575Z HEAD is now at 4a8fcc2 Complete original model dependency for native archive semantic controls
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0807281Z ##[endgroup]
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0847374Z [command]/usr/bin/git log -1 --format=%H
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0878796Z 4a8fcc2a845e130889f38efd12caafe03db731b6
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0889406Z ##[group]Removing auth
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0893610Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.0925452Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.1156321Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.1186390Z http.https://github.com/.extraheader
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.1195279Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.1230573Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+semantic-controls	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:02:12.1454325Z ##[endgroup]
+semantic-controls	Compile and run only the new portable semantic closure	﻿2026-11-22T15:02:12.1694313Z ##[group]Run python3 docs/pinkha/torah-integration/native-body-comparison-20261122/controls/run_semantic_controls.py --repo-root "$GITHUB_WORKSPACE" --output-root "$WORK_ROOT" --expected-source-sha "$EXPECTED_SOURCE_SHA" --expected-swift-version 6.4.2
+semantic-controls	Compile and run only the new portable semantic closure	2026-11-22T15:02:12.1697641Z ^[[36;1mpython3 docs/pinkha/torah-integration/native-body-comparison-20261122/controls/run_semantic_controls.py --repo-root "$GITHUB_WORKSPACE" --output-root "$WORK_ROOT" --expected-source-sha "$EXPECTED_SOURCE_SHA" --expected-swift-version 6.4.2^[[0m
+semantic-controls	Compile and run only the new portable semantic closure	2026-11-22T15:02:12.1718250Z shell: /usr/bin/bash -e {0}
+semantic-controls	Compile and run only the new portable semantic closure	2026-11-22T15:02:12.1719357Z env:
+semantic-controls	Compile and run only the new portable semantic closure	2026-11-22T15:02:12.1720758Z   WORK_ROOT: /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1
+semantic-controls	Compile and run only the new portable semantic closure	2026-11-22T15:02:12.1722200Z   EXPECTED_SOURCE_SHA: 4a8fcc2a845e130889f38efd12caafe03db731b6
+semantic-controls	Compile and run only the new portable semantic closure	2026-11-22T15:02:12.1723596Z ##[endgroup]
+semantic-controls	Compile and run only the new portable semantic closure	2026-11-22T15:03:30.2690075Z {"status": "FAILED", "source_commit": "4a8fcc2a845e130889f38efd12caafe03db731b6", "evidence": "/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/evidence", "error": "build failed; preserve diagnostics and do not automatically replay", "tests_run": 0}
+semantic-controls	Compile and run only the new portable semantic closure	2026-11-22T15:03:30.2766417Z ##[error]Process completed with exit code 1.
+semantic-controls	Retain exact source and execution result	﻿2026-11-22T15:03:30.2869618Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.2870174Z with:
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.2870616Z   name: native-body-semantics-4a8fcc2a845e130889f38efd12caafe03db731b6-1
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.2871304Z   path: /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1/evidence
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.2871858Z   if-no-files-found: error
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.2872270Z   retention-days: 30
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.2872584Z   compression-level: 6
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.2873665Z   overwrite: false
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.2874044Z   include-hidden-files: false
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.2874372Z env:
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.2875116Z   WORK_ROOT: /home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45036034258-1
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.2875732Z   EXPECTED_SOURCE_SHA: 4a8fcc2a845e130889f38efd12caafe03db731b6
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.2876129Z ##[endgroup]
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.4619052Z (node:3173) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.4620540Z (Use `node --trace-deprecation ...` to show where the warning was created)
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.4705989Z With the provided path, there will be 13 files uploaded
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.4712962Z Artifact name is valid!
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.4714350Z Root directory input is valid!
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.7382564Z Beginning upload of artifact content to blob storage
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.7943624Z (node:3173) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.9480752Z Uploaded bytes 22835
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.9872675Z Finished uploading artifact content to blob storage!
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.9877732Z SHA256 digest of uploaded artifact zip is 0e3ea62fbb6a3c920a3050d9d1604e7a9de169cd8909ab5bbb1b28ed315a72f9
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:30.9878976Z Finalizing artifact upload
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:31.4381647Z Artifact native-body-semantics-4a8fcc2a845e130889f38efd12caafe03db731b6-1.zip successfully finalized. Artifact ID 14759169318
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:31.4383080Z Artifact native-body-semantics-4a8fcc2a845e130889f38efd12caafe03db731b6-1 has been successfully uploaded! Final size is 22835 bytes. Artifact ID is 14759169318
+semantic-controls	Retain exact source and execution result	2026-11-22T15:03:31.4386562Z Artifact download URL: https://github.com/davidpovarsky/anytype-swift/actions/runs/45036034258/artifacts/14759169318
+semantic-controls	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	﻿2026-11-22T15:03:31.4627335Z Post job cleanup.
+semantic-controls	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:03:31.5504759Z [command]/usr/bin/git version
+semantic-controls	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:03:31.5544773Z git version 2.56.1
+semantic-controls	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:03:31.5583347Z Temporarily overriding HOME='/home/runner/work/_temp/babb1572-3f87-4fe2-b3bc-0ede13eff056' before making global git config changes
+semantic-controls	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:03:31.5584848Z Adding repository directory to the temporary git global config as a safe directory
+semantic-controls	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:03:31.5589610Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/anytype-swift/anytype-swift
+semantic-controls	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:03:31.5635384Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+semantic-controls	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:03:31.5672842Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+semantic-controls	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:03:31.5945601Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+semantic-controls	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-22T15:03:31.5991508Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+semantic-controls	Complete job	﻿2026-11-22T15:03:31.6445492Z Cleaning up orphan processes
+semantic-controls	Complete job	2026-11-22T15:03:31.6836376Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683, actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

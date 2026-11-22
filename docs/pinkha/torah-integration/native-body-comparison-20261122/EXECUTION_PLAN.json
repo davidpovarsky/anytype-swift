@@ -1,7 +1,7 @@
 {
   "status": "CORRECTIVE_CANDIDATE_NOT_DISPATCHED",
   "source_base": "b5162d777e3ebc5c4c0d044e02b52347c0c3dd6e",
-  "candidate_branch": "codex/otzaria-native-body-model-closure-20261122",
+  "candidate_branch": "codex/otzaria-native-body-protobuf-typefix-20261122",
   "workflow": ".github/workflows/otzaria-native-body-semantics.yml",
   "activation_branch": "codex/otzaria-native-body-semantics-run-20261122",
   "dispatch_owner": "/root",
@@ -50,14 +50,25 @@
     "genuine import-map authority",
     "closed source/commit and durable mapping/ACK"
   ],
-  "candidate_parent": "f784bbb71963a57ba142e33b68c68df753e71afb",
-  "prior_actual_run": {
-    "id": 45035204985,
-    "attempt": 1,
-    "head": "f784bbb71963a57ba142e33b68c68df753e71afb",
-    "conclusion": "failure",
-    "semantic_cases_executed": 0,
-    "reason": "197-model standalone target omitted original additive export_report.pb.swift dependency",
-    "runner_result_sha256": "9e46da28180a62d0266a5a5241044ab18eba90cfbde2b5a4a13c062e324438d1"
-  }
+  "candidate_parent": "4a8fcc2a845e130889f38efd12caafe03db731b6",
+  "prior_actual_runs": [
+    {
+      "id": 45035204985,
+      "attempt": 1,
+      "head": "f784bbb71963a57ba142e33b68c68df753e71afb",
+      "conclusion": "failure",
+      "semantic_cases_executed": 0,
+      "reason": "197-model standalone target omitted original additive export_report.pb.swift dependency",
+      "runner_result_sha256": "9e46da28180a62d0266a5a5241044ab18eba90cfbde2b5a4a13c062e324438d1"
+    },
+    {
+      "id": 45036034258,
+      "attempt": 1,
+      "head": "4a8fcc2a845e130889f38efd12caafe03db731b6",
+      "conclusion": "failure",
+      "semantic_cases_executed": 0,
+      "reason": "SnapshotWire used nonexistent _ProtobufString instead of the pinned public ProtobufString map field type",
+      "runner_result_sha256": "fc89a903b59d5408f5d2f8ce6996b0ac1d76195f92db2d2f61e81d230c5b7a7d"
+    }
+  ]
 }
