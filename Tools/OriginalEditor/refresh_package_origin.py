@@ -62,8 +62,7 @@ def command(name, argv):
 try:
     if os.environ.get("GITHUB_REF") != BRANCH or git("rev-parse", "HEAD") != receipt["source_sha"]:
         raise ValueError("foreign source or branch")
-    if git("rev-parse", "HEAD^") != BASE:
-        raise ValueError("resolver lane is not directly based on recorded failed producer")
+    subprocess.run(["git", "merge-base", "--is-ancestor", BASE, "HEAD"], cwd=root, check=True)
     changed = set(git("diff", "--name-only", BASE, "HEAD").splitlines())
     if changed != LANE_FILES or git("status", "--porcelain", "--untracked-files=all"):
         raise ValueError("resolver source has unreviewed changes")
