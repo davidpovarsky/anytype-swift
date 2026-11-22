@@ -1,0 +1,765 @@
+{
+  "schema_version": 1,
+  "audit_kind": "read_only_source_composition",
+  "captured_at": "2026-11-22T06:43:59.887248+00:00",
+  "audit_parent": "af987cd17494c6b456efaed591e1a30ca4c1d09a",
+  "source_count": 17,
+  "composed_source_or_build_claim": false,
+  "entries": [
+    {
+      "id": "source_binding",
+      "commit": "af987cd17494c6b456efaed591e1a30ca4c1d09a",
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift",
+      "git_blob": "c90dd7f2ee0577d3496d81fd164fc238b79ea364",
+      "sha256": "b0ae02be8c28c22246d29bf927cb154e10019d841f3b831771f968a8938f7d46",
+      "bytes": 49230,
+      "line_count": 1120,
+      "source_url": "https://github.com/davidpovarsky/anytype-swift/blob/af987cd17494c6b456efaed591e1a30ca4c1d09a/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift",
+      "anchors": [
+        {
+          "symbol": "struct EditorDocumentWriteSourceBinding",
+          "matches": [
+            {
+              "line": 216,
+              "text": "struct EditorDocumentWriteSourceBinding {"
+            }
+          ]
+        },
+        {
+          "symbol": "private let accountCapture:",
+          "matches": [
+            {
+              "line": 219,
+              "text": "    private let accountCapture: EditorDocumentWriteCapture?"
+            }
+          ]
+        },
+        {
+          "symbol": "fileprivate func channelPinCapture",
+          "matches": [
+            {
+              "line": 265,
+              "text": "    fileprivate func channelPinCapture("
+            }
+          ]
+        },
+        {
+          "symbol": "func performOperation<",
+          "matches": [
+            {
+              "line": 301,
+              "text": "    func performOperation<Value: Sendable>("
+            },
+            {
+              "line": 310,
+              "text": "    private func performOperation<Value: Sendable>("
+            }
+          ]
+        },
+        {
+          "symbol": "private func prepareDispatch(",
+          "matches": [
+            {
+              "line": 347,
+              "text": "    private func prepareDispatch("
+            },
+            {
+              "line": 971,
+              "text": "    private func prepareDispatch(lease: UUID, messageName: String) throws -> InvocationDispatchPermit {"
+            }
+          ]
+        },
+        {
+          "symbol": "func withExclusiveRead<",
+          "matches": [
+            {
+              "line": 699,
+              "text": "    func withExclusiveRead<Value: Sendable>("
+            }
+          ]
+        },
+        {
+          "symbol": "func performSynchronousOperation<",
+          "matches": [
+            {
+              "line": 746,
+              "text": "    func performSynchronousOperation<Value>("
+            }
+          ]
+        },
+        {
+          "symbol": "throw EditorDocumentWriteError.completedWithoutOwnership(reason)",
+          "matches": [
+            {
+              "line": 813,
+              "text": "                throw EditorDocumentWriteError.completedWithoutOwnership(reason)"
+            },
+            {
+              "line": 951,
+              "text": "                throw EditorDocumentWriteError.completedWithoutOwnership(reason)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "space_permissions",
+      "commit": "af987cd17494c6b456efaed591e1a30ca4c1d09a",
+      "path": "Anytype/Sources/ServiceLayer/ParticipantSpacesStorage/Model/SpacePermissions.swift",
+      "git_blob": "28b6281e2541f1d7ad6ecde321997562dc59a14a",
+      "sha256": "e831c211f172ccf9f6f79d59db569ef7ce38d73486209a95134d684b9d53c2bb",
+      "bytes": 1988,
+      "line_count": 56,
+      "source_url": "https://github.com/davidpovarsky/anytype-swift/blob/af987cd17494c6b456efaed591e1a30ca4c1d09a/Anytype/Sources/ServiceLayer/ParticipantSpacesStorage/Model/SpacePermissions.swift",
+      "anchors": [
+        {
+          "symbol": "init(spaceView: SpaceView, participant:",
+          "matches": [
+            {
+              "line": 19,
+              "text": "    init(spaceView: SpaceView, participant: Participant?, isLocalMode: Bool) {"
+            }
+          ]
+        },
+        {
+          "symbol": "init(spaceView: SpaceView, spaceAccessType:",
+          "matches": [
+            {
+              "line": 34,
+              "text": "    init(spaceView: SpaceView, spaceAccessType: SpaceAccessType, isOwner: Bool, participantCanEdit: Bool, isLocalMode: Bool) {"
+            }
+          ]
+        },
+        {
+          "symbol": "canEdit =",
+          "matches": [
+            {
+              "line": 38,
+              "text": "        canEdit = participantCanEdit && (!spaceView.isLegacyStream || isOwner)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "participant_predicates",
+      "commit": "af987cd17494c6b456efaed591e1a30ca4c1d09a",
+      "path": "Anytype/Sources/Models/Extensions/Participant+Extensions.swift",
+      "git_blob": "d00b609f7d05a44a3ee7218442aae5ea63e869d3",
+      "sha256": "bdcd30821043e53459ea8429a0d034a32de470f5a947c5b728a62e9a4f530603",
+      "bytes": 1765,
+      "line_count": 73,
+      "source_url": "https://github.com/davidpovarsky/anytype-swift/blob/af987cd17494c6b456efaed591e1a30ca4c1d09a/Anytype/Sources/Models/Extensions/Participant+Extensions.swift",
+      "anchors": [
+        {
+          "symbol": "var canEdit:",
+          "matches": [
+            {
+              "line": 29,
+              "text": "    var canEdit: Bool {"
+            },
+            {
+              "line": 58,
+              "text": "    var canEdit: Bool {"
+            }
+          ]
+        },
+        {
+          "symbol": "var isOwner:",
+          "matches": [
+            {
+              "line": 54,
+              "text": "    var isOwner: Bool {"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "host_open",
+      "commit": "af987cd17494c6b456efaed591e1a30ca4c1d09a",
+      "path": "OriginalEditorFramework/AnytypeOriginalEditorHost.swift",
+      "git_blob": "4f88f355aafddd02d3dcd54a7a5c5da789eccd35",
+      "sha256": "c4f8149db47f4c915b83ec6b94ac8ae48ee3f8753993ca51c753c24412839a82",
+      "bytes": 12620,
+      "line_count": 284,
+      "source_url": "https://github.com/davidpovarsky/anytype-swift/blob/af987cd17494c6b456efaed591e1a30ca4c1d09a/OriginalEditorFramework/AnytypeOriginalEditorHost.swift",
+      "anchors": [
+        {
+          "symbol": "public static func openExistingEditor",
+          "matches": [
+            {
+              "line": 225,
+              "text": "    public static func openExistingEditor("
+            }
+          ]
+        },
+        {
+          "symbol": "let accountManager =",
+          "matches": [
+            {
+              "line": 233,
+              "text": "            let accountManager = Container.shared.accountManager()"
+            }
+          ]
+        },
+        {
+          "symbol": "let sourceBinding = try EditorDocumentWriteSourceBinding(",
+          "matches": [
+            {
+              "line": 255,
+              "text": "            let sourceBinding = try EditorDocumentWriteSourceBinding("
+            }
+          ]
+        },
+        {
+          "symbol": "PreparedEditorPageSessionFactory.prepare",
+          "matches": [
+            {
+              "line": 263,
+              "text": "            let session = try await PreparedEditorPageSessionFactory.prepare("
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "active_space",
+      "commit": "af987cd17494c6b456efaed591e1a30ca4c1d09a",
+      "path": "Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift",
+      "git_blob": "a0b729b10e80067cd94466295b2296d56c4931ba",
+      "sha256": "74bf7f9669d20668281b9bd9df9fd256ee80062768d28b86c2b4fabf5b2d9a98",
+      "bytes": 5749,
+      "line_count": 156,
+      "source_url": "https://github.com/davidpovarsky/anytype-swift/blob/af987cd17494c6b456efaed591e1a30ca4c1d09a/Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift",
+      "anchors": [
+        {
+          "symbol": "private var activeSpaceId:",
+          "matches": [
+            {
+              "line": 28,
+              "text": "    private var activeSpaceId: String?"
+            }
+          ]
+        },
+        {
+          "symbol": "private let workspaceInfoStorage",
+          "matches": [
+            {
+              "line": 31,
+              "text": "    private let workspaceInfoStorage = AtomicStorage<AccountInfo?>(nil)"
+            }
+          ]
+        },
+        {
+          "symbol": "private var setActiveSpaceTask:",
+          "matches": [
+            {
+              "line": 32,
+              "text": "    private var setActiveSpaceTask: Task<AccountInfo?, any Error>?"
+            }
+          ]
+        },
+        {
+          "symbol": "func setActiveSpace(",
+          "matches": [
+            {
+              "line": 10,
+              "text": "    func setActiveSpace(spaceId: String?) async throws -> AccountInfo?"
+            },
+            {
+              "line": 54,
+              "text": "    func setActiveSpace(spaceId: String?) async throws -> AccountInfo? {"
+            }
+          ]
+        },
+        {
+          "symbol": "workspaceService.workspaceOpen(",
+          "matches": [
+            {
+              "line": 67,
+              "text": "                    let info = try await workspaceService.workspaceOpen(spaceId: spaceId, withChat: true)"
+            }
+          ]
+        },
+        {
+          "symbol": "workspaceInfoStreamInternal.send(info)",
+          "matches": [
+            {
+              "line": 80,
+              "text": "                    workspaceInfoStreamInternal.send(info)"
+            }
+          ]
+        },
+        {
+          "symbol": "func stopSubscription(",
+          "matches": [
+            {
+              "line": 14,
+              "text": "    func stopSubscription() async"
+            },
+            {
+              "line": 105,
+              "text": "    func stopSubscription() {"
+            }
+          ]
+        },
+        {
+          "symbol": "private func clearActiveSpace()",
+          "matches": [
+            {
+              "line": 148,
+              "text": "    private func clearActiveSpace() async {"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "participant_prerequisite",
+      "commit": "56f896321686f3a929383b49a207c60d67104d31",
+      "path": "Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift",
+      "git_blob": "21085b9a22f05d44ce4199005122a0a7e41e5d05",
+      "sha256": "7fc5fc32d5dd7f21d6133f72511ccc133dea9dbe6bdabcbc9a5e435deffa8da1",
+      "bytes": 21412,
+      "line_count": 499,
+      "source_url": "https://github.com/davidpovarsky/anytype-swift/blob/56f896321686f3a929383b49a207c60d67104d31/Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift",
+      "anchors": [
+        {
+          "symbol": "struct OriginalParticipantEditPermission:",
+          "matches": [
+            {
+              "line": 118,
+              "text": "struct OriginalParticipantEditPermission: Sendable {"
+            }
+          ]
+        },
+        {
+          "symbol": "var originalParticipant:",
+          "matches": [
+            {
+              "line": 136,
+              "text": "    var originalParticipant: Participant { participant }"
+            }
+          ]
+        },
+        {
+          "symbol": "matching account: EditorDocumentWriteCapture, spaceId:",
+          "matches": [
+            {
+              "line": 30,
+              "text": "    func capture(matching account: EditorDocumentWriteCapture, spaceId: String) throws -> EditorDocumentWriteCapture {"
+            },
+            {
+              "line": 144,
+              "text": "        matching account: EditorDocumentWriteCapture, spaceId: String"
+            }
+          ]
+        },
+        {
+          "symbol": "fileprivate func retainsRole(",
+          "matches": [
+            {
+              "line": 157,
+              "text": "    fileprivate func retainsRole(of value: Participant) -> Bool {"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "space_prerequisite",
+      "commit": "37731bcfdfda320b3a58356b54719e904c399810",
+      "path": "Anytype/Sources/ServiceLayer/SpaceStorage/SpaceViewsStorage.swift",
+      "git_blob": "57e247b98ef5d8898154794a4121a6b9ff69b931",
+      "sha256": "f1570f8cff28d87152ea455ded6bc0bdfeb729e0beb3a70e3a47fb06b4710a57",
+      "bytes": 17829,
+      "line_count": 427,
+      "source_url": "https://github.com/davidpovarsky/anytype-swift/blob/37731bcfdfda320b3a58356b54719e904c399810/Anytype/Sources/ServiceLayer/SpaceStorage/SpaceViewsStorage.swift",
+      "anchors": [
+        {
+          "symbol": "struct OriginalSpaceViewPermission:",
+          "matches": [
+            {
+              "line": 9,
+              "text": "struct OriginalSpaceViewPermission: Sendable {"
+            }
+          ]
+        },
+        {
+          "symbol": "var originalSpaceView:",
+          "matches": [
+            {
+              "line": 42,
+              "text": "    var originalSpaceView: SpaceView { spaceView }"
+            }
+          ]
+        },
+        {
+          "symbol": "matching account: EditorDocumentWriteCapture, spaceId:",
+          "matches": [
+            {
+              "line": 51,
+              "text": "        matching account: EditorDocumentWriteCapture, spaceId: String"
+            }
+          ]
+        },
+        {
+          "symbol": "fileprivate func retainsAuthority(",
+          "matches": [
+            {
+              "line": 65,
+              "text": "    fileprivate func retainsAuthority(of value: SpaceView) -> Bool {"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "original_permission_construction",
+      "commit": "af987cd17494c6b456efaed591e1a30ca4c1d09a",
+      "path": "Anytype/Sources/ServiceLayer/ParticipantSpaceStorage/ParticipantSpacesStorage.swift",
+      "git_blob": "355480b972b04fad2a117e16a040f1bfeb5381cd",
+      "sha256": "f6a761b04d4af9a19e9fa851fbc9eb07ba21d21f47b9e792b52c4ffa42fa0896",
+      "bytes": 4345,
+      "line_count": 108,
+      "source_url": "https://github.com/davidpovarsky/anytype-swift/blob/af987cd17494c6b456efaed591e1a30ca4c1d09a/Anytype/Sources/ServiceLayer/ParticipantSpaceStorage/ParticipantSpacesStorage.swift",
+      "anchors": [
+        {
+          "symbol": "private let serverConfigurationStorage:",
+          "matches": [
+            {
+              "line": 56,
+              "text": "    private let serverConfigurationStorage: any ServerConfigurationStorageProtocol = Container.shared.serverConfigurationStorage()"
+            }
+          ]
+        },
+        {
+          "symbol": "private func updateData(",
+          "matches": [
+            {
+              "line": 93,
+              "text": "    private func updateData(spaces: [SpaceView], participants: [Participant]) {"
+            }
+          ]
+        },
+        {
+          "symbol": "let permissions = SpacePermissions(",
+          "matches": [
+            {
+              "line": 96,
+              "text": "            let permissions = SpacePermissions("
+            }
+          ]
+        },
+        {
+          "symbol": "isLocalMode:",
+          "matches": [
+            {
+              "line": 99,
+              "text": "                isLocalMode: serverConfigurationStorage.currentConfiguration().middlewareNetworkMode == .localOnly"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "server_configuration",
+      "commit": "af987cd17494c6b456efaed591e1a30ca4c1d09a",
+      "path": "Anytype/Sources/ServiceLayer/ServerConfigirationStorage/ServerConfigirationStorage.swift",
+      "git_blob": "992f9bdfa89de65dbca875bdcd277c0ec79e7ee1",
+      "sha256": "fa0fc90cc56615b081abd893376a961597e248372cfe6a9404dcb587bcb81248",
+      "bytes": 5144,
+      "line_count": 128,
+      "source_url": "https://github.com/davidpovarsky/anytype-swift/blob/af987cd17494c6b456efaed591e1a30ca4c1d09a/Anytype/Sources/ServiceLayer/ServerConfigirationStorage/ServerConfigirationStorage.swift",
+      "anchors": [
+        {
+          "symbol": "private let serverConfig =",
+          "matches": [
+            {
+              "line": 25,
+              "text": "    private let serverConfig = UserDefaultStorage<NetworkServerConfig>(key: \"serverConfig\", defaultValue: .anytype)"
+            }
+          ]
+        },
+        {
+          "symbol": "func currentConfiguration() ->",
+          "matches": [
+            {
+              "line": 12,
+              "text": "    func currentConfiguration() -> NetworkServerConfig"
+            },
+            {
+              "line": 105,
+              "text": "    func currentConfiguration() -> NetworkServerConfig {"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "network_mode_mapping",
+      "commit": "af987cd17494c6b456efaed591e1a30ca4c1d09a",
+      "path": "Anytype/Sources/ServiceLayer/ServerConfigirationStorage/NetworkServerConfig.swift",
+      "git_blob": "351390bd435b24f2077322fab4963c9659759412",
+      "sha256": "5306d93f932b694b683d37775b007e4d9ff2a6e415b5fc242cfb92ad0f043dcc",
+      "bytes": 799,
+      "line_count": 38,
+      "source_url": "https://github.com/davidpovarsky/anytype-swift/blob/af987cd17494c6b456efaed591e1a30ca4c1d09a/Anytype/Sources/ServiceLayer/ServerConfigirationStorage/NetworkServerConfig.swift",
+      "anchors": [
+        {
+          "symbol": "enum NetworkServerConfig:",
+          "matches": [
+            {
+              "line": 4,
+              "text": "enum NetworkServerConfig: Codable, Equatable {"
+            }
+          ]
+        },
+        {
+          "symbol": "var middlewareNetworkMode:",
+          "matches": [
+            {
+              "line": 15,
+              "text": "    var middlewareNetworkMode:  Anytype_Rpc.Account.NetworkMode {"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "configuration_di",
+      "commit": "af987cd17494c6b456efaed591e1a30ca4c1d09a",
+      "path": "Anytype/Sources/ServiceLayer/ServicesDI.swift",
+      "git_blob": "dfc2b87f5e688b6fb5b89e24d58799f65751ea67",
+      "sha256": "62d07a9d2040365fc03a127e63c5f84f3a67b2128ce1a89848578e2308bff1a5",
+      "bytes": 19148,
+      "line_count": 551,
+      "source_url": "https://github.com/davidpovarsky/anytype-swift/blob/af987cd17494c6b456efaed591e1a30ca4c1d09a/Anytype/Sources/ServiceLayer/ServicesDI.swift",
+      "anchors": [
+        {
+          "symbol": "var serverConfigurationStorage:",
+          "matches": [
+            {
+              "line": 291,
+              "text": "    var serverConfigurationStorage: Factory<any ServerConfigurationStorageProtocol> {"
+            }
+          ]
+        },
+        {
+          "symbol": "self { ServerConfigurationStorage() }.singleton",
+          "matches": [
+            {
+              "line": 292,
+              "text": "        self { ServerConfigurationStorage() }.singleton"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "account_source",
+      "commit": "af987cd17494c6b456efaed591e1a30ca4c1d09a",
+      "path": "Anytype/Sources/ServiceLayer/Account/AccountManager.swift",
+      "git_blob": "8b5d3d362f2c73b248b8b5b68e6ecda9a62f09e2",
+      "sha256": "954494a8c39f3c913dccb824a4064fdc1199ea46b0afbd9c54fd35f7105b224b",
+      "bytes": 1291,
+      "line_count": 40,
+      "source_url": "https://github.com/davidpovarsky/anytype-swift/blob/af987cd17494c6b456efaed591e1a30ca4c1d09a/Anytype/Sources/ServiceLayer/Account/AccountManager.swift",
+      "anchors": [
+        {
+          "symbol": "var editorWriteLifetime:",
+          "matches": [
+            {
+              "line": 10,
+              "text": "    var editorWriteLifetime: EditorDocumentWriteLifetime? { get }"
+            },
+            {
+              "line": 16,
+              "text": "    var editorWriteLifetime: EditorDocumentWriteLifetime? { nil }"
+            },
+            {
+              "line": 24,
+              "text": "    var editorWriteLifetime: EditorDocumentWriteLifetime? { writeLifetime }"
+            }
+          ]
+        },
+        {
+          "symbol": "writeLifetime.markUnavailable()",
+          "matches": [
+            {
+              "line": 29,
+              "text": "            writeLifetime.markUnavailable()"
+            }
+          ]
+        },
+        {
+          "symbol": "storage.value = newValue",
+          "matches": [
+            {
+              "line": 30,
+              "text": "            storage.value = newValue"
+            }
+          ]
+        },
+        {
+          "symbol": "writeLifetime.confirmOpened()",
+          "matches": [
+            {
+              "line": 31,
+              "text": "            if !newValue.id.isEmpty { writeLifetime.confirmOpened() }"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "basic_user_info",
+      "commit": "af987cd17494c6b456efaed591e1a30ca4c1d09a",
+      "path": "Modules/Services/Sources/Services/BasicUserInfoService/BasicUserInfoStorage.swift",
+      "git_blob": "3c35124603ac69c45d48dd8f9c6ec8c10eee64f0",
+      "sha256": "e84d082c92b928f611cca50c8836a2a4787958ba05b4f78d827cdaef04be8dd4",
+      "bytes": 560,
+      "line_count": 22,
+      "source_url": "https://github.com/davidpovarsky/anytype-swift/blob/af987cd17494c6b456efaed591e1a30ca4c1d09a/Modules/Services/Sources/Services/BasicUserInfoService/BasicUserInfoStorage.swift",
+      "anchors": [
+        {
+          "symbol": "var usersId:",
+          "matches": [
+            {
+              "line": 5,
+              "text": "    var usersId: String { get set }"
+            },
+            {
+              "line": 14,
+              "text": "    var usersId: String"
+            }
+          ]
+        },
+        {
+          "symbol": "func cleanUserIdAfterLogout()",
+          "matches": [
+            {
+              "line": 8,
+              "text": "    func cleanUserIdAfterLogout()"
+            },
+            {
+              "line": 19,
+              "text": "    func cleanUserIdAfterLogout() {"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "workspace_rpc",
+      "commit": "af987cd17494c6b456efaed591e1a30ca4c1d09a",
+      "path": "Modules/Services/Sources/Services/Workspace/WorkspaceService.swift",
+      "git_blob": "be38e9ba3d84f989e658c10c84c9f3fb59bac590",
+      "sha256": "6c5d000a7d82394db583e655c49d63a9acb1b6b6a58b42630e43814679283f4b",
+      "bytes": 11729,
+      "line_count": 267,
+      "source_url": "https://github.com/davidpovarsky/anytype-swift/blob/af987cd17494c6b456efaed591e1a30ca4c1d09a/Modules/Services/Sources/Services/Workspace/WorkspaceService.swift",
+      "anchors": [
+        {
+          "symbol": "public func workspaceOpen(",
+          "matches": [
+            {
+              "line": 88,
+              "text": "    public func workspaceOpen(spaceId: String, withChat: Bool) async throws -> AccountInfo {"
+            }
+          ]
+        },
+        {
+          "symbol": "ClientCommands.workspaceOpen(",
+          "matches": [
+            {
+              "line": 89,
+              "text": "        let result = try await ClientCommands.workspaceOpen(.with {"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "raw_readback",
+      "commit": "ab0feb2b34dcacf64084e9e9787ddb828da155ea",
+      "path": "Anytype/Sources/Pinkha/Torah/Annotations/OriginalAnnotationObjectReadback.swift",
+      "git_blob": "10e2404fc3d9c9469b2b810ce1563eca5880df3d",
+      "sha256": "0d007b5d2ee2bab38218cbdc36b0385f17b8ee95d8579ddaa23626081c602526",
+      "bytes": 7948,
+      "line_count": 169,
+      "source_url": "https://github.com/davidpovarsky/anytype-swift/blob/ab0feb2b34dcacf64084e9e9787ddb828da155ea/Anytype/Sources/Pinkha/Torah/Annotations/OriginalAnnotationObjectReadback.swift",
+      "anchors": [
+        {
+          "symbol": "func readFreshDetails()",
+          "matches": [
+            {
+              "line": 89,
+              "text": "    func readFreshDetails() async throws -> ObjectDetails {"
+            }
+          ]
+        },
+        {
+          "symbol": "let details = try await session.owner.withExclusiveRead(",
+          "matches": [
+            {
+              "line": 92,
+              "text": "        let details = try await session.owner.withExclusiveRead("
+            }
+          ]
+        },
+        {
+          "symbol": "return details",
+          "matches": [
+            {
+              "line": 107,
+              "text": "        return details"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "production_contract",
+      "commit": "ab0feb2b34dcacf64084e9e9787ddb828da155ea",
+      "path": "docs/pinkha/torah-integration/production-annotation-20261122/CONTRACT.md",
+      "git_blob": "665f1288064e8c278cfe0e85bd1c571aa3e4c20f",
+      "sha256": "11c0df741459028146ce5c938d44398b88d4acad647c058b837652d89b24a801",
+      "bytes": 21889,
+      "line_count": 119,
+      "source_url": "https://github.com/davidpovarsky/anytype-swift/blob/ab0feb2b34dcacf64084e9e9787ddb828da155ea/docs/pinkha/torah-integration/production-annotation-20261122/CONTRACT.md",
+      "anchors": []
+    },
+    {
+      "id": "native_space_view",
+      "commit": "af987cd17494c6b456efaed591e1a30ca4c1d09a",
+      "path": "Anytype/Sources/ServiceLayer/SpaceStorage/Models/SpaceView.swift",
+      "git_blob": "c8e826322240520f1df6812a33f886ee1db0a58d",
+      "sha256": "3e0eb5c308f1577f9ac0361025c93dc711acee3bae4ec538a3430c7bc10707c9",
+      "bytes": 8436,
+      "line_count": 240,
+      "source_url": "https://github.com/davidpovarsky/anytype-swift/blob/af987cd17494c6b456efaed591e1a30ca4c1d09a/Anytype/Sources/ServiceLayer/SpaceStorage/Models/SpaceView.swift",
+      "anchors": [
+        {
+          "symbol": "var isActive:",
+          "matches": [
+            {
+              "line": 153,
+              "text": "    var isActive: Bool {"
+            }
+          ]
+        },
+        {
+          "symbol": "var isLegacyStream:",
+          "matches": [
+            {
+              "line": 177,
+              "text": "    var isLegacyStream: Bool {"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
