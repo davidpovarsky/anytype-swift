@@ -1,0 +1,288 @@
+[
+  {
+    "id": 137011052214,
+    "name": "Patched native Any library on iOS Simulator",
+    "status": "completed",
+    "conclusion": "failure",
+    "run_id": 44958245692,
+    "logs_url": null,
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 1
+      },
+      {
+        "name": "Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 2
+      },
+      {
+        "name": "Checkout immutable canonical Hanlin source",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 3
+      },
+      {
+        "name": "Materialize the verified shared Hanlin SDK",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 4
+      },
+      {
+        "name": "Checkout exact upstream Any",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 5
+      },
+      {
+        "name": "Checkout exact upstream SDK in the portable replace path",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 6
+      },
+      {
+        "name": "Run actions/setup-go@v6",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 7
+      },
+      {
+        "name": "Apply and verify exact native source overlays",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 8
+      },
+      {
+        "name": "Test the actual iOS C lifecycle shim",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 9
+      },
+      {
+        "name": "Build device and simulator native slices",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 10
+      },
+      {
+        "name": "Bind artifact hashes to the tested sources and install",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 11
+      },
+      {
+        "name": "Verify retained source provenance before Apple acceptance",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 12
+      },
+      {
+        "name": "Reuse the original binary after exact native source verification",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 13
+      },
+      {
+        "name": "Create one simulator owned by this run",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 14
+      },
+      {
+        "name": "Reuse the unchanged UIKit components from their original execution",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 15
+      },
+      {
+        "name": "Build and run the linked AnyLib lifecycle tests",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 16
+      },
+      {
+        "name": "Publish lifecycle diagnostic log",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 17
+      },
+      {
+        "name": "Test protected Hanlin recovery on iOS",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 18
+      },
+      {
+        "name": "Test the UIKit editor and composition lifecycle",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 19
+      },
+      {
+        "name": "Test the real native account, Keychain and cold reopen path",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 20
+      },
+      {
+        "name": "Publish hosted application diagnostic log",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 21
+      },
+      {
+        "name": "Start the owned simulator while the required native target builds",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 22
+      },
+      {
+        "name": "Build the selected native executable and UI tests once",
+        "status": "completed",
+        "conclusion": "failure",
+        "number": 23
+      },
+      {
+        "name": "Verify the built native app ownership boundary",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 24
+      },
+      {
+        "name": "Prepare owned Hanlin HTTPS provider for mounted acceptance",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 25
+      },
+      {
+        "name": "Publish a failed owned simulator or provider preflight",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 26
+      },
+      {
+        "name": "Run the native acceptance entry before dependent journeys",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 27
+      },
+      {
+        "name": "Run only the seven remaining native journeys from the same build",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 28
+      },
+      {
+        "name": "Run one real Files archive roundtrip from the same native build",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 29
+      },
+      {
+        "name": "Verify mounted Hanlin provider transcript contract",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 30
+      },
+      {
+        "name": "Extract native execution counts",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 31
+      },
+      {
+        "name": "Compare actual saved canonical archives after cold reopen",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 32
+      },
+      {
+        "name": "Preserve bounded noncontent editor phase diagnostics",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 33
+      },
+      {
+        "name": "Stop only the owned Hanlin provider and remove private TLS material",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 34
+      },
+      {
+        "name": "Remove only this run's simulator",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 35
+      },
+      {
+        "name": "Upload real-library evidence",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 36
+      },
+      {
+        "name": "Upload exact source-bound native artifact",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 37
+      },
+      {
+        "name": "Post Checkout immutable canonical Hanlin source",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 73
+      },
+      {
+        "name": "Post Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 74
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 75
+      }
+    ]
+  },
+  {
+    "id": 137011053393,
+    "name": "Real embedded Any library on iOS Simulator",
+    "status": "completed",
+    "conclusion": "skipped",
+    "run_id": 44958245692,
+    "logs_url": null,
+    "steps": null
+  },
+  {
+    "id": 137011053445,
+    "name": "Candidate authorized operation read through the real iOS runtime",
+    "status": "completed",
+    "conclusion": "skipped",
+    "run_id": 44958245692,
+    "logs_url": null,
+    "steps": null
+  },
+  {
+    "id": 137011053593,
+    "name": "Apple package contracts and preserved domain behavior",
+    "status": "completed",
+    "conclusion": "skipped",
+    "run_id": 44958245692,
+    "logs_url": null,
+    "steps": null
+  },
+  {
+    "id": 137011053664,
+    "name": "Retained UIKit consumers after shared extraction",
+    "status": "completed",
+    "conclusion": "skipped",
+    "run_id": 44958245692,
+    "logs_url": null,
+    "steps": null
+  }
+]

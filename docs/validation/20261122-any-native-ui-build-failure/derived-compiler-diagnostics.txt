@@ -1,0 +1,18 @@
+
+/Users/runner/work/anytype-swift/anytype-swift/NativeApp/UITests/NativeLaunchTests.swift:1329:13: error: cannot call value of non-function type 'XCUIElement'
+1327 |             ax.name = "ARCHIVE_ROUNDTRIP_" + phase + "_private_AX"
+1328 |             ax.lifetime = .keepAlways
+1329 |             add(ax)
+     |             `- error: cannot call value of non-function type 'XCUIElement'
+1330 |             let screenshot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+1331 |             screenshot.name = "ARCHIVE_ROUNDTRIP_" + phase + "_private_screen"
+
+
+/Users/runner/work/anytype-swift/anytype-swift/NativeApp/UITests/NativeLaunchTests.swift:1333:13: error: cannot call value of non-function type 'XCUIElement'
+1331 |             screenshot.name = "ARCHIVE_ROUNDTRIP_" + phase + "_private_screen"
+1332 |             screenshot.lifetime = .keepAlways
+1333 |             add(screenshot)
+     |             `- error: cannot call value of non-function type 'XCUIElement'
+1334 |         }
+1335 |         func uniqueReady(_ query: XCUIElementQuery, phase: String,
+
