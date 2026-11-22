@@ -97,6 +97,11 @@ final class ObjectSettingsMenuViewModel {
     }
 
     func scheduleAction(_ action: ObjectAction) {
+        if case .pin = action, viewModel.hasPreparedSource {
+            let prepared = viewModel.prepareChannelPinAction()
+            Task { try await prepared() }
+            return
+        }
         let permissions: Set<EditorDocumentWritePermission>
         switch action {
         case .archive: permissions = [.archive]

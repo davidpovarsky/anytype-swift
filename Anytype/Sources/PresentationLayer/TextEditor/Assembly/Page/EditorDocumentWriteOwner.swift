@@ -192,6 +192,11 @@ fileprivate struct EditorDocumentOperationLineage: Sendable {
     }
 }
 
+fileprivate func intersectOriginalRPCRestrictions(_ lhs: Set<String>?, _ rhs: Set<String>?) -> Set<String>? {
+    if let lhs, let rhs { return lhs.intersection(rhs) }
+    return lhs ?? rhs
+}
+
 fileprivate enum EditorDocumentOperationContext {
     @TaskLocal static var lineage = EditorDocumentOperationLineage()
 }
@@ -213,6 +218,7 @@ struct EditorDocumentWriteSourceBinding {
     let captures: [EditorDocumentWriteCapture]
     private let accountCapture: EditorDocumentWriteCapture?
     fileprivate let parentOwner: EditorDocumentWriteOwner?
+    fileprivate let rpcRestriction: Set<String>?
     let isCurrent: @MainActor () -> Bool
 
     init(
@@ -228,27 +234,42 @@ struct EditorDocumentWriteSourceBinding {
             + (accountCapture.map { [$0] } ?? [])
         self.isCurrent = isCurrent
         parentOwner = nil
+        rpcRestriction = nil
     }
 
     private init(
         inheriting original: Self,
         parentOwner: EditorDocumentWriteOwner,
         captures: [EditorDocumentWriteCapture],
+        rpcRestriction: Set<String>?,
         isCurrent: @escaping @MainActor () -> Bool
     ) {
         lifetime = original.lifetime
         accountCapture = original.accountCapture
         self.parentOwner = parentOwner
         self.captures = captures
+        self.rpcRestriction = intersectOriginalRPCRestrictions(original.rpcRestriction, rpcRestriction)
         self.isCurrent = isCurrent
     }
 
     fileprivate func inheritingParent(
         owner: EditorDocumentWriteOwner,
         captures: [EditorDocumentWriteCapture],
+        rpcRestriction: Set<String>? = nil,
         isCurrent: @escaping @MainActor () -> Bool
     ) -> Self {
-        Self(inheriting: self, parentOwner: owner, captures: captures, isCurrent: isCurrent)
+        Self(inheriting: self, parentOwner: owner, captures: captures,
+             rpcRestriction: rpcRestriction, isCurrent: isCurrent)
+    }
+
+    fileprivate func channelPinCapture(
+        _ permission: OriginalChannelPinPermission, spaceId: String
+    ) throws -> EditorDocumentWriteCapture {
+        try validate()
+        guard let accountCapture else {
+            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+        }
+        return try permission.capture(matching: accountCapture, spaceId: spaceId)
     }
 
     var committedEventBinding: InvocationDispatchBinding? {
@@ -330,7 +351,8 @@ struct EditorDocumentWriteSourceBinding {
     ) throws -> InvocationDispatchPermit {
         do {
             try validate()
-            guard lease.isAccepting, rpcNames.contains(messageName) else {
+            guard lease.isAccepting, rpcNames.contains(messageName),
+                  rpcRestriction?.contains(messageName) != false else {
                 throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
             }
             let captured = captures
@@ -381,6 +403,8 @@ final class EditorDocumentWriteOwner {
         let contextId: String
         let requiresEditing: Bool
         let requiredPermissions: Set<EditorDocumentWritePermission>
+        let sourceCaptures: [EditorDocumentWriteCapture]
+        let rpcRestriction: Set<String>?
         let lineage: EditorDocumentOperationLineage
         let parentWork: EditorDocumentParentWork?
         let onDrained: (@MainActor @Sendable () -> Void)?
@@ -493,9 +517,21 @@ final class EditorDocumentWriteOwner {
         guard let originalSourceBinding else {
             throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
         }
+        let inheritedID = EditorDocumentOperationLineage.current.leases[ObjectIdentifier(self)]
+        let entry = inheritedID.flatMap { pending[$0] }
+        if inheritedID != nil {
+            guard let entry, entry.operation.isAccepting else {
+                throw EditorDocumentWriteError.rejected(.invalidLease)
+            }
+        }
+        let sourceCaptures = entry?.sourceCaptures ?? []
+        for capture in sourceCaptures { try capture.validate() }
         let captured = [try EditorDocumentWriteCapture(dispatchLifetime)]
             + lifetimeBindings.map { EditorDocumentWriteCapture(source: $0.source, token: $0.token) }
-        return originalSourceBinding.inheritingParent(owner: self, captures: captured) { [weak self] in
+            + sourceCaptures
+        return originalSourceBinding.inheritingParent(
+            owner: self, captures: captured, rpcRestriction: entry?.rpcRestriction
+        ) { [weak self] in
             guard let self else { return false }
             return (try? self.validateOwnership()) != nil
         }
@@ -561,6 +597,34 @@ final class EditorDocumentWriteOwner {
                               requiredPermissions: requiredPermissions, onDrained: onDrained)
         defer { finish(lease) }
         return try await execute(lease, operation: operation)
+    }
+
+    /// The original participant store supplies an opaque frozen role proof.
+    /// It only narrows this target owner's existing mutation lease and native
+    /// Invocation permit; no account, target or writer authority is replaced.
+    func performChannelPinMutation<Value: Sendable>(
+        contextId: String,
+        permission: OriginalChannelPinPermission,
+        onDrained: (@MainActor @Sendable () -> Void)? = nil,
+        operation: @Sendable () async throws -> Value
+    ) async throws -> Value {
+        do {
+            guard let originalSourceBinding else {
+                throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+            }
+            let roleCapture = try originalSourceBinding.channelPinCapture(permission, spaceId: data.spaceId)
+            let lease = try admit(
+                contextId: contextId, requiresEditing: true, access: .mutation,
+                sourceCaptures: [roleCapture],
+                rpcRestriction: ["BlockCreateWidget", "BlockListDelete"],
+                onDrained: onDrained
+            )
+            defer { finish(lease) }
+            return try await execute(lease, operation: operation)
+        } catch {
+            recordWriteFailure()
+            throw error
+        }
     }
 
     /// Some original document actions (for example type details) are allowed
@@ -738,7 +802,7 @@ final class EditorDocumentWriteOwner {
             let ownerCapture = try EditorDocumentWriteCapture(dispatchLifetime)
             let captured = [ownerCapture] + lifetimeBindings.map {
                 EditorDocumentWriteCapture(source: $0.source, token: $0.token)
-            }
+            } + entry.sourceCaptures
             let admissions = try EditorDocumentWriteCapture.acquireAll(captured)
             defer { for admission in admissions { admission.cancel() } }
             let value = try EditorDocumentOperationContext.$lineage.withValue(lineage) {
@@ -748,6 +812,7 @@ final class EditorDocumentWriteOwner {
                                       requiredPermissions: entry.requiredPermissions) {
                 throw EditorDocumentWriteError.completedWithoutOwnership(reason)
             }
+            try validateSourceCaptures(entry.sourceCaptures, afterCompletion: true)
             return value
         } catch {
             entry.operation.markFailed()
@@ -805,6 +870,8 @@ final class EditorDocumentWriteOwner {
         access: EditorDocumentOperationAccess,
         requiredPermissions: Set<EditorDocumentWritePermission> = [],
         actionPermissionsOnly: Bool = false,
+        sourceCaptures: [EditorDocumentWriteCapture] = [],
+        rpcRestriction: Set<String>? = nil,
         tracking: Bool = false,
         phase: Phase = .ordinary,
         onDrained: (@MainActor @Sendable () -> Void)? = nil,
@@ -815,6 +882,11 @@ final class EditorDocumentWriteOwner {
         let predecessor = inheritedID.flatMap { pending[$0] }
         let writeIntent = access.isMutation || predecessor?.writeIntent == true
         let permissions = requiredPermissions.union(predecessor?.requiredPermissions ?? [])
+        let sourceCaptures = sourceCaptures + (predecessor?.sourceCaptures ?? [])
+        let rpcRestriction = intersectOriginalRPCRestrictions(
+            originalSourceBinding?.rpcRestriction,
+            intersectOriginalRPCRestrictions(predecessor?.rpcRestriction, rpcRestriction)
+        )
         let inheritedActionScope = predecessor.map {
             !$0.requiresEditing && !$0.requiredPermissions.isEmpty
         } ?? false
@@ -822,6 +894,7 @@ final class EditorDocumentWriteOwner {
         let requiresEditing = requiresEditing || (!permissions.isEmpty && !actionScope)
             || predecessor?.requiresEditing == true
         do {
+            try validateSourceCaptures(sourceCaptures)
             if let reason = rejection(contextId: contextId, requiresEditing: requiresEditing,
                                       requiredPermissions: permissions) {
                 throw EditorDocumentWriteError.rejected(reason)
@@ -846,7 +919,9 @@ final class EditorDocumentWriteOwner {
             }
             pending[lease] = Pending(operation: operation, access: access, tracking: tracking,
                 writeIntent: writeIntent, contextId: contextId, requiresEditing: requiresEditing,
-                requiredPermissions: permissions, lineage: lineage, parentWork: parentWork, onDrained: onDrained, phase: phase)
+                requiredPermissions: permissions, sourceCaptures: sourceCaptures,
+                rpcRestriction: rpcRestriction, lineage: lineage,
+                parentWork: parentWork, onDrained: onDrained, phase: phase)
             return lease
         } catch {
             if writeIntent { recordWriteFailure() }
@@ -863,6 +938,7 @@ final class EditorDocumentWriteOwner {
         let binding = dispatchBinding(lease: lease)
         let lineage = entry.lineage.dispatching(binding)
         do {
+            try validateSourceCaptures(entry.sourceCaptures)
             if let reason = rejection(contextId: entry.contextId, requiresEditing: entry.requiresEditing,
                                       requiredPermissions: entry.requiredPermissions) {
                 throw EditorDocumentWriteError.rejected(reason)
@@ -874,6 +950,7 @@ final class EditorDocumentWriteOwner {
                                       requiredPermissions: entry.requiredPermissions) {
                 throw EditorDocumentWriteError.completedWithoutOwnership(reason)
             }
+            try validateSourceCaptures(entry.sourceCaptures, afterCompletion: true)
             guard pending[lease] != nil else {
                 throw EditorDocumentWriteError.completedWithoutOwnership(.invalidLease)
             }
@@ -894,20 +971,34 @@ final class EditorDocumentWriteOwner {
     private func prepareDispatch(lease: UUID, messageName: String) throws -> InvocationDispatchPermit {
         guard let entry = pending[lease] else { throw EditorDocumentWriteError.rejected(.invalidLease) }
         do {
+            try validateSourceCaptures(entry.sourceCaptures)
             if let reason = rejection(contextId: entry.contextId, requiresEditing: entry.requiresEditing,
                                       requiredPermissions: entry.requiredPermissions) {
                 throw EditorDocumentWriteError.rejected(reason)
             }
             guard entry.operation.isAccepting else { throw EditorDocumentWriteError.rejected(.invalidLease) }
             guard !entry.tracking, documentLifetimeSource != nil,
-                  entry.access.permits(.read([messageName])) else {
+                  entry.access.permits(.read([messageName])),
+                  entry.rpcRestriction?.contains(messageName) != false else {
                 throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
             }
             let ownerCapture = try EditorDocumentWriteCapture(dispatchLifetime)
             let captured = [ownerCapture] + lifetimeBindings.map { EditorDocumentWriteCapture(source: $0.source, token: $0.token) }
+                + entry.sourceCaptures
             return entry.operation.permit { try EditorDocumentWriteCapture.acquireAll(captured) }
         } catch {
             entry.operation.markFailed()
+            throw error
+        }
+    }
+
+    private func validateSourceCaptures(
+        _ captures: [EditorDocumentWriteCapture], afterCompletion: Bool = false
+    ) throws {
+        do {
+            for capture in captures { try capture.validate() }
+        } catch {
+            if afterCompletion { throw EditorDocumentWriteError.completedWithoutOwnership(.retired) }
             throw error
         }
     }

@@ -238,6 +238,33 @@ final class ObjectSettingsViewModel {
         }
     }
 
+    /// Capture the actual original moderator role on the button's synchronous
+    /// call stack. An older queued intent cannot recapture a restored role.
+    func prepareChannelPinAction() -> @MainActor @Sendable () async throws -> Void {
+        guard let preparedSession else { return { [self] in try await changePinState() } }
+        do {
+            let scheduled = try preparedSession.owner.scheduleDocumentAction(
+                contextId: objectId, requiredPermissions: [.applyUneditableActions]
+            )
+            let selected = try withCurrentSource(requiredPermissions: [.applyUneditableActions]) {
+                guard let session = preparedWidgetSessions[.channel],
+                      let participants = Container.shared.participantsStorage() as? ParticipantsStorage else {
+                    throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+                }
+                try validatePreparedWidget(session, kind: .channel)
+                let permission = try participants.currentChannelPinPermission(spaceId: spaceId)
+                return (session, permission)
+            }
+            return { [self] in
+                try await scheduled.run { @MainActor in
+                    try await changePreparedPinState(session: selected.0, permission: selected.1)
+                }
+            }
+        } catch {
+            return { throw error }
+        }
+    }
+
     private func performAction<Value: Sendable>(
         requiredPermissions: Set<EditorDocumentWritePermission>,
         operation: @MainActor @Sendable () async throws -> Value
@@ -251,7 +278,7 @@ final class ObjectSettingsViewModel {
         }
     }
 
-    /// Foreign channel/Space writers and not-yet-bound modal writers are not
+    /// Foreign Space writers and not-yet-bound modal writers are not
     /// authorized by a page Owner. Keep their original nil route and visible
     /// menu entries; the prepared Host must fail closed until the exact target
     /// and its original service graph are qualified separately.
@@ -586,6 +613,46 @@ final class ObjectSettingsViewModel {
         try await personalFavoritesService.toggle(objectId: details.id, personalWidgetsObject: personalWidgetsObject)
         toastData = ToastBarData(wasFavorited ? Loc.unfavorited : Loc.favorited)
         dismiss.toggle()
+    }
+
+    private func changePreparedPinState(
+        session: PreparedEditorPageSession, permission: OriginalChannelPinPermission
+    ) async throws {
+        try await performAction(requiredPermissions: [.applyUneditableActions]) { [self] in
+            let service = try ChannelPinsService.requireOriginal(channelPinsService)
+            try await session.owner.performChannelPinMutation(
+                contextId: session.data.objectId, permission: permission,
+                onDrained: { [session] in withExtendedLifetime(session) {} }
+            ) { @MainActor [self] in
+                let layout = try withCurrentSource(requiredPermissions: [.applyUneditableActions]) {
+                    try validatePreparedWidget(session, kind: .channel)
+                    guard let details = document.details,
+                          details.id.utf8.elementsEqual(objectId.utf8),
+                          details.isVisibleLayout(spaceType: spaceType), !details.isTemplate,
+                          details.resolvedLayoutValue != .participant,
+                          let layout = details.availableWidgetLayout.first else {
+                        throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+                    }
+                    return layout
+                }
+                let wasPinned = session.document.widgetBlockIdFor(targetObjectId: objectId).isNotNil
+                try await service.toggle(
+                    objectId: objectId, channelWidgetsObject: session.document,
+                    layout: layout, limit: layout.limits.first ?? 0
+                )
+                // This nested original read inherits the same frozen role, so
+                // source loss after the RPC cannot publish stale success.
+                try session.owner.performSynchronousOperation(
+                    contextId: session.data.objectId, spaceId: spaceId, requiresEditing: false
+                ) {
+                    try withCurrentSource {
+                        try validatePreparedWidget(session, kind: .channel)
+                        toastData = ToastBarData(wasPinned ? Loc.unpinned : Loc.pinned)
+                        dismiss.toggle()
+                    }
+                }
+            }
+        }
     }
 
     private func changePreparedFavoriteState() async throws {
