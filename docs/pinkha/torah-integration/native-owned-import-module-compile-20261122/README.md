@@ -1,0 +1,15 @@
+# Compile the owned importer in the original Heart module
+
+This gate performs one compile/link operation against the immutable original Heart `d98420b1113536afd08cde6de9a5816f6d27ffff`, using Go 1.26.5 on Darwin arm64 and the existing Xcode 27 route. It does not execute a test binary, initialize a native application, import an archive or enable a production route.
+
+The runner first verifies and applies the exact original r14 patch and all its afterimages, then installs the six-file compatible mapping diagnostic packet `13f63c2dff32ff8ca6b864748843822fcdd0d004`. It verifies the frozen owned-import packet `3d58f04f938f743b9c3b737cdfedcc10610cbffc`, tree `8659bdd358d0b198c6a57b68b90bf9d65dafe5d9`, and invokes its existing strict source installer. That installer validates all seven compiled preimages and eight absent targets before changing any source.
+
+The final source closure contains twenty distinct product files: the prior six plus fifteen owned upload/import files, with the processor's later afterimage replacing its earlier one. Every final file must appear with its exact hash in the actual original `go list -deps -test -json ./core/block/import` closure. The original module and native checksum inputs, full r14 afterimages and actual Tantivy archive/library remain pinned. There is no new iosrepacks bootstrap or qualification.
+
+The only compile selection remains `go test -c -p 2 -o <owned-output>/original-importer.test ./core/block/import`. A later `go version -m` reads build metadata without executing the binary. The runner retains actual raw compiler streams, output hash and size, all declared dependency file commitments, exact toolchain observations, source installation receipts and post-compile input rechecks. It preserves failures and the finite owned process-group drain behavior of the previously successful original-module gate. No process-global cancellation is introduced.
+
+The previous 50 mapping controls, seven request-compatibility controls and twenty-six owned upload/import controls remain historical results at their exact source closures. This gate does not replay any of them. The twenty-six controls used the actual extracted candidate source and original worker code with explicit component fixtures on Go 1.25.6 Windows. Compilation here is the separate check of the complete dependency constructor, original block/editor hooks, importer and original dependency ABI.
+
+Passing this gate would establish source/link compatibility only. Real account lifetime admission, exact account/Space/archive/attempt binding, actual native import cancellation and completion, complete execution-origin mapping, persisted semantic body comparison and ACK remain downstream gates. The private constructor still has no production caller.
+
+The workflow uses a separate exact activation branch and attempt-one guard. There is no path filter, so creation of the reviewed activation branch does not depend on a previously published neutral commit having a new path delta. This packet is prepared for review; publishing its neutral source does not activate it.

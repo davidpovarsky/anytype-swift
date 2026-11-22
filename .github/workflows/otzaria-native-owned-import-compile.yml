@@ -1,0 +1,66 @@
+name: Original Heart owned importer compile only
+
+on:
+  push:
+    branches:
+      - codex/otzaria-native-owned-import-compile-20261122
+
+permissions:
+  contents: read
+
+concurrency:
+  group: otzaria-native-owned-import-compile-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  original-module-compile:
+    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-native-owned-import-compile-20261122' && github.run_attempt == 1
+    runs-on: xcode-27
+    timeout-minutes: 120
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+    steps:
+      - name: Fix the absolute owned execution deadline
+        run: |
+          echo "OTZARIA_IMPORT_COMPILE_DEADLINE=$(( $(date +%s) + 6900 ))" >> "$GITHUB_ENV"
+      - name: Checkout the exact reviewed gate source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Select actual ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Install the exact original Go toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache: false
+      - name: Checkout the immutable original Heart base
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: build/Heart-Owned-Import-Compile
+          persist-credentials: false
+      - name: Compile the original importer without executing its test binary
+        run: |
+          python3 -I docs/pinkha/torah-integration/native-owned-import-module-compile-20261122/run_original_importer_compile.py \
+            --control-root "$GITHUB_WORKSPACE" \
+            --control-head "$GITHUB_SHA" \
+            --packet docs/pinkha/torah-integration/native-owned-import-module-compile-20261122 \
+            --execution-manifest-sha256 cd92164560819349233326af2d7c68a5aafd55e21820541a53749891970426fc \
+            --job-deadline-unix "$OTZARIA_IMPORT_COMPILE_DEADLINE" \
+            --heart build/Heart-Owned-Import-Compile \
+            --work build/Heart-Owned-Import-Compile-Owned-Work \
+            --evidence build/Heart-Owned-Import-Compile-Evidence
+      - name: Retain exact compilation evidence including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otzaria-Original-Owned-Importer-Compile-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/Heart-Owned-Import-Compile-Evidence
+          if-no-files-found: warn
+          compression-level: 6
+          retention-days: 14

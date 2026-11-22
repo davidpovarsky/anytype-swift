@@ -1,0 +1,64 @@
+--- proven-gate/otzaria-native-import-compile.yml
++++ owned-gate/otzaria-native-owned-import-compile.yml
+@@ -1,22 +1,20 @@
+-name: Original Heart importer compile only
++name: Original Heart owned importer compile only
+ 
+ on:
+   push:
+     branches:
+-      - codex/otzaria-native-import-compile-20261122
+-    paths:
+-      - .github/workflows/otzaria-native-import-compile.yml
+-      - docs/pinkha/torah-integration/native-import-module-compile-20261122/**
++      - codex/otzaria-native-owned-import-compile-20261122
+ 
+ permissions:
+   contents: read
+ 
+ concurrency:
+-  group: otzaria-native-import-compile-${{ github.ref }}
++  group: otzaria-native-owned-import-compile-${{ github.ref }}
+   cancel-in-progress: false
+ 
+ jobs:
+   original-module-compile:
++    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-native-owned-import-compile-20261122' && github.run_attempt == 1
+     runs-on: xcode-27
+     timeout-minutes: 120
+     env:
+@@ -44,25 +42,25 @@
+         with:
+           repository: anyproto/anytype-heart
+           ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+-          path: build/Heart-Import-Compile
++          path: build/Heart-Owned-Import-Compile
+           persist-credentials: false
+       - name: Compile the original importer without executing its test binary
+         run: |
+-          python3 -I docs/pinkha/torah-integration/native-import-module-compile-20261122/run_original_importer_compile.py \
++          python3 -I docs/pinkha/torah-integration/native-owned-import-module-compile-20261122/run_original_importer_compile.py \
+             --control-root "$GITHUB_WORKSPACE" \
+             --control-head "$GITHUB_SHA" \
+-            --packet docs/pinkha/torah-integration/native-import-module-compile-20261122 \
+-            --execution-manifest-sha256 7fbd330f47fe6651022e28d0d0e03ff139d13d19c0c68c6ef9d0fe9c0af68118 \
++            --packet docs/pinkha/torah-integration/native-owned-import-module-compile-20261122 \
++            --execution-manifest-sha256 cd92164560819349233326af2d7c68a5aafd55e21820541a53749891970426fc \
+             --job-deadline-unix "$OTZARIA_IMPORT_COMPILE_DEADLINE" \
+-            --heart build/Heart-Import-Compile \
+-            --work build/Heart-Import-Compile-Owned-Work \
+-            --evidence build/Heart-Import-Compile-Evidence
++            --heart build/Heart-Owned-Import-Compile \
++            --work build/Heart-Owned-Import-Compile-Owned-Work \
++            --evidence build/Heart-Owned-Import-Compile-Evidence
+       - name: Retain exact compilation evidence including failures
+         if: always()
+         uses: actions/upload-artifact@v4
+         with:
+-          name: Otzaria-Original-Importer-Compile-${{ github.run_id }}-${{ github.run_attempt }}
+-          path: build/Heart-Import-Compile-Evidence
++          name: Otzaria-Original-Owned-Importer-Compile-${{ github.run_id }}-${{ github.run_attempt }}
++          path: build/Heart-Owned-Import-Compile-Evidence
+           if-no-files-found: warn
+           compression-level: 6
+           retention-days: 14

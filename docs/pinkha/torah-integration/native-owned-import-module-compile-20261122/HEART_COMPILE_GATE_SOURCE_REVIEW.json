@@ -1,0 +1,62 @@
+{
+  "schema": "otzaria.heart-owned-import-compile-source-review/1",
+  "status": "SOURCE_CLEAR_COMPILE_UNEXECUTED",
+  "reviewed_utc": "2026-11-22T18:12:36.754283+00:00",
+  "inputs": {
+    "run_original_importer_compile.py": {
+      "bytes": 29051,
+      "sha256": "f256702e910d0813247627b4ff48533fd39691add022b040cd1e29dd3df795b2",
+      "git_blob": "11acd1c4a643c4463f7eccb8a890d4253a7726cf"
+    },
+    "EXECUTION_INPUTS.json": {
+      "bytes": 17942,
+      "sha256": "cd92164560819349233326af2d7c68a5aafd55e21820541a53749891970426fc",
+      "git_blob": "781b22743a4ab3e44732e7065e523b1ef22d285b"
+    },
+    "otzaria-native-owned-import-compile.yml": {
+      "bytes": 2714,
+      "sha256": "a859413692fd3ee4b9c88afc542f227cc1468205e54f1df0b9300b08a7907d1b",
+      "git_blob": "14716f4acd0e4ff2da675cb343ed857226da21f9"
+    }
+  },
+  "checked_inputs": {
+    "gate_inputs": 10,
+    "origin_inputs": 8,
+    "owned_inputs": 17
+  },
+  "preserved_helper_declarations": [
+    "digest",
+    "write_json",
+    "safe_path",
+    "check_file",
+    "git",
+    "Commands",
+    "read_json_stream",
+    "dependency_inputs",
+    "native_library_inputs"
+  ],
+  "preserved_helper_count": 9,
+  "inspected": [
+    "full runner and finite Commands/drain/evidence path",
+    "strict fifteen-file installer and all preimages before first write",
+    "exact origin and owned packet tree bindings",
+    "six original plus fifteen owned sources form exactly twenty final targets",
+    "post-install gofmt equality and actual go list closure coverage for all twenty",
+    "single go test -c ./core/block/import followed only by go version -m",
+    "original r14 and Tantivy checksum closure, complete declared inputs rechecked after compilation",
+    "workflow attempt1/branch binding and always-upload failure evidence"
+  ],
+  "finding": "No concrete source blocker found for this compile-only gate. Every existing top-level helper/class body is byte-identical to the successful prior gate. No test binary execution or native import occurs in this runner.",
+  "scope_limits": [
+    "Actual Darwin compiler/link outcome remains open.",
+    "Compilation cannot prove native cancellation/drain, original account admission, semantic body/map authority or ACK.",
+    "The historical 50, 7 and 26 unit outcomes are retained, not replayed by this gate."
+  ],
+  "mutations_or_executions": {
+    "source_edits": false,
+    "installer_executed": false,
+    "native_compilation": false,
+    "tests": false,
+    "activation": false
+  }
+}
