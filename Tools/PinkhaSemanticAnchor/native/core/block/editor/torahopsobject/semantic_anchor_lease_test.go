@@ -137,6 +137,99 @@ func TestPinkhaSemanticAnchorLeaseRetainsNativeLocksAndOneCallStoredWitness(t *t
 	release()
 	assertSemanticLeaseUnlocked(t, space)
 	require.ErrorIs(t, validate(), semanticanchor.ErrUnavailable)
+	// The real storage above deliberately returns an unhydrated TreeId. These
+	// controlled faults keep that compatibility fix from admitting a different
+	// native storage handle, conflicting metadata or changed signed bytes.
+	assertSemanticWitnessStorageBindings(t)
+}
+
+type semanticWitnessStorage struct {
+	objecttree.Storage
+	fault string
+}
+
+func (storage *semanticWitnessStorage) Id() string {
+	if storage.fault == "foreign-storage" {
+		return "another-native-tree"
+	}
+	return storage.Storage.Id()
+}
+
+func (storage *semanticWitnessStorage) Get(ctx context.Context, id string) (objecttree.StorageChange, error) {
+	stored, err := storage.Storage.Get(ctx, id)
+	if err != nil {
+		return stored, err
+	}
+	stored.RawChange = slices.Clone(stored.RawChange)
+	switch storage.fault {
+	case "foreign-record-tree":
+		stored.TreeId = "another-native-tree"
+	case "foreign-change-id":
+		stored.Id = "another-native-change"
+	case "changed-signed-bytes":
+		stored.RawChange[len(stored.RawChange)-1] ^= 1
+	}
+	return stored, nil
+}
+
+func (storage *semanticWitnessStorage) Heads(ctx context.Context) ([]string, error) {
+	if storage.fault == "foreign-storage-heads" {
+		return []string{"another-native-change"}, nil
+	}
+	return storage.Storage.Heads(ctx)
+}
+
+type semanticWitnessTree struct {
+	objecttree.ObjectTree
+	storage objecttree.Storage
+}
+
+func (tree *semanticWitnessTree) Storage() objecttree.Storage { return tree.storage }
+
+type semanticWitnessBlock struct {
+	*semanticLeaseBlock
+	witnessTree objecttree.ObjectTree
+}
+
+func (block *semanticWitnessBlock) Tree() objecttree.ObjectTree { return block.witnessTree }
+
+type semanticWitnessSpace struct {
+	*semanticLeaseSpace
+	witnessBlock *semanticWitnessBlock
+}
+
+func (space *semanticWitnessSpace) GetObject(ctx context.Context, id string) (smartblock.SmartBlock, error) {
+	if _, err := space.semanticLeaseSpace.GetObject(ctx, id); err != nil {
+		return nil, err
+	}
+	return space.witnessBlock, nil
+}
+
+func (space *semanticWitnessSpace) PinkhaTorahTargetIsCurrent(block smartblock.SmartBlock) bool {
+	return space.current && block == space.witnessBlock
+}
+
+func assertSemanticWitnessStorageBindings(t *testing.T) {
+	t.Helper()
+	for _, fault := range []string{"foreign-storage", "foreign-record-tree", "foreign-change-id", "changed-signed-bytes", "foreign-storage-heads"} {
+		f, original, request := newSemanticLeaseFixture(t)
+		storage := &semanticWitnessStorage{Storage: original.target.tree.Storage(), fault: fault}
+		tree := &semanticWitnessTree{ObjectTree: original.target.tree, storage: storage}
+		block := &semanticWitnessBlock{semanticLeaseBlock: original.target, witnessTree: tree}
+		space := &semanticWitnessSpace{semanticLeaseSpace: original, witnessBlock: block}
+		ctx, _, release, err := AcquireNativeSemanticAnchorLease(context.Background(), space, f.Keys.SignKey.GetPublic(), request)
+		require.NoError(t, err, fault)
+		defer release()
+		_, err = BorrowNativeSemanticAnchorLease(ctx, tree, request)
+		require.NoError(t, err, fault)
+		before := slices.Clone(tree.Heads())
+		changeID := semanticStoredChange(t, f, original)
+		actual, err := VerifySemanticAnchorNativeChange(ctx, tree, before[0], changeID, before)
+		require.ErrorIs(t, err, semanticanchor.ErrUncertain, fault)
+		require.Empty(t, actual, fault)
+		release()
+		assertSemanticLeaseUnlocked(t, original)
+	}
 }
 
 func TestPinkhaSemanticAnchorLeaseRejectsStaleDeletedOrphanAndDuplicateTargets(t *testing.T) {

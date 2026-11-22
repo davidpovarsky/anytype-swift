@@ -1,0 +1,39 @@
+{
+  "scope": "original raw Go execution review, no reruns",
+  "runID": "45050652738",
+  "commit": "4e76dba6f6ff714e3d25e382013495a11ac9267a",
+  "status": "ORIGINAL_FAIL_PRESERVED",
+  "threePackagesCompiled": true,
+  "passedTopLevel": 7,
+  "passedTerminalCases": 25,
+  "failedTopLevel": 1,
+  "coreMethod": "NOT_RUN",
+  "logs": [
+    {
+      "log": "execute-stext.log",
+      "sha256": "a8a741c05f5406f588f40befe63c2b969f3fe0e8dcad57d06fd6baf3f778ddac",
+      "top": {
+        "TestPinkhaSemanticAnchorTextCASRefusesPendingAndAllMarkConflicts": "pass",
+        "TestPinkhaSemanticAnchorTextCASRequiresPostApplyStateAndNativeWitness": "pass",
+        "TestPinkhaSemanticAnchorTextCASPreservesMarksAndNormalApplyFlags": "pass",
+        "TestPinkhaSemanticAnchorTextPublicEntryRequiresNativeLease": "pass"
+      },
+      "passedLeaves": 14,
+      "failedLeaves": 0,
+      "skippedLeaves": 0
+    },
+    {
+      "log": "execute-torahopsobject.log",
+      "sha256": "1abc432df0363dd836fbc79e6f189b78a32a30a0b736464e896faa886cb013c0",
+      "top": {
+        "TestPinkhaSemanticAnchorLeaseRetainsNativeLocksAndOneCallStoredWitness": "fail",
+        "TestPinkhaSemanticAnchorLeaseRejectsStaleDeletedOrphanAndDuplicateTargets": "pass",
+        "TestPinkhaSemanticAnchorLeaseRechecksSignedWriteAuthorityBeforeAndAfterCommit": "pass",
+        "TestPinkhaSemanticAnchorLeaseRechecksHookGraphAndCancellation": "pass"
+      },
+      "passedLeaves": 11,
+      "failedLeaves": 1,
+      "skippedLeaves": 0
+    }
+  ]
+}

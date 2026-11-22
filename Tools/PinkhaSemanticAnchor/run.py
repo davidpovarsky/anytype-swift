@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compile additive CAS candidate files and execute only nine new native controls."""
+"""Compile additive CAS candidates; retain qualified scopes for a narrow continuation."""
 from __future__ import annotations
 
 import argparse
@@ -14,6 +14,7 @@ import subprocess
 import sys
 
 import contract
+import resume_native
 
 sys.path.insert(0, str(contract.ROOT / "Tools/PinkhaNativeDerived"))
 sys.path.insert(0, str(contract.ROOT / "Tools/TorahNativeOperations"))
@@ -106,8 +107,15 @@ def execute(args, receipt, run):
     # Deliberately never advertise the original production139 runtime marker.
     ldflags = "-extldflags=-static -X github.com/anyproto/anytype-heart/util/vcs.GitCommit=" + contract.HEART + \
               " -X github.com/anyproto/anytype-heart/util/vcs.GitSummary=" + version
-    binaries, results = {}, {}
-    for package, cases in contract.CASES.items():
+    retained = None
+    selection = contract.CASES
+    binaries, results, current_results = {}, {}, {}
+    if args.component_run is not None:
+        retained = resume_native.retain(contract.load(args.component_run), native139, additions, evidence)
+        selection = resume_native.SELECTED_CASES
+        results.update(retained["results"])
+        receipt["retained_native_components"] = retained
+    for package, cases in selection.items():
         label = package.rsplit("/", 1)[-1]
         binary = work / (label + ".test")
         run(["go", "test", "-c", "-p", "1", "-tags", processes.TAGS, "-ldflags", ldflags,
@@ -118,19 +126,20 @@ def execute(args, receipt, run):
         binaries[package] = dict(path=binary.name, sha256=contract.digest(binary), selected_methods=sorted(cases))
         contract.require(verify_candidate(heart, qualified, additions) == candidate_before
                          and snapshot(control) == source_before, "Source changed while compiling native controls")
-    # Finish every required compilation first. A later compile failure must
-    # not create passing execution that a continuation would repeat blindly.
+    # Compile every selected current binary first. Retained packages are not
+    # executed or rebuilt only to recreate an already qualified result.
     receipt["built_control_binaries"] = binaries
     receipt["qualified_partial_results"] = results
-    for package, cases in contract.CASES.items():
+    for package, cases in selection.items():
         label = package.rsplit("/", 1)[-1]
         binary = work / binaries[package]["path"]
         selector = "^(" + "|".join(sorted(cases)) + ")$"
         run(["go", "tool", "test2json", "-t", "-p", "github.com/anyproto/anytype-heart/" + package,
              str(binary), "-test.v=test2json", "-test.run=" + selector, "-test.timeout=180s", "-test.count=1"],
              "execute-" + label, heart, env, 240)
-        results[package] = contract.outcomes(evidence / ("execute-" + label + ".log"),
+        current_results[package] = contract.outcomes(evidence / ("execute-" + label + ".log"),
             "github.com/anyproto/anytype-heart/" + package, cases)
+        results[package] = resume_native.combine(results[package], current_results[package]) if package in results else current_results[package]
         contract.require(contract.digest(binary) == binaries[package]["sha256"], "Executed native binary changed")
         contract.require(verify_candidate(heart, qualified, additions) == candidate_before
                          and snapshot(control) == source_before, "Source changed during selected native controls")
@@ -149,7 +158,13 @@ def execute(args, receipt, run):
         native_source_run=contract.NATIVE_RUN, original_native139_source_sha256=native139,
         candidate_source_count=148, candidate_additions_count=9, candidate_additions_manifest_sha256=candidate_sha,
         candidate_source_sha256=after, candidate_runtime_version=version, binaries=binaries, results=results,
-        retained_pure_contract_methods=5, actual_new_top_level_methods=9, actual_new_terminal_cases=27,
+        retained_pure_contract_methods=5,
+        retained_native_top_level_methods=7 if retained else 0, retained_native_terminal_cases=25 if retained else 0,
+        original_native_component_run=resume_native.ORIGINAL_RUN if retained else None,
+        actual_new_top_level_methods=sum(value["top_level"] for value in current_results.values()),
+        actual_new_terminal_cases=sum(value["terminal"] for value in current_results.values()),
+        qualified_total_top_level_methods=9, qualified_total_terminal_cases=27,
+        current_execution_results=current_results, retained_methods_executed_again=0,
         actual_fail=0, actual_skip=0, native_modules=qualified["generation"]["module_sha256"], genproto=genproto,
         protobuf_generation_executed=0, shipping_frameworks_built=0,
         claim_boundary="Text/state component and real signed-storage/ACL lease controls; actual production Page Apply, wire, account lifecycle and mounted Apple acceptance remain separate.")
@@ -160,9 +175,13 @@ def main():
     for name in ("control", "heart", "work", "evidence", "original-run"):
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--expected-app-sha", required=True)
+    parser.add_argument("--component-run", type=Path,
+                        help="Exact original failed run metadata; retains seven passing methods and executes only the missing two")
     args = parser.parse_args()
     for name in ("control", "heart", "work", "evidence", "original_run"):
         setattr(args, name, getattr(args, name).resolve())
+    if args.component_run is not None:
+        args.component_run = args.component_run.resolve()
     args.evidence.mkdir(parents=True, exist_ok=True)
     path = args.evidence / "receipt.json"
     contract.require(not path.exists(), "Fresh native CAS receipt required")

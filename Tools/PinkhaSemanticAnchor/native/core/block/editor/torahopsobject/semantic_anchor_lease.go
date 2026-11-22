@@ -224,16 +224,23 @@ func VerifySemanticAnchorNativeChange(ctx context.Context, tree objecttree.Objec
 	if err := lease.validate(ctx); err != nil {
 		return "", err
 	}
+	storage := tree.Storage()
 	if !semanticanchor.ValidIdentity(changeID) || changeID == beforeChangeID || len(beforeHeads) == 0 ||
-		slices.Contains(beforeHeads, changeID) || !slices.Equal(tree.Heads(), []string{changeID}) || tree.Storage() == nil {
+		slices.Contains(beforeHeads, changeID) || !slices.Equal(tree.Heads(), []string{changeID}) ||
+		storage == nil || storage.Id() != tree.Id() {
 		return "", semanticanchor.ErrUncertain
 	}
-	stored, err := tree.Storage().Get(ctx, changeID)
+	stored, err := storage.Get(ctx, changeID)
 	if err != nil {
 		return "", errors.Join(semanticanchor.ErrUncertain, err)
 	}
-	storedHeads, err := tree.Storage().Heads(ctx)
-	if err != nil || !slices.Equal(storedHeads, []string{changeID}) || stored.Id != changeID || stored.TreeId != tree.Id() || len(stored.RawChange) == 0 {
+	storedHeads, err := storage.Heads(ctx)
+	// any-sync v0.13.8 stores the tree ID but does not hydrate TreeId in
+	// storage.changeFromDoc/Get. Bind the actual storage handle above instead;
+	// a populated conflicting field remains invalid. Signed parents, current
+	// storage heads and the immutable change bytes are still checked below.
+	if err != nil || !slices.Equal(storedHeads, []string{changeID}) || stored.Id != changeID ||
+		(stored.TreeId != "" && stored.TreeId != tree.Id()) || len(stored.RawChange) == 0 {
 		return "", errors.Join(semanticanchor.ErrUncertain, err)
 	}
 	change, err := objecttree.NewChangeBuilder(crypto.NewKeyStorage(), tree.Header()).Unmarshall(stored.RawTreeChangeWithId(), true)

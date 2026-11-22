@@ -39,6 +39,7 @@ jobs:
         run: |
           mkdir -p evidence/toolchain
           gh api repos/davidpovarsky/anytype-swift/actions/runs/45026227924 > evidence/original-native-run.json
+          gh api repos/davidpovarsky/anytype-swift/actions/runs/45050652738 > evidence/original-component-run.json
           python3 -B control/Tools/PinkhaSemanticAnchor/retain_controller.py \
             --output evidence/retained-controller-controls.json
       - name: Restore compatible compiled musl dependencies
@@ -51,7 +52,7 @@ jobs:
             t2-native-clients-alpine-111d7915-go1.26.5-
             t2-account-rpc-alpine-111d7915-go1.26.5-
             t2-account-alpine-111d7915-go1.26.5-
-      - name: Compile all candidate packages then execute only nine new controls
+      - name: Retain seven native scopes and execute only repaired lease and missing core controls
         run: |
           mkdir -p .t2-cache native-work
           docker pull --platform linux/amd64 "$T2_GO_IMAGE"
@@ -77,6 +78,7 @@ jobs:
               exec python3 -B /workspace/control/Tools/PinkhaSemanticAnchor/run.py \
                 --control /workspace/control --heart /workspace/heart --work /workspace/work/build \
                 --evidence /workspace/evidence --original-run /workspace/evidence/original-native-run.json \
+                --component-run /workspace/evidence/original-component-run.json \
                 --expected-app-sha "$EXPECTED_APP_SHA"
             '
       - name: Preserve truthful native execution status
