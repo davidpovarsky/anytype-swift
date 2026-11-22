@@ -1,0 +1,47 @@
+{
+  "status": "SOURCE_PREPARATION_ONLY_NO_INSTALLER_OR_COMPILER_EXECUTION",
+  "unchanged_full_helper_or_class_bodies": [
+    "digest",
+    "write_json",
+    "safe_path",
+    "check_file",
+    "git",
+    "Commands",
+    "read_json_stream",
+    "native_library_inputs"
+  ],
+  "dependency_inputs_change": "Only selected_original_packages changes from core/block/import to core/application; inventory, hashes and actual source coverage remain identical.",
+  "command_lifecycle_helper_unchanged": true,
+  "prior_gate_runner_sha256": "bc403e79507d5b70b275aee9ca898be3f7cbdd32703697e240bc430f42341506",
+  "runner": {
+    "path": "run_original_application_compile.py",
+    "bytes": 33111,
+    "sha256": "017778c096eca985774bd1a4f1e1e117ac3dee6ac08082c2a9793273826aa196",
+    "git_blob": "0498f13879a15dacde8b4c7575b64d6f128b9402"
+  },
+  "manifest": {
+    "path": "EXECUTION_INPUTS.json",
+    "bytes": 33548,
+    "sha256": "ba577d1dd71e1df50e378338a4cff26865a46ac5d9b6b538e9395ac3c64d5eda",
+    "git_blob": "89e00dc425bbdd141a8e60dd235b8db7505c6f7a"
+  },
+  "counts": {
+    "gate_inputs": 12,
+    "origin_inputs": 8,
+    "owned_inputs": 17,
+    "lifetime_inputs": 11,
+    "preserved_native_source_files": 20,
+    "new_lifetime_source_files": 8,
+    "final_native_source_files": 28
+  },
+  "fixture_files_installed": 0,
+  "original_r14_lifetime_overlap": [],
+  "unchanged_budgets": {
+    "workflow_seconds": 6900,
+    "reserved_cleanup_seconds": 180,
+    "compile_seconds": 3600,
+    "dependency_resolution_seconds": 1200
+  },
+  "runtime_execution": false,
+  "test_replay": false
+}

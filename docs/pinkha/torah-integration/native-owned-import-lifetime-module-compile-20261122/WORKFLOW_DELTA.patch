@@ -1,0 +1,74 @@
+--- previous/otzaria-native-owned-import-compile.yml
++++ next/otzaria-native-owned-import-lifetime-compile.yml
+@@ -1,20 +1,20 @@
+-name: Original Heart owned importer compile only
++name: Original Heart owned import application lifetime compile only
+ 
+ on:
+   push:
+     branches:
+-      - codex/otzaria-native-owned-import-compile-20261122
++      - codex/otzaria-native-owned-import-lifetime-compile-20261122
+ 
+ permissions:
+   contents: read
+ 
+ concurrency:
+-  group: otzaria-native-owned-import-compile-${{ github.ref }}
++  group: otzaria-native-owned-import-lifetime-compile-${{ github.ref }}
+   cancel-in-progress: false
+ 
+ jobs:
+-  original-module-compile:
+-    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-native-owned-import-compile-20261122' && github.run_attempt == 1
++  original-application-module-compile:
++    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-native-owned-import-lifetime-compile-20261122' && github.run_attempt == 1
+     runs-on: xcode-27
+     timeout-minutes: 120
+     env:
+@@ -22,7 +22,7 @@
+     steps:
+       - name: Fix the absolute owned execution deadline
+         run: |
+-          echo "OTZARIA_IMPORT_COMPILE_DEADLINE=$(( $(date +%s) + 6900 ))" >> "$GITHUB_ENV"
++          echo "OTZARIA_IMPORT_LIFETIME_COMPILE_DEADLINE=$(( $(date +%s) + 6900 ))" >> "$GITHUB_ENV"
+       - name: Checkout the exact reviewed gate source
+         uses: actions/checkout@v4
+         with:
+@@ -42,25 +42,25 @@
+         with:
+           repository: anyproto/anytype-heart
+           ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+-          path: build/Heart-Owned-Import-Compile
++          path: build/Heart-Owned-Import-Lifetime-Compile
+           persist-credentials: false
+-      - name: Compile the original importer without executing its test binary
++      - name: Compile the original application without executing its test binary
+         run: |
+-          python3 -I docs/pinkha/torah-integration/native-owned-import-module-compile-20261122/run_original_importer_compile.py \
++          python3 -I docs/pinkha/torah-integration/native-owned-import-lifetime-module-compile-20261122/run_original_application_compile.py \
+             --control-root "$GITHUB_WORKSPACE" \
+             --control-head "$GITHUB_SHA" \
+-            --packet docs/pinkha/torah-integration/native-owned-import-module-compile-20261122 \
+-            --execution-manifest-sha256 376af3e7d1dfbcc4729fbb7dc57f67c97e8a1c376e28021577e9c3e1fba1f4cf \
+-            --job-deadline-unix "$OTZARIA_IMPORT_COMPILE_DEADLINE" \
+-            --heart build/Heart-Owned-Import-Compile \
+-            --work build/Heart-Owned-Import-Compile-Owned-Work \
+-            --evidence build/Heart-Owned-Import-Compile-Evidence
++            --packet docs/pinkha/torah-integration/native-owned-import-lifetime-module-compile-20261122 \
++            --execution-manifest-sha256 ba577d1dd71e1df50e378338a4cff26865a46ac5d9b6b538e9395ac3c64d5eda \
++            --job-deadline-unix "$OTZARIA_IMPORT_LIFETIME_COMPILE_DEADLINE" \
++            --heart build/Heart-Owned-Import-Lifetime-Compile \
++            --work build/Heart-Owned-Import-Lifetime-Compile-Owned-Work \
++            --evidence build/Heart-Owned-Import-Lifetime-Compile-Evidence
+       - name: Retain exact compilation evidence including failures
+         if: always()
+         uses: actions/upload-artifact@v4
+         with:
+-          name: Otzaria-Original-Owned-Importer-Compile-${{ github.run_id }}-${{ github.run_attempt }}
+-          path: build/Heart-Owned-Import-Compile-Evidence
++          name: Otzaria-Original-Owned-Import-Lifetime-Compile-${{ github.run_id }}-${{ github.run_attempt }}
++          path: build/Heart-Owned-Import-Lifetime-Compile-Evidence
+           if-no-files-found: warn
+           compression-level: 6
+           retention-days: 14

@@ -1,0 +1,96 @@
+{
+  "status": "SOURCE_ONLY_EXECUTION_PLAN",
+  "runner_sha256": "017778c096eca985774bd1a4f1e1e117ac3dee6ac08082c2a9793273826aa196",
+  "expected_success_command_count": 14,
+  "expected_success_stream_count": 28,
+  "compile_commands": 1,
+  "test_or_import_execution": false,
+  "source_input_readbacks": 48,
+  "final_product_sources_in_go_declared_closure": 28,
+  "commands": [
+    {
+      "line": 412,
+      "label": "go-version",
+      "argv_expression": "[go_binary, 'version']",
+      "requested_seconds": 30
+    },
+    {
+      "line": 416,
+      "label": "xcode-version",
+      "argv_expression": "['xcodebuild', '-version']",
+      "requested_seconds": 30
+    },
+    {
+      "line": 419,
+      "label": "macos-sdk-version",
+      "argv_expression": "['xcrun', '--sdk', 'macosx', '--show-sdk-version']",
+      "requested_seconds": 30
+    },
+    {
+      "line": 420,
+      "label": "clang-version",
+      "argv_expression": "['xcrun', '--sdk', 'macosx', 'clang', '--version']",
+      "requested_seconds": 30
+    },
+    {
+      "line": 427,
+      "label": "r14-apply-check",
+      "argv_expression": "['git', 'apply', '--check', str(patch)]",
+      "requested_seconds": 30
+    },
+    {
+      "line": 428,
+      "label": "r14-apply",
+      "argv_expression": "['git', 'apply', str(patch)]",
+      "requested_seconds": 30
+    },
+    {
+      "line": 432,
+      "label": "install-frozen-origin-overlay",
+      "argv_expression": "[sys.executable, '-I', str(origin / 'install_native_sources.py'), '--source-root', str(heart), '--receipt', str(evidence / 'SOURCE_OVERLAY.json')]",
+      "requested_seconds": 30
+    },
+    {
+      "line": 439,
+      "label": "install-frozen-owned-overlay",
+      "argv_expression": "[sys.executable, '-I', str(owned / 'install_owned_sources.py'), '--source-root', str(heart), '--receipt', str(evidence / 'OWNED_SOURCE_OVERLAY.json')]",
+      "requested_seconds": 30
+    },
+    {
+      "line": 446,
+      "label": "install-frozen-lifetime-overlay",
+      "argv_expression": "[sys.executable, '-I', str(lifetime / 'install_lifetime_sources.py'), '--root', str(heart), '--packet', str(lifetime), '--output', str(evidence / 'LIFETIME_SOURCE_OVERLAY.json')]",
+      "requested_seconds": 30
+    },
+    {
+      "line": 466,
+      "label": "source-format-equality",
+      "argv_expression": "[str(gofmt), '-l', *[str(heart / e['path']) for e in required_bindings]]",
+      "requested_seconds": 30
+    },
+    {
+      "line": 475,
+      "label": "original-tantivy-setup",
+      "argv_expression": "[sys.executable, '-I', str(child), '--heart', str(heart), '--helper', str(helper), '--helper-sha256', manifest['original_setup_helper']['sha256'], '--receipt', str(evidence / 'TANTIVY_SETUP.json')]",
+      "requested_seconds": 600
+    },
+    {
+      "line": 488,
+      "label": "declared-dependency-inputs",
+      "argv_expression": "[go_binary, 'list', '-deps', '-test', '-json', './core/application']",
+      "requested_seconds": 1200
+    },
+    {
+      "line": 499,
+      "label": "compile-original-application",
+      "argv_expression": "result['compile_command']",
+      "requested_seconds": 3600
+    },
+    {
+      "line": 507,
+      "label": "compiled-binary-buildinfo",
+      "argv_expression": "[go_binary, 'version', '-m', str(binary)]",
+      "requested_seconds": 30
+    }
+  ]
+}
