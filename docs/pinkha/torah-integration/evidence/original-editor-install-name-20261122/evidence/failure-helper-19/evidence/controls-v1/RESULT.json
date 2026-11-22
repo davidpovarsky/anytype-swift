@@ -1,0 +1,62 @@
+{
+  "status": "PASS_NEW_DIAGNOSTIC_HELPER_BOUNDARIES",
+  "scope": "Actual Python helper with explicit local filesystem, help text and terminal-command fixtures; no Apple tools, actual crashes, simulator or native runtime.",
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+    "/workspace/scratch/22d6326e1023/sdk_consumer_failure_capture/controls/failure_capture_controls.py"
+  ],
+  "returncode": 0,
+  "seconds": 0.315626859664917,
+  "expected_controls": 19,
+  "control_events": [
+    "test_actual_command_tampering_refused (__main__.FailureCaptureControls.test_actual_command_tampering_refused) ... ok",
+    "test_capture_request_tampering_refused (__main__.FailureCaptureControls.test_capture_request_tampering_refused) ... ok",
+    "test_changed_original_launch_arguments_refused (__main__.FailureCaptureControls.test_changed_original_launch_arguments_refused) ... ok",
+    "test_changed_simctl_stream_is_not_claimed_as_original (__main__.FailureCaptureControls.test_changed_simctl_stream_is_not_claimed_as_original) ... ok",
+    "test_directory_scan_is_nonrecursive_and_bounded (__main__.FailureCaptureControls.test_directory_scan_is_nonrecursive_and_bounded) ... ok",
+    "test_expired_attempt_refused (__main__.FailureCaptureControls.test_expired_attempt_refused) ... ok",
+    "test_foreign_bundle_and_device_reports_are_not_retained (__main__.FailureCaptureControls.test_foreign_bundle_and_device_reports_are_not_retained) ... ok",
+    "test_foreign_device_container_refused (__main__.FailureCaptureControls.test_foreign_device_container_refused) ... ok",
+    "test_foreign_producer_refused (__main__.FailureCaptureControls.test_foreign_producer_refused) ... ok",
+    "test_installed_bundle_identity_refused (__main__.FailureCaptureControls.test_installed_bundle_identity_refused) ... ok",
+    "test_malformed_and_oversized_reports_are_not_retained (__main__.FailureCaptureControls.test_malformed_and_oversized_reports_are_not_retained) ... ok",
+    "test_matching_report_count_is_bounded (__main__.FailureCaptureControls.test_matching_report_count_is_bounded) ... ok",
+    "test_missing_actual_help_option_refuses_before_output_creation (__main__.FailureCaptureControls.test_missing_actual_help_option_refuses_before_output_creation) ... ok",
+    "test_only_native_identity_bound_ips_and_text_reports_copied (__main__.FailureCaptureControls.test_only_native_identity_bound_ips_and_text_reports_copied) ... ok",
+    "test_original_launch_error_and_raw_outputs_retained_without_authority (__main__.FailureCaptureControls.test_original_launch_error_and_raw_outputs_retained_without_authority) ... ok",
+    "test_prepare_changes_only_two_output_options (__main__.FailureCaptureControls.test_prepare_changes_only_two_output_options) ... ok",
+    "test_stale_and_future_report_times_are_not_retained (__main__.FailureCaptureControls.test_stale_and_future_report_times_are_not_retained) ... ok",
+    "test_symlink_reports_and_outputs_are_not_read_as_owned (__main__.FailureCaptureControls.test_symlink_reports_and_outputs_are_not_read_as_owned) ... ok",
+    "test_wrong_owned_device_name_refused (__main__.FailureCaptureControls.test_wrong_owned_device_name_refused) ... ok"
+  ],
+  "passed": 19,
+  "old_controls_replayed": 0,
+  "native_runs": 0,
+  "source_after": [
+    {
+      "path": "sdk_consumer_failure_capture/candidate/Tools/OriginalEditor/consumer_failure_capture.py",
+      "bytes": 16289,
+      "sha256": "9576f7c82abe8aa3f12570d2840ffe1dd93ad1824e2558e4cf164920a96e098a"
+    },
+    {
+      "path": "sdk_consumer_failure_capture/controls/failure_capture_controls.py",
+      "bytes": 12805,
+      "sha256": "0b486a464b085ed842097c204eb4ed47dc53c5dc071bc9a6b3e5dc3635b3b0fc"
+    },
+    {
+      "path": "sdk_consumer_failure_capture/ENTRY_CONTRACT.md",
+      "bytes": 3162,
+      "sha256": "9a8de0c29d0391f869b79f51bfb47cf5deee3baef5284edb1aabd20386aad0e0"
+    }
+  ],
+  "streams": {
+    "controls.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "controls.stderr": {
+      "bytes": 2662,
+      "sha256": "c656fa5613dbbc6e754b629f586edc17f1ed78bdac279f3f66650c4401923eb7"
+    }
+  }
+}

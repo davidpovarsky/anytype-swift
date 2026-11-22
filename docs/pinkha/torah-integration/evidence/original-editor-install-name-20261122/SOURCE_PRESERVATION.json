@@ -1,0 +1,111 @@
+{
+  "install_budget": {
+    "after_seconds": 300,
+    "attempts": 1,
+    "before_seconds": 60,
+    "bootstatus_seconds": 180,
+    "justification": {
+      "actual_successful_install_seconds": 40.694,
+      "bound": "Reuses the already reviewed single-install 300-second budget; no automatic retries or success inference",
+      "consumer_bytes": 500498107,
+      "consumer_files": 642,
+      "measured_consumer_run": 45054111060,
+      "original_install": "60-second timeout; runtime unqualified",
+      "original_run": 45041382512
+    }
+  },
+  "new_control_scope": {
+    "diagnostic_recorder_1": "New failing-recorder AST path executed once on current driver; earlier four not replayed",
+    "failure_helper_19": "Exact helper 9576f7c82abe8aa3f12570d2840ffe1dd93ad1824e2558e4cf164920a96e098a unchanged",
+    "failure_wrapper_4": {
+      "exact_try_ast_sha256": "8a9ffc8b2fd6b2f02964ef61d9a60b410e2300d625f6cd526b93097198c1e8dc",
+      "executed_driver_retained": true,
+      "executed_driver_sha256": "474f312c77edf8dda0fe3c31563e3de252ff99503eec62892c47ed22e40dc4e2",
+      "guard_inverse_ast_equal": true,
+      "later_wrapper_delta": "Only guard the diagnostic-error recorder; exact inverse reproduces the four-control AST",
+      "post_control_changes_outside_wrapper_only": false
+    },
+    "install_name_28": {
+      "final_three-boundary_fixture_check": "retention-adapter-v1: complete_new_fixture_inverse_preserves_all_ten_old_test_bodies",
+      "first_two-boundary_fixture_check_retained": true,
+      "historical_control_source": "evidence/controls-v1/EXECUTED_CONTROLS.py",
+      "reader_project_profile_unchanged": true
+    },
+    "retained_admission_11": {
+      "executed_input_rebind": {
+        "admission_code_unchanged_since_eleven_controls": true,
+        "after": {
+          "bytes": 5727,
+          "git_blob": "f27f23b4e2570b4a6895028d6dcbd05bf3252b3a",
+          "sha256": "780ec33ebaca25d48f30e769ab922ff523e1b7fa6fd4fde40899cbfca5658254"
+        },
+        "all_other_plan_fields_identical": true,
+        "before": {
+          "bytes": 5727,
+          "git_blob": "ca812018b9ec93fc3c389fd9e15843e3ea25660f",
+          "sha256": "b759e665c8da1e8ec8e8b1e62630a40e800114a24fae925a947cb8d27efae022"
+        },
+        "controls_replayed": 0,
+        "current_plan_bytes": 9627,
+        "current_plan_sha256": "8c234266fb028f6bc54c9371f895ddc7cf392e9ddc00cab2d70ab608212c7256",
+        "executed_plan_bytes": 9627,
+        "executed_plan_path": "evidence/retained-admission-v1/EXECUTED_INPUTS.json",
+        "executed_plan_sha256": "6e68a71c2607752e585cbbb8eca319cd8bcffdbc3cc25d04c14bb3ed20cd1386",
+        "only_changed_json_path": "reviewed_source_input_changes.Tools/OriginalEditor/framework_profile.json.after"
+      },
+      "scope": "New validator/real temporary Git input boundaries only; historical245 and selected affected8 not executed"
+    },
+    "retention_adapter_8": "Current exact final adapter, archive dependencies and three-boundary fixture"
+  },
+  "original_flow_tests": {
+    "bodies_byte_identical": true,
+    "count": 10,
+    "fixture_only_additions": [
+      "verify_framework_install_name explicit Mach-O double",
+      "verify_consumer_install_name explicit Mach-O double",
+      "retain_built_consumer explicit archive double"
+    ],
+    "old_passes_not_extended_to_new_gates": true
+  },
+  "runtime_and_acceptance": {
+    "new_workflow_current_affected_selection": 8,
+    "new_workflow_full_245_execution_removed": true,
+    "no_apple_execution": true,
+    "observation_validator_unchanged": true,
+    "original_245_source_results_source_scoped": true,
+    "original_38_public_spi_results_source_scoped": true,
+    "original_command_and_main_unchanged": true
+  },
+  "schema": 1,
+  "status": "SOURCE_PRESERVATION_VERIFIED_WITHOUT_TEST_REPLAY",
+  "unchanged_driver_functions": [
+    {
+      "name": "write",
+      "sha256": "29db7a9949d4e6c236d33be465b9082307329cf0e06a1e4bcf11f9fd71557fa1"
+    },
+    {
+      "name": "timestamp",
+      "sha256": "831abd368df858a1706d5757dd26791d3babfdb181751408d251f884474b7c5b"
+    },
+    {
+      "name": "command",
+      "sha256": "b10edf9d08abdd3f238ce044a4a110751d8a669444ae06e42813127453d9a779"
+    },
+    {
+      "name": "symbolgraph_import_context",
+      "sha256": "198e537993035ad7e152c94fa00775f51d7eeb53fdb0841d64a7155d42de97f8"
+    },
+    {
+      "name": "source_file_proof",
+      "sha256": "a90562228950cd13d578b57f86f3ba33b8cbb01786fdf5d80bdcc58ab733a08a"
+    },
+    {
+      "name": "dependency_proof",
+      "sha256": "acd2bc93a0960283eeeb88b6900ff32f74fc4ac6e4464667958ed5d2df848aae"
+    },
+    {
+      "name": "main",
+      "sha256": "2701b5447bc515c6baa3aa0396df482d643e483294e8912f05a2e3bef3960892"
+    }
+  ]
+}

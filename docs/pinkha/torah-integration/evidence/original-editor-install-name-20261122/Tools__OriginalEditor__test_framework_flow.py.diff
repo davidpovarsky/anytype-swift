@@ -1,0 +1,15 @@
+--- a/Tools/OriginalEditor/test_framework_flow.py
++++ b/Tools/OriginalEditor/test_framework_flow.py
+@@ -184,6 +184,12 @@
+             stack.enter_context(patch.object(driver, 'dependency_proof', return_value={'EXPLICIT_DEPENDENCY_BOUNDARY_DOUBLE': True}))
+             stack.enter_context(patch.object(driver, 'export_clang_declarations', side_effect=self.clang_export_fixture))
+             stack.enter_context(patch.object(driver, 'original_oracles', return_value={'EXPLICIT_ORACLE_BOUNDARY_DOUBLE': True}))
++            stack.enter_context(patch.object(driver, 'verify_framework_install_name', return_value={
++                'scope': 'EXPLICIT_MACHO_BOUNDARY_DOUBLE_NO_NATIVE_BINARY_ACCEPTANCE'}))
++            stack.enter_context(patch.object(driver, 'verify_consumer_install_name', return_value={
++                'scope': 'EXPLICIT_MACHO_BOUNDARY_DOUBLE_NO_NATIVE_BINARY_ACCEPTANCE'}))
++            stack.enter_context(patch.object(driver, 'retain_built_consumer', return_value={
++                'scope': 'EXPLICIT_SIGNED_APP_RETENTION_BOUNDARY_DOUBLE_NO_APP_ARCHIVE'}))
+             stack.enter_context(patch.object(driver.platform, 'system', return_value='Darwin'))
+             stack.enter_context(patch.object(driver.platform, 'machine', return_value='arm64'))
+             stack.enter_context(patch.object(driver, 'command', side_effect=self.command))

@@ -1,0 +1,146 @@
+{
+  "admission_plan": {
+    "path": "admission/INPUTS.json",
+    "sha256": "6e68a71c2607752e585cbbb8eca319cd8bcffdbc3cc25d04c14bb3ed20cd1386"
+  },
+  "apple_builds_activated": 0,
+  "base_commit": "a45fbc0c2f9c5b04a812c2aaad6ed85a6ec1c9b5",
+  "current_affected_eight_executed_locally": false,
+  "current_source_input_ledger": {
+    "current_expected_count": 69,
+    "original_count": 60,
+    "reviewed_added": 9,
+    "reviewed_changed": 6,
+    "unreviewed_paths_allowed": 0
+  },
+  "historical_results": {
+    "public_spi": {
+      "count": 38,
+      "replayed_locally": false,
+      "run_id": 45041382512,
+      "source_sha": "edce5b975b173059522f90adb71271fb95adf963"
+    },
+    "source_controls": {
+      "count": 245,
+      "replayed_locally": false,
+      "run_id": 45041382512,
+      "source_sha": "edce5b975b173059522f90adb71271fb95adf963"
+    }
+  },
+  "historical_source_and_public_results_relabelled": false,
+  "new_executions": {
+    "diagnostic_recorder_failure": 1,
+    "install_name_and_first_fixture_boundaries": 28,
+    "original_error_preservation": 4,
+    "retained_admission_boundaries": 11,
+    "separately_owned_failure_capture_helper": 19,
+    "signature_adapter_and_final_fixture_boundary": 8
+  },
+  "new_executions_total": 71,
+  "original_profile_preserved": {
+    "facades": 12,
+    "package_pins": 51,
+    "source_trees": {
+      "Anytype/Resources": "0827010674c089cfe9846e592e1d801e9d3f7a9b",
+      "Anytype/Sources": "7f60c27ac32ea66f889abd70edbb1cab1778f0a6",
+      "Modules": "a8a4b7688ea6295ae6c6b2f3baf90e18ab268e1b"
+    },
+    "swift_sources": 2254
+  },
+  "product_files": [
+    {
+      "bytes": 9284,
+      "git_blob": "7c207c7af0d062ddc2adc66f308d4f27e2f71001",
+      "path": ".github/workflows/pinkha-original-editor-framework.yml",
+      "preimage_sha256": "d2bbeca88b43530febfc0f6e247aefac9ab83eb5cee90b98ab9e30d90a64438e",
+      "sha256": "88836d52748f286f2dcf844cd5dea228958f540f47ff5247cdebfc0e9d351187"
+    },
+    {
+      "bytes": 151362,
+      "git_blob": "dd6008de840bd5725e8a6650f6fbf65e0d247bbe",
+      "path": "Anytype.xcodeproj/project.pbxproj",
+      "preimage_sha256": "4747f82180111e6a77939717eaaa006fa20ef35db5ebe079ad60fd76a2e0e195",
+      "sha256": "f56b68c8389bd742fe2f61f51601297d0d463558240687d977f581ddd89ae5ad"
+    },
+    {
+      "bytes": 11697,
+      "git_blob": "e2235916c14c6381412e0926e1c2687ff4f024b4",
+      "path": "Tools/OriginalEditor/admit_retained_source_controls.py",
+      "preimage_sha256": null,
+      "sha256": "befed2a63e45f1eeaff6018d4d73ddb559acb812f2adf1d7b06854c8f5bb0ed6"
+    },
+    {
+      "bytes": 16289,
+      "git_blob": "d328cd81b33e3780229136935d7064017240e328",
+      "path": "Tools/OriginalEditor/consumer_failure_capture.py",
+      "preimage_sha256": null,
+      "sha256": "9576f7c82abe8aa3f12570d2840ffe1dd93ad1824e2558e4cf164920a96e098a"
+    },
+    {
+      "bytes": 3938,
+      "git_blob": "f8adbaf44f9a3c4a2a6833320f0c568cfae4344e",
+      "path": "Tools/OriginalEditor/framework_consumer_retention.py",
+      "preimage_sha256": null,
+      "sha256": "cb468516195b2748a551b9bafe072b00bf7a1e6ca2abca8f9082a957bd7ca127"
+    },
+    {
+      "bytes": 8845,
+      "git_blob": "c75a9946ec1c78f441b5f479dc2caa34796c205f",
+      "path": "Tools/OriginalEditor/framework_install_names.py",
+      "preimage_sha256": null,
+      "sha256": "a5555c17dd7609558577a622e4df25424e9dea16d01e7f354600e62a21b483f9"
+    },
+    {
+      "bytes": 5727,
+      "git_blob": "ca812018b9ec93fc3c389fd9e15843e3ea25660f",
+      "path": "Tools/OriginalEditor/framework_profile.json",
+      "preimage_sha256": "abb8a3fae883d99269a9e7515b8ea6b72af48cf8e0c3748c0e6afe87b2f35370",
+      "sha256": "b759e665c8da1e8ec8e8b1e62630a40e800114a24fae925a947cb8d27efae022"
+    },
+    {
+      "bytes": 12102,
+      "git_blob": "af9969bdf43303eef9ca6a00129904ca5bf8e214",
+      "path": "Tools/OriginalEditor/framework_profile.py",
+      "preimage_sha256": "6ca8bc0697a014109f05af34d9eab27a56487da3f476f6df404fe7e06f7ef732",
+      "sha256": "20ac3912f2d15c6b1ae4d780859cc75b8ab8af876c1c1e024be72eb562a58c4f"
+    },
+    {
+      "bytes": 40932,
+      "git_blob": "719a1e435a7ea8827449b15c5e8f1d8c5dac1b4f",
+      "path": "Tools/OriginalEditor/run_framework_acceptance.py",
+      "preimage_sha256": "f4efd414ca0f8e9dd041b0b1a663466a9e48f9b1df33035956a238d3349331bc",
+      "sha256": "170f1302e42f6dba47bcf0c0baed40a377849742b3e34a458e7003abc4f04679"
+    },
+    {
+      "bytes": 17712,
+      "git_blob": "404d99f3a733b758dec8308525134098f80e4737",
+      "path": "Tools/OriginalEditor/test_framework_flow.py",
+      "preimage_sha256": "fded1c49613eb4ca0e4739ec899e78ba04c67753df0e01f6b71b66f34f98cf3e",
+      "sha256": "1fb419f8b1908d1688624365878deb3c184add8648795de7f90763aa0fd47f62"
+    }
+  ],
+  "remaining_gates": [
+    "Explicit retained historical245 admission plus exactly8 affected current Python flow cases; no complete historical-suite replay",
+    "Genuine framework rebuild with explicit @rpath install identity",
+    "Actual target-only 38 public/SPI requirements and full original Clang export",
+    "Actual separate consumer build/signature and reachable Mach-O load gates",
+    "Actual en/he runtime observations and original source/distribution integrity"
+  ],
+  "schema": 1,
+  "status": "SOURCE_CANDIDATE_NO_APPLE_EXECUTION",
+  "unchanged_archive_dependencies": {
+    "product_inventory.py": {
+      "bytes": 659,
+      "sha256": "6511e13546ffb02ea8b1d18bf401648663de73fbbc0a6849b84412b1b4d1bbfc"
+    },
+    "runtime_continuation_observation.py": {
+      "bytes": 14117,
+      "sha256": "6bc82f3a5676ffe5b0c00228ec5b7a6c630beb7b599a308b07c4787885391170"
+    },
+    "runtime_continuation_process.py": {
+      "bytes": 7495,
+      "sha256": "d55f83a6eb3f3334356087813743dce773ec74b7c07695f2184d77c4a07d212f"
+    }
+  },
+  "workflow_yaml_parsed": true
+}

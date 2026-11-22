@@ -1,0 +1,75 @@
+--- a/.github/workflows/pinkha-original-editor-framework.yml
++++ b/.github/workflows/pinkha-original-editor-framework.yml
+@@ -45,8 +45,8 @@
+           git switch --force-create "$EXPECTED_APP_BRANCH" "$GITHUB_SHA"
+           python3 Tools/OriginalEditor/run_framework_acceptance.py --root "$GITHUB_WORKSPACE" \
+             --evidence "$EDITOR_EVIDENCE" --work "$EDITOR_WORK" --source-only
+-          python3 Tools/OriginalEditor/run_source_controls.py --evidence "$EDITOR_EVIDENCE" \
+-            > "$EDITOR_EVIDENCE/source-controls.stdout.log" 2> "$EDITOR_EVIDENCE/source-controls.stderr.log"
++          python3 Tools/OriginalEditor/admit_retained_source_controls.py --root "$GITHUB_WORKSPACE" --evidence "$EDITOR_EVIDENCE" \
++            > "$EDITOR_EVIDENCE/retained-source-controls.stdout.log" 2> "$EDITOR_EVIDENCE/retained-source-controls.stderr.log"
+       - name: Checkout the immutable original canonical Hanlin source
+         uses: actions/checkout@v4
+         with:
+@@ -85,6 +85,46 @@
+         run: |
+           python3 Tools/OriginalEditor/run_framework_acceptance.py --root "$GITHUB_WORKSPACE" \
+             --evidence "$EDITOR_EVIDENCE" --work "$EDITOR_WORK"
++      - name: Identify this producer's separately retained signed consumer
++        if: always()
++        id: retained_consumer
++        run: |
++          python3 - <<'PYCODE'
++          import hashlib, json, os, sys
++          from pathlib import Path
++          sys.path.insert(0, 'Tools/OriginalEditor')
++          from framework_consumer_retention import current_producers
++          root = Path(os.environ['EDITOR_WORK']) / 'retained-consumer'
++          manifest = root / 'consumer-app-retention.json'
++          available = False
++          if manifest.is_file():
++              retained = json.loads(manifest.read_bytes())
++              source = json.loads((Path(os.environ['EDITOR_EVIDENCE']) / 'source-before.json').read_bytes())
++              consumer, framework = current_producers(source, os.environ)
++              assert retained['schema'] == 1 and retained['status'] == 'SIGNED_CONSUMER_RETAINED_WITHOUT_RUNTIME_QUALIFICATION'
++              assert retained['runtime_qualified'] is False and retained['restore_as_original_sdk_allowed'] is False
++              assert retained['consumer_producer'] == consumer and retained['framework_producer'] == framework
++              assert retained['archive_name'] == 'consumer-app.zip'
++              archive = root / retained['archive_name']
++              assert archive.stat().st_size == retained['archive_bytes']
++              with archive.open('rb') as stream: assert hashlib.file_digest(stream, 'sha256').hexdigest() == retained['archive_sha256']
++              assert hashlib.sha256((root / 'consumer-app-inventory.json').read_bytes()).hexdigest() == retained['consumer_inventory_sha256']
++              available = True
++          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
++              output.write('available=' + str(available).lower() + '\n')
++          PYCODE
++      - name: Upload this producer's unqualified signed consumer bytes
++        if: always() && steps.retained_consumer.outputs.available == 'true'
++        uses: actions/upload-artifact@v4
++        with:
++          name: Otzaria-Original-Editor-Signed-Consumer-Unqualified-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
++          path: |
++            ${{ env.EDITOR_WORK }}/retained-consumer/consumer-app.zip
++            ${{ env.EDITOR_WORK }}/retained-consumer/consumer-app-inventory.json
++            ${{ env.EDITOR_WORK }}/retained-consumer/consumer-app-retention.json
++          if-no-files-found: error
++          compression-level: 0
++          retention-days: 14
+       - name: Restore only this run's exact macro approval afterimage
+         if: always()
+         run: |
+@@ -120,6 +160,7 @@
+           path: |
+             ${{ env.EDITOR_WORK }}/distribution
+             ${{ env.EDITOR_WORK }}/UNQUALIFIED_PRODUCER.json
++          include-hidden-files: true
+           if-no-files-found: error
+           retention-days: 14
+       - name: Upload only the actually qualified simulator framework closure
+@@ -128,5 +169,6 @@
+         with:
+           name: Otzaria-Original-Editor-Simulator-Framework-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+           path: ${{ env.EDITOR_WORK }}/distribution
++          include-hidden-files: true
+           if-no-files-found: error
+           retention-days: 14

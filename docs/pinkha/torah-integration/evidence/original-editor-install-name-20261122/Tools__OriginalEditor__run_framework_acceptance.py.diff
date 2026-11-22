@@ -1,0 +1,103 @@
+--- a/Tools/OriginalEditor/run_framework_acceptance.py
++++ b/Tools/OriginalEditor/run_framework_acceptance.py
+@@ -31,6 +31,9 @@
+ from observed_package_simulator_signing import (PROFILES as OBSERVED_PACKAGE_PROFILES,
+                                                prepare_observed_package_simulator_export)
+ from pbx_source import require
++from framework_install_names import verify_framework_install_name, verify_consumer_install_name
++from consumer_failure_capture import prepare_launch_capture
++from framework_consumer_retention import retain_built_consumer
+ 
+ 
+ def write(path, value):
+@@ -403,6 +406,8 @@
+             command(['otool', '-L', str(binary)], root, evidence, 'framework-load-commands-' + str(number), 30)
+     require(TARGET + '.framework' in dynamic, 'The original editor product is not a real dynamic framework')
+     original_binary = exported / 'Frameworks' / (TARGET + '.framework') / TARGET
++    receipt['actual_framework_install_name'] = verify_framework_install_name(original_binary)
++    write(evidence / 'framework-install-name.json', receipt['actual_framework_install_name'])
+     architecture = command(['lipo', '-archs', str(original_binary)], root, evidence, 'framework-architecture', 30).strip()
+     require(architecture == 'arm64', 'Wrong actual simulator framework architecture')
+     platform_output = command(['xcrun', 'vtool', '-show-build', str(original_binary)], root, evidence, 'framework-platform', 30)
+@@ -467,39 +472,66 @@
+     for name in dynamic:
+         require(inventory(app / 'Frameworks' / name) == inventory(exported / 'Frameworks' / name),
+                 'The actual consumer did not embed the exact exported framework: ' + name)
++    command(['otool', '-l', str(app / 'OriginalEditorConsumer')], root, evidence, 'consumer-main-load-commands', 30)
++    if (app / 'OriginalEditorConsumer.debug.dylib').exists():
++        command(['otool', '-l', str(app / 'OriginalEditorConsumer.debug.dylib')], root, evidence,
++                'consumer-debug-load-commands', 30)
++    receipt['actual_consumer_install_names'] = verify_consumer_install_name(app)
++    write(evidence / 'consumer-install-names.json', receipt['actual_consumer_install_names'])
+     receipt['external_consumer_build'] = 'PASS'
+     receipt['public_host_api'] = 'EXPOSED_COMPILED_NATIVE_EDITOR_NOT_RUN'
+     receipt['compiled_consumer_api_probe_sha256'] = sha256(root / 'Tools/OriginalEditor/Consumer/ConsumerApp.swift')
++    receipt['phase'] = 'RETAIN_SIGNED_CONSUMER'
++    write(evidence / 'execution.json', receipt)
++    receipt['retained_signed_consumer'] = retain_built_consumer(app, root, evidence, work, before)
++    write(evidence / 'retained-consumer.json', receipt['retained_signed_consumer'])
+     receipt['phase'] = 'ACTUAL_EXTERNAL_RESOURCE_RUNTIME'
+     receipt['verified_runtime_observations'] = []
+     write(evidence / 'execution.json', receipt)
+     bundle_id = 'org.otzaria.acceptance.original-editor'
+     command(['xcrun', 'simctl', 'boot', udid], root, evidence, 'boot-owned-simulator', 60)
+     command(['xcrun', 'simctl', 'bootstatus', udid, '-b'], root, evidence, 'boot-status', 180)
+-    command(['xcrun', 'simctl', 'install', udid, str(app)], root, evidence, 'install-external-consumer', 60)
++    command(['xcrun', 'simctl', 'install', udid, str(app)], root, evidence, 'install-external-consumer', 300)
+     installed = command(['xcrun', 'simctl', 'get_app_container', udid, bundle_id, 'app'], root, evidence, 'actual-consumer-app-container', 30).strip()
+     data = Path(command(['xcrun', 'simctl', 'get_app_container', udid, bundle_id, 'data'], root, evidence, 'actual-consumer-data-container', 30).strip())
+     require(Path(installed).is_dir() and data.is_dir() and udid in Path(installed).parts and udid in data.parts,
+             'Actual consumer containers are not in the owned simulator')
++    launch_help = command(['xcrun', 'simctl', 'help', 'launch'], root, evidence, 'actual-simctl-launch-help', 15)
+     for language in ['en', 'he']:
+         nonce = str(uuid.uuid4()).upper()
+         name = 'consumer-' + language
+         output = data / 'Documents' / ('original-editor-' + nonce + '.json')
+         require(not output.exists(), 'Stale consumer result')
+-        command(['xcrun', 'simctl', 'launch', '--terminate-running-process', udid, bundle_id,
+-                 '--original-editor-nonce', nonce, '-AppleLanguages', '(' + language + ')',
+-                 '-AppleLocale', 'he_IL' if language == 'he' else 'en_US'], root, evidence, name + '-launch', 30)
+-        deadline = time.monotonic() + 20
+-        while not output.exists() and time.monotonic() < deadline:
+-            time.sleep(0.1)
+-        require(output.is_file() and not output.is_symlink() and 0 < output.stat().st_size <= 65_536,
+-                'No bounded actual external consumer result: ' + language)
+-        raw = output.read_bytes()
+-        (evidence / (name + '-observation.json')).write_bytes(raw)
+-        value = verify_observation(json.loads(raw), nonce, language, installed, oracle)
+-        require(not derived.exists(), 'Producer fallback was recreated before runtime')
+-        receipt['verified_runtime_observations'].append(value)
+-        write(evidence / 'execution.json', receipt)
++        original_launch = ['xcrun', 'simctl', 'launch', '--terminate-running-process', udid, bundle_id,
++                           '--original-editor-nonce', nonce, '-AppleLanguages', '(' + language + ')',
++                           '-AppleLocale', 'he_IL' if language == 'he' else 'en_US']
++        launch, capture_request = prepare_launch_capture(evidence, preflight, installed, original_launch, language, launch_help)
++        try:
++            command(launch, root, evidence, name + '-launch', 30)
++            deadline = time.monotonic() + 20
++            while not output.exists() and time.monotonic() < deadline:
++                time.sleep(0.1)
++            require(output.is_file() and not output.is_symlink() and 0 < output.stat().st_size <= 65_536,
++                    'No bounded actual external consumer result: ' + language)
++            raw = output.read_bytes()
++            (evidence / (name + '-observation.json')).write_bytes(raw)
++            value = verify_observation(json.loads(raw), nonce, language, installed, oracle)
++            require(not derived.exists(), 'Producer fallback was recreated before runtime')
++            receipt['verified_runtime_observations'].append(value)
++            write(evidence / 'execution.json', receipt)
++        except BaseException:
++            try:
++                command([sys.executable, str(root / 'Tools/OriginalEditor/consumer_failure_capture.py'),
++                         '--capture-failure', str(capture_request)], root, evidence, name + '-failure-capture', 15)
++            except BaseException as diagnostic_error:
++                try:
++                    write(evidence / (name + '-failure-capture-error.json'),
++                          {'error_type': type(diagnostic_error).__name__, 'error': str(diagnostic_error),
++                           'primary_launch_or_observation_error_preserved': True})
++                except BaseException:
++                    # Unavailable diagnostic storage cannot replace the primary failure.
++                    pass
++            raise
+         command(['xcrun', 'simctl', 'terminate', udid, bundle_id], root, evidence, name + '-terminate', 30)
+     require(len(receipt['verified_runtime_observations']) == 2, 'Incomplete actual resource-language execution')
+     require(source_observation(root) == before, 'Tracked source closure changed during actual framework execution')

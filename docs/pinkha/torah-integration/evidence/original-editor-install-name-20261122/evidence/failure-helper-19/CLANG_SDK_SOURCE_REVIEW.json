@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "status": "BOUNDED_SOURCE_REVIEW_CLEAR",
+  "reviewer": "clang_sdk",
+  "scope": "Exact consumer launch output argv and bounded native crash report attribution; no runtime acceptance claim",
+  "helper_sha256": "9576f7c82abe8aa3f12570d2840ffe1dd93ad1824e2558e4cf164920a96e098a",
+  "manifest_sha256": "6a3b08a0d61242c08fc4541b7d817e4c4c94ff6b6dc0dad0bce7be15e072e690",
+  "findings": [
+    "Current producer/preflight identities and original 12-element launch are revalidated",
+    "Only exact output redirects are added to original launch; helper owns no subprocess or simulator actions",
+    "Crash read requires exact native bundle/process/full installed path and native plus filesystem timestamps within actual attempt",
+    "Scan and individual file sizes are bounded; symlinks and unstable reads are rejected",
+    "Caller must keep original exception authoritative and run capture before cleanup; zero reports is inconclusive"
+  ],
+  "executions_by_reviewer": 0,
+  "source_edits_by_reviewer": 0,
+  "native_execution": false
+}

@@ -1,0 +1,38 @@
+{
+  "expected_ids": [
+    "__main__.RetainedAdmissionControls.test_affected_selection_cannot_expand_to_the_whole_old_suite",
+    "__main__.RetainedAdmissionControls.test_authentic_245_receipt_admits_exact_changed_ledger_without_execution",
+    "__main__.RetainedAdmissionControls.test_duplicate_historical_success_cannot_replace_an_original_identity",
+    "__main__.RetainedAdmissionControls.test_extra_current_helper_is_refused",
+    "__main__.RetainedAdmissionControls.test_historical_skip_or_failure_is_not_retained_as_pass",
+    "__main__.RetainedAdmissionControls.test_original_product_tree_change_is_refused",
+    "__main__.RetainedAdmissionControls.test_real_committed_input_read_rejects_dirty_bytes",
+    "__main__.RetainedAdmissionControls.test_unreviewed_original_source_input_change_is_refused",
+    "__main__.RetainedAdmissionControls.test_wrong_historical_producer_is_refused",
+    "__main__.RetainedAdmissionControls.test_wrong_new_helper_afterimage_is_refused",
+    "__main__.RetainedAdmissionControls.test_wrong_reviewed_source_preimage_is_refused"
+  ],
+  "files": {
+    "admission/INPUTS.json": {
+      "bytes": 9627,
+      "sha256": "6e68a71c2607752e585cbbb8eca319cd8bcffdbc3cc25d04c14bb3ed20cd1386"
+    },
+    "admission/original-source-before.json": {
+      "bytes": 248192,
+      "sha256": "de7f018511c096b6d8f6eec5fe8ec805be118a9d9f0333af7de7ccc69a9ba469"
+    },
+    "admission/original-source-controls-result.json": {
+      "bytes": 120857,
+      "sha256": "67ef0aeb21ad307f0e396192106c2043998e66941613e5e953df61c5cae42ed5"
+    },
+    "candidate/Tools/OriginalEditor/admit_retained_source_controls.py": {
+      "bytes": 11697,
+      "sha256": "befed2a63e45f1eeaff6018d4d73ddb559acb812f2adf1d7b06854c8f5bb0ed6"
+    },
+    "controls/retained_admission_controls.py": {
+      "bytes": 6332,
+      "sha256": "d6910a3dc032b719c8c5b347ddf8ef02e4f4c40b801c627eb3a26c2837ed1901"
+    }
+  },
+  "scope": "New validator and committed-input boundaries only; no current or historical product test cases are executed"
+}
