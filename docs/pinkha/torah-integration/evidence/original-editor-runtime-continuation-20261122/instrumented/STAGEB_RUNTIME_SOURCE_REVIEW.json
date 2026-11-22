@@ -1,0 +1,59 @@
+{
+  "status": "SOURCE_REVIEW_CLEAR_FOR_BOUNDED_INSTRUMENTED_RUNTIME_CONTINUATION",
+  "reviewer": "stageb_auth",
+  "at_utc": "2026-11-22T18:03:14.939725+00:00",
+  "files": [
+    {
+      "path": "sdk_runtime_instrumented/candidate/Tools/OriginalEditor/runtime_continuation_observation.py",
+      "bytes": 14117,
+      "sha256": "6bc82f3a5676ffe5b0c00228ec5b7a6c630beb7b599a308b07c4787885391170"
+    },
+    {
+      "path": "sdk_runtime_instrumented/candidate/Tools/OriginalEditor/run_runtime_continuation.py",
+      "bytes": 40601,
+      "sha256": "b96eaf6445abcd62cbd46aa6d701b2cba0329ebf9bcaf19e4d02a96a5ae203e7"
+    },
+    {
+      "path": "sdk_runtime_instrumented/controls/instrumented_runtime_controls.py",
+      "bytes": 14940,
+      "sha256": "813114cfca275f92375702be93af18e6c5f4be44ecf4b2c01842a9a8b2187ac6"
+    },
+    {
+      "path": "sdk_runtime_continuation/candidate/Tools/OriginalEditor/runtime_continuation_process.py",
+      "bytes": 7495,
+      "sha256": "d55f83a6eb3f3334356087813743dce773ec74b7c07695f2184d77c4a07d212f"
+    },
+    {
+      "path": "sdk_runtime_continuation/original/Tools/OriginalEditor/product_inventory.py",
+      "bytes": 659,
+      "sha256": "6511e13546ffb02ea8b1d18bf401648663de73fbbc0a6849b84412b1b4d1bbfc"
+    }
+  ],
+  "original_top_level_helpers_unchanged": [
+    "require",
+    "timestamp",
+    "read_json",
+    "zip_members",
+    "verify_metadata",
+    "verify_retained_phase",
+    "extract_original_evidence",
+    "validate_original_dotfile",
+    "restore_original_distribution",
+    "validate_toolchain"
+  ],
+  "findings": [
+    "Cleanup authenticates the exact newly-created simulator identity; shutdown failure may proceed only after its actual owned process group has drained. Delete and strict JSON post-state remain required, and any failed delete, malformed state, remaining owned UDID or undrained group prevents completion.",
+    "Main preserves primary failure: success begins false and becomes true only after both real en/he observations and source/inventory gates. Successful cleanup cannot change a primary failure into qualification; cleanup failure can only remove success.",
+    "Signed-consumer retention requires the successful actual codesign command, exact full inventory and before/after checks. ZIP writing preserves hidden files, executable/directory modes and empty directories, rejects symlinks/special files, verifies every retained file hash, and publishes an explicitly unqualified separate archive.",
+    "Read-only host diagnostics use a separate finite command ledger and a small runtime environment allowlist. Runtime child and diagnostic environments exclude GH/GITHUB/ACTIONS tokens and SIMCTL_CHILD overrides; ps excludes argv arguments.",
+    "Existing framework-producer identity, retained product inventory, original toolchain, 180-second boot, one 300-second install, language observations and no-replay rules remain intact. The source delta changes only main and adds the explicitly allowlisted observation helper.",
+    "Existing Maktabah schema2 reader permits extra separate artifacts and diagnostic fields while requiring the same four named steps, exact runtime evidence outer wrapper and exact two role identities. It checks proved cleanup completion, not absence of a historical shutdown error."
+  ],
+  "limits": [
+    "Fourteen new controls are source-reviewed only by this reviewer; no tests or Apple commands executed by this review.",
+    "The controls use explicit command/signature fixtures. Actual simulator service behavior, signed-consumer archival size/time, and real runtime acceptance remain the Apple gate.",
+    "Final workflow/artifact upload bytes and source-binding changes were not yet reviewed in this receipt."
+  ],
+  "test_executions": 0,
+  "source_edits": 0
+}

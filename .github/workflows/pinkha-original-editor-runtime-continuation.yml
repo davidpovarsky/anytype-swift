@@ -57,9 +57,26 @@ jobs:
           binding = json.loads((packet / 'controls/SOURCE_BINDING.json').read_bytes())
           assert hashlib.sha256((packet / 'controls/RESULT.json').read_bytes()).hexdigest() == binding['executed_result_sha256']
           assert set(binding['files']) == set(result['source_sha256'])
+          instrumented = packet / 'instrumented'
+          runner_inverse = json.loads((instrumented / 'RUNNER_EXACT_INVERSE.json').read_bytes())
           for path, commitment in result['source_sha256'].items():
               item = binding['files'][path]
               raw = Path(item['current_path']).read_bytes()
+              if item['current_path'] == 'Tools/OriginalEditor/run_runtime_continuation.py':
+                  assert hashlib.sha256(raw).hexdigest() == runner_inverse['current_sha256']
+                  current_text = raw.decode()
+                  lines = current_text.splitlines(keepends=True)
+                  for edit in reversed(runner_inverse['edits']):
+                      assert lines[edit['current_start']:edit['current_end']] == edit['current_lines']
+                      lines[edit['current_start']:edit['current_end']] = edit['previous_lines']
+                  previous_text = ''.join(lines)
+                  def functions(source):
+                      return {node.name: ast.get_source_segment(source, node) for node in ast.parse(source).body
+                              if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name != 'main'}
+                  assert functions(current_text) == functions(previous_text)
+                  assert len(functions(previous_text)) == 10
+                  raw = previous_text.encode()
+                  assert hashlib.sha256(raw).hexdigest() == runner_inverse['previous_sha256']
               assert hashlib.sha256(raw).hexdigest() == item['current_sha256'], path
               if 'inverse' in item:
                   inverse = item['inverse']
@@ -69,11 +86,31 @@ jobs:
           for row in json.loads((packet / 'ORIGINAL_HELPER_BINDINGS.json').read_bytes()):
               source = Path('Tools/OriginalEditor') / row['path']
               assert hashlib.sha256(source.read_bytes()).hexdigest() == row['sha256'], row['path']
+          focused = json.loads((instrumented / 'controls/RESULT.json').read_bytes())
+          assert focused['status'] == 'PASS_NEW_INSTRUMENTED_RUNTIME_BOUNDARIES'
+          focused_source = instrumented / 'controls/instrumented_runtime_controls.py'
+          focused_tree = ast.parse(focused_source.read_text())
+          focused_ids = [method.name for node in focused_tree.body
+                         if isinstance(node, ast.ClassDef) and node.name == 'InstrumentedRuntimeBoundaries'
+                         for method in node.body if isinstance(method, ast.FunctionDef) and method.name.startswith('test_')]
+          assert len(focused_ids) == len(set(focused_ids)) == focused['tests_run'] == 14
+          assert sorted(focused_ids) == sorted(focused['expected_ids']) == sorted(focused['started_ids']) == sorted(focused['passed_ids'])
+          assert not focused['errors'] and not focused['failures'] and not focused['skipped']
+          assert focused['old_control_bodies_replayed'] == focused['apple_commands_executed'] == 0
+          routes = {name: Path('Tools/OriginalEditor') / name for name in [
+              'run_runtime_continuation.py', 'runtime_continuation_observation.py', 'runtime_continuation_process.py',
+              'product_inventory.py', 'framework_profile.py', 'pbx_source.py']}
+          routes['instrumented_runtime_controls.py'] = focused_source
+          assert {Path(row['path']).name for row in focused['source_inputs']} == set(routes)
+          assert len(focused['source_inputs']) == len(routes)
+          for row in focused['source_inputs']:
+              assert hashlib.sha256(routes[Path(row['path']).name].read_bytes()).hexdigest() == row['sha256']
           Path('build').mkdir(exist_ok=True)
           Path('build/runtime-continuation-control-admission.json').write_text(json.dumps({
               'status': 'SOURCE_BOUND_NEW_CONTROLS_RETAINED_WITHOUT_REPLAY',
               'control_sha': os.environ['GITHUB_SHA'], 'run_id': os.environ['GITHUB_RUN_ID'],
               'retained_new_control_count': result['tests_run'], 'prior_source_controls_replayed': 0,
+              'retained_instrumented_control_count': focused['tests_run'],
               'new_control_bodies_replayed': 0,
               'result_sha256': hashlib.sha256((packet / 'controls/RESULT.json').read_bytes()).hexdigest(),
           }, indent=2, sort_keys=True) + '\n')
@@ -88,6 +125,48 @@ jobs:
             --inputs-sha256 51fc7e47df710254e29cf2ef6e4e9ceb8c83743d6b5e3f361099a7f7991fc032 \
             --work "$CONTINUATION_WORK" --evidence "$CONTINUATION_EVIDENCE" \
             --deadline-unix "$OTZARIA_RUNTIME_DEADLINE"
+      - name: Identify the separately retained signed consumer
+        if: always()
+        id: retained_consumer
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          root = Path(os.environ['CONTINUATION_WORK']) / 'retained-consumer'
+          manifest = root / 'consumer-app-retention.json'
+          available = False
+          if manifest.is_file():
+              retained = json.loads(manifest.read_bytes())
+              inputs = json.loads(Path('Tools/OriginalEditor/runtime_continuation_inputs.json').read_bytes())
+              expected = {'repository': os.environ['GITHUB_REPOSITORY'], 'repository_id': int(os.environ['GITHUB_REPOSITORY_ID']),
+                  'control_sha': os.environ['GITHUB_SHA'], 'run_id': int(os.environ['GITHUB_RUN_ID']),
+                  'run_attempt': int(os.environ['GITHUB_RUN_ATTEMPT']),
+                  'workflow_path': '.github/workflows/pinkha-original-editor-runtime-continuation.yml',
+                  'head_branch': os.environ['GITHUB_REF_NAME'], 'job_name': 'original-editor-runtime-continuation'}
+              assert retained['schema'] == 1 and retained['status'] == 'SIGNED_CONSUMER_RETAINED_WITHOUT_RUNTIME_QUALIFICATION'
+              assert retained['runtime_qualified'] is False and retained['restore_as_original_sdk_allowed'] is False
+              assert retained['consumer_producer'] == expected and retained['framework_producer'] == inputs['framework_producer']
+              assert retained['archive_name'] == 'consumer-app.zip'
+              archive = root / retained['archive_name']
+              assert archive.stat().st_size == retained['archive_bytes']
+              with archive.open('rb') as stream: assert hashlib.file_digest(stream, 'sha256').hexdigest() == retained['archive_sha256']
+              assert hashlib.sha256((root / 'consumer-app-inventory.json').read_bytes()).hexdigest() == retained['consumer_inventory_sha256']
+              available = True
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('available=' + str(available).lower() + '\n')
+          PY
+      - name: Upload the unqualified signed consumer bytes
+        if: always() && steps.retained_consumer.outputs.available == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otzaria-Original-Editor-Signed-Consumer-Unqualified-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ env.CONTINUATION_WORK }}/retained-consumer/consumer-app.zip
+            ${{ env.CONTINUATION_WORK }}/retained-consumer/consumer-app-inventory.json
+            ${{ env.CONTINUATION_WORK }}/retained-consumer/consumer-app-retention.json
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14
       - name: Preserve runtime continuation evidence
         if: always()
         run: |

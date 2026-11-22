@@ -26,6 +26,8 @@ import zipfile
 from clang_product_closure import read_clang_imports
 from framework_products import consumer_project, inventory, original_oracles, verify_observation
 from runtime_continuation_process import Commands, digest, write_json
+from runtime_continuation_observation import (runtime_environment, validate_ownership, observe_runtime,
+                                               retain_signed_consumer, cleanup_owned_simulator)
 
 REPOSITORY = 'davidpovarsky/anytype-swift'
 QUALIFIED = 'ACTUAL_ORIGINAL_FRAMEWORK_EXTERNAL_IMPORT_LINK_RESOURCES_PASS'
@@ -35,6 +37,7 @@ CONTROL_FILES = {
     'Tools/OriginalEditor/runtime_continuation_process.py',
     'Tools/OriginalEditor/runtime_continuation_inputs.json',
     'Tools/OriginalEditor/runtime_continuation_controls.py',
+    'Tools/OriginalEditor/runtime_continuation_observation.py',
 }
 EVIDENCE_PREFIX = 'docs/pinkha/torah-integration/evidence/original-editor-runtime-continuation-20261122/'
 ORIGINAL_DOTFILE_PATHS = {
@@ -283,7 +286,8 @@ def main():
         'control_sha': os.environ['GITHUB_SHA'], 'run_id': int(os.environ['GITHUB_RUN_ID']),
         'run_attempt': int(os.environ['GITHUB_RUN_ATTEMPT']), 'workflow_path': WORKFLOW,
         'head_branch': os.environ['GITHUB_REF_NAME'], 'job_name': 'original-editor-runtime-continuation'}
-    env = {k: os.environ[k] for k in ['PATH', 'HOME', 'TMPDIR', 'LANG', 'LC_ALL', 'DEVELOPER_DIR'] if k in os.environ}
+    env = runtime_environment(os.environ)
+    write_json(evidence / 'runtime-environment.json', env)
     for name in ['commands', 'github-commands', 'cleanup']:
         (evidence / name).mkdir()
     commands = Commands(evidence / 'commands', env, args.deadline_unix - 180)
@@ -319,8 +323,22 @@ def main():
         'automatic_retry': False}
     write_json(evidence / 'execution.json', result)
     owned_id = None
+    owned_record = None
     simulator_name = None
     original_device_ids = set()
+    diagnostic_groups_drained = True
+    def observe(stage, reserve=180):
+        nonlocal diagnostic_groups_drained
+        try:
+            observed = observe_runtime(evidence, stage, root, env, args.deadline_unix - reserve, owned_record)
+        except BaseException:
+            diagnostic_groups_drained = False
+            raise
+        diagnostic_groups_drained = diagnostic_groups_drained and observed['owned_groups_drained']
+        result.setdefault('runtime_diagnostics', []).append(observed)
+        write_json(evidence / 'execution.json', result)
+        if observed.get('interrupted'):
+            raise KeyboardInterrupt('Runtime diagnostics were interrupted')
     success = False
     try:
         require(platform.system() == 'Darwin' and platform.machine() == 'arm64', 'Actual Darwin arm64 toolchain required')
@@ -413,7 +431,9 @@ def main():
         require(str(uuid.UUID(created)).upper() == created.upper() and created not in original_device_ids,
                 'Simulator creation returned no new exact identity')
         owned_id = created
-        write_json(evidence / 'owned-simulator.json', {'udid': owned_id, 'name': simulator_name, 'device': inputs['device'], 'runtime': inputs['runtime']})
+        owned_record = {'udid': owned_id, 'name': simulator_name, 'device': inputs['device'], 'runtime': inputs['runtime']}
+        validate_ownership(owned_record, simulator_name, inputs['device'], inputs['runtime'], original_device_ids)
+        write_json(evidence / 'owned-simulator.json', owned_record)
         result['preflight']['selected'] = {'ipad': {'udid': owned_id, 'name': simulator_name, 'device': inputs['device'], 'runtime': inputs['runtime']}}
         derived = work / 'consumer-derived'
         result['phase'] = 'EXTERNAL_BINARY_CONSUMER_BUILD'
@@ -423,6 +443,7 @@ def main():
             '-resultBundlePath', evidence / 'consumer-build.xcresult', 'ONLY_ACTIVE_ARCH=YES', 'ARCHS=arm64'], consumer, 600)
         app = derived / 'Build/Products/Debug-iphonesimulator/OriginalEditorConsumer.app'
         command('external-consumer-signature', ['codesign', '--verify', '--strict', app])
+        consumer_signature = commands.items[-1]
         for name in dynamic:
             require(inventory(app / 'Frameworks' / name) == inventory(distribution / 'Frameworks' / name), 'Embedded original framework differs: ' + name)
         app_inventory = inventory(app)
@@ -432,9 +453,20 @@ def main():
             consumer_app_bytes=sum(v['bytes'] for v in app_inventory.values()), consumer_app_files=len(app_inventory),
             consumer_app_inventory_sha256=digest(evidence / 'consumer-app-inventory.json'), phase='ACTUAL_EXTERNAL_RESOURCE_RUNTIME')
         require(inventory(distribution) == exported['files'], 'Consumer build changed the retained original SDK')
+        result['phase'] = 'RETAIN_SIGNED_CONSUMER'
         write_json(evidence / 'execution.json', result)
+        result['retained_signed_consumer'] = retain_signed_consumer(app, app_inventory, consumer_signature,
+            work / 'retained-consumer', current, producer, digest(source),
+            digest(evidence / 'consumer-source-inputs.json'), args.deadline_unix - 180)
+        write_json(evidence / 'retained-consumer.json', result['retained_signed_consumer'])
+        result['phase'] = 'ACTUAL_EXTERNAL_RESOURCE_RUNTIME'
+        write_json(evidence / 'execution.json', result)
+        observe('before-boot')
+        require(diagnostic_groups_drained, 'A diagnostic command group did not drain before boot')
         command('boot-owned-simulator', ['xcrun', 'simctl', 'boot', owned_id], seconds=60)
         command('boot-status', ['xcrun', 'simctl', 'bootstatus', owned_id, '-b'], seconds=180)
+        observe('after-boot')
+        require(diagnostic_groups_drained, 'A diagnostic command group did not drain before install')
         result['install_attempts'] = 1
         write_json(evidence / 'execution.json', result)
         command('install-external-consumer', ['xcrun', 'simctl', 'install', owned_id, app], seconds=inputs['install_timeout_seconds'])
@@ -470,10 +502,16 @@ def main():
         success = True
     except BaseException as error:
         result.update(error_type=type(error).__name__, error=str(error))
+        if (owned_record and commands.owned_groups_drained and github.owned_groups_drained
+                and diagnostic_groups_drained and not isinstance(error, KeyboardInterrupt)):
+            try:
+                observe('after-runtime-failure')
+            except BaseException as diagnostic_error:
+                result['failure_diagnostic_error'] = {'type': type(diagnostic_error).__name__, 'error': str(diagnostic_error)}
     finally:
         cleanup = Commands(evidence / 'cleanup', env, args.deadline_unix)
         try:
-            require(commands.owned_groups_drained and github.owned_groups_drained,
+            require(commands.owned_groups_drained and github.owned_groups_drained and diagnostic_groups_drained,
                     'A continuation-owned command group has not drained')
             if owned_id is None and result['simulator_attempts'] == 1:
                 out = cleanup.require('recover-create-identity', ['xcrun', 'simctl', 'list', 'devices', '-j'], root, 30)
@@ -483,15 +521,20 @@ def main():
                            and d.get('deviceTypeIdentifier') == inputs['device']['identifier']]
                 require(len(matches) == 1, 'Creation outcome is uncertain; no broad simulator cleanup is permitted')
                 owned_id = matches[0]['udid']
+                owned_record = {'udid': owned_id, 'name': simulator_name, 'device': inputs['device'], 'runtime': inputs['runtime']}
                 write_json(evidence / 'owned-simulator-recovered-for-cleanup.json', matches[0])
             if owned_id is not None:
-                code, out, err = cleanup.run('shutdown-owned-simulator', ['xcrun', 'simctl', 'shutdown', owned_id], root, 60)
-                require(code == 0 or (code == 149 and 'current state: Shutdown' in err.read_text(errors='replace')), 'Owned simulator shutdown did not finish')
-                cleanup.require('delete-owned-simulator', ['xcrun', 'simctl', 'delete', owned_id], root, 60)
-                after = cleanup.require('devices-after-cleanup', ['xcrun', 'simctl', 'list', 'devices', '-j'], root, 30)
-                require(not any(d.get('udid') == owned_id for values in json.loads(after.read_bytes())['devices'].values()
-                                for d in values), 'Owned simulator remains after delete')
-            require(cleanup.owned_groups_drained, 'An owned cleanup group did not drain')
+                if success:
+                    observe('before-cleanup', reserve=150)
+                require(diagnostic_groups_drained, 'A diagnostic command group did not drain before cleanup')
+                result['owned_simulator_cleanup'] = cleanup_owned_simulator(cleanup, root, owned_record,
+                    simulator_name, inputs['device'], inputs['runtime'], original_device_ids)
+                # Preserve every cleanup outcome before diagnostics or admission.
+                write_json(evidence / 'execution.json', result)
+                if cleanup.owned_groups_drained:
+                    observe('after-cleanup', reserve=0)
+                require(result['owned_simulator_cleanup']['completed'], 'Owned simulator deletion and absence were not proven')
+            require(cleanup.owned_groups_drained and diagnostic_groups_drained, 'An owned cleanup or diagnostic group did not drain')
             result['owned_simulator_cleanup_completed'] = True
         except BaseException as error:
             success = False

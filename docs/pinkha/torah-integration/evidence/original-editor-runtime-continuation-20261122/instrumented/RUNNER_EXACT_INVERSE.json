@@ -1,0 +1,171 @@
+{
+  "previous_sha256": "5dc0f1c0c9ebb4ef72e6d15c13f185ad42a86209dd50f37f6b20fcd44874df12",
+  "current_sha256": "b96eaf6445abcd62cbd46aa6d701b2cba0329ebf9bcaf19e4d02a96a5ae203e7",
+  "edits": [
+    {
+      "current_start": 28,
+      "current_end": 30,
+      "current_lines": [
+        "from runtime_continuation_observation import (runtime_environment, validate_ownership, observe_runtime,\n",
+        "                                               retain_signed_consumer, cleanup_owned_simulator)\n"
+      ],
+      "previous_lines": []
+    },
+    {
+      "current_start": 39,
+      "current_end": 40,
+      "current_lines": [
+        "    'Tools/OriginalEditor/runtime_continuation_observation.py',\n"
+      ],
+      "previous_lines": []
+    },
+    {
+      "current_start": 288,
+      "current_end": 290,
+      "current_lines": [
+        "    env = runtime_environment(os.environ)\n",
+        "    write_json(evidence / 'runtime-environment.json', env)\n"
+      ],
+      "previous_lines": [
+        "    env = {k: os.environ[k] for k in ['PATH', 'HOME', 'TMPDIR', 'LANG', 'LC_ALL', 'DEVELOPER_DIR'] if k in os.environ}\n"
+      ]
+    },
+    {
+      "current_start": 325,
+      "current_end": 326,
+      "current_lines": [
+        "    owned_record = None\n"
+      ],
+      "previous_lines": []
+    },
+    {
+      "current_start": 328,
+      "current_end": 341,
+      "current_lines": [
+        "    diagnostic_groups_drained = True\n",
+        "    def observe(stage, reserve=180):\n",
+        "        nonlocal diagnostic_groups_drained\n",
+        "        try:\n",
+        "            observed = observe_runtime(evidence, stage, root, env, args.deadline_unix - reserve, owned_record)\n",
+        "        except BaseException:\n",
+        "            diagnostic_groups_drained = False\n",
+        "            raise\n",
+        "        diagnostic_groups_drained = diagnostic_groups_drained and observed['owned_groups_drained']\n",
+        "        result.setdefault('runtime_diagnostics', []).append(observed)\n",
+        "        write_json(evidence / 'execution.json', result)\n",
+        "        if observed.get('interrupted'):\n",
+        "            raise KeyboardInterrupt('Runtime diagnostics were interrupted')\n"
+      ],
+      "previous_lines": []
+    },
+    {
+      "current_start": 433,
+      "current_end": 436,
+      "current_lines": [
+        "        owned_record = {'udid': owned_id, 'name': simulator_name, 'device': inputs['device'], 'runtime': inputs['runtime']}\n",
+        "        validate_ownership(owned_record, simulator_name, inputs['device'], inputs['runtime'], original_device_ids)\n",
+        "        write_json(evidence / 'owned-simulator.json', owned_record)\n"
+      ],
+      "previous_lines": [
+        "        write_json(evidence / 'owned-simulator.json', {'udid': owned_id, 'name': simulator_name, 'device': inputs['device'], 'runtime': inputs['runtime']})\n"
+      ]
+    },
+    {
+      "current_start": 445,
+      "current_end": 446,
+      "current_lines": [
+        "        consumer_signature = commands.items[-1]\n"
+      ],
+      "previous_lines": []
+    },
+    {
+      "current_start": 455,
+      "current_end": 456,
+      "current_lines": [
+        "        result['phase'] = 'RETAIN_SIGNED_CONSUMER'\n"
+      ],
+      "previous_lines": []
+    },
+    {
+      "current_start": 457,
+      "current_end": 465,
+      "current_lines": [
+        "        result['retained_signed_consumer'] = retain_signed_consumer(app, app_inventory, consumer_signature,\n",
+        "            work / 'retained-consumer', current, producer, digest(source),\n",
+        "            digest(evidence / 'consumer-source-inputs.json'), args.deadline_unix - 180)\n",
+        "        write_json(evidence / 'retained-consumer.json', result['retained_signed_consumer'])\n",
+        "        result['phase'] = 'ACTUAL_EXTERNAL_RESOURCE_RUNTIME'\n",
+        "        write_json(evidence / 'execution.json', result)\n",
+        "        observe('before-boot')\n",
+        "        require(diagnostic_groups_drained, 'A diagnostic command group did not drain before boot')\n"
+      ],
+      "previous_lines": []
+    },
+    {
+      "current_start": 467,
+      "current_end": 469,
+      "current_lines": [
+        "        observe('after-boot')\n",
+        "        require(diagnostic_groups_drained, 'A diagnostic command group did not drain before install')\n"
+      ],
+      "previous_lines": []
+    },
+    {
+      "current_start": 504,
+      "current_end": 510,
+      "current_lines": [
+        "        if (owned_record and commands.owned_groups_drained and github.owned_groups_drained\n",
+        "                and diagnostic_groups_drained and not isinstance(error, KeyboardInterrupt)):\n",
+        "            try:\n",
+        "                observe('after-runtime-failure')\n",
+        "            except BaseException as diagnostic_error:\n",
+        "                result['failure_diagnostic_error'] = {'type': type(diagnostic_error).__name__, 'error': str(diagnostic_error)}\n"
+      ],
+      "previous_lines": []
+    },
+    {
+      "current_start": 513,
+      "current_end": 514,
+      "current_lines": [
+        "            require(commands.owned_groups_drained and github.owned_groups_drained and diagnostic_groups_drained,\n"
+      ],
+      "previous_lines": [
+        "            require(commands.owned_groups_drained and github.owned_groups_drained,\n"
+      ]
+    },
+    {
+      "current_start": 523,
+      "current_end": 524,
+      "current_lines": [
+        "                owned_record = {'udid': owned_id, 'name': simulator_name, 'device': inputs['device'], 'runtime': inputs['runtime']}\n"
+      ],
+      "previous_lines": []
+    },
+    {
+      "current_start": 526,
+      "current_end": 537,
+      "current_lines": [
+        "                if success:\n",
+        "                    observe('before-cleanup', reserve=150)\n",
+        "                require(diagnostic_groups_drained, 'A diagnostic command group did not drain before cleanup')\n",
+        "                result['owned_simulator_cleanup'] = cleanup_owned_simulator(cleanup, root, owned_record,\n",
+        "                    simulator_name, inputs['device'], inputs['runtime'], original_device_ids)\n",
+        "                # Preserve every cleanup outcome before diagnostics or admission.\n",
+        "                write_json(evidence / 'execution.json', result)\n",
+        "                if cleanup.owned_groups_drained:\n",
+        "                    observe('after-cleanup', reserve=0)\n",
+        "                require(result['owned_simulator_cleanup']['completed'], 'Owned simulator deletion and absence were not proven')\n",
+        "            require(cleanup.owned_groups_drained and diagnostic_groups_drained, 'An owned cleanup or diagnostic group did not drain')\n"
+      ],
+      "previous_lines": [
+        "                code, out, err = cleanup.run('shutdown-owned-simulator', ['xcrun', 'simctl', 'shutdown', owned_id], root, 60)\n",
+        "                require(code == 0 or (code == 149 and 'current state: Shutdown' in err.read_text(errors='replace')), 'Owned simulator shutdown did not finish')\n",
+        "                cleanup.require('delete-owned-simulator', ['xcrun', 'simctl', 'delete', owned_id], root, 60)\n",
+        "                after = cleanup.require('devices-after-cleanup', ['xcrun', 'simctl', 'list', 'devices', '-j'], root, 30)\n",
+        "                require(not any(d.get('udid') == owned_id for values in json.loads(after.read_bytes())['devices'].values()\n",
+        "                                for d in values), 'Owned simulator remains after delete')\n",
+        "            require(cleanup.owned_groups_drained, 'An owned cleanup group did not drain')\n"
+      ]
+    }
+  ]
+}

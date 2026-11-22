@@ -1,0 +1,476 @@
+--- a/.github/workflows/pinkha-original-editor-runtime-continuation.yml
++++ b/.github/workflows/pinkha-original-editor-runtime-continuation.yml
+@@ -57,9 +57,26 @@
+           binding = json.loads((packet / 'controls/SOURCE_BINDING.json').read_bytes())
+           assert hashlib.sha256((packet / 'controls/RESULT.json').read_bytes()).hexdigest() == binding['executed_result_sha256']
+           assert set(binding['files']) == set(result['source_sha256'])
++          instrumented = packet / 'instrumented'
++          runner_inverse = json.loads((instrumented / 'RUNNER_EXACT_INVERSE.json').read_bytes())
+           for path, commitment in result['source_sha256'].items():
+               item = binding['files'][path]
+               raw = Path(item['current_path']).read_bytes()
++              if item['current_path'] == 'Tools/OriginalEditor/run_runtime_continuation.py':
++                  assert hashlib.sha256(raw).hexdigest() == runner_inverse['current_sha256']
++                  current_text = raw.decode()
++                  lines = current_text.splitlines(keepends=True)
++                  for edit in reversed(runner_inverse['edits']):
++                      assert lines[edit['current_start']:edit['current_end']] == edit['current_lines']
++                      lines[edit['current_start']:edit['current_end']] = edit['previous_lines']
++                  previous_text = ''.join(lines)
++                  def functions(source):
++                      return {node.name: ast.get_source_segment(source, node) for node in ast.parse(source).body
++                              if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name != 'main'}
++                  assert functions(current_text) == functions(previous_text)
++                  assert len(functions(previous_text)) == 10
++                  raw = previous_text.encode()
++                  assert hashlib.sha256(raw).hexdigest() == runner_inverse['previous_sha256']
+               assert hashlib.sha256(raw).hexdigest() == item['current_sha256'], path
+               if 'inverse' in item:
+                   inverse = item['inverse']
+@@ -69,11 +86,31 @@
+           for row in json.loads((packet / 'ORIGINAL_HELPER_BINDINGS.json').read_bytes()):
+               source = Path('Tools/OriginalEditor') / row['path']
+               assert hashlib.sha256(source.read_bytes()).hexdigest() == row['sha256'], row['path']
++          focused = json.loads((instrumented / 'controls/RESULT.json').read_bytes())
++          assert focused['status'] == 'PASS_NEW_INSTRUMENTED_RUNTIME_BOUNDARIES'
++          focused_source = instrumented / 'controls/instrumented_runtime_controls.py'
++          focused_tree = ast.parse(focused_source.read_text())
++          focused_ids = [method.name for node in focused_tree.body
++                         if isinstance(node, ast.ClassDef) and node.name == 'InstrumentedRuntimeBoundaries'
++                         for method in node.body if isinstance(method, ast.FunctionDef) and method.name.startswith('test_')]
++          assert len(focused_ids) == len(set(focused_ids)) == focused['tests_run'] == 14
++          assert sorted(focused_ids) == sorted(focused['expected_ids']) == sorted(focused['started_ids']) == sorted(focused['passed_ids'])
++          assert not focused['errors'] and not focused['failures'] and not focused['skipped']
++          assert focused['old_control_bodies_replayed'] == focused['apple_commands_executed'] == 0
++          routes = {name: Path('Tools/OriginalEditor') / name for name in [
++              'run_runtime_continuation.py', 'runtime_continuation_observation.py', 'runtime_continuation_process.py',
++              'product_inventory.py', 'framework_profile.py', 'pbx_source.py']}
++          routes['instrumented_runtime_controls.py'] = focused_source
++          assert {Path(row['path']).name for row in focused['source_inputs']} == set(routes)
++          assert len(focused['source_inputs']) == len(routes)
++          for row in focused['source_inputs']:
++              assert hashlib.sha256(routes[Path(row['path']).name].read_bytes()).hexdigest() == row['sha256']
+           Path('build').mkdir(exist_ok=True)
+           Path('build/runtime-continuation-control-admission.json').write_text(json.dumps({
+               'status': 'SOURCE_BOUND_NEW_CONTROLS_RETAINED_WITHOUT_REPLAY',
+               'control_sha': os.environ['GITHUB_SHA'], 'run_id': os.environ['GITHUB_RUN_ID'],
+               'retained_new_control_count': result['tests_run'], 'prior_source_controls_replayed': 0,
++              'retained_instrumented_control_count': focused['tests_run'],
+               'new_control_bodies_replayed': 0,
+               'result_sha256': hashlib.sha256((packet / 'controls/RESULT.json').read_bytes()).hexdigest(),
+           }, indent=2, sort_keys=True) + '\n')
+@@ -88,6 +125,48 @@
+             --inputs-sha256 51fc7e47df710254e29cf2ef6e4e9ceb8c83743d6b5e3f361099a7f7991fc032 \
+             --work "$CONTINUATION_WORK" --evidence "$CONTINUATION_EVIDENCE" \
+             --deadline-unix "$OTZARIA_RUNTIME_DEADLINE"
++      - name: Identify the separately retained signed consumer
++        if: always()
++        id: retained_consumer
++        run: |
++          python3 - <<'PY'
++          import hashlib, json, os
++          from pathlib import Path
++          root = Path(os.environ['CONTINUATION_WORK']) / 'retained-consumer'
++          manifest = root / 'consumer-app-retention.json'
++          available = False
++          if manifest.is_file():
++              retained = json.loads(manifest.read_bytes())
++              inputs = json.loads(Path('Tools/OriginalEditor/runtime_continuation_inputs.json').read_bytes())
++              expected = {'repository': os.environ['GITHUB_REPOSITORY'], 'repository_id': int(os.environ['GITHUB_REPOSITORY_ID']),
++                  'control_sha': os.environ['GITHUB_SHA'], 'run_id': int(os.environ['GITHUB_RUN_ID']),
++                  'run_attempt': int(os.environ['GITHUB_RUN_ATTEMPT']),
++                  'workflow_path': '.github/workflows/pinkha-original-editor-runtime-continuation.yml',
++                  'head_branch': os.environ['GITHUB_REF_NAME'], 'job_name': 'original-editor-runtime-continuation'}
++              assert retained['schema'] == 1 and retained['status'] == 'SIGNED_CONSUMER_RETAINED_WITHOUT_RUNTIME_QUALIFICATION'
++              assert retained['runtime_qualified'] is False and retained['restore_as_original_sdk_allowed'] is False
++              assert retained['consumer_producer'] == expected and retained['framework_producer'] == inputs['framework_producer']
++              assert retained['archive_name'] == 'consumer-app.zip'
++              archive = root / retained['archive_name']
++              assert archive.stat().st_size == retained['archive_bytes']
++              with archive.open('rb') as stream: assert hashlib.file_digest(stream, 'sha256').hexdigest() == retained['archive_sha256']
++              assert hashlib.sha256((root / 'consumer-app-inventory.json').read_bytes()).hexdigest() == retained['consumer_inventory_sha256']
++              available = True
++          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
++              output.write('available=' + str(available).lower() + '\n')
++          PY
++      - name: Upload the unqualified signed consumer bytes
++        if: always() && steps.retained_consumer.outputs.available == 'true'
++        uses: actions/upload-artifact@v4
++        with:
++          name: Otzaria-Original-Editor-Signed-Consumer-Unqualified-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
++          path: |
++            ${{ env.CONTINUATION_WORK }}/retained-consumer/consumer-app.zip
++            ${{ env.CONTINUATION_WORK }}/retained-consumer/consumer-app-inventory.json
++            ${{ env.CONTINUATION_WORK }}/retained-consumer/consumer-app-retention.json
++          if-no-files-found: error
++          compression-level: 0
++          retention-days: 14
+       - name: Preserve runtime continuation evidence
+         if: always()
+         run: |
+--- a/Tools/OriginalEditor/run_runtime_continuation.py
++++ b/Tools/OriginalEditor/run_runtime_continuation.py
+@@ -26,6 +26,8 @@
+ from clang_product_closure import read_clang_imports
+ from framework_products import consumer_project, inventory, original_oracles, verify_observation
+ from runtime_continuation_process import Commands, digest, write_json
++from runtime_continuation_observation import (runtime_environment, validate_ownership, observe_runtime,
++                                               retain_signed_consumer, cleanup_owned_simulator)
+ 
+ REPOSITORY = 'davidpovarsky/anytype-swift'
+ QUALIFIED = 'ACTUAL_ORIGINAL_FRAMEWORK_EXTERNAL_IMPORT_LINK_RESOURCES_PASS'
+@@ -35,6 +37,7 @@
+     'Tools/OriginalEditor/runtime_continuation_process.py',
+     'Tools/OriginalEditor/runtime_continuation_inputs.json',
+     'Tools/OriginalEditor/runtime_continuation_controls.py',
++    'Tools/OriginalEditor/runtime_continuation_observation.py',
+ }
+ EVIDENCE_PREFIX = 'docs/pinkha/torah-integration/evidence/original-editor-runtime-continuation-20261122/'
+ ORIGINAL_DOTFILE_PATHS = {
+@@ -283,7 +286,8 @@
+         'control_sha': os.environ['GITHUB_SHA'], 'run_id': int(os.environ['GITHUB_RUN_ID']),
+         'run_attempt': int(os.environ['GITHUB_RUN_ATTEMPT']), 'workflow_path': WORKFLOW,
+         'head_branch': os.environ['GITHUB_REF_NAME'], 'job_name': 'original-editor-runtime-continuation'}
+-    env = {k: os.environ[k] for k in ['PATH', 'HOME', 'TMPDIR', 'LANG', 'LC_ALL', 'DEVELOPER_DIR'] if k in os.environ}
++    env = runtime_environment(os.environ)
++    write_json(evidence / 'runtime-environment.json', env)
+     for name in ['commands', 'github-commands', 'cleanup']:
+         (evidence / name).mkdir()
+     commands = Commands(evidence / 'commands', env, args.deadline_unix - 180)
+@@ -319,8 +323,22 @@
+         'automatic_retry': False}
+     write_json(evidence / 'execution.json', result)
+     owned_id = None
++    owned_record = None
+     simulator_name = None
+     original_device_ids = set()
++    diagnostic_groups_drained = True
++    def observe(stage, reserve=180):
++        nonlocal diagnostic_groups_drained
++        try:
++            observed = observe_runtime(evidence, stage, root, env, args.deadline_unix - reserve, owned_record)
++        except BaseException:
++            diagnostic_groups_drained = False
++            raise
++        diagnostic_groups_drained = diagnostic_groups_drained and observed['owned_groups_drained']
++        result.setdefault('runtime_diagnostics', []).append(observed)
++        write_json(evidence / 'execution.json', result)
++        if observed.get('interrupted'):
++            raise KeyboardInterrupt('Runtime diagnostics were interrupted')
+     success = False
+     try:
+         require(platform.system() == 'Darwin' and platform.machine() == 'arm64', 'Actual Darwin arm64 toolchain required')
+@@ -413,7 +431,9 @@
+         require(str(uuid.UUID(created)).upper() == created.upper() and created not in original_device_ids,
+                 'Simulator creation returned no new exact identity')
+         owned_id = created
+-        write_json(evidence / 'owned-simulator.json', {'udid': owned_id, 'name': simulator_name, 'device': inputs['device'], 'runtime': inputs['runtime']})
++        owned_record = {'udid': owned_id, 'name': simulator_name, 'device': inputs['device'], 'runtime': inputs['runtime']}
++        validate_ownership(owned_record, simulator_name, inputs['device'], inputs['runtime'], original_device_ids)
++        write_json(evidence / 'owned-simulator.json', owned_record)
+         result['preflight']['selected'] = {'ipad': {'udid': owned_id, 'name': simulator_name, 'device': inputs['device'], 'runtime': inputs['runtime']}}
+         derived = work / 'consumer-derived'
+         result['phase'] = 'EXTERNAL_BINARY_CONSUMER_BUILD'
+@@ -423,6 +443,7 @@
+             '-resultBundlePath', evidence / 'consumer-build.xcresult', 'ONLY_ACTIVE_ARCH=YES', 'ARCHS=arm64'], consumer, 600)
+         app = derived / 'Build/Products/Debug-iphonesimulator/OriginalEditorConsumer.app'
+         command('external-consumer-signature', ['codesign', '--verify', '--strict', app])
++        consumer_signature = commands.items[-1]
+         for name in dynamic:
+             require(inventory(app / 'Frameworks' / name) == inventory(distribution / 'Frameworks' / name), 'Embedded original framework differs: ' + name)
+         app_inventory = inventory(app)
+@@ -432,9 +453,20 @@
+             consumer_app_bytes=sum(v['bytes'] for v in app_inventory.values()), consumer_app_files=len(app_inventory),
+             consumer_app_inventory_sha256=digest(evidence / 'consumer-app-inventory.json'), phase='ACTUAL_EXTERNAL_RESOURCE_RUNTIME')
+         require(inventory(distribution) == exported['files'], 'Consumer build changed the retained original SDK')
+-        write_json(evidence / 'execution.json', result)
++        result['phase'] = 'RETAIN_SIGNED_CONSUMER'
++        write_json(evidence / 'execution.json', result)
++        result['retained_signed_consumer'] = retain_signed_consumer(app, app_inventory, consumer_signature,
++            work / 'retained-consumer', current, producer, digest(source),
++            digest(evidence / 'consumer-source-inputs.json'), args.deadline_unix - 180)
++        write_json(evidence / 'retained-consumer.json', result['retained_signed_consumer'])
++        result['phase'] = 'ACTUAL_EXTERNAL_RESOURCE_RUNTIME'
++        write_json(evidence / 'execution.json', result)
++        observe('before-boot')
++        require(diagnostic_groups_drained, 'A diagnostic command group did not drain before boot')
+         command('boot-owned-simulator', ['xcrun', 'simctl', 'boot', owned_id], seconds=60)
+         command('boot-status', ['xcrun', 'simctl', 'bootstatus', owned_id, '-b'], seconds=180)
++        observe('after-boot')
++        require(diagnostic_groups_drained, 'A diagnostic command group did not drain before install')
+         result['install_attempts'] = 1
+         write_json(evidence / 'execution.json', result)
+         command('install-external-consumer', ['xcrun', 'simctl', 'install', owned_id, app], seconds=inputs['install_timeout_seconds'])
+@@ -470,10 +502,16 @@
+         success = True
+     except BaseException as error:
+         result.update(error_type=type(error).__name__, error=str(error))
++        if (owned_record and commands.owned_groups_drained and github.owned_groups_drained
++                and diagnostic_groups_drained and not isinstance(error, KeyboardInterrupt)):
++            try:
++                observe('after-runtime-failure')
++            except BaseException as diagnostic_error:
++                result['failure_diagnostic_error'] = {'type': type(diagnostic_error).__name__, 'error': str(diagnostic_error)}
+     finally:
+         cleanup = Commands(evidence / 'cleanup', env, args.deadline_unix)
+         try:
+-            require(commands.owned_groups_drained and github.owned_groups_drained,
++            require(commands.owned_groups_drained and github.owned_groups_drained and diagnostic_groups_drained,
+                     'A continuation-owned command group has not drained')
+             if owned_id is None and result['simulator_attempts'] == 1:
+                 out = cleanup.require('recover-create-identity', ['xcrun', 'simctl', 'list', 'devices', '-j'], root, 30)
+@@ -483,15 +521,20 @@
+                            and d.get('deviceTypeIdentifier') == inputs['device']['identifier']]
+                 require(len(matches) == 1, 'Creation outcome is uncertain; no broad simulator cleanup is permitted')
+                 owned_id = matches[0]['udid']
++                owned_record = {'udid': owned_id, 'name': simulator_name, 'device': inputs['device'], 'runtime': inputs['runtime']}
+                 write_json(evidence / 'owned-simulator-recovered-for-cleanup.json', matches[0])
+             if owned_id is not None:
+-                code, out, err = cleanup.run('shutdown-owned-simulator', ['xcrun', 'simctl', 'shutdown', owned_id], root, 60)
+-                require(code == 0 or (code == 149 and 'current state: Shutdown' in err.read_text(errors='replace')), 'Owned simulator shutdown did not finish')
+-                cleanup.require('delete-owned-simulator', ['xcrun', 'simctl', 'delete', owned_id], root, 60)
+-                after = cleanup.require('devices-after-cleanup', ['xcrun', 'simctl', 'list', 'devices', '-j'], root, 30)
+-                require(not any(d.get('udid') == owned_id for values in json.loads(after.read_bytes())['devices'].values()
+-                                for d in values), 'Owned simulator remains after delete')
+-            require(cleanup.owned_groups_drained, 'An owned cleanup group did not drain')
++                if success:
++                    observe('before-cleanup', reserve=150)
++                require(diagnostic_groups_drained, 'A diagnostic command group did not drain before cleanup')
++                result['owned_simulator_cleanup'] = cleanup_owned_simulator(cleanup, root, owned_record,
++                    simulator_name, inputs['device'], inputs['runtime'], original_device_ids)
++                # Preserve every cleanup outcome before diagnostics or admission.
++                write_json(evidence / 'execution.json', result)
++                if cleanup.owned_groups_drained:
++                    observe('after-cleanup', reserve=0)
++                require(result['owned_simulator_cleanup']['completed'], 'Owned simulator deletion and absence were not proven')
++            require(cleanup.owned_groups_drained and diagnostic_groups_drained, 'An owned cleanup or diagnostic group did not drain')
+             result['owned_simulator_cleanup_completed'] = True
+         except BaseException as error:
+             success = False
+--- /dev/null
++++ b/Tools/OriginalEditor/runtime_continuation_observation.py
+@@ -0,0 +1,224 @@
++"""Bounded observations and owned cleanup for the retained-framework consumer.
++
++This module neither repairs the host nor qualifies a framework. App retention is
++explicitly unqualified; the original runner still owns all runtime acceptance.
++"""
++import hashlib
++import json
++import os
++from pathlib import Path
++import plistlib
++import stat
++import time
++import uuid
++import zipfile
++
++from product_inventory import inventory
++from runtime_continuation_process import Commands, digest, write_json
++
++ENVIRONMENT_KEYS = ('PATH', 'HOME', 'TMPDIR', 'LANG', 'LC_ALL', 'DEVELOPER_DIR',
++                    'USER', 'LOGNAME', 'SHELL', '__CF_USER_TEXT_ENCODING')
++DIAGNOSTIC_STAGES = {'before-boot', 'after-boot', 'after-runtime-failure', 'before-cleanup', 'after-cleanup'}
++
++
++def require(condition, message):
++    if not condition:
++        raise RuntimeError(message)
++
++
++def runtime_environment(environment):
++    selected = {key: environment[key] for key in ENVIRONMENT_KEYS if key in environment}
++    require(all(isinstance(value, str) and '\0' not in value and len(value) <= 16384
++                for value in selected.values()), 'Malformed ordinary runtime environment')
++    return selected
++
++
++def validate_ownership(owned, expected_name, device, runtime, original_device_ids):
++    require(isinstance(owned, dict) and owned.get('name') == expected_name
++            and owned.get('device') == device and owned.get('runtime') == runtime,
++            'Owned simulator provenance differs')
++    identifier = owned.get('udid')
++    require(isinstance(identifier, str) and str(uuid.UUID(identifier)).upper() == identifier.upper()
++            and identifier.upper() not in {value.upper() for value in original_device_ids},
++            'Simulator is not the newly created owned identity')
++    return identifier
++
++
++def diagnostic_catalog(root):
++    """Read-only commands; ps deliberately excludes command-line arguments."""
++    return [
++        ('host-resources', ['sysctl', '-n', 'hw.memsize', 'hw.logicalcpu', 'vm.swapusage']),
++        ('host-memory', ['vm_stat']),
++        ('owned-filesystem-space', ['df', '-k', str(root)]),
++        ('process-identities', ['ps', '-axo', 'pid=,ppid=,pgid=,comm=']),
++        ('devices-observed', ['xcrun', 'simctl', 'list', 'devices', '-j']),
++    ]
++
++
++def observe_runtime(evidence, stage, root, environment, deadline_unix, owned,
++                    commands_factory=Commands):
++    require(stage in DIAGNOSTIC_STAGES, 'Unexpected diagnostic stage')
++    require(runtime_environment(environment) == environment, 'Unapproved diagnostic environment')
++    destination = Path(evidence) / 'diagnostics' / stage
++    destination.mkdir(parents=True, exist_ok=False)
++    # The whole snapshot gets at most 35 seconds of requested work, each child
++    # at most 8. Actual overrun and owned group drain remain in the command log.
++    deadline = min(deadline_unix, time.time() + 35)
++    commands = commands_factory(destination, environment, deadline)
++    result = {'stage': stage, 'scope': 'READ_ONLY_HOST_AND_OWNED_SIMULATOR_OBSERVATION',
++              'requested_snapshot_budget_seconds': 35, 'requested_child_budget_seconds': 8,
++              'owned_udid': owned.get('udid') if owned else None,
++              'environment': dict(environment), 'commands': [], 'owned_device_state': 'NOT_OBSERVED',
++              'device_plist': 'NOT_OBSERVED'}
++    for label, argv in diagnostic_catalog(root):
++        if not commands.owned_groups_drained or time.time() >= deadline:
++            result['remaining_commands_not_started'] = True
++            break
++        try:
++            code, output, error = commands.run(label, argv, root, 8)
++            result['commands'].append({'label': label, 'effective_returncode': code})
++            if label == 'devices-observed' and code == 0:
++                require(output.stat().st_size <= 8 * 1024 * 1024, 'Oversized simulator diagnostic')
++                devices = json.loads(output.read_bytes())['devices']
++                require(isinstance(devices, dict) and all(isinstance(rows, list) for rows in devices.values()),
++                        'Malformed simulator observation')
++                if owned:
++                    matching = [row for rows in devices.values() for row in rows
++                                if isinstance(row, dict) and row.get('udid') == owned['udid']]
++                    require(len(matching) <= 1, 'Ambiguous owned simulator observation')
++                    result['owned_device_state'] = matching[0] if matching else 'ABSENT_IN_THIS_OBSERVATION'
++        except BaseException as error:
++            result['commands'].append({'label': label, 'error_type': type(error).__name__, 'error': str(error)})
++            if not isinstance(error, Exception):
++                result['interrupted'] = True
++                break
++    # This is an independent read of the exact owned device's persisted record,
++    # useful when the CoreSimulator service cannot answer its list request.
++    if owned and 'HOME' in environment and not result.get('interrupted'):
++        try:
++            identifier = owned['udid']
++            require(str(uuid.UUID(identifier)).upper() == identifier.upper(), 'Invalid diagnostic owned identity')
++            parent = Path(environment['HOME']) / 'Library/Developer/CoreSimulator/Devices'
++            path = parent / identifier / 'device.plist'
++            if not path.exists():
++                result['device_plist'] = 'ABSENT_AT_EXACT_OWNED_PATH'
++            else:
++                require(not path.is_symlink() and path.resolve().is_relative_to(parent.resolve())
++                        and path.is_file() and path.stat().st_size <= 2 * 1024 * 1024,
++                        'Unexpected owned simulator plist')
++                raw = path.read_bytes()
++                value = plistlib.loads(raw)
++                require(value.get('UDID', identifier).upper() == identifier.upper(), 'Owned device plist identity differs')
++                (destination / 'owned-device.plist').write_bytes(raw)
++                result['device_plist'] = {'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest(),
++                    'represented_fields': {key: value[key] for key in ['UDID', 'name', 'state', 'deviceType', 'runtime'] if key in value}}
++        except BaseException as error:
++            result['device_plist'] = {'error_type': type(error).__name__, 'error': str(error)}
++            if not isinstance(error, Exception):
++                result['interrupted'] = True
++    result['owned_groups_drained'] = commands.owned_groups_drained
++    write_json(destination / 'OBSERVATION.json', result)
++    return result
++
++
++def retain_signed_consumer(app, expected_inventory, signature, destination, producer, framework_producer,
++                           source_sha256, source_inventory_sha256, deadline_unix):
++    """Retain real signed bytes before boot without granting runtime acceptance."""
++    app, destination = Path(app), Path(destination)
++    require(app.name == 'OriginalEditorConsumer.app' and app.is_dir() and not app.is_symlink(),
++            'Unexpected signed consumer root')
++    require(signature.get('label') == 'external-consumer-signature'
++            and signature.get('argv') == ['codesign', '--verify', '--strict', str(app)]
++            and signature.get('status') == 'TERMINAL' and signature.get('returncode') == 0
++            and signature.get('effective_returncode') == 0 and signature.get('timed_out') is False,
++            'A successful actual consumer signature command is required')
++    require(inventory(app) == expected_inventory and 0 < len(expected_inventory) <= 20000
++            and sum(row['bytes'] for row in expected_inventory.values()) <= 2 * 1024 * 1024 * 1024,
++            'Signed consumer inventory differs or exceeds its retention bound')
++    require(time.time() + 45 < deadline_unix, 'No bounded consumer retention budget remains')
++    destination.mkdir(parents=True, exist_ok=False)
++    archive = destination / 'consumer-app.zip'
++    partial = destination / 'consumer-app.zip.partial'
++    modes, directories = {}, {}
++    paths = [app, *sorted(app.rglob('*'))]
++    with zipfile.ZipFile(partial, 'x', zipfile.ZIP_DEFLATED, compresslevel=6) as output:
++        for path in paths:
++            require(time.time() < deadline_unix, 'Consumer retention deadline expired')
++            mode = path.lstat().st_mode
++            require(stat.S_ISREG(mode) or stat.S_ISDIR(mode), 'Aliased or special consumer member')
++            require(not stat.S_IMODE(mode) & ~0o777, 'Special consumer permission bits')
++            relative = path.relative_to(app).as_posix()
++            if path.is_dir():
++                directories[relative] = stat.S_IMODE(mode)
++            else:
++                modes[relative] = stat.S_IMODE(mode)
++            output.write(path, app.name + ('/' + relative if relative != '.' else ''))
++    with zipfile.ZipFile(partial) as retained:
++        expected_names = {app.name + ('/' + key if key != '.' else '') + '/' for key in directories}
++        expected_names |= {app.name + '/' + key for key in expected_inventory}
++        require(set(retained.namelist()) == expected_names and len(retained.namelist()) == len(expected_names),
++                'Retained consumer membership differs')
++        for relative, mode in directories.items():
++            name = app.name + ('/' + relative if relative != '.' else '') + '/'
++            entry = retained.getinfo(name)
++            require(entry.is_dir() and stat.S_IMODE(entry.external_attr >> 16) == mode,
++                    'Retained consumer directory mode differs')
++        for relative, expected in expected_inventory.items():
++            require(time.time() < deadline_unix, 'Consumer archive verification deadline expired')
++            entry = retained.getinfo(app.name + '/' + relative)
++            with retained.open(entry) as stream:
++                actual = hashlib.file_digest(stream, 'sha256').hexdigest()
++            require(entry.file_size == expected['bytes'] and actual == expected['sha256']
++                    and stat.S_IMODE(entry.external_attr >> 16) == modes[relative], 'Retained signed consumer byte/mode differs')
++    require(inventory(app) == expected_inventory, 'Consumer changed while being retained')
++    require(all(stat.S_IMODE((app / name).stat().st_mode) == value for name, value in modes.items()),
++            'Consumer file mode changed while being retained')
++    require(all((app / name).is_dir() and stat.S_IMODE((app / name).stat().st_mode) == value
++                for name, value in directories.items()), 'Consumer directory mode changed while being retained')
++    partial.rename(archive)
++    write_json(destination / 'consumer-app-inventory.json', expected_inventory)
++    receipt = {'schema': 1, 'status': 'SIGNED_CONSUMER_RETAINED_WITHOUT_RUNTIME_QUALIFICATION',
++        'runtime_qualified': False, 'restore_as_original_sdk_allowed': False,
++        'consumer_producer': producer, 'framework_producer': framework_producer,
++        'consumer_probe_sha256': source_sha256, 'consumer_source_inventory_sha256': source_inventory_sha256,
++        'consumer_inventory_sha256': digest(destination / 'consumer-app-inventory.json'),
++        'consumer_files': len(expected_inventory), 'consumer_bytes': sum(row['bytes'] for row in expected_inventory.values()),
++        'archive_name': archive.name, 'archive_bytes': archive.stat().st_size, 'archive_sha256': digest(archive),
++        'file_modes': modes, 'directories': directories, 'signature_command': signature,
++        'scope': 'Exact signed external consumer only; original framework retains its original producer and inventory.'}
++    write_json(destination / 'consumer-app-retention.json', receipt)
++    return receipt
++
++
++def cleanup_owned_simulator(commands, root, owned, expected_name, device, runtime, original_device_ids):
++    """A drained shutdown failure cannot hide the targeted delete/post-state."""
++    identifier = validate_ownership(owned, expected_name, device, runtime, original_device_ids)
++    result = {'owned_udid': identifier, 'shutdown': None, 'delete': None, 'post_state': None,
++              'owned_device_proven_absent': False, 'completed': False}
++    operations = [('shutdown', 'shutdown-owned-simulator', ['xcrun', 'simctl', 'shutdown', identifier], 60),
++                  ('delete', 'delete-owned-simulator', ['xcrun', 'simctl', 'delete', identifier], 60),
++                  ('post_state', 'devices-after-cleanup', ['xcrun', 'simctl', 'list', 'devices', '-j'], 30)]
++    for operation, label, argv, seconds in operations:
++        if not commands.owned_groups_drained:
++            result[operation] = {'status': 'NOT_ATTEMPTED_OWNED_COMMAND_GROUP_NOT_DRAINED'}
++            continue
++        try:
++            code, output, error = commands.run(label, argv, root, seconds)
++            result[operation] = {'effective_returncode': code,
++                                 'timed_out': commands.items[-1].get('timed_out')}
++            if operation == 'post_state' and code == 0:
++                require(output.stat().st_size <= 8 * 1024 * 1024, 'Oversized cleanup device list')
++                devices = json.loads(output.read_bytes())['devices']
++                require(isinstance(devices, dict) and all(isinstance(rows, list) for rows in devices.values())
++                        and all(isinstance(row, dict) and isinstance(row.get('udid'), str)
++                                for rows in devices.values() for row in rows), 'Malformed cleanup device list')
++                result['owned_device_proven_absent'] = not any(row['udid'].upper() == identifier.upper()
++                    for rows in devices.values() for row in rows)
++        except Exception as error:
++            result[operation] = {'error_type': type(error).__name__, 'error': str(error)}
++    result['owned_groups_drained'] = commands.owned_groups_drained
++    result['completed'] = (commands.owned_groups_drained and result['owned_device_proven_absent']
++                           and result['delete'].get('effective_returncode') == 0
++                           and result['post_state'].get('effective_returncode') == 0)
++    write_json(commands.evidence / 'OWNED_SIMULATOR_CLEANUP.json', result)
++    return result

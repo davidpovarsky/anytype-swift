@@ -1,0 +1,96 @@
+{
+  "apple_commands_executed": 0,
+  "errors": [],
+  "expected_ids": [
+    "test_an_undrained_diagnostic_stops_later_commands_and_reports_incomplete_ownership",
+    "test_changed_signed_input_cannot_be_archived_as_the_observed_consumer",
+    "test_diagnostics_are_bounded_readonly_and_bind_owned_state_and_plist",
+    "test_diagnostics_reject_unapproved_environment_before_any_command",
+    "test_drained_shutdown_timeout_still_deletes_and_proves_actual_absence",
+    "test_failed_delete_still_observes_state_and_cannot_complete_cleanup",
+    "test_failed_signature_cannot_create_a_retained_consumer_receipt",
+    "test_interrupted_diagnostic_preserves_undrained_state_and_stops",
+    "test_malformed_poststate_is_unknown_and_cannot_complete_cleanup",
+    "test_ordinary_context_is_preserved_without_any_credential_or_child_override",
+    "test_remaining_owned_device_cannot_complete_cleanup",
+    "test_retention_keeps_hidden_bytes_empty_directories_and_executable_modes_unqualified",
+    "test_undrained_shutdown_prevents_later_mutation_and_false_absence",
+    "test_unowned_or_preexisting_identity_cannot_receive_cleanup_commands"
+  ],
+  "failures": [],
+  "old_control_bodies_replayed": 0,
+  "passed_ids": [
+    "test_an_undrained_diagnostic_stops_later_commands_and_reports_incomplete_ownership",
+    "test_changed_signed_input_cannot_be_archived_as_the_observed_consumer",
+    "test_diagnostics_are_bounded_readonly_and_bind_owned_state_and_plist",
+    "test_diagnostics_reject_unapproved_environment_before_any_command",
+    "test_drained_shutdown_timeout_still_deletes_and_proves_actual_absence",
+    "test_failed_delete_still_observes_state_and_cannot_complete_cleanup",
+    "test_failed_signature_cannot_create_a_retained_consumer_receipt",
+    "test_interrupted_diagnostic_preserves_undrained_state_and_stops",
+    "test_malformed_poststate_is_unknown_and_cannot_complete_cleanup",
+    "test_ordinary_context_is_preserved_without_any_credential_or_child_override",
+    "test_remaining_owned_device_cannot_complete_cleanup",
+    "test_retention_keeps_hidden_bytes_empty_directories_and_executable_modes_unqualified",
+    "test_undrained_shutdown_prevents_later_mutation_and_false_absence",
+    "test_unowned_or_preexisting_identity_cannot_receive_cleanup_commands"
+  ],
+  "runtime_qualification": false,
+  "scope": "Actual new helper with explicit command/signature fixtures and actual archive byte/mode IO.",
+  "skipped": [],
+  "source_inputs": [
+    {
+      "bytes": 14940,
+      "path": "/workspace/scratch/22d6326e1023/sdk_runtime_instrumented/controls/instrumented_runtime_controls.py",
+      "sha256": "813114cfca275f92375702be93af18e6c5f4be44ecf4b2c01842a9a8b2187ac6"
+    },
+    {
+      "bytes": 14117,
+      "path": "/workspace/scratch/22d6326e1023/sdk_runtime_instrumented/candidate/Tools/OriginalEditor/runtime_continuation_observation.py",
+      "sha256": "6bc82f3a5676ffe5b0c00228ec5b7a6c630beb7b599a308b07c4787885391170"
+    },
+    {
+      "bytes": 40601,
+      "path": "/workspace/scratch/22d6326e1023/sdk_runtime_instrumented/candidate/Tools/OriginalEditor/run_runtime_continuation.py",
+      "sha256": "b96eaf6445abcd62cbd46aa6d701b2cba0329ebf9bcaf19e4d02a96a5ae203e7"
+    },
+    {
+      "bytes": 7495,
+      "path": "/workspace/scratch/22d6326e1023/sdk_runtime_continuation/candidate/Tools/OriginalEditor/runtime_continuation_process.py",
+      "sha256": "d55f83a6eb3f3334356087813743dce773ec74b7c07695f2184d77c4a07d212f"
+    },
+    {
+      "bytes": 659,
+      "path": "/workspace/scratch/22d6326e1023/sdk_runtime_continuation/original/Tools/OriginalEditor/product_inventory.py",
+      "sha256": "6511e13546ffb02ea8b1d18bf401648663de73fbbc0a6849b84412b1b4d1bbfc"
+    },
+    {
+      "bytes": 11622,
+      "path": "/workspace/scratch/22d6326e1023/sdk_runtime_continuation/original/Tools/OriginalEditor/framework_profile.py",
+      "sha256": "6ca8bc0697a014109f05af34d9eab27a56487da3f476f6df404fe7e06f7ef732"
+    },
+    {
+      "bytes": 4635,
+      "path": "/workspace/scratch/22d6326e1023/sdk_runtime_continuation/original/Tools/OriginalEditor/pbx_source.py",
+      "sha256": "113436ddb2837c9d0c65a650dbde8fe18461c0421a94f6830f60f55961332055"
+    }
+  ],
+  "started_ids": [
+    "test_an_undrained_diagnostic_stops_later_commands_and_reports_incomplete_ownership",
+    "test_changed_signed_input_cannot_be_archived_as_the_observed_consumer",
+    "test_diagnostics_are_bounded_readonly_and_bind_owned_state_and_plist",
+    "test_diagnostics_reject_unapproved_environment_before_any_command",
+    "test_drained_shutdown_timeout_still_deletes_and_proves_actual_absence",
+    "test_failed_delete_still_observes_state_and_cannot_complete_cleanup",
+    "test_failed_signature_cannot_create_a_retained_consumer_receipt",
+    "test_interrupted_diagnostic_preserves_undrained_state_and_stops",
+    "test_malformed_poststate_is_unknown_and_cannot_complete_cleanup",
+    "test_ordinary_context_is_preserved_without_any_credential_or_child_override",
+    "test_remaining_owned_device_cannot_complete_cleanup",
+    "test_retention_keeps_hidden_bytes_empty_directories_and_executable_modes_unqualified",
+    "test_undrained_shutdown_prevents_later_mutation_and_false_absence",
+    "test_unowned_or_preexisting_identity_cannot_receive_cleanup_commands"
+  ],
+  "status": "PASS_NEW_INSTRUMENTED_RUNTIME_BOUNDARIES",
+  "tests_run": 14
+}
