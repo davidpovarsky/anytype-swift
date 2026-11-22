@@ -1,0 +1,47 @@
+{
+  "status": "SOURCE_REVIEW_CLEAR_WITH_ORIGINAL_LIMITATIONS",
+  "reviewer": "heart_completion",
+  "frozen_patch_sha256": "fcc4183e692edd1d9a7a7202a8342feb7bce8c124bbec7719da3e7178a627709",
+  "files": [
+    {
+      "path": "core/block/editor/file/file.go",
+      "bytes": 6736,
+      "sha256": "e95704f380d684ab98af21569887cb135aa6d5120fac11632516d1c914f9a688"
+    },
+    {
+      "path": "core/block/editor/file/owned_upload.go",
+      "bytes": 1771,
+      "sha256": "efc65e213af2fe07c93f551eb96495261835d899c01b274cbab45a43a3abb05a"
+    },
+    {
+      "path": "core/block/owned_file_upload.go",
+      "bytes": 1577,
+      "sha256": "a81179424c4d7b9a0dc12b44adccb1e30f364b14c7073433adbd8ceacb46d7bd"
+    },
+    {
+      "path": "core/files/fileuploader/owned_upload.go",
+      "bytes": 4343,
+      "sha256": "ff9f23846495b2bc0151078f0002c95a5a48e35ebf2e3356221370a74ff4ce19"
+    },
+    {
+      "path": "core/files/fileuploader/uploader.go",
+      "bytes": 26431,
+      "sha256": "494ffda93ed6fe3023bd24833f38cd6de299d344c698b3b7a6f325c8e12c5a6a"
+    }
+  ],
+  "original_cache_blob": "83cc692770550b120df2704b52f64c50a6067a47",
+  "findings": [
+    "Legacy UploadAsync retains original service context; preparation extraction preserves prior order and arguments.",
+    "The owned upload retains the actual original result channel; Upload includes synchronous final updateBlock before result send/close. Done follows channel exhaustion, not cancel acknowledgement.",
+    "Returned handle remains available after initial Apply error and must be registered/drained outside the SmartBlock lock.",
+    "Context-bound getter implements both original ObjectGetter methods; operation cancellation does not cancel the global service or use a shared preload.",
+    "Closed Done establishes publication ordering for the copied scalar outcome. Original final update errors remain logged-only and unproven."
+  ],
+  "limitations": [
+    "Original cache.Do/DoContext checks context only through GetObject, then calls unconditional SmartBlock.Lock. Cancellation can remain pending while lock acquisition waits and does not guarantee absence of a later update. Done correctly remains open until the original call returns.",
+    "Original URL reader has pre-reader error paths that do not close the HTTP body/temp file. Exhausting the upload result channel does not prove cleanup of those original resources.",
+    "No production import caller, actual account-lifetime admission, complete native file readback, compile or execution was reviewed as accepted by this source receipt."
+  ],
+  "changes_by_reviewer": 0,
+  "tests_or_runs_by_reviewer": 0
+}

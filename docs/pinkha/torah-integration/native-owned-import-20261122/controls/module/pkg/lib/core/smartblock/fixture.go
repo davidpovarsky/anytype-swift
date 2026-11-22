@@ -1,0 +1,16 @@
+package smartblock
+type SmartBlockType int32
+const (
+ SmartBlockTypeWorkspace SmartBlockType=iota
+ SmartBlockTypeWidget
+ SmartBlockTypeRelation
+ SmartBlockTypeObjectType
+ SmartBlockTypeRelationOption
+ SmartBlockTypePage
+ SmartBlockTypeFileObject
+ SmartBlockTypeFile
+ SmartBlockTypeProfilePage
+ SmartBlockTypeTemplate
+ SmartBlockTypeParticipant
+ SmartBlockTypeChatDerivedObject
+)

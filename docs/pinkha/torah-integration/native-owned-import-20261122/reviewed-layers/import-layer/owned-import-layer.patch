@@ -1,0 +1,446 @@
+--- a/core/block/import/common/syncer/syncer.go
++++ b/core/block/import/common/syncer/syncer.go
+@@ -6,7 +6,7 @@
+ 
+ type Factory struct {
+ 	fs *FileSyncer
+-	bs *BookmarkSyncer
++	bs Syncer
+ 	is *IconSyncer
+ }
+ 
+@@ -30,3 +30,10 @@
+ 	}
+ 	return nil
+ }
++
++// NewWithBookmarkSyncer permits the explicitly owned importer to reject an
++// unjoined bookmark fetch at the actual live-block boundary. New keeps its
++// original signature and default bookmark behavior.
++func NewWithBookmarkSyncer(fs *FileSyncer, bs Syncer, is *IconSyncer) *Factory {
++	return &Factory{fs: fs, bs: bs, is: is}
++}
+--- /dev/null
++++ b/core/block/import/owned_import_dependencies.go
+@@ -0,0 +1,97 @@
++package importer
++
++import (
++	"errors"
++
++	"github.com/anyproto/any-sync/app"
++	"github.com/gogo/protobuf/proto"
++
++	"github.com/anyproto/anytype-heart/core/anytype/account"
++	"github.com/anyproto/anytype-heart/core/block"
++	"github.com/anyproto/anytype-heart/core/block/collection"
++	"github.com/anyproto/anytype-heart/core/block/detailservice"
++	"github.com/anyproto/anytype-heart/core/block/import/common"
++	creator "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator"
++	"github.com/anyproto/anytype-heart/core/block/import/common/objectid"
++	"github.com/anyproto/anytype-heart/core/block/import/common/syncer"
++	pbc "github.com/anyproto/anytype-heart/core/block/import/pb"
++	"github.com/anyproto/anytype-heart/core/block/object/objectcreator"
++	"github.com/anyproto/anytype-heart/core/block/process"
++	"github.com/anyproto/anytype-heart/core/event"
++	"github.com/anyproto/anytype-heart/core/files/fileobject"
++	"github.com/anyproto/anytype-heart/core/files/filesync"
++	"github.com/anyproto/anytype-heart/core/notifications"
++	"github.com/anyproto/anytype-heart/core/relationutils"
++	"github.com/anyproto/anytype-heart/pb"
++	"github.com/anyproto/anytype-heart/pkg/lib/core"
++	"github.com/anyproto/anytype-heart/pkg/lib/localstore/objectstore"
++	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++	"github.com/anyproto/anytype-heart/space"
++)
++
++// This constructor is deliberately package-private and has no production
++// caller. Exact archive/account/Space admission must be bound before enabling a
++// route. The original public NewProcessor and five-field ImportRequest stay
++// unchanged. Neither caller-owned progress nor mutable RPC data is retained.
++func newOwnedImportProcessor(a *app.App, owned *ownedImportExecution, request *ImportRequest) (*importProcessor, error) {
++	if a == nil || owned == nil || owned.ctx == nil || request == nil || request.RpcObjectImportRequest == nil {
++		return nil, errors.New("owned native import is not initialized")
++	}
++	if err := owned.ctx.Err(); err != nil {
++		return nil, err
++	}
++	if request.Type != model.Import_Pb || request.Mode != pb.RpcObjectImportRequest_ALL_OR_NOTHING ||
++		!request.IsSync || !request.GetNoProgress() || request.SendNotification || request.Progress != nil ||
++		request.IsMigration || request.IsNewSpace || request.SpaceId == "" {
++		return nil, errors.New("unsupported owned native import request")
++	}
++	cloned := *request
++	cloned.RpcObjectImportRequest = proto.Clone(request.RpcObjectImportRequest).(*pb.RpcObjectImportRequest)
++	cloned.Progress = process.NewNoOp()
++	return &importProcessor{
++		deps: newOwnedImportDependencies(a, owned), request: &cloned,
++		response: &ImportResponse{}, captureMappingObservation: true, owned: owned,
++	}, nil
++}
++
++// newOwnedImportDependencies constructs fresh original converter/provider state
++// for one operation. Its caller must retain the exact native app's lifetime;
++// a copied app pointer alone is not admission. No production caller is enabled.
++func newOwnedImportDependencies(a *app.App, owned *ownedImportExecution) *Dependencies {
++	blocks := app.MustComponent[*block.Service](a)
++	spaces := app.MustComponent[space.Service](a)
++	store := app.MustComponent[objectstore.ObjectStore](a)
++	fileObjects := app.MustComponent[fileobject.Service](a)
++	scoped := ownedImportBlockService{Service: blocks, owned: owned}
++	deps := &Dependencies{
++		converters: map[string]common.Converter{
++			model.Import_Pb.String(): pbc.New(
++				app.MustComponent[*collection.Service](a),
++				app.MustComponent[account.Service](a),
++				app.MustComponent[core.TempDirProvider](a),
++			),
++		},
++		blockService:        blocks,
++		spaceService:        spaces,
++		objectStore:         store,
++		fileSync:            app.MustComponent[filesync.FileSync](a),
++		notificationService: app.MustComponent[notifications.Notifications](a),
++		eventSender:         app.MustComponent[event.Sender](a),
++	}
++	// The provider's uploads are synchronous on the original Execute context;
++	// they finish before assignment returns. It is never shared with the legacy
++	// importer or a second owned import.
++	deps.idProvider = objectid.NewIDProvider(store, spaces, blocks, fileObjects)
++	factory := syncer.NewWithBookmarkSyncer(
++		syncer.NewFileSyncer(scoped, fileObjects),
++		ownedImportBookmarkSyncer{},
++		syncer.NewIconSyncer(scoped, fileObjects),
++	)
++	deps.objectCreator = creator.New(
++		app.MustComponent[detailservice.Service](a),
++		factory, store, syncer.NewFileRelationSyncer(scoped, fileObjects), spaces,
++		app.MustComponent[objectcreator.Service](a), scoped,
++		app.MustComponent[relationutils.RelationFormatFetcher](a),
++	)
++	return deps
++}
+--- /dev/null
++++ b/core/block/import/owned_import_drain.go
+@@ -0,0 +1,76 @@
++package importer
++
++import (
++	"fmt"
++
++	"github.com/anyproto/anytype-heart/core/block/import/common"
++	creator "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator"
++	"github.com/anyproto/anytype-heart/core/block/import/common/workerpool"
++	"github.com/anyproto/anytype-heart/core/domain"
++)
++
++// createOwnedObjectsBatch uses the original workers and tasks. Unlike the
++// legacy result reader, cancellation stops admission and still consumes the
++// actual channel until the original worker WaitGroup closes it. It also joins
++// the submission goroutine. This is a local-work drain, not applied-body proof.
++func (p *importProcessor) createOwnedObjectsBatch(data *creator.DataObject, snapshots []*common.Snapshot) map[string]*domain.Details {
++	if err := p.owned.ctx.Err(); err != nil {
++		p.errors.Add(err)
++		return nil
++	}
++	pool := workerpool.NewPool(min(workerPoolSize, len(snapshots)))
++	submissionDone := make(chan struct{})
++	go func() {
++		defer close(submissionDone)
++		p.addWork(snapshots, pool)
++	}()
++	go pool.Start(data)
++
++	details := make(map[string]*domain.Details)
++	cancellation := p.owned.ctx.Done()
++	aborted := false
++	stop := func(err error) {
++		if !aborted {
++			aborted = true
++			p.errors.Add(err)
++			pool.Stop()
++			p.owned.cancel()
++		}
++		// A permanently ready cancellation channel must not spin while native
++		// workers are still returning. Their actual result channel is drained.
++		cancellation = nil
++	}
++	for {
++		select {
++		case <-cancellation:
++			stop(p.owned.ctx.Err())
++		case raw, open := <-pool.Results():
++			if !open {
++				<-submissionDone
++				if p.nativeMapping != nil {
++					p.nativeMappingBatchesDrained++
++				}
++				if !aborted && p.owned.ctx.Err() != nil {
++					stop(p.owned.ctx.Err())
++				}
++				if aborted {
++					return nil
++				}
++				return details
++			}
++			result := raw.(*creator.Result)
++			if result.Err != nil {
++				p.errors.Add(result.Err)
++				// The owned route always retires on a failed native task. Partial
++				// effects remain retained; it never claims atomic rollback.
++				stop(fmt.Errorf("owned native object creation failed: %w", result.Err))
++			}
++			if !aborted {
++				if err := p.request.Progress.TryStep(1); err != nil {
++					stop(fmt.Errorf("%w: %s", common.ErrCancel, err.Error()))
++				}
++			}
++			details[result.NewID] = result.Details
++		}
++	}
++}
+--- /dev/null
++++ b/core/block/import/owned_import_files.go
+@@ -0,0 +1,171 @@
++package importer
++
++import (
++	"context"
++	"errors"
++	"sync"
++
++	"github.com/anyproto/anytype-heart/core/block"
++	"github.com/anyproto/anytype-heart/core/block/editor/smartblock"
++	"github.com/anyproto/anytype-heart/core/block/import/common"
++	"github.com/anyproto/anytype-heart/core/block/simple"
++	"github.com/anyproto/anytype-heart/core/domain"
++	"github.com/anyproto/anytype-heart/core/domain/objectorigin"
++	"github.com/anyproto/anytype-heart/core/files/fileuploader"
++	"github.com/anyproto/anytype-heart/core/session"
++	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++)
++
++var errOwnedImportSealed = errors.New("owned native import file admission is sealed")
++var errOwnedImportPreload = errors.New("owned native import does not admit shared preloads")
++var errOwnedImportBookmark = errors.New("owned native import has no joined bookmark fetch")
++
++type ownedImportFileResult struct {
++	Kind, ObjectID, BlockID, FileObjectID string
++	Err                                   error
++}
++
++// A slot is registered before native upload admission, including its initial
++// object-lock/Apply phase. Cancelling a context never closes ready or Done.
++type ownedImportFileSlot struct {
++	ready  chan struct{}
++	async  *fileuploader.OwnedUpload
++	result ownedImportFileResult
++}
++
++type ownedImportExecution struct {
++	ctx         context.Context
++	cancel      context.CancelFunc
++	mu          sync.Mutex
++	started     bool
++	sealed      bool
++	files       []*ownedImportFileSlot
++	fileResults []ownedImportFileResult
++}
++
++func (o *ownedImportExecution) beginRun() error {
++	o.mu.Lock()
++	defer o.mu.Unlock()
++	if o.started || o.sealed {
++		return errOwnedImportSealed
++	}
++	if err := o.ctx.Err(); err != nil {
++		return err
++	}
++	o.started = true
++	return nil
++}
++
++func newOwnedImportExecution(ctx context.Context) *ownedImportExecution {
++	ownedCtx, cancel := context.WithCancel(ctx)
++	return &ownedImportExecution{ctx: ownedCtx, cancel: cancel}
++}
++
++func (o *ownedImportExecution) beginFile(kind, objectID, blockID string) (*ownedImportFileSlot, error) {
++	o.mu.Lock()
++	defer o.mu.Unlock()
++	if o.sealed {
++		return nil, errOwnedImportSealed
++	}
++	if err := o.ctx.Err(); err != nil {
++		return nil, err
++	}
++	slot := &ownedImportFileSlot{ready: make(chan struct{}), result: ownedImportFileResult{
++		Kind: kind, ObjectID: objectID, BlockID: blockID,
++	}}
++	o.files = append(o.files, slot)
++	return slot, nil
++}
++
++// sealAndDrain is called only by the owning import goroutine, after its actual
++// native workers and submitters have drained. Existing initial upload calls and
++// real asynchronous upload channels must finish even if cancellation was asked.
++// It does not wait for component-wide remote backup synchronization.
++func (o *ownedImportExecution) sealAndDrain() ([]ownedImportFileResult, error) {
++	o.mu.Lock()
++	o.sealed = true
++	slots := append([]*ownedImportFileSlot(nil), o.files...)
++	o.mu.Unlock()
++	results := make([]ownedImportFileResult, 0, len(slots))
++	var outcome error
++	for _, slot := range slots {
++		<-slot.ready
++		result := slot.result
++		if slot.async != nil {
++			// The concrete original hook returns an initialized channel. A
++			// zero handle cannot manufacture completed native work.
++			<-slot.async.Done()
++			actual, completed := slot.async.Result()
++			if !completed {
++				result.Err = errors.Join(result.Err, fileuploader.ErrOwnedUploadCompletion)
++			} else {
++				result.FileObjectID = actual.FileObjectID
++				result.Err = errors.Join(result.Err, actual.Err)
++			}
++		}
++		results = append(results, result)
++		outcome = errors.Join(outcome, result.Err)
++	}
++	return results, errors.Join(outcome, o.ctx.Err())
++}
++
++// The retained concrete block service remains the native implementation. Only
++// this operation's context replaces the syncers' Background/nil cancellation.
++type ownedImportBlockService struct {
++	*block.Service
++	owned *ownedImportExecution
++}
++
++func (s ownedImportBlockService) GetObject(_ context.Context, id string) (smartblock.SmartBlock, error) {
++	return s.Service.GetObject(s.owned.ctx, id)
++}
++
++func (s ownedImportBlockService) GetObjectByFullID(_ context.Context, id domain.FullID) (smartblock.SmartBlock, error) {
++	return s.Service.GetObjectByFullID(s.owned.ctx, id)
++}
++
++func (s ownedImportBlockService) UploadFile(_ context.Context, spaceID string, req block.FileUploadRequest) (id string, kind model.BlockContentFileType, details *domain.Details, err error) {
++	if req.PreloadOnly {
++		return "", 0, nil, errOwnedImportPreload
++	}
++	slot, err := s.owned.beginFile("synchronous-file", req.CreatedInContext, "")
++	if err != nil {
++		return "", 0, nil, err
++	}
++	defer close(slot.ready)
++	id, kind, details, err = s.Service.UploadFile(s.owned.ctx, spaceID, req)
++	slot.result.FileObjectID, slot.result.Err = id, err
++	return id, kind, details, err
++}
++
++func (s ownedImportBlockService) UploadBlockFile(eventCtx session.Context, req block.UploadRequest, groupID string, isSync bool) (string, error) {
++	// Existing FileSyncer explicitly requests async. An unreviewed synchronous
++	// editor route is rejected instead of silently losing its completion.
++	if isSync {
++		return "", fileuploader.ErrOwnedUploadUnavailable
++	}
++	slot, err := s.owned.beginFile("asynchronous-block-file", req.ContextId, req.BlockId)
++	if err != nil {
++		return "", err
++	}
++	defer close(slot.ready)
++	started, err := s.Service.StartOwnedBlockFile(s.owned.ctx, eventCtx, req, groupID)
++	if started == nil && err == nil {
++		err = fileuploader.ErrOwnedUploadCompletion
++	}
++	// Keep a started handle even if the initial native Apply also failed.
++	slot.async, slot.result.Err = started, err
++	return "", err
++}
++
++// Check the actual block handed to the syncer, not just the parsed archive:
++// original object creation can observe a live block changed after preflight.
++type ownedImportBookmarkSyncer struct{}
++
++func (ownedImportBookmarkSyncer) Sync(_ domain.FullID, _ map[string]struct{}, b simple.Block, _ objectorigin.ObjectOrigin) error {
++	bookmark := b.Model().GetBookmark()
++	if bookmark != nil && bookmark.TargetObjectId == "" && bookmark.Url != "" {
++		return errors.Join(common.ErrFileLoad, errOwnedImportBookmark)
++	}
++	return nil
++}
+--- /dev/null
++++ b/core/block/import/owned_import_finalize.go
+@@ -0,0 +1,24 @@
++package importer
++
++import (
++	"context"
++	"errors"
++
++	"github.com/anyproto/anytype-heart/metrics"
++)
++
++// finalizeOwnedImport is used only by the private, explicitly owned processor.
++// Its completion covers the local native calls and file channels admitted by
++// this operation. Remote backup queues and their later status notifications are
++// component-owned background work and are not drained or cleared here.
++func (p *importProcessor) finalizeOwnedImport(ctx context.Context, importID string) {
++	files, err := p.owned.sealAndDrain()
++	p.owned.fileResults = files
++	p.response.Err = errors.Join(p.response.Err, err)
++	if p.response.Err == nil {
++		p.addRootCollectionWidget(ctx)
++	}
++	p.finishImportProcess()
++	recordEvent(&metrics.ImportFinishedEvent{ID: importID, ImportType: p.request.Type.String()})
++	p.sendImportFinishEvent()
++}
+--- a/core/block/import/processor.go
++++ b/core/block/import/processor.go
+@@ -55,6 +55,7 @@
+ 	createPayloads                                                  map[string]treestorage.TreeStorageCreatePayload
+ 	relationKeysToFormat                                            map[domain.RelationKey]int32
+ 	captureMappingObservation                                       bool
++	owned                                                           *ownedImportExecution
+ 	nativeMapping                                                   *nativeMappingBuilder
+ 	nativeMappingTraceID, nativeMappingSpaceID                      string
+ 	nativeMappingAssignmentsFinished, nativeMappingCreationReturned bool
+@@ -62,6 +63,12 @@
+ }
+ 
+ func (p *importProcessor) Execute(ctx context.Context) *ImportResponse {
++	if p.owned != nil {
++		if err := p.owned.beginRun(); err != nil {
++			return &ImportResponse{Err: err}
++		}
++		ctx = p.owned.ctx
++	}
+ 	p.resetNativeMappingObservation()
+ 	if p.request.SpaceId == "" {
+ 		p.response.Err = fmt.Errorf("spaceId is empty")
+@@ -342,6 +349,9 @@
+ // ALL_OR_NOTHING, aborted by a failed object. Draining it is what makes the objects it created
+ // observable to the next batch: Apply indexes synchronously, so a result here means committed.
+ func (p *importProcessor) createObjectsBatch(dataObject *creator.DataObject, snapshots []*common.Snapshot) map[string]*domain.Details {
++	if p.owned != nil {
++		return p.createOwnedObjectsBatch(dataObject, snapshots)
++	}
+ 	// Scale to the batch, not down to a single worker: batches are smaller than the whole
+ 	// import, and dropping to one worker would serialize every archive with fewer snapshots
+ 	// than the pool size.
+@@ -527,6 +537,10 @@
+ }
+ 
+ func (p *importProcessor) finalize(ctx context.Context, importId string) {
++	if p.owned != nil {
++		p.finalizeOwnedImport(ctx, importId)
++		return
++	}
+ 	p.finishImportProcess()
+ 	p.sendFileEvents()
+ 	p.addRootCollectionWidget(ctx)

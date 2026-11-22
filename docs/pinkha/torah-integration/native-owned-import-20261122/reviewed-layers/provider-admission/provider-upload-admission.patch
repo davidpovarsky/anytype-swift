@@ -1,0 +1,109 @@
+--- /dev/null
++++ b/core/block/import/common/objectid/file_upload_provider.go
+@@ -0,0 +1,32 @@
++package objectid
++
++import (
++	"context"
++
++	"github.com/anyproto/anytype-heart/core/block"
++	"github.com/anyproto/anytype-heart/core/domain"
++	"github.com/anyproto/anytype-heart/core/files/fileobject"
++	"github.com/anyproto/anytype-heart/pkg/lib/localstore/objectstore"
++	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++	"github.com/anyproto/anytype-heart/space"
++)
++
++// FileUploader is the original synchronous upload dependency. The ordinary
++// NewIDProvider still receives the same concrete block service. An explicitly
++// owned importer may pass its operation-scoped adapter to retain upload errors
++// that the original file providers intentionally log and fall back from.
++type FileUploader interface {
++	UploadFile(context.Context, string, block.FileUploadRequest) (string, model.BlockContentFileType, *domain.Details, error)
++}
++
++// NewIDProviderWithFileUploader changes only upload observation/context. The
++// original ID assignment, fallback, file-key and object-creation semantics are
++// shared with NewIDProvider; a nil final provider error is not a body proof.
++func NewIDProviderWithFileUploader(
++	objectStore objectstore.ObjectStore,
++	spaceService space.Service,
++	fileUploader FileUploader,
++	fileObjectService fileobject.Service,
++) IdAndKeyProvider {
++	return newIDProvider(objectStore, spaceService, fileUploader, fileObjectService)
++}
+--- a/core/block/import/common/objectid/fileobject.go
++++ b/core/block/import/common/objectid/fileobject.go
+@@ -7,7 +7,6 @@
+ 	"github.com/anyproto/any-sync/commonspace/object/tree/treestorage"
+ 	"go.uber.org/zap"
+ 
+-	"github.com/anyproto/anytype-heart/core/block"
+ 	"github.com/anyproto/anytype-heart/core/block/import/common"
+ 	"github.com/anyproto/anytype-heart/core/domain/objectorigin"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
+@@ -16,7 +15,7 @@
+ type fileObject struct {
+ 	treeObject *treeObject
+ 
+-	blockService *block.Service
++	blockService FileUploader
+ }
+ 
+ func (o *fileObject) GetIDAndPayload(ctx context.Context, spaceId string, sn *common.Snapshot, timestamp time.Time, getExisting bool, origin objectorigin.ObjectOrigin) (string, treestorage.TreeStorageCreatePayload, error) {
+--- a/core/block/import/common/objectid/oldfile.go
++++ b/core/block/import/common/objectid/oldfile.go
+@@ -21,7 +21,7 @@
+ 
+ // oldFile represents file in pre Files-as-Objects format
+ type oldFile struct {
+-	blockService      *block.Service
++	blockService      FileUploader
+ 	fileObjectService fileobject.Service
+ 	objectStore       objectstore.ObjectStore
+ }
+@@ -87,7 +87,7 @@
+ 
+ func uploadFile(
+ 	ctx context.Context,
+-	blockService *block.Service,
++	blockService FileUploader,
+ 	spaceId, filePath string,
+ 	origin objectorigin.ObjectOrigin,
+ 	encryptionKeys map[string]string,
+--- a/core/block/import/common/objectid/provider.go
++++ b/core/block/import/common/objectid/provider.go
+@@ -40,6 +40,15 @@
+ 	objectStore objectstore.ObjectStore,
+ 	spaceService space.Service,
+ 	blockService *block.Service,
++	fileObjectService fileobject.Service,
++) IdAndKeyProvider {
++	return newIDProvider(objectStore, spaceService, blockService, fileObjectService)
++}
++
++func newIDProvider(
++	objectStore objectstore.ObjectStore,
++	spaceService space.Service,
++	blockService FileUploader,
+ 	fileObjectService fileobject.Service,
+ ) IdAndKeyProvider {
+ 	p := &Provider{
+--- a/core/block/import/owned_import_dependencies.go
++++ b/core/block/import/owned_import_dependencies.go
+@@ -78,10 +78,10 @@
+ 		notificationService: app.MustComponent[notifications.Notifications](a),
+ 		eventSender:         app.MustComponent[event.Sender](a),
+ 	}
+-	// The provider's uploads are synchronous on the original Execute context;
+-	// they finish before assignment returns. It is never shared with the legacy
+-	// importer or a second owned import.
+-	deps.idProvider = objectid.NewIDProvider(store, spaces, blocks, fileObjects)
++	// The original provider's synchronous uploads remain on this Execute path.
++	// Its original log-and-fallback behavior is unchanged, while scoped slots
++	// retain the actual upload error for the owning import's final result.
++	deps.idProvider = objectid.NewIDProviderWithFileUploader(store, spaces, scoped, fileObjects)
+ 	factory := syncer.NewWithBookmarkSyncer(
+ 		syncer.NewFileSyncer(scoped, fileObjects),
+ 		ownedImportBookmarkSyncer{},

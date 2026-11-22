@@ -1,0 +1,66 @@
+{
+  "status": "SOURCE_REVIEW_CLEAR_FOR_SLOT_AND_DRAIN_BOUNDARY_ONLY",
+  "reviewer": "heart_completion",
+  "files": [
+    {
+      "path": "core/block/import/common/syncer/syncer.go",
+      "bytes": 947,
+      "sha256": "607899ccf2e0b993093709b40630445525ae7e0234209beda8013f552463873a",
+      "preimage_sha256": "9fe22ef63ef4c6a31ffffd8f8c105f4f5474df5fef7ff6d6a3ad650b7b069940",
+      "preimage_path": "native-owned-import-audit/original/anytype-heart/core/block/import/common/syncer/syncer.go"
+    },
+    {
+      "path": "core/block/import/owned_import_dependencies.go",
+      "bytes": 4583,
+      "sha256": "45a128f02b6e9e4278d0bff7fa4c8b34560b9767cca254d806e0ade3d5e57008",
+      "preimage_sha256": null,
+      "preimage_path": null
+    },
+    {
+      "path": "core/block/import/owned_import_drain.go",
+      "bytes": 2293,
+      "sha256": "00348d426f9b4eb721df0c369cba5c15fea181f80eeefbd100d639a1e9c68609",
+      "preimage_sha256": null,
+      "preimage_path": null
+    },
+    {
+      "path": "core/block/import/owned_import_files.go",
+      "bytes": 6041,
+      "sha256": "742f8e30b8878973ad9a30418b94643cf7c7d812b4563b20851b72530074d2fb",
+      "preimage_sha256": null,
+      "preimage_path": null
+    },
+    {
+      "path": "core/block/import/owned_import_finalize.go",
+      "bytes": 824,
+      "sha256": "0d407ac175f316ff4c1ba77bf9d0ff2f72af0019a53b7442e734740d0a6b4155",
+      "preimage_sha256": null,
+      "preimage_path": null
+    },
+    {
+      "path": "core/block/import/processor.go",
+      "bytes": 23225,
+      "sha256": "bc2ee47724a4f32615a5b5a81f3a3eb25779f273c94fa543ea82169788c7bba6",
+      "preimage_sha256": "5f2d2844d9a07f4319bc594d7e4e666c13b75e77460431e952aa9cf8c150a2bd",
+      "preimage_path": "native-import-request-compat/candidate/native/core/block/import/processor.go"
+    }
+  ],
+  "patch_sha256": "6019741b4315b7ef1ad6c3201c85e88876119a933c0cde2baec11ee1b590b048",
+  "executed_tests": 0,
+  "source_mutations": 0,
+  "findings": [
+    "File slots are registered before initial upload admission. The deferred ready close publishes initial return and any nonnil started handle even when initial Apply returns an error.",
+    "sealAndDrain copies the sealed slot list under its private mutex, releases that mutex, then waits for each initial return and the actual original asynchronous completion channel. No SmartBlock lock is held across these waits.",
+    "The actual original objectcreator syncFilesAndLinks gathers sync tasks under cache.Do but invokes them after that callback releases the object lock; the new async wrapper therefore preserves the existing no-reentrant-lock route.",
+    "The owned batch reader consumes the original worker result channel through its WaitGroup-owned closure and then joins the submission goroutine. A closed cancellation channel is disabled after cancellation to avoid spinning.",
+    "The live bookmark guard rejects only the original unjoined fetch condition (nonempty URL with no existing target) and returns common.ErrFileLoad so the original object creator reports failure. The original factory constructor retains its default bookmark implementation.",
+    "NewProcessor, the legacy ImportRequest shape and legacy readResults/finalization remain default-off and unchanged. The new finalizer does not clear shared component-wide file event queues."
+  ],
+  "preserved_limits": [
+    "Original WorkerPool.works evaluates task.Execute(data) while evaluating a select send. Closing quit can therefore leave already received tasks executing; this source joins their actual completion but cannot promise no write after cancellation request.",
+    "The original synchronous object-ID provider invokes concrete block.Service.UploadFile directly; fileobject.GetIDAndPayload logs an upload error and returns id/payload/nil. These calls finish on the original Execute path, but their errors are not all represented by the scoped slot results. Nil import error does not prove all files succeeded.",
+    "Original cache.Do/DoContext can wait for an object lock after a cancellation check. Some original objectcreator paths also use Background or log-only errors. This bounded layer supplies drain ownership, not a guaranteed cancellation latency, complete applied-body proof or transactional rollback.",
+    "The owner of newOwnedImportExecution must eventually release its derived context after actual Execute/mapping copyout. Canceling it before retainNativeMappingObservation would change the observed cancellation facts. No production owner is enabled by this packet.",
+    "Exact active app/account/archive/Space admission, lifecycle cancellation/join integration and native compile/execution remain open; a copied app pointer or historical mapping cannot authorize a write or ACK."
+  ]
+}

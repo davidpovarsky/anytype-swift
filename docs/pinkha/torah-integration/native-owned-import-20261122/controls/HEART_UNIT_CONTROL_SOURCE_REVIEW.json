@@ -1,0 +1,41 @@
+{
+  "schema": "otzaria.heart-owned-import-unit-source-review/1",
+  "utc": "2026-11-22T17:49:24.830399+00:00",
+  "reviewer": "heart_completion",
+  "status": "SOURCE_CLEAR_FOR_DECLARED_EXTRACTED_UNIT_BOUNDARIES",
+  "execution": "NOT_RUN_BY_REVIEWER",
+  "source_manifest_sha256": "17953bde8059c527a40715a60bc76bdf83ca45dba517d45580cd3f4ec16d9123",
+  "reviewed_controls": 26,
+  "full_source_file_hashes_verified": 12,
+  "original_fragments_verified": 3,
+  "module_files_verified": 39,
+  "reviewed_files": [
+    {
+      "path": "native-owned-import-audit/controls/build_controls.py",
+      "sha256": "4529e9acec6a358cdc3a308900753c85b8e0025159402a81f67e0d9956767ed9"
+    },
+    {
+      "path": "native-owned-import-audit/controls/owned_upload_test.go",
+      "sha256": "caeca3ad80fff4d93bcae3a128c546918a71cbcbb1963a19126e5e5ee3db52d1"
+    },
+    {
+      "path": "native-owned-import-audit/controls/owned_import_test.go",
+      "sha256": "bf2bf64ce60411668577311e7271b3fcc725220be011352d28fd8b2aae266cc8"
+    },
+    {
+      "path": "native-owned-import-audit/controls/run_windows_controls.py",
+      "sha256": "da67b70801ae2e34255bf9c8094b8d12e8e47acc5cabf5c4bb9878a2d08c52bb"
+    }
+  ],
+  "findings": [
+    "Initial admission and later upload completion are independently gated; cancellation acknowledgement alone cannot release held callbacks.",
+    "Failure and cancellation retain actual callback errors and copied scalar results; legacy UploadAsync service context and provider fallback are explicitly checked.",
+    "Actual original WorkerPool/task/addWork source is compiled, while component dependencies are explicit ABI/callback fixtures.",
+    "Both declared fixture packages must compile before any test executes; exact 26 starts/outcomes are required with zero previous suites."
+  ],
+  "limitations": [
+    "No full native module, original application/Space/storage/file upload, editor hook, complete importer.Execute or production authority is compiled or executed by this closure.",
+    "Worker controls cover already-running tasks. The original queued-task Execute-after-Stop select race is not itself exercised, and no prohibition of later work after cancellation is established.",
+    "Thirty millisecond pending checks are bounded negative observations after explicit callback entry, not universal scheduling guarantees."
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "status": "SOURCE_REVIEW_CLEAR_FOR_OPT_IN_PROVIDER_UPLOAD_OBSERVATION",
+  "reviewer": "heart_completion",
+  "files": [
+    {
+      "path": "core/block/import/common/objectid/file_upload_provider.go",
+      "bytes": 1339,
+      "sha256": "afbc0ce4174ad0bcf337bbfef76ce5c56084c392f9cc5eb513a4692b4077b030",
+      "preimage_sha256": null
+    },
+    {
+      "path": "core/block/import/common/objectid/fileobject.go",
+      "bytes": 1511,
+      "sha256": "2037d827213fc28330d2f89d4eebd1062e88bd000188afcc543f7fd15e92c5ae",
+      "preimage_sha256": "487ba1cff8f75d5e968add9243c82a0ace8b69b481dc7f9bc25ba9238ebbce13"
+    },
+    {
+      "path": "core/block/import/common/objectid/oldfile.go",
+      "bytes": 3947,
+      "sha256": "d86a1be57c61b320c99cdfa3c5268c428de2017c1a3071fa4451f61671c21014",
+      "preimage_sha256": "129e1aef835d1141f004babff37182b31822f6a473573d493429980f06ef7a51"
+    },
+    {
+      "path": "core/block/import/common/objectid/provider.go",
+      "bytes": 4197,
+      "sha256": "250fa16b3d17a19a741029ffd5fe6c71d3c3dfd2b0e43550879e078db5e95109",
+      "preimage_sha256": "46b960c5bff18c2e7c3d7d6f7d862196bbbb33114d87ac0a40040c2fe5a7c6e7"
+    },
+    {
+      "path": "core/block/import/owned_import_dependencies.go",
+      "bytes": 4632,
+      "sha256": "f6bc99b3c2de3e41aea66f9c3b3b68822e2af5fa200469e34049c8a4fca00993",
+      "preimage_sha256": "45a128f02b6e9e4278d0bff7fa4c8b34560b9767cca254d806e0ade3d5e57008"
+    }
+  ],
+  "patch_sha256": "be2fa6d40db8e1c9fc8d27de606b1a074eca0a4b30f8ad174428ca6446ca413c",
+  "original_provider_setup_body_byte_identical": true,
+  "executed_tests": 0,
+  "source_mutations": 0,
+  "findings": [
+    "The original four-argument NewIDProvider signature remains concrete and delegates to the byte-identical original setup body. Existing default callers preserve their dependency and fallback behavior.",
+    "The new FileUploader interface matches only the existing synchronous block.Service.UploadFile signature. Only the fileObject/oldFile upload dependency and the shared uploadFile parameter change type. Existing upload/fallback bodies are unchanged.",
+    "The explicitly owned constructor now passes its existing scoped adapter, whose slot registration precedes the real synchronous upload call and whose deferred ready close records the actual return/error. This retains a provider upload error even when the original provider returns its fallback ID with nil error.",
+    "The private finalizer already joins slot errors into the original import response after actual local channel drain. No original ID assignment, source map, object creation or file-key behavior is replaced."
+  ],
+  "limits": [
+    "Source-only clearance; actual compilation, provider failure controls and native cancellation/drain execution remain open.",
+    "An observed error does not roll back prior effects, and a successful upload result remains separate from exact persisted body/file-byte comparison and current account/Space authority.",
+    "The six-file import-layer review remains historical at its original hashes; this receipt covers the separate five-file provider delta only."
+  ]
+}

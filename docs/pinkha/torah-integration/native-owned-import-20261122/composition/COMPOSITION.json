@@ -1,0 +1,36 @@
+{
+  "status": "SOURCE_ONLY_NO_ACTIVATION",
+  "source_files": 15,
+  "existing_preimages": 7,
+  "new_files": 8,
+  "source_layers": [
+    {
+      "path": "native-owned-import-audit/candidate/SOURCE_MANIFEST.json",
+      "bytes": 802,
+      "sha256": "2b1248e9c18b59c75909332fb494e22c1169feef96bfbbc07de087f6e5aa7e08",
+      "git_blob": "b1a126d2785bb289735445d08d7b7d89cef746af"
+    },
+    {
+      "path": "native-owned-import-audit/import-layer/SOURCE_MANIFEST.json",
+      "bytes": 1611,
+      "sha256": "fcde7ba29e493640530845a326bbc3267d9fb32dd7912ebebdf9cb09f9989b3c",
+      "git_blob": "7f9134f0086b937e6f882a9bd4713c408df2581f"
+    },
+    {
+      "path": "native-owned-import-audit/provider-admission/SOURCE_MANIFEST.json",
+      "bytes": 1260,
+      "sha256": "93fb757ba8f37927b57b5bd2917908584864f67afb1463692acb962c8d23ce0b",
+      "git_blob": "d6eb99262f60720dc6d3ff0470fbdfef5f52eaf6"
+    }
+  ],
+  "original_heart": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "required_compatible_origin_commit": "13f63c2dff32ff8ca6b864748843822fcdd0d004",
+  "required_compatible_origin_tree": "90cc6f5adbbcc9f01f38b24766378d38adc0f453",
+  "preimage_actual_compile_run": 45047489968,
+  "ordinary_request_and_constructor_unchanged": true,
+  "r14_remap_and_mapping_capture_bodies_unchanged": true,
+  "source_conflict_resolution": "Only owned_import_dependencies.go takes the reviewed provider-admission afterimage. All other exact frozen files are copied unchanged.",
+  "native_import_route_enabled": false,
+  "account_lifetime_admission_enabled": false,
+  "body_or_ack_authority": false
+}

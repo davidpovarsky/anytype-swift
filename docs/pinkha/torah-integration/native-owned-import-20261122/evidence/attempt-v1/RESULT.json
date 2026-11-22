@@ -1,0 +1,495 @@
+{
+  "started_at": "2026-11-22T17:49:22.094838+00:00",
+  "status": "FAILED_NEW_UNIT_CLOSURE_NO_AUTOMATIC_REPLAY",
+  "native_executions": 0,
+  "prior_suites_replayed": 0,
+  "scope": "New owned uploader/importer/provider unit boundaries over exact actual source files/fragments and original WorkerPool/task. Explicit component ABI/callback fixtures; no full original native module, account, storage, real file upload, body success or ACK.",
+  "fixture_scope": "All files named fixture.go, actual_async_and_fixture.go declarations/Upload callback and separate any-sync/zap replacement modules are explicit dependency fixtures. Full newOwnedImportDependencies, original block/editor hooks and complete importer.Execute are not compiled by this unit closure.",
+  "compiler": "C:\\Program Files\\Go\\bin\\go.exe",
+  "compiler_sha256": "f42439591f4592adfb02a9744af1f2c3a03b704f614d9e939a2d5d04b0a054b3",
+  "source_manifest": {
+    "scope": "New owned uploader/importer/provider unit boundaries over exact actual source files/fragments and original WorkerPool/task. Explicit component ABI/callback fixtures; no full original native module, account, storage, real file upload, body success or ACK.",
+    "full_actual_source_files": [
+      {
+        "source": "native-owned-import-audit/candidate/native/core/files/fileuploader/owned_upload.go",
+        "compiled_path": "core/files/fileuploader/owned_upload.go",
+        "bytes": 4343,
+        "sha256": "ff9f23846495b2bc0151078f0002c95a5a48e35ebf2e3356221370a74ff4ce19",
+        "full_file": true,
+        "kind": "candidate"
+      },
+      {
+        "source": "native-map-audit/original/core/block/import/common/workerpool/workerpool.go",
+        "compiled_path": "core/block/import/common/workerpool/workerpool.go",
+        "bytes": 1189,
+        "sha256": "619d4f594618d1339f81da4d1a572106e52a43ca395227b0cbeee9f07bfbb979",
+        "full_file": true,
+        "kind": "original"
+      },
+      {
+        "source": "native-map-audit/original/core/block/import/common/objectcreator/task.go",
+        "compiled_path": "core/block/import/common/objectcreator/task.go",
+        "bytes": 1730,
+        "sha256": "4d5ba7e2c6dbb4bf51334a9664a276f18b8fd2e2b915d20f96d4f8b525749f6c",
+        "full_file": true,
+        "kind": "original"
+      },
+      {
+        "source": "native-owned-import-audit/provider-admission/candidate/native/core/block/import/common/objectid/provider.go",
+        "compiled_path": "core/block/import/common/objectid/provider.go",
+        "bytes": 4197,
+        "sha256": "250fa16b3d17a19a741029ffd5fe6c71d3c3dfd2b0e43550879e078db5e95109",
+        "full_file": true,
+        "kind": "candidate"
+      },
+      {
+        "source": "native-owned-import-audit/provider-admission/candidate/native/core/block/import/common/objectid/fileobject.go",
+        "compiled_path": "core/block/import/common/objectid/fileobject.go",
+        "bytes": 1511,
+        "sha256": "2037d827213fc28330d2f89d4eebd1062e88bd000188afcc543f7fd15e92c5ae",
+        "full_file": true,
+        "kind": "candidate"
+      },
+      {
+        "source": "native-owned-import-audit/provider-admission/candidate/native/core/block/import/common/objectid/oldfile.go",
+        "compiled_path": "core/block/import/common/objectid/oldfile.go",
+        "bytes": 3947,
+        "sha256": "d86a1be57c61b320c99cdfa3c5268c428de2017c1a3071fa4451f61671c21014",
+        "full_file": true,
+        "kind": "candidate"
+      },
+      {
+        "source": "native-owned-import-audit/provider-admission/candidate/native/core/block/import/common/objectid/file_upload_provider.go",
+        "compiled_path": "core/block/import/common/objectid/file_upload_provider.go",
+        "bytes": 1339,
+        "sha256": "afbc0ce4174ad0bcf337bbfef76ce5c56084c392f9cc5eb513a4692b4077b030",
+        "full_file": true,
+        "kind": "candidate"
+      },
+      {
+        "source": "native-owned-import-audit/import-layer/candidate/native/core/block/import/owned_import_files.go",
+        "compiled_path": "core/block/import/owned_import_files.go",
+        "bytes": 6041,
+        "sha256": "742f8e30b8878973ad9a30418b94643cf7c7d812b4563b20851b72530074d2fb",
+        "full_file": true,
+        "kind": "candidate"
+      },
+      {
+        "source": "native-owned-import-audit/import-layer/candidate/native/core/block/import/owned_import_drain.go",
+        "compiled_path": "core/block/import/owned_import_drain.go",
+        "bytes": 2293,
+        "sha256": "00348d426f9b4eb721df0c369cba5c15fea181f80eeefbd100d639a1e9c68609",
+        "full_file": true,
+        "kind": "candidate"
+      },
+      {
+        "source": "native-owned-import-audit/import-layer/candidate/native/core/block/import/owned_import_finalize.go",
+        "compiled_path": "core/block/import/owned_import_finalize.go",
+        "bytes": 824,
+        "sha256": "0d407ac175f316ff4c1ba77bf9d0ff2f72af0019a53b7442e734740d0a6b4155",
+        "full_file": true,
+        "kind": "candidate"
+      },
+      {
+        "source": "native-owned-import-audit/controls/owned_upload_test.go",
+        "compiled_path": "core/files/fileuploader/owned_upload_test.go",
+        "bytes": 8227,
+        "sha256": "caeca3ad80fff4d93bcae3a128c546918a71cbcbb1963a19126e5e5ee3db52d1",
+        "full_file": true,
+        "kind": "control"
+      },
+      {
+        "source": "native-owned-import-audit/controls/owned_import_test.go",
+        "compiled_path": "core/block/import/owned_import_test.go",
+        "bytes": 20974,
+        "sha256": "bf2bf64ce60411668577311e7271b3fcc725220be011352d28fd8b2aae266cc8",
+        "full_file": true,
+        "kind": "control"
+      }
+    ],
+    "actual_source_fragments": [
+      {
+        "source": "native-owned-import-audit/candidate/native/core/files/fileuploader/uploader.go",
+        "start": "type UploadResult struct {",
+        "end": "\nfunc (ur UploadResult) ToBlock",
+        "source_sha256": "494ffda93ed6fe3023bd24833f38cd6de299d344c698b3b7a6f325c8e12c5a6a",
+        "fragment_sha256": "3a1dc61415404a901a4ebb0bc8ce2d4851d50bc912094f85641411cd788a8a24",
+        "bytes": 275
+      },
+      {
+        "source": "native-owned-import-audit/candidate/native/core/files/fileuploader/uploader.go",
+        "start": "func (u *uploader) UploadAsync(",
+        "end": "\nfunc (u *uploader) addFile(",
+        "source_sha256": "494ffda93ed6fe3023bd24833f38cd6de299d344c698b3b7a6f325c8e12c5a6a",
+        "fragment_sha256": "13ffac6f8a98c313b6b69696641450dd52d527a1146aa062d3ae59e6c128e8ff",
+        "bytes": 746
+      },
+      {
+        "source": "native-owned-import-audit/import-layer/candidate/native/core/block/import/processor.go",
+        "start": "func (p *importProcessor) addWork(",
+        "end": "\nfunc (p *importProcessor) readResults(",
+        "source_sha256": "bc2ee47724a4f32615a5b5a81f3a3eb25779f273c94fa543ea82169788c7bba6",
+        "fragment_sha256": "9cdf4f5ebdc1e0074cd212f31f44d582cfbb7541e617780b326f34778f41c8e9",
+        "bytes": 262
+      }
+    ],
+    "module_files": [
+      {
+        "path": "core/block/cache/fixture.go",
+        "bytes": 333,
+        "sha256": "95c1ef457eafd81600e720f338e15ec21eb05c2f9a589e6874cb10cfcf9de48c"
+      },
+      {
+        "path": "core/block/editor/smartblock/fixture.go",
+        "bytes": 47,
+        "sha256": "b6679d3733506c71e9b8fcfe0cd2b3fd172993a7460488f5bcde2bd3326c6e20"
+      },
+      {
+        "path": "core/block/fixture.go",
+        "bytes": 1613,
+        "sha256": "7a3bf6f10456a592b191efc1aa0865931f3303130f19675d4484fdb1cc463543"
+      },
+      {
+        "path": "core/block/import/common/fixture.go",
+        "bytes": 810,
+        "sha256": "a12156f351e9e20ca18af5dfcd68e7c98511d14f5affb95ff72eada9eee9d794"
+      },
+      {
+        "path": "core/block/import/common/objectcreator/fixture.go",
+        "bytes": 432,
+        "sha256": "e6b527d38eccb7d666f319a1317606d905d1607b59ee07c2f315344e1265623c"
+      },
+      {
+        "path": "core/block/import/common/objectcreator/task.go",
+        "bytes": 1730,
+        "sha256": "4d5ba7e2c6dbb4bf51334a9664a276f18b8fd2e2b915d20f96d4f8b525749f6c"
+      },
+      {
+        "path": "core/block/import/common/objectid/file_upload_provider.go",
+        "bytes": 1339,
+        "sha256": "afbc0ce4174ad0bcf337bbfef76ce5c56084c392f9cc5eb513a4692b4077b030"
+      },
+      {
+        "path": "core/block/import/common/objectid/fileobject.go",
+        "bytes": 1511,
+        "sha256": "2037d827213fc28330d2f89d4eebd1062e88bd000188afcc543f7fd15e92c5ae"
+      },
+      {
+        "path": "core/block/import/common/objectid/fixture.go",
+        "bytes": 1411,
+        "sha256": "ff2324cb97422ea9d579c6abc27e5475a4be2434ce1ba303d963f88662c21305"
+      },
+      {
+        "path": "core/block/import/common/objectid/oldfile.go",
+        "bytes": 3947,
+        "sha256": "d86a1be57c61b320c99cdfa3c5268c428de2017c1a3071fa4451f61671c21014"
+      },
+      {
+        "path": "core/block/import/common/objectid/provider.go",
+        "bytes": 4197,
+        "sha256": "250fa16b3d17a19a741029ffd5fe6c71d3c3dfd2b0e43550879e078db5e95109"
+      },
+      {
+        "path": "core/block/import/common/workerpool/workerpool.go",
+        "bytes": 1189,
+        "sha256": "619d4f594618d1339f81da4d1a572106e52a43ca395227b0cbeee9f07bfbb979"
+      },
+      {
+        "path": "core/block/import/fixture.go",
+        "bytes": 1383,
+        "sha256": "b883c5c56ed8ced101667a02120dd19e0310ce685c4b6023843e565a44679e65"
+      },
+      {
+        "path": "core/block/import/owned_import_drain.go",
+        "bytes": 2293,
+        "sha256": "00348d426f9b4eb721df0c369cba5c15fea181f80eeefbd100d639a1e9c68609"
+      },
+      {
+        "path": "core/block/import/owned_import_files.go",
+        "bytes": 6041,
+        "sha256": "742f8e30b8878973ad9a30418b94643cf7c7d812b4563b20851b72530074d2fb"
+      },
+      {
+        "path": "core/block/import/owned_import_finalize.go",
+        "bytes": 824,
+        "sha256": "0d407ac175f316ff4c1ba77bf9d0ff2f72af0019a53b7442e734740d0a6b4155"
+      },
+      {
+        "path": "core/block/import/owned_import_test.go",
+        "bytes": 20974,
+        "sha256": "bf2bf64ce60411668577311e7271b3fcc725220be011352d28fd8b2aae266cc8"
+      },
+      {
+        "path": "core/block/simple/file/fixture.go",
+        "bytes": 232,
+        "sha256": "b2a2d9414f91b3b37568db09e03787b5de2e429ff40e94a3822fa44e22b77d0a"
+      },
+      {
+        "path": "core/block/simple/fixture.go",
+        "bytes": 121,
+        "sha256": "751ddaa8311341facd0f232c94312950e8ba756a81c7f1a21f823656fa637699"
+      },
+      {
+        "path": "core/domain/fixture.go",
+        "bytes": 758,
+        "sha256": "76de32e177e6dcfa8eff7138cf11f94dabad782d0e2820840a29a3072d543d49"
+      },
+      {
+        "path": "core/domain/objectorigin/fixture.go",
+        "bytes": 48,
+        "sha256": "336bd9d81b3c0fda3a51e73038e98e2407fa80a15472e4e0e04e1e0622611bcb"
+      },
+      {
+        "path": "core/files/fileobject/fixture.go",
+        "bytes": 259,
+        "sha256": "6babec8f10e9b6e15eddd997118eadb9eed1baef092fa862c1a0df899411c8b2"
+      },
+      {
+        "path": "core/files/fileuploader/actual_async_and_fixture.go",
+        "bytes": 1922,
+        "sha256": "fe1f57f89975c5474e855ba40f66ead7d28179eca250ab9db78784c68bfc31eb"
+      },
+      {
+        "path": "core/files/fileuploader/owned_upload.go",
+        "bytes": 4343,
+        "sha256": "ff9f23846495b2bc0151078f0002c95a5a48e35ebf2e3356221370a74ff4ce19"
+      },
+      {
+        "path": "core/files/fileuploader/owned_upload_test.go",
+        "bytes": 8227,
+        "sha256": "caeca3ad80fff4d93bcae3a128c546918a71cbcbb1963a19126e5e5ee3db52d1"
+      },
+      {
+        "path": "core/session/fixture.go",
+        "bytes": 41,
+        "sha256": "c2ff10746e4580af17ad174675770541ee8e72e6f89323b6bed149a5e71df187"
+      },
+      {
+        "path": "fixture-modules/any-sync/commonspace/object/tree/treestorage/fixture.go",
+        "bytes": 59,
+        "sha256": "bd054b84036ae94776d1893f6883f76e7229fd47a6161d0b54b102ebf2c2987e"
+      },
+      {
+        "path": "fixture-modules/any-sync/go.mod",
+        "bytes": 46,
+        "sha256": "afd675f1b5b75c8cc5d19ec97400624680ba7e2f91c3b21caaeee1b9977f6b97"
+      },
+      {
+        "path": "fixture-modules/zap/fixture.go",
+        "bytes": 53,
+        "sha256": "d837499f044a509afbddfd2636885807774d4990482827ff8d988eaf136b0e6f"
+      },
+      {
+        "path": "fixture-modules/zap/go.mod",
+        "bytes": 33,
+        "sha256": "884c04bbffbc47586f533cf4f9c2cfed357e03281b77d8cb0dfac13eea82a154"
+      },
+      {
+        "path": "go.mod",
+        "bytes": 242,
+        "sha256": "56afea0c37e1cdf68f62b2b7b74490d77686f3633d8e570880e3cfa812998417"
+      },
+      {
+        "path": "metrics/fixture.go",
+        "bytes": 70,
+        "sha256": "c3b63c335a0fa9c601e8961b1f54490c2c2bc8c68fe48d325b9aeabc25132791"
+      },
+      {
+        "path": "pb/fixture.go",
+        "bytes": 90,
+        "sha256": "670021ca86401310319f3291c11713344e59a38141e00b0cfdf94b26e4a38b59"
+      },
+      {
+        "path": "pkg/lib/bundle/fixture.go",
+        "bytes": 224,
+        "sha256": "c53d268f43f7570c9292b8fdb738abc9cea47a604836cd3aa4cf11fe03f692cb"
+      },
+      {
+        "path": "pkg/lib/core/smartblock/fixture.go",
+        "bytes": 379,
+        "sha256": "d29a061349c767c4b750f5bfb1bd89706ea3d2e10874119e2c2128abac67b983"
+      },
+      {
+        "path": "pkg/lib/localstore/objectstore/fixture.go",
+        "bytes": 149,
+        "sha256": "df44ff815fc1478906f1c74b044c5be604bab37c6390180757a6a4ca2e588790"
+      },
+      {
+        "path": "pkg/lib/logging/fixture.go",
+        "bytes": 128,
+        "sha256": "b636f55ae5e9c204feb16ac593cde89fd985f4cc0fba21ea066089ae055f3db1"
+      },
+      {
+        "path": "pkg/lib/pb/model/fixture.go",
+        "bytes": 583,
+        "sha256": "3b58b7abd719333d36e7fb860da9904dcfb4bef2d84a7f60f6aeebe6decf26b2"
+      },
+      {
+        "path": "space/fixture.go",
+        "bytes": 39,
+        "sha256": "64f2436a02cacd34f73444b94fecfb6ac69a9374bf704b552e299944028c1c9a"
+      }
+    ],
+    "fixture_scope": "All files named fixture.go, actual_async_and_fixture.go declarations/Upload callback and separate any-sync/zap replacement modules are explicit dependency fixtures. Full newOwnedImportDependencies, original block/editor hooks and complete importer.Execute are not compiled by this unit closure.",
+    "expected_tests": [
+      {
+        "package": "github.com/anyproto/anytype-heart/core/files/fileuploader",
+        "name": "TestOwnedUploadRejectsUnownedOrInactiveAdmission"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/files/fileuploader",
+        "name": "TestOwnedCancellationWaitsForActualCallbackAndReturnsCopiedResult"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/files/fileuploader",
+        "name": "TestServiceCancellationPropagatesWithoutPublishingPrematureDrain"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/files/fileuploader",
+        "name": "TestLegacyUploadAsyncStillUsesOriginalServiceContext"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/files/fileuploader",
+        "name": "TestZeroOrNilOwnedHandleCannotManufactureCompletion"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/files/fileuploader",
+        "name": "TestOwnedObjectGetterBindsBothOriginalLookupRoutes"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/files/fileuploader",
+        "name": "TestSuccessfulOwnedUploadDoesNotInventCancellation"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/block/import",
+        "name": "TestOwnedExecutionAdmitsOnlyOneRun"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/block/import",
+        "name": "TestPrecancelledExecutionRejectsRunAndFileAdmission"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/block/import",
+        "name": "TestSynchronousFileSlotIsRegisteredBeforeCallAndWaitsActualReturn"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/block/import",
+        "name": "TestStartedAsyncHandleSurvivesInitialApplyFailureUntilActualDrain"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/block/import",
+        "name": "TestMissingAsyncHandleIsRetainedAsFailure"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/block/import",
+        "name": "TestOwnedFileAdapterRejectsSharedPreloadAndUnreviewedSyncRoute"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/block/import",
+        "name": "TestSealedOperationRejectsLateSyncAndAsyncAdmission"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/block/import",
+        "name": "TestOwnedBlockGettersOverrideBackgroundAndNilContexts"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/block/import",
+        "name": "TestLiveBookmarkGuardRejectsOnlyUnjoinedFetch"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/block/import",
+        "name": "TestFileProviderFallbackCannotHideOwnedSynchronousUploadFailure"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/block/import",
+        "name": "TestOldFileFallbackAndKeysRemainOriginalWhileUploadErrorIsObserved"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/block/import",
+        "name": "TestOrdinaryProviderKeepsConcreteDependencyAndFallbackBehavior"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/block/import",
+        "name": "TestSuccessfulBatchWaitsOriginalWorkersAndReturnsBothResults"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/block/import",
+        "name": "TestPrecancelledBatchDoesNotStartOriginalTasks"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/block/import",
+        "name": "TestEmptyBatchJoinsOriginalSubmissionAndZeroWorkerClosure"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/block/import",
+        "name": "TestCancellationWaitsAllAlreadyExecutingOriginalTasks"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/block/import",
+        "name": "TestFirstTaskFailureWaitsOtherOriginalWorkerBeforeReturning"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/block/import",
+        "name": "TestFinalizationWaitsActualUploadAndPreservesPriorAndFileErrors"
+      },
+      {
+        "package": "github.com/anyproto/anytype-heart/core/block/import",
+        "name": "TestSuccessfulFinalizationRunsOnlyAfterOriginalFileCompletion"
+      }
+    ],
+    "prior_controls_replayed": 0,
+    "native_executions": 0
+  },
+  "commands": [
+    {
+      "name": "go-version",
+      "args": [
+        "C:\\Program Files\\Go\\bin\\go.exe",
+        "version"
+      ],
+      "exit": 0,
+      "timed_out": false,
+      "pid": 30824,
+      "process_wait_completed": true,
+      "seconds": 0.297,
+      "stdout": {
+        "bytes": 34,
+        "sha256": "a1ae6dc6b3b40081e3c80e6066e60c64af94a96582f26ceea875c8dd0807125b"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "compile-uploader",
+      "args": [
+        "C:\\Program Files\\Go\\bin\\go.exe",
+        "test",
+        "-c",
+        "-o",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-owned-import-controls-20261122-v1\\uploader-unit.test.exe",
+        "./core/files/fileuploader"
+      ],
+      "exit": 1,
+      "timed_out": true,
+      "pid": 12308,
+      "process_wait_completed": true,
+      "seconds": 90.907,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "tests": [],
+  "tests_run": 0,
+  "expected_leaf_controls": 26,
+  "go_version": "go version go1.25.6 windows/amd64",
+  "error": "RuntimeError: uploader fixture closure compile failed; no control was executed",
+  "finished_at": "2026-11-22T17:50:54.039211+00:00"
+}
