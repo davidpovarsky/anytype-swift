@@ -313,7 +313,10 @@ actor AuthService: AuthServiceProtocol, Sendable {
         let transition = accountManager.editorWriteLifetime.map {
             EditorAccountWriteTransition(lifetime: $0, rpcNames: ["AccountStop"], attemptCaptures: stop.captures)
         }
-        try await withTaskCancellationHandler {
+        // Once accepted, Stop owns cleanup independently of the caller. A caller
+        // cancellation must not revoke the only native RPC that can release the
+        // retired startup's AccountSelect/Create callback.
+        let cleanup = Task { [self] in
             do {
                 // Real original Stop is invoked BEFORE any retired-start drain await.
                 // AccountStop(false) may return while that start is still cleaning.
@@ -329,14 +332,17 @@ actor AuthService: AuthServiceProtocol, Sendable {
             } catch {
                 stop.retire()
                 await transition?.finishAndWaitForRelease()
-                await previous?.waitForDrain()
-                if let previous { await loginStateService.cancelStartup(attempt: previous) }
+                // A failed Stop may leave the retired native startup pending.
+                // Keep its cleanup owned by that attempt and admit another Stop;
+                // joining it here would prevent the retry needed to release it.
                 successfulStopRequired = true
                 stop.finishOuter()
                 if stopping === stop { stopping = nil }
                 throw error
             }
-        } onCancel: { stop.retire() }
+        }
+        try await cleanup.value
+        try Task.checkCancellation()
     }
 
     func deleteAccount() async throws -> AccountStatus {

@@ -103,7 +103,9 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
         previous?.retire() // synchronous, also revokes the child's Auth attempt
         let originalAccount = accounts.account.id
         let bootstrap = bootstrap
-        try await withTaskCancellationHandler {
+        // This accepted Stop must outlive cancellation of its UI caller. Its
+        // native child is the operation that releases any retired startup.
+        let cleanup = Task { [self] in
             do {
                 // True removal keeps the original journal poison/flush/removal
                 // before native erasure. This path never overlaps a startup.
@@ -127,13 +129,16 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
                 if stopping === stop { stopping = nil }
             } catch {
                 stop.retire()
-                await previous?.waitForDrain()
+                // Do not join a native startup after Stop failed: another Stop
+                // must remain admissible to release that retired operation.
                 successfulStopRequired = true
                 stop.finishOuter()
                 if stopping === stop { stopping = nil }
                 throw error
             }
-        } onCancel: { stop.retire() }
+        }
+        try await cleanup.value
+        try Task.checkCancellation()
     }
 
     func deleteAccount() async throws -> AccountStatus {
