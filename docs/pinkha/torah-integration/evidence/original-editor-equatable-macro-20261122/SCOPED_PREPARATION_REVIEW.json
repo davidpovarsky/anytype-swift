@@ -1,0 +1,47 @@
+{
+  "status": "SCOPED_MACRO_APPROVAL_SOURCE_REVIEWED_APPLE_ACCEPTANCE_PENDING",
+  "product_source_head": "fc03fcd713e2c449ad97c5d1e604a9433c2a309b",
+  "product_trees_unchanged": {
+    "Anytype/Sources": "fe509f78c2c2dee5db314c82f5272852d6e1c3d2",
+    "Anytype/Resources": "0827010674c089cfe9846e592e1d801e9d3f7a9b",
+    "Modules": "e2913a7c1f322407d5cfd73ad9e051622e1fa870",
+    "OriginalEditorFramework": "8bc1d92a3f209d2e42c74e273f1d675eae38f3f2",
+    "Anytype.xcodeproj": "5200a1b5cdaaaabda45906c82105ba8629d688f6"
+  },
+  "rejected_run": 44976039281,
+  "rejected_artifact": {
+    "id": 14735711994,
+    "bytes": 103258,
+    "sha256": "5f3bdd52fe61195bd6524f7ca2f275d567af9fc7c9da6343f088a4418be86953",
+    "both_archive_crcs_verified": true
+  },
+  "failure": "Xcode ComputeTargetDependencyGraph: EquatableMacros must be enabled before it can be used; exit65 before Swift compilation.",
+  "existing_source_controls": {
+    "status": "PASS_SOURCE_CONTROLS_221",
+    "run_id": 44976039281,
+    "rerun_locally": false
+  },
+  "strict_package_resolution": {
+    "status": "ACTUAL_PASS_51_PINS_UNCHANGED",
+    "run_id": 44975218662,
+    "repeated_maintenance_run": false
+  },
+  "approval_record": {
+    "packageIdentity": "equatable",
+    "targetName": "EquatableMacros",
+    "fingerprint": "597c2bb34af0c51331eb3b5e705f942d8ee20daa"
+  },
+  "safety_properties": [
+    "Verifies exactURL/version/revision, original Package.swift and17macro source Git blobs from immutable upstream archive.",
+    "Adds only one target+revision tuple; all existing trust-store bytes remain in their original order.",
+    "Preexisting exactapproval is a no-op and is never removed.",
+    "Ownership/evidence written before mutation; alwaysstep restores original bytes only when actualcurrentfilematchesownedafterimage.",
+    "Aliased paths, foreignrun ownership and concurrent changes rejected without overwriting.",
+    "Original build command, strictfrozen package gate, tests, signatures, public/SPI, externalbinary consumer and runtime resource gates remain unchanged."
+  ],
+  "new_helper_sha256": "b0733b76dba92a4d150662d8b144d559df27a379e573fc35e2de4544442fb5c7",
+  "control_evidence": "20initialnewcontrolsPASS;9affectedcontrols rerunafterbyte-preservingappend,11unaffectedexactfunctioncontrolsreused;seeBYTE_PRESERVATION_DELTA.json",
+  "global_defaults_modified": false,
+  "validation_skip_flags_added": false,
+  "created_at": "2026-11-22T02:46:32.999436+00:00"
+}

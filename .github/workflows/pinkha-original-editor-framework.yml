@@ -73,11 +73,22 @@ jobs:
             --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch \
             --app-source "$GITHUB_WORKSPACE" --source-run-id "$HEART_SOURCE_RUN_ID" \
             --expected-app-branch "$EXPECTED_APP_BRANCH" --evidence "$EDITOR_EVIDENCE/heart"
+      - name: Approve only the exact reviewed Equatable compiler macro
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 Tools/OriginalEditor/prepare_reviewed_macro.py --root "$GITHUB_WORKSPACE" \
+            --evidence "$EDITOR_EVIDENCE/macro-trust"
       - name: Build the genuine framework and execute the separate binary consumer
         timeout-minutes: 120
         run: |
           python3 Tools/OriginalEditor/run_framework_acceptance.py --root "$GITHUB_WORKSPACE" \
             --evidence "$EDITOR_EVIDENCE" --work "$EDITOR_WORK"
+      - name: Restore only this run's exact macro approval afterimage
+        if: always()
+        run: |
+          python3 Tools/OriginalEditor/prepare_reviewed_macro.py --root "$GITHUB_WORKSPACE" \
+            --evidence "$EDITOR_EVIDENCE/macro-trust" --restore
       - name: Preserve actual source input command build and runtime evidence
         if: always()
         run: |

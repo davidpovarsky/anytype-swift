@@ -1,0 +1,132 @@
+{
+  "created_at": "2026-11-22T02:39:18.704355+00:00",
+  "format_status": "Firsthand Xcode CI implementation; not asserted as stable official API. Actual Xcode27 acceptance pending.",
+  "git_fingerprint_primary_blob": "132501d7d451fba0927808c497eb888d6ddbfa8b",
+  "git_fingerprint_primary_reference": "https://github.com/swiftlang/swift-package-manager/blob/f9bd44c03a3dcef96b82554223851dd91f8038e3/Documentation/PackageSecurity.md",
+  "identity": "equatable",
+  "macro_swift_sources": 17,
+  "observed_rejection_run": 44976039281,
+  "repository": "https://github.com/ordo-one/equatable",
+  "review": [
+    "Full original macro target plus exactPackage.swift reviewed at immutable revision.",
+    "Compiler-plugin entry registers only Equatable, ignored-property and ignored-closure macros.",
+    "Bodies transform SwiftSyntax AST and emit diagnostics/equality/hash declarations; no process, network or filesystem side effects in reviewed macro bodies.",
+    "SwiftSyntax dependency600..<604 is compiler/plugin support; original Anytype600.0.1 pin remains unchanged."
+  ],
+  "reviewed_files": [
+    {
+      "bytes": 1806,
+      "git_blob": "2cb7e844884a029dd205d12e8b26224a710eb17c",
+      "path": "Package.swift",
+      "sha256": "21f122fb50207cf54b2177b6fcf85841ad40371769ba0d6587828748cc8b60f3"
+    },
+    {
+      "bytes": 683,
+      "git_blob": "9e69022085337fa6cc969182f6d6542631eedb7b",
+      "path": "Sources/EquatableMacros/Closure.swift",
+      "sha256": "d20c25a7297c7901c2147f7a87850eb64f1d4636d5551c40d91f3a49d0f9747b"
+    },
+    {
+      "bytes": 2620,
+      "git_blob": "0391e17f91ced8d418855786752e3afc8baa2595",
+      "path": "Sources/EquatableMacros/EquatableIgnoredMacro.swift",
+      "sha256": "7ccd00d3035deed7566d314885077a86a86657798cda4c69ad5e3856b799d992"
+    },
+    {
+      "bytes": 4169,
+      "git_blob": "40a0192394a873e15075d9e37b61f418312926d9",
+      "path": "Sources/EquatableMacros/EquatableIgnoredUnsafeClosureMacro.swift",
+      "sha256": "8648e897a8404b7d1ea898b66471058a0cbc3b0e8722c115819a10ad2d6628dc"
+    },
+    {
+      "bytes": 9320,
+      "git_blob": "ad623ca82e35025072a5c96e35d44d8fe0196240",
+      "path": "Sources/EquatableMacros/EquatableMacro.swift",
+      "sha256": "82f2c4e30dc54434cda442fd722c8e76c142187ab6ce26fd8baffc1945a36f24"
+    },
+    {
+      "bytes": 263,
+      "git_blob": "c84b77f75353fc88fbf80139198d1e7641eb4dcf",
+      "path": "Sources/EquatableMacros/EquatablePlugin.swift",
+      "sha256": "f46d413b6fad8f8d77e19020f0ebacf52473de2adf88472d74ffeaab1accb111"
+    },
+    {
+      "bytes": 1435,
+      "git_blob": "5791acf187ce5742bac9721f7a05173682e85105",
+      "path": "Sources/EquatableMacros/Extensions/EquatableMacro/EquatableMacro+Diagnostic.swift",
+      "sha256": "d5d7e21b2416fd6ab5f9700a982d44865818077e8f2fa450440a661ba6ec9b8b"
+    },
+    {
+      "bytes": 2551,
+      "git_blob": "8629c777c2f3c4e934d1029e82068d09365e7e1e",
+      "path": "Sources/EquatableMacros/Extensions/EquatableMacro/EquatableMacro+Equatable.swift",
+      "sha256": "58bf6b12d44a594bbe8d38d8b94278f941c15ac582ea0b9e38cf762d86bd4b4f"
+    },
+    {
+      "bytes": 2245,
+      "git_blob": "a5ef35dde08686f1f48bbd784552e9108fcd3fac",
+      "path": "Sources/EquatableMacros/Extensions/EquatableMacro/EquatableMacro+Hashable.swift",
+      "sha256": "8409f77adc3308739cf0c7e76da0ca77aa23c8ddd033ea6caa88c34e22772475"
+    },
+    {
+      "bytes": 2468,
+      "git_blob": "65c46daa13acafc90db32991379ca056a922a266",
+      "path": "Sources/EquatableMacros/Extensions/EquatableMacro/EquatableMacro+Helpers.swift",
+      "sha256": "21f881e4f52a722c1a626845ffc65cbf9e8d8acc51800e458513392e40f76cec"
+    },
+    {
+      "bytes": 969,
+      "git_blob": "a0e737fb99a8808dd5a759cafc595aabbc3cf1c9",
+      "path": "Sources/EquatableMacros/Extensions/EquatableMacro/EquatableMacro+Isolation.swift",
+      "sha256": "4c3eb4eee53f30e0ad4a0d04a6d2e03d9d576ad304b7b9f487aa68bb8269919d"
+    },
+    {
+      "bytes": 1276,
+      "git_blob": "4f5d989cb7ef8adc3e36a8b2376e318aadfcd03a",
+      "path": "Sources/EquatableMacros/Extensions/EquatableMacro/EquatableMacro+TypeComplexity.swift",
+      "sha256": "f1a7660a2d35e8e29a29a02a3b16fd018b0de8f445e98794d09425800ba6aaab"
+    },
+    {
+      "bytes": 424,
+      "git_blob": "fd814ce3d6f5095a1e498c8afaef181239cfd4b0",
+      "path": "Sources/EquatableMacros/Extensions/IdentifierTypeSyntax+Extensions.swift",
+      "sha256": "ad961771cdc2ac24eb26fad70638221b0e11db5bdab59e5b8035a6d1d50e84f6"
+    },
+    {
+      "bytes": 358,
+      "git_blob": "20484a9678051f455b976b1692a069a58c28d96b",
+      "path": "Sources/EquatableMacros/Extensions/MemberTypeSyntax+Extensions.swift",
+      "sha256": "ee7500a5afd330b33df8497cdcb2a66b2a429bcb0ef9f6739ec4fd65ac002974"
+    },
+    {
+      "bytes": 305,
+      "git_blob": "ae794ecf8d8af280655eb881f51974ec7f2cba6c",
+      "path": "Sources/EquatableMacros/Extensions/StructDeclSyntax+Extensions.swift",
+      "sha256": "54e9f2526f2f2455a6e0f826bf8ebd2ed54e93c977509b704f7aec228f856474"
+    },
+    {
+      "bytes": 866,
+      "git_blob": "c621da3024f68b3d1c6b71b5a461e23c4ea7948e",
+      "path": "Sources/EquatableMacros/Extensions/TypeSyntax+Extensions.swift",
+      "sha256": "acae29cb5fee862cb2ab1f1a53fb077e065eefb963a097696ed02b15e75922fc"
+    },
+    {
+      "bytes": 192,
+      "git_blob": "b1c9fb0058bf895770e902ff12e11561809cb6fb",
+      "path": "Sources/EquatableMacros/Extensions/VariableDeclSyntax+Extensions.swift",
+      "sha256": "f862509e778944c58842e72a0710abefcaa8b386676dd012aa4c7230ea0f5a2b"
+    },
+    {
+      "bytes": 139,
+      "git_blob": "80e1e39d49ebf6cbfde9d55c93ea8e7181e19e5c",
+      "path": "Sources/EquatableMacros/SimpleFixItMessage.swift",
+      "sha256": "b9595a748bece166c8e125cb5ae1837d73592abdf07d38f4f63ca6094e6659b8"
+    }
+  ],
+  "revision": "597c2bb34af0c51331eb3b5e705f942d8ee20daa",
+  "schema": 1,
+  "scope": "SINGLE_EXACT_COMPILER_MACRO_APPROVAL_NOT_FRAMEWORK_OR_NATIVE_ACCEPTANCE",
+  "target_name": "EquatableMacros",
+  "version": "1.4.1",
+  "xcode_record_format_reference": "https://xebia.com/blog/using-swift-macros-ci-cd-without-compromising-security/"
+}
