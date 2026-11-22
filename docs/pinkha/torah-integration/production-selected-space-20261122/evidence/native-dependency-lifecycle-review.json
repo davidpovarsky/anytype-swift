@@ -1,0 +1,212 @@
+{
+  "schema": "otzaria.selected-space-dependency-lifecycle-review/1",
+  "status": "SOURCE_BOUND_LIMITS_AND_STALE_CONTINUATION_PATHS_IDENTIFIED",
+  "base": "37f48119609747c01ee92cf597e4216f63b7bfa4",
+  "scope": "Complementary read-only review of WidgetsObjectsStorage, ObjectTypeProvider, PropertyDetailsStorage, SubscriptionStorage and MultispaceOneActiveSubscriptionHelper only; author owns ActiveSpaceManager/AccountManager/Invocation/SourceBinding.",
+  "findings": [
+    {
+      "id": "widgets-cancel-not-drain",
+      "functions": [
+        "WidgetsObjectsStorage.prepare",
+        "WidgetsObjectsStorage.clear",
+        "WidgetsObjectsStorage.waitForReady"
+      ],
+      "proof": "prepare launches an unstructured Task holding channel/personal docs and overlapping opens. clear synchronously cancels and discards task/references; it does not await task completion or native close. waitForReady captures only the current task before await and waits both opens, but both errors are swallowed and no post-await space/attempt check exists.",
+      "limit": "Task completion alone is not successful native readiness or child/native teardown. BaseDocument.open/close implementation was outside this read."
+    },
+    {
+      "id": "subscription-start-stop-gap",
+      "functions": [
+        "SubscriptionStorage.startOrUpdateSubscription",
+        "SubscriptionStorage.stopSubscription",
+        "SubscriptionStorage.handle"
+      ],
+      "sequence": [
+        "start waits handler registration then native subscribe before assigning self.data",
+        "overlapping stop sees nil data and returns",
+        "late start assigns data, seeds caches and publishes callback/state"
+      ],
+      "limit": "An upper caller can serialize its own lifecycle to avoid this path, but SubscriptionStorage itself is not an awaited acquisition/drain primitive. stop does not retire callback/handler or fence late publications; deinit cleanup is an unjoined Task."
+    },
+    {
+      "id": "prewarm-late-cache-write",
+      "functions": [
+        "MultispaceOneActiveSubscriptionHelper.prepareData",
+        "ObjectTypeProvider.prepareData",
+        "PropertyDetailsStorage.prepareData"
+      ],
+      "sequence": [
+        "prepareData(A) suspends at original search",
+        "stop clears data or another selection installs B",
+        "original searchA returns and unconditionally writes data[A]",
+        "the public wrapper rebuilds its search cache after helper return"
+      ],
+      "limit": "A manager-only final token check does not prevent the helper's prior cache publication or independent prewarm calls."
+    },
+    {
+      "id": "callback-aba",
+      "functions": [
+        "MultispaceOneActiveSubscriptionHelper.updateStorage",
+        "MultispaceOneActiveSubscriptionHelper.updateSubscription"
+      ],
+      "proof": "The subscription callback captures spaceId, and updateStorage writes data[spaceId] and invokes update without checking activeSpaceId, account identity or attempt. A late A callback may publish during B or overwrite a later A generation.",
+      "limit": "Fresh/current cache authority cannot be inferred from selected manager identity alone."
+    },
+    {
+      "id": "void-does-not-prove-native-success",
+      "functions": [
+        "MultispaceOneActiveSubscriptionHelper.stopSubscription",
+        "MultispaceOneActiveSubscriptionHelper.updateSubscription"
+      ],
+      "proof": "Both native stop and start use try?. Stop clears active fields and caches after the await even if unsubscribe failed; updateSubscription installs the next storage after a swallowed previous-stop error. Concurrent helper entry can resume an old stop and clear newer state.",
+      "limit": "The no-throw wrapper return cannot certify successful subscription acquisition or unsubscribe/drain. Manager serialization limits its direct callers only."
+    }
+  ],
+  "safeClaim": "A bounded selected-Space prerequisite may attest exact current manager/account/attempt identity if its own transitions are correctly fenced; it must not imply provider/widgets/native readiness or drain from these APIs without additional source-backed closure.",
+  "testsExecuted": 0,
+  "sourceEdits": 0,
+  "nativeCalls": 0,
+  "sources": [
+    {
+      "path": "Anytype/Sources/ServiceLayer/Object/TypeProvider/ObjectTypeProvider.swift",
+      "snapshot": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-selected-space-source-audit-20261122\\07-ObjectTypeProvider.swift",
+      "bytes": 6519,
+      "sha256": "98d7a229d613b0724d1274a8535ca972448fd12b01819fa17c137aa0807673d6",
+      "matchesActualImmutableGit": true,
+      "anchors": [
+        {
+          "line": 128,
+          "text": "func startSubscription(spaceId: String) async {"
+        },
+        {
+          "line": 135,
+          "text": "func stopSubscription() async {"
+        },
+        {
+          "line": 140,
+          "text": "func prepareData(spaceId: String) async {"
+        }
+      ]
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/PropertyStorage/PropertyDetailsStorage.swift",
+      "snapshot": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-selected-space-source-audit-20261122\\08-PropertyDetailsStorage.swift",
+      "bytes": 4160,
+      "sha256": "922edb31022ad1764e8cab565c345e5b55f868c82808a049f973e90ec5c520a6",
+      "matchesActualImmutableGit": true,
+      "anchors": [
+        {
+          "line": 71,
+          "text": "func startSubscription(spaceId: String) async {"
+        },
+        {
+          "line": 78,
+          "text": "func stopSubscription() async {"
+        },
+        {
+          "line": 84,
+          "text": "func prepareData(spaceId: String) async {"
+        }
+      ]
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/SubscriptionsToggler/Internals/SubscriptionStorage.swift",
+      "snapshot": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-selected-space-source-audit-20261122\\11-SubscriptionStorage.swift",
+      "bytes": 9632,
+      "sha256": "6dd4b130d7177dc6e97ad44edca6922d3fdc42d9a47f540eb07222be3ed1b730",
+      "matchesActualImmutableGit": true,
+      "anchors": [
+        {
+          "line": 12,
+          "text": "func startOrUpdateSubscription(data: SubscriptionData, update: @escaping @Sendable (_ state: SubscriptionStorageState) async -> Void) async throws"
+        },
+        {
+          "line": 13,
+          "text": "func startOrUpdateSubscription(data: SubscriptionData) async throws"
+        },
+        {
+          "line": 14,
+          "text": "func stopSubscription() async throws"
+        },
+        {
+          "line": 73,
+          "text": "func startOrUpdateSubscription(data: SubscriptionData) async throws {"
+        },
+        {
+          "line": 77,
+          "text": "func startOrUpdateSubscription(data: SubscriptionData, update: @escaping @Sendable (_ state: SubscriptionStorageState) async -> Void) async throws {"
+        },
+        {
+          "line": 135,
+          "text": "func stopSubscription() async throws {"
+        },
+        {
+          "line": 156,
+          "text": "private func handle(events: EventsBunch) async {"
+        }
+      ]
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/WidgetsObjectsStorage/WidgetsObjectsStorage.swift",
+      "snapshot": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-selected-space-source-audit-20261122\\12-WidgetsObjectsStorage.swift",
+      "bytes": 2838,
+      "sha256": "82eb1f95e66d630415237680f50602d046ec8079d215aba42098becb7e164090",
+      "matchesActualImmutableGit": true,
+      "anchors": [
+        {
+          "line": 6,
+          "text": "func prepare(info: AccountInfo)"
+        },
+        {
+          "line": 7,
+          "text": "func waitForReady(spaceId: String) async"
+        },
+        {
+          "line": 9,
+          "text": "func clear()"
+        },
+        {
+          "line": 25,
+          "text": "func prepare(info: AccountInfo) {"
+        },
+        {
+          "line": 61,
+          "text": "func waitForReady(spaceId: String) async {"
+        },
+        {
+          "line": 71,
+          "text": "func clear() {"
+        }
+      ]
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/MultispaceSubscriptionHelper/MultispaceOneActiveSubscriptionHelper.swift",
+      "snapshot": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-selected-space-source-audit-20261122\\extra-0-MultispaceOneActiveSubscriptionHelper.swift",
+      "bytes": 3338,
+      "sha256": "a7f00c548ca1d84d801f9e20cdebbcbbc7db83529b85ad75eadd88c21768b6ab",
+      "matchesActualImmutableGit": true,
+      "anchors": [
+        {
+          "line": 38,
+          "text": "func startSubscription(spaceId: String, update: @escaping @Sendable () -> Void) async {"
+        },
+        {
+          "line": 42,
+          "text": "func stopSubscription() async {"
+        },
+        {
+          "line": 51,
+          "text": "func prepareData(spaceId: String) async {"
+        },
+        {
+          "line": 64,
+          "text": "private func updateSubscription(spaceId: String, update: @escaping @Sendable () -> Void) async {"
+        },
+        {
+          "line": 82,
+          "text": "private func updateStorage(subscriptionState: SubscriptionStorageState, spaceId: String, update: @escaping @Sendable () -> Void) {"
+        }
+      ]
+    }
+  ]
+}

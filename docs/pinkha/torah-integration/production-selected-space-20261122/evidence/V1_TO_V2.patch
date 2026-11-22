@@ -1,0 +1,62 @@
+--- v1/Tests/SelectedSpaceControls/ActiveSpaceManager.swift
++++ v2/Tests/SelectedSpaceControls/ActiveSpaceManager.swift
+@@ -188,6 +188,7 @@
+     private var selectionAttempt: OriginalActiveSpaceSelectionAttempt?
+     private var setActiveSpaceTask: Task<AccountInfo?, any Error>?
+     private var stopOperation: Task<Void, Never>?
++    private var probeDuplicateStopEntries = 0
+     
+     @Injected(\.objectTypeProvider)
+     private var objectTypeProvider: any ObjectTypeProviderProtocol
+@@ -269,6 +270,7 @@
+     
+     func stopSubscription() async {
+         if let stopOperation {
++            probeDuplicateStopEntries += 1
+             await stopOperation.value
+             return
+         }
+@@ -412,6 +414,7 @@
+ 
+ 
+ extension ActiveSpaceManager {
++    func probeDuplicateStopEntryCount() -> Int { probeDuplicateStopEntries }
+     func probeCurrentSelectionCapture() -> EditorDocumentWriteCapture? { selectionAttempt?.capture }
+     func probeRequestedSpaceID() -> String? { selectionAttempt?.requestedSpaceID }
+     var probeStopIsPending: Bool { stopOperation != nil }
+--- v1/Tests/SelectedSpaceControls/Controls.swift
++++ v2/Tests/SelectedSpaceControls/Controls.swift
+@@ -259,6 +259,7 @@
+         let firstStop = Task { await manager.stopSubscription() }
+         try await selectionWait { clear.hasEntered }
+         let secondStop = Task { await manager.stopSubscription() }
++        try await selectionWait { await manager.probeDuplicateStopEntryCount() == 1 }
+         #expect(await selectionAsyncError { _ = try await manager.setActiveSpace(spaceId: "space-B") }
+                 as? EditorDocumentWriteError == .rejected(.unqualifiedDispatch))
+         await manager.startSubscription()
+--- v1/run_controls.py
++++ v2/run_controls.py
+@@ -1,12 +1,12 @@
+ import pathlib,subprocess,json,hashlib,os,datetime,xml.etree.ElementTree as ET,struct
+-out=pathlib.Path(r"C:\Users\DAVID\AppData\Local\Temp\oe-selected-20261122")
++out=pathlib.Path(r"C:\Users\DAVID\AppData\Local\Temp\oe-selected-v2-20261122")
+ repo=pathlib.Path(r"C:\Users\DAVID\Code\anytype-original-selected-space-20261122")
+ swiftc=pathlib.Path(r"C:\Users\DAVID\AppData\Local\Programs\Swift\Toolchains\6.3.3+Asserts\usr\bin\swiftc.EXE")
+ swift=swiftc.parent/"swift.EXE"
+ runtime=pathlib.Path(r"C:\Users\DAVID\AppData\Local\Programs\Swift\Runtimes\6.3.3\usr\bin")
+ def sha(data):return hashlib.sha256(data).hexdigest()
+ assert not (out/"EXECUTION.json").exists(),"First actual execution exists; inspect it instead of replay"
+-assert sha((out/"INPUTS.json").read_bytes())=="b181b4f4af4848bb6864d18e9826cc50bc7c732db9602a675246ff2abf236962"
++assert sha((out/"INPUTS.json").read_bytes())=="c7a3b40b7a5a5e8daa904d6f4c07dbb7208d4e517c43d8603fab66483353e9af"
+ assert sha(swiftc.read_bytes())=="e1d0a0b20d95a92b22f4906e7ca331a7c8b89be86b2d9a2d215ac24f753e945a"
+ inputs=json.loads((out/"INPUTS.json").read_bytes())
+ def verify_inputs():
+@@ -16,7 +16,7 @@
+   assert sha((out/item["saved_path"]).read_bytes())==item["sha256"],item["path"]
+  for item in inputs["product_candidates"]:
+   assert sha((out/item["saved_path"]).read_bytes())==item["canonical_sha256"],item["saved_path"]
+- for key in ("package","projection_map","preparation"):
++ for key in ("package","projection_map","preparation","fixture_revision"):
+   item=inputs[key];assert sha((out/item["path"]).read_bytes())==item["sha256"],item["path"]
+  actual={p.relative_to(out).as_posix() for p in (out/"Tests").rglob("*.swift")}
+  assert actual=={item["path"] for item in inputs["compiled_inputs"]},"Unbound or missing test source"

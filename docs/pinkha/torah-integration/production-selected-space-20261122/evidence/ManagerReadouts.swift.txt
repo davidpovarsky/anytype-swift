@@ -1,0 +1,14 @@
+
+
+extension ActiveSpaceManager {
+    func probeDuplicateStopEntryCount() -> Int { probeDuplicateStopEntries }
+    func probeCurrentSelectionCapture() -> EditorDocumentWriteCapture? { selectionAttempt?.capture }
+    func probeRequestedSpaceID() -> String? { selectionAttempt?.requestedSpaceID }
+    var probeStopIsPending: Bool { stopOperation != nil }
+    func probeCapturedSubscriptionCallback() -> (@Sendable ([SpaceView]) async -> Void)? {
+        guard let subscription = workspaceSubscriptionAttempt else { return nil }
+        return { [weak self] views in
+            await self?.handleSpaces(workspaces: views, subscription: subscription)
+        }
+    }
+}
