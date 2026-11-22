@@ -1,0 +1,50 @@
+name: Original editor observed package origin refresh
+
+on:
+  push:
+    branches:
+      - codex/otzaria-original-editor-lock-origin-20261122
+
+permissions:
+  contents: read
+
+concurrency:
+  group: original-editor-lock-origin-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  observe-lock-origin:
+    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-original-editor-lock-origin-20261122'
+    runs-on: xcode-27
+    timeout-minutes: 35
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      LOCK_EVIDENCE: build/original-editor-lock-origin-evidence
+    steps:
+      - name: Checkout exact resolver source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Checkout immutable canonical Hanlin manifests
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/hanlin-ai
+          ref: e00498e33f106cc43be0476ffa2e09329c8ca300
+          path: .ci/hanlin-source
+          persist-credentials: false
+      - name: Prepare and verify original SDK snapshot
+        run: |
+          python3 Tools/Hanlin/prepare_sdk.py --source .ci/hanlin-source
+          python3 Tools/Hanlin/prepare_sdk.py --check
+      - name: Observe actual resolver metadata and recheck frozen pins
+        run: python3 Tools/OriginalEditor/refresh_package_origin.py
+      - name: Retain exact before after command and source evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Original-Editor-Lock-Origin-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.LOCK_EVIDENCE }}
+          if-no-files-found: error
+          retention-days: 14
