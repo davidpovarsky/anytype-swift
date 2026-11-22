@@ -35,7 +35,9 @@ import (
 // command schemas and capability advertisements are unchanged.
 var t5ACLFixtureSHA = "UNSET"
 
-const t5ACLProtocol = "pinkha-t5-signed-local-revocation-v1"
+const t5ACLProtocol = "pinkha-t5-signed-local-revocation-v2"
+const t5ACLCurrentReadDenied = "PINKHA_CURRENT_SPACE_READ_DENIED_V1"
+const t5ACLCurrentReadInvalidated = "PINKHA_CURRENT_SPACE_READ_INVALIDATED_V1"
 const t5ACLHeart = "d98420b1113536afd08cde6de9a5816f6d27ffff"
 
 func t5ACLHash(value []byte) string {
@@ -371,8 +373,20 @@ func TestT5NativeCachedQueriesAfterSignedRevocation(t *testing.T) {
 	if showAfter.Error != nil {
 		showCode = int32(showAfter.Error.Code)
 	}
-	searchDenied := searchAfter.Error != nil && searchCode != 0 && len(searchAfter.Records) == 0 && searchAfter.Total == 0
-	showDenied := showAfter.Error != nil && showCode != 0 && showAfter.ObjectView == nil
+	searchDescription, showDescription := "", ""
+	if searchAfter.Error != nil {
+		searchDescription = searchAfter.Error.Description
+	}
+	if showAfter.Error != nil {
+		showDescription = showAfter.Error.Description
+	}
+	// The unchanged native ACL updater may already have retired this Space.
+	// Both exact current-authority outcomes deny the read; generic errors and
+	// success-with-empty results remain failures. All payload counts stay zero.
+	searchAuthorityStopped := searchDescription == t5ACLCurrentReadDenied || searchDescription == t5ACLCurrentReadInvalidated
+	showAuthorityStopped := showDescription == t5ACLCurrentReadDenied || showDescription == t5ACLCurrentReadInvalidated
+	searchDenied := searchAfter.Error != nil && searchCode == int32(pb.RpcObjectSearchResponseError_BAD_INPUT) && searchAuthorityStopped && len(searchAfter.Records) == 0 && searchAfter.Total == 0
+	showDenied := showAfter.Error != nil && showCode == int32(pb.RpcObjectShowResponseError_BAD_INPUT) && showAuthorityStopped && showAfter.ObjectView == nil
 	closeAccount()
 	observation := map[string]any{"protocol": t5ACLProtocol, "nonce": nonce, "pid": os.Getpid(),
 		"heart_sha": vcs.GitCommit, "runtime_version": vcs.GitSummary, "fixture_sha256": t5ACLFixtureSHA,
@@ -384,6 +398,7 @@ func TestT5NativeCachedQueriesAfterSignedRevocation(t *testing.T) {
 		"read_key_id_before": previousReadKey, "read_key_id_after": readKeyAfter,
 		"native_acl_updater": "NOT_REPLACED_OR_SUPPRESSED", "local_signed_delivery": true,
 		"object_search_error_code": searchCode, "object_search_rows": len(searchAfter.Records), "object_search_total": searchAfter.Total,
+		"object_search_error_description": searchDescription, "object_show_error_description": showDescription,
 		"object_search_explicit_denial": searchDenied, "object_show_error_code": showCode,
 		"object_show_has_payload": showAfter.ObjectView != nil, "object_show_explicit_denial": showDenied,
 		"account_stop_verified": closed, "rpc_calls": calls, "network_acl_transport": "NOT_RUN",

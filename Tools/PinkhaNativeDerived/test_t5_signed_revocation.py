@@ -20,8 +20,10 @@ def observation():
         current_permission="none", had_read_permission=True, read_key_rotated=True,
         read_key_id_before="fixture-before", read_key_id_after="fixture-after",
         native_acl_updater="NOT_REPLACED_OR_SUPPRESSED", local_signed_delivery=True,
-        object_search_error_code=1, object_search_rows=0, object_search_total=0, object_search_explicit_denial=True,
-        object_show_error_code=1, object_show_has_payload=False, object_show_explicit_denial=True,
+        object_search_error_code=2, object_search_error_description=gate.DENIED_DESCRIPTION,
+        object_search_rows=0, object_search_total=0, object_search_explicit_denial=True,
+        object_show_error_code=2, object_show_error_description=gate.DENIED_DESCRIPTION,
+        object_show_has_payload=False, object_show_explicit_denial=True,
         account_stop_verified=True, network_acl_transport="NOT_RUN", offline_unknown_revocation="NOT_PROVEN",
         ios_acceptance="NOT_RUN", full_t5_acceptance="NOT_PROVEN", status=gate.PASS)
     value["rpc_calls"] = dict(InitialSetParameters=1, AppGetVersion=1, WalletCreate=1, AccountCreate=1,
@@ -34,6 +36,15 @@ def observation():
 class SignedRevocationControls(unittest.TestCase):
     def test_exact_native_observation_qualifies_only_local_scope(self):
         self.assertEqual(gate.validate_observation(observation(), IDENTITY, PID, NONCE), gate.PASS)
+
+    def test_current_denial_or_retired_space_both_require_exact_zero_payload(self):
+        for search in gate.AUTHORITY_STOPPED_DESCRIPTIONS:
+            for show in gate.AUTHORITY_STOPPED_DESCRIPTIONS:
+                value = observation()
+                value.update(object_search_error_description=search, object_show_error_description=show)
+                self.assertEqual(gate.validate_observation(value, IDENTITY, PID, NONCE), gate.PASS)
+                value.update(object_show_has_payload=True, object_show_explicit_denial=False, status=gate.DENIAL_FAILURE)
+                self.assertEqual(gate.validate_observation(value, IDENTITY, PID, NONCE), gate.DENIAL_FAILURE)
 
     def test_successful_empty_query_is_not_a_denial(self):
         value = observation()
@@ -68,6 +79,35 @@ class SignedRevocationControls(unittest.TestCase):
             value.update(change)
             with self.subTest(change=change), self.assertRaises(ValueError):
                 gate.validate_observation(value, IDENTITY, PID, NONCE)
+
+    def test_only_exact_native_authority_denial_retires_access(self):
+        for change in (
+            dict(object_search_error_code=1, object_search_explicit_denial=False),
+            dict(object_search_error_description="account must be started", object_search_explicit_denial=False),
+            dict(object_search_error_description=gate.INVALIDATED_DESCRIPTION + " suffix", object_search_explicit_denial=False),
+            dict(object_show_error_description=gate.DENIED_DESCRIPTION + " suffix", object_show_explicit_denial=False),
+            dict(object_show_error_code=4, object_show_explicit_denial=False),
+        ):
+            value = observation()
+            value.update(change, status=gate.DENIAL_FAILURE)
+            with self.subTest(change=change):
+                self.assertEqual(gate.validate_observation(value, IDENTITY, PID, NONCE), gate.DENIAL_FAILURE)
+                value["status"] = gate.PASS
+                with self.assertRaises(ValueError):
+                    gate.validate_observation(value, IDENTITY, PID, NONCE)
+
+    def test_component_requires_its_exact_one_actual_terminal(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "component.log"
+            for _, method in gate.COMPONENTS:
+                passing = "=== RUN   " + method + "\n--- PASS: " + method + " (0.01s)\nPASS\n"
+                path.write_text(passing)
+                self.assertEqual(gate.qualify_component(path, method)["passed"], 1)
+                for text in ("PASS\n", passing + passing, passing.replace("--- PASS:", "--- SKIP:"),
+                             passing.replace(method, "AnotherMethod")):
+                    path.write_text(text)
+                    with self.subTest(method=method, text=text), self.assertRaises(ValueError):
+                        gate.qualify_component(path, method)
 
     def test_real_log_requires_one_exact_complete_native_method(self):
         with tempfile.TemporaryDirectory() as tmp:

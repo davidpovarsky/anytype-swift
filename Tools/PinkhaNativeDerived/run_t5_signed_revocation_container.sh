@@ -20,4 +20,5 @@ export GIT_CONFIG_VALUE_1=/workspace/heart
 export GIT_CONFIG_KEY_2=safe.directory
 export GIT_CONFIG_VALUE_2=/workspace/source
 python3 -B control/Tools/PinkhaNativeDerived/t5_signed_revocation.py \
-  --control control --source source --heart heart --work work --evidence evidence
+  --control control --source source --heart heart --work work --evidence evidence \
+  --runtime-profile "$T5_CURRENT_READ_PROFILE"

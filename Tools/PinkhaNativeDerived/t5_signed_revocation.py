@@ -1,8 +1,8 @@
-"""One real former-member cached-query boundary on the corrected r15 source.
+"""One real former-member cached-query boundary on an exact r15 source variant.
 
-No product patch is introduced. An observed authorization gap keeps this run
-failed and its sanitized actual observation intact; it cannot become acceptance
-through a controller exception or an expected-failure label.
+The original baseline and the separately inventoried native read-authority
+candidate share the same signed scenario. An observed authorization gap stays
+failed; no empty success or unrelated error can become permanent denial.
 """
 from __future__ import annotations
 
@@ -21,13 +21,20 @@ import sys
 from uuid import uuid4
 
 import attachment_runtime
+import current_read_runtime
 import build_custom_heart
 import run_t5_native_attachment as native
 import run_t5_pairs_ci as modules
 
-PROTOCOL = "pinkha-t5-signed-local-revocation-v1"
+PROTOCOL = "pinkha-t5-signed-local-revocation-v2"
 METHOD = "TestT5NativeCachedQueriesAfterSignedRevocation"
 PROFILE = "r15-attachment-v1"
+PROFILES = (PROFILE, current_read_runtime.VARIANT)
+DENIED_DESCRIPTION = "PINKHA_CURRENT_SPACE_READ_DENIED_V1"
+INVALIDATED_DESCRIPTION = "PINKHA_CURRENT_SPACE_READ_INVALIDATED_V1"
+AUTHORITY_STOPPED_DESCRIPTIONS = {DENIED_DESCRIPTION, INVALIDATED_DESCRIPTION}
+COMPONENTS = (("./core/application", "TestCurrentAppReadPublicationLease"),
+              ("./space/clientspace", "TestCurrentSpaceReadPublicationLease"))
 FIXTURE = "Tools/PinkhaNativeDerived/signed_revocation/native_signed_revocation_test.go"
 SOURCE = attachment_runtime.SOURCE_SHA
 HEART = attachment_runtime.HEART_SHA
@@ -40,9 +47,9 @@ OBSERVATION_KEYS = {
     "same_engine_account", "populated_native_cache", "reader_positive", "signed_acl_add_head",
     "signed_acl_transfer_head", "signed_acl_remove_head", "current_permission", "had_read_permission",
     "read_key_rotated", "read_key_id_before", "read_key_id_after", "native_acl_updater",
-    "local_signed_delivery", "object_search_error_code", "object_search_rows", "object_search_total",
+    "local_signed_delivery", "object_search_error_code", "object_search_error_description", "object_search_rows", "object_search_total",
     "object_search_explicit_denial", "object_show_error_code", "object_show_has_payload",
-    "object_show_explicit_denial", "account_stop_verified", "rpc_calls", "network_acl_transport",
+    "object_show_explicit_denial", "object_show_error_description", "account_stop_verified", "rpc_calls", "network_acl_transport",
     "offline_unknown_revocation", "ios_acceptance", "full_t5_acceptance", "status",
 }
 
@@ -99,9 +106,14 @@ def validate_observation(value, identity, pid, nonce):
             "Impossible native response metric")
     for key in ("object_search_explicit_denial", "object_show_has_payload", "object_show_explicit_denial"):
         require(type(value[key]) is bool, "Missing native denial/payload observation")
-    search_denied = (value["object_search_error_code"] > 0 and value["object_search_rows"] == 0
-                     and value["object_search_total"] == 0)
-    show_denied = value["object_show_error_code"] > 0 and not value["object_show_has_payload"]
+    for key in ("object_search_error_description", "object_show_error_description"):
+        require(isinstance(value[key], str) and len(value[key]) <= 512, "Invalid native error description")
+    search_denied = (value["object_search_error_code"] == 2
+                     and value["object_search_error_description"] in AUTHORITY_STOPPED_DESCRIPTIONS
+                     and value["object_search_rows"] == 0 and value["object_search_total"] == 0)
+    show_denied = (value["object_show_error_code"] == 2
+                   and value["object_show_error_description"] in AUTHORITY_STOPPED_DESCRIPTIONS
+                   and not value["object_show_has_payload"])
     require(value["object_search_explicit_denial"] is search_denied
             and value["object_show_explicit_denial"] is show_denied, "Denial was inferred from an empty aggregate")
     expected = PASS if search_denied and show_denied else DENIAL_FAILURE
@@ -125,6 +137,17 @@ def qualify_execution(log, code, observation_status):
     return dict(method=METHOD, tests_started=1, tests_passed=int(observation_status == PASS),
                 tests_failed=int(observation_status != PASS), tests_skipped=0,
                 exit_code=code, native_log_sha256=digest(log))
+
+
+def qualify_component(log, method):
+    text = log.read_text(encoding="utf-8", errors="replace")
+    starts = re.findall(r"^=== RUN\s+(\S+)\s*$", text, re.M)
+    endings = re.findall(r"^--- (PASS|FAIL|SKIP): (\S+) \(", text, re.M)
+    require(method in {name for _, name in COMPONENTS}
+            and starts == [method] and endings == [("PASS", method)],
+            "New native publication component executed zero, extra, failed or skipped methods")
+    return dict(status="PASS_NATIVE_COMPONENT", method=method, passed=1, failed=0, skipped=0,
+                log_sha256=digest(log), scope="Native lifecycle lock component; not an account or UI journey")
 
 
 def export_private(private, evidence):
@@ -192,12 +215,20 @@ def execute(args, receipt):
     require(digest(helper) == HELPER_SHA, "Reviewed builder helper changed")
     require(digest(source / modules.GENPROTO_DECLARATION) == modules.GENPROTO_DECLARATION_SHA,
             "Existing reviewed genproto declaration changed")
-    runtime = attachment_runtime.prepare(source, control, PROFILE)
+    require(args.runtime_profile in PROFILES, "Unreviewed native runtime profile")
+    runtime = (current_read_runtime.prepare(source, control, heart)
+               if args.runtime_profile == current_read_runtime.VARIANT
+               else attachment_runtime.prepare(source, control, PROFILE))
     patch, inventory_path = runtime.write(work / "corrected-source")
     inventory = json.loads(inventory_path.read_bytes())
-    native.save(evidence / "runtime-source.json", dict(variant=PROFILE, heart_sha=HEART,
+    product_changes = inventory.get("product_source_changes", 0)
+    require(product_changes == (len(current_read_runtime.PRODUCT_PATHS)
+            if args.runtime_profile == current_read_runtime.VARIANT else 0),
+            "Native product change inventory differs from the fixed variant")
+    receipt.update(runtime_profile=args.runtime_profile, product_source_changes=product_changes)
+    native.save(evidence / "runtime-source.json", dict(variant=runtime.variant, heart_sha=HEART,
         patch_sha256=runtime.patch_sha256, inventory_sha256=runtime.inventory_sha256, runtime_version=runtime.version,
-        inventory=inventory, product_source_changes=0, app_capability="UNCHANGED"))
+        inventory=inventory, product_source_changes=product_changes, app_capability="UNCHANGED"))
     env = dict(os.environ, GOMAXPROCS="2", CGO_ENABLED="1", GOTOOLCHAIN="local", GOWORK="off", GOFLAGS="-mod=readonly")
     native.run([sys.executable, "-B", str(helper), "--heart-source", str(heart), "--patch", str(patch),
         "--inventory", str(inventory_path), "--approved-patch-sha256", runtime.patch_sha256,
@@ -237,8 +268,20 @@ def execute(args, receipt):
                    heart, evidence / "compile-native-fixture.log", env, 1800)
         identity = dict(heart_sha=HEART, runtime_version=runtime.version, fixture_sha256=fixture_sha,
                         binary_sha256=digest(binary), app_sha=os.environ["GITHUB_SHA"], genproto=genproto,
-                        patch_sha256=runtime.patch_sha256, overlay=json.loads(overlay.read_bytes()))
+                        patch_sha256=runtime.patch_sha256, runtime_profile=args.runtime_profile,
+                        overlay=json.loads(overlay.read_bytes()))
         native.save(evidence / "build.json", identity)
+        if args.runtime_profile == current_read_runtime.VARIANT:
+            receipt["phase"] = "NEW_NATIVE_PUBLICATION_COMPONENTS"
+            native.save(evidence / "receipt.json", receipt)
+            components = []
+            for package, method in COMPONENTS:
+                log = evidence / (method + ".log")
+                native.run(["go", "test", "-p", "1", "-tags", modules.TAGS,
+                    "-ldflags", ldflags, "-count=1", "-v", "-run", "^" + method + "$",
+                    "-timeout=60s", package], heart, log, env, 600)
+                components.append(qualify_component(log, method))
+            receipt["publication_components"] = components
         nonce = uuid4().hex
         native.save(private / "ownership.json", dict(protocol=PROTOCOL, nonce=nonce, synthetic_only=True))
         root = private / "account-root"
@@ -271,6 +314,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("control", "source", "heart", "work", "evidence"):
         parser.add_argument("--" + name, type=Path, required=True)
+    parser.add_argument("--runtime-profile", choices=PROFILES, default=PROFILE)
     args = parser.parse_args(argv)
     args.evidence.mkdir(parents=True, exist_ok=True)
     require(not (args.evidence / "receipt.json").exists(), "Refuse an existing native attempt receipt")
@@ -278,6 +322,7 @@ def main(argv=None):
         run_id=os.environ.get("GITHUB_RUN_ID"), run_attempt=os.environ.get("GITHUB_RUN_ATTEMPT"),
         app_sha=os.environ.get("GITHUB_SHA"), network_acl_transport="NOT_RUN", offline_unknown_revocation="NOT_PROVEN",
         ios_acceptance="NOT_RUN", full_t5_acceptance="NOT_PROVEN", product_source_changes=0,
+        runtime_profile=args.runtime_profile,
         started_at=datetime.now(timezone.utc).isoformat())
     try:
         require(re.fullmatch(r"[0-9a-f]{40}", receipt["app_sha"] or "")
