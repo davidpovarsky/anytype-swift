@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "status": "REVIEWED_ISOLATED_PURE_CONTRACT_NOT_NATIVE_INTEGRATION",
+  "reviewer": "Root read both exact Swift files, CONTRACT.md and actual52-result receipt; approved isolated pure data/recovery policy.",
+  "source_sha256": {
+    "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAnnotationNativeIdentity.swift": "511c648c9c789d838b196f75e223094783a399c36ee9650c664b23d878c605cf",
+    "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAnnotationCreateRecovery.swift": "12beaebc75d52ea495d86a729f9ef8e07902dd82cccafe1cb07dedd89d09cd38"
+  },
+  "contract_sha256": "b237b9bd02603e78e6b41c091eb0a2a06fa0c90835e954385178ec375a783317",
+  "actual_controls": 52,
+  "native_tests": 0,
+  "corrections_after_review": [
+    "Production attemptID aliases the existing durable messageID; no fresh retry/recovery ID.",
+    "Only an outermost serialized SQLite COMMIT permits first dispatch; SAVEPOINT release cannot be a fence."
+  ],
+  "unchanged_controls_rerun_for_doc_corrections": false,
+  "not_enabled": [
+    "native RPC",
+    "native schema registration",
+    "public original editor facade",
+    "identity writer",
+    "ACK",
+    "transport"
+  ],
+  "next_authorized_work": "Separate original account/Space/Owner native readback capability, with original schema and opaque receipt review before consumer identity writer."
+}
