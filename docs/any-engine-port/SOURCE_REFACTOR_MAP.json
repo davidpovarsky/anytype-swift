@@ -578,13 +578,14 @@
       "sharedSources": [
         {
           "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahEditorSession.swift",
-          "gitBlob": "83a9f0dc56c549d9267a2607f79d629c198dcd62"
+          "gitBlob": "e995ba6e0879d7bcf13fd5e5c53200f9136f1af0"
         }
       ],
       "validation": [
         "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
         "Existing app test bodies are retained; import-only edits are mechanically checked.",
-        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity."
+        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity.",
+        "Reviewed f42/403 owner lifecycle followup: activateDocument resumes related access; deactivateDocument synchronously retires it instead of cache invalidation. Existing selection and epoch fences are unchanged. Shared lifetime1 and Kit authority/cache/state15 methods17 cases are pending actual final-pin execution; syntax and independent source review are not runtime proof."
       ]
     },
     {
@@ -829,15 +830,15 @@
       "from": "Modules/PinkhaKit/Package.swift",
       "to": "Modules/PinkhaKit/Package.swift",
       "baselineBlob": "eb19331cb8b675b0271f2252a5453463e3f50b88",
-      "replacementBlob": "5f39dae4261c8dc93ff2832f19f7508e6d84e0e0",
+      "replacementBlob": "89d37550451cc28118cbffe547e5c634ff0f0235",
       "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
       "inheritedSourceBlob": "5f39dae4261c8dc93ff2832f19f7508e6d84e0e0",
-      "reason": "Retain the exact old-engine UIKit, fixture, runtime-pair or shared dependency correction from its active work lane.",
+      "reason": "Preserve the retained PinkhaKit package and converge its sole TorahInspectorKit exact dependency revision to 511454e49450cb2581ddf77f644146ff3e30dbef for both active engines. No product or test source is changed by this dependency declaration.",
       "sharedSources": [],
       "validation": [
-        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
-        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
-        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+        "The reviewed f42c1997743350993db8f3179c6b597d800d46e5 package bytes were retained from a05088b98844bba30f90b794effb8cf579e2ef08 before this one-revision convergence.",
+        "An exact before/after source comparison permits only the immutable Kit revision replacement. Historical source-bound receipts and negative drift fixtures are unchanged.",
+        "Final-pin focused Kit/Any/session/R05 component acceptance is pending; manifest agreement and resolve-only success do not establish semantic acceptance."
       ]
     },
     {
@@ -1451,6 +1452,19 @@
       ],
       "validation": [
         "Reviewed exact candidate-only source, immutable request/typed response ownership, all generated native lifecycle callers, overlapping transition refusal and bounded byte bridge. Nine focused owner/byte controls and the actual iOS Lib journey are authored but NOT_RUN; no previous pass is relabelled and default capability remains OFF."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift",
+      "to": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift",
+      "baselineBlob": "4fdb3aec1b4bfecabdf612695bc6a264a0311aae",
+      "replacementBlob": "c17304bc6249f14866ef51c6d07a60820d7d7966",
+      "reason": "Preserve the retained Heart related-query body in private loadRelatedDocuments and add a public error boundary that maps only exact typed native BAD_INPUT plus current-authority sentinel through AnytypeTorahRelatedReadFailure; all other errors are rethrown unchanged.",
+      "sharedSources": [],
+      "validation": [
+        "Reviewed the exact f42/403 diff and old/new Git blobs; no query, pagination, identity, projection, persistence or runtime behavior is replaced by this wrapper.",
+        "Heart typed mapping2 methods3 cases will run within the already-required SDK Debug build. The native signed-ACL acceptance is separate and pending. No prior native, UIKit or provider result is relabelled by this mapping."
       ]
     }
   ],

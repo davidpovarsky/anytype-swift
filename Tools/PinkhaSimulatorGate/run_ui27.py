@@ -24,7 +24,7 @@ import heart_runtime_profile as heart_profiles
 
 SMOKE = ['testObjectAddPropertyButtonAndPickerSearch', 'testDocumentSourceSearchPresentation',
          'testSourceChipOpensAndClosesInspector']
-KIT = '158acb295f832e96907cdadc813a1c2a4bb6a03c'
+KIT = '511454e49450cb2581ddf77f644146ff3e30dbef'
 MARKER = 'pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077'
 DEFAULT_METHOD_SECONDS = 300
 PROPERTIES_METHOD_SECONDS = 900

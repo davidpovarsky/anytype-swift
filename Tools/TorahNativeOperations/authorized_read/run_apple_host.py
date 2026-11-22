@@ -73,7 +73,7 @@ SOURCES = {
     "HeartAuthorizedOperationLibTests": "Tools/TorahNativeOperations/authorized_read/apple/HostTests/HeartAuthorizedOperationLibTests.swift",
 }
 PINS = {
-    "torahinspectorkit": "158acb295f832e96907cdadc813a1c2a4bb6a03c",
+    "torahinspectorkit": "511454e49450cb2581ddf77f644146ff3e30dbef",
     "swift-protobuf": "c6fe6442e6a64250495669325044052e113e990c",
     "swift-crypto": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
     "swift-asn1": "917b472dbe53ba699cbb0495f9a95a084bc6364d",

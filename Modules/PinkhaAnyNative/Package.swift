@@ -14,7 +14,7 @@ let package = Package(
         .package(path: "../PinkhaKit"),
         .package(path: "../PinkhaTorahPresentation"),
         .package(url: "https://github.com/davidpovarsky/TorahInspectorKit.git",
-                 revision: "158acb295f832e96907cdadc813a1c2a4bb6a03c"),
+                 revision: "511454e49450cb2581ddf77f644146ff3e30dbef"),
         .package(path: "../PinkhaAnyHanlin"),
         .package(path: "../../Dependencies/Hanlin/Packages/HanlinAgentSDK"),
         .package(path: "../../Dependencies/Hanlin/Packages/HanlinPlatform")

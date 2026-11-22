@@ -14,7 +14,7 @@ from pathlib import Path
 PACKAGE = "PinkhaTorahPresentation"
 SUITE = "T5ResolvedAliasIdentityTests"
 METHOD = "testResolvedAliasesRemainDistinctFromOtherVersesAndProviders"
-PIN = "158acb295f832e96907cdadc813a1c2a4bb6a03c"
+PIN = "511454e49450cb2581ddf77f644146ff3e30dbef"
 FIXTURE = "Modules/PinkhaTorahPresentation/Tests/PinkhaTorahPresentationTests/Fixtures/reference-resolved.json"
 ORIGINAL_FIXTURE = "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Fixtures/reference-resolved.json"
 RETAINED_COMMIT = "653aa1aac2e61987999d1a54fcdd91e1cfcae228"

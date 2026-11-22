@@ -13,7 +13,7 @@ let package = Package(
         .package(path: "../PinkhaAnyHanlin"),
         .package(path: "../Loc"),
         .package(url: "https://github.com/davidpovarsky/TorahInspectorKit.git",
-                 revision: "158acb295f832e96907cdadc813a1c2a4bb6a03c")
+                 revision: "511454e49450cb2581ddf77f644146ff3e30dbef")
     ],
     targets: [
         .target(name: "PinkhaAnyUI", dependencies: [

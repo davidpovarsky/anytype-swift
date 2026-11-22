@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "requiredKitCommit": "511454e49450cb2581ddf77f644146ff3e30dbef",
+  "reviewedBaseCommit": "f42c1997743350993db8f3179c6b597d800d46e5",
+  "status": "ACTIVE_SOURCE_PINS_CONVERGED_COMPONENT_PROOFS_PENDING",
+  "directConsumers": [
+    "Anytype.xcodeproj/project.pbxproj",
+    "Modules/PinkhaAnyNative/Package.swift",
+    "Modules/PinkhaAnyUI/Package.swift",
+    "Modules/PinkhaKit/Package.swift",
+    "Modules/PinkhaTorahPresentation/Package.swift",
+    "NativeApp/AnyNative.xcodeproj/project.pbxproj"
+  ],
+  "trackedLocks": [
+    "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+    "Modules/PinkhaAnyHanlin/Package.resolved",
+    "Modules/PinkhaAnyHost/Package.resolved",
+    "Modules/PinkhaAnyIntegration/Package.resolved",
+    "Modules/PinkhaAnyUI/Package.resolved",
+    "Modules/PinkhaTorahPresentation/Package.resolved"
+  ],
+  "activeAdmissionGuards": [
+    "Tools/AnyEngineValidation/run_authorized_operation_read_packages.py",
+    "Tools/PinkhaSimulatorGate/required-coverage.json",
+    "Tools/PinkhaSimulatorGate/run_ui27.py",
+    "Tools/T5RelatedDocuments/run_r05_alias.py",
+    "Tools/TorahNativeOperations/authorized_read/run_apple_host.py"
+  ],
+  "otherDependencyPinsUnchanged": true,
+  "historicalEvidenceAndNegativeDriftFixturesChanged": false,
+  "resolveOnly": [
+    {
+      "package": "PinkhaTorahPresentation",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swift.exe",
+        "package",
+        "--package-path",
+        "C:\\Users\\DAVID\\Code\\anytype-swift-shared-related-pins-20261122\\Modules\\PinkhaTorahPresentation",
+        "resolve"
+      ],
+      "returncode": 0,
+      "seconds": 107.08,
+      "status": "PASS_RESOLVE_ONLY",
+      "originHash": "759b8f2ad04ee0fd9c075dd644e7b8c88eb9e3b187d9d1d0d1f4cbf340d9d103",
+      "otherPinsUnchanged": true
+    }
+  ],
+  "remainingPackageResolution": {
+    "PinkhaAnyUI": "180_SECOND_TIMEOUT_NO_BUILD_OR_TEST_RESULT",
+    "PinkhaAnyHanlin": "NOT_RUN",
+    "PinkhaAnyHost": "NOT_RUN",
+    "PinkhaAnyIntegration": "NOT_RUN"
+  },
+  "xcodeLockOriginHash": "PRESERVED_PENDING_REAL_XCODE_RESOLUTION",
+  "xcodeResolveRoute": "heart-dependency-resolution",
+  "heartSourceRunID": "44943967103",
+  "xcodeResolutionBoundary": "Existing route must return its original/generated lock. Do not relax existing tracked-source or dependency admission. No app/test build is requested by that route.",
+  "componentProfiles": "docs/architecture/related-read-authority-20261121/test-profiles.json",
+  "componentExecution": "NOT_RUN",
+  "appBuilds": 0,
+  "testExecutions": 0
+}
