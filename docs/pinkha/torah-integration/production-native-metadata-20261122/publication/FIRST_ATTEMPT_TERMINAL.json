@@ -1,0 +1,24 @@
+{
+  "id": "job_f8525de792d7",
+  "type": "job_result",
+  "source": "script_run@host_7ec8382e82747448",
+  "severity": "warning",
+  "tool": "script_run",
+  "host": "host_7ec8382e82747448",
+  "status": "failed",
+  "exit_code": 1,
+  "created_at": 1795331097.0033047,
+  "started_at": "2026-11-22T07:04:57.284143+00:00",
+  "finished_at": "2026-11-22T07:05:03.221770+00:00",
+  "duration_s": 5.94,
+  "error": null,
+  "output_truncated": false,
+  "timeout_s": 600,
+  "read": false,
+  "notified": {
+    "telegram": null,
+    "resend": null
+  },
+  "notify_spec": {},
+  "output": "{\"phase\": \"VERIFIED_BEFORE_SOURCE_COMMIT\", \"at\": \"2026-11-22T07:04:59.996930+00:00\", \"base\": \"b854e7f3f59690134bcabdef88527b61517d5ab5\", \"product_sha256\": \"21321e2e69bcb29dc784620dd459f1152528f117caa13695e689b6d024813dc5\", \"controls_index_sha256\": \"ffac49d17c87592d13594aa6574ae7d8e09609751dac90dfca17d951de8c9d92\"}\r\n{\"phase\": \"SOURCE_COMMITTED_EVIDENCE_PENDING\", \"at\": \"2026-11-22T07:05:02.510839+00:00\", \"source_commit\": \"032a8320178ca702ed05327de168cbc2578f11eb\"}\nTraceback (most recent call last):\r\n  File \"C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_db11d08d06394c1d82b0ebeb797efa6a\\metadata_publish.py\", line 147, in <module>\r\n    assert len(payload)==75,len(payload)\r\n           ^^^^^^^^^^^^^^^^\r\nAssertionError: 76"
+}

@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "frozen_at": "2026-11-22T06:30:45.128123+00:00",
+  "base": "b854e7f3f59690134bcabdef88527b61517d5ab5",
+  "product_sha256": "21321e2e69bcb29dc784620dd459f1152528f117caa13695e689b6d024813dc5",
+  "dependency_revision": "c6fe6442e6a64250495669325044052e113e990c",
+  "expected_swift_testing_cases": 26,
+  "test_methods": [
+    "testNativeDescriptorUsesLosslessStringStorageAndDelimiterSafeSchemaKeys",
+    "testRealBinaryProtobufRoundTripPreservesExactCandidate",
+    "testNativeRootIdentityMatchesByteExactlyAndIsNonempty",
+    "testNativeSpaceMatchesCreatorSpaceByteExactly",
+    "testNativeTypeRequiresExactlyOneString",
+    "testNativeTypeIDUsesExistingIdentifierBounds",
+    "testProtocolRejectsUnknownVersions",
+    "testEveryRequiredMarkerIsRequired",
+    "testRequiredMarkersRejectNonStringProtobufKinds",
+    "testNativeFieldsRejectMissingAndMalformedKinds",
+    "testCanonicalUUIDsRetainExistingMessageAsAttempt",
+    "testNoncanonicalUUIDSpellingsRejected",
+    "testRevisionPreservesIntegersBeyondDoubleAndInt64Max",
+    "testRevisionRejectsNoncanonicalOrOutOfRangeDecimal",
+    "testRevisionRejectsNativeNumberKind",
+    "testScopeIdentifiersUseExistingCaseSensitiveBounds",
+    "testCommitmentDigestsUseExactLowercaseSHA256Grammar",
+    "testForeignCreatorScopeIsPreservedForConflictAssessment",
+    "testPromotedClassificationRemainsExplicitConflict",
+    "testUnknownClassificationNeverFallsBackToNote",
+    "testNativeStateAbsentDefaultsFalseAndPresentRequiresBool",
+    "testArchivedDeletedStateIsRetained",
+    "testAppliedCommitmentRequiresAllFiveOrNone",
+    "testAppliedCommitmentRejectsMalformedValues",
+    "testCopiedSnapshotMarkersCannotProveAppliedBody",
+    "testDecodePreservesOpaqueBodySourceAndUnknownWireFields"
+  ],
+  "source_inputs": [
+    {
+      "kind": "complete_unmodified_original_git_source",
+      "base": "b854e7f3f59690134bcabdef88527b61517d5ab5",
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_RelationFormat.swift",
+      "git_blob": "fd66723ed232b199d8a78e6643bbbf377ade539b",
+      "retained": "proto/RelationFormat.swift",
+      "bytes": 3943,
+      "sha256": "570da500bed728ca86740c29efb55b563678cb2999dd1c60906b249e0cc1c564"
+    },
+    {
+      "kind": "complete_unmodified_original_git_source",
+      "base": "b854e7f3f59690134bcabdef88527b61517d5ab5",
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAnnotationNativeIdentity.swift",
+      "git_blob": "2c9db7736ee536b64c157de21ac88833c445bdfc",
+      "retained": "pinkha/TorahAnnotationNativeIdentity.swift",
+      "bytes": 7630,
+      "sha256": "511c648c9c789d838b196f75e223094783a399c36ee9650c664b23d878c605cf"
+    },
+    {
+      "kind": "complete_unmodified_original_git_source",
+      "base": "b854e7f3f59690134bcabdef88527b61517d5ab5",
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAnnotationCreateRecovery.swift",
+      "git_blob": "7d62d3af97ef318eadaeef995dca558a62e47803",
+      "retained": "pinkha/TorahAnnotationCreateRecovery.swift",
+      "bytes": 8484,
+      "sha256": "12beaebc75d52ea495d86a729f9ef8e07902dd82cccafe1cb07dedd89d09cd38"
+    },
+    {
+      "kind": "complete_unmodified_reviewed_internal_decoder",
+      "path": "Anytype/Sources/Pinkha/Torah/Annotations/OriginalAnnotationNativeMetadata.swift",
+      "retained": "tests/OriginalAnnotationNativeMetadata.swift",
+      "bytes": 8112,
+      "sha256": "21321e2e69bcb29dc784620dd459f1152528f117caa13695e689b6d024813dc5"
+    },
+    {
+      "kind": "new_focused_control_source",
+      "retained": "tests/MetadataTests.swift",
+      "bytes": 27121,
+      "sha256": "e2976314b0d8ada3dd3dffd6937b400b34effbee7fcc3a59fd2705f05b9ea8d6"
+    },
+    {
+      "kind": "new_focused_control_source",
+      "retained": "Package.swift",
+      "bytes": 986,
+      "sha256": "13d753e8be3d81ed08e83e6aae1be4c44a78e5be502c8ccf45e0b735edc698de"
+    }
+  ],
+  "retained_harness": "C:\\Users\\DAVID\\Code\\anytype-original-annotation-metadata-20261122\\docs\\pinkha\\torah-integration\\production-native-metadata-20261122\\controls\\harness",
+  "execution_harness": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\omd-20261122\\harness",
+  "scratch_path": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\omd-20261122\\build",
+  "old_policy52_rerun": false,
+  "native_calls": 0,
+  "module_scopes": {
+    "SwiftProtobuf": "Complete original package runtime target and resources, pinned Git revision; unused protoc binary disabled through upstream Package.swift supported environment switch",
+    "ProtobufMessages": "Exact unmodified generated RelationFormat source under original module name; no fake enum or removed conformance",
+    "PinkhaKit": "Exact unmodified two original NativeIdentity/CreateRecovery files under original module name; no full-package qualification",
+    "OriginalAnnotationNativeMetadataTests": "Complete frozen internal decoder plus 26 new Swift Testing cases; no Service/ObjectDetails wrapper"
+  },
+  "source_body_or_envelope_changes": false
+}
