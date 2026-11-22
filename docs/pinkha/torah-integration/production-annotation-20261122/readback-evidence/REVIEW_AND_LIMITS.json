@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "source_path": "Anytype/Sources/Pinkha/Torah/Annotations/OriginalAnnotationObjectReadback.swift",
+  "source_sha256": "0d007b5d2ee2bab38218cbdc36b0385f17b8ee95d8579ddaa23626081c602526",
+  "contract_sha256": "465c6e80a821206a8ec91ce016135b654233d0b372166b2fb00a48b997734f87",
+  "root_source_review": "Root fully read the exact 0d007b source and accepted the narrow boundary as raw observation only; identity receipt remains contingent on native schema and held commit admission.",
+  "root_admission_review": "Use original admission/drain linearization; after DB serialization lock, admit synchronously and keep true COMMIT inside the original exclusive read/admission scope. Retirement before admission rejects; already admitted operation may finish while teardown drains. Durable commit then retired must never be rollback/reset/recreate or current-owner UI success.",
+  "consumer_schema_review": "Canonical Heart supports fixed schema type/relation keys, not UUID-derived ordinary annotation IDs. Copy original UUID.uuidString and existing commitment/digests; immutable creation scope, separate cross-account adoption, no global uniqueness claim.",
+  "actual_new_syntax_files": 1,
+  "actual_native_reads": 0,
+  "actual_apple_module_tests": 0,
+  "public_facade_changes": 0,
+  "identity_writers": 0,
+  "ack_writes": 0,
+  "unchanged_policy_controls_not_rerun": 52,
+  "next_required_controls": "Joint actual original Owner/Lifetime plus real SQLite admission/retirement/commit-failure/durable-postcommit-retirement controls are being prepared separately.",
+  "created_at": "2026-11-22T04:23:31.018464+00:00"
+}
