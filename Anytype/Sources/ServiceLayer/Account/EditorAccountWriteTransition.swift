@@ -8,7 +8,7 @@ final class EditorAccountWriteTransition: Sendable {
     private let operation: EditorDocumentWriteOperation
     private let state: State
 
-    init(lifetime: EditorDocumentWriteLifetime, rpcNames: Set<String>) {
+    init(lifetime: EditorDocumentWriteLifetime, rpcNames: Set<String>, attemptCaptures: [EditorDocumentWriteCapture] = []) {
         let state = State(lifetime: lifetime)
         let operation = EditorDocumentWriteOperation { _ in state.release() }
         self.state = state
@@ -19,9 +19,15 @@ final class EditorAccountWriteTransition: Sendable {
             guard rpcNames.contains(messageName) else {
                 throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
             }
+            for capture in attemptCaptures { try capture.validate() }
             await lifetime.waitForOperationsToDrain()
             try Task.checkCancellation()
-            return operation.permit { [] }
+            for capture in attemptCaptures { try capture.validate() }
+            // Recheck the frozen original attempt at the queued native begin,
+            // not merely before an await. An empty default preserves old callers.
+            return operation.permit {
+                try EditorDocumentWriteCapture.acquireAll(attemptCaptures)
+            }
         }
     }
 

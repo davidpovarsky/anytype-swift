@@ -1,0 +1,212 @@
+{
+  "reviewed_base": "b5162d777e3ebc5c4c0d044e02b52347c0c3dd6e",
+  "status": "BOUNDED_SOURCE_REVIEW_NOT_A_TYPECHECK",
+  "files": [
+    {
+      "path": "Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorViewModel.swift",
+      "sha": "14e68010d2eecd8b832926472166a50369fb7ac5",
+      "matched": [
+        {
+          "line": "    @Injected(\\.authService) @ObservationIgnored",
+          "i": 11
+        },
+        {
+          "line": "    private var authService: any AuthServiceProtocol",
+          "i": 12
+        },
+        {
+          "line": "                try? await authService.logout(removeData: true)",
+          "i": 92
+        },
+        {
+          "line": "            try await authService.walletRecovery(mnemonic: seed)",
+          "i": 134
+        },
+        {
+          "line": "            let account = try await authService.selectAccount(id: id, preferredSpaceId: preferredSpaceId())",
+          "i": 149
+        }
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Auth/AuthCoordinatorViewModel.swift",
+      "sha": "61fe5b68c4df627edea57038d5302f8ccc68ceb0",
+      "matched": []
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Auth/DeletedAccount/DeletedAccountViewModel.swift",
+      "sha": "ea09cd0501f46e244ec0623aa879d971a6235982",
+      "matched": [
+        {
+          "line": "    @ObservationIgnored @Injected(\\.authService)",
+          "i": 7
+        },
+        {
+          "line": "    private var service: any AuthServiceProtocol",
+          "i": 8
+        }
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Auth/Join/JoinCoordinatorViewModel.swift",
+      "sha": "a27c394194c526cfcdbe4208221eda009426b393",
+      "matched": []
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Auth/Join/JoinView/EmailCollectionView/EmailCollectionViewModel.swift",
+      "sha": "4f14572a4f652bcab29b622b68166cbbe97f6eec",
+      "matched": []
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Auth/Join/JoinView/JoinSelectionView/JoinSelectionViewModel.swift",
+      "sha": "ba4a1dd21892df7f8ec6ff61f1c481c91ad62049",
+      "matched": []
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Auth/Join/JoinView/JoinViewModel.swift",
+      "sha": "52ca5fd5a2ebbb79576ea51d04164181dd69b23b",
+      "matched": []
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Auth/Join/Shared/KeyPhraseView/KeyPhraseViewModel.swift",
+      "sha": "32a8f37fb35bc2d9ae64de25a7596eb3d1ed3b4d",
+      "matched": []
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Auth/Login/LoginCoordinatorViewModel.swift",
+      "sha": "23ed0cea51f9eb9e633b3f1add942c8e38319a6d",
+      "matched": []
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginViewModel.swift",
+      "sha": "98658a311e242e82b18a980b8c470f8dd8a96433",
+      "matched": [
+        {
+          "line": "    @ObservationIgnored @Injected(\\.authService)",
+          "i": 27
+        },
+        {
+          "line": "    private var authService: any AuthServiceProtocol",
+          "i": 28
+        },
+        {
+          "line": "    @ObservationIgnored @Injected(\\.localAuthService)",
+          "i": 31
+        },
+        {
+          "line": "    private var localAuthService: any LocalAuthServiceProtocol",
+          "i": 32
+        },
+        {
+          "line": "            try await localAuthService.auth(reason: Loc.accessToKeyFromKeychain)",
+          "i": 89
+        },
+        {
+          "line": "        } catch LocalAuthServiceError.passcodeNotSet {",
+          "i": 91
+        },
+        {
+          "line": "        try? await authService.logout(removeData: false)",
+          "i": 119
+        },
+        {
+          "line": "            phrase = try await authService.mnemonicByEntropy(entropy)",
+          "i": 125
+        },
+        {
+          "line": "            try await authService.walletRecovery(mnemonic: phrase.trimmingCharacters(in: .whitespacesAndNewlines))",
+          "i": 136
+        },
+        {
+          "line": "            try await authService.accountRecover()",
+          "i": 163
+        },
+        {
+          "line": "            let account = try await authService.selectAccount(id: accountId, preferredSpaceId: \"\")",
+          "i": 178
+        }
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Auth/PrimaryAuthView/PrimaryAuthViewModel.swift",
+      "sha": "58f4b0d1e4939686282b13f796753032bbe55b4c",
+      "matched": [
+        {
+          "line": "    @ObservationIgnored @Injected(\\.authService)",
+          "i": 28
+        },
+        {
+          "line": "    private var authService: any AuthServiceProtocol",
+          "i": 29
+        },
+        {
+          "line": "            state.mnemonic = try await authService.createWallet()",
+          "i": 87
+        },
+        {
+          "line": "            let account = try await authService.createAccount(",
+          "i": 89
+        }
+      ]
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Account/AccountManager.swift",
+      "sha": "8b5d3d362f2c73b248b8b5b68e6ecda9a62f09e2",
+      "matched": [
+        {
+          "line": "    var editorWriteLifetime: EditorDocumentWriteLifetime? { get }",
+          "i": 10
+        },
+        {
+          "line": "    var editorWriteLifetime: EditorDocumentWriteLifetime? { nil }",
+          "i": 16
+        },
+        {
+          "line": "    var editorWriteLifetime: EditorDocumentWriteLifetime? { writeLifetime }",
+          "i": 24
+        }
+      ]
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Auth/AuthServiceProtocol.swift",
+      "sha": "3f247a1955ef7ccb19e7d874c8f9b3c7363a3dd4",
+      "matched": [
+        {
+          "line": "protocol AuthServiceProtocol: Sendable {",
+          "i": 3
+        }
+      ]
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/ServicesDI.swift",
+      "sha": "dfc2b87f5e688b6fb5b89e24d58799f65751ea67",
+      "matched": [
+        {
+          "line": "    var loginStateService: Factory<any LoginStateServiceProtocol> {",
+          "i": 59
+        },
+        {
+          "line": "        self { LoginStateService() }.singleton",
+          "i": 60
+        },
+        {
+          "line": "    var localAuthService: Factory<any LocalAuthServiceProtocol> {",
+          "i": 171
+        },
+        {
+          "line": "        self { LocalAuthService() }.shared",
+          "i": 172
+        },
+        {
+          "line": "    var authService: Factory<any AuthServiceProtocol> {",
+          "i": 295
+        },
+        {
+          "line": "        self { PinkhaHanlinAuthService(base: AuthService()) }.shared",
+          "i": 296
+        }
+      ]
+    }
+  ],
+  "scope_limit": "GitHub code-search index reported incomplete_results; unenumerated references require Apple compilation. Existing test trees expose no Auth/LoginState mock file by name."
+}
