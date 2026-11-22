@@ -1,0 +1,51 @@
+{
+  "scope": "Local evidence verifier only; native source, selectors and immutable evidence unchanged",
+  "initial_status": "FAIL",
+  "initial_verifier_sha256": "0d3b5c82685987853d6e3675707ee5a832fca8c8e04f30a8000f257fe130c8a5",
+  "failure": "line 137 required [] for different_detail_keys; original Go empty nil slice serialized as JSON null",
+  "raw_values": [
+    {
+      "file": "missing-attachment-00-registered.json",
+      "different_detail_keys": null,
+      "different_block_ids": [
+        "dataview"
+      ]
+    },
+    {
+      "file": "missing-attachment-01-unrelated-property-added.json",
+      "different_detail_keys": null,
+      "different_block_ids": [
+        "dataview"
+      ]
+    },
+    {
+      "file": "missing-attachment-02-second-view-applied.json",
+      "different_detail_keys": null,
+      "different_block_ids": [
+        "dataview"
+      ]
+    },
+    {
+      "file": "missing-attachment-03-metadata-property-removed.json",
+      "different_detail_keys": null,
+      "different_block_ids": [
+        "dataview"
+      ]
+    },
+    {
+      "file": "missing-attachment-04-before-registration-attempt.json",
+      "different_detail_keys": null,
+      "different_block_ids": [
+        "dataview"
+      ]
+    },
+    {
+      "file": "missing-attachment-05-after-registration-attempt.json",
+      "different_detail_keys": null,
+      "different_block_ids": [
+        "dataview"
+      ]
+    }
+  ],
+  "correction": "Accept empty list or null only when original details_equal is true and no different detail keys are reported; keep exact dataview block difference requirement."
+}

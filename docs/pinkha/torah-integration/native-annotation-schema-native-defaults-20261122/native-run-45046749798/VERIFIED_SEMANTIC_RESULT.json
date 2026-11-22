@@ -1,0 +1,118 @@
+{
+  "status": "VERIFIED_ACTUAL_FIVE_PASS",
+  "source": "0896ae82864142e0b633278a8c5cb718ddf66e1e",
+  "run_id": 45046749798,
+  "attempt": 1,
+  "artifact_id": 14764570821,
+  "artifact_bytes": 3191815,
+  "artifact_sha256": "3ac1d224746d3a466cf978798fc238eaec0c556ffd5ed4ae2f3fcb894a07210a",
+  "payloads_verified": 54,
+  "commands_verified": 21,
+  "all_owned_command_groups_drained": true,
+  "composed_inputs_verified": 21,
+  "unchanged_diagnostic_inputs": 19,
+  "unchanged_registration_inputs": 17,
+  "old_baseline_inputs_unchanged": 13,
+  "native_registration_passes_preserved_not_replayed": 12,
+  "outcomes": {
+    "semantics": {
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "compile_seconds": 232.267,
+      "execution_seconds": 2.597,
+      "cases": [
+        "TestOtzariaAnnotationSchemaNativeBlockSemantics/OriginalDataviewDiffExplainsEmptyMessage",
+        "TestOtzariaAnnotationSchemaNativeBlockSemantics/CapturedNativePairUsesSemanticCopies",
+        "TestOtzariaAnnotationSchemaNativeBlockSemantics/NonzeroNativeRestrictionsRemainDifferent",
+        "TestOtzariaAnnotationSchemaNativeBlockSemantics/OtherNativeFieldsRemainDifferent"
+      ]
+    },
+    "native": {
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "compile_seconds": 69.014,
+      "execution_seconds": 6.29,
+      "cases": [
+        "TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply"
+      ]
+    }
+  },
+  "repair_phase": {
+    "Time": "2026-11-22T17:11:11.784928Z",
+    "Action": "output",
+    "Package": "./core/block/object/objectcreator",
+    "Test": "TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply",
+    "Output": "    annotation_schema_registration_native_test.go:110: native registration phase=1 creates=0 apply=true returned=true disposition=MATCHING_SCHEMA_OBSERVED error=<nil>\n"
+  },
+  "repair_added_property_id": "bafyreihrm56pobrjrplg24mx5qyywzozbuwqp5vydjmw6illgbdt4ul5ja",
+  "repair_delta": "One hidden property ID, one relation link and one hidden column in each of two preserved views; all remaining decoded persisted state identical, plus unchanged original full native protobuf preservation assertions PASS.",
+  "captures": [
+    {
+      "stage": "00-registered",
+      "path": "missing-attachment-00-registered.json",
+      "sha256": "f001b47642e2148b285aad73647d65b16fcf5baa55e9aa5a33d98bc8cfc4227d",
+      "heads_equal": true,
+      "details_equal_native": true,
+      "blocks_equal_native": false,
+      "sole_wire_difference": "dataview top-level Restrictions empty message 1a00 present only in loaded state",
+      "all_remaining_block_bytes_identical": true
+    },
+    {
+      "stage": "01-unrelated-property-added",
+      "path": "missing-attachment-01-unrelated-property-added.json",
+      "sha256": "0615e84c0b452ee43952147f303f45081096734392c19c50b149979cc202e1b4",
+      "heads_equal": true,
+      "details_equal_native": true,
+      "blocks_equal_native": false,
+      "sole_wire_difference": "dataview top-level Restrictions empty message 1a00 present only in loaded state",
+      "all_remaining_block_bytes_identical": true
+    },
+    {
+      "stage": "02-second-view-applied",
+      "path": "missing-attachment-02-second-view-applied.json",
+      "sha256": "4e0c3af1c987fc0147bb2a8d55c132bcdb13d7c36c32b3d2cc469069b4506425",
+      "heads_equal": true,
+      "details_equal_native": true,
+      "blocks_equal_native": false,
+      "sole_wire_difference": "dataview top-level Restrictions empty message 1a00 present only in loaded state",
+      "all_remaining_block_bytes_identical": true
+    },
+    {
+      "stage": "03-metadata-property-removed",
+      "path": "missing-attachment-03-metadata-property-removed.json",
+      "sha256": "ab54b3df3b0e31eb699c10e511a20ad89ebba42b242e1ee79fa1a3da290c0e96",
+      "heads_equal": true,
+      "details_equal_native": true,
+      "blocks_equal_native": false,
+      "sole_wire_difference": "dataview top-level Restrictions empty message 1a00 present only in loaded state",
+      "all_remaining_block_bytes_identical": true
+    },
+    {
+      "stage": "04-before-registration-attempt",
+      "path": "missing-attachment-04-before-registration-attempt.json",
+      "sha256": "4172a8bb8d55d72b64af3ba1e7b7aaa62f8206818ca49891b68ce5d83d309445",
+      "heads_equal": true,
+      "details_equal_native": true,
+      "blocks_equal_native": false,
+      "sole_wire_difference": "dataview top-level Restrictions empty message 1a00 present only in loaded state",
+      "all_remaining_block_bytes_identical": true
+    },
+    {
+      "stage": "05-after-registration-attempt",
+      "path": "missing-attachment-05-after-registration-attempt.json",
+      "sha256": "4e90f084a112171a355501e014fbcbd8d80c1a811c06930160c4e451322673c2",
+      "heads_equal": true,
+      "details_equal_native": true,
+      "blocks_equal_native": false,
+      "sole_wire_difference": "dataview top-level Restrictions empty message 1a00 present only in loaded state",
+      "all_remaining_block_bytes_identical": true
+    }
+  ],
+  "semantic_scope": "Complete represented native state with only original Base.Diff nil top-level Restrictions defaults on deep copies; raw wire observations remain unequal when presence differs.",
+  "decoder_limit": "Original generated Block and BlockRestrictions decoders discard unknown wire fields; all represented native state remains compared. No wire-equality or unknown-wire-retention claim.",
+  "binary_scope": "Two compiled binary hashes are runner-observed before/after; executable bytes are excluded from uploaded evidence and have not been independently rehashed.",
+  "owned_disposable_temp_removed": true,
+  "open_scope": "Swift/RPC generation, generated compilation, native response/cancellation integration and production destination wiring remain separate gates. No body, lease or ACK acceptance."
+}
