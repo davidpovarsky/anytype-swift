@@ -1,0 +1,19 @@
+Command line invocation:
+    /Applications/Xcode_27.app/Contents/Developer/usr/bin/xcodebuild -resolvePackageDependencies -scheme HeartAuthorizedReadHarness -clonedSourcePackagesDirPath /Users/runner/work/anytype-swift/anytype-swift/build/heart-authorized-read-ios-44961619024-1/work/SourcePackages
+
+Resolve Package Graph
+dependency 'swift-asn1' is not used by any target2026-11-22 00:00:32.414 xcodebuild[16330:45928] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+
+
+Resolved source packages:
+  PinkhaKit: /Users/runner/work/anytype-swift/anytype-swift/build/heart-authorized-read-ios-44961619024-1/work/client/Modules/PinkhaKit @ local
+  TorahInspectorKit: https://github.com/davidpovarsky/TorahInspectorKit.git @ 158acb2
+  PinkhaHeartNative: /Users/runner/work/anytype-swift/anytype-swift/build/heart-authorized-read-ios-44961619024-1/work/client/Modules/PinkhaHeartNative @ local
+  swift-crypto: https://github.com/apple/swift-crypto.git @ 3.12.3
+  SwiftProtobuf: https://github.com/apple/swift-protobuf @ 1.32.0 (c6fe644)
+  swift-asn1: https://github.com/apple/swift-asn1.git @ 1.7.4
+  PinkhaHeartEngine: /Users/runner/work/anytype-swift/anytype-swift/build/heart-authorized-read-ios-44961619024-1/work/client/Modules/PinkhaHeartEngine @ local
+  HeartAuthorizedReadHarness: /Users/runner/work/anytype-swift/anytype-swift/build/heart-authorized-read-ios-44961619024-1/work/client/Harness
+  ProtobufMessages: /Users/runner/work/anytype-swift/anytype-swift/build/heart-authorized-read-ios-44961619024-1/work/client/Modules/ProtobufMessages @ local
+
+resolved source packages: PinkhaKit, TorahInspectorKit, PinkhaHeartNative, swift-crypto, SwiftProtobuf, swift-asn1, PinkhaHeartEngine, HeartAuthorizedReadHarness, ProtobufMessages
