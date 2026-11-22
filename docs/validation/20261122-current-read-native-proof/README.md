@@ -6,3 +6,5 @@ This qualifies the scoped native candidate r15-attachment-current-read-v1, patch
 No previously passed native71, attachment fixtures, pagination36 or UIKit14 were executed by this proof.
 
 Source: https://github.com/davidpovarsky/anytype-swift/actions/runs/44966862922
+
+Consumer source comparison uses committed Git blob bytes to avoid treating Windows checkout CRLF as source edits. See consumer-control-deltas.json; original Linux proof files remain byte-exact.
