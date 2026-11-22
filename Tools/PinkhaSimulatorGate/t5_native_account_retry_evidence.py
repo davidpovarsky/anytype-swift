@@ -42,7 +42,7 @@ def validate_directory(value):
             and finite(value.get("createdAt")), "Existing native directory identity is incomplete")
 
 
-def successful_query(query, baseline, fixtures):
+def successful_query(query, baseline, fixtures, *, prior_readbacks=None):
     require(query.get("status") == "SUCCESS" and query.get("errorCode") is None
             and query.get("errorDescription") is None, "Recovered query did not return successfully")
     space = baseline["spaceID"]
@@ -63,7 +63,9 @@ def successful_query(query, baseline, fixtures):
             and {row.get("objectID") for row in readbacks} == set(ids),
             "Post-query independent current native readbacks are missing")
     current = {row["objectID"]: row for row in readbacks}
-    prior = {row["objectID"]: row for row in baseline["observations"][-1]["readbacks"]}
+    if prior_readbacks is None:
+        prior_readbacks = baseline["observations"][-1]["readbacks"]
+    prior = {row["objectID"]: row for row in prior_readbacks}
     expected = []
     for obj in originals:
         value = current[obj["objectID"]]
@@ -118,12 +120,25 @@ def failed_query(query, space):
 
 
 def validate_receipt(receipt, baseline, baseline_bytes, *, source, run_id, run_attempt, token, root_sha,
-                     credential_sha, current_directories, execution_window):
-    baseline_counts = pagination.validate_receipt(baseline, source=source, run_id=run_id, token=token, root_sha=root_sha)
+                     credential_sha, current_directories, execution_window, pending_only=False):
+    require(type(pending_only) is bool, "Explicit pending-only mode required")
     require(isinstance(baseline_bytes, bytes) and json.loads(baseline_bytes) == baseline,
-            "The original accepted pagination receipt bytes are missing")
-    require(isinstance(receipt, dict) and receipt.get("protocolVersion") == PROTOCOL
-            and receipt.get("status") == "PASS_NATIVE_ACCOUNT_RETRY", "Native existing-account retry receipt incomplete")
+            "The original starting-state receipt bytes are missing")
+    prior_readbacks = None
+    fixture = None
+    if pending_only:
+        import t5_native_account_retry_pending_evidence as pending
+        fixture = baseline
+        baseline, prior_readbacks, fixtures = pending.validate_prepared_fixture(
+            fixture, source=source, run_id=run_id, token=token, root_sha=root_sha)
+        baseline_counts = {"actual_search_calls": 0}
+        protocol, status = pending.PROTOCOL, pending.STATUS
+    else:
+        baseline_counts = pagination.validate_receipt(baseline, source=source, run_id=run_id, token=token, root_sha=root_sha)
+        fixtures = pagination.validate_fixture(baseline)
+        protocol, status = PROTOCOL, "PASS_NATIVE_ACCOUNT_RETRY"
+    require(isinstance(receipt, dict) and receipt.get("protocolVersion") == protocol
+            and receipt.get("status") == status, "Native existing-account retry receipt incomplete")
     for field in ("token", "appSourceSHA", "runID", "processID", "runtimeVersion", "accountID", "spaceID", "rootPathSHA256"):
         require(receipt.get(field) == baseline[field], "Retry belongs to another original account/process/runtime/source: " + field)
     require(type(receipt["processID"]) is int, "Actual native process identity type differs")
@@ -200,13 +215,25 @@ def validate_receipt(receipt, baseline, baseline_bytes, *, source, run_id, run_a
     require(receipt.get("productLookupFlag") == "OFF" and receipt.get("wholeIndexCompleteness") == "NOT_PROVEN"
             and receipt.get("networkOutage") == "NOT_RUN" and receipt.get("uiErrorPresentation") == "NOT_RUN",
             "Stopped-account service proof cannot widen product, outage or UI acceptance")
-    fixtures = pagination.validate_fixture(baseline)
-    successful_calls = successful_query(queries[0], baseline, fixtures) + successful_query(queries[2], baseline, fixtures)
+    if pending_only:
+        require(receipt["wrapperStartedAt"] <= fixture["setupCompletedAt"] <= receipt["baselineFinishedAt"],
+                "Prepared fixture is outside the actual current pending-only method")
+    successful_calls = (successful_query(queries[0], baseline, fixtures, prior_readbacks=prior_readbacks)
+                        + successful_query(queries[2], baseline, fixtures, prior_readbacks=prior_readbacks))
     failed_query(queries[1], baseline["spaceID"])
-    return dict(selected_test_methods=1, baseline_body_invocations=1, baseline_observations=10,
+    result = dict(selected_test_methods=1, baseline_body_invocations=0 if pending_only else 1,
+        baseline_observations=0 if pending_only else 10,
         baseline_search_calls=baseline_counts["actual_search_calls"], retry_observations=3,
         retry_successful_search_calls=successful_calls, retry_failed_search_attempts=1,
         total_search_calls_in_wrapper=baseline_counts["actual_search_calls"] + successful_calls + 1,
         tail_existing_account_restores=2, tail_account_stops=2, same_production_service=True,
-        unchanged_original_baseline=True, unchanged_private_credentials=True, same_existing_root_and_account_directories=True,
+        unchanged_original_baseline=not pending_only, unchanged_private_credentials=True, same_existing_root_and_account_directories=True,
         whole_index_completeness="NOT_PROVEN", network_outage="NOT_RUN", ui_error_presentation="NOT_RUN", product_lookup_flag="OFF")
+
+    if pending_only:
+        result.update(pending_only=True, retained_pagination_run_id=pending.RETAINED_RUN,
+                      retained_search_calls_not_reexecuted=36, fixture_setup_only=True,
+                      unchanged_prepared_fixture=True, fixture_objects=10,
+                      prepared_native_block_deletions=1, baseline_acceptance_rerun="NOT_RUN")
+        require(result["total_search_calls_in_wrapper"] == 9, "Exactly nine pending service search calls required")
+    return result

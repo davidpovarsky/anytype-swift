@@ -176,7 +176,7 @@ class NativeAccountRetrySelectionControls(unittest.TestCase):
         source = Path(__file__).resolve().parents[2] / "AnyTypeTests/Pinkha/TorahT5NativePaginationTests.swift"
         raw = source.read_bytes()
         self.assertEqual(hashlib.sha256(raw[:28741]).hexdigest(), "dff9dd58471659cc19d082ea0961f2ccff9666ad86c4aa052c85a3aa4e5d4990")
-        added = raw[28741:].decode()
+        added = raw[28741:].decode().split("private struct T5AccountRetryPreparedFixture:", 1)[0]
         self.assertEqual(added.count("@Test("), 1)
         self.assertEqual(added.count("try await original.nativePaginationCurrentSpaceAndMutationAcceptance()"), 1)
         self.assertIn("struct TorahT5NativeAccountRetryTests", added)
@@ -236,19 +236,21 @@ class NativeAccountRetryPublicationControls(unittest.TestCase):
 
 class NativeAccountRetryControllerControls(unittest.TestCase):
     def execute_synthetic_phase(self, *, account_retry, missing_retry=False, foreign_credentials=False,
-                                wrong_method=False, extra_original=False):
+                                wrong_method=False, extra_original=False, pending_only=False,
+                                input_factory=inputs, replayed_baseline=False, missing_fixture=False):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary).resolve(); app, work, container, built = [root / key for key in ("app", "work", "container", "built")]
             for path in (app, work, container, built):
                 path.mkdir()
             private = container / controller.PRIVATE_RELATIVE_PATH; private.mkdir(parents=True)
             native_root = container / controller.pair.ROOT_RELATIVE_PATH; native_root.mkdir(parents=True)
-            value, baseline, _, arguments = inputs()
+            value, baseline, _, arguments = input_factory()
+            state = baseline["state"] if pending_only else baseline
             root_sha = controller.pair.sha_bytes(str(native_root).encode())
-            baseline["rootPathSHA256"] = value["rootPathSHA256"] = root_sha
+            state["rootPathSHA256"] = value["rootPathSHA256"] = root_sha
             baseline_bytes = json.dumps(baseline, sort_keys=True).encode()
             value.update(baselineReceiptSHA256Before=evidence.digest(baseline_bytes), baselineReceiptSHA256After=evidence.digest(baseline_bytes))
-            native_account = native_root / baseline["accountID"]; native_account.mkdir()
+            native_account = native_root / state["accountID"]; native_account.mkdir()
             directories = arguments["current_directories"]
             directories["root"]["pathSHA256"] = root_sha
             directories["account"]["pathSHA256"] = controller.pair.sha_bytes(str(native_account).encode())
@@ -257,7 +259,11 @@ class NativeAccountRetryControllerControls(unittest.TestCase):
             credential_sha = evidence.digest(credentials)
             value.update(credentialFileSHA256Before=credential_sha, credentialFileSHA256After=credential_sha)
             (private / "secrets.json").write_bytes(credentials + (b" " if foreign_credentials else b""))
-            (private / "receipt.json").write_bytes(baseline_bytes)
+            state_name = "account-retry-fixture.json" if pending_only else "receipt.json"
+            if not missing_fixture:
+                (private / state_name).write_bytes(baseline_bytes)
+            if replayed_baseline:
+                (private / "receipt.json").write_bytes(baseline_bytes)
             if not missing_retry:
                 (private / "account-retry-receipt.json").write_text(json.dumps(value))
             configuration = built / "original.xctestrun"
@@ -267,7 +273,7 @@ class NativeAccountRetryControllerControls(unittest.TestCase):
                 injected.append(dict(environment))
                 data["TestConfigurations"][0]["TestTargets"][0]["EnvironmentVariables"] = environment
             ui = SimpleNamespace(inject=inject, code_carriers=lambda _: {"sha256": "f" * 64})
-            method = controller.selected_method(account_retry)
+            method = controller.selected_method(account_retry, pending_only)
             udid = "11111111-1111-1111-1111-111111111111"
             methods = {(controller.evidence.METHOD if wrong_method else method) + "()": "Passed"}
             if extra_original:
@@ -288,7 +294,7 @@ class NativeAccountRetryControllerControls(unittest.TestCase):
                  patch.dict(controller.os.environ, {"GITHUB_RUN_ATTEMPT": "1"}):
                 counts = controller.execute_phase(app=app, work=work, build=dict(app=str(built), configuration=str(configuration), code_sha256="f" * 64),
                     udid=udid, source=original.SOURCE, run_id=original.RUN, token=original.TOKEN, ui=ui,
-                    method_results=lambda value: value, account_retry=account_retry)
+                    method_results=lambda value: value, account_retry=account_retry, pending_only=pending_only)
             record = json.loads((work / "phase/result.json").read_text())
             selected = json.loads((work / "phase/selection.json").read_text())
             command = next(command for command, _ in calls if command[0] == "xcodebuild")

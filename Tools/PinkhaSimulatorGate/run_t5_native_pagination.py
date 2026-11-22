@@ -12,15 +12,19 @@ from uuid import uuid4
 import run_t5_apple_pair as pair
 import t5_native_pagination_evidence as evidence
 import t5_native_account_retry_evidence as retry_evidence
+import t5_native_account_retry_pending_evidence as pending_evidence
 
 PRIVATE_RELATIVE_PATH = "Library/Application Support/pinkha-t5-native-pagination"
 ALLOWED_PHASE_FILES = ["test.log", "test.command.json", "summary.json", "tests.json", "receipt.json", "result.json",
                        "selection.json", "install.log", "install.command.json", "export-summary.command.json",
-                       "export-tests.command.json", "account-retry-receipt.json", "account-retry-controller.json"]
+                       "export-tests.command.json", "account-retry-receipt.json", "account-retry-controller.json", "account-retry-fixture.json"]
 
 
-def selected_method(account_retry):
-    pair.require(type(account_retry) is bool, "Explicit native account-retry mode required")
+def selected_method(account_retry, pending_only=False):
+    pair.require(type(account_retry) is bool and type(pending_only) is bool
+                 and not (account_retry and pending_only), "One explicit native pagination/retry profile required")
+    if pending_only:
+        return pending_evidence.METHOD
     return retry_evidence.METHOD if account_retry else evidence.METHOD
 
 
@@ -81,14 +85,16 @@ def publish_native_evidence(work, proof, container, token):
     return True
 
 
-def execute_phase(*, app, work, build, udid, source, run_id, token, ui, method_results, account_retry=False):
+def execute_phase(*, app, work, build, udid, source, run_id, token, ui, method_results, account_retry=False, pending_only=False):
     from run_t5_native_ui import selected_configuration
     from t5_native_ui_evidence import validate_selection
 
     directory = work / "phase"
     pair.require(not directory.exists(), "Fresh native pagination phase directory required")
     directory.mkdir()
-    method = selected_method(account_retry)
+    method = selected_method(account_retry, pending_only)
+    retry_selected = account_retry or pending_only
+    state_filename = "account-retry-fixture.json" if pending_only else "receipt.json"
     selected_class = method.split("/", 1)[0]
     record = dict(status="RUNNING", method=method, actual_test_counts=None)
     pair.write(directory / "result.json", record)
@@ -98,8 +104,12 @@ def execute_phase(*, app, work, build, udid, source, run_id, token, ui, method_r
         environment = {"PINKHA_T5_NATIVE_PAGINATION": "1", "PINKHA_SIMULATOR_UI_DISPOSABLE": "1",
                        "PINKHA_T5_PAGINATION_TOKEN": token, "PINKHA_T5_PAGINATION_APP_SHA": source,
                        "PINKHA_T5_PAGINATION_RUN_ID": run_id}
-        if account_retry:
+        if pending_only:
+            environment.pop("PINKHA_T5_NATIVE_PAGINATION")
+            environment["PINKHA_T5_ACCOUNT_RETRY_PENDING"] = "1"
+        elif account_retry:
             environment["PINKHA_T5_ACCOUNT_RETRY"] = "1"
+        if retry_selected:
             run_attempt = os.environ.get("GITHUB_RUN_ATTEMPT", "")
             pair.require(run_attempt.isdigit() and int(run_attempt) > 0, "Actual account-retry run attempt required")
             environment["PINKHA_T5_ACCOUNT_RETRY_RUN_ATTEMPT"] = run_attempt
@@ -119,10 +129,13 @@ def execute_phase(*, app, work, build, udid, source, run_id, token, ui, method_r
                 pair.run_logged(["xcrun", "xcresulttool", "get", "test-results", mode, "--path", str(bundle), "--format", "json"],
                                 app, directory, "export-" + mode, 120, check=False, output=directory / (mode + ".json"))
         container = pair.app_container(udid, "data")
-        receipt_path = container / PRIVATE_RELATIVE_PATH / "receipt.json"
+        receipt_path = container / PRIVATE_RELATIVE_PATH / state_filename
         if receipt_path.is_file():
-            shutil.copyfile(private_file(container, "receipt.json"), directory / "receipt.json")
-        if account_retry and (container / PRIVATE_RELATIVE_PATH / "account-retry-receipt.json").is_file():
+            shutil.copyfile(private_file(container, state_filename), directory / state_filename)
+        if pending_only:
+            pair.require(not (container / PRIVATE_RELATIVE_PATH / "receipt.json").exists(),
+                         "Pending-only route unexpectedly produced a replayed pagination receipt")
+        if retry_selected and (container / PRIVATE_RELATIVE_PATH / "account-retry-receipt.json").is_file():
             shutil.copyfile(private_file(container, "account-retry-receipt.json"), directory / "account-retry-receipt.json")
         installed = pair.app_container(udid, "app")
         pair.require(ui.code_carriers(installed)["sha256"] == build["code_sha256"], "Installed pagination executable bytes differ")
@@ -130,12 +143,16 @@ def execute_phase(*, app, work, build, udid, source, run_id, token, ui, method_r
         summary = json.loads((directory / "summary.json").read_text(encoding="utf8"))
         methods = method_results(json.loads((directory / "tests.json").read_text(encoding="utf8")))
         record["actual_test_counts"] = validate_selection(summary, methods, [method], udid)
-        report = json.loads((directory / "receipt.json").read_text(encoding="utf8"))
+        report = json.loads((directory / state_filename).read_text(encoding="utf8"))
+        state = report["state"] if pending_only else report
         root = container / pair.ROOT_RELATIVE_PATH
         pair.require(root.is_dir() and not root.is_symlink() and root.resolve().is_relative_to(container.resolve()), "Actual owned native account root missing")
-        counts = evidence.validate_receipt(report, source=source, run_id=run_id, token=token, root_sha=pair.sha_bytes(str(root.resolve()).encode()))
-        if account_retry:
-            account_id = report["accountID"]
+        counts = None
+        if not pending_only:
+            counts = evidence.validate_receipt(report, source=source, run_id=run_id, token=token,
+                                              root_sha=pair.sha_bytes(str(root.resolve()).encode()))
+        if retry_selected:
+            account_id = state["accountID"]
             pair.require(account_id not in {".", ".."} and "/" not in account_id and "\\" not in account_id,
                          "Original account directory name is invalid")
             canonical_root = root.resolve(strict=True)
@@ -144,14 +161,15 @@ def execute_phase(*, app, work, build, udid, source, run_id, token, ui, method_r
             credential_sha = pair.digest(private_file(container, "secrets.json"))
             window = [summary.get("startTime"), summary.get("finishTime")]
             controller = dict(current_directories=observed, credential_sha256=credential_sha, run_attempt=run_attempt,
-                              actual_xctest_execution_window=window, baseline_receipt_sha256=pair.digest(directory / "receipt.json"))
+                              actual_xctest_execution_window=window, baseline_receipt_sha256=pair.digest(directory / state_filename),
+                              baseline_kind="READY_FIXTURE" if pending_only else "ACCEPTED_PAGINATION", pending_only=pending_only)
             pair.write(directory / "account-retry-controller.json", controller)
             retry_report = json.loads((directory / "account-retry-receipt.json").read_text(encoding="utf8"))
-            counts = retry_evidence.validate_receipt(retry_report, report, (directory / "receipt.json").read_bytes(),
+            counts = retry_evidence.validate_receipt(retry_report, report, (directory / state_filename).read_bytes(),
                 source=source, run_id=run_id, run_attempt=run_attempt, token=token, root_sha=observed["root"]["pathSHA256"],
-                credential_sha=credential_sha, current_directories=observed, execution_window=window)
+                credential_sha=credential_sha, current_directories=observed, execution_window=window, pending_only=pending_only)
             record["account_retry_receipt_sha256"] = pair.digest(directory / "account-retry-receipt.json")
-        record.update(status="PASS", native_process_id=report["processID"], receipt_sha256=pair.digest(directory / "receipt.json"),
+        record.update(status="PASS", native_process_id=state["processID"], receipt_sha256=pair.digest(directory / state_filename),
                       installed_code_sha256=build["code_sha256"], actual_counts=counts, actual_methods=methods)
         return counts
     finally:
@@ -167,8 +185,15 @@ def execute(args, result):
     pair.require(len({app, native_source, work, proof, derived}) == 5 and not work.exists(), "Separate fresh owned private work required")
     work.mkdir(parents=True, mode=0o700)
     source = pair.verify_published_source(app, proof)
-    pair.require(pair.git(native_source, "rev-parse", "HEAD") == pair.NATIVE_SOURCE and not pair.git(native_source, "status", "--porcelain"),
-                 "Exact clean immutable native inventory checkout required")
+    account_retry = getattr(args, "include_account_retry", False)
+    pending_only = getattr(args, "pending_account_retry_only", False)
+    selected_method(account_retry, pending_only)
+    if pending_only:
+        pair.require(args.heart_r15_run_id == pending_evidence.RUNTIME_RUN, "Pending retry must use the qualified current corrected r15 runtime source")
+        pair.write(proof / "retained-pagination.json", pending_evidence.validate_retained_source(app))
+    if not pending_only:
+        pair.require(pair.git(native_source, "rev-parse", "HEAD") == pair.NATIVE_SOURCE and not pair.git(native_source, "status", "--porcelain"),
+                     "Exact clean immutable native inventory checkout required")
     preflight = json.loads((proof / "preflight/preflight.json").read_text(encoding="utf8"))
     pair.require(preflight.get("status") == "PREFLIGHT_PASS_UI_NOT_RUN" and preflight.get("source_sha") == source,
                  "Actual source-bound Xcode27 preflight required")
@@ -187,7 +212,8 @@ def execute(args, result):
     from validate_release import method_results
 
     result.update(app_source_sha=source, run_id=run_id, device_udid=udid, app_flags=pair.FLAGS,
-                  expected_runtime_version=pair.runtime_version("new"), phase="NATIVE_RUNTIME_AND_BUILD")
+                  expected_runtime_version=pending_evidence.expected_runtime_version() if pending_only else pair.runtime_version("new"),
+                  phase="NATIVE_RUNTIME_AND_BUILD")
     pair.write(proof / "result.json", result)
     token = uuid4().hex
     published = False
@@ -196,17 +222,29 @@ def execute(args, result):
         pair.run_logged(["xcrun", "simctl", "bootstatus", udid, "-b"], app, proof / "simulator", "boot-status", 180)
         pair.require(pair.app_container(udid, "data", required=False) is None, "Fresh pagination simulator already contains an account")
         runtime_proof = proof / "runtime-new"
-        archive, source_run = pair.download_runtime("new", args.heart_r15_run_id, work, runtime_proof, os.environ["GITHUB_REPOSITORY"])
-        installed = pair.install_runtime("new", archive, source_run, app, native_source, work, runtime_proof, heart_helper)
-        build = pair.build_app("new", app, derived, work, proof / "build-new", udid, source, (ui, native_helper))
-        shutil.move(str(installed), work / "installed-framework-new")
-        account_retry = getattr(args, "include_account_retry", False)
-        result.update(phase="ACTUAL_NATIVE_ACCOUNT_RETRY" if account_retry else "ACTUAL_NATIVE_PAGINATION",
+        if pending_only:
+            installation = json.loads((proof / "heart/heart-installation.json").read_text(encoding="utf8"))
+            binding = ui.heart_profiles.installed_binding(app, installation, source,
+                pending_evidence.RUNTIME_PROFILE, args.heart_r15_run_id)
+            pair.require(binding["native_marker"] == pending_evidence.expected_runtime_version(),
+                         "Pending retry runtime binding differs from the exact current candidate")
+            result.update(runtime_profile=pending_evidence.RUNTIME_PROFILE, runtime_binding=binding,
+                          expected_runtime_version=pending_evidence.expected_runtime_version())
+            pair.write(proof / "result.json", result)
+            build = pair.build_app("new", app, derived, work, proof / "build-new", udid, source,
+                                   (ui, native_helper), corrected_r15_binding=binding)
+        else:
+            archive, source_run = pair.download_runtime("new", args.heart_r15_run_id, work, runtime_proof, os.environ["GITHUB_REPOSITORY"])
+            installed = pair.install_runtime("new", archive, source_run, app, native_source, work, runtime_proof, heart_helper)
+            build = pair.build_app("new", app, derived, work, proof / "build-new", udid, source, (ui, native_helper))
+            shutil.move(str(installed), work / "installed-framework-new")
+        result.update(phase="ACTUAL_NATIVE_ACCOUNT_RETRY_PENDING" if pending_only else
+                      ("ACTUAL_NATIVE_ACCOUNT_RETRY" if account_retry else "ACTUAL_NATIVE_PAGINATION"),
                       kit_sha=build["kit_sha"], packaged_code_sha256=build["code_sha256"])
         pair.write(proof / "result.json", result)
         result["actual_counts"] = execute_phase(app=app, work=work, build=build, udid=udid, source=source,
                                                 run_id=run_id, token=token, ui=ui, method_results=method_results,
-                                                account_retry=account_retry)
+                                                account_retry=account_retry, pending_only=pending_only)
         pair.require(pair.git(app, "rev-parse", "HEAD") == source and not pair.git(app, "status", "--porcelain"),
                      "Published application source changed during native execution")
     finally:
@@ -215,7 +253,8 @@ def execute(args, result):
         finally:
             pair.run_logged(["xcrun", "simctl", "shutdown", udid], app, proof / "simulator", "shutdown", 120, check=False)
     pair.require(published, "Complete secret-scanned native pagination evidence required")
-    result.update(status="APPLE_NATIVE_ACCOUNT_RETRY_PASS" if account_retry else "APPLE_NATIVE_PAGINATION_PASS",
+    result.update(status="APPLE_NATIVE_ACCOUNT_RETRY_PENDING_PASS" if pending_only else
+                  ("APPLE_NATIVE_ACCOUNT_RETRY_PASS" if account_retry else "APPLE_NATIVE_PAGINATION_PASS"),
                   phase="COMPLETE", product_lookup_flag="OFF",
                   full_matrix_accepted=False, whole_index_completeness="NOT_PROVEN", acl_revocation="NOT_PROVEN",
                   physical_device_accepted=False, ui_navigation="NOT_RUN")
@@ -226,9 +265,12 @@ def main(argv=None):
     for name in ["app", "native-source", "work", "evidence", "derived"]:
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--heart-r15-run-id", required=True)
-    parser.add_argument("--include-account-retry", action="store_true")
+    profile = parser.add_mutually_exclusive_group()
+    profile.add_argument("--include-account-retry", action="store_true")
+    profile.add_argument("--pending-account-retry-only", action="store_true")
     args = parser.parse_args(argv)
-    result = dict(protocol=retry_evidence.PROTOCOL if args.include_account_retry else evidence.PROTOCOL,
+    result = dict(protocol=pending_evidence.PROTOCOL if args.pending_account_retry_only else
+                  (retry_evidence.PROTOCOL if args.include_account_retry else evidence.PROTOCOL),
                   status="RUNNING", phase="PREFLIGHT", started_at=datetime.now(timezone.utc).isoformat(),
                   product_lookup_flag="OFF", full_matrix_accepted=False, whole_index_completeness="NOT_PROVEN",
                   acl_revocation="NOT_PROVEN", physical_device_accepted=False, ui_navigation="NOT_RUN")

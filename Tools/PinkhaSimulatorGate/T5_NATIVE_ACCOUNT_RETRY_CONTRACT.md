@@ -1,5 +1,45 @@
 # T5 R07 existing-account error and retry
 
+## Pending-only completion route (2026-11-22)
+
+The reusable workflow now accepts the mutually exclusive
+`pending_account_retry_only: true` / `include_account_retry: false` profile.
+Its controller flag is `--pending-account-retry-only`. It selects exactly
+`TorahT5NativeAccountRetryPendingTests/nativeStoppedAccountPendingNineOnly` and
+does not enable either earlier suite. The original routes below remain intact.
+
+This completion route retains run `44579466213` and its exact original
+qualification/Swift prefix; it does not repeat that run's ten observations or
+36 related-service search calls. Preparation uses the same native account,
+two-Space, ten-object creation helpers, performs only the block deletion needed
+for the prior final state, and writes a distinct `READY_NATIVE_FIXTURE` receipt.
+The preparation receipt has zero baseline observations and calls, seven current
+native readbacks, and no pagination acceptance claim. The original36 proof remains bound to r15 source run `44393343388`. The nine
+pending calls instead consume the already-qualified current corrected
+`r15-attachment-v1` artifact from `44943967103` through the maintained verified
+downloader and full producer/marker binding. No native rebuild occurs and the
+ACL candidate is not substituted. `RUNTIME_INPUT_IMPACT.json` records the exact
+41 unchanged native paths and one changed production file; the two executions
+are not combined into a claim of45 current-candidate searches.
+
+The existing retry tail then executes only its four successful native pages,
+one actual stopped-account error and four successful recovery pages, retaining
+the same service, recorder, upstream search, account, private credential bytes
+and existing directory identities. All original byte/metadata/graph, native
+error, chronology, source/run and result-count checks remain active. Historical
+`baseline*` fields in the shared tail refer to the READY starting-state file
+for this explicit pending protocol; they never imply original-body execution.
+
+Nine counts the calls made through the instrumented production related service.
+Necessary native fixture creation, Note-type readiness checks and independent
+candidate/readback queries remain separate setup/verification operations.
+
+See `docs/validation/20261122-t5-r07-pending-nine/README.md` for source boundaries,
+focused controller proof and exact dispatch inputs. Apple execution is NOT_RUN
+until the exact new method and native receipts pass on the original runtime.
+
+## Original full wrapper
+
 This lane adds one separately selected native Swift test around the accepted
 pagination body. It verifies a real stopped-account RPC error at the production
 service boundary, followed by a successful query after restoring that same

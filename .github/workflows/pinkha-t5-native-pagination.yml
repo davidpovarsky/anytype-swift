@@ -9,6 +9,9 @@ on:
       include_account_retry:
         type: boolean
         default: false
+      pending_account_retry_only:
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -25,6 +28,7 @@ jobs:
       - name: Checkout exact published application and controller source
         uses: actions/checkout@v4
       - name: Checkout immutable native approval inventories
+        if: ${{ !inputs.pending_account_retry_only }}
         uses: actions/checkout@v4
         with:
           ref: 947fbde24d5657d0e1229f45bb3993648884a8a1
@@ -48,13 +52,38 @@ jobs:
           python3 Tools/Hanlin/prepare_sdk.py --check
           mkdir -p build/t5-native-pagination-proof
           cp Dependencies/Hanlin/.pinkha-source.json build/t5-native-pagination-proof/hanlin-snapshot.json
-      - name: Run adversarial receipt and publication controls
+      - name: Run the exact selected receipt and publication controls
+        env:
+          INCLUDE_ACCOUNT_RETRY: ${{ inputs.include_account_retry }}
+          PENDING_ACCOUNT_RETRY_ONLY: ${{ inputs.pending_account_retry_only }}
         run: |
-          python3 -B -m unittest discover -s Tools/PinkhaSimulatorGate -p 'test_t5_native_pagination*.py' -v > build/t5-native-pagination-proof/controller-controls.log 2>&1
-          python3 -B -m unittest discover -s Tools/PinkhaSimulatorGate -p 'test_t5_native_account_retry*.py' -v >> build/t5-native-pagination-proof/controller-controls.log 2>&1
+          if [ "$PENDING_ACCOUNT_RETRY_ONLY" = "true" ]; then
+            test "$INCLUDE_ACCOUNT_RETRY" = "false"
+            PYTHONPATH=Tools/PinkhaSimulatorGate python3 -B -m unittest -v \
+              test_t5_native_account_retry_pending \
+              test_t5_native_account_retry.NativeAccountRetrySelectionControls.test_separate_swift_suite_keeps_the_full_accepted_original_source_byte_identical \
+              test_t5_native_account_retry.NativeAccountRetryControllerControls.test_actual_controller_branch_selects_one_wrapper_and_requires_full_tail_evidence \
+              test_t5_native_account_retry.NativeAccountRetryControllerControls.test_default_original_lane_keeps_its_single_original_selection_and_does_not_require_tail \
+              > build/t5-native-pagination-proof/controller-controls.log 2>&1
+          else
+            python3 -B -m unittest discover -s Tools/PinkhaSimulatorGate -p 'test_t5_native_pagination*.py' -v > build/t5-native-pagination-proof/controller-controls.log 2>&1
+            python3 -B -m unittest discover -s Tools/PinkhaSimulatorGate -p 'test_t5_native_account_retry.py' -v >> build/t5-native-pagination-proof/controller-controls.log 2>&1
+          fi
           cat build/t5-native-pagination-proof/controller-controls.log
       - name: Verify actual Xcode27 and create fresh owned OS27 simulators
         run: python3 Tools/PinkhaSimulatorGate/preflight.py --evidence build/t5-native-pagination-proof/preflight
+      - name: Reuse the qualified corrected r15 artifact for the pending nine
+        if: ${{ inputs.pending_account_retry_only }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEART_SOURCE_RUN_ID: ${{ inputs.heart_r15_run_id }}
+        run: |
+          test "$HEART_SOURCE_RUN_ID" = "44943967103"
+          python3 -B Tools/PinkhaNativeDerived/download_heart_runtime.py \
+            --runtime-profile r15-attachment-v1 --source-run-id "$HEART_SOURCE_RUN_ID" \
+            --app-source "$GITHUB_WORKSPACE" --expected-app-branch "$GITHUB_REF_NAME" \
+            --work "build/t5-pending9-heart-${{ github.run_id }}-${{ github.run_attempt }}" \
+            --evidence build/t5-native-pagination-proof/heart
       - name: Restore compatible compilation inputs
         id: native-cache
         uses: actions/cache/restore@v4
@@ -62,6 +91,7 @@ jobs:
           path: build/ui27-derived
           key: pinkha-t5-native-pagination-arm64-xcode27-Release-Anytype-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-${{ github.sha }}
           restore-keys: |
+            ${{ inputs.pending_account_retry_only && format('pinkha-t5-corrected-arm64-xcode27-Release-Anytype-{0}-', hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json')) || '' }}
             pinkha-t5-native-pagination-arm64-xcode27-Release-Anytype-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-
             pinkha-t5-apple-pair-arm64-xcode27-Release-Anytype-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-
       - name: Run real native pagination and mutation acceptance
@@ -70,9 +100,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           HEART_R15_RUN_ID: ${{ inputs.heart_r15_run_id }}
           INCLUDE_ACCOUNT_RETRY: ${{ inputs.include_account_retry }}
+          PENDING_ACCOUNT_RETRY_ONLY: ${{ inputs.pending_account_retry_only }}
         run: |
           extra=()
           if [ "$INCLUDE_ACCOUNT_RETRY" = "true" ]; then extra+=(--include-account-retry); fi
+          if [ "$PENDING_ACCOUNT_RETRY_ONLY" = "true" ]; then extra+=(--pending-account-retry-only); fi
           python3 -B Tools/PinkhaSimulatorGate/run_t5_native_pagination.py \
             --app "$GITHUB_WORKSPACE" --native-source build/t5-pagination-native-source \
             --work build/t5-native-pagination-private --evidence build/t5-native-pagination-proof \
@@ -110,7 +142,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Pinkha-T5-Native-${{ inputs.include_account_retry && 'Account-Retry' || 'Pagination' }}-Evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          name: Pinkha-T5-Native-${{ inputs.pending_account_retry_only && 'Account-Retry-Pending9' || (inputs.include_account_retry && 'Account-Retry' || 'Pagination') }}-Evidence-${{ github.run_id }}-${{ github.run_attempt }}
           path: build/t5-native-pagination-proof/Pinkha-Native-Derived-Evidence.zip
           if-no-files-found: error
           retention-days: 14

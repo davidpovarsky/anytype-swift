@@ -609,26 +609,43 @@ struct TorahT5NativeAccountRetryTests {
 }
 
 extension TorahT5NativePaginationTests {
-    fileprivate func verifyStoppedAccountRetry(wrapperStartedAt: Double) async throws {
+    fileprivate func verifyStoppedAccountRetry(wrapperStartedAt: Double, preparedFixtureOnly: Bool = false) async throws {
         #if PINKHA_NATIVE_DERIVED && PINKHA_NATIVE_T5_LOOKUP_V1
         let baselineFinishedAt = Date().timeIntervalSince1970
         let environment = ProcessInfo.processInfo.environment
-        try require(environment["PINKHA_T5_ACCOUNT_RETRY"] == "1" && environment["PINKHA_SIMULATOR_UI_DISPOSABLE"] == "1",
+        let selected = preparedFixtureOnly
+            ? environment["PINKHA_T5_ACCOUNT_RETRY_PENDING"] == "1"
+                && environment["PINKHA_T5_NATIVE_PAGINATION"] != "1" && environment["PINKHA_T5_ACCOUNT_RETRY"] != "1"
+            : environment["PINKHA_T5_ACCOUNT_RETRY"] == "1" && environment["PINKHA_T5_ACCOUNT_RETRY_PENDING"] != "1"
+        try require(selected && environment["PINKHA_SIMULATOR_UI_DISPOSABLE"] == "1",
                     "stopped-account-tail-not-authorized-by-selection")
         let runAttempt = try #require(environment["PINKHA_T5_ACCOUNT_RETRY_RUN_ATTEMPT"])
         try require(Int(runAttempt).map { $0 > 0 } == true, "native-account-retry-run-attempt-required")
         let support = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask,
             appropriateFor: nil, create: false)
         let directory = support.appendingPathComponent("pinkha-t5-native-pagination", isDirectory: true)
-        let baselineURL = directory.appendingPathComponent("receipt.json")
+        let baselineURL = directory.appendingPathComponent(preparedFixtureOnly ? "account-retry-fixture.json" : "receipt.json")
         let credentialURL = directory.appendingPathComponent("secrets.json")
         let outputURL = directory.appendingPathComponent("account-retry-receipt.json")
         try require(!FileManager.default.fileExists(atPath: outputURL.path), "account-retry-receipt-already-exists")
         let baselineBytes = try Data(contentsOf: baselineURL)
         let credentialBytes = try Data(contentsOf: credentialURL)
-        let baseline = try JSONDecoder().decode(T5PaginationReceipt.self, from: baselineBytes)
+        let baseline: T5PaginationReceipt
+        if preparedFixtureOnly {
+            let fixture = try JSONDecoder().decode(T5AccountRetryPreparedFixture.self, from: baselineBytes)
+            try require(fixture.protocolVersion == "pinkha-t5-native-account-retry-fixture-v1"
+                && fixture.status == "READY_NATIVE_FIXTURE" && fixture.baselineBodyInvocations == 0
+                && fixture.baselineSearchCalls == 0 && fixture.retainedPaginationRunID == "44579466213"
+                && fixture.state.observations.isEmpty && fixture.state.nativeMutationCounts == ["BlockListDelete": 1]
+                && fixture.preparedReadbacks.count == 7, "pending-fixture-cannot-claim-baseline-execution")
+            baseline = fixture.state
+        } else {
+            baseline = try JSONDecoder().decode(T5PaginationReceipt.self, from: baselineBytes)
+        }
         let credentials = try JSONDecoder().decode(T5PaginationSecrets.self, from: credentialBytes)
-        try require(baseline.status == "PASS_NATIVE_OBSERVATIONS" && baseline.protocolVersion == "pinkha-t5-native-pagination-v1"
+        let expectedStatus = preparedFixtureOnly ? "READY_NATIVE_FIXTURE_STATE" : "PASS_NATIVE_OBSERVATIONS"
+        let expectedProtocol = preparedFixtureOnly ? "pinkha-t5-native-account-retry-fixture-state-v1" : "pinkha-t5-native-pagination-v1"
+        try require(baseline.status == expectedStatus && baseline.protocolVersion == expectedProtocol
             && baseline.accountStopCompleted && baseline.accountNotRunningConfirmed && baseline.appShutdownCompleted
             && baseline.token == environment["PINKHA_T5_PAGINATION_TOKEN"]
             && baseline.appSourceSHA == environment["PINKHA_T5_PAGINATION_APP_SHA"]
@@ -759,7 +776,12 @@ extension TorahT5NativePaginationTests {
             try require(finalBaseline == baselineBytes && finalCredentials == credentialBytes, "private-baseline-or-credential-file-changed")
             let version = try await ClientCommands.appGetVersion().invoke().version
             try require(version == baseline.runtimeVersion, "retry-runtime-version-differs")
-            try write(T5AccountRetryReceipt(protocolVersion: "pinkha-t5-native-account-retry-v1", status: "PASS_NATIVE_ACCOUNT_RETRY",
+            if preparedFixtureOnly {
+                try require(queries.map { $0.attempts.count } == [4, 1, 4], "exact-nine-pending-service-searches-required")
+            }
+            try write(T5AccountRetryReceipt(
+                protocolVersion: preparedFixtureOnly ? "pinkha-t5-native-account-retry-pending-v1" : "pinkha-t5-native-account-retry-v1",
+                status: preparedFixtureOnly ? "PASS_NATIVE_ACCOUNT_RETRY_PENDING" : "PASS_NATIVE_ACCOUNT_RETRY",
                 token: baseline.token, appSourceSHA: baseline.appSourceSHA, runID: baseline.runID, runAttempt: runAttempt,
                 processID: ProcessInfo.processInfo.processIdentifier, runtimeVersion: version, accountID: baseline.accountID,
                 spaceID: baseline.spaceID, rootPathSHA256: baseline.rootPathSHA256, wrapperStartedAt: wrapperStartedAt,
@@ -771,7 +793,11 @@ extension TorahT5NativePaginationTests {
                 accountCreatedByTail: false, walletCreatedByTail: false, accountMigratedByTail: false,
                 productLookupFlag: "OFF", wholeIndexCompleteness: "NOT_PROVEN", networkOutage: "NOT_RUN", uiErrorPresentation: "NOT_RUN"),
                 to: outputURL)
-            print("T5_NATIVE_ACCOUNT_RETRY same_service=true native_error=BAD_INPUT restored_account=true product_lookup=OFF")
+            if preparedFixtureOnly {
+                print("T5_NATIVE_ACCOUNT_RETRY_PENDING baseline_calls=0 retry_calls=9 same_service=true native_error=BAD_INPUT product_lookup=OFF")
+            } else {
+                print("T5_NATIVE_ACCOUNT_RETRY same_service=true native_error=BAD_INPUT restored_account=true product_lookup=OFF")
+            }
         } catch {
             _ = try? await ClientCommands.appShutdown().invoke()
             throw error
@@ -791,5 +817,146 @@ extension TorahT5NativePaginationTests {
         let created = (try #require(attributes[.creationDate] as? Date)).timeIntervalSince1970
         try require(inode > 0 && created > 0, "native-directory-identity-incomplete")
         return .init(pathSHA256: hash(Data(url.path.utf8)), device: device, inode: inode, createdAt: created)
+    }
+}
+
+
+private struct T5AccountRetryPreparedFixture: Codable {
+    let protocolVersion: String
+    let status: String
+    let retainedPaginationRunID: String
+    let baselineBodyInvocations: Int
+    let baselineSearchCalls: Int
+    let state: T5PaginationReceipt
+    let preparedReadbacks: [T5PaginationReadback]
+    let setupCompletedAt: Double
+}
+
+@Suite("T5 pending account-retry nine native searches only", .serialized,
+       .enabled(if: ProcessInfo.processInfo.environment["PINKHA_T5_ACCOUNT_RETRY_PENDING"] == "1"))
+@MainActor
+struct TorahT5NativeAccountRetryPendingTests {
+    @Test("Prepare the retained fixture state, then only the nine missing stop/error/retry searches")
+    func nativeStoppedAccountPendingNineOnly() async throws {
+        let startedAt = Date().timeIntervalSince1970
+        let original = TorahT5NativePaginationTests()
+        try await original.prepareStoppedAccountRetryFixture()
+        try await original.verifyStoppedAccountRetry(wrapperStartedAt: startedAt, preparedFixtureOnly: true)
+    }
+}
+
+extension TorahT5NativePaginationTests {
+    // Prepare only the state needed by the pending tail. The ten original
+    // observation queries and their 36 service searches are never invoked.
+    // Fixture creation/readback helpers stay shared with the retained test.
+    fileprivate func prepareStoppedAccountRetryFixture() async throws {
+        #if PINKHA_NATIVE_DERIVED && PINKHA_NATIVE_T5_LOOKUP_V1
+        let environment = ProcessInfo.processInfo.environment
+        try require(environment["PINKHA_T5_ACCOUNT_RETRY_PENDING"] == "1"
+            && environment["PINKHA_T5_NATIVE_PAGINATION"] != "1"
+            && environment["PINKHA_T5_ACCOUNT_RETRY"] != "1", "pending-nine-only-selection-required")
+        try require(environment["PINKHA_SIMULATOR_UI_DISPOSABLE"] == "1", "disposable-confirmation-required")
+        let token = try #require(environment["PINKHA_T5_PAGINATION_TOKEN"])
+        let sourceSHA = try #require(environment["PINKHA_T5_PAGINATION_APP_SHA"])
+        let runID = try #require(environment["PINKHA_T5_PAGINATION_RUN_ID"])
+        try require(token.count == 32 && token.allSatisfy(\.isHexDigit), "invalid-token")
+        try require(sourceSHA.count == 40 && sourceSHA.allSatisfy(\.isHexDigit), "invalid-source")
+        try require(!runID.isEmpty && runID.allSatisfy(\.isNumber), "invalid-run")
+        let support = try FileManager.default.url(for: .applicationSupportDirectory,
+            in: .userDomainMask, appropriateFor: nil, create: true)
+        let privateDirectory = support.appendingPathComponent("pinkha-t5-native-pagination", isDirectory: true)
+        try require(!FileManager.default.fileExists(atPath: privateDirectory.path)
+            && !FileManager.default.fileExists(atPath: support.appendingPathComponent("pinkha-t5-runtime-pair").path)
+            && !FileManager.default.fileExists(atPath: support.appendingPathComponent("pinkha-t5-native-ui-fixture.json").path),
+            "fresh-private-account-required")
+        let patch = "595f8142f00035da2fff4925c8fe125fa7cf36de9ae124b528a9d2130b2a9bf6"
+        let version = try await ClientCommands.appGetVersion().invoke().version
+        try require(version == "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-" + patch
+            + "-pinkha-native-t5-lookup-v1-" + patch + "-pinkha-torah-attachment-v1-" + patch,
+            "exact-corrected-r15-runtime-required")
+        guard case .verified = try await AnytypeT5NativeRelatedLookup.current() else {
+            throw T5PaginationFailure.invariant("production-capability-not-verified")
+        }
+        Container.shared.serverConfigurationStorage().setupCurrentConfiguration(config: .localOnly)
+        let root = Container.shared.localRepoService().middlewareRepoURL.resolvingSymlinksInPath().path
+        let wallet = try await ClientCommands.walletCreate(.with { $0.rootPath = root }).invoke(responseMask: {
+            $0.mnemonic = "***"; $0.accountKey = "***"
+        })
+        try require(!wallet.mnemonic.isEmpty && !wallet.accountKey.isEmpty, "native-credentials-missing")
+        try FileManager.default.createDirectory(at: privateDirectory, withIntermediateDirectories: false,
+            attributes: [.posixPermissions: 0o700])
+        try write(T5PaginationSecrets(token: token, mnemonic: wallet.mnemonic, accountKey: wallet.accountKey),
+                  to: privateDirectory.appendingPathComponent("secrets.json"))
+        do {
+            try Container.shared.seedService().saveSeed(wallet.mnemonic)
+            let account = try await Container.shared.authService().createAccount(name: "T5 pagination disposable", iconOption: 1, imagePath: "")
+            try require(!account.id.isEmpty, "native-account-missing")
+            let spaceID = try await createSpace("T5 pagination current Space")
+            try await activate(spaceID)
+            let manifest = try await Container.shared.pinkhaBootstrapService().bootstrapSpace(spaceId: spaceID)
+            let writingID = try #require(manifest.registeredDocumentTypes[PinkhaSchemaRoles.chiddushKey])
+            let writing = ObjectType(details: try await details(writingID, spaceID: spaceID)).uniqueKey
+            _ = try await ClientCommands.workspaceObjectListAdd(.with { $0.spaceID = spaceID; $0.objectIds = ["_otnote"] }).invoke()
+            try await waitForNoteType(spaceID)
+            let associations = AnytypeTorahAssociationRepository()
+            var objects: [T5PaginationObject] = []
+            for (role, type) in [("page_a", ObjectTypeUniqueKey.page), ("page_b", .page), ("note", .note),
+                                 ("writing", writing), ("block", .page), ("quote", .page), ("multi", .page)] {
+                objects.append(try await createFixture(role: role, type: type, spaceID: spaceID,
+                    canonicalKey: manifest.documentAssociationsPropertyKey, token: token, identity: source, associations: associations))
+            }
+            for (role, identity) in [
+                ("different_verse", T5SourceIdentity(providerID: "sefaria", canonicalReference: "Genesis 5:6")),
+                ("different_provider", T5SourceIdentity(providerID: "fixture-other-provider", canonicalReference: source.canonicalReference))
+            ] {
+                objects.append(try await createFixture(role: role, type: .page, spaceID: spaceID,
+                    canonicalKey: manifest.documentAssociationsPropertyKey, token: token, identity: identity, associations: associations))
+            }
+            let foreignSpaceID = try await createSpace("T5 pagination other Space")
+            try require(foreignSpaceID != spaceID, "distinct-native-spaces-required")
+            try await activate(foreignSpaceID)
+            let foreignManifest = try await Container.shared.pinkhaBootstrapService().bootstrapSpace(spaceId: foreignSpaceID)
+            objects.append(try await createFixture(role: "foreign", type: .page, spaceID: foreignSpaceID,
+                canonicalKey: foreignManifest.documentAssociationsPropertyKey, token: token, identity: source, associations: associations))
+            try await activate(spaceID)
+            let originals = objects.filter { !["different_verse", "different_provider", "foreign"].contains($0.role) }
+            try require(originals.count == 7 && originals.flatMap(\.targets).count == 9, "fixture-target-count-differs")
+            try require(Set(objects.map(\.objectID)).count == 10, "fixture-object-identities-overlap")
+            let blockObject = try #require(originals.first { $0.role == "block" })
+            let blockID = try #require(blockObject.targets.first?.blockID)
+            _ = try await ClientCommands.blockListDelete(.with {
+                $0.contextID = blockObject.objectID; $0.blockIds = [blockID]
+            }).invoke()
+            var preparedReadbacks: [T5PaginationReadback] = []
+            for object in originals {
+                preparedReadbacks.append(try await readback(object.objectID, spaceID: object.spaceID, canonicalKey: object.canonicalKey))
+            }
+            _ = try await ClientCommands.accountStop(.with { $0.removeData = false }).invoke()
+            do {
+                _ = try await ClientCommands.accountPreloadRemainingSpaces().invoke(ignoreLogErrors: .accountIsNotRunning)
+                throw T5PaginationFailure.invariant("prepared-fixture-account-remains-running")
+            } catch let error as Anytype_Rpc.Account.PreloadRemainingSpaces.Response.Error where error.code == .accountIsNotRunning { }
+            _ = try await ClientCommands.appShutdown().invoke()
+            let state = T5PaginationReceipt(protocolVersion: "pinkha-t5-native-account-retry-fixture-state-v1",
+                status: "READY_NATIVE_FIXTURE_STATE", token: token, appSourceSHA: sourceSHA, runID: runID,
+                processID: ProcessInfo.processInfo.processIdentifier, runtimeVersion: version, accountID: account.id,
+                spaceID: spaceID, foreignSpaceID: foreignSpaceID, rootPathSHA256: hash(Data(root.utf8)),
+                providerID: source.providerID, canonicalReference: source.canonicalReference, indexValue: source.indexValue,
+                objects: objects, observations: [], nativeMutationCounts: ["BlockListDelete": 1],
+                accountStopCompleted: true, accountNotRunningConfirmed: true, appShutdownCompleted: true,
+                productLookupFlag: "OFF", wholeIndexCompleteness: "NOT_PROVEN", aclRevocation: "NOT_PROVEN")
+            try write(T5AccountRetryPreparedFixture(protocolVersion: "pinkha-t5-native-account-retry-fixture-v1",
+                status: "READY_NATIVE_FIXTURE", retainedPaginationRunID: "44579466213", baselineBodyInvocations: 0,
+                baselineSearchCalls: 0, state: state, preparedReadbacks: preparedReadbacks,
+                setupCompletedAt: Date().timeIntervalSince1970),
+                to: privateDirectory.appendingPathComponent("account-retry-fixture.json"))
+            print("T5_ACCOUNT_RETRY_FIXTURE_READY baseline_calls=0 fixture_objects=10 deleted_block_setup=1 acceptance=NOT_RUN")
+        } catch {
+            _ = try? await ClientCommands.appShutdown().invoke()
+            throw error
+        }
+        #else
+        throw T5PaginationFailure.invariant("test-only-native-lookup-flags-required")
+        #endif
     }
 }

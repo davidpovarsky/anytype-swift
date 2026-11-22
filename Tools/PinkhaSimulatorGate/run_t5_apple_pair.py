@@ -569,8 +569,20 @@ def rewrite_product_paths(value, original, snapshot):
     return value
 
 
-def build_app(role, app, derived, work, proof, udid, source, helpers):
+def build_runtime_version(role, ui, corrected_r15_binding=None):
+    if corrected_r15_binding is None:
+        return runtime_version(role)
+    require(role == "new" and corrected_r15_binding.get("runtime_profile") == "r15-attachment-v1",
+            "Corrected build binding requires the explicit r15 attachment profile")
+    marker = ui.heart_profiles.verify_binding(corrected_r15_binding)
+    require(marker == ui.heart_profiles.select("r15-attachment-v1").version,
+            "Corrected App build must use the complete qualified runtime marker")
+    return marker
+
+
+def build_app(role, app, derived, work, proof, udid, source, helpers, *, corrected_r15_binding=None):
     ui, native = helpers
+    expected_version = build_runtime_version(role, ui, corrected_r15_binding)
     product_root = work / role / "Products"
     proof.mkdir(parents=True)
     before_locks = lock_hashes(app)
@@ -597,7 +609,7 @@ def build_app(role, app, derived, work, proof, udid, source, helpers):
     configuration.write_bytes(plistlib.dumps(rewrite_product_paths(data, products, product_root)))
     built = product_root / "Release-Anytype-iphonesimulator/Anytype.app"
     ui.verify_signed_simulator(built, proof)
-    ui.verify_runtime_copies(built, runtime_version(role).encode(), proof)
+    ui.verify_runtime_copies(built, expected_version.encode(), proof)
     (proof / "native-source-marker").mkdir()
     ui.verify_runtime_copies(built, HEART.encode(), proof / "native-source-marker")
     carriers = ui.code_carriers(built)
@@ -607,10 +619,12 @@ def build_app(role, app, derived, work, proof, udid, source, helpers):
     checkouts = [path for path in (derived / "SourcePackages/checkouts").iterdir()
                  if path.name.lower() == "torahinspectorkit"]
     require(len(checkouts) == 1 and git(checkouts[0], "rev-parse", "HEAD") == pins[0], "Resolved Kit differs from app lock")
-    receipt = dict(role=role, app_source_sha=source, flags=FLAGS, runtime_version=runtime_version(role),
+    receipt = dict(role=role, app_source_sha=source, flags=FLAGS, runtime_version=expected_version,
                    package_lock_hashes=before_locks, hanlin_snapshot_sha256=hanlin_sha, kit_sha=pins[0],
                    code_sha256=carriers["sha256"], code_carriers=carriers,
                    app=str(built), configuration=str(configuration), build_log_sha256=digest(log))
+    if corrected_r15_binding is not None:
+        receipt["runtime_binding"] = dict(corrected_r15_binding)
     write(proof / "build.json", receipt)
     return receipt
 
