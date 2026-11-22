@@ -34,9 +34,20 @@ public protocol WorkspaceServiceProtocol: Sendable {
 }
 
 public extension WorkspaceServiceProtocol {
+    func workspaceOpenForOriginalSelection(spaceId: String) async throws -> AccountInfo {
+        guard let original = self as? WorkspaceService else {
+            throw OriginalWorkspaceSelectionError.unqualifiedService
+        }
+        return try await original.workspaceOpen(spaceId: spaceId, withChat: true)
+    }
+
     func generateInvite(spaceId: String, inviteType: InviteType?, permissions: InvitePermissions?) async throws -> SpaceInvite {
         try await generateInvite(spaceId: spaceId, inviteType: inviteType, permissions: permissions, shareWithinSpace: false)
     }
+}
+
+private enum OriginalWorkspaceSelectionError: Error {
+    case unqualifiedService
 }
 
 final class WorkspaceService: WorkspaceServiceProtocol {
