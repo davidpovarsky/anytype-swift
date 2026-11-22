@@ -459,7 +459,7 @@ def validate_execution(summary, tree, actual_execution):
             and actual_execution.get("actual_cases") == cases, "Missing, extra or nonpassing original named XCTest")
 
 
-def qualify_apple(proof, profile, producer, build, evidence, command):
+def qualify_apple(proof, profile, producer, build, evidence, command, build_lineage=None):
     host = proof / "host"
     receipt = read_json(host / "receipt.json")
     required = dict(status=APPLE_PASS, app_sha=producer["source_sha"], run_id=producer["run_id"],
@@ -480,6 +480,14 @@ def qualify_apple(proof, profile, producer, build, evidence, command):
     require(modules == {name: sha for name, sha in before.items() if name.startswith(tuple(module + "/" for module in MODULES))}
             and any(name.startswith("Modules/PinkhaKit/") for name in modules)
             and any(name.startswith("Modules/PinkhaHeartEngine/") for name in modules), "Actual shared module provenance differs")
+    if build_lineage is None:
+        require("build_origin" not in receipt and "build_reuse_receipt_sha256" not in receipt,
+                "A distinct build origin requires separately verified immutable lineage")
+    else:
+        require(receipt.get("build_origin") == build_lineage["build_producer"]
+                and receipt.get("build_reuse_receipt_sha256") == build_lineage["receipt_sha256"]
+                and before == build_lineage["current_source"] and modules == build_lineage["modules"],
+                "Actual Apple execution differs from its qualified current controller or original build lineage")
     commands = receipt.get("commands", [])
     selected = [entry for entry in commands if entry.get("name") == "ios-coherent-tests"]
     require(len(selected) == 1 and selected[0].get("status") == "PASS_EXIT_0"
@@ -542,7 +550,8 @@ def execute(args, profile, command):
             and not (destination / "Lib.xcframework").is_symlink() and not (destination / "PinkhaNativeHeartBuild.json").is_symlink(),
             "Refusing to overwrite an existing middleware installation")
     for name in ("heart-installation.json", "custom-heart-build.json", "original-runtime-download.json",
-                 "original-coherent-apple-host-receipt.json", "original-coherent-apple-build.json", "original-coherent-apple-actual.json"):
+                 "original-coherent-apple-host-receipt.json", "original-coherent-apple-build.json", "original-coherent-apple-actual.json",
+                 "original-coherent-apple-build-reuse.json"):
         require(not (args.evidence / name).exists() and not (args.evidence / name).is_symlink(),
                 "Refusing to overwrite prior installation evidence")
     run_path = args.evidence / "original-producer-run.json"
@@ -586,9 +595,14 @@ def execute(args, profile, command):
     staging = args.work / "verified-production"
     safe_tar(runtime_archive, staging)
     receipt_raw = read_bounded(staging / "PinkhaNativeHeartBuild.json")
-    receipt, build = validate_build(proof, receipt_raw, inventory, profile, producer, digest(runtime_archive))
+    build_lineage, build_producer = None, producer
+    if (proof / "build-reuse.json").exists():
+        from coherent_apple import reuse_build
+        build_lineage = reuse_build.validate_admission_lineage(proof, producer, args.work, args.evidence, command)
+        build_producer = build_lineage["build_producer"]
+    receipt, build = validate_build(proof, receipt_raw, inventory, profile, build_producer, digest(runtime_archive))
     observed = validate_framework(staging / "Lib.xcframework", receipt, profile)
-    host = qualify_apple(proof, profile, producer, build, args.evidence, command)
+    host = qualify_apple(proof, profile, producer, build, args.evidence, command, build_lineage)
     require(host["copied_module_sha256"] == modules == consumer_modules(args.app_source),
             "Consumer shared modules differ from those actually executed in the admitted Apple proof")
     require(git(args.app_source, "branch", "--show-current") == branch and git(args.app_source, "rev-parse", "HEAD") == head,
@@ -612,12 +626,14 @@ def execute(args, profile, command):
         "original-coherent-apple-build.json": read_bounded(proof / "build.json"),
         "original-coherent-apple-actual.json": read_bounded(proof / "host/actual.json"),
     }
+    if build_lineage is not None:
+        saved["original-coherent-apple-build-reuse.json"] = read_bounded(proof / "build-reuse.json")
     for name, raw in saved.items():
         with (args.evidence / name).open("xb") as output:
             output.write(raw)
     installation = dict(status="PASS", source_run_id=producer["run_id"], archive_sha256=digest(runtime_archive),
         patch_sha256=profile.patch_sha256, inventory_sha256=profile.inventory_sha256, app_source_sha=head,
-        original_build_app_sha=producer["source_sha"], marker=profile.receipt_marker, runtime_profile=profile.name,
+        original_build_app_sha=build_producer["source_sha"], marker=profile.receipt_marker, runtime_profile=profile.name,
         native_marker=profile.binary_marker, expected_app_get_version=profile.version, producer=producer,
         heart_build_receipt_sha256=profiles.digest_bytes(receipt_raw),
         heart_artifact_id=downloaded["artifacts"]["runtime"]["id"], heart_artifact_sha256=downloaded["archive_sha256"]["runtime"],
@@ -627,6 +643,14 @@ def execute(args, profile, command):
         coherent_fixture_ios_acceptance=APPLE_PASS, production_binary_execution="NOT_RUN", full_app_acceptance="NOT_RUN",
         native_source_run_id=profiles.COHERENT_NATIVE_RUN, native_source_sha=NATIVE_SOURCE,
         installed_fixture=False, target_architecture="arm64", target_environment="simulator")
+    if build_lineage is not None:
+        originals = build_lineage["original_artifacts"]
+        installation.update(build_producer=build_producer,
+            build_reuse_receipt_sha256=build_lineage["receipt_sha256"],
+            original_build_artifact_id=originals["production"]["id"],
+            original_build_artifact_sha256=originals["production"]["zip_sha256"],
+            original_build_proof_artifact_id=originals["proof"]["id"],
+            original_build_proof_artifact_sha256=originals["proof"]["zip_sha256"])
     with (args.evidence / "heart-installation.json").open("x", encoding="utf8") as output:
         output.write(json.dumps(installation, indent=2) + "\n")
     return installation

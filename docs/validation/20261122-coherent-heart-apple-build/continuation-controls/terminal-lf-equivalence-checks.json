@@ -1,0 +1,43 @@
+{
+  "status": "PASS_EXACT_CANONICAL_GIT_SOURCE_RETENTION",
+  "canonical_sources_qualified": 13,
+  "immutable_inputs_qualified": 9,
+  "exact_terminal_lf_pairs_qualified": 3,
+  "negative_vectors": [
+    {
+      "case": "extra-two-LF",
+      "path": "Tools/PinkhaNativeDerived/attachment_runtime.py",
+      "outcome": "REJECTED",
+      "reason": "Source differs from the exact reviewed terminal-LF/Git/AST pair"
+    },
+    {
+      "case": "substantive-source-change",
+      "path": "Tools/PinkhaNativeDerived/build_custom_heart.py",
+      "outcome": "REJECTED",
+      "reason": "Source differs from the exact reviewed terminal-LF/Git/AST pair"
+    },
+    {
+      "case": "unreviewed-source-LF",
+      "path": "Tools/PinkhaNativeDerived/coherent_apple/contract.py",
+      "outcome": "REJECTED",
+      "reason": "Retained controller dependency/input changed: Tools/PinkhaNativeDerived/coherent_apple/contract.py"
+    },
+    {
+      "case": "data-input-byte-change",
+      "path": "docs/validation/20261122-coherent-heart-apple-build/proof-original.zip",
+      "outcome": "REJECTED",
+      "reason": "Retained controller dependency/input changed: docs/validation/20261122-coherent-heart-apple-build/proof-original.zip"
+    },
+    {
+      "case": "review-byte-change",
+      "path": "docs/validation/20261122-coherent-heart-apple-build/continuation-controls/source-equivalence-review.json",
+      "outcome": "REJECTED",
+      "reason": "Exact source-equivalence review changed"
+    }
+  ],
+  "original_python_report_sha256": "7aa150c574dddb7eecb0ff9e29e79a28e9f3246e7d3f8e78a945183b49d5f169",
+  "original_logs_rewritten": false,
+  "already_passed_test_methods_executed": 0,
+  "apple_execution": "NOT_RUN",
+  "verifier_sha256": "ad0e23b8bf64baa14c66e5b68053c5177f7f053330bd30331a7dec6b47342de7"
+}

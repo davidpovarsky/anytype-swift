@@ -145,6 +145,7 @@ def qualify_observation(value, configuration, build, output):
 
 def source_snapshot(control):
     paths = ["Tools/PinkhaNativeDerived", "Tools/TorahNativeOperations", "Tools/AnyEnginePort/verify_native_test_execution.py",
+             "Tools/PinkhaSimulatorGate/simulator_selection.py",
              ".github/workflows/pinkha-coherent-heart-apple.yml", *("Modules/" + name for name in MODULES)]
     names = subprocess.check_output(["git", "-C", str(control), "ls-files", "-z", "--", *paths]).decode().split("\0")
     return {name: contract.digest(control / name) for name in names if name}
@@ -178,8 +179,16 @@ def execute(args, receipt, run):
                      and not original.git(args.control, "status", "--porcelain"), "Exact clean source required")
     contract.require(not args.work.exists(), "Fresh owned test work required"); args.work.mkdir()
     build = json.loads(args.build_receipt.read_bytes())
-    contract.validate_build_receipt(build, args.expected_app_sha, receipt["run_id"])
-    contract.require(build["run_attempt"] == receipt["run_attempt"], "Build/test attempts differ")
+    if args.build_reuse_receipt is not None:
+        import reuse_build
+        build_origin = reuse_build.validate_host_lineage(args.control, args.build_receipt, args.build_reuse_receipt,
+            args.expected_app_sha, receipt["run_id"], receipt["run_attempt"])
+        contract.validate_build_receipt(build, build_origin["source_sha"], build_origin["run_id"])
+        contract.require(build["run_attempt"] == build_origin["run_attempt"], "Original build attempt differs")
+        receipt.update(build_origin=build_origin, build_reuse_receipt_sha256=contract.digest(args.build_reuse_receipt))
+    else:
+        contract.validate_build_receipt(build, args.expected_app_sha, receipt["run_id"])
+        contract.require(build["run_attempt"] == receipt["run_attempt"], "Build/test attempts differ")
     for kind in ("production", "fixture"):
         contract.verify_framework(args.frameworks / kind / "Lib.xcframework", build["frameworks"][kind])
     source = source_snapshot(args.control)
@@ -204,16 +213,12 @@ def execute(args, receipt, run):
     pins = original.validate_pins(harness)
     receipt["resolved_packages"] = pins
     runtime_data = original.command_json(run(["xcrun", "simctl", "list", "runtimes", "-j"], "runtimes"))
-    runtimes = [item for item in runtime_data["runtimes"] if item.get("isAvailable")
-                and item.get("identifier", "").startswith("com.apple.CoreSimulator.SimRuntime.iOS-")
-                and str(item.get("version", "")).split(".")[0] == "27"]
-    contract.require(runtimes, "No available iOS27 runtime")
-    runtime = sorted(runtimes, key=lambda value: tuple(map(int, value["version"].split("."))))[-1]
-    types = original.command_json(run(["xcrun", "simctl", "list", "devicetypes", "-j"], "device-types"))["devicetypes"]
-    tablets = [item for item in types if item.get("productFamily") == "iPad"
-               and item.get("minRuntimeVersion", 0) <= 27*65536 <= item.get("maxRuntimeVersion", 2**32)]
-    contract.require(tablets, "No compatible iPad type")
-    selected = sorted(tablets, key=lambda value: (value.get("minRuntimeVersion", 0), value["name"]))[-1]
+    type_data = original.command_json(run(["xcrun", "simctl", "list", "devicetypes", "-j"], "device-types"))
+    sys.path.insert(0, str(args.control / "Tools/PinkhaSimulatorGate"))
+    from simulator_selection import choose_pair
+    pair = choose_pair(runtime_data, type_data, product_family="iPad", major=27, architecture="arm64")
+    runtime, selected = pair["runtime"], pair["device"]
+    receipt["simulator_selection"] = pair["selection"]
     udid = run(["xcrun", "simctl", "create", "CoherentHeart-" + configuration["nonce"], selected["identifier"], runtime["identifier"]],
                "create-owned-simulator").read_text().strip()
     contract.require(re.fullmatch(r"[0-9A-Fa-f-]{36}", udid), "Invalid owned simulator identifier")
@@ -255,6 +260,9 @@ def execute(args, receipt, run):
             contract.verify_framework(args.frameworks / kind / "Lib.xcframework", build["frameworks"][kind])
         contract.verify_framework(args.work / "client/Dependencies/Middleware/Lib.xcframework", build["frameworks"]["fixture"])
         contract.require(contract.digest(args.build_receipt) == receipt["build_receipt_sha256"], "Build receipt changed")
+        if args.build_reuse_receipt is not None:
+            contract.require(contract.digest(args.build_reuse_receipt) == receipt["build_reuse_receipt_sha256"],
+                             "Original build reuse lineage changed during actual execution")
         contract.save(args.evidence / "control-source-after.json", source_snapshot(args.control))
         receipt.update(status=contract.PASS, old_native_methods_executed=0, old_swift_methods_executed=0,
                        fresh_ios_process_reopen="NOT_RUN", app_capability="OFF")
@@ -269,9 +277,12 @@ def main():
     for name in ("control", "work", "evidence", "build-receipt", "frameworks"):
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--expected-app-sha", required=True)
+    parser.add_argument("--build-reuse-receipt", type=Path)
     args = parser.parse_args()
     for name in ("control", "work", "evidence", "build_receipt", "frameworks"):
         setattr(args, name, getattr(args, name).resolve())
+    if args.build_reuse_receipt is not None:
+        args.build_reuse_receipt = args.build_reuse_receipt.resolve()
     args.evidence.mkdir(parents=True, exist_ok=False)
     path = args.evidence / "receipt.json"
     receipt = dict(status="NOT_RUN", app_sha=args.expected_app_sha, run_id=os.environ.get("GITHUB_RUN_ID"),

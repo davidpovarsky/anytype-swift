@@ -1,7 +1,13 @@
-name: Build and prove the distinct coherent Heart Apple candidate
+name: Build or reuse and prove the distinct coherent Heart Apple candidate
 
 on:
   workflow_call:
+    inputs:
+      source_run_id:
+        description: Exact completed framework build to continue; empty performs a new build
+        type: string
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -16,6 +22,7 @@ jobs:
       ATTEMPT: build/coherent-heart-apple-${{ github.run_id }}-${{ github.run_attempt }}
       PYTHONDONTWRITEBYTECODE: '1'
       GH_TOKEN: ${{ github.token }}
+      SOURCE_RUN_ID: ${{ inputs.source_run_id }}
     steps:
       - name: Checkout the exact shared source
         uses: actions/checkout@v4
@@ -24,6 +31,7 @@ jobs:
           path: build/coherent-heart-apple-${{ github.run_id }}-${{ github.run_attempt }}/control
           persist-credentials: false
       - name: Checkout the original clean native base
+        if: inputs.source_run_id == ''
         uses: actions/checkout@v4
         with:
           repository: anyproto/anytype-heart
@@ -31,6 +39,7 @@ jobs:
           path: build/coherent-heart-apple-${{ github.run_id }}-${{ github.run_attempt }}/heart
           persist-credentials: false
       - name: Retrieve the exact qualified139 original evidence without rerunning it
+        if: inputs.source_run_id == ''
         uses: actions/download-artifact@v4
         with:
           name: Pinkha-Coherent-Heart-Native-45026227924-1
@@ -43,18 +52,33 @@ jobs:
           python-version: '3.12'
           architecture: arm64
       - name: Select the exact Go compiler
+        if: inputs.source_run_id == ''
         uses: actions/setup-go@v5
         with:
           go-version: '1.26.5'
           cache: false
       - name: Retain passed unchanged controls and verify only the new bind regressions
+        if: inputs.source_run_id == ''
         run: |
           mkdir -p "$ATTEMPT/evidence/controls"
           python3 -B "$ATTEMPT/control/Tools/PinkhaNativeDerived/coherent_apple/retain_controls.py" \
             --control "$ATTEMPT/control" --output "$ATTEMPT/evidence/controls/retained-original.json"
           python3 -B "$ATTEMPT/control/Tools/PinkhaNativeDerived/coherent_apple/test_binding_scope.py" -v > "$ATTEMPT/evidence/controls/results.log" 2>&1
           cat "$ATTEMPT/evidence/controls/results.log"
+      - name: Retain passed unchanged controller evidence without executing the tests again
+        run: |
+          mkdir -p "$ATTEMPT/evidence/current-controls"
+          python3 -B "$ATTEMPT/control/Tools/PinkhaSimulatorGate/retain_coherent_apple_controls.py" \
+            --control "$ATTEMPT/control" --output "$ATTEMPT/evidence/current-controls/retained.json"
+      - name: Qualify and retain the exact original distinct framework archives without rebuilding
+        if: inputs.source_run_id != ''
+        run: |
+          python3 -B "$ATTEMPT/control/Tools/PinkhaNativeDerived/coherent_apple/reuse_build.py" \
+            --control "$ATTEMPT/control" --work "$ATTEMPT/reuse" --frameworks "$ATTEMPT/work" \
+            --evidence "$ATTEMPT/evidence" --artifacts "$ATTEMPT/artifacts" \
+            --source-run-id "$SOURCE_RUN_ID" --repository "$GITHUB_REPOSITORY" --expected-app-sha "$GITHUB_SHA"
       - name: Build the production slice and a distinct fixture slice from qualified139 source
+        if: inputs.source_run_id == ''
         run: |
           python3 -B "$ATTEMPT/control/Tools/PinkhaNativeDerived/coherent_apple/build.py" \
             --control "$ATTEMPT/control" --heart-source "$ATTEMPT/heart" \
@@ -63,10 +87,14 @@ jobs:
             --expected-app-sha "$GITHUB_SHA"
       - name: Execute one new actual iOS signed-authority journey and shared Swift decode
         run: |
+          lineage=()
+          if [[ -n "$SOURCE_RUN_ID" ]]; then
+            lineage=(--build-reuse-receipt "$ATTEMPT/evidence/proof/build-reuse.json")
+          fi
           python3 -B "$ATTEMPT/control/Tools/PinkhaNativeDerived/coherent_apple/run_host.py" \
             --control "$ATTEMPT/control" --work "$ATTEMPT/host" --evidence "$ATTEMPT/evidence/proof/host" \
             --build-receipt "$ATTEMPT/evidence/proof/build.json" --frameworks "$ATTEMPT/work" \
-            --expected-app-sha "$GITHUB_SHA"
+            --expected-app-sha "$GITHUB_SHA" "${lineage[@]}"
       - name: Preserve the production framework separately
         if: always()
         uses: actions/upload-artifact@v4

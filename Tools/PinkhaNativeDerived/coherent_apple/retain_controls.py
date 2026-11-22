@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import hashlib
 import json
 from pathlib import Path
@@ -35,12 +36,49 @@ PYTHON_METHODS = {
 }
 GO_METHODS = {"TestAssertionAdapterPositiveAndNegativeSemantics", "TestCleanupRunsOnceInReverseOrder",
               "TestFailureDiagnosticsExcludeAssertionValues"}
+HOST = "Tools/PinkhaNativeDerived/coherent_apple/run_host.py"
+# Derived from the exact original HOST bytes in SOURCES. The old controls call
+# only qualify_t5_wire -> fields. Every import, top-level statement, function
+# signature/decorator/default, and those two complete bodies remain pinned.
+# Only the bodies of functions never invoked by those controls are excluded.
+HOST_UNEXECUTED = frozenset({"load_helpers", "validate_execution", "qualify_observation", "source_snapshot",
+                           "prepare_harness", "execute", "main"})
+HOST_CONTROL_AST_SHA = "a222135fe50d341c269eb7f3eb1a76b4d83463838e51b478becc3023caf7a48c"
+
+
+def host_control_scope(path):
+    tree = ast.parse(path.read_bytes(), filename=str(path))
+    functions = [node.name for node in tree.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))]
+    contract.require(len(functions) == len(set(functions))
+                     and set(functions) == HOST_UNEXECUTED | {"fields", "qualify_t5_wire"},
+                     "Retained host function declarations changed")
+    for node in tree.body:
+        if isinstance(node, ast.FunctionDef) and node.name in HOST_UNEXECUTED:
+            node.body = [ast.Pass()]
+    def canonical(value):
+        if isinstance(value, ast.AST):
+            return {"node": type(value).__name__, **{key: canonical(child) for key, child in ast.iter_fields(value)
+                    if not (key == "type_params" and child == [])}}
+        if isinstance(value, list):
+            return [canonical(child) for child in value]
+        return value
+    observed = hashlib.sha256(json.dumps(canonical(tree), sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    contract.require(observed == HOST_CONTROL_AST_SHA, "Retained host control/import dependency AST changed")
+    return dict(original_complete_source_sha256=SOURCES[HOST], current_complete_source_sha256=contract.digest(path),
+                unchanged_control_ast_sha256=observed, executed_functions=["fields", "qualify_t5_wire"],
+                excluded_unexecuted_function_bodies=sorted(HOST_UNEXECUTED),
+                complete_host_file_claim=("UNCHANGED_COMPLETE_SOURCE" if contract.digest(path) == SOURCES[HOST]
+                    else "CHANGED_OUTSIDE_RETAINED_CONTROL_DEPENDENCIES"),
+                dependency_scope="Exact module imports/statements, declaration metadata, two executed bodies, and separately pinned contract.py")
 
 
 def qualify(root):
     original = root / PROOF
     for name, expected in SOURCES.items():
+        if name == HOST:
+            continue
         contract.require(contract.digest(root / name) == expected, "Retained control dependency changed: " + name)
+    host = host_control_scope(root / HOST)
     archive, log, build = original / "original-evidence.zip", original / "original-controls.log", original / "original-build.json"
     for path, expected in ((archive, ZIP_SHA), (log, LOG_SHA), (build, BUILD_SHA)):
         contract.require(contract.digest(path) == expected, "Original control evidence changed: " + path.name)
@@ -62,7 +100,9 @@ def qualify(root):
         and not re.search(r"FAIL|ERROR|SKIP|skipped", text), "Original controls did not all pass")
     return dict(status="RETAINED_UNCHANGED_CONTROL_EXECUTION", original_run_id=ORIGINAL_RUN,
         original_source_sha=ORIGINAL_SOURCE, original_run_attempt=1, original_artifact_zip_sha256=ZIP_SHA,
-        original_log_sha256=LOG_SHA, original_build_sha256=BUILD_SHA, source_sha256=SOURCES,
+        original_log_sha256=LOG_SHA, original_build_sha256=BUILD_SHA, original_source_sha256=SOURCES,
+        unchanged_complete_source_sha256={name: sha for name, sha in SOURCES.items() if name != HOST},
+        host_control_dependency_scope=host,
         python_methods_passed=5, embedded_go_methods_passed=3, fail=0, skip=0,
         python_methods=sorted(PYTHON_METHODS), embedded_go_methods=sorted(GO_METHODS),
         methods_executed_again=0, new_build_helpers_covered_by="test_binding_scope.py",

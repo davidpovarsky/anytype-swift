@@ -16,6 +16,13 @@ COHERENT = "r15-attachment-authorized-current-read-v1"
 COHERENT_PATCH = "2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00"
 COHERENT_INVENTORY = "05ee31723508599e228d28e132ce5b89af886f5095c908362b2348d07c80d0f0"
 COHERENT_NATIVE_RUN = "45026227924"
+COHERENT_BUILT_RUN = "45035194823"
+COHERENT_BUILT_SHA = "78b8b6168f0a750d2b742d94b78c95aa4abf579a"
+COHERENT_BUILT_ARTIFACT = 14759749573
+COHERENT_BUILT_ARTIFACT_SHA = "9129d5b08a52f48422c2494b195ec6f32128948a0a578f3af0785102d35c925e"
+COHERENT_BUILT_PROOF_ARTIFACT = 14759749585
+COHERENT_BUILT_PROOF_SHA = "ff35f54d028057cccc3125d63e681a257e371d37cacd3e7a5ea0aadf1b69b358"
+COHERENT_BUILT_RECEIPT_SHA = "f924c22b612bf456fafd754f66152905110e0e6556bf1b6f858dc09e2a6cc9a0"
 COHERENT_VERSION = attachment.HEART_TAG + "-" + "-".join(
     part + COHERENT_PATCH for part in (
         "pinkha-native-derived-v1-", "pinkha-native-t5-lookup-v1-",
@@ -26,6 +33,16 @@ BINDING_KEYS = (
     "heart_source_run_id", "heart_source_sha", "heart_source_attempt",
     "heart_build_receipt_sha256", "heart_artifact_id", "heart_artifact_sha256",
     "heart_proof_artifact_id", "heart_proof_artifact_sha256",
+)
+REUSE_BINDING_KEYS = (
+    "heart_build_source_run_id", "heart_build_source_sha", "heart_build_source_attempt",
+    "heart_build_reuse_receipt_sha256", "heart_original_build_artifact_id",
+    "heart_original_build_artifact_sha256", "heart_original_build_proof_artifact_id",
+    "heart_original_build_proof_artifact_sha256",
+)
+REUSE_INSTALLATION_KEYS = (
+    "build_producer", "build_reuse_receipt_sha256", "original_build_artifact_id",
+    "original_build_artifact_sha256", "original_build_proof_artifact_id", "original_build_proof_artifact_sha256",
 )
 
 
@@ -185,6 +202,16 @@ def validate_build(profile, receipt, inventory, source_run_id, producer=None):
     return profile.binary_marker
 
 
+def validate_reuse_build_origin(origin):
+    expected = dict(run_id=COHERENT_BUILT_RUN, run_attempt="1", source_sha=COHERENT_BUILT_SHA,
+                    source_branch="codex/chatgpt-wave15-shared-20261121",
+                    repository="davidpovarsky/anytype-swift",
+                    workflow_path=".github/workflows/torah-inspector-ipados27.yml",
+                    workflow_conclusion="failure", scope="framework_build_only")
+    require(origin == expected, "Unqualified or relabelled original coherent build origin")
+    return expected
+
+
 def verify_binding(value):
     profile = select(value.get("runtime_profile", "r14"))
     require(value.get("native_marker") == profile.binary_marker,
@@ -201,6 +228,22 @@ def verify_binding(value):
                 and type(value.get("heart_artifact_id")) is int
                 and type(value.get("heart_proof_artifact_id")) is int,
                 "Actual-process observation lost the corrected runtime producer proof")
+    build_keys = set(REUSE_BINDING_KEYS)
+    if build_keys & value.keys() or value.get("heart_build_receipt_sha256") == COHERENT_BUILT_RECEIPT_SHA:
+        require(profile.name == COHERENT and build_keys <= value.keys()
+                and value.get("heart_source_run_id") != COHERENT_BUILT_RUN
+                and value.get("heart_build_source_run_id") == COHERENT_BUILT_RUN
+                and value.get("heart_build_source_sha") == COHERENT_BUILT_SHA
+                and value.get("heart_build_source_attempt") == "1"
+                and value.get("heart_build_receipt_sha256") == COHERENT_BUILT_RECEIPT_SHA
+                and is_sha(value.get("heart_build_reuse_receipt_sha256"))
+                and type(value.get("heart_original_build_artifact_id")) is int
+                and value["heart_original_build_artifact_id"] == COHERENT_BUILT_ARTIFACT
+                and value.get("heart_original_build_artifact_sha256") == COHERENT_BUILT_ARTIFACT_SHA
+                and type(value.get("heart_original_build_proof_artifact_id")) is int
+                and value["heart_original_build_proof_artifact_id"] == COHERENT_BUILT_PROOF_ARTIFACT
+                and value.get("heart_original_build_proof_artifact_sha256") == COHERENT_BUILT_PROOF_SHA,
+                "Actual-process observation lost the distinct immutable build origin")
     return profile.binary_marker
 
 
@@ -220,10 +263,20 @@ def installed_binding(app, installation, head, profile_name="r14", source_run_id
         raw = path.read_bytes()
         receipt = json.loads(raw)
         producer = installation.get("producer", {})
+        build_producer = producer
+        if set(REUSE_INSTALLATION_KEYS) & installation.keys():
+            require(set(REUSE_INSTALLATION_KEYS) <= installation.keys(), "Incomplete distinct build-origin installation binding")
+        if "build_producer" in installation:
+            require(profile.name == COHERENT and producer.get("run_id") == source_run_id
+                    and source_run_id != COHERENT_BUILT_RUN
+                    and installation.get("original_build_app_sha") == COHERENT_BUILT_SHA,
+                    "Build reuse requires a distinct successful coherent execution origin")
+            build_producer = validate_reuse_build_origin(installation["build_producer"])
         require(digest_bytes(raw) == installation.get("heart_build_receipt_sha256")
-                and receipt.get("github_run_id") == producer.get("run_id") == source_run_id
-                and receipt.get("github_run_attempt") == producer.get("run_attempt")
-                and receipt.get("integration_sha") == producer.get("source_sha")
+                and producer.get("run_id") == source_run_id
+                and receipt.get("github_run_id") == build_producer.get("run_id")
+                and receipt.get("github_run_attempt") == build_producer.get("run_attempt")
+                and receipt.get("integration_sha") == build_producer.get("source_sha")
                 and receipt.get("runtime_variant") == profile.name
                 and receipt.get("expected_app_get_version") == profile.version
                 and receipt.get("inventory_sha256") == profile.inventory_sha256
@@ -243,5 +296,16 @@ def installed_binding(app, installation, head, profile_name="r14", source_run_id
             heart_proof_artifact_id=installation.get("heart_proof_artifact_id"),
             heart_proof_artifact_sha256=installation.get("heart_proof_artifact_sha256"),
         )
+        if build_producer is not producer:
+            value.update(
+                heart_build_source_run_id=build_producer["run_id"],
+                heart_build_source_sha=build_producer["source_sha"],
+                heart_build_source_attempt=build_producer["run_attempt"],
+                heart_build_reuse_receipt_sha256=installation.get("build_reuse_receipt_sha256"),
+                heart_original_build_artifact_id=installation.get("original_build_artifact_id"),
+                heart_original_build_artifact_sha256=installation.get("original_build_artifact_sha256"),
+                heart_original_build_proof_artifact_id=installation.get("original_build_proof_artifact_id"),
+                heart_original_build_proof_artifact_sha256=installation.get("original_build_proof_artifact_sha256"),
+            )
     verify_binding(value)
     return value

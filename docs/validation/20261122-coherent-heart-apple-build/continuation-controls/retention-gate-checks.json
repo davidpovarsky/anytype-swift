@@ -1,0 +1,24 @@
+{
+  "status": "PASS_NEW_RETENTION_GATE_CHECKS",
+  "positive_original_evidence": "validation/retained-current-controls.json",
+  "negative_vectors": [
+    {
+      "changed": "Tools/PinkhaNativeDerived/heart_runtime_profile.py",
+      "outcome": "REJECTED",
+      "reason": "Retained controller dependency/input changed: Tools/PinkhaNativeDerived/heart_runtime_profile.py"
+    },
+    {
+      "changed": "docs/validation/20261122-coherent-heart-apple-build/continuation-controls/new-build-reuse-controls.log",
+      "outcome": "REJECTED",
+      "reason": "Original raw controller output changed: new-build-reuse-controls.log"
+    },
+    {
+      "changed": "Tools/PinkhaSimulatorGate/simulator_selection.py",
+      "outcome": "REJECTED",
+      "reason": "Observed selector dependency changed: Tools/PinkhaSimulatorGate/simulator_selection.py"
+    }
+  ],
+  "already_passed_test_methods_executed": 0,
+  "native_builds": 0,
+  "apple_execution": "NOT_RUN"
+}

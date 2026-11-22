@@ -876,11 +876,11 @@
       "to": "Tools/PinkhaNativeDerived/install_verified_heart.py",
       "baselineBlob": "1ed1f7fa90083cc110f4cb73ec69ac5973d34a1c",
       "replacementBlob": "04bab7f476492fe743b7e8d75bc8131c99afdf96",
-      "reason": "Admit explicit r14 or corrected r15-attachment-v1 runtime profiles while preserving the original r14 default and all binary/native source/patch integrity checks. The corrected profile binds the original producer source/run/attempt, full version and both artifact hashes through installation and observed app process. Add a separate coherent production-simulator admission path with exact original artifacts and no fixture fallback; retain original r14/corrected defaults.",
+      "reason": "Admit explicit r14 or corrected r15-attachment-v1 runtime profiles while preserving the original r14 default and all binary/native source/patch integrity checks. The corrected profile binds the original producer source/run/attempt, full version and both artifact hashes through installation and observed app process. Add a separate coherent production-simulator admission path with exact original artifacts and no fixture fallback; retain original r14/corrected defaults. Admit a distinct successful Apple execution of the exact original completed framework build while retaining immutable failed-builder provenance, packaged receipts, current execution origin and all original source/byte/XCTest checks.",
       "sharedSources": [
         {
           "path": "Tools/PinkhaNativeDerived/heart_runtime_profile.py",
-          "gitBlob": "4cb657fa60a5f9c664a0b871560dda77e11b339d"
+          "gitBlob": "71e4efb0a5b953f5428e67252545cd274479b64e"
         },
         {
           "path": "Tools/PinkhaNativeDerived/download_heart_runtime.py",
@@ -888,14 +888,25 @@
         },
         {
           "path": "Tools/PinkhaNativeDerived/coherent_runtime_admission.py",
-          "gitBlob": "4677a98c8bba3a18f14cdbd88da0778de8f4965e"
+          "gitBlob": "72c9490f5727e698bd48170a78cc8c2f777f11ec"
+        },
+        {
+          "path": "Tools/PinkhaNativeDerived/coherent_apple/reuse_build.py",
+          "gitBlob": "12b543a43c076832cd8a5e9d029e6d71b7df85b0"
+        },
+        {
+          "path": "Tools/PinkhaNativeDerived/coherent_apple/run_host.py",
+          "gitBlob": "97627c455e01fe3bfb401da5fd2a59981450954f"
         }
       ],
       "validation": [
         "Twenty-two selected artifact-admission, observer/CLI and fresh-worker propagation controls passed in docs/validation/20261121-heart-runtime-consumer.",
         "Corrected producer run44943967103 passed at4ee2d7fd9f8acd74f51cbb2236d08f55a93af08b; original artifact verification remains source-bound and does not rerun native tests.",
         "This reviewed map proves source provenance only. Actual app process/SDK06/Properties/UI acceptance is recorded by separate original execution receipts.",
-        "New coherent admission checks are source-scoped; production simulator and fixture binaries are identified separately. Actual new Apple acceptance is recorded only after execution."
+        "New coherent admission checks are source-scoped; production simulator and fixture binaries are identified separately. Actual new Apple acceptance is recorded only after execution.",
+        "Ten new two-origin build/source/extraction/AST and admission/observer controls passed with exact raw logs and dependency hashes in docs/validation/20261122-coherent-heart-apple-build/continuation-controls. These controller controls do not claim Apple or production execution.",
+        "The original failed Apple host45035194823 remains FAIL before XCTest. Consumer admission requires a separate successful current execution, exact one-method xcresult/raw attachment replay and unchanged139 native files/shared Swift modules; both build origins remain visible.",
+        "Fresh route control retention pins both executed host functions and exact module/declaration/dependency AST; it does not call the changed whole host file unchanged. Legacy r14/corrected defaults and production-only installation remain preserved."
       ]
     },
     {

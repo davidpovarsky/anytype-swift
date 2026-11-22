@@ -263,6 +263,8 @@ jobs:
   coherent-heart-apple:
     if: ${{ inputs.route == 'coherent-heart-apple' }}
     uses: ./.github/workflows/pinkha-coherent-heart-apple.yml
+    with:
+      source_run_id: ${{ inputs.source_run_id }}
 
   coherent-heart-peers:
     if: ${{ inputs.route == 'coherent-heart-peers' }}
