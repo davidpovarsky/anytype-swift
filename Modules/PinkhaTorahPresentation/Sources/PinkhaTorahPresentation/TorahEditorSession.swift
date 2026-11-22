@@ -353,13 +353,14 @@ public final class TorahEditorSession {
 
     public func activateDocument() {
         isActiveDocument = true
+        repository.resumeRelatedDocuments()
     }
 
     public func deactivateDocument() {
         isActiveDocument = false
         documentActionEpoch &+= 1
         noteActionEpoch &+= 1
-        repository.invalidateRelatedDocuments()
+        repository.retireRelatedDocuments()
         searchRequestEpoch &+= 1
         associationSnapshotEpoch &+= 1
         isSearchPresented = false

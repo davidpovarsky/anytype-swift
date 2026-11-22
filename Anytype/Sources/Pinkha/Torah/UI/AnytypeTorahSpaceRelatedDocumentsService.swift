@@ -25,6 +25,19 @@ final class AnytypeTorahSpaceRelatedDocumentsService {
     }
 
     func relatedDocuments(spaceID: String, selection: TorahInspectorSelection) async throws -> TorahRelatedDocumentsSnapshot {
+        do {
+            return try await loadRelatedDocuments(spaceID: spaceID, selection: selection)
+        } catch {
+            if let failure = AnytypeTorahRelatedReadFailure.classify(error) {
+                throw failure
+            }
+            throw error
+        }
+    }
+
+    private func loadRelatedDocuments(
+        spaceID: String, selection: TorahInspectorSelection
+    ) async throws -> TorahRelatedDocumentsSnapshot {
         let source = T5SourceIdentity(providerID: selection.providerID, canonicalReference: selection.relationshipRef)
         guard !spaceID.isEmpty, !source.providerID.isEmpty, !source.canonicalReference.isEmpty else {
             throw T5SpaceRelatedDocumentsError.invalidIdentity

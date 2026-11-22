@@ -170,30 +170,39 @@ public final class AnySessionTorahNotesService: TorahEditorNotesService {
     }
 
     public func relatedDocuments(for selection: TorahInspectorSelection) async throws -> TorahRelatedDocumentsSnapshot {
-        let source = T5SourceIdentity(providerID: selection.providerID, canonicalReference: selection.relationshipRef)
-        if let nativeRelated {
-            return try await session.perform { lease in
-                let result = try await nativeRelated.snapshot(source: source)
-                try await lease.validate(); return result
+        do {
+            let source = T5SourceIdentity(providerID: selection.providerID, canonicalReference: selection.relationshipRef)
+            if let nativeRelated {
+                return try await session.perform { lease in
+                    let result = try await nativeRelated.snapshot(source: source)
+                    try await lease.validate(); return result
+                }
             }
-        }
-        guard let related else { throw AnyHostError.incompleteDocument }
-        return try await session.perform { lease in
-            let output = try await related.documents(source: source)
-            try await lease.validate()
-            var limitations: [TorahRelatedDocumentsLimitation] = [
-                .blockAssociationsNotIndexed, .sourceQuotesNotIndexed, .indexFreshnessUnverified]
-            if output.documents.isTruncated { limitations.append(.resultLimitReached) }
-            if output.documents.hasStaleCandidates { limitations.append(.staleCandidates) }
-            return .init(documents: output.documents.matches.map { match in
-                let document = match.document
-                return TorahRelatedDocument(id: match.id, spaceID: document.spaceID,
-                    objectID: document.objectID, title: document.title,
-                    sourceReference: source.canonicalReference,
-                    kind: document.isNote ? .note : .document, typeID: document.typeID,
-                    iconEmoji: document.iconEmoji, iconImageID: document.iconImageID,
-                    updatedAt: document.updatedAt, canUnlink: document.canUnlink)
-            }, coverage: .indexedDocumentsOnly, limitations: limitations)
+            guard let related else { throw AnyHostError.incompleteDocument }
+            return try await session.perform { lease in
+                let output = try await related.documents(source: source)
+                try await lease.validate()
+                var limitations: [TorahRelatedDocumentsLimitation] = [
+                    .blockAssociationsNotIndexed, .sourceQuotesNotIndexed, .indexFreshnessUnverified]
+                if output.documents.isTruncated { limitations.append(.resultLimitReached) }
+                if output.documents.hasStaleCandidates { limitations.append(.staleCandidates) }
+                return .init(documents: output.documents.matches.map { match in
+                    let document = match.document
+                    return TorahRelatedDocument(id: match.id, spaceID: document.spaceID,
+                        objectID: document.objectID, title: document.title,
+                        sourceReference: source.canonicalReference,
+                        kind: document.isNote ? .note : .document, typeID: document.typeID,
+                        iconEmoji: document.iconEmoji, iconImageID: document.iconImageID,
+                        updatedAt: document.updatedAt, canUnlink: document.canUnlink)
+                }, coverage: .indexedDocumentsOnly, limitations: limitations)
+            }
+        } catch {
+            if let failure = AnyTorahRelatedReadFailure.classify(
+                error, ownerIsActive: await session.isActive
+            ) {
+                throw failure
+            }
+            throw error
         }
     }
 
