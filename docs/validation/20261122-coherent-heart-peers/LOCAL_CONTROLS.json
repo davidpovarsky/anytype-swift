@@ -1,0 +1,99 @@
+{
+  "focused_finalization_failure": {
+    "elapsed_seconds": 1.697,
+    "errors": 0,
+    "failures": 0,
+    "method": "test_publication_failure_changes_receipt_to_fail_and_returns_nonzero",
+    "original_job": "job_dca97dcc8ebc",
+    "original_job_receipt_sha256": "ceee43e39725b91afc344938fd89ef28ef885b50d845c5e25f4ebf1e45078171",
+    "scope": "Actual retained finalizer and new runner main, injected permission failure, mocked native completion, no Docker/native calls",
+    "skips": 0,
+    "status": "PASS",
+    "tests_run": 1
+  },
+  "focused_python": {
+    "command": "PINKHA_PEER_CONTROL_ORIGINAL=/workspace/scratch/15ed7c0f4658/native-evidence-45026227924 PYTHONDONTWRITEBYTECODE=1 python3 -B -m unittest -v test_contract",
+    "elapsed_seconds": 0.011,
+    "errors": 0,
+    "failures": 0,
+    "methods": 13,
+    "record_kind": "Observed execution summary; raw stdout remains in tool transcript",
+    "retained_without_repeat": true,
+    "skips": 0
+  },
+  "full_t2_acceptance": "NOT_RUN",
+  "full_tree_python_import": {
+    "created_at": 1795357498.356012,
+    "duration_s": 4.18,
+    "error": null,
+    "exit_code": 0,
+    "finished_at": "2026-11-22T14:25:02.602760+00:00",
+    "host": "host_7ec8382e82747448",
+    "id": "job_270160452055",
+    "notified": {
+      "resend": null,
+      "telegram": null
+    },
+    "notify_spec": {},
+    "output": "{\"status\": \"PYTHON_BUILD_AND_RUN_IMPORT_PASS\", \"head\": \"ef06a2c438104d1b47a715319bb78d31348edc04\", \"go_tags\": \"nogrpcserver nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg\", \"tantivy\": \"88b34e006707bfec2d29e8b26405f67cbb975d06fd4ea164da856d0084aaabbc\", \"selection\": [\"-test.run\", \"^TestCoherentAuthorizedReadNativePeer$\", \"-test.count=1\", \"-test.v\", \"-test.timeout=1000s\"]}",
+    "output_truncated": false,
+    "read": false,
+    "severity": "info",
+    "source": "script_run@host_7ec8382e82747448",
+    "started_at": "2026-11-22T14:24:58.421423+00:00",
+    "status": "succeeded",
+    "timeout_s": 120,
+    "tool": "script_run",
+    "type": "job_result"
+  },
+  "go_format": {
+    "created_at": 1795357252.6581185,
+    "duration_s": 1.49,
+    "error": null,
+    "exit_code": 0,
+    "finished_at": "2026-11-22T14:20:54.210764+00:00",
+    "host": "host_7ec8382e82747448",
+    "id": "job_4e168b86b487",
+    "notified": {
+      "resend": null,
+      "telegram": null
+    },
+    "notify_spec": {},
+    "output_truncated": false,
+    "read": false,
+    "result": {
+      "sha256": "1dd9b12406160fe26116feb059363cea0a792fc38a9c880b76fe8026f443edc1",
+      "status": "GOFMT_PARSE_PASS"
+    },
+    "severity": "info",
+    "source": "script_run@host_7ec8382e82747448",
+    "started_at": "2026-11-22T14:20:52.716967+00:00",
+    "status": "succeeded",
+    "timeout_s": 120,
+    "tool": "script_run",
+    "type": "job_result"
+  },
+  "ios_acceptance": "NOT_RUN",
+  "mixed_versions": "NOT_RUN",
+  "native_build": "NOT_RUN",
+  "native_processes": "NOT_RUN",
+  "network_acl_transport": "NOT_RUN",
+  "offline_unknown_revocation": "NOT_PROVEN",
+  "old_go_swift_apple_tests_repeated": 0,
+  "protocol": "pinkha-coherent-peer-local-control-review-v1",
+  "python_ast": {
+    "files": 4,
+    "status": "PASS"
+  },
+  "review": {
+    "agent": "/root/asana_acceptance",
+    "scope": "build.py, native_peer_test.go, run.py, workflow; did not execute tests or exhaustively inspect all seven retained helpers",
+    "status": "NO_CONCRETE_BLOCKER_IN_READ_ONLY_REVIEW"
+  },
+  "status": "PASS_LOCAL_CONTROLS_NATIVE_NOT_RUN",
+  "unique_new_control_methods_passed": 14,
+  "workflow_yaml": {
+    "status": "PASS",
+    "steps": 8
+  }
+}

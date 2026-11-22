@@ -1,0 +1,28 @@
+{
+  "status": "REVIEWED_SOURCE_NATIVE_NOT_RUN",
+  "base": "e073b6ac48d15af1b0a630940b1440e3f65a45ac",
+  "newImplementationFiles": 7,
+  "dispatcherSourceBinding": "github.sha",
+  "dispatcherActionsPermission": "read",
+  "nativeMethod": "TestCoherentAuthorizedReadNativePeer",
+  "plannedNativeProcesses": 3,
+  "oldNativeTestsSelected": 0,
+  "sourceGenerationRepeated": false,
+  "focusedNewControlsPassed": 14,
+  "sourceInputs": "Original qualified 139-source closure and native run45026227924; exact original successful run metadata checked before build.",
+  "boundaries": [
+    "Two independent fresh native stores over an owned LAN; authorized-read is B first private read",
+    "Actual network detach then the same exact variant",
+    "Fresh offline process over original B store, one first private read without retry",
+    "Stopped raw protobuf denial has no payload; exact source/binary; owned resources cleanup and secret screened original evidence"
+  ],
+  "notAccepted": [
+    "Network membership grant/revoke between accounts",
+    "Unknown remote revocation while offline",
+    "Mixed-version compatibility",
+    "iOS",
+    "Physical iPad",
+    "Full T2",
+    "Release"
+  ]
+}
