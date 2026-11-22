@@ -1,5 +1,6 @@
 #if DEBUG && targetEnvironment(simulator)
 import Foundation
+import CryptoKit
 import Services
 import ProtobufMessages
 import SwiftProtobuf
@@ -42,6 +43,36 @@ public struct AnytypeOriginalEditorQualificationSource: Sendable, Equatable {
     }
 }
 
+
+@_spi(OriginalEditorQualification)
+public struct AnytypeOriginalEditorProcessResumeContext: Sendable, Equatable {
+    public let workspaceNamespace: UUID
+    public let legacyAnnotationID: Int64
+    public let payloadDigest: String
+
+    public init(workspaceNamespace: UUID, legacyAnnotationID: Int64,
+                payloadDigest: String) throws {
+        guard legacyAnnotationID > 0, payloadDigest.utf8.count == 64,
+              payloadDigest.utf8.allSatisfy({ (48...57).contains($0) || (97...102).contains($0) }) else {
+            throw AnytypeOriginalEditorHostError.invalidBinding
+        }
+        self.workspaceNamespace = workspaceNamespace
+        self.legacyAnnotationID = legacyAnnotationID
+        self.payloadDigest = payloadDigest
+    }
+}
+
+@_spi(OriginalEditorQualification)
+public struct AnytypeOriginalEditorProcessResumeReceipt: Sendable {
+    public let runtimeNonce: UUID
+    public let accountID: String
+    public let spaceID: String
+    public let objectID: String
+    public let preparedProcessID: Int32
+    public let currentProcessID: Int32
+    public let credentialConsumed: Bool
+}
+
 @_spi(OriginalEditorQualification)
 public enum AnytypeOriginalEditorQualificationError: Error, Sendable {
     case sourceChanged, wrongSnapshot, alreadyRestored, nativeIdentityMissing
@@ -56,6 +87,7 @@ public final class AnytypeOriginalEditorQualificationSession {
     public let binding: AnytypeOriginalEditorBinding
     public let retainedSourceEvidenceDirectory: URL
     public private(set) var retainedImportEvidenceDirectory: URL?
+    public private(set) var processResumeReceipt: AnytypeOriginalEditorProcessResumeReceipt?
 
     private let runtime: OwnedOriginalEditorQualificationRuntime
     private let initialSource: AnytypeOriginalEditorQualificationSource
@@ -63,17 +95,22 @@ public final class AnytypeOriginalEditorQualificationSession {
     private var restoreConsumed = false
     private var restoreSpace: OwnedQualificationSpace?
     private var importedCandidate: AnytypeOriginalEditorImportedCandidate?
+    private var currentImportedSource: AnytypeOriginalEditorQualificationSource?
+    private var currentImportedBodySHA256: String?
 
     fileprivate init(runtime: OwnedOriginalEditorQualificationRuntime,
                      source: AnytypeOriginalEditorQualificationSource,
                      binding: AnytypeOriginalEditorBinding,
                      evidence: URL,
-                     fidelityFixture: AnytypeOriginalEditorNativeFixture?) {
+                     fidelityFixture: AnytypeOriginalEditorNativeFixture?,
+                     processResumeReceipt: AnytypeOriginalEditorProcessResumeReceipt? = nil) {
         self.runtime = runtime
         initialSource = source
         self.binding = binding
         retainedSourceEvidenceDirectory = evidence
         self.fidelityFixture = fidelityFixture
+        self.processResumeReceipt = processResumeReceipt
+        restoreConsumed = processResumeReceipt != nil
     }
 
     /// The caller first reads its CURRENT durable row. The snapshot's capture
@@ -116,9 +153,85 @@ public final class AnytypeOriginalEditorQualificationSession {
         guard sourceIsCurrent(currentSource) else {
             throw AnytypeOriginalEditorQualificationError.sourceChanged
         }
-        return try currentSource.binding(
+        let result = try currentSource.binding(
             accountID: candidate.accountID, spaceID: candidate.spaceID, objectID: candidate.objectID
         )
+        currentImportedSource = currentSource
+        currentImportedBodySHA256 = SHA256.hash(data: snapshot.bodyBytes)
+            .map { String(format: "%02x", $0) }.joined()
+        return result
+    }
+
+
+    public func prepareProcessResume(
+        host: AnytypeOriginalEditorHost,
+        snapshot: AnytypeOriginalEditorSnapshot,
+        currentSource: AnytypeOriginalEditorQualificationSource,
+        context: AnytypeOriginalEditorProcessResumeContext,
+        sourceIsCurrent: @escaping @MainActor (AnytypeOriginalEditorQualificationSource) -> Bool
+    ) async throws -> AnytypeOriginalEditorProcessResumeReceipt {
+        var beganCapture = false
+        do {
+            guard let importedCandidate else {
+                throw AnytypeOriginalEditorQualificationError.wrongSnapshot
+            }
+            let expected = try currentSource.binding(
+                accountID: importedCandidate.accountID, spaceID: importedCandidate.spaceID,
+                objectID: importedCandidate.objectID
+            )
+            guard host.binding == expected else {
+                throw AnytypeOriginalEditorQualificationError.wrongSnapshot
+            }
+            try host.validateCurrentSource()
+            try host.beginSnapshotCapture()
+            beganCapture = true
+            let receipt = try await host.preparedSession.owner.withExclusiveRead(
+                contextId: expected.objectID, spaceId: expected.spaceID,
+                rpcNames: [], retireOnSuccess: true
+            ) {
+                try await self.sealProcessResume(
+                    snapshot: snapshot, currentSource: currentSource,
+                    context: context, sourceIsCurrent: sourceIsCurrent
+                )
+            }
+            host.completeSnapshotCapture()
+            return receipt
+        } catch {
+            if beganCapture { host.failSnapshotCapture() }
+            let failure = await runtime.preservingProcessResumeCleanupFailure(error)
+            throw failure
+        }
+    }
+
+    private func sealProcessResume(
+        snapshot: AnytypeOriginalEditorSnapshot,
+        currentSource: AnytypeOriginalEditorQualificationSource,
+        context: AnytypeOriginalEditorProcessResumeContext,
+        sourceIsCurrent: @escaping @MainActor (AnytypeOriginalEditorQualificationSource) -> Bool
+    ) async throws -> AnytypeOriginalEditorProcessResumeReceipt {
+        try runtime.validateCurrentRuntime()
+        try Task.checkCancellation()
+        guard let currentImportedSource, currentImportedSource == currentSource,
+              let currentImportedBodySHA256,
+              currentImportedBodySHA256 == SHA256.hash(data: snapshot.bodyBytes)
+                .map({ String(format: "%02x", $0) }).joined(),
+              let importedCandidate, let restoreSpace,
+              importedCandidate.accountID.utf8.elementsEqual(runtime.accountID.utf8),
+              importedCandidate.spaceID.utf8.elementsEqual(restoreSpace.spaceID.utf8),
+              sourceIsCurrent(currentSource) else {
+            throw AnytypeOriginalEditorQualificationError.wrongSnapshot
+        }
+        let request = try OriginalEditorQualificationResumeRequest(
+            source: currentSource, context: context, snapshot: snapshot
+        )
+        let receipt = try await runtime.prepareProcessResume(
+            request: request, space: restoreSpace, objectID: importedCandidate.objectID
+        )
+        guard sourceIsCurrent(currentSource) else {
+            throw AnytypeOriginalEditorQualificationError.sourceChanged
+        }
+        processResumeReceipt = receipt
+        return receipt
     }
 
     /// Independent rich-engine fidelity evidence only. The caller must have
@@ -138,6 +251,54 @@ public final class AnytypeOriginalEditorQualificationSession {
 }
 
 extension AnytypeOriginalEditorModule {
+
+    @_spi(OriginalEditorQualification)
+    @MainActor
+    public static func cleanupOwnedProcessResumeCredential() async throws -> Bool {
+        try await OwnedOriginalEditorQualificationRuntime.cleanupOwnedProcessResumeCredential()
+    }
+
+
+    @_spi(OriginalEditorQualification)
+    @MainActor
+    public static func resumeEditableAcceptance(
+        source: AnytypeOriginalEditorQualificationSource,
+        snapshot: AnytypeOriginalEditorSnapshot,
+        context: AnytypeOriginalEditorProcessResumeContext,
+        sourceIsCurrent: @escaping @MainActor (AnytypeOriginalEditorQualificationSource) -> Bool
+    ) async throws -> AnytypeOriginalEditorQualificationSession {
+        try Task.checkCancellation()
+        guard sourceIsCurrent(source) else {
+            throw AnytypeOriginalEditorQualificationError.sourceChanged
+        }
+        let request = try OriginalEditorQualificationResumeRequest(
+            source: source, context: context, snapshot: snapshot
+        )
+        let runtime = try await OwnedOriginalEditorQualificationRuntime.resumeLocalOnlyAcceptance(request: request)
+        do {
+            try Task.checkCancellation()
+            try runtime.validateCurrentRuntime()
+            guard sourceIsCurrent(source),
+                  let checkpoint = runtime.recoveredCheckpoint,
+                  checkpoint.request == request,
+                  let evidence = runtime.recoveredEvidenceDirectory,
+                  let receipt = runtime.processResumeReceipt, receipt.credentialConsumed else {
+                throw AnytypeOriginalEditorQualificationError.sourceChanged
+            }
+            let binding = try source.binding(
+                accountID: runtime.accountID, spaceID: checkpoint.spaceID, objectID: checkpoint.objectID
+            )
+            let session = AnytypeOriginalEditorQualificationSession(
+                runtime: runtime, source: source, binding: binding, evidence: evidence,
+                fidelityFixture: nil, processResumeReceipt: receipt
+            )
+            return session
+        } catch {
+            let failure = await runtime.preservingProcessResumeCleanupFailure(error)
+            throw failure
+        }
+    }
+
     /// A fresh real page with no seeded editor text. Native acceptance must type
     /// and commit its two blocks through the actual original editor UI.
     @_spi(OriginalEditorQualification)
@@ -169,70 +330,75 @@ extension AnytypeOriginalEditorModule {
         try Task.checkCancellation()
         guard sourceIsCurrent(source) else { throw AnytypeOriginalEditorQualificationError.sourceChanged }
         let runtime = try await OwnedOriginalEditorQualificationRuntime.createLocalOnlyAcceptance()
-        guard sourceIsCurrent(source) else { throw AnytypeOriginalEditorQualificationError.sourceChanged }
-        let space = try await runtime.makeFixtureSpace()
-        guard sourceIsCurrent(source) else { throw AnytypeOriginalEditorQualificationError.sourceChanged }
-        let objectID: String
-        let evidence: URL
-        let fixture: AnytypeOriginalEditorNativeFixture?
-        if richFixture {
-            let created = try await AnytypeOriginalEditorNativeFixtureBuilder.create(in: space)
-            objectID = created.objectID
-            evidence = created.retainedEvidenceDirectory
-            fixture = created
-        } else {
-            try space.claimForFixture()
-            let directory = try OriginalEditorArchiveFiles.makeOwnedDirectory()
-            let spaceID = space.spaceID
-            objectID = try await space.performRPCs(rpcNames: ["ObjectCreate", "ObjectShow"]) {
-                let created = try await ClientCommands.objectCreate(.with {
-                    $0.spaceID = spaceID
-                    $0.objectTypeUniqueKey = ObjectTypeUniqueKey.page.value
-                    $0.details = .with { $0.fields["name"] = .with { $0.stringValue = "" } }
-                    // No delete-empty, select-type or select-template flags.
-                }).invoke()
-                try created.serializedData().write(
-                    to: directory.appendingPathComponent("original-empty-page-create.pb"),
-                    options: .withoutOverwriting
-                )
-                guard !created.objectID.isEmpty, created.hasDetails,
-                      created.details.fields["id"]?.stringValue.utf8.elementsEqual(created.objectID.utf8) == true,
-                      created.details.fields["spaceId"]?.stringValue.utf8.elementsEqual(spaceID.utf8) == true else {
-                    throw AnytypeOriginalEditorQualificationError.nativeIdentityMissing
+        do {
+            guard sourceIsCurrent(source) else { throw AnytypeOriginalEditorQualificationError.sourceChanged }
+            let space = try await runtime.makeFixtureSpace()
+            guard sourceIsCurrent(source) else { throw AnytypeOriginalEditorQualificationError.sourceChanged }
+            let objectID: String
+            let evidence: URL
+            let fixture: AnytypeOriginalEditorNativeFixture?
+            if richFixture {
+                let created = try await AnytypeOriginalEditorNativeFixtureBuilder.create(in: space)
+                objectID = created.objectID
+                evidence = created.retainedEvidenceDirectory
+                fixture = created
+            } else {
+                try space.claimForFixture()
+                let directory = try OriginalEditorArchiveFiles.makeOwnedDirectory()
+                let spaceID = space.spaceID
+                objectID = try await space.performRPCs(rpcNames: ["ObjectCreate", "ObjectShow"]) {
+                    let created = try await ClientCommands.objectCreate(.with {
+                        $0.spaceID = spaceID
+                        $0.objectTypeUniqueKey = ObjectTypeUniqueKey.page.value
+                        $0.details = .with { $0.fields["name"] = .with { $0.stringValue = "" } }
+                        // No delete-empty, select-type or select-template flags.
+                    }).invoke()
+                    try created.serializedData().write(
+                        to: directory.appendingPathComponent("original-empty-page-create.pb"),
+                        options: .withoutOverwriting
+                    )
+                    guard !created.objectID.isEmpty, created.hasDetails,
+                          created.details.fields["id"]?.stringValue.utf8.elementsEqual(created.objectID.utf8) == true,
+                          created.details.fields["spaceId"]?.stringValue.utf8.elementsEqual(spaceID.utf8) == true else {
+                        throw AnytypeOriginalEditorQualificationError.nativeIdentityMissing
+                    }
+                    let shown = try await ClientCommands.objectShow(.with {
+                        $0.contextID = created.objectID
+                        $0.objectID = created.objectID
+                        $0.spaceID = spaceID
+                    }).invoke()
+                    try shown.serializedData().write(
+                        to: directory.appendingPathComponent("original-empty-page-show.pb"),
+                        options: .withoutOverwriting
+                    )
+                    guard shown.hasObjectView,
+                          shown.objectView.rootID.utf8.elementsEqual(created.objectID.utf8) else {
+                        throw AnytypeOriginalEditorQualificationError.nativeIdentityMissing
+                    }
+                    let rootDetails = shown.objectView.details.filter {
+                        $0.id.utf8.elementsEqual(created.objectID.utf8)
+                    }
+                    guard rootDetails.count == 1, rootDetails[0].hasDetails,
+                          rootDetails[0].details.fields["id"]?.stringValue.utf8.elementsEqual(created.objectID.utf8) == true,
+                          rootDetails[0].details.fields["spaceId"]?.stringValue.utf8.elementsEqual(spaceID.utf8) == true else {
+                        throw AnytypeOriginalEditorQualificationError.nativeIdentityMissing
+                    }
+                    return created.objectID
                 }
-                let shown = try await ClientCommands.objectShow(.with {
-                    $0.contextID = created.objectID
-                    $0.objectID = created.objectID
-                    $0.spaceID = spaceID
-                }).invoke()
-                try shown.serializedData().write(
-                    to: directory.appendingPathComponent("original-empty-page-show.pb"),
-                    options: .withoutOverwriting
-                )
-                guard shown.hasObjectView,
-                      shown.objectView.rootID.utf8.elementsEqual(created.objectID.utf8) else {
-                    throw AnytypeOriginalEditorQualificationError.nativeIdentityMissing
-                }
-                let rootDetails = shown.objectView.details.filter {
-                    $0.id.utf8.elementsEqual(created.objectID.utf8)
-                }
-                guard rootDetails.count == 1, rootDetails[0].hasDetails,
-                      rootDetails[0].details.fields["id"]?.stringValue.utf8.elementsEqual(created.objectID.utf8) == true,
-                      rootDetails[0].details.fields["spaceId"]?.stringValue.utf8.elementsEqual(spaceID.utf8) == true else {
-                    throw AnytypeOriginalEditorQualificationError.nativeIdentityMissing
-                }
-                return created.objectID
+                evidence = directory
+                fixture = nil
             }
-            evidence = directory
-            fixture = nil
+            try Task.checkCancellation()
+            try runtime.validateCurrentRuntime()
+            guard sourceIsCurrent(source) else { throw AnytypeOriginalEditorQualificationError.sourceChanged }
+            let binding = try source.binding(accountID: runtime.accountID, spaceID: space.spaceID, objectID: objectID)
+            return AnytypeOriginalEditorQualificationSession(
+                runtime: runtime, source: source, binding: binding, evidence: evidence, fidelityFixture: fixture
+            )
+        } catch {
+            let failure = await runtime.preservingProcessResumeCleanupFailure(error)
+            throw failure
         }
-        try Task.checkCancellation()
-        try runtime.validateCurrentRuntime()
-        guard sourceIsCurrent(source) else { throw AnytypeOriginalEditorQualificationError.sourceChanged }
-        let binding = try source.binding(accountID: runtime.accountID, spaceID: space.spaceID, objectID: objectID)
-        return AnytypeOriginalEditorQualificationSession(
-            runtime: runtime, source: source, binding: binding, evidence: evidence, fidelityFixture: fixture
-        )
     }
 }
 #endif

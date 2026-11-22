@@ -74,13 +74,81 @@
         [
           "AnytypeOriginalEditorModule",
           "beginFidelityAcceptance(source:sourceIsCurrent:)"
+        ],
+        [
+          "AnytypeOriginalEditorProcessResumeContext"
+        ],
+        [
+          "AnytypeOriginalEditorProcessResumeContext",
+          "init(workspaceNamespace:legacyAnnotationID:payloadDigest:)"
+        ],
+        [
+          "AnytypeOriginalEditorProcessResumeContext",
+          "workspaceNamespace"
+        ],
+        [
+          "AnytypeOriginalEditorProcessResumeContext",
+          "legacyAnnotationID"
+        ],
+        [
+          "AnytypeOriginalEditorProcessResumeContext",
+          "payloadDigest"
+        ],
+        [
+          "AnytypeOriginalEditorProcessResumeReceipt"
+        ],
+        [
+          "AnytypeOriginalEditorProcessResumeReceipt",
+          "runtimeNonce"
+        ],
+        [
+          "AnytypeOriginalEditorProcessResumeReceipt",
+          "accountID"
+        ],
+        [
+          "AnytypeOriginalEditorProcessResumeReceipt",
+          "spaceID"
+        ],
+        [
+          "AnytypeOriginalEditorProcessResumeReceipt",
+          "objectID"
+        ],
+        [
+          "AnytypeOriginalEditorProcessResumeReceipt",
+          "preparedProcessID"
+        ],
+        [
+          "AnytypeOriginalEditorProcessResumeReceipt",
+          "currentProcessID"
+        ],
+        [
+          "AnytypeOriginalEditorProcessResumeReceipt",
+          "credentialConsumed"
+        ],
+        [
+          "AnytypeOriginalEditorQualificationSession",
+          "processResumeReceipt"
+        ],
+        [
+          "AnytypeOriginalEditorQualificationSession",
+          "prepareProcessResume(host:snapshot:currentSource:context:sourceIsCurrent:)"
+        ],
+        [
+          "AnytypeOriginalEditorModule",
+          "cleanupOwnedProcessResumeCredential()"
+        ],
+        [
+          "AnytypeOriginalEditorModule",
+          "resumeEditableAcceptance(source:snapshot:context:sourceIsCurrent:)"
         ]
       ],
       "roots": [
         "AnytypeOriginalEditorQualificationSource",
         "AnytypeOriginalEditorQualificationError",
         "AnytypeOriginalEditorQualificationSession",
-        "AnytypeOriginalEditorModule"
+        "AnytypeOriginalEditorModule",
+        "AnytypeOriginalEditorProcessResumeContext",
+        "AnytypeOriginalEditorProcessResumeReceipt"
       ],
       "scope": "DEBUG_SIMULATOR_SPI_ONLY"
     },
@@ -121,7 +189,8 @@
   },
   "nonconstructible_types": [
     "AnytypeOriginalEditorHost",
-    "AnytypeOriginalEditorQualificationSession"
+    "AnytypeOriginalEditorQualificationSession",
+    "AnytypeOriginalEditorProcessResumeReceipt"
   ],
   "schema": 1,
   "status": "COMPILE_SURFACE_CONTRACT_NATIVE_EDITOR_NOT_QUALIFIED"

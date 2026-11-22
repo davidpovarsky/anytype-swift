@@ -34,11 +34,11 @@ public protocol WorkspaceServiceProtocol: Sendable {
 }
 
 public extension WorkspaceServiceProtocol {
-    func workspaceOpenForOriginalSelection(spaceId: String) async throws -> AccountInfo {
+    func workspaceOpenForOriginalSelection(spaceId: String, withChat: Bool = true) async throws -> AccountInfo {
         guard let original = self as? WorkspaceService else {
             throw OriginalWorkspaceSelectionError.unqualifiedService
         }
-        return try await original.workspaceOpen(spaceId: spaceId, withChat: true)
+        return try await original.workspaceOpen(spaceId: spaceId, withChat: withChat)
     }
 
     func generateInvite(spaceId: String, inviteType: InviteType?, permissions: InvitePermissions?) async throws -> SpaceInvite {
@@ -276,3 +276,4 @@ final class WorkspaceService: WorkspaceServiceProtocol {
         }).invoke()
     }
 }
+

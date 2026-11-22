@@ -29,12 +29,12 @@ class HostFrameworkContractControls(unittest.TestCase):
 
     def test_all_reviewed_public_and_spi_paths_are_required_without_ui_credit(self):
         result = self.verify(self.graph())
-        self.assertEqual(result['reviewed_host_and_spi_requirements_observed'], 21)
+        self.assertEqual(result['reviewed_host_and_spi_requirements_observed'], 38)
         self.assertEqual(result['editable_mount_api'], 'EXPOSED_COMPILED_NATIVE_EDITOR_NOT_RUN')
-        self.assertEqual(len(result['own_public_symbols']), 21)
+        self.assertEqual(len(result['own_public_symbols']), 38)
         self.assertTrue(result['qualification_spi_scope_verified'])
         self.assertTrue(result['public_host_scope_verified'])
-        self.assertEqual(sum(symbol['spi'] for symbol in result['own_public_symbols']), 5)
+        self.assertEqual(sum(symbol['spi'] for symbol in result['own_public_symbols']), 22)
 
     def test_qualification_declarations_require_actual_spi_scope(self):
         original = self.graph()
@@ -95,6 +95,27 @@ class HostFrameworkContractControls(unittest.TestCase):
             'identifier': {'precise': 's:21AnytypeOriginalEditorUnownedRuntime'},
             'location': {'uri': (ROOT / 'OriginalEditorFramework/AnytypeOriginalEditorQualificationRuntime.swift').as_uri()}})
         with self.assertRaises(ValueError): self.verify(graph)
+
+    def test_new_resume_context_fields_and_operations_cannot_be_missing(self):
+        additions = [['AnytypeOriginalEditorProcessResumeContext'], ['AnytypeOriginalEditorProcessResumeContext', 'init(workspaceNamespace:legacyAnnotationID:payloadDigest:)'], ['AnytypeOriginalEditorProcessResumeContext', 'workspaceNamespace'], ['AnytypeOriginalEditorProcessResumeContext', 'legacyAnnotationID'], ['AnytypeOriginalEditorProcessResumeContext', 'payloadDigest'], ['AnytypeOriginalEditorProcessResumeReceipt'], ['AnytypeOriginalEditorProcessResumeReceipt', 'runtimeNonce'], ['AnytypeOriginalEditorProcessResumeReceipt', 'accountID'], ['AnytypeOriginalEditorProcessResumeReceipt', 'spaceID'], ['AnytypeOriginalEditorProcessResumeReceipt', 'objectID'], ['AnytypeOriginalEditorProcessResumeReceipt', 'preparedProcessID'], ['AnytypeOriginalEditorProcessResumeReceipt', 'currentProcessID'], ['AnytypeOriginalEditorProcessResumeReceipt', 'credentialConsumed'], ['AnytypeOriginalEditorQualificationSession', 'processResumeReceipt'], ['AnytypeOriginalEditorQualificationSession', 'prepareProcessResume(host:snapshot:currentSource:context:sourceIsCurrent:)'], ['AnytypeOriginalEditorModule', 'cleanupOwnedProcessResumeCredential()'], ['AnytypeOriginalEditorModule', 'resumeEditableAcceptance(source:snapshot:context:sourceIsCurrent:)']]
+        original = self.graph()
+        for components in additions:
+            with self.subTest(path=components):
+                graph = copy.deepcopy(original)
+                graph["symbols"] = [row for row in graph["symbols"] if row["pathComponents"] != components]
+                with self.assertRaises(ValueError):
+                    self.verify(graph)
+
+    def test_returned_process_receipt_cannot_be_publicly_constructed(self):
+        graph = self.graph()
+        graph["symbols"].append({
+            "accessLevel": "public", "spi": True,
+            "pathComponents": ["AnytypeOriginalEditorProcessResumeReceipt", "init()"],
+            "identifier": {"precise": "s:21AnytypeOriginalEditorUnownedProcessReceipt"},
+            "location": {"uri": (ROOT / "OriginalEditorFramework/AnytypeOriginalEditorQualification.swift").as_uri()}
+        })
+        with self.assertRaises(ValueError):
+            self.verify(graph)
 
     def mutation(self, identifier, change):
         raw = (ROOT / 'Anytype.xcodeproj/project.pbxproj').read_text()
