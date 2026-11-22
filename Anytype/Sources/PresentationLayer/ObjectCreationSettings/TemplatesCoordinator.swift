@@ -18,6 +18,7 @@ protocol TemplatesCoordinatorProtocol {
     )
 }
 
+@MainActor
 final class TemplatesCoordinator: TemplatesCoordinatorProtocol, ObjectSettingsCoordinatorOutput {
     
     @Injected(\.legacyNavigationContext)
@@ -26,14 +27,52 @@ final class TemplatesCoordinator: TemplatesCoordinatorProtocol, ObjectSettingsCo
     private var toastPresenter: any ToastPresenterProtocol
 
     private var onSetAsDefaultTemplate: ((String) -> Void)?
+    private let ownedNavigationContext: (any NavigationContextProtocol)?
+    private let documentWriteOwner: EditorDocumentWriteOwner?
+    private let childPreparation: PreparedEditorChildPreparation?
+    private let ownedSpaceId: String?
+
+    private var activeNavigationContext: any NavigationContextProtocol {
+        ownedNavigationContext ?? navigationContext
+    }
     
-    nonisolated init() {}
+    nonisolated init() {
+        ownedNavigationContext = nil
+        documentWriteOwner = nil
+        childPreparation = nil
+        ownedSpaceId = nil
+    }
+
+    private init(owner: EditorDocumentWriteOwner, childPreparation: PreparedEditorChildPreparation,
+                 navigationContext: any NavigationContextProtocol, spaceId: String) {
+        self.documentWriteOwner = owner
+        self.childPreparation = childPreparation
+        self.ownedNavigationContext = navigationContext
+        self.ownedSpaceId = spaceId
+    }
+
+    static func bindOriginal(_ service: any TemplatesCoordinatorProtocol,
+                             owner: EditorDocumentWriteOwner,
+                             childPreparation: PreparedEditorChildPreparation,
+                             navigationContext: any NavigationContextProtocol,
+                             spaceId: String) throws -> any TemplatesCoordinatorProtocol {
+        guard service is TemplatesCoordinator else { throw EditorDocumentWriteError.rejected(.unqualifiedDispatch) }
+        try owner.performSynchronousOperation(spaceId: spaceId, requiresEditing: false) {}
+        return TemplatesCoordinator(owner: owner, childPreparation: childPreparation,
+                                    navigationContext: navigationContext, spaceId: spaceId)
+    }
     
     @MainActor
     func showTemplatesPicker(
         document: some BaseDocumentProtocol,
         onSetAsDefaultTemplate: @escaping (String) -> Void
     ) {
+        if let documentWriteOwner {
+            guard (try? documentWriteOwner.performSynchronousOperation(
+                contextId: document.objectId, spaceId: document.spaceId, requiresEditing: false,
+                operation: { try documentWriteOwner.validateDocument(document) }
+            )) != nil else { return }
+        }
         let data = TemplatePickerViewModelData(
             mode: .objectTemplate(objectId: document.objectId),
             typeId: document.details?.objectType.id,
@@ -48,16 +87,24 @@ final class TemplatesCoordinator: TemplatesCoordinatorProtocol, ObjectSettingsCo
         data: TemplatePickerViewModelData,
         onSetAsDefaultTemplate: @escaping (String) -> Void
     ) {
+        if let documentWriteOwner {
+            guard (try? documentWriteOwner.performSynchronousOperation(spaceId: data.spaceId, requiresEditing: false) {}) != nil else { return }
+        }
         self.onSetAsDefaultTemplate = onSetAsDefaultTemplate
-        let picker = TemplatePickerView(viewModel: .init(data: data, output: self))
+        let picker = TemplatePickerView(viewModel: .init(data: data, output: self, documentWriteOwner: documentWriteOwner))
         let hostViewController = UIHostingController(rootView: picker)
         hostViewController.modalPresentationStyle = .fullScreen
-        navigationContext.present(hostViewController, animated: true, completion: nil)
+        activeNavigationContext.present(hostViewController, animated: true, completion: nil)
     }
 }
 
 extension TemplatesCoordinator: TemplatePickerViewModuleOutput {
     func onTemplatesChanged(_ templates: [ObjectDetails], completion: ([TemplatePickerData]) -> Void) {
+        if let documentWriteOwner {
+            guard (try? documentWriteOwner.validateOwnership()) != nil,
+                  let ownedSpaceId,
+                  templates.allSatisfy({ $0.spaceId.utf8.elementsEqual(ownedSpaceId.utf8) }) else { return }
+        }
         let editorsViews = templates.map { template in
             let editorView = EditorPageCoordinatorView(
                 data: EditorPageObject(
@@ -65,7 +112,8 @@ extension TemplatesCoordinator: TemplatePickerViewModuleOutput {
                     spaceId: template.spaceId,
                     usecase: .embedded
                 ),
-                showHeader: false
+                showHeader: false,
+                childPreparation: childPreparation
             ).eraseToAnyView()
             return TemplatePickerData(template: template, editorView: editorView)
         }
@@ -78,7 +126,7 @@ extension TemplatesCoordinator: TemplatePickerViewModuleOutput {
     }
 
     func onClose() {
-        navigationContext.dismissTopPresented(animated: true, completion: nil)
+        activeNavigationContext.dismissTopPresented(animated: true, completion: nil)
     }
     
     // MARK: - ObjectSettingsCoordinatorOutput
@@ -92,7 +140,13 @@ extension TemplatesCoordinator: TemplatePickerViewModuleOutput {
     func didCreateTemplate(templateId: String) {}
     
     func didTapUseTemplateAsDefault(templateId: String) {
-        onSetAsDefaultTemplate?(templateId)
+        if let documentWriteOwner {
+            try? documentWriteOwner.performSynchronousDocumentAction(requiredPermissions: [.templateSetAsDefault]) {
+                onSetAsDefaultTemplate?(templateId)
+            }
+        } else {
+            onSetAsDefaultTemplate?(templateId)
+        }
     }
     
     func didUndoRedo() {

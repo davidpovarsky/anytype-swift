@@ -77,7 +77,8 @@ struct AccessoryViewBuilder {
             cursorModeViewModel: cursorModeAccessoryViewModel,
             slashMenuViewModel: slashMenuViewModel,
             mentionsViewModel: mentionsModule.1,
-            markupAccessoryViewModel: markupViewModel
+            markupAccessoryViewModel: markupViewModel,
+            documentWriteOwner: actionHandler.documentWriteOwner
         )
         
         mentionsModule.1.onSelect = { [weak stateManager] in

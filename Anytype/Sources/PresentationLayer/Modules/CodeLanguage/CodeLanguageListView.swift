@@ -7,8 +7,8 @@ struct CodeLanguageListView: View {
     @State private var searchText: String = ""
     @Environment(\.dismiss) private var dismiss
 
-    init(data: CodeLanguageListData) {
-        self._model = State(initialValue: CodeLanguageListViewModel(data: data))
+    init(data: CodeLanguageListData, documentWriteOwner: EditorDocumentWriteOwner? = nil) {
+        self._model = State(initialValue: CodeLanguageListViewModel(data: data, documentWriteOwner: documentWriteOwner))
     }
     
     var body: some View {

@@ -8,8 +8,8 @@ struct ObjectCoverPicker: View {
 
     @State private var index: Int = 0
 
-    init(data: BaseDocumentIdentifiable) {
-        _viewModel = State(initialValue: ObjectCoverPickerViewModel(data: data))
+    init(data: BaseDocumentIdentifiable, dependencies: ObjectHeaderViewModelDependencies = .original()) {
+        _viewModel = State(initialValue: ObjectCoverPickerViewModel(data: data, dependencies: dependencies))
     }
     
     var body: some View {
@@ -36,8 +36,9 @@ struct ObjectCoverPicker: View {
                 viewModel: UnsplashViewModel(
                     onItemSelect: { item in
                         viewModel.uploadUnplashCover(unsplashItem: item)
-                        dismiss()
-                    }
+                        viewModel.performCurrentPresentation { dismiss() }
+                    },
+                    documentWriteOwner: viewModel.documentWriteOwner
                 )
             )
         }
@@ -55,7 +56,7 @@ struct ObjectCoverPicker: View {
                     case let .gradient(gradient):
                         viewModel.setGradient(gradient.data.name)
                     }
-                    dismiss()
+                    viewModel.performCurrentPresentation { dismiss() }
                 }
             )
         }
@@ -66,7 +67,7 @@ struct ObjectCoverPicker: View {
             itemProvider.flatMap {
                 viewModel.uploadImage(from: $0)
             }
-            dismiss()
+            viewModel.performCurrentPresentation { dismiss() }
         }
     }
     
@@ -79,7 +80,7 @@ struct ObjectCoverPicker: View {
             if viewModel.isRemoveButtonAvailable {
                 Button {
                     viewModel.removeCover()
-                    dismiss()
+                    viewModel.performCurrentPresentation { dismiss() }
                 } label: {
                     AnytypeText(Loc.remove, style: .uxBodyRegular)
                         .foregroundStyle(Color.Pure.red)

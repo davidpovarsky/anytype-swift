@@ -22,8 +22,10 @@ enum ObjectIconPickerAction {
 @Observable
 final class ObjectIconPickerViewModel {
 
-    @ObservationIgnored @Injected(\.objectHeaderUploadingService)
-    private var objectHeaderUploadingService: any ObjectHeaderUploadingServiceProtocol
+    @ObservationIgnored
+    private let objectHeaderUploadingService: any ObjectHeaderUploadingServiceProtocol
+    @ObservationIgnored
+    private let documentWriteOwner: EditorDocumentWriteOwner?
 
     let mediaPickerContentType: MediaPickerContentType = .images
 
@@ -38,13 +40,15 @@ final class ObjectIconPickerViewModel {
 
     // MARK: - Initializer
 
-    init(data: ObjectIconPickerData) {
+    init(data: ObjectIconPickerData, dependencies: ObjectHeaderViewModelDependencies = .original()) {
         self.document = data.document
+        self.objectHeaderUploadingService = dependencies.objectHeaderUploadingService
+        self.documentWriteOwner = dependencies.documentWriteOwner
     }
 
     func startSubscription() async {
         for await details in document.detailsPublisher.values {
-            updateState(details: details)
+            try? withCurrentDocument { updateState(details: details) }
         }
     }
     
@@ -89,12 +93,24 @@ final class ObjectIconPickerViewModel {
     }
     
     private func handleIconAction(document: some BaseDocumentProtocol, action: ObjectIconPickerAction) {
-        Task {
+        scheduleOriginalEditorMutation(owner: documentWriteOwner, contextId: document.objectId,
+                                       requiredPermissions: [.editDetails, .changeIcon]) { [self] in
+            try withCurrentDocument { }
             try await objectHeaderUploadingService.handleIconAction(
                 objectId: document.objectId,
                 spaceId: document.spaceId,
                 action: action
             )
+        }
+    }
+
+    private func withCurrentDocument<Value>(_ operation: () throws -> Value) throws -> Value {
+        guard let documentWriteOwner else { return try operation() }
+        return try documentWriteOwner.performSynchronousOperation(
+            contextId: document.objectId, spaceId: document.spaceId, requiresEditing: false
+        ) {
+            try documentWriteOwner.validateDocument(document)
+            return try operation()
         }
     }
 }

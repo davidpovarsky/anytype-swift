@@ -43,6 +43,7 @@ final class TemplatePickerViewModel: ObservableObject, OptionsItemProvider {
     var spaceId: String { data.spaceId }
 
     private let data: TemplatePickerViewModelData
+    private let documentWriteOwner: EditorDocumentWriteOwner?
     private var didSetupDefaultItem = false
     private var dismiss: DismissAction?
     
@@ -60,10 +61,12 @@ final class TemplatePickerViewModel: ObservableObject, OptionsItemProvider {
 
     init(
         data: TemplatePickerViewModelData,
-        output: (any TemplatePickerViewModuleOutput)?
+        output: (any TemplatePickerViewModuleOutput)?,
+        documentWriteOwner: EditorDocumentWriteOwner? = nil
     ) {
         self.data = data
         self.output = output
+        self.documentWriteOwner = documentWriteOwner
     }
     
     func setDismissAction(_ dismiss: DismissAction) {
@@ -74,9 +77,27 @@ final class TemplatePickerViewModel: ObservableObject, OptionsItemProvider {
         guard let objectId = data.objectId else { return }
         
         let templateId = selectedTemplateId()
-        Task { @MainActor in
-            try await objectService.applyTemplate(objectId: objectId, templateId: templateId)
-            output?.onClose()
+        let action: @MainActor @Sendable () async throws -> Void = { [self] in
+            let service: any ObjectActionsServiceProtocol
+            if let documentWriteOwner {
+                service = DocumentOwnedObjectActionsService(owner: documentWriteOwner, service: objectService)
+            } else {
+                service = objectService
+            }
+            try await service.applyTemplate(objectId: objectId, templateId: templateId)
+            if let documentWriteOwner {
+                try documentWriteOwner.performSynchronousOperation(requiresEditing: false) { output?.onClose() }
+            } else {
+                output?.onClose()
+            }
+        }
+        if let documentWriteOwner {
+            do {
+                let scheduled = try documentWriteOwner.scheduleMutation(contextId: objectId, requiredPermissions: [.applyTemplates])
+                Task { try await scheduled.run(operation: action) }
+            } catch { anytypeAssertionFailure(error.localizedDescription) }
+        } else {
+            Task { try await action() }
         }
     }
 
@@ -97,8 +118,15 @@ final class TemplatePickerViewModel: ObservableObject, OptionsItemProvider {
             update: nil
         )
         for await templates in publisher.values {
-            updateItems(with: templates)
-            setupDefaultItem()
+            if let documentWriteOwner {
+                guard (try? documentWriteOwner.performSynchronousOperation(spaceId: data.spaceId, requiresEditing: false) {
+                    updateItems(with: templates)
+                    setupDefaultItem()
+                }) != nil else { return }
+            } else {
+                updateItems(with: templates)
+                setupDefaultItem()
+            }
         }
     }
     

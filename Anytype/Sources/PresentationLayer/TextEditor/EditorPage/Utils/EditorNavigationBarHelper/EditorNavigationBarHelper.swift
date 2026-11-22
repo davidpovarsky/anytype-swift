@@ -72,6 +72,7 @@ final class EditorNavigationBarHelper {
         onTitleTap: @escaping () -> Void,
         onSyncStatusTap: @escaping () -> Void,
         torahSession: TorahEditorSession? = nil,
+        preparedSession: PreparedEditorPageSession? = nil,
         onHanlinSelectionTap: @escaping () -> Void = {},
         onWebBannerTap: @escaping () -> Void
     ) {
@@ -81,7 +82,8 @@ final class EditorNavigationBarHelper {
             objectId: objectId,
             spaceId: spaceId,
             output: output,
-            torahSession: torahSession
+            torahSession: torahSession,
+            preparedSession: preparedSession
         ) {
             Image(asset: .X24.more)
                 .foregroundStyle(Color.Text.primary)

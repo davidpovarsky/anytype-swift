@@ -31,26 +31,48 @@ extension BaseDocumentProtocol {
 final class ObjectCoverPickerViewModel {
 
     let mediaPickerContentType: MediaPickerContentType = .images
-    var isRemoveButtonAvailable: Bool { document.details?.documentCover != nil }
+    var isRemoveButtonAvailable: Bool {
+        (try? withCurrentDocument { document.details?.documentCover != nil }) ?? false
+    }
 
     // MARK: - Private variables
-    @ObservationIgnored @Injected(\.objectHeaderUploadingService)
-    private var objectHeaderUploadingService: any ObjectHeaderUploadingServiceProtocol
+    @ObservationIgnored
+    private let objectHeaderUploadingService: any ObjectHeaderUploadingServiceProtocol
+    @ObservationIgnored
+    let documentWriteOwner: EditorDocumentWriteOwner?
 
     @ObservationIgnored
     private let document: any BaseDocumentProtocol
         
     // MARK: - Initializer
     
-    init(data: BaseDocumentIdentifiable) {
+    init(data: BaseDocumentIdentifiable, dependencies: ObjectHeaderViewModelDependencies = .original()) {
         self.document = data.document
+        self.objectHeaderUploadingService = dependencies.objectHeaderUploadingService
+        self.documentWriteOwner = dependencies.documentWriteOwner
+    }
+
+    func performCurrentPresentation(_ operation: () -> Void) {
+        try? withCurrentDocument(operation)
+    }
+
+    private func withCurrentDocument<Value>(_ operation: () throws -> Value) throws -> Value {
+        guard let documentWriteOwner else { return try operation() }
+        return try documentWriteOwner.performSynchronousOperation(
+            contextId: document.objectId, spaceId: document.spaceId, requiresEditing: false
+        ) {
+            try documentWriteOwner.validateDocument(document)
+            return try operation()
+        }
     }
 }
 
 extension ObjectCoverPickerViewModel {
     
     func setColor(_ colorName: String) {
-        Task {
+        scheduleOriginalEditorMutation(owner: documentWriteOwner, contextId: document.objectId,
+                                       requiredPermissions: [.editDetails, .changeCover]) { [self] in
+            try withCurrentDocument { }
             try await objectHeaderUploadingService.handleCoverAction(
                 objectId: document.objectId,
                 spaceId: document.spaceId,
@@ -60,7 +82,9 @@ extension ObjectCoverPickerViewModel {
     }
     
     func setGradient(_ gradientName: String) {
-        Task {
+        scheduleOriginalEditorMutation(owner: documentWriteOwner, contextId: document.objectId,
+                                       requiredPermissions: [.editDetails, .changeCover]) { [self] in
+            try withCurrentDocument { }
             try await objectHeaderUploadingService.handleCoverAction(
                 objectId: document.objectId,
                 spaceId: document.spaceId,
@@ -71,7 +95,9 @@ extension ObjectCoverPickerViewModel {
     
     func uploadImage(from itemProvider: NSItemProvider) {
         let safeItemProvoder = itemProvider.sendable()
-        Task {
+        scheduleOriginalEditorMutation(owner: documentWriteOwner, contextId: document.objectId,
+                                       requiredPermissions: [.editDetails, .changeCover]) { [self] in
+            try withCurrentDocument { }
             try await objectHeaderUploadingService.handleCoverAction(
                 objectId: document.objectId,
                 spaceId: document.spaceId,
@@ -81,7 +107,9 @@ extension ObjectCoverPickerViewModel {
     }
 
     func uploadUnplashCover(unsplashItem: UnsplashItem) {
-        Task {
+        scheduleOriginalEditorMutation(owner: documentWriteOwner, contextId: document.objectId,
+                                       requiredPermissions: [.editDetails, .changeCover]) { [self] in
+            try withCurrentDocument { }
             try await objectHeaderUploadingService.handleCoverAction(
                 objectId: document.objectId,
                 spaceId: document.spaceId,
@@ -91,7 +119,9 @@ extension ObjectCoverPickerViewModel {
     }
     
     func removeCover() {
-        Task {
+        scheduleOriginalEditorMutation(owner: documentWriteOwner, contextId: document.objectId,
+                                       requiredPermissions: [.editDetails, .changeCover]) { [self] in
+            try withCurrentDocument { }
             try await objectHeaderUploadingService.handleCoverAction(
                 objectId: document.objectId,
                 spaceId: document.spaceId,

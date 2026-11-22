@@ -10,6 +10,7 @@ final class PreparedEditorPageSession {
     let document: any BaseDocumentProtocol & EditorDocumentWriteLifetimeProviding
     let owner: EditorDocumentWriteOwner
     let services: EditorPageServiceDependencies
+    let hasExternalSourceBinding: Bool
 
     private let sessionLifetime: EditorDocumentWriteLifetime
     private var assemblyClaimed = false
@@ -84,9 +85,30 @@ final class PreparedEditorPageSession {
                 documentWriteOwner: owner
             )
         }
+        func router(_ dependencies: EditorRouterDependencies) throws -> EditorRouterDependencies {
+            guard externalSource else { return dependencies }
+            let child = try PreparedEditorChildPreparation(owner: owner, navigationContext: dependencies.navigationContext)
+            return .init(
+                navigationContext: dependencies.navigationContext,
+                templatesCoordinator: try TemplatesCoordinator.bindOriginal(
+                    dependencies.templatesCoordinator, owner: owner, childPreparation: child,
+                    navigationContext: dependencies.navigationContext, spaceId: data.spaceId
+                ),
+                setObjectCreationSettingsCoordinator: try SetObjectCreationSettingsCoordinator.bindOriginal(
+                    dependencies.setObjectCreationSettingsCoordinator, owner: owner, childPreparation: child,
+                    navigationContext: dependencies.navigationContext, contextId: data.objectId
+                ),
+                toastPresenter: dependencies.toastPresenter,
+                templateService: try DocumentOwnedTemplatesService.bindOriginal(
+                    dependencies.templateService, owner: owner, childPreparation: child, spaceId: data.spaceId
+                ),
+                documentWriteOwner: owner
+            )
+        }
         self.data = data
         self.document = document
         self.owner = owner
+        self.hasExternalSourceBinding = externalSource
         self.sessionLifetime = sessionLifetime
         self.services = EditorPageServiceDependencies(
             blockActionService: .init(
@@ -145,7 +167,7 @@ final class PreparedEditorPageSession {
                 objectDateByTimestampService: services.slashMenu.objectDateByTimestampService
             ),
             header: try header(services.header),
-            router: services.router,
+            router: try router(services.router),
             viewModel: .init(
                 objectActionsService: objects(services.viewModel.objectActionsService),
                 objectTypeProvider: services.viewModel.objectTypeProvider,

@@ -71,6 +71,19 @@ final class EditorPageController: UIViewController {
     var selectionEscalationAutoscroll: CADisplayLink?
     var selectionEscalationLastTouchInView: CGPoint?
 
+    private var preparedSettingsSession: PreparedEditorPageSession?
+
+    /// The native menu is built lazily with this controller's original view.
+    /// A prepared source must be installed before that first view load.
+    func bindPreparedSettingsSession(_ session: PreparedEditorPageSession) throws {
+        guard session.hasExternalSourceBinding,
+              preparedSettingsSession == nil, !isViewLoaded, let viewModel else {
+            throw EditorDocumentWriteError.rejected(.invalidLease)
+        }
+        try session.owner.validateDocument(viewModel.document)
+        preparedSettingsSession = session
+    }
+
     private lazy var navigationBarHelper: EditorNavigationBarHelper = EditorNavigationBarHelper(
         navigationBarView: navigationBarView,
         parentViewController: self,
@@ -94,6 +107,7 @@ final class EditorPageController: UIViewController {
             viewModel?.showSyncStatusInfo()
         },
         torahSession: viewModel.torahSession,
+        preparedSession: preparedSettingsSession,
         onHanlinSelectionTap: { [weak self] in
             guard let self, let owner = self.pinkhaHanlinRouteOwner else { return }
             PinkhaHanlinSelectionEntry.open(editor: self, routeOwner: owner)

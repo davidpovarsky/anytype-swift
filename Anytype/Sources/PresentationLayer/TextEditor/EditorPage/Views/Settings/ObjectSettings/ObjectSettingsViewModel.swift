@@ -68,10 +68,12 @@ final class ObjectSettingsViewModel {
     private var participantSpacesStorage: any ParticipantSpacesStorageProtocol
     @ObservationIgnored
     private weak var output: (any ObjectSettingsModelOutput)?
+    @ObservationIgnored
+    private let preparedSession: PreparedEditorPageSession?
 
     @ObservationIgnored
     private lazy var document: any BaseDocumentProtocol = {
-        openDocumentsProvider.document(objectId: objectId, spaceId: spaceId)
+        preparedSession?.document ?? openDocumentsProvider.document(objectId: objectId, spaceId: spaceId)
     }()
 
     // Both widget documents exist only to resolve the pin and favorite states, and both
@@ -132,20 +134,120 @@ final class ObjectSettingsViewModel {
         objectId: String,
         spaceId: String,
         output: some ObjectSettingsModelOutput,
-        quickCapture: Bool = false
+        quickCapture: Bool = false,
+        preparedSession: PreparedEditorPageSession? = nil
     ) {
         self.objectId = objectId
         self.spaceId = spaceId
         self.output = output
         self.quickCapture = quickCapture
+        self.preparedSession = preparedSession
 
         let spaceView = Container.shared.spaceViewsStorage().spaceView(spaceId: spaceId)
         spaceType = spaceView?.spaceType
     }
 
+    var hasPreparedSource: Bool { preparedSession != nil }
+
+    /// Uses the exact prepared document and both original identity fields.
+    /// This synchronous boundary also keeps late UI publication inside the
+    /// captured account and source admissions.
+    func withCurrentSource<Value>(
+        requiredPermissions: Set<EditorDocumentWritePermission> = [],
+        _ operation: () throws -> Value
+    ) throws -> Value {
+        guard let preparedSession else { return try operation() }
+        return try preparedSession.owner.performSynchronousOperation(
+            contextId: objectId, spaceId: spaceId, requiresEditing: false,
+            requiredPermissions: requiredPermissions
+        ) {
+            try preparedSession.owner.validateDocument(document)
+            guard document.objectId.utf8.elementsEqual(objectId.utf8),
+                  document.spaceId.utf8.elementsEqual(spaceId.utf8) else {
+                throw EditorDocumentWriteError.rejected(.wrongContext)
+            }
+            return try operation()
+        }
+    }
+
+    /// An original completion that begins another write must retain its named
+    /// mutation authority. Cache, toast and presentation-only publication keep
+    /// using withCurrentSource and cannot upgrade a surrounding read scope.
+    private func withActionCallback<Value>(
+        requiredPermissions: Set<EditorDocumentWritePermission>,
+        _ operation: () throws -> Value
+    ) throws -> Value {
+        guard let preparedSession else { return try operation() }
+        return try preparedSession.owner.performSynchronousDocumentAction(
+            contextId: objectId, spaceId: spaceId, requiredPermissions: requiredPermissions
+        ) {
+            try preparedSession.owner.validateDocument(document)
+            guard document.objectId.utf8.elementsEqual(objectId.utf8),
+                  document.spaceId.utf8.elementsEqual(spaceId.utf8) else {
+                throw EditorDocumentWriteError.rejected(.wrongContext)
+            }
+            return try operation()
+        }
+    }
+
+    private func originalObjectActions() throws -> any ObjectActionsServiceProtocol {
+        guard preparedSession != nil else { return service }
+        return try OriginalObjectActionsServiceBinding.requireOriginal(service)
+    }
+
+    private func originalProperties() throws -> any PropertiesServiceProtocol {
+        guard preparedSession != nil else { return propertiesService }
+        return try OriginalPropertiesServiceBinding.requireOriginal(propertiesService)
+    }
+
+    /// Called synchronously by the original menu/confirmation button before
+    /// it creates its existing Task. No new owner or dispatch authority exists.
+    func prepareAction(
+        requiredPermissions: Set<EditorDocumentWritePermission>,
+        operation: @escaping @MainActor @Sendable () async throws -> Void
+    ) -> @MainActor @Sendable () async throws -> Void {
+        guard let preparedSession else { return operation }
+        do {
+            let scheduled = try preparedSession.owner.scheduleDocumentAction(
+                contextId: objectId, requiredPermissions: requiredPermissions
+            )
+            return { try await scheduled.run(operation: operation) }
+        } catch {
+            // The same Owner records rejected UI intent for the capture barrier.
+            return { throw error }
+        }
+    }
+
+    private func performAction<Value: Sendable>(
+        requiredPermissions: Set<EditorDocumentWritePermission>,
+        operation: @MainActor @Sendable () async throws -> Value
+    ) async throws -> Value {
+        guard let preparedSession else { return try await operation() }
+        return try await preparedSession.owner.performDocumentAction(
+            contextId: objectId, requiredPermissions: requiredPermissions
+        ) { @MainActor [self] in
+            try withCurrentSource {}
+            return try await operation()
+        }
+    }
+
+    /// Foreign widget/Space writers and not-yet-bound modal writers are not
+    /// authorized by a page Owner. Keep their original nil route and visible
+    /// menu entries; the prepared Host must fail closed until the exact target
+    /// and its original service graph are qualified separately.
+    private func requireQualifiedTarget() throws {
+        guard let preparedSession else { return }
+        try preparedSession.owner.performSynchronousOperation(
+            contextId: objectId, spaceId: spaceId
+        ) {
+            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+        }
+    }
+
     // MARK: - Subscriptions
 
     func startDocumentTask() async {
+        guard (try? withCurrentSource {}) != nil else { return }
         async let documentSub: () = startDocumentSubscription()
         async let widgetSub: () = startWidgetDocSubscription(widgetObject)
         async let personalWidgetSub: () = startWidgetDocSubscription(personalWidgetsObject)
@@ -156,6 +258,7 @@ final class ObjectSettingsViewModel {
 
     private func startDocumentSubscription() async {
         for await _ in document.syncPublisher.receiveOnMain().values {
+            guard (try? withCurrentSource {}) != nil else { return }
             updateSettings()
             updateActions()
         }
@@ -164,108 +267,139 @@ final class ObjectSettingsViewModel {
     private func startWidgetDocSubscription(_ doc: (any BaseDocumentProtocol)?) async {
         guard let doc else { return }
         for await _ in doc.syncPublisher.values {
+            guard (try? withCurrentSource {}) != nil else { return }
             updateActions()
         }
     }
 
     private func startParticipantSpaceViewSubscription() async {
         for await participantSpaceView in participantSpacesStorage.participantSpaceViewPublisher(spaceId: spaceId).values {
-            canManageChannelPins = participantSpaceView.canManageChannelPins
-            isSpaceOwner = participantSpaceView.isOwner
-            updateActions()
+            guard (try? withCurrentSource {
+                canManageChannelPins = participantSpaceView.canManageChannelPins
+                isSpaceOwner = participantSpaceView.isOwner
+                updateActions()
+            }) != nil else { return }
         }
     }
 
     private func startSpaceViewSubscription() async {
         for await spaceView in workspaceStorage.spaceViewPublisher(spaceId: spaceId).values {
-            chatNotificationMode = spaceView.effectiveNotificationMode(for: objectId)
-            updateSettings()
+            guard (try? withCurrentSource {
+                chatNotificationMode = spaceView.effectiveNotificationMode(for: objectId)
+                updateSettings()
+            }) != nil else { return }
         }
     }
 
     private func updateSettings() {
-        if let details = document.details {
-            settings = settingsBuilder.build(
-                details: details,
-                permissions: document.permissions,
-                spaceType: spaceType,
-                chatNotificationMode: chatNotificationMode
-            )
-            isChat = details.resolvedLayoutValue.isChat
+        try? withCurrentSource {
+            if let details = document.details {
+                settings = settingsBuilder.build(
+                    details: details,
+                    permissions: document.permissions,
+                    spaceType: spaceType,
+                    chatNotificationMode: chatNotificationMode
+                )
+                isChat = details.resolvedLayoutValue.isChat
+            }
         }
     }
 
     private func updateActions() {
-        guard let details = document.details else {
-            objectActions = []
-            return
+        try? withCurrentSource {
+            guard let details = document.details else {
+                objectActions = []
+                return
+            }
+
+            let isPinnedToWidgets = widgetObject?.widgetBlockIdFor(targetObjectId: objectId).isNotNil ?? false
+            let isFavorited = personalWidgetsObject?.containsWidgetFor(objectId: objectId) ?? false
+
+            objectActions = ObjectAction.buildActions(
+                details: details,
+                isLocked: document.isLocked,
+                isPinnedToWidgets: isPinnedToWidgets,
+                isFavorited: isFavorited,
+                canManageChannelPins: canManageChannelPins,
+                permissions: document.permissions,
+                spaceType: spaceType,
+                isSpaceOwner: isSpaceOwner
+            )
         }
-
-        let isPinnedToWidgets = widgetObject?.widgetBlockIdFor(targetObjectId: objectId).isNotNil ?? false
-        let isFavorited = personalWidgetsObject?.containsWidgetFor(objectId: objectId) ?? false
-
-        objectActions = ObjectAction.buildActions(
-            details: details,
-            isLocked: document.isLocked,
-            isPinnedToWidgets: isPinnedToWidgets,
-            isFavorited: isFavorited,
-            canManageChannelPins: canManageChannelPins,
-            permissions: document.permissions,
-            spaceType: spaceType,
-            isSpaceOwner: isSpaceOwner
-        )
     }
 
     func onTapIconPicker() {
-        output?.showIconPicker(document: document)
+        try? withCurrentSource(requiredPermissions: [.changeIcon]) {
+            output?.showIconPicker(document: document)
+        }
     }
     
     func onTapCoverPicker() {
-        output?.showCoverPicker(document: document)
+        try? withCurrentSource(requiredPermissions: [.changeCover]) {
+            output?.showCoverPicker(document: document)
+        }
     }
     
     func onTapRelations() {
-        output?.relationsAction(document: document)
+        try? withCurrentSource { output?.relationsAction(document: document) }
     }
     
     func onTapHistory() {
-        output?.showVersionHistory(document: document)
+        do {
+            try requireQualifiedTarget()
+            try withCurrentSource { output?.showVersionHistory(document: document) }
+        } catch { }
     }
     
     func onTapDescription() async throws {
-        guard let details = document.details else { return }
-        
-        let descriptionIsOn = details.featuredRelations.contains(where: { $0 == BundledPropertyKey.description.rawValue })
-        try await propertiesService.toggleDescription(objectId: document.objectId, isOn: !descriptionIsOn)
+        try await performAction(requiredPermissions: [.toggleDescription]) { [self] in
+            guard let details = document.details else { return }
+            let descriptionIsOn = details.featuredRelations.contains(where: { $0 == BundledPropertyKey.description.rawValue })
+            let properties = try originalProperties()
+            try await properties.toggleDescription(objectId: document.objectId, isOn: !descriptionIsOn)
+        }
     }
     
     func onTapPrefillName() async throws {
-        guard let details = document.details else { return }
-        let newValue = details.isTemplateNamePrefilled ? 0 : 1
-        try await service.updateBundledDetails(
-            contextID: document.objectId,
-            details: [.templateNamePrefillType(newValue)]
-        )
+        try await performAction(requiredPermissions: [.editDetails]) { [self] in
+            guard let details = document.details else { return }
+            let newValue = details.isTemplateNamePrefilled ? 0 : 1
+            let actions = try originalObjectActions()
+            try await actions.updateBundledDetails(
+                contextID: document.objectId,
+                details: [.templateNamePrefillType(newValue)]
+            )
+        }
     }
 
     func onTapResolveConflict() {
-        showConflictAlert.toggle()
+        try? withCurrentSource { showConflictAlert.toggle() }
     }
     
     func onTapResolveConflictApprove() async throws {
-        guard let details = document.details else { return }
-        try await conflictManager.resolveConflicts(details: details)
-        AnytypeAnalytics.instance().logResetToTypeDefault()
+        try await performAction(requiredPermissions: [.changeLayout, .editPropertiesList]) { [self] in
+            guard let details = document.details else { return }
+            let conflicts = preparedSession == nil ? conflictManager
+                : try OriginalObjectSettingsConflictManagerBinding.requireOriginal(conflictManager)
+            try await conflicts.resolveConflicts(details: details)
+            try withCurrentSource { AnytypeAnalytics.instance().logResetToTypeDefault() }
+        }
     }
     
     func onTapPublishing() {
-        if let details = document.details {
-            AnytypeAnalytics.instance().logClickShareObject(objectType: details.objectType.analyticsType)
-        }
-        output?.showPublising(document: document)
+        do {
+            try requireQualifiedTarget()
+            try withCurrentSource(requiredPermissions: [.publish]) {
+                if let details = document.details {
+                    AnytypeAnalytics.instance().logClickShareObject(objectType: details.objectType.analyticsType)
+                }
+                output?.showPublising(document: document)
+            }
+        } catch { }
     }
 
     func changeNotificationMode(_ mode: SpacePushNotificationsMode) async throws {
+        try requireQualifiedTarget()
         try await workspaceService.pushNotificationSetChatMode(
             spaceId: spaceId,
             chatIds: [objectId],
@@ -282,18 +416,23 @@ final class ObjectSettingsViewModel {
     // MARK: - Object Actions
 
     func changeArchiveState() async throws {
-        guard let details = document.details else { return }
-
-        let isArchived = !details.isArchived
-        AnytypeAnalytics.instance().logMoveToBin(isArchived)
-        try await service.setArchive(objectIds: [objectId], isArchived)
-        if isArchived {
-            dismiss.toggle()
-            output?.closeEditorAction()
+        try await performAction(requiredPermissions: [.archive]) { [self] in
+            guard let details = document.details else { return }
+            let isArchived = !details.isArchived
+            AnytypeAnalytics.instance().logMoveToBin(isArchived)
+            let actions = try originalObjectActions()
+            try await actions.setArchive(objectIds: [objectId], isArchived)
+            if isArchived {
+                try withCurrentSource {
+                    dismiss.toggle()
+                    output?.closeEditorAction()
+                }
+            }
         }
     }
 
     func changePinState() async throws {
+        try requireQualifiedTarget()
         // TODO: IOS-5864 No dedicated pin/unpin analytics event exists today.
         // Add `logPinObject` / `logUnpinObject` (or a unified `logChangePinState(pinned:)`)
         // once product confirms the event shape. Reorder already has `logReorderWidget`.
@@ -330,6 +469,7 @@ final class ObjectSettingsViewModel {
     }
 
     func changeFavoriteState() async throws {
+        try requireQualifiedTarget()
         // TODO: IOS-5864 No dedicated favorite/unfavorite analytics event exists today.
         // Add `logFavoriteObject` / `logUnfavoriteObject` (or a unified
         // `logChangeFavoriteState(favorited:)`) once product confirms the event shape.
@@ -349,103 +489,147 @@ final class ObjectSettingsViewModel {
     }
 
     func changeLockState() async throws {
-        let isCurrentlyLocked = document.isLocked
-        AnytypeAnalytics.instance().logLockPage(!isCurrentlyLocked)
-        try await service.setLocked(!isCurrentlyLocked, objectId: objectId)
-        toastData = ToastBarData(isCurrentlyLocked ? Loc.unlocked : Loc.locked)
-        dismiss.toggle()
+        try await performAction(requiredPermissions: [.lock]) { [self] in
+            let isCurrentlyLocked = document.isLocked
+            AnytypeAnalytics.instance().logLockPage(!isCurrentlyLocked)
+            let actions = try originalObjectActions()
+            try await actions.setLocked(!isCurrentlyLocked, objectId: objectId)
+            try withCurrentSource {
+                toastData = ToastBarData(isCurrentlyLocked ? Loc.unlocked : Loc.locked)
+                dismiss.toggle()
+            }
+        }
     }
 
     func duplicateAction() async throws {
-        guard let details = document.details else { return }
-
-        AnytypeAnalytics.instance().logDuplicateObject(count: 1, objectType: details.objectType.analyticsType)
-
-        let duplicatedId = try await service.duplicate(objectId: objectId)
-
-        let newDetails = ObjectDetails(id: duplicatedId, values: details.values)
-        dismiss.toggle()
-        output?.openPageAction(screenData: newDetails.screenData())
+        try await performAction(requiredPermissions: [.duplicate]) { [self] in
+            guard let details = document.details else { return }
+            AnytypeAnalytics.instance().logDuplicateObject(count: 1, objectType: details.objectType.analyticsType)
+            let actions = try originalObjectActions()
+            let duplicatedId = try await actions.duplicate(objectId: objectId)
+            try withCurrentSource {
+                let newDetails = ObjectDetails(id: duplicatedId, values: details.values)
+                dismiss.toggle()
+                output?.openPageAction(screenData: newDetails.screenData())
+            }
+        }
     }
 
     func linkItselfAction() {
-        guard let currentObjectId = document.details?.id else { return }
-        let spaceId = document.spaceId
-        let onObjectSelection: (String) -> Void = { [weak self] objectId in
-            self?.onObjectSelection(objectId: objectId, spaceId: spaceId, currentObjectId: currentObjectId)
-        }
-
-        output?.linkToAction(document: document, onSelect: onObjectSelection)
+        do {
+            // A selected foreign target still needs its own acquired Owner.
+            try requireQualifiedTarget()
+            try withCurrentSource {
+                guard let currentObjectId = document.details?.id else { return }
+                let spaceId = document.spaceId
+                let onObjectSelection: (String) -> Void = { [weak self] objectId in
+                    self?.onObjectSelection(objectId: objectId, spaceId: spaceId, currentObjectId: currentObjectId)
+                }
+                output?.linkToAction(document: document, onSelect: onObjectSelection)
+            }
+        } catch { }
     }
 
     func makeAsTemplate() async throws {
-        guard let details = document.details else { return }
-
-        let templateId = try await templatesService.createTemplateFromObject(objectId: details.id)
-        AnytypeAnalytics.instance().logTemplateCreate(objectType: details.objectType.analyticsType)
-        output?.didCreateTemplate(templateId: templateId)
+        try await performAction(requiredPermissions: [.makeAsTemplate]) { [self] in
+            guard let details = document.details else { return }
+            let templates = preparedSession?.services.router.templateService ?? templatesService
+            let templateId = try await templates.createTemplateFromObject(objectId: details.id)
+            try withCurrentSource {
+                AnytypeAnalytics.instance().logTemplateCreate(objectType: details.objectType.analyticsType)
+                output?.didCreateTemplate(templateId: templateId)
+            }
+        }
     }
 
     func templateToggleDefaultState() async throws {
-        guard let details = document.details,
-        let targetObjectType = details.targetObjectTypeValue else { return }
-
-        let isCurrentlyDefault = targetObjectType.defaultTemplateId == details.id
-        let newTemplateId = isCurrentlyDefault ? "" : details.id
-
-        output?.didTapUseTemplateAsDefault(templateId: newTemplateId)
+        try withActionCallback(requiredPermissions: [.templateSetAsDefault]) {
+            guard let details = document.details,
+                  let targetObjectType = details.targetObjectTypeValue else { return }
+            let isCurrentlyDefault = targetObjectType.defaultTemplateId == details.id
+            let newTemplateId = isCurrentlyDefault ? "" : details.id
+            output?.didTapUseTemplateAsDefault(templateId: newTemplateId)
+        }
     }
 
     func deleteAction() async throws {
-        guard let details = document.details else { return }
-
-        AnytypeAnalytics.instance().logDeletion(count: 1, route: .bin)
-        try await service.delete(objectIds: [details.id])
-        dismiss.toggle()
-        output?.closeEditorAction()
+        try await performAction(requiredPermissions: [.delete]) { [self] in
+            guard let details = document.details else { return }
+            AnytypeAnalytics.instance().logDeletion(count: 1, route: .bin)
+            let actions = try originalObjectActions()
+            try await actions.delete(objectIds: [details.id])
+            try withCurrentSource {
+                dismiss.toggle()
+                output?.closeEditorAction()
+            }
+        }
     }
 
     func copyLinkAction() async throws {
-        guard let details = document.details else { return }
-
-        let invite = try? await workspaceService.getCurrentInvite(spaceId: details.spaceId)
-        let hasLink = invite?.hasLink ?? false
-        let link = universalLinkParser.createUrl(link: .object(objectId: details.id, spaceId: details.spaceId, cid: hasLink ? invite?.cid : nil, key: hasLink ? invite?.fileKey : nil))
-
-        UIPasteboard.general.string = link?.absoluteString
-        toastData = ToastBarData(Loc.copied)
-        dismiss.toggle()
+        guard let details = try withCurrentSource(requiredPermissions: [.share], { document.details }) else { return }
+        let invite: SpaceInvite?
+        if let preparedSession {
+            let workspace = workspaceService
+            invite = try? await preparedSession.owner.performRead(
+                contextId: objectId, spaceId: spaceId, rpcNames: ["SpaceInviteGetCurrent"],
+                requiredPermissions: [.share]
+            ) {
+                try await workspace.getCurrentInvite(spaceId: details.spaceId)
+            }
+        } else {
+            invite = try? await workspaceService.getCurrentInvite(spaceId: details.spaceId)
+        }
+        try withCurrentSource(requiredPermissions: [.share]) {
+            let hasLink = invite?.hasLink ?? false
+            let link = universalLinkParser.createUrl(link: .object(objectId: details.id, spaceId: details.spaceId, cid: hasLink ? invite?.cid : nil, key: hasLink ? invite?.fileKey : nil))
+            UIPasteboard.general.string = link?.absoluteString
+            toastData = ToastBarData(Loc.copied)
+            dismiss.toggle()
+        }
     }
 
     func copyDeepLinkAction() async throws {
-        guard let details = document.details else { return }
-
-        let link = deepLinkParser.createUrl(
-            deepLink: .object(objectId: details.id, spaceId: details.spaceId, cid: nil, key: nil),
-            scheme: .main
-        )
-
-        UIPasteboard.general.string = link?.absoluteString
-        toastData = ToastBarData(Loc.copied)
-        dismiss.toggle()
+        try withCurrentSource {
+            guard let details = document.details else { return }
+            let link = deepLinkParser.createUrl(
+                deepLink: .object(objectId: details.id, spaceId: details.spaceId, cid: nil, key: nil),
+                scheme: .main
+            )
+            UIPasteboard.general.string = link?.absoluteString
+            toastData = ToastBarData(Loc.copied)
+            dismiss.toggle()
+        }
     }
 
     func undoRedoAction() {
-        output?.undoRedoAction(objectId: objectId)
+        try? withCurrentSource(requiredPermissions: [.undoRedo]) {
+            output?.undoRedoAction(objectId: objectId)
+        }
     }
 
     func inviteMembersAction() {
-        output?.showInviteMembers(spaceId: spaceId)
-        dismiss.toggle()
+        do {
+            try requireQualifiedTarget()
+            try withCurrentSource {
+                output?.showInviteMembers(spaceId: spaceId)
+                dismiss.toggle()
+            }
+        } catch { }
     }
 
     func editInfoAction() {
-        output?.showEditInfo(document: document)
+        do {
+            try requireQualifiedTarget()
+            try withCurrentSource(requiredPermissions: [.editDetails]) {
+                output?.showEditInfo(document: document)
+            }
+        } catch { }
     }
 
     // MARK: - Private Action Helpers
 
     private func onObjectSelection(objectId: String, spaceId: String, currentObjectId: String) {
+        guard (try? requireQualifiedTarget()) != nil else { return }
         Task { @MainActor in
             let targetDocument = documentsProvider.document(objectId: objectId, spaceId: spaceId, mode: .preview)
             try? await targetDocument.open()

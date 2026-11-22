@@ -4,6 +4,14 @@ import Services
 struct PropertyOptionSettingsConfiguration {
     let option: PropertyOptionParameters
     let mode: PropertyOptionSettingsMode
+    let originalPropertyConfiguration: PropertyModuleConfiguration?
+
+    init(option: PropertyOptionParameters, mode: PropertyOptionSettingsMode,
+         originalPropertyConfiguration: PropertyModuleConfiguration? = nil) {
+        self.option = option
+        self.mode = mode
+        self.originalPropertyConfiguration = originalPropertyConfiguration
+    }
 }
 
 enum PropertyOptionSettingsMode {

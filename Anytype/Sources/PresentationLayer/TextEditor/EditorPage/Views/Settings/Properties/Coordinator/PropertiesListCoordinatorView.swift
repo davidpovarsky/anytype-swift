@@ -8,17 +8,21 @@ struct PropertiesListCoordinatorView: View {
 
     @State private var model: PropertiesListCoordinatorViewModel
     private let torahSession: TorahEditorSession?
+    private let preparedSession: PreparedEditorPageSession?
 
-    init(document: some BaseDocumentProtocol, output: (any PropertyValueCoordinatorOutput)?, torahSession: TorahEditorSession? = nil) {
+    init(document: some BaseDocumentProtocol, output: (any PropertyValueCoordinatorOutput)?, torahSession: TorahEditorSession? = nil,
+         preparedSession: PreparedEditorPageSession? = nil) {
         self.torahSession = torahSession
-        _model = State(initialValue: PropertiesListCoordinatorViewModel(document: document, output: output))
+        self.preparedSession = preparedSession
+        _model = State(initialValue: PropertiesListCoordinatorViewModel(document: document, output: output, preparedSession: preparedSession))
     }
     
     var body: some View {
         ObjectPropertiesView(
             document: model.document,
             output: model,
-            torahSession: torahSession
+            torahSession: torahSession,
+            preparedSession: preparedSession
         )
         .sheet(item: $model.relationValueData) { data in
             PropertyValueCoordinatorView(data: data, output: model)

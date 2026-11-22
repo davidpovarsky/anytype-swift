@@ -17,6 +17,10 @@ final class PropertyCalendarCoordinatorViewModel: PropertyCalendarOutput {
     // MARK: - PropertyCalendarOutput
     
     func onOpenDateSelected(date: Date) {
+        guard (try? configuration.withCurrentOriginalProperty {}) != nil else { return }
+        // The original date-object flow can create a different object. It must
+        // be prepared from this same source before the external Host opens it.
+        guard configuration.preparedSession == nil else { return }
         dateObjectData = DateObjectData(
             data: EditorDateObject(
                 date: date,

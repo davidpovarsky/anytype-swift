@@ -9,6 +9,7 @@ final class TemplateEditingViewController: UIViewController {
     private let spaceId: String
     private weak var output: (any ObjectSettingsCoordinatorOutput)?
     private var settingsMenuView: UIView?
+    private let preparedSession: PreparedEditorPageSession?
     
     private lazy var keyboardHelper = KeyboardEventsListnerHelper(
         didShowAction: { [weak selectTemplateButton] _ in
@@ -32,13 +33,15 @@ final class TemplateEditingViewController: UIViewController {
         objectId: String,
         spaceId: String,
         output: any ObjectSettingsCoordinatorOutput,
-        onSelectTemplateTap: (() -> Void)?
+        onSelectTemplateTap: (() -> Void)?,
+        preparedSession: PreparedEditorPageSession? = nil
     ) {
         self.editorViewController = editorViewController
         self.objectId = objectId
         self.spaceId = spaceId
         self.output = output
         self.onSelectTemplateTap = onSelectTemplateTap
+        self.preparedSession = preparedSession
         
         super.init(nibName: nil, bundle: nil)
         
@@ -64,7 +67,7 @@ final class TemplateEditingViewController: UIViewController {
         titleLabel.textColor = .Text.primary
 
         if let output {
-            let menuContainer = ObjectSettingsMenuContainer(objectId: objectId, spaceId: spaceId, output: output)
+            let menuContainer = ObjectSettingsMenuContainer(objectId: objectId, spaceId: spaceId, output: output, preparedSession: preparedSession)
             let hostingController = UIHostingController(rootView: menuContainer)
             hostingController.view.backgroundColor = .clear
             self.settingsMenuView = hostingController.view

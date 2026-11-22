@@ -14,12 +14,16 @@ public struct BottomAlertButton {
     public var style: Style
     public var disable = false
     public var action: () async throws -> Void
+    public var prepareAction: (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))?
     
-    public init(text: String, style: Style, disable: Bool = false, action: @escaping () async throws -> Void) {
+    public init(text: String, style: Style, disable: Bool = false,
+                prepareAction: (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))? = nil,
+                action: @escaping () async throws -> Void) {
         self.text = text
         self.style = style
         self.disable = disable
         self.action = action
+        self.prepareAction = prepareAction
     }
     
     fileprivate var standartStyle: StandardButtonStyle {
@@ -54,6 +58,7 @@ struct BottomAlertButtonView: View {
                 AsyncStandardButton(
                     button.text,
                     style: button.standartStyle,
+                    prepareAction: button.prepareAction,
                     action: button.action
                 )
                 .disabled(button.disable)

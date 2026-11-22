@@ -31,40 +31,62 @@ final class PropertySelectedOptionsModel: PropertySelectedOptionsModelProtocol {
     }
     
     func onClear() async throws {
-        selectedOptionsIds = []
-        try await propertiesService.updateProperty(objectId: config.objectId, propertyKey: config.relationKey, value: [String]().protobufValue)
-        logChanges()
+        try await config.performOriginalPropertyAction { [self] in
+            let service = try config.originalPropertiesService(propertiesService)
+            try config.withCurrentOriginalProperty { selectedOptionsIds = [] }
+            try await service.updateProperty(objectId: config.objectId, propertyKey: config.relationKey, value: [String]().protobufValue)
+            try config.withCurrentOriginalProperty { logChanges() }
+        }
     }
     
     func optionSelected(_ optionId: String) async throws {
-        switch config.selectionMode {
-        case .single:
-            selectedOptionsIds = [optionId]
-        case .multi:
-            handleMultiOptionSelected(optionId)
-        }
-        
-        try await propertiesService.updateProperty(
-            objectId: config.objectId,
-            propertyKey: config.relationKey,
-            value: selectedOptionsIds.protobufValue
-        )
-        logChanges()
-    }
-    
-    func removeRelationOption(_ optionId: String) async throws {
-        try await propertiesService.removePropertyOptions(ids: [optionId])
-        try await removeRelationOptionFromSelectedIfNeeded(optionId)
-    }
-    
-    func removeRelationOptionFromSelectedIfNeeded(_ optionId: String) async throws {
-        if let index = selectedOptionsIds.firstIndex(of: optionId) {
-            selectedOptionsIds.remove(at: index)
-            try await propertiesService.updateProperty(
+        try await config.performOriginalPropertyAction { [self] in
+            let service = try config.originalPropertiesService(propertiesService)
+            try config.withCurrentOriginalProperty {
+                switch config.selectionMode {
+                case .single:
+                    selectedOptionsIds = [optionId]
+                case .multi:
+                    handleMultiOptionSelected(optionId)
+                }
+            }
+            try await service.updateProperty(
                 objectId: config.objectId,
                 propertyKey: config.relationKey,
                 value: selectedOptionsIds.protobufValue
             )
+            try config.withCurrentOriginalProperty { logChanges() }
+        }
+    }
+
+    func removeRelationOption(_ optionId: String) async throws {
+        try await config.performOriginalPropertyAction { [self] in
+            let service = try config.originalPropertiesService(propertiesService)
+            if let scope = config.originalEditorScope {
+                try await scope.withSelectedObjects(ids: [optionId], requiredPermissions: [.editDetails, .archive]) {
+                    try await service.removePropertyOptions(ids: [optionId])
+                }
+            } else {
+                try await service.removePropertyOptions(ids: [optionId])
+            }
+            try config.withCurrentOriginalProperty {}
+            try await removeRelationOptionFromSelectedIfNeeded(optionId)
+        }
+    }
+
+    func removeRelationOptionFromSelectedIfNeeded(_ optionId: String) async throws {
+        try await config.performOriginalPropertyAction { [self] in
+            let service = try config.originalPropertiesService(propertiesService)
+            let index = try config.withCurrentOriginalProperty { selectedOptionsIds.firstIndex(of: optionId) }
+            if let index {
+                try config.withCurrentOriginalProperty { selectedOptionsIds.remove(at: index) }
+                try await service.updateProperty(
+                    objectId: config.objectId,
+                    propertyKey: config.relationKey,
+                    value: selectedOptionsIds.protobufValue
+                )
+                try config.withCurrentOriginalProperty {}
+            }
         }
     }
     
@@ -78,13 +100,15 @@ final class PropertySelectedOptionsModel: PropertySelectedOptionsModelProtocol {
     
     private func logChanges() {
         Task {
-            let relationDetails = try propertyDetailsStorage.relationsDetails(key: config.relationKey, spaceId: config.spaceId)
-            AnytypeAnalytics.instance().logChangeOrDeleteRelationValue(
-                isEmpty: selectedOptionsIds.isEmpty,
-                format: relationDetails.format,
-                type: config.analyticsType,
-                key: relationDetails.analyticsKey
-            )
+            try config.withCurrentOriginalProperty {
+                let relationDetails = try propertyDetailsStorage.relationsDetails(key: config.relationKey, spaceId: config.spaceId)
+                AnytypeAnalytics.instance().logChangeOrDeleteRelationValue(
+                    isEmpty: selectedOptionsIds.isEmpty,
+                    format: relationDetails.format,
+                    type: config.analyticsType,
+                    key: relationDetails.analyticsKey
+                )
+            }
         }
     }
 }

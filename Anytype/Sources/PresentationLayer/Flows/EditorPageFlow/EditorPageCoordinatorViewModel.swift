@@ -16,7 +16,12 @@ final class EditorPageCoordinatorViewModel: EditorPageModuleOutput, PropertyValu
     @ObservationIgnored private var preparationStarted = false
     @ObservationIgnored private var preparedSession: PreparedEditorPageSession?
 
-    var hasQualifiedPreparation: Bool { childPreparation != nil }
+    var hasQualifiedPreparation: Bool { childPreparation != nil || preparedSession != nil }
+    var documentWriteOwner: EditorDocumentWriteOwner? { preparedEditorSession?.owner }
+    var preparedEditorSession: PreparedEditorPageSession? {
+        guard let preparedSession, preparedSession.hasExternalSourceBinding else { return nil }
+        return preparedSession
+    }
     @ObservationIgnored
     @Injected(\.propertyValueProcessingService)
     private var propertyValueProcessingService: any PropertyValueProcessingServiceProtocol
@@ -58,6 +63,22 @@ final class EditorPageCoordinatorViewModel: EditorPageModuleOutput, PropertyValu
         }
     }
     
+    /// The external root owns this same original coordinator and its original
+    /// modal flow. It consumes the existing prepared session without another
+    /// document open, another source capture or a second assembly claim.
+    init(preparedSession: PreparedEditorPageSession, showHeader: Bool) throws {
+        self.data = preparedSession.data
+        self.showHeader = showHeader
+        self.childPreparation = nil
+        self.torahSession = nil
+        self.preparedSession = preparedSession
+        self.preparationStarted = true
+        self.preparedState = try EditorPageModuleAssembly().buildStateModel(
+            preparedSession: preparedSession, output: self, showHeader: showHeader, torahSession: nil
+        )
+        try preparedSession.owner.validateOwnership()
+    }
+
     /// Retain the prepared child across later user-created tasks. A failed or
     /// cancelled acquisition never falls back to an unbound legacy editor.
     func prepareQualifiedEditor() async {
@@ -183,7 +204,8 @@ final class EditorPageCoordinatorViewModel: EditorPageModuleOutput, PropertyValu
         relationValueData = propertyValueProcessingService.handlePropertyValue(
             relation: relation,
             objectDetails: objectDetails,
-            analyticsType: .block
+            analyticsType: .block,
+            preparedSession: preparedEditorSession
         )
     }
 }

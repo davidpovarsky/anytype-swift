@@ -53,29 +53,29 @@ struct DocumentOwnedObjectActionsService: ObjectActionsServiceProtocol {
     }
 
     func updateLayout(contextID: String, value: Int) async throws {
-        try await owner.performMutation(contextId: contextID) { [service] in
+        try await owner.performMutation(contextId: contextID, requiredPermissions: [.changeLayout]) { [service] in
             try await service.updateLayout(contextID: contextID, value: value)
         }
     }
 
     func duplicate(objectId: String) async throws -> String {
-        try await owner.performMutation(contextId: objectId) { [service] in try await service.duplicate(objectId: objectId) }
+        try await owner.performMutation(contextId: objectId, requiredPermissions: [.duplicate]) { [service] in try await service.duplicate(objectId: objectId) }
     }
 
     func applyTemplate(objectId: String, templateId: String) async throws {
-        try await owner.performMutation(contextId: objectId) { [service] in
+        try await owner.performMutation(contextId: objectId, requiredPermissions: [.applyTemplates]) { [service] in
             try await service.applyTemplate(objectId: objectId, templateId: templateId)
         }
     }
 
     func updateBundledDetails(contextID: String, details: [BundledDetails]) async throws {
-        try await owner.performMutation(contextId: contextID) { [service] in
+        try await owner.performMutation(contextId: contextID, requiredPermissions: [.editDetails]) { [service] in
             try await service.updateBundledDetails(contextID: contextID, details: details)
         }
     }
 
     func updateDetails(contextId: String, relationKey: String, value: DataviewGroupValue) async throws {
-        try await owner.performMutation(contextId: contextId) { [service] in
+        try await owner.performMutation(contextId: contextId, requiredPermissions: [.editRelationValues]) { [service] in
             try await service.updateDetails(contextId: contextId, relationKey: relationKey, value: value)
         }
     }
@@ -117,11 +117,11 @@ struct DocumentOwnedObjectActionsService: ObjectActionsServiceProtocol {
     }
 
     func undo(objectId: String) async throws {
-        try await owner.performMutation(contextId: objectId) { [service] in try await service.undo(objectId: objectId) }
+        try await owner.performMutation(contextId: objectId, requiredPermissions: [.undoRedo]) { [service] in try await service.undo(objectId: objectId) }
     }
 
     func redo(objectId: String) async throws {
-        try await owner.performMutation(contextId: objectId) { [service] in try await service.redo(objectId: objectId) }
+        try await owner.performMutation(contextId: objectId, requiredPermissions: [.undoRedo]) { [service] in try await service.redo(objectId: objectId) }
     }
 
     func move(dashboadId: String, blockId: String, dropPositionblockId: String,

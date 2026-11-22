@@ -41,29 +41,41 @@ final class ObjectPropertyListViewModel {
     }
 
     func startSelectedOptionsSubscription() async {
+        guard (try? configuration.withCurrentOriginalProperty {}) != nil else { return }
         for await ids in relationSelectedOptionsModel.selectedOptionsIdsPublisher.values {
-            selectedOptionsIds = ids
+            guard (try? configuration.withCurrentOriginalProperty { selectedOptionsIds = ids }) != nil else { return }
         }
     }
-    
+
+
     func onClear() {
-        Task {
-            try await relationSelectedOptionsModel.onClear()
+        configuration.scheduleOriginalPropertyAction { [self] in
+            try await configuration.originalSelectedOptionsModel(relationSelectedOptionsModel).onClear()
         }
     }
     
     func onOpenAsObject(_ option: ObjectPropertyOption) {
-        output?.onObjectOpen(screenData: option.objectScreenData)
+        try? configuration.withCurrentOriginalProperty { output?.onObjectOpen(screenData: option.objectScreenData) }
     }
     
     func onOpen(_ option: ObjectPropertyOption) {
-        output?.onObjectOpen(screenData: option.screenData)
+        try? configuration.withCurrentOriginalProperty { output?.onObjectOpen(screenData: option.screenData) }
     }
     
     func onObjectDuplicate(_ option: ObjectPropertyOption) {
-        Task {
-            let newOptionId =  try await objectActionsService.duplicate(objectId: option.id)
-            try await relationSelectedOptionsModel.optionSelected(newOptionId)
+        configuration.scheduleOriginalPropertyAction { [self] in
+            let newOptionId: String
+            if let scope = configuration.originalEditorScope {
+                let service = try OriginalObjectActionsServiceBinding.requireOriginal(objectActionsService)
+                newOptionId = try await scope.withSelectedObjects(ids: [option.id], requiredPermissions: [.duplicate]) { [self] in
+                    try await service.duplicate(objectId: option.id)
+                }
+            } else {
+                newOptionId = try await objectActionsService.duplicate(objectId: option.id)
+            }
+            try configuration.withCurrentOriginalProperty {}
+            try await configuration.originalSelectedOptionsModel(relationSelectedOptionsModel).optionSelected(newOptionId)
+            try configuration.withCurrentOriginalProperty {}
             await searchTextChanged()
         }
     }
@@ -77,8 +89,10 @@ final class ObjectPropertyListViewModel {
     }
     
     func onOptionDelete(_ option: ObjectPropertyOption) {
+        guard (try? configuration.withCurrentOriginalProperty {}) != nil else { return }
         output?.onDeleteTap { [weak self] isSuccess in
             guard let self else { return }
+            guard (try? configuration.withCurrentOriginalProperty {}) != nil else { return }
             if isSuccess {
                 removeRelationOption(option)
             } else {
@@ -89,9 +103,9 @@ final class ObjectPropertyListViewModel {
     
     func optionSelected(_ option: ObjectPropertyOption) {
         if configuration.isEditable {
-            Task {
-                try await relationSelectedOptionsModel.optionSelected(option.id)
-                closeIfNeeded()
+            configuration.scheduleOriginalPropertyAction { [self] in
+                try await configuration.originalSelectedOptionsModel(relationSelectedOptionsModel).optionSelected(option.id)
+                try configuration.withCurrentOriginalProperty { closeIfNeeded() }
             }
         } else {
             onOpen(option)
@@ -123,6 +137,7 @@ final class ObjectPropertyListViewModel {
     }
     
     func searchTextChanged() async {
+        guard (try? configuration.withCurrentOriginalProperty {}) != nil else { return }
         // Read-only object relations (links/backlinks) render already-resolved objects
         // instead of re-querying via filtered search, which drops hidden/legacy objects.
         if let preloadedReadOnlyOptions {
@@ -132,7 +147,9 @@ final class ObjectPropertyListViewModel {
         }
         do {
             let selectedOptions = try await interactor.searchOptions(text: searchText, limitObjectIds: selectedOptionsIds)
+            try configuration.withCurrentOriginalProperty {}
             let rawOptions = try await interactor.searchOptions(text: searchText, excludeObjectIds: selectedOptionsIds)
+            try configuration.withCurrentOriginalProperty {}
             
             let selectedReorder = selectedOptions
                 .reordered(
@@ -150,13 +167,23 @@ final class ObjectPropertyListViewModel {
     }
     
     private func removeRelationOption(_ option: ObjectPropertyOption) {
-        Task {
-            if let index = options.firstIndex(of: option) {
-                options.remove(at: index)
+        configuration.scheduleOriginalPropertyAction { [self] in
+            try configuration.withCurrentOriginalProperty {
+                if let index = options.firstIndex(of: option) {
+                    options.remove(at: index)
+                }
             }
-            try await objectActionsService.setArchive(objectIds: [option.id], true)
-            try await relationSelectedOptionsModel.removeRelationOptionFromSelectedIfNeeded(option.id)
-            setEmptyIfNeeded()
+            if let scope = configuration.originalEditorScope {
+                let service = try OriginalObjectActionsServiceBinding.requireOriginal(objectActionsService)
+                try await scope.withSelectedObjects(ids: [option.id], requiredPermissions: [.archive]) { [self] in
+                    try await service.setArchive(objectIds: [option.id], true)
+                }
+            } else {
+                try await objectActionsService.setArchive(objectIds: [option.id], true)
+            }
+            try configuration.withCurrentOriginalProperty {}
+            try await configuration.originalSelectedOptionsModel(relationSelectedOptionsModel).removeRelationOptionFromSelectedIfNeeded(option.id)
+            try configuration.withCurrentOriginalProperty { setEmptyIfNeeded() }
         }
     }
     

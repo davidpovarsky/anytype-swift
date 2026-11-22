@@ -132,13 +132,14 @@ extension BlockActionHandlerProtocol {
 func scheduleOriginalEditorMutation<Value: Sendable>(
     owner: EditorDocumentWriteOwner?,
     contextId: String,
+    requiredPermissions: Set<EditorDocumentWritePermission> = [],
     operation: @escaping @MainActor @Sendable () async throws -> Value
 ) -> Task<Value, Error> {
     guard let owner else {
         return Task { @MainActor in try await operation() }
     }
     do {
-        let scheduled = try owner.scheduleMutation(contextId: contextId)
+        let scheduled = try owner.scheduleMutation(contextId: contextId, requiredPermissions: requiredPermissions)
         return Task { @MainActor in try await scheduled.run(operation: operation) }
     } catch {
         // A rejected UI intent must not start its original mutation later.

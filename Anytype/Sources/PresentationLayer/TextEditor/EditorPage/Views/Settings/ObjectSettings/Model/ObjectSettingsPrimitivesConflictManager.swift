@@ -51,6 +51,26 @@ final class ObjectSettingsPrimitivesConflictManager: ObjectSettingsPrimitivesCon
     }
 }
 
+/// A prepared Host keeps the original migration implementation and its captured
+/// original Properties delegate. This validates identity; it grants no authority.
+enum OriginalObjectSettingsConflictManagerBinding {
+    static func requireOriginal(
+        _ manager: any ObjectSettingsPrimitivesConflictManagerProtocol
+    ) throws -> any ObjectSettingsPrimitivesConflictManagerProtocol {
+        guard let original = manager as? ObjectSettingsPrimitivesConflictManager else {
+            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+        }
+        try original.validateOriginalPropertiesDelegate()
+        return original
+    }
+}
+
+private extension ObjectSettingsPrimitivesConflictManager {
+    func validateOriginalPropertiesDelegate() throws {
+        _ = try OriginalPropertiesServiceBinding.requireOriginal(propertiesService)
+    }
+}
+
 extension Container {
     var objectSettingsConflictManager: Factory<any ObjectSettingsPrimitivesConflictManagerProtocol> {
         self { ObjectSettingsPrimitivesConflictManager() }.shared

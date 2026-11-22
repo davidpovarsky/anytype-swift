@@ -65,13 +65,24 @@ extension NavigationContextProtocol {
 final class NavigationContext: NavigationContextProtocol {
     
     @Injected(\.legacyViewControllerProvider)
-    private var viewControllerProvider: any ViewControllerProviderProtocol
+    private var originalViewControllerProvider: any ViewControllerProviderProtocol
+    private let scopedViewControllerProvider: (any ViewControllerProviderProtocol)?
+
+    private var viewControllerProvider: any ViewControllerProviderProtocol {
+        scopedViewControllerProvider ?? originalViewControllerProvider
+    }
     
     private var navigationController: UINavigationController? {
         viewControllerProvider.rootViewController?.topPresentedController as? UINavigationController
     }
     
-    nonisolated init() {}
+    nonisolated init() {
+        scopedViewControllerProvider = nil
+    }
+
+    init(viewControllerProvider: any ViewControllerProviderProtocol) {
+        scopedViewControllerProvider = viewControllerProvider
+    }
     
     // MARK: - NavigationContextProtocol
     

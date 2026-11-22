@@ -17,6 +17,9 @@ final class EditorPageViewState: ObservableObject {
             throw EditorDocumentWriteError.rejected(.invalidLease)
         }
         try session.bind(controller: viewController)
+        if session.hasExternalSourceBinding {
+            try viewController.bindPreparedSettingsSession(session)
+        }
         preparedSession = session
     }
 

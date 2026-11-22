@@ -358,7 +358,11 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
         )
 
         accessoryState.1.onTypeSelected = { [weak viewModel] typeSelection in
-            Task {
+            scheduleOriginalEditorMutation(
+                owner: actionHandler.documentWriteOwner,
+                contextId: actionHandler.documentWriteContextID,
+                requiredPermissions: [.changeType]
+            ) {
                 try await viewModel?.onChangeType(typeSelection: typeSelection)
             }
         }

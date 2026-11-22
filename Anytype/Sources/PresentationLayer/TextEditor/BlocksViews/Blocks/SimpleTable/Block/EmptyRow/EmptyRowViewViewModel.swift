@@ -12,7 +12,8 @@ struct EmptyRowViewViewModel: SystemContentConfiguationProvider {
         columnId: String,
         tablesService: some BlockTableServiceProtocol,
         cursorManager: EditorCursorManager,
-        isHeaderRow: Bool
+        isHeaderRow: Bool,
+        documentWriteOwner: EditorDocumentWriteOwner? = nil
     ) {
         self.contextId = contextId
         self.rowId = rowId
@@ -20,6 +21,7 @@ struct EmptyRowViewViewModel: SystemContentConfiguationProvider {
         self.tablesService = tablesService
         self.cursorManager = cursorManager
         self.isHeaderRow = isHeaderRow
+        self.documentWriteOwner = documentWriteOwner
     }
 
     private let contextId: String
@@ -28,11 +30,13 @@ struct EmptyRowViewViewModel: SystemContentConfiguationProvider {
     private let tablesService: any BlockTableServiceProtocol
     private let cursorManager: EditorCursorManager
     private let isHeaderRow: Bool
+    private let documentWriteOwner: EditorDocumentWriteOwner?
 
     func didSelectRowInTableView(editorEditingState: EditorEditingState) {
 
     }
 
+    @MainActor
     func emptyRowConfiguration() -> EmptyRowConfiguration {
         EmptyRowConfiguration(id: "\(rowId)-\(columnId)") {
             fillAndSetFocus()
@@ -54,8 +58,9 @@ struct EmptyRowViewViewModel: SystemContentConfiguationProvider {
         fillAndSetFocus()
     }
 
+    @MainActor
     private func fillAndSetFocus() {
-        Task { @MainActor in
+        scheduleOriginalEditorMutation(owner: documentWriteOwner, contextId: contextId) { @MainActor [self] in
             try await tablesService.rowListFill(
                 contextId: contextId,
                 targetIds: [rowId]
@@ -71,14 +76,14 @@ struct EmptyRowConfiguration: BlockConfiguration {
 
     let id: String
 
-    @EquatableNoop private(set) var action: () -> Void
+    @EquatableNoop private(set) var action: @MainActor () -> Void
 
     var spreadsheetInsets: UIEdgeInsets { .zero }
 }
 
 final class EmptyRowView: UIView, BlockContentView {
     let button = UIButton()
-    private var actionHandler: (() -> Void)?
+    private var actionHandler: (@MainActor () -> Void)?
     static var size: CGSize?
 
     override init(frame: CGRect) {

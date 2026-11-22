@@ -6,6 +6,7 @@ struct PropertyModuleConfiguration {
     let spaceId: String
     let selectionMode: PropertySelectionOptionsMode
     let analyticsType: AnalyticsEventsRelationType
+    let preparedSession: PreparedEditorPageSession?
     
     init(
         title: String, 
@@ -14,7 +15,8 @@ struct PropertyModuleConfiguration {
         objectId: String,
         spaceId: String,
         selectionMode: PropertySelectionOptionsMode = .single,
-        analyticsType: AnalyticsEventsRelationType
+        analyticsType: AnalyticsEventsRelationType,
+        preparedSession: PreparedEditorPageSession? = nil
     ) {
         self.title = title
         self.isEditable = isEditable
@@ -23,6 +25,7 @@ struct PropertyModuleConfiguration {
         self.spaceId = spaceId
         self.selectionMode = selectionMode
         self.analyticsType = analyticsType
+        self.preparedSession = preparedSession
     }
     
     static let `default` = PropertyModuleConfiguration(

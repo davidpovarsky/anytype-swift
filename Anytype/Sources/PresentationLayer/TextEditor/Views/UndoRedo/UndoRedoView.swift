@@ -7,15 +7,18 @@ struct UndoRedoView: View {
 
     init(
         objectId: String,
-        objectActionsService: any ObjectActionsServiceProtocol = Container.shared.objectActionsService()
+        objectActionsService: any ObjectActionsServiceProtocol = Container.shared.objectActionsService(),
+        documentWriteOwner: EditorDocumentWriteOwner? = nil
     ) {
-        self._model = State(initialValue: UndoRedoViewModel(objectId: objectId, objectActionsService: objectActionsService))
+        self._model = State(initialValue: UndoRedoViewModel(
+            objectId: objectId, objectActionsService: objectActionsService, documentWriteOwner: documentWriteOwner
+        ))
     }
     
     var body: some View {
         HStack(spacing: 16) {
             
-            AsyncButton {
+            AsyncButton(prepareAction: model.hasDocumentWriteOwner ? { model.prepareUndo() } : nil) {
                 try await model.undo()
             } label: {
                 ItemView(
@@ -25,7 +28,7 @@ struct UndoRedoView: View {
             }
             .accessibilityIdentifier("editor-undo")
             
-            AsyncButton {
+            AsyncButton(prepareAction: model.hasDocumentWriteOwner ? { model.prepareRedo() } : nil) {
                 try await model.redo()
             } label: {
                 ItemView(

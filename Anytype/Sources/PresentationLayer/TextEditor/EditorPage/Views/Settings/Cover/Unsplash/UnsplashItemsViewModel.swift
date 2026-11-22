@@ -19,16 +19,19 @@ final class UnsplashViewModel: GridItemViewModelProtocol {
     }
     @Injected(\.unsplashService)
     private var unsplashService: any UnsplashServiceProtocol
+    private let documentWriteOwner: EditorDocumentWriteOwner?
     private(set) var isLoading: Bool = true
     private var searchTextChangedSubscription: AnyCancellable?
 
     @Published private var searchValue: String = ""
 
     init(
-        onItemSelect: @escaping (UnsplashItem) -> ()
+        onItemSelect: @escaping (UnsplashItem) -> (),
+        documentWriteOwner: EditorDocumentWriteOwner? = nil
     ) {
         self.onItemSelect = onItemSelect
         self.unsplashService = unsplashService
+        self.documentWriteOwner = documentWriteOwner
 
         searchImages(query: "")
 
@@ -40,22 +43,37 @@ final class UnsplashViewModel: GridItemViewModelProtocol {
     }
 
     func didSelectItem(item: UnsplashItemViewModel) {
-        onItemSelect(item.item)
+        performCurrentPresentation { onItemSelect(item.item) }
     }
 
     func didChangeSearchQuery(query: String) {
-        searchValue = query
+        performCurrentPresentation { searchValue = query }
     }
 
     private func searchImages(query: String) {
-        isLoading = true
+        performCurrentPresentation { isLoading = true }
 
         Task { @MainActor [weak self] in
-            let items = try? await self?.unsplashService.searchUnsplashImages(query: query)
-            self?.isLoading = false
-            if let items {
-                self?.unsplashItems = items
+            let items = try? await self?.searchService.searchUnsplashImages(query: query)
+            self?.performCurrentPresentation {
+                self?.isLoading = false
+                if let items {
+                    self?.unsplashItems = items
+                }
             }
+        }
+    }
+
+    private var searchService: any UnsplashServiceProtocol {
+        guard let documentWriteOwner else { return unsplashService }
+        return DocumentOwnedUnsplashService(owner: documentWriteOwner, service: unsplashService)
+    }
+
+    private func performCurrentPresentation(_ operation: () -> Void) {
+        if let documentWriteOwner {
+            try? documentWriteOwner.performSynchronousOperation(requiresEditing: false, operation: operation)
+        } else {
+            operation()
         }
     }
 

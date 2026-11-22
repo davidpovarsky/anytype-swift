@@ -18,10 +18,11 @@ final class SelectPropertyListCoordinatorViewModel: SelectPropertyListModuleOutp
     // MARK: - SelectPropertyListModuleOutput
     
     func onClose() {
-        dismiss.toggle()
+        try? data.configuration.withCurrentOriginalProperty { dismiss.toggle() }
     }
     
     func onCreateTap(text: String?, color: Color?, completion: @escaping (_ option: SelectPropertyOption) -> Void) {
+        guard (try? data.configuration.withCurrentOriginalProperty {}) != nil else { return }
         propertyData = PropertyData(
             configuration: PropertyOptionSettingsConfiguration(
                 option: PropertyOptionParameters(
@@ -33,16 +34,19 @@ final class SelectPropertyListCoordinatorViewModel: SelectPropertyListModuleOutp
                         relationKey: data.configuration.relationKey,
                         spaceId: data.configuration.spaceId
                     )
-                )
+                ),
+                originalPropertyConfiguration: data.configuration
             ),
             completion: { [weak self] optionParams in
+                guard let self, (try? self.data.configuration.withCurrentOriginalProperty {}) != nil else { return }
                 completion(SelectPropertyOption(optionParams: optionParams))
-                self?.propertyData = nil
+                try? self.data.configuration.withCurrentOriginalProperty { self.propertyData = nil }
             }
         )
     }
     
     func onEditTap(option: SelectPropertyOption, completion: @escaping (_ option: SelectPropertyOption) -> Void) {
+        guard (try? data.configuration.withCurrentOriginalProperty {}) != nil else { return }
         propertyData = PropertyData(
             configuration: PropertyOptionSettingsConfiguration(
                 option: PropertyOptionParameters(
@@ -50,16 +54,19 @@ final class SelectPropertyListCoordinatorViewModel: SelectPropertyListModuleOutp
                     text: option.text,
                     color: option.color
                 ),
-                mode: .edit
+                mode: .edit,
+                originalPropertyConfiguration: data.configuration
             ),
             completion: { [weak self] optionParams in
+                guard let self, (try? self.data.configuration.withCurrentOriginalProperty {}) != nil else { return }
                 completion(SelectPropertyOption(optionParams: optionParams))
-                self?.propertyData = nil
+                try? self.data.configuration.withCurrentOriginalProperty { self.propertyData = nil }
             }
         )
     }
     
     func onDeleteTap(completion: @escaping (_ isSuccess: Bool) -> Void) {
+        guard (try? data.configuration.withCurrentOriginalProperty {}) != nil else { return }
         deletionAlertData = DeletionAlertData(
             title: Loc.Relation.Delete.Alert.title,
             description: Loc.Relation.Delete.Alert.description,
@@ -68,18 +75,30 @@ final class SelectPropertyListCoordinatorViewModel: SelectPropertyListModuleOutp
     }
     
     func deletionAlertView(data: DeletionAlertData) -> AnyView {
-        BottomAlertView(
+        let alertID = data.id
+        return BottomAlertView(
             title: data.title,
             message: data.description,
             icon: .Dialog.question
         ) {
             BottomAlertButton(text: Loc.cancel, style: .secondary) { [weak self] in
+                guard let self, (try? self.data.configuration.withCurrentOriginalProperty {}) != nil else { return }
                 data.completion(false)
-                self?.deletionAlertData = nil
+                self.deletionAlertData = nil
             }
-            BottomAlertButton(text: Loc.delete, style: .warning) { [weak self] in
+            BottomAlertButton(text: Loc.delete, style: .warning,
+                              prepareAction: self.data.configuration.originalPropertyButtonPreparation { [weak self] in
+                guard let self, let alert = self.deletionAlertData, alert.id == alertID else {
+                    throw EditorDocumentWriteError.rejected(.wrongContext)
+                }
+                try self.data.configuration.withOriginalPropertyActionCallback {
+                    alert.completion(true)
+                    try self.data.configuration.withCurrentOriginalProperty { self.deletionAlertData = nil }
+                }
+            }) { [weak self] in
+                guard let self, (try? self.data.configuration.withCurrentOriginalProperty {}) != nil else { return }
                 data.completion(true)
-                self?.deletionAlertData = nil
+                self.deletionAlertData = nil
             }
         }.eraseToAnyView()
     }

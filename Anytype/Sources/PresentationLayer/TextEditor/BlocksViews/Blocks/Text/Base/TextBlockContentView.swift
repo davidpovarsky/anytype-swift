@@ -270,6 +270,21 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
             cancelPendingFocus()
         }
         configuredBlockId = configuration.blockId
+        #if DEBUG && targetEnvironment(simulator)
+        // Passive identity on the real original UITextView. No content or edit
+        // behavior changes; reused views clear this qualification-only identity.
+        if ProcessInfo.processInfo.environment["OTZARIA_ORIGINAL_EDITOR_QUALIFICATION"] == "owned-local-only" {
+            let role: String
+            switch configuration.content.contentType {
+            case .text: role = "text"
+            case .title: role = "title"
+            default: role = "other"
+            }
+            textView.textView.accessibilityIdentifier = "original-editor-block-" + role + ":" + configuration.blockId
+        } else {
+            textView.textView.accessibilityIdentifier = nil
+        }
+        #endif
         focusContext = configuration.focusContext
         applyTextStorage(configuration.attributedString)
 

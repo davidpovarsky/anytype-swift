@@ -20,6 +20,8 @@ final class CodeLanguageListViewModel {
 
     private let data: CodeLanguageListData
     private let document: any BaseDocumentProtocol
+    @ObservationIgnored
+    private let documentWriteOwner: EditorDocumentWriteOwner?
     private var selectedLanguage: CodeLanguage?
 
     // MARK: - State
@@ -27,13 +29,14 @@ final class CodeLanguageListViewModel {
     var rows: [CodeLanguageRowModel] = []
     var dismiss: Bool = false
     
-    init(data: CodeLanguageListData) {
+    init(data: CodeLanguageListData, documentWriteOwner: EditorDocumentWriteOwner? = nil) {
         self.data = data
+        self.documentWriteOwner = documentWriteOwner
         
         let documentsProvider = Container.shared.documentsProvider()
         self.document = documentsProvider.document(objectId: data.documentId, spaceId: data.spaceId)
         
-        let info = document.infoContainer.get(id: data.blockId)
+        let info = try? withCurrentDocument { document.infoContainer.get(id: data.blockId) }
         selectedLanguage = info?.fields.codeLanguage
         updateRows(searchText: "")
     }
@@ -62,12 +65,28 @@ final class CodeLanguageListViewModel {
     }
     
     private func onTapCodeLanguage(_ language: CodeLanguage) {
-        Task { @MainActor in
-            guard let info = document.infoContainer.get(id: data.blockId) else { return }
+        scheduleOriginalEditorMutation(owner: documentWriteOwner, contextId: data.documentId) { [self] in
+            guard let info = try withCurrentDocument({ document.infoContainer.get(id: data.blockId) }) else { return }
             let fields = CodeBlockFields(language: language)
             let newInfo = info.addFields(fields.asMiddleware())
-            try await blockService.setFields(objectId: document.objectId, blockId: data.blockId, fields: newInfo.fields)
-            dismiss.toggle()
+            let service: any BlockServiceProtocol
+            if let documentWriteOwner {
+                service = DocumentOwnedBlockService(owner: documentWriteOwner, service: blockService)
+            } else {
+                service = blockService
+            }
+            try await service.setFields(objectId: document.objectId, blockId: data.blockId, fields: newInfo.fields)
+            try withCurrentDocument { dismiss.toggle() }
+        }
+    }
+
+    private func withCurrentDocument<Value>(_ operation: () throws -> Value) throws -> Value {
+        guard let documentWriteOwner else { return try operation() }
+        return try documentWriteOwner.performSynchronousOperation(
+            contextId: data.documentId, spaceId: data.spaceId, requiresEditing: false
+        ) {
+            try documentWriteOwner.validateDocument(document)
+            return try operation()
         }
     }
     

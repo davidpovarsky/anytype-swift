@@ -84,7 +84,7 @@ final class SlashMenuActionHandler {
             switch action {
             case .newRealtion:
                 router.showAddPropertyInfoView(document: document) { [weak self] relation, isNew in
-                    Task {
+                    self?.actionHandler.scheduleMutationTask { [weak self] in
                         try await self?.actionHandler.addBlock(.relation(key: relation.key), blockId: blockInformation.id, blockText: textView?.attributedText.sendable())
                     }
                     AnytypeAnalytics.instance().logAddExistingOrCreateRelation(
@@ -124,7 +124,7 @@ final class SlashMenuActionHandler {
             case .linkTo:
                 textView?.shouldResignFirstResponder()
                 router.showLinkTo { [weak self] details in
-                    Task { [weak self] in
+                    self?.actionHandler.scheduleMutationTask { [weak self] in
                         try? await self?.actionHandler.addLink(targetDetails: details, blockId: blockInformation.id, route: .slashMenu)
                     }
                 }
@@ -133,7 +133,7 @@ final class SlashMenuActionHandler {
     }
     
     private func handleDate(_ newDate: Date, blockId: String) {
-        Task {
+        actionHandler.scheduleMutationTask { [self] in
             let details = try? await objectDateByTimestampService.objectDateByTimestamp(
                 newDate.timeIntervalSince1970,
                 spaceId: document.spaceId
@@ -247,7 +247,7 @@ final class SlashMenuActionHandler {
             actionHandler.duplicate(blockId: blockId)
         case .moveTo:
             router.showMoveTo { [weak self] details in
-                Task {
+                self?.actionHandler.scheduleMutationTask { [weak self] in
                     try await self?.actionHandler.moveToPage(blockIds: [blockId], pageId: details.id)
                 }
             }

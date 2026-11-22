@@ -15,10 +15,12 @@ struct TextIconPickerData: Identifiable, Hashable {
 @Observable
 final class TextIconPickerViewModel {
 
-    @ObservationIgnored @Injected(\.fileActionsService)
-    private var fileService: any FileActionsServiceProtocol
-    @ObservationIgnored @Injected(\.textServiceHandler)
-    private var textServiceHandler: any TextServiceProtocol
+    @ObservationIgnored
+    private let fileService: any FileActionsServiceProtocol
+    @ObservationIgnored
+    private let textServiceHandler: any TextServiceProtocol
+    @ObservationIgnored
+    private let documentWriteOwner: EditorDocumentWriteOwner?
 
     @ObservationIgnored
     private let contextId: String
@@ -27,15 +29,19 @@ final class TextIconPickerViewModel {
     @ObservationIgnored
     private let spaceId: String
 
-    init(data: TextIconPickerData) {
+    init(data: TextIconPickerData, dependencies: BlockActionServiceDependencies = .original()) {
         self.contextId = data.contextId
         self.objectId = data.objectId
         self.spaceId = data.spaceId
+        self.fileService = dependencies.fileService
+        self.textServiceHandler = dependencies.textServiceHandler
+        self.documentWriteOwner = dependencies.documentWriteOwner
     }
     
 
     func setEmoji(_ emojiUnicode: String)  {
-        Task {
+        scheduleOriginalEditorMutation(owner: documentWriteOwner, contextId: contextId) { [self] in
+            try validateSource()
             try await textServiceHandler.setTextIcon(
                 contextId: contextId,
                 blockId: objectId,
@@ -47,7 +53,8 @@ final class TextIconPickerViewModel {
 
     func uploadImage(from itemProvider: NSItemProvider) {
         let safeSendableItemProvider = itemProvider.sendable()
-        Task {
+        scheduleOriginalEditorMutation(owner: documentWriteOwner, contextId: contextId) { [self] in
+            try validateSource()
             let fileDetails = try await fileService.uploadImage(spaceId: spaceId, source: .itemProvider(safeSendableItemProvider.value), origin: .none, createdInContext: contextId, createdInContextRef: objectId)
             try await textServiceHandler.setTextIcon(
                 contextId: contextId,
@@ -56,6 +63,12 @@ final class TextIconPickerViewModel {
                 emojiUnicode: ""
             )
         }
+    }
+
+    private func validateSource() throws {
+        try documentWriteOwner?.performSynchronousOperation(
+            contextId: contextId, spaceId: spaceId, requiresEditing: false
+        ) { }
     }
 }
 

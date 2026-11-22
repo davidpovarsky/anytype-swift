@@ -20,7 +20,9 @@ struct TextPropertyEditingView: View {
             dismiss()
         }
         .onChange(of: viewModel.text) { _, newText in
-            viewModel.onTextChanged(newText)
+            if viewModel.config.preparedSession == nil {
+                viewModel.onTextChanged(newText)
+            }
         }
         .task {
             viewModel.updatePasteState()
@@ -79,8 +81,17 @@ struct TextPropertyEditingView: View {
     
     @ViewBuilder
     private var textField: some View {
-        TextField(viewModel.type.placeholder, text: $viewModel.text, axis: .vertical)
+        TextField(viewModel.type.placeholder, text: originalTextBinding, axis: .vertical)
             .lineLimit(1...10)
+    }
+
+    private var originalTextBinding: Binding<String> {
+        if viewModel.config.preparedSession != nil {
+            // Reserve the actual write on the original text-input callback,
+            // before a later SwiftUI onChange transaction or Host capture.
+            return Binding(get: { viewModel.text }, set: { viewModel.acceptOriginalTextInput($0) })
+        }
+        return $viewModel.text
     }
     
     @ViewBuilder
@@ -119,7 +130,7 @@ struct TextPropertyEditingView: View {
             ForEach(viewModel.actionsViewModels, id: \.id) { model in
                 Divider()
                 Button {
-                    model.performAction()
+                    try? viewModel.config.withCurrentOriginalProperty { model.performAction() }
                 } label: {
                     HStack(spacing: 0) {
                         Image(asset: model.iconAsset)

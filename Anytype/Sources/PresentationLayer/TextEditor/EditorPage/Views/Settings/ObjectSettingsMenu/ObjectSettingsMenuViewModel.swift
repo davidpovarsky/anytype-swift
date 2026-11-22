@@ -88,10 +88,58 @@ final class ObjectSettingsMenuViewModel {
     }
 
     private func rebuildMenu() {
-        menuConfig = ObjectMenuBuilder.buildMenu(
-            settings: quickCapture ? viewModel.settings.filter(\.availableInQuickCapture) : viewModel.settings,
-            actions: quickCapture ? viewModel.objectActions.filter(\.availableInQuickCapture) : viewModel.objectActions
-        )
+        try? viewModel.withCurrentSource {
+            menuConfig = ObjectMenuBuilder.buildMenu(
+                settings: quickCapture ? viewModel.settings.filter(\.availableInQuickCapture) : viewModel.settings,
+                actions: quickCapture ? viewModel.objectActions.filter(\.availableInQuickCapture) : viewModel.objectActions
+            )
+        }
+    }
+
+    func scheduleAction(_ action: ObjectAction) {
+        let permissions: Set<EditorDocumentWritePermission>
+        switch action {
+        case .archive: permissions = [.archive]
+        case .locked: permissions = [.lock]
+        case .duplicate: permissions = [.duplicate]
+        case .makeAsTemplate: permissions = [.makeAsTemplate]
+        case .templateToggleDefaultState: permissions = [.templateSetAsDefault]
+        case .delete: permissions = [.delete]
+        default: permissions = []
+        }
+        let operation: @MainActor @Sendable () async throws -> Void = { [self] in
+            await handleAction(action)
+        }
+        let prepared = permissions.isEmpty ? operation
+            : viewModel.prepareAction(requiredPermissions: permissions, operation: operation)
+        Task { try await prepared() }
+    }
+
+    func scheduleSetting(_ setting: ObjectSetting) {
+        let permissions: Set<EditorDocumentWritePermission>
+        switch setting {
+        case .description: permissions = [.toggleDescription]
+        case .prefillName: permissions = [.editDetails]
+        default: permissions = []
+        }
+        let operation: @MainActor @Sendable () async throws -> Void = { [self] in
+            await handleSetting(setting)
+        }
+        let prepared = permissions.isEmpty ? operation
+            : viewModel.prepareAction(requiredPermissions: permissions, operation: operation)
+        Task { try await prepared() }
+    }
+
+    func prepareConflictReset() -> @MainActor @Sendable () async throws -> Void {
+        viewModel.prepareAction(requiredPermissions: [.changeLayout, .editPropertiesList]) { [self] in
+            try await onTapResolveConflictApprove()
+        }
+    }
+
+    func prepareArchiveConfirmation() -> @MainActor @Sendable () async throws -> Void {
+        viewModel.prepareAction(requiredPermissions: [.archive]) { [self] in
+            try await viewModel.changeArchiveState()
+        }
     }
 
     func isDestructiveAction(_ action: ObjectAction) -> Bool {
@@ -134,7 +182,7 @@ final class ObjectSettingsMenuViewModel {
         switch action {
         case .archive(let isArchived):
             if viewModel.isChat && !isArchived {
-                viewModel.showDeleteChatConfirmation = true
+                try? viewModel.withCurrentSource { viewModel.showDeleteChatConfirmation = true }
             } else {
                 try? await viewModel.changeArchiveState()
             }

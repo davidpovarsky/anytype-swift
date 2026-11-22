@@ -61,30 +61,45 @@ final class TextPropertyEditingViewModel {
     }
     
     func onClear() {
-        text = ""
-        updateText(with: "")
+        try? config.withOriginalPropertyActionCallback {
+            text = ""
+            updateText(with: "")
+        }
     }
     
     func onPaste() {
-        text = pasteboardHelper.obtainTextSlot() ?? ""
-        updateText(with: text)
+        try? config.withOriginalPropertyActionCallback {
+            text = pasteboardHelper.obtainTextSlot() ?? ""
+            updateText(with: text)
+        }
     }
     
     func updatePasteState() {
-        showPaste = pasteboardHelper.hasSlots && text.isEmpty
+        try? config.withCurrentOriginalProperty {
+            showPaste = pasteboardHelper.hasSlots && text.isEmpty
+        }
     }
     
     func onTextChanged(_ text: String) {
         updateText(with: text)
     }
+
+    func acceptOriginalTextInput(_ text: String) {
+        try? config.withOriginalPropertyActionCallback {
+            self.text = text
+            onTextChanged(text)
+        }
+    }
     
     func handlePasteboard() async {
         for await _ in pasteboardHelper.pasteboardChangePublisher().values {
+            guard (try? config.withCurrentOriginalProperty {}) != nil else { return }
             updatePasteState()
         }
     }
     
     private func updateText(with text: String) {
+        guard (try? config.withCurrentOriginalProperty {}) != nil else { return }
         updateRelation(with: text)
         handleTextUpdate(text: text)
         updatePasteState()
@@ -95,7 +110,8 @@ final class TextPropertyEditingViewModel {
             objectId: config.objectId,
             value: value,
             key: config.relationKey,
-            textType: type
+            textType: type,
+            originalEditorScope: config.originalEditorScope
         )
         logEvent()
     }
@@ -108,6 +124,14 @@ final class TextPropertyEditingViewModel {
     }
     
     private func logEvent() {
+        if let scope = config.originalEditorScope {
+            try? scope.withCurrent { logCurrentEvent() }
+        } else {
+            logCurrentEvent()
+        }
+    }
+
+    private func logCurrentEvent() {
         switch type {
         case .url:
             AnytypeAnalytics.instance().logRelationUrlEditMobile()
@@ -119,13 +143,17 @@ final class TextPropertyEditingViewModel {
     private func logChangeOrDeleteRelationValue() {
         guard initialText != text else { return }
         Task {
-            let relationDetails = try propertyDetailsStorage.relationsDetails(key: config.relationKey, spaceId: config.spaceId)
-            AnytypeAnalytics.instance().logChangeOrDeleteRelationValue(
-                isEmpty: text.isEmpty,
-                format: relationDetails.format,
-                type: config.analyticsType,
-                key: relationDetails.analyticsKey
-            )
+            let publish = { [self] in
+                let relationDetails = try propertyDetailsStorage.relationsDetails(key: config.relationKey, spaceId: config.spaceId)
+                AnytypeAnalytics.instance().logChangeOrDeleteRelationValue(
+                    isEmpty: text.isEmpty,
+                    format: relationDetails.format,
+                    type: config.analyticsType,
+                    key: relationDetails.analyticsKey
+                )
+            }
+            if let scope = config.originalEditorScope { try scope.withCurrent(publish) }
+            else { try publish() }
         }
     }
 }

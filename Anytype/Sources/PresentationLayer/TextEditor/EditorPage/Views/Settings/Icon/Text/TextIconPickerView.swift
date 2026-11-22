@@ -5,8 +5,8 @@ struct TextIconPickerView: View {
 
     @State private var model: TextIconPickerViewModel
 
-    init(data: TextIconPickerData) {
-        _model = State(initialValue: TextIconPickerViewModel(data: data))
+    init(data: TextIconPickerData, dependencies: BlockActionServiceDependencies = .original()) {
+        _model = State(initialValue: TextIconPickerViewModel(data: data, dependencies: dependencies))
     }
     
     var body: some View {

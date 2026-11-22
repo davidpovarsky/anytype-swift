@@ -16,6 +16,7 @@ final class EditorRouter: NSObject, EditorRouterProtocol, ObjectSettingsCoordina
     private weak var output: (any EditorPageModuleOutput)?
     
     private let templateService: any TemplatesServiceProtocol
+    private let documentWriteOwner: EditorDocumentWriteOwner?
 
     private var waitingViewDismiss: AnytypeDismiss?
 
@@ -34,6 +35,7 @@ final class EditorRouter: NSObject, EditorRouterProtocol, ObjectSettingsCoordina
         self.setObjectCreationSettingsCoordinator = dependencies.setObjectCreationSettingsCoordinator
         self.toastPresenter = dependencies.toastPresenter
         self.templateService = dependencies.templateService
+        self.documentWriteOwner = dependencies.documentWriteOwner
         
         super.init()
     }
@@ -456,16 +458,24 @@ extension EditorRouter {
         )
     }
     
+    @MainActor
     func didTapUseTemplateAsDefault(templateId: String) {
         guard let details = document.details else { return }
        
-        Task { @MainActor in
+        scheduleOriginalEditorMutation(owner: documentWriteOwner, contextId: document.objectId) { [self] in
             try await templateService.setTemplateAsDefaultForType(
                 objectTypeId: details.type,
                 templateId: templateId
             )
-            navigationContext.dismissTopPresented(animated: true, completion: nil)
-            toastPresenter.show(message: templateId.isEmpty ? Loc.unsetAsDefault : Loc.Templates.Popup.default)
+            if let documentWriteOwner {
+                try documentWriteOwner.performSynchronousOperation(requiresEditing: false) {
+                    navigationContext.dismissTopPresented(animated: true, completion: nil)
+                    toastPresenter.show(message: templateId.isEmpty ? Loc.unsetAsDefault : Loc.Templates.Popup.default)
+                }
+            } else {
+                navigationContext.dismissTopPresented(animated: true, completion: nil)
+                toastPresenter.show(message: templateId.isEmpty ? Loc.unsetAsDefault : Loc.Templates.Popup.default)
+            }
         }
     }
 }

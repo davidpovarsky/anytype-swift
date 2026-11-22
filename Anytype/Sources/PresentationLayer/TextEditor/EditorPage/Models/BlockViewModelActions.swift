@@ -63,7 +63,7 @@ final class MediaBlockActionsProvider: MediaBlockActionsProviderProtocol {
             
             switch result {
             case .success(let images):
-                Task {
+                handler.scheduleMutationTask { [self] in
                     var currentBlockId = blockId
                     for (index, image) in images.enumerated() {
                         if index == 0 {

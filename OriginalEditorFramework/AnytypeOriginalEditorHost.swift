@@ -98,23 +98,30 @@ public final class AnytypeOriginalEditorSourceLifetime {
 public final class AnytypeOriginalEditorHost {
     public let binding: AnytypeOriginalEditorBinding
     internal let preparedSession: PreparedEditorPageSession
-    private let state: EditorPageViewState
+    private let coordinator: EditorPageCoordinatorViewModel
+    private let navigationProvider: ViewControllerProvider
     private let sourceLifetime: AnytypeOriginalEditorSourceLifetime
     private var accountObservation: AnyCancellable?
     private var mountedViewController: UIViewController?
     private var snapshotCaptureInProgress = false
-    private var interactionBeforeCapture: Bool?
+    private struct CapturedInteraction {
+        weak var view: UIView?
+        let wasEnabled: Bool
+    }
+    private var interactionBeforeCapture: [CapturedInteraction] = []
 
     internal init(
         binding: AnytypeOriginalEditorBinding,
         preparedSession: PreparedEditorPageSession,
-        state: EditorPageViewState,
+        coordinator: EditorPageCoordinatorViewModel,
+        navigationProvider: ViewControllerProvider,
         sourceLifetime: AnytypeOriginalEditorSourceLifetime,
         accountManager: any AccountManagerProtocol
     ) {
         self.binding = binding
         self.preparedSession = preparedSession
-        self.state = state
+        self.coordinator = coordinator
+        self.navigationProvider = navigationProvider
         self.sourceLifetime = sourceLifetime
         accountObservation = accountManager.accountPublisher.sink { [sourceLifetime, expected = binding.accountID] account in
             if !account.id.utf8.elementsEqual(expected.utf8) { sourceLifetime.retire() }
@@ -131,7 +138,8 @@ public final class AnytypeOriginalEditorHost {
     public func makeViewController() throws -> UIViewController {
         try validateCurrentSource()
         guard mountedViewController == nil else { throw AnytypeOriginalEditorHostError.alreadyMounted }
-        let controller = UIHostingController(rootView: EditorPageView(preparedState: state))
+        let controller = UIHostingController(rootView: EditorPageCoordinatorView(preparedModel: coordinator))
+        navigationProvider.setScopedRootViewController(controller)
         mountedViewController = controller
         return controller
     }
@@ -139,10 +147,23 @@ public final class AnytypeOriginalEditorHost {
     public func retire() {
         sourceLifetime.retire()
         preparedSession.retire()
-        mountedViewController?.viewIfLoaded?.isUserInteractionEnabled = false
+        for view in ownedPresentedViews() { view.isUserInteractionEnabled = false }
         snapshotCaptureInProgress = false
-        interactionBeforeCapture = nil
+        interactionBeforeCapture = []
         accountObservation = nil
+    }
+
+    /// UIKit sheets have their own view trees. Traverse only this Host's
+    /// retained controller and its presentations, never another app window.
+    private func ownedPresentedViews() -> [UIView] {
+        var result: [UIView] = []
+        var current = mountedViewController
+        var visited = Set<ObjectIdentifier>()
+        while let controller = current, visited.insert(ObjectIdentifier(controller)).inserted {
+            if let view = controller.viewIfLoaded { result.append(view) }
+            current = controller.presentedViewController
+        }
+        return result
     }
 
     /// Original end-editing callbacks synchronously register their pending UI
@@ -155,16 +176,19 @@ public final class AnytypeOriginalEditorHost {
         }
         snapshotCaptureInProgress = true
         do {
-            if let view = mountedViewController?.viewIfLoaded {
-                let previous = view.isUserInteractionEnabled
-                view.endEditing(true)
-                try validateCurrentSource()
-                interactionBeforeCapture = previous
-                view.isUserInteractionEnabled = false
+            let views = ownedPresentedViews()
+            // Synchronous original callbacks reserve their same-owner work
+            // before any capture await. A child editor is included through its
+            // actual presented controller and the existing parent tracking.
+            for view in views.reversed() { view.endEditing(true) }
+            try validateCurrentSource()
+            interactionBeforeCapture = views.map {
+                CapturedInteraction(view: $0, wasEnabled: $0.isUserInteractionEnabled)
             }
+            for view in views { view.isUserInteractionEnabled = false }
         } catch {
             snapshotCaptureInProgress = false
-            interactionBeforeCapture = nil
+            interactionBeforeCapture = []
             throw error
         }
     }
@@ -179,10 +203,10 @@ public final class AnytypeOriginalEditorHost {
     internal func failSnapshotCapture() {
         let previous = interactionBeforeCapture
         snapshotCaptureInProgress = false
-        interactionBeforeCapture = nil
-        guard let previous, sourceLifetime.isCurrent, !preparedSession.owner.isCapturing,
+        interactionBeforeCapture = []
+        guard sourceLifetime.isCurrent, !preparedSession.owner.isCapturing,
               (try? preparedSession.owner.validateOwnership()) != nil else { return }
-        mountedViewController?.viewIfLoaded?.isUserInteractionEnabled = previous
+        for item in previous { item.view?.isUserInteractionEnabled = item.wasEnabled }
     }
 
     deinit {
@@ -234,14 +258,19 @@ extension AnytypeOriginalEditorModule {
                 isCurrent: sourceCheck
             )
             let data = EditorPageObject(objectId: binding.objectID, spaceId: binding.spaceID, mode: .handling)
+            let navigationProvider = ViewControllerProvider()
+            let navigationContext = NavigationContext(viewControllerProvider: navigationProvider)
             let session = try await PreparedEditorPageSessionFactory.prepare(
-                data: data, sourceBinding: sourceBinding
+                data: data, sourceBinding: sourceBinding, navigationContext: navigationContext
             )
-            let state = try EditorPageModuleAssembly().buildStateModel(
-                preparedSession: session, output: nil, showHeader: true, torahSession: nil
+            // Keep the original coordinator as the real output and modal owner;
+            // the already acquired root session is never opened a second time.
+            let coordinator = try EditorPageCoordinatorViewModel(
+                preparedSession: session, showHeader: true
             )
             let host = AnytypeOriginalEditorHost(
-                binding: binding, preparedSession: session, state: state,
+                binding: binding, preparedSession: session, coordinator: coordinator,
+                navigationProvider: navigationProvider,
                 sourceLifetime: sourceLifetime, accountManager: accountManager
             )
             try host.validateCurrentSource()

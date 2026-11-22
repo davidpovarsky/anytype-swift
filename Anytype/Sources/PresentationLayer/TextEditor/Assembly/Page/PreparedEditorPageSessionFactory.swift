@@ -26,7 +26,9 @@ private final class PreparedEditorOpeningDocumentRetention {
 enum PreparedEditorPageSessionFactory {
     static func prepare(
         data: EditorPageObject,
-        sourceBinding: EditorDocumentWriteSourceBinding
+        sourceBinding: EditorDocumentWriteSourceBinding,
+        navigationContext: (any NavigationContextProtocol)? = nil,
+        requiredPermissions: Set<EditorDocumentWritePermission> = []
     ) async throws -> PreparedEditorPageSession {
         try sourceBinding.validate()
         guard sourceBinding.committedEventBinding != nil else {
@@ -56,7 +58,8 @@ enum PreparedEditorPageSessionFactory {
         try await waitForOriginalEditPermission(
             document: ownedDocument,
             sourceBinding: sourceBinding,
-            participants: Container.shared.participantsStorage()
+            participants: Container.shared.participantsStorage(),
+            requiredPermissions: requiredPermissions
         )
         let services = EditorPageServiceDependencies(
             blockActionService: .original(),
@@ -67,7 +70,7 @@ enum PreparedEditorPageSessionFactory {
             simpleTable: .original(),
             slashMenu: .original(),
             header: .original(),
-            router: .original(),
+            router: .original(navigationContext: navigationContext),
             viewModel: .original(),
             localEvents: OriginalEditorLocalEventPublisher()
         )
@@ -85,7 +88,8 @@ enum PreparedEditorPageSessionFactory {
     private static func waitForOriginalEditPermission(
         document: any BaseDocumentProtocol,
         sourceBinding: EditorDocumentWriteSourceBinding,
-        participants: any ParticipantsStorageProtocol
+        participants: any ParticipantsStorageProtocol,
+        requiredPermissions: Set<EditorDocumentWritePermission>
     ) async throws {
         let clock = ContinuousClock()
         let deadline = clock.now.advanced(by: .seconds(15))
@@ -99,7 +103,11 @@ enum PreparedEditorPageSessionFactory {
             }), !participant.canEdit {
                 throw PreparedEditorPageSessionFactoryError.notEditable
             }
-            if document.permissions.canEditBlocks { return }
+            let permissions = document.permissions
+            let admitted = requiredPermissions.isEmpty
+                ? permissions.canEditBlocks
+                : requiredPermissions.allSatisfy { $0.isAllowed(by: permissions) }
+            if admitted { return }
             guard clock.now < deadline else {
                 throw PreparedEditorPageSessionFactoryError.permissionReadinessTimeout
             }
@@ -115,15 +123,21 @@ enum PreparedEditorPageSessionFactory {
 struct PreparedEditorChildPreparation {
     private weak var parentOwner: EditorDocumentWriteOwner?
     private let sourceBinding: EditorDocumentWriteSourceBinding
+    private let navigationContext: (any NavigationContextProtocol)?
 
-    init(owner: EditorDocumentWriteOwner) throws {
+    init(owner: EditorDocumentWriteOwner, navigationContext: (any NavigationContextProtocol)? = nil) throws {
         sourceBinding = try owner.childSourceBinding()
         parentOwner = owner
+        self.navigationContext = navigationContext
     }
 
-    func prepare(data: EditorPageObject) async throws -> PreparedEditorPageSession {
+    func deriving(owner: EditorDocumentWriteOwner) throws -> Self {
+        try Self(owner: owner, navigationContext: navigationContext)
+    }
+
+    func prepare(data: EditorPageObject, requiredPermissions: Set<EditorDocumentWritePermission> = []) async throws -> PreparedEditorPageSession {
         try validateParent(spaceId: data.spaceId)
-        let session = try await PreparedEditorPageSessionFactory.prepare(data: data, sourceBinding: sourceBinding)
+        let session = try await PreparedEditorPageSessionFactory.prepare(data: data, sourceBinding: sourceBinding, navigationContext: navigationContext, requiredPermissions: requiredPermissions)
         do {
             try validateParent(spaceId: data.spaceId)
             return session
@@ -137,13 +151,23 @@ struct PreparedEditorChildPreparation {
     /// original writes use the child, rather than the parent's object authority.
     func performMutation<Value: Sendable>(
         data: EditorPageObject,
+        requiredPermissions: Set<EditorDocumentWritePermission> = [],
         operation: @Sendable (EditorDocumentWriteOwner) async throws -> Value
     ) async throws -> Value {
-        let session = try await prepare(data: data)
+        let session = try await prepare(data: data, requiredPermissions: requiredPermissions)
         let childOwner = session.owner
         defer { session.retire() }
+        if !requiredPermissions.isEmpty {
+            return try await childOwner.performDocumentAction(
+                contextId: data.objectId, requiredPermissions: requiredPermissions,
+                onDrained: { [session] in withExtendedLifetime(session) {} }
+            ) {
+                try await operation(childOwner)
+            }
+        }
         return try await childOwner.performMutation(
             contextId: data.objectId,
+            requiredPermissions: requiredPermissions,
             onDrained: { [session] in withExtendedLifetime(session) {} }
         ) {
             try await operation(childOwner)

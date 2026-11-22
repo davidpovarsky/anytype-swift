@@ -35,18 +35,21 @@ final class SelectPropertyListViewModel {
     }
 
     func startSelectedOptionsSubscription() async {
+        guard (try? configuration.withCurrentOriginalProperty {}) != nil else { return }
         for await ids in relationSelectedOptionsModel.selectedOptionsIdsPublisher.values {
-            selectedOptionsIds = ids
+            guard (try? configuration.withCurrentOriginalProperty { selectedOptionsIds = ids }) != nil else { return }
         }
     }
 
+
     func onClear() {
-        Task {
-            try await relationSelectedOptionsModel.onClear()
+        configuration.scheduleOriginalPropertyAction { [self] in
+            try await configuration.originalSelectedOptionsModel(relationSelectedOptionsModel).onClear()
         }
     }
     
     func onCreate(with title: String?, color: Color? = nil) {
+        guard (try? configuration.withCurrentOriginalProperty {}) != nil else { return }
         output?.onCreateTap(text: title, color: color, completion: { [weak self] option in
             self?.updateListOnCreate(with: option.id)
         })
@@ -57,10 +60,13 @@ final class SelectPropertyListViewModel {
     }
     
     func onOptionEdit(_ option: SelectPropertyOption) {
+        guard (try? configuration.withCurrentOriginalProperty {}) != nil else { return }
         output?.onEditTap(option: option, completion: { [weak self] option in
             guard let self else { return }
-            if let index = options.firstIndex(where: { $0.id == option.id }) {
-                options[index] = option
+            try? configuration.withCurrentOriginalProperty {
+                if let index = options.firstIndex(where: { $0.id == option.id }) {
+                    options[index] = option
+                }
             }
         })
     }
@@ -74,8 +80,10 @@ final class SelectPropertyListViewModel {
     }
     
     func onOptionDelete(_ option: SelectPropertyOption) {
+        guard (try? configuration.withCurrentOriginalProperty {}) != nil else { return }
         output?.onDeleteTap { [weak self] isSuccess in
             guard let self else { return }
+            guard (try? configuration.withCurrentOriginalProperty {}) != nil else { return }
             if isSuccess {
                 removeRelationOption(option)
             } else {
@@ -85,20 +93,23 @@ final class SelectPropertyListViewModel {
     }
     
     func optionSelected(_ optionId: String) {
-        Task {
-            try await relationSelectedOptionsModel.optionSelected(optionId)
-            closeIfNeeded()
+        configuration.scheduleOriginalPropertyAction { [self] in
+            try await configuration.originalSelectedOptionsModel(relationSelectedOptionsModel).optionSelected(optionId)
+            try configuration.withCurrentOriginalProperty { closeIfNeeded() }
         }
     }
     
     func searchTextChanged() async {
         do {
+            try configuration.withCurrentOriginalProperty {}
             let rawOptions = try await searchService.searchRelationOptions(
                 text: searchText,
                 relationKey: configuration.relationKey,
                 excludedObjectIds: [],
                 spaceId: configuration.spaceId
             ).map { SelectPropertyOption(relation: $0) }
+
+            try configuration.withCurrentOriginalProperty {}
             
             switch configuration.selectionMode {
             case .single:
@@ -118,20 +129,23 @@ final class SelectPropertyListViewModel {
     }
     
     private func updateListOnCreate(with optionId: String) {
-        Task {
-            searchText = ""
-            try await relationSelectedOptionsModel.optionSelected(optionId)
+        configuration.scheduleOriginalPropertyAction { [self] in
+            try configuration.withCurrentOriginalProperty { searchText = "" }
+            try await configuration.originalSelectedOptionsModel(relationSelectedOptionsModel).optionSelected(optionId)
+            try configuration.withCurrentOriginalProperty {}
             await searchTextChanged()
         }
     }
     
     private func removeRelationOption(_ option: SelectPropertyOption) {
-        Task {
-            if let index = options.firstIndex(of: option) {
-                options.remove(at: index)
+        configuration.scheduleOriginalPropertyAction { [self] in
+            try configuration.withCurrentOriginalProperty {
+                if let index = options.firstIndex(of: option) {
+                    options.remove(at: index)
+                }
             }
-            try await relationSelectedOptionsModel.removeRelationOption(option.id)
-            setEmptyIfNeeded()
+            try await configuration.originalSelectedOptionsModel(relationSelectedOptionsModel).removeRelationOption(option.id)
+            try configuration.withCurrentOriginalProperty { setEmptyIfNeeded() }
         }
     }
     

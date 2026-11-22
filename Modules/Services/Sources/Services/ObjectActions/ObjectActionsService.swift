@@ -4,6 +4,24 @@ import SwiftProtobuf
 import ProtobufMessages
 import AnytypeCore
 
+public enum OriginalObjectActionsServiceBindingError: Error, Sendable {
+    case unsupportedOriginalDelegate
+}
+
+/// Admit the exact original Services implementation without constructing or
+/// wrapping another writer. The caller supplies the current, actual target's
+/// existing document/account dispatch scope around each operation.
+public enum OriginalObjectActionsServiceBinding {
+    public static func requireOriginal(
+        _ service: any ObjectActionsServiceProtocol
+    ) throws -> any ObjectActionsServiceProtocol {
+        guard service is ObjectActionsService else {
+            throw OriginalObjectActionsServiceBindingError.unsupportedOriginalDelegate
+        }
+        return service
+    }
+}
+
 final class ObjectActionsService: ObjectActionsServiceProtocol {
     
     // MARK: - ObjectActionsServiceProtocol

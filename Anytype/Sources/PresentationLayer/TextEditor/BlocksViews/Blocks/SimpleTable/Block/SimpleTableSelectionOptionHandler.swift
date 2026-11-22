@@ -40,7 +40,7 @@ final class SimpleTableSelectionOptionHandler {
     // MARK: - Public
 
     func handle(action: SimpleTableOptionType) {
-        Task { @MainActor in
+        actionHandler.scheduleMutationTask { @MainActor [self] in
             switch action {
             case .cell(let cellAction):
                 await handleCellAction(action: cellAction)

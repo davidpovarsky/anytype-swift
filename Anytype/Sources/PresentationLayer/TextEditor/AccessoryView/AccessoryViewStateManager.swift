@@ -50,6 +50,7 @@ final class AccessoryViewStateManagerImpl: AccessoryViewStateManager, CursorMode
     private let document: any BaseDocumentProtocol
     private let switcher: AccessoryViewSwitcher
     private let markupChanger: any BlockMarkupChangerProtocol
+    private let documentWriteOwner: EditorDocumentWriteOwner?
     
     let cursorModeViewModel: CursorModeAccessoryViewModel
     let slashMenuViewModel: SlashMenuViewModel
@@ -63,11 +64,13 @@ final class AccessoryViewStateManagerImpl: AccessoryViewStateManager, CursorMode
         cursorModeViewModel: CursorModeAccessoryViewModel,
         slashMenuViewModel: SlashMenuViewModel,
         mentionsViewModel: MentionsViewModel,
-        markupAccessoryViewModel: MarkupAccessoryViewModel
+        markupAccessoryViewModel: MarkupAccessoryViewModel,
+        documentWriteOwner: EditorDocumentWriteOwner? = nil
     ) {
         self.document = document
         self.switcher = switcher
         self.markupChanger = markupChanger
+        self.documentWriteOwner = documentWriteOwner
         
         self.cursorModeViewModel = cursorModeViewModel
         self.slashMenuViewModel = slashMenuViewModel
@@ -75,13 +78,13 @@ final class AccessoryViewStateManagerImpl: AccessoryViewStateManager, CursorMode
         self.markupAccessoryViewModel = markupAccessoryViewModel
         
         markupAccessoryViewModel.onMarkupTap = { [weak self] markup in
-            Task { @MainActor in
+            self?.scheduleMutationTask { @MainActor [weak self] in
                 try await self?.handle(markup)
             }
         }
         
         markupAccessoryViewModel.onColorSelection = { [weak self] selectedColor in
-            Task { @MainActor in
+            self?.scheduleMutationTask { @MainActor [weak self] in
                 try await self?.handle(selectedColor)
             }
         }
@@ -95,6 +98,20 @@ final class AccessoryViewStateManagerImpl: AccessoryViewStateManager, CursorMode
         }
     }
     
+    /// The original page builder supplies the same stable Owner as its action
+    /// handler. A transient nil/changed editing configuration cannot create an
+    /// unregistered mutation after a snapshot barrier has started.
+    @discardableResult
+    private func scheduleMutationTask<Value: Sendable>(
+        operation: @escaping @MainActor @Sendable () async throws -> Value
+    ) -> Task<Value, Error> {
+        scheduleOriginalEditorMutation(
+            owner: documentWriteOwner,
+            contextId: document.objectId,
+            operation: operation
+        )
+    }
+
     // MARK: - AccessoryViewStateManager
     func willBeginEditing(with configuration: TextViewAccessoryConfiguration) {
         // Attach before the text view becomes first responder so the keyboard presents with
@@ -330,7 +347,7 @@ final class AccessoryViewStateManagerImpl: AccessoryViewStateManager, CursorMode
 // MARK: - SlashMenuHandler
 extension AccessoryViewStateManagerImpl {
     func handle(_ action: SlashAction){
-        Task { @MainActor in
+        scheduleMutationTask { @MainActor [self] in
             guard let (attrString, index) = attributedStringWithoutSearchSymbols(),
                   let configuration else { return }
             
@@ -368,7 +385,7 @@ extension AccessoryViewStateManagerImpl: MentionViewDelegate {
         guard let (attrString, index) = attributedStringWithoutSearchSymbols(),
               let configuration else { return }
         
-        Task { @MainActor in
+        scheduleMutationTask { @MainActor [self] in
             try await configuration.output?.didSelectAddMention(mention, at: index, attributedString: attrString.sendable())
             
             switcher.showDefaultView()

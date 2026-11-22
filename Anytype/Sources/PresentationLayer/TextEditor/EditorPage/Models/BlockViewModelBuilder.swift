@@ -492,7 +492,7 @@ final class BlockViewModelBuilder {
     }
 
     private func typeSelected(_ type: ObjectType, route: ChangeObjectTypeRoute? = nil) {
-        Task { [weak self] in
+        handler.scheduleMutationTask { [weak self] in
             guard let self else { return }
             try await handler.setObjectType(type: type)
             AnytypeAnalytics.instance().logChangeObjectType(type.analyticsType, route: route)
@@ -505,7 +505,7 @@ final class BlockViewModelBuilder {
 
     private func showBookmarkBar(info: BlockInformation) {
         router.showBookmarkBar() { [weak self] url in
-            Task { [weak self] in
+            self?.handler.scheduleMutationTask { [weak self] in
                 try await self?.handler.fetch(url: url, blockId: info.id)
             }
         }
@@ -528,7 +528,7 @@ final class BlockViewModelBuilder {
             return
         }
 
-        Task {
+        handler.scheduleMutationTask { [self] in
             try await blockService.move(
                 objectId: document.objectId,
                 blockId: blockInformation.id,
@@ -557,7 +557,7 @@ final class BlockViewModelBuilder {
             return
         }
 
-        Task {
+        handler.scheduleMutationTask { [self] in
             try await blockService.move(
                 objectId: document.objectId,
                 blockId: blockInformation.id,

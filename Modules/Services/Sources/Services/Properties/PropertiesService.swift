@@ -6,6 +6,21 @@ enum PropertyServiceError: Error {
     case unableToCreateRelationFromObject
 }
 
+public enum OriginalPropertiesServiceBindingError: Error, Sendable {
+    case unsupportedOriginalDelegate
+}
+
+/// The real Services implementation remains the sole property writer. The
+/// editor supplies its existing document/account admission around each call.
+public enum OriginalPropertiesServiceBinding {
+    public static func requireOriginal(_ service: any PropertiesServiceProtocol) throws -> any PropertiesServiceProtocol {
+        guard service is PropertiesService else {
+            throw OriginalPropertiesServiceBindingError.unsupportedOriginalDelegate
+        }
+        return service
+    }
+}
+
 final class PropertiesService: PropertiesServiceProtocol {
     
     // MARK: - PropertiesServiceProtocol

@@ -25,8 +25,40 @@ final class SetObjectCreationSettingsCoordinator:
     private var toastPresenter: any ToastPresenterProtocol
     
     private var useAsTemplateAction: ((String) -> Void)?
+    private let ownedNavigationContext: (any NavigationContextProtocol)?
+    private let documentWriteOwner: EditorDocumentWriteOwner?
+    private let childPreparation: PreparedEditorChildPreparation?
+    private let ownedContextId: String?
 
-    nonisolated init() {}
+    private var activeNavigationContext: any NavigationContextProtocol {
+        ownedNavigationContext ?? navigationContext
+    }
+
+    nonisolated init() {
+        ownedNavigationContext = nil
+        documentWriteOwner = nil
+        childPreparation = nil
+        ownedContextId = nil
+    }
+
+    private init(owner: EditorDocumentWriteOwner, childPreparation: PreparedEditorChildPreparation,
+                 navigationContext: any NavigationContextProtocol, contextId: String) {
+        self.documentWriteOwner = owner
+        self.childPreparation = childPreparation
+        self.ownedNavigationContext = navigationContext
+        self.ownedContextId = contextId
+    }
+
+    static func bindOriginal(_ service: any SetObjectCreationSettingsCoordinatorProtocol,
+                             owner: EditorDocumentWriteOwner,
+                             childPreparation: PreparedEditorChildPreparation,
+                             navigationContext: any NavigationContextProtocol,
+                             contextId: String) throws -> any SetObjectCreationSettingsCoordinatorProtocol {
+        guard service is SetObjectCreationSettingsCoordinator else { throw EditorDocumentWriteError.rejected(.unqualifiedDispatch) }
+        try owner.performSynchronousOperation(contextId: contextId, requiresEditing: false) {}
+        return SetObjectCreationSettingsCoordinator(owner: owner, childPreparation: childPreparation,
+                                                    navigationContext: navigationContext, contextId: contextId)
+    }
     
     func showTemplateEditing(
         setting: ObjectCreationSetting,
@@ -34,6 +66,28 @@ final class SetObjectCreationSettingsCoordinator:
         onSetAsDefaultTemplate: @escaping (String) -> Void,
         completion: (() -> Void)?
     ) {
+        if let documentWriteOwner, let childPreparation, let ownedContextId {
+            scheduleOriginalEditorMutation(owner: documentWriteOwner, contextId: ownedContextId) { [self] in
+                let data = EditorPageObject(objectId: setting.templateId, spaceId: setting.spaceId, usecase: .embedded)
+                let session = try await childPreparation.prepare(data: data)
+                do {
+                    let model = try EditorPageCoordinatorViewModel(preparedSession: session, showHeader: false)
+                    let controller = TemplateEditingViewController(
+                        editorViewController: UIHostingController(rootView: EditorPageCoordinatorView(preparedModel: model)),
+                        objectId: setting.templateId, spaceId: setting.spaceId, output: self,
+                        onSelectTemplateTap: onTemplateSelection, preparedSession: session
+                    )
+                    try documentWriteOwner.performSynchronousOperation(spaceId: setting.spaceId, requiresEditing: false) {
+                        useAsTemplateAction = onSetAsDefaultTemplate
+                        activeNavigationContext.present(controller, completion: completion)
+                    }
+                } catch {
+                    session.retire()
+                    throw error
+                }
+            }
+            return
+        }
         let editorView = EditorPageCoordinatorView(
             data: EditorPageObject(
                 objectId: setting.templateId,
@@ -53,7 +107,7 @@ final class SetObjectCreationSettingsCoordinator:
             onSelectTemplateTap: onTemplateSelection
         )
 
-        navigationContext.present(editingTemplateViewController, completion: completion)
+        activeNavigationContext.present(editingTemplateViewController, completion: completion)
     }
     
     private func showTypesSearch(
@@ -65,16 +119,16 @@ final class SetObjectCreationSettingsCoordinator:
             spaceId: setDocument.spaceId,
             settings: .setByRelationNewObject
         ) { [weak self] type in
-            self?.navigationContext.dismissTopPresented()
+            self?.activeNavigationContext.dismissTopPresented()
             onSelect(type)
         }
         
-        navigationContext.presentSwiftUIView(view: view)
+        activeNavigationContext.presentSwiftUIView(view: view)
     }
     
     // MARK: - ObjectSettingsCoordinatorOutput
     func closeEditor() {
-        navigationContext.dismissTopPresented(animated: true, completion: nil)
+        activeNavigationContext.dismissTopPresented(animated: true, completion: nil)
     }
     
     func showEditorScreen(data: ScreenData) {}
@@ -88,7 +142,13 @@ final class SetObjectCreationSettingsCoordinator:
     }
     
     func didTapUseTemplateAsDefault(templateId: String) {
-        useAsTemplateAction?(templateId)
+        if let documentWriteOwner {
+            try? documentWriteOwner.performSynchronousDocumentAction(requiredPermissions: [.templateSetAsDefault]) {
+                useAsTemplateAction?(templateId)
+            }
+        } else {
+            useAsTemplateAction?(templateId)
+        }
     }
     
     func didUndoRedo() {
@@ -113,13 +173,13 @@ final class SetObjectCreationSettingsCoordinator:
         showTemplateEditing(
             setting: setting,
             onTemplateSelection: { [weak self] in
-                self?.navigationContext.dismissAllPresented(animated: true) {
+                self?.activeNavigationContext.dismissAllPresented(animated: true) {
                     onSetAsDefaultTemplate(setting.templateId)
                     onTemplateSelection?(setting)
                 }
             },
             onSetAsDefaultTemplate: { [weak self] templateId in
-                self?.navigationContext.dismissTopPresented(animated: true, completion: {
+                self?.activeNavigationContext.dismissTopPresented(animated: true, completion: {
                     onSetAsDefaultTemplate(templateId)
                 })
             },

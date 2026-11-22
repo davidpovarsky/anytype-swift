@@ -32,6 +32,7 @@ final class PropertyCalendarViewModel {
     }
     
     func dateChanged(_ newDate: Date) {
+        guard (try? config.withCurrentOriginalProperty {}) != nil else { return }
         let date = newDate.trimTime() ??  newDate
         let value = date.timeIntervalSince1970
         self.date = newDate
@@ -39,24 +40,35 @@ final class PropertyCalendarViewModel {
     }
     
     func clear() {
+        guard (try? config.withCurrentOriginalProperty {}) != nil else { return }
         updateDateRelation(with: 0)
         dismiss.toggle()
     }
     
     func onOpenCurrentDateSelected() {
-        output?.onOpenDateSelected(date: date)
+        try? config.withCurrentOriginalProperty { output?.onOpenDateSelected(date: date) }
     }
     
     private func updateDateRelation(with value: Double) {
-        Task {
-            try await propertiesService.updateProperty(objectId: config.objectId, propertyKey: config.relationKey, value: value.protobufValue)
-            let relationDetails = try propertyDetailsStorage.relationsDetails(key: config.relationKey, spaceId: config.spaceId)
-            AnytypeAnalytics.instance().logChangeOrDeleteRelationValue(
-                isEmpty: value.isZero,
-                format: relationDetails.format,
-                type: config.analyticsType,
-                key: relationDetails.analyticsKey
-            )
+        let scope = config.originalEditorScope
+        let operation: @MainActor @Sendable () async throws -> Void = { [self] in
+            let service: any PropertiesServiceProtocol
+            if let scope { service = try scope.originalProperties(propertiesService) }
+            else { service = propertiesService }
+            try await service.updateProperty(objectId: config.objectId, propertyKey: config.relationKey, value: value.protobufValue)
+            let publish = {
+                let relationDetails = try self.propertyDetailsStorage.relationsDetails(key: self.config.relationKey, spaceId: self.config.spaceId)
+                AnytypeAnalytics.instance().logChangeOrDeleteRelationValue(
+                    isEmpty: value.isZero,
+                    format: relationDetails.format,
+                    type: self.config.analyticsType,
+                    key: relationDetails.analyticsKey
+                )
+            }
+            if let scope { try scope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.valuePermissions, publish) }
+            else { try publish() }
         }
+        if let scope { scope.schedule(operation: operation) }
+        else { Task { try await operation() } }
     }
 }

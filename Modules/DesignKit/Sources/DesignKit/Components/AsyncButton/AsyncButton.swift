@@ -6,29 +6,63 @@ public struct AsyncButton<Label> : View where Label : View {
     let action: @Sendable () async throws -> Void
     let label: Label
     let role: ButtonRole?
+    let prepareAction: (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))?
+
+    private struct PreparedAction: Sendable {
+        let id = UUID()
+        let action: @MainActor @Sendable () async throws -> Void
+    }
     
     @State private var taskId: UUID?
     @State private var disable = false
+    @State private var preparedAction: PreparedAction?
     
-    public init(role: ButtonRole? = nil, action: @Sendable @escaping @MainActor () async throws -> Void, @ViewBuilder label: () -> Label) {
+    public init(role: ButtonRole? = nil,
+                prepareAction: (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))? = nil,
+                action: @Sendable @escaping @MainActor () async throws -> Void, @ViewBuilder label: () -> Label) {
         self.action = action
+        self.prepareAction = prepareAction
         self.role = role
         self.label = label()
     }
     
     public var body: some View {
         Button(role: role) {
-            taskId = UUID()
+            if let prepareAction {
+                // Capture a per-tap admission before SwiftUI creates its task.
+                // Another tap cannot replace an accepted, unstarted action.
+                guard taskId == nil else { return }
+                let prepared = PreparedAction(action: prepareAction())
+                preparedAction = prepared
+                taskId = prepared.id
+            } else {
+                taskId = UUID()
+            }
         } label: {
             label
         }
         .throwingTask(id: taskId) {
             guard taskId.isNotNil else { return }
-            defer { taskId = nil }
+            let prepared = preparedAction
+            guard prepareAction == nil || prepared != nil else { return }
+            defer {
+                if let prepared {
+                    if taskId == prepared.id {
+                        taskId = nil
+                        preparedAction = nil
+                    }
+                } else {
+                    taskId = nil
+                }
+            }
             do {
                 disable = true
                 defer { disable = false }
-                try await action()
+                if let prepared {
+                    try await prepared.action()
+                } else {
+                    try await action()
+                }
             } catch {
                 throw error
             }

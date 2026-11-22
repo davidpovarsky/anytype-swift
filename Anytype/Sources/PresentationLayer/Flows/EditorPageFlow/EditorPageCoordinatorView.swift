@@ -14,6 +14,10 @@ struct EditorPageCoordinatorView: View {
         ))
     }
     
+    init(preparedModel: EditorPageCoordinatorViewModel) {
+        self._model = State(initialValue: preparedModel)
+    }
+
     var body: some View {
         editor
             .ignoresSafeArea()
@@ -29,21 +33,33 @@ struct EditorPageCoordinatorView: View {
                 PropertyValueCoordinatorView(data: data, output: model)
             }
             .sheet(item: $model.codeLanguageData) {
-                CodeLanguageListView(data: $0)
+                CodeLanguageListView(data: $0, documentWriteOwner: model.documentWriteOwner)
             }
-            .sheet(item: $model.covertPickerData) {
-                ObjectCoverPicker(data: $0)
+            .sheet(item: $model.covertPickerData) { data in
+                if let session = model.preparedEditorSession {
+                    ObjectCoverPicker(data: data, dependencies: session.services.header)
+                } else if !model.hasQualifiedPreparation {
+                    ObjectCoverPicker(data: data)
+                }
             }
             .sheet(item: $model.linkToObjectData) {
                 LinkToObjectSearchView(data: $0) { data in
                     model.showEditorScreen(data: data)
                 }
             }
-            .sheet(item: $model.objectIconPickerData) {
-                ObjectIconPicker(data: $0)
+            .sheet(item: $model.objectIconPickerData) { data in
+                if let session = model.preparedEditorSession {
+                    ObjectIconPicker(data: data, dependencies: session.services.header)
+                } else if !model.hasQualifiedPreparation {
+                    ObjectIconPicker(data: data)
+                }
             }
-            .sheet(item: $model.textIconPickerData) {
-                TextIconPickerView(data: $0)
+            .sheet(item: $model.textIconPickerData) { data in
+                if let session = model.preparedEditorSession {
+                    TextIconPickerView(data: data, dependencies: session.services.blockActionService)
+                } else if !model.hasQualifiedPreparation {
+                    TextIconPickerView(data: data)
+                }
             }
             .sheet(item: $model.blockObjectSearchData) {
                 BlockObjectSearchView(data: $0)
@@ -52,7 +68,7 @@ struct EditorPageCoordinatorView: View {
                 PropertyCreationView(data: $0)
             }
             .anytypeSheet(item: $model.undoRedoObjectId) {
-                UndoRedoView(objectId: $0.value)
+                UndoRedoView(objectId: $0.value, documentWriteOwner: model.documentWriteOwner)
             }
             .anytypeSheet(item: $model.syncStatusSpaceId) {
                 SyncStatusInfoView(spaceId: $0.value)

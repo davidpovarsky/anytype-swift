@@ -9,16 +9,23 @@ struct ObjectPropertiesView: View {
 
     @State private var model: ObjectPropertiesViewModel
     @State private var torahProperties: PinkhaTorahPropertiesModel
+    private let preparedSession: PreparedEditorPageSession?
 
-    init(document: some BaseDocumentProtocol, output: (any PropertiesListModuleOutput)?, torahSession: TorahEditorSession? = nil) {
+    init(document: some BaseDocumentProtocol, output: (any PropertiesListModuleOutput)?, torahSession: TorahEditorSession? = nil,
+         preparedSession: PreparedEditorPageSession? = nil) {
+        self.preparedSession = preparedSession
         _torahProperties = State(initialValue: PinkhaTorahPropertiesModel(document: document, session: torahSession))
-        _model = State(initialValue: ObjectPropertiesViewModel(document: document, output: output))
+        _model = State(initialValue: ObjectPropertiesViewModel(document: document, output: output, preparedSession: preparedSession))
     }
     
     var body: some View {
         content
             .task { await model.setupSubscriptions() }
-            .task { await torahProperties.observeDocument() }
+            .task {
+                // This original observer can provision the Space schema. Its
+                // separate Torah ownership path is not a page-write admission.
+                if preparedSession == nil { await torahProperties.observeDocument() }
+            }
             .sheet(item: $model.relationsSearchData) { PropertyCreationView(data: $0) }
             .torahEditorHost(session: torahProperties.session, presentationHost: .properties)
             .anytypeSheet(isPresented: $model.showConflictingInfo) {
@@ -83,6 +90,7 @@ struct ObjectPropertiesView: View {
                 }
 
                 PinkhaTorahPropertiesSection(model: torahProperties)
+                    .disabled(preparedSession != nil)
                 if model.canAddProperty {
                     Button {
                         model.onAddPropertyTap()

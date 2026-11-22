@@ -28,6 +28,51 @@ enum EditorDocumentWritePermission: Hashable, Sendable {
     case changeLayout
     case editRelationValues
     case editPropertiesList
+    case duplicate
+    case makeAsTemplate
+    case archive
+    case templateSetAsDefault
+    case applyTemplates
+    case undoRedo
+    case lock
+    case delete
+    case restore
+    case share
+    case publish
+    case toggleDescription
+    case restoreVersionHistory
+    case linkItself
+    case changeType
+    case favorite
+    case applyUneditableActions
+
+    func isAllowed(by permissions: ObjectPermissions) -> Bool {
+        switch self {
+        case .editDetails: return permissions.canEditDetails
+        case .changeCover: return permissions.canChangeCover
+        case .changeIcon: return permissions.canChangeIcon
+        case .changeLayout: return permissions.canChangeLayout
+        case .editRelationValues: return permissions.canEditRelationValues
+        case .editPropertiesList: return permissions.canEditPropertiesList
+        case .duplicate: return permissions.canDuplicate
+        case .makeAsTemplate: return permissions.canMakeAsTemplate
+        case .archive: return permissions.canArchive
+        case .templateSetAsDefault: return permissions.canTemplateSetAsDefault
+        case .applyTemplates: return permissions.canApplyTemplates
+        case .undoRedo: return permissions.canUndoRedo
+        case .lock: return permissions.canLock
+        case .delete: return permissions.canDelete
+        case .restore: return permissions.canRestore
+        case .share: return permissions.canShare
+        case .publish: return permissions.canPublish
+        case .toggleDescription: return permissions.canToggleDescription
+        case .restoreVersionHistory: return permissions.canRestoreVersionHistory
+        case .linkItself: return permissions.canLinkItself
+        case .changeType: return permissions.canChangeType
+        case .favorite: return permissions.canFavorite
+        case .applyUneditableActions: return permissions.canApplyUneditableActions
+        }
+    }
 
     /// Called by the original document before publishing changed permissions.
     /// The same existing lifetime token closes the prepare-to-GCD queue window;
@@ -40,6 +85,23 @@ enum EditorDocumentWritePermission: Hashable, Sendable {
             || (previous.canChangeLayout && !current.canChangeLayout)
             || (previous.canEditRelationValues && !current.canEditRelationValues)
             || (previous.canEditPropertiesList && !current.canEditPropertiesList)
+            || (previous.canDuplicate && !current.canDuplicate)
+            || (previous.canMakeAsTemplate && !current.canMakeAsTemplate)
+            || (previous.canArchive && !current.canArchive)
+            || (previous.canTemplateSetAsDefault && !current.canTemplateSetAsDefault)
+            || (previous.canApplyTemplates && !current.canApplyTemplates)
+            || (previous.canUndoRedo && !current.canUndoRedo)
+            || (previous.canLock && !current.canLock)
+            || (previous.canDelete && !current.canDelete)
+            || (previous.canRestore && !current.canRestore)
+            || (previous.canShare && !current.canShare)
+            || (previous.canPublish && !current.canPublish)
+            || (previous.canToggleDescription && !current.canToggleDescription)
+            || (previous.canRestoreVersionHistory && !current.canRestoreVersionHistory)
+            || (previous.canLinkItself && !current.canLinkItself)
+            || (previous.canChangeType && !current.canChangeType)
+            || (previous.canFavorite && !current.canFavorite)
+            || (previous.canApplyUneditableActions && !current.canApplyUneditableActions)
     }
 }
 
@@ -456,6 +518,22 @@ final class EditorDocumentWriteOwner {
         return EditorDocumentScheduledWrite(owner: self, lease: lease)
     }
 
+    /// Reserve a named original action synchronously before its existing UI
+    /// task is created, using the same one-use scheduled write and drain ledger.
+    func scheduleDocumentAction(
+        contextId: String,
+        requiredPermissions: Set<EditorDocumentWritePermission>
+    ) throws -> EditorDocumentScheduledWrite {
+        guard !requiredPermissions.isEmpty else {
+            recordWriteFailure()
+            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+        }
+        let lease = try admit(contextId: contextId, requiresEditing: false, access: .mutation,
+                              requiredPermissions: requiredPermissions, actionPermissionsOnly: true,
+                              phase: .reserved)
+        return EditorDocumentScheduledWrite(owner: self, lease: lease)
+    }
+
     fileprivate func runScheduled<Value: Sendable>(
         _ lease: UUID, operation: @Sendable () async throws -> Value
     ) async throws -> Value {
@@ -481,6 +559,28 @@ final class EditorDocumentWriteOwner {
     ) async throws -> Value {
         let lease = try admit(contextId: contextId, requiresEditing: true, access: .mutation,
                               requiredPermissions: requiredPermissions, onDrained: onDrained)
+        defer { finish(lease) }
+        return try await execute(lease, operation: operation)
+    }
+
+    /// Some original document actions (for example type details) are allowed
+    /// while that document's blocks are restricted. Only an explicitly named
+    /// original action flag can enter this route; handling, lock, exact identity,
+    /// account/source generations and actual native dispatch checks still apply.
+    /// An inherited block-edit requirement can never be downgraded here.
+    func performDocumentAction<Value: Sendable>(
+        contextId: String,
+        requiredPermissions: Set<EditorDocumentWritePermission>,
+        onDrained: (@MainActor @Sendable () -> Void)? = nil,
+        operation: @Sendable () async throws -> Value
+    ) async throws -> Value {
+        guard !requiredPermissions.isEmpty else {
+            recordWriteFailure()
+            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+        }
+        let lease = try admit(contextId: contextId, requiresEditing: false, access: .mutation,
+                              requiredPermissions: requiredPermissions, actionPermissionsOnly: true,
+                              onDrained: onDrained)
         defer { finish(lease) }
         return try await execute(lease, operation: operation)
     }
@@ -586,15 +686,61 @@ final class EditorDocumentWriteOwner {
         requiredPermissions: Set<EditorDocumentWritePermission> = [],
         operation: () throws -> Value
     ) throws -> Value {
-        if let spaceId { try requireSpace(spaceId, writeIntent: requiresEditing) }
+        try performSynchronousAdmittedOperation(
+            contextId: contextId, spaceId: spaceId, requiresEditing: requiresEditing,
+            access: requiresEditing ? .mutation : .read([]), requiredPermissions: requiredPermissions,
+            actionPermissionsOnly: false, operation: operation
+        )
+    }
+
+    /// Original callbacks that synchronously begin a named document action must
+    /// retain mutation authority until that callback has registered its work.
+    /// Pure publication remains a read and cannot be upgraded through this API.
+    func performSynchronousDocumentAction<Value>(
+        contextId: String? = nil,
+        spaceId: String? = nil,
+        requiredPermissions: Set<EditorDocumentWritePermission>,
+        operation: () throws -> Value
+    ) throws -> Value {
+        guard !requiredPermissions.isEmpty else {
+            recordWriteFailure()
+            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+        }
+        return try performSynchronousAdmittedOperation(
+            contextId: contextId, spaceId: spaceId, requiresEditing: false,
+            access: .mutation, requiredPermissions: requiredPermissions,
+            actionPermissionsOnly: true, operation: operation
+        )
+    }
+
+    private func performSynchronousAdmittedOperation<Value>(
+        contextId: String?,
+        spaceId: String?,
+        requiresEditing: Bool,
+        access: EditorDocumentOperationAccess,
+        requiredPermissions: Set<EditorDocumentWritePermission>,
+        actionPermissionsOnly: Bool,
+        operation: () throws -> Value
+    ) throws -> Value {
+        if let spaceId { try requireSpace(spaceId, writeIntent: access.isMutation) }
         let contextId = contextId ?? data.objectId
         let lease = try admit(contextId: contextId, requiresEditing: requiresEditing,
-                              access: requiresEditing ? .mutation : .read([]), requiredPermissions: requiredPermissions)
+                              access: access, requiredPermissions: requiredPermissions,
+                              actionPermissionsOnly: actionPermissionsOnly)
         defer { finish(lease) }
         guard let entry = pending[lease] else { throw EditorDocumentWriteError.rejected(.invalidLease) }
         let binding = dispatchBinding(lease: lease)
         let lineage = entry.lineage.dispatching(binding)
         do {
+            // Original account transitions run on their own actor. Keep a
+            // synchronous local write/publication inside the same captured
+            // lifetime admissions that their actual RPC boundary drains.
+            let ownerCapture = try EditorDocumentWriteCapture(dispatchLifetime)
+            let captured = [ownerCapture] + lifetimeBindings.map {
+                EditorDocumentWriteCapture(source: $0.source, token: $0.token)
+            }
+            let admissions = try EditorDocumentWriteCapture.acquireAll(captured)
+            defer { for admission in admissions { admission.cancel() } }
             let value = try EditorDocumentOperationContext.$lineage.withValue(lineage) {
                 try InvocationDispatchContext.$binding.withValue(binding, operation: operation)
             }
@@ -658,6 +804,7 @@ final class EditorDocumentWriteOwner {
         requiresEditing: Bool,
         access: EditorDocumentOperationAccess,
         requiredPermissions: Set<EditorDocumentWritePermission> = [],
+        actionPermissionsOnly: Bool = false,
         tracking: Bool = false,
         phase: Phase = .ordinary,
         onDrained: (@MainActor @Sendable () -> Void)? = nil,
@@ -668,7 +815,12 @@ final class EditorDocumentWriteOwner {
         let predecessor = inheritedID.flatMap { pending[$0] }
         let writeIntent = access.isMutation || predecessor?.writeIntent == true
         let permissions = requiredPermissions.union(predecessor?.requiredPermissions ?? [])
-        let requiresEditing = requiresEditing || !permissions.isEmpty || predecessor?.requiresEditing == true
+        let inheritedActionScope = predecessor.map {
+            !$0.requiresEditing && !$0.requiredPermissions.isEmpty
+        } ?? false
+        let actionScope = actionPermissionsOnly || inheritedActionScope
+        let requiresEditing = requiresEditing || (!permissions.isEmpty && !actionScope)
+            || predecessor?.requiresEditing == true
         do {
             if let reason = rejection(contextId: contextId, requiresEditing: requiresEditing,
                                       requiredPermissions: permissions) {
@@ -782,21 +934,13 @@ final class EditorDocumentWriteOwner {
         }
         guard exactSourceMatches() else { return .documentChanged }
         let permissions = document.permissions
-        if requiresEditing {
+        if requiresEditing || !requiredPermissions.isEmpty {
             guard data.mode == .handling else { return .notHandling }
-            guard !document.isLocked, permissions.canEditBlocks else { return .notEditable }
+            guard !document.isLocked else { return .notEditable }
+            if requiresEditing && !permissions.canEditBlocks { return .notEditable }
         }
         for requirement in requiredPermissions {
-            let allowed: Bool
-            switch requirement {
-            case .editDetails: allowed = permissions.canEditDetails
-            case .changeCover: allowed = permissions.canChangeCover
-            case .changeIcon: allowed = permissions.canChangeIcon
-            case .changeLayout: allowed = permissions.canChangeLayout
-            case .editRelationValues: allowed = permissions.canEditRelationValues
-            case .editPropertiesList: allowed = permissions.canEditPropertiesList
-            }
-            guard allowed else { return .notEditable }
+            guard requirement.isAllowed(by: permissions) else { return .notEditable }
         }
         return nil
     }

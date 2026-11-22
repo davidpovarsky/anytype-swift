@@ -93,7 +93,8 @@ final class SimpleTableCellsBuilder {
                 columnId: columnId,
                 tablesService: blockTableService,
                 cursorManager: cursorManager,
-                isHeaderRow: isHeaderRow
+                isHeaderRow: isHeaderRow,
+                documentWriteOwner: handler.documentWriteOwner
             )
         )
     }
@@ -198,7 +199,7 @@ final class SimpleTableCellsBuilder {
         if let blockInformation = cell.blockInformation {
             cursorManager.focus(at: blockInformation.id, position: position)
         } else {
-            Task { @MainActor in
+            handler.scheduleMutationTask { @MainActor [self] in
                 try await blockTableService.rowListFill(
                     contextId: document.objectId,
                     targetIds: [cell.rowId]

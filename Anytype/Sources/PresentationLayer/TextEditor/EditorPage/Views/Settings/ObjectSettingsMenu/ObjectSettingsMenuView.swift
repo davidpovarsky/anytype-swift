@@ -13,10 +13,12 @@ struct ObjectSettingsMenuView<LabelView: View, AdditionalMenuItems: View>: View 
         spaceId: String,
         output: some ObjectSettingsModelOutput,
         quickCapture: Bool = false,
+        preparedSession: PreparedEditorPageSession? = nil,
         @ViewBuilder labelView: () -> LabelView,
         @ViewBuilder additionalMenuItems: () -> AdditionalMenuItems
     ) {
-        let vm = ObjectSettingsViewModel(objectId: objectId, spaceId: spaceId, output: output, quickCapture: quickCapture)
+        let vm = ObjectSettingsViewModel(objectId: objectId, spaceId: spaceId, output: output,
+                                        quickCapture: quickCapture, preparedSession: preparedSession)
         self._viewModel = State(wrappedValue: ObjectSettingsMenuViewModel(viewModel: vm, quickCapture: quickCapture))
         self.labelView = labelView()
         self.additionalMenuItems = additionalMenuItems()
@@ -45,12 +47,22 @@ struct ObjectSettingsMenuView<LabelView: View, AdditionalMenuItems: View>: View 
             await viewModel.startTasks()
         }
         .anytypeSheet(isPresented: viewModel.showConflictAlert) {
-            ObjectSettingsResolveConflictAlert {
+            ObjectSettingsResolveConflictAlert(
+                prepareAction: viewModel.viewModel.hasPreparedSource ? { viewModel.prepareConflictReset() } : nil,
+                publish: viewModel.viewModel.hasPreparedSource ? { action in
+                    try viewModel.viewModel.withCurrentSource(action)
+                } : nil
+            ) {
                 try await viewModel.onTapResolveConflictApprove()
             }
         }
         .anytypeSheet(isPresented: viewModel.showDeleteChatConfirmation) {
-            ChatDeleteChatAlert {
+            ChatDeleteChatAlert(
+                prepareAction: viewModel.viewModel.hasPreparedSource ? { viewModel.prepareArchiveConfirmation() } : nil,
+                publish: viewModel.viewModel.hasPreparedSource ? { action in
+                    try viewModel.viewModel.withCurrentSource(action)
+                } : nil
+            ) {
                 try await viewModel.viewModel.changeArchiveState()
             }
         }
@@ -95,9 +107,7 @@ struct ObjectSettingsMenuView<LabelView: View, AdditionalMenuItems: View>: View 
             settingMenuItem(setting)
         case .action(let action):
             Button(role: viewModel.isDestructiveAction(action) ? .destructive : nil) {
-                Task {
-                    await viewModel.handleAction(action)
-                }
+                viewModel.scheduleAction(action)
             } label: {
                 Label {
                     Text(action.title)
@@ -134,9 +144,7 @@ struct ObjectSettingsMenuView<LabelView: View, AdditionalMenuItems: View>: View 
 
     private func defaultSettingMenuItem(_ setting: ObjectSetting) -> some View {
         Button {
-            Task {
-                await viewModel.handleSetting(setting)
-            }
+            viewModel.scheduleSetting(setting)
         } label: {
             Label {
                 Text(setting.title)

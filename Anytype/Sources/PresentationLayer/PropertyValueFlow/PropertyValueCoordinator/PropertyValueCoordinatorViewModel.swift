@@ -26,15 +26,28 @@ final class PropertyValueCoordinatorViewModel:
     private let relation: Property
     private let objectDetails: ObjectDetails
     private let analyticsType: AnalyticsEventsRelationType
+    private let preparedSession: PreparedEditorPageSession?
     private weak var output: (any PropertyValueCoordinatorOutput)?
 
     var toastBarData: ToastBarData?
     var safariUrl: URL?
+
+    private var originalScope: OriginalEditorPropertyScope? {
+        preparedSession.map {
+            OriginalEditorPropertyScope(preparedSession: $0, objectId: objectDetails.id, spaceId: objectDetails.spaceId)
+        }
+    }
+
+    private func publish(_ operation: () -> Void) {
+        if let scope = originalScope { try? scope.withCurrent(operation) }
+        else { operation() }
+    }
     
     init(data: PropertyValueData, output: (any PropertyValueCoordinatorOutput)?) {
         self.relation = data.relation
         self.objectDetails = data.objectDetails
         self.analyticsType = data.analyticsType
+        self.preparedSession = data.preparedSession
         self.output = output
 
         NotificationCenter.default.addObserver(
@@ -45,12 +58,15 @@ final class PropertyValueCoordinatorViewModel:
             guard let self else { return }
             let notifiedSpace = notification.userInfo?["spaceId"] as? String
             if notifiedSpace == nil || notifiedSpace == self.objectDetails.spaceId {
-                self.identityRevision &+= 1
+                self.publish { self.identityRevision &+= 1 }
             }
         }
     }
     
     func propertyModule() -> AnyView {
+        if let scope = originalScope, (try? scope.withCurrent {}) == nil {
+            return EmptyView().eraseToAnyView()
+        }
         _ = identityRevision
         let status = PinkhaTorahPropertyPolicy.shared.internalIdentityStatus(spaceId: objectDetails.spaceId)
         switch status {
@@ -68,6 +84,9 @@ final class PropertyValueCoordinatorViewModel:
             }
         }
         if TorahNativePropertyPresentation.definition(relation.key) != nil {
+            // This separate original Torah session must receive the retained
+            // page authority before it may be created by the external Host.
+            guard preparedSession == nil else { return EmptyView().eraseToAnyView() }
             mediumDetent = false
             return TorahNativePropertyEditorView(
                 spaceId: objectDetails.spaceId, objectId: objectDetails.id,
@@ -85,7 +104,8 @@ final class PropertyValueCoordinatorViewModel:
                 objectId: objectDetails.id,
                 spaceId: objectDetails.spaceId,
                 selectionMode: .single,
-                analyticsType: analyticsType
+                analyticsType: analyticsType,
+                preparedSession: preparedSession
             )
             mediumDetent = status.values.isNotEmpty || !relation.isEditable
             let selectedOptionsIds = status.values.compactMap { $0.id }
@@ -107,7 +127,8 @@ final class PropertyValueCoordinatorViewModel:
                 objectId: objectDetails.id,
                 spaceId: objectDetails.spaceId,
                 selectionMode: .multi,
-                analyticsType: analyticsType
+                analyticsType: analyticsType,
+                preparedSession: preparedSession
             )
             mediumDetent = tag.selectedTags.isNotEmpty || !relation.isEditable
             let selectedOptionsIds = tag.selectedTags.compactMap { $0.id }
@@ -129,7 +150,8 @@ final class PropertyValueCoordinatorViewModel:
                 objectId: objectDetails.id,
                 spaceId: objectDetails.spaceId,
                 selectionMode: .multi,
-                analyticsType: analyticsType
+                analyticsType: analyticsType,
+                preparedSession: preparedSession
             )
             mediumDetent = object.selectedObjects.isNotEmpty || !relation.isEditable
             return ObjectPropertyListCoordinatorView(
@@ -157,7 +179,8 @@ final class PropertyValueCoordinatorViewModel:
                 objectId: objectDetails.id,
                 spaceId: objectDetails.spaceId,
                 selectionMode: .multi,
-                analyticsType: analyticsType
+                analyticsType: analyticsType,
+                preparedSession: preparedSession
             )
             mediumDetent = file.files.isNotEmpty || !relation.isEditable
             return ObjectPropertyListCoordinatorView(
@@ -223,7 +246,8 @@ final class PropertyValueCoordinatorViewModel:
                 relationKey: date.key,
                 objectId: objectDetails.id,
                 spaceId: objectDetails.spaceId,
-                analyticsType: analyticsType
+                analyticsType: analyticsType,
+                preparedSession: preparedSession
             )
             return PropertyCalendarCoordinatorView(
                 date: dateValue,
@@ -252,7 +276,8 @@ final class PropertyValueCoordinatorViewModel:
             relationKey: relationKey,
             objectId: objectDetails.id,
             spaceId: objectDetails.spaceId,
-            analyticsType: analyticsType
+            analyticsType: analyticsType,
+            preparedSession: preparedSession
         )
         
         return TextPropertyEditingView(
@@ -274,20 +299,23 @@ final class PropertyValueCoordinatorViewModel:
     // MARK: - ObjectPropertyListCoordinatorModuleOutput
     
     func onObjectOpen(screenData: ScreenData) {
-        output?.showEditorScreen(data: screenData)
+        publish { output?.showEditorScreen(data: screenData) }
     }
     
     // MARK: - TextPropertyActionButtonViewModelDelegate
     
     func canOpenUrl(_ url: URL) -> Bool {
-        UIApplication.shared.canOpenURL(url.urlByAddingHttpIfSchemeIsEmpty())
+        if let scope = originalScope {
+            return (try? scope.withCurrent { UIApplication.shared.canOpenURL(url.urlByAddingHttpIfSchemeIsEmpty()) }) ?? false
+        }
+        return UIApplication.shared.canOpenURL(url.urlByAddingHttpIfSchemeIsEmpty())
     }
     
     func openUrl(_ url: URL) {
-        safariUrl = url
+        publish { safariUrl = url }
     }
     
     func showActionSuccessMessage(_ text: String) {
-        toastBarData = ToastBarData(text, type: .success)
+        publish { toastBarData = ToastBarData(text, type: .success) }
     }
 }

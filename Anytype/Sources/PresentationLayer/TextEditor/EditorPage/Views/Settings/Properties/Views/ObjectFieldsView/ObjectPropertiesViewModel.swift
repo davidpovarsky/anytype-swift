@@ -32,6 +32,8 @@ final class ObjectPropertiesViewModel {
     @ObservationIgnored
     private let document: any BaseDocumentProtocol
     @ObservationIgnored
+    private let preparedSession: PreparedEditorPageSession?
+    @ObservationIgnored
     private let sectionsBuilder = PropertiesSectionBuilder()
     @ObservationIgnored
     private var latestParsedProperties = ParsedProperties.empty
@@ -53,29 +55,53 @@ final class ObjectPropertiesViewModel {
     
     init(
         document: some BaseDocumentProtocol,
-        output: (any PropertiesListModuleOutput)?
+        output: (any PropertiesListModuleOutput)?,
+        preparedSession: PreparedEditorPageSession? = nil
     ) {
         self.document = document
         self.output = output
+        self.preparedSession = preparedSession
         self.latestParsedProperties = document.parsedProperties
         self.typeId = Self.resolvedTypeId(for: document.details)
         if document.details != nil {
             rebuildSections(from: document.parsedProperties)
         }
     }
+
+    private var originalEditorScope: OriginalEditorPropertyScope? {
+        preparedSession.map {
+            OriginalEditorPropertyScope(preparedSession: $0, objectId: document.objectId,
+                                        spaceId: document.spaceId, document: document)
+        }
+    }
+
+    private func withCurrentSource<Value>(_ operation: () throws -> Value) throws -> Value {
+        if let scope = originalEditorScope { return try scope.withCurrent(operation) }
+        return try operation()
+    }
+
+    private func requireQualifiedSchemaRoute() throws {
+        guard let scope = originalEditorScope else { return }
+        try scope.withCurrent { throw EditorDocumentWriteError.rejected(.unqualifiedDispatch) }
+    }
     
     func setupSubscriptions() async {
-        if !document.isOpened {
+        guard (try? withCurrentSource {}) != nil else { return }
+        if preparedSession == nil && !document.isOpened {
             try? await document.open()
         }
-        latestParsedProperties = document.parsedProperties
-        rebuildSections(from: document.parsedProperties)
+        guard (try? withCurrentSource {
+            latestParsedProperties = document.parsedProperties
+            rebuildSections(from: document.parsedProperties)
+        }) != nil else { return }
 
-        Task { [document] in
-            await PinkhaTorahNativePropertyCatalog.shared.ensureSpaceAndTypeReady(
-                spaceId: document.spaceId,
-                typeId: Self.resolvedTypeId(for: document.details)
-            )
+        if preparedSession == nil {
+            Task { [document] in
+                await PinkhaTorahNativePropertyCatalog.shared.ensureSpaceAndTypeReady(
+                    spaceId: document.spaceId,
+                    typeId: Self.resolvedTypeId(for: document.details)
+                )
+            }
         }
 
         NotificationCenter.default.addObserver(
@@ -86,14 +112,18 @@ final class ObjectPropertiesViewModel {
             guard let self else { return }
             let notifiedSpace = notification.userInfo?["spaceId"] as? String
             if notifiedSpace == nil || notifiedSpace == self.document.spaceId {
-                self.latestParsedProperties = self.document.parsedProperties
-                self.rebuildSections(from: self.latestParsedProperties)
+                try? self.withCurrentSource {
+                    self.latestParsedProperties = self.document.parsedProperties
+                    self.rebuildSections(from: self.latestParsedProperties)
+                }
             }
         }
 
         for await properties in document.parsedPropertiesPublisher.values {
-            latestParsedProperties = properties
-            rebuildSections(from: properties)
+            guard (try? withCurrentSource {
+                latestParsedProperties = properties
+                rebuildSections(from: properties)
+            }) != nil else { return }
         }
     }
 
@@ -135,10 +165,17 @@ final class ObjectPropertiesViewModel {
     }
     
     func handleTapOnRelation(_ relation: Property) {
+        guard (try? withCurrentSource {}) != nil else { return }
         guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(
             propertyId: relation.id, key: relation.key, spaceId: document.spaceId
         ) else { return }
-        output?.editRelationValueAction(document: document, relationKey: relation.key)
+        if case .checkbox = relation, relation.isEditable, let scope = originalEditorScope {
+            try? scope.withActionCallback {
+                output?.editRelationValueAction(document: document, relationKey: relation.key)
+            }
+        } else {
+            try? withCurrentSource { output?.editRelationValueAction(document: document, relationKey: relation.key) }
+        }
     }
     
     func removeRelation(_ relation: Property) {
@@ -146,11 +183,17 @@ final class ObjectPropertiesViewModel {
         guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(
             propertyId: relation.id, key: relation.key, spaceId: document.spaceId
         ) else { return }
-        Task {
-            try await propertiesService.removeProperty(objectId: document.objectId, propertyKey: relation.key)
-            let relationDetails = try propertyDetailsStorage.relationsDetails(key: relation.key, spaceId: document.spaceId)
-            AnytypeAnalytics.instance().logDeleteRelation(format: relationDetails.format, key: relationDetails.analyticsKey, route: .object)
+        let operation: @MainActor @Sendable () async throws -> Void = { [self] in
+            let service = try originalEditorScope?.originalProperties(propertiesService) ?? propertiesService
+            try await service.removeProperty(objectId: document.objectId, propertyKey: relation.key)
+            try withCurrentSource {
+                let relationDetails = try propertyDetailsStorage.relationsDetails(key: relation.key, spaceId: document.spaceId)
+                AnytypeAnalytics.instance().logDeleteRelation(format: relationDetails.format, key: relationDetails.analyticsKey, route: .object)
+            }
         }
+        if let scope = originalEditorScope {
+            scope.schedule(requiredPermissions: OriginalEditorPropertyScope.listPermissions, operation: operation)
+        } else { Task { try await operation() } }
     }
 
     func isObjectAttachedNative(_ relation: Property) -> Bool {
@@ -159,11 +202,13 @@ final class ObjectPropertiesViewModel {
     }
     
     func onEditTap() {
+        guard (try? requireQualifiedSchemaRoute()) != nil else { return }
         guard let typeId else { return }
-        output?.showTypeRelationsView(typeId: typeId)
+        try? withCurrentSource { output?.showTypeRelationsView(typeId: typeId) }
     }
 
     func onAddPropertyTap() {
+        guard (try? requireQualifiedSchemaRoute()) != nil else { return }
         guard canAddProperty else { return }
         let properties = document.parsedProperties
         relationsSearchData = PropertiesSearchData(
@@ -176,6 +221,7 @@ final class ObjectPropertiesViewModel {
     }
     
     func addRelationToType(_ relation: Property) {
+        guard (try? requireQualifiedSchemaRoute()) != nil else { return }
         guard let details = document.details else { return }
         guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(
             propertyId: relation.id, key: relation.key, spaceId: details.spaceId
@@ -198,6 +244,7 @@ final class ObjectPropertiesViewModel {
     }
 
     func revealHiddenRelation(_ relation: Property) {
+        guard (try? requireQualifiedSchemaRoute()) != nil else { return }
         guard let details = document.details else { return }
         guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(
             propertyId: relation.id, key: relation.key, spaceId: details.spaceId
@@ -218,16 +265,20 @@ final class ObjectPropertiesViewModel {
     }
     
     func onConflictingInfoTap() {
-        AnytypeAnalytics.instance().logConflictFieldHelp()
-        showConflictingInfo.toggle()
+        try? withCurrentSource {
+            AnytypeAnalytics.instance().logConflictFieldHelp()
+            showConflictingInfo.toggle()
+        }
     }
     
     func toggleSectionExpansion(_ sectionId: String) {
-        withAnimation(.fastSpring) {
-            if expandedSections.contains(sectionId) {
-                expandedSections.remove(sectionId)
-            } else {
-                expandedSections.insert(sectionId)
+        try? withCurrentSource {
+            withAnimation(.fastSpring) {
+                if expandedSections.contains(sectionId) {
+                    expandedSections.remove(sectionId)
+                } else {
+                    expandedSections.insert(sectionId)
+                }
             }
         }
     }

@@ -5,8 +5,8 @@ struct ObjectIconPicker: View {
 
     @State var viewModel: ObjectIconPickerViewModel
 
-    init(data: ObjectIconPickerData) {
-        _viewModel = State(initialValue: ObjectIconPickerViewModel(data: data))
+    init(data: ObjectIconPickerData, dependencies: ObjectHeaderViewModelDependencies = .original()) {
+        _viewModel = State(initialValue: ObjectIconPickerViewModel(data: data, dependencies: dependencies))
     }
 
     var body: some View {

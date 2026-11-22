@@ -13,6 +13,7 @@ protocol ViewControllerProviderProtocol {
 final class ViewControllerProvider: ViewControllerProviderProtocol {
     
     private weak var sceneWindow: UIWindow?
+    private weak var scopedRootViewController: UIViewController?
         
     // MARK: - ViewControllerProviderProtocol
     
@@ -21,13 +22,19 @@ final class ViewControllerProvider: ViewControllerProviderProtocol {
     }
     
     var rootViewController: UIViewController? {
-        return sceneWindow?.rootViewController
+        return scopedRootViewController ?? sceneWindow?.rootViewController
     }
     
     var topVisibleController: UIViewController? {
-        return sceneWindow?.rootViewController?.topVisibleController
+        return rootViewController?.topVisibleController
     }
     
+    /// Used only by a separately retained external editor provider. The
+    /// original app singleton and its scene window are never reconfigured.
+    func setScopedRootViewController(_ viewController: UIViewController) {
+        self.scopedRootViewController = viewController
+    }
+
     func setSceneWindow(_ sceneWindow: UIWindow?) {
         self.sceneWindow = sceneWindow
     }
