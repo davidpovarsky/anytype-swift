@@ -1,0 +1,110 @@
+name: Original shared SDK lock resolution only waxqv0pw
+
+on:
+  push:
+    branches:
+      - codex/otzaria-lock-resolution-waxqv0pw-20261122
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: original-shared-lock-resolution-waxqv0pw
+  cancel-in-progress: false
+
+jobs:
+  resolve-only:
+    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-lock-resolution-waxqv0pw-20261122'
+    runs-on: xcode-27
+    timeout-minutes: 85
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        # Anytype already has another owner's real resolver lane at19babe.
+        # Keep it disabled here; the immutable8d reference contract is evidence.
+        target: [maktabah]
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+    steps:
+      - name: Checkout exact isolated resolution implementation
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: resolver-kit
+          persist-credentials: false
+      - name: Checkout immutable producer source
+        if: matrix.target == 'anytype'
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/anytype-swift
+          ref: 8d80a2754c1a21597ef6ac65c5ad01a3204909b1
+          path: owned-inputs/anytype-waxqv0pw
+          persist-credentials: false
+      - name: Checkout immutable consumer source
+        if: matrix.target == 'maktabah'
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/Maktabah
+          ref: 813fbe79c1b325ee21a8c2be78bb86577f44bf6c
+          path: owned-inputs/maktabah-waxqv0pw
+          persist-credentials: false
+      - name: Checkout the original canonical Hanlin source
+        if: matrix.target == 'anytype'
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/hanlin-ai
+          ref: e00498e33f106cc43be0476ffa2e09329c8ca300
+          path: owned-inputs/hanlin-waxqv0pw
+          persist-credentials: false
+      - name: Bind fresh producer checkout to original installer branch
+        if: matrix.target == 'anytype'
+        working-directory: owned-inputs/anytype-waxqv0pw
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 8d80a2754c1a21597ef6ac65c5ad01a3204909b1
+          git switch --create codex/otzaria-original-editor-framework-v11-host-reviewed-20261122 8d80a2754c1a21597ef6ac65c5ad01a3204909b1
+      - name: Use original native ARM64 Python contract
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Use recorded original native dependency Node runtime
+        if: matrix.target == 'maktabah'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.23.4'
+      - name: Use recorded original native dependency Ruby runtime
+        if: matrix.target == 'maktabah'
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3.14'
+      - name: Use recorded original CocoaPods implementation
+        if: matrix.target == 'maktabah'
+        run: |
+          set -euo pipefail
+          gem install cocoapods -v 1.17.0 --no-document
+          test "$(pod --version)" = 1.17.0
+      - name: Prepare original inputs and resolve only the exact reviewed graph
+        timeout-minutes: 75
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RESOLUTION_TARGET: ${{ matrix.target }}
+        run: |
+          set -euo pipefail
+          python3 resolver-kit/Tools/SharedSDKResolution/resolve_packages.py \
+            --contract "$GITHUB_WORKSPACE/resolver-kit/Tools/SharedSDKResolution/contract.json" \
+            --kind "$RESOLUTION_TARGET" \
+            --root "$GITHUB_WORKSPACE/owned-inputs/$RESOLUTION_TARGET-waxqv0pw" \
+            --output "$GITHUB_WORKSPACE/resolution-evidence-waxqv0pw/$RESOLUTION_TARGET" \
+            --hanlin-source "$GITHUB_WORKSPACE/owned-inputs/hanlin-waxqv0pw"
+      - name: Retain actual resolver commands locks and source checks
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Original-Lock-Resolution-waxqv0pw-${{ matrix.target }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: resolution-evidence-waxqv0pw/${{ matrix.target }}
+          if-no-files-found: error
+          retention-days: 14
