@@ -1,0 +1,48 @@
+{
+  "status": "PASS_ROOT_ORIGINAL_RPC_BASELINE_FAILURE_REVIEW",
+  "run_id": 45055852172,
+  "attempt": 1,
+  "head": "ca6eb576d0ac105ef260bc2703b7d0dc186a8656",
+  "artifact_id": 14768420988,
+  "archive_bytes": 11898059,
+  "archive_sha256": "8d76ee6f186f32985c276dba1f79e2ee82e0db7c1ad9c259ce4c2350b43fc769",
+  "payloads_verified": 2986,
+  "crc": true,
+  "commands": 33,
+  "successful_commands": 32,
+  "failed_commands": 1,
+  "command_streams_verified": 66,
+  "owned_groups_drained": 33,
+  "owned_work_removed": true,
+  "local_control_inputs_verified": 12,
+  "private_materialized_copies": {
+    "count": 2,
+    "files_each": 1038,
+    "bytes_each": 20082375
+  },
+  "baseline_generated_and_failure_time_rows_identical": {
+    "middleware": 37,
+    "native": 11,
+    "swift": 693
+  },
+  "baseline_tracked_drift": {
+    "native": 0,
+    "swift": 0
+  },
+  "baseline_go_packages": "Actual go build ./pb ./pb/service PASS",
+  "swift_failure": {
+    "error": "no such module 'SwiftProtobuf'",
+    "search_path": "/Users/runner/work/anytype-swift/anytype-swift/build/Schema-RPC-Owned-Work/baseline-swift/build/swift-protobuf/.build/release/Modules",
+    "precise_built_module_location": "NOT_RETAINED_OR_OBSERVED",
+    "duration_seconds": 5.434
+  },
+  "candidate_generation": "NOT_REACHED; candidate failure-time files are not generated-candidate acceptance",
+  "limitations": [
+    "Compiled SwiftProtobuf module tree and generator binaries were not archived; executable fingerprints do not replace those bytes.",
+    "Final source/tool immutability checks were not reached. Their absence is preserved.",
+    "Original generators and baseline Go compile succeeded; Swift baseline typecheck, candidate generation/typechecks, fullSDK and native integration remain open."
+  ],
+  "verifier_layout_correction": "Initial root verifier assumed separate middleware directories in failure-time and generated namespaces and stopped at each. The actual37 middleware rows live under swift in both namespaces; only the verifier mappings were corrected, with original artifact untouched.",
+  "new_controls_or_artifact_downloads_by_root": 0,
+  "native_tests_executed": 0
+}
