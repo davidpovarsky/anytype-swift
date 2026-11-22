@@ -1,0 +1,914 @@
+{
+  "schema": 2,
+  "sdk_parent": "a9aa64bb8556ba5504ed0f5fe528cd1ce5f91efc",
+  "sdk_tree": "8145b7ccc8c651d46055949cabe2eb10a7271789",
+  "body_parent": "f9cf2a5a48315d11c9e9d7cc53f1bd075171623d",
+  "body_product_head": "4d73ccd6c0ff2e744c3abdf0b138779c17e45163",
+  "common_base": "b5162d777e3ebc5c4c0d044e02b52347c0c3dd6e",
+  "body_changed_files": [
+    {
+      "path": ".github/workflows/otzaria-native-body-semantics.yml",
+      "sha": "4cda7c383759e38b2e7f90d0bb86613669ef4193",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/Annotations/OriginalAnnotationObjectReadback.swift",
+      "sha": "5f1bf96171c25c32ddc47894b6e300d0b277f314",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/.gitattributes",
+      "sha": "e3fa09a17089d35fde22b0cee44d665d6cfdb84c",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/audit/MODEL_DEPENDENCY_CORRECTION.json",
+      "sha": "8e50ce157f8479def76196dc52cfa3b064a6eecc",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/audit/PEER_REVIEW.json",
+      "sha": "897d8ef1738cf837a108970aba62cde0f7f41e67",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/audit/POLICY_CALLSITES.json",
+      "sha": "d11311f8aef648d638a39e8de1a7e01f6837a0b5",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/audit/PUSH_WORKFLOW_AUDIT.json",
+      "sha": "6055063b3a4a3f658f09f61662c662c0cb83908b",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/audit/SEMANTIC_RESULT_VERIFICATION.json",
+      "sha": "b56c9cec0129b9c0a13032eb32e7ae77e5f9af3b",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/audit/SNAPSHOT_WIRE_TYPE_CORRECTION.json",
+      "sha": "26b3149b5913e9e1e3b6c59b7f4ee7cdb1498acd",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/audit/SOURCE_AUDIT.json",
+      "sha": "94361fb5e5bebc9d331f31255cde59e2650c668c",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/controls/boundary-vectors.json",
+      "sha": "bd7ac3cbbba84ff87ecf6a842b5f6aa38a6fb5a4",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/controls/build_boundary_vectors.py",
+      "sha": "59e74bbb73f667af28fb217599eeb39c9327abbb",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/controls/build_map_entry_vectors.py",
+      "sha": "fef4430109599c6c5234a03e3a1f6b5dfa49dadf",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/controls/generated-model-support.json",
+      "sha": "b83643f0e63841af5a5981d03fa8e2e8ca75f3f0",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/controls/generated-models.json",
+      "sha": "221b0e10e046a5acfb6f382648b13f764d759023",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/controls/map-entry-vectors.json",
+      "sha": "17758044be9977e38739685bffc3c2c98edca210",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/controls/NativeBodyBoundaryControls.swift",
+      "sha": "62bfb12dbc2abd3bea26d689f76e606ca96b3e26",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/controls/NativeBodyMapEntryControls.swift",
+      "sha": "7753d34f0e9ba4b9368ee44318d8a4bbe0252514",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/controls/NativeBodySemanticControls.swift",
+      "sha": "8706ed5c9c876faf5ac234e5370e11e841d41de1",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/controls/run_boundary_controls_windows.py",
+      "sha": "3fac7776c0b67cc6b68216e3a05d105698ceb7e8",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/controls/run_map_entry_controls_windows.py",
+      "sha": "8e3caa764e3955a25e1fb1366bb4b3749de3cd17",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/controls/run_semantic_controls.py",
+      "sha": "790c2e31e36c623b0b62ce486f752606e993d4be",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/boundary-controls-v1/compile.stderr.log",
+      "sha": "378ca98c30733bf78760cb058a2c97a9c68d6e52",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/boundary-controls-v1/compile.stdout.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/boundary-controls-v1/controls.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/boundary-controls-v1/controls.stdout.log",
+      "sha": "94287cd691e95082afa0c4f3a799c286f372a5b7",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/boundary-controls-v1/parse-1.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/boundary-controls-v1/parse-1.stdout.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/boundary-controls-v1/parse-2.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/boundary-controls-v1/parse-2.stdout.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/boundary-controls-v1/parse-3.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/boundary-controls-v1/parse-3.stdout.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/boundary-controls-v1/parse-4.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/boundary-controls-v1/parse-4.stdout.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/boundary-controls-v1/RESULT.json",
+      "sha": "e87b9f1078dded1439319a635f9ef84226616354",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/boundary-controls-v1/retained-inputs/controls/TorahAnnotationNativeIdentity.swift",
+      "sha": "3add6036bbf6c77585ba22c79e19389a62d26267",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/boundary-controls-v1/retained-inputs/OriginalEditorFramework/OriginalAnnotationNativeMapKeyGuard.swift",
+      "sha": "a8301a98289b7cd184ec3f783ce072e2f33abc4e",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/boundary-controls-v1/retained-inputs/OriginalEditorFramework/OriginalAnnotationNativeSnapshotWire.swift",
+      "sha": "987f571ce2902ddfab25233b2c7d1883e6eed330",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/ARTIFACTS.json",
+      "sha": "8357d56d0e4f095e9b6ccb672079de13a3a4d365",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/ARTIFACTS.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/download.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/download.stdout.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/downloaded-evidence/build.stderr.log",
+      "sha": "223b1a5837da1318b852cfd729b0b50cc3c5991a",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/downloaded-evidence/build.stdout.log",
+      "sha": "4ca590d938b517e03a00d1bcd66cf24b92d56caa",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/downloaded-evidence/Package.swift",
+      "sha": "be0482d51cb3763b17bb366d689651466618b3ed",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/downloaded-evidence/RESULT.json",
+      "sha": "55ae0e27a8f67c4ec891bfe7f880ae81b1aa9660",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/downloaded-evidence/source-head.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/downloaded-evidence/source-head.stdout.log",
+      "sha": "756817f4e9cb570c68846e08cf5ce23dc243192d",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/downloaded-evidence/source-status.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/downloaded-evidence/source-status.stdout.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/downloaded-evidence/swift-version.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/downloaded-evidence/swift-version.stdout.log",
+      "sha": "367d7c5bb5c51aae377fd56e8e3be78f42198657",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/downloaded-evidence/zlib-version.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/downloaded-evidence/zlib-version.stdout.log",
+      "sha": "7e32cd56983e65ffbfcfeb39146e7ee67e986e10",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/gh-run.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/gh-run.stdout.log",
+      "sha": "17682197b3fcd5776cf5d5e57a33e5da101a6908",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/JOBS.json",
+      "sha": "ef6e4478ec989025aa379345bf5e28a022c72d36",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/JOBS.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/RUN_INITIAL.json",
+      "sha": "06fdc75b483b04fb364086b9831718a3c118269f",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/RUN_INITIAL.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/RUN_TERMINAL_OR_LAST.json",
+      "sha": "fceedb18ac8fa0eaf03decee7bdfbd1f5968f2f6",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45035204985/WATCH_RECEIPT.json",
+      "sha": "b19ae9f79fc952e77977e2ef74af23ca19612539",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/ARTIFACTS.json",
+      "sha": "eb19bd2b35baf29b2c3a744cb37fba1a02d512d6",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/ARTIFACTS.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/download.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/download.stdout.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/downloaded-evidence/build.stderr.log",
+      "sha": "8d8468c1a8d40a128e84be82d4ee2bac1dd4a482",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/downloaded-evidence/build.stdout.log",
+      "sha": "c4f866de6c66650792b428a6a21b05792c7fd12c",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/downloaded-evidence/Package.resolved",
+      "sha": "2c26e5fe08feada083f24a3d13d61359ae75777b",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/downloaded-evidence/Package.swift",
+      "sha": "be0482d51cb3763b17bb366d689651466618b3ed",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/downloaded-evidence/RESULT.json",
+      "sha": "743a117dd8889b6c040056e23279c488a990644f",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/downloaded-evidence/source-head.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/downloaded-evidence/source-head.stdout.log",
+      "sha": "66a85e26e8e33af219e067fd2c66a15e6cd4ae82",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/downloaded-evidence/source-status.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/downloaded-evidence/source-status.stdout.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/downloaded-evidence/swift-version.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/downloaded-evidence/swift-version.stdout.log",
+      "sha": "367d7c5bb5c51aae377fd56e8e3be78f42198657",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/downloaded-evidence/zlib-version.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/downloaded-evidence/zlib-version.stdout.log",
+      "sha": "7e32cd56983e65ffbfcfeb39146e7ee67e986e10",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/gh-run.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/gh-run.stdout.log",
+      "sha": "2181ca5dbed06460c4bb78c20111e4acacb9a8bc",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/JOBS.json",
+      "sha": "2c4c3de9ceff4143117b3522ceb8510b780283ec",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/JOBS.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/RUN_INITIAL.json",
+      "sha": "0a22d44cb3a019c84101edb7f6fc309d9dcf188b",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/RUN_INITIAL.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/RUN_LATEST.json",
+      "sha": "3fd4485dbe1ee816a7b4ace423e69530adadaaf2",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/RUN_LATEST.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/RUN_TERMINAL_OR_LAST.json",
+      "sha": "bc2b48c80cace996a7428fa2630bfa749b482caf",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45036034258/WATCH_RECEIPT.json",
+      "sha": "c8c67d40bbdf7084dddc763a559b467b0f005199",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/ARTIFACTS.json",
+      "sha": "64243351376247b1c3b076fc22bc0e92bbb35a6c",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/ARTIFACTS.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/download.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/download.stdout.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/downloaded-evidence/build.stderr.log",
+      "sha": "0293eb7eb9fbfaceaf0bf839f7670b10cb43bff2",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/downloaded-evidence/build.stdout.log",
+      "sha": "884f3c6d149e133fe15a969613ed58fa629ccead",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/downloaded-evidence/Package.resolved",
+      "sha": "2c26e5fe08feada083f24a3d13d61359ae75777b",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/downloaded-evidence/Package.swift",
+      "sha": "be0482d51cb3763b17bb366d689651466618b3ed",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/downloaded-evidence/RESULT.json",
+      "sha": "35764c8bf7ae15dddfa19bd0074d35177eaf392b",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/downloaded-evidence/semantic-controls.stderr.log",
+      "sha": "5e351110169a7fdbfcfcdc04a508e80d79cbf65d",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/downloaded-evidence/semantic-controls.stdout.log",
+      "sha": "2a468fb1c910843726a79ad7f5dd011775a1f622",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/downloaded-evidence/source-head.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/downloaded-evidence/source-head.stdout.log",
+      "sha": "6837655c080daee00dfbb8c2b7100a704ee2404d",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/downloaded-evidence/source-status.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/downloaded-evidence/source-status.stdout.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/downloaded-evidence/swift-version.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/downloaded-evidence/swift-version.stdout.log",
+      "sha": "367d7c5bb5c51aae377fd56e8e3be78f42198657",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/downloaded-evidence/zlib-version.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/downloaded-evidence/zlib-version.stdout.log",
+      "sha": "7e32cd56983e65ffbfcfeb39146e7ee67e986e10",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/gh-run.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/gh-run.stdout.log",
+      "sha": "483377d92c6b98ef1c91723d857d6800cd735a68",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/JOBS.json",
+      "sha": "b9d135b7781bea73d4b66af918b392f59ce82290",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/JOBS.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/RUN_INITIAL.json",
+      "sha": "324692d662538f82252f755bfea61c4824d4818f",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/RUN_INITIAL.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/RUN_LATEST.json",
+      "sha": "a7b7c2b3ac1db0fca203fdaef9d05bbeba447d93",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/RUN_LATEST.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/RUN_TERMINAL_OR_LAST.json",
+      "sha": "a39f326faae688c61956c86c21ee8d42e21c0560",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/linux-semantic-run-45037906356/WATCH_RECEIPT.json",
+      "sha": "8845afa453ed796190de4a5edb83938fba16a7e1",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/map-entry-controls-v1/compile.stderr.log",
+      "sha": "17a74cd117b7146733f07d26da38bf4639a638ea",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/map-entry-controls-v1/compile.stdout.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/map-entry-controls-v1/controls.stderr.log",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/map-entry-controls-v1/controls.stdout.log",
+      "sha": "762633f15cf67329ce839a06c1e9b1d9805c1ec1",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/evidence/map-entry-controls-v1/RESULT.json",
+      "sha": "17629eb0eb2bc3cd4a97002844894a8d97b0bddc",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/EXECUTION_PLAN.json",
+      "sha": "0e10e579553bf4f02e13b499f63d032270a42500",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/README.md",
+      "sha": "3c61d2297e728c2d40aba8be06bbacb2512bf55d",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/SOURCE_MANIFEST.json",
+      "sha": "d7ec29a3346c6560c551fc90ad332c4799437205",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAnnotationCreateRecovery.swift",
+      "sha": "4ff97632ec37b8f482384721ec26dd503d04f8b5",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "OriginalEditorFramework/AnytypeOriginalEditorNativeBodyReadback.swift",
+      "sha": "573be835265b7fb9d9ea86216b19e395f4785d35",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "OriginalEditorFramework/OriginalAnnotationNativeArchiveComparison.swift",
+      "sha": "2add3f44c6508e060726564453fb01bee39b6266",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "OriginalEditorFramework/OriginalAnnotationNativeArchiveLayout.swift",
+      "sha": "3cdccf777009d4e2320cb16fcea838f3b92fb88e",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "OriginalEditorFramework/OriginalAnnotationNativeMapKeyGuard.swift",
+      "sha": "d1b46c01dedfe1e08d0cd2b541358bdd9d7669e9",
+      "mode": "100644",
+      "type": "blob"
+    },
+    {
+      "path": "OriginalEditorFramework/OriginalAnnotationNativeSnapshotWire.swift",
+      "sha": "75bbd19e7e68975e47dc9d65f6abf62426febf20",
+      "mode": "100644",
+      "type": "blob"
+    }
+  ],
+  "sdk_changed_paths": [
+    ".github/workflows/pinkha-original-editor-framework.yml",
+    "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+    "Anytype/Sources/ServiceLayer/Account/EditorAccountWriteTransition.swift",
+    "Anytype/Sources/ServiceLayer/Auth/AuthService.swift",
+    "Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift",
+    "Modules/SecureService/SecureService/KeychainStore/KeychainStore+OriginalEditorQualification.swift",
+    "Modules/Services/Sources/Services/Auth/AuthMiddleService+OriginalEditorQualification.swift",
+    "Modules/Services/Sources/Services/Workspace/WorkspaceService.swift",
+    "OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+    "OriginalEditorFramework/AnytypeOriginalEditorQualificationRuntime.swift",
+    "Tools/OriginalEditor/Consumer/ConsumerApp.swift",
+    "Tools/OriginalEditor/clang_control_fixtures.py",
+    "Tools/OriginalEditor/clang_product_closure.py",
+    "Tools/OriginalEditor/framework_products.py",
+    "Tools/OriginalEditor/framework_profile.json",
+    "Tools/OriginalEditor/framework_profile.py",
+    "Tools/OriginalEditor/module_maps_fixture.json",
+    "Tools/OriginalEditor/product_inventory.py",
+    "Tools/OriginalEditor/public_host_contract.json",
+    "Tools/OriginalEditor/retain_unqualified_products.py",
+    "Tools/OriginalEditor/run_framework_acceptance.py",
+    "Tools/OriginalEditor/run_source_controls.py",
+    "Tools/OriginalEditor/test_amplitude_simulator_signing.py",
+    "Tools/OriginalEditor/test_clang_product_closure.py",
+    "Tools/OriginalEditor/test_framework.py",
+    "Tools/OriginalEditor/test_framework_flow.py",
+    "Tools/OriginalEditor/test_host_framework_contract.py",
+    "Tools/PinkhaNativeDerived/install_verified_heart.py",
+    "docs/pinkha/torah-integration/evidence/clang-declaration-export-20261122/ACTUAL_EXECUTION_PACKET_INDEX.json",
+    "docs/pinkha/torah-integration/evidence/clang-declaration-export-20261122/INPUTS.json",
+    "docs/pinkha/torah-integration/evidence/clang-declaration-export-20261122/INTEGRATION.json",
+    "docs/pinkha/torah-integration/evidence/clang-declaration-export-20261122/SOURCE_PROVENANCE.json",
+    "docs/pinkha/torah-integration/evidence/clang-declaration-export-20261122/execution-first/EXECUTION.json",
+    "docs/pinkha/torah-integration/evidence/clang-declaration-export-20261122/execution-first/RESULT.json",
+    "docs/pinkha/torah-integration/evidence/original-auth-startup-continuation-20261122/CALLSITE_REVIEW.json",
+    "docs/pinkha/torah-integration/evidence/original-auth-startup-continuation-20261122/README.md",
+    "docs/pinkha/torah-integration/evidence/original-auth-startup-continuation-20261122/SOURCE.json",
+    "docs/pinkha/torah-integration/evidence/original-auth-startup-continuation-20261122/stop-regression/AuthStopControls.swift",
+    "docs/pinkha/torah-integration/evidence/original-auth-startup-continuation-20261122/stop-regression/CAPTURE_CHANGE.diff",
+    "docs/pinkha/torah-integration/evidence/original-auth-startup-continuation-20261122/stop-regression/CAPTURE_COMPILE.json",
+    "docs/pinkha/torah-integration/evidence/original-auth-startup-continuation-20261122/stop-regression/EXECUTION.json",
+    "docs/pinkha/torah-integration/evidence/original-auth-startup-continuation-20261122/stop-regression/README.md",
+    "docs/pinkha/torah-integration/evidence/original-auth-startup-continuation-20261122/stop-regression/SOURCE.json",
+    "docs/pinkha/torah-integration/evidence/original-auth-startup-continuation-20261122/stop-regression/compile.stderr",
+    "docs/pinkha/torah-integration/evidence/original-auth-startup-continuation-20261122/stop-regression/compile.stdout",
+    "docs/pinkha/torah-integration/evidence/original-auth-startup-continuation-20261122/stop-regression/run.stderr",
+    "docs/pinkha/torah-integration/evidence/original-auth-startup-continuation-20261122/stop-regression/run.stdout",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/BUILD_PREPARATION.json",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/loginstate-actor-isolation/AUDIT.json",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/loginstate-actor-isolation/BUILD_PREPARATION.json",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/loginstate-actor-isolation/PROFILE.diff",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/loginstate-actor-isolation/REMOTE_SOURCE_VERIFICATION.json",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/loginstate-actor-isolation/SOURCE.diff",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/loginstate-actor-isolation/controls/LoginStateIsolationTypecheck.swift",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/loginstate-actor-isolation/controls/SOURCE.json",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/loginstate-actor-isolation/evidence/RESULT.json",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/loginstate-actor-isolation/evidence/typecheck.stderr.log",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/loginstate-actor-isolation/evidence/typecheck.stdout.log",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45030480333/DISCOVERY_CORRECTION.json",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45030480333/WATCH_RECEIPT.json",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45030480333/artifact-14756809224.zip",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45030480333/source-admission.json",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45030480333/source-controls.stderr.log",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45031200131/CONTROL_CORRECTION.json",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45031200131/TEST.diff",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45031200131/WATCH_RECEIPT.json",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45031200131/affected-control/EXECUTION.json",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45031200131/affected-control/RESULT.json",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45031200131/affected-control/driver-trace/test_whole_driver_keeps_strict_gate_and_exact_transformed_consumer_inputs.json",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45031200131/affected-control/stderr.log",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45031200131/raw-evidence.zip",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45031200131/source-admission.json",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45034016674/COMPILER_DIAGNOSTICS.log",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45034016674/ROOT_ARCHIVE_VERIFICATION.json",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45034016674/ROOT_INTAKE_REVIEW.json",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45034016674/TERMINAL_SUMMARY.json",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45034016674/WATCH_RECEIPT.json",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45034016674/execution.json",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45034016674/framework-build.command.json",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45034016674/raw-evidence.zip",
+    "docs/pinkha/torah-integration/evidence/original-editor-composed-v12-20261122/run-45034016674/source-controls-result.json",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/README.md",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/SOURCE.json",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/linux/RESULT.json",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/linux/collector/CASES.json",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/linux/collector/SELECTED.json",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/linux/collector/stderr.txt",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/linux/collector/stdout.txt",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/linux/public/CASES.json",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/linux/public/RESULT.json",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/linux/public/SELECTED.json",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/linux/public/stderr.txt",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/linux/public/stdout.txt",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/linux/public/xunit.xml",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/reporting-continuation/SUMMARY.json",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/reporting-continuation/retained-outcomes.xml",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/source-controls/controls-runner-v1/PLAN.md",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/source-controls/controls-runner-v1/RUNNERS.json",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/source-controls/controls-runner-v1/control_child.py",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/source-controls/controls-runner-v1/run_python_controls.py",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/source-controls/controls-runner-v1/run_swift_parses.py",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/source-controls/controls-source-v1/INPUTS.json",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/source-controls/controls-source-v1/SOURCE.json",
+    "docs/pinkha/torah-integration/evidence/stageb-process-resume-continuation-20261122/source-controls/controls-source-v1/test_process_receipts.py"
+  ],
+  "overlapping_paths": [],
+  "project_blob": "8bcfe29be2d3d1db4badc5a302921661b6806d40",
+  "planned_build_branch": "codex/otzaria-original-editor-framework-v13-body-reviewed-20261122",
+  "planned_review_branch": "codex/otzaria-sdk-v13-body-prepared-20261122",
+  "retained_body_semantic_run": "45037906356",
+  "retained_body_result_sha256": "23ca9dceda9e4ad0bf6b015eaf8500efb96d51717c02df00043e6ace8a4903f7"
+}

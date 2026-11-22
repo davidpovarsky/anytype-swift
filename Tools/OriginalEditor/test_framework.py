@@ -94,7 +94,7 @@ class OriginalProjectPreservation(unittest.TestCase):
 
     def test_original_heart_installer_changes_only_one_new_branch_choice(self):
         raw = (ROOT / 'Tools/PinkhaNativeDerived/install_verified_heart.py').read_bytes()
-        suffix = b",\n                             'codex/otzaria-original-editor-framework-v12-composed-20261122'"
+        suffix = b",\n                             'codex/otzaria-original-editor-framework-v13-body-reviewed-20261122'"
         self.assertEqual(raw.count(suffix), 1)
         old = raw.replace(suffix, b'', 1)
         actual = hashlib.sha1(b'blob ' + str(len(old)).encode() + b'\0' + old).hexdigest()

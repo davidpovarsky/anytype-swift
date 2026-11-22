@@ -8,7 +8,7 @@ import subprocess
 
 from pbx_source import loads, object_text, require
 
-BRANCH = 'codex/otzaria-original-editor-framework-v12-composed-20261122'
+BRANCH = 'codex/otzaria-original-editor-framework-v13-body-reviewed-20261122'
 REPOSITORY = 'davidpovarsky/anytype-swift'
 TARGET = 'AnytypeOriginalEditor'
 APP_TARGET = '0303ECFA22D8EDAA005C552B'
@@ -36,8 +36,8 @@ def read_manifest():
     require(set(value.get('reviewed_shared_dependency_objects', {})) == {
         '5333421A262E249100238121', '2A685D582B7B854200456E08', 'FA1000002F000001006805CC'},
         'Unreviewed shared runtime dependency object set')
-    require(len(value.get('framework_facade_sources', [])) == 7
-            and len(set(value['framework_facade_sources'])) == 7,
+    require(len(value.get('framework_facade_sources', [])) == 12
+            and len(set(value['framework_facade_sources'])) == 12,
             'Incomplete reviewed Host facade source closure')
     require(sha256(HERE / 'public_host_contract.json') == value.get('public_host_contract_sha256'),
             'Reviewed public Host and qualification SPI contract differs')
@@ -133,8 +133,8 @@ def source_observation(root, environment=None):
     project = verify_project((root / 'Anytype.xcodeproj/project.pbxproj').read_bytes(), before, profile)
     installer_path = 'Tools/PinkhaNativeDerived/install_verified_heart.py'
     installer = (root / installer_path).read_text()
-    reviewed = "                             'codex/otzaria-original-editor-framework-v11-host-reviewed-20261122',\n                             '" + BRANCH + "'],"
-    original = "                             'codex/otzaria-original-editor-framework-v11-host-reviewed-20261122'],"
+    reviewed = "                             'codex/otzaria-original-editor-framework-v12-composed-20261122',\n                             '" + BRANCH + "'],"
+    original = "                             'codex/otzaria-original-editor-framework-v12-composed-20261122'],"
     require(installer.count(reviewed) == 1 and
             blob(installer.replace(reviewed, original, 1).encode()) == profile['original_heart_installer_blob'],
             'Original verified Heart installer has a change beyond the exact new consumer branch')

@@ -1,0 +1,132 @@
+--- a/.github/workflows/pinkha-original-editor-framework.yml
++++ b/.github/workflows/pinkha-original-editor-framework.yml
+@@ -3,7 +3,7 @@
+ on:
+   push:
+     branches:
+-      - codex/otzaria-original-editor-framework-v12-composed-20261122
++      - codex/otzaria-original-editor-framework-v13-body-reviewed-20261122
+ 
+ permissions:
+   contents: read
+@@ -15,13 +15,13 @@
+ 
+ jobs:
+   original-editor-framework:
+-    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-original-editor-framework-v12-composed-20261122'
++    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-original-editor-framework-v13-body-reviewed-20261122'
+     runs-on: xcode-27
+     timeout-minutes: 140
+     env:
+       PYTHONDONTWRITEBYTECODE: '1'
+       DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+-      EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v12-composed-20261122
++      EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v13-body-reviewed-20261122
+       HEART_SOURCE_RUN_ID: '44203168617'
+       EDITOR_EVIDENCE: build/original-editor-framework-evidence
+       EDITOR_WORK: build/original-editor-framework-${{ github.run_id }}-${{ github.run_attempt }}
+--- a/Tools/OriginalEditor/framework_profile.py
++++ b/Tools/OriginalEditor/framework_profile.py
+@@ -8,7 +8,7 @@
+ 
+ from pbx_source import loads, object_text, require
+ 
+-BRANCH = 'codex/otzaria-original-editor-framework-v12-composed-20261122'
++BRANCH = 'codex/otzaria-original-editor-framework-v13-body-reviewed-20261122'
+ REPOSITORY = 'davidpovarsky/anytype-swift'
+ TARGET = 'AnytypeOriginalEditor'
+ APP_TARGET = '0303ECFA22D8EDAA005C552B'
+@@ -36,8 +36,8 @@
+     require(set(value.get('reviewed_shared_dependency_objects', {})) == {
+         '5333421A262E249100238121', '2A685D582B7B854200456E08', 'FA1000002F000001006805CC'},
+         'Unreviewed shared runtime dependency object set')
+-    require(len(value.get('framework_facade_sources', [])) == 7
+-            and len(set(value['framework_facade_sources'])) == 7,
++    require(len(value.get('framework_facade_sources', [])) == 12
++            and len(set(value['framework_facade_sources'])) == 12,
+             'Incomplete reviewed Host facade source closure')
+     require(sha256(HERE / 'public_host_contract.json') == value.get('public_host_contract_sha256'),
+             'Reviewed public Host and qualification SPI contract differs')
+@@ -133,8 +133,8 @@
+     project = verify_project((root / 'Anytype.xcodeproj/project.pbxproj').read_bytes(), before, profile)
+     installer_path = 'Tools/PinkhaNativeDerived/install_verified_heart.py'
+     installer = (root / installer_path).read_text()
+-    reviewed = "                             'codex/otzaria-original-editor-framework-v11-host-reviewed-20261122',\n                             '" + BRANCH + "'],"
+-    original = "                             'codex/otzaria-original-editor-framework-v11-host-reviewed-20261122'],"
++    reviewed = "                             'codex/otzaria-original-editor-framework-v12-composed-20261122',\n                             '" + BRANCH + "'],"
++    original = "                             'codex/otzaria-original-editor-framework-v12-composed-20261122'],"
+     require(installer.count(reviewed) == 1 and
+             blob(installer.replace(reviewed, original, 1).encode()) == profile['original_heart_installer_blob'],
+             'Original verified Heart installer has a change beyond the exact new consumer branch')
+--- a/Tools/OriginalEditor/framework_profile.json
++++ b/Tools/OriginalEditor/framework_profile.json
+@@ -18,25 +18,30 @@
+     "Tools/PinkhaNativeDerived/package_evidence.py": "e55d2a959296630686a60aa5d927a3b4c34401f9",
+     "Tools/PinkhaSimulatorGate/preflight.py": "2628b345d5743bbe1ddc0d1afaeef9fb410f3daf"
+   },
+-  "branch": "codex/otzaria-original-editor-framework-v12-composed-20261122",
+-  "candidate_project_sha256": "e2d73aec1955e2a30bff380a5c4f2af5707e9ef8618152be368107604cc22f6d",
++  "branch": "codex/otzaria-original-editor-framework-v13-body-reviewed-20261122",
++  "candidate_project_sha256": "4747f82180111e6a77939717eaaa006fa20ef35db5ebe079ad60fd76a2e0e195",
+   "framework_facade_sources": [
+     "OriginalEditorFramework/AnytypeOriginalEditorHost.swift",
+     "OriginalEditorFramework/AnytypeOriginalEditorModule.swift",
++    "OriginalEditorFramework/AnytypeOriginalEditorNativeBodyReadback.swift",
+     "OriginalEditorFramework/AnytypeOriginalEditorNativeFixture.swift",
+     "OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+     "OriginalEditorFramework/AnytypeOriginalEditorQualificationRuntime.swift",
+     "OriginalEditorFramework/AnytypeOriginalEditorRestoreQualification.swift",
+-    "OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift"
++    "OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift",
++    "OriginalEditorFramework/OriginalAnnotationNativeArchiveComparison.swift",
++    "OriginalEditorFramework/OriginalAnnotationNativeArchiveLayout.swift",
++    "OriginalEditorFramework/OriginalAnnotationNativeMapKeyGuard.swift",
++    "OriginalEditorFramework/OriginalAnnotationNativeSnapshotWire.swift"
+   ],
+   "framework_target_id": "83B785D0C457FE3CCBAB196E",
+-  "new_project_objects": 120,
+-  "original_heart_installer_blob": "ca5324672c329422793e88168c37febab43a722a",
++  "new_project_objects": 130,
++  "original_heart_installer_blob": "6cb6624fa650e3a42e3389a71b9c3a76ddbf37ff",
+   "original_swift_sources": 2254,
+   "original_trees": {
+     "Anytype/Resources": "0827010674c089cfe9846e592e1d801e9d3f7a9b",
+-    "Anytype/Sources": "5368846b3219456d1dc12fb3b1ac22c3051dc1f1",
+-    "Modules": "8fa8e654ca3e045a429c50296265266e6187a619"
++    "Anytype/Sources": "7f60c27ac32ea66f889abd70edbb1cab1778f0a6",
++    "Modules": "a8a4b7688ea6295ae6c6b2f3baf90e18ab268e1b"
+   },
+   "package_closure_review": {
+     "additional_count": 7,
+@@ -94,7 +99,7 @@
+   },
+   "schema": 1,
+   "scope": "Same-toolchain original Host API framework and Debug Simulator SPI import/link/resource prerequisite; native editable UI/save/reopen remains unqualified",
+-  "source_checkpoint": "ab6992d6fcbcab428010845b7ea48d26fe8ff0cc",
++  "source_checkpoint": "de6ca841b0afed07c02a61e399a1a0ca70222033",
+   "symbol_graph_emission": {
+     "configuration_id": "7B34B94A980226257449D4B8",
+     "configuration_name": "Debug-Anytype",
+--- a/Tools/OriginalEditor/test_framework.py
++++ b/Tools/OriginalEditor/test_framework.py
+@@ -94,7 +94,7 @@
+ 
+     def test_original_heart_installer_changes_only_one_new_branch_choice(self):
+         raw = (ROOT / 'Tools/PinkhaNativeDerived/install_verified_heart.py').read_bytes()
+-        suffix = b",\n                             'codex/otzaria-original-editor-framework-v12-composed-20261122'"
++        suffix = b",\n                             'codex/otzaria-original-editor-framework-v13-body-reviewed-20261122'"
+         self.assertEqual(raw.count(suffix), 1)
+         old = raw.replace(suffix, b'', 1)
+         actual = hashlib.sha1(b'blob ' + str(len(old)).encode() + b'\0' + old).hexdigest()
+--- a/Tools/PinkhaNativeDerived/install_verified_heart.py
++++ b/Tools/PinkhaNativeDerived/install_verified_heart.py
+@@ -35,7 +35,8 @@
+                              'codex/otzaria-original-editor-framework-v9-reviewed-20261121',
+                              'codex/otzaria-original-editor-framework-v10-reviewed-20261121',
+                              'codex/otzaria-original-editor-framework-v11-host-reviewed-20261122',
+-                             'codex/otzaria-original-editor-framework-v12-composed-20261122'],
++                             'codex/otzaria-original-editor-framework-v12-composed-20261122',
++                             'codex/otzaria-original-editor-framework-v13-body-reviewed-20261122'],
+                     default='codex/torah-native-derived-properties-20261103')
+ args = parser.parse_args()
+ inventory = json.loads(args.inventory.read_text())
