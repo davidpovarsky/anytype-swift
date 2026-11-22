@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "wrapper_pid": 6652,
+  "inputs_sha256": "fe33d37e071d97ac07c277a222bb42d153d07ccc523e6296ee924511d10c5f46",
+  "runner_sha256": "b61ce5e74313d664a09e35d1915553598e0a0e801f9fbd045120b809e6d82225",
+  "commands": [
+    {
+      "label": "complete-original-candidate-syntax",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+        "-frontend",
+        "-parse",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-editor-visibility-20261122\\BlockIndentationStyle.candidate.swift"
+      ],
+      "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-editor-visibility-20261122",
+      "started_at": "2026-11-22T09:44:58.848482+00:00",
+      "timeout_seconds": 90,
+      "phase": "TERMINAL",
+      "child_pid": 18600,
+      "returncode": 0,
+      "timed_out": false,
+      "finished_at": "2026-11-22T09:44:59.436027+00:00",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "all_inputs_unchanged": true
+    },
+    {
+      "label": "portable-original-candidate-module",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+        "-emit-module",
+        "-parse-as-library",
+        "-module-name",
+        "OriginalIndentationVisibility",
+        "-emit-module-path",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-editor-visibility-20261122\\compiler-module-v2\\OriginalIndentationVisibility.swiftmodule",
+        "-swift-version",
+        "5",
+        "-strict-concurrency=complete",
+        "-module-cache-path",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-editor-visibility-20261122\\compiler-module-v2\\ModuleCache",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-editor-visibility-20261122\\portable-BlockIndentationStyle.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-editor-visibility-20261122\\portable-LayoutConstants.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-editor-visibility-20261122\\dependency-2-BlockLayoutDetails.swift"
+      ],
+      "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-editor-visibility-20261122",
+      "started_at": "2026-11-22T09:44:59.446259+00:00",
+      "timeout_seconds": 120,
+      "phase": "TERMINAL",
+      "child_pid": 33384,
+      "returncode": 0,
+      "timed_out": false,
+      "finished_at": "2026-11-22T09:46:50.328801+00:00",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "all_inputs_unchanged": true
+    },
+    {
+      "label": "expected-external-visibility-rejection-v2",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+        "-typecheck",
+        "-swift-version",
+        "5",
+        "-I",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-editor-visibility-20261122\\compiler-module-v2",
+        "-module-cache-path",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-editor-visibility-20261122\\compiler-module-v2\\ModuleCache",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-editor-visibility-20261122\\ExternalConsumer.swift"
+      ],
+      "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-editor-visibility-20261122",
+      "started_at": "2026-11-22T09:46:50.340470+00:00",
+      "timeout_seconds": 120,
+      "phase": "TERMINAL",
+      "child_pid": 21092,
+      "returncode": 1,
+      "timed_out": false,
+      "finished_at": "2026-11-22T09:46:51.635498+00:00",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "d8cd656f407213e6fb4ebfc1623b5df9f6ec5a13225589e14fa0bfe2e516b2fd",
+      "all_inputs_unchanged": true
+    }
+  ]
+}

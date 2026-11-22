@@ -1,7 +1,7 @@
 import CoreFoundation
 
 
-public enum BlockIndentationStyle: Hashable, Equatable {
+enum BlockIndentationStyle: Hashable, Equatable {
     case `none`
     case quote
     case callout

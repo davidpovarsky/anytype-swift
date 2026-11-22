@@ -1,0 +1,160 @@
+{
+  "run": 45006133053,
+  "head": "7b594f6f28961258d81b0eb2e7a29c7b047bb1d2",
+  "artifact": 14747819041,
+  "original_framework_build": "PASS",
+  "external_consumer_build": "NOT_RUN",
+  "native_editor_ui_tests": 0,
+  "error_type": "ValueError",
+  "error": "Unqualified original editor/document/writer declaration is public: [{\"path\": [\"BlockIndentationStyle\"], \"identifier\": \"s:21AnytypeOriginalEditor21BlockIndentationStyleO\", \"location\": \"file:///Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/FlowLayout/Models/BlockIndentationStyle.swift\"}, {\"path\": [\"BlockIndentationStyle\", \"none\"], \"identifier\": \"s:21AnytypeOriginalEditor21BlockIndentationStyleO4noneyA2CmF\", \"location\": \"file:///Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/FlowLayout/Models/BlockIndentationStyle.swift\"}, {\"path\": [\"BlockIndentationStyle\", \"quote\"], \"identifier\": \"s:21AnytypeOriginalEditor21BlockIndentationStyleO5quoteyA2CmF\", \"location\": \"file:///Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/FlowLayout/Models/BlockIndentationStyle.swift\"}, {\"path\": [\"BlockIndentationStyle\", \"callout\"], \"identifier\": \"s:21AnytypeOriginalEditor21BlockIndentationStyleO7calloutyA2CmF\", \"location\": \"file:///Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/FlowLayout/Models/BlockIndentationStyle.swift\"}]",
+  "phase": "ORIGINAL_FRAMEWORK_BUILD",
+  "finished_at": "2026-11-22T09:27:33.361748+00:00",
+  "framework_build_command": {
+    "command": [
+      "xcodebuild",
+      "build",
+      "-project",
+      "/Users/runner/work/anytype-swift/anytype-swift/Anytype.xcodeproj",
+      "-scheme",
+      "AnytypeOriginalEditor",
+      "-configuration",
+      "Debug-Anytype",
+      "-destination",
+      "platform=iOS Simulator,id=93AA6E6D-540D-443D-9791-DC04E21E66CF",
+      "-derivedDataPath",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45006133053-1/producer-derived",
+      "-resultBundlePath",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-evidence/framework-build.xcresult",
+      "-onlyUsePackageVersionsFromResolvedFile",
+      "OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED $(ORIGINAL_EDITOR_SYMBOL_GRAPH_FLAGS)",
+      "ONLY_ACTIVE_ARCH=YES",
+      "ARCHS=arm64",
+      "SWIFT_OPTIMIZATION_LEVEL=-Onone",
+      "CODE_SIGN_IDENTITY=-",
+      "CODE_SIGNING_ALLOWED=YES",
+      "CODE_SIGNING_REQUIRED=YES",
+      "PROVISIONING_PROFILE_SPECIFIER="
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "finished_at": "2026-11-22T09:26:35.474398+00:00",
+    "returncode": 0,
+    "started_at": "2026-11-22T09:10:29.948000+00:00",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "a73e94cd6e11dfb3ce6162fb61ccf7d161c959e0526b380c2b8576694c833a40",
+    "timed_out": false,
+    "timeout_seconds": 6000
+  },
+  "public_graph_command": {
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
+      "/Users/runner/work/anytype-swift/anytype-swift/Tools/OriginalEditor/collect_compiler_symbolgraphs.py",
+      "--root",
+      "/Users/runner/work/anytype-swift/anytype-swift",
+      "--derived",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45006133053-1/producer-derived",
+      "--evidence",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-evidence",
+      "--sdk",
+      "/Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk",
+      "--output-dir",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-evidence/actual-public-symbol-graphs"
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "finished_at": "2026-11-22T09:27:31.100746+00:00",
+    "returncode": 0,
+    "started_at": "2026-11-22T09:27:23.765827+00:00",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "3f548ecc185262cbdaecffc28684704f9c2db7f3ed7860b0f3c77047cef61d86",
+    "timed_out": false,
+    "timeout_seconds": 120
+  },
+  "source_before_after_bytes_equal": true,
+  "source_before_sha256": "18d2ac72c45c2f6d54b1abccf162014ec717f0b076ba5c4b8e5cd25750434460",
+  "macro_restoration": {
+    "status": "EXACT_ORIGINAL_MACRO_TRUST_RESTORED",
+    "wrote_trust_store": true
+  },
+  "source_control_keys": [
+    "discovered_ids",
+    "errors",
+    "expected_count",
+    "expected_failures",
+    "expected_ids",
+    "failures",
+    "passed_ids",
+    "phase",
+    "schema",
+    "scope",
+    "skipped",
+    "started_ids",
+    "status",
+    "tests_run",
+    "unexpected_successes"
+  ],
+  "source_controls_summary": {
+    "errors": [],
+    "expected_count": 221,
+    "failures": [],
+    "phase": "COMPLETE",
+    "schema": 1,
+    "scope": "Python source controls only; no Apple build or consumer qualification",
+    "status": "PASS_SOURCE_CONTROLS_221",
+    "tests_run": 221
+  },
+  "source_error_count": 0,
+  "unlocated_driver_errors": [
+    {
+      "line": 37046,
+      "text": "Internal Error: DecodingError.dataCorrupted: Data was corrupted. Debug description: Corrupted JSON. Underlying error: unexpected end of file"
+    },
+    {
+      "line": 38307,
+      "text": "Internal Error: DecodingError.dataCorrupted: Data was corrupted. Debug description: Corrupted JSON. Underlying error: unexpected end of file"
+    },
+    {
+      "line": 46076,
+      "text": "Internal Error: DecodingError.dataCorrupted: Data was corrupted. Debug description: Corrupted JSON. Underlying error: unexpected end of file"
+    },
+    {
+      "line": 48436,
+      "text": "Internal Error: DecodingError.dataCorrupted: Data was corrupted. Debug description: Corrupted JSON. Underlying error: unexpected end of file"
+    }
+  ],
+  "build_markers": [
+    {
+      "line": 51705,
+      "text": "** BUILD SUCCEEDED **"
+    }
+  ],
+  "actual_source_count": 2259,
+  "actual_pin_count": 51,
+  "relevant_files": [
+    "actual-public-symbol-graphs",
+    "actual-target-public-symbol-graph.command.json",
+    "actual-target-public-symbol-graph.stderr.log",
+    "actual-target-public-symbol-graph.stdout.log",
+    "compiler-symbolgraph-collection.json",
+    "framework-build.xcresult",
+    "framework-distribution-after-anycrypto-signing.json",
+    "framework-distribution-after-observed-app-target-signing.json",
+    "framework-distribution-after-observed-bigint-signing.json",
+    "framework-distribution-after-observed-crypto-signing.json",
+    "framework-distribution-after-observed-factory-signing.json",
+    "framework-distribution-after-observed-notifications-core-signing.json",
+    "framework-distribution-after-observed-swift-protobuf-signing.json",
+    "framework-distribution-after-simulator-signing.json",
+    "framework-distribution-before-anycrypto-signing.json",
+    "framework-distribution-before-observed-app-target-signing.json",
+    "framework-distribution-before-observed-bigint-signing.json",
+    "framework-distribution-before-observed-crypto-signing.json",
+    "framework-distribution-before-observed-factory-signing.json",
+    "framework-distribution-before-observed-notifications-core-signing.json",
+    "framework-distribution-before-observed-swift-protobuf-signing.json",
+    "framework-distribution-before-simulator-signing.json",
+    "framework-distribution.json",
+    "original-framework-symbols.command.json",
+    "original-framework-symbols.stderr.log",
+    "original-framework-symbols.stdout.log",
+    "source-controls-result.json"
+  ]
+}
