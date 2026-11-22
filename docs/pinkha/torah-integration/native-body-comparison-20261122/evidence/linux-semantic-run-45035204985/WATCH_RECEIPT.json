@@ -1,0 +1,121 @@
+{
+  "run_id": "45035204985",
+  "run_attempt": 1,
+  "expected_head": "f784bbb71963a57ba142e33b68c68df753e71afb",
+  "expected_branch": "codex/otzaria-native-body-semantics-run-20261122",
+  "started_at": "2026-11-22T14:54:29.679514+00:00",
+  "observer_pid": 24892,
+  "status": "TERMINAL_EVIDENCE_RETAINED",
+  "observer_owner": "/root/stageb_auth",
+  "dispatch_owner": "/root",
+  "watch_invocations": 1,
+  "gh_run_watch_invocations": 0,
+  "status_polls": 0,
+  "maximum_watch_seconds": 1800,
+  "transport_retries": 0,
+  "commands": [
+    {
+      "suffix": "",
+      "exit": 0,
+      "at": "2026-11-22T14:54:30.725758+00:00"
+    },
+    {
+      "suffix": "/jobs?per_page=100",
+      "exit": 0,
+      "at": "2026-11-22T14:54:32.016928+00:00"
+    },
+    {
+      "suffix": "/artifacts?per_page=100",
+      "exit": 0,
+      "at": "2026-11-22T14:54:33.108209+00:00"
+    }
+  ],
+  "scope": "sole new portable semantic run; no native, SDK, old-suite watch or dispatch",
+  "run_status": "completed",
+  "run_conclusion": "failure",
+  "jobs": [
+    {
+      "id": 137247306197,
+      "name": "semantic-controls",
+      "conclusion": "failure"
+    }
+  ],
+  "log_download_exit": 0,
+  "matching_artifact_count": 1,
+  "artifact": {
+    "id": 14759397143,
+    "name": "native-body-semantics-f784bbb71963a57ba142e33b68c68df753e71afb-1",
+    "size_in_bytes": 22390,
+    "digest": "sha256:805fc1047334d695ac72ec72bb146fb49888d1db7d95036ca5a06093e9c0bfe1",
+    "created_at": "2026-11-22T14:53:54Z",
+    "expired": false
+  },
+  "evidence_download_exit": 0,
+  "retained_files": [
+    {
+      "path": "build.stderr.log",
+      "bytes": 39748,
+      "sha256": "b506f644728eca1ceaf89d6ad18d4bdb5d102c154b3b89ed83714474b45801b4"
+    },
+    {
+      "path": "build.stdout.log",
+      "bytes": 428,
+      "sha256": "d2ca3e02ce01b9bfabb915b93e738196dfed2530238a9e5036fa2fb3e2b5b149"
+    },
+    {
+      "path": "Package.swift",
+      "bytes": 1011,
+      "sha256": "e432bd557ae2e32316231490c6f6d1abc1d6df4baa6e47a785f15a26709cbf52"
+    },
+    {
+      "path": "RESULT.json",
+      "bytes": 60866,
+      "sha256": "9e46da28180a62d0266a5a5241044ab18eba90cfbde2b5a4a13c062e324438d1"
+    },
+    {
+      "path": "source-head.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source-head.stdout.log",
+      "bytes": 41,
+      "sha256": "30c696fa3afcbeae8c137f1df2455c4a5f6eb25a0643ecd2f43150863f1864da"
+    },
+    {
+      "path": "source-status.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source-status.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "swift-version.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "swift-version.stdout.log",
+      "bytes": 75,
+      "sha256": "7c811e5cb6a9cc03cb630c6ee61c720c37c7b659f4664a7244bd4e7e4b753871"
+    },
+    {
+      "path": "zlib-version.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "zlib-version.stdout.log",
+      "bytes": 4,
+      "sha256": "b6403da9b22abe355ad17208a336e658322c5d1d7ff646ca7b9229237ba4aef4"
+    }
+  ],
+  "semantic_status": "FAILED",
+  "semantic_error": "build failed; preserve diagnostics and do not automatically replay",
+  "tests_run": 0,
+  "result_sha256": "9e46da28180a62d0266a5a5241044ab18eba90cfbde2b5a4a13c062e324438d1",
+  "finished_at": "2026-11-22T14:54:40.006901+00:00"
+}

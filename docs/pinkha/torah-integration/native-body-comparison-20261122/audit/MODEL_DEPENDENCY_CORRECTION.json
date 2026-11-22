@@ -1,0 +1,36 @@
+{
+  "kind": "narrow standalone target dependency correction after actual compiler failure",
+  "source_commit": "b5162d777e3ebc5c4c0d044e02b52347c0c3dd6e",
+  "failed_run": {
+    "id": 45035204985,
+    "head": "f784bbb71963a57ba142e33b68c68df753e71afb",
+    "attempt": 1,
+    "semantic_cases_executed": 0
+  },
+  "diagnostic": "Anytype_Model_Notification.Export cannot find Anytype_Model_ExportReport",
+  "missing_original_file": {
+    "path": "Modules/ProtobufMessages/Sources/Protocol/export_report.pb.swift",
+    "git_blob": "b31e3dd92cea5245cce40b593356a56b328dde67",
+    "sha256": "3f77442c6efe1ba8a2c868c9c13d807d5d81bc57dff341b4c8dd76c67562d86b",
+    "bytes": 9894
+  },
+  "new_generated_source_count": 198,
+  "read_only_symbol_audit": {
+    "method": "197 Models files plus additive export_report from immutable git archive; compare Anytype_* top-level reference and declaration token inventories",
+    "unresolved_top_level_Anytype_types": [],
+    "note": "This is a source inventory check, not Swift typechecking. Windows git archive applied line endings; stage pin uses separately verified raw GitHub blob and bytes."
+  },
+  "changes": [
+    "Stage one unchanged original generated file after the unchanged 197 model inventory",
+    "Retain Package.resolved if compilation fails after dependency resolution",
+    "Preserve first run failure evidence"
+  ],
+  "unchanged": [
+    "Seven production Swift candidate files",
+    "Workflow definition",
+    "Thirty new semantic assertions",
+    "Swift 6.4.2 and both original dependency pins",
+    "Prior 40/13 passing evidence"
+  ],
+  "dispatch": "No dispatch performed; root must review corrective immutable head"
+}

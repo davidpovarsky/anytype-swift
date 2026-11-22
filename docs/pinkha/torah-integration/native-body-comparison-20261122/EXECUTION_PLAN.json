@@ -1,11 +1,11 @@
 {
-  "status": "PREPARED_NOT_DISPATCHED",
+  "status": "CORRECTIVE_CANDIDATE_NOT_DISPATCHED",
   "source_base": "b5162d777e3ebc5c4c0d044e02b52347c0c3dd6e",
-  "candidate_branch": "codex/otzaria-native-body-source-reviewed-20261122",
+  "candidate_branch": "codex/otzaria-native-body-model-closure-20261122",
   "workflow": ".github/workflows/otzaria-native-body-semantics.yml",
   "activation_branch": "codex/otzaria-native-body-semantics-run-20261122",
   "dispatch_owner": "/root",
-  "activation_rule": "Root reviews the immutable candidate SHA, then creates the exact activation branch at that SHA once. Candidate publication itself does not trigger CI.",
+  "activation_rule": "Root reviews the corrective immutable head, then fast-forwards the existing isolated activation branch exactly once. No automatic retry.",
   "runtime": {
     "runner": "ubuntu-24.04",
     "expected_swift_version": "6.4.2",
@@ -17,7 +17,9 @@
     "generated_models": 197,
     "expected_controls": 30,
     "timeout_minutes": 25,
-    "max_build_jobs": 2
+    "max_build_jobs": 2,
+    "original_generated_support_files": 1,
+    "original_generated_files_total": 198
   },
   "scope": "Actual pure comparator and exact original generated model source with real pinned SwiftProtobuf/ZIPFoundation; synthetic original-format archives. No Heart/Lib, Editor UI, Owner authority, atomic graph, mapping or ACK acceptance.",
   "does_not_rerun": [
@@ -47,5 +49,15 @@
     "stable native whole-graph authority",
     "genuine import-map authority",
     "closed source/commit and durable mapping/ACK"
-  ]
+  ],
+  "candidate_parent": "f784bbb71963a57ba142e33b68c68df753e71afb",
+  "prior_actual_run": {
+    "id": 45035204985,
+    "attempt": 1,
+    "head": "f784bbb71963a57ba142e33b68c68df753e71afb",
+    "conclusion": "failure",
+    "semantic_cases_executed": 0,
+    "reason": "197-model standalone target omitted original additive export_report.pb.swift dependency",
+    "runner_result_sha256": "9e46da28180a62d0266a5a5241044ab18eba90cfbde2b5a4a13c062e324438d1"
+  }
 }

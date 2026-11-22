@@ -1,0 +1,1306 @@
+{
+  "started_at": "2026-11-22T14:52:55.062852+00:00",
+  "expected_source_sha": "f784bbb71963a57ba142e33b68c68df753e71afb",
+  "status": "FAILED",
+  "native_executions": 0,
+  "prior_controls_rerun": 0,
+  "commands": [
+    {
+      "name": "source-head",
+      "args": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "timed_out": false,
+      "seconds": 0.004,
+      "stdout_sha256": "30c696fa3afcbeae8c137f1df2455c4a5f6eb25a0643ecd2f43150863f1864da",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "source-status",
+      "args": [
+        "git",
+        "status",
+        "--porcelain",
+        "--untracked-files=no"
+      ],
+      "exit": 0,
+      "timed_out": false,
+      "seconds": 0.032,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "swift-version",
+      "args": [
+        "swift",
+        "--version"
+      ],
+      "exit": 0,
+      "timed_out": false,
+      "seconds": 13.163,
+      "stdout_sha256": "7c811e5cb6a9cc03cb630c6ee61c720c37c7b659f4664a7244bd4e7e4b753871",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "zlib-version",
+      "args": [
+        "pkg-config",
+        "--modversion",
+        "zlib"
+      ],
+      "exit": 0,
+      "timed_out": false,
+      "seconds": 0.038,
+      "stdout_sha256": "b6403da9b22abe355ad17208a336e658322c5d1d7ff646ca7b9229237ba4aef4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "build",
+      "args": [
+        "swift",
+        "build",
+        "--package-path",
+        "/home/runner/work/anytype-swift/anytype-swift/.native-body-semantics-45035204985-1/package",
+        "--product",
+        "NativeBodySemanticControls",
+        "--configuration",
+        "debug",
+        "--jobs",
+        "2",
+        "--disable-index-store"
+      ],
+      "exit": 1,
+      "timed_out": false,
+      "seconds": 44.717,
+      "stdout_sha256": "d2ca3e02ce01b9bfabb915b93e738196dfed2530238a9e5036fa2fb3e2b5b149",
+      "stderr_sha256": "b506f644728eca1ceaf89d6ad18d4bdb5d102c154b3b89ed83714474b45801b4"
+    }
+  ],
+  "source_files": [
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.Auth.AppGrant.Perm.swift",
+      "git_blob": "3b33a6819eeb1dd99ee217e34af80d78a8591f79",
+      "sha256": "ab82db7ecdb706cad6b6ee8a413f865d525ee10b7f36dcb26dc40bd62748dd22",
+      "bytes": 2435
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.Auth.AppGrant.swift",
+      "git_blob": "d8ff8771c0db718755e0a6570828ace7ca6a3c8e",
+      "sha256": "05b682d6f3f91d0ee7f27a5daf9cff20d8ddce5d7e9b28ece381ab1a2c7afc2c",
+      "bytes": 3841
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.Auth.AppInfo.swift",
+      "git_blob": "1b6a0a277f2b0a702ef23f6c56a24675203c47d2",
+      "sha256": "c0a8e8710f1ac5842f58745f9fa1e17178a3d41dcb9a1d518f7ca2a384e62ff0",
+      "bytes": 5973
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.Auth.LocalApiScope.swift",
+      "git_blob": "3c36bfb0a1614fbdc4f853263217394bd3b21bc4",
+      "sha256": "895b9fbece1622ffae19a70662f2fe82928609c45fd49e96d256725b59eab735",
+      "bytes": 2432
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.Auth.swift",
+      "git_blob": "39d73b8ea87d84c2951087a915d169c62857c7a2",
+      "sha256": "c44021ba360372827bdff21287e937dfdb45f7d671be92dc7847c51549e98e2a",
+      "bytes": 2143
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.Config.swift",
+      "git_blob": "d79b95a41eee2e6bb652170d04114d5dbc9db61b",
+      "sha256": "52ed901795a9ef7193b41cf6cee63a5d2d66b4ca29f7547367e0e2f20afb9e8c",
+      "bytes": 4911
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.Info.swift",
+      "git_blob": "2a5ac4af99094e689862c5291552211b3ac515dd",
+      "sha256": "3ccf5a852cf1752708634e9d6e16e800d2635c7b831bed4f3f51eee7de7ad5b2",
+      "bytes": 14543
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.Status.swift",
+      "git_blob": "228020fc07a859d6359e68f5660890536337bf4d",
+      "sha256": "ab6d62b92b8c352b8a68100ae1df1734f39e9d7ed63918da5c15f66fc5310230",
+      "bytes": 3105
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.StatusType.swift",
+      "git_blob": "61791eb4e70118fdb9b727dc148d51ef6c2f8f7f",
+      "sha256": "109c3796424f19d816234fc2010595be74e7138731792cec70013bc661eedbeb",
+      "bytes": 2263
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.swift",
+      "git_blob": "877358d63c45e3105be77d79b67eca0b003af261",
+      "sha256": "f9e98bee0daaceb4913ed9cc19d6e8bcfa2902f85f8dcde083e8ef77f5d48a65",
+      "bytes": 5107
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Align.swift",
+      "git_blob": "7e0b0fee278d67f5f8a8d41fb789753a9eb5cd93",
+      "sha256": "8c1ebb60cbfccac858e303148f8203f5d5e281489e8312a0b91eb1ef171a166b",
+      "bytes": 2155
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Bookmark.State.swift",
+      "git_blob": "2502da69e8e71703b9f195e411f18e694f720f4c",
+      "sha256": "8beefeaa2689205987bc9b842f41fb3bd81210487f6489ad8f893a528ce5fff4",
+      "bytes": 2331
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Bookmark.swift",
+      "git_blob": "59800c17382a484138ca8be8e09365e36004957c",
+      "sha256": "6ce5e9af68ff65ffe26b1cc6291af781de1d61806ad9c9207fc2b88d2ba953ed",
+      "bytes": 5302
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Chat.swift",
+      "git_blob": "b792866bae4b23063cbfe6a12cb87682efaee141",
+      "sha256": "8bb7ee54a74f5981bc43e772518339cd690b1af807450e897dd2ac0c2cf115b9",
+      "bytes": 2185
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.Checkbox.swift",
+      "git_blob": "ab6f892b50c999cfe8ddee693492dd61cef8bda2",
+      "sha256": "6d3adb00207959e60fba70a231928ddfedb8bac825d3ce0da82e7d44c5fc9792",
+      "bytes": 2837
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.Date.swift",
+      "git_blob": "63792e26c8bf08270cadcfb1909755bdc27b07c0",
+      "sha256": "811e03e32812034a970f455203802a61be530f26a61b9392f1bd0f2f12cb9fae",
+      "bytes": 2242
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.Filter.swift",
+      "git_blob": "e1206988b3f6f97f3851cd1a22c5aed660b64954",
+      "sha256": "a5444b433a49a74d31efe25d4a21649a8de7fdb6d0723dcf25e9b76e32126cf4",
+      "bytes": 14692
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.Group.swift",
+      "git_blob": "46a12e27be4500a4a71f6641d68dc57bdabdf315",
+      "sha256": "af2042be3a7a5a8a260f1add4bdff9665e18b4883f082b0e859f472db2502f7a",
+      "bytes": 7220
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.GroupOrder.swift",
+      "git_blob": "8331c789d7ec462bbdc282baff83aa4a4240e9b5",
+      "sha256": "ab240f8a76b7339f0222cf20113f47f5bca0eb141bf7d79a2b6b57128129d4a9",
+      "bytes": 3219
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.ObjectOrder.swift",
+      "git_blob": "6f157c65a1f2a6f71e395fcfef11b338c40f3cf5",
+      "sha256": "65b9de6d6a9b9c310817348bd932a91ee7c8d29fcd5bca5ff363f57a96974679",
+      "bytes": 3486
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.Relation.swift",
+      "git_blob": "ba8f8cc042cc86a53bda3b642819186c1d52404e",
+      "sha256": "de30e9a2479552acebc7b8c15ac0fd409b0a8e486ef99a21d763dce3ff5de4d8",
+      "bytes": 11382
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.Sort.swift",
+      "git_blob": "a6fc8191ab96a1fcd6785cb60c1ffee3e90423af",
+      "sha256": "95ec43f4c8862dab89479cb442aeefd54e54931e5f3c38021d26a2d5d1bfb31a",
+      "bytes": 7757
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.Status.swift",
+      "git_blob": "e686591896f7250454918fb0fda7b80e5abd3583",
+      "sha256": "5447284eeeac9b2a3a260cbde873b9ef38b9e1b29af9e61bdfba3c41b94b100c",
+      "bytes": 2801
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.Tag.swift",
+      "git_blob": "f198c0b1e50cd842d70fa4179f0e8fd02fc93a14",
+      "sha256": "2b3bd5c092bf4b4d250568a1c0a537af1659280d260dd44e03bba24495a34c8c",
+      "bytes": 2789
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.View.swift",
+      "git_blob": "7d59d10889eb4704b6fcf8399b849ddfe6b94f89",
+      "sha256": "eb5bd6434f01104aa7a7cb2b474af3460839c91d96f1533c17745368b2bdaf30",
+      "bytes": 19706
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.ViewGroup.swift",
+      "git_blob": "f2dc73810482d2e487931fb9fa1d196a4f42a979",
+      "sha256": "6028dfccba578db910dd870b9ba431d65b5846e61f19b770b712be517dc2b32c",
+      "bytes": 3796
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.swift",
+      "git_blob": "bf880a283c824cde3e479935bf1fb3e57cb323c2",
+      "sha256": "dfedf721a90a9882eccbfc175eb2dabe1a5e77d0f25b0d8e61f378643dbb3e79",
+      "bytes": 5825
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Div.Style.swift",
+      "git_blob": "5f601408a9abed12a7c66b80e8ed905ba592d686",
+      "sha256": "066bf37d51a60449417738b2b4e37cbc38b4e16c41489b9897c6a592d126eeec",
+      "bytes": 2055
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Div.swift",
+      "git_blob": "3d6ae68ee91d6020ecd3bf95dc4971c2747a717e",
+      "sha256": "f23ac5b0cca89ce231d30acf43b2481ac5a60933f2ea3767c54c1bb06a390775",
+      "bytes": 2772
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.FeaturedRelations.swift",
+      "git_blob": "598d491d29f193e1bceefafc49e0710ca66a03ae",
+      "sha256": "cae0281764f4c5dd0bbba988c8b4ae34e81b9314d807d5501c0269ec7b29d226",
+      "bytes": 2250
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.State.swift",
+      "git_blob": "7f7c01dd54adbcba3be01d212521e3b17211271f",
+      "sha256": "7df2e107a6d7e51ac0e90d9834a9cd9c4fb4bf55b25a1b301785d0b3014856e0",
+      "bytes": 2554
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.Style.swift",
+      "git_blob": "7c031a8d14a30c6088d7a3c3c83b4f243cec08f1",
+      "sha256": "0ffd8801761c01088f9387271be2c1f87e89b6f2a36c8278ed55bad9e16c672a",
+      "bytes": 2249
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.TypeEnum.swift",
+      "git_blob": "44acc5794e0954482351aff371fe196b52262d6c",
+      "sha256": "d74a3030d17567c8fe6a1dff58f1602599d210824e09e043fab789abcbbb0140",
+      "bytes": 2537
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.swift",
+      "git_blob": "9f670b4c06dbb775dc43b9d02c4f83ceda7a1145",
+      "sha256": "7f007a08a5f31cab76deb6db2a177f970c53f6b13129cbe46b6edffaebb4fe0f",
+      "bytes": 5207
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Icon.swift",
+      "git_blob": "d817e83934a04875bba66e1f07c7f2c4525ecd0f",
+      "sha256": "f71d2911013fcc3e92169eac728394938e9dbc741273889fd878104181da4a27",
+      "bytes": 2746
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Latex.Processor.swift",
+      "git_blob": "574199f79a29c798cc43899119d0eba23fdac62f",
+      "sha256": "b7fb8639d14efb94d0841cb98ae91aef98a1b852939bd0979c869d6a26cb665a",
+      "bytes": 5184
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Latex.swift",
+      "git_blob": "89e433658784933bbb682fa23a5ba4f9d21c4e51",
+      "sha256": "bd48e5813ac19375df674dd2de250e9a5ae21d995b89ba99649ac12fa5706b6a",
+      "bytes": 3106
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Layout.Style.swift",
+      "git_blob": "552e329ca920f344308900bdb2b1ce9911f7c8fc",
+      "sha256": "680013545b73d01a95a2f2f97044ceda234f89fc1b38d2a93f9352621ac84e8f",
+      "bytes": 2598
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Layout.swift",
+      "git_blob": "85dc91f557f0c48c34a3ce78c3ea2a31efd44b74",
+      "sha256": "7555cdbfc8996e969813243cc4a5feb21df7596e8819e74f22f9a9cfd1e9b907",
+      "bytes": 2788
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.CardStyle.swift",
+      "git_blob": "02b0555e946354f12345bbf453c056b91ae75692",
+      "sha256": "0c075e98aab4f687cd92d321bf589ae6ad42384e99f37947ec170ade8212e520",
+      "bytes": 2195
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.Description.swift",
+      "git_blob": "acdd7b88e391a1a147b9a9c50dc117a7d90a6f5f",
+      "sha256": "cd16b92d274f8399c4a6d597d71fe4907c367b0f70e30fa186c3d8b90490c8a1",
+      "bytes": 2211
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.IconSize.swift",
+      "git_blob": "7c2da0a8ecb6c8beff5a51cd2d23d9792396a50a",
+      "sha256": "d9edf62e4355a2374003e8e39b878ed0f0c7e73fb50d61b3a4e8bd244a3c98d5",
+      "bytes": 2261
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.Style.swift",
+      "git_blob": "1f759d12ea2a05d83c1c9427bb90ad2a8700f2a8",
+      "sha256": "c06dbf07c621f5143327db00f47a8397fd111a4cfd3034537aa0ee556b5a1d74",
+      "bytes": 2365
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.swift",
+      "git_blob": "b57f540b38b31c8ad6b9621ab6f7cf967d2b0645",
+      "sha256": "9563f84c5a323135416ae8d23b1fa885a0a2debd3205287056258275a5a5b806",
+      "bytes": 5678
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Relation.swift",
+      "git_blob": "7e7027b793f4c60c1191f4c16dffe3a236c4f8bf",
+      "sha256": "ef556698040cdcf5a22bb8f3d16f7382e65218a172c67c8494b8015ed90ca429",
+      "bytes": 2759
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Smartblock.swift",
+      "git_blob": "feaf83c2c0086f3aa03401b0357da53745ea0a11",
+      "sha256": "f20a78b30971d52dd2662581a662b0375858a7587b11fffbdd51e89d8de05afa",
+      "bytes": 2215
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Table.swift",
+      "git_blob": "b1a6658ae8e6754031fe40dab1fd4ecf2cc112e2",
+      "sha256": "dd386429954b0094b24a86c528787f288910bf82bb9918d8f5e807648e3fef7d",
+      "bytes": 2190
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.TableColumn.swift",
+      "git_blob": "3a879f478e0e744f502276b6671a9565a256e494",
+      "sha256": "9cbddf5c8ffdf1629787cf855fe26ffffe575fbcc23ee84f21fd3ff578fce71d",
+      "bytes": 2220
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.TableOfContents.swift",
+      "git_blob": "0fb61c26c38ec855062269f756f8d11ce505deaf",
+      "sha256": "14b82b81bd0f4af7aeb7dad1f1a08fa275d0b1aceff3341a860d3c5088f7c9f5",
+      "bytes": 2240
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.TableRow.swift",
+      "git_blob": "f1e94ece81e0379f4de1e91b4ae0bd555bc6a5b2",
+      "sha256": "7451c8db3b798527cda74bee06a5ff8f691b1b540f8639f8cef188757ded6e5c",
+      "bytes": 2785
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.Mark.swift",
+      "git_blob": "b92189a4ed83b2ffb2c29852ebca5e312c29b6c5",
+      "sha256": "8461068f32562871b3230416087ac800490eb15df87311c7593ee4e55fda044a",
+      "bytes": 6734
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.Marks.swift",
+      "git_blob": "0833cea3fccde3ead28f2cd311afcf52f1d7cbf0",
+      "sha256": "9f0da4ed2d2d84a10e53cab6ad5ee95e8bd4cb3eb7558bba08df9550d3a0e711",
+      "bytes": 2826
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.Style.swift",
+      "git_blob": "eb8a536aaf64dbfd37eec8171953bdfca3867900",
+      "sha256": "10bced3f146f05f8b5bcaca06de67468c410adc019bc50023793d2c4c3a29048",
+      "bytes": 4323
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.swift",
+      "git_blob": "66d9fd67eedfb052d9165b514c426aa140f16a79",
+      "sha256": "c2c445cbc47822d933f9d115a31801ff5f6c925b4894fad46cc9eb648b75dc14",
+      "bytes": 5565
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Widget.Layout.swift",
+      "git_blob": "098f8806f6073e4b1e9f13326596f3d73b80a407",
+      "sha256": "488fc8193c349f7c4f1e2f273de573819cc5e796bd2fb4d85a7d37157b95d4a0",
+      "bytes": 2447
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Widget.swift",
+      "git_blob": "280d760681853d2b2998108a0d57e60140cdca23",
+      "sha256": "c8578389f5485152ceee9b23e7d93bb8c14263c3c499b0c221ddcabb89a017be",
+      "bytes": 3695
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.swift",
+      "git_blob": "101cc7f82887564cb4f8d85b6e38b93f6a807012",
+      "sha256": "7e6945965d0b67531ee6279cb441a12be8bb65119308bd2cfaabfe7895698519",
+      "bytes": 2148
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.OneOf_Content.swift",
+      "git_blob": "9bf140f3816825ed54f521be1daaff5928fe1ea0",
+      "sha256": "5f795ce341fd455c8de0b7f5e2fe938c24645e10a73d3d8e9e6698e4fb8549f8",
+      "bytes": 2041
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Position.swift",
+      "git_blob": "f46d9c1ccdd19ff1926aef0d6fa2ec7ccd8f4a26",
+      "sha256": "cf8ce5059e51e852df4dd5a93485270a31206d91c2f3f6b91ae8b109ed054636",
+      "bytes": 2812
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Restrictions.swift",
+      "git_blob": "47bc0ed51efaf7c6655dee06fc88153809e9ca29",
+      "sha256": "a7b498291b91bd291437d8f2107113aa5fd27ee9b5ac0042b38332c037fe24e7",
+      "bytes": 3859
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.VerticalAlign.swift",
+      "git_blob": "10a57c77247a1227df02bad1613da692b48faeaa",
+      "sha256": "82cef49cd69d2cece25bafa941f73284351b5bdf0f81aa8caa7cf571ac445ff4",
+      "bytes": 2083
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.swift",
+      "git_blob": "a1954290e7819f8339130374daf2b6d209d3dff5",
+      "sha256": "566f029f4f08273589a3f46baff7c13a2278572604312c4d1b82ea4280fc8f9f",
+      "bytes": 25768
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_BlockMetaOnly.swift",
+      "git_blob": "57140269df8570959979251b6c24c63f8aa2553a",
+      "sha256": "f7e5aab5132695b08e7a45918771db6f64beab9c97e3815a4c7600957d3731d7",
+      "bytes": 3699
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ChatMessage.Attachment.AttachmentType.swift",
+      "git_blob": "f83d8f8051db9bbfae1adc4475db553886eb578b",
+      "sha256": "fd7ab5440572aef009da01b5857e1eb4c6d17f10ab2badd3373ed211e3f748db",
+      "bytes": 2235
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ChatMessage.Attachment.swift",
+      "git_blob": "f52292aabf2e9be7ca4edf38c02d9b39ca9328fd",
+      "sha256": "c6a6d2094c772256ac861f7c71552a390de1555f2fa17d80464bcc790e1c1042",
+      "bytes": 3162
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ChatMessage.MessageBlock.OneOf_Content.swift",
+      "git_blob": "e039a4767473dc70d4fe53553e0832196d62136f",
+      "sha256": "7673620ed5cf8ef172467bb4305e3d0d26559d40fdaa71c22edc86acf02003a3",
+      "bytes": 1416
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ChatMessage.MessageBlock.swift",
+      "git_blob": "c6403872964a9851c7aff02d180be46fda45564a",
+      "sha256": "65b404f385f997d250f08855ba6e5b97268bf0ff6bef039dcac692ae335b4beb",
+      "bytes": 7509
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ChatMessage.MessageBlockEditorQuote.swift",
+      "git_blob": "738c9ec9a45684eb59e1ce641d0e98717ed1835f",
+      "sha256": "74e591d96ccb870c303ee8a7bd695b6a8b86691aacfe1826477b1b20b4f20e1d",
+      "bytes": 4052
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ChatMessage.MessageBlockEmbed.swift",
+      "git_blob": "783bc090cdface8c777cfceb3f44f908861a77b1",
+      "sha256": "cc1848d8145b428982c21a7b6ef514f146cfd7bea5fca66c012ff63d465e3993",
+      "bytes": 3140
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ChatMessage.MessageBlockLink.LinkType.swift",
+      "git_blob": "71303013d2cbaf402996a343dbd7b46232314b83",
+      "sha256": "7c04e818471eba2ec53bd6f5c323d84c118bf3fc164b24b7402518ee08c0da4e",
+      "bytes": 2292
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ChatMessage.MessageBlockLink.swift",
+      "git_blob": "806b538d91e98077e8d9917766857b1cbe5ba4b3",
+      "sha256": "09df0b628e2f83d22202d0e62f5348164d7018375c14afce706e05f1e4f8ed9d",
+      "bytes": 3180
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ChatMessage.MessageBlockMessageQuote.swift",
+      "git_blob": "4cdbdde26718f3f321f1493411d94082ff7ce294",
+      "sha256": "b76ebddc701195ae76e418cf4b6e971abbe54127b2dd953f6a461020bff50a92",
+      "bytes": 4470
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ChatMessage.MessageBlockText.swift",
+      "git_blob": "b1cba41516326f55c5eec8438e5eb3d27c86dc9b",
+      "sha256": "fa7881b745dbe762c18f166aa1213d20899ff90c6e9d0ee49545e723b5a2ed68",
+      "bytes": 4016
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ChatMessage.MessageContent.swift",
+      "git_blob": "d28059110ea50fe5b1e1ed5eb55afba5962a360b",
+      "sha256": "8f6274a1573ca34af639ca95412ab5b1b089ec100d754e19680858dd9e1770bb",
+      "bytes": 3552
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ChatMessage.Reactions.IdentityList.swift",
+      "git_blob": "1212bcd7167a059e3be8cbbd6226bed4c1dfdb66",
+      "sha256": "ff1ffe347bdef6c9cdd7e4e5522b538830e8baaac73d197f1b798c6a632a42d5",
+      "bytes": 2842
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ChatMessage.Reactions.swift",
+      "git_blob": "7eb471f5c27390583c955b30f55646265bab7eeb",
+      "sha256": "c745bef6a0d98e6e8a4d650acbb5909544b32e8b67ebf382bb5fcae6d3bf22a8",
+      "bytes": 3117
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ChatMessage.swift",
+      "git_blob": "8613b696d403ec0176d9511038b73be73153bc43",
+      "sha256": "20b5288abe06abe45ca8e18e82d46968f73f14b1a72ad205cd81b65648fe0c3d",
+      "bytes": 15030
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ChatState.UnreadState.swift",
+      "git_blob": "ca61f0d69817f4437186b254acde3c0477556e23",
+      "sha256": "9024e2d64cf846431ce95ab4c0d74cc875ce2ca76a2004b9f284cd1a51446c5d",
+      "bytes": 3285
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ChatState.swift",
+      "git_blob": "957cb88d9286e929be4ccaeb0245a54e9e2cc66a",
+      "sha256": "21f87f3619be89f26e42687ebc019c7f77947a8e3e2f16c72863cf5f41c35851",
+      "bytes": 5579
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Detail.swift",
+      "git_blob": "3deb80da71fe0d7f635cfc57f432e21497e534b8",
+      "sha256": "85bc4bfadb44c88585dc9deb597fd9fa85a1ee49dc7b2184c808d878ead9174e",
+      "bytes": 3678
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_DeviceInfo.swift",
+      "git_blob": "0a5dc8b46b07f9ec2d98f32e16a3cdfdf2f24fbf",
+      "sha256": "dfca2c2e7f1a3e4829aaf1b67c0da3093f4f493342e82d3f5eb549f6336d914e",
+      "bytes": 3830
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_DeviceNetworkType.swift",
+      "git_blob": "8f268b073324373552b5f687f46e7be73b481b39",
+      "sha256": "3e3e9d6519ca86cee0751f8a705b7d614809fdea8a7684247f4fa00ee4ba4760",
+      "bytes": 2007
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Export.Format.swift",
+      "git_blob": "e6bd860d00dc17a67b0e6b8426854f57685ef3b7",
+      "sha256": "1441066c768c50199fa7e8327d1466fae869d159fe54a792e2e105c3b8d4fa01",
+      "bytes": 2803
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Export.swift",
+      "git_blob": "7464a7d80eaf9a10c71f7d5f1903bc07af33c8b4",
+      "sha256": "8edae99d24785253bdd0dc7da76564755f3fe8369ac69553c8d4d08da4570d9b",
+      "bytes": 2065
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_FileEncryptionKey.swift",
+      "git_blob": "eb4494a3531cf1172d9e80946ff6eb5c38290987",
+      "sha256": "bf09815fa1d1a56a4e6a85a7e98a583366085f9ddc37b3dd29cffdd2b12e3868",
+      "bytes": 2954
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_FileIndexingStatus.swift",
+      "git_blob": "435fe12c4caf9108c418d2666e739736500b5224",
+      "sha256": "d42d1ec70393c958bb3f6d98121a36d24fd504eaf4e080bc7c9e6c4e7b23db60",
+      "bytes": 2020
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_FileInfo.swift",
+      "git_blob": "1331a1da316e04f526dec9c3e94b9ca3d0b2cc37",
+      "sha256": "241be49743e705a6b091dbd8c5a0668a3b1abbdd621ff73dd8661eea67c26c3e",
+      "bytes": 3023
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_IdentityProfile.swift",
+      "git_blob": "9f626f09150800cd90640871d2a9b9243c865556",
+      "sha256": "f96ec4a1f27dd870e48b3d2af53dbe8ae004ab3d174149a3b5afb9bb5ab355f0",
+      "bytes": 4360
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_IdentityProfileWithKey.swift",
+      "git_blob": "9f3f76d27b00a0d033b8e513642d13ccd72d3345",
+      "sha256": "e2837f8a7181e9ffd5cd14fd4e932fe0c51b7afef21406207a502aac2f456c70",
+      "bytes": 3943
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ImageKind.swift",
+      "git_blob": "a6ec200f0178d54f5a390f85e2e5db5d012510c7",
+      "sha256": "7cfe59bbded6f9896bb899e83254b11261840c1778e4a797d3cd521161834734",
+      "bytes": 2094
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Import.ErrorCode.swift",
+      "git_blob": "cdc437adf863e92c47040d92a3ea03dc91d484b1",
+      "sha256": "225b8482f559b9241b949272926de870c437c17add1368b1b2be153325db00d2",
+      "bytes": 4478
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Import.TypeEnum.swift",
+      "git_blob": "8a56537f3dc1bf6764d97d66783ef56588ae9293",
+      "sha256": "5846ef5b868233328df69f7fe57dc12c323df1e6d6f786319fc13df8ff82db5c",
+      "bytes": 2646
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Import.swift",
+      "git_blob": "5904ba6b8dee01484914e7e115885dd3e5fa0f24",
+      "sha256": "84367c189d58a859d0b9d8166cf16d7e46d9de3b58724c51368f6ae3e0b1192e",
+      "bytes": 2065
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_InternalFlag.Value.swift",
+      "git_blob": "1fbe8a964e3a753b256913a142969417930d7540",
+      "sha256": "07e99974df9f4928b978264e9b2b404158931b9aa55071018abb0034628db798",
+      "bytes": 2610
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_InternalFlag.swift",
+      "git_blob": "0587dc9e8460e80e55b6a2db0ae71f82c2f31c0b",
+      "sha256": "08213bf18febf37629e79692fa79cd3407def032fd323779041038d3b8f4a9da",
+      "bytes": 2704
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Invite.swift",
+      "git_blob": "008d22986a7e921c0470ce4be5d9cfc1e142c01e",
+      "sha256": "458d5066ca23a87c3c82d15b0930c4be77505de28b82d957a6b4c39c134ea42e",
+      "bytes": 2950
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_InvitePayload.swift",
+      "git_blob": "242bc7529c6edb47e163b12c2a7b990934548fc8",
+      "sha256": "d1f22db0c28064be86e2f5e078c2fbe93df378e7ee09d7da125dd9c456e0fda8",
+      "bytes": 7225
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_InviteType.swift",
+      "git_blob": "8624a1886593bdc59a2d34eeaca59591cf95668a",
+      "sha256": "92f724121eaa3ab1743bbd6eba5e4d38bb2c1d8c621b76d433c4ecd1e4f0a857",
+      "bytes": 2182
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Layout.swift",
+      "git_blob": "64af5f9d1558b4847e1e73657349a2fd37bc4820",
+      "sha256": "b1b959e8ca39fed65248e6b50f72f53dd33ac8cd86c0bbc351002cca6e0aa3fc",
+      "bytes": 3347
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_LinkPreview.TypeEnum.swift",
+      "git_blob": "a7788d51f3e615f34b231411be78c7c9e6000889",
+      "sha256": "fc43ca40815e6ef66e59605973a512b71ef62685feb36e09546fc425fb477833",
+      "bytes": 2155
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_LinkPreview.swift",
+      "git_blob": "9976d0d128d790400d778c2fa6a6c4621045ab88",
+      "sha256": "834f3097d8cd78206ba01b58e78db47d264252aca6eec55a6061743b2797e5b8",
+      "bytes": 4225
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ManifestInfo.swift",
+      "git_blob": "a9caa6395f90b1ac2921cde40b89f4e3e8bd8485",
+      "sha256": "12588ac7a591269bc6b15d085ee6849b947991b382b7757697835acda0454b3b",
+      "bytes": 6075
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Membership.EmailVerificationStatus.swift",
+      "git_blob": "3f879249ba27db87840f56611f8f284c8b39c38a",
+      "sha256": "fb19bd9e06afa6070370e2f6c641fa7ec7fd8288396e663e35f83cbe5ac1adef",
+      "bytes": 2550
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Membership.PaymentMethod.swift",
+      "git_blob": "db12d0590cf4c720c3875144d2768ff065657951",
+      "sha256": "93995c511aa1954c039f05fa071bd978b43a56878ac0b0a11de1c264374dd750",
+      "bytes": 2484
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Membership.Status.swift",
+      "git_blob": "b61a8b9f48a89bc5b524f8e0a0cd38a6c9d49a36",
+      "sha256": "b60c1478ee13e690c733498698054c271e5822a85a4571776de80811469ae70b",
+      "bytes": 2804
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Membership.swift",
+      "git_blob": "6061b602e902a2454e07286455cab99403718ce8",
+      "sha256": "bbdbfe6831a6554a71c68a2cd79c4e88abd5f82a35bac87a11d94911dd5b04c5",
+      "bytes": 5857
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_MembershipTierData.PeriodType.swift",
+      "git_blob": "9fddafff8b84768c820b8bd22cbcf323b7b69980",
+      "sha256": "38bb57dacb3b23454c588e55b57031a7661011a098e2093e25d6ad808a92911c",
+      "bytes": 2480
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_MembershipTierData.swift",
+      "git_blob": "a610de65fb84ed09dbecb378e93ac1f020e2ddb0",
+      "sha256": "2fb3c8882636039ceee0c25bfc94140c560ee5a2369118700f9b7110e8b38172",
+      "bytes": 14340
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_MembershipV2.Amount.swift",
+      "git_blob": "dd9ea3978424222c5a2060fd24a28024c42c79e3",
+      "sha256": "9d15e6ecaec8368e572d7738297aab3bcc5da14368d17a47fcbcd2b46e5d5193",
+      "bytes": 3252
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_MembershipV2.Cart.swift",
+      "git_blob": "7050529beb374a7ed2ae5e10e38f33ce45dff808",
+      "sha256": "50ac80144cdb64d328984218836367499baff1af4bfc18c97f180ed028ba2bbb",
+      "bytes": 5811
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_MembershipV2.CartProduct.swift",
+      "git_blob": "5b8156e01c958429c912fa2118a6249114d40f7b",
+      "sha256": "6a3e622eabd6d3c8b308aadf69fb1be5f0b81ff2caac7c5ce331754b59f87c42",
+      "bytes": 4837
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_MembershipV2.CryptoCheckout.swift",
+      "git_blob": "18d5435079d1bba93d147f55bb61de4f795c5e54",
+      "sha256": "d05e8e1c219a996e5901d5d327c9e7fbae862a65c10a96abeaf1d943b3543dca",
+      "bytes": 4195
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_MembershipV2.DataMessage.swift",
+      "git_blob": "f584af8159a81450d333d4ed85ea0d3d6ebdf2a7",
+      "sha256": "f5ee9e899f75356c0656a4229c136f5b155231684a1fa2ba3a697e4f2231b2e5",
+      "bytes": 5061
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_MembershipV2.Features.swift",
+      "git_blob": "8f867616e16083322d07506c7a4b605335b4eba1",
+      "sha256": "83ea4b4bc8bb8122af604f717be61598f5b110c5d6f889a04e72b716f1b59cb5",
+      "bytes": 5102
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_MembershipV2.FetchState.swift",
+      "git_blob": "067d4ec58f7ecd3e0d9e2434cc672b5072cd5680",
+      "sha256": "2d42c056c6e6609067d81d7f6ff6f8f16829c0f5024fcfe6b0dc3fbd45d23492",
+      "bytes": 4838
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_MembershipV2.Freshness.swift",
+      "git_blob": "74c43dfca612386de23bef115a2458d9c9de534d",
+      "sha256": "7482646754688b0226344e3db4ca59f454c9a0cb1e4c42d5a501faf2c67b7a0b",
+      "bytes": 2632
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_MembershipV2.Invoice.swift",
+      "git_blob": "c27c849e5fd14d39861435f950799eba8fcfff4c",
+      "sha256": "ad29b5ba9efac181c8de50f2baed79fa0fb8b403792fa58e41c1de560c5621ab",
+      "bytes": 3781
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_MembershipV2.PaymentProvider.swift",
+      "git_blob": "63470716cbd65dc9da1bf7c02eff4d1451b48f53",
+      "sha256": "490d8d3a9feed85f12df01b131233bd6814c75a3318ddb07aa011f2d114704bc",
+      "bytes": 2469
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_MembershipV2.Period.swift",
+      "git_blob": "d1899fc7e2705da8643176ba8f86f4b81d78326b",
+      "sha256": "4bfcd20c2601e2766b53f6744ba5dc65e0c005bdb4c1677357efdd7a1729ba2f",
+      "bytes": 2408
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_MembershipV2.Platform.swift",
+      "git_blob": "b21f0fd78edef97b53a21fed7568531944a8b410",
+      "sha256": "0422a0a757787e8aee93cabff3ac2e95f17b335dfcb1d1d1f27959a1e8135f61",
+      "bytes": 2332
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_MembershipV2.Product.swift",
+      "git_blob": "97e5d8ea582eabe5e59aeb9437c7bc53c0f66850",
+      "sha256": "d169fd67073f603e9b981c1dcece459246d66e665ae18c6efaa58eff56e1d2ba",
+      "bytes": 12056
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_MembershipV2.ProductStatus.Status.swift",
+      "git_blob": "b721cb347e376100435c2e9bd39c95dc5a943ef7",
+      "sha256": "cf4b02265172c83af6d8cb659480cbc55950f6e53fe03e0dad42cd9a80a67231",
+      "bytes": 2450
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_MembershipV2.ProductStatus.swift",
+      "git_blob": "2d719a09d9f2012d5cf671df486b1a3d93992675",
+      "sha256": "95f45a1f68f69d4c952ebe9cb64a493ee4393c7a392ae8478a3236238666604c",
+      "bytes": 2826
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_MembershipV2.PurchaseInfo.swift",
+      "git_blob": "217b07d6f3f0251f028eff2c836ded94c4de1276",
+      "sha256": "1b0970b12969f5928b756e78597f5252a3b03d8ac9e25429f28e4a2572e75521",
+      "bytes": 3764
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_MembershipV2.PurchasedProduct.swift",
+      "git_blob": "84637a1ee2711627b2743538232d76bd1e973bd3",
+      "sha256": "b0d7d9597b26989da2cc190fc8aab9948ef97bd56350a028e2b9a31e8ec75804",
+      "bytes": 5354
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_MembershipV2.RefreshError.swift",
+      "git_blob": "f11dbcfaba48a3546ee14bbd8c2d8d90308b597a",
+      "sha256": "9ec75328a5c6ba0500a9c3ad4721857d8cb2cf894c92306e65c6ba6601d75011",
+      "bytes": 2287
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_MembershipV2.Revision.swift",
+      "git_blob": "1ce4aa4d9567c72fc0a6bae59bb6f0b2cd09b0ae",
+      "sha256": "68d5152ef7306999b42152166af3b6d18490490a884bbe04ec5aadbcbaf450b9",
+      "bytes": 3039
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_MembershipV2.swift",
+      "git_blob": "d6914e642b353450e6ec17b0c8ef32a8ca866206",
+      "sha256": "2135604b4de819b6b9a5ec2f92f1742575b3cff26b58600e8eb0b6c115a52672",
+      "bytes": 2095
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Metadata.OneOf_Payload.swift",
+      "git_blob": "78216bb0c4433b60ebdd2d8098f75bb11a1b7822",
+      "sha256": "2143030a3d10c02c26db344fdca292ebda47d5ddef0c0b771c7e22e8b6fac899",
+      "bytes": 1130
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Metadata.Payload.IdentityPayload.swift",
+      "git_blob": "fc6e4c08be84e8f7f0e7da4e35f8df2b48f7ebdc",
+      "sha256": "45b662616cc97f6730191f90113e4972d4c51e3e8fae778d7cb5464b20fe9ab3",
+      "bytes": 2873
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Metadata.Payload.swift",
+      "git_blob": "edef5cf8d6f012a561d7d7ac8ff2e7864d0eb953",
+      "sha256": "984d931da3ee81607b09c46d8b4b4b902a64b49b8cded2f8ce67c9db5234a6b2",
+      "bytes": 2163
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Metadata.swift",
+      "git_blob": "44abd48b920bb6e5d959013564b24e9e85e332f0",
+      "sha256": "d7682bfb3ecc06cc381ee249b1b09275256ed515e32a0b0afa672c535aea3c8e",
+      "bytes": 3612
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_NameserviceNameType.swift",
+      "git_blob": "a139d83988b3373bfc4a9ef8d7f352c22efcc71e",
+      "sha256": "78e9f0535a717ce8ce41e006d9a3919fb19b787b299bd3b3c070f83730b55201",
+      "bytes": 1807
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Notification.ActionType.swift",
+      "git_blob": "6007ee4bfac52109beff002b241b5087ce48801c",
+      "sha256": "a511267689525cbf58e468b47155353da1653b033ee992f48cd63193eb58c081",
+      "bytes": 1850
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Notification.Export.Code.swift",
+      "git_blob": "f128d79dc7ce39babb80b33d3bebc298187a64d4",
+      "sha256": "fd81060134c3800b882ead24fd9214587784bf2fc6ecba5ff8219eaf117a800a",
+      "bytes": 2171
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Notification.Export.swift",
+      "git_blob": "4ac15bf4b515d9facabea9490b8d87c08331132a",
+      "sha256": "ba27fca1355307c5072f4f89e9b67c694b2b27bc0e657a80086584a213fae8f3",
+      "bytes": 4544
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Notification.GalleryImport.swift",
+      "git_blob": "9a02ce197eda7fbd77a1c84463d1f0d88b3c3a70",
+      "sha256": "10669026d568b5f2531a42f2eadf06e4dd7f4dcfda1d503400ac030f9bc63873",
+      "bytes": 4059
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Notification.Import.swift",
+      "git_blob": "8af12f69f6e02c2784a7e02b71018ff21997ab8e",
+      "sha256": "a440c4e9347e2adfe2efa733f67ccb83fdb4e97e3aa2e48ceb7388a162d5adc3",
+      "bytes": 5246
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Notification.OneOf_Payload.swift",
+      "git_blob": "0b8fec78fed8fd982309e8dadf16273126c3e6fe",
+      "sha256": "8d3bc6688e4c291f77ada7e1ba52f355cfd4fefe78ab399ea03bf2d0682b4039",
+      "bytes": 1764
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Notification.ParticipantPermissionsChange.swift",
+      "git_blob": "05f92de1542dc286b129a57213c070929b687b4c",
+      "sha256": "6d12b82e9cceeb0aaf160270948005102b75aabbc20c0ae6e28d13739b95966a",
+      "bytes": 3551
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Notification.ParticipantRemove.swift",
+      "git_blob": "6a9749c9098edc94078db34c6b3795d3effa7cef",
+      "sha256": "bc473cff95029074e6ebe8a6ac6b8c14b881a72d5255b9f9d003edebf805ad11",
+      "bytes": 4132
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Notification.ParticipantRequestApproved.swift",
+      "git_blob": "50f637676abbea11f2206d3b1c117f254e78724f",
+      "sha256": "38de27b1b6a4ac0b587d14f562496a4c0b06fb88785e5f21a687352ecb19d646",
+      "bytes": 3546
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Notification.ParticipantRequestDecline.swift",
+      "git_blob": "21b3ffea7cbd5f721cacc0a007e8304ee2cd451d",
+      "sha256": "d0a541b2645bef09b0e849e0c9ffe70424c921322c067cb93e9d616c6ef09460",
+      "bytes": 3179
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Notification.RequestToJoin.swift",
+      "git_blob": "08a4ce1832603a5a73b64111697593f42f80e760",
+      "sha256": "ee20ffbaf12337463d08e48846b274f8ab0dae4441cc5c40a111617ab8a8c57e",
+      "bytes": 4112
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Notification.RequestToLeave.swift",
+      "git_blob": "366e329c2ad70fffe5491b73930e3f793c44a587",
+      "sha256": "6e9385930e56098a3eb7fb793d22393d5c201b4c88cf0e607e07944af4748e36",
+      "bytes": 4117
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Notification.Status.swift",
+      "git_blob": "f75ab1c39c9884b7d412132e99f7e8b6be332cc2",
+      "sha256": "ca514aa308749d2aed7afe18934896f694c16854baf8c425f7ba1bb9abfe9545",
+      "bytes": 2167
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Notification.Test.swift",
+      "git_blob": "dd7f67a3c259af098808a98f48d2bff2ab8f610d",
+      "sha256": "ecd52d0b6050ec2f9c3bdeb5d521b8462e4f962c6df16ef61bcec75dfe5fad6d",
+      "bytes": 2168
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Notification.swift",
+      "git_blob": "2e04d9ca63c0e2eda1309d1656ff942b5d5607c8",
+      "sha256": "ea4a7d209f637eb3b95685ed0701942f29c971a101c0f67dd9146ccb1cd3dc65",
+      "bytes": 14187
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Object.ChangePayload.swift",
+      "git_blob": "1de756b88e484cc45c2142d0f16fa5a80135a073",
+      "sha256": "ba5793b9777c09317b57f445c7ad58d91cf3197e23a66242ee1eab49d07ffd74",
+      "bytes": 3398
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Object.swift",
+      "git_blob": "a1392ebee56093d9467a6cd59aed6e7529e84255",
+      "sha256": "95c74ea9b72d138a51d09f5e3cde4c3bd671d830c701600da45d51fe5869e7cd",
+      "bytes": 2065
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectOrigin.swift",
+      "git_blob": "8c947cdd9dd795a10b96de35c70e347e7a957965",
+      "sha256": "71dbce91fb946dbd9b3b7ba7fe53e9b2a5e9e9506ddd76671913bd53eb77ff06",
+      "bytes": 2775
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectType.Layout.swift",
+      "git_blob": "a7e58a624262978db22d7e738559a0dbfc7df278",
+      "sha256": "a9e5a2438d1cdc86c64e7db481d9e21708be3aff78c0f99a3d60ffc77fa92d3b",
+      "bytes": 5124
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectType.swift",
+      "git_blob": "2e5b629375ef579081f7c39321aaeaac52983e01",
+      "sha256": "c3eded1c4ecfce67f07c502e8102fbb2e17a0fb7f2359046d068eec98ad4e395",
+      "bytes": 13155
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.BlockParticipant.swift",
+      "git_blob": "1da6233cb31ff26a53cd0771f1a4505e0f1dc3af",
+      "sha256": "f48f540b62cbd92b32d65d96681473e548ad29e2f96778bf8614770e226cf840",
+      "bytes": 3147
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.DetailsSet.swift",
+      "git_blob": "cdedc300b1ff8f0a8f0b736a3d9277911cdaa1d4",
+      "sha256": "86db57ca1f7ebc70a4d23d741f9cf484ffc1c0e0c763604a579ed93ce61f1117",
+      "bytes": 4215
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.HistorySize.swift",
+      "git_blob": "c067085ca604700037e0a48ae01c652ca36b02cc",
+      "sha256": "98fdd0b33f4d1c7666e5a1f541b1329e36e7c4d0b4081d9fe0ddf27dd6127cf8",
+      "bytes": 3010
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.RelationWithValuePerObject.swift",
+      "git_blob": "eb1ad396c9e29abcf99e98e81cb658b7b498e53e",
+      "sha256": "1b81f1c84ebd376abc0f23cf322941cafa87383bfe674cb94951263edc2e9ca7",
+      "bytes": 3199
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.swift",
+      "git_blob": "7c0f41600c1b0454f3e506d5f6d0ef284e1d6106",
+      "sha256": "0e4c1cf72e1c3c179dd08c553a67aa52f7f4888bc6644752392655519bc17aa1",
+      "bytes": 6799
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ParticipantPermissionChange.swift",
+      "git_blob": "6f0fcf413bee98e0dcd1cef7bb14ace6dca18b32",
+      "sha256": "65f1c745e8eb785aed3891e2fb60e33425279584b85494cb42e3d58cc25c5335",
+      "bytes": 3073
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ParticipantPermissions.swift",
+      "git_blob": "cacce9daad76cdc83f46ffc7ab0c25790fa01d3e",
+      "sha256": "5022bf16a8c3ef693a41d29e136ed053af79e2fd4ea4de5d41275a1b7980c798",
+      "bytes": 2220
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ParticipantStatus.swift",
+      "git_blob": "c4d11256c886cb60605f6ff77d37db84d85ce7df",
+      "sha256": "be78e48419db2f64f9e39e4c3108cb2ab74d8068133e5d06b24990a359fe2554",
+      "bytes": 2322
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Placeholder.TypeEnum.swift",
+      "git_blob": "f3c7c882782b651c222fb43253bbd47a8b7bbb16",
+      "sha256": "d337d97852aca368ec850d8019e049bf02d92650162b8b306b3c03d5d4516201",
+      "bytes": 2255
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Placeholder.Value.swift",
+      "git_blob": "6c82058dfa7c20b91846b9af90dfd26b38c69764",
+      "sha256": "c7d15985e402739994547d0d08cbc16bd2b8aac5623866ba2233b2905c7ff7c6",
+      "bytes": 3828
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Placeholder.swift",
+      "git_blob": "b8ec232532e9226b9fb30e16cb3120700e3012ea",
+      "sha256": "80c35d06c9949180b155c8becbe22e4151b8f32fb7163b392513045f9e7b7506",
+      "bytes": 3017
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Range.swift",
+      "git_blob": "779b9f7563b8a913ec272d131434b1f0e784d428",
+      "sha256": "7e80af1a8283650c29fe564f9f9e073f426ed47fb59dda137ff6d713938ae460",
+      "bytes": 2859
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.DataSource.swift",
+      "git_blob": "f40c23c7659160932f3eba12323f48822af8092c",
+      "sha256": "1950939900fcdb289c7ed1926c91b3a5e1f6d4c0a04d5cfb06c74bfbaf2899ed",
+      "bytes": 2407
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.Option.swift",
+      "git_blob": "bd04db35b481bd202fa0b9e33b42cce8bb776ca9",
+      "sha256": "5013107f107fd5427aa365722aa522c02cd10a89cfda3fc2385ee8471de30902",
+      "bytes": 4093
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.Scope.swift",
+      "git_blob": "cece8265ead6eb8d136c048d42003ab7132fb294",
+      "sha256": "b273f801c8871e810d76ab9a947613dd34564dc798fcc3512afc2eba741a4fb8",
+      "bytes": 2636
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.swift",
+      "git_blob": "97882443082fedabe611d3f390aeb7bcf96a4196",
+      "sha256": "d08d81c2b4ea7fcbd4ac47f8ab387c34a41d0a83ebc4537c3a9efeb6b9f9527c",
+      "bytes": 14691
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_RelationFormat.swift",
+      "git_blob": "fd66723ed232b199d8a78e6643bbbf377ade539b",
+      "sha256": "570da500bed728ca86740c29efb55b563678cb2999dd1c60906b249e0cc1c564",
+      "bytes": 3943
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_RelationLink.swift",
+      "git_blob": "3fc8bc10c449a35fd9cf0d837140f94ab0194e9c",
+      "sha256": "a510d62379bf4b144d21842ed7338b496ce2a47b5b011e424861e1f0b12c9601",
+      "bytes": 2966
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_RelationOptions.swift",
+      "git_blob": "93ff7e9d9aaa2054143001327b01ebbcd55d2085",
+      "sha256": "34ef2c060751abe3d60d72fc11e4d7c38bbbaf87827da91c8d57db71c7b031f3",
+      "bytes": 2709
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_RelationWithValue.swift",
+      "git_blob": "807c085e41efbc73e961ca4fae863355b18f0011",
+      "sha256": "5f63997c5bcbd5fe564fff03a4a1b3df090c243b0b7cfdc34d26a478d42eb72f",
+      "bytes": 4178
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relations.swift",
+      "git_blob": "72219f4a6f8a15d3bfe017a826ea9e2816cb247e",
+      "sha256": "83c7c8778b2afc07086d0265beecbec613e01a0de654131c842a24b493d32f81",
+      "bytes": 2686
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.DataviewRestriction.swift",
+      "git_blob": "a8afc7bf61e5faa0b078ef940ec70c8dd0ed9958",
+      "sha256": "67526e2bac1c69228f3126eadc2c77454ac66be610d297061f78d81364ba289f",
+      "bytes": 2275
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.DataviewRestrictions.swift",
+      "git_blob": "6830f4cfadb5bb123200917cf52b5533ef21b158",
+      "sha256": "df376bbbf3db571ebc249b6f405842e2f8fb6c7d6b3cb974b0719a2774f58ce9",
+      "bytes": 3200
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.ObjectRestriction.swift",
+      "git_blob": "afaad648c4b8b0b3e013bb902d1e0dfcca29b244",
+      "sha256": "ebe8f660443ad424219786cde2b343e2fd504b726844e53d283fbc4b17b89de6",
+      "bytes": 3552
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.swift",
+      "git_blob": "475f7ce186b1b03b3104ea7216df0da79509b1c1",
+      "sha256": "5afd55c41ec5a48172e4885bcf624ae9d050ff281821ccccdcec6784650bec2a",
+      "bytes": 3045
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Search.Message.Result.swift",
+      "git_blob": "edd3d1ea9e66c6504acf342a4b774c82b01e4cfd",
+      "sha256": "2d54373a05b9d4f68109d44925323be96eda919341fc1bd0c9336cbb9905f0dc",
+      "bytes": 5631
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Search.Message.Sort.Key.swift",
+      "git_blob": "df3693d2984cd92c2689721760e89f59efa40d65",
+      "sha256": "2c99389b4c99a895b2fd94e33eb50e21b0abe85331fb569599367c47d4dfd6c3",
+      "bytes": 2366
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Search.Message.Sort.TypeEnum.swift",
+      "git_blob": "67b91a3c7edd9656f055008b7dcd248365537810",
+      "sha256": "8c27d2129dd6094f6cb2f5444eec0da2fd19a003c7e2aa2efb38ce3e642ee587",
+      "bytes": 2064
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Search.Message.Sort.swift",
+      "git_blob": "ac4845b4e8c3d7a057867711dd13a692e93caaaf",
+      "sha256": "96650288c0d689362bd07ca7d1021b53da664e0847401844bb01b989f2d70a76",
+      "bytes": 3089
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Search.Message.swift",
+      "git_blob": "4503c34d956982ba3213d097ac7d44995b22d074",
+      "sha256": "a5d1fb9b76ea30d38959c395289767da1fa9611054592029e9dd9fc52c138252",
+      "bytes": 2153
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Search.Meta.swift",
+      "git_blob": "2bee8e7b43486f65a419c8c5c1be7cabd6d17702",
+      "sha256": "21b68f6b44693e75302c4c35876dca45d88a454710129885523156f5e19d1dec",
+      "bytes": 5292
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Search.Result.swift",
+      "git_blob": "8b874ebf550a9db47780e3d826bc88d8fb80935f",
+      "sha256": "ee243813954ff83dbbdc052c6cd68dca80c6e03bad86f4d5208791a60e66c67f",
+      "bytes": 4176
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Search.swift",
+      "git_blob": "6ddd26ea314820350bd3f12d06e17106fad21ed7",
+      "sha256": "99a09fa93dbe85d3e002e0ac6718d70e1e422256b1e74a2a05f58746c9034e45",
+      "bytes": 2065
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_SmartBlockSnapshotBase.swift",
+      "git_blob": "62bbd7477f4b9b8d89b5c7d9549d6b7336bb82da",
+      "sha256": "bff2e74a31d0f83f043fe2e6311b648570f9049394d1c31e5772a517cb25f0e5",
+      "bytes": 8643
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_SmartBlockType.swift",
+      "git_blob": "7bc4ad8d03446c95821c38b96de5f953cfcd842e",
+      "sha256": "1bff13c1505eb7acf25acb6d88d980cfedde0260cc37476fd5239ac16d78a020",
+      "bytes": 6245
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_SpaceAccessType.swift",
+      "git_blob": "1b3cc709d7ccb2c34c1fbfbd15cb1c010eec37f9",
+      "sha256": "9090a0668935f2188e62a82a2734e59c1f120273db06120e22453339c3fbdff1",
+      "bytes": 1990
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_SpaceObjectHeader.swift",
+      "git_blob": "1ceed83ce5391a842758edffd63c61984b166d1a",
+      "sha256": "6548ade5d8701f0272afa2687d19a4d6c37000adcd6562dbd566da9ec5e1eabb",
+      "bytes": 2698
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_SpaceShareableStatus.swift",
+      "git_blob": "7c23832cc04126453f8c1cb6a6437508d08aa677",
+      "sha256": "77731597ad36fa514f6299a76f5259993226dad1274684c6a01151526a69e14a",
+      "bytes": 2134
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_SpaceStatus.swift",
+      "git_blob": "95565316d55a76769b701c687cc9a369cc8c75d3",
+      "sha256": "620c12cbabb4af6e3414ea3a028e965f3aa2eea6c44b8769e58f469117c81c35",
+      "bytes": 3631
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_SpaceType.swift",
+      "git_blob": "e33b11b2d6dcedcefee1ff5eddf9c0ad48e27460",
+      "sha256": "3bfaf7ee87c7567c5742ddbcee66818b6eefaafa2945eddeea9b71f665533781",
+      "bytes": 2202
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_SpaceUxType.swift",
+      "git_blob": "82de34e37db6b29236b0c033066866e88e46b725",
+      "sha256": "80db7e272f84ccce2c8a211950148cfaef9f3b47ea7804df39b0589d387dd7c8",
+      "bytes": 2363
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_SyncError.swift",
+      "git_blob": "0889f4be7b9fa1d8e781932b6c3b980dc352dcb4",
+      "sha256": "957ae9d605f43893c416c00912f215f4d32157f191bf0d800f985beeafbda3d1",
+      "bytes": 2194
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_SyncStatus.swift",
+      "git_blob": "47793162197909da71c67b1ca36d95b72aee5d2e",
+      "sha256": "f19704984190d4761bf147391f24d1aa4af7ec092d7d887ae3f1f70d1c3bfb36",
+      "bytes": 2098
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_TemplateNamePrefillType.swift",
+      "git_blob": "57c24919118fed7a86efa0f7bbb51ef1636fe13b",
+      "sha256": "240248649fb4d7358e697917b4676f324b1e8e26c283753d0ed03fc1771d26bd",
+      "bytes": 1939
+    },
+    {
+      "path": "OriginalEditorFramework/OriginalAnnotationNativeArchiveLayout.swift",
+      "git_blob": "3cdccf777009d4e2320cb16fcea838f3b92fb88e",
+      "sha256": "982470bc1bd237eb053edcb8081a53c96baf53a9eba75c408baaced0cc7f7560",
+      "bytes": 8234
+    },
+    {
+      "path": "OriginalEditorFramework/OriginalAnnotationNativeMapKeyGuard.swift",
+      "git_blob": "d1b46c01dedfe1e08d0cd2b541358bdd9d7669e9",
+      "sha256": "2d8f22ac43e67b1f30cdc6ed2e82a4bd3ce5c3da6666d103da19e61baa060125",
+      "bytes": 5938
+    },
+    {
+      "path": "OriginalEditorFramework/OriginalAnnotationNativeSnapshotWire.swift",
+      "git_blob": "63f20a87969d782a39188ffdf9edafaabd62238e",
+      "sha256": "44c564b5597b08dccc84a700a14d98122ce23dab924b386297666bd185555a1e",
+      "bytes": 5216
+    },
+    {
+      "path": "OriginalEditorFramework/OriginalAnnotationNativeArchiveComparison.swift",
+      "git_blob": "2add3f44c6508e060726564453fb01bee39b6266",
+      "sha256": "7cd565292ca7b77fe4eab865cbfe947d9d97e5f83868a96660a84c3b7dff840a",
+      "bytes": 9920
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-body-comparison-20261122/controls/NativeBodySemanticControls.swift",
+      "git_blob": "8706ed5c9c876faf5ac234e5370e11e841d41de1",
+      "sha256": "18b24324d72f63a355e59aa0c39bbfcf92a0a25d00662b43da1e7fc1c1db1fab",
+      "bytes": 21309
+    }
+  ],
+  "scope": "New actual SwiftProtobuf/ZIPFoundation semantic comparator controls with synthetic original-format archives; no engine/Owner/atomic/mapping/ACK acceptance",
+  "dependency_pins": {
+    "swift-protobuf": "c6fe6442e6a64250495669325044052e113e990c",
+    "zipfoundation": "22787ffb59de99e5dc1fbfe80b19c97a904ad48d"
+  },
+  "model_base": "b5162d777e3ebc5c4c0d044e02b52347c0c3dd6e",
+  "source_commit": "f784bbb71963a57ba142e33b68c68df753e71afb",
+  "swift_version": "Swift version 6.4.2 (swift-6.4.2-RELEASE)\nTarget: x86_64-unknown-linux-gnu\n",
+  "error": "build failed; preserve diagnostics and do not automatically replay",
+  "finished_at": "2026-11-22T14:53:53.040450+00:00"
+}

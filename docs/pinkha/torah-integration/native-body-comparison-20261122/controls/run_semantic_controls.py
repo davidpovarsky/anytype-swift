@@ -112,6 +112,14 @@ try:
         raise RuntimeError("original generated model inventory changed")
     for item in models:
         stage(item["path"], model_target / Path(item["path"]).name, item["git_blob"])
+    # Notification.Export references the original additive export report type,
+    # which lives beside Models rather than inside that directory. Preserve the
+    # same 197 model inventory and stage this one exact original dependency.
+    support = json.loads((repo / PACKET / "controls/generated-model-support.json").read_text())
+    if len(support) != 1 or support[0]["path"] != "Modules/ProtobufMessages/Sources/Protocol/export_report.pb.swift":
+        raise RuntimeError("unexpected generated model support closure")
+    for item in support:
+        stage(item["path"], model_target / Path(item["path"]).name, item["git_blob"])
     for path in SOURCE_PATHS:
         stage(path, control_target / Path(path).name)
     stage(PACKET + "/controls/NativeBodySemanticControls.swift", control_target / "NativeBodySemanticControls.swift")
@@ -150,6 +158,11 @@ let package = Package(
 except Exception as error:
     result["status"], result["error"] = "FAILED", str(error)
 finally:
+    # A compiler failure can occur after successful dependency resolution.
+    # Preserve that actual lockfile even when run("build", ...) throws.
+    resolved = package / "Package.resolved"
+    if resolved.exists() and not (evidence / "Package.resolved").exists():
+        shutil.copyfile(resolved, evidence / "Package.resolved")
     result["finished_at"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
     save()
     print(json.dumps({"status": result["status"], "source_commit": result.get("source_commit"),
