@@ -1,0 +1,74 @@
+name: Original Heart fixed-schema observer â€” new native controls
+
+on:
+  push:
+    branches:
+      - codex/otzaria-original-schema-native-20261122
+    paths:
+      - .github/workflows/otzaria-original-schema-native.yml
+      - docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/candidate-v5/CANDIDATE.patch
+      - docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v6-r1/EXECUTION_INPUTS.json
+      - docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v6-r1/V5_TO_V6.patch
+      - docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v6-r1/run_original_native_schema_controls.py
+      - docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v6-r1/prepare_original_tantivy.py
+      - docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v6-r1/candidate/**/*.go
+
+permissions:
+  contents: read
+
+concurrency:
+  group: otzaria-original-schema-native-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  new-native-controls:
+    runs-on: xcode-27
+    timeout-minutes: 120
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+    steps:
+      - name: Fix the absolute owned execution deadline
+        run: |
+          echo "OTZARIA_SCHEMA_JOB_DEADLINE=$(( $(date +%s) + 6900 ))" >> "$GITHUB_ENV"
+      - name: Checkout exact reviewed control source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Select actual ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Install the exact original Go toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache: false
+      - name: Checkout the immutable original Heart base
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: build/Heart-Schema-Observer
+          persist-credentials: false
+      - name: Build and execute only 20 unresolved native cases
+        run: |
+          python3 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v6-r1/run_original_native_schema_controls.py \
+            --control-root "$GITHUB_WORKSPACE" \
+            --control-head "$GITHUB_SHA" \
+            --source docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/candidate-v5 \
+            --controls docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v6-r1 \
+            --execution-manifest-sha256 dc843c2a08a1a55fc96ebe822f2c6e70b3c46bf83edd248266761a1cda8137e7 \
+            --job-deadline-unix "$OTZARIA_SCHEMA_JOB_DEADLINE" \
+            --heart build/Heart-Schema-Observer \
+            --work build/Heart-Schema-Owned-Work \
+            --evidence build/Heart-Schema-Evidence
+      - name: Retain exact new case evidence including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otzaria-Original-Heart-Schema-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/Heart-Schema-Evidence
+          if-no-files-found: warn
+          compression-level: 6
+          retention-days: 14

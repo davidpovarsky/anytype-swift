@@ -1,0 +1,192 @@
+--- v6/run_original_native_schema_controls.py
++++ v7/run_original_native_schema_controls.py
+@@ -1,14 +1,15 @@
+ #!/usr/bin/env python3
+ """Run only the newly reviewed original Heart observer controls on macOS ARM64.
+ 
+-Requires a fresh original Heart checkout, frozen V5 source, and this reviewed V6 correction.
+-Only the 20 unresolved/previously masked native cases execute; strict12 and the
+-13 unaffected early-rejection controls are retained from actual run45008694456.
++Requires a fresh original Heart checkout and unchanged reviewed V5 plus V6 product.
++Only the TWO unresolved genuine counter cases execute. Strict12, original13,
++and V6 eighteen passing cases are retained without replay.
+ This does not build an iOS framework, invoke old regression packages, provision
+ production schema, or use an existing wallet/account. Native fixture setup owns
+ a disposable LocalOnly original application and removes it through AccountStop.
+ """
+ import argparse
++import base64
+ import hashlib
+ import json
+ import os
+@@ -291,6 +292,107 @@
+     return {"pass": passed, "expected": wanted, "started": started, "terminal": terminal, "package_terminal": packages, "unexpected": unexpected}
+ 
+ 
++def validate_counter_observations(evidence, expected):
++    """Verify retained actual row bytes/attempt selection; no alternate native decoder."""
++    paths = sorted(evidence.glob("counter-*.json"))
++    reports = {case: [] for case in expected}
++    if not 2 <= len(paths) <= 6:
++        raise RuntimeError("exact two counter cases require one to three observations each")
++    for path in paths:
++        record = json.loads(path.read_text(encoding="utf-8"))
++        case = record.get("Case")
++        attempt = record.get("Attempt")
++        if (case not in reports or type(attempt) is not int or not 1 <= attempt <= 3 or
++                path.name != f"counter-{case}-attempt-{attempt}.json" or
++                record.get("Schema") != "otzaria.native-counter-observation/1" or
++                record.get("MaximumAttempts") != 3 or type(record.get("ProcessID")) is not int or
++                record["ProcessID"] <= 0):
++            raise RuntimeError("unexpected counter observation identity/selection")
++        reports[case].append((attempt, path, record))
++    result = {}
++    process_ids = set()
++    for case, entries in reports.items():
++        entries.sort(key=lambda entry: entry[0])
++        if not entries or [entry[0] for entry in entries] != list(range(1, len(entries) + 1)):
++            raise RuntimeError("missing/duplicated bounded counter observation")
++        first = entries[0][2]
++        reference = base64.b64decode(first["CounterBefore"], validate=True)
++        if not reference:
++            raise RuntimeError("empty genuine counter row")
++        for position, (_, path, record) in enumerate(entries):
++            process_ids.add(record["ProcessID"])
++            if (record.get("Failure") or record.get("ScopeUnchanged") is not True or
++                    record.get("CounterUnchanged") is not True or
++                    record["Scope"] != first["Scope"] or record["ObjectID"] != first["ObjectID"] or
++                    record["ChangeID"] != first["ChangeID"] or record["ExpectedCounter"] != first["ExpectedCounter"] or
++                    not record["ObjectID"] or not record["ChangeID"] or
++                    base64.b64decode(record["CounterBefore"], validate=True) != reference or
++                    base64.b64decode(record["CounterAfter"], validate=True) != reference):
++                raise RuntimeError("counter/scope guard did not remain exact")
++            if type(record["ExpectedCounter"]) is not int or (
++                    case == "ActualLocalZeroCounterAccepted" and record["ExpectedCounter"] != 0) or (
++                    case == "NativeComputedRemoteCounterAccepted" and record["ExpectedCounter"] <= 0):
++                raise RuntimeError("wrong genuine native counter value")
++            snapshots = record["Snapshots"]
++            if len(snapshots) != 2:
++                raise RuntimeError("two complete original snapshots required")
++            decoded = []
++            for number, snapshot in enumerate(snapshots, 1):
++                if (snapshot["Index"] != number or snapshot["Committed"] is not True or
++                        snapshot["Done"] is not True or snapshot["CommitError"] or
++                        snapshot["ReadErrors"] or snapshot["TraceErrors"] or not snapshot["Rows"]):
++                    raise RuntimeError("native snapshot/read/commit/trace failure")
++                rows = {}
++                for key, row in snapshot["Rows"].items():
++                    raw = base64.b64decode(row["Encoded"], validate=True)
++                    if (not raw or key != row["Collection"] + "\0" + row["ID"] or
++                            hashlib.sha256(raw).hexdigest() != row["SHA256"]):
++                        raise RuntimeError("retained original row identity/hash mismatch")
++                    rows[key] = raw
++                counter_key = "changes\0" + record["ChangeID"]
++                if rows.get(counter_key) != reference:
++                    raise RuntimeError("snapshot did not retain exact genuine counter row")
++                decoded.append(rows)
++            changed = sorted(key for key in set(decoded[0]) | set(decoded[1])
++                             if decoded[0].get(key) != decoded[1].get(key))
++            differences = record["Differences"] or []
++            diff_keys = []
++            for difference in differences:
++                key = difference["Collection"] + "\0" + difference["ID"]
++                diff_keys.append(key)
++                left, right = snapshots[0]["Rows"].get(key), snapshots[1]["Rows"].get(key)
++                if (difference["FirstPresent"] != (left is not None) or
++                        difference["SecondPresent"] != (right is not None) or
++                        difference["FirstSHA256"] != (left["SHA256"] if left else "") or
++                        difference["SecondSHA256"] != (right["SHA256"] if right else "")):
++                    raise RuntimeError("reported snapshot difference does not match retained rows")
++                a, b = left["Fields"] if left else {}, right["Fields"] if right else {}
++                fields = sorted(field for field in set(a) | set(b) if a.get(field) != b.get(field))
++                if (difference["ChangedFields"] or []) != fields:
++                    raise RuntimeError("reported field difference does not match original projections")
++            if sorted(diff_keys) != changed:
++                raise RuntimeError("recorded snapshot delta is incomplete")
++            terminal = position == len(entries) - 1
++            if terminal:
++                if (record["CompleteStableMatch"] is not True or record["RetryAdmitted"] is not False or
++                        record["Error"] or record["ExactChangedError"] is not False or
++                        record["Disposition"] != 1 or changed):
++                    raise RuntimeError("no final complete stable native PersistedMatch")
++            elif (record["CompleteStableMatch"] is not False or record["RetryAdmitted"] is not True or
++                    record["ExactChangedError"] is not True or record["Disposition"] != 5 or not changed or
++                    record["Error"] != "fixed schema context or persisted input changed while reading"):
++                raise RuntimeError("retry lacks exact error/disposition/actual native delta")
++        result[case] = {
++            "attempts": len(entries), "stable_final_match": True,
++            "counter_sha256": hashlib.sha256(reference).hexdigest(),
++            "files": [{"path": path.name, "bytes": path.stat().st_size, "sha256": digest(path)} for _, path, _ in entries],
++        }
++    if len(process_ids) != 1:
++        raise RuntimeError("counter observations did not come from one native test process")
++    return {"cases": result, "reported_native_process_id": next(iter(process_ids)),
++            "scope": "Original encoded rows are independently rehashed; field projection semantics remain the original anyenc fixture's observation. No replacement native decoder or direct child-PID observation is claimed."}
++
++
+ def main():
+     parser = argparse.ArgumentParser(__doc__)
+     parser.add_argument("--control-root", required=True, type=Path)
+@@ -319,10 +421,8 @@
+         raise RuntimeError("unreviewed execution manifest")
+     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+     selected_cases = manifest["expected_cases"]
+-    if (set(selected_cases) != {"native"} or len(selected_cases["native"]) != 20 or
+-            len(set(selected_cases["native"])) != 20 or
+-            any(re.fullmatch(r"[A-Za-z0-9]+", name) is None for name in selected_cases["native"])):
+-        raise RuntimeError("exact reviewed 20-case native-only selection required")
++    if selected_cases != {"native": ["ActualLocalZeroCounterAccepted", "NativeComputedRemoteCounterAccepted"]}:
++        raise RuntimeError("exact reviewed TWO-counter-case native-only selection required")
+     for entry in manifest["control_inputs"]:
+         check_file(controls, entry)
+     if digest(source / "SOURCE_REVIEW_INDEX.json") != manifest["source_index_sha256"]:
+@@ -342,6 +442,7 @@
+     allowed_env = ("PATH", "HOME", "TMPDIR", "LANG", "LC_ALL", "DEVELOPER_DIR", "SDKROOT", "GOCACHE", "GOMODCACHE")
+     env = {key: os.environ[key] for key in allowed_env if key in os.environ}
+     env["TMPDIR"] = str(owned_temp)
++    env["OTZARIA_SCHEMA_COUNTER_EVIDENCE"] = str(evidence)
+     env.update({"CGO_ENABLED": "1", "GOMAXPROCS": "2", "GOTOOLCHAIN": "local", "GOWORK": "off", "GOFLAGS": "-mod=readonly"})
+     # The first workflow step fixes the absolute job deadline. Reserve three
+     # minutes inside it for owned cleanup/evidence, plus five more before the
+@@ -351,9 +452,9 @@
+         "status": "STARTED_NOT_ACCEPTED", "heart_base": PIN, "control_head": args.control_head,
+         "source_index_sha256": manifest["source_index_sha256"],
+         "execution_manifest_sha256": digest(manifest_path), "tests": {},
+-        "baseline_run_id": 45008694456,
++        "baseline_run_id": 45012913358,
+         "observer_delta_sha256": manifest["observer_delta_patch"]["sha256"],
+-        "unchanged_prior_cases_not_replayed": {"strict": 12, "native_early_rejection": 13},
++        "unchanged_prior_cases_not_replayed": {"strict": 12, "native_early_rejection": 13, "native_v6_passed": 18},
+         "job_deadline_unix": args.job_deadline_unix,
+         "command_deadline_unix": commands.deadline,
+         "cleanup_reserve_seconds": 180,
+@@ -446,8 +547,8 @@
+         env["CGO_LDFLAGS"] = "-L" + str(heart / "deps/libs/darwin-arm64")
+         listing = commands.require("declared-dependency-inputs", [args.go, "list", "-deps", "-test", "-json", *[v[0] for v in PACKAGES.values()]], heart, 1200)
+         closure = dependency_inputs(listing, heart, compiled_product_inputs)
+-        if len(closure["required_product_test_coverage"]) != 8:
+-            raise RuntimeError("exact five product plus three native test input coverage required")
++        if len(closure["required_product_test_coverage"]) != 9:
++            raise RuntimeError("exact five product plus four native test input coverage required")
+         write_json(evidence / "DECLARED_NATIVE_INPUTS.json", closure)
+         result["declared_native_inputs_sha256"] = digest(evidence / "DECLARED_NATIVE_INPUTS.json")
+         result["declared_native_input_count"] = len(closure["files"])
+@@ -482,6 +583,9 @@
+                            "timed_out": commands.items[-1]["timed_out"]})
+             actual["pass"] = actual["pass"] and code == 0 and not actual["timed_out"] and actual["binary_unchanged"]
+             result["tests"][name] = actual
++            write_json(evidence / "RESULT.json", result)
++            observations = validate_counter_observations(evidence, selected_cases[name])
++            result["counter_observations"] = observations
+             write_json(evidence / "RESULT.json", result)
+ 
+         for entry in compiled_product_inputs:
+@@ -524,7 +628,7 @@
+             for p in sorted(evidence.iterdir()) if p.is_file() and p.name != "EVIDENCE_INDEX.json"
+         ]
+         write_json(evidence / "EVIDENCE_INDEX.json", {
+-            "scope": "Only result/commands/source closure and captured command streams; no native account directory or wallet is included.",
++            "scope": "Result/commands/source closure, original streams, and exact disposable counter snapshot rows; no wallet or native account directory is included.",
+             "files": payloads,
+         })
+     return 0 if success else 1

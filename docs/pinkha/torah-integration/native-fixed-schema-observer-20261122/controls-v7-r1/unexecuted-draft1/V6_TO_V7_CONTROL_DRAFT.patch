@@ -1,0 +1,529 @@
+--- a/core/block/object/objectcreator/fixed_schema_native_observer_test.go
++++ b/core/block/object/objectcreator/fixed_schema_native_observer_test.go
+@@ -92,7 +92,7 @@
+ 		if stored.SnapshotCounter != 0 {
+ 			t.Fatal("fixture did not exercise the actual native local zero-counter path")
+ 		}
+-		f.observe(t, spc, definition, objectcreator.FixedSchemaPersistedMatch)
++		f.observeStableCounter(t, spc, definition, id, added.Added[0].Id, stored.SnapshotCounter)
+ 	})
+ 
+ 	t.Run("NativeComputedRemoteCounterAccepted", func(t *testing.T) {
+@@ -113,7 +113,7 @@
+ 		if stored.SnapshotCounter <= 0 {
+ 			t.Fatal("fixture did not exercise native computed remote-ingest counter")
+ 		}
+-		f.observe(t, spc, definition, objectcreator.FixedSchemaPersistedMatch)
++		f.observeStableCounter(t, spc, definition, id, raw.Id, stored.SnapshotCounter)
+ 	})
+ 
+ 	t.Run("NonzeroCounterMetadataConflict", func(t *testing.T) {
+--- /dev/null
++++ b/core/block/object/objectcreator/fixed_schema_native_counter_observation_test.go
+@@ -0,0 +1,506 @@
++package objectcreator_test
++
++import (
++	"bytes"
++	"context"
++	"crypto/sha256"
++	"encoding/hex"
++	"encoding/json"
++	"fmt"
++	"os"
++	"path/filepath"
++	"reflect"
++	"slices"
++	"strings"
++	"sync"
++	"testing"
++	"time"
++
++	anystore "github.com/anyproto/any-store"
++	"github.com/anyproto/any-store/anyenc"
++	"github.com/anyproto/any-sync/commonspace/headsync/headstorage"
++	"github.com/anyproto/any-sync/commonspace/object/tree/objecttree"
++
++	"github.com/anyproto/anytype-heart/core/block/object/objectcreator"
++	"github.com/anyproto/anytype-heart/space/clientspace"
++)
++
++// Fixture-only observation of exactly the real rows returned to the unchanged
++// observer. Embedded operations delegate to the original disposable runtime.
++// Nothing replaces a read result, mutates a row, delays a native callback, or
++// filters a field from the observer's complete comparison.
++type counterReadContextKey struct{}
++
++type counterRecordedField struct {
++	Type   uint8
++	Bytes  int
++	SHA256 string
++}
++
++type counterRecordedRow struct {
++	Collection string
++	ID         string
++	Encoded    []byte
++	SHA256     string
++	Fields     map[string]counterRecordedField
++}
++
++type counterRecordedSnapshot struct {
++	Index       int
++	Rows        map[string]counterRecordedRow
++	Committed   bool
++	Done        bool
++	CommitError string
++	ReadErrors  []string
++	TraceErrors []string
++}
++
++type counterSnapshotRecorder struct {
++	anystore.DB
++	mu        sync.Mutex
++	snapshots []*counterRecordedSnapshot
++}
++
++type counterRecordedTx struct {
++	anystore.ReadTx
++	ctx      context.Context
++	recorder *counterSnapshotRecorder
++	snapshot *counterRecordedSnapshot
++}
++
++func (r *counterSnapshotRecorder) ReadTx(ctx context.Context) (anystore.ReadTx, error) {
++	tx, err := r.DB.ReadTx(ctx)
++	if err != nil {
++		return nil, err
++	}
++	r.mu.Lock()
++	snapshot := &counterRecordedSnapshot{Index: len(r.snapshots) + 1, Rows: make(map[string]counterRecordedRow)}
++	r.snapshots = append(r.snapshots, snapshot)
++	r.mu.Unlock()
++	return &counterRecordedTx{
++		ReadTx: tx, ctx: context.WithValue(tx.Context(), counterReadContextKey{}, snapshot),
++		recorder: r, snapshot: snapshot,
++	}, nil
++}
++
++func (tx *counterRecordedTx) Context() context.Context { return tx.ctx }
++
++func (tx *counterRecordedTx) Commit() error {
++	err := tx.ReadTx.Commit()
++	// Observe completion strictly after the actual reader has been returned.
++	tx.recorder.mu.Lock()
++	if tx.snapshot.Committed {
++		tx.snapshot.TraceErrors = append(tx.snapshot.TraceErrors, "duplicate Commit")
++	}
++	tx.snapshot.Committed = true
++	tx.snapshot.Done = tx.ReadTx.Done()
++	if err != nil {
++		tx.snapshot.CommitError = err.Error()
++	}
++	tx.recorder.mu.Unlock()
++	return err
++}
++
++func (r *counterSnapshotRecorder) OpenCollection(ctx context.Context, name string) (anystore.Collection, error) {
++	collection, err := r.DB.OpenCollection(ctx, name)
++	if err != nil {
++		return nil, err
++	}
++	return &counterRecordedCollection{Collection: collection, recorder: r, name: strings.Clone(name)}, nil
++}
++
++type counterRecordedCollection struct {
++	anystore.Collection
++	recorder *counterSnapshotRecorder
++	name     string
++}
++
++func (c *counterRecordedCollection) FindId(ctx context.Context, id any) (anystore.Doc, error) {
++	doc, err := c.Collection.FindId(ctx, id)
++	c.recorder.observe(ctx, c.name, doc, err)
++	return doc, err
++}
++
++func (c *counterRecordedCollection) FindIdWithParser(ctx context.Context, parser *anyenc.Parser, id any) (anystore.Doc, error) {
++	doc, err := c.Collection.FindIdWithParser(ctx, parser, id)
++	c.recorder.observe(ctx, c.name, doc, err)
++	return doc, err
++}
++
++func (c *counterRecordedCollection) Find(filter any) anystore.Query {
++	return &counterRecordedQuery{Query: c.Collection.Find(filter), recorder: c.recorder, name: c.name}
++}
++
++type counterRecordedQuery struct {
++	anystore.Query
++	recorder *counterSnapshotRecorder
++	name     string
++}
++
++func (q *counterRecordedQuery) Limit(limit uint) anystore.Query {
++	return &counterRecordedQuery{Query: q.Query.Limit(limit), recorder: q.recorder, name: q.name}
++}
++func (q *counterRecordedQuery) Offset(offset uint) anystore.Query {
++	return &counterRecordedQuery{Query: q.Query.Offset(offset), recorder: q.recorder, name: q.name}
++}
++func (q *counterRecordedQuery) Sort(fields ...any) anystore.Query {
++	return &counterRecordedQuery{Query: q.Query.Sort(fields...), recorder: q.recorder, name: q.name}
++}
++func (q *counterRecordedQuery) IndexHint(hints ...anystore.IndexHint) anystore.Query {
++	return &counterRecordedQuery{Query: q.Query.IndexHint(hints...), recorder: q.recorder, name: q.name}
++}
++func (q *counterRecordedQuery) Iter(ctx context.Context) (anystore.Iterator, error) {
++	iter, err := q.Query.Iter(ctx)
++	if err != nil {
++		q.recorder.observe(ctx, q.name, nil, err)
++		return nil, err
++	}
++	return &counterRecordedIterator{Iterator: iter, ctx: ctx, recorder: q.recorder, name: q.name}, nil
++}
++
++type counterRecordedIterator struct {
++	anystore.Iterator
++	ctx      context.Context
++	recorder *counterSnapshotRecorder
++	name     string
++}
++
++func (i *counterRecordedIterator) Doc() (anystore.Doc, error) {
++	doc, err := i.Iterator.Doc()
++	i.recorder.observe(i.ctx, i.name, doc, err)
++	return doc, err
++}
++func (i *counterRecordedIterator) Err() error {
++	err := i.Iterator.Err()
++	if err != nil {
++		i.recorder.observe(i.ctx, i.name, nil, err)
++	}
++	return err
++}
++func (i *counterRecordedIterator) Close() error {
++	err := i.Iterator.Close()
++	if err != nil {
++		i.recorder.observe(i.ctx, i.name, nil, err)
++	}
++	return err
++}
++
++func counterHash(value []byte) string {
++	hash := sha256.Sum256(value)
++	return hex.EncodeToString(hash[:])
++}
++
++func counterRowKey(collection, id string) string { return collection + "\x00" + id }
++
++func (r *counterSnapshotRecorder) observe(ctx context.Context, collection string, doc anystore.Doc, readError error) {
++	snapshot, _ := ctx.Value(counterReadContextKey{}).(*counterRecordedSnapshot)
++	r.mu.Lock()
++	defer r.mu.Unlock()
++	found := false
++	for _, owned := range r.snapshots {
++		if owned == snapshot {
++			found = true
++			break
++		}
++	}
++	if !found {
++		// This path must never be reachable from the full observer. Record it
++		// on every owned snapshot; do not synthesize or suppress a native error.
++		for _, owned := range r.snapshots {
++			owned.TraceErrors = append(owned.TraceErrors, "read outside exact original ReadTx context")
++		}
++		return
++	}
++	if snapshot.Committed {
++		snapshot.TraceErrors = append(snapshot.TraceErrors, "read after original Commit")
++	}
++	if readError != nil {
++		snapshot.ReadErrors = append(snapshot.ReadErrors, collection+": "+readError.Error())
++		return
++	}
++	if doc == nil || doc.Value() == nil {
++		snapshot.TraceErrors = append(snapshot.TraceErrors, "nil original document")
++		return
++	}
++	value := doc.Value()
++	id := strings.Clone(value.GetString("id"))
++	if id == "" {
++		snapshot.TraceErrors = append(snapshot.TraceErrors, "empty original row ID")
++		return
++	}
++	object, err := value.Object()
++	if err != nil {
++		snapshot.TraceErrors = append(snapshot.TraceErrors, "original row is not an object: "+err.Error())
++		return
++	}
++	row := counterRecordedRow{
++		Collection: strings.Clone(collection), ID: id, Encoded: value.MarshalTo(nil),
++		Fields: make(map[string]counterRecordedField),
++	}
++	row.SHA256 = counterHash(row.Encoded)
++	object.Visit(func(key []byte, field *anyenc.Value) {
++		if field == nil {
++			snapshot.TraceErrors = append(snapshot.TraceErrors, "nil original top-level field")
++			return
++		}
++		encoded := field.MarshalTo(nil)
++		row.Fields[string(bytes.Clone(key))] = counterRecordedField{Type: uint8(field.Type()), Bytes: len(encoded), SHA256: counterHash(encoded)}
++	})
++	key := counterRowKey(collection, id)
++	if previous, exists := snapshot.Rows[key]; exists && !bytes.Equal(previous.Encoded, row.Encoded) {
++		snapshot.TraceErrors = append(snapshot.TraceErrors, "same row changed inside one original ReadTx")
++	}
++	snapshot.Rows[key] = row
++}
++
++func (r *counterSnapshotRecorder) report() []counterRecordedSnapshot {
++	r.mu.Lock()
++	defer r.mu.Unlock()
++	result := make([]counterRecordedSnapshot, 0, len(r.snapshots))
++	for _, snapshot := range r.snapshots {
++		copy := *snapshot
++		copy.Rows = make(map[string]counterRecordedRow, len(snapshot.Rows))
++		for key, row := range snapshot.Rows {
++			row.Encoded = bytes.Clone(row.Encoded)
++			fields := make(map[string]counterRecordedField, len(row.Fields))
++			for field, observation := range row.Fields {
++				fields[field] = observation
++			}
++			row.Fields = fields
++			copy.Rows[key] = row
++		}
++		copy.ReadErrors = slices.Clone(snapshot.ReadErrors)
++		copy.TraceErrors = slices.Clone(snapshot.TraceErrors)
++		result = append(result, copy)
++	}
++	return result
++}
++
++type counterRowDifference struct {
++	Collection    string
++	ID            string
++	FirstPresent  bool
++	SecondPresent bool
++	FirstSHA256   string
++	SecondSHA256  string
++	ChangedFields []string
++}
++
++func counterDifferences(first, second counterRecordedSnapshot) []counterRowDifference {
++	keys := make(map[string]struct{})
++	for key := range first.Rows { keys[key] = struct{}{} }
++	for key := range second.Rows { keys[key] = struct{}{} }
++	ordered := make([]string, 0, len(keys))
++	for key := range keys { ordered = append(ordered, key) }
++	slices.Sort(ordered)
++	differences := make([]counterRowDifference, 0)
++	for _, key := range ordered {
++		left, hasLeft := first.Rows[key]
++		right, hasRight := second.Rows[key]
++		if hasLeft && hasRight && bytes.Equal(left.Encoded, right.Encoded) { continue }
++		row := left
++		if !hasLeft { row = right }
++		fields := make(map[string]struct{})
++		for field := range left.Fields { fields[field] = struct{}{} }
++		for field := range right.Fields { fields[field] = struct{}{} }
++		var changed []string
++		for field := range fields {
++			a, hasA := left.Fields[field]
++			b, hasB := right.Fields[field]
++			if hasA != hasB || a != b { changed = append(changed, field) }
++		}
++		slices.Sort(changed)
++		differences = append(differences, counterRowDifference{
++			Collection: row.Collection, ID: row.ID, FirstPresent: hasLeft, SecondPresent: hasRight,
++			FirstSHA256: left.SHA256, SecondSHA256: right.SHA256, ChangedFields: changed,
++		})
++	}
++	return differences
++}
++
++type counterScopeValue struct {
++	SpaceID, SettingsID, ArchiveID, AccountIdentity, ACLID, ACLHead, ACLRootSHA256 string
++	ACLRecords [][2]string
++}
++
++// This freezes only the existing fixture's retained native scope. It grants no
++// capability and reads no database while the original ACL RLock is held.
++func (f *nativeSchemaFixture) counterScopeGuard(t *testing.T, spc clientspace.Space) (counterScopeValue, func() error) {
++	t.Helper()
++	application := f.service.GetApp()
++	storage, database := spc.Storage(), spc.Storage().AnyStore()
++	stateStorage, common := storage.StateStorage(), spc.CommonSpace()
++	acl, identity := common.Acl(), spc.GetAclIdentity()
++	capture := func() (counterScopeValue, error) {
++		if application != f.service.GetApp() || spc.Storage() != storage || storage.AnyStore() != database ||
++			storage.StateStorage() != stateStorage || spc.CommonSpace() != common || common.Acl() != acl ||
++			spc.GetAclIdentity() == nil || !identity.Equals(spc.GetAclIdentity()) {
++			return counterScopeValue{}, fmt.Errorf("owned original runtime/storage/account identity changed")
++		}
++		value := counterScopeValue{SpaceID: spc.Id(), SettingsID: stateStorage.SettingsId(), ArchiveID: spc.DerivedIDs().Archive, AccountIdentity: identity.Account()}
++		acl.RLock()
++		defer acl.RUnlock()
++		state, head, root := acl.AclState(), acl.Head(), acl.Root()
++		if state == nil || state.Identity() == nil || !state.Identity().Equals(identity) || head == nil || root == nil {
++			return counterScopeValue{}, fmt.Errorf("owned original ACL state unavailable")
++		}
++		value.ACLID, value.ACLHead, value.ACLRootSHA256 = acl.Id(), head.Id, counterHash(root.Payload)
++		for _, record := range acl.Records() {
++			if record == nil { return counterScopeValue{}, fmt.Errorf("nil original ACL record") }
++			value.ACLRecords = append(value.ACLRecords, [2]string{record.Id, record.PrevId})
++		}
++		return value, nil
++	}
++	frozen, err := capture()
++	nativeSchemaNoError(t, err)
++	return frozen, func() error {
++		current, err := capture()
++		if err != nil { return err }
++		if !reflect.DeepEqual(frozen, current) { return fmt.Errorf("owned original scope changed") }
++		return nil
++	}
++}
++
++type counterObservationAttempt struct {
++	Schema              string
++	Case                string
++	Attempt             int
++	MaximumAttempts     int
++	ProcessID           int
++	Started             time.Time
++	Finished            time.Time
++	Scope               counterScopeValue
++	ObjectID            string
++	ChangeID            string
++	ExpectedCounter     int
++	CounterBefore       []byte
++	CounterAfter        []byte
++	CounterUnchanged    bool
++	ScopeUnchanged      bool
++	Snapshots           []counterRecordedSnapshot
++	Differences         []counterRowDifference
++	Disposition         objectcreator.FixedSchemaDisposition
++	Error               string
++	ExactChangedError   bool
++	CompleteStableMatch bool
++	RetryAdmitted       bool
++	Failure             string
++}
++
++func persistCounterAttempt(t *testing.T, report counterObservationAttempt) {
++	t.Helper()
++	directory := os.Getenv("OTZARIA_SCHEMA_COUNTER_EVIDENCE")
++	if directory == "" { t.Fatal("owned counter evidence directory is required") }
++	info, err := os.Stat(directory)
++	nativeSchemaNoError(t, err)
++	if !info.IsDir() { t.Fatal("counter evidence path is not a directory") }
++	body, err := json.MarshalIndent(report, "", "  ")
++	nativeSchemaNoError(t, err)
++	body = append(body, '\n')
++	path := filepath.Join(directory, fmt.Sprintf("counter-%s-attempt-%d.json", report.Case, report.Attempt))
++	file, err := os.OpenFile(path, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
++	nativeSchemaNoError(t, err)
++	_, writeError := file.Write(body)
++	syncError, closeError := file.Sync(), file.Close()
++	nativeSchemaNoError(t, writeError)
++	nativeSchemaNoError(t, syncError)
++	nativeSchemaNoError(t, closeError)
++	// Encoded rows are retained in the owned artifact, not printed as native logs.
++	t.Logf("COUNTER_OBSERVATION case=%s attempt=%d disposition=%d stable=%t retry=%t differences=%d sha256=%s",
++		report.Case, report.Attempt, report.Disposition, report.CompleteStableMatch, report.RetryAdmitted, len(report.Differences), counterHash(body))
++}
++
++func (f *nativeSchemaFixture) observeStableCounter(t *testing.T, spc clientspace.Space, definition objectcreator.FixedSchemaDefinition, objectID, changeID string, expectedCounter int) {
++	t.Helper()
++	ctx, cancel := context.WithTimeout(f.ctx, 10*time.Second)
++	defer cancel()
++	scope, guard := f.counterScopeGuard(t, spc)
++	nativeSchemaNoError(t, guard())
++	db := spc.Storage().AnyStore()
++	readCounter := func() ([]byte, error) {
++		collection, err := db.OpenCollection(ctx, objecttree.CollName)
++		if err != nil { return nil, err }
++		doc, err := collection.FindId(ctx, changeID)
++		if err != nil { return nil, err }
++		value := doc.Value()
++		counter := value.Get(objecttree.SnapshotCounterKey)
++		if counter == nil || counter.Type() != anyenc.TypeNumber { return nil, fmt.Errorf("genuine counter field is absent or not numeric") }
++		actual, err := counter.Float64()
++		if err != nil || actual != float64(expectedCounter) { return nil, fmt.Errorf("genuine original counter differs: %v", err) }
++		return value.MarshalTo(nil), nil
++	}
++	before, err := readCounter()
++	nativeSchemaNoError(t, err)
++	nativeSchemaNoError(t, guard())
++	caseName := t.Name()[strings.LastIndex(t.Name(), "/")+1:]
++	for attempt := 1; attempt <= 3; attempt++ {
++		nativeSchemaNoError(t, ctx.Err())
++		nativeSchemaNoError(t, guard())
++		recorder := &counterSnapshotRecorder{DB: db}
++		traced := &tracedSchemaSpace{Space: spc, storage: &tracedSchemaStorage{ClientSpaceStorage: spc.Storage(), db: recorder}}
++		report := counterObservationAttempt{Schema: "otzaria.native-counter-observation/1", Case: caseName, Attempt: attempt, MaximumAttempts: 3, ProcessID: os.Getpid(), Started: time.Now().UTC(), Scope: scope, ObjectID: objectID, ChangeID: changeID, ExpectedCounter: expectedCounter, CounterBefore: bytes.Clone(before)}
++		// Every attempt enters the complete unchanged production observer.
++		result, observeError := f.observer.ObserveFixedSchema(ctx, traced, definition)
++		report.Finished, report.Disposition = time.Now().UTC(), result.Disposition
++		report.Snapshots = recorder.report()
++		if observeError != nil { report.Error = observeError.Error() }
++		report.ExactChangedError = observeError == objectcreator.ErrFixedSchemaChanged
++		scopeError := guard()
++		report.ScopeUnchanged = scopeError == nil
++		after, counterError := readCounter()
++		report.CounterAfter = after
++		report.CounterUnchanged = counterError == nil && bytes.Equal(before, after)
++		// Check scope again after the independent counter read, without ACL/DB lock overlap.
++		if scopeError == nil { scopeError = guard(); report.ScopeUnchanged = scopeError == nil }
++		fail := func(message string) { if report.Failure == "" { report.Failure = message } }
++		if err := ctx.Err(); err != nil { fail("finite total observation deadline: " + err.Error()) }
++		if scopeError != nil { fail(scopeError.Error()) }
++		if counterError != nil { fail("original counter read: " + counterError.Error()) }
++		if !report.CounterUnchanged { fail("original counter row changed") }
++		if len(report.Snapshots) != 2 { fail("expected exactly two original ReadTx snapshots") }
++		if len(report.Snapshots) == 2 {
++			report.Differences = counterDifferences(report.Snapshots[0], report.Snapshots[1])
++			for index, snapshot := range report.Snapshots {
++				if snapshot.Index != index+1 || !snapshot.Committed || !snapshot.Done || snapshot.CommitError != "" ||
++					len(snapshot.ReadErrors) != 0 || len(snapshot.TraceErrors) != 0 { fail("original snapshot/trace did not complete cleanly") }
++				required := [][2]string{
++					{"state", scope.SpaceID}, {objecttree.CollName, scope.SettingsID},
++					{objecttree.CollName, objectID}, {objecttree.CollName, changeID},
++					{objecttree.CollName, scope.ArchiveID},
++					{headstorage.HeadsCollectionName, objectID}, {headstorage.HeadsCollectionName, scope.ArchiveID},
++					{headstorage.HeadsCollectionName, scope.ACLID},
++				}
++				for _, record := range scope.ACLRecords { required = append(required, [2]string{scope.ACLID, record[0]}) }
++				for _, row := range required {
++					if _, ok := snapshot.Rows[counterRowKey(row[0], row[1])]; !ok { fail("original snapshot coverage is incomplete") }
++				}
++				if row, ok := snapshot.Rows[counterRowKey(objecttree.CollName, changeID)]; !ok || !bytes.Equal(row.Encoded, before) {
++					fail("genuine counter row differs inside original snapshot")
++				}
++			}
++		}
++		if result.SpaceID != scope.SpaceID || result.ObjectID != objectID || result.NativeKey == nil ||
++			result.NativeKey.Marshal() != definition.Key.Marshal() || result.AccountIdentity != scope.AccountIdentity ||
++			result.ACLID != scope.ACLID || result.ACLHead != scope.ACLHead || result.ArchiveID != scope.ArchiveID {
++			fail("full observer returned a different owned identity")
++		}
++		if observeError == nil {
++			if result.Disposition != objectcreator.FixedSchemaPersistedMatch || len(result.PersistedHeads) == 0 ||
++				len(result.ArchiveHeads) == 0 || len(report.Differences) != 0 { fail("no complete stable PersistedMatch") }
++			report.CompleteStableMatch = report.Failure == ""
++		} else if !report.ExactChangedError || result.Disposition != objectcreator.FixedSchemaChangedWhileReading {
++			fail("unexpected observer error; retry forbidden")
++		} else if len(report.Differences) == 0 {
++			fail("Changed has no recorded original snapshot difference; retry forbidden")
++		} else if attempt == 3 {
++			fail("three complete observations exhausted without a stable match")
++		} else {
++			report.RetryAdmitted = report.Failure == ""
++		}
++		persistCounterAttempt(t, report)
++		if report.Failure != "" { t.Fatal(report.Failure) }
++		if report.CompleteStableMatch { return }
++		if !report.RetryAdmitted { t.Fatal("no positive retry admission") }
++	}
++	t.Fatal("bounded original counter observation did not complete")
++}

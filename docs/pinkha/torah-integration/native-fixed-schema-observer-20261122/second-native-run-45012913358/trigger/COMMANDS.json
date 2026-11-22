@@ -1,0 +1,96 @@
+[
+  {
+    "label": "head",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-schema-native-controls-20261122",
+    "started_at": "2026-11-22T10:32:04.273377+00:00",
+    "status": "COMPLETED",
+    "pid": 33296,
+    "exit_code": 0,
+    "stdout_sha256": "8d24011f9bc19c1752dee425abd011dbd8bf54eceede8ea083cf995eb80e5971",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "branch",
+    "argv": [
+      "git",
+      "branch",
+      "--show-current"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-schema-native-controls-20261122",
+    "started_at": "2026-11-22T10:32:04.535149+00:00",
+    "status": "COMPLETED",
+    "pid": 25800,
+    "exit_code": 0,
+    "stdout_sha256": "2abff33555a06e7075a42629a08d832f03a276a8e5f48aedb685308f30ee8a75",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "status",
+    "argv": [
+      "git",
+      "status",
+      "--porcelain",
+      "--untracked-files=all"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-schema-native-controls-20261122",
+    "started_at": "2026-11-22T10:32:04.731522+00:00",
+    "status": "COMPLETED",
+    "pid": 22816,
+    "exit_code": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "ONE-normal-trigger-push",
+    "argv": [
+      "git",
+      "push",
+      "origin",
+      "HEAD:refs/heads/codex/otzaria-original-schema-native-20261122"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-schema-native-controls-20261122",
+    "started_at": "2026-11-22T10:32:05.508430+00:00",
+    "status": "COMPLETED",
+    "pid": 10496,
+    "exit_code": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "5910a898f8213f160d8941c63d744ad542933259ffab0edd4ffbc5753d7d60a9"
+  },
+  {
+    "label": "remote-head",
+    "argv": [
+      "git",
+      "ls-remote",
+      "--heads",
+      "origin",
+      "refs/heads/codex/otzaria-original-schema-native-20261122"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-schema-native-controls-20261122",
+    "started_at": "2026-11-22T10:32:09.842542+00:00",
+    "status": "COMPLETED",
+    "pid": 31264,
+    "exit_code": 0,
+    "stdout_sha256": "37e8ab8a1a8da2e238387c2ad5b40c5288aac4b0ec122d24c8f8ace80db6ff3a",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "actual-run-query",
+    "argv": [
+      "C:\\Program Files\\GitHub CLI\\gh.EXE",
+      "api",
+      "repos/davidpovarsky/anytype-swift/actions/runs?branch=codex/otzaria-original-schema-native-20261122&event=push&per_page=10"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-schema-native-controls-20261122",
+    "started_at": "2026-11-22T10:32:10.772751+00:00",
+    "status": "COMPLETED",
+    "pid": 7840,
+    "exit_code": 0,
+    "stdout_sha256": "cf9d2fa6206af76373d397a258605c8fd264043215da77eeef4bbc01f39e710b",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

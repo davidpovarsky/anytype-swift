@@ -1,0 +1,59 @@
+[
+  {
+    "label": "bound-run-before",
+    "argv": [
+      "C:\\Program Files\\GitHub CLI\\gh.EXE",
+      "api",
+      "repos/davidpovarsky/anytype-swift/actions/runs/45012913358"
+    ],
+    "status": "COMPLETED",
+    "started_at": "2026-11-22T10:33:43.953815+00:00",
+    "pid": 7968,
+    "exit_code": 0,
+    "timed_out": false,
+    "parent_reaped": true,
+    "finished_at": "2026-11-22T10:33:44.811155+00:00",
+    "stdout_sha256": "624d3118b48fb261e40fbc31bcc9a3467d2348328161845a988b5bf88096da9a",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "owned-gh-watch",
+    "argv": [
+      "C:\\Program Files\\GitHub CLI\\gh.EXE",
+      "run",
+      "watch",
+      "45012913358",
+      "--repo",
+      "davidpovarsky/anytype-swift",
+      "--exit-status",
+      "--interval",
+      "30"
+    ],
+    "status": "COMPLETED",
+    "started_at": "2026-11-22T10:33:44.925239+00:00",
+    "pid": 33352,
+    "exit_code": 1,
+    "timed_out": false,
+    "parent_reaped": true,
+    "finished_at": "2026-11-22T10:37:57.846244+00:00",
+    "stdout_sha256": "10b676963fff6f830f929d8c99baeab5468dcfd54cb655d7b94dd2253cb7e536",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "bound-run-after",
+    "argv": [
+      "C:\\Program Files\\GitHub CLI\\gh.EXE",
+      "api",
+      "repos/davidpovarsky/anytype-swift/actions/runs/45012913358"
+    ],
+    "status": "COMPLETED",
+    "started_at": "2026-11-22T10:37:57.918590+00:00",
+    "pid": 24988,
+    "exit_code": 0,
+    "timed_out": false,
+    "parent_reaped": true,
+    "finished_at": "2026-11-22T10:37:58.851718+00:00",
+    "stdout_sha256": "0fd9466549fbc5639e02000ca0ef56315e3a2b122879b61bc9d25b20592e1ab9",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

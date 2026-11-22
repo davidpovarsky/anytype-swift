@@ -1,0 +1,443 @@
+{
+  "heart_base": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "source_index_sha256": "3487663a830281fc33bef1f944d68047c784819918f03dc76341bd35413e7581",
+  "source_manifest_sha256": "c091fa3696f8b3f2610997aed65c988010529c59caeac3d53a47c1d3e028ac4d",
+  "original_setup_helper": {
+    "path": "Tools/PinkhaNativeDerived/build_custom_heart.py",
+    "retained_path": "original/anytype-swift/Tools/PinkhaNativeDerived/build_custom_heart.py",
+    "repository": "davidpovarsky/anytype-swift",
+    "commit": "d02a4972e7f124bc97a577e1c6d448d4797acf22",
+    "git_blob": "e32c935fedce5fc732240bf9b2ada21764b5add1",
+    "sha256": "0ebbe2f6227418eac2c532b0058290158319ba9f786baaf445de444887e8c669",
+    "bytes": 12945
+  },
+  "original_setup_child": {
+    "path": "prepare_original_tantivy.py",
+    "bytes": 1242,
+    "sha256": "7f2f4b11bc6803241333f04c935ed85f3007fcb6894fd02b03fcc0fa7d50be43"
+  },
+  "r14_patch": {
+    "path": "docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch",
+    "retained_path": "original/anytype-swift/docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch",
+    "repository": "anyproto/anytype-swift",
+    "commit": "d02a4972e7f124bc97a577e1c6d448d4797acf22",
+    "git_blob": "02b7412c24015e90a45ac17ca646dc6758841e95",
+    "sha256": "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+    "bytes": 91246
+  },
+  "r14_inventory": {
+    "path": "docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json",
+    "retained_path": "original/anytype-swift/docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json",
+    "repository": "anyproto/anytype-swift",
+    "commit": "d02a4972e7f124bc97a577e1c6d448d4797acf22",
+    "git_blob": "d6302bfef08ab255f6d34d8db1f66ddcf7f8d118",
+    "sha256": "952073d8dccc991f21bffe5d3ded4e1d5369bb2c30f247ae5204d47cb03aee14",
+    "bytes": 7906
+  },
+  "original_module_hashes": {
+    "go.mod": "0c506b9ab921a9bfea985871c9c912d362147a6bb76e697ee62c51a2eb678de7",
+    "go.sum": "7c873be1e5b4c65e5e46d18167ae6bc29f0f5b51c459a8398d75ab22f0b2432d",
+    "tantivity_sha256.txt": "14a78977c8b08e3e976cfbe130a6092aaec707e7515aa1811326e1c028cd2948"
+  },
+  "runtime": "Actual original application.WalletCreate / AccountCreate LocalOnly / regular WorkspaceCreate, disposable owned temp storage; no fake Space/ACL/DB",
+  "schema": "otzaria.original-heart-schema-observer-execution/7",
+  "status": "REVIEW_ONLY_NO_EXECUTION_AUTHORIZED",
+  "baseline_run_id": 45012913358,
+  "baseline_control_head": "d8ea2be0f42e51b35001c35509dd27c9035c3c66",
+  "baseline_native_event_sha256": "9e9ba5b88136b178245265b69797c50f41844c666ffd01441ed324e3fb56dceb",
+  "control_inputs": [
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_native_fixture_test.go",
+      "bytes": 14947,
+      "sha256": "1afa72779c24aff5a78fe63b181f112ca7a4fa7c6984f1395a0cf5fc4a308999",
+      "retained_path": "candidate/core/block/object/objectcreator/fixed_schema_native_fixture_test.go"
+    },
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_native_trace_test.go",
+      "bytes": 8977,
+      "sha256": "129341500230b4e053985b34155cf48f6dcad185027e5ba1d5a89859c347a98d",
+      "retained_path": "candidate/core/block/object/objectcreator/fixed_schema_native_trace_test.go"
+    },
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_native_observer_test.go",
+      "bytes": 25964,
+      "sha256": "a8cbec19d91da9442a75bf7a406d7718c54b0224d24377ddd2e5160d218de6cc",
+      "retained_path": "candidate/core/block/object/objectcreator/fixed_schema_native_observer_test.go"
+    },
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_replay.go",
+      "before_sha256": "3fe8c34b02ee93224e8e52a139871012f4ee8d0b45ee8e1d9c690cd1a4dcdf3f",
+      "sha256": "fb2c8c245320efe002e4bbece3b38af572a33e262d22652f54388bb6391371c4",
+      "bytes": 14512,
+      "lines": 338,
+      "retained_path": "candidate/core/block/object/objectcreator/fixed_schema_replay.go"
+    },
+    {
+      "repository": "anyproto/any-sync",
+      "commit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+      "path": "commonspace/object/tree/objecttree/objecttree.go",
+      "git_blob": "665e216847a94942a48260f59e3f734721bf03e3",
+      "bytes": 25152,
+      "sha256": "8e439c2a300e0cf089e59eb3cf9bb2e10a9a0fd80e37d6288f91902a69544766",
+      "retained_path": "original/any-sync/commonspace/object/tree/objecttree/objecttree.go"
+    },
+    {
+      "repository": "anyproto/any-sync",
+      "commit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+      "path": "util/crypto/derived.go",
+      "git_blob": "7c627fa8d45bbffa9a360607ae0cbcc9d654cc37",
+      "bytes": 4305,
+      "sha256": "20c2dee12c1ba4f10ff817f2ca844f3df53ed4fde9c7a09311b394a90620dac5",
+      "retained_path": "original/any-sync/util/crypto/derived.go"
+    },
+    {
+      "repository": "anyproto/any-sync",
+      "commit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+      "path": "commonspace/spaceservice.go",
+      "git_blob": "c87e931b91b5de665dedb34382de472ba1da4037",
+      "bytes": 14061,
+      "sha256": "4910f9e6854f0d699e87f3710c81ee9b0257eda59625f3d05f73640f15c62585",
+      "retained_path": "original/any-sync/commonspace/spaceservice.go"
+    },
+    {
+      "repository": "anyproto/any-sync",
+      "commit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+      "path": "commonspace/object/acl/recordverifier/recordverifier.go",
+      "git_blob": "4c4ca94201cf0e20dfb4c94ce61f91663bb5f68b",
+      "bytes": 1592,
+      "sha256": "80dae314e4d130d6fc28fd833cdaf31d69ae8179077ef2db7721010c466b944a",
+      "retained_path": "original/any-sync/commonspace/object/acl/recordverifier/recordverifier.go"
+    },
+    {
+      "repository": "anyproto/any-sync",
+      "commit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+      "path": "commonspace/object/acl/recordverifier/validatefull.go",
+      "git_blob": "f6d3dab76e74e8d4ec5482d2bafc851e5cd1f808",
+      "bytes": 340,
+      "sha256": "98f563d6e543266eb2b525a25eb8f967a8345c8329ab554f699936db75b8f5f0",
+      "retained_path": "original/any-sync/commonspace/object/acl/recordverifier/validatefull.go"
+    },
+    {
+      "repository": "anyproto/any-sync",
+      "commit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+      "path": "commonspace/object/acl/list/aclrecordbuilder.go",
+      "git_blob": "02a0044bb82e43c7c0ea56aa2fe5a42011fe0f81",
+      "bytes": 39667,
+      "sha256": "e8ba4a5b35427a4aee24c099cbb814b6dcfdd41e7ba5aa4479b48148f3f5c98b",
+      "retained_path": "original/any-sync/commonspace/object/acl/list/aclrecordbuilder.go"
+    },
+    {
+      "repository": "anyproto/any-sync",
+      "commit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+      "path": "commonspace/object/acl/list/list.go",
+      "git_blob": "47363fe89660c85ae0af86089719c929bcbd68df",
+      "bytes": 12602,
+      "sha256": "7a44abd9184d1b05191c1955989c7eb45026ec664acab2811635b230d543cc2c",
+      "retained_path": "original/any-sync/commonspace/object/acl/list/list.go"
+    },
+    {
+      "repository": "anyproto/any-sync",
+      "commit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+      "path": "commonspace/object/acl/list/listtest/listtest.go",
+      "git_blob": "812f5161b6032d2f53b98cf07234df96ffd20936",
+      "bytes": 724,
+      "sha256": "9f6c1053c9177d2658de069741c00deb4df776aacb039c68e9894c406ee49b64",
+      "retained_path": "original/any-sync/commonspace/object/acl/list/listtest/listtest.go"
+    },
+    {
+      "repository": "anyproto/any-sync",
+      "commit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+      "path": "commonspace/object/acl/list/storage.go",
+      "git_blob": "2266cdfba35d6bd6e6a74d2a939c693b6d426a99",
+      "bytes": 7333,
+      "sha256": "99a45d282bed2fb5c6f817f350f4e31f20f2b7246c7846835c20b2b8282a32ef",
+      "retained_path": "original/any-sync/commonspace/object/acl/list/storage.go"
+    },
+    {
+      "repository": "anyproto/any-sync",
+      "commit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+      "path": "commonspace/object/acl/syncacl/syncacl.go",
+      "git_blob": "e9de38d696f7739e2974a38d902ccc65b1a914b0",
+      "bytes": 4702,
+      "sha256": "30221434dcdb4748950869c5c4bdf55b4e78fa4b4cbf4076a6ce62245051cb64",
+      "retained_path": "original/any-sync/commonspace/object/acl/syncacl/syncacl.go"
+    },
+    {
+      "repository": "anyproto/any-sync",
+      "commit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+      "path": "commonspace/acl/aclclient/aclspaceclient.go",
+      "git_blob": "9153bf34e5969a24cc21f2f594f42f3bf237cddb",
+      "bytes": 11737,
+      "sha256": "3cf2643d45b431510e2a953d24dcfae3e434319e8d94a20e05cf46d3bd85142e",
+      "retained_path": "original/any-sync/commonspace/acl/aclclient/aclspaceclient.go"
+    },
+    {
+      "repository": "anyproto/any-sync",
+      "commit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+      "path": "nodeconf/nodeconf.go",
+      "git_blob": "4f1334c44f855daf16c04787dfcba17c1d3adad9",
+      "bytes": 5788,
+      "sha256": "1074bdb4f7ffaf8a1b53c1af08e3563915c829e324b020267c23c117a0d891c5",
+      "retained_path": "original/any-sync/nodeconf/nodeconf.go"
+    },
+    {
+      "repository": "anyproto/any-sync",
+      "commit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+      "path": "nodeconf/service.go",
+      "git_blob": "36761d9eb7dddd905e6c33e15efc31549aea8fc3",
+      "bytes": 9969,
+      "sha256": "38198a7f27f40f8e926bf6392d835d5092b2ce5b8433b00855954efa50e9396b",
+      "retained_path": "original/any-sync/nodeconf/service.go"
+    },
+    {
+      "repository": "anyproto/any-sync",
+      "commit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+      "path": "app/app.go",
+      "git_blob": "4480295d423c8e39ccad6793a3cc23257c94051e",
+      "bytes": 12410,
+      "sha256": "209fd71566c053bc300e03c67a952ee9067eb6bec39b0e76f87a1818c896f914",
+      "retained_path": "original/any-sync/app/app.go"
+    },
+    {
+      "repository": "anyproto/anytype-heart",
+      "commit": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "core/anytype/config/config.go",
+      "git_blob": "aca3c215fb168e2c3a52fdd4dfe0a8d1fed2dd79",
+      "bytes": 22667,
+      "sha256": "f85e9d7db1a9d8dfc43baca0eacad43260e3f71a8d096a8dac4825849a47ff9e",
+      "retained_path": "original/anytype-heart/core/anytype/config/config.go"
+    },
+    {
+      "repository": "anyproto/anytype-heart",
+      "commit": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "space/spacecore/service.go",
+      "git_blob": "1e9e4d24579d99371a093b6b73d822f179082273",
+      "bytes": 15420,
+      "sha256": "2afc4adc6606dc849697b9285c9b2c8d9c29f8c05616753a44592e2f321cccf4",
+      "retained_path": "original/anytype-heart/space/spacecore/service.go"
+    },
+    {
+      "path": "Tools/PinkhaNativeDerived/build_custom_heart.py",
+      "retained_path": "original/anytype-swift/Tools/PinkhaNativeDerived/build_custom_heart.py",
+      "repository": "davidpovarsky/anytype-swift",
+      "commit": "d02a4972e7f124bc97a577e1c6d448d4797acf22",
+      "git_blob": "e32c935fedce5fc732240bf9b2ada21764b5add1",
+      "sha256": "0ebbe2f6227418eac2c532b0058290158319ba9f786baaf445de444887e8c669",
+      "bytes": 12945
+    },
+    {
+      "path": "prepare_original_tantivy.py",
+      "bytes": 1242,
+      "sha256": "7f2f4b11bc6803241333f04c935ed85f3007fcb6894fd02b03fcc0fa7d50be43"
+    },
+    {
+      "path": "docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch",
+      "retained_path": "original/anytype-swift/docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch",
+      "repository": "anyproto/anytype-swift",
+      "commit": "d02a4972e7f124bc97a577e1c6d448d4797acf22",
+      "git_blob": "02b7412c24015e90a45ac17ca646dc6758841e95",
+      "sha256": "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+      "bytes": 91246
+    },
+    {
+      "path": "docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json",
+      "retained_path": "original/anytype-swift/docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json",
+      "repository": "anyproto/anytype-swift",
+      "commit": "d02a4972e7f124bc97a577e1c6d448d4797acf22",
+      "git_blob": "d6302bfef08ab255f6d34d8db1f66ddcf7f8d118",
+      "sha256": "952073d8dccc991f21bffe5d3ded4e1d5369bb2c30f247ae5204d47cb03aee14",
+      "bytes": 7906
+    },
+    {
+      "path": "run_original_native_schema_controls.py",
+      "bytes": 36775,
+      "sha256": "78321fbd48e015874f08f5916663c2adf6ba59c95d2d76be5547062a21c0903b"
+    },
+    {
+      "path": "V5_TO_V6.patch",
+      "bytes": 1316,
+      "sha256": "e25ec45ba7832c77085bce3358aa1f17f6a3239cf1444bb4b27488bab3ee1c07"
+    },
+    {
+      "path": "CANDIDATE_AND_CONTROL_DELTA.patch",
+      "bytes": 8888,
+      "sha256": "649632629d00956ebe7bd3ceca3807e956fa7eca7b2a7e96d02549102964f1a7"
+    },
+    {
+      "path": "SOURCE_WRITTEN.json",
+      "bytes": 1577,
+      "sha256": "264e3e07ac705237309e69f0f4bff3950964a92bb3d7c88659e60f37ce30a41d",
+      "retained_path": "v6-preimage/SOURCE_WRITTEN.json"
+    },
+    {
+      "path": "ADDITIONAL_ORIGINAL_INPUTS.json",
+      "bytes": 7251,
+      "sha256": "c02ae44f350ed969dba986658da586a20cf361c5b0fd3367a41381f7bec47053"
+    },
+    {
+      "path": "PASS_FIRST_FAILURE_MAP.json",
+      "bytes": 9941,
+      "sha256": "9a85601aeafd1bb24ce29026d29ad870cea76860a92cfd2a9f31342e2cc53daa"
+    },
+    {
+      "path": "R2_TO_V6_RUNNER.patch",
+      "bytes": 6373,
+      "sha256": "2b867b533db24dac4912d6ec6bedcb3ba07f2949dc1066dfb93b1c71fdbc21de"
+    },
+    {
+      "path": "R2_TO_V6_RUNNER_REPLACEMENTS.json",
+      "bytes": 4116,
+      "sha256": "793476280aef1bbde4a53a1e5063646544e9ec0eb36464dc465d9f201d3004d4"
+    },
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_native_counter_observation_test.go",
+      "bytes": 20028,
+      "sha256": "54041071214718844bcec0f8d4a6d8723d844d11bd30ca5129faeec87eab0078",
+      "retained_path": "candidate/core/block/object/objectcreator/fixed_schema_native_counter_observation_test.go"
+    },
+    {
+      "path": "commonspace/headsync/headsync.go",
+      "commit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+      "git_blob": "5b16a3a3cf546237507585036af4706a7533680b",
+      "bytes": 5031,
+      "sha256": "44a9a963cde82e4616f6d9337886cd695bc9e3740d0c70dbe41bf1f2c1b20fa9",
+      "retained_path": "original/any-sync/commonspace/headsync/headsync.go",
+      "repository": "anyproto/any-sync"
+    },
+    {
+      "path": "commonspace/headsync/diffmanager.go",
+      "commit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+      "git_blob": "8c85539a2467b243c925eb3dd8cf97d2fc3bcac2",
+      "bytes": 4823,
+      "sha256": "c68050c902813da84608d310ad3aac4209480cddd3798be3a751128ed1699c40",
+      "retained_path": "original/any-sync/commonspace/headsync/diffmanager.go",
+      "repository": "anyproto/any-sync"
+    },
+    {
+      "path": "commonspace/headsync/headupdater.go",
+      "commit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+      "git_blob": "5391bc864a456f41189b18f325640046fb54492c",
+      "bytes": 832,
+      "sha256": "69be74c55339d32e54d6294deda9ede18115e38021f85c0fdac7a5e6ed00d9f2",
+      "retained_path": "original/any-sync/commonspace/headsync/headupdater.go",
+      "repository": "anyproto/any-sync"
+    },
+    {
+      "repository": "anyproto/any-store",
+      "commit": "ebdcd277c3188538fbbc29a2b2ddbdf5f39cbe1d",
+      "git_blob": "1d41c6573287f43c348625f1581b4640f6cddc6b",
+      "path": "anyenc/object.go",
+      "bytes": 1049,
+      "sha256": "e854fc3c742adefea59bb526e1933442287cad4f99d6c8034bfa647cf1d1cecc",
+      "retained_path": "original/any-store/anyenc/object.go"
+    },
+    {
+      "path": "V7_ADDITIONAL_ORIGINAL_INPUTS.json",
+      "bytes": 1578,
+      "sha256": "3901a5bb977269e595253603a74c59c91d36a6bdbf8d5f7ee6661ebecb9b29a7"
+    },
+    {
+      "path": "V6_TO_V7_CONTROLS.patch",
+      "bytes": 21552,
+      "sha256": "a5a3a11cc1d22fd97fcc8eb847bf335e03517fcec5dc3eaf43963119bfcf7382"
+    },
+    {
+      "path": "V6_TO_V7_RUNNER.patch",
+      "bytes": 12699,
+      "sha256": "450abadd874a260e7c7962e4e733604ed6aef15e42c01d0dc18e9e326504a53e"
+    },
+    {
+      "path": "V6_TO_V7_RUNNER_REPLACEMENTS.json",
+      "bytes": 10443,
+      "sha256": "097e329c1f3ad47c0a9113e3875c7c2a8609f80a17f0079dd12eb8b156d34475"
+    },
+    {
+      "path": "V7_CONTROL_ANCESTRY.json",
+      "bytes": 8504,
+      "sha256": "32ad4413f6ebead10c08b1ae275e3f84507a3e3c24199339d577d738574ab624"
+    },
+    {
+      "path": "prior-v6-actual/RESULT.json",
+      "bytes": 10328,
+      "sha256": "9d4cde9e0f596b8005f3d3523363e6045aecfb0a9c50b58b18366eea29a5019a"
+    },
+    {
+      "path": "prior-v6-actual/ACTUAL_CASE_REVIEW.json",
+      "bytes": 54917,
+      "sha256": "be6ca815ef80813cbb6a4044572dc37d849eb32a27f178ccd234ca722ef4751c"
+    }
+  ],
+  "observer_delta_patch": {
+    "path": "V5_TO_V6.patch",
+    "bytes": 1316,
+    "sha256": "e25ec45ba7832c77085bce3358aa1f17f6a3239cf1444bb4b27488bab3ee1c07"
+  },
+  "observer_product_delta": [
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_replay.go",
+      "before_sha256": "3fe8c34b02ee93224e8e52a139871012f4ee8d0b45ee8e1d9c690cd1a4dcdf3f",
+      "sha256": "fb2c8c245320efe002e4bbece3b38af572a33e262d22652f54388bb6391371c4",
+      "bytes": 14512,
+      "lines": 338,
+      "retained_path": "candidate/core/block/object/objectcreator/fixed_schema_replay.go"
+    }
+  ],
+  "test_sources": [
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_native_fixture_test.go",
+      "bytes": 14947,
+      "sha256": "1afa72779c24aff5a78fe63b181f112ca7a4fa7c6984f1395a0cf5fc4a308999",
+      "retained_path": "candidate/core/block/object/objectcreator/fixed_schema_native_fixture_test.go"
+    },
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_native_trace_test.go",
+      "bytes": 8977,
+      "sha256": "129341500230b4e053985b34155cf48f6dcad185027e5ba1d5a89859c347a98d",
+      "retained_path": "candidate/core/block/object/objectcreator/fixed_schema_native_trace_test.go"
+    },
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_native_observer_test.go",
+      "bytes": 25964,
+      "sha256": "a8cbec19d91da9442a75bf7a406d7718c54b0224d24377ddd2e5160d218de6cc",
+      "retained_path": "candidate/core/block/object/objectcreator/fixed_schema_native_observer_test.go"
+    },
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_native_counter_observation_test.go",
+      "bytes": 20028,
+      "sha256": "54041071214718844bcec0f8d4a6d8723d844d11bd30ca5129faeec87eab0078",
+      "retained_path": "candidate/core/block/object/objectcreator/fixed_schema_native_counter_observation_test.go"
+    }
+  ],
+  "expected_cases": {
+    "native": [
+      "ActualLocalZeroCounterAccepted",
+      "NativeComputedRemoteCounterAccepted"
+    ]
+  },
+  "prior_cases_not_replayed": {
+    "native_first_run": 13,
+    "strict": 12,
+    "native_v6": 18
+  },
+  "test_selection": "Exactly the TWO prior failed counter cases; no strict or previously passing native case executes.",
+  "runner_revision": "Inherited R2 finite lifecycle and unchanged V6 product; fixture-only complete-observation recorder with at most3 attempts per selected case",
+  "native_calls": 0,
+  "builds": 0,
+  "tests": 0,
+  "baseline_native_result_sha256": "9d4cde9e0f596b8005f3d3523363e6045aecfb0a9c50b58b18366eea29a5019a",
+  "baseline_actual_case_review_sha256": "be6ca815ef80813cbb6a4044572dc37d849eb32a27f178ccd234ca722ef4751c",
+  "counter_observation_policy": {
+    "maximum_attempts_per_case": 3,
+    "context_budget_seconds": 10,
+    "outer_native_process_budget_seconds": 780,
+    "exact_retry_error": "ErrFixedSchemaChanged",
+    "required_retry_disposition": "FixedSchemaChangedWhileReading",
+    "requires_actual_snapshot_difference": true,
+    "full_stable_persisted_match_required": true,
+    "counter_bytes_immutable": true,
+    "owned_scope_immutable": true,
+    "encoded_rows_retained": true,
+    "no_quiescence_assumption": true,
+    "headsync_SetHash_is_hypothesis_only": true
+  }
+}

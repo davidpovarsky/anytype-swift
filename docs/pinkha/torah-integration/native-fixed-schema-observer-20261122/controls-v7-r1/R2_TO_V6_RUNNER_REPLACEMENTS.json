@@ -1,0 +1,38 @@
+[
+  {
+    "old": "Requires a fresh original Heart checkout and the separately reviewed V5 packets.",
+    "new": "Requires a fresh original Heart checkout, frozen V5 source, and this reviewed V6 correction.\nOnly the 20 unresolved/previously masked native cases execute; strict12 and the\n13 unaffected early-rejection controls are retained from actual run45008694456."
+  },
+  {
+    "old": "import platform\n",
+    "new": "import platform\nimport re\n"
+  },
+  {
+    "old": "    \"strict\": (\"./core/block/source/sourceimpl\", \"TestOtzariaFixedSchemaStrictReplayV5\"),\n",
+    "new": ""
+  },
+  {
+    "old": "    manifest = json.loads(manifest_path.read_text(encoding=\"utf-8\"))\n",
+    "new": "    manifest = json.loads(manifest_path.read_text(encoding=\"utf-8\"))\n    selected_cases = manifest[\"expected_cases\"]\n    if (set(selected_cases) != {\"native\"} or len(selected_cases[\"native\"]) != 20 or\n            len(set(selected_cases[\"native\"])) != 20 or\n            any(re.fullmatch(r\"[A-Za-z0-9]+\", name) is None for name in selected_cases[\"native\"])):\n        raise RuntimeError(\"exact reviewed 20-case native-only selection required\")\n"
+  },
+  {
+    "old": "        \"execution_manifest_sha256\": digest(manifest_path), \"tests\": {},\n",
+    "new": "        \"execution_manifest_sha256\": digest(manifest_path), \"tests\": {},\n        \"baseline_run_id\": 45008694456,\n        \"observer_delta_sha256\": manifest[\"observer_delta_patch\"][\"sha256\"],\n        \"unchanged_prior_cases_not_replayed\": {\"strict\": 12, \"native_early_rejection\": 13},\n"
+  },
+  {
+    "old": "        compiled_product_inputs = []\n        for entry in source_manifest[\"candidate\"]:\n",
+    "new": "        # Preserve frozen V5, then apply the separately reviewed one-file native\n        # key-derivation correction. Both before and after bytes are sealed.\n        product_by_path = {entry[\"path\"]: entry for entry in source_manifest[\"candidate\"]}\n        delta = manifest[\"observer_product_delta\"]\n        if len(delta) != 1 or delta[0][\"path\"] != \"core/block/object/objectcreator/fixed_schema_replay.go\":\n            raise RuntimeError(\"only the reviewed original replay key delta is admitted\")\n        for entry in delta:\n            original = product_by_path.get(entry[\"path\"])\n            if original is None or original[\"sha256\"] != entry[\"before_sha256\"] or digest(heart / entry[\"path\"]) != entry[\"before_sha256\"]:\n                raise RuntimeError(\"wrong product preimage before V6 correction\")\n            check_file(controls, entry)\n            product_by_path[entry[\"path\"]] = entry\n        correction_patch = check_file(controls, manifest[\"observer_delta_patch\"])\n        commands.require(\"observer-v6-apply-check\", [\"git\", \"apply\", \"--check\", str(correction_patch)], heart, 30)\n        commands.require(\"observer-v6-apply\", [\"git\", \"apply\", str(correction_patch)], heart, 30)\n        compiled_product_inputs = []\n        for entry in product_by_path.values():\n"
+  },
+  {
+    "old": "        if len(closure[\"required_product_test_coverage\"]) != 9:\n            raise RuntimeError(\"exact five product plus four test input coverage required\")",
+    "new": "        if len(closure[\"required_product_test_coverage\"]) != 8:\n            raise RuntimeError(\"exact five product plus three native test input coverage required\")"
+  },
+  {
+    "old": "            code, output, _ = commands.run(\"run-\" + name, [",
+    "new": "            selection = \"^\" + re.escape(parent) + \"$/^(\" + \"|\".join(re.escape(case) for case in selected_cases[name]) + \")$\"\n            actual[\"selection\"] = selection\n            write_json(evidence / \"RESULT.json\", result)\n            code, output, _ = commands.run(\"run-\" + name, ["
+  },
+  {
+    "old": "                \"-test.v=test2json\", \"-test.count=1\", \"-test.run=^\" + parent + \"$\", \"-test.timeout=12m\",",
+    "new": "                \"-test.v=test2json\", \"-test.count=1\", \"-test.run=\" + selection, \"-test.timeout=12m\","
+  }
+]

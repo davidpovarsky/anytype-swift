@@ -1,0 +1,101 @@
+--- a/run_original_native_schema_controls.py
++++ b/run_original_native_schema_controls.py
+@@ -1,7 +1,9 @@
+ #!/usr/bin/env python3
+ """Run only the newly reviewed original Heart observer controls on macOS ARM64.
+ 
+-Requires a fresh original Heart checkout and the separately reviewed V5 packets.
++Requires a fresh original Heart checkout, frozen V5 source, and this reviewed V6 correction.
++Only the 20 unresolved/previously masked native cases execute; strict12 and the
++13 unaffected early-rejection controls are retained from actual run45008694456.
+ This does not build an iOS framework, invoke old regression packages, provision
+ production schema, or use an existing wallet/account. Native fixture setup owns
+ a disposable LocalOnly original application and removes it through AccountStop.
+@@ -12,6 +14,7 @@
+ import os
+ from pathlib import Path
+ import platform
++import re
+ import shutil
+ import signal
+ import subprocess
+@@ -22,7 +25,6 @@
+ GO_VERSION = "go1.26.5"
+ PACKAGES = {
+     "native": ("./core/block/object/objectcreator", "TestOtzariaFixedSchemaNativeObserverV5"),
+-    "strict": ("./core/block/source/sourceimpl", "TestOtzariaFixedSchemaStrictReplayV5"),
+ }
+ INPUT_FIELDS = (
+     "GoFiles", "CgoFiles", "CFiles", "CXXFiles", "MFiles", "HFiles", "FFiles",
+@@ -316,6 +318,11 @@
+     if digest(manifest_path) != args.execution_manifest_sha256:
+         raise RuntimeError("unreviewed execution manifest")
+     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
++    selected_cases = manifest["expected_cases"]
++    if (set(selected_cases) != {"native"} or len(selected_cases["native"]) != 20 or
++            len(set(selected_cases["native"])) != 20 or
++            any(re.fullmatch(r"[A-Za-z0-9]+", name) is None for name in selected_cases["native"])):
++        raise RuntimeError("exact reviewed 20-case native-only selection required")
+     for entry in manifest["control_inputs"]:
+         check_file(controls, entry)
+     if digest(source / "SOURCE_REVIEW_INDEX.json") != manifest["source_index_sha256"]:
+@@ -344,6 +351,9 @@
+         "status": "STARTED_NOT_ACCEPTED", "heart_base": PIN, "control_head": args.control_head,
+         "source_index_sha256": manifest["source_index_sha256"],
+         "execution_manifest_sha256": digest(manifest_path), "tests": {},
++        "baseline_run_id": 45008694456,
++        "observer_delta_sha256": manifest["observer_delta_patch"]["sha256"],
++        "unchanged_prior_cases_not_replayed": {"strict": 12, "native_early_rejection": 13},
+         "job_deadline_unix": args.job_deadline_unix,
+         "command_deadline_unix": commands.deadline,
+         "cleanup_reserve_seconds": 180,
+@@ -385,8 +395,23 @@
+         candidate_patch = source / "CANDIDATE.patch"
+         commands.require("observer-apply-check", ["git", "apply", "--check", str(candidate_patch)], heart, 30)
+         commands.require("observer-apply", ["git", "apply", str(candidate_patch)], heart, 30)
++        # Preserve frozen V5, then apply the separately reviewed one-file native
++        # key-derivation correction. Both before and after bytes are sealed.
++        product_by_path = {entry["path"]: entry for entry in source_manifest["candidate"]}
++        delta = manifest["observer_product_delta"]
++        if len(delta) != 1 or delta[0]["path"] != "core/block/object/objectcreator/fixed_schema_replay.go":
++            raise RuntimeError("only the reviewed original replay key delta is admitted")
++        for entry in delta:
++            original = product_by_path.get(entry["path"])
++            if original is None or original["sha256"] != entry["before_sha256"] or digest(heart / entry["path"]) != entry["before_sha256"]:
++                raise RuntimeError("wrong product preimage before V6 correction")
++            check_file(controls, entry)
++            product_by_path[entry["path"]] = entry
++        correction_patch = check_file(controls, manifest["observer_delta_patch"])
++        commands.require("observer-v6-apply-check", ["git", "apply", "--check", str(correction_patch)], heart, 30)
++        commands.require("observer-v6-apply", ["git", "apply", str(correction_patch)], heart, 30)
+         compiled_product_inputs = []
+-        for entry in source_manifest["candidate"]:
++        for entry in product_by_path.values():
+             path = heart / entry["path"]
+             if digest(path) != entry["sha256"]:
+                 raise RuntimeError("composed product source differs")
+@@ -421,8 +446,8 @@
+         env["CGO_LDFLAGS"] = "-L" + str(heart / "deps/libs/darwin-arm64")
+         listing = commands.require("declared-dependency-inputs", [args.go, "list", "-deps", "-test", "-json", *[v[0] for v in PACKAGES.values()]], heart, 1200)
+         closure = dependency_inputs(listing, heart, compiled_product_inputs)
+-        if len(closure["required_product_test_coverage"]) != 9:
+-            raise RuntimeError("exact five product plus four test input coverage required")
++        if len(closure["required_product_test_coverage"]) != 8:
++            raise RuntimeError("exact five product plus three native test input coverage required")
+         write_json(evidence / "DECLARED_NATIVE_INPUTS.json", closure)
+         result["declared_native_inputs_sha256"] = digest(evidence / "DECLARED_NATIVE_INPUTS.json")
+         result["declared_native_input_count"] = len(closure["files"])
+@@ -443,9 +468,12 @@
+             buildinfo = commands.require("buildinfo-" + name, [args.go, "version", "-m", str(binary)], heart, 30)
+             actual.update({"buildinfo_sha256": digest(buildinfo), "execution_started": True})
+             write_json(evidence / "RESULT.json", result)
++            selection = "^" + re.escape(parent) + "$/^(" + "|".join(re.escape(case) for case in selected_cases[name]) + ")$"
++            actual["selection"] = selection
++            write_json(evidence / "RESULT.json", result)
+             code, output, _ = commands.run("run-" + name, [
+                 args.go, "tool", "test2json", "-t", "-p", package, str(binary),
+-                "-test.v=test2json", "-test.count=1", "-test.run=^" + parent + "$", "-test.timeout=12m",
++                "-test.v=test2json", "-test.count=1", "-test.run=" + selection, "-test.timeout=12m",
+             ], heart, 780)
+             binary_after = digest(binary)
+             actual.update(validate_cases(output, parent, manifest["expected_cases"][name]))

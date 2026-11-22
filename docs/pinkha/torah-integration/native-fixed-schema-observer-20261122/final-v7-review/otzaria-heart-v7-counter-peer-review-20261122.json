@@ -1,0 +1,101 @@
+{
+  "additional_read": [
+    {
+      "bytes": 8977,
+      "path": "candidate/core/block/object/objectcreator/fixed_schema_native_trace_test.go",
+      "sha256": "129341500230b4e053985b34155cf48f6dcad185027e5ba1d5a89859c347a98d"
+    },
+    {
+      "bytes": 1049,
+      "path": "original/any-store/anyenc/object.go",
+      "sha256": "e854fc3c742adefea59bb526e1933442287cad4f99d6c8034bfa647cf1d1cecc"
+    }
+  ],
+  "counter_source": {
+    "bytes": 20028,
+    "path": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-schema-observer-source-20261122\\controls-v7-r1\\candidate\\core\\block\\object\\objectcreator\\fixed_schema_native_counter_observation_test.go",
+    "sha256": "54041071214718844bcec0f8d4a6d8723d844d11bd30ca5129faeec87eab0078"
+  },
+  "date_utc": "2026-11-22",
+  "findings": [
+    "Original ReadTx includes Context/Commit/Done plus package-private methods; embedding the genuine interface retains the private methods. WithValue(original Context) preserves original ctxKeyTx. Actual DB getReadTx selects noOpTx for that live same-instance reader; it does not acquire a replacement reader.",
+    "Counter Commit calls actual original Commit before recording actual Done and exact error. The actual readTx Commit releases the read connection and pool before return; Done compares the captured version.",
+    "Original Query Limit/Offset/Sort/IndexHint signatures match wrapper delegation; Iter delegates exact ctx. Embedded Next, delegated Doc/Err/Close preserve original results and errors. FindId and FindIdWithParser likewise observe after the original result without replacing data.",
+    "Original anyenc Object.Visit only enumerates pairs. Recorder clones original encoded row and field bytes, does not mutate the row, and reports errors/outside-context/after-commit observations.",
+    "Full unchanged observer fills SpaceID, NativeKey, account/ACL identity and target/archive IDs before its two snapshots. Final comparison returns that same result with exact ErrFixedSchemaChanged; early wrapped errors are not admitted as the retry case.",
+    "V7 requires exactly two committed/done snapshots without trace/read errors, positive coverage for original state/settings/schema/counter/archive/heads/ACL rows, exact counter bytes before/inside/after, and unchanged original runtime/account/ACL scope. Retry requires an actual recorded row difference plus exact final Changed result, at most three attempts under one 10-second context.",
+    "V7 uses only existing tracedSchemaSpace/tracedSchemaStorage delegation for this recorder; the separate synthetic V6 fault injector is not selected in observeStableCounter."
+  ],
+  "limits": [
+    "No tests, compilation, native RPC, fixture mutation or product edit executed by peer review.",
+    "No guarantee of a stable observation on real scheduling is inferred before actual run.",
+    "DB/collection reads were bounded to actual transaction and FindId implementations; remaining unrelated methods were not audited.",
+    "No native schema write, repair, annotation receipt, identity writer or body ACK is authorized by these observations."
+  ],
+  "reviewer": "root/anytype_editor",
+  "scope": "New V7 counter recorder delegation, two actual snapshot coverage and exact final Changed result identity only. No V6/native controls rerun.",
+  "status": "APPROVED_BOUNDED_V7_SOURCE_REVIEW_NOT_EXECUTED",
+  "verified_v5_inputs": [
+    {
+      "bytes": 5624,
+      "commit": "ebdcd277c3188538fbbc29a2b2ddbdf5f39cbe1d",
+      "git_blob": "becf9b4cecfe5efdfa28479870d7c11110592d2b",
+      "path": "tx.go",
+      "repository": "anyproto/any-store",
+      "retained_path": "original/any-store/tx.go",
+      "sha256": "27dd41fc966399534b64c7324fdd73855e01541dd3fb04de82ccc51841cf787e"
+    },
+    {
+      "bytes": 18098,
+      "commit": "ebdcd277c3188538fbbc29a2b2ddbdf5f39cbe1d",
+      "git_blob": "780e032f89dc493b826c5073db897d762f1bef0e",
+      "path": "db.go",
+      "repository": "anyproto/any-store",
+      "retained_path": "original/any-store/db.go",
+      "sha256": "164474b3684a0c6a5895f9a831dbd1585ef51cdff62edaa7cfd3bf1ae49d7e2d"
+    },
+    {
+      "bytes": 20854,
+      "commit": "ebdcd277c3188538fbbc29a2b2ddbdf5f39cbe1d",
+      "git_blob": "2dcbafc355654590259e11554e55bcd391938a91",
+      "path": "collection.go",
+      "repository": "anyproto/any-store",
+      "retained_path": "original/any-store/collection.go",
+      "sha256": "31b49656d9ad9257df190874d01b6861de478b16e3db3b1c74771178275141c0"
+    },
+    {
+      "bytes": 14987,
+      "commit": "ebdcd277c3188538fbbc29a2b2ddbdf5f39cbe1d",
+      "git_blob": "70121f28b72e0616f37e5007f3117e9e4c490cc9",
+      "path": "query.go",
+      "repository": "anyproto/any-store",
+      "retained_path": "original/any-store/query.go",
+      "sha256": "8f8caf61ad76189546df8dd8a50e276502d492269f0eea2b4d8cd4867f1099e3"
+    },
+    {
+      "bytes": 2328,
+      "commit": "ebdcd277c3188538fbbc29a2b2ddbdf5f39cbe1d",
+      "git_blob": "74804d457a705a02808943810acf7f7da0b13aba",
+      "path": "iterator.go",
+      "repository": "anyproto/any-store",
+      "retained_path": "original/any-store/iterator.go",
+      "sha256": "8f34f95703cc74031b5485aae50a6305325c04b55a7c8afb564342a3d32576fb"
+    },
+    {
+      "bytes": 14244,
+      "git_blob_if_committed": "5922dd7a131f9af89fedcb4cbf0a6e0d2a79570b",
+      "lines": 345,
+      "path": "core/block/object/objectcreator/fixed_schema_observer.go",
+      "retained_path": "candidate/core/block/object/objectcreator/fixed_schema_observer.go",
+      "sha256": "53a05ff554ff7b23c2ee3d1f322522fb88784139392cc30d7cb9b06d8e0e87d1"
+    },
+    {
+      "bytes": 17843,
+      "git_blob_if_committed": "fc144b18716859a3a0af9b1883f3d85c9bf375bf",
+      "lines": 473,
+      "path": "core/block/object/objectcreator/fixed_schema_snapshot.go",
+      "retained_path": "candidate/core/block/object/objectcreator/fixed_schema_snapshot.go",
+      "sha256": "3a404738380ca7b8a6e59c93a377b85927ed4383fed560385f5920f86631e5df"
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+Updating 382e5ac625..66bdc665da
+Fast-forward
+ .gitattributes                                     |    4 +
+ .../EVIDENCE_INDEX.json                            |  348 +++++
+ .../PUSH_COMMANDS.json                             |  128 ++
+ .../first-native-run-45008694456/PUSH_INTENT.json  |    8 +
+ .../first-native-run-45008694456/PUSH_RESULT.json  |   10 +
+ .../first-native-run-45008694456/README.md         |   27 +
+ .../first-native-run-45008694456/RUN_BINDING.json  |   25 +
+ .../ACTUAL_CASE_RECEIPT_REVIEW.json                |  107 ++
+ .../artifact-intake-01/COMMANDS.json               |   74 +
+ .../artifact-intake-01/DOWNLOAD_INTENT.json        |    7 +
+ .../artifact-intake-01/FIRST_ACTUAL_FAILURES.json  |  345 +++++
+ .../artifact-intake-01/INTAKE_RESULT.json          | 1178 ++++++++++++++
+ .../actual-failed-step-log.stderr                  |    0
+ .../actual-failed-step-log.stdout                  |   38 +
+ .../artifact-intake-01/artifact-download.stderr    |    0
+ .../artifact-intake-01/artifact-metadata.stderr    |    0
+ .../artifact-intake-01/artifact-metadata.stdout    |    1 +
+ .../artifact-intake-01/jobs.stderr                 |    0
+ .../artifact-intake-01/jobs.stdout                 |    1 +
+ .../original-native-schema-evidence.zip            |  Bin 0 -> 2865799 bytes
+ .../asana/COMMENTS.json                            |   30 +
+ .../branch-before.stderr                           |    0
+ .../branch-before.stdout                           |    1 +
+ .../diagnosis/PASS_FIRST_FAILURE_MAP.json          |  215 +++
+ .../head-before.stderr                             |    0
+ .../head-before.stdout                             |    1 +
+ .../normal-trigger-push.stderr                     |    4 +
+ .../normal-trigger-push.stdout                     |    3 +
+ .../observer-01/COMMANDS.json                      |   65 +
+ .../observer-01/IDENTITY.json                      |    9 +
+ .../observer-01/RESULT.json                        |   63 +
+ .../observer-01/owned-gh-watch.stderr              |    0
+ .../observer-01/owned-gh-watch.stdout              |  121 ++
+ .../observer-01/run-after.stderr                   |    0
+ .../observer-01/run-after.stdout                   |    1 +
+ .../observer-01/run-before.stderr                  |    0
+ .../observer-01/run-before.stdout                  |    1 +
+ .../remote-after.stderr                            |    0
+ .../remote-after.stdout                            |    1 +
+ .../remote-before.stderr                           |    0
+ .../remote-before.stdout                           |    0
+ .../root-final-git-review/ACTUAL_ROOT_REVIEW.py    |  100 ++
+ .../ROOT_FINAL_GIT_ADMISSION.json                  |   10 +
+ .../ACTUAL_CONTINUATION.py                         |   85 +
+ .../FIRST_TOOL_RESULT.json                         |   17 +
+ .../ROOT_FINAL_GIT_ADMISSION.json                  | 1633 ++++++++++++++++++++
+ .../runs-after-push.stderr                         |    0
+ .../runs-after-push.stdout                         |    1 +
+ .../runs-identification.stderr                     |    0
+ .../runs-identification.stdout                     |    1 +
+ .../selected-artifact-files/01-go-version.stdout   |    1 +
+ .../02-xcode-version.stdout                        |    2 +
+ .../03-macos-sdk-version.stdout                    |    1 +
+ .../04-clang-version.stdout                        |    4 +
+ .../11-compile-native.stderr                       |    2 +
+ .../12-buildinfo-native.stdout                     |   13 +
+ .../14-compile-strict.stderr                       |    2 +
+ .../15-buildinfo-strict.stdout                     |   13 +
+ .../selected-artifact-files/16-run-strict.stdout   |   55 +
+ .../selected-artifact-files/COMMANDS.json          |  572 +++++++
+ .../selected-artifact-files/EVIDENCE_INDEX.json    |  195 +++
+ .../selected-artifact-files/RESULT.json            |  268 ++++
+ .../TANTIVY_INPUTS_AFTER.json                      |   11 +
+ .../TANTIVY_INPUTS_BEFORE.json                     |   11 +
+ .../selected-artifact-files/TANTIVY_SETUP.json     |    4 +
+ .../status-before.stderr                           |    0
+ .../status-before.stdout                           |    0
+ 67 files changed, 5817 insertions(+)
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/EVIDENCE_INDEX.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/PUSH_COMMANDS.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/PUSH_INTENT.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/PUSH_RESULT.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/README.md
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/RUN_BINDING.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/artifact-intake-01/ACTUAL_CASE_RECEIPT_REVIEW.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/artifact-intake-01/COMMANDS.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/artifact-intake-01/DOWNLOAD_INTENT.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/artifact-intake-01/FIRST_ACTUAL_FAILURES.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/artifact-intake-01/INTAKE_RESULT.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/artifact-intake-01/actual-failed-step-log.stderr
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/artifact-intake-01/actual-failed-step-log.stdout
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/artifact-intake-01/artifact-download.stderr
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/artifact-intake-01/artifact-metadata.stderr
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/artifact-intake-01/artifact-metadata.stdout
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/artifact-intake-01/jobs.stderr
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/artifact-intake-01/jobs.stdout
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/artifact-intake-01/original-native-schema-evidence.zip
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/asana/COMMENTS.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/branch-before.stderr
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/branch-before.stdout
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/diagnosis/PASS_FIRST_FAILURE_MAP.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/head-before.stderr
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/head-before.stdout
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/normal-trigger-push.stderr
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/normal-trigger-push.stdout
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/observer-01/COMMANDS.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/observer-01/IDENTITY.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/observer-01/RESULT.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/observer-01/owned-gh-watch.stderr
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/observer-01/owned-gh-watch.stdout
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/observer-01/run-after.stderr
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/observer-01/run-after.stdout
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/observer-01/run-before.stderr
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/observer-01/run-before.stdout
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/remote-after.stderr
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/remote-after.stdout
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/remote-before.stderr
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/remote-before.stdout
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/root-final-git-review/ACTUAL_ROOT_REVIEW.py
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/root-final-git-review/ROOT_FINAL_GIT_ADMISSION.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/root-final-git-review/windows-command-length-continuation/ACTUAL_CONTINUATION.py
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/root-final-git-review/windows-command-length-continuation/FIRST_TOOL_RESULT.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/root-final-git-review/windows-command-length-continuation/ROOT_FINAL_GIT_ADMISSION.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/runs-after-push.stderr
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/runs-after-push.stdout
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/runs-identification.stderr
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/runs-identification.stdout
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/selected-artifact-files/01-go-version.stdout
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/selected-artifact-files/02-xcode-version.stdout
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/selected-artifact-files/03-macos-sdk-version.stdout
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/selected-artifact-files/04-clang-version.stdout
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/selected-artifact-files/11-compile-native.stderr
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/selected-artifact-files/12-buildinfo-native.stdout
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/selected-artifact-files/14-compile-strict.stderr
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/selected-artifact-files/15-buildinfo-strict.stdout
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/selected-artifact-files/16-run-strict.stdout
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/selected-artifact-files/COMMANDS.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/selected-artifact-files/EVIDENCE_INDEX.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/selected-artifact-files/RESULT.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/selected-artifact-files/TANTIVY_INPUTS_AFTER.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/selected-artifact-files/TANTIVY_INPUTS_BEFORE.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/selected-artifact-files/TANTIVY_SETUP.json
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/status-before.stderr
+ create mode 100644 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/first-native-run-45008694456/status-before.stdout

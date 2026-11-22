@@ -1,0 +1,72 @@
+--- draft1/fixed_schema_native_counter_observation_test.go
++++ r1/fixed_schema_native_counter_observation_test.go
+@@ -59,6 +59,7 @@
+ 	anystore.DB
+ 	mu        sync.Mutex
+ 	snapshots []*counterRecordedSnapshot
++	traceErrors []string
+ }
+ 
+ type counterRecordedTx struct {
+@@ -206,9 +207,7 @@
+ 	if !found {
+ 		// This path must never be reachable from the full observer. Record it
+ 		// on every owned snapshot; do not synthesize or suppress a native error.
+-		for _, owned := range r.snapshots {
+-			owned.TraceErrors = append(owned.TraceErrors, "read outside exact original ReadTx context")
+-		}
++		r.traceErrors = append(r.traceErrors, "read outside exact original ReadTx context")
+ 		return
+ 	}
+ 	if snapshot.Committed {
+@@ -270,7 +269,7 @@
+ 			copy.Rows[key] = row
+ 		}
+ 		copy.ReadErrors = slices.Clone(snapshot.ReadErrors)
+-		copy.TraceErrors = slices.Clone(snapshot.TraceErrors)
++		copy.TraceErrors = append(slices.Clone(snapshot.TraceErrors), r.traceErrors...)
+ 		result = append(result, copy)
+ 	}
+ 	return result
+@@ -319,7 +318,7 @@
+ }
+ 
+ type counterScopeValue struct {
+-	SpaceID, SettingsID, ArchiveID, AccountIdentity, ACLID, ACLHead, ACLRootSHA256 string
++	SpaceID, SettingsID, ArchiveID, AccountIdentity, ACLID, ACLHead, ACLRootID, ACLRootSHA256 string
+ 	ACLRecords [][2]string
+ }
+ 
+@@ -331,6 +330,7 @@
+ 	storage, database := spc.Storage(), spc.Storage().AnyStore()
+ 	stateStorage, common := storage.StateStorage(), spc.CommonSpace()
+ 	acl, identity := common.Acl(), spc.GetAclIdentity()
++	if application == nil || acl == nil || identity == nil { t.Fatal("owned original runtime identity unavailable") }
+ 	capture := func() (counterScopeValue, error) {
+ 		if application != f.service.GetApp() || spc.Storage() != storage || storage.AnyStore() != database ||
+ 			storage.StateStorage() != stateStorage || spc.CommonSpace() != common || common.Acl() != acl ||
+@@ -344,7 +344,7 @@
+ 		if state == nil || state.Identity() == nil || !state.Identity().Equals(identity) || head == nil || root == nil {
+ 			return counterScopeValue{}, fmt.Errorf("owned original ACL state unavailable")
+ 		}
+-		value.ACLID, value.ACLHead, value.ACLRootSHA256 = acl.Id(), head.Id, counterHash(root.Payload)
++		value.ACLID, value.ACLHead, value.ACLRootID, value.ACLRootSHA256 = acl.Id(), head.Id, root.Id, counterHash(root.Payload)
+ 		for _, record := range acl.Records() {
+ 			if record == nil { return counterScopeValue{}, fmt.Errorf("nil original ACL record") }
+ 			value.ACLRecords = append(value.ACLRecords, [2]string{record.Id, record.PrevId})
+@@ -422,6 +422,7 @@
+ 		if err != nil { return nil, err }
+ 		doc, err := collection.FindId(ctx, changeID)
+ 		if err != nil { return nil, err }
++		if doc == nil || doc.Value() == nil { return nil, fmt.Errorf("nil genuine counter row") }
+ 		value := doc.Value()
+ 		counter := value.Get(objecttree.SnapshotCounterKey)
+ 		if counter == nil || counter.Type() != anyenc.TypeNumber { return nil, fmt.Errorf("genuine counter field is absent or not numeric") }
+@@ -497,6 +498,7 @@
+ 		} else {
+ 			report.RetryAdmitted = report.Failure == ""
+ 		}
++		report.Finished = time.Now().UTC()
+ 		persistCounterAttempt(t, report)
+ 		if report.Failure != "" { t.Fatal(report.Failure) }
+ 		if report.CompleteStableMatch { return }

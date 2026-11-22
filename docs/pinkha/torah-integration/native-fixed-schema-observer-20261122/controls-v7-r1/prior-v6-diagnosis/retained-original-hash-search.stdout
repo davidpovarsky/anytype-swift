@@ -1,0 +1,11 @@
+C:\Users\DAVID\AppData\Local\Temp\otzaria-native-schema-observer-source-20261122\candidate-v5\original\any-sync\commonspace\headsync\statestorage\statestorage.go:13:	NewHash     string
+C:\Users\DAVID\AppData\Local\Temp\otzaria-native-schema-observer-source-20261122\candidate-v5\original\any-sync\commonspace\headsync\statestorage\statestorage.go:27:	SetHash(ctx context.Context, hash string) error
+C:\Users\DAVID\AppData\Local\Temp\otzaria-native-schema-observer-source-20261122\candidate-v5\original\any-sync\commonspace\headsync\statestorage\statestorage.go:34:	newHashKey         = "nh"
+C:\Users\DAVID\AppData\Local\Temp\otzaria-native-schema-observer-source-20261122\candidate-v5\original\any-sync\commonspace\headsync\statestorage\statestorage.go:37:	// and misread NewHash as empty (see their stateFromDoc). Drop the mirror once
+C:\Users\DAVID\AppData\Local\Temp\otzaria-native-schema-observer-source-20261122\candidate-v5\original\any-sync\commonspace\headsync\statestorage\statestorage.go:68:func (s *stateStorage) SetHash(ctx context.Context, hash string) (err error) {
+C:\Users\DAVID\AppData\Local\Temp\otzaria-native-schema-observer-source-20261122\candidate-v5\original\any-sync\commonspace\headsync\statestorage\statestorage.go:77:		if storeutil.ModifyKey(v, newHashKey, a.NewString(hash)) {
+C:\Users\DAVID\AppData\Local\Temp\otzaria-native-schema-observer-source-20261122\candidate-v5\original\any-sync\commonspace\headsync\statestorage\statestorage.go:154:	newHash := doc.Value().GetString(newHashKey)
+C:\Users\DAVID\AppData\Local\Temp\otzaria-native-schema-observer-source-20261122\candidate-v5\original\any-sync\commonspace\headsync\statestorage\statestorage.go:156:	if newHash == "" {
+C:\Users\DAVID\AppData\Local\Temp\otzaria-native-schema-observer-source-20261122\candidate-v5\original\any-sync\commonspace\headsync\statestorage\statestorage.go:157:		newHash = doc.Value().GetString(legacyHashKey)
+C:\Users\DAVID\AppData\Local\Temp\otzaria-native-schema-observer-source-20261122\candidate-v5\original\any-sync\commonspace\headsync\statestorage\statestorage.go:163:		NewHash:     newHash,
+C:\Users\DAVID\AppData\Local\Temp\otzaria-native-schema-observer-source-20261122\candidate-v5\original\anytype-heart\core\block\simple\simple.go:44:	MigrateFile(replacer func(oldHash string) (newHash string))
