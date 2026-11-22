@@ -1,0 +1,38 @@
+{
+  "source_ref": "fc03fcd713e2c449ad97c5d1e604a9433c2a309b",
+  "status": "SOURCE_REVIEW_CANDIDATE; no compiler/Native execution",
+  "patch_sha256": "0a5d41a35493dbc4563c912ba0456f341f4c32b204bdccd1c1768b922df85ae3",
+  "files": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesView.swift",
+      "before_git_blob": "53507c363d21437d1856fbb0084371dd09e22087",
+      "before_sha256": "10dee7a9f3c186b00f9c7c219ca6b8f18034563fb9d4c9cdcb61278a19df866b",
+      "after_git_blob": "3c4d6dab04b995c102d4c418b7e850cd2a178887",
+      "after_sha256": "1388133f8336031315e70214b4ba1bf55808b22c6a96446aaec108b9338db8b5",
+      "bytes": 9177
+    }
+  ],
+  "dependencies": [
+    "Root-owned prepared ObjectPropertiesViewModel mount/rebuild/subscription/current-identity implementation; View uses that same original model.sections."
+  ],
+  "preservation": [
+    "Only one original View changed; original row, section header, navigation, sizing and callbacks retained.",
+    "Nil prepared route constructs the same original Torah model and uses its visibleSections, observer, section and host.",
+    "Prepared route constructs no Torah model and invokes no Torah rendering/filter/loading/reload/session; optional accessor also rejects retained legacy State.",
+    "Existing Torah observer Task is keyed by route classification to cancel on a prepared/legacy route change; no independent dispatcher."
+  ],
+  "nil_host_proof": {
+    "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift",
+    "git_blob": "bf6063cbc59ab5f689486d29c9dd1661b44173bc",
+    "behavior": "Original body uses if let session for all host/observer machinery; nil returns only content."
+  },
+  "explicitly_unqualified": [
+    "Torah/schema/association editing on prepared route",
+    "Apple module compile/link",
+    "Native properties mount/reload/retirement acceptance"
+  ],
+  "validation": {
+    "syntax": "NOT_RUN; root requested no compiler yet",
+    "Native": "NOT_RUN"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "schema": "original-editor-property-modal-peer-review/1",
+  "source_ref": "fc03fcd713e2c449ad97c5d1e604a9433c2a309b",
+  "review_state": "IN_PROGRESS; implementation agent is correcting both concrete draft findings; final exact diff pending",
+  "execution_scope": "Read-only source review and one exact-ref git grep. No production, shared worktree, branch, test, native execution or CI mutations.",
+  "findings": [
+    {
+      "id": "modal-parent-tracking-reentry",
+      "state": "ACKNOWLEDGED_BY_IMPLEMENTER",
+      "file": "Anytype/Sources/PresentationLayer/PropertyValueFlow/PropertyValueCoordinator/OriginalEditorPropertyScope.swift",
+      "finding": "The initial withSelectedModalProperty draft re-entered parent withCurrent/requireModalProperty from the actual child action. Child lineage carries a passive parent tracking lease, and unchanged Owner.admit rejects normal parent admission from that lease. The existing-row callback also attempted parent add and publication inside the child action.",
+      "source_contract": "EditorDocumentWriteOwner.beginTrackedWork and admit guard (!predecessor.tracking || tracking).",
+      "required_resolution": "Parent operations/publication must execute in parent scheduled lineage after returning from child action. Actual child work retains its own original owner; no weakening of Owner."
+    },
+    {
+      "id": "cached-manifest-not-account-attested",
+      "state": "ACKNOWLEDGED_BY_IMPLEMENTER_AND_ROOT",
+      "finding": "PinkhaSpaceBootstrapEngine CacheContainer is keyed only by Space and has no clear/account token. PinkhaSpaceBootstrapService.manifest only reads that cache. quiesce/resume reset StateManager and admission, not the engine cache. Parent account freshness alone cannot attest the cached canonical identities.",
+      "required_resolution": "Do not use cached absence as property-write authority. Use the original current-account read-only canonical manifest path under current owner reads, or fail closed."
+    }
+  ],
+  "existing_read_path": {
+    "file": "Anytype/Sources/Pinkha/Bootstrap/PinkhaSpaceManifestStore.swift",
+    "git_blob": "b712657e45feea1f05ca68a3aa2098fb9d053e5b",
+    "methods": [
+      "discoverManifestObjectId(spaceId:)",
+      "loadManifest(spaceId:)"
+    ],
+    "native_calls": [
+      "ObjectSearch",
+      "ObjectSearch",
+      "ObjectShow"
+    ],
+    "effects": "No Task, bootstrap, provisioning, saveManifest, create or update in either read method.",
+    "validation": "Discovery matches actual same-Space ObjectDetails and decoded manifest; multiple valid candidates reject. Load uses original ObjectShow and returned root identity. Callers must require exact Space and complete required identities and reject missing/ambiguous results.",
+    "delegate_note": "Original final SearchMiddleService is internal in Services. A strict original-delegate binding, if required, must expose that same instance; no replacement query engine."
+  },
+  "slash_callback": {
+    "file": "Anytype/Sources/PresentationLayer/TextEditor/AccessoryView/SlashMenu/Handler/SlashMenuActionHandler.swift",
+    "status": "Original callback already uses actionHandler.scheduleMutationTask synchronously before Task creation. Keep it and invoke from actual current parent action callback, outside child tracking."
+  },
+  "readonly_probe": {
+    "job_id": "job_e4eccec76e27",
+    "exit_code": 0,
+    "finished_at": "2026-11-22T02:45:26.321003+00:00",
+    "finding": "Exact-fc03 grep found quiesce/resume production callers only in PinkhaHanlinAuthService. Normal original AuthService/LoginStateService do not reset the engine cache."
+  },
+  "not_qualified": [
+    "Apple module compilation",
+    "Lib/native RPC execution",
+    "Native modal interaction",
+    "Type/dataview/library modal targets",
+    "Object-type restriction search subscription route",
+    "Missing canonical manifest route"
+  ],
+  "source_receipt": "FETCHED_REFERENCES.json"
+}

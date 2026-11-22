@@ -1,0 +1,8 @@
+{
+  "first_run": "AUDIT_SELECTOR_FAILED",
+  "affected_check": "unchanged:func search(data: SearchRequest)",
+  "cause": "The method extractor selected the earlier protocol requirement rather than the concrete original implementation.",
+  "correction": "Use the exact public func search(data: SearchRequest) implementation signature.",
+  "production_source_changes": 0,
+  "native_or_runtime_tests_repeated": 0
+}

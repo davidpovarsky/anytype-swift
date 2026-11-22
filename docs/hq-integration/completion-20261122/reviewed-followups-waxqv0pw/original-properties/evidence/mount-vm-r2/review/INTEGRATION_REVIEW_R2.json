@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "reviewer": "/root/integration_audit",
+  "reviewed_at": "2026-11-22T03:04:17Z",
+  "status": "READ_ONLY_SOURCE_REVIEW_NO_REMAINING_CONCRETE_BLOCKER",
+  "scope": "Full prepared property VM increment R2 against native value-entry R2; original Owner/Scope/manifest/service/model causal paths inspected. Separate optional Torah View increment belongs to native peer/root review.",
+  "base_sha256": "51ee8e68655f57ae3679ce9c26f6e4f43c65c1c69aa209d71577a74dc0840282",
+  "patch_sha256": "ca6ec5b788e40eb8206bfa6fa14744fe770f0ae6d7997cba2fab5540b1c2d21b",
+  "candidate_sha256": "e24a0419fbf6a57021ac9d28051c246d5902bb776c4676c5bf5989f0815667be",
+  "findings": [
+    {
+      "id": "MOUNT-R1-001",
+      "status": "CORRECTED_IN_R2_BY_SOURCE_REVIEW",
+      "original_patch_sha256": "a50c96eb085a6eb1a8d6d37ab45af66f575ba538d54a219da9666322ea9c32af",
+      "original_candidate_sha256": "6b8b054d3d2d9f8360d000c5a32dced5508b2ec1dfae50bc3093166e6c985c88",
+      "title": "Retained VM can lose its subscription during cancellation and immediate reattachment",
+      "causal_interleaving": [
+        "Original SwiftUI view retains the model in @State and calls setupSubscriptions from .task.",
+        "Old invocation waits in the async publisher; disappearance cancels that task.",
+        "A new visible invocation may enter before the cancelled predecessor resumes its defer.",
+        "R1 active-bool guard makes the new invocation return; old defer then clears active and cancels the read, leaving no active subscription."
+      ],
+      "correction": [
+        "R2 replaces the active boolean with a per-invocation passive UI subscription UUID and does not reject a valid new invocation because a cancelled predecessor has not unwound.",
+        "The old defer always removes its own observer but changes shared subscription/task state only if it still owns the current UUID.",
+        "Old notification callbacks, publisher iterations and result publication check that same UUID.",
+        "Both the cancellation check after the awaited canonical read and the exact current ParsedProperties comparison remain before publication.",
+        "The UUID grants no source/account/document/RPC or permission authority."
+      ],
+      "runtime_reproduction": "NOT_RUN; causal source review only"
+    }
+  ],
+  "causal_review": [
+    "Prepared initialization and canAddProperty return before the legacy Pinkha policy/cache path; setupSubscriptions selects a separate prepared path.",
+    "Prepared rebuild performs the original account/source-bound canonical read through loadModalPropertyIdentity and the original concrete manifest/search service; no bootstrap/save/cache adoption is added.",
+    "The newly created rebuild Task is outside the local temporary synchronous read scope. Rebuild publication re-enters the original current-source/instance scope.",
+    "The original PropertiesSectionBuilder remains the renderer input builder; internal/native property filtering uses the same identity snapshot and scope.",
+    "Removal reserves the original scheduleDocumentAction before Task creation, retains inherited named action permissions, reads canonical identity, then verifies byte-exact property ID/key and current original Property equality.",
+    "The original concrete PropertiesService and ObjectRelationDelete call remain the sole removal implementation; the call executes after the temporary read scope has returned to its reserved mutation lineage.",
+    "Original Owner admission, actual Invocation permit/currentness, account drain, cancellation/failed-write semantics and read-to-write restrictions are unchanged.",
+    "The previous native value-entry implementation and legacy setup/rebuild/removal/rest suffixes remain byte-identical."
+  ],
+  "source_structural_comparisons": {
+    "legacy_setup_suffix_exact": true,
+    "legacy_rebuild_and_resolved_type_exact": true,
+    "legacy_removal_suffix_exact": true,
+    "legacy_after_removal_exact": true,
+    "prior_native_value_entry_exact": true
+  },
+  "inputs": [
+    {
+      "path": "original_editor_property_mount_waxqv0pw_20261122/base/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesViewModel.swift",
+      "bytes": 13441,
+      "sha256": "51ee8e68655f57ae3679ce9c26f6e4f43c65c1c69aa209d71577a74dc0840282"
+    },
+    {
+      "path": "original_editor_property_mount_waxqv0pw_20261122/source/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesViewModel.swift",
+      "bytes": 19949,
+      "sha256": "e24a0419fbf6a57021ac9d28051c246d5902bb776c4676c5bf5989f0815667be"
+    },
+    {
+      "path": "original_editor_property_mount_waxqv0pw_20261122/prepared-property-mount-r1.patch",
+      "bytes": 8254,
+      "sha256": "a50c96eb085a6eb1a8d6d37ab45af66f575ba538d54a219da9666322ea9c32af"
+    },
+    {
+      "path": "original_editor_property_mount_waxqv0pw_20261122/prepared-property-mount-r2.patch",
+      "bytes": 8711,
+      "sha256": "ca6ec5b788e40eb8206bfa6fa14744fe770f0ae6d7997cba2fab5540b1c2d21b"
+    },
+    {
+      "path": "original_editor_property_modal_waxqv0pw_20261122/source/Anytype/Sources/PresentationLayer/PropertyValueFlow/PropertyValueCoordinator/OriginalEditorPropertyScope.swift",
+      "bytes": 19555,
+      "sha256": "3b8a24397fc5ebc659c28a81a693839faa1ac9cf9854a57de178240062856322"
+    },
+    {
+      "path": "original_editor_property_modal_waxqv0pw_20261122/references/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift",
+      "bytes": 49230,
+      "sha256": "b0ae02be8c28c22246d29bf927cb154e10019d841f3b831771f968a8938f7d46"
+    },
+    {
+      "path": "original_editor_property_modal_waxqv0pw_20261122/source/Anytype/Sources/Pinkha/Bootstrap/PinkhaSpaceManifestStore.swift",
+      "bytes": 6847,
+      "sha256": "db6bcaf3792980094f1ceb9e40cd7e89f9694870ec5bc903a9f766e3e2cbe906"
+    },
+    {
+      "path": "original_editor_property_mount_waxqv0pw_20261122/references/Anytype/Sources/Models/Properties/ParsedProperties.swift",
+      "bytes": 1568,
+      "sha256": "e0cadce9fa46bddacf71718bba0324dd002cb9d16fe4a9cc90d4aa6e09bd485b"
+    },
+    {
+      "path": "original_editor_property_mount_waxqv0pw_20261122/references/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Entities/PropertiesSectionBuilder.swift",
+      "bytes": 1913,
+      "sha256": "a08e903edc97cc429cc0a5d4fdb8e63cb8c149952abec4270a72effbe3d04624"
+    },
+    {
+      "path": "original_editor_property_value_entry_waxqv0pw_20261122/references/Anytype/Sources/Models/Properties/Entities/Property.swift",
+      "bytes": 8207,
+      "sha256": "ae11b3ac3c1f2753d66e96b81d922b853988253f059dccad7116c3bd8d62bd59"
+    },
+    {
+      "path": "original_editor_property_modal_waxqv0pw_20261122/base/Modules/Services/Sources/Services/Properties/PropertiesService.swift",
+      "bytes": 8333,
+      "sha256": "34130335773c315ec3183b487b617df6200189b1cece3e2c21cc392f3821e143"
+    },
+    {
+      "path": "original_editor_property_mount_waxqv0pw_20261122/references/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesView.swift",
+      "bytes": 8250,
+      "sha256": "10dee7a9f3c186b00f9c7c219ca6b8f18034563fb9d4c9cdcb61278a19df866b"
+    }
+  ],
+  "execution": {
+    "source_or_worktree_changes": 0,
+    "compiler_invocations": 0,
+    "test_bodies_executed": 0,
+    "ci_dispatches": 0,
+    "branches_or_refs_mutated": 0,
+    "apple_typecheck": "NOT_RUN",
+    "native_ui_or_runtime_acceptance": "NOT_RUN"
+  }
+}

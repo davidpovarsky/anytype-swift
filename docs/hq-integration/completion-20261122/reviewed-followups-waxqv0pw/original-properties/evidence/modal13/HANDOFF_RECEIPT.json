@@ -1,0 +1,60 @@
+{
+  "status": "FROZEN_SOURCE_CANDIDATE_READY_FOR_ROOT_COMBINED_JOIN",
+  "base": "fc03fcd713e2c449ad97c5d1e604a9433c2a309b",
+  "patch_sha256": "377ef209aa567db9f95728f54be101726befea96b2e2cc36b28d0ca3a8bb729d",
+  "changed_existing_swift_files": 13,
+  "independent_review": "SOURCE_LEVEL_GO_NO_APPLE_NATIVE_CREDIT",
+  "checks": {
+    "exact_git_apply_check_and_apply": "PASS",
+    "output_bytes_match_all13": true,
+    "preservation_checks": 24,
+    "separate_swift_parse": "NOT_RUN_ROOT_WILL_RUN_COMBINED_JOIN",
+    "apple_semantic_compile": "NOT_RUN",
+    "native": "NOT_RUN"
+  },
+  "excluded": [
+    "prepared type/dataview/library targets",
+    "object-type restriction picker",
+    "unknown/ambiguous/incomplete canonical identity",
+    "cached already-open child adoption",
+    "foreign type/property edit-entry activation",
+    "root-owned mount/value-entry patches"
+  ],
+  "repository_and_windows_mutations": 0,
+  "ci_dispatches": 0,
+  "asana_writes": 0,
+  "files": {
+    "original-property-modal-owner.patch": {
+      "bytes": 49733,
+      "sha256": "377ef209aa567db9f95728f54be101726befea96b2e2cc36b28d0ca3a8bb729d"
+    },
+    "CANDIDATE_INPUTS.json": {
+      "bytes": 6971,
+      "sha256": "ad0218a3fef3c641b79816a38dec8273f8e0bd30cdf0d50bc9bdf590cc52f8e6"
+    },
+    "SOURCE_APPLICATION_RECEIPT.json": {
+      "bytes": 634,
+      "sha256": "b8647c8b1c28e76c92e5721ca341575d41f13f852ec84eab5eadacfdffb1523e"
+    },
+    "SOURCE_PRESERVATION_RECEIPT.json": {
+      "bytes": 6593,
+      "sha256": "00e1267aaa3c54d5f5d62355cf315ab6ef90103d74dfb4b982bc0c11053ea364"
+    },
+    "SOURCE_MAP_AND_REMAINING_GATES.md": {
+      "bytes": 9245,
+      "sha256": "e2130f9fa428a8d1118b5559a429112dc5dcc100c66b7095dae8aa3b2f901c25"
+    },
+    "verify_source_preservation.py": {
+      "bytes": 4493,
+      "sha256": "f153a44f81a365c5bb1b3fa6a6a7fe7567074213e5e6c8dea4aa3b819fd4ca2b"
+    },
+    "SOURCE_PRESERVATION_AUDIT_CORRECTION.json": {
+      "bytes": 410,
+      "sha256": "24536468181a588c5235fbd13c87b5298a20bac333475d4c23694f35f9348d26"
+    },
+    "review/MODAL_REVIEW_377ef209.json": {
+      "bytes": 11164,
+      "sha256": "d43fd8671041515a313b902346b517430c55a43972e26e06318cca4405902d8c"
+    }
+  }
+}
