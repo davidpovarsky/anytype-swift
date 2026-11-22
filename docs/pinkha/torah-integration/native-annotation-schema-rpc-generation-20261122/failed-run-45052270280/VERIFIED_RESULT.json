@@ -1,0 +1,110 @@
+{
+  "schema": "otzaria.independent-schema-rpc-generation-artifact-verification/1",
+  "artifact": {
+    "bytes": 866386,
+    "sha256": "9e12af3ae19e07b06cc3ee4215d218b62e0092525921cece5c81759aac802b01"
+  },
+  "head": "65dae331936645cf807349f1fcd10db2ba973f9b",
+  "payloads_verified": 30,
+  "control_inputs_locally_bound": 11,
+  "actual_result": {
+    "commands": 8,
+    "control_head": "65dae331936645cf807349f1fcd10db2ba973f9b",
+    "error": "owned command failed: baseline-clone-swift",
+    "error_type": "RuntimeError",
+    "finished_unix": 1795370600.912231,
+    "full_sdk_typecheck": false,
+    "integration_authority": false,
+    "ios_build": false,
+    "manifest_sha256": "800c0745ddc36537c443e17f9d984c98a11fd22c4d825c4a935ffa4f8d264ee3",
+    "native_tests_executed": 0,
+    "owned_command_groups_drained": true,
+    "owned_work_removed": true,
+    "schema": "otzaria.original-schema-rpc-generation-result/1",
+    "status": "FAIL"
+  },
+  "commands": [
+    {
+      "label": "go-version",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "xcode-version",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "swift-version",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "swift-target",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "make-version",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "baseline-clone-heart",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "baseline-checkout-heart",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "baseline-clone-swift",
+      "status": "TERMINAL",
+      "returncode": 128,
+      "effective_returncode": 128,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    }
+  ],
+  "generated_counts": {},
+  "failure_time_counts": {
+    "baseline": {
+      "heart": 11
+    }
+  },
+  "verified_generated_deltas": null,
+  "scope": "Archive bytes, all indexed source/log payloads, source bindings, declared deltas and actual command outcomes only. Generated output semantics require separate review; full endpoint/Invocation/SDK/native acceptance remains open.",
+  "tool_limit": "CI records actual generator executable hashes before/after use. Executable binaries and the complete OS/SDK closure are not part of this artifact and cannot be independently rehashed here.",
+  "native_or_app_reexecutions": 0
+}

@@ -1,0 +1,79 @@
+{
+  "schema": "otzaria.finite-schema-rpc-generation-observer/1",
+  "run_id": 45052270280,
+  "expected_head": "65dae331936645cf807349f1fcd10db2ba973f9b",
+  "events": [
+    {
+      "utc": "2026-11-22T17:57:25.449966+00:00",
+      "event": "RUN_STATE",
+      "status": "queued",
+      "conclusion": null
+    },
+    {
+      "utc": "2026-11-22T18:02:34.041430+00:00",
+      "event": "RUN_STATE",
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "utc": "2026-11-22T18:03:58.932858+00:00",
+      "event": "READ_FAILED",
+      "error_type": "TimeoutExpired"
+    },
+    {
+      "utc": "2026-11-22T18:05:06.748772+00:00",
+      "event": "READ_FAILED",
+      "error_type": "TimeoutExpired"
+    },
+    {
+      "utc": "2026-11-22T18:05:44.435220+00:00",
+      "event": "RUN_STATE",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "utc": "2026-11-22T18:06:39.918458+00:00",
+      "event": "ARTIFACT_VERIFIED",
+      "artifact_id": 14766048443,
+      "generation_status": "FAIL"
+    }
+  ],
+  "status": "TERMINAL_ARTIFACT_RETAINED",
+  "owned_directory": "C:\\Users\\DAVID\\Code\\otzaria-schema-rpc-generation-observer-20261122-45052270280",
+  "run": {
+    "id": 45052270280,
+    "head_sha": "65dae331936645cf807349f1fcd10db2ba973f9b",
+    "head_branch": "codex/otzaria-schema-rpc-generation-20261122",
+    "run_attempt": 1,
+    "event": "push",
+    "status": "completed",
+    "conclusion": "failure",
+    "html_url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45052270280",
+    "created_at": "2026-11-22T17:56:58Z",
+    "updated_at": "2026-11-22T18:03:32Z"
+  },
+  "artifact": {
+    "id": 14766048443,
+    "name": "Otzaria-Schema-RPC-Generation-45052270280-1",
+    "bytes": 866386,
+    "sha256": "9e12af3ae19e07b06cc3ee4215d218b62e0092525921cece5c81759aac802b01",
+    "path": "C:\\Users\\DAVID\\Code\\otzaria-schema-rpc-generation-observer-20261122-45052270280\\generation-artifact.zip",
+    "payloads": 30
+  },
+  "generation_result": {
+    "commands": 8,
+    "control_head": "65dae331936645cf807349f1fcd10db2ba973f9b",
+    "error": "owned command failed: baseline-clone-swift",
+    "error_type": "RuntimeError",
+    "finished_unix": 1795370600.912231,
+    "full_sdk_typecheck": false,
+    "integration_authority": false,
+    "ios_build": false,
+    "manifest_sha256": "800c0745ddc36537c443e17f9d984c98a11fd22c4d825c4a935ffa4f8d264ee3",
+    "native_tests_executed": 0,
+    "owned_command_groups_drained": true,
+    "owned_work_removed": true,
+    "schema": "otzaria.original-schema-rpc-generation-result/1",
+    "status": "FAIL"
+  }
+}
