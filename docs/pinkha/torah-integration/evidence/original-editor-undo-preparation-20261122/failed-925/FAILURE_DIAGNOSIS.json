@@ -1,0 +1,68 @@
+{
+  "run": 44992780854,
+  "head": "925b7e3cc687dcccad7703f57bd0a6b374dc1919",
+  "phase": "ORIGINAL_FRAMEWORK_BUILD",
+  "framework_command": {
+    "command": [
+      "xcodebuild",
+      "build",
+      "-project",
+      "/Users/runner/work/anytype-swift/anytype-swift/Anytype.xcodeproj",
+      "-scheme",
+      "AnytypeOriginalEditor",
+      "-configuration",
+      "Debug-Anytype",
+      "-destination",
+      "platform=iOS Simulator,id=BF43E5B1-15C7-4E79-BF7E-7F8083CC8952",
+      "-derivedDataPath",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44992780854-1/producer-derived",
+      "-resultBundlePath",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-evidence/framework-build.xcresult",
+      "-onlyUsePackageVersionsFromResolvedFile",
+      "OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED $(ORIGINAL_EDITOR_SYMBOL_GRAPH_FLAGS)",
+      "ONLY_ACTIVE_ARCH=YES",
+      "ARCHS=arm64",
+      "SWIFT_OPTIMIZATION_LEVEL=-Onone",
+      "CODE_SIGN_IDENTITY=-",
+      "CODE_SIGNING_ALLOWED=YES",
+      "CODE_SIGNING_REQUIRED=YES",
+      "PROVISIONING_PROFILE_SPECIFIER="
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "finished_at": "2026-11-22T06:23:56.239354+00:00",
+    "returncode": 65,
+    "started_at": "2026-11-22T06:15:15.834641+00:00",
+    "stderr_sha256": "5d3b7c4cb5a09c4b906db5699330c3b12acb76e9b4caa1e46f8a7be98d462556",
+    "stdout_sha256": "f34e0a98f09d8d22c54359ed0c0081db4553daaeb06aa9b637737159a09dd559",
+    "timed_out": false,
+    "timeout_seconds": 6000
+  },
+  "actual_framework_command_attempted": true,
+  "semantic_framework_build_completed": false,
+  "external_consumer_executed": false,
+  "native_editor_ui_tests": 0,
+  "unique_source_diagnostics": [
+    {
+      "line": 36436,
+      "diagnostic": "/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/Views/UndoRedo/UndoRedoView.swift:18:25: error: failed to produce diagnostic for expression; please submit a bug report (https://swift.org/contributing/#reporting-bugs)",
+      "context": [
+        "    builtin-SwiftPerFileCompile SetKanbanBoardState.swift",
+        "",
+        "SwiftCompile normal arm64 Compiling\\ DocumentUpdateAlertView.swift,\\ UndoRedoView.swift,\\ UndoRedoViewModel.swift,\\ ToastPresenter.swift,\\ ObjectDetailsMock.swift,\\ ParticipantMock.swift,\\ ParticipantSpaceViewDataMock.swift,\\ SpacePermissionsMock.swift,\\ SpaceViewMock.swift,\\ FileLimitsStorageMock.swift,\\ MembershipStatusStorageMock.swift,\\ ParticipantSpacesStorageMock.swift,\\ SearchServiceMock.swift,\\ SingleObjectSubscriptionServiceMock.swift,\\ SpaceViewsStorageMock.swift,\\ SyncStatusStorageMock.swift,\\ MockView.swift,\\ AccountDataExtension.swift,\\ AccountEventHandler.swift,\\ AccountManager.swift,\\ EditorAccountWriteTransition.swift,\\ AcountParticipantSubscriptionBuilder.swift,\\ ActiveSpaceManager.swift,\\ ParticipantsSubscription.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/Views/Alerts/DocumentUpdateAlertView.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/Views/UndoRedo/UndoRedoView.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/Views/UndoRedo/UndoRedoViewModel.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/ToastPresenter/ToastPresenter.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PreviewMocks/Mocks/Models/ObjectDetailsMock.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PreviewMocks/Mocks/Models/ParticipantMock.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PreviewMocks/Mocks/Models/ParticipantSpaceViewDataMock.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PreviewMocks/Mocks/Models/SpacePermissionsMock.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PreviewMocks/Mocks/Models/SpaceViewMock.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PreviewMocks/Mocks/Services/FileLimitsStorageMock.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PreviewMocks/Mocks/Services/MembershipStatusStorageMock.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PreviewMocks/Mocks/Services/ParticipantSpacesStorageMock.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PreviewMocks/Mocks/Services/SearchServiceMock.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PreviewMocks/Mocks/Services/SingleObjectSubscriptionServiceMock.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PreviewMocks/Mocks/Services/SpaceViewsStorageMock.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PreviewMocks/Mocks/Services/SyncStatusStorageMock.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PreviewMocks/MockView.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/Account/AccountDataExtension.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/Account/AccountEventHandler.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/Account/AccountManager.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/Account/EditorAccountWriteTransition.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/AccountParticipantsStorage/AcountParticipantSubscriptionBuilder.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/ActiveSpaceParticipantsStorage/ParticipantsSubscription.swift (in target 'AnytypeOriginalEditor' from project 'Anytype')",
+        "/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/Views/UndoRedo/UndoRedoView.swift:18:25: error: failed to produce diagnostic for expression; please submit a bug report (https://swift.org/contributing/#reporting-bugs)",
+        "16 |     }",
+        "17 |     ",
+        "18 |     var body: some View {",
+        "   |                         `- error: failed to produce diagnostic for expression; please submit a bug report (https://swift.org/contributing/#reporting-bugs)",
+        "19 |         HStack(spacing: 16) {",
+        "20 |             ",
+        ""
+      ]
+    }
+  ],
+  "source_controls_status": "PASS_SOURCE_CONTROLS_221",
+  "source_controls_tests_run": 221,
+  "macro_trust_restored": "EXACT_ORIGINAL_MACRO_TRUST_RESTORED",
+  "source_before_after_bytes_equal": true,
+  "download_count": 1
+}

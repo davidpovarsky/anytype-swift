@@ -1,0 +1,67 @@
+import SwiftUI
+import AnytypeCore
+import Services
+
+struct UndoRedoView: View {
+    @State private var model: UndoRedoViewModel
+
+    init(
+        objectId: String,
+        objectActionsService: any ObjectActionsServiceProtocol = Container.shared.objectActionsService(),
+        documentWriteOwner: EditorDocumentWriteOwner? = nil
+    ) {
+        self._model = State(initialValue: UndoRedoViewModel(
+            objectId: objectId, objectActionsService: objectActionsService, documentWriteOwner: documentWriteOwner
+        ))
+    }
+    
+    var body: some View {
+        HStack(spacing: 16) {
+            
+            AsyncButton(prepareAction: model.hasDocumentWriteOwner ? { model.prepareUndo() } : nil) {
+                try await model.undo()
+            } label: {
+                ItemView(
+                    imageAsset: .X32.Undo.undo,
+                    title: Loc.undo
+                )
+            }
+            .accessibilityIdentifier("editor-undo")
+            
+            AsyncButton(prepareAction: model.hasDocumentWriteOwner ? { model.prepareRedo() } : nil) {
+                try await model.redo()
+            } label: {
+                ItemView(
+                    imageAsset: .X32.Undo.redo,
+                    title: Loc.redo
+                )
+            }
+            .accessibilityIdentifier("editor-redo")
+        }
+        .snackbar(toastBarData: $model.toastData)
+        .padding(.init(top: 16, leading: 16, bottom: 8, trailing: 16))
+        .background(Color.Background.secondary)
+    }
+}
+
+private struct ItemView: View {
+    let imageAsset: ImageAsset
+    let title: String
+
+    var body: some View {
+        VStack(spacing: 5) {
+            Image(asset: imageAsset)
+                .foregroundStyle(Color.Control.secondary)
+                .frame(height: 52)
+                .frame(
+                    minWidth: 0,
+                    maxWidth: .infinity,
+                    alignment: .center
+                )
+                .background(Color.Background.highlightedMedium)
+                .clipShape(.rect(cornerRadius: 10.5))
+            AnytypeText(title, style: .caption2Regular)
+                .foregroundStyle(Color.Text.secondary)
+        }
+    }
+}
