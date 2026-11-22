@@ -22,6 +22,14 @@ final class ChannelPinsService: ChannelPinsServiceProtocol {
 
     private let blockWidgetService: any BlockWidgetServiceProtocol = Container.shared.blockWidgetService()
 
+    static func requireOriginal(_ service: any ChannelPinsServiceProtocol) throws -> ChannelPinsService {
+        guard let original = service as? ChannelPinsService else {
+            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+        }
+        _ = try OriginalBlockWidgetServiceBinding.requireOriginal(original.blockWidgetService)
+        return original
+    }
+
     func toggle(
         objectId: String,
         channelWidgetsObject: any BaseDocumentProtocol,
