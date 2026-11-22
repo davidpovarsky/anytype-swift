@@ -1,0 +1,140 @@
+{
+  "schema": "otzaria.original-heart-annotation-schema-readback/1",
+  "status": "SOURCE_REVIEW_CANDIDATE_NATIVE_NOT_RUN",
+  "repository_base": "dc4929239ebd9cb199a7e0c238f5bf155305f7d8",
+  "heart_base": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "source_index_sha256": "3487663a830281fc33bef1f944d68047c784819918f03dc76341bd35413e7581",
+  "source_manifest_sha256": "c091fa3696f8b3f2610997aed65c988010529c59caeac3d53a47c1d3e028ac4d",
+  "prior_execution_manifest_sha256": "8b4306ca235e95a5990ddf9378755ca41aef5dffeba856bc2396c88b7b89e941",
+  "retained_v7r1_source": "7431d8fd3b3e9f4a3ef167dbb3b6c995ab972508",
+  "retained_v7r1_run": 45027606300,
+  "control_inputs": [
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_observer.go",
+      "sha256": "f591939d759e733a37e776d189de36d597ddd30cab284142f82aa8de9de51d89",
+      "bytes": 15466,
+      "retained_path": "native/core/block/object/objectcreator/fixed_schema_observer.go"
+    },
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_replay.go",
+      "sha256": "47de485bc746070ee5791cac1efc67e84da31c5477cdb4ad577d62c53310adc7",
+      "bytes": 14619,
+      "retained_path": "native/core/block/object/objectcreator/fixed_schema_replay.go"
+    },
+    {
+      "path": "core/pinkha/annotationschema/definition.go",
+      "sha256": "cce970f838d91d9f3f06af5e4f2511afc6838c69704deaa4099ba9c392996eac",
+      "bytes": 3520,
+      "retained_path": "native/core/pinkha/annotationschema/definition.go"
+    },
+    {
+      "path": "core/pinkha/annotationschema/observe.go",
+      "sha256": "06eac0c21b0974863a197f8f1a3ae80804c5d97d3e4a49e8f775e9cccc1cc193",
+      "bytes": 9880,
+      "retained_path": "native/core/pinkha/annotationschema/observe.go"
+    },
+    {
+      "path": "core/pinkha/annotationschema/type_layout.go",
+      "sha256": "574f1fc23e9387c59167fdeac72b6a4d727f4c6c782b03ed2a99593a0e7ad312",
+      "bytes": 6266,
+      "retained_path": "native/core/pinkha/annotationschema/type_layout.go"
+    },
+    {
+      "path": "core/block/object/objectcreator/annotation_schema_readback_native_test.go",
+      "sha256": "3cffade31d78d38f577f5cefbaceaa23696ca3077cdcdd53c7fab6ae9da79077",
+      "bytes": 17307,
+      "retained_path": "native/core/block/object/objectcreator/annotation_schema_readback_native_test.go"
+    },
+    {
+      "path": "observer-readback.patch",
+      "sha256": "640040ea8ba982b2a160521afd2f7001dab4254875129b69d7d53bbaef78fabe",
+      "bytes": 3179
+    },
+    {
+      "path": "run_annotation_schema_readback.py",
+      "sha256": "0d870246ffa9f3a42f4f2984c2b52fbd5127cc28390af8c7e8c98156306eab5f",
+      "bytes": 35336
+    },
+    {
+      "path": "GOFMT.json",
+      "sha256": "8ebad253d2fe5abef910cfebb1afeedcebdeaa76bf81cafd3a2b88d0b00e0f69",
+      "bytes": 1746
+    }
+  ],
+  "copyout_patch": {
+    "path": "observer-readback.patch",
+    "sha256": "640040ea8ba982b2a160521afd2f7001dab4254875129b69d7d53bbaef78fabe",
+    "bytes": 3179
+  },
+  "copyout_afterimages": [
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_observer.go",
+      "sha256": "f591939d759e733a37e776d189de36d597ddd30cab284142f82aa8de9de51d89",
+      "bytes": 15466,
+      "retained_path": "native/core/block/object/objectcreator/fixed_schema_observer.go",
+      "before_sha256": "53a05ff554ff7b23c2ee3d1f322522fb88784139392cc30d7cb9b06d8e0e87d1"
+    },
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_replay.go",
+      "sha256": "47de485bc746070ee5791cac1efc67e84da31c5477cdb4ad577d62c53310adc7",
+      "bytes": 14619,
+      "retained_path": "native/core/block/object/objectcreator/fixed_schema_replay.go",
+      "before_sha256": "fb2c8c245320efe002e4bbece3b38af572a33e262d22652f54388bb6391371c4"
+    }
+  ],
+  "new_product_sources": [
+    {
+      "path": "core/pinkha/annotationschema/definition.go",
+      "sha256": "cce970f838d91d9f3f06af5e4f2511afc6838c69704deaa4099ba9c392996eac",
+      "bytes": 3520,
+      "retained_path": "native/core/pinkha/annotationschema/definition.go"
+    },
+    {
+      "path": "core/pinkha/annotationschema/observe.go",
+      "sha256": "06eac0c21b0974863a197f8f1a3ae80804c5d97d3e4a49e8f775e9cccc1cc193",
+      "bytes": 9880,
+      "retained_path": "native/core/pinkha/annotationschema/observe.go"
+    },
+    {
+      "path": "core/pinkha/annotationschema/type_layout.go",
+      "sha256": "574f1fc23e9387c59167fdeac72b6a4d727f4c6c782b03ed2a99593a0e7ad312",
+      "bytes": 6266,
+      "retained_path": "native/core/pinkha/annotationschema/type_layout.go"
+    }
+  ],
+  "new_test_sources": [
+    {
+      "path": "core/block/object/objectcreator/annotation_schema_readback_native_test.go",
+      "sha256": "3cffade31d78d38f577f5cefbaceaa23696ca3077cdcdd53c7fab6ae9da79077",
+      "bytes": 17307,
+      "retained_path": "native/core/block/object/objectcreator/annotation_schema_readback_native_test.go"
+    }
+  ],
+  "expected_cases": {
+    "native": [
+      "ActualDefinitionsHiddenAttachmentsAndViews",
+      "CallerMutationCannotChangeCopiedNativeReadback",
+      "ConflictCannotExposePersistedPayload",
+      "ChangedRowsCannotExposePersistedPayload",
+      "FinalCancellationCannotExposePersistedPayload",
+      "MissingAttachmentRemainsIncomplete",
+      "VisibleNativeMetadataColumnIsConflict",
+      "UncertainRootIsPreservedWithoutCreation",
+      "OriginalNativeRetirementIsConflict"
+    ]
+  },
+  "prior_cases_not_replayed": {
+    "strict": 12,
+    "native_first_run": 13,
+    "native_v6": 18,
+    "native_v7": 2
+  },
+  "native_calls": 0,
+  "builds": 0,
+  "tests": 0,
+  "scope": "Direct original native account/Space observation and historical classification only. No registration receipt, create/repair, materialization, identity/body authority, mapping, COMMIT or ACK.",
+  "copyout_semantics": "Owned protobuf copy only after unchanged original PersistedMatch publication checks; preexisting rejection, snapshot, ACL, identity and cancellation predicates/order unchanged.",
+  "index_semantics": "Original per-Space QueryRaw(FilterEq,2,0), no default filters; zero is unresolved, two is conflict, one must match actual derived identity/state. No absence or global uniqueness proof.",
+  "native_case_semantics": "Disposable genuine production application; existing four native fixture/control files are compiled byte-for-byte but no existing test parent is selected. New retirement fixture uses original Space.Do/SmartBlock.Apply, never an injected index row.",
+  "format_semantics": "Actual Windows Go1.25.6 gofmt verification, then pinned macOS Go1.26.5 gofmt -l must be empty; execution does not rewrite frozen sources."
+}

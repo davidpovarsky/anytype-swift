@@ -1,0 +1,101 @@
+--- a/core/block/object/objectcreator/fixed_schema_observer.go
++++ b/core/block/object/objectcreator/fixed_schema_observer.go
+@@ -9,6 +9,9 @@
+ 	"reflect"
+ 	"slices"
+ 	"strings"
++
++	"github.com/gogo/protobuf/proto"
++	"github.com/gogo/protobuf/types"
+ 
+ 	"github.com/anyproto/any-sync/commonspace/headsync/statestorage"
+ 	"github.com/anyproto/any-sync/commonspace/object/acl/list"
+@@ -55,16 +58,39 @@
+ }
+ 
+ type FixedSchemaObservation struct {
+-	Disposition     FixedSchemaDisposition
+-	SpaceID         string
+-	ObjectID        string
+-	NativeKey       domain.UniqueKey
+-	PersistedHeads  []string
+-	ArchiveID       string
+-	ArchiveHeads    []string
+-	ACLID           string
+-	ACLHead         string
+-	AccountIdentity string
++	Disposition      FixedSchemaDisposition
++	SpaceID          string
++	ObjectID         string
++	NativeKey        domain.UniqueKey
++	PersistedHeads   []string
++	ArchiveID        string
++	ArchiveHeads     []string
++	ACLID            string
++	ACLHead          string
++	AccountIdentity  string
++	persistedDetails *types.Struct
++	persistedBlocks  []*model.Block
++}
++
++// CopyPersistedSchemaState returns an owned copy of the original strict replay.
++// It is available only for a matching result published after both full native
++// snapshots and final scope validation. It is historical observation data, not
++// a writable SmartBlock, a creation capability, or an annotation/body receipt.
++func (o FixedSchemaObservation) CopyPersistedSchemaState() (*types.Struct, []*model.Block) {
++	if o.Disposition != FixedSchemaPersistedMatch || o.persistedDetails == nil {
++		return nil, nil
++	}
++	return proto.Clone(o.persistedDetails).(*types.Struct), copyFixedSchemaBlocks(o.persistedBlocks)
++}
++
++func copyFixedSchemaBlocks(blocks []*model.Block) []*model.Block {
++	result := make([]*model.Block, len(blocks))
++	for i, block := range blocks {
++		if block != nil {
++			result[i] = proto.Clone(block).(*model.Block)
++		}
++	}
++	return result
+ }
+ 
+ // FixedSchemaObserver is additive. Existing Service, generated messages, and all
+@@ -146,6 +172,10 @@
+ 		return result, err
+ 	}
+ 	result.Disposition = disposition
++	if disposition == FixedSchemaPersistedMatch {
++		result.persistedDetails = first.schemaDetails
++		result.persistedBlocks = first.schemaBlocks
++	}
+ 	return result, nil
+ }
+ 
+@@ -295,10 +325,12 @@
+ }
+ 
+ type fixedSchemaRead struct {
+-	space   fixedSchemaStoredSpace
+-	schema  fixedSchemaStoredTree
+-	archive fixedSchemaStoredTree
+-	acl     fixedSchemaStoredACL
++	space         fixedSchemaStoredSpace
++	schema        fixedSchemaStoredTree
++	archive       fixedSchemaStoredTree
++	acl           fixedSchemaStoredACL
++	schemaDetails *types.Struct
++	schemaBlocks  []*model.Block
+ }
+ 
+ func (r fixedSchemaRead) same(other fixedSchemaRead) bool {
+--- a/core/block/object/objectcreator/fixed_schema_replay.go
++++ b/core/block/object/objectcreator/fixed_schema_replay.go
+@@ -70,6 +70,8 @@
+ 		!fixedSchemaDetailsMatch(st.Details(), definition.Required) {
+ 		return read, FixedSchemaPopulatedConflict, nil
+ 	}
++	read.schemaDetails = st.Details().ToProto()
++	read.schemaBlocks = copyFixedSchemaBlocks(st.BlocksToSave())
+ 	return read, FixedSchemaPersistedMatch, nil
+ }
+ 

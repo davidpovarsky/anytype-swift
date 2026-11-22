@@ -1,0 +1,73 @@
+name: Original Heart annotation schema readback
+
+on:
+  push:
+    branches:
+      - codex/otzaria-annotation-schema-readback-20261122
+    paths:
+      - .github/workflows/otzaria-annotation-schema-readback.yml
+      - docs/pinkha/torah-integration/native-annotation-schema-readback-20261122/EXECUTION_INPUTS.json
+      - docs/pinkha/torah-integration/native-annotation-schema-readback-20261122/observer-readback.patch
+      - docs/pinkha/torah-integration/native-annotation-schema-readback-20261122/run_annotation_schema_readback.py
+      - docs/pinkha/torah-integration/native-annotation-schema-readback-20261122/native/**/*.go
+
+permissions:
+  contents: read
+
+concurrency:
+  group: otzaria-annotation-schema-readback-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  new-native-controls:
+    runs-on: xcode-27
+    timeout-minutes: 120
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+    steps:
+      - name: Fix the absolute owned execution deadline
+        run: |
+          echo "OTZARIA_ANNOTATION_SCHEMA_JOB_DEADLINE=$(( $(date +%s) + 6900 ))" >> "$GITHUB_ENV"
+      - name: Checkout exact reviewed control source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Select actual ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Install the exact original Go toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache: false
+      - name: Checkout the immutable original Heart base
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: build/Heart-Annotation-Schema
+          persist-credentials: false
+      - name: Build and execute only NINE new schema readback cases
+        run: |
+          python3 docs/pinkha/torah-integration/native-annotation-schema-readback-20261122/run_annotation_schema_readback.py \
+            --control-root "$GITHUB_WORKSPACE" \
+            --control-head "$GITHUB_SHA" \
+            --source docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/candidate-v5 \
+            --controls docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v7-r1 \
+            --schema docs/pinkha/torah-integration/native-annotation-schema-readback-20261122 \
+            --execution-manifest-sha256 0ea7581ee2de14bbc31b7bb35f7b5650201bc60022956cfa07d1c43441b07178 \
+            --job-deadline-unix "$OTZARIA_ANNOTATION_SCHEMA_JOB_DEADLINE" \
+            --heart build/Heart-Annotation-Schema \
+            --work build/Heart-Annotation-Schema-Owned-Work \
+            --evidence build/Heart-Annotation-Schema-Evidence
+      - name: Retain exact new case evidence including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otzaria-Annotation-Schema-Readback-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/Heart-Annotation-Schema-Evidence
+          if-no-files-found: warn
+          compression-level: 6
+          retention-days: 14
