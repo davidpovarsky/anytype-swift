@@ -1,0 +1,1320 @@
+--- a/Anytype.xcodeproj/project.pbxproj
++++ b/Anytype.xcodeproj/project.pbxproj
+@@ -2552,7 +2552,7 @@
+ 			};
+ 			"name" = "Release-Anytype";
+ 		};
+-		7B34B94A980226257449D4B8 /* EditorConfig_Debug-Anytype */ = {
++		7B34B94A980226257449D4B8 = {
+ 			"isa" = "XCBuildConfiguration";
+ 			"buildSettings" = {
+ 				"CODE_SIGN_IDENTITY" = "-";
+@@ -2597,6 +2597,7 @@
+ 				"PROVISIONING_PROFILE_SPECIFIER" = "";
+ 				"SWIFT_INSTALL_OBJC_HEADER" = "YES";
+ 				"SWIFT_OBJC_INTERFACE_HEADER_NAME" = "AnytypeOriginalEditor-Swift.h";
++				"ORIGINAL_EDITOR_SYMBOL_GRAPH_FLAGS" = "-emit-symbol-graph -emit-symbol-graph-dir $(DERIVED_FILE_DIR)/OriginalEditorSymbolGraphs -symbol-graph-minimum-access-level public -include-spi-symbols";
+ 			};
+ 			"name" = "Debug-Anytype";
+ 		};
+--- a/.github/workflows/pinkha-original-editor-framework.yml
++++ b/.github/workflows/pinkha-original-editor-framework.yml
+@@ -3,7 +3,7 @@
+ on:
+   push:
+     branches:
+-      - codex/otzaria-original-editor-framework-v10-reviewed-20261121
++      - codex/otzaria-original-editor-framework-v11-host-reviewed-20261122
+ 
+ permissions:
+   contents: read
+@@ -15,13 +15,13 @@
+ 
+ jobs:
+   original-editor-framework:
+-    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-original-editor-framework-v10-reviewed-20261121'
++    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-original-editor-framework-v11-host-reviewed-20261122'
+     runs-on: xcode-27
+     timeout-minutes: 140
+     env:
+       PYTHONDONTWRITEBYTECODE: '1'
+       DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+-      EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v10-reviewed-20261121
++      EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v11-host-reviewed-20261122
+       HEART_SOURCE_RUN_ID: '44203168617'
+       EDITOR_EVIDENCE: build/original-editor-framework-evidence
+       EDITOR_WORK: build/original-editor-framework-${{ github.run_id }}-${{ github.run_attempt }}
+@@ -51,7 +51,7 @@
+         uses: actions/checkout@v4
+         with:
+           repository: davidpovarsky/hanlin-ai
+-          ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
++          ref: e00498e33f106cc43be0476ffa2e09329c8ca300
+           path: .ci/hanlin-source
+           persist-credentials: false
+       - name: Prepare and verify the original SDK snapshot
+--- a/Tools/PinkhaNativeDerived/install_verified_heart.py
++++ b/Tools/PinkhaNativeDerived/install_verified_heart.py
+@@ -33,7 +33,8 @@
+                              'codex/otzaria-original-editor-framework-v7-reviewed-20261120',
+                              'codex/otzaria-original-editor-framework-v8-reviewed-20261121',
+                              'codex/otzaria-original-editor-framework-v9-reviewed-20261121',
+-                             'codex/otzaria-original-editor-framework-v10-reviewed-20261121'],
++                             'codex/otzaria-original-editor-framework-v10-reviewed-20261121',
++                             'codex/otzaria-original-editor-framework-v11-host-reviewed-20261122'],
+                     default='codex/torah-native-derived-properties-20261103')
+ args = parser.parse_args()
+ inventory = json.loads(args.inventory.read_text())
+--- a/Tools/OriginalEditor/framework_profile.json
++++ b/Tools/OriginalEditor/framework_profile.json
+@@ -13,25 +13,35 @@
+     "Tools/Hanlin/original_editor_profile.py": "3e84bee3d28f180e122da480d0a779820508097d",
+     "Tools/Hanlin/prepare_original_editor_heart.py": "14ee9e553a883872a08526e1196f61d3dd3049f0",
+     "Tools/Hanlin/prepare_sdk.py": "99e1286268f7aacb5f5638cfe14633d37c04bccc",
+-    "Tools/Hanlin/source.json": "0ac43dc444fa2234c2eb11fb9bebf129dbe4fb94",
++    "Tools/Hanlin/source.json": "5b4501d4986a6c4155cc22d74bf4149c361172f2",
+     "Tools/PinkhaNativeDerived/build_custom_heart.py": "e32c935fedce5fc732240bf9b2ada21764b5add1",
+     "Tools/PinkhaNativeDerived/package_evidence.py": "e55d2a959296630686a60aa5d927a3b4c34401f9",
+     "Tools/PinkhaSimulatorGate/preflight.py": "2628b345d5743bbe1ddc0d1afaeef9fb410f3daf"
+   },
+-  "branch": "codex/otzaria-original-editor-framework-v10-reviewed-20261121",
+-  "candidate_project_sha256": "6d8ea7d95077a20f6e8343db77d30cfdd7a59a3e85a4a2a69c8e075c8adcf05c",
++  "branch": "codex/otzaria-original-editor-framework-v11-host-reviewed-20261122",
++  "candidate_project_sha256": "e2d73aec1955e2a30bff380a5c4f2af5707e9ef8618152be368107604cc22f6d",
++  "framework_facade_sources": [
++    "OriginalEditorFramework/AnytypeOriginalEditorHost.swift",
++    "OriginalEditorFramework/AnytypeOriginalEditorModule.swift",
++    "OriginalEditorFramework/AnytypeOriginalEditorNativeFixture.swift",
++    "OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
++    "OriginalEditorFramework/AnytypeOriginalEditorQualificationRuntime.swift",
++    "OriginalEditorFramework/AnytypeOriginalEditorRestoreQualification.swift",
++    "OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift"
++  ],
+   "framework_target_id": "83B785D0C457FE3CCBAB196E",
+-  "new_project_objects": 108,
+-  "original_heart_installer_blob": "7efcba968641e7cf223154b5503f404fb9b3fbe3",
+-  "original_swift_sources": 2237,
++  "new_project_objects": 120,
++  "original_heart_installer_blob": "6dd3399302b70e2de801ea82614a3b616cddee58",
++  "original_swift_sources": 2249,
+   "original_trees": {
+     "Anytype/Resources": "0827010674c089cfe9846e592e1d801e9d3f7a9b",
+-    "Anytype/Sources": "4fe81315ecfc546cc03fd4719873cc651e933371",
+-    "Modules": "c8163bff54e6ba631e82ce5475f226989846d341"
++    "Anytype/Sources": "01f0a5c46fdf80c242e7f3e345346f0b0e50c764",
++    "Modules": "caa80b42d4c68fd2f8b5fe6b1542f8c5557d7e4b"
+   },
+   "package_pin_count": 44,
+-  "package_resolved_blob": "2ee4435d9563f3e8b8691fbb36600bf63ec35a36",
++  "package_resolved_blob": "93172ce5fe62007a1620f7e64866e3b59338dc58",
+   "package_resolved_path": "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
++  "public_host_contract_sha256": "561eb1e73af3a43b512adae79c918d8f899999aa85fe48b212e949b5b3902e15",
+   "resource_oracles": {
+     "color_blob": "6c02bf01dd48acd99bba5a1396ba4e8e01701ab7",
+     "color_path": "Modules/Assets/Sources/Assets/Resources/SystemColors.xcassets/DesignSystem/Text/primary.colorset/Contents.json",
+@@ -41,6 +51,39 @@
+     "localization_key": "Cancel",
+     "localization_path": "Modules/Loc/Sources/Loc/Resources/UI.xcstrings"
+   },
++  "reviewed_shared_dependency_objects": {
++    "2A685D582B7B854200456E08": {
++      "isa": "XCRemoteSwiftPackageReference",
++      "repositoryURL": "https://github.com/weichsel/ZIPFoundation",
++      "requirement": {
++        "kind": "exactVersion",
++        "version": "0.9.20"
++      }
++    },
++    "5333421A262E249100238121": {
++      "isa": "XCRemoteSwiftPackageReference",
++      "repositoryURL": "https://github.com/scenee/FloatingPanel",
++      "requirement": {
++        "kind": "exactVersion",
++        "version": "3.2.4"
++      }
++    },
++    "FA1000002F000001006805CC": {
++      "isa": "XCRemoteSwiftPackageReference",
++      "repositoryURL": "https://github.com/davidpovarsky/TorahInspectorKit.git",
++      "requirement": {
++        "kind": "revision",
++        "revision": "23db0f84e88d9ee9c7053c49de86903fc7bb5785"
++      }
++    }
++  },
+   "schema": 1,
+-  "scope": "Same-toolchain iOS Simulator genuine framework import/link/resource prerequisite; no editable consumer or app runtime qualification"
++  "scope": "Same-toolchain original Host API framework and Debug Simulator SPI import/link/resource prerequisite; native editable UI/save/reopen remains unqualified",
++  "source_checkpoint": "bbd11635598a77d98e7ffcb336fafee9a75eba10",
++  "symbol_graph_emission": {
++    "configuration_id": "7B34B94A980226257449D4B8",
++    "configuration_name": "Debug-Anytype",
++    "setting": "ORIGINAL_EDITOR_SYMBOL_GRAPH_FLAGS",
++    "value": "-emit-symbol-graph -emit-symbol-graph-dir $(DERIVED_FILE_DIR)/OriginalEditorSymbolGraphs -symbol-graph-minimum-access-level public -include-spi-symbols"
++  }
+ }
+--- a/Tools/OriginalEditor/framework_profile.py
++++ b/Tools/OriginalEditor/framework_profile.py
+@@ -8,7 +8,7 @@
+ 
+ from pbx_source import loads, object_text, require
+ 
+-BRANCH = 'codex/otzaria-original-editor-framework-v10-reviewed-20261121'
++BRANCH = 'codex/otzaria-original-editor-framework-v11-host-reviewed-20261122'
+ REPOSITORY = 'davidpovarsky/anytype-swift'
+ TARGET = 'AnytypeOriginalEditor'
+ APP_TARGET = '0303ECFA22D8EDAA005C552B'
+@@ -33,6 +33,14 @@
+     value = json.loads((HERE / 'framework_profile.json').read_text())
+     require(value.get('schema') == 1 and value.get('branch') == BRANCH
+             and value.get('package_pin_count') == 44, 'Unreviewed framework profile')
++    require(set(value.get('reviewed_shared_dependency_objects', {})) == {
++        '5333421A262E249100238121', '2A685D582B7B854200456E08', 'FA1000002F000001006805CC'},
++        'Unreviewed shared runtime dependency object set')
++    require(len(value.get('framework_facade_sources', [])) == 7
++            and len(set(value['framework_facade_sources'])) == 7,
++            'Incomplete reviewed Host facade source closure')
++    require(sha256(HERE / 'public_host_contract.json') == value.get('public_host_contract_sha256'),
++            'Reviewed public Host and qualification SPI contract differs')
+     return value
+ 
+ 
+@@ -43,12 +51,15 @@
+     original = loads(baseline.decode())
+     candidate = loads(raw.decode())
+     old, new = original['objects'], candidate['objects']
+-    allowed = set(profile['allowed_original_structural_objects'])
++    dependencies = profile['reviewed_shared_dependency_objects']
++    allowed = set(profile['allowed_original_structural_objects']) | set(dependencies)
+     require(set(old) <= set(new), 'An original project object was removed')
+     require(all(new[key] == value for key, value in old.items() if key not in allowed),
+             'An original application, configuration, resource or dependency object changed')
+     original_target = old[APP_TARGET]
+     require(new[APP_TARGET] == original_target, 'Original app target was changed')
++    require(all(key in old and new[key] == expected for key, expected in dependencies.items()),
++            'Reviewed shared runtime package requirement differs')
+     added = set(new) - set(old)
+     require(len(added) == profile['new_project_objects'], 'Unexpected additional project objects')
+     targets = [key for key in added if new[key]['isa'] == 'PBXNativeTarget']
+@@ -67,18 +78,28 @@
+     require([new[key] for key in target['packageProductDependencies']]
+             == [old[key] for key in original_target['packageProductDependencies']],
+             'Original package product closure differs')
+-    # An exact inverse rejects extra project edits even to the four structural
+-    # objects that need one new group/product/target/target-only exception.
++    emission = profile['symbol_graph_emission']
++    configuration = new[emission['configuration_id']]
++    require(emission['configuration_id'] in new[target['buildConfigurationList']]['buildConfigurations']
++            and configuration['name'] == emission['configuration_name'] == 'Debug-Anytype'
++            and configuration['buildSettings'].get(emission['setting']) == emission['value'],
++            'Public/SPI compiler graph emission is not bound to the framework target')
++    emitters = [key for key, value in new.items() if value.get('isa') == 'XCBuildConfiguration'
++                and emission['setting'] in value.get('buildSettings', {})]
++    require(emitters == [emission['configuration_id']], 'A dependency or original app emits the Host graph')
++    # Restore only the four additive structural objects and the three exact
++    # reviewed shared package requirements. All original products stay intact.
+     inverse = raw.decode()
+     for key in sorted(added):
+         inverse = inverse.replace(object_text(inverse, key), '', 1)
+     for key in allowed:
+         inverse = inverse.replace(object_text(inverse, key), object_text(baseline.decode(), key), 1)
+     require(inverse.encode() == baseline, 'Complete original project inverse differs')
+-    return {'original_app_unchanged': True, 'original_objects': len(old),
++    return {'original_app_target_unchanged': True, 'original_objects': len(old),
+             'new_objects': len(added), 'original_package_products': len(target['packageProductDependencies']),
+             'framework_target_id': targets[0], 'only_excluded_source': 'ApplicationLayer/AppScene.swift',
+-            'whole_project_inverse_exact': True}
++            'reviewed_shared_dependency_objects': sorted(dependencies),
++            'target_only_full_public_spi_graph': True, 'whole_project_inverse_exact': True}
+ 
+ 
+ def source_observation(root, environment=None):
+@@ -112,8 +133,8 @@
+     project = verify_project((root / 'Anytype.xcodeproj/project.pbxproj').read_bytes(), before, profile)
+     installer_path = 'Tools/PinkhaNativeDerived/install_verified_heart.py'
+     installer = (root / installer_path).read_text()
+-    reviewed = "                             'codex/otzaria-original-editor-framework-v9-reviewed-20261121',\n                             '" + BRANCH + "'],"
+-    original = "                             'codex/otzaria-original-editor-framework-v9-reviewed-20261121'],"
++    reviewed = "                             'codex/otzaria-original-editor-framework-v10-reviewed-20261121',\n                             '" + BRANCH + "'],"
++    original = "                             'codex/otzaria-original-editor-framework-v10-reviewed-20261121'],"
+     require(installer.count(reviewed) == 1 and
+             blob(installer.replace(reviewed, original, 1).encode()) == profile['original_heart_installer_blob'],
+             'Original verified Heart installer has a change beyond the exact new consumer branch')
+@@ -137,6 +158,8 @@
+     require(len(source_files) == profile['original_swift_sources'], 'Original whole-source count differs')
+     main_files = [p for p in source_files if re.search(r'(?m)^\s*@main\b', (root / p).read_text())]
+     require(main_files == ['Anytype/Sources/ApplicationLayer/AppScene.swift'], 'Unexpected application entrypoints')
++    facades = sorted(p for p in tracked if p.startswith('OriginalEditorFramework/') and p.endswith('.swift'))
++    require(facades == profile['framework_facade_sources'], 'Reviewed Host/qualification facade membership differs')
+     package_main_uses = []
+     for path in source_files:
+         for number, line in enumerate((root / path).read_text().splitlines(), 1):
+@@ -146,5 +169,7 @@
+             'head_sha': head, 'run_id': environment['GITHUB_RUN_ID'], 'run_attempt': environment['GITHUB_RUN_ATTEMPT'],
+             'original_trees': trees, 'project': project, 'source_inputs': records,
+             'original_swift_sources': len(source_files), 'source_files': source_files,
++            'framework_facade_sources': facades,
++            'public_host_contract_sha256': profile['public_host_contract_sha256'],
+             'resource_and_module_couplings': package_main_uses,
+-            'editable_mount_api': 'NOT_EXPOSED', 'original_app_native_runtime': 'NOT_RUN'}
++            'editable_mount_api': 'SOURCE_DECLARED_NATIVE_EDITOR_NOT_RUN', 'original_app_native_runtime': 'NOT_RUN'}
+--- /dev/null
++++ b/Tools/OriginalEditor/public_host_contract.json
+@@ -0,0 +1,128 @@
++{
++  "facades": {
++    "OriginalEditorFramework/AnytypeOriginalEditorHost.swift": {
++      "required": [
++        [
++          "AnytypeOriginalEditorBinding"
++        ],
++        [
++          "AnytypeOriginalEditorBinding",
++          "init(accountID:spaceID:objectID:hostProfileID:annotationUUID:expectedRevision:sourceWitnessSHA256:)"
++        ],
++        [
++          "AnytypeOriginalEditorSourceLifetime"
++        ],
++        [
++          "AnytypeOriginalEditorSourceLifetime",
++          "init(binding:)"
++        ],
++        [
++          "AnytypeOriginalEditorSourceLifetime",
++          "retire()"
++        ],
++        [
++          "AnytypeOriginalEditorHost"
++        ],
++        [
++          "AnytypeOriginalEditorHost",
++          "makeViewController()"
++        ],
++        [
++          "AnytypeOriginalEditorHost",
++          "retire()"
++        ],
++        [
++          "AnytypeOriginalEditorModule",
++          "openExistingEditor(binding:sourceLifetime:sourceIsCurrent:)"
++        ]
++      ],
++      "roots": [
++        "AnytypeOriginalEditorBinding",
++        "AnytypeOriginalEditorHostError",
++        "AnytypeOriginalEditorSourceLifetime",
++        "AnytypeOriginalEditorHost",
++        "AnytypeOriginalEditorModule"
++      ]
++    },
++    "OriginalEditorFramework/AnytypeOriginalEditorModule.swift": {
++      "required": [
++        [
++          "AnytypeOriginalEditorModule",
++          "inspectResources()"
++        ]
++      ],
++      "roots": [
++        "AnytypeOriginalEditorModule"
++      ]
++    },
++    "OriginalEditorFramework/AnytypeOriginalEditorQualification.swift": {
++      "required": [
++        [
++          "AnytypeOriginalEditorQualificationSource"
++        ],
++        [
++          "AnytypeOriginalEditorQualificationSession"
++        ],
++        [
++          "AnytypeOriginalEditorQualificationSession",
++          "prepareReopen(snapshot:currentSource:sourceIsCurrent:)"
++        ],
++        [
++          "AnytypeOriginalEditorModule",
++          "beginEditableAcceptance(source:sourceIsCurrent:)"
++        ],
++        [
++          "AnytypeOriginalEditorModule",
++          "beginFidelityAcceptance(source:sourceIsCurrent:)"
++        ]
++      ],
++      "roots": [
++        "AnytypeOriginalEditorQualificationSource",
++        "AnytypeOriginalEditorQualificationError",
++        "AnytypeOriginalEditorQualificationSession",
++        "AnytypeOriginalEditorModule"
++      ],
++      "scope": "DEBUG_SIMULATOR_SPI_ONLY"
++    },
++    "OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift": {
++      "required": [
++        [
++          "AnytypeOriginalEditorSnapshot"
++        ],
++        [
++          "AnytypeOriginalEditorSnapshot",
++          "init(bodyBytes:maximumBodyBytes:)"
++        ],
++        [
++          "AnytypeOriginalEditorSnapshot",
++          "Provenance",
++          "matchesCaptureBinding(_:)"
++        ],
++        [
++          "AnytypeOriginalEditorSnapshot",
++          "bodyBytes"
++        ],
++        [
++          "AnytypeOriginalEditorSnapshotCapture"
++        ],
++        [
++          "AnytypeOriginalEditorHost",
++          "captureNativeSnapshot(maximumBodyBytes:)"
++        ]
++      ],
++      "roots": [
++        "AnytypeOriginalEditorSnapshot",
++        "AnytypeOriginalEditorSnapshotError",
++        "AnytypeOriginalEditorSnapshotCapture",
++        "AnytypeOriginalEditorSnapshotCaptureFailure",
++        "AnytypeOriginalEditorHost"
++      ]
++    }
++  },
++  "nonconstructible_types": [
++    "AnytypeOriginalEditorHost",
++    "AnytypeOriginalEditorQualificationSession"
++  ],
++  "schema": 1,
++  "status": "COMPILE_SURFACE_CONTRACT_NATIVE_EDITOR_NOT_QUALIFIED"
++}
+--- a/Tools/OriginalEditor/framework_products.py
++++ b/Tools/OriginalEditor/framework_products.py
+@@ -392,17 +392,34 @@
+             'native_editor_ui_tests': 0, 'editable_mount': 'NOT_EXPOSED'}
+ 
+ 
+-def verify_public_surface(graphs, source_root):
++def verify_public_surface(graphs, source_root, host_contract=None):
+     """Inspect the actual compiler graph for this target, not imported APIs."""
+     source_root = Path(source_root).resolve()
+     editor = source_root / 'Anytype/Sources/PresentationLayer/TextEditor'
+     app_source = source_root / 'Anytype/Sources'
+     facade = source_root / 'OriginalEditorFramework/AnytypeOriginalEditorModule.swift'
++    reviewed_facades, required = {}, set()
++    if host_contract is not None:
++        require(host_contract.get('schema') == 1 and len(host_contract.get('facades', {})) == 4,
++                'Malformed reviewed Host surface contract')
++        for path, contract in host_contract['facades'].items():
++            location = (source_root / path).resolve()
++            require(location.is_relative_to(source_root / 'OriginalEditorFramework')
++                    and isinstance(contract.get('roots'), list) and contract['roots']
++                    and isinstance(contract.get('required'), list) and contract['required']
++                    and contract.get('scope', 'PUBLIC') in {'PUBLIC', 'DEBUG_SIMULATOR_SPI_ONLY'},
++                    'Unreviewed facade source/root requirement')
++            reviewed_facades[location] = contract
++            required.update((location, tuple(components)) for components in contract['required'])
++        require(len(required) == 21, 'Incomplete public Host or qualification SPI surface requirement')
+     found_inspection = False
+     own_symbols = []
+     imported_count = 0
+     blocked = []
+-    unsafe_names = ('EditorPage', 'PreparedEditor', 'EditorDocumentWrite', 'DocumentOwned', 'BaseDocument')
++    unsafe_names = ('EditorPage', 'PreparedEditor', 'EditorDocumentWrite', 'DocumentOwned', 'BaseDocument',
++                    'OwnedOriginalEditor', 'OwnedQualificationSpace', 'AnytypeOriginalEditorNativeFixture',
++                    'AnytypeOriginalEditorRestoreQualification')
++    observed_required = set()
+     for graph in graphs:
+         if graph.get('module', {}).get('name') != TARGET:
+             imported_count += len(graph.get('symbols', []))
+@@ -422,20 +439,42 @@
+             precise = symbol.get('identifier', {}).get('precise', '')
+             our_identifier = precise.startswith('s:' + str(len(TARGET)) + TARGET)
+             own_app_source = location is not None and location.is_relative_to(app_source)
+-            own_facade = location == facade
++            own_facade = location == facade or location in reviewed_facades
+             # Imported/re-exported package symbols are not our target's public
+             # constructors and must not be confused with an editing API.
+             if not own_app_source and not own_facade and not our_identifier:
+                 imported_count += 1
+                 continue
+-            own_symbols.append({'path': components, 'identifier': precise, 'location': uri})
++            own_symbols.append({'path': components, 'identifier': precise, 'location': uri,
++                                'spi': symbol.get('spi', False)})
+             if own_facade and components[:1] == ['AnytypeOriginalEditorModule'] and components[-1:] == ['inspectResources()']:
+                 found_inspection = True
++            if location in reviewed_facades:
++                require(components and components[0] in reviewed_facades[location]['roots'],
++                        'Unexpected public declaration in a reviewed Host facade: ' + repr(components))
++                expected_spi = reviewed_facades[location].get('scope') == 'DEBUG_SIMULATOR_SPI_ONLY'
++                require(type(symbol.get('spi', False)) is bool
++                        and symbol.get('spi', False) is expected_spi,
++                        'Actual compiler public/SPI scope differs from the reviewed facade: ' + repr(components))
++                observed_required.add((location, tuple(components)))
++                require(not (components[0] in host_contract['nonconstructible_types']
++                             and any(item.startswith('init(') for item in components[1:])),
++                        'Public constructor grants an unowned original Host/session capability')
++            if (host_contract is not None and location is not None
++                    and location.is_relative_to(source_root / 'OriginalEditorFramework')
++                    and location not in reviewed_facades):
++                blocked.append({'path': components, 'identifier': precise, 'location': uri})
+             if ((location is not None and location.is_relative_to(editor))
+                     or any(item.startswith(unsafe_names) for item in components)):
+                 blocked.append({'path': components, 'identifier': precise, 'location': uri})
+     require(found_inspection, 'Actual compiler graph does not expose the reviewed inspection facade')
+     require(not blocked, 'Unqualified original editor/document/writer declaration is public: ' + json.dumps(blocked))
++    require(required <= observed_required, 'Missing actual compiled Host or qualification SPI declaration: ' +
++            repr(sorted((str(location), components) for location, components in required - observed_required)))
+     return {'status': 'ACTUAL_TARGET_PUBLIC_SURFACE_INSPECTED', 'target': TARGET,
+             'own_public_symbols': own_symbols, 'imported_dependency_symbols_not_rejected': imported_count,
+-            'public_original_editor_or_writer_declarations': [], 'editable_mount_api': 'NOT_EXPOSED'}
++            'public_original_editor_or_writer_declarations': [],
++            'reviewed_host_and_spi_requirements_observed': len(required),
++            'qualification_spi_scope_verified': host_contract is not None,
++            'public_host_scope_verified': host_contract is not None,
++            'editable_mount_api': 'EXPOSED_COMPILED_NATIVE_EDITOR_NOT_RUN' if host_contract is not None else 'NOT_EXPOSED'}
+--- a/Tools/OriginalEditor/run_framework_acceptance.py
++++ b/Tools/OriginalEditor/run_framework_acceptance.py
+@@ -1,8 +1,9 @@
+ #!/usr/bin/env python3
+ """Build the genuine original framework and execute a separate binary consumer.
+ 
+-Only a real Xcode27/OS27 execution can produce the final PASS. This driver does
+-not mount an editable document, create an account, or claim original app/UI tests.
++Only a real Xcode27/OS27 execution can produce the final PASS. The exported Host
++and Debug Simulator SPI must compile and pass the full public-surface gate. This
++driver does not mount a document, create an account, or claim editor UI tests.
+ """
+ import argparse
+ from datetime import datetime, timezone
+@@ -146,8 +147,8 @@
+     require(paths, 'Actual original framework compiler input lists are absent')
+     expected = {(root / path).resolve() for path in before['source_files']
+                 if path != 'Anytype/Sources/ApplicationLayer/AppScene.swift'}
+-    expected.update({root / 'Anytype/Resources/AssetConstants.swift',
+-                     root / 'OriginalEditorFramework/AnytypeOriginalEditorModule.swift'})
++    expected.add(root / 'Anytype/Resources/AssetConstants.swift')
++    expected.update(root / path for path in before['framework_facade_sources'])
+     observed = set()
+     retained = []
+     for number, path in enumerate(sorted(paths)):
+@@ -260,11 +261,11 @@
+     require(sdk.split('.')[0] == '27', 'Framework SDK is not the reviewed OS27 SDK')
+     swift = command(['xcrun', 'swiftc', '--version'], root, evidence, 'actual-swift', 30).strip()
+     receipt.update(preflight=preflight, sdk=sdk, swift=swift, heart=installation,
+-                   original_app_runtime='NOT_RUN', editable_mount='NOT_EXPOSED', native_editor_ui_tests=0)
++                   original_app_runtime='NOT_RUN', editable_mount='API_DECLARED_NATIVE_UI_NOT_RUN', native_editor_ui_tests=0)
+     udid = preflight['selected']['ipad']['udid']
+     derived = work / 'producer-derived'
+     destination = 'platform=iOS Simulator,id=' + udid
+-    flags = ['OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED', 'ONLY_ACTIVE_ARCH=YES',
++    flags = ['OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED $(ORIGINAL_EDITOR_SYMBOL_GRAPH_FLAGS)', 'ONLY_ACTIVE_ARCH=YES',
+              'ARCHS=arm64', 'SWIFT_OPTIMIZATION_LEVEL=-Onone', 'CODE_SIGN_IDENTITY=-',
+              'CODE_SIGNING_ALLOWED=YES', 'CODE_SIGNING_REQUIRED=YES', 'PROVISIONING_PROFILE_SPECIFIER=']
+     build = ['xcodebuild', 'build', '-project', str(root / 'Anytype.xcodeproj'), '-scheme', TARGET,
+@@ -298,7 +299,8 @@
+                 notice_files.append({'path': notice_destination.relative_to(exported).as_posix(), 'sha256': sha256(notice_destination)})
+     write(notices / 'OriginalSource.json', {'application_source': before['head_sha'],
+           'original_trees': before['original_trees'], 'dependencies': receipt['dependencies'],
+-          'retained_original_dependency_notices': notice_files, 'scope': 'Framework/resource prerequisite; editable mount is not exposed'})
++          'retained_original_dependency_notices': notice_files,
++          'scope': 'Original Host API framework prerequisite; editable UI/save/reopen is not exercised'})
+     exported_proof['files'] = inventory(exported)
+     exported_proof['bytes'] = sum(item['bytes'] for item in exported_proof['files'].values())
+     write(evidence / 'framework-distribution.json', exported_proof)
+@@ -410,18 +412,16 @@
+     sdk_path = command(['xcrun', '--sdk', 'iphonesimulator', '--show-sdk-path'], root, evidence,
+                        'actual-simulator-sdk-path', 30).strip()
+     graph_directory = evidence / 'actual-public-symbol-graphs'
+-    graph_directory.mkdir()
+-    import_context = symbolgraph_import_context(root, derived, products, sdk_path, evidence)
+-    command(['xcrun', 'swift-symbolgraph-extract', '-module-name', TARGET,
+-             '-target', 'arm64-apple-ios27.0-simulator', '-sdk', sdk_path,
+-             '-F', str(products), '-F', str(products / 'PackageFrameworks'),
+-             '-I', str(products), '-I', str(products / 'Modules'), *import_context,
+-             '-minimum-access-level', 'public', '-output-dir', str(graph_directory)],
++    command([sys.executable, str(root / 'Tools/OriginalEditor/collect_compiler_symbolgraphs.py'),
++             '--root', str(root), '--derived', str(derived), '--evidence', str(evidence),
++             '--sdk', sdk_path, '--output-dir', str(graph_directory)],
+             root, evidence, 'actual-target-public-symbol-graph', 120)
+     graphs = sorted(graph_directory.glob('*.symbols.json'))
+     require(graphs and (graph_directory / (TARGET + '.symbols.json')).is_file(),
+             'Actual public module graph is absent')
+-    receipt['actual_public_surface'] = verify_public_surface([json.loads(path.read_text()) for path in graphs], root)
++    host_contract = json.loads((root / 'Tools/OriginalEditor/public_host_contract.json').read_text())
++    receipt['actual_public_surface'] = verify_public_surface(
++        [json.loads(path.read_text()) for path in graphs], root, host_contract=host_contract)
+     write(evidence / 'actual-public-surface.json', receipt['actual_public_surface'])
+     oracle = original_oracles(root, profile)
+     write(evidence / 'independent-original-resource-oracles.json', oracle)
+@@ -451,6 +451,8 @@
+         require(inventory(app / 'Frameworks' / name) == inventory(exported / 'Frameworks' / name),
+                 'The actual consumer did not embed the exact exported framework: ' + name)
+     receipt['external_consumer_build'] = 'PASS'
++    receipt['public_host_api'] = 'EXPOSED_COMPILED_NATIVE_EDITOR_NOT_RUN'
++    receipt['compiled_consumer_api_probe_sha256'] = sha256(root / 'Tools/OriginalEditor/Consumer/ConsumerApp.swift')
+     receipt['phase'] = 'ACTUAL_EXTERNAL_RESOURCE_RUNTIME'
+     receipt['verified_runtime_observations'] = []
+     write(evidence / 'execution.json', receipt)
+@@ -489,7 +491,8 @@
+     write(evidence / 'source-after.json', source_observation(root))
+     receipt.update(status='ACTUAL_ORIGINAL_FRAMEWORK_EXTERNAL_IMPORT_LINK_RESOURCES_PASS', phase='COMPLETE',
+                    distribution=str(exported), same_toolchain_only=True, device_framework_build='NOT_RUN',
+-                   original_43_component_tests='NOT_RERUN', native_editor_ui_tests=0, editable_mount='NOT_EXPOSED')
++                   original_43_component_tests='NOT_RERUN', native_editor_ui_tests=0,
++                   editable_mount='API_COMPILED_NATIVE_UI_NOT_RUN')
+     write(exported / 'QUALIFICATION.json', receipt)
+ 
+ 
+--- a/Tools/OriginalEditor/Consumer/ConsumerApp.swift
++++ b/Tools/OriginalEditor/Consumer/ConsumerApp.swift
+@@ -1,6 +1,6 @@
+ import Foundation
+ import UIKit
+-import AnytypeOriginalEditor
++@_spi(OriginalEditorQualification) import AnytypeOriginalEditor
+ 
+ /// A separate acceptance host. This is not an editor or a replacement renderer.
+ @main
+@@ -60,3 +60,47 @@
+     let preferredLanguages: [String]
+     let inspection: AnytypeOriginalEditorModule.Inspection
+ }
++
++/// This body is typechecked and linked against only the exported binary. It is
++/// deliberately never invoked by the resource probe: no account, Space, editor
++/// object, native edit, or persistence acceptance is inferred from compilation.
++@MainActor
++private func compileOriginalHostAPI(
++    binding: AnytypeOriginalEditorBinding,
++    sourceLifetime: AnytypeOriginalEditorSourceLifetime,
++    host: AnytypeOriginalEditorHost,
++    snapshot: AnytypeOriginalEditorSnapshot,
++    source: AnytypeOriginalEditorQualificationSource,
++    qualification: AnytypeOriginalEditorQualificationSession
++) async throws {
++    let exactBinding = try AnytypeOriginalEditorBinding(
++        accountID: binding.accountID, spaceID: binding.spaceID, objectID: binding.objectID,
++        hostProfileID: binding.hostProfileID, annotationUUID: binding.annotationUUID,
++        expectedRevision: binding.expectedRevision, sourceWitnessSHA256: binding.sourceWitnessSHA256
++    )
++    let lifetime = AnytypeOriginalEditorSourceLifetime(binding: exactBinding)
++    let opened = try await AnytypeOriginalEditorModule.openExistingEditor(
++        binding: exactBinding, sourceLifetime: sourceLifetime, sourceIsCurrent: { $0 == exactBinding }
++    )
++    _ = try opened.makeViewController()
++    let capture = try await host.captureNativeSnapshot(maximumBodyBytes: 65_536)
++    _ = try AnytypeOriginalEditorSnapshot(bodyBytes: capture.snapshot.bodyBytes, maximumBodyBytes: 65_536)
++    _ = snapshot.provenance.matchesCaptureBinding(exactBinding)
++    let qualificationSource = try AnytypeOriginalEditorQualificationSource(
++        hostProfileID: source.hostProfileID, annotationUUID: source.annotationUUID,
++        expectedRevision: source.expectedRevision, sourceWitnessSHA256: source.sourceWitnessSHA256
++    )
++    _ = try await AnytypeOriginalEditorModule.beginEditableAcceptance(
++        source: qualificationSource, sourceIsCurrent: { $0 == qualificationSource }
++    )
++    _ = try await AnytypeOriginalEditorModule.beginFidelityAcceptance(
++        source: qualificationSource, sourceIsCurrent: { $0 == qualificationSource }
++    )
++    _ = try await qualification.prepareReopen(
++        snapshot: snapshot, currentSource: qualificationSource,
++        sourceIsCurrent: { $0 == qualificationSource }
++    )
++    _ = try await qualification.verifyFidelityAfterReopen(host: opened)
++    opened.retire()
++    lifetime.retire()
++}
+--- a/Tools/OriginalEditor/test_framework.py
++++ b/Tools/OriginalEditor/test_framework.py
+@@ -93,7 +93,7 @@
+ 
+     def test_original_heart_installer_changes_only_one_new_branch_choice(self):
+         raw = (ROOT / 'Tools/PinkhaNativeDerived/install_verified_heart.py').read_bytes()
+-        suffix = b",\n                             'codex/otzaria-original-editor-framework-v10-reviewed-20261121'"
++        suffix = b",\n                             'codex/otzaria-original-editor-framework-v11-host-reviewed-20261122'"
+         self.assertEqual(raw.count(suffix), 1)
+         old = raw.replace(suffix, b'', 1)
+         actual = hashlib.sha1(b'blob ' + str(len(old)).encode() + b'\0' + old).hexdigest()
+--- a/Tools/OriginalEditor/test_framework_source_retention.py
++++ b/Tools/OriginalEditor/test_framework_source_retention.py
+@@ -42,7 +42,9 @@
+         self.file_list.write_bytes(('\n'.join(shlex.quote(str(p)) for p in values) + '\n').encode())
+ 
+     def proof(self):
+-        return source_file_proof(self.root, self.derived, {'source_files': self.sources}, self.evidence)
++        return source_file_proof(self.root, self.derived, {
++            'source_files': self.sources,
++            'framework_facade_sources': ['OriginalEditorFramework/AnytypeOriginalEditorModule.swift']}, self.evidence)
+ 
+     def test_original_packager_retains_all_four_exact_raw_proofs_as_text(self):
+         value = self.proof()
+--- a/Tools/OriginalEditor/test_framework_flow.py
++++ b/Tools/OriginalEditor/test_framework_flow.py
+@@ -63,6 +63,7 @@
+         consumer_source = self.root / 'Tools/OriginalEditor/Consumer/ConsumerApp.swift'
+         consumer_source.parent.mkdir(parents=True)
+         shutil.copyfile(HERE / 'Consumer/ConsumerApp.swift', consumer_source)
++        shutil.copyfile(HERE / 'public_host_contract.json', consumer_source.parent.parent / 'public_host_contract.json')
+         self.addCleanup(self.retain_trace)
+ 
+     def retain_trace(self):
+@@ -132,12 +133,16 @@
+         elif name == 'actual-simulator-sdk-path':
+             return '/EXPLICIT_SYNTHETIC_SDK_NOT_USED'
+         elif name == 'actual-target-public-symbol-graph':
+-            directory = Path(arguments[arguments.index('-output-dir') + 1])
++            directory = Path(arguments[arguments.index('--output-dir') + 1])
++            contract = json.loads((HERE / 'public_host_contract.json').read_text())
++            symbols = [{'accessLevel': 'public', 'pathComponents': components,
++                        'identifier': {'precise': 's:21AnytypeOriginalEditorSynthetic' + str(number)},
++                        'location': {'uri': (self.root / path).as_uri()},
++                        **({'spi': True} if item.get('scope') == 'DEBUG_SIMULATOR_SPI_ONLY' else {})}
++                       for path, item in contract['facades'].items()
++                       for number, components in enumerate(item['required'])]
+             driver.write(directory / (TARGET + '.symbols.json'), {'module': {'name': TARGET},
+-                'symbols': [{'accessLevel': 'public',
+-                    'pathComponents': ['AnytypeOriginalEditorModule', 'inspectResources()'],
+-                    'identifier': {'precise': 's:21AnytypeOriginalEditorInspection'},
+-                    'location': {'uri': (self.root / 'OriginalEditorFramework/AnytypeOriginalEditorModule.swift').as_uri()}}]})
++                'symbols': symbols})
+         elif name == 'external-consumer-build':
+             app = self.work / 'consumer-derived/Build/Products/Debug-iphonesimulator/OriginalEditorConsumer.app'
+             shutil.copytree(self.work / 'distribution/Frameworks', app / 'Frameworks')
+--- /dev/null
++++ b/Tools/OriginalEditor/test_host_framework_contract.py
+@@ -0,0 +1,125 @@
++"""New Host admission controls; synthetic graphs are never compiler evidence."""
++import copy
++import hashlib
++import json
++from pathlib import Path
++import unittest
++
++from framework_profile import HERE, APP_TARGET, TARGET, read_manifest, verify_project
++from framework_products import verify_public_surface
++from pbx_source import loads, object_text, render
++
++ROOT = HERE.parents[1]
++CONTRACT = json.loads((HERE / 'public_host_contract.json').read_text())
++
++
++class HostFrameworkContractControls(unittest.TestCase):
++    def graph(self):
++        symbols = []
++        for path, item in CONTRACT['facades'].items():
++            for components in item['required']:
++                symbols.append({'accessLevel': 'public', 'pathComponents': components,
++                    'identifier': {'precise': 's:21AnytypeOriginalEditorSynthetic' + str(len(symbols))},
++                    'location': {'uri': (ROOT / path).as_uri()},
++                    **({'spi': True} if item.get('scope') == 'DEBUG_SIMULATOR_SPI_ONLY' else {})})
++        return {'module': {'name': TARGET}, 'symbols': symbols}
++
++    def verify(self, graph):
++        return verify_public_surface([graph], ROOT, host_contract=CONTRACT)
++
++    def test_all_reviewed_public_and_spi_paths_are_required_without_ui_credit(self):
++        result = self.verify(self.graph())
++        self.assertEqual(result['reviewed_host_and_spi_requirements_observed'], 21)
++        self.assertEqual(result['editable_mount_api'], 'EXPOSED_COMPILED_NATIVE_EDITOR_NOT_RUN')
++        self.assertEqual(len(result['own_public_symbols']), 21)
++        self.assertTrue(result['qualification_spi_scope_verified'])
++        self.assertTrue(result['public_host_scope_verified'])
++        self.assertEqual(sum(symbol['spi'] for symbol in result['own_public_symbols']), 5)
++
++    def test_qualification_declarations_require_actual_spi_scope(self):
++        original = self.graph()
++        for index, symbol in enumerate(original['symbols']):
++            if symbol.get('spi') is not True:
++                continue
++            for remove in [False, True]:
++                with self.subTest(path=symbol['pathComponents'], absent=remove):
++                    graph = copy.deepcopy(original)
++                    if remove:
++                        graph['symbols'][index].pop('spi')
++                    else:
++                        graph['symbols'][index]['spi'] = False
++                    with self.assertRaises(ValueError): self.verify(graph)
++
++    def test_regular_host_declarations_cannot_be_hidden_as_spi(self):
++        original = self.graph()
++        for index, symbol in enumerate(original['symbols']):
++            if symbol.get('spi') is True:
++                continue
++            with self.subTest(path=symbol['pathComponents']):
++                graph = copy.deepcopy(original)
++                graph['symbols'][index]['spi'] = True
++                with self.assertRaises(ValueError): self.verify(graph)
++
++    def test_malformed_spi_marker_does_not_grant_qualification_scope(self):
++        for marker in [None, 'true', 1, [], {}]:
++            with self.subTest(marker=marker):
++                graph = self.graph()
++                symbol = next(item for item in graph['symbols'] if item.get('spi') is True)
++                symbol['spi'] = marker
++                with self.assertRaises(ValueError): self.verify(graph)
++
++    def test_missing_real_capture_entrypoint_rejects_inspection_only_surface(self):
++        graph = self.graph()
++        graph['symbols'] = [symbol for symbol in graph['symbols']
++                            if symbol['pathComponents'][-1] != 'captureNativeSnapshot(maximumBodyBytes:)']
++        with self.assertRaises(ValueError): self.verify(graph)
++
++    def test_same_spelling_from_a_foreign_source_is_not_a_host_capability(self):
++        graph = self.graph()
++        symbol = next(s for s in graph['symbols'] if s['pathComponents'] == ['AnytypeOriginalEditorHost'])
++        symbol['location']['uri'] = (ROOT / 'Modules/Unrelated/Host.swift').as_uri()
++        with self.assertRaises(ValueError): self.verify(graph)
++
++    def test_public_unowned_host_constructor_is_rejected(self):
++        graph = self.graph()
++        graph['symbols'].append({'accessLevel': 'public',
++            'pathComponents': ['AnytypeOriginalEditorHost', 'init()'],
++            'identifier': {'precise': 's:21AnytypeOriginalEditorUnownedConstructor'},
++            'location': {'uri': (ROOT / 'OriginalEditorFramework/AnytypeOriginalEditorHost.swift').as_uri()}})
++        with self.assertRaises(ValueError): self.verify(graph)
++
++    def test_public_raw_runtime_helper_is_not_the_qualified_spi(self):
++        graph = self.graph()
++        graph['symbols'].append({'accessLevel': 'public',
++            'pathComponents': ['OwnedOriginalEditorQualificationRuntime', 'init()'],
++            'identifier': {'precise': 's:21AnytypeOriginalEditorUnownedRuntime'},
++            'location': {'uri': (ROOT / 'OriginalEditorFramework/AnytypeOriginalEditorQualificationRuntime.swift').as_uri()}})
++        with self.assertRaises(ValueError): self.verify(graph)
++
++    def mutation(self, identifier, change):
++        raw = (ROOT / 'Anytype.xcodeproj/project.pbxproj').read_text()
++        objects = loads(raw)['objects']
++        change(objects[identifier])
++        raw = raw.replace(object_text(raw, identifier),
++                          '\t\t' + identifier + ' = ' + render(objects[identifier], 2) + ';\n', 1).encode()
++        profile = copy.deepcopy(read_manifest())
++        profile['candidate_project_sha256'] = hashlib.sha256(raw).hexdigest()
++        return raw, profile
++
++    def test_different_shared_package_pin_rejected_even_with_updated_project_hash(self):
++        raw, profile = self.mutation('5333421A262E249100238121',
++                                    lambda value: value['requirement'].update(version='2.8.3'))
++        with self.assertRaises(ValueError):
++            verify_project(raw, (HERE / 'original_project.pbxproj').read_bytes(), profile)
++
++    def test_symbol_graph_emission_cannot_spill_into_original_application(self):
++        objects = loads((ROOT / 'Anytype.xcodeproj/project.pbxproj').read_text())['objects']
++        configuration = objects[objects[APP_TARGET]['buildConfigurationList']]['buildConfigurations'][0]
++        raw, profile = self.mutation(configuration,
++            lambda value: value['buildSettings'].update(ORIGINAL_EDITOR_SYMBOL_GRAPH_FLAGS='-emit-symbol-graph'))
++        with self.assertRaises(ValueError):
++            verify_project(raw, (HERE / 'original_project.pbxproj').read_bytes(), profile)
++
++
++if __name__ == '__main__':
++    unittest.main(verbosity=2)
+--- a/Tools/OriginalEditor/run_source_controls.py
++++ b/Tools/OriginalEditor/run_source_controls.py
+@@ -199,8 +199,36 @@
+     "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_failed_timed_out_or_foreign_build_is_not_import_authority",
+     "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_observed_original_context_keeps_all_clang_imports_and_implicit_cache",
+     "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_wrong_target_sdk_language_or_cache_is_rejected",
++    "test_compiler_symbolgraphs.CompilerSymbolGraphCollectionControls.test_aliased_graph_is_rejected",
++    "test_compiler_symbolgraphs.CompilerSymbolGraphCollectionControls.test_changed_access_level_or_filter_flags_are_rejected",
++    "test_compiler_symbolgraphs.CompilerSymbolGraphCollectionControls.test_changed_log_is_not_build_authority",
++    "test_compiler_symbolgraphs.CompilerSymbolGraphCollectionControls.test_duplicate_emission_or_path_flags_are_rejected",
++    "test_compiler_symbolgraphs.CompilerSymbolGraphCollectionControls.test_duplicate_target_compiler_is_rejected",
++    "test_compiler_symbolgraphs.CompilerSymbolGraphCollectionControls.test_failed_timed_out_foreign_or_changed_timeout_receipt_is_rejected",
++    "test_compiler_symbolgraphs.CompilerSymbolGraphCollectionControls.test_foreign_target_derivedsources_or_module_output_is_rejected",
++    "test_compiler_symbolgraphs.CompilerSymbolGraphCollectionControls.test_full_public_spi_and_extension_bytes_are_retained_without_filtering",
++    "test_compiler_symbolgraphs.CompilerSymbolGraphCollectionControls.test_missing_emit_or_spi_flag_is_rejected",
++    "test_compiler_symbolgraphs.CompilerSymbolGraphCollectionControls.test_missing_empty_or_wrong_main_graph_is_rejected",
++    "test_compiler_symbolgraphs.CompilerSymbolGraphCollectionControls.test_original_debug_and_heart_definitions_are_required",
++    "test_compiler_symbolgraphs.CompilerSymbolGraphCollectionControls.test_preexisting_collection_is_rejected_without_overwrite",
++    "test_compiler_symbolgraphs.CompilerSymbolGraphCollectionControls.test_source_change_rejects_collection",
++    "test_compiler_symbolgraphs.CompilerSymbolGraphCollectionControls.test_source_retirement_during_collection_prevents_success_receipt",
++    "test_compiler_symbolgraphs.CompilerSymbolGraphCollectionControls.test_stale_graph_is_rejected",
++    "test_compiler_symbolgraphs.CompilerSymbolGraphCollectionControls.test_unexpected_graph_directory_member_is_rejected",
++    "test_compiler_symbolgraphs.CompilerSymbolGraphCollectionControls.test_wrong_actual_module_target_sdk_swift_or_working_directory_is_rejected",
++    "test_compiler_symbolgraphs.CompilerSymbolGraphCollectionControls.test_wrong_build_scheme_configuration_or_derived_is_rejected",
++    "test_host_framework_contract.HostFrameworkContractControls.test_all_reviewed_public_and_spi_paths_are_required_without_ui_credit",
++    "test_host_framework_contract.HostFrameworkContractControls.test_different_shared_package_pin_rejected_even_with_updated_project_hash",
++    "test_host_framework_contract.HostFrameworkContractControls.test_missing_real_capture_entrypoint_rejects_inspection_only_surface",
++    "test_host_framework_contract.HostFrameworkContractControls.test_public_raw_runtime_helper_is_not_the_qualified_spi",
++    "test_host_framework_contract.HostFrameworkContractControls.test_public_unowned_host_constructor_is_rejected",
++    "test_host_framework_contract.HostFrameworkContractControls.test_same_spelling_from_a_foreign_source_is_not_a_host_capability",
++    "test_host_framework_contract.HostFrameworkContractControls.test_symbol_graph_emission_cannot_spill_into_original_application",
++    'test_host_framework_contract.HostFrameworkContractControls.test_qualification_declarations_require_actual_spi_scope',
++    'test_host_framework_contract.HostFrameworkContractControls.test_regular_host_declarations_cannot_be_hidden_as_spi',
++    'test_host_framework_contract.HostFrameworkContractControls.test_malformed_spi_marker_does_not_grant_qualification_scope',
+ )
+-EXPECTED_COUNT = 193
++EXPECTED_COUNT = 221
+ 
+ 
+ def cases(suite):
+--- /dev/null
++++ b/Tools/OriginalEditor/collect_compiler_symbolgraphs.py
+@@ -0,0 +1,218 @@
++"""Retain full symbol graphs emitted by the original successful framework build.
++
++This does not invoke an extractor or change the compiler's public/SPI surface.
++The original driver still owns source qualification, the fresh build directory,
++the full public-surface verifier, and the later binary-only consumer gates.
++"""
++import argparse
++from datetime import datetime
++import hashlib
++import json
++import math
++import os
++from pathlib import Path
++import shlex
++import stat
++
++from framework_profile import TARGET, sha256, source_observation
++from pbx_source import require
++
++
++def option_values(arguments, option):
++    indices = [index for index, value in enumerate(arguments) if value == option]
++    require(all(index + 1 < len(arguments) for index in indices),
++            'Missing compiler/build option value: ' + option)
++    return [arguments[index + 1] for index in indices]
++
++
++def owned_path(path, parent, *, directory):
++    """Reject aliases in the existing, driver-owned portion of an output path."""
++    path, parent = Path(path), Path(parent)
++    require(path.is_absolute() and path.is_relative_to(parent) and path != parent
++            and '..' not in path.parts, 'Unowned symbol graph input/output path')
++    current = parent
++    for part in path.relative_to(parent).parts:
++        current = current / part
++        details = current.lstat()
++        require(not stat.S_ISLNK(details.st_mode), 'Aliased symbol graph input/output path')
++        if current != path:
++            require(stat.S_ISDIR(details.st_mode), 'Non-directory symbol graph ancestor')
++    require(stat.S_ISDIR(details.st_mode) if directory else stat.S_ISREG(details.st_mode),
++            'Unexpected symbol graph input/output type')
++    return path
++
++
++def regular_bytes(path):
++    """Read one stable regular file without following a final symlink."""
++    with os.fdopen(os.open(path, os.O_RDONLY | os.O_NOFOLLOW), 'rb') as stream:
++        before = os.fstat(stream.fileno())
++        require(stat.S_ISREG(before.st_mode), 'Symbol graph evidence is not a regular file')
++        raw = stream.read()
++        after = os.fstat(stream.fileno())
++    identity = lambda value: (value.st_dev, value.st_ino, value.st_size, value.st_mtime_ns)
++    require(identity(before) == identity(after) and len(raw) == before.st_size,
++            'Symbol graph evidence changed while reading')
++    return raw, before
++
++
++def record(raw):
++    return {'sha256': hashlib.sha256(raw).hexdigest(), 'bytes': len(raw)}
++
++
++def timestamp(value):
++    parsed = datetime.fromisoformat(value)
++    require(parsed.tzinfo is not None, 'Build timestamp has no time zone')
++    return parsed.timestamp()
++
++
++def collect(root, derived, evidence, sdk, output_dir):
++    root = Path(root).resolve(strict=True)
++    derived, evidence, output_dir = map(Path, (derived, evidence, output_dir))
++    require(derived.name == 'producer-derived'
++            and not derived.is_relative_to(evidence) and not evidence.is_relative_to(derived),
++            'Unowned or overlapping producer/evidence directory')
++    owned_path(root / 'build', root, directory=True)
++    owned_path(derived, root / 'build', directory=True)
++    owned_path(evidence, root / 'build', directory=True)
++    require(output_dir == evidence / 'actual-public-symbol-graphs'
++            and not os.path.lexists(output_dir), 'Refusing stale or foreign collected symbol graphs')
++    collection_path = evidence / 'compiler-symbolgraph-collection.json'
++    require(not os.path.lexists(collection_path), 'Refusing stale symbol graph collection receipt')
++
++    input_paths = [evidence / name for name in
++                   ['source-before.json', 'framework-build.command.json', 'framework-build.stdout.log']]
++    for path in input_paths:
++        owned_path(path, evidence, directory=False)
++    before_raw, _ = regular_bytes(input_paths[0])
++    before = json.loads(before_raw)
++    require(before == source_observation(root), 'Source differs from original build admission')
++    command_raw, _ = regular_bytes(input_paths[1])
++    build = json.loads(command_raw)
++    log_raw, _ = regular_bytes(input_paths[2])
++    require(build.get('returncode') == 0 and build.get('timed_out') is False
++            and build.get('cwd') == str(root)
++            and build.get('stdout_sha256') == record(log_raw)['sha256']
++            and build.get('timeout_seconds') == 6000,
++            'Symbol graphs are not bound to the successful original framework build')
++    build_arguments = build.get('command')
++    require(isinstance(build_arguments, list) and build_arguments[:2] == ['xcodebuild', 'build']
++            and option_values(build_arguments, '-project') == [str(root / 'Anytype.xcodeproj')]
++            and option_values(build_arguments, '-scheme') == [TARGET]
++            and option_values(build_arguments, '-configuration') == ['Debug-Anytype']
++            and option_values(build_arguments, '-derivedDataPath') == [str(derived)]
++            and option_values(build_arguments, '-resultBundlePath') == [str(evidence / 'framework-build.xcresult')],
++            'Original framework build identity or owned derived directory differs')
++    started, finished = timestamp(build['started_at']), timestamp(build['finished_at'])
++    require(started < finished, 'Invalid original framework build interval')
++
++    candidates = []
++    for line in log_raw.decode('utf-8').splitlines():
++        if 'builtin-SwiftDriver --' not in line:
++            continue
++        arguments = shlex.split(line.strip())
++        if TARGET in option_values(arguments, '-module-name'):
++            candidates.append((line, arguments))
++    require(len(candidates) == 1, 'Missing or ambiguous original target compiler command')
++    line, arguments = candidates[0]
++    require(arguments[:2] == ['builtin-SwiftDriver', '--']
++            and len(arguments) > 2 and Path(arguments[2]).name == 'swiftc'
++            and option_values(arguments, '-module-name') == [TARGET]
++            and option_values(arguments, '-target') == ['arm64-apple-ios27.0-simulator']
++            and option_values(arguments, '-sdk') == [str(sdk)]
++            and option_values(arguments, '-swift-version') == ['5']
++            and option_values(arguments, '-working-directory') == [str(root)],
++            'Actual compiler module, target, SDK, language or checkout differs')
++    definitions = set(option_values(arguments, '-D')) | {
++        value[2:] for value in arguments if value.startswith('-D') and value != '-D'}
++    require({'DEBUG', 'PINKHA_NATIVE_DERIVED'} <= definitions,
++            'Original Debug/Heart compiler definitions were not preserved')
++    graph_options = {'-emit-symbol-graph', '-emit-symbol-graph-dir',
++                     '-symbol-graph-minimum-access-level', '-include-spi-symbols'}
++    require(all(value in graph_options for value in arguments if value.startswith('-')
++                and ('symbol-graph' in value or 'symbolgraph' in value or value.startswith('-include-spi')))
++            and not any(value.startswith(('-skip-synthesized', '-skip-inherited', '-minimum-access-level'))
++                        for value in arguments)
++            and arguments.count('-emit-symbol-graph') == 1
++            and arguments.count('-include-spi-symbols') == 1
++            and option_values(arguments, '-symbol-graph-minimum-access-level') == ['public'],
++            'Full public/SPI compiler emission is absent, filtered or ambiguous')
++    module_paths = option_values(arguments, '-emit-module-path')
++    graph_paths = option_values(arguments, '-emit-symbol-graph-dir')
++    require(len(module_paths) == 1 and len(graph_paths) == 1,
++            'Missing or ambiguous original target output paths')
++    target_build = derived / ('Build/Intermediates.noindex/Anytype.build/'
++                              'Debug-Anytype-iphonesimulator/' + TARGET + '.build')
++    require(Path(module_paths[0]) == target_build / 'Objects-normal/arm64' / (TARGET + '.swiftmodule')
++            and Path(graph_paths[0]) == target_build / 'DerivedSources/OriginalEditorSymbolGraphs',
++            'Graph directory is not the actual owned framework target DerivedSources directory')
++    graph_directory = owned_path(Path(graph_paths[0]), derived, directory=True)
++    members = sorted(graph_directory.iterdir())
++    require(members and graph_directory / (TARGET + '.symbols.json') in members
++            and all(path.name.endswith('.symbols.json') for path in members),
++            'Original full target symbol graph or complete graph-only directory is absent')
++
++    output_dir.mkdir()
++    graphs = []
++    for path in members:
++        owned_path(path, graph_directory, directory=False)
++        raw, details = regular_bytes(path)
++        # Permit only the file-system's one-second timestamp granularity. The
++        # original source-bound driver also refuses a pre-existing work tree.
++        require(math.floor(started) * 1_000_000_000 <= details.st_mtime_ns
++                <= math.ceil(finished) * 1_000_000_000,
++                'Symbol graph was not written within this original build interval')
++        graph = json.loads(raw)
++        require(isinstance(graph, dict) and isinstance(graph.get('module'), dict)
++                and isinstance(graph['module'].get('name'), str)
++                and isinstance(graph.get('symbols'), list)
++                and isinstance(graph.get('relationships'), list), 'Malformed full compiler symbol graph')
++        if path.name == TARGET + '.symbols.json':
++            require(graph['module']['name'] == TARGET and bool(graph['symbols']),
++                    'Original framework public/SPI graph is empty or names another module')
++        destination = output_dir / path.name
++        with destination.open('xb') as stream:
++            stream.write(raw)
++        require(sha256(destination) == record(raw)['sha256'], 'Collected full graph bytes differ')
++        graphs.append({'source': str(path), 'collected': str(destination), **record(raw),
++                       'module': graph['module']['name'], 'symbols': len(graph['symbols']),
++                       'relationships': len(graph['relationships']), 'source_mtime_ns': details.st_mtime_ns})
++
++    require(sorted(graph_directory.iterdir()) == members, 'Compiler graph membership changed during collection')
++    for graph in graphs:
++        raw, _ = regular_bytes(Path(graph['source']))
++        require(record(raw) == {'sha256': graph['sha256'], 'bytes': graph['bytes']},
++                'Original compiler graph changed during collection')
++    require(regular_bytes(input_paths[0])[0] == before_raw
++            and regular_bytes(input_paths[1])[0] == command_raw
++            and regular_bytes(input_paths[2])[0] == log_raw
++            and source_observation(root) == before, 'Original source/build evidence changed during collection')
++    receipt = {'schema': 1, 'status': 'ACTUAL_COMPILER_FULL_GRAPHS_COLLECTED_SURFACE_NOT_YET_VERIFIED',
++               'source_sha': before['head_sha'], 'run_id': before['run_id'], 'run_attempt': before['run_attempt'],
++               'source_admission': record(before_raw), 'framework_build_command': record(command_raw),
++               'framework_build_stdout': record(log_raw), 'compiler_line_sha256': record(line.encode())['sha256'],
++               'compiler_arguments': arguments, 'module': TARGET, 'sdk': str(sdk),
++               'target': 'arm64-apple-ios27.0-simulator', 'swift_version': '5',
++               'minimum_access_level': 'public', 'include_spi_symbols': True,
++               'source_graph_directory': str(graph_directory), 'output_directory': str(output_dir),
++               'graphs': graphs, 'all_emitted_graphs_copied_without_filtering': True,
++               'standalone_extractor_invocations': 0, 'native_editor_ui_tests': 0,
++               'build_started_at': build['started_at'], 'build_finished_at': build['finished_at']}
++    with collection_path.open('x') as stream:
++        json.dump(receipt, stream, indent=2, sort_keys=True)
++        stream.write('\n')
++    return receipt
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    for option in ['root', 'derived', 'evidence', 'sdk', 'output-dir']:
++        parser.add_argument('--' + option, type=Path, required=True)
++    arguments = parser.parse_args()
++    receipt = collect(arguments.root, arguments.derived, arguments.evidence,
++                      arguments.sdk, arguments.output_dir)
++    print(json.dumps({'status': receipt['status'], 'graphs': len(receipt['graphs']),
++                      'source_sha': receipt['source_sha'], 'native_editor_ui_tests': 0}, sort_keys=True))
++
++
++if __name__ == '__main__':
++    main()
+--- /dev/null
++++ b/Tools/OriginalEditor/test_compiler_symbolgraphs.py
+@@ -0,0 +1,245 @@
++"""Reconstructed source controls; no Apple compilation or Native acceptance.
++
++The old observed compiler line is relocated into a temporary checkout and the
++proposed target emission arguments are appended explicitly. Graph JSON and the
++successful command receipt are test fixtures, never reported as native evidence.
++"""
++from datetime import datetime, timedelta, timezone
++import hashlib
++import json
++import os
++from pathlib import Path
++import shlex
++import tempfile
++import unittest
++from unittest.mock import patch
++
++import collect_compiler_symbolgraphs as collector
++from framework_profile import HERE
++
++
++class CompilerSymbolGraphCollectionControls(unittest.TestCase):
++    def setUp(self):
++        self.temporary = tempfile.TemporaryDirectory()
++        self.addCleanup(self.temporary.cleanup)
++        self.root = Path(self.temporary.name).resolve()
++        self.evidence = self.root / 'build/evidence'
++        self.derived = self.root / 'build/work/producer-derived'
++        self.target_build = self.derived / ('Build/Intermediates.noindex/Anytype.build/'
++                            'Debug-Anytype-iphonesimulator/AnytypeOriginalEditor.build')
++        self.graph_directory = self.target_build / 'DerivedSources/OriginalEditorSymbolGraphs'
++        self.graph_directory.mkdir(parents=True)
++        self.evidence.mkdir(parents=True)
++        self.output = self.evidence / 'actual-public-symbol-graphs'
++        original = (HERE / 'fixtures/v9-original-swift-driver.txt').read_bytes()
++        self.assertEqual(hashlib.sha256(original).hexdigest(),
++                         '4a109408517a12f6a274d032a90bf5b52db560bab196d14583a4347682dabfd7')
++        arguments = shlex.split(original.decode().strip())
++        old_root = arguments[arguments.index('-working-directory') + 1]
++        old_derived = str(Path(arguments[arguments.index('-clang-scanner-module-cache-path') + 1]).parent)
++        self.arguments = [value.replace(old_derived, str(self.derived)).replace(old_root, str(self.root))
++                          for value in arguments]
++        self.sdk = self.arguments[self.arguments.index('-sdk') + 1]
++        self.arguments.extend(['-emit-symbol-graph', '-emit-symbol-graph-dir', str(self.graph_directory),
++                               '-symbol-graph-minimum-access-level', 'public', '-include-spi-symbols'])
++        self.source = {'head_sha': '1' * 40, 'run_id': '2', 'run_attempt': '1',
++                       'scope': 'SYNTHETIC_SOURCE_CONTROL_NO_APPLE_OR_NATIVE_EXECUTION'}
++        self.source_path = self.evidence / 'source-before.json'
++        self.source_path.write_text(json.dumps(self.source))
++        self.observation = patch.object(collector, 'source_observation', return_value=self.source)
++        self.observation.start()
++        self.addCleanup(self.observation.stop)
++        self.started = datetime.now(timezone.utc) - timedelta(seconds=5)
++        self.finished = datetime.now(timezone.utc) + timedelta(seconds=5)
++        self.write_graph('AnytypeOriginalEditor.symbols.json', 'AnytypeOriginalEditor', [
++            {'identifier': {'precise': 'public-fixture'}, 'accessLevel': 'public'},
++            {'identifier': {'precise': 'spi-fixture'}, 'accessLevel': 'public', 'spi': True}])
++        self.write_graph('AnytypeOriginalEditor@Foundation.symbols.json', 'Foundation', [
++            {'identifier': {'precise': 'extension-fixture'}, 'accessLevel': 'public'}])
++        self.write_build()
++
++    def write_graph(self, name, module, symbols):
++        path = self.graph_directory / name
++        path.write_text(json.dumps({'module': {'name': module}, 'symbols': symbols,
++                                    'relationships': [{'kind': 'memberOf', 'source': 'a', 'target': 'b'}]},
++                                   indent=3) + '\n')
++        return path
++
++    def write_build(self, **overrides):
++        self.log = self.evidence / 'framework-build.stdout.log'
++        self.log.write_text(shlex.join(self.arguments) + '\n')
++        self.receipt = {'command': ['xcodebuild', 'build', '-project', str(self.root / 'Anytype.xcodeproj'),
++                        '-scheme', 'AnytypeOriginalEditor', '-configuration', 'Debug-Anytype',
++                        '-derivedDataPath', str(self.derived), '-resultBundlePath',
++                        str(self.evidence / 'framework-build.xcresult')], 'cwd': str(self.root),
++                        'started_at': self.started.isoformat(), 'finished_at': self.finished.isoformat(),
++                        'returncode': 0, 'timed_out': False, 'timeout_seconds': 6000,
++                        'stdout_sha256': collector.sha256(self.log),
++                        'scope': 'RECONSTRUCTED_SUCCESSFUL_RECEIPT_NO_APPLE_EXECUTION'}
++        self.receipt.update(overrides)
++        self.receipt_path = self.evidence / 'framework-build.command.json'
++        self.receipt_path.write_text(json.dumps(self.receipt))
++
++    def collect(self):
++        return collector.collect(self.root, self.derived, self.evidence, self.sdk, self.output)
++
++    def test_full_public_spi_and_extension_bytes_are_retained_without_filtering(self):
++        expected = {path.name: path.read_bytes() for path in self.graph_directory.iterdir()}
++        receipt = self.collect()
++        self.assertEqual({path.name: path.read_bytes() for path in self.output.iterdir()}, expected)
++        self.assertEqual(receipt['graphs'][0]['symbols'], 2)
++        self.assertEqual(len(receipt['graphs']), 2)
++        self.assertTrue(receipt['all_emitted_graphs_copied_without_filtering'])
++        self.assertTrue(receipt['include_spi_symbols'])
++        self.assertEqual(receipt['standalone_extractor_invocations'], 0)
++        self.assertEqual(receipt['native_editor_ui_tests'], 0)
++        self.assertEqual(receipt['framework_build_stdout']['sha256'], collector.sha256(self.log))
++        self.assertEqual(json.loads((self.evidence / 'compiler-symbolgraph-collection.json').read_text()), receipt)
++
++    def test_source_change_rejects_collection(self):
++        self.source_path.write_text(json.dumps({**self.source, 'head_sha': '3' * 40}))
++        with self.assertRaisesRegex(ValueError, 'Source differs'):
++            self.collect()
++        self.assertFalse(self.output.exists())
++
++    def test_changed_log_is_not_build_authority(self):
++        self.log.write_text(self.log.read_text() + 'UNRECORDED CHANGE\n')
++        with self.assertRaisesRegex(ValueError, 'successful original framework build'):
++            self.collect()
++
++    def test_failed_timed_out_foreign_or_changed_timeout_receipt_is_rejected(self):
++        for changes in [{'returncode': 1}, {'timed_out': True}, {'cwd': '/foreign'}, {'timeout_seconds': 120}]:
++            with self.subTest(changes=changes):
++                self.write_build(**changes)
++                with self.assertRaisesRegex(ValueError, 'successful original framework build'):
++                    self.collect()
++
++    def test_wrong_build_scheme_configuration_or_derived_is_rejected(self):
++        for option in ['-scheme', '-configuration', '-derivedDataPath', '-project', '-resultBundlePath']:
++            with self.subTest(option=option):
++                self.write_build()
++                self.receipt['command'][self.receipt['command'].index(option) + 1] = '/foreign'
++                self.receipt_path.write_text(json.dumps(self.receipt))
++                with self.assertRaisesRegex(ValueError, 'build identity'):
++                    self.collect()
++
++    def test_duplicate_target_compiler_is_rejected(self):
++        self.log.write_text(self.log.read_text() * 2)
++        self.receipt['stdout_sha256'] = collector.sha256(self.log)
++        self.receipt_path.write_text(json.dumps(self.receipt))
++        with self.assertRaisesRegex(ValueError, 'ambiguous original target compiler'):
++            self.collect()
++
++    def test_wrong_actual_module_target_sdk_swift_or_working_directory_is_rejected(self):
++        original = list(self.arguments)
++        for option in ['-module-name', '-target', '-sdk', '-swift-version', '-working-directory']:
++            with self.subTest(option=option):
++                self.arguments = list(original)
++                self.arguments[self.arguments.index(option) + 1] = '/foreign'
++                self.write_build()
++                with self.assertRaises(ValueError):
++                    self.collect()
++
++    def test_missing_emit_or_spi_flag_is_rejected(self):
++        original = list(self.arguments)
++        for option in ['-emit-symbol-graph', '-include-spi-symbols']:
++            with self.subTest(option=option):
++                self.arguments = [value for value in original if value != option]
++                self.write_build()
++                with self.assertRaisesRegex(ValueError, 'Full public/SPI'):
++                    self.collect()
++
++    def test_changed_access_level_or_filter_flags_are_rejected(self):
++        original = list(self.arguments)
++        for level in ['private', 'internal', 'open']:
++            with self.subTest(level=level):
++                self.arguments = list(original)
++                self.arguments[self.arguments.index('-symbol-graph-minimum-access-level') + 1] = level
++                self.write_build()
++                with self.assertRaisesRegex(ValueError, 'Full public/SPI'):
++                    self.collect()
++        for option in ['-symbol-graph-skip-synthesized-members', '-skip-synthesized-members',
++                       '-symbol-graph-skip-inherited-docs', '-include-spi-symbols=false']:
++            with self.subTest(option=option):
++                self.arguments = [*original, option]
++                self.write_build()
++                with self.assertRaisesRegex(ValueError, 'Full public/SPI'):
++                    self.collect()
++
++    def test_duplicate_emission_or_path_flags_are_rejected(self):
++        original = list(self.arguments)
++        for extra in [['-include-spi-symbols'], ['-emit-symbol-graph'],
++                      ['-emit-symbol-graph-dir', str(self.graph_directory)],
++                      ['-symbol-graph-minimum-access-level', 'public']]:
++            with self.subTest(extra=extra):
++                self.arguments = [*original, *extra]
++                self.write_build()
++                with self.assertRaises(ValueError):
++                    self.collect()
++
++    def test_original_debug_and_heart_definitions_are_required(self):
++        original = list(self.arguments)
++        for definition in ['DEBUG', 'PINKHA_NATIVE_DERIVED']:
++            with self.subTest(definition=definition):
++                self.arguments = [value.replace(definition, 'UNQUALIFIED') for value in original]
++                self.write_build()
++                with self.assertRaisesRegex(ValueError, 'definitions'):
++                    self.collect()
++
++    def test_foreign_target_derivedsources_or_module_output_is_rejected(self):
++        original = list(self.arguments)
++        for option in ['-emit-symbol-graph-dir', '-emit-module-path']:
++            with self.subTest(option=option):
++                self.arguments = list(original)
++                self.arguments[self.arguments.index(option) + 1] = str(self.derived / 'foreign')
++                self.write_build()
++                with self.assertRaisesRegex(ValueError, 'actual owned framework target'):
++                    self.collect()
++
++    def test_stale_graph_is_rejected(self):
++        path = self.graph_directory / 'AnytypeOriginalEditor.symbols.json'
++        stale = int((self.started - timedelta(seconds=60)).timestamp() * 1_000_000_000)
++        os.utime(path, ns=(stale, stale))
++        with self.assertRaisesRegex(ValueError, 'within this original build interval'):
++            self.collect()
++
++    def test_missing_empty_or_wrong_main_graph_is_rejected(self):
++        path = self.graph_directory / 'AnytypeOriginalEditor.symbols.json'
++        path.unlink()
++        with self.assertRaisesRegex(ValueError, 'full target symbol graph'):
++            self.collect()
++        self.write_graph(path.name, 'AnytypeOriginalEditor', [])
++        with self.assertRaisesRegex(ValueError, 'empty or names another'):
++            self.collect()
++
++    def test_unexpected_graph_directory_member_is_rejected(self):
++        (self.graph_directory / 'partial.json').write_text('{}')
++        with self.assertRaisesRegex(ValueError, 'graph-only directory'):
++            self.collect()
++
++    def test_aliased_graph_is_rejected(self):
++        path = self.graph_directory / 'AnytypeOriginalEditor.symbols.json'
++        outside = self.root / 'foreign.symbols.json'
++        outside.write_bytes(path.read_bytes())
++        path.unlink()
++        path.symlink_to(outside)
++        with self.assertRaisesRegex(ValueError, 'Aliased'):
++            self.collect()
++
++    def test_preexisting_collection_is_rejected_without_overwrite(self):
++        self.output.mkdir()
++        marker = self.output / 'preserved'
++        marker.write_text('existing')
++        with self.assertRaisesRegex(ValueError, 'Refusing stale'):
++            self.collect()
++        self.assertEqual(marker.read_text(), 'existing')
++
++    def test_source_retirement_during_collection_prevents_success_receipt(self):
++        with patch.object(collector, 'source_observation', side_effect=[self.source, {**self.source, 'changed': True}]):
++            with self.assertRaisesRegex(ValueError, 'changed during collection'):
++                self.collect()
++        self.assertFalse((self.evidence / 'compiler-symbolgraph-collection.json').exists())
++
++
++if __name__ == '__main__':
++    unittest.main(verbosity=2)

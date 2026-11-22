@@ -1,0 +1,128 @@
+{
+  "facades": {
+    "OriginalEditorFramework/AnytypeOriginalEditorHost.swift": {
+      "required": [
+        [
+          "AnytypeOriginalEditorBinding"
+        ],
+        [
+          "AnytypeOriginalEditorBinding",
+          "init(accountID:spaceID:objectID:hostProfileID:annotationUUID:expectedRevision:sourceWitnessSHA256:)"
+        ],
+        [
+          "AnytypeOriginalEditorSourceLifetime"
+        ],
+        [
+          "AnytypeOriginalEditorSourceLifetime",
+          "init(binding:)"
+        ],
+        [
+          "AnytypeOriginalEditorSourceLifetime",
+          "retire()"
+        ],
+        [
+          "AnytypeOriginalEditorHost"
+        ],
+        [
+          "AnytypeOriginalEditorHost",
+          "makeViewController()"
+        ],
+        [
+          "AnytypeOriginalEditorHost",
+          "retire()"
+        ],
+        [
+          "AnytypeOriginalEditorModule",
+          "openExistingEditor(binding:sourceLifetime:sourceIsCurrent:)"
+        ]
+      ],
+      "roots": [
+        "AnytypeOriginalEditorBinding",
+        "AnytypeOriginalEditorHostError",
+        "AnytypeOriginalEditorSourceLifetime",
+        "AnytypeOriginalEditorHost",
+        "AnytypeOriginalEditorModule"
+      ]
+    },
+    "OriginalEditorFramework/AnytypeOriginalEditorModule.swift": {
+      "required": [
+        [
+          "AnytypeOriginalEditorModule",
+          "inspectResources()"
+        ]
+      ],
+      "roots": [
+        "AnytypeOriginalEditorModule"
+      ]
+    },
+    "OriginalEditorFramework/AnytypeOriginalEditorQualification.swift": {
+      "required": [
+        [
+          "AnytypeOriginalEditorQualificationSource"
+        ],
+        [
+          "AnytypeOriginalEditorQualificationSession"
+        ],
+        [
+          "AnytypeOriginalEditorQualificationSession",
+          "prepareReopen(snapshot:currentSource:sourceIsCurrent:)"
+        ],
+        [
+          "AnytypeOriginalEditorModule",
+          "beginEditableAcceptance(source:sourceIsCurrent:)"
+        ],
+        [
+          "AnytypeOriginalEditorModule",
+          "beginFidelityAcceptance(source:sourceIsCurrent:)"
+        ]
+      ],
+      "roots": [
+        "AnytypeOriginalEditorQualificationSource",
+        "AnytypeOriginalEditorQualificationError",
+        "AnytypeOriginalEditorQualificationSession",
+        "AnytypeOriginalEditorModule"
+      ],
+      "scope": "DEBUG_SIMULATOR_SPI_ONLY"
+    },
+    "OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift": {
+      "required": [
+        [
+          "AnytypeOriginalEditorSnapshot"
+        ],
+        [
+          "AnytypeOriginalEditorSnapshot",
+          "init(bodyBytes:maximumBodyBytes:)"
+        ],
+        [
+          "AnytypeOriginalEditorSnapshot",
+          "Provenance",
+          "matchesCaptureBinding(_:)"
+        ],
+        [
+          "AnytypeOriginalEditorSnapshot",
+          "bodyBytes"
+        ],
+        [
+          "AnytypeOriginalEditorSnapshotCapture"
+        ],
+        [
+          "AnytypeOriginalEditorHost",
+          "captureNativeSnapshot(maximumBodyBytes:)"
+        ]
+      ],
+      "roots": [
+        "AnytypeOriginalEditorSnapshot",
+        "AnytypeOriginalEditorSnapshotError",
+        "AnytypeOriginalEditorSnapshotCapture",
+        "AnytypeOriginalEditorSnapshotCaptureFailure",
+        "AnytypeOriginalEditorHost"
+      ]
+    }
+  },
+  "nonconstructible_types": [
+    "AnytypeOriginalEditorHost",
+    "AnytypeOriginalEditorQualificationSession"
+  ],
+  "schema": 1,
+  "status": "COMPILE_SURFACE_CONTRACT_NATIVE_EDITOR_NOT_QUALIFIED"
+}

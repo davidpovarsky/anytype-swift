@@ -1,0 +1,53 @@
+{
+  "apple_compiler_executions": 0,
+  "errors": 0,
+  "failed": 0,
+  "native_editor_ui_tests": 0,
+  "observed_run_command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=anytype_compiler_symbolgraph_collection/source/Tools/OriginalEditor:original_editor_common_join_20261122/producer-base/Tools/OriginalEditor python3 -m unittest -v test_compiler_symbolgraphs",
+  "observed_unittest_duration_seconds": 0.231,
+  "original_compiler_fixture_sha256": "4a109408517a12f6a274d032a90bf5b52db560bab196d14583a4347682dabfd7",
+  "passed": 18,
+  "patch_exact_roundtrip": "PASS",
+  "patch_whitespace_check": "PASS",
+  "recorded_at": "2026-11-22T01:06:26.384855+00:00",
+  "schema": 1,
+  "scope": "PYTHON_SYNTHETIC_RECEIPT_GRAPH_CONTROLS_AROUND_ORIGINAL_OBSERVED_COMPILER_LINE",
+  "skipped": 0,
+  "source_files": {
+    "Tools/OriginalEditor/collect_compiler_symbolgraphs.py": {
+      "bytes": 12513,
+      "git_blob": "fd525eaf3c2c694ce11d0bcc625e463e5db9d7b9",
+      "new_file": true,
+      "sha256": "a436473c899de218068d68474203b8a0e33ed13eec0a67bb9e6a7067de0e720b"
+    },
+    "Tools/OriginalEditor/test_compiler_symbolgraphs.py": {
+      "bytes": 13369,
+      "git_blob": "fb09f791bf6e1e7d426689b999c6714785dab882",
+      "new_file": true,
+      "sha256": "0208722096ae3fe8e5d90c43f1325d87bd330a9a9d11ad56f60f4f6e4fabda78"
+    }
+  },
+  "standalone_extractor_executions": 0,
+  "status": "PASS_SOURCE_CONTROLS_18",
+  "syntax_parse_files": 2,
+  "tests": [
+    "test_aliased_graph_is_rejected",
+    "test_changed_access_level_or_filter_flags_are_rejected",
+    "test_changed_log_is_not_build_authority",
+    "test_duplicate_emission_or_path_flags_are_rejected",
+    "test_duplicate_target_compiler_is_rejected",
+    "test_failed_timed_out_foreign_or_changed_timeout_receipt_is_rejected",
+    "test_foreign_target_derivedsources_or_module_output_is_rejected",
+    "test_full_public_spi_and_extension_bytes_are_retained_without_filtering",
+    "test_missing_emit_or_spi_flag_is_rejected",
+    "test_missing_empty_or_wrong_main_graph_is_rejected",
+    "test_original_debug_and_heart_definitions_are_required",
+    "test_preexisting_collection_is_rejected_without_overwrite",
+    "test_source_change_rejects_collection",
+    "test_source_retirement_during_collection_prevents_success_receipt",
+    "test_stale_graph_is_rejected",
+    "test_unexpected_graph_directory_member_is_rejected",
+    "test_wrong_actual_module_target_sdk_swift_or_working_directory_is_rejected",
+    "test_wrong_build_scheme_configuration_or_derived_is_rejected"
+  ]
+}

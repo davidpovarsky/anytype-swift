@@ -63,6 +63,7 @@ class OriginalDriverFlowControls(unittest.TestCase):
         consumer_source = self.root / 'Tools/OriginalEditor/Consumer/ConsumerApp.swift'
         consumer_source.parent.mkdir(parents=True)
         shutil.copyfile(HERE / 'Consumer/ConsumerApp.swift', consumer_source)
+        shutil.copyfile(HERE / 'public_host_contract.json', consumer_source.parent.parent / 'public_host_contract.json')
         self.addCleanup(self.retain_trace)
 
     def retain_trace(self):
@@ -132,12 +133,16 @@ class OriginalDriverFlowControls(unittest.TestCase):
         elif name == 'actual-simulator-sdk-path':
             return '/EXPLICIT_SYNTHETIC_SDK_NOT_USED'
         elif name == 'actual-target-public-symbol-graph':
-            directory = Path(arguments[arguments.index('-output-dir') + 1])
+            directory = Path(arguments[arguments.index('--output-dir') + 1])
+            contract = json.loads((HERE / 'public_host_contract.json').read_text())
+            symbols = [{'accessLevel': 'public', 'pathComponents': components,
+                        'identifier': {'precise': 's:21AnytypeOriginalEditorSynthetic' + str(number)},
+                        'location': {'uri': (self.root / path).as_uri()},
+                        **({'spi': True} if item.get('scope') == 'DEBUG_SIMULATOR_SPI_ONLY' else {})}
+                       for path, item in contract['facades'].items()
+                       for number, components in enumerate(item['required'])]
             driver.write(directory / (TARGET + '.symbols.json'), {'module': {'name': TARGET},
-                'symbols': [{'accessLevel': 'public',
-                    'pathComponents': ['AnytypeOriginalEditorModule', 'inspectResources()'],
-                    'identifier': {'precise': 's:21AnytypeOriginalEditorInspection'},
-                    'location': {'uri': (self.root / 'OriginalEditorFramework/AnytypeOriginalEditorModule.swift').as_uri()}}]})
+                'symbols': symbols})
         elif name == 'external-consumer-build':
             app = self.work / 'consumer-derived/Build/Products/Debug-iphonesimulator/OriginalEditorConsumer.app'
             shutil.copytree(self.work / 'distribution/Frameworks', app / 'Frameworks')

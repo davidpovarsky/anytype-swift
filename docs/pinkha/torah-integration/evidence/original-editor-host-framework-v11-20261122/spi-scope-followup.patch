@@ -1,0 +1,119 @@
+--- a/Tools/OriginalEditor/framework_products.py
++++ b/Tools/OriginalEditor/framework_products.py
+@@ -406,7 +406,8 @@
+             location = (source_root / path).resolve()
+             require(location.is_relative_to(source_root / 'OriginalEditorFramework')
+                     and isinstance(contract.get('roots'), list) and contract['roots']
+-                    and isinstance(contract.get('required'), list) and contract['required'],
++                    and isinstance(contract.get('required'), list) and contract['required']
++                    and contract.get('scope', 'PUBLIC') in {'PUBLIC', 'DEBUG_SIMULATOR_SPI_ONLY'},
+                     'Unreviewed facade source/root requirement')
+             reviewed_facades[location] = contract
+             required.update((location, tuple(components)) for components in contract['required'])
+@@ -444,12 +445,17 @@
+             if not own_app_source and not own_facade and not our_identifier:
+                 imported_count += 1
+                 continue
+-            own_symbols.append({'path': components, 'identifier': precise, 'location': uri})
++            own_symbols.append({'path': components, 'identifier': precise, 'location': uri,
++                                'spi': symbol.get('spi', False)})
+             if own_facade and components[:1] == ['AnytypeOriginalEditorModule'] and components[-1:] == ['inspectResources()']:
+                 found_inspection = True
+             if location in reviewed_facades:
+                 require(components and components[0] in reviewed_facades[location]['roots'],
+                         'Unexpected public declaration in a reviewed Host facade: ' + repr(components))
++                expected_spi = reviewed_facades[location].get('scope') == 'DEBUG_SIMULATOR_SPI_ONLY'
++                require(type(symbol.get('spi', False)) is bool
++                        and symbol.get('spi', False) is expected_spi,
++                        'Actual compiler public/SPI scope differs from the reviewed facade: ' + repr(components))
+                 observed_required.add((location, tuple(components)))
+                 require(not (components[0] in host_contract['nonconstructible_types']
+                              and any(item.startswith('init(') for item in components[1:])),
+@@ -469,4 +475,6 @@
+             'own_public_symbols': own_symbols, 'imported_dependency_symbols_not_rejected': imported_count,
+             'public_original_editor_or_writer_declarations': [],
+             'reviewed_host_and_spi_requirements_observed': len(required),
++            'qualification_spi_scope_verified': host_contract is not None,
++            'public_host_scope_verified': host_contract is not None,
+             'editable_mount_api': 'EXPOSED_COMPILED_NATIVE_EDITOR_NOT_RUN' if host_contract is not None else 'NOT_EXPOSED'}
+--- a/Tools/OriginalEditor/test_framework_flow.py
++++ b/Tools/OriginalEditor/test_framework_flow.py
+@@ -137,7 +137,8 @@
+             contract = json.loads((HERE / 'public_host_contract.json').read_text())
+             symbols = [{'accessLevel': 'public', 'pathComponents': components,
+                         'identifier': {'precise': 's:21AnytypeOriginalEditorSynthetic' + str(number)},
+-                        'location': {'uri': (self.root / path).as_uri()}}
++                        'location': {'uri': (self.root / path).as_uri()},
++                        **({'spi': True} if item.get('scope') == 'DEBUG_SIMULATOR_SPI_ONLY' else {})}
+                        for path, item in contract['facades'].items()
+                        for number, components in enumerate(item['required'])]
+             driver.write(directory / (TARGET + '.symbols.json'), {'module': {'name': TARGET},
+--- a/Tools/OriginalEditor/test_host_framework_contract.py
++++ b/Tools/OriginalEditor/test_host_framework_contract.py
+@@ -20,7 +20,8 @@
+             for components in item['required']:
+                 symbols.append({'accessLevel': 'public', 'pathComponents': components,
+                     'identifier': {'precise': 's:21AnytypeOriginalEditorSynthetic' + str(len(symbols))},
+-                    'location': {'uri': (ROOT / path).as_uri()}})
++                    'location': {'uri': (ROOT / path).as_uri()},
++                    **({'spi': True} if item.get('scope') == 'DEBUG_SIMULATOR_SPI_ONLY' else {})})
+         return {'module': {'name': TARGET}, 'symbols': symbols}
+ 
+     def verify(self, graph):
+@@ -31,6 +32,41 @@
+         self.assertEqual(result['reviewed_host_and_spi_requirements_observed'], 21)
+         self.assertEqual(result['editable_mount_api'], 'EXPOSED_COMPILED_NATIVE_EDITOR_NOT_RUN')
+         self.assertEqual(len(result['own_public_symbols']), 21)
++        self.assertTrue(result['qualification_spi_scope_verified'])
++        self.assertTrue(result['public_host_scope_verified'])
++        self.assertEqual(sum(symbol['spi'] for symbol in result['own_public_symbols']), 5)
++
++    def test_qualification_declarations_require_actual_spi_scope(self):
++        original = self.graph()
++        for index, symbol in enumerate(original['symbols']):
++            if symbol.get('spi') is not True:
++                continue
++            for remove in [False, True]:
++                with self.subTest(path=symbol['pathComponents'], absent=remove):
++                    graph = copy.deepcopy(original)
++                    if remove:
++                        graph['symbols'][index].pop('spi')
++                    else:
++                        graph['symbols'][index]['spi'] = False
++                    with self.assertRaises(ValueError): self.verify(graph)
++
++    def test_regular_host_declarations_cannot_be_hidden_as_spi(self):
++        original = self.graph()
++        for index, symbol in enumerate(original['symbols']):
++            if symbol.get('spi') is True:
++                continue
++            with self.subTest(path=symbol['pathComponents']):
++                graph = copy.deepcopy(original)
++                graph['symbols'][index]['spi'] = True
++                with self.assertRaises(ValueError): self.verify(graph)
++
++    def test_malformed_spi_marker_does_not_grant_qualification_scope(self):
++        for marker in [None, 'true', 1, [], {}]:
++            with self.subTest(marker=marker):
++                graph = self.graph()
++                symbol = next(item for item in graph['symbols'] if item.get('spi') is True)
++                symbol['spi'] = marker
++                with self.assertRaises(ValueError): self.verify(graph)
+ 
+     def test_missing_real_capture_entrypoint_rejects_inspection_only_surface(self):
+         graph = self.graph()
+--- a/Tools/OriginalEditor/run_source_controls.py
++++ b/Tools/OriginalEditor/run_source_controls.py
+@@ -224,8 +224,11 @@
+     "test_host_framework_contract.HostFrameworkContractControls.test_public_unowned_host_constructor_is_rejected",
+     "test_host_framework_contract.HostFrameworkContractControls.test_same_spelling_from_a_foreign_source_is_not_a_host_capability",
+     "test_host_framework_contract.HostFrameworkContractControls.test_symbol_graph_emission_cannot_spill_into_original_application",
++    'test_host_framework_contract.HostFrameworkContractControls.test_qualification_declarations_require_actual_spi_scope',
++    'test_host_framework_contract.HostFrameworkContractControls.test_regular_host_declarations_cannot_be_hidden_as_spi',
++    'test_host_framework_contract.HostFrameworkContractControls.test_malformed_spi_marker_does_not_grant_qualification_scope',
+ )
+-EXPECTED_COUNT = 218
++EXPECTED_COUNT = 221
+ 
+ 
+ def cases(suite):

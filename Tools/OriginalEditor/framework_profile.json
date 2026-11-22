@@ -13,25 +13,35 @@
     "Tools/Hanlin/original_editor_profile.py": "3e84bee3d28f180e122da480d0a779820508097d",
     "Tools/Hanlin/prepare_original_editor_heart.py": "14ee9e553a883872a08526e1196f61d3dd3049f0",
     "Tools/Hanlin/prepare_sdk.py": "99e1286268f7aacb5f5638cfe14633d37c04bccc",
-    "Tools/Hanlin/source.json": "0ac43dc444fa2234c2eb11fb9bebf129dbe4fb94",
+    "Tools/Hanlin/source.json": "5b4501d4986a6c4155cc22d74bf4149c361172f2",
     "Tools/PinkhaNativeDerived/build_custom_heart.py": "e32c935fedce5fc732240bf9b2ada21764b5add1",
     "Tools/PinkhaNativeDerived/package_evidence.py": "e55d2a959296630686a60aa5d927a3b4c34401f9",
     "Tools/PinkhaSimulatorGate/preflight.py": "2628b345d5743bbe1ddc0d1afaeef9fb410f3daf"
   },
-  "branch": "codex/otzaria-original-editor-framework-v10-reviewed-20261121",
-  "candidate_project_sha256": "6d8ea7d95077a20f6e8343db77d30cfdd7a59a3e85a4a2a69c8e075c8adcf05c",
+  "branch": "codex/otzaria-original-editor-framework-v11-host-reviewed-20261122",
+  "candidate_project_sha256": "e2d73aec1955e2a30bff380a5c4f2af5707e9ef8618152be368107604cc22f6d",
+  "framework_facade_sources": [
+    "OriginalEditorFramework/AnytypeOriginalEditorHost.swift",
+    "OriginalEditorFramework/AnytypeOriginalEditorModule.swift",
+    "OriginalEditorFramework/AnytypeOriginalEditorNativeFixture.swift",
+    "OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+    "OriginalEditorFramework/AnytypeOriginalEditorQualificationRuntime.swift",
+    "OriginalEditorFramework/AnytypeOriginalEditorRestoreQualification.swift",
+    "OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift"
+  ],
   "framework_target_id": "83B785D0C457FE3CCBAB196E",
-  "new_project_objects": 108,
-  "original_heart_installer_blob": "7efcba968641e7cf223154b5503f404fb9b3fbe3",
-  "original_swift_sources": 2237,
+  "new_project_objects": 120,
+  "original_heart_installer_blob": "6dd3399302b70e2de801ea82614a3b616cddee58",
+  "original_swift_sources": 2249,
   "original_trees": {
     "Anytype/Resources": "0827010674c089cfe9846e592e1d801e9d3f7a9b",
-    "Anytype/Sources": "4fe81315ecfc546cc03fd4719873cc651e933371",
-    "Modules": "c8163bff54e6ba631e82ce5475f226989846d341"
+    "Anytype/Sources": "01f0a5c46fdf80c242e7f3e345346f0b0e50c764",
+    "Modules": "caa80b42d4c68fd2f8b5fe6b1542f8c5557d7e4b"
   },
   "package_pin_count": 44,
-  "package_resolved_blob": "2ee4435d9563f3e8b8691fbb36600bf63ec35a36",
+  "package_resolved_blob": "93172ce5fe62007a1620f7e64866e3b59338dc58",
   "package_resolved_path": "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+  "public_host_contract_sha256": "561eb1e73af3a43b512adae79c918d8f899999aa85fe48b212e949b5b3902e15",
   "resource_oracles": {
     "color_blob": "6c02bf01dd48acd99bba5a1396ba4e8e01701ab7",
     "color_path": "Modules/Assets/Sources/Assets/Resources/SystemColors.xcassets/DesignSystem/Text/primary.colorset/Contents.json",
@@ -41,6 +51,39 @@
     "localization_key": "Cancel",
     "localization_path": "Modules/Loc/Sources/Loc/Resources/UI.xcstrings"
   },
+  "reviewed_shared_dependency_objects": {
+    "2A685D582B7B854200456E08": {
+      "isa": "XCRemoteSwiftPackageReference",
+      "repositoryURL": "https://github.com/weichsel/ZIPFoundation",
+      "requirement": {
+        "kind": "exactVersion",
+        "version": "0.9.20"
+      }
+    },
+    "5333421A262E249100238121": {
+      "isa": "XCRemoteSwiftPackageReference",
+      "repositoryURL": "https://github.com/scenee/FloatingPanel",
+      "requirement": {
+        "kind": "exactVersion",
+        "version": "3.2.4"
+      }
+    },
+    "FA1000002F000001006805CC": {
+      "isa": "XCRemoteSwiftPackageReference",
+      "repositoryURL": "https://github.com/davidpovarsky/TorahInspectorKit.git",
+      "requirement": {
+        "kind": "revision",
+        "revision": "23db0f84e88d9ee9c7053c49de86903fc7bb5785"
+      }
+    }
+  },
   "schema": 1,
-  "scope": "Same-toolchain iOS Simulator genuine framework import/link/resource prerequisite; no editable consumer or app runtime qualification"
+  "scope": "Same-toolchain original Host API framework and Debug Simulator SPI import/link/resource prerequisite; native editable UI/save/reopen remains unqualified",
+  "source_checkpoint": "bbd11635598a77d98e7ffcb336fafee9a75eba10",
+  "symbol_graph_emission": {
+    "configuration_id": "7B34B94A980226257449D4B8",
+    "configuration_name": "Debug-Anytype",
+    "setting": "ORIGINAL_EDITOR_SYMBOL_GRAPH_FLAGS",
+    "value": "-emit-symbol-graph -emit-symbol-graph-dir $(DERIVED_FILE_DIR)/OriginalEditorSymbolGraphs -symbol-graph-minimum-access-level public -include-spi-symbols"
+  }
 }

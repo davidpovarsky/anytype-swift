@@ -42,7 +42,9 @@ class OriginalRawCompilerEvidenceControls(unittest.TestCase):
         self.file_list.write_bytes(('\n'.join(shlex.quote(str(p)) for p in values) + '\n').encode())
 
     def proof(self):
-        return source_file_proof(self.root, self.derived, {'source_files': self.sources}, self.evidence)
+        return source_file_proof(self.root, self.derived, {
+            'source_files': self.sources,
+            'framework_facade_sources': ['OriginalEditorFramework/AnytypeOriginalEditorModule.swift']}, self.evidence)
 
     def test_original_packager_retains_all_four_exact_raw_proofs_as_text(self):
         value = self.proof()

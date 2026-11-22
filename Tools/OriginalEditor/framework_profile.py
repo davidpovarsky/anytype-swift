@@ -8,7 +8,7 @@ import subprocess
 
 from pbx_source import loads, object_text, require
 
-BRANCH = 'codex/otzaria-original-editor-framework-v10-reviewed-20261121'
+BRANCH = 'codex/otzaria-original-editor-framework-v11-host-reviewed-20261122'
 REPOSITORY = 'davidpovarsky/anytype-swift'
 TARGET = 'AnytypeOriginalEditor'
 APP_TARGET = '0303ECFA22D8EDAA005C552B'
@@ -33,6 +33,14 @@ def read_manifest():
     value = json.loads((HERE / 'framework_profile.json').read_text())
     require(value.get('schema') == 1 and value.get('branch') == BRANCH
             and value.get('package_pin_count') == 44, 'Unreviewed framework profile')
+    require(set(value.get('reviewed_shared_dependency_objects', {})) == {
+        '5333421A262E249100238121', '2A685D582B7B854200456E08', 'FA1000002F000001006805CC'},
+        'Unreviewed shared runtime dependency object set')
+    require(len(value.get('framework_facade_sources', [])) == 7
+            and len(set(value['framework_facade_sources'])) == 7,
+            'Incomplete reviewed Host facade source closure')
+    require(sha256(HERE / 'public_host_contract.json') == value.get('public_host_contract_sha256'),
+            'Reviewed public Host and qualification SPI contract differs')
     return value
 
 
@@ -43,12 +51,15 @@ def verify_project(raw, baseline, profile):
     original = loads(baseline.decode())
     candidate = loads(raw.decode())
     old, new = original['objects'], candidate['objects']
-    allowed = set(profile['allowed_original_structural_objects'])
+    dependencies = profile['reviewed_shared_dependency_objects']
+    allowed = set(profile['allowed_original_structural_objects']) | set(dependencies)
     require(set(old) <= set(new), 'An original project object was removed')
     require(all(new[key] == value for key, value in old.items() if key not in allowed),
             'An original application, configuration, resource or dependency object changed')
     original_target = old[APP_TARGET]
     require(new[APP_TARGET] == original_target, 'Original app target was changed')
+    require(all(key in old and new[key] == expected for key, expected in dependencies.items()),
+            'Reviewed shared runtime package requirement differs')
     added = set(new) - set(old)
     require(len(added) == profile['new_project_objects'], 'Unexpected additional project objects')
     targets = [key for key in added if new[key]['isa'] == 'PBXNativeTarget']
@@ -67,18 +78,28 @@ def verify_project(raw, baseline, profile):
     require([new[key] for key in target['packageProductDependencies']]
             == [old[key] for key in original_target['packageProductDependencies']],
             'Original package product closure differs')
-    # An exact inverse rejects extra project edits even to the four structural
-    # objects that need one new group/product/target/target-only exception.
+    emission = profile['symbol_graph_emission']
+    configuration = new[emission['configuration_id']]
+    require(emission['configuration_id'] in new[target['buildConfigurationList']]['buildConfigurations']
+            and configuration['name'] == emission['configuration_name'] == 'Debug-Anytype'
+            and configuration['buildSettings'].get(emission['setting']) == emission['value'],
+            'Public/SPI compiler graph emission is not bound to the framework target')
+    emitters = [key for key, value in new.items() if value.get('isa') == 'XCBuildConfiguration'
+                and emission['setting'] in value.get('buildSettings', {})]
+    require(emitters == [emission['configuration_id']], 'A dependency or original app emits the Host graph')
+    # Restore only the four additive structural objects and the three exact
+    # reviewed shared package requirements. All original products stay intact.
     inverse = raw.decode()
     for key in sorted(added):
         inverse = inverse.replace(object_text(inverse, key), '', 1)
     for key in allowed:
         inverse = inverse.replace(object_text(inverse, key), object_text(baseline.decode(), key), 1)
     require(inverse.encode() == baseline, 'Complete original project inverse differs')
-    return {'original_app_unchanged': True, 'original_objects': len(old),
+    return {'original_app_target_unchanged': True, 'original_objects': len(old),
             'new_objects': len(added), 'original_package_products': len(target['packageProductDependencies']),
             'framework_target_id': targets[0], 'only_excluded_source': 'ApplicationLayer/AppScene.swift',
-            'whole_project_inverse_exact': True}
+            'reviewed_shared_dependency_objects': sorted(dependencies),
+            'target_only_full_public_spi_graph': True, 'whole_project_inverse_exact': True}
 
 
 def source_observation(root, environment=None):
@@ -112,8 +133,8 @@ def source_observation(root, environment=None):
     project = verify_project((root / 'Anytype.xcodeproj/project.pbxproj').read_bytes(), before, profile)
     installer_path = 'Tools/PinkhaNativeDerived/install_verified_heart.py'
     installer = (root / installer_path).read_text()
-    reviewed = "                             'codex/otzaria-original-editor-framework-v9-reviewed-20261121',\n                             '" + BRANCH + "'],"
-    original = "                             'codex/otzaria-original-editor-framework-v9-reviewed-20261121'],"
+    reviewed = "                             'codex/otzaria-original-editor-framework-v10-reviewed-20261121',\n                             '" + BRANCH + "'],"
+    original = "                             'codex/otzaria-original-editor-framework-v10-reviewed-20261121'],"
     require(installer.count(reviewed) == 1 and
             blob(installer.replace(reviewed, original, 1).encode()) == profile['original_heart_installer_blob'],
             'Original verified Heart installer has a change beyond the exact new consumer branch')
@@ -137,6 +158,8 @@ def source_observation(root, environment=None):
     require(len(source_files) == profile['original_swift_sources'], 'Original whole-source count differs')
     main_files = [p for p in source_files if re.search(r'(?m)^\s*@main\b', (root / p).read_text())]
     require(main_files == ['Anytype/Sources/ApplicationLayer/AppScene.swift'], 'Unexpected application entrypoints')
+    facades = sorted(p for p in tracked if p.startswith('OriginalEditorFramework/') and p.endswith('.swift'))
+    require(facades == profile['framework_facade_sources'], 'Reviewed Host/qualification facade membership differs')
     package_main_uses = []
     for path in source_files:
         for number, line in enumerate((root / path).read_text().splitlines(), 1):
@@ -146,5 +169,7 @@ def source_observation(root, environment=None):
             'head_sha': head, 'run_id': environment['GITHUB_RUN_ID'], 'run_attempt': environment['GITHUB_RUN_ATTEMPT'],
             'original_trees': trees, 'project': project, 'source_inputs': records,
             'original_swift_sources': len(source_files), 'source_files': source_files,
+            'framework_facade_sources': facades,
+            'public_host_contract_sha256': profile['public_host_contract_sha256'],
             'resource_and_module_couplings': package_main_uses,
-            'editable_mount_api': 'NOT_EXPOSED', 'original_app_native_runtime': 'NOT_RUN'}
+            'editable_mount_api': 'SOURCE_DECLARED_NATIVE_EDITOR_NOT_RUN', 'original_app_native_runtime': 'NOT_RUN'}

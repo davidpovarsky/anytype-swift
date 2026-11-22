@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Build the genuine original framework and execute a separate binary consumer.
 
-Only a real Xcode27/OS27 execution can produce the final PASS. This driver does
-not mount an editable document, create an account, or claim original app/UI tests.
+Only a real Xcode27/OS27 execution can produce the final PASS. The exported Host
+and Debug Simulator SPI must compile and pass the full public-surface gate. This
+driver does not mount a document, create an account, or claim editor UI tests.
 """
 import argparse
 from datetime import datetime, timezone
@@ -146,8 +147,8 @@ def source_file_proof(root, derived, before, evidence):
     require(paths, 'Actual original framework compiler input lists are absent')
     expected = {(root / path).resolve() for path in before['source_files']
                 if path != 'Anytype/Sources/ApplicationLayer/AppScene.swift'}
-    expected.update({root / 'Anytype/Resources/AssetConstants.swift',
-                     root / 'OriginalEditorFramework/AnytypeOriginalEditorModule.swift'})
+    expected.add(root / 'Anytype/Resources/AssetConstants.swift')
+    expected.update(root / path for path in before['framework_facade_sources'])
     observed = set()
     retained = []
     for number, path in enumerate(sorted(paths)):
@@ -260,11 +261,11 @@ def execute(args, receipt):
     require(sdk.split('.')[0] == '27', 'Framework SDK is not the reviewed OS27 SDK')
     swift = command(['xcrun', 'swiftc', '--version'], root, evidence, 'actual-swift', 30).strip()
     receipt.update(preflight=preflight, sdk=sdk, swift=swift, heart=installation,
-                   original_app_runtime='NOT_RUN', editable_mount='NOT_EXPOSED', native_editor_ui_tests=0)
+                   original_app_runtime='NOT_RUN', editable_mount='API_DECLARED_NATIVE_UI_NOT_RUN', native_editor_ui_tests=0)
     udid = preflight['selected']['ipad']['udid']
     derived = work / 'producer-derived'
     destination = 'platform=iOS Simulator,id=' + udid
-    flags = ['OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED', 'ONLY_ACTIVE_ARCH=YES',
+    flags = ['OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED $(ORIGINAL_EDITOR_SYMBOL_GRAPH_FLAGS)', 'ONLY_ACTIVE_ARCH=YES',
              'ARCHS=arm64', 'SWIFT_OPTIMIZATION_LEVEL=-Onone', 'CODE_SIGN_IDENTITY=-',
              'CODE_SIGNING_ALLOWED=YES', 'CODE_SIGNING_REQUIRED=YES', 'PROVISIONING_PROFILE_SPECIFIER=']
     build = ['xcodebuild', 'build', '-project', str(root / 'Anytype.xcodeproj'), '-scheme', TARGET,
@@ -298,7 +299,8 @@ def execute(args, receipt):
                 notice_files.append({'path': notice_destination.relative_to(exported).as_posix(), 'sha256': sha256(notice_destination)})
     write(notices / 'OriginalSource.json', {'application_source': before['head_sha'],
           'original_trees': before['original_trees'], 'dependencies': receipt['dependencies'],
-          'retained_original_dependency_notices': notice_files, 'scope': 'Framework/resource prerequisite; editable mount is not exposed'})
+          'retained_original_dependency_notices': notice_files,
+          'scope': 'Original Host API framework prerequisite; editable UI/save/reopen is not exercised'})
     exported_proof['files'] = inventory(exported)
     exported_proof['bytes'] = sum(item['bytes'] for item in exported_proof['files'].values())
     write(evidence / 'framework-distribution.json', exported_proof)
@@ -410,18 +412,16 @@ def execute(args, receipt):
     sdk_path = command(['xcrun', '--sdk', 'iphonesimulator', '--show-sdk-path'], root, evidence,
                        'actual-simulator-sdk-path', 30).strip()
     graph_directory = evidence / 'actual-public-symbol-graphs'
-    graph_directory.mkdir()
-    import_context = symbolgraph_import_context(root, derived, products, sdk_path, evidence)
-    command(['xcrun', 'swift-symbolgraph-extract', '-module-name', TARGET,
-             '-target', 'arm64-apple-ios27.0-simulator', '-sdk', sdk_path,
-             '-F', str(products), '-F', str(products / 'PackageFrameworks'),
-             '-I', str(products), '-I', str(products / 'Modules'), *import_context,
-             '-minimum-access-level', 'public', '-output-dir', str(graph_directory)],
+    command([sys.executable, str(root / 'Tools/OriginalEditor/collect_compiler_symbolgraphs.py'),
+             '--root', str(root), '--derived', str(derived), '--evidence', str(evidence),
+             '--sdk', sdk_path, '--output-dir', str(graph_directory)],
             root, evidence, 'actual-target-public-symbol-graph', 120)
     graphs = sorted(graph_directory.glob('*.symbols.json'))
     require(graphs and (graph_directory / (TARGET + '.symbols.json')).is_file(),
             'Actual public module graph is absent')
-    receipt['actual_public_surface'] = verify_public_surface([json.loads(path.read_text()) for path in graphs], root)
+    host_contract = json.loads((root / 'Tools/OriginalEditor/public_host_contract.json').read_text())
+    receipt['actual_public_surface'] = verify_public_surface(
+        [json.loads(path.read_text()) for path in graphs], root, host_contract=host_contract)
     write(evidence / 'actual-public-surface.json', receipt['actual_public_surface'])
     oracle = original_oracles(root, profile)
     write(evidence / 'independent-original-resource-oracles.json', oracle)
@@ -451,6 +451,8 @@ def execute(args, receipt):
         require(inventory(app / 'Frameworks' / name) == inventory(exported / 'Frameworks' / name),
                 'The actual consumer did not embed the exact exported framework: ' + name)
     receipt['external_consumer_build'] = 'PASS'
+    receipt['public_host_api'] = 'EXPOSED_COMPILED_NATIVE_EDITOR_NOT_RUN'
+    receipt['compiled_consumer_api_probe_sha256'] = sha256(root / 'Tools/OriginalEditor/Consumer/ConsumerApp.swift')
     receipt['phase'] = 'ACTUAL_EXTERNAL_RESOURCE_RUNTIME'
     receipt['verified_runtime_observations'] = []
     write(evidence / 'execution.json', receipt)
@@ -489,7 +491,8 @@ def execute(args, receipt):
     write(evidence / 'source-after.json', source_observation(root))
     receipt.update(status='ACTUAL_ORIGINAL_FRAMEWORK_EXTERNAL_IMPORT_LINK_RESOURCES_PASS', phase='COMPLETE',
                    distribution=str(exported), same_toolchain_only=True, device_framework_build='NOT_RUN',
-                   original_43_component_tests='NOT_RERUN', native_editor_ui_tests=0, editable_mount='NOT_EXPOSED')
+                   original_43_component_tests='NOT_RERUN', native_editor_ui_tests=0,
+                   editable_mount='API_COMPILED_NATIVE_UI_NOT_RUN')
     write(exported / 'QUALIFICATION.json', receipt)
 
 
