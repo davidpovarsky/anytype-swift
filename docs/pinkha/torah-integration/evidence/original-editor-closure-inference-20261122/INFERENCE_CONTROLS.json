@@ -1,0 +1,25 @@
+{
+  "scope": "FOCUSED_EXTRACTED_GENERIC_INFERENCE_ONLY_NOT_ORIGINAL_OWNER_OR_APPLE_TYPECHECK",
+  "source_sha256": "f474d32404784326e79c6d9792979e9da24e6537540abbd4e8b35141c601ae97",
+  "fixture_sha256": "f0ef95e8d96faa2812e6d8054f4173553a6a654f7869195cea3539156469d6be",
+  "fixture_transform": "Exact two guarded callback bodies and signatures; only rejection returns false to observe outcome. Local generic gate/dependency fixtures do not model native authority.",
+  "command": [
+    "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+    "-parse-as-library",
+    "-swift-version",
+    "5",
+    "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-editor-closure-inference-20261122\\ExtractedClosureInferenceControls.swift",
+    "-o",
+    "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-editor-closure-inference-20261122\\inference-controls.exe"
+  ],
+  "compile_exit": 0,
+  "started_at": "2026-11-22T04:04:24.343982+00:00",
+  "elapsed_seconds": 8.625,
+  "actual_framework_builds": 0,
+  "native_tests": 0,
+  "run_exit": 0,
+  "new_controls": 4,
+  "stdout": "PASS 4 extracted closure inference controls; original Owner, Apple framework and Native behavior NOT_RUN\r\n",
+  "status": "PASS_EXTRACTED_GENERIC_INFERENCE",
+  "finished_at": "2026-11-22T04:04:33.263946+00:00"
+}
