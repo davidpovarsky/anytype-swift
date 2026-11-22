@@ -79,7 +79,7 @@ def admit(root, kit):
                   manifest["artifactZipSHA256"], manifest["originalWorkflowConclusion"])
                  == (44969141133, 137044839873, SOURCE, 14732218185, ZIP, "failure"),
                  "original producer/artifact identity differs")
-    actual_files = {str(p.relative_to(proof)) for p in (proof / "original").rglob("*") if p.is_file()}
+    actual_files = {p.relative_to(proof).as_posix() for p in (proof / "original").rglob("*") if p.is_file()}
     gate.require(actual_files == set(manifest["originalFilesSHA256"]), "original artifact inventory differs")
     for name, expected in manifest["originalFilesSHA256"].items():
         gate.require(gate.digest(proof / name) == expected, "original artifact bytes changed: " + name)
@@ -106,7 +106,7 @@ def admit(root, kit):
                      "original command/log binding differs")
     gate.exact_source(kit, gate.KIT)
     _, all_methods = gate.load_profile(root, "kit-related-current-access", kit)
-    current = gate.inspect_sources(kit, all_methods)
+    current = {name.replace("\\", "/"): value for name, value in gate.inspect_sources(kit, all_methods).items()}
     gate.require({name: git_digest(kit, name) for name in current} == receipt["sourceSHA256"],
                  "retained Kit Git source differs")
     retained = [m for m in all_methods if not m.top_level]
