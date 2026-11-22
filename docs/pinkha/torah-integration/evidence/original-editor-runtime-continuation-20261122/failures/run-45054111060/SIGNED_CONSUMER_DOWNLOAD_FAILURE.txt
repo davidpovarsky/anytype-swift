@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "C:\ProgramData\SentinelX\uploads\.sentinelx_uploads\script_job_3966214ba6e748d086a9fe8bd5fae80e\script.py", line 98, in <module>
+    outcome = subprocess.run(command, stdout=output, stderr=subprocess.PIPE, timeout=180)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\DAVID\AppData\Local\Programs\Python\Python312\Lib\subprocess.py", line 550, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\DAVID\AppData\Local\Programs\Python\Python312\Lib\subprocess.py", line 1209, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\DAVID\AppData\Local\Programs\Python\Python312\Lib\subprocess.py", line 1634, in _communicate
+    raise TimeoutExpired(self.args, orig_timeout)
+subprocess.TimeoutExpired: Command '['C:\\Program Files\\GitHub CLI\\gh.EXE', 'api', 'repos/davidpovarsky/anytype-swift/actions/artifacts/14766857451/zip']' timed out after 180 seconds

@@ -1,0 +1,137 @@
+{
+  "schema": 1,
+  "reviewed_at": "2026-11-22T18:29:09.315563+00:00",
+  "status": "ACTUAL_LAUNCH_FAILURE_PRESERVED_RUNTIME_NOT_QUALIFIED",
+  "run_id": 45054111060,
+  "run_attempt": 1,
+  "control_sha": "0b792c7f2906f375e34b30a0cb42b85d98c0ba56",
+  "job_id": 137305434669,
+  "framework_source_sha": "edce5b975b173059522f90adb71271fb95adf963",
+  "framework_run_id": 45041382512,
+  "framework_rebuilt": false,
+  "retained_source_controls": 245,
+  "retained_public_spi_requirements": 38,
+  "retained_continuation_controls": 24,
+  "retained_instrumented_controls": 14,
+  "test_bodies_replayed": 0,
+  "main_cleanup_diagnostic_commands_with_exact_stream_hashes": 77,
+  "indexed_payloads_verified": 209,
+  "inner_archive_sha256": "37ccba5016d8457da54945338e19e88b47f40909b2940cfbbf09f6c7ed6377b5",
+  "inner_archive_git_blob": "2eed122fe092fcf9781ec223d34d5cbb4d74b120",
+  "actual_phases": [
+    {
+      "label": "external-consumer-build",
+      "effective_returncode": 0,
+      "requested_timeout_seconds": 600,
+      "duration_seconds": 41.354,
+      "timed_out": false,
+      "stdout_sha256": "576c8ca3adad25211476351654a401c84d7602a77db2cad8c37e5744928275e3",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "external-consumer-signature",
+      "effective_returncode": 0,
+      "requested_timeout_seconds": 60,
+      "duration_seconds": 0.653,
+      "timed_out": false,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "boot-owned-simulator",
+      "effective_returncode": 0,
+      "requested_timeout_seconds": 60,
+      "duration_seconds": 5.587,
+      "timed_out": false,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "boot-status",
+      "effective_returncode": 0,
+      "requested_timeout_seconds": 180,
+      "duration_seconds": 127.237,
+      "timed_out": false,
+      "stdout_sha256": "1633e8dd4f4b2b864d583643d67f948d0ddf15bbd1a67e4a45265ee9a6a20a01",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "install-external-consumer",
+      "effective_returncode": 0,
+      "requested_timeout_seconds": 300,
+      "duration_seconds": 40.694,
+      "timed_out": false,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "installed-app-container",
+      "effective_returncode": 0,
+      "requested_timeout_seconds": 60,
+      "duration_seconds": 10.009,
+      "timed_out": false,
+      "stdout_sha256": "9bb6b53554268d5b59c75e451b71d492ee23016994a38f38ed3c80ddcc7fbbbb",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "installed-data-container",
+      "effective_returncode": 0,
+      "requested_timeout_seconds": 60,
+      "duration_seconds": 2.12,
+      "timed_out": false,
+      "stdout_sha256": "c7475847472d0841ec21a024569f0836f1c47ed4d6c4506fd684cf820e9a323c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "consumer-en-launch",
+      "effective_returncode": 3,
+      "requested_timeout_seconds": 60,
+      "duration_seconds": 4.88,
+      "timed_out": false,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "cb719d94b2379dfacb0c065bd81ea152831245b6133c046c8f32c091a90b1bd5"
+    }
+  ],
+  "failure_stderr": "An error was encountered processing the command (domain=NSPOSIXErrorDomain, code=3):\nSimulator device failed to launch org.otzaria.acceptance.original-editor.\nNo such process\nUnderlying error (domain=NSPOSIXErrorDomain, code=3):\n\tApplication launch for 'org.otzaria.acceptance.original-editor' did not return a process handle nor launch error.\n\tNo such process\n",
+  "actual_en_he_observations": 0,
+  "consumer_app_files": 642,
+  "consumer_app_bytes": 500498107,
+  "owned_simulator_cleanup": {
+    "completed": true,
+    "delete": {
+      "effective_returncode": 0,
+      "timed_out": false
+    },
+    "owned_device_proven_absent": true,
+    "owned_groups_drained": true,
+    "owned_udid": "DF31D8F2-1736-4A99-88BB-3D14D94B3588",
+    "post_state": {
+      "effective_returncode": 0,
+      "timed_out": false
+    },
+    "shutdown": {
+      "effective_returncode": 0,
+      "timed_out": false
+    }
+  },
+  "retained_consumer_artifact": {
+    "id": 14766857451,
+    "name": "Otzaria-Original-Editor-Signed-Consumer-Unqualified-0b792c7f2906f375e34b30a0cb42b85d98c0ba56-45054111060-1",
+    "size_in_bytes": 141885343,
+    "digest": "sha256:54e2a4b191d1248ab446273628f397bb2763c26efcf1c9648c208c3ae0469302"
+  },
+  "retained_consumer_inner_sha256": "ef49025e85cc27723738c0cb96cc91084412a952462627d9416bc7b3207068a1",
+  "static_app_inspection_pending": true,
+  "diagnostic_scope": [
+    "Actual host has 7516192768 bytes of memory and 3 logical CPUs; no swap was configured in all four snapshots.",
+    "simctl device list timed out at its 8-second diagnostic limit after boot and after launch failure; both owned command groups drained.",
+    "The exact owned device.plist remained present with native state=3 after boot and launch failure; after cleanup it was absent and simctl independently proved no such device.",
+    "OriginalEditorConsumer was not observed in the process snapshots. ReportCrashService appears in the post-failure snapshot, without a captured crash report or proven causal attribution."
+  ],
+  "not_claimed": [
+    "Runtime qualification",
+    "StageB runtime acceptance",
+    "Native editor UI execution",
+    "A proven application or host root cause"
+  ]
+}

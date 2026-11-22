@@ -1,0 +1,475 @@
+{
+  "actual_commands": [
+    {
+      "absolute_command_deadline_unix": 1795373903,
+      "argv": [
+        "xcodebuild",
+        "build",
+        "-project",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-runtime-45054111060-1/external-consumer/OriginalEditorConsumer.xcodeproj",
+        "-scheme",
+        "OriginalEditorConsumer",
+        "-configuration",
+        "Debug",
+        "-destination",
+        "platform=iOS Simulator,id=DF31D8F2-1736-4A99-88BB-3D14D94B3588",
+        "-derivedDataPath",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-runtime-45054111060-1/consumer-derived",
+        "-resultBundlePath",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-runtime-evidence/consumer-build.xcresult",
+        "ONLY_ACTIVE_ARCH=YES",
+        "ARCHS=arm64"
+      ],
+      "child_started_unix": 1795371482.359756,
+      "cleanup": [
+        {
+          "drained": true,
+          "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+          "unix": 1795371523.690837
+        }
+      ],
+      "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-runtime-45054111060-1/external-consumer",
+      "duration_seconds": 41.354,
+      "effective_returncode": 0,
+      "effective_timeout_seconds": 600.0,
+      "label": "external-consumer-build",
+      "pid": 7519,
+      "process_group_id": 7519,
+      "requested_timeout_seconds": 600,
+      "returncode": 0,
+      "start_new_session": true,
+      "started_unix": 1795371482.351907,
+      "status": "TERMINAL",
+      "stderr": "47-external-consumer-build.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "47-external-consumer-build.stdout",
+      "stdout_sha256": "576c8ca3adad25211476351654a401c84d7602a77db2cad8c37e5744928275e3",
+      "timed_out": false
+    },
+    {
+      "absolute_command_deadline_unix": 1795373903,
+      "argv": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-runtime-45054111060-1/consumer-derived/Build/Products/Debug-iphonesimulator/OriginalEditorConsumer.app"
+      ],
+      "child_started_unix": 1795371523.726298,
+      "cleanup": [
+        {
+          "drained": true,
+          "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+          "unix": 1795371524.360868
+        }
+      ],
+      "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+      "duration_seconds": 0.653,
+      "effective_returncode": 0,
+      "effective_timeout_seconds": 60.0,
+      "label": "external-consumer-signature",
+      "pid": 8791,
+      "process_group_id": 8791,
+      "requested_timeout_seconds": 60,
+      "returncode": 0,
+      "start_new_session": true,
+      "started_unix": 1795371523.715459,
+      "status": "TERMINAL",
+      "stderr": "48-external-consumer-signature.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "48-external-consumer-signature.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timed_out": false,
+      "stdout_content": "",
+      "stderr_content": ""
+    },
+    {
+      "absolute_command_deadline_unix": 1795373903,
+      "argv": [
+        "xcrun",
+        "simctl",
+        "boot",
+        "DF31D8F2-1736-4A99-88BB-3D14D94B3588"
+      ],
+      "child_started_unix": 1795371554.714697,
+      "cleanup": [
+        {
+          "drained": true,
+          "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+          "unix": 1795371560.047402
+        }
+      ],
+      "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+      "duration_seconds": 5.587,
+      "effective_returncode": 0,
+      "effective_timeout_seconds": 60.0,
+      "label": "boot-owned-simulator",
+      "pid": 10210,
+      "process_group_id": 10210,
+      "requested_timeout_seconds": 60,
+      "returncode": 0,
+      "start_new_session": true,
+      "started_unix": 1795371554.710075,
+      "status": "TERMINAL",
+      "stderr": "49-boot-owned-simulator.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "49-boot-owned-simulator.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timed_out": false,
+      "stdout_content": "",
+      "stderr_content": ""
+    },
+    {
+      "absolute_command_deadline_unix": 1795373903,
+      "argv": [
+        "xcrun",
+        "simctl",
+        "bootstatus",
+        "DF31D8F2-1736-4A99-88BB-3D14D94B3588",
+        "-b"
+      ],
+      "child_started_unix": 1795371561.71055,
+      "cleanup": [
+        {
+          "drained": true,
+          "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+          "unix": 1795371680.98208
+        }
+      ],
+      "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+      "duration_seconds": 127.237,
+      "effective_returncode": 0,
+      "effective_timeout_seconds": 180.0,
+      "label": "boot-status",
+      "pid": 10308,
+      "process_group_id": 10308,
+      "requested_timeout_seconds": 180,
+      "returncode": 0,
+      "start_new_session": true,
+      "started_unix": 1795371560.46447,
+      "status": "TERMINAL",
+      "stderr": "50-boot-status.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "50-boot-status.stdout",
+      "stdout_sha256": "1633e8dd4f4b2b864d583643d67f948d0ddf15bbd1a67e4a45265ee9a6a20a01",
+      "timed_out": false,
+      "stdout_content": "Monitoring boot status for Otzaria-Original-Editor-Continuation-45054111060-1 (DF31D8F2-1736-4A99-88BB-3D14D94B3588).\nDevice already booted, nothing to do.\n\n",
+      "stderr_content": ""
+    },
+    {
+      "absolute_command_deadline_unix": 1795373903,
+      "argv": [
+        "xcrun",
+        "simctl",
+        "install",
+        "DF31D8F2-1736-4A99-88BB-3D14D94B3588",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-runtime-45054111060-1/consumer-derived/Build/Products/Debug-iphonesimulator/OriginalEditorConsumer.app"
+      ],
+      "child_started_unix": 1795371716.226308,
+      "cleanup": [
+        {
+          "drained": true,
+          "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+          "unix": 1795371753.995847
+        }
+      ],
+      "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+      "duration_seconds": 40.694,
+      "effective_returncode": 0,
+      "effective_timeout_seconds": 300.0,
+      "label": "install-external-consumer",
+      "pid": 11123,
+      "process_group_id": 11123,
+      "requested_timeout_seconds": 300,
+      "returncode": 0,
+      "start_new_session": true,
+      "started_unix": 1795371713.3914702,
+      "status": "TERMINAL",
+      "stderr": "51-install-external-consumer.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "51-install-external-consumer.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timed_out": false,
+      "stdout_content": "",
+      "stderr_content": ""
+    },
+    {
+      "absolute_command_deadline_unix": 1795373903,
+      "argv": [
+        "xcrun",
+        "simctl",
+        "launch",
+        "--terminate-running-process",
+        "DF31D8F2-1736-4A99-88BB-3D14D94B3588",
+        "org.otzaria.acceptance.original-editor",
+        "--original-editor-nonce",
+        "90ACB19F-2D76-4842-8B66-92EABC9F3D4B",
+        "-AppleLanguages",
+        "(en)",
+        "-AppleLocale",
+        "en_US"
+      ],
+      "child_started_unix": 1795371766.4549062,
+      "cleanup": [
+        {
+          "drained": true,
+          "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+          "unix": 1795371770.972508
+        }
+      ],
+      "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+      "duration_seconds": 4.88,
+      "effective_returncode": 3,
+      "effective_timeout_seconds": 60.0,
+      "label": "consumer-en-launch",
+      "pid": 11840,
+      "process_group_id": 11840,
+      "requested_timeout_seconds": 60,
+      "returncode": 3,
+      "start_new_session": true,
+      "started_unix": 1795371766.3847349,
+      "status": "TERMINAL",
+      "stderr": "54-consumer-en-launch.stderr",
+      "stderr_sha256": "cb719d94b2379dfacb0c065bd81ea152831245b6133c046c8f32c091a90b1bd5",
+      "stdout": "54-consumer-en-launch.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timed_out": false,
+      "stdout_content": "",
+      "stderr_content": "An error was encountered processing the command (domain=NSPOSIXErrorDomain, code=3):\nSimulator device failed to launch org.otzaria.acceptance.original-editor.\nNo such process\nUnderlying error (domain=NSPOSIXErrorDomain, code=3):\n\tApplication launch for 'org.otzaria.acceptance.original-editor' did not return a process handle nor launch error.\n\tNo such process\n"
+    }
+  ],
+  "diagnostic_snapshots": [
+    {
+      "commands": [
+        {
+          "effective_returncode": 0,
+          "label": "host-resources"
+        },
+        {
+          "effective_returncode": 0,
+          "label": "host-memory"
+        },
+        {
+          "effective_returncode": 0,
+          "label": "owned-filesystem-space"
+        },
+        {
+          "effective_returncode": 0,
+          "label": "process-identities"
+        },
+        {
+          "effective_returncode": 0,
+          "label": "devices-observed"
+        }
+      ],
+      "device_plist": {
+        "bytes": 689,
+        "represented_fields": {
+          "UDID": "DF31D8F2-1736-4A99-88BB-3D14D94B3588",
+          "deviceType": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+          "name": "Otzaria-Original-Editor-Continuation-45054111060-1",
+          "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+          "state": 1
+        },
+        "sha256": "8a88b8c061a8e5ba134703f4f44fa68c6102317fc8dfe7483f47111f90962d5f"
+      },
+      "environment": {
+        "DEVELOPER_DIR": "/Applications/Xcode_27.app/Contents/Developer",
+        "HOME": "/Users/runner",
+        "LANG": "en_US.UTF-8",
+        "LC_ALL": "en_US.UTF-8",
+        "LOGNAME": "runner",
+        "PATH": "/Users/runner/hostedtoolcache/Python/3.12.10/arm64/bin:/Users/runner/hostedtoolcache/Python/3.12.10/arm64:/opt/homebrew/opt/rustup/bin:/opt/homebrew/lib/ruby/gems/3.4.0/bin:/opt/homebrew/opt/ruby@3.4/bin:/Users/runner/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Users/runner/.cargo/bin:/usr/local/opt/curl/bin:/usr/local/bin:/usr/local/sbin:/Users/runner/bin:/Users/runner/.yarn/bin:/Users/runner/Library/Android/sdk/tools:/Users/runner/Library/Android/sdk/platform-tools:/Library/Frameworks/Python.framework/Versions/Current/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/usr/bin:/bin:/usr/sbin:/sbin:/Users/runner/.dotnet/tools",
+        "SHELL": "/bin/bash",
+        "TMPDIR": "/var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/",
+        "USER": "runner",
+        "__CF_USER_TEXT_ENCODING": "0x1F5:0x0:0x0"
+      },
+      "owned_device_state": {
+        "dataPath": "/Users/runner/Library/Developer/CoreSimulator/Devices/DF31D8F2-1736-4A99-88BB-3D14D94B3588/data",
+        "dataPathSize": 18337792,
+        "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+        "isAvailable": true,
+        "logPath": "/Users/runner/Library/Logs/CoreSimulator/DF31D8F2-1736-4A99-88BB-3D14D94B3588",
+        "name": "Otzaria-Original-Editor-Continuation-45054111060-1",
+        "state": "Shutdown",
+        "udid": "DF31D8F2-1736-4A99-88BB-3D14D94B3588"
+      },
+      "owned_groups_drained": true,
+      "owned_udid": "DF31D8F2-1736-4A99-88BB-3D14D94B3588",
+      "requested_child_budget_seconds": 8,
+      "requested_snapshot_budget_seconds": 35,
+      "scope": "READ_ONLY_HOST_AND_OWNED_SIMULATOR_OBSERVATION",
+      "stage": "before-boot"
+    },
+    {
+      "commands": [
+        {
+          "effective_returncode": 0,
+          "label": "host-resources"
+        },
+        {
+          "effective_returncode": 0,
+          "label": "host-memory"
+        },
+        {
+          "effective_returncode": 0,
+          "label": "owned-filesystem-space"
+        },
+        {
+          "effective_returncode": 0,
+          "label": "process-identities"
+        },
+        {
+          "effective_returncode": 124,
+          "label": "devices-observed"
+        }
+      ],
+      "device_plist": {
+        "bytes": 747,
+        "represented_fields": {
+          "UDID": "DF31D8F2-1736-4A99-88BB-3D14D94B3588",
+          "deviceType": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+          "name": "Otzaria-Original-Editor-Continuation-45054111060-1",
+          "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+          "state": 3
+        },
+        "sha256": "76fa9f3b5cbc40be4bd98be52bd148974811b7bad5d9895960288310c9ad367f"
+      },
+      "environment": {
+        "DEVELOPER_DIR": "/Applications/Xcode_27.app/Contents/Developer",
+        "HOME": "/Users/runner",
+        "LANG": "en_US.UTF-8",
+        "LC_ALL": "en_US.UTF-8",
+        "LOGNAME": "runner",
+        "PATH": "/Users/runner/hostedtoolcache/Python/3.12.10/arm64/bin:/Users/runner/hostedtoolcache/Python/3.12.10/arm64:/opt/homebrew/opt/rustup/bin:/opt/homebrew/lib/ruby/gems/3.4.0/bin:/opt/homebrew/opt/ruby@3.4/bin:/Users/runner/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Users/runner/.cargo/bin:/usr/local/opt/curl/bin:/usr/local/bin:/usr/local/sbin:/Users/runner/bin:/Users/runner/.yarn/bin:/Users/runner/Library/Android/sdk/tools:/Users/runner/Library/Android/sdk/platform-tools:/Library/Frameworks/Python.framework/Versions/Current/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/usr/bin:/bin:/usr/sbin:/sbin:/Users/runner/.dotnet/tools",
+        "SHELL": "/bin/bash",
+        "TMPDIR": "/var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/",
+        "USER": "runner",
+        "__CF_USER_TEXT_ENCODING": "0x1F5:0x0:0x0"
+      },
+      "owned_device_state": "NOT_OBSERVED",
+      "owned_groups_drained": true,
+      "owned_udid": "DF31D8F2-1736-4A99-88BB-3D14D94B3588",
+      "requested_child_budget_seconds": 8,
+      "requested_snapshot_budget_seconds": 35,
+      "scope": "READ_ONLY_HOST_AND_OWNED_SIMULATOR_OBSERVATION",
+      "stage": "after-boot"
+    },
+    {
+      "commands": [
+        {
+          "effective_returncode": 0,
+          "label": "host-resources"
+        },
+        {
+          "effective_returncode": 0,
+          "label": "host-memory"
+        },
+        {
+          "effective_returncode": 0,
+          "label": "owned-filesystem-space"
+        },
+        {
+          "effective_returncode": 0,
+          "label": "process-identities"
+        },
+        {
+          "effective_returncode": 124,
+          "label": "devices-observed"
+        }
+      ],
+      "device_plist": {
+        "bytes": 747,
+        "represented_fields": {
+          "UDID": "DF31D8F2-1736-4A99-88BB-3D14D94B3588",
+          "deviceType": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+          "name": "Otzaria-Original-Editor-Continuation-45054111060-1",
+          "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+          "state": 3
+        },
+        "sha256": "76fa9f3b5cbc40be4bd98be52bd148974811b7bad5d9895960288310c9ad367f"
+      },
+      "environment": {
+        "DEVELOPER_DIR": "/Applications/Xcode_27.app/Contents/Developer",
+        "HOME": "/Users/runner",
+        "LANG": "en_US.UTF-8",
+        "LC_ALL": "en_US.UTF-8",
+        "LOGNAME": "runner",
+        "PATH": "/Users/runner/hostedtoolcache/Python/3.12.10/arm64/bin:/Users/runner/hostedtoolcache/Python/3.12.10/arm64:/opt/homebrew/opt/rustup/bin:/opt/homebrew/lib/ruby/gems/3.4.0/bin:/opt/homebrew/opt/ruby@3.4/bin:/Users/runner/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Users/runner/.cargo/bin:/usr/local/opt/curl/bin:/usr/local/bin:/usr/local/sbin:/Users/runner/bin:/Users/runner/.yarn/bin:/Users/runner/Library/Android/sdk/tools:/Users/runner/Library/Android/sdk/platform-tools:/Library/Frameworks/Python.framework/Versions/Current/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/usr/bin:/bin:/usr/sbin:/sbin:/Users/runner/.dotnet/tools",
+        "SHELL": "/bin/bash",
+        "TMPDIR": "/var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/",
+        "USER": "runner",
+        "__CF_USER_TEXT_ENCODING": "0x1F5:0x0:0x0"
+      },
+      "owned_device_state": "NOT_OBSERVED",
+      "owned_groups_drained": true,
+      "owned_udid": "DF31D8F2-1736-4A99-88BB-3D14D94B3588",
+      "requested_child_budget_seconds": 8,
+      "requested_snapshot_budget_seconds": 35,
+      "scope": "READ_ONLY_HOST_AND_OWNED_SIMULATOR_OBSERVATION",
+      "stage": "after-runtime-failure"
+    },
+    {
+      "commands": [
+        {
+          "effective_returncode": 0,
+          "label": "host-resources"
+        },
+        {
+          "effective_returncode": 0,
+          "label": "host-memory"
+        },
+        {
+          "effective_returncode": 0,
+          "label": "owned-filesystem-space"
+        },
+        {
+          "effective_returncode": 0,
+          "label": "process-identities"
+        },
+        {
+          "effective_returncode": 0,
+          "label": "devices-observed"
+        }
+      ],
+      "device_plist": "ABSENT_AT_EXACT_OWNED_PATH",
+      "environment": {
+        "DEVELOPER_DIR": "/Applications/Xcode_27.app/Contents/Developer",
+        "HOME": "/Users/runner",
+        "LANG": "en_US.UTF-8",
+        "LC_ALL": "en_US.UTF-8",
+        "LOGNAME": "runner",
+        "PATH": "/Users/runner/hostedtoolcache/Python/3.12.10/arm64/bin:/Users/runner/hostedtoolcache/Python/3.12.10/arm64:/opt/homebrew/opt/rustup/bin:/opt/homebrew/lib/ruby/gems/3.4.0/bin:/opt/homebrew/opt/ruby@3.4/bin:/Users/runner/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Users/runner/.cargo/bin:/usr/local/opt/curl/bin:/usr/local/bin:/usr/local/sbin:/Users/runner/bin:/Users/runner/.yarn/bin:/Users/runner/Library/Android/sdk/tools:/Users/runner/Library/Android/sdk/platform-tools:/Library/Frameworks/Python.framework/Versions/Current/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/usr/bin:/bin:/usr/sbin:/sbin:/Users/runner/.dotnet/tools",
+        "SHELL": "/bin/bash",
+        "TMPDIR": "/var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/",
+        "USER": "runner",
+        "__CF_USER_TEXT_ENCODING": "0x1F5:0x0:0x0"
+      },
+      "owned_device_state": "ABSENT_IN_THIS_OBSERVATION",
+      "owned_groups_drained": true,
+      "owned_udid": "DF31D8F2-1736-4A99-88BB-3D14D94B3588",
+      "requested_child_budget_seconds": 8,
+      "requested_snapshot_budget_seconds": 35,
+      "scope": "READ_ONLY_HOST_AND_OWNED_SIMULATOR_OBSERVATION",
+      "stage": "after-cleanup"
+    }
+  ],
+  "cleanup": {
+    "completed": true,
+    "delete": {
+      "effective_returncode": 0,
+      "timed_out": false
+    },
+    "owned_device_proven_absent": true,
+    "owned_groups_drained": true,
+    "owned_udid": "DF31D8F2-1736-4A99-88BB-3D14D94B3588",
+    "post_state": {
+      "effective_returncode": 0,
+      "timed_out": false
+    },
+    "shutdown": {
+      "effective_returncode": 0,
+      "timed_out": false
+    }
+  }
+}

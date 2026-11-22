@@ -1,0 +1,122 @@
+{
+  "schema": "otzaria.root-sdk-launch-failure-review/1",
+  "utc": "2026-11-22T18:31:42.277364+00:00",
+  "run_id": 45054111060,
+  "attempt": 1,
+  "head": "0b792c7f2906f375e34b30a0cb42b85d98c0ba56",
+  "job_id": 137305434669,
+  "status": "VERIFIED_LAUNCH_FAILURE_WITH_SUCCESSFUL_OWNED_DEVICE_CLEANUP",
+  "archive_members_crc_and_bytes_verified": 210,
+  "upload_index": 209,
+  "execution_index": 206,
+  "command_ledger_counts": {
+    "cleanup": 3,
+    "commands": 54,
+    "github-commands": 8,
+    "diagnostics/after-runtime-failure": 5,
+    "diagnostics/after-cleanup": 5,
+    "diagnostics/before-boot": 5,
+    "diagnostics/after-boot": 5
+  },
+  "command_groups_drained": 85,
+  "original_binary_stream_relocations": [
+    {
+      "label": "original-evidence-outer-download",
+      "artifact_id": 14762747841,
+      "bytes": 15271306,
+      "sha256": "5fe85920a931ebbe6b7ea0a564f981aaf64c7cb6dc7315a9a7838a4deaf457c7"
+    },
+    {
+      "label": "original-framework-download",
+      "artifact_id": 14762329313,
+      "bytes": 360785361,
+      "sha256": "b0ebfc5dc9d86a6b1829aad7117ab005c8eacb019b0d37e3373f9e9df9c2a2df"
+    }
+  ],
+  "retained_source_controls": 245,
+  "retained_continuation_controls": 24,
+  "retained_instrumented_controls": 14,
+  "consumer_build_and_signature": "PASS",
+  "boot_status": "PASS",
+  "boot_status_seconds": 127.237,
+  "install_attempts": 1,
+  "install_seconds": 40.694,
+  "install": "PASS",
+  "first_failed_command": {
+    "absolute_command_deadline_unix": 1795373903,
+    "argv": [
+      "xcrun",
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "DF31D8F2-1736-4A99-88BB-3D14D94B3588",
+      "org.otzaria.acceptance.original-editor",
+      "--original-editor-nonce",
+      "90ACB19F-2D76-4842-8B66-92EABC9F3D4B",
+      "-AppleLanguages",
+      "(en)",
+      "-AppleLocale",
+      "en_US"
+    ],
+    "child_started_unix": 1795371766.4549062,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795371770.972508
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 4.88,
+    "effective_returncode": 3,
+    "effective_timeout_seconds": 60.0,
+    "label": "consumer-en-launch",
+    "pid": 11840,
+    "process_group_id": 11840,
+    "requested_timeout_seconds": 60,
+    "returncode": 3,
+    "start_new_session": true,
+    "started_unix": 1795371766.3847349,
+    "status": "TERMINAL",
+    "stderr": "54-consumer-en-launch.stderr",
+    "stderr_sha256": "cb719d94b2379dfacb0c065bd81ea152831245b6133c046c8f32c091a90b1bd5",
+    "stdout": "54-consumer-en-launch.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  "runtime_observations": 0,
+  "runtime_qualified": false,
+  "owned_udid": "DF31D8F2-1736-4A99-88BB-3D14D94B3588",
+  "cleanup": {
+    "completed": true,
+    "delete": {
+      "effective_returncode": 0,
+      "timed_out": false
+    },
+    "owned_device_proven_absent": true,
+    "owned_groups_drained": true,
+    "owned_udid": "DF31D8F2-1736-4A99-88BB-3D14D94B3588",
+    "post_state": {
+      "effective_returncode": 0,
+      "timed_out": false
+    },
+    "shutdown": {
+      "effective_returncode": 0,
+      "timed_out": false
+    }
+  },
+  "signed_app_retention_metadata": {
+    "outer_artifact_id": 14766857451,
+    "outer_bytes": 141885343,
+    "outer_sha256": "54e2a4b191d1248ab446273628f397bb2763c26efcf1c9648c208c3ae0469302",
+    "inner_bytes": 141705455,
+    "inner_sha256": "ef49025e85cc27723738c0cb96cc91084412a952462627d9416bc7b3207068a1",
+    "files": 642,
+    "bytes": 500498107,
+    "actual_app_archive_not_downloaded_by_this_review": true
+  },
+  "diagnostic_limits": "Two bounded simctl list reads timed out; process and plist observations do not establish the launch failure cause. No app crash report is present.",
+  "cause": "NOT_ESTABLISHED",
+  "new_tests_or_Actions_downloads_by_review": 0,
+  "next": "Inspect the once-retained signed application bytes and exact dependencies; require an evidence-driven change or scoped diagnostic before a further simulator attempt."
+}
