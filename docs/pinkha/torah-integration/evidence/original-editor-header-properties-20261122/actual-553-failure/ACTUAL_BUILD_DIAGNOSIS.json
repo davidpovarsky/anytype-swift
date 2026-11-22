@@ -1,0 +1,200 @@
+{
+  "inner_sha256": "909ae64541dc82269fe4252f0252f533cca48f1afaca759ca5db9de1c5baa472",
+  "safe_members": 38,
+  "expanded_bytes": 12270825,
+  "paths": [
+    "source-admission.json",
+    "source-controls.stderr.log",
+    "source-before.json",
+    "source-after.json",
+    "framework-build.stdout.log",
+    "actual-simulator-sdk.stderr.log",
+    "actual-swift.stdout.log",
+    "owned-simulator-cleanup.json",
+    "actual-simulator-sdk.command.json",
+    "source-controls-result.json",
+    "source-controls.stdout.log",
+    "original-hanlin-snapshot.json",
+    "framework-build.stderr.log",
+    "framework-build.command.json",
+    "actual-simulator-sdk.stdout.log",
+    "actual-swift.command.json",
+    "actual-swift.stderr.log",
+    "execution.json",
+    "heart-source/original-heart-artifact.json",
+    "heart-source/original-heart-download.stderr.log",
+    "heart-source/original-heart-producer-run.json",
+    "heart-source/original-heart-download.json",
+    "macro-trust/macros.after.json",
+    "macro-trust/owned-trust-state.json",
+    "macro-trust/macro-restoration.json",
+    "macro-trust/source-download.stderr.log",
+    "macro-trust/macro-approval.json",
+    "heart/heart-installation.json",
+    "heart/custom-heart-build.json",
+    "framework-build.xcresult/Info.plist",
+    "preflight/simulator-inventory.json",
+    "preflight/preflight.json",
+    "framework-build.xcresult/Data/refs.0~HwgGm2Gt6q6VyadTLtBN4S85JbkTKRmriHu-YE6n7DyAExYYuFRIPqw1sLISpnsvEGNekXd3tlHm_42fD0q21A==",
+    "framework-build.xcresult/Data/refs.0~AvMfZdiQsNs9NJ3gBTXZuv44B46FkQsAwHugjP4HVOQKqLwunchQAM5FKxtQ-sc09l9hi2oGslSN9Cz060RYQQ==",
+    "framework-build.xcresult/Data/refs.0~b1OftuhoebmuCkcFHhTVpd0lfwzKhBrjWpolMkXmGiTGQCkAXwUkFcXXayGROLUWcCezYLI7bsWBxEizWFnlyg==",
+    "framework-build.xcresult/Data/data.0~b1OftuhoebmuCkcFHhTVpd0lfwzKhBrjWpolMkXmGiTGQCkAXwUkFcXXayGROLUWcCezYLI7bsWBxEizWFnlyg==",
+    "framework-build.xcresult/Data/data.0~AvMfZdiQsNs9NJ3gBTXZuv44B46FkQsAwHugjP4HVOQKqLwunchQAM5FKxtQ-sc09l9hi2oGslSN9Cz060RYQQ==",
+    "framework-build.xcresult/Data/data.0~HwgGm2Gt6q6VyadTLtBN4S85JbkTKRmriHu-YE6n7DyAExYYuFRIPqw1sLISpnsvEGNekXd3tlHm_42fD0q21A=="
+  ],
+  "errors": [
+    {
+      "path": "framework-build.stderr.log",
+      "lines": [
+        "** BUILD FAILED **"
+      ]
+    },
+    {
+      "path": "framework-build.stdout.log",
+      "lines": [
+        "183 |     private func observeUI27Startup(_ phase: String, consumed: ApplicationState? = nil, error: Error? = nil) {",
+        "33 |     private func safeCode(_ error: Error) -> HanlinErrorCode {",
+        "277 |     private func safeCode(_ error: Error) -> HanlinErrorCode {",
+        "1153 |     func reportSearchError(_ error: Error) {",
+        "1162 |     func searchMessage(for error: Error) -> String {",
+        "1181 |     private func recordAssociationError(_ error: Error) {",
+        "/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Header/Entities/ObjectHeaderViewModel.swift:30:35: error: reference to property 'document' in closure requires explicit use of 'self' to make capture semantics explicit",
+        "    |                                   `- error: reference to property 'document' in closure requires explicit use of 'self' to make capture semantics explicit",
+        "/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Header/Entities/ObjectHeaderViewModel.swift:40:13: error: reference to property 'output' in closure requires explicit use of 'self' to make capture semantics explicit",
+        "    |             `- error: reference to property 'output' in closure requires explicit use of 'self' to make capture semantics explicit",
+        "/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Header/Entities/ObjectHeaderViewModel.swift:40:47: error: reference to property 'document' in closure requires explicit use of 'self' to make capture semantics explicit",
+        "    |                                               `- error: reference to property 'document' in closure requires explicit use of 'self' to make capture semantics explicit"
+      ]
+    }
+  ],
+  "selected_metadata": [
+    {
+      "path": "actual-simulator-sdk.command.json",
+      "data": {
+        "command": [
+          "xcrun",
+          "--sdk",
+          "iphonesimulator",
+          "--show-sdk-version"
+        ],
+        "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+        "finished_at": "2026-11-22T04:11:13.500873+00:00",
+        "returncode": 0,
+        "started_at": "2026-11-22T04:11:10.276094+00:00",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "7b01c549928398a045692f24bcac7803b348524cdd76f21265b02984b2ba556a",
+        "timed_out": false,
+        "timeout_seconds": 30
+      }
+    },
+    {
+      "path": "actual-swift.command.json",
+      "data": {
+        "command": [
+          "xcrun",
+          "swiftc",
+          "--version"
+        ],
+        "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+        "finished_at": "2026-11-22T04:11:14.740760+00:00",
+        "returncode": 0,
+        "started_at": "2026-11-22T04:11:13.516500+00:00",
+        "stderr_sha256": "bbc8b176d3c74d4c5a7fd00b40280f98168e116d5272273bfe8e71407625540e",
+        "stdout_sha256": "04630ab8fa201f57c63c59730e638135e32584a97e16e004a417eb8ed283dc83",
+        "timed_out": false,
+        "timeout_seconds": 30
+      }
+    },
+    {
+      "path": "framework-build.command.json",
+      "data": {
+        "command": [
+          "xcodebuild",
+          "build",
+          "-project",
+          "/Users/runner/work/anytype-swift/anytype-swift/Anytype.xcodeproj",
+          "-scheme",
+          "AnytypeOriginalEditor",
+          "-configuration",
+          "Debug-Anytype",
+          "-destination",
+          "platform=iOS Simulator,id=74BD66E3-105C-4E12-9386-84912D0E5D62",
+          "-derivedDataPath",
+          "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44983797493-1/producer-derived",
+          "-resultBundlePath",
+          "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-evidence/framework-build.xcresult",
+          "-onlyUsePackageVersionsFromResolvedFile",
+          "OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED $(ORIGINAL_EDITOR_SYMBOL_GRAPH_FLAGS)",
+          "ONLY_ACTIVE_ARCH=YES",
+          "ARCHS=arm64",
+          "SWIFT_OPTIMIZATION_LEVEL=-Onone",
+          "CODE_SIGN_IDENTITY=-",
+          "CODE_SIGNING_ALLOWED=YES",
+          "CODE_SIGNING_REQUIRED=YES",
+          "PROVISIONING_PROFILE_SPECIFIER="
+        ],
+        "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+        "finished_at": "2026-11-22T04:25:27.117354+00:00",
+        "returncode": 65,
+        "started_at": "2026-11-22T04:11:14.746145+00:00",
+        "stderr_sha256": "5f26ac970ffeaf7d575cdba32d85efd88ad6d287cccebe39f2851119bff428fd",
+        "stdout_sha256": "42f5eb71f57b814e18bff5e31b010902627fd6175df33efaa9a4b421d7c1af67",
+        "timed_out": false,
+        "timeout_seconds": 6000
+      }
+    },
+    {
+      "path": "macro-trust/macro-approval.json",
+      "data": {
+        "added_by_this_run": true,
+        "after_sha256": "7d1821befdef1327439a77047600813d40a3da350f4d1ab7cd6be01f1eebc39c",
+        "all_existing_approvals_preserved": true,
+        "approval": {
+          "fingerprint": "597c2bb34af0c51331eb3b5e705f942d8ee20daa",
+          "packageIdentity": "equatable",
+          "targetName": "EquatableMacros"
+        },
+        "before_existed": false,
+        "before_sha256": null,
+        "blanket_skip_flags_or_defaults_changed": false,
+        "framework_builds": 0,
+        "head_sha": "553d4ae90eb8fb0ec21b5ecc319b43db40d2dba2",
+        "macro_swift_sources": 17,
+        "native_tests_executed": 0,
+        "pin": {
+          "identity": "equatable",
+          "kind": "remoteSourceControl",
+          "location": "https://github.com/ordo-one/equatable",
+          "state": {
+            "revision": "597c2bb34af0c51331eb3b5e705f942d8ee20daa",
+            "version": "1.4.1"
+          }
+        },
+        "reviewed_file_count": 18,
+        "run_id": "44983797493",
+        "schema": 1,
+        "source_archive_bytes": 36068,
+        "source_archive_sha256": "58816bb9fc940f73660d3f80481d27ba37bbf5a59975b8791926c78828b306ee",
+        "status": "EXACT_REVIEWED_MACRO_APPROVAL_PREPARED_XCODE_ACCEPTANCE_PENDING",
+        "target": "/Users/runner/Library/org.swift.swiftpm/security/macros.json"
+      }
+    },
+    {
+      "path": "macro-trust/macro-restoration.json",
+      "data": {
+        "status": "EXACT_ORIGINAL_MACRO_TRUST_RESTORED",
+        "wrote_trust_store": true
+      }
+    },
+    {
+      "path": "macro-trust/macros.after.json",
+      "data": [
+        {
+          "fingerprint": "597c2bb34af0c51331eb3b5e705f942d8ee20daa",
+          "packageIdentity": "equatable",
+          "targetName": "EquatableMacros"
+        }
+      ]
+    }
+  ]
+}

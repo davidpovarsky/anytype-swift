@@ -64,7 +64,7 @@ final class PropertiesListCoordinatorViewModel:
             editOriginalRelationValue(document: document, relationKey: relationKey, scope: scope)
             return
         }
-        guard (try? withCurrentSource {
+        guard (try? withCurrentSource { () -> Void in
             try preparedSession?.owner.validateDocument(document)
         }) != nil else { return }
         let relation = document.parsedProperties.installed.first { $0.key == relationKey }

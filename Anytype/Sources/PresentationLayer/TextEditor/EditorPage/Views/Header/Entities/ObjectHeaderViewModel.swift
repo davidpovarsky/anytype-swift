@@ -27,7 +27,7 @@ final class ObjectHeaderViewModel: ObservableObject {
         guard let self, document.mode.isHandling, document.permissions.canChangeIcon else { return }
         performOwnedPublication(requiresEditing: true, requiredPermissions: [.editDetails, .changeIcon]) {
             UISelectionFeedbackGenerator().selectionChanged()
-            self.onIconPickerTap?(document)
+            self.onIconPickerTap?(self.document)
         }
     }
     
@@ -37,7 +37,7 @@ final class ObjectHeaderViewModel: ObservableObject {
         guard document.permissions.canChangeCover else { return }
         performOwnedPublication(requiresEditing: true, requiredPermissions: [.editDetails, .changeCover]) {
             UISelectionFeedbackGenerator().selectionChanged()
-            output?.showCoverPicker(document: document)
+            self.output?.showCoverPicker(document: self.document)
         }
     }
     
@@ -163,7 +163,7 @@ final class ObjectHeaderViewModel: ObservableObject {
                 .sink { [weak self] update in
                     guard let self else { return }
                     performOwnedPublication(requiresEditing: true, requiredPermissions: [.editDetails, .changeCover]) {
-                        self.header = buildLoadingHeader(update, showPublishingBanner: showPublishingBanner)
+                        self.header = self.buildLoadingHeader(update, showPublishingBanner: showPublishingBanner)
                     }
                 }
         }

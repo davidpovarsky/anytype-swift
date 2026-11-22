@@ -123,7 +123,7 @@ final class ObjectPropertiesViewModel {
         if preparedSession == nil && !document.isOpened {
             try? await document.open()
         }
-        guard (try? withCurrentSource {
+        guard (try? withCurrentSource { () -> Void in
             latestParsedProperties = document.parsedProperties
             rebuildSections(from: document.parsedProperties)
         }) != nil else { return }
@@ -153,7 +153,7 @@ final class ObjectPropertiesViewModel {
         }
 
         for await properties in document.parsedPropertiesPublisher.values {
-            guard (try? withCurrentSource {
+            guard (try? withCurrentSource { () -> Void in
                 latestParsedProperties = properties
                 rebuildSections(from: properties)
             }) != nil else { return }

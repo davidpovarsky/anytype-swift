@@ -1,0 +1,29 @@
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Header/Entities/ObjectHeaderViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Header/Entities/ObjectHeaderViewModel.swift
+@@ -27,7 +27,7 @@
+         guard let self, document.mode.isHandling, document.permissions.canChangeIcon else { return }
+         performOwnedPublication(requiresEditing: true, requiredPermissions: [.editDetails, .changeIcon]) {
+             UISelectionFeedbackGenerator().selectionChanged()
+-            self.onIconPickerTap?(document)
++            self.onIconPickerTap?(self.document)
+         }
+     }
+     
+@@ -37,7 +37,7 @@
+         guard document.permissions.canChangeCover else { return }
+         performOwnedPublication(requiresEditing: true, requiredPermissions: [.editDetails, .changeCover]) {
+             UISelectionFeedbackGenerator().selectionChanged()
+-            output?.showCoverPicker(document: document)
++            self.output?.showCoverPicker(document: self.document)
+         }
+     }
+     
+@@ -163,7 +163,7 @@
+                 .sink { [weak self] update in
+                     guard let self else { return }
+                     performOwnedPublication(requiresEditing: true, requiredPermissions: [.editDetails, .changeCover]) {
+-                        self.header = buildLoadingHeader(update, showPublishingBanner: showPublishingBanner)
++                        self.header = self.buildLoadingHeader(update, showPublishingBanner: showPublishingBanner)
+                     }
+                 }
+         }

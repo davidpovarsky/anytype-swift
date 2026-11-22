@@ -1,0 +1,45 @@
+{
+  "source_commit": "1fe163c8182c813fa64f9e12c861ad5f5efc608f",
+  "inputs": [
+    {
+      "path": "Anytype/Sources/Models/Documents/Document/BaseDocument.swift",
+      "git_blob": "c2da15143071a0f7f59a9a7e8a2a5295cf09c0d3",
+      "sha256": "9a3a95a8df963d3dc2d2cfa4881254c48337baa492b622676339008c279d6552",
+      "weak_self_occurrences": 10
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift",
+      "git_blob": "c90dd7f2ee0577d3496d81fd164fc238b79ea364",
+      "sha256": "b0ae02be8c28c22246d29bf927cb154e10019d841f3b831771f968a8938f7d46",
+      "weak_self_occurrences": 5
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Header/Entities/ObjectHeaderViewModel.swift",
+      "git_blob": "8dc7b67777a4e76d6a13144972a5a39622defeba",
+      "sha256": "1840c9148367e522a3781617a9763ea0f38fd5e623370f2726cb54f826407fef",
+      "weak_self_occurrences": 4
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Object/Details/DocumentOwnedDetailsService.swift",
+      "git_blob": "d9a8e330d8852094c482e20fe956e5dcce0240ca",
+      "sha256": "0ff0b9e573ea3001528678f5c6e098321c67242dc49eef340d9765be660ecc03",
+      "weak_self_occurrences": 0
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/ObjectHeaderUploadingService/DocumentOwnedObjectHeaderUploadingService.swift",
+      "git_blob": "0e4e9030b4d8e906a13427ea704c655d49f7ad54",
+      "sha256": "91d02db3b2b73c6b96fb0dc4be35bfd250909008e42d75e065d11b18238d3a60",
+      "weak_self_occurrences": 0
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/ObjectHeaderUploadingService/ObjectHeaderUploadingService.swift",
+      "git_blob": "0b3e70ee42002cc34403df0b3e7b0870a9575199",
+      "sha256": "dca5069dc63b6085848d02025e4c81df1aa0a5323a650d82253715c8c3a641dd",
+      "weak_self_occurrences": 0
+    }
+  ],
+  "observed_diagnostics": "ObjectHeader lines30/40: document, output, document",
+  "proactive_qualifier": "ObjectHeader line166: self.buildLoadingHeader; showPublishingBanner retains the lexical onUpdate parameter",
+  "no_other_source_changes": true,
+  "root_full_source_review": "APPROVED observed three and proactive one, no new behavioral suite required"
+}
