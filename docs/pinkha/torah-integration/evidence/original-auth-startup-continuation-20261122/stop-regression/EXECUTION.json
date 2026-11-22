@@ -1,0 +1,74 @@
+{
+  "started_at": "2026-11-22T13:51:28.532981+00:00",
+  "host": "david_and_goldy",
+  "runner_pid": 27856,
+  "scope": "source-extracted Swift unit controls; controlled native dispatch fixtures; not Apple or full Auth acceptance",
+  "compiler": "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+  "compiler_sha256": "e1d0a0b20d95a92b22f4906e7ca331a7c8b89be86b2d9a2d215ac24f753e945a",
+  "source_sha256": "f0d8e973d272e2af1349961b4f9213e7739b1e967a1cc8ab2570ea08b987521e",
+  "previous_passed_tests_rerun": 0,
+  "compile_command": [
+    "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+    "-swift-version",
+    "5",
+    "-strict-concurrency=complete",
+    "-parse-as-library",
+    "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-auth-stop-regression-20261122\\AuthStopControls.swift",
+    "-o",
+    "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-auth-stop-regression-20261122\\AuthStopControls.exe"
+  ],
+  "compile_exit": 0,
+  "executable_sha256": "bc31fab50607db709ef1dcc6822370eadfcb6139b7d63de46451c2616c880162",
+  "run_exit": 0,
+  "result": {
+    "cases": [
+      {
+        "id": "auth_queued_stop_survives_caller_cancellation",
+        "status": "PASS"
+      },
+      {
+        "id": "pinkha_queued_stop_survives_caller_cancellation",
+        "status": "PASS"
+      },
+      {
+        "id": "auth_callback_cancellation_waits_cleanup",
+        "status": "PASS"
+      },
+      {
+        "id": "pinkha_callback_cancellation_waits_cleanup",
+        "status": "PASS"
+      },
+      {
+        "id": "auth_failed_stop_allows_retry_before_start_drain",
+        "status": "PASS"
+      },
+      {
+        "id": "pinkha_failed_stop_allows_retry_before_start_drain",
+        "status": "PASS"
+      },
+      {
+        "id": "auth_failed_stop_blocks_new_work_after_drain",
+        "status": "PASS"
+      },
+      {
+        "id": "pinkha_failed_stop_blocks_new_work_after_drain",
+        "status": "PASS"
+      },
+      {
+        "id": "cancellation_before_stop_admission_preserves_startup",
+        "status": "PASS"
+      },
+      {
+        "id": "membership_installed_after_retirement_is_cancelled_and_drained",
+        "status": "PASS"
+      }
+    ],
+    "fail": 0,
+    "pass": 10,
+    "pid": 27804,
+    "scope": "source-extracted Swift unit controls with controlled native callbacks",
+    "skip": 0
+  },
+  "run_stderr": "",
+  "finished_at": "2026-11-22T13:52:13.918610+00:00"
+}

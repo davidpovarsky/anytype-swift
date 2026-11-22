@@ -71,7 +71,8 @@ private func compileOriginalHostAPI(
     host: AnytypeOriginalEditorHost,
     snapshot: AnytypeOriginalEditorSnapshot,
     source: AnytypeOriginalEditorQualificationSource,
-    qualification: AnytypeOriginalEditorQualificationSession
+    qualification: AnytypeOriginalEditorQualificationSession,
+    processContext: AnytypeOriginalEditorProcessResumeContext
 ) async throws {
     let exactBinding = try AnytypeOriginalEditorBinding(
         accountID: binding.accountID, spaceID: binding.spaceID, objectID: binding.objectID,
@@ -101,6 +102,28 @@ private func compileOriginalHostAPI(
         sourceIsCurrent: { $0 == qualificationSource }
     )
     _ = try await qualification.verifyFidelityAfterReopen(host: opened)
+    let exactProcessContext = try AnytypeOriginalEditorProcessResumeContext(
+        workspaceNamespace: processContext.workspaceNamespace,
+        legacyAnnotationID: processContext.legacyAnnotationID,
+        payloadDigest: processContext.payloadDigest
+    )
+    let preparedReceipt: AnytypeOriginalEditorProcessResumeReceipt = try await qualification.prepareProcessResume(
+        host: opened, snapshot: snapshot, currentSource: qualificationSource,
+        context: exactProcessContext, sourceIsCurrent: { $0 == qualificationSource }
+    )
+    _ = preparedReceipt.runtimeNonce
+    _ = preparedReceipt.accountID
+    _ = preparedReceipt.spaceID
+    _ = preparedReceipt.objectID
+    _ = preparedReceipt.preparedProcessID
+    _ = preparedReceipt.currentProcessID
+    _ = preparedReceipt.credentialConsumed
+    let resumed = try await AnytypeOriginalEditorModule.resumeEditableAcceptance(
+        source: qualificationSource, snapshot: snapshot, context: exactProcessContext,
+        sourceIsCurrent: { $0 == qualificationSource }
+    )
+    _ = resumed.processResumeReceipt
+    _ = try await AnytypeOriginalEditorModule.cleanupOwnedProcessResumeCredential()
     opened.retire()
     lifetime.retire()
 }

@@ -1,0 +1,48 @@
+stageb-review/auth/candidate/Anytype/Sources/ServiceLayer/Auth/AuthService.swift:74:21: warning: call to method 'validate' in closure requires explicit use of 'self' to make capture semantics explicit; this is an error in the Swift 6 language mode
+
+ 572 |             try validate()
+
+ 573 |             try validating()
+
+ 574 |             return InvocationDispatchPermit {
+
+     |                                             `- note: capture 'self' explicitly to enable implicit 'self' in this closure
+
+ 575 |                 try validate()
+
+     |                     |- warning: call to method 'validate' in closure requires explicit use of 'self' to make capture semantics explicit; this is an error in the Swift 6 language mode
+
+     |                     `- note: reference 'self.' explicitly
+
+ 576 |                 try validating()
+
+ 577 |                 let admissions = try EditorDocumentWriteCapture.acquireAll(captures)
+
+
+
+stageb-review/auth/candidate/Anytype/Sources/ServiceLayer/Auth/AuthService.swift:76:76: warning: reference to property 'captures' in closure requires explicit use of 'self' to make capture semantics explicit; this is an error in the Swift 6 language mode
+
+ 572 |             try validate()
+
+ 573 |             try validating()
+
+ 574 |             return InvocationDispatchPermit {
+
+     |                                             `- note: capture 'self' explicitly to enable implicit 'self' in this closure
+
+ 575 |                 try validate()
+
+ 576 |                 try validating()
+
+ 577 |                 let admissions = try EditorDocumentWriteCapture.acquireAll(captures)
+
+     |                                                                            |- warning: reference to property 'captures' in closure requires explicit use of 'self' to make capture semantics explicit; this is an error in the Swift 6 language mode
+
+     |                                                                            `- note: reference 'self.' explicitly
+
+ 578 |                 return InvocationDispatchCompletion {
+
+ 579 |                     for admission in admissions { admission.cancel() }
+
+   Creating library C:\Users\DAVID\AppData\Local\Temp\otzaria-auth-stop-regression-20261122\AuthStopControls.lib and object C:\Users\DAVID\AppData\Local\Temp\otzaria-auth-stop-regression-20261122\AuthStopControls.exp
+

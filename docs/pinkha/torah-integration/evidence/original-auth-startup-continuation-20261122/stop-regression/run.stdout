@@ -1,0 +1,49 @@
+{
+  "cases" : [
+    {
+      "id" : "auth_queued_stop_survives_caller_cancellation",
+      "status" : "PASS"
+    },
+    {
+      "id" : "pinkha_queued_stop_survives_caller_cancellation",
+      "status" : "PASS"
+    },
+    {
+      "id" : "auth_callback_cancellation_waits_cleanup",
+      "status" : "PASS"
+    },
+    {
+      "id" : "pinkha_callback_cancellation_waits_cleanup",
+      "status" : "PASS"
+    },
+    {
+      "id" : "auth_failed_stop_allows_retry_before_start_drain",
+      "status" : "PASS"
+    },
+    {
+      "id" : "pinkha_failed_stop_allows_retry_before_start_drain",
+      "status" : "PASS"
+    },
+    {
+      "id" : "auth_failed_stop_blocks_new_work_after_drain",
+      "status" : "PASS"
+    },
+    {
+      "id" : "pinkha_failed_stop_blocks_new_work_after_drain",
+      "status" : "PASS"
+    },
+    {
+      "id" : "cancellation_before_stop_admission_preserves_startup",
+      "status" : "PASS"
+    },
+    {
+      "id" : "membership_installed_after_retirement_is_cancelled_and_drained",
+      "status" : "PASS"
+    }
+  ],
+  "fail" : 0,
+  "pass" : 10,
+  "pid" : 27804,
+  "scope" : "source-extracted Swift unit controls with controlled native callbacks",
+  "skip" : 0
+}

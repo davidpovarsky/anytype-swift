@@ -1,0 +1,126 @@
+{
+  "schema": 1,
+  "source_commit": "edded737125fea403d2a59674d56a70b6166cf16",
+  "scope": "Exact production attempt, transition, lifetime, two logout bodies, begin/perform guards, and StartupTasks; controlled native dispatch and callback fixtures. Unit scope only, not full native Auth or Apple app acceptance.",
+  "fragments": [
+    {
+      "source": "auth_controls_review/InvocationDispatchBinding.swift",
+      "declaration": "complete file, imports deduplicated",
+      "source_sha256": "52db8b31f83e26a31f261b57e40a052446fa7a1f729b94f22568a72bdf726dca"
+    },
+    {
+      "source": "auth_controls_review/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteLifetime.swift",
+      "declaration": "complete file, imports deduplicated",
+      "source_sha256": "3a5441dfa7b1247ff80392702fd4926c7976345d7a3a6ca70cacd748f70abf02"
+    },
+    {
+      "source": "auth_controls_review/EditorDocumentWriteOwner.swift",
+      "declaration": "enum EditorDocumentWriteRejection:",
+      "line": 5,
+      "source_sha256": "19d070deff5f5365509df405f0cdcaa66c3b71c615a0e336287eac619b1131ec",
+      "fragment_sha256": "890db42c64d061aaea1df527037535fc848f1e2f836e5179e9d03f505bc904f9"
+    },
+    {
+      "source": "auth_controls_review/EditorDocumentWriteOwner.swift",
+      "declaration": "enum EditorDocumentWriteError:",
+      "line": 18,
+      "source_sha256": "19d070deff5f5365509df405f0cdcaa66c3b71c615a0e336287eac619b1131ec",
+      "fragment_sha256": "1563b337b509fce53610cffa85398978f0debe8d9b75c83c3743da13c374705b"
+    },
+    {
+      "source": "auth_controls_review/EditorDocumentWriteOwner.swift",
+      "declaration": "struct EditorDocumentWriteCapture:",
+      "line": 111,
+      "source_sha256": "19d070deff5f5365509df405f0cdcaa66c3b71c615a0e336287eac619b1131ec",
+      "fragment_sha256": "7a8aad8fa934d0d3c76a58f594c99099d1e7d91e790bd844081e47b24f2e8b71"
+    },
+    {
+      "source": "auth_controls_review/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOperation.swift",
+      "declaration": "complete file, imports deduplicated",
+      "source_sha256": "0dbff98425dcaa77c5135fbd84db6bf6fd94b8be66e895bbda9dd520cce9853c"
+    },
+    {
+      "source": "stageb-review/auth/candidate/Anytype/Sources/ServiceLayer/Account/EditorAccountWriteTransition.swift",
+      "declaration": "complete file, imports deduplicated",
+      "source_sha256": "11eddb8832b7a73b079665562b964073baef7fce3d6594ef3980915a9a429443"
+    },
+    {
+      "source": "stageb-review/auth/candidate/Anytype/Sources/ServiceLayer/Auth/AuthService.swift",
+      "declaration": "enum OriginalAuthRequestContext",
+      "line": 10,
+      "source_sha256": "9ca5eb334ff4fc27140c1a41c6ed24477ef1a8a19ae396a3a556775b065a728f",
+      "fragment_sha256": "a4126f78e55ed09a917ea3c0acca5bbd83d747c754244390de3b6fb24510c75c"
+    },
+    {
+      "source": "stageb-review/auth/candidate/Anytype/Sources/ServiceLayer/Auth/AuthService.swift",
+      "declaration": "enum OriginalAuthFlowError:",
+      "line": 14,
+      "source_sha256": "9ca5eb334ff4fc27140c1a41c6ed24477ef1a8a19ae396a3a556775b065a728f",
+      "fragment_sha256": "7f4f40c6d6b2b6e9748facb4fe8c5f72d1207a55efb972638152adeeec5bf392"
+    },
+    {
+      "source": "stageb-review/auth/candidate/Anytype/Sources/ServiceLayer/Auth/AuthService.swift",
+      "declaration": "final class OriginalAuthAttempt:",
+      "line": 22,
+      "source_sha256": "9ca5eb334ff4fc27140c1a41c6ed24477ef1a8a19ae396a3a556775b065a728f",
+      "fragment_sha256": "e7524cb9cf0c49bed76f5b7161f4b62f20ce2be25e462f9229081fe087dc2402"
+    },
+    {
+      "source": "stageb-review/auth/candidate/Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift",
+      "declaration": "private final class StartupTasks:",
+      "line": 86,
+      "source_sha256": "bc0ccb3f962867031ab960df0210174591fd6b09f1e7aa4b7e6989fb60139af2",
+      "fragment_sha256": "601b1b11a0e89f46fb11a6d1a3a8955b85f181fabc41c2c45d7a0eb44818fd32"
+    },
+    {
+      "source": "stageb-review/auth/candidate/Anytype/Sources/ServiceLayer/Auth/AuthService.swift",
+      "declaration": "func logout(removeData:",
+      "line": 299,
+      "source_sha256": "9ca5eb334ff4fc27140c1a41c6ed24477ef1a8a19ae396a3a556775b065a728f",
+      "fragment_sha256": "62621d7b5fd6be36efbc5cc52d4378a11c4745f5d7840fc2fc1b3ecf1f765410"
+    },
+    {
+      "source": "stageb-review/auth/candidate/Anytype/Sources/ServiceLayer/Auth/AuthService.swift",
+      "declaration": "private func begin(kind:",
+      "line": 384,
+      "source_sha256": "9ca5eb334ff4fc27140c1a41c6ed24477ef1a8a19ae396a3a556775b065a728f",
+      "fragment_sha256": "682ed747653b6226bd52997813594fa518d1c3d9ed4a3332c54624107032db62"
+    },
+    {
+      "source": "stageb-review/auth/candidate/Anytype/Sources/ServiceLayer/Auth/AuthService.swift",
+      "declaration": "private func requireCurrent(",
+      "line": 404,
+      "source_sha256": "9ca5eb334ff4fc27140c1a41c6ed24477ef1a8a19ae396a3a556775b065a728f",
+      "fragment_sha256": "6bdeae7833b13df577f4919e803ddb9cbb368b2778557ca11a94f62896735527"
+    },
+    {
+      "source": "stageb-review/auth/candidate/Anytype/Sources/ServiceLayer/Auth/AuthService.swift",
+      "declaration": "private func finish(_",
+      "line": 409,
+      "source_sha256": "9ca5eb334ff4fc27140c1a41c6ed24477ef1a8a19ae396a3a556775b065a728f",
+      "fragment_sha256": "8e99acda145621f952acdd38a97769300ab4dcb76ef5224389d5d888b2506adc"
+    },
+    {
+      "source": "stageb-review/auth/candidate/Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+      "declaration": "func logout(removeData:",
+      "line": 93,
+      "source_sha256": "a009c7e9d5e2b7fce143f59bcf2c2352ece76ae3f28dd6617997100b52563c7a",
+      "fragment_sha256": "0b01ca09e8ea5eb7b82fd2f894813b27cb494e96988ff718182aca6483014fdd"
+    },
+    {
+      "source": "stageb-review/auth/candidate/Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+      "declaration": "private func perform<Value:",
+      "line": 182,
+      "source_sha256": "a009c7e9d5e2b7fce143f59bcf2c2352ece76ae3f28dd6617997100b52563c7a",
+      "fragment_sha256": "5705d743a3363013d0af093d6df9ede31361e30590ace18002251e8e411557f1"
+    },
+    {
+      "source": "stageb-review/auth/candidate/Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+      "declaration": "private func requireCurrent(",
+      "line": 206,
+      "source_sha256": "a009c7e9d5e2b7fce143f59bcf2c2352ece76ae3f28dd6617997100b52563c7a",
+      "fragment_sha256": "eaa6a74612b5dadeeb805ee6f6bb0af9fca3dd919c282aebd91c2e7401e27675"
+    }
+  ],
+  "previous_passed_tests_rerun": 0
+}
