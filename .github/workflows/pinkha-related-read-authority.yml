@@ -47,38 +47,15 @@ jobs:
         run: |
           python3 -B Tools/Hanlin/prepare_sdk.py --source build/related-read-hanlin-source
           python3 -B Tools/Hanlin/prepare_sdk.py --check
-      - name: Admit source-bound archived controls without rerunning them
+      - name: Qualify original ten Kit methods and preserve the failed workflow receipt
         run: |
-          python3 -B - <<'PYTHON'
-          from pathlib import Path
-          import hashlib, json, subprocess
-          root = Path.cwd()
-          proof = root / 'docs/validation/20261122-related-read-package-controls'
-          record = json.loads((proof / 'evidence.json').read_bytes())
-          assert record['status'] == 'PASS_NEW_PARSER_11_AND_PROCESS_5_CONTROLS'
-          assert record['parserControls']['testCount'] == 11 and record['parserControls']['returnCode'] == 0
-          assert record['processControls']['testCount'] == 5 and record['processControls']['returnCode'] == 0
-          for name, expected in record['sourceSHA256'].items():
-              assert hashlib.sha256((root / name).read_bytes()).hexdigest() == expected, name
-          for name, expected in [('original-tool-output.log', record['parserControls']['originalToolLogSHA256']),
-                                 ('original-process-controls.log', record['processControls']['logSHA256'])]:
-              assert hashlib.sha256((proof / name).read_bytes()).hexdigest() == expected, name
-          for name, expected in record['processControls']['existingHelperGitBlobsAt816e3748d5499e7f5a64783506057c4dca0d83d3'].items():
-              path = 'Tools/PinkhaSimulatorGate/' + name
-              assert subprocess.check_output(['git', 'rev-parse', 'HEAD:' + path], text=True).strip() == expected, path
-          output = root / 'build/related-read-authority/controls'
-          output.mkdir(parents=True, exist_ok=False)
-          admission = dict(status='SOURCE_BOUND_PRIOR_CONTROLS_REUSED', parserControls=11,
-                           processControls=5, controlsRerun=0,
-                           archivedReceiptSHA256=hashlib.sha256((proof / 'evidence.json').read_bytes()).hexdigest())
-          (output / 'reuse.json').write_text(json.dumps(admission, indent=2) + '\n')
-          print(json.dumps(admission))
-          PYTHON
-      - name: Qualify Kit fifteen methods and seventeen argument cases
+          python3 -B Tools/RelatedReadAuthority/admit_observed_kit.py --root "$GITHUB_WORKSPACE" \
+            --source-sha "$EXPECTED_SOURCE_SHA" --kit-root build/related-read-kit-source
+      - name: Execute only the five missing top-level Kit refresh methods
         run: |
           python3 -B Tools/RelatedReadAuthority/run_packages.py --root "$GITHUB_WORKSPACE" \
             --source-sha "$EXPECTED_SOURCE_SHA" --kit-root build/related-read-kit-source \
-            --profile kit-related-current-access
+            --profile kit-related-refresh-pending
       - name: Qualify Any authority mapping three methods and four argument cases
         run: |
           python3 -B Tools/RelatedReadAuthority/run_packages.py --root "$GITHUB_WORKSPACE" \

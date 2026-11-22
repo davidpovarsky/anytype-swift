@@ -1,0 +1,45 @@
+{
+  "status": "PASS_SIXTEEN_AFFECTED_PARSER_CONTROLS",
+  "actualSwiftReruns": 0,
+  "attempts": [
+    {
+      "log": "parser-controls-attempt1.log",
+      "sha256": "32c60a3f4f601a2d89bc0671eb4dc133d5b0d3be39ed8325e836f899454d4854",
+      "passedMethods": [
+        "testActualDeclarationAndArgumentDriftIsRejected",
+        "testAggregatePassCannotReplaceActualPassingTerminal",
+        "testAmbiguousJSONOrUnreviewedSchemaIsRejected",
+        "testDuplicateOrWrongActualArgumentCannotSatisfyCount",
+        "testDuplicateTerminalOrMissingRunEndCannotQualify",
+        "testEmptyCaseTerminalRequiresItsExactDeclaredAndStartedIdentity",
+        "testEmptyTargetRunCannotSubstituteForAnyMethod",
+        "testExactNamedEnumAndBooleanArgumentClosuresAreAccepted",
+        "testFailureKnownIssueSkipAndCancellationRejectWholeRun",
+        "testMissingMethodOrMissingNamedCaseIsRejected",
+        "testSequentialTargetsRequireIndependentCompleteClosure",
+        "testSourceProfilesRequireTheirSeparateExactCounts",
+        "testTopLevelSelectionUsesMethodsAndRequiresNoInventedSuite",
+        "testUnselectedExecutionOrForeignSourceCannotQualify"
+      ],
+      "outcome": "14_PASS_1_ERROR"
+    },
+    {
+      "log": "parser-controls-attempt2.log",
+      "sha256": "c697ebdd348b92cb9af832151965c09fe52a4abaaf87df559e8f1de655bdea24",
+      "passedMethods": [
+        "testActualOriginalTenMethodsQualifyWithoutRerunningSwift",
+        "testEmptySimpleTerminalRequiresItsExactOriginalNamedLog"
+      ],
+      "outcome": "2_PASS"
+    }
+  ],
+  "sourceSHA256": {
+    "Tools/RelatedReadAuthority/run_packages.py": "56d211ff337cdd359a556dadde52ae796d8730945a236c389bb8767169404af3",
+    "Tools/RelatedReadAuthority/test_packages.py": "b4005a9759f81fdbb7f64898a5d0b10566fa0f99f831c6dfba3950a8ae70c4a7",
+    "Tools/RelatedReadAuthority/admit_observed_kit.py": "6d845896cb67ad0ef998ea79fb809f97bb1b368b4772a36f32aed077d53eb90d"
+  },
+  "preservedControls": {
+    "host": 1,
+    "ownedProcess": 5
+  }
+}

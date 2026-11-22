@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "status": "FAIL",
+  "profile": "kit-related-current-access",
+  "appSourceCommit": "f6d565064462d73300e66861c8113dd6e6a085a9",
+  "kitCommit": "511454e49450cb2581ddf77f644146ff3e30dbef",
+  "appBuilds": 0,
+  "simulatorRuns": 0,
+  "nativeACLProof": false,
+  "otherProfilesAcceptedByThisReceipt": false,
+  "buildReuseClaim": "NOT_INFERRED_FROM_SHARED_JOB",
+  "contractSHA256": "33d21a9e29a7a130785c636266792e9ef832a887de2b7ee80756be0d52c48a5b",
+  "sourceSHA256": {
+    "Tests/TorahInspectorCoreTests/RelatedDocumentsAuthorityTests.swift": "62606747bfeeca0f3ceda096f462258f5ee344839d22ecf3e4fb6ee7d0960514",
+    "Tests/TorahInspectorCoreTests/RelatedDocumentsRefreshTests.swift": "a2d16ada336855937f9f06850ecac9269d65ca2e7821a0fe74b4cae416812c6f",
+    "Tests/TorahInspectorUITests/TorahRelatedDocumentsAccessStateTests.swift": "99e29d7f8e4cda29d0f362930e779a02beb70ef0c1eeefbbfda4781d1e9a6a3e"
+  },
+  "swiftVersion": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "xcodeVersion": "Xcode 27.0\nBuild version 27A266a",
+  "platform": {
+    "system": "Darwin",
+    "architecture": "arm64"
+  },
+  "resolution": {
+    "status": "PROCESS_COMPLETE_TEST_ACCEPTANCE_PENDING",
+    "command": [
+      "swift",
+      "package",
+      "--package-path",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source",
+      "resolve"
+    ],
+    "testAcceptanceInferred": false,
+    "returncode": 0,
+    "ownedGroupQuiescence": {
+      "status": "PASS",
+      "pgid": 4010,
+      "live_members": 0,
+      "observations": 1
+    },
+    "originalCommandSHA256": "2a829a3f34a87000ac9bf5deeff4c66a62438d18dccfd68c22fbbf6668c8179b",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "actualKitCheckout": {
+    "path": "/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source",
+    "commit": "511454e49450cb2581ddf77f644146ff3e30dbef"
+  },
+  "execution": {
+    "status": "PROCESS_COMPLETE_TEST_ACCEPTANCE_PENDING",
+    "command": [
+      "swift",
+      "test",
+      "--verbose",
+      "--package-path",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source",
+      "--jobs",
+      "2",
+      "--force-resolved-versions",
+      "--disable-xctest",
+      "--enable-swift-testing",
+      "--no-parallel",
+      "--filter",
+      "TorahInspectorCoreTests\\.RelatedDocumentsAuthorityTests|TorahInspectorCoreTests\\.RelatedDocumentsRefreshTests|TorahInspectorUITests\\.TorahRelatedDocumentsAccessStateTests",
+      "--event-stream-output-path",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/related-read-authority/kit-related-current-access/original-events.jsonl",
+      "--event-stream-version",
+      "0"
+    ],
+    "testAcceptanceInferred": false,
+    "returncode": 0,
+    "ownedGroupQuiescence": {
+      "status": "PASS",
+      "pgid": 4169,
+      "live_members": 0,
+      "observations": 1
+    },
+    "originalCommandSHA256": "b4d6fd61a72d90c94615bdb53241c5c9e3b9eb4172a6d4d7b8c80f6ab53f4469",
+    "logSHA256": "b16212dc85381286f14c371ab0f8505ae1eb8c3f5f10ac62daf46c0e5e572933"
+  },
+  "error": "ValueError: missing, duplicate or unexpected actual argument"
+}

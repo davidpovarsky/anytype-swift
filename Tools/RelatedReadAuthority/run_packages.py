@@ -18,6 +18,7 @@ KIT = "511454e49450cb2581ddf77f644146ff3e30dbef"
 CONTRACT = "docs/architecture/related-read-authority-20261121/test-profiles.json"
 PROFILES = {
     "kit-related-current-access": (15, 17),
+    "kit-related-refresh-pending": (5, 5),
     "any-related-authority-mapping": (3, 4),
     "shared-related-session-lifetime": (1, 1),
 }
@@ -66,6 +67,7 @@ class Method:
     suite: str
     name: str
     arguments: tuple[tuple[str, tuple[str, ...]], ...] = ()
+    top_level: bool = False
 
     @property
     def key(self):
@@ -93,12 +95,13 @@ def load_profile(root, profile_id, kit_root=None):
     contract = read_json(root / CONTRACT)
     require(contract.get("schemaVersion") == 1 and contract.get("requiredKitCommit") == KIT,
             "reviewed common profile or Kit pin changed")
-    rows = [p for p in contract["profiles"] if p["id"] == profile_id]
+    contract_id = "kit-related-current-access" if profile_id == "kit-related-refresh-pending" else profile_id
+    rows = [p for p in contract["profiles"] if p["id"] == contract_id]
     require(len(rows) == 1, "one fixed profile required")
     profile = rows[0]
-    require((profile["expectedMethods"], profile["expectedArgumentCases"]) == PROFILES[profile_id],
+    require((profile["expectedMethods"], profile["expectedArgumentCases"]) == PROFILES[contract_id],
             "fixed method/argument counts changed")
-    if profile_id == "kit-related-current-access":
+    if contract_id == "kit-related-current-access":
         require(kit_root is not None, "exact separate Kit checkout required")
         selection = read_json(kit_root / profile["selectionSource"])
         require((selection["expectedMethods"], selection["expectedActualCases"]) == (15, 17),
@@ -116,7 +119,10 @@ def load_profile(root, profile_id, kit_root=None):
         for row in suite["methods"]:
             args = tuple((label, tuple(spelling(value) for value in values))
                          for label, values in row.get("argumentValues", {}).items())
-            methods.append(Method(suite["target"], suite["suite"], row["name"], args))
+            top_level = contract_id == "kit-related-current-access" and suite["suite"] == "RelatedDocumentsRefreshTests"
+            methods.append(Method(suite["target"], suite["suite"], row["name"], args, top_level))
+    if profile_id == "kit-related-refresh-pending":
+        methods = [m for m in methods if m.top_level]
     require(len({m.key for m in methods}) == len(methods) == PROFILES[profile_id][0],
             "duplicate or missing selected method")
     require(sum(len(m.argument_cases) for m in methods) == PROFILES[profile_id][1],
@@ -138,6 +144,9 @@ def inspect_sources(package, methods):
                 "selected source declarations changed")
         for attributes, name, parameters in declarations:
             method = expected[name]
+            if method.top_level:
+                require(re.search(r"(?m)^@Test[^\n]*\bfunc\s+" + re.escape(name) + r"\s*\(", content),
+                        "reviewed top-level function is no longer declared at file scope")
             values = re.search(r"arguments\s*:\s*\[([^]]+)\]", attributes)
             if method.arguments:
                 label, arguments = method.arguments[0]
@@ -163,20 +172,53 @@ def argument_value(event, method):
     return found[0]
 
 
+def case_identity(value, method):
+    """The observed Swift 6.4 ABI-v0 case identity is opaque, not a parsed hash."""
+    require(isinstance(value, dict) and isinstance(value.get("id"), str) and value["id"],
+            "missing actual parameter case identity")
+    display = value.get("displayName")
+    require(isinstance(display, str), "missing actual parameter display value")
+    match = re.fullmatch(r"(?:[A-Za-z_]\w*\.)*\.?([A-Za-z_]\w*)", display)
+    require(match and match[1] in method.argument_cases, "unexpected parameter case display value")
+    return value["id"], match[1]
+
+
+def selection_filter(methods):
+    """File names are not Swift suites; select the five top-level functions by name."""
+    return "|".join(sorted({
+        (r"\b" + re.escape(m.name) + r"\(") if m.top_level
+        else re.escape(m.target + "." + m.suite)
+        for m in methods
+    }))
+
+
 def passed(event):
     symbols = [message.get("symbol") for message in event.get("messages", [])]
     require("pass" in symbols and not set(symbols) & {"fail", "skip", "passWithKnownIssue", "warning"},
             "original terminal event does not prove a clean pass")
 
 
-def qualify_stream(path, methods):
-    """Require original named start/end pairs, argument pairs and clean run end."""
+def qualify_stream(path, methods, log_path=None):
+    """Qualify actual methods across sequential per-target runs in one invocation.
+
+    Swift 6.4 emits an empty message list on testCaseEnded. The terminal is
+    matched to the exact declared/start _testCase identity and display value;
+    clean function, suite and run terminals plus absence of any issue are also
+    required. An aggregate pass never substitutes for a missing case terminal.
+    """
     expected = {(m.file_id, m.name): m for m in methods}
     require(len(expected) == len(methods), "ambiguous source method identity")
-    suites = {m.suite for m in methods}
+    original_log = Path(log_path).read_text(encoding="utf-8") if log_path is not None else None
+    suites = {(m.target, m.suite) for m in methods if not m.top_level}
     descriptors, mapped, states = {}, {}, {}
     suite_starts, suite_ends = Counter(), Counter()
-    started = ended = False
+    descriptor_runs, pending = {}, []
+    active = False
+    run_number = 0
+    closed_runs = 0
+    run_methods = set()
+    run_suites = set()
+    seen_targets = set()
     versions = set()
     for line in Path(path).read_text(encoding="utf-8").splitlines():
         require(line.strip(), "blank or truncated event-stream record")
@@ -186,10 +228,12 @@ def qualify_stream(path, methods):
         payload = record.get("payload")
         require(isinstance(payload, dict), "missing original event payload")
         if record.get("kind") == "test":
+            require(not active, "descriptor interleaved with a live target run")
             identity = payload.get("id")
             require(isinstance(identity, str) and identity and identity not in descriptors, "duplicate test descriptor")
             require(payload.get("kind") in {"suite", "function"}, "unreviewed test descriptor kind")
             descriptors[identity] = payload
+            pending.append(identity)
             if payload["kind"] == "function":
                 source = payload.get("sourceLocation", {}).get("fileID")
                 name = payload.get("name", "").split("(", 1)[0]
@@ -198,7 +242,21 @@ def qualify_stream(path, methods):
                     require(payload.get("isParameterized") is bool(method.arguments), "actual parameterization differs")
                     require(method.key not in states, "same method discovered twice")
                     mapped[identity] = method
-                    states[method.key] = {"started": False, "ended": False, "starts": [], "ends": []}
+                    cases = {}
+                    if method.arguments:
+                        parameters = payload.get("_parameters")
+                        require(isinstance(parameters, list) and len(parameters) == 1
+                                and parameters[0].get("name") == method.arguments[0][0],
+                                "actual parameter label differs")
+                        declared = payload.get("_testCases")
+                        require(isinstance(declared, list), "missing actual parameter case descriptors")
+                        for case in declared:
+                            case_id, value = case_identity(case, method)
+                            require(case_id not in cases and value not in cases.values(), "duplicate case descriptor")
+                            cases[case_id] = value
+                        require(set(cases.values()) == set(method.argument_cases), "actual case descriptors differ")
+                    states[method.key] = {"started": False, "ended": False, "starts": [], "ends": [],
+                                          "caseIDs": cases, "startedCaseIDs": [], "endedCaseIDs": []}
             continue
         require(record.get("kind") == "event", "unreviewed original record kind")
         event = payload
@@ -209,20 +267,38 @@ def qualify_stream(path, methods):
         require(not any(m.get("symbol") in {"fail", "skip", "passWithKnownIssue", "warning"}
                         for m in event.get("messages", [])), "nonpassing event")
         if kind == "runStarted":
-            require(not started and not ended, "duplicate run start")
-            started = True
+            require(not active, "overlapping or duplicate run start")
+            run_number += 1
+            active = True
+            run_methods, run_suites = set(), set()
+            for identity in pending:
+                descriptor_runs[identity] = run_number
+            pending = []
             continue
-        require(started and not ended, "execution outside one live run")
+        require(active, "execution outside a live target run")
         if kind == "runEnded":
             passed(event)
-            ended = True
+            require(all(states[key]["ended"] for key in run_methods), "target ended with a live method")
+            require(all(suite_starts[key] == suite_ends[key] == 1 for key in run_suites),
+                    "target ended with a live suite")
+            targets = {m.target for m in methods if m.key in run_methods}
+            require(len(targets) <= 1 and not targets & seen_targets, "duplicate or mixed target run")
+            seen_targets.update(targets)
+            text = "\n".join(m.get("text", "") for m in event.get("messages", []))
+            counts = re.findall(r"Test run with (\d+) tests?\b", text)
+            require(counts == [str(len(run_methods))], "target run count differs from actual named terminals")
+            active = False
+            closed_runs += 1
             continue
         identity = event.get("testID")
         require(identity in descriptors, "event has no discovered identity")
+        require(descriptor_runs.get(identity) == run_number, "event belongs to another target run")
         descriptor = descriptors[identity]
         if descriptor["kind"] == "suite":
-            name = descriptor["name"]
+            target = descriptor.get("sourceLocation", {}).get("fileID", "").split("/", 1)[0]
+            name = (target, descriptor["name"])
             require(name in suites and kind in {"testStarted", "testEnded"}, "unselected suite execution")
+            run_suites.add(name)
             if kind == "testStarted":
                 suite_starts[name] += 1
                 require(suite_starts[name] == 1 and not suite_ends[name], "duplicate suite start")
@@ -233,23 +309,44 @@ def qualify_stream(path, methods):
             continue
         require(identity in mapped, "an unselected method executed")
         method, state = mapped[identity], states[mapped[identity].key]
-        require(suite_starts[method.suite] == 1 and not suite_ends[method.suite], "method outside its suite")
+        if not method.top_level:
+            suite_key = (method.target, method.suite)
+            require(suite_starts[suite_key] == 1 and not suite_ends[suite_key], "method outside its suite")
+        run_methods.add(method.key)
         if kind == "testStarted":
             require(not state["started"] and not state["ended"], "duplicate method start")
             state["started"] = True
         elif kind in {"testCaseStarted", "testCaseEnded"}:
             require(state["started"] and not state["ended"], "argument event outside its method")
-            value = argument_value(event, method)
+            case_id, value = case_identity(event.get("_testCase"), method)
+            require(state["caseIDs"].get(case_id) == value, "case terminal or start changed its declared identity")
             if kind == "testCaseStarted":
-                require(value not in state["starts"], "duplicate actual argument")
+                require(argument_value(event, method) == value, "named argument differs from actual case")
+                require(value not in state["starts"] and case_id not in state["startedCaseIDs"], "duplicate actual argument")
                 state["starts"].append(value)
+                state["startedCaseIDs"].append(case_id)
             else:
-                passed(event)
+                if event.get("messages"):
+                    passed(event)
+                    require(argument_value(event, method) == value, "named terminal argument differs")
                 require(value in state["starts"] and value not in state["ends"], "missing or duplicate argument end")
+                require(case_id in state["startedCaseIDs"] and case_id not in state["endedCaseIDs"],
+                        "missing or duplicate actual case terminal")
                 state["ends"].append(value)
+                state["endedCaseIDs"].append(case_id)
         elif kind == "testEnded":
             require(state["started"] and not state["ended"], "missing or duplicate method terminal")
-            passed(event)
+            if event.get("messages") or method.arguments:
+                passed(event)
+            else:
+                # Swift 6.4 elides the simple-case message from ABI-v0, too.
+                # Require its original named human-readable PASS in addition
+                # to the actual descriptor/start/end and clean target closure.
+                require(original_log is not None and sum(m.name == method.name for m in methods) == 1,
+                        "empty simple terminal requires an unambiguous original named log")
+                terminals = re.findall(r"(?m)^✔ Test " + re.escape(method.name)
+                                       + r"\(\) passed after [0-9.]+ seconds\.\r?$", original_log)
+                require(len(terminals) == 1, "missing or duplicate original named simple PASS")
             if method.arguments:
                 require(set(state["starts"]) == set(state["ends"]) == set(method.argument_cases),
                         "missing actual named argument cases")
@@ -258,7 +355,7 @@ def qualify_stream(path, methods):
             state["ended"] = True
         else:
             raise ValueError("unreviewed method event: " + str(kind))
-    require(started and ended and versions == {0}, "incomplete original run")
+    require(closed_runs > 0 and not active and not pending and versions == {0}, "incomplete original run")
     require(set(states) == {m.key for m in methods} and all(s["ended"] for s in states.values()),
             "selected method missing from actual execution")
     require(dict(suite_starts) == dict(suite_ends) == {s: 1 for s in suites}, "suite closure missing")
@@ -387,7 +484,7 @@ def main():
             receipt["packageLockSHA256"] = digest(lock)
         exact_source(root, args.source_sha)
         receipt["actualKitCheckout"] = actual_checkout(package, kit)
-        selected = "|".join(re.escape(target + "." + suite) for target, suite in sorted({(m.target,m.suite) for m in methods}))
+        selected = selection_filter(methods)
         # Both libraries may be compiled; execution is Swift Testing only.
         argv = ["swift", "test", "--verbose", "--package-path", str(package), "--jobs", "2",
                 "--force-resolved-versions", "--disable-xctest", "--enable-swift-testing", "--no-parallel",
@@ -395,7 +492,7 @@ def main():
                 "--event-stream-version", "0"]
         receipt["execution"] = run_command(root, argv, output / "original-test.log", 1500)
         require(receipt["execution"]["returncode"] == 0, "selected package build or tests failed")
-        receipt["methods"] = qualify_stream(output / "original-events.jsonl", methods)
+        receipt["methods"] = qualify_stream(output / "original-events.jsonl", methods, output / "original-test.log")
         receipt["eventsSHA256"] = digest(output / "original-events.jsonl")
         require(inspect_sources(package, methods) == receipt["sourceSHA256"], "selected source changed during execution")
         exact_source(root, args.source_sha)

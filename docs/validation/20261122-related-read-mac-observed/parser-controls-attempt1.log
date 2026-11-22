@@ -1,0 +1,35 @@
+testActualDeclarationAndArgumentDriftIsRejected (test_packages.RelatedReadPackageControls.testActualDeclarationAndArgumentDriftIsRejected) ... ok
+testActualOriginalTenMethodsQualifyWithoutRerunningSwift (test_packages.RelatedReadPackageControls.testActualOriginalTenMethodsQualifyWithoutRerunningSwift) ... ERROR
+testAggregatePassCannotReplaceActualPassingTerminal (test_packages.RelatedReadPackageControls.testAggregatePassCannotReplaceActualPassingTerminal) ... ok
+testAmbiguousJSONOrUnreviewedSchemaIsRejected (test_packages.RelatedReadPackageControls.testAmbiguousJSONOrUnreviewedSchemaIsRejected) ... ok
+testDuplicateOrWrongActualArgumentCannotSatisfyCount (test_packages.RelatedReadPackageControls.testDuplicateOrWrongActualArgumentCannotSatisfyCount) ... ok
+testDuplicateTerminalOrMissingRunEndCannotQualify (test_packages.RelatedReadPackageControls.testDuplicateTerminalOrMissingRunEndCannotQualify) ... ok
+testEmptyCaseTerminalRequiresItsExactDeclaredAndStartedIdentity (test_packages.RelatedReadPackageControls.testEmptyCaseTerminalRequiresItsExactDeclaredAndStartedIdentity) ... ok
+testEmptyTargetRunCannotSubstituteForAnyMethod (test_packages.RelatedReadPackageControls.testEmptyTargetRunCannotSubstituteForAnyMethod) ... ok
+testExactNamedEnumAndBooleanArgumentClosuresAreAccepted (test_packages.RelatedReadPackageControls.testExactNamedEnumAndBooleanArgumentClosuresAreAccepted) ... ok
+testFailureKnownIssueSkipAndCancellationRejectWholeRun (test_packages.RelatedReadPackageControls.testFailureKnownIssueSkipAndCancellationRejectWholeRun) ... ok
+testMissingMethodOrMissingNamedCaseIsRejected (test_packages.RelatedReadPackageControls.testMissingMethodOrMissingNamedCaseIsRejected) ... ok
+testSequentialTargetsRequireIndependentCompleteClosure (test_packages.RelatedReadPackageControls.testSequentialTargetsRequireIndependentCompleteClosure) ... ok
+testSourceProfilesRequireTheirSeparateExactCounts (test_packages.RelatedReadPackageControls.testSourceProfilesRequireTheirSeparateExactCounts) ... ok
+testTopLevelSelectionUsesMethodsAndRequiresNoInventedSuite (test_packages.RelatedReadPackageControls.testTopLevelSelectionUsesMethodsAndRequiresNoInventedSuite) ... ok
+testUnselectedExecutionOrForeignSourceCannotQualify (test_packages.RelatedReadPackageControls.testUnselectedExecutionOrForeignSourceCannotQualify) ... ok
+
+======================================================================
+ERROR: testActualOriginalTenMethodsQualifyWithoutRerunningSwift (test_packages.RelatedReadPackageControls.testActualOriginalTenMethodsQualifyWithoutRerunningSwift)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/292d7a286e77/related-read-repair/Tools/RelatedReadAuthority/test_packages.py", line 186, in testActualOriginalTenMethodsQualifyWithoutRerunningSwift
+    rows = subject.qualify_stream(path, methods)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/292d7a286e77/related-read-repair/Tools/RelatedReadAuthority/run_packages.py", line 338, in qualify_stream
+    passed(event)
+  File "/workspace/scratch/292d7a286e77/related-read-repair/Tools/RelatedReadAuthority/run_packages.py", line 197, in passed
+    require("pass" in symbols and not set(symbols) & {"fail", "skip", "passWithKnownIssue", "warning"},
+  File "/workspace/scratch/292d7a286e77/related-read-repair/Tools/RelatedReadAuthority/run_packages.py", line 29, in require
+    raise ValueError(message)
+ValueError: original terminal event does not prove a clean pass
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.015s
+
+FAILED (errors=1)
