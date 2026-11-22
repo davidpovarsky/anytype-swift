@@ -32,7 +32,7 @@ def git(root, *args):
 def read_manifest():
     value = json.loads((HERE / 'framework_profile.json').read_text())
     require(value.get('schema') == 1 and value.get('branch') == BRANCH
-            and value.get('package_pin_count') == 44, 'Unreviewed framework profile')
+            and value.get('package_pin_count') == 51, 'Unreviewed framework profile')
     require(set(value.get('reviewed_shared_dependency_objects', {})) == {
         '5333421A262E249100238121', '2A685D582B7B854200456E08', 'FA1000002F000001006805CC'},
         'Unreviewed shared runtime dependency object set')
@@ -127,8 +127,8 @@ def source_observation(root, environment=None):
         require(actual == expected, 'Original source/resource tree differs: ' + path)
         trees[path] = actual
     pinned = root / profile['package_resolved_path']
-    require(blob(pinned.read_bytes()) == profile['package_resolved_blob'], 'Original 44 package pins differ')
-    require(len(json.loads(pinned.read_text())['pins']) == 44, 'Original package pin inventory differs')
+    require(blob(pinned.read_bytes()) == profile['package_resolved_blob'], 'Reviewed exact 51-pin package closure differs')
+    require(len(json.loads(pinned.read_text())['pins']) == 51, 'Reviewed package pin inventory differs')
     before = (HERE / 'original_project.pbxproj').read_bytes()
     project = verify_project((root / 'Anytype.xcodeproj/project.pbxproj').read_bytes(), before, profile)
     installer_path = 'Tools/PinkhaNativeDerived/install_verified_heart.py'
