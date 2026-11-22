@@ -1,0 +1,39 @@
+{
+  "status": "SOURCE_API_REVIEW_NATIVE_FRAMEWORK_AND_PANEL_BEHAVIOR_PENDING",
+  "original_application": "9bedb6e70bee3f5bcd35bbfe6de44d6a51729c1b",
+  "source_preservation": "Original package products and all app callers are retained; only reviewed package requirements/lock revisions and canonical Hanlin pin change.",
+  "inspector_receipt": "https://github.com/davidpovarsky/TorahInspectorKit/tree/1ea2aba49ff69af07a8acca94da946f1f8cfc613/docs/validation/20261122-common-sdk/receipt-44968013856",
+  "packages": {
+    "FloatingPanel": {
+      "primary_comparison_url": "https://github.com/scenee/FloatingPanel/compare/22d46c526084724a718b8c39ab77f12452712cc7...3db567a19ff81d2d3ce00399021ee87a4fccf7e0",
+      "comparison_sha256": "64363e75835beee29c440f9df6b5d23dffa980d73304297d1c4812e01870aef9",
+      "base_commit": "22d46c526084724a718b8c39ab77f12452712cc7",
+      "status": "ahead",
+      "changed_files": 78,
+      "findings": [
+        "Original UIKit controller/layout/delegate call families retained; new public animator callback is optional.",
+        "Pan recognizer final-to-open declaration change retains the class; layout anchor external initializer labels remain unchanged.",
+        "Anytype continues existing UIKit callers; no SwiftUI replacement or padding/layout workaround was introduced.",
+        "Version3 minimum-platform/toolchain change does not raise the existing iOS27/Xcode27 route. Native panel interaction remains unverified on this joined Host."
+      ]
+    },
+    "ZIPFoundation": {
+      "primary_comparison_url": "https://github.com/weichsel/ZIPFoundation/compare/02b6abe5f6eef7e3cbd5f247c5cc24e246efcfe0...22787ffb59de99e5dc1fbfe80b19c97a904ad48d",
+      "comparison_sha256": "42e5a51f092dabcc85e0fef8f2f21d8fc56de70fd27ecad36cee903a9bfcacd9",
+      "base_commit": "02b6abe5f6eef7e3cbd5f247c5cc24e246efcfe0",
+      "status": "ahead",
+      "changed_files": 49,
+      "findings": [
+        "Actual Anytype calls FileManager.zipItem(at:to:) and unzipItem(at:to:) in debug export and initial coordinator.",
+        "Exact FileManager+ZIP source comparison preserves those entrypoints; only copyright/stat/metadata details change there.",
+        "No archive format rewrite or compatibility shim; actual Apple dependency compile remains mandatory."
+      ]
+    }
+  },
+  "swiftpm_lock": {
+    "mode": "original -onlyUsePackageVersionsFromResolvedFile preserved",
+    "origin_hash": "original metadata preserved",
+    "primary_source": "https://github.com/swiftlang/swift-package-manager/blob/swift-6.3.3-RELEASE/Sources/Workspace/Workspace%2BDependencies.swift",
+    "finding": "Forced resolved-file route checks current manifests/pins directly; cache origin hash is not recomputed or treated as new resolver evidence. Exact post-build source bytes/pins remain required."
+  }
+}
