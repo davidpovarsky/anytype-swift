@@ -1,0 +1,191 @@
+{
+  "schema": 1,
+  "scope": "Six exact upstream modulemap bytes and one exact CAtomic header; package repositories, other headers and generated modulemap bodies are explicit local Git/filesystem fixtures, not real dependency compilation or Apple acceptance",
+  "maps": [
+    {
+      "identity": "swift-cmark",
+      "path": "src/include/module.modulemap",
+      "content": "module cmark_gfm {\n    header \"cmark-gfm.h\"\n    header \"cmark-gfm_config.h\"\n    header \"cmark-gfm-extension_api.h\"\n    header \"buffer.h\"\n    header \"chunk.h\"\n    header \"cmark_ctype.h\"\n    header \"export.h\"\n    header \"footnotes.h\"\n    header \"houdini.h\"\n    header \"html.h\"\n    header \"inlines.h\"\n    header \"iterator.h\"\n    header \"map.h\"\n    header \"node.h\"\n    header \"parser.h\"\n    header \"plugin.h\"\n    header \"references.h\"\n    header \"registry.h\"\n    header \"render.h\"\n    header \"scanners.h\"\n    header \"syntax_extension.h\"\n    header \"utf8.h\"\n    export *\n}\n",
+      "encoding": "utf-8",
+      "sha": "b8d9e8e80dfddeb6422a69fb922a5a2c96d184d8",
+      "display_url": "https://github.com/swiftlang/swift-cmark/blob/08ddb528923cc1a6527e02b7a1aee9e516ca749a/src/include/module.modulemap",
+      "display_title": "module.modulemap"
+    },
+    {
+      "identity": "swift-cmark",
+      "path": "extensions/include/module.modulemap",
+      "content": "\nmodule cmark_gfm_extensions {\n  header \"cmark-gfm-core-extensions.h\"\n}\n\n",
+      "encoding": "utf-8",
+      "sha": "7bb1bd79ac1c83f1e29af8c85e1d3270ba8f9ef6",
+      "display_url": "https://github.com/swiftlang/swift-cmark/blob/08ddb528923cc1a6527e02b7a1aee9e516ca749a/extensions/include/module.modulemap",
+      "display_title": "module.modulemap"
+    },
+    {
+      "identity": "swift-markdown",
+      "path": "Sources/CAtomic/include/module.modulemap",
+      "content": "module CAtomic {\n  header \"CAtomic.h\"\n  export *\n}\n",
+      "encoding": "utf-8",
+      "sha": "b8ff9bb74f223b3e7bc4dee0628dd37be757d334",
+      "display_url": "https://github.com/swiftlang/swift-markdown/blob/7d9a5ce307528578dfa777d505496bd5f544ad94/Sources/CAtomic/include/module.modulemap",
+      "display_title": "module.modulemap"
+    },
+    {
+      "identity": "iosmath",
+      "path": "iosMath/module.modulemap",
+      "content": "// Explicit module map for iosMath.\n// Only the intended public headers are listed here. Internal headers\n// (MTConfig.h, MTLabel.h, MTUnicode.h, render/internal/*, category files)\n// are deliberately excluded and will not appear in the Swift module interface.\nmodule iosMath {\n    // Primary rendering API\n    header \"render/MTMathUILabel.h\"\n\n    // Font system\n    header \"render/MTFont.h\"\n    header \"render/MTFontManager.h\"\n\n    // Display tree (expert use)\n    header \"render/MTMathListDisplay.h\"\n\n    // Math model\n    header \"lib/MTMathList.h\"\n    header \"lib/MTMathAtomFactory.h\"\n    header \"lib/MTMathListBuilder.h\"\n    header \"lib/MTMathListIndex.h\"\n\n    export *\n}\n",
+      "encoding": "utf-8",
+      "sha": "2f415206b9133e649a0e5e1f16eebcb0d3aa191f",
+      "display_url": "https://github.com/junyan72/iosMath/blob/ba9ab7729b151329c54fd895a7c1859981d9484c/iosMath/module.modulemap",
+      "display_title": "module.modulemap"
+    },
+    {
+      "identity": "promises",
+      "path": "Sources/FBLPromises/include/module.modulemap",
+      "content": "module FBLPromises {\n    umbrella header \"FBLPromises.h\"\n\n    header \"FBLPromise.h\"\n    header \"FBLPromiseError.h\"\n    header \"FBLPromise+All.h\"\n    header \"FBLPromise+Always.h\"\n    header \"FBLPromise+Any.h\"\n    header \"FBLPromise+Async.h\"\n    header \"FBLPromise+Await.h\"\n    header \"FBLPromise+Catch.h\"\n    header \"FBLPromise+Delay.h\"\n    header \"FBLPromise+Do.h\"\n    header \"FBLPromise+Race.h\"\n    header \"FBLPromise+Recover.h\"\n    header \"FBLPromise+Reduce.h\"\n    header \"FBLPromise+Retry.h\"\n    header \"FBLPromise+Testing.h\"\n    header \"FBLPromise+Then.h\"\n    header \"FBLPromise+Timeout.h\"\n    header \"FBLPromise+Validate.h\"\n    header \"FBLPromise+Wrap.h\"\n\n    exclude header \"FBLPromisePrivate.h\"\n\n    export *\n}\n",
+      "encoding": "utf-8",
+      "sha": "b0f7774d9eecab6beaa7b0b289179f6701eee939",
+      "display_url": "https://github.com/google/promises/blob/540318ecedd63d883069ae7f1ed811a2df00b6ac/Sources/FBLPromises/include/module.modulemap",
+      "display_title": "module.modulemap"
+    },
+    {
+      "identity": "firebase-ios-sdk",
+      "path": "CoreOnly/Sources/module.modulemap",
+      "content": "module Firebase {\n  export *\n  header \"Firebase.h\"\n}",
+      "encoding": "utf-8",
+      "sha": "3685b54a68143e83bed4f7a01986ba00702d3a20",
+      "display_url": "https://github.com/firebase/firebase-ios-sdk/blob/6318278e8e64d21f0fdcc69004395e4d34048aaf/CoreOnly/Sources/module.modulemap",
+      "display_title": "module.modulemap"
+    }
+  ],
+  "catomic": {
+    "content": "/*\n This source file is part of the Swift.org open source project\n\n Copyright (c) 2021 Apple Inc. and the Swift project authors\n Licensed under Apache License v2.0 with Runtime Library Exception\n\n See https://swift.org/LICENSE.txt for license information\n See https://swift.org/CONTRIBUTORS.txt for Swift project authors\n*/\n\n#include <stdint.h>\n\n/// The current unique atomic identifier.\nuint64_t _cmarkup_current_unique_id(void);\n\n/// Increment the current unique identifier atomically and return it.\nuint64_t _cmarkup_increment_and_get_unique_id(void);\n",
+    "encoding": "utf-8",
+    "sha": "db27b2b54b09ef60086131fdcae76b233abbed7f",
+    "display_url": "https://github.com/swiftlang/swift-markdown/blob/7d9a5ce307528578dfa777d505496bd5f544ad94/Sources/CAtomic/include/CAtomic.h",
+    "display_title": "CAtomic.h"
+  },
+  "actual_modulemap_paths": [
+    "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/swift-cmark/src/include/module.modulemap",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/swift-cmark/extensions/include/module.modulemap",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/swift-markdown/Sources/CAtomic/include/module.modulemap",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/iosMath/iosMath/module.modulemap",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/promises/Sources/FBLPromises/include/module.modulemap",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/GoogleUtilities-UserDefaults.modulemap",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/GoogleUtilities-Network.modulemap",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/GoogleUtilities-NSData.modulemap",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/GoogleUtilities-AppDelegateSwizzler.modulemap",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/GoogleUtilities-Logger.modulemap",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/GoogleUtilities-Environment.modulemap",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/third-party-IsAppEncrypted.modulemap",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/GoogleUtilities-Reachability.modulemap",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/GoogleDataTransport.modulemap",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/nanopb.modulemap",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/FirebaseInstallations.modulemap",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/FirebaseCore.modulemap",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/firebase-ios-sdk/CoreOnly/Sources/module.modulemap",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/FirebaseMessaging.modulemap"
+  ],
+  "actual_header_arguments": [
+    "-iquote",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/AnytypeOriginalEditor.build/AnytypeOriginalEditor-own-target-headers.hmap",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/AnytypeOriginalEditor.build/AnytypeOriginalEditor-all-non-framework-target-headers.hmap",
+    "-ivfsoverlay",
+    "-iquote",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/swift-cmark/src/include",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/swift-cmark/extensions/include",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/swift-markdown/Sources/CAtomic/include",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/iosMath/iosMath",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/promises/Sources/FBLPromises/include",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/UserDefaults/Public",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/Network/Public",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/NSData+zlib/Public",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/AppDelegateSwizzler/Public",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/Logger/Public",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/Environment/Public",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/GoogleUtilities/third_party/IsAppEncrypted/Public",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/Reachability/Public",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/GoogleDataTransport/GoogleDataTransport/GDTCORLibrary/Public",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/nanopb/spm_headers",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/firebase-ios-sdk/FirebaseInstallations/Source/Library/Public",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/firebase-ios-sdk/FirebaseCore/Sources/Public",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/firebase-ios-sdk/CoreOnly/Sources",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/SourcePackages/checkouts/firebase-ios-sdk/FirebaseMessaging/Sources/Public",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/Build/Products/Debug-Anytype-iphonesimulator/include",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/AnytypeOriginalEditor.build/DerivedSources-normal/arm64",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/AnytypeOriginalEditor.build/DerivedSources/arm64",
+    "-I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-45009422605-1/producer-derived/Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/AnytypeOriginalEditor.build/DerivedSources"
+  ],
+  "actual_pins": [
+    {
+      "identity": "firebase-ios-sdk",
+      "kind": "remoteSourceControl",
+      "location": "https://github.com/firebase/firebase-ios-sdk",
+      "state": {
+        "revision": "6318278e8e64d21f0fdcc69004395e4d34048aaf",
+        "version": "11.8.1"
+      }
+    },
+    {
+      "identity": "googledatatransport",
+      "kind": "remoteSourceControl",
+      "location": "https://github.com/google/GoogleDataTransport.git",
+      "state": {
+        "revision": "617af071af9aa1d6a091d59a202910ac482128f9",
+        "version": "10.1.0"
+      }
+    },
+    {
+      "identity": "googleutilities",
+      "kind": "remoteSourceControl",
+      "location": "https://github.com/google/GoogleUtilities.git",
+      "state": {
+        "revision": "53156c7ec267db846e6b64c9f4c4e31ba4cf75eb",
+        "version": "8.0.2"
+      }
+    },
+    {
+      "identity": "iosmath",
+      "kind": "remoteSourceControl",
+      "location": "https://github.com/junyan72/iosMath",
+      "state": {
+        "revision": "ba9ab7729b151329c54fd895a7c1859981d9484c"
+      }
+    },
+    {
+      "identity": "nanopb",
+      "kind": "remoteSourceControl",
+      "location": "https://github.com/firebase/nanopb.git",
+      "state": {
+        "revision": "b7e1104502eca3a213b46303391ca4d3bc8ddec1",
+        "version": "2.30910.0"
+      }
+    },
+    {
+      "identity": "promises",
+      "kind": "remoteSourceControl",
+      "location": "https://github.com/google/promises.git",
+      "state": {
+        "revision": "540318ecedd63d883069ae7f1ed811a2df00b6ac",
+        "version": "2.4.0"
+      }
+    },
+    {
+      "identity": "swift-cmark",
+      "kind": "remoteSourceControl",
+      "location": "https://github.com/swiftlang/swift-cmark",
+      "state": {
+        "revision": "08ddb528923cc1a6527e02b7a1aee9e516ca749a",
+        "version": "0.9.0"
+      }
+    },
+    {
+      "identity": "swift-markdown",
+      "kind": "remoteSourceControl",
+      "location": "https://github.com/swiftlang/swift-markdown.git",
+      "state": {
+        "revision": "7d9a5ce307528578dfa777d505496bd5f544ad94",
+        "version": "0.7.3"
+      }
+    }
+  ]
+}

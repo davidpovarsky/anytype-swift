@@ -22,6 +22,7 @@ import sys
 import time
 import uuid
 
+from clang_product_closure import export_clang_declarations
 from framework_profile import BRANCH, TARGET, blob, git, read_manifest, sha256, source_observation
 from framework_products import consumer_project, export_products, inventory, original_oracles, verify_observation, verify_public_surface
 from amplitude_simulator_signing import prepare_amplitude_simulator_export
@@ -423,10 +424,26 @@ def execute(args, receipt):
     receipt['actual_public_surface'] = verify_public_surface(
         [json.loads(path.read_text()) for path in graphs], root, host_contract=host_contract)
     write(evidence / 'actual-public-surface.json', receipt['actual_public_surface'])
+    clang_collection = json.loads((evidence / 'compiler-symbolgraph-collection.json').read_text())
+    clang_proof = export_clang_declarations(
+        derived, exported, clang_collection, before, root / profile['package_resolved_path'])
+    write(evidence / 'clang-declaration-export.json', clang_proof)
+    receipt['original_clang_declarations'] = {
+        'module_map_count': len(clang_proof['module_maps']),
+        'header_root_count': len(clang_proof['header_search_paths']),
+        'declaration_file_count': len(clang_proof['files']),
+        'manifest_sha256': sha256(exported / 'SourceProvenance/ClangImportContext.json')}
+    clang_identity = {key: clang_proof[key] for key in (
+        'source_sha', 'run_id', 'run_attempt', 'original_package_lock_sha256')}
+    clang_identity['manifest_sha256'] = receipt['original_clang_declarations']['manifest_sha256']
+    exported_proof['files'] = inventory(exported)
+    exported_proof['bytes'] = sum(item['bytes'] for item in exported_proof['files'].values())
+    write(evidence / 'framework-distribution.json', exported_proof)
     oracle = original_oracles(root, profile)
     write(evidence / 'independent-original-resource-oracles.json', oracle)
     consumer = work / 'external-consumer'
-    project = consumer_project(consumer, exported, root / 'Tools/OriginalEditor/Consumer/ConsumerApp.swift', dynamic)
+    project = consumer_project(consumer, exported, root / 'Tools/OriginalEditor/Consumer/ConsumerApp.swift',
+                               dynamic, clang_identity)
     write(evidence / 'consumer-source-inputs.json', inventory(consumer))
     # Preserve all real products/evidence but remove the original absolute path
     # used by generated Bundle.module build-path fallback before consumer build.

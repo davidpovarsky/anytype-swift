@@ -21,6 +21,7 @@ from unittest.mock import patch
 
 import run_framework_acceptance as driver
 from framework_profile import HERE, TARGET, read_manifest, sha256
+from clang_control_fixtures import write_clang_fixture
 
 
 class StopBeforeRuntime(RuntimeError):
@@ -143,6 +144,8 @@ class OriginalDriverFlowControls(unittest.TestCase):
                        for number, components in enumerate(item['required'])]
             driver.write(directory / (TARGET + '.symbols.json'), {'module': {'name': TARGET},
                 'symbols': symbols})
+            driver.write(self.evidence / 'compiler-symbolgraph-collection.json',
+                         {'scope': 'EXPLICIT_CLANG_EXPORT_BOUNDARY_FIXTURE_NO_COMPILER_EXECUTION'})
         elif name == 'external-consumer-build':
             app = self.work / 'consumer-derived/Build/Products/Debug-iphonesimulator/OriginalEditorConsumer.app'
             shutil.copytree(self.work / 'distribution/Frameworks', app / 'Frameworks')
@@ -159,6 +162,12 @@ class OriginalDriverFlowControls(unittest.TestCase):
                             'timeout_seconds': kwargs['timeout']})
         return subprocess.CompletedProcess(arguments, 0, b'EXPLICIT_CLEANUP_DOUBLE', b'')
 
+    def clang_export_fixture(self, derived, exported, collection, source, lock_path):
+        if collection != {'scope': 'EXPLICIT_CLANG_EXPORT_BOUNDARY_FIXTURE_NO_COMPILER_EXECUTION'}:
+            raise AssertionError('Unexpected original declaration export boundary fixture')
+        proof, _ = write_clang_fixture(exported, source, sha256(lock_path))
+        return proof
+
     def run_driver(self, source_only=False):
         sdk = ModuleType('prepare_sdk')
         sdk.verify = lambda root: {'EXPLICIT_HANLIN_SOURCE_BOUNDARY_DOUBLE': True}
@@ -173,6 +182,7 @@ class OriginalDriverFlowControls(unittest.TestCase):
             stack.enter_context(patch.object(driver, 'source_observation', return_value=self.before))
             stack.enter_context(patch.object(driver, 'source_file_proof', return_value={'EXPLICIT_FILELIST_BOUNDARY_DOUBLE': True}))
             stack.enter_context(patch.object(driver, 'dependency_proof', return_value={'EXPLICIT_DEPENDENCY_BOUNDARY_DOUBLE': True}))
+            stack.enter_context(patch.object(driver, 'export_clang_declarations', side_effect=self.clang_export_fixture))
             stack.enter_context(patch.object(driver, 'original_oracles', return_value={'EXPLICIT_ORACLE_BOUNDARY_DOUBLE': True}))
             stack.enter_context(patch.object(driver.platform, 'system', return_value='Darwin'))
             stack.enter_context(patch.object(driver.platform, 'machine', return_value='arm64'))

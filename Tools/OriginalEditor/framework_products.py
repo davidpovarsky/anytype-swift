@@ -13,21 +13,9 @@ import xml.etree.ElementTree as ET
 from urllib.parse import unquote, urlparse
 
 from framework_profile import TARGET, blob, sha256
+from clang_product_closure import read_clang_imports
 from pbx_source import render, require
-
-
-def inventory(root):
-    root = Path(root).resolve()
-    result = {}
-    for path in sorted(root.rglob('*')):
-        relative = path.relative_to(root).as_posix()
-        mode = path.lstat().st_mode
-        require(not path.is_symlink(), 'Exported acceptance products must contain materialized files: ' + relative)
-        if stat.S_ISDIR(mode):
-            continue
-        require(stat.S_ISREG(mode), 'Special file in product closure: ' + relative)
-        result[relative] = {'bytes': path.stat().st_size, 'sha256': sha256(path)}
-    return result
+from product_inventory import inventory
 
 
 def copy_product(source, target, producer_root):
@@ -224,8 +212,9 @@ def export_products(products, exported, producer_root):
             'files': result, 'bytes': sum(item['bytes'] for item in result.values())}
 
 
-def consumer_project(directory, exported, source, dynamic_frameworks):
+def consumer_project(directory, exported, source, dynamic_frameworks, clang_identity):
     directory, exported, source = Path(directory).resolve(), Path(exported).resolve(), Path(source).resolve()
+    clang_context = read_clang_imports(exported, clang_identity)
     require(not directory.exists(), 'Refusing existing consumer project')
     require(directory != exported and not directory.is_relative_to(exported), 'Consumer must be a separate project')
     directory.mkdir(parents=True)
@@ -282,7 +271,12 @@ def consumer_project(directory, exported, source, dynamic_frameworks):
             'FRAMEWORK_SEARCH_PATHS': ['$(inherited)', '$(PROJECT_DIR)/' + relative_export + '/Frameworks'],
             'SWIFT_INCLUDE_PATHS': ['$(inherited)', '$(PROJECT_DIR)/' + relative_export + '/Modules'],
             'LIBRARY_SEARCH_PATHS': ['$(inherited)', '$(PROJECT_DIR)/' + relative_export + '/Libraries'],
-            'HEADER_SEARCH_PATHS': ['$(inherited)', '$(PROJECT_DIR)/' + relative_export + '/Include'],
+            'HEADER_SEARCH_PATHS': ['$(inherited)', *[
+                '$(PROJECT_DIR)/' + relative_export + '/' + path
+                for path in clang_context['header_search_paths']]],
+            'OTHER_SWIFT_FLAGS': ['$(inherited)', *[
+                argument for path in clang_context['module_maps'] for argument in
+                ['-Xcc', '-fmodule-map-file=$(PROJECT_DIR)/' + relative_export + '/' + path]]],
             'INFOPLIST_KEY_CFBundleDisplayName': 'Original editor resource acceptance',
             'INFOPLIST_KEY_UILaunchScreen_Generation': 'YES', 'INFOPLIST_KEY_LSRequiresIPhoneOS': 'YES'}
         configurations.append(add('Configuration_' + name, {'isa': 'XCBuildConfiguration', 'buildSettings': settings, 'name': name}))

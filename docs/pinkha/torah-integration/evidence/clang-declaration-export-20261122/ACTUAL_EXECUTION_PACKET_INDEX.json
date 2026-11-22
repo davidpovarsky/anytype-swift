@@ -1,0 +1,260 @@
+{
+  "actual_controls": 24,
+  "created_at": "2026-11-22T11:33:12.583601+00:00",
+  "directly_affected_existing_controls": 8,
+  "execution_sha256": "07c53dfebc4bd12f1e358c41add9e536536f17de3d6ec2fd042288f7d5210d79",
+  "files": {
+    "CANDIDATE.patch": {
+      "bytes": 89529,
+      "sha256": "127dfa2c0f241a33b41a858ebf7c7a8587f09e280415f9c5248261d168864461"
+    },
+    "CONTRACT_V2.md": {
+      "bytes": 5675,
+      "sha256": "0ac006133a6d9497eb9afcca720c2f9274dcd8052cc2ff9d96283d65f64d1fed"
+    },
+    "EXECUTION_TRANSFER_RECEIPT.json": {
+      "bytes": 3155,
+      "sha256": "f01b2d54dd58e26f3348b5cf43b2d7944447854a49b217bcb27631fafca493f3"
+    },
+    "INPUTS.json": {
+      "bytes": 68660,
+      "sha256": "6b01a817a7153dea02c80af45d3512fb8317ffb58b6f72ad82ea4fbb710d7ff1"
+    },
+    "SOURCE_PROVENANCE.json": {
+      "bytes": 4481,
+      "sha256": "5775e14a05f954413133ccfe207e3fcd6734db0c19d3bf74e3347b78e830617b"
+    },
+    "base/Tools/OriginalEditor/run_source_controls.py": {
+      "bytes": 30604,
+      "sha256": "ce3bcaa50fff6a741e4af53671fbe86cf5559b3f8fbca158951d3aae92b80fff"
+    },
+    "base/Tools/OriginalEditor/test_framework.py": {
+      "bytes": 19235,
+      "sha256": "06cdb227f7645bbb11cd157fc087776d3b8561016e60ebea76de80fd98da9014"
+    },
+    "base/Tools/OriginalEditor/test_framework_flow.py": {
+      "bytes": 16415,
+      "sha256": "dcd3d7f49dad6fdfbdf1ae72eabfdf456e9c82cea71215806a9c6d7c048535e8"
+    },
+    "candidate/.github/workflows/pinkha-original-editor-framework.yml": {
+      "bytes": 6656,
+      "sha256": "d4d98f510f236fefbf74bc45bc7e646cb81b6258593e4febb600e2b6122c5ac6"
+    },
+    "candidate/Tools/OriginalEditor/clang_control_fixtures.py": {
+      "bytes": 2080,
+      "sha256": "691af430fd19309f5de603bb1a2e2e9186f2502ebf4ac712cf1afee854dada2f"
+    },
+    "candidate/Tools/OriginalEditor/clang_product_closure.py": {
+      "bytes": 24035,
+      "sha256": "67fcc512a616ed6589ab1ef04e0b0960aada038a7ad6cde632fe409f4c7bd0f6"
+    },
+    "candidate/Tools/OriginalEditor/framework_products.py": {
+      "bytes": 31219,
+      "sha256": "e0ee785e4e517cbbbc8173d391fcf897a6e9407ecf13205643bbe405592fe858"
+    },
+    "candidate/Tools/OriginalEditor/module_maps_fixture.json": {
+      "bytes": 16969,
+      "sha256": "a7caccdb2f245bb4bc5f75ac4cc54f15808a49461d4ad4916278e0486ea4fc22"
+    },
+    "candidate/Tools/OriginalEditor/product_inventory.py": {
+      "bytes": 659,
+      "sha256": "6511e13546ffb02ea8b1d18bf401648663de73fbbc0a6849b84412b1b4d1bbfc"
+    },
+    "candidate/Tools/OriginalEditor/retain_unqualified_products.py": {
+      "bytes": 5083,
+      "sha256": "c093e4d51ff752e4f88872d351e83b4e081a3a9000c3ce99f8b933994290b807"
+    },
+    "candidate/Tools/OriginalEditor/run_framework_acceptance.py": {
+      "bytes": 38605,
+      "sha256": "f4efd414ca0f8e9dd041b0b1a663466a9e48f9b1df33035956a238d3349331bc"
+    },
+    "candidate/Tools/OriginalEditor/run_source_controls.py": {
+      "bytes": 32771,
+      "sha256": "db6f07d39e911db3d2a8290b8b258b902d57f01a3ec5adcccc2561c51666c4d4"
+    },
+    "candidate/Tools/OriginalEditor/test_clang_product_closure.py": {
+      "bytes": 24373,
+      "sha256": "8197de40f14b59f21f83be37ca4078daa685aa793e03e6a0c61bc2c1fee595f2"
+    },
+    "candidate/Tools/OriginalEditor/test_framework.py": {
+      "bytes": 19456,
+      "sha256": "3257d22e90bb5328d96a800e02c6a40eb5d0f2879346de501d90a2896432ac77"
+    },
+    "candidate/Tools/OriginalEditor/test_framework_flow.py": {
+      "bytes": 17149,
+      "sha256": "fded1c49613eb4ca0e4739ec899e78ba04c67753df0e01f6b71b66f34f98cf3e"
+    },
+    "execution-first/EXECUTION.json": {
+      "bytes": 2464,
+      "sha256": "07c53dfebc4bd12f1e358c41add9e536536f17de3d6ec2fd042288f7d5210d79"
+    },
+    "execution-first/RESULT.json": {
+      "bytes": 13290,
+      "sha256": "493030b931249359d4fe051c3dc0fa7e60d7209b8a01394d85bccd425fc5682e"
+    },
+    "execution-first/controls.stderr.log": {
+      "bytes": 4950,
+      "sha256": "6dbb610590771d3f730ec98d4bb57edee55983ade1c77dfaf0d0eb3a8cce3e4a"
+    },
+    "execution-first/controls.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "execution-first/original-flow-fixtures/test_boot_command_failure_keeps_build_evidence_but_never_runs_bootstatus_or_install.json": {
+      "bytes": 14762,
+      "sha256": "844ace53524a9599db0328b403e9a85ddaf49c4404a2ae0963efe00d11b98ca2"
+    },
+    "execution-first/original-flow-fixtures/test_build_graph_consumer_and_signature_complete_before_original_boot_pair.json": {
+      "bytes": 15325,
+      "sha256": "0a1abf3a88cc5adcf4bee4f2b205b2068aa332aeae3feb92a4b49d7d3a7225f7"
+    },
+    "execution-first/original-flow-fixtures/test_consumer_compile_failure_cannot_boot_or_install.json": {
+      "bytes": 14093,
+      "sha256": "15369e0e09c2a993ce9f055d8616b9f4dd56885e3ae043f8bbbb702bc1059df5"
+    },
+    "execution-first/original-flow-fixtures/test_different_embedded_product_cannot_reach_boot_or_install.json": {
+      "bytes": 14436,
+      "sha256": "0b044e7610dc8a4b4598bb3a93deb5d28c1d74ba995686b7798fe6fdcc19ed61"
+    },
+    "execution-first/original-flow-fixtures/test_multiple_notices_preserve_exact_contents_and_consumer_destination.json": {
+      "bytes": 15325,
+      "sha256": "657abfe14ce7f1035777b531d72a7a066a6c425ab95da1f0a171620dac3e60f8"
+    },
+    "execution-first/original-flow-fixtures/test_one_notice_preserves_selected_simulator_for_both_original_build_commands.json": {
+      "bytes": 15325,
+      "sha256": "9b0d65a880825b9e148ead2da33f6b1fe85a53ff082fada84499cdd031dc69ed"
+    },
+    "execution-first/original-flow-fixtures/test_same_180_second_boot_timeout_retains_partial_builds_without_runtime_credit.json": {
+      "bytes": 15058,
+      "sha256": "f959a6d880281d100da8a593d73c329e2f156cf2abce2cd7a43a3ae3dc3eba4c"
+    },
+    "execution-provenance/CONSUMER_CONTRACT_REVIEW.json": {
+      "bytes": 1887,
+      "sha256": "1271e61193e3adbff4adea27b60a881b38c1b760e1271f92782e7314aec60499"
+    },
+    "execution-provenance/ROOT_SOURCE_CONTROL_REVIEW.json": {
+      "bytes": 4858,
+      "sha256": "c3d1c27829a131d2073b735b2733471a7fb8d3eec7000e450aeb4cbacf441775"
+    },
+    "execution-provenance/actual_execution_retention.tool.json": {
+      "bytes": 2517,
+      "sha256": "b71019ad5f7a1fc24dbc8545cf313c77f24ebdde908800ed1c275bb2a50254e1"
+    },
+    "execution-provenance/actual_execution_upload.tool.json": {
+      "bytes": 700,
+      "sha256": "862fded733f130c043660ded07c29b7a00695509bd2df409a5b3dca9504ab89a"
+    },
+    "execution-provenance/prepare_remote_inputs.py": {
+      "bytes": 4116,
+      "sha256": "3a0280f3c3e9f5eee568a59d0fc8827a66027d5112f1cdd74de9af5e86140131"
+    },
+    "execution-provenance/remote_preparation.tool.json": {
+      "bytes": 2905,
+      "sha256": "9898159f56492c43700462492f005577969005c3ada47fa0df5b0ee4561c36d9"
+    },
+    "execution-provenance/retain_actual_execution.py": {
+      "bytes": 3315,
+      "sha256": "a49bff77597b47df8e9f3104e4391bebdfc859ff69fd7f0b86845297124ca170"
+    },
+    "harness/Anytype.xcodeproj/project.pbxproj": {
+      "bytes": 148767,
+      "sha256": "e2d73aec1955e2a30bff380a5c4f2af5707e9ef8618152be368107604cc22f6d"
+    },
+    "harness/Tools/OriginalEditor/Consumer/ConsumerApp.swift": {
+      "bytes": 5376,
+      "sha256": "23052e7746bdb66136e1056ef334916056f8f899ae9739012505ca5b745cb271"
+    },
+    "harness/Tools/OriginalEditor/amplitude_simulator_signing.py": {
+      "bytes": 24140,
+      "sha256": "ea222037b349d6266ea6a7a8fba43e155b0eefb4afa9295bf2508e11837744f9"
+    },
+    "harness/Tools/OriginalEditor/anycrypto_simulator_signing.py": {
+      "bytes": 17727,
+      "sha256": "87e2df111acb96df222761e0e5449cdcb8095903859eecaf76e2fb15c1be0a49"
+    },
+    "harness/Tools/OriginalEditor/clang_control_fixtures.py": {
+      "bytes": 2080,
+      "sha256": "691af430fd19309f5de603bb1a2e2e9186f2502ebf4ac712cf1afee854dada2f"
+    },
+    "harness/Tools/OriginalEditor/clang_product_closure.py": {
+      "bytes": 24035,
+      "sha256": "67fcc512a616ed6589ab1ef04e0b0960aada038a7ad6cde632fe409f4c7bd0f6"
+    },
+    "harness/Tools/OriginalEditor/framework_products.py": {
+      "bytes": 31219,
+      "sha256": "e0ee785e4e517cbbbc8173d391fcf897a6e9407ecf13205643bbe405592fe858"
+    },
+    "harness/Tools/OriginalEditor/framework_profile.json": {
+      "bytes": 5349,
+      "sha256": "1cc8cdfc98657155877564443e19f6ab2234309f8265b3648f9314ab098bbc45"
+    },
+    "harness/Tools/OriginalEditor/framework_profile.py": {
+      "bytes": 11620,
+      "sha256": "a7436097519c7275f8b01a78d1dc32e2f2bc5d948c493976563560dbf1e25202"
+    },
+    "harness/Tools/OriginalEditor/module_maps_fixture.json": {
+      "bytes": 16969,
+      "sha256": "a7caccdb2f245bb4bc5f75ac4cc54f15808a49461d4ad4916278e0486ea4fc22"
+    },
+    "harness/Tools/OriginalEditor/observed_package_simulator_signing.py": {
+      "bytes": 13456,
+      "sha256": "c0f1e505a0a95c5122706866a4921c3fac6fb8fcf861805fa15810228501e581"
+    },
+    "harness/Tools/OriginalEditor/original_project.pbxproj": {
+      "bytes": 117644,
+      "sha256": "d051bbc11c82705b4f473b1d51c2e5fedbce015b8ccaa2d5eca00f16fdd1cd59"
+    },
+    "harness/Tools/OriginalEditor/pbx_source.py": {
+      "bytes": 4635,
+      "sha256": "113436ddb2837c9d0c65a650dbde8fe18461c0421a94f6830f60f55961332055"
+    },
+    "harness/Tools/OriginalEditor/product_inventory.py": {
+      "bytes": 659,
+      "sha256": "6511e13546ffb02ea8b1d18bf401648663de73fbbc0a6849b84412b1b4d1bbfc"
+    },
+    "harness/Tools/OriginalEditor/public_host_contract.json": {
+      "bytes": 3501,
+      "sha256": "561eb1e73af3a43b512adae79c918d8f899999aa85fe48b212e949b5b3902e15"
+    },
+    "harness/Tools/OriginalEditor/retain_unqualified_products.py": {
+      "bytes": 5083,
+      "sha256": "c093e4d51ff752e4f88872d351e83b4e081a3a9000c3ce99f8b933994290b807"
+    },
+    "harness/Tools/OriginalEditor/run_framework_acceptance.py": {
+      "bytes": 38605,
+      "sha256": "f4efd414ca0f8e9dd041b0b1a663466a9e48f9b1df33035956a238d3349331bc"
+    },
+    "harness/Tools/OriginalEditor/run_source_controls.py": {
+      "bytes": 32771,
+      "sha256": "db6f07d39e911db3d2a8290b8b258b902d57f01a3ec5adcccc2561c51666c4d4"
+    },
+    "harness/Tools/OriginalEditor/test_clang_product_closure.py": {
+      "bytes": 24373,
+      "sha256": "8197de40f14b59f21f83be37ca4078daa685aa793e03e6a0c61bc2c1fee595f2"
+    },
+    "harness/Tools/OriginalEditor/test_framework.py": {
+      "bytes": 19456,
+      "sha256": "3257d22e90bb5328d96a800e02c6a40eb5d0f2879346de501d90a2896432ac77"
+    },
+    "harness/Tools/OriginalEditor/test_framework_flow.py": {
+      "bytes": 17149,
+      "sha256": "fded1c49613eb4ca0e4739ec899e78ba04c67753df0e01f6b71b66f34f98cf3e"
+    },
+    "prepare_frozen_inputs.py": {
+      "bytes": 7240,
+      "sha256": "bd1757356158ba9360ead7e25d2feca90399c1f6a297d5265bb6708214a05a77"
+    },
+    "run_focused_clang_controls.py": {
+      "bytes": 7664,
+      "sha256": "d68dfcbd0df8e9b1c36d9e5cfe61a21af0f44ee43b7e4f4e16fe2248e4235be7"
+    }
+  },
+  "input_manifest_sha256": "6b01a817a7153dea02c80af45d3512fb8317ffb58b6f72ad82ea4fbb710d7ff1",
+  "new_controls": 16,
+  "result_sha256": "493030b931249359d4fe051c3dc0fa7e60d7209b8a01394d85bccd425fc5682e",
+  "schema": 1,
+  "scope": "Python 3.12.14 real Git 2.56.1/filesystem controls with explicitly synthetic native/build/header/generated-map fixtures. Six modulemap declarations and CAtomic.h are exact pinned upstream bytes. No Clang/Swift/Xcode/native execution or SDK qualification. Python compiler banner does not mean Clang was executed.",
+  "source_base": "5c1d08e327bb8155248885e496cf64200932a812",
+  "status": "FROZEN_SOURCE_AND_ACTUAL_FOCUSED_24_PASS_NO_NATIVE_QUALIFICATION",
+  "unchanged_old_controls_not_replayed_locally": 213
+}

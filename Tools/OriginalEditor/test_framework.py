@@ -14,6 +14,7 @@ from framework_profile import HERE, TARGET, APP_TARGET, SOURCE_GROUP, read_manif
 from framework_products import copy_product, export_products, consumer_project, inventory, verify_observation, verify_public_surface
 from pbx_source import loads, object_text, render
 from run_framework_acceptance import command
+from clang_control_fixtures import write_clang_fixture
 
 ROOT = HERE.parents[1]
 BASELINE = (HERE / 'original_project.pbxproj').read_bytes()
@@ -179,7 +180,9 @@ class RealFilesystemExportControls(unittest.TestCase):
     def test_external_consumer_compiles_only_its_own_importer(self):
         self.export()
         source = ROOT / 'Tools/OriginalEditor/Consumer/ConsumerApp.swift'
-        project = consumer_project(self.root / 'consumer', self.exported, source, [TARGET + '.framework'])
+        _, clang_identity = write_clang_fixture(
+            self.exported, {'head_sha': 'a' * 40, 'run_id': '900001', 'run_attempt': '1'}, 'b' * 64)
+        project = consumer_project(self.root / 'consumer', self.exported, source, [TARGET + '.framework'], clang_identity)
         data = loads((project / 'project.pbxproj').read_text())['objects']
         swift = [value for value in data.values() if value.get('lastKnownFileType') == 'sourcecode.swift']
         self.assertEqual([value['path'] for value in swift], ['ConsumerApp.swift'])

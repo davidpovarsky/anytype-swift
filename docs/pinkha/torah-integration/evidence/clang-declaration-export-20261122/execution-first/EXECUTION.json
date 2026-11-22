@@ -1,0 +1,58 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "/workspace/scratch/30fcb225a423/oe-clang-controls-20261122/ready-v2/run_focused_clang_controls.py",
+        "--evidence",
+        "/workspace/scratch/30fcb225a423/oe-clang-controls-20261122/ready-v2/execution-first",
+        "--execute-child"
+      ],
+      "controls.stderr.log": {
+        "bytes": 4950,
+        "sha256": "6dbb610590771d3f730ec98d4bb57edee55983ade1c77dfaf0d0eb3a8cce3e4a"
+      },
+      "controls.stdout.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "cwd": "/workspace/scratch/30fcb225a423/oe-clang-controls-20261122/ready-v2",
+      "finished_at": "2026-11-22T11:29:11.037056+00:00",
+      "pid": 7,
+      "returncode": 0,
+      "started_at": "2026-11-22T11:29:02.886607+00:00",
+      "timed_out": false,
+      "timeout_seconds": 900
+    }
+  ],
+  "finished_at": "2026-11-22T11:29:11.039445+00:00",
+  "git": {
+    "path": "/usr/local/bin/git",
+    "sha256": "7235cbcfe5c8d62e1cd97059cd5d5887edc3336979df0ce3243cb2a3c1fc880d",
+    "version_stderr": "",
+    "version_stdout": "git version 2.56.1\n"
+  },
+  "input_manifest_sha256": "6b01a817a7153dea02c80af45d3512fb8317ffb58b6f72ad82ea4fbb710d7ff1",
+  "pid": 2,
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "python": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+  "python_sha256": "fa67443527ed9647f760d807e2a38f26340757123e643c4639cf273ed15d5ea7",
+  "python_version": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "retained_outputs": {
+    "RESULT.json": {
+      "bytes": 13290,
+      "sha256": "493030b931249359d4fe051c3dc0fa7e60d7209b8a01394d85bccd425fc5682e"
+    },
+    "controls.stderr.log": {
+      "bytes": 4950,
+      "sha256": "6dbb610590771d3f730ec98d4bb57edee55983ade1c77dfaf0d0eb3a8cce3e4a"
+    },
+    "controls.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "scope": "16 new real Git/filesystem declaration/retention controls and 8 directly affected existing Python driver controls. Explicit native/build/generated-map/header fixtures. No Clang, Swift, Xcode, native, editor, resource or production acceptance.",
+  "started_at": "2026-11-22T11:29:02.783503+00:00",
+  "status": "PASS_FOCUSED_16_NEW_AND_8_DIRECTLY_AFFECTED_CONTROLS"
+}

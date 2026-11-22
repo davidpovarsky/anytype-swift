@@ -80,6 +80,7 @@ jobs:
           python3 Tools/OriginalEditor/prepare_reviewed_macro.py --root "$GITHUB_WORKSPACE" \
             --evidence "$EDITOR_EVIDENCE/macro-trust"
       - name: Build the genuine framework and execute the separate binary consumer
+        id: framework
         timeout-minutes: 120
         run: |
           python3 Tools/OriginalEditor/run_framework_acceptance.py --root "$GITHUB_WORKSPACE" \
@@ -100,6 +101,25 @@ jobs:
         with:
           name: Otzaria-Original-Editor-Framework-Evidence-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ env.EDITOR_EVIDENCE }}/Pinkha-Native-Derived-Evidence.zip
+          if-no-files-found: error
+          retention-days: 14
+      - name: Retain unqualified producer outputs for an explicitly admitted continuation
+        id: retain_unqualified
+        if: always() && steps.framework.outcome == 'failure'
+        run: |
+          python3 Tools/OriginalEditor/retain_unqualified_products.py --root "$GITHUB_WORKSPACE" \
+            --evidence "$EDITOR_EVIDENCE" --work "$EDITOR_WORK"
+          if test -f "$EDITOR_WORK/UNQUALIFIED_PRODUCER.json"; then
+            echo "retained=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Upload unqualified producer outputs without SDK acceptance
+        if: always() && steps.retain_unqualified.outputs.retained == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otzaria-Original-Editor-Unqualified-Producer-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ env.EDITOR_WORK }}/distribution
+            ${{ env.EDITOR_WORK }}/UNQUALIFIED_PRODUCER.json
           if-no-files-found: error
           retention-days: 14
       - name: Upload only the actually qualified simulator framework closure
