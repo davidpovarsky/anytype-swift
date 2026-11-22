@@ -1,0 +1,142 @@
+[
+  {
+    "label": "head-before",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "returncode": 0,
+    "started_at": "2026-11-22T10:41:31.753843+00:00",
+    "finished_at": "2026-11-22T10:41:31.928778+00:00",
+    "stdout_sha256": "67927099a842c5bb86202b1116b872f152a1d1444be840b5ba9b015723683a13",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "status-before",
+    "args": [
+      "status",
+      "--porcelain"
+    ],
+    "returncode": 0,
+    "started_at": "2026-11-22T10:41:31.930773+00:00",
+    "finished_at": "2026-11-22T10:41:32.549758+00:00",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "branch-before",
+    "args": [
+      "branch",
+      "--show-current"
+    ],
+    "returncode": 0,
+    "started_at": "2026-11-22T10:41:32.551316+00:00",
+    "finished_at": "2026-11-22T10:41:32.719849+00:00",
+    "stdout_sha256": "209cc10601f695aa423b9ecaaebf0b35e9fa136fa48bf956031e1a441a097909",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "true-merge-selected",
+    "args": [
+      "merge",
+      "--no-ff",
+      "--no-edit",
+      "-m",
+      "Merge tested original selected-Space lifecycle",
+      "172c639348cab52ed76151c917f56691f25151b2"
+    ],
+    "returncode": 0,
+    "started_at": "2026-11-22T10:41:32.721855+00:00",
+    "finished_at": "2026-11-22T10:41:41.345634+00:00",
+    "stdout_sha256": "976b83d0fd4b1b71a2e80ef3cae9dd6c0ebfab10268dca960300c728028bfbfb",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "merge-head",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "returncode": 0,
+    "started_at": "2026-11-22T10:41:41.348951+00:00",
+    "finished_at": "2026-11-22T10:41:41.552440+00:00",
+    "stdout_sha256": "bbbf9c3592305708f9429ced9e4c94a78ffec7c8c6fda92cfb9e7792cd3ea41d",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "merge-parents",
+    "args": [
+      "show",
+      "-s",
+      "--format=%P",
+      "7cc89cb1a1538ce853b269a002bbd5e3c926d50a"
+    ],
+    "returncode": 0,
+    "started_at": "2026-11-22T10:41:41.555999+00:00",
+    "finished_at": "2026-11-22T10:41:41.846577+00:00",
+    "stdout_sha256": "079148db5332fd27cfb751de97b1ea7f223efa4fac3b2dd79d2c28a373adfbca",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "merge-tree",
+    "args": [
+      "rev-parse",
+      "HEAD^{tree}"
+    ],
+    "returncode": 0,
+    "started_at": "2026-11-22T10:41:41.849142+00:00",
+    "finished_at": "2026-11-22T10:41:42.105576+00:00",
+    "stdout_sha256": "6237c55c10756ae3db1566149b3d305e649f8522b4dc157e12a5c774358dc08f",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "tested-evidence-tree",
+    "args": [
+      "rev-parse",
+      "172c639348cab52ed76151c917f56691f25151b2^{tree}"
+    ],
+    "returncode": 0,
+    "started_at": "2026-11-22T10:41:42.108573+00:00",
+    "finished_at": "2026-11-22T10:41:42.375758+00:00",
+    "stdout_sha256": "6237c55c10756ae3db1566149b3d305e649f8522b4dc157e12a5c774358dc08f",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "clean-after-source-merge",
+    "args": [
+      "status",
+      "--porcelain"
+    ],
+    "returncode": 0,
+    "started_at": "2026-11-22T10:41:42.386633+00:00",
+    "finished_at": "2026-11-22T10:41:43.594921+00:00",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "stage-root-proof",
+    "args": [
+      "add",
+      "--",
+      "docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122"
+    ],
+    "returncode": 0,
+    "started_at": "2026-11-22T10:41:43.931392+00:00",
+    "finished_at": "2026-11-22T10:41:44.485346+00:00",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "proof-whitespace-check",
+    "args": [
+      "diff",
+      "--cached",
+      "--check"
+    ],
+    "returncode": 2,
+    "started_at": "2026-11-22T10:41:44.487159+00:00",
+    "finished_at": "2026-11-22T10:41:44.768315+00:00",
+    "stdout_sha256": "cc0fbadea9357c5490685bdc6e46fb49922aab3c177889d406b0e2a2b7993d17",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

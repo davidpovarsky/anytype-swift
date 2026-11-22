@@ -1,0 +1,138 @@
+{
+  "schema": "original-selected-space-corrected-report/v1",
+  "status": "ACTUAL_SWIFT_TEST_TEN_PASS_WITH_PRESERVED_REPORTING_WRAPPER_FAILURE",
+  "actual_child_command_count": 4,
+  "all_actual_child_commands_exit_zero_without_timeout": true,
+  "tests_run": 10,
+  "tests": [
+    {
+      "classname": "SelectedSpaceControls.OriginalSelectedSpaceControls",
+      "name": "staleNativeFailureAndHelperCompletionCannotClearReplacement()",
+      "time": "0.0121511"
+    },
+    {
+      "classname": "SelectedSpaceControls.OriginalSelectedSpaceControls",
+      "name": "accountAndOriginalViewRetirementAreSynchronousAndCannotReviveSelection()",
+      "time": "0.0119148"
+    },
+    {
+      "classname": "SelectedSpaceControls.OriginalSelectedSpaceControls",
+      "name": "replacementRequestsRetireAThroughBAndABARoundTrip()",
+      "time": "0.0131137"
+    },
+    {
+      "classname": "SelectedSpaceControls.OriginalSelectedSpaceControls",
+      "name": "realPermitRejectsRetiredQueueAndAdmittedCompletionMustDrain()",
+      "time": "0.0088778"
+    },
+    {
+      "classname": "SelectedSpaceControls.OriginalSelectedSpaceControls",
+      "name": "cancellationOfOneAwaiterDoesNotRetireSharedManagerSelection()",
+      "time": "0.0042541"
+    },
+    {
+      "classname": "SelectedSpaceControls.OriginalSelectedSpaceControls",
+      "name": "existingDocumentAndReadLineageCannotGrantGlobalWorkspaceMutation()",
+      "time": "0.0084128"
+    },
+    {
+      "classname": "SelectedSpaceControls.OriginalSelectedSpaceControls",
+      "name": "exactOriginalServiceResponseAndFrozenIdentityRejectSubstitution()",
+      "time": "0.0265668"
+    },
+    {
+      "classname": "SelectedSpaceControls.OriginalSelectedSpaceControls",
+      "name": "managerDeallocationRetiresRetainedSelectionAndCancelsConsumer()",
+      "time": "0.0042898"
+    },
+    {
+      "classname": "SelectedSpaceControls.OriginalSelectedSpaceControls",
+      "name": "missingInitialViewAuthorityIsNeverRecapturedAfterNativeAwait()",
+      "time": "0.0046687"
+    },
+    {
+      "classname": "SelectedSpaceControls.OriginalSelectedSpaceControls",
+      "name": "duplicateStopBlocksNewRequestsAndFencesQueuedOldSubscriptionCallback()",
+      "time": "0.0075353"
+    }
+  ],
+  "fresh_xunit": {
+    "path": "TEST_RESULTS.xml",
+    "bytes": 1870,
+    "sha256": "008d5489b07d8be7e4634ca3b8f945fd0686e24ff43f4289eb13cdcce19d44d5"
+  },
+  "input_manifest": {
+    "path": "INPUTS.json",
+    "bytes": 16351,
+    "sha256": "ef6b5d2758ad78da46e6c152f16d41f050ff478832b41e0cb4db618ed53b0f69"
+  },
+  "actual_runner": {
+    "path": "run_controls.py",
+    "bytes": 6738,
+    "sha256": "fa38adc2e3a99268b83341070812a1bc5bf21ed3f0c17a87084b28010c78747d"
+  },
+  "all17_compiled_inputs_unchanged": true,
+  "canonical_candidates": [
+    {
+      "product_path": "Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift",
+      "raw_v2_input": "CANDIDATE_V2.swift",
+      "raw_v2_sha256": "8ca13778807ab8cadac5ef6dc0d518319e9ef076e7ab446fb05d0ed38c32822e",
+      "raw_v2_bytes": 16190,
+      "canonical_input": "CANDIDATE_CANONICAL.swift",
+      "canonical_sha256": "bf33794809bff676321ae0265e0caf6539fd7feaa69edaf4d14829753c131ac1",
+      "canonical_bytes": 15775,
+      "base_input": "BASE.swift",
+      "base_sha256": "74bf7f9669d20668281b9bd9df9fd256ee80062768d28b86c2b4fabf5b2d9a98",
+      "only_change_from_reviewed_v2": "CRLF -> LF, exact inverse",
+      "semantic_changes_from_v2": 0,
+      "saved_path": "product-inputs/CANDIDATE_CANONICAL.swift"
+    },
+    {
+      "product_path": "Modules/Services/Sources/Services/Workspace/WorkspaceService.swift",
+      "raw_v2_input": "WORKSPACE_SERVICE_CANDIDATE_V2.swift",
+      "raw_v2_sha256": "be1d52cccfcab649d777be3c67924aa353052a7f62d366860767dfad72d8d59d",
+      "raw_v2_bytes": 12412,
+      "canonical_input": "WORKSPACE_SERVICE_CANONICAL.swift",
+      "canonical_sha256": "284c09888c8cf75b2fa54a0f529e0ac6401fbc9ba9c9a923973edaaace061c21",
+      "canonical_bytes": 12134,
+      "base_input": "WORKSPACE_SERVICE_BASE.swift",
+      "base_sha256": "6c5d000a7d82394db583e655c49d63a9acb1b6b6a58b42630e43814679283f4b",
+      "only_change_from_reviewed_v2": "CRLF -> LF, exact inverse",
+      "semantic_changes_from_v2": 0,
+      "saved_path": "product-inputs/WORKSPACE_SERVICE_CANONICAL.swift"
+    }
+  ],
+  "emitted_linked_binary": {
+    "path": ".build/x86_64-unknown-windows-msvc/debug/OriginalSelectedSpacePackageTests.xctest",
+    "bytes": 3975168,
+    "sha256": "456cde35061b5f6e3d5fcdad9fe403133affc8b08b255ba091495fd8cda23a05",
+    "format": "PE32+ x86_64",
+    "independent_os_child_process_identity_observed": false
+  },
+  "wrapper_failure": {
+    "stage": "Post-test report assertion",
+    "condition": "binary basename was expected in stdout",
+    "actual": "SwiftPM placed emitted binary/link commands in stderr; no separately printed child executable invocation or child PID was observed",
+    "original_runner_and_traceback_preserved": true
+  },
+  "evidence_continuation": {
+    "compilers_or_tests_invoked": 0,
+    "prior_tests_replayed": false,
+    "basis": "Existing exact swift test argv/exit, fresh named XML and matching Swift Testing stdout, immutable source inputs and emitted linked PE; linker text is not OS execution proof"
+  },
+  "product_applied": false,
+  "native_calls": 0,
+  "limits": [
+    "Ten new selected-Space manager controls only. Previous composition10, Participant16+1, Space22, Owner/SQLite and other passed suites are not replayed.",
+    "Complete reviewed manager source, excluding four external imports, appending five read-only fixture accessors and inserting one fixture-only duplicate-stop observation counter before the unchanged original await. Removing that field/increment/accessor and restoring imports recovers the complete canonical product. Product candidates are not applied.",
+    "Complete original Owner/Lifetime/Operation/InvocationDispatchBinding/AccountManager and actual Participant/Space actors are reused from the exact published source-bound portable projection. Previous read-only accessors/import mappings remain explicit.",
+    "Positive closed-service boundary compiles actual final WorkspaceService declaration, unchanged workspaceOpen body, exact static extension/error and full original AccountInfo decoder. Unrelated service protocol requirements/methods are omitted explicitly.",
+    "The actual native ClientCommands/Invocation/middleware/protobuf codec are not compiled or called. Named RPC permit.prepare/begin/finish are real original code, while request/response values and queued RPC body are explicit probes.",
+    "Actual original SpaceViewsStorage callback mints permission using injected decoded SpaceView/account values and explicit subscription, Combine/publisher, AtomicStorage and DI probes. No caller boolean or fabricated permission substitutes for its private factory.",
+    "Workspace widgets/type/property readiness or native-child shutdown is not established by void probe completion. The manager contract is selected request/account/Space identity and its own serialized sequence.",
+    "A probe effect admitted before retirement may finish and remain recorded while current-owner publication fails. Rejection is not rollback or no-effect proof.",
+    "No selected destination SDK factory, native annotation receipt, ObjectCreate/schema repair, identity mapping/ACK, production bootstrap or device/Release acceptance is enabled.",
+    "Swift Testing actual serialized tests, Swift6.3.3 toolchain/Swift5 language mode/strict concurrency complete; no Apple framework or native UI qualification.",
+    "Every successful fixture cleanup checks all recorded assertion/hold-timeout errors after actual owned teardown. No per-fixture reset can erase them."
+  ]
+}

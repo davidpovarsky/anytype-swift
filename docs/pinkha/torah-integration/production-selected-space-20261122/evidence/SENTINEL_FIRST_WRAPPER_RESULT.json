@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "job": {
+    "id": "job_5c9fd5c1bbf1",
+    "type": "job_result",
+    "source": "script_run@host_7ec8382e82747448",
+    "severity": "warning",
+    "tool": "script_run",
+    "host": "host_7ec8382e82747448",
+    "status": "failed",
+    "exit_code": 1,
+    "created_at": 1795342303.853993,
+    "started_at": "2026-11-22T10:11:43.896064+00:00",
+    "finished_at": "2026-11-22T10:16:39.010249+00:00",
+    "duration_s": 295.11,
+    "error": null,
+    "output_truncated": false,
+    "timeout_s": 1500,
+    "read": false,
+    "notified": {
+      "telegram": null,
+      "resend": null
+    },
+    "notify_spec": {},
+    "output": "Traceback (most recent call last):\r\n  File \"C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_fd1b6a84998e4aa6af6d255031ef9116\\script.py\", line 10, in <module>\r\n    runpy.run_path(str(out/\"run_controls.py\"),run_name=\"__main__\")\r\n  File \"<frozen runpy>\", line 286, in run_path\r\n  File \"<frozen runpy>\", line 98, in _run_module_code\r\n  File \"<frozen runpy>\", line 88, in _run_code\r\n  File \"C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-selected-final-20261122\\run_controls.py\", line 86, in <module>\r\n    assert binary.name in (out/\"swift-testing-selected-space.stdout.log\").read_text(encoding=\"utf-8\",errors=\"replace\")\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError"
+  }
+}

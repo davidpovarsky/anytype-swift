@@ -1,0 +1,462 @@
+diff --git a/Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift b/Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift
+index a0b729b10e..66a2d5dd02 100644
+--- a/Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift
++++ b/Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift
+@@ -2,6 +2,7 @@ import Foundation
+ import AnytypeCore
+ import Services
+ import AsyncTools
++import ProtobufMessages
+ 
+ protocol ActiveSpaceManagerProtocol: AnyObject, Sendable {
+     var workspaceInfoStream: AnyAsyncSequence<AccountInfo?> { get }
+@@ -14,6 +15,161 @@ protocol ActiveSpaceManagerProtocol: AnyObject, Sendable {
+     func stopSubscription() async
+ }
+ 
++struct OriginalActiveSpaceSelection: Sendable {
++    let accountID: String
++    let accountInfo: AccountInfo
++
++    private let attempt: OriginalActiveSpaceSelectionAttempt
++
++    fileprivate init(attempt: OriginalActiveSpaceSelectionAttempt, info: AccountInfo) throws {
++        try attempt.validateReturnedInfo(info)
++        guard let accountID = attempt.accountID, attempt.spaceViewCapture != nil else {
++            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
++        }
++        self.accountID = accountID
++        accountInfo = info
++        self.attempt = attempt
++        try validate()
++    }
++
++    func validate() throws {
++        try attempt.validate()
++        try attempt.validateReturnedInfo(accountInfo)
++    }
++
++    func capture(
++        matching account: EditorDocumentWriteCapture, spaceId: String
++    ) throws -> EditorDocumentWriteCapture {
++        guard let original = attempt.accountCapture,
++              original.source === account.source,
++              original.token == account.token,
++              accountInfo.accountSpaceId.utf8.elementsEqual(spaceId.utf8) else {
++            throw EditorDocumentWriteError.rejected(.wrongContext)
++        }
++        try account.validate()
++        try validate()
++        return attempt.capture
++    }
++}
++
++fileprivate final class OriginalActiveSpaceSelectionAttempt: Sendable {
++    let requestedSpaceID: String?
++    let accountID: String?
++    let accountCapture: EditorDocumentWriteCapture?
++    let capture: EditorDocumentWriteCapture
++    let spaceViewCapture: EditorDocumentWriteCapture?
++
++    private let spaceView: OriginalSpaceViewPermission?
++    private let accountRetirement: EditorDocumentWriteLifetime.Observation?
++    private let viewRetirement: EditorDocumentWriteLifetime.Observation?
++
++    init(
++        spaceId: String?,
++        accountManager: any AccountManagerProtocol,
++        workspaceStorage: any SpaceViewsStorageProtocol
++    ) throws {
++        let lifetime = EditorDocumentWriteLifetime()
++        requestedSpaceID = spaceId
++        capture = try EditorDocumentWriteCapture(lifetime)
++        if let spaceId {
++            guard !spaceId.isEmpty,
++                  accountManager is AccountManager,
++                  let accountLifetime = accountManager.editorWriteLifetime else {
++                throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
++            }
++            let capturedAccount = try EditorDocumentWriteCapture(accountLifetime)
++            let account = accountManager.account
++            try capturedAccount.validate()
++            guard !account.id.isEmpty else {
++                throw EditorDocumentWriteError.rejected(.wrongContext)
++            }
++            accountID = account.id
++            accountCapture = capturedAccount
++
++            let view = (workspaceStorage as? SpaceViewsStorage).flatMap {
++                try? $0.currentOriginalSpaceViewPermission(spaceId: spaceId)
++            }
++            let capturedView = try view?.capture(matching: capturedAccount, spaceId: spaceId)
++            spaceView = view
++            spaceViewCapture = capturedView
++            accountRetirement = capturedAccount.source.observe(capturedAccount.token) {
++                lifetime.markUnavailable()
++            }
++            viewRetirement = capturedView.map { value in
++                value.source.observe(value.token) { lifetime.markUnavailable() }
++            }
++        } else {
++            accountID = nil
++            accountCapture = nil
++            spaceView = nil
++            spaceViewCapture = nil
++            accountRetirement = nil
++            viewRetirement = nil
++        }
++        try validate()
++    }
++
++    func validate() throws {
++        try Task.checkCancellation()
++        try capture.validate()
++        try accountCapture?.validate()
++        try spaceViewCapture?.validate()
++    }
++
++    func validateReturnedInfo(_ info: AccountInfo) throws {
++        try validate()
++        guard let requestedSpaceID,
++              info.accountSpaceId.utf8.elementsEqual(requestedSpaceID.utf8),
++              !info.spaceViewId.isEmpty else {
++            throw EditorDocumentWriteError.rejected(.wrongContext)
++        }
++        if let spaceView {
++            guard spaceView.originalSpaceView.targetSpaceId.utf8.elementsEqual(requestedSpaceID.utf8),
++                  spaceView.originalSpaceView.id.utf8.elementsEqual(info.spaceViewId.utf8) else {
++                throw EditorDocumentWriteError.rejected(.wrongContext)
++            }
++            try spaceView.validate()
++        }
++    }
++
++    @MainActor
++    func workspaceBinding() throws -> EditorDocumentWriteSourceBinding {
++        try validate()
++        guard let accountCapture, requestedSpaceID != nil else {
++            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
++        }
++        let additional = spaceViewCapture.map { [$0.source] } ?? []
++        let binding = try EditorDocumentWriteSourceBinding(
++            lifetime: capture.source,
++            accountLifetime: accountCapture.source,
++            additionalLifetimes: additional,
++            isCurrent: { (try? self.validate()) != nil }
++        )
++        let expected = [capture] + (spaceViewCapture.map { [$0] } ?? []) + [accountCapture]
++        guard binding.captures.count == expected.count,
++              zip(binding.captures, expected).allSatisfy({ pair in
++                  pair.0.source === pair.1.source && pair.0.token == pair.1.token
++              }) else {
++            throw EditorDocumentWriteError.rejected(.wrongContext)
++        }
++        try validate()
++        try binding.validate()
++        return binding
++    }
++
++    func retire() {
++        capture.source.markUnavailable()
++        accountRetirement?.cancel()
++        viewRetirement?.cancel()
++    }
++
++    deinit {
++        retire()
++    }
++}
++
++private final class OriginalActiveSpaceSubscriptionAttempt: Sendable {}
++
+ actor ActiveSpaceManager: ActiveSpaceManagerProtocol, Sendable {
+     
+     // MARK: - DI
+@@ -22,14 +178,20 @@ actor ActiveSpaceManager: ActiveSpaceManagerProtocol, Sendable {
+     private var workspaceStorage: any SpaceViewsStorageProtocol
+     @Injected(\.workspaceService)
+     private var workspaceService: any WorkspaceServiceProtocol
++    @Injected(\.accountManager)
++    private var accountManager: any AccountManagerProtocol
+     
+     // MARK: - State
+     private var workspaceSubscription: Task<Void, Never>?
++    private var workspaceSubscriptionAttempt: OriginalActiveSpaceSubscriptionAttempt?
+     private var activeSpaceId: String?
+     private var spaceIsLoading: Bool = false
+     private let workspaceInfoStreamInternal = AsyncToManyStream<AccountInfo?>()
+     private let workspaceInfoStorage = AtomicStorage<AccountInfo?>(nil)
++    private let selectedSpaceStorage = AtomicStorage<OriginalActiveSpaceSelection?>(nil)
++    private var selectionAttempt: OriginalActiveSpaceSelectionAttempt?
+     private var setActiveSpaceTask: Task<AccountInfo?, any Error>?
++    private var stopOperation: Task<Void, Never>?
+     
+     @Injected(\.objectTypeProvider)
+     private var objectTypeProvider: any ObjectTypeProviderProtocol
+@@ -41,6 +203,11 @@ actor ActiveSpaceManager: ActiveSpaceManagerProtocol, Sendable {
+     private var spaceRecencyStorage: any SpaceRecencyStorageProtocol
+ 
+     init() {}
++
++    deinit {
++        selectionAttempt?.retire()
++        workspaceSubscription?.cancel()
++    }
+     
+     nonisolated var workspaceInfoStream: AnyAsyncSequence<AccountInfo?> {
+         workspaceInfoStreamInternal.eraseToAnyAsyncSequence()
+@@ -49,65 +216,86 @@ actor ActiveSpaceManager: ActiveSpaceManagerProtocol, Sendable {
+     nonisolated var workspaceInfo: AccountInfo? {
+         workspaceInfoStorage.value
+     }
++
++    nonisolated func currentOriginalActiveSpaceSelection() throws -> OriginalActiveSpaceSelection {
++        guard let selection = selectedSpaceStorage.value else {
++            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
++        }
++        try selection.validate()
++        return selection
++    }
+     
+     @discardableResult
+     func setActiveSpace(spaceId: String?) async throws -> AccountInfo? {
+-        if activeSpaceId == spaceId {
+-            return try await setActiveSpaceTask?.value
++        try Task.checkCancellation()
++        guard stopOperation == nil, InvocationDispatchContext.binding == nil else {
++            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+         }
+-        
++        if activeSpaceId == spaceId,
++           let selectionAttempt,
++           (try? selectionAttempt.validate()) != nil,
++           let setActiveSpaceTask {
++            let value = try await setActiveSpaceTask.value
++            try Task.checkCancellation()
++            try selectionAttempt.validate()
++            return value
++        }
++
++        let attempt = try OriginalActiveSpaceSelectionAttempt(
++            spaceId: spaceId, accountManager: accountManager, workspaceStorage: workspaceStorage
++        )
++        let previous = setActiveSpaceTask
++        selectionAttempt?.retire()
++        selectedSpaceStorage.value = nil
++        selectionAttempt = attempt
+         activeSpaceId = spaceId
+-        setActiveSpaceTask?.cancel()
+-        
+-        setActiveSpaceTask = Task {
+-            spaceIsLoading = true
+-            defer { spaceIsLoading = false }
+-            if let spaceId {
+-                do {
+-                    let info = try await workspaceService.workspaceOpen(spaceId: spaceId, withChat: true)
+-                    workspaceStorage.addSpaceInfo(spaceId: spaceId, info: info)
+-                    spaceRecencyStorage.markInteraction(spaceId: spaceId)
+-                    // prepare spawns its own Task — placing it here lets the widget-doc
+-                    // open race with the two subscription startups below.
+-                    await widgetsObjectsStorage.prepare(info: info)
+-                    await objectTypeProvider.startSubscription(spaceId: spaceId)
+-                    await propertyDetailsStorage.startSubscription(spaceId: spaceId)
+-                    
+-                    PinkhaBootstrapHook.handleSpaceActivated(spaceId: spaceId)
+-                    
+-                    logSwitchSpace(spaceId: spaceId)
+-                    
+-                    workspaceInfoStreamInternal.send(info)
+-                    workspaceInfoStorage.value = info
+-                    return info
+-                } catch {
+-                    // Reset active space for try open again in next time
+-                    await clearActiveSpace()
+-                    throw error
+-                }
+-            } else {
+-                await clearActiveSpace()
+-                return nil
+-            }
++        let task = Task { [self] in
++            if let previous { _ = await previous.result }
++            return try await performSelection(attempt)
+         }
+-        
+-        return try await setActiveSpaceTask?.value
++        setActiveSpaceTask = task
++        let value = try await task.value
++        try Task.checkCancellation()
++        try attempt.validate()
++        return value
+     }
+     
+     func startSubscription() {
++        guard workspaceSubscription == nil, stopOperation == nil else { return }
++        let attempt = OriginalActiveSpaceSubscriptionAttempt()
++        workspaceSubscriptionAttempt = attempt
+         workspaceSubscription = Task { [weak self, workspaceStorage] in
+             for await workspaces in workspaceStorage.allSpaceViewsPublisher.values {
+-                await self?.handleSpaces(workspaces: workspaces)
++                await self?.handleSpaces(workspaces: workspaces, subscription: attempt)
+             }
+         }
+     }
+     
+-    func stopSubscription() {
++    func stopSubscription() async {
++        if let stopOperation {
++            await stopOperation.value
++            return
++        }
++        workspaceSubscriptionAttempt = nil
+         workspaceSubscription?.cancel()
+         workspaceSubscription = nil
++        selectionAttempt?.retire()
++        selectionAttempt = nil
++        selectedSpaceStorage.value = nil
+         activeSpaceId = nil
++        spaceIsLoading = false
+         workspaceInfoStreamInternal.send(nil)
+         workspaceInfoStorage.value = nil
++
++        let previous = setActiveSpaceTask
++        let operation = Task { [self] in
++            if let previous { _ = await previous.result }
++            await clearSharedActiveSpace()
++        }
++        stopOperation = operation
++        await operation.value
++        setActiveSpaceTask = nil
++        stopOperation = nil
+     }
+     
+     func prepareSpaceForPreview(spaceId: String) async {
+@@ -116,13 +304,87 @@ actor ActiveSpaceManager: ActiveSpaceManagerProtocol, Sendable {
+     }
+ 
+     func prepareWidgets() async {
+-        guard let info = workspaceInfoStorage.value else { return }
++        guard stopOperation == nil,
++              let attempt = selectionAttempt,
++              let info = workspaceInfoStorage.value,
++              info.accountSpaceId == attempt.requestedSpaceID,
++              (try? attempt.validateReturnedInfo(info)) != nil else { return }
+         await widgetsObjectsStorage.prepare(info: info)
+     }
+     
+     // MARK: - Private
++
++    private func performSelection(_ attempt: OriginalActiveSpaceSelectionAttempt) async throws -> AccountInfo? {
++        try requireCurrent(attempt)
++        spaceIsLoading = true
++        defer {
++            if selectionAttempt === attempt { spaceIsLoading = false }
++        }
++        do {
++            guard let spaceId = attempt.requestedSpaceID else {
++                workspaceInfoStreamInternal.send(nil)
++                workspaceInfoStorage.value = nil
++                await clearSharedActiveSpace()
++                try requireCurrent(attempt)
++                return nil
++            }
++            let binding = try await attempt.workspaceBinding()
++            try requireCurrent(attempt)
++            let service = workspaceService
++            let info = try await binding.performOperation(rpcNames: ["WorkspaceOpen"]) {
++                try await service.workspaceOpenForOriginalSelection(spaceId: spaceId)
++            }
++            await attempt.capture.source.waitForOperationsToDrain()
++            try requireCurrent(attempt)
++            try attempt.validateReturnedInfo(info)
++            let selection = try attempt.spaceViewCapture.map { _ in
++                try OriginalActiveSpaceSelection(attempt: attempt, info: info)
++            }
++
++            workspaceStorage.addSpaceInfo(spaceId: spaceId, info: info)
++            spaceRecencyStorage.markInteraction(spaceId: spaceId)
++            await widgetsObjectsStorage.prepare(info: info)
++            try requireCurrent(attempt)
++            await objectTypeProvider.startSubscription(spaceId: spaceId)
++            try requireCurrent(attempt)
++            await propertyDetailsStorage.startSubscription(spaceId: spaceId)
++            try requireCurrent(attempt)
++            
++            PinkhaBootstrapHook.handleSpaceActivated(spaceId: spaceId)
++            
++            logSwitchSpace(spaceId: spaceId)
++            
++            try selection?.validate()
++            selectedSpaceStorage.value = selection
++            workspaceInfoStreamInternal.send(info)
++            workspaceInfoStorage.value = info
++            return info
++        } catch {
++            await attempt.capture.source.waitForOperationsToDrain()
++            if selectionAttempt === attempt {
++                attempt.retire()
++                selectionAttempt = nil
++                selectedSpaceStorage.value = nil
++                activeSpaceId = nil
++                workspaceInfoStreamInternal.send(nil)
++                workspaceInfoStorage.value = nil
++                await clearSharedActiveSpace()
++            }
++            throw error
++        }
++    }
++
++    private func requireCurrent(_ attempt: OriginalActiveSpaceSelectionAttempt) throws {
++        guard stopOperation == nil, selectionAttempt === attempt else {
++            throw EditorDocumentWriteError.rejected(.retired)
++        }
++        try attempt.validate()
++    }
+     
+-    private func handleSpaces(workspaces: [SpaceView]) async {
++    private func handleSpaces(
++        workspaces: [SpaceView], subscription: OriginalActiveSpaceSubscriptionAttempt
++    ) async {
++        guard workspaceSubscriptionAttempt === subscription else { return }
+         guard let activeSpaceId,
+               let currentView = workspaces.first(where: { $0.targetSpaceId == activeSpaceId }),
+               (currentView.isLoading && spaceIsLoading) || currentView.isActive else {
+@@ -145,10 +407,7 @@ actor ActiveSpaceManager: ActiveSpaceManagerProtocol, Sendable {
+         }
+     }
+     
+-    private func clearActiveSpace() async {
+-        workspaceInfoStreamInternal.send(nil)
+-        workspaceInfoStorage.value = nil
+-        activeSpaceId = nil
++    private func clearSharedActiveSpace() async {
+         await widgetsObjectsStorage.clear()
+         await objectTypeProvider.stopSubscription()
+         await propertyDetailsStorage.stopSubscription()
+diff --git a/Modules/Services/Sources/Services/Workspace/WorkspaceService.swift b/Modules/Services/Sources/Services/Workspace/WorkspaceService.swift
+index be38e9ba3d..cdf22c38b3 100644
+--- a/Modules/Services/Sources/Services/Workspace/WorkspaceService.swift
++++ b/Modules/Services/Sources/Services/Workspace/WorkspaceService.swift
+@@ -34,11 +34,22 @@ public protocol WorkspaceServiceProtocol: Sendable {
+ }
+ 
+ public extension WorkspaceServiceProtocol {
++    func workspaceOpenForOriginalSelection(spaceId: String) async throws -> AccountInfo {
++        guard let original = self as? WorkspaceService else {
++            throw OriginalWorkspaceSelectionError.unqualifiedService
++        }
++        return try await original.workspaceOpen(spaceId: spaceId, withChat: true)
++    }
++
+     func generateInvite(spaceId: String, inviteType: InviteType?, permissions: InvitePermissions?) async throws -> SpaceInvite {
+         try await generateInvite(spaceId: spaceId, inviteType: inviteType, permissions: permissions, shareWithinSpace: false)
+     }
+ }
+ 
++private enum OriginalWorkspaceSelectionError: Error {
++    case unqualifiedService
++}
++
+ final class WorkspaceService: WorkspaceServiceProtocol {
+     
+     // MARK: - WorkspaceServiceProtocol

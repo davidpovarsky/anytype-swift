@@ -1,0 +1,248 @@
+--- v1/Tests/SelectedSpaceControls/ActiveSpaceManager.swift
++++ final-v2/Tests/SelectedSpaceControls/ActiveSpaceManager.swift
+@@ -188,6 +188,7 @@
+     private var selectionAttempt: OriginalActiveSpaceSelectionAttempt?
+     private var setActiveSpaceTask: Task<AccountInfo?, any Error>?
+     private var stopOperation: Task<Void, Never>?
++    private var probeDuplicateStopEntries = 0
+     
+     @Injected(\.objectTypeProvider)
+     private var objectTypeProvider: any ObjectTypeProviderProtocol
+@@ -269,6 +270,7 @@
+     
+     func stopSubscription() async {
+         if let stopOperation {
++            probeDuplicateStopEntries += 1
+             await stopOperation.value
+             return
+         }
+@@ -412,6 +414,7 @@
+ 
+ 
+ extension ActiveSpaceManager {
++    func probeDuplicateStopEntryCount() -> Int { probeDuplicateStopEntries }
+     func probeCurrentSelectionCapture() -> EditorDocumentWriteCapture? { selectionAttempt?.capture }
+     func probeRequestedSpaceID() -> String? { selectionAttempt?.requestedSpaceID }
+     var probeStopIsPending: Bool { stopOperation != nil }
+--- v1/Tests/SelectedSpaceControls/Controls.swift
++++ final-v2/Tests/SelectedSpaceControls/Controls.swift
+@@ -64,7 +64,7 @@
+         #expect(fixture.rpc.state.value.admitted == 1)
+         #expect(fixture.rpc.state.value.finished == 1)
+         #expect(fixture.rpc.state.value.qos == [.userInitiated])
+-        await fixture.stop()
++        try await fixture.stop()
+ 
+         for response in [selectionInfo("wrong-space"), selectionInfo(view: "wrong-view")] {
+             let rejected = SelectionFixture()
+@@ -77,7 +77,7 @@
+             #expect(rejected.rpc.state.value.effects == 1)
+             #expect(manager.workspaceInfo == nil)
+             #expect(selectionError { _ = try manager.currentOriginalActiveSpaceSelection() } != nil)
+-            await rejected.stop()
++            try await rejected.stop()
+         }
+ 
+         let replacement = ReplacementWorkspaceService(info: selectionInfo().asModel)
+@@ -90,7 +90,7 @@
+         #expect(replacement.shadowCalls.value == 0)
+         #expect(foreign.rpc.state.value.requests.isEmpty)
+         #expect(selectionError { _ = try foreignManager.currentOriginalActiveSpaceSelection() } != nil)
+-        await foreign.stop()
++        try await foreign.stop()
+     }
+ 
+     @Test @MainActor
+@@ -112,7 +112,7 @@
+         #expect(selectionError { _ = try manager.currentOriginalActiveSpaceSelection() }
+                 as? EditorDocumentWriteError == .rejected(.unqualifiedDispatch))
+         #expect(fixture.rpc.state.value.effects == 1)
+-        await fixture.stop()
++        try await fixture.stop()
+     }
+ 
+     @Test @MainActor
+@@ -151,7 +151,7 @@
+             }
+             try manager.currentOriginalActiveSpaceSelection().validate()
+             #expect(selectionError { try originalCapture.validate() } != nil)
+-            await fixture.stop()
++            try await fixture.stop()
+         }
+     }
+ 
+@@ -173,7 +173,7 @@
+             #expect(fixture.rpc.state.value.prepared == 1)
+             #expect(fixture.rpc.state.value.admitted == 0)
+             #expect(fixture.rpc.state.value.effects == 0)
+-            await fixture.stop()
++            try await fixture.stop()
+         }
+         do {
+             let fixture = SelectionFixture()
+@@ -211,7 +211,7 @@
+             #expect(capture.source.probeAdmissionAndWaiterCounts.0 == 0)
+             #expect(manager.workspaceInfo == nil)
+             #expect(selectionError { _ = try manager.currentOriginalActiveSpaceSelection() } != nil)
+-            await fixture.stop()
++            try await fixture.stop()
+         }
+     }
+ 
+@@ -240,7 +240,7 @@
+             #expect(!fixture.widgets.calls.contains("clear"))
+             #expect(!fixture.types.calls.contains("stop"))
+             #expect(!fixture.properties.calls.contains("stop"))
+-            await fixture.stop()
++            try await fixture.stop()
+         }
+     }
+ 
+@@ -259,6 +259,7 @@
+         let firstStop = Task { await manager.stopSubscription() }
+         try await selectionWait { clear.hasEntered }
+         let secondStop = Task { await manager.stopSubscription() }
++        try await selectionWait { await manager.probeDuplicateStopEntryCount() == 1 }
+         #expect(await selectionAsyncError { _ = try await manager.setActiveSpace(spaceId: "space-B") }
+                 as? EditorDocumentWriteError == .rejected(.unqualifiedDispatch))
+         await manager.startSubscription()
+@@ -280,7 +281,7 @@
+         #expect(manager.workspaceInfo == nil)
+         #expect(selectionError { _ = try manager.currentOriginalActiveSpaceSelection() } != nil)
+         #expect(fixture.rpc.state.value.requests.map(\.spaceID) == ["space-A", "space-B"])
+-        await fixture.stop()
++        try await fixture.stop()
+     }
+ 
+     @Test @MainActor
+@@ -315,7 +316,7 @@
+             #expect(renewed.accountID == (changeAccount ? "restored-account" : "actual-account"))
+             #expect(selectionError { try old.validate() } != nil)
+             #expect(fixture.rpc.state.value.effects == 2)
+-            await fixture.stop()
++            try await fixture.stop()
+         }
+     }
+ 
+@@ -337,7 +338,7 @@
+         try manager.currentOriginalActiveSpaceSelection().validate()
+         #expect(fixture.rpc.state.value.requests.count == 1)
+         #expect(fixture.rpc.state.value.effects == 1)
+-        await fixture.stop()
++        try await fixture.stop()
+     }
+ 
+     @Test @MainActor
+@@ -354,7 +355,7 @@
+         #expect(selectionError { try selection.validate() } as? EditorDocumentWriteError == .rejected(.retired))
+         try await selectionWait { fixture.spaces.allSpaceViewsPublisher.probeSubscriberCount == 0 }
+         #expect(fixture.rpc.state.value.effects == 1)
+-        await fixture.stop()
++        try await fixture.stop()
+     }
+ 
+     @Test @MainActor
+@@ -399,6 +400,6 @@
+         #expect(fixture.rpc.state.value.effects == 0)
+         #expect(manager.workspaceInfo == nil)
+         owner.retire()
+-        await fixture.stop()
+-    }
+-}
++        try await fixture.stop()
++    }
++}
+--- v1/Tests/SelectedSpaceControls/SelectionDependencyProbes.swift
++++ final-v2/Tests/SelectedSpaceControls/SelectionDependencyProbes.swift
+@@ -57,6 +57,7 @@
+ enum SelectionProbeError: Error, Sendable, Equatable {
+     case missingDependency, missingBinding, missingPlan, plannedNativeFailure
+     case nativePauseTimedOut, conditionTimedOut, missingManager
++    case recordedAssertions([String])
+ }
+ 
+ enum Anytype_Model_Account {
+@@ -357,7 +358,6 @@
+         )
+         SelectionRegistry.bootstrap.value = []
+         SelectionRegistry.analytics.value = 0
+-        ProbeRegistry.assertions.value = []
+         manager = ActiveSpaceManager()
+     }
+     func start() async { await spaces.startSubscription() }
+@@ -378,9 +378,11 @@
+         widgets.releaseAll()
+         recency.releaseAll()
+     }
+-    func stop() async {
++    func stop() async throws {
+         releaseAll()
+         await manager?.stopSubscription()
+         await spaces.stopSubscription()
+-    }
+-}
++        let assertions = ProbeRegistry.assertions.value
++        guard assertions.isEmpty else { throw SelectionProbeError.recordedAssertions(assertions) }
++    }
++}
+--- v1/run_controls.py
++++ final-v2/run_controls.py
+@@ -1,12 +1,12 @@
+ import pathlib,subprocess,json,hashlib,os,datetime,xml.etree.ElementTree as ET,struct
+-out=pathlib.Path(r"C:\Users\DAVID\AppData\Local\Temp\oe-selected-20261122")
++out=pathlib.Path(r"C:\Users\DAVID\AppData\Local\Temp\oe-selected-final-20261122")
+ repo=pathlib.Path(r"C:\Users\DAVID\Code\anytype-original-selected-space-20261122")
+ swiftc=pathlib.Path(r"C:\Users\DAVID\AppData\Local\Programs\Swift\Toolchains\6.3.3+Asserts\usr\bin\swiftc.EXE")
+ swift=swiftc.parent/"swift.EXE"
+ runtime=pathlib.Path(r"C:\Users\DAVID\AppData\Local\Programs\Swift\Runtimes\6.3.3\usr\bin")
+ def sha(data):return hashlib.sha256(data).hexdigest()
+ assert not (out/"EXECUTION.json").exists(),"First actual execution exists; inspect it instead of replay"
+-assert sha((out/"INPUTS.json").read_bytes())=="b181b4f4af4848bb6864d18e9826cc50bc7c732db9602a675246ff2abf236962"
++assert sha((out/"INPUTS.json").read_bytes())=="ef6b5d2758ad78da46e6c152f16d41f050ff478832b41e0cb4db618ed53b0f69"
+ assert sha(swiftc.read_bytes())=="e1d0a0b20d95a92b22f4906e7ca331a7c8b89be86b2d9a2d215ac24f753e945a"
+ inputs=json.loads((out/"INPUTS.json").read_bytes())
+ def verify_inputs():
+@@ -16,7 +16,7 @@
+   assert sha((out/item["saved_path"]).read_bytes())==item["sha256"],item["path"]
+  for item in inputs["product_candidates"]:
+   assert sha((out/item["saved_path"]).read_bytes())==item["canonical_sha256"],item["saved_path"]
+- for key in ("package","projection_map","preparation"):
++ for key in ("package","projection_map","preparation","fixture_revision"):
+   item=inputs[key];assert sha((out/item["path"]).read_bytes())==item["sha256"],item["path"]
+  actual={p.relative_to(out).as_posix() for p in (out/"Tests").rglob("*.swift")}
+  assert actual=={item["path"] for item in inputs["compiled_inputs"]},"Unbound or missing test source"
+--- v1/PROJECTIONS.json
++++ final-v2/PROJECTIONS.json
+@@ -7,11 +7,20 @@
+       "import AsyncTools",
+       "import ProtobufMessages"
+     ],
+-    "full_body_unchanged": true,
+     "appended_readonly_accessor": {
+       "path": "ManagerReadouts.swift.txt",
+-      "sha256": "c5a4746336184f63549eefa0623aaa89af4939907b6bedf305fc1972d5764013",
+-      "bytes": 588
++      "sha256": "95944f4fec0b5a11ed0db85ccac2025de1508ae040cb212e73dfde73c2ed0a85",
++      "bytes": 665
++    },
++    "product_body_after_removing_explicit_fixture_observations_is_unchanged": true,
++    "fixture_counter_instrumentation": {
++      "field_insertion": "    private var probeDuplicateStopEntries = 0\n",
++      "branch_insertion": "            probeDuplicateStopEntries += 1\n",
++      "exact_branch": "if let stopOperation; immediately before unchanged await stopOperation.value",
++      "purpose": "Positive observation of actual duplicate-stop branch entry before releasing the first held clear; no scheduling/yield assumption",
++      "inverse_recovers_full_canonical_manager_after_restoring_only_original_imports": true,
++      "canonical_sha256": "bf33794809bff676321ae0265e0caf6539fd7feaa69edaf4d14829753c131ac1",
++      "product_source_changed": false
+     }
+   },
+   "service": {
+@@ -112,6 +121,7 @@
+     "actual final service calls explicit ClientCommands/Invocation request and response value boundary",
+     "original InvocationDispatchBinding.prepare and permit.begin/finish execute, with begin/finish on DispatchQueue.global",
+     "optional holds expose prepare-before-dispatch and response-before-permit-completion windows",
+-    "widgets/types/properties/recency/bootstrap/analytics/DI/publishers/decoded SpaceView/account values are explicit probes; no original child-readiness/native unsubscribe claims"
++    "widgets/types/properties/recency/bootstrap/analytics/DI/publishers/decoded SpaceView/account values are explicit probes; no original child-readiness/native unsubscribe claims",
++    "Successful fixture cleanup throws if any recorded assertion exists after manager/Space teardown; no fixture resets the shared assertion list. All13 successful cleanup sites use try await."
+   ]
+ }

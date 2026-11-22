@@ -1,0 +1,39 @@
+{
+  "schema": "otzaria.selected-space-queued-rpc-source-review/1",
+  "reviewer": "/root/native_completion",
+  "status": "APPROVED_FOR_SCOPED_VALIDATION",
+  "source": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-selected-final-20261122\\Tests\\SelectedSpaceControls\\SelectionDependencyProbes.swift",
+  "sha256": "b25d995635bd243e5da0d2bce67fce4436930b447da817215ba7f58e204488b3",
+  "bytes": 15070,
+  "priorSHA256": "b99d28be8a598b68b46d1ad6c294aa63a22958f04443a107602eac855edf5f3e",
+  "queuedInvocationUnchanged": true,
+  "reviewedRanges": [
+    [
+      1,
+      55
+    ],
+    [
+      95,
+      191
+    ],
+    [
+      381,
+      387
+    ]
+  ],
+  "findings": [
+    "The explicit probe obtains the actual task-local InvocationDispatchBinding, prepares WorkspaceOpen, and holds before the real permit.begin call on DispatchQueue.",
+    "Only successful original begin creates completion. Body errors markFailed; defer finishes the actual completion. A failed begin never fabricates an admitted completion.",
+    "The successful response is resumed before the optional afterResponse hold, so returned DTO and actual original completion/drain remain distinct observable boundaries.",
+    "SelectionGate releases continuations outside its AtomicStorage lock and is idempotent. SelectionNativePause has an actual 30-second semaphore bound with idempotent release; these one-use holds are explicit portable transport probes.",
+    "Final cleanup releases all fixture holds, awaits manager and Space cleanup, then throws any recorded probe assertions. No per-fixture reset silently erases a timed-out afterResponse observation."
+  ],
+  "limits": [
+    "No test/Swift build/CI executed by this review.",
+    "The explicit request/response and transport are probes; this does not compile genuine native Invocation, generated protobuf response, middleware or Go.",
+    "Root owns complete ten-case assertions/source mapping/execution approval. This is a complementary call-boundary review only."
+  ],
+  "testsExecuted": 0,
+  "sourceMutations": 0,
+  "created": "2026-11-22T10:13:01.540539+00:00"
+}
