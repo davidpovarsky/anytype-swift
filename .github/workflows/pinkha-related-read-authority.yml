@@ -1,0 +1,80 @@
+name: Focused shared related-read authority components
+
+on:
+  workflow_call:
+    inputs:
+      source_sha:
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  related-components:
+    runs-on: xcode-27
+    timeout-minutes: 65
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+      EXPECTED_SOURCE_SHA: ${{ inputs.source_sha }}
+    steps:
+      - name: Checkout the exact final shared application source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_sha }}
+          persist-credentials: false
+      - name: Checkout the exact reviewed shared Kit
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/TorahInspectorKit
+          ref: 511454e49450cb2581ddf77f644146ff3e30dbef
+          path: build/related-read-kit-source
+          persist-credentials: false
+      - name: Checkout canonical Hanlin source for the Any package graph
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/hanlin-ai
+          ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+          path: build/related-read-hanlin-source
+          persist-credentials: false
+      - name: Select native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Prepare the source-bound SDK dependency without building an App
+        run: |
+          python3 -B Tools/Hanlin/prepare_sdk.py --source build/related-read-hanlin-source
+          python3 -B Tools/Hanlin/prepare_sdk.py --check
+      - name: Check the new profile and owned-process controls
+        run: |
+          mkdir -p build/related-read-authority/controls
+          python3 -B -m unittest discover -s Tools/RelatedReadAuthority -p 'test_*.py' -v > build/related-read-authority/controls/original.log 2>&1
+          cat build/related-read-authority/controls/original.log
+      - name: Qualify Kit fifteen methods and seventeen argument cases
+        run: |
+          python3 -B Tools/RelatedReadAuthority/run_packages.py --root "$GITHUB_WORKSPACE" \
+            --source-sha "$EXPECTED_SOURCE_SHA" --kit-root build/related-read-kit-source \
+            --profile kit-related-current-access
+      - name: Qualify Any authority mapping three methods and four argument cases
+        run: |
+          python3 -B Tools/RelatedReadAuthority/run_packages.py --root "$GITHUB_WORKSPACE" \
+            --source-sha "$EXPECTED_SOURCE_SHA" --profile any-related-authority-mapping
+      - name: Qualify the one shared session lifetime method
+        run: |
+          python3 -B Tools/RelatedReadAuthority/run_packages.py --root "$GITHUB_WORKSPACE" \
+            --source-sha "$EXPECTED_SOURCE_SHA" --profile shared-related-session-lifetime
+      - name: Qualify R05 through its unchanged exact-one controller
+        run: |
+          python3 -B Tools/T5RelatedDocuments/run_r05_alias.py --root "$GITHUB_WORKSPACE" --source-sha "$EXPECTED_SOURCE_SHA"
+      - name: Preserve every original profile stream and separate result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Related-Read-Authority-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            build/related-read-authority/
+            build/t5-r05-alias/
+          if-no-files-found: error
+          retention-days: 14

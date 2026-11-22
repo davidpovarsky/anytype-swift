@@ -17,6 +17,7 @@ on:
           - native-diagnostics
           - t5-coverage-proof
           - t5-r05-alias
+          - related-read-authority-packages
           - t2-native-operations
           - t2-authorized-read-packages
           - t2-native-rpc
@@ -227,6 +228,12 @@ jobs:
     uses: ./.github/workflows/pinkha-t5-corrected-ui.yml
     with:
       heart_source_run_id: ${{ inputs.source_run_id }}
+
+  related-read-authority-packages:
+    if: ${{ inputs.route == 'related-read-authority-packages' }}
+    uses: ./.github/workflows/pinkha-related-read-authority.yml
+    with:
+      source_sha: ${{ github.sha }}
 
   t5-r05-alias:
     if: ${{ inputs.route == 't5-r05-alias' }}

@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "scope": "Affected repository cache/owner lifecycle and the actual Foundation panel request-state declarations",
+  "executionBoundary": "Component test profile; this file is not an execution receipt. Full SwiftUI, native ACL and app journeys are separate.",
+  "suites": [
+    {
+      "target": "TorahInspectorCoreTests",
+      "suite": "RelatedDocumentsAuthorityTests",
+      "methods": [
+        {
+          "name": "currentAccessFailureEvictsEverySelection",
+          "argumentValues": {
+            "reason": [
+              "denied",
+              "invalidated"
+            ]
+          }
+        },
+        {
+          "name": "retirementRejectsCachedAndNewReadsUntilReactivation"
+        },
+        {
+          "name": "retiredUncooperativeResultCannotReplaceReactivatedOwner"
+        },
+        {
+          "name": "currentDenialFencesAnUncooperativeOtherSelection"
+        },
+        {
+          "name": "lateDenialCannotInvalidateNewOwnerOrAnotherRepository"
+        },
+        {
+          "name": "transientFailureKeepsOtherCachesAndDoesNotSignalAuthorityLoss"
+        }
+      ]
+    },
+    {
+      "target": "TorahInspectorCoreTests",
+      "suite": "RelatedDocumentsRefreshTests",
+      "methods": [
+        {
+          "name": "preCancelledCachedRelatedDocumentsRequestThrowsWithoutChangingCache"
+        },
+        {
+          "name": "preCancelledUncachedRelatedDocumentsRequestDoesNotStartFetch"
+        },
+        {
+          "name": "preCancelledRelatedDocumentsRefreshDoesNotInvalidateCacheOrFetch"
+        },
+        {
+          "name": "invalidatedLateResultCannotReplaceFreshRelatedDocuments"
+        },
+        {
+          "name": "refreshedCoverageRetainsExactBlocksAndDropsThemAfterRuntimeFallback"
+        }
+      ]
+    },
+    {
+      "target": "TorahInspectorUITests",
+      "suite": "TorahRelatedDocumentsAccessStateTests",
+      "methods": [
+        {
+          "name": "permanentAccessFailureDropsPreviousRows",
+          "argumentValues": {
+            "reason": [
+              "denied",
+              "invalidated"
+            ]
+          }
+        },
+        {
+          "name": "transientFailureKeepsPreviousRowsWithItsError"
+        },
+        {
+          "name": "ownerInvalidationClearsRowsAndRejectsLatePublication"
+        },
+        {
+          "name": "staleDenialCannotClearANewerPanelRequest"
+        }
+      ]
+    }
+  ],
+  "expectedMethods": 15,
+  "expectedActualCases": 17,
+  "newMethods": 10,
+  "newActualCases": 12,
+  "affectedExistingMethods": 5
+}
+

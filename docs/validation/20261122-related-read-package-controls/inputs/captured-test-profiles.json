@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "requiredKitCommit": "511454e49450cb2581ddf77f644146ff3e30dbef",
+  "executionStatus": "NOT_RUN",
+  "profiles": [
+    {
+      "id": "kit-related-current-access",
+      "repository": "TorahInspectorKit",
+      "packagePath": ".",
+      "suiteTypes": [
+        "RelatedDocumentsAuthorityTests",
+        "RelatedDocumentsRefreshTests",
+        "TorahRelatedDocumentsAccessStateTests"
+      ],
+      "expectedMethods": 15,
+      "expectedArgumentCases": 17,
+      "selectionSource": "docs/validation/20261121-related-read-authority/test-profile.json",
+      "command": [
+        "swift",
+        "test",
+        "--filter",
+        "RelatedDocumentsAuthorityTests|RelatedDocumentsRefreshTests|TorahRelatedDocumentsAccessStateTests"
+      ]
+    },
+    {
+      "id": "any-related-authority-mapping",
+      "packagePath": "Modules/PinkhaAnyUI",
+      "suiteTypes": [
+        "AnyTorahRelatedReadFailureTests"
+      ],
+      "expectedMethods": 3,
+      "expectedArgumentCases": 4,
+      "methods": [
+        {
+          "name": "confirmedNativeAndOwnerFailuresDiscardPriorResults"
+        },
+        {
+          "name": "cancellationUsesActualOwnerState",
+          "argumentValues": {
+            "ownerIsActive": [
+              false,
+              true
+            ]
+          }
+        },
+        {
+          "name": "ordinaryFailuresAreNotRelabelledAsPermissionDenials"
+        }
+      ],
+      "command": [
+        "swift",
+        "test",
+        "--package-path",
+        "Modules/PinkhaAnyUI",
+        "--filter",
+        "AnyTorahRelatedReadFailureTests"
+      ]
+    },
+    {
+      "id": "heart-related-authority-mapping",
+      "xcodeProject": "Anytype.xcodeproj",
+      "testTarget": "AnytypeTests",
+      "suiteTypes": [
+        "TorahRelatedReadAuthorityMappingTests"
+      ],
+      "expectedMethods": 2,
+      "expectedArgumentCases": 3,
+      "methods": [
+        {
+          "name": "nativeDenialRequiresExactTypedCodeAndDescription",
+          "argumentValues": {
+            "objectShow": [
+              false,
+              true
+            ]
+          }
+        },
+        {
+          "name": "providerAndTransportDescriptionsCannotForgeNativeAuthority"
+        }
+      ],
+      "selectionBoundary": "Select the complete Swift Testing suite from the necessary Debug host build; verify its raw named argument cases. Do not create another app build just for this suite."
+    },
+    {
+      "id": "shared-related-session-lifetime",
+      "packagePath": "Modules/PinkhaTorahPresentation",
+      "suiteTypes": [
+        "SharedRelatedDocumentsLifetimeTests"
+      ],
+      "expectedMethods": 1,
+      "expectedArgumentCases": 1,
+      "methods": [
+        {
+          "name": "documentRetirementFencesRelatedCacheUntilExplicitReactivation"
+        }
+      ],
+      "command": [
+        "swift",
+        "test",
+        "--package-path",
+        "Modules/PinkhaTorahPresentation",
+        "--filter",
+        "SharedRelatedDocumentsLifetimeTests"
+      ]
+    },
+    {
+      "id": "r05-resolved-identity",
+      "packagePath": "Modules/PinkhaTorahPresentation",
+      "suiteTypes": [
+        "T5ResolvedAliasIdentityTests"
+      ],
+      "expectedMethods": 1,
+      "expectedArgumentCases": 1,
+      "methods": [
+        {
+          "name": "testResolvedAliasesRemainDistinctFromOtherVersesAndProviders"
+        }
+      ],
+      "selectionBoundary": "Use the existing R05 exact-one controller unchanged apart from its reviewed immutable Kit pin. A separate step may reuse this same package build if SwiftPM finds its unchanged outputs valid; the shared job alone does not establish build reuse."
+    }
+  ],
+  "validationRules": [
+    "Each profile requires actual named terminal results and its own source-bound receipt.",
+    "Declarations and syntax compilation are not executed-case evidence.",
+    "Do not combine totals across profiles or weaken the existing R05 exact-one gate.",
+    "Verify only affected existing Kit cache tests; retain unrelated provider/UIKit/native originals."
+  ]
+}
+
