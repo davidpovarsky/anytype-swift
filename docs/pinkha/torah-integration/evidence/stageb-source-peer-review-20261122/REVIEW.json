@@ -1,0 +1,50 @@
+{
+  "schema": "otzaria-stageb-source-peer-review/1",
+  "reviewer": "heart_completion",
+  "review_kind": "bounded source peer review",
+  "reviewed_sources": {
+    "sdk": {
+      "repository": "davidpovarsky/anytype-swift",
+      "sha": "4cc56934121d73152a8d73f0b97cfea81ae3864b",
+      "parent": "b5162d777e3ebc5c4c0d044e02b52347c0c3dd6e",
+      "url": "https://github.com/davidpovarsky/anytype-swift/commit/4cc56934121d73152a8d73f0b97cfea81ae3864b"
+    },
+    "application": {
+      "repository": "davidpovarsky/Maktabah",
+      "sha": "cdc8cbb3b0fa9ea428b0367d764fe82ac6c5899a",
+      "parent": "a1940076187c0c2e6047115162771f0e48e5cab8",
+      "url": "https://github.com/davidpovarsky/Maktabah/commit/cdc8cbb3b0fa9ea428b0367d764fe82ac6c5899a"
+    }
+  },
+  "date": "2026-11-22",
+  "conclusion": "No actionable source defect found in the bounded scope. Approved for combination and actual SDK build; native acceptance remains unproven.",
+  "reviewed_assertions": [
+    "Mixed Hebrew/English input uses two original UITextView controls, real capture/CAS/import and rendered block verification.",
+    "Actual app terminate/notRunning/launch transition preserves launch arguments and requires different positive ProcessInfo PIDs.",
+    "Resume binds saved workspace namespace, profile, annotation UUID/ID, revision, payload/source/body/archive hashes to the same original account, Space and object.",
+    "Resume invokes original wallet recovery/account selection and existing Workspace/ObjectShow, without replacement import or creation.",
+    "Owned Keychain storage is add-only. The exact owned query is consumed and absence-verified before recovery RPCs. Cleanup errors are retained; explicit Close awaits cleanup; cleanupRequested rejects late credential storage.",
+    "Qualification session and receipt remain externally nonconstructible; auth SPI requires the final original concrete service, rejecting substituted protocol implementations.",
+    "workspaceOpenForOriginalSelection retains withChat=true by default; qualification resume explicitly uses false.",
+    "The pending collector SOURCE intentionally rejects execution until final source and SDK artifact binding."
+  ],
+  "tests_executed_by_this_review": 0,
+  "retained_prior_evidence": {
+    "public_controls_pass": 4,
+    "collector_controls_pass": 20,
+    "classification": "source/synthetic controls; no replay"
+  },
+  "remaining_required": [
+    "Finalize immutable application and SDK producer/artifact pins",
+    "Actual Apple SDK compilation and surface/distribution checks",
+    "One focused native StageB acceptance run"
+  ],
+  "not_claimed": [
+    "Apple compile success",
+    "Native StageB acceptance",
+    "Production schema registration",
+    "Semantic native snapshot digest",
+    "Body acknowledgement"
+  ],
+  "mutations": "Review documentation only; no reviewed source or test changed."
+}
