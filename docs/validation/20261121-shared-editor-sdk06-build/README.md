@@ -148,3 +148,18 @@ Both passed in job `job_c9057128b7be`,
 2026-11-21T22:13:19Z–22:13:23Z, Python 3.12, exit 0. The previous fourteen-control
 result remains evidence for the unchanged selection, argument and source gates;
 those cases were not repeated.
+
+## 2026-11-22: related-read authority joins the same required build
+
+The current wrapper adds the two Heart authority-mapping methods / three actual
+argument cases to the still-pending editor10/15 and table11/14 scope. Discovery
+is now exactly30 compiled declarations and selection exactly23 methods /32
+cases; the same seven excluded focus methods and separate acknowledgement7
+remain unchanged. No extra app build is created.
+
+The component validators retain the original editor/table contracts. Each of
+the three components now receives a separate source/build/raw-result receipt,
+with combined status `SHARED_EDITOR_TABLE_AUTHORITY_COMPONENT_PASS`.
+The old receipts above remain historical evidence for their original scopes.
+Actual Apple23/32 execution is NOT_RUN pending the new source-bound SDK06 run.
+See [the precise controller scope and 18-control proof](../20261122-sdk-related-authority-controls/README.md).

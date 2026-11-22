@@ -1,6 +1,6 @@
-"""Run the reviewed editor and table cases in the existing SDK06 Debug build.
+"""Run reviewed editor, table and authority cases in the existing SDK06 build.
 
-Keep the original two source/argument contracts. Enumerate the compiled suites,
+Keep each independent source/argument contract. Enumerate the compiled suites,
 then verify the exact selected signatures before running any component test.
 This wrapper never creates or restores an application build.
 """
@@ -19,31 +19,34 @@ if str(HANLIN_TOOLS) not in sys.path:
 import run_host_tests as host
 import shared_editor_profile as editor
 import shared_table_profile as table
+import related_read_authority_profile as authority
 
 LANE = "hanlin-native-shared-editor"
-PROFILE = "shared-editor-and-table"
-PASS_STATUS = "SHARED_EDITOR_TABLE_COMPONENT_PASS"
-RESULT_PREFIX = "shared-editor-table"
+PROFILE = "shared-editor-table-and-related-authority"
+PASS_STATUS = "SHARED_EDITOR_TABLE_AUTHORITY_COMPONENT_PASS"
+RESULT_PREFIX = "shared-editor-table-authority"
 SUITE = "TextBlockFocusLifecycleTests"
-SUITES = (SUITE, table.SUITE)
-EXPECTED_METHOD_COUNT = 21
-DECLARED_CASE_COUNT = 29
+SUITES = (SUITE, table.SUITE, authority.SUITE)
+EXPECTED_METHOD_COUNT = 23
+DECLARED_CASE_COUNT = 32
+COMPILED_DECLARATION_COUNT = 30
 
 
 def source_contract(app):
     expected, hashes = host.expected_methods(app, host.HostTestProfile.SHARED_EDITOR)
     host.require(len(expected) == 10, "The existing ten-method shared-editor selection changed")
     tracked = subprocess.check_output(["git", "-C", str(app), "ls-files", "-z"]).decode().split("\0")
-    candidates = [name for name in tracked if name.casefold() == table.SOURCE_PATH.casefold()]
-    host.require(len(candidates) == 1, "Missing or case-colliding tracked table test source")
-    actual, synced = app / candidates[0], app / table.SOURCE_PATH
-    host.require(synced.is_file() and actual.samefile(synced),
-                 "Table test source is absent from the Xcode synchronized root")
-    data = actual.read_bytes()
-    table_methods = {table.SUITE + "/" + name for name in table.validate_source(data.decode("utf-8"))}
-    host.require(not expected.intersection(table_methods), "Editor and table method scopes overlap")
-    expected.update(table_methods)
-    hashes[candidates[0]] = hashlib.sha256(data).hexdigest()
+    for profile, label in ((table, "table"), (authority, "related-read authority")):
+        candidates = [name for name in tracked if name.casefold() == profile.SOURCE_PATH.casefold()]
+        host.require(len(candidates) == 1, "Missing or case-colliding tracked " + label + " test source")
+        actual, synced = app / candidates[0], app / profile.SOURCE_PATH
+        host.require(synced.is_file() and actual.samefile(synced),
+                     label + " test source is absent from the Xcode synchronized root")
+        data = actual.read_bytes()
+        methods = {profile.SUITE + "/" + name for name in profile.validate_source(data.decode("utf-8"))}
+        host.require(not expected.intersection(methods), "Component method scopes overlap")
+        expected.update(methods)
+        hashes[candidates[0]] = hashlib.sha256(data).hexdigest()
     declarations = {}
     for path in hashes:
         suite = Path(path).stem
@@ -53,14 +56,15 @@ def source_contract(app):
             signature = "(" + "".join(p["name"] + ":" for p in specification["parameters"]) + ")"
             declarations[method] = "AnytypeTests/" + method + signature
     excluded = set(declarations) - expected
-    host.require(len(expected) == EXPECTED_METHOD_COUNT and len(declarations) == 28 and len(excluded) == 7,
-                 "Reviewed editor/table declaration or pending selection inventory changed")
+    host.require(len(expected) == EXPECTED_METHOD_COUNT and len(declarations) == COMPILED_DECLARATION_COUNT and len(excluded) == 7,
+                 "Reviewed editor/table/authority declaration or pending selection inventory changed")
     return {"methods": sorted(expected), "source_hashes": hashes,
             "expected_methods": EXPECTED_METHOD_COUNT, "declared_invocations": DECLARED_CASE_COUNT,
             "profile": PROFILE, "compiled_declarations": declarations,
             "unselected_existing_methods": sorted(excluded),
             "components": {"shared-editor": {"expected_methods": 10, "declared_invocations": 15},
-                           "shared-table": {"expected_methods": 11, "declared_invocations": 14}}}
+                           "shared-table": {"expected_methods": 11, "declared_invocations": 14},
+                           "related-read-authority": {"expected_methods": 2, "declared_invocations": 3}}}
 
 
 def enumerated_identifiers(payload):
@@ -142,7 +146,7 @@ def enumerate_selection(app, base, evidence, shared, source):
     declaration_ids = set(source["compiled_declarations"].values())
     selected_source_ids = {source["compiled_declarations"][method] for method in source["methods"]}
     host.require(len(selected_source_ids) == EXPECTED_METHOD_COUNT,
-                 "Pending component source selection does not identify21 methods")
+                 "Pending component source selection does not identify23 methods")
     discovery_path = evidence / "compiled-suite-enumeration.json"
     selected_path = evidence / "compiled-selected-enumeration.json"
     original = Path(base[base.index("-xctestrun") + 1])
@@ -169,7 +173,7 @@ def enumerate_selection(app, base, evidence, shared, source):
     discovery_command, discovery_binding, (plan, discovered, disabled) = enumerate_to(
         discovery_path, discovery_configuration, ["AnytypeTests/" + suite for suite in SUITES])
     host.require(discovered == declaration_ids and not declaration_ids.intersection(disabled),
-                 "Compiled suites differ from the exact28 source declarations")
+                 "Compiled suites differ from the exact30 source declarations")
     # Reuse actual returned strings. Source signatures are equality checks, not
     # guessed only-testing filters; in particular bare Swift method names are
     # never sent to Xcode.
@@ -177,9 +181,9 @@ def enumerate_selection(app, base, evidence, shared, source):
     selected_command, selected_binding, (selected_plan, observed, disabled) = enumerate_to(
         selected_path, selected_configuration, selected)
     host.require(selected_plan == plan and observed == set(selected) and not observed.intersection(disabled),
-                 "Compiled pending selection differs from the exact21 methods; no tests executed")
+                 "Compiled pending selection differs from the exact23 methods; no tests executed")
     host.require(len(selected) == EXPECTED_METHOD_COUNT,
-                 "Compiled pending selection does not contain21 methods")
+                 "Compiled pending selection does not contain23 methods")
     return {"status": "EXACT_COMPILED_SELECTION_VERIFIED", "test_plan": plan, "selection_nonce": selection_nonce,
             "selected_identifiers": selected, "selected_method_count": len(selected),
             "enumerated_source_method_count": len(discovered),
@@ -193,7 +197,7 @@ def enumerate_selection(app, base, evidence, shared, source):
 def validate_results(summary, tree, expected, udid):
     # The default host validator checks the original combined summary, actual
     # destination and every method identity without applying a single profile's
-    # count assumptions. Original case nodes then enter both unchanged contracts.
+    # count assumptions. Original case nodes then enter each component's own unchanged case validator.
     actual = host.validate_results(summary, tree, expected, udid)
     nodes = []
 
@@ -210,7 +214,8 @@ def validate_results(summary, tree, expected, udid):
     visit(tree)
     components = {}
     for label, suite, validator in (("shared-editor", SUITE, editor.validate_arguments),
-                                    ("shared-table", table.SUITE, table.validate_arguments)):
+                                    ("shared-table", table.SUITE, table.validate_arguments),
+                                    ("related-read-authority", authority.SUITE, authority.validate_arguments)):
         methods = {name for name in expected if name.split("/", 1)[0] == suite}
         selected = [node for node in nodes if any(re.search(
             r"(?:^|/)" + re.escape(name) + r"(?:\(|/|$)", node["nodeIdentifier"]) for name in methods)]
@@ -219,9 +224,9 @@ def validate_results(summary, tree, expected, udid):
     host.require(len(nodes) == EXPECTED_METHOD_COUNT
                  and sum(part["actual_method_count"] for part in components.values()) == EXPECTED_METHOD_COUNT
                  and sum(part["declared_case_count"] for part in components.values()) == DECLARED_CASE_COUNT,
-                 "Combined editor/table method or literal-case execution differs")
+                 "Combined editor/table/authority method or literal-case execution differs")
     host.require(actual["counts"]["totalTestCount"] in {EXPECTED_METHOD_COUNT, DECLARED_CASE_COUNT},
-                 "Combined summary differs from exact21 methods or29 argument cases")
+                 "Combined summary differs from exact23 methods or32 argument cases")
     actual.update(components=components, actual_method_count=EXPECTED_METHOD_COUNT,
                   declared_case_count=DECLARED_CASE_COUNT)
     return actual
@@ -241,7 +246,7 @@ def execute(app, configuration, udid, expected_app, evidence, shared):
     selected_configuration = None
 
     def verify_binding():
-        host.require(source_contract(app) == source, "Shared-editor/table source changed during execution")
+        host.require(source_contract(app) == source, "Shared-editor/table/authority source changed during execution")
         host.require(shared.digest(app_executable) == hashes["app_executable"]
                      and shared.digest(test_executable) == hashes["test_executable"]
                      and shared.digest(configuration) == hashes["xctestrun"],
@@ -250,7 +255,7 @@ def execute(app, configuration, udid, expected_app, evidence, shared):
             host.require(shared.digest(Path(selected_configuration["path"])) == selected_configuration["sha256"],
                          "Selected component xctestrun changed during execution")
 
-    bundle = evidence / "SharedEditorTable.xcresult"
+    bundle = evidence / "SharedEditorTableAuthority.xcresult"
     base = ["xcodebuild", "test-without-building", "-xctestrun", str(configuration),
             "-destination", "platform=iOS Simulator,id=" + udid,
             "-parallel-testing-enabled", "NO"]
@@ -276,8 +281,25 @@ def execute(app, configuration, udid, expected_app, evidence, shared):
         actual = validate_results(json.loads(summary_path.read_text()), json.loads(tree_path.read_text()),
                                   set(source["methods"]), udid)
         verify_binding()
+        raw_summary_hash = shared.digest(summary_path)
+        raw_tests_hash = shared.digest(tree_path)
+        component_receipts = {}
+        for label, component in actual["components"].items():
+            methods = sorted(component["core_cases"])
+            path = evidence / ("component-" + label + ".json")
+            component_receipt = {
+                "status": "SOURCE_BOUND_COMPONENT_PASS", "component": label,
+                "build_mode": "SAME_JOB_EXISTING_SDK06_BUILD", "additional_app_builds": 0,
+                "methods": methods, "actual": component,
+                "source_hashes": source["source_hashes"], "built_products": hashes,
+                "raw_summary_sha256": raw_summary_hash, "raw_tests_sha256": raw_tests_hash,
+                "real_native_persistence_accepted": False,
+            }
+            shared.write(path, component_receipt)
+            component_receipts[label] = {"path": str(path), "sha256": shared.digest(path)}
         receipt.update(status=PASS_STATUS, phase="COMPLETE", actual=actual,
-                       raw_summary_sha256=shared.digest(summary_path), raw_tests_sha256=shared.digest(tree_path),
+                       component_receipts=component_receipts,
+                       raw_summary_sha256=raw_summary_hash, raw_tests_sha256=raw_tests_hash,
                        real_native_persistence_accepted=False)
     except BaseException as error:
         receipt.update(error_type=type(error).__name__, error=str(error))

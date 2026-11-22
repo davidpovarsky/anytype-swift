@@ -1,4 +1,4 @@
-"""Focused controls for exact pending editor/table execution in the SDK06 build.
+"""Focused controls for exact editor/table/authority execution in the SDK06 build.
 
 Synthetic enumerations/results below test the controller, never stand in for
 actual Apple evidence or qualify product acceptance.
@@ -30,7 +30,12 @@ TABLE_PARAMETERS = {
 }
 TABLE_SUITE = "SimpleTableTextPersistenceTests"
 TABLE_EXPECTED = {TABLE_SUITE + "/" + name for name in TABLE_PLAIN | set(TABLE_PARAMETERS)}
-EXPECTED = fixtures.EXPECTED | TABLE_EXPECTED
+AUTHORITY_SUITE = "TorahRelatedReadAuthorityMappingTests"
+AUTHORITY_PARAMETERIZED = "nativeDenialRequiresExactTypedCodeAndDescription"
+AUTHORITY_PLAIN = "providerAndTransportDescriptionsCannotForgeNativeAuthority"
+AUTHORITY_EXPECTED = {AUTHORITY_SUITE + "/" + name
+                      for name in (AUTHORITY_PARAMETERIZED, AUTHORITY_PLAIN)}
+EXPECTED = fixtures.EXPECTED | TABLE_EXPECTED | AUTHORITY_EXPECTED
 UNSELECTED = {
     "nativeFocusObservationDistinguishesOutcomes": "outcome:",
     "pendingFocusWaitsForKeyWindow": "", "refusedFocusWaitsForWindowReadiness": "",
@@ -54,6 +59,17 @@ def table_tree():
         children.append(node)
     return dict(children=children)
 
+def authority_tree():
+    return dict(children=[
+        dict(nodeType="Test Case",
+             nodeIdentifier="AnytypeTests/" + AUTHORITY_SUITE + "/" + AUTHORITY_PARAMETERIZED + "(objectShow:)",
+             result="Passed", children=[
+                 dict(nodeType="Arguments", name=json.dumps(value), result="Passed")
+                 for value in (False, True)]),
+        dict(nodeType="Test Case", result="Passed",
+             nodeIdentifier="AnytypeTests/" + AUTHORITY_SUITE + "/" + AUTHORITY_PLAIN + "()"),
+    ])
+
 
 class ExistingBuildTests(unittest.TestCase):
     def setUp(self):
@@ -73,23 +89,23 @@ class ExistingBuildTests(unittest.TestCase):
             {"Name": "Anytype", "IsEnabled": True, "TestTargets": [
                 {"BlueprintName": "AnytypeTests", "TestHostPath": "__TESTROOT__/Anytype.app",
                  "TestBundlePath": "__TESTHOST__/AnytypeTests.xctest", "EnvironmentVariables": {"OWNED": "1"},
-                 "OnlyTestIdentifiers": [fixtures.SUITE, TABLE_SUITE, text_native_ack.SUITE],
+                 "OnlyTestIdentifiers": [fixtures.SUITE, TABLE_SUITE, AUTHORITY_SUITE, text_native_ack.SUITE],
                  "SkipTestIdentifiers": []},
                 {"BlueprintName": "OtherTests", "TestBundlePath": "__TESTROOT__/OtherTests.xctest"}]}]}
         self.configuration.write_bytes(plistlib.dumps(self.original_configuration))
         self.original_product_bytes = {path: path.read_bytes()
                                        for path in (self.app_executable, self.test_executable, self.configuration)}
-        self.tree = dict(children=fixtures.tree()["children"] + table_tree()["children"])
+        self.tree = dict(children=fixtures.tree()["children"] + table_tree()["children"] + authority_tree()["children"])
         declarations = {node["nodeIdentifier"].removeprefix("AnytypeTests/").split("(", 1)[0]:
                         node["nodeIdentifier"] for node in self.tree["children"]}
         declarations.update({fixtures.SUITE + "/" + name:
                              "AnytypeTests/" + fixtures.SUITE + "/" + name + "(" + parameters + ")"
                              for name, parameters in UNSELECTED.items()})
         self.source = dict(methods=sorted(EXPECTED), source_hashes={"editor.swift": "a" * 64,
-                           "table.swift": "b" * 64}, expected_methods=21, declared_invocations=29,
+                           "table.swift": "b" * 64, "authority.swift": "d" * 64}, expected_methods=23, declared_invocations=32,
                            profile=runner.PROFILE, compiled_declarations=declarations,
                            unselected_existing_methods=sorted(set(declarations) - EXPECTED))
-        self.report = fixtures.summary(21)
+        self.report = fixtures.summary(23)
         self.commands, self.enumerations = [], []
         self.after_run, self.after_enumeration, self.mutate_enumeration = None, None, None
         self.shared = SimpleNamespace(write=self.write, digest=self.digest, run_xctest=self.run_xctest)
@@ -157,18 +173,32 @@ class ExistingBuildTests(unittest.TestCase):
         return runner.execute(self.root, self.configuration, fixtures.UDID, self.app,
                               self.root / directory, self.shared)
 
-    def test_one_build_enumerates_exact21_then_proves_all29_actual_cases(self):
-        for count in (21, 29):
+    def test_one_build_enumerates_exact23_then_proves_all32_actual_cases(self):
+        for count in (23, 32):
             self.report = fixtures.summary(count)
             result = self.execute("evidence-" + str(count))
             self.assertEqual(result["status"], runner.PASS_STATUS)
-            self.assertEqual(result["actual"]["actual_method_count"], 21)
-            self.assertEqual(result["actual"]["declared_case_count"], 29)
+            self.assertEqual(result["actual"]["actual_method_count"], 23)
+            self.assertEqual(result["actual"]["declared_case_count"], 32)
             self.assertEqual(result["actual"]["components"]["shared-editor"]["declared_case_count"], 15)
             self.assertEqual(result["actual"]["components"]["shared-table"]["declared_case_count"], 14)
+            self.assertEqual(result["actual"]["components"]["related-read-authority"]["declared_case_count"], 3)
+            self.assertEqual(set(result["component_receipts"]),
+                             {"shared-editor", "shared-table", "related-read-authority"})
+            for label, expected_methods in (("shared-editor", fixtures.EXPECTED),
+                                             ("shared-table", TABLE_EXPECTED),
+                                             ("related-read-authority", AUTHORITY_EXPECTED)):
+                receipt_info = result["component_receipts"][label]
+                path = Path(receipt_info["path"])
+                self.assertEqual(self.digest(path), receipt_info["sha256"])
+                component = json.loads(path.read_text())
+                self.assertEqual(component["status"], "SOURCE_BOUND_COMPONENT_PASS")
+                self.assertEqual(set(component["methods"]), expected_methods)
+                self.assertFalse(component["real_native_persistence_accepted"])
+
             self.assertEqual(result["additional_app_builds"], 0)
             self.assertFalse(result["real_native_persistence_accepted"])
-            self.assertEqual(result["enumeration"]["enumerated_source_method_count"], 28)
+            self.assertEqual(result["enumeration"]["enumerated_source_method_count"], 30)
             self.assertEqual(len(result["enumeration"]["unselected_identifiers"]), 7)
             self.assertEqual(plistlib.loads(self.configuration.read_bytes()), self.original_configuration)
             binding = result["enumeration"]["selected_configuration"]
@@ -227,15 +257,35 @@ class ExistingBuildTests(unittest.TestCase):
                 self.execute(change)
             self.assertEqual(self.commands, [])
 
+
+    def test_old_editor_table_only_result_cannot_qualify_the_authority_extension(self):
+        self.tree["children"] = [node for node in self.tree["children"]
+                                 if ("/" + AUTHORITY_SUITE + "/") not in node["nodeIdentifier"]]
+        for old_count in (21, 29):
+            self.report = fixtures.summary(old_count)
+            with self.subTest(old_count=old_count), self.assertRaises(ValueError):
+                self.execute("old-scope-" + str(old_count))
+
+    def test_authority_compiled_signature_drift_prevents_any_component_execution(self):
+        def mutate(payload, discovery):
+            if discovery:
+                for row in payload["values"][0]["enabledTests"]:
+                    if AUTHORITY_PARAMETERIZED in row["identifier"]:
+                        row["identifier"] = row["identifier"].replace("(objectShow:)", "(unreviewed:)")
+        self.mutate_enumeration = mutate
+        with self.assertRaises(ValueError):
+            self.execute()
+        self.assertEqual(self.commands, [])
+
     def test_wrong_app_product_is_rejected_before_xcode(self):
         self.product_mock.return_value = (self.root / "different.app", *self.products[1:])
         with self.assertRaisesRegex(ValueError, "SDK06 app build"):
             self.execute()
         self.assertEqual(self.commands + self.enumerations, [])
 
-    def test_missing_duplicate_or_nonpassing_arguments_in_either_group_cannot_hide_in_summary(self):
+    def test_missing_duplicate_or_nonpassing_arguments_in_any_group_cannot_hide_in_summary(self):
         original = copy.deepcopy(self.tree)
-        for suite in (fixtures.SUITE, TABLE_SUITE):
+        for suite in (fixtures.SUITE, TABLE_SUITE, AUTHORITY_SUITE):
             for change in ("missing", "duplicate", "skipped"):
                 self.tree = copy.deepcopy(original)
                 node = next(item for item in self.tree["children"]
@@ -317,7 +367,7 @@ class ExistingBuildTests(unittest.TestCase):
         value["TestConfigurations"][0]["TestTargets"][0]["SkipTestIdentifiers"] = [
             TABLE_SUITE + "/acceptedSnapshotSurvivesViewReuse()"]
         self.configuration.write_bytes(plistlib.dumps(value))
-        with self.assertRaisesRegex(ValueError, "exact28"):
+        with self.assertRaisesRegex(ValueError, "exact30"):
             self.execute()
         self.assertEqual(self.commands, [])
         self.assertEqual(plistlib.loads(self.configuration.read_bytes()), value)
@@ -362,14 +412,29 @@ class TrackedContractTests(unittest.TestCase):
         root = Path(__file__).resolve().parents[2]
         source = runner.source_contract(root)
         self.assertEqual(source["methods"], sorted(EXPECTED))
-        self.assertEqual(source["declared_invocations"], 29)
-        self.assertEqual(len(source["source_hashes"]), 2)
-        self.assertEqual(len(source["compiled_declarations"]), 28)
+        self.assertEqual(source["declared_invocations"], 32)
+        self.assertEqual(len(source["source_hashes"]), 3)
+        self.assertEqual(len(source["compiled_declarations"]), 30)
         self.assertEqual(source["unselected_existing_methods"],
                          sorted(fixtures.SUITE + "/" + name for name in UNSELECTED))
         acknowledgement = text_native_ack.source_contract(root)
         self.assertEqual(acknowledgement["expected_methods"], 7)
         self.assertEqual(acknowledgement["methods"], text_native_ack.METHODS)
+
+
+    def test_authority_source_requires_both_exact_native_types_and_literal_arguments(self):
+        root = Path(__file__).resolve().parents[2]
+        text = (root / runner.authority.SOURCE_PATH).read_text(encoding="utf-8")
+        self.assertEqual(runner.authority.validate_source(text),
+                         {AUTHORITY_PARAMETERIZED, AUTHORITY_PLAIN})
+        changes = [
+            text.replace("objectShow: Bool", "show: Bool"),
+            text.replace("arguments: [false, true]", "arguments: [true]"),
+            text.replace("arguments: [false, true]", "arguments: [true, true]"),
+        ]
+        for changed in changes:
+            with self.subTest(source=changed), self.assertRaises(ValueError):
+                runner.authority.validate_source(changed)
 
 
 if __name__ == "__main__":
