@@ -1,0 +1,57 @@
+{
+  "status": "VERIFIED_ACTUAL_APPLE_STRICT_51_PIN_CLOSURE",
+  "run_id": 44975218662,
+  "head_sha": "e5f09e2295baba8ca2265c4fb1696fabd0bf1cd5",
+  "artifact_id": 14734539670,
+  "artifact_sha256": "14d7d3435128408d151d99017afc3a9f85770de00ef56df41c169fdca7fe9001",
+  "artifact_bytes": 35854,
+  "crc_verified": true,
+  "base_source": "3a33d083af7a4f087b37bf910904bb817e990ee0",
+  "manifest_and_lock_diff_to_current_source": [],
+  "original_pin_count": 44,
+  "all_original_pins_unchanged": true,
+  "exact_reviewed_additions": [
+    "equatable",
+    "hanlin-streaming-markdown",
+    "highlightswift",
+    "iosmath",
+    "swift-cmark",
+    "swift-markdown",
+    "swiftui-shimmer"
+  ],
+  "observed_unrestricted_resolver_reused_not_rerun": {
+    "archive_sha256": "40e34bd2e5549c9bc0dde527c024cbe3d37a6281189c28e0a0e14238c0ff41ff",
+    "artifact_id": 14734653215,
+    "command_duration_seconds": 236.8195239590001,
+    "command_returncode": 0,
+    "correction": "Xcode accepted the complete 51-pin closure without changing originHash; no changed hash is invented or required.",
+    "resolution_rerun": false,
+    "run_id": 44973540287
+  },
+  "strict_command": {
+    "command": [
+      "xcodebuild",
+      "-resolvePackageDependencies",
+      "-project",
+      "/Users/runner/work/anytype-swift/anytype-swift/Anytype.xcodeproj",
+      "-scheme",
+      "AnytypeOriginalEditor",
+      "-configuration",
+      "Debug-Anytype",
+      "-clonedSourcePackagesDirPath",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-lock-packages-44975218662",
+      "-skipPackageUpdates",
+      "-onlyUsePackageVersionsFromResolvedFile"
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 187.5705743750001,
+    "returncode": 0,
+    "started_at": "2026-11-22T02:16:37.863358+00:00",
+    "stderr_sha256": "b56b678572dfd30a91af1428c5fa11aa24e22cff8b0f6b1cbc4cb8a9a75e0a4d",
+    "stdout_sha256": "c110e4b3299e1107ba65ff0b557412908e172c72df623fbe2908598a16282f72",
+    "timeout_seconds": 900
+  },
+  "framework_builds": 0,
+  "native_tests_executed": 0,
+  "created_at": "2026-11-22T02:22:31.362682+00:00"
+}
