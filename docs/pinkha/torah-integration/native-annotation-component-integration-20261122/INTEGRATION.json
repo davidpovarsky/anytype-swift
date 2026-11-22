@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "status": "VERIFIED_COMPONENT_INTEGRATION_ONLY",
+  "createdUTC": "2026-11-22T07:41:07.366041+00:00",
+  "base": "d33a41338bd0a56326fd02c05977c10d1c4c7baa",
+  "metadataEvidence": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+  "metadataSource": "032a8320178ca702ed05327de168cbc2578f11eb",
+  "metadataMerge": "fef6a3d6315c864515a73d9c81269d359e76b64b",
+  "auditSource": "a432310c2c86871321c4c6939846a5c713b753c0",
+  "auditMerge": "64755ad7853ab1a40f5cffa5369b4ba698a32d8b",
+  "metadataPayloadsVerified": 80,
+  "auditPayloadsVerified": 5,
+  "totalPayloadsAndTwoIndexes": 87,
+  "immutableAuditSourcesVerified": 47,
+  "metadataIndexSHA256": "1c259ce9f311ad5cb00fce882961bba95dc407ace0b3f34d12e3079192fb7cd3",
+  "auditIndexSHA256": "c12c919fb688f93fb89976684adac88b559470abdb89e1d155ea5c7433a1d7ce",
+  "metadataProductSHA256": "21321e2e69bcb29dc784620dd459f1152528f117caa13695e689b6d024813dc5",
+  "descriptorBinding": "Historical provisional audit input21321 equals published032a; old descriptor provenance unchanged",
+  "sharedTreesUnchanged": {
+    "Modules": "dd3201fa7fb1fab4512c0459a58042ff5f8cdc44",
+    "Anytype/Resources": "0827010674c089cfe9846e592e1d801e9d3f7a9b",
+    "Scripts": "0e66f9e9e7cb5d0e47fe8fa5e8bf52ee20b80f16",
+    "scripts": "7c1c4d6e9e6025ef745e0390cebcbb9ddd534be5",
+    ".github": "f18f548f45c8f46a8f078865541203f2743ede9d",
+    "OriginalEditorFramework": "8bc1d92a3f209d2e42c74e273f1d675eae38f3f2",
+    "Anytype.xcodeproj": "5200a1b5cdaaaabda45906c82105ba8629d688f6"
+  },
+  "preservedEvidenceTrees": {
+    "docs/pinkha/torah-integration/production-native-metadata-20261122": {
+      "originalRef": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "tree": "3fa223cc3d41213c8a9c3c4854c07d8a529b0734"
+    },
+    "docs/pinkha/torah-integration/native-annotation-schema-audit-20261122": {
+      "originalRef": "a432310c2c86871321c4c6939846a5c713b753c0",
+      "tree": "0201b571bd00e8cef5d2a0371ff283d838e717f9"
+    },
+    "docs/pinkha/torah-integration/production-annotation-20261122": {
+      "originalRef": "d33a41338bd0a56326fd02c05977c10d1c4c7baa",
+      "tree": "8f5ca64788c8e084ce1ff8a3b0ac243ab9315da6"
+    },
+    "docs/pinkha/torah-integration/production-space-authority-20261122": {
+      "originalRef": "d33a41338bd0a56326fd02c05977c10d1c4c7baa",
+      "tree": "3dc419fa7e6bcf18e98526e045fc519079d1af9a"
+    },
+    "docs/pinkha/torah-integration/production-space-composition-audit-20261122": {
+      "originalRef": "d33a41338bd0a56326fd02c05977c10d1c4c7baa",
+      "tree": "8996ffeed6e0d0694ad5c92c397a9064a9d62c4c"
+    }
+  },
+  "productPathsChangedFromB854": [
+    "Anytype/Sources/Pinkha/Torah/Annotations/.gitattributes",
+    "Anytype/Sources/Pinkha/Torah/Annotations/OriginalAnnotationNativeMetadata.swift",
+    "Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift",
+    "Anytype/Sources/ServiceLayer/SpaceStorage/SpaceViewsStorage.swift"
+  ],
+  "initialExecution": "INITIAL_EXECUTION.json",
+  "initialScriptSHA256": "48c502031753f22c4f7c03ebdd46f5d2f106694024036691021b4dc26efe2386",
+  "bookkeepingCorrection": "Initial script used nonexistent top-level Resources after both successful merges and all85 payload/47source checks. Continued from observed clean64755 and verified actual Anytype/Resources plus6 other unchanged trees. No merge/test/download replay.",
+  "execution": {
+    "tests": 0,
+    "builds": 0,
+    "nativeCalls": 0,
+    "schemaWrites": 0,
+    "ciDispatches": 0
+  },
+  "reusedComponentResults": {
+    "metadata": 26,
+    "participant": {
+      "original": 16,
+      "separateDeinit": 1
+    },
+    "space": 22
+  },
+  "openGates": [
+    "SourceBinding composition remains independently in progress",
+    "Native schema observer/ensure and typed transport not integrated",
+    "Held-read and body verifier not integrated",
+    "No receipt/writer/mapping/ACK acceptance",
+    "No full Apple/Native116/Release114/StageB/device acceptance"
+  ]
+}
