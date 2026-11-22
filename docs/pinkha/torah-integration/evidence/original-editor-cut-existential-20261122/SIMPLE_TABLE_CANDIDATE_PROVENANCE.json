@@ -1,0 +1,12 @@
+{
+  "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/SimpleTable/Block/TextBlock/SimpleTablesTextBlockActionHandler.swift",
+  "base_sha256": "e56b728efa118250ba7dc8f6eed68d48a9945db696c55ed4593b4848e2094f47",
+  "candidate_sha256": "2ff3000961e9fe6114c45094a8f122287caac8e9850f11705161dfdf897e6f05",
+  "patch_sha256": "77bdd9eafc24ec43790f3a415221e773610fb41478a8011ad6c1efa9b5331df8",
+  "patch": "--- a/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/SimpleTable/Block/TextBlock/SimpleTablesTextBlockActionHandler.swift\n+++ b/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/SimpleTable/Block/TextBlock/SimpleTablesTextBlockActionHandler.swift\n@@ -279,7 +279,7 @@\n     }\n     \n     private func cut(range: NSRange) {\n-        actionHandler.scheduleMutationTask { [self] in\n+        actionHandler.scheduleMutationTask { [self] () -> Void in\n             try await pasteboardService?.cut(document: document, blocksIds: [info.id], selectedTextRange: range)\n         }\n     }\n",
+  "actual_diagnostic": false,
+  "rationale": "Identical generic scheduler + single-expression weak-service optional cut on existential document; preventative source-compatibility candidate only",
+  "protocol_path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandlerProtocol.swift",
+  "protocol_sha256": "226bdc5d8c3d1881ceb1778bd5ca5cacb026c93189b934d7f4811125797c7e76",
+  "protocol": "import Services\nimport Combine\nimport Foundation\n\n\n@MainActor\nprotocol TextBlockActionHandlerProtocol: AnyObject {\n    var info: BlockInformation { get set }\n\n    var resetSubject: PassthroughSubject<NSAttributedString?, Never> { get }\n    var focusSubject: PassthroughSubject<BlockFocusPosition, Never> { get }\n\n    func textBlockActions() -> TextBlockContentConfiguration.Actions\n    /// Undo restored the block this handler forked away from; a completed or in-flight fork\n    /// must not gate a fresh first fill nor rebind to the deleted id.\n    func resetEmptyBlockFork()\n}\n"
+}

@@ -1,0 +1,155 @@
+{
+  "schema": 1,
+  "head": "d8416b161ba7af42e8459d612a94f7591470513e",
+  "original_inputs": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandler.swift",
+      "original_file": "TextBlockActionHandler.BASE.swift",
+      "git_blob": "707d703a44acd1ca9576f1727199b40a93ed3e38",
+      "sha256": "41ef1dc75c22d6617b629c31b3cd60b002ffacdb87b01373fa98bc3d37c10203",
+      "bytes": 46319,
+      "candidate_file": "TextBlockActionHandler.V2.swift",
+      "candidate_sha256": "906b29f184e3be133dee47ec6a6ff1b60af4e410b43cd8d93c4d6c61fd4993b0"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/SimpleTable/Block/TextBlock/SimpleTablesTextBlockActionHandler.swift",
+      "original_file": "SimpleTablesTextBlockActionHandler.swift",
+      "git_blob": "a344220b364d81b0faec9ea2662c859d58a2f1ac",
+      "sha256": "e56b728efa118250ba7dc8f6eed68d48a9945db696c55ed4593b4848e2094f47",
+      "bytes": 17909,
+      "candidate_file": "SimpleTablesTextBlockActionHandler.V2.swift",
+      "candidate_sha256": "6381d6125455923834f07e62d245386728dcac08eb3195b8d32bcd0bef6560e4"
+    },
+    {
+      "path": "Anytype/Sources/Models/Documents/Document/BaseDocumentProtocol.swift",
+      "original_file": "BaseDocumentProtocol.swift",
+      "git_blob": "ebd88df90a7355661c1adaa92000853df0410f9f",
+      "sha256": "c41dd53747e0f8245aac0c173e0738cbcb8419f717a8f73ae05a6f11479f3b10",
+      "bytes": 960
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionHandlerProtocol.swift",
+      "original_file": "BlockActionHandlerProtocol.swift",
+      "git_blob": "b2d1f214fd7eef7536e455e1783fb8edc743cae4",
+      "sha256": "61447ab08a7642b819ee0d4a88ba2195154b417ed7c2ab16709d0f50bce5953a",
+      "bytes": 6661
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/Pastboard/DocumentService/PasteboardBlockDocumentServiceProtocol.swift",
+      "original_file": "PasteboardBlockDocumentServiceProtocol.swift",
+      "git_blob": "38e87fc5a17fd2e6e3e490d34501b3063b34621c",
+      "sha256": "ca1639e2f0b2d5221154d63a66521a0ee8ba34828f20473fe44ab93b42b3b318",
+      "bytes": 923
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/Pastboard/DocumentService/PasteboardBlockDocumentService.swift",
+      "original_file": "PasteboardBlockDocumentService.swift",
+      "git_blob": "2d939bf6cd6d0d7271d0b103a56e490e423d25b9",
+      "sha256": "ef4dc60e7ffbb569ed86f92b133689d264762270856bb1eee0ddd49e85336dcd",
+      "bytes": 3651
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandlerProtocol.swift",
+      "original_file": "TextBlockActionHandlerProtocol.swift",
+      "git_blob": "d539964dd3ae19938a844dd59603e4f960eebb51",
+      "sha256": "226bdc5d8c3d1881ceb1778bd5ca5cacb026c93189b934d7f4811125797c7e76",
+      "bytes": 579
+    }
+  ],
+  "compiled_inputs": [
+    {
+      "path": "semantic-package/Tests/CutBoundary/Controls.swift",
+      "sha256": "9aeb4542a306b41c9a48ef5d854bfae63ccb40f467e031152c1e35936ac3a3ba",
+      "bytes": 4814
+    },
+    {
+      "path": "semantic-package/Tests/CutBoundary/DependencyProbes.swift",
+      "sha256": "12736bec3f536f548c03c1647151d6e9c61c68a5a06beddddc056148bd511336",
+      "bytes": 9325
+    },
+    {
+      "path": "semantic-package/Tests/CutBoundary/OriginalCutHandlers.swift",
+      "sha256": "6e37e5e7826997fcec642c76bcb6b1fcb4cd71d041d0ccc79b29999676ffd2d8",
+      "bytes": 2993
+    },
+    {
+      "path": "semantic-package/Tests/CutBoundary/OriginalPasteboardDocumentService.swift",
+      "sha256": "fe10c8dec99bde060cae13e77710038e0f7b8b18e9c79cb14acb9b8311b5af44",
+      "bytes": 3621
+    },
+    {
+      "path": "semantic-package/Tests/CutBoundary/OriginalProtocols.swift",
+      "sha256": "f8947e52bb2febbdab19d504b918ceb9949f8dc9e53d2ee1fdd8ee11b365bd69",
+      "bytes": 2350
+    },
+    {
+      "path": "semantic-package/Tests/CutBoundary/OriginalScheduler.swift",
+      "sha256": "5c6fadb4e7e3fab882cad913727794f2b43f0af805cf859298b847e5be894e28",
+      "bytes": 1669
+    }
+  ],
+  "red_projection_sha256": "940f0cc3086b161758c79cbb610b0a62a89f9b7cb04fa0ea0076a6b88db9c03a",
+  "package_sha256": "6f677af9417a685a0028964406d651f754080278f17d11f275604c904415f4b8",
+  "module_cache": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-space-bind-20261122\\.build\\x86_64-unknown-windows-msvc\\debug\\ModuleCache",
+  "expected_tests": [
+    "textCutRetainsOriginalDeferredGenericServiceBoundaryAndVirtualGuard",
+    "tableCutRetainsOriginalDeferredGenericServiceBoundary"
+  ],
+  "prior_tests_replayed": false,
+  "limits": [
+    "Both exact original cut(range:) bodies compile with only the reviewed local guard unwrap of the original weak service inside the same original scheduled closure. Original field types/capture lists, MainActor source/inference and text virtual guard are retained; other handler bodies/initializer/UI are explicit fixture projections.",
+    "Complete original BaseDocumentProtocol, PasteboardBlockDocumentServiceProtocol and TextBlockActionHandlerProtocol declarations are included with imports projected. Complete original PasteboardBlockDocumentService implementation is included with external imports projected.",
+    "Exact original generic BlockActionHandlerProtocol.scheduleMutationTask and scheduleOriginalEditorMutation bodies/signatures are compiled. Unrelated BlockActionHandlerProtocol requirements are not included; the two actual owner/context requirements and default implementations are retained.",
+    "Owner/scheduled admission, lower pasteboard backend, Container, publisher/model/UI values are explicit disposable probes. This packet does not qualify original Owner lifetimes, native permission/Invocation/RPC, clipboard, Combine, actual UIKit interaction or a full editor/module build.",
+    "New controls observe synchronous registration, exact document identity, block/range flow through the original generic document service, weak-service absence after dispatch preparation, native-probe error propagation and unchanged nil-owner legacy routing. Original text virtual guard rejects before any registration.",
+    "Actual initial old-source compilation reproduced the same existential error at both projected sites. The initial explicit-Void candidate failed the same two errors before any test execution. Exact old expectedRED is reused, not rerun; only the changed V2 handler projection is rebuilt against unchanged fixtures and assertions. Apple attributed only the original text handler; simple-table remains an analogous preventive source correction.",
+    "Existing completed Foundation module cache is reused without building/executing any previous target or assertions. No prior initialization, composition, permission or Owner controls are replayed."
+  ],
+  "predecessor_inputs_sha256": "bf5027b52cf4947b7a700fa2b6a70a13fb08ee1df143ba197307ec74fc38a297",
+  "first_candidate_failure_sha256": "9b1d8bea6cd66fea497989dcd8a8f2678420ddbc0969fd73e10c4438df18376d",
+  "preimage_expected_error_reuse": {
+    "record": {
+      "label": "expected-old-cut-error",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+        "-emit-object",
+        "-whole-module-optimization",
+        "-parse-as-library",
+        "-module-name",
+        "OriginalCutBoundaryRED",
+        "-swift-version",
+        "5",
+        "-strict-concurrency=complete",
+        "-module-cache-path",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-space-bind-20261122\\.build\\x86_64-unknown-windows-msvc\\debug\\ModuleCache",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122\\semantic-package\\Tests\\CutBoundary\\DependencyProbes.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122\\semantic-package\\Tests\\CutBoundary\\OriginalProtocols.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122\\semantic-package\\Tests\\CutBoundary\\OriginalScheduler.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122\\semantic-package\\Tests\\CutBoundary\\OriginalPasteboardDocumentService.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122\\RED_Handlers.swift",
+        "-o",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122\\RED.o"
+      ],
+      "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122",
+      "wrapper_pid": 28644,
+      "started_at": "2026-11-22T08:23:31.581810+00:00",
+      "timeout_seconds": 180,
+      "phase": "TERMINAL",
+      "child_pid": 27512,
+      "returncode": 1,
+      "timed_out": false,
+      "finished_at": "2026-11-22T08:23:34.274859+00:00",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "da3aaed75724461291b84fc521cb55950a4aa26090cfd8ffc2a49e7b5ce5cd22",
+      "all_inputs_unchanged": true
+    },
+    "errors": [
+      "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122\\RED_Handlers.swift:30:42: error: type 'any BaseDocumentProtocol' cannot conform to 'BaseDocumentProtocol' [#ProtocolTypeNonConformance]",
+      "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122\\RED_Handlers.swift:54:42: error: type 'any BaseDocumentProtocol' cannot conform to 'BaseDocumentProtocol' [#ProtocolTypeNonConformance]"
+    ],
+    "reexecuted": false
+  },
+  "changed_compiled_inputs": [
+    "semantic-package/Tests/CutBoundary/OriginalCutHandlers.swift"
+  ]
+}

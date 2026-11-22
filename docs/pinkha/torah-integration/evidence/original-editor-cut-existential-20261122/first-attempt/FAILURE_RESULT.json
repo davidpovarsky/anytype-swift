@@ -1,0 +1,17 @@
+{
+  "status": "INITIAL_EXPLICIT_VOID_CANDIDATE_FAILED_SAME_EXISTENTIAL_BOUNDARY",
+  "executed_tests": 0,
+  "error_lines": {
+    "expected-old-cut-error": [
+      "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122\\RED_Handlers.swift:30:42: error: type 'any BaseDocumentProtocol' cannot conform to 'BaseDocumentProtocol' [#ProtocolTypeNonConformance]",
+      "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122\\RED_Handlers.swift:54:42: error: type 'any BaseDocumentProtocol' cannot conform to 'BaseDocumentProtocol' [#ProtocolTypeNonConformance]"
+    ],
+    "swift-testing-new-cut-boundary": [
+      "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122\\semantic-package\\Tests\\CutBoundary\\OriginalCutHandlers.swift:30:42: error: type 'any BaseDocumentProtocol' cannot conform to 'BaseDocumentProtocol' [#ProtocolTypeNonConformance]",
+      "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122\\semantic-package\\Tests\\CutBoundary\\OriginalCutHandlers.swift:54:42: error: type 'any BaseDocumentProtocol' cannot conform to 'BaseDocumentProtocol' [#ProtocolTypeNonConformance]"
+    ]
+  },
+  "initial_inputs_sha256": "bf5027b52cf4947b7a700fa2b6a70a13fb08ee1df143ba197307ec74fc38a297",
+  "reuse_scope": "Both original full-file parses and exact old-code expectedRED completed; oldRED is reused without another compiler invocation. Prior candidate parses apply only to the old candidate; the changed new candidate requires new parse. No passing test is replayed.",
+  "new_direction": "Guard-unwrapped original weak service inside original scheduled operation before same generic cut, no explicit-Void annotation required."
+}

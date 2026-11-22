@@ -1,0 +1,12 @@
+--- a/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/SimpleTable/Block/TextBlock/SimpleTablesTextBlockActionHandler.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/SimpleTable/Block/TextBlock/SimpleTablesTextBlockActionHandler.swift
+@@ -280,7 +280,8 @@
+     
+     private func cut(range: NSRange) {
+         actionHandler.scheduleMutationTask { [self] in
+-            try await pasteboardService?.cut(document: document, blocksIds: [info.id], selectedTextRange: range)
++            guard let pasteboardService else { return }
++            try await pasteboardService.cut(document: document, blocksIds: [info.id], selectedTextRange: range)
+         }
+     }
+     

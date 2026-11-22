@@ -280,7 +280,8 @@ final class SimpleTablesTextBlockActionHandler: TextBlockActionHandlerProtocol, 
     
     private func cut(range: NSRange) {
         actionHandler.scheduleMutationTask { [self] in
-            try await pasteboardService?.cut(document: document, blocksIds: [info.id], selectedTextRange: range)
+            guard let pasteboardService else { return }
+            try await pasteboardService.cut(document: document, blocksIds: [info.id], selectedTextRange: range)
         }
     }
     

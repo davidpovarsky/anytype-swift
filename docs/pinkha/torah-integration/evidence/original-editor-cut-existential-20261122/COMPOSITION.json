@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "base": "d8416b161ba7af42e8459d612a94f7591470513e",
+  "failed_run": 45000655252,
+  "changed_product_files": 2,
+  "files": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandler.swift",
+      "base_file": "TextBlockActionHandler.BASE.swift",
+      "candidate_file": "TextBlockActionHandler.V2.swift",
+      "base_sha256": "41ef1dc75c22d6617b629c31b3cd60b002ffacdb87b01373fa98bc3d37c10203",
+      "candidate_sha256": "906b29f184e3be133dee47ec6a6ff1b60af4e410b43cd8d93c4d6c61fd4993b0",
+      "patch_file": "TextBlockActionHandler.V2.patch",
+      "patch_sha256": "6ffe010691258d3d49b9a10ffcbf635f7195669297b6e0b08e3b653beb207bc2",
+      "patch": "--- a/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandler.swift\n+++ b/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandler.swift\n@@ -666,7 +666,8 @@\n     private func cut(range: NSRange) {\n         guard !isVirtualUnmaterialized else { return }\n         actionHandler.scheduleMutationTask { [self] in\n-            try await pasteboardService?.cut(document: document, blocksIds: [info.id], selectedTextRange: range)\n+            guard let pasteboardService else { return }\n+            try await pasteboardService.cut(document: document, blocksIds: [info.id], selectedTextRange: range)\n         }\n     }\n \n",
+      "inverse_verified": true
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/SimpleTable/Block/TextBlock/SimpleTablesTextBlockActionHandler.swift",
+      "base_file": "SimpleTablesTextBlockActionHandler.swift",
+      "candidate_file": "SimpleTablesTextBlockActionHandler.V2.swift",
+      "base_sha256": "e56b728efa118250ba7dc8f6eed68d48a9945db696c55ed4593b4848e2094f47",
+      "candidate_sha256": "6381d6125455923834f07e62d245386728dcac08eb3195b8d32bcd0bef6560e4",
+      "patch_file": "SimpleTablesTextBlockActionHandler.V2.patch",
+      "patch_sha256": "a542dc74af57d5f62b93740eef1a6cfbe5acd0543e661cc8b26eaa88c1a41987",
+      "patch": "--- a/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/SimpleTable/Block/TextBlock/SimpleTablesTextBlockActionHandler.swift\n+++ b/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/SimpleTable/Block/TextBlock/SimpleTablesTextBlockActionHandler.swift\n@@ -280,7 +280,8 @@\n     \n     private func cut(range: NSRange) {\n         actionHandler.scheduleMutationTask { [self] in\n-            try await pasteboardService?.cut(document: document, blocksIds: [info.id], selectedTextRange: range)\n+            guard let pasteboardService else { return }\n+            try await pasteboardService.cut(document: document, blocksIds: [info.id], selectedTextRange: range)\n         }\n     }\n     \n",
+      "inverse_verified": true
+    }
+  ],
+  "new_semantic_groups": 2,
+  "expected_old_error_compile_reused": true,
+  "initial_candidate_failed_before_tests": true,
+  "actual_native_tests": 0,
+  "older_tests_replayed": false
+}

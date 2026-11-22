@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "wrapper_pid": 3900,
+  "inputs_sha256": "d50ba25b544b3c5ecfaa4f2dbf26d42d591cda4753a399addb5a9d4904828bb6",
+  "runner_sha256": "4237da13f84e075edb560e1e777da7e28d75f6fa79a48def6bd43ea2d976a143",
+  "commands": [
+    {
+      "label": "complete-text-v2-syntax",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+        "-frontend",
+        "-parse",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122\\TextBlockActionHandler.V2.swift"
+      ],
+      "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122",
+      "wrapper_pid": 3900,
+      "started_at": "2026-11-22T08:28:53.434040+00:00",
+      "timeout_seconds": 90,
+      "phase": "TERMINAL",
+      "child_pid": 32100,
+      "returncode": 0,
+      "timed_out": false,
+      "finished_at": "2026-11-22T08:28:54.023019+00:00",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "all_inputs_unchanged": true
+    },
+    {
+      "label": "complete-table-v2-syntax",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+        "-frontend",
+        "-parse",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122\\SimpleTablesTextBlockActionHandler.V2.swift"
+      ],
+      "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122",
+      "wrapper_pid": 3900,
+      "started_at": "2026-11-22T08:28:54.039455+00:00",
+      "timeout_seconds": 90,
+      "phase": "TERMINAL",
+      "child_pid": 7560,
+      "returncode": 0,
+      "timed_out": false,
+      "finished_at": "2026-11-22T08:28:54.547671+00:00",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "all_inputs_unchanged": true
+    },
+    {
+      "label": "swift-testing-new-cut-boundary-v2",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swift.EXE",
+        "test",
+        "--verbose",
+        "--package-path",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122\\semantic-package",
+        "--scratch-path",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122\\semantic-package\\.build",
+        "--enable-swift-testing",
+        "--disable-xctest",
+        "--xunit-output",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122\\SEMANTIC_TEST_RESULTS_V2.xml",
+        "-Xswiftc",
+        "-strict-concurrency=complete",
+        "-Xswiftc",
+        "-module-cache-path",
+        "-Xswiftc",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-space-bind-20261122\\.build\\x86_64-unknown-windows-msvc\\debug\\ModuleCache"
+      ],
+      "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122",
+      "wrapper_pid": 3900,
+      "started_at": "2026-11-22T08:28:54.564374+00:00",
+      "timeout_seconds": 480,
+      "phase": "TERMINAL",
+      "child_pid": 412,
+      "returncode": 0,
+      "timed_out": false,
+      "finished_at": "2026-11-22T08:29:32.538963+00:00",
+      "stdout_sha256": "8da2507bf46010fb48b13ef74a004a1951cf84f9df5bf3438621dd3a162ba072",
+      "stderr_sha256": "838d4fe46675ef12eb06d3386a5851d58d4415818571efa03e444f76da51a70d",
+      "all_inputs_unchanged": true
+    }
+  ]
+}
