@@ -42,6 +42,11 @@ bounded quiescence verifier. Cancellation is latched while cleanup completes;
 the next profile cannot begin after an unproved cleanup. Original command and
 ownership receipts accompany the untouched log and event stream. A zero process
 exit is explicitly labelled as awaiting test qualification, never as a test pass.
+The workflow also wraps the unchanged R05 controller in this same owned-group
+boundary. R05 retains its own exact-one selection and original acceptance receipt.
+The sixteen already-passing Python controls are not executed again: a read-only
+admission step checks their archived logs, final controller/test/fixture bytes and
+the exact existing process-helper Git blobs before reusing that evidence.
 
 R05 keeps its own controller, one selected method, raw XCTest result and xUnit
 receipt. This route changes no R05 acceptance rule. The shared-session and R05

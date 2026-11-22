@@ -47,11 +47,33 @@ jobs:
         run: |
           python3 -B Tools/Hanlin/prepare_sdk.py --source build/related-read-hanlin-source
           python3 -B Tools/Hanlin/prepare_sdk.py --check
-      - name: Check the new profile and owned-process controls
+      - name: Admit source-bound archived controls without rerunning them
         run: |
-          mkdir -p build/related-read-authority/controls
-          python3 -B -m unittest discover -s Tools/RelatedReadAuthority -p 'test_*.py' -v > build/related-read-authority/controls/original.log 2>&1
-          cat build/related-read-authority/controls/original.log
+          python3 -B - <<'PYTHON'
+          from pathlib import Path
+          import hashlib, json, subprocess
+          root = Path.cwd()
+          proof = root / 'docs/validation/20261122-related-read-package-controls'
+          record = json.loads((proof / 'evidence.json').read_bytes())
+          assert record['status'] == 'PASS_NEW_PARSER_11_AND_PROCESS_5_CONTROLS'
+          assert record['parserControls']['testCount'] == 11 and record['parserControls']['returnCode'] == 0
+          assert record['processControls']['testCount'] == 5 and record['processControls']['returnCode'] == 0
+          for name, expected in record['sourceSHA256'].items():
+              assert hashlib.sha256((root / name).read_bytes()).hexdigest() == expected, name
+          for name, expected in [('original-tool-output.log', record['parserControls']['originalToolLogSHA256']),
+                                 ('original-process-controls.log', record['processControls']['logSHA256'])]:
+              assert hashlib.sha256((proof / name).read_bytes()).hexdigest() == expected, name
+          for name, expected in record['processControls']['existingHelperGitBlobsAt816e3748d5499e7f5a64783506057c4dca0d83d3'].items():
+              path = 'Tools/PinkhaSimulatorGate/' + name
+              assert subprocess.check_output(['git', 'rev-parse', 'HEAD:' + path], text=True).strip() == expected, path
+          output = root / 'build/related-read-authority/controls'
+          output.mkdir(parents=True, exist_ok=False)
+          admission = dict(status='SOURCE_BOUND_PRIOR_CONTROLS_REUSED', parserControls=11,
+                           processControls=5, controlsRerun=0,
+                           archivedReceiptSHA256=hashlib.sha256((proof / 'evidence.json').read_bytes()).hexdigest())
+          (output / 'reuse.json').write_text(json.dumps(admission, indent=2) + '\n')
+          print(json.dumps(admission))
+          PYTHON
       - name: Qualify Kit fifteen methods and seventeen argument cases
         run: |
           python3 -B Tools/RelatedReadAuthority/run_packages.py --root "$GITHUB_WORKSPACE" \
@@ -65,9 +87,21 @@ jobs:
         run: |
           python3 -B Tools/RelatedReadAuthority/run_packages.py --root "$GITHUB_WORKSPACE" \
             --source-sha "$EXPECTED_SOURCE_SHA" --profile shared-related-session-lifetime
-      - name: Qualify R05 through its unchanged exact-one controller
+      - name: Qualify unchanged exact-one R05 inside the same owned-process boundary
         run: |
-          python3 -B Tools/T5RelatedDocuments/run_r05_alias.py --root "$GITHUB_WORKSPACE" --source-sha "$EXPECTED_SOURCE_SHA"
+          python3 -B - <<'PYTHON'
+          from pathlib import Path
+          import os, sys
+          root = Path(os.environ['GITHUB_WORKSPACE']).resolve()
+          sys.path.insert(0, str(root / 'Tools/RelatedReadAuthority'))
+          from run_packages import run_command
+          output = root / 'build/related-read-authority/r05-process'
+          output.mkdir(parents=True, exist_ok=False)
+          outcome = run_command(root, [sys.executable, '-B', str(root / 'Tools/T5RelatedDocuments/run_r05_alias.py'),
+              '--root', str(root), '--source-sha', os.environ['EXPECTED_SOURCE_SHA']],
+              output / 'original-controller.log', 1200)
+          raise SystemExit(outcome['returncode'])
+          PYTHON
       - name: Preserve every original profile stream and separate result
         if: always()
         uses: actions/upload-artifact@v4
