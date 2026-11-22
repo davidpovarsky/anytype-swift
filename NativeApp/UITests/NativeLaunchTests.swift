@@ -1326,11 +1326,11 @@ final class NativeLaunchTests: XCTestCase {
             let ax = XCTAttachment(string: tree)
             ax.name = "ARCHIVE_ROUNDTRIP_" + phase + "_private_AX"
             ax.lifetime = .keepAlways
-            add(ax)
+            self.add(ax)
             let screenshot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
             screenshot.name = "ARCHIVE_ROUNDTRIP_" + phase + "_private_screen"
             screenshot.lifetime = .keepAlways
-            add(screenshot)
+            self.add(screenshot)
         }
         func uniqueReady(_ query: XCUIElementQuery, phase: String,
                          timeout: TimeInterval = 30) throws -> XCUIElement {
