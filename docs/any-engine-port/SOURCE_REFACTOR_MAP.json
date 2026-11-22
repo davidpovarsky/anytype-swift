@@ -204,17 +204,18 @@
       "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatView.swift",
       "baselineBlob": "0ddff522e7645ea19c3d4c319396177e355c4172",
       "replacementBlob": "8a1129ab3e5a7aa64fe07c71ea8fd6667bd72164",
-      "reason": "Keep original app aliases and share original UI/consent/localized-string implementation; only public API, injected styling and Bundle.module resource ownership change.",
+      "reason": "Keep original app aliases and share original UI/consent/localized-string implementation; only public API, injected styling and Bundle.module resource ownership change. The same shared endpoint/model/SecureField now have explicit localized accessibility labels and stable identifiers, preserving native controls and all consent/provider/session behavior.",
       "sharedSources": [
         {
           "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatView.swift",
-          "gitBlob": "6aea1bfe242d973bd93c8c61a46b7d1f4b07af5e"
+          "gitBlob": "bd78eb17d62fe2e03becc7db684fd57472e19e1e"
         }
       ],
       "validation": [
         "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
         "Existing app test bodies are retained; import-only edits are mechanically checked.",
-        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity."
+        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity.",
+        "Original450382 mounted failure exposed empty field accessibility labels. Root source diff changes labels/identifiers only; current actual Hanlin mounted acceptance remains required. See docs/validation/20261122-any-ui-continuation. No old passing tests were rerun for this source review."
       ]
     },
     {

@@ -153,6 +153,26 @@ PROFILES["native-custom-type"] = {
 }
 SOURCE_PATHS["native-custom-type"] = SOURCE_PATHS["native-ui"]
 
+# Explicit continuation scopes never include an already passed native journey.
+PROFILES["native-ui-continuation-six"] = {
+    "NativeLaunchTests": [
+        "testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType",
+        "testExplicitHebrewDirectionAndAlignmentSurviveColdReopen",
+        "testHierarchyDragIntoFolderPersistsAfterColdReopen",
+        "testSourceDragIntoNativeEditorPreservesTargetAndColdReopens",
+        "testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen",
+        "testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen",
+    ],
+}
+SOURCE_PATHS["native-ui-continuation-six"] = SOURCE_PATHS["native-ui"]
+PROFILES["native-history"] = {
+    "NativeHistoryTests": [
+        "testSavedHebrewVersionsRemainReadOnlyAcrossCloseBackgroundAndColdReopen",
+    ],
+}
+SOURCE_PATHS["native-history"] = ["NativeApp/UITests/NativeHistoryTests.swift"]
+EXACT_PROFILES = EXACT_PROFILES | {"native-ui-continuation-six", "native-history"}
+
 def require(condition, message):
     if not condition:
         raise RuntimeError(message)

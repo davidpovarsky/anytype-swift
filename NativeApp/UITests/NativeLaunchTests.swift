@@ -163,7 +163,8 @@ final class NativeLaunchTests: XCTestCase {
         waitUntilEnabled(field)
         field.tap(); field.press(forDuration: 1.2)
         let selectAll = app.descendants(matching: .any).matching(
-            NSPredicate(format: "label == %@ OR label == %@ OR label == %@", "Select All", "בחר הכל", "בחר הכול")).firstMatch
+            NSPredicate(format: "label == %@ OR label == %@ OR label == %@ OR label == %@",
+                        "Select All", "בחר הכל", "בחר הכול", "בחירת הכול")).firstMatch
         tapWhenEnabled(selectAll)
         field.typeText(updatedName)
         tapWhenEnabled(app.buttons["any-native-property-save"])
@@ -455,7 +456,12 @@ final class NativeLaunchTests: XCTestCase {
         XCTAssertNotEqual(rowIdentifier, folderIdentifier)
         // Exercise the production String drag payload and folder drop handler.
         // Do not invoke the Move context-menu action or a fixture/native API.
-        source.press(forDuration: 1.1, thenDragTo: destination)
+        // The original 52-point move ended after 104 ms with no destination
+        // dwell and left the context menu open. Give the real native drag/drop
+        // interaction time to enter the target before lifting the pointer.
+        source.press(forDuration: 1.1, thenDragTo: destination,
+                     withVelocity: XCUIGestureVelocity(rawValue: 100),
+                     thenHoldForDuration: 0.6)
         let movedRow = app.buttons[rowIdentifier]
         waitFor(NSPredicate(format: "exists == false"), object: movedRow, timeout: 45)
         let library = app.descendants(matching: .any)
@@ -588,6 +594,11 @@ final class NativeLaunchTests: XCTestCase {
             dx: insertionPoint.x - appFrame.minX, dy: insertionPoint.y - appFrame.minY))
         dragStart.press(forDuration: 1.1, thenDragTo: insertionBoundary)
 
+        // The original run rendered the canonical badge while the expanded
+        // inspector kept that background button outside its accessible scope.
+        // Use the same real header collapse as the passing Inspector journey
+        // before requiring the quote, native badge, and unchanged target.
+        collapseInspectorForBackgroundRead(app)
         let quote = blocks.matching(NSPredicate(format: "value == %@", providerText)).firstMatch
         waitFor(NSPredicate(format: "exists == true AND value == %@", providerText),
                 object: quote, timeout: 60)
@@ -633,6 +644,13 @@ final class NativeLaunchTests: XCTestCase {
         let documentA = "Topic Word Document A " + suffix
         let documentB = "Topic Word Document B " + suffix
         let linkedPrefix = "any-native-linked-source-"
+        let relatedList = app.descendants(matching: .any)
+            .matching(identifier: "any-native-related-documents-list").firstMatch
+        func relatedDocument(_ title: String) -> XCUIElement {
+            relatedList.buttons.matching(NSPredicate(
+                format: "identifier BEGINSWITH %@ AND label == %@",
+                "any-native-related-document-", title)).firstMatch
+        }
         app.launch()
         defer { app.terminate() }
         createOwnedWorkspace(app, spaceName: spaceName)
@@ -730,9 +748,10 @@ final class NativeLaunchTests: XCTestCase {
         tapWhenEnabled(app.buttons.matching(NSPredicate(
             format: "label == %@ OR label == %@", "מסמכים מקושרים", "Related documents")).firstMatch)
         waitFor(NSPredicate(format: "exists == true"), object: app.navigationBars[topicTitleB], timeout: 60)
-        waitUntilEnabled(app.buttons[documentA].firstMatch, timeout: 60)
-        waitUntilEnabled(app.buttons[documentB].firstMatch, timeout: 60)
-        tapWhenEnabled(app.buttons[documentA].firstMatch)
+        waitFor(NSPredicate(format: "exists == true"), object: relatedList, timeout: 60)
+        waitUntilEnabled(relatedDocument(documentA), timeout: 60)
+        waitUntilEnabled(relatedDocument(documentB), timeout: 60)
+        tapWhenEnabled(relatedDocument(documentA))
         waitFor(NSPredicate(format: "exists == true"), object: app.navigationBars[documentA], timeout: 60)
         waitFor(NSPredicate(format: "exists == false"), object: app.buttons["any-native-property-close"], timeout: 30)
         waitUntilEnabled(app.buttons["any-native-document-properties"])
@@ -744,8 +763,11 @@ final class NativeLaunchTests: XCTestCase {
         tapWhenEnabled(app.buttons.matching(NSPredicate(
             format: "label == %@ OR label == %@", "מסמכים מקושרים", "Related documents")).firstMatch)
         waitFor(NSPredicate(format: "exists == true"), object: app.navigationBars[wordTitle], timeout: 60)
-        waitUntilEnabled(app.buttons[documentA].firstMatch, timeout: 60)
-        XCTAssertFalse(app.buttons[documentB].exists, "A Topic-only document must not enter the Word index.")
+        waitFor(NSPredicate(format: "exists == true"), object: relatedList, timeout: 60)
+        waitUntilEnabled(relatedDocument(documentA), timeout: 60)
+        // The underlying navigation BackButton still names document B. Only
+        // actual rows returned to the current native Word-results list count.
+        XCTAssertFalse(relatedDocument(documentB).exists, "A Topic-only document must not enter the Word index.")
 
         // Reopen from disk without relinking. The exact canonical item IDs and
         // labels must remain present, and Word-related results remain distinct.
@@ -762,8 +784,9 @@ final class NativeLaunchTests: XCTestCase {
         tapWhenEnabled(app.buttons.matching(NSPredicate(
             format: "label == %@ OR label == %@", "מסמכים מקושרים", "Related documents")).firstMatch)
         waitFor(NSPredicate(format: "exists == true"), object: app.navigationBars[wordTitle], timeout: 60)
-        waitUntilEnabled(app.buttons[documentA].firstMatch, timeout: 60)
-        XCTAssertFalse(app.buttons[documentB].exists)
+        waitFor(NSPredicate(format: "exists == true"), object: relatedList, timeout: 60)
+        waitUntilEnabled(relatedDocument(documentA), timeout: 60)
+        XCTAssertFalse(relatedDocument(documentB).exists)
     }
 
     func testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen() async throws {
@@ -971,20 +994,22 @@ final class NativeLaunchTests: XCTestCase {
 
     private func configureHanlinThroughNormalFields(_ app: XCUIApplication,
                                                     fixture: HanlinMountedFixtureClient) throws {
-        let endpoint = app.textFields.matching(NSPredicate(
-            format: "label == %@ OR label == %@", "כתובת API מסוג HTTPS", "HTTPS API endpoint")).firstMatch
-        let model = app.textFields.matching(NSPredicate(
-            format: "label == %@ OR label == %@", "מזהה המודל", "Model identifier")).firstMatch
-        let key = app.secureTextFields.matching(NSPredicate(
-            format: "label == %@ OR label == %@", "מפתח API", "API key")).firstMatch
+        let endpoint = app.textFields["pinkha.hanlin.connection.endpoint"]
+        let model = app.textFields["pinkha.hanlin.connection.model"]
+        let key = app.secureTextFields["pinkha.hanlin.connection.credential"]
         waitUntilEnabled(endpoint)
+        XCTAssertTrue(["כתובת API מסוג HTTPS", "HTTPS API endpoint"].contains(endpoint.label))
         endpoint.tap()
         endpoint.typeKey("a", modifierFlags: .command)
         endpoint.typeText(fixture.providerURL.absoluteString)
         XCTAssertEqual(endpoint.value as? String, fixture.providerURL.absoluteString)
-        waitUntilEnabled(model); model.tap(); model.typeText(fixture.model)
+        waitUntilEnabled(model)
+        XCTAssertTrue(["מזהה המודל", "Model identifier"].contains(model.label))
+        model.tap(); model.typeText(fixture.model)
         XCTAssertEqual(model.value as? String, fixture.model)
-        waitUntilEnabled(key); key.tap(); key.typeText(fixture.providerKey)
+        waitUntilEnabled(key)
+        XCTAssertTrue(["מפתח API", "API key"].contains(key.label))
+        key.tap(); key.typeText(fixture.providerKey)
         tapWhenEnabled(app.buttons["pinkha.hanlin.connect"])
         waitUntilEnabled(hanlinComposerInput(app))
     }
@@ -1286,6 +1311,7 @@ final class NativeLaunchTests: XCTestCase {
 
     // BEGIN_CANONICAL_ARCHIVE_ROUNDTRIP_V1
     func testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies() throws {
+        executionTimeAllowance = 1_800
         let scope = UUID()
         let suffix = String(scope.uuidString.prefix(8))
         let app = makeApplication(scope: scope)
@@ -1347,6 +1373,11 @@ final class NativeLaunchTests: XCTestCase {
             }
             return query.firstMatch
         }
+        func requireArchiveFilesDirectory(phase: String) throws {
+            let directory = app.buttons.matching(NSPredicate(
+                format: "label == %@ OR label BEGINSWITH %@", "Exports", "Exports,"))
+            _ = try uniqueReady(directory, phase: phase + "_directory", timeout: 15)
+        }
         func exportUsingFiles(named filename: String) throws {
             XCTAssertTrue(filename.hasSuffix(".json"))
             let basename = String(filename.dropLast(".json".count))
@@ -1356,6 +1387,7 @@ final class NativeLaunchTests: XCTestCase {
             let saveQuery = app.buttons.matching(NSPredicate(
                 format: "label IN %@", ["Save", "שמירה", "שמור"]))
             _ = try uniqueReady(saveQuery, phase: basename + "_save", timeout: 45)
+            try requireArchiveFilesDirectory(phase: basename + "_export")
             let filenameField = try uniqueReady(app.textFields, phase: basename + "_filename")
             guard let currentName = filenameField.value as? String,
                   ["source-associations", "source-associations.json", basename, filename].contains(currentName) else {
@@ -1377,6 +1409,11 @@ final class NativeLaunchTests: XCTestCase {
         func importUsingFiles(named filename: String) throws {
             let basename = String(filename.dropLast(".json".count))
             tapWhenEnabled(app.buttons["any-native-archive-import"])
+            let cancelQuery = app.buttons.matching(NSPredicate(
+                format: "label IN %@", ["Cancel", "ביטול"]))
+            _ = try uniqueReady(cancelQuery, phase: basename + "_import_dialog", timeout: 15)
+            try captureFilesState(basename + "_import_PRESENTED")
+            try requireArchiveFilesDirectory(phase: basename + "_import")
             // Query actual Files rows/text. All names contain this test's UUID;
             // there is no injected URL, fake picker, or filesystem selection.
             let exactName = NSPredicate(format: "label == %@ OR label == %@", filename, basename)

@@ -1,0 +1,363 @@
+{
+  "schemaVersion": 1,
+  "status": "AUDITED_ORIGINAL_MIXED_RESULT_NOT_FULL_ACCEPTANCE",
+  "runID": 45038244641,
+  "jobID": 137256671984,
+  "commit": "07c3568f9f9cf4044dd81163cd374d4ad35330cb",
+  "artifactID": 14763060546,
+  "artifactSHA256": "631272ec9be40f243645009f181ee3f83dbbb0eb57e47a6ab92e59aca0d1a3cb",
+  "artifactBytes": 310306892,
+  "artifactFiles": 4742,
+  "profiles": [
+    {
+      "profile": "ui-focus-handoff",
+      "counts": {
+        "totalTestCount": 10,
+        "passedTests": 10,
+        "failedTests": 0,
+        "skippedTests": 0
+      },
+      "cases": [
+        {
+          "method": "AnyNativeFocusHandoffTests/testDeferredNativeRefusalWaitsForActualReadinessWithoutLayoutRetries()",
+          "result": "Passed",
+          "durationSeconds": 1.5297999382019043
+        },
+        {
+          "method": "AnyNativeFocusHandoffTests/testQueuedDeliveryRevalidatesOwnerVersionAndHonorsCancellationAndReplacement()",
+          "result": "Passed",
+          "durationSeconds": 0.12967395782470703
+        },
+        {
+          "method": "AnyNativeFocusHandoffTests/testReadinessBurstAndReentrantLayoutDeliverOnlyOneAttempt()",
+          "result": "Passed",
+          "durationSeconds": 0.049626946449279785
+        },
+        {
+          "method": "AnyNativeFocusHandoffTests/testSnapshotCompletionUnwindsBeforeResponderAcquisition()",
+          "result": "Passed",
+          "durationSeconds": 0.05754399299621582
+        },
+        {
+          "method": "AnyNativeFocusLifecycleTests/testCurrentResponderRequestDoesNotStealFocusAfterLaterInput()",
+          "result": "Passed",
+          "durationSeconds": 0.04661595821380615
+        },
+        {
+          "method": "AnyNativeFocusLifecycleTests/testDetachedRequestWaitsForAttachmentAndIsConsumedOnce()",
+          "result": "Passed",
+          "durationSeconds": 0.027350902557373047
+        },
+        {
+          "method": "AnyNativeFocusLifecycleTests/testKeyWindowReadinessRetriesNativeRefusalWithoutRenderPolling()",
+          "result": "Passed",
+          "durationSeconds": 0.11439502239227295
+        },
+        {
+          "method": "AnyNativeFocusLifecycleTests/testLockedViewDenialDoesNotReviveAfterUnlock()",
+          "result": "Passed",
+          "durationSeconds": 0.006217002868652344
+        },
+        {
+          "method": "AnyNativeFocusLifecycleTests/testNewUserFocusCancelsDetachedRequest()",
+          "result": "Passed",
+          "durationSeconds": 0.023965001106262207
+        },
+        {
+          "method": "AnyNativeFocusLifecycleTests/testOwnerOrVersionChangeCancelsOldRequestBeforeRebind()",
+          "result": "Passed",
+          "durationSeconds": 0.017552971839904785
+        }
+      ],
+      "sqliteCases": [
+        {
+          "method": "AnyNativeFocusHandoffTests/testDeferredNativeRefusalWaitsForActualReadinessWithoutLayoutRetries()",
+          "result": "Success"
+        },
+        {
+          "method": "AnyNativeFocusHandoffTests/testQueuedDeliveryRevalidatesOwnerVersionAndHonorsCancellationAndReplacement()",
+          "result": "Success"
+        },
+        {
+          "method": "AnyNativeFocusHandoffTests/testReadinessBurstAndReentrantLayoutDeliverOnlyOneAttempt()",
+          "result": "Success"
+        },
+        {
+          "method": "AnyNativeFocusHandoffTests/testSnapshotCompletionUnwindsBeforeResponderAcquisition()",
+          "result": "Success"
+        },
+        {
+          "method": "AnyNativeFocusLifecycleTests/testCurrentResponderRequestDoesNotStealFocusAfterLaterInput()",
+          "result": "Success"
+        },
+        {
+          "method": "AnyNativeFocusLifecycleTests/testDetachedRequestWaitsForAttachmentAndIsConsumedOnce()",
+          "result": "Success"
+        },
+        {
+          "method": "AnyNativeFocusLifecycleTests/testKeyWindowReadinessRetriesNativeRefusalWithoutRenderPolling()",
+          "result": "Success"
+        },
+        {
+          "method": "AnyNativeFocusLifecycleTests/testLockedViewDenialDoesNotReviveAfterUnlock()",
+          "result": "Success"
+        },
+        {
+          "method": "AnyNativeFocusLifecycleTests/testNewUserFocusCancelsDetachedRequest()",
+          "result": "Success"
+        },
+        {
+          "method": "AnyNativeFocusLifecycleTests/testOwnerOrVersionChangeCancelsOldRequestBeforeRebind()",
+          "result": "Success"
+        }
+      ],
+      "namedStatus": "PASS"
+    },
+    {
+      "profile": "native-ui",
+      "counts": {
+        "totalTestCount": 1,
+        "passedTests": 1,
+        "failedTests": 0,
+        "skippedTests": 0
+      },
+      "cases": [
+        {
+          "method": "NativeLaunchTests/testCreateEditHanlinConsentBackgroundAndColdReopen()",
+          "result": "Passed",
+          "durationSeconds": 120.28471994400024
+        }
+      ],
+      "sqliteCases": [
+        {
+          "method": "NativeLaunchTests/testCreateEditHanlinConsentBackgroundAndColdReopen()",
+          "result": "Success"
+        }
+      ],
+      "namedStatus": "PASS"
+    },
+    {
+      "profile": "native-ui-followup",
+      "counts": {
+        "totalTestCount": 7,
+        "passedTests": 1,
+        "failedTests": 6,
+        "skippedTests": 0
+      },
+      "cases": [
+        {
+          "method": "NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen()",
+          "result": "Failed",
+          "durationSeconds": 116.64910089969635
+        },
+        {
+          "method": "NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen()",
+          "result": "Failed",
+          "durationSeconds": 160.36428499221802
+        },
+        {
+          "method": "NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen()",
+          "result": "Failed",
+          "durationSeconds": 211.38082098960876
+        },
+        {
+          "method": "NativeLaunchTests/testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType()",
+          "result": "Failed",
+          "durationSeconds": 160.74317693710327
+        },
+        {
+          "method": "NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens()",
+          "result": "Failed",
+          "durationSeconds": 146.13227701187134
+        },
+        {
+          "method": "NativeLaunchTests/testSourceInspectorQuoteAndNoteSurviveColdReopen()",
+          "result": "Passed",
+          "durationSeconds": 290.8552750349045
+        },
+        {
+          "method": "NativeLaunchTests/testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen()",
+          "result": "Failed",
+          "durationSeconds": 196.79057896137238
+        }
+      ],
+      "sqliteCases": [
+        {
+          "method": "NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen()",
+          "result": "Failure"
+        },
+        {
+          "method": "NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen()",
+          "result": "Failure"
+        },
+        {
+          "method": "NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen()",
+          "result": "Failure"
+        },
+        {
+          "method": "NativeLaunchTests/testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType()",
+          "result": "Failure"
+        },
+        {
+          "method": "NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens()",
+          "result": "Failure"
+        },
+        {
+          "method": "NativeLaunchTests/testSourceInspectorQuoteAndNoteSurviveColdReopen()",
+          "result": "Success"
+        },
+        {
+          "method": "NativeLaunchTests/testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen()",
+          "result": "Failure"
+        }
+      ],
+      "namedStatus": "FAIL"
+    },
+    {
+      "profile": "archive-roundtrip",
+      "counts": {
+        "totalTestCount": 1,
+        "passedTests": 0,
+        "failedTests": 1,
+        "skippedTests": 0
+      },
+      "cases": [
+        {
+          "method": "NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies()",
+          "result": "Failed",
+          "durationSeconds": 360
+        }
+      ],
+      "sqliteCases": [
+        {
+          "method": "NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies()",
+          "result": "Failure"
+        }
+      ],
+      "namedStatus": "FAIL"
+    }
+  ],
+  "originalFiles": {
+    "ui-focus-handoff.xcresult/database.sqlite3": {
+      "sha256": "ffc84f4f9d42d2d96e167577952bdd3cea7ca753d433368bfd9f366dea106eda",
+      "bytes": 245760
+    },
+    "ui-focus-handoff-test-counts.json": {
+      "sha256": "f15dfdfbbb07804baed59092d9be0309b57c736c787bae2a45db48fb7ea59925",
+      "bytes": 1027
+    },
+    "ui-focus-handoff-test-methods.json": {
+      "sha256": "cdd48c72a50b0458d86a1b3f6037c73a9db40fd2aa0d5dc662946ffff6656926",
+      "bytes": 7689
+    },
+    "ui-focus-handoff-named-execution.json": {
+      "sha256": "a55417ce5e0c223f0a8b11b130f4cc50e7a6ae66664516f1474d198f63d0571c",
+      "bytes": 13766
+    },
+    "ui-focus-handoff.log": {
+      "sha256": "6cbd3a19f8adac7f6b64661c015ec8d563465928b7d51282ea820b6deb3601a7",
+      "bytes": 2686354
+    },
+    "native-ui.xcresult/database.sqlite3": {
+      "sha256": "f4c7f83addb79860f92b35ef0c915297abad622789b1255327ace698fd445800",
+      "bytes": 303104
+    },
+    "native-ui-test-counts.json": {
+      "sha256": "4368f0a7da0ff36d0591132574b55f4838a5bdf2623c4b0674904d8d93b63a74",
+      "bytes": 1183
+    },
+    "native-ui-test-methods.json": {
+      "sha256": "66dcc00fc13c5679f8061c9171177639cece3ffb09da99fe53133baf8c04c979",
+      "bytes": 2014
+    },
+    "native-ui-named-execution.json": {
+      "sha256": "b182675f5b35c01d3ddcbff8a653026fb58527be7e2f62919e8aad3167d02356",
+      "bytes": 1352
+    },
+    "native-ui.log": {
+      "sha256": "935a504ee23f5fc7083a8ec4160e74bb2aab016a2e1798bd85e409330d41a492",
+      "bytes": 30820
+    },
+    "native-ui-followup.xcresult/database.sqlite3": {
+      "sha256": "19f7389e3f6401d02ab363c50347482b077e5003ad0625c2d2cb9e2840b8a657",
+      "bytes": 1060864
+    },
+    "native-ui-followup-test-counts.json": {
+      "sha256": "1dc33b42d186c5b64b32e132d9e85a0232ebb66a8ef83c5f5c7ecd3421f90606",
+      "bytes": 5925
+    },
+    "native-ui-followup-test-methods.json": {
+      "sha256": "f4c5b895d06de2bc4283b0ce845f4c467eb1ed7d3be9d016e3bfef4521d4af49",
+      "bytes": 10193
+    },
+    "native-ui-followup-named-execution.json": {
+      "sha256": "56f428d16599632fa0b79c01faa3554f4e8490aed2d60d5363360736ba853752",
+      "bytes": 733
+    },
+    "native-ui-followup.log": {
+      "sha256": "95d45807cdb30800322f5a606fee53c066948b4749be82240d0155327bd9a355",
+      "bytes": 299238
+    },
+    "archive-roundtrip.xcresult/database.sqlite3": {
+      "sha256": "495ab874820b4261c2bc523dd6ab0eaa448f6f6e8aaa04a9b21da9afd8f4a998",
+      "bytes": 417792
+    },
+    "archive-roundtrip-test-counts.json": {
+      "sha256": "ebf256defbe2a99d04aed6a7f73bc726b4353ede315406d586bfa35ad62b69e6",
+      "bytes": 1708
+    },
+    "archive-roundtrip-test-methods.json": {
+      "sha256": "8a2c8c2dd69efacf3087c37a0a38cd5ca2c834e3f3ad7867118a55e3e6724eb1",
+      "bytes": 2210
+    },
+    "archive-roundtrip-named-execution.json": {
+      "sha256": "3b2e0dbb632731fdc5aa6d92da0942c7b9ae0c8fb9cb6da886fc33e3571ef8d0",
+      "bytes": 732
+    },
+    "archive-roundtrip.log": {
+      "sha256": "855febf2bacbb1c5fe3db314aff3881dfb6605acde93e04179ed99b5bb0a7ccc",
+      "bytes": 65403
+    },
+    "source-sha.txt": {
+      "sha256": "6b59d829f726b727ceab205db0ca4872ed946820539f5459a4ac70c51ad67e9e",
+      "bytes": 41
+    },
+    "native-reuse.json": {
+      "sha256": "29321e996cf31e4409d3efd35d65ff1d110cded1dd8ece0230ec17340a1a8b05",
+      "bytes": 528
+    },
+    "ui-ios-reuse.json": {
+      "sha256": "3738b068fc2feaefd7e27a0cc71e05134cfbacd70f0e630b9ea17f8420da8f26",
+      "bytes": 20944
+    },
+    "compiled-product-identity-retained.json": {
+      "sha256": "5c0801da0655cc1edf2e5bb978c58afef20ae99ad6708ef855b143e0ccceb8f8",
+      "bytes": 1577
+    },
+    "native-app-bundle.json": {
+      "sha256": "de0ee1b19debec4c575e5c1b80f0c28369fccfc26c79c950328a9e76e18d78d1",
+      "bytes": 933
+    },
+    "native-shared-products.json": {
+      "sha256": "2a1e68c8c4d4b4806adf1d9829e978d783b23483b442c77a74e6d85341ac61ee",
+      "bytes": 43059
+    },
+    "native-products-originals/manifest.json": {
+      "sha256": "1e784234e0d48a0843fe6a85498434b7fe8313d2cee9c4d4765747fad5db4eac",
+      "bytes": 851
+    },
+    "hanlin-provider/verify.json": {
+      "sha256": "86c0fce3a0316f2788e0651a02e1a6f9b4dee20929bb215cdc252a8f9fef77d5",
+      "bytes": 277
+    }
+  },
+  "newXCTestCases": 19,
+  "newPassed": 12,
+  "newFailed": 7,
+  "newSkipped": 0,
+  "retainedUnchangedUIKitMethods": 8,
+  "oldTestsRerunForThisAudit": 0,
+  "customTypeUI": "NOT_RUN",
+  "hanlinProviderTranscript": "FAIL owned_command_failed",
+  "claimBoundary": "Original current iPad Simulator evidence only. Native entry and focus repair passed. Six follow-up failures and Files 360-second allowance failure remain. XCTest runner restarts with zero-test local summaries do not erase original failures. Canonical archive is association transport, not full native Space migration. Physical iPad/full release/full Any acceptance NOT_RUN."
+}

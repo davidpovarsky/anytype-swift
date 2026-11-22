@@ -434,6 +434,7 @@ public struct AnyNativeArchiveTransferView: View {
                 case .failure(let error): model.message = AnyUIErrorText.describe(error)
                 }
             }
+            .fileDialogDefaultDirectory(exportsDirectory)
             .fileImporter(isPresented: $showsImporter, allowedContentTypes: [.json]) { result in
                 switch result {
                 case .success(let url): Task { await model.loadFile(url) }

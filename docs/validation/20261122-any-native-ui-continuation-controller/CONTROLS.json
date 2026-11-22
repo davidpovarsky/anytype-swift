@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_16_FOCUSED_ADMISSION_CONTROLS",
+  "scope": "Python source, archive, original-evidence and continuation-admission controls; no product execution",
+  "actualNamedMethods": [
+    "test_changed_passed_entry_or_common_helper_cannot_be_excused_by_new_review_hashes",
+    "test_current_named_stage_requires_current_source_commit_and_raw_terminals",
+    "test_exact_review_accepts_actual_twelve_frozen_sources_and_preserves_passed_declarations",
+    "test_frozen_build_binds_explicit_continuation_and_old_shape_is_preserved",
+    "test_hanlin_helper_must_have_only_the_failed_journey_as_caller",
+    "test_history_registration_rejects_any_production_target_change",
+    "test_new_exact_profiles_reject_old_quote_extra_cases_and_skips",
+    "test_original_failed_seven_remains_failed_with_only_quote_selected",
+    "test_original_manifest_cannot_be_replaced_with_other_passed_evidence",
+    "test_original_run_artifact_identity_rejects_wrong_origin_or_relabel",
+    "test_product_identity_code_is_byte_identical_to_original_five_control_scope",
+    "test_raw_log_rejects_duplicates_missing_terminals_and_skips",
+    "test_source_and_review_digests_cannot_drift",
+    "test_unreviewed_source_additions_and_scope_relabel_are_rejected",
+    "test_zip_exact_file_binding_and_no_overwrite",
+    "test_zip_rejects_traversal_symlink_duplicates_and_changed_bytes"
+  ],
+  "total": 16,
+  "passed": 16,
+  "failed": 0,
+  "skipped": 0,
+  "rawLog": {
+    "path": "controls.log",
+    "sha256": "346f14975e725fe830be5f35da0f73964c8b1cedccf7eeab5cac9a55811f8bde",
+    "bytes": 3491
+  },
+  "command": "PINKHA_CONTINUATION_CANDIDATE_ROOT=/workspace/scratch/15ed7c0f4658/any-ui-continuation-work PINKHA_CONTINUATION_BASELINE_ROOT=/workspace/scratch/15ed7c0f4658/any-ui-continuation-work/baseline python -m unittest discover -s any-acceptance-continuation-work/Tools/AnyEnginePort -p test_native_acceptance_continuation.py -v",
+  "controllerSourcesAtQualification": {
+    "Tools/AnyEnginePort/continue_native_acceptance.py": {
+      "sha256": "63f11c8855bed52eec5def6c0c4cc3943218a861935929217cac6eadf065dd89",
+      "bytes": 22562,
+      "gitBlob": "8b2f140c88cdea5c905ee0f67a2ba68fbfa06d2a"
+    },
+    "Tools/AnyEnginePort/native_continuation_sources.py": {
+      "sha256": "3bb2a0419c87feb75f7376df951ea384396045afd30c756001da5c3b6997500d",
+      "bytes": 10782,
+      "gitBlob": "c4f5a2b8ac2f192df9e6d319367117dda4ce8c2e"
+    },
+    "Tools/AnyEnginePort/test_native_acceptance_continuation.py": {
+      "sha256": "ebc50fe8848896c37d854cf05898d8e244d58be01021a8ab899ccf97f3c6081d",
+      "bytes": 17981,
+      "gitBlob": "c05f011b8746fcf70630568867eba1308f35c2d9"
+    },
+    "Tools/AnyEnginePort/verify_native_test_execution.py": {
+      "sha256": "af126a59d47fec07b0d465c0077c812fb5f52cfcadf71a2da22cebb969e21b91",
+      "bytes": 13754,
+      "gitBlob": "c29631531507ca15501e6b9300bc0e28b45ab2a7"
+    },
+    "Tools/AnyEnginePort/verify_custom_type.py": {
+      "sha256": "6322e8f63d7c5864359c2a10f7b4f30773c96855c461840c5238f87211ddc864",
+      "bytes": 24998,
+      "gitBlob": "7676373fcd864a47b57a4ac9ff9b44991c1ade9f"
+    },
+    ".github/workflows/pinkha-any-engine-port.yml": {
+      "sha256": "e597ad587470ddd7598448d7a783ff64eed70218571f93952ccfc18a44176bdb",
+      "bytes": 85987,
+      "gitBlob": "37c2d9a392cf202d49b894def0edb066ea5a987d"
+    },
+    "Tools/AnyEnginePort/reviews/native-ui-continuation-450382-originals.json": {
+      "sha256": "1f8d5aedfa8bb16fc7eb7ed21cef45376897f6d2ddd305642cac5c77a33cbb93",
+      "bytes": 4094,
+      "gitBlob": "2bc22b8d5115b9a4e467b47aae1a5ff25f2ad1ea"
+    },
+    "Tools/AnyEnginePort/reviews/native-ui-continuation-450382-sources.json": {
+      "sha256": "5f0475554aa57f5017e2426e8e1bd5b99170c9c3c3a9df3cfa090db8b85ed417",
+      "bytes": 10978,
+      "gitBlob": "9908b559251a139c9187a25f049c1415953e8bcf"
+    }
+  },
+  "sourceSnapshotCaveat": "Source hashes recorded at final qualification; no pre-execution source snapshot is asserted. Controller Python and review JSON bytes were unchanged after the 16-method execution; subsequent edits affected workflow routing and its local verification helper only.",
+  "rootCandidateManifestSHA256": "7c275c07d2b82d1f39ae4e1cc0d9f4eb16b61bfb0f56d92b4cbd9b37ca4e77d8",
+  "sourceReviewSHA256": "5f0475554aa57f5017e2426e8e1bd5b99170c9c3c3a9df3cfa090db8b85ed417",
+  "currentProductTestsExecuted": 0,
+  "currentAppleTestsExecuted": 0,
+  "oldProductSuitesRerun": 0,
+  "actualOriginalArchiveCheck": "actual-original-check.json",
+  "actualOriginalQualification": "The downloaded original full ZIP and 25 pinned records were read and qualified. The original seven-method batch remains FAIL with one passed and six failed methods.",
+  "workflowCheck": "workflow-check.json",
+  "continuationEnabledJobs": [
+    "ios-native-runtime"
+  ],
+  "oldCompiledProductControls": "Original five-control product-identity scope retained only through byte-identical relevant implementation; these controls were not rerun.",
+  "pending": [
+    "Actual current Git source closure and clean-worktree check on the published commit",
+    "Live GitHub original run/artifact metadata requalification in CI",
+    "Current Apple build, six failed journeys, Files, Custom Type and optional new history execution",
+    "Current compiled-product postflight and final aggregate"
+  ],
+  "wholeAPP01": "OPEN",
+  "fullAcceptance": false
+}

@@ -1,0 +1,57 @@
+{
+  "apple_typecheck": "NOT_RUN",
+  "baseline_app_sha": "bf5b2fb4e0b446f8e13c04c8f9d8c16a44b41345",
+  "dependencies": {
+    "swift-asn1": "917b472dbe53ba699cbb0495f9a95a084bc6364d",
+    "swift-crypto": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+    "torahinspectorkit": "511454e49450cb2581ddf77f644146ff3e30dbef"
+  },
+  "executed_methods": 16,
+  "failed_methods": 0,
+  "full_APP01": "OPEN",
+  "git_tracked_source_count": 233,
+  "harness": "Exact production Host/Engine/Integration/Kit sources with local package wiring and two selected new test suites. No dependency stubs.",
+  "mounted_history_acceptance": "NOT_RUN",
+  "native_acl_transition": "NOT_RUN",
+  "native_history_http": "NOT_RUN",
+  "original_receipt_sha256": "dbf2f9282e54e5bcabb6e62b6229ea7aada07436d93a4c373b34ab9aaec9c7e7",
+  "owned_source_sha256": {
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeHistoryReader.swift": "097a4c59dd7cdce04d9ae7951190a4b57918a9184386942be552691a1aca3fe8",
+    "Sources/PinkhaAnyUI/AnyNativeDocumentView.swift": "0ebeb847cca5218ba3f81b57e1dda852621452fab8aebd318a30687fbfb2e6b9",
+    "Sources/PinkhaAnyUI/AnyNativeHistoryPresentation.swift": "0930eda2e012811b4087e1a54b93cb010b3dc6c3d20477b992870fa0c0240270",
+    "Sources/PinkhaAnyUI/AnyNativeHistoryView.swift": "a1f169687696606a98c7c6e1911fc9d71a64deaf89c27d61341b0e8f6d62d6c3",
+    "Tests/PinkhaHistoryControls/AnyNativeHistoryPresentationTests.swift": "309d436266ee7dd99862b96f077998954396eb285aac12f50ecae148c52381c6",
+    "Tests/PinkhaHistoryControls/NativeHistoryReaderTests.swift": "76a2220e49932710c7f6fda2e1a6ea9bc57afa58588a899ea6ca8a9e20ff583b"
+  },
+  "passed_methods": 16,
+  "physical_device": "NOT_RUN",
+  "prior_attempts": "Three dependency/build timeouts, no test methods executed; originals retained without relabeling.",
+  "raw_log_sha256": "68aa337fe3ffcf434a7847e0577d90d14252a1939c910b6d27c0376fe8b27055",
+  "runtime": "Swift 6.3.3, x86_64-unknown-windows-msvc",
+  "schema_version": 1,
+  "scope": "Scripted transport and authority controls for actual history reader, session, model, and publication lifecycle. Windows excludes conditional SwiftUI/UIKit view bodies.",
+  "sentinel_job_id": "job_82914797a4fc",
+  "skipped_methods": 0,
+  "source_before_sha256": "783327b13240972ce59df81d53899ce06825a78569e7d9e3fafbde22fe52f711",
+  "status": "PASS_FOCUSED_PORTABLE_HISTORY_CONTROLS",
+  "swift_testing_methods": [
+    "MountedOwnerRevocationClearsAllHistoricalData",
+    "listedTruncationDoesNotDispatchACompleteVersionRead",
+    "missingTruncatedAndLargeVersionsNeverBecomeEmptySuccess",
+    "pageFailureRetiresAnInFlightVersionEvenWhenItIgnoresCancellation",
+    "paginationStopsAtTwentyPagesAndKeepsNativeOrder",
+    "refreshCannotBeRepopulatedByThePreviousPreview",
+    "supersededVersionCannotReplaceTheCurrentSelection"
+  ],
+  "xctest_methods": [
+    "testCursorCannotCrossObjectAccountSpaceGenerationOrRun",
+    "testDenialBeforeAndAfterReadNeverReturnsPayload",
+    "testDuplicateAndStalledPagesAreExplicitFailures",
+    "testMissingTruncatedOversizeAndPermissionRemainDistinct",
+    "testNativeDocumentGenerationChangeRejectsHistoricalReply",
+    "testReaderKeepsNativeOrderOpaqueFieldsAndReaderAuthority",
+    "testRevokedSessionDoesNotDeliverAReplyThatIgnoresCancellation",
+    "testVersionAndRecordBoundsDoNotPretendDataIsEmpty",
+    "testVersionKeepsUnknownDatasetsBlockTypesAndIntegerValues"
+  ]
+}

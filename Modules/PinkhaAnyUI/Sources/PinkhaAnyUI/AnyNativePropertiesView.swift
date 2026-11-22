@@ -127,7 +127,9 @@ public struct AnyNativePropertiesView: View {
                             Label(item.title.isEmpty ? AnyUIErrorText.text("ללא כותרת", "Untitled") : item.title,
                                   systemImage: item.kind == .note ? "note.text" : "doc.text")
                         }
+                        .accessibilityIdentifier("any-native-related-document-" + item.objectID)
                     }
+                    .accessibilityIdentifier("any-native-related-documents-list")
                     .navigationTitle(presentation.sourceDocumentsTitle ?? "")
                     .toolbar { ToolbarItem(placement: .confirmationAction) {
                         Button(AnyUIErrorText.text("סיום", "Done")) { presentation.sourceDocumentsTitle = nil }

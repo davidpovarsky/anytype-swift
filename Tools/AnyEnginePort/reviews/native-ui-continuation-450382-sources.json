@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "producerCommit": "07c3568f9f9cf4044dd81163cd374d4ad35330cb",
+  "historyIncluded": true,
+  "reviewedChanges": [
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatView.swift",
+      "beforeSHA256": "40b38c897057a1823c61918fbc01243ab6b0db1f9cb48d676df4c1ee7625e6d9",
+      "afterSHA256": "0617d3228bbbcaba6b20955e242de7b9524cfaf6a09f341129cbc706a0bbd341",
+      "beforeGitBlob": "6aea1bfe242d973bd93c8c61a46b7d1f4b07af5e",
+      "afterGitBlob": "bd78eb17d62fe2e03becc7db684fd57472e19e1e",
+      "scope": "connection_field_accessibility_only",
+      "declarations": [
+        "PinkhaHanlinConnectionView.body connection fields"
+      ],
+      "reason": "Only explicit accessible names and stable identifiers are added to the existing endpoint, model and credential input fields. Their text bindings, submit action and credentials remain unchanged. The private helper used only by the failed selected-context journey targets these fields; native entry proof remains at its original source/run."
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeHistoryReader.swift",
+      "beforeSHA256": null,
+      "afterSHA256": "097a4c59dd7cdce04d9ae7951190a4b57918a9184386942be552691a1aca3fe8",
+      "beforeGitBlob": null,
+      "afterGitBlob": "158878178e82697509c5f22f458ca337cb846693",
+      "scope": "unexecuted_readonly_history",
+      "declarations": [
+        "AnyNativeHistoryReader"
+      ],
+      "reason": "New read-only history source or focused test. No original retained method invokes this new history action or API. These bytes are not described as executed by any old Apple run; current native mounted history remains required. Existing reader/publication portable controls retain only their exact separately recorded source hashes."
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeHistoryReaderTests.swift",
+      "beforeSHA256": null,
+      "afterSHA256": "76a2220e49932710c7f6fda2e1a6ea9bc57afa58588a899ea6ca8a9e20ff583b",
+      "beforeGitBlob": null,
+      "afterGitBlob": "83c88504ecd38f88fde0c43cbe1af64c48002971",
+      "scope": "unexecuted_readonly_history",
+      "declarations": [
+        "NativeHistoryReaderTests"
+      ],
+      "reason": "New read-only history source or focused test. No original retained method invokes this new history action or API. These bytes are not described as executed by any old Apple run; current native mounted history remains required. Existing reader/publication portable controls retain only their exact separately recorded source hashes."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeArchiveTransfer.swift",
+      "beforeSHA256": "613a85b5fab49ed8fe3bd15b9987c8c965b63a3f318e37e6164364d56c3b631d",
+      "afterSHA256": "f8377cc7365b42dc15fe265dbcd57dde84de767d214d517130d297e5fbed3bf6",
+      "beforeGitBlob": "499a86475aa176488949b95e917ff93d92d05b5b",
+      "afterGitBlob": "0e1384decf5138e2b9e0d62dfb41a8064d69b966",
+      "scope": "export_directory_default_only",
+      "declarations": [
+        "AnyNativeArchiveTransferView.body fileExporter"
+      ],
+      "reason": "One native fileDialogDefaultDirectory modifier is attached after the existing fileExporter. The importer default, data, destination mapping and body checks remain unchanged. The Files journey is not retained and must execute again; retained entry/quote/focus never invokes this export sheet."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+      "beforeSHA256": "d5adf7b936ea9ae1d1ff00f6cf60133d1f89fdc3816f06e57e7aac9fe943ab96",
+      "afterSHA256": "dfec8627781ac59ce6bf241f55efcd67c8f620d2674f49fcd21336d7c369489c",
+      "beforeGitBlob": "f01a50fece506f61917fd3aa517e39bc037402df",
+      "afterGitBlob": "e167c9959afa1bc7728f4dbaaa97a7d17d231ab4",
+      "scope": "alignment_picker_and_inactive_history_presentation",
+      "declarations": [
+        "AnyNativeDocumentView.history",
+        "AnyNativeDocumentView.body",
+        "AnyNativeDocumentView.savedAlignment",
+        "AnyNativeDocumentView.canPresentDocumentChild",
+        "AnyNativeDocumentView.releaseDocumentChildIfAbsent"
+      ],
+      "reason": "The acknowledged native alignment state now feeds a menu Picker. Read-only history adds an initially absent child presentation, explicit menu action and lifecycle dismissal. The retained entry/quote never invokes alignment or history; editor controller, focus coordinator, selection, persistence and shared source session remain unchanged. Current Apple compilation and fresh alignment/history journeys remain required."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeHistoryPresentation.swift",
+      "beforeSHA256": null,
+      "afterSHA256": "0930eda2e012811b4087e1a54b93cb010b3dc6c3d20477b992870fa0c0240270",
+      "beforeGitBlob": null,
+      "afterGitBlob": "1ce7ba612c411788e95ddffa95e31473619b693f",
+      "scope": "unexecuted_readonly_history",
+      "declarations": [
+        "AnyNativeHistoryPresentation"
+      ],
+      "reason": "New read-only history source or focused test. No original retained method invokes this new history action or API. These bytes are not described as executed by any old Apple run; current native mounted history remains required. Existing reader/publication portable controls retain only their exact separately recorded source hashes."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeHistoryView.swift",
+      "beforeSHA256": null,
+      "afterSHA256": "a1f169687696606a98c7c6e1911fc9d71a64deaf89c27d61341b0e8f6d62d6c3",
+      "beforeGitBlob": null,
+      "afterGitBlob": "743414563fa339a683579b26c7db141318962b96",
+      "scope": "unexecuted_readonly_history",
+      "declarations": [
+        "AnyNativeHistoryView"
+      ],
+      "reason": "New read-only history source or focused test. No original retained method invokes this new history action or API. These bytes are not described as executed by any old Apple run; current native mounted history remains required. Existing reader/publication portable controls retain only their exact separately recorded source hashes."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift",
+      "beforeSHA256": "6e359a23e45d203deb715ccef085c44305895bf164a35461db51edb625cc9e18",
+      "afterSHA256": "947c413a65f79d60b14fbb49a43773c9cd0def6a162157838e0241dceba0f45a",
+      "beforeGitBlob": "c508a10e7de89b2020d0987ed7772630ff1b0062",
+      "afterGitBlob": "9dd0dfb97628a2ae6500d38c7d147361ea74a6f3",
+      "scope": "related_result_accessibility_only",
+      "declarations": [
+        "AnyNativePropertiesView.body related-document sheet"
+      ],
+      "reason": "Only accessibility identifiers are added to the related-document result List and its existing row buttons. Querying, source authority, ordering and navigation actions are unchanged. The failed Topic/Word journey reruns with a result-list-specific query; retained entry/quote does not read this result sheet."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeHistoryPresentationTests.swift",
+      "beforeSHA256": null,
+      "afterSHA256": "309d436266ee7dd99862b96f077998954396eb285aac12f50ecae148c52381c6",
+      "beforeGitBlob": null,
+      "afterGitBlob": "5e036410c35b9573468d1732238ae3883de69d5b",
+      "scope": "unexecuted_readonly_history",
+      "declarations": [
+        "AnyNativeHistoryPresentationTests"
+      ],
+      "reason": "New read-only history source or focused test. No original retained method invokes this new history action or API. These bytes are not described as executed by any old Apple run; current native mounted history remains required. Existing reader/publication portable controls retain only their exact separately recorded source hashes."
+    },
+    {
+      "path": "NativeApp/UITests/NativeHistoryTests.swift",
+      "beforeSHA256": null,
+      "afterSHA256": "f104bcd9722dfac94c90c947e4879447f081f2898149809966f0fb4ccea6230b",
+      "beforeGitBlob": null,
+      "afterGitBlob": "546c5867fd2fd302a5e61054ec639c61a636b9ea",
+      "scope": "unexecuted_readonly_history",
+      "declarations": [
+        "NativeHistoryTests"
+      ],
+      "reason": "New read-only history source or focused test. No original retained method invokes this new history action or API. These bytes are not described as executed by any old Apple run; current native mounted history remains required. Existing reader/publication portable controls retain only their exact separately recorded source hashes."
+    },
+    {
+      "path": "NativeApp/UITests/NativeLaunchTests.swift",
+      "beforeSHA256": "f4cc433fe98ab1e6ffe9af3c6d3db0a46e71ec7f0f61ddd1e6d4c29cc1b33f53",
+      "afterSHA256": "69e841cf6ea3f4af46fa6a51e20e645702710e70d14a330f42601ec467bc0371",
+      "beforeGitBlob": "cbd759da5bed37ac9c35582b4b3b0924c8ba19a6",
+      "afterGitBlob": "5870d91beaf7885231edd757147b686ee2e7d3c5",
+      "scope": "failed_journey_controllers_only",
+      "declarations": [
+        "testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType",
+        "testExplicitHebrewDirectionAndAlignmentSurviveColdReopen",
+        "testHierarchyDragIntoFolderPersistsAfterColdReopen",
+        "testSourceDragIntoNativeEditorPreservesTargetAndColdReopens",
+        "testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen",
+        "testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen",
+        "testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies",
+        "configureHanlinThroughNormalFields"
+      ],
+      "reason": "Exact controller changes only in six previously failed journeys, Files, and the private Hanlin field helper whose only caller is the failed Hanlin journey. Whole remaining file including passed entry, quote/Note, custom Type and common helpers is byte-identical to original07."
+    },
+    {
+      "path": "NativeApp/AnyNative.xcodeproj/project.pbxproj",
+      "beforeSHA256": "919374c8283980b4dfc1a60a87e80e5e110b4236f7eebba2ab147b9dc33711b8",
+      "afterSHA256": "7282befe3104df28a3e0f5feef05a018bc515c68cf443307de65dbe977e33532",
+      "beforeGitBlob": "c18a8dbafba8b3a968e00dc49b46ea09c2866064",
+      "afterGitBlob": "71dd1da326eeadbbd49b217eee94c073d56b7560",
+      "scope": "new_history_ui_test_target_registration",
+      "declarations": [
+        "PBXBuildFile A10000000000000000000005",
+        "PBXFileReference A20000000000000000000006",
+        "root PBXGroup child list",
+        "UI-only PBXSourcesBuildPhase A40000000000000000000004"
+      ],
+      "reason": "Register only the new unexecuted NativeHistoryTests.swift in the existing UI test target: one build file, one file reference, one root group child, one UI-only sources entry. Reversing exactly these four edits reproduces the entire canonical original project, including every production target and build setting."
+    }
+  ]
+}

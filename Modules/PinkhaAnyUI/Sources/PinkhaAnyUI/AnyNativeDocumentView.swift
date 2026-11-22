@@ -13,6 +13,7 @@ import Loc
 public struct AnyNativeDocumentView: View {
     @Bindable private var presentation: AnyDocumentPresentation
     @State private var documentChildReserved = false
+    @State private var history: AnyNativeHistoryPresentation?
     public init(presentation: AnyDocumentPresentation) { self.presentation = presentation }
 
     public var body: some View {
@@ -58,6 +59,19 @@ public struct AnyNativeDocumentView: View {
                     .accessibilityIdentifier("any-native-document-properties")
                     .disabled(!canPresentDocumentChild)
                 Menu {
+                    Button(AnyUIErrorText.text("היסטוריית גרסאות", "Version history"),
+                           systemImage: "clock.arrow.circlepath") {
+                        guard presentation.isMounted, presentation.read != nil,
+                              !presentation.hasPendingEdits, reserveDocumentChild() else { return }
+                        do { history = try AnyNativeHistoryPresentation(document: presentation) }
+                        catch {
+                            presentation.message = AnyUIErrorText.describe(error)
+                            releaseDocumentChildIfAbsent()
+                        }
+                    }
+                        .accessibilityIdentifier("any-native-document-history")
+                        .disabled(!presentation.isMounted || presentation.read == nil ||
+                                  presentation.hasPendingEdits || !canPresentDocumentChild)
                     Button(AnyUIErrorText.text("העברת קישורי מקורות", "Transfer source associations"),
                            systemImage: "arrow.up.arrow.down") {
                         guard reserveDocumentChild() else { return }
@@ -80,31 +94,36 @@ public struct AnyNativeDocumentView: View {
                         .accessibilityIdentifier("any-native-writing-direction-ltr")
                         .accessibilityAddTraits(isSavedDirection(.leftToRight) ? .isSelected : [])
                     Menu(AnyUIErrorText.text("יישור טקסט", "Text alignment")) {
-                        Button(AnyUIErrorText.text("טבעי", "Natural")) {
-                            Task { await presentation.setWritingStyle(alignment: .natural) }
-                        }
-                            .accessibilityIdentifier("any-native-text-alignment-natural")
-                            .accessibilityAddTraits(isSavedAlignment(.natural) ? .isSelected : [])
-                        Button(AnyUIErrorText.text("לשמאל", "Left")) {
-                            Task { await presentation.setWritingStyle(alignment: .left) }
-                        }
-                            .accessibilityIdentifier("any-native-text-alignment-left")
-                            .accessibilityAddTraits(isSavedAlignment(.left) ? .isSelected : [])
-                        Button(AnyUIErrorText.text("למרכז", "Center")) {
-                            Task { await presentation.setWritingStyle(alignment: .center) }
-                        }
-                            .accessibilityIdentifier("any-native-text-alignment-center")
-                            .accessibilityAddTraits(isSavedAlignment(.center) ? .isSelected : [])
-                        Button(AnyUIErrorText.text("לימין", "Right")) {
-                            Task { await presentation.setWritingStyle(alignment: .right) }
-                        }
-                            .accessibilityIdentifier("any-native-text-alignment-right")
-                            .accessibilityAddTraits(isSavedAlignment(.right) ? .isSelected : [])
-                        Button(AnyUIErrorText.text("לשני הצדדים", "Justified")) {
-                            Task { await presentation.setWritingStyle(alignment: .justified) }
-                        }
-                            .accessibilityIdentifier("any-native-text-alignment-justified")
-                            .accessibilityAddTraits(isSavedAlignment(.justified) ? .isSelected : [])
+                        // A native menu Picker carries its selected state into
+                        // UIKit's submenu. Its value is the acknowledged native
+                        // snapshot; submitting an action never changes it locally.
+                        Picker(AnyUIErrorText.text("יישור טקסט", "Text alignment"),
+                               selection: Binding<AnyTextAlignment?>(
+                                get: { savedAlignment },
+                                set: { value in
+                                    guard let value else { return }
+                                    Task { await presentation.setWritingStyle(alignment: value) }
+                                })) {
+                            if savedAlignment == nil {
+                                Text(AnyUIErrorText.text("יישור שונה בבלוקים שנבחרו", "Mixed alignment"))
+                                    .tag(Optional<AnyTextAlignment>.none)
+                            }
+                            Text(AnyUIErrorText.text("טבעי", "Natural"))
+                                .tag(AnyTextAlignment.natural as AnyTextAlignment?)
+                                .accessibilityIdentifier("any-native-text-alignment-natural")
+                            Text(AnyUIErrorText.text("לשמאל", "Left"))
+                                .tag(AnyTextAlignment.left as AnyTextAlignment?)
+                                .accessibilityIdentifier("any-native-text-alignment-left")
+                            Text(AnyUIErrorText.text("למרכז", "Center"))
+                                .tag(AnyTextAlignment.center as AnyTextAlignment?)
+                                .accessibilityIdentifier("any-native-text-alignment-center")
+                            Text(AnyUIErrorText.text("לימין", "Right"))
+                                .tag(AnyTextAlignment.right as AnyTextAlignment?)
+                                .accessibilityIdentifier("any-native-text-alignment-right")
+                            Text(AnyUIErrorText.text("לשני הצדדים", "Justified"))
+                                .tag(AnyTextAlignment.justified as AnyTextAlignment?)
+                                .accessibilityIdentifier("any-native-text-alignment-justified")
+                        }.pickerStyle(.inline)
                     }.disabled(presentation.selectedBlockIDs.isEmpty || !presentation.canMutate)
                         .accessibilityIdentifier("any-native-text-alignment")
                     Button(AnyUIErrorText.text("ביטול הפעולה האחרונה", "Undo last saved edit"), systemImage: "arrow.uturn.backward") {
@@ -137,6 +156,9 @@ public struct AnyNativeDocumentView: View {
         .sheet(isPresented: $presentation.showsArchiveTransfer,
                onDismiss: { releaseDocumentChildIfAbsent() }) {
             AnyNativeArchiveTransferView(document: presentation)
+        }
+        .sheet(item: $history, onDismiss: { releaseDocumentChildIfAbsent() }) { owner in
+            AnyNativeHistoryView(presentation: owner)
         }
         .sheet(isPresented: $presentation.showsDraftReview,
                onDismiss: { releaseDocumentChildIfAbsent() }) { draftReview }
@@ -194,9 +216,11 @@ public struct AnyNativeDocumentView: View {
         return !blocks.isEmpty && blocks.allSatisfy { ($0.direction ?? .natural) == value }
     }
 
-    private func isSavedAlignment(_ value: AnyTextAlignment) -> Bool {
+    private var savedAlignment: AnyTextAlignment? {
         let blocks = selectedNativeBlocks
-        return !blocks.isEmpty && blocks.allSatisfy { ($0.alignment ?? .natural) == value }
+        guard let first = blocks.first else { return nil }
+        let value = first.alignment ?? .natural
+        return blocks.allSatisfy { ($0.alignment ?? .natural) == value } ? value : nil
     }
 
     private var savedWritingStyleDescription: String {
@@ -232,7 +256,7 @@ public struct AnyNativeDocumentView: View {
             isReserved: documentChildReserved,
             hasInspector: presentation.torah.selection != nil,
             hasSearch: presentation.torah.isSearchPresented,
-            hasNativeChild: presentation.showsProperties || presentation.showsArchiveTransfer || presentation.showsDraftReview,
+            hasNativeChild: presentation.showsProperties || presentation.showsArchiveTransfer || presentation.showsDraftReview || history != nil,
             isNavigating: presentation.isNavigating)
     }
 
@@ -245,7 +269,7 @@ public struct AnyNativeDocumentView: View {
     private func releaseDocumentChildIfAbsent() {
         guard presentation.torah.selection == nil, !presentation.torah.isSearchPresented,
               !presentation.showsProperties, !presentation.showsArchiveTransfer,
-              !presentation.showsDraftReview else { return }
+              !presentation.showsDraftReview, history == nil else { return }
         documentChildReserved = false
     }
 

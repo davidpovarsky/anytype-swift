@@ -151,14 +151,20 @@ def original_receipt(directory):
     return strict_json(raw), raw
 
 
-def validate_sources(root=ROOT):
+def validate_sources(root=ROOT, continuation=None):
     raw = (root / SOURCES[2]).read_bytes()
     require(b"\r" not in raw, "source_must_use_canonical_lf")
     begin, end = b"    // BEGIN_NATIVE_CUSTOM_TYPE_UI_V1\n", b"    // END_NATIVE_CUSTOM_TYPE_UI_V1\n\n"
     require(raw.count(begin) == raw.count(end) == 1, "one_additive_ui_section_required")
     prefix, section = raw.split(begin)
     method, suffix = section.split(end)
-    require(sha(prefix + suffix) == ORIGINAL_TEST_SHA256, "existing_tests_or_helpers_changed")
+    if continuation is None:
+        require(sha(prefix + suffix) == ORIGINAL_TEST_SHA256, "existing_tests_or_helpers_changed")
+    else:
+        # An explicit, independently verified continuation retains exact old
+        # entry/quote/helper declarations while rerunning only failed methods.
+        from continue_native_acceptance import validate_admission
+        validate_admission(continuation, root)
     require(method.count(b"    func test") == 1 and
             ("func " + METHOD.split("/")[1] + "() throws").encode() in method,
             "one_new_actual_ui_method_required")
@@ -320,9 +326,13 @@ def current_context(simulator):
 
 
 def capture(args):
-    return {"schemaVersion": 1, "status": "FROZEN_BUILD_INPUTS", **current_context(args.simulator_receipt),
-            "scope": "same_job_native_ui_product_identity", "sourceInputs": validate_sources(),
-            "products": product_identity(args.derived)}
+    continuation = getattr(args, "continuation", None)
+    result = {"schemaVersion": 1, "status": "FROZEN_BUILD_INPUTS", **current_context(args.simulator_receipt),
+              "scope": "same_job_native_ui_product_identity", "sourceInputs": validate_sources(continuation=continuation),
+              "products": product_identity(args.derived)}
+    if continuation is not None:
+        result["continuationAdmissionSHA256"] = sha(continuation.read_bytes())
+    return result
 
 
 def validate_frozen(frozen, current):
@@ -339,8 +349,13 @@ def postflight(args):
     receipt, raw = original_receipt(args.attachments)
     proof = validate_receipt(receipt)
     previous = {}
-    for name, profile in (("native-ui", "native-ui-entry"), ("native-ui-followup", "native-ui-followup"),
-                          ("archive-roundtrip", "archive-roundtrip")):
+    continuation = getattr(args, "continuation", None)
+    if continuation is not None:
+        from continue_native_acceptance import previous_stages
+        previous = previous_stages(args.previous, continuation)
+    same_run_stages = (("native-ui", "native-ui-entry"), ("native-ui-followup", "native-ui-followup"),
+                       ("archive-roundtrip", "archive-roundtrip")) if continuation is None else ()
+    for name, profile in same_run_stages:
         path = args.previous / (name + "-named-execution.json")
         record = strict_json(path.read_bytes())
         require(record.get("status") == "PASS" and record.get("commit") == context["commit"] and
@@ -354,7 +369,7 @@ def postflight(args):
     installed = inventory(container)
     require(same_value(installed["codeCarriers"], frozen["products"]["app"]["codeCarriers"]),
             "installed_executable_bytes_differ_from_frozen_build")
-    return {"schemaVersion": 1, "status": "PASS", **context, **proof, "profile": PROFILE,
+    result = {"schemaVersion": 1, "status": "PASS", **context, **proof, "profile": PROFILE,
             "scope": "actual_native_custom_type_ui_and_fresh_process_reopen", "fullAcceptance": False,
             "actualMethod": METHOD, "actualMethodCount": 1, "execution": executed,
             "fixtureBoundary": "Only three definition writes; document creation, Type membership, property value and body editing use the normal UI.",
@@ -364,6 +379,12 @@ def postflight(args):
             "priorStageReceipts": previous, "sameCompiledProducts": True,
             "installedCodeCarriersSHA256": canonical(installed["codeCarriers"]),
             "sourceInputs": frozen["sourceInputs"]}
+    if continuation is not None:
+        result.update(continuationAdmissionSHA256=sha(continuation.read_bytes()),
+                      sameCompiledProducts=False, sameCompiledProductsForCurrentRun=True,
+                      retainedMethodsExecutedThisRun=0,
+                      priorExecutionBoundary="Original entry/quote proof is retained at its original run; only six journeys, Files and custom Type execute in these current products.")
+    return result
 
 
 def main():
@@ -376,6 +397,7 @@ def main():
     parser.add_argument("--summary", type=Path)
     parser.add_argument("--tests", type=Path)
     parser.add_argument("--previous", type=Path)
+    parser.add_argument("--continuation", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     record = {"schemaVersion": 1, "status": "FAIL", "action": args.action,

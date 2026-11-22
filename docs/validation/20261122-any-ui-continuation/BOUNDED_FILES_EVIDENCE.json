@@ -1,0 +1,121 @@
+{
+  "status": "ORIGINAL_FAILURE_DIAGNOSIS_NOT_ACCEPTANCE",
+  "runID": 45038244641,
+  "originalCommit": "07c3568f9f9cf4044dd81163cd374d4ad35330cb",
+  "case": "NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies",
+  "recordedDurationSeconds": 360,
+  "issues": [
+    {
+      "sanitizedDescription": "Test exceeded execution time allowance of 6 minutes",
+      "compactDescription": "Test exceeded execution time allowance of 6 minutes",
+      "issueType": "Assertion Failure"
+    },
+    {
+      "sanitizedDescription": null,
+      "compactDescription": "Update the Info.plist: Support for all orientations will soon be required.",
+      "issueType": "Runtime Warning"
+    }
+  ],
+  "sourceCommit": "e5f4697c9e8cbda7448e9cba59e64de5535ec28e",
+  "sourceGitBlob": "499a86475aa176488949b95e917ff93d92d05b5b",
+  "timeline": [
+    {
+      "rowid": 382,
+      "title": "Type 'canonical-source-8...' into \"DOCPicker.filenameTextField\" TextField",
+      "relativeSeconds": 246.58
+    },
+    {
+      "rowid": 404,
+      "title": "Added attachment named 'ARCHIVE_ROUNDTRIP_canonical-source-8891C86E-110D-4D1F-978F-EDBCF4315F6E_save_READY_private_screen'",
+      "relativeSeconds": 264.137
+    },
+    {
+      "rowid": 410,
+      "title": "Tap Button (First Match)",
+      "relativeSeconds": 266.427
+    },
+    {
+      "rowid": 419,
+      "title": "Checking `Expect predicate `exists == 1 AND value == \"canonical-source-8891C86E-110D-4D1F-978F-EDBCF4315F6E.json\"` for object \"any-native-archive-exported-file\" Any`",
+      "relativeSeconds": 270.798
+    },
+    {
+      "rowid": 425,
+      "title": "Tap \"any-native-archive-close\" Button",
+      "relativeSeconds": 272.653
+    },
+    {
+      "rowid": 497,
+      "title": "Tap \"any-native-name-confirm\" Button",
+      "relativeSeconds": 290.276
+    },
+    {
+      "rowid": 555,
+      "title": "Checking `Expect predicate `exists == 1 AND value == \"saved\"` for object \"any-native-save-status\" Any`",
+      "relativeSeconds": 305.558
+    },
+    {
+      "rowid": 598,
+      "title": "Tap \"any-native-archive-import\" Button",
+      "relativeSeconds": 316.557
+    },
+    {
+      "rowid": 607,
+      "title": "Checking existence of `StaticText (First Match)`",
+      "relativeSeconds": 318.386
+    },
+    {
+      "rowid": 696,
+      "title": "Checking existence of `Button (First Match)`",
+      "relativeSeconds": 359.0
+    }
+  ],
+  "freshSystemFolderEvidence": [
+    {
+      "line": 24965,
+      "time": "16:16:14.009",
+      "text": "Button, 0x11336ebc0, label: 'Pinkha, תפריט פעולות' <AX element pid: 21478, elementOrHash.elementID: 4399949312.56>",
+      "count": 43
+    },
+    {
+      "line": 55562,
+      "time": "16:16:42.886",
+      "text": "Button, 0x1145f1680, label: 'Pinkha, תפריט פעולות' <AX element pid: 21478, elementOrHash.elementID: 4399949312.56>",
+      "count": 43
+    },
+    {
+      "line": 71770,
+      "time": "16:17:41.437",
+      "text": "Button, 0x1145f6080, label: 'Exports, תפריט פעולות' <AX element pid: 21478, elementOrHash.elementID: 4362053120.397>",
+      "count": 208
+    },
+    {
+      "line": 117810,
+      "time": "16:18:15.662",
+      "text": "Button, 0x113453340, label: 'Exports, תפריט פעולות' <AX element pid: 21478, elementOrHash.elementID: 4362053120.397>",
+      "count": 208
+    },
+    {
+      "line": 117841,
+      "time": "16:18:15.662",
+      "text": "StaticText, 0x113450000, label: 'התיקיה ריקה' <AX element pid: 21478, elementOrHash.elementID: 4362017280.549>",
+      "count": 231
+    }
+  ],
+  "sessionLogSHA256": "2f2f19d19c7d24701052647eb68bccbc91a5c6f206b201edb0b174dc3d67ac31",
+  "lateDiagnosticsOnlyInRunnerLog": [
+    {
+      "line": 726,
+      "text": "    t =   373.34s Added attachment named 'ARCHIVE_ROUNDTRIP_canonical-source-8891C86E-110D-4D1F-978F-EDBCF4315F6E_import_NOT_READY_private_AX'"
+    },
+    {
+      "line": 727,
+      "text": "    t =   373.91s Added attachment named 'ARCHIVE_ROUNDTRIP_canonical-source-8891C86E-110D-4D1F-978F-EDBCF4315F6E_import_NOT_READY_private_screen'"
+    }
+  ],
+  "spindumpObservation": "Runner is in importUsingFiles at NativeLaunchTests.swift1393, then captureFilesState at1394 after wait expiry; no full native migration executed.",
+  "originalRemoteAXWarningScope": "Missing process57557 warning predates file picker and spans successful export; it does not establish failure cause. Live system file provider pid21478 provides fresh folder evidence.",
+  "productCandidate": "Add default-directory modifier immediately after exporter; keep existing importer default. API documented, chained-dialog scoping inference needs mounted Apple proof.",
+  "testPlan": "Dedicated archive case1800s plus bounded individual waits; capture actual import picker before waiting for exact filename; retain all mapping/cold-body and3export checks.",
+  "nativeFileCapability": 0
+}

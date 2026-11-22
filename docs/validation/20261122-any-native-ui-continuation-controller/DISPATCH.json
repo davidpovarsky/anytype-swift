@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "status": "READY_AFTER_EXACT_PUBLICATION_NOT_DISPATCHED_BY_THIS_AGENT",
+  "repository": "davidpovarsky/anytype-swift",
+  "workflow": "pinkha-any-engine-port.yml",
+  "ref": "codex/chatgpt-wave15-shared-20261121",
+  "inputs": {
+    "validation_scope": "remaining-native-ui-continuation",
+    "native_artifact_run_id": "44695105165",
+    "native_producer_commit": "31ae2e63890b6e10af8413625534f6234ed263bb",
+    "continuation_history": true,
+    "focus_handoff_validation": false
+  },
+  "precondition": "The branch head must equal the newly published immutable candidate commit including the frozen 12 product/project files, this controller bundle, and the parent source-retention map update. Record that commit before dispatch.",
+  "command": "gh workflow run pinkha-any-engine-port.yml --repo davidpovarsky/anytype-swift --ref codex/chatgpt-wave15-shared-20261121 -f validation_scope=remaining-native-ui-continuation -f native_artifact_run_id=44695105165 -f native_producer_commit=31ae2e63890b6e10af8413625534f6234ed263bb -f continuation_history=true -f focus_handoff_validation=false",
+  "uiArtifactInputs": "Omit. The new controller pins original run45038244641/artifact14763060546 and the embedded original449422 evidence internally.",
+  "expectedRetained": 20,
+  "expectedCurrent": 9,
+  "currentBreakdown": {
+    "failedFollowups": 6,
+    "files": 1,
+    "customType": 1,
+    "history": 1
+  },
+  "jobTimeoutMinutes": 120,
+  "filesAndHistoryPerCaseSeconds": 1800,
+  "terminalAggregate": "native-continuation-aggregate.json; PASS_CONTINUATION requires exact named current methods, raw terminals, original/source bindings and all required postflights. It does not close APP-01."
+}
