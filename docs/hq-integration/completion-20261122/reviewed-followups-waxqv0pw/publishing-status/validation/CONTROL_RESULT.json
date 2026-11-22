@@ -1,0 +1,797 @@
+{
+  "scope": "Actual generated GetStatus/Remove/PublishState and cached pinned SwiftProtobuf. Exact new production classifier, existing native-result admission block and new result-policy block, unchanged Owner/lifetime/operation/dispatch. Explicit document/effect inputs; no Lib, network, UIKit or full Invocation logging/cancellation/event execution.",
+  "source_patch": {
+    "path": "original-publishing-owned-strict-status.patch",
+    "bytes": 34919,
+    "sha256": "bae4945918224d3afd259829745032eba2f3b82cfa0d47eadc6473d46ded2c4c"
+  },
+  "archive_sha256": "1c1075262db249ea5def0d8c18c9712ec3484214ad82c35bd9adb36ecacee361",
+  "inputs": {
+    "expected_controls": 14,
+    "compiler_jobs": 1,
+    "dependency_builds": 0,
+    "scope": "Actual generated GetStatus/Remove/PublishState and cached pinned SwiftProtobuf. Exact new production classifier, existing native-result admission block and new result-policy block, unchanged Owner/lifetime/operation/dispatch. Explicit document/effect inputs; no Lib, network, UIKit or full Invocation logging/cancellation/event execution.",
+    "source_patch": {
+      "path": "original-publishing-owned-strict-status.patch",
+      "bytes": 34919,
+      "sha256": "bae4945918224d3afd259829745032eba2f3b82cfa0d47eadc6473d46ded2c4c"
+    },
+    "get_status_has_event": {
+      "generated_response": "No event field or override",
+      "adoption": "extension Anytype_Rpc.Publishing.GetStatus.Response: ResultWithError {}",
+      "original_default": "public var hasEvent: Bool { false }"
+    },
+    "files": [
+      {
+        "name": "Lifetime.swift",
+        "source": "anytype_writer_qualification/candidate/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteLifetime.swift",
+        "canonical_sha256": "451054685e2ff0c30371d384904be831412eec16c2a5e16c660d2f1891921eb4",
+        "staged_sha256": "451054685e2ff0c30371d384904be831412eec16c2a5e16c660d2f1891921eb4",
+        "transform": "remove module imports only; Foundation reimport",
+        "bytes": 5574,
+        "reused_without_old_test_execution": true
+      },
+      {
+        "name": "Operation.swift",
+        "source": "anytype_writer_qualification/candidate/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOperation.swift",
+        "canonical_sha256": "d6a1034809671d7550e21c5da4e46e1065d21ca6438bb66c7e1f9ea869b9dc51",
+        "staged_sha256": "55804cf1a06b59dc80846ab4bc8b874a2d54ae28649288c5b49930267b9ae844",
+        "transform": "remove module imports only; Foundation reimport",
+        "bytes": 2435,
+        "reused_without_old_test_execution": true
+      },
+      {
+        "name": "Binding.swift",
+        "source": "anytype_writer_qualification/candidate/Modules/ProtobufMessages/Sources/InvocationDispatchBinding.swift",
+        "canonical_sha256": "e304f05ed114342795dbc3a603490311142d63f9a6a156bdcdafd68743e710cb",
+        "staged_sha256": "e304f05ed114342795dbc3a603490311142d63f9a6a156bdcdafd68743e710cb",
+        "transform": "remove module imports only; Foundation reimport",
+        "bytes": 3025,
+        "reused_without_old_test_execution": true
+      },
+      {
+        "name": "Owner.swift",
+        "source": "anytype_channel_pin_role_qualification/source/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift",
+        "canonical_sha256": "b0ae02be8c28c22246d29bf927cb154e10019d841f3b831771f968a8938f7d46",
+        "staged_sha256": "5ff93fe232eaed63519ce3721bf423c777d6d0b4d312f6d48c4bf8f6ca6b1adc",
+        "transform": "remove module imports only; Foundation reimport",
+        "bytes": 49206,
+        "reused_without_old_test_execution": true
+      },
+      {
+        "name": "OriginalTypePermissionProbe.swift",
+        "source": "reused explicit portable document inputs from synchronous-action-controls.zip",
+        "canonical_sha256": "0708d577f19f0c382cec913b990e949716c543536c4166575ed60e96f5c33f6a",
+        "staged_sha256": "0708d577f19f0c382cec913b990e949716c543536c4166575ed60e96f5c33f6a",
+        "transform": "remove module imports only; Foundation reimport",
+        "bytes": 7227,
+        "reused_without_old_test_execution": true
+      },
+      {
+        "name": "PreparedEditorPageDocument.swift",
+        "source": "reused explicit portable document inputs from synchronous-action-controls.zip",
+        "canonical_sha256": "42e595c324e46947d4b964070994a193478d57072931b92be1451f155e2cb32e",
+        "staged_sha256": "42e595c324e46947d4b964070994a193478d57072931b92be1451f155e2cb32e",
+        "transform": "remove module imports only; Foundation reimport",
+        "bytes": 1093,
+        "reused_without_old_test_execution": true
+      },
+      {
+        "name": "RoleSource.swift",
+        "source": "unchanged exact production passive role region required by current Owner",
+        "canonical_sha256": "42d619b79a0f68794163fd3cfdb1261292237b215e2554dfb35677897eb975e9",
+        "staged_sha256": "bd497ad835574512d29d75f7285cf13e54f9353b6f62500b56655cf36a1b0951",
+        "bytes": 4634,
+        "transform": "extract exact marked region; only Foundation import added; no role tests rerun"
+      },
+      {
+        "name": "Anytype_Rpc.swift",
+        "source": "reference/anytype/Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.swift",
+        "canonical_sha256": "9ad79e5c256c10bccd592dc5517f458d99c3fedef6379fb4a27af286d832b255",
+        "staged_sha256": "9ad79e5c256c10bccd592dc5517f458d99c3fedef6379fb4a27af286d832b255",
+        "bytes": 2022,
+        "transform": "none"
+      },
+      {
+        "name": "Anytype_Rpc.Publishing.swift",
+        "source": "reference/anytype/Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Publishing.swift",
+        "canonical_sha256": "7f0e51ade76d428219e1e4b71f10aa7b94553c3a47eddb978d80067df4a8cdfa",
+        "staged_sha256": "7f0e51ade76d428219e1e4b71f10aa7b94553c3a47eddb978d80067df4a8cdfa",
+        "bytes": 2119,
+        "transform": "none"
+      },
+      {
+        "name": "Anytype_Rpc.Publishing.GetStatus.swift",
+        "source": "reference/anytype/Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Publishing.GetStatus.swift",
+        "canonical_sha256": "c947978f4fb0bf1d64737a0f35bbfadba0152ad01b509a3d6cbcfdff12bd3069",
+        "staged_sha256": "c947978f4fb0bf1d64737a0f35bbfadba0152ad01b509a3d6cbcfdff12bd3069",
+        "bytes": 11697,
+        "transform": "none"
+      },
+      {
+        "name": "Anytype_Rpc.Publishing.PublishState.swift",
+        "source": "reference/anytype/Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Publishing.PublishState.swift",
+        "canonical_sha256": "8d33354bcf967d25fcbe4729fb959f954f8b78e9343b3b28fc60dabae394ef74",
+        "staged_sha256": "8d33354bcf967d25fcbe4729fb959f954f8b78e9343b3b28fc60dabae394ef74",
+        "bytes": 6019,
+        "transform": "none"
+      },
+      {
+        "name": "Anytype_Rpc.Publishing.PublishStatus.swift",
+        "source": "reference/anytype/Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Publishing.PublishStatus.swift",
+        "canonical_sha256": "91dd66f742128e2c5fc1aaecd5ddcd981de45e34c5918f900a8a893d554dd5a2",
+        "staged_sha256": "91dd66f742128e2c5fc1aaecd5ddcd981de45e34c5918f900a8a893d554dd5a2",
+        "bytes": 2195,
+        "transform": "none"
+      },
+      {
+        "name": "Anytype_Rpc.Publishing.Remove.swift",
+        "source": "reference/anytype/Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Publishing.Remove.swift",
+        "canonical_sha256": "bf6e82b4de48ddc7096ddfe7c1be1e42d7d20bd784d696f90b44f0503e1f8142",
+        "staged_sha256": "bf6e82b4de48ddc7096ddfe7c1be1e42d7d20bd784d696f90b44f0503e1f8142",
+        "bytes": 10803,
+        "transform": "none"
+      },
+      {
+        "name": "PublishingControls.swift",
+        "source": "exact production classifier/native-result blocks plus 14 new controls",
+        "canonical_sha256": "71e93f4c50ed01ba382881c60fd537cdb190b7921769098a7c719f44b12e6f20",
+        "staged_sha256": "d1fb7255d386995273f014ddaf803c8ac2b5db6b5dc8b40963966de707c24063",
+        "bytes": 17090,
+        "transform": "exact marked classifier/policy/GCD blocks; actual generated error getter; explicit isolated protocol/document/effect inputs",
+        "regions": {
+          "classifier_and_policy_sha256": "ac0ddc2900d10d096422f2014171ee1dbd559b7578fd213c60b33852e1c611fe",
+          "gcd_body_sha256": "240563ecc78e3435c92ecc46cebd18f56e730af997ae61d93244133b2d05fed1",
+          "result_policy_sha256": "04d17c4ecb23a14f13480bcaca85afe66e331113a716f890f0e1ab6a6756c12b",
+          "control_sha256": "28b5de01c166d5aef438d2da838f4baf18406002271f25f71d8a79c60cfe9a5d"
+        }
+      }
+    ],
+    "prior_suites_rerun": false,
+    "native": "NOT_RUN",
+    "apple_typecheck": "NOT_RUN"
+  },
+  "compiler_jobs": 1,
+  "dependency_builds": 0,
+  "cached_dependency_objects": [
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\any.pb.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp000.o",
+      "sha256": "e74c7b4f398ef3eaaa6a9f50ea9d96575d6022fb60540d72026fe5714f899d8f",
+      "bytes": 80456
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\AnyMessageStorage.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp001.o",
+      "sha256": "1bd86c495a96f3096c62acde524d485458ef86002ad274d458ed69d9580d5329",
+      "bytes": 128841
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\AnyUnpackError.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp002.o",
+      "sha256": "51525bb020d5fdafcc7a35fba218f3c30ac711f2250bf0242afea2f4bef3d10e",
+      "bytes": 23127
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\api.pb.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp003.o",
+      "sha256": "08e5fd6ba9e349fb9f60a74b225d341cc5ef37975c003e19e34551ca29f500aa",
+      "bytes": 226628
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\AsyncMessageSequence.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp004.o",
+      "sha256": "37a671402133aca2f771ca38af1d37edd11601f2d5968bfa4752acc09edbd182",
+      "bytes": 98708
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\BinaryDecoder.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp005.o",
+      "sha256": "c5c22118b5d7be22bc41c44145d7cf9796c91211e986946f28584505b5460537",
+      "bytes": 330657
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\BinaryDecodingError.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp006.o",
+      "sha256": "10a10cbbee8958d41a20734229b92837c01deba556131e5b0685353b30c648f3",
+      "bytes": 24273
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\BinaryDecodingOptions.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp007.o",
+      "sha256": "0f7c00b5cd36024be9314a716ff0774f3d64694ce964878a90f93f17672e7123",
+      "bytes": 16334
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\BinaryDelimited.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp008.o",
+      "sha256": "66e104342debb51dfa3474bd751510b1e7027b6d3836b1d5573ca0b7f8aa83b9",
+      "bytes": 66383
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\BinaryEncoder.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp009.o",
+      "sha256": "8daa3794c5ea2b24841171ed48fde1f1da75983ee84146356ee534fbb15b3d13",
+      "bytes": 45055
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\BinaryEncodingError.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp010.o",
+      "sha256": "692457ae827c5bf0cb6d8b3ae79ec0312461f0807acf5dacc03765ff5a840bf6",
+      "bytes": 23489
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\BinaryEncodingOptions.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp011.o",
+      "sha256": "906b28ee46bbb741ba83ccc66f1410cdebafb74902cabe2c291ee3fdf737a70f",
+      "bytes": 14283
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\BinaryEncodingSizeVisitor.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp012.o",
+      "sha256": "45eea01f57c64d3abf5781605d99eab7397c33a7e826ef2d082a8ffe2d6ef9d9",
+      "bytes": 267671
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\BinaryEncodingVisitor.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp013.o",
+      "sha256": "f16a3fb716b440f330110130c4fcdfe03b0c1df9eedf9b04314cc5c0657b1e9f",
+      "bytes": 236401
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\BytecodeInterpreter.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp014.o",
+      "sha256": "ed80088358687286792d4ef4d4b95a89f9fd40e0781ce2ba85ea6d4f9e106874",
+      "bytes": 24165
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\BytecodeReader.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp015.o",
+      "sha256": "8d923bdf1045b2c4d6da87f9de5d80c2ecf28d029366b918d6fd2b1f8a7d385e",
+      "bytes": 52723
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\CustomJSONCodable.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp016.o",
+      "sha256": "5b8a98f7e5bb622bf4ef9427416d9b5e3f499f27407acd025bd9c5a06dd27b49",
+      "bytes": 9416
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Decoder.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp017.o",
+      "sha256": "210fb0b67555783ca7c97eac4c70d68cf37fc64f604f402df08811df44b64aba",
+      "bytes": 11491
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\descriptor.pb.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp018.o",
+      "sha256": "bd7db233fe1e0c46b4ab6f6ae44c4487f6a324b83e245213252966a21a0b1ac3",
+      "bytes": 3797854
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\DoubleParser.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp019.o",
+      "sha256": "175a679ff25acc2a82cc6e67a76cdaf94cf4681884fbf5b6404898f917eacf56",
+      "bytes": 24637
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\duration.pb.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp020.o",
+      "sha256": "3b9faa759288c9a7e1fff2bb200784f215cd8486e7ec543e7030c78c4bbb20cb",
+      "bytes": 67107
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\empty.pb.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp021.o",
+      "sha256": "f20fb0cf6fedf9468c83620ae207d437b068600ffa4f9b33e64a7d416880d105",
+      "bytes": 59453
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Enum.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp022.o",
+      "sha256": "d7624a349c7b50e8112e7bc824a4baae46b41313ad0df5d1eaa9f69e0909acfd",
+      "bytes": 18315
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\ExtensibleMessage.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp023.o",
+      "sha256": "c51fb24a080ff0720b4469c7da43bffd0dcf17fe2ba1f3a97af857971a1dfa6b",
+      "bytes": 44511
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\ExtensionFields.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp024.o",
+      "sha256": "f1a4b16e6847fc57ccb5bd2099810a4075859a4b4650593b7c52d74271f656f1",
+      "bytes": 418138
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\ExtensionFieldValueSet.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp025.o",
+      "sha256": "2933c8e93549e7ad5c2e00758732f9332cfe00c5c24c3e238f45b40dafa024de",
+      "bytes": 47426
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\ExtensionMap.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp026.o",
+      "sha256": "5f69c9162125a9e9d1c47dd4e78c1ac4e2678f0e1ea52b81ac3fcfbe4dca51c0",
+      "bytes": 7765
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\field_mask.pb.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp027.o",
+      "sha256": "63f3ff4af57b1e85f1b4b45c709d66e1a48a0bfea86449bf538074412e19b685",
+      "bytes": 67888
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\FieldTag.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp028.o",
+      "sha256": "88c02bb10cad2cdc0590263788ba8f34b47df3322c332d873b08eb1cf848b8e1",
+      "bytes": 18559
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\FieldTypes.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp029.o",
+      "sha256": "d5bf3c2c8ad75ac10245f47f4d2a7fc2b5df9c8b45f7dbb770d62ce4684f9379",
+      "bytes": 279111
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Google_Protobuf_Any+Extensions.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp030.o",
+      "sha256": "23d58873952574eb1dce19bf561c53ab1b61c1251f4740c19f962416f44fc060",
+      "bytes": 41317
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Google_Protobuf_Any+Registry.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp031.o",
+      "sha256": "16ffe7426df040773188df93e02d17d7445e8554ac4c5852d1d2f025f5d328d3",
+      "bytes": 71575
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Google_Protobuf_Duration+Extensions.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp032.o",
+      "sha256": "95eba45aaaee60f8867806d81d2bf55b6b620833eeb1e727fe419a8ff8d080f5",
+      "bytes": 78255
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Google_Protobuf_FieldMask+Extensions.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp033.o",
+      "sha256": "de30a6e9ad60ec43a191e5b46c8f2fc7860d62be945cfb8ada1dbe38d8ec6987",
+      "bytes": 113309
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Google_Protobuf_ListValue+Extensions.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp034.o",
+      "sha256": "5645de5d85587319127058355992d7f7ffc21b6a36073ef7936363dc4094f7dd",
+      "bytes": 35749
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Google_Protobuf_NullValue+Extensions.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp035.o",
+      "sha256": "fb6e439a7da84806dd9726388b84dd78f3ca5a839e2e596554fda982c33ba8c0",
+      "bytes": 14141
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Google_Protobuf_Struct+Extensions.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp036.o",
+      "sha256": "016731e6bc9e502d285178de81017079265b69e9e2779d4d065ca42ebef88ea4",
+      "bytes": 41182
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Google_Protobuf_Timestamp+Extensions.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp037.o",
+      "sha256": "98891ae924dc03ecb68369057799b945defa2140b889ff739a5934948c0d58a7",
+      "bytes": 90417
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Google_Protobuf_Value+Extensions.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp038.o",
+      "sha256": "e4f9ec409045f8844ad44acb13979ef824b169011471640fea478d8a8037c056",
+      "bytes": 71596
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Google_Protobuf_Wrappers+Extensions.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp039.o",
+      "sha256": "5be99e4068e6ed4c9b94777df416682f511f4ac2f69c4df6b78074df4649ee76",
+      "bytes": 185643
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\HashVisitor.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp040.o",
+      "sha256": "0acbd53fb978a50eb1e65e8be6ce0a03a8cf607ff8406424ccfa9ccf31eccfde",
+      "bytes": 129229
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Internal.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp041.o",
+      "sha256": "813f8930736b7c5328be3d45f16b69236f57fa144c320c7efb791d1710462cf5",
+      "bytes": 24413
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\JSONDecoder.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp042.o",
+      "sha256": "eeed24f138077347a167004e31a24a9ae4bdce3fd3af934a70770b4fc22c2739",
+      "bytes": 204603
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\JSONDecodingError.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp043.o",
+      "sha256": "eb60cbf15bd9238498b55a8c11956d5d3a089262a94c9f6b8dcda998ac034647",
+      "bytes": 16966
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\JSONDecodingOptions.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp044.o",
+      "sha256": "5192dc23a578cf0c7513b6ff7909c653563394017aff95fcad71cca156d4ba48",
+      "bytes": 16185
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\JSONEncoder.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp045.o",
+      "sha256": "43853629cbb24b83177898bc33cfa53f1f96a622fff32c8725296a0ce73c2756",
+      "bytes": 114978
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\JSONEncodingError.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp046.o",
+      "sha256": "36cb09cba871d4a0e5113965d5e100ef1f6c4a37dc1b6670a3e6507e4837a39b",
+      "bytes": 24116
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\JSONEncodingOptions.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp047.o",
+      "sha256": "9fb4abc153d878164886e5be331a33079a3a722f17486d4f85d47010285b742b",
+      "bytes": 20949
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\JSONEncodingVisitor.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp048.o",
+      "sha256": "090605e1d4ba6803893aa1ea7aca1db9b3746409e59cd712de4b202227cc3cbb",
+      "bytes": 185051
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\JSONMapEncodingVisitor.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp049.o",
+      "sha256": "14929ba495a3602889e85405bd6b76ab03eab820811c9e4e7950a97596ecc535",
+      "bytes": 101993
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\JSONScanner.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp050.o",
+      "sha256": "985b27c7f6eef6a7d6b171c73babaa691cad544024fac7903eefd7a26b6108b3",
+      "bytes": 233352
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\MathUtils.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp051.o",
+      "sha256": "3081e084ab577357b981729173a55ee5738080e81866bd9c3f43002293ed9297",
+      "bytes": 17773
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Message+AnyAdditions.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp052.o",
+      "sha256": "3ec2e490f2e43e500efc367f96756b067e146d796a35b6672a65f2172ba1ce5a",
+      "bytes": 12724
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Message+BinaryAdditions.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp053.o",
+      "sha256": "2729faec0ee58f42f6187b53e4023490bd18e93308408146a8b85f0f74c41d05",
+      "bytes": 43327
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Message+BinaryAdditions_Data.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp054.o",
+      "sha256": "6bc9f25f98cea81a6f0f77f83a164b59c68e834a2f2a6e41b1a18d66f6c93ed5",
+      "bytes": 40867
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Message+FieldMask.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp055.o",
+      "sha256": "97addc72afbcd584a51c447d9f696db9643d76a2dc3849286098a49becd319be",
+      "bytes": 38970
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Message+JSONAdditions.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp056.o",
+      "sha256": "81fbf7a006deb81e987cbc75009bc294033e21263f692ab01a2fd64c8c1f31f8",
+      "bytes": 46016
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Message+JSONAdditions_Data.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp057.o",
+      "sha256": "429b0bede6fe8d82b0895a17c76d273741fee11869418934e1336a435ec460b7",
+      "bytes": 18639
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Message+JSONArrayAdditions.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp058.o",
+      "sha256": "d78c26d65b28534962054b723eeea10deda582ab359bef31f676298ce5fbaa22",
+      "bytes": 42448
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Message+JSONArrayAdditions_Data.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp059.o",
+      "sha256": "43f467a3335ce249073e6bc4c7629873e7775d5bd4475c35841bc4a8029899ba",
+      "bytes": 17982
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Message+TextFormatAdditions.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp060.o",
+      "sha256": "d641c3b5f22f34a8f9e69996ac9094931dd2e97a90a9ab0d919f947f421723bf",
+      "bytes": 27741
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Message.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp061.o",
+      "sha256": "33a240b8add950af476d0e509ebe465fe583e88e556e0fb49f21ecf1e8196714",
+      "bytes": 23979
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\MessageExtension.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp062.o",
+      "sha256": "6dcbe66923cbd67fe8e5414f478857e7adb51827343a0e8915385b2527f8aaec",
+      "bytes": 24413
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\NameMap.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp063.o",
+      "sha256": "b60ef0ecf45c5ab8af4769ffc01027a73fd49a054e90a498d9fbf989e61d853e",
+      "bytes": 171288
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\PathDecoder.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp064.o",
+      "sha256": "2fc4d5b15e2a75eef5bd1bddf373640c35bed60424f1aa90e35d008e5468325d",
+      "bytes": 190538
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\PathVisitor.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp065.o",
+      "sha256": "db2cf2ff36df0eacb25335c70ee67915e90db856aeeeec9a911a22a921b182f8",
+      "bytes": 137204
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\ProtobufAPIVersionCheck.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp066.o",
+      "sha256": "40f4bfaff37f2a15a1f65730b5ff9aeab4b922ad2bfcdda7ad7a281d4835f204",
+      "bytes": 8784
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\ProtobufMap.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp067.o",
+      "sha256": "6953b2720a5578e672b5009281e163ecc356bb461d07d37d5d12a22e5491dea6",
+      "bytes": 14844
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\ProtoNameProviding.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp068.o",
+      "sha256": "f6979621004214582cf7069e6f4e5140866e8c997b6d214bee347ff228a82ee6",
+      "bytes": 7820
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\resource_bundle_accessor.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp069.o",
+      "sha256": "1307c1c32c2d810f8f9350037d0ea58a23536420b88fcc608b95b2f93a463718",
+      "bytes": 16099
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\SelectiveVisitor.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp070.o",
+      "sha256": "fba0b59c9306f1f6eb96181d294dbbc71d2d49cdfd65758952fa313c8c5656a3",
+      "bytes": 77720
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\SimpleExtensionMap.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp071.o",
+      "sha256": "bcc342579281ac8e7d8c7f351f90f63f49434a70e406e1f9257e704751637f9f",
+      "bytes": 58797
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\source_context.pb.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp072.o",
+      "sha256": "02b64d7a22cc9261f309ee1d5eb2b80ba19ab67c8a98b6e13dfd1740028f7a2f",
+      "bytes": 66309
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\StringUtils.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp073.o",
+      "sha256": "995847c72725fc1a8e8b2381984e2c054d83cf04b4acb0546068100c8d016ba3",
+      "bytes": 23504
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\struct.pb.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp074.o",
+      "sha256": "5bd27cabd79a7b041e488b20a2864ea45ee93e603cbe5629e2333cdf9e0b77dd",
+      "bytes": 241441
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\SwiftProtobuf.swiftmodule.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp075.o",
+      "sha256": "9ce572e8fedf297d6d25f9e13664e099645011cb73d485f25433cd3dd00e06d8",
+      "bytes": 2685912
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\SwiftProtobufContiguousBytes.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp076.o",
+      "sha256": "3dec818cb68801547d93bbc9fbd6ddaebc9ddfb37ebb2975b7720e78127e21c5",
+      "bytes": 19158
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\SwiftProtobufError.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp077.o",
+      "sha256": "7997d176e9e8585b129c013d14b06f5cbbd4803a3e23ce9c05738695d145c5a8",
+      "bytes": 120251
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\TextFormatDecoder.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp078.o",
+      "sha256": "e57845061903a57f7b465c117b2f116d71a06ef4bf1686a3b522991a7d79c1d6",
+      "bytes": 216929
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\TextFormatDecodingError.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp079.o",
+      "sha256": "fc42a8d2301f1217db565335ad6c515a0ce9c311296e19f6eebd3dd0ac209967",
+      "bytes": 25325
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\TextFormatDecodingOptions.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp080.o",
+      "sha256": "3935f90c6896c9edcf319f31112cdc3f63a4dec073f8e65893dfe66e2324b418",
+      "bytes": 19211
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\TextFormatEncoder.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp081.o",
+      "sha256": "c064ab5109a44f25a660f1066826f9cf42089c7aa482d15975aeae58dd08af54",
+      "bytes": 85186
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\TextFormatEncodingOptions.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp082.o",
+      "sha256": "665a4f57d1b119c43b813b82af21c30d1a95383c53f31cc4022aed45280af094",
+      "bytes": 14318
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\TextFormatEncodingVisitor.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp083.o",
+      "sha256": "18e827ca4c132c11b89eca8a0f712a2f109369d6ff85efc6e843837ff58b5d27",
+      "bytes": 241098
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\TextFormatScanner.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp084.o",
+      "sha256": "ea3e4d13db3f2c848e83a14dee17ce8d7f1ce96b34ffb7cc24545d173f82d94e",
+      "bytes": 227634
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\timestamp.pb.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp085.o",
+      "sha256": "d94b24d94b6bc3eb8d9809c9ec971868ff2b756f6042141505fbb3885b49a061",
+      "bytes": 67558
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\TimeUtils.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp086.o",
+      "sha256": "035ae6c364677e59fbf157c566c5a0d0521daee743c4ff7df5d4a6256000deac",
+      "bytes": 29856
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\type.pb.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp087.o",
+      "sha256": "51f4bc183aee43bdd9515529dcd982df34b9c082b45a10f9aa815458f7dee5b0",
+      "bytes": 435615
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\UnknownStorage.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp088.o",
+      "sha256": "29113041f6097a7f8d016c111be424f9c6dd411ef4f48fd88f50c4b5ed330b9c",
+      "bytes": 22441
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\UnsafeRawPointer+Shims.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp089.o",
+      "sha256": "8e3815a32c6fa12849f85efe8d85c0625504b0ab7df98a2f5fe34c64f6efd163",
+      "bytes": 13695
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Varint.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp090.o",
+      "sha256": "ccadb01c596be3d3c38ff4fca79d7151548a119c8aa022cefb5f9ad4f372f8c7",
+      "bytes": 16825
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Version.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp091.o",
+      "sha256": "a7028f205fcf9da085cb5854fb023ccd2994ffeb9bcbf0455b847dfeef16c864",
+      "bytes": 19518
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\Visitor.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp092.o",
+      "sha256": "0d7aa42931392d1e43c4b2ad34b8933030e2879569027ea930ff113f0175ef0c",
+      "bytes": 97200
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\WireFormat.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp093.o",
+      "sha256": "1d04973e442af0ea1a0f2cbfc960aa48b158daf152b7aa4e3dfde5b8c3f2159a",
+      "bytes": 48633
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\wrappers.pb.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp094.o",
+      "sha256": "2f6eb35c7383f0bba7a861e65ec115cdae5c9e1a34f9dd61575ba45cb7faf907",
+      "bytes": 378226
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\SwiftProtobuf.build\\ZigZag.swift.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp095.o",
+      "sha256": "84182eadd336ef8670dec22d4f8f0f4b2142aae8013192b7f67c5129fb4de3a2",
+      "bytes": 15176
+    },
+    {
+      "original": "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\Modules\\SwiftProtobuf.o",
+      "copy": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects\\sp096.o",
+      "sha256": "cdab0d2e5d0766faa8e331916ad6d7fed20b79554a5a75a9e7b90c3622aec253",
+      "bytes": 2685894
+    }
+  ],
+  "started_at": "2026-11-22T02:33:44.418595+00:00",
+  "results": [
+    {
+      "label": "compile",
+      "argv": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+        "-swift-version",
+        "5",
+        "-strict-concurrency=complete",
+        "-parse-as-library",
+        "-j",
+        "1",
+        "-whole-module-optimization",
+        "-Onone",
+        "-I",
+        "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\Modules",
+        "-module-name",
+        "PublishingStatusQualification",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\Lifetime.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\Operation.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\Binding.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\Owner.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\OriginalTypePermissionProbe.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\PreparedEditorPageDocument.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\RoleSource.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\Anytype_Rpc.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\Anytype_Rpc.Publishing.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\Anytype_Rpc.Publishing.GetStatus.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\Anytype_Rpc.Publishing.PublishState.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\Anytype_Rpc.Publishing.PublishStatus.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\Anytype_Rpc.Publishing.Remove.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\PublishingControls.swift",
+        "@C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\objects.rsp",
+        "-o",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\p.exe"
+      ],
+      "exit_code": 0,
+      "duration_s": 60.2190000000046,
+      "stdout": "",
+      "stderr": "   Creating library C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\p.lib and object C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\p.exp\r\r\n"
+    },
+    {
+      "label": "execute",
+      "argv": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\publishing-controls-bae494-r2\\p.exe"
+      ],
+      "exit_code": 0,
+      "duration_s": 0.7350000000005821,
+      "stdout": "{\"apple_native\":\"NOT_RUN\",\"controls\":[\"exact original absent response is distinct from ordinary successful code-zero response\",\"an absent error with an actual publish payload is rejected\",\"real decoded unknown response fields cannot hide behind the absent sentinel\",\"real decoded unknown error fields cannot hide behind the absent sentinel\",\"wrong RPC spelling or concrete response type receives no exception\",\"wrong code, prefixes, casing, whitespace and other descriptions are not absence\",\"generic invoke preserves the exact thrown response error and handled absence does not poison save\",\"registered successful write followed by exact absent status reaches original save admission\",\"ordinary successful present status retains actual payload and original save admission\",\"caught code-zero access failure propagates exact error and keeps original failed-save latch\",\"a thrown transport-body failure still marks actual admission failed and blocks save\",\"actual SwiftProtobuf malformed-byte decoding error keeps original failed-save latch\",\"ambiguous publish payload remains original error and keeps the failed-save latch\",\"same sentinel on a different named RPC remains failed native work\"],\"executed\":14,\"native_lib_calls\":0,\"passed\":14,\"prior_suites_rerun\":false,\"publishing_network_calls\":0,\"scope\":\"Real generated protobuf types and cached actual SwiftProtobuf; exact production classifier and GCD admission\\/result-policy blocks; unchanged actual Owner\\/lifetime\\/operation\\/binding with explicit document and effect inputs. Full Invocation logging\\/event\\/cancellation plumbing is not executed by these controls.\",\"status\":\"PASS_NEW_PUBLISHING_RESPONSE_CONTROLS\"}\r\n",
+      "stderr": ""
+    }
+  ],
+  "native_lib_calls": 0,
+  "publishing_network_calls": 0,
+  "apple_native": "NOT_RUN",
+  "status": "PASS_14_NEW_PUBLISHING_CONTROLS",
+  "finished_at": "2026-11-22T02:34:45.406615+00:00"
+}

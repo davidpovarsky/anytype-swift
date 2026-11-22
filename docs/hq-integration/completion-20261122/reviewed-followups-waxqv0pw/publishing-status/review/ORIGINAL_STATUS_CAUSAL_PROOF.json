@@ -1,0 +1,94 @@
+{
+  "scope": "Immutable original source review; no publishing server request, account operation, or native Lib execution.",
+  "anytype_source": "35a906a6c37b5ff796ff0e0acee7089e5d81b852",
+  "heart_source": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "publish_server_source": "0fb960f004589086579d29e10faf0e824496ef61",
+  "original_r14_patch_sha256": "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+  "r14_changes_publishing_paths": false,
+  "source_chain": [
+    {
+      "path": "Modules/Services/Sources/Services/Publishing/PublishingService.swift",
+      "git_blob": "e19d7cd9e82e4f4c9d09b5e37d00abebaf658e83",
+      "fact": "Original public final service performs ClientCommands.publishingGetStatus with exact Space/object fields. Its existing catch returns nil for any native error whose code is null, regardless of description."
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Generated/CommandsInvocation/invocation-adoption.generated.swift",
+      "git_blob": "0896bbcc737681560f0914fdede02a0e71a8b1d5",
+      "fact": "GetStatus.Response.Error.isNull is code == .null && description_p.isEmpty. Code zero with nonempty description is an error."
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Invocation.swift",
+      "git_blob": "9c585ecb941c9e09ef4848fd9090e625b8880f7a",
+      "fact": "Original accepted GCD body marks native completion failed unless response.error.isNull, before throwing the original response error. The original Owner retains a failed mutation latch even if its UI body catches the error."
+    },
+    {
+      "path": "core/publish.go",
+      "git_blob": "5d7a78c94d6d8911abb7194d6dc276b9172b55ae",
+      "fact": "Pinned Heart PublishingGetStatus calls mapErrorCode(nil, errToCode(err, NULL)) and sends getErrorDescription(err) with the result."
+    },
+    {
+      "path": "core/util.go",
+      "git_blob": "f067c07fd833410dcf774ecf0f0445b551e62cd8",
+      "fact": "mapErrorCode immediately returns zero when its first argument is nil. getErrorDescription returns an empty string only for nil error; otherwise it returns CleanupError(err).Error()."
+    },
+    {
+      "path": "core/publish/service.go",
+      "git_blob": "d335e416618ee0cd461b55d9874e67fa57cdfbf3",
+      "fact": "GetStatus forwards publishClientService.GetPublishStatus errors; a successful response is mapped to the actual Space/object publication."
+    },
+    {
+      "path": "go.mod",
+      "git_blob": "6cf5f865ace0b463e4e64257fc0700450fa1de96",
+      "fact": "The publishing client is pinned to v0.0.0-20260925080338-0fb960f00458."
+    },
+    {
+      "path": "publish/publishrepo/publishrepo.go",
+      "git_blob": "dadaa5392f567224fb4f1d05db373e14d7be20b0",
+      "fact": "ObjectPublishStatus queries the actual identity/Space/object. A missing object document produces publishapi.ErrNotFound."
+    },
+    {
+      "path": "publishclient/publishapi/errors.go",
+      "git_blob": "7f31ae49e445248cd814265a532a1e714f299a7e",
+      "fact": "ErrNotFound is the publisher-specific coded errors.New(\"not found\"); UnwrapError maps that publisher code back to the same sentinel. Other publisher/transport errors are distinct."
+    },
+    {
+      "path": "publishclient/client.go",
+      "git_blob": "1e1ce218dba4a1c35a963b1273a77a64c89e74d3",
+      "fact": "GetPublishStatus invokes the original DRPC client and unwraps its error before returning."
+    },
+    {
+      "path": "util/anyerror/anyerror.go",
+      "git_blob": "697a2a9d36568d8030aaaab7374ecddfdc39efcf",
+      "fact": "CleanupError only changes file/URL/DNS/path-bearing errors; the literal not-found sentinel remains unchanged."
+    }
+  ],
+  "confirmed_source_defect": "After a successful original unpublish mutation, a genuine absent status is .null plus description not found with no publish payload. The old generic Invocation marks that status admission failed before the service returns nil. Because the status read occurs within the registered mutation lineage, the Owner later refuses capture/save. Other code-zero descriptions also became nil in the original service, so a broad code-zero exception would falsely admit failures.",
+  "correction": {
+    "native_admission": "Only exact message name PublishingGetStatus plus concrete generated GetStatus.Response, explicit error code null, exact description not found, no publish payload, and empty response/error unknown fields qualifies as expected read absence.",
+    "generic_invoke": "Still throws the exact original response error for that absence and all other errors. Its original signature and ordinary success/error handling remain.",
+    "strict_invoke": "A concrete GetStatus Request/Response extension selects a private closed response policy through the same invocation/native body, then returns nil only from the whole exact absent response.",
+    "original_service": "One private original request/body supports both paths. Legacy getStatus retains its original catch; only source-owned callers select getStatusForOriginalEditor. No substitute service/client or arbitrary error-policy callback exists.",
+    "unchanged_authority": "Owner, lifetime, operation, InvocationDispatchBinding, admission, native completion/drain, account/source captures and named publish permission are unchanged."
+  },
+  "events": {
+    "generated_get_status_blob": "d7c0a45fd8b9ebbc1d0c0b8f40ea7779aa04fe15",
+    "generated_fields": ["error", "publish", "unknownFields"],
+    "adoption": "extension Anytype_Rpc.Publishing.GetStatus.Response: ResultWithError {}",
+    "original_protocol_blob": "8b257bab7e899a06df8b5297fe1afc6be92afc2a",
+    "default": "public var hasEvent: Bool { false }",
+    "expected_absence_dispatches_events": false
+  },
+  "reviewed_ui_lifetime": {
+    "same_target": "The exact prepared session/Owner and existing original document are retained from Settings through coordinator and both publishing models; both object and Space identities are checked.",
+    "reservation": "All three actual create/update/remove AsyncStandardButton taps call scheduleDocumentAction([.publish]) synchronously before their original Task. The existing optional preparation hook has default-nil behavior.",
+    "actual_mutation": "Each task uses the same Owner performDocumentAction([.publish]) and exact original final PublishingService. No foreign target is admitted through a parent owner.",
+    "after_await": "Status identity, current source/document, current publish permission, status assignment, toast, success analytics, haptic, copy/link/preview publication remain inside synchronous current-owner read/publication checks. The strict status method propagates non-absence failures before publication.",
+    "legacy_route": "Absent preparedSession retains original service injection, request arguments, error catch and button task behavior.",
+    "explicit_exclusions": ["Membership/account-management presentation remains unqualified for the configured editor source", "Apple typechecking and actual Native publishing/unpublishing are pending"]
+  },
+  "control_scope": {
+    "executed_when_run": ["Actual unmodified generated protobuf message parsing and serialization", "Exact production absence classifier", "Exact production GCD result-admission and closed result-policy blocks", "Unchanged actual Owner/lifetime/operation/dispatch permit with explicit disposable document and effect inputs"],
+    "not_executed": ["Lib.ServicePublishingGetStatus", "Publishing network/backend", "Full Invocation logging/event/cancellation plumbing", "Cross-module public strict entry and final service as a linked Apple product", "UIKit or original publishing UI"],
+    "old_suites_repeated": false
+  }
+}

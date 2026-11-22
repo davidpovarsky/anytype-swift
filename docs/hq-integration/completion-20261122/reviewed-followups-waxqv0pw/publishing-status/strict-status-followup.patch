@@ -1,0 +1,208 @@
+diff --git a/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebInternalViewModel.swift b/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebInternalViewModel.swift
+index fc6572ead9a5c958cff7cd6509224b19ae1b292a..fd62f9608c3327326880e4cfcef051eff64bb573 100644
+--- a/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebInternalViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebInternalViewModel.swift
+@@ -98,6 +98,16 @@ final class PublishToWebInternalViewModel: PublishingPreviewOutput {
+         return original
+     }
+ 
++    private func getStatus(from service: any PublishingServiceProtocol) async throws -> PublishState? {
++        guard preparedSession != nil else {
++            return try await service.getStatus(spaceId: spaceId, objectId: objectId)
++        }
++        guard let original = service as? PublishingService else {
++            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
++        }
++        return try await original.getStatusForOriginalEditor(spaceId: spaceId, objectId: objectId)
++    }
++
+     private func validateStatusIdentity(_ value: PublishState?) throws {
+         guard preparedSession != nil, let value else { return }
+         guard value.objectId.utf8.elementsEqual(objectId.utf8),
+@@ -151,7 +161,7 @@ final class PublishToWebInternalViewModel: PublishingPreviewOutput {
+ 
+             let service = try originalPublishingService()
+             try await service.create(spaceId: spaceId, objectId: objectId, uri: customPath, joinSpace: showJoinSpaceButton)
+-            let updatedStatus = try await service.getStatus(spaceId: spaceId, objectId: objectId)
++            let updatedStatus = try await getStatus(from: service)
+ 
+             try withCurrentSource {
+                 try validateStatusIdentity(updatedStatus)
+@@ -178,7 +188,7 @@ final class PublishToWebInternalViewModel: PublishingPreviewOutput {
+ 
+             let service = try originalPublishingService()
+             try await service.remove(spaceId: spaceId, objectId: objectId)
+-            let updatedStatus = try await service.getStatus(spaceId: spaceId, objectId: objectId)
++            let updatedStatus = try await getStatus(from: service)
+ 
+             try withCurrentSource {
+                 try validateStatusIdentity(updatedStatus)
+diff --git a/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebViewModel.swift b/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebViewModel.swift
+index 6703c6e6db868bee2fafae42de18697d55739e64..3be257441c5d65a51a0ac9c13059474cf2d12c51 100644
+--- a/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebViewModel.swift
+@@ -131,7 +131,7 @@ final class PublishToWebViewModel {
+             let status = try await preparedSession.owner.performRead(
+                 contextId: objectId, spaceId: spaceId, rpcNames: ["PublishingGetStatus"]
+             ) { [objectId, spaceId] in
+-                try await original.getStatus(spaceId: spaceId, objectId: objectId)
++                try await original.getStatusForOriginalEditor(spaceId: spaceId, objectId: objectId)
+             }
+             try withCurrentSource {
+                 if let status {
+diff --git a/Modules/Services/Sources/Services/Publishing/PublishingService.swift b/Modules/Services/Sources/Services/Publishing/PublishingService.swift
+index e19d7cd9e82e4f4c9d09b5e37d00abebaf658e83..4f58c0a5aaee9019f0daacb3ef2fb23cd9aa636b 100644
+--- a/Modules/Services/Sources/Services/Publishing/PublishingService.swift
++++ b/Modules/Services/Sources/Services/Publishing/PublishingService.swift
+@@ -61,15 +61,30 @@ public final class PublishingService: PublishingServiceProtocol {
+     
+     public func getStatus(spaceId: String, objectId: String) async throws -> PublishState? {
+         do {
+-            let response = try await ClientCommands.publishingGetStatus(.with {
+-                $0.spaceID = spaceId
+-                $0.objectID = objectId
+-            }).invoke(ignoreLogErrors: .badInput, .noSuchObject, .noSuchSpace, .null)
+-            
+-            return PublishState(from: response.publish)
++            return try await getStatus(spaceId: spaceId, objectId: objectId, requireExactAbsence: false)
+         } catch let error as Anytype_Rpc.Publishing.GetStatus.Response.Error {
+             if error.code == .null { return nil }
+             else { throw error }
+         }
+     }
++
++    /// Source-owned callers require the exact original unpublished sentinel.
++    /// Legacy getStatus retains its existing error policy and injected route.
++    public func getStatusForOriginalEditor(spaceId: String, objectId: String) async throws -> PublishState? {
++        try await getStatus(spaceId: spaceId, objectId: objectId, requireExactAbsence: true)
++    }
++
++    private func getStatus(spaceId: String, objectId: String, requireExactAbsence: Bool) async throws -> PublishState? {
++        let invocation = ClientCommands.publishingGetStatus(.with {
++            $0.spaceID = spaceId
++            $0.objectID = objectId
++        })
++        let response: Anytype_Rpc.Publishing.GetStatus.Response?
++        if requireExactAbsence {
++            response = try await invocation.invokePublishingGetStatus()
++        } else {
++            response = try await invocation.invoke(ignoreLogErrors: .badInput, .noSuchObject, .noSuchSpace, .null)
++        }
++        return response.map { PublishState(from: $0.publish) }
++    }
+ }
+diff --git a/Modules/ProtobufMessages/Sources/Invocation.swift b/Modules/ProtobufMessages/Sources/Invocation.swift
+index 9c585ecb941c9e09ef4848fd9090e625b8880f7a..d2af2d24b0c2e7d7a29bdef70f0b16c47bea0dc9 100644
+--- a/Modules/ProtobufMessages/Sources/Invocation.swift
++++ b/Modules/ProtobufMessages/Sources/Invocation.swift
+@@ -2,6 +2,26 @@ import Foundation
+ import Combine
+ import SwiftProtobuf
+ 
++// ORIGINAL_PUBLISHING_STATUS_ABSENCE_BEGIN
++// The pinned original publishing service uses this one exact response for an
++// unpublished object. Code zero alone also carries transport/server failures.
++// Keep this a closed concrete-response rule, never a caller-provided exemption.
++private func isOriginalPublishingStatusAbsence<Response>(
++    messageName: String, response: Response
++) -> Bool {
++    guard messageName == "PublishingGetStatus",
++          let status = response as? Anytype_Rpc.Publishing.GetStatus.Response else { return false }
++    return status.hasError && status.error.code == .null
++        && status.error.description_p == "not found" && !status.hasPublish
++        && status.unknownFields.data.isEmpty && status.error.unknownFields.data.isEmpty
++}
++// ORIGINAL_PUBLISHING_STATUS_ABSENCE_END
++
++private enum InvocationResponsePolicy: Sendable, Equatable {
++    case original
++    case publishingStatusAbsence
++}
++
+ public struct Invocation<Request, Response>: Sendable where Request: Message & Sendable,
+                                                   Response: ResultWithError & Message & Sendable {
+     
+@@ -24,12 +44,27 @@ public struct Invocation<Request, Response>: Sendable where Request: Message & S
+         function: String = #function,
+         line: UInt = #line,
+         ignoreLogErrors: Response.Error.ErrorCode...
++    ) async throws -> Response {
++        try await invokeResponse(
++            requestMask: requestMask, responseMask: responseMask, qos: qos,
++            file: file, function: function, line: line,
++            ignoreLogErrors: ignoreLogErrors, responsePolicy: .original
++        )
++    }
++
++    private func invokeResponse(
++        requestMask: (@Sendable (inout Request) -> Void)?,
++        responseMask: (@Sendable (inout Response) -> Void)?,
++        qos: DispatchQoS.QoSClass,
++        file: StaticString, function: String, line: UInt,
++        ignoreLogErrors: [Response.Error.ErrorCode],
++        responsePolicy: InvocationResponsePolicy
+     ) async throws -> Response {
+         let dispatchBinding = InvocationDispatchContext.binding
+         do {
+             return try await withUncancellableHandler {
+                 try await internalInvoke(requestMask: requestMask, responseMask: responseMask, qos: qos,
+-                                         dispatchBinding: dispatchBinding)
++                                         dispatchBinding: dispatchBinding, responsePolicy: responsePolicy)
+             }
+         } catch let error as CancellationError {
+             // Ignore try Task.checkCancellation()
+@@ -49,7 +84,8 @@ public struct Invocation<Request, Response>: Sendable where Request: Message & S
+         requestMask: ((inout Request) -> Void)?,
+         responseMask: ((inout Response) -> Void)?,
+         qos: DispatchQoS.QoSClass,
+-        dispatchBinding: InvocationDispatchBinding?
++        dispatchBinding: InvocationDispatchBinding?,
++        responsePolicy: InvocationResponsePolicy
+     ) async throws -> Response {
+         
+         let result: Response
+@@ -78,6 +114,7 @@ public struct Invocation<Request, Response>: Sendable where Request: Message & S
+                         }
+                         let response = try invokeTask(request)
+                         succeeded = response.error.isNull
++                            || isOriginalPublishingStatusAbsence(messageName: messageName, response: response)
+                         cont.resume(returning: response)
+                     } catch {
+                         cont.resume(throwing: error)
+@@ -97,7 +134,12 @@ public struct Invocation<Request, Response>: Sendable where Request: Message & S
+         }
+         
+         if !result.error.isNull {
+-            throw result.error
++            guard responsePolicy == .publishingStatusAbsence,
++                  isOriginalPublishingStatusAbsence(messageName: messageName, response: result) else {
++                // Generic invoke keeps throwing the exact original error,
++                // including the expected absence consumed by legacy callers.
++                throw result.error
++            }
+         }
+         
+         if result.hasEvent {
+@@ -146,3 +188,22 @@ public struct Invocation<Request, Response>: Sendable where Request: Message & S
+         handler.logHandler(message: message)
+     }
+ }
++
++public extension Invocation where Request == Anytype_Rpc.Publishing.GetStatus.Request,
++                                  Response == Anytype_Rpc.Publishing.GetStatus.Response {
++    /// Exact original GetStatus response policy for source-owned callers. Uses
++    /// the same request, native invocation, cancellation and dispatch admission.
++    /// A genuine absent result becomes nil; every other original error escapes.
++    func invokePublishingGetStatus(
++        file: StaticString = #file, function: String = #function, line: UInt = #line
++    ) async throws -> Response? {
++        let response = try await invokeResponse(
++            requestMask: nil, responseMask: nil, qos: .default,
++            file: file, function: function, line: line,
++            ignoreLogErrors: [.badInput, .noSuchObject, .noSuchSpace, .null],
++            responsePolicy: .publishingStatusAbsence
++        )
++        return isOriginalPublishingStatusAbsence(messageName: messageName, response: response)
++            ? nil : response
++    }
++}
