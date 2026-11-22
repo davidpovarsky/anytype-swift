@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "argv": [
+    "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_t5_existing_build_readiness.OwnedReadinessControls",
+    "test_t5_existing_build_readiness.SameBuildControls.test_host_readiness_precedes_enumeration_and_preserves_exact_timeout",
+    "test_t5_existing_build_readiness.SameBuildControls.test_readiness_failure_prevents_all_host_discovery_and_test_execution",
+    "test_t5_existing_build_readiness.SameBuildControls.test_enumeration_timeout_keeps_zero_test_execution_and_shuts_down",
+    "test_t5_existing_build_readiness.SameBuildControls.test_pending_nine_uses_same_products_and_separate_account_without_build_or_baseline",
+    "test_t5_existing_build_readiness.SameBuildControls.test_changed_compiled_products_cannot_qualify_pending_results",
+    "test_t5_existing_build_readiness.SameBuildControls.test_unpublished_native_evidence_cannot_pass_even_with_valid_counts",
+    "test_t5_existing_build_readiness.SameBuildControls.test_native_failure_is_preserved_through_owned_shutdown_failure"
+  ],
+  "returncode": 0,
+  "elapsed_seconds": 5.409,
+  "raw_log_sha256": "ddda4219f5157813205c6043d06960a5d21dcab836588c456a6cca04cc6666b7",
+  "source_sha256": {
+    "owned_simulator_readiness.py": "42be87c8f6e9cb4911b6f5e8a009d0e17aa8d43bf1c259f91534fda7e70d1d09",
+    "t5_account_retry_existing_build.py": "a9a32138f6ab78c2b6512fd35d1bd2069e37109c88ba92e1346b639b242334de",
+    "t5_host_actions.py": "b839cf9a908093e717a5497cf2546047b36d523e3455b42d5a1e6755e942d9a8",
+    "run_t5_native_ui.py": "676b8f9431f64c36e1bb922a0b7fa9fe839b748ea44356a1f8db68b86a025708",
+    "run_t5_corrected_ui.py": "5c2bb5ed57850fed4613c352cb8ed7b0630037383b9185bd0ed47d2b5c3e04ab",
+    "test_t5_existing_build_readiness.py": "68fb08de68b2204c4fd0441fd56b5750097ace46e6d02344fe96fbc62ba67a3b"
+  },
+  "apple_tests_executed": 0,
+  "native_tests_executed": 0,
+  "additional_app_builds": 0,
+  "unaffected_prior_controls_retained": 4
+}

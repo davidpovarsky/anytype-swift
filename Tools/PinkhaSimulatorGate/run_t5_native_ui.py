@@ -244,8 +244,8 @@ def run_after_pair(*, app, work, proof, pair_result, build, pair_container, sele
         pair_boundary={"fresh": fresh, "container": pair_container})
 
 
-def run_after_corrected_build(*, app, work, proof, build, selection, pair, ui, method_results, source, run_id):
-    """Qualify UI on one corrected-r15 build; never claim the unexecuted pair."""
+def validate_corrected_build(build, source, pair, ui):
+    """Shared admission for independent journeys using the one corrected App."""
     profile = ui.heart_profiles.select("r15-attachment-v1")
     evidence.require(build.get("role") == "corrected-r15" and build.get("app_source_sha") == source
         and build.get("flags") == pair.FLAGS and build.get("runtime_version") == profile.version,
@@ -255,6 +255,12 @@ def run_after_corrected_build(*, app, work, proof, build, selection, pair, ui, m
     evidence.require(all(evidence.is_hash(build.get(key)) for key in ["code_sha256", "hanlin_snapshot_sha256"])
         and re.fullmatch(r"[0-9a-f]{40}", build.get("kit_sha", "")) is not None,
         "Standalone UI build dependency/carrier identity is missing")
+    return profile
+
+
+def run_after_corrected_build(*, app, work, proof, build, selection, pair, ui, method_results, source, run_id):
+    """Qualify UI on one corrected-r15 build; never claim the unexecuted pair."""
+    profile = validate_corrected_build(build, source, pair, ui)
     return _run_on_fresh_simulator(app=app, work=work, proof=proof, build=build, selection=selection,
         pair=pair, ui=ui, method_results=method_results, source=source, run_id=run_id,
         runtime=profile.version, runtime_profile=profile.name, pair_boundary=None)

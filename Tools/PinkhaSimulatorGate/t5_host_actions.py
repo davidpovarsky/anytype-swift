@@ -17,6 +17,7 @@ if str(HANLIN_TOOLS) not in sys.path:
 import run_host_tests as host
 import wave15_core_profile as core
 import shared_editor_existing_build as existing
+import owned_simulator_readiness as simulator
 
 SUITE = "TorahRelatedDocumentActionTests"
 SOURCE_PATH = "AnyTypeTests/Pinkha/TorahRelatedDocumentActionTests.swift"
@@ -108,7 +109,7 @@ def execute(*, app, build, selection, evidence, pair, ui, source, run_id):
     base = ["xcodebuild", "test-without-building", "-xctestrun", str(selected),
             "-destination", "platform=iOS Simulator,id=" + udid, "-parallel-testing-enabled", "NO",
             "-only-testing:AnytypeTests/" + SUITE]
-    receipt = dict(status="RUNNING", phase="COMPILED_SELECTION", app_source_sha=source, run_id=run_id,
+    receipt = dict(status="RUNNING", phase="SIMULATOR_READINESS", app_source_sha=source, run_id=run_id,
                    source=contract, built_products=binding, selected_configuration=selected_binding,
                    additional_app_builds=0, real_native_acl_accepted=False,
                    real_native_persistence_accepted=False)
@@ -124,7 +125,12 @@ def execute(*, app, build, selection, evidence, pair, ui, source, run_id):
                      and ui.code_carriers(built)["sha256"] == build["code_sha256"],
                      "T5 host execution changed its original or selected App products")
 
+    failure = None
     try:
+        receipt["simulator_readiness"] = simulator.ensure_ready(app=app, evidence=evidence / "readiness",
+            selection=selection, expected_name="Pinkha-UI27-" + run_id + "-ipad", pair=pair)
+        receipt["phase"] = "COMPILED_SELECTION"
+        pair.write(evidence / "execution.json", receipt)
         inventory = evidence / "compiled-enumeration.json"
         enumerate_command = [*base, "-enumerate-tests", "-test-enumeration-style", "flat",
                              "-test-enumeration-format", "json", "-test-enumeration-output-path", str(inventory)]
@@ -161,9 +167,20 @@ def execute(*, app, build, selection, evidence, pair, ui, source, run_id):
                        raw_summary_sha256=pair.digest(evidence / "summary.json"),
                        raw_tests_sha256=pair.digest(evidence / "tests.json"))
     except BaseException as error:
+        failure = error
         receipt.update(status="CANCELLED" if isinstance(error, KeyboardInterrupt) else "FAIL",
                        error_type=type(error).__name__, error=str(error))
         raise
     finally:
-        pair.write(evidence / "execution.json", receipt)
+        try:
+            receipt["simulator_shutdown"] = simulator.shutdown_owned(app=app, evidence=evidence / "shutdown",
+                selection=selection, expected_name="Pinkha-UI27-" + run_id + "-ipad", pair=pair,
+                readiness_receipt_path=evidence / "readiness/readiness.json")
+        except BaseException as cleanup_error:
+            receipt.update(status="CANCELLED" if isinstance(cleanup_error, KeyboardInterrupt) else "FAIL",
+                           cleanup_error_type=type(cleanup_error).__name__, cleanup_error=str(cleanup_error))
+            if failure is None:
+                raise
+        finally:
+            pair.write(evidence / "execution.json", receipt)
     return receipt

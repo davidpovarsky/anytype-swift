@@ -1,0 +1,818 @@
+﻿2026-11-21T23:38:16.4086950Z Current runner version: '2.338.2'
+2026-11-21T23:38:16.4102790Z ##[group]Runner Image Provisioner
+2026-11-21T23:38:16.4103400Z Hosted Compute Agent
+2026-11-21T23:38:16.4103800Z Version: 20261103.629
+2026-11-21T23:38:16.4104270Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+2026-11-21T23:38:16.4104780Z Build Date: 2026-11-03T17:26:59Z
+2026-11-21T23:38:16.4105280Z Worker ID: {32367bab-39f5-450d-b7fd-c5ea98dba6d8}
+2026-11-21T23:38:16.4105780Z Region: westus
+2026-11-21T23:38:16.4106170Z Cloud: MacCloud
+2026-11-21T23:38:16.4106600Z ##[endgroup]
+2026-11-21T23:38:16.4107600Z ##[group]Operating System
+2026-11-21T23:38:16.4107980Z macOS
+2026-11-21T23:38:16.4108310Z 27.0.1
+2026-11-21T23:38:16.4108620Z 26A434
+2026-11-21T23:38:16.4108990Z ##[endgroup]
+2026-11-21T23:38:16.4109400Z ##[group]Runner Image
+2026-11-21T23:38:16.4109770Z Image: xcode-27-arm64
+2026-11-21T23:38:16.4110140Z Version: 20261104.0337.1
+2026-11-21T23:38:16.4111020Z Included Software: https://github.com/actions/runner-images/blob/xcode-27-arm64/20261104.0337/images/macos/xcode-27-arm64-Readme.md
+2026-11-21T23:38:16.4112050Z Image Release: https://github.com/actions/runner-images/releases/tag/xcode-27-arm64%2F20261104.0337
+2026-11-21T23:38:16.4112720Z ##[endgroup]
+2026-11-21T23:38:16.4113700Z ##[group]GITHUB_TOKEN Permissions
+2026-11-21T23:38:16.4115080Z Actions: read
+2026-11-21T23:38:16.4115440Z Contents: read
+2026-11-21T23:38:16.4115790Z Metadata: read
+2026-11-21T23:38:16.4116130Z ##[endgroup]
+2026-11-21T23:38:16.4118160Z Secret source: Actions
+2026-11-21T23:38:16.4118830Z Cache mode: write
+2026-11-21T23:38:16.4120100Z Prepare workflow directory
+2026-11-21T23:38:16.4507240Z Prepare all required actions
+2026-11-21T23:38:16.4552330Z Getting action download info
+2026-11-21T23:38:16.9027070Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-11-21T23:38:17.3281690Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+2026-11-21T23:38:17.6348510Z Download action repository 'actions/cache@v4' (SHA:0057852bfaa89a56745cba8c7296529d2fc39830)
+2026-11-21T23:38:17.7820870Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-11-21T23:38:18.0585380Z Uses: davidpovarsky/anytype-swift/.github/workflows/pinkha-t5-corrected-ui.yml@refs/heads/codex/chatgpt-wave15-shared-20261121 (87a543d81b51ca16d624d2f21f9ce50d70c0ab5b)
+2026-11-21T23:38:18.0589450Z ##[group] Inputs
+2026-11-21T23:38:18.0589820Z   heart_source_run_id: 44943967103
+2026-11-21T23:38:18.0590280Z   route: t5-corrected-ui
+2026-11-21T23:38:18.0590670Z   t5_component: native-index
+2026-11-21T23:38:18.0591030Z   ui_scope: FULL_SMOKE
+2026-11-21T23:38:18.0591380Z   acceptance_lane: inspector
+2026-11-21T23:38:18.0591830Z   acceptance_device: ipad
+2026-11-21T23:38:18.0592230Z   acceptance_language: en
+2026-11-21T23:38:18.0592580Z   runtime_profile: r14
+2026-11-21T23:38:18.0593330Z   source_run_id: 44943967103
+2026-11-21T23:38:18.0593790Z   native_test_scope: all
+2026-11-21T23:38:18.0594510Z   require_full_acceptance: true
+2026-11-21T23:38:18.0594940Z ##[endgroup]
+2026-11-21T23:38:18.0595380Z Complete job name: t5-corrected-ui / actual-corrected-ui
+2026-11-21T23:38:18.1455820Z ##[group]Run actions/checkout@v4
+2026-11-21T23:38:18.1456940Z with:
+2026-11-21T23:38:18.1457350Z   repository: davidpovarsky/anytype-swift
+2026-11-21T23:38:18.1460710Z   token: ***
+2026-11-21T23:38:18.1461030Z   ssh-strict: true
+2026-11-21T23:38:18.1461420Z   ssh-user: git
+2026-11-21T23:38:18.1461780Z   persist-credentials: true
+2026-11-21T23:38:18.1463310Z   clean: true
+2026-11-21T23:38:18.1464320Z   sparse-checkout-cone-mode: true
+2026-11-21T23:38:18.1465400Z   fetch-depth: 1
+2026-11-21T23:38:18.1466530Z   fetch-tags: false
+2026-11-21T23:38:18.1467110Z   show-progress: true
+2026-11-21T23:38:18.1467470Z   lfs: false
+2026-11-21T23:38:18.1467790Z   submodules: false
+2026-11-21T23:38:18.1468130Z   set-safe-directory: true
+2026-11-21T23:38:18.1468560Z   allow-unsafe-pr-checkout: false
+2026-11-21T23:38:18.1471110Z env:
+2026-11-21T23:38:18.1496790Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-21T23:38:18.1497640Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-21T23:38:18.1498090Z ##[endgroup]
+2026-11-21T23:38:18.6833740Z Syncing repository: davidpovarsky/anytype-swift
+2026-11-21T23:38:18.6835660Z ##[group]Getting Git version info
+2026-11-21T23:38:18.6856840Z Working directory is '/Users/runner/work/anytype-swift/anytype-swift'
+2026-11-21T23:38:18.7006700Z [command]/opt/homebrew/bin/git version
+2026-11-21T23:38:18.8256850Z git version 2.56.0
+2026-11-21T23:38:18.8282330Z ##[endgroup]
+2026-11-21T23:38:18.8297750Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/fd991a39-1dac-461a-b989-c417b5220158/.gitconfig'
+2026-11-21T23:38:18.8310870Z Temporarily overriding HOME='/Users/runner/work/_temp/fd991a39-1dac-461a-b989-c417b5220158' before making global git config changes
+2026-11-21T23:38:18.8313850Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-21T23:38:18.8317730Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/anytype-swift/anytype-swift
+2026-11-21T23:38:18.8472940Z Deleting the contents of '/Users/runner/work/anytype-swift/anytype-swift'
+2026-11-21T23:38:18.8476430Z ##[group]Initializing the repository
+2026-11-21T23:38:18.8481860Z [command]/opt/homebrew/bin/git init /Users/runner/work/anytype-swift/anytype-swift
+2026-11-21T23:38:18.8829960Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-21T23:38:18.8831520Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-21T23:38:18.8832360Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-21T23:38:18.8832960Z hint: call:
+2026-11-21T23:38:18.8833280Z hint:
+2026-11-21T23:38:18.8833680Z hint: 	git config --global init.defaultBranch <name>
+2026-11-21T23:38:18.8834150Z hint:
+2026-11-21T23:38:18.8834660Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-21T23:38:18.8836040Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-21T23:38:18.8836580Z hint:
+2026-11-21T23:38:18.8836970Z hint: 	git branch -m <name>
+2026-11-21T23:38:18.8837380Z hint:
+2026-11-21T23:38:18.8837940Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-21T23:38:18.8842840Z Initialized empty Git repository in /Users/runner/work/anytype-swift/anytype-swift/.git/
+2026-11-21T23:38:18.8863440Z [command]/opt/homebrew/bin/git remote add origin https://github.com/davidpovarsky/anytype-swift
+2026-11-21T23:38:18.9011160Z ##[endgroup]
+2026-11-21T23:38:18.9013360Z ##[group]Disabling automatic garbage collection
+2026-11-21T23:38:18.9019850Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+2026-11-21T23:38:18.9241390Z ##[endgroup]
+2026-11-21T23:38:18.9244010Z ##[group]Setting up auth
+2026-11-21T23:38:18.9245080Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-21T23:38:18.9346640Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-21T23:38:19.0840780Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-21T23:38:19.0924610Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-21T23:38:19.2519790Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-21T23:38:19.2834160Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-21T23:38:19.4853680Z [command]/opt/homebrew/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-21T23:38:19.5087460Z ##[endgroup]
+2026-11-21T23:38:19.5090960Z ##[group]Fetching the repository
+2026-11-21T23:38:19.5094920Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +87a543d81b51ca16d624d2f21f9ce50d70c0ab5b:refs/remotes/origin/codex/chatgpt-wave15-shared-20261121
+2026-11-21T23:38:23.4791000Z From https://github.com/davidpovarsky/anytype-swift
+2026-11-21T23:38:23.4795980Z  * [new ref]         87a543d81b51ca16d624d2f21f9ce50d70c0ab5b -> origin/codex/chatgpt-wave15-shared-20261121
+2026-11-21T23:38:23.4802040Z ##[endgroup]
+2026-11-21T23:38:23.4803450Z ##[group]Determining the checkout info
+2026-11-21T23:38:23.4805850Z ##[endgroup]
+2026-11-21T23:38:23.4820600Z [command]/opt/homebrew/bin/git sparse-checkout disable
+2026-11-21T23:38:23.5001400Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-21T23:38:23.5186410Z ##[group]Checking out the ref
+2026-11-21T23:38:23.5189240Z [command]/opt/homebrew/bin/git checkout --progress --force -B codex/chatgpt-wave15-shared-20261121 refs/remotes/origin/codex/chatgpt-wave15-shared-20261121
+2026-11-21T23:38:24.7081150Z Updating files:  45% (4735/10374)
+2026-11-21T23:38:24.7593340Z Updating files:  46% (4773/10374)
+2026-11-21T23:38:24.7809100Z Updating files:  47% (4876/10374)
+2026-11-21T23:38:24.7997350Z Updating files:  48% (4980/10374)
+2026-11-21T23:38:24.8164310Z Updating files:  49% (5084/10374)
+2026-11-21T23:38:24.8360290Z Updating files:  50% (5187/10374)
+2026-11-21T23:38:24.8569170Z Updating files:  51% (5291/10374)
+2026-11-21T23:38:24.8765110Z Updating files:  52% (5395/10374)
+2026-11-21T23:38:24.9053600Z Updating files:  53% (5499/10374)
+2026-11-21T23:38:24.9241640Z Updating files:  54% (5602/10374)
+2026-11-21T23:38:24.9396550Z Updating files:  55% (5706/10374)
+2026-11-21T23:38:24.9555890Z Updating files:  56% (5810/10374)
+2026-11-21T23:38:24.9780330Z Updating files:  57% (5914/10374)
+2026-11-21T23:38:24.9963530Z Updating files:  58% (6017/10374)
+2026-11-21T23:38:25.0181980Z Updating files:  59% (6121/10374)
+2026-11-21T23:38:25.0368060Z Updating files:  60% (6225/10374)
+2026-11-21T23:38:25.0542790Z Updating files:  61% (6329/10374)
+2026-11-21T23:38:25.0852290Z Updating files:  62% (6432/10374)
+2026-11-21T23:38:25.1122290Z Updating files:  63% (6536/10374)
+2026-11-21T23:38:25.1424330Z Updating files:  64% (6640/10374)
+2026-11-21T23:38:25.1686390Z Updating files:  65% (6744/10374)
+2026-11-21T23:38:25.2070030Z Updating files:  66% (6847/10374)
+2026-11-21T23:38:25.2323010Z Updating files:  67% (6951/10374)
+2026-11-21T23:38:25.2671840Z Updating files:  68% (7055/10374)
+2026-11-21T23:38:25.2909980Z Updating files:  69% (7159/10374)
+2026-11-21T23:38:25.3136070Z Updating files:  70% (7262/10374)
+2026-11-21T23:38:25.3618160Z Updating files:  71% (7366/10374)
+2026-11-21T23:38:25.4166230Z Updating files:  72% (7470/10374)
+2026-11-21T23:38:25.4623210Z Updating files:  73% (7574/10374)
+2026-11-21T23:38:25.5238470Z Updating files:  74% (7677/10374)
+2026-11-21T23:38:25.5540720Z Updating files:  75% (7781/10374)
+2026-11-21T23:38:25.5644620Z Updating files:  76% (7885/10374)
+2026-11-21T23:38:25.6527200Z Updating files:  76% (7888/10374)
+2026-11-21T23:38:25.8325110Z Updating files:  77% (7988/10374)
+2026-11-21T23:38:25.8805440Z Updating files:  78% (8092/10374)
+2026-11-21T23:38:25.9060560Z Updating files:  79% (8196/10374)
+2026-11-21T23:38:25.9465780Z Updating files:  80% (8300/10374)
+2026-11-21T23:38:25.9722210Z Updating files:  81% (8403/10374)
+2026-11-21T23:38:26.0067420Z Updating files:  82% (8507/10374)
+2026-11-21T23:38:26.0288970Z Updating files:  83% (8611/10374)
+2026-11-21T23:38:26.0768860Z Updating files:  84% (8715/10374)
+2026-11-21T23:38:26.1024540Z Updating files:  85% (8818/10374)
+2026-11-21T23:38:26.1374640Z Updating files:  86% (8922/10374)
+2026-11-21T23:38:26.1842460Z Updating files:  87% (9026/10374)
+2026-11-21T23:38:26.2378800Z Updating files:  88% (9130/10374)
+2026-11-21T23:38:26.2860220Z Updating files:  89% (9233/10374)
+2026-11-21T23:38:26.3169570Z Updating files:  90% (9337/10374)
+2026-11-21T23:38:26.3368590Z Updating files:  91% (9441/10374)
+2026-11-21T23:38:26.3565520Z Updating files:  92% (9545/10374)
+2026-11-21T23:38:26.3827250Z Updating files:  93% (9648/10374)
+2026-11-21T23:38:26.4057940Z Updating files:  94% (9752/10374)
+2026-11-21T23:38:26.4358340Z Updating files:  95% (9856/10374)
+2026-11-21T23:38:26.4612030Z Updating files:  96% (9960/10374)
+2026-11-21T23:38:26.4839010Z Updating files:  97% (10063/10374)
+2026-11-21T23:38:26.5027710Z Updating files:  98% (10167/10374)
+2026-11-21T23:38:26.5284220Z Updating files:  99% (10271/10374)
+2026-11-21T23:38:26.5390800Z Updating files: 100% (10374/10374)
+2026-11-21T23:38:26.5492740Z Updating files: 100% (10374/10374), done.
+2026-11-21T23:38:26.5689550Z Switched to a new branch 'codex/chatgpt-wave15-shared-20261121'
+2026-11-21T23:38:26.5795800Z branch 'codex/chatgpt-wave15-shared-20261121' set up to track 'origin/codex/chatgpt-wave15-shared-20261121'.
+2026-11-21T23:38:26.6102460Z ##[endgroup]
+2026-11-21T23:38:26.6400420Z [command]/opt/homebrew/bin/git log -1 --format=%H
+2026-11-21T23:38:26.6499520Z 87a543d81b51ca16d624d2f21f9ce50d70c0ab5b
+2026-11-21T23:38:26.7332270Z ##[group]Run actions/setup-python@v5
+2026-11-21T23:38:26.7332690Z with:
+2026-11-21T23:38:26.7332920Z   python-version: 3.12
+2026-11-21T23:38:26.7333270Z   architecture: arm64
+2026-11-21T23:38:26.7333510Z   check-latest: false
+2026-11-21T23:38:26.7336070Z   token: ***
+2026-11-21T23:38:26.7336320Z   update-environment: true
+2026-11-21T23:38:26.7336700Z   allow-prereleases: false
+2026-11-21T23:38:26.7337070Z   freethreaded: false
+2026-11-21T23:38:26.7338530Z env:
+2026-11-21T23:38:26.7339500Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-21T23:38:26.7340460Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-21T23:38:26.7341190Z ##[endgroup]
+2026-11-21T23:38:27.0250260Z ##[group]Installed versions
+2026-11-21T23:38:27.0309720Z (node:9264) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-21T23:38:27.0321370Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-21T23:38:27.0352610Z Successfully set up CPython (3.12.10)
+2026-11-21T23:38:27.0353320Z ##[endgroup]
+2026-11-21T23:38:27.0559540Z ##[group]Run actions/checkout@v4
+2026-11-21T23:38:27.0641580Z with:
+2026-11-21T23:38:27.0641840Z   repository: davidpovarsky/hanlin-ai
+2026-11-21T23:38:27.0642090Z   ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+2026-11-21T23:38:27.0643220Z   path: build/t5-corrected-hanlin-source
+2026-11-21T23:38:27.0643500Z   persist-credentials: false
+2026-11-21T23:38:27.0646320Z   token: ***
+2026-11-21T23:38:27.0646490Z   ssh-strict: true
+2026-11-21T23:38:27.0646680Z   ssh-user: git
+2026-11-21T23:38:27.0646850Z   clean: true
+2026-11-21T23:38:27.0647200Z   sparse-checkout-cone-mode: true
+2026-11-21T23:38:27.0647440Z   fetch-depth: 1
+2026-11-21T23:38:27.0647600Z   fetch-tags: false
+2026-11-21T23:38:27.0647760Z   show-progress: true
+2026-11-21T23:38:27.0647980Z   lfs: false
+2026-11-21T23:38:27.0648200Z   submodules: false
+2026-11-21T23:38:27.0648560Z   set-safe-directory: true
+2026-11-21T23:38:27.0648800Z   allow-unsafe-pr-checkout: false
+2026-11-21T23:38:27.0649010Z env:
+2026-11-21T23:38:27.0649370Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-21T23:38:27.0649690Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-21T23:38:27.0649960Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:38:27.0650410Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-21T23:38:27.0650860Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:38:27.0651240Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:38:27.0651600Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:38:27.0651890Z ##[endgroup]
+2026-11-21T23:38:27.4383550Z Syncing repository: davidpovarsky/hanlin-ai
+2026-11-21T23:38:27.4486190Z ##[group]Getting Git version info
+2026-11-21T23:38:27.4589190Z Working directory is '/Users/runner/work/anytype-swift/anytype-swift/build/t5-corrected-hanlin-source'
+2026-11-21T23:38:27.4792290Z [command]/opt/homebrew/bin/git version
+2026-11-21T23:38:27.4909230Z git version 2.56.0
+2026-11-21T23:38:27.5326580Z ##[endgroup]
+2026-11-21T23:38:27.5534250Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/c63486c5-89e5-4b48-92f6-a2925e046bc8/.gitconfig'
+2026-11-21T23:38:27.5637110Z Temporarily overriding HOME='/Users/runner/work/_temp/c63486c5-89e5-4b48-92f6-a2925e046bc8' before making global git config changes
+2026-11-21T23:38:27.5741470Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-21T23:38:27.5843790Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/anytype-swift/anytype-swift/build/t5-corrected-hanlin-source
+2026-11-21T23:38:27.6191640Z ##[group]Initializing the repository
+2026-11-21T23:38:27.6294370Z [command]/opt/homebrew/bin/git init /Users/runner/work/anytype-swift/anytype-swift/build/t5-corrected-hanlin-source
+2026-11-21T23:38:27.6402660Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-21T23:38:27.6506460Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-21T23:38:27.6609260Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-21T23:38:27.6727190Z hint: call:
+2026-11-21T23:38:27.6831170Z hint:
+2026-11-21T23:38:27.6934410Z hint: 	git config --global init.defaultBranch <name>
+2026-11-21T23:38:27.7036100Z hint:
+2026-11-21T23:38:27.7137550Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-21T23:38:27.7240830Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-21T23:38:27.7352120Z hint:
+2026-11-21T23:38:27.7457490Z hint: 	git branch -m <name>
+2026-11-21T23:38:27.7564850Z hint:
+2026-11-21T23:38:27.7666640Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-21T23:38:27.7768100Z Initialized empty Git repository in /Users/runner/work/anytype-swift/anytype-swift/build/t5-corrected-hanlin-source/.git/
+2026-11-21T23:38:27.8101940Z [command]/opt/homebrew/bin/git remote add origin https://github.com/davidpovarsky/hanlin-ai
+2026-11-21T23:38:27.8407000Z ##[endgroup]
+2026-11-21T23:38:27.8508460Z ##[group]Disabling automatic garbage collection
+2026-11-21T23:38:27.8610050Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+2026-11-21T23:38:27.8915310Z ##[endgroup]
+2026-11-21T23:38:27.8935810Z ##[group]Setting up auth
+2026-11-21T23:38:27.9036880Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-21T23:38:27.9345070Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-21T23:38:27.9650750Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-21T23:38:27.9992940Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-21T23:38:28.0300570Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-21T23:38:28.0609900Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-21T23:38:28.0924260Z [command]/opt/homebrew/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-21T23:38:28.1234880Z ##[endgroup]
+2026-11-21T23:38:28.1353270Z ##[group]Fetching the repository
+2026-11-21T23:38:28.1456610Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 116cc6be0654a5d11bc56ba00e0310031107ee36
+2026-11-21T23:38:30.6553030Z From https://github.com/davidpovarsky/hanlin-ai
+2026-11-21T23:38:30.6653360Z  * branch            116cc6be0654a5d11bc56ba00e0310031107ee36 -> FETCH_HEAD
+2026-11-21T23:38:30.6778640Z ##[endgroup]
+2026-11-21T23:38:30.6811270Z ##[group]Determining the checkout info
+2026-11-21T23:38:30.6861620Z ##[endgroup]
+2026-11-21T23:38:30.6863810Z [command]/opt/homebrew/bin/git sparse-checkout disable
+2026-11-21T23:38:30.6865170Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-21T23:38:30.6958350Z ##[group]Checking out the ref
+2026-11-21T23:38:30.6964750Z [command]/opt/homebrew/bin/git checkout --progress --force 116cc6be0654a5d11bc56ba00e0310031107ee36
+2026-11-21T23:38:31.7343270Z Updating files:  55% (2839/5101)
+2026-11-21T23:38:31.7433850Z Updating files:  56% (2857/5101)
+2026-11-21T23:38:31.7760820Z Updating files:  57% (2908/5101)
+2026-11-21T23:38:31.7902470Z Updating files:  58% (2959/5101)
+2026-11-21T23:38:31.8334610Z Updating files:  59% (3010/5101)
+2026-11-21T23:38:31.8442590Z Updating files:  60% (3061/5101)
+2026-11-21T23:38:31.8596160Z Updating files:  61% (3112/5101)
+2026-11-21T23:38:31.8745150Z Updating files:  62% (3163/5101)
+2026-11-21T23:38:31.8827780Z Updating files:  63% (3214/5101)
+2026-11-21T23:38:31.8954240Z Updating files:  64% (3265/5101)
+2026-11-21T23:38:31.9036830Z Updating files:  65% (3316/5101)
+2026-11-21T23:38:31.9155350Z Updating files:  66% (3367/5101)
+2026-11-21T23:38:31.9259430Z Updating files:  67% (3418/5101)
+2026-11-21T23:38:31.9421960Z Updating files:  68% (3469/5101)
+2026-11-21T23:38:31.9541050Z Updating files:  69% (3520/5101)
+2026-11-21T23:38:31.9653170Z Updating files:  70% (3571/5101)
+2026-11-21T23:38:31.9796990Z Updating files:  71% (3622/5101)
+2026-11-21T23:38:31.9953100Z Updating files:  72% (3673/5101)
+2026-11-21T23:38:32.0021120Z Updating files:  73% (3724/5101)
+2026-11-21T23:38:32.0115060Z Updating files:  74% (3775/5101)
+2026-11-21T23:38:32.0166730Z Updating files:  75% (3826/5101)
+2026-11-21T23:38:32.0290970Z Updating files:  76% (3877/5101)
+2026-11-21T23:38:32.0515490Z Updating files:  77% (3928/5101)
+2026-11-21T23:38:32.0618250Z Updating files:  78% (3979/5101)
+2026-11-21T23:38:32.0723340Z Updating files:  79% (4030/5101)
+2026-11-21T23:38:32.0822270Z Updating files:  80% (4081/5101)
+2026-11-21T23:38:32.1017870Z Updating files:  81% (4132/5101)
+2026-11-21T23:38:32.1221350Z Updating files:  82% (4183/5101)
+2026-11-21T23:38:32.1852040Z Updating files:  83% (4234/5101)
+2026-11-21T23:38:32.2011900Z Updating files:  84% (4285/5101)
+2026-11-21T23:38:32.2179590Z Updating files:  85% (4336/5101)
+2026-11-21T23:38:32.2290960Z Updating files:  86% (4387/5101)
+2026-11-21T23:38:32.2400550Z Updating files:  87% (4438/5101)
+2026-11-21T23:38:32.2493020Z Updating files:  88% (4489/5101)
+2026-11-21T23:38:32.2659040Z Updating files:  89% (4540/5101)
+2026-11-21T23:38:32.2796510Z Updating files:  90% (4591/5101)
+2026-11-21T23:38:32.2904810Z Updating files:  91% (4642/5101)
+2026-11-21T23:38:32.3204880Z Updating files:  92% (4693/5101)
+2026-11-21T23:38:32.3493000Z Updating files:  93% (4744/5101)
+2026-11-21T23:38:32.3771350Z Updating files:  94% (4795/5101)
+2026-11-21T23:38:32.4203650Z Updating files:  95% (4846/5101)
+2026-11-21T23:38:32.4508610Z Updating files:  96% (4897/5101)
+2026-11-21T23:38:32.4668560Z Updating files:  97% (4948/5101)
+2026-11-21T23:38:32.4799860Z Updating files:  98% (4999/5101)
+2026-11-21T23:38:32.5032680Z Updating files:  99% (5050/5101)
+2026-11-21T23:38:32.5134310Z Updating files: 100% (5101/5101)
+2026-11-21T23:38:32.5226080Z Updating files: 100% (5101/5101), done.
+2026-11-21T23:38:32.5228240Z HEAD is now at 116cc6b Expose bundled OpenUI resource location to public renderer configuration
+2026-11-21T23:38:32.5358540Z ##[endgroup]
+2026-11-21T23:38:32.5526610Z [command]/opt/homebrew/bin/git log -1 --format=%H
+2026-11-21T23:38:32.5581490Z 116cc6be0654a5d11bc56ba00e0310031107ee36
+2026-11-21T23:38:32.5601060Z ##[group]Removing auth
+2026-11-21T23:38:32.5605980Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-21T23:38:32.5771080Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-21T23:38:32.7670360Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-21T23:38:32.7809720Z http.https://github.com/.extraheader
+2026-11-21T23:38:32.7839660Z [command]/opt/homebrew/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-21T23:38:32.8037630Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-21T23:38:32.9799480Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-21T23:38:32.9889850Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-21T23:38:33.1338690Z ##[endgroup]
+2026-11-21T23:38:33.1573870Z ##[group]Run python3 Tools/Hanlin/prepare_sdk.py --source build/t5-corrected-hanlin-source
+2026-11-21T23:38:33.1575890Z [36;1mpython3 Tools/Hanlin/prepare_sdk.py --source build/t5-corrected-hanlin-source[0m
+2026-11-21T23:38:33.1576960Z [36;1mpython3 Tools/Hanlin/prepare_sdk.py --check[0m
+2026-11-21T23:38:33.1753600Z shell: /bin/bash -e {0}
+2026-11-21T23:38:33.1753820Z env:
+2026-11-21T23:38:33.1754160Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-21T23:38:33.1754550Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-21T23:38:33.1754910Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:38:33.1755340Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-21T23:38:33.1755750Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:38:33.1756240Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:38:33.1757010Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:38:33.1757470Z ##[endgroup]
+2026-11-21T23:38:34.1987650Z Verified Hanlin 116cc6be0654a5d11bc56ba00e0310031107ee36 at /Users/runner/work/anytype-swift/anytype-swift/Dependencies/Hanlin
+2026-11-21T23:38:34.3518270Z Verified Hanlin 116cc6be0654a5d11bc56ba00e0310031107ee36 at /Users/runner/work/anytype-swift/anytype-swift/Dependencies/Hanlin
+2026-11-21T23:38:34.3629890Z ##[group]Run python3 -B Tools/PinkhaSimulatorGate/test_t5_corrected_ui.py -v
+2026-11-21T23:38:34.3630640Z [36;1mpython3 -B Tools/PinkhaSimulatorGate/test_t5_corrected_ui.py -v[0m
+2026-11-21T23:38:34.3631250Z [36;1mpython3 -B Tools/PinkhaSimulatorGate/test_t5_host_actions.py -v[0m
+2026-11-21T23:38:34.3632700Z [36;1mpython3 -B Tools/PinkhaSimulatorGate/test_t5_native_ui.py NativeUIEvidenceControls.test_requires_fresh_account_source_and_real_runtime NativeUIEvidenceControls.test_rejects_duplicate_wrong_block_and_incomplete_negative_fixtures NativeUIEvidenceControls.test_cancellation_during_cleanup_or_publication_is_recorded_and_propagated -v[0m
+2026-11-21T23:38:34.3677700Z shell: /bin/bash -e {0}
+2026-11-21T23:38:34.3677990Z env:
+2026-11-21T23:38:34.3678380Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-21T23:38:34.3678810Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-21T23:38:34.3679190Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:38:34.3679910Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-21T23:38:34.3680360Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:38:34.3680900Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:38:34.3681430Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:38:34.3681920Z ##[endgroup]
+2026-11-21T23:38:34.8190940Z test_corrected_route_refuses_old_runtime_flags_source_and_missing_proof (__main__.CorrectedUIControls.test_corrected_route_refuses_old_runtime_flags_source_and_missing_proof) ... ok
+2026-11-21T23:38:34.8293190Z test_corrected_route_uses_shared_journey_without_a_fabricated_pair (__main__.CorrectedUIControls.test_corrected_route_uses_shared_journey_without_a_fabricated_pair) ... ok
+2026-11-21T23:38:34.8317310Z test_standalone_fixture_preserves_exact_schema_bounds_and_real_identities (__main__.CorrectedUIControls.test_standalone_fixture_preserves_exact_schema_bounds_and_real_identities) ... ok
+2026-11-21T23:38:34.8329480Z 
+2026-11-21T23:38:34.8340260Z ----------------------------------------------------------------------
+2026-11-21T23:38:34.8343980Z Ran 3 tests in 0.001s
+2026-11-21T23:38:34.8348310Z 
+2026-11-21T23:38:34.8369610Z OK
+2026-11-21T23:38:34.9761090Z test_actual_tracked_source_has_exact_pending_inventory (__main__.T5HostActionControls.test_actual_tracked_source_has_exact_pending_inventory) ... ok
+2026-11-21T23:38:34.9863250Z test_aggregate_cannot_hide_missing_duplicate_or_failed_argument (__main__.T5HostActionControls.test_aggregate_cannot_hide_missing_duplicate_or_failed_argument) ... ok
+2026-11-21T23:38:35.0064750Z test_enumeration_requires_exact_pending_suite_before_execution (__main__.T5HostActionControls.test_enumeration_requires_exact_pending_suite_before_execution) ... ok
+2026-11-21T23:38:35.0168790Z test_named_results_accept_both_summary_forms_but_require_actual_argument_nodes (__main__.T5HostActionControls.test_named_results_accept_both_summary_forms_but_require_actual_argument_nodes) ... ok
+2026-11-21T23:38:35.0268730Z test_results_reject_extra_missing_skipped_or_foreign_destination (__main__.T5HostActionControls.test_results_reject_extra_missing_skipped_or_foreign_destination) ... ok
+2026-11-21T23:38:35.0372950Z test_source_rejects_new_missing_or_changed_argument_cases (__main__.T5HostActionControls.test_source_rejects_new_missing_or_changed_argument_cases) ... ok
+2026-11-21T23:38:35.0472070Z 
+2026-11-21T23:38:35.0573120Z ----------------------------------------------------------------------
+2026-11-21T23:38:35.0674660Z Ran 6 tests in 0.068s
+2026-11-21T23:38:35.0775760Z 
+2026-11-21T23:38:35.0877130Z OK
+2026-11-21T23:38:35.1689070Z test_requires_fresh_account_source_and_real_runtime (__main__.NativeUIEvidenceControls.test_requires_fresh_account_source_and_real_runtime) ... ok
+2026-11-21T23:38:35.1776470Z test_rejects_duplicate_wrong_block_and_incomplete_negative_fixtures (__main__.NativeUIEvidenceControls.test_rejects_duplicate_wrong_block_and_incomplete_negative_fixtures) ... ok
+2026-11-21T23:38:35.1935520Z test_cancellation_during_cleanup_or_publication_is_recorded_and_propagated (__main__.NativeUIEvidenceControls.test_cancellation_during_cleanup_or_publication_is_recorded_and_propagated) ... ok
+2026-11-21T23:38:35.1936220Z 
+2026-11-21T23:38:35.1936400Z ----------------------------------------------------------------------
+2026-11-21T23:38:35.1936720Z Ran 3 tests in 0.028s
+2026-11-21T23:38:35.1936870Z 
+2026-11-21T23:38:35.1936940Z OK
+2026-11-21T23:38:35.2272540Z ##[group]Run python3 Tools/PinkhaSimulatorGate/preflight.py --evidence build/t5-corrected-ui-proof/preflight
+2026-11-21T23:38:35.2273330Z [36;1mpython3 Tools/PinkhaSimulatorGate/preflight.py --evidence build/t5-corrected-ui-proof/preflight[0m
+2026-11-21T23:38:35.2312840Z shell: /bin/bash -e {0}
+2026-11-21T23:38:35.2313060Z env:
+2026-11-21T23:38:35.2313310Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-21T23:38:35.2313650Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-21T23:38:35.2314020Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:38:35.2314460Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-21T23:38:35.2314900Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:38:35.2315270Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:38:35.2315650Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:38:35.2316290Z ##[endgroup]
+2026-11-21T23:38:52.7715720Z {"status": "PREFLIGHT_PASS_UI_NOT_RUN", "phase": "PREFLIGHT", "ui_tests_executed": 0, "started_at": "2026-11-21T23:38:35.327350+00:00", "run_id": "44960856322", "run_attempt": "1", "source_sha": "87a543d81b51ca16d624d2f21f9ce50d70c0ab5b", "xcode": "Xcode 27.0\nBuild version 27A266a", "host_architecture": "arm64", "selected": {"iphone": {"udid": "891ACAA6-86F6-49EB-8F6F-A2C8A5317D1B", "device": {"productFamily": "iPhone", "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 18 Pro.simdevicetype", "maxRuntimeVersion": 4294967295, "maxRuntimeVersionString": "65535.255.255", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro", "modelIdentifier": "iPhone19,2", "minRuntimeVersionString": "27.0.0", "minRuntimeVersion": 1769472, "name": "iPhone 18 Pro"}, "runtime": {"isAvailable": true, "version": "27.0", "isInternal": false, "buildversion": "24A434", "supportedArchitectures": ["arm64"], "supportedDeviceTypes": [{"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 18 Pro.simdevicetype", "name": "iPhone 18 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 18 Pro Max.simdevicetype", "name": "iPhone 18 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17 Pro.simdevicetype", "name": "iPhone 17 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17 Pro Max.simdevicetype", "name": "iPhone 17 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17e.simdevicetype", "name": "iPhone 17e", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17e"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone Air.simdevicetype", "name": "iPhone Air", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-Air"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17.simdevicetype", "name": "iPhone 17", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Pro.simdevicetype", "name": "iPhone 16 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Pro Max.simdevicetype", "name": "iPhone 16 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16e.simdevicetype", "name": "iPhone 16e", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16e"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16.simdevicetype", "name": "iPhone 16", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Plus.simdevicetype", "name": "iPhone 16 Plus", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Plus"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Pro.simdevicetype", "name": "iPhone 15 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Pro Max.simdevicetype", "name": "iPhone 15 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15.simdevicetype", "name": "iPhone 15", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Plus.simdevicetype", "name": "iPhone 15 Plus", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Plus"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Pro.simdevicetype", "name": "iPhone 14 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Pro Max.simdevicetype", "name": "iPhone 14 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14.simdevicetype", "name": "iPhone 14", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Plus.simdevicetype", "name": "iPhone 14 Plus", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Plus"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone SE (3rd generation).simdevicetype", "name": "iPhone SE (3rd generation)", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 Pro.simdevicetype", "name": "iPhone 13 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 Pro Max.simdevicetype", "name": "iPhone 13 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13.simdevicetype", "name": "iPhone 13", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 mini.simdevicetype", "name": "iPhone 13 mini", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-mini"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 Pro.simdevicetype", "name": "iPhone 12 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 Pro Max.simdevicetype", "name": "iPhone 12 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12.simdevicetype", "name": "iPhone 12", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 mini.simdevicetype", "name": "iPhone 12 mini", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-mini"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone SE (2nd generation).simdevicetype", "name": "iPhone SE (2nd generation)", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-SE--2nd-generation-"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11 Pro.simdevicetype", "name": "iPhone 11 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11 Pro Max.simdevicetype", "name": "iPhone 11 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11.simdevicetype", "name": "iPhone 11", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M5) (16GB).simdevicetype", "name": "iPad Pro 13-inch (M5) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M5).simdevicetype", "name": "iPad Pro 13-inch (M5)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M5) (16GB).simdevicetype", "name": "iPad Pro 11-inch (M5) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M5-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M5).simdevicetype", "name": "iPad Pro 11-inch (M5)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M5-12GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M4) (16GB).simdevicetype", "name": "iPad Pro 11-inch (M4) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M4-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M4).simdevicetype", "name": "iPad Pro 11-inch (M4)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M4-8GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M4) (16GB).simdevicetype", "name": "iPad Pro 13-inch (M4) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M4-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M4).simdevicetype", "name": "iPad Pro 13-inch (M4)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M4-8GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M4).simdevicetype", "name": "iPad Air 13-inch (M4)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M4"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M4).simdevicetype", "name": "iPad Air 11-inch (M4)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M4"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (A16).simdevicetype", "name": "iPad (A16)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-A16"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M3).simdevicetype", "name": "iPad Air 13-inch (M3)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M3"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M3).simdevicetype", "name": "iPad Air 11-inch (M3)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M3"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M2).simdevicetype", "name": "iPad Air 11-inch (M2)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M2"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M2).simdevicetype", "name": "iPad Air 13-inch (M2)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M2"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad mini (A17 Pro).simdevicetype", "name": "iPad mini (A17 Pro)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-A17-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (4th generation) (16GB).simdevicetype", "name": "iPad Pro (11-inch) (4th generation) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-4th-generation-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (4th generation).simdevicetype", "name": "iPad Pro (11-inch) (4th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-4th-generation-8GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (6th generation) (16GB).simdevicetype", "name": "iPad Pro (12.9-inch) (6th generation) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-6th-generation-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (6th generation).simdevicetype", "name": "iPad Pro (12.9-inch) (6th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-6th-generation-8GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (10th generation).simdevicetype", "name": "iPad (10th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-10th-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air (5th generation).simdevicetype", "name": "iPad Air (5th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-5th-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad mini (6th generation).simdevicetype", "name": "iPad mini (6th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-6th-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (3rd generation).simdevicetype", "name": "iPad Pro (11-inch) (3rd generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-3rd-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (5th generation).simdevicetype", "name": "iPad Pro (12.9-inch) (5th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-5th-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (9th generation).simdevicetype", "name": "iPad (9th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-9th-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air (4th generation).simdevicetype", "name": "iPad Air (4th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air--4th-generation-"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (2nd generation).simdevicetype", "name": "iPad Pro (11-inch) (2nd generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro--11-inch---2nd-generation-"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (4th generation).simdevicetype", "name": "iPad Pro (12.9-inch) (4th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro--12-9-inch---4th-generation-"}], "identifier": "com.apple.CoreSimulator.SimRuntime.iOS-27-0", "platform": "iOS", "bundlePath": "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.VhqNH5/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime", "runtimeRoot": "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.VhqNH5/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot", "lastUsage": {"arm64": "0001-01-01T00:00:00Z"}, "name": "iOS 27.0"}, "name": "Pinkha-UI27-44960856322-iphone"}, "ipad": {"udid": "DE077769-6526-4261-AB29-39472C693355", "device": {"productFamily": "iPad", "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M5) (16GB).simdevicetype", "maxRuntimeVersion": 4294967295, "maxRuntimeVersionString": "65535.255.255", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB", "modelIdentifier": "iPad17,4", "minRuntimeVersionString": "26.0.0", "minRuntimeVersion": 1703936, "name": "iPad Pro 13-inch (M5) (16GB)"}, "runtime": {"isAvailable": true, "version": "27.0", "isInternal": false, "buildversion": "24A434", "supportedArchitectures": ["arm64"], "supportedDeviceTypes": [{"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 18 Pro.simdevicetype", "name": "iPhone 18 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 18 Pro Max.simdevicetype", "name": "iPhone 18 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17 Pro.simdevicetype", "name": "iPhone 17 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17 Pro Max.simdevicetype", "name": "iPhone 17 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17e.simdevicetype", "name": "iPhone 17e", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17e"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone Air.simdevicetype", "name": "iPhone Air", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-Air"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17.simdevicetype", "name": "iPhone 17", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Pro.simdevicetype", "name": "iPhone 16 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Pro Max.simdevicetype", "name": "iPhone 16 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16e.simdevicetype", "name": "iPhone 16e", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16e"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16.simdevicetype", "name": "iPhone 16", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Plus.simdevicetype", "name": "iPhone 16 Plus", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Plus"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Pro.simdevicetype", "name": "iPhone 15 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Pro Max.simdevicetype", "name": "iPhone 15 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15.simdevicetype", "name": "iPhone 15", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Plus.simdevicetype", "name": "iPhone 15 Plus", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Plus"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Pro.simdevicetype", "name": "iPhone 14 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Pro Max.simdevicetype", "name": "iPhone 14 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14.simdevicetype", "name": "iPhone 14", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Plus.simdevicetype", "name": "iPhone 14 Plus", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Plus"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone SE (3rd generation).simdevicetype", "name": "iPhone SE (3rd generation)", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 Pro.simdevicetype", "name": "iPhone 13 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 Pro Max.simdevicetype", "name": "iPhone 13 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13.simdevicetype", "name": "iPhone 13", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 mini.simdevicetype", "name": "iPhone 13 mini", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-mini"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 Pro.simdevicetype", "name": "iPhone 12 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 Pro Max.simdevicetype", "name": "iPhone 12 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12.simdevicetype", "name": "iPhone 12", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 mini.simdevicetype", "name": "iPhone 12 mini", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-mini"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone SE (2nd generation).simdevicetype", "name": "iPhone SE (2nd generation)", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-SE--2nd-generation-"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11 Pro.simdevicetype", "name": "iPhone 11 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11 Pro Max.simdevicetype", "name": "iPhone 11 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11.simdevicetype", "name": "iPhone 11", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M5) (16GB).simdevicetype", "name": "iPad Pro 13-inch (M5) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M5).simdevicetype", "name": "iPad Pro 13-inch (M5)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M5) (16GB).simdevicetype", "name": "iPad Pro 11-inch (M5) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M5-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M5).simdevicetype", "name": "iPad Pro 11-inch (M5)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M5-12GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M4) (16GB).simdevicetype", "name": "iPad Pro 11-inch (M4) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M4-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M4).simdevicetype", "name": "iPad Pro 11-inch (M4)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M4-8GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M4) (16GB).simdevicetype", "name": "iPad Pro 13-inch (M4) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M4-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M4).simdevicetype", "name": "iPad Pro 13-inch (M4)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M4-8GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M4).simdevicetype", "name": "iPad Air 13-inch (M4)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M4"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M4).simdevicetype", "name": "iPad Air 11-inch (M4)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M4"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (A16).simdevicetype", "name": "iPad (A16)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-A16"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M3).simdevicetype", "name": "iPad Air 13-inch (M3)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M3"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M3).simdevicetype", "name": "iPad Air 11-inch (M3)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M3"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M2).simdevicetype", "name": "iPad Air 11-inch (M2)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M2"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M2).simdevicetype", "name": "iPad Air 13-inch (M2)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M2"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad mini (A17 Pro).simdevicetype", "name": "iPad mini (A17 Pro)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-A17-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (4th generation) (16GB).simdevicetype", "name": "iPad Pro (11-inch) (4th generation) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-4th-generation-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (4th generation).simdevicetype", "name": "iPad Pro (11-inch) (4th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-4th-generation-8GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (6th generation) (16GB).simdevicetype", "name": "iPad Pro (12.9-inch) (6th generation) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-6th-generation-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (6th generation).simdevicetype", "name": "iPad Pro (12.9-inch) (6th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-6th-generation-8GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (10th generation).simdevicetype", "name": "iPad (10th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-10th-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air (5th generation).simdevicetype", "name": "iPad Air (5th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-5th-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad mini (6th generation).simdevicetype", "name": "iPad mini (6th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-6th-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (3rd generation).simdevicetype", "name": "iPad Pro (11-inch) (3rd generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-3rd-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (5th generation).simdevicetype", "name": "iPad Pro (12.9-inch) (5th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-5th-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (9th generation).simdevicetype", "name": "iPad (9th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-9th-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air (4th generation).simdevicetype", "name": "iPad Air (4th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air--4th-generation-"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (2nd generation).simdevicetype", "name": "iPad Pro (11-inch) (2nd generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro--11-inch---2nd-generation-"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (4th generation).simdevicetype", "name": "iPad Pro (12.9-inch) (4th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro--12-9-inch---4th-generation-"}], "identifier": "com.apple.CoreSimulator.SimRuntime.iOS-27-0", "platform": "iOS", "bundlePath": "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.VhqNH5/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime", "runtimeRoot": "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.VhqNH5/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot", "lastUsage": {"arm64": "0001-01-01T00:00:00Z"}, "name": "iOS 27.0"}, "name": "Pinkha-UI27-44960856322-ipad"}}, "python": "3.12.10 (v3.12.10:0cc81280367, Apr  8 2025, 08:46:59) [Clang 13.0.0 (clang-1300.0.29.30)]", "developer_dir": "/Applications/Xcode_27.app/Contents/Developer", "swift": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0", "sdks": "DriverKit SDKs:\n\tDriverKit 27.0                \t-sdk driverkit27.0\n\niOS SDKs:\n\tiOS 27.0                      \t-sdk iphoneos27.0\n\niOS Simulator SDKs:\n\tSimulator - iOS 27.0          \t-sdk iphonesimulator27.0\n\nmacOS SDKs:\n\tmacOS 27.0                    \t-sdk macosx27.0\n\tmacOS 27.0                    \t-sdk macosx27.0\n\ntvOS SDKs:\n\ttvOS 27.0                     \t-sdk appletvos27.0\n\ntvOS Simulator SDKs:\n\tSimulator - tvOS 27.0         \t-sdk appletvsimulator27.0\n\nvisionOS SDKs:\n\tvisionOS 27.0                 \t-sdk xros27.0\n\nvisionOS Simulator SDKs:\n\tSimulator - visionOS 27.0     \t-sdk xrsimulator27.0\n\nwatchOS SDKs:\n\twatchOS 27.0                  \t-sdk watchos27.0\n\nwatchOS Simulator SDKs:\n\tSimulator - watchOS 27.0      \t-sdk watchsimulator27.0", "finished_at": "2026-11-21T23:38:52.748716+00:00"}
+2026-11-21T23:38:52.7914130Z swift-driver version: 1.168.6 
+2026-11-21T23:38:52.8117040Z ##[group]Run python3 -B Tools/PinkhaNativeDerived/download_heart_runtime.py \
+2026-11-21T23:38:52.8117860Z [36;1mpython3 -B Tools/PinkhaNativeDerived/download_heart_runtime.py \[0m
+2026-11-21T23:38:52.8118530Z [36;1m  --runtime-profile r15-attachment-v1 --source-run-id "$HEART_SOURCE_RUN_ID" \[0m
+2026-11-21T23:38:52.8119100Z [36;1m  --app-source "$GITHUB_WORKSPACE" --expected-app-branch "$GITHUB_REF_NAME" \[0m
+2026-11-21T23:38:52.8119720Z [36;1m  --work "build/t5-corrected-heart-44960856322-1" \[0m
+2026-11-21T23:38:52.8120110Z [36;1m  --evidence build/t5-corrected-ui-proof/heart[0m
+2026-11-21T23:38:52.8510700Z shell: /bin/bash -e {0}
+2026-11-21T23:38:52.8511710Z env:
+2026-11-21T23:38:52.8512120Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-21T23:38:52.8512770Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-21T23:38:52.8513190Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:38:52.8513930Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-21T23:38:52.8514450Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:38:52.8515110Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:38:52.8515590Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:38:52.8516310Z   PINKHA_UI27_IPHONE_UDID: 891ACAA6-86F6-49EB-8F6F-A2C8A5317D1B
+2026-11-21T23:38:52.8516810Z   PINKHA_UI27_IPAD_UDID: DE077769-6526-4261-AB29-39472C693355
+2026-11-21T23:38:52.8519800Z   GH_TOKEN: ***
+2026-11-21T23:38:52.8520300Z   HEART_SOURCE_RUN_ID: 44943967103
+2026-11-21T23:38:52.8520610Z ##[endgroup]
+2026-11-21T23:39:27.6162820Z {"status": "PASS", "source_run_id": "44943967103", "archive_sha256": "979d0de5c191ea3efb4acac42545a5cc3fc0201617f3f1e22a4fc99e8915c98a", "patch_sha256": "595f8142f00035da2fff4925c8fe125fa7cf36de9ae124b528a9d2130b2a9bf6", "app_source_sha": "87a543d81b51ca16d624d2f21f9ce50d70c0ab5b", "original_build_app_sha": null, "marker": "pinkha-native-derived-v1-595f8142f00035da2fff4925c8fe125fa7cf36de9ae124b528a9d2130b2a9bf6", "runtime_profile": "r15-attachment-v1", "native_marker": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-595f8142f00035da2fff4925c8fe125fa7cf36de9ae124b528a9d2130b2a9bf6-pinkha-native-t5-lookup-v1-595f8142f00035da2fff4925c8fe125fa7cf36de9ae124b528a9d2130b2a9bf6-pinkha-torah-attachment-v1-595f8142f00035da2fff4925c8fe125fa7cf36de9ae124b528a9d2130b2a9bf6", "expected_app_get_version": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-595f8142f00035da2fff4925c8fe125fa7cf36de9ae124b528a9d2130b2a9bf6-pinkha-native-t5-lookup-v1-595f8142f00035da2fff4925c8fe125fa7cf36de9ae124b528a9d2130b2a9bf6-pinkha-torah-attachment-v1-595f8142f00035da2fff4925c8fe125fa7cf36de9ae124b528a9d2130b2a9bf6", "producer": {"run_id": "44943967103", "run_attempt": "1", "source_sha": "4ee2d7fd9f8acd74f51cbb2236d08f55a93af08b", "source_branch": "codex/chatgpt-wave15-shared-20261121", "repository": "davidpovarsky/anytype-swift", "workflow_path": ".github/workflows/torah-inspector-ipados27.yml"}, "inventory_sha256": "a9c381a46a0003c34695f22232b57716096ec51b100bb8dae2a18b47148274d8", "heart_build_receipt_sha256": "54ff0f28d82421689f5f5400b7df699e61ca80334eec7e01ac1cd2117b1ec1b5", "heart_artifact_id": 14722543676, "heart_artifact_sha256": "42fb82875edd0025e8731bb2d6323ebce71621d302b11b0e018f845b5881b915", "heart_proof_artifact_id": 14722434042, "heart_proof_artifact_sha256": "5d70073c5f593e3dc9c80df05bc6548106ce086a3b41ec7372b47859e9eb0996", "original_fixture_log_sha256": "06f62a99b7641493ff7826738e7997df4af7e4c6953ff55f8c1f3ee6e59483a2"}
+2026-11-21T23:39:28.3267690Z ##[group]Run actions/cache/restore@v4
+2026-11-21T23:39:28.3268140Z with:
+2026-11-21T23:39:28.3268430Z   path: build/ui27-derived
+2026-11-21T23:39:28.3269260Z   key: pinkha-t5-corrected-arm64-xcode27-Release-Anytype-eac7ea32a9215f2a28e258290c50bc1064896f03dbcfd99a4bcc34e44cc7f28a-87a543d81b51ca16d624d2f21f9ce50d70c0ab5b
+2026-11-21T23:39:28.3270840Z   restore-keys: pinkha-t5-corrected-arm64-xcode27-Release-Anytype-eac7ea32a9215f2a28e258290c50bc1064896f03dbcfd99a4bcc34e44cc7f28a-
+pinkha-t5-apple-pair-arm64-xcode27-Release-Anytype-
+pinkha-ui27-arm64-xcode27.0-Release-Anytype-
+
+2026-11-21T23:39:28.3271930Z   enableCrossOsArchive: false
+2026-11-21T23:39:28.3272220Z   fail-on-cache-miss: false
+2026-11-21T23:39:28.3272600Z   lookup-only: false
+2026-11-21T23:39:28.3272880Z env:
+2026-11-21T23:39:28.3273260Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-21T23:39:28.3273700Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-21T23:39:28.3274290Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:39:28.3274930Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-21T23:39:28.3275500Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:39:28.3276040Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:39:28.3276610Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:39:28.3277130Z   PINKHA_UI27_IPHONE_UDID: 891ACAA6-86F6-49EB-8F6F-A2C8A5317D1B
+2026-11-21T23:39:28.3277730Z   PINKHA_UI27_IPAD_UDID: DE077769-6526-4261-AB29-39472C693355
+2026-11-21T23:39:28.3278060Z ##[endgroup]
+2026-11-21T23:39:28.5318390Z (node:11544) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-21T23:39:28.5322220Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-21T23:39:28.9213560Z Cache hit for restore-key: pinkha-ui27-arm64-xcode27.0-Release-Anytype-eac7ea32a9215f2a28e258290c50bc1064896f03dbcfd99a4bcc34e44cc7f28a-abc1aebfcdebbe801aab928e9576f39ef3c7f0ac
+2026-11-21T23:39:28.9399060Z (node:11544) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-11-21T23:39:30.2648720Z Received 0 of 3205339877 (0.0%), 0.0 MBs/sec
+2026-11-21T23:39:31.2670390Z Received 46137344 of 3205339877 (1.4%), 22.0 MBs/sec
+2026-11-21T23:39:32.3180370Z Received 134217728 of 3205339877 (4.2%), 41.9 MBs/sec
+2026-11-21T23:39:33.3234260Z Received 188743680 of 3205339877 (5.9%), 44.4 MBs/sec
+2026-11-21T23:39:34.3601760Z Received 268435456 of 3205339877 (8.4%), 50.2 MBs/sec
+2026-11-21T23:39:35.3665580Z Received 331350016 of 3205339877 (10.3%), 51.8 MBs/sec
+2026-11-21T23:39:36.5078430Z Received 402653184 of 3205339877 (12.6%), 53.1 MBs/sec
+2026-11-21T23:39:37.5007670Z Received 461373440 of 3205339877 (14.4%), 53.4 MBs/sec
+2026-11-21T23:39:38.6025190Z Received 536870912 of 3205339877 (16.7%), 54.8 MBs/sec
+2026-11-21T23:39:39.6042090Z Received 587202560 of 3205339877 (18.3%), 54.2 MBs/sec
+2026-11-21T23:39:40.6086250Z Received 654311424 of 3205339877 (20.4%), 55.0 MBs/sec
+2026-11-21T23:39:41.6072590Z Received 692060160 of 3205339877 (21.6%), 53.5 MBs/sec
+2026-11-21T23:39:42.6127750Z Received 750780416 of 3205339877 (23.4%), 53.7 MBs/sec
+2026-11-21T23:39:43.6096650Z Received 801112064 of 3205339877 (25.0%), 53.3 MBs/sec
+2026-11-21T23:39:44.6146050Z Received 838860800 of 3205339877 (26.2%), 52.1 MBs/sec
+2026-11-21T23:39:45.6176340Z Received 914358272 of 3205339877 (28.5%), 53.3 MBs/sec
+2026-11-21T23:39:46.6202500Z Received 939524096 of 3205339877 (29.3%), 51.6 MBs/sec
+2026-11-21T23:39:47.6218970Z Received 1010827264 of 3205339877 (31.5%), 52.5 MBs/sec
+2026-11-21T23:39:48.6255880Z Received 1069547520 of 3205339877 (33.4%), 52.7 MBs/sec
+2026-11-21T23:39:49.6478130Z Received 1107296256 of 3205339877 (34.5%), 51.8 MBs/sec
+2026-11-21T23:39:50.6396300Z Received 1178599424 of 3205339877 (36.8%), 52.6 MBs/sec
+2026-11-21T23:39:51.6703700Z Received 1207959552 of 3205339877 (37.7%), 51.5 MBs/sec
+2026-11-21T23:39:52.6661840Z Received 1266679808 of 3205339877 (39.5%), 51.6 MBs/sec
+2026-11-21T23:39:53.6708630Z Received 1325400064 of 3205339877 (41.3%), 51.8 MBs/sec
+2026-11-21T23:39:54.6641810Z Received 1342177280 of 3205339877 (41.9%), 50.4 MBs/sec
+2026-11-21T23:39:55.6713350Z Received 1388314624 of 3205339877 (43.3%), 50.1 MBs/sec
+2026-11-21T23:39:56.6901900Z Received 1447034880 of 3205339877 (45.1%), 50.3 MBs/sec
+2026-11-21T23:39:57.6862950Z Received 1476395008 of 3205339877 (46.1%), 49.5 MBs/sec
+2026-11-21T23:39:58.6915420Z Received 1530920960 of 3205339877 (47.8%), 49.6 MBs/sec
+2026-11-21T23:39:59.6938110Z Received 1598029824 of 3205339877 (49.9%), 50.1 MBs/sec
+2026-11-21T23:40:00.6952690Z Received 1610612736 of 3205339877 (50.2%), 48.9 MBs/sec
+2026-11-21T23:40:01.6979890Z Received 1669332992 of 3205339877 (52.1%), 49.1 MBs/sec
+2026-11-21T23:40:02.7567170Z Received 1744830464 of 3205339877 (54.4%), 49.7 MBs/sec
+2026-11-21T23:40:03.7592280Z Received 1799356416 of 3205339877 (56.1%), 49.7 MBs/sec
+2026-11-21T23:40:04.7599870Z Received 1866465280 of 3205339877 (58.2%), 50.1 MBs/sec
+2026-11-21T23:40:05.7639800Z Received 1912602624 of 3205339877 (59.7%), 50.0 MBs/sec
+2026-11-21T23:40:06.7711170Z Received 1967128576 of 3205339877 (61.4%), 50.0 MBs/sec
+2026-11-21T23:40:07.7708300Z Received 2013265920 of 3205339877 (62.8%), 49.9 MBs/sec
+2026-11-21T23:40:08.8021270Z Received 2063597568 of 3205339877 (64.4%), 49.8 MBs/sec
+2026-11-21T23:40:09.8012230Z Received 2130706432 of 3205339877 (66.5%), 50.1 MBs/sec
+2026-11-21T23:40:10.8086110Z Received 2155872256 of 3205339877 (67.3%), 49.5 MBs/sec
+2026-11-21T23:40:11.8106730Z Received 2222981120 of 3205339877 (69.4%), 49.8 MBs/sec
+2026-11-21T23:40:12.8313010Z Received 2281701376 of 3205339877 (71.2%), 50.0 MBs/sec
+2026-11-21T23:40:13.8242650Z Received 2327838720 of 3205339877 (72.6%), 49.8 MBs/sec
+2026-11-21T23:40:14.8261160Z Received 2390753280 of 3205339877 (74.6%), 50.0 MBs/sec
+2026-11-21T23:40:15.8973350Z Received 2415919104 of 3205339877 (75.4%), 49.5 MBs/sec
+2026-11-21T23:40:16.8633800Z Received 2487222272 of 3205339877 (77.6%), 49.8 MBs/sec
+2026-11-21T23:40:18.0270660Z Received 2550136832 of 3205339877 (79.6%), 49.9 MBs/sec
+2026-11-21T23:40:19.0175430Z Received 2600468480 of 3205339877 (81.1%), 49.8 MBs/sec
+2026-11-21T23:40:20.0201290Z Received 2663383040 of 3205339877 (83.1%), 50.0 MBs/sec
+2026-11-21T23:40:21.0207790Z Received 2684354560 of 3205339877 (83.7%), 49.5 MBs/sec
+2026-11-21T23:40:22.0209080Z Received 2743074816 of 3205339877 (85.6%), 49.6 MBs/sec
+2026-11-21T23:40:23.0305100Z Received 2810183680 of 3205339877 (87.7%), 49.9 MBs/sec
+2026-11-21T23:40:24.0244880Z Received 2831155200 of 3205339877 (88.3%), 49.3 MBs/sec
+2026-11-21T23:40:25.0263480Z Received 2889875456 of 3205339877 (90.2%), 49.4 MBs/sec
+2026-11-21T23:40:26.0290220Z Received 2944401408 of 3205339877 (91.9%), 49.5 MBs/sec
+2026-11-21T23:40:27.0296600Z Received 2952790016 of 3205339877 (92.1%), 48.7 MBs/sec
+2026-11-21T23:40:28.0323990Z Received 3003121664 of 3205339877 (93.7%), 48.7 MBs/sec
+2026-11-21T23:40:29.0573910Z Received 3053453312 of 3205339877 (95.3%), 48.7 MBs/sec
+2026-11-21T23:40:30.0363750Z Received 3087007744 of 3205339877 (96.3%), 48.4 MBs/sec
+2026-11-21T23:40:31.0380830Z Received 3128950784 of 3205339877 (97.6%), 48.3 MBs/sec
+2026-11-21T23:40:32.0416610Z Received 3184368357 of 3205339877 (99.3%), 48.4 MBs/sec
+2026-11-21T23:40:32.3396530Z Received 3205339877 of 3205339877 (100.0%), 48.5 MBs/sec
+2026-11-21T23:40:32.3482550Z Cache Size: ~3057 MB (3205339877 B)
+2026-11-21T23:40:32.3786070Z [command]/opt/homebrew/bin/gtar -xf /Users/runner/work/_temp/7d410fd3-c667-4bf5-8bac-6d82245de0aa/cache.tzst -P -C /Users/runner/work/anytype-swift/anytype-swift --delay-directory-restore --use-compress-program unzstd
+2026-11-21T23:41:50.7682180Z Cache restored successfully
+2026-11-21T23:41:51.0213790Z Cache restored from key: pinkha-ui27-arm64-xcode27.0-Release-Anytype-eac7ea32a9215f2a28e258290c50bc1064896f03dbcfd99a4bcc34e44cc7f28a-abc1aebfcdebbe801aab928e9576f39ef3c7f0ac
+2026-11-21T23:41:51.0863190Z ##[group]Run xcodebuild -resolvePackageDependencies -project Anytype.xcodeproj -scheme Anytype -clonedSourcePackagesDirPath build/ui27-derived/SourcePackages -onlyUsePackageVersionsFromResolvedFile
+2026-11-21T23:41:51.0865530Z [36;1mxcodebuild -resolvePackageDependencies -project Anytype.xcodeproj -scheme Anytype -clonedSourcePackagesDirPath build/ui27-derived/SourcePackages -onlyUsePackageVersionsFromResolvedFile[0m
+2026-11-21T23:41:51.0867020Z [36;1mgit diff --exit-code -- Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved[0m
+2026-11-21T23:41:51.4088140Z shell: /bin/bash -e {0}
+2026-11-21T23:41:51.4088860Z env:
+2026-11-21T23:41:51.4089840Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-21T23:41:51.4090800Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-21T23:41:51.4091690Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:41:51.4093620Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-21T23:41:51.4094310Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:41:51.4094870Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:41:51.4096510Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:41:51.4098230Z   PINKHA_UI27_IPHONE_UDID: 891ACAA6-86F6-49EB-8F6F-A2C8A5317D1B
+2026-11-21T23:41:51.4099270Z   PINKHA_UI27_IPAD_UDID: DE077769-6526-4261-AB29-39472C693355
+2026-11-21T23:41:51.4100650Z ##[endgroup]
+2026-11-21T23:41:56.4347920Z Command line invocation:
+2026-11-21T23:41:56.4355070Z     /Applications/Xcode_27.app/Contents/Developer/usr/bin/xcodebuild -resolvePackageDependencies -project Anytype.xcodeproj -scheme Anytype -clonedSourcePackagesDirPath build/ui27-derived/SourcePackages -onlyUsePackageVersionsFromResolvedFile
+2026-11-21T23:41:56.4361010Z 
+2026-11-21T23:42:01.5080060Z Resolve Package Graph
+2026-11-21T23:43:03.2580800Z 
+2026-11-21T23:43:03.2794120Z 
+2026-11-21T23:43:03.2808150Z Resolved source packages:
+2026-11-21T23:43:03.2811210Z   QRCode: https://github.com/dagronf/QRCode @ 27.11.0
+2026-11-21T23:43:03.2812610Z   PinkhaAnyHost: /Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyHost
+2026-11-21T23:43:03.2813360Z   SwiftImageReadWrite: https://github.com/dagronf/SwiftImageReadWrite @ 1.9.2
+2026-11-21T23:43:03.2814790Z   ConfettiSwiftUI: https://github.com/simibac/ConfettiSwiftUI.git @ 1.1.0
+2026-11-21T23:43:03.2815520Z   Sentry: https://github.com/getsentry/sentry-cocoa @ 8.58.2
+2026-11-21T23:43:03.2816330Z   AsyncTools: /Users/runner/work/anytype-swift/anytype-swift/Modules/AsyncTools
+2026-11-21T23:43:03.2818880Z   ZIPFoundation: https://github.com/weichsel/ZIPFoundation @ 0.9.19
+2026-11-21T23:43:03.2819680Z   GoogleAppMeasurement: https://github.com/google/GoogleAppMeasurement.git @ 11.7.0
+2026-11-21T23:43:03.2822410Z   NotificationsCore: /Users/runner/work/anytype-swift/anytype-swift/Modules/NotificationsCore
+2026-11-21T23:43:03.2828130Z   Promises: https://github.com/google/promises.git @ 2.4.0
+2026-11-21T23:43:03.2830240Z   swift-collections: https://github.com/apple/swift-collections.git @ 1.1.4
+2026-11-21T23:43:03.3087990Z   Logger: /Users/runner/work/anytype-swift/anytype-swift/Modules/Logger
+2026-11-21T23:43:03.3089670Z   gRPC: https://github.com/google/grpc-binary.git @ 1.65.1
+2026-11-21T23:43:03.3091200Z   SwiftEntryKit: https://github.com/huri000/SwiftEntryKit @ 2.0.0
+2026-11-21T23:43:03.3093250Z   PinkhaKit: /Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaKit
+2026-11-21T23:43:03.3095480Z   swift-markdown: https://github.com/swiftlang/swift-markdown.git @ 25cb61d
+2026-11-21T23:43:03.3097320Z   swift-argument-parser: https://github.com/apple/swift-argument-parser @ 1.8.2
+2026-11-21T23:43:03.3099090Z   AppTarget: /Users/runner/work/anytype-swift/anytype-swift/Modules/AppTarget
+2026-11-21T23:43:03.3100370Z   Kingfisher: https://github.com/onevcat/Kingfisher @ 8.2.0
+2026-11-21T23:43:03.3109960Z   AmplitudeCore: https://github.com/amplitude/AmplitudeCore-Swift.git @ 1.1.0
+2026-11-21T23:43:03.3111490Z   PinkhaAnyIntegration: /Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyIntegration
+2026-11-21T23:43:03.3112310Z   InteropForGoogle: https://github.com/google/interop-ios-for-google-sdks.git @ 100.0.0
+2026-11-21T23:43:03.3114290Z   HanlinAgentSDK: /Users/runner/work/anytype-swift/anytype-swift/Dependencies/Hanlin/Packages/HanlinAgentSDK @ local
+2026-11-21T23:43:03.3115600Z   PinkhaTorahPresentation: /Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaTorahPresentation
+2026-11-21T23:43:03.3117470Z   PinkhaAnyUI: /Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyUI
+2026-11-21T23:43:03.3120010Z   GoogleUtilities: https://github.com/google/GoogleUtilities.git @ 8.0.2
+2026-11-21T23:43:03.3122700Z   ProtobufMessages: /Users/runner/work/anytype-swift/anytype-swift/Modules/ProtobufMessages
+2026-11-21T23:43:03.3123830Z   Loc: /Users/runner/work/anytype-swift/anytype-swift/Modules/Loc
+2026-11-21T23:43:03.3124750Z   AppCheck: https://github.com/google/app-check.git @ 11.2.0
+2026-11-21T23:43:03.3126760Z   StoredHashMacro: /Users/runner/work/anytype-swift/anytype-swift/Modules/StoredHashMacro
+2026-11-21T23:43:03.3129660Z   SecureService: /Users/runner/work/anytype-swift/anytype-swift/Modules/SecureService
+2026-11-21T23:43:03.3131580Z   SwiftAISDK: https://github.com/davidpovarsky/swift-ai-sdk.git @ e7bf341
+2026-11-21T23:43:03.3132930Z   PinkhaHeartNative: /Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaHeartNative
+2026-11-21T23:43:03.3133710Z   Firebase: https://github.com/firebase/firebase-ios-sdk @ 11.8.1
+2026-11-21T23:43:03.3135400Z   LayoutKit: /Users/runner/work/anytype-swift/anytype-swift/Modules/LayoutKit
+2026-11-21T23:43:03.3137060Z   PinkhaHeartEngine: /Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaHeartEngine
+2026-11-21T23:43:03.3138010Z   swift-qrcode-generator: https://github.com/dagronf/swift-qrcode-generator @ 2.0.2
+2026-11-21T23:43:03.3138680Z   BigInt: https://github.com/attaswift/BigInt.git @ 5.5.2
+2026-11-21T23:43:03.3139860Z   ShimmerSwift: https://github.com/BeauNouvelle/ShimmerSwift @ 2.2.0
+2026-11-21T23:43:03.3140560Z   PinkhaAnyNative: /Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyNative
+2026-11-21T23:43:03.3141750Z   Factory: https://github.com/hmlongco/Factory @ 2.3.1 (8ca11a7)
+2026-11-21T23:43:03.3142650Z   DeepLinks: /Users/runner/work/anytype-swift/anytype-swift/Modules/DeepLinks
+2026-11-21T23:43:03.3144770Z   leveldb: https://github.com/firebase/leveldb.git @ 1.22.5
+2026-11-21T23:43:03.3146200Z   Cache: https://github.com/hyperoslo/Cache.git @ 7.4.0
+2026-11-21T23:43:03.3147060Z   swift-async-algorithms: https://github.com/apple/swift-async-algorithms @ 1.0.3 (4c3ea81)
+2026-11-21T23:43:03.3149340Z   PinkhaAnyRuntime: /Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyRuntime
+2026-11-21T23:43:03.3151610Z   FloatingPanel: https://github.com/scenee/FloatingPanel @ 2.8.3
+2026-11-21T23:43:03.3153470Z   TorahInspectorKit: https://github.com/davidpovarsky/TorahInspectorKit.git @ 158acb2
+2026-11-21T23:43:03.3155000Z   WrappingHStack: https://github.com/ksemianov/WrappingHStack @ 0.2.0
+2026-11-21T23:43:03.3156920Z   PinkhaAnyEngine: /Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyEngine
+2026-11-21T23:43:03.3157920Z   GoogleDataTransport: https://github.com/google/GoogleDataTransport.git @ 10.1.0
+2026-11-21T23:43:03.3159660Z   Pulse: https://github.com/kean/Pulse @ 5.1.2 (c102aaa)
+2026-11-21T23:43:03.3160610Z   PinkhaAnyHanlin: /Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyHanlin
+2026-11-21T23:43:03.3161840Z   Amplitude-Swift: https://github.com/amplitude/Amplitude-Swift @ 1.13.7
+2026-11-21T23:43:03.3163200Z   SwiftyJSON: https://github.com/SwiftyJSON/SwiftyJSON.git @ 5.0.1
+2026-11-21T23:43:03.3163990Z   swift-crypto: https://github.com/apple/swift-crypto.git @ 3.12.3
+2026-11-21T23:43:03.3164590Z   Services: /Users/runner/work/anytype-swift/anytype-swift/Modules/Services
+2026-11-21T23:43:03.3167420Z   SwiftProtobuf: https://github.com/apple/swift-protobuf @ 1.32.0 (c6fe644)
+2026-11-21T23:43:03.3168240Z   swift-log: https://github.com/apple/swift-log @ 1.4.2 (5d66f7b)
+2026-11-21T23:43:03.3168830Z   Highlightr: https://github.com/raspu/Highlightr @ 2.2.0
+2026-11-21T23:43:03.3169380Z   cmark-gfm: https://github.com/swiftlang/swift-cmark.git @ 0.9.0
+2026-11-21T23:43:03.3170100Z   SharedContentManager: /Users/runner/work/anytype-swift/anytype-swift/Modules/SharedContentManager
+2026-11-21T23:43:03.3170810Z   nanopb: https://github.com/firebase/nanopb.git @ 2.30910.0
+2026-11-21T23:43:03.3171450Z   abseil: https://github.com/google/abseil-cpp-binary.git @ 1.2024011602.0
+2026-11-21T23:43:03.3173050Z   swift-syntax: https://github.com/swiftlang/swift-syntax.git @ 600.0.1
+2026-11-21T23:43:03.3174220Z   AnytypeCore: /Users/runner/work/anytype-swift/anytype-swift/Modules/AnytypeCore
+2026-11-21T23:43:03.3174880Z   analytics-connector-ios: https://github.com/amplitude/analytics-connector-ios.git @ 1.3.1
+2026-11-21T23:43:03.3270920Z   AnyCryptoSwift: https://github.com/anyproto/any-crypto-swift @ 1.0.1
+2026-11-21T23:43:03.3272010Z   swift-asn1: https://github.com/apple/swift-asn1.git @ 1.3.2
+2026-11-21T23:43:03.3272550Z   Assets: /Users/runner/work/anytype-swift/anytype-swift/Modules/Assets
+2026-11-21T23:43:03.3273230Z   GTMSessionFetcher: https://github.com/google/gtm-session-fetcher.git @ 4.3.0
+2026-11-21T23:43:03.3274030Z   DeviceKit: https://github.com/devicekit/DeviceKit @ 5.2.2
+2026-11-21T23:43:03.3274870Z   HanlinPresentationSDK: /Users/runner/work/anytype-swift/anytype-swift/Dependencies/Hanlin/Packages/HanlinPresentationSDK @ local
+2026-11-21T23:43:03.3275710Z   DesignKit: /Users/runner/work/anytype-swift/anytype-swift/Modules/DesignKit
+2026-11-21T23:43:03.3276620Z   HanlinPlatform: /Users/runner/work/anytype-swift/anytype-swift/Dependencies/Hanlin/Packages/HanlinPlatform @ local
+2026-11-21T23:43:03.3277030Z 
+2026-11-21T23:43:03.3426950Z resolved source packages: QRCode, PinkhaAnyHost, SwiftImageReadWrite, ConfettiSwiftUI, Sentry, AsyncTools, ZIPFoundation, GoogleAppMeasurement, NotificationsCore, Promises, swift-collections, Logger, gRPC, SwiftEntryKit, PinkhaKit, swift-markdown, swift-argument-parser, AppTarget, Kingfisher, AmplitudeCore, PinkhaAnyIntegration, InteropForGoogle, HanlinAgentSDK, PinkhaTorahPresentation, PinkhaAnyUI, GoogleUtilities, ProtobufMessages, Loc, AppCheck, StoredHashMacro, SecureService, SwiftAISDK, PinkhaHeartNative, Firebase, LayoutKit, PinkhaHeartEngine, swift-qrcode-generator, BigInt, ShimmerSwift, PinkhaAnyNative, Factory, DeepLinks, leveldb, Cache, swift-async-algorithms, PinkhaAnyRuntime, FloatingPanel, TorahInspectorKit, WrappingHStack, PinkhaAnyEngine, GoogleDataTransport, Pulse, PinkhaAnyHanlin, Amplitude-Swift, SwiftyJSON, swift-crypto, Services, SwiftProtobuf, swift-log, Highlightr, cmark-gfm, SharedContentManager, nanopb, abseil, swift-syntax, AnytypeCore, analytics-connector-ios, AnyCryptoSwift, swift-asn1, Assets, GTMSessionFetcher, DeviceKit, HanlinPresentationSDK, DesignKit, HanlinPlatform
+2026-11-21T23:43:03.5495970Z ##[group]Run python3 -B Tools/PinkhaSimulatorGate/run_t5_corrected_ui.py \
+2026-11-21T23:43:03.5497320Z [36;1mpython3 -B Tools/PinkhaSimulatorGate/run_t5_corrected_ui.py \[0m
+2026-11-21T23:43:03.5497860Z [36;1m  --app "$GITHUB_WORKSPACE" --work build/t5-corrected-ui-private \[0m
+2026-11-21T23:43:03.5498490Z [36;1m  --evidence build/t5-corrected-ui-proof --derived build/ui27-derived \[0m
+2026-11-21T23:43:03.5498970Z [36;1m  --source-run-id "$HEART_SOURCE_RUN_ID"[0m
+2026-11-21T23:43:03.5918200Z shell: /bin/bash -e {0}
+2026-11-21T23:43:03.5918550Z env:
+2026-11-21T23:43:03.5919010Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-21T23:43:03.5919460Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-21T23:43:03.5919910Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:43:03.5921470Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-21T23:43:03.5922320Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:43:03.5922850Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:43:03.5923440Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-21T23:43:03.5923930Z   PINKHA_UI27_IPHONE_UDID: 891ACAA6-86F6-49EB-8F6F-A2C8A5317D1B
+2026-11-21T23:43:03.5924330Z   PINKHA_UI27_IPAD_UDID: DE077769-6526-4261-AB29-39472C693355
+2026-11-21T23:43:03.5924640Z   HEART_SOURCE_RUN_ID: 44943967103
+2026-11-21T23:43:03.5924960Z ##[endgroup]
+2026-11-21T23:43:12.7724480Z {"content_verified_source_timestamps": 10236}
+2026-11-22T00:03:43.3309250Z {"command": ["/usr/bin/codesign", "--verify", "--deep", "--strict", "/Users/runner/work/anytype-swift/anytype-swift/build/t5-corrected-ui-private/new/Products/Release-Anytype-iphonesimulator/Anytype.app"], "log": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-corrected-ui-proof/build/command-00.log"}
+2026-11-22T00:07:04.8665010Z Traceback (most recent call last):
+2026-11-22T00:07:13.8165940Z   File "/Users/runner/work/anytype-swift/anytype-swift/Tools/PinkhaSimulatorGate/run_t5_corrected_ui.py", line 161, in <module>
+2026-11-22T00:07:13.8174710Z     raise SystemExit(main())
+2026-11-22T00:07:13.8176210Z                      ^^^^^^
+2026-11-22T00:07:13.8178520Z   File "/Users/runner/work/anytype-swift/anytype-swift/Tools/PinkhaSimulatorGate/run_t5_corrected_ui.py", line 147, in main
+2026-11-22T00:07:13.8180210Z     execute(args, result)
+2026-11-22T00:07:13.8182400Z   File "/Users/runner/work/anytype-swift/anytype-swift/Tools/PinkhaSimulatorGate/run_t5_corrected_ui.py", line 108, in execute
+2026-11-22T00:07:13.8183590Z     host = host_actions.execute(app=app, build=build, selection=selection,
+2026-11-22T00:07:13.8184330Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-11-22T00:07:13.8185910Z   File "/Users/runner/work/anytype-swift/anytype-swift/Tools/PinkhaSimulatorGate/t5_host_actions.py", line 131, in execute
+2026-11-22T00:07:13.8186820Z     pair.run_logged(enumerate_command, app, evidence, "enumerate", 180)
+2026-11-22T00:07:13.8190420Z   File "/Users/runner/work/anytype-swift/anytype-swift/Tools/PinkhaSimulatorGate/run_t5_apple_pair.py", line 434, in run_logged
+2026-11-22T00:07:13.8191780Z     metadata["return_code"] = process.wait(timeout=timeout)
+2026-11-22T00:07:13.8192310Z                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-11-22T00:07:13.8193230Z   File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/subprocess.py", line 1264, in wait
+2026-11-22T00:07:13.8194780Z     return self._wait(timeout=timeout)
+2026-11-22T00:07:13.8195140Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-11-22T00:07:13.8197860Z   File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/subprocess.py", line 2045, in _wait
+2026-11-22T00:07:13.8199940Z     raise TimeoutExpired(self.args, timeout)
+2026-11-22T00:07:13.8277100Z subprocess.TimeoutExpired: Command '['xcodebuild', 'test-without-building', '-xctestrun', '/Users/runner/work/anytype-swift/anytype-swift/build/t5-corrected-ui-private/new/Products/UI27-T5-host-f1d5ed4106394cac8675c4c43b77d0a1.xctestrun', '-destination', 'platform=iOS Simulator,id=DE077769-6526-4261-AB29-39472C693355', '-parallel-testing-enabled', 'NO', '-only-testing:AnytypeTests/TorahRelatedDocumentActionTests', '-enumerate-tests', '-test-enumeration-style', 'flat', '-test-enumeration-format', 'json', '-test-enumeration-output-path', '/Users/runner/work/anytype-swift/anytype-swift/build/t5-corrected-ui-proof/host-actions/compiled-enumeration.json']' timed out after 180 seconds
+2026-11-22T00:07:14.0274510Z ##[error]Process completed with exit code 1.
+2026-11-22T00:07:14.5556780Z ##[group]Run python3 - <<'PY'
+2026-11-22T00:07:14.5558710Z [36;1mpython3 - <<'PY'[0m
+2026-11-22T00:07:14.5559480Z [36;1mfrom pathlib import Path[0m
+2026-11-22T00:07:14.5568080Z [36;1mimport shutil[0m
+2026-11-22T00:07:14.5569320Z [36;1mlogs=Path("build/ui27-derived/Logs")[0m
+2026-11-22T00:07:14.5570270Z [36;1mprivate=Path("build/t5-corrected-ui-private/unpublished-derived-logs")[0m
+2026-11-22T00:07:14.5571130Z [36;1mif logs.exists():[0m
+2026-11-22T00:07:14.5571480Z [36;1m    if private.exists():[0m
+2026-11-22T00:07:14.5572190Z [36;1m        raise RuntimeError("Refuse stale private cache log destination")[0m
+2026-11-22T00:07:14.5572810Z [36;1m    private.parent.mkdir(parents=True,exist_ok=True)[0m
+2026-11-22T00:07:14.5573820Z [36;1m    shutil.move(str(logs),private)[0m
+2026-11-22T00:07:14.5574420Z [36;1mPY[0m
+2026-11-22T00:07:20.6528770Z shell: /bin/bash -e {0}
+2026-11-22T00:07:20.6529990Z env:
+2026-11-22T00:07:20.6531640Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-22T00:07:20.6532590Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-22T00:07:20.6533110Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-22T00:07:20.6533980Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-22T00:07:20.6547100Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-22T00:07:20.6547860Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-22T00:07:20.6569600Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-22T00:07:20.6570260Z   PINKHA_UI27_IPHONE_UDID: 891ACAA6-86F6-49EB-8F6F-A2C8A5317D1B
+2026-11-22T00:07:20.6571240Z   PINKHA_UI27_IPAD_UDID: DE077769-6526-4261-AB29-39472C693355
+2026-11-22T00:07:20.6571790Z ##[endgroup]
+2026-11-22T00:07:23.0338890Z ##[group]Run python3 Tools/PinkhaNativeDerived/package_evidence.py build/t5-corrected-ui-proof
+2026-11-22T00:07:23.0340140Z [36;1mpython3 Tools/PinkhaNativeDerived/package_evidence.py build/t5-corrected-ui-proof[0m
+2026-11-22T00:07:23.4731810Z shell: /bin/bash -e {0}
+2026-11-22T00:07:23.4732220Z env:
+2026-11-22T00:07:23.4732780Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-22T00:07:23.4733180Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-22T00:07:23.4733730Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-22T00:07:23.4735000Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-22T00:07:23.4735700Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-22T00:07:23.5559210Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-22T00:07:23.5560760Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-22T00:07:23.5562310Z   PINKHA_UI27_IPHONE_UDID: 891ACAA6-86F6-49EB-8F6F-A2C8A5317D1B
+2026-11-22T00:07:23.6416120Z   PINKHA_UI27_IPAD_UDID: DE077769-6526-4261-AB29-39472C693355
+2026-11-22T00:07:23.7272170Z ##[endgroup]
+2026-11-22T00:07:26.3390580Z /Users/runner/work/anytype-swift/anytype-swift/build/t5-corrected-ui-proof/Pinkha-Native-Derived-Evidence.zip
+2026-11-22T00:07:26.4164700Z ##[group]Run actions/upload-artifact@v4
+2026-11-22T00:07:26.4165110Z with:
+2026-11-22T00:07:26.4165440Z   name: Pinkha-T5-Corrected-UI-44960856322-1
+2026-11-22T00:07:26.4166340Z   path: build/t5-corrected-ui-proof/Pinkha-Native-Derived-Evidence.zip
+2026-11-22T00:07:26.4166810Z   if-no-files-found: error
+2026-11-22T00:07:26.4167070Z   retention-days: 14
+2026-11-22T00:07:26.4168260Z   compression-level: 6
+2026-11-22T00:07:26.4168570Z   overwrite: false
+2026-11-22T00:07:26.4168810Z   include-hidden-files: false
+2026-11-22T00:07:26.4169040Z env:
+2026-11-22T00:07:26.4169260Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-22T00:07:26.4169780Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-22T00:07:26.4170420Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-22T00:07:26.4170990Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-22T00:07:26.4172190Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-22T00:07:26.4223570Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-22T00:07:26.4224090Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-22T00:07:26.4224570Z   PINKHA_UI27_IPHONE_UDID: 891ACAA6-86F6-49EB-8F6F-A2C8A5317D1B
+2026-11-22T00:07:26.4225120Z   PINKHA_UI27_IPAD_UDID: DE077769-6526-4261-AB29-39472C693355
+2026-11-22T00:07:26.4225440Z ##[endgroup]
+2026-11-22T00:07:27.2957960Z (node:70836) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-22T00:07:27.2959300Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-22T00:07:27.3020870Z With the provided path, there will be 1 file uploaded
+2026-11-22T00:07:27.3028680Z Artifact name is valid!
+2026-11-22T00:07:27.3031410Z Root directory input is valid!
+2026-11-22T00:07:27.8386040Z Beginning upload of artifact content to blob storage
+2026-11-22T00:07:27.8549920Z (node:70836) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-11-22T00:07:28.5746030Z Uploaded bytes 1051075
+2026-11-22T00:07:28.6557760Z Finished uploading artifact content to blob storage!
+2026-11-22T00:07:28.6579940Z SHA256 digest of uploaded artifact zip is bf0f9c2392e5963dfcae533c54bf066a8c1aef6b5df517f7058a768fffb9bea6
+2026-11-22T00:07:28.6581010Z Finalizing artifact upload
+2026-11-22T00:07:29.0835630Z Artifact Pinkha-T5-Corrected-UI-44960856322-1.zip successfully finalized. Artifact ID 14731226989
+2026-11-22T00:07:29.0839870Z Artifact Pinkha-T5-Corrected-UI-44960856322-1 has been successfully uploaded! Final size is 1051075 bytes. Artifact ID is 14731226989
+2026-11-22T00:07:29.0841380Z Artifact download URL: https://github.com/davidpovarsky/anytype-swift/actions/runs/44960856322/artifacts/14731226989
+2026-11-22T00:07:29.3595780Z ##[group]Run actions/cache/save@v4
+2026-11-22T00:07:29.3597580Z with:
+2026-11-22T00:07:29.3597960Z   path: build/ui27-derived
+2026-11-22T00:07:29.3598800Z   key: pinkha-t5-corrected-arm64-xcode27-Release-Anytype-eac7ea32a9215f2a28e258290c50bc1064896f03dbcfd99a4bcc34e44cc7f28a-87a543d81b51ca16d624d2f21f9ce50d70c0ab5b
+2026-11-22T00:07:29.3601050Z   enableCrossOsArchive: false
+2026-11-22T00:07:29.3601820Z env:
+2026-11-22T00:07:29.3602470Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-22T00:07:29.3603450Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-22T00:07:29.3604260Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-22T00:07:29.3606120Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-22T00:07:29.3606700Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-22T00:07:29.3607150Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-22T00:07:29.3607610Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-22T00:07:29.3608110Z   PINKHA_UI27_IPHONE_UDID: 891ACAA6-86F6-49EB-8F6F-A2C8A5317D1B
+2026-11-22T00:07:29.3608580Z   PINKHA_UI27_IPAD_UDID: DE077769-6526-4261-AB29-39472C693355
+2026-11-22T00:07:29.3608950Z ##[endgroup]
+2026-11-22T00:07:29.6018460Z (node:71112) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-22T00:07:29.6051790Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-22T00:07:29.6616740Z [command]/opt/homebrew/bin/gtar --posix -cf cache.tzst --exclude cache.tzst -P -C /Users/runner/work/anytype-swift/anytype-swift --files-from manifest.txt --delay-directory-restore --use-compress-program zstdmt
+2026-11-22T00:08:58.0997580Z (node:71112) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-11-22T00:08:59.0812700Z Sent 0 of 3288835580 (0.0%), 0.0 MBs/sec
+2026-11-22T00:09:00.0845370Z Sent 0 of 3288835580 (0.0%), 0.0 MBs/sec
+2026-11-22T00:09:01.0852440Z Sent 0 of 3288835580 (0.0%), 0.0 MBs/sec
+2026-11-22T00:09:02.0861170Z Sent 134217728 of 3288835580 (4.1%), 31.9 MBs/sec
+2026-11-22T00:09:03.0868440Z Sent 402653184 of 3288835580 (12.2%), 76.7 MBs/sec
+2026-11-22T00:09:04.0879570Z Sent 536870912 of 3288835580 (16.3%), 85.2 MBs/sec
+2026-11-22T00:09:05.0874360Z Sent 671088640 of 3288835580 (20.4%), 91.3 MBs/sec
+2026-11-22T00:09:06.0875490Z Sent 872415232 of 3288835580 (26.5%), 103.9 MBs/sec
+2026-11-22T00:09:07.0878630Z Sent 872415232 of 3288835580 (26.5%), 92.3 MBs/sec
+2026-11-22T00:09:08.0879970Z Sent 939524096 of 3288835580 (28.6%), 89.5 MBs/sec
+2026-11-22T00:09:09.0888010Z Sent 1275068416 of 3288835580 (38.8%), 110.4 MBs/sec
+2026-11-22T00:09:10.0880940Z Sent 1342177280 of 3288835580 (40.8%), 106.6 MBs/sec
+2026-11-22T00:09:11.0931520Z Sent 1409286144 of 3288835580 (42.9%), 103.3 MBs/sec
+2026-11-22T00:09:12.0930890Z Sent 1677721600 of 3288835580 (51.0%), 114.2 MBs/sec
+2026-11-22T00:09:13.0924730Z Sent 1744830464 of 3288835580 (53.1%), 110.8 MBs/sec
+2026-11-22T00:09:14.0942070Z Sent 1811939328 of 3288835580 (55.1%), 107.9 MBs/sec
+2026-11-22T00:09:15.0941180Z Sent 2080374784 of 3288835580 (63.3%), 116.6 MBs/sec
+2026-11-22T00:09:16.0944320Z Sent 2214592512 of 3288835580 (67.3%), 117.2 MBs/sec
+2026-11-22T00:09:17.0959470Z Sent 2214592512 of 3288835580 (67.3%), 111.1 MBs/sec
+2026-11-22T00:09:18.0982590Z Sent 2483027968 of 3288835580 (75.5%), 118.3 MBs/sec
+2026-11-22T00:09:19.1184950Z Sent 2617245696 of 3288835580 (79.6%), 118.7 MBs/sec
+2026-11-22T00:09:20.0991720Z Sent 2617245696 of 3288835580 (79.6%), 113.3 MBs/sec
+2026-11-22T00:09:21.1019030Z Sent 2818572288 of 3288835580 (85.7%), 116.7 MBs/sec
+2026-11-22T00:09:22.1020910Z Sent 3020400124 of 3288835580 (91.8%), 119.9 MBs/sec
+2026-11-22T00:09:23.1012660Z Sent 3087508988 of 3288835580 (93.9%), 117.7 MBs/sec
+2026-11-22T00:09:24.1033320Z Sent 3154617852 of 3288835580 (95.9%), 115.6 MBs/sec
+2026-11-22T00:09:25.1030130Z Sent 3154617852 of 3288835580 (95.9%), 111.3 MBs/sec
+2026-11-22T00:09:25.9606920Z Sent 3288835580 of 3288835580 (100.0%), 112.5 MBs/sec
+2026-11-22T00:09:26.6274660Z Cache saved with key: pinkha-t5-corrected-arm64-xcode27-Release-Anytype-eac7ea32a9215f2a28e258290c50bc1064896f03dbcfd99a4bcc34e44cc7f28a-87a543d81b51ca16d624d2f21f9ce50d70c0ab5b
+2026-11-22T00:09:26.7276710Z Post job cleanup.
+2026-11-22T00:09:26.9912180Z [command]/opt/homebrew/bin/git version
+2026-11-22T00:09:27.0860210Z git version 2.56.0
+2026-11-22T00:09:27.0935540Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/9208daa7-0afd-4dce-88b0-093280f8cb29/.gitconfig'
+2026-11-22T00:09:27.0948570Z Temporarily overriding HOME='/Users/runner/work/_temp/9208daa7-0afd-4dce-88b0-093280f8cb29' before making global git config changes
+2026-11-22T00:09:27.0951440Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-22T00:09:27.0955000Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/anytype-swift/anytype-swift/build/t5-corrected-hanlin-source
+2026-11-22T00:09:27.1263420Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-22T00:09:27.1433150Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-22T00:09:27.4386900Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-22T00:09:27.4514840Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-22T00:09:27.7165870Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-22T00:09:27.7480480Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-22T00:09:28.0088160Z Post job cleanup.
+2026-11-22T00:09:28.2433950Z [command]/opt/homebrew/bin/git version
+2026-11-22T00:09:28.2536890Z git version 2.56.0
+2026-11-22T00:09:28.2788670Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/74cd04fb-0824-4599-94ae-1b61491d2fd2/.gitconfig'
+2026-11-22T00:09:28.2789560Z Temporarily overriding HOME='/Users/runner/work/_temp/74cd04fb-0824-4599-94ae-1b61491d2fd2' before making global git config changes
+2026-11-22T00:09:28.2790560Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-22T00:09:28.2791700Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/anytype-swift/anytype-swift
+2026-11-22T00:09:28.2793030Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-22T00:09:28.2869060Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-22T00:09:28.5420180Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-22T00:09:28.5572830Z http.https://github.com/.extraheader
+2026-11-22T00:09:28.5593000Z [command]/opt/homebrew/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-22T00:09:28.5787800Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-22T00:09:28.8529680Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-22T00:09:28.8609110Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-22T00:09:29.0124640Z Cleaning up orphan processes
+2026-11-22T00:09:31.3018000Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/cache/restore@v4, actions/cache/save@v4, actions/checkout@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

@@ -1,0 +1,62 @@
+{
+  "additional_app_builds": 0,
+  "app_source_sha": "87a543d81b51ca16d624d2f21f9ce50d70c0ab5b",
+  "built_products": {
+    "app_executable_sha256": "2434212eee7022db421c22e4563a60e50b7a5431d612121d20ce88350773717d",
+    "original_xctestrun_sha256": "4db100cf7eed2c4bf6b813da415a73bdc9c1f0020f1919de44f5c9bd48f9a952",
+    "test_executable_sha256": "5de168d2ed5a7010f8414b78f11dfe075b876d82ffdf448217e49691afd1464a"
+  },
+  "error": "Command '['xcodebuild', 'test-without-building', '-xctestrun', '/Users/runner/work/anytype-swift/anytype-swift/build/t5-corrected-ui-private/new/Products/UI27-T5-host-f1d5ed4106394cac8675c4c43b77d0a1.xctestrun', '-destination', 'platform=iOS Simulator,id=DE077769-6526-4261-AB29-39472C693355', '-parallel-testing-enabled', 'NO', '-only-testing:AnytypeTests/TorahRelatedDocumentActionTests', '-enumerate-tests', '-test-enumeration-style', 'flat', '-test-enumeration-format', 'json', '-test-enumeration-output-path', '/Users/runner/work/anytype-swift/anytype-swift/build/t5-corrected-ui-proof/host-actions/compiled-enumeration.json']' timed out after 180 seconds",
+  "error_type": "TimeoutExpired",
+  "phase": "COMPILED_SELECTION",
+  "real_native_acl_accepted": false,
+  "real_native_persistence_accepted": false,
+  "run_id": "44960856322",
+  "selected_configuration": {
+    "format_version": 2,
+    "only_test_identifiers": [
+      "TorahRelatedDocumentActionTests"
+    ],
+    "original_sha256": "4db100cf7eed2c4bf6b813da415a73bdc9c1f0020f1919de44f5c9bd48f9a952",
+    "other_targets_removed_from_copy": [
+      "DeepLinksTests",
+      "AnytypeCoreTests"
+    ],
+    "path": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-corrected-ui-private/new/Products/UI27-T5-host-f1d5ed4106394cac8675c4c43b77d0a1.xctestrun",
+    "sha256": "c1b700c5f774c0c47fd53b372024f9a07cf4a0eabff734433d3755ad93f0b422",
+    "target": "AnytypeTests"
+  },
+  "source": {
+    "compiled_identifiers": [
+      "AnytypeTests/TorahRelatedDocumentActionTests/cancelledUnlinkDoesNotMutateAfterRead()",
+      "AnytypeTests/TorahRelatedDocumentActionTests/changedRootSelectionRejectsCapturedCallbacks()",
+      "AnytypeTests/TorahRelatedDocumentActionTests/dismissedInspectorCallbacksAreRetired()",
+      "AnytypeTests/TorahRelatedDocumentActionTests/lateUnlinkFailureIsIgnoredAfterDocumentLifetimeEnds(isNote:)",
+      "AnytypeTests/TorahRelatedDocumentActionTests/noteUnlinkStopsBeforeBothSourceAndOriginMutationWhenRevoked()",
+      "AnytypeTests/TorahRelatedDocumentActionTests/relatedNavigationPreservesBlockTarget()",
+      "AnytypeTests/TorahRelatedDocumentActionTests/relatedNavigationRequiresCurrentSpaceAndLifetime()",
+      "AnytypeTests/TorahRelatedDocumentActionTests/unlinkRechecksAuthorityAfterSuspendedRead()",
+      "AnytypeTests/TorahRelatedDocumentActionTests/unlinkRejectsDeniedAuthorityAtEntry()",
+      "AnytypeTests/TorahRelatedDocumentActionTests/unlinkRejectsForeignSpaceBeforeRead()",
+      "AnytypeTests/TorahRelatedDocumentActionTests/unlinkRemovesOnlyTheSelectedCanonicalSource()"
+    ],
+    "declared_cases": 12,
+    "expected_methods": 11,
+    "methods": [
+      "TorahRelatedDocumentActionTests/cancelledUnlinkDoesNotMutateAfterRead",
+      "TorahRelatedDocumentActionTests/changedRootSelectionRejectsCapturedCallbacks",
+      "TorahRelatedDocumentActionTests/dismissedInspectorCallbacksAreRetired",
+      "TorahRelatedDocumentActionTests/lateUnlinkFailureIsIgnoredAfterDocumentLifetimeEnds",
+      "TorahRelatedDocumentActionTests/noteUnlinkStopsBeforeBothSourceAndOriginMutationWhenRevoked",
+      "TorahRelatedDocumentActionTests/relatedNavigationPreservesBlockTarget",
+      "TorahRelatedDocumentActionTests/relatedNavigationRequiresCurrentSpaceAndLifetime",
+      "TorahRelatedDocumentActionTests/unlinkRechecksAuthorityAfterSuspendedRead",
+      "TorahRelatedDocumentActionTests/unlinkRejectsDeniedAuthorityAtEntry",
+      "TorahRelatedDocumentActionTests/unlinkRejectsForeignSpaceBeforeRead",
+      "TorahRelatedDocumentActionTests/unlinkRemovesOnlyTheSelectedCanonicalSource"
+    ],
+    "source_path": "AnyTypeTests/Pinkha/TorahRelatedDocumentActionTests.swift",
+    "source_sha256": "7705663ed35dace9590c716a3fc7ff986d19b98f44739181a05c81673a54a78e"
+  },
+  "status": "FAIL"
+}

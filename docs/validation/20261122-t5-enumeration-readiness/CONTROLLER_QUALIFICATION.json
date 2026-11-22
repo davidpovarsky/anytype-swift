@@ -1,0 +1,91 @@
+{
+  "status": "QUALIFIED_18_UNIQUE_CURRENT_CONTROLLER_METHODS",
+  "current_affected_controls_passed": 14,
+  "unaffected_prior_controls_retained": 4,
+  "current_source_sha256": {
+    "Tools/PinkhaSimulatorGate/owned_simulator_readiness.py": "42be87c8f6e9cb4911b6f5e8a009d0e17aa8d43bf1c259f91534fda7e70d1d09",
+    "Tools/PinkhaSimulatorGate/t5_account_retry_existing_build.py": "a9a32138f6ab78c2b6512fd35d1bd2069e37109c88ba92e1346b639b242334de",
+    "Tools/PinkhaSimulatorGate/t5_host_actions.py": "b839cf9a908093e717a5497cf2546047b36d523e3455b42d5a1e6755e942d9a8",
+    "Tools/PinkhaSimulatorGate/run_t5_native_ui.py": "676b8f9431f64c36e1bb922a0b7fa9fe839b748ea44356a1f8db68b86a025708",
+    "Tools/PinkhaSimulatorGate/run_t5_corrected_ui.py": "5c2bb5ed57850fed4613c352cb8ed7b0630037383b9185bd0ed47d2b5c3e04ab",
+    "Tools/PinkhaSimulatorGate/test_t5_existing_build_readiness.py": "68fb08de68b2204c4fd0441fd56b5750097ace46e6d02344fe96fbc62ba67a3b"
+  },
+  "current_controls_raw_log_sha256": "ddda4219f5157813205c6043d06960a5d21dcab836588c456a6cca04cc6666b7",
+  "current_controls_receipt_sha256": "3f35ce9479c3eaff2bdfb8a80d1cb30212db3490cd0614523079f894bbe42593",
+  "retained_method_ast_sha256": {
+    "SameBuildControls.test_pending_nine_refuses_old_producer_or_an_additional_app_build": "c0240fd6299237b849f365fccec58d1224b3bffe1424eae15918b2b8a59a9447",
+    "SameBuildControls.test_pending_receipt_cannot_add_baseline_calls_or_omit_real_error": "eb547dcdb9be51c221c0f47071ef1a078b057802dfa6f84cc01a4ccdf3d94408"
+  },
+  "retained_guard_ast_sha256": {
+    "validate_counts": "7d9aa3e88f972db0b63bfa58a738c16648a28c0ea4b2eb9178f1bafb67bd6fb0",
+    "runtime_admission": "34d648820d0b11b946837fa4ce64947aa3f34e6e20f49270e59df50a967b3e40"
+  },
+  "retained_admission_methods": [
+    "test_corrected_route_uses_shared_journey_without_a_fabricated_pair",
+    "test_corrected_route_refuses_old_runtime_flags_source_and_missing_proof"
+  ],
+  "retained_admission_implementation_file_sha256": "676b8f9431f64c36e1bb922a0b7fa9fe839b748ea44356a1f8db68b86a025708",
+  "first_draft_qualification": {
+    "status": "QUALIFIED_17_UNIQUE_CONTROLLER_METHODS_ACROSS_TWO_ATTEMPTS",
+    "initial_attempt_status": "FAIL_7_METHODS_EXPECTED_WRONG_EXISTING_EXCEPTION_TYPE",
+    "initial_passing_methods_retained": [
+      "test_t5_existing_build_readiness.OwnedReadinessControls.test_already_booted_destination_is_not_booted_again.test_already_booted_destination_is_not_booted_again",
+      "test_t5_existing_build_readiness.OwnedReadinessControls.test_bootstatus_timeout_is_not_readiness_and_keeps_the_original_bound.test_bootstatus_timeout_is_not_readiness_and_keeps_the_original_bound",
+      "test_t5_existing_build_readiness.OwnedReadinessControls.test_shutdown_destination_boots_once_and_is_observed_ready.test_shutdown_destination_boots_once_and_is_observed_ready",
+      "test_t5_existing_build_readiness.SameBuildControls.test_enumeration_timeout_keeps_zero_test_execution_and_shuts_down.test_enumeration_timeout_keeps_zero_test_execution_and_shuts_down",
+      "test_t5_existing_build_readiness.SameBuildControls.test_host_readiness_precedes_enumeration_and_preserves_exact_timeout.test_host_readiness_precedes_enumeration_and_preserves_exact_timeout",
+      "test_t5_existing_build_readiness.SameBuildControls.test_native_failure_is_preserved_through_owned_shutdown_failure.test_native_failure_is_preserved_through_owned_shutdown_failure",
+      "test_t5_existing_build_readiness.SameBuildControls.test_pending_nine_uses_same_products_and_separate_account_without_build_or_baseline.test_pending_nine_uses_same_products_and_separate_account_without_build_or_baseline",
+      "test_t5_existing_build_readiness.SameBuildControls.test_readiness_failure_prevents_all_host_discovery_and_test_execution.test_readiness_failure_prevents_all_host_discovery_and_test_execution",
+      "test_t5_corrected_ui.CorrectedUIControls.test_corrected_route_uses_shared_journey_without_a_fabricated_pair.test_corrected_route_uses_shared_journey_without_a_fabricated_pair",
+      "test_t5_corrected_ui.CorrectedUIControls.test_corrected_route_refuses_old_runtime_flags_source_and_missing_proof.test_corrected_route_refuses_old_runtime_flags_source_and_missing_proof"
+    ],
+    "corrected_expectation_only_methods_passed": [
+      "test_t5_existing_build_readiness.OwnedReadinessControls.test_final_destination_state_must_still_be_booted_and_owned.test_final_destination_state_must_still_be_booted_and_owned",
+      "test_t5_existing_build_readiness.OwnedReadinessControls.test_foreign_missing_ambiguous_or_unavailable_identity_never_boots.test_foreign_missing_ambiguous_or_unavailable_identity_never_boots",
+      "test_t5_existing_build_readiness.OwnedReadinessControls.test_shutdown_observes_final_state_and_refuses_a_foreign_destination.test_shutdown_observes_final_state_and_refuses_a_foreign_destination",
+      "test_t5_existing_build_readiness.SameBuildControls.test_changed_compiled_products_cannot_qualify_pending_results.test_changed_compiled_products_cannot_qualify_pending_results",
+      "test_t5_existing_build_readiness.SameBuildControls.test_pending_nine_refuses_old_producer_or_an_additional_app_build.test_pending_nine_refuses_old_producer_or_an_additional_app_build",
+      "test_t5_existing_build_readiness.SameBuildControls.test_pending_receipt_cannot_add_baseline_calls_or_omit_real_error.test_pending_receipt_cannot_add_baseline_calls_or_omit_real_error",
+      "test_t5_existing_build_readiness.SameBuildControls.test_unpublished_native_evidence_cannot_pass_even_with_valid_counts.test_unpublished_native_evidence_cannot_pass_even_with_valid_counts"
+    ],
+    "unique_current_passing_methods": 17,
+    "already_passing_methods_reexecuted_in_second_attempt": 0,
+    "controller_production_source_changed_between_attempts": false,
+    "proof_scope": "Synthetic controller boundaries only; no Apple or native result",
+    "apple_tests_executed": 0,
+    "native_tests_executed": 0,
+    "additional_app_builds": 0,
+    "new_controller_methods": 15,
+    "affected_corrected_build_admission_methods": 2,
+    "source_sha256": {
+      "Tools/PinkhaSimulatorGate/owned_simulator_readiness.py": "91d749f733432e476eefce245902a71b7d0314451bef09b08f5164c948f3b434",
+      "Tools/PinkhaSimulatorGate/t5_account_retry_existing_build.py": "136d6fd6bfb84a7425a2b9d6768b21637bdc0e425f5e26ca2c34e91d136f00e1",
+      "Tools/PinkhaSimulatorGate/t5_host_actions.py": "846b20b6dab0ca873b3cadabb76f7d1621213ad7c1a2a8374b67f8d75e01b152",
+      "Tools/PinkhaSimulatorGate/run_t5_native_ui.py": "676b8f9431f64c36e1bb922a0b7fa9fe839b748ea44356a1f8db68b86a025708",
+      "Tools/PinkhaSimulatorGate/run_t5_corrected_ui.py": "5c2bb5ed57850fed4613c352cb8ed7b0630037383b9185bd0ed47d2b5c3e04ab",
+      "Tools/PinkhaSimulatorGate/test_t5_existing_build_readiness.py": "b277ef6ca1f821517f1f9d481bed3667ef225d3020073ee7f59dd8321041c8b5"
+    },
+    "workflow_sha256": "fb32109311e633815f92f650bc5cc96d5582d264ac94e1a77e157274addbdc5a",
+    "syntax": {
+      "python_ast_files": 6,
+      "yaml_workflows": 1,
+      "bash_run_blocks": 8
+    },
+    "independent_source_review": {
+      "agent": "shared_editor",
+      "result": "NO_BLOCKER",
+      "tests_executed_by_reviewer": 0
+    }
+  },
+  "postboot_and_shutdown_inventory_queries": 0,
+  "apple_tests_executed": 0,
+  "native_tests_executed": 0,
+  "additional_app_builds": 0,
+  "root_review": "Approved scoped preboot identity plus bootstatus and receipt-bound owned shutdown; actual XCTest destination mandatory",
+  "syntax": {
+    "python_ast_files": 6,
+    "yaml_workflows_retained_unchanged": 1,
+    "bash_run_blocks_retained_unchanged": 8
+  }
+}

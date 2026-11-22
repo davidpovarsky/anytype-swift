@@ -41,6 +41,7 @@ jobs:
         run: |
           python3 -B Tools/PinkhaSimulatorGate/test_t5_corrected_ui.py -v
           python3 -B Tools/PinkhaSimulatorGate/test_t5_host_actions.py -v
+          python3 -B Tools/PinkhaSimulatorGate/test_t5_existing_build_readiness.py -v
           python3 -B Tools/PinkhaSimulatorGate/test_t5_native_ui.py NativeUIEvidenceControls.test_requires_fresh_account_source_and_real_runtime NativeUIEvidenceControls.test_rejects_duplicate_wrong_block_and_incomplete_negative_fixtures NativeUIEvidenceControls.test_cancellation_during_cleanup_or_publication_is_recorded_and_propagated -v
       - name: Verify Xcode27 and create owned simulator destinations
         run: python3 Tools/PinkhaSimulatorGate/preflight.py --evidence build/t5-corrected-ui-proof/preflight
@@ -68,7 +69,7 @@ jobs:
         run: |
           xcodebuild -resolvePackageDependencies -project Anytype.xcodeproj -scheme Anytype -clonedSourcePackagesDirPath build/ui27-derived/SourcePackages -onlyUsePackageVersionsFromResolvedFile
           git diff --exit-code -- Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
-      - name: Build once and run pending host actions, native preparation and T5 UI
+      - name: Build once and run host actions, pending nine queries, native preparation and T5 UI
         id: actual
         env:
           HEART_SOURCE_RUN_ID: ${{ inputs.heart_source_run_id }}

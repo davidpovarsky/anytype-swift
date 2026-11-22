@@ -1,0 +1,44 @@
+{
+  "argv": [
+    "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_t5_existing_build_readiness.OwnedReadinessControls.test_final_destination_state_must_still_be_booted_and_owned",
+    "test_t5_existing_build_readiness.OwnedReadinessControls.test_foreign_missing_ambiguous_or_unavailable_identity_never_boots",
+    "test_t5_existing_build_readiness.OwnedReadinessControls.test_shutdown_observes_final_state_and_refuses_a_foreign_destination",
+    "test_t5_existing_build_readiness.SameBuildControls.test_changed_compiled_products_cannot_qualify_pending_results",
+    "test_t5_existing_build_readiness.SameBuildControls.test_pending_nine_refuses_old_producer_or_an_additional_app_build",
+    "test_t5_existing_build_readiness.SameBuildControls.test_pending_receipt_cannot_add_baseline_calls_or_omit_real_error",
+    "test_t5_existing_build_readiness.SameBuildControls.test_unpublished_native_evidence_cannot_pass_even_with_valid_counts"
+  ],
+  "status": "PASS",
+  "returncode": 0,
+  "elapsed_seconds": 3.556,
+  "raw_log_sha256": "f3317e4422aa721992223d57f0eb235ea4695b8e04d88848faa720dc31847808",
+  "changed_expectation_methods": [
+    "OwnedReadinessControls.test_final_destination_state_must_still_be_booted_and_owned",
+    "OwnedReadinessControls.test_foreign_missing_ambiguous_or_unavailable_identity_never_boots",
+    "OwnedReadinessControls.test_shutdown_observes_final_state_and_refuses_a_foreign_destination",
+    "SameBuildControls.test_changed_compiled_products_cannot_qualify_pending_results",
+    "SameBuildControls.test_pending_nine_refuses_old_producer_or_an_additional_app_build",
+    "SameBuildControls.test_pending_receipt_cannot_add_baseline_calls_or_omit_real_error",
+    "SameBuildControls.test_unpublished_native_evidence_cannot_pass_even_with_valid_counts"
+  ],
+  "unchanged_passed_methods_retained": [
+    "OwnedReadinessControls.test_already_booted_destination_is_not_booted_again",
+    "OwnedReadinessControls.test_bootstatus_timeout_is_not_readiness_and_keeps_the_original_bound",
+    "OwnedReadinessControls.test_shutdown_destination_boots_once_and_is_observed_ready",
+    "SameBuildControls.test_enumeration_timeout_keeps_zero_test_execution_and_shuts_down",
+    "SameBuildControls.test_host_readiness_precedes_enumeration_and_preserves_exact_timeout",
+    "SameBuildControls.test_native_failure_is_preserved_through_owned_shutdown_failure",
+    "SameBuildControls.test_pending_nine_uses_same_products_and_separate_account_without_build_or_baseline",
+    "SameBuildControls.test_readiness_failure_prevents_all_host_discovery_and_test_execution"
+  ],
+  "source_sha256": "b277ef6ca1f821517f1f9d481bed3667ef225d3020073ee7f59dd8321041c8b5",
+  "controller_source_changed": false,
+  "apple_tests_executed": 0,
+  "native_tests_executed": 0,
+  "additional_app_builds": 0
+}

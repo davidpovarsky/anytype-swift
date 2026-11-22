@@ -1,0 +1,57 @@
+{
+  "status": "VERIFIED_ONE_APP_BUILD_THEN_ENUMERATION_TIMEOUT_TESTS_NOT_RUN",
+  "run_id": "44960856322",
+  "job_id": 137019127550,
+  "artifact_id": 14731226989,
+  "artifact_bytes": 1051075,
+  "artifact_sha256": "bf0f9c2392e5963dfcae533c54bf066a8c1aef6b5df517f7058a768fffb9bea6",
+  "original_evidence_zip_sha256": "f7d6c30a923c0f397f1595b12a2b907b356f4be5c4499947d71512d0b65c4417",
+  "source_sha": "87a543d81b51ca16d624d2f21f9ce50d70c0ab5b",
+  "completed_app_builds": 1,
+  "host_tests_executed": 0,
+  "native_tests_executed": 0,
+  "ui_tests_executed": 0,
+  "native_runtime_source_run": "44943967103",
+  "observed_failure": "xcodebuild test enumeration exceeded its unchanged 180-second limit; output is invocation plus BUILD INTERRUPTED",
+  "verified_source_gap": "preflight creates the simulator; corrected T5 did not explicitly boot/wait for readiness before enumeration",
+  "limit_of_diagnosis": "No actual simulator state was recorded at enumeration; source gap is confirmed, sole operating-system hang cause is not established",
+  "cache_saved_original_line": "2026-11-22T00:09:26.6274660Z Cache saved with key: pinkha-t5-corrected-arm64-xcode27-Release-Anytype-eac7ea32a9215f2a28e258290c50bc1064896f03dbcfd99a4bcc34e44cc7f28a-87a543d81b51ca16d624d2f21f9ce50d70c0ab5b",
+  "other_routes": {
+    "sdk": "run_wave15_acceptance already calls boot and bootstatus before build/component execution",
+    "retained_release": "wave15_batch already calls boot and bootstatus; no evidence of the omitted-readiness defect"
+  },
+  "artifacts": {
+    "originals/host-enumerate.command.json": {
+      "bytes": 1078,
+      "sha256": "4d97f41db0e15521028e62bd1684a721ac93d2a9201ccdad11b32b5b90af6924"
+    },
+    "originals/source-preflight.json": {
+      "bytes": 248,
+      "sha256": "f0fd80f08b2ba994a4bb2bb8a350cee019d3c896e72183ac575731fdf0f34066"
+    },
+    "originals/preflight.json": {
+      "bytes": 43057,
+      "sha256": "fd0e27993209537440da22c1dc432791b1c1fbb038cb08a4c4b83451849a3990"
+    },
+    "originals/build.json": {
+      "bytes": 51955,
+      "sha256": "a112be21ab189a632aa542c835b26c208cc58463ef96846bf2a5c789a7068ef4"
+    },
+    "originals/host-enumerate.log": {
+      "bytes": 686,
+      "sha256": "cada2b61828fb369bf7fd234e70cf88936df20e1d3305adc3df79b9e2e7f9213"
+    },
+    "originals/host-execution.json": {
+      "bytes": 4218,
+      "sha256": "0c317494f7c934e1bfa5d5d6cdd7390c0ff0caacfd1a8a765e15ec9c05c78367"
+    },
+    "originals/job.log": {
+      "bytes": 109687,
+      "sha256": "c602dfba45c2fce9e66b36147205b9d3543fccd740cfebfc078c6b79f113dbab"
+    },
+    "originals/result.json": {
+      "bytes": 2801,
+      "sha256": "ae3422c748233d49bc63d79fcdfaf1491a625f51e3ffb8dd3f8e85a1d8324529"
+    }
+  }
+}

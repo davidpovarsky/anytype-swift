@@ -17,6 +17,7 @@ import sys
 import run_t5_apple_pair as pair
 import run_t5_native_ui as native_ui
 import t5_host_actions as host_actions
+import t5_account_retry_existing_build as pending_retry
 import run_ui27 as ui
 from validate_release import method_results
 
@@ -40,6 +41,7 @@ def build_once(app, derived, work, proof, selection, source, binding):
         "-derivedDataPath", str(derived), "-parallel-testing-enabled", "NO",
         "-only-testing:AnytypeTests/" + PREPARATION.split("/")[0], *pair.FLAGS,
         "-only-testing:AnytypeTests/" + host_actions.SUITE,
+        "-only-testing:AnytypeTests/" + pending_retry.native.pending_evidence.METHOD.split("/")[0],
     ]
     _, log = pair.run_logged(command, app, proof, "build-corrected-r15", 5400)
     pair.require(pair.git(app, "rev-parse", "HEAD") == source and not pair.git(app, "status", "--porcelain"),
@@ -87,6 +89,9 @@ def execute(args, result):
     work.mkdir(parents=True, mode=0o700)
     source = pair.verify_published_source(app, proof)
     host_actions.source_contract(app)  # Reject declaration drift before compilation.
+    pair.write(proof / "retained-pagination.json", pending_retry.native.pending_evidence.validate_retained_source(app))
+    pair.require(args.source_run_id == pending_retry.native.pending_evidence.RUNTIME_RUN,
+                 "The combined pending-nine route requires the current corrected runtime producer")
     run_id = os.environ["GITHUB_RUN_ID"]
     preflight = json.loads((proof / "preflight/preflight.json").read_text(encoding="utf8"))
     pair.require(preflight.get("status") == "PREFLIGHT_PASS_UI_NOT_RUN"
@@ -109,7 +114,13 @@ def execute(args, result):
         evidence=proof / "host-actions", pair=pair, ui=ui, source=source, run_id=run_id)
     pair.require(host["status"] == host_actions.PASS, "Exact pending T5 host actions did not pass")
     result.update(host_actions_status=host["status"], host_actions_result="host-actions/execution.json",
-                  phase="ACTUAL_NATIVE_UI")
+                  phase="ACTUAL_PENDING_NINE", pending_retry_status="RUNNING")
+    pair.write(proof / "result.json", result)
+    pending = pending_retry.run_after_corrected_build(app=app, work=work, proof=proof, build=build,
+        selection=selection, pair=pair, ui=ui, method_results=method_results, source=source, run_id=run_id)
+    pair.require(pending["status"] == pending_retry.PASS, "The exact pending native nine-query scope did not pass")
+    result.update(pending_retry_status=pending["status"], pending_retry_result="account-retry-pending/result.json",
+                  pending_retry_actual_counts=pending["actual_counts"], phase="ACTUAL_NATIVE_UI")
     pair.write(proof / "result.json", result)
     outcome = native_ui.run_after_corrected_build(app=app, work=work, proof=proof, build=build,
         selection=selection, pair=pair, ui=ui, method_results=method_results, source=source, run_id=run_id)
@@ -127,6 +138,7 @@ def execute(args, result):
         and outcome.get("ui_simulator_shutdown") is True, "Standalone scope or owned cleanup differs")
     result.update(status=PASS, phase="COMPLETE", actual_counts=dict(
         app_builds=1, host_action_methods=11, host_action_cases=12,
+        pending_retry_methods=1, pending_retry_observations=3, pending_retry_service_queries=9,
         native_preparation_methods=1, native_mutations=2, native_mutation_observations=3, core_ui_methods=2,
         hebrew_readonly_ui_executions=2, ui_app_lifetimes=5, failed=0, skipped=0),
         actual_ui_observations=outcome.get("actual_observation_counts"))
@@ -139,7 +151,7 @@ def main(argv=None):
     parser.add_argument("--source-run-id", required=True)
     args = parser.parse_args(argv)
     result = dict(status="RUNNING", phase="PREFLIGHT", completed_app_builds=0, native_ui_status="NOT_RUN",
-        host_actions_status="NOT_RUN",
+        host_actions_status="NOT_RUN", pending_retry_status="NOT_RUN",
         mixed_version_accepted=False, host_freshness_accepted=False, full_matrix_accepted=False,
         product_lookup_flag="OFF", voice_over_status="NOT_RUN", visual_review_status="PENDING",
         physical_device_accepted=False, started_at=datetime.now(timezone.utc).isoformat())
@@ -150,6 +162,8 @@ def main(argv=None):
                       error_type=type(error).__name__, error=str(error))
         if result["phase"] == "ACTUAL_HOST_ACTIONS":
             result["host_actions_status"] = result["status"]
+        if result["phase"] == "ACTUAL_PENDING_NINE":
+            result["pending_retry_status"] = result["status"]
         raise
     finally:
         result["finished_at"] = datetime.now(timezone.utc).isoformat()
