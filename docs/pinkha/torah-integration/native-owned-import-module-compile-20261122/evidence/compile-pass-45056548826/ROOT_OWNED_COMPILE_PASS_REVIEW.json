@@ -1,0 +1,55 @@
+{
+  "status": "PASS_ROOT_ORIGINAL_OWNED_COMPILE_EVIDENCE_REVIEW",
+  "run_id": 45056548826,
+  "head": "9e76d3c6868c0540636396e66ac9829e5f8dc14e",
+  "attempt": 1,
+  "verified_retained_mirror": {
+    "bytes": 1793738,
+    "sha256": "3c15055682def6dfae0cfc685d170d3f849918b99d67fbe6a09334371896e7a9",
+    "members": 51,
+    "crc": true
+  },
+  "original_actions_zip_metadata_only": {
+    "artifact_id": 14767901351,
+    "bytes": 1734312,
+    "sha256": "2a1542ed11ad74df9290199aad6a801813efb64d3702101f6550e2497e47777b",
+    "distinction": "The original observer downloaded/extracted once; root verifies the retained51-file mirror. The original Actions ZIP bytes are not retained in this mirror and are not independently rehashed."
+  },
+  "indexed_payloads": 34,
+  "owned_commands": 13,
+  "command_streams": 26,
+  "all_owned_groups_drained": true,
+  "local_source_readbacks_verified": {
+    "gate": 10,
+    "origin": 8,
+    "owned": 17
+  },
+  "native_declared_input_commitments": 9829,
+  "all_twenty_product_bytes_bound_to_native_compiler_inputs": true,
+  "overlay_composition": "6 original +15 owned; processor preimage matches the original overlay, yielding20unique final files",
+  "compile_seconds": 152.892,
+  "go": {
+    "path": "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+    "sha256": "3925fc3221ac440ebf7c35361ff663bed0c7bdb2e0a157b75fe993607ffe0a19",
+    "version": "go version go1.26.5 darwin/arm64"
+  },
+  "compiled_binary_runner_observation": {
+    "bytes": 119264626,
+    "evidence_scope": "Runner-observed output hash; executable bytes remain in the owned work directory, outside the uploaded evidence.",
+    "executed": false,
+    "path": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Owned-Import-Compile-Owned-Work/original-importer.test",
+    "sha256": "2f7b2d63b9bcf2546f9c2f3b9c938a0c35ccc452775c88af1ae5c95d307fd458"
+  },
+  "original_modules_and_tantivy_preserved": true,
+  "tests_executed": 0,
+  "imports_executed": 0,
+  "preserved_old_controls": [
+    50,
+    7,
+    26
+  ],
+  "scope": "Actual original-module compile/link compatibility for the reviewed20files; new lifetime source, import execution, persisted semantics and native UI acceptance remain open.",
+  "linker_warning": "# github.com/anyproto/anytype-heart/core/block/import.test\nld: warning: ignoring duplicate libraries: '-ldl', '-lm', '-ltantivy_go'\n",
+  "root_additional_actions_downloads": 0,
+  "root_test_replays": 0
+}

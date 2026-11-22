@@ -1,0 +1,56 @@
+{
+  "status": "PASS_RETAINED_COMPILE_EVIDENCE_AND_EXACT_SOURCE_BINDING",
+  "head": "9e76d3c6868c0540636396e66ac9829e5f8dc14e",
+  "run_id": 45056548826,
+  "run_attempt": 1,
+  "artifact_id": 14767901351,
+  "result_sha256": "1d5e67148a33da422202ee12f791c05abeb98670441c430a959fa3610e2c36e9",
+  "indexed_payloads_verified": 34,
+  "retained_evidence_files_including_index": 35,
+  "actual_commands_verified": 13,
+  "all_command_streams_and_drained_groups_verified": true,
+  "declared_native_input_commitment_count": 9829,
+  "declared_native_inputs_sha256": "e28d4e1f376509159443f7133e265882eff3d2c7635872e2864f03172d48d341",
+  "twenty_local_products_match_native_declared_inputs": true,
+  "input_readbacks": {
+    "gate": 10,
+    "origin": 8,
+    "owned": 17
+  },
+  "go": {
+    "path": "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+    "sha256": "3925fc3221ac440ebf7c35361ff663bed0c7bdb2e0a157b75fe993607ffe0a19",
+    "version": "go version go1.26.5 darwin/arm64"
+  },
+  "compile_argv": [
+    "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+    "test",
+    "-c",
+    "-p",
+    "2",
+    "-o",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Owned-Import-Compile-Owned-Work/original-importer.test",
+    "./core/block/import"
+  ],
+  "compiled_binary": {
+    "bytes": 119264626,
+    "evidence_scope": "Runner-observed output hash; executable bytes remain in the owned work directory, outside the uploaded evidence.",
+    "executed": false,
+    "path": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Owned-Import-Compile-Owned-Work/original-importer.test",
+    "sha256": "2f7b2d63b9bcf2546f9c2f3b9c938a0c35ccc452775c88af1ae5c95d307fd458"
+  },
+  "linker_warning_retained": "# github.com/anyproto/anytype-heart/core/block/import.test\nld: warning: ignoring duplicate libraries: '-ldl', '-lm', '-ltantivy_go'\n",
+  "tests_executed": 0,
+  "native_imports_executed": 0,
+  "historical_controls_preserved_without_replay": [
+    50,
+    7,
+    26
+  ],
+  "qualification": "Original-module source/link compatibility only; no import execution, lifetime proof, mapping authority, semantic native readback, or ACK.",
+  "limitations": [
+    "The complete 9,829-file dependency inventory is a runner-observed hash commitment; external module contents are not separately copied into this evidence.",
+    "The compiled executable hash is observed by the original runner; executable bytes were not uploaded or executed.",
+    "New lifetime source files are separate and are not included in this compilation."
+  ]
+}
