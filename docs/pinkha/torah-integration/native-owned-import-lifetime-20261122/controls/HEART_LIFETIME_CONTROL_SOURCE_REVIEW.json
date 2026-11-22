@@ -1,0 +1,60 @@
+{
+  "status": "SOURCE_REVIEW_CLEAR_EXPLICIT_UNIT_BOUNDARIES",
+  "reviewer": "heart_completion",
+  "inputs": [
+    {
+      "path": "build_controls.py",
+      "bytes": 12723,
+      "sha256": "8a0d02dbc16a635766619d9272418b25ce1b9b9e23083c39972cba3eb686eacc"
+    },
+    {
+      "path": "owned_operation_test.go",
+      "bytes": 9636,
+      "sha256": "6e9bdeea06647e68d324cc023e7b87000afacdfdfb95ac08d12f119fd4f96115"
+    },
+    {
+      "path": "owned_admission_test.go",
+      "bytes": 13340,
+      "sha256": "69f74b9669e4fc9a7029397d829ce3e59b9ddd7ec2fab142d15a56b4073d4793"
+    },
+    {
+      "path": "run_windows_controls.py",
+      "bytes": 6882,
+      "sha256": "2bda5203a895bca7aa73e4ff25381865f3e1d67d6e6c58adfc2c0edd009945db"
+    },
+    {
+      "path": "SOURCE.json",
+      "bytes": 13161,
+      "sha256": "ac8ad5d8488ad17cb5469c314f33e0a1e15ee7f0bfd7f397888896e03ad762b6"
+    }
+  ],
+  "source_bindings_independently_verified": {
+    "module_files": 22,
+    "whole_files": 5,
+    "exact_original_or_owned_fragments": 8,
+    "new_leaf_controls": 23
+  },
+  "findings": [
+    "Controlled Execute entry/release channels independently distinguish cancellation request from actual return; Done and Result remain unavailable before release.",
+    "Registration is inspected before Start; pre-start Stop returns pending and preserves app/lease until the controlled actual Execute return.",
+    "Reentrant Stop is invoked inside the held Execute callback and must return pending without self-join, lock-held GetApp blockage or early app close.",
+    "Multiple operations and overlapping lifecycle reservations remain independently represented; completion of one does not release another owner.",
+    "The original beginStart/cancelStart fragments are exercised for supersession and fast AccountStop cancellation while the existing writer lock is held.",
+    "Copied outcomes retain independent slices; invalid zero operation or changed destination never gains successful identity.",
+    "Finite parent runner admits only two fixture packages and exact23 leaves after both compile checks, recording errors without an automatic rerun."
+  ],
+  "scope_limits": [
+    "The supersession case models overlapping reservations and uses original beginStart semantics; it is not a native concurrent AccountSelect/Create integration or race-detector proof.",
+    "Execute, protobuf clone/dependency construction, components, wallet/lease and close/remove are declared ABI/callback fixtures. These controls cannot establish actual importer workers/uploads/storage, native account lifecycle, schema, body equivalence or ACK.",
+    "Full native compile and actual lifecycle integration remain separate gates."
+  ],
+  "execution_by_reviewer": 0,
+  "test_or_apple_replays_by_reviewer": 0,
+  "existing_actual_result_read": {
+    "path": "evidence/attempt-v1/VERIFICATION.json",
+    "reported_controls": 23,
+    "reported_passed": 23,
+    "result_sha256": "4325bbe6be2344db032275f6faed8d7d9e9f98e018f9dedc42d74632217cc819",
+    "claim": "Read-only source review; this receipt does not add an execution or replace the owner retained-result verification."
+  }
+}

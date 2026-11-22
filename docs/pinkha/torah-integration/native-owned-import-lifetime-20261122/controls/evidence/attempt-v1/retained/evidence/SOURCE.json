@@ -1,0 +1,324 @@
+{
+  "scope": "New operation completion, application registration/retirement and legacy start/stop boundary unit controls; explicit controlled dependency fixtures only.",
+  "full_actual_source_files": [
+    {
+      "source": "native-owned-import-audit/lifetime/candidate/native/core/block/import/owned_import_operation.go",
+      "compiled_path": "core/block/import/owned_import_operation.go",
+      "bytes": 6059,
+      "sha256": "8fba0afe60bd32ed51707ca43ed0beb7a45e30470a32811e290a6aaef4073b13",
+      "kind": "product"
+    },
+    {
+      "source": "native-owned-import-audit/lifetime/candidate/native/core/application/owned_import_admission.go",
+      "compiled_path": "core/application/owned_import_admission.go",
+      "bytes": 5128,
+      "sha256": "3ed41b1989e03d087c393d04b5b3c3a5d6a813830e4c42bebb6f2c4d727e67ee",
+      "kind": "product"
+    },
+    {
+      "source": "native-import-request-compat/candidate/native/core/block/import/mapping_observation.go",
+      "compiled_path": "core/block/import/mapping_observation.go",
+      "bytes": 9367,
+      "sha256": "851c5ad1a2c65e3698816bf8be5ccdd85e4074d9afb3b3f3dd79d5758e6be9cf",
+      "kind": "unchanged_prior_product"
+    },
+    {
+      "source": "native-owned-import-audit/lifetime/controls/owned_operation_test.go",
+      "compiled_path": "core/block/import/owned_operation_test.go",
+      "bytes": 9636,
+      "sha256": "6e9bdeea06647e68d324cc023e7b87000afacdfdfb95ac08d12f119fd4f96115",
+      "kind": "new_unit_control"
+    },
+    {
+      "source": "native-owned-import-audit/lifetime/controls/owned_admission_test.go",
+      "compiled_path": "core/application/owned_admission_test.go",
+      "bytes": 13340,
+      "sha256": "69f74b9669e4fc9a7029397d829ce3e59b9ddd7ec2fab142d15a56b4073d4793",
+      "kind": "new_unit_control"
+    }
+  ],
+  "actual_source_fragments": [
+    {
+      "source": "native-import-request-compat/candidate/native/core/block/import/types.go",
+      "source_bytes": 3134,
+      "source_sha256": "d701d6d5e6c7a66e361c3f2db4b623fa8745423477d78ec289eb53b133e54140",
+      "start": "type ImportRequest struct {",
+      "end": "\ntype Dependencies struct {",
+      "bytes": 1151,
+      "fragment_sha256": "fe49771bb5e9529621bd0428772cd2462c988560c3445a565b55f45383056523"
+    },
+    {
+      "source": "native-owned-import-audit/import-layer/candidate/native/core/block/import/owned_import_files.go",
+      "source_bytes": 6041,
+      "source_sha256": "742f8e30b8878973ad9a30418b94643cf7c7d812b4563b20851b72530074d2fb",
+      "start": "type ownedImportFileResult struct {",
+      "end": "\nfunc (o *ownedImportExecution) beginRun()",
+      "bytes": 639,
+      "fragment_sha256": "3ba8e45364de2b8ab2c61e33439d64d07593ce6170545b63d2f45d10d781b0a7"
+    },
+    {
+      "source": "native-owned-import-audit/import-layer/candidate/native/core/block/import/owned_import_files.go",
+      "source_bytes": 6041,
+      "source_sha256": "742f8e30b8878973ad9a30418b94643cf7c7d812b4563b20851b72530074d2fb",
+      "start": "func newOwnedImportExecution(",
+      "end": "\nfunc (o *ownedImportExecution) beginFile(",
+      "bytes": 182,
+      "fragment_sha256": "339528805ec7031c4b376ae8c7587c221c37cbdc73bb1aa8bc324f67e4d3ae71"
+    },
+    {
+      "source": "native-owned-import-audit/lifetime/candidate/native/core/application/application.go",
+      "source_bytes": 5872,
+      "source_sha256": "30d0110b028f009d5b447faff657def67e2605e44bcbb85fa6ffc437b0f686f2",
+      "start": "func (s *Service) GetApp()",
+      "end": "\nfunc (s *Service) requireClientWithVersion()",
+      "bytes": 94,
+      "fragment_sha256": "3a4e4593258efedff1f1a033786e3288de47c879feacd349e116653c60df7595"
+    },
+    {
+      "source": "native-owned-import-audit/lifetime/candidate/native/core/application/application.go",
+      "source_bytes": 5872,
+      "source_sha256": "30d0110b028f009d5b447faff657def67e2605e44bcbb85fa6ffc437b0f686f2",
+      "start": "func (s *Service) Stop()",
+      "end": "\n// closeApp closes",
+      "bytes": 346,
+      "fragment_sha256": "a0ee0b9ed2daa0f98195bf23557709b79f6a74dc1da8b02792ea95fe488e3342"
+    },
+    {
+      "source": "native-owned-import-audit/lifetime/candidate/native/core/application/account_stop.go",
+      "source_bytes": 4978,
+      "source_sha256": "fe6b79b2491996b11b2f18fe8724084bfb658926c44a4612179a79293ae53f2a",
+      "start": "func (s *Service) AccountStop(",
+      "end": "\nfunc (s *Service) AccountChangeNetworkConfigAndRestart(",
+      "bytes": 1072,
+      "fragment_sha256": "2bce7ed31fe6bdaefaaf0a3910f681960112a38ebaab4ffc923f701612cd4fcf"
+    },
+    {
+      "source": "native-owned-import-audit/original/anytype-heart/core/application/app_start.go",
+      "source_bytes": 6726,
+      "source_sha256": "3e708b02ad4b0ae507961fa1d1c7c0ba1028066752317dfb0c1c0aea7777d05d",
+      "start": "type startRun struct {",
+      "end": "\n// startNewApp is where",
+      "bytes": 1812,
+      "fragment_sha256": "53c5ffd7d9fbfea9eee4691d39a342230d1f83c3a7a19124b9f8213da52167c1"
+    },
+    {
+      "source": "native-owned-import-audit/lifetime/original/core/application/account_lock.go",
+      "source_bytes": 2683,
+      "source_sha256": "8c06c16071995c7cd882f3202a4fbc8efd2bb5df31cbf8fa08b5e169d4f6f6e1",
+      "start": "func (s *Service) releaseAccountLease()",
+      "end": null,
+      "bytes": 210,
+      "fragment_sha256": "d3e128765e7fe44216203cf116a9540382de54f537129224a802e0f4770c6328"
+    }
+  ],
+  "module_files": [
+    {
+      "path": "core/application/accountdirlock/fixture.go",
+      "bytes": 420,
+      "sha256": "34a6e6fc816fd33f0da6fbf59569142ee974dac05a12e00da5e71f1b9efb377f"
+    },
+    {
+      "path": "core/application/actual_lifecycle.go",
+      "bytes": 3818,
+      "sha256": "0475f03e336ccfb0820db2994a6e191e504932435ffd5ebf72dda7dda7162390"
+    },
+    {
+      "path": "core/application/fixture.go",
+      "bytes": 947,
+      "sha256": "d9f6a7908eec4065fa66a812d0d8c80c11405238c21bbb2d58086dfa2f9e7205"
+    },
+    {
+      "path": "core/application/owned_admission_test.go",
+      "bytes": 13340,
+      "sha256": "69f74b9669e4fc9a7029397d829ce3e59b9ddd7ec2fab142d15a56b4073d4793"
+    },
+    {
+      "path": "core/application/owned_import_admission.go",
+      "bytes": 5128,
+      "sha256": "3ed41b1989e03d087c393d04b5b3c3a5d6a813830e4c42bebb6f2c4d727e67ee"
+    },
+    {
+      "path": "core/block/import/actual_owned_context.go",
+      "bytes": 937,
+      "sha256": "89326079df2fa5daf65c7afd7ef0137e1c7a10fb5dca2d63ef86ee8b52b72118"
+    },
+    {
+      "path": "core/block/import/actual_types.go",
+      "bytes": 1404,
+      "sha256": "8cdc988d51dbf1ede79c4997ba012cf7a3ea57fb00846e3c91e9c8b0ff803fff"
+    },
+    {
+      "path": "core/block/import/fixture.go",
+      "bytes": 2671,
+      "sha256": "422104b682e55167ded16fdb8521e38521014487a027794f746ed051bd034ebb"
+    },
+    {
+      "path": "core/block/import/mapping_observation.go",
+      "bytes": 9367,
+      "sha256": "851c5ad1a2c65e3698816bf8be5ccdd85e4074d9afb3b3f3dd79d5758e6be9cf"
+    },
+    {
+      "path": "core/block/import/owned_import_operation.go",
+      "bytes": 6059,
+      "sha256": "8fba0afe60bd32ed51707ca43ed0beb7a45e30470a32811e290a6aaef4073b13"
+    },
+    {
+      "path": "core/block/import/owned_operation_test.go",
+      "bytes": 9636,
+      "sha256": "6e9bdeea06647e68d324cc023e7b87000afacdfdfb95ac08d12f119fd4f96115"
+    },
+    {
+      "path": "core/block/process/fixture.go",
+      "bytes": 42,
+      "sha256": "b21ecb0168950aa89f74be869afa82bdb7a1d8f4f924df300a960df914196379"
+    },
+    {
+      "path": "core/domain/objectorigin/fixture.go",
+      "bytes": 48,
+      "sha256": "336bd9d81b3c0fda3a51e73038e98e2407fa80a15472e4e0e04e1e0622611bcb"
+    },
+    {
+      "path": "core/files/fileuploader/fixture.go",
+      "bytes": 47,
+      "sha256": "b5a1b5b23f54081736ce3280b1a5553241b612e2f6f4102a20be76ea8bc4827f"
+    },
+    {
+      "path": "core/pushnotification/fixture.go",
+      "bytes": 137,
+      "sha256": "075c1a781e3becb5c92179ae3e3aa7d8cb738eac6ed296e4221dd771fdc4459a"
+    },
+    {
+      "path": "core/wallet/fixture.go",
+      "bytes": 521,
+      "sha256": "02712711909f1a2f029f81c92dcc4f9ceed6a123441f2a130b0385caeda7c234"
+    },
+    {
+      "path": "fixture-modules/any-sync/app/fixture.go",
+      "bytes": 209,
+      "sha256": "a27686bf8964ea716978042cd6c2a43f4e3c4c5b45e67715e3609c05773a0958"
+    },
+    {
+      "path": "fixture-modules/any-sync/go.mod",
+      "bytes": 46,
+      "sha256": "afd675f1b5b75c8cc5d19ec97400624680ba7e2f91c3b21caaeee1b9977f6b97"
+    },
+    {
+      "path": "go.mod",
+      "bytes": 162,
+      "sha256": "35c0202ce741192b39457b9cb04693dc4729adffd57d496d34e3948dd31d51c5"
+    },
+    {
+      "path": "pb/fixture.go",
+      "bytes": 119,
+      "sha256": "b1d19c51afcb1fa63e644a843d57f5ff1f859de2df33c146f923d0080064b5e8"
+    },
+    {
+      "path": "pkg/lib/pb/model/fixture.go",
+      "bytes": 50,
+      "sha256": "5fc269c372e1cd80c2687b41a0f1390a4d8b15cee8f7a487512227f387418fb7"
+    },
+    {
+      "path": "util/anyerror/fixture.go",
+      "bytes": 67,
+      "sha256": "3f9ad63b1e97266ec125eaecc8e013793585f64ccfefff71cabeb7237fbb3c5f"
+    }
+  ],
+  "fixture_scope": "All fixture.go files and the replacement any-sync module are explicit ABI/callback fixtures. Execute, dependency construction/protobuf clone, component lookup, wallet keys, account lease, closeApp and accountRemoveLocalData are fixtures. No native module/account/storage/worker/upload/body/ACK qualification; prior 50/7/26 and native lifecycle controls are not executed.",
+  "expected_tests": [
+    {
+      "package": "github.com/anyproto/anytype-heart/core/application",
+      "name": "TestAdmissionRejectsWrongOwnerBeforeConstruction"
+    },
+    {
+      "package": "github.com/anyproto/anytype-heart/core/application",
+      "name": "TestAdmissionDoesNotQueueBehindExistingWriter"
+    },
+    {
+      "package": "github.com/anyproto/anytype-heart/core/application",
+      "name": "TestRegistrationPrecedesStartAndCancellationDoesNotForgeDrain"
+    },
+    {
+      "package": "github.com/anyproto/anytype-heart/core/application",
+      "name": "TestStopPreservesAppAndLeaseUntilActualReturn"
+    },
+    {
+      "package": "github.com/anyproto/anytype-heart/core/application",
+      "name": "TestRemoveDataCannotDispatchWhileImportIsPending"
+    },
+    {
+      "package": "github.com/anyproto/anytype-heart/core/application",
+      "name": "TestReentrantStopInsideExecuteDoesNotJoinItself"
+    },
+    {
+      "package": "github.com/anyproto/anytype-heart/core/application",
+      "name": "TestPendingRetirementBlocksNewAdmissionUntilLifecycleRetry"
+    },
+    {
+      "package": "github.com/anyproto/anytype-heart/core/application",
+      "name": "TestRetirementCountBlocksUntilEveryLegacyReservationFinishes"
+    },
+    {
+      "package": "github.com/anyproto/anytype-heart/core/application",
+      "name": "TestConcurrentRetirementsPreserveOriginalStartSupersession"
+    },
+    {
+      "package": "github.com/anyproto/anytype-heart/core/application",
+      "name": "TestAccountStopFastCancellationRemainsBeforeWriterLock"
+    },
+    {
+      "package": "github.com/anyproto/anytype-heart/core/application",
+      "name": "TestEveryRegisteredOperationMustReturnBeforeRetirement"
+    },
+    {
+      "package": "github.com/anyproto/anytype-heart/core/application",
+      "name": "TestParentCancellationCannotManufactureLifecycleCompletion"
+    },
+    {
+      "package": "github.com/anyproto/anytype-heart/core/block/import",
+      "name": "TestZeroOperationCannotReportCompletion"
+    },
+    {
+      "package": "github.com/anyproto/anytype-heart/core/block/import",
+      "name": "TestPrepareRejectsMissingOrCancelledOwnerBeforeConstructor"
+    },
+    {
+      "package": "github.com/anyproto/anytype-heart/core/block/import",
+      "name": "TestPrepareErrorCancelsOnlyDerivedContext"
+    },
+    {
+      "package": "github.com/anyproto/anytype-heart/core/block/import",
+      "name": "TestPreparedTargetIsCopiedBeforeCallerMutation"
+    },
+    {
+      "package": "github.com/anyproto/anytype-heart/core/block/import",
+      "name": "TestConcurrentStartRunsExactlyOneExecuteAndWaitsForReturn"
+    },
+    {
+      "package": "github.com/anyproto/anytype-heart/core/block/import",
+      "name": "TestCancellationBeforeStartStillWaitsForExecuteReturn"
+    },
+    {
+      "package": "github.com/anyproto/anytype-heart/core/block/import",
+      "name": "TestCancellationDuringExecuteIsRequestUntilActualReturn"
+    },
+    {
+      "package": "github.com/anyproto/anytype-heart/core/block/import",
+      "name": "TestNilExecuteResponseIsUnavailableAfterReturn"
+    },
+    {
+      "package": "github.com/anyproto/anytype-heart/core/block/import",
+      "name": "TestOutcomeReturnsIndependentCopiesOfRetainedSlices"
+    },
+    {
+      "package": "github.com/anyproto/anytype-heart/core/block/import",
+      "name": "TestChangedProcessorTargetFailsClosedAtReturn"
+    },
+    {
+      "package": "github.com/anyproto/anytype-heart/core/block/import",
+      "name": "TestCancellationIsIsolatedToOneOwnedOperation"
+    }
+  ],
+  "prior_controls_replayed": 0,
+  "native_executions": 0,
+  "product_manifest_sha256": "b346aef087de866e7b5fd862f5ee81b74a7199eb22cc1246c3f9e88ee9d882bd"
+}

@@ -1,0 +1,435 @@
+--- a/core/application/account_create.go
++++ b/core/application/account_create.go
+@@ -26,6 +26,12 @@
+ )
+ 
+ func (s *Service) AccountCreate(ctx context.Context, req *pb.RpcAccountCreateRequest) (newAcc *model.Account, err error) {
++	releaseOwnedRetirement, ownedErr := s.beginOwnedImportRetirement()
++	if ownedErr != nil {
++		return nil, ownedErr
++	}
++	defer releaseOwnedRetirement()
++
+ 	// published before the lock wait, so a stop can reach this start at any
+ 	// point of it; retracted under the lock, last (see app_start.go)
+ 	ctx, end := s.beginStart(ctx)
+--- a/core/application/account_create_from_export.go
++++ b/core/application/account_create_from_export.go
+@@ -65,6 +65,12 @@
+ }
+ 
+ func (s *Service) RecoverFromLegacy(req *pb.RpcAccountRecoverFromLegacyExportRequest) (response RecoverFromLegacyResponse, err error) {
++	releaseOwnedRetirement, ownedErr := s.beginOwnedImportRetirement()
++	if ownedErr != nil {
++		return RecoverFromLegacyResponse{}, ownedErr
++	}
++	defer releaseOwnedRetirement()
++
+ 	s.lock.Lock()
+ 	defer s.lock.Unlock()
+ 
+--- a/core/application/account_move.go
++++ b/core/application/account_move.go
+@@ -20,6 +20,12 @@
+ )
+ 
+ func (s *Service) AccountMove(req *pb.RpcAccountMoveRequest) (err error) {
++	releaseOwnedRetirement, ownedErr := s.beginOwnedImportRetirement()
++	if ownedErr != nil {
++		return ownedErr
++	}
++	defer releaseOwnedRetirement()
++
+ 	s.lock.Lock()
+ 	defer s.lock.Unlock()
+ 
+--- a/core/application/account_select.go
++++ b/core/application/account_select.go
+@@ -34,6 +34,12 @@
+ )
+ 
+ func (s *Service) AccountSelect(ctx context.Context, req *pb.RpcAccountSelectRequest) (*model.Account, error) {
++	releaseOwnedRetirement, ownedErr := s.beginOwnedImportRetirement()
++	if ownedErr != nil {
++		return nil, ownedErr
++	}
++	defer releaseOwnedRetirement()
++
+ 	if req.Id == "" {
+ 		return nil, ErrEmptyAccountID
+ 	}
+--- a/core/application/account_stop.go
++++ b/core/application/account_stop.go
+@@ -36,6 +36,12 @@
+ // resolve the account directory from, it reports the failure rather than
+ // reporting success.
+ func (s *Service) AccountStop(req *pb.RpcAccountStopRequest) error {
++	releaseOwnedRetirement, ownedErr := s.beginOwnedImportRetirement()
++	if ownedErr != nil {
++		return ownedErr
++	}
++	defer releaseOwnedRetirement()
++
+ 	cancelled := s.cancelStart()
+ 	if cancelled && !req.RemoveData {
+ 		return nil
+@@ -75,6 +81,12 @@
+ }
+ 
+ func (s *Service) AccountChangeNetworkConfigAndRestart(ctx context.Context, req *pb.RpcAccountChangeNetworkConfigAndRestartRequest) error {
++	releaseOwnedRetirement, ownedErr := s.beginOwnedImportRetirement()
++	if ownedErr != nil {
++		return ownedErr
++	}
++	defer releaseOwnedRetirement()
++
+ 	s.lock.Lock()
+ 	defer s.lock.Unlock()
+ 	if s.app == nil {
+--- a/core/application/application.go
++++ b/core/application/application.go
+@@ -22,7 +22,8 @@
+ var log = logging.Logger("anytype-core-account")
+ 
+ type Service struct {
+-	lock sync.RWMutex
++	lock         sync.RWMutex
++	ownedImports ownedImportRegistry
+ 
+ 	app          *app.App
+ 	accountLease *accountdirlock.Lease
+@@ -106,6 +107,12 @@
+ // Stop is process shutdown: a start in flight is cancelled rather than waited
+ // for, and the lock is then taken behind its unwind.
+ func (s *Service) Stop() error {
++	releaseOwnedRetirement, ownedErr := s.beginOwnedImportRetirement()
++	if ownedErr != nil {
++		return ownedErr
++	}
++	defer releaseOwnedRetirement()
++
+ 	s.cancelStart()
+ 	s.lock.Lock()
+ 	defer s.lock.Unlock()
+--- /dev/null
++++ b/core/application/owned_import_admission.go
+@@ -0,0 +1,141 @@
++package application
++
++import (
++	"context"
++	"errors"
++	"sync"
++
++	"github.com/anyproto/any-sync/app"
++
++	importer "github.com/anyproto/anytype-heart/core/block/import"
++	walletComp "github.com/anyproto/anytype-heart/core/wallet"
++)
++
++var ErrOwnedImportDrainPending = errors.New("owned original import cancellation requested; actual drain is pending")
++var ErrOwnedImportAdmissionUnavailable = errors.New("owned original import application admission is unavailable")
++
++// These fields bind an internally constructed operation to the actual retained
++// app and wallet. The target Space is the original request's declared target;
++// this is not an ACL, archive, semantic body or ACK capability.
++type ownedAccountImport struct {
++	app       *app.App
++	accountID string
++	spaceID   string
++	operation *importer.OwnedImportOperation
++}
++
++// The registry's mutex is never held while waiting for an import, invoking a
++// cancellation function or acquiring Service.lock. Admission takes Service's
++// read lock first. Lifecycle reserves retirement before its existing writer
++// lock, beginStart and account-lease effects.
++type ownedImportRegistry struct {
++	mu          sync.Mutex
++	operations  map[*ownedAccountImport]struct{}
++	retirements uint64
++	pending     bool
++}
++
++func (r *ownedImportRegistry) pruneDrainedLocked() {
++	for owned := range r.operations {
++		// Only the closed original operation supplies Done. No caller-provided
++		// channel, completion closure or mutable success flag is accepted.
++		select {
++		case <-owned.operation.Done():
++			delete(r.operations, owned)
++		default:
++		}
++	}
++}
++
++// beginOwnedImportRetirement never joins native work. A synchronous original
++// event callback may reenter Stop here; waiting would join its own import or
++// block GetApp behind a writer. Pending is an error, not successful Stop.
++func (s *Service) beginOwnedImportRetirement() (func(), error) {
++	r := &s.ownedImports
++	r.mu.Lock()
++	r.pruneDrainedLocked()
++	if len(r.operations) != 0 {
++		r.pending = true
++		operations := make([]*importer.OwnedImportOperation, 0, len(r.operations))
++		for owned := range r.operations {
++			operations = append(operations, owned.operation)
++		}
++		r.mu.Unlock()
++		for _, operation := range operations {
++			operation.RequestCancel()
++		}
++		return nil, ErrOwnedImportDrainPending
++	}
++	// This is a count, not an exclusive lifecycle gate: with no owned import,
++	// newer original starts still publish and cancel older starts in exactly
++	// their original order, and AccountStop retains its fast cancelStart path.
++	r.retirements++
++	r.pending = false
++	r.mu.Unlock()
++	var once sync.Once
++	return func() {
++		once.Do(func() {
++			r.mu.Lock()
++			r.retirements--
++			r.mu.Unlock()
++		})
++	}, nil
++}
++
++// startOwnedImport is package-private and has no production caller. The future
++// native route must supply authentic archive/attempt/permission binding before
++// using it. This method only establishes actual app lifetime and wallet identity.
++func (s *Service) startOwnedImport(ctx context.Context, expected *app.App, accountID string, request *importer.ImportRequest) (*ownedAccountImport, error) {
++	owned, err := s.prepareOwnedAccountImport(ctx, expected, accountID, request)
++	if err != nil {
++		return nil, err
++	}
++	// Registration is already visible before the first native work. A lifecycle
++	// request in this gap can cancel the operation, but must still return pending
++	// until the now-cancelled original Execute actually returns.
++	owned.operation.Start()
++	return owned, nil
++}
++
++func (s *Service) prepareOwnedAccountImport(ctx context.Context, expected *app.App, accountID string, request *importer.ImportRequest) (*ownedAccountImport, error) {
++	if s == nil || ctx == nil || expected == nil || accountID == "" || request == nil || request.RpcObjectImportRequest == nil {
++		return nil, ErrOwnedImportAdmissionUnavailable
++	}
++	if err := ctx.Err(); err != nil {
++		return nil, err
++	}
++	// Do not queue a new owned admission behind an original startup's possibly
++	// long writer lock. This private route fails closed and can be retried.
++	if !s.lock.TryRLock() {
++		return nil, ErrOwnedImportAdmissionUnavailable
++	}
++	defer s.lock.RUnlock()
++	if s.app == nil || s.app != expected {
++		return nil, ErrOwnedImportAdmissionUnavailable
++	}
++	wallet, ok := s.app.Component(walletComp.CName).(walletComp.Wallet)
++	if !ok || wallet == nil || wallet.GetAccountPrivkey().GetPublic().Account() != accountID ||
++		s.accountLease == nil || !s.accountLease.Matches(wallet.RootPath(), accountID) || !s.accountLease.Usable() {
++		return nil, ErrOwnedImportAdmissionUnavailable
++	}
++	r := &s.ownedImports
++	r.mu.Lock()
++	defer r.mu.Unlock()
++	r.pruneDrainedLocked()
++	if r.pending || r.retirements != 0 {
++		return nil, ErrOwnedImportAdmissionUnavailable
++	}
++	if err := ctx.Err(); err != nil {
++		return nil, err
++	}
++	operation, err := importer.PrepareOwnedImport(ctx, expected, request)
++	if err != nil {
++		return nil, err
++	}
++	owned := &ownedAccountImport{app: expected, accountID: accountID, spaceID: operation.TargetSpaceID(), operation: operation}
++	if r.operations == nil {
++		r.operations = make(map[*ownedAccountImport]struct{})
++	}
++	r.operations[owned] = struct{}{}
++	return owned, nil
++}
+--- /dev/null
++++ b/core/block/import/owned_import_operation.go
+@@ -0,0 +1,175 @@
++package importer
++
++import (
++	"context"
++	"errors"
++	"sync"
++
++	"github.com/anyproto/any-sync/app"
++)
++
++var ErrOwnedImportOperationUnavailable = errors.New("owned original import operation is unavailable")
++
++// OwnedImportFileObservation is copied from this execution's admitted native
++// calls and actual upload completions. A returned file ID does not prove that
++// the original final block update succeeded or that a body is semantically equal.
++type OwnedImportFileObservation struct {
++	Kind, ObjectID, BlockID, FileObjectID string
++	Err                                   error
++}
++
++// OwnedImportOutcome is a historical local completion. It has no caller-facing
++// constructor and grants no account, archive, mapping, body or ACK authority.
++// In particular, nil Err does not imply complete file/reference/body coverage.
++type OwnedImportOutcome struct {
++	targetSpaceID         string
++	processID             string
++	rootCollectionID      string
++	objectsCount          int64
++	cancellationRequested bool
++	err                   error
++	files                 []OwnedImportFileObservation
++	mapping               NativeProtobufImportMappingObservation
++	hasMapping            bool
++	mappingProblems       []string
++}
++
++func (o OwnedImportOutcome) TargetSpaceID() string       { return o.targetSpaceID }
++func (o OwnedImportOutcome) ProcessID() string           { return o.processID }
++func (o OwnedImportOutcome) RootCollectionID() string    { return o.rootCollectionID }
++func (o OwnedImportOutcome) ObjectsCount() int64         { return o.objectsCount }
++func (o OwnedImportOutcome) CancellationRequested() bool { return o.cancellationRequested }
++func (o OwnedImportOutcome) Err() error                  { return o.err }
++func (o OwnedImportOutcome) Files() []OwnedImportFileObservation {
++	return append([]OwnedImportFileObservation(nil), o.files...)
++}
++func (o OwnedImportOutcome) NativeMappingObservation() (NativeProtobufImportMappingObservation, bool) {
++	return o.mapping.copy(), o.hasMapping
++}
++func (o OwnedImportOutcome) NativeMappingProblems() []string {
++	return append([]string(nil), o.mappingProblems...)
++}
++func (o OwnedImportOutcome) copy() OwnedImportOutcome {
++	o.files = o.Files()
++	o.mapping = o.mapping.copy()
++	o.mappingProblems = o.NativeMappingProblems()
++	return o
++}
++
++// OwnedImportOperation retains only the actual original processor. There is no
++// injected executor, caller completion callback or writable drained flag. Its
++// owner must register it against the native application's lifetime BEFORE Start.
++// The zero value cannot start or report completion. No production RPC uses it.
++type OwnedImportOperation struct {
++	processor     *importProcessor
++	owned         *ownedImportExecution
++	targetSpaceID string
++	start         sync.Once
++	done          chan struct{}
++	outcome       OwnedImportOutcome
++}
++
++// PrepareOwnedImport constructs the original fresh dependency closure without
++// starting native import work. It is not lifetime admission by itself. The
++// request's protobuf is cloned by the reviewed private processor constructor.
++func PrepareOwnedImport(ctx context.Context, a *app.App, request *ImportRequest) (*OwnedImportOperation, error) {
++	if ctx == nil || a == nil {
++		return nil, ErrOwnedImportOperationUnavailable
++	}
++	if err := ctx.Err(); err != nil {
++		return nil, err
++	}
++	owned := newOwnedImportExecution(ctx)
++	prepared := false
++	defer func() {
++		if !prepared {
++			owned.cancel()
++		}
++	}()
++	processor, err := newOwnedImportProcessor(a, owned, request)
++	if err != nil {
++		return nil, err
++	}
++	operation := &OwnedImportOperation{processor: processor, owned: owned, targetSpaceID: processor.request.SpaceId, done: make(chan struct{})}
++	prepared = true
++	return operation, nil
++}
++
++// TargetSpaceID is copied from the cloned request, not reread from caller data.
++// It is a declared destination, not proof of native membership or permission.
++func (o *OwnedImportOperation) TargetSpaceID() string {
++	if o == nil {
++		return ""
++	}
++	return o.targetSpaceID
++}
++
++// Start dispatches exactly one original Execute. It must follow the native
++// owner's registration; even cancellation before Start still runs that owned
++// execution to its actual return before Done closes. Starting a zero handle
++// does nothing and cannot make it look drained.
++func (o *OwnedImportOperation) Start() {
++	if o == nil || o.processor == nil || o.owned == nil || o.done == nil {
++		return
++	}
++	o.start.Do(func() {
++		go o.run()
++	})
++}
++
++func (o *OwnedImportOperation) run() {
++	response := o.processor.Execute(o.owned.ctx)
++	result := OwnedImportOutcome{
++		targetSpaceID:         o.targetSpaceID,
++		cancellationRequested: o.owned.ctx.Err() != nil,
++	}
++	if response == nil {
++		result.err = ErrOwnedImportOperationUnavailable
++	} else {
++		result.processID = response.ProcessId
++		result.rootCollectionID = response.RootCollectionId
++		result.objectsCount = response.ObjectsCount
++		result.err = response.Err
++		result.mapping, result.hasMapping = response.NativeMappingObservation()
++		result.mappingProblems = response.NativeMappingProblems()
++	}
++	if o.processor.request.SpaceId != o.targetSpaceID {
++		result.err = errors.Join(result.err, ErrOwnedImportOperationUnavailable)
++	}
++	for _, file := range o.owned.fileResults {
++		result.files = append(result.files, OwnedImportFileObservation{
++			Kind: file.Kind, ObjectID: file.ObjectID, BlockID: file.BlockID,
++			FileObjectID: file.FileObjectID, Err: file.Err,
++		})
++	}
++	o.outcome = result
++	// Release the derived cancellation only after Execute's finalizer and
++	// mapping copyout have returned. It never substitutes for their drain.
++	o.owned.cancel()
++	close(o.done)
++}
++
++func (o *OwnedImportOperation) RequestCancel() {
++	if o != nil && o.owned != nil && o.owned.cancel != nil {
++		o.owned.cancel()
++	}
++}
++
++func (o *OwnedImportOperation) Done() <-chan struct{} {
++	if o == nil {
++		return nil
++	}
++	return o.done
++}
++
++func (o *OwnedImportOperation) Result() (OwnedImportOutcome, bool) {
++	if o == nil || o.done == nil {
++		return OwnedImportOutcome{}, false
++	}
++	select {
++	case <-o.done:
++		return o.outcome.copy(), true
++	default:
++		return OwnedImportOutcome{}, false
++	}
++}

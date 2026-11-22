@@ -1,0 +1,19 @@
+{
+  "status": "PASS_RETAINED_23_NEW_LIFETIME_UNIT_CONTROLS",
+  "result_sha256": "4325bbe6be2344db032275f6faed8d7d9e9f98e018f9dedc42d74632217cc819",
+  "source_manifest_sha256": "ac8ad5d8488ad17cb5469c314f33e0a1e15ee7f0bfd7f397888896e03ad762b6",
+  "raw_go_json_events": 100,
+  "leaf_controls_exactly_once": 23,
+  "failed": 0,
+  "skipped": 0,
+  "old_suites_replayed": 0,
+  "native_executions": 0,
+  "source_files_verified": 22,
+  "whole_files_verified": 5,
+  "exact_fragments_verified": 8,
+  "commands_verified": 4,
+  "streams_verified": 8,
+  "compiler": "go version go1.25.6 windows/amd64",
+  "scope": "New operation completion, application registration/retirement and legacy start/stop boundary unit controls; explicit controlled dependency fixtures only.",
+  "fixture_scope": "All fixture.go files and the replacement any-sync module are explicit ABI/callback fixtures. Execute, dependency construction/protobuf clone, component lookup, wallet keys, account lease, closeApp and accountRemoveLocalData are fixtures. No native module/account/storage/worker/upload/body/ACK qualification; prior 50/7/26 and native lifecycle controls are not executed."
+}

@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "reviewer": "clang_sdk",
+  "reviewed_at": "2026-11-22T18:25:29.227648+00:00",
+  "status": "SOURCE_ONLY_REVIEW_CLEAR_WITH_NATIVE_EXECUTION_PENDING",
+  "source_manifest_sha256": "b346aef087de866e7b5fd862f5ee81b74a7199eb22cc1246c3f9e88ee9d882bd",
+  "patch_sha256": "c3d6a93e966f49173631ff242cf37f62045a130beceae23f7d11e659dbd05d59",
+  "files": [
+    {
+      "path": "core/application/account_create.go",
+      "sha256": "d0726be42c7f3bedb1479113ec90310296f2a551d04d64dad06d0a8a863ed4b4",
+      "git_blob": "f37d02dd21df133ed35d563e96951ebed9948786",
+      "exact_inverse_preimage_sha256": "320baacb33c5a6db832ce507ac54747497529da735f8a4776ab9024155f7114c",
+      "guards_removed": 1
+    },
+    {
+      "path": "core/application/account_create_from_export.go",
+      "sha256": "5d7f91dc44d7c04f445a3b22ccc692c525a94c8b61cc5ac696764fe03c69db21",
+      "git_blob": "22d13ce25ad689defabb53e4a7a81ef2d1bf9c4b",
+      "exact_inverse_preimage_sha256": "2682d523ed12e1b34279045c73cd2eae090ec90c439b556ed0ac72d5c25216a8",
+      "guards_removed": 1
+    },
+    {
+      "path": "core/application/account_move.go",
+      "sha256": "7a0e25f0423b1304d86022e83e4b76ee259a31ab9d9aa7a056ef71d4d7bbfb6a",
+      "git_blob": "e18d6111d43c31276df511270e023ce2ef6e500b",
+      "exact_inverse_preimage_sha256": "43ccd2ca3003fc75f4ca215a7e3021cf0c496e5ad7d47962f065086fa8cc4004",
+      "guards_removed": 1
+    },
+    {
+      "path": "core/application/account_select.go",
+      "sha256": "814b9c0a857df43032bf96c3fd1869570db2abfa5b25f0ceca6b798db3ed8dbd",
+      "git_blob": "2b2bfeeee3a9a37a0d7e1e72aba522c1727c08af",
+      "exact_inverse_preimage_sha256": "70df8befa61075fb2fa0b4fe486a20518de418cc685db1f77d410daff9620a91",
+      "guards_removed": 1
+    },
+    {
+      "path": "core/application/account_stop.go",
+      "sha256": "fe6b79b2491996b11b2f18fe8724084bfb658926c44a4612179a79293ae53f2a",
+      "git_blob": "dd1a43aea8c64134016941fb7e8bf2289ac591cc",
+      "exact_inverse_preimage_sha256": "5675f1211e5fcb3d95d54ea1d9894a5834df27b8ab3af75d0e7d075b55f1069a",
+      "guards_removed": 2
+    },
+    {
+      "path": "core/application/application.go",
+      "sha256": "30d0110b028f009d5b447faff657def67e2605e44bcbb85fa6ffc437b0f686f2",
+      "git_blob": "b73c36841f2aa15bb0e794c07c4f28976166c06c",
+      "exact_inverse_preimage_sha256": "e889d58b2d9afa11ba5bc8b03cbef5f58c01100a9a2faef0902ba9be2f2e3255",
+      "guards_removed": 1
+    },
+    {
+      "path": "core/application/owned_import_admission.go",
+      "sha256": "3ed41b1989e03d087c393d04b5b3c3a5d6a813830e4c42bebb6f2c4d727e67ee",
+      "git_blob": "39709e4fa9a47275d7df04448c02ed115b6be283"
+    },
+    {
+      "path": "core/block/import/owned_import_operation.go",
+      "sha256": "8fba0afe60bd32ed51707ca43ed0beb7a45e30470a32811e290a6aaef4073b13",
+      "git_blob": "301b0953c534fdc4a145d5bedca8978c7be6fe49"
+    }
+  ],
+  "conclusions": [
+    "Registry cancellation runs after mutex release; retirement never joins Execute or takes the application writer lock while native work is pending. A synchronous native event callback can request retirement without waiting on itself.",
+    "Application admission uses TryRLock and verifies the retained app pointer, wallet account and usable matching account lease. Registration occurs before the read lock releases and before Start. Lifecycle reservation therefore excludes new admission across the original close/start/lease operations.",
+    "A retirement count preserves concurrent legacy start and fast cancellation behavior when the registry is empty; exact seven-guard/one-field inverse restores all six original application sources.",
+    "Only the actual concrete processor Execute return publishes outcome and closes Done. Existing owned finalizer joins admitted local upload channels; RequestCancel only requests cancellation, including before Start.",
+    "The result copy exposes local historical completion only; target Space is a declared request value, not ACL/archive/body/mapping/ACK authorization. Remote backup work remains outside the owned closure.",
+    "Pending state intentionally blocks new admission until an actual lifecycle retry observes drained operations. No automatic lifecycle success or retry is introduced."
+  ],
+  "limits": [
+    "No new native compile, race detector, unit controls or actual import executed by reviewer.",
+    "No production route or RPC caller is enabled by this source packet. Future route admission and precise outcome interpretation remain separate gates.",
+    "Constructor/dependency audit is bounded to supplied exact native source closure and retained original source references; this receipt is not whole-repository build evidence."
+  ],
+  "tests_executed": 0,
+  "product_source_edits": 0
+}

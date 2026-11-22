@@ -1,0 +1,62 @@
+{
+  "status": "SOURCE_ONLY_NOT_FORMATTED_OR_EXECUTED",
+  "files": [
+    {
+      "path": "core/application/application.go",
+      "preimage_sha256": "e889d58b2d9afa11ba5bc8b03cbef5f58c01100a9a2faef0902ba9be2f2e3255",
+      "preimage_git_blob": "e90383d54205304ed60567689ea1d1ac713ffea2",
+      "lifecycle_entries": [
+        "func (s *Service) Stop() error {"
+      ],
+      "exact_inverse_before_formatting": true
+    },
+    {
+      "path": "core/application/account_create.go",
+      "preimage_sha256": "320baacb33c5a6db832ce507ac54747497529da735f8a4776ab9024155f7114c",
+      "preimage_git_blob": "b32972418fe1b10891d85aeec4deee8613a4c196",
+      "lifecycle_entries": [
+        "func (s *Service) AccountCreate(ctx context.Context, req *pb.RpcAccountCreateRequest) (newAcc *model.Account, err error) {"
+      ],
+      "exact_inverse_before_formatting": true
+    },
+    {
+      "path": "core/application/account_create_from_export.go",
+      "preimage_sha256": "2682d523ed12e1b34279045c73cd2eae090ec90c439b556ed0ac72d5c25216a8",
+      "preimage_git_blob": "8dedb580904a4a7d5c0ca2a7f1cf2ff4d6d8650b",
+      "lifecycle_entries": [
+        "func (s *Service) RecoverFromLegacy(req *pb.RpcAccountRecoverFromLegacyExportRequest) (response RecoverFromLegacyResponse, err error) {"
+      ],
+      "exact_inverse_before_formatting": true
+    },
+    {
+      "path": "core/application/account_move.go",
+      "preimage_sha256": "43ccd2ca3003fc75f4ca215a7e3021cf0c496e5ad7d47962f065086fa8cc4004",
+      "preimage_git_blob": "be7814b13841d87ef2fc7ba5261dd0d2ff690264",
+      "lifecycle_entries": [
+        "func (s *Service) AccountMove(req *pb.RpcAccountMoveRequest) (err error) {"
+      ],
+      "exact_inverse_before_formatting": true
+    },
+    {
+      "path": "core/application/account_select.go",
+      "preimage_sha256": "70df8befa61075fb2fa0b4fe486a20518de418cc685db1f77d410daff9620a91",
+      "preimage_git_blob": "682ed6f92d08f959f0969e9adb695ed54a7763b9",
+      "lifecycle_entries": [
+        "func (s *Service) AccountSelect(ctx context.Context, req *pb.RpcAccountSelectRequest) (*model.Account, error) {"
+      ],
+      "exact_inverse_before_formatting": true
+    },
+    {
+      "path": "core/application/account_stop.go",
+      "preimage_sha256": "5675f1211e5fcb3d95d54ea1d9894a5834df27b8ab3af75d0e7d075b55f1069a",
+      "preimage_git_blob": "e2b0e222b63c733b75dc27eaf284a165cdf30219",
+      "lifecycle_entries": [
+        "func (s *Service) AccountStop(req *pb.RpcAccountStopRequest) error {",
+        "func (s *Service) AccountChangeNetworkConfigAndRestart(ctx context.Context, req *pb.RpcAccountChangeNetworkConfigAndRestartRequest) error {"
+      ],
+      "exact_inverse_before_formatting": true
+    }
+  ],
+  "entries": 7,
+  "product_tests_executed": 0
+}
