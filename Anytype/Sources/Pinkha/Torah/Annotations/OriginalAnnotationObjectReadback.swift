@@ -28,6 +28,22 @@ struct OriginalAnnotationHeldReadObservation: Sendable {
     }
 }
 
+/// Actual original responses from one held Owner interval. This is historical
+/// observation data, not an atomic native graph or permission to COMMIT/ACK.
+struct OriginalAnnotationHeldArchiveObservation: Sendable {
+    let before: OriginalAnnotationHeldReadObservation
+    let after: OriginalAnnotationHeldReadObservation
+    let exportResponse: Anytype_Rpc.Object.ListExport.Response
+
+    fileprivate init(before: OriginalAnnotationHeldReadObservation,
+                     after: OriginalAnnotationHeldReadObservation,
+                     exportResponse: Anytype_Rpc.Object.ListExport.Response) {
+        self.before = before
+        self.after = after
+        self.exportResponse = exportResponse
+    }
+}
+
 enum OriginalAnnotationHeldReadOutcome<Value: Sendable>: Sendable {
     case completed(Value)
     case completedWithoutCurrentOwnership(Value, error: any Error)
@@ -169,6 +185,112 @@ final class OriginalAnnotationObjectReadback {
         }
     }
 
+    /// Uses the original exporter directly in the already acquired barrier.
+    /// Inbound native changes are not stopped by this app Owner. The synchronous
+    /// consumer may compare the captured archive; it cannot infer whole-graph
+    /// atomicity or durable application from this interval alone.
+    func withFreshNativeArchiveObservation<Value: Sendable>(
+        ownedArchiveDirectory: URL,
+        consume: @MainActor @Sendable (OriginalAnnotationHeldArchiveObservation) throws -> Value
+    ) async throws -> OriginalAnnotationHeldReadOutcome<Value> {
+        try validateOwnedRuntime()
+        let identity = requestedIdentity
+        let completion = OriginalAnnotationHeldReadCompletion<Value>()
+        do {
+            let value = try await session.owner.withExclusiveRead(
+                contextId: identity.objectID,
+                spaceId: identity.scope.space,
+                rpcNames: ["ObjectShow", "ObjectListExport"]
+            ) { [self] in
+                try await validateOwnedRuntime()
+                let beforeResponse = try await ClientCommands.objectShow(.with {
+                    $0.contextID = identity.objectID
+                    $0.objectID = identity.objectID
+                    $0.spaceID = identity.scope.space
+                }).invoke(qos: .userInitiated)
+                let before = try await makeFreshNativeObservation(beforeResponse)
+                let exported = try await ClientCommands.objectListExport(.with {
+                    $0.spaceID = identity.scope.space
+                    $0.objectIds = [identity.objectID]
+                    $0.path = ownedArchiveDirectory.path
+                    $0.format = .protobuf
+                    $0.zip = true
+                    $0.isJson = false
+                    $0.includeFiles = true
+                    $0.includeNested = true
+                    $0.includeArchived = true
+                    $0.includeBacklinks = false
+                    $0.includeSpace = false
+                    $0.noProgress = true
+                    // No filters, removeBlocks, import or public nested capture.
+                }).invoke(qos: .userInitiated)
+                // Retain the actual response report even if a later owner check
+                // or second ObjectShow fails. This owned temporary file is
+                // historical recovery evidence, never body/commit authority.
+                try await retainNativeExportReport(exported, in: ownedArchiveDirectory)
+                try await validateOwnedRuntime()
+                let afterResponse = try await ClientCommands.objectShow(.with {
+                    $0.contextID = identity.objectID
+                    $0.objectID = identity.objectID
+                    $0.spaceID = identity.scope.space
+                }).invoke(qos: .userInitiated)
+                return try await consumeFreshNativeArchive(
+                    before: before, afterResponse: afterResponse, exported: exported,
+                    completion: completion, consume: consume
+                )
+            }
+            try validateOwnedRuntime()
+            return .completed(value)
+        } catch {
+            switch completion.state {
+            case .notCompleted: throw error
+            case let .completed(value):
+                return .completedWithoutCurrentOwnership(value, error: error)
+            }
+        }
+    }
+
+    private func retainNativeExportReport(
+        _ response: Anytype_Rpc.Object.ListExport.Response, in directory: URL
+    ) throws {
+        if response.hasReport {
+            try response.report.serializedData().write(
+                to: directory.appendingPathComponent("native-export-report.pb"),
+                options: .withoutOverwriting
+            )
+        }
+    }
+
+    private func consumeFreshNativeArchive<Value: Sendable>(
+        before: OriginalAnnotationHeldReadObservation,
+        afterResponse: Anytype_Rpc.Object.Show.Response,
+        exported: Anytype_Rpc.Object.ListExport.Response,
+        completion: OriginalAnnotationHeldReadCompletion<Value>,
+        consume: @MainActor @Sendable (OriginalAnnotationHeldArchiveObservation) throws -> Value
+    ) throws -> Value {
+        let after = try makeFreshNativeObservation(afterResponse)
+        let observation = OriginalAnnotationHeldArchiveObservation(
+            before: before, after: after, exportResponse: exported
+        )
+        let value = try consume(observation)
+        completion.state = .completed(value)
+        try validateOwnedRuntime()
+        return value
+    }
+
+    private func makeFreshNativeObservation(
+        _ response: Anytype_Rpc.Object.Show.Response
+    ) throws -> OriginalAnnotationHeldReadObservation {
+        try validateOwnedRuntime()
+        _ = try Self.strictDetails(response, requestedIdentity: requestedIdentity)
+        guard let root = response.objectView.details.first(where: {
+            $0.id.utf8.elementsEqual(requestedIdentity.objectID.utf8)
+        }) else { throw OriginalAnnotationObjectReadbackError.wrongObject }
+        return OriginalAnnotationHeldReadObservation(
+            objectView: response.objectView, rootDetails: root.details
+        )
+    }
+
     private func consumeFreshNativeResponse<Value: Sendable>(
         _ response: Anytype_Rpc.Object.Show.Response,
         completion: OriginalAnnotationHeldReadCompletion<Value>,
@@ -250,3 +372,4 @@ final class OriginalAnnotationObjectReadback {
         return try ObjectDetails(protobufStruct: matching[0].details)
     }
 }
+

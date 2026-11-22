@@ -35,8 +35,11 @@ public enum TorahAnnotationIdentityAssessment: Sendable, Equatable {
     case conflict(TorahAnnotationRecoveryConflict)
 }
 
-/// Even a positive assessment is not an opaque runtime-issued receipt. Only
-/// the original adapter's current-owner read/export may supply the observations.
+/// Even a positive assessment is not an opaque runtime-issued receipt. The
+/// legacy positive case remains source-compatible, but assessApplied never
+/// emits it from caller-constructible digest data. Only a separately closed
+/// actual native comparison can describe body equality, and even a historical
+/// export comparison alone is not an atomic native COMMIT or ACK capability.
 public enum TorahAnnotationAppliedAssessment: Sendable, Equatable {
     case appliedCommitmentMatches(TorahAnnotationNativeIdentity, nativeSnapshotDigest: String)
     case bodyApplicationUnproven
@@ -161,8 +164,10 @@ public enum TorahAnnotationCreateRecovery {
         guard applied.messageID == commitment.messageID && applied.mutationID == commitment.mutationID else {
             return .conflict(.appliedMessageMismatch)
         }
-        guard let snapshot = candidate.nativeSnapshotDigest else { return .bodyApplicationUnproven }
-        return .appliedCommitmentMatches(candidate.identity, nativeSnapshotDigest: snapshot)
+        // nativeSnapshotDigest is caller-constructible observation data. Its
+        // presence (or equality to another supplied digest) does not compare
+        // an authentic complete native body with this intended application.
+        return .bodyApplicationUnproven
     }
 
     private static func identityConflict(
@@ -183,3 +188,4 @@ public enum TorahAnnotationCreateRecovery {
         return nil
     }
 }
+

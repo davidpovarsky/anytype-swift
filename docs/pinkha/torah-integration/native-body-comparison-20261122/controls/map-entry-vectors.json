@@ -1,0 +1,67 @@
+[
+  {
+    "name": "string map refuses unknown varint field",
+    "bytes": "EhAKDgoDa2V5EgV2YWx1ZRgB",
+    "failure": "unsupportedMapEntry"
+  },
+  {
+    "name": "string map refuses unknown message field",
+    "bytes": "EhYKFAoDa2V5EgV2YWx1ZRoGb3BhcXVl",
+    "failure": "unsupportedMapEntry"
+  },
+  {
+    "name": "string map refuses wrong-wire key",
+    "bytes": "EgsKCQgBEgV2YWx1ZQ==",
+    "failure": "unsupportedMapEntry"
+  },
+  {
+    "name": "string map refuses wrong-wire value",
+    "bytes": "EgkKBwoDa2V5EAE=",
+    "failure": "unsupportedMapEntry"
+  },
+  {
+    "name": "string map refuses repeated value",
+    "bytes": "EhUKEwoDa2V5EgV2YWx1ZRIFdmFsdWU=",
+    "failure": "unsupportedMapEntry"
+  },
+  {
+    "name": "string map retains its supported exact key/value shape",
+    "bytes": "Eg4KDAoDa2V5EgV2YWx1ZQ==",
+    "failure": null
+  },
+  {
+    "name": "Value map refuses unknown varint field",
+    "bytes": "EhYSFBISChAKA2tleRIHGgV2YWx1ZRgB",
+    "failure": "unsupportedMapEntry"
+  },
+  {
+    "name": "Value map refuses unknown message field",
+    "bytes": "EhwSGhIYChYKA2tleRIHGgV2YWx1ZRoGb3BhcXVl",
+    "failure": "unsupportedMapEntry"
+  },
+  {
+    "name": "Value map refuses wrong-wire key",
+    "bytes": "EhESDxINCgsIARIHGgV2YWx1ZQ==",
+    "failure": "unsupportedMapEntry"
+  },
+  {
+    "name": "Value map refuses wrong-wire value",
+    "bytes": "Eg0SCxIJCgcKA2tleRAB",
+    "failure": "unsupportedMapEntry"
+  },
+  {
+    "name": "Value map refuses repeated value",
+    "bytes": "Eh0SGxIZChcKA2tleRIHGgV2YWx1ZRIHGgV2YWx1ZQ==",
+    "failure": "unsupportedMapEntry"
+  },
+  {
+    "name": "Value map retains its supported exact key/value shape",
+    "bytes": "EhQSEhIQCg4KA2tleRIHGgV2YWx1ZQ==",
+    "failure": null
+  },
+  {
+    "name": "ordinary nested Value unknown field remains supported",
+    "bytes": "EhYSFBISChAKA2tleRIJGgR0ZXh0oAYB",
+    "failure": null
+  }
+]

@@ -1,0 +1,148 @@
+{
+  "source_base": "b5162d777e3ebc5c4c0d044e02b52347c0c3dd6e",
+  "source_tree": "33ef1f2698e48935cb76464ea82594d4df9d5ef2",
+  "source_repository": "davidpovarsky/anytype-swift",
+  "swift_sources": [
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/Annotations/OriginalAnnotationNativeMetadata.swift",
+      "git_blob": "ef0a495b7b5a20e4bd3d71032c0fd1da557dd1aa"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/Annotations/OriginalAnnotationObjectReadback.swift",
+      "git_blob": "1ac04b8cfa88677ab03f7677204930ec1aa41fb3"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAnnotationNativeIdentity.swift",
+      "git_blob": "2c9db7736ee536b64c157de21ac88833c445bdfc"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAnnotationCreateRecovery.swift",
+      "git_blob": "7d62d3af97ef318eadaeef995dca558a62e47803"
+    },
+    {
+      "path": "OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift",
+      "git_blob": "cea6c015f1430257f0d5b47d1bb0b697d274cb39"
+    },
+    {
+      "path": "OriginalEditorFramework/AnytypeOriginalEditorHost.swift",
+      "git_blob": "4f88f355aafddd02d3dcd54a7a5c5da789eccd35"
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_SmartBlockSnapshotBase.swift",
+      "git_blob": "62bbd7477f4b9b8d89b5c7d9549d6b7336bb82da"
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.swift",
+      "git_blob": "7c0f41600c1b0454f3e506d5f6d0ef284e1d6106"
+    }
+  ],
+  "original_native_repository": "anyproto/anytype-heart",
+  "original_native_commit": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "native_sources": [
+    {
+      "path": "core/converter/pbc/pbc.go",
+      "git_blob": "8ae34fde9e8f173657b3e9be61e5ecbc9369c4e3"
+    },
+    {
+      "path": "core/block/export/export.go",
+      "git_blob": "a55e221573866e1f9da64418951b70a12c7c6f65"
+    },
+    {
+      "path": "core/block/export/queue.go",
+      "git_blob": "f640e52f8eaca05ce213859a55b921ebc82c3b94"
+    },
+    {
+      "path": "core/block/export/writer.go",
+      "git_blob": "5941a4ca6f63bd2298d7bb664252f1976e78aa66"
+    },
+    {
+      "path": "core/block/export/objectresolver.go",
+      "git_blob": "cf8fe4f80b8e4b4c60b492a8a168bc4f86903adb"
+    },
+    {
+      "path": "core/block/export/collect/collect.go",
+      "git_blob": "d6f71db5a2d969adfe97ab816a078a89f67f7847"
+    },
+    {
+      "path": "core/block/import/pb/converter.go",
+      "git_blob": "304f965b442dc373ec49870c5b8d23b741e76c94"
+    },
+    {
+      "path": "core/block/import/pb/anyblock.go",
+      "git_blob": "329e980d375649594171f42ac7eede186c95f5e6"
+    },
+    {
+      "path": "core/block/import/common/common.go",
+      "git_blob": "7edf2d02075d4b3ba80a6f05d87a142df3dd895d"
+    },
+    {
+      "path": "core/block/import/common/types.go",
+      "git_blob": "b503ae80b27d34d39c643907304853044a156638"
+    },
+    {
+      "path": "core/block/object/objectlink/dependent_objects.go",
+      "git_blob": "0fd9964a55673f4e6e09cf80a4b63feb4e6922ac"
+    },
+    {
+      "path": "pb/protos/snapshot.proto",
+      "git_blob": "f6f83c5ca9ab54fa5cfdd11674fcc2d32f5fa86e"
+    },
+    {
+      "path": "pb/protos/changes.proto",
+      "git_blob": "b7dfdbf9e96e4373c7acc69ec9a7da732acbbf0e"
+    },
+    {
+      "path": "pkg/lib/pb/model/protos/models.proto",
+      "git_blob": "1d56550bab8b2813fef419309ed6f6c3bc4f4171"
+    }
+  ],
+  "r14_overlay": {
+    "path": "docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch",
+    "git_blob": "02b7412c24015e90a45ac17ca646dc6758841e95",
+    "sha256": "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077"
+  },
+  "findings": [
+    "ObjectView is not the complete original native snapshot graph and cannot establish body equality.",
+    "Original protobuf export emits SnapshotWithType containing Change.Snapshot and SmartBlockSnapshotBase; Change.Snapshot has no engine-wide version field.",
+    "Original exporter uses separate object tasks/per-object cache.Do; app Owner serialization is not an atomic multi-object native snapshot or inbound-change barrier.",
+    "r14 ExportDetails copies the details map and removes exactly the eleven torah.LocalKeys names; this is not a general local/derived relation exclusion.",
+    "All 17 annotation metadata fields and supported unknown message fields remain compared. Exact native IDs are preserved; no remapping is inferred.",
+    "Original protobuf export includes binary attachment bytes and native file-object snapshots. Supported comparator requires exact complete file inventory and original report count.",
+    "The original import processor remaps IDs, but this candidate has no authentic import-map authority and refuses semantic equality across changed IDs.",
+    "Current assessApplied API is advisory; active production callsite audit found only its definition and DTO/decoder references. Digest-presence shortcut is tightened defensively with old public enum/API retained.",
+    "SwiftProtobuf c6fe6442 map-entry decoder discards unknown entry fields. The corrected guard refuses these entries, wrong wire and repeated values before decode."
+  ],
+  "dependency_evidence": [
+    {
+      "repository": "apple/swift-protobuf",
+      "commit": "c6fe6442e6a64250495669325044052e113e990c",
+      "path": "Sources/SwiftProtobuf/BinaryDecoder.swift",
+      "git_blob": "3407f73abcb9454e2192600bec09e4a765e1f311",
+      "finding": "decodeMapField skips map-entry fields other than key/value"
+    },
+    {
+      "repository": "weichsel/ZIPFoundation",
+      "commit": "22787ffb59de99e5dc1fbfe80b19c97a904ad48d",
+      "finding": "Throwing in-memory Archive initializer, UInt64 member sizes and extract CRC interface verified"
+    },
+    {
+      "repository": "actions/runner-images",
+      "path": "images/ubuntu/Ubuntu2404-Readme.md",
+      "git_blob": "7fa7e1aeaa474591fccf5973dd2f85c2cf6f5529",
+      "finding": "advertised Swift 6.4.2; new job validates actual compiler"
+    }
+  ],
+  "legacy_52_controls": {
+    "commit": "53392efc0010ac0c75b9c104b51bc144b545eb5e",
+    "scope": "advisory pure policy, not opaque native authority",
+    "intentionally_superseded_assertion": "matching explicit applied marker retains separate snapshot commitment",
+    "reexecuted": false
+  },
+  "known_boundaries": [
+    "Historical captured comparison only",
+    "No actual native execution in this packet",
+    "No atomic/current graph proof",
+    "No import-map/COMMIT/ACK authority",
+    "Actual Apple bridge composition and full Linux semantic typecheck remain open"
+  ]
+}

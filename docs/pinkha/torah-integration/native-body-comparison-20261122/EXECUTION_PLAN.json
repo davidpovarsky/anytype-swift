@@ -1,0 +1,51 @@
+{
+  "status": "PREPARED_NOT_DISPATCHED",
+  "source_base": "b5162d777e3ebc5c4c0d044e02b52347c0c3dd6e",
+  "candidate_branch": "codex/otzaria-native-body-source-reviewed-20261122",
+  "workflow": ".github/workflows/otzaria-native-body-semantics.yml",
+  "activation_branch": "codex/otzaria-native-body-semantics-run-20261122",
+  "dispatch_owner": "/root",
+  "activation_rule": "Root reviews the immutable candidate SHA, then creates the exact activation branch at that SHA once. Candidate publication itself does not trigger CI.",
+  "runtime": {
+    "runner": "ubuntu-24.04",
+    "expected_swift_version": "6.4.2",
+    "language_mode": 6,
+    "dependency_pins": {
+      "SwiftProtobuf": "c6fe6442e6a64250495669325044052e113e990c",
+      "ZIPFoundation": "22787ffb59de99e5dc1fbfe80b19c97a904ad48d"
+    },
+    "generated_models": 197,
+    "expected_controls": 30,
+    "timeout_minutes": 25,
+    "max_build_jobs": 2
+  },
+  "scope": "Actual pure comparator and exact original generated model source with real pinned SwiftProtobuf/ZIPFoundation; synthetic original-format archives. No Heart/Lib, Editor UI, Owner authority, atomic graph, mapping or ACK acceptance.",
+  "does_not_rerun": [
+    "original52pure-policy",
+    "boundary40",
+    "map-entry13",
+    "previousStageB4plus20",
+    "sharedrelease6",
+    "selectedSpace10",
+    "Clang24",
+    "AuthStop10"
+  ],
+  "outputs": [
+    "source_commit and clean tracked status",
+    "source files with exact git blob and SHA256",
+    "compiler and zlib versions",
+    "exact resolved dependency pins",
+    "build and execution stdout/stderr",
+    "30 individual semantic outcomes",
+    "native_executions=0"
+  ],
+  "on_failure": "Preserve all output and failing exact source; no automatic retry. Fix only concrete failing closure after review.",
+  "remaining_gates": [
+    "actual full semantic integration execution",
+    "actual Apple held-read bridge composition",
+    "real original native export observation",
+    "stable native whole-graph authority",
+    "genuine import-map authority",
+    "closed source/commit and durable mapping/ACK"
+  ]
+}
