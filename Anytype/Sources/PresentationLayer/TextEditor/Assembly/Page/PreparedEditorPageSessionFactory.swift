@@ -45,12 +45,15 @@ enum PreparedEditorPageSessionFactory {
               data.mode.isHandling, ownedDocument.mode == data.mode else {
             throw PreparedEditorPageSessionFactoryError.invalidIdentity
         }
+        guard let originalDocument = ownedDocument as? BaseDocument else {
+            throw PreparedEditorPageSessionFactoryError.unsupportedDocumentLifetime
+        }
         let openingRetention = PreparedEditorOpeningDocumentRetention(ownedDocument)
         try await sourceBinding.performRead(
             rpcNames: ["ObjectOpen"],
             onDrained: { openingRetention.release() }
         ) {
-            try await ownedDocument.open()
+            try await originalDocument.openForOriginalEditorSource()
         }
         try Task.checkCancellation()
         try sourceBinding.validate()

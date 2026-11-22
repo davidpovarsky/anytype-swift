@@ -59,6 +59,15 @@ final class BaseDocument: BaseDocumentProtocol, EditorDocumentWriteLifetimeProvi
     private var openTask: Task<Void, any Error>?
     @Atomic
     private var originalAccountDispatch: InvocationDispatchBinding?
+    // This is the identity of the existing source-opening dispatch binding,
+    // not a new owner or permission. Automatic schema provisioning is outside
+    // an external document's qualified edit/save graph.
+    @Atomic
+    private var originalEditorOpeningContext: UUID?
+
+    private var allowsAutomaticSchemaPreparation: Bool {
+        mode.isHandling && originalEditorOpeningContext == nil
+    }
     
     // MARK: - Sync Handle
     var syncPublisher: AnyPublisher<[BaseDocumentUpdate], Never> {
@@ -114,8 +123,28 @@ final class BaseDocument: BaseDocumentProtocol, EditorDocumentWriteLifetimeProvi
     
     // MARK: - BaseDocumentProtocol
     
+    /// Admit only a fresh ORIGINAL document into an external source opening.
+    /// Existing opens/subscriptions are never cancelled, adopted or relabelled.
+    @MainActor
+    func openForOriginalEditorSource() async throws {
+        guard !isOpened, openTask == nil, originalAccountDispatch == nil,
+              originalEditorOpeningContext == nil,
+              let context = InvocationDispatchContext.binding?.contextIdentity else {
+            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+        }
+        originalEditorOpeningContext = context
+        try await open()
+    }
+
     @MainActor
     func open() async throws {
+        // Until the first source-bound Task exists, another caller cannot win
+        // the opening race using an unbound dispatch. Later callers may await
+        // that same original task or read the already-open document.
+        if let expected = originalEditorOpeningContext, !isOpened, openTask == nil,
+           InvocationDispatchContext.binding?.contextIdentity != expected {
+            throw EditorDocumentWriteError.rejected(.invalidLease)
+        }
         if originalAccountDispatch == nil {
             originalAccountDispatch = InvocationDispatchContext.binding?.bindingForCommittedEvents()
         }
@@ -324,15 +353,17 @@ final class BaseDocument: BaseDocumentProtocol, EditorDocumentWriteLifetimeProvi
         .cancellable()
         .store(in: &subscriptions)
 
-        let initialTypeId = details?.type.isEmpty == false ? details?.type : objectId
-        Task { [spaceId, initialTypeId] in
-            await PinkhaTorahNativePropertyCatalog.shared.ensureSpaceAndTypeReady(
-                spaceId: spaceId,
-                typeId: initialTypeId
-            )
+        if allowsAutomaticSchemaPreparation {
+            let initialTypeId = details?.type.isEmpty == false ? details?.type : objectId
+            Task { [spaceId, initialTypeId] in
+                await PinkhaTorahNativePropertyCatalog.shared.ensureSpaceAndTypeReady(
+                    spaceId: spaceId,
+                    typeId: initialTypeId
+                )
+            }
+            .cancellable()
+            .store(in: &subscriptions)
         }
-        .cancellable()
-        .store(in: &subscriptions)
 
         objectTypeProvider.syncPublisher
             .receiveOnMain()
@@ -388,7 +419,7 @@ final class BaseDocument: BaseDocumentProtocol, EditorDocumentWriteLifetimeProvi
         
         guard updates.contains(where: { updatesForRelations.contains($0) }) || permissionsChanged else { return [] }
 
-        if updates.contains(.details(id: objectId)), !details.type.isEmpty {
+        if allowsAutomaticSchemaPreparation, updates.contains(.details(id: objectId)), !details.type.isEmpty {
             let currentSpaceId = spaceId
             let currentTypeId = details.type
             Task {
