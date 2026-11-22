@@ -101,6 +101,9 @@ def execute(args):
     profiles.require(not args.work.exists(), "Fresh owned Heart download directory required")
     args.work.mkdir(parents=True)
     args.evidence.mkdir(parents=True, exist_ok=True)
+    if profile.name == profiles.COHERENT:
+        from coherent_runtime_admission import execute as install_coherent
+        return install_coherent(args, profile, command)
     if profile.name == "r14":
         # Preserve the existing original r14 route, filename and approval inputs.
         command(["gh", "run", "download", args.source_run_id, "--repo", args.repository,

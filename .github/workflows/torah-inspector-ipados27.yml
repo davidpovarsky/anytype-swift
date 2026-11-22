@@ -45,6 +45,7 @@ on:
           - t5-signed-revocation
           - t5-current-read-proof
           - coherent-heart-native
+          - coherent-heart-apple
           - t5-native-pagination
           - t5-native-account-retry
           - t5-native-attachment
@@ -90,6 +91,7 @@ on:
           - hanlin-selection
           - remaining-release
           - retained-heart-release
+          - coherent-heart-release
         default: inspector
       acceptance_device:
         description: Disposable OS27 device family
@@ -111,6 +113,7 @@ on:
         options:
           - r14
           - r15-attachment-v1
+          - r15-attachment-authorized-current-read-v1
         default: r14
       source_run_id:
         description: Verified Heart runtime run, or native evidence source for diagnostics
@@ -255,6 +258,10 @@ jobs:
   coherent-heart-native:
     if: ${{ inputs.route == 'coherent-heart-native' }}
     uses: ./.github/workflows/pinkha-coherent-heart-native.yml
+
+  coherent-heart-apple:
+    if: ${{ inputs.route == 'coherent-heart-apple' }}
+    uses: ./.github/workflows/pinkha-coherent-heart-apple.yml
 
   t5-apple-pairs:
     if: ${{ inputs.route == 't5-apple-pairs' || inputs.route == 't5-apple-ui' }}

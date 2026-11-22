@@ -648,7 +648,7 @@ def main():
     parser.add_argument("--derived", required=True, type=Path)
     parser.add_argument("--expected-app-branch", required=True, choices=APPROVED_BRANCHES)
     parser.add_argument("--heart-source-run-id", required=True)
-    parser.add_argument("--runtime-profile", choices=["r14", "r15-attachment-v1"], default="r14")
+    parser.add_argument("--runtime-profile", choices=["r14", "r15-attachment-v1", "r15-attachment-authorized-current-read-v1"], default="r14")
     parser.add_argument("--profile", choices=[profile.value for profile in HostTestProfile], default=HostTestProfile.SDK06.value)
     args = parser.parse_args()
     args.evidence.mkdir(parents=True, exist_ok=True)

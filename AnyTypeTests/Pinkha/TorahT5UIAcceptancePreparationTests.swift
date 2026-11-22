@@ -144,6 +144,8 @@ struct TorahT5UIAcceptancePreparationTests {
             expectedVersion = T5NativeRelatedLookupCapability.runtimeVersion
         case "r15-attachment-v1":
             expectedVersion = T5NativeRelatedLookupCapability.correctedRuntimeVersion
+        case "r15-attachment-authorized-current-read-v1":
+            expectedVersion = T5NativeRelatedLookupCapability.coherentRuntimeVersion
         default:
             throw Failure.invariant("unknown-explicit-ui-runtime-profile")
         }
@@ -152,7 +154,8 @@ struct TorahT5UIAcceptancePreparationTests {
             enabledByBuild: false, runtimeVersion: expectedVersion
         ) else { throw Failure.invariant("runtime-enabled-disabled-host") }
         for foreign in [expectedVersion + "-unreviewed", expectedVersion + "\n",
-                        expectedVersion.replacingOccurrences(of: "595f8142", with: "00000000")] {
+                        expectedVersion.replacingOccurrences(of: "595f8142", with: "00000000"),
+                        expectedVersion.replacingOccurrences(of: "2e898ac9", with: "00000000")] {
             if foreign == expectedVersion { continue }
             guard case .unavailable = T5NativeRelatedLookupCapability.resolve(
                 enabledByBuild: true, runtimeVersion: foreign
@@ -297,10 +300,12 @@ struct TorahT5UIAcceptancePreparationTests {
         let service = AnytypeTorahSpaceRelatedDocumentsService(associations: associations)
         let selection = TorahInspectorSelection(providerID: source.providerID, canonicalRef: source.canonicalReference)
         var snapshot = try await waitForSnapshot(service, selection: selection, targets: targets, spaceID: spaceID)
-        // Only the new corrected-runtime route adds the two missing mutations.
+        // Corrected and coherent runtimes include the two remaining mutations.
         // The historical pair route and its existing five-target fixture are unchanged.
         var mutationReceipt: MutationReceipt?
-        if environment["PINKHA_T5_UI_RUNTIME_PROFILE"] == "r15-attachment-v1" {
+        if ["r15-attachment-v1", "r15-attachment-authorized-current-read-v1"].contains(
+            environment["PINKHA_T5_UI_RUNTIME_PROFILE"] ?? ""
+        ) {
             let result = try await verifyTypeChangeAndWholeObjectDelete(
                 service: service, associations: associations, selection: selection, baseline: snapshot,
                 spaceID: spaceID, canonicalPropertyKey: manifest.documentAssociationsPropertyKey,

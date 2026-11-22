@@ -1,0 +1,43 @@
+{
+  "status": "PASS_FOCUSED_COHERENT_ADMISSION_CONTROLS",
+  "command": "python -m unittest -v test_coherent_runtime_admission",
+  "exit_code": 0,
+  "methods": 15,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "control_kind": "synthetic transport/framework/XCTest controls with retained original native observation and T2 protobuf bytes",
+  "actual_apple_execution": "NOT_RUN",
+  "actual_native_execution": "NOT_RUN",
+  "prior_native_go_tests_reexecuted": 0,
+  "prior_swift_tests_reexecuted": 0,
+  "producer_schema_review": "MATCHES_FINAL_COHERENT_APPLE_BUILDER",
+  "consumer_shared_modules": "EXACT_TRACKED_SOURCE_HASH_MAP_REQUIRED",
+  "source_run": "45026227924",
+  "source_sha": "b2fc3804426067dd1ec8318d6ea92a4bcb8e9545",
+  "source_files": [
+    {
+      "path": "Tools/PinkhaNativeDerived/coherent_runtime_admission.py",
+      "sha256": "82be7eb9cf7b24e77129739f4a4f5ac1b61cef16a641eaa7756a7e661b75f0d8",
+      "bytes": 41693
+    },
+    {
+      "path": "Tools/PinkhaNativeDerived/test_coherent_runtime_admission.py",
+      "sha256": "025cdb31f0561ee487c2c58fa37eb4a2318a7015ec07828001f2361b07614f52",
+      "bytes": 27557
+    }
+  ],
+  "log_sha256": "56ab332f047e62b819264396a9727137a5d4b5044aa2b6d4998b44b909507643",
+  "tested_shared_helpers": {
+    "heart_runtime_profile.py": "b388e18e35eb7f9853ded9cfec0c27737f0fcd3fb940811b270f11df33186538",
+    "download_heart_runtime.py": "1f863a87dfc9936ae361c1d528d3050ccbbcd9abbf3f40030c758178a337c7e2",
+    "install_verified_heart.py": "b68bb5a8e5c71075cd74b90724ba1d95f587d0e55b83dc78a8c6eaee3c778373",
+    "build_custom_heart.py": "a79710c1e48d970f082510c34f679995c14245ee5b09e70a80d63199a086d62b",
+    "attachment_runtime.py": "e3dc82fdc34c7ba0567f7b7afb48c3a8b499f7054cd3bbdb14fc2981ffeaec7d"
+  },
+  "limitations": [
+    "Actual producer GitHub artifact and Apple xcresult admission awaits the Apple producer run.",
+    "Passing fixture Apple evidence will not establish production-app execution or full acceptance.",
+    "Network ACL transport and automatic T2-to-T5 projection remain unproven."
+  ]
+}

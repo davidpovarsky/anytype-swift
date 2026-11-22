@@ -866,21 +866,26 @@
       "to": "Tools/PinkhaNativeDerived/install_verified_heart.py",
       "baselineBlob": "1ed1f7fa90083cc110f4cb73ec69ac5973d34a1c",
       "replacementBlob": "04bab7f476492fe743b7e8d75bc8131c99afdf96",
-      "reason": "Admit explicit r14 or corrected r15-attachment-v1 runtime profiles while preserving the original r14 default and all binary/native source/patch integrity checks. The corrected profile binds the original producer source/run/attempt, full version and both artifact hashes through installation and observed app process.",
+      "reason": "Admit explicit r14 or corrected r15-attachment-v1 runtime profiles while preserving the original r14 default and all binary/native source/patch integrity checks. The corrected profile binds the original producer source/run/attempt, full version and both artifact hashes through installation and observed app process. Add a separate coherent production-simulator admission path with exact original artifacts and no fixture fallback; retain original r14/corrected defaults.",
       "sharedSources": [
         {
           "path": "Tools/PinkhaNativeDerived/heart_runtime_profile.py",
-          "gitBlob": "0849481b380ca3a2401476fce5ca075847a5bfce"
+          "gitBlob": "4cb657fa60a5f9c664a0b871560dda77e11b339d"
         },
         {
           "path": "Tools/PinkhaNativeDerived/download_heart_runtime.py",
-          "gitBlob": "2d154bad91d7e10e57ae4659f3b57abafaf229f2"
+          "gitBlob": "fa29a8659d8ff39e528b1a43ed0658bb14a22a69"
+        },
+        {
+          "path": "Tools/PinkhaNativeDerived/coherent_runtime_admission.py",
+          "gitBlob": "4677a98c8bba3a18f14cdbd88da0778de8f4965e"
         }
       ],
       "validation": [
         "Twenty-two selected artifact-admission, observer/CLI and fresh-worker propagation controls passed in docs/validation/20261121-heart-runtime-consumer.",
         "Corrected producer run44943967103 passed at4ee2d7fd9f8acd74f51cbb2236d08f55a93af08b; original artifact verification remains source-bound and does not rerun native tests.",
-        "This reviewed map proves source provenance only. Actual app process/SDK06/Properties/UI acceptance is recorded by separate original execution receipts."
+        "This reviewed map proves source provenance only. Actual app process/SDK06/Properties/UI acceptance is recorded by separate original execution receipts.",
+        "New coherent admission checks are source-scoped; production simulator and fixture binaries are identified separately. Actual new Apple acceptance is recorded only after execution."
       ]
     },
     {
@@ -1367,13 +1372,14 @@
       "kind": "refactor",
       "to": "AnyTypeTests/Pinkha/TorahT5UIAcceptancePreparationTests.swift",
       "baselineBlob": "62fe7bcd241211919a679807137f41cb0322995f",
-      "replacementBlob": "fe4ea83f8971199153941298388ff4426fd41340",
-      "reason": "Preserve the original native five-target UI fixture and add explicit corrected-r15 identity selection plus negative capability checks; real assertions and account isolation remain unchanged. Extend only the still-unexecuted corrected-r15 preparation with a transient sixth owned document to prove actual native Page-to-Note type change and whole-object deletion; preserve exact canonical/body bytes and the final original five UI targets.",
+      "replacementBlob": "ec1ed3d7302e2505990384d715bb86113f23121c",
+      "reason": "Preserve the original native five-target UI fixture and add explicit corrected-r15 identity selection plus negative capability checks; real assertions and account isolation remain unchanged. Extend only the still-unexecuted corrected-r15 preparation with a transient sixth owned document to prove actual native Page-to-Note type change and whole-object deletion; preserve exact canonical/body bytes and the final original five UI targets. Admit only the exact coherent runtime in the unexecuted native fixture, retain the original five targets and required type/delete mutations, and check disabled-build/foreign-identity rejection.",
       "sharedSources": [],
       "validation": [
         "Exact original and replacement Git blobs reviewed; original source/acceptance evidence remains scoped to its original run.",
         "Corrected-runtime controller3 and affected existing fixture/cancellation3 controls passed. The standalone UI route remains NOT_RUN before actual dispatch; no product/full acceptance inferred.",
-        "Nine new mutation/identity controller controls and two affected existing identity controls passed in their focused runs. Real native and UI acceptance remains pending; old paired-r15 behavior and prior successful pagination/mutation scopes are retained without rerun."
+        "Nine new mutation/identity controller controls and two affected existing identity controls passed in their focused runs. Real native and UI acceptance remains pending; old paired-r15 behavior and prior successful pagination/mutation scopes are retained without rerun.",
+        "Coherent source run45026227924 has independently audited10methods/19terminals; exact composite Apple/runtime/UI acceptance remains a separate pending gate. No unaffected prior test rerun."
       ],
       "from": "AnyTypeTests/Pinkha/TorahT5UIAcceptancePreparationTests.swift"
     },
@@ -1381,12 +1387,13 @@
       "kind": "refactor",
       "to": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NativeRelatedLookupCapability.swift",
       "baselineBlob": "940b1dc6c1ac9b6ff8ced049e8bfdf479086214e",
-      "replacementBlob": "51a5571f230b2399f7b0b668b31683e3e22e6b6a",
-      "reason": "Recognize the exact reviewed full corrected-r15 runtime only under the existing build flag. Preserve original identity and reject partial/foreign identities.",
+      "replacementBlob": "16becdac6e33a646f9f013ab7970a7bb63688ddf",
+      "reason": "Recognize the exact reviewed full corrected-r15 runtime only under the existing build flag. Preserve original identity and reject partial/foreign identities. Add the exact source-qualified coherent authorized/current-read identity under the existing explicit build flag; unflagged production and foreign identities remain unavailable.",
       "sharedSources": [],
       "validation": [
         "Exact original and replacement Git blobs reviewed; original source/acceptance evidence remains scoped to its original run.",
-        "Corrected-runtime controller3 and affected existing fixture/cancellation3 controls passed. The standalone UI route remains NOT_RUN before actual dispatch; no product/full acceptance inferred."
+        "Corrected-runtime controller3 and affected existing fixture/cancellation3 controls passed. The standalone UI route remains NOT_RUN before actual dispatch; no product/full acceptance inferred.",
+        "Coherent source run45026227924 has independently audited10methods/19terminals; exact composite Apple/runtime/UI acceptance remains a separate pending gate. No unaffected prior test rerun."
       ],
       "from": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NativeRelatedLookupCapability.swift"
     },

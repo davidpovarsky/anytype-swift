@@ -1,0 +1,93 @@
+name: Build and prove the distinct coherent Heart Apple candidate
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  coherent-apple-authority:
+    runs-on: xcode-27
+    timeout-minutes: 150
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      ATTEMPT: build/coherent-heart-apple-${{ github.run_id }}-${{ github.run_attempt }}
+      PYTHONDONTWRITEBYTECODE: '1'
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout the exact shared source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: build/coherent-heart-apple-${{ github.run_id }}-${{ github.run_attempt }}/control
+          persist-credentials: false
+      - name: Checkout the original clean native base
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: build/coherent-heart-apple-${{ github.run_id }}-${{ github.run_attempt }}/heart
+          persist-credentials: false
+      - name: Retrieve the exact qualified139 original evidence without rerunning it
+        uses: actions/download-artifact@v4
+        with:
+          name: Pinkha-Coherent-Heart-Native-45026227924-1
+          run-id: 45026227924
+          github-token: ${{ github.token }}
+          path: build/coherent-heart-apple-${{ github.run_id }}-${{ github.run_attempt }}/native-proof
+      - name: Select native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Select the exact Go compiler
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache: false
+      - name: Verify only the new admission and fixture-translation controls
+        run: |
+          mkdir -p "$ATTEMPT/evidence/controls"
+          python3 -B "$ATTEMPT/control/Tools/PinkhaNativeDerived/coherent_apple/test_controls.py" -v > "$ATTEMPT/evidence/controls/results.log" 2>&1
+          cat "$ATTEMPT/evidence/controls/results.log"
+      - name: Build the production slice and a distinct fixture slice from qualified139 source
+        run: |
+          python3 -B "$ATTEMPT/control/Tools/PinkhaNativeDerived/coherent_apple/build.py" \
+            --control "$ATTEMPT/control" --heart-source "$ATTEMPT/heart" \
+            --native-proof "$ATTEMPT/native-proof" --work "$ATTEMPT/work" \
+            --evidence "$ATTEMPT/evidence/proof" --artifacts "$ATTEMPT/artifacts" \
+            --expected-app-sha "$GITHUB_SHA"
+      - name: Execute one new actual iOS signed-authority journey and shared Swift decode
+        run: |
+          python3 -B "$ATTEMPT/control/Tools/PinkhaNativeDerived/coherent_apple/run_host.py" \
+            --control "$ATTEMPT/control" --work "$ATTEMPT/host" --evidence "$ATTEMPT/evidence/proof/host" \
+            --build-receipt "$ATTEMPT/evidence/proof/build.json" --frameworks "$ATTEMPT/work" \
+            --expected-app-sha "$GITHUB_SHA"
+      - name: Preserve the production framework separately
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Coherent-Heart-Production-Simulator-v1
+          path: build/coherent-heart-apple-${{ github.run_id }}-${{ github.run_attempt }}/artifacts/Pinkha-Coherent-Heart-Production-Simulator-v1.tar.gz
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Preserve the fixture framework as explicitly non-shipping
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Coherent-Heart-Fixture-Simulator-v1
+          path: build/coherent-heart-apple-${{ github.run_id }}-${{ github.run_attempt }}/artifacts/Pinkha-Coherent-Heart-Fixture-Simulator-v1.tar.gz
+          compression-level: 0
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Preserve original proof, raw native responses and actual xcresult including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Coherent-Heart-Apple-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/coherent-heart-apple-${{ github.run_id }}-${{ github.run_attempt }}/evidence
+          if-no-files-found: error
+          retention-days: 14

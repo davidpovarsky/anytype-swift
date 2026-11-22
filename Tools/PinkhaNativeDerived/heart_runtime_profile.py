@@ -12,7 +12,15 @@ import attachment_runtime as attachment
 LEGACY_PATCH = attachment.VARIANTS["r14-attachment-v1"]["patch_sha256"]
 LEGACY_INVENTORY = attachment.VARIANTS["r14-attachment-v1"]["inventory_sha256"]
 CORRECTED = "r15-attachment-v1"
-PROFILE_NAMES = ("r14", CORRECTED)
+COHERENT = "r15-attachment-authorized-current-read-v1"
+COHERENT_PATCH = "2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00"
+COHERENT_INVENTORY = "05ee31723508599e228d28e132ce5b89af886f5095c908362b2348d07c80d0f0"
+COHERENT_NATIVE_RUN = "45026227924"
+COHERENT_VERSION = attachment.HEART_TAG + "-" + "-".join(
+    part + COHERENT_PATCH for part in (
+        "pinkha-native-derived-v1-", "pinkha-native-t5-lookup-v1-",
+        "pinkha-torah-attachment-v1-", "pinkha-current-read-v1-", "pinkha-authorized-read-v1-"))
+PROFILE_NAMES = ("r14", CORRECTED, COHERENT)
 BINDING_KEYS = (
     "runtime_profile", "native_marker", "heart_patch_sha256", "heart_inventory_sha256",
     "heart_source_run_id", "heart_source_sha", "heart_source_attempt",
@@ -52,6 +60,8 @@ class RuntimeProfile:
 
     @property
     def artifact_name(self):
+        if self.name == COHERENT:
+            return "Pinkha-Coherent-Heart-Production-Simulator-v1"
         return "Pinkha-Universal-Verified-Heart-" + self.name
 
     @property
@@ -61,6 +71,9 @@ class RuntimeProfile:
 
 def select(name="r14"):
     require(name in PROFILE_NAMES, "Unsupported explicit Heart runtime profile")
+    if name == COHERENT:
+        return RuntimeProfile(name, COHERENT_PATCH, COHERENT_INVENTORY,
+                              COHERENT_VERSION, COHERENT_VERSION)
     if name == "r14":
         marker = "pinkha-native-derived-v1-" + LEGACY_PATCH
         return RuntimeProfile(name, LEGACY_PATCH, LEGACY_INVENTORY,
@@ -85,10 +98,19 @@ def verify_source(profile, patch, inventory_bytes):
                 and inventory.get("features", {}).get("t5_related_lookup") == 1
                 and inventory["features"].get("ordinary_details_preserve_torah_attachment") == 1,
                 "The corrected runtime inventory is incomplete")
+    elif profile.name == COHERENT:
+        require(inventory.get("runtime_variant") == COHERENT
+                and inventory.get("expected_app_get_version") == profile.version
+                and len(inventory.get("files", [])) == 139
+                and all(inventory.get("features", {}).get(name) == 1 for name in (
+                    "t5_related_lookup", "ordinary_details_preserve_torah_attachment",
+                    "authorized_operation_read", "coherent_read_publication", "current_authority_read_fence")),
+                "The coherent runtime must retain the exact combined source and all five features")
     return inventory
 
 
-def validate_producer(run, run_id, repository, expected_branch):
+def validate_producer(run, run_id, repository, expected_branch, profile_name=CORRECTED):
+    require(profile_name in (CORRECTED, COHERENT), "Unsupported source-bound producer profile")
     require(isinstance(run_id, str) and run_id.isdigit()
             and str(run.get("id")) == run_id
             and run.get("status") == "completed" and run.get("conclusion") == "success",
@@ -100,8 +122,9 @@ def validate_producer(run, run_id, repository, expected_branch):
             and run.get("head_branch") == expected_branch
             and run.get("repository", {}).get("full_name") == repository,
             "Corrected runtime producer source, workflow, repository or attempt differs")
-    require(run.get("display_title") == "Pinkha t5-r15-attachment-runtime · " + run["head_sha"],
-            "Producer was not the explicitly selected corrected-runtime route")
+    route = "coherent-heart-apple" if profile_name == COHERENT else "t5-r15-attachment-runtime"
+    require(run.get("display_title") == "Pinkha " + route + " · " + run["head_sha"],
+            "Producer was not the explicitly selected runtime route")
     return dict(run_id=run_id, run_attempt=str(run["run_attempt"]), source_sha=run["head_sha"],
                 source_branch=run["head_branch"], repository=repository,
                 workflow_path=run["path"])
@@ -144,6 +167,21 @@ def validate_build(profile, receipt, inventory, source_run_id, producer=None):
                 and receipt.get("native_test_invocations") == 2
                 and receipt.get("correction_provenance") == inventory["correction_provenance"],
                 "Corrected runtime build, native fixtures or full version is unverified")
+    elif profile.name == COHERENT:
+        require(producer is not None and producer.get("run_id") == source_run_id
+                and receipt.get("github_run_id") == producer["run_id"]
+                and receipt.get("github_run_attempt") == producer["run_attempt"]
+                and receipt.get("integration_sha") == producer["source_sha"],
+                "Coherent archive does not belong to the admitted producer run/head/attempt")
+        require(receipt.get("runtime_variant") == COHERENT
+                and receipt.get("inventory_sha256") == profile.inventory_sha256
+                and receipt.get("expected_app_get_version") == profile.version
+                and receipt.get("fixture_included") is False
+                and receipt.get("target_architecture") == "arm64"
+                and receipt.get("target_environment") == "simulator"
+                and receipt.get("build_status") == "APPLE_FRAMEWORK_BUILT_NOT_EXECUTED"
+                and receipt.get("app_get_version_status") == "NOT_RUN_BUILD_ONLY",
+                "Coherent admission requires the production-only simulator artifact and honest build scope")
     return profile.binary_marker
 
 
@@ -151,7 +189,7 @@ def verify_binding(value):
     profile = select(value.get("runtime_profile", "r14"))
     require(value.get("native_marker") == profile.binary_marker,
             "Runtime observer identity differs from the selected exact full marker")
-    if profile.name == CORRECTED:
+    if profile.name in (CORRECTED, COHERENT):
         require(value.get("heart_patch_sha256") == profile.patch_sha256
                 and value.get("heart_inventory_sha256") == profile.inventory_sha256
                 and str(value.get("heart_source_run_id", "")).isdigit()
@@ -175,7 +213,7 @@ def installed_binding(app, installation, head, profile_name="r14", source_run_id
     if source_run_id:
         require(installation.get("source_run_id") == source_run_id, "Installed runtime producer run differs")
     value = dict(runtime_profile=profile.name, native_marker=profile.binary_marker)
-    if profile.name == CORRECTED:
+    if profile.name in (CORRECTED, COHERENT):
         require(source_run_id and installation.get("source_run_id") == source_run_id,
                 "Corrected consumer requires an explicit original producer run")
         path = app / "Dependencies/Middleware/PinkhaNativeHeartBuild.json"
@@ -186,11 +224,16 @@ def installed_binding(app, installation, head, profile_name="r14", source_run_id
                 and receipt.get("github_run_id") == producer.get("run_id") == source_run_id
                 and receipt.get("github_run_attempt") == producer.get("run_attempt")
                 and receipt.get("integration_sha") == producer.get("source_sha")
-                and receipt.get("runtime_variant") == CORRECTED
+                and receipt.get("runtime_variant") == profile.name
                 and receipt.get("expected_app_get_version") == profile.version
                 and receipt.get("inventory_sha256") == profile.inventory_sha256
                 and receipt.get("patch_sha256") == profile.patch_sha256,
                 "Installed corrected runtime receipt changed after verified admission")
+        if profile.name == COHERENT:
+            require(receipt.get("fixture_included") is False
+                    and receipt.get("target_architecture") == "arm64"
+                    and receipt.get("target_environment") == "simulator",
+                    "A fixture runtime or another platform cannot become the coherent app runtime")
         value.update(
             heart_patch_sha256=profile.patch_sha256, heart_inventory_sha256=profile.inventory_sha256,
             heart_source_run_id=source_run_id, heart_source_sha=producer["source_sha"],

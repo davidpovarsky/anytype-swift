@@ -869,11 +869,19 @@ extension TorahT5NativePaginationTests {
             && !FileManager.default.fileExists(atPath: support.appendingPathComponent("pinkha-t5-runtime-pair").path)
             && !FileManager.default.fileExists(atPath: support.appendingPathComponent("pinkha-t5-native-ui-fixture.json").path),
             "fresh-private-account-required")
-        let patch = "595f8142f00035da2fff4925c8fe125fa7cf36de9ae124b528a9d2130b2a9bf6"
+        let expectedVersion: String
+        switch environment["PINKHA_T5_ACCOUNT_RETRY_RUNTIME_PROFILE"] ?? "r15-attachment-v1" {
+        case "r15-attachment-v1":
+            expectedVersion = T5NativeRelatedLookupCapability.correctedRuntimeVersion
+        case "r15-attachment-authorized-current-read-v1":
+            expectedVersion = T5NativeRelatedLookupCapability.coherentRuntimeVersion
+            try require(environment["PINKHA_T5_ACCOUNT_RETRY_RUNTIME_VERSION"] == expectedVersion,
+                "coherent-pending-runtime-binding-required")
+        default:
+            throw T5PaginationFailure.invariant("unknown-pending-runtime-profile")
+        }
         let version = try await ClientCommands.appGetVersion().invoke().version
-        try require(version == "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-" + patch
-            + "-pinkha-native-t5-lookup-v1-" + patch + "-pinkha-torah-attachment-v1-" + patch,
-            "exact-corrected-r15-runtime-required")
+        try require(version == expectedVersion, "exact-selected-pending-runtime-required")
         guard case .verified = try await AnytypeT5NativeRelatedLookup.current() else {
             throw T5PaginationFailure.invariant("production-capability-not-verified")
         }

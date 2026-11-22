@@ -16,11 +16,22 @@ public enum T5NativeRelatedLookupCapability {
         + "-pinkha-native-t5-lookup-v1-" + correctedPatchSHA256
         + "-pinkha-torah-attachment-v1-" + correctedPatchSHA256
 
+    /// Exact combined authorized-read/current-read candidate. Lookup still requires
+    /// the explicit host build flag; this identity does not enable shipping builds.
+    public static let coherentPatchSHA256 = "2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00"
+    public static let coherentRuntimeVersion =
+        "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-" + coherentPatchSHA256
+        + "-pinkha-native-t5-lookup-v1-" + coherentPatchSHA256
+        + "-pinkha-torah-attachment-v1-" + coherentPatchSHA256
+        + "-pinkha-current-read-v1-" + coherentPatchSHA256
+        + "-pinkha-authorized-read-v1-" + coherentPatchSHA256
+
     public static func resolve(
         enabledByBuild: Bool, runtimeVersion: String
     ) -> T5ExpandedRelatedTargets.Capability {
         guard enabledByBuild,
               runtimeVersion == self.runtimeVersion || runtimeVersion == correctedRuntimeVersion
+                || runtimeVersion == coherentRuntimeVersion
         else { return .unavailable }
         return .verified
     }
