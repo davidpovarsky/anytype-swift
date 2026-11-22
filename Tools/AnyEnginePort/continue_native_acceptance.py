@@ -22,6 +22,7 @@ ROOT = sources.ROOT
 RUN = "45038244641"
 REPOSITORY = "davidpovarsky/anytype-swift"
 BRANCH = "codex/chatgpt-wave15-shared-20261121"
+CONTINUATION_BRANCH = "codex/chatgpt-wave15-acceptance-continuation-20261122"
 MANIFEST = "Tools/AnyEnginePort/reviews/native-ui-continuation-450382-originals.json"
 MANIFEST_SHA = "1f8d5aedfa8bb16fc7eb7ed21cef45376897f6d2ddd305642cac5c77a33cbb93"
 SELF = "Tools/AnyEnginePort/continue_native_acceptance.py"
@@ -233,7 +234,8 @@ def context(evidence, root=ROOT):
     run, commit, _ = github_context()
     udid, simulator, _ = verify_simulator(evidence / "simulator.json", run)
     require(run != RUN and os.environ.get("GITHUB_REPOSITORY") == REPOSITORY and
-            os.environ.get("GITHUB_REF") == "refs/heads/" + BRANCH, "consumer_run_scope_mismatch")
+            os.environ.get("GITHUB_REF") in {"refs/heads/" + BRANCH, "refs/heads/" + CONTINUATION_BRANCH},
+            "consumer_run_scope_mismatch")
     attempt = os.environ.get("GITHUB_RUN_ATTEMPT", "")
     require(attempt.isdigit() and int(attempt) > 0, "consumer_attempt_missing")
     return {"consumerCommit": commit, "consumerRunID": run, "ownedSimulatorUDID": udid,

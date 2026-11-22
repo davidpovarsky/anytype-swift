@@ -142,6 +142,30 @@ def scoped_configuration(original, destination, identifiers, shared):
             "other_targets_removed_from_copy": [item.get("BlueprintName") for item in targets if item is not target]}
 
 
+def xcode_method_selectors(identifiers, declarations):
+    """Map reviewed compiled identities to unambiguous Xcode method filters.
+
+    Xcode27 enumeration returned full parameter signatures, but those strings
+    selected none of the eight parameterized methods in run45047827580. Use
+    target/suite/method for those filters only. Full signatures remain the
+    required enumeration and result identities; no argument case is removed.
+    """
+    by_method = {}
+    for identifier in declarations:
+        match = re.fullmatch(r"(AnytypeTests/([A-Za-z_][A-Za-z0-9_]*)/[A-Za-z_][A-Za-z0-9_]*)"
+                             r"\((?:[A-Za-z_][A-Za-z0-9_]*:)*\)", identifier)
+        host.require(match is not None and match.group(2) in SUITES,
+                     "Unreviewed compiled component signature")
+        method = match.group(1)
+        host.require(method not in by_method, "Ambiguous compiled method selector")
+        by_method[method] = identifier
+    host.require(identifiers and len(set(identifiers)) == len(identifiers)
+                 and set(identifiers).issubset(set(by_method.values())),
+                 "Method selectors require unique reviewed compiled identities")
+    return [identifier if identifier.endswith("()") else identifier.split("(", 1)[0]
+            for identifier in identifiers]
+
+
 def enumerate_selection(app, base, evidence, shared, source):
     declaration_ids = set(source["compiled_declarations"].values())
     selected_source_ids = {source["compiled_declarations"][method] for method in source["methods"]}
@@ -174,18 +198,21 @@ def enumerate_selection(app, base, evidence, shared, source):
         discovery_path, discovery_configuration, ["AnytypeTests/" + suite for suite in SUITES])
     host.require(discovered == declaration_ids and not declaration_ids.intersection(disabled),
                  "Compiled suites differ from the exact30 source declarations")
-    # Reuse actual returned strings. Source signatures are equality checks, not
-    # guessed only-testing filters; in particular bare Swift method names are
-    # never sent to Xcode.
+    # Preserve actual full signatures for equality/result checks. Outbound
+    # parameterized filters use Xcode's method selector grammar, independently
+    # qualified by another original enumeration before any test can execute.
     selected = sorted(identifier for identifier in discovered if identifier in selected_source_ids)
+    selectors = xcode_method_selectors(selected, discovered)
     selected_command, selected_binding, (selected_plan, observed, disabled) = enumerate_to(
-        selected_path, selected_configuration, selected)
+        selected_path, selected_configuration, selectors)
     host.require(selected_plan == plan and observed == set(selected) and not observed.intersection(disabled),
                  "Compiled pending selection differs from the exact23 methods; no tests executed")
     host.require(len(selected) == EXPECTED_METHOD_COUNT,
                  "Compiled pending selection does not contain23 methods")
     return {"status": "EXACT_COMPILED_SELECTION_VERIFIED", "test_plan": plan, "selection_nonce": selection_nonce,
             "selected_identifiers": selected, "selected_method_count": len(selected),
+            "xcode_method_selectors": selectors,
+            "selector_identity_binding": dict(zip(selectors, selected)),
             "enumerated_source_method_count": len(discovered),
             "unselected_identifiers": sorted(discovered - observed),
             "discovery_command": discovery_command, "selected_command": selected_command,
@@ -270,7 +297,7 @@ def execute(app, configuration, udid, expected_app, evidence, shared):
         verify_binding()
         selected_base = list(base)
         selected_base[selected_base.index("-xctestrun") + 1] = selected_configuration["path"]
-        command = [*selected_base, *["-only-testing:" + identifier for identifier in enumeration["selected_identifiers"]],
+        command = [*selected_base, *["-only-testing:" + identifier for identifier in enumeration["xcode_method_selectors"]],
                    "-resultBundlePath", str(bundle)]
         receipt.update(phase="EXECUTION", command=command)
         shared.write(evidence / "execution.json", receipt)

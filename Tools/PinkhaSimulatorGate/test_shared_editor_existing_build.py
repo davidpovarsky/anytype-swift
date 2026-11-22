@@ -149,10 +149,18 @@ class ExistingBuildTests(unittest.TestCase):
         enabled, disabled = [], []
         for identifier in sorted(self.source["compiled_declarations"].values()):
             relative = identifier.removeprefix("AnytypeTests/")
-            matches = lambda candidate: relative == candidate or relative.startswith(candidate + "/")
+            # Original run45047827580 enabled zero-argument full signatures,
+            # but rejected all parameterized full-signature selectors. Model
+            # that observed failure and the separate method-name grammar here;
+            # actual Apple enumeration still has to verify the latter.
+            matches = lambda candidate: (relative.startswith(candidate + "/")
+                                         or relative.split("(", 1)[0] == candidate
+                                         or (relative.endswith("()") and relative == candidate))
             if any(matches(candidate) for candidate in targets[0]["OnlyTestIdentifiers"]):
                 (disabled if any(matches(candidate) for candidate in targets[0]["SkipTestIdentifiers"])
                  else enabled).append({"identifier": identifier})
+            else:
+                disabled.append({"identifier": identifier})
         payload = {"errors": [], "values": [{"testPlan": "Anytype",
                     "enabledTests": enabled, "disabledTests": disabled}]}
         if self.mutate_enumeration:
@@ -203,9 +211,11 @@ class ExistingBuildTests(unittest.TestCase):
             self.assertEqual(plistlib.loads(self.configuration.read_bytes()), self.original_configuration)
             binding = result["enumeration"]["selected_configuration"]
             self.assertEqual(binding["other_targets_removed_from_copy"], ["OtherTests"])
+            selectors = {identifier if identifier.endswith("()") else identifier.split("(", 1)[0]
+                         for identifier in (self.source["compiled_declarations"][name] for name in EXPECTED)}
             self.assertEqual(set(binding["only_test_identifiers"]),
-                             {self.source["compiled_declarations"][name].removeprefix("AnytypeTests/") for name in EXPECTED})
-            selected = {"-only-testing:" + self.source["compiled_declarations"][name] for name in EXPECTED}
+                             {identifier.removeprefix("AnytypeTests/") for identifier in selectors})
+            selected = {"-only-testing:" + identifier for identifier in selectors}
             for command in (self.enumerations[-1], self.commands[-1]):
                 self.assertEqual(command[:2], ["xcodebuild", "test-without-building"])
                 self.assertEqual({item for item in command if item.startswith("-only-testing:")}, selected)
@@ -405,6 +415,72 @@ class ExistingBuildTests(unittest.TestCase):
         for path in stale:
             self.assertEqual(path.read_bytes(), b"preserved-other-run-copy")
         self.assertEqual(result["status"], runner.PASS_STATUS)
+
+
+class SelectorRepairTests(unittest.TestCase):
+    """New controller controls; synthetic terminals are never product proof."""
+
+    setUp = ExistingBuildTests.setUp
+    write = staticmethod(ExistingBuildTests.write)
+    digest = staticmethod(ExistingBuildTests.digest)
+    enumerate_tests = ExistingBuildTests.enumerate_tests
+    run_xctest = ExistingBuildTests.run_xctest
+    execute = ExistingBuildTests.execute
+
+    def test_parameterized_filter_mapping_preserves_exact_full_identity_and_32_cases(self):
+        result = self.execute()
+        enumeration = result["enumeration"]
+        full_ids = {self.source["compiled_declarations"][name] for name in EXPECTED}
+        parameterized = {identifier for identifier in full_ids if not identifier.endswith("()")}
+        self.assertEqual(len(parameterized), 8)
+        self.assertEqual(set(enumeration["selected_identifiers"]), full_ids)
+        expected_filters = {identifier.split("(", 1)[0] for identifier in parameterized} | (full_ids - parameterized)
+        self.assertEqual(set(enumeration["xcode_method_selectors"]), expected_filters)
+        self.assertEqual(set(enumeration["selector_identity_binding"].values()), full_ids)
+        self.assertEqual(len(enumeration["selector_identity_binding"]), 23)
+        self.assertEqual(result["actual"]["declared_case_count"], 32)
+        self.assertEqual({item for item in self.commands[0] if item.startswith("-only-testing:")},
+                         {"-only-testing:" + name for name in expected_filters})
+        self.assertEqual(plistlib.loads(self.configuration.read_bytes()), self.original_configuration)
+
+    def test_original_full_parameter_signature_filters_reproduce_15_only_refusal(self):
+        with patch.object(runner, "xcode_method_selectors", side_effect=lambda selected, declarations: selected):
+            with self.assertRaisesRegex(ValueError, "exact23"):
+                self.execute()
+        payload = json.loads((self.root / "evidence/compiled-selected-enumeration.json").read_text())
+        _, enabled, disabled = runner.enumerated_identifiers(payload)
+        expected = {self.source["compiled_declarations"][name] for name in EXPECTED}
+        self.assertEqual(len(enabled), 15)
+        self.assertEqual(expected - enabled, {name for name in expected if not name.endswith("()")})
+        self.assertTrue((expected - enabled).issubset(disabled))
+        self.assertEqual(self.commands, [])
+
+    def test_mapped_filter_still_rejects_changed_full_signature_before_execution(self):
+        def mutate(payload, discovery):
+            if not discovery:
+                node = next(row for row in payload["values"][0]["enabledTests"]
+                            if "(objectShow:)" in row["identifier"])
+                node["identifier"] = node["identifier"].replace("(objectShow:)", "(unreviewed:)")
+        self.mutate_enumeration = mutate
+        with self.assertRaisesRegex(ValueError, "exact23"):
+            self.execute()
+        self.assertEqual(self.commands, [])
+
+    def test_selector_mapping_refuses_overloads_unknown_or_unscoped_identities(self):
+        identifier = "AnytypeTests/" + AUTHORITY_SUITE + "/" + AUTHORITY_PARAMETERIZED + "(objectShow:)"
+        declarations = list(self.source["compiled_declarations"].values())
+        cases = [
+            ([identifier], declarations + [identifier.replace("(objectShow:)", "(other:)")]),
+            ([identifier, identifier], declarations),
+            ([], declarations),
+            ([identifier.replace("(objectShow:)", "(unknown:)")], declarations),
+            (["AnytypeTests/" + AUTHORITY_SUITE], declarations),
+            ([identifier], declarations + ["OtherTarget/OtherSuite/method()"]),
+        ]
+        for selected, inventory in cases:
+            with self.subTest(selected=selected), self.assertRaises(ValueError):
+                runner.xcode_method_selectors(selected, inventory)
+        self.assertEqual(self.commands + self.enumerations, [])
 
 
 class TrackedContractTests(unittest.TestCase):

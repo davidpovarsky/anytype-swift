@@ -1,0 +1,57 @@
+{
+  "continue_native_acceptance.py": {
+    "addedFunctions": [],
+    "afterSHA256": "befa4f7974aaed9b8b936c0457a6acec5454c2d48c8f483740ca9810c14d2098",
+    "beforeSHA256": "63f11c8855bed52eec5def6c0c4cc3943218a861935929217cac6eadf065dd89",
+    "changedFunctions": [
+      "context"
+    ],
+    "unchangedNamedFunctions": [
+      "read",
+      "data",
+      "manifest",
+      "verify_api",
+      "extract_selected",
+      "fetch_originals",
+      "verify_log",
+      "verify_raw_results",
+      "verify_originals",
+      "qualify_retention",
+      "validate_admission",
+      "current_stage",
+      "previous_stages",
+      "aggregate",
+      "main"
+    ]
+  },
+  "native_continuation_sources.py": {
+    "addedFunctions": [
+      "verify_worktree"
+    ],
+    "afterSHA256": "fe74ca6ed78f26f008c79da674e87f6a51b9f5f82bfe2e697bbb1d90e9002465",
+    "beforeSHA256": "3bb2a0419c87feb75f7376df951ea384396045afd30c756001da5c3b6997500d",
+    "changedFunctions": [
+      "verify_sources"
+    ],
+    "unchangedNamedFunctions": [
+      "require",
+      "sha",
+      "blob",
+      "canonical",
+      "git",
+      "source",
+      "source_tree",
+      "declaration",
+      "verify_test_declarations",
+      "verify_history_registration",
+      "verify_maps"
+    ]
+  },
+  "retainedControls": {
+    "methodsRerun": 0,
+    "originalLogSHA256": "346f14975e725fe830be5f35da0f73964c8b1cedccf7eeab5cac9a55811f8bde",
+    "originalMethods": 16,
+    "scope": "All functions exercised by the original sixteen source/admission controls are byte-identical. The new workflow import hygiene, worktree diagnostic wrapper and explicit consumer branch condition are separately covered by three new controls.",
+    "unchangedTestGitBlob": "c05f011b8746fcf70630568867eba1308f35c2d9"
+  }
+}

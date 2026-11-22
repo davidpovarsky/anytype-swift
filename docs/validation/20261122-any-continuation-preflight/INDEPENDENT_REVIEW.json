@@ -1,0 +1,68 @@
+{
+  "controller_sources_before_after_equal": true,
+  "files_reviewed": 13,
+  "findings": [
+    "Workflow prevents Python bytecode creation before the first local import.",
+    "The strict dirty source fence remains active for tracked and untracked files; the new -z parser preserves exact filenames and emits bounded path diagnostics.",
+    "Consumer branch admission adds one exact authorized work branch; original producer repository/branch/run/source verification functions remain byte-identical.",
+    "The protected product source closure and exact twelve-path reviewed source delta remain mandatory; later portable anchor sources are not implicitly admitted.",
+    "Original failing Apple artifact omitted offending paths; the supplied new local import reproducer is correctly described as separate evidence, not historical raw-path evidence."
+  ],
+  "limitations": [
+    "No Apple or native product execution was performed by this review.",
+    "Future acceptance still requires the source-bound continuation run."
+  ],
+  "manifest_sha256": "cfdbb134bb4549fb33a5abcc08f8db7541dc75cc1dab8af5acdc8820e49b238e",
+  "new_control_log_sha256": "a23639659c39b478c1f942466d94eb36da8f6b75a1cd735d7a8a063138ec2229",
+  "new_raw_controls_passed": 3,
+  "source_changes": {
+    "continue_native_acceptance.py": {
+      "added_functions": [],
+      "changed_functions": [
+        "context"
+      ],
+      "unchanged_functions": [
+        "read",
+        "data",
+        "manifest",
+        "verify_api",
+        "extract_selected",
+        "fetch_originals",
+        "verify_log",
+        "verify_raw_results",
+        "verify_originals",
+        "qualify_retention",
+        "validate_admission",
+        "current_stage",
+        "previous_stages",
+        "aggregate",
+        "main"
+      ]
+    },
+    "native_continuation_sources.py": {
+      "added_functions": [
+        "verify_worktree"
+      ],
+      "changed_functions": [
+        "verify_sources"
+      ],
+      "unchanged_functions": [
+        "require",
+        "sha",
+        "blob",
+        "canonical",
+        "git",
+        "source",
+        "source_tree",
+        "declaration",
+        "verify_test_declarations",
+        "verify_history_registration",
+        "verify_maps"
+      ]
+    }
+  },
+  "source_closure_files": 14,
+  "status": "NO_CONCRETE_BLOCKER_FOUND_READ_ONLY",
+  "test_methods_executed_by_review": 0,
+  "unchanged_function_bodies": 26
+}

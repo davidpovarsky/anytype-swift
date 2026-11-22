@@ -1,0 +1,50 @@
+{
+  "status": "PASS_NEW_CONTROLLER_CONTROLS",
+  "sourceSHA256": {
+    "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py": "ff25ef9fc14630a67decf242b327c53111cfb8b77e0c2f10511a46a926aef8f0",
+    "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py": "b4f2cea82d84bcaed1d1ee96bd8f7718be84b0dec5181e4f5d4e3ed799cbf975",
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": "cfac4fd4f3a7b52aca0be49adc2b089ce4977153722c0afb36bf2ba10cf2d002",
+    "Tools/PinkhaNativeDerived/coherent_runtime_admission.py": "3abc33c74a65d3bd3eec1183c33f1ece79bee0665821dfbf29f1a5d1842f4983",
+    "Tools/PinkhaNativeDerived/install_verified_heart.py": "fe643439f65e1e20282607d95865c02937a5501d58125834a5cd4bef2532176a",
+    "Tools/PinkhaNativeDerived/test_acceptance_continuation_branch.py": "8e675bab3796f3fcea6c7256e5f3e4200fae3ae219dd988f9dba7d42f78f7ee7"
+  },
+  "commands": [
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_shared_editor_existing_build.SelectorRepairTests"
+      ],
+      "cwd": "/workspace/scratch/15ed7c0f4658/sdk06-selector-repair-work/Tools/PinkhaSimulatorGate",
+      "exitCode": 0,
+      "startedAt": "2026-11-22T18:23:11.314918+00:00",
+      "finishedAt": "2026-11-22T18:23:11.499512+00:00",
+      "rawLog": "selector-controls-final.log",
+      "rawLogSHA256": "a5e7bed7f0482dafe9e90c7f5efc791566a65f607c34f9d5c6777ec5b4d12ebf"
+    },
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_acceptance_continuation_branch.ContinuationBranchTests"
+      ],
+      "cwd": "/workspace/scratch/15ed7c0f4658/sdk06-selector-repair-work/Tools/PinkhaNativeDerived",
+      "exitCode": 0,
+      "startedAt": "2026-11-22T18:23:11.499574+00:00",
+      "finishedAt": "2026-11-22T18:23:11.623739+00:00",
+      "rawLog": "branch-controls.log",
+      "rawLogSHA256": "0ab1b5fca189335c43ebfcefce55389c9639b917c29563e45a125ead2407c2ec"
+    }
+  ],
+  "newControlMethods": 6,
+  "oldControlMethodsSelected": 0,
+  "productTestsExecuted": 0,
+  "appleExecution": "NOT_RUN",
+  "productionAdmission": "NOT_RUN"
+}
