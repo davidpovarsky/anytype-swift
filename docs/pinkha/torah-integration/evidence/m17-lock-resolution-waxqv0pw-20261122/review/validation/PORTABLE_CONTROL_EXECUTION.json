@@ -1,0 +1,46 @@
+{
+  "scope": "NEW_PORTABLE_LOCK_ADMISSION_CONTROLS_ONLY",
+  "executed_tests": 10,
+  "passed": 10,
+  "failed": 0,
+  "errors": 0,
+  "skipped": 0,
+  "duration_seconds_reported": 0.006,
+  "ids": [
+    "test_resolution_contract.OriginalLockAdmissionTests.test_actual_version2_lock_does_not_require_invented_origin_hash",
+    "test_resolution_contract.OriginalLockAdmissionTests.test_duplicate_identity_is_rejected",
+    "test_resolution_contract.OriginalLockAdmissionTests.test_existing_revision_change_is_rejected",
+    "test_resolution_contract.OriginalLockAdmissionTests.test_existing_url_change_is_rejected_even_with_same_revision",
+    "test_resolution_contract.OriginalLockAdmissionTests.test_existing_version_change_is_rejected_even_with_same_revision",
+    "test_resolution_contract.OriginalLockAdmissionTests.test_missing_or_malformed_version3_hash_is_rejected",
+    "test_resolution_contract.OriginalLockAdmissionTests.test_missing_runtime_addition_is_rejected",
+    "test_resolution_contract.OriginalLockAdmissionTests.test_real44_plus_exact7_retains_every_original_pin_and_metadata",
+    "test_resolution_contract.OriginalLockAdmissionTests.test_seed_cannot_replace_existing_pin",
+    "test_resolution_contract.OriginalLockAdmissionTests.test_unreviewed_transitive_addition_is_rejected"
+  ],
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "original_editor_v11_resolver_audit/resolution-draft/Tools/SharedSDKResolution",
+    "-p",
+    "test_resolution_contract.py",
+    "-v"
+  ],
+  "execution_receipt": "Observed exec_command chunk be963e, exit0; no Apple run or source-control221 rerun",
+  "source_sha256": {
+    "resolve_packages.py": "e2a6d766e83d98dc55afe5bd5edcbf54a288e9a98e5b77ae26ddbdcb8af4e281",
+    "contract.json": "ec9349adf20317fcf930022885203f4711c5793a69e12013eed66c04d0470d14",
+    "test_resolution_contract.py": "7590293cc88387e7ef68cb865f83a90de8b6a8f38651ea4665138b1da817132c",
+    "original-anytype-Package.resolved": "0e37d48b432710f5d1f951e8259a9d4b7ef4f9d066dbef65bdefa21dd83675a4"
+  },
+  "tested_function_ast_sha256": {
+    "require": "9da730f7c58f95f6e23f25fa0cd76f28059d4e75b4a62253116be61938546a17",
+    "pin_map": "adb95e6660fdab1874830c2b85cc6fbfaaca0781cdc0269d5073d8dc3933ebd4",
+    "expected_pins": "936f5de94c3499323b7b047b4553f1eeae771e4cf8b7320b1537e931cabfbf9f",
+    "verify_resolved": "c92e0b5d27d50537db959ff64672f85cfcf595a6f94cc2db33d118620eae55e6",
+    "seed_lock": "0214ad42728b8a7e359e1d84592e147948b6ce76462feb636b8157c77bbc96a9"
+  }
+}

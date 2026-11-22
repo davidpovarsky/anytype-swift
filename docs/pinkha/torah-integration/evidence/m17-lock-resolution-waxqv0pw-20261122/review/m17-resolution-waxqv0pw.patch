@@ -1,0 +1,1500 @@
+diff --git a/.github/workflows/otzaria-lock-resolution-waxqv0pw.yml b/.github/workflows/otzaria-lock-resolution-waxqv0pw.yml
+new file mode 100644
+--- /dev/null
++++ b/.github/workflows/otzaria-lock-resolution-waxqv0pw.yml
+@@ -0,0 +1,110 @@
++name: Original shared SDK lock resolution only waxqv0pw
++
++on:
++  push:
++    branches:
++      - codex/otzaria-lock-resolution-waxqv0pw-20261122
++
++permissions:
++  contents: read
++  actions: read
++
++concurrency:
++  group: original-shared-lock-resolution-waxqv0pw
++  cancel-in-progress: false
++
++jobs:
++  resolve-only:
++    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-lock-resolution-waxqv0pw-20261122'
++    runs-on: xcode-27
++    timeout-minutes: 85
++    strategy:
++      fail-fast: false
++      max-parallel: 1
++      matrix:
++        # Anytype already has another owner's real resolver lane at19babe.
++        # Keep it disabled here; the immutable8d reference contract is evidence.
++        target: [maktabah]
++    env:
++      PYTHONDONTWRITEBYTECODE: '1'
++      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
++    steps:
++      - name: Checkout exact isolated resolution implementation
++        uses: actions/checkout@v4
++        with:
++          ref: ${{ github.sha }}
++          path: resolver-kit
++          persist-credentials: false
++      - name: Checkout immutable producer source
++        if: matrix.target == 'anytype'
++        uses: actions/checkout@v4
++        with:
++          repository: davidpovarsky/anytype-swift
++          ref: 8d80a2754c1a21597ef6ac65c5ad01a3204909b1
++          path: owned-inputs/anytype-waxqv0pw
++          persist-credentials: false
++      - name: Checkout immutable consumer source
++        if: matrix.target == 'maktabah'
++        uses: actions/checkout@v4
++        with:
++          repository: davidpovarsky/Maktabah
++          ref: 813fbe79c1b325ee21a8c2be78bb86577f44bf6c
++          path: owned-inputs/maktabah-waxqv0pw
++          persist-credentials: false
++      - name: Checkout the original canonical Hanlin source
++        if: matrix.target == 'anytype'
++        uses: actions/checkout@v4
++        with:
++          repository: davidpovarsky/hanlin-ai
++          ref: e00498e33f106cc43be0476ffa2e09329c8ca300
++          path: owned-inputs/hanlin-waxqv0pw
++          persist-credentials: false
++      - name: Bind fresh producer checkout to original installer branch
++        if: matrix.target == 'anytype'
++        working-directory: owned-inputs/anytype-waxqv0pw
++        run: |
++          set -euo pipefail
++          test "$(git rev-parse HEAD)" = 8d80a2754c1a21597ef6ac65c5ad01a3204909b1
++          git switch --create codex/otzaria-original-editor-framework-v11-host-reviewed-20261122 8d80a2754c1a21597ef6ac65c5ad01a3204909b1
++      - name: Use original native ARM64 Python contract
++        uses: actions/setup-python@v5
++        with:
++          python-version: '3.12'
++          architecture: arm64
++      - name: Use recorded original native dependency Node runtime
++        if: matrix.target == 'maktabah'
++        uses: actions/setup-node@v4
++        with:
++          node-version: '22.23.4'
++      - name: Use recorded original native dependency Ruby runtime
++        if: matrix.target == 'maktabah'
++        uses: ruby/setup-ruby@v1
++        with:
++          ruby-version: '3.3.14'
++      - name: Use recorded original CocoaPods implementation
++        if: matrix.target == 'maktabah'
++        run: |
++          set -euo pipefail
++          gem install cocoapods -v 1.17.0 --no-document
++          test "$(pod --version)" = 1.17.0
++      - name: Prepare original inputs and resolve only the exact reviewed graph
++        timeout-minutes: 75
++        env:
++          GH_TOKEN: ${{ github.token }}
++          RESOLUTION_TARGET: ${{ matrix.target }}
++        run: |
++          set -euo pipefail
++          python3 resolver-kit/Tools/SharedSDKResolution/resolve_packages.py \
++            --contract "$GITHUB_WORKSPACE/resolver-kit/Tools/SharedSDKResolution/contract.json" \
++            --kind "$RESOLUTION_TARGET" \
++            --root "$GITHUB_WORKSPACE/owned-inputs/$RESOLUTION_TARGET-waxqv0pw" \
++            --output "$GITHUB_WORKSPACE/resolution-evidence-waxqv0pw/$RESOLUTION_TARGET" \
++            --hanlin-source "$GITHUB_WORKSPACE/owned-inputs/hanlin-waxqv0pw"
++      - name: Retain actual resolver commands locks and source checks
++        if: always()
++        uses: actions/upload-artifact@v4
++        with:
++          name: Original-Lock-Resolution-waxqv0pw-${{ matrix.target }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
++          path: resolution-evidence-waxqv0pw/${{ matrix.target }}
++          if-no-files-found: error
++          retention-days: 14
+diff --git a/Tools/SharedSDKResolution/contract.json b/Tools/SharedSDKResolution/contract.json
+new file mode 100644
+--- /dev/null
++++ b/Tools/SharedSDKResolution/contract.json
+@@ -0,0 +1,210 @@
++{
++  "schema": 1,
++  "status": "REVIEW_DRAFT_NOT_DISPATCHED",
++  "context": "waxqv0pw",
++  "workflow_branch": "codex/otzaria-lock-resolution-waxqv0pw-20261122",
++  "workflow_file": ".github/workflows/otzaria-lock-resolution-waxqv0pw.yml",
++  "repository": "davidpovarsky/anytype-swift",
++  "hanlin_sha": "e00498e33f106cc43be0476ffa2e09329c8ca300",
++  "failure_run": 44972129359,
++  "targets": {
++    "anytype": {
++      "execution_blocked": "Superseded by the parallel owner's resolver19babe. Immutable8d80 also has a conflicting Modules/PinkhaKit Inspector revision; no duplicate Anytype resolution is permitted by this packet.",
++      "repository": "davidpovarsky/anytype-swift",
++      "sha": "8d80a2754c1a21597ef6ac65c5ad01a3204909b1",
++      "source_path": "owned-inputs/anytype-waxqv0pw",
++      "project": "Anytype.xcodeproj",
++      "scheme": "AnytypeOriginalEditor",
++      "configuration": "Debug-Anytype",
++      "lock": "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
++      "original_pin_count": 44,
++      "expected_pin_count": 51,
++      "expected_new_pins": [
++        {
++          "identity": "equatable",
++          "kind": "remoteSourceControl",
++          "location": "https://github.com/ordo-one/equatable",
++          "state": {
++            "revision": "597c2bb34af0c51331eb3b5e705f942d8ee20daa",
++            "version": "1.4.1"
++          }
++        },
++        {
++          "identity": "hanlin-streaming-markdown",
++          "kind": "remoteSourceControl",
++          "location": "https://github.com/davidpovarsky/hanlin-streaming-markdown",
++          "state": {
++            "revision": "6bde022876ef4af738c154b3d5c871984ef76195"
++          }
++        },
++        {
++          "identity": "highlightswift",
++          "kind": "remoteSourceControl",
++          "location": "https://github.com/appstefan/highlightswift",
++          "state": {
++            "revision": "99c431b38a1444a5fd6a4978307fbbefe3a7af53"
++          }
++        },
++        {
++          "identity": "iosmath",
++          "kind": "remoteSourceControl",
++          "location": "https://github.com/junyan72/iosMath",
++          "state": {
++            "revision": "ba9ab7729b151329c54fd895a7c1859981d9484c"
++          }
++        },
++        {
++          "identity": "swift-cmark",
++          "kind": "remoteSourceControl",
++          "location": "https://github.com/swiftlang/swift-cmark",
++          "state": {
++            "revision": "08ddb528923cc1a6527e02b7a1aee9e516ca749a",
++            "version": "0.9.0"
++          }
++        },
++        {
++          "identity": "swift-markdown",
++          "kind": "remoteSourceControl",
++          "location": "https://github.com/swiftlang/swift-markdown.git",
++          "state": {
++            "revision": "7d9a5ce307528578dfa777d505496bd5f544ad94",
++            "version": "0.7.3"
++          }
++        },
++        {
++          "identity": "swiftui-shimmer",
++          "kind": "remoteSourceControl",
++          "location": "https://github.com/markiv/SwiftUI-Shimmer",
++          "state": {
++            "revision": "0226e21f9bf355d40e07e5f5e1c33679d50e167f",
++            "version": "1.5.1"
++          }
++        }
++      ],
++      "inputs": {
++        "Anytype.xcodeproj/project.pbxproj": {
++          "git_blob": "8bcfe29be2d3d1db4badc5a302921661b6806d40",
++          "bytes": 148767
++        },
++        "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved": {
++          "git_blob": "93172ce5fe62007a1620f7e64866e3b59338dc58",
++          "bytes": 12076
++        },
++        "Anytype.xcodeproj/xcshareddata/xcschemes/AnytypeOriginalEditor.xcscheme": {
++          "git_blob": "bd44a92536f974581cb5b1911d55ce045e8b4b4f",
++          "bytes": 813
++        },
++        "Tools/Hanlin/prepare_sdk.py": {
++          "git_blob": "99e1286268f7aacb5f5638cfe14633d37c04bccc",
++          "bytes": 4206
++        },
++        "Tools/Hanlin/source.json": {
++          "git_blob": "5b4501d4986a6c4155cc22d74bf4149c361172f2",
++          "bytes": 339
++        },
++        "Tools/Hanlin/prepare_original_editor_heart.py": {
++          "git_blob": "14ee9e553a883872a08526e1196f61d3dd3049f0",
++          "bytes": 5637
++        },
++        "Tools/PinkhaNativeDerived/install_verified_heart.py": {
++          "git_blob": "ca5324672c329422793e88168c37febab43a722a",
++          "bytes": 5495
++        },
++        "Tools/PinkhaNativeDerived/build_custom_heart.py": {
++          "git_blob": "e32c935fedce5fc732240bf9b2ada21764b5add1",
++          "bytes": 12945
++        },
++        "Modules/ProtobufMessages/Package.swift": {
++          "git_blob": "57972496dd061849f48c79d6d147c518dfa39826",
++          "bytes": 1176
++        }
++      },
++      "heart_source_run_id": "44203168617",
++      "heart_branch": "codex/otzaria-original-editor-framework-v11-host-reviewed-20261122",
++      "binary_manifest": "Modules/ProtobufMessages/Package.swift",
++      "binary_path": "Dependencies/Middleware/Lib.xcframework"
++    },
++    "maktabah": {
++      "repository": "davidpovarsky/Maktabah",
++      "sha": "813fbe79c1b325ee21a8c2be78bb86577f44bf6c",
++      "source_path": "owned-inputs/maktabah-waxqv0pw",
++      "project": "Maktabah.xcodeproj",
++      "workspace": "Maktabah.xcworkspace",
++      "scheme": "Maktabah-iOS",
++      "lock": "Maktabah.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
++      "workspace_lock": "Maktabah.xcworkspace/xcshareddata/swiftpm/Package.resolved",
++      "original_pin_count": 17,
++      "expected_pin_count": 17,
++      "expected_new_pins": [],
++      "inputs": {
++        "Maktabah.xcodeproj/project.pbxproj": {
++          "git_blob": "282b75da81da7ee94db39e57c861fe9a0e59e9eb",
++          "bytes": 601307
++        },
++        "Maktabah.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved": {
++          "git_blob": "99a5b952aab40cb3d5ffe03153c9cf8c07ed341b",
++          "bytes": 4432
++        },
++        "Scripts/CI/hq-stage2-focused-apple.py": {
++          "git_blob": "ab9164b58c3a64571590220ed8fc558e20279486",
++          "bytes": 48574
++        },
++        "Scripts/CI/hq-stage2-focused-apple.inputs.json": {
++          "git_blob": "b20a3034879d7c666a4b5c04bac61986d3c232f0",
++          "bytes": 4333
++        },
++        "Scripts/CI/prepare-hanlin-sdk.py": {
++          "git_blob": "2b3d439abe961e77cf81538043a77d6be50c3904",
++          "bytes": 4117
++        },
++        "Scripts/CI/prepare-pinned-sharp-libvips.py": {
++          "git_blob": "4ed75a5f8e661cb3aac6de763dd68f31631d9860",
++          "bytes": 6252
++        },
++        "Podfile": {
++          "git_blob": "4ebf2a981de4447b1ce98f885eb0a463ee75e692",
++          "bytes": 4017
++        },
++        ".gitmodules": {
++          "git_blob": "dbefe3a99b1c267817d7e95a8979554b08d8f9a8",
++          "bytes": 245
++        },
++        "Source/ChavrusaText/Dependencies/CommandPalette/Package.swift": {
++          "git_blob": "29b39d3e69cb0197a099768a7a8dbff793aacfa7",
++          "bytes": 414
++        },
++        "Source/Otzaria/Actions/Package.swift": {
++          "git_blob": "6e0f66e23a58df559e2eccdd62c5b894437aada8",
++          "bytes": 446
++        },
++        "Source/Otzaria/UIRouting/Package.swift": {
++          "git_blob": "1c7d5d67a69d7ec920575a19e00d0118d3611cc8",
++          "bytes": 603
++        },
++        "Source/ChavrusaText/UIRoutingHost/Package.swift": {
++          "git_blob": "125ecf527f49830015b68e2ecb59c15a211df61b",
++          "bytes": 701
++        }
++      },
++      "local_package_paths": [
++        "Source/ChavrusaText/Dependencies/CommandPalette",
++        "Source/Otzaria/Actions",
++        "Source/Otzaria/UIRouting",
++        "Source/ChavrusaText/UIRoutingHost",
++        "Vendor/HanlinSDK/Packages/HanlinAgentSDK",
++        "Vendor/HanlinSDK/Packages/HanlinPlatform",
++        "Vendor/HanlinSDK/Packages/HanlinPresentationSDK"
++      ],
++      "recorded_native_preparation_toolchain": {
++        "node": "22.23.4",
++        "ruby": "3.3.14",
++        "cocoapods": "1.17.0",
++        "observed_source": "a1cdbb59a55b47a767fe261325c7a97ecf8045eb",
++        "evidence": "native_failure_audit/reader/hq-stage2/result.json"
++      }
++    }
++  },
++  "xcode_version": "Xcode 27.0\nBuild version 27A266a",
++  "simulator_sdk_version": "27.0",
++  "swift_compiler_version": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)"
++}
+diff --git a/Tools/SharedSDKResolution/original-anytype-Package.resolved b/Tools/SharedSDKResolution/original-anytype-Package.resolved
+new file mode 100644
+--- /dev/null
++++ b/Tools/SharedSDKResolution/original-anytype-Package.resolved
+@@ -0,0 +1,400 @@
++{
++  "originHash" : "6e4d07011e5b3bb204bc1bd6a0f7a0ef9c957ae4598d7c6bb29699a5a9e0d0ed",
++  "pins" : [
++    {
++      "identity" : "abseil-cpp-binary",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/google/abseil-cpp-binary.git",
++      "state" : {
++        "revision" : "194a6706acbd25e4ef639bcaddea16e8758a3e27",
++        "version" : "1.2024011602.0"
++      }
++    },
++    {
++      "identity" : "amplitude-swift",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/amplitude/Amplitude-Swift",
++      "state" : {
++        "revision" : "227c2bbc578e9e03bc7b2033da02937c06e476c6",
++        "version" : "1.13.7"
++      }
++    },
++    {
++      "identity" : "amplitudecore-swift",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/amplitude/AmplitudeCore-Swift.git",
++      "state" : {
++        "revision" : "13fd0eb0aa080816ffa409669758b2e8787322b2",
++        "version" : "1.1.0"
++      }
++    },
++    {
++      "identity" : "analytics-connector-ios",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/amplitude/analytics-connector-ios.git",
++      "state" : {
++        "revision" : "4adbfe85486e6dcdcdca5fa9362097ffe5ec712b",
++        "version" : "1.3.1"
++      }
++    },
++    {
++      "identity" : "any-crypto-swift",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/anyproto/any-crypto-swift",
++      "state" : {
++        "revision" : "0d7429888f8ec60d1730341ff1122d5ddf0ff1ab",
++        "version" : "1.0.1"
++      }
++    },
++    {
++      "identity" : "app-check",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/google/app-check.git",
++      "state" : {
++        "revision" : "61b85103a1aeed8218f17c794687781505fbbef5",
++        "version" : "11.2.0"
++      }
++    },
++    {
++      "identity" : "bigint",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/attaswift/BigInt.git",
++      "state" : {
++        "revision" : "d013a2b66ee468aade6da1f26c6d55cb6cd2e9ad",
++        "version" : "5.5.2"
++      }
++    },
++    {
++      "identity" : "cache",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/hyperoslo/Cache.git",
++      "state" : {
++        "revision" : "24e47109e31b2031cb26e25cc1b81b607496066c",
++        "version" : "7.4.0"
++      }
++    },
++    {
++      "identity" : "confettiswiftui",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/simibac/ConfettiSwiftUI.git",
++      "state" : {
++        "revision" : "f45961f97bbae6fff6e2e64546fea0189425ad92",
++        "version" : "1.1.0"
++      }
++    },
++    {
++      "identity" : "devicekit",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/devicekit/DeviceKit",
++      "state" : {
++        "revision" : "fe41d18eccd92a115cffaa35dfff03018c67e635",
++        "version" : "5.2.2"
++      }
++    },
++    {
++      "identity" : "factory",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/hmlongco/Factory",
++      "state" : {
++        "branch" : "2.3.1",
++        "revision" : "8ca11a7bd1ede031e8e6d7a912bb116e2e43961b"
++      }
++    },
++    {
++      "identity" : "firebase-ios-sdk",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/firebase/firebase-ios-sdk",
++      "state" : {
++        "revision" : "6318278e8e64d21f0fdcc69004395e4d34048aaf",
++        "version" : "11.8.1"
++      }
++    },
++    {
++      "identity" : "floatingpanel",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/scenee/FloatingPanel",
++      "state" : {
++        "revision" : "3db567a19ff81d2d3ce00399021ee87a4fccf7e0",
++        "version" : "3.2.4"
++      }
++    },
++    {
++      "identity" : "googleappmeasurement",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/google/GoogleAppMeasurement.git",
++      "state" : {
++        "revision" : "be0881ff728eca210ccb628092af400c086abda3",
++        "version" : "11.7.0"
++      }
++    },
++    {
++      "identity" : "googledatatransport",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/google/GoogleDataTransport.git",
++      "state" : {
++        "revision" : "617af071af9aa1d6a091d59a202910ac482128f9",
++        "version" : "10.1.0"
++      }
++    },
++    {
++      "identity" : "googleutilities",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/google/GoogleUtilities.git",
++      "state" : {
++        "revision" : "53156c7ec267db846e6b64c9f4c4e31ba4cf75eb",
++        "version" : "8.0.2"
++      }
++    },
++    {
++      "identity" : "grpc-binary",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/google/grpc-binary.git",
++      "state" : {
++        "revision" : "f56d8fc3162de9a498377c7b6cea43431f4f5083",
++        "version" : "1.65.1"
++      }
++    },
++    {
++      "identity" : "gtm-session-fetcher",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/google/gtm-session-fetcher.git",
++      "state" : {
++        "revision" : "3cdb78efb79b4a5383c3911488d8025bfc545b5e",
++        "version" : "4.3.0"
++      }
++    },
++    {
++      "identity" : "highlightr",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/raspu/Highlightr",
++      "state" : {
++        "revision" : "fa483d37c692961ecc2391eac568ba3d3935e663",
++        "version" : "2.2.0"
++      }
++    },
++    {
++      "identity" : "interop-ios-for-google-sdks",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/google/interop-ios-for-google-sdks.git",
++      "state" : {
++        "revision" : "2d12673670417654f08f5f90fdd62926dc3a2648",
++        "version" : "100.0.0"
++      }
++    },
++    {
++      "identity" : "kingfisher",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/onevcat/Kingfisher",
++      "state" : {
++        "revision" : "3db26ab625d194c38e68c1a40e43d1bc12743fe0",
++        "version" : "8.2.0"
++      }
++    },
++    {
++      "identity" : "leveldb",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/firebase/leveldb.git",
++      "state" : {
++        "revision" : "a0bc79961d7be727d258d33d5a6b2f1023270ba1",
++        "version" : "1.22.5"
++      }
++    },
++    {
++      "identity" : "nanopb",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/firebase/nanopb.git",
++      "state" : {
++        "revision" : "b7e1104502eca3a213b46303391ca4d3bc8ddec1",
++        "version" : "2.30910.0"
++      }
++    },
++    {
++      "identity" : "promises",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/google/promises.git",
++      "state" : {
++        "revision" : "540318ecedd63d883069ae7f1ed811a2df00b6ac",
++        "version" : "2.4.0"
++      }
++    },
++    {
++      "identity" : "pulse",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/kean/Pulse",
++      "state" : {
++        "branch" : "5.1.2",
++        "revision" : "c102aaa266ac69a26d08ee6861da710283988e3b"
++      }
++    },
++    {
++      "identity" : "qrcode",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/dagronf/QRCode",
++      "state" : {
++        "revision" : "ea4047a7777bae470adc140cd94bfa5396a96202",
++        "version" : "27.11.0"
++      }
++    },
++    {
++      "identity" : "sentry-cocoa",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/getsentry/sentry-cocoa",
++      "state" : {
++        "revision" : "cf44aa8cb4147f39e698c1f28be0b6b2c89f79d2",
++        "version" : "8.58.2"
++      }
++    },
++    {
++      "identity" : "shimmerswift",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/BeauNouvelle/ShimmerSwift",
++      "state" : {
++        "revision" : "f1a4366f74329c313e9528bcbe5286eacc750c05",
++        "version" : "2.2.0"
++      }
++    },
++    {
++      "identity" : "swift-ai-sdk",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/davidpovarsky/swift-ai-sdk.git",
++      "state" : {
++        "revision" : "e7bf34111e603ca977becd007dd4e5bb109af857"
++      }
++    },
++    {
++      "identity" : "swift-argument-parser",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/apple/swift-argument-parser",
++      "state" : {
++        "revision" : "6a52f3251125d74daf04fcbd5e6f08a75d074382",
++        "version" : "1.8.2"
++      }
++    },
++    {
++      "identity" : "swift-asn1",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/apple/swift-asn1.git",
++      "state" : {
++        "revision" : "a54383ada6cecde007d374f58f864e29370ba5c3",
++        "version" : "1.3.2"
++      }
++    },
++    {
++      "identity" : "swift-async-algorithms",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/apple/swift-async-algorithms",
++      "state" : {
++        "branch" : "1.0.3",
++        "revision" : "4c3ea81f81f0a25d0470188459c6d4bf20cf2f97"
++      }
++    },
++    {
++      "identity" : "swift-collections",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/apple/swift-collections.git",
++      "state" : {
++        "revision" : "671108c96644956dddcd89dd59c203dcdb36cec7",
++        "version" : "1.1.4"
++      }
++    },
++    {
++      "identity" : "swift-crypto",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/apple/swift-crypto.git",
++      "state" : {
++        "revision" : "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
++        "version" : "3.12.3"
++      }
++    },
++    {
++      "identity" : "swift-log",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/apple/swift-log",
++      "state" : {
++        "branch" : "1.4.2",
++        "revision" : "5d66f7ba25daf4f94100e7022febf3c75e37a6c7"
++      }
++    },
++    {
++      "identity" : "swift-protobuf",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/apple/swift-protobuf",
++      "state" : {
++        "branch" : "1.32.0",
++        "revision" : "c6fe6442e6a64250495669325044052e113e990c"
++      }
++    },
++    {
++      "identity" : "swift-qrcode-generator",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/dagronf/swift-qrcode-generator",
++      "state" : {
++        "revision" : "2b1980b825f08a81ccc762b0c4d17fcde9d5e953",
++        "version" : "2.0.2"
++      }
++    },
++    {
++      "identity" : "swift-syntax",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/swiftlang/swift-syntax.git",
++      "state" : {
++        "revision" : "0687f71944021d616d34d922343dcef086855920",
++        "version" : "600.0.1"
++      }
++    },
++    {
++      "identity" : "swiftentrykit",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/huri000/SwiftEntryKit",
++      "state" : {
++        "revision" : "5ad36cccf0c4b9fea32f4e9b17a8e38f07563ef0",
++        "version" : "2.0.0"
++      }
++    },
++    {
++      "identity" : "swiftimagereadwrite",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/dagronf/SwiftImageReadWrite",
++      "state" : {
++        "revision" : "42ace2412279f18bc264bc306e96b51c36e12a33",
++        "version" : "1.9.2"
++      }
++    },
++    {
++      "identity" : "swiftyjson",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/SwiftyJSON/SwiftyJSON.git",
++      "state" : {
++        "revision" : "b3dcd7dbd0d488e1a7077cb33b00f2083e382f07",
++        "version" : "5.0.1"
++      }
++    },
++    {
++      "identity" : "torahinspectorkit",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/davidpovarsky/TorahInspectorKit.git",
++      "state" : {
++        "revision" : "23db0f84e88d9ee9c7053c49de86903fc7bb5785"
++      }
++    },
++    {
++      "identity" : "wrappinghstack",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/ksemianov/WrappingHStack",
++      "state" : {
++        "revision" : "3300f68b6bf5f8a75ee7ca8a40f136a558053d10",
++        "version" : "0.2.0"
++      }
++    },
++    {
++      "identity" : "zipfoundation",
++      "kind" : "remoteSourceControl",
++      "location" : "https://github.com/weichsel/ZIPFoundation",
++      "state" : {
++        "revision" : "22787ffb59de99e5dc1fbfe80b19c97a904ad48d",
++        "version" : "0.9.20"
++      }
++    }
++  ],
++  "version" : 3
++}
+diff --git a/Tools/SharedSDKResolution/resolve_packages.py b/Tools/SharedSDKResolution/resolve_packages.py
+new file mode 100644
+--- /dev/null
++++ b/Tools/SharedSDKResolution/resolve_packages.py
+@@ -0,0 +1,512 @@
++#!/usr/bin/env python3
++"""Resolve immutable original graphs on Xcode; never compile or qualify an app.
++
++The only proposed source change is Xcode's actual Package.resolved output.
++All original pin objects, including URL/kind/version/revision, must be retained.
++The Anytype seed adds only seven source-reviewed Hanlin dependencies; it retains
++the old metadata unchanged and is explicitly not an accepted resolved file.
++"""
++import argparse
++from datetime import datetime, timezone
++import hashlib
++import importlib.util
++import json
++import os
++from pathlib import Path
++import platform
++import re
++import shutil
++import signal
++import subprocess
++import sys
++import time
++import xml.etree.ElementTree as ET
++
++
++def require(value, message):
++    if not value:
++        raise RuntimeError(message)
++
++
++def sha256(path):
++    with Path(path).open('rb') as stream:
++        return hashlib.file_digest(stream, 'sha256').hexdigest()
++
++
++def git_blob(raw):
++    return hashlib.sha1(b'blob ' + str(len(raw)).encode() + b'\0' + raw).hexdigest()
++
++
++def write(path, value):
++    path = Path(path)
++    path.parent.mkdir(parents=True, exist_ok=True)
++    path.write_text(json.dumps(value, indent=2, sort_keys=True) + '\n', encoding='utf-8')
++
++
++def git(root, *args):
++    return subprocess.check_output(['git', '--no-replace-objects', '-C', str(root), *args], timeout=120).decode().strip()
++
++
++def pin_map(lock):
++    require(type(lock) is dict and lock.get('version') in (2, 3), 'Unsupported actual resolved-file schema')
++    require(type(lock.get('pins')) is list, 'Missing pin array')
++    result = {}
++    for pin in lock['pins']:
++        require(type(pin) is dict and type(pin.get('identity')) is str, 'Malformed pin')
++        name = pin['identity']
++        require(name and name == name.lower() and name not in result, 'Duplicate or noncanonical package identity')
++        require(pin.get('kind') == 'remoteSourceControl' and type(pin.get('location')) is str
++                and pin['location'].startswith('https://'), 'Unreviewed package location/kind')
++        state = pin.get('state', {})
++        require(type(state) is dict and re.fullmatch('[0-9a-f]{40}', state.get('revision', '')),
++                'A package revision is not immutable')
++        result[name] = pin
++    return result
++
++
++def expected_pins(original, target):
++    result = pin_map(original)
++    require(len(result) == target['original_pin_count'], 'Original pin count changed')
++    for pin in target['expected_new_pins']:
++        name = pin['identity']
++        require(name not in result, 'A proposed addition replaces an original pin')
++        result[name] = pin
++    require(len(result) == target['expected_pin_count'], 'Reviewed closure count differs')
++    # Validate new entries with the same exact immutable shape check.
++    pin_map({'version': original['version'], 'pins': list(result.values())})
++    return result
++
++
++def verify_resolved(actual, expected):
++    require(pin_map(actual) == expected, 'Xcode changed an original pin or selected an unreviewed dependency')
++    require(set(actual) <= {'version', 'pins', 'originHash'}, 'Unreviewed resolved-file metadata')
++    if actual['version'] == 3:
++        require(type(actual.get('originHash')) is str and re.fullmatch('[0-9a-f]{64}', actual['originHash']),
++                'Xcode did not retain a valid version3 originHash')
++    else:
++        require('originHash' not in actual, 'Unexpected metadata in version2 lock')
++
++
++def seed_lock(original, expected):
++    seed = dict(original)
++    seed['pins'] = [expected[name] for name in sorted(expected)]
++    return seed
++
++
++def run(command, cwd, evidence, name, timeout=1200, *, require_success=True):
++    evidence = Path(evidence)
++    evidence.mkdir(parents=True, exist_ok=True)
++    stdout = evidence / (name + '.stdout.log')
++    stderr = evidence / (name + '.stderr.log')
++    record = {'argv': [str(x) for x in command], 'cwd': str(cwd), 'timeout_seconds': timeout,
++              'started_at': datetime.now(timezone.utc).isoformat(), 'returncode': None, 'timed_out': False}
++    process = None
++    start = time.monotonic()
++    try:
++        with stdout.open('xb') as out, stderr.open('xb') as err:
++            process = subprocess.Popen(command, cwd=cwd, stdout=out, stderr=err, start_new_session=True)
++            try:
++                record['returncode'] = process.wait(timeout=timeout)
++            except subprocess.TimeoutExpired:
++                record['timed_out'] = True
++                raise
++    except BaseException:
++        if process is not None and process.poll() is None:
++            os.killpg(process.pid, signal.SIGTERM)
++            try:
++                process.wait(timeout=10)
++            except subprocess.TimeoutExpired:
++                os.killpg(process.pid, signal.SIGKILL)
++                process.wait(timeout=10)
++        raise
++    finally:
++        if process is not None:
++            record['returncode'] = process.returncode
++        record.update(finished_at=datetime.now(timezone.utc).isoformat(), elapsed_seconds=time.monotonic() - start,
++                      stdout_sha256=sha256(stdout) if stdout.exists() else None,
++                      stderr_sha256=sha256(stderr) if stderr.exists() else None)
++        write(evidence / (name + '.command.json'), record)
++    if require_success:
++        require(record['returncode'] == 0, 'Actual command failed: ' + name)
++    return stdout.read_text(errors='replace')
++
++
++def stale_lock_failure(record, stdout, stderr):
++    diagnostic = (stdout + '\n' + stderr).lower()
++    return (record.get('returncode') == 74 and record.get('timed_out') is False
++            and 'could not resolve package dependencies' in diagnostic
++            and 'an out-of-date resolved file was detected' in diagnostic
++            and 'automatic dependency resolution is disabled' in diagnostic
++            and 'requirements have changed' in diagnostic
++            and not any(message in diagnostic for message in (
++                'authentication failed', 'repository not found', 'failed to clone',
++                'could not connect', "couldn't connect", 'ssl error', 'tls error', 'permission denied')))
++
++
++def resolve_strict_first(command, root, output, active_lock, canonical_lock, expected, *, runner=run):
++    """Never automatically resolve an already acceptable or unrelated failing graph."""
++    strict = [*command, '-onlyUsePackageVersionsFromResolvedFile']
++    runner(strict, root, output, 'actual-strict-first', 1800, require_success=False)
++    first = json.loads((output / 'actual-strict-first.command.json').read_bytes())
++    if first['returncode'] == 0:
++        raw = active_lock.read_bytes()
++        verify_resolved(json.loads(raw), expected)
++        # These are actual successful strict-resolver bytes. No automatic
++        # resolution or second strict invocation is needed in this case.
++        canonical_lock.write_bytes(raw)
++        return raw, {'mode': 'ORIGINAL_STRICT_RESOLVER_ACCEPTED', 'automatic_resolution_invocations': 0,
++                     'strict_resolution_invocations': 1}
++    stdout = (output / 'actual-strict-first.stdout.log').read_text(errors='replace')
++    stderr = (output / 'actual-strict-first.stderr.log').read_text(errors='replace')
++    require(stale_lock_failure(first, stdout, stderr), 'Strict resolution failed for a reason not admitted for metadata refresh')
++    (output / 'Package.resolved.after-strict-failure').write_bytes(active_lock.read_bytes())
++    verify_resolved(json.loads(active_lock.read_bytes()), expected)
++    runner(command, root, output, 'actual-resolve-packages', 1800)
++    raw = active_lock.read_bytes()
++    verify_resolved(json.loads(raw), expected)
++    canonical_lock.write_bytes(raw)
++    runner(strict, root, output, 'actual-strict-replay', 900)
++    require(active_lock.read_bytes() == raw and canonical_lock.read_bytes() == raw,
++            'Strict replay changed the actual Xcode-generated lock')
++    return raw, {'mode': 'ACTUAL_STALE_LOCK_RESOLVED_AND_STRICTLY_REPLAYED', 'automatic_resolution_invocations': 1,
++                 'strict_resolution_invocations': 2}
++
++
++def identity(root, target):
++    require(git(root, 'rev-parse', 'HEAD') == target['sha'], 'Unexpected immutable source checkout')
++    require(not git(root, 'diff', '--name-only', 'HEAD'), 'Preserve and inspect changed source checkout')
++    require(not git(root, 'ls-files', '--others', '--exclude-standard', '-z'), 'Fresh source checkout has untracked inputs')
++    records = {}
++    for name, expected in target['inputs'].items():
++        path = root / name
++        require(path.is_file() and not path.is_symlink(), 'Missing or aliased original preparation input: ' + name)
++        raw = path.read_bytes()
++        require(len(raw) == expected['bytes'] and git_blob(raw) == expected['git_blob']
++                and git(root, 'rev-parse', 'HEAD:' + name) == expected['git_blob'],
++                'Actual original input bytes differ: ' + name)
++        records[name] = {'git_blob': expected['git_blob'], 'bytes': len(raw), 'sha256': sha256(path)}
++    return {'repository': target['repository'], 'sha': target['sha'], 'tree': git(root, 'rev-parse', 'HEAD^{tree}'),
++            'inputs': records}
++
++
++def graph_inputs(root):
++    """Hash actual graph declarations, not merely commit labels or a lock file."""
++    rows = subprocess.check_output(['git', '-C', str(root), 'ls-files', '-z']).decode().split('\0')
++    selected = [p for p in rows if p and (
++        re.search(r'(^|/)Package(?:@swift[^/]*)?\.swift$', p)
++        or p.endswith(('/project.pbxproj', '.xcscheme', '.xcconfig', '/Package.resolved'))
++        or p in ('.gitmodules', 'Podfile')
++    ) and not p.startswith(('docs/', 'Tests/', 'Tools/OriginalEditor/original_project'))]
++    records = {}
++    for name in sorted(selected):
++        path = root / name
++        require(path.is_file() and not path.is_symlink(), 'Graph input missing/aliased: ' + name)
++        records[name] = {'bytes': path.stat().st_size, 'sha256': sha256(path), 'git_blob': git_blob(path.read_bytes())}
++    return records
++
++
++def package_graph(actual):
++    objects = actual['objects']
++    references = {key: value for key, value in objects.items() if value.get('isa') in {
++        'XCLocalSwiftPackageReference', 'XCRemoteSwiftPackageReference', 'XCSwiftPackageProductDependency'}}
++    owners = {}
++    for key, value in objects.items():
++        if value.get('isa') not in {'PBXProject', 'PBXNativeTarget'}:
++            continue
++        owner = {'isa': value['isa'], 'name': value.get('name')}
++        for field in ('packageReferences', 'packageProductDependencies'):
++            attachment = value.get(field)
++            require(attachment is None or (type(attachment) is list
++                    and all(type(item) is str for item in attachment)
++                    and len(attachment) == len(set(attachment))), 'Malformed package ownership attachment')
++            for item in attachment or []:
++                allowed = {'XCLocalSwiftPackageReference', 'XCRemoteSwiftPackageReference'} if field == 'packageReferences' else {'XCSwiftPackageProductDependency'}
++                require(item in references and references[item]['isa'] in allowed,
++                        'Dangling or mismatched package ownership attachment')
++            owner[field] = attachment
++        owners[key] = owner
++    return {'references': references, 'owners': owners}
++
++
++def project_package_references(path):
++    actual = json.loads(subprocess.check_output(['plutil', '-convert', 'json', '-o', '-', str(path)], timeout=60))
++    return package_graph(actual)
++
++
++def require_unchanged_package_graph(before, after):
++    require(after == before, 'Original package requirements/products or owning project/target attachments changed')
++
++
++def has_package_graph(graph):
++    return bool(graph['references']) or any(owner[field] for owner in graph['owners'].values()
++                                           for field in ('packageReferences', 'packageProductDependencies'))
++
++
++def workspace_inputs(root):
++    """Capture the real CocoaPods workspace graph and actual generated settings."""
++    workspace = root / 'Maktabah.xcworkspace'
++    declaration = workspace / 'contents.xcworkspacedata'
++    require(declaration.is_file() and not declaration.is_symlink(), 'Missing real generated workspace declaration')
++    references = [entry.attrib.get('location', '') for entry in ET.fromstring(declaration.read_bytes()).iter('FileRef')]
++    require(sorted(references) == ['group:Maktabah.xcodeproj', 'group:Pods/Pods.xcodeproj'],
++            'Unreviewed generated workspace project membership')
++    pods_packages = project_package_references(root / 'Pods/Pods.xcodeproj/project.pbxproj')
++    require(not has_package_graph(pods_packages),
++            'Generated CocoaPods project added an unreviewed Swift package graph')
++    paths = {declaration, root / 'Pods/Pods.xcodeproj/project.pbxproj', root / 'Podfile.lock', root / 'Pods/Manifest.lock'}
++    for directory in (workspace / 'xcshareddata', root / 'Pods/Pods.xcodeproj/xcshareddata', root / 'Pods/Target Support Files'):
++        if directory.exists():
++            paths.update(p for p in directory.rglob('*') if p.is_file() and p.suffix in {'.xcscheme', '.xcconfig', '.xcsettings'})
++    records = {}
++    for path in sorted(paths):
++        require(path.is_file() and not path.is_symlink() and path.resolve().is_relative_to(root),
++                'Missing or aliased generated workspace graph input')
++        records[path.relative_to(root).as_posix()] = {'bytes': path.stat().st_size, 'sha256': sha256(path)}
++    require(any(name.endswith('.xcconfig') for name in records), 'Missing actual CocoaPods generated settings')
++    return {'project_references': references, 'files': records,
++            'app_package_references': project_package_references(root / 'Maktabah.xcodeproj/project.pbxproj'),
++            'pods_package_graph': pods_packages,
++            'pods_has_additional_swift_package_references': False}
++
++
++def load_original_stage2(root):
++    path = root / 'Scripts/CI/hq-stage2-focused-apple.py'
++    spec = importlib.util.spec_from_file_location('original_stage2_lock_preparation', path)
++    module = importlib.util.module_from_spec(spec)
++    spec.loader.exec_module(module)
++    return module
++
++
++def prepare_maktabah(root, output, hanlin_sha):
++    """Call only three original preparation operations; no engine or app build."""
++    module = load_original_stage2(root)
++    config = json.loads(module.INPUTS.read_bytes())
++    require(config['hanlin_gitlink'] == hanlin_sha, 'Unexpected original Hanlin gitlink')
++    # The original logger requires evidence to be inside its actual app root.
++    module.OUT = root / 'build/lock-resolution-preparation-waxqv0pw'
++    module.OUT.mkdir(parents=True, exist_ok=False)
++    report = {'status': 'PREPARING_RESOLVER_INPUTS_ONLY', 'app_build_executed': False,
++              'package_pins': module.pins(root / 'Maktabah.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved')}
++    try:
++        module.prepare_original_hanlin(config, report)
++        module.prepare_react_sources(config, report)
++        module.install_real_pods(report)
++        module.prepare_original_hanlin(config, report, verify_only=True)
++        privacy = 'Source/PrivacyInfo.xcprivacy'
++        if git(root, 'diff', '--name-only', 'HEAD', '--', privacy):
++            module.audit_generated_privacy(report, git(root, 'rev-parse', 'HEAD:' + privacy))
++        report['status'] = 'ORIGINAL_RESOLVER_INPUTS_PREPARED_NO_BUILD'
++    finally:
++        write(module.OUT / 'preparation.json', report)
++        shutil.copytree(module.OUT, output / 'original-preparation')
++
++
++def prepare_anytype(root, target, output, hanlin_source):
++    require(git(hanlin_source, 'rev-parse', 'HEAD') == 'e00498e33f106cc43be0476ffa2e09329c8ca300',
++            'Wrong actual original Hanlin checkout')
++    require(not (root / 'Dependencies/Hanlin').exists()
++            and not (root / 'Dependencies/Middleware/Lib.xcframework').exists()
++            and not (root / 'Dependencies/Middleware/PinkhaNativeHeartBuild.json').exists(),
++            'Preserve an occupied original dependency installation')
++    require(git(root, 'branch', '--show-current') == target['heart_branch'], 'Wrong fresh installer checkout branch')
++    run([sys.executable, 'Tools/Hanlin/prepare_sdk.py', '--source', str(hanlin_source)], root, output, 'prepare-hanlin', 300)
++    run([sys.executable, 'Tools/Hanlin/prepare_sdk.py', '--check'], root, output, 'verify-hanlin', 120)
++    heart = root / 'build/lock-resolution-verified-heart-waxqv0pw'
++    require(not heart.exists(), 'Heart verification output already exists')
++    heart_evidence = root / 'build/lock-resolution-heart-evidence-waxqv0pw'
++    require(not heart_evidence.exists(), 'Heart evidence path already exists')
++    run([sys.executable, 'Tools/Hanlin/prepare_original_editor_heart.py', '--source-run-id', target['heart_source_run_id'],
++         '--output', str(heart), '--evidence', str(heart_evidence / 'source')], root, output, 'verify-original-heart', 1200)
++    run([sys.executable, 'Tools/PinkhaNativeDerived/install_verified_heart.py',
++         '--archive', str(heart / 'Pinkha-Universal-Verified-Heart-r14.tar.gz'),
++         '--inventory', 'docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json',
++         '--patch', 'docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch',
++         '--app-source', str(root), '--source-run-id', target['heart_source_run_id'],
++         '--expected-app-branch', target['heart_branch'], '--evidence', str(heart_evidence / 'installation')],
++        root, output, 'install-original-heart', 300)
++    require((root / target['binary_path'] / 'Info.plist').is_file(), 'Original local binaryTarget is absent')
++    shutil.copytree(heart_evidence, output / 'original-heart')
++
++
++def checkout_proof(checkouts, expected):
++    require(checkouts.is_dir() and not checkouts.is_symlink(), 'Missing real Xcode dependency checkouts')
++    records = {}
++    for folder in sorted(checkouts.iterdir()):
++        require(folder.is_dir() and not folder.is_symlink(), 'Unexpected checkout entry')
++        name = folder.name.lower()
++        require(name in expected and name not in records, 'Unreviewed dependency checkout: ' + name)
++        actual = git(folder, 'rev-parse', 'HEAD')
++        require(actual == expected[name]['state']['revision'], 'Actual dependency revision changed: ' + name)
++        require(not git(folder, 'diff', '--name-only', 'HEAD'), 'Dirty dependency source: ' + name)
++        require(not git(folder, 'ls-files', '--others', '-z'), 'Extra tracked-or-ignored build inputs: ' + name)
++        records[name] = {'revision': actual, 'package_manifest_sha256': sha256(folder / 'Package.swift')}
++    required = {'hanlin-streaming-markdown', 'equatable', 'highlightswift', 'iosmath', 'swiftui-shimmer',
++                'swift-markdown', 'swift-cmark', 'torahinspectorkit'}
++    require(required <= set(records), 'A required shared runtime package was not actually materialized')
++    return {'checkouts': records, 'locked_but_not_materialized': sorted(set(expected) - set(records)),
++            'all_actual_checkout_files_tracked': True}
++
++
++def main():
++    parser = argparse.ArgumentParser(__doc__)
++    parser.add_argument('--contract', type=Path, required=True)
++    parser.add_argument('--kind', choices=['anytype', 'maktabah'], required=True)
++    parser.add_argument('--root', type=Path, required=True)
++    parser.add_argument('--output', type=Path, required=True)
++    parser.add_argument('--hanlin-source', type=Path)
++    parser.add_argument('--prepare-maktabah-only', action='store_true')
++    args = parser.parse_args()
++    contract = json.loads(args.contract.read_bytes())
++    require(contract['schema'] == 1 and contract['context'] == 'waxqv0pw', 'Wrong reviewed resolution contract')
++    target = contract['targets'][args.kind]
++    require(not target.get('execution_blocked'), target.get('execution_blocked', 'Target execution is blocked'))
++    root, output = args.root.resolve(), args.output.resolve()
++    require(platform.system() == 'Darwin' and platform.machine() == 'arm64', 'Requires actual native Apple ARM64 Xcode')
++    require(os.environ.get('GITHUB_REPOSITORY') == contract['repository']
++            and os.environ.get('GITHUB_EVENT_NAME') == 'push'
++            and os.environ.get('GITHUB_REF') == 'refs/heads/' + contract['workflow_branch']
++            and os.environ.get('GITHUB_WORKFLOW_REF') == contract['repository'] + '/' + contract['workflow_file']
++                + '@refs/heads/' + contract['workflow_branch'], 'Not the one reviewed isolated resolver workflow')
++    workspace = Path(os.environ['GITHUB_WORKSPACE']).resolve()
++    require(root == workspace / target['source_path'] and root.is_dir(), 'Wrong owned immutable checkout path')
++    expected_output = workspace / 'resolution-evidence-waxqv0pw' / args.kind
++    if args.prepare_maktabah_only:
++        require(args.kind == 'maktabah' and output == expected_output and output.is_dir()
++                and git(root, 'rev-parse', 'HEAD') == target['sha'], 'Invalid original preparation subprocess')
++        prepare_maktabah(root, output, contract['hanlin_sha'])
++        return
++    require(output == expected_output and not output.exists(), 'Preserve existing/foreign resolution evidence')
++    output.mkdir(parents=True)
++    def interrupted(*_):
++        raise InterruptedError('Owned resolver interrupted')
++    signal.signal(signal.SIGTERM, interrupted)
++    report = {'status': 'FAILED', 'scope': 'REAL_XCODE_PACKAGE_RESOLUTION_ONLY', 'source': target['sha'],
++              'run_id': os.environ.get('GITHUB_RUN_ID'), 'run_attempt': os.environ.get('GITHUB_RUN_ATTEMPT'),
++              'workflow_sha': os.environ.get('GITHUB_SHA'), 'contract_sha256': sha256(args.contract),
++              'application_or_framework_compilation_executed': False,
++              'package_manifest_evaluation_by_xcode': True,
++              'tests_executed': 0, 'native_acceptance': 'NOT_RUN'}
++    try:
++        toolkit = Path(__file__).resolve().parents[2]
++        require(toolkit == workspace / 'resolver-kit' and git(toolkit, 'rev-parse', 'HEAD') == os.environ['GITHUB_SHA'],
++                'Actual resolver implementation checkout differs from workflow SHA')
++        for name in ('Tools/SharedSDKResolution/resolve_packages.py', 'Tools/SharedSDKResolution/contract.json',
++                     contract['workflow_file']):
++            require(git_blob((toolkit / name).read_bytes()) == git(toolkit, 'rev-parse', 'HEAD:' + name),
++                    'Resolver implementation working bytes changed: ' + name)
++        write(output / 'source-before.json', identity(root, target))
++        initial_graph = graph_inputs(root)
++        write(output / 'graph-before-preparation.json', initial_graph)
++        original_package_references = project_package_references(root / target['project'] / 'project.pbxproj')
++        if 'local_package_paths' in target:
++            actual_local_paths = sorted(value['relativePath'] for value in original_package_references['references'].values()
++                                        if value.get('isa') == 'XCLocalSwiftPackageReference')
++            require(actual_local_paths == sorted(target['local_package_paths']), 'Unreviewed original local package membership')
++        write(output / 'project-package-references-original.json', original_package_references)
++        lock = root / target['lock']
++        original_raw = lock.read_bytes()
++        original = json.loads(original_raw)
++        expected = expected_pins(original, target)
++        (output / 'Package.resolved.original').write_bytes(original_raw)
++        write(output / 'expected-pin-closure.json', expected)
++        xcode = run(['xcodebuild', '-version'], root, output, 'xcode-version', 60)
++        require(xcode.strip() == contract['xcode_version'], 'Requires the original exact Xcode27 toolchain')
++        sdk = run(['xcrun', '--sdk', 'iphonesimulator', '--show-sdk-version'], root, output, 'sdk-version', 60).strip()
++        require(sdk == contract['simulator_sdk_version'], 'Unexpected Simulator SDK')
++        swift = run(['xcrun', 'swiftc', '--version'], root, output, 'swift-version', 60)
++        require(swift.splitlines()[0] == contract['swift_compiler_version'], 'Unexpected original Swift compiler')
++        help_text = run(['xcodebuild', '-help'], root, output, 'xcode-help', 60)
++        help_text += (output / 'xcode-help.stderr.log').read_text(errors='replace')
++        require('-resolvePackageDependencies' in help_text and '-onlyUsePackageVersionsFromResolvedFile' in help_text,
++                'Original strict resolver flags unavailable')
++        if args.kind == 'anytype':
++            require(args.hanlin_source is not None, 'Original canonical Hanlin source required')
++            prepare_anytype(root, target, output, args.hanlin_source.resolve())
++            # Metadata is copied verbatim from the prior actual lock. Only Xcode
++            # may produce a new originHash. This seed is not admitted output.
++            seed = seed_lock(original, expected)
++            seed_raw = (json.dumps(seed, indent=2) + '\n').encode()
++            lock.write_bytes(seed_raw)
++            active_lock = lock
++            clone_root = root / 'build/lock-resolution-derived-waxqv0pw/SourcePackages'
++            project_args = ['-project', target['project'], '-scheme', target['scheme'], '-configuration', target['configuration']]
++        else:
++            run([sys.executable, str(Path(__file__).resolve()), '--contract', str(args.contract.resolve()),
++                 '--kind', args.kind, '--root', str(root), '--output', str(output), '--prepare-maktabah-only'],
++                root, output, 'original-workspace-preparation', 2400)
++            active_lock = root / target['workspace_lock']
++            require(active_lock.read_bytes() == original_raw, 'Original workspace did not stage the exact committed lock')
++            clone_root = root / 'build/SourcePackages'
++            project_args = ['-workspace', target['workspace'], '-scheme', target['scheme']]
++        require(not clone_root.exists(), 'Preserve an occupied package-resolution cache')
++        prepared_graph = graph_inputs(root)
++        allowed = {target['lock']}
++        if args.kind == 'maktabah':
++            allowed.add('Maktabah.xcodeproj/project.pbxproj')
++        require(set(initial_graph) == set(prepared_graph)
++                and all(initial_graph[p] == prepared_graph[p] for p in initial_graph if p not in allowed),
++                'Original preparation changed a package-graph input beyond its reviewed boundary')
++        write(output / 'graph-prepared.json', prepared_graph)
++        prepared_workspace = workspace_inputs(root) if args.kind == 'maktabah' else None
++        if prepared_workspace is not None:
++            require_unchanged_package_graph(original_package_references, prepared_workspace['app_package_references'])
++            write(output / 'workspace-graph-prepared.json', prepared_workspace)
++        (output / 'Package.resolved.seed').write_bytes(active_lock.read_bytes())
++        command = ['xcodebuild', '-resolvePackageDependencies', *project_args,
++                   '-clonedSourcePackagesDirPath', str(clone_root)]
++        resolved_raw, resolution_path = resolve_strict_first(command, root, output, active_lock, lock, expected)
++        resolved = json.loads(resolved_raw)
++        (output / 'Package.resolved.xcode-output').write_bytes(resolved_raw)
++        require(active_lock.read_bytes() == resolved_raw and lock.read_bytes() == resolved_raw,
++                'Accepted actual lock output changed after resolution')
++        if prepared_workspace is not None:
++            after_workspace = workspace_inputs(root)
++            write(output / 'workspace-graph-after.json', after_workspace)
++            require(after_workspace == prepared_workspace, 'Resolution changed actual CocoaPods workspace graph/settings')
++        proof = checkout_proof(clone_root / 'checkouts', expected)
++        write(output / 'actual-package-checkouts.json', proof)
++        final_graph = graph_inputs(root)
++        require(set(final_graph) == set(prepared_graph)
++                and all(final_graph[p] == prepared_graph[p] for p in final_graph if p != target['lock']),
++                'Package resolution changed another actual graph input')
++        write(output / 'graph-after.json', final_graph)
++        changed = git(root, 'diff', '--name-only', '--ignore-submodules=untracked', 'HEAD').splitlines()
++        allowed_source_changes = {target['lock']}
++        if args.kind == 'maktabah':
++            allowed_source_changes.update({'Maktabah.xcodeproj/project.pbxproj', 'Source/PrivacyInfo.xcprivacy'})
++        require(set(changed) <= allowed_source_changes, 'Source changed outside original preparation/lock output')
++        require(git(root, 'rev-parse', 'HEAD') == target['sha'], 'Immutable source HEAD changed')
++        run([sys.executable, 'Tools/Hanlin/prepare_sdk.py', '--check'], root, output, 'hanlin-final', 120) if args.kind == 'anytype' else run(
++            [sys.executable, 'Scripts/CI/prepare-hanlin-sdk.py', '--sha', contract['hanlin_sha'], '--verify-only',
++             '--output', str(output / 'hanlin-final.json')], root, output, 'hanlin-final', 120)
++        report.update(status='ACTUAL_XCODE_STRICT_PACKAGE_GRAPH_ACCEPTED_NO_BUILD', resolution_path=resolution_path,
++                      original_pin_count=len(pin_map(original)), actual_pin_count=len(expected),
++                      all_original_pin_objects_unchanged=True,
++                      exact_added_identities=sorted(p['identity'] for p in target['expected_new_pins']),
++                      original_lock_version=original['version'], actual_lock_version=resolved['version'],
++                      original_originHash=original.get('originHash'), actual_originHash=resolved.get('originHash'),
++                      proposed_project_lock=target['lock'], output_sha256=hashlib.sha256(resolved_raw).hexdigest(),
++                      output_git_blob=git_blob(resolved_raw), original_source_sha_unchanged=True,
++                      tracked_preparation_changes=changed)
++        write(output / 'source-after.json', {'sha': target['sha'], 'tree': git(root, 'rev-parse', 'HEAD^{tree}'),
++                                           'actual_graph_inputs': final_graph, 'tracked_changes': changed})
++    except BaseException as error:
++        report['error'] = type(error).__name__ + ': ' + str(error)
++        raise
++    finally:
++        try:
++            write(output / 'source-after-attempt.json', {
++                'sha': git(root, 'rev-parse', 'HEAD'), 'tree': git(root, 'rev-parse', 'HEAD^{tree}'),
++                'actual_graph_inputs': graph_inputs(root),
++                'tracked_changes': git(root, 'diff', '--name-only', '--ignore-submodules=untracked', 'HEAD').splitlines()})
++            for label, name in [('project', target['lock']), ('workspace', target.get('workspace_lock'))]:
++                if name and (root / name).is_file():
++                    (output / ('Package.resolved.last-observed-' + label)).write_bytes((root / name).read_bytes())
++        except BaseException as evidence_error:
++            report['final_readonly_evidence_error'] = type(evidence_error).__name__ + ': ' + str(evidence_error)
++        write(output / 'RESOLUTION.json', report)
++        print(json.dumps(report, sort_keys=True))
++
++
++if __name__ == '__main__':
++    main()
+diff --git a/Tools/SharedSDKResolution/test_package_attachments.py b/Tools/SharedSDKResolution/test_package_attachments.py
+new file mode 100644
+--- /dev/null
++++ b/Tools/SharedSDKResolution/test_package_attachments.py
+@@ -0,0 +1,45 @@
++"""Two new admission controls for actual PBX owning attachment semantics."""
++import copy
++import importlib.util
++from pathlib import Path
++import unittest
++
++HERE = Path(__file__).resolve().parent
++SPEC = importlib.util.spec_from_file_location('package_attachment_resolution', HERE / 'resolve_packages.py')
++MODULE = importlib.util.module_from_spec(SPEC)
++SPEC.loader.exec_module(MODULE)
++
++
++class OriginalPackageAttachmentTests(unittest.TestCase):
++    def setUp(self):
++        self.original = {'objects': {
++            'P': {'isa': 'PBXProject', 'packageReferences': ['R']},
++            'A': {'isa': 'PBXNativeTarget', 'name': 'OriginalApp', 'packageProductDependencies': ['D']},
++            'B': {'isa': 'PBXNativeTarget', 'name': 'OtherTarget', 'packageProductDependencies': []},
++            'R': {'isa': 'XCRemoteSwiftPackageReference', 'repositoryURL': 'https://example.invalid/original',
++                  'requirement': {'kind': 'revision', 'revision': '1' * 40}},
++            'D': {'isa': 'XCSwiftPackageProductDependency', 'package': 'R', 'productName': 'OriginalProduct'},
++        }}
++        self.before = MODULE.package_graph(self.original)
++        MODULE.require_unchanged_package_graph(self.before, MODULE.package_graph(copy.deepcopy(self.original)))
++
++    def test_retained_reference_objects_cannot_hide_project_attachment_removal(self):
++        modified = copy.deepcopy(self.original)
++        modified['objects']['P']['packageReferences'] = []
++        after = MODULE.package_graph(modified)
++        self.assertEqual(after['references'], self.before['references'])
++        with self.assertRaisesRegex(RuntimeError, 'owning project/target attachments'):
++            MODULE.require_unchanged_package_graph(self.before, after)
++
++    def test_retained_product_objects_cannot_hide_reassignment_to_other_target(self):
++        modified = copy.deepcopy(self.original)
++        modified['objects']['A']['packageProductDependencies'] = []
++        modified['objects']['B']['packageProductDependencies'] = ['D']
++        after = MODULE.package_graph(modified)
++        self.assertEqual(after['references'], self.before['references'])
++        with self.assertRaisesRegex(RuntimeError, 'owning project/target attachments'):
++            MODULE.require_unchanged_package_graph(self.before, after)
++
++
++if __name__ == '__main__':
++    unittest.main()
+diff --git a/Tools/SharedSDKResolution/test_resolution_contract.py b/Tools/SharedSDKResolution/test_resolution_contract.py
+new file mode 100644
+--- /dev/null
++++ b/Tools/SharedSDKResolution/test_resolution_contract.py
+@@ -0,0 +1,87 @@
++"""New portable lock-admission controls only; no simulated Apple pass."""
++import copy
++import importlib.util
++import json
++from pathlib import Path
++import unittest
++
++HERE = Path(__file__).resolve().parent
++SPEC = importlib.util.spec_from_file_location('resolution', HERE / 'resolve_packages.py')
++MODULE = importlib.util.module_from_spec(SPEC)
++SPEC.loader.exec_module(MODULE)
++CONTRACT = json.loads((HERE / 'contract.json').read_bytes())
++ORIGINAL = json.loads((HERE / 'original-anytype-Package.resolved').read_bytes())
++
++
++class OriginalLockAdmissionTests(unittest.TestCase):
++    def setUp(self):
++        self.original = copy.deepcopy(ORIGINAL)
++        self.target = copy.deepcopy(CONTRACT['targets']['anytype'])
++        self.expected = MODULE.expected_pins(self.original, self.target)
++        self.actual = MODULE.seed_lock(self.original, self.expected)
++
++    def test_real44_plus_exact7_retains_every_original_pin_and_metadata(self):
++        self.assertEqual(len(self.expected), 51)
++        self.assertEqual({k: v for k, v in self.actual.items() if k != 'pins'},
++                         {k: v for k, v in self.original.items() if k != 'pins'})
++        for pin in self.original['pins']:
++            self.assertEqual(pin, self.expected[pin['identity']])
++        MODULE.verify_resolved(self.actual, self.expected)
++
++    def test_existing_revision_change_is_rejected(self):
++        self.actual['pins'] = copy.deepcopy(self.actual['pins'])
++        self.actual['pins'][0]['state']['revision'] = '0' * 40
++        with self.assertRaisesRegex(RuntimeError, 'changed an original pin'):
++            MODULE.verify_resolved(self.actual, self.expected)
++
++    def test_existing_url_change_is_rejected_even_with_same_revision(self):
++        self.actual['pins'] = copy.deepcopy(self.actual['pins'])
++        self.actual['pins'][0]['location'] += '.git'
++        with self.assertRaisesRegex(RuntimeError, 'changed an original pin'):
++            MODULE.verify_resolved(self.actual, self.expected)
++
++    def test_existing_version_change_is_rejected_even_with_same_revision(self):
++        self.actual['pins'] = copy.deepcopy(self.actual['pins'])
++        self.actual['pins'][0]['state']['version'] = '999.0.0'
++        with self.assertRaisesRegex(RuntimeError, 'changed an original pin'):
++            MODULE.verify_resolved(self.actual, self.expected)
++
++    def test_missing_runtime_addition_is_rejected(self):
++        self.actual['pins'] = [p for p in self.actual['pins'] if p['identity'] != 'iosmath']
++        with self.assertRaisesRegex(RuntimeError, 'changed an original pin'):
++            MODULE.verify_resolved(self.actual, self.expected)
++
++    def test_unreviewed_transitive_addition_is_rejected(self):
++        pin = copy.deepcopy(self.actual['pins'][0])
++        pin['identity'] = 'unreviewed-package'
++        self.actual['pins'] = [*self.actual['pins'], pin]
++        with self.assertRaisesRegex(RuntimeError, 'changed an original pin'):
++            MODULE.verify_resolved(self.actual, self.expected)
++
++    def test_duplicate_identity_is_rejected(self):
++        self.actual['pins'] = [*self.actual['pins'], copy.deepcopy(self.actual['pins'][0])]
++        with self.assertRaisesRegex(RuntimeError, 'Duplicate'):
++            MODULE.verify_resolved(self.actual, self.expected)
++
++    def test_seed_cannot_replace_existing_pin(self):
++        self.target['expected_new_pins'].append(copy.deepcopy(self.original['pins'][0]))
++        with self.assertRaisesRegex(RuntimeError, 'replaces an original pin'):
++            MODULE.expected_pins(self.original, self.target)
++
++    def test_actual_version2_lock_does_not_require_invented_origin_hash(self):
++        original = {'pins': copy.deepcopy(self.original['pins']), 'version': 2}
++        MODULE.verify_resolved(original, MODULE.pin_map(original))
++        original['originHash'] = '0' * 64
++        with self.assertRaisesRegex(RuntimeError, 'version2'):
++            MODULE.verify_resolved(original, MODULE.pin_map(original))
++
++    def test_missing_or_malformed_version3_hash_is_rejected(self):
++        for value in (None, '', 'fake', True):
++            with self.subTest(value=value):
++                candidate = dict(self.actual, originHash=value)
++                with self.assertRaisesRegex(RuntimeError, 'originHash'):
++                    MODULE.verify_resolved(candidate, self.expected)
++
++
++if __name__ == '__main__':
++    unittest.main()
+diff --git a/Tools/SharedSDKResolution/test_strict_first_policy.py b/Tools/SharedSDKResolution/test_strict_first_policy.py
+new file mode 100644
+--- /dev/null
++++ b/Tools/SharedSDKResolution/test_strict_first_policy.py
+@@ -0,0 +1,101 @@
++"""Portable command-policy probes; explicit runner doubles are never Apple evidence."""
++import copy
++import importlib.util
++import json
++from pathlib import Path
++import subprocess
++import tempfile
++import unittest
++
++HERE = Path(__file__).resolve().parent
++SPEC = importlib.util.spec_from_file_location('strict_first_resolution', HERE / 'resolve_packages.py')
++MODULE = importlib.util.module_from_spec(SPEC)
++SPEC.loader.exec_module(MODULE)
++STALE = ('xcodebuild: error: Could not resolve package dependencies:\n'
++         'an out-of-date resolved file was detected at example/Package.resolved, which is not allowed '
++         'when automatic dependency resolution is disabled; Running resolver because requirements have changed.')
++
++
++class StrictFirstPolicyTests(unittest.TestCase):
++    def setUp(self):
++        self.temporary = tempfile.TemporaryDirectory(prefix='strict-first-policy-')
++        self.addCleanup(self.temporary.cleanup)
++        self.root = Path(self.temporary.name)
++        self.output = self.root / 'evidence'
++        self.output.mkdir()
++        self.active = self.root / 'Workspace.resolved'
++        self.canonical = self.root / 'Project.resolved'
++        self.lock = {'version': 2, 'pins': [{'identity': 'explicit-fixture', 'kind': 'remoteSourceControl',
++                     'location': 'https://example.invalid/explicit-fixture', 'state': {'revision': '1' * 40}}]}
++        self.original = json.dumps(self.lock).encode()
++        self.active.write_bytes(self.original)
++        self.canonical.write_bytes(self.original)
++        self.expected = MODULE.pin_map(self.lock)
++        self.calls = []
++
++    def runner(self, results):
++        def explicit_runner_double(argv, root, output, name, timeout, **kwargs):
++            self.calls.append(list(argv))
++            row = results[len(self.calls) - 1]
++            if row.get('raises'):
++                raise row['raises']
++            if 'replacement' in row:
++                self.active.write_bytes(json.dumps(row['replacement']).encode())
++            MODULE.write(output / (name + '.command.json'), {'returncode': row['code'], 'timed_out': False})
++            (output / (name + '.stdout.log')).write_text('')
++            (output / (name + '.stderr.log')).write_text(row.get('stderr', ''))
++            return ''
++        return explicit_runner_double
++
++    def invoke(self, results):
++        return MODULE.resolve_strict_first(['xcodebuild', '-resolvePackageDependencies'], self.root, self.output,
++            self.active, self.canonical, self.expected, runner=self.runner(results))
++
++    def test_existing_strict_success_stops_after_one_command(self):
++        raw, receipt = self.invoke([{'code': 0}])
++        self.assertEqual(raw, self.original)
++        self.assertEqual(len(self.calls), 1)
++        self.assertEqual(receipt['automatic_resolution_invocations'], 0)
++        self.assertIn('-onlyUsePackageVersionsFromResolvedFile', self.calls[0])
++
++    def test_successful_strict_metadata_output_needs_no_second_pass(self):
++        actual_output_fixture = dict(self.lock, version=3, originHash='a' * 64)
++        raw, receipt = self.invoke([{'code': 0, 'replacement': actual_output_fixture}])
++        self.assertEqual(json.loads(raw), actual_output_fixture)
++        self.assertEqual(self.canonical.read_bytes(), raw)
++        self.assertEqual(len(self.calls), 1)
++        self.assertEqual(receipt['automatic_resolution_invocations'], 0)
++
++    def test_observed_stale_lock_diagnostic_permits_one_resolve_then_strict_replay(self):
++        actual_output_fixture = dict(self.lock, version=3, originHash='b' * 64)
++        raw, receipt = self.invoke([{'code': 74, 'stderr': STALE},
++                                   {'code': 0, 'replacement': actual_output_fixture}, {'code': 0}])
++        self.assertEqual(len(self.calls), 3)
++        self.assertEqual(['-onlyUsePackageVersionsFromResolvedFile' in x for x in self.calls], [True, False, True])
++        self.assertEqual(receipt['automatic_resolution_invocations'], 1)
++        self.assertEqual(self.canonical.read_bytes(), raw)
++
++    def test_network_failure_does_not_trigger_automatic_resolution(self):
++        with self.assertRaisesRegex(RuntimeError, 'not admitted'):
++            self.invoke([{'code': 74, 'stderr': 'Could not resolve package dependencies: failed to clone: TLS error'}])
++        self.assertEqual(len(self.calls), 1)
++        self.assertEqual(self.canonical.read_bytes(), self.original)
++
++    def test_timeout_does_not_trigger_automatic_resolution(self):
++        with self.assertRaises(subprocess.TimeoutExpired):
++            self.invoke([{'raises': subprocess.TimeoutExpired(['xcodebuild'], 1800)}])
++        self.assertEqual(len(self.calls), 1)
++        self.assertEqual(self.canonical.read_bytes(), self.original)
++
++    def test_automatic_pin_drift_is_preserved_as_failure_before_strict_replay(self):
++        wrong = copy.deepcopy(self.lock)
++        wrong['pins'][0]['state']['revision'] = '2' * 40
++        with self.assertRaisesRegex(RuntimeError, 'changed an original pin'):
++            self.invoke([{'code': 74, 'stderr': STALE}, {'code': 0, 'replacement': wrong}])
++        self.assertEqual(len(self.calls), 2)
++        self.assertEqual(self.canonical.read_bytes(), self.original)
++        self.assertEqual(json.loads(self.active.read_bytes()), wrong)
++
++
++if __name__ == '__main__':
++    unittest.main()

@@ -1,0 +1,22 @@
+{
+  "Source/ChavrusaText/Dependencies/CommandPalette/Package.swift": {
+    "git_blob": "29b39d3e69cb0197a099768a7a8dbff793aacfa7",
+    "bytes": 414,
+    "content": "// swift-tools-version: 6.2\nimport PackageDescription\n\nlet package = Package(\n    name: \"CommandPalette\",\n    platforms: [\n        .macOS(.v14),\n        .iOS(.v17),\n    ],\n    products: [\n        .library(name: \"CommandPalette\", targets: [\"CommandPalette\"]),\n    ],\n    targets: [\n        .target(name: \"CommandPalette\"),\n        .testTarget(name: \"CommandPaletteTests\", dependencies: [\"CommandPalette\"]),\n    ]\n)\n"
+  },
+  "Source/Otzaria/Actions/Package.swift": {
+    "git_blob": "6e0f66e23a58df559e2eccdd62c5b894437aada8",
+    "bytes": 446,
+    "content": "// swift-tools-version: 6.0\nimport PackageDescription\n\nlet package = Package(\n    name: \"OtzariaActionCore\",\n    platforms: [.iOS(.v13)],\n    products: [.library(name: \"OtzariaActionCore\", targets: [\"OtzariaActionCore\"])],\n    targets: [\n        .target(name: \"OtzariaActionCore\", resources: [.process(\"Resources\")]),\n        .testTarget(name: \"OtzariaActionCoreTests\", dependencies: [\"OtzariaActionCore\"])\n    ],\n    swiftLanguageModes: [.v6]\n)\n"
+  },
+  "Source/Otzaria/UIRouting/Package.swift": {
+    "git_blob": "1c7d5d67a69d7ec920575a19e00d0118d3611cc8",
+    "bytes": 603,
+    "content": "// swift-tools-version: 6.0\nimport PackageDescription\n\nlet package = Package(\n    name: \"OtzariaUIRouting\",\n    platforms: [.iOS(\"27.0\")],\n    products: [.library(name: \"OtzariaUIRouting\", targets: [\"OtzariaUIRouting\"])],\n    dependencies: [.package(path: \"../Actions\")],\n    targets: [\n        .target(name: \"OtzariaUIRouting\", dependencies: [.product(name: \"OtzariaActionCore\", package: \"Actions\")], resources: [.process(\"Resources\")]),\n        .testTarget(name: \"OtzariaUIRoutingTests\", dependencies: [\"OtzariaUIRouting\"], resources: [.copy(\"Contracts/Fixtures\")])\n    ], swiftLanguageModes: [.v6]\n)\n"
+  },
+  "Source/ChavrusaText/UIRoutingHost/Package.swift": {
+    "git_blob": "125ecf527f49830015b68e2ecb59c15a211df61b",
+    "bytes": 701,
+    "content": "// swift-tools-version: 6.0\nimport PackageDescription\n\nlet package = Package(\n    name: \"ChavrusaUIRoutingHost\",\n    platforms: [.iOS(\"27.0\")],\n    products: [.library(name: \"ChavrusaUIRoutingHost\", targets: [\"ChavrusaUIRoutingHost\"])],\n    dependencies: [.package(path: \"../../Otzaria/UIRouting\"), .package(path: \"../../Otzaria/Actions\")],\n    targets: [\n        .target(name: \"ChavrusaUIRoutingHost\", dependencies: [\n            .product(name: \"OtzariaUIRouting\", package: \"UIRouting\"),\n            .product(name: \"OtzariaActionCore\", package: \"Actions\")\n        ]),\n        .testTarget(name: \"ChavrusaUIRoutingHostTests\", dependencies: [\"ChavrusaUIRoutingHost\"])\n    ], swiftLanguageModes: [.v6]\n)\n"
+  }
+}

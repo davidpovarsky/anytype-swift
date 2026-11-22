@@ -1,0 +1,499 @@
+PIN {"repository": "https://github.com/davidpovarsky/hanlin-ai.git", "revision": "e00498e33f106cc43be0476ffa2e09329c8ca300", "packages": ["Packages/HanlinAgentSDK", "Packages/HanlinPlatform", "Packages/HanlinPresentationSDK"], "swiftAISDKRevision": "e7bf34111e603ca977becd007dd4e5bb109af857", "minimumIOS": "27.0"}
+MANIFEST Packages/HanlinAgentSDK // swift-tools-version: 6.2
+import PackageDescription
+
+let package = Package(
+    name: "HanlinAgentSDK",
+    platforms: [.iOS("27.0"), .macOS(.v26)],
+    products: [
+        .library(name: "HanlinHostContracts", targets: ["HanlinHostContracts"]),
+        .library(name: "HanlinAgentCore", targets: ["HanlinAgentCore"]),
+        .library(name: "HanlinPersistenceAdapters", targets: ["HanlinPersistenceAdapters"]),
+        .executable(name: "HanlinFixtureHost", targets: ["HanlinFixtureHost"])
+    ],
+    dependencies: [
+        .package(path: "../HanlinPlatform"),
+        .package(url: "https://github.com/davidpovarsky/swift-ai-sdk.git", revision: "e7bf34111e603ca977becd007dd4e5bb109af857")
+    ],
+    targets: [
+        // Original pinned Swift-JSON sources, with a unique schema module in the A2UI app graph.
+        // See Vendor/Swift-JSON/PROVENANCE.json for byte identity and the resource-name adaptation.
+        .target(name: "JSON", path: "Vendor/Swift-JSON/Sources/JSON"),
+        .target(name: "JSONRegexRuntime", dependencies: ["JSON"], path: "Vendor/Swift-JSON/Sources/JSONRegexRuntime"),
+        .target(name: "HanlinExactJSONSchema", dependencies: ["JSON", "JSONRegexRuntime"],
+                path: "Vendor/Swift-JSON/Sources/JSONSchema", resources: [.copy("Resources/Draft2020-12")]),
+        .target(name: "HanlinHostContracts", dependencies: [.product(name: "HanlinPlatformContracts", package: "HanlinPlatform")]),
+        .target(name: "HanlinAgentCore", dependencies: [
+            "HanlinHostContracts",
+            .product(name: "HanlinChatCore", package: "HanlinPlatform"),
+            .product(name: "AISDKProvider", package: "swift-ai-sdk"),
+            .product(name: "SwiftAISDK", package: "swift-ai-sdk"),
+            "JSON",
+            "HanlinExactJSONSchema"
+        ]),
+        .target(name: "HanlinPersistenceAdapters", dependencies: ["HanlinHostContracts"]),
+        .target(name: "HanlinSDKTestFixtures", dependencies: ["HanlinHostContracts"], path: "Tests/Fixtures"),
+        .executableTarget(name: "HanlinFixtureHost", dependencies: ["HanlinAgentCore", "HanlinPersistenceAdapters", "HanlinSDKTestFixtures"], path: "Examples/FixtureHost"),
+        .executableTarget(name: "HanlinSDKPortableProof", dependencies: ["HanlinAgentCore", "HanlinPersistenceAdapters", "HanlinSDKTestFixtures"], path: "Tests/PortableProof"),
+        .testTarget(name: "HanlinHostContractsTests", dependencies: ["HanlinHostContracts"]),
+        .testTarget(name: "HanlinHostConcurrencyTests", dependencies: ["HanlinHostContracts", .product(name: "HanlinPlatformContracts", package: "HanlinPlatform")],
+                    swiftSettings: [.enableUpcomingFeature("NonisolatedNonsendingByDefault")]),
+        .testTarget(name: "HanlinAgentCoreTests", dependencies: ["HanlinAgentCore", "HanlinPersistenceAdapters", "HanlinSDKTestFixtures", .product(name: "AISDKProvider", package: "swift-ai-sdk")]),
+        .testTarget(name: "HanlinPersistenceAdaptersTests", dependencies: ["HanlinPersistenceAdapters"])
+    ],
+    swiftLanguageModes: [.v6]
+)
+ 
+MANIFEST Packages/HanlinPlatform // swift-tools-version: 6.2
+
+import PackageDescription
+
+let package = Package(
+    name: "HanlinPlatform",
+    platforms: [
+        .macOS(.v26),
+        .iOS("27.0")
+    ],
+    products: [
+        .library(
+            name: "HanlinPlatformContracts",
+            targets: ["HanlinPlatformContracts"]
+        ),
+        .library(
+            name: "HanlinMiniAppCore",
+            targets: ["HanlinMiniAppCore"]
+        ),
+        .library(
+            name: "HanlinScriptContracts",
+            targets: ["HanlinScriptContracts"]
+        ),
+        .library(
+            name: "HanlinScriptCompiler",
+            targets: ["HanlinScriptCompiler"]
+        ),
+        .library(
+            name: "HanlinScriptStore",
+            targets: ["HanlinScriptStore"]
+        ),
+        .library(
+            name: "HanlinScriptRuntime",
+            targets: ["HanlinScriptRuntime"]
+        ),
+        .library(
+            name: "HanlinScriptingSDK",
+            targets: ["HanlinScriptingSDK"]
+        ),
+        .library(
+            name: "HanlinScriptUI",
+            targets: ["HanlinScriptUI"]
+        ),
+        .library(
+            name: "HanlinScriptServices",
+            targets: ["HanlinScriptServices"]
+        ),
+        .library(
+            name: "HanlinScriptDeviceServices",
+            targets: ["HanlinScriptDeviceServices"]
+        ),
+        .library(
+            name: "HanlinScriptExtensions",
+            targets: ["HanlinScriptExtensions"]
+        ),
+        .library(
+            name: "HanlinChatCore",
+            targets: ["HanlinChatCore"]
+        ),
+        .library(
+            name: "HanlinScriptingApplicationRuntime",
+            targets: ["HanlinScriptingApplicationRuntime"]
+        )
+    ],
+    dependencies: [
+        .package(url: "https://github.com/SwiftyJSON/SwiftyJSON.git", exact: "5.0.1"),
+        .package(
+            url: "https://github.com/davidpovarsky/swift-ai-sdk.git",
+            revision: "e7bf34111e603ca977becd007dd4e5bb109af857"
+        ),
+        .package(
+            url: "https://github.com/weichsel/ZIPFoundation.git",
+            .upToNextMinor(from: "0.9.19")
+        )
+    ],
+    targets: [
+        .target(
+            name: "HanlinPlatformContracts",
+            resources: [
+                .process("Resources")
+            ],
+            swiftSettings: [.unsafeFlags(["-application-extension"], .when(platforms: [.iOS]))],
+            linkerSettings: [.unsafeFlags(["-Xlinker", "-application_extension"], .when(platforms: [.iOS]))]
+        ),
+        .testTarget(
+            name: "HanlinPlatformContractsTests",
+            dependencies: ["HanlinPlatformContracts"]
+        ),
+        .target(
+            name: "HanlinMiniAppCore",
+            dependencies: ["HanlinPlatformContracts"]
+        ),
+        .testTarget(
+            name: "HanlinMiniAppCoreTests",
+            dependencies: ["HanlinMiniAppCore", "HanlinPlatformContracts"]
+        ),
+        .target(
+            name: "HanlinScriptContracts",
+            dependencies: ["HanlinPlatformContracts"],
+            resources: [.process("Resources")]
+        ),
+        .testTarget(
+            name: "HanlinScriptContractsTests",
+            dependencies: ["HanlinScriptContracts"]
+        ),
+        .target(
+            name: "HanlinWidgetCompiler",
+            dependencies: ["HanlinPlatformContracts", "HanlinScriptContracts"],
+            resources: [.copy("Resources/core.js"), .copy("Resources/prepare-widget.js")],
+            linkerSettings: [.linkedFramework("JavaScriptCore", .when(platforms: [.iOS, .macOS]))]
+        ),
+        .target(
+            name: "HanlinScriptCompiler",
+            dependencies: [
+                "HanlinWidgetCompiler",
+                "HanlinPlatformContracts",
+                "HanlinScriptContracts",
+                .product(name: "ZIPFoundation", package: "ZIPFoundation")
+            ],
+            resources: [.process("Resources")]
+        ),
+        .testTarget(
+            name: "HanlinScriptCompilerTests",
+            dependencies: [
+                "HanlinScriptCompiler",
+                .product(name: "ZIPFoundation", package: "ZIPFoundation")
+            ]
+        ),
+        .target(
+            name: "HanlinScriptStore",
+            dependencies: [
+                "HanlinPlatformContracts",
+                "HanlinScriptContracts",
+                "HanlinMiniAppCore"
+            ]
+        ),
+        .testTarget(
+            name: "HanlinScriptStoreTests",
+            dependencies: ["HanlinScriptStore", "HanlinMiniAppCore"]
+        ),
+        .target(
+            name: "HanlinScriptRuntime",
+            dependencies: [
+                "HanlinPlatformContracts",
+                "HanlinScriptContracts"
+            ]
+        ),
+        .testTarget(
+            name: "HanlinScriptRuntimeTests",
+            dependencies: ["HanlinScriptRuntime"]
+        ),
+        .target(
+            name: "HanlinScriptingSDK",
+            dependencies: ["HanlinScriptContracts"],
+            resources: [.process("Resources")]
+        ),
+        .testTarget(
+            name: "HanlinScriptingSDKTests",
+            dependencies: ["HanlinScriptingSDK"]
+        ),
+        .target(
+            name: "HanlinScriptUI",
+            dependencies: [
+                "HanlinPlatformContracts",
+                "HanlinScriptContracts",
+                "HanlinChatCore"
+            ],
+            resources: [.process("Resources")]
+        ),
+        .testTarget(
+            name: "HanlinScriptUITests",
+            dependencies: ["HanlinScriptUI"]
+        ),
+        .target(
+            name: "HanlinScriptServices",
+            dependencies: [
+                "HanlinPlatformContracts",
+                "HanlinScriptContracts"
+            ]
+        ),
+        .testTarget(
+            name: "HanlinScriptServicesTests",
+            dependencies: ["HanlinScriptServices"]
+        ),
+        .target(
+            name: "HanlinScriptDeviceServices",
+            dependencies: [
+                "HanlinPlatformContracts",
+                "HanlinScriptServices"
+            ],
+            exclude: ["README.md"]
+        ),
+        .testTarget(
+            name: "HanlinScriptDeviceServicesTests",
+            dependencies: ["HanlinScriptDeviceServices"]
+        ),
+        .target(
+            name: "HanlinChatCore",
+            dependencies: [
+                "HanlinPlatformContracts",
+                .product(name: "SwiftAISDK", package: "swift-ai-sdk"),
+                .product(name: "AISDKProvider", package: "swift-ai-sdk"),
+                .product(name: "AISDKProviderUtils", package: "swift-ai-sdk"),
+                .product(name: "OpenAIProvider", package: "swift-ai-sdk"),
+                .product(name: "AnthropicProvider", package: "swift-ai-sdk"),
+                .product(name: "GoogleProvider", package: "swift-ai-sdk"),
+                .product(name: "OpenAICompatibleProvider", package: "swift-ai-sdk")
+            ]
+        ),
+        .testTarget(
+            name: "HanlinChatCoreTests",
+            dependencies: [
+                "HanlinChatCore",
+                .product(name: "SwiftAISDK", package: "swift-ai-sdk"),
+                .product(name: "AISDKProvider", package: "swift-ai-sdk"),
+                .product(name: "AISDKProviderUtils", package: "swift-ai-sdk"),
+                .product(name: "OpenAIProvider", package: "swift-ai-sdk"),
+                .product(name: "AnthropicProvider", package: "swift-ai-sdk"),
+                .product(name: "GoogleProvider", package: "swift-ai-sdk"),
+                .product(name: "OpenAICompatibleProvider", package: "swift-ai-sdk")
+            ]
+        ),
+        .target(
+            name: "HanlinScriptExtensions",
+            dependencies: [
+                .product(name: "SwiftyJSON", package: "SwiftyJSON"),
+                "HanlinPlatformContracts",
+                "HanlinScriptContracts",
+                "HanlinScriptStore",
+                "HanlinScriptUI",
+                "HanlinChatCore"
+            ],
+            exclude: ["ScriptWidget/Original/MIT-previous.txt", "ScriptWidget/Original/LICENSE.txt", "ScriptWidget/Original/NOTICE.txt", "ScriptWidget/Original/Component/Attributes/Animation/ClockHandKit-LICENSE.txt"],
+            resources: [
+                .copy("Resources/support.bundle"),
+                .copy("Resources/ExpoWidgets.bundle")
+            ],
+            linkerSettings: [
+                .linkedFramework("JavaScriptCore")
+            ]
+        ),
+        .testTarget(
+            name: "HanlinScriptExtensionsTests",
+            dependencies: ["HanlinScriptExtensions", "HanlinChatCore", "HanlinScriptCompiler", "HanlinScriptStore", "HanlinLegacyWidgetStoreFixture"]
+        ),
+        .target(name: "HanlinLegacyWidgetStoreFixture", dependencies: ["HanlinPlatformContracts", "HanlinScriptUI"],
+            path: "Tests/Fixtures/LegacyWidgetStore", exclude: ["PROVENANCE.txt"]),
+        .target(
+            name: "HanlinScriptingApplicationRuntime",
+            dependencies: [
+                "HanlinPlatformContracts",
+                "HanlinScriptUI",
+                "HanlinMiniAppCore"
+            ],
+            linkerSettings: [
+                .linkedFramework("JavaScriptCore"),
+                .linkedFramework("UniformTypeIdentifiers"),
+                .linkedLibrary("sqlite3")
+            ]
+        ),
+        .testTarget(
+            name: "HanlinScriptingApplicationRuntimeTests",
+            dependencies: [
+                "HanlinPlatformContracts",
+                "HanlinMiniAppCore",
+                "HanlinScriptingApplicationRuntime"
+            ]
+        )
+    ],
+    swiftLanguageModes: [.v6]
+)
+ 
+MANIFEST Packages/HanlinPresentationSDK // swift-tools-version: 6.2
+import PackageDescription
+
+let package = Package(
+    name: "HanlinPresentationSDK",
+    platforms: [.iOS("27.0"), .macOS(.v26)],
+    products: [
+        .library(name: "HanlinPresentationKit", targets: ["HanlinPresentationKit"]),
+        .library(name: "HanlinRichUI", targets: ["HanlinRichUI"]),
+        .library(name: "HanlinChatUI", targets: ["HanlinChatUI"])
+    ],
+    dependencies: [
+        .package(url: "https://github.com/davidpovarsky/hanlin-streaming-markdown",
+                 revision: "6bde022876ef4af738c154b3d5c871984ef76195")
+    ],
+    targets: [
+        .target(name: "HanlinPresentationKit"),
+        .target(name: "HanlinRichUI", dependencies: ["HanlinPresentationKit"],
+                resources: [.copy("Resources/OpenUI")]),
+        .target(name: "HanlinChatUI", dependencies: ["HanlinPresentationKit", "HanlinRichUI",
+                .product(name: "SwiftStreamingMarkdown", package: "hanlin-streaming-markdown",
+                         condition: .when(platforms: [.iOS]))]),
+        .testTarget(name: "HanlinPresentationKitTests", dependencies: ["HanlinPresentationKit"])
+    ],
+    swiftLanguageModes: [.v6]
+)
+ 
+APP_REMOTE_REQUIREMENTS
+/* Begin XCRemoteSwiftPackageReference section */
+		1259300326F3A5C500B115CD /* XCRemoteSwiftPackageReference "Highlightr" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/raspu/Highlightr";
+			requirement = {
+				kind = exactVersion;
+				version = 2.2.0;
+			};
+		};
+		1259300C26F3A6AE00B115CD /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher";
+			requirement = {
+				kind = exactVersion;
+				version = 8.2.0;
+			};
+		};
+		2A01A4F72A1FB4B7002042FB /* XCRemoteSwiftPackageReference "DeviceKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/devicekit/DeviceKit";
+			requirement = {
+				kind = exactVersion;
+				version = 5.2.2;
+			};
+		};
+		2A10D84E2C53A5F00088BB46 /* XCRemoteSwiftPackageReference "WrappingHStack" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ksemianov/WrappingHStack";
+			requirement = {
+				kind = exactVersion;
+				version = 0.2.0;
+			};
+		};
+		2A30B2062BB44A0C00206806 /* XCRemoteSwiftPackageReference "QRCode" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/dagronf/QRCode";
+			requirement = {
+				kind = exactVersion;
+				version = 27.11.0;
+			};
+		};
+		2A685D582B7B854200456E08 /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/weichsel/ZIPFoundation";
+			requirement = {
+				kind = exactVersion;
+				version = 0.9.20;
+			};
+		};
+		2A6ED16E285B452600AAA21C /* XCRemoteSwiftPackageReference "swift-protobuf" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-protobuf";
+			requirement = {
+				kind = exactVersion;
+				version = 1.32.0;
+			};
+		};
+		2A94B5D129B88E95009AE2A7 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/getsentry/sentry-cocoa";
+			requirement = {
+				kind = exactVersion;
+				version = 8.58.2;
+			};
+		};
+		2AC1262B2B90F65F003A4A8D /* XCRemoteSwiftPackageReference "Factory" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hmlongco/Factory";
+			requirement = {
+				kind = exactVersion;
+				version = 2.3.1;
+			};
+		};
+		2ADB57842CB6B6FE00BFC386 /* XCRemoteSwiftPackageReference "Cache" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hyperoslo/Cache";
+			requirement = {
+				kind = exactVersion;
+				version = 7.4.0;
+			};
+		};
+		2E63D9B52D56520C008A733A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = exactVersion;
+				version = 11.8.1;
+			};
+		};
+		3D24B09A2C1A2B6300795BAA /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/simibac/ConfettiSwiftUI";
+			requirement = {
+				kind = exactVersion;
+				version = 1.1.0;
+			};
+		};
+		5333421A262E249100238121 /* XCRemoteSwiftPackageReference "FloatingPanel" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/scenee/FloatingPanel";
+			requirement = {
+				kind = exactVersion;
+				version = 3.2.4;
+			};
+		};
+		538ABD4C284F9F88000D3CCC /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections";
+			requirement = {
+				kind = exactVersion;
+				version = 1.1.4;
+			};
+		};
+		74819CB22E169F5D0042D5EC /* XCRemoteSwiftPackageReference "Amplitude-Swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/amplitude/Amplitude-Swift";
+			requirement = {
+				kind = exactVersion;
+				version = 1.13.7;
+			};
+		};
+		74B35D242D5B39C500AC9879 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-async-algorithms.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.0.3;
+			};
+		};
+		C9433E52293EA5EF001662EA /* XCRemoteSwiftPackageReference "SwiftEntryKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/huri000/SwiftEntryKit";
+			requirement = {
+				kind = exactVersion;
+				version = 2.0.0;
+			};
+		};
+		C9BFBA8C28A133320003D9E6 /* XCRemoteSwiftPackageReference "ShimmerSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/BeauNouvelle/ShimmerSwift";
+			requirement = {
+				kind = exactVersion;
+				version = 2.2.0;
+			};
+		};
+		FA1000002F000001006805CC /* XCRemoteSwiftPackageReference "TorahInspectorKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/davidpovarsky/TorahInspectorKit.git";
+			requirement = {
+				kind = revision;
+				revision = 23db0f84e88d9ee9c7053c49de86903fc7bb5785;
+			};
+		};
