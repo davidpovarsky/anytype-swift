@@ -1,0 +1,276 @@
+{
+  "schemaVersion": 1,
+  "status": "READ_ONLY_SOURCE_IMPACT_REVIEW",
+  "testsExecutedByThisReview": 0,
+  "producerCommit": "96173b0afc6b360c8f780ae70c6c80042fda98da",
+  "producerRunID": "44942212731",
+  "reviewedPinCommit": "004adf9522ac728fa09842476d3eb4f5bba8a3d8",
+  "integratedConsumer": "816e3748d5499e7f5a64783506057c4dca0d83d3",
+  "integratedProtectedTreeEqualsPinCommit": true,
+  "recommendation": {
+    "retainedOriginalUIKitMethods": 14,
+    "affectedUIKitMethodsRequiringRerun": [],
+    "originalEvidenceMustRemainUnmodified": true,
+    "gateMutationAuthorized": false,
+    "reason": "All three test sources and their actually invoked renderer/render-policy, UITextView marked-input, markdown projection and focus-coordinator implementations are byte-identical. The changed Kit related cache/panel and adapter authority code is not instantiated or invoked by these component methods."
+  },
+  "boundary": "This review is not a new execution or acceptance of Kit511454, its related authority behavior, package resolution, native editor app journeys, or archive transfer. Source mapping remains fail-closed until root reviews exact changes and actual Apple dependency resolution.",
+  "protectedInventory": {
+    "unchangedCount": 56,
+    "reviewedDifferentCandidateCount": 14,
+    "changes": [
+      {
+        "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahContract.swift",
+        "before": "9e0155304b9db4f2144170db69ff1f1ace66c739",
+        "after": "7d140ed76c16204f34e099d6d92541ca25d514ee"
+      },
+      {
+        "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahOperationRead.swift",
+        "before": null,
+        "after": "ef551bc4179c10352670446ef9caa3609c40b93c"
+      },
+      {
+        "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHostAuthorizedTorahOperationReader.swift",
+        "before": null,
+        "after": "1f8d20843514a65e9be730ae4d768d409b571820"
+      },
+      {
+        "path": "Modules/PinkhaAnyUI/Package.resolved",
+        "before": "c7b9d711177e1e673e3bfbf4840c3a739ac2963b",
+        "after": "922577c0ee307d33a5ad92f9e91b7fd20ce6ea50"
+      },
+      {
+        "path": "Modules/PinkhaAnyUI/Package.swift",
+        "before": "657c88d52d9f85e56442e5d69706cf0d78ee946e",
+        "after": "87e8dd93e41030ab8ec81f5221e50f928d66b7a3"
+      },
+      {
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+        "before": "1e7c27cc76c9a159d7651907f5a1a5e9b4a44a5a",
+        "after": "6e18f37e0bf5e81355ace0810f27a52f9375b949"
+      },
+      {
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+        "before": "a10a1a5bf3b705db2ab09adef750f6acb1d780d1",
+        "after": "f01a50fece506f61917fd3aa517e39bc037402df"
+      },
+      {
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditorDiagnostics.swift",
+        "before": null,
+        "after": "d8bf6501897cfb53b5faa4db26894cc04371a884"
+      },
+      {
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift",
+        "before": "6df774d80090af2398ceb63111ed4e0f5542ff17",
+        "after": "c508a10e7de89b2020d0987ed7772630ff1b0062"
+      },
+      {
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyTorahPresentationBridge.swift",
+        "before": "9d70a51ebf9b49966d7129bab8ea4c4a129e6357",
+        "after": "228fc97cecc6d6f492a06a95f3ee2ea8e777520e"
+      },
+      {
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyTorahRelatedReadFailure.swift",
+        "before": null,
+        "after": "8c598cf1560aa6a22b3054fa9080470cf8205a6b"
+      },
+      {
+        "path": "Modules/PinkhaKit/Package.swift",
+        "before": "5f39dae4261c8dc93ff2832f19f7508e6d84e0e0",
+        "after": "89d37550451cc28118cbffe547e5c634ff0f0235"
+      },
+      {
+        "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSerialTextEditQueue.swift",
+        "before": "d2cab57bd99bea694fff8e700853f8ad32719d23",
+        "after": "bb55f7eb2997f7c4a1cdc8196bd51703aef0c418"
+      },
+      {
+        "path": "Modules/PinkhaTorahPresentation/Package.swift",
+        "before": "a173ac7c0318cff288bc74b1df8cc05aa0b2493b",
+        "after": "07b7210c42d3844baa35ee1fac8cdd830c661c74"
+      }
+    ]
+  },
+  "originalMethodGroups": [
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeMarkedTextTests.swift",
+      "gitBlob": "15877d0d64c3ce52b1a724e19e0dd5ca75d72bf2",
+      "methods": [
+        "testFirstMarkedInputBeginsBeforeMutationAndRepeatedUpdatesKeepTheMarkedRange",
+        "testActualMarkedBufferUsesImmutableRawProjectionUntilCommit",
+        "testRecoveryCapturesLatestVisibleTextAndNeverRequestsASave",
+        "testRejectedBeginOrProposalDoesNotReplaceVisibleSource",
+        "testUnmarkAndResignEndOnceAndNormalTextInputStillWorks"
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeFocusLifecycleTests.swift",
+      "gitBlob": "7f1a0ce95f042f9346dfc66056fb631ecd3507b5",
+      "methods": [
+        "testDetachedRequestWaitsForAttachmentAndIsConsumedOnce",
+        "testKeyWindowReadinessRetriesNativeRefusalWithoutRenderPolling",
+        "testNewUserFocusCancelsDetachedRequest",
+        "testOwnerOrVersionChangeCancelsOldRequestBeforeRebind",
+        "testLockedViewDenialDoesNotReviveAfterUnlock",
+        "testCurrentResponderRequestDoesNotStealFocusAfterLaterInput"
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+      "gitBlob": "c8372f370ff3cba7bc6f9563c4e522f919081662",
+      "methods": [
+        "testEqualNativeTextChangesAttributesWithoutReplacingCharactersOrSelection",
+        "testChangedNativeTextReplacesCharactersAndKeepsValidSelection",
+        "testMarkedTextKeepsCharactersSelectionAndAttributesUntilCommit"
+      ]
+    }
+  ],
+  "unchangedReachableImplementationPaths": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+      "beforeGitBlob": "59c0a9061081f9bc2776357f09d58d726d6a0bc8",
+      "afterGitBlob": "59c0a9061081f9bc2776357f09d58d726d6a0bc8"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeTextRenderer.swift",
+      "beforeGitBlob": "6516f0744f06854ac02141d94ed88106c564c99f",
+      "afterGitBlob": "6516f0744f06854ac02141d94ed88106c564c99f"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeTextComposition.swift",
+      "beforeGitBlob": "0a0abeeefce2382425bcad0c501851c0abf80e18",
+      "afterGitBlob": "0a0abeeefce2382425bcad0c501851c0abf80e18"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeFocusCoordinator.swift",
+      "beforeGitBlob": "0ea0e0bcb2aa6518d3210517bdac599b90fc9a6d",
+      "afterGitBlob": "0ea0e0bcb2aa6518d3210517bdac599b90fc9a6d"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaTextInputRenderPolicy.swift",
+      "beforeGitBlob": "0ec54dca421d293675ccef47f33d6d013e90f271",
+      "afterGitBlob": "0ec54dca421d293675ccef47f33d6d013e90f271"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyInlineMarkdown.swift",
+      "beforeGitBlob": "ebf6e503a7c266efce44285ce609fc8fb11403c5",
+      "afterGitBlob": "ebf6e503a7c266efce44285ce609fc8fb11403c5"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyInlineMarkdown.swift",
+      "beforeGitBlob": "6610f5e43527cc40ae0da8c4565da16ac83e6c28",
+      "afterGitBlob": "6610f5e43527cc40ae0da8c4565da16ac83e6c28"
+    }
+  ],
+  "packageReview": {
+    "exactSemanticLockDifference": {
+      "torahinspectorkit": {
+        "before": {
+          "identity": "torahinspectorkit",
+          "kind": "remoteSourceControl",
+          "location": "https://github.com/davidpovarsky/TorahInspectorKit.git",
+          "state": {
+            "revision": "4e59e909dd22685bb46f9396bc57e5f8c627d773"
+          }
+        },
+        "after": {
+          "identity": "torahinspectorkit",
+          "kind": "remoteSourceControl",
+          "location": "https://github.com/davidpovarsky/TorahInspectorKit.git",
+          "state": {
+            "revision": "511454e49450cb2581ddf77f644146ff3e30dbef"
+          }
+        }
+      }
+    },
+    "trackedLockOriginHash": {
+      "before": "c2eab6de49cf1687d6a32af3150d54f4d65f87665de6e5fffacbb535188891ed",
+      "after": "c2eab6de49cf1687d6a32af3150d54f4d65f87665de6e5fffacbb535188891ed"
+    },
+    "actualResolutionProof": false,
+    "sourceManifestDiff": "diff --git a/Modules/PinkhaAnyUI/Package.swift b/Modules/PinkhaAnyUI/Package.swift\nindex 657c88d52d..87e8dd93e4 100644\n--- a/Modules/PinkhaAnyUI/Package.swift\n+++ b/Modules/PinkhaAnyUI/Package.swift\n@@ -13,7 +13,7 @@ let package = Package(\n         .package(path: \"../PinkhaAnyHanlin\"),\n         .package(path: \"../Loc\"),\n         .package(url: \"https://github.com/davidpovarsky/TorahInspectorKit.git\",\n-                 revision: \"158acb295f832e96907cdadc813a1c2a4bb6a03c\")\n+                 revision: \"511454e49450cb2581ddf77f644146ff3e30dbef\")\n     ],\n     targets: [\n         .target(name: \"PinkhaAnyUI\", dependencies: [\ndiff --git a/Modules/PinkhaKit/Package.swift b/Modules/PinkhaKit/Package.swift\nindex 5f39dae426..89d3755045 100644\n--- a/Modules/PinkhaKit/Package.swift\n+++ b/Modules/PinkhaKit/Package.swift\n@@ -16,7 +16,7 @@ let package = Package(\n     dependencies: [\n         .package(\n             url: \"https://github.com/davidpovarsky/TorahInspectorKit.git\",\n-            revision: \"158acb295f832e96907cdadc813a1c2a4bb6a03c\"\n+            revision: \"511454e49450cb2581ddf77f644146ff3e30dbef\"\n         )\n     ],\n     targets: [\ndiff --git a/Modules/PinkhaTorahPresentation/Package.swift b/Modules/PinkhaTorahPresentation/Package.swift\nindex a173ac7c03..07b7210c42 100644\n--- a/Modules/PinkhaTorahPresentation/Package.swift\n+++ b/Modules/PinkhaTorahPresentation/Package.swift\n@@ -8,7 +8,7 @@ let package = Package(\n         .package(path: \"../PinkhaKit\"),\n         .package(path: \"../Loc\"),\n         .package(url: \"https://github.com/davidpovarsky/TorahInspectorKit.git\",\n-                 revision: \"158acb295f832e96907cdadc813a1c2a4bb6a03c\")\n+                 revision: \"511454e49450cb2581ddf77f644146ff3e30dbef\")\n     ],\n     targets: [\n         .target(name: \"PinkhaTorahPresentation\", dependencies: [\n@@ -18,6 +18,7 @@ let package = Package(\n             .product(name: \"TorahInspectorUI\", package: \"TorahInspectorKit\",\n                      condition: .when(platforms: [.iOS, .macOS]))\n         ]),\n-        .testTarget(name: \"PinkhaTorahPresentationTests\", dependencies: [\"PinkhaTorahPresentation\"])\n+        .testTarget(name: \"PinkhaTorahPresentationTests\", dependencies: [\"PinkhaTorahPresentation\"],\n+                    resources: [.process(\"Fixtures\")])\n     ]\n )\n",
+    "producerManifestKitRevision": "158acb295f832e96907cdadc813a1c2a4bb6a03c",
+    "producerTrackedLockKitRevision": "4e59e909dd22685bb46f9396bc57e5f8c627d773",
+    "note": "Producer manifest and tracked AnyUI Package.resolved differ. Both possible Kit baselines were separately compared to511454; only the same four related-document production paths differ. No claim is made that the stale tracked lock proves the actually resolved original checkout."
+  },
+  "externalKitReview": {
+    "consumerRevision": "511454e49450cb2581ddf77f644146ff3e30dbef",
+    "packageBlobBefore": "5ec0de7727f3e99768c8f49d95734c74d90c1571",
+    "packageBlobAfter": "5ec0de7727f3e99768c8f49d95734c74d90c1571",
+    "changesFromManifestBaseline": [
+      {
+        "path": "Sources/TorahInspectorCore/TorahInspectorRepository.swift",
+        "before": "24aff666fa42725579b643be13146010f429e1a7",
+        "after": "479b2f0b1b6e4eaf5030eb5455782cdc7361f439"
+      },
+      {
+        "path": "Sources/TorahInspectorCore/TorahRelatedDocumentsAccessError.swift",
+        "before": null,
+        "after": "7e2e810e4af9e2f9d848efc52739199e645b249d"
+      },
+      {
+        "path": "Sources/TorahInspectorUI/TorahPanelLoadState.swift",
+        "before": "476185fbaccf605f1e07af84a38f2c76031383ae",
+        "after": "d17bfe19e37af50d5a5bdec31b680c50d498ea89"
+      },
+      {
+        "path": "Sources/TorahInspectorUI/TorahSegmentDetailView.swift",
+        "before": "99c92a0b5a24cafe23b35636937b1a2443594e59",
+        "after": "032870f0c43c63099168be68cb5ed6378a6b83a9"
+      }
+    ],
+    "changesFromTrackedLockBaseline": [
+      {
+        "path": "Sources/TorahInspectorCore/TorahInspectorRepository.swift",
+        "before": "e179f6b8c96c3f6dab08138e79ddb4c5ee255f33",
+        "after": "479b2f0b1b6e4eaf5030eb5455782cdc7361f439"
+      },
+      {
+        "path": "Sources/TorahInspectorCore/TorahRelatedDocumentsAccessError.swift",
+        "before": null,
+        "after": "7e2e810e4af9e2f9d848efc52739199e645b249d"
+      },
+      {
+        "path": "Sources/TorahInspectorUI/TorahPanelLoadState.swift",
+        "before": "476185fbaccf605f1e07af84a38f2c76031383ae",
+        "after": "d17bfe19e37af50d5a5bdec31b680c50d498ea89"
+      },
+      {
+        "path": "Sources/TorahInspectorUI/TorahSegmentDetailView.swift",
+        "before": "99c92a0b5a24cafe23b35636937b1a2443594e59",
+        "after": "032870f0c43c63099168be68cb5ed6378a6b83a9"
+      }
+    ]
+  },
+  "pendingFocusedAuthorityProof": {
+    "kit": {
+      "methods": 15,
+      "cases": 17
+    },
+    "anyMapping": {
+      "methods": 3,
+      "cases": 4
+    },
+    "heartMapping": {
+      "methods": 2,
+      "cases": 3
+    },
+    "sessionLifetime": {
+      "methods": 1,
+      "cases": 1
+    },
+    "r05AliasConnection": {
+      "methods": 1,
+      "cases": 1
+    },
+    "status": "NOT_RUN_AT_SOURCE_REVIEW"
+  },
+  "newReviewCandidates": {
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyTorahPresentationBridge.swift": "Only relatedDocuments native/owner failure classification changed. The UIKit14 methods directly construct UITextView or the text/focus helpers; none constructs this bridge, an AnyDocumentPresentation, a TorahEditorSession or a TorahInspectorRepository.",
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyTorahRelatedReadFailure.swift": "New typed native/owner authority classifier called from the relatedDocuments bridge only. No registered callback, global eager initializer or other invocation from the UIKit14 method closure.",
+    "Modules/PinkhaAnyUI/Package.swift": "Only exact TorahInspectorKit revision158acb295→511454 changed. The new Kit changes concern related cache/authority/panel; none of these is reached by UIKit14.",
+    "Modules/PinkhaKit/Package.swift": "Only exact TorahInspectorKit revision158acb295→511454 changed. The actually invoked PinkhaTextInputRenderPolicy source is unchanged; no related repository/UI is constructed by those renderer methods.",
+    "Modules/PinkhaTorahPresentation/Package.swift": "Only exact Kit revision and processing Fixtures for a separate Presentation test target changed. UIKit14 is in PinkhaAnyUITests and does not instantiate TorahEditorSession or execute Presentation test resources.",
+    "Modules/PinkhaAnyUI/Package.resolved": "Only torahinspectorkit pin revision differs semantically; all other tracked pins are identical. Both original manifest158acb and stale tracked-lock4e59 baselines differ from511454 only in the four unexecuted related-document production paths. Actual fresh dependency resolution remains independently required."
+  }
+}

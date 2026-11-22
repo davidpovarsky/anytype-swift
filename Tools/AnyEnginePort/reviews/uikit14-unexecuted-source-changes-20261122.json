@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "profile": "ui-ios-remaining",
+  "producerCommit": "96173b0afc6b360c8f780ae70c6c80042fda98da",
+  "producerRunID": "44942212731",
+  "reviewedAgainstIntegratedBaseCommit": "816e3748d5499e7f5a64783506057c4dca0d83d3",
+  "claim": "not_executed_by_original_fourteen_methods",
+  "requiredMethods": [
+    "AnyNativeFocusLifecycleTests/testCurrentResponderRequestDoesNotStealFocusAfterLaterInput",
+    "AnyNativeFocusLifecycleTests/testDetachedRequestWaitsForAttachmentAndIsConsumedOnce",
+    "AnyNativeFocusLifecycleTests/testKeyWindowReadinessRetriesNativeRefusalWithoutRenderPolling",
+    "AnyNativeFocusLifecycleTests/testLockedViewDenialDoesNotReviveAfterUnlock",
+    "AnyNativeFocusLifecycleTests/testNewUserFocusCancelsDetachedRequest",
+    "AnyNativeFocusLifecycleTests/testOwnerOrVersionChangeCancelsOldRequestBeforeRebind",
+    "AnyNativeMarkedTextTests/testActualMarkedBufferUsesImmutableRawProjectionUntilCommit",
+    "AnyNativeMarkedTextTests/testFirstMarkedInputBeginsBeforeMutationAndRepeatedUpdatesKeepTheMarkedRange",
+    "AnyNativeMarkedTextTests/testRecoveryCapturesLatestVisibleTextAndNeverRequestsASave",
+    "AnyNativeMarkedTextTests/testRejectedBeginOrProposalDoesNotReplaceVisibleSource",
+    "AnyNativeMarkedTextTests/testUnmarkAndResignEndOnceAndNormalTextInputStillWorks",
+    "AnyNativeTextRendererTests/testChangedNativeTextReplacesCharactersAndKeepsValidSelection",
+    "AnyNativeTextRendererTests/testEqualNativeTextChangesAttributesWithoutReplacingCharactersOrSelection",
+    "AnyNativeTextRendererTests/testMarkedTextKeepsCharactersSelectionAndAttributesUntilCommit"
+  ],
+  "testSourceGitBlobs": {
+    "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeMarkedTextTests.swift": "15877d0d64c3ce52b1a724e19e0dd5ca75d72bf2",
+    "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeFocusLifecycleTests.swift": "7f1a0ce95f042f9346dfc66056fb631ecd3507b5",
+    "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift": "c8372f370ff3cba7bc6f9563c4e522f919081662"
+  },
+  "reviewedChanges": [
+    {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahContract.swift",
+      "beforeGitBlob": "9e0155304b9db4f2144170db69ff1f1ace66c739",
+      "afterGitBlob": "7d140ed76c16204f34e099d6d92541ca25d514ee",
+      "claim": "not_executed_by_original_fourteen_methods",
+      "reason": "The fourteen selected methods exercise local UIKit buffers, focus and attributed-text rendering. None negotiates native capabilities, creates a guarded Torah repository, decodes an authorized operation, or invokes this native contract. The added read contract belongs to the separately selected authorized-operation acceptance."
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahOperationRead.swift",
+      "beforeGitBlob": null,
+      "afterGitBlob": "ef551bc4179c10352670446ef9caa3609c40b93c",
+      "claim": "not_executed_by_original_fourteen_methods",
+      "reason": "This new authorized-operation reader is not instantiated or referenced by the selected UIKit fixture paths. Their closures stay local to text/focus state and never make native HTTP requests. Read authorization and exact operation bytes require the separate candidate/runtime acceptance and are not covered by the old UIKit PASS."
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHostAuthorizedTorahOperationReader.swift",
+      "beforeGitBlob": null,
+      "afterGitBlob": "1f8d20843514a65e9be730ae4d768d409b571820",
+      "claim": "not_executed_by_original_fourteen_methods",
+      "reason": "No selected UIKit method creates an AnyApplicationSession, this authorized reader, or a native workspace host. The test fixtures supply local focus closures directly. The new Host read wrapper is covered only by its own shared/candidate acceptance, not by the original fourteen UIKit executions."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Package.resolved",
+      "beforeGitBlob": "c7b9d711177e1e673e3bfbf4840c3a739ac2963b",
+      "afterGitBlob": "922577c0ee307d33a5ad92f9e91b7fd20ce6ea50",
+      "claim": "not_executed_by_original_fourteen_methods",
+      "reason": "Only torahinspectorkit pin revision differs semantically; all other tracked pins are identical. Both original manifest158acb and stale tracked-lock4e59 baselines differ from511454 only in the four unexecuted related-document production paths. Actual fresh dependency resolution remains independently required."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Package.swift",
+      "beforeGitBlob": "657c88d52d9f85e56442e5d69706cf0d78ee946e",
+      "afterGitBlob": "87e8dd93e41030ab8ec81f5221e50f928d66b7a3",
+      "claim": "not_executed_by_original_fourteen_methods",
+      "reason": "Only exact TorahInspectorKit revision158acb295→511454 changed. The new Kit changes concern related cache/authority/panel; none of these is reached by UIKit14."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "beforeGitBlob": "1e7c27cc76c9a159d7651907f5a1a5e9b4a44a5a",
+      "afterGitBlob": "6e18f37e0bf5e81355ace0810f27a52f9375b949",
+      "claim": "not_executed_by_original_fourteen_methods",
+      "reason": "The selected methods directly instantiate native text views, focus coordinators, composition and renderer helpers. None instantiates AnyDocumentPresentation or executes paragraph creation/readback. These changed noncontent diagnostics run in the separately selected real native UI journey and do not inherit the original fourteen PASS results."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+      "beforeGitBlob": "a10a1a5bf3b705db2ab09adef750f6acb1d780d1",
+      "afterGitBlob": "f01a50fece506f61917fd3aa517e39bc037402df",
+      "claim": "not_executed_by_original_fourteen_methods",
+      "reason": "No selected UIKit component method mounts this SwiftUI document surface or presses its paragraph buttons. They instantiate the native text view and focus fixtures directly. Notification-only diagnostic hooks and action-phase records are part of pending native UI acceptance; the underlying renderer, focus and test files remain byte-identical."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditorDiagnostics.swift",
+      "beforeGitBlob": null,
+      "afterGitBlob": "d8bf6501897cfb53b5faa4db26894cc04371a884",
+      "claim": "not_executed_by_original_fourteen_methods",
+      "reason": "This new DEBUG-only helper is called from the real native document surface and paragraph path, neither of which is executed by the fourteen UIKit fixture methods. It accepts only an explicit native UI scope, records bounded noncontent phases, and cannot supply an acceptance pass. The separate native journey remains required."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift",
+      "beforeGitBlob": "6df774d80090af2398ceb63111ed4e0f5542ff17",
+      "afterGitBlob": "c508a10e7de89b2020d0987ed7772630ff1b0062",
+      "claim": "not_executed_by_original_fourteen_methods",
+      "reason": "None of the fourteen selected component methods creates or navigates the native Properties sheet. This file changes only the accessibility identifiers of its two Lists so the separate native journey can scroll actual controls. Properties behavior is not being relabelled as tested by the old renderer/IME/focus result."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyTorahPresentationBridge.swift",
+      "beforeGitBlob": "9d70a51ebf9b49966d7129bab8ea4c4a129e6357",
+      "afterGitBlob": "228fc97cecc6d6f492a06a95f3ee2ea8e777520e",
+      "claim": "not_executed_by_original_fourteen_methods",
+      "reason": "Only relatedDocuments native/owner failure classification changed. The UIKit14 methods directly construct UITextView or the text/focus helpers; none constructs this bridge, an AnyDocumentPresentation, a TorahEditorSession or a TorahInspectorRepository."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyTorahRelatedReadFailure.swift",
+      "beforeGitBlob": null,
+      "afterGitBlob": "8c598cf1560aa6a22b3054fa9080470cf8205a6b",
+      "claim": "not_executed_by_original_fourteen_methods",
+      "reason": "New typed native/owner authority classifier called from the relatedDocuments bridge only. No registered callback, global eager initializer or other invocation from the UIKit14 method closure."
+    },
+    {
+      "path": "Modules/PinkhaKit/Package.swift",
+      "beforeGitBlob": "5f39dae4261c8dc93ff2832f19f7508e6d84e0e0",
+      "afterGitBlob": "89d37550451cc28118cbffe547e5c634ff0f0235",
+      "claim": "not_executed_by_original_fourteen_methods",
+      "reason": "Only exact TorahInspectorKit revision158acb295→511454 changed. The actually invoked PinkhaTextInputRenderPolicy source is unchanged; no related repository/UI is constructed by those renderer methods."
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSerialTextEditQueue.swift",
+      "beforeGitBlob": "d2cab57bd99bea694fff8e700853f8ad32719d23",
+      "afterGitBlob": "bb55f7eb2997f7c4a1cdc8196bd51703aef0c418",
+      "claim": "not_executed_by_original_fourteen_methods",
+      "reason": "The five marked-text, six focus and three renderer methods construct UITextView/AnyNativeTextView, AnyNativeFocusCoordinator with local fixture closures, AnyNativeTextComposition and AnyNativeTextRenderer. None constructs or calls PinkhaSerialTextEditQueue or AnyDocumentPresentation. Mandatory persistence ordering is qualified by its separate queue and retained editor/table evidence, not by these fourteen methods."
+    },
+    {
+      "path": "Modules/PinkhaTorahPresentation/Package.swift",
+      "beforeGitBlob": "a173ac7c0318cff288bc74b1df8cc05aa0b2493b",
+      "afterGitBlob": "07b7210c42d3844baa35ee1fac8cdd830c661c74",
+      "claim": "not_executed_by_original_fourteen_methods",
+      "reason": "Only exact Kit revision and processing Fixtures for a separate Presentation test target changed. UIKit14 is in PinkhaAnyUITests and does not instantiate TorahEditorSession or execute Presentation test resources."
+    }
+  ],
+  "claimBoundary": "Only the original fourteen unchanged component methods are reused. All fourteen differing source/dependency files are separately bound to exact producer/consumer Git blobs and reviewed as unexecuted by those methods. This is not new test execution, fresh package resolution, or acceptance of the changed related-document behavior.",
+  "pendingAppleEvidence": "Kit15methods/17cases, Any mapping3/4, Heart mapping2/3, session1 and R05exact1 remain independently required for the authority changes. Native entry1, dependent native7 and real archive1 retain their own actual Apple gates. A changed tracked lock alone does not prove dependency resolution.",
+  "previousReviewPath": "Tools/AnyEnginePort/reviews/uikit14-unexecuted-source-changes-20261121.json",
+  "sourceImpactReviewPath": "Tools/AnyEnginePort/reviews/uikit14-kit511454-source-impact-20261122.json"
+}

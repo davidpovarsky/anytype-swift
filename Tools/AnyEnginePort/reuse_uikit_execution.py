@@ -131,6 +131,13 @@ REVIEWABLE_UNEXECUTED_PATHS = frozenset({
     "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
     "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift",
     "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditorDiagnostics.swift",
+    # Exact related-authority source and pin changes reviewed at Kit511454.
+    "Modules/PinkhaAnyUI/Package.resolved",
+    "Modules/PinkhaAnyUI/Package.swift",
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyTorahPresentationBridge.swift",
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyTorahRelatedReadFailure.swift",
+    "Modules/PinkhaKit/Package.swift",
+    "Modules/PinkhaTorahPresentation/Package.swift",
 })
 REVIEW_CLAIM = "not_executed_by_original_fourteen_methods"
 

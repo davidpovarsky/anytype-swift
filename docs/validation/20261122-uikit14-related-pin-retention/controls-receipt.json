@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "scope": "four_new_python_admission_controls_only",
+  "sourceBaseCommit": "816e3748d5499e7f5a64783506057c4dca0d83d3",
+  "command": [
+    "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "Tools/AnyEnginePort",
+    "-p",
+    "test_uikit_related_pin_review.py",
+    "-v"
+  ],
+  "testCommandExitCodeObserved": 0,
+  "actualControlMethodCount": 4,
+  "actualControlMethods": [
+    "test_each_new_path_requires_its_exact_before_and_after_blob",
+    "test_related_pin_review_cannot_relabel_changed_behavior_as_executed",
+    "test_six_new_paths_remain_reviewed_differences",
+    "test_unknown_dependency_or_future_source_cannot_be_excused"
+  ],
+  "durationSecondsFromOriginalLog": 0.064,
+  "rawLogSHA256": "9e4d2f341427d1ed2589b4c183e982d040ee04074ab6d973ae0283e651cd13fd",
+  "sourceSHA256": {
+    "Tools/AnyEnginePort/reuse_uikit_execution.py": "1d0f2c7b821cc80bc2d2309605bf0b7bd0c835fed6c699541d4f7a87922f9f8b",
+    "Tools/AnyEnginePort/test_uikit_related_pin_review.py": "a835f819770db731e4c51008a9c979869653d15485421c4d685998e3953ed4fd",
+    "Tools/AnyEnginePort/reviews/uikit14-unexecuted-source-changes-20261122.json": "0af5fe8958ddc440ea2c33eaf02c4a4fac3f7906c22db0360179f6e92ed4f2b7",
+    "Tools/AnyEnginePort/reviews/uikit14-kit511454-source-impact-20261122.json": "4885d1a8a3bcb355d3f9f0736c099f4448e4cc783cc538c5f18cf94788bb2375",
+    ".github/workflows/pinkha-any-engine-port.yml": "a727397779f7318800e91f5487261cf379da42e579eb82adf7f62133d8ab1fff"
+  },
+  "actualUIKitTestsExecuted": 0,
+  "newProductBehaviorAccepted": false,
+  "archivalWrapperFailure": {
+    "stage": "terminal-name extraction after the four passing controls",
+    "reason": "LF-only regex did not match original Windows CRLF terminal lines",
+    "originalResult": "original-wrapper-result.json",
+    "resolvedBy": "Read original raw log with splitlines; no test rerun and no source modification."
+  }
+}
