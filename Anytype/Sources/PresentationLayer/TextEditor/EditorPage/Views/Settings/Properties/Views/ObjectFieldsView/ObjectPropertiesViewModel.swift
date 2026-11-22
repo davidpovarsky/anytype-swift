@@ -16,9 +16,16 @@ final class ObjectPropertiesViewModel {
     var relationsSearchData: PropertiesSearchData?
 
     var canAddProperty: Bool {
-        // The separate schema route remains unqualified for a prepared page.
-        // Do not consult its Space-only policy cache while rendering this page.
-        guard preparedSession == nil else { return false }
+        if let scope = originalEditorScope {
+            guard let subscriptionID = preparedSubscriptionID,
+                  isPreparedSubscriptionCurrent(subscriptionID),
+                  let hint = preparedAddHint else { return false }
+            // Only a display hint. A tap performs a new canonical read with
+            // its own scope; no manifest or identity survives in this state.
+            return (try? scope.withCurrent {
+                PinkhaRuntime.enabled && hint == preparedPropertyState
+            }) == true
+        }
         return document.permissions.canEditRelationValues && document.details?.isReadonly == false &&
             PinkhaTorahPropertyPolicy.shared.isNormalDocument(document.details, spaceId: document.spaceId)
     }
@@ -32,6 +39,13 @@ final class ObjectPropertiesViewModel {
 
     // MARK: - Private variables
 
+    private struct PreparedPropertyState: Equatable {
+        let details: ObjectDetails?
+        let properties: ParsedProperties
+        let permissions: ObjectPermissions
+    }
+
+    private var preparedAddHint: PreparedPropertyState?
     @ObservationIgnored
     private let document: any BaseDocumentProtocol
     @ObservationIgnored
@@ -44,6 +58,14 @@ final class ObjectPropertiesViewModel {
     private var preparedSectionsTask: Task<Void, Never>?
     @ObservationIgnored
     private var preparedSubscriptionID: UUID?
+    @ObservationIgnored
+    private var preparedSubscriptionTask: Task<Void, Never>?
+    @ObservationIgnored
+    private var preparedSectionsInput: PreparedPropertyState?
+    @ObservationIgnored
+    private var preparedAddTask: Task<Void, Never>?
+    @ObservationIgnored
+    private var preparedAddRequestID: UUID?
 
     @ObservationIgnored
     @Injected(\.propertiesService)
@@ -144,8 +166,42 @@ final class ObjectPropertiesViewModel {
         // This identifies only the view subscription, never source authority.
         // A new .task can start before its cancelled predecessor unwinds.
         let subscriptionID = UUID()
-        preparedSubscriptionID = subscriptionID
+        preparedSubscriptionTask?.cancel()
         preparedSectionsTask?.cancel()
+        cancelPreparedAdd()
+        preparedAddHint = nil
+        preparedSectionsInput = nil
+        relationsSearchData = nil
+        preparedSubscriptionID = subscriptionID
+        let subscriptionTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            await self.observePreparedUpdates(scope: scope, subscriptionID: subscriptionID)
+        }
+        // Assignment happens on MainActor before the first await. The handle
+        // is this real subscription task, never a source/permission token.
+        preparedSubscriptionTask = subscriptionTask
+        defer {
+            if preparedSubscriptionID == subscriptionID {
+                preparedSubscriptionID = nil
+                preparedSubscriptionTask = nil
+                preparedSectionsTask?.cancel()
+                preparedSectionsTask = nil
+                preparedSectionsInput = nil
+                preparedAddHint = nil
+                cancelPreparedAdd()
+                relationsSearchData = nil
+            }
+        }
+        await withTaskCancellationHandler {
+            await subscriptionTask.value
+        } onCancel: {
+            // Cancellation is visible to a pending Add even before this
+            // outer task resumes its MainActor cleanup.
+            subscriptionTask.cancel()
+        }
+    }
+
+    private func observePreparedUpdates(scope: OriginalEditorPropertyScope, subscriptionID: UUID) async {
         let observer = NotificationCenter.default.addObserver(
             forName: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification,
             object: nil,
@@ -153,33 +209,51 @@ final class ObjectPropertiesViewModel {
         ) { [weak self] notification in
             let notifiedSpace = notification.userInfo?["spaceId"] as? String
             Task { @MainActor [weak self] in
-                guard let self, self.preparedSubscriptionID == subscriptionID,
+                guard let self, self.isPreparedSubscriptionCurrent(subscriptionID),
                       notifiedSpace == nil || notifiedSpace?.utf8.elementsEqual(self.document.spaceId.utf8) == true else { return }
-                self.schedulePreparedSectionsRebuild(scope: scope, subscriptionID: subscriptionID)
+                self.schedulePreparedSectionsRebuild(scope: scope, subscriptionID: subscriptionID, force: true)
             }
         }
-        defer {
-            NotificationCenter.default.removeObserver(observer)
-            if preparedSubscriptionID == subscriptionID {
-                preparedSubscriptionID = nil
-                preparedSectionsTask?.cancel()
-                preparedSectionsTask = nil
-            }
-        }
+        defer { NotificationCenter.default.removeObserver(observer) }
 
         // Start the asynchronous read only after the temporary read admission
         // above has returned; no task inherits a completed scope lease.
         guard schedulePreparedSectionsRebuild(scope: scope, subscriptionID: subscriptionID) else { return }
-        for await _ in document.parsedPropertiesPublisher.values {
+        for await _ in document.subscibeFor(update: [.relations, .details(id: document.objectId), .permissions]).values {
             guard !Task.isCancelled,
                   schedulePreparedSectionsRebuild(scope: scope, subscriptionID: subscriptionID) else { return }
         }
     }
 
+    private var preparedPropertyState: PreparedPropertyState {
+        .init(details: document.details, properties: document.parsedProperties, permissions: document.permissions)
+    }
+
+    private func isPreparedSubscriptionCurrent(_ subscriptionID: UUID) -> Bool {
+        preparedSubscriptionID == subscriptionID && preparedSubscriptionTask?.isCancelled == false
+    }
+
+    private func cancelPreparedAdd() {
+        preparedAddTask?.cancel()
+        preparedAddTask = nil
+        preparedAddRequestID = nil
+    }
+
     @discardableResult
-    private func schedulePreparedSectionsRebuild(scope: OriginalEditorPropertyScope, subscriptionID: UUID) -> Bool {
-        guard preparedSubscriptionID == subscriptionID else { return false }
+    private func schedulePreparedSectionsRebuild(
+        scope: OriginalEditorPropertyScope, subscriptionID: UUID, force: Bool = false
+    ) -> Bool {
+        guard isPreparedSubscriptionCurrent(subscriptionID) else { return false }
+        let input: PreparedPropertyState
+        do { input = try scope.withCurrent { preparedPropertyState } }
+        catch { return false }
+        // The initial/general update or an unrelated document event must not
+        // launch a second identical canonical read.
+        guard force || preparedSectionsInput != input else { return true }
         preparedSectionsTask?.cancel()
+        cancelPreparedAdd()
+        preparedAddHint = nil
+        preparedSectionsInput = input
         let properties: ParsedProperties
         do {
             properties = try scope.withCurrent {
@@ -197,9 +271,9 @@ final class ObjectPropertiesViewModel {
                 try Task.checkCancellation()
                 let identity = try await scope.loadModalPropertyIdentity()
                 try Task.checkCancellation()
-                try scope.withCurrent {
-                    guard self.preparedSubscriptionID == subscriptionID,
-                          self.document.parsedProperties == properties else { return }
+                let current: PreparedPropertyState? = try scope.withCurrent {
+                    guard self.isPreparedSubscriptionCurrent(subscriptionID),
+                          self.document.parsedProperties == properties else { return nil }
                     let rawSections = self.sectionsBuilder.buildObjectSections(parsedProperties: properties)
                     self.sections = rawSections.compactMap { section in
                         let filtered = section.relations.filter { relation in
@@ -214,10 +288,27 @@ final class ObjectPropertiesViewModel {
                         )
                     }
                     self.typeId = Self.resolvedTypeId(for: self.document.details)
+                    // Keep the original row behavior: properties are captured
+                    // before the read, while details/permissions are live here.
+                    let current = self.preparedPropertyState
+                    self.preparedSectionsInput = current
+                    return current
+                }
+                guard let current, self.isPreparedSubscriptionCurrent(subscriptionID) else { return }
+                // Type classification is another real account-bound read.
+                // It does not delay or replace the original row projection.
+                let canAdd = try await scope.canAddOriginalProperty(identity: identity)
+                try Task.checkCancellation()
+                try scope.withCurrent {
+                    guard self.isPreparedSubscriptionCurrent(subscriptionID),
+                          self.preparedPropertyState == current,
+                          PinkhaRuntime.enabled else { return }
+                    self.preparedAddHint = canAdd ? current : nil
                 }
             } catch {
-                // A missing/ambiguous manifest or retired source leaves the
-                // already-cleared rows closed. This read never bootstraps.
+                // A failed canonical read leaves rows cleared. Missing type
+                // identity or a retired source never publishes an Add hint;
+                // neither original read bootstraps the Space.
             }
         }
         return true
@@ -348,6 +439,10 @@ final class ObjectPropertiesViewModel {
     }
 
     func onAddPropertyTap() {
+        if let scope = originalEditorScope {
+            schedulePreparedAdd(scope: scope)
+            return
+        }
         guard (try? requireQualifiedSchemaRoute()) != nil else { return }
         guard canAddProperty else { return }
         let properties = document.parsedProperties
@@ -358,6 +453,75 @@ final class ObjectPropertiesViewModel {
             target: .object(objectId: document.objectId),
             onRelationSelect: { _, _ in }
         )
+    }
+
+    private func schedulePreparedAdd(scope: OriginalEditorPropertyScope) {
+        guard let subscriptionID = preparedSubscriptionID,
+              isPreparedSubscriptionCurrent(subscriptionID),
+              preparedAddTask == nil, relationsSearchData == nil else { return }
+        let input: PreparedPropertyState
+        do {
+            input = try scope.withCurrent {
+                guard PinkhaRuntime.enabled, let hint = preparedAddHint,
+                      hint == preparedPropertyState else {
+                    throw EditorDocumentWriteError.rejected(.documentChanged)
+                }
+                return preparedPropertyState
+            }
+        } catch { return }
+
+        let requestID = UUID()
+        preparedAddRequestID = requestID
+        // Opening the original modal is a read/presentation operation. Its
+        // actual selection/save already reserves the named list write before
+        // Task creation. Start this read after the temporary lease returned.
+        preparedAddTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            defer {
+                if self.preparedAddRequestID == requestID {
+                    self.preparedAddTask = nil
+                    self.preparedAddRequestID = nil
+                }
+            }
+            do {
+                try Task.checkCancellation()
+                guard self.isPreparedSubscriptionCurrent(subscriptionID),
+                      self.preparedAddRequestID == requestID else { return }
+                let identity = try await scope.loadModalPropertyIdentity()
+                try Task.checkCancellation()
+                guard self.isPreparedSubscriptionCurrent(subscriptionID),
+                      self.preparedAddRequestID == requestID,
+                      self.preparedPropertyState == input else { return }
+                let canAdd = try await scope.canAddOriginalProperty(identity: identity)
+                try Task.checkCancellation()
+                let data = try scope.withCurrent {
+                    guard self.isPreparedSubscriptionCurrent(subscriptionID),
+                          self.preparedAddRequestID == requestID,
+                          self.relationsSearchData == nil,
+                          self.preparedPropertyState == input,
+                          PinkhaRuntime.enabled, canAdd else {
+                        throw EditorDocumentWriteError.rejected(.documentChanged)
+                    }
+                    let properties = self.document.parsedProperties
+                    return PropertiesSearchData(
+                        objectId: self.document.objectId, spaceId: self.document.spaceId,
+                        excludedRelationsIds: (properties.featuredProperties + properties.sidebarProperties + properties.conflictedProperties + properties.legacyFeaturedProperties).map(\.id),
+                        hiddenRelationsIds: Set(properties.hiddenProperties.map(\.id)),
+                        target: .object(objectId: self.document.objectId),
+                        originalEditorScope: scope,
+                        onRelationSelect: { _, _ in }
+                    )
+                }
+                // SwiftUI's modal work must not inherit the finished read
+                // lease. There is no await between validation and publication.
+                guard !Task.isCancelled, self.isPreparedSubscriptionCurrent(subscriptionID),
+                      self.preparedAddRequestID == requestID else { return }
+                self.relationsSearchData = data
+            } catch {
+                // Missing current identity, changed input, cancellation or a
+                // retired source leaves the original modal closed.
+            }
+        }
     }
     
     func addRelationToType(_ relation: Property) {

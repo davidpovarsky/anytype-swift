@@ -1,6 +1,7 @@
 import Foundation
 import Services
 import PinkhaKit
+import SwiftProtobuf
 
 /// Carries the already prepared document into the original property UI. This
 /// owns no generation, store, editor or permission policy of its own.
@@ -144,6 +145,7 @@ struct OriginalEditorPropertyIdentitySnapshot: Sendable {
     fileprivate let spaceId: String
     fileprivate let pinkhaEnabled: Bool
     fileprivate let internalIdentities: PinkhaInternalPropertyIdentities?
+    fileprivate let canonicalManifest: PinkhaSpaceManifest?
 }
 
 @MainActor
@@ -166,7 +168,8 @@ extension OriginalEditorPropertyScope {
         try withCurrent {}
         let enabled = PinkhaRuntime.enabled
         guard enabled else {
-            return .init(scope: self, spaceId: spaceId, pinkhaEnabled: false, internalIdentities: nil)
+            return .init(scope: self, spaceId: spaceId, pinkhaEnabled: false,
+                         internalIdentities: nil, canonicalManifest: nil)
         }
         guard let original = Container.shared.pinkhaSpaceManifestStore() as? PinkhaSpaceManifestStore else {
             throw OriginalEditorPropertyModalError.unsupportedOriginalDelegate
@@ -190,7 +193,73 @@ extension OriginalEditorPropertyScope {
                    identities.orderPropertyId, identities.orderPropertyKey].allSatisfy({ !$0.isEmpty && !$0.utf8.contains(0) }) else {
                 throw OriginalEditorPropertyModalError.internalIdentityUnavailable
             }
-            return .init(scope: self, spaceId: spaceId, pinkhaEnabled: enabled, internalIdentities: identities)
+            return .init(scope: self, spaceId: spaceId, pinkhaEnabled: enabled,
+                         internalIdentities: identities, canonicalManifest: manifest)
+        }
+    }
+
+    /// The original object's Add button uses the original pure eligibility
+    /// rule with this operation's canonical read, never the Space-only cache.
+    /// Template classification comes from the actual type in the same account;
+    /// ObjectDetails.isTemplate would consult an unbound global type cache.
+    /// This is a display/presentation check; actual modal writes retain their
+    /// existing named action reservations.
+    func canAddOriginalProperty(identity: OriginalEditorPropertyIdentitySnapshot) async throws -> Bool {
+        let input: (details: ObjectDetails, permissions: ObjectPermissions)? = try withCurrent {
+            try requireModalIdentity(identity)
+            guard identity.pinkhaEnabled, let details = document.details,
+                  details.id.utf8.elementsEqual(objectId.utf8),
+                  details.spaceId.utf8.elementsEqual(spaceId.utf8),
+                  !details.type.isEmpty, !details.type.utf8.contains(0),
+                  document.permissions.canEditRelationValues,
+                  document.permissions.canEditDetails,
+                  document.permissions.canEditPropertiesList,
+                  details.isReadonly == false else { return nil }
+            return (details, document.permissions)
+        }
+        guard let input else { return false }
+        let original = try withCurrent {
+            try OriginalSearchMiddleServiceBinding.requireOriginal(Container.shared.searchMiddleService())
+        }
+        let typeId = input.details.type
+        try Task.checkCancellation()
+        let types = try await owner.performRead(
+            contextId: objectId, spaceId: spaceId, rpcNames: ["ObjectSearch"]
+        ) { [spaceId, typeId] in
+            try await original.search(
+                spaceId: spaceId, filters: [SearchHelper.includeIdsFilter([typeId])],
+                keys: [BundledPropertyKey.id, .spaceId, .layout, .resolvedLayout, .uniqueKey].map(\.rawValue),
+                limit: 0
+            )
+        }
+        try Task.checkCancellation()
+        return try withCurrent {
+            try requireModalIdentity(identity)
+            guard let details = document.details, details == input.details,
+                  details.id.utf8.elementsEqual(objectId.utf8),
+                  details.spaceId.utf8.elementsEqual(spaceId.utf8),
+                  details.type.utf8.elementsEqual(typeId.utf8),
+                  document.permissions == input.permissions,
+                  types.count == 1, let actualType = types.first,
+                  actualType.id.utf8.elementsEqual(typeId.utf8),
+                  actualType.spaceId.utf8.elementsEqual(spaceId.utf8),
+                  (actualType.resolvedLayout ?? actualType.layout) == DetailsLayout.objectType.rawValue,
+                  case .stringValue(let uniqueKey)? = actualType.values[BundledPropertyKey.uniqueKey.rawValue]?.kind,
+                  !uniqueKey.isEmpty, !uniqueKey.utf8.contains(0),
+                  uniqueKey.utf8.elementsEqual(actualType.uniqueKey.utf8) else {
+                throw OriginalEditorPropertyModalError.invalidPropertyIdentity
+            }
+            return TorahDocumentPropertyEligibility.includesDocument(
+                objectId: details.id, typeId: details.type, spaceId: spaceId,
+                layout: details.resolvedLayout ?? details.layout,
+                isTemplate: uniqueKey == ObjectTypeUniqueKey.template.value,
+                isDeleted: details.isDeleted, isArchived: details.isArchived,
+                isInternal: details.isHidden || !details.uniqueKey.isEmpty ||
+                    details.values[BundledPropertyKey.relationKey.rawValue] != nil ||
+                    details.values[BundledPropertyKey.relationFormat.rawValue] != nil ||
+                    details.values[BundledPropertyKey.recommendedLayout.rawValue] != nil,
+                manifest: identity.canonicalManifest
+            )
         }
     }
 
