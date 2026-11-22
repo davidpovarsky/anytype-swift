@@ -208,10 +208,12 @@ EXPECTED_IDS = (
     "test_host_framework_contract.HostFrameworkContractControls.test_different_shared_package_pin_rejected_even_with_updated_project_hash",
     "test_host_framework_contract.HostFrameworkContractControls.test_malformed_spi_marker_does_not_grant_qualification_scope",
     "test_host_framework_contract.HostFrameworkContractControls.test_missing_real_capture_entrypoint_rejects_inspection_only_surface",
+    "test_host_framework_contract.HostFrameworkContractControls.test_new_resume_context_fields_and_operations_cannot_be_missing",
     "test_host_framework_contract.HostFrameworkContractControls.test_public_raw_runtime_helper_is_not_the_qualified_spi",
     "test_host_framework_contract.HostFrameworkContractControls.test_public_unowned_host_constructor_is_rejected",
     "test_host_framework_contract.HostFrameworkContractControls.test_qualification_declarations_require_actual_spi_scope",
     "test_host_framework_contract.HostFrameworkContractControls.test_regular_host_declarations_cannot_be_hidden_as_spi",
+    "test_host_framework_contract.HostFrameworkContractControls.test_returned_process_receipt_cannot_be_publicly_constructed",
     "test_host_framework_contract.HostFrameworkContractControls.test_same_spelling_from_a_foreign_source_is_not_a_host_capability",
     "test_host_framework_contract.HostFrameworkContractControls.test_symbol_graph_emission_cannot_spill_into_original_application",
     "test_observed_package_simulator_signing.DependencyCheckoutSourceClosureControls.test_unchanged_source_accepts_separate_owned_generated_build_metadata",
@@ -244,7 +246,7 @@ EXPECTED_IDS = (
     "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_observed_original_context_keeps_all_clang_imports_and_implicit_cache",
     "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_wrong_target_sdk_language_or_cache_is_rejected",
 )
-EXPECTED_COUNT = 237
+EXPECTED_COUNT = 239
 
 
 def cases(suite):

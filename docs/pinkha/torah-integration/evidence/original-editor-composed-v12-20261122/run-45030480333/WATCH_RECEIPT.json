@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "run_id": "45030480333",
+  "run_attempt": 1,
+  "expected_head": "efe4da82f5befbece9438065b1606903e0e09ec7",
+  "expected_branch": "codex/otzaria-original-editor-framework-v12-composed-20261122",
+  "started_at": "2026-11-22T14:02:48.513259+00:00",
+  "runner_pid": 12248,
+  "watch_invocations": 1,
+  "watch_timeout_seconds": 3000,
+  "commands": [
+    {
+      "argv": [
+        "C:\\Program Files\\GitHub CLI\\gh.EXE",
+        "api",
+        "repos/davidpovarsky/anytype-swift/actions/runs/45030480333"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "C:\\Program Files\\GitHub CLI\\gh.EXE",
+        "api",
+        "repos/davidpovarsky/anytype-swift/actions/runs/45030480333"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "C:\\Program Files\\GitHub CLI\\gh.EXE",
+        "api",
+        "repos/davidpovarsky/anytype-swift/actions/runs/45030480333/jobs?per_page=100"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "C:\\Program Files\\GitHub CLI\\gh.EXE",
+        "api",
+        "repos/davidpovarsky/anytype-swift/actions/runs/45030480333/artifacts?per_page=100"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "watch_command": [
+    "C:\\Program Files\\GitHub CLI\\gh.EXE",
+    "run",
+    "watch",
+    "45030480333",
+    "--repo",
+    "davidpovarsky/anytype-swift",
+    "--interval",
+    "30",
+    "--exit-status"
+  ],
+  "watch_exit": 1,
+  "run_status": "completed",
+  "run_conclusion": "failure",
+  "artifacts": [
+    {
+      "id": 14756809224,
+      "name": "Otzaria-Original-Editor-Framework-Evidence-efe4da82f5befbece9438065b1606903e0e09ec7-45030480333-1",
+      "size_in_bytes": 34104,
+      "expired": false,
+      "digest": "sha256:42bf7230595df709b9b7693a4fe4d2adbdcafb260eac0124c8d19f4fb522af3f"
+    }
+  ],
+  "log_download_exit": 0,
+  "evidence_download_exit": 0,
+  "evidence_archives": [
+    {
+      "path": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-sdk-v12-watch-45030480333\\downloaded-evidence\\Pinkha-Native-Derived-Evidence.zip",
+      "sha256": "98a0bb7cc005c93a38b3596258f0e2302914ede42dd2f96e116d46abe7407a80",
+      "bytes": 34256,
+      "expanded_bytes": 306162,
+      "members": 5,
+      "extracted_to": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-sdk-v12-watch-45030480333\\evidence-unpacked-0"
+    }
+  ],
+  "finished_at": "2026-11-22T14:03:29.786972+00:00"
+}
