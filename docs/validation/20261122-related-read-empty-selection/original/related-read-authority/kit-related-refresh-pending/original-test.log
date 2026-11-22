@@ -1,0 +1,883 @@
+info: using 'Package.resolved' file as lock file
+warning: 'related-read-kit-source': /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -c -primary-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/Package.swift -target arm64-apple-macosx14.0 -Xllvm -aarch64-use-tbi -enable-objc-interop -stack-check -sdk /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -I /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -I /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/pm/ManifestAPI -F /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -vfsoverlay /var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/TemporaryDirectory.eq9B2u/vfs.yaml -no-color-diagnostics -Xcc -fno-color-diagnostics -swift-version 6 -package-description-version 6.0.0 -new-driver-path /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-driver -empty-abi-descriptor -plugin-path /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -no-auto-bridging-header-chaining -module-name main -disable-clang-spi -target-sdk-version 27.0 -target-sdk-name macosx27.0 -external-plugin-path '/Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins#/Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' -external-plugin-path '/Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/local/lib/swift/host/plugins#/Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server' -in-process-plugin-server-path /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -plugin-path /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins -plugin-path /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/local/lib/swift/host/plugins -o /var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/TemporaryDirectory.DfkeDK/Package-1.o
+/Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang /var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/TemporaryDirectory.DfkeDK/Package-1.o -F /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks --sysroot /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk --target=arm64-apple-macosx14.0 -L /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/usr/lib/swift -rpath /usr/lib/swift -L /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/pm/ManifestAPI -L /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -lPackageDescription -Xlinker -rpath -Xlinker /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/pm/ManifestAPI -o /var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/TemporaryDirectory.MiapDL/related-read-kit-source-manifest
+Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)
+Target: arm64-apple-macosx14.0
+info: using 'Package.resolved' file as lock file
+Building for debugging...
+Planning build
+[Computing dependencies]
+Compute target dependency graph
+info: Building targets in dependency order
+info: Target dependency graph (8 targets)
+info: Target 'AllIncludingTests' in project 'Aggregate'
+info: ➜ Explicit dependency on target 'TorahInspectorUITests-product' in project 'TorahInspectorKit'
+info: ➜ Dependency on target 'TorahInspectorUITests-product' in project 'TorahInspectorKit' via transitive dependency through 'TorahInspectorUITests-test-runner'
+info: ➜ Explicit dependency on target 'TorahInspectorCoreTests-product' in project 'TorahInspectorKit'
+info: ➜ Dependency on target 'TorahInspectorCoreTests-product' in project 'TorahInspectorKit' via transitive dependency through 'TorahInspectorCoreTests-test-runner'
+info: ➜ Explicit dependency on target 'TorahInspectorCore-product' in project 'TorahInspectorKit'
+info: ➜ Explicit dependency on target 'TorahInspectorUI-product' in project 'TorahInspectorKit'
+info: ➜ Explicit dependency on target 'TorahInspectorCore' in project 'TorahInspectorKit'
+info: ➜ Explicit dependency on target 'TorahInspectorUI' in project 'TorahInspectorKit'
+info: ➜ Explicit dependency on target 'TorahInspectorKit_TorahInspectorUI' in project 'TorahInspectorKit'
+info: Target 'TorahInspectorUI-product' in project 'TorahInspectorKit'
+info: ➜ Explicit dependency on target 'TorahInspectorUI' in project 'TorahInspectorKit'
+info: ➜ Explicit dependency on target 'TorahInspectorKit_TorahInspectorUI' in project 'TorahInspectorKit'
+info: ➜ Explicit dependency on target 'TorahInspectorCore' in project 'TorahInspectorKit'
+info: Target 'TorahInspectorCore-product' in project 'TorahInspectorKit'
+info: ➜ Explicit dependency on target 'TorahInspectorCore' in project 'TorahInspectorKit'
+info: Target 'TorahInspectorCoreTests-product' in project 'TorahInspectorKit'
+info: ➜ Explicit dependency on target 'TorahInspectorCore' in project 'TorahInspectorKit'
+info: Target 'TorahInspectorUITests-product' in project 'TorahInspectorKit'
+info: ➜ Explicit dependency on target 'TorahInspectorCore' in project 'TorahInspectorKit'
+info: ➜ Explicit dependency on target 'TorahInspectorUI' in project 'TorahInspectorKit'
+info: Target 'TorahInspectorUI' in project 'TorahInspectorKit'
+info: ➜ Explicit dependency on target 'TorahInspectorKit_TorahInspectorUI' in project 'TorahInspectorKit'
+info: ➜ Explicit dependency on target 'TorahInspectorCore' in project 'TorahInspectorKit'
+info: Target 'TorahInspectorKit_TorahInspectorUI' in project 'TorahInspectorKit' (no dependencies)
+info: Target 'TorahInspectorCore' in project 'TorahInspectorKit' (no dependencies)
+Gather provisioning inputs
+Planning complete
+[Pre-planning 1 / 211]
+Discovering version info for clang
+Discovering version info for swiftc
+Discovering version info for libtool
+Discovering version info for ld
+[Planning deferred tasks]
+Create build description
+Build description signature: db1cf0677e4a796232176199ed60134f
+Build description path: /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/XCBuildData/db1cf0677e4a796232176199ed60134f.xcbuilddata
+Create build directory $(TARGET_BUILD_DIR)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-create-build-directory /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products
+
+Create build directory $(DERIVED_DATA_DIR)/SDKExplicitPrecompiledModules
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-create-build-directory /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKExplicitPrecompiledModules
+
+Create build directory $(TARGET_BUILD_DIR)/Debug
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-create-build-directory /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug
+
+Create build directory $(DERIVED_DATA_DIR)/PCH
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-create-build-directory /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/PCH
+
+Create build directory $(DERIVED_DATA_DIR)/ModuleCache.noindex
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-create-build-directory /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex
+
+Create build directory $(TARGET_BUILD_DIR)/Debug/PackageFrameworks
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-create-build-directory /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/PackageFrameworks
+
+Create build directory $(OBJROOT)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-create-build-directory /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex
+
+Create build directory $(DERIVED_DATA_DIR)/CompilationCache.noindex
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-create-build-directory /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/CompilationCache.noindex
+
+Create build directory $(OBJROOT)/SwiftExplicitPrecompiledModules
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-create-build-directory /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+Create build directory $(OBJROOT)/ExplicitPrecompiledModules
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-create-build-directory /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/ExplicitPrecompiledModules
+
+Create build directory $(OBJROOT)/EagerLinkingTBDs/Debug
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-create-build-directory /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/EagerLinkingTBDs/Debug
+
+Write TorahInspectorUI.LinkFileList (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-product-p.build/Objects-normal/arm64/TorahInspectorUI.LinkFileList
+
+Write empty-TorahInspectorUITests.plist
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/empty-TorahInspectorUITests.plist
+
+Write TorahInspectorUITests_const_extract_protocols.json (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests_const_extract_protocols.json
+
+Write TorahInspectorUITests.SwiftFileList (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests.SwiftFileList
+
+Write TorahInspectorUITests.LinkFileList (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests.LinkFileList
+
+Write TorahInspectorUITests-OutputFileMap.json (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests-OutputFileMap.json
+
+Write Entitlements.plist
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/DerivedSources/Entitlements.plist
+
+Write TorahInspectorUI.modulemap
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/TorahInspectorUI.modulemap
+
+Write TorahInspectorUI_const_extract_protocols.json (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI_const_extract_protocols.json
+
+Write TorahInspectorUI.SwiftFileList (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI.SwiftFileList
+
+Write TorahInspectorUI.LinkFileList (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI.LinkFileList
+
+Write TorahInspectorUI-OutputFileMap.json (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI-OutputFileMap.json
+
+Write resource_bundle_accessor.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/DerivedSources/resource_bundle_accessor.swift
+
+Copy TorahInspectorUI.modulemap
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/TorahInspectorUI.modulemap /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/GeneratedModuleMaps
+
+Write empty-TorahInspectorKit_TorahInspectorUI.plist
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorKit_TorahInspectorUI-b.build/empty-TorahInspectorKit_TorahInspectorUI.plist
+
+Write Entitlements.plist
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorKit_TorahInspectorUI-b.build/DerivedSources/Entitlements.plist
+
+Write empty-TorahInspectorCoreTests.plist
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/empty-TorahInspectorCoreTests.plist
+
+Write TorahInspectorCoreTests_const_extract_protocols.json (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests_const_extract_protocols.json
+
+Write TorahInspectorCoreTests.SwiftFileList (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests.SwiftFileList
+
+Write TorahInspectorCoreTests.LinkFileList (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests.LinkFileList
+
+Write TorahInspectorCoreTests-OutputFileMap.json (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests-OutputFileMap.json
+
+Write Entitlements.plist
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/DerivedSources/Entitlements.plist
+
+Write TorahInspectorCore.LinkFileList (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-product-p.build/Objects-normal/arm64/TorahInspectorCore.LinkFileList
+
+Write TorahInspectorCore.modulemap
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/TorahInspectorCore.modulemap
+
+Write TorahInspectorCore_const_extract_protocols.json (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore_const_extract_protocols.json
+
+Write TorahInspectorCore.SwiftFileList (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore.SwiftFileList
+
+Write TorahInspectorCore.LinkFileList (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore.LinkFileList
+
+Write TorahInspectorCore-OutputFileMap.json (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    write-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore-OutputFileMap.json
+
+Copy TorahInspectorCore.modulemap
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/TorahInspectorCore.modulemap /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/GeneratedModuleMaps
+
+Create directory Resources
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    /bin/mkdir -p /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUITests.xctest/Contents/Resources
+
+Create directory MacOS
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    /bin/mkdir -p /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUITests.xctest/Contents/MacOS
+
+Create directory Contents
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    /bin/mkdir -p /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUITests.xctest/Contents
+
+Create directory TorahInspectorUITests.xctest
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    /bin/mkdir -p /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUITests.xctest
+
+Create directory Resources
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    /bin/mkdir -p /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorKit_TorahInspectorUI.bundle/Contents/Resources
+
+Create directory Contents
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    /bin/mkdir -p /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorKit_TorahInspectorUI.bundle/Contents
+
+Create directory TorahInspectorKit_TorahInspectorUI.bundle
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    /bin/mkdir -p /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorKit_TorahInspectorUI.bundle
+
+Create directory MacOS
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    /bin/mkdir -p /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCoreTests.xctest/Contents/MacOS
+
+Create directory Contents
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    /bin/mkdir -p /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCoreTests.xctest/Contents
+
+Create directory TorahInspectorCoreTests.xctest
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    /bin/mkdir -p /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCoreTests.xctest
+
+Process product packaging
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    
+    Entitlements:
+    
+    {
+    "com.apple.security.get-task-allow" = 1;
+}
+    
+    builtin-productPackagingUtility -entitlements -format xml -o /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorKit_TorahInspectorUI-b.build/TorahInspectorKit_TorahInspectorUI.bundle.xcent
+
+Generate DER entitlements
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    /usr/bin/derq query -f xml -i /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorKit_TorahInspectorUI-b.build/TorahInspectorKit_TorahInspectorUI.bundle.xcent -o /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorKit_TorahInspectorUI-b.build/TorahInspectorKit_TorahInspectorUI.bundle.xcent.der --raw
+
+Process empty-TorahInspectorKit_TorahInspectorUI.plist
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-infoPlistUtility /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorKit_TorahInspectorUI-b.build/empty-TorahInspectorKit_TorahInspectorUI.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorKit_TorahInspectorUI.bundle/Contents/Info.plist
+
+[55 / 108] TorahInspectorKit_TorahInspectorUI
+Copy Localizable.strings
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/Sources/TorahInspectorUI/Resources/he.lproj/Localizable.strings /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorKit_TorahInspectorUI.bundle/Contents/Resources/he.lproj
+
+Copy Localizable.strings
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/Sources/TorahInspectorUI/Resources/en.lproj/Localizable.strings /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorKit_TorahInspectorUI.bundle/Contents/Resources/en.lproj
+
+Sign TorahInspectorKit_TorahInspectorUI.bundle
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    
+    Signing Identity:     "-"
+    
+    /usr/bin/codesign --force --sign - --entitlements /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorKit_TorahInspectorUI-b.build/TorahInspectorKit_TorahInspectorUI.bundle.xcent --timestamp\=none --generate-entitlement-der /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorKit_TorahInspectorUI.bundle
+
+Register execution policy exception for TorahInspectorKit_TorahInspectorUI.bundle
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-RegisterExecutionPolicyException /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorKit_TorahInspectorUI.bundle
+
+Touch TorahInspectorKit_TorahInspectorUI.bundle
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    /usr/bin/touch -c /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorKit_TorahInspectorUI.bundle
+
+[59 / 108] TorahInspectorKit_TorahInspectorUI
+Build stat cache for /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -o /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKStatCaches.noindex/macosx27.0-26A425-80c5bbf1d171475443272936d42f90a3913bb46a471500b83ecd9898560a2d87.sdkstatcache
+
+[59 / 108]
+Planning Swift module TorahInspectorCore (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftDriver -- /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name TorahInspectorCore -Onone @/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -plugin-path /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -Isystem /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -F /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -emit-localized-strings -emit-localized-strings-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64 -c -j3 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKStatCaches.noindex/macosx27.0-26A425-80c5bbf1d171475443272936d42f90a3913bb46a471500b83ecd9898560a2d87.sdkstatcache -output-file-map /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore-OutputFileMap.json -save-temps -color-diagnostics -explicit-module-build -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -sdk-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name related_read_kit_source -emit-const-values -const-gather-protocols-list /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore_const_extract_protocols.json -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/include -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/DerivedSources/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore-Swift.h -working-directory /Users/runner/work/anytype-swift/anytype-swift/build -experimental-emit-module-separately -disable-cmo
+
+[60 / 109] TorahInspectorCore
+Compiling Clang module ptrcheck
+[63 / 149]
+Compiling Clang module SwiftShims
+Compiling Clang module _SwiftConcurrencyShims
+Compiling Clang module _Builtin_stdarg
+Compiling Clang module _Builtin_stdbool
+[67 / 149]
+Compiling Clang module ptrauth
+Compiling Clang module _Builtin_float
+Compiling Clang module _AvailabilityInternal
+Compiling Clang module _Builtin_stddef
+[70 / 149]
+Compiling Clang module _DarwinFoundation1
+Compiling Clang module _Builtin_limits
+Compiling Clang module _DarwinFoundation2
+[72 / 149]
+Compiling Clang module sys_types
+[75 / 149]
+Compiling Clang module _Builtin_stdint
+Compiling Clang module libDER
+[77 / 149]
+Compiling Clang module string_h
+Compiling Clang module _DarwinFoundation3
+Compiling Clang module _Builtin_inttypes
+Compiling Clang module Darwin
+[79 / 149]
+Compiling Clang module launch
+[82 / 149]
+Compiling Clang module MachO
+Compiling Clang module libkern
+[83 / 149]
+Compiling Clang module ObjectiveC
+Compiling Clang module os_object
+[84 / 149]
+Compiling Clang module os_workgroup
+Compiling Clang module Dispatch
+[86 / 149]
+Compiling Clang module XPC
+Compiling Clang module CoreFoundation
+[88 / 149]
+Compiling Clang module CFNetwork
+Compiling Clang module Security
+[91 / 149]
+Compiling Clang module IOKit
+Compiling Clang module DiskArbitration
+Compiling Clang module CoreServices
+[93 / 149]
+Compiling Clang module Foundation
+[94 / 149]
+Compiling Clang module CoreTransferable
+Compiling Clang module UniformTypeIdentifiers
+Compile
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    
+
+Emitting module for TorahInspectorCore
+[99 / 149] TorahInspectorCore
+Discovering Swift tasks after 'Emitting module for TorahInspectorCore'
+Compile Models.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile Models.swift
+
+Compile ProviderProtocols.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile ProviderProtocols.swift
+
+Compile TorahInspectorCoordinator.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile TorahInspectorCoordinator.swift
+
+Compiling Models.swift, ProviderProtocols.swift, TorahInspectorCoordinator.swift
+[100 / 149] TorahInspectorCore
+Unblock downstream dependents of TorahInspectorCore (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name TorahInspectorCore -Onone @/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -plugin-path /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -Isystem /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -F /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -emit-localized-strings -emit-localized-strings-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64 -c -j3 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKStatCaches.noindex/macosx27.0-26A425-80c5bbf1d171475443272936d42f90a3913bb46a471500b83ecd9898560a2d87.sdkstatcache -output-file-map /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore-OutputFileMap.json -save-temps -color-diagnostics -explicit-module-build -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -sdk-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name related_read_kit_source -emit-const-values -const-gather-protocols-list /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore_const_extract_protocols.json -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/include -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/DerivedSources/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore-Swift.h -working-directory /Users/runner/work/anytype-swift/anytype-swift/build -experimental-emit-module-separately -disable-cmo
+
+Discovering Swift tasks after 'Compiling Models.swift, ProviderProtocols.swift, TorahInspectorCoordinator.swift'
+Compile TorahSourceTransfer.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile TorahSourceTransfer.swift
+
+Compile TorahToolSelectorStateMachine.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile TorahToolSelectorStateMachine.swift
+
+Compiling TorahSourceTransfer.swift, TorahToolSelectorStateMachine.swift
+[102 / 149] TorahInspectorCore
+Merge Objective-C generated interface headers
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-swiftHeaderTool -arch arm64 /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore-Swift.h -o /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/GeneratedModuleMaps/TorahInspectorCore-Swift.h
+
+Discovering Swift tasks after 'Compiling TorahSourceTransfer.swift, TorahToolSelectorStateMachine.swift'
+Copy TorahInspectorCore.swiftmodule (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore.swiftmodule /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCore.swiftmodule/arm64-apple-macos.swiftmodule
+
+Copy TorahInspectorCore.swiftdoc (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore.swiftdoc /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCore.swiftmodule/arm64-apple-macos.swiftdoc
+
+Copy TorahInspectorCore.abi.json (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore.abi.json /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCore.swiftmodule/arm64-apple-macos.abi.json
+
+Copy TorahInspectorCore.swiftsourceinfo (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore.swiftsourceinfo /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCore.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+Process product packaging
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    
+    Entitlements:
+    
+    {
+    "com.apple.security.get-task-allow" = 1;
+}
+    
+    builtin-productPackagingUtility -entitlements -format xml -o /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/TorahInspectorCoreTests.xctest.xcent
+
+Generate DER entitlements
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    /usr/bin/derq query -f xml -i /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/TorahInspectorCoreTests.xctest.xcent -o /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/TorahInspectorCoreTests.xctest.xcent.der --raw
+
+Compile TorahInspectorRepository.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile TorahInspectorRepository.swift
+
+Compile TorahReaderScrollStateMachine.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile TorahReaderScrollStateMachine.swift
+
+Compile TorahRelatedDocumentsAccessError.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile TorahRelatedDocumentsAccessError.swift
+
+Compiling TorahInspectorRepository.swift, TorahReaderScrollStateMachine.swift, TorahRelatedDocumentsAccessError.swift
+[109 / 150]
+Discovering Swift tasks after 'Compiling TorahInspectorRepository.swift, TorahReaderScrollStateMachine.swift, TorahRelatedDocumentsAccessError.swift'
+Compile TorahInspectorCore (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-Swift-Compilation -- /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name TorahInspectorCore -Onone @/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -plugin-path /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -Isystem /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -F /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -emit-localized-strings -emit-localized-strings-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64 -c -j3 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKStatCaches.noindex/macosx27.0-26A425-80c5bbf1d171475443272936d42f90a3913bb46a471500b83ecd9898560a2d87.sdkstatcache -output-file-map /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore-OutputFileMap.json -save-temps -color-diagnostics -explicit-module-build -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -sdk-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name related_read_kit_source -emit-const-values -const-gather-protocols-list /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore_const_extract_protocols.json -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/include -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/DerivedSources/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore-Swift.h -working-directory /Users/runner/work/anytype-swift/anytype-swift/build -experimental-emit-module-separately -disable-cmo
+
+Link TorahInspectorCore.o (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos14.0 -r -isysroot /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -F/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/EagerLinkingTBDs/Debug -F/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -iframework /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -filelist /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore.LinkFileList -nostdlib -Xlinker -object_path_lto -Xlinker /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore_lto.o -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-t.build/Objects-normal/arm64/TorahInspectorCore.swiftmodule -o /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCore.o
+
+[111 / 150]
+Generate entry point for TorahInspectorCoreTests
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-generateTestEntryPoint --output /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/DerivedSources/test_entry_point.swift
+
+Create static library libTorahInspectorCore.a (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/libtool -static -arch_only arm64 -D -syslibroot /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -L/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -L/Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -filelist /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-product-p.build/Objects-normal/arm64/TorahInspectorCore.LinkFileList -no_warning_for_no_symbols -dependency_info /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCore-product-p.build/Objects-normal/arm64/TorahInspectorCore_libtool_dependency_info.dat -o /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/libTorahInspectorCore.a
+
+Process empty-TorahInspectorCoreTests.plist
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-infoPlistUtility /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/empty-TorahInspectorCoreTests.plist -producttype com.apple.product-type.bundle.unit-test -expandbuildsettings -platform macosx -o /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCoreTests.xctest/Contents/Info.plist
+
+Planning Swift module TorahInspectorCoreTests (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftDriver -- /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name TorahInspectorCoreTests -Onone @/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -plugin-path /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -Isystem /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/PackageFrameworks -F /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -F /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -emit-localized-strings -emit-localized-strings-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64 -c -j3 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKStatCaches.noindex/macosx27.0-26A425-80c5bbf1d171475443272936d42f90a3913bb46a471500b83ecd9898560a2d87.sdkstatcache -output-file-map /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests-OutputFileMap.json -save-temps -color-diagnostics -explicit-module-build -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -sdk-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name related_read_kit_source -emit-const-values -const-gather-protocols-list /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests_const_extract_protocols.json -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/include -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/DerivedSources/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /Users/runner/work/anytype-swift/anytype-swift/build -experimental-emit-module-separately -disable-cmo
+
+[115 / 151]
+Planning Swift module TorahInspectorUI (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftDriver -- /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name TorahInspectorUI -Onone @/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_AVAILABLE -DXcode -plugin-path /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -Isystem /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/PackageFrameworks -F /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -F /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -emit-localized-strings -emit-localized-strings-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64 -c -j3 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKStatCaches.noindex/macosx27.0-26A425-80c5bbf1d171475443272936d42f90a3913bb46a471500b83ecd9898560a2d87.sdkstatcache -output-file-map /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI-OutputFileMap.json -save-temps -color-diagnostics -explicit-module-build -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -sdk-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name related_read_kit_source -emit-const-values -const-gather-protocols-list /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI_const_extract_protocols.json -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/include -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/DerivedSources/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI-Swift.h -working-directory /Users/runner/work/anytype-swift/anytype-swift/build -experimental-emit-module-separately -disable-cmo
+
+[116 / 157]
+Compiling Clang module DeveloperToolsSupport
+[118 / 191]
+Compiling Swift module Testing
+Compiling Clang module IOSurface
+[120 / 191]
+Compiling Clang module ColorSync
+Compiling Clang module DataDetection
+Compiling Clang module Symbols
+[123 / 191]
+Compiling Clang module _Builtin_tgmath
+Compiling Clang module CoreGraphics
+[125 / 191]
+Compiling Clang module CoreAudioTypes
+Compiling Clang module _Builtin_stdatomic
+Compiling Clang module Accessibility
+[128 / 191]
+Compiling Clang module CoreText
+Compiling Swift module _Testing_Foundation
+[130 / 191]
+Compiling Clang module CUPS
+Compiling Clang module CoreAudio
+[132 / 191]
+Compiling Clang module ImageIO
+Compiling Clang module CoreData
+[134 / 191]
+Compile
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    
+
+Emitting module for TorahInspectorCoreTests
+Discovering Swift tasks after 'Emitting module for TorahInspectorCoreTests'
+Compiling Clang module ApplicationServices
+[136 / 191] TorahInspectorCoreTests-product
+Unblock downstream dependents of TorahInspectorCoreTests (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name TorahInspectorCoreTests -Onone @/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -plugin-path /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -Isystem /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/PackageFrameworks -F /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -F /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -emit-localized-strings -emit-localized-strings-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64 -c -j3 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKStatCaches.noindex/macosx27.0-26A425-80c5bbf1d171475443272936d42f90a3913bb46a471500b83ecd9898560a2d87.sdkstatcache -output-file-map /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests-OutputFileMap.json -save-temps -color-diagnostics -explicit-module-build -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -sdk-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name related_read_kit_source -emit-const-values -const-gather-protocols-list /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests_const_extract_protocols.json -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/include -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/DerivedSources/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /Users/runner/work/anytype-swift/anytype-swift/build -experimental-emit-module-separately -disable-cmo
+
+Compiling Clang module Metal
+[138 / 191] TorahInspectorCoreTests-product
+Copy TorahInspectorCoreTests.swiftmodule (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests.swiftmodule /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCoreTests.swiftmodule/arm64-apple-macos.swiftmodule
+
+Copy TorahInspectorCoreTests.swiftdoc (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests.swiftdoc /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCoreTests.swiftmodule/arm64-apple-macos.swiftdoc
+
+Copy TorahInspectorCoreTests.abi.json (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests.abi.json /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCoreTests.swiftmodule/arm64-apple-macos.abi.json
+
+Copy TorahInspectorCoreTests.swiftsourceinfo (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests.swiftsourceinfo /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCoreTests.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+Compiling Clang module os
+Compiling Clang module _Builtin_intrinsics
+Compiling Clang module OSLog
+[145 / 191]
+Compiling Clang module OpenGL
+Compiling Clang module simd
+[147 / 191]
+Compiling Clang module CoreVideo
+Compiling Clang module Spatial
+[149 / 191]
+Compiling Clang module CoreImage
+[150 / 191]
+Compiling Clang module QuartzCore
+[151 / 191]
+Compiling Clang module CoreMedia
+[152 / 191]
+Compile RelatedDocumentsAuthorityTests.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile RelatedDocumentsAuthorityTests.swift
+
+Compile RelatedDocumentsRefreshTests.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile RelatedDocumentsRefreshTests.swift
+
+Compiling RelatedDocumentsAuthorityTests.swift, RelatedDocumentsRefreshTests.swift
+[153 / 191]
+Discovering Swift tasks after 'Compiling RelatedDocumentsAuthorityTests.swift, RelatedDocumentsRefreshTests.swift'
+Compiling Clang module SwiftUICore
+[154 / 191] TorahInspectorCoreTests-product
+Compiling Clang module AppKit
+Compiling Clang module SwiftUI
+Compile test_entry_point.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile test_entry_point.swift
+
+Compile DocumentConsumerCancellationTests.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile DocumentConsumerCancellationTests.swift
+
+Compiling test_entry_point.swift, DocumentConsumerCancellationTests.swift
+[157 / 191] TorahInspectorUI
+Discovering Swift tasks after 'Compiling test_entry_point.swift, DocumentConsumerCancellationTests.swift'
+Compile
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    
+
+Emitting module for TorahInspectorUI
+[158 / 191] TorahInspectorUI
+Discovering Swift tasks after 'Emitting module for TorahInspectorUI'
+Compile TorahInspectorCoreTests.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile TorahInspectorCoreTests.swift
+
+Compiling TorahInspectorCoreTests.swift
+[159 / 191] TorahInspectorUI
+Unblock downstream dependents of TorahInspectorUI (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name TorahInspectorUI -Onone @/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_AVAILABLE -DXcode -plugin-path /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -Isystem /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/PackageFrameworks -F /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -F /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -emit-localized-strings -emit-localized-strings-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64 -c -j3 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKStatCaches.noindex/macosx27.0-26A425-80c5bbf1d171475443272936d42f90a3913bb46a471500b83ecd9898560a2d87.sdkstatcache -output-file-map /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI-OutputFileMap.json -save-temps -color-diagnostics -explicit-module-build -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -sdk-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name related_read_kit_source -emit-const-values -const-gather-protocols-list /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI_const_extract_protocols.json -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/include -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/DerivedSources/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI-Swift.h -working-directory /Users/runner/work/anytype-swift/anytype-swift/build -experimental-emit-module-separately -disable-cmo
+
+Discovering Swift tasks after 'Compiling TorahInspectorCoreTests.swift'
+Compile TorahInspectorSheetPresenter.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile TorahInspectorSheetPresenter.swift
+
+Compile TorahInspectorView.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile TorahInspectorView.swift
+
+Compile TorahPanelLoadState.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile TorahPanelLoadState.swift
+
+Compile TorahPlatformSupport.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile TorahPlatformSupport.swift
+
+Compiling TorahInspectorSheetPresenter.swift, TorahInspectorView.swift, TorahPanelLoadState.swift, TorahPlatformSupport.swift
+[160 / 191] TorahInspectorUI
+Merge Objective-C generated interface headers
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-swiftHeaderTool -arch arm64 /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI-Swift.h -o /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/GeneratedModuleMaps/TorahInspectorUI-Swift.h
+
+Copy TorahInspectorUI.swiftmodule (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI.swiftmodule /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUI.swiftmodule/arm64-apple-macos.swiftmodule
+
+Copy TorahInspectorUI.swiftdoc (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI.swiftdoc /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUI.swiftmodule/arm64-apple-macos.swiftdoc
+
+Discovering Swift tasks after 'Compiling TorahInspectorSheetPresenter.swift, TorahInspectorView.swift, TorahPanelLoadState.swift, TorahPlatformSupport.swift'
+Copy TorahInspectorUI.abi.json (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI.abi.json /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUI.swiftmodule/arm64-apple-macos.abi.json
+
+Copy TorahInspectorUI.swiftsourceinfo (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI.swiftsourceinfo /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUI.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+Compile resource_bundle_accessor.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile resource_bundle_accessor.swift
+
+Compile TorahInspectorAppearance.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile TorahInspectorAppearance.swift
+
+Compile TorahInspectorHostActions.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile TorahInspectorHostActions.swift
+
+Compile TorahInspectorPresentation.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile TorahInspectorPresentation.swift
+
+Compile TorahInspectorRoute.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile TorahInspectorRoute.swift
+
+Compiling resource_bundle_accessor.swift, TorahInspectorAppearance.swift, TorahInspectorHostActions.swift, TorahInspectorPresentation.swift, TorahInspectorRoute.swift
+[166 / 191] TorahInspectorUI
+Compile TorahInspectorCoreTests (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-Swift-Compilation -- /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name TorahInspectorCoreTests -Onone @/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -plugin-path /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -Isystem /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/PackageFrameworks -F /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -F /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -emit-localized-strings -emit-localized-strings-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64 -c -j3 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKStatCaches.noindex/macosx27.0-26A425-80c5bbf1d171475443272936d42f90a3913bb46a471500b83ecd9898560a2d87.sdkstatcache -output-file-map /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests-OutputFileMap.json -save-temps -color-diagnostics -explicit-module-build -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -sdk-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name related_read_kit_source -emit-const-values -const-gather-protocols-list /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests_const_extract_protocols.json -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/include -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/DerivedSources/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /Users/runner/work/anytype-swift/anytype-swift/build -experimental-emit-module-separately -disable-cmo
+
+Discovering Swift tasks after 'Compiling resource_bundle_accessor.swift, TorahInspectorAppearance.swift, TorahInspectorHostActions.swift, TorahInspectorPresentation.swift, TorahInspectorRoute.swift'
+Compile TorahReaderSessionState.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile TorahReaderSessionState.swift
+
+Compile TorahSegmentDetailView.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile TorahSegmentDetailView.swift
+
+Compile TorahSourceReaderView.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile TorahSourceReaderView.swift
+
+Compile TorahStrings.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile TorahStrings.swift
+
+Compiling TorahReaderSessionState.swift, TorahSegmentDetailView.swift, TorahSourceReaderView.swift, TorahStrings.swift
+[168 / 191] TorahInspectorUITests-product
+Discovering Swift tasks after 'Compiling TorahReaderSessionState.swift, TorahSegmentDetailView.swift, TorahSourceReaderView.swift, TorahStrings.swift'
+Compile TorahInspectorUI (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-Swift-Compilation -- /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name TorahInspectorUI -Onone @/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_AVAILABLE -DXcode -plugin-path /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -Isystem /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/PackageFrameworks -F /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -F /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -emit-localized-strings -emit-localized-strings-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64 -c -j3 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKStatCaches.noindex/macosx27.0-26A425-80c5bbf1d171475443272936d42f90a3913bb46a471500b83ecd9898560a2d87.sdkstatcache -output-file-map /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI-OutputFileMap.json -save-temps -color-diagnostics -explicit-module-build -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -sdk-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name related_read_kit_source -emit-const-values -const-gather-protocols-list /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI_const_extract_protocols.json -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/include -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/DerivedSources/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI-Swift.h -working-directory /Users/runner/work/anytype-swift/anytype-swift/build -experimental-emit-module-separately -disable-cmo
+
+Link TorahInspectorUI.o (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos14.0 -r -isysroot /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -F/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/EagerLinkingTBDs/Debug -F/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/PackageFrameworks -F/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -iframework /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -filelist /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI.LinkFileList -nostdlib -Xlinker -object_path_lto -Xlinker /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI_lto.o -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-t.build/Objects-normal/arm64/TorahInspectorUI.swiftmodule -o /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUI.o
+
+[171 / 191] TorahInspectorUITests-product
+Process product packaging
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    
+    Entitlements:
+    
+    {
+    "com.apple.security.get-task-allow" = 1;
+}
+    
+    builtin-productPackagingUtility -entitlements -format xml -o /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/TorahInspectorUITests.xctest.xcent
+
+Generate DER entitlements
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    /usr/bin/derq query -f xml -i /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/TorahInspectorUITests.xctest.xcent -o /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/TorahInspectorUITests.xctest.xcent.der --raw
+
+Create static library libTorahInspectorUI.a (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/libtool -static -arch_only arm64 -D -syslibroot /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -L/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -L/Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -filelist /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-product-p.build/Objects-normal/arm64/TorahInspectorUI.LinkFileList -no_warning_for_no_symbols -dependency_info /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUI-product-p.build/Objects-normal/arm64/TorahInspectorUI_libtool_dependency_info.dat -o /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/libTorahInspectorUI.a
+
+Generate entry point for TorahInspectorUITests
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-generateTestEntryPoint --output /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/DerivedSources/test_entry_point.swift
+
+Copy TorahInspectorKit_TorahInspectorUI.bundle
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorKit_TorahInspectorUI.bundle /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUITests.xctest/Contents/Resources
+
+Planning Swift module TorahInspectorUITests (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftDriver -- /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name TorahInspectorUITests -Onone @/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -plugin-path /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -Isystem /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/PackageFrameworks -F /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -F /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -emit-localized-strings -emit-localized-strings-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64 -c -j3 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKStatCaches.noindex/macosx27.0-26A425-80c5bbf1d171475443272936d42f90a3913bb46a471500b83ecd9898560a2d87.sdkstatcache -output-file-map /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests-OutputFileMap.json -save-temps -color-diagnostics -explicit-module-build -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -sdk-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name related_read_kit_source -emit-const-values -const-gather-protocols-list /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests_const_extract_protocols.json -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/include -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/DerivedSources/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /Users/runner/work/anytype-swift/anytype-swift/build -experimental-emit-module-separately -disable-cmo
+
+[177 / 192] TorahInspectorUITests-product
+Process empty-TorahInspectorUITests.plist
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-infoPlistUtility /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/empty-TorahInspectorUITests.plist -producttype com.apple.product-type.bundle.unit-test -expandbuildsettings -platform macosx -scanforprivacyfile /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUITests.xctest/Contents/Resources/TorahInspectorKit_TorahInspectorUI.bundle -o /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUITests.xctest/Contents/Info.plist
+
+Compiling Swift module _Testing_CoreGraphics
+[179 / 198]
+Compiling Swift module _Testing_CoreTransferable
+Link TorahInspectorCoreTests (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -Xlinker -reproducible -target arm64-apple-macos14.0 -Xlinker -bundle -sdk /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -Xlinker -no_warn_duplicate_libraries -L/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/EagerLinkingTBDs/Debug -L/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -L/Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/EagerLinkingTBDs/Debug -F/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/PackageFrameworks -F/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -Fsystem /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks @/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests.LinkFileList -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @loader_path -Xlinker -rpath -Xlinker /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/PackageFrameworks -Xlinker -rpath -Xlinker @loader_path/../../.. -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -rpath -Xlinker @loader_path/../Frameworks -Xlinker -rpath -Xlinker /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.266.1.mv804M/Metal.xctoolchain/usr/lib/swift-6.2/macosx -Xlinker -rpath -Xlinker /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-6.2/macosx -Xlinker -dead_strip -Xlinker -object_path_lto -Xlinker /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests_lto.o -Xclang-linker -rdynamic -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests_dependency_info.dat -link-objc-runtime -L/Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/Objects-normal/arm64/TorahInspectorCoreTests.swiftmodule -Xlinker -needed_framework -Xlinker XCTest -framework XCTest -Xlinker -needed-lXCTestSwiftSupport -lXCTestSwiftSupport -Xlinker -no_adhoc_codesign -o /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCoreTests.xctest/Contents/MacOS/TorahInspectorCoreTests -no-stdlib-rpath
+
+[181 / 198] TorahInspectorUITests-product
+Compile
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    
+
+Emitting module for TorahInspectorUITests
+[182 / 198] TorahInspectorUITests-product
+Discovering Swift tasks after 'Emitting module for TorahInspectorUITests'
+Compile test_entry_point.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile test_entry_point.swift
+
+Compiling test_entry_point.swift
+[183 / 198] TorahInspectorUITests-product
+Unblock downstream dependents of TorahInspectorUITests (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name TorahInspectorUITests -Onone @/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -plugin-path /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -Isystem /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/PackageFrameworks -F /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -F /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -emit-localized-strings -emit-localized-strings-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64 -c -j3 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKStatCaches.noindex/macosx27.0-26A425-80c5bbf1d171475443272936d42f90a3913bb46a471500b83ecd9898560a2d87.sdkstatcache -output-file-map /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests-OutputFileMap.json -save-temps -color-diagnostics -explicit-module-build -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -sdk-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name related_read_kit_source -emit-const-values -const-gather-protocols-list /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests_const_extract_protocols.json -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/include -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/DerivedSources/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /Users/runner/work/anytype-swift/anytype-swift/build -experimental-emit-module-separately -disable-cmo
+
+Discovering Swift tasks after 'Compiling test_entry_point.swift'
+Compile TorahRelatedDocumentsAccessStateTests.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile TorahRelatedDocumentsAccessStateTests.swift
+
+Compiling TorahRelatedDocumentsAccessStateTests.swift
+[185 / 198] TorahInspectorUITests-product
+Discovering Swift tasks after 'Compiling TorahRelatedDocumentsAccessStateTests.swift'
+Copy TorahInspectorUITests.swiftmodule (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests.swiftmodule /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUITests.swiftmodule/arm64-apple-macos.swiftmodule
+
+Copy TorahInspectorUITests.swiftdoc (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests.swiftdoc /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUITests.swiftmodule/arm64-apple-macos.swiftdoc
+
+Copy TorahInspectorUITests.abi.json (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests.abi.json /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUITests.swiftmodule/arm64-apple-macos.abi.json
+
+Copy TorahInspectorUITests.swiftsourceinfo (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests.swiftsourceinfo /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUITests.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+Copy Swift standard libraries into TorahInspectorCoreTests.xctest
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCoreTests.xctest/Contents/MacOS/TorahInspectorCoreTests --scan-folder /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCoreTests.xctest/Contents/Frameworks --scan-folder /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCoreTests.xctest/Contents/PlugIns --scan-folder /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCoreTests.xctest/Contents/Library/SystemExtensions --scan-folder /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCoreTests.xctest/Contents/Extensions --platform macosx --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.266.1.mv804M/Metal.xctoolchain --toolchain /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCoreTests.xctest/Contents/Frameworks --strip-bitcode --scan-executable /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os --back-deploy-swift-span
+
+[189 / 198]
+Sign TorahInspectorCoreTests.xctest
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    
+    Signing Identity:     "-"
+    
+    /usr/bin/codesign --force --sign - --entitlements /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorCoreTests-p.build/TorahInspectorCoreTests.xctest.xcent --timestamp\=none --generate-entitlement-der /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCoreTests.xctest
+
+[190 / 198] TorahInspectorCoreTests-product
+Register execution policy exception for TorahInspectorCoreTests.xctest
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-RegisterExecutionPolicyException /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCoreTests.xctest
+
+Touch TorahInspectorCoreTests.xctest
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    /usr/bin/touch -c /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorCoreTests.xctest
+
+[192 / 198]
+Compile TorahInspectorHostActionsTests.swift
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-SwiftPerFileCompile TorahInspectorHostActionsTests.swift
+
+Compiling TorahInspectorHostActionsTests.swift
+[192 / 198] TorahInspectorUITests-product
+/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/Tests/TorahInspectorUITests/TorahInspectorHostActionsTests.swift:94:21: [1;33mwarning: [1;39m'#expect(_:_:)' will always fail here; use 'Bool(false)' to silence this warning (from macro 'expect')[0;0m
+ [0;36m92 |[0;0m             #expect(true)
+ [0;36m93 |[0;0m         case .relationships, .segmentRelationships:
+ [0;36m94 |[0;0m             #expect([4;39mfalse[0;0m)
+    [0;36m|[0;0m                     `- [1;33mwarning: [1;39m'#expect(_:_:)' will always fail here; use 'Bool(false)' to silence this warning (from macro 'expect')[0;0m
+ [0;36m95 |[0;0m         }
+ [0;36m96 |[0;0m         switch modeRelationships {
+ [0;36m97 |[0;0m         case .relationships:
+ [0;36m98 |[0;0m             #expect([4;39mtrue[0;0m)
+    [0;36m|[0;0m                     `- [1;39mnote: [1;39m'#expect(_:_:)' will always pass here; use 'Bool(true)' to silence this warning (from macro 'expect')[0;0m
+ [0;36m99 |[0;0m         case .sourceReader, .segmentRelationships:
+[0;36m100 |[0;0m             #expect(false)
+
+/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/Tests/TorahInspectorUITests/TorahInspectorHostActionsTests.swift:100:21: [1;33mwarning: [1;39m'#expect(_:_:)' will always fail here; use 'Bool(false)' to silence this warning (from macro 'expect')[0;0m
+ [0;36m98 |[0;0m             #expect(true)
+ [0;36m99 |[0;0m         case .sourceReader, .segmentRelationships:
+[0;36m100 |[0;0m             #expect([4;39mfalse[0;0m)
+    [0;36m|[0;0m                     `- [1;33mwarning: [1;39m'#expect(_:_:)' will always fail here; use 'Bool(false)' to silence this warning (from macro 'expect')[0;0m
+[0;36m101 |[0;0m         }
+[0;36m102 |[0;0m     }
+
+/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/Tests/TorahInspectorUITests/TorahInspectorHostActionsTests.swift:90:16: [1;33mwarning: [1;39mswitch condition evaluates to a constant[0;0m
+ [0;36m88 |[0;0m         let modeDefault = TorahInspectorEntryMode.sourceReader
+ [0;36m89 |[0;0m         let modeRelationships = TorahInspectorEntryMode.relationships
+ [0;36m90 |[0;0m         switch modeDefault {
+    [0;36m|[0;0m                `- [1;33mwarning: [1;39mswitch condition evaluates to a constant[0;0m
+ [0;36m91 |[0;0m         case .sourceReader:
+ [0;36m92 |[0;0m             #expect(true)
+ [0;36m93 |[0;0m         case .relationships, .segmentRelationships:
+ [0;36m94 |[0;0m             [4;39m#expect(false)[0;0m
+    [0;36m|[0;0m             `- [1;39mnote: [1;39min expansion of macro 'expect' here[0;0m
+[0;36m    +--- [0;0mmacro expansion #expect [0;36m---------------------------------------[0;0m
+[0;36m    |[0;0m[0;36m1 |[0;0m Testing.__checkValue(false,expression: .__fromSyntaxNode("false"),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+[0;36m    |[0;0m  [0;36m|[0;0m                      `- [1;39mnote: [1;39mwill never be executed[0;0m
+[0;36m    +----------------------------[0;0m[0;36m---------------------------------------[0;0m
+ [0;36m95 |[0;0m         }
+ [0;36m96 |[0;0m         switch modeRelationships {
+
+/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/Tests/TorahInspectorUITests/TorahInspectorHostActionsTests.swift:96:16: [1;33mwarning: [1;39mswitch condition evaluates to a constant[0;0m
+ [0;36m94 |[0;0m             #expect(false)
+ [0;36m95 |[0;0m         }
+ [0;36m96 |[0;0m         switch modeRelationships {
+    [0;36m|[0;0m                `- [1;33mwarning: [1;39mswitch condition evaluates to a constant[0;0m
+ [0;36m97 |[0;0m         case .relationships:
+ [0;36m98 |[0;0m             #expect(true)
+ [0;36m99 |[0;0m         case .sourceReader, .segmentRelationships:
+[0;36m100 |[0;0m             [4;39m#expect(false)[0;0m
+    [0;36m|[0;0m             `- [1;39mnote: [1;39min expansion of macro 'expect' here[0;0m
+[0;36m    +--- [0;0mmacro expansion #expect [0;36m---------------------------------------[0;0m
+[0;36m    |[0;0m[0;36m1 |[0;0m Testing.__checkValue(false,expression: .__fromSyntaxNode("false"),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+[0;36m    |[0;0m  [0;36m|[0;0m                      `- [1;39mnote: [1;39mwill never be executed[0;0m
+[0;36m    +----------------------------[0;0m[0;36m---------------------------------------[0;0m
+[0;36m101 |[0;0m         }
+[0;36m102 |[0;0m     }
+Discovering Swift tasks after 'Compiling TorahInspectorHostActionsTests.swift'
+Compile TorahInspectorUITests (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build
+    builtin-Swift-Compilation -- /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name TorahInspectorUITests -Onone @/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -plugin-path /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -Isystem /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/PackageFrameworks -F /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -F /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -emit-localized-strings -emit-localized-strings-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64 -c -j3 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKStatCaches.noindex/macosx27.0-26A425-80c5bbf1d171475443272936d42f90a3913bb46a471500b83ecd9898560a2d87.sdkstatcache -output-file-map /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests-OutputFileMap.json -save-temps -color-diagnostics -explicit-module-build -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex -sdk-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name related_read_kit_source -emit-const-values -const-gather-protocols-list /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests_const_extract_protocols.json -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/include -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/DerivedSources/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /Users/runner/work/anytype-swift/anytype-swift/build -experimental-emit-module-separately -disable-cmo
+
+Link TorahInspectorUITests (arm64)
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -Xlinker -reproducible -target arm64-apple-macos14.0 -Xlinker -bundle -sdk /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -Xlinker -no_warn_duplicate_libraries -L/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/EagerLinkingTBDs/Debug -L/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -L/Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/EagerLinkingTBDs/Debug -F/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/PackageFrameworks -F/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug -Fsystem /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks @/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests.LinkFileList -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @loader_path -Xlinker -rpath -Xlinker /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/PackageFrameworks -Xlinker -rpath -Xlinker @loader_path/../../.. -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -rpath -Xlinker @loader_path/../Frameworks -Xlinker -rpath -Xlinker /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.266.1.mv804M/Metal.xctoolchain/usr/lib/swift-6.2/macosx -Xlinker -rpath -Xlinker /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-6.2/macosx -Xlinker -dead_strip -Xlinker -object_path_lto -Xlinker /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests_lto.o -Xclang-linker -rdynamic -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests_dependency_info.dat -link-objc-runtime -L/Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/Objects-normal/arm64/TorahInspectorUITests.swiftmodule -Xlinker -needed_framework -Xlinker XCTest -framework XCTest -Xlinker -needed-lXCTestSwiftSupport -lXCTestSwiftSupport -Xlinker -no_adhoc_codesign -o /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUITests.xctest/Contents/MacOS/TorahInspectorUITests -no-stdlib-rpath
+
+[194 / 198] TorahInspectorUITests-product
+Copy Swift standard libraries into TorahInspectorUITests.xctest
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUITests.xctest/Contents/MacOS/TorahInspectorUITests --scan-folder /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUITests.xctest/Contents/Frameworks --scan-folder /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUITests.xctest/Contents/PlugIns --scan-folder /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUITests.xctest/Contents/Library/SystemExtensions --scan-folder /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUITests.xctest/Contents/Extensions --platform macosx --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.266.1.mv804M/Metal.xctoolchain --toolchain /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUITests.xctest/Contents/Frameworks --strip-bitcode --scan-executable /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os --back-deploy-swift-span
+
+Sign TorahInspectorUITests.xctest
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    
+    Signing Identity:     "-"
+    
+    /usr/bin/codesign --force --sign - --entitlements /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/TorahInspectorKit.build/Debug/TorahInspectorUITests-p.build/TorahInspectorUITests.xctest.xcent --timestamp\=none --generate-entitlement-der /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUITests.xctest
+
+[196 / 198] TorahInspectorUITests-product
+Register execution policy exception for TorahInspectorUITests.xctest
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    builtin-RegisterExecutionPolicyException /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUITests.xctest
+
+Touch TorahInspectorUITests.xctest
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source
+    /usr/bin/touch -c /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Products/Debug/TorahInspectorUITests.xctest
+
+Prune stale explicit modules at /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/SDKExplicitPrecompiledModules
+Prune stale explicit modules at /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/ExplicitPrecompiledModules
+Prune stale explicit modules at /Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source/.build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules
+Build complete! (46.78 sec)
+warning: No matching test cases were run

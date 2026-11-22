@@ -18,10 +18,10 @@
         "testMissingMethodOrMissingNamedCaseIsRejected",
         "testSequentialTargetsRequireIndependentCompleteClosure",
         "testSourceProfilesRequireTheirSeparateExactCounts",
-        "testTopLevelSelectionUsesMethodsAndRequiresNoInventedSuite",
         "testUnselectedExecutionOrForeignSourceCannotQualify"
       ],
-      "outcome": "14_PASS_1_ERROR"
+      "outcome": "14_PASS_1_ERROR",
+      "priorPassSupersededByAffectedSelectorCheck": "testTopLevelSelectionUsesMethodsAndRequiresNoInventedSuite"
     },
     {
       "log": "parser-controls-attempt2.log",
@@ -31,16 +31,25 @@
         "testEmptySimpleTerminalRequiresItsExactOriginalNamedLog"
       ],
       "outcome": "2_PASS"
+    },
+    {
+      "log": "parser-controls-attempt3.log",
+      "sha256": "223d0e4519eb3b77465bb50bbfc6a114595ee124716a780eb872b16c1a0a5a6c",
+      "passedMethods": [
+        "testTopLevelSelectionUsesMethodsAndRequiresNoInventedSuite"
+      ],
+      "outcome": "1_PASS_SELECTOR_CORRECTION"
     }
   ],
   "sourceSHA256": {
-    "Tools/RelatedReadAuthority/run_packages.py": "56d211ff337cdd359a556dadde52ae796d8730945a236c389bb8767169404af3",
-    "Tools/RelatedReadAuthority/test_packages.py": "b4005a9759f81fdbb7f64898a5d0b10566fa0f99f831c6dfba3950a8ae70c4a7",
+    "Tools/RelatedReadAuthority/run_packages.py": "83dfb45530a1439fe07b8ef54cbbccfb06769d175dfa176a2b1ddc586477ec6b",
+    "Tools/RelatedReadAuthority/test_packages.py": "1419d12a721e3e398cc57e5e9462f9d03981925f40586822c878c4512f9cb888",
     "Tools/RelatedReadAuthority/admit_observed_kit.py": "db98cebb8ca84a3bba4804afaf8c9dd36bb2ede259dcdd18b83de6f918760384"
   },
   "preservedControls": {
     "host": 1,
     "ownedProcess": 5
   },
-  "admissionPortability": "Canonical POSIX inventory paths for Windows read-only requalification; no product source or parser test changes."
+  "admissionPortability": "Canonical POSIX inventory paths for Windows read-only requalification; no product source or parser test changes.",
+  "selectorCorrection": "44970683706 executed zero methods with the word-boundary/punctuation expression; use literal unique selected method names, keeping exact original-result qualification."
 }

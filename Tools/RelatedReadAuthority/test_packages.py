@@ -214,6 +214,7 @@ class RelatedReadPackageControls(unittest.TestCase):
         import re
         pattern = subject.selection_filter(methods)
         self.assertTrue(re.search(pattern, "RefreshTests.refreshOne()/SourceFile.swift:3:6"))
+        self.assertTrue(re.search(pattern, "RefreshTests.refreshOne"))
         self.assertFalse(re.search(pattern, "RefreshTests.SourceFile/unrelated()"))
         self.assertEqual(len(self.qualify(original_stream(methods), methods)), 2)
 

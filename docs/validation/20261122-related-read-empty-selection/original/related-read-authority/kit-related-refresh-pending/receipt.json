@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "status": "FAIL",
+  "profile": "kit-related-refresh-pending",
+  "appSourceCommit": "749edf96e283e759fd7f566e7f9ba26b24289f08",
+  "kitCommit": "511454e49450cb2581ddf77f644146ff3e30dbef",
+  "appBuilds": 0,
+  "simulatorRuns": 0,
+  "nativeACLProof": false,
+  "otherProfilesAcceptedByThisReceipt": false,
+  "buildReuseClaim": "NOT_INFERRED_FROM_SHARED_JOB",
+  "contractSHA256": "33d21a9e29a7a130785c636266792e9ef832a887de2b7ee80756be0d52c48a5b",
+  "sourceSHA256": {
+    "Tests/TorahInspectorCoreTests/RelatedDocumentsRefreshTests.swift": "a2d16ada336855937f9f06850ecac9269d65ca2e7821a0fe74b4cae416812c6f"
+  },
+  "swiftVersion": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "xcodeVersion": "Xcode 27.0\nBuild version 27A266a",
+  "platform": {
+    "system": "Darwin",
+    "architecture": "arm64"
+  },
+  "resolution": {
+    "status": "PROCESS_COMPLETE_TEST_ACCEPTANCE_PENDING",
+    "command": [
+      "swift",
+      "package",
+      "--package-path",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source",
+      "resolve"
+    ],
+    "testAcceptanceInferred": false,
+    "returncode": 0,
+    "ownedGroupQuiescence": {
+      "status": "PASS",
+      "pgid": 42280,
+      "live_members": 0,
+      "observations": 1
+    },
+    "originalCommandSHA256": "46c56c6b9093e519cf2c0e507b5fcc9ff6b9530f7b6e1fe2045cda26659e8b12",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "actualKitCheckout": {
+    "path": "/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source",
+    "commit": "511454e49450cb2581ddf77f644146ff3e30dbef"
+  },
+  "execution": {
+    "status": "PROCESS_COMPLETE_TEST_ACCEPTANCE_PENDING",
+    "command": [
+      "swift",
+      "test",
+      "--verbose",
+      "--package-path",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source",
+      "--jobs",
+      "2",
+      "--force-resolved-versions",
+      "--disable-xctest",
+      "--enable-swift-testing",
+      "--no-parallel",
+      "--filter",
+      "\\binvalidatedLateResultCannotReplaceFreshRelatedDocuments\\(|\\bpreCancelledCachedRelatedDocumentsRequestThrowsWithoutChangingCache\\(|\\bpreCancelledRelatedDocumentsRefreshDoesNotInvalidateCacheOrFetch\\(|\\bpreCancelledUncachedRelatedDocumentsRequestDoesNotStartFetch\\(|\\brefreshedCoverageRetainsExactBlocksAndDropsThemAfterRuntimeFallback\\(",
+      "--event-stream-output-path",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/related-read-authority/kit-related-refresh-pending/original-events.jsonl",
+      "--event-stream-version",
+      "0"
+    ],
+    "testAcceptanceInferred": false,
+    "returncode": 0,
+    "ownedGroupQuiescence": {
+      "status": "PASS",
+      "pgid": 42783,
+      "live_members": 0,
+      "observations": 1
+    },
+    "originalCommandSHA256": "a8e52203d0fa68661b0f422b000aff88b93993fb2d0e944233bf1b03582e9c17",
+    "logSHA256": "0204568652f94a1658b5e4e0a0e3a7380627981e4c381e4f1cd2599a2307dd67"
+  },
+  "error": "ValueError: selected method missing from actual execution"
+}

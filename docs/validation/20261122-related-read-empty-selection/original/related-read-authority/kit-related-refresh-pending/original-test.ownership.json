@@ -1,0 +1,32 @@
+{
+  "status": "PROCESS_COMPLETE_TEST_ACCEPTANCE_PENDING",
+  "command": [
+    "swift",
+    "test",
+    "--verbose",
+    "--package-path",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source",
+    "--jobs",
+    "2",
+    "--force-resolved-versions",
+    "--disable-xctest",
+    "--enable-swift-testing",
+    "--no-parallel",
+    "--filter",
+    "\\binvalidatedLateResultCannotReplaceFreshRelatedDocuments\\(|\\bpreCancelledCachedRelatedDocumentsRequestThrowsWithoutChangingCache\\(|\\bpreCancelledRelatedDocumentsRefreshDoesNotInvalidateCacheOrFetch\\(|\\bpreCancelledUncachedRelatedDocumentsRequestDoesNotStartFetch\\(|\\brefreshedCoverageRetainsExactBlocksAndDropsThemAfterRuntimeFallback\\(",
+    "--event-stream-output-path",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/related-read-authority/kit-related-refresh-pending/original-events.jsonl",
+    "--event-stream-version",
+    "0"
+  ],
+  "testAcceptanceInferred": false,
+  "returncode": 0,
+  "ownedGroupQuiescence": {
+    "status": "PASS",
+    "pgid": 42783,
+    "live_members": 0,
+    "observations": 1
+  },
+  "originalCommandSHA256": "a8e52203d0fa68661b0f422b000aff88b93993fb2d0e944233bf1b03582e9c17",
+  "logSHA256": "0204568652f94a1658b5e4e0a0e3a7380627981e4c381e4f1cd2599a2307dd67"
+}

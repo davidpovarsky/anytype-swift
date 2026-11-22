@@ -186,7 +186,7 @@ def case_identity(value, method):
 def selection_filter(methods):
     """File names are not Swift suites; select the five top-level functions by name."""
     return "|".join(sorted({
-        (r"\b" + re.escape(m.name) + r"\(") if m.top_level
+        re.escape(m.name) if m.top_level
         else re.escape(m.target + "." + m.suite)
         for m in methods
     }))

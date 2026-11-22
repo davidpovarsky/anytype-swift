@@ -1,0 +1,100 @@
+{
+  "status": "PASS_REQUALIFIED_ORIGINAL_TEN_KIT_METHODS",
+  "sourceRunID": 44969141133,
+  "sourceCommit": "f6d565064462d73300e66861c8113dd6e6a085a9",
+  "kitCommit": "511454e49450cb2581ddf77f644146ff3e30dbef",
+  "originalWorkflowConclusion": "failure",
+  "originalReceiptPreserved": true,
+  "originalPostQualificationSourceGuard": "NOT_REACHED",
+  "currentKitGitBlobsMatchOriginalPreExecutionHashes": true,
+  "actualMethods": 10,
+  "actualArgumentCases": 12,
+  "productTestsRerun": 0,
+  "methods": [
+    {
+      "method": "TorahInspectorCoreTests.RelatedDocumentsAuthorityTests/currentAccessFailureEvictsEverySelection",
+      "status": "passed",
+      "actualArguments": [
+        "denied",
+        "invalidated"
+      ],
+      "actualCases": 2
+    },
+    {
+      "method": "TorahInspectorCoreTests.RelatedDocumentsAuthorityTests/retirementRejectsCachedAndNewReadsUntilReactivation",
+      "status": "passed",
+      "actualArguments": [],
+      "actualCases": 1
+    },
+    {
+      "method": "TorahInspectorCoreTests.RelatedDocumentsAuthorityTests/retiredUncooperativeResultCannotReplaceReactivatedOwner",
+      "status": "passed",
+      "actualArguments": [],
+      "actualCases": 1
+    },
+    {
+      "method": "TorahInspectorCoreTests.RelatedDocumentsAuthorityTests/currentDenialFencesAnUncooperativeOtherSelection",
+      "status": "passed",
+      "actualArguments": [],
+      "actualCases": 1
+    },
+    {
+      "method": "TorahInspectorCoreTests.RelatedDocumentsAuthorityTests/lateDenialCannotInvalidateNewOwnerOrAnotherRepository",
+      "status": "passed",
+      "actualArguments": [],
+      "actualCases": 1
+    },
+    {
+      "method": "TorahInspectorCoreTests.RelatedDocumentsAuthorityTests/transientFailureKeepsOtherCachesAndDoesNotSignalAuthorityLoss",
+      "status": "passed",
+      "actualArguments": [],
+      "actualCases": 1
+    },
+    {
+      "method": "TorahInspectorUITests.TorahRelatedDocumentsAccessStateTests/permanentAccessFailureDropsPreviousRows",
+      "status": "passed",
+      "actualArguments": [
+        "denied",
+        "invalidated"
+      ],
+      "actualCases": 2
+    },
+    {
+      "method": "TorahInspectorUITests.TorahRelatedDocumentsAccessStateTests/transientFailureKeepsPreviousRowsWithItsError",
+      "status": "passed",
+      "actualArguments": [],
+      "actualCases": 1
+    },
+    {
+      "method": "TorahInspectorUITests.TorahRelatedDocumentsAccessStateTests/ownerInvalidationClearsRowsAndRejectsLatePublication",
+      "status": "passed",
+      "actualArguments": [],
+      "actualCases": 1
+    },
+    {
+      "method": "TorahInspectorUITests.TorahRelatedDocumentsAccessStateTests/staleDenialCannotClearANewerPanelRequest",
+      "status": "passed",
+      "actualArguments": [],
+      "actualCases": 1
+    }
+  ],
+  "pendingMethods": [
+    "TorahInspectorCoreTests.RelatedDocumentsRefreshTests/preCancelledCachedRelatedDocumentsRequestThrowsWithoutChangingCache",
+    "TorahInspectorCoreTests.RelatedDocumentsRefreshTests/preCancelledUncachedRelatedDocumentsRequestDoesNotStartFetch",
+    "TorahInspectorCoreTests.RelatedDocumentsRefreshTests/preCancelledRelatedDocumentsRefreshDoesNotInvalidateCacheOrFetch",
+    "TorahInspectorCoreTests.RelatedDocumentsRefreshTests/invalidatedLateResultCannotReplaceFreshRelatedDocuments",
+    "TorahInspectorCoreTests.RelatedDocumentsRefreshTests/refreshedCoverageRetainsExactBlocksAndDropsThemAfterRuntimeFallback"
+  ],
+  "pendingMethodsAccepted": false,
+  "originalEventsSHA256": "5dc0702e332ca378851bde0aff88c11df76fff108b99ec97645ac588926621a6",
+  "originalLogSHA256": "b16212dc85381286f14c371ab0f8505ae1eb8c3f5f10ac62daf46c0e5e572933",
+  "originalArtifactSHA256": "24dfdf81711cba9abd3af48c036790db700f725077d933eb083fa21357851969",
+  "consumerSourceCommit": "749edf96e283e759fd7f566e7f9ba26b24289f08",
+  "controls": {
+    "status": "SOURCE_BOUND_CONTROLS_REUSED",
+    "affectedParserControls": 16,
+    "unchangedHostControls": 1,
+    "unchangedProcessControls": 5,
+    "controlsRerun": 0
+  }
+}
