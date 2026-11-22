@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "execution": {
+    "schemaVersion": 1,
+    "args": [
+      "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swift.exe",
+      "test",
+      "--package-path",
+      "C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\h",
+      "--scratch-path",
+      "C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\b",
+      "--configuration",
+      "debug",
+      "--jobs",
+      "4",
+      "--disable-xctest",
+      "--enable-swift-testing",
+      "--filter",
+      "OriginalHeldReadTests",
+      "--xunit-output",
+      "C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\held-read-26.xml",
+      "--verbose"
+    ],
+    "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122",
+    "environment_overrides": {
+      "OTZARIA_HELD_READ_SWIFTPROTOBUF_CHECKOUT": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\omd-protobuf-20261122",
+      "PROTOBUF_NO_PROTOC": "true",
+      "NO_COLOR": "1",
+      "CLICOLOR": "0",
+      "PATH_prepend": "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin"
+    },
+    "parent_pid": 33560,
+    "timeout_s": 900,
+    "runner": {
+      "path": "C:\\Users\\DAVID\\Code\\anytype-original-held-read-20261122\\docs\\pinkha\\torah-integration\\production-held-read-20261122\\controls-null-fixture-continuation\\run-held-read-controls-continuation.py",
+      "bytes": 15658,
+      "sha256": "8c7a4fb6abeba4207afcfe1b6940640c3c02a6512f666509ab09b8957d53cde9"
+    },
+    "inputs": {
+      "path": "C:\\Users\\DAVID\\Code\\anytype-original-held-read-20261122\\docs\\pinkha\\torah-integration\\production-held-read-20261122\\controls-null-fixture-continuation\\INPUTS.json",
+      "bytes": 98327,
+      "sha256": "afdec7917149611b064631589085388d26ff5bdcb2d0d6b24c097b818bf3efea"
+    },
+    "child_pid": 23448,
+    "started_at": "2026-11-22T08:33:04.867615+00:00",
+    "exit_code": 0,
+    "timed_out": false,
+    "owned_timeout_cleanup": null,
+    "duration_s": 95.391,
+    "finished_at": "2026-11-22T08:34:40.219306+00:00",
+    "stdout": {
+      "path": "C:\\Users\\DAVID\\Code\\anytype-original-held-read-20261122\\docs\\pinkha\\torah-integration\\production-held-read-20261122\\controls-null-fixture-continuation\\validation\\windows-first-26-after-null-fixture\\swift-test.stdout",
+      "bytes": 4592,
+      "sha256": "fa55d08a4028c5ba664bbf7d24d45a6eb87bba969553ef5d01adb4ac87ba3394"
+    },
+    "stderr": {
+      "path": "C:\\Users\\DAVID\\Code\\anytype-original-held-read-20261122\\docs\\pinkha\\torah-integration\\production-held-read-20261122\\controls-null-fixture-continuation\\validation\\windows-first-26-after-null-fixture\\swift-test.stderr",
+      "bytes": 77488,
+      "sha256": "92e9baa65f17b22ac15168479b094ee062cb07b0991d5c53b2c759624111e3b0"
+    }
+  },
+  "candidate_sha256": "dcb942bbbdc799989134da1f84256641ac750437749ca67d4412e352a0f0a252",
+  "inputs_sha256": "afdec7917149611b064631589085388d26ff5bdcb2d0d6b24c097b818bf3efea",
+  "source_inputs_unchanged": true,
+  "dependency_unchanged": true,
+  "original_test_methods": [
+    "testFreshBinaryViewAndRootPreservedInsideOriginalReadLineage",
+    "testLegacyFreshDetailsUsesSameStrictActualResponse",
+    "testMalformedRootAndDetailsRefuseConsumer",
+    "testNativeSpaceRequiresExactStringScope",
+    "testNativeTypeKindsCountsAndIdentifiersRefuseConsumer",
+    "testPresentStateKindsAndUnavailableValuesRefuseConsumer",
+    "testLinkedRowsAndFalseStatesPreserveUnqualifiedNativeType",
+    "testOwnerRetiredBeforeReadNeverDispatches",
+    "testAccountChangedBeforeReadNeverDispatches",
+    "testSourceRetiredBeforeReadNeverDispatches",
+    "testDocumentChangedBeforeReadNeverDispatches",
+    "testCancelledBeforeReadNeverDispatches",
+    "testOwnerRetiredDuringRPCRefusesConsumer",
+    "testAccountChangedDuringRPCRefusesConsumer",
+    "testSourceRetiredDuringRPCRefusesConsumer",
+    "testCancelledDuringRPCRefusesConsumer",
+    "testRPCFailurePreservesOriginalErrorAndNeverCallsConsumer",
+    "testCallbackErrorPreservedAfterEffectAndRetirement",
+    "testCallbackValueRetainedWhenItRetiresOwner",
+    "testCallbackValueRetainedWhenItCancelsCurrentTask",
+    "testReturnedValueSurvivesRetirementWithNativeCompletionPending",
+    "testReturnedValueSurvivesCancellationWithNativeCompletionPending",
+    "testDefaultMutationChildRejectedInsideHeldRead",
+    "testNestedExclusiveReadRefusedWithoutDroppingOuterBarrier",
+    "testChangedBasicAccountScopeRefusesRead",
+    "testSecondReadObservesSecondActualResponseWithoutCache"
+  ],
+  "expected_count": 26,
+  "scope": "Portable new adapter controls with genuine generated protobuf/Services values and original Owner/capture/binding. Explicit native RPC, prepared UI/document/DI and Combine/OS storage boundaries; no Apple/native engine/identity/body/COMMIT/ACK qualification.",
+  "binary_evidence_candidates": [
+    "C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\b\\x86_64-unknown-windows-msvc\\debug\\OriginalHeldReadControlsPackageTests.xctest"
+  ],
+  "test_binary": {
+    "path": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\b\\x86_64-unknown-windows-msvc\\debug\\OriginalHeldReadControlsPackageTests.xctest",
+    "bytes": 20249600,
+    "sha256": "03e589cca509acdeb6e9058799901e1b9a288a01e3ef8b4889bbf71b00a6a303",
+    "has_MZ_header": true
+  },
+  "test_binary_archive": {
+    "path": "C:\\Users\\DAVID\\Code\\anytype-original-held-read-20261122\\docs\\pinkha\\torah-integration\\production-held-read-20261122\\controls-null-fixture-continuation\\validation\\windows-first-26-after-null-fixture\\actual-test-binary.zip",
+    "bytes": 5043358,
+    "sha256": "74e60a6c583c6cdfdd4f0fd38c2df52342d76eb416de355259fd876722ac5265"
+  },
+  "binary_evidence_complete": true,
+  "actual_compiler_sources_count": 213,
+  "actual_compiler_sources_archive": {
+    "path": "C:\\Users\\DAVID\\Code\\anytype-original-held-read-20261122\\docs\\pinkha\\torah-integration\\production-held-read-20261122\\controls-null-fixture-continuation\\validation\\windows-first-26-after-null-fixture\\actual-compiler-sources.zip",
+    "bytes": 416078,
+    "sha256": "632ac7eaa4e1156e1c6a30345d1283624de4b45d73576b7d0ec7f23dd9992ecb"
+  },
+  "compiler_source_coverage": {
+    "status": "PASS",
+    "declared_target_swift_count": 115,
+    "covered_target_swift_count": 115,
+    "excluded_manifest": "harness/Package.swift",
+    "missing": [],
+    "byte_mismatches": []
+  },
+  "actual_count": 26,
+  "actual_names": [
+    "testSourceRetiredBeforeReadNeverDispatches",
+    "testCallbackErrorPreservedAfterEffectAndRetirement",
+    "testLinkedRowsAndFalseStatesPreserveUnqualifiedNativeType",
+    "testSecondReadObservesSecondActualResponseWithoutCache",
+    "testNativeSpaceRequiresExactStringScope",
+    "testReturnedValueSurvivesRetirementWithNativeCompletionPending",
+    "testSourceRetiredDuringRPCRefusesConsumer",
+    "testChangedBasicAccountScopeRefusesRead",
+    "testCallbackValueRetainedWhenItCancelsCurrentTask",
+    "testLegacyFreshDetailsUsesSameStrictActualResponse",
+    "testCallbackValueRetainedWhenItRetiresOwner",
+    "testRPCFailurePreservesOriginalErrorAndNeverCallsConsumer",
+    "testDefaultMutationChildRejectedInsideHeldRead",
+    "testNativeTypeKindsCountsAndIdentifiersRefuseConsumer",
+    "testOwnerRetiredBeforeReadNeverDispatches",
+    "testAccountChangedBeforeReadNeverDispatches",
+    "testOwnerRetiredDuringRPCRefusesConsumer",
+    "testFreshBinaryViewAndRootPreservedInsideOriginalReadLineage",
+    "testReturnedValueSurvivesCancellationWithNativeCompletionPending",
+    "testCancelledBeforeReadNeverDispatches",
+    "testNestedExclusiveReadRefusedWithoutDroppingOuterBarrier",
+    "testCancelledDuringRPCRefusesConsumer",
+    "testMalformedRootAndDetailsRefuseConsumer",
+    "testDocumentChangedBeforeReadNeverDispatches",
+    "testAccountChangedDuringRPCRefusesConsumer",
+    "testPresentStateKindsAndUnavailableValuesRefuseConsumer"
+  ],
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "xunit": {
+    "path": "C:\\Users\\DAVID\\Code\\anytype-original-held-read-20261122\\docs\\pinkha\\torah-integration\\production-held-read-20261122\\controls-null-fixture-continuation\\validation\\windows-first-26-after-null-fixture\\swift-testing-26.xml",
+    "bytes": 4020,
+    "sha256": "7778e41fb5f611675039ffcec52259277e27dc15cfa184f3db71b20c6d26580c"
+  },
+  "exact_new_test_names": true
+}

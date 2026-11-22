@@ -1,0 +1,113 @@
+--- first-reviewed-runner
++++ fixture-continuation-runner
+@@ -2,16 +2,19 @@
+ import datetime,hashlib,json,os,re,shutil,subprocess,sys,time,traceback,xml.etree.ElementTree as ET,zipfile
+ 
+ PACKET=Path(__file__).resolve().parent
++SOURCE_PACKET=PACKET.with_name("controls")
++PRIOR_INPUTS_SHA="bf16b93b5ab6badcd405f436258f2b4e40d5069bdf58004f6249fa03adf241ad"
++PRIOR_INDEX_SHA="2eaa54a08ca04cb3b99acc6370326fd719d7784d480de2b5282336dc58329ac4"
+ REPO=PACKET.parents[4]
+ BASE="18ac6d39dfe76b12e5dead9627c831c6a88d073c"
+ PRODUCT="Anytype/Sources/Pinkha/Torah/Annotations/OriginalAnnotationObjectReadback.swift"
+ PRODUCT_SHA="dcb942bbbdc799989134da1f84256641ac750437749ca67d4412e352a0f0a252"
+-INPUTS_SHA="bf16b93b5ab6badcd405f436258f2b4e40d5069bdf58004f6249fa03adf241ad"
++INPUTS_SHA="afdec7917149611b064631589085388d26ff5bdcb2d0d6b24c097b818bf3efea"
+ DEPENDENCY=Path(r"C:\Users\DAVID\AppData\Local\Temp\omd-protobuf-20261122")
+ DEPENDENCY_REV="c6fe6442e6a64250495669325044052e113e990c"
+ SWIFT_BIN=Path(r"C:\Users\DAVID\AppData\Local\Programs\Swift\Toolchains\6.3.3+Asserts\usr\bin")
+ WORK=Path(r"C:\Users\DAVID\AppData\Local\Temp\ohr-20261122")
+-RESULT=PACKET/"validation"/"windows-held-read-26"
++RESULT=PACKET/"validation"/"windows-first-26-after-null-fixture"
+ TIMEOUT_SECONDS=900
+ 
+ def digest(raw):
+@@ -37,12 +40,25 @@
+ def source_snapshot(inputs):
+     rows=[]
+     for row in inputs["sourceInputs"]:
+-        p=PACKET/row["compiled"]
++        p=(PACKET/row["retainedOverride"]) if "retainedOverride" in row else (SOURCE_PACKET/row["compiled"])
+         actual=record(p)
+         assert actual["bytes"]==row["bytes"] and actual["sha256"]==row["sha256"],row["compiled"]
+         rows.append({"relative":row["compiled"],**actual})
+     assert digest((REPO/PRODUCT).read_bytes())==PRODUCT_SHA
+     return rows
++
++def verify_prior_red():
++    index_bytes=(SOURCE_PACKET/"RED_INDEX.json").read_bytes()
++    assert digest(index_bytes)==PRIOR_INDEX_SHA
++    index=json.loads(index_bytes)
++    for row in index["payloads"]:
++        raw=(SOURCE_PACKET/row["path"]).read_bytes()
++        assert len(raw)==row["bytes"] and digest(raw)==row["sha256"],row["path"]
++    assert digest((SOURCE_PACKET/"INPUTS.json").read_bytes())==PRIOR_INPUTS_SHA
++    prior=json.loads((SOURCE_PACKET/"validation/windows-held-read-26/RESULT.json").read_bytes())
++    assert prior["status"]=="FAIL" and prior["execution"]["exit_code"]==1
++    assert prior.get("test_cases_unavailable") is True and prior["binary_evidence_complete"] is False
++    return index
+ 
+ def main():
+     assert not RESULT.exists(),str(RESULT)
+@@ -52,14 +68,33 @@
+     assert git(["rev-parse","HEAD"])==BASE
+     assert digest((PACKET/"INPUTS.json").read_bytes())==INPUTS_SHA
+     inputs=json.loads((PACKET/"INPUTS.json").read_bytes())
++    prior_index=verify_prior_red()
+     before=source_snapshot(inputs)
+     dependency_before=inspect_dependency()
+     write_json(RESULT/"SOURCE_BEFORE.json",before)
+     write_json(RESULT/"DEPENDENCY_BEFORE.json",dependency_before)
+-    assert not WORK.exists(),str(WORK)
+-    WORK.mkdir()
++    assert WORK.is_dir(),str(WORK)
+     harness=WORK/"h"
+-    shutil.copytree(PACKET/"harness",harness)
++    assert harness.is_dir() and (WORK/"b").is_dir()
++    prior_inputs=json.loads((SOURCE_PACKET/"INPUTS.json").read_bytes())
++    old_copies=[]
++    for row in prior_inputs["sourceInputs"]:
++        relative=Path(row["compiled"]).relative_to("harness")
++        actual=record(harness/relative)
++        assert actual["sha256"]==row["sha256"],str(relative)
++        old_copies.append({"relative":relative.as_posix(),**actual})
++    module_dir=WORK/"b"/"x86_64-unknown-windows-msvc"/"debug"/"Modules"
++    cached_modules=[record(p) for p in sorted(module_dir.glob("*.swiftmodule")) if p.is_file()]
++    write_json(RESULT/"CACHE_REUSE_BEFORE.json",{
++        "frozen_first_red_index_sha256":PRIOR_INDEX_SHA,
++        "verified_prior_copies":old_copies,"existing_modules":cached_modules,
++        "only_input_replaced":"tests/HeldReadTests.swift",
++        "prior_test_cases_executed":0
++    })
++    new_test=(PACKET/"HeldReadTests.swift").read_bytes()
++    replacement=next(row for row in inputs["sourceInputs"] if row.get("retainedOverride")=="HeldReadTests.swift")
++    assert digest(new_test)==replacement["sha256"]
++    (harness/"tests/HeldReadTests.swift").write_bytes(new_test)
+     copy_rows=[]
+     for row in inputs["sourceInputs"]:
+         relative=Path(row["compiled"]).relative_to("harness")
+@@ -77,6 +112,7 @@
+     write_json(RESULT/"COMPILER.json",compiler)
+     build=WORK/"b"
+     xunit=WORK/"held-read-26.xml"
++    assert not xunit.exists(),str(xunit)
+     args=[
+         str(SWIFT_BIN/"swift.exe"),"test","--package-path",str(harness),
+         "--scratch-path",str(build),"--configuration","debug","--jobs","4",
+@@ -100,7 +136,7 @@
+         "runner":record(Path(__file__)),"inputs":record(PACKET/"INPUTS.json")
+     }
+     write_json(RESULT/"EXECUTION.json",invocation)
+-    print(json.dumps({"status":"STARTING_ONE_FOCUSED_SUITE","cases":26,"inputs":len(before),"work":str(WORK)}),flush=True)
++    print(json.dumps({"status":"STARTING_FIRST_RUNTIME_ATTEMPT_AFTER_FIXTURE_COMPILE_CORRECTION","cases":26,"inputs":len(before),"work":str(WORK)}),flush=True)
+     stdout_path=RESULT/"swift-test.stdout"
+     stderr_path=RESULT/"swift-test.stderr"
+     timing=time.monotonic()
+@@ -133,6 +169,7 @@
+     write_json(RESULT/"DEPENDENCY_AFTER.json",dependency_after)
+     assert before==after
+     assert dependency_before==dependency_after
++    verify_prior_red()
+     result={
+         "schemaVersion":1,"status":"FAIL","execution":invocation,
+         "candidate_sha256":PRODUCT_SHA,"inputs_sha256":INPUTS_SHA,

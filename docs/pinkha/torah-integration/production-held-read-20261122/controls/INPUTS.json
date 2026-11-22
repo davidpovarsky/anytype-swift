@@ -1,0 +1,1689 @@
+{
+  "schemaVersion": 1,
+  "status": "SOURCE_CLOSURE_FROZEN_NOT_COMPILED",
+  "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+  "productSHA256": "dcb942bbbdc799989134da1f84256641ac750437749ca67d4412e352a0f0a252",
+  "generatedRoots": [
+    "Anytype_Rpc",
+    "Anytype_Rpc.Object",
+    "Anytype_Rpc.Object.Show",
+    "Anytype_Model_ObjectView",
+    "Anytype_Model_Account",
+    "Anytype_Rpc.Account",
+    "Anytype_Rpc.Account.Config"
+  ],
+  "generatedFiles": 74,
+  "generatedFilesBytes": 338116,
+  "generatedEdges": {
+    "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Object.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Object.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Account.Config.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Account.Config.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Account.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Object.Show.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Object.Show.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Object.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.BlockParticipant.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.DetailsSet.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.HistorySize.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_RelationLink.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_SmartBlockType.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.Config.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.Info.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.Status.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Account.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Account.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.BlockParticipant.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.BlockParticipant.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.Info.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.Info.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.HistorySize.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.HistorySize.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.DataviewRestrictions.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.ObjectRestriction.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_RelationLink.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_RelationFormat.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_RelationLink.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_SmartBlockType.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_SmartBlockType.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.DetailsSet.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.DetailsSet.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.Status.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.Status.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.StatusType.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Align.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Bookmark.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Chat.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Div.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.FeaturedRelations.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Icon.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Latex.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Layout.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Relation.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Smartblock.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Table.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.TableColumn.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.TableOfContents.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.TableRow.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Widget.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.OneOf_Content.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Restrictions.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.VerticalAlign.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.DataviewRestrictions.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.DataviewRestriction.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.DataviewRestrictions.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.DataSource.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.Option.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.Scope.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_RelationFormat.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.StatusType.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.StatusType.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.ObjectRestriction.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.ObjectRestriction.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.GroupOrder.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.ObjectOrder.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.View.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_RelationLink.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.Config.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.Config.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Smartblock.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Smartblock.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.DataSource.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.DataSource.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_RelationFormat.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_RelationFormat.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Div.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Div.Style.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Div.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.ObjectOrder.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.ObjectOrder.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.DataviewRestriction.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.DataviewRestriction.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.Scope.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.Scope.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Table.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Table.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Chat.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Chat.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Relation.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Relation.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.TableOfContents.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.TableOfContents.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.CardStyle.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.Description.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.IconSize.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.Style.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.Option.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.Option.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.TableColumn.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.TableColumn.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.VerticalAlign.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.VerticalAlign.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Div.Style.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Div.Style.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Div.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Widget.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Widget.Layout.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Widget.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.OneOf_Content.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Bookmark.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Chat.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Div.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.FeaturedRelations.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Icon.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Latex.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Layout.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Relation.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Smartblock.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Table.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.TableColumn.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.TableOfContents.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.TableRow.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Widget.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Align.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Align.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Bookmark.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Bookmark.State.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Bookmark.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_LinkPreview.TypeEnum.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.IconSize.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.IconSize.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.CardStyle.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.CardStyle.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Widget.Layout.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Widget.Layout.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Widget.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Restrictions.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Restrictions.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Icon.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Icon.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_LinkPreview.TypeEnum.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_LinkPreview.TypeEnum.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_LinkPreview.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.State.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.Style.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.TypeEnum.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.GroupOrder.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.GroupOrder.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.ViewGroup.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Layout.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Layout.Style.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Layout.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Latex.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Latex.Processor.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Latex.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.View.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.Filter.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.Relation.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.Sort.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.View.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.TableRow.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.TableRow.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.FeaturedRelations.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.FeaturedRelations.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.Sort.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.Sort.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_RelationFormat.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.Marks.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.Style.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.TypeEnum.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.TypeEnum.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.ViewGroup.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.ViewGroup.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.Description.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.Description.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Latex.Processor.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Latex.Processor.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Latex.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.Style.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.Style.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Bookmark.State.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Bookmark.State.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Bookmark.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.Filter.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.Filter.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_RelationFormat.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.Style.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.Style.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Layout.Style.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Layout.Style.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Layout.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.Relation.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Align.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.Relation.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.Style.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.Style.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_LinkPreview.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_LinkPreview.TypeEnum.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_LinkPreview.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.Marks.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.Mark.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.Marks.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.State.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.State.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.Mark.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.Mark.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.swift",
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Range.swift"
+    ],
+    "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Range.swift": [
+      "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Range.swift"
+    ]
+  },
+  "sourceInputs": [
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Account.Config.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "583112525b3936d4f78ffd4da84b884b24dcab81",
+      "sourceBytes": 4935,
+      "sourceSHA256": "d655292664a7c6cf1065cefa557c8ab9ad4951d71be47f0d5e6ed63338ec1386",
+      "compiled": "harness/proto/Anytype_Rpc.Account.Config.swift",
+      "bytes": 4935,
+      "sha256": "d655292664a7c6cf1065cefa557c8ab9ad4951d71be47f0d5e6ed63338ec1386",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Account.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "efc5cde47f6e6bdb212b20363b2f4f963228c700",
+      "sourceBytes": 2104,
+      "sourceSHA256": "5365b553aef59be0224c6b4db55c65fb24698e2567e4828cce1034a0d5b4cb1a",
+      "compiled": "harness/proto/Anytype_Rpc.Account.swift",
+      "bytes": 2104,
+      "sha256": "5365b553aef59be0224c6b4db55c65fb24698e2567e4828cce1034a0d5b4cb1a",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Object.Show.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "e34d01df405c2ca6f629aba18994297ff48332d8",
+      "sourceBytes": 13074,
+      "sourceSHA256": "5cdba00c8a75b374ea8e096861749d38bde27d507ed43547e52a6105c6b56623",
+      "compiled": "harness/proto/Anytype_Rpc.Object.Show.swift",
+      "bytes": 13074,
+      "sha256": "5cdba00c8a75b374ea8e096861749d38bde27d507ed43547e52a6105c6b56623",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Object.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "849d9046eaee078f7f032b4a782e55736edfb11b",
+      "sourceBytes": 2099,
+      "sourceSHA256": "30ff6c2a45110be950a3ac33d865aa18f9408b15452b113184999d76ecee0d2f",
+      "compiled": "harness/proto/Anytype_Rpc.Object.swift",
+      "bytes": 2099,
+      "sha256": "30ff6c2a45110be950a3ac33d865aa18f9408b15452b113184999d76ecee0d2f",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "3a7f42b32f594bcab322ace75f7087ec15b65b27",
+      "sourceBytes": 2022,
+      "sourceSHA256": "9ad79e5c256c10bccd592dc5517f458d99c3fedef6379fb4a27af286d832b255",
+      "compiled": "harness/proto/Anytype_Rpc.swift",
+      "bytes": 2022,
+      "sha256": "9ad79e5c256c10bccd592dc5517f458d99c3fedef6379fb4a27af286d832b255",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.Config.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "d79b95a41eee2e6bb652170d04114d5dbc9db61b",
+      "sourceBytes": 4911,
+      "sourceSHA256": "52ed901795a9ef7193b41cf6cee63a5d2d66b4ca29f7547367e0e2f20afb9e8c",
+      "compiled": "harness/proto/Anytype_Model_Account.Config.swift",
+      "bytes": 4911,
+      "sha256": "52ed901795a9ef7193b41cf6cee63a5d2d66b4ca29f7547367e0e2f20afb9e8c",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.Info.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "2a5ac4af99094e689862c5291552211b3ac515dd",
+      "sourceBytes": 14543,
+      "sourceSHA256": "3ccf5a852cf1752708634e9d6e16e800d2635c7b831bed4f3f51eee7de7ad5b2",
+      "compiled": "harness/proto/Anytype_Model_Account.Info.swift",
+      "bytes": 14543,
+      "sha256": "3ccf5a852cf1752708634e9d6e16e800d2635c7b831bed4f3f51eee7de7ad5b2",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.Status.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "228020fc07a859d6359e68f5660890536337bf4d",
+      "sourceBytes": 3105,
+      "sourceSHA256": "ab6d62b92b8c352b8a68100ae1df1734f39e9d7ed63918da5c15f66fc5310230",
+      "compiled": "harness/proto/Anytype_Model_Account.Status.swift",
+      "bytes": 3105,
+      "sha256": "ab6d62b92b8c352b8a68100ae1df1734f39e9d7ed63918da5c15f66fc5310230",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.StatusType.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "61791eb4e70118fdb9b727dc148d51ef6c2f8f7f",
+      "sourceBytes": 2263,
+      "sourceSHA256": "109c3796424f19d816234fc2010595be74e7138731792cec70013bc661eedbeb",
+      "compiled": "harness/proto/Anytype_Model_Account.StatusType.swift",
+      "bytes": 2263,
+      "sha256": "109c3796424f19d816234fc2010595be74e7138731792cec70013bc661eedbeb",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Account.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "877358d63c45e3105be77d79b67eca0b003af261",
+      "sourceBytes": 5107,
+      "sourceSHA256": "f9e98bee0daaceb4913ed9cc19d6e8bcfa2902f85f8dcde083e8ef77f5d48a65",
+      "compiled": "harness/proto/Anytype_Model_Account.swift",
+      "bytes": 5107,
+      "sha256": "f9e98bee0daaceb4913ed9cc19d6e8bcfa2902f85f8dcde083e8ef77f5d48a65",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Align.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "7e0b0fee278d67f5f8a8d41fb789753a9eb5cd93",
+      "sourceBytes": 2155,
+      "sourceSHA256": "8c1ebb60cbfccac858e303148f8203f5d5e281489e8312a0b91eb1ef171a166b",
+      "compiled": "harness/proto/Anytype_Model_Block.Align.swift",
+      "bytes": 2155,
+      "sha256": "8c1ebb60cbfccac858e303148f8203f5d5e281489e8312a0b91eb1ef171a166b",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Bookmark.State.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "2502da69e8e71703b9f195e411f18e694f720f4c",
+      "sourceBytes": 2331,
+      "sourceSHA256": "8beefeaa2689205987bc9b842f41fb3bd81210487f6489ad8f893a528ce5fff4",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Bookmark.State.swift",
+      "bytes": 2331,
+      "sha256": "8beefeaa2689205987bc9b842f41fb3bd81210487f6489ad8f893a528ce5fff4",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Bookmark.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "59800c17382a484138ca8be8e09365e36004957c",
+      "sourceBytes": 5302,
+      "sourceSHA256": "6ce5e9af68ff65ffe26b1cc6291af781de1d61806ad9c9207fc2b88d2ba953ed",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Bookmark.swift",
+      "bytes": 5302,
+      "sha256": "6ce5e9af68ff65ffe26b1cc6291af781de1d61806ad9c9207fc2b88d2ba953ed",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Chat.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "b792866bae4b23063cbfe6a12cb87682efaee141",
+      "sourceBytes": 2185,
+      "sourceSHA256": "8bb7ee54a74f5981bc43e772518339cd690b1af807450e897dd2ac0c2cf115b9",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Chat.swift",
+      "bytes": 2185,
+      "sha256": "8bb7ee54a74f5981bc43e772518339cd690b1af807450e897dd2ac0c2cf115b9",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.Filter.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "e1206988b3f6f97f3851cd1a22c5aed660b64954",
+      "sourceBytes": 14692,
+      "sourceSHA256": "a5444b433a49a74d31efe25d4a21649a8de7fdb6d0723dcf25e9b76e32126cf4",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Dataview.Filter.swift",
+      "bytes": 14692,
+      "sha256": "a5444b433a49a74d31efe25d4a21649a8de7fdb6d0723dcf25e9b76e32126cf4",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.GroupOrder.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "8331c789d7ec462bbdc282baff83aa4a4240e9b5",
+      "sourceBytes": 3219,
+      "sourceSHA256": "ab240f8a76b7339f0222cf20113f47f5bca0eb141bf7d79a2b6b57128129d4a9",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Dataview.GroupOrder.swift",
+      "bytes": 3219,
+      "sha256": "ab240f8a76b7339f0222cf20113f47f5bca0eb141bf7d79a2b6b57128129d4a9",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.ObjectOrder.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "6f157c65a1f2a6f71e395fcfef11b338c40f3cf5",
+      "sourceBytes": 3486,
+      "sourceSHA256": "65b9de6d6a9b9c310817348bd932a91ee7c8d29fcd5bca5ff363f57a96974679",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Dataview.ObjectOrder.swift",
+      "bytes": 3486,
+      "sha256": "65b9de6d6a9b9c310817348bd932a91ee7c8d29fcd5bca5ff363f57a96974679",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.Relation.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "ba8f8cc042cc86a53bda3b642819186c1d52404e",
+      "sourceBytes": 11382,
+      "sourceSHA256": "de30e9a2479552acebc7b8c15ac0fd409b0a8e486ef99a21d763dce3ff5de4d8",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Dataview.Relation.swift",
+      "bytes": 11382,
+      "sha256": "de30e9a2479552acebc7b8c15ac0fd409b0a8e486ef99a21d763dce3ff5de4d8",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.Sort.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "a6fc8191ab96a1fcd6785cb60c1ffee3e90423af",
+      "sourceBytes": 7757,
+      "sourceSHA256": "95ec43f4c8862dab89479cb442aeefd54e54931e5f3c38021d26a2d5d1bfb31a",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Dataview.Sort.swift",
+      "bytes": 7757,
+      "sha256": "95ec43f4c8862dab89479cb442aeefd54e54931e5f3c38021d26a2d5d1bfb31a",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.View.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "7d59d10889eb4704b6fcf8399b849ddfe6b94f89",
+      "sourceBytes": 19706,
+      "sourceSHA256": "eb5bd6434f01104aa7a7cb2b474af3460839c91d96f1533c17745368b2bdaf30",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Dataview.View.swift",
+      "bytes": 19706,
+      "sha256": "eb5bd6434f01104aa7a7cb2b474af3460839c91d96f1533c17745368b2bdaf30",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.ViewGroup.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "f2dc73810482d2e487931fb9fa1d196a4f42a979",
+      "sourceBytes": 3796,
+      "sourceSHA256": "6028dfccba578db910dd870b9ba431d65b5846e61f19b770b712be517dc2b32c",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Dataview.ViewGroup.swift",
+      "bytes": 3796,
+      "sha256": "6028dfccba578db910dd870b9ba431d65b5846e61f19b770b712be517dc2b32c",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Dataview.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "bf880a283c824cde3e479935bf1fb3e57cb323c2",
+      "sourceBytes": 5825,
+      "sourceSHA256": "dfedf721a90a9882eccbfc175eb2dabe1a5e77d0f25b0d8e61f378643dbb3e79",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Dataview.swift",
+      "bytes": 5825,
+      "sha256": "dfedf721a90a9882eccbfc175eb2dabe1a5e77d0f25b0d8e61f378643dbb3e79",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Div.Style.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "5f601408a9abed12a7c66b80e8ed905ba592d686",
+      "sourceBytes": 2055,
+      "sourceSHA256": "066bf37d51a60449417738b2b4e37cbc38b4e16c41489b9897c6a592d126eeec",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Div.Style.swift",
+      "bytes": 2055,
+      "sha256": "066bf37d51a60449417738b2b4e37cbc38b4e16c41489b9897c6a592d126eeec",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Div.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "3d6ae68ee91d6020ecd3bf95dc4971c2747a717e",
+      "sourceBytes": 2772,
+      "sourceSHA256": "f23ac5b0cca89ce231d30acf43b2481ac5a60933f2ea3767c54c1bb06a390775",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Div.swift",
+      "bytes": 2772,
+      "sha256": "f23ac5b0cca89ce231d30acf43b2481ac5a60933f2ea3767c54c1bb06a390775",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.FeaturedRelations.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "598d491d29f193e1bceefafc49e0710ca66a03ae",
+      "sourceBytes": 2250,
+      "sourceSHA256": "cae0281764f4c5dd0bbba988c8b4ae34e81b9314d807d5501c0269ec7b29d226",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.FeaturedRelations.swift",
+      "bytes": 2250,
+      "sha256": "cae0281764f4c5dd0bbba988c8b4ae34e81b9314d807d5501c0269ec7b29d226",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.State.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "7f7c01dd54adbcba3be01d212521e3b17211271f",
+      "sourceBytes": 2554,
+      "sourceSHA256": "7df2e107a6d7e51ac0e90d9834a9cd9c4fb4bf55b25a1b301785d0b3014856e0",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.File.State.swift",
+      "bytes": 2554,
+      "sha256": "7df2e107a6d7e51ac0e90d9834a9cd9c4fb4bf55b25a1b301785d0b3014856e0",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.Style.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "7c031a8d14a30c6088d7a3c3c83b4f243cec08f1",
+      "sourceBytes": 2249,
+      "sourceSHA256": "0ffd8801761c01088f9387271be2c1f87e89b6f2a36c8278ed55bad9e16c672a",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.File.Style.swift",
+      "bytes": 2249,
+      "sha256": "0ffd8801761c01088f9387271be2c1f87e89b6f2a36c8278ed55bad9e16c672a",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.TypeEnum.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "44acc5794e0954482351aff371fe196b52262d6c",
+      "sourceBytes": 2537,
+      "sourceSHA256": "d74a3030d17567c8fe6a1dff58f1602599d210824e09e043fab789abcbbb0140",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.File.TypeEnum.swift",
+      "bytes": 2537,
+      "sha256": "d74a3030d17567c8fe6a1dff58f1602599d210824e09e043fab789abcbbb0140",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.File.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "9f670b4c06dbb775dc43b9d02c4f83ceda7a1145",
+      "sourceBytes": 5207,
+      "sourceSHA256": "7f007a08a5f31cab76deb6db2a177f970c53f6b13129cbe46b6edffaebb4fe0f",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.File.swift",
+      "bytes": 5207,
+      "sha256": "7f007a08a5f31cab76deb6db2a177f970c53f6b13129cbe46b6edffaebb4fe0f",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Icon.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "d817e83934a04875bba66e1f07c7f2c4525ecd0f",
+      "sourceBytes": 2746,
+      "sourceSHA256": "f71d2911013fcc3e92169eac728394938e9dbc741273889fd878104181da4a27",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Icon.swift",
+      "bytes": 2746,
+      "sha256": "f71d2911013fcc3e92169eac728394938e9dbc741273889fd878104181da4a27",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Latex.Processor.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "574199f79a29c798cc43899119d0eba23fdac62f",
+      "sourceBytes": 5184,
+      "sourceSHA256": "b7fb8639d14efb94d0841cb98ae91aef98a1b852939bd0979c869d6a26cb665a",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Latex.Processor.swift",
+      "bytes": 5184,
+      "sha256": "b7fb8639d14efb94d0841cb98ae91aef98a1b852939bd0979c869d6a26cb665a",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Latex.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "89e433658784933bbb682fa23a5ba4f9d21c4e51",
+      "sourceBytes": 3106,
+      "sourceSHA256": "bd48e5813ac19375df674dd2de250e9a5ae21d995b89ba99649ac12fa5706b6a",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Latex.swift",
+      "bytes": 3106,
+      "sha256": "bd48e5813ac19375df674dd2de250e9a5ae21d995b89ba99649ac12fa5706b6a",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Layout.Style.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "552e329ca920f344308900bdb2b1ce9911f7c8fc",
+      "sourceBytes": 2598,
+      "sourceSHA256": "680013545b73d01a95a2f2f97044ceda234f89fc1b38d2a93f9352621ac84e8f",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Layout.Style.swift",
+      "bytes": 2598,
+      "sha256": "680013545b73d01a95a2f2f97044ceda234f89fc1b38d2a93f9352621ac84e8f",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Layout.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "85dc91f557f0c48c34a3ce78c3ea2a31efd44b74",
+      "sourceBytes": 2788,
+      "sourceSHA256": "7555cdbfc8996e969813243cc4a5feb21df7596e8819e74f22f9a9cfd1e9b907",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Layout.swift",
+      "bytes": 2788,
+      "sha256": "7555cdbfc8996e969813243cc4a5feb21df7596e8819e74f22f9a9cfd1e9b907",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.CardStyle.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "02b0555e946354f12345bbf453c056b91ae75692",
+      "sourceBytes": 2195,
+      "sourceSHA256": "0c075e98aab4f687cd92d321bf589ae6ad42384e99f37947ec170ade8212e520",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Link.CardStyle.swift",
+      "bytes": 2195,
+      "sha256": "0c075e98aab4f687cd92d321bf589ae6ad42384e99f37947ec170ade8212e520",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.Description.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "acdd7b88e391a1a147b9a9c50dc117a7d90a6f5f",
+      "sourceBytes": 2211,
+      "sourceSHA256": "cd16b92d274f8399c4a6d597d71fe4907c367b0f70e30fa186c3d8b90490c8a1",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Link.Description.swift",
+      "bytes": 2211,
+      "sha256": "cd16b92d274f8399c4a6d597d71fe4907c367b0f70e30fa186c3d8b90490c8a1",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.IconSize.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "7c2da0a8ecb6c8beff5a51cd2d23d9792396a50a",
+      "sourceBytes": 2261,
+      "sourceSHA256": "d9edf62e4355a2374003e8e39b878ed0f0c7e73fb50d61b3a4e8bd244a3c98d5",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Link.IconSize.swift",
+      "bytes": 2261,
+      "sha256": "d9edf62e4355a2374003e8e39b878ed0f0c7e73fb50d61b3a4e8bd244a3c98d5",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.Style.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "1f759d12ea2a05d83c1c9427bb90ad2a8700f2a8",
+      "sourceBytes": 2365,
+      "sourceSHA256": "c06dbf07c621f5143327db00f47a8397fd111a4cfd3034537aa0ee556b5a1d74",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Link.Style.swift",
+      "bytes": 2365,
+      "sha256": "c06dbf07c621f5143327db00f47a8397fd111a4cfd3034537aa0ee556b5a1d74",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Link.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "b57f540b38b31c8ad6b9621ab6f7cf967d2b0645",
+      "sourceBytes": 5678,
+      "sourceSHA256": "9563f84c5a323135416ae8d23b1fa885a0a2debd3205287056258275a5a5b806",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Link.swift",
+      "bytes": 5678,
+      "sha256": "9563f84c5a323135416ae8d23b1fa885a0a2debd3205287056258275a5a5b806",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Relation.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "7e7027b793f4c60c1191f4c16dffe3a236c4f8bf",
+      "sourceBytes": 2759,
+      "sourceSHA256": "ef556698040cdcf5a22bb8f3d16f7382e65218a172c67c8494b8015ed90ca429",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Relation.swift",
+      "bytes": 2759,
+      "sha256": "ef556698040cdcf5a22bb8f3d16f7382e65218a172c67c8494b8015ed90ca429",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Smartblock.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "feaf83c2c0086f3aa03401b0357da53745ea0a11",
+      "sourceBytes": 2215,
+      "sourceSHA256": "f20a78b30971d52dd2662581a662b0375858a7587b11fffbdd51e89d8de05afa",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Smartblock.swift",
+      "bytes": 2215,
+      "sha256": "f20a78b30971d52dd2662581a662b0375858a7587b11fffbdd51e89d8de05afa",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Table.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "b1a6658ae8e6754031fe40dab1fd4ecf2cc112e2",
+      "sourceBytes": 2190,
+      "sourceSHA256": "dd386429954b0094b24a86c528787f288910bf82bb9918d8f5e807648e3fef7d",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Table.swift",
+      "bytes": 2190,
+      "sha256": "dd386429954b0094b24a86c528787f288910bf82bb9918d8f5e807648e3fef7d",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.TableColumn.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "3a879f478e0e744f502276b6671a9565a256e494",
+      "sourceBytes": 2220,
+      "sourceSHA256": "9cbddf5c8ffdf1629787cf855fe26ffffe575fbcc23ee84f21fd3ff578fce71d",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.TableColumn.swift",
+      "bytes": 2220,
+      "sha256": "9cbddf5c8ffdf1629787cf855fe26ffffe575fbcc23ee84f21fd3ff578fce71d",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.TableOfContents.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "0fb61c26c38ec855062269f756f8d11ce505deaf",
+      "sourceBytes": 2240,
+      "sourceSHA256": "14b82b81bd0f4af7aeb7dad1f1a08fa275d0b1aceff3341a860d3c5088f7c9f5",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.TableOfContents.swift",
+      "bytes": 2240,
+      "sha256": "14b82b81bd0f4af7aeb7dad1f1a08fa275d0b1aceff3341a860d3c5088f7c9f5",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.TableRow.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "f1e94ece81e0379f4de1e91b4ae0bd555bc6a5b2",
+      "sourceBytes": 2785,
+      "sourceSHA256": "7451c8db3b798527cda74bee06a5ff8f691b1b540f8639f8cef188757ded6e5c",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.TableRow.swift",
+      "bytes": 2785,
+      "sha256": "7451c8db3b798527cda74bee06a5ff8f691b1b540f8639f8cef188757ded6e5c",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.Mark.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "b92189a4ed83b2ffb2c29852ebca5e312c29b6c5",
+      "sourceBytes": 6734,
+      "sourceSHA256": "8461068f32562871b3230416087ac800490eb15df87311c7593ee4e55fda044a",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Text.Mark.swift",
+      "bytes": 6734,
+      "sha256": "8461068f32562871b3230416087ac800490eb15df87311c7593ee4e55fda044a",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.Marks.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "0833cea3fccde3ead28f2cd311afcf52f1d7cbf0",
+      "sourceBytes": 2826,
+      "sourceSHA256": "9f0da4ed2d2d84a10e53cab6ad5ee95e8bd4cb3eb7558bba08df9550d3a0e711",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Text.Marks.swift",
+      "bytes": 2826,
+      "sha256": "9f0da4ed2d2d84a10e53cab6ad5ee95e8bd4cb3eb7558bba08df9550d3a0e711",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.Style.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "eb8a536aaf64dbfd37eec8171953bdfca3867900",
+      "sourceBytes": 4323,
+      "sourceSHA256": "10bced3f146f05f8b5bcaca06de67468c410adc019bc50023793d2c4c3a29048",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Text.Style.swift",
+      "bytes": 4323,
+      "sha256": "10bced3f146f05f8b5bcaca06de67468c410adc019bc50023793d2c4c3a29048",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Text.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "66d9fd67eedfb052d9165b514c426aa140f16a79",
+      "sourceBytes": 5565,
+      "sourceSHA256": "c2c445cbc47822d933f9d115a31801ff5f6c925b4894fad46cc9eb648b75dc14",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Text.swift",
+      "bytes": 5565,
+      "sha256": "c2c445cbc47822d933f9d115a31801ff5f6c925b4894fad46cc9eb648b75dc14",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Widget.Layout.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "098f8806f6073e4b1e9f13326596f3d73b80a407",
+      "sourceBytes": 2447,
+      "sourceSHA256": "488fc8193c349f7c4f1e2f273de573819cc5e796bd2fb4d85a7d37157b95d4a0",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Widget.Layout.swift",
+      "bytes": 2447,
+      "sha256": "488fc8193c349f7c4f1e2f273de573819cc5e796bd2fb4d85a7d37157b95d4a0",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.Widget.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "280d760681853d2b2998108a0d57e60140cdca23",
+      "sourceBytes": 3695,
+      "sourceSHA256": "c8578389f5485152ceee9b23e7d93bb8c14263c3c499b0c221ddcabb89a017be",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.Widget.swift",
+      "bytes": 3695,
+      "sha256": "c8578389f5485152ceee9b23e7d93bb8c14263c3c499b0c221ddcabb89a017be",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Content.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "101cc7f82887564cb4f8d85b6e38b93f6a807012",
+      "sourceBytes": 2148,
+      "sourceSHA256": "7e6945965d0b67531ee6279cb441a12be8bb65119308bd2cfaabfe7895698519",
+      "compiled": "harness/proto/Anytype_Model_Block.Content.swift",
+      "bytes": 2148,
+      "sha256": "7e6945965d0b67531ee6279cb441a12be8bb65119308bd2cfaabfe7895698519",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.OneOf_Content.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "9bf140f3816825ed54f521be1daaff5928fe1ea0",
+      "sourceBytes": 2041,
+      "sourceSHA256": "5f795ce341fd455c8de0b7f5e2fe938c24645e10a73d3d8e9e6698e4fb8549f8",
+      "compiled": "harness/proto/Anytype_Model_Block.OneOf_Content.swift",
+      "bytes": 2041,
+      "sha256": "5f795ce341fd455c8de0b7f5e2fe938c24645e10a73d3d8e9e6698e4fb8549f8",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.Restrictions.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "47bc0ed51efaf7c6655dee06fc88153809e9ca29",
+      "sourceBytes": 3859,
+      "sourceSHA256": "a7b498291b91bd291437d8f2107113aa5fd27ee9b5ac0042b38332c037fe24e7",
+      "compiled": "harness/proto/Anytype_Model_Block.Restrictions.swift",
+      "bytes": 3859,
+      "sha256": "a7b498291b91bd291437d8f2107113aa5fd27ee9b5ac0042b38332c037fe24e7",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.VerticalAlign.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "10a57c77247a1227df02bad1613da692b48faeaa",
+      "sourceBytes": 2083,
+      "sourceSHA256": "82cef49cd69d2cece25bafa941f73284351b5bdf0f81aa8caa7cf571ac445ff4",
+      "compiled": "harness/proto/Anytype_Model_Block.VerticalAlign.swift",
+      "bytes": 2083,
+      "sha256": "82cef49cd69d2cece25bafa941f73284351b5bdf0f81aa8caa7cf571ac445ff4",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Block.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "a1954290e7819f8339130374daf2b6d209d3dff5",
+      "sourceBytes": 25768,
+      "sourceSHA256": "566f029f4f08273589a3f46baff7c13a2278572604312c4d1b82ea4280fc8f9f",
+      "compiled": "harness/proto/Anytype_Model_Block.swift",
+      "bytes": 25768,
+      "sha256": "566f029f4f08273589a3f46baff7c13a2278572604312c4d1b82ea4280fc8f9f",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_LinkPreview.TypeEnum.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "a7788d51f3e615f34b231411be78c7c9e6000889",
+      "sourceBytes": 2155,
+      "sourceSHA256": "fc43ca40815e6ef66e59605973a512b71ef62685feb36e09546fc425fb477833",
+      "compiled": "harness/proto/Anytype_Model_LinkPreview.TypeEnum.swift",
+      "bytes": 2155,
+      "sha256": "fc43ca40815e6ef66e59605973a512b71ef62685feb36e09546fc425fb477833",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_LinkPreview.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "9976d0d128d790400d778c2fa6a6c4621045ab88",
+      "sourceBytes": 4225,
+      "sourceSHA256": "834f3097d8cd78206ba01b58e78db47d264252aca6eec55a6061743b2797e5b8",
+      "compiled": "harness/proto/Anytype_Model_LinkPreview.swift",
+      "bytes": 4225,
+      "sha256": "834f3097d8cd78206ba01b58e78db47d264252aca6eec55a6061743b2797e5b8",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.BlockParticipant.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "1da6233cb31ff26a53cd0771f1a4505e0f1dc3af",
+      "sourceBytes": 3147,
+      "sourceSHA256": "f48f540b62cbd92b32d65d96681473e548ad29e2f96778bf8614770e226cf840",
+      "compiled": "harness/proto/Anytype_Model_ObjectView.BlockParticipant.swift",
+      "bytes": 3147,
+      "sha256": "f48f540b62cbd92b32d65d96681473e548ad29e2f96778bf8614770e226cf840",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.DetailsSet.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "cdedc300b1ff8f0a8f0b736a3d9277911cdaa1d4",
+      "sourceBytes": 4215,
+      "sourceSHA256": "86db57ca1f7ebc70a4d23d741f9cf484ffc1c0e0c763604a579ed93ce61f1117",
+      "compiled": "harness/proto/Anytype_Model_ObjectView.DetailsSet.swift",
+      "bytes": 4215,
+      "sha256": "86db57ca1f7ebc70a4d23d741f9cf484ffc1c0e0c763604a579ed93ce61f1117",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.HistorySize.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "c067085ca604700037e0a48ae01c652ca36b02cc",
+      "sourceBytes": 3010,
+      "sourceSHA256": "98fdd0b33f4d1c7666e5a1f541b1329e36e7c4d0b4081d9fe0ddf27dd6127cf8",
+      "compiled": "harness/proto/Anytype_Model_ObjectView.HistorySize.swift",
+      "bytes": 3010,
+      "sha256": "98fdd0b33f4d1c7666e5a1f541b1329e36e7c4d0b4081d9fe0ddf27dd6127cf8",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ObjectView.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "7c0f41600c1b0454f3e506d5f6d0ef284e1d6106",
+      "sourceBytes": 6799,
+      "sourceSHA256": "0e4c1cf72e1c3c179dd08c553a67aa52f7f4888bc6644752392655519bc17aa1",
+      "compiled": "harness/proto/Anytype_Model_ObjectView.swift",
+      "bytes": 6799,
+      "sha256": "0e4c1cf72e1c3c179dd08c553a67aa52f7f4888bc6644752392655519bc17aa1",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Range.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "779b9f7563b8a913ec272d131434b1f0e784d428",
+      "sourceBytes": 2859,
+      "sourceSHA256": "7e80af1a8283650c29fe564f9f9e073f426ed47fb59dda137ff6d713938ae460",
+      "compiled": "harness/proto/Anytype_Model_Range.swift",
+      "bytes": 2859,
+      "sha256": "7e80af1a8283650c29fe564f9f9e073f426ed47fb59dda137ff6d713938ae460",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.DataSource.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "f40c23c7659160932f3eba12323f48822af8092c",
+      "sourceBytes": 2407,
+      "sourceSHA256": "1950939900fcdb289c7ed1926c91b3a5e1f6d4c0a04d5cfb06c74bfbaf2899ed",
+      "compiled": "harness/proto/Anytype_Model_Relation.DataSource.swift",
+      "bytes": 2407,
+      "sha256": "1950939900fcdb289c7ed1926c91b3a5e1f6d4c0a04d5cfb06c74bfbaf2899ed",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.Option.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "bd04db35b481bd202fa0b9e33b42cce8bb776ca9",
+      "sourceBytes": 4093,
+      "sourceSHA256": "5013107f107fd5427aa365722aa522c02cd10a89cfda3fc2385ee8471de30902",
+      "compiled": "harness/proto/Anytype_Model_Relation.Option.swift",
+      "bytes": 4093,
+      "sha256": "5013107f107fd5427aa365722aa522c02cd10a89cfda3fc2385ee8471de30902",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.Scope.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "cece8265ead6eb8d136c048d42003ab7132fb294",
+      "sourceBytes": 2636,
+      "sourceSHA256": "b273f801c8871e810d76ab9a947613dd34564dc798fcc3512afc2eba741a4fb8",
+      "compiled": "harness/proto/Anytype_Model_Relation.Scope.swift",
+      "bytes": 2636,
+      "sha256": "b273f801c8871e810d76ab9a947613dd34564dc798fcc3512afc2eba741a4fb8",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Relation.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "97882443082fedabe611d3f390aeb7bcf96a4196",
+      "sourceBytes": 14691,
+      "sourceSHA256": "d08d81c2b4ea7fcbd4ac47f8ab387c34a41d0a83ebc4537c3a9efeb6b9f9527c",
+      "compiled": "harness/proto/Anytype_Model_Relation.swift",
+      "bytes": 14691,
+      "sha256": "d08d81c2b4ea7fcbd4ac47f8ab387c34a41d0a83ebc4537c3a9efeb6b9f9527c",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_RelationFormat.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "fd66723ed232b199d8a78e6643bbbf377ade539b",
+      "sourceBytes": 3943,
+      "sourceSHA256": "570da500bed728ca86740c29efb55b563678cb2999dd1c60906b249e0cc1c564",
+      "compiled": "harness/proto/Anytype_Model_RelationFormat.swift",
+      "bytes": 3943,
+      "sha256": "570da500bed728ca86740c29efb55b563678cb2999dd1c60906b249e0cc1c564",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_RelationLink.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "3fc8bc10c449a35fd9cf0d837140f94ab0194e9c",
+      "sourceBytes": 2966,
+      "sourceSHA256": "a510d62379bf4b144d21842ed7338b496ce2a47b5b011e424861e1f0b12c9601",
+      "compiled": "harness/proto/Anytype_Model_RelationLink.swift",
+      "bytes": 2966,
+      "sha256": "a510d62379bf4b144d21842ed7338b496ce2a47b5b011e424861e1f0b12c9601",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.DataviewRestriction.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "a8afc7bf61e5faa0b078ef940ec70c8dd0ed9958",
+      "sourceBytes": 2275,
+      "sourceSHA256": "67526e2bac1c69228f3126eadc2c77454ac66be610d297061f78d81364ba289f",
+      "compiled": "harness/proto/Anytype_Model_Restrictions.DataviewRestriction.swift",
+      "bytes": 2275,
+      "sha256": "67526e2bac1c69228f3126eadc2c77454ac66be610d297061f78d81364ba289f",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.DataviewRestrictions.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "6830f4cfadb5bb123200917cf52b5533ef21b158",
+      "sourceBytes": 3200,
+      "sourceSHA256": "df376bbbf3db571ebc249b6f405842e2f8fb6c7d6b3cb974b0719a2774f58ce9",
+      "compiled": "harness/proto/Anytype_Model_Restrictions.DataviewRestrictions.swift",
+      "bytes": 3200,
+      "sha256": "df376bbbf3db571ebc249b6f405842e2f8fb6c7d6b3cb974b0719a2774f58ce9",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.ObjectRestriction.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "afaad648c4b8b0b3e013bb902d1e0dfcca29b244",
+      "sourceBytes": 3552,
+      "sourceSHA256": "ebe8f660443ad424219786cde2b343e2fd504b726844e53d283fbc4b17b89de6",
+      "compiled": "harness/proto/Anytype_Model_Restrictions.ObjectRestriction.swift",
+      "bytes": 3552,
+      "sha256": "ebe8f660443ad424219786cde2b343e2fd504b726844e53d283fbc4b17b89de6",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_Restrictions.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "475f7ce186b1b03b3104ea7216df0da79509b1c1",
+      "sourceBytes": 3045,
+      "sourceSHA256": "5afd55c41ec5a48172e4885bcf624ae9d050ff281821ccccdcec6784650bec2a",
+      "compiled": "harness/proto/Anytype_Model_Restrictions.swift",
+      "bytes": 3045,
+      "sha256": "5afd55c41ec5a48172e4885bcf624ae9d050ff281821ccccdcec6784650bec2a",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_SmartBlockType.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "7bc4ad8d03446c95821c38b96de5f953cfcd842e",
+      "sourceBytes": 6245,
+      "sourceSHA256": "1bff13c1505eb7acf25acb6d88d980cfedde0260cc37476fd5239ac16d78a020",
+      "compiled": "harness/proto/Anytype_Model_SmartBlockType.swift",
+      "bytes": 6245,
+      "sha256": "1bff13c1505eb7acf25acb6d88d980cfedde0260cc37476fd5239ac16d78a020",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/ProtobufMessages/Sources/InvocationDispatchBinding.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "7f6862925605de7a15220f6c44dbf4d6d884113d",
+      "sourceBytes": 3025,
+      "sourceSHA256": "e304f05ed114342795dbc3a603490311142d63f9a6a156bdcdafd68743e710cb",
+      "compiled": "harness/proto/InvocationDispatchBinding.swift",
+      "bytes": 3025,
+      "sha256": "e304f05ed114342795dbc3a603490311142d63f9a6a156bdcdafd68743e710cb",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/AnytypeCore/AnytypeCore/Extensions/StringExtension.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "14132d67114667adbc271297c261eab668f28642",
+      "sourceBytes": 1061,
+      "sourceSHA256": "cc7b5f9e062c85d234064584eef2540668d511f83c42bc367ea1bc0bb33beb17",
+      "compiled": "harness/core/StringExtension.swift",
+      "bytes": 1061,
+      "sha256": "cc7b5f9e062c85d234064584eef2540668d511f83c42bc367ea1bc0bb33beb17",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/AnytypeCore/AnytypeCore/Extensions/ContainerExtension.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "ec5d2b5329887f221250afcf5ef2d2dfc930764c",
+      "sourceBytes": 153,
+      "sourceSHA256": "6536489f24d00b129bce8d3c4fedbc9fa037d3519b3c5dbb6f546e2510fdc7dc",
+      "compiled": "harness/core/ContainerExtension.swift",
+      "bytes": 153,
+      "sha256": "6536489f24d00b129bce8d3c4fedbc9fa037d3519b3c5dbb6f546e2510fdc7dc",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/AnytypeCore/AnytypeCore/Structs/AnytypeURL.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "847deb114098d75f8d6dfbdf18449676fb66ba5a",
+      "sourceBytes": 1777,
+      "sourceSHA256": "e8163c640b7c24b09859a53b3e3ec0103c49b8212b9b30c81a1711985a6a0f40",
+      "compiled": "harness/core/AnytypeURL.swift",
+      "bytes": 1777,
+      "sha256": "e8163c640b7c24b09859a53b3e3ec0103c49b8212b9b30c81a1711985a6a0f40",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/AnytypeCore/AnytypeCore/Structs/Emoji.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "2df3442cf6e22f8e8782842f67cfdad64fd4fba7",
+      "sourceBytes": 386,
+      "sourceSHA256": "4ff2c819d33c3050f08936eb389b3bbd034109af5fa6ecaeb2c3b839754c5078",
+      "compiled": "harness/core/Emoji.swift",
+      "bytes": 386,
+      "sha256": "4ff2c819d33c3050f08936eb389b3bbd034109af5fa6ecaeb2c3b839754c5078",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/AnytypeCore/AnytypeCore/Utils/SwiftProtobuf/GoogleProtobufValueExtensions.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "2eefa6a26d27826c0c1cb9634a496fe777a4c36c",
+      "sourceBytes": 358,
+      "sourceSHA256": "c00c2ac6965033f1824f6c1f61fd907afc3760b43efe39a43b73fae0579d1ef2",
+      "compiled": "harness/core/GoogleProtobufValueExtensions.swift",
+      "bytes": 358,
+      "sha256": "c00c2ac6965033f1824f6c1f61fd907afc3760b43efe39a43b73fae0579d1ef2",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/Services/Sources/Generated/BundledPropertyKey.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "582d3789fe7390a09791a2694f5b61b70db43c46",
+      "sourceBytes": 17613,
+      "sourceSHA256": "bd2a7746a4feece5cfff856239d77390f37d8ae18b76bf336db13f40bde110a1",
+      "compiled": "harness/services/BundledPropertyKey.swift",
+      "bytes": 17613,
+      "sha256": "bd2a7746a4feece5cfff856239d77390f37d8ae18b76bf336db13f40bde110a1",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/Services/Sources/Generated/BundledPropertiesValueProvider.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "0f0ef610389ea633f3b892764b6cd24077c2b165",
+      "sourceBytes": 38265,
+      "sourceSHA256": "04d2434697110393810793139d534e0c80ec44f538142780e9b2f1536d983bcb",
+      "compiled": "harness/services/BundledPropertiesValueProvider.swift",
+      "bytes": 38265,
+      "sha256": "04d2434697110393810793139d534e0c80ec44f538142780e9b2f1536d983bcb",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/Services/Sources/Models/Details/ObjectDetails.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "f1e2522941e1b562978fc37994e7bac15cc3a0dc",
+      "sourceBytes": 1823,
+      "sourceSHA256": "6cc61e2d19350790f3fe41636fedcfd807054d835637322cdaf2b0ff3103a778",
+      "compiled": "harness/services/ObjectDetails.swift",
+      "bytes": 1823,
+      "sha256": "6cc61e2d19350790f3fe41636fedcfd807054d835637322cdaf2b0ff3103a778",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/Services/Sources/Models/Extensions/StringExtensions.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "04dbc3186208361bc4452ab87dda0f6fa360eb2f",
+      "sourceBytes": 283,
+      "sourceSHA256": "7093dc74ea8e01b81f1ea6e39f86b11e2a57aeeff000228c4cb802f07879dd17",
+      "compiled": "harness/services/StringExtensions.swift",
+      "bytes": 283,
+      "sha256": "7093dc74ea8e01b81f1ea6e39f86b11e2a57aeeff000228c4cb802f07879dd17",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/Services/Sources/Models/Properties/Provider/General/PropertyValueProvider.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "7882030e7b508940ee22520e473e9210a8ddf52b",
+      "sourceBytes": 1352,
+      "sourceSHA256": "720a6533c2e4198a738b5399dea72dbebff3a8e1a99d00a25a7964f9afda4e57",
+      "compiled": "harness/services/PropertyValueProvider.swift",
+      "bytes": 1352,
+      "sha256": "720a6533c2e4198a738b5399dea72dbebff3a8e1a99d00a25a7964f9afda4e57",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/Services/Sources/Models/Properties/Provider/General/ProtobufSupport.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "607f5e3a3fa3dbc5e9a0e94dc73a2d2ffdcbbd67",
+      "sourceBytes": 118,
+      "sourceSHA256": "08a95c14628bb229d6b9de4536f7b62f37e955a981ecd83d61b8310758533b7a",
+      "compiled": "harness/services/ProtobufSupport.swift",
+      "bytes": 118,
+      "sha256": "08a95c14628bb229d6b9de4536f7b62f37e955a981ecd83d61b8310758533b7a",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/Services/Sources/Models/Properties/Provider/General/ProtobufDefaultTypeProvider.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "fd2849aa8836ebdd564adfe820160cea805f51f3",
+      "sourceBytes": 113,
+      "sourceSHA256": "344ac3d74a3b6294663d98195285efb9b6e28c6b5056e571df17f46f9d389251",
+      "compiled": "harness/services/ProtobufDefaultTypeProvider.swift",
+      "bytes": 113,
+      "sha256": "344ac3d74a3b6294663d98195285efb9b6e28c6b5056e571df17f46f9d389251",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/Services/Sources/Models/Properties/Provider/General/Google_Protobuf_Value+Entries.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "47007b1db3ff64f1802733bd0e77de791bef7b2f",
+      "sourceBytes": 521,
+      "sourceSHA256": "ae7b441e35e87ec5a66017e401238c4cbed44dccb8775506651133e72c1a6acc",
+      "compiled": "harness/services/Google_Protobuf_Value+Entries.swift",
+      "bytes": 521,
+      "sha256": "ae7b441e35e87ec5a66017e401238c4cbed44dccb8775506651133e72c1a6acc",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/Services/Sources/Models/Properties/Provider/General/TypeExpensions/ProtobufSupport+Types.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "397110001f8726db3d15a73cbee9a03972a0f910",
+      "sourceBytes": 1923,
+      "sourceSHA256": "270665c1446e04d71abcb1b7bc42d4e1d87696d76dbe0497b009a28277fecdfe",
+      "compiled": "harness/services/ProtobufSupport+Types.swift",
+      "bytes": 1923,
+      "sha256": "270665c1446e04d71abcb1b7bc42d4e1d87696d76dbe0497b009a28277fecdfe",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/Services/Sources/Models/Properties/Provider/General/TypeExpensions/ProtobufDefaultTypeProvider+Types.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "2abc0f7f4fcb7587a080a9f5793a53334a70ab5e",
+      "sourceBytes": 279,
+      "sourceSHA256": "70ebf987b2915840bcf30b8a8fc7ee05447ddf50287c8221b6822340c3e530c1",
+      "compiled": "harness/services/ProtobufDefaultTypeProvider+Types.swift",
+      "bytes": 279,
+      "sha256": "70ebf987b2915840bcf30b8a8fc7ee05447ddf50287c8221b6822340c3e530c1",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/Services/Sources/Models/Properties/Models/RelationPlaceholder.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "8adb0f25234e2d45ff554339db6c1cbfee0380e9",
+      "sourceBytes": 542,
+      "sourceSHA256": "bf788da57ba164ad7308973a867b91388885bc273e138765c7c8cff7ee582a76",
+      "compiled": "harness/services/RelationPlaceholder.swift",
+      "bytes": 542,
+      "sha256": "bf788da57ba164ad7308973a867b91388885bc273e138765c7c8cff7ee582a76",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/Services/Sources/Models/Properties/Models/PlaceholderType.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "faf1cdeafca5b1d9bfbd213faa84fe68713da71a",
+      "sourceBytes": 352,
+      "sourceSHA256": "bffc866dffabfe7b8cdd593a25135bdb8a166e5641178ae707631f8a491a2396",
+      "compiled": "harness/services/PlaceholderType.swift",
+      "bytes": 352,
+      "sha256": "bffc866dffabfe7b8cdd593a25135bdb8a166e5641178ae707631f8a491a2396",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/Services/Sources/Models/Account/AccountData.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "bcab335b6a9bef338df5d6a30291ae53f730628d",
+      "sourceBytes": 603,
+      "sourceSHA256": "cc30fb617864d35f82b07d220aa3f35f9804cd2d5e3d042fd7faffd019cc933b",
+      "compiled": "harness/services/AccountData.swift",
+      "bytes": 603,
+      "sha256": "cc30fb617864d35f82b07d220aa3f35f9804cd2d5e3d042fd7faffd019cc933b",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/Services/Sources/Models/Account/AccountConfiguration.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "bfe6c6dfbd4e6ab536ca642b7b4529173fc86cb1",
+      "sourceBytes": 1016,
+      "sourceSHA256": "0e080e3628005d394041141b06fb56acf66c4ce0a22afb9e9153f2056c3d845a",
+      "compiled": "harness/services/AccountConfiguration.swift",
+      "bytes": 1016,
+      "sha256": "0e080e3628005d394041141b06fb56acf66c4ce0a22afb9e9153f2056c3d845a",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/Services/Sources/Models/Account/AccountInfo.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "404e08f19fd7b4b6dfe1b2912ec6fd0823f8aafa",
+      "sourceBytes": 2767,
+      "sourceSHA256": "062b04e94232d70587a364a86369ccd9cc53736670177ee1fb0d5fc15985d6cd",
+      "compiled": "harness/services/AccountInfo.swift",
+      "bytes": 2767,
+      "sha256": "062b04e94232d70587a364a86369ccd9cc53736670177ee1fb0d5fc15985d6cd",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/Services/Sources/Models/Common/CommonConvertError.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "696937ee30c9eba55fe75b0d171e96b4f5d5c5e3",
+      "sourceBytes": 107,
+      "sourceSHA256": "63f13332f4d8f0708a0367e0858e26c470247132f044aab797367a7f22878541",
+      "compiled": "harness/services/CommonConvertError.swift",
+      "bytes": 107,
+      "sha256": "63f13332f4d8f0708a0367e0858e26c470247132f044aab797367a7f22878541",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/Services/Sources/Models/Account/AccountStatus.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "d9a7782ef1f102f43d719fba9df2d91f048cc668",
+      "sourceBytes": 1074,
+      "sourceSHA256": "0b85558d5bcf88ef59c7f5462eee8a9100c9e6290bf356446ef30d18344f2d8d",
+      "compiled": "harness/services/AccountStatus.swift",
+      "bytes": 1054,
+      "sha256": "195296a8efc941341637b4df5739e026f13d58177141c37bb0e14894962dcb52",
+      "projection": "Remove only unused import CoreGraphics newline; complete enum/conversion body is byte unchanged.",
+      "retainedOriginal": "reference/Modules/Services/Sources/Models/Account/AccountStatus.swift"
+    },
+    {
+      "source": "Modules/Services/Sources/Services/BasicUserInfoService/BasicUserInfoStorage.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "3c35124603ac69c45d48dd8f9c6ec8c10eee64f0",
+      "sourceBytes": 560,
+      "sourceSHA256": "e84d082c92b928f611cca50c8836a2a4787958ba05b4f78d827cdaef04be8dd4",
+      "compiled": "harness/services/BasicUserInfoStorageProtocol.swift",
+      "bytes": 225,
+      "sha256": "7cdabb78c063f807cb7e35f3c9285beb22dfb2e7e03b7e6f32ffcc11bf98533e",
+      "projection": "Exact original imports and BasicUserInfoStorageProtocol prefix; exclude UserDefaultByAppGroup implementation. Explicit fixture supplies in-memory basic values.",
+      "retainedOriginal": "reference/Modules/Services/Sources/Services/BasicUserInfoService/BasicUserInfoStorage.swift"
+    },
+    {
+      "source": "Anytype/Sources/Models/ObjectPermissions/ObjectPermissions.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "f0f97d0b362b927e3652aadf47e15b0adde5bff2",
+      "sourceBytes": 4902,
+      "sourceSHA256": "3e696ada8ddc0a2d175f6f238d06bf5e3d97c492ae6c10ad5f512fbc8e615968",
+      "compiled": "harness/app/ObjectPermissions.swift",
+      "bytes": 1124,
+      "sha256": "286e9727b48f25b6344197362ad9774094aca95626a4a8d5bf3a24c6ee745e1e",
+      "projection": "Exact original imports and stored ObjectPermissions struct prefix; exclude native details/layout/participant permission evaluation. Fixture sets editable=true only to isolate read-lineage denial.",
+      "retainedOriginal": "reference/Anytype/Sources/Models/ObjectPermissions/ObjectPermissions.swift"
+    },
+    {
+      "source": "Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "953cf70be87282dde644d0a4e4b10c1e2f04edc0",
+      "sourceBytes": 9627,
+      "sourceSHA256": "42d619b79a0f68794163fd3cfdb1261292237b215e2554dfb35677897eb975e9",
+      "compiled": "harness/app/OriginalChannelPinPermission.swift",
+      "bytes": 4634,
+      "sha256": "bd497ad835574512d29d75f7285cf13e54f9353b6f62500b56655cf36a1b0951",
+      "projection": "Exact ORIGINAL_CHANNEL_PIN_PERMISSION_BEGIN..END marked original region plus Foundation import; real permission/capture definitions, no participant actor/subscription.",
+      "retainedOriginal": "reference/Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift"
+    },
+    {
+      "source": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "c90dd7f2ee0577d3496d81fd164fc238b79ea364",
+      "sourceBytes": 49230,
+      "sourceSHA256": "b0ae02be8c28c22246d29bf927cb154e10019d841f3b831771f968a8938f7d46",
+      "compiled": "harness/app/EditorDocumentWriteOwner.swift",
+      "bytes": 49230,
+      "sha256": "b0ae02be8c28c22246d29bf927cb154e10019d841f3b831771f968a8938f7d46",
+      "projection": "none"
+    },
+    {
+      "source": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOperation.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "fdfa2a427044e6ea395f02dbda43d244b1fbe4af",
+      "sourceBytes": 2459,
+      "sourceSHA256": "d6a1034809671d7550e21c5da4e46e1065d21ca6438bb66c7e1f9ea869b9dc51",
+      "compiled": "harness/app/EditorDocumentWriteOperation.swift",
+      "bytes": 2459,
+      "sha256": "d6a1034809671d7550e21c5da4e46e1065d21ca6438bb66c7e1f9ea869b9dc51",
+      "projection": "none"
+    },
+    {
+      "source": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteLifetime.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "19f81f5e1bb51b48a7fd46d30476a99105d9aea2",
+      "sourceBytes": 5574,
+      "sourceSHA256": "451054685e2ff0c30371d384904be831412eec16c2a5e16c660d2f1891921eb4",
+      "compiled": "harness/app/EditorDocumentWriteLifetime.swift",
+      "bytes": 5574,
+      "sha256": "451054685e2ff0c30371d384904be831412eec16c2a5e16c660d2f1891921eb4",
+      "projection": "none"
+    },
+    {
+      "source": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/PreparedEditorPageDocument.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "37ff035f30c0b2f17c2ce75b4c7a7f1acbbb78a2",
+      "sourceBytes": 1093,
+      "sourceSHA256": "42e595c324e46947d4b964070994a193478d57072931b92be1451f155e2cb32e",
+      "compiled": "harness/app/PreparedEditorPageDocument.swift",
+      "bytes": 1093,
+      "sha256": "42e595c324e46947d4b964070994a193478d57072931b92be1451f155e2cb32e",
+      "projection": "none"
+    },
+    {
+      "source": "Anytype/Sources/ServiceLayer/Account/AccountManager.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "8b5d3d362f2c73b248b8b5b68e6ecda9a62f09e2",
+      "sourceBytes": 1291,
+      "sourceSHA256": "954494a8c39f3c913dccb824a4064fdc1199ea46b0afbd9c54fd35f7105b224b",
+      "compiled": "harness/app/AccountManager.swift",
+      "bytes": 1291,
+      "sha256": "954494a8c39f3c913dccb824a4064fdc1199ea46b0afbd9c54fd35f7105b224b",
+      "projection": "none"
+    },
+    {
+      "source": "Anytype/Sources/Models/Documents/Document/DocumentMode.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "1b9bfabc1b1e17fc7615806483053885d039f80e",
+      "sourceBytes": 312,
+      "sourceSHA256": "4421806df8b06416f858460549f1ae6afeee11cccd378f6552ccdf65d95ef7d3",
+      "compiled": "harness/app/DocumentMode.swift",
+      "bytes": 312,
+      "sha256": "4421806df8b06416f858460549f1ae6afeee11cccd378f6552ccdf65d95ef7d3",
+      "projection": "none"
+    },
+    {
+      "source": "Anytype/Sources/Models/Documents/Document/EditBlocksPermission.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "d428dc06b3f55559bb39b141815d84daececca4a",
+      "sourceBytes": 428,
+      "sourceSHA256": "77f7918bbf674b6873c2f9bdbd419445a8b8c72664aabfb851a4393a49dbc3bb",
+      "compiled": "harness/app/EditBlocksPermission.swift",
+      "bytes": 428,
+      "sha256": "77f7918bbf674b6873c2f9bdbd419445a8b8c72664aabfb851a4393a49dbc3bb",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAnnotationNativeIdentity.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "2c9db7736ee536b64c157de21ac88833c445bdfc",
+      "sourceBytes": 7630,
+      "sourceSHA256": "511c648c9c789d838b196f75e223094783a399c36ee9650c664b23d878c605cf",
+      "compiled": "harness/pinkha/TorahAnnotationNativeIdentity.swift",
+      "bytes": 7630,
+      "sha256": "511c648c9c789d838b196f75e223094783a399c36ee9650c664b23d878c605cf",
+      "projection": "none"
+    },
+    {
+      "source": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAnnotationCreateRecovery.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "gitBlob": "7d62d3af97ef318eadaeef995dca558a62e47803",
+      "sourceBytes": 8484,
+      "sourceSHA256": "12beaebc75d52ea495d86a729f9ef8e07902dd82cccafe1cb07dedd89d09cd38",
+      "compiled": "harness/pinkha/TorahAnnotationCreateRecovery.swift",
+      "bytes": 8484,
+      "sha256": "12beaebc75d52ea495d86a729f9ef8e07902dd82cccafe1cb07dedd89d09cd38",
+      "projection": "none"
+    },
+    {
+      "source": "Anytype/Sources/Pinkha/Torah/Annotations/OriginalAnnotationObjectReadback.swift",
+      "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+      "compiled": "harness/app/OriginalAnnotationObjectReadback.swift",
+      "bytes": 11058,
+      "sha256": "dcb942bbbdc799989134da1f84256641ac750437749ca67d4412e352a0f0a252",
+      "projection": "none: complete frozen reviewed new candidate, including only approved old signature token correction"
+    },
+    {
+      "kind": "new_focused_fixture_or_control",
+      "compiled": "harness/Package.swift",
+      "bytes": 1805,
+      "sha256": "b209720a2cb1ac9194ac2361166bce83d14586731f5c1947a59ad4c8f3bb1ed0"
+    },
+    {
+      "kind": "new_focused_fixture_or_control",
+      "compiled": "harness/combine/PortableCombineBoundary.swift",
+      "bytes": 227,
+      "sha256": "671d789eeff3f0d4d4316d47b466951251f6e3e3c29315eeaed46655b2fa94bb"
+    },
+    {
+      "kind": "new_focused_fixture_or_control",
+      "compiled": "harness/core/PortablePlatformStorageBoundary.swift",
+      "bytes": 803,
+      "sha256": "7e0738798edd040ea3bb38e3f0d54aa33ceae6c3f5de9cee08976eeebc6ca812"
+    },
+    {
+      "kind": "new_focused_fixture_or_control",
+      "compiled": "harness/app/PortableDocumentAndDIBoundaries.swift",
+      "bytes": 3662,
+      "sha256": "d1c711d9f6af8d03961113b168f682dbe187fac40ab2e02d4217ab03a6de90c3"
+    },
+    {
+      "kind": "new_focused_fixture_or_control",
+      "compiled": "harness/app/PortableObjectShowBoundary.swift",
+      "bytes": 3843,
+      "sha256": "3feebee653f1c6927b02404d1a6dd7acc4a8d68fd39f26022a43a2ae7db4c6f3"
+    },
+    {
+      "kind": "new_focused_fixture_or_control",
+      "compiled": "harness/tests/HeldReadTests.swift",
+      "bytes": 29301,
+      "sha256": "a8fbd4310bec2d110efb8723472d04dfaeef59caf1fd3ff27b463ee3d59cd52f"
+    }
+  ],
+  "sourceInputCount": 116,
+  "compiledBytes": 546790,
+  "swiftProtobuf": {
+    "path": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\omd-protobuf-20261122",
+    "commit": "c6fe6442e6a64250495669325044052e113e990c",
+    "verifiedClean": true
+  },
+  "testMethods": [
+    "testFreshBinaryViewAndRootPreservedInsideOriginalReadLineage",
+    "testLegacyFreshDetailsUsesSameStrictActualResponse",
+    "testMalformedRootAndDetailsRefuseConsumer",
+    "testNativeSpaceRequiresExactStringScope",
+    "testNativeTypeKindsCountsAndIdentifiersRefuseConsumer",
+    "testPresentStateKindsAndUnavailableValuesRefuseConsumer",
+    "testLinkedRowsAndFalseStatesPreserveUnqualifiedNativeType",
+    "testOwnerRetiredBeforeReadNeverDispatches",
+    "testAccountChangedBeforeReadNeverDispatches",
+    "testSourceRetiredBeforeReadNeverDispatches",
+    "testDocumentChangedBeforeReadNeverDispatches",
+    "testCancelledBeforeReadNeverDispatches",
+    "testOwnerRetiredDuringRPCRefusesConsumer",
+    "testAccountChangedDuringRPCRefusesConsumer",
+    "testSourceRetiredDuringRPCRefusesConsumer",
+    "testCancelledDuringRPCRefusesConsumer",
+    "testRPCFailurePreservesOriginalErrorAndNeverCallsConsumer",
+    "testCallbackErrorPreservedAfterEffectAndRetirement",
+    "testCallbackValueRetainedWhenItRetiresOwner",
+    "testCallbackValueRetainedWhenItCancelsCurrentTask",
+    "testReturnedValueSurvivesRetirementWithNativeCompletionPending",
+    "testReturnedValueSurvivesCancellationWithNativeCompletionPending",
+    "testDefaultMutationChildRejectedInsideHeldRead",
+    "testNestedExclusiveReadRefusedWithoutDroppingOuterBarrier",
+    "testChangedBasicAccountScopeRefusesRead",
+    "testSecondReadObservesSecondActualResponseWithoutCache"
+  ],
+  "expectedTestMethods": 26,
+  "limits": [
+    "No original generated source changes, removed conformances, protobuf value stubs or substitute ObjectDetails model.",
+    "Complete new adapter, original Owner/Lifetime/Operation/PreparedDocument/AccountManager, actual InvocationDispatchBinding, actual Pinkha DTO sources; complete Services ObjectDetails/providers.",
+    "Original Invocation/native middleware body is not compiled. Explicit ObjectShow probe serializes/deserializes genuine generated messages and exercises actual dispatch permits; it can retain completion or delay RPC return.",
+    "Prepared session/document/container are declared fixture boundaries; no actual editor assembly, UI, native account selection, original BasicUserInfo UserDefaults storage, Combine publisher, OSAllocatedUnfairLock or native service execution.",
+    "AccountStatus removes only unused CoreGraphics import; other original projections retain exact prefixes/marked regions with full originals adjacent.",
+    "Application target uses Swift 5 language plus complete strict-concurrency diagnostics; support modules/tests use Swift 6; not an Apple SDK or full application build.",
+    "Completion outcome is callback completion only, never a body/equality/identity/type/COMMIT/receipt/ACK grant. Two pending-completion cases admit only observed late cancellation/retirement error variants; no private Owner wait-phase inference.",
+    "No old policy52, metadata26, Owner/SQLite, Native or Live tests are included."
+  ]
+}

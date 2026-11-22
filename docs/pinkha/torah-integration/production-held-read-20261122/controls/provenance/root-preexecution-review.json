@@ -1,0 +1,79 @@
+{
+  "status": "PASS_SOURCE_AND_CONTROL_REVIEW_ONLY",
+  "createdUTC": "2026-11-22T08:14:24.107322+00:00",
+  "base": "18ac6d39dfe76b12e5dead9627c831c6a88d073c",
+  "candidateSHA256": "dcb942bbbdc799989134da1f84256641ac750437749ca67d4412e352a0f0a252",
+  "inputIndexSHA256": "bf16b93b5ab6badcd405f436258f2b4e40d5069bdf58004f6249fa03adf241ad",
+  "compiledInputsVerified": 116,
+  "compiledInputBytes": 546790,
+  "immutableOriginalInputRows": 109,
+  "uniqueOriginalGitBlobs": 109,
+  "unchangedGeneratedFiles": 74,
+  "unchangedGeneratedBytes": 338116,
+  "exactProjections": [
+    {
+      "source": "Modules/Services/Sources/Models/Account/AccountStatus.swift",
+      "compiled": "harness/services/AccountStatus.swift",
+      "projection": "Remove only unused import CoreGraphics newline; complete enum/conversion body is byte unchanged."
+    },
+    {
+      "source": "Modules/Services/Sources/Services/BasicUserInfoService/BasicUserInfoStorage.swift",
+      "compiled": "harness/services/BasicUserInfoStorageProtocol.swift",
+      "projection": "Exact original imports and BasicUserInfoStorageProtocol prefix; exclude UserDefaultByAppGroup implementation. Explicit fixture supplies in-memory basic values."
+    },
+    {
+      "source": "Anytype/Sources/Models/ObjectPermissions/ObjectPermissions.swift",
+      "compiled": "harness/app/ObjectPermissions.swift",
+      "projection": "Exact original imports and stored ObjectPermissions struct prefix; exclude native details/layout/participant permission evaluation. Fixture sets editable=true only to isolate read-lineage denial."
+    },
+    {
+      "source": "Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift",
+      "compiled": "harness/app/OriginalChannelPinPermission.swift",
+      "projection": "Exact ORIGINAL_CHANNEL_PIN_PERMISSION_BEGIN..END marked original region plus Foundation import; real permission/capture definitions, no participant actor/subscription."
+    }
+  ],
+  "candidateAndNewFixtureInputs": [
+    "harness/app/OriginalAnnotationObjectReadback.swift",
+    "harness/Package.swift",
+    "harness/combine/PortableCombineBoundary.swift",
+    "harness/core/PortablePlatformStorageBoundary.swift",
+    "harness/app/PortableDocumentAndDIBoundaries.swift",
+    "harness/app/PortableObjectShowBoundary.swift",
+    "harness/tests/HeldReadTests.swift"
+  ],
+  "newCaseNames": [
+    "testFreshBinaryViewAndRootPreservedInsideOriginalReadLineage",
+    "testLegacyFreshDetailsUsesSameStrictActualResponse",
+    "testMalformedRootAndDetailsRefuseConsumer",
+    "testNativeSpaceRequiresExactStringScope",
+    "testNativeTypeKindsCountsAndIdentifiersRefuseConsumer",
+    "testPresentStateKindsAndUnavailableValuesRefuseConsumer",
+    "testLinkedRowsAndFalseStatesPreserveUnqualifiedNativeType",
+    "testOwnerRetiredBeforeReadNeverDispatches",
+    "testAccountChangedBeforeReadNeverDispatches",
+    "testSourceRetiredBeforeReadNeverDispatches",
+    "testDocumentChangedBeforeReadNeverDispatches",
+    "testCancelledBeforeReadNeverDispatches",
+    "testOwnerRetiredDuringRPCRefusesConsumer",
+    "testAccountChangedDuringRPCRefusesConsumer",
+    "testSourceRetiredDuringRPCRefusesConsumer",
+    "testCancelledDuringRPCRefusesConsumer",
+    "testRPCFailurePreservesOriginalErrorAndNeverCallsConsumer",
+    "testCallbackErrorPreservedAfterEffectAndRetirement",
+    "testCallbackValueRetainedWhenItRetiresOwner",
+    "testCallbackValueRetainedWhenItCancelsCurrentTask",
+    "testReturnedValueSurvivesRetirementWithNativeCompletionPending",
+    "testReturnedValueSurvivesCancellationWithNativeCompletionPending",
+    "testDefaultMutationChildRejectedInsideHeldRead",
+    "testNestedExclusiveReadRefusedWithoutDroppingOuterBarrier",
+    "testChangedBasicAccountScopeRefusesRead",
+    "testSecondReadObservesSecondActualResponseWithoutCache"
+  ],
+  "newCaseCount": 26,
+  "fullTestSourceRead": true,
+  "allFourPortableProbeFilesRead": true,
+  "actualNativeRPC": false,
+  "testsParsesBuildsExecuted": 0,
+  "runnerReview": "Pending narrowly corrected evidence-only executable/source-closure admission; no product/test/input changes requested",
+  "scriptSHA256": "0d59f5223cbf5ae24ba1beaa6deb6d8f91c089b551f2ec9a7ef1644fdb867ec7"
+}

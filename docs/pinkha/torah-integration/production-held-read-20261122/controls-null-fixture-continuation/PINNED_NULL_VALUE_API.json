@@ -1,0 +1,29 @@
+{
+  "query": "Sources/SwiftProtobuf\\Message.swift:164:    public static func with(\nSources/SwiftProtobuf\\struct.pb.swift:125:  public var nullValue: Google_Protobuf_NullValue {\n",
+  "files": [
+    {
+      "path": "Sources/SwiftProtobuf/Message.swift",
+      "revision": "c6fe6442e6a64250495669325044052e113e990c",
+      "sha256": "04b419dcb0bcb60f2e7d418545ebac29669caa3dcc7d75a7db22ca2981351570",
+      "bytes": 8780,
+      "excerpts": [
+        {
+          "line": 164,
+          "source": "    /// - Parameter populator: A block or function that populates the new message,\n    ///   which is passed into the block as an `inout` argument.\n    /// - Returns: The message after execution of the block.\n    public static func with(\n        _ populator: (inout Self) throws -> Void\n    ) rethrows -> Self {\n        var message = Self()\n        try populator(&message)\n        return message\n    }\n}\n\n/// Implementation base for all messages; not intended for client use.\n///\n/// In general, use `SwiftProtobuf.Message` instead when you need a variable or\n/// argument that can hold any type of message. Occasionally, you can use\n/// `SwiftProtobuf.Message & Equatable` or `SwiftProtobuf.Message & Hashable` as\n/// generic constraints if you need to write generic code that can be applied to\n/// multiple message types that uses equality tests, puts messages in a `Set`,"
+        }
+      ]
+    },
+    {
+      "path": "Sources/SwiftProtobuf/struct.pb.swift",
+      "revision": "c6fe6442e6a64250495669325044052e113e990c",
+      "sha256": "8c1994128f4b1966ddb18e676212ab09fd2c6a329785b71ce44cbfa501504059",
+      "bytes": 14614,
+      "excerpts": [
+        {
+          "line": 125,
+          "source": "  public var kind: Google_Protobuf_Value.OneOf_Kind? = nil\n\n  /// Represents a null value.\n  public var nullValue: Google_Protobuf_NullValue {\n    get {\n      if case .nullValue(let v)? = kind {return v}\n      return .nullValue\n    }\n    set {kind = .nullValue(newValue)}\n  }\n\n  /// Represents a double value.\n  public var numberValue: Double {\n    get {\n      if case .numberValue(let v)? = kind {return v}\n      return 0\n    }\n    set {kind = .numberValue(newValue)}\n  }"
+        }
+      ]
+    }
+  ]
+}

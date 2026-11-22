@@ -1,0 +1,11 @@
+--- original/HeldReadTests.swift
++++ continuation/HeldReadTests.swift
+@@ -348,7 +348,7 @@
+         for key in ["isArchived", "isDeleted"] {
+             for field in [Google_Protobuf_Value(stringValue: "false"),
+                           Google_Protobuf_Value(numberValue: 0),
+-                          Google_Protobuf_Value(nullValue: .nullValue),
++                          Google_Protobuf_Value.with { $0.nullValue = .nullValue },
+                           Google_Protobuf_Value()] {
+                 var response = original
+                 response.objectView.details[0].details.fields[key] = field
