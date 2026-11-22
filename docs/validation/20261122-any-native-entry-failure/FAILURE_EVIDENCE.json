@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "runID": 45031455896,
+  "jobID": 137235750274,
+  "artifactID": 14760000069,
+  "commit": "ef06a2c438104d1b47a715319bb78d31348edc04",
+  "originalArtifactSHA256": "cb5275f3497c6b8580462e43dc69dca52bce1a819757005b49fda2136b2cb974",
+  "originalArtifactBytes": 76048603,
+  "originalArtifactFiles": 1430,
+  "selectionClaim": "Exact original selected failure evidence, not the entire artifact or original binaries",
+  "selectedFiles": {
+    "compiled-product-identity-controls.log": {
+      "bytes": 1125,
+      "sha256": "8d5bfa21bd3b648b299b18571fd9e6029f6a60f09164fd3794e36b2d579d3036"
+    },
+    "native-app-bundle.json": {
+      "bytes": 933,
+      "sha256": "de0ee1b19debec4c575e5c1b80f0c28369fccfc26c79c950328a9e76e18d78d1"
+    },
+    "native-reuse.json": {
+      "bytes": 528,
+      "sha256": "773043f9844d69f3db362581f71acbeac059abee2c6aee9221046d34380785ae"
+    },
+    "native-shared-products.json": {
+      "bytes": 43059,
+      "sha256": "e1604b04d7921e18a8369603d6390ecb3f671ffbe51245eb4b66213c9f2d9be0"
+    },
+    "native-ui-named-execution.json": {
+      "bytes": 730,
+      "sha256": "f06cb8287805290895c19a15a60ec9887c1bbe919427e91aec128b56050af106"
+    },
+    "native-ui-test-counts.json": {
+      "bytes": 1700,
+      "sha256": "75137e1d190d747f02d2cfdf25535ff4461f4d1a0d0c3278d22659460c149f75"
+    },
+    "native-ui-test-methods.json": {
+      "bytes": 2462,
+      "sha256": "65240ef07f4f9b3b292645a5699c6c74faf7e651428b8ef2b7801ce16db48c68"
+    },
+    "native-ui.log": {
+      "bytes": 18371,
+      "sha256": "b9a56e8ec2e473d73f24ef22360add6f5da2bffb8904d87b4d98d0e63147190f"
+    },
+    "editor-diagnostics.json": {
+      "bytes": 450,
+      "sha256": "c42b48c8c1b066c5d5126a370f1a8cf6be06f51c59dbcd9dda19936a10e11bc4"
+    },
+    "source-sha.txt": {
+      "bytes": 41,
+      "sha256": "758fe0a9d7590b448d2ee6509cd2e6c73200614ee3dd4bda656ffa47a5fbf8ed"
+    },
+    "ui-ios-reuse.json": {
+      "bytes": 18473,
+      "sha256": "f7fd45f84ead6e06c3fc8532551606cda5f3eaa0c6725c282f2e70b1d5c3b5ad"
+    },
+    "xcode-version.txt": {
+      "bytes": 33,
+      "sha256": "694b44731d0b415c5b11d844151e466d7f5e200a95627efda377f232f1a6ab77"
+    },
+    "simulator.json": {
+      "bytes": 184,
+      "sha256": "efb273f85142712ed49e176b8803a4c195e3f7ff7cd79b57ab33a0f44029ef91"
+    },
+    "native-products-originals/manifest.json": {
+      "bytes": 851,
+      "sha256": "c4262e879879e1c541ff6b0cbb32eacb014cfb4cd0d8ff1ef5446be463c45ab9"
+    },
+    "editor-debug-events/pinkha-editor-ui-diagnostics-0ED44335-125D-4E14-B02D-847D66812E02.json": {
+      "bytes": 1947,
+      "sha256": "779791877632aab32f72714096200234d2efeb13284db032b399c5a062c5f430"
+    },
+    "original-spindump.zst": {
+      "bytes": 737156,
+      "sha256": "48452811d41d48bb39fe1beead0c1df39f4dde3e98f3cec35b09d92cbb4bd148",
+      "xcresultPayloadRef": "0~XMcS8ZMhKiq0GfV24aWm9toWiGU2wAepSrGidFu5muV-8bj_xxMO3NAjMjSJVHDoPGWDvUY3h9zzsZEhTtGRMw=="
+    }
+  },
+  "selectedZIP_SHA256": "e3cd373b2e444bf6216b1847c57e4da023b13b1080cf99f3562efaf59ce12d83",
+  "originalSpindumpSHA256": "7a95235c01425c10644bcb8a781ce966bc84e75ba9ecc6271f8d0fc7f5c5f5ff",
+  "appSpindumpSHA256": "957bf426f048290d2247806138ddf610521c982b5a30072cac383857ba7a8e58",
+  "nativeEntry": {
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "test": "NativeLaunchTests/testCreateEditHanlinConsentBackgroundAndColdReopen()"
+  },
+  "dependentJourneys": "NOT_RUN",
+  "filesRoundtrip": "NOT_RUN",
+  "customType": "NOT_RUN",
+  "diagnosis": "Original native creation/readback completed; original app spindump266/266 samples places becomeFirstResponder inside diffable completion during SwiftUI update",
+  "fullAcceptance": false
+}

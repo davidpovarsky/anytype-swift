@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "ef06a2c438104d1b47a715319bb78d31348edc04",
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+      "sha256": "a9c472bf39882127ab758dd953d4d1c0d5c26b120970caf2fd5ad48d2563c5c9",
+      "gitBlob": "87e143a99640689ea1e520d3459819f153b48740",
+      "bytes": 39906,
+      "base": {
+        "gitBlob": "59c0a9061081f9bc2776357f09d58d726d6a0bc8",
+        "sha256": "4cc147c83804b8fcd7fb680dd16615fcfaa00e512df812ff3fcc03b41ecadd76",
+        "bytes": 39754
+      }
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeFocusCoordinator.swift",
+      "sha256": "3c565e2b46983921881d3a093e61825529e59df49ba8662a81b37f337120c7f2",
+      "gitBlob": "bef053d891d3a9cc10f042d62ef331d730d85681",
+      "bytes": 4930,
+      "base": {
+        "gitBlob": "0ea0e0bcb2aa6518d3210517bdac599b90fc9a6d",
+        "sha256": "b0566c1207b871d3d5416c8815801d35280f386c351316621c6f7482aaeb60d6",
+        "bytes": 3186
+      }
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeFocusHandoffTests.swift",
+      "sha256": "df49aa84964c7ce17e9db8a65d5e3594c0a01b636cb545f9820009fb6f65ef34",
+      "gitBlob": "7aef0601107efe1f51174bee9ff3f3fbfa8c20ee",
+      "bytes": 8791,
+      "base": null
+    },
+    {
+      "path": "Tools/AnyEnginePort/reuse_uikit_unaffected_eight.py",
+      "sha256": "56596559359b60c27e8302785720f8f456ce384ad375c8ee3a038002694baecc",
+      "gitBlob": "4848860bcd4b55dff8e901edd7b5f6ace46203fe",
+      "bytes": 10694,
+      "base": null
+    },
+    {
+      "path": "Tools/AnyEnginePort/verify_focus_handoff_execution.py",
+      "sha256": "3b6799f003a1e526e66b6c35dbe34a727f0b2a736cc7a6690d8575805642bc1c",
+      "gitBlob": "d0d9cab5ed03c74cc04b25d61a13c2fb319cd510",
+      "bytes": 6973,
+      "base": null
+    },
+    {
+      "path": "Tools/AnyEnginePort/test_reuse_uikit_unaffected_eight.py",
+      "sha256": "86e9e30bf57377ffad281751af5b49a3898892f54762c48944a3a275dd44151d",
+      "gitBlob": "f229184e20119cf118182323895ea4b1a1479931",
+      "bytes": 8474,
+      "base": null
+    }
+  ],
+  "unchangedAnyNativeTextViewDeclarationSHA256": "8739ef7a27019f8d286473227ca784a8e149643d28d4749b277a58ee4bad3951",
+  "unchangedAnyNativeTextViewDeclarationBytes": 4607,
+  "appleValidation": "NOT_RUN",
+  "nativeEntryAssertions": "UNCHANGED",
+  "originalSpindumpSHA256": "7a95235c01425c10644bcb8a781ce966bc84e75ba9ecc6271f8d0fc7f5c5f5ff",
+  "localValidation": {
+    "pythonAdmissionControls": {
+      "status": "PASS",
+      "methods": 5,
+      "failures": 0,
+      "skips": 0,
+      "command": "python3 -m unittest discover -s Tools/AnyEnginePort -p test_reuse_uikit_unaffected_eight.py -v",
+      "scope": "New Python admission controls only; no Apple test execution"
+    },
+    "swiftGrammar": {
+      "status": "PASS_GRAMMAR_ONLY",
+      "sentinelJob": "job_e53160e5eca6",
+      "scope": "Swift 6.3.3 Windows frontend parse; UIKit not typechecked or executed"
+    }
+  }
+}

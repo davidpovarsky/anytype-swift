@@ -43,6 +43,10 @@ on:
         description: Exact original UIKit14 producer commit
         type: string
         default: ''
+      focus_handoff_validation:
+        description: Retain eight unaffected UIKit methods and execute ten affected focus methods before remaining native UI
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -270,6 +274,10 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
+      - name: Verify the focused handoff selection is a remaining native UI run
+        if: ${{ inputs.focus_handoff_validation }}
+        shell: bash
+        run: test "${{ inputs.validation_scope }}" = remaining-native-ui
       - name: Checkout immutable canonical Hanlin source
         uses: actions/checkout@v4
         with:
@@ -336,8 +344,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python3 -m unittest discover -s Tools/AnyEnginePort -p test_compiled_product_identity.py -v \
-            2>&1 | tee build/any-patched-evidence/compiled-product-identity-controls.log
+          if [ "${{ inputs.focus_handoff_validation }}" = true ]; then
+            python3 Tools/AnyEnginePort/retain_compiled_product_controls.py \
+              --output build/any-patched-evidence/compiled-product-identity-retained.json
+          else
+            python3 -m unittest discover -s Tools/AnyEnginePort -p test_compiled_product_identity.py -v \
+              2>&1 | tee build/any-patched-evidence/compiled-product-identity-controls.log
+          fi
       - name: Reuse the original binary after exact native source verification
         id: native-reuse
         if: ${{ inputs.validation_scope == 'remaining' || inputs.validation_scope == 'remaining-native-ui' }}
@@ -416,13 +429,55 @@ jobs:
           [[ "$UI_PRODUCER_COMMIT" =~ ^[0-9a-f]{40}$ ]]
           gh run download "$UI_ARTIFACT_RUN_ID" --repo "$GITHUB_REPOSITORY" \
             --name "any-engine-port-ios-patched-runtime-$UI_PRODUCER_COMMIT" --dir build/any-reused-ui-evidence
-          python3 Tools/AnyEnginePort/reuse_uikit_execution.py \
+          verifier=Tools/AnyEnginePort/reuse_uikit_execution.py
+          if [ "${{ inputs.focus_handoff_validation }}" = true ]; then
+            verifier=Tools/AnyEnginePort/reuse_uikit_unaffected_eight.py
+          fi
+          python3 "$verifier" \
             --evidence build/any-reused-ui-evidence \
             --producer-commit "$UI_PRODUCER_COMMIT" --producer-run "$UI_ARTIFACT_RUN_ID" \
             --consumer-simulator build/any-patched-evidence/simulator.json \
             --consumer-xcode-version build/any-patched-evidence/xcode-version.txt \
             --reviewed-source-changes Tools/AnyEnginePort/reviews/uikit14-unexecuted-source-changes-20261122.json \
             --output build/any-patched-evidence/ui-ios-reuse.json
+      - name: Execute only the six affected focus methods and four new handoff regressions
+        id: ui-focus-tests
+        if: ${{ !cancelled() && inputs.validation_scope == 'remaining-native-ui' && inputs.focus_handoff_validation && steps.ui-reuse.outcome == 'success' }}
+        working-directory: Modules/PinkhaAnyUI
+        shell: bash
+        run: |
+          set -euo pipefail
+          set +e
+          xcodebuild test \
+            -only-testing:PinkhaAnyUITests/AnyNativeFocusLifecycleTests \
+            -only-testing:PinkhaAnyUITests/AnyNativeFocusHandoffTests \
+            -scheme PinkhaAnyUI \
+            -destination "platform=iOS Simulator,id=$ANY_NATIVE_SIMULATOR_UDID" \
+            -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived" \
+            -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/ui-focus-handoff.xcresult" \
+            -parallel-testing-enabled NO \
+            -test-timeouts-enabled YES \
+            -default-test-execution-time-allowance 180 \
+            -maximum-test-execution-time-allowance 180 \
+            2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/ui-focus-handoff.log"
+          test_exit=$?
+          set -e
+          cd "$GITHUB_WORKSPACE"
+          named_exit=0
+          if [ -d build/any-patched-evidence/ui-focus-handoff.xcresult ]; then
+            xcrun xcresulttool get test-results summary \
+              --path build/any-patched-evidence/ui-focus-handoff.xcresult --format json \
+              > build/any-patched-evidence/ui-focus-handoff-test-counts.json || true
+            xcrun xcresulttool get test-results tests \
+              --path build/any-patched-evidence/ui-focus-handoff.xcresult --format json \
+              > build/any-patched-evidence/ui-focus-handoff-test-methods.json || true
+          fi
+          python3 Tools/AnyEnginePort/verify_focus_handoff_execution.py \
+            --udid "$ANY_NATIVE_SIMULATOR_UDID" \
+            --summary build/any-patched-evidence/ui-focus-handoff-test-counts.json \
+            --tests build/any-patched-evidence/ui-focus-handoff-test-methods.json \
+            --output build/any-patched-evidence/ui-focus-handoff-named-execution.json || named_exit=1
+          if [ "$test_exit" -ne 0 ] || [ "$named_exit" -ne 0 ]; then exit 1; fi
       - name: Build and run the linked AnyLib lifecycle tests
         if: ${{ inputs.validation_scope != 'remaining' && inputs.validation_scope != 'remaining-native-ui' }}
         working-directory: Modules/PinkhaAnyRuntime
@@ -540,7 +595,7 @@ jobs:
           if-no-files-found: warn
       - name: Start the owned simulator while the required native target builds
         id: native-boot
-        if: ${{ !cancelled() && inputs.validation_scope == 'remaining-native-ui' && steps.ui-reuse.outcome == 'success' }}
+        if: ${{ !cancelled() && inputs.validation_scope == 'remaining-native-ui' && steps.ui-reuse.outcome == 'success' && (!inputs.focus_handoff_validation || steps.ui-focus-tests.outcome == 'success') }}
         shell: bash
         run: |
           set -euo pipefail
@@ -549,7 +604,7 @@ jobs:
             --safe-dir build/any-patched-evidence/hanlin-provider
       - name: Build the selected native executable and UI tests once
         id: native-ui-build
-        if: ${{ !cancelled() && (steps.ui-tests.outcome == 'success' || steps.ui-reuse.outcome == 'success') && (inputs.validation_scope != 'remaining-native-ui' || steps.native-boot.outcome == 'success') }}
+        if: ${{ !cancelled() && (steps.ui-tests.outcome == 'success' || steps.ui-reuse.outcome == 'success') && (inputs.validation_scope != 'remaining-native-ui' || steps.native-boot.outcome == 'success') && (!inputs.focus_handoff_validation || steps.ui-focus-tests.outcome == 'success') }}
         shell: bash
         run: |
           set -euo pipefail
@@ -640,7 +695,7 @@ jobs:
             --output build/any-patched-evidence/native-shared-products.json
       - name: Prepare owned Hanlin HTTPS provider for mounted acceptance
         id: provider-fixture
-        if: ${{ !cancelled() && steps.native-ui-build.outcome == 'success' && steps.native-app-boundary.outcome == 'success' && (steps.ui-tests.outcome == 'success' || steps.ui-reuse.outcome == 'success') }}
+        if: ${{ !cancelled() && steps.native-ui-build.outcome == 'success' && steps.native-app-boundary.outcome == 'success' && (steps.ui-tests.outcome == 'success' || steps.ui-reuse.outcome == 'success') && (!inputs.focus_handoff_validation || steps.ui-focus-tests.outcome == 'success') }}
         shell: bash
         run: |
           set -euo pipefail
@@ -657,7 +712,7 @@ jobs:
           if-no-files-found: warn
       - name: Run the native acceptance entry before dependent journeys
         id: native-ui-tests
-        if: ${{ !cancelled() && steps.provider-fixture.outcome == 'success' && (steps.ui-tests.outcome == 'success' || steps.ui-reuse.outcome == 'success') && (inputs.validation_scope != 'remaining-native-ui' || steps.native-shared-products.outcome == 'success') }}
+        if: ${{ !cancelled() && steps.provider-fixture.outcome == 'success' && (steps.ui-tests.outcome == 'success' || steps.ui-reuse.outcome == 'success') && (inputs.validation_scope != 'remaining-native-ui' || steps.native-shared-products.outcome == 'success') && (!inputs.focus_handoff_validation || steps.ui-focus-tests.outcome == 'success') }}
         shell: bash
         run: |
           set -euo pipefail
@@ -1158,3 +1213,4 @@ jobs:
           path: build/any-authorized-read-evidence/
           retention-days: 14
           if-no-files-found: error
+

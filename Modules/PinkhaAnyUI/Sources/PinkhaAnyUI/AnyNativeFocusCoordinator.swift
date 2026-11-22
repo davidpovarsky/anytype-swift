@@ -23,6 +23,12 @@ final class AnyNativeFocusCoordinator: NSObject {
     private var pending: AnyNativeFocusIntent?
     private var resolving = false
     private var waitingAfterNativeRefusal = false
+    private struct DeferredReadiness {
+        let deliveryID: UUID
+        let intentID: UUID
+        var event: Readiness
+    }
+    private var deferredReadiness: DeferredReadiness?
     private(set) var applying = false
     var hasPending: Bool { pending != nil }
 
@@ -37,12 +43,39 @@ final class AnyNativeFocusCoordinator: NSObject {
     deinit { NotificationCenter.default.removeObserver(self) }
 
     func request(_ intent: AnyNativeFocusIntent, attemptImmediately: Bool = true) {
+        deferredReadiness = nil
         pending = intent; waitingAfterNativeRefusal = false
         if attemptImmediately { readinessChanged(.layout) }
     }
 
-    func cancel() { pending = nil; waitingAfterNativeRefusal = false }
+    func cancel() { pending = nil; waitingAfterNativeRefusal = false; deferredReadiness = nil }
     func userInteraction() { if !applying { cancel() } }
+
+    /// UIKit may invoke snapshot completions synchronously inside a SwiftUI
+    /// representable update. Acquiring a responder on that stack can reenter
+    /// UIKit's layout/responder machinery before the update has unwound.
+    /// Deliver one coalesced readiness event on the next main-queue turn; this
+    /// is not a timer or a retry. The intent and its owner/version are checked
+    /// again at delivery, and real user input cancels the queued handoff.
+    func readinessChangedAfterUIUpdate(_ event: Readiness) {
+        guard !resolving, let intent = pending else { return }
+        if waitingAfterNativeRefusal && event == .layout { return }
+        if var queued = deferredReadiness, queued.intentID == intent.id {
+            // A real attachment/key-window event must not be downgraded to a
+            // layout event while waiting after a native refusal.
+            if event != .layout { queued.event = event; deferredReadiness = queued }
+            return
+        }
+        let deliveryID = UUID()
+        deferredReadiness = .init(deliveryID: deliveryID, intentID: intent.id, event: event)
+        DispatchQueue.main.async { [weak self] in
+            guard let self, let delivery = self.deferredReadiness,
+                  delivery.deliveryID == deliveryID else { return }
+            self.deferredReadiness = nil
+            guard self.pending?.id == delivery.intentID else { return }
+            self.readinessChanged(delivery.event)
+        }
+    }
 
     func readinessChanged(_ event: Readiness) {
         guard !resolving, let intent = pending else { return }
@@ -69,6 +102,8 @@ final class AnyNativeFocusCoordinator: NSObject {
         }
     }
 
-    @objc private func windowBecameKey(_ notification: Notification) { readinessChanged(.keyWindow) }
+    @objc private func windowBecameKey(_ notification: Notification) {
+        readinessChangedAfterUIUpdate(.keyWindow)
+    }
 }
 #endif

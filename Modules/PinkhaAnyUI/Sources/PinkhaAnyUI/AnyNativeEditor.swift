@@ -140,7 +140,7 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
 
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        focus.readinessChanged(.layout)
+        focus.readinessChangedAfterUIUpdate(.layout)
     }
 
     private var focusPresentationIsVisible: Bool {
@@ -168,7 +168,9 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
     public func reveal(blockID: String, selection: NSRange?) {
         if let selection, let block = presentation.read?.snapshot.blocks.first(where: { $0.id == blockID }) {
             focus.request(.init(blockID: blockID, ownerID: presentation.mountedOwnerID,
-                nativeVersion: block.native["_ver"], source: presentation.source(for: block), selection: selection))
+                nativeVersion: block.native["_ver"], source: presentation.source(for: block), selection: selection),
+                attemptImmediately: false)
+            focus.readinessChangedAfterUIUpdate(.layout)
         } else if let path = dataSource.indexPath(for: blockID) {
             table.scrollToRow(at: path, at: .middle, animated: false)
             table.layoutIfNeeded()
@@ -206,12 +208,12 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
                 guard let self, self.snapshotGeneration == generation else { return }
                 self.applyingSnapshot = false
                 self.configureVisibleCells()
-                self.focus.readinessChanged(.layout)
+                self.focus.readinessChangedAfterUIUpdate(.layout)
             }
         } else {
             blockByID = Dictionary(uniqueKeysWithValues: blocks.map { ($0.id, $0) })
             configureVisibleCells()
-            focus.readinessChanged(.layout)
+            focus.readinessChangedAfterUIUpdate(.layout)
         }
     }
 
@@ -236,7 +238,7 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
         cell.renderedHistoryEpoch = historyEpoch
         cell.textView.delegate = self
         configureComposition(cell.textView)
-        cell.textView.onAttachmentReadiness = { [weak self] in self?.focus.readinessChanged(.attachment) }
+        cell.textView.onAttachmentReadiness = { [weak self] in self?.focus.readinessChangedAfterUIUpdate(.attachment) }
         cell.textView.accessibilityIdentifier = "any-native-block-" + block.id
         cell.textView.isEditable = supported && projection.isEditable && presentation.canMutate
         cell.textView.isSelectable = true

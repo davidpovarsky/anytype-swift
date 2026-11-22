@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "originalProducerCommit": "96173b0afc6b360c8f780ae70c6c80042fda98da",
+  "originalProducerRun": "44942212731",
+  "originalExecutedCount": 14,
+  "reusedCount": 8,
+  "reusedMethods": [
+    "AnyNativeMarkedTextTests/testActualMarkedBufferUsesImmutableRawProjectionUntilCommit",
+    "AnyNativeMarkedTextTests/testFirstMarkedInputBeginsBeforeMutationAndRepeatedUpdatesKeepTheMarkedRange",
+    "AnyNativeMarkedTextTests/testRecoveryCapturesLatestVisibleTextAndNeverRequestsASave",
+    "AnyNativeMarkedTextTests/testRejectedBeginOrProposalDoesNotReplaceVisibleSource",
+    "AnyNativeMarkedTextTests/testUnmarkAndResignEndOnceAndNormalTextInputStillWorks",
+    "AnyNativeTextRendererTests/testChangedNativeTextReplacesCharactersAndKeepsValidSelection",
+    "AnyNativeTextRendererTests/testEqualNativeTextChangesAttributesWithoutReplacingCharactersOrSelection",
+    "AnyNativeTextRendererTests/testMarkedTextKeepsCharactersSelectionAndAttributesUntilCommit"
+  ],
+  "affectedExistingMethodsRequireFreshExecution": [
+    "AnyNativeFocusLifecycleTests/testCurrentResponderRequestDoesNotStealFocusAfterLaterInput",
+    "AnyNativeFocusLifecycleTests/testDetachedRequestWaitsForAttachmentAndIsConsumedOnce",
+    "AnyNativeFocusLifecycleTests/testKeyWindowReadinessRetriesNativeRefusalWithoutRenderPolling",
+    "AnyNativeFocusLifecycleTests/testLockedViewDenialDoesNotReviveAfterUnlock",
+    "AnyNativeFocusLifecycleTests/testNewUserFocusCancelsDetachedRequest",
+    "AnyNativeFocusLifecycleTests/testOwnerOrVersionChangeCancelsOldRequestBeforeRebind"
+  ],
+  "newMethodsRequireFreshExecution": [
+    "AnyNativeFocusHandoffTests/testSnapshotCompletionUnwindsBeforeResponderAcquisition",
+    "AnyNativeFocusHandoffTests/testReadinessBurstAndReentrantLayoutDeliverOnlyOneAttempt",
+    "AnyNativeFocusHandoffTests/testQueuedDeliveryRevalidatesOwnerVersionAndHonorsCancellationAndReplacement",
+    "AnyNativeFocusHandoffTests/testDeferredNativeRefusalWaitsForActualReadinessWithoutLayoutRetries"
+  ],
+  "freshExactCount": 10,
+  "testMethodAssertionsChanged": false,
+  "unchangedTextViewDeclaration": {
+    "sha256": "8739ef7a27019f8d286473227ca784a8e149643d28d4749b277a58ee4bad3951",
+    "bytes": 4607
+  },
+  "dependencyClosure": "The full original PROTECTED_PATHS tree is retained. Only two fixed editor/focus source blobs receive this new scope review; all other differences still require the existing original per-file reviewed-source-changes contract. The original fourteen-method receipt is verified in full before selecting eight.",
+  "actualNativeEntry": "NOT_EXECUTED_AFTER_REPAIR; original NativeLaunchTests source/assertions unchanged",
+  "existingFocusAssumptions": "All six source methods unchanged. The native-refusal/key-window method already awaits turn() after makeKeyAndVisible; other window setup precedes coordinator construction. Immediate unit-fixture request semantics remain available; actual mounted controller requests always set attemptImmediately=false."
+}

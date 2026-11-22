@@ -1,0 +1,1011 @@
+Process:          PinkhaAnyNative [31962]
+UUID:             26D9FBBE-6209-3058-9772-5E260E514FC2
+Path:             /Users/runner/Library/Developer/CoreSimulator/Devices/430054DC-66CB-4951-AF2C-48F2C895BFE3/data/Containers/Bundle/Application/9F1DB3ED-4E25-4079-96E5-667AB70FAF4E/PinkhaAnyNative.app/PinkhaAnyNative
+Identifier:       io.pinkha.anynative.dev
+Version:          0.1.0 (1)
+Is First Party:   No
+Beta Identifier:  D4808140-344D-5C89-9AE5-6F91FDD43D9C
+Shared Cache:     None
+Architecture:     arm64
+Parent:           launchd_sim [3582]
+Responsible:      launchd_sim [3582]
+UID:              501
+Memory Limit:     0MB
+Jetsam Priority:  180
+Footprint:        211.07 MB
+Time Since Fork:  181s
+Num samples:      266 (1-266)
+CPU Time:         4.957s
+Num threads:      23
+Note:             3 idle work queue threads omitted
+
+  Thread 0x1705e    DispatchQueue "com.apple.uikit.datasource.diffing"(4101),none    266 samples (1-266)    priority 47 (base 47)    cpu time 4.925s
+  <DispatchQueue "com.apple.uikit.datasource.diffing"(4101), process frontmost, thread QoS user interactive (requested user interactive, promote user interactive), process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 0>
+  266  start + 6688 (dyld + 204416) [0x10308de80] 1-266
+    266  start_sim + 20 (dyld + 66516) [0x102f083d4] 1-266
+      266  __debug_main_executable_dylib_entry_point + 12 (AnyNativeApp.swift in PinkhaAnyNative.debug.dylib + 20632) [0x10aaf5098] 1-266
+        266  static AnyNativeApp.$main() + 40 (<compiler-generated> in PinkhaAnyNative.debug.dylib + 20536) [0x10aaf5038] 1-266
+          266  ??? [0x1c9b17394] 1-266
+            266  ??? [0x1c9d739c8] 1-266
+              266  ??? [0x1c9d73b4c] 1-266
+                266  ??? [0x1c543f4d4] 1-266
+                  266  ??? [0x21d3c19ac] 1-266
+                    266  ??? [0x1c01df4d4] 1-266
+                      266  ??? [0x1c01e4520] 1-266
+                        266  ??? [0x1c01e5318] 1-266
+                          266  ??? [0x1c01e5b88] 1-266
+                            266  ??? [0x1c01e5c40] 1-266
+                              266  ??? [0x257d42394] 1-266
+                                266  ??? [0x1c46f2964] 1-266
+                                  266  ??? [0x1c3c92700] 1-266
+                                    266  ??? [0x1c4fcbb00] 1-266
+                                      266  ??? [0x1c4fcbff0] 1-266
+                                        266  ??? [0x1c700a80c] 1-266
+                                          266  ??? [0x1c7140008] 1-266
+                                            266  ??? [0x1c4eb029c] 1-266
+                                              266  ??? [0x1c4fcc07c] 1-266
+                                                266  ??? [0x1c4f1de40] 1-266
+                                                  266  ??? [0x1c97f5c04] 1-266
+                                                    266  ??? [0x1c79bdf9c] 1-266
+                                                      266  ??? [0x1c79bf630] 1-266
+                                                        266  ??? [0x1c777d764] 1-266
+                                                          266  ??? [0x1c97f5c30] 1-266
+                                                            266  ??? [0x1c7532940] 1-266
+                                                              266  ??? [0x1c951b158] 1-266
+                                                                266  ??? [0x1c950c134] 1-266
+                                                                  266  ??? [0x1c70452f4] 1-266
+                                                                    266  ??? [0x1c70926a8] 1-266
+                                                                      266  ??? [0x1c709396c] 1-266
+                                                                        266  ??? [0x1c79be2d8] 1-266
+                                                                          266  ??? [0x1c7093bf4] 1-266
+                                                                            266  ??? [0x1c9ceefa8] 1-266
+                                                                              266  protocol witness for UIViewControllerRepresentable.updateUIViewController(_:context:) in conformance AnyNativeEditor + 20 (<compiler-generated> in PinkhaAnyNative.debug.dylib + 2184348) [0x10ad0549c] 1-266
+                                                                                266  AnyNativeEditor.updateUIViewController(_:context:) + 296 (AnyNativeEditor.swift:30,20 in PinkhaAnyNative.debug.dylib + 2179888) [0x10ad04330] 1-266
+                                                                                  266  AnyNativeEditorController.render() + 3828 (AnyNativeEditor.swift:205,24 in PinkhaAnyNative.debug.dylib + 2183732) [0x10ad05234] 1-266
+                                                                                    266  ??? [0x1c53f9068] 1-266
+                                                                                      266  ??? [0x1c3d97b40] 1-266
+                                                                                        266  ??? [0x1c3d97444] 1-266
+                                                                                          266  ??? [0x1e6735b28] 1-266
+                                                                                            266  ??? [0x1e673ffb8] 1-266
+                                                                                              266  ??? [0x1c3d974d4] 1-266
+                                                                                                266  ??? [0x1c3d98790] 1-266
+                                                                                                  266  ??? [0x1c3d98b24] 1-266
+                                                                                                    266  ??? [0x1c3d9961c] 1-266
+                                                                                                      266  ??? [0x1c3def644] 1-266
+                                                                                                        266  ??? [0x1c4a54b40] 1-266
+                                                                                                          266  ??? [0x1c4a54cc4] 1-266
+                                                                                                            266  ??? [0x1c3defd2c] 1-266
+                                                                                                              266  ??? [0x1c4fa9c78] 1-266
+                                                                                                                266  closure #2 in AnyNativeEditorController.render() + 564 (AnyNativeEditor.swift:209,28 in PinkhaAnyNative.debug.dylib + 2220040) [0x10ad0e008] 1-266
+                                                                                                                  266  AnyNativeFocusCoordinator.readinessChanged(_:) + 2900 (AnyNativeFocusCoordinator.swift:64,47 in PinkhaAnyNative.debug.dylib + 2358500) [0x10ad2fce4] 1-266
+                                                                                                                    266  ??? [0x1c4bca93c] 1-266
+                                                                                                                      266  ??? [0x1c4da9098] 1-266
+                                                                                                                        266  ??? [0x1c4814258] 1-266
+                                                                                                                          266  ??? [0x1c4d9f4c8] 1-266
+                                                                                                                            266  ??? [0x1c48186b8] 1-266
+                                                                                                                              266  ??? [0x1c4d9f4c8] 1-266
+                                                                                                                                266  ??? [0x1c48186b8] 1-266
+                                                                                                                                  266  ??? [0x1c4d9f4c8] 1-266
+                                                                                                                                    266  ??? [0x1c48186b8] 1-266
+                                                                                                                                      266  ??? [0x1c4d9f4c8] 1-266
+                                                                                                                                        266  ??? [0x1c48186b8] 1-266
+                                                                                                                                          266  ??? [0x1c4d9f4c8] 1-266
+                                                                                                                                            266  ??? [0x1c48186b8] 1-266
+                                                                                                                                              266  ??? [0x1c4d9f4c8] 1-266
+                                                                                                                                                266  ??? [0x1c48186b8] 1-266
+                                                                                                                                                  266  ??? [0x1c4d9f4c8] 1-266
+                                                                                                                                                    266  ??? [0x1c48186b8] 1-266
+                                                                                                                                                      266  ??? [0x1c48186b8] 1-266
+                                                                                                                                                        266  ??? [0x1c4d9f4c8] 1-266
+                                                                                                                                                          266  ??? [0x1c48186b8] 1-266
+                                                                                                                                                            266  ??? [0x1c4d9f4c8] 1-266
+                                                                                                                                                              266  ??? [0x1c48186c8] 1-266
+                                                                                                                                                                266  ??? [0x1ca3645f0] 1-266
+                                                                                                                                                                  266  ??? [0x1ca364584] 1-266
+                                                                                                                                                                    266  ??? [0x1c79bdadc] 1-266
+                                                                                                                                                                      266  ??? [0x1c79bf630] 1-266
+                                                                                                                                                                        266  ??? [0x1c79bfb20] 1-266
+                                                                                                                                                                          266  ??? [0x1c952c0ec] 1-266
+                                                                                                                                                                            266  ??? [0x1c9513818] 1-266
+                                                                                                                                                                              266  ??? [0x1c950c824] 1-266
+                                                                                                                                                                                1    ??? [0x1c950bfe0] (running) 1
+                                                                                                                                                                                1    ??? [0x1c950c584] 2
+                                                                                                                                                                                  1    ??? [0x1c950bd18] (running) 2
+                                                                                                                                                                                2    ??? [0x1c950bfe0] (running) 3-4
+                                                                                                                                                                                1    ??? [0x1c950c07c] (running) 5
+                                                                                                                                                                                1    ??? [0x1c950bfe0] (running) 6
+                                                                                                                                                                                1    ??? [0x1c950c0a0] (running) 7
+                                                                                                                                                                                1    ??? [0x1c950bfac] (running) 8
+                                                                                                                                                                                2    ??? [0x1c950c584] 9-10
+                                                                                                                                                                                  2    ??? [0x1c950bd68] 9-10
+                                                                                                                                                                                    1    ??? [0x1c95289b8] (running) 9
+                                                                                                                                                                                    1    ??? [0x1c95289bc] (running) 10
+                                                                                                                                                                                1    ??? [0x1c950bf9c] (running) 11
+                                                                                                                                                                                2    ??? [0x1c950c584] 12-13
+                                                                                                                                                                                  1    ??? [0x1c95287e8] (running) 12
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 13
+                                                                                                                                                                                    1    ??? [0x1c9528860] (running) 13
+                                                                                                                                                                                1    ??? [0x1c950be8c] (running) 14
+                                                                                                                                                                                1    ??? [0x1c950bcec] (running) 15
+                                                                                                                                                                                2    ??? [0x1c950c584] 16-17
+                                                                                                                                                                                  2    ??? [0x1c950bd68] 16-17
+                                                                                                                                                                                    1    ??? [0x1c9528868] (running) 16
+                                                                                                                                                                                    1    ??? [0x1c95289e4] (running) 17
+                                                                                                                                                                                1    ??? [0x1c950c004] (running) 18
+                                                                                                                                                                                2    ??? [0x1c950c584] 19-20
+                                                                                                                                                                                  2    ??? [0x1c950bd68] 19-20
+                                                                                                                                                                                    1    ??? [0x1c9528868] (running) 19
+                                                                                                                                                                                    1    ??? [0x1c9528824] (running) 20
+                                                                                                                                                                                1    ??? [0x1c950bf9c] 21
+                                                                                                                                                                                 *1    ??? (kernel.release.vmapple + 50792) [0xfffffe0009eb8668] 21
+                                                                                                                                                                                   *1    ??? (kernel.release.vmapple + 1966160) [0xfffffe000a08c050] 21
+                                                                                                                                                                                     *1    ??? (kernel.release.vmapple + 341868) [0xfffffe0009eff76c] 21
+                                                                                                                                                                                       *1    ??? (kernel.release.vmapple + 605220) [0xfffffe0009f3fc24] 21
+                                                                                                                                                                                         *1    ??? (kernel.release.vmapple + 609788) [0xfffffe0009f40dfc] (runnable) 21
+                                                                                                                                                                                1    ??? [0x1c950bfac] (running) 22
+                                                                                                                                                                                1    ??? [0x1c950bfa0] (running) 23
+                                                                                                                                                                                1    ??? [0x1c950c584] 24
+                                                                                                                                                                                  1    ??? [0x1c950bd08] (running) 24
+                                                                                                                                                                                1    ??? [0x1c950c0ac] (running) 25
+                                                                                                                                                                                1    ??? [0x1c950bfa0] (running) 26
+                                                                                                                                                                                1    ??? [0x1c950bf9c] (running) 27
+                                                                                                                                                                                1    ??? [0x1c950c0bc] (running) 28
+                                                                                                                                                                                1    ??? [0x1c950c56c] (running) 29
+                                                                                                                                                                                4    ??? [0x1c950c584] 30-33
+                                                                                                                                                                                  2    ??? [0x1c950bd68] 30-31
+                                                                                                                                                                                    1    ??? [0x1c952880c] (running) 30
+                                                                                                                                                                                    1    ??? [0x1c9528868] (running) 31
+                                                                                                                                                                                  1    ??? [0x1c950bd5c] (running) 32
+                                                                                                                                                                                  1    ??? [0x1c950bd18] (running) 33
+                                                                                                                                                                                1    ??? [0x1c950bf94] (running) 34
+                                                                                                                                                                                1    ??? [0x1c950bfec] (running) 35
+                                                                                                                                                                                1    ??? [0x1c950c07c] (running) 36
+                                                                                                                                                                                1    ??? [0x1c950bfec] (running) 37
+                                                                                                                                                                                1    ??? [0x1c950c0a0] (running) 38
+                                                                                                                                                                                2    ??? [0x1c950c584] 39-40
+                                                                                                                                                                                  2    ??? [0x1c950bd68] 39-40
+                                                                                                                                                                                    1    ??? [0x1c95289bc] (running) 39
+                                                                                                                                                                                    1    ??? [0x1c9528854] (running) 40
+                                                                                                                                                                                1    ??? [0x1c950c0bc] (running) 41
+                                                                                                                                                                                1    ??? [0x1c950c584] 42
+                                                                                                                                                                                  1    ??? [0x1c950bd5c] (running) 42
+                                                                                                                                                                                1    ??? [0x1c950bcec] (running) 43
+                                                                                                                                                                                1    ??? [0x1c950c584] 44
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 44
+                                                                                                                                                                                    1    ??? [0x1c95289c4] (running) 44
+                                                                                                                                                                                1    ??? [0x1c950c098] (running) 45
+                                                                                                                                                                                2    ??? [0x1c950c584] 46-47
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 46
+                                                                                                                                                                                    1    ??? [0x1c9528868] (running) 46
+                                                                                                                                                                                  1    ??? [0x1c950bd3c] (running) 47
+                                                                                                                                                                                1    ??? [0x1c950c088] (running) 48
+                                                                                                                                                                                4    ??? [0x1c950c584] 49-52
+                                                                                                                                                                                  2    ??? [0x1c950bd68] 49-50
+                                                                                                                                                                                    1    ??? [0x1c9528808] (running) 49
+                                                                                                                                                                                    1    ??? [0x1c95289c4] (running) 50
+                                                                                                                                                                                  2    ??? [0x1c95289f4] (running) 51-52
+                                                                                                                                                                                1    ??? [0x1c950be94] (running) 53
+                                                                                                                                                                                2    ??? [0x1c950c584] 54-55
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 54
+                                                                                                                                                                                    1    ??? [0x1c9528824] (running) 54
+                                                                                                                                                                                  1    ??? [0x1c950bd08] (running) 55
+                                                                                                                                                                                1    ??? [0x1c950bf9c] (running) 56
+                                                                                                                                                                                1    ??? [0x1c950c0bc] (running) 57
+                                                                                                                                                                                1    ??? [0x1c950be94] (running) 58
+                                                                                                                                                                                1    ??? [0x1c950c0a0] (running) 59
+                                                                                                                                                                                1    ??? [0x1c950c07c] (running) 60
+                                                                                                                                                                                1    ??? [0x1c950c0a0] (running) 61
+                                                                                                                                                                                1    ??? [0x1c950c584] 62
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 62
+                                                                                                                                                                                    1    ??? [0x1c95289bc] (running) 62
+                                                                                                                                                                                1    ??? [0x1c950c0bc] (running) 63
+                                                                                                                                                                                1    ??? [0x1c950bf9c] (running) 64
+                                                                                                                                                                                1    ??? [0x1c950bfa0] (running) 65
+                                                                                                                                                                                1    ??? [0x1c950c584] 66
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 66
+                                                                                                                                                                                    1    ??? [0x1c9528808] (running) 66
+                                                                                                                                                                                1    ??? [0x1c950bfe0] (running) 67
+                                                                                                                                                                                1    ??? [0x1c950c0a0] (running) 68
+                                                                                                                                                                                1    ??? [0x1c950bfac] (running) 69
+                                                                                                                                                                                1    ??? [0x1c950be90] (running) 70
+                                                                                                                                                                                1    ??? [0x1c950c584] 71
+                                                                                                                                                                                  1    ??? [0x1c95289f4] (running) 71
+                                                                                                                                                                                1    ??? [0x1c950c004] (running) 72
+                                                                                                                                                                                1    ??? [0x1c950bfe0] (running) 73
+                                                                                                                                                                                2    ??? [0x1c950c584] 74-75
+                                                                                                                                                                                  1    ??? [0x1c95289f4] (running) 74
+                                                                                                                                                                                  1    ??? [0x1c950bd08] (running) 75
+                                                                                                                                                                                1    ??? [0x1c950c0bc] (running) 76
+                                                                                                                                                                                1    ??? [0x1c950c07c] (running) 77
+                                                                                                                                                                                3    ??? [0x1c950c584] 78-80
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 78
+                                                                                                                                                                                    1    ??? [0x1c95289c4] (running) 78
+                                                                                                                                                                                  1    ??? [0x1c950bd1c] (running) 79
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 80
+                                                                                                                                                                                    1    ??? [0x1c95289bc] (running) 80
+                                                                                                                                                                                1    ??? [0x1c950bfe0] (running) 81
+                                                                                                                                                                                2    ??? [0x1c950c004] (running) 82-83
+                                                                                                                                                                                1    ??? [0x1c950bfec] (running) 84
+                                                                                                                                                                                1    ??? [0x1c950c584] 85
+                                                                                                                                                                                  1    ??? [0x1c950bd18] (running) 85
+                                                                                                                                                                                1    ??? [0x1c950c0a0] (running) 86
+                                                                                                                                                                                8    ??? [0x1c950c584] 87-94
+                                                                                                                                                                                  1    ??? [0x1c950bd5c] (running) 87
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 88
+                                                                                                                                                                                    1    ??? [0x1c9528854] (running) 88
+                                                                                                                                                                                  1    ??? [0x1c95287e8] (running) 89
+                                                                                                                                                                                  1    ??? [0x1c950bd1c] (running) 90
+                                                                                                                                                                                  1    ??? [0x1c950bd3c] (running) 91
+                                                                                                                                                                                  2    ??? [0x1c950bd68] 92-93
+                                                                                                                                                                                    1    ??? [0x1c9528860] (running) 92
+                                                                                                                                                                                    1    ??? [0x1c9528868] (running) 93
+                                                                                                                                                                                  1    ??? [0x1c950bd08] (running) 94
+                                                                                                                                                                                1    ??? [0x1c950bfec] (running) 95
+                                                                                                                                                                                1    ??? [0x1c950bfe0] (running) 96
+                                                                                                                                                                                1    ??? [0x1c950c584] 97
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 97
+                                                                                                                                                                                    1    ??? [0x1c95289bc] (running) 97
+                                                                                                                                                                                1    ??? [0x1c950c07c] (running) 98
+                                                                                                                                                                                1    ??? [0x1c950bfe0] (running) 99
+                                                                                                                                                                                1    ??? [0x1c950c0a0] (running) 100
+                                                                                                                                                                                1    ??? [0x1c950c584] 101
+                                                                                                                                                                                  1    ??? [0x1c95287e8] (running) 101
+                                                                                                                                                                                1    ??? [0x1c950c0bc] (running) 102
+                                                                                                                                                                                1    ??? [0x1c950c584] 103
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 103
+                                                                                                                                                                                    1    ??? [0x1c95289bc] (running) 103
+                                                                                                                                                                                1    ??? [0x1c950bfa0] (running) 104
+                                                                                                                                                                                1    ??? [0x1c950bc84] (running) 105
+                                                                                                                                                                                5    ??? [0x1c950c584] 106-110
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 106
+                                                                                                                                                                                    1    ??? [0x1c9528868] (running) 106
+                                                                                                                                                                                  1    ??? [0x1c95287e8] (running) 107
+                                                                                                                                                                                  1    ??? [0x1c950bd1c] (running) 108
+                                                                                                                                                                                  1    ??? [0x1c950bd5c] (running) 109
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 110
+                                                                                                                                                                                    1    ??? [0x1c9528860] (running) 110
+                                                                                                                                                                                1    ??? [0x1c950c0a0] (running) 111
+                                                                                                                                                                                1    ??? [0x1c950c0bc] (running) 112
+                                                                                                                                                                                1    ??? [0x1c950bf94] (running) 113
+                                                                                                                                                                                1    ??? [0x1c950c0bc] (running) 114
+                                                                                                                                                                                1    ??? [0x1c950c0a0] (running) 115
+                                                                                                                                                                                2    ??? [0x1c950c584] 116-117
+                                                                                                                                                                                  2    ??? [0x1c950bd68] 116-117
+                                                                                                                                                                                    1    ??? [0x1c95289c4] (running) 116
+                                                                                                                                                                                    1    ??? [0x1c9528808] (running) 117
+                                                                                                                                                                                1    ??? [0x1c950bfe0] (running) 118
+                                                                                                                                                                                1    ??? [0x1c950bfa0] (running) 119
+                                                                                                                                                                                1    ??? [0x1c950c07c] (running) 120
+                                                                                                                                                                                1    ??? [0x1c950c584] 121
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 121
+                                                                                                                                                                                    1    ??? [0x1c95289c4] (running) 121
+                                                                                                                                                                                2    ??? [0x1c950bf9c] (running) 122-123
+                                                                                                                                                                                1    ??? [0x1c950bfe0] (running) 124
+                                                                                                                                                                                1    ??? [0x1c950bf9c] (running) 125
+                                                                                                                                                                                1    ??? [0x1c950bfac] (running) 126
+                                                                                                                                                                                1    ??? [0x1c950c584] 127
+                                                                                                                                                                                  1    ??? [0x1c950bd1c] (running) 127
+                                                                                                                                                                                2    ??? [0x1c950bfa0] (running) 128-129
+                                                                                                                                                                                1    ??? [0x1c950bc78] (running) 130
+                                                                                                                                                                                1    ??? [0x1c950bcec] (running) 131
+                                                                                                                                                                                1    ??? [0x1c950c0a8] (running) 132
+                                                                                                                                                                                1    ??? [0x1c950bfa0] (running) 133
+                                                                                                                                                                                1    ??? [0x1c950c0bc] (running) 134
+                                                                                                                                                                                1    ??? [0x1c950c088] (running) 135
+                                                                                                                                                                                1    ??? [0x1c950bf9c] (running) 136
+                                                                                                                                                                                1    ??? [0x1c950c0bc] (running) 137
+                                                                                                                                                                                1    ??? [0x1c950be94] (running) 138
+                                                                                                                                                                                2    ??? [0x1c950c0a0] (running) 139-140
+                                                                                                                                                                                1    ??? [0x1c950bf9c] (running) 141
+                                                                                                                                                                                1    ??? [0x1c950bffc] (running) 142
+                                                                                                                                                                                1    ??? [0x1c950bfa0] (running) 143
+                                                                                                                                                                                1    ??? [0x1c950bf94] (running) 144
+                                                                                                                                                                                1    ??? [0x1c950bfa0] (running) 145
+                                                                                                                                                                                1    ??? [0x1c950c584] 146
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 146
+                                                                                                                                                                                    1    ??? [0x1c9528824] (running) 146
+                                                                                                                                                                                1    ??? [0x1c950c56c] (running) 147
+                                                                                                                                                                                5    ??? [0x1c950c584] 148-152
+                                                                                                                                                                                  2    ??? [0x1c950bd68] 148-149
+                                                                                                                                                                                    1    ??? [0x1c95289d8] 148
+                                                                                                                                                                                     *1    ??? (kernel.release.vmapple + 342756) [0xfffffe0009effae4] (runnable) 148
+                                                                                                                                                                                    1    ??? [0x1c9528824] (running) 149
+                                                                                                                                                                                  1    ??? [0x1c95289f4] (running) 150
+                                                                                                                                                                                  2    ??? [0x1c950bd68] 151-152
+                                                                                                                                                                                    1    ??? [0x1c9528824] 151
+                                                                                                                                                                                     *1    ??? (kernel.release.vmapple + 342756) [0xfffffe0009effae4] (runnable) 151
+                                                                                                                                                                                    1    ??? [0x1c95289e4] (running) 152
+                                                                                                                                                                                1    ??? [0x1c950bf9c] (running) 153
+                                                                                                                                                                                1    ??? [0x1c950bf8c] (running) 154
+                                                                                                                                                                                1    ??? [0x1c950c584] 155
+                                                                                                                                                                                  1    ??? [0x1c950bd1c] (running) 155
+                                                                                                                                                                                1    ??? [0x1c950be94] (running) 156
+                                                                                                                                                                                1    ??? [0x1c950be90] (running) 157
+                                                                                                                                                                                1    ??? [0x1c950bfe0] (running) 158
+                                                                                                                                                                                3    ??? [0x1c950c584] 159-161
+                                                                                                                                                                                  2    ??? [0x1c950bd68] 159-160
+                                                                                                                                                                                    1    ??? [0x1c9528808] (running) 159
+                                                                                                                                                                                    1    ??? [0x1c95289b8] (running) 160
+                                                                                                                                                                                  1    ??? [0x1c95289f4] (running) 161
+                                                                                                                                                                                1    ??? [0x1c950c0a0] (running) 162
+                                                                                                                                                                                1    ??? [0x1c950c584] 163
+                                                                                                                                                                                  1    ??? [0x1c950bd08] (running) 163
+                                                                                                                                                                                1    ??? [0x1c950bf9c] (running) 164
+                                                                                                                                                                                1    ??? [0x1c950c584] 165
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 165
+                                                                                                                                                                                    1    ??? [0x1c9528854] (running) 165
+                                                                                                                                                                                1    ??? [0x1c950c0bc] 166
+                                                                                                                                                                                 *1    ??? (kernel.release.vmapple + 342756) [0xfffffe0009effae4] (runnable) 166
+                                                                                                                                                                                1    ??? [0x1c950c584] 167
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 167
+                                                                                                                                                                                    1    ??? [0x1c952885c] (running) 167
+                                                                                                                                                                                1    ??? [0x1c950be8c] (running) 168
+                                                                                                                                                                                1    ??? [0x1c950c584] 169
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 169
+                                                                                                                                                                                    1    ??? [0x1c95289bc] (running) 169
+                                                                                                                                                                                1    ??? [0x1c950bfac] (running) 170
+  <DispatchQueue none>
+                                                                                                                                                                                1    ??? [0x1c950bfac] (running) 171
+                                                                                                                                                                                2    ??? [0x1c950c584] 172-173
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 172
+                                                                                                                                                                                    1    ??? [0x1c95289b8] (running) 172
+                                                                                                                                                                                  1    ??? [0x1c950bd08] (running) 173
+                                                                                                                                                                                1    ??? [0x1c950bf9c] (running) 174
+                                                                                                                                                                                1    ??? [0x1c950bc84] 175
+                                                                                                                                                                                 *1    ??? (kernel.release.vmapple + 342756) [0xfffffe0009effae4] (runnable) 175
+                                                                                                                                                                                1    ??? [0x1c950c0a0] (running) 176
+                                                                                                                                                                                2    ??? [0x1c950c584] 177-178
+                                                                                                                                                                                  1    ??? [0x1c950bd18] (running) 177
+                                                                                                                                                                                  1    ??? [0x1c95289f4] (running) 178
+                                                                                                                                                                                1    ??? [0x1c950c0ac] (running) 179
+                                                                                                                                                                                1    ??? [0x1c950bf94] (running) 180
+                                                                                                                                                                                1    ??? [0x1c950c0a0] (running) 181
+                                                                                                                                                                                1    ??? [0x1c950bfe0] (running) 182
+                                                                                                                                                                                1    ??? [0x1c950bfec] (running) 183
+                                                                                                                                                                                2    ??? [0x1c950bfe0] (running) 184-185
+                                                                                                                                                                                1    ??? [0x1c950c0bc] (running) 186
+                                                                                                                                                                                1    ??? [0x1c950bfec] (running) 187
+                                                                                                                                                                                1    ??? [0x1c950c584] 188
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 188
+                                                                                                                                                                                    1    ??? [0x1c9528824] (running) 188
+                                                                                                                                                                                1    ??? [0x1c950bfa0] (running) 189
+                                                                                                                                                                                1    ??? [0x1c950bc84] 190
+                                                                                                                                                                                 *1    ??? (kernel.release.vmapple + 342756) [0xfffffe0009effae4] (runnable) 190
+                                                                                                                                                                                1    ??? [0x1c950bfa0] (running) 191
+                                                                                                                                                                                1    ??? [0x1c950c584] 192
+                                                                                                                                                                                  1    ??? [0x1c95287e8] (running) 192
+                                                                                                                                                                                1    ??? [0x1c950c0a0] (running) 193
+                                                                                                                                                                                2    ??? [0x1c950c584] 194-195
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 194
+                                                                                                                                                                                    1    ??? [0x1c9528860] (running) 194
+                                                                                                                                                                                  1    ??? [0x1c950bd1c] (running) 195
+                                                                                                                                                                                1    ??? [0x1c950c0a0] (running) 196
+                                                                                                                                                                                1    ??? [0x1c950c07c] (running) 197
+                                                                                                                                                                                1    ??? [0x1c950bfec] (running) 198
+                                                                                                                                                                                1    ??? [0x1c950c088] (running) 199
+                                                                                                                                                                                1    ??? [0x1c950c584] 200
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 200
+                                                                                                                                                                                    1    ??? [0x1c95289c4] (running) 200
+                                                                                                                                                                                1    ??? [0x1c950be90] (running) 201
+                                                                                                                                                                                1    ??? [0x1c950bfa0] (running) 202
+                                                                                                                                                                                2    ??? [0x1c950c584] 203-204
+                                                                                                                                                                                  1    ??? [0x1c950bd08] (running) 203
+                                                                                                                                                                                  1    ??? [0x1c950bd3c] (running) 204
+                                                                                                                                                                                1    ??? [0x1c950bf9c] (running) 205
+                                                                                                                                                                                1    ??? [0x1c950c088] (running) 206
+                                                                                                                                                                                1    ??? [0x1c950c584] 207
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 207
+                                                                                                                                                                                    1    ??? [0x1c952880c] (running) 207
+                                                                                                                                                                                1    ??? [0x1c950bfe0] (running) 208
+                                                                                                                                                                                1    ??? [0x1c950c584] 209
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 209
+                                                                                                                                                                                    1    ??? [0x1c9528824] (running) 209
+                                                                                                                                                                                1    ??? [0x1c950be94] (running) 210
+                                                                                                                                                                                1    ??? [0x1c950bfe0] (running) 211
+                                                                                                                                                                                1    ??? [0x1c950be94] (running) 212
+                                                                                                                                                                                1    ??? [0x1c950bf94] (running) 213
+                                                                                                                                                                                1    ??? [0x1c950bfe0] (running) 214
+                                                                                                                                                                                1    ??? [0x1c950bf9c] (running) 215
+                                                                                                                                                                                1    ??? [0x1c950bc84] (running) 216
+                                                                                                                                                                                2    ??? [0x1c950c584] 217-218
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 217
+                                                                                                                                                                                    1    ??? [0x1c9528854] 217
+                                                                                                                                                                                     *1    ??? (kernel.release.vmapple + 342756) [0xfffffe0009effae4] (runnable) 217
+                                                                                                                                                                                  1    ??? [0x1c950bd5c] (running) 218
+                                                                                                                                                                                1    ??? [0x1c950c0a0] (running) 219
+                                                                                                                                                                                1    ??? [0x1c950be94] (running) 220
+                                                                                                                                                                                1    ??? [0x1c950c0bc] (running) 221
+                                                                                                                                                                                1    ??? [0x1c950c0ac] (running) 222
+                                                                                                                                                                                1    ??? [0x1c950c07c] (running) 223
+                                                                                                                                                                                1    ??? [0x1c950bf7c] (running) 224
+                                                                                                                                                                                2    ??? [0x1c950bfe0] (running) 225-226
+                                                                                                                                                                                1    ??? [0x1c950bfac] (running) 227
+                                                                                                                                                                                1    ??? [0x1c950bfe0] (running) 228
+                                                                                                                                                                                1    ??? [0x1c950be94] (running) 229
+                                                                                                                                                                                1    ??? [0x1c950bfe0] (running) 230
+                                                                                                                                                                                1    ??? [0x1c950bfec] (running) 231
+                                                                                                                                                                                1    ??? [0x1c950c584] 232
+                                                                                                                                                                                  1    ??? [0x1c950bd5c] (running) 232
+                                                                                                                                                                                1    ??? [0x1c950c07c] (running) 233
+                                                                                                                                                                                1    ??? [0x1c950c56c] (running) 234
+                                                                                                                                                                                1    ??? [0x1c950c088] (running) 235
+                                                                                                                                                                                1    ??? [0x1c950be8c] (running) 236
+                                                                                                                                                                                1    ??? [0x1c950c584] 237
+                                                                                                                                                                                  1    ??? [0x1c950bd68] (running) 237
+                                                                                                                                                                                2    ??? [0x1c950c0ac] (running) 238-239
+                                                                                                                                                                                3    ??? [0x1c950c584] 240-242
+                                                                                                                                                                                  3    ??? [0x1c950bd68] 240-242
+                                                                                                                                                                                    1    ??? [0x1c952881c] (running) 240
+                                                                                                                                                                                    2    ??? [0x1c95289c4] (running) 241-242
+                                                                                                                                                                                1    ??? [0x1c950c0a0] (running) 243
+                                                                                                                                                                                1    ??? [0x1c950bf7c] (running) 244
+                                                                                                                                                                                2    ??? [0x1c950c584] 245-246
+                                                                                                                                                                                  2    ??? [0x1c950bd68] 245-246
+                                                                                                                                                                                    2    ??? [0x1c9528868] (running) 245-246
+                                                                                                                                                                                1    ??? [0x1c950bfa0] (running) 247
+                                                                                                                                                                                1    ??? [0x1c950c584] 248
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 248
+                                                                                                                                                                                    1    ??? [0x1c95289d8] (running) 248
+                                                                                                                                                                                1    ??? [0x1c950bfa0] (running) 249
+                                                                                                                                                                                3    ??? [0x1c950c584] 250-252
+                                                                                                                                                                                  1    ??? [0x1c950be84] (running) 250
+                                                                                                                                                                                  2    ??? [0x1c950bd68] 251-252
+                                                                                                                                                                                    1    ??? [0x1c9528808] (running) 251
+                                                                                                                                                                                    1    ??? [0x1c952880c] 252
+                                                                                                                                                                                     *1    ??? (kernel.release.vmapple + 342756) [0xfffffe0009effae4] (runnable) 252
+                                                                                                                                                                                1    ??? [0x1c950bf7c] (running) 253
+                                                                                                                                                                                2    ??? [0x1c950c584] 254-255
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 254
+                                                                                                                                                                                    1    ??? [0x1c9528824] (running) 254
+  <2243ms gap with no samples>
+                                                                                                                                                                                  1    ??? [0x1c950bd1c] (running) 255
+                                                                                                                                                                                1    ??? [0x1c950bfec] (running) 256
+                                                                                                                                                                                1    ??? [0x1c950c584] 257
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 257
+                                                                                                                                                                                    1    ??? [0x1c95289c4] (running) 257
+                                                                                                                                                                                1    ??? [0x1c950bfec] (running) 258
+                                                                                                                                                                                1    ??? [0x1c950be94] (running) 259
+                                                                                                                                                                                2    ??? [0x1c950c584] 260-261
+                                                                                                                                                                                  1    ??? [0x1c950bd1c] (running) 260
+                                                                                                                                                                                  1    ??? [0x1c950bd18] (running) 261
+                                                                                                                                                                                1    ??? [0x1c950bfa0] (running) 262
+                                                                                                                                                                                3    ??? [0x1c950c584] 263-265
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 263
+                                                                                                                                                                                    1    ??? [0x1c9528854] (running) 263
+                                                                                                                                                                                  1    ??? [0x1c950bd3c] (running) 264
+                                                                                                                                                                                  1    ??? [0x1c950bd68] 265
+                                                                                                                                                                                    1    ??? [0x1c9528868] (running) 265
+                                                                                                                                                                                1    ??? [0x1c950c07c] 266
+                                                                                                                                                                                 *1    ??? (kernel.release.vmapple + 342756) [0xfffffe0009effae4] (runnable) 266
+
+  Thread 0x1747f    266 samples (1-266)    priority 31 (base 31)    cpu time 0.011s    last ran 0.082s ago
+  <process frontmost, thread QoS default (requested default), process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 0>
+  15   <truncated backtrace> 1-15
+    15   kevent + 8 (libsystem_kernel.dylib + 26272) [0x102e826a0] 1-15
+     *14   ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] 1-14
+     *1    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] (runnable) 15
+  19   runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 16-34
+    19   <patched truncated backtrace> 16-34
+      19   runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 16-34
+        19   __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 16-34
+         *16   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 16-31
+         *3    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] (runnable) 32-34
+  10   <truncated backtrace> 35-44
+    10   kevent + 8 (libsystem_kernel.dylib + 26272) [0x102e826a0] 35-44
+     *5    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] 35-39
+     *5    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] (runnable) 40-44
+  9    runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 45-53
+    9    <patched truncated backtrace> 45-53
+      9    runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 45-53
+        9    __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 45-53
+         *9    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 45-53
+  13   <truncated backtrace> 54-66
+    13   kevent + 8 (libsystem_kernel.dylib + 26272) [0x102e826a0] 54-66
+     *10   ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] 54-63
+     *1    ??? (kernel.release.vmapple + 26104) [0xfffffe0009eb25f8] 64
+       *1    ??? (kernel.release.vmapple + 26692) [0xfffffe0009eb2844] 64
+         *1    ??? (kernel.release.vmapple + 341868) [0xfffffe0009eff76c] 64
+           *1    ??? (kernel.release.vmapple + 605220) [0xfffffe0009f3fc24] 64
+             *1    ??? (kernel.release.vmapple + 609788) [0xfffffe0009f40dfc] (runnable) 64
+     *2    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] (runnable) 65-66
+  14   runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 67-80
+    14   <patched truncated backtrace> 67-80
+      14   runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 67-80
+        14   __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 67-80
+         *14   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 67-80
+  8    <truncated backtrace> 81-88
+    8    kevent + 8 (libsystem_kernel.dylib + 26272) [0x102e826a0] 81-88
+     *8    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] 81-88
+  25   runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 89-113
+    25   <patched truncated backtrace> 89-113
+      25   runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 89-113
+        25   __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 89-113
+         *25   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 89-113
+  29   <truncated backtrace> 114-142
+    9    kevent + 8 (libsystem_kernel.dylib + 26272) [0x102e826a0] 114-122
+     *9    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] 114-122
+    1    runtime.chansend + 404 (PinkhaAnyNative.debug.dylib + 33218308) [0x10ca9df04] 123
+     *1    ??? (kernel.release.vmapple + 26028) [0xfffffe0009eb25ac] 123
+       *1    ??? (kernel.release.vmapple + 26252) [0xfffffe0009eb268c] 123
+         *1    ??? (kernel.release.vmapple + 26692) [0xfffffe0009eb2844] 123
+           *1    ??? (kernel.release.vmapple + 341868) [0xfffffe0009eff76c] 123
+             *1    ??? (kernel.release.vmapple + 605220) [0xfffffe0009f3fc24] 123
+               *1    ??? (kernel.release.vmapple + 609788) [0xfffffe0009f40dfc] (runnable) 123
+    11   kevent + 8 (libsystem_kernel.dylib + 26272) [0x102e826a0] 124-134
+     *6    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] 124-129
+     *5    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] (runnable) 130-134
+    4    runtime.mallocgcSmallNoscan + 212 (PinkhaAnyNative.debug.dylib + 33250740) [0x10caa5db4] 135-138
+     *4    ??? (kernel.release.vmapple + 342756) [0xfffffe0009effae4] (runnable) 135-138
+    4    kevent + 8 (libsystem_kernel.dylib + 26272) [0x102e826a0] 139-142
+     *4    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] (runnable) 139-142
+  67   runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 143-209
+    67   <patched truncated backtrace> 143-209
+      67   runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 143-209
+        67   __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 143-209
+         *60   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 143-202
+         *1    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] (runnable) 203
+         *6    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 204-209
+  26   <truncated backtrace> 210-235
+    26   kevent + 8 (libsystem_kernel.dylib + 26272) [0x102e826a0] 210-235
+     *17   ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] 210-226
+     *2    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] (runnable) 227-228
+     *7    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] 229-235
+  19   runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 236-254
+    19   <patched truncated backtrace> 236-254
+      19   runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 236-254
+        19   __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 236-254
+         *19   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 236-254
+  <2243ms gap with no samples>
+  5    <truncated backtrace> 255-259
+    5    kevent + 8 (libsystem_kernel.dylib + 26272) [0x102e826a0] 255-259
+     *5    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] 255-259
+  7    runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 260-266
+    7    <patched truncated backtrace> 260-266
+      7    runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 260-266
+        7    __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 260-266
+         *7    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 260-266
+
+  Thread 0x17777    266 samples (1-266)    priority 31 (base 31)    cpu time 0.006s    last ran 0.082s ago
+  <process frontmost, thread QoS default (requested default), process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 0>
+  15   runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 1-15
+    15   <patched truncated backtrace> 1-15
+      15   runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 1-15
+        15   __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 1-15
+         *15   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 1-15
+  20   <truncated backtrace> 16-35
+    16   kevent + 8 (libsystem_kernel.dylib + 26272) [0x102e826a0] 16-31
+     *16   ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] 16-31
+    1    runtime.tracebackPCs + 352 (PinkhaAnyNative.debug.dylib + 33594096) [0x10caf9af0] (running) 32
+    1    runtime.(*unwinder).resolveInternal + 28 (PinkhaAnyNative.debug.dylib + 33591436) [0x10caf908c] 33
+     *1    ??? (kernel.release.vmapple + 342756) [0xfffffe0009effae4] (runnable) 33
+    1    runtime.findfunc + 208 (PinkhaAnyNative.debug.dylib + 33695232) [0x10cb12600] 34
+     *1    ??? (kernel.release.vmapple + 342756) [0xfffffe0009effae4] (runnable) 34
+    1    kevent + 8 (libsystem_kernel.dylib + 26272) [0x102e826a0] 35
+     *1    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] (runnable) 35
+  9    runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 36-44
+    9    <patched truncated backtrace> 36-44
+      9    runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 36-44
+        9    __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 36-44
+         *9    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 36-44
+  9    <truncated backtrace> 45-53
+    9    kevent + 8 (libsystem_kernel.dylib + 26272) [0x102e826a0] 45-53
+     *3    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] 45-47
+     *6    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] (runnable) 48-53
+  13   runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 54-66
+    13   <patched truncated backtrace> 54-66
+      13   runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 54-66
+        13   __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 54-66
+         *11   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 54-64
+         *2    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] (runnable) 65-66
+  14   <truncated backtrace> 67-80
+    14   kevent + 8 (libsystem_kernel.dylib + 26272) [0x102e826a0] 67-80
+     *14   ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] 67-80
+  8    runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 81-88
+    8    <patched truncated backtrace> 81-88
+      8    runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 81-88
+        8    __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 81-88
+         *8    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 81-88
+  25   <truncated backtrace> 89-113
+    25   kevent + 8 (libsystem_kernel.dylib + 26272) [0x102e826a0] 89-113
+     *24   ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] 89-112
+     *1    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] (runnable) 113
+  25   runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 114-138
+    25   <patched truncated backtrace> 114-138
+      25   runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 114-138
+        25   __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 114-138
+         *21   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 114-134
+         *4    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] (runnable) 135-138
+  21   <truncated backtrace> 139-159
+    21   kevent + 8 (libsystem_kernel.dylib + 26272) [0x102e826a0] 139-159
+     *21   ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] 139-159
+  20   runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 160-179
+    20   <patched truncated backtrace> 160-179
+      20   runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 160-179
+        20   __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 160-179
+         *20   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 160-179
+  24   <truncated backtrace> 180-203
+    24   kevent + 8 (libsystem_kernel.dylib + 26272) [0x102e826a0] 180-203
+     *5    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] 180-184
+     *1    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] (runnable) 185
+     *15   ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] 186-200
+     *3    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] (runnable) 201-203
+  63   runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 204-266
+    63   <patched truncated backtrace> 204-266
+      63   runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 204-266
+        63   __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 204-266
+         *51   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 204-254
+  <2243ms gap with no samples>
+         *12   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 255-266
+
+  Thread 0x17483    266 samples (1-266)    priority 31 (base 31)    cpu time 0.006s    last ran 0.082s ago
+  <process frontmost, thread QoS default (requested default), process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 0>
+  31   runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 1-31
+    31   <patched truncated backtrace> 1-31
+      31   runtime.pthread_cond_timedwait_relative_np_trampoline.abi0 + 28 (PinkhaAnyNative.debug.dylib + 33716316) [0x10cb1785c] 1-31
+        31   __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 1-31
+         *14   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 1-14
+         *1    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] (runnable) 15
+         *16   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 16-31
+  4    <truncated backtrace> 32-35
+    4    runtime.usleep_trampoline.abi0 + 20 (PinkhaAnyNative.debug.dylib + 33715428) [0x10cb174e4] 32-35
+      4    ??? [0x1c821bab8] 32-35
+        4    __semwait_signal + 8 (libsystem_kernel.dylib + 15956) [0x102e7fe54] 32-35
+         *4    ??? (kernel.release.vmapple + 677840) [0xfffffe0009f517d0] (runnable) 32-35
+  29   runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 36-64
+    29   <patched truncated backtrace> 36-64
+      29   runtime.pthread_cond_timedwait_relative_np_trampoline.abi0 + 28 (PinkhaAnyNative.debug.dylib + 33716316) [0x10cb1785c] 36-64
+        29   __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 36-64
+         *4    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 36-39
+         *5    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] (runnable) 40-44
+         *3    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 45-47
+         *6    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] (runnable) 48-53
+         *10   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 54-63
+         *1    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] (runnable) 64
+  2    <truncated backtrace> 65-66
+    2    runtime.usleep_trampoline.abi0 + 20 (PinkhaAnyNative.debug.dylib + 33715428) [0x10cb174e4] 65-66
+      2    ??? [0x1c821bab8] 65-66
+        2    __semwait_signal + 8 (libsystem_kernel.dylib + 15956) [0x102e7fe54] 65-66
+         *2    ??? (kernel.release.vmapple + 677840) [0xfffffe0009f517d0] (runnable) 65-66
+  15   runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 67-81
+    15   <patched truncated backtrace> 67-81
+      15   runtime.pthread_cond_timedwait_relative_np_trampoline.abi0 + 28 (PinkhaAnyNative.debug.dylib + 33716316) [0x10cb1785c] 67-81
+        15   __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 67-81
+         *14   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 67-80
+         *1    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] (runnable) 81
+  1    <truncated backtrace> 82
+    1    runtime.usleep_trampoline.abi0 + 20 (PinkhaAnyNative.debug.dylib + 33715428) [0x10cb174e4] 82
+      1    ??? [0x1c821bab8] 82
+        1    __semwait_signal + 8 (libsystem_kernel.dylib + 15956) [0x102e7fe54] 82
+         *1    ??? (kernel.release.vmapple + 677840) [0xfffffe0009f517d0] (runnable) 82
+  40   runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 83-122
+    40   <patched truncated backtrace> 83-122
+      40   runtime.pthread_cond_timedwait_relative_np_trampoline.abi0 + 28 (PinkhaAnyNative.debug.dylib + 33716316) [0x10cb1785c] 83-122
+        40   __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 83-122
+         *30   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 83-112
+         *1    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] (runnable) 113
+         *9    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 114-122
+  1    <truncated backtrace> 123
+    1    runtime.usleep_trampoline.abi0 + 20 (PinkhaAnyNative.debug.dylib + 33715428) [0x10cb174e4] 123
+      1    ??? [0x1c821bab8] 123
+        1    __semwait_signal + 8 (libsystem_kernel.dylib + 15956) [0x102e7fe54] 123
+         *1    ??? (kernel.release.vmapple + 677840) [0xfffffe0009f517d0] (runnable) 123
+  15   runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 124-138
+    15   <patched truncated backtrace> 124-138
+      15   runtime.pthread_cond_timedwait_relative_np_trampoline.abi0 + 28 (PinkhaAnyNative.debug.dylib + 33716316) [0x10cb1785c] 124-138
+        15   __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 124-138
+         *7    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 124-130
+         *8    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] (runnable) 131-138
+  4    <truncated backtrace> 139-142
+    4    kevent + 8 (libsystem_kernel.dylib + 26272) [0x102e826a0] 139-142
+     *4    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] (runnable) 139-142
+  42   runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 143-184
+    42   <patched truncated backtrace> 143-184
+      42   runtime.pthread_cond_timedwait_relative_np_trampoline.abi0 + 28 (PinkhaAnyNative.debug.dylib + 33716316) [0x10cb1785c] 143-184
+        42   __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 143-184
+         *17   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 143-159
+         *2    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] (runnable) 160-161
+         *15   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 162-176
+         *3    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] (runnable) 177-179
+         *5    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 180-184
+  1    <truncated backtrace> 185
+    1    runtime.usleep_trampoline.abi0 + 20 (PinkhaAnyNative.debug.dylib + 33715428) [0x10cb174e4] 185
+      1    ??? [0x1c821bab8] 185
+        1    __semwait_signal + 8 (libsystem_kernel.dylib + 15956) [0x102e7fe54] 185
+         *1    ??? (kernel.release.vmapple + 677840) [0xfffffe0009f517d0] (runnable) 185
+  17   runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 186-202
+    17   <patched truncated backtrace> 186-202
+      17   runtime.pthread_cond_timedwait_relative_np_trampoline.abi0 + 28 (PinkhaAnyNative.debug.dylib + 33716316) [0x10cb1785c] 186-202
+        17   __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 186-202
+         *15   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 186-200
+         *2    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] (runnable) 201-202
+  1    <truncated backtrace> 203
+    1    runtime.usleep_trampoline.abi0 + 20 (PinkhaAnyNative.debug.dylib + 33715428) [0x10cb174e4] 203
+      1    ??? [0x1c821bab8] 203
+        1    __semwait_signal + 8 (libsystem_kernel.dylib + 15956) [0x102e7fe54] 203
+         *1    ??? (kernel.release.vmapple + 677840) [0xfffffe0009f517d0] (runnable) 203
+  63   runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 204-266
+    63   <patched truncated backtrace> 204-266
+      63   runtime.pthread_cond_timedwait_relative_np_trampoline.abi0 + 28 (PinkhaAnyNative.debug.dylib + 33716316) [0x10cb1785c] 204-266
+        63   __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 204-266
+         *51   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 204-254
+  <2243ms gap with no samples>
+         *12   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 255-266
+
+  Thread 0x17776    266 samples (1-266)    priority 31 (base 31)    cpu time 0.004s    last ran 7.160s ago
+  <process frontmost, thread QoS default (requested default), process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 0>
+  159  <truncated backtrace> 1-159
+    159  runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 1-159
+      159  __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 1-159
+       *138  psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 1-138
+       *4    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] (runnable) 139-142
+       *17   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 143-159
+  20   kevent + 8 (libsystem_kernel.dylib + 26272) [0x102e826a0] 160-179
+   *17   ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] 160-176
+   *3    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] (runnable) 177-179
+  24   <truncated backtrace> 180-203
+    23   runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 180-202
+      23   __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 180-202
+       *5    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 180-184
+       *1    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] (runnable) 185
+       *17   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 186-202
+    1    github.com/anyproto/any-store/v2/internal/btree.(*DB).beginRead + 0 (PinkhaAnyNative.debug.dylib + 40434272) [0x10d17fa60] 203
+     *1    ??? (kernel.release.vmapple + 342756) [0xfffffe0009effae4] (runnable) 203
+  6    kevent + 8 (libsystem_kernel.dylib + 26272) [0x102e826a0] 204-209
+   *6    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] 204-209
+  26   <truncated backtrace> 210-235
+    26   runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 210-235
+      26   __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 210-235
+       *26   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 210-235
+  19   kevent + 8 (libsystem_kernel.dylib + 26272) [0x102e826a0] 236-254
+   *19   ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] 236-254
+  <2243ms gap with no samples>
+  5    <truncated backtrace> 255-259
+    5    runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 255-259
+      5    __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 255-259
+       *5    psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 255-259
+  7    kevent + 8 (libsystem_kernel.dylib + 26272) [0x102e826a0] 260-266
+   *7    ??? (kernel.release.vmapple + 6144036) [0xfffffe000a488024] 260-266
+
+  Thread 0x17dc9    DispatchQueue "com.apple.network.connections"(189)    1 sample (35)    priority 31 (base 31)    cpu time <0.001s
+  <DispatchQueue not seen for 34 samples, process frontmost, thread QoS default (requested default, workloop servicer override default), process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 0>
+  1  start_wqthread + 8 (libsystem_pthread.dylib + 6780) [0x102fc5a7c] 35
+    1  _pthread_wqthread + 288 (libsystem_pthread.dylib + 11388) [0x102fc6c7c] 35
+      1  ??? [0x1e673971c] 35
+        1  ??? [0x1e6739fd4] 35
+          1  ??? [0x1e672fd64] 35
+            1  ??? [0x1e673d060] 35
+              1  ??? [0x1e672a078] 35
+                1  ??? [0x1e673ffb8] 35
+                  1  ??? [0x1c242eca4] 35
+                    1  ??? [0x1c1ce702c] 35
+                      1  ??? [0x1c1cd3424] 35
+                        1  ??? [0x1c1bc396c] 35
+                          1  __recvmsg + 8 (libsystem_kernel.dylib + 20564) [0x102e81054] 35
+                           *1  ??? (kernel.release.vmapple + 342756) [0xfffffe0009effae4] (runnable) 35
+
+  Thread 0x174ae    4 samples (139-142)    priority 31 (base 31)    cpu time <0.001s
+  <Thread in another call tree for 138 samples, process frontmost, thread QoS default (requested default), process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 0>
+  4  start_wqthread + 8 (libsystem_pthread.dylib + 6780) [0x102fc5a7c] 139-142
+    4  __workq_kernreturn + 8 (libsystem_kernel.dylib + 9868) [0x102e7e68c] 139-142
+     *4  ??? (kernel.release.vmapple + 5909696) [0xfffffe000a44ecc0] (runnable) 139-142
+
+  Thread 0x17dc9    5 samples (51-156 with gaps of 101)    priority 31-47 (base 31-47)    cpu time <0.001s
+  <Thread in another call tree for 50 samples, process frontmost, thread QoS default (requested default), process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 0, priority 31 (31)>
+  3  start_wqthread + 8 (libsystem_pthread.dylib + 6780) [0x102fc5a7c] 51-53
+    3  __workq_kernreturn + 8 (libsystem_kernel.dylib + 9868) [0x102e7e68c] 51-53
+     *3  ??? (kernel.release.vmapple + 5909696) [0xfffffe000a44ecc0] (runnable) 51-53
+  <Thread in another call tree for 89 samples, thread QoS user initiated (requested user initiated), priority 37 (37)>
+  1  start_wqthread + 8 (libsystem_pthread.dylib + 6780) [0x102fc5a7c] 143
+    1  __workq_kernreturn + 8 (libsystem_kernel.dylib + 9868) [0x102e7e68c] 143
+     *1  ??? (kernel.release.vmapple + 5909696) [0xfffffe000a44ecc0] (runnable) 143
+  <Thread in another call tree for 12 samples, thread QoS user interactive (requested user interactive), priority 47 (47)>
+  1  start_wqthread + 8 (libsystem_pthread.dylib + 6780) [0x102fc5a7c] 156
+    1  __workq_kernreturn + 8 (libsystem_kernel.dylib + 9868) [0x102e7e68c] 156
+     *1  ??? (kernel.release.vmapple + 5909696) [0xfffffe000a44ecc0] (runnable) 156
+
+  Thread 0x179ab    Thread name "com.apple.UIKit.inProcessAnimationManager"    266 samples (1-266)    priority 53 (base 53)    last ran 124.522s ago
+  <process frontmost, process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 0>
+  266  thread_start + 8 (libsystem_pthread.dylib + 6792) [0x102fc5a88] 1-266
+    266  _pthread_start + 104 (libsystem_pthread.dylib + 26240) [0x102fca680] 1-266
+      266  ??? [0x1c05e7574] 1-266
+        266  ??? [0x1de4bd13c] 1-266
+          266  ??? [0x1de4cdecc] 1-266
+            266  ??? [0x1de4c97dc] 1-266
+              266  ??? [0x1e67273bc] 1-266
+                266  semaphore_wait_trap + 8 (libsystem_kernel.dylib + 2776) [0x102e7cad8] 1-266
+                 *254  ??? (kernel.release.vmapple + 677840) [0xfffffe0009f517d0] 1-254
+  <2243ms gap with no samples>
+                 *12   ??? (kernel.release.vmapple + 677840) [0xfffffe0009f517d0] 255-266
+
+  Thread 0x18277    Thread name "com.apple.SwiftUI.AsyncRenderer"    266 samples (1-266)    priority 47 (base 47)    last ran 120.637s ago
+  <process frontmost, thread QoS user interactive (requested user interactive), process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 0>
+  266  thread_start + 8 (libsystem_pthread.dylib + 6792) [0x102fc5a88] 1-266
+    266  _pthread_start + 104 (libsystem_pthread.dylib + 26240) [0x102fca680] 1-266
+      266  ??? [0x1c05e7574] 1-266
+        266  ??? [0x1c700ea50] 1-266
+          266  ??? [0x1c7010294] 1-266
+            266  ??? [0x1c6d181e4] 1-266
+              266  _pthread_mutex_firstfit_lock_slow + 212 (libsystem_pthread.dylib + 6064) [0x102fc57b0] 1-266
+                266  __psynch_mutexwait + 8 (libsystem_kernel.dylib + 13684) [0x102e7f574] 1-266
+                 *254  psynch_mtxcontinue + 0 (pthread + 11792) [0xfffffe0007f927b0] (blocked by turnstile waiting for PinkhaAnyNative [31962] thread 0x1705e) 1-254
+  <2243ms gap with no samples>
+                 *12   psynch_mtxcontinue + 0 (pthread + 11792) [0xfffffe0007f927b0] (blocked by turnstile waiting for PinkhaAnyNative [31962] thread 0x1705e) 255-266
+
+  Thread 0x17dc8    DispatchQueue "com.apple.dt.xctautomationsupport.snapshot-request"(6065)    266 samples (1-266)    priority 37 (base 37)    last ran 1.151s ago
+  <process frontmost, thread QoS user initiated (requested user initiated, workloop servicer override user initiated), process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 0>
+  266  start_wqthread + 8 (libsystem_pthread.dylib + 6780) [0x102fc5a7c] 1-266
+    266  _pthread_wqthread + 288 (libsystem_pthread.dylib + 11388) [0x102fc6c7c] 1-266
+      266  ??? [0x1e673971c] 1-266
+        266  ??? [0x1e6739fd4] 1-266
+          266  ??? [0x1e672f0c8] 1-266
+            266  ??? [0x1e672e600] 1-266
+              266  ??? [0x1e673ffb8] 1-266
+                266  ??? [0x1e67256a0] 1-266
+                  266  __51-[XCTAutomationSession fetchMatchesForQuery:reply:]_block_invoke + 72 (XCTAutomationSupport + 178656) [0x107ebb9e0] 1-266
+                    266  -[XCTElementQueryProcessor fetchMatchesForQuery:clientCapabilities:reply:] + 388 (XCTAutomationSupport + 50436) [0x107e9c504] 1-266
+                      266  +[XCTRuntimeIssueContext captureIssuesWithContext:inScope:] + 176 (XCTAutomationSupport + 82016) [0x107ea4060] 1-266
+                        266  __74-[XCTElementQueryProcessor fetchMatchesForQuery:clientCapabilities:reply:]_block_invoke + 88 (XCTAutomationSupport + 52248) [0x107e9cc18] 1-266
+                          266  -[XCTElementQuery matchingSnapshotsWithRelatedElements:noMatchesMessage:error:] + 168 (XCTAutomationSupport + 40264) [0x107e99d48] 1-266
+                            266  -[XCTElementQuery _rootElementSnapshot:] + 340 (XCTAutomationSupport + 39036) [0x107e9987c] 1-266
+                              266  -[XCTElementQuery _snapshotForElement:error:] + 460 (XCTAutomationSupport + 39532) [0x107e99a6c] 1-266
+                                266  __36-[XCTElementQuery evaluationContext]_block_invoke + 20 (XCTAutomationSupport + 37544) [0x107e992a8] 1-266
+                                  266  __45-[XCTElementQuery _snapshotForElement:error:]_block_invoke + 140 (XCTAutomationSupport + 40012) [0x107e99c4c] 1-266
+                                    266  -[XCTAutomationSession snapshotForElement:attributes:parameters:timeoutControls:error:] + 192 (XCTAutomationSupport + 187516) [0x107ebdc7c] 1-266
+                                      266  -[XCTElementSnapshotRequest loadSnapshotAndReturnError:] + 224 (XCTAutomationSupport + 56740) [0x107e9dda4] 1-266
+                                        266  ??? [0x1e6735b28] 1-266
+                                          266  ??? [0x1e673ffb8] 1-266
+                                            266  __56-[XCTElementSnapshotRequest loadSnapshotAndReturnError:]_block_invoke + 308 (XCTAutomationSupport + 57504) [0x107e9e0a0] 1-266
+                                              266  XCTPerformOnMainRunLoop + 624 (XCTAutomationSupport + 159800) [0x107eb7038] 1-266
+                                                266  interposed_dispatch_semaphore_wait + 124 (libRPAC.dylib + 558292) [0x1034584d4] 1-266
+                                                  266  ??? [0x1e6727384] 1-266
+                                                    266  semaphore_timedwait_trap + 8 (libsystem_kernel.dylib + 2800) [0x102e7caf0] 1-266
+                                                     *254  ??? (kernel.release.vmapple + 677840) [0xfffffe0009f517d0] 1-254
+  <2243ms gap with no samples>
+                                                     *12   ??? (kernel.release.vmapple + 677840) [0xfffffe0009f517d0] 255-266
+
+  Thread 0x1776b    Thread name "com.apple.NSURLConnectionLoader"    266 samples (1-266)    priority 33 (base 33)    last ran 121.725s ago
+  <process frontmost, process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 0>
+  266  thread_start + 8 (libsystem_pthread.dylib + 6792) [0x102fc5a88] 1-266
+    266  _pthread_start + 104 (libsystem_pthread.dylib + 26240) [0x102fca680] 1-266
+      266  ??? [0x1c05e7574] 1-266
+        266  ??? [0x1cb66a804] 1-266
+          266  ??? [0x1c01df4d4] 1-266
+            266  ??? [0x1c01e4674] 1-266
+              266  ??? [0x1c01e54a4] 1-266
+                266  mach_msg + 20 (libsystem_kernel.dylib + 3804) [0x102e7cedc] 1-266
+                  266  mach_msg_overwrite + 484 (libsystem_kernel.dylib + 35928) [0x102e84c58] 1-266
+                    266  mach_msg2_trap + 8 (libsystem_kernel.dylib + 2908) [0x102e7cb5c] 1-266
+                     *254  ??? (kernel.release.vmapple + 232404) [0xfffffe0009ee4bd4] 1-254
+  <2243ms gap with no samples>
+                     *12   ??? (kernel.release.vmapple + 232404) [0xfffffe0009ee4bd4] 255-266
+
+  Thread 0x17484    266 samples (1-266)    priority 31 (base 31)    last ran 167.129s ago
+  <process frontmost, thread QoS default (requested default), process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 0>
+  266  runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 1-266
+    266  <patched truncated backtrace> 1-266
+      266  runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 1-266
+        266  __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 1-266
+         *254  psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 1-254
+  <2243ms gap with no samples>
+         *12   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 255-266
+
+  Thread 0x17485    266 samples (1-266)    priority 31 (base 31)    last ran 166.798s ago
+  <process frontmost, thread QoS default (requested default), process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 0>
+  266  runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 1-266
+    266  <patched truncated backtrace> 1-266
+      266  runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 1-266
+        266  __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 1-266
+         *254  psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 1-254
+  <2243ms gap with no samples>
+         *12   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 255-266
+
+  Thread 0x17486    266 samples (1-266)    priority 31 (base 31)    last ran 167.051s ago
+  <process frontmost, thread QoS default (requested default), process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 0>
+  266  runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 1-266
+    266  <patched truncated backtrace> 1-266
+      266  runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 1-266
+        266  __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 1-266
+         *254  psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 1-254
+  <2243ms gap with no samples>
+         *12   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 255-266
+
+  Thread 0x17487    266 samples (1-266)    priority 31 (base 31)    last ran 173.623s ago
+  <process frontmost, thread QoS default (requested default), process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 0>
+  266  runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 1-266
+    266  <patched truncated backtrace> 1-266
+      266  runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 1-266
+        266  __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 1-266
+         *254  psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 1-254
+  <2243ms gap with no samples>
+         *12   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 255-266
+
+  Thread 0x1749b    266 samples (1-266)    priority 31 (base 31)    last ran 167.150s ago
+  <process frontmost, thread QoS default (requested default), process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 0>
+  266  runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 1-266
+    266  <patched truncated backtrace> 1-266
+      266  runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 1-266
+        266  __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 1-266
+         *254  psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 1-254
+  <2243ms gap with no samples>
+         *12   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 255-266
+
+  Thread 0x17772    266 samples (1-266)    priority 31 (base 31)    last ran 167.043s ago
+  <process frontmost, thread QoS default (requested default), process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 0>
+  266  runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 1-266
+    266  <patched truncated backtrace> 1-266
+      266  runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 1-266
+        266  __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 1-266
+         *254  psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 1-254
+  <2243ms gap with no samples>
+         *12   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 255-266
+
+  Thread 0x17773    266 samples (1-266)    priority 31 (base 31)    last ran 7.160s ago
+  <process frontmost, thread QoS default (requested default), process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 0>
+  266  runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 1-266
+    266  <patched truncated backtrace> 1-266
+      266  runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 1-266
+        266  __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 1-266
+         *254  psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 1-254
+  <2243ms gap with no samples>
+         *12   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 255-266
+
+  Thread 0x17774    266 samples (1-266)    priority 31 (base 31)    last ran 167.044s ago
+  <process frontmost, thread QoS default (requested default), process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 0>
+  266  runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 1-266
+    266  <patched truncated backtrace> 1-266
+      266  runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 1-266
+        266  __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 1-266
+         *254  psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 1-254
+  <2243ms gap with no samples>
+         *12   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 255-266
+
+  Thread 0x17775    266 samples (1-266)    priority 31 (base 31)    last ran 167.046s ago
+  <process frontmost, thread QoS default (requested default), process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 0>
+  266  runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 1-266
+    266  <patched truncated backtrace> 1-266
+      266  runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 1-266
+        266  __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 1-266
+         *254  psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 1-254
+  <2243ms gap with no samples>
+         *12   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 255-266
+
+  Thread 0x17778    266 samples (1-266)    priority 31 (base 31)    last ran 122.054s ago
+  <process frontmost, thread QoS default (requested default), process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 0>
+  266  runtime.asmcgocall.abi0 + 212 (PinkhaAnyNative.debug.dylib + 33711700) [0x10cb16654] 1-266
+    266  runtime.pthread_cond_wait_trampoline.abi0 + 24 (PinkhaAnyNative.debug.dylib + 33716264) [0x10cb17828] 1-266
+      266  <patched truncated backtrace> 1-266
+        266  __psynch_cvwait + 8 (libsystem_kernel.dylib + 16420) [0x102e80024] 1-266
+         *254  psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 1-254
+  <2243ms gap with no samples>
+         *12   psynch_cvcontinue + 0 (pthread + 20048) [0xfffffe0007f947f0] 255-266
+
+  Thread 0x174a8    DispatchQueue "AXBinaryMonitorQueue"(78)    266 samples (1-266)    priority 4 (base 4)    last ran 15.007s ago    runnable before first sample for 15.007s
+  <process frontmost, thread QoS background (requested background, workloop servicer override background), process unclamped, jetsam priority 180 (requested 180, assertion 0), process memory limit 0MB, thread darwinbg, process received importance donation from SpringBoard [3603], process received importance donation from PinkhaAnyNativeUITests-Runner [31207], IO tier 2>
+  266  start_wqthread + 8 (libsystem_pthread.dylib + 6780) [0x102fc5a7c] 1-266
+    266  _pthread_wqthread + 288 (libsystem_pthread.dylib + 11388) [0x102fc6c7c] 1-266
+      266  ??? [0x1e673971c] 1-266
+        266  ??? [0x1e6739fd4] 1-266
+          266  ??? [0x1e672f0c8] 1-266
+            266  ??? [0x1e672e600] 1-266
+              266  ??? [0x1e673ffb8] 1-266
+                266  ??? [0x1e67256a0] 1-266
+                  266  ??? [0x1c87dbe3c] 1-266
+                    266  ??? [0x1c87dbcfc] 1-266
+                      266  ??? [0x1c05d6204] 1-266
+                        266  ??? [0x1c0216634] 1-266
+                         *254  ??? (kernel.release.vmapple + 342756) [0xfffffe0009effae4] (runnable) 1-254
+  <2243ms gap with no samples>
+                         *12   ??? (kernel.release.vmapple + 342756) [0xfffffe0009effae4] (runnable) 255-266
+
+  Binary Images:
+           0x102e3c000 -        0x102e47fff  io.pinkha.anynative.dev 0.1.0 (1)  <26D9FBBE-6209-3058-9772-5E260E514FC2>             /Users/runner/Library/Developer/CoreSimulator/Devices/430054DC-66CB-4951-AF2C-48F2C895BFE3/data/Containers/Bundle/Application/9F1DB3ED-4E25-4079-96E5-667AB70FAF4E/PinkhaAnyNative.app/PinkhaAnyNative
+           0x102e7c000 -        0x102ec7fff  libsystem_kernel.dylib (13432.1.9) <B07862D0-C2DE-3AED-898C-88190E38064E>             /usr/lib/system/libsystem_kernel.dylib
+           0x102ef8000 -        0x102f87fff  dyld (27104)                       <D753CBA8-F4ED-3813-B91C-C6F04918FCF4>             /usr/lib/dyld
+           0x102fc4000 -        0x102ff7fff  libsystem_pthread.dylib (553.0.1)  <08833BEC-E49C-31B7-85FD-6EF2BAC2B425>             /usr/lib/system/libsystem_pthread.dylib
+           0x10305c000 -        0x103153fff  dyld (27062)                       <D341DDCB-7969-3A9C-8E03-0CF4751398A9>             /usr/lib/dyld
+           0x1033d0000 -        0x103a73fff  libRPAC.dylib (106)                <73451CEB-28EE-3422-A7CF-86F046219718>             /usr/lib/libRPAC.dylib
+           0x107e90000 -        0x107efffff  XCTAutomationSupport (25427)       <542A71E8-2A96-339A-B14D-12E05CF7EF35>             /Developer/Library/PrivateFrameworks/XCTAutomationSupport.framework/XCTAutomationSupport
+           0x10aaf0000 -        0x111413fff  PinkhaAnyNative.debug.dylib (0)    <31D0C941-64FF-382E-9367-9143FFC7E38F>             /Users/runner/Library/Developer/CoreSimulator/Devices/430054DC-66CB-4951-AF2C-48F2C895BFE3/data/Containers/Bundle/Application/9F1DB3ED-4E25-4079-96E5-667AB70FAF4E/PinkhaAnyNative.app/PinkhaAnyNative.debug.dylib
+   *0xfffffe0007f8f9a0 - 0xfffffe0007f96147  com.apple.kec.pthread (1)          <3876436B-CFDE-32BB-9C0F-D77FDD0007EC>__TEXT_EXEC  /System/KernelKit/System/Library/Extensions/pthread.kext/pthread
+   *0xfffffe0009eac000 - 0xfffffe000a837fff  kernel.release.vmapple (27.0.0)    <D36225BA-FD41-3361-A406-B77B0E260801>__TEXT_EXEC  /System/Library/Kernels/kernel.release.vmapple
+
