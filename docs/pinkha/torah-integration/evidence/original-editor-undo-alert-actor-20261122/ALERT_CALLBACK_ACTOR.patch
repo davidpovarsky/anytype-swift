@@ -1,0 +1,20 @@
+--- a/Anytype/Sources/PresentationLayer/Common/Factories/AlertModel.swift
++++ b/Anytype/Sources/PresentationLayer/Common/Factories/AlertModel.swift
+@@ -4,7 +4,7 @@
+     struct ButtonModel: Sendable {
+         let title: String
+         let style: UIAlertAction.Style
+-        let action: @Sendable () -> Void
++        let action: @MainActor @Sendable () -> Void
+     }
+ 
+     let title: String?
+@@ -19,7 +19,7 @@
+ }
+ 
+ extension AlertModel {
+-    static func undoAlertModel(undoAction: @escaping @Sendable () -> Void) -> AlertModel {
++    static func undoAlertModel(undoAction: @escaping @MainActor @Sendable () -> Void) -> AlertModel {
+         AlertModel(
+             title: Loc.undoTyping,
+             message: nil,

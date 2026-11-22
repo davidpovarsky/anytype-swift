@@ -1,0 +1,13 @@
+56d5d0b68d9d46b93ea31fdc69873d5f1d9ee793:Anytype/Sources/PresentationLayer/Common/Factories/AlertModel.swift:3:struct AlertModel {
+56d5d0b68d9d46b93ea31fdc69873d5f1d9ee793:Anytype/Sources/PresentationLayer/Common/Factories/AlertModel.swift:16:extension AlertModel.ButtonModel {
+56d5d0b68d9d46b93ea31fdc69873d5f1d9ee793:Anytype/Sources/PresentationLayer/Common/Factories/AlertModel.swift:17:    static let cancel = AlertModel.ButtonModel(title: Loc.cancel, style: .cancel, action: { })
+56d5d0b68d9d46b93ea31fdc69873d5f1d9ee793:Anytype/Sources/PresentationLayer/Common/Factories/AlertModel.swift:18:    static let ok = AlertModel.ButtonModel(title: Loc.ok, style: .default, action: { })
+56d5d0b68d9d46b93ea31fdc69873d5f1d9ee793:Anytype/Sources/PresentationLayer/Common/Factories/AlertModel.swift:21:extension AlertModel {
+56d5d0b68d9d46b93ea31fdc69873d5f1d9ee793:Anytype/Sources/PresentationLayer/Common/Factories/AlertModel.swift:22:    static func undoAlertModel(undoAction: @escaping @Sendable () -> Void) -> AlertModel {
+56d5d0b68d9d46b93ea31fdc69873d5f1d9ee793:Anytype/Sources/PresentationLayer/Common/Factories/AlertModel.swift:23:        AlertModel(
+56d5d0b68d9d46b93ea31fdc69873d5f1d9ee793:Anytype/Sources/PresentationLayer/Common/Factories/AlertsFactory.swift:19:    static func alertController(from alertModel: AlertModel) -> UIAlertController {
+56d5d0b68d9d46b93ea31fdc69873d5f1d9ee793:Anytype/Sources/PresentationLayer/Common/Factories/AlertsFactory.swift:26:        alertModel.buttons.forEach { item in
+56d5d0b68d9d46b93ea31fdc69873d5f1d9ee793:Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModel.swift:572:            alertModel: .undoAlertModel(
+56d5d0b68d9d46b93ea31fdc69873d5f1d9ee793:Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Models/BlockViewModelActions.swift:80:                self.router.showAlert(alertModel: AlertModel(title: Loc.documentScanFailed, message: error.localizedDescription, buttons: []))
+56d5d0b68d9d46b93ea31fdc69873d5f1d9ee793:Anytype/Sources/PresentationLayer/TextEditor/Routing/Editor/EditorRouter.swift:69:    func showAlert(alertModel: AlertModel) {
+56d5d0b68d9d46b93ea31fdc69873d5f1d9ee793:Anytype/Sources/PresentationLayer/TextEditor/Routing/Editor/EditorRouterProtocol.swift:12:    func showAlert(alertModel: AlertModel)
