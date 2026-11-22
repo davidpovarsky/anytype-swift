@@ -1,0 +1,132 @@
+{
+  "status": "VERIFIED_TWO_NATIVE_CASES_PASS",
+  "run_id": 45027606300,
+  "attempt": 1,
+  "head": "7431d8fd3b3e9f4a3ef167dbb3b6c995ab972508",
+  "artifact_id": 14756238741,
+  "artifact_sha256": "2145510a2b7619daae6d7d7cfd47c12351a39033af400c7ea1f94611be2c018f",
+  "artifact_bytes": 2598552,
+  "payloads_verified": 39,
+  "commands_verified": 15,
+  "case_counts": {
+    "pass": 2,
+    "fail": 0,
+    "skip": 0
+  },
+  "exact_case_events": [
+    {
+      "Time": "2026-11-22T13:34:04.878807Z",
+      "Action": "pass",
+      "Package": "./core/block/object/objectcreator",
+      "Test": "TestOtzariaFixedSchemaNativeObserverV5/ActualLocalZeroCounterAccepted",
+      "Elapsed": 0.04
+    },
+    {
+      "Time": "2026-11-22T13:34:04.900815Z",
+      "Action": "pass",
+      "Package": "./core/block/object/objectcreator",
+      "Test": "TestOtzariaFixedSchemaNativeObserverV5/NativeComputedRemoteCounterAccepted",
+      "Elapsed": 0.02
+    }
+  ],
+  "counter_observations": [
+    {
+      "Case": "ActualLocalZeroCounterAccepted",
+      "Attempt": 1,
+      "ExpectedCounter": 0,
+      "ProcessID": 16152,
+      "Started": "2026-11-22T13:34:04.856377Z",
+      "Finished": "2026-11-22T13:34:04.862872Z",
+      "Differences": [
+        {
+          "Collection": "state",
+          "ID": "bafyreih54srotpgdhs5se22eqqz4afj2ffcdyibln2xo4dpytu224to2la.9nmhl50lq9cd",
+          "FirstPresent": true,
+          "SecondPresent": true,
+          "FirstSHA256": "2c076fa91932c99d15c583bbf590df10570bbc60c5befbffffeda4c41f640f92",
+          "SecondSHA256": "1339f3f5f796690734301be8b2109d57eec8212292b6ae49a02b0a6a93cf83e4",
+          "ChangedFields": [
+            "nh",
+            "oh"
+          ]
+        }
+      ],
+      "CompleteStableMatch": false,
+      "RetryAdmitted": true
+    },
+    {
+      "Case": "ActualLocalZeroCounterAccepted",
+      "Attempt": 2,
+      "ExpectedCounter": 0,
+      "ProcessID": 16152,
+      "Started": "2026-11-22T13:34:04.866979Z",
+      "Finished": "2026-11-22T13:34:04.871561Z",
+      "Differences": [],
+      "CompleteStableMatch": true,
+      "RetryAdmitted": false
+    },
+    {
+      "Case": "NativeComputedRemoteCounterAccepted",
+      "Attempt": 1,
+      "ExpectedCounter": 3,
+      "ProcessID": 16152,
+      "Started": "2026-11-22T13:34:04.893272Z",
+      "Finished": "2026-11-22T13:34:04.89479Z",
+      "Differences": [],
+      "CompleteStableMatch": true,
+      "RetryAdmitted": false
+    }
+  ],
+  "prior_passed_cases_rerun": 0,
+  "source_inputs": [
+    {
+      "bytes": 14244,
+      "path": "core/block/object/objectcreator/fixed_schema_observer.go",
+      "sha256": "53a05ff554ff7b23c2ee3d1f322522fb88784139392cc30d7cb9b06d8e0e87d1"
+    },
+    {
+      "bytes": 17843,
+      "path": "core/block/object/objectcreator/fixed_schema_snapshot.go",
+      "sha256": "3a404738380ca7b8a6e59c93a377b85927ed4383fed560385f5920f86631e5df"
+    },
+    {
+      "bytes": 4218,
+      "path": "core/block/object/objectcreator/fixed_schema_acl.go",
+      "sha256": "170a100526f0be337c12bf9831099eb78381948b41f851791e00bbb54160a09e"
+    },
+    {
+      "bytes": 14512,
+      "path": "core/block/object/objectcreator/fixed_schema_replay.go",
+      "sha256": "fb2c8c245320efe002e4bbece3b38af572a33e262d22652f54388bb6391371c4"
+    },
+    {
+      "bytes": 27591,
+      "path": "core/block/source/sourceimpl/source.go",
+      "sha256": "30481a09de754219aa3e714cab42a5750880f9d835a720e1330de22690262e55"
+    },
+    {
+      "bytes": 14947,
+      "path": "core/block/object/objectcreator/fixed_schema_native_fixture_test.go",
+      "sha256": "1afa72779c24aff5a78fe63b181f112ca7a4fa7c6984f1395a0cf5fc4a308999"
+    },
+    {
+      "bytes": 8977,
+      "path": "core/block/object/objectcreator/fixed_schema_native_trace_test.go",
+      "sha256": "129341500230b4e053985b34155cf48f6dcad185027e5ba1d5a89859c347a98d"
+    },
+    {
+      "bytes": 25964,
+      "path": "core/block/object/objectcreator/fixed_schema_native_observer_test.go",
+      "sha256": "a8cbec19d91da9442a75bf7a406d7718c54b0224d24377ddd2e5160d218de6cc"
+    },
+    {
+      "bytes": 20028,
+      "path": "core/block/object/objectcreator/fixed_schema_native_counter_observation_test.go",
+      "sha256": "54041071214718844bcec0f8d4a6d8723d844d11bd30ca5129faeec87eab0078"
+    }
+  ],
+  "native_declared_input_count": 11319,
+  "raw_log_sha256": "3724aecbe9f4a491d3e9ea6172555fc70f6d44bc8390d55ccfab202f46427d84",
+  "result_sha256": "2dc33059dbd70625a12b8b063ee92988d4d68475729431585067c569d7b704da",
+  "boundary": "Original disposable LocalOnly Heart native observer controls only. No iOS SDK, editor, schema creation/repair, annotation body equality or COMMIT/ACK acceptance. Native binary hashes and reported process ID are runner observations; executable bytes were not uploaded."
+}
