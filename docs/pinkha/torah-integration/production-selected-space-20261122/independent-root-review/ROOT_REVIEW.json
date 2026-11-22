@@ -1,0 +1,100 @@
+{
+  "schema": "otzaria.selected-space-actual-root-review/1",
+  "status": "PASS_FOR_CANONICAL_SOURCE_INTEGRATION",
+  "observed_at": "2026-11-22T10:28:53.829526+00:00",
+  "packet": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-selected-final-20261122\\evidence-ready-v2",
+  "packet_index_sha256": "1c4bc8643d8f32556a87edcb88f8fec9a73804cce64e2dc0b3459e99312f39f6",
+  "payloads_verified": 91,
+  "total_payload_bytes": 2203609,
+  "prior85_payloads_and_index_unchanged": true,
+  "root_control_review_sha256": "86fe254ec7f4aac95b54c40e1a9df61f8a0e29f2a1947366248faad2d4fe2e97",
+  "input_sha256": "ef6b5d2758ad78da46e6c152f16d41f050ff478832b41e0cb4db618ed53b0f69",
+  "runner_sha256": "fa38adc2e3a99268b83341070812a1bc5bf21ed3f0c17a87084b28010c78747d",
+  "compiled_inputs_verified": 17,
+  "original_inputs_retained_matching_prior_root_git_review": 23,
+  "generated_swiftpm_inputs_verified": 3,
+  "commands": [
+    {
+      "label": "swift-version",
+      "child_pid": 24852,
+      "returncode": 0,
+      "timed_out": false,
+      "started_at": "2026-11-22T10:11:45.696133+00:00",
+      "finished_at": "2026-11-22T10:11:46.453975+00:00"
+    },
+    {
+      "label": "actual-manager-syntax",
+      "child_pid": 24060,
+      "returncode": 0,
+      "timed_out": false,
+      "started_at": "2026-11-22T10:11:46.515329+00:00",
+      "finished_at": "2026-11-22T10:11:47.079187+00:00"
+    },
+    {
+      "label": "actual-service-syntax",
+      "child_pid": 19780,
+      "returncode": 0,
+      "timed_out": false,
+      "started_at": "2026-11-22T10:11:47.140051+00:00",
+      "finished_at": "2026-11-22T10:11:47.675577+00:00"
+    },
+    {
+      "label": "swift-testing-selected-space",
+      "child_pid": 28980,
+      "returncode": 0,
+      "timed_out": false,
+      "started_at": "2026-11-22T10:11:47.733127+00:00",
+      "finished_at": "2026-11-22T10:16:38.159278+00:00"
+    }
+  ],
+  "actual_named_tests_passed": [
+    "accountAndOriginalViewRetirementAreSynchronousAndCannotReviveSelection",
+    "cancellationOfOneAwaiterDoesNotRetireSharedManagerSelection",
+    "duplicateStopBlocksNewRequestsAndFencesQueuedOldSubscriptionCallback",
+    "exactOriginalServiceResponseAndFrozenIdentityRejectSubstitution",
+    "existingDocumentAndReadLineageCannotGrantGlobalWorkspaceMutation",
+    "managerDeallocationRetiresRetainedSelectionAndCancelsConsumer",
+    "missingInitialViewAuthorityIsNeverRecapturedAfterNativeAwait",
+    "realPermitRejectsRetiredQueueAndAdmittedCompletionMustDrain",
+    "replacementRequestsRetireAThroughBAndABARoundTrip",
+    "staleNativeFailureAndHelperCompletionCannotClearReplacement"
+  ],
+  "xunit_sha256": "008d5489b07d8be7e4634ca3b8f945fd0686e24ff43f4289eb13cdcce19d44d5",
+  "observed_original_xunit_mtime_utc": "2026-11-22T10:16:38.021338+00:00",
+  "exact_fresh_xml_and_stdout_agree": true,
+  "first_post_test_wrapper_failure_preserved": true,
+  "original_red_runner_unchanged": true,
+  "evidence_only_addition": true,
+  "compiled_or_tests_reexecuted_by_root": 0,
+  "emitted_linked_binary": {
+    "sha256": "456cde35061b5f6e3d5fcdad9fe403133affc8b08b255ba091495fd8cda23a05",
+    "bytes": 3975168,
+    "format": "PE32+ x86_64",
+    "independent_child_process_identity_observed": false
+  },
+  "canonical_product_candidates": [
+    {
+      "path": "Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift",
+      "sha256": "bf33794809bff676321ae0265e0caf6539fd7feaa69edaf4d14829753c131ac1",
+      "bytes": 15775
+    },
+    {
+      "path": "Modules/Services/Sources/Services/Workspace/WorkspaceService.swift",
+      "sha256": "284c09888c8cf75b2fa54a0f529e0ac6401fbc9ba9c9a923973edaaace061c21",
+      "bytes": 12134
+    }
+  ],
+  "limits": [
+    "Ten new selected-Space manager controls only. Previous composition10, Participant16+1, Space22, Owner/SQLite and other passed suites are not replayed.",
+    "Complete reviewed manager source, excluding four external imports, appending five read-only fixture accessors and inserting one fixture-only duplicate-stop observation counter before the unchanged original await. Removing that field/increment/accessor and restoring imports recovers the complete canonical product. Product candidates are not applied.",
+    "Complete original Owner/Lifetime/Operation/InvocationDispatchBinding/AccountManager and actual Participant/Space actors are reused from the exact published source-bound portable projection. Previous read-only accessors/import mappings remain explicit.",
+    "Positive closed-service boundary compiles actual final WorkspaceService declaration, unchanged workspaceOpen body, exact static extension/error and full original AccountInfo decoder. Unrelated service protocol requirements/methods are omitted explicitly.",
+    "The actual native ClientCommands/Invocation/middleware/protobuf codec are not compiled or called. Named RPC permit.prepare/begin/finish are real original code, while request/response values and queued RPC body are explicit probes.",
+    "Actual original SpaceViewsStorage callback mints permission using injected decoded SpaceView/account values and explicit subscription, Combine/publisher, AtomicStorage and DI probes. No caller boolean or fabricated permission substitutes for its private factory.",
+    "Workspace widgets/type/property readiness or native-child shutdown is not established by void probe completion. The manager contract is selected request/account/Space identity and its own serialized sequence.",
+    "A probe effect admitted before retirement may finish and remain recorded while current-owner publication fails. Rejection is not rollback or no-effect proof.",
+    "No selected destination SDK factory, native annotation receipt, ObjectCreate/schema repair, identity mapping/ACK, production bootstrap or device/Release acceptance is enabled.",
+    "Swift Testing actual serialized tests, Swift6.3.3 toolchain/Swift5 language mode/strict concurrency complete; no Apple framework or native UI qualification.",
+    "Every successful fixture cleanup checks all recorded assertion/hold-timeout errors after actual owned teardown. No per-fixture reset can erase them."
+  ]
+}

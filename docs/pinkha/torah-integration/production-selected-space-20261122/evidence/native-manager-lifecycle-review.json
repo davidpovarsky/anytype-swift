@@ -1,0 +1,68 @@
+{
+  "schema": "otzaria.original-selected-space-lifecycle-review/1",
+  "reviewer": "native_completion",
+  "observedAt": "2026-11-22T09:38:25.811549+00:00",
+  "base": "37f48119609747c01ee92cf597e4216f63b7bfa4",
+  "scope": "Read-only complete b19 manager/attempt/selection and contract review, focused on request/account lifetime replacement, shared-task caller cancellation and stop joining.",
+  "inputs": [
+    {
+      "path": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-selected-space-20261122\\CANDIDATE.swift",
+      "bytes": 16186,
+      "sha256": "b19d42c16fd073787b6f8567229be07190151ef7e48b76d47e4c1e2dbb574b37"
+    },
+    {
+      "path": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-selected-space-20261122\\CANDIDATE.patch",
+      "bytes": 17373,
+      "sha256": "2557fd1350073ebab9fc9cdc1784f12f45d7928636b812104528525fa358a70d"
+    },
+    {
+      "path": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-selected-space-20261122\\CONTRACT.md",
+      "bytes": 8728,
+      "sha256": "5bf6d17436f719d3d38ad51b3c3a7907fbad9e28e5a116a35b8a143f6b9b73ee"
+    }
+  ],
+  "outcome": "No additional concrete lifecycle blocker within the explicitly bounded selected-manager contract.",
+  "findings": [
+    {
+      "anchors": "CANDIDATE.swift:66-117,135-167",
+      "finding": "The existing opened AccountManager lifetime is captured before the single AccountData read; that token is then validated. Optional existing view authority is frozen once, never recaptured. Real account/view retirement synchronously retires the request source. Binding construction compares exact frozen capture source identity, token and order."
+    },
+    {
+      "anchors": "CANDIDATE.swift:229-260,317-339,362-381",
+      "finding": "Replacement retires the prior request and clears the opaque selection before suspension. The new task joins the prior task before direct service stages. A request superseded before entry fails requireCurrent before loading or service work. Late catch/defer state changes require the exact original attempt."
+    },
+    {
+      "anchors": "CANDIDATE.swift:234-241,257-260",
+      "finding": "Same-Space joiners validate their captured request after awaiting. Cancellation rejects the individual caller before requesting or after the shared task result, while the global unstructured selection task continues. Cancellation is not falsely equated with native drain or global deselection."
+    },
+    {
+      "anchors": "CANDIDATE.swift:263-299,384-393,410-414",
+      "finding": "Stop retires selection and subscription identity before awaiting, reserves one shared stop operation, blocks new selections, joins the prior selection and clears original shared providers. Duplicate stops join that same operation. Queued retired subscription callbacks fail exact identity admission."
+    },
+    {
+      "anchors": "CANDIDATE.swift:344-360; CONTRACT.md:25,29-33",
+      "finding": "Opaque selection validates actual request/account/view captures. Original public UI caches can still contain bytes after concurrent source retirement; that is explicitly not atomic UI rollback or current authority. Independent widget/helper native readiness and stale callback/drain gaps remain separate."
+    }
+  ],
+  "separateKnownGap": {
+    "status": "Root and author own a V2 repair; not a new finding from this review.",
+    "anchors": "CANDIDATE.swift:333-336; CONTRACT.md:15,19",
+    "finding": "SourceBinding alone does not prove an RPC was issued; an injected WorkspaceServiceProtocol could return a matching DTO. The root-reviewed V2 original final-service boundary must be independently frozen and used for execution."
+  },
+  "newControlExpectations": [
+    "Suspended A-to-B-to-A replacement rejects old captures and skips superseded queued stages.",
+    "Same-Space shared waiters distinguish caller cancellation from current global selection.",
+    "Stop duplicates join the same drain/clear operation and exact retired callbacks cannot operate on a replacement.",
+    "Account/view retirement rejects original captures through native-return and helper-await boundaries.",
+    "Stale catch/defer cannot clear the replacement; manager deinit is tested only without legitimate operation retention."
+  ],
+  "limits": [
+    "No edits, parser, compiler, control execution, Native RPC, UI or acceptance run performed by this review.",
+    "No independent helper/widget drain, account bootstrap ordering, canEdit, schema/write or body receipt qualification.",
+    "The subsequent V2 bytes and actual positive final-service/native probe compiler closure are outside this frozen b19 receipt."
+  ],
+  "priorDependencyReceipt": {
+    "path": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-selected-space-dependency-lifecycle-independent-review-20261122.json",
+    "sha256": "3346ec0d9f61075aa9a69447024939368f5621fce4e5b7af2e1dce4853a22bf6"
+  }
+}

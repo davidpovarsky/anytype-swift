@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "job": {
+    "id": "job_fd9c3f8ceef8",
+    "type": "job_result",
+    "source": "script_run@host_7ec8382e82747448",
+    "severity": "warning",
+    "tool": "script_run",
+    "host": "host_7ec8382e82747448",
+    "status": "failed",
+    "exit_code": 1,
+    "created_at": 1795343422.6630738,
+    "started_at": "2026-11-22T10:30:22.729031+00:00",
+    "finished_at": "2026-11-22T10:30:27.117637+00:00",
+    "duration_s": 4.39,
+    "error": null,
+    "output_truncated": false,
+    "timeout_s": 700,
+    "read": false,
+    "notified": {
+      "telegram": null,
+      "resend": null
+    },
+    "notify_spec": {},
+    "output": "Traceback (most recent call last):\r\n  File \"C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_0786c9217f5447cb9f281320727a6165\\script.py\", line 50, in <module>\r\n    git(\"diff\",\"--check\",\"--\",*paths)\r\n  File \"C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_0786c9217f5447cb9f281320727a6165\\script.py\", line 21, in git\r\n    def git(*args,timeout=60):return run([\"git\",*args],timeout)\r\n                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_0786c9217f5447cb9f281320727a6165\\script.py\", line 19, in run\r\n    assert p.returncode==0,commands[-1]\r\n           ^^^^^^^^^^^^^^^\r\nAssertionError: {'argv': ['git', 'diff', '--check', '--', 'Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift', 'Modules/Services/Sources/Services/Workspace/WorkspaceService.swift'], 'started_at': '2026-11-22T10:30:26.836569+00:00', 'finished_at': '2026-11-22T10:30:27.067127+00:00', 'returncode': 2, 'stdout': 'Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift:352: trailing whitespace.\\n+            \\nAnytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift:354: trailing whitespace.\\n+            \\nAnytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift:356: trailing whitespace.\\n+            \\n', 'stderr': \"warning: in the working copy of 'Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift', LF will be replaced by CRLF the next time Git touches it\\nwarning: in the working copy of 'Modules/Services/Sources/Services/Workspace/WorkspaceService.swift', LF will be replaced by CRLF the next time Git touches it\\n\"}"
+  }
+}

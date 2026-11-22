@@ -1,0 +1,127 @@
+{
+  "manager": {
+    "candidate_sha256": "bf33794809bff676321ae0265e0caf6539fd7feaa69edaf4d14829753c131ac1",
+    "remove_import_lines": [
+      "import AnytypeCore",
+      "import Services",
+      "import AsyncTools",
+      "import ProtobufMessages"
+    ],
+    "appended_readonly_accessor": {
+      "path": "ManagerReadouts.swift.txt",
+      "sha256": "95944f4fec0b5a11ed0db85ccac2025de1508ae040cb212e73dfde73c2ed0a85",
+      "bytes": 665
+    },
+    "product_body_after_removing_explicit_fixture_observations_is_unchanged": true,
+    "fixture_counter_instrumentation": {
+      "field_insertion": "    private var probeDuplicateStopEntries = 0\n",
+      "branch_insertion": "            probeDuplicateStopEntries += 1\n",
+      "exact_branch": "if let stopOperation; immediately before unchanged await stopOperation.value",
+      "purpose": "Positive observation of actual duplicate-stop branch entry before releasing the first held clear; no scheduling/yield assumption",
+      "inverse_recovers_full_canonical_manager_after_restoring_only_original_imports": true,
+      "canonical_sha256": "bf33794809bff676321ae0265e0caf6539fd7feaa69edaf4d14829753c131ac1",
+      "product_source_changed": false
+    }
+  },
+  "service": {
+    "candidate_sha256": "284c09888c8cf75b2fa54a0f529e0ac6401fbc9ba9c9a923973edaaace061c21",
+    "retained_fragments": [
+      {
+        "name": "protocol WorkspaceServiceProtocol declaration and workspaceOpen requirement",
+        "text": "public protocol WorkspaceServiceProtocol: Sendable {\n    func workspaceOpen(spaceId: String, withChat: Bool) async throws -> AccountInfo\n}"
+      },
+      {
+        "name": "closed static extension method",
+        "text": "    func workspaceOpenForOriginalSelection(spaceId: String) async throws -> AccountInfo {\n        guard let original = self as? WorkspaceService else {\n            throw OriginalWorkspaceSelectionError.unqualifiedService\n        }\n        return try await original.workspaceOpen(spaceId: spaceId, withChat: true)\n    }"
+      },
+      {
+        "name": "exact private error",
+        "text": "private enum OriginalWorkspaceSelectionError: Error {\n    case unqualifiedService\n}"
+      },
+      {
+        "name": "original final class declaration",
+        "text": "final class WorkspaceService: WorkspaceServiceProtocol {"
+      },
+      {
+        "name": "unchanged original workspaceOpen method",
+        "text": "    public func workspaceOpen(spaceId: String, withChat: Bool) async throws -> AccountInfo {\n        let result = try await ClientCommands.workspaceOpen(.with {\n            $0.spaceID = spaceId\n            $0.withChat = withChat\n        }).invoke(qos: .userInitiated)\n\n        return result.info.asModel\n    }"
+      }
+    ],
+    "unrelated_protocol_requirements_and_methods": "omitted from portable compilation only; complete candidate retained"
+  },
+  "account_info": {
+    "full_model_and_original_asModel_body": true,
+    "removed_import_line": "import ProtobufMessages",
+    "generated_info_value": "explicit 14-field portable value input; no protobuf serialization or native response authenticity claim"
+  },
+  "reused_compilation_inputs": [
+    {
+      "target": "Tests/SelectedSpaceControls/AccountManager.swift",
+      "from": "docs/pinkha/torah-integration/production-space-edit-composition-20261122/controls/Tests/CompositionControls/AccountManager.swift",
+      "sha256": "be0b4358ba976cbe32a56b6746e30e793fc3a845ad27eb84ff9ac39e6a517390"
+    },
+    {
+      "target": "Tests/SelectedSpaceControls/Binding.swift",
+      "from": "docs/pinkha/torah-integration/production-space-edit-composition-20261122/controls/Tests/CompositionControls/Binding.swift",
+      "sha256": "e304f05ed114342795dbc3a603490311142d63f9a6a156bdcdafd68743e710cb"
+    },
+    {
+      "target": "Tests/SelectedSpaceControls/DocumentDependencyProbe.swift",
+      "from": "docs/pinkha/torah-integration/production-space-edit-composition-20261122/controls/Tests/CompositionControls/DocumentDependencyProbe.swift",
+      "sha256": "cd63279791862f8f12edfd4159bf8a64aa64c42d1aa49ac77cb5c9a42885e540"
+    },
+    {
+      "target": "Tests/SelectedSpaceControls/Lifetime.swift",
+      "from": "docs/pinkha/torah-integration/production-space-edit-composition-20261122/controls/Tests/CompositionControls/Lifetime.swift",
+      "sha256": "41567aaf7c2850aa240535f42c5f341a0c8963314a1e1b44236fbf932a886871"
+    },
+    {
+      "target": "Tests/SelectedSpaceControls/NativePermissionValues.swift",
+      "from": "docs/pinkha/torah-integration/production-space-edit-composition-20261122/controls/Tests/CompositionControls/NativePermissionValues.swift",
+      "sha256": "56d6ba929c24f187ae52d90a9e8dfb65757707a70b32935a8e86fefada10063e"
+    },
+    {
+      "target": "Tests/SelectedSpaceControls/Operation.swift",
+      "from": "docs/pinkha/torah-integration/production-space-edit-composition-20261122/controls/Tests/CompositionControls/Operation.swift",
+      "sha256": "55804cf1a06b59dc80846ab4bc8b874a2d54ae28649288c5b49930267b9ae844"
+    },
+    {
+      "target": "Tests/SelectedSpaceControls/Owner.swift",
+      "from": "docs/pinkha/torah-integration/production-space-edit-composition-20261122/controls/Tests/CompositionControls/Owner.swift",
+      "sha256": "8f7b178326b483688402827efdd4aea7cc9f2daa0d441479e185d8a49ea193ba"
+    },
+    {
+      "target": "Tests/SelectedSpaceControls/ParticipantsStorageProjection.swift",
+      "from": "docs/pinkha/torah-integration/production-space-edit-composition-20261122/controls/Tests/CompositionControls/ParticipantsStorageProjection.swift",
+      "sha256": "82040d087905b27c45463e83213e24273cf0880c0b5fc8a434073644ac1f0a14"
+    },
+    {
+      "target": "Tests/SelectedSpaceControls/PreparedEditorPageDocument.swift",
+      "from": "docs/pinkha/torah-integration/production-space-edit-composition-20261122/controls/Tests/CompositionControls/PreparedEditorPageDocument.swift",
+      "sha256": "42e595c324e46947d4b964070994a193478d57072931b92be1451f155e2cb32e"
+    },
+    {
+      "target": "Tests/SelectedSpaceControls/SpacePermissions.swift",
+      "from": "docs/pinkha/torah-integration/production-space-edit-composition-20261122/controls/Tests/CompositionControls/SpacePermissions.swift",
+      "sha256": "c2344a24654d5a9c15a8421811ee2ac869c59a2f0477e28e9f50bd95da6b995b"
+    },
+    {
+      "target": "Tests/SelectedSpaceControls/SpaceViewsStorageProjection.swift",
+      "from": "docs/pinkha/torah-integration/production-space-edit-composition-20261122/controls/Tests/CompositionControls/SpaceViewsStorageProjection.swift",
+      "sha256": "dd4061614a07b212523f6408631a50efd9e52ff7e316bc63a479cf4c96de1686"
+    }
+  ],
+  "portable_probes_changes": [
+    "replace minimal AccountInfo with full original AccountInfo model/decoder in a separate file",
+    "AccountData.empty refers to original AccountInfo.empty",
+    "add exact original SpaceView.isLoading body over explicitly injected decoded fields",
+    "append only publisher subscriber-count readout"
+  ],
+  "selection_probes": [
+    "actual final service calls explicit ClientCommands/Invocation request and response value boundary",
+    "original InvocationDispatchBinding.prepare and permit.begin/finish execute, with begin/finish on DispatchQueue.global",
+    "optional holds expose prepare-before-dispatch and response-before-permit-completion windows",
+    "widgets/types/properties/recency/bootstrap/analytics/DI/publishers/decoded SpaceView/account values are explicit probes; no original child-readiness/native unsubscribe claims",
+    "Successful fixture cleanup throws if any recorded assertion exists after manager/Space teardown; no fixture resets the shared assertion list. All13 successful cleanup sites use try await."
+  ]
+}
