@@ -1,0 +1,38 @@
+{
+  "repository": "anyproto/anytype-heart",
+  "ref": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "path": "pkg/lib/pb/model/models.pb.go",
+  "bytes": 1180139,
+  "git_blob": "5a07a9a96731786a6fb849ab56002c735b10aba2",
+  "sha256": "1e7bea1584323e3d69fb7a9f1cbe0815ab274cc1b847508b3c3c6feb9a4ad99d",
+  "excerpts": [
+    {
+      "label": "BlockRestrictions declaration",
+      "start_line": 3794,
+      "text": "type BlockRestrictions struct {\n\tRead   bool `protobuf:\"varint,1,opt,name=read,proto3\" json:\"read,omitempty\"`\n\tEdit   bool `protobuf:\"varint,2,opt,name=edit,proto3\" json:\"edit,omitempty\"`\n\tRemove bool `protobuf:\"varint,3,opt,name=remove,proto3\" json:\"remove,omitempty\"`\n\tDrag   bool `protobuf:\"varint,4,opt,name=drag,proto3\" json:\"drag,omitempty\"`\n\tDropOn bool `protobuf:\"varint,5,opt,name=dropOn,proto3\" json:\"dropOn,omitempty\"`\n}"
+    },
+    {
+      "label": "Block declaration",
+      "start_line": 3444,
+      "text": "type Block struct {\n\tId              string             `protobuf:\"bytes,1,opt,name=id,proto3\" json:\"id,omitempty\"`\n\tFields          *types.Struct      `protobuf:\"bytes,2,opt,name=fields,proto3\" json:\"fields,omitempty\"`\n\tRestrictions    *BlockRestrictions `protobuf:\"bytes,3,opt,name=restrictions,proto3\" json:\"restrictions,omitempty\"`\n\tChildrenIds     []string           `protobuf:\"bytes,4,rep,name=childrenIds,proto3\" json:\"childrenIds,omitempty\"`\n\tBackgroundColor string             `protobuf:\"bytes,5,opt,name=backgroundColor,proto3\" json:\"backgroundColor,omitempty\"`\n\tAlign           BlockAlign         `protobuf:\"varint,6,opt,name=align,proto3,enum=anytype.model.BlockAlign\" json:\"align,omitempty\"`\n\tVerticalAlign   BlockVerticalAlign `protobuf:\"varint,7,opt,name=verticalAlign,proto3,enum=anytype.model.BlockVerticalAlign\" json:\"verticalAlign,omitempty\"`\n\t// Types that are valid to be assigned to Content:\n\t//\n\t//\t*BlockContentOfSmartblock\n\t//\t*BlockContentOfText\n\t//\t*BlockContentOfFile\n\t//\t*BlockContentOfLayout\n\t//\t*BlockContentOfDiv\n\t//\t*BlockContentOfBookmark\n\t//\t*BlockContentOfIcon\n\t//\t*BlockContentOfLink\n\t//\t*BlockContentOfDataview\n\t//\t*BlockContentOfRelation\n\t//\t*BlockContentOfFeaturedRelations\n\t//\t*BlockContentOfLatex\n\t//\t*BlockContentOfTableOfContents\n\t//\t*BlockContentOfTable\n\t//\t*BlockContentOfTableColumn\n\t//\t*BlockContentOfTableRow\n\t//\t*BlockContentOfWidget\n\t//\t*BlockContentOfChat\n\tContent IsBlockContent `protobuf_oneof:\"content\"`\n}"
+    },
+    {
+      "label": "BlockRestrictions Unmarshal",
+      "start_line": 27171,
+      "text": "\t\tdefault:\n\t\t\tiNdEx = preIndex\n\t\t\tskippy, err := skipModels(dAtA[iNdEx:])\n\t\t\tif err != nil {\n\t\t\t\treturn err\n\t\t\t}\n\t\t\tif (skippy < 0) || (iNdEx+skippy) < 0 {\n\t\t\t\treturn ErrInvalidLengthModels\n\t\t\t}\n\t\t\tif (iNdEx + skippy) > l {\n\t\t\t\treturn io.ErrUnexpectedEOF\n\t\t\t}\n\t\t\tiNdEx += skippy\n\t\t}\n\t}\n\n\tif iNdEx > l {\n\t\treturn io.ErrUnexpectedEOF\n\t}\n\treturn nil\n}"
+    },
+    {
+      "label": "Block Unmarshal",
+      "start_line": 27021,
+      "text": "\t\tdefault:\n\t\t\tiNdEx = preIndex\n\t\t\tskippy, err := skipModels(dAtA[iNdEx:])\n\t\t\tif err != nil {\n\t\t\t\treturn err\n\t\t\t}\n\t\t\tif (skippy < 0) || (iNdEx+skippy) < 0 {\n\t\t\t\treturn ErrInvalidLengthModels\n\t\t\t}\n\t\t\tif (iNdEx + skippy) > l {\n\t\t\t\treturn io.ErrUnexpectedEOF\n\t\t\t}\n\t\t\tiNdEx += skippy\n\t\t}\n\t}\n\n\tif iNdEx > l {\n\t\treturn io.ErrUnexpectedEOF\n\t}\n\treturn nil\n}"
+    }
+  ],
+  "proto_options": {
+    "path": "pkg/lib/pb/model/protos/models.proto",
+    "bytes": 56622,
+    "git_blob": "1d56550bab8b2813fef419309ed6f6c3bc4f4171",
+    "sha256": "c80b86f9680e1f25cf5e4fcbdb8f317a1273afdab5b2934bb3d9510742f0da31",
+    "lines": []
+  },
+  "execution": "git show only; no generator, Go compilation or test"
+}

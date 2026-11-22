@@ -1,0 +1,27 @@
+{
+  "status": "BOUNDED_LOCAL_SOURCE_AND_COLLECTOR_VERIFICATION_PASS",
+  "native_execution": "NOT_RUN",
+  "runner_python_syntax": true,
+  "all_control_input_hashes_match": true,
+  "unchanged_runner_functions_and_classes": {
+    "digest": true,
+    "write_json": true,
+    "safe_path": true,
+    "check_file": true,
+    "git": true,
+    "Commands": true,
+    "read_json_stream": true,
+    "dependency_inputs": true,
+    "native_library_inputs": true,
+    "validate_cases": true,
+    "validate_missing_attachment_pairs": true
+  },
+  "new_case_names_exact": true,
+  "embedded_native_wire_fixtures_exact": true,
+  "final_expected_closure_inputs": 21,
+  "retained_previous_failed_event_stream": "correctly remains FAIL",
+  "retained_full_thirteen_case_event_stream": "rejected with twelve distinct unexpected siblings",
+  "new_native_or_semantic_tests_executed": 0,
+  "local_verifier_correction": "Initial receipt assertion counted unexpected event occurrences instead of distinct child names. Inspection showed the unchanged collector correctly records each event; the local check now counts distinct names. No runner/product/native-test source was changed for this correction.",
+  "limitations": "Source/collector verification only; no generated-type compile or genuine native execution yet."
+}

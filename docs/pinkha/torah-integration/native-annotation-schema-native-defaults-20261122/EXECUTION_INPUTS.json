@@ -1,0 +1,209 @@
+{
+  "schema": "otzaria.original-heart-native-restriction-defaults/1",
+  "status": "SOURCE_REVIEW_CANDIDATE_NATIVE_NOT_RUN",
+  "repository_base": "8885a230159570a58ab2b8de4d09df632dcfc8f1",
+  "heart_base": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "diagnostic_source_commit": "b93b7b351cfeb625607b5b7d86aef7c29fe78b0b",
+  "diagnostic_source_run": 45042110729,
+  "diagnostic_execution_manifest_sha256": "0653a672d696f200e1333b163a6e6362262e46629e0d70346069607d68652744",
+  "registration_source_commit": "60b8300c3506e53638c8ca883f82484de073fae8",
+  "registration_source_run": 45038140322,
+  "registration_execution_manifest_sha256": "f3d2fd65b109fc67602318ff8e0e51c79b4295eae535a2d7ed3153e19ef0c36f",
+  "control_inputs": [
+    {
+      "path": "core/pinkha/annotationschema/register_type_layout.go",
+      "bytes": 5649,
+      "sha256": "1f50a65ff9bc3e3acccea2fcd53dce03f025f280940502b028a22d3e75b0d6ce",
+      "retained_path": "native/core/pinkha/annotationschema/register_type_layout.go",
+      "before_sha256": "806a91025237e5b14acff577bb36d9969963af824880d7e6cc3c5c33b267a50e"
+    },
+    {
+      "path": "core/pinkha/annotationschema/native_block_semantics_test.go",
+      "bytes": 11900,
+      "sha256": "a736758dbb0034ef99f08c71de5e4ce1085f3d48e6cd4b965a70d4b12048e6d1",
+      "retained_path": "native/core/pinkha/annotationschema/native_block_semantics_test.go"
+    },
+    {
+      "path": "run_native_defaults_repair.py",
+      "bytes": 48065,
+      "sha256": "aae68a25c0499d1bf61e98eca0ace9ffc48997823fdce9a775b22b239e904cdf"
+    },
+    {
+      "path": "GOFMT.json",
+      "bytes": 983,
+      "sha256": "7d449033c4e3fb2472250394a7861da2fb9bcd1adc6291675b7253296b43beb3"
+    },
+    {
+      "path": "SOURCE_PRESERVATION.json",
+      "bytes": 1157,
+      "sha256": "a44e46f8607665bde5ef66df7828a9eb6885e53700ebcd943341f590323cd333"
+    },
+    {
+      "path": "core/block/simple/base/base.go",
+      "bytes": 3288,
+      "sha256": "a840e66a5cb704bb3cfa591d6d70db984bd315ea13507ce875c5265710fa5d54",
+      "retained_path": "original-source/base.go"
+    },
+    {
+      "path": "core/block/simple/dataview/diff.go",
+      "bytes": 7830,
+      "sha256": "2b3c4e406bf4f058a3cc0a44b9c07922d5068613b01c450bd5489675d217bb15",
+      "retained_path": "original-source/dataview-diff.go"
+    }
+  ],
+  "product_afterimages": [
+    {
+      "path": "core/pinkha/annotationschema/register_type_layout.go",
+      "bytes": 5649,
+      "sha256": "1f50a65ff9bc3e3acccea2fcd53dce03f025f280940502b028a22d3e75b0d6ce",
+      "retained_path": "native/core/pinkha/annotationschema/register_type_layout.go",
+      "before_sha256": "806a91025237e5b14acff577bb36d9969963af824880d7e6cc3c5c33b267a50e"
+    }
+  ],
+  "new_test_sources": [
+    {
+      "path": "core/pinkha/annotationschema/native_block_semantics_test.go",
+      "bytes": 11900,
+      "sha256": "a736758dbb0034ef99f08c71de5e4ce1085f3d48e6cd4b965a70d4b12048e6d1",
+      "retained_path": "native/core/pinkha/annotationschema/native_block_semantics_test.go"
+    }
+  ],
+  "original_semantics_sources": [
+    {
+      "repository": "anyproto/anytype-heart",
+      "ref": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "core/block/simple/base/base.go",
+      "retained_path": "original-source/base.go",
+      "git_blob": "c4a0a0dd7cb2985df66a02a27a3e8c7c9c173d55",
+      "sha256": "a840e66a5cb704bb3cfa591d6d70db984bd315ea13507ce875c5265710fa5d54",
+      "bytes": 3288
+    },
+    {
+      "repository": "anyproto/anytype-heart",
+      "ref": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "core/block/simple/dataview/diff.go",
+      "retained_path": "original-source/dataview-diff.go",
+      "git_blob": "7040dc931815a5b4905be6b39f21ac09ff5a9cd3",
+      "sha256": "2b3c4e406bf4f058a3cc0a44b9c07922d5068613b01c450bd5489675d217bb15",
+      "bytes": 7830
+    }
+  ],
+  "diagnostic_composed_inputs": [
+    {
+      "bytes": 15466,
+      "path": "core/block/object/objectcreator/fixed_schema_observer.go",
+      "sha256": "f591939d759e733a37e776d189de36d597ddd30cab284142f82aa8de9de51d89"
+    },
+    {
+      "bytes": 17843,
+      "path": "core/block/object/objectcreator/fixed_schema_snapshot.go",
+      "sha256": "3a404738380ca7b8a6e59c93a377b85927ed4383fed560385f5920f86631e5df"
+    },
+    {
+      "bytes": 4218,
+      "path": "core/block/object/objectcreator/fixed_schema_acl.go",
+      "sha256": "170a100526f0be337c12bf9831099eb78381948b41f851791e00bbb54160a09e"
+    },
+    {
+      "bytes": 14619,
+      "path": "core/block/object/objectcreator/fixed_schema_replay.go",
+      "sha256": "47de485bc746070ee5791cac1efc67e84da31c5477cdb4ad577d62c53310adc7"
+    },
+    {
+      "bytes": 27591,
+      "path": "core/block/source/sourceimpl/source.go",
+      "sha256": "30481a09de754219aa3e714cab42a5750880f9d835a720e1330de22690262e55"
+    },
+    {
+      "bytes": 3520,
+      "path": "core/pinkha/annotationschema/definition.go",
+      "sha256": "cce970f838d91d9f3f06af5e4f2511afc6838c69704deaa4099ba9c392996eac"
+    },
+    {
+      "bytes": 9880,
+      "path": "core/pinkha/annotationschema/observe.go",
+      "sha256": "06eac0c21b0974863a197f8f1a3ae80804c5d97d3e4a49e8f775e9cccc1cc193"
+    },
+    {
+      "bytes": 6266,
+      "path": "core/pinkha/annotationschema/type_layout.go",
+      "sha256": "574f1fc23e9387c59167fdeac72b6a4d727f4c6c782b03ed2a99593a0e7ad312"
+    },
+    {
+      "bytes": 1575,
+      "path": "core/application/active_app_admission.go",
+      "sha256": "345ae6b7200367d31b420d65332fe63c650da16ed1e87b08e4ad55288f3082ac"
+    },
+    {
+      "bytes": 6738,
+      "path": "core/block/object/objectcreator/fixed_schema_creation.go",
+      "sha256": "40a78d46222fc84f7b50a820642ffe15bf2a8a5ce2cf0271ef894e286124ec5d"
+    },
+    {
+      "bytes": 12479,
+      "path": "core/pinkha/annotationschema/register.go",
+      "sha256": "a14d21693fa8e60fe7e4d581295816a7e9a73919e61eafd5fd1532b9928cd9fc"
+    },
+    {
+      "bytes": 4745,
+      "path": "core/pinkha/annotationschema/register_type_layout.go",
+      "sha256": "806a91025237e5b14acff577bb36d9969963af824880d7e6cc3c5c33b267a50e"
+    },
+    {
+      "bytes": 14947,
+      "path": "core/block/object/objectcreator/fixed_schema_native_fixture_test.go",
+      "sha256": "1afa72779c24aff5a78fe63b181f112ca7a4fa7c6984f1395a0cf5fc4a308999"
+    },
+    {
+      "bytes": 8977,
+      "path": "core/block/object/objectcreator/fixed_schema_native_trace_test.go",
+      "sha256": "129341500230b4e053985b34155cf48f6dcad185027e5ba1d5a89859c347a98d"
+    },
+    {
+      "bytes": 25964,
+      "path": "core/block/object/objectcreator/fixed_schema_native_observer_test.go",
+      "sha256": "a8cbec19d91da9442a75bf7a406d7718c54b0224d24377ddd2e5160d218de6cc"
+    },
+    {
+      "bytes": 20028,
+      "path": "core/block/object/objectcreator/fixed_schema_native_counter_observation_test.go",
+      "sha256": "54041071214718844bcec0f8d4a6d8723d844d11bd30ca5129faeec87eab0078"
+    },
+    {
+      "bytes": 17307,
+      "path": "core/block/object/objectcreator/annotation_schema_readback_native_test.go",
+      "sha256": "3cffade31d78d38f577f5cefbaceaa23696ca3077cdcdd53c7fab6ae9da79077"
+    },
+    {
+      "bytes": 14433,
+      "path": "core/block/object/objectcreator/annotation_schema_registration_lifecycle_test.go",
+      "sha256": "ebc89aac0fbb73ed114bb7abbcd6155d6d17a10028d6efefca5d5df539b74e3b"
+    },
+    {
+      "bytes": 18919,
+      "path": "core/block/object/objectcreator/annotation_schema_registration_native_test.go",
+      "sha256": "0a55414b48c74c822b2c58cbda0f94911665f9c0e27cd709a6b403b7b945269c"
+    },
+    {
+      "bytes": 5783,
+      "path": "core/block/object/objectcreator/annotation_schema_missing_attachment_diagnostic_test.go",
+      "sha256": "8dd82f89bff90a8bd44806846f2159fb02dc52320b1ff8f63463bf9a9ff368fc"
+    }
+  ],
+  "expected_cases": {
+    "semantics": [
+      "OriginalDataviewDiffExplainsEmptyMessage",
+      "CapturedNativePairUsesSemanticCopies",
+      "NonzeroNativeRestrictionsRemainDifferent",
+      "OtherNativeFieldsRemainDifferent"
+    ],
+    "native": [
+      "MissingAttachmentUsesOneNativeApply"
+    ]
+  },
+  "preserved_registration_results": {
+    "passed": 12,
+    "unresolved_before_this_run": 1
+  },
+  "scope": "Four new controls using authentic captured native blocks and original Dataview.Diff; one existing failed native child with unchanged writes/assertions/raw diagnostics. One comparison-only product change; no Swift/RPC or ACK acceptance."
+}

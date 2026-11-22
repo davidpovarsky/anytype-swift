@@ -1,0 +1,77 @@
+name: Original Heart native restriction defaults repair
+
+on:
+  push:
+    branches:
+      - codex/otzaria-schema-native-defaults-20261122
+    paths:
+      - .github/workflows/otzaria-schema-native-defaults.yml
+      - docs/pinkha/torah-integration/native-annotation-schema-native-defaults-20261122/EXECUTION_INPUTS.json
+      - docs/pinkha/torah-integration/native-annotation-schema-native-defaults-20261122/run_native_defaults_repair.py
+      - docs/pinkha/torah-integration/native-annotation-schema-native-defaults-20261122/native/**/*.go
+
+permissions:
+  contents: read
+
+concurrency:
+  group: otzaria-schema-native-defaults-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  native-defaults-repair:
+    runs-on: xcode-27
+    timeout-minutes: 120
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+    steps:
+      - name: Fix the absolute owned execution deadline
+        run: |
+          echo "OTZARIA_ANNOTATION_SCHEMA_JOB_DEADLINE=$(( $(date +%s) + 6900 ))" >> "$GITHUB_ENV"
+      - name: Checkout exact reviewed control source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Select actual ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Install the exact original Go toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache: false
+      - name: Checkout the immutable original Heart base
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: build/Heart-Schema-Native-Defaults
+          persist-credentials: false
+      - name: Execute four new semantic controls and the failed native child
+        run: |
+          python3 docs/pinkha/torah-integration/native-annotation-schema-native-defaults-20261122/run_native_defaults_repair.py \
+            --control-root "$GITHUB_WORKSPACE" \
+            --control-head "$GITHUB_SHA" \
+            --source docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/candidate-v5 \
+            --controls docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v7-r1 \
+            --schema docs/pinkha/torah-integration/native-annotation-schema-readback-20261122 \
+            --registration docs/pinkha/torah-integration/native-annotation-schema-registration-20261122 \
+            --diagnostic docs/pinkha/torah-integration/native-annotation-schema-missing-attachment-20261122 \
+            --diagnostic-execution-manifest-sha256 0653a672d696f200e1333b163a6e6362262e46629e0d70346069607d68652744 \
+            --repair docs/pinkha/torah-integration/native-annotation-schema-native-defaults-20261122 \
+            --repair-execution-manifest-sha256 af5e099142aa6f28b43ecf64e1fdbfb3c60a6293755074ba9f440cfd55417285 \
+            --execution-manifest-sha256 f3d2fd65b109fc67602318ff8e0e51c79b4295eae535a2d7ed3153e19ef0c36f \
+            --job-deadline-unix "$OTZARIA_ANNOTATION_SCHEMA_JOB_DEADLINE" \
+            --heart build/Heart-Schema-Native-Defaults \
+            --work build/Heart-Schema-Native-Defaults-Owned-Work \
+            --evidence build/Heart-Schema-Native-Defaults-Evidence
+      - name: Retain complete paired-state evidence including failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otzaria-Schema-Native-Defaults-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/Heart-Schema-Native-Defaults-Evidence
+          if-no-files-found: warn
+          compression-level: 6
+          retention-days: 14

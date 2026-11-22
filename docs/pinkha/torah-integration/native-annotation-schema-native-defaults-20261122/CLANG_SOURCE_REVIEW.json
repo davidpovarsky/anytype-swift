@@ -1,0 +1,16 @@
+{
+  "status": "SOURCE_REVIEW_CLEAR_NATIVE_NOT_RUN",
+  "reviewer": "clang_sdk",
+  "source_boundary": "Original Base.Diff allocation and exact generated model representation",
+  "original_heart": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "base_diff_git_blob": "c4a0a0dd7cb2985df66a02a27a3e8c7c9c173d55",
+  "generated_model_git_blob": "5a07a9a96731786a6fb849ab56002c735b10aba2",
+  "generated_model_sha256": "1e7bea1584323e3d69fb7a9f1cbe0815ab274cc1b847508b3c3c6feb9a4ad99d",
+  "represented_restriction_fields": ["Read", "Edit", "Remove", "Drag", "DropOn"],
+  "restriction_bookkeeping_fields": 0,
+  "unknown_wire_storage": "Neither Block nor BlockRestrictions retains unknown wire fields; original Unmarshal default branches skip them.",
+  "conclusion": "Full clone/fill-nil/proto.Equal admits the exact original empty allocation while retaining every represented restriction value and other represented native field. The four new control shapes match the exact original generated model. No remaining source blocker to the reviewed five-case gate.",
+  "claim_limit": "Complete represented native state only; no preservation claim for wire fields discarded by the original decoder, and no native execution acceptance yet.",
+  "reviewer_source_mutations": 0,
+  "reviewer_test_or_ci_runs": 0
+}

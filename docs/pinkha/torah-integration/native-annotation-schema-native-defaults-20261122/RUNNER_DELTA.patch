@@ -1,0 +1,179 @@
+--- a/run_missing_attachment_diagnostic.py
++++ b/run_native_defaults_repair.py
+@@ -1,11 +1,11 @@
+ #!/usr/bin/env python3
+-"""Run only the failed native missing-attachment child with read-only state pairs.
+-
+-All twelve passing registration children and all earlier cases remain unmodified
+-and unselected. Product source is byte-identical to the first 13-case native run.
+-The diagnostic retains complete loaded/persisted protobuf bytes after each setup
+-mutation and before/after the existing registration attempt; it adds no writes,
+-exclusions, normalization, retries or replacement acceptance assertions.
++"""Run the failed native child and four new original block-semantic controls.
++
++The one product delta applies original Base.Diff's nil Restrictions default only
++to deep comparison copies. All twelve passing registration children remain
++unmodified and unselected. The failed child, its original setup writes and all
++acceptance assertions remain byte-identical to the diagnostic run. Six raw
++paired observations are retained unchanged; they are never normalized.
+ """
+ import argparse
+ import base64
+@@ -24,6 +24,7 @@
+ PIN = "d98420b1113536afd08cde6de9a5816f6d27ffff"
+ GO_VERSION = "go1.26.5"
+ PACKAGES = {
++    "semantics": ("./core/pinkha/annotationschema", "TestOtzariaAnnotationSchemaNativeBlockSemantics"),
+     "native": ("./core/block/object/objectcreator", "TestOtzariaAnnotationSchemaRegistration"),
+ }
+ INPUT_FIELDS = (
+@@ -360,6 +361,8 @@
+     parser.add_argument("--execution-manifest-sha256", required=True)
+     parser.add_argument("--diagnostic", required=True, type=Path)
+     parser.add_argument("--diagnostic-execution-manifest-sha256", required=True)
++    parser.add_argument("--repair", required=True, type=Path)
++    parser.add_argument("--repair-execution-manifest-sha256", required=True)
+     parser.add_argument("--heart", required=True, type=Path)
+     parser.add_argument("--work", required=True, type=Path)
+     parser.add_argument("--evidence", required=True, type=Path)
+@@ -371,9 +374,10 @@
+     schema = args.schema.resolve()
+     registration = args.registration.resolve()
+     diagnostic = args.diagnostic.resolve()
++    repair = args.repair.resolve()
+     if evidence.exists() or work.exists():
+         raise RuntimeError("fresh owned evidence/work paths are required")
+-    if any(not packet.is_relative_to(control) for packet in (source, controls, schema, registration, diagnostic)):
++    if any(not packet.is_relative_to(control) for packet in (source, controls, schema, registration, diagnostic, repair)):
+         raise RuntimeError("all sealed packets must belong to the exact control checkout")
+     if git(control, "rev-parse", "HEAD") != args.control_head:
+         raise RuntimeError("wrong control commit")
+@@ -391,13 +395,25 @@
+     diagnostic_manifest = json.loads(diagnostic_manifest_path.read_text(encoding="utf-8"))
+     if diagnostic_manifest["registration_execution_manifest_sha256"] != digest(manifest_path):
+         raise RuntimeError("wrong first-run registration manifest")
+-    selected_cases = diagnostic_manifest["expected_cases"]
+-    if selected_cases != {"native": ["MissingAttachmentUsesOneNativeApply"]}:
++    if diagnostic_manifest["expected_cases"] != {"native": ["MissingAttachmentUsesOneNativeApply"]}:
+         raise RuntimeError("only the exact failed native child is admitted")
+     if diagnostic_manifest["capture_stages"] != ["00-registered", "01-unrelated-property-added", "02-second-view-applied", "03-metadata-property-removed", "04-before-registration-attempt", "05-after-registration-attempt"]:
+         raise RuntimeError("exact six reviewed native paired-state stages required")
+     for entry in diagnostic_manifest["control_inputs"]:
+         check_file(diagnostic, entry)
++    repair_manifest_path = repair / "EXECUTION_INPUTS.json"
++    if digest(repair_manifest_path) != args.repair_execution_manifest_sha256:
++        raise RuntimeError("unreviewed semantic repair execution manifest")
++    repair_manifest = json.loads(repair_manifest_path.read_text(encoding="utf-8"))
++    if repair_manifest["diagnostic_execution_manifest_sha256"] != digest(diagnostic_manifest_path):
++        raise RuntimeError("wrong retained paired-state diagnostic manifest")
++    selected_cases = repair_manifest["expected_cases"]
++    if selected_cases != {"semantics": ["OriginalDataviewDiffExplainsEmptyMessage", "CapturedNativePairUsesSemanticCopies", "NonzeroNativeRestrictionsRemainDifferent", "OtherNativeFieldsRemainDifferent"], "native": ["MissingAttachmentUsesOneNativeApply"]}:
++        raise RuntimeError("only four new semantic controls and the failed native child are admitted")
++    for entry in repair_manifest["control_inputs"]:
++        check_file(repair, entry)
++    for entry in repair_manifest["original_semantics_sources"]:
++        check_file(heart, {key: value for key, value in entry.items() if key != "retained_path"})
+     schema_manifest_path = schema / "EXECUTION_INPUTS.json"
+     if digest(schema_manifest_path) != manifest["readback_execution_manifest_sha256"]:
+         raise RuntimeError("wrong proven nine-case readback source manifest")
+@@ -438,8 +454,11 @@
+         "source_index_sha256": manifest["source_index_sha256"],
+         "execution_manifest_sha256": digest(manifest_path), "tests": {},
+         "diagnostic_execution_manifest_sha256": digest(diagnostic_manifest_path),
++        "repair_execution_manifest_sha256": digest(repair_manifest_path),
+         "registration_source_commit": "60b8300c3506e53638c8ca883f82484de073fae8",
+-        "registration_source_run_id": 45038140322, "diagnostic_only": True,
++        "registration_source_run_id": 45038140322, "diagnostic_only": False,
++        "diagnostic_source_run_id": 45042110729,
++        "semantic_comparison_scope": "Complete represented native state with only original Base.Diff nil top-level Restrictions defaults on deep copies; raw wire observations remain unequal when presence differs.",
+         "baseline_run_id": 45032882624,
+         "retained_v7r1_run_id": 45027606300,
+         "observer_delta_sha256": prior_manifest["observer_delta_patch"]["sha256"],
+@@ -449,9 +468,9 @@
+         "job_deadline_unix": args.job_deadline_unix,
+         "command_deadline_unix": commands.deadline,
+         "cleanup_reserve_seconds": 180,
+-        "observer_write_scope": "All product files remain byte-identical to source60b; diagnostic reads add no native mutation.",
++        "observer_write_scope": "All strict observer bytes remain unchanged; only the registrar comparison uses original native defaults on copies. Six diagnostic reads add no native mutation.",
+         "ios_build": False,
+-        "scope": "Only the previously failed missing-attachment child; complete read-only paired native diagnostics. No product edit, passing-case replay, Swift/RPC integration, body authority or ACK.",
++        "scope": "One registrar comparison delta; four new original model/Diff controls plus the unchanged failed native child. No passing-case replay, Swift/RPC integration, body authority or ACK.",
+     }
+     write_json(evidence / "RESULT.json", result)
+     success = False
+@@ -577,13 +596,43 @@
+             raise RuntimeError("exact eighteen unchanged native inputs required")
+         for entry in unchanged:
+             check_file(heart, entry)
+-        result["registration_inputs_unchanged"] = unchanged
++        result["registration_inputs_verified_before_semantic_fix"] = unchanged
+         result["passed_registration_case_bodies_unchanged"] = True
+-        result["diagnostic_product_changes"] = 0
++        diagnostic_inputs = repair_manifest["diagnostic_composed_inputs"]
++        if len(diagnostic_inputs) != 20 or len({entry["path"] for entry in diagnostic_inputs}) != 20 or {entry["path"]: entry for entry in diagnostic_inputs} != {entry["path"]: entry for entry in compiled_product_inputs}:
++            raise RuntimeError("the exact twenty retained diagnostic inputs were not composed")
++        result["diagnostic_inputs_verified_before_semantic_fix"] = diagnostic_inputs
++        afterimages = repair_manifest["product_afterimages"]
++        semantic_tests = repair_manifest["new_test_sources"]
++        if len(afterimages) != 1 or afterimages[0]["path"] != "core/pinkha/annotationschema/register_type_layout.go" or len(semantic_tests) != 1 or semantic_tests[0]["path"] != "core/pinkha/annotationschema/native_block_semantics_test.go":
++            raise RuntimeError("only one reviewed registrar comparison afterimage and four-case test file are admitted")
++        for entry in afterimages:
++            destination = safe_path(heart, entry["path"])
++            if digest(destination) != entry["before_sha256"]:
++                raise RuntimeError("registrar comparison preimage differs")
++            shutil.copyfile(check_file(repair, entry), destination)
++            for existing in compiled_product_inputs:
++                if existing["path"] == entry["path"]:
++                    existing.update({"sha256": digest(destination), "bytes": destination.stat().st_size})
++        for entry in semantic_tests:
++            destination = safe_path(heart, entry["path"])
++            if destination.exists():
++                raise RuntimeError("new semantic control path already exists")
++            shutil.copyfile(check_file(repair, entry), destination)
++            compiled_product_inputs.append({"path": entry["path"], "sha256": digest(destination), "bytes": destination.stat().st_size})
++        unchanged_diagnostic = [entry for entry in diagnostic_inputs if entry["path"] != afterimages[0]["path"]]
++        if len(unchanged_diagnostic) != 19:
++            raise RuntimeError("exact nineteen retained diagnostic inputs must remain unchanged")
++        for entry in unchanged_diagnostic:
++            check_file(heart, entry)
++        result["diagnostic_inputs_unchanged"] = unchanged_diagnostic
++        result["registration_inputs_unchanged"] = [entry for entry in unchanged if entry["path"] != afterimages[0]["path"]]
++        result["semantic_product_changes"] = 1
++        result["diagnostic_helper_and_case_unchanged"] = True
+         gofmt = Path(go_binary).resolve().with_name("gofmt")
+         if not gofmt.is_file():
+             raise RuntimeError("pinned Go formatter is absent")
+-        format_paths = schema_manifest["copyout_afterimages"] + schema_manifest["new_product_sources"] + schema_manifest["new_test_sources"] + manifest["new_product_sources"] + manifest["new_test_sources"] + diagnostic_manifest["new_test_sources"]
++        format_paths = schema_manifest["copyout_afterimages"] + schema_manifest["new_product_sources"] + schema_manifest["new_test_sources"] + manifest["new_product_sources"] + manifest["new_test_sources"] + diagnostic_manifest["new_test_sources"] + semantic_tests
+         formatting = commands.require("source-format-equality", [str(gofmt), "-l", *[str(heart / e["path"]) for e in format_paths]], heart, 30)
+         if formatting.read_text().strip():
+             raise RuntimeError("frozen source differs from pinned gofmt; no source is rewritten")
+@@ -612,8 +661,8 @@
+         env["CGO_LDFLAGS"] = "-L" + str(heart / "deps/libs/darwin-arm64")
+         listing = commands.require("declared-dependency-inputs", [args.go, "list", "-deps", "-test", "-json", *[v[0] for v in PACKAGES.values()]], heart, 1200)
+         closure = dependency_inputs(listing, heart, compiled_product_inputs)
+-        if len(closure["required_product_test_coverage"]) != 20:
+-            raise RuntimeError("exact twelve unchanged product plus eight native test input coverage required")
++        if len(closure["required_product_test_coverage"]) != 21:
++            raise RuntimeError("exact twelve product plus nine test input coverage required")
+         write_json(evidence / "DECLARED_NATIVE_INPUTS.json", closure)
+         result["declared_native_inputs_sha256"] = digest(evidence / "DECLARED_NATIVE_INPUTS.json")
+         result["declared_native_input_count"] = len(closure["files"])
+@@ -649,11 +698,12 @@
+             actual["pass"] = actual["pass"] and code == 0 and not actual["timed_out"] and actual["binary_unchanged"]
+             result["tests"][name] = actual
+             write_json(evidence / "RESULT.json", result)
+-            try:
+-                result["diagnostic_capture"] = validate_missing_attachment_pairs(evidence, diagnostic_manifest["capture_stages"])
+-            except Exception as capture_error:
+-                result["diagnostic_capture"] = {"complete": False, "error_type": type(capture_error).__name__, "error": str(capture_error)}
+-            write_json(evidence / "RESULT.json", result)
++            if name == "native":
++                try:
++                    result["diagnostic_capture"] = validate_missing_attachment_pairs(evidence, diagnostic_manifest["capture_stages"])
++                except Exception as capture_error:
++                    result["diagnostic_capture"] = {"complete": False, "error_type": type(capture_error).__name__, "error": str(capture_error)}
++                write_json(evidence / "RESULT.json", result)
+ 
+         for entry in compiled_product_inputs:
+             if digest(heart / entry["path"]) != entry["sha256"]:

@@ -1,0 +1,53 @@
+{
+  "schema": "otzaria.root-missing-attachment-diagnostic-review/1",
+  "verified_at": "2026-11-22T16:49:40.718369+00:00",
+  "run": 45042110729,
+  "archive_sha256": "270b824b9c0210cd1cd584db0315215678bfa04c29c4251692527c57e403fd6e",
+  "indexed_payloads_verified": 48,
+  "command_streams_verified": 18,
+  "actual_selected_child": "FAIL",
+  "prior_passing_cases_reexecuted": 0,
+  "pairs": [
+    {
+      "stage": "00-registered",
+      "only_difference": "top-level Restrictions nil versus empty message",
+      "wire_difference": "loaded has 1a00 at byte offset 10",
+      "all_other_complete_block_bytes_identical": true
+    },
+    {
+      "stage": "01-unrelated-property-added",
+      "only_difference": "top-level Restrictions nil versus empty message",
+      "wire_difference": "loaded has 1a00 at byte offset 10",
+      "all_other_complete_block_bytes_identical": true
+    },
+    {
+      "stage": "02-second-view-applied",
+      "only_difference": "top-level Restrictions nil versus empty message",
+      "wire_difference": "loaded has 1a00 at byte offset 10",
+      "all_other_complete_block_bytes_identical": true
+    },
+    {
+      "stage": "03-metadata-property-removed",
+      "only_difference": "top-level Restrictions nil versus empty message",
+      "wire_difference": "loaded has 1a00 at byte offset 10",
+      "all_other_complete_block_bytes_identical": true
+    },
+    {
+      "stage": "04-before-registration-attempt",
+      "only_difference": "top-level Restrictions nil versus empty message",
+      "wire_difference": "loaded has 1a00 at byte offset 10",
+      "all_other_complete_block_bytes_identical": true
+    },
+    {
+      "stage": "05-after-registration-attempt",
+      "only_difference": "top-level Restrictions nil versus empty message",
+      "wire_difference": "loaded has 1a00 at byte offset 10",
+      "all_other_complete_block_bytes_identical": true
+    }
+  ],
+  "semantic_fix_complete_source_hashes_verified": true,
+  "two_recorded_test_fixtures_exact": true,
+  "source_review": "Only nil top-level restrictions defaulted on full deep copies, followed by full proto.Equal. Other fields and nonzero restrictions remain compared.",
+  "new_semantic_controls_executed": false,
+  "new_github_artifact_downloads": 0
+}
