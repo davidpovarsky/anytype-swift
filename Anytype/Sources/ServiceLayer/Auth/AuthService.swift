@@ -70,7 +70,7 @@ final class OriginalAuthAttempt: Sendable {
         InvocationDispatchBinding(committedEvents: { nil }) { [self] _ in
             try validate()
             try validating()
-            return InvocationDispatchPermit {
+            return InvocationDispatchPermit { [self] in
                 try validate()
                 try validating()
                 let admissions = try EditorDocumentWriteCapture.acquireAll(captures)
