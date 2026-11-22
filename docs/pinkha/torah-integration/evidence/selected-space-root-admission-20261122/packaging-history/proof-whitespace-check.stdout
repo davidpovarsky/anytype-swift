@@ -1,0 +1,326 @@
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:1: trailing whitespace.
++from pathlib import Path
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:2: trailing whitespace.
++import subprocess,json,hashlib,datetime,shutil
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:3: trailing whitespace.
++repo=Path(r"C:\Users\DAVID\Code\anytype-original-selected-space-20261122")
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:4: trailing whitespace.
++out=Path(r"C:\Users\DAVID\AppData\Local\Temp\otzaria-continuation-20261122\selected-space-published-git-root-review")
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:5: trailing whitespace.
++out.mkdir(parents=True,exist_ok=False)
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:6: trailing whitespace.
++base="37f48119609747c01ee92cf597e4216f63b7bfa4";source="6ac09deac37f3f537f54ad37c330014fe8af2c46";head="172c639348cab52ed76151c917f56691f25151b2"
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:7: trailing whitespace.
++prefix="docs/pinkha/torah-integration/production-selected-space-20261122"
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:8: trailing whitespace.
++products={"Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift":"bf33794809bff676321ae0265e0caf6539fd7feaa69edaf4d14829753c131ac1","Modules/Services/Sources/Services/Workspace/WorkspaceService.swift":"284c09888c8cf75b2fa54a0f529e0ac6401fbc9ba9c9a923973edaaace061c21"}
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:9: trailing whitespace.
++def sha(x):return hashlib.sha256(x).hexdigest()
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:10: trailing whitespace.
++def git(*args,data=None):
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:11: trailing whitespace.
++ p=subprocess.run(["git",*args],cwd=repo,input=data,capture_output=True,timeout=30);assert p.returncode==0,(args,p.stderr.decode("utf-8","replace"));return p.stdout
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:12: trailing whitespace.
++assert git("rev-parse","HEAD").decode().strip()==head and not git("status","--porcelain")
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:13: trailing whitespace.
++assert git("show","-s","--format=%P",source).decode().split()==[base]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:14: trailing whitespace.
++assert git("show","-s","--format=%P",head).decode().split()==[source]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:15: trailing whitespace.
++sourcechanged=sorted(x.decode() for x in git("diff","--name-only","-z",base,source).split(b"\0") if x);assert sourcechanged==sorted(products)
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:16: trailing whitespace.
++changed=sorted(x.decode() for x in git("diff","--name-only","-z",base,head).split(b"\0") if x)
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:17: trailing whitespace.
++other=[x for x in changed if x not in products and not x.startswith(prefix+"/")]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:18: trailing whitespace.
++assert len(other)==1 and other[0].endswith("UPSTREAM_ARTIFACT_REGISTER.md"),other
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:19: trailing whitespace.
++registry=other[0]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:20: trailing whitespace.
++tree={}
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:21: trailing whitespace.
++for row in git("ls-tree","-r","-z",head).split(b"\0"):
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:22: trailing whitespace.
++ if row:
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:23: trailing whitespace.
++  meta,path=row.split(b"\t",1);mode,kind,oid=meta.decode().split();tree[path.decode()]=(mode,kind,oid)
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:24: trailing whitespace.
++batch=git("cat-file","--batch",data=("\n".join(tree[x][2] for x in changed)+"\n").encode())
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:25: trailing whitespace.
++offset=0;raws={};bindings=[]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:26: trailing whitespace.
++for path in changed:
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:27: trailing whitespace.
++ end=batch.index(b"\n",offset);h=batch[offset:end].decode().split();n=int(h[2]);offset=end+1;b=batch[offset:offset+n];offset+=n+1
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:28: trailing whitespace.
++ assert h[0]==tree[path][2] and h[1]=="blob" and tree[path][0]=="100644"
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:29: trailing whitespace.
++ assert b==(repo/path).read_bytes(),path
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:30: trailing whitespace.
++ raws[path]=b;bindings.append({"path":path,"sha256":sha(b),"bytes":n,"git_blob":h[0]})
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:31: trailing whitespace.
++assert offset==len(batch)
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:32: trailing whitespace.
++indexraw=raws[prefix+"/INDEX.json"];assert sha(indexraw)=="cf833a6647cc73313a9ca0d6b78b1f8a297b8385ce81eec8a14d19a3a5eaac91"
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:33: trailing whitespace.
++index=json.loads(indexraw);rows=index["files"];assert len(rows)==104
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:34: trailing whitespace.
++assert sorted(x["path"] for x in rows)==sorted(x[len(prefix)+1:] for x in changed if x.startswith(prefix+"/") and x!=prefix+"/INDEX.json")
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:35: trailing whitespace.
++for x in rows:
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:36: trailing whitespace.
++ b=raws[prefix+"/"+x["path"]];assert sha(b)==x["sha256"] and len(b)==x["bytes"],x["path"]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:37: trailing whitespace.
++for path,digest in products.items():assert sha(raws[path])==digest
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:38: trailing whitespace.
++required=["1c4bc8643d8f32556a87edcb88f8fec9a73804cce64e2dc0b3459e99312f39f6","64b7377b43792e53478aca183b83438ff40e105494479e682485ff365306955b","008d5489b07d8be7e4634ca3b8f945fd0686e24ff43f4289eb13cdcce19d44d5","1299b391644755a586e9481398ff303a464d82f60f88dabe7354f338c3d67cb7"]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:39: trailing whitespace.
++for digest in required:assert any(sha(raw)==digest for raw in raws.values()),digest
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:40: trailing whitespace.
++oldregistry=git("show",base+":"+registry);newregistry=raws[registry]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:41: trailing whitespace.
++assert newregistry.startswith(oldregistry),"Register must retain prior bytes unchanged"
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:42: trailing whitespace.
++entry=newregistry[len(oldregistry):].decode("utf-8")
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:43: trailing whitespace.
++assert source in entry and prefix in entry
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:44: trailing whitespace.
++(out/"REGISTER_ADDITION.md").write_bytes(newregistry[len(oldregistry):])
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:45: trailing whitespace.
++(out/"GIT_BLOB_BINDINGS.json").write_bytes((json.dumps(bindings,indent=2)+"\n").encode())
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:46: trailing whitespace.
++shutil.copyfile(__file__,out/"root_published_git_review.py")
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:47: trailing whitespace.
++result={"schema":"otzaria.selected-space-published-git-root-review/1","status":"PASS_FOR_TRUE_MERGE_WITHOUT_REEXECUTION","observed_at":datetime.datetime.now(datetime.timezone.utc).isoformat(),"worktree":str(repo),"head":head,"source_commit":source,"base":base,"source_parent_exact":True,"evidence_parent_exact":True,"all_changed_files":len(changed),"outer_payloads":104,"all_committed_bytes_exact":True,"outer_index_sha256":sha(indexraw),"actual_control_root_review_sha256":required[1],"tested_product_sha256":products,"registry_path":registry,"old_registry_sha256":sha(oldregistry),"registry_prefix_retained_exact":True,"registry_appended_bytes":len(newregistry)-len(oldregistry),"tests_or_compilers_replayed":0,"limits":"Only ten actual portable selected-Space controls passed. Native current account startup, withChat:false follow-up and combined Apple SDK qualification remain separate dependencies."}
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:48: trailing whitespace.
++raw=(json.dumps(result,indent=2)+"\n").encode();(out/"ROOT_REVIEW.json").write_bytes(raw)
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/FIRST_PATH_EXPECTATION_REVIEW.py:49: trailing whitespace.
++print(json.dumps({"result":result,"sha256":sha(raw),"path":str(out/"ROOT_REVIEW.json"),"registry_addition":entry}))
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/PRIOR_READONLY_REVIEW_ERRORS.txt:1: trailing whitespace.
++The first read-only review used an incorrect register filename expectation; the second required Git/worktree raw byte equality for this ordinary Git-normalized registry. Actual path docs/architecture/UPSTREAM_EXCEPTION_REGISTER.md was then independently read: work92288B/562CRLF normalizes exactly to committed91726B/LF, whose89534B prior committed prefix is unchanged. Original product,91-payload packet,104-payload outer packet, compiler commands and tests were not changed or replayed.
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/README.md:1: trailing whitespace.
++# Selected-Space canonical integration
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/README.md:2: trailing whitespace.
++
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/README.md:3: trailing whitespace.
++The two reviewed original source files and their actual ten-case portable proof were integrated with a true two-parent merge. The resulting complete source/evidence tree equals the author's published172c6393 tree exactly. No compiler or test was replayed.
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/README.md:4: trailing whitespace.
++
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/README.md:5: trailing whitespace.
++Root independently verified all104 outer evidence payloads, the two tested product files, actual four process receipts, exact ten named XML/stdout passes and the emitted linked PE. Native execution/child process identity and complete annotation authority remain outside this proof. The first reporting-wrapper failure and two read-only reviewer path/text assumptions are retained without rewriting their source.
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:1: trailing whitespace.
++from pathlib import Path
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:2: trailing whitespace.
++import subprocess,json,hashlib,datetime,shutil
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:3: trailing whitespace.
++repo=Path(r"C:\Users\DAVID\Code\anytype-original-selected-space-20261122")
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:4: trailing whitespace.
++out=Path(r"C:\Users\DAVID\AppData\Local\Temp\otzaria-continuation-20261122\selected-space-published-git-root-review\register-path-continuation")
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:5: trailing whitespace.
++out.mkdir(parents=True,exist_ok=False)
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:6: trailing whitespace.
++prior_script=Path(r"C:\ProgramData\SentinelX\uploads\.sentinelx_uploads\script_job_517a29369ca1487fa9ea499413e1a2e1\selected_published_git_root_review.py")
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:7: trailing whitespace.
++shutil.copyfile(prior_script,out/"FIRST_READONLY_REVIEW_SCRIPT.py")
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:8: trailing whitespace.
++(out/"FIRST_READONLY_REVIEW_FAILURE.txt").write_text("First read-only root admission stopped before payload/Git binding because it expected the filename UPSTREAM_ARTIFACT_REGISTER.md. Actual retained path is docs/architecture/UPSTREAM_EXCEPTION_REGISTER.md. Exact first source/parent/product-path checks had passed. No product, test, compiler, or packet changed.\n",encoding="utf-8")
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:9: trailing whitespace.
++base="37f48119609747c01ee92cf597e4216f63b7bfa4";source="6ac09deac37f3f537f54ad37c330014fe8af2c46";head="172c639348cab52ed76151c917f56691f25151b2"
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:10: trailing whitespace.
++prefix="docs/pinkha/torah-integration/production-selected-space-20261122"
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:11: trailing whitespace.
++products={"Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift":"bf33794809bff676321ae0265e0caf6539fd7feaa69edaf4d14829753c131ac1","Modules/Services/Sources/Services/Workspace/WorkspaceService.swift":"284c09888c8cf75b2fa54a0f529e0ac6401fbc9ba9c9a923973edaaace061c21"}
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:12: trailing whitespace.
++def sha(x):return hashlib.sha256(x).hexdigest()
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:13: trailing whitespace.
++def git(*args,data=None):
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:14: trailing whitespace.
++ p=subprocess.run(["git",*args],cwd=repo,input=data,capture_output=True,timeout=30);assert p.returncode==0,(args,p.stderr.decode("utf-8","replace"));return p.stdout
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:15: trailing whitespace.
++assert git("rev-parse","HEAD").decode().strip()==head and not git("status","--porcelain")
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:16: trailing whitespace.
++assert git("show","-s","--format=%P",source).decode().split()==[base]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:17: trailing whitespace.
++assert git("show","-s","--format=%P",head).decode().split()==[source]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:18: trailing whitespace.
++sourcechanged=sorted(x.decode() for x in git("diff","--name-only","-z",base,source).split(b"\0") if x);assert sourcechanged==sorted(products)
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:19: trailing whitespace.
++changed=sorted(x.decode() for x in git("diff","--name-only","-z",base,head).split(b"\0") if x)
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:20: trailing whitespace.
++other=[x for x in changed if x not in products and not x.startswith(prefix+"/")]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:21: trailing whitespace.
++assert len(other)==1 and other[0].endswith("UPSTREAM_EXCEPTION_REGISTER.md"),other
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:22: trailing whitespace.
++registry=other[0]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:23: trailing whitespace.
++tree={}
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:24: trailing whitespace.
++for row in git("ls-tree","-r","-z",head).split(b"\0"):
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:25: trailing whitespace.
++ if row:
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:26: trailing whitespace.
++  meta,path=row.split(b"\t",1);mode,kind,oid=meta.decode().split();tree[path.decode()]=(mode,kind,oid)
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:27: trailing whitespace.
++batch=git("cat-file","--batch",data=("\n".join(tree[x][2] for x in changed)+"\n").encode())
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:28: trailing whitespace.
++offset=0;raws={};bindings=[]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:29: trailing whitespace.
++for path in changed:
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:30: trailing whitespace.
++ end=batch.index(b"\n",offset);h=batch[offset:end].decode().split();n=int(h[2]);offset=end+1;b=batch[offset:offset+n];offset+=n+1
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:31: trailing whitespace.
++ assert h[0]==tree[path][2] and h[1]=="blob" and tree[path][0]=="100644"
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:32: trailing whitespace.
++ assert b==(repo/path).read_bytes(),path
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:33: trailing whitespace.
++ raws[path]=b;bindings.append({"path":path,"sha256":sha(b),"bytes":n,"git_blob":h[0]})
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:34: trailing whitespace.
++assert offset==len(batch)
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:35: trailing whitespace.
++indexraw=raws[prefix+"/INDEX.json"];assert sha(indexraw)=="cf833a6647cc73313a9ca0d6b78b1f8a297b8385ce81eec8a14d19a3a5eaac91"
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:36: trailing whitespace.
++index=json.loads(indexraw);rows=index["files"];assert len(rows)==104
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:37: trailing whitespace.
++assert sorted(x["path"] for x in rows)==sorted(x[len(prefix)+1:] for x in changed if x.startswith(prefix+"/") and x!=prefix+"/INDEX.json")
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:38: trailing whitespace.
++for x in rows:
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:39: trailing whitespace.
++ b=raws[prefix+"/"+x["path"]];assert sha(b)==x["sha256"] and len(b)==x["bytes"],x["path"]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:40: trailing whitespace.
++for path,digest in products.items():assert sha(raws[path])==digest
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:41: trailing whitespace.
++required=["1c4bc8643d8f32556a87edcb88f8fec9a73804cce64e2dc0b3459e99312f39f6","64b7377b43792e53478aca183b83438ff40e105494479e682485ff365306955b","008d5489b07d8be7e4634ca3b8f945fd0686e24ff43f4289eb13cdcce19d44d5","1299b391644755a586e9481398ff303a464d82f60f88dabe7354f338c3d67cb7"]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:42: trailing whitespace.
++for digest in required:assert any(sha(raw)==digest for raw in raws.values()),digest
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:43: trailing whitespace.
++oldregistry=git("show",base+":"+registry);newregistry=raws[registry]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:44: trailing whitespace.
++assert newregistry.startswith(oldregistry),"Register must retain prior bytes unchanged"
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:45: trailing whitespace.
++entry=newregistry[len(oldregistry):].decode("utf-8")
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:46: trailing whitespace.
++assert source in entry and prefix in entry
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:47: trailing whitespace.
++(out/"REGISTER_ADDITION.md").write_bytes(newregistry[len(oldregistry):])
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:48: trailing whitespace.
++(out/"GIT_BLOB_BINDINGS.json").write_bytes((json.dumps(bindings,indent=2)+"\n").encode())
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:49: trailing whitespace.
++shutil.copyfile(__file__,out/"root_published_git_review.py")
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:50: trailing whitespace.
++result={"schema":"otzaria.selected-space-published-git-root-review/1","status":"PASS_FOR_TRUE_MERGE_WITHOUT_REEXECUTION","observed_at":datetime.datetime.now(datetime.timezone.utc).isoformat(),"worktree":str(repo),"head":head,"source_commit":source,"base":base,"source_parent_exact":True,"evidence_parent_exact":True,"all_changed_files":len(changed),"outer_payloads":104,"all_committed_bytes_exact":True,"outer_index_sha256":sha(indexraw),"actual_control_root_review_sha256":required[1],"tested_product_sha256":products,"registry_path":registry,"old_registry_sha256":sha(oldregistry),"registry_prefix_retained_exact":True,"registry_appended_bytes":len(newregistry)-len(oldregistry),"tests_or_compilers_replayed":0,"limits":"Only ten actual portable selected-Space controls passed. Native current account startup, withChat:false follow-up and combined Apple SDK qualification remain separate dependencies."}
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:51: trailing whitespace.
++raw=(json.dumps(result,indent=2)+"\n").encode();(out/"ROOT_REVIEW.json").write_bytes(raw)
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/SECOND_REGISTRY_TEXT_REVIEW.py:52: trailing whitespace.
++print(json.dumps({"result":result,"sha256":sha(raw),"path":str(out/"ROOT_REVIEW.json"),"registry_addition":entry}))
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:1: trailing whitespace.
++from pathlib import Path
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:2: trailing whitespace.
++import subprocess,json,hashlib,datetime,shutil
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:3: trailing whitespace.
++repo=Path(r"C:\Users\DAVID\Code\anytype-original-selected-space-20261122")
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:4: trailing whitespace.
++out=Path(r"C:\Users\DAVID\AppData\Local\Temp\otzaria-continuation-20261122\selected-space-published-git-root-review\registry-text-continuation")
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:5: trailing whitespace.
++out.mkdir(parents=True,exist_ok=False)
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:6: trailing whitespace.
++for name,path in [
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:7: trailing whitespace.
++ ("FIRST_PATH_EXPECTATION_REVIEW.py",r"C:\ProgramData\SentinelX\uploads\.sentinelx_uploads\script_job_517a29369ca1487fa9ea499413e1a2e1\selected_published_git_root_review.py"),
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:8: trailing whitespace.
++ ("SECOND_REGISTRY_TEXT_REVIEW.py",r"C:\ProgramData\SentinelX\uploads\.sentinelx_uploads\script_job_9f08259d0f5a4c748556f4c0329394ae\selected_published_git_register_path_continuation.py")]:
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:9: trailing whitespace.
++ shutil.copyfile(Path(path),out/name)
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:10: trailing whitespace.
++(out/"PRIOR_READONLY_REVIEW_ERRORS.txt").write_text("The first read-only review used an incorrect register filename expectation; the second required Git/worktree raw byte equality for this ordinary Git-normalized registry. Actual path docs/architecture/UPSTREAM_EXCEPTION_REGISTER.md was then independently read: work92288B/562CRLF normalizes exactly to committed91726B/LF, whose89534B prior committed prefix is unchanged. Original product,91-payload packet,104-payload outer packet, compiler commands and tests were not changed or replayed.\n",encoding="utf-8")
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:11: trailing whitespace.
++base="37f48119609747c01ee92cf597e4216f63b7bfa4";source="6ac09deac37f3f537f54ad37c330014fe8af2c46";head="172c639348cab52ed76151c917f56691f25151b2"
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:12: trailing whitespace.
++prefix="docs/pinkha/torah-integration/production-selected-space-20261122"
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:13: trailing whitespace.
++products={"Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift":"bf33794809bff676321ae0265e0caf6539fd7feaa69edaf4d14829753c131ac1","Modules/Services/Sources/Services/Workspace/WorkspaceService.swift":"284c09888c8cf75b2fa54a0f529e0ac6401fbc9ba9c9a923973edaaace061c21"}
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:14: trailing whitespace.
++def sha(x):return hashlib.sha256(x).hexdigest()
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:15: trailing whitespace.
++def git(*args,data=None):
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:16: trailing whitespace.
++ p=subprocess.run(["git",*args],cwd=repo,input=data,capture_output=True,timeout=30);assert p.returncode==0,(args,p.stderr.decode("utf-8","replace"));return p.stdout
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:17: trailing whitespace.
++assert git("rev-parse","HEAD").decode().strip()==head and not git("status","--porcelain")
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:18: trailing whitespace.
++assert git("show","-s","--format=%P",source).decode().split()==[base]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:19: trailing whitespace.
++assert git("show","-s","--format=%P",head).decode().split()==[source]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:20: trailing whitespace.
++sourcechanged=sorted(x.decode() for x in git("diff","--name-only","-z",base,source).split(b"\0") if x);assert sourcechanged==sorted(products)
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:21: trailing whitespace.
++changed=sorted(x.decode() for x in git("diff","--name-only","-z",base,head).split(b"\0") if x)
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:22: trailing whitespace.
++other=[x for x in changed if x not in products and not x.startswith(prefix+"/")]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:23: trailing whitespace.
++assert len(other)==1 and other[0].endswith("UPSTREAM_EXCEPTION_REGISTER.md"),other
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:24: trailing whitespace.
++registry=other[0]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:25: trailing whitespace.
++tree={}
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:26: trailing whitespace.
++for row in git("ls-tree","-r","-z",head).split(b"\0"):
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:27: trailing whitespace.
++ if row:
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:28: trailing whitespace.
++  meta,path=row.split(b"\t",1);mode,kind,oid=meta.decode().split();tree[path.decode()]=(mode,kind,oid)
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:29: trailing whitespace.
++batch=git("cat-file","--batch",data=("\n".join(tree[x][2] for x in changed)+"\n").encode())
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:30: trailing whitespace.
++offset=0;raws={};bindings=[]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:31: trailing whitespace.
++for path in changed:
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:32: trailing whitespace.
++ end=batch.index(b"\n",offset);h=batch[offset:end].decode().split();n=int(h[2]);offset=end+1;b=batch[offset:offset+n];offset+=n+1
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:33: trailing whitespace.
++ assert h[0]==tree[path][2] and h[1]=="blob" and tree[path][0]=="100644"
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:34: trailing whitespace.
++ work=(repo/path).read_bytes()
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:35: trailing whitespace.
++ if path==registry:assert work.replace(b"\r\n",b"\n")==b,path
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:36: trailing whitespace.
++ else:assert b==work,path
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:37: trailing whitespace.
++ raws[path]=b;bindings.append({"path":path,"sha256":sha(b),"bytes":n,"git_blob":h[0]})
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:38: trailing whitespace.
++assert offset==len(batch)
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:39: trailing whitespace.
++indexraw=raws[prefix+"/INDEX.json"];assert sha(indexraw)=="cf833a6647cc73313a9ca0d6b78b1f8a297b8385ce81eec8a14d19a3a5eaac91"
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:40: trailing whitespace.
++index=json.loads(indexraw);rows=index["files"];assert len(rows)==104
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:41: trailing whitespace.
++assert sorted(x["path"] for x in rows)==sorted(x[len(prefix)+1:] for x in changed if x.startswith(prefix+"/") and x!=prefix+"/INDEX.json")
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:42: trailing whitespace.
++for x in rows:
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:43: trailing whitespace.
++ b=raws[prefix+"/"+x["path"]];assert sha(b)==x["sha256"] and len(b)==x["bytes"],x["path"]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:44: trailing whitespace.
++for path,digest in products.items():assert sha(raws[path])==digest
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:45: trailing whitespace.
++required=["1c4bc8643d8f32556a87edcb88f8fec9a73804cce64e2dc0b3459e99312f39f6","64b7377b43792e53478aca183b83438ff40e105494479e682485ff365306955b","008d5489b07d8be7e4634ca3b8f945fd0686e24ff43f4289eb13cdcce19d44d5","1299b391644755a586e9481398ff303a464d82f60f88dabe7354f338c3d67cb7"]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:46: trailing whitespace.
++for digest in required:assert any(sha(raw)==digest for raw in raws.values()),digest
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:47: trailing whitespace.
++oldregistry=git("show",base+":"+registry);newregistry=raws[registry]
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:48: trailing whitespace.
++assert newregistry.startswith(oldregistry),"Register must retain prior bytes unchanged"
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:49: trailing whitespace.
++entry=newregistry[len(oldregistry):].decode("utf-8")
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:50: trailing whitespace.
++assert source in entry and prefix in entry
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:51: trailing whitespace.
++(out/"REGISTER_ADDITION.md").write_bytes(newregistry[len(oldregistry):])
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:52: trailing whitespace.
++(out/"GIT_BLOB_BINDINGS.json").write_bytes((json.dumps(bindings,indent=2)+"\n").encode())
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:53: trailing whitespace.
++shutil.copyfile(__file__,out/"root_published_git_review.py")
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:54: trailing whitespace.
++result={"schema":"otzaria.selected-space-published-git-root-review/1","status":"PASS_FOR_TRUE_MERGE_WITHOUT_REEXECUTION","observed_at":datetime.datetime.now(datetime.timezone.utc).isoformat(),"worktree":str(repo),"head":head,"source_commit":source,"base":base,"source_parent_exact":True,"evidence_parent_exact":True,"all_changed_files":len(changed),"outer_payloads":104,"all_payload_and_product_committed_bytes_exact":True,"registry_worktree_to_git":"Exactly562 CRLF line endings to LF; committed prior registry prefix retained unchanged","outer_index_sha256":sha(indexraw),"actual_control_root_review_sha256":required[1],"tested_product_sha256":products,"registry_path":registry,"old_registry_sha256":sha(oldregistry),"registry_prefix_retained_exact":True,"registry_appended_bytes":len(newregistry)-len(oldregistry),"tests_or_compilers_replayed":0,"limits":"Only ten actual portable selected-Space controls passed. Native current account startup, withChat:false follow-up and combined Apple SDK qualification remain separate dependencies."}
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:55: trailing whitespace.
++raw=(json.dumps(result,indent=2)+"\n").encode();(out/"ROOT_REVIEW.json").write_bytes(raw)
+docs/pinkha/torah-integration/evidence/selected-space-root-admission-20261122/root_published_git_review.py:56: trailing whitespace.
++print(json.dumps({"result":result,"sha256":sha(raw),"path":str(out/"ROOT_REVIEW.json"),"registry_addition":entry}))
