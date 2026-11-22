@@ -1,0 +1,9 @@
+{
+  "phase": "read-only evidence reconciliation, no compilation or test execution",
+  "initial_error": "FileNotFoundError for packet-root SOURCE_MANIFEST.json",
+  "cause": "The published manifest is stored locally under publication/SOURCE_MANIFEST.json.",
+  "correction": "Resolve that exact known published path to its retained local file; continue checking its actual Git blob identity. No source, receipt, result or expected hash is changed.",
+  "second_read_only_error": "The initial inverse removed added lines individually, so repeated Go brace lines matched earlier unrelated code.",
+  "second_correction": "Require exactly one complete added import and exactly one contiguous added block, then remove those exact two original r14 fragments and compare complete bytes. No product changes or normalization.",
+  "test_replays": 0
+}

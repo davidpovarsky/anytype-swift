@@ -1,0 +1,179 @@
+{
+  "schema": "otzaria.original-importer.compile/1",
+  "status": "SOURCE_REVIEW_REQUIRED_NO_ACTIVATION",
+  "heart_base": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "go": "1.26.5",
+  "architecture": "darwin-arm64",
+  "origin_commit": "20cb8998211eaefa5ddb00ef60ff2462dd3271e9",
+  "origin_packet_tree": "be05778c6a9e6412d181ced642694daee3baf30b",
+  "origin_packet_path": "docs/pinkha/torah-integration/native-import-origin-observation-20261122",
+  "gate_inputs": [
+    {
+      "path": "run_original_importer_compile.py",
+      "bytes": 26527,
+      "sha256": "63893fcb28afd5a13801c15893b53cd37d5c3b69978e7e8a052d62aeeeb4cfa9",
+      "git_blob": "711980cf18993c79ccd4bfef770eecfc99a4cc3a"
+    },
+    {
+      "path": "bootstrap/prepare_original_tantivy.py",
+      "bytes": 1242,
+      "sha256": "7f2f4b11bc6803241333f04c935ed85f3007fcb6894fd02b03fcc0fa7d50be43",
+      "git_blob": "828736cb89f212e509ba80634bf596b488c920ca"
+    },
+    {
+      "path": "bootstrap/build_custom_heart.py",
+      "bytes": 12945,
+      "sha256": "0ebbe2f6227418eac2c532b0058290158319ba9f786baaf445de444887e8c669",
+      "git_blob": "e32c935fedce5fc732240bf9b2ada21764b5add1"
+    },
+    {
+      "path": "root-review/ROOT_REMOTE_BINDINGS.json",
+      "bytes": 21563,
+      "sha256": "1696ba55e3e5ed5eb9ec5779c988c06b782627579fe81ae05aecf61b85c864c5",
+      "git_blob": "9b3d211062284a508ce4acc882eabead1e786362"
+    },
+    {
+      "path": "root-review/ROOT_UNIT_AND_SOURCE_VERIFICATION.json",
+      "bytes": 824,
+      "sha256": "03285136592a853a8f96106cba62a59cb3f8423078c6703611ec0a86fa4db1db",
+      "git_blob": "b92b6b0b28b09fd19a2008c17703bc58a9e919f2"
+    },
+    {
+      "path": "root-review/ROOT_VERIFIER_LAYOUT_CORRECTION.json",
+      "bytes": 837,
+      "sha256": "7bde9003469ecb7acf3e9844be0654d4f9c38008580b6b9f0b905f739496c759",
+      "git_blob": "ec3e7701597bb1210f565868dc5c7dae81793dc2"
+    },
+    {
+      "path": "root-review/root_verify_origin_controls.py",
+      "bytes": 4007,
+      "sha256": "c5d65e10cb8477cd4b985326147b6546bac0f0be4693d8a0f98036681ae94f95",
+      "git_blob": "c73ef8f116350150d5912ed5d019a9286b48f1c1"
+    }
+  ],
+  "origin_inputs": [
+    {
+      "path": "install_native_sources.py",
+      "bytes": 2922,
+      "sha256": "c3caa004be62f46521e6744fa7080d65ee1533f710d8349927d03de43820ad28",
+      "git_blob": "f170b0f0774f3eedeba781177b152cedf488e118"
+    },
+    {
+      "path": "composition/r14/SOURCE_BINDINGS.json",
+      "bytes": 2476,
+      "sha256": "beb822d52417eb46edbc924f4aa6fbd040601a938833f8c8d585b19b4f8d6bf0",
+      "git_blob": "3806559f4042a6bca1d3f875a5922ece4c658c7c"
+    },
+    {
+      "path": "composition/r14/native/core/block/import/common/types.go",
+      "bytes": 8403,
+      "sha256": "458829293a09663646e6a76d6d8cc4e7325359b2e2e8619bb4960e8e36509149",
+      "git_blob": "8dd101aaa16fd2a582faa0686db3996f672e9af9"
+    },
+    {
+      "path": "composition/r14/native/core/block/import/mapping_observation.go",
+      "bytes": 9367,
+      "sha256": "851c5ad1a2c65e3698816bf8be5ccdd85e4074d9afb3b3f3dd79d5758e6be9cf",
+      "git_blob": "663032e78e91558f614defa2a6cc55d6a7206b4c"
+    },
+    {
+      "path": "composition/r14/native/core/block/import/mapping_observation_processor.go",
+      "bytes": 2810,
+      "sha256": "26120b7b2396c84e69adff0681ea6c082412761a6a24eafa03ee561c89463e67",
+      "git_blob": "180af6a9c5033736a5fd19b76f94c2c3567c909f"
+    },
+    {
+      "path": "composition/r14/native/core/block/import/pb/converter.go",
+      "bytes": 19568,
+      "sha256": "9542dc143969622b7264d6de7e83c86eea1ad4756dcd21268616884e787445ee",
+      "git_blob": "3d02dd5b0853b8a586bed12d98a6cd837a19a88d"
+    },
+    {
+      "path": "composition/r14/native/core/block/import/processor.go",
+      "bytes": 22793,
+      "sha256": "4588c5b5f596a8a3db0454270f6ddad467d9ab775d8a491d06490fda657968a1",
+      "git_blob": "48229e692d6cc3f12b576767e0a71a212c234114"
+    },
+    {
+      "path": "composition/r14/native/core/block/import/types.go",
+      "bytes": 3333,
+      "sha256": "e175307ed43e205e7495541945c26e002053a216e4a3ac21413814f7b04f487b",
+      "git_blob": "a5f543f7f919a4c37e862c7882061c63523b0e6b"
+    }
+  ],
+  "six_product_hashes": {
+    "core/block/import/common/types.go": "458829293a09663646e6a76d6d8cc4e7325359b2e2e8619bb4960e8e36509149",
+    "core/block/import/mapping_observation.go": "851c5ad1a2c65e3698816bf8be5ccdd85e4074d9afb3b3f3dd79d5758e6be9cf",
+    "core/block/import/mapping_observation_processor.go": "26120b7b2396c84e69adff0681ea6c082412761a6a24eafa03ee561c89463e67",
+    "core/block/import/pb/converter.go": "9542dc143969622b7264d6de7e83c86eea1ad4756dcd21268616884e787445ee",
+    "core/block/import/processor.go": "4588c5b5f596a8a3db0454270f6ddad467d9ab775d8a491d06490fda657968a1",
+    "core/block/import/types.go": "e175307ed43e205e7495541945c26e002053a216e4a3ac21413814f7b04f487b"
+  },
+  "original_module_hashes": {
+    "go.mod": "0c506b9ab921a9bfea985871c9c912d362147a6bb76e697ee62c51a2eb678de7",
+    "go.sum": "7c873be1e5b4c65e5e46d18167ae6bc29f0f5b51c459a8398d75ab22f0b2432d",
+    "tantivity_sha256.txt": "14a78977c8b08e3e976cfbe130a6092aaec707e7515aa1811326e1c028cd2948"
+  },
+  "r14_patch": {
+    "path": "docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch",
+    "repository": "anyproto/anytype-swift",
+    "commit": "d02a4972e7f124bc97a577e1c6d448d4797acf22",
+    "git_blob": "02b7412c24015e90a45ac17ca646dc6758841e95",
+    "sha256": "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+    "bytes": 91246
+  },
+  "r14_inventory": {
+    "path": "docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json",
+    "repository": "anyproto/anytype-swift",
+    "commit": "d02a4972e7f124bc97a577e1c6d448d4797acf22",
+    "git_blob": "d6302bfef08ab255f6d34d8db1f66ddcf7f8d118",
+    "sha256": "952073d8dccc991f21bffe5d3ded4e1d5369bb2c30f247ae5204d47cb03aee14",
+    "bytes": 7906
+  },
+  "original_setup_helper": {
+    "path": "bootstrap/build_custom_heart.py",
+    "bytes": 12945,
+    "sha256": "0ebbe2f6227418eac2c532b0058290158319ba9f786baaf445de444887e8c669",
+    "git_blob": "e32c935fedce5fc732240bf9b2ada21764b5add1"
+  },
+  "original_setup_child": {
+    "path": "bootstrap/prepare_original_tantivy.py",
+    "bytes": 1242,
+    "sha256": "7f2f4b11bc6803241333f04c935ed85f3007fcb6894fd02b03fcc0fa7d50be43",
+    "git_blob": "828736cb89f212e509ba80634bf596b488c920ca"
+  },
+  "expected_tantivy_inputs": {
+    "architecture": "darwin-arm64",
+    "archive_sha256": "f0e4fa9bdca31da3b115db4fbe6689c5d6cab771be8f9468e5309c818b3f8add",
+    "files": [
+      {
+        "bytes": 42087136,
+        "path": "libtantivy_go.a",
+        "sha256": "506128732fae00d9b66ea11262b9e99bf5376a3ae4eaafae2a54770362d680fa"
+      }
+    ]
+  },
+  "retained_native_bootstrap_origin": {
+    "commit": "60b8300c3506e53638c8ca883f82484de073fae8",
+    "path": "docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v7-r1",
+    "manifest_sha256": "8b4306ca235e95a5990ddf9378755ca41aef5dffeba856bc2396c88b7b89e941",
+    "original_setup_helper_commit": "d02a4972e7f124bc97a577e1c6d448d4797acf22",
+    "iosrepacks": "No iosrepacks bootstrap or qualification in the genuine Darwin native gate; do not add one."
+  },
+  "compile_selection": [
+    "go",
+    "test",
+    "-c",
+    "-p",
+    "2",
+    "-o",
+    "<owned-output>/original-importer.test",
+    "./core/block/import"
+  ],
+  "tests_executed": 0,
+  "native_imports_executed": 0,
+  "test_binary_executed": false,
+  "preserved_unit_leaf_pass": 50,
+  "preserved_unit_result_sha256": "cdd51f4581c2d78bacc072cf81956b51f94a8370c3e1d57f22e95ee2fd8d1cfb",
+  "qualification": "Actual original-module compile/link compatibility only. No import lifetime, mapping authority, native body equality, commit or ACK."
+}
