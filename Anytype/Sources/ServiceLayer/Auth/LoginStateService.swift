@@ -315,23 +315,29 @@ actor LoginStateService: LoginStateServiceProtocol, Sendable {
         stopping = stop
         let task = Task { [weak self] in
             guard let self else { return }
-            await owner?.tasks.drain()
-            // Auth's outer startup lease is finished before its error cleanup
-            // requests this drain; native Stop is dispatched before logout joins.
-            await owner?.attempt.waitForDrain()
-            await self.stopSubscriptions()
-            if stop.clearAccountData {
-                await self.clearOriginalStateAfterLogout()
-            }
-            if self.startup === owner {
-                self.startup = nil
-                self.accountSource = nil
-                self.primaryRunning = false
-            }
-            if self.stopping === stop { self.stopping = nil }
+            await self.completeOwnedStop(owner: owner, stop: stop)
         }
         stop.task = task
         await task.value
+    }
+
+    // Actor isolation remains explicit after the unstructured task's awaits.
+    // Mutable Stopping fields and the startup/account state belong to this actor.
+    private func completeOwnedStop(owner: Startup?, stop: Stopping) async {
+        await owner?.tasks.drain()
+        // Auth's outer startup lease is finished before its error cleanup
+        // requests this drain; native Stop is dispatched before logout joins.
+        await owner?.attempt.waitForDrain()
+        await stopSubscriptions()
+        if stop.clearAccountData {
+            await clearOriginalStateAfterLogout()
+        }
+        if startup === owner {
+            startup = nil
+            accountSource = nil
+            primaryRunning = false
+        }
+        if stopping === stop { stopping = nil }
     }
 
     private func clearOriginalStateAfterLogout() async {
