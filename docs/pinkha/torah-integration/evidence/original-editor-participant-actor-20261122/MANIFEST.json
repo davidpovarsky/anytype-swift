@@ -1,0 +1,72 @@
+{
+  "head": "52e9e7563a160d61b0633275bc6b468e373b3c09",
+  "before_path": "Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift",
+  "before_sha256": "42d619b79a0f68794163fd3cfdb1261292237b215e2554dfb35677897eb975e9",
+  "before_git_blob": "953cf70be87282dde644d0a4e4b10c1e2f04edc0",
+  "candidate_sha256": "83d27ed0b0440b298883592f7b04506aac6acbf9bf90c1efb3959d266e4cb001",
+  "patch_sha256": "6b46c9f07e93faaa4f2578b80dca990ef5f3af6df37d47999d1cf70ad964f894",
+  "diagnostic": "actual52e ParticipantsStorage.swift:198:23 missing actor hop",
+  "changed_swift_inventory_count": 149,
+  "actor_files": [
+    {
+      "path": "Anytype/Sources/Models/Documents/Events/Model/EventBunchSubscribtion.swift",
+      "sha256": "a2f48aab873b8aa7107116a668ad24238ab442d7af0b23aafc35db9d31b617ed",
+      "lines": 74,
+      "task_sites": [
+        {
+          "line": 20,
+          "text": "        Task {"
+        }
+      ]
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/ActiveSpaceParticipantsStorage/ParticipantsSubscription.swift",
+      "sha256": "b698845b2d69be2342df2570c40e72205eb8dd5d337cf88ea94053b46bbf5e59",
+      "lines": 107,
+      "task_sites": [
+        {
+          "line": 36,
+          "text": "        Task {"
+        }
+      ]
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Auth/AuthService.swift",
+      "sha256": "f82c4993614dcd2e70f4ccb6d6eeefcf46e5130d5c17f21dca59db3f04cf7075",
+      "lines": 179,
+      "task_sites": []
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift",
+      "sha256": "42d619b79a0f68794163fd3cfdb1261292237b215e2554dfb35677897eb975e9",
+      "lines": 226,
+      "task_sites": [
+        {
+          "line": 195,
+          "text": "        subscription = Task { [weak self, subscriptionStorage] in"
+        },
+        {
+          "line": 198,
+          "text": "                self?.publishParticipants(participants, channelPinContext: channelPinContext)"
+        }
+      ]
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/SubscriptionsToggler/Internals/SubscriptionStorage.swift",
+      "sha256": "6dd4b130d7177dc6e97ad44edca6922d3fdc42d9a47f540eb07222be3ed1b730",
+      "lines": 239,
+      "task_sites": [
+        {
+          "line": 47,
+          "text": "        handlerRegistration = Task { await setupHandler() }"
+        },
+        {
+          "line": 62,
+          "text": "        Task { [identifier, toggler, originalAccountDispatch] in"
+        }
+      ]
+    }
+  ],
+  "worktree_changed": false,
+  "prepared_at": "2026-11-22T05:59:04.594346+00:00"
+}

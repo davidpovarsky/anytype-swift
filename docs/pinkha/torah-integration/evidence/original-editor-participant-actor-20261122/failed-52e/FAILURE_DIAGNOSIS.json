@@ -1,0 +1,36 @@
+{
+  "run": 44990082633,
+  "head": "52e9e7563a160d61b0633275bc6b468e373b3c09",
+  "phase": "ORIGINAL_FRAMEWORK_BUILD",
+  "actual_framework_command_attempted": true,
+  "semantic_framework_build_completed": false,
+  "external_consumer_executed": false,
+  "native_editor_ui_tests": 0,
+  "unique_source_diagnostics": [
+    {
+      "line": 40044,
+      "diagnostic": "/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift:198:23: error: actor-isolated instance method 'publishParticipants(_:channelPinContext:)' cannot be called from outside of the actor",
+      "context": [
+        "    builtin-SwiftPerFileCompile VaultSearchBarButton.swift",
+        "",
+        "SwiftDriverJobDiscovery normal arm64 Compiling LocalObjectIconPickerViewModel.swift, ObjectIconPicker.swift, ObjectIconPickerViewModel.swift, SpaceObjectIconPickerView.swift, SpaceObjectIconPickerViewModel.swift, TextIconPickerView.swift, TextIconPickerViewModel.swift, DismissHandler.swift, DetailsLayout+Metadata.swift, ObjectLayoutPicker.swift, ObjectLayoutPickerViewModel.swift, ObjectLayoutRow.swift, ObjectAction.swift, ObjectActionRow.swift, ObjectSettingsResolveConflictAlert.swift, ObjectSetting.swift, ObjectSettingBuilder.swift, ObjectSettingsPrimitivesConflictManager.swift, ObjectSettingRow.swift, ObjectSettingsViewModel.swift, ObjectMenuItem.swift, ObjectMenuSection.swift, ObjectMenuSectionType.swift, ObjectMenuBuilder.swift, ObjectSettingsMenuContainer.swift (in target 'AnytypeOriginalEditor' from project 'Anytype')",
+        "",
+        "SwiftCompile normal arm64 Compiling\\ ParticipantsStorage.swift,\\ PendingShareRetryService.swift,\\ PendingShareState.swift,\\ PendingShareStorage.swift,\\ PersonalFavoritesService.swift,\\ Profile.swift,\\ ProfileStorage.swift,\\ PropertySubscriptionDataBuilder.swift,\\ PropertyDetailsStorage.swift,\\ PropertyDetailsStorageProtocol.swift,\\ PushNotificationsAlertHandler.swift,\\ PushNotificationsPermissionService.swift,\\ PushNotificationsRegistrationService.swift,\\ PushNotificationsSystemSettingsBroadcaster.swift,\\ QuickAction.swift,\\ QuickActionShortcutBuilder.swift,\\ QuickCaptureDraft.swift,\\ QuickCaptureDraftStorage.swift,\\ QuickCaptureService.swift,\\ QuickCaptureTypeSuggestionService.swift,\\ RemainingSpacesPreloadService.swift,\\ ScaleProvider.swift,\\ SceneStateListener.swift,\\ SceneStateNotifier.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/PendingShare/PendingShareRetryService.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/PendingShare/PendingShareState.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/PendingShare/PendingShareStorage.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/PersonalFavorites/PersonalFavoritesService.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/ProfileStorage/Profile.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/ProfileStorage/ProfileStorage.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/PropertyStorage/Subscription/PropertySubscriptionDataBuilder.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/PropertyStorage/PropertyDetailsStorage.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/PropertyStorage/PropertyDetailsStorageProtocol.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/PushNotifications/PushNotificationsAlertHandler/PushNotificationsAlertHandler.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/PushNotifications/PushNotificationsPermissionService.swift/PushNotificationsPermissionService.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/PushNotifications/PushNotificationsRegistrationService/PushNotificationsRegistrationService.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/PushNotifications/PushNotificationsSystemSettingsBroadcaster/PushNotificationsSystemSettingsBroadcaster.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/QuickActions/QuickAction.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/QuickActions/QuickActionShortcutBuilder.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/QuickCapture/QuickCaptureDraft.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/QuickCapture/QuickCaptureDraftStorage.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/QuickCapture/QuickCaptureService.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/QuickCapture/QuickCaptureTypeSuggestionService.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/RemainingSpacesPreload/RemainingSpacesPreloadService.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/ScaleProvider/ScaleProvider.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/SceneState/SceneStateListener.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/SceneState/SceneStateNotifier.swift (in target 'AnytypeOriginalEditor' from project 'Anytype')",
+        "/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift:198:23: error: actor-isolated instance method 'publishParticipants(_:channelPinContext:)' cannot be called from outside of the actor",
+        "196 |             for await state in subscriptionStorage.statePublisher.values {",
+        "197 |                 let participants = state.items.compactMap { try? Participant(details: $0) }",
+        "198 |                 self?.publishParticipants(participants, channelPinContext: channelPinContext)",
+        "    |                       `- error: actor-isolated instance method 'publishParticipants(_:channelPinContext:)' cannot be called from outside of the actor",
+        "199 |             }",
+        "200 |         }",
+        "",
+        "/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/PendingShare/PendingShareRetryService.swift:62:31: warning: cast from 'any Error' to unrelated type 'Anytype_Rpc.Space.InviteGetCurrent.Response.Error' always fails"
+      ]
+    }
+  ],
+  "source_controls_status": "PASS_SOURCE_CONTROLS_221",
+  "source_controls_tests_run": 221,
+  "macro_trust_restored": "EXACT_ORIGINAL_MACRO_TRUST_RESTORED",
+  "source_before_after_equal": true,
+  "download_count": 1
+}

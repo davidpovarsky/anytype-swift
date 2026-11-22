@@ -195,7 +195,7 @@ actor ParticipantsStorage: ParticipantsStorageProtocol, Sendable {
         subscription = Task { [weak self, subscriptionStorage] in
             for await state in subscriptionStorage.statePublisher.values {
                 let participants = state.items.compactMap { try? Participant(details: $0) }
-                self?.publishParticipants(participants, channelPinContext: channelPinContext)
+                await self?.publishParticipants(participants, channelPinContext: channelPinContext)
             }
         }
     }
