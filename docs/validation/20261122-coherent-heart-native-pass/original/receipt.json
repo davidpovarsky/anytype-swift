@@ -1,0 +1,202 @@
+{
+  "actual": {
+    "actual_account_tests": 1,
+    "automatic_t2_to_t5_projection": "NOT_PROVEN",
+    "owner_positive": true,
+    "reader_positive": true,
+    "removed_t2_error_code": 4,
+    "removed_t2_payload": false,
+    "same_runtime_account_space_target": true,
+    "status": "PASS_COHERENT_SIGNED_AUTHORITY",
+    "t5_query_rows": 0,
+    "t5_query_total": 0,
+    "t5_read_key_rotated": true,
+    "t5_show_payload": false
+  },
+  "actual_fail": 0,
+  "actual_skip": 0,
+  "actual_terminal_cases": 19,
+  "actual_top_level_methods": 10,
+  "app_sha": "b2fc3804426067dd1ec8318d6ea92a4bcb8e9545",
+  "automatic_t2_to_t5_projection": "NOT_PROVEN",
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "apply",
+        "--check",
+        "/workspace/work/current-read-source/native-heart-integration.patch"
+      ],
+      "name": "current-read-apply-check",
+      "pid": 92,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "git",
+        "apply",
+        "/workspace/work/current-read-source/native-heart-integration.patch"
+      ],
+      "name": "current-read-apply",
+      "pid": 93,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "go",
+        "mod",
+        "download"
+      ],
+      "name": "download-modules",
+      "pid": 151,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "go",
+        "list",
+        "-m",
+        "-json",
+        "all"
+      ],
+      "name": "resolved-modules",
+      "pid": 157,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "go",
+        "list",
+        "-m",
+        "-json",
+        "google.golang.org/genproto"
+      ],
+      "name": "genproto",
+      "pid": 161,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "go",
+        "test",
+        "-p",
+        "1",
+        "-parallel",
+        "1",
+        "-count=1",
+        "-timeout=120s",
+        "-json",
+        "-tags",
+        "nogrpcserver nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg",
+        "-ldflags",
+        "-extldflags=-static -X github.com/anyproto/anytype-heart/util/vcs.GitCommit=d98420b1113536afd08cde6de9a5816f6d27ffff -X github.com/anyproto/anytype-heart/util/vcs.GitSummary=v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-native-t5-lookup-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-torah-attachment-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-current-read-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-authorized-read-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00 -X github.com/anyproto/anytype-heart/clientlibrary/service.t5ACLFixtureSHA=be8136a6108c00b5b687d3e587cacce611b8f2ac7dcde01efc5cb11bdd59786d",
+        "-run",
+        "^(TestCoherentAuthorizedReadBuildsWireBeforePublication|TestCoherentAuthorizedReadFinalizationReleasesNoRetiredPayload|TestCoherentAuthorizedReadMissingOwnershipFailsClosed|TestCoherentAuthorizedReadNativeSuccessReleasesPublication|TestCoherentAuthorizedReadRejectsActiveReadLeaseBeforePublication|TestPinkhaAuthorizedOperationRPCRejectsBeforeAccount|TestPinkhaAuthorizedOperationReadRejectsVersionBeforeAccount|TestPinkhaAuthorizedOperationReadRequiresRunningAccount|TestPinkhaAuthorizedOperationReadShapeAndCancellationBeforeAccount)$",
+        "./core"
+      ],
+      "name": "coherent-components",
+      "pid": 165,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "go",
+        "test",
+        "-c",
+        "-p",
+        "1",
+        "-tags",
+        "nogrpcserver nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg",
+        "-overlay",
+        "/workspace/work/account-overlay.json",
+        "-ldflags",
+        "-extldflags=-static -X github.com/anyproto/anytype-heart/util/vcs.GitCommit=d98420b1113536afd08cde6de9a5816f6d27ffff -X github.com/anyproto/anytype-heart/util/vcs.GitSummary=v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-native-t5-lookup-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-torah-attachment-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-current-read-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-authorized-read-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00 -X github.com/anyproto/anytype-heart/clientlibrary/service.t5ACLFixtureSHA=be8136a6108c00b5b687d3e587cacce611b8f2ac7dcde01efc5cb11bdd59786d",
+        "-o",
+        "/workspace/work/pinkha-coherent-authority.test",
+        "./clientlibrary/service"
+      ],
+      "name": "compile-native-fixture",
+      "pid": 13705,
+      "status": "PASS_EXIT_0"
+    }
+  ],
+  "components": {
+    "affected_prior_methods": 4,
+    "affected_prior_terminals": 4,
+    "exact_passed": [
+      "TestCoherentAuthorizedReadBuildsWireBeforePublication",
+      "TestCoherentAuthorizedReadFinalizationReleasesNoRetiredPayload",
+      "TestCoherentAuthorizedReadFinalizationReleasesNoRetiredPayload/native-cancelled-after-wait",
+      "TestCoherentAuthorizedReadFinalizationReleasesNoRetiredPayload/native-denied",
+      "TestCoherentAuthorizedReadFinalizationReleasesNoRetiredPayload/native-retired",
+      "TestCoherentAuthorizedReadFinalizationReleasesNoRetiredPayload/wire-cancelled-after-wait",
+      "TestCoherentAuthorizedReadFinalizationReleasesNoRetiredPayload/wire-denied",
+      "TestCoherentAuthorizedReadFinalizationReleasesNoRetiredPayload/wire-retired",
+      "TestCoherentAuthorizedReadMissingOwnershipFailsClosed",
+      "TestCoherentAuthorizedReadMissingOwnershipFailsClosed/missing-publication",
+      "TestCoherentAuthorizedReadMissingOwnershipFailsClosed/missing-read-owner",
+      "TestCoherentAuthorizedReadMissingOwnershipFailsClosed/missing-release",
+      "TestCoherentAuthorizedReadNativeSuccessReleasesPublication",
+      "TestCoherentAuthorizedReadRejectsActiveReadLeaseBeforePublication",
+      "TestPinkhaAuthorizedOperationRPCRejectsBeforeAccount",
+      "TestPinkhaAuthorizedOperationReadRejectsVersionBeforeAccount",
+      "TestPinkhaAuthorizedOperationReadRequiresRunningAccount",
+      "TestPinkhaAuthorizedOperationReadShapeAndCancellationBeforeAccount"
+    ],
+    "fail": 0,
+    "log_sha256": "87a3c4b0c80809f9e45e4dac3944e33d6b078cd966a393fa970ea9487d768d2c",
+    "new_methods": 5,
+    "new_terminals": 14,
+    "skip": 0,
+    "source_scope": "Publication doubles and changed front-door guards; not a real ACL proof",
+    "status": "PASS_COHERENT_FINALIZATION_COMPONENTS",
+    "terminal_pass": 18,
+    "top_level_pass": 9
+  },
+  "evidence_export": {
+    "files": {
+      "coherent-observation.json": "b25ef1fa1ba17a45bbff2e4dd79a742a1b035881a84aae9d41908cffc333c81d",
+      "coherent-owner.pb": "58919cffbb02a2ea279f3494060b3db2e75dc1adc1c94b3a8b8215741268a6df",
+      "coherent-reader.pb": "0a08377dd2babc4e23c882065e49f6572b91257519c1d6f8ade348d277aed7ba",
+      "coherent-removed.pb": "c1e21cc2a02f193ceb78d7217ee112353e9e8ab43d5df1f7aa612776db7f79e4",
+      "native-observation.json": "756c772d109d8e02fdab0d44e5ed557ce9d3065eda1d37dc58099e5d9bb75f74",
+      "native.log": "716ac26bd2a508e754ac9c1aef9aa3efda8018329fc8e91a92dca1e2f091dcc7",
+      "ownership.json": "4ad6839bfd54b596e9b23c90d3c9f7e67ba4444b77fb6157f4c1903d4d234710"
+    },
+    "status": "PASS_EXACT_ACCOUNT_SECRET_SCAN"
+  },
+  "execution": {
+    "command": [
+      "/workspace/work/pinkha-coherent-authority.test",
+      "-test.run",
+      "^TestCoherentNativeReadsAfterSignedRevocation$",
+      "-test.count=1",
+      "-test.v",
+      "-test.timeout=300s"
+    ],
+    "exit_code": 0,
+    "pid": 13807
+  },
+  "finished_at": "2026-11-22T13:25:23.309886+00:00",
+  "generation_receipt_sha256": "123e4ab6000c07cdd507626d21f0e5ed676bf58a325e6bb36906d8e70ab9c9a4",
+  "inventory_sha256": "05ee31723508599e228d28e132ce5b89af886f5095c908362b2348d07c80d0f0",
+  "ios_acceptance": "NOT_RUN",
+  "named_account_test": {
+    "method": "TestCoherentNativeReadsAfterSignedRevocation",
+    "native_log_sha256": "716ac26bd2a508e754ac9c1aef9aa3efda8018329fc8e91a92dca1e2f091dcc7",
+    "tests_failed": 0,
+    "tests_passed": 1,
+    "tests_skipped": 0,
+    "tests_started": 1
+  },
+  "network_acl_transport": "NOT_RUN",
+  "original_current_read_components_retained": 2,
+  "original_t2_unaffected_terminals_retained": 67,
+  "patch_sha256": "2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00",
+  "phase": "COMPLETE",
+  "run_attempt": "1",
+  "run_id": "45026227924",
+  "runtime_profile": "r15-attachment-authorized-current-read-v1",
+  "started_at": "2026-11-22T13:13:07.560180+00:00",
+  "status": "PASS_COHERENT_SIGNED_AUTHORITY"
+}

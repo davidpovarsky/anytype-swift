@@ -1,0 +1,33 @@
+{
+  "affected_prior_methods": 4,
+  "affected_prior_terminals": 4,
+  "exact_passed": [
+    "TestCoherentAuthorizedReadBuildsWireBeforePublication",
+    "TestCoherentAuthorizedReadFinalizationReleasesNoRetiredPayload",
+    "TestCoherentAuthorizedReadFinalizationReleasesNoRetiredPayload/native-cancelled-after-wait",
+    "TestCoherentAuthorizedReadFinalizationReleasesNoRetiredPayload/native-denied",
+    "TestCoherentAuthorizedReadFinalizationReleasesNoRetiredPayload/native-retired",
+    "TestCoherentAuthorizedReadFinalizationReleasesNoRetiredPayload/wire-cancelled-after-wait",
+    "TestCoherentAuthorizedReadFinalizationReleasesNoRetiredPayload/wire-denied",
+    "TestCoherentAuthorizedReadFinalizationReleasesNoRetiredPayload/wire-retired",
+    "TestCoherentAuthorizedReadMissingOwnershipFailsClosed",
+    "TestCoherentAuthorizedReadMissingOwnershipFailsClosed/missing-publication",
+    "TestCoherentAuthorizedReadMissingOwnershipFailsClosed/missing-read-owner",
+    "TestCoherentAuthorizedReadMissingOwnershipFailsClosed/missing-release",
+    "TestCoherentAuthorizedReadNativeSuccessReleasesPublication",
+    "TestCoherentAuthorizedReadRejectsActiveReadLeaseBeforePublication",
+    "TestPinkhaAuthorizedOperationRPCRejectsBeforeAccount",
+    "TestPinkhaAuthorizedOperationReadRejectsVersionBeforeAccount",
+    "TestPinkhaAuthorizedOperationReadRequiresRunningAccount",
+    "TestPinkhaAuthorizedOperationReadShapeAndCancellationBeforeAccount"
+  ],
+  "fail": 0,
+  "log_sha256": "87a3c4b0c80809f9e45e4dac3944e33d6b078cd966a393fa970ea9487d768d2c",
+  "new_methods": 5,
+  "new_terminals": 14,
+  "skip": 0,
+  "source_scope": "Publication doubles and changed front-door guards; not a real ACL proof",
+  "status": "PASS_COHERENT_FINALIZATION_COMPONENTS",
+  "terminal_pass": 18,
+  "top_level_pass": 9
+}

@@ -1,0 +1,286 @@
+{
+  "audit_status": "PASS_SCOPED_ARCHIVED_NATIVE_EVIDENCE",
+  "method": "Independent parsing and hashing of already-produced original evidence; zero Go/Swift/native test executions.",
+  "run_id": "45026227924",
+  "run_attempt": 1,
+  "app_sha": "b2fc3804426067dd1ec8318d6ea92a4bcb8e9545",
+  "source_url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45026227924",
+  "artifact_id": 14756266358,
+  "archive_sha256": "52f293d77c7d1bcf9b94c0c0cd0cf0a2cbb8cdeca7a83ab5dde1506635b12783",
+  "original_file_count": 43,
+  "native_methods": 10,
+  "native_terminal_events": 19,
+  "failed": 0,
+  "skipped": 0,
+  "patch_sha256": "2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00",
+  "inventory_sha256": "05ee31723508599e228d28e132ce5b89af886f5095c908362b2348d07c80d0f0",
+  "native_source_paths": 139,
+  "controller_source_paths": 314,
+  "independently_reconstructed_new_source_paths": 99,
+  "checks": [
+    {
+      "name": "archive digest",
+      "passed": true
+    },
+    {
+      "name": "43 originals and no duplicate ZIP entries",
+      "passed": true
+    },
+    {
+      "name": "extracted originals equal ZIP bytes",
+      "passed": true
+    },
+    {
+      "name": "all 11 distinct archived hash references match",
+      "passed": true,
+      "details": {
+        "count": 11
+      }
+    },
+    {
+      "name": "controller and source SHA identity",
+      "passed": true
+    },
+    {
+      "name": "run identity and completed receipt",
+      "passed": true
+    },
+    {
+      "name": "patch and inventory identity consistency",
+      "passed": true
+    },
+    {
+      "name": "embedded inventory equals original inventory",
+      "passed": true
+    },
+    {
+      "name": "139 native sources unchanged",
+      "passed": true
+    },
+    {
+      "name": "314 controller sources unchanged",
+      "passed": true
+    },
+    {
+      "name": "all 139 inventory after-hashes equal native snapshots",
+      "passed": true
+    },
+    {
+      "name": "patch paths equal full 139-source inventory",
+      "passed": true
+    },
+    {
+      "name": "new-file patch content rehashes to inventory",
+      "passed": true,
+      "details": {
+        "count": 99
+      }
+    },
+    {
+      "name": "frozen fixture coherent_authority_account_test.go",
+      "passed": true
+    },
+    {
+      "name": "frozen fixture native_signed_revocation_base_test.go",
+      "passed": true
+    },
+    {
+      "name": "combined fixture digest",
+      "passed": true
+    },
+    {
+      "name": "frozen controller digest",
+      "passed": true
+    },
+    {
+      "name": "raw component count and every started method terminated",
+      "passed": true
+    },
+    {
+      "name": "raw Go package succeeded",
+      "passed": true
+    },
+    {
+      "name": "nine new finalization subcases and five new top-level methods",
+      "passed": true
+    },
+    {
+      "name": "exactly one real account method passed",
+      "passed": true
+    },
+    {
+      "name": "receipt10 methods19 terminals0 fail0 skip agrees with originals",
+      "passed": true
+    },
+    {
+      "name": "same account Space object process nonce and runtime across T2/T5",
+      "passed": true
+    },
+    {
+      "name": "owned disposable account",
+      "passed": true
+    },
+    {
+      "name": "same native PID bound to execution",
+      "passed": true
+    },
+    {
+      "name": "staged owner reader removed and account stopped",
+      "passed": true
+    },
+    {
+      "name": "native signed ACL/key rotation",
+      "passed": true
+    },
+    {
+      "name": "T5 cache retained for Reader and revoked results empty",
+      "passed": true
+    },
+    {
+      "name": "raw owner response protocol",
+      "passed": true
+    },
+    {
+      "name": "raw owner found complete one-variant success",
+      "passed": true
+    },
+    {
+      "name": "raw owner identities and canonical bytes match observation",
+      "passed": true
+    },
+    {
+      "name": "raw owner author and provenance identity",
+      "passed": true
+    },
+    {
+      "name": "raw reader response protocol",
+      "passed": true
+    },
+    {
+      "name": "raw reader found complete one-variant success",
+      "passed": true
+    },
+    {
+      "name": "raw reader identities and canonical bytes match observation",
+      "passed": true
+    },
+    {
+      "name": "raw reader author and provenance identity",
+      "passed": true
+    },
+    {
+      "name": "raw removed response protocol",
+      "passed": true
+    },
+    {
+      "name": "raw removed response contains only permission denial and version",
+      "passed": true
+    },
+    {
+      "name": "raw owner Reader canonical bytes and provenance identical",
+      "passed": true
+    },
+    {
+      "name": "raw authority snapshot token changed after downgrade",
+      "passed": true
+    },
+    {
+      "name": "raw denial contains no canonical body claim or synthetic payload",
+      "passed": true
+    },
+    {
+      "name": "scope boundaries preserved",
+      "passed": true
+    }
+  ],
+  "raw_wire": {
+    "owner": {
+      "bytes": 1195,
+      "error_code": 0,
+      "has_snapshot": true
+    },
+    "reader": {
+      "bytes": 1195,
+      "error_code": 0,
+      "has_snapshot": true
+    },
+    "removed": {
+      "bytes": 32,
+      "error_code": 4,
+      "has_snapshot": false
+    }
+  },
+  "fixture_source_sha256": {
+    "coherent_authority_account_test.go": "3a1fcd0f370224e59137897467e59bb4d41e44ce580e3c0bacce48170019d71b",
+    "native_signed_revocation_base_test.go": "389184e3ba40e1371143505c48eedd6420872f35f57d66784ee5262c62bed25d"
+  },
+  "file_sha256": {
+    "actual/coherent-observation.json": "b25ef1fa1ba17a45bbff2e4dd79a742a1b035881a84aae9d41908cffc333c81d",
+    "actual/coherent-owner.pb": "58919cffbb02a2ea279f3494060b3db2e75dc1adc1c94b3a8b8215741268a6df",
+    "actual/coherent-reader.pb": "0a08377dd2babc4e23c882065e49f6572b91257519c1d6f8ade348d277aed7ba",
+    "actual/coherent-removed.pb": "c1e21cc2a02f193ceb78d7217ee112353e9e8ab43d5df1f7aa612776db7f79e4",
+    "actual/native-observation.json": "756c772d109d8e02fdab0d44e5ed557ce9d3065eda1d37dc58099e5d9bb75f74",
+    "actual/native.log": "716ac26bd2a508e754ac9c1aef9aa3efda8018329fc8e91a92dca1e2f091dcc7",
+    "actual/ownership.json": "4ad6839bfd54b596e9b23c90d3c9f7e67ba4444b77fb6157f4c1903d4d234710",
+    "build.json": "c183cb9b48e086f7fd8626185cc3a9f56d364a964f75a276a1d8021cf426fd42",
+    "coherent-components.log": "87a3c4b0c80809f9e45e4dac3944e33d6b078cd966a393fa970ea9487d768d2c",
+    "compile-native-fixture.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "component-receipt.json": "65b703038bbde8604d1f585da432aac758ea2202a310c643eb25268fd3863851",
+    "control-source-after.json": "3eec900d6e6c52ae89a893ee2204fa89eac9369ffe7d71344736d99181e708da",
+    "control-source-before.json": "3eec900d6e6c52ae89a893ee2204fa89eac9369ffe7d71344736d99181e708da",
+    "current-read-apply-check.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "current-read-apply.log": "c28cbd1f7981b8b9f7a32d986f4fabbe1eaea8765d31c435daf29fffdac6deac",
+    "download-modules.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "generation/authorized-schema-apply.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "generation/authorized-schema-check.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "generation/build-gogo.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "generation/generate-authorized-operation-read.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "generation/generate-gomobile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "generation/generate-grpc.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "generation/generate-messages.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "generation/generation-receipt.json": "123e4ab6000c07cdd507626d21f0e5ed676bf58a325e6bb36906d8e70ab9c9a4",
+    "generation/gogo-download.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "generation/gogo-selection.log": "1bbdc6bed584feeab085d11180a73e7e9c7d4f66dfa44b0c4e3145f997bdfd5c",
+    "generation/schema-apply.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "generation/schema-check.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "genproto.log": "dff547e42be4822ad8336c2c9dd9292a7288dc8f82195502442b0243db4f0545",
+    "native-source-after.json": "042fb3d3d0337a9c9a06eb5b42ac6034ee3dd75a338e2de58ec12c7b096dd262",
+    "native-source-before.json": "042fb3d3d0337a9c9a06eb5b42ac6034ee3dd75a338e2de58ec12c7b096dd262",
+    "receipt.json": "256689b46460b038375e144ad0978939610bf3241970af9b4904573af0ac799c",
+    "resolved-modules.log": "66ed7a896fb676e7ce789c93415a760dd5c615a0e09df775d1e93182543e58ac",
+    "runtime-source/native-heart-integration.json": "05ee31723508599e228d28e132ce5b89af886f5095c908362b2348d07c80d0f0",
+    "runtime-source/native-heart-integration.patch": "2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00",
+    "runtime-source.json": "710c088df114d6d73ddccccfc79a26402868916fed988979647be130aeef6537",
+    "tantivy.json": "48c57e9119ae13ab936207e24df8da60cecb984cdb0c11489dbb1cd270716531",
+    "toolchain/apk-install.log": "6f1a33c853227961ca863220231a901ed4faf00719738729eca6e729d3882bb9",
+    "toolchain/compiler-target.txt": "66c45e7df6309dd685144a621b781d80bce1064015211b26f85313cfa834b671",
+    "toolchain/compiler.log": "aa0aa3ad11bcb51d619d508b4b5952c30b34f571d7e7411b55d30096771ce93f",
+    "toolchain/go-version.txt": "ca25a53670d7230b3c37a21135d0b41d44ea1528bf3bb0a4793158538f03e3b7",
+    "toolchain/image.json": "3fb275272677469e06fd7b770792128bac61bb85744922e9ba74559a18b9d83d",
+    "toolchain/packages.txt": "a732d47198733e230c69d1ef4c8723c36c4e0ece336164ffcdba5f304ee9a560"
+  },
+  "archived_hash_references": {
+    "runtime-source/native-heart-integration.patch": "2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00",
+    "runtime-source/native-heart-integration.json": "05ee31723508599e228d28e132ce5b89af886f5095c908362b2348d07c80d0f0",
+    "generation/generation-receipt.json": "123e4ab6000c07cdd507626d21f0e5ed676bf58a325e6bb36906d8e70ab9c9a4",
+    "coherent-components.log": "87a3c4b0c80809f9e45e4dac3944e33d6b078cd966a393fa970ea9487d768d2c",
+    "actual/native.log": "716ac26bd2a508e754ac9c1aef9aa3efda8018329fc8e91a92dca1e2f091dcc7",
+    "actual/coherent-observation.json": "b25ef1fa1ba17a45bbff2e4dd79a742a1b035881a84aae9d41908cffc333c81d",
+    "actual/coherent-owner.pb": "58919cffbb02a2ea279f3494060b3db2e75dc1adc1c94b3a8b8215741268a6df",
+    "actual/coherent-reader.pb": "0a08377dd2babc4e23c882065e49f6572b91257519c1d6f8ade348d277aed7ba",
+    "actual/coherent-removed.pb": "c1e21cc2a02f193ceb78d7217ee112353e9e8ab43d5df1f7aa612776db7f79e4",
+    "actual/native-observation.json": "756c772d109d8e02fdab0d44e5ed557ce9d3065eda1d37dc58099e5d9bb75f74",
+    "actual/ownership.json": "4ad6839bfd54b596e9b23c90d3c9f7e67ba4444b77fb6157f4c1903d4d234710"
+  },
+  "limitations": [
+    "iOS/Apple acceptance NOT_RUN. This is one Linux native run; no iPad, UI, release, or fresh iOS process proof.",
+    "Network ACL transport NOT_RUN: real signed records were delivered locally through native validation/update code.",
+    "Automatic T2-to-T5 projection NOT_PROVEN. T2 immutable operation bytes and T5 canonical association property are distinct fixture writes on the same native target.",
+    "Full T5, offline unknown revocation, mixed clients, and full T2 acceptance remain unproven.",
+    "T2 response protobufs are archived and independently decoded. T5 Search/Show raw protobufs are not in this ZIP; T5 denial is supported by original observation, source-bound require assertions, and the passing native log.",
+    "The native executable is not archived. Its recorded binary SHA256 and before/after execution check can be audited in the frozen controller, but the binary digest cannot be independently recomputed from this artifact.",
+    "139 native and314 controller source guards are verified through before/after snapshots. Two account fixtures and controller were separately fetched at exact b2fc380 and rehashed. Existing changed files are not full snapshots in the ZIP; their complete base+patch content was not reconstructed here.",
+    "Original credential scanning is recorded by the controller and hash-bound export. Disposable wallet secrets are deliberately absent, so this audit cannot independently repeat the original exact-secret comparison."
+  ],
+  "native_log_note": "Native log preserves warning/error diagnostics, including cache closed/context canceled around shutdown; these are not suppressed or relabeled. Final AccountStop and graceful shutdown completed and named test ended PASS."
+}

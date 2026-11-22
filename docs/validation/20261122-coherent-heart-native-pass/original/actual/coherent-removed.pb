@@ -1,0 +1,2 @@
+
+native permission denied
