@@ -1,0 +1,1377 @@
+--- a/Anytype/Sources/Pinkha/Bootstrap/PinkhaSpaceManifestStore.swift
++++ b/Anytype/Sources/Pinkha/Bootstrap/PinkhaSpaceManifestStore.swift
+@@ -21,6 +21,13 @@
+     private var objectActionsService: any ObjectActionsServiceProtocol
+ 
+     public init() {}
++
++    /// The prepared editor supplies its captured account/source read lease.
++    /// This enters the same canonical read body, never bootstrap or save.
++    func loadOriginalEditorManifest(spaceId: String) async throws -> PinkhaSpaceManifest? {
++        _ = try OriginalSearchMiddleServiceBinding.requireOriginal(searchMiddleService)
++        return try await loadManifest(spaceId: spaceId)
++    }
+ 
+     public func discoverManifestObjectId(spaceId: String) async throws -> String? {
+         // Heart derives uniqueKey from the tree header. Older Pinkha creation
+--- a/Anytype/Sources/PresentationLayer/AddNewRelation flow/CreateNewRelation/Coordinator/PropertyInfoCoordinatorViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/AddNewRelation flow/CreateNewRelation/Coordinator/PropertyInfoCoordinatorViewModel.swift
+@@ -26,6 +26,14 @@
+     // MARK: - PropertyInfoModuleOutput
+     
+     func didAskToShowPropertyFormats(selectedFormat: SupportedPropertyFormat, onSelect: @escaping (SupportedPropertyFormat) -> Void) {
++        if let scope = data.originalEditorScope {
++            try? scope.withCurrent {
++                propertyFormatsData = PropertyFormatsData(format: selectedFormat, onSelect: { format in
++                    try? scope.withCurrent { onSelect(format) }
++                })
++            }
++            return
++        }
+         propertyFormatsData = PropertyFormatsData(
+             format: selectedFormat,
+             onSelect: onSelect
+@@ -33,6 +41,9 @@
+     }
+     
+     func didAskToShowObjectTypesSearch(selectedObjectTypesIds: [String], onSelect: @escaping ([String]) -> Void) {
++        // This legacy search has its own unqualified subscription/tasks. The
++        // prepared object-property increment does not activate that subroute.
++        guard data.originalEditorScope == nil else { return }
+         searchData = ObjectTypesLimitedSearchData(
+             title: Loc.limitObjectTypes,
+             spaceId: data.spaceId,
+@@ -44,6 +55,12 @@
+     }
+     
+     func didPressConfirm(_ relation: PropertyDetails) {
++        if let scope = data.originalEditorScope {
++            try? scope.withActionCallback(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
++                output?.didPressConfirm(relation)
++            }
++            return
++        }
+         output?.didPressConfirm(relation)
+     }
+     
+--- a/Anytype/Sources/PresentationLayer/AddNewRelation flow/CreateNewRelation/Coordinator/PropertyInfoData.swift
++++ b/Anytype/Sources/PresentationLayer/AddNewRelation flow/CreateNewRelation/Coordinator/PropertyInfoData.swift
+@@ -50,4 +50,17 @@
+     let target: PropertiesModuleTarget
+     let mode: PropertyInfoViewMode
+     let isReadOnly: Bool
++    let originalEditorScope: OriginalEditorPropertyScope?
++
++    init(name: String, objectId: String?, spaceId: String, target: PropertiesModuleTarget,
++         mode: PropertyInfoViewMode, isReadOnly: Bool,
++         originalEditorScope: OriginalEditorPropertyScope? = nil) {
++        self.name = name
++        self.objectId = objectId
++        self.spaceId = spaceId
++        self.target = target
++        self.mode = mode
++        self.isReadOnly = isReadOnly
++        self.originalEditorScope = originalEditorScope
++    }
+ }
+--- a/Anytype/Sources/PresentationLayer/AddNewRelation flow/CreateNewRelation/View/PropertyInfoView.swift
++++ b/Anytype/Sources/PresentationLayer/AddNewRelation flow/CreateNewRelation/View/PropertyInfoView.swift
+@@ -7,7 +7,9 @@
+     @Environment(\.dismiss) private var dismiss
+ 
+     init(data: PropertyInfoData, output: (any PropertyInfoModuleOutput)?) {
+-        let relationsInteractor = PropertiesInteractor(objectId: data.objectId, spaceId: data.spaceId)
++        let relationsInteractor = PropertiesInteractor(
++            objectId: data.objectId, spaceId: data.spaceId, originalEditorScope: data.originalEditorScope
++        )
+         _viewModel = State(initialValue: PropertyInfoViewModel(
+             data: data,
+             relationsInteractor: relationsInteractor,
+@@ -21,9 +23,11 @@
+             TitleView(title: viewModel.title) {
+                 if viewModel.canShowMenu {
+                     Menu {
+-                        AsyncButton(Loc.delete, role: .destructive) {
++                        AsyncButton(role: .destructive, prepareAction: viewModel.prepareDeleteAction(onCompletion: { dismiss() })) {
+                             try await viewModel.didTapDelete()
+                             dismiss()
++                        } label: {
++                            Text(Loc.delete)
+                         }
+                     } label: {
+                         MoreIndicator()
+@@ -102,16 +106,20 @@
+                     UIApplication.shared.hideKeyboard()
+                     viewModel.didTapTypesRestrictionSection()
+                 },
+-                isArrowVisible: !viewModel.isReadOnly
++                isArrowVisible: viewModel.canEditTypeRestrictions
+             )
+-            .disabled(viewModel.isReadOnly)
++            .disabled(!viewModel.canEditTypeRestrictions)
+         }
+     }
+     
+     private var button: some View {
+         StandardButton(viewModel.confirmButtonTitle, style: .primaryLarge) {
+-            viewModel.didTapAddButton()
+-            dismiss()
++            if viewModel.hasOriginalEditorScope {
++                viewModel.didTapAddButton(onCompletion: { dismiss() })
++            } else {
++                viewModel.didTapAddButton()
++                dismiss()
++            }
+         }
+         .disabled(!viewModel.isSaveButtonActive)
+         .padding(.vertical, 10)
+--- a/Anytype/Sources/PresentationLayer/AddNewRelation flow/CreateNewRelation/ViewModel/PropertyInfoViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/AddNewRelation flow/CreateNewRelation/ViewModel/PropertyInfoViewModel.swift
+@@ -8,6 +8,12 @@
+ final class PropertyInfoViewModel {
+ 
+     private var identityRevision: Int = 0
++    private var isPerformingOriginalAction = false
++    private var originalCreationStarted = false
++    private(set) var createdOriginalProperty: PropertyDetails?
++
++    var hasOriginalEditorScope: Bool { originalEditorScope != nil }
++    var canEditTypeRestrictions: Bool { !isReadOnly && originalEditorScope == nil }
+ 
+     var formatModel: NewPropertyFormatSectionView.Model {
+         format.asViewModel
+@@ -20,6 +26,9 @@
+     var isSaveButtonActive: Bool {
+         _ = identityRevision
+         guard name.isNotEmpty else { return false }
++        if originalEditorScope != nil {
++            return !isReadOnly && !isPerformingOriginalAction && !originalCreationStarted && originalDefinitionIsCurrent
++        }
+         switch mode {
+         case .create:
+             return true
+@@ -54,6 +63,9 @@
+         case .create:
+             return false
+         case .edit:
++            if originalEditorScope != nil {
++                return !isReadOnly && !isPerformingOriginalAction && originalDefinitionIsCurrent
++            }
+             return !isReadOnly && PinkhaTorahPropertyPolicy.shared.canDeletePropertyDefinition(
+                 propertyId: relationId, key: "", spaceId: spaceId
+             )
+@@ -74,6 +86,8 @@
+     private let spaceId: String
+     @ObservationIgnored
+     private let relationId: String
++    @ObservationIgnored
++    private let originalEditorScope: OriginalEditorPropertyScope?
+ 
+     @ObservationIgnored
+     @Injected(\.objectTypeProvider)
+@@ -97,24 +111,27 @@
+         self.relationsInteractor = relationsInteractor
+         self.output = output
+         self.mode = data.mode
+-        self.isReadOnly = data.isReadOnly || !PinkhaTorahPropertyPolicy.shared.canEditPropertyDefinition(
++        self.originalEditorScope = data.originalEditorScope
++        self.isReadOnly = data.isReadOnly || (data.originalEditorScope == nil && !PinkhaTorahPropertyPolicy.shared.canEditPropertyDefinition(
+             propertyId: data.mode.relationId ?? "", key: "", spaceId: data.spaceId
+-        )
++        ))
+         
+         self.name = data.name
+         self.format = data.mode.format ?? SupportedPropertyFormat.object
+         self.relationId = data.mode.relationId ?? ""
+         handleFormatUpdate()
+         data.mode.limitedObjectTypes.flatMap { updateTypesRestriction(objectTypeIds: $0) }
+-        NotificationCenter.default.addObserver(
+-            forName: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification,
+-            object: nil,
+-            queue: .main
+-        ) { [weak self] notification in
+-            guard let self else { return }
+-            let notifiedSpace = notification.userInfo?["spaceId"] as? String
+-            if notifiedSpace == nil || notifiedSpace == self.spaceId {
+-                self.identityRevision &+= 1
++        if data.originalEditorScope == nil {
++            NotificationCenter.default.addObserver(
++                forName: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification,
++                object: nil,
++                queue: .main
++            ) { [weak self] notification in
++                guard let self else { return }
++                let notifiedSpace = notification.userInfo?["spaceId"] as? String
++                if notifiedSpace == nil || notifiedSpace == self.spaceId {
++                    self.identityRevision &+= 1
++                }
+             }
+         }
+     }
+@@ -126,6 +143,15 @@
+ extension PropertyInfoViewModel {
+     
+     func didTapFormatSection() {
++        if let scope = originalEditorScope {
++            try? scope.withCurrent {
++                guard !isReadOnly else { return }
++                output?.didAskToShowPropertyFormats(selectedFormat: format, onSelect: { [weak self] format in
++                    self?.updatePropertyFormat(format)
++                })
++            }
++            return
++        }
+         guard PinkhaTorahPropertyPolicy.shared.canEditPropertyDefinition(propertyId: relationId, key: "", spaceId: spaceId) else { return }
+         output?.didAskToShowPropertyFormats(selectedFormat: format, onSelect: { [weak self] format in
+             self?.updatePropertyFormat(format)
+@@ -133,13 +159,14 @@
+     }
+     
+     func didTapTypesRestrictionSection() {
++        guard originalEditorScope == nil else { return }
+         guard PinkhaTorahPropertyPolicy.shared.canEditPropertyDefinition(propertyId: relationId, key: "", spaceId: spaceId) else { return }
+         output?.didAskToShowObjectTypesSearch(selectedObjectTypesIds: objectTypeIds, onSelect: { [weak self] ids in
+             self?.updateTypesRestriction(objectTypeIds: ids)
+         })
+     }
+     
+-    func didTapAddButton() {
++    func didTapAddButton(onCompletion: (@MainActor @Sendable () -> Void)? = nil) {
+         let relationDetails = PropertyDetails(
+             id: relationId,
+             key: "",
+@@ -154,6 +181,11 @@
+             isDeleted: false,
+             spaceId: ""
+         )
++
++        if let scope = originalEditorScope {
++            saveOriginalProperty(relationDetails, scope: scope, onCompletion: onCompletion)
++            return
++        }
+         
+         switch mode {
+         case .create:
+@@ -165,11 +197,88 @@
+     }
+     
+     func didTapDelete() async throws {
++        if let scope = originalEditorScope {
++            guard !isReadOnly, case let .edit(selectedId, _, _) = mode else {
++                throw OriginalEditorPropertyModalError.invalidPropertyIdentity
++            }
++            try scope.requireModalTarget(target, spaceId: spaceId)
++            let original = try OriginalObjectActionsServiceBinding.requireOriginal(objectActionsService)
++            try await scope.withSelectedModalProperty(id: selectedId, requiredPermissions: [.archive]) { _, actual, _ in
++                try await original.setArchive(objectIds: [actual.id], true)
++            }
++            try scope.withCurrent { toastData = ToastBarData(Loc.successfullyDeleted(name)) }
++            return
++        }
+         guard case let .edit(relationId, _, _) = mode else { return }
+         guard PinkhaTorahPropertyPolicy.shared.canDeletePropertyDefinition(propertyId: relationId, key: "", spaceId: spaceId) else { return }
+         
+         try await objectActionsService.setArchive(objectIds: [relationId], true)
+         toastData = ToastBarData(Loc.successfullyDeleted(name))
++    }
++
++    func prepareDeleteAction(
++        onCompletion: @escaping @MainActor @Sendable () -> Void
++    ) -> (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))? {
++        guard let scope = originalEditorScope else { return nil }
++        return { [self] in
++            scope.prepareAction(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
++                try await self.didTapDelete()
++                try scope.withCurrent { onCompletion() }
++            }
++        }
++    }
++
++    private var originalDefinitionIsCurrent: Bool {
++        guard let scope = originalEditorScope else { return false }
++        return (try? scope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
++            try scope.requireModalTarget(target, spaceId: spaceId)
++        }) != nil
++    }
++
++    private func saveOriginalProperty(
++        _ details: PropertyDetails, scope: OriginalEditorPropertyScope,
++        onCompletion: (@MainActor @Sendable () -> Void)?
++    ) {
++        guard !isReadOnly, !isPerformingOriginalAction, !originalCreationStarted else { return }
++        do {
++            try scope.requireModalTarget(target, spaceId: spaceId)
++            try scope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
++                isPerformingOriginalAction = true
++            }
++        } catch { reportOriginalFailure(scope); return }
++        let action = scope.prepareAction(requiredPermissions: OriginalEditorPropertyScope.listPermissions) { [self] in
++            guard let original = relationsInteractor as? PropertiesInteractor,
++                  original.originalEditorScope === scope else {
++                throw OriginalEditorPropertyModalError.unsupportedOriginalDelegate
++            }
++            let completed: PropertyDetails
++            switch mode {
++            case .create:
++                // Do not automatically repeat an uncertain native creation.
++                // Its original record is retained even if later attachment fails.
++                try scope.withCurrent { originalCreationStarted = true }
++                completed = try await original.createProperty(spaceId: spaceId, relation: details)
++                try scope.withCurrent { createdOriginalProperty = completed }
++                try await original.addPropertyToObject(objectId: scope.objectId, relation: completed)
++            case .edit:
++                completed = try await original.updateOriginalProperty(spaceId: spaceId, relation: details)
++            }
++            try scope.withActionCallback(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
++                onSuccessfullAction(relationDetails: completed)
++                onCompletion?()
++            }
++        }
++        Task { [self] in
++            do { try await action() }
++            catch { reportOriginalFailure(scope) }
++            try? scope.withCurrent { isPerformingOriginalAction = false }
++        }
++    }
++
++    private func reportOriginalFailure(_ scope: OriginalEditorPropertyScope) {
++        try? scope.withCurrent {
++            toastData = ToastBarData(Loc.error, type: .failure)
++        }
+     }
+     
+     private func createRelation(_ relationDetails: PropertyDetails) {
+@@ -224,11 +333,34 @@
+ extension PropertyInfoViewModel: PropertyInfoModuleInput {
+     
+     func updatePropertyFormat(_ newFormat: SupportedPropertyFormat) {
++        if let scope = originalEditorScope {
++            try? scope.withCurrent {
++                guard !isReadOnly, mode.canEditRelationType else { return }
++                format = newFormat
++                handleFormatUpdate()
++            }
++            return
++        }
+         format = newFormat
+         handleFormatUpdate()
+     }
+     
+     func updateTypesRestriction(objectTypeIds: [String]) {
++        if let scope = originalEditorScope {
++            do {
++                try scope.withCurrent {
++                    guard objectTypeProvider is ObjectTypeProvider else {
++                        throw OriginalEditorPropertyModalError.unsupportedOriginalDelegate
++                    }
++                    let originalTypes = try objectTypeIds.map { try objectTypeProvider.objectType(id: $0) }
++                    guard originalTypes.allSatisfy({ $0.spaceId.utf8.elementsEqual(spaceId.utf8) }) else {
++                        throw EditorDocumentWriteError.rejected(.wrongContext)
++                    }
++                    objectTypes = originalTypes
++                }
++            } catch { reportOriginalFailure(scope) }
++            return
++        }
+         objectTypes = objectTypeIds.compactMap {
+             try? objectTypeProvider.objectType(id: $0)
+         }
+--- a/Anytype/Sources/PresentationLayer/Flows/EditorPageFlow/EditorPageCoordinatorViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/Flows/EditorPageFlow/EditorPageCoordinatorViewModel.swift
+@@ -159,6 +159,14 @@
+     }
+     
+     func showAddPropertyInfoView(document: some BaseDocumentProtocol, onSelect: @escaping (PropertyDetails, _ isNew: Bool) -> Void) {
++        let scope = preparedEditorSession.map {
++            OriginalEditorPropertyScope(preparedSession: $0, objectId: document.objectId,
++                                        spaceId: document.spaceId, document: document)
++        }
++        guard !hasQualifiedPreparation || scope != nil else { return }
++        if let scope {
++            guard (try? scope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions, {})) != nil else { return }
++        }
+         guard let details = document.details else { return }
+         let visibleInstalledIds = (
+             document.parsedProperties.featuredProperties +
+@@ -173,6 +181,7 @@
+             excludedRelationsIds: visibleInstalledIds,
+             hiddenRelationsIds: hiddenIds,
+             target: .object(objectId: details.id),
++            originalEditorScope: scope,
+             onRelationSelect: onSelect
+         )
+     }
+--- a/Anytype/Sources/PresentationLayer/PropertyValueFlow/PropertyValueCoordinator/OriginalEditorPropertyScope.swift
++++ b/Anytype/Sources/PresentationLayer/PropertyValueFlow/PropertyValueCoordinator/OriginalEditorPropertyScope.swift
+@@ -1,5 +1,6 @@
+ import Foundation
+ import Services
++import PinkhaKit
+ 
+ /// Carries the already prepared document into the original property UI. This
+ /// owns no generation, store, editor or permission policy of its own.
+@@ -129,6 +130,194 @@
+     }
+ }
+ 
++enum OriginalEditorPropertyModalError: Error, Sendable {
++    case unsupportedTarget
++    case internalIdentityUnavailable
++    case invalidPropertyIdentity
++    case unsupportedOriginalDelegate
++}
++
++/// Per-operation metadata from the original canonical read. This is not a
++/// lifetime/permission token and is never cached for a later user action.
++struct OriginalEditorPropertyIdentitySnapshot: Sendable {
++    fileprivate let scope: OriginalEditorPropertyScope
++    fileprivate let spaceId: String
++    fileprivate let pinkhaEnabled: Bool
++    fileprivate let internalIdentities: PinkhaInternalPropertyIdentities?
++}
++
++@MainActor
++extension OriginalEditorPropertyScope {
++    /// This increment qualifies the original slash-menu object target. The
++    /// type, dataview and library routes need their own actual prepared target.
++    func requireModalTarget(_ target: PropertiesModuleTarget, spaceId: String) throws {
++        try withCurrent {
++            guard self.spaceId.utf8.elementsEqual(spaceId.utf8),
++                  case .object(let selectedObjectId) = target,
++                  selectedObjectId.utf8.elementsEqual(objectId.utf8) else {
++                throw OriginalEditorPropertyModalError.unsupportedTarget
++            }
++        }
++    }
++
++    /// Read the actual canonical manifest in the captured account. The old
++    /// Space-only singleton cache is deliberately not accepted as provenance.
++    func loadModalPropertyIdentity() async throws -> OriginalEditorPropertyIdentitySnapshot {
++        try withCurrent {}
++        let enabled = PinkhaRuntime.enabled
++        guard enabled else {
++            return .init(scope: self, spaceId: spaceId, pinkhaEnabled: false, internalIdentities: nil)
++        }
++        guard let original = Container.shared.pinkhaSpaceManifestStore() as? PinkhaSpaceManifestStore else {
++            throw OriginalEditorPropertyModalError.unsupportedOriginalDelegate
++        }
++        let manifest = try await owner.performRead(
++            contextId: objectId, spaceId: spaceId, rpcNames: ["ObjectSearch", "ObjectShow"]
++        ) { [spaceId] in
++            try await original.loadOriginalEditorManifest(spaceId: spaceId)
++        }
++        return try withCurrent {
++            guard PinkhaRuntime.enabled == enabled, let manifest,
++                  manifest.spaceId.utf8.elementsEqual(spaceId.utf8), manifest.isComplete,
++                  manifest.schemaVersion == PinkhaSpaceManifest.currentSchemaVersion,
++                  let manifestId = manifest.manifestObjectId, !manifestId.isEmpty, !manifestId.utf8.contains(0),
++                  let identities = PinkhaInternalPropertyIdentities(manifest: manifest),
++                  identities.canonicalPropertyId.utf8.elementsEqual(manifest.documentAssociationsPropertyId.utf8),
++                  identities.canonicalPropertyKey.utf8.elementsEqual(manifest.documentAssociationsPropertyKey.utf8),
++                  identities.orderPropertyId.utf8.elementsEqual(manifest.orderPropertyId.utf8),
++                  identities.orderPropertyKey.utf8.elementsEqual(manifest.orderPropertyKey.utf8),
++                  [identities.canonicalPropertyId, identities.canonicalPropertyKey,
++                   identities.orderPropertyId, identities.orderPropertyKey].allSatisfy({ !$0.isEmpty && !$0.utf8.contains(0) }) else {
++                throw OriginalEditorPropertyModalError.internalIdentityUnavailable
++            }
++            return .init(scope: self, spaceId: spaceId, pinkhaEnabled: enabled, internalIdentities: identities)
++        }
++    }
++
++    func requireModalProperty(_ property: PropertyDetails, identity: OriginalEditorPropertyIdentitySnapshot) throws {
++        try withCurrent {
++            try requireModalIdentity(identity)
++            try Self.requireModalProperty(property, spaceId: spaceId, identity: identity)
++        }
++    }
++
++    /// The original value editor supplies its own editable/value semantics.
++    /// This shared check only excludes the current account's internal/native
++    /// properties; it does not grant a property-definition mutation.
++    func requireOriginalPropertyValue(propertyId: String, key: String,
++                                      identity: OriginalEditorPropertyIdentitySnapshot) throws {
++        try withCurrent {
++            try requireModalIdentity(identity)
++            guard !propertyId.isEmpty, !propertyId.utf8.contains(0),
++                  !key.isEmpty, !key.utf8.contains(0),
++                  TorahNativePropertyDefinition.definition(for: key) == nil,
++                  identity.internalIdentities?.isInternal(propertyId: propertyId, key: key) != true else {
++                throw OriginalEditorPropertyModalError.invalidPropertyIdentity
++            }
++        }
++    }
++
++    func requireNewModalProperty(_ property: PropertyDetails, spaceId: String,
++                                 identity: OriginalEditorPropertyIdentitySnapshot) throws {
++        try withCurrent(requiredPermissions: Self.listPermissions) {
++            try requireModalIdentity(identity)
++            guard self.spaceId.utf8.elementsEqual(spaceId.utf8),
++                  property.id.isEmpty, property.key.isEmpty, property.sourceObject.isEmpty,
++                  property.spaceId.isEmpty || property.spaceId.utf8.elementsEqual(spaceId.utf8),
++                  !property.isHidden, !property.isReadOnly, !property.isReadOnlyValue,
++                  !property.isDeleted, !property.name.isEmpty,
++                  property.format != .unrecognized, property.objectTypes.isEmpty else {
++                throw OriginalEditorPropertyModalError.invalidPropertyIdentity
++            }
++        }
++    }
++
++    /// Definition and last-used/archive writes belong to the actual selected
++    /// property document. Never relabel a foreign ID as this parent context.
++    func withSelectedModalProperty<Value: Sendable>(
++        id: String, requiredPermissions: Set<EditorDocumentWritePermission>,
++        beforeMutation: (@MainActor @Sendable (PropertyDetails) async throws -> Void)? = nil,
++        operation: @escaping @MainActor @Sendable (PreparedEditorPageSession, PropertyDetails, OriginalEditorPropertyIdentitySnapshot) async throws -> Value
++    ) async throws -> Value {
++        try withCurrent {
++            guard !id.isEmpty, !id.utf8.contains(0) else {
++                throw OriginalEditorPropertyModalError.invalidPropertyIdentity
++            }
++        }
++        // Finish this parent read before any child tracking lease is active.
++        let identity = try await loadModalPropertyIdentity()
++        let preparation = try PreparedEditorChildPreparation(owner: owner)
++        let child = try await preparation.prepare(
++            data: .init(objectId: id, spaceId: spaceId), requiredPermissions: requiredPermissions
++        )
++        defer { child.retire() }
++        let selected = try Self.modalPropertySnapshot(child: child, id: id, identity: identity, requiredPermissions: requiredPermissions)
++        // Parent work runs in its original scheduled lineage, before entering
++        // the child's operation. A child never re-enters its passive parent.
++        try await beforeMutation?(selected)
++        let result = try await child.owner.performDocumentAction(
++            contextId: id, requiredPermissions: requiredPermissions,
++            onDrained: { [child] in withExtendedLifetime(child) {} }
++        ) { [child] in
++            let property = try await Self.modalPropertySnapshot(child: child, id: id, identity: identity, requiredPermissions: requiredPermissions)
++            guard property.key.utf8.elementsEqual(selected.key.utf8), property.format == selected.format else {
++                throw OriginalEditorPropertyModalError.invalidPropertyIdentity
++            }
++            return try await operation(child, property, identity)
++        }
++        try withCurrent {}
++        return result
++    }
++
++    static func modalPropertySnapshot(
++        child: PreparedEditorPageSession, id: String,
++        identity: OriginalEditorPropertyIdentitySnapshot,
++        requiredPermissions: Set<EditorDocumentWritePermission>
++    ) throws -> PropertyDetails {
++        try child.owner.performSynchronousDocumentAction(
++            contextId: id, spaceId: child.data.spaceId,
++            requiredPermissions: requiredPermissions
++        ) {
++            try child.owner.validateDocument(child.document)
++            guard let details = child.document.details,
++                  details.id.utf8.elementsEqual(id.utf8),
++                  details.spaceId.utf8.elementsEqual(child.data.spaceId.utf8),
++                  details.resolvedLayoutValue == .relation,
++                  !details.isArchived, !details.isDeleted else {
++                throw OriginalEditorPropertyModalError.invalidPropertyIdentity
++            }
++            let property = PropertyDetails(details: details)
++            try requireModalProperty(property, spaceId: child.data.spaceId, identity: identity)
++            return property
++        }
++    }
++
++    private func requireModalIdentity(_ identity: OriginalEditorPropertyIdentitySnapshot) throws {
++        guard identity.scope === self, identity.spaceId.utf8.elementsEqual(spaceId.utf8),
++              identity.pinkhaEnabled == PinkhaRuntime.enabled else {
++            throw OriginalEditorPropertyModalError.invalidPropertyIdentity
++        }
++    }
++
++    private static func requireModalProperty(
++        _ property: PropertyDetails, spaceId: String,
++        identity: OriginalEditorPropertyIdentitySnapshot
++    ) throws {
++        guard identity.spaceId.utf8.elementsEqual(spaceId.utf8), identity.pinkhaEnabled == PinkhaRuntime.enabled,
++              !identity.pinkhaEnabled || identity.internalIdentities != nil,
++              !property.id.isEmpty, !property.id.utf8.contains(0),
++              !property.key.isEmpty, !property.key.utf8.contains(0),
++              property.spaceId.utf8.elementsEqual(spaceId.utf8),
++              !property.isHidden, !property.isReadOnly, !property.isReadOnlyValue,
++              !property.isDeleted, property.format != .unrecognized,
++              !BundledPropertyKey.internalKeys.contains(where: { $0.rawValue.utf8.elementsEqual(property.key.utf8) }),
++              TorahNativePropertyDefinition.definition(for: property.key) == nil,
++              identity.internalIdentities?.isInternal(propertyId: property.id, key: property.key) != true else {
++            throw OriginalEditorPropertyModalError.invalidPropertyIdentity
++        }
++    }
++}
++
+ @MainActor
+ extension PropertyModuleConfiguration {
+     var originalEditorScope: OriginalEditorPropertyScope? {
+--- a/Anytype/Sources/PresentationLayer/Search screen/InternalViewModels/PropertiesSearchViewModel/PropertiesInteractor.swift
++++ b/Anytype/Sources/PresentationLayer/Search screen/InternalViewModels/PropertiesSearchViewModel/PropertiesInteractor.swift
+@@ -21,9 +21,15 @@
+     private let propertyDetailsStorage: any PropertyDetailsStorageProtocol = Container.shared.propertyDetailsStorage()
+     
+     private let document: (any BaseDocumentProtocol)?
++    let originalEditorScope: OriginalEditorPropertyScope?
+     
+-    init(objectId: String?, spaceId: String) {
+-        if let objectId = objectId, objectId.isNotEmpty {
++    init(objectId: String?, spaceId: String, originalEditorScope: OriginalEditorPropertyScope? = nil) {
++        self.originalEditorScope = originalEditorScope
++        if originalEditorScope != nil {
++            // objectId is historically a type ID on the slash route. The
++            // scope retains the actual target; never fetch a type as its proxy.
++            document = nil
++        } else if let objectId = objectId, objectId.isNotEmpty {
+             let documentsProvider = Container.shared.openedDocumentProvider()
+             document = documentsProvider.document(objectId: objectId, spaceId: spaceId)
+         } else {
+@@ -32,14 +38,66 @@
+     }
+     
+     func createProperty(spaceId: String, relation: PropertyDetails) async throws -> PropertyDetails {
+-        try await propertiesService.createProperty(spaceId: spaceId, propertyDetails: relation)
++        if let scope = originalEditorScope {
++            let identity = try await scope.loadModalPropertyIdentity()
++            try await scope.requireNewModalProperty(relation, spaceId: spaceId, identity: identity)
++            let original = try await scope.originalProperties(propertiesService)
++            let created = try await scope.owner.performMutation(
++                spaceId: spaceId, requiredPermissions: OriginalEditorPropertyScope.listPermissions
++            ) {
++                try await original.createProperty(spaceId: spaceId, propertyDetails: relation)
++            }
++            // The actual native result supplies identity. A rejection after
++            // creation is a partial outcome; this does not delete or roll back.
++            try await scope.requireModalProperty(created, identity: identity)
++            return created
++        }
++        return try await propertiesService.createProperty(spaceId: spaceId, propertyDetails: relation)
+     }
+     
+     func updateProperty(spaceId: String, relation: PropertyDetails) async throws {
++        if originalEditorScope != nil {
++            _ = try await updateOriginalProperty(spaceId: spaceId, relation: relation)
++            return
++        }
+         try await propertiesService.updateProperty(objectId: relation.id, fields: relation.fields)
++    }
++
++    /// Return metadata read from the retained original property document after
++    /// the real update/event delivery, not a fabricated replacement row.
++    func updateOriginalProperty(spaceId: String, relation: PropertyDetails) async throws -> PropertyDetails {
++        guard let scope = originalEditorScope else {
++            throw OriginalEditorPropertyModalError.unsupportedOriginalDelegate
++        }
++        try await scope.withCurrent {
++            guard scope.spaceId.utf8.elementsEqual(spaceId.utf8) else {
++                throw EditorDocumentWriteError.rejected(.wrongContext)
++            }
++        }
++        let original = try await scope.originalProperties(propertiesService)
++        return try await scope.withSelectedModalProperty(id: relation.id, requiredPermissions: [.editDetails]) { child, actual, identity in
++            guard relation.id.utf8.elementsEqual(actual.id.utf8),
++                  relation.key.isEmpty || relation.key.utf8.elementsEqual(actual.key.utf8),
++                  relation.spaceId.isEmpty || relation.spaceId.utf8.elementsEqual(actual.spaceId.utf8),
++                  !relation.name.isEmpty, relation.format == actual.format,
++                  relation.objectTypes.count == actual.objectTypes.count,
++                  zip(relation.objectTypes, actual.objectTypes).allSatisfy({ pair in pair.0.utf8.elementsEqual(pair.1.utf8) }) else {
++                throw OriginalEditorPropertyModalError.invalidPropertyIdentity
++            }
++            try await original.updateProperty(objectId: actual.id, fields: relation.fields)
++            let updated = try OriginalEditorPropertyScope.modalPropertySnapshot(
++                child: child, id: actual.id, identity: identity, requiredPermissions: [.editDetails]
++            )
++            guard updated.key.utf8.elementsEqual(actual.key.utf8),
++                  updated.name.utf8.elementsEqual(relation.name.utf8), updated.format == actual.format else {
++                throw OriginalEditorPropertyModalError.invalidPropertyIdentity
++            }
++            return updated
++        }
+     }
+     
+     func addPropertyToType(relation: PropertyDetails, isFeatured: Bool) async throws {
++        guard originalEditorScope == nil else { throw OriginalEditorPropertyModalError.unsupportedTarget }
+         guard let document = document else { 
+             throw PropertiesInteractorError.documentRequired 
+         }
+@@ -53,6 +111,7 @@
+     }
+     
+     func addPropertyToDataview(objectId: String, relation: PropertyDetails, activeViewId: String, typeDetails: ObjectDetails?) async throws {
++        guard originalEditorScope == nil else { throw OriginalEditorPropertyModalError.unsupportedTarget }
+         if let typeDetails {
+             try await addPropertyToType(relation: relation, details: typeDetails)
+         } else {
+@@ -68,6 +127,15 @@
+     }
+     
+     func addPropertyToObject(objectId: String, relation: PropertyDetails) async throws {
++        if let scope = originalEditorScope {
++            try await scope.requireModalTarget(.object(objectId: objectId), spaceId: scope.spaceId)
++            let identity = try await scope.loadModalPropertyIdentity()
++            try await scope.requireModalProperty(relation, identity: identity)
++            let original = try await scope.originalProperties(propertiesService)
++            return try await scope.perform(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
++                try await original.addProperties(objectId: objectId, propertiesDetails: [relation])
++            }
++        }
+         try await propertiesService.addProperties(objectId: objectId, propertiesDetails: [relation])
+     }
+ }
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Coordinator/PropertiesListCoordinatorViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Coordinator/PropertiesListCoordinatorViewModel.swift
+@@ -60,6 +60,10 @@
+     // MARK: - PropertiesListModuleOutput
+     
+     func editRelationValueAction(document: some BaseDocumentProtocol, relationKey: String) {
++        if let scope = originalEditorScope {
++            editOriginalRelationValue(document: document, relationKey: relationKey, scope: scope)
++            return
++        }
+         guard (try? withCurrentSource {
+             try preparedSession?.owner.validateDocument(document)
+         }) != nil else { return }
+@@ -78,6 +82,71 @@
+             propertyId: relation.id, key: relation.key, spaceId: document.spaceId
+         ) else { return }
+         handlePropertyValue(relation: relation, objectDetails: objectDetails)
++    }
++
++    /// Resolve canonical identity through the original current-account reader.
++    /// No prepared value tap enters the policy's implicit bootstrap path.
++    private func editOriginalRelationValue(
++        document candidate: any BaseDocumentProtocol, relationKey: String,
++        scope: OriginalEditorPropertyScope
++    ) {
++        do {
++            let selected = try scope.withCurrent {
++                try scope.owner.validateDocument(candidate)
++                guard !relationKey.isEmpty, !relationKey.utf8.contains(0),
++                      let relation = document.parsedProperties.installed.first(where: {
++                          $0.key.utf8.elementsEqual(relationKey.utf8)
++                      }) else {
++                    throw EditorDocumentWriteError.rejected(.wrongContext)
++                }
++                return relation
++            }
++            let writesCheckbox: Bool
++            if case .checkbox = selected { writesCheckbox = selected.isEditable }
++            else { writesCheckbox = false }
++
++            let operation: @MainActor @Sendable () async throws -> Void = { [self] in
++                let identity = try await scope.loadModalPropertyIdentity()
++                let present = {
++                    try scope.owner.validateDocument(self.document)
++                    guard let current = self.document.parsedProperties.installed.first(where: {
++                        $0.key.utf8.elementsEqual(relationKey.utf8)
++                    }), current.id.utf8.elementsEqual(selected.id.utf8),
++                        current.key.utf8.elementsEqual(selected.key.utf8), current == selected,
++                        let details = self.document.details,
++                        details.id.utf8.elementsEqual(scope.objectId.utf8),
++                        details.spaceId.utf8.elementsEqual(scope.spaceId.utf8) else {
++                        throw EditorDocumentWriteError.rejected(.documentChanged)
++                    }
++                    try scope.requireOriginalPropertyValue(
++                        propertyId: current.id, key: current.key, identity: identity
++                    )
++                    self.handlePropertyValue(relation: current, objectDetails: details)
++                }
++                if writesCheckbox {
++                    // The original processor synchronously registers its real
++                    // checkbox write; a publication read cannot authorize it.
++                    try scope.withActionCallback(present)
++                } else {
++                    try scope.withCurrent(present)
++                }
++            }
++            // Reserve the actual editable-checkbox action at the UI callback,
++            // before the asynchronous canonical read or original Task starts.
++            let action = writesCheckbox
++                ? scope.prepareAction(operation: operation)
++                : operation
++            Task { [weak self] in
++                do { try await action() }
++                catch { self?.reportOriginalPropertyFailure(scope: scope) }
++            }
++        } catch { reportOriginalPropertyFailure(scope: scope) }
++    }
++
++    private func reportOriginalPropertyFailure(scope: OriginalEditorPropertyScope) {
++        try? scope.withCurrent {
++            typePropertiesToast = ToastBarData(Loc.error, type: .failure)
++        }
+     }
+     
+     private func handlePropertyValue(relation: Property, objectDetails: ObjectDetails) {
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesView.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesView.swift
+@@ -8,26 +8,45 @@
+ struct ObjectPropertiesView: View {
+ 
+     @State private var model: ObjectPropertiesViewModel
+-    @State private var torahProperties: PinkhaTorahPropertiesModel
++    @State private var torahProperties: PinkhaTorahPropertiesModel?
+     private let preparedSession: PreparedEditorPageSession?
+ 
+     init(document: some BaseDocumentProtocol, output: (any PropertiesListModuleOutput)?, torahSession: TorahEditorSession? = nil,
+          preparedSession: PreparedEditorPageSession? = nil) {
+         self.preparedSession = preparedSession
+-        _torahProperties = State(initialValue: PinkhaTorahPropertiesModel(document: document, session: torahSession))
++        if preparedSession == nil {
++            _torahProperties = State(initialValue: PinkhaTorahPropertiesModel(document: document, session: torahSession))
++        } else {
++            // The original Torah model resolves schema during initialization.
++            // The prepared page uses its current-account property reader only.
++            _torahProperties = State(initialValue: nil)
++        }
+         _model = State(initialValue: ObjectPropertiesViewModel(document: document, output: output, preparedSession: preparedSession))
++    }
++
++    private var legacyTorahProperties: PinkhaTorahPropertiesModel? {
++        // State can outlive a View value. A prepared route must never reuse a
++        // previously retained legacy model or its separate Torah session.
++        preparedSession == nil ? torahProperties : nil
++    }
++
++    private var visibleSections: [PropertiesSection] {
++        if let legacyTorahProperties {
++            return legacyTorahProperties.visibleSections(model.sections)
++        }
++        return model.sections
+     }
+     
+     var body: some View {
+         content
+             .task { await model.setupSubscriptions() }
+-            .task {
++            .task(id: preparedSession == nil) {
+                 // This original observer can provision the Space schema. Its
+                 // separate Torah ownership path is not a page-write admission.
+-                if preparedSession == nil { await torahProperties.observeDocument() }
++                if let legacyTorahProperties { await legacyTorahProperties.observeDocument() }
+             }
+             .sheet(item: $model.relationsSearchData) { PropertyCreationView(data: $0) }
+-            .torahEditorHost(session: torahProperties.session, presentationHost: .properties)
++            .torahEditorHost(session: legacyTorahProperties?.session, presentationHost: .properties)
+             .anytypeSheet(isPresented: $model.showConflictingInfo) {
+                 ObjectPropertiesBottomAlert()
+             }
+@@ -70,14 +89,14 @@
+     private var relationsList: some View {
+         ScrollView {
+             LazyVStack(alignment: .leading, spacing: 0) {
+-                if torahProperties.isResolvingManifest {
+-                    PinkhaTorahPropertiesLoadingState(model: torahProperties)
++                if let legacyTorahProperties, legacyTorahProperties.isResolvingManifest {
++                    PinkhaTorahPropertiesLoadingState(model: legacyTorahProperties)
+                 } else if model.shouldShowEmptyState {
+                     emptyStateView
+                         .padding(.top, 24)
+                 }
+                 
+-                ForEach(torahProperties.visibleSections(model.sections)) { section in
++                ForEach(visibleSections) { section in
+                     Section {
+                         if !section.isExpandable || model.isSectionExpanded(section.id) {
+                             ForEach(section.relations) {
+@@ -89,8 +108,9 @@
+                     }
+                 }
+ 
+-                PinkhaTorahPropertiesSection(model: torahProperties)
+-                    .disabled(preparedSession != nil)
++                if let legacyTorahProperties {
++                    PinkhaTorahPropertiesSection(model: legacyTorahProperties)
++                }
+                 if model.canAddProperty {
+                     Button {
+                         model.onAddPropertyTap()
+@@ -196,11 +216,12 @@
+         } onEditTap: { tappedRelation in
+             if model.hasOutput {
+                 model.handleTapOnRelation(tappedRelation)
+-            } else if let definition = TorahNativePropertyDefinition.definition(for: tappedRelation.key),
+-                      torahProperties.isEligible,
+-                      torahProperties.canEdit,
+-                      torahProperties.session != nil {
+-                torahProperties.edit(definition.kind)
++            } else if let legacyTorahProperties,
++                      let definition = TorahNativePropertyDefinition.definition(for: tappedRelation.key),
++                      legacyTorahProperties.isEligible,
++                      legacyTorahProperties.canEdit,
++                      legacyTorahProperties.session != nil {
++                legacyTorahProperties.edit(definition.kind)
+             } else {
+                 model.handleTapOnRelation(tappedRelation)
+             }
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesViewModel.swift
+@@ -16,7 +16,10 @@
+     var relationsSearchData: PropertiesSearchData?
+ 
+     var canAddProperty: Bool {
+-        document.permissions.canEditRelationValues && document.details?.isReadonly == false &&
++        // The separate schema route remains unqualified for a prepared page.
++        // Do not consult its Space-only policy cache while rendering this page.
++        guard preparedSession == nil else { return false }
++        return document.permissions.canEditRelationValues && document.details?.isReadonly == false &&
+             PinkhaTorahPropertyPolicy.shared.isNormalDocument(document.details, spaceId: document.spaceId)
+     }
+ 
+@@ -37,6 +40,10 @@
+     private let sectionsBuilder = PropertiesSectionBuilder()
+     @ObservationIgnored
+     private var latestParsedProperties = ParsedProperties.empty
++    @ObservationIgnored
++    private var preparedSectionsTask: Task<Void, Never>?
++    @ObservationIgnored
++    private var preparedSubscriptionID: UUID?
+ 
+     @ObservationIgnored
+     @Injected(\.propertiesService)
+@@ -63,7 +70,7 @@
+         self.preparedSession = preparedSession
+         self.latestParsedProperties = document.parsedProperties
+         self.typeId = Self.resolvedTypeId(for: document.details)
+-        if document.details != nil {
++        if preparedSession == nil && document.details != nil {
+             rebuildSections(from: document.parsedProperties)
+         }
+     }
+@@ -86,6 +93,10 @@
+     }
+     
+     func setupSubscriptions() async {
++        if let scope = originalEditorScope {
++            await setupPreparedSubscriptions(scope: scope)
++            return
++        }
+         guard (try? withCurrentSource {}) != nil else { return }
+         if preparedSession == nil && !document.isOpened {
+             try? await document.open()
+@@ -127,6 +138,91 @@
+         }
+     }
+ 
++    private func setupPreparedSubscriptions(scope: OriginalEditorPropertyScope) async {
++        guard !Task.isCancelled,
++              (try? scope.withCurrent {}) != nil else { return }
++        // This identifies only the view subscription, never source authority.
++        // A new .task can start before its cancelled predecessor unwinds.
++        let subscriptionID = UUID()
++        preparedSubscriptionID = subscriptionID
++        preparedSectionsTask?.cancel()
++        let observer = NotificationCenter.default.addObserver(
++            forName: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification,
++            object: nil,
++            queue: .main
++        ) { [weak self] notification in
++            let notifiedSpace = notification.userInfo?["spaceId"] as? String
++            Task { @MainActor [weak self] in
++                guard let self, self.preparedSubscriptionID == subscriptionID,
++                      notifiedSpace == nil || notifiedSpace?.utf8.elementsEqual(self.document.spaceId.utf8) == true else { return }
++                self.schedulePreparedSectionsRebuild(scope: scope, subscriptionID: subscriptionID)
++            }
++        }
++        defer {
++            NotificationCenter.default.removeObserver(observer)
++            if preparedSubscriptionID == subscriptionID {
++                preparedSubscriptionID = nil
++                preparedSectionsTask?.cancel()
++                preparedSectionsTask = nil
++            }
++        }
++
++        // Start the asynchronous read only after the temporary read admission
++        // above has returned; no task inherits a completed scope lease.
++        guard schedulePreparedSectionsRebuild(scope: scope, subscriptionID: subscriptionID) else { return }
++        for await _ in document.parsedPropertiesPublisher.values {
++            guard !Task.isCancelled,
++                  schedulePreparedSectionsRebuild(scope: scope, subscriptionID: subscriptionID) else { return }
++        }
++    }
++
++    @discardableResult
++    private func schedulePreparedSectionsRebuild(scope: OriginalEditorPropertyScope, subscriptionID: UUID) -> Bool {
++        guard preparedSubscriptionID == subscriptionID else { return false }
++        preparedSectionsTask?.cancel()
++        let properties: ParsedProperties
++        do {
++            properties = try scope.withCurrent {
++                latestParsedProperties = document.parsedProperties
++                // No internal row is displayed while its current account's
++                // canonical identity is unresolved or has been invalidated.
++                sections = []
++                return document.parsedProperties
++            }
++        } catch { return false }
++
++        preparedSectionsTask = Task { [weak self] in
++            guard let self else { return }
++            do {
++                try Task.checkCancellation()
++                let identity = try await scope.loadModalPropertyIdentity()
++                try Task.checkCancellation()
++                try scope.withCurrent {
++                    guard self.preparedSubscriptionID == subscriptionID,
++                          self.document.parsedProperties == properties else { return }
++                    let rawSections = self.sectionsBuilder.buildObjectSections(parsedProperties: properties)
++                    self.sections = rawSections.compactMap { section in
++                        let filtered = section.relations.filter { relation in
++                            (try? scope.requireOriginalPropertyValue(
++                                propertyId: relation.id, key: relation.key, identity: identity
++                            )) != nil
++                        }
++                        guard !filtered.isEmpty else { return nil }
++                        return PropertiesSection(
++                            id: section.id, title: section.title, relations: filtered,
++                            isMissingFields: section.isMissingFields, isExpandable: section.isExpandable
++                        )
++                    }
++                    self.typeId = Self.resolvedTypeId(for: self.document.details)
++                }
++            } catch {
++                // A missing/ambiguous manifest or retired source leaves the
++                // already-cleared rows closed. This read never bootstraps.
++            }
++        }
++        return true
++    }
++
+     private static func resolvedTypeId(for details: ObjectDetails?) -> String? {
+         guard let details else { return nil }
+         if !details.type.isEmpty {
+@@ -165,6 +261,27 @@
+     }
+     
+     func handleTapOnRelation(_ relation: Property) {
++        if let scope = originalEditorScope {
++            do {
++                let coordinator = try scope.withCurrent {
++                    try scope.owner.validateDocument(document)
++                    guard let preparedSession,
++                          let original = output as? PropertiesListCoordinatorViewModel,
++                          original.preparedSession === preparedSession,
++                          original.document === document,
++                          let current = document.parsedProperties.installed.first(where: {
++                              $0.key.utf8.elementsEqual(relation.key.utf8)
++                          }), current.id.utf8.elementsEqual(relation.id.utf8), current == relation else {
++                        throw EditorDocumentWriteError.rejected(.wrongContext)
++                    }
++                    return original
++                }
++                // The real coordinator reserves checkbox writes before Task.
++                // A read task must not inherit this completed temporary lease.
++                coordinator.editRelationValueAction(document: document, relationKey: relation.key)
++            } catch { return }
++            return
++        }
+         guard (try? withCurrentSource {}) != nil else { return }
+         guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(
+             propertyId: relation.id, key: relation.key, spaceId: document.spaceId
+@@ -179,6 +296,29 @@
+     }
+     
+     func removeRelation(_ relation: Property) {
++        if let scope = originalEditorScope {
++            // Reserve this actual UI write before the manifest read or Task.
++            scope.schedule(requiredPermissions: OriginalEditorPropertyScope.listPermissions) { [self] in
++                let identity = try await scope.loadModalPropertyIdentity()
++                let service = try scope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
++                    guard document.permissions.canEditRelationValues, document.details?.isReadonly == false,
++                          relation.canBeRemovedFromObject,
++                          let current = document.parsedProperties.installed.first(where: {
++                              $0.key.utf8.elementsEqual(relation.key.utf8)
++                          }), current.id.utf8.elementsEqual(relation.id.utf8), current == relation else {
++                        throw EditorDocumentWriteError.rejected(.wrongContext)
++                    }
++                    try scope.requireOriginalPropertyValue(propertyId: relation.id, key: relation.key, identity: identity)
++                    return try scope.originalProperties(propertiesService)
++                }
++                try await service.removeProperty(objectId: document.objectId, propertyKey: relation.key)
++                try scope.withCurrent {
++                    let relationDetails = try propertyDetailsStorage.relationsDetails(key: relation.key, spaceId: document.spaceId)
++                    AnytypeAnalytics.instance().logDeleteRelation(format: relationDetails.format, key: relationDetails.analyticsKey, route: .object)
++                }
++            }
++            return
++        }
+         guard document.permissions.canEditRelationValues, document.details?.isReadonly == false else { return }
+         guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(
+             propertyId: relation.id, key: relation.key, spaceId: document.spaceId
+--- a/Anytype/Sources/PresentationLayer/TextEditor/Routing/Editor/EditorRouter.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/Routing/Editor/EditorRouter.swift
+@@ -417,6 +417,15 @@
+ 
+     @MainActor
+     func showAddPropertyInfoView(document: some BaseDocumentProtocol, onSelect: @escaping (PropertyDetails, _ isNew: Bool) -> Void) {
++        if let documentWriteOwner {
++            // The prepared route must continue through its actual retained
++            // coordinator. A generic output cannot silently drop the source.
++            guard let coordinator = output as? EditorPageCoordinatorViewModel,
++                  coordinator.preparedEditorSession?.owner === documentWriteOwner,
++                  (try? documentWriteOwner.performSynchronousOperation(requiresEditing: false, operation: {
++                      try documentWriteOwner.validateDocument(document)
++                  })) != nil else { return }
++        }
+         output?.showAddPropertyInfoView(document: document, onSelect: onSelect)
+     }
+ }
+--- a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertiesSearchData.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertiesSearchData.swift
+@@ -8,6 +8,7 @@
+     let excludedRelationsIds: [String]
+     let hiddenRelationsIds: Set<String>
+     let target: PropertiesModuleTarget
++    let originalEditorScope: OriginalEditorPropertyScope?
+     @EquatableNoop
+     var onRelationSelect: (_ relationDetails: PropertyDetails, _ isNew: Bool) -> Void
+ 
+@@ -17,6 +18,7 @@
+         excludedRelationsIds: [String],
+         hiddenRelationsIds: Set<String> = [],
+         target: PropertiesModuleTarget,
++        originalEditorScope: OriginalEditorPropertyScope? = nil,
+         onRelationSelect: @escaping (_ relationDetails: PropertyDetails, _ isNew: Bool) -> Void
+     ) {
+         self.objectId = objectId
+@@ -24,6 +26,7 @@
+         self.excludedRelationsIds = excludedRelationsIds
+         self.hiddenRelationsIds = hiddenRelationsIds
+         self.target = target
++        self.originalEditorScope = originalEditorScope
+         self.onRelationSelect = onRelationSelect
+     }
+ }
+--- a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationView.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationView.swift
+@@ -11,7 +11,7 @@
+     var body: some View {
+         content
+             .safeAreaInset(edge: .bottom) {
+-                if model.nativeLookupFailed {
++                if model.nativeLookupFailed || model.preparedRouteUnavailable {
+                     VStack {
+                         AnytypeText(Loc.Content.Common.error, style: .uxBodyRegular)
+                         Button(Loc.Pinkha.Home.retry) { Task { await model.retryNativeLookup() } }
+--- a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift
+@@ -11,7 +11,10 @@
+     var rows: [SearchDataSection<PropertySearchData>] = []
+     var newPropertyData: PropertyInfoData?
+     var nativeLookupFailed = false
++    var preparedRouteUnavailable = false
+     private var lastSearchText = ""
++    private var ownedSearchResults: [PropertyDetails] = []
++    private var ownedSearchID = UUID()
+ 
+     @ObservationIgnored
+     var dismiss: DismissAction?
+@@ -51,6 +54,10 @@
+     }
+     
+     func search(text: String) async {
++        if let scope = data.originalEditorScope {
++            await searchOriginalProperties(text: text, scope: scope)
++            return
++        }
+         lastSearchText = text
+         let propertyFormats = SupportedPropertyFormat.allCases.filter {
+             if text.isEmpty { return true }
+@@ -121,11 +128,19 @@
+     }
+     
+     func retryNativeLookup() async {
++        if data.originalEditorScope != nil {
++            await search(text: lastSearchText)
++            return
++        }
+         PinkhaTorahNativePropertyCatalog.shared.invalidate(spaceId: data.spaceId)
+         await search(text: lastSearchText)
+     }
+ 
+     func onRowTap(_ row: PropertySearchData) {
++        if let scope = data.originalEditorScope {
++            onOriginalRowTap(row, scope: scope)
++            return
++        }
+         Task {
+             switch row {
+             case .existing(let details):
+@@ -151,6 +166,10 @@
+     }
+     
+     func onNewPropertyTap(name: String) {
++        if let scope = data.originalEditorScope {
++            presentOriginalProperty(name: name, format: .text, scope: scope)
++            return
++        }
+         newPropertyData = PropertyInfoData(
+             name: name,
+             objectId: data.objectId,
+@@ -163,6 +182,19 @@
+     
+     // MARK: - PropertyInfoCoordinatorViewOutput
+     func didPressConfirm(_ relation: PropertyDetails) {
++        if let scope = data.originalEditorScope {
++            do {
++                try scope.withActionCallback(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
++                    guard !relation.id.isEmpty, !relation.key.isEmpty,
++                          relation.spaceId.utf8.elementsEqual(scope.spaceId.utf8) else {
++                        throw OriginalEditorPropertyModalError.invalidPropertyIdentity
++                    }
++                    data.onRelationSelect(relation, true)
++                    dismiss?()
++                }
++            } catch { reportPreparedFailure(scope) }
++            return
++        }
+         data.onRelationSelect(relation, true) // isNew = true
+         dismiss?()
+     }
+@@ -247,6 +279,122 @@
+     }
+     
+     func addPropertyToObject(objectId: String, relation: PropertyDetails) async throws {
++        if let scope = data.originalEditorScope {
++            try scope.requireModalTarget(.object(objectId: objectId), spaceId: data.spaceId)
++            let identity = try await scope.loadModalPropertyIdentity()
++            try scope.requireModalProperty(relation, identity: identity)
++            let original = try scope.originalProperties(propertiesService)
++            return try await scope.perform(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
++                try await original.addProperties(objectId: objectId, propertiesDetails: [relation])
++            }
++        }
+         try await propertiesService.addProperties(objectId: objectId, propertiesDetails: [relation])
+     }
++
++    private func searchOriginalProperties(text: String, scope: OriginalEditorPropertyScope) async {
++        let searchID = UUID()
++        do {
++            try scope.requireModalTarget(data.target, spaceId: data.spaceId)
++            try scope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
++                ownedSearchID = searchID
++                lastSearchText = text
++                ownedSearchResults = []
++                rows = []
++                preparedRouteUnavailable = false
++            }
++            let identity = try await scope.loadModalPropertyIdentity()
++            guard let original = searchService as? SearchService else {
++                throw OriginalEditorPropertyModalError.unsupportedOriginalDelegate
++            }
++            let excludedIds = searchExcludedIds
++            let result = try await scope.owner.performRead(
++                contextId: scope.objectId, spaceId: scope.spaceId,
++                rpcNames: ["ObjectSearch"], requiredPermissions: OriginalEditorPropertyScope.listPermissions
++            ) {
++                try await original.searchRelations(text: text, excludedIds: excludedIds, spaceId: scope.spaceId)
++            }
++            try Task.checkCancellation()
++            try scope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
++                guard ownedSearchID == searchID else { return }
++                let existing = result.filter { (try? scope.requireModalProperty($0, identity: identity)) != nil }
++                let formats = SupportedPropertyFormat.allCases.filter {
++                    text.isEmpty || $0.title.lowercased().contains(text.lowercased())
++                }
++                ownedSearchResults = existing
++                rows = .builder {
++                    if formats.isNotEmpty {
++                        SearchDataSection(searchData: formats.map { PropertySearchData.new($0) }, sectionName: Loc.propertiesFormats)
++                    }
++                    if existing.isNotEmpty {
++                        SearchDataSection(searchData: existing.map { PropertySearchData.existing($0) }, sectionName: Loc.existingProperties)
++                    }
++                }
++            }
++        } catch {
++            guard ownedSearchID == searchID else { return }
++            reportPreparedFailure(scope)
++        }
++    }
++
++    private func presentOriginalProperty(name: String, format: SupportedPropertyFormat,
++                                         scope: OriginalEditorPropertyScope) {
++        do {
++            try scope.requireModalTarget(data.target, spaceId: data.spaceId)
++            try scope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
++                newPropertyData = PropertyInfoData(
++                    name: name, objectId: data.objectId, spaceId: data.spaceId,
++                    target: data.target, mode: .create(format: format), isReadOnly: false,
++                    originalEditorScope: scope
++                )
++            }
++        } catch { reportPreparedFailure(scope) }
++    }
++
++    private func onOriginalRowTap(_ row: PropertySearchData, scope: OriginalEditorPropertyScope) {
++        switch row {
++        case .new(let format):
++            presentOriginalProperty(name: "", format: format, scope: scope)
++        case .existing(let selected):
++            // Reserve before Task creation. Selection comes from this current
++            // native search result; its property document is then opened anew.
++            let action = scope.prepareAction(requiredPermissions: OriginalEditorPropertyScope.listPermissions) { [self] in
++                try scope.requireModalTarget(data.target, spaceId: data.spaceId)
++                guard ownedSearchResults.contains(where: {
++                    $0.id.utf8.elementsEqual(selected.id.utf8) &&
++                    $0.key.utf8.elementsEqual(selected.key.utf8) &&
++                    $0.spaceId.utf8.elementsEqual(selected.spaceId.utf8)
++                }) else { throw OriginalEditorPropertyModalError.invalidPropertyIdentity }
++                let original = try OriginalObjectActionsServiceBinding.requireOriginal(objectActionsService)
++                let originalProperties = try scope.originalProperties(propertiesService)
++                let actual = try await scope.withSelectedModalProperty(
++                    id: selected.id, requiredPermissions: [.editDetails],
++                    beforeMutation: { [self] actual in
++                        guard actual.key.utf8.elementsEqual(selected.key.utf8), actual.format == selected.format else {
++                            throw OriginalEditorPropertyModalError.invalidPropertyIdentity
++                        }
++                        try await scope.perform(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
++                            try await originalProperties.addProperties(objectId: scope.objectId, propertiesDetails: [actual])
++                        }
++                    }
++                ) { _, actual, _ in
++                    try await original.updateBundledDetails(contextID: actual.id, details: [.lastUsedDate(Date.now)])
++                    return actual
++                }
++                try scope.withActionCallback(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
++                    data.onRelationSelect(actual, false)
++                    dismiss?()
++                }
++            }
++            Task { [self] in
++                do { try await action() }
++                catch { reportPreparedFailure(scope) }
++            }
++        }
++    }
++
++    private func reportPreparedFailure(_ scope: OriginalEditorPropertyScope) {
++        try? scope.withCurrent {
++            preparedRouteUnavailable = true
++        }
++    }
+ }
+--- a/Modules/Services/Sources/Services/SearchService/SearchMiddleService.swift
++++ b/Modules/Services/Sources/Services/SearchService/SearchMiddleService.swift
+@@ -3,6 +3,21 @@
+ 
+ public protocol SearchMiddleServiceProtocol: AnyObject, Sendable {
+     func search(data: SearchRequest) async throws -> [ObjectDetails]
++}
++
++public enum OriginalSearchMiddleServiceBindingError: Error, Sendable {
++    case unsupportedOriginalDelegate
++}
++
++/// Identity admission for an existing source-bound reader; the original
++/// implementation and its native ObjectSearch request remain unchanged.
++public enum OriginalSearchMiddleServiceBinding {
++    public static func requireOriginal(_ service: any SearchMiddleServiceProtocol) throws -> any SearchMiddleServiceProtocol {
++        guard service is SearchMiddleService else {
++            throw OriginalSearchMiddleServiceBindingError.unsupportedOriginalDelegate
++        }
++        return service
++    }
+ }
+ 
+ public extension SearchMiddleServiceProtocol {

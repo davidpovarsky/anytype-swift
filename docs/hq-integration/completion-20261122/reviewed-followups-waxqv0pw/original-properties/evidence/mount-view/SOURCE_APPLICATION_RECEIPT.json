@@ -1,0 +1,62 @@
+{
+  "status": "PASS: exact patch application and source preservation only",
+  "source_ref": "fc03fcd713e2c449ad97c5d1e604a9433c2a309b",
+  "patch_sha256": "0a5d41a35493dbc4563c912ba0456f341f4c32b204bdccd1c1768b922df85ae3",
+  "observed_checks": [
+    {
+      "command": [
+        "git",
+        "apply",
+        "--check",
+        "/workspace/scratch/ab739d619196/original_editor_property_mount_view_waxqv0pw_20261122/prepared-property-view-composition.patch"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "apply",
+        "/workspace/scratch/ab739d619196/original_editor_property_mount_view_waxqv0pw_20261122/prepared-property-view-composition.patch"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--no-index",
+        "--check",
+        "base/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesView.swift",
+        "source/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesView.swift"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "",
+      "interpretation": "The two files differ; no whitespace error emitted. no-index supplies diff exit status."
+    }
+  ],
+  "before": {
+    "git_blob": "53507c363d21437d1856fbb0084371dd09e22087",
+    "sha256": "10dee7a9f3c186b00f9c7c219ca6b8f18034563fb9d4c9cdcb61278a19df866b",
+    "bytes": 8250
+  },
+  "after": {
+    "git_blob": "3c4d6dab04b995c102d4c418b7e850cd2a178887",
+    "sha256": "1388133f8336031315e70214b4ba1bf55808b22c6a96446aaec108b9338db8b5",
+    "bytes": 9177
+  },
+  "observed_applied_bytes_equal_frozen_source": true,
+  "changed_files_exactly": [
+    "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesView.swift"
+  ],
+  "source_manifest_sha256": "ca1e4bd7c615b96c3e56c5a38264ed022e813e5157d3e30dff1e72ce16740787",
+  "validation_scope": "Observed local git apply in disposable plain directory containing exact original Git blob. Applied bytes and only existing file matched frozen source. No repository/worktree/ref changes, no compiler/tests/Native.",
+  "receipt_generation_note": "Initial receipt script assumed no-index --check would return zero for differing files and stopped on its empty-output exit1; follow-up inspected actual command statuses and byte identity. No source change was made.",
+  "syntax": "NOT_RUN",
+  "Apple_module_build": "NOT_RUN",
+  "Native": "NOT_RUN"
+}

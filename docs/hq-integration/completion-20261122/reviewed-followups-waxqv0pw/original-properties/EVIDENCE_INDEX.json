@@ -1,0 +1,748 @@
+{
+  "schema": "original-editor-property-join-evidence/1",
+  "assembled_at": "2026-11-22T03:09:31.697431+00:00",
+  "assembled_by": "/root/integration_audit",
+  "status": "FROZEN_SOURCE_EVIDENCE_ACTUAL_SYNTAX_AND_14_NEW_PORTABLE_CONTROLS_PASS",
+  "base_commit": "f25442b59f021ebb8dd5b2ec2a5be1f5f2c6be5e",
+  "compatible_frozen_producer": "fc03fcd713e2c449ad97c5d1e604a9433c2a309b",
+  "combined_patch": {
+    "path": "original-property-modal-value-mount.patch",
+    "sha256": "90605b0cb2576c87c3102729ef4784733fc4e24989045acd756b3b9d1f6d5a25",
+    "bytes": 69734
+  },
+  "components": {
+    "modal13": "377ef209aa567db9f95728f54be101726befea96b2e2cc36b28d0ca3a8bb729d",
+    "value2": "3e5238cc1ff57cd797c3deb5b6ca7e17c8e74194b37b48987a164f665e1b85dc",
+    "mount_vm_increment": "ca6ec5b788e40eb8206bfa6fa14744fe770f0ae6d7997cba2fab5540b1c2d21b",
+    "mount_view": "0a5d41a35493dbc4563c912ba0456f341f4c32b204bdccd1c1768b922df85ae3"
+  },
+  "source_files": 16,
+  "source_manifest": {
+    "path": "evidence/join/SOURCE_MANIFEST.json",
+    "bytes": 8560,
+    "sha256": "351809a4d7926dc26183ba9c3c28b8ba25e07fa012ff01416a68a395f95b6261"
+  },
+  "source_and_tools_unchanged_during_assembly": true,
+  "protected_inputs": {
+    "source/Anytype/Sources/Pinkha/Bootstrap/PinkhaSpaceManifestStore.swift": {
+      "bytes": 6847,
+      "sha256": "db6bcaf3792980094f1ceb9e40cd7e89f9694870ec5bc903a9f766e3e2cbe906"
+    },
+    "source/Anytype/Sources/PresentationLayer/AddNewRelation flow/CreateNewRelation/Coordinator/PropertyInfoCoordinatorViewModel.swift": {
+      "bytes": 2254,
+      "sha256": "39f821bdb53348d87a8e4c18163c29b33000567f640bd4f5c5f42dd844fd416d"
+    },
+    "source/Anytype/Sources/PresentationLayer/AddNewRelation flow/CreateNewRelation/Coordinator/PropertyInfoData.swift": {
+      "bytes": 1675,
+      "sha256": "2bed839c9b3316e1d4d98567735d4d953ce5b3f1e46a53a602a884254d14b466"
+    },
+    "source/Anytype/Sources/PresentationLayer/AddNewRelation flow/CreateNewRelation/View/PropertyInfoView.swift": {
+      "bytes": 4189,
+      "sha256": "01d393334b03e7e46a7a5865618b5e45123d72f1fd4a4cf2fe3fb198d9401589"
+    },
+    "source/Anytype/Sources/PresentationLayer/AddNewRelation flow/CreateNewRelation/ViewModel/PropertyInfoViewModel.swift": {
+      "bytes": 16042,
+      "sha256": "dfc8c6942a508a9b29bb538a721bff6f6ef3e888093bb24e0412d2bb637f9f66"
+    },
+    "source/Anytype/Sources/PresentationLayer/Flows/EditorPageFlow/EditorPageCoordinatorViewModel.swift": {
+      "bytes": 8550,
+      "sha256": "ba6c0977e8239dbc5e1086846af145f1b6678f42dac047ff49043da861c4060b"
+    },
+    "source/Anytype/Sources/PresentationLayer/PropertyValueFlow/PropertyValueCoordinator/OriginalEditorPropertyScope.swift": {
+      "bytes": 19555,
+      "sha256": "3b8a24397fc5ebc659c28a81a693839faa1ac9cf9854a57de178240062856322"
+    },
+    "source/Anytype/Sources/PresentationLayer/Search screen/InternalViewModels/PropertiesSearchViewModel/PropertiesInteractor.swift": {
+      "bytes": 7829,
+      "sha256": "dd103b5cba91ff4c6394160631e7f14aa9552c4da83012e5c384e8ca0f1cd218"
+    },
+    "source/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Coordinator/PropertiesListCoordinatorViewModel.swift": {
+      "bytes": 10839,
+      "sha256": "619072ddd975bd61e28baa66095f18651a7bcbb47d30630fcd7eb5fd750813a9"
+    },
+    "source/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesView.swift": {
+      "bytes": 9177,
+      "sha256": "1388133f8336031315e70214b4ba1bf55808b22c6a96446aaec108b9338db8b5"
+    },
+    "source/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesViewModel.swift": {
+      "bytes": 19949,
+      "sha256": "e24a0419fbf6a57021ac9d28051c246d5902bb776c4676c5bf5989f0815667be"
+    },
+    "source/Anytype/Sources/PresentationLayer/TextEditor/Routing/Editor/EditorRouter.swift": {
+      "bytes": 19261,
+      "sha256": "f2175346cd759b135e35b2d6dd0789b26e3d38670e8153275d732f03ca620ffb"
+    },
+    "source/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertiesSearchData.swift": {
+      "bytes": 1098,
+      "sha256": "f2b72836a6caf66ee45c7e612f9999b160dd0af72a143b416d353f92643133d2"
+    },
+    "source/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationView.swift": {
+      "bytes": 1552,
+      "sha256": "dcdcc5cfe7118ca2a3f879464fe6d28a906042ab8b8ab5934ae49cdc44018daf"
+    },
+    "source/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift": {
+      "bytes": 17996,
+      "sha256": "5561c9b9831761b0f327cacac16e78b10689ccf062cb5935a66239da07c0a109"
+    },
+    "source/Modules/Services/Sources/Services/SearchService/SearchMiddleService.swift": {
+      "bytes": 1841,
+      "sha256": "8c2270488107f2e1ecbe3b6ce8e156c95ff5a3c4ea13d86438a0f8d6113653ba"
+    },
+    "build_join.py": {
+      "bytes": 5329,
+      "sha256": "882e80894c8bd13906ed5762f02bca98ad7a30347d1195576dda18682296ed95"
+    },
+    "validation/run_parse.py": {
+      "bytes": 3483,
+      "sha256": "0cf05d899316a5df1b80e7bd28b4d240a3556beb65bc9080244dff24a7c840d2"
+    },
+    "validation/PARSE_PAYLOAD.json": {
+      "bytes": 207932,
+      "sha256": "bcf0ec271c09143a8e769af8431010d0ad9e8ca3c7d495311650d0e427637a45"
+    },
+    "validation/PARSE_PAYLOAD.b64": {
+      "bytes": 65884,
+      "sha256": "6f4f195e73211a8728bfc42a65697bc4437033982d2ce81653c76e16ce2094bd"
+    }
+  },
+  "evidence_files_copied": 33,
+  "indexed_files": 80,
+  "indexed_bytes": 692958,
+  "entries": [
+    {
+      "path": "README.md",
+      "origin": "integration_audit evidence assembly",
+      "classification": "assembly_summary",
+      "bytes": 10560,
+      "sha256": "6475f602444f034ae35c1525ea44d7b47f5bc1ad3e0c4d38358c802f80c36e76"
+    },
+    {
+      "path": "build_join.py",
+      "origin": "root actual validation and reviewed publication tooling",
+      "classification": "current",
+      "bytes": 5329,
+      "sha256": "882e80894c8bd13906ed5762f02bca98ad7a30347d1195576dda18682296ed95"
+    },
+    {
+      "path": "build_publication.py",
+      "origin": "root actual validation and reviewed publication tooling",
+      "classification": "current",
+      "bytes": 22453,
+      "sha256": "b23d4f1aa1aaa0eea9075efe34c43b358e164c751d7538d7d8074d46879e0138"
+    },
+    {
+      "path": "evidence/join/SOURCE_MANIFEST.json",
+      "origin": "original_editor_property_join_waxqv0pw_20261122/SOURCE_MANIFEST.json",
+      "classification": "current",
+      "bytes": 8560,
+      "sha256": "351809a4d7926dc26183ba9c3c28b8ba25e07fa012ff01416a68a395f95b6261",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/join/original-property-modal-value-mount.patch",
+      "origin": "original_editor_property_join_waxqv0pw_20261122/original-property-modal-value-mount.patch",
+      "classification": "current",
+      "bytes": 69734,
+      "sha256": "90605b0cb2576c87c3102729ef4784733fc4e24989045acd756b3b9d1f6d5a25",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/join/review/ACTUAL_F254_WORKFLOW_BLOBS.json",
+      "origin": "original_editor_property_join_waxqv0pw_20261122/review/ACTUAL_F254_WORKFLOW_BLOBS.json",
+      "classification": "current",
+      "bytes": 6162,
+      "sha256": "4b16140d66d3911bb1e89c9c727b0da383b4ac37419ea5538c1da6c85b390e5b",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/join/review/COMBINED_SOURCE_APPLICATION.json",
+      "origin": "original_editor_property_join_waxqv0pw_20261122/review/COMBINED_SOURCE_APPLICATION.json",
+      "classification": "current",
+      "bytes": 8421,
+      "sha256": "08f3110c3fa11d105edca4cb53d29cf2d21a7fa873c49ed1ae1b32480fdf0c6b",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/join/review/F254_FC03_PREIMAGE_IDENTITY.json",
+      "origin": "original_editor_property_join_waxqv0pw_20261122/review/F254_FC03_PREIMAGE_IDENTITY.json",
+      "classification": "current",
+      "bytes": 4514,
+      "sha256": "686e9dff97aae9a7e563dbe64e17b0855b6da7fa960e49ab7cc8a8130c428200",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/join/review/PUSH_WORKFLOW_AUDIT.json",
+      "origin": "original_editor_property_join_waxqv0pw_20261122/review/PUSH_WORKFLOW_AUDIT.json",
+      "classification": "current",
+      "bytes": 13225,
+      "sha256": "1b01dc0bb18d17dd16de3b9724af33c6ecf231dd5cd8a33934ada2964a78bab5",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/modal13/ADDITIONAL_EDIT_PREIMAGES.json",
+      "origin": "original_editor_property_modal_waxqv0pw_20261122/ADDITIONAL_EDIT_PREIMAGES.json",
+      "classification": "current",
+      "bytes": 864,
+      "sha256": "7a2db5dc85d69c4051519db318c82a0beb5704db2fa356b64eb416d068ca2f04",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/modal13/CANDIDATE_INPUTS.json",
+      "origin": "original_editor_property_modal_waxqv0pw_20261122/CANDIDATE_INPUTS.json",
+      "classification": "current",
+      "bytes": 6971,
+      "sha256": "ad0218a3fef3c641b79816a38dec8273f8e0bd30cdf0d50bc9bdf590cc52f8e6",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/modal13/HANDOFF_RECEIPT.json",
+      "origin": "original_editor_property_modal_waxqv0pw_20261122/HANDOFF_RECEIPT.json",
+      "classification": "current",
+      "bytes": 2202,
+      "sha256": "124b228e1747c98649dec0291aae81a78c1cff3ea9e24892958c9ab0de95f8e2",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/modal13/SOURCE_APPLICATION_RECEIPT.json",
+      "origin": "original_editor_property_modal_waxqv0pw_20261122/SOURCE_APPLICATION_RECEIPT.json",
+      "classification": "current",
+      "bytes": 634,
+      "sha256": "b8647c8b1c28e76c92e5721ca341575d41f13f852ec84eab5eadacfdffb1523e",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/modal13/SOURCE_MAP_AND_REMAINING_GATES.md",
+      "origin": "original_editor_property_modal_waxqv0pw_20261122/SOURCE_MAP_AND_REMAINING_GATES.md",
+      "classification": "current",
+      "bytes": 9245,
+      "sha256": "e2130f9fa428a8d1118b5559a429112dc5dcc100c66b7095dae8aa3b2f901c25",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/modal13/SOURCE_PRESERVATION_AUDIT_CORRECTION.json",
+      "origin": "original_editor_property_modal_waxqv0pw_20261122/SOURCE_PRESERVATION_AUDIT_CORRECTION.json",
+      "classification": "current",
+      "bytes": 410,
+      "sha256": "24536468181a588c5235fbd13c87b5298a20bac333475d4c23694f35f9348d26",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/modal13/SOURCE_PRESERVATION_RECEIPT.json",
+      "origin": "original_editor_property_modal_waxqv0pw_20261122/SOURCE_PRESERVATION_RECEIPT.json",
+      "classification": "current",
+      "bytes": 6593,
+      "sha256": "00e1267aaa3c54d5f5d62355cf315ab6ef90103d74dfb4b982bc0c11053ea364",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/modal13/historical-r1/ARCHITECTURE_REVIEW_R1.json",
+      "origin": "original_editor_property_modal_peer_review_20261122/ARCHITECTURE_REVIEW_R1.json",
+      "classification": "historical_corrected_findings",
+      "bytes": 3927,
+      "sha256": "90dd0adaddb9439c6eba3e4662394d47333e2af711c801885eaf5da1befb4d24",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/modal13/original-property-modal-owner.patch",
+      "origin": "original_editor_property_modal_waxqv0pw_20261122/original-property-modal-owner.patch",
+      "classification": "current",
+      "bytes": 49733,
+      "sha256": "377ef209aa567db9f95728f54be101726befea96b2e2cc36b28d0ca3a8bb729d",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/modal13/review/MODAL_REVIEW_377ef209.json",
+      "origin": "original_editor_property_modal_waxqv0pw_20261122/review/MODAL_REVIEW_377ef209.json",
+      "classification": "current",
+      "bytes": 11164,
+      "sha256": "d43fd8671041515a313b902346b517430c55a43972e26e06318cca4405902d8c",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/modal13/verify_source_preservation.py",
+      "origin": "original_editor_property_modal_waxqv0pw_20261122/verify_source_preservation.py",
+      "classification": "current",
+      "bytes": 4493,
+      "sha256": "f153a44f81a365c5bb1b3fa6a6a7fe7567074213e5e6c8dea4aa3b819fd4ca2b",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/mount-view/ROOT_SOURCE_REVIEW.json",
+      "origin": "original_editor_property_mount_view_waxqv0pw_20261122/ROOT_SOURCE_REVIEW.json",
+      "classification": "current",
+      "bytes": 783,
+      "sha256": "52dbe01e9a60e9e45c19cadd5f08922c3db2777f3baf3971384f5ba197b096fe",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/mount-view/SOURCE_APPLICATION_RECEIPT.json",
+      "origin": "original_editor_property_mount_view_waxqv0pw_20261122/SOURCE_APPLICATION_RECEIPT.json",
+      "classification": "current",
+      "bytes": 2641,
+      "sha256": "56eac10801d5160a4e69942319604ce8433e7962b9d37a57b8c811a938512f36",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/mount-view/SOURCE_MANIFEST.json",
+      "origin": "original_editor_property_mount_view_waxqv0pw_20261122/SOURCE_MANIFEST.json",
+      "classification": "current",
+      "bytes": 2047,
+      "sha256": "ca1e4bd7c615b96c3e56c5a38264ed022e813e5157d3e30dff1e72ce16740787",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/mount-view/prepared-property-view-composition.patch",
+      "origin": "original_editor_property_mount_view_waxqv0pw_20261122/prepared-property-view-composition.patch",
+      "classification": "current",
+      "bytes": 5336,
+      "sha256": "0a5d41a35493dbc4563c912ba0456f341f4c32b204bdccd1c1768b922df85ae3",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/mount-view/render-audit/INPUTS_R1.json",
+      "origin": "original_editor_property_mount_peer_review_waxqv0pw_20261122/INPUTS_R1.json",
+      "classification": "causal_preimage_audit_with_reviewed_replacement",
+      "bytes": 1234,
+      "sha256": "765982e9f3de22d4b12ccb6cf77973b869291b24f9f9cae9e6e8c3521beffa60",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/mount-view/render-audit/MOUNT_RENDER_REVIEW.json",
+      "origin": "original_editor_property_mount_peer_review_waxqv0pw_20261122/MOUNT_RENDER_REVIEW.json",
+      "classification": "causal_preimage_audit_with_reviewed_replacement",
+      "bytes": 7528,
+      "sha256": "672a2db492a4ce8bdee9a62ac50e9fb92ebe7cbcfdb474e2f044ab565c0089f2",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/mount-vm-r2/DRAFT_R2.json",
+      "origin": "original_editor_property_mount_waxqv0pw_20261122/DRAFT_R2.json",
+      "classification": "current",
+      "bytes": 657,
+      "sha256": "08a9108aeaef6cfc56b2e7b6966bee38796299e41fa90b9dbc37e3fec4e8e636",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/mount-vm-r2/historical-r1/DRAFT_R1.json",
+      "origin": "original_editor_property_mount_waxqv0pw_20261122/DRAFT_R1.json",
+      "classification": "historical_corrected_findings",
+      "bytes": 503,
+      "sha256": "0ddf86e6372c375472f1746af4b25df4d4bc6b4ac00145efe62b14370a4a16cc",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/mount-vm-r2/historical-r1/prepared-property-mount-r1.patch",
+      "origin": "original_editor_property_mount_waxqv0pw_20261122/prepared-property-mount-r1.patch",
+      "classification": "historical_corrected_findings",
+      "bytes": 8254,
+      "sha256": "a50c96eb085a6eb1a8d6d37ab45af66f575ba538d54a219da9666322ea9c32af",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/mount-vm-r2/prepared-property-mount-r2.patch",
+      "origin": "original_editor_property_mount_waxqv0pw_20261122/prepared-property-mount-r2.patch",
+      "classification": "current",
+      "bytes": 8711,
+      "sha256": "ca6ec5b788e40eb8206bfa6fa14744fe770f0ae6d7997cba2fab5540b1c2d21b",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/mount-vm-r2/review/INTEGRATION_REVIEW_R2.json",
+      "origin": "original_editor_property_mount_waxqv0pw_20261122/review/INTEGRATION_REVIEW_R2.json",
+      "classification": "current",
+      "bytes": 7644,
+      "sha256": "59be961bf00bf9271bd3e2bb2ddbcc55b15c280695f8e0611011282b5687856c",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/syntax/PARSE_JOB_NOTIFICATION.json",
+      "origin": "original_editor_property_join_waxqv0pw_20261122/validation/PARSE_JOB_NOTIFICATION.json",
+      "classification": "actual_syntax_only",
+      "bytes": 1215,
+      "sha256": "4bb4f681a0c86709faf12ec54f9c86593503c7414cc4258bfc5f8f448adf2a91",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/syntax/PARSE_RESULT.json",
+      "origin": "original_editor_property_join_waxqv0pw_20261122/validation/PARSE_RESULT.json",
+      "classification": "actual_syntax_only",
+      "bytes": 12533,
+      "sha256": "341f136d75c156e367c566531da4a843c7eaac4d75a123f43b85b4dbf7e20c6d",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/syntax/PARSE_SOURCE_BINDING.json",
+      "origin": "original_editor_property_join_waxqv0pw_20261122/validation/PARSE_SOURCE_BINDING.json",
+      "classification": "actual_syntax_only",
+      "bytes": 473,
+      "sha256": "1d648c911ea7906e83ce5ab7539290c3c1d58ad5cfec8a522d03a1a4c0ce2259",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/value-entry-r2/SOURCE_MANIFEST_R2.json",
+      "origin": "original_editor_property_value_entry_waxqv0pw_20261122/SOURCE_MANIFEST_R2.json",
+      "classification": "current",
+      "bytes": 2147,
+      "sha256": "1d8e9e9330c99e78106b29efbeaeb4e8b177dad8ccf0d16c0a4081490fb27ac3",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "evidence/value-entry-r2/prepared-property-value-entry-r2.patch",
+      "origin": "original_editor_property_value_entry_waxqv0pw_20261122/prepared-property-value-entry-r2.patch",
+      "classification": "current",
+      "bytes": 6247,
+      "sha256": "3e5238cc1ff57cd797c3deb5b6ca7e17c8e74194b37b48987a164f665e1b85dc",
+      "copied_bytes_exact": true
+    },
+    {
+      "path": "new-controls/EXTRACTED_INPUTS.json",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 6560,
+      "sha256": "3effa830f19a878e31ccb616aa194d68cc6507dada56be13d523ca1d88909f77"
+    },
+    {
+      "path": "new-controls/GIT_SOURCE_VERIFICATION.json",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 7723,
+      "sha256": "286b4104cdd90c13fb711bab8cffc4518483aae60b81d4dda3c43664dcc3d26d"
+    },
+    {
+      "path": "new-controls/INPUTS.json",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 9703,
+      "sha256": "db2e635ca6a15b72e4d5929aa55d602d29332b0dda8810762cead70ed5325d39"
+    },
+    {
+      "path": "new-controls/PACKET_RECEIPT.json",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 3913,
+      "sha256": "cda719802fd1715acb4c6ce9ed4fd766b59de0fbfe8bb639f7aaa0c22edde95a"
+    },
+    {
+      "path": "new-controls/PRODUCTION_INPUTS.json",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 3642,
+      "sha256": "0b690141511e33228ce55be9d0ab2a74ad51ef5f412eda81110dbea4a9c6994b"
+    },
+    {
+      "path": "new-controls/PRODUCTION_REGIONS.json",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 7396,
+      "sha256": "05f31163d9fe00ed7d8f4760365da634f3c81037546a9a7877ea2cb5547bfbd1"
+    },
+    {
+      "path": "new-controls/README.md",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 7131,
+      "sha256": "3f3d4f490c91cb24202c938fd636642f3a9f5444387285733cfea28e214af087"
+    },
+    {
+      "path": "new-controls/build_controls.py",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 22054,
+      "sha256": "c49243bdfee4581af26fed84f62ec5203781572dc3de739d5f6070cc2244c645"
+    },
+    {
+      "path": "new-controls/production/Anytype/Sources/Pinkha/Bootstrap/PinkhaSpaceManifestStore.swift",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 6847,
+      "sha256": "db6bcaf3792980094f1ceb9e40cd7e89f9694870ec5bc903a9f766e3e2cbe906"
+    },
+    {
+      "path": "new-controls/production/Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahPropertyPolicy.swift",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 27373,
+      "sha256": "91797e706a8a72318745437d44d7f6ce6c0d45c47e11d6a799805be2a45eee71"
+    },
+    {
+      "path": "new-controls/production/Anytype/Sources/PresentationLayer/PropertyValueFlow/PropertyValueCoordinator/OriginalEditorPropertyScope.swift",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 19555,
+      "sha256": "3b8a24397fc5ebc659c28a81a693839faa1ac9cf9854a57de178240062856322"
+    },
+    {
+      "path": "new-controls/production/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteLifetime.swift",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 5574,
+      "sha256": "451054685e2ff0c30371d384904be831412eec16c2a5e16c660d2f1891921eb4"
+    },
+    {
+      "path": "new-controls/production/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOperation.swift",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 2459,
+      "sha256": "d6a1034809671d7550e21c5da4e46e1065d21ca6438bb66c7e1f9ea869b9dc51"
+    },
+    {
+      "path": "new-controls/production/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 49230,
+      "sha256": "b0ae02be8c28c22246d29bf927cb154e10019d841f3b831771f968a8938f7d46"
+    },
+    {
+      "path": "new-controls/production/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/PreparedEditorPageDocument.swift",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 1093,
+      "sha256": "42e595c324e46947d4b964070994a193478d57072931b92be1451f155e2cb32e"
+    },
+    {
+      "path": "new-controls/production/Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 9627,
+      "sha256": "42d619b79a0f68794163fd3cfdb1261292237b215e2554dfb35677897eb975e9"
+    },
+    {
+      "path": "new-controls/production/Modules/PinkhaKit/Sources/PinkhaKit/Domain/PinkhaRuntime.swift",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 308,
+      "sha256": "c46aa3280a746f7e0fee5bae59ba94e3767b4c95a9d611cb007803d098f68970"
+    },
+    {
+      "path": "new-controls/production/Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSchemaRoles.swift",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 1555,
+      "sha256": "891033c5597706f043026fbfa21cfe7eb010117bdbb0a6cdd194ba62e26103a3"
+    },
+    {
+      "path": "new-controls/production/Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSpaceManifest.swift",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 10826,
+      "sha256": "aa0e424dcd17c948531b3d8389bf66894f5a7afd1bb2e93f54f43d7a69588e17"
+    },
+    {
+      "path": "new-controls/production/Modules/ProtobufMessages/Sources/InvocationDispatchBinding.swift",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 3025,
+      "sha256": "e304f05ed114342795dbc3a603490311142d63f9a6a156bdcdafd68743e710cb"
+    },
+    {
+      "path": "new-controls/production/Modules/Services/Sources/Generated/BundledPropertyKey.swift",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 17613,
+      "sha256": "bd2a7746a4feece5cfff856239d77390f37d8ae18b76bf336db13f40bde110a1"
+    },
+    {
+      "path": "new-controls/property-modal-controls.zip",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 46699,
+      "sha256": "1d21d47b8cd407675265c87a82a2c6a32d1dee537b524eed6f10179ed7194514"
+    },
+    {
+      "path": "new-controls/review/CANONICAL_SOURCE_REVIEW.json",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 4528,
+      "sha256": "247e655d4b99689a5c26abf587613dd22e1d3a3c140982aa3d5e23f53760c94a"
+    },
+    {
+      "path": "new-controls/review/OWNER_SOURCE_REVIEW.json",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 1879,
+      "sha256": "be1fe93e1f087520967c151399bfe10aa00d571015c2cdf4369ec6960669f12e"
+    },
+    {
+      "path": "new-controls/review/ROOT_RUNNER_REVIEW.json",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 441,
+      "sha256": "f2d0fcff2b1e3037a98fcb4d1f3709531717bded7df9d08b15f62118a0d59a36"
+    },
+    {
+      "path": "new-controls/run_portable_controls.py",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 7378,
+      "sha256": "095d766fafc91701e1e0f2b6b4e5aaf6acb0fe687348615331904e560e446f39"
+    },
+    {
+      "path": "new-controls/run_portable_controls_original.py",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 6381,
+      "sha256": "28caf9f565f6bece40f95e7c449bcd2ee6778c027ddb9f140f2d7a60e1b378b9"
+    },
+    {
+      "path": "publish_source.py",
+      "origin": "root actual validation and reviewed publication tooling",
+      "classification": "current",
+      "bytes": 8204,
+      "sha256": "698e08beb24e608efb420956547cdef18955dc63748655ff6e73e39b54a131d8"
+    },
+    {
+      "path": "review/ACTUAL_F254_WORKFLOW_BLOBS.json",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 6162,
+      "sha256": "4b16140d66d3911bb1e89c9c727b0da383b4ac37419ea5538c1da6c85b390e5b"
+    },
+    {
+      "path": "review/CB2_PRODUCER_PREIMAGE_IDENTITY.json",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 8110,
+      "sha256": "b9cb8a01dde9288e4deb0d80344899de93da4211d77ba73cf5554acea71be108"
+    },
+    {
+      "path": "review/COMBINED_SOURCE_APPLICATION.json",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 8421,
+      "sha256": "08f3110c3fa11d105edca4cb53d29cf2d21a7fa873c49ed1ae1b32480fdf0c6b"
+    },
+    {
+      "path": "review/CONTROL_PRODUCTION_IDENTITY.json",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 6262,
+      "sha256": "ae55bf2d6392e8403dbe0267a84212413ec8a6ecaebc43d48d2898ebd619ef1b"
+    },
+    {
+      "path": "review/F254_FC03_PREIMAGE_IDENTITY.json",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 4514,
+      "sha256": "686e9dff97aae9a7e563dbe64e17b0855b6da7fa960e49ab7cc8a8130c428200"
+    },
+    {
+      "path": "review/PUSH_WORKFLOW_AUDIT.json",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 13225,
+      "sha256": "1b01dc0bb18d17dd16de3b9724af33c6ecf231dd5cd8a33934ada2964a78bab5"
+    },
+    {
+      "path": "review/ROOT_SOURCE_REVIEW.json",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 4052,
+      "sha256": "10fd87f724401192de803d9f19d56d8d19f18567307fea78d6e98d95c8101678"
+    },
+    {
+      "path": "validation/CONTROL_JOB_NOTIFICATION.json",
+      "origin": "root actual validation and reviewed publication tooling",
+      "classification": "current",
+      "bytes": 1330,
+      "sha256": "68bc39b9e04900653043d2227c643b75cf80bf0622c40b8e68a22c4e939a0120"
+    },
+    {
+      "path": "validation/CONTROL_RESULT.json",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 5939,
+      "sha256": "d3890de7f007813f1a7be0ca05559688341045af5b7d8208f39a7396a7e53f45"
+    },
+    {
+      "path": "validation/CONTROL_SOURCE_BINDING.json",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 2647,
+      "sha256": "07715337d4615e3f4ee84116d071054176abb6c5c7048ebdc53324835ab59fd4"
+    },
+    {
+      "path": "validation/CONTROL_compile.log",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 273,
+      "sha256": "a717e10361788f7d56f12b2b632152aa4675829c5e7bd4dcc43e93171ac1b6d1"
+    },
+    {
+      "path": "validation/CONTROL_run.log",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 2455,
+      "sha256": "9c6bcef5b7d6ccd1a3b251f9de414c3dcc2b8abd4c607860c7061d93ff48a257"
+    },
+    {
+      "path": "validation/PARSE_JOB_NOTIFICATION.json",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 1215,
+      "sha256": "4bb4f681a0c86709faf12ec54f9c86593503c7414cc4258bfc5f8f448adf2a91"
+    },
+    {
+      "path": "validation/PARSE_RESULT.json",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 12533,
+      "sha256": "341f136d75c156e367c566531da4a843c7eaac4d75a123f43b85b4dbf7e20c6d"
+    },
+    {
+      "path": "validation/PARSE_SOURCE_BINDING.json",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 473,
+      "sha256": "1d648c911ea7906e83ce5ab7539290c3c1d58ad5cfec8a522d03a1a4c0ce2259"
+    },
+    {
+      "path": "validation/run_parse.py",
+      "origin": "root actual validation/source handoff",
+      "classification": "current",
+      "bytes": 3483,
+      "sha256": "0cf05d899316a5df1b80e7bd28b4d240a3556beb65bc9080244dff24a7c840d2"
+    }
+  ],
+  "validation": {
+    "source_application": "Existing exact16 application receipt retained; not rerun during assembly",
+    "source_preimages": "Actual16 preimages match f254/fc03/cb2; immutable source/blob proof retained",
+    "workflow_scope": "Existing49 unchanged-workflow receipt retained; zero matching push routes",
+    "syntax": {
+      "status": "PASS_SYNTAX_ONLY",
+      "files": 16,
+      "compiler_processes": 1,
+      "job_id": "job_6785d512ea3f",
+      "receipt": "evidence/syntax/PARSE_RESULT.json",
+      "receipt_sha256": "341f136d75c156e367c566531da4a843c7eaac4d75a123f43b85b4dbf7e20c6d",
+      "limitations": "Windows toolchain with iPhone target; retained sysroot/SDK warnings; no Apple semantic or module check"
+    },
+    "new_behavioral_controls": {
+      "status": "PASS_ACTUAL_NEW_PROPERTY_CONTROLS",
+      "executed": 14,
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0,
+      "compiler_processes": 1,
+      "execution_processes": 1,
+      "dependency_builds": 0,
+      "prior_suites_rerun": false,
+      "job_id": "job_359d85ccd1f7",
+      "receipt": "validation/CONTROL_RESULT.json",
+      "receipt_sha256": "d3890de7f007813f1a7be0ca05559688341045af5b7d8208f39a7396a7e53f45",
+      "Apple_typecheck": "NOT_RUN",
+      "Native": "NOT_RUN"
+    },
+    "Apple_semantic_module_compile_link": "NOT_RUN",
+    "Native_UI_Lib_RPC_acceptance": "NOT_RUN",
+    "compiler_or_test_execution_by_evidence_assembler": 0,
+    "Sentinel_Asana_CI_branch_actions_by_evidence_assembler": 0
+  },
+  "inventory_rules": [
+    "Every retained evidence file and README is hashed; this index intentionally excludes its own hash.",
+    "Historical receipts remain byte-exact and retain their original status/limitations.",
+    "Actual root-owned controls and refreshed inventory are included; source/syntax/portable results do not qualify Apple SDK, Lib, UI or Native acceptance."
+  ],
+  "updated_at": "2026-11-22T03:22:12.308205+00:00",
+  "updated_by": "/root",
+  "compatible_latest_frozen_producer": "cb2df9baa201db0ce404ba37eac853424bae6204"
+}

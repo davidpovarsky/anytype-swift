@@ -1,0 +1,37 @@
+{
+  "source_ref": "fc03fcd713e2c449ad97c5d1e604a9433c2a309b",
+  "state": "DRAFT_REVIEW; prepared value tap only; not qualified",
+  "files": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Coordinator/PropertiesListCoordinatorViewModel.swift",
+      "before_git_blob": "fb103a5d12cd516d7c130964571877ab863cc7ce",
+      "before_sha256": "a02bc0f84691e430a47011f6b324553ddc28c8ae7b6470359ec68261c2a564c1",
+      "after_git_blob": "db1d909d65e9b36bc0d41208e8926a615235f552",
+      "after_sha256": "619072ddd975bd61e28baa66095f18651a7bcbb47d30630fcd7eb5fd750813a9",
+      "bytes": 10839
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesViewModel.swift",
+      "before_git_blob": "5dd5f6c96b8b4d26797a52d85c686aa033d8245c",
+      "before_sha256": "7b8be0ad2ebcefb4979becae49285a343f8bcc5e0594e6f58e76e1a7fe576384",
+      "after_git_blob": "3584159262fe59cfd66ac6c565dd82e6eaeed14e",
+      "after_sha256": "51ee8e68655f57ae3679ce9c26f6e4f43c65c1c69aa209d71577a74dc0840282",
+      "bytes": 13441
+    }
+  ],
+  "patch_sha256": "3e5238cc1ff57cd797c3deb5b6ca7e17c8e74194b37b48987a164f665e1b85dc",
+  "dependencies": [
+    "Asana modal patch377ef209aa567db9f95728f54be101726befea96b2e2cc36b28d0ca3a8bb729d: loadModalPropertyIdentity(), requireOriginalPropertyValue(propertyId:key:identity:)."
+  ],
+  "preservation": [
+    "Entire existing Type7 child preparation/type selection remains unchanged.",
+    "Both old nil-source method bodies retained after new prepared-only early branch.",
+    "Owner, source binding, native service methods, shared scope and task-local semantics unchanged."
+  ],
+  "remaining_existing_boundary": "ObjectPropertiesViewModel.rebuildSections invokes policy at prepared init/subscriptions before either tap path. Root notified; outside currently assigned handleTap-only hunk. No full no-bootstrap mount claim.",
+  "validation": {
+    "syntax": "NOT_RUN; final changed-source parse only after root review",
+    "Apple_module_typecheck": "NOT_RUN",
+    "Native": "NOT_RUN"
+  }
+}

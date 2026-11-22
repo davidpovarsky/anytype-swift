@@ -1,0 +1,101 @@
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesView.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesView.swift
+@@ -8,26 +8,45 @@
+ struct ObjectPropertiesView: View {
+ 
+     @State private var model: ObjectPropertiesViewModel
+-    @State private var torahProperties: PinkhaTorahPropertiesModel
++    @State private var torahProperties: PinkhaTorahPropertiesModel?
+     private let preparedSession: PreparedEditorPageSession?
+ 
+     init(document: some BaseDocumentProtocol, output: (any PropertiesListModuleOutput)?, torahSession: TorahEditorSession? = nil,
+          preparedSession: PreparedEditorPageSession? = nil) {
+         self.preparedSession = preparedSession
+-        _torahProperties = State(initialValue: PinkhaTorahPropertiesModel(document: document, session: torahSession))
++        if preparedSession == nil {
++            _torahProperties = State(initialValue: PinkhaTorahPropertiesModel(document: document, session: torahSession))
++        } else {
++            // The original Torah model resolves schema during initialization.
++            // The prepared page uses its current-account property reader only.
++            _torahProperties = State(initialValue: nil)
++        }
+         _model = State(initialValue: ObjectPropertiesViewModel(document: document, output: output, preparedSession: preparedSession))
++    }
++
++    private var legacyTorahProperties: PinkhaTorahPropertiesModel? {
++        // State can outlive a View value. A prepared route must never reuse a
++        // previously retained legacy model or its separate Torah session.
++        preparedSession == nil ? torahProperties : nil
++    }
++
++    private var visibleSections: [PropertiesSection] {
++        if let legacyTorahProperties {
++            return legacyTorahProperties.visibleSections(model.sections)
++        }
++        return model.sections
+     }
+     
+     var body: some View {
+         content
+             .task { await model.setupSubscriptions() }
+-            .task {
++            .task(id: preparedSession == nil) {
+                 // This original observer can provision the Space schema. Its
+                 // separate Torah ownership path is not a page-write admission.
+-                if preparedSession == nil { await torahProperties.observeDocument() }
++                if let legacyTorahProperties { await legacyTorahProperties.observeDocument() }
+             }
+             .sheet(item: $model.relationsSearchData) { PropertyCreationView(data: $0) }
+-            .torahEditorHost(session: torahProperties.session, presentationHost: .properties)
++            .torahEditorHost(session: legacyTorahProperties?.session, presentationHost: .properties)
+             .anytypeSheet(isPresented: $model.showConflictingInfo) {
+                 ObjectPropertiesBottomAlert()
+             }
+@@ -70,14 +89,14 @@
+     private var relationsList: some View {
+         ScrollView {
+             LazyVStack(alignment: .leading, spacing: 0) {
+-                if torahProperties.isResolvingManifest {
+-                    PinkhaTorahPropertiesLoadingState(model: torahProperties)
++                if let legacyTorahProperties, legacyTorahProperties.isResolvingManifest {
++                    PinkhaTorahPropertiesLoadingState(model: legacyTorahProperties)
+                 } else if model.shouldShowEmptyState {
+                     emptyStateView
+                         .padding(.top, 24)
+                 }
+                 
+-                ForEach(torahProperties.visibleSections(model.sections)) { section in
++                ForEach(visibleSections) { section in
+                     Section {
+                         if !section.isExpandable || model.isSectionExpanded(section.id) {
+                             ForEach(section.relations) {
+@@ -89,8 +108,9 @@
+                     }
+                 }
+ 
+-                PinkhaTorahPropertiesSection(model: torahProperties)
+-                    .disabled(preparedSession != nil)
++                if let legacyTorahProperties {
++                    PinkhaTorahPropertiesSection(model: legacyTorahProperties)
++                }
+                 if model.canAddProperty {
+                     Button {
+                         model.onAddPropertyTap()
+@@ -196,11 +216,12 @@
+         } onEditTap: { tappedRelation in
+             if model.hasOutput {
+                 model.handleTapOnRelation(tappedRelation)
+-            } else if let definition = TorahNativePropertyDefinition.definition(for: tappedRelation.key),
+-                      torahProperties.isEligible,
+-                      torahProperties.canEdit,
+-                      torahProperties.session != nil {
+-                torahProperties.edit(definition.kind)
++            } else if let legacyTorahProperties,
++                      let definition = TorahNativePropertyDefinition.definition(for: tappedRelation.key),
++                      legacyTorahProperties.isEligible,
++                      legacyTorahProperties.canEdit,
++                      legacyTorahProperties.session != nil {
++                legacyTorahProperties.edit(definition.kind)
+             } else {
+                 model.handleTapOnRelation(tappedRelation)
+             }

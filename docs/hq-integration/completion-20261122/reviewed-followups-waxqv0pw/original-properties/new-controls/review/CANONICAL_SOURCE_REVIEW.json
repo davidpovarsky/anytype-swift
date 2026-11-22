@@ -1,0 +1,82 @@
+{
+  "reviewer": "/root/native_failures",
+  "decision": "SOURCE_REVIEW_GO; execution pending",
+  "scope": "Bounded Swift/API/control-causality review of canonical controls and original discovery/post-read projection envelopes; no compiler or control execution",
+  "production_modal_patch_sha256": "377ef209aa567db9f95728f54be101726befea96b2e2cc36b28d0ca3a8bb729d",
+  "inputs": [
+    {
+      "path": "CanonicalModalControls.swift",
+      "bytes": 12395,
+      "sha256": "5317635df1a3049df7cb3a6c0fb7a53b8476f30051b586bea0acc71575ba3128"
+    },
+    {
+      "path": "portable-inputs/OriginalManifestDiscoveryProbe.swift",
+      "bytes": 1585,
+      "sha256": "deba1345640229e91d6fa0a1de1a4bb76b70fa3851e19124273ecbfc283db83a"
+    },
+    {
+      "path": "portable-inputs/OriginalPropertyScopeProbe.swift",
+      "bytes": 5567,
+      "sha256": "0edff5af98deb225f3acd0ca861e8307a786abb33910705b117ef15b65b30580"
+    },
+    {
+      "path": "portable-inputs/PinkhaSpaceManifest.swift",
+      "bytes": 10826,
+      "sha256": "aa0e424dcd17c948531b3d8389bf66894f5a7afd1bb2e93f54f43d7a69588e17"
+    },
+    {
+      "path": "portable-inputs/PinkhaInternalPropertyIdentities.swift",
+      "bytes": 2009,
+      "sha256": "07046f57ea9abc90eb23b1e60409169d7b293d7db4bfc6164050ff508bd87699"
+    },
+    {
+      "path": "portable-inputs/PinkhaRuntime.swift",
+      "bytes": 308,
+      "sha256": "c46aa3280a746f7e0fee5bae59ba94e3767b4c95a9d611cb007803d098f68970"
+    },
+    {
+      "path": "OwnerModalControls.swift",
+      "bytes": 20368,
+      "sha256": "9e8f3a0ab69e6fa41e95153c2ba94ffab064b4656a5fa6a9a0334eecb474d3c0"
+    }
+  ],
+  "corrections": [
+    {
+      "id": "specific_source_retirement_errors",
+      "prior_control_sha256": "9f7dd0e8731ad982fd9b46ea109ae95f83c2eeae9670fde7e2a3f548218d406f",
+      "finding": "Catching any EditorDocumentWriteError could admit a wrong authority failure instead of the intended source-state boundary.",
+      "disposition": "Verified exact rejected(documentChanged) for first Boolean currentness loss and rejected(retired) after restoration. Both match unchanged Owner.rejection semantics."
+    },
+    {
+      "id": "isolate_each_discovery_space_predicate",
+      "prior_control_sha256": "9f7dd0e8731ad982fd9b46ea109ae95f83c2eeae9670fde7e2a3f548218d406f",
+      "finding": "Foreign-result and foreign-payload fixtures also mismatched canonical root IDs, masking a missing Space predicate.",
+      "disposition": "Verified each fixture now has a matching unique manifestObjectId/result ID; only its intended result-Space or payload-Space is foreign."
+    }
+  ],
+  "reviewed_properties": [
+    "Original Codable/Equatable/mutable manifest API and complete default support the fixtures; exact original runtime flag is true.",
+    "Eighteen invalid canonical payload variants are rejected only by the intended validator error; unexpected success/errors propagate as failures.",
+    "Composed/decomposed Unicode Space equality has an explicit different-UTF8 fixture check and exercises exact post-read byte validation.",
+    "Identity snapshot must match its issuing Scope, and later source Boolean equality cannot revive the original retired Owner.",
+    "Actual original final discovery filter consumes only the explicitly declared decoded ID/Space/description projection. Missing/malformed/root mismatch/foreign candidates cannot silently replace the single canonical result; two valid roots require the original ambiguity error.",
+    "Passed IDs are appended only after the corresponding assertions return and final inventory equality is checked."
+  ],
+  "owner_control_status": {
+    "file": "OwnerModalControls.swift",
+    "sha256": "9e8f3a0ab69e6fa41e95153c2ba94ffab064b4656a5fa6a9a0334eecb474d3c0",
+    "cases": 8,
+    "independent_peer_review": "/root/asana_audit read actual Owner.admit/execute/finish/rejection and Operation.permit; reported no concrete API/lineage/expectation blocker.",
+    "execution": "NOT_RUN"
+  },
+  "limitations": [
+    "No actual canonical store/search service/native protobuf decode executed by the discovery projection",
+    "No PreparedSession/Factory/document acquisition implemented by the Scope envelope",
+    "No Lib, GCD native invocation, account creation, original editor UI or Apple module execution",
+    "Owner effect probes are explicit MainActor permit bodies; no full Invocation/native engine credit",
+    "Production13 and combined16 sources remain unchanged"
+  ],
+  "compiler": "NOT_RUN",
+  "control_execution": "NOT_RUN",
+  "prior_suites_rerun": false
+}

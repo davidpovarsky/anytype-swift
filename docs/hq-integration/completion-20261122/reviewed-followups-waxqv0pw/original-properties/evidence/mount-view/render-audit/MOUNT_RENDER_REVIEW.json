@@ -1,0 +1,131 @@
+{
+  "source_ref": "fc03fcd713e2c449ad97c5d1e604a9433c2a309b",
+  "scope": "Read-only actual prepared ObjectPropertiesView mount/render/callback closure; no Native or compiler execution",
+  "inputs": [
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahPropertyPolicy.swift",
+      "git_blob": "8a5abc0a225ab9ca2d3db9fe9670b5f35753886e",
+      "sha256": "91797e706a8a72318745437d44d7f6ce6c0d45c47e11d6a799805be2a45eee71",
+      "bytes": 27373,
+      "exact_ref_match": true
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/PinkhaTorahPropertiesModel.swift",
+      "git_blob": "5c556164e65e073fbc602a4317057a2e69e2bb0a",
+      "sha256": "50ff5358f4813570bec1c60496fff33a1cd9a94d0065da1da27d9e0f35efb59c",
+      "bytes": 5746,
+      "exact_ref_match": true
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/PinkhaTorahPropertiesSection.swift",
+      "git_blob": "22c1c5b0e1f34c37cc6121ab397a9d94b338f403",
+      "sha256": "9bf675e8ace94ed87c59ebe45e6fdd10c0b57c3e4d92bd02a22b6499433afea7",
+      "bytes": 3119,
+      "exact_ref_match": true
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift",
+      "git_blob": "bf6063cbc59ab5f689486d29c9dd1661b44173bc",
+      "sha256": "e36b7b7dbde28bbfc431a40dfbf59a49a05d973217f2b7be46a61e6cb1334bbf",
+      "bytes": 5356,
+      "exact_ref_match": true
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Entities/PropertiesSectionBuilder.swift",
+      "git_blob": "d69ca2d5cd4adaf9ba04c5e2928d8083e30376a4",
+      "sha256": "a08e903edc97cc429cc0a5d4fdb8e63cb8c149952abec4270a72effbe3d04624",
+      "bytes": 1913,
+      "exact_ref_match": true
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/PropertiesListRowView/PropertiesListRowView.swift",
+      "git_blob": "1c33f2fd88b8a7b7fd9bb4856cb7c92ff575c18d",
+      "sha256": "bce52d32d20229510a4bc7c348c594d12f83187e6f20c6e05c9efe335d31ccd1",
+      "bytes": 6705,
+      "exact_ref_match": true
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesView.swift",
+      "git_blob": "53507c363d21437d1856fbb0084371dd09e22087",
+      "sha256": "10dee7a9f3c186b00f9c7c219ca6b8f18034563fb9d4c9cdcb61278a19df866b",
+      "bytes": 8250,
+      "exact_ref_match": true
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesViewModel.swift",
+      "git_blob": "5dd5f6c96b8b4d26797a52d85c686aa033d8245c",
+      "sha256": "7b8be0ad2ebcefb4979becae49285a343f8bcc5e0594e6f58e76e1a7fe576384",
+      "bytes": 12249,
+      "exact_ref_match": true,
+      "retained_path": "/workspace/scratch/ab739d619196/original_editor_property_value_entry_waxqv0pw_20261122/base/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesViewModel.swift"
+    }
+  ],
+  "findings": [
+    {
+      "id": "pre_vm_initialization",
+      "status": "CONCRETE_REACHABLE",
+      "source": "ObjectPropertiesView.init; PinkhaTorahPropertiesModel.init/update; PinkhaTorahPropertyPolicy.internalIdentityStatus/resolveInternalIdentityTask",
+      "behavior": "Original View constructs Torah model before guarded VM. Model update invokes internalIdentityStatus, which can start original bootstrapSpace Task when canonical metadata is not ready. Suppressing observeDocument does not suppress construction."
+    },
+    {
+      "id": "render_filter",
+      "status": "CONCRETE_REACHABLE",
+      "source": "PinkhaTorahPropertiesModel.visibleSections/isInternalProperty",
+      "behavior": "Visible section filtering may call the same policy resolver from the rendered View. isResolvingManifest itself is pure, but is based on stored initializer state; with its observer suppressed a prepared route can retain loading state without refresh."
+    },
+    {
+      "id": "retry_and_row_fallback",
+      "status": "CONCRETE_REACHABLE",
+      "source": "PinkhaTorahPropertiesLoadingState; PinkhaTorahPropertiesModel.reloadManifest/edit; ObjectPropertiesView.rowWithoutActions",
+      "behavior": "Loading retry invokes identity retry and independent session refresh. Missing-output native property fallback invokes model.edit/update and can present an independently owned Torah editor. Disabling only the Torah section does not contain these routes."
+    },
+    {
+      "id": "nil_host",
+      "status": "EXACT_ORIGINAL_CONTRACT",
+      "source": "TorahEditorHostModifier.body",
+      "behavior": "All session host machinery is under if let session. The nil branch returns only content; it creates no default session or observer. This is the prepared route containment seam."
+    },
+    {
+      "id": "vm_remove_before_reservation",
+      "status": "ROOT_OWNS_CORRECTION",
+      "source": "ObjectPropertiesViewModel.removeRelation",
+      "behavior": "The preimage calls side-effecting internal-property policy before scheduling the same Owner. Root is replacing this only for prepared routes with pre-Task same-Owner reservation and current canonical identity read."
+    },
+    {
+      "id": "vm_mount_filter",
+      "status": "ROOT_OWNS_CORRECTION",
+      "source": "ObjectPropertiesViewModel.init/setupSubscriptions/rebuildSections",
+      "behavior": "Original initializer and subscription callback filter through policy. Root owns fresh identity read, live document/property comparison, cancellation and original builder publication."
+    },
+    {
+      "id": "already_unqualified_schema_entries",
+      "status": "FAIL_CLOSED_PRESERVED",
+      "source": "ObjectPropertiesViewModel.onEditTap/onAddPropertyTap/addRelationToType/revealHiddenRelation",
+      "behavior": "Prepared routes invoke requireQualifiedSchemaRoute before policy, catalog or Tasks. These feature routes remain explicitly unqualified; this audit does not claim them implemented."
+    },
+    {
+      "id": "pure_render_helpers",
+      "status": "SOURCE_REVIEWED",
+      "source": "PropertiesSectionBuilder; PropertiesListRowView; ObjectPropertiesView section callbacks",
+      "behavior": "The original section builder is pure array grouping. Original row delegates do not themselves start native work; parent editing callbacks determine authority. Section expansion/conflict info are source-checked UI publication."
+    }
+  ],
+  "minimal_implementation": {
+    "folder": "original_editor_property_mount_view_waxqv0pw_20261122",
+    "patch": "prepared-property-view-composition.patch",
+    "patch_sha256": "0a5d41a35493dbc4563c912ba0456f341f4c32b204bdccd1c1768b922df85ae3",
+    "files": 1,
+    "behavior": "Optional original Torah model constructed only on nil prepared route. Prepared uses original model.sections and no Torah loading/filter/section/session. Same original renderer and legacy nil route retained."
+  },
+  "pending_peer_issue": {
+    "owner": "root + integration_audit",
+    "description": "Prepared VM task reattachment must not lose subscriptions if a new retained-State task starts before cancelled predecessor cleanup. This View patch leaves original model.setupSubscriptions task unchanged."
+  },
+  "limits": [
+    "No Apple module compile/link",
+    "No Native mount/render/reload/source-retirement acceptance",
+    "No Torah/schema/association or foreign property route qualification",
+    "No policy/Owner/permit/runtime change",
+    "No tests rerun"
+  ]
+}
