@@ -1,0 +1,345 @@
+{
+  "run_id": 45008694456,
+  "result_sha256": "4c1f27019674c4ddd9a1198f933e71e02d2452e93f3cbc1cdfbf1dc7a932aaab",
+  "native": {
+    "pass": 17,
+    "fail": 16,
+    "failures": [
+      {
+        "case": "TestOtzariaFixedSchemaNativeObserverV5/ActualLocalZeroCounterAccepted",
+        "assertion_lines": [
+          "2026-11-22T09:43:58.863Z\tDEBUG\tanytype-mw-smartblock\tclose smartblock bafyreiex74wxmuh73u5jxinm5yrodnrfpvwbztegqpjipmt3rwbrlg5ibq",
+          "    fixed_schema_native_observer_test.go:94: native fixture operation: observe original persisted schema: read original archive: decrypt original stored content: cipher: message authentication failed",
+          "2026-11-22T09:43:58.863Z\tDEBUG\tcommon.commonspace.synctree\tclosing sync tree\t{\"id\": \"bafyreiexkt7cbst3s2nwwmguhcvzolvg6yvs664ub5i57b3s5paxjqc22m\"}",
+          "2026-11-22T09:43:58.863Z\tDEBUG\tcommon.commonspace.objecttreebuilder\tdecrementing counter\t{\"id\": \"bafyreiexkt7cbst3s2nwwmguhcvzolvg6yvs664ub5i57b3s5paxjqc22m\", \"trees\": 59, \"spaceId\": \"bafyreiagxspz4brdavjer5xlulssf2de3xwmpuokmtuekl6ull6nzx35q4.1d97k8zdoaq83\"}",
+          "2026-11-22T09:43:58.863Z\tDEBUG\tcommon.commonspace.synctree\tclosed sync tree\t{\"id\": \"bafyreiexkt7cbst3s2nwwmguhcvzolvg6yvs664ub5i57b3s5paxjqc22m\"}",
+          "--- FAIL: TestOtzariaFixedSchemaNativeObserverV5/ActualLocalZeroCounterAccepted (0.00s)",
+          "2026-11-22T09:43:58.863Z\tDEBUG\tanytype-mw-smartblock\tclose smartblock bafyreiexkt7cbst3s2nwwmguhcvzolvg6yvs664ub5i57b3s5paxjqc22m"
+        ],
+        "all_output_bytes": 17229
+      },
+      {
+        "case": "TestOtzariaFixedSchemaNativeObserverV5/ArchiveUsesOriginalNativeLinkTree",
+        "assertion_lines": [
+          "2026-11-22T09:43:58.915Z\tDEBUG\tanytype-mw-smartblock\tclose smartblock bafyreihrr6r4ypoqhisxrlfsvmjcoatodwg6krbuvrk7qg6ec67un6mnge",
+          "    fixed_schema_native_observer_test.go:203: native fixture operation: observe original persisted schema: read original archive: decrypt original stored content: cipher: message authentication failed",
+          "--- FAIL: TestOtzariaFixedSchemaNativeObserverV5/ArchiveUsesOriginalNativeLinkTree (0.01s)"
+        ],
+        "all_output_bytes": 10637
+      },
+      {
+        "case": "TestOtzariaFixedSchemaNativeObserverV5/ExactNativeRootOnly",
+        "assertion_lines": [
+          "2026-11-22T09:43:58.859Z\tDEBUG\tanytype-mw-smartblock\tclose smartblock bafyreidomc2nuytbnai554x5tkk2lbrvtmw7dhj743ipu2m3nz42kwm7bq",
+          "    fixed_schema_native_observer_test.go:68: native fixture operation: observe original persisted schema: read original archive: decrypt original stored content: cipher: message authentication failed",
+          "--- FAIL: TestOtzariaFixedSchemaNativeObserverV5/ExactNativeRootOnly (0.00s)"
+        ],
+        "all_output_bytes": 4444
+      },
+      {
+        "case": "TestOtzariaFixedSchemaNativeObserverV5/ExplicitLongtextPresenceCannotDefault",
+        "assertion_lines": [
+          "2026-11-22T09:43:58.909Z\tDEBUG\tcommon.commonspace.objecttree\tfinished adding content\t{\"treeId\": \"bafyreidie4cagcglt2uvrjanuqwa7vgw3yse6iqz2l2kny74wbzesccj2y\", \"head\": \"bafyreigrnx2ozlyf4iovvlbt6nidvpuhqfunpoibw2hasq3mpvzwtjr5ay\"}",
+          "    fixed_schema_native_observer_test.go:197: native fixture operation: observe original persisted schema: read original archive: decrypt original stored content: cipher: message authentication failed",
+          "--- FAIL: TestOtzariaFixedSchemaNativeObserverV5/ExplicitLongtextPresenceCannotDefault (0.00s)"
+        ],
+        "all_output_bytes": 3022
+      },
+      {
+        "case": "TestOtzariaFixedSchemaNativeObserverV5/FullACLIntermediateRecordRequired",
+        "assertion_lines": [
+          "2026-11-22T09:43:59.287Z\tDEBUG\tanytype-doc-indexer\tdetails have changed, but heads are equal\t{\"objectID\": \"bafyreia4o6pookn6nygqdbnw765wyldiyvqxf7m4h4ezjjh2qk7yolxvde\", \"hashesAreEqual\": true, \"lastHashIsEmpty\": false, \"skipFlagSet\": false}",
+          "    fixed_schema_native_observer_test.go:230: native fixture operation: unable to connect",
+          "--- FAIL: TestOtzariaFixedSchemaNativeObserverV5/FullACLIntermediateRecordRequired (0.36s)"
+        ],
+        "all_output_bytes": 387517
+      },
+      {
+        "case": "TestOtzariaFixedSchemaNativeObserverV5/NativeComputedRemoteCounterAccepted",
+        "assertion_lines": [
+          "2026-11-22T09:43:58.867Z\tDEBUG\tanytype-mw-smartblock\tclose smartblock bafyreigaz3rhtalgd2xntlcbi6wlpxmscuxqslnc4gyb3l7ujyzogoaxhi",
+          "    fixed_schema_native_observer_test.go:115: native fixture operation: observe original persisted schema: read original archive: decrypt original stored content: cipher: message authentication failed",
+          "--- FAIL: TestOtzariaFixedSchemaNativeObserverV5/NativeComputedRemoteCounterAccepted (0.00s)"
+        ],
+        "all_output_bytes": 19063
+      },
+      {
+        "case": "TestOtzariaFixedSchemaNativeObserverV5/NativeLocalMissingWithoutCreation",
+        "assertion_lines": [
+          "2026-11-22T09:43:58.859Z\tDEBUG\tanytype-mw-smartblock\tclose smartblock bafyreidx5w4w5igtfqlqwhmuft3mn7rfjg62fk6ppufayotsdcfco4bkea",
+          "    fixed_schema_native_observer_test.go:77: native fixture operation: observe original persisted schema: read original archive: decrypt original stored content: cipher: message authentication failed",
+          "--- FAIL: TestOtzariaFixedSchemaNativeObserverV5/NativeLocalMissingWithoutCreation (0.00s)"
+        ],
+        "all_output_bytes": 3106
+      },
+      {
+        "case": "TestOtzariaFixedSchemaNativeObserverV5/OlderNativeCommonSnapshotAccepted",
+        "assertion_lines": [
+          "2026-11-22T09:43:58.897Z\tDEBUG\tcommon.commonspace.objecttree\tfinished adding content\t{\"treeId\": \"bafyreifcbml2xv25amj3na6y6ukggot5wgxu4urvtrvvhjuc2ngwjxrhny\", \"head\": \"bafyreiat4vvd6dbzgmwq36lwvxoum5v5e5m664abphialtfk7ocphdocjm\"}",
+          "    fixed_schema_native_observer_test.go:166: native fixture operation: observe original persisted schema: read original archive: decrypt original stored content: cipher: message authentication failed",
+          "--- FAIL: TestOtzariaFixedSchemaNativeObserverV5/OlderNativeCommonSnapshotAccepted (0.01s)"
+        ],
+        "all_output_bytes": 3123
+      },
+      {
+        "case": "TestOtzariaFixedSchemaNativeObserverV5/OriginalACLSignatureCIDVerification",
+        "assertion_lines": [
+          "2026-11-22T09:43:59.858Z\tINFO\tanytype-doc-indexer\tindexBatch: indexed 1 docs for a 526.208\u00b5s: err: <nil>\t{\"spaceId\": \"bafyreicuoeqttb7nzw2fpr7vxdkb7yw43cdzv2ulrkzwg6apviiqiriyfi.1d97k8zdoaq83\"}",
+          "    fixed_schema_native_observer_test.go:278: native fixture operation: unable to connect",
+          "--- FAIL: TestOtzariaFixedSchemaNativeObserverV5/OriginalACLSignatureCIDVerification (0.30s)"
+        ],
+        "all_output_bytes": 505457
+      },
+      {
+        "case": "TestOtzariaFixedSchemaNativeObserverV5/OriginalObjectTypeMatch",
+        "assertion_lines": [
+          "2026-11-22T09:43:58.858Z\tDEBUG\tanytype-mw-smartblock\tclose smartblock bafyreidjfw5qlh5fopka27l3avejsh4i52hparr3e2xonreyxcmsayijbe",
+          "    fixed_schema_native_observer_test.go:61: native fixture operation: observe original persisted schema: read original archive: decrypt original stored content: cipher: message authentication failed",
+          "--- FAIL: TestOtzariaFixedSchemaNativeObserverV5/OriginalObjectTypeMatch (0.00s)"
+        ],
+        "all_output_bytes": 22465
+      },
+      {
+        "case": "TestOtzariaFixedSchemaNativeObserverV5/OriginalPooledReaderAndACLLockOrder",
+        "assertion_lines": [
+          "2026-11-22T09:43:58.926Z\tINFO\tanytype-doc-indexer\tindexBatch: indexed 1 docs for a 719.292\u00b5s: err: <nil>\t{\"spaceId\": \"bafyreiagxspz4brdavjer5xlulssf2de3xwmpuokmtuekl6ull6nzx35q4.1d97k8zdoaq83\"}",
+          "    fixed_schema_native_observer_test.go:223: native fixture operation: observe original persisted schema: read original archive: decrypt original stored content: cipher: message authentication failed",
+          "--- FAIL: TestOtzariaFixedSchemaNativeObserverV5/OriginalPooledReaderAndACLLockOrder (0.01s)"
+        ],
+        "all_output_bytes": 2776
+      },
+      {
+        "case": "TestOtzariaFixedSchemaNativeObserverV5/OriginalRelationMatch",
+        "assertion_lines": [
+          "2026-11-22T09:43:58.853Z\tDEBUG\tanytype-mw-smartblock\tclose smartblock bafyreic5msxgcqax3k5girg24k4k56ygdxlu73bpossz7chhn2pkcc6g4m",
+          "    fixed_schema_native_observer_test.go:54: native fixture operation: observe original persisted schema: read original archive: decrypt original stored content: cipher: message authentication failed",
+          "2026-11-22T09:43:58.854Z\tDEBUG\tcommon.commonspace.synctree\tclosing sync tree\t{\"id\": \"bafyreic6ywcqhtxlvrjmvesm25b5ev24jbizam2bdibiiumoo2d2m6gi4y\"}",
+          "2026-11-22T09:43:58.854Z\tDEBUG\tcommon.commonspace.objecttreebuilder\tdecrementing counter\t{\"id\": \"bafyreic6ywcqhtxlvrjmvesm25b5ev24jbizam2bdibiiumoo2d2m6gi4y\", \"trees\": 117, \"spaceId\": \"bafyreiagxspz4brdavjer5xlulssf2de3xwmpuokmtuekl6ull6nzx35q4.1d97k8zdoaq83\"}",
+          "2026-11-22T09:43:58.854Z\tDEBUG\tcommon.commonspace.synctree\tclosed sync tree\t{\"id\": \"bafyreic6ywcqhtxlvrjmvesm25b5ev24jbizam2bdibiiumoo2d2m6gi4y\"}",
+          "2026-11-22T09:43:58.854Z\tDEBUG\tanytype-mw-smartblock\tclose smartblock bafyreic6ywcqhtxlvrjmvesm25b5ev24jbizam2bdibiiumoo2d2m6gi4y",
+          "--- FAIL: TestOtzariaFixedSchemaNativeObserverV5/OriginalRelationMatch (0.01s)"
+        ],
+        "all_output_bytes": 24664
+      },
+      {
+        "case": "TestOtzariaFixedSchemaNativeObserverV5/SecondSnapshotSeesCompleteSettingsRootRowChange",
+        "assertion_lines": [
+          "2026-11-22T09:44:00.235Z\tINFO\tanytype-doc-indexer\tindexBatch: indexed 1 docs for a 1.157625ms: err: <nil>\t{\"spaceId\": \"bafyreiagxspz4brdavjer5xlulssf2de3xwmpuokmtuekl6ull6nzx35q4.1d97k8zdoaq83\"}",
+          "    fixed_schema_native_observer_test.go:544: full actual settings root row change escaped second snapshot: 7 observe original persisted schema: read original archive: decrypt original stored content: cipher: message authentication failed",
+          "--- FAIL: TestOtzariaFixedSchemaNativeObserverV5/SecondSnapshotSeesCompleteSettingsRootRowChange (0.00s)"
+        ],
+        "all_output_bytes": 5681
+      },
+      {
+        "case": "TestOtzariaFixedSchemaNativeObserverV5/SecondSnapshotSeesCompleteStateRowChange",
+        "assertion_lines": [
+          "2026-11-22T09:44:00.231Z\tDEBUG\tanytype-doc-indexer\tdetails have changed, but heads are equal\t{\"objectID\": \"bafyreihd4efsut6ppz6kom77rhc7o6rt4qhs3yhlawltsa2ljfv7lw3vii\", \"hashesAreEqual\": true, \"lastHashIsEmpty\": false, \"skipFlagSet\": false}",
+          "    fixed_schema_native_observer_test.go:513: full native state row change escaped second snapshot: 7 observe original persisted schema: read original archive: decrypt original stored content: cipher: message authentication failed",
+          "2026-11-22T09:44:00.232Z\tINFO\tanytype-doc-indexer\tindexBatch: indexed 1 docs for a 129.625\u00b5s: err: <nil>\t{\"spaceId\": \"bafyreicigu57k45j66avmqdujnf7cyo2xicyskmhkkdcachqp4glqayhoi.1d97k8zdoaq83\"}",
+          "--- FAIL: TestOtzariaFixedSchemaNativeObserverV5/SecondSnapshotSeesCompleteStateRowChange (0.00s)"
+        ],
+        "all_output_bytes": 9624
+      },
+      {
+        "case": "TestOtzariaFixedSchemaNativeObserverV5/SecondSnapshotSeesExtraNonHeadChange",
+        "assertion_lines": [
+          "2026-11-22T09:43:59.865Z\tDEBUG\tcommon.commonspace.objecttree\tfinished adding content\t{\"treeId\": \"bafyreiekk24x72rhzodermwhvum7afxj24s52d5whtwv43hcctx2kevm5e\", \"head\": \"bafyreia64nrobuugp3htcralt36rt25bnzzf5ps42boynqehhpi6pqtnp4\"}",
+          "    fixed_schema_native_observer_test.go:347: extra native non-head row was missed: 7 observe original persisted schema: read original archive: decrypt original stored content: cipher: message authentication failed",
+          "--- FAIL: TestOtzariaFixedSchemaNativeObserverV5/SecondSnapshotSeesExtraNonHeadChange (0.00s)"
+        ],
+        "all_output_bytes": 3026
+      },
+      {
+        "case": "TestOtzariaFixedSchemaNativeObserverV5/SecondSnapshotSeesInvisibleEncodedRowChange",
+        "assertion_lines": [
+          "2026-11-22T09:43:59.861Z\tINFO\tanytype-doc-indexer\tindexBatch: indexed 1 docs for a 525.625\u00b5s: err: <nil>\t{\"spaceId\": \"bafyreiagxspz4brdavjer5xlulssf2de3xwmpuokmtuekl6ull6nzx35q4.1d97k8zdoaq83\"}",
+          "    fixed_schema_native_observer_test.go:320: complete native encoded row change was missed: 7 observe original persisted schema: read original archive: decrypt original stored content: cipher: message authentication failed",
+          "--- FAIL: TestOtzariaFixedSchemaNativeObserverV5/SecondSnapshotSeesInvisibleEncodedRowChange (0.00s)"
+        ],
+        "all_output_bytes": 2819
+      }
+    ]
+  },
+  "strict": {
+    "pass": 12,
+    "fail": 0
+  },
+  "command_timings": [
+    {
+      "label": "go-version",
+      "pid": 2387,
+      "start_unix": null,
+      "finished_unix": null,
+      "duration_seconds": 0.016,
+      "elapsed_seconds": null,
+      "returncode": 0,
+      "timed_out": false,
+      "owned_group_drained": null
+    },
+    {
+      "label": "xcode-version",
+      "pid": 2388,
+      "start_unix": null,
+      "finished_unix": null,
+      "duration_seconds": 0.149,
+      "elapsed_seconds": null,
+      "returncode": 0,
+      "timed_out": false,
+      "owned_group_drained": null
+    },
+    {
+      "label": "macos-sdk-version",
+      "pid": 2389,
+      "start_unix": null,
+      "finished_unix": null,
+      "duration_seconds": 1.771,
+      "elapsed_seconds": null,
+      "returncode": 0,
+      "timed_out": false,
+      "owned_group_drained": null
+    },
+    {
+      "label": "clang-version",
+      "pid": 2417,
+      "start_unix": null,
+      "finished_unix": null,
+      "duration_seconds": 0.668,
+      "elapsed_seconds": null,
+      "returncode": 0,
+      "timed_out": false,
+      "owned_group_drained": null
+    },
+    {
+      "label": "r14-apply-check",
+      "pid": 2425,
+      "start_unix": null,
+      "finished_unix": null,
+      "duration_seconds": 0.016,
+      "elapsed_seconds": null,
+      "returncode": 0,
+      "timed_out": false,
+      "owned_group_drained": null
+    },
+    {
+      "label": "r14-apply",
+      "pid": 2426,
+      "start_unix": null,
+      "finished_unix": null,
+      "duration_seconds": 0.019,
+      "elapsed_seconds": null,
+      "returncode": 0,
+      "timed_out": false,
+      "owned_group_drained": null
+    },
+    {
+      "label": "observer-apply-check",
+      "pid": 2427,
+      "start_unix": null,
+      "finished_unix": null,
+      "duration_seconds": 0.013,
+      "elapsed_seconds": null,
+      "returncode": 0,
+      "timed_out": false,
+      "owned_group_drained": null
+    },
+    {
+      "label": "observer-apply",
+      "pid": 2428,
+      "start_unix": null,
+      "finished_unix": null,
+      "duration_seconds": 0.015,
+      "elapsed_seconds": null,
+      "returncode": 0,
+      "timed_out": false,
+      "owned_group_drained": null
+    },
+    {
+      "label": "original-tantivy-setup",
+      "pid": 2431,
+      "start_unix": null,
+      "finished_unix": null,
+      "duration_seconds": 0.724,
+      "elapsed_seconds": null,
+      "returncode": 0,
+      "timed_out": false,
+      "owned_group_drained": null
+    },
+    {
+      "label": "declared-dependency-inputs",
+      "pid": 2433,
+      "start_unix": null,
+      "finished_unix": null,
+      "duration_seconds": 29.541,
+      "elapsed_seconds": null,
+      "returncode": 0,
+      "timed_out": false,
+      "owned_group_drained": null
+    },
+    {
+      "label": "compile-native",
+      "pid": 2862,
+      "start_unix": null,
+      "finished_unix": null,
+      "duration_seconds": 132.829,
+      "elapsed_seconds": null,
+      "returncode": 0,
+      "timed_out": false,
+      "owned_group_drained": null
+    },
+    {
+      "label": "buildinfo-native",
+      "pid": 9159,
+      "start_unix": null,
+      "finished_unix": null,
+      "duration_seconds": 0.091,
+      "elapsed_seconds": null,
+      "returncode": 0,
+      "timed_out": false,
+      "owned_group_drained": null
+    },
+    {
+      "label": "run-native",
+      "pid": 9175,
+      "start_unix": null,
+      "finished_unix": null,
+      "duration_seconds": 4.725,
+      "elapsed_seconds": null,
+      "returncode": 1,
+      "timed_out": false,
+      "owned_group_drained": null
+    },
+    {
+      "label": "compile-strict",
+      "pid": 9380,
+      "start_unix": null,
+      "finished_unix": null,
+      "duration_seconds": 13.94,
+      "elapsed_seconds": null,
+      "returncode": 0,
+      "timed_out": false,
+      "owned_group_drained": null
+    },
+    {
+      "label": "buildinfo-strict",
+      "pid": 9476,
+      "start_unix": null,
+      "finished_unix": null,
+      "duration_seconds": 0.055,
+      "elapsed_seconds": null,
+      "returncode": 0,
+      "timed_out": false,
+      "owned_group_drained": null
+    },
+    {
+      "label": "run-strict",
+      "pid": 9497,
+      "start_unix": null,
+      "finished_unix": null,
+      "duration_seconds": 0.298,
+      "elapsed_seconds": null,
+      "returncode": 0,
+      "timed_out": false,
+      "owned_group_drained": null
+    }
+  ]
+}

@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "run_id": 45008694456,
+  "attempt": 1,
+  "control_head": "382e5ac62575d4df533d5ad38286ca5a09049b45",
+  "actual_counts": {
+    "native": {
+      "raw_pass": 17,
+      "fail": 16,
+      "skip": 0
+    },
+    "strict": {
+      "pass": 12,
+      "fail": 0,
+      "skip": 0
+    }
+  },
+  "native_event_sha256": "e39a743a8b2d4d379e71268ad711e19207e7be400fc0e2908ac74c88ad305a1f",
+  "classification_limit": "Specific errors were not printed for generic successful unavailable assertions. The 13 reuse decisions are constrained by exact source evaluation order and the explicit mutated native input; they are not a claim of newly instrumented runtime traces. The four later target negatives remain semantically unproven until strengthened and executed.",
+  "mapping": [
+    {
+      "name": "FractionalCounterCannotDefaultToZero",
+      "observed_test2json": "pass",
+      "first_failure_path": "snapshot.readTree -> requireFixedSchemaInteger",
+      "source": "fixed_schema_snapshot.go",
+      "line": 317,
+      "basis": "Mutated 0.25 is rejected as non-integral before either tree is replayed.",
+      "classification": "source_constrained_early_rejection",
+      "replay_selected": false
+    },
+    {
+      "name": "FullACLExtraRecordRefused",
+      "observed_test2json": "pass",
+      "first_failure_path": "snapshot.readACL complete persisted chain",
+      "source": "fixed_schema_snapshot.go",
+      "line": 210,
+      "basis": "The added row exceeds the frozen native Records membership; the snapshot fails before archive replay.",
+      "classification": "source_constrained_early_rejection",
+      "replay_selected": false
+    },
+    {
+      "name": "RealNativeOperationsPropagateInjectedIteratorCloseCommitErrors",
+      "observed_test2json": "pass",
+      "first_failure_path": "readFixedSchemaSnapshot + scanFixedSchemaRows + finish",
+      "source": "fixed_schema_snapshot.go",
+      "line": 355,
+      "basis": "The assertion separately requires all three injected cause identities and exactly one actual released transaction.",
+      "classification": "cause_asserted_runtime",
+      "replay_selected": false
+    },
+    {
+      "name": "RealNativeOpenFailurePropagationStillReleasesReadTx",
+      "observed_test2json": "pass",
+      "first_failure_path": "openFixedSchemaSnapshot failure cleanup",
+      "source": "fixed_schema_snapshot.go",
+      "line": 32,
+      "basis": "The assertion requires the injected actual-open and actual-release causes plus exactly one released transaction.",
+      "classification": "cause_asserted_runtime",
+      "replay_selected": false
+    },
+    {
+      "name": "MissingOriginalSpaceStateUnavailable",
+      "observed_test2json": "pass",
+      "first_failure_path": "snapshot.readSpace -> original StateStorage.GetState",
+      "source": "fixed_schema_snapshot.go",
+      "line": 85,
+      "basis": "Deleting the actual state row fails the first original state read before ACL/tree replay.",
+      "classification": "source_constrained_early_rejection",
+      "replay_selected": false
+    },
+    {
+      "name": "PersistedStateACLIdentityMismatchUnavailable",
+      "observed_test2json": "pass",
+      "first_failure_path": "snapshot.readSpace retained ACL comparison",
+      "source": "fixed_schema_snapshot.go",
+      "line": 89,
+      "basis": "The decoded ACL ID differs from the retained actual ACL identity before tree replay; ErrFixedSchemaStorage is asserted.",
+      "classification": "source_constrained_early_rejection",
+      "replay_selected": false
+    },
+    {
+      "name": "PersistedStateSettingsIdentityMismatchUnavailable",
+      "observed_test2json": "pass",
+      "first_failure_path": "snapshot.readSpace retained settings comparison",
+      "source": "fixed_schema_snapshot.go",
+      "line": 89,
+      "basis": "The mutated row differs from the retained original SettingsId; the test verifies the retained getter did not adopt it and asserts ErrFixedSchemaStorage.",
+      "classification": "source_constrained_early_rejection",
+      "replay_selected": false
+    },
+    {
+      "name": "AnotherRealSpaceHeaderCannotBindCurrentSpace",
+      "observed_test2json": "pass",
+      "first_failure_path": "validateFixedSchemaSpace -> original ValidateSpaceStorageCreatePayload",
+      "source": "fixed_schema_acl.go",
+      "line": 31,
+      "basis": "The distinct real Space header is paired with current Space ID/ACL/settings; original CID/version-specific payload verification runs before archive replay.",
+      "classification": "source_constrained_early_rejection",
+      "replay_selected": false
+    },
+    {
+      "name": "ActualSpaceHeaderSignatureCIDFailureUnavailable",
+      "observed_test2json": "pass",
+      "first_failure_path": "validateFixedSchemaSpace -> original ValidateSpaceStorageCreatePayload",
+      "source": "fixed_schema_acl.go",
+      "line": 31,
+      "basis": "The actual nonempty Space header bytes are changed under the original unchanged CID, which original verification rejects before archive replay.",
+      "classification": "source_constrained_early_rejection",
+      "replay_selected": false
+    },
+    {
+      "name": "SpaceHeaderNativeTypeCannotDefault",
+      "observed_test2json": "pass",
+      "first_failure_path": "snapshot.readSpace original decode/type checks",
+      "source": "fixed_schema_snapshot.go",
+      "line": 89,
+      "basis": "The original binary header field is replaced by a string; original GetBytes returns no valid header or the explicit TypeBinary guard rejects before replay.",
+      "classification": "source_constrained_early_rejection",
+      "replay_selected": false
+    },
+    {
+      "name": "MissingActualSettingsRootUnavailable",
+      "observed_test2json": "pass",
+      "first_failure_path": "snapshot.readSpace -> original TreeRoot",
+      "source": "fixed_schema_snapshot.go",
+      "line": 114,
+      "basis": "Deleting the actual retained settings root fails its required read before ACL/tree replay.",
+      "classification": "source_constrained_early_rejection",
+      "replay_selected": false
+    },
+    {
+      "name": "ActualSettingsRootSignatureCIDFailureUnavailable",
+      "observed_test2json": "pass",
+      "first_failure_path": "validateFixedSchemaSpace -> original ValidateSpaceStorageCreatePayload",
+      "source": "fixed_schema_acl.go",
+      "line": 31,
+      "basis": "The actual settings root bytes are changed under the original unchanged ID; original payload verification runs before archive replay.",
+      "classification": "source_constrained_early_rejection",
+      "replay_selected": false
+    },
+    {
+      "name": "CanceledCallerCannotPublishObservation",
+      "observed_test2json": "pass",
+      "first_failure_path": "ObserveFixedSchema context check",
+      "source": "fixed_schema_observer.go",
+      "line": 101,
+      "basis": "The actual canceled context must return context.Canceled and Unavailable before any persisted snapshot.",
+      "classification": "cause_asserted_runtime",
+      "replay_selected": false
+    },
+    {
+      "name": "NonzeroCounterMetadataConflict",
+      "observed_test2json": "pass",
+      "first_failure_path": "archive replay -> validateFixedSchemaStoredContent",
+      "source": "fixed_schema_replay.go",
+      "line": 313,
+      "basis": "The earlier archive decryption defect can satisfy generic unavailable before schema counter validation (target line175).",
+      "classification": "semantically_unproven_masked",
+      "replay_selected": true
+    },
+    {
+      "name": "StoredOrderMustMatchNativeTraversal",
+      "observed_test2json": "pass",
+      "first_failure_path": "archive replay -> validateFixedSchemaStoredContent",
+      "source": "fixed_schema_replay.go",
+      "line": 313,
+      "basis": "The earlier archive decryption defect can satisfy generic unavailable before target original traversal comparison (line184).",
+      "classification": "semantically_unproven_masked",
+      "replay_selected": true
+    },
+    {
+      "name": "UnrelatedNativeSnapshotCannotBecomeCommon",
+      "observed_test2json": "pass",
+      "first_failure_path": "archive replay -> validateFixedSchemaStoredContent",
+      "source": "fixed_schema_replay.go",
+      "line": 313,
+      "basis": "The earlier archive decryption defect can satisfy generic unavailable before target native common-snapshot ancestry (line276).",
+      "classification": "semantically_unproven_masked",
+      "replay_selected": true
+    },
+    {
+      "name": "WrongDerivedHeaderUnavailable",
+      "observed_test2json": "pass",
+      "first_failure_path": "archive replay -> validateFixedSchemaStoredContent",
+      "source": "fixed_schema_replay.go",
+      "line": 313,
+      "basis": "The earlier archive decryption defect can satisfy generic unavailable before target derived-header comparison (line118).",
+      "classification": "semantically_unproven_masked",
+      "replay_selected": true
+    }
+  ],
+  "source_inputs": [
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_observer.go",
+      "sha256": "53a05ff554ff7b23c2ee3d1f322522fb88784139392cc30d7cb9b06d8e0e87d1",
+      "bytes": 14244
+    },
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_snapshot.go",
+      "sha256": "3a404738380ca7b8a6e59c93a377b85927ed4383fed560385f5920f86631e5df",
+      "bytes": 17843
+    },
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_acl.go",
+      "sha256": "170a100526f0be337c12bf9831099eb78381948b41f851791e00bbb54160a09e",
+      "bytes": 4218
+    },
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_replay.go",
+      "sha256": "3fe8c34b02ee93224e8e52a139871012f4ee8d0b45ee8e1d9c690cd1a4dcdf3f",
+      "bytes": 14045
+    }
+  ],
+  "tests_reexecuted": 0
+}

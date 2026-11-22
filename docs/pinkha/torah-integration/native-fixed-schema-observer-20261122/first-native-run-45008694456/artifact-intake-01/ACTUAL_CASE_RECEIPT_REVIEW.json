@@ -1,0 +1,107 @@
+{
+  "schema": "otzaria.original-native-schema-actual-first-case-intake/1",
+  "run_id": 45008694456,
+  "head": "382e5ac62575d4df533d5ad38286ca5a09049b45",
+  "heart_base": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "suites": {
+    "native": {
+      "parent": "TestOtzariaFixedSchemaNativeObserverV5",
+      "counts": {
+        "fail": 16,
+        "pass": 17
+      },
+      "parent_terminal": "fail",
+      "package_terminal": [
+        "fail"
+      ],
+      "process_returncode": 1,
+      "effective_returncode": 1,
+      "timed_out": false,
+      "raw_event_sha256": "e39a743a8b2d4d379e71268ad711e19207e7be400fc0e2908ac74c88ad305a1f",
+      "cases": {
+        "TestOtzariaFixedSchemaNativeObserverV5/OriginalRelationMatch": "fail",
+        "TestOtzariaFixedSchemaNativeObserverV5/OriginalObjectTypeMatch": "fail",
+        "TestOtzariaFixedSchemaNativeObserverV5/ExactNativeRootOnly": "fail",
+        "TestOtzariaFixedSchemaNativeObserverV5/NativeLocalMissingWithoutCreation": "fail",
+        "TestOtzariaFixedSchemaNativeObserverV5/ActualLocalZeroCounterAccepted": "fail",
+        "TestOtzariaFixedSchemaNativeObserverV5/NativeComputedRemoteCounterAccepted": "fail",
+        "TestOtzariaFixedSchemaNativeObserverV5/NonzeroCounterMetadataConflict": "pass",
+        "TestOtzariaFixedSchemaNativeObserverV5/FractionalCounterCannotDefaultToZero": "pass",
+        "TestOtzariaFixedSchemaNativeObserverV5/StoredOrderMustMatchNativeTraversal": "pass",
+        "TestOtzariaFixedSchemaNativeObserverV5/OlderNativeCommonSnapshotAccepted": "fail",
+        "TestOtzariaFixedSchemaNativeObserverV5/UnrelatedNativeSnapshotCannotBecomeCommon": "pass",
+        "TestOtzariaFixedSchemaNativeObserverV5/ExplicitLongtextPresenceCannotDefault": "fail",
+        "TestOtzariaFixedSchemaNativeObserverV5/ArchiveUsesOriginalNativeLinkTree": "fail",
+        "TestOtzariaFixedSchemaNativeObserverV5/WrongDerivedHeaderUnavailable": "pass",
+        "TestOtzariaFixedSchemaNativeObserverV5/OriginalPooledReaderAndACLLockOrder": "fail",
+        "TestOtzariaFixedSchemaNativeObserverV5/FullACLIntermediateRecordRequired": "fail",
+        "TestOtzariaFixedSchemaNativeObserverV5/FullACLExtraRecordRefused": "pass",
+        "TestOtzariaFixedSchemaNativeObserverV5/OriginalACLSignatureCIDVerification": "fail",
+        "TestOtzariaFixedSchemaNativeObserverV5/SecondSnapshotSeesInvisibleEncodedRowChange": "fail",
+        "TestOtzariaFixedSchemaNativeObserverV5/SecondSnapshotSeesExtraNonHeadChange": "fail",
+        "TestOtzariaFixedSchemaNativeObserverV5/RealNativeOperationsPropagateInjectedIteratorCloseCommitErrors": "pass",
+        "TestOtzariaFixedSchemaNativeObserverV5/RealNativeOpenFailurePropagationStillReleasesReadTx": "pass",
+        "TestOtzariaFixedSchemaNativeObserverV5/MissingOriginalSpaceStateUnavailable": "pass",
+        "TestOtzariaFixedSchemaNativeObserverV5/PersistedStateACLIdentityMismatchUnavailable": "pass",
+        "TestOtzariaFixedSchemaNativeObserverV5/PersistedStateSettingsIdentityMismatchUnavailable": "pass",
+        "TestOtzariaFixedSchemaNativeObserverV5/AnotherRealSpaceHeaderCannotBindCurrentSpace": "pass",
+        "TestOtzariaFixedSchemaNativeObserverV5/ActualSpaceHeaderSignatureCIDFailureUnavailable": "pass",
+        "TestOtzariaFixedSchemaNativeObserverV5/SpaceHeaderNativeTypeCannotDefault": "pass",
+        "TestOtzariaFixedSchemaNativeObserverV5/MissingActualSettingsRootUnavailable": "pass",
+        "TestOtzariaFixedSchemaNativeObserverV5/ActualSettingsRootSignatureCIDFailureUnavailable": "pass",
+        "TestOtzariaFixedSchemaNativeObserverV5/SecondSnapshotSeesCompleteStateRowChange": "fail",
+        "TestOtzariaFixedSchemaNativeObserverV5/SecondSnapshotSeesCompleteSettingsRootRowChange": "fail",
+        "TestOtzariaFixedSchemaNativeObserverV5/CanceledCallerCannotPublishObservation": "pass",
+        "TestOtzariaFixedSchemaNativeObserverV5": "fail"
+      }
+    },
+    "strict": {
+      "parent": "TestOtzariaFixedSchemaStrictReplayV5",
+      "counts": {
+        "pass": 12
+      },
+      "parent_terminal": "pass",
+      "package_terminal": [
+        "pass"
+      ],
+      "process_returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "raw_event_sha256": "94439fb971645f35abdb6c98d69df7100907fcedebde1805d63b4793fdd6fba1",
+      "cases": {
+        "TestOtzariaFixedSchemaStrictReplayV5/UnknownDataTypeStrictOnlyRefusal": "pass",
+        "TestOtzariaFixedSchemaStrictReplayV5/OriginalPlainAndSnappyTagsAccepted": "pass",
+        "TestOtzariaFixedSchemaStrictReplayV5/InvalidNativeSnappyErrorPropagated": "pass",
+        "TestOtzariaFixedSchemaStrictReplayV5/SnapshotBlockFieldsRefusedBeforeReplay": "pass",
+        "TestOtzariaFixedSchemaStrictReplayV5/CreatedBlockFieldsRefusedBeforeReplay": "pass",
+        "TestOtzariaFixedSchemaStrictReplayV5/BlockSetFieldsEventRefusedBeforeReplay": "pass",
+        "TestOtzariaFixedSchemaStrictReplayV5/NilSnapshotFieldsPreserved": "pass",
+        "TestOtzariaFixedSchemaStrictReplayV5/NilCreatedFieldsPreserved": "pass",
+        "TestOtzariaFixedSchemaStrictReplayV5/NilFieldsResetEventPreserved": "pass",
+        "TestOtzariaFixedSchemaStrictReplayV5/EmptySnapshotIDCannotBeSynthesized": "pass",
+        "TestOtzariaFixedSchemaStrictReplayV5/EmptyCreatedIDCannotBeSynthesized": "pass",
+        "TestOtzariaFixedSchemaStrictReplayV5/MissingOriginalEventRefused": "pass",
+        "TestOtzariaFixedSchemaStrictReplayV5": "pass"
+      }
+    }
+  },
+  "actual_declared_input_count": 11334,
+  "exact_product_test_coverage": {
+    "core/block/object/objectcreator/fixed_schema_observer.go": "53a05ff554ff7b23c2ee3d1f322522fb88784139392cc30d7cb9b06d8e0e87d1",
+    "core/block/object/objectcreator/fixed_schema_snapshot.go": "3a404738380ca7b8a6e59c93a377b85927ed4383fed560385f5920f86631e5df",
+    "core/block/object/objectcreator/fixed_schema_acl.go": "170a100526f0be337c12bf9831099eb78381948b41f851791e00bbb54160a09e",
+    "core/block/object/objectcreator/fixed_schema_replay.go": "3fe8c34b02ee93224e8e52a139871012f4ee8d0b45ee8e1d9c690cd1a4dcdf3f",
+    "core/block/source/sourceimpl/source.go": "30481a09de754219aa3e714cab42a5750880f9d835a720e1330de22690262e55",
+    "core/block/object/objectcreator/fixed_schema_native_fixture_test.go": "574a92ed1b1f8ebc23d96bff7f24cfbabb46d0dde9186edacbd2948327afe66e",
+    "core/block/object/objectcreator/fixed_schema_native_trace_test.go": "129341500230b4e053985b34155cf48f6dcad185027e5ba1d5a89859c347a98d",
+    "core/block/object/objectcreator/fixed_schema_native_observer_test.go": "32b20449a80496c9b624dac6f09dd97356522740d953f742d4b00f081e078221",
+    "core/block/source/sourceimpl/fixed_schema_strict_test.go": "2cd96e7827eb5a50353a6e3d649aaf2a6f97a1db6dc0e86bfa6ab58e756006d2"
+  },
+  "native_library_file_count": 1,
+  "native_library_before_after_equal": true,
+  "source_postcheck_reported_by_runner": true,
+  "owned_temp_removal_reported_by_runner": true,
+  "binary_before_after_equal_reported": true,
+  "binary_bytes_available_for_independent_rehash": false,
+  "executed_during_this_review": false
+}

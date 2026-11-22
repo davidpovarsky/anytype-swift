@@ -1,0 +1,572 @@
+[
+  {
+    "absolute_command_deadline_unix": 1795347167,
+    "argv": [
+      "go",
+      "version"
+    ],
+    "child_started_unix": 1795340468.6810281,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795340468.695035
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Observer",
+    "duration_seconds": 0.016,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "go-version",
+    "pid": 2387,
+    "process_group_id": 2387,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795340468.67926,
+    "status": "TERMINAL",
+    "stderr": "01-go-version.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "01-go-version.stdout",
+    "stdout_sha256": "278375c8a03c34bb0f855154850de7c4f217fd3b8cdf37986819e3f05d0a4c33",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795347167,
+    "argv": [
+      "xcodebuild",
+      "-version"
+    ],
+    "child_started_unix": 1795340468.712327,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795340468.852462
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Observer",
+    "duration_seconds": 0.149,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "xcode-version",
+    "pid": 2388,
+    "process_group_id": 2388,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795340468.7045162,
+    "status": "TERMINAL",
+    "stderr": "02-xcode-version.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "02-xcode-version.stdout",
+    "stdout_sha256": "694b44731d0b415c5b11d844151e466d7f5e200a95627efda377f232f1a6ab77",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795347167,
+    "argv": [
+      "xcrun",
+      "--sdk",
+      "macosx",
+      "--show-sdk-version"
+    ],
+    "child_started_unix": 1795340468.856818,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795340470.6238022
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Observer",
+    "duration_seconds": 1.771,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "macos-sdk-version",
+    "pid": 2389,
+    "process_group_id": 2389,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795340468.8536909,
+    "status": "TERMINAL",
+    "stderr": "03-macos-sdk-version.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "03-macos-sdk-version.stdout",
+    "stdout_sha256": "7b01c549928398a045692f24bcac7803b348524cdd76f21265b02984b2ba556a",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795347167,
+    "argv": [
+      "xcrun",
+      "--sdk",
+      "macosx",
+      "clang",
+      "--version"
+    ],
+    "child_started_unix": 1795340470.627415,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795340471.29211
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Observer",
+    "duration_seconds": 0.668,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "clang-version",
+    "pid": 2417,
+    "process_group_id": 2417,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795340470.625033,
+    "status": "TERMINAL",
+    "stderr": "04-clang-version.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "04-clang-version.stdout",
+    "stdout_sha256": "f7d94e70f50cd55c0a560f909290570818892beae3a1c0ee41f35ee034d050b0",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795347167,
+    "argv": [
+      "git",
+      "apply",
+      "--check",
+      "/Users/runner/work/anytype-swift/anytype-swift/docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v5-r2/original/anytype-swift/docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch"
+    ],
+    "child_started_unix": 1795340471.296694,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795340471.309346
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Observer",
+    "duration_seconds": 0.016,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "r14-apply-check",
+    "pid": 2425,
+    "process_group_id": 2425,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795340471.2942688,
+    "status": "TERMINAL",
+    "stderr": "05-r14-apply-check.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "05-r14-apply-check.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795347167,
+    "argv": [
+      "git",
+      "apply",
+      "/Users/runner/work/anytype-swift/anytype-swift/docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v5-r2/original/anytype-swift/docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch"
+    ],
+    "child_started_unix": 1795340471.31252,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795340471.329346
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Observer",
+    "duration_seconds": 0.019,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "r14-apply",
+    "pid": 2426,
+    "process_group_id": 2426,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795340471.3106492,
+    "status": "TERMINAL",
+    "stderr": "06-r14-apply.stderr",
+    "stderr_sha256": "db6add88ad479f97534bb85c867cfd68e89a78bfce0e4c901e195f4bc3a355da",
+    "stdout": "06-r14-apply.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795347167,
+    "argv": [
+      "git",
+      "apply",
+      "--check",
+      "/Users/runner/work/anytype-swift/anytype-swift/docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/candidate-v5/CANDIDATE.patch"
+    ],
+    "child_started_unix": 1795340471.333667,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795340471.3445399
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Observer",
+    "duration_seconds": 0.013,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "observer-apply-check",
+    "pid": 2427,
+    "process_group_id": 2427,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795340471.331903,
+    "status": "TERMINAL",
+    "stderr": "07-observer-apply-check.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "07-observer-apply-check.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795347167,
+    "argv": [
+      "git",
+      "apply",
+      "/Users/runner/work/anytype-swift/anytype-swift/docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/candidate-v5/CANDIDATE.patch"
+    ],
+    "child_started_unix": 1795340471.34749,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795340471.360679
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Observer",
+    "duration_seconds": 0.015,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "observer-apply",
+    "pid": 2428,
+    "process_group_id": 2428,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795340471.345779,
+    "status": "TERMINAL",
+    "stderr": "08-observer-apply.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "08-observer-apply.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795347167,
+    "argv": [
+      "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
+      "/Users/runner/work/anytype-swift/anytype-swift/docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v5-r2/prepare_original_tantivy.py",
+      "--heart",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Observer",
+      "--helper",
+      "/Users/runner/work/anytype-swift/anytype-swift/docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v5-r2/original/anytype-swift/Tools/PinkhaNativeDerived/build_custom_heart.py",
+      "--helper-sha256",
+      "0ebbe2f6227418eac2c532b0058290158319ba9f786baaf445de444887e8c669",
+      "--receipt",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Evidence/TANTIVY_SETUP.json"
+    ],
+    "child_started_unix": 1795340471.390168,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795340472.1116228
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Observer",
+    "duration_seconds": 0.724,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 600.0,
+    "label": "original-tantivy-setup",
+    "pid": 2431,
+    "process_group_id": 2431,
+    "requested_timeout_seconds": 600,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795340471.3886368,
+    "status": "TERMINAL",
+    "stderr": "09-original-tantivy-setup.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "09-original-tantivy-setup.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795347167,
+    "argv": [
+      "go",
+      "list",
+      "-deps",
+      "-test",
+      "-json",
+      "./core/block/object/objectcreator",
+      "./core/block/source/sourceimpl"
+    ],
+    "child_started_unix": 1795340472.147007,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795340501.684442
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Observer",
+    "duration_seconds": 29.541,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 1200.0,
+    "label": "declared-dependency-inputs",
+    "pid": 2433,
+    "process_group_id": 2433,
+    "requested_timeout_seconds": 1200,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795340472.145123,
+    "status": "TERMINAL",
+    "stderr": "10-declared-dependency-inputs.stderr",
+    "stderr_sha256": "f3d1fb55da4f4d31b1a0be67e3d9f1d97f84aa043463f6a856970739b05e154e",
+    "stdout": "10-declared-dependency-inputs.stdout",
+    "stdout_sha256": "202f13dcb11b7cb46026fea261933564a92635675c83334af2dbccd73494a2cd",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795347167,
+    "argv": [
+      "go",
+      "test",
+      "-c",
+      "-p",
+      "2",
+      "-o",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Owned-Work/native.test",
+      "./core/block/object/objectcreator"
+    ],
+    "child_started_unix": 1795340502.891256,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795340635.714365
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Observer",
+    "duration_seconds": 132.829,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 2400.0,
+    "label": "compile-native",
+    "pid": 2862,
+    "process_group_id": 2862,
+    "requested_timeout_seconds": 2400,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795340502.8887942,
+    "status": "TERMINAL",
+    "stderr": "11-compile-native.stderr",
+    "stderr_sha256": "0ee5f00529a3cb6d32f854f7cffbe0b465889855e6763cf576ef8971b6ad4945",
+    "stdout": "11-compile-native.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795347167,
+    "argv": [
+      "go",
+      "version",
+      "-m",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Owned-Work/native.test"
+    ],
+    "child_started_unix": 1795340635.8076181,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795340635.894612
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Observer",
+    "duration_seconds": 0.091,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "buildinfo-native",
+    "pid": 9159,
+    "process_group_id": 9159,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795340635.804606,
+    "status": "TERMINAL",
+    "stderr": "12-buildinfo-native.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "12-buildinfo-native.stdout",
+    "stdout_sha256": "d40627e92541218e861ab77a339ceddf3e18650da80dcbd66af8abd2e554fb8f",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795347167,
+    "argv": [
+      "go",
+      "tool",
+      "test2json",
+      "-t",
+      "-p",
+      "./core/block/object/objectcreator",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Owned-Work/native.test",
+      "-test.v=test2json",
+      "-test.count=1",
+      "-test.run=^TestOtzariaFixedSchemaNativeObserverV5$",
+      "-test.timeout=12m"
+    ],
+    "child_started_unix": 1795340635.9300349,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795340640.62465
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Observer",
+    "duration_seconds": 4.725,
+    "effective_returncode": 1,
+    "effective_timeout_seconds": 780.0,
+    "label": "run-native",
+    "pid": 9175,
+    "process_group_id": 9175,
+    "requested_timeout_seconds": 780,
+    "returncode": 1,
+    "start_new_session": true,
+    "started_unix": 1795340635.9004831,
+    "status": "TERMINAL",
+    "stderr": "13-run-native.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "13-run-native.stdout",
+    "stdout_sha256": "e39a743a8b2d4d379e71268ad711e19207e7be400fc0e2908ac74c88ad305a1f",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795347167,
+    "argv": [
+      "go",
+      "test",
+      "-c",
+      "-p",
+      "2",
+      "-o",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Owned-Work/strict.test",
+      "./core/block/source/sourceimpl"
+    ],
+    "child_started_unix": 1795340640.8146718,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795340654.747812
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Observer",
+    "duration_seconds": 13.94,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 2400.0,
+    "label": "compile-strict",
+    "pid": 9380,
+    "process_group_id": 9380,
+    "requested_timeout_seconds": 2400,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795340640.809164,
+    "status": "TERMINAL",
+    "stderr": "14-compile-strict.stderr",
+    "stderr_sha256": "48b4f6ca4e791e71a97ab74e4bce50565d7d09f57d83cbeac410848db9f845ef",
+    "stdout": "14-compile-strict.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795347167,
+    "argv": [
+      "go",
+      "version",
+      "-m",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Owned-Work/strict.test"
+    ],
+    "child_started_unix": 1795340654.812908,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795340654.863186
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Observer",
+    "duration_seconds": 0.055,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "buildinfo-strict",
+    "pid": 9476,
+    "process_group_id": 9476,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795340654.809383,
+    "status": "TERMINAL",
+    "stderr": "15-buildinfo-strict.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "15-buildinfo-strict.stdout",
+    "stdout_sha256": "020a8c1b2afcf7d39d41cc5fa4bc64d847fa20de3de73e3e79f03d0cca22ccfe",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795347167,
+    "argv": [
+      "go",
+      "tool",
+      "test2json",
+      "-t",
+      "-p",
+      "./core/block/source/sourceimpl",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Owned-Work/strict.test",
+      "-test.v=test2json",
+      "-test.count=1",
+      "-test.run=^TestOtzariaFixedSchemaStrictReplayV5$",
+      "-test.timeout=12m"
+    ],
+    "child_started_unix": 1795340654.8679,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795340655.1620889
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Schema-Observer",
+    "duration_seconds": 0.298,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 780.0,
+    "label": "run-strict",
+    "pid": 9497,
+    "process_group_id": 9497,
+    "requested_timeout_seconds": 780,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795340654.865314,
+    "status": "TERMINAL",
+    "stderr": "16-run-strict.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "16-run-strict.stdout",
+    "stdout_sha256": "94439fb971645f35abdb6c98d69df7100907fcedebde1805d63b4793fdd6fba1",
+    "timed_out": false
+  }
+]

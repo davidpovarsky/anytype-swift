@@ -1,0 +1,17 @@
+{
+  "ok": false,
+  "interpreter": "python3",
+  "sudo": false,
+  "cwd": null,
+  "cleanup": false,
+  "command": [
+    "C:\\ProgramData\\SentinelX\\.venv\\Scripts\\python.exe",
+    "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_a2b08a442301422eb01fb5e4715089cb\\heart_final_git_admission.py"
+  ],
+  "output": "{\"schema\": \"otzaria.heart-v5-r2-final-root-git-admission/1\", \"status\": \"FAIL_FINAL_GIT_ADMISSION\", \"tests\": 0, \"builds\": 0, \"native_calls\": 0, \"pushes\": 0, \"error_type\": \"FileNotFoundError\", \"error\": \"[WinError 206] The filename or extension is too long\"}\nTraceback (most recent call last):\r\n  File \"C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_a2b08a442301422eb01fb5e4715089cb\\heart_final_git_admission.py\", line 61, in <module>\r\n    rawtree=cmd(\"ls-tree\",\"-r\",\"-z\",HEAD,\"--\",*paths)\r\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_a2b08a442301422eb01fb5e4715089cb\\heart_final_git_admission.py\", line 12, in cmd\r\n    p=subprocess.run([\"git\",\"-c\",\"core.autocrlf=false\",*args],cwd=R,input=input,capture_output=True,timeout=45)\r\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\subprocess.py\", line 548, in run\r\n    with Popen(*popenargs, **kwargs) as process:\r\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\subprocess.py\", line 1026, in __init__\r\n    self._execute_child(args, executable, preexec_fn, close_fds,\r\n  File \"C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\subprocess.py\", line 1538, in _execute_child\r\n    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,\r\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nFileNotFoundError: [WinError 206] The filename or extension is too long",
+  "duration": 3.9,
+  "returncode": 1,
+  "script_path": "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_a2b08a442301422eb01fb5e4715089cb\\heart_final_git_admission.py",
+  "workdir": "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_a2b08a442301422eb01fb5e4715089cb",
+  "hub_request_id": "hreq_3f8b22d2c1d04247"
+}
