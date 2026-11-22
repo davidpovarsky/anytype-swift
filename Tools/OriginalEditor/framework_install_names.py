@@ -1,0 +1,160 @@
+"""Read the actual owned arm64 Mach-O load commands before consumer runtime.
+
+These checks never rewrite, sign or execute a binary. They qualify only the
+relocatable install identity and the actual consumer's reachable framework
+load; the existing source, signature, platform and runtime gates still apply.
+"""
+import hashlib
+import os
+from pathlib import Path
+import plistlib
+import stat
+import struct
+
+TARGET = 'AnytypeOriginalEditor'
+INSTALL_NAME = '@rpath/' + TARGET + '.framework/' + TARGET
+CONSUMER = 'OriginalEditorConsumer'
+DEBUG_NAME = '@rpath/' + CONSUMER + '.debug.dylib'
+LOAD = 0xC
+IDENTITY = 0xD
+RPATH = 0x8000001C
+BUILD_VERSION = 0x32
+DYLIB_COMMANDS = {LOAD, IDENTITY, 0x80000018, 0x8000001F, 0x80000023, 0x20}
+MAX_LOAD_BYTES = 1024 * 1024
+
+
+def require(condition, message):
+    if not condition:
+        raise ValueError(message)
+
+
+def parse_load_commands(prefix, file_bytes):
+    """Parse exactly the 64-bit header and complete load-command prefix.
+
+    A fixture can supply a copied prefix and its authentic total byte count;
+    production read_image always derives both from the actual opened file.
+    Unrecognized load-command payloads are retained by the prefix digest.
+    """
+    require(isinstance(prefix, bytes) and len(prefix) >= 32, 'Truncated Mach-O header')
+    magic, cpu, subtype, kind, count, total, flags, reserved = struct.unpack_from('<8I', prefix)
+    require(magic == 0xFEEDFACF and cpu == 0x100000C and subtype == 0,
+            'Install-name gate requires the actual thin arm64 binary')
+    require(kind in {2, 6} and reserved == 0, 'Unexpected Mach-O file type/header')
+    require(0 < count <= 65536 and count * 8 <= total <= MAX_LOAD_BYTES
+            and len(prefix) == 32 + total and type(file_bytes) is int and file_bytes >= len(prefix),
+            'Incomplete or unbounded Mach-O load-command region')
+    result = {'filetype': kind, 'cpu_type': cpu, 'cpu_subtype': subtype,
+              'load_command_count': count, 'load_command_bytes': total,
+              'prefix_sha256': hashlib.sha256(prefix).hexdigest(),
+              'dylibs': [], 'rpaths': [], 'build_versions': []}
+    offset = 32
+    for index in range(count):
+        require(offset + 8 <= len(prefix), 'Truncated load-command header')
+        command, size = struct.unpack_from('<2I', prefix, offset)
+        require(size >= 8 and size % 8 == 0 and offset + size <= len(prefix),
+                'Invalid load-command size/alignment')
+        row = {'index': index, 'command': command, 'file_offset': offset, 'bytes': size}
+        if command in DYLIB_COMMANDS or command == RPATH:
+            minimum = 24 if command in DYLIB_COMMANDS else 12
+            require(size >= minimum, 'Truncated dylib/rpath command')
+            name_offset = struct.unpack_from('<I', prefix, offset + 8)[0]
+            require(minimum <= name_offset < size, 'Invalid load-command string offset')
+            encoded = prefix[offset + name_offset:offset + size]
+            end = encoded.find(b'\0')
+            require(end > 0, 'Missing or empty load-command string')
+            row['name'] = encoded[:end].decode('utf-8')
+            row['raw_command_sha256'] = hashlib.sha256(prefix[offset:offset + size]).hexdigest()
+            result['rpaths' if command == RPATH else 'dylibs'].append(row)
+        elif command == BUILD_VERSION:
+            require(size >= 24, 'Truncated build-version command')
+            platform, minimum_os, sdk, tools = struct.unpack_from('<4I', prefix, offset + 8)
+            require(size == 24 + tools * 8, 'Invalid build-version tool extent')
+            result['build_versions'].append({'platform': platform, 'minimum_os': minimum_os, 'sdk': sdk})
+        offset += size
+    require(offset == len(prefix), 'Load-command count does not cover the declared region')
+    require(len(result['build_versions']) == 1 and result['build_versions'][0]['platform'] == 7,
+            'Actual load-command image is not uniquely an iOS Simulator binary')
+    return result
+
+
+def read_image(path):
+    path = Path(path)
+    require(path.is_absolute() and path.resolve(strict=True) == path, 'Binary path is not exact/unaliased')
+    before = path.lstat()
+    require(stat.S_ISREG(before.st_mode), 'Binary is not a regular file')
+    descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    with os.fdopen(descriptor, 'rb') as stream:
+        opened = os.fstat(stream.fileno())
+        require((before.st_dev, before.st_ino) == (opened.st_dev, opened.st_ino)
+                and stat.S_ISREG(opened.st_mode), 'Binary changed before opening')
+        header = stream.read(32)
+        require(len(header) == 32, 'Truncated actual Mach-O header')
+        total = struct.unpack_from('<I', header, 20)[0]
+        require(total <= MAX_LOAD_BYTES, 'Unbounded actual Mach-O load-command region')
+        prefix = header + stream.read(total)
+        parsed = parse_load_commands(prefix, opened.st_size)
+        stream.seek(0)
+        digest = hashlib.file_digest(stream, 'sha256').hexdigest()
+        after = os.fstat(stream.fileno())
+    require((opened.st_size, opened.st_mtime_ns) == (after.st_size, after.st_mtime_ns),
+            'Binary changed during load-command observation')
+    parsed.update(path=str(path), file_bytes=opened.st_size, file_sha256=digest)
+    return parsed
+
+
+def require_framework_identity(image):
+    identities = [row for row in image['dylibs'] if row['command'] == IDENTITY]
+    require(image['filetype'] == 6 and len(identities) == 1 and identities[0]['name'] == INSTALL_NAME,
+            'Actual framework LC_ID_DYLIB is not the exact relocatable install name')
+
+
+def verify_framework_install_name(binary):
+    image = read_image(binary)
+    require_framework_identity(image)
+    return {'status': 'ACTUAL_FRAMEWORK_INSTALL_NAME_PASS', 'expected_install_name': INSTALL_NAME,
+            'image': image, 'binary_mutations': 0, 'runtime_execution': False}
+
+
+def target_loads(image):
+    loads = [row for row in image['dylibs']
+             if row['command'] != IDENTITY and TARGET in row['name']]
+    require(len(loads) <= 1 and all(row['command'] == LOAD and row['name'] == INSTALL_NAME for row in loads),
+            'Consumer has a nonrelocatable, weak, duplicate or unexpected original-framework load')
+    return loads
+
+
+def verify_consumer_install_name(app):
+    app = Path(app)
+    require(app.is_absolute() and app.resolve(strict=True) == app and app.is_dir(),
+            'Actual consumer app path is not exact/unaliased')
+    info_path = app / 'Info.plist'
+    require(info_path.is_file() and not info_path.is_symlink() and info_path.stat().st_size <= 1024 * 1024,
+            'Missing or aliased consumer metadata')
+    info_raw = info_path.read_bytes()
+    info = plistlib.loads(info_raw)
+    require(info.get('CFBundleIdentifier') == 'org.otzaria.acceptance.original-editor'
+            and info.get('CFBundleExecutable') == CONSUMER, 'Actual consumer executable identity differs')
+    main = read_image(app / CONSUMER)
+    require(main['filetype'] == 2 and not any(row['command'] == IDENTITY for row in main['dylibs']),
+            'Consumer entrypoint is not the actual executable')
+    main_rpaths = [row['name'] for row in main['rpaths']]
+    require('@executable_path/Frameworks' in main_rpaths, 'Consumer lacks its actual embedded-framework rpath')
+    reachable = [main]
+    debug_loads = [row for row in main['dylibs'] if CONSUMER + '.debug.dylib' in row['name']]
+    require(len(debug_loads) <= 1 and all(row['command'] == LOAD and row['name'] == DEBUG_NAME for row in debug_loads),
+            'Consumer debug-image edge is not one exact strong load')
+    if debug_loads:
+        require('@executable_path' in main_rpaths, 'Consumer debug image is not resolvable from the entrypoint')
+        debug = read_image(app / (CONSUMER + '.debug.dylib'))
+        identities = [row for row in debug['dylibs'] if row['command'] == IDENTITY]
+        require(debug['filetype'] == 6 and len(identities) == 1 and identities[0]['name'] == DEBUG_NAME,
+                'Reachable consumer debug image has an unexpected identity')
+        reachable.append(debug)
+    loads = [(image['path'], row) for image in reachable for row in target_loads(image)]
+    require(loads, 'No reachable actual consumer image strongly loads the original framework')
+    framework = verify_framework_install_name(app / 'Frameworks' / (TARGET + '.framework') / TARGET)
+    return {'status': 'ACTUAL_CONSUMER_RELOCATABLE_LOAD_PASS', 'expected_install_name': INSTALL_NAME,
+            'app': str(app), 'info_plist_sha256': hashlib.sha256(info_raw).hexdigest(),
+            'reachable_consumer_images': reachable,
+            'framework_loads': [{'consumer_image': path, 'load_command': row} for path, row in loads],
+            'embedded_framework': framework, 'binary_mutations': 0, 'runtime_execution': False}

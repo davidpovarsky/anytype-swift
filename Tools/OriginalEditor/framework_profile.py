@@ -78,6 +78,11 @@ def verify_project(raw, baseline, profile):
     require([new[key] for key in target['packageProductDependencies']]
             == [old[key] for key in original_target['packageProductDependencies']],
             'Original package product closure differs')
+    framework_configurations = new[target['buildConfigurationList']]['buildConfigurations']
+    require(len(framework_configurations) == 4
+            and all(new[key]['buildSettings'].get('LD_DYLIB_INSTALL_NAME') == '@rpath/$(EXECUTABLE_PATH)'
+                    for key in framework_configurations),
+            'Framework install identity is not explicitly relocatable in every target configuration')
     emission = profile['symbol_graph_emission']
     configuration = new[emission['configuration_id']]
     require(emission['configuration_id'] in new[target['buildConfigurationList']]['buildConfigurations']
@@ -99,7 +104,8 @@ def verify_project(raw, baseline, profile):
             'new_objects': len(added), 'original_package_products': len(target['packageProductDependencies']),
             'framework_target_id': targets[0], 'only_excluded_source': 'ApplicationLayer/AppScene.swift',
             'reviewed_shared_dependency_objects': sorted(dependencies),
-            'target_only_full_public_spi_graph': True, 'whole_project_inverse_exact': True}
+            'target_only_full_public_spi_graph': True, 'whole_project_inverse_exact': True,
+            'framework_install_name_setting': '@rpath/$(EXECUTABLE_PATH)'}
 
 
 def source_observation(root, environment=None):
