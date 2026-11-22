@@ -1,0 +1,49 @@
+{
+  "base": "37f48119609747c01ee92cf597e4216f63b7bfa4",
+  "files": [
+    {
+      "path": "Anytype/Sources/ServiceLayer/Auth/AuthServiceProtocol.swift",
+      "git_blob": "3f247a1955ef7ccb19e7d874c8f9b3c7363a3dd4",
+      "bytes": 696,
+      "sha256": "ab99daf4b36b27b08e58c0c4fdb4673d6f6d4ada1c4453938a138e991db3eb01"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift",
+      "git_blob": "21085b9a22f05d44ce4199005122a0a7e41e5d05",
+      "bytes": 21412,
+      "sha256": "7fc5fc32d5dd7f21d6133f72511ccc133dea9dbe6bdabcbc9a5e435deffa8da1"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/SpaceStorage/SpaceViewsStorage.swift",
+      "git_blob": "57e247b98ef5d8898154794a4121a6b9ff69b931",
+      "bytes": 17829,
+      "sha256": "f1570f8cff28d87152ea455ded6bc0bdfeb729e0beb3a70e3a47fb06b4710a57"
+    },
+    {
+      "path": "Modules/Services/Sources/Models/Account/AccountData.swift",
+      "git_blob": "bcab335b6a9bef338df5d6a30291ae53f730628d",
+      "bytes": 603,
+      "sha256": "cc30fb617864d35f82b07d220aa3f35f9804cd2d5e3d042fd7faffd019cc933b"
+    },
+    {
+      "path": "Modules/Services/Sources/Services/Auth/AuthMiddleService.swift",
+      "git_blob": "6e8810033642e28269fe798e411e49cdccf08860",
+      "bytes": 5451,
+      "sha256": "7dde49656a11ca47935fac73eb20dba634bcfa57b5351dddb153f5b90a6406d4"
+    }
+  ],
+  "searches": [
+    {
+      "pattern": "accountManager\\.account[ \\t]*=",
+      "matches": "37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/AuthService.swift:70:        accountManager.account = account\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/AuthService.swift:132:        accountManager.account = account\n"
+    },
+    {
+      "pattern": "setupStateAfterLoginOrAuth|setupStateAfterRegistration|setupStateAfterAuth|cleanStateAfterLogout|setupStateBeforeLoginOrAuth",
+      "matches": "37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/AuthService.swift:28:        await loginStateService.cleanStateAfterLogout()\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/AuthService.swift:45:        await loginStateService.setupStateBeforeLoginOrAuth()\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/AuthService.swift:72:        await loginStateService.setupStateAfterRegistration(account: account)\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/AuthService.swift:91:        await loginStateService.setupStateAfterAuth()\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/AuthService.swift:98:        await loginStateService.setupStateBeforeLoginOrAuth()\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/AuthService.swift:122:            await loginStateService.cleanStateAfterLogout()\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/AuthService.swift:133:        await loginStateService.setupStateAfterLoginOrAuth(account: accountManager.account)\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift:7:    func setupStateAfterLoginOrAuth(account: AccountData) async\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift:8:    func setupStateAfterAuth() async\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift:9:    func setupStateAfterRegistration(account: AccountData) async\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift:10:    func cleanStateAfterLogout() async\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift:11:    func setupStateBeforeLoginOrAuth() async\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift:58:    func setupStateAfterLoginOrAuth(account: AccountData) async {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift:65:    func setupStateAfterAuth() async {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift:70:    func setupStateAfterRegistration(account: AccountData) async {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift:78:    func cleanStateAfterLogout() async {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift:90:        userDefaults.cleanStateAfterLogout()\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift:93:    func setupStateBeforeLoginOrAuth() async {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/Utilities/UserDefaults/UserDefaultsStorage.swift:26:    func cleanStateAfterLogout()\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/Utilities/UserDefaults/UserDefaultsStorage.swift:121:    func cleanStateAfterLogout() {\n"
+    },
+    {
+      "pattern": "func (createAccount|selectAccount|logout|accountRecover)|protocol AuthServiceProtocol",
+      "matches": "37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorViewModel.swift:146:    func selectAccount(id: String) async {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift:24:    func accountRecover() async throws {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift:30:    func createAccount(name: String, iconOption: Int, imagePath: String) async throws -> AccountData {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift:40:    func selectAccount(id: String, preferredSpaceId: String) async throws -> AccountData {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift:50:    func logout(removeData: Bool) async throws {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginViewModel.swift:110:    func logoutAction() {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginViewModel.swift:114:    func logout() async {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginViewModel.swift:161:    private func accountRecover() async {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginViewModel.swift:170:    func selectAccount() async {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/PresentationLayer/Auth/PrimaryAuthView/PrimaryAuthViewModel.swift:81:    func createAccount() async {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/PresentationLayer/Auth/PrimaryAuthView/PrimaryAuthViewModel.swift:118:    private func createAccountError(_ error: some Error) {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/PresentationLayer/Modules/HomeWidgets/Container/Views/Alerts/DashboardAccountDeletionAlert/DashboardAccountDeletionAlertModel.swift:38:    private func logout() async throws {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/AuthService.swift:22:    func logout(removeData: Bool) async throws  {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/AuthService.swift:39:    func createAccount(name: String, iconOption: Int, imagePath: String) async throws -> AccountData {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/AuthService.swift:85:    func accountRecover() async throws {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/AuthService.swift:94:    func selectAccount(id: String, preferredSpaceId: String) async throws -> AccountData {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/AuthServiceProtocol.swift:3:protocol AuthServiceProtocol: Sendable {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/AuthServiceProtocol.swift:5:    func createAccount(name: String, iconOption: Int, imagePath: String) async throws -> AccountData\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/AuthServiceProtocol.swift:8:    func accountRecover() async throws\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/AuthServiceProtocol.swift:10:    func selectAccount(id: String, preferredSpaceId: String) async throws -> AccountData\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/AuthServiceProtocol.swift:15:    func logout(removeData: Bool) async throws\n37f48119609747c01ee92cf597e4216f63b7bfa4:Modules/Services/Sources/Services/Auth/AuthMiddleService.swift:6:    func logout(removeData: Bool)  async throws\n37f48119609747c01ee92cf597e4216f63b7bfa4:Modules/Services/Sources/Services/Auth/AuthMiddleService.swift:8:    func createAccount(\n37f48119609747c01ee92cf597e4216f63b7bfa4:Modules/Services/Sources/Services/Auth/AuthMiddleService.swift:17:    func accountRecover() async throws\n37f48119609747c01ee92cf597e4216f63b7bfa4:Modules/Services/Sources/Services/Auth/AuthMiddleService.swift:18:    func selectAccount(\n37f48119609747c01ee92cf597e4216f63b7bfa4:Modules/Services/Sources/Services/Auth/AuthMiddleService.swift:34:    public func logout(removeData: Bool)  async throws {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Modules/Services/Sources/Services/Auth/AuthMiddleService.swift:47:    public func createAccount(\n37f48119609747c01ee92cf597e4216f63b7bfa4:Modules/Services/Sources/Services/Auth/AuthMiddleService.swift:83:    public func accountRecover() async throws {\n37f48119609747c01ee92cf597e4216f63b7bfa4:Modules/Services/Sources/Services/Auth/AuthMiddleService.swift:92:    public func selectAccount(\n"
+    }
+  ]
+}

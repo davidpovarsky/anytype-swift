@@ -1,0 +1,10 @@
+{
+  "stage": "precommit_evidence_diff_check",
+  "source_commit": "15ea8755a4e1cebf63314ab415fd809fbe9e8e84",
+  "tests_replayed": 0,
+  "first_commit_executed": false,
+  "first_push_executed": false,
+  "cause": "The original MSVC linker stderr contains CR CR LF. The initial raw-evidence CR-at-EOL allowance did not permit the second CR. Preserve exact raw bytes and add only its exact path whitespace exception.",
+  "raw_stdout_sha256": "d79d2716da0c82658d6d3f0e1595e3e2136742394533f6680e2f8845a37accb9",
+  "exact_rule": "docs/pinkha/torah-integration/original-auth-release-20261122/execution-v2/compile-six-new-controls.stderr -whitespace"
+}

@@ -1,0 +1,37 @@
+{
+  "schema": "otzaria.original-auth-release-seam-root-review/1",
+  "status": "PASS_FOR_EXACT_SEAM_IMPLEMENTATION_AND_NEW_FOCUSED_CONTROLS",
+  "observed_at": "2026-11-22T10:33:24.817016+00:00",
+  "source_packet": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-auth-startup-20261122\\repair-proposal-v1",
+  "source_index_sha256": "ac3a98c43bc915a117f779d638e53b629990d01c93b686df6182500c4cf7e372",
+  "original_git_inputs_verified": 23,
+  "original_swift_inputs": 19,
+  "original_heart_inputs": 4,
+  "product_path": "Anytype/Sources/ServiceLayer/Account/EditorAccountWriteTransition.swift",
+  "preimage_sha256": "25d37aa7d7dfe1b018c3161eca54c42bb6f0e7394bfdbf6ea6af3182c429c6dc",
+  "candidate_sha256": "65a20edfdacbb8c5a51d647b2746a16f75ca9865984026cca5b6235f4fa4933e",
+  "exact_patch_sha256": "3de561dafa7e05446a2885f65a7ba1c6c096c1302aa235395e45c02aab084117",
+  "review": [
+    "Full source, preimage, patch and proposal read by root.",
+    "Original released claim remains separate from completed release effects.",
+    "Atomic registration/completion using existing State lock; continuations resume outside lock.",
+    "Actual native operation drain, closing cancellation and optional verified confirmOpened all precede waiter completion.",
+    "First finish owns verification; duplicate calls cannot upgrade it.",
+    "Void return creates no current-account, subscription, selected-Space or body authority.",
+    "Cancellation does not synthesize release of an admitted original native body."
+  ],
+  "new_control_scope": [
+    "no admitted RPC",
+    "admitted body held until actual completion",
+    "second waiter registered during verification after release claim",
+    "other closing lease keeps token unavailable",
+    "cancelled waiter does not release admitted body",
+    "first unverified finish cannot be upgraded"
+  ],
+  "limits": [
+    "This approves only the original transition completion seam.",
+    "Exact-attempt Auth/LoginState/Hanlin decorator cancellation changes need concrete implementation review.",
+    "No normal logout serialization, global queue, new authentication selector or generated native readiness.",
+    "No compile, native execution or prior passed test replay by root."
+  ]
+}

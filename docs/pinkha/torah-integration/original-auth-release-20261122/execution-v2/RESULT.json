@@ -1,0 +1,229 @@
+{
+  "status": "PASS",
+  "scope": "Windows Swift6.3.3 toolchain / Swift5 language / strict-concurrency complete; actual original transition/lifetime/operation/binding/capture; no Auth runtime or StageB",
+  "commands": [
+    {
+      "label": "compiler-version",
+      "argv": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+        "--version"
+      ],
+      "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-auth-startup-20261122\\execution-v2",
+      "status": "COMPLETED",
+      "started_at": "2026-11-22T10:52:41.743310+00:00",
+      "pid": 28452,
+      "exit_code": 0,
+      "timed_out": false,
+      "parent_reaped": true,
+      "finished_at": "2026-11-22T10:52:42.328197+00:00",
+      "stdout_sha256": "a2aa2d7dcd61b2f3db2c0e6ff30a1f0ab2d45f58a9542e79f6b7fa7111b09dd5",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "compile-six-new-controls",
+      "argv": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+        "-swift-version",
+        "5",
+        "-strict-concurrency=complete",
+        "-parse-as-library",
+        "-j",
+        "1",
+        "-whole-module-optimization",
+        "-Onone",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-auth-startup-20261122\\execution-v2\\compiled-inputs\\Lifetime.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-auth-startup-20261122\\execution-v2\\compiled-inputs\\Operation.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-auth-startup-20261122\\execution-v2\\compiled-inputs\\Binding.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-auth-startup-20261122\\execution-v2\\compiled-inputs\\OriginalCaptureAndError.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-auth-startup-20261122\\execution-v2\\compiled-inputs\\Transition.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-auth-startup-20261122\\execution-v2\\compiled-inputs\\Controls.swift",
+        "-o",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-auth-startup-20261122\\execution-v2\\original-account-transition-controls.exe"
+      ],
+      "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-auth-startup-20261122\\execution-v2",
+      "status": "COMPLETED",
+      "started_at": "2026-11-22T10:52:42.454801+00:00",
+      "pid": 22644,
+      "exit_code": 0,
+      "timed_out": false,
+      "parent_reaped": true,
+      "finished_at": "2026-11-22T10:53:02.500829+00:00",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "69cbbf8f29482a0c9482deb5ba3158a1b43b3b25248443ac52c65be1d4a1b955"
+    },
+    {
+      "label": "execute-six-new-controls",
+      "argv": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-auth-startup-20261122\\execution-v2\\original-account-transition-controls.exe"
+      ],
+      "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-auth-startup-20261122\\execution-v2",
+      "status": "COMPLETED",
+      "started_at": "2026-11-22T10:53:02.756276+00:00",
+      "pid": 4420,
+      "exit_code": 0,
+      "timed_out": false,
+      "parent_reaped": true,
+      "finished_at": "2026-11-22T10:53:03.111543+00:00",
+      "stdout_sha256": "832b2cf1a73e46cb090809bd30d419700dcb66d03e1b68a42b1bfee553a2561c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "manifest_sha256": "aedafa37e322e06559d04b2fd6704bf369037c4332023a37cdff79e67a998644",
+  "started_at": "2026-11-22T10:52:40.881634+00:00",
+  "canonical_and_compiled_inputs_before": "PASS",
+  "compiler_path": "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+  "compiler_executable_sha256": "e1d0a0b20d95a92b22f4906e7ca331a7c8b89be86b2d9a2d215ac24f753e945a",
+  "runtime_path_prefix": [
+    "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Runtimes\\6.3.3\\usr\\bin",
+    "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin"
+  ],
+  "other_inherited_environment_preserved": true,
+  "PYTHONUTF8": "1",
+  "compiler_version": "Swift version 6.3.3 (swift-6.3.3-RELEASE)\nTarget: x86_64-unknown-windows-msvc\nBuild config: +assertions\n",
+  "actual_compiled_copies": [
+    {
+      "path": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-auth-startup-20261122\\execution-v2\\compiled-inputs\\Lifetime.swift",
+      "sha256": "451054685e2ff0c30371d384904be831412eec16c2a5e16c660d2f1891921eb4",
+      "bytes": 5574
+    },
+    {
+      "path": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-auth-startup-20261122\\execution-v2\\compiled-inputs\\Operation.swift",
+      "sha256": "55804cf1a06b59dc80846ab4bc8b874a2d54ae28649288c5b49930267b9ae844",
+      "bytes": 2435
+    },
+    {
+      "path": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-auth-startup-20261122\\execution-v2\\compiled-inputs\\Binding.swift",
+      "sha256": "e304f05ed114342795dbc3a603490311142d63f9a6a156bdcdafd68743e710cb",
+      "bytes": 3025
+    },
+    {
+      "path": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-auth-startup-20261122\\execution-v2\\compiled-inputs\\OriginalCaptureAndError.swift",
+      "sha256": "b267ee41ba4f6cc808a5c500afe78e83514009667b8df7d47b10d2a726fd1f4c",
+      "bytes": 2117
+    },
+    {
+      "path": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-auth-startup-20261122\\execution-v2\\compiled-inputs\\Transition.swift",
+      "sha256": "57f4cfe0ca506cc5cde2e1624cfe9d5da006cd90d8068b3e516db0e85347cb27",
+      "bytes": 4540
+    },
+    {
+      "path": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-auth-startup-20261122\\execution-v2\\compiled-inputs\\Controls.swift",
+      "sha256": "5693db8a8426d227166cea5df6f51afc2fed58ce695c096187e5583f77a5cfe8",
+      "bytes": 16053
+    }
+  ],
+  "binary_before_execution": {
+    "path": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-auth-startup-20261122\\execution-v2\\original-account-transition-controls.exe",
+    "bytes": 263168,
+    "sha256": "ad8035e5118bee97ee39f3bc03c01c944c88fcd22dcc4d9e21949a99a6484366"
+  },
+  "actual_cases": {
+    "cases": [
+      {
+        "details": {
+          "admittedNativeBodies": "0",
+          "firstCapture": "current"
+        },
+        "events": [
+          "before-finish-no-token",
+          "original-verification",
+          "wait-returned",
+          "first-real-capture-current"
+        ],
+        "name": "immediateVerifiedRelease",
+        "status": "PASS"
+      },
+      {
+        "details": {
+          "firstCapture": "current",
+          "nativeScope": "actual original permit/completion; disposable native-body boundary",
+          "verificationCalls": "1"
+        },
+        "events": [
+          "original-permit-began",
+          "outer-finished-native-still-admitted",
+          "waiter-invoked",
+          "actual-original-waiter-registered",
+          "fixture-ends-original-native-body",
+          "original-verification",
+          "wait-returned",
+          "first-real-capture-current"
+        ],
+        "name": "admittedOriginalOperationMustDrain",
+        "status": "PASS"
+      },
+      {
+        "details": {
+          "registrationEvidence": "actual original continuation count under the original State lock; projection-only readout",
+          "secondWaiter": "after-release-effects",
+          "verificationCalls": "1"
+        },
+        "events": [
+          "verification-entered-after-lease-cancel",
+          "second-waiter-invoked",
+          "actual-original-waiter-registered",
+          "fixture-unblocks-verification",
+          "verification-returning-before-confirm-open",
+          "original-finish-returned",
+          "second-waiter-returned",
+          "first-real-capture-current"
+        ],
+        "name": "concurrentWaiterCannotSkipReleaseEffects",
+        "status": "PASS"
+      },
+      {
+        "details": {
+          "firstCapture": "rejected(retired)",
+          "otherClosingCancellationReopens": "false",
+          "waitReturn": "Void only"
+        },
+        "events": [
+          "original-verification",
+          "this-transition-returned",
+          "first-capture-denied-retired",
+          "other-cancel-does-not-confirm-open"
+        ],
+        "name": "otherClosingLeaseStillDeniesCapture",
+        "status": "PASS"
+      },
+      {
+        "details": {
+          "actualTaskCancelled": "true",
+          "authAttemptIntegration": "not tested",
+          "postDrainAccountToken": "unavailable",
+          "waitReturnBeforeDrain": "false"
+        },
+        "events": [
+          "original-permit-began",
+          "waiter-invoked",
+          "actual-task-cancellation-observed",
+          "actual-original-waiter-registered",
+          "fixture-ends-original-native-body",
+          "original-verification-after-native-drain",
+          "cancelled-waiter-returned-after-drain"
+        ],
+        "name": "cancelledWaiterDoesNotReleaseNativeOperation",
+        "status": "PASS"
+      },
+      {
+        "details": {
+          "firstCapture": "rejected(retired)",
+          "lateVerificationCalls": "0"
+        },
+        "events": [
+          "first-finish-unverified",
+          "duplicate-wait-returned",
+          "first-capture-denied-retired"
+        ],
+        "name": "duplicateFinishCannotUpgradeVerification",
+        "status": "PASS"
+      }
+    ],
+    "processID": 4420,
+    "scope": "Windows portable original transition/lifetime/operation/dispatch; no native Auth, Combine, subscriptions or StageB",
+    "status": "PASS"
+  },
+  "binary_after_execution_sha256": "ad8035e5118bee97ee39f3bc03c01c944c88fcd22dcc4d9e21949a99a6484366",
+  "canonical_and_compiled_inputs_after": "PASS",
+  "finished_at": "2026-11-22T10:53:04.005597+00:00"
+}

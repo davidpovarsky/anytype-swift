@@ -1,0 +1,133 @@
+{
+  "status": "FROZEN_V2_BEFORE_FIRST_EXECUTION",
+  "candidate_commit": "15ea8755a4e1cebf63314ab415fd809fbe9e8e84",
+  "base": "37f48119609747c01ee92cf597e4216f63b7bfa4",
+  "scope": "Windows Swift6.3.3 toolchain / Swift5 language / strict-concurrency complete; actual original transition/lifetime/operation/binding/capture; no Auth runtime or StageB",
+  "canonical_inputs": [
+    {
+      "kind": "original",
+      "commit": "37f48119609747c01ee92cf597e4216f63b7bfa4",
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteLifetime.swift",
+      "bytes": 5574,
+      "sha256": "451054685e2ff0c30371d384904be831412eec16c2a5e16c660d2f1891921eb4",
+      "git_blob": "19f81f5e1bb51b48a7fd46d30476a99105d9aea2"
+    },
+    {
+      "kind": "original",
+      "commit": "37f48119609747c01ee92cf597e4216f63b7bfa4",
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOperation.swift",
+      "bytes": 2459,
+      "sha256": "d6a1034809671d7550e21c5da4e46e1065d21ca6438bb66c7e1f9ea869b9dc51",
+      "git_blob": "fdfa2a427044e6ea395f02dbda43d244b1fbe4af"
+    },
+    {
+      "kind": "original",
+      "commit": "37f48119609747c01ee92cf597e4216f63b7bfa4",
+      "path": "Modules/ProtobufMessages/Sources/InvocationDispatchBinding.swift",
+      "bytes": 3025,
+      "sha256": "e304f05ed114342795dbc3a603490311142d63f9a6a156bdcdafd68743e710cb",
+      "git_blob": "7f6862925605de7a15220f6c44dbf4d6d884113d"
+    },
+    {
+      "kind": "original",
+      "commit": "37f48119609747c01ee92cf597e4216f63b7bfa4",
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift",
+      "bytes": 50759,
+      "sha256": "bf619f8e022c99d6f7f5f8e374b7213989639502801d36b754dcd95aedae9873",
+      "git_blob": "719b02f1ce8e24d672ab448a592286f97ce78559"
+    },
+    {
+      "kind": "reviewed_candidate",
+      "commit": "15ea8755a4e1cebf63314ab415fd809fbe9e8e84",
+      "path": "Anytype/Sources/ServiceLayer/Account/EditorAccountWriteTransition.swift",
+      "bytes": 4151,
+      "sha256": "65a20edfdacbb8c5a51d647b2746a16f75ca9865984026cca5b6235f4fa4933e",
+      "git_blob": "27b23e4e2ba7b5654ef934f3f88ab5c841c9827e"
+    }
+  ],
+  "compiled_inputs": [
+    {
+      "path": "compiled-inputs/Lifetime.swift",
+      "bytes": 5574,
+      "sha256": "451054685e2ff0c30371d384904be831412eec16c2a5e16c660d2f1891921eb4",
+      "canonical_path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteLifetime.swift",
+      "transforms": []
+    },
+    {
+      "path": "compiled-inputs/Operation.swift",
+      "bytes": 2435,
+      "sha256": "55804cf1a06b59dc80846ab4bc8b874a2d54ae28649288c5b49930267b9ae844",
+      "canonical_path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOperation.swift",
+      "transforms": [
+        {
+          "type": "remove-one-original-ProtobufMessages-import-for-same-module-compilation"
+        }
+      ]
+    },
+    {
+      "path": "compiled-inputs/Binding.swift",
+      "bytes": 3025,
+      "sha256": "e304f05ed114342795dbc3a603490311142d63f9a6a156bdcdafd68743e710cb",
+      "canonical_path": "Modules/ProtobufMessages/Sources/InvocationDispatchBinding.swift",
+      "transforms": []
+    },
+    {
+      "path": "compiled-inputs/OriginalCaptureAndError.swift",
+      "bytes": 2117,
+      "sha256": "b267ee41ba4f6cc808a5c500afe78e83514009667b8df7d47b10d2a726fd1f4c",
+      "canonical_path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift",
+      "transforms": [
+        {
+          "type": "exact-original-declaration-projection",
+          "error_enums_sha256": "e0eb6a222e495dc19a2f5ae9c4ff6ae236e3992dea285480c25919360f144176",
+          "capture_sha256": "4ded1aca60644722b4c7ff84ede19ce92a5108c8909586b2b84ede5185f7236a",
+          "error_enums_bytes": 460,
+          "capture_bytes": 1638
+        }
+      ]
+    },
+    {
+      "path": "compiled-inputs/Transition.swift",
+      "bytes": 4540,
+      "sha256": "57f4cfe0ca506cc5cde2e1624cfe9d5da006cd90d8068b3e516db0e85347cb27",
+      "canonical_path": "Anytype/Sources/ServiceLayer/Account/EditorAccountWriteTransition.swift",
+      "transforms": [
+        {
+          "type": "remove-one-original-ProtobufMessages-import-for-same-module-compilation"
+        },
+        {
+          "type": "test-projection-only-lock-protected-waiter-count-accessors",
+          "outer_fragment_sha256": "d1b25773ac2d14e2acdf07e561d86b4a0977b5e2956b60de1c73fbca58c5bb13",
+          "inner_fragment_sha256": "a7e72635599ff07fbe2a30c4d3acfc560a83e7e8e01e455e07a4c63ade4b1951",
+          "inverse_full_candidate_sha256": "65a20edfdacbb8c5a51d647b2746a16f75ca9865984026cca5b6235f4fa4933e"
+        }
+      ]
+    }
+  ],
+  "controls_sha256": "5693db8a8426d227166cea5df6f51afc2fed58ce695c096187e5583f77a5cfe8",
+  "runner_sha256": "614b9bfe7e0699ca5eef6da7cb6014c796b45f31ec5386dca98f7f743c3ce91b",
+  "case_names": [
+    "immediateVerifiedRelease",
+    "admittedOriginalOperationMustDrain",
+    "concurrentWaiterCannotSkipReleaseEffects",
+    "otherClosingLeaseStillDeniesCapture",
+    "cancelledWaiterDoesNotReleaseNativeOperation",
+    "duplicateFinishCannotUpgradeVerification"
+  ],
+  "case_count": 6,
+  "old_cases_replayed": 0,
+  "root_source_review_sha256": "17ce2a6b681d034b453e6c3b94d9e7c566aae172eaeef7291a1db427a549d157",
+  "prior_unexecuted_packet_index_sha256": "1562ede32960cb1d6a00d04efd19c1bedfbcf4c8865acd914d150258a1bc6768",
+  "compiler_binding": {
+    "path": "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+    "bytes": 41472,
+    "sha256": "e1d0a0b20d95a92b22f4906e7ca331a7c8b89be86b2d9a2d215ac24f753e945a",
+    "runtime_path": "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Runtimes\\6.3.3\\usr\\bin",
+    "PATH_prefix": [
+      "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Runtimes\\6.3.3\\usr\\bin",
+      "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin"
+    ],
+    "PYTHONUTF8": "1",
+    "other_environment_preserved": true
+  }
+}

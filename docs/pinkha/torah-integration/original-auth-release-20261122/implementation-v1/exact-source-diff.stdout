@@ -1,0 +1,64 @@
+diff --git a/Anytype/Sources/ServiceLayer/Account/EditorAccountWriteTransition.swift b/Anytype/Sources/ServiceLayer/Account/EditorAccountWriteTransition.swift
+index b139a9f3ba..27b23e4e2b 100644
+--- a/Anytype/Sources/ServiceLayer/Account/EditorAccountWriteTransition.swift
++++ b/Anytype/Sources/ServiceLayer/Account/EditorAccountWriteTransition.swift
+@@ -30,6 +30,15 @@ final class EditorAccountWriteTransition: Sendable {
+         if operation.finishOuter() { state.release() }
+     }
+ 
++    /// Waits for the original transition's actual native drain and release
++    /// effects. This does not certify a current account token or subscription.
++    func finishAndWaitForRelease(
++        verifiedAccountIsCurrent: @escaping @Sendable () -> Bool = { false }
++    ) async {
++        finish(verifiedAccountIsCurrent: verifiedAccountIsCurrent)
++        await state.waitForRelease()
++    }
++
+     deinit { finish() }
+ 
+     private final class State: @unchecked Sendable {
+@@ -38,6 +47,8 @@ final class EditorAccountWriteTransition: Sendable {
+         private let closing: EditorDocumentWriteLifetime.Observation
+         private var outerFinished = false
+         private var released = false
++        private var releaseCompleted = false
++        private var releaseWaiters: [CheckedContinuation<Void, Never>] = []
+         private var verifiedAccountIsCurrent: (@Sendable () -> Bool)?
+ 
+         init(lifetime: EditorDocumentWriteLifetime) {
+@@ -54,6 +65,19 @@ final class EditorAccountWriteTransition: Sendable {
+             return true
+         }
+ 
++        func waitForRelease() async {
++            await withCheckedContinuation { continuation in
++                lock.lock()
++                if releaseCompleted {
++                    lock.unlock()
++                    continuation.resume()
++                } else {
++                    releaseWaiters.append(continuation)
++                    lock.unlock()
++                }
++            }
++        }
++
+         func release() {
+             lock.lock()
+             guard outerFinished, !released else { lock.unlock(); return }
+@@ -65,6 +89,14 @@ final class EditorAccountWriteTransition: Sendable {
+             // Setter confirmation while the close lease existed could not make
+             // tokens available. Only a completed verified transition may do so.
+             if verify?() == true { lifetime.confirmOpened() }
++            // A release claim made before these effects is not completion.
++            // Registration and completion share the same lock; resume outside it.
++            lock.lock()
++            releaseCompleted = true
++            let waiters = releaseWaiters
++            releaseWaiters.removeAll()
++            lock.unlock()
++            for waiter in waiters { waiter.resume() }
+         }
+     }
+ }

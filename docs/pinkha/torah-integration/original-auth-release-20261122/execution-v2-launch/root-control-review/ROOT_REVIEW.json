@@ -1,0 +1,34 @@
+{
+  "schema": "otzaria.auth-release-controls-v2-root-review/1",
+  "status": "PASS_FOR_FIRST_SIX_FOCUSED_CONTROLS",
+  "observed_at": "2026-11-22T10:51:50.094259+00:00",
+  "packet": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-auth-startup-20261122\\controls-v2",
+  "index_sha256": "dd0caf3e22df95d03a090377c231e90dfe33866fdd971319b2164840961da01e",
+  "payloads": 20,
+  "old_unexecuted_v1_payloads_unchanged": 18,
+  "manifest_sha256": "aedafa37e322e06559d04b2fd6704bf369037c4332023a37cdff79e67a998644",
+  "product_commit": "15ea8755a4e1cebf63314ab415fd809fbe9e8e84",
+  "product_sha256": "65a20edfdacbb8c5a51d647b2746a16f75ca9865984026cca5b6235f4fa4933e",
+  "canonical_git_inputs": 5,
+  "compiled_inputs": 5,
+  "projection_inverse_recovers_exact_full_candidate": true,
+  "full_v1_bodies_and_exact_v2_delta_reviewed": true,
+  "exact_six_names": [
+    "immediateVerifiedRelease",
+    "admittedOriginalOperationMustDrain",
+    "concurrentWaiterCannotSkipReleaseEffects",
+    "otherClosingLeaseStillDeniesCapture",
+    "cancelledWaiterDoesNotReleaseNativeOperation",
+    "duplicateFinishCannotUpgradeVerification"
+  ],
+  "positive_registration": "Actual original State.releaseWaiters.count under original lock; bounded3s; native/verification gates remain held until observed. Fixture-only readout, no product hook.",
+  "compiler_sha256": "e1d0a0b20d95a92b22f4906e7ca331a7c8b89be86b2d9a2d215ac24f753e945a",
+  "actual_pid_equality_required": true,
+  "command_bounds": {
+    "compiler_version": 20,
+    "compile": 240,
+    "execute": 45
+  },
+  "native_or_old_tests_executed": 0,
+  "limits": "Portable original transition/Lifetime/Operation/Dispatch/Capture only. Actual Auth/LoginState/Hanlin startup integration, Apple compiler and StageB remain pending."
+}

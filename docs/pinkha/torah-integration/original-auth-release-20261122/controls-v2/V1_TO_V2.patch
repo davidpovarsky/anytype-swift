@@ -1,0 +1,234 @@
+--- controls-v1/compiled-inputs/Transition.swift
++++ controls-v2/compiled-inputs/Transition.swift
+@@ -38,6 +38,11 @@
+         await state.waitForRelease()
+     }
+ 
++    // CONTROL PROJECTION ONLY: observe actual queued original continuations.
++    func _controlReleaseWaiterCount() -> Int {
++        state._controlReleaseWaiterCount()
++    }
++
+     deinit { finish() }
+ 
+     private final class State: @unchecked Sendable {
+@@ -62,6 +67,13 @@
+             outerFinished = true
+             self.verifiedAccountIsCurrent = verifiedAccountIsCurrent
+             return true
++        }
++
++        // CONTROL PROJECTION ONLY: no mutation or continuation resumption.
++        func _controlReleaseWaiterCount() -> Int {
++            lock.lock()
++            defer { lock.unlock() }
++            return releaseWaiters.count
+         }
+ 
+         func waitForRelease() async {
+--- controls-v1/Controls.swift
++++ controls-v2/Controls.swift
+@@ -60,16 +60,25 @@
+     var didTimeOut: Bool { lock.lock(); defer { lock.unlock() }; return timedOut }
+ }
+ 
+-// A bounded observation after the waiter task announces invocation. It does not
+-// expose or claim proof of the private continuation-array registration instant.
++// The compiled projection adds only a lock-protected test readout of the
++// original State.releaseWaiters count. The product has no test hook. Hold the
++// existing fixture gates until the actual continuation is positively queued.
+ private func observePending(
+-    _ probe: Probe, lifetime: EditorDocumentWriteLifetime, log: EventLog
++    _ probe: Probe, transition: EditorAccountWriteTransition,
++    lifetime: EditorDocumentWriteLifetime, log: EventLog
+ ) async throws {
+     await probe.started.wait()
+-    try await Task.sleep(nanoseconds: 75_000_000)
+-    try require(!probe.didReturn, "waiter returned before the original release boundary")
++    let deadline = DispatchTime.now().uptimeNanoseconds + 3_000_000_000
++    while transition._controlReleaseWaiterCount() == 0 {
++        try require(!probe.didReturn, "waiter returned without reaching the original release wait")
++        try require(DispatchTime.now().uptimeNanoseconds < deadline,
++                    "actual release waiter did not register within the finite fixture budget")
++        try await Task.sleep(nanoseconds: 1_000_000)
++    }
++    try require(transition._controlReleaseWaiterCount() == 1, "unexpected original waiter count")
++    try require(!probe.didReturn, "registered waiter returned before original release")
+     try require(lifetime.token() == nil, "account lifetime became available before release")
+-    log.append("observed-pending-75ms")
++    log.append("actual-original-waiter-registered")
+ }
+ 
+ private enum Case: String, CaseIterable {
+@@ -135,7 +144,7 @@
+         log.append("wait-returned")
+     }
+     var pendingFailure: Error?
+-    do { try await observePending(probe, lifetime: lifetime, log: log) }
++    do { try await observePending(probe, transition: transition, lifetime: lifetime, log: log) }
+     catch { pendingFailure = error }
+     log.append("fixture-ends-original-native-body")
+     completion.finish()
+@@ -185,7 +194,7 @@
+         log.append("second-waiter-returned")
+     }
+     var pendingFailure: Error?
+-    do { try await observePending(probe, lifetime: lifetime, log: log) }
++    do { try await observePending(probe, transition: transition, lifetime: lifetime, log: log) }
+     catch { pendingFailure = error }
+     log.append("fixture-unblocks-verification")
+     releaseVerification.signal()
+@@ -201,7 +210,7 @@
+     try EditorDocumentWriteCapture(lifetime).validate()
+     log.append("first-real-capture-current")
+     return ["verificationCalls": "1", "secondWaiter": "after-release-effects",
+-            "negativeObservation": "75ms after invocation announced; no private-state instrumentation"]
++            "registrationEvidence": "actual original continuation count under the original State lock; projection-only readout"]
+ }
+ 
+ private func otherClosingLeaseStillDeniesCapture(_ log: EventLog) async throws -> [String: String] {
+@@ -253,7 +262,7 @@
+     waiter.cancel()
+     var pendingFailure: Error?
+     do {
+-        try await observePending(probe, lifetime: lifetime, log: log)
++        try await observePending(probe, transition: transition, lifetime: lifetime, log: log)
+         try require(probe.wasCancelled, "actual cancellation handler did not run")
+     } catch { pendingFailure = error }
+     log.append("fixture-ends-original-native-body")
+--- controls-v1/run_controls.py
++++ controls-v2/run_controls.py
+@@ -17,6 +17,11 @@
+     if sha(pathlib.Path(__file__).read_bytes()) != manifest["runner_sha256"]:
+         raise RuntimeError("reviewed runner changed")
+     shutil.copyfile(packet / "EXECUTION_INPUTS.json", out / "EXECUTION_INPUTS.json")
++    compiler_path = pathlib.Path(r"C:\Users\DAVID\AppData\Local\Programs\Swift\Toolchains\6.3.3+Asserts\usr\bin\swiftc.EXE")
++    runtime_path = pathlib.Path(r"C:\Users\DAVID\AppData\Local\Programs\Swift\Runtimes\6.3.3\usr\bin")
++    environment = os.environ.copy()
++    environment["PATH"] = str(runtime_path) + os.pathsep + str(compiler_path.parent) + os.pathsep + environment.get("PATH", "")
++    environment["PYTHONUTF8"] = "1"
+     commands = []
+     result = {"status": "STARTING", "scope": manifest["scope"], "commands": commands,
+               "manifest_sha256": sha(manifest_bytes), "started_at": datetime.datetime.now(datetime.timezone.utc).isoformat()}
+@@ -28,7 +33,7 @@
+         commands.append(row); save()
+         stdout = out / (label + ".stdout"); stderr = out / (label + ".stderr")
+         with stdout.open("wb") as o, stderr.open("wb") as e:
+-            process = subprocess.Popen(argv, cwd=out, stdout=o, stderr=e, stdin=subprocess.DEVNULL)
++            process = subprocess.Popen(argv, cwd=out, stdout=o, stderr=e, stdin=subprocess.DEVNULL, env=environment)
+             row.update(status="RUNNING", pid=process.pid); save()
+             try:
+                 returncode = process.wait(timeout=timeout)
+@@ -72,12 +77,17 @@
+     try:
+         verify_inputs()
+         result["canonical_and_compiled_inputs_before"] = "PASS"; save()
+-        compiler = shutil.which("swiftc")
+-        if compiler is None:
+-            raise RuntimeError("original configured Swift compiler unavailable")
+-        compiler = str(pathlib.Path(compiler).resolve())
++        if not compiler_path.is_file() or not runtime_path.is_dir():
++            raise RuntimeError("reviewed original compiler/runtime path unavailable")
++        compiler = str(compiler_path)
++        compiler_hash = sha(compiler_path.read_bytes())
++        if compiler_hash != "e1d0a0b20d95a92b22f4906e7ca331a7c8b89be86b2d9a2d215ac24f753e945a":
++            raise RuntimeError("reviewed original compiler executable changed")
+         result["compiler_path"] = compiler
+-        result["compiler_executable_sha256"] = sha(pathlib.Path(compiler).read_bytes()); save()
++        result["compiler_executable_sha256"] = compiler_hash
++        result["runtime_path_prefix"] = [str(runtime_path), str(compiler_path.parent)]
++        result["other_inherited_environment_preserved"] = True
++        result["PYTHONUTF8"] = "1"; save()
+         version = command("compiler-version", [compiler, "--version"], 20).decode(errors="replace")
+         if "Swift version 6.3.3" not in version:
+             raise RuntimeError("unreviewed Swift toolchain version")
+@@ -110,6 +120,8 @@
+         if len(markers) != 1:
+             raise RuntimeError("expected exactly one actual result")
+         actual = json.loads(markers[0])
++        if commands[-1]["label"] != "execute-six-new-controls" or actual.get("processID") != commands[-1]["pid"]:
++            raise RuntimeError("control result PID differs from actual owned executable process")
+         cases = actual.get("cases", [])
+         names = [row["name"] for row in cases]
+         if names != manifest["case_names"] or len(cases) != 6 or any(row["status"] != "PASS" for row in cases):
+--- controls-v1/README.md
++++ controls-v2/README.md
+@@ -1,13 +1,13 @@
+-# Original account transition release: six new controls
++# Original account transition release: six new controls, V2
+ 
+-This packet is source-frozen for review and has not run. The product candidate is the exact root-reviewed 65a20edf release waiter. It remains an internal Void completion boundary; actual Auth startup, LoginState sequencing, the Hanlin decorator, native account lifecycle and StageB acceptance are outside this packet.
++This is the additive correction to the frozen, unexecuted18-payload controls-v1. The production source remains exactly65a20edf, committed15ea8755; only control/projection/runner evidence changes. No test has executed yet.
+ 
+-The runner compiles unchanged original EditorDocumentWriteLifetime, EditorDocumentWriteOperation and InvocationDispatchBinding bodies, the exact reviewed EditorAccountWriteTransition, and exact original error/capture declarations projected from EditorDocumentWriteOwner. The only module transformation is removing import ProtobufMessages for one-module portable compilation. No fake Owner, AccountManager, operation tracker, native RPC or account store is introduced. The fixture explicitly drives the existing original dispatch permit/completion and uses disposable original lifetimes. Capture is the real original capture type, but the account's real native runtime is not created.
++The six cases and intended boundaries are unchanged: immediate verified release; an actual original admitted operation must drain; a concurrent waiter cannot skip release effects; a second closing lease continues to deny capture; actual Swift task cancellation cannot release an admitted operation early; duplicate finish cannot upgrade first-call verification.
+ 
+-Six cases match the reviewed proposal: immediate verified release; an admitted operation must really drain; a concurrent waiter cannot treat the released flag as completed release effects; another closing lease continues to deny a token; actual Swift task cancellation cannot release an admitted original operation early; and a duplicate finish cannot upgrade the first stored verification closure. The verification callback is blocked only in a finite fixture, with real threads and the original code. Three negative timing observations are 75ms after a waiter announces invocation. They do not instrument or prove the private waiter-array registration instant, and are recorded as bounded observations. The original lock implementation is separately source-reviewed. No unchanged suite or historical assertion is replayed.
++For the three concurrent controls, the test-only compiled Transition projection adds a synchronous readout of actual State.releaseWaiters.count under the existing State.lock. The outer forwarding accessor and inner count accessor only observe the original array. The actual product source has neither hook. An exact inverse removes both accessor fragments and restores the sole module import to recover all4151 original candidate bytes and SHA65a20edf. No original line/body is substituted. Controls keep the genuine admitted-operation or verification gates held until they positively observe exactly one queued original continuation; a premature return or lack of registration within3seconds fails. The old75ms assumption is absent. The1ms awaited interval is only a bounded readout poll, not a claim that elapsed time proves progress.
+ 
+-Exact tool scope: configured Windows Swift 6.3.3 toolchain, -swift-version 5 and -strict-concurrency=complete. The runner records the actual compiler path, version and executable SHA256, exact original/candidate source hashes, six compiled copies, actual commands/PIDs/raw streams, and executable SHA256 before and after use. Actual binary bytes remain in the owned execution directory; future evidence packaging must state whether those bytes are included. Native/Apple compilation is not inferred.
++The packet compiles the original Lifetime, Operation, DispatchBinding, reviewed Transition, and exact original error/capture declarations from Owner. Apart from these two documented observation accessors, the sole same-module transformation is removing import ProtobufMessages. No fake Owner, AccountManager, store or native RPC exists. The fixture drives the actual original dispatch permit/completion using disposable original lifetimes; it does not create a native account. Native Auth/Combine/subscription/selected-Space/StageB acceptance remains outside scope.
+ 
+-The runner's compiler stage is bounded to240s, execution to45s, compiler version to20s. Commands record RUNNING with PID before waiting; any timeout is failure regardless of exit code. Cleanup targets only that owned process tree. No user account, mnemonic, database or live service is touched. An unavailable or different compiler fails closed. Runtime input/copy/binary checks are distinct from independently reviewed Git provenance.
++The runner binds the already verified absolute Windows Swift6.3.3 compiler,41472B, SHAe1d0a0b20d95a92b22f4906e7ca331a7c8b89be86b2d9a2d215ac24f753e945a, and prefixes its exact Swift6.3.3 runtime directory and compiler directory to the inherited PATH. PYTHONUTF8=1; other environment is preserved. Actual language flags remain -swift-version5 and -strict-concurrency=complete. It records compiler path/version/hash, original/candidate/copy hashes, every command PID before awaiting, and executable hash before/after. CONTROL_RESULT.processID must equal the owned execute-command PID. Binary bytes remain in the owned output directory pending explicit evidence packaging scope.
+ 
+-Root source approval17ce2a6b and the original proposal/preimage are retained separately under the source review folder. The actual first execution requires root's review of these new control bodies and runner. Existing synchronous finish/deinit/first-call behavior stays intact; full Auth cancellation/start-drain integration is a later reviewed change.
++Compiler stage240s, executable45s, compiler-version20s, and verification fixture10s are finite. Any process timeout fails, even if termination yields exit0. Cleanup targets only the owned process tree. No old suite executes. Root source review17ce2a6b and exact proposal/preimage remain unchanged. This prerequisite does not repair Auth/LoginState/decorator ownership by itself; those separate exact source changes still require review.
+--- controls-v1/EXECUTION_INPUTS.json
++++ controls-v2/EXECUTION_INPUTS.json
+@@ -1,5 +1,5 @@
+ {
+-  "status": "FROZEN_BEFORE_FIRST_EXECUTION",
++  "status": "FROZEN_V2_BEFORE_FIRST_EXECUTION",
+   "candidate_commit": "15ea8755a4e1cebf63314ab415fd809fbe9e8e84",
+   "base": "37f48119609747c01ee92cf597e4216f63b7bfa4",
+   "scope": "Windows Swift6.3.3 toolchain / Swift5 language / strict-concurrency complete; actual original transition/lifetime/operation/binding/capture; no Auth runtime or StageB",
+@@ -88,18 +88,24 @@
+     },
+     {
+       "path": "compiled-inputs/Transition.swift",
+-      "bytes": 4127,
+-      "sha256": "ea2f5d4d78d4916f42393db435ebe746286780374ac014a743338d991c80f1ba",
++      "bytes": 4540,
++      "sha256": "57f4cfe0ca506cc5cde2e1624cfe9d5da006cd90d8068b3e516db0e85347cb27",
+       "canonical_path": "Anytype/Sources/ServiceLayer/Account/EditorAccountWriteTransition.swift",
+       "transforms": [
+         {
+           "type": "remove-one-original-ProtobufMessages-import-for-same-module-compilation"
++        },
++        {
++          "type": "test-projection-only-lock-protected-waiter-count-accessors",
++          "outer_fragment_sha256": "d1b25773ac2d14e2acdf07e561d86b4a0977b5e2956b60de1c73fbca58c5bb13",
++          "inner_fragment_sha256": "a7e72635599ff07fbe2a30c4d3acfc560a83e7e8e01e455e07a4c63ade4b1951",
++          "inverse_full_candidate_sha256": "65a20edfdacbb8c5a51d647b2746a16f75ca9865984026cca5b6235f4fa4933e"
+         }
+       ]
+     }
+   ],
+-  "controls_sha256": "41a676609b42f668753ba637fc42a7b0665b5e61b99b18b8d5784c943cb2d167",
+-  "runner_sha256": "21ed89d9c48e31f385ed659f9be93c9919b3202c913d767488dd63ed1f0dc981",
++  "controls_sha256": "5693db8a8426d227166cea5df6f51afc2fed58ce695c096187e5583f77a5cfe8",
++  "runner_sha256": "614b9bfe7e0699ca5eef6da7cb6014c796b45f31ec5386dca98f7f743c3ce91b",
+   "case_names": [
+     "immediateVerifiedRelease",
+     "admittedOriginalOperationMustDrain",
+@@ -110,5 +116,18 @@
+   ],
+   "case_count": 6,
+   "old_cases_replayed": 0,
+-  "root_source_review_sha256": "17ce2a6b681d034b453e6c3b94d9e7c566aae172eaeef7291a1db427a549d157"
++  "root_source_review_sha256": "17ce2a6b681d034b453e6c3b94d9e7c566aae172eaeef7291a1db427a549d157",
++  "prior_unexecuted_packet_index_sha256": "1562ede32960cb1d6a00d04efd19c1bedfbcf4c8865acd914d150258a1bc6768",
++  "compiler_binding": {
++    "path": "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
++    "bytes": 41472,
++    "sha256": "e1d0a0b20d95a92b22f4906e7ca331a7c8b89be86b2d9a2d215ac24f753e945a",
++    "runtime_path": "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Runtimes\\6.3.3\\usr\\bin",
++    "PATH_prefix": [
++      "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Runtimes\\6.3.3\\usr\\bin",
++      "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin"
++    ],
++    "PYTHONUTF8": "1",
++    "other_environment_preserved": true
++  }
+ }
