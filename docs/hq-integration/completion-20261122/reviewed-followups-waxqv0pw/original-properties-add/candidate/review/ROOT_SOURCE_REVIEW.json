@@ -1,0 +1,46 @@
+{
+  "status": "GO_SOURCE_REVIEW_PENDING_INDEPENDENT_PEER_AND_SYNTAX",
+  "reviewer": "root",
+  "reviewed_at_utc": "2026-11-22 03:57:09 UTC",
+  "base_commit": "06b639ff196a66c19d22dda7ea28b47ce6801705",
+  "source_patch_sha256": "0e909411da157ffa3e5f25980f016017fd46629827ed181d0d11cf0740b8171e",
+  "source_files": 2,
+  "rejected_predecessor": {
+    "sha256": "f348fa5d380cc0deee8c5bda52dc6cd4002fedf9bf88f948c3fdfbb971ed11cd",
+    "reason": "App isTemplate resolved through unbound ObjectTypeProvider cache; no compiler or publication occurred.",
+    "corrected": true
+  },
+  "findings": [
+    "The existing scope carries the exact original canonical manifest only as issuer-bound per-operation metadata. Existing manifest schema, raw Space/manifest-ID/internal property guards remain.",
+    "Add-specific async classification uses the already qualified OriginalSearchMiddleServiceBinding and original ObjectSearch under the same Owner, exact includeIdsFilter and post-result objectType-layout validation. No alternate service, direct RPC, cache, store or dispatcher was introduced.",
+    "Actual type proof requires one returned typed record, byte-exact raw ID/Space, explicit string uniqueKey, nonempty/no NUL, and the original ObjectTypeUniqueKey.template.value predicate. The parent details, raw type and permissions are revalidated after await.",
+    "Original includesDocument field mapping, parent internal/template/archive/deletion/layout criteria and type string are retained. No registered-type-only rule was introduced.",
+    "Display hints contain only actual document/details/properties/permissions, never a canonical identity or manifest. Tap performs fresh canonical and type reads, with complete live-state checks; actual writes remain existing original modal reservations.",
+    "Actual subscription Task is retained and synchronously cancelled by its exact withTaskCancellationHandler. UUID checks prevent old cleanup or requests from replacing/cancelling newer UI work; these identities grant no source authority.",
+    "Original rows publish before the extra Add-only type read. Existing legacy route, value/removal writers, Type/schema refusals and original renderer are preserved.",
+    "Modal data is published after temporary synchronous read admission returns, with no intervening await. Original same-object target, exclusions, hidden IDs, exact retained scope and no-op selection callback are preserved."
+  ],
+  "current_producer_preimage_proof": {
+    "producer": "a5fffd7f0ead01b3086019f4c1bef7c01f3a699d",
+    "files": [
+      {
+        "path": "Anytype/Sources/PresentationLayer/PropertyValueFlow/PropertyValueCoordinator/OriginalEditorPropertyScope.swift",
+        "git_blob": "670fbf49fbd362b59525508c255423f98989055d"
+      },
+      {
+        "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesViewModel.swift",
+        "git_blob": "4fd7ef3e865298cf3366ae8861e887ef54fd4fcb"
+      }
+    ],
+    "both_match_published_base": true,
+    "producer_modified": false
+  },
+  "boundaries": {
+    "compiler": "NOT_RUN_AT_REVIEW",
+    "runtime_tests": 0,
+    "old_suites_rerun": 0,
+    "Apple_semantic_typecheck": "NOT_RUN",
+    "Native_Add_create_select_attach_save_reopen": "NOT_RUN",
+    "historical_property14": "Historical unchanged Owner/reader evidence retained; no assertion that modified Scope or new Add UI was executed."
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "status": "GO_GUARDED_PUBLISHER_TEMPLATE_REVIEW_ONLY",
+  "reviewed_at_utc": "2026-11-22T03:54:18.018048+00:00",
+  "reviewer": "/root/integration_audit",
+  "template": "publication/publish_source.py",
+  "template_bytes": 11003,
+  "template_sha256": "ab769cf757c5da9bac6d18cd38c451cf32cd404e360623a42f7fa02d44bd7376",
+  "prior_reviewed_template_sha256": "786bf8efb24a4ca8afce03153d87b23edac35e8bf2562583d79bf323407676fe",
+  "scope": "Re-read only the corrected final evidence-commit and push block; retain the preceding complete-template read-only review.",
+  "finding": {
+    "description": "The previous template bound source/evidence preservation to the source commit but did not validate the final evidence commit before pushing mutable HEAD.",
+    "resolution": "RESOLVED_IN_ACTUAL_TEMPLATE",
+    "verified_final_guards": [
+      "Final evidence commit parent is the verified source commit.",
+      "Final committed changed-path set equals the exact payload evidence paths plus SOURCE_PUBLICATION.json and .gitattributes.",
+      "Committed evidence, two source files, fourteen retained property files, and unchanged control inputs are rehashed at the final immutable SHA.",
+      "Committed publication receipt and attributes match their exact expected bytes.",
+      "Protected .github, Tools, project, resources, and Modules trees match the fixed parent; final Anytype/Sources matches the verified source commit.",
+      "The remote parent and clean worktree are checked before a normal push of the verified immutable head SHA; actual remote readback must equal it."
+    ]
+  },
+  "remaining_publisher_blockers_in_reviewed_scope": [],
+  "source_add_implementation_acceptance": "NOT_REVIEWED_BY_THIS_INCREMENT",
+  "payload_frozen": false,
+  "publication_authorized_by_this_receipt": false,
+  "publisher_executions": 0,
+  "host_operations": 0,
+  "git_mutations": 0,
+  "compiler_or_test_runs": 0,
+  "Apple_typecheck": "NOT_RUN",
+  "Native": "NOT_RUN"
+}
