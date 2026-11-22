@@ -1,0 +1,694 @@
+{
+  "apple_builds_executed": 0,
+  "events": [
+    {
+      "command": [
+        "xcrun",
+        "--sdk",
+        "iphonesimulator",
+        "--show-sdk-version"
+      ],
+      "name": "actual-simulator-sdk",
+      "timeout_seconds": 30
+    },
+    {
+      "command": [
+        "xcrun",
+        "swiftc",
+        "--version"
+      ],
+      "name": "actual-swift",
+      "timeout_seconds": 30
+    },
+    {
+      "command": [
+        "xcodebuild",
+        "build",
+        "-project",
+        "/tmp/tmp3mlx7kds/Anytype.xcodeproj",
+        "-scheme",
+        "AnytypeOriginalEditor",
+        "-configuration",
+        "Debug-Anytype",
+        "-destination",
+        "platform=iOS Simulator,id=12345678-1234-1234-1234-1234567890AB",
+        "-derivedDataPath",
+        "/tmp/tmp3mlx7kds/build/work/producer-derived",
+        "-resultBundlePath",
+        "/tmp/tmp3mlx7kds/build/evidence/framework-build.xcresult",
+        "-onlyUsePackageVersionsFromResolvedFile",
+        "OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED $(ORIGINAL_EDITOR_SYMBOL_GRAPH_FLAGS)",
+        "ONLY_ACTIVE_ARCH=YES",
+        "ARCHS=arm64",
+        "SWIFT_OPTIMIZATION_LEVEL=-Onone",
+        "CODE_SIGN_IDENTITY=-",
+        "CODE_SIGNING_ALLOWED=YES",
+        "CODE_SIGNING_REQUIRED=YES",
+        "PROVISIONING_PROFILE_SPECIFIER="
+      ],
+      "name": "framework-build",
+      "timeout_seconds": 6000
+    },
+    {
+      "command": [
+        "otool",
+        "-hv",
+        "/tmp/tmp3mlx7kds/build/work/distribution/Frameworks/AmplitudeCore.framework/AmplitudeCore"
+      ],
+      "name": "framework-header-0",
+      "timeout_seconds": 30
+    },
+    {
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "--verbose=4",
+        "/tmp/tmp3mlx7kds/build/work/producer-derived/Build/Products/Debug-Anytype-iphonesimulator/AmplitudeCore.framework"
+      ],
+      "name": "amplitude-original-strict-signature",
+      "timeout_seconds": 30
+    },
+    {
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "--verbose=4",
+        "/tmp/tmp3mlx7kds/build/work/distribution/Frameworks/AmplitudeCore.framework"
+      ],
+      "name": "amplitude-export-before-strict-signature",
+      "timeout_seconds": 30
+    },
+    {
+      "command": [
+        "codesign",
+        "--force",
+        "--sign",
+        "-",
+        "--timestamp=none",
+        "/tmp/tmp3mlx7kds/build/work/distribution/Frameworks/AmplitudeCore.framework"
+      ],
+      "name": "amplitude-export-adhoc-sign",
+      "timeout_seconds": 30
+    },
+    {
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "--verbose=4",
+        "/tmp/tmp3mlx7kds/build/work/distribution/Frameworks/AmplitudeCore.framework"
+      ],
+      "name": "amplitude-export-after-strict-signature",
+      "timeout_seconds": 30
+    },
+    {
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "/tmp/tmp3mlx7kds/build/work/distribution/Frameworks/AmplitudeCore.framework"
+      ],
+      "name": "framework-signature-0",
+      "timeout_seconds": 30
+    },
+    {
+      "command": [
+        "otool",
+        "-L",
+        "/tmp/tmp3mlx7kds/build/work/distribution/Frameworks/AmplitudeCore.framework/AmplitudeCore"
+      ],
+      "name": "framework-load-commands-0",
+      "timeout_seconds": 30
+    },
+    {
+      "command": [
+        "otool",
+        "-hv",
+        "/tmp/tmp3mlx7kds/build/work/distribution/Frameworks/AnytypeOriginalEditor.framework/AnytypeOriginalEditor"
+      ],
+      "name": "framework-header-1",
+      "timeout_seconds": 30
+    },
+    {
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "/tmp/tmp3mlx7kds/build/work/distribution/Frameworks/AnytypeOriginalEditor.framework"
+      ],
+      "name": "framework-signature-1",
+      "timeout_seconds": 30
+    },
+    {
+      "command": [
+        "otool",
+        "-L",
+        "/tmp/tmp3mlx7kds/build/work/distribution/Frameworks/AnytypeOriginalEditor.framework/AnytypeOriginalEditor"
+      ],
+      "name": "framework-load-commands-1",
+      "timeout_seconds": 30
+    },
+    {
+      "command": [
+        "lipo",
+        "-archs",
+        "/tmp/tmp3mlx7kds/build/work/distribution/Frameworks/AnytypeOriginalEditor.framework/AnytypeOriginalEditor"
+      ],
+      "name": "framework-architecture",
+      "timeout_seconds": 30
+    },
+    {
+      "command": [
+        "xcrun",
+        "vtool",
+        "-show-build",
+        "/tmp/tmp3mlx7kds/build/work/distribution/Frameworks/AnytypeOriginalEditor.framework/AnytypeOriginalEditor"
+      ],
+      "name": "framework-platform",
+      "timeout_seconds": 30
+    },
+    {
+      "command": [
+        "nm",
+        "-gU",
+        "/tmp/tmp3mlx7kds/build/work/distribution/Frameworks/AnytypeOriginalEditor.framework/AnytypeOriginalEditor"
+      ],
+      "name": "original-framework-symbols",
+      "timeout_seconds": 60
+    },
+    {
+      "command": [
+        "xcrun",
+        "--sdk",
+        "iphonesimulator",
+        "--show-sdk-path"
+      ],
+      "name": "actual-simulator-sdk-path",
+      "timeout_seconds": 30
+    },
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/tmp/tmp3mlx7kds/Tools/OriginalEditor/collect_compiler_symbolgraphs.py",
+        "--root",
+        "/tmp/tmp3mlx7kds",
+        "--derived",
+        "/tmp/tmp3mlx7kds/build/work/producer-derived",
+        "--evidence",
+        "/tmp/tmp3mlx7kds/build/evidence",
+        "--sdk",
+        "/EXPLICIT_SYNTHETIC_SDK_NOT_USED",
+        "--output-dir",
+        "/tmp/tmp3mlx7kds/build/evidence/actual-public-symbol-graphs"
+      ],
+      "name": "actual-target-public-symbol-graph",
+      "timeout_seconds": 120
+    },
+    {
+      "command": [
+        "xcodebuild",
+        "build",
+        "-project",
+        "/tmp/tmp3mlx7kds/build/work/external-consumer/OriginalEditorConsumer.xcodeproj",
+        "-scheme",
+        "OriginalEditorConsumer",
+        "-configuration",
+        "Debug",
+        "-destination",
+        "platform=iOS Simulator,id=12345678-1234-1234-1234-1234567890AB",
+        "-derivedDataPath",
+        "/tmp/tmp3mlx7kds/build/work/consumer-derived",
+        "-resultBundlePath",
+        "/tmp/tmp3mlx7kds/build/evidence/consumer-build.xcresult",
+        "ONLY_ACTIVE_ARCH=YES",
+        "ARCHS=arm64"
+      ],
+      "name": "external-consumer-build",
+      "timeout_seconds": 600
+    },
+    {
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "/tmp/tmp3mlx7kds/build/work/consumer-derived/Build/Products/Debug-iphonesimulator/OriginalEditorConsumer.app"
+      ],
+      "name": "external-consumer-signature",
+      "timeout_seconds": 30
+    },
+    {
+      "command": [
+        "xcrun",
+        "simctl",
+        "boot",
+        "12345678-1234-1234-1234-1234567890AB"
+      ],
+      "name": "boot-owned-simulator",
+      "timeout_seconds": 60
+    },
+    {
+      "command": [
+        "xcrun",
+        "simctl",
+        "bootstatus",
+        "12345678-1234-1234-1234-1234567890AB",
+        "-b"
+      ],
+      "name": "boot-status",
+      "timeout_seconds": 180
+    },
+    {
+      "command": [
+        "xcrun",
+        "simctl",
+        "install",
+        "12345678-1234-1234-1234-1234567890AB",
+        "/tmp/tmp3mlx7kds/build/work/consumer-derived/Build/Products/Debug-iphonesimulator/OriginalEditorConsumer.app"
+      ],
+      "name": "install-external-consumer",
+      "timeout_seconds": 60
+    },
+    {
+      "command": [
+        "xcrun",
+        "simctl",
+        "shutdown",
+        "12345678-1234-1234-1234-1234567890AB"
+      ],
+      "name": "cleanup-shutdown",
+      "timeout_seconds": 60
+    },
+    {
+      "command": [
+        "xcrun",
+        "simctl",
+        "delete",
+        "12345678-1234-1234-1234-1234567890AB"
+      ],
+      "name": "cleanup-delete",
+      "timeout_seconds": 60
+    }
+  ],
+  "native_tests_executed": 0,
+  "receipt": {
+    "actual_public_surface": {
+      "editable_mount_api": "EXPOSED_COMPILED_NATIVE_EDITOR_NOT_RUN",
+      "imported_dependency_symbols_not_rejected": 0,
+      "own_public_symbols": [
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic0",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorHost.swift",
+          "path": [
+            "AnytypeOriginalEditorBinding"
+          ],
+          "spi": false
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic1",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorHost.swift",
+          "path": [
+            "AnytypeOriginalEditorBinding",
+            "init(accountID:spaceID:objectID:hostProfileID:annotationUUID:expectedRevision:sourceWitnessSHA256:)"
+          ],
+          "spi": false
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic2",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorHost.swift",
+          "path": [
+            "AnytypeOriginalEditorSourceLifetime"
+          ],
+          "spi": false
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic3",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorHost.swift",
+          "path": [
+            "AnytypeOriginalEditorSourceLifetime",
+            "init(binding:)"
+          ],
+          "spi": false
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic4",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorHost.swift",
+          "path": [
+            "AnytypeOriginalEditorSourceLifetime",
+            "retire()"
+          ],
+          "spi": false
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic5",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorHost.swift",
+          "path": [
+            "AnytypeOriginalEditorHost"
+          ],
+          "spi": false
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic6",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorHost.swift",
+          "path": [
+            "AnytypeOriginalEditorHost",
+            "makeViewController()"
+          ],
+          "spi": false
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic7",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorHost.swift",
+          "path": [
+            "AnytypeOriginalEditorHost",
+            "retire()"
+          ],
+          "spi": false
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic8",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorHost.swift",
+          "path": [
+            "AnytypeOriginalEditorModule",
+            "openExistingEditor(binding:sourceLifetime:sourceIsCurrent:)"
+          ],
+          "spi": false
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic0",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorModule.swift",
+          "path": [
+            "AnytypeOriginalEditorModule",
+            "inspectResources()"
+          ],
+          "spi": false
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic0",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+          "path": [
+            "AnytypeOriginalEditorQualificationSource"
+          ],
+          "spi": true
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic1",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+          "path": [
+            "AnytypeOriginalEditorQualificationSession"
+          ],
+          "spi": true
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic2",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+          "path": [
+            "AnytypeOriginalEditorQualificationSession",
+            "prepareReopen(snapshot:currentSource:sourceIsCurrent:)"
+          ],
+          "spi": true
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic3",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+          "path": [
+            "AnytypeOriginalEditorModule",
+            "beginEditableAcceptance(source:sourceIsCurrent:)"
+          ],
+          "spi": true
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic4",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+          "path": [
+            "AnytypeOriginalEditorModule",
+            "beginFidelityAcceptance(source:sourceIsCurrent:)"
+          ],
+          "spi": true
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic5",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+          "path": [
+            "AnytypeOriginalEditorProcessResumeContext"
+          ],
+          "spi": true
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic6",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+          "path": [
+            "AnytypeOriginalEditorProcessResumeContext",
+            "init(workspaceNamespace:legacyAnnotationID:payloadDigest:)"
+          ],
+          "spi": true
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic7",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+          "path": [
+            "AnytypeOriginalEditorProcessResumeContext",
+            "workspaceNamespace"
+          ],
+          "spi": true
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic8",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+          "path": [
+            "AnytypeOriginalEditorProcessResumeContext",
+            "legacyAnnotationID"
+          ],
+          "spi": true
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic9",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+          "path": [
+            "AnytypeOriginalEditorProcessResumeContext",
+            "payloadDigest"
+          ],
+          "spi": true
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic10",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+          "path": [
+            "AnytypeOriginalEditorProcessResumeReceipt"
+          ],
+          "spi": true
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic11",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+          "path": [
+            "AnytypeOriginalEditorProcessResumeReceipt",
+            "runtimeNonce"
+          ],
+          "spi": true
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic12",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+          "path": [
+            "AnytypeOriginalEditorProcessResumeReceipt",
+            "accountID"
+          ],
+          "spi": true
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic13",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+          "path": [
+            "AnytypeOriginalEditorProcessResumeReceipt",
+            "spaceID"
+          ],
+          "spi": true
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic14",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+          "path": [
+            "AnytypeOriginalEditorProcessResumeReceipt",
+            "objectID"
+          ],
+          "spi": true
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic15",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+          "path": [
+            "AnytypeOriginalEditorProcessResumeReceipt",
+            "preparedProcessID"
+          ],
+          "spi": true
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic16",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+          "path": [
+            "AnytypeOriginalEditorProcessResumeReceipt",
+            "currentProcessID"
+          ],
+          "spi": true
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic17",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+          "path": [
+            "AnytypeOriginalEditorProcessResumeReceipt",
+            "credentialConsumed"
+          ],
+          "spi": true
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic18",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+          "path": [
+            "AnytypeOriginalEditorQualificationSession",
+            "processResumeReceipt"
+          ],
+          "spi": true
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic19",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+          "path": [
+            "AnytypeOriginalEditorQualificationSession",
+            "prepareProcessResume(host:snapshot:currentSource:context:sourceIsCurrent:)"
+          ],
+          "spi": true
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic20",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+          "path": [
+            "AnytypeOriginalEditorModule",
+            "cleanupOwnedProcessResumeCredential()"
+          ],
+          "spi": true
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic21",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorQualification.swift",
+          "path": [
+            "AnytypeOriginalEditorModule",
+            "resumeEditableAcceptance(source:snapshot:context:sourceIsCurrent:)"
+          ],
+          "spi": true
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic0",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift",
+          "path": [
+            "AnytypeOriginalEditorSnapshot"
+          ],
+          "spi": false
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic1",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift",
+          "path": [
+            "AnytypeOriginalEditorSnapshot",
+            "init(bodyBytes:maximumBodyBytes:)"
+          ],
+          "spi": false
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic2",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift",
+          "path": [
+            "AnytypeOriginalEditorSnapshot",
+            "Provenance",
+            "matchesCaptureBinding(_:)"
+          ],
+          "spi": false
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic3",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift",
+          "path": [
+            "AnytypeOriginalEditorSnapshot",
+            "bodyBytes"
+          ],
+          "spi": false
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic4",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift",
+          "path": [
+            "AnytypeOriginalEditorSnapshotCapture"
+          ],
+          "spi": false
+        },
+        {
+          "identifier": "s:21AnytypeOriginalEditorSynthetic5",
+          "location": "file:///tmp/tmp3mlx7kds/OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift",
+          "path": [
+            "AnytypeOriginalEditorHost",
+            "captureNativeSnapshot(maximumBodyBytes:)"
+          ],
+          "spi": false
+        }
+      ],
+      "public_host_scope_verified": true,
+      "public_original_editor_or_writer_declarations": [],
+      "qualification_spi_scope_verified": true,
+      "reviewed_host_and_spi_requirements_observed": 38,
+      "status": "ACTUAL_TARGET_PUBLIC_SURFACE_INSPECTED",
+      "target": "AnytypeOriginalEditor"
+    },
+    "actual_source_closure": {
+      "EXPLICIT_FILELIST_BOUNDARY_DOUBLE": true
+    },
+    "compiled_consumer_api_probe_sha256": "9aa9f4036de1f6d9b8c3b0f6670ac4008f1772535d8f8c5f958184a2cd262aff",
+    "dependencies": {
+      "EXPLICIT_DEPENDENCY_BOUNDARY_DOUBLE": true
+    },
+    "editable_mount": "API_DECLARED_NATIVE_UI_NOT_RUN",
+    "error": "Synthetic control stops before real installation",
+    "error_type": "StopBeforeRuntime",
+    "external_consumer_build": "PASS",
+    "finished_at": "2026-11-22T14:37:11.756537+00:00",
+    "heart": {
+      "app_source_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "marker": "EXPLICIT_HEART_BOUNDARY_DOUBLE",
+      "source_run_id": "44203168617",
+      "status": "PASS"
+    },
+    "native_editor_ui_tests": 0,
+    "original_app_runtime": "NOT_RUN",
+    "original_clang_declarations": {
+      "declaration_file_count": 2,
+      "header_root_count": 1,
+      "manifest_sha256": "ae2db4a6f4ed07de39166259b3b41f8da262599fd72d1e1ccf5e2a8e3fba0c10",
+      "module_map_count": 1
+    },
+    "original_framework_build": "PASS",
+    "phase": "ACTUAL_EXTERNAL_RESOURCE_RUNTIME",
+    "preflight": {
+      "run_attempt": "1",
+      "run_id": "900001",
+      "selected": {
+        "ipad": {
+          "name": "Pinkha-UI27-900001-ipad",
+          "udid": "12345678-1234-1234-1234-1234567890AB"
+        }
+      },
+      "source_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "status": "PREFLIGHT_PASS_UI_NOT_RUN"
+    },
+    "public_host_api": "EXPOSED_COMPILED_NATIVE_EDITOR_NOT_RUN",
+    "run_attempt": "1",
+    "run_id": "900001",
+    "schema": 1,
+    "sdk": "27.2",
+    "source_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "started_at": "2026-11-22T14:37:11.615714+00:00",
+    "status": "FAIL",
+    "swift": "EXPLICIT_SWIFT_TOOL_DOUBLE_NOT_A_COMPILER",
+    "verified_runtime_observations": []
+  },
+  "scope": "Whole Python driver, explicit Apple/source doubles; no Apple execution"
+}

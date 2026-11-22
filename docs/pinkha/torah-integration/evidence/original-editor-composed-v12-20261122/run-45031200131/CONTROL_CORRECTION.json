@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "status": "PASS_ONE_FAILED_CONTROL_CORRECTED_238_PRIOR_PASSES_RETAINED",
+  "failed_run_id": "45031200131",
+  "run_attempt": 1,
+  "failed_head": "fcb8fbb0610d71f78d1f5c3fcde75342d5dd08b3",
+  "source_admission": "SOURCE_BOUND_FRAMEWORK_RUNTIME_NOT_RUN",
+  "ci_tests_run": 239,
+  "ci_passed": 238,
+  "ci_errors": [
+    {
+      "id": "test_amplitude_simulator_signing.OriginalSigningDriverFlowControls.test_whole_driver_keeps_strict_gate_and_exact_transformed_consumer_inputs",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/runner/work/anytype-swift/anytype-swift/Tools/OriginalEditor/test_amplitude_simulator_signing.py\", line 597, in test_whole_driver_keeps_strict_gate_and_exact_transformed_consumer_inputs\n    self.assertEqual({p for p in proof['files'] if proof['files'][p] != before['files'][p]},\n                                                                        ~~~~~~~~~~~~~~~^^^\nKeyError: 'Clang/Packages/EXPLICIT_DECLARATION_FIXTURE/include/EXPLICIT.h'\n"
+    }
+  ],
+  "ci_failures": 0,
+  "ci_skipped": 0,
+  "raw_ci_report_sha256": "a1fec172116830bd6caedaf0b76ed1ac048e99d8891341c590ae15a274d03ca6",
+  "raw_downloaded_evidence_sha256": "9869c5530d29073f37d71b8c66136533aa586bf41ff177212f9dcdf5c8e370a4",
+  "artifact_id": 14757988028,
+  "artifact_published_outer_sha256": "e729f0f2d55d496149cef97d93eb8b481b4bb41d2fb3e66c219e7e39167a92ee",
+  "correction": "Require exact original distribution inventory plus the two explicit Clang fixture files and identity manifest; compare every original file and still permit only Amplitude executable and CodeResources changes.",
+  "changed_product_sources": [],
+  "changed_profile_or_workflow": false,
+  "required_ci_control_count": 239,
+  "preserved_required_ids": 239,
+  "local_test_ids": [
+    "test_amplitude_simulator_signing.OriginalSigningDriverFlowControls.test_whole_driver_keeps_strict_gate_and_exact_transformed_consumer_inputs"
+  ],
+  "local_test_count": 1,
+  "prior_passed_tests_rerun_locally": 0,
+  "local_scope": "One affected Python orchestration/signing control; explicit Apple tool/source doubles; no native signing, Apple compile or runtime qualification",
+  "corrected_test_sha256": "df86e8c42a2ff0a9b59df1bb86ae45480c714b606964ff3f80b097f09af805be",
+  "next_gate": "Root exact-head review, then one producer push; all239 source controls remain required before Apple build.",
+  "apple_framework_compile": "NOT_RUN",
+  "external_clang_consumer": "NOT_RUN",
+  "resource_runtime": "NOT_RUN",
+  "producer_products_retained": false
+}

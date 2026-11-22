@@ -594,7 +594,15 @@ class OriginalSigningDriverFlowControls(unittest.TestCase):
         self.assertIn('Synthetic control stops before real installation', case.receipt['error'])
         proof = json.loads((case.evidence / 'framework-distribution.json').read_bytes())
         before = json.loads((case.evidence / 'framework-distribution-before-simulator-signing.json').read_bytes())
-        self.assertEqual({p for p in proof['files'] if proof['files'][p] != before['files'][p]},
+        # Clang declarations are exported after signing. Require that exact
+        # fixture addition while still checking every pre-signing file below.
+        clang_additions = {
+            'Clang/Packages/EXPLICIT_DECLARATION_FIXTURE/include/EXPLICIT.h',
+            'Clang/Packages/EXPLICIT_DECLARATION_FIXTURE/include/module.modulemap',
+            'SourceProvenance/ClangImportContext.json',
+        }
+        self.assertEqual(set(proof['files']), set(before['files']) | clang_additions)
+        self.assertEqual({p for p in before['files'] if proof['files'][p] != before['files'][p]},
                          {'Frameworks/AmplitudeCore.framework/AmplitudeCore',
                           'Frameworks/AmplitudeCore.framework/_CodeSignature/CodeResources'})
         self.assertEqual(proof['simulator_signing_transformations'][0]['consumer_qualification'], 'NOT_GRANTED')
