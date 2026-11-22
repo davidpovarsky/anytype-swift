@@ -1,0 +1,79 @@
+{
+  "schema": "otzaria.explicit-file-gofmt/1",
+  "host": "host_7ec8382e82747448",
+  "formatter": "C:\\Program Files\\Go\\bin\\gofmt.exe",
+  "owned_temp": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-schema-diagnostic-gofmt-7c7_drpd",
+  "stdin": "DEVNULL",
+  "events": [
+    {
+      "stage": "GO_VERSION_START",
+      "elapsed_seconds": 0,
+      "timeout_seconds": 5
+    },
+    {
+      "stage": "GO_VERSION_FINISHED",
+      "elapsed_seconds": 1.062,
+      "version": "go version go1.25.6 windows/amd64"
+    },
+    {
+      "stage": "GOFMT_FILE_START",
+      "elapsed_seconds": 1.062,
+      "path": "core/block/object/objectcreator/annotation_schema_missing_attachment_diagnostic_test.go",
+      "timeout_seconds": 8
+    },
+    {
+      "stage": "GOFMT_FILE_FINISHED",
+      "elapsed_seconds": 2.172,
+      "path": "core/block/object/objectcreator/annotation_schema_missing_attachment_diagnostic_test.go",
+      "bytes": 5783,
+      "changed": false
+    },
+    {
+      "stage": "GOFMT_FILE_START",
+      "elapsed_seconds": 2.172,
+      "path": "core/block/object/objectcreator/annotation_schema_registration_native_test.go",
+      "timeout_seconds": 8
+    },
+    {
+      "stage": "GOFMT_FILE_FINISHED",
+      "elapsed_seconds": 2.859,
+      "path": "core/block/object/objectcreator/annotation_schema_registration_native_test.go",
+      "bytes": 18919,
+      "changed": false
+    }
+  ],
+  "files": [
+    {
+      "path": "core/block/object/objectcreator/annotation_schema_missing_attachment_diagnostic_test.go",
+      "before_sha256": "8dd82f89bff90a8bd44806846f2159fb02dc52320b1ff8f63463bf9a9ff368fc",
+      "sha256": "8dd82f89bff90a8bd44806846f2159fb02dc52320b1ff8f63463bf9a9ff368fc",
+      "bytes": 5783,
+      "changed": false
+    },
+    {
+      "path": "core/block/object/objectcreator/annotation_schema_registration_native_test.go",
+      "before_sha256": "0a55414b48c74c822b2c58cbda0f94911665f9c0e27cd709a6b403b7b945269c",
+      "sha256": "0a55414b48c74c822b2c58cbda0f94911665f9c0e27cd709a6b403b7b945269c",
+      "bytes": 18919,
+      "changed": false
+    }
+  ],
+  "status": "PASS",
+  "go_version": "go version go1.25.6 windows/amd64",
+  "owned_temp_removed": true,
+  "tool": {
+    "ok": true,
+    "returncode": 0,
+    "duration": 5.69,
+    "command": [
+      "C:\\ProgramData\\SentinelX\\.venv\\Scripts\\python.exe",
+      "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_1b32886f406243baaa77f3e586b9ccc5\\script.py"
+    ]
+  },
+  "exact_script_local_path": "heart_completion/schema_registration/diagnostic_formatter_explicit_file.py",
+  "script_sha256": "eccba5535fed17970831c6f674983915234886ff3b8c5617bd0ba946584a8f07",
+  "previous_timeout_receipt": "FORMAT_TIMEOUT_RECEIPT.json",
+  "native_compile": "NOT_RUN",
+  "native_execution": "NOT_RUN",
+  "pinned_runtime_gate": "macOS Go1.26.5 source equality remains mandatory; no source rewrite"
+}

@@ -1,0 +1,22 @@
+{
+  "additional_mutations": 0,
+  "after_attempt_capture_deferred_before_fixture_teardown": true,
+  "after_sha256": "0a55414b48c74c822b2c58cbda0f94911665f9c0e27cd709a6b403b7b945269c",
+  "all_twelve_passing_child_bodies_unchanged": true,
+  "assertions_removed_or_changed": 0,
+  "before_sha256": "8b4354f42fc1ca4c9575ac26f5f64eb769e647610ffee39bbe2123b50e8b7859",
+  "capture_calls": [
+    "retainMissingAttachmentState(t, f, spc, definitions[0], typeID, \"00-registered\")",
+    "retainMissingAttachmentState(t, f, spc, definitions[0], typeID, \"01-unrelated-property-added\")",
+    "retainMissingAttachmentState(t, f, spc, definitions[0], typeID, \"02-second-view-applied\")",
+    "retainMissingAttachmentState(t, f, spc, definitions[0], typeID, \"03-metadata-property-removed\")",
+    "retainMissingAttachmentState(t, f, spc, definitions[0], typeID, \"04-before-registration-attempt\")",
+    "defer retainMissingAttachmentState(t, f, spc, definitions[0], typeID, \"05-after-registration-attempt\")"
+  ],
+  "failed_child": "MissingAttachmentUsesOneNativeApply",
+  "product_changes": 0,
+  "six_capture_calls_removed_recovers_exact_original_bytes": true,
+  "source_commit": "60b8300c3506e53638c8ca883f82484de073fae8",
+  "source_run": 45038140322,
+  "test_path": "core/block/object/objectcreator/annotation_schema_registration_native_test.go"
+}

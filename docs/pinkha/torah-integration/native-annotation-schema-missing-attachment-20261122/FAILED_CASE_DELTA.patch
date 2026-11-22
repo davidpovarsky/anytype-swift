@@ -1,0 +1,32 @@
+--- source60b/core/block/object/objectcreator/annotation_schema_registration_native_test.go
++++ diagnostic/core/block/object/objectcreator/annotation_schema_registration_native_test.go
+@@ -73,6 +73,7 @@
+ 		spc := f.regularSpace(t)
+ 		ready, _ := registrationComplete(t, f, spc)
+ 		typeID := ready.Observation.Definitions[0].Native.ObjectID
++		retainMissingAttachmentState(t, f, spc, definitions[0], typeID, "00-registered")
+ 		unrelated := nativeSchemaDefinition(t, coresb.SmartBlockTypeRelation, "registrationunrelated")
+ 		unrelatedID := f.createSchema(t, spc, unrelated)
+ 		waitAnnotationSchemaIndex(t, f, spc.Id(), unrelated, unrelatedID, false)
+@@ -82,6 +83,7 @@
+ 			Section: detailservice.TypePropertySectionRecommended, EnableInViews: true,
+ 		})
+ 		nativeSchemaNoError(t, err)
++		retainMissingAttachmentState(t, f, spc, definitions[0], typeID, "01-unrelated-property-added")
+ 		nativeSchemaNoError(t, spc.DoCtx(f.ctx, typeID, func(object smartblock.SmartBlock) error {
+ 			st := object.NewState()
+ 			st.SetDetailAndBundledRelation(bundle.RelationKeyDescription, domain.String("preserve this unrelated native description"))
+@@ -98,9 +100,13 @@
+ 			st.Set(block)
+ 			return object.Apply(st)
+ 		}))
++		retainMissingAttachmentState(t, f, spc, definitions[0], typeID, "02-second-view-applied")
+ 		_, err = properties.ObjectTypePropertyRemove(f.ctx, typeID, domain.RelationKey(definitions[1].Key.InternalKey()))
+ 		nativeSchemaNoError(t, err)
++		retainMissingAttachmentState(t, f, spc, definitions[0], typeID, "03-metadata-property-removed")
+ 		before := annotationSchemaReadback(t, f, spc, definitions[0])
++		retainMissingAttachmentState(t, f, spc, definitions[0], typeID, "04-before-registration-attempt")
++		defer retainMissingAttachmentState(t, f, spc, definitions[0], typeID, "05-after-registration-attempt")
+ 		result, phases := registrationComplete(t, f, spc)
+ 		applies := 0
+ 		for _, phase := range phases {
