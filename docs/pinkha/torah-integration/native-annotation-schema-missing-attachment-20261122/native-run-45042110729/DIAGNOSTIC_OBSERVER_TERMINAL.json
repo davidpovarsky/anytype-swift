@@ -1,0 +1,231 @@
+{
+  "notification": {
+    "ok": true,
+    "job": {
+      "id": "job_6fdc32065bdf",
+      "type": "job_result",
+      "source": "script_run@host_7ec8382e82747448",
+      "severity": "info",
+      "tool": "script_run",
+      "host": "host_7ec8382e82747448",
+      "status": "succeeded",
+      "exit_code": 0,
+      "created_at": 1795363716.4420788,
+      "started_at": "2026-11-22T16:08:36.520334+00:00",
+      "finished_at": "2026-11-22T16:24:10.434612+00:00",
+      "duration_s": 933.91,
+      "error": null,
+      "output_truncated": false,
+      "timeout_s": 3600,
+      "read": true,
+      "notified": {
+        "telegram": null,
+        "resend": null
+      },
+      "notify_spec": {},
+      "output": "{\"schema\": \"otzaria.finite-schema-missing-attachment-observer/1\", \"run_id\": 45042110729, \"expected_head\": \"b93b7b351cfeb625607b5b7d86aef7c29fe78b0b\", \"events\": [{\"utc\": \"2026-11-22T16:08:38.804624+00:00\", \"event\": \"RUN_STATE\", \"status\": \"queued\", \"conclusion\": null}, {\"utc\": \"2026-11-22T16:20:55.392212+00:00\", \"event\": \"RUN_STATE\", \"status\": \"in_progress\", \"conclusion\": null}, {\"utc\": \"2026-11-22T16:24:01.729048+00:00\", \"event\": \"RUN_STATE\", \"status\": \"completed\", \"conclusion\": \"failure\"}, {\"utc\": \"2026-11-22T16:24:10.283753+00:00\", \"event\": \"ARTIFACT_VERIFIED\", \"artifact_id\": 14762199006, \"native_status\": \"FAIL\"}], \"status\": \"TERMINAL_ARTIFACT_RETAINED\", \"owned_directory\": \"C:\\\\Users\\\\DAVID\\\\Code\\\\otzaria-schema-missing-attachment-observer-20261122-45042110729\", \"run\": {\"id\": 45042110729, \"head_sha\": \"b93b7b351cfeb625607b5b7d86aef7c29fe78b0b\", \"head_branch\": \"codex/otzaria-schema-missing-attachment-20261122\", \"run_attempt\": 1, \"event\": \"push\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/davidpovarsky/anytype-swift/actions/runs/45042110729\", \"created_at\": \"2026-11-22T16:08:07Z\", \"updated_at\": \"2026-11-22T16:23:42Z\"}, \"artifact\": {\"id\": 14762199006, \"name\": \"Otzaria-Schema-Missing-Attachment-45042110729-1\", \"bytes\": 2634204, \"sha256\": \"270b824b9c0210cd1cd584db0315215678bfa04c29c4251692527c57e403fd6e\", \"path\": \"C:\\\\Users\\\\DAVID\\\\Code\\\\otzaria-schema-missing-attachment-observer-20261122-45042110729\\\\native-artifact.zip\", \"payloads\": 48}, \"native_result\": {\"status\": \"FAIL\", \"control_head\": \"b93b7b351cfeb625607b5b7d86aef7c29fe78b0b\", \"tests\": {\"native\": {\"binary_bytes\": 173383186, \"binary_evidence_scope\": \"Runner-observed hashes; executable bytes are excluded from uploaded evidence and not independently rehashed by root.\", \"binary_sha256_after\": \"815bc2c2de348399f4d993f533a0362c7aa1b12e293bb6fc296af2ad525608f8\", \"binary_sha256_before\": \"815bc2c2de348399f4d993f533a0362c7aa1b12e293bb6fc296af2ad525608f8\", \"binary_unchanged\": true, \"buildinfo_sha256\": \"5d5aec8321ec716adaccd84fbbd388bc69ebf72043dc0a9c512c391e2f85a116\", \"compiled\": true, \"effective_returncode\": 1, \"execution_started\": true, \"expected\": [\"TestOtzariaAnnotationSchemaRegistration\", \"TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply\"], \"package_terminal\": [\"fail\"], \"pass\": false, \"process_returncode\": 1, \"selection\": \"^TestOtzariaAnnotationSchemaRegistration$/^(MissingAttachmentUsesOneNativeApply)$\", \"started\": [\"TestOtzariaAnnotationSchemaRegistration\", \"TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply\"], \"terminal\": {\"TestOtzariaAnnotationSchemaRegistration\": \"fail\", \"TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply\": \"fail\"}, \"timed_out\": false, \"unexpected\": []}}, \"diagnostic_capture\": {\"captures\": [{\"blocks_equal\": false, \"details_equal\": true, \"different_block_ids\": [\"dataview\"], \"different_detail_keys\": [], \"live_heads\": [\"bafyreihhy4woytbkgzvkagaqbqvtwm6eiefvlculqglxabxucodlyxmejm\"], \"path\": \"missing-attachment-00-registered.json\", \"persisted_heads\": [\"bafyreihhy4woytbkgzvkagaqbqvtwm6eiefvlculqglxabxucodlyxmejm\"], \"sha256\": \"ff6388e1493d127e3fc5efd3451e04c4961c957bab51c09f1ef6e1e9550ef243\", \"stage\": \"00-registered\"}, {\"blocks_equal\": false, \"details_equal\": true, \"different_block_ids\": [\"dataview\"], \"different_detail_keys\": [], \"live_heads\": [\"bafyreibj7neygdvhjggnxbqogci3dgvr6vvh6io7emtk4wwic566vvbb2i\"], \"path\": \"missing-attachment-01-unrelated-property-added.json\", \"persisted_heads\": [\"bafyreibj7neygdvhjggnxbqogci3dgvr6vvh6io7emtk4wwic566vvbb2i\"], \"sha256\": \"325788feca8f418c47e1ccd5a6eea4ca10bb2a1ca0a7fec1cd895f9f767a5dd9\", \"stage\": \"01-unrelated-property-added\"}, {\"blocks_equal\": false, \"details_equal\": true, \"different_block_ids\": [\"dataview\"], \"different_detail_keys\": [], \"live_heads\": [\"bafyreihbdkve45rg2vnujxhrnreaulhaxyphn7ijz6rs2b3myrygv3nq6e\"], \"path\": \"missing-attachment-02-second-view-applied.json\", \"persisted_heads\": [\"bafyreihbdkve45rg2vnujxhrnreaulhaxyphn7ijz6rs2b3myrygv3nq6e\"], \"sha256\": \"f7d7f562661e999f4ea158efbbcf91cde882b12925fcef89c58a90ed1e7f7f70\", \"stage\": \"02-second-view-applied\"}, {\"blocks_equal\": false, \"details_equal\": true, \"different_block_ids\": [\"dataview\"], \"different_detail_keys\": [], \"live_heads\": [\"bafyreigjgn6j3cr2dkb4vrjj6i5qn4ox5imupts52azzqfeykzo32pfwra\"], \"path\": \"missing-attachment-03-metadata-property-removed.json\", \"persisted_heads\": [\"bafyreigjgn6j3cr2dkb4vrjj6i5qn4ox5imupts52azzqfeykzo32pfwra\"], \"sha256\": \"74dd26d8330899970f9c8a4a910a1b21ea6d02466b60f37442208f3f95136d03\", \"stage\": \"03-metadata-property-removed\"}, {\"blocks_equal\": false, \"details_equal\": true, \"different_block_ids\": [\"dataview\"], \"different_detail_keys\": [], \"live_heads\": [\"bafyreigjgn6j3cr2dkb4vrjj6i5qn4ox5imupts52azzqfeykzo32pfwra\"], \"path\": \"missing-attachment-04-before-registration-attempt.json\", \"persisted_heads\": [\"bafyreigjgn6j3cr2dkb4vrjj6i5qn4ox5imupts52azzqfeykzo32pfwra\"], \"sha256\": \"0e2a851175ab735982dc3e144d539890669ef4ac9144338fd970165456cc2061\", \"stage\": \"04-before-registration-attempt\"}, {\"blocks_equal\": false, \"details_equal\": true, \"different_block_ids\": [\"dataview\"], \"different_detail_keys\": [], \"live_heads\": [\"bafyreigjgn6j3cr2dkb4vrjj6i5qn4ox5imupts52azzqfeykzo32pfwra\"], \"path\": \"missing-attachment-05-after-registration-attempt.json\", \"persisted_heads\": [\"bafyreigjgn6j3cr2dkb4vrjj6i5qn4ox5imupts52azzqfeykzo32pfwra\"], \"sha256\": \"d92f61da82639963c45f8ea8a8c339722619dc709d79291f4f8021e840fbca7f\", \"stage\": \"05-after-registration-attempt\"}], \"complete\": true, \"reported_native_process_id\": 24081, \"scope\": \"Historical complete native state pairs. Original Go proto.Equal owns equality; Python checks byte framing/hashes and never normalizes or excludes fields. A retained diagnostic does not turn a failing test into PASS.\"}, \"error\": null, \"error_type\": null, \"owned_disposable_temp_removed\": true}}"
+    }
+  },
+  "observer": {
+    "schema": "otzaria.finite-schema-missing-attachment-observer/1",
+    "run_id": 45042110729,
+    "expected_head": "b93b7b351cfeb625607b5b7d86aef7c29fe78b0b",
+    "events": [
+      {
+        "utc": "2026-11-22T16:08:38.804624+00:00",
+        "event": "RUN_STATE",
+        "status": "queued",
+        "conclusion": null
+      },
+      {
+        "utc": "2026-11-22T16:20:55.392212+00:00",
+        "event": "RUN_STATE",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "utc": "2026-11-22T16:24:01.729048+00:00",
+        "event": "RUN_STATE",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "utc": "2026-11-22T16:24:10.283753+00:00",
+        "event": "ARTIFACT_VERIFIED",
+        "artifact_id": 14762199006,
+        "native_status": "FAIL"
+      }
+    ],
+    "status": "TERMINAL_ARTIFACT_RETAINED",
+    "owned_directory": "C:\\Users\\DAVID\\Code\\otzaria-schema-missing-attachment-observer-20261122-45042110729",
+    "run": {
+      "id": 45042110729,
+      "head_sha": "b93b7b351cfeb625607b5b7d86aef7c29fe78b0b",
+      "head_branch": "codex/otzaria-schema-missing-attachment-20261122",
+      "run_attempt": 1,
+      "event": "push",
+      "status": "completed",
+      "conclusion": "failure",
+      "html_url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45042110729",
+      "created_at": "2026-11-22T16:08:07Z",
+      "updated_at": "2026-11-22T16:23:42Z"
+    },
+    "artifact": {
+      "id": 14762199006,
+      "name": "Otzaria-Schema-Missing-Attachment-45042110729-1",
+      "bytes": 2634204,
+      "sha256": "270b824b9c0210cd1cd584db0315215678bfa04c29c4251692527c57e403fd6e",
+      "path": "C:\\Users\\DAVID\\Code\\otzaria-schema-missing-attachment-observer-20261122-45042110729\\native-artifact.zip",
+      "payloads": 48
+    },
+    "native_result": {
+      "status": "FAIL",
+      "control_head": "b93b7b351cfeb625607b5b7d86aef7c29fe78b0b",
+      "tests": {
+        "native": {
+          "binary_bytes": 173383186,
+          "binary_evidence_scope": "Runner-observed hashes; executable bytes are excluded from uploaded evidence and not independently rehashed by root.",
+          "binary_sha256_after": "815bc2c2de348399f4d993f533a0362c7aa1b12e293bb6fc296af2ad525608f8",
+          "binary_sha256_before": "815bc2c2de348399f4d993f533a0362c7aa1b12e293bb6fc296af2ad525608f8",
+          "binary_unchanged": true,
+          "buildinfo_sha256": "5d5aec8321ec716adaccd84fbbd388bc69ebf72043dc0a9c512c391e2f85a116",
+          "compiled": true,
+          "effective_returncode": 1,
+          "execution_started": true,
+          "expected": [
+            "TestOtzariaAnnotationSchemaRegistration",
+            "TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply"
+          ],
+          "package_terminal": [
+            "fail"
+          ],
+          "pass": false,
+          "process_returncode": 1,
+          "selection": "^TestOtzariaAnnotationSchemaRegistration$/^(MissingAttachmentUsesOneNativeApply)$",
+          "started": [
+            "TestOtzariaAnnotationSchemaRegistration",
+            "TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply"
+          ],
+          "terminal": {
+            "TestOtzariaAnnotationSchemaRegistration": "fail",
+            "TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply": "fail"
+          },
+          "timed_out": false,
+          "unexpected": []
+        }
+      },
+      "diagnostic_capture": {
+        "captures": [
+          {
+            "blocks_equal": false,
+            "details_equal": true,
+            "different_block_ids": [
+              "dataview"
+            ],
+            "different_detail_keys": [],
+            "live_heads": [
+              "bafyreihhy4woytbkgzvkagaqbqvtwm6eiefvlculqglxabxucodlyxmejm"
+            ],
+            "path": "missing-attachment-00-registered.json",
+            "persisted_heads": [
+              "bafyreihhy4woytbkgzvkagaqbqvtwm6eiefvlculqglxabxucodlyxmejm"
+            ],
+            "sha256": "ff6388e1493d127e3fc5efd3451e04c4961c957bab51c09f1ef6e1e9550ef243",
+            "stage": "00-registered"
+          },
+          {
+            "blocks_equal": false,
+            "details_equal": true,
+            "different_block_ids": [
+              "dataview"
+            ],
+            "different_detail_keys": [],
+            "live_heads": [
+              "bafyreibj7neygdvhjggnxbqogci3dgvr6vvh6io7emtk4wwic566vvbb2i"
+            ],
+            "path": "missing-attachment-01-unrelated-property-added.json",
+            "persisted_heads": [
+              "bafyreibj7neygdvhjggnxbqogci3dgvr6vvh6io7emtk4wwic566vvbb2i"
+            ],
+            "sha256": "325788feca8f418c47e1ccd5a6eea4ca10bb2a1ca0a7fec1cd895f9f767a5dd9",
+            "stage": "01-unrelated-property-added"
+          },
+          {
+            "blocks_equal": false,
+            "details_equal": true,
+            "different_block_ids": [
+              "dataview"
+            ],
+            "different_detail_keys": [],
+            "live_heads": [
+              "bafyreihbdkve45rg2vnujxhrnreaulhaxyphn7ijz6rs2b3myrygv3nq6e"
+            ],
+            "path": "missing-attachment-02-second-view-applied.json",
+            "persisted_heads": [
+              "bafyreihbdkve45rg2vnujxhrnreaulhaxyphn7ijz6rs2b3myrygv3nq6e"
+            ],
+            "sha256": "f7d7f562661e999f4ea158efbbcf91cde882b12925fcef89c58a90ed1e7f7f70",
+            "stage": "02-second-view-applied"
+          },
+          {
+            "blocks_equal": false,
+            "details_equal": true,
+            "different_block_ids": [
+              "dataview"
+            ],
+            "different_detail_keys": [],
+            "live_heads": [
+              "bafyreigjgn6j3cr2dkb4vrjj6i5qn4ox5imupts52azzqfeykzo32pfwra"
+            ],
+            "path": "missing-attachment-03-metadata-property-removed.json",
+            "persisted_heads": [
+              "bafyreigjgn6j3cr2dkb4vrjj6i5qn4ox5imupts52azzqfeykzo32pfwra"
+            ],
+            "sha256": "74dd26d8330899970f9c8a4a910a1b21ea6d02466b60f37442208f3f95136d03",
+            "stage": "03-metadata-property-removed"
+          },
+          {
+            "blocks_equal": false,
+            "details_equal": true,
+            "different_block_ids": [
+              "dataview"
+            ],
+            "different_detail_keys": [],
+            "live_heads": [
+              "bafyreigjgn6j3cr2dkb4vrjj6i5qn4ox5imupts52azzqfeykzo32pfwra"
+            ],
+            "path": "missing-attachment-04-before-registration-attempt.json",
+            "persisted_heads": [
+              "bafyreigjgn6j3cr2dkb4vrjj6i5qn4ox5imupts52azzqfeykzo32pfwra"
+            ],
+            "sha256": "0e2a851175ab735982dc3e144d539890669ef4ac9144338fd970165456cc2061",
+            "stage": "04-before-registration-attempt"
+          },
+          {
+            "blocks_equal": false,
+            "details_equal": true,
+            "different_block_ids": [
+              "dataview"
+            ],
+            "different_detail_keys": [],
+            "live_heads": [
+              "bafyreigjgn6j3cr2dkb4vrjj6i5qn4ox5imupts52azzqfeykzo32pfwra"
+            ],
+            "path": "missing-attachment-05-after-registration-attempt.json",
+            "persisted_heads": [
+              "bafyreigjgn6j3cr2dkb4vrjj6i5qn4ox5imupts52azzqfeykzo32pfwra"
+            ],
+            "sha256": "d92f61da82639963c45f8ea8a8c339722619dc709d79291f4f8021e840fbca7f",
+            "stage": "05-after-registration-attempt"
+          }
+        ],
+        "complete": true,
+        "reported_native_process_id": 24081,
+        "scope": "Historical complete native state pairs. Original Go proto.Equal owns equality; Python checks byte framing/hashes and never normalizes or excludes fields. A retained diagnostic does not turn a failing test into PASS."
+      },
+      "error": null,
+      "error_type": null,
+      "owned_disposable_temp_removed": true
+    }
+  }
+}

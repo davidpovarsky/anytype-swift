@@ -1,0 +1,105 @@
+{
+  "status": "VERIFIED_ACTUAL_ONE_FAIL_WITH_SIX_COMPLETE_PAIRS",
+  "source": "b93b7b351cfeb625607b5b7d86aef7c29fe78b0b",
+  "run_id": 45042110729,
+  "attempt": 1,
+  "artifact_id": 14762199006,
+  "artifact_bytes": 2634204,
+  "artifact_sha256": "270b824b9c0210cd1cd584db0315215678bfa04c29c4251692527c57e403fd6e",
+  "payloads_verified": 48,
+  "commands_verified": 18,
+  "native_compile": "PASS",
+  "compile_seconds": 131.344,
+  "native_seconds": 3.369,
+  "native_cases": {
+    "fail": 1,
+    "pass": 0,
+    "skip": 0
+  },
+  "composed_inputs_verified": 20,
+  "unchanged_previous_inputs": 18,
+  "old_baseline_inputs_unchanged": 13,
+  "native_registration_passes_preserved_not_replayed": 12,
+  "captures": [
+    {
+      "stage": "00-registered",
+      "path": "missing-attachment-00-registered.json",
+      "sha256": "ff6388e1493d127e3fc5efd3451e04c4961c957bab51c09f1ef6e1e9550ef243",
+      "heads_equal": true,
+      "details_equal_native": true,
+      "blocks_equal_native": false,
+      "sole_wire_difference": "dataview field 3 empty message (1a00) present only in loaded state",
+      "all_remaining_block_bytes_identical": true
+    },
+    {
+      "stage": "01-unrelated-property-added",
+      "path": "missing-attachment-01-unrelated-property-added.json",
+      "sha256": "325788feca8f418c47e1ccd5a6eea4ca10bb2a1ca0a7fec1cd895f9f767a5dd9",
+      "heads_equal": true,
+      "details_equal_native": true,
+      "blocks_equal_native": false,
+      "sole_wire_difference": "dataview field 3 empty message (1a00) present only in loaded state",
+      "all_remaining_block_bytes_identical": true
+    },
+    {
+      "stage": "02-second-view-applied",
+      "path": "missing-attachment-02-second-view-applied.json",
+      "sha256": "f7d7f562661e999f4ea158efbbcf91cde882b12925fcef89c58a90ed1e7f7f70",
+      "heads_equal": true,
+      "details_equal_native": true,
+      "blocks_equal_native": false,
+      "sole_wire_difference": "dataview field 3 empty message (1a00) present only in loaded state",
+      "all_remaining_block_bytes_identical": true
+    },
+    {
+      "stage": "03-metadata-property-removed",
+      "path": "missing-attachment-03-metadata-property-removed.json",
+      "sha256": "74dd26d8330899970f9c8a4a910a1b21ea6d02466b60f37442208f3f95136d03",
+      "heads_equal": true,
+      "details_equal_native": true,
+      "blocks_equal_native": false,
+      "sole_wire_difference": "dataview field 3 empty message (1a00) present only in loaded state",
+      "all_remaining_block_bytes_identical": true
+    },
+    {
+      "stage": "04-before-registration-attempt",
+      "path": "missing-attachment-04-before-registration-attempt.json",
+      "sha256": "0e2a851175ab735982dc3e144d539890669ef4ac9144338fd970165456cc2061",
+      "heads_equal": true,
+      "details_equal_native": true,
+      "blocks_equal_native": false,
+      "sole_wire_difference": "dataview field 3 empty message (1a00) present only in loaded state",
+      "all_remaining_block_bytes_identical": true
+    },
+    {
+      "stage": "05-after-registration-attempt",
+      "path": "missing-attachment-05-after-registration-attempt.json",
+      "sha256": "d92f61da82639963c45f8ea8a8c339722619dc709d79291f4f8021e840fbca7f",
+      "heads_equal": true,
+      "details_equal_native": true,
+      "blocks_equal_native": false,
+      "sole_wire_difference": "dataview field 3 empty message (1a00) present only in loaded state",
+      "all_remaining_block_bytes_identical": true
+    }
+  ],
+  "failed_case_events": [
+    {
+      "Time": "2026-11-22T16:23:33.440508Z",
+      "Action": "output",
+      "Package": "./core/block/object/objectcreator",
+      "Test": "TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply",
+      "Output": "    annotation_schema_registration_native_test.go:110: native registration phase=1 creates=0 apply=false returned=false disposition=INCOMPLETE_OR_UNRESOLVED error=native annotation schema registration conflicts with persisted state: loaded type differs from complete persisted native state\n"
+    },
+    {
+      "Time": "2026-11-22T16:23:33.440566Z",
+      "Action": "output",
+      "Package": "./core/block/object/objectcreator",
+      "Test": "TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply",
+      "Output": "    annotation_schema_registration_native_test.go:110: registration cannot resume after this failure: native annotation schema registration conflicts with persisted state: loaded type differs from complete persisted native state\n"
+    }
+  ],
+  "diagnosis": "All six pairs have exactly one additional empty dataview Restrictions message in loaded state. This includes the initial post-registration pair. All other complete block wire bytes match, details compare equal under original native proto.Equal, and heads match. The repair is correctly refused under the frozen exact guard before any create or Apply.",
+  "root_cause_scope": "Original live initialization/persistence semantics require source review before a bounded fix; no guard change or native acceptance follows from this diagnostic.",
+  "binary_scope": "Runner-observed hashes; executable bytes are excluded from uploaded evidence and not independently rehashed by root.",
+  "owned_disposable_temp_removed": true
+}

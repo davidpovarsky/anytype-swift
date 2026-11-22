@@ -1,0 +1,128 @@
+[
+  {
+    "stage": "00-registered",
+    "details_equal_native": true,
+    "heads_equal": true,
+    "differences": [
+      {
+        "id": "dataview",
+        "json_differences": [
+          {
+            "path": "$.restrictions",
+            "live": {},
+            "persisted_missing": true
+          }
+        ],
+        "live_wire_hex_prefix": "0a0864617461766965771a00aa01ad0e12b6",
+        "persisted_wire_hex_prefix": "0a086461746176696577aa01ad0e12b6070a",
+        "live_bytes": 1853,
+        "persisted_bytes": 1851
+      }
+    ]
+  },
+  {
+    "stage": "01-unrelated-property-added",
+    "details_equal_native": true,
+    "heads_equal": true,
+    "differences": [
+      {
+        "id": "dataview",
+        "json_differences": [
+          {
+            "path": "$.restrictions",
+            "live": {},
+            "persisted_missing": true
+          }
+        ],
+        "live_wire_hex_prefix": "0a0864617461766965771a00aa01860f12e5",
+        "persisted_wire_hex_prefix": "0a086461746176696577aa01860f12e5070a",
+        "live_bytes": 1942,
+        "persisted_bytes": 1940
+      }
+    ]
+  },
+  {
+    "stage": "02-second-view-applied",
+    "details_equal_native": true,
+    "heads_equal": true,
+    "differences": [
+      {
+        "id": "dataview",
+        "json_differences": [
+          {
+            "path": "$.restrictions",
+            "live": {},
+            "persisted_missing": true
+          }
+        ],
+        "live_wire_hex_prefix": "0a0864617461766965771a00aa01951712e5",
+        "persisted_wire_hex_prefix": "0a086461746176696577aa01951712e5070a",
+        "live_bytes": 2981,
+        "persisted_bytes": 2979
+      }
+    ]
+  },
+  {
+    "stage": "03-metadata-property-removed",
+    "details_equal_native": true,
+    "heads_equal": true,
+    "differences": [
+      {
+        "id": "dataview",
+        "json_differences": [
+          {
+            "path": "$.restrictions",
+            "live": {},
+            "persisted_missing": true
+          }
+        ],
+        "live_wire_hex_prefix": "0a0864617461766965771a00aa01ac1612c1",
+        "persisted_wire_hex_prefix": "0a086461746176696577aa01ac1612c1070a",
+        "live_bytes": 2876,
+        "persisted_bytes": 2874
+      }
+    ]
+  },
+  {
+    "stage": "04-before-registration-attempt",
+    "details_equal_native": true,
+    "heads_equal": true,
+    "differences": [
+      {
+        "id": "dataview",
+        "json_differences": [
+          {
+            "path": "$.restrictions",
+            "live": {},
+            "persisted_missing": true
+          }
+        ],
+        "live_wire_hex_prefix": "0a0864617461766965771a00aa01ac1612c1",
+        "persisted_wire_hex_prefix": "0a086461746176696577aa01ac1612c1070a",
+        "live_bytes": 2876,
+        "persisted_bytes": 2874
+      }
+    ]
+  },
+  {
+    "stage": "05-after-registration-attempt",
+    "details_equal_native": true,
+    "heads_equal": true,
+    "differences": [
+      {
+        "id": "dataview",
+        "json_differences": [
+          {
+            "path": "$.restrictions",
+            "live": {},
+            "persisted_missing": true
+          }
+        ],
+        "live_wire_hex_prefix": "0a0864617461766965771a00aa01ac1612c1",
+        "persisted_wire_hex_prefix": "0a086461746176696577aa01ac1612c1070a",
+        "live_bytes": 2876,
+        "persisted_bytes": 2874
+      }
+    ]
+  }
+]
