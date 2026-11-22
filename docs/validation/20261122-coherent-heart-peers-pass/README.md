@@ -1,0 +1,11 @@
+# Original coherent native peers: qualified execution
+
+Run [45033575598](https://github.com/davidpovarsky/anytype-swift/actions/runs/45033575598), source `7f42c6daf270f8e87f789ebc1491b4d8fcc74867`, attempt1, completed successfully. The exact 39-file original artifact is retained in original-evidence.zip (SHA-256 baf78b78966cb46b29d9cbed47c51bab638ccf1d2f144a8ba43936792cb18a69). AUDIT.json records 38 independent original-evidence checks, zero failures, and no product rerun.
+
+Three real native processes each passed exactly TestCoherentAuthorizedReadNativePeer, with zero failures/skips. A created one operation. B began with a separate empty store and recovered through the owned LAN; its first private read family was authorized-read, with two bounded online attempts before the successful original response. B appended nothing and never primed the operation through ReadTarget. Actual Docker detachment preceded one offline read. A new network-none process reopened B original native store and succeeded on its first authorized read, without a retry.
+
+The four successful protobuf responses are byte-identical, including canonical bytes and native change/ACL provenance. Each process cleanly stopped and emitted the generated NOT_LOGGED_IN error5 with no snapshot. Distinct host PIDs, containers, namespaces and database ownership, current scope, exact source hashes, original final/log digests, secret-screened evidence export and owned cleanup were checked.
+
+This proves the same-account coherent native peer/reopen scope. Cross-account membership/revoke transport, an unknown revocation while offline, mixed versions, iOS, physical iPad and full T2 acceptance remain open. Raw signed DAG changes and the native executable are not archived; their digests/native verification come from the original checked runner receipts. Docker inspections are original controller observations, not a later replay against live containers. Those limits are retained in the audit.
+
+To replay evidence checks after extracting the verified ZIP to a fresh directory, run audit_original.py with --archive, --proof, --control-root and --output. It requires the exact tested contract source hash and performs no native or application execution. Original evidence is never rewritten.
