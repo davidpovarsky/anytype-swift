@@ -1,0 +1,231 @@
+--- failed-admission/run_original_importer_compile.py
++++ explicit-packet-provenance/run_original_importer_compile.py
+@@ -19,7 +19,9 @@
+ 
+ PIN = "d98420b1113536afd08cde6de9a5816f6d27ffff"
+ ORIGIN = "13f63c2dff32ff8ca6b864748843822fcdd0d004"
+-ORIGIN_TREE = "90cc6f5adbbcc9f01f38b24766378d38adc0f453"
++ORIGIN_SOURCE_TREE = "90cc6f5adbbcc9f01f38b24766378d38adc0f453"
++ORIGIN_PACKET_COMMIT = "72e8154c9ad21280894d0c93f5828e33a19ed7d6"
++ORIGIN_TREE = "75e3fae71c323ba03dbcbaf519bdb993050a5a6d"
+ OWNED = "3d58f04f938f743b9c3b737cdfedcc10610cbffc"
+ OWNED_TREE = "8659bdd358d0b198c6a57b68b90bf9d65dafe5d9"
+ INPUT_FIELDS = (
+@@ -298,6 +300,7 @@
+     result = {
+         "status": "STARTED_NOT_ACCEPTED", "control_head": args.control_head,
+         "heart_base": PIN, "origin_commit": ORIGIN, "origin_packet_tree": ORIGIN_TREE,
++        "origin_source_packet_tree": ORIGIN_SOURCE_TREE, "origin_packet_commit": ORIGIN_PACKET_COMMIT,
+         "owned_source_commit": OWNED, "owned_source_packet_tree": OWNED_TREE,
+         "job_deadline_unix": args.job_deadline_unix, "command_deadline_unix": commands.deadline,
+         "tests_executed": 0, "native_imports_executed": 0, "test_binary_executed": False,
+@@ -323,8 +326,10 @@
+         if digest(manifest_path) != args.execution_manifest_sha256:
+             raise RuntimeError("execution manifest differs from the reviewed workflow binding")
+         manifest = json.loads(manifest_path.read_bytes())
+-        if manifest["heart_base"] != PIN or manifest["origin_commit"] != ORIGIN or manifest["origin_packet_tree"] != ORIGIN_TREE:
+-            raise RuntimeError("unexpected native/origin source binding")
++        if (manifest["heart_base"] != PIN or manifest["origin_commit"] != ORIGIN or
++                manifest["origin_source_packet_tree"] != ORIGIN_SOURCE_TREE or
++                manifest["origin_packet_commit"] != ORIGIN_PACKET_COMMIT or manifest["origin_packet_tree"] != ORIGIN_TREE):
++            raise RuntimeError("unexpected native/original-source/retained-packet binding")
+         for entry in manifest["gate_inputs"]:
+             check_file(packet, entry)
+         origin_path = manifest["origin_packet_path"]
+--- failed-admission/EXECUTION_INPUTS.json
++++ explicit-packet-provenance/EXECUTION_INPUTS.json
+@@ -5,14 +5,14 @@
+   "go": "1.26.5",
+   "architecture": "darwin-arm64",
+   "origin_commit": "13f63c2dff32ff8ca6b864748843822fcdd0d004",
+-  "origin_packet_tree": "90cc6f5adbbcc9f01f38b24766378d38adc0f453",
++  "origin_packet_tree": "75e3fae71c323ba03dbcbaf519bdb993050a5a6d",
+   "origin_packet_path": "docs/pinkha/torah-integration/native-import-request-compat-20261122",
+   "gate_inputs": [
+     {
+       "path": "run_original_importer_compile.py",
+-      "bytes": 29051,
+-      "sha256": "f256702e910d0813247627b4ff48533fd39691add022b040cd1e29dd3df795b2",
+-      "git_blob": "11acd1c4a643c4463f7eccb8a890d4253a7726cf"
++      "bytes": 29459,
++      "sha256": "bc403e79507d5b70b275aee9ca898be3f7cbdd32703697e240bc430f42341506",
++      "git_blob": "b5d0bf7a91a719aedc989dc608c8f90400e7a2a5"
+     },
+     {
+       "path": "bootstrap/prepare_original_tantivy.py",
+@@ -345,5 +345,164 @@
+     "core/block/owned_file_upload.go": "a81179424c4d7b9a0dc12b44adccb1e30f364b14c7073433adbd8ceacb46d7bd",
+     "core/files/fileuploader/owned_upload.go": "ff9f23846495b2bc0151078f0002c95a5a48e35ebf2e3356221370a74ff4ce19",
+     "core/files/fileuploader/uploader.go": "494ffda93ed6fe3023bd24833f38cd6de299d344c698b3b7a6f325c8e12c5a6a"
++  },
++  "origin_source_packet_tree": "90cc6f5adbbcc9f01f38b24766378d38adc0f453",
++  "origin_packet_commit": "72e8154c9ad21280894d0c93f5828e33a19ed7d6",
++  "origin_retention_delta": {
++    "scope": "Original source commit/tree remain13f63c/90cc. Retained packet at72e/75e adds only the exact17 historical compile-pass evidence files; all eight source inputs are unchanged.",
++    "additions_only": [
++      {
++        "path": "evidence/compile-pass-45047489968/11-compile-original-importer.stderr",
++        "bytes": 132,
++        "sha256": "0a1c70ee90329a349776501de9d69c2d739dae4ca1d2917b233ee77ace8741cb",
++        "git_blob": "f91d4180925b0705ef7ae3e471eb34091d48f2ec"
++      },
++      {
++        "path": "evidence/compile-pass-45047489968/12-compiled-binary-buildinfo.stdout",
++        "bytes": 530,
++        "sha256": "b557f097d24bd349241154c51aa5ad5e495121f29cc147c222b0364722c90d7d",
++        "git_blob": "9f0792e7852d9bee62b7ac7d6f6e58055b2f5c2d"
++      },
++      {
++        "path": "evidence/compile-pass-45047489968/COMMANDS.json",
++        "bytes": 15274,
++        "sha256": "7390734c2d0811fd75eac4c45c155fb955b2c10fc381b170a6e2bd341e227d0c",
++        "git_blob": "6cfbdf23617a9004cf69a7701724c36a6d89938d"
++      },
++      {
++        "path": "evidence/compile-pass-45047489968/EVIDENCE_INDEX.json",
++        "bytes": 5114,
++        "sha256": "b2783cb52fc76e289860bcc1773d3814208b12ef6e29061419a91dc1449a310d",
++        "git_blob": "795c1a1dd3243ae7e2fdc312c91c018066e066d0"
++      },
++      {
++        "path": "evidence/compile-pass-45047489968/LOCAL_AUDIT_NOTE.json",
++        "bytes": 233,
++        "sha256": "285d5e267092d51e22ef16e35924b8a157f508707d0928ef9e1be09b4176eef7",
++        "git_blob": "d3a287fd9d462d8df617846b783aa90f29a80271"
++      },
++      {
++        "path": "evidence/compile-pass-45047489968/RAW_RETAINED_ARCHIVE.json",
++        "bytes": 803,
++        "sha256": "8692a2f49f115f327bab57c8962a84db9c92f212729603c0f2f776266418d74c",
++        "git_blob": "f148cae193fc28697603916a77fed51705d75c88"
++      },
++      {
++        "path": "evidence/compile-pass-45047489968/README.md",
++        "bytes": 1659,
++        "sha256": "6bc582bc3887f06d1e2bdf37659b2929520eae03cde7ea18e10974f05cab7d2e",
++        "git_blob": "2f0d7322258f6b1d9e29bd60fe2a6c30a2298495"
++      },
++      {
++        "path": "evidence/compile-pass-45047489968/RESULT.json",
++        "bytes": 11536,
++        "sha256": "96705538739843ddd9cfffd9b276de85a5ecf74af717b9d520d3a9874a1ed121",
++        "git_blob": "8cd0b37016af57652ff2888682586bad39abfdd0"
++      },
++      {
++        "path": "evidence/compile-pass-45047489968/RETAINED_PASS_VERIFICATION.json",
++        "bytes": 1344,
++        "sha256": "094ee0b01ef05074640e1b1800cca21d207c5dd0940e02096bdcf1bd51ac2460",
++        "git_blob": "bff776357db43fa4b5db91d13922ac5f3498df5d"
++      },
++      {
++        "path": "evidence/compile-pass-45047489968/ROOT_COMPILE_PASS_REVIEW.json",
++        "bytes": 1402,
++        "sha256": "5d505b96dbc8db85e7c548c3b57cd3fbc4eac1774af16d77baf1f7ec3180c6a0",
++        "git_blob": "3497208fdb55638fd9620d879333d72c42219c99"
++      },
++      {
++        "path": "evidence/compile-pass-45047489968/SOURCE_OVERLAY.json",
++        "bytes": 1739,
++        "sha256": "74a07dedcb77f70c45a5da82e6eb49a7d25cb127c1ea320c787958b38be20bdb",
++        "git_blob": "389625a7761b9db294a9f6a9e6a5139ef27440aa"
++      },
++      {
++        "path": "evidence/compile-pass-45047489968/TANTIVY_INPUTS_AFTER.json",
++        "bytes": 296,
++        "sha256": "07808e77a2a72e662c6c30a87809ded94f7e179cf459956122971695d2701e64",
++        "git_blob": "fe7c720460bc1e3eecfcda3f3d8eb017063544f4"
++      },
++      {
++        "path": "evidence/compile-pass-45047489968/TANTIVY_INPUTS_BEFORE.json",
++        "bytes": 296,
++        "sha256": "07808e77a2a72e662c6c30a87809ded94f7e179cf459956122971695d2701e64",
++        "git_blob": "fe7c720460bc1e3eecfcda3f3d8eb017063544f4"
++      },
++      {
++        "path": "evidence/compile-pass-45047489968/TANTIVY_SETUP.json",
++        "bytes": 125,
++        "sha256": "3415100aff14de277ce32baff9185b988e835c707ca8e06f1fca96eced0cb94a",
++        "git_blob": "8f79d787d135ea8345b3b3fc602fda193ec37987"
++      },
++      {
++        "path": "evidence/compile-pass-45047489968/WATCH_RECEIPT.json",
++        "bytes": 10008,
++        "sha256": "d4e7b501526409671119a2921f3cbb8a10e8e6910a42b22198f33d29335704bb",
++        "git_blob": "e11ccd101262ffa6b3a888916500354b2bbe8ddd"
++      },
++      {
++        "path": "evidence/compile-pass-45047489968/raw-retained-intake.zip",
++        "bytes": 1785333,
++        "sha256": "b1738f18c2a42ca8095ad91a79f8ef652b2c53d43256414c08d0e22b4474acb1",
++        "git_blob": "465cbe14298184cd8939ae2130c5ca666f840135"
++      },
++      {
++        "path": "evidence/compile-pass-45047489968/verify_retained_pass.py",
++        "bytes": 5343,
++        "sha256": "ca72e34e81a83b4d0377f8426b67ac8a4517438cd9354c1a9a45e3d88e2f1b39",
++        "git_blob": "07d9c75ef6e0cbf03a7a6e05fa8262bd1951cc54"
++      }
++    ],
++    "source_inputs_unchanged": [
++      {
++        "path": "install_native_sources.py",
++        "bytes": 2922,
++        "sha256": "c3caa004be62f46521e6744fa7080d65ee1533f710d8349927d03de43820ad28",
++        "expected_equal": true
++      },
++      {
++        "path": "composition/r14/SOURCE_BINDINGS.json",
++        "bytes": 2476,
++        "sha256": "23d1ebc7b7f1054821775719c5108baf6969005802a2eb6fedbc5111300783e4",
++        "expected_equal": true
++      },
++      {
++        "path": "composition/r14/native/core/block/import/common/types.go",
++        "bytes": 8403,
++        "sha256": "458829293a09663646e6a76d6d8cc4e7325359b2e2e8619bb4960e8e36509149",
++        "expected_equal": true
++      },
++      {
++        "path": "composition/r14/native/core/block/import/mapping_observation.go",
++        "bytes": 9367,
++        "sha256": "851c5ad1a2c65e3698816bf8be5ccdd85e4074d9afb3b3f3dd79d5758e6be9cf",
++        "expected_equal": true
++      },
++      {
++        "path": "composition/r14/native/core/block/import/mapping_observation_processor.go",
++        "bytes": 3334,
++        "sha256": "154bbade29f59a5431a5d69aaa00130e0545408b7c9647dccb25561b362be480",
++        "expected_equal": true
++      },
++      {
++        "path": "composition/r14/native/core/block/import/pb/converter.go",
++        "bytes": 19568,
++        "sha256": "9542dc143969622b7264d6de7e83c86eea1ad4756dcd21268616884e787445ee",
++        "expected_equal": true
++      },
++      {
++        "path": "composition/r14/native/core/block/import/processor.go",
++        "bytes": 22855,
++        "sha256": "5f2d2844d9a07f4319bc594d7e4e666c13b75e77460431e952aa9cf8c150a2bd",
++        "expected_equal": true
++      },
++      {
++        "path": "composition/r14/native/core/block/import/types.go",
++        "bytes": 3134,
++        "sha256": "d701d6d5e6c7a66e361c3f2db4b623fa8745423477d78ec289eb53b133e54140",
++        "expected_equal": true
++      }
++    ]
+   }
+ }
+--- failed-admission/otzaria-native-owned-import-compile.yml
++++ explicit-packet-provenance/otzaria-native-owned-import-compile.yml
+@@ -50,7 +50,7 @@
+             --control-root "$GITHUB_WORKSPACE" \
+             --control-head "$GITHUB_SHA" \
+             --packet docs/pinkha/torah-integration/native-owned-import-module-compile-20261122 \
+-            --execution-manifest-sha256 cd92164560819349233326af2d7c68a5aafd55e21820541a53749891970426fc \
++            --execution-manifest-sha256 376af3e7d1dfbcc4729fbb7dc57f67c97e8a1c376e28021577e9c3e1fba1f4cf \
+             --job-deadline-unix "$OTZARIA_IMPORT_COMPILE_DEADLINE" \
+             --heart build/Heart-Owned-Import-Compile \
+             --work build/Heart-Owned-Import-Compile-Owned-Work \

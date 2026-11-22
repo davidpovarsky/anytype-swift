@@ -19,7 +19,9 @@ import time
 
 PIN = "d98420b1113536afd08cde6de9a5816f6d27ffff"
 ORIGIN = "13f63c2dff32ff8ca6b864748843822fcdd0d004"
-ORIGIN_TREE = "90cc6f5adbbcc9f01f38b24766378d38adc0f453"
+ORIGIN_SOURCE_TREE = "90cc6f5adbbcc9f01f38b24766378d38adc0f453"
+ORIGIN_PACKET_COMMIT = "72e8154c9ad21280894d0c93f5828e33a19ed7d6"
+ORIGIN_TREE = "75e3fae71c323ba03dbcbaf519bdb993050a5a6d"
 OWNED = "3d58f04f938f743b9c3b737cdfedcc10610cbffc"
 OWNED_TREE = "8659bdd358d0b198c6a57b68b90bf9d65dafe5d9"
 INPUT_FIELDS = (
@@ -298,6 +300,7 @@ def main():
     result = {
         "status": "STARTED_NOT_ACCEPTED", "control_head": args.control_head,
         "heart_base": PIN, "origin_commit": ORIGIN, "origin_packet_tree": ORIGIN_TREE,
+        "origin_source_packet_tree": ORIGIN_SOURCE_TREE, "origin_packet_commit": ORIGIN_PACKET_COMMIT,
         "owned_source_commit": OWNED, "owned_source_packet_tree": OWNED_TREE,
         "job_deadline_unix": args.job_deadline_unix, "command_deadline_unix": commands.deadline,
         "tests_executed": 0, "native_imports_executed": 0, "test_binary_executed": False,
@@ -323,8 +326,10 @@ def main():
         if digest(manifest_path) != args.execution_manifest_sha256:
             raise RuntimeError("execution manifest differs from the reviewed workflow binding")
         manifest = json.loads(manifest_path.read_bytes())
-        if manifest["heart_base"] != PIN or manifest["origin_commit"] != ORIGIN or manifest["origin_packet_tree"] != ORIGIN_TREE:
-            raise RuntimeError("unexpected native/origin source binding")
+        if (manifest["heart_base"] != PIN or manifest["origin_commit"] != ORIGIN or
+                manifest["origin_source_packet_tree"] != ORIGIN_SOURCE_TREE or
+                manifest["origin_packet_commit"] != ORIGIN_PACKET_COMMIT or manifest["origin_packet_tree"] != ORIGIN_TREE):
+            raise RuntimeError("unexpected native/original-source/retained-packet binding")
         for entry in manifest["gate_inputs"]:
             check_file(packet, entry)
         origin_path = manifest["origin_packet_path"]

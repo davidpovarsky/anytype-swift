@@ -13,3 +13,7 @@ The previous 50 mapping controls, seven request-compatibility controls and twent
 Passing this gate would establish source/link compatibility only. Real account lifetime admission, exact account/Space/archive/attempt binding, actual native import cancellation and completion, complete execution-origin mapping, persisted semantic body comparison and ACK remain downstream gates. The private constructor still has no production caller.
 
 The workflow uses a separate exact activation branch and attempt-one guard. There is no path filter, so creation of the reviewed activation branch does not depend on a previously published neutral commit having a new path delta. This packet is prepared for review; publishing its neutral source does not activate it.
+
+## Correct the retained-packet binding before compilation
+
+Attempt 45054871934 stopped at the strict origin tree admission with zero runner commands. The unchanged source remains commit13f63c/tree90cc. Publishing the previous successful compilation's seventeen evidence files produced retained packet commit72e/tree75e. This continuation explicitly distinguishes those two roles, admits the exact retained tree and still verifies all eight source inputs. The whole-tree check is preserved. The failed attempt and exact additions-only audit are retained under `evidence/admission-failure-45054871934`; no compiler result or test result is invented or replayed.

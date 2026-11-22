@@ -1,0 +1,72 @@
+{
+  "run_id": "45054871934",
+  "run_attempt": 1,
+  "expected_head": "8a1356b146bc7251530bb0f88eadca09de66950d",
+  "expected_branch": "codex/otzaria-native-owned-import-compile-20261122",
+  "started_at": "2026-11-22T18:25:25.633461+00:00",
+  "observer_pid": 24584,
+  "status": "TERMINAL_EVIDENCE_RETAINED",
+  "observer_owner": "/root/stageb_auth",
+  "dispatch_owner": "/root",
+  "watch_invocations": 1,
+  "gh_run_watch_invocations": 0,
+  "status_polls": 0,
+  "maximum_watch_seconds": 3000,
+  "transport_retries": 0,
+  "commands": [
+    {
+      "suffix": "",
+      "exit": 0,
+      "at": "2026-11-22T18:25:27.385242+00:00"
+    },
+    {
+      "suffix": "/jobs?per_page=100",
+      "exit": 0,
+      "at": "2026-11-22T18:25:28.278574+00:00"
+    },
+    {
+      "suffix": "/artifacts?per_page=100",
+      "exit": 0,
+      "at": "2026-11-22T18:25:29.131294+00:00"
+    }
+  ],
+  "scope": "sole owned original importer compile-only run; no test binary execution, old-suite replay or dispatch",
+  "run_status": "completed",
+  "run_conclusion": "failure",
+  "jobs": [
+    {
+      "id": 137307758428,
+      "name": "original-module-compile",
+      "conclusion": "failure"
+    }
+  ],
+  "log_download_exit": 0,
+  "matching_artifact_count": 1,
+  "artifact": {
+    "id": 14766936566,
+    "name": "Otzaria-Original-Owned-Importer-Compile-45054871934-1",
+    "size_in_bytes": 1146,
+    "digest": "sha256:ea2e9018f235357330334b3613746950c56b1f64ae5956990f37e3b739290d5d",
+    "created_at": "2026-11-22T18:24:56Z",
+    "expired": false
+  },
+  "evidence_download_exit": 0,
+  "retained_files": [
+    {
+      "path": "EVIDENCE_INDEX.json",
+      "bytes": 291,
+      "sha256": "9111d0540781daba07d35691fa4755dd4c465909f8c32526de832490586b65b6"
+    },
+    {
+      "path": "RESULT.json",
+      "bytes": 1237,
+      "sha256": "49249cb7d60002a220dc086b9c19641604e6dc8a859ace454c21a4347f85f648"
+    }
+  ],
+  "compile_status": "FAIL",
+  "compile_error": "the frozen reviewed origin packet changed",
+  "tests_executed": 0,
+  "compiled_binary": null,
+  "result_sha256": "49249cb7d60002a220dc086b9c19641604e6dc8a859ace454c21a4347f85f648",
+  "finished_at": "2026-11-22T18:25:33.516804+00:00"
+}
