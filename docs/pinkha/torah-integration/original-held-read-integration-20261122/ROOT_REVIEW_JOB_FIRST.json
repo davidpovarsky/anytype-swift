@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "job": {
+    "id": "job_4dfa99fbb7fd",
+    "type": "job_result",
+    "source": "script_run@host_7ec8382e82747448",
+    "severity": "warning",
+    "tool": "script_run",
+    "host": "host_7ec8382e82747448",
+    "status": "failed",
+    "exit_code": 1,
+    "created_at": 1795337977.8904,
+    "started_at": "2026-11-22T08:59:37.965243+00:00",
+    "finished_at": "2026-11-22T08:59:44.456516+00:00",
+    "duration_s": 6.49,
+    "error": null,
+    "output_truncated": false,
+    "timeout_s": 180,
+    "read": false,
+    "notified": {
+      "telegram": null,
+      "resend": null
+    },
+    "notify_spec": {},
+    "output": "Traceback (most recent call last):\r\n  File \"C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_1b703f3335964164995301b189305773\\held_read_root_final_review.py\", line 87, in <module>\r\n    assert sum(1 for x in git_inputs if x[\"source\"].startswith(\"Modules/ProtobufMessages/\"))==74\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError"
+  }
+}

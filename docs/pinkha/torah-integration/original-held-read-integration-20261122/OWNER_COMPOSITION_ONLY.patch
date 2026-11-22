@@ -1,0 +1,53 @@
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift b/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift
+index c90dd7f2ee..719b02f1ce 100644
+--- a/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift
+@@ -1,5 +1,6 @@
+ import Foundation
+ import ProtobufMessages
++import Services
+ 
+ enum EditorDocumentWriteRejection: Sendable, Equatable {
+     case retired
+@@ -272,6 +273,41 @@ struct EditorDocumentWriteSourceBinding {
+         return try permission.capture(matching: accountCapture, spaceId: spaceId)
+     }
+ 
++    private init(restricting original: Self, additionalCaptures: [EditorDocumentWriteCapture]) {
++        lifetime = original.lifetime
++        captures = original.captures + additionalCaptures
++        accountCapture = original.accountCapture
++        parentOwner = original.parentOwner
++        rpcRestriction = original.rpcRestriction
++        isCurrent = original.isCurrent
++    }
++
++    func requiringSpaceEditPermission(
++        participant: OriginalParticipantEditPermission,
++        spaceView: OriginalSpaceViewPermission,
++        spaceId: String
++    ) throws -> Self {
++        try validate()
++        guard let accountCapture else {
++            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
++        }
++        let participantCapture = try participant.capture(matching: accountCapture, spaceId: spaceId)
++        let viewCapture = try spaceView.capture(matching: accountCapture, spaceId: spaceId)
++        let permissions = SpacePermissions(
++            spaceView: spaceView.originalSpaceView,
++            participant: participant.originalParticipant,
++            isLocalMode: Container.shared.serverConfigurationStorage().currentConfiguration().middlewareNetworkMode == .localOnly
++        )
++        guard permissions.canEdit else {
++            throw EditorDocumentWriteError.rejected(.notEditable)
++        }
++        let restricted = Self(
++            restricting: self, additionalCaptures: [participantCapture, viewCapture]
++        )
++        try restricted.validate()
++        return restricted
++    }
++
+     var committedEventBinding: InvocationDispatchBinding? {
+         accountCapture?.accountDispatchBinding()
+     }

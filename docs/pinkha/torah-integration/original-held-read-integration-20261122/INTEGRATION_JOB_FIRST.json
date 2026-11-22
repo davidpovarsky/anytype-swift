@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "job": {
+    "id": "job_10a1ff0d3d02",
+    "type": "job_result",
+    "source": "script_run@host_7ec8382e82747448",
+    "severity": "warning",
+    "tool": "script_run",
+    "host": "host_7ec8382e82747448",
+    "status": "failed",
+    "exit_code": 1,
+    "created_at": 1795338242.2349138,
+    "started_at": "2026-11-22T09:04:02.301317+00:00",
+    "finished_at": "2026-11-22T09:04:19.646189+00:00",
+    "duration_s": 17.34,
+    "error": null,
+    "output_truncated": false,
+    "timeout_s": 120,
+    "read": false,
+    "notified": {
+      "telegram": null,
+      "resend": null
+    },
+    "notify_spec": {},
+    "output": "Traceback (most recent call last):\r\n  File \"C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_7917028ff2304f8c98673f5d4e1d70f5\\held_read_root_integration.py\", line 82, in <module>\r\n    run(\"diff\",\"--cached\",\"--check\")\r\n  File \"C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_7917028ff2304f8c98673f5d4e1d70f5\\held_read_root_integration.py\", line 14, in run\r\n    if p.returncode:raise RuntimeError(json.dumps({\"command\":list(args),\"exit\":p.returncode,\"stdout\":p.stdout.decode(errors=\"replace\"),\"stderr\":p.stderr.decode(errors=\"replace\")}))\r\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nRuntimeError: {\"command\": [\"diff\", \"--cached\", \"--check\"], \"exit\": 2, \"stdout\": \"docs/pinkha/torah-integration/original-held-read-integration-20261122/OWNER_COMPOSITION_ONLY.patch:9: trailing whitespace.\\n+ \\ndocs/pinkha/torah-integration/original-held-read-integration-20261122/OWNER_COMPOSITION_ONLY.patch:15: trailing whitespace.\\n+ \\n\", \"stderr\": \"\"}"
+  }
+}

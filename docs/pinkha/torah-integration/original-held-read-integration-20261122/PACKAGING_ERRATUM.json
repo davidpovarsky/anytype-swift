@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "utc": "2026-11-22T09:05:13.015537+00:00",
+  "firstJob": "job_10a1ff0d3d02",
+  "actualMerge": "7a228366ad5eb6c762c796039ac4d1bd5b7d5428",
+  "failedStep": "Evidence-only cached whitespace check after successful true merge",
+  "cause": "Exact original Git diff retains two blank context lines consisting of one required diff context prefix space.",
+  "correction": "Preserve raw patch and original lint; exempt only these raw evidence paths from whitespace lint, retaining ordinary product and documentation checks.",
+  "rootReadReviewSHA256": "c1a998c7c3b2f30f2187a8281706721326b01de66e47b22eb5466ee766c9ed82",
+  "productChanged": false,
+  "mergeRepeated": false,
+  "newTestExecutions": 0
+}
