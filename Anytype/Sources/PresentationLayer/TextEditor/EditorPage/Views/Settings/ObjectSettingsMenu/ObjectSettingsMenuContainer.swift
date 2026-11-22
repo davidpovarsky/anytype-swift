@@ -48,7 +48,7 @@ struct ObjectSettingsMenuContainer<Label: View, AdditionalMenuItems: View>: View
                                               preparedSession: model.preparedSession)
             }
             .sheet(item: $model.versionHistoryData) {
-                VersionHistoryCoordinatorView(data: $0, output: model)
+                VersionHistoryCoordinatorView(data: $0, output: model, preparedSession: model.preparedSession)
             }
             .sheet(item: $model.publishingData) {
                 PublishToWebCoordinator(data: $0)

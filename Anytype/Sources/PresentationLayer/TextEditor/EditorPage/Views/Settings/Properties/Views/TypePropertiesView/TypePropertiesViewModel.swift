@@ -22,6 +22,8 @@ final class TypePropertiesViewModel {
 
     let document: any BaseDocumentProtocol
     @ObservationIgnored
+    private let preparedSession: PreparedEditorPageSession?
+    @ObservationIgnored
     private let fieldsDataBuilder = TypePropertiesRowBuilder()
     @ObservationIgnored
     private let moveHandler = TypePropertiesMoveHandler()
@@ -44,24 +46,53 @@ final class TypePropertiesViewModel {
         self.init(document: document)
     }
     
-    init(document: some BaseDocumentProtocol) {
+    init(document: some BaseDocumentProtocol, preparedSession: PreparedEditorPageSession? = nil) {
         self.document = document
+        self.preparedSession = preparedSession
         if document.details != nil {
             rebuildTypeProperties(animate: false)
         }
     }
+
+    var originalEditorScope: OriginalEditorPropertyScope? {
+        preparedSession.map {
+            OriginalEditorPropertyScope(preparedSession: $0, objectId: document.objectId,
+                                        spaceId: document.spaceId, document: document)
+        }
+    }
+
+    // These original helpers can provision or mutate other schema objects.
+    // Reordering below uses the already acquired type's original two RPCs.
+    var canUseCatalogActions: Bool { preparedSession == nil && canEditPropertiesList }
+
+    func retireOwnedPresentation() { preparedSession?.retire() }
+
+    private func withCurrentSource<Value>(_ operation: () throws -> Value) throws -> Value {
+        if let scope = originalEditorScope { return try scope.withCurrent(operation) }
+        return try operation()
+    }
     
     func setupSubscriptions() async {
-        if !document.isOpened {
+        if let scope = originalEditorScope {
+            // Acquisition already used the fresh source-bound open. Never
+            // fall back to a raw cached document or restart its open here.
+            guard (try? scope.withCurrent {
+                guard document.isOpened else {
+                    throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+                }
+            }) != nil else { return }
+        } else if !document.isOpened {
             try? await document.open()
         }
         rebuildTypeProperties(animate: false)
 
-        Task { [document] in
-            await PinkhaTorahNativePropertyCatalog.shared.ensureSpaceAndTypeReady(
-                spaceId: document.spaceId,
-                typeId: document.objectId
-            )
+        if preparedSession == nil {
+            Task { [document] in
+                await PinkhaTorahNativePropertyCatalog.shared.ensureSpaceAndTypeReady(
+                    spaceId: document.spaceId,
+                    typeId: document.objectId
+                )
+            }
         }
 
         NotificationCenter.default.addObserver(
@@ -84,6 +115,12 @@ final class TypePropertiesViewModel {
     }
 
     private func rebuildTypeProperties(fallback: ParsedProperties? = nil, animate: Bool = true) {
+        try? withCurrentSource {
+            rebuildOriginalTypeProperties(fallback: fallback, animate: animate)
+        }
+    }
+
+    private func rebuildOriginalTypeProperties(fallback: ParsedProperties?, animate: Bool) {
         let catalogBuilt = PinkhaTorahNativePropertyCatalog.shared.buildParsedPropertiesForType(document: document)
         let effective: ParsedProperties
         if !catalogBuilt.installed.isEmpty {
@@ -124,7 +161,7 @@ final class TypePropertiesViewModel {
     }
 
     func canInspectRelation(_ row: TypePropertiesRelationRow) -> Bool {
-        guard canEditPropertiesList else { return false }
+        guard canUseCatalogActions else { return false }
         if TorahNativePropertyDefinition.definition(for: row.relation.key) != nil {
             return true
         }
@@ -132,7 +169,7 @@ final class TypePropertiesViewModel {
     }
 
     func canRemoveRelation(_ row: TypePropertiesRelationRow) -> Bool {
-        guard canEditPropertiesList else { return false }
+        guard canUseCatalogActions else { return false }
         guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(
             propertyId: row.relation.id, key: row.relation.key, spaceId: document.spaceId
         ) else { return false }
@@ -141,27 +178,45 @@ final class TypePropertiesViewModel {
 
     private func setupRelationsSubscription() async {
         for await properties in document.parsedPropertiesPublisherForType.values {
+            if preparedSession != nil {
+                guard !Task.isCancelled, (try? withCurrentSource {}) != nil else { return }
+            }
             rebuildTypeProperties(fallback: properties, animate: relationRows.isNotEmpty)
         }
     }
     
     private func setupPermissionSubscription() async {
         for await permissions in document.permissionsPublisher.values {
-            canEditPropertiesList = permissions.canEditPropertiesList
+            if let scope = originalEditorScope {
+                guard !Task.isCancelled else { return }
+                do {
+                    try scope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
+                        canEditPropertiesList = permissions.canEditPropertiesList && permissions.canEditDetails
+                    }
+                } catch {
+                    canEditPropertiesList = false
+                    return
+                }
+            } else {
+                canEditPropertiesList = permissions.canEditPropertiesList
+            }
         }
     }
     
     func setupDetailsSubscription() async {
         for await details in document.detailsPublisher.values {
-            await PinkhaTorahNativePropertyCatalog.shared.refreshTypeRelationsIfNeeded(
-                observedDetails: details, spaceId: document.spaceId
-            )
+            if preparedSession == nil {
+                await PinkhaTorahNativePropertyCatalog.shared.refreshTypeRelationsIfNeeded(
+                    observedDetails: details, spaceId: document.spaceId
+                )
+            }
             guard !Task.isCancelled else { return }
             try? await updateConflictRelations(details: details)
         }
     }
     
     func onRelationTap(_ data: TypePropertiesRelationRow) {
+        guard preparedSession == nil else { return }
         guard let details = document.details else { return }
         guard let format = data.relation.format else { return }
         
@@ -185,6 +240,7 @@ final class TypePropertiesViewModel {
     }
     
     func onAddRelationTap(section: TypePropertiesSectionRow) {
+        guard preparedSession == nil else { return }
         guard let details = document.details else { return }
         let type = ObjectType(details: details)
         let typeData: PropertiesModuleTypeData = section.isFeatured ? .recommendedFeaturedRelations(type) : .recommendedRelations(type)
@@ -206,11 +262,14 @@ final class TypePropertiesViewModel {
     }
     
     func onConflictingInfoTap() {
-        AnytypeAnalytics.instance().logConflictFieldHelp()
-        showConflictingInfo.toggle()
+        try? withCurrentSource {
+            AnytypeAnalytics.instance().logConflictFieldHelp()
+            showConflictingInfo.toggle()
+        }
     }
 
     func onRelationReveal(_ row: TypePropertiesRelationRow, featured: Bool = false) {
+        guard preparedSession == nil else { return }
         guard let details = document.details else { return }
         guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(
             propertyId: row.relation.id, key: row.relation.key, spaceId: document.spaceId
@@ -231,6 +290,7 @@ final class TypePropertiesViewModel {
 
     @discardableResult
     func onRelationHide(_ row: TypePropertiesRelationRow) -> Task<Void, any Error>? {
+        guard preparedSession == nil else { return nil }
         guard let details = document.details else { return nil }
         guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(
             propertyId: row.relation.id, key: row.relation.key, spaceId: document.spaceId
@@ -257,6 +317,7 @@ final class TypePropertiesViewModel {
     }
 
     func onRelationRemove(_ row: TypePropertiesRelationRow) {
+        guard preparedSession == nil else { return }
         guard let details = document.details else { return }
         guard canRemoveRelation(row) else { return }
 
@@ -272,6 +333,7 @@ final class TypePropertiesViewModel {
     }
     
     func onAddConflictRelation(_ relation: PropertyDetails) {
+        guard preparedSession == nil else { return }
         guard let details = document.details else { return }
         let type = ObjectType(details: details)
         let target = PropertiesModuleTarget.type(.recommendedRelations(type))
@@ -291,9 +353,27 @@ final class TypePropertiesViewModel {
         let isEligibleType = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
             typeId: document.objectId, spaceId: document.spaceId
         )
-        let releationKeys = try await propertiesService.getConflictPropertiesForType(typeId: document.objectId, spaceId: document.spaceId)
+        let releationKeys: [String]
+        if let scope = originalEditorScope {
+            let service = try scope.originalProperties(propertiesService)
+            let typeId = scope.objectId
+            let spaceId = scope.spaceId
+            releationKeys = try await scope.owner.performRead(
+                contextId: typeId, spaceId: spaceId, rpcNames: ["ObjectTypeListConflictingRelations"]
+            ) {
+                try await service.getConflictPropertiesForType(typeId: typeId, spaceId: spaceId)
+            }
+        } else {
+            releationKeys = try await propertiesService.getConflictPropertiesForType(typeId: document.objectId, spaceId: document.spaceId)
+        }
+        try withCurrentSource {
+            publishConflictRelations(keys: releationKeys, isEligibleType: isEligibleType)
+        }
+    }
+
+    private func publishConflictRelations(keys: [String], isEligibleType: Bool) {
         conflictRelations = propertyDetailsStorage
-            .relationsDetails(ids: releationKeys, spaceId: document.spaceId)
+            .relationsDetails(ids: keys, spaceId: document.spaceId)
             .filter {
                 !$0.isHidden &&
                 !$0.isDeleted &&

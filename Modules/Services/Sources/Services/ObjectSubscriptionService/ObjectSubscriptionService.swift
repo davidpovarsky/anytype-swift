@@ -1,5 +1,20 @@
 import ProtobufMessages
 
+public enum OriginalObjectSubscriptionServiceBindingError: Error, Sendable {
+    case unsupportedOriginalDelegate
+}
+
+public enum OriginalObjectSubscriptionServiceBinding {
+    public static func requireOriginal(
+        _ service: any ObjectSubscriptionServiceProtocol
+    ) throws -> any ObjectSubscriptionServiceProtocol {
+        guard service is ObjectSubscriptionService else {
+            throw OriginalObjectSubscriptionServiceBindingError.unsupportedOriginalDelegate
+        }
+        return service
+    }
+}
+
 public protocol ObjectSubscriptionServiceProtocol: Sendable {
     func objectSubscribe(data: SubscriptionData.Object) async throws -> ObjectSubscriptionResponse
     func objectSearchSubscribe(data: SubscriptionData.Search) async throws -> ObjectSubscriptionResponse

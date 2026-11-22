@@ -6,8 +6,11 @@ struct ObjectVersionView: View {
     @State private var model: ObjectVersionViewModel
     @Environment(\.dismiss) private var dismiss
 
-    init(data: ObjectVersionData, output: (any ObjectVersionModuleOutput)?) {
-        _model = State(initialValue: ObjectVersionViewModel(data: data, output: output))
+    init(data: ObjectVersionData, output: (any ObjectVersionModuleOutput)?,
+         preparedSession: PreparedEditorPageSession? = nil) {
+        _model = State(initialValue: ObjectVersionViewModel(
+            data: data, output: output, preparedSession: preparedSession
+        ))
     }
     
     var body: some View {
@@ -42,13 +45,23 @@ struct ObjectVersionView: View {
     
     @ViewBuilder
     private var content: some View {
-        switch model.screenData {
-        case .page(let data):
-            EditorPageCoordinatorView(data: data, showHeader: false)
-        case .list(let data):
-            EditorSetCoordinatorView(data: data, showHeader: false)
-        default:
-            EmptyView()
+        if model.hasPreparedSource {
+            if let preparedModel = model.preparedEditorModel {
+                EditorPageCoordinatorView(preparedModel: preparedModel)
+            } else if model.preparationFailed {
+                DocumentCommonOpenErrorView { dismiss() }
+            } else {
+                ProgressView()
+            }
+        } else {
+            switch model.screenData {
+            case .page(let data):
+                EditorPageCoordinatorView(data: data, showHeader: false)
+            case .list(let data):
+                EditorSetCoordinatorView(data: data, showHeader: false)
+            default:
+                EmptyView()
+            }
         }
     }
     

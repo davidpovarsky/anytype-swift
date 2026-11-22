@@ -5,28 +5,58 @@ extension PropertiesServiceProtocol {
         typeId: String,
         recommendedProperties: [PropertyDetails],
         recommendedFeaturedProperties: [PropertyDetails],
-        recommendedHiddenProperties: [PropertyDetails]
+        recommendedHiddenProperties: [PropertyDetails],
+        originalEditorScope: OriginalEditorPropertyScope? = nil
     ) async throws {
-        try await updateTypeProperties(
-            typeId: typeId,
-            dataviewId: SetConstants.dataviewBlockId,
-            recommendedProperties: recommendedProperties,
-            recommendedFeaturedProperties: recommendedFeaturedProperties,
-            recommendedHiddenProperties: recommendedHiddenProperties
-        )
-        let spaceId = recommendedProperties.first?.spaceId
-            ?? recommendedFeaturedProperties.first?.spaceId
-            ?? recommendedHiddenProperties.first?.spaceId
-            ?? (try? Container.shared.objectTypeProvider().objectType(id: typeId).spaceId)
-            ?? ""
-        if !spaceId.isEmpty {
-            PinkhaTorahNativePropertyCatalog.shared.recordUpdatedTypeRelations(
+        // Keep the original native operation and payload shared by both routes.
+        let updateOriginal: @Sendable () async throws -> Void = {
+            try await self.updateTypeProperties(
                 typeId: typeId,
-                spaceId: spaceId,
-                recommendedIds: recommendedProperties.map(\.id),
-                featuredIds: recommendedFeaturedProperties.map(\.id),
-                hiddenIds: recommendedHiddenProperties.map(\.id)
+                dataviewId: SetConstants.dataviewBlockId,
+                recommendedProperties: recommendedProperties,
+                recommendedFeaturedProperties: recommendedFeaturedProperties,
+                recommendedHiddenProperties: recommendedHiddenProperties
             )
+            let publishOriginal: @Sendable (String) -> Void = { spaceId in
+                PinkhaTorahNativePropertyCatalog.shared.recordUpdatedTypeRelations(
+                    typeId: typeId,
+                    spaceId: spaceId,
+                    recommendedIds: recommendedProperties.map(\.id),
+                    featuredIds: recommendedFeaturedProperties.map(\.id),
+                    hiddenIds: recommendedHiddenProperties.map(\.id)
+                )
+            }
+            if let originalEditorScope {
+                // RPC completion alone cannot authorize a delayed cache write.
+                // Use the acquired type's Space, never a later global lookup.
+                try await originalEditorScope.withActionCallback(
+                    requiredPermissions: OriginalEditorPropertyScope.listPermissions
+                ) {
+                    publishOriginal(originalEditorScope.spaceId)
+                }
+            } else {
+                let spaceId = recommendedProperties.first?.spaceId
+                    ?? recommendedFeaturedProperties.first?.spaceId
+                    ?? recommendedHiddenProperties.first?.spaceId
+                    ?? (try? Container.shared.objectTypeProvider().objectType(id: typeId).spaceId)
+                    ?? ""
+                if !spaceId.isEmpty { publishOriginal(spaceId) }
+            }
+        }
+        if let originalEditorScope {
+            try await originalEditorScope.perform(
+                requiredPermissions: OriginalEditorPropertyScope.listPermissions
+            ) {
+                _ = try originalEditorScope.originalProperties(self)
+                try originalEditorScope.withCurrent {
+                    guard typeId.utf8.elementsEqual(originalEditorScope.objectId.utf8) else {
+                        throw EditorDocumentWriteError.rejected(.wrongContext)
+                    }
+                }
+                try await updateOriginal()
+            }
+        } else {
+            try await updateOriginal()
         }
     }
     

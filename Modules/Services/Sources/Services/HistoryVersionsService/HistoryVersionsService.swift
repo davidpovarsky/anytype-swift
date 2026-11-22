@@ -2,6 +2,21 @@ import Foundation
 import ProtobufMessages
 import AnytypeCore
 
+public enum OriginalHistoryVersionsServiceBindingError: Error, Sendable {
+    case unsupportedOriginalDelegate
+}
+
+public enum OriginalHistoryVersionsServiceBinding {
+    public static func requireOriginal(
+        _ service: any HistoryVersionsServiceProtocol
+    ) throws -> any HistoryVersionsServiceProtocol {
+        guard service is HistoryVersionsService else {
+            throw OriginalHistoryVersionsServiceBindingError.unsupportedOriginalDelegate
+        }
+        return service
+    }
+}
+
 public protocol HistoryVersionsServiceProtocol: Sendable {
     func getVersions(objectId: String, lastVersionId: String) async throws -> [VersionHistory]
     func showVersion(objectId: String, versionId: String) async throws -> ObjectViewModel

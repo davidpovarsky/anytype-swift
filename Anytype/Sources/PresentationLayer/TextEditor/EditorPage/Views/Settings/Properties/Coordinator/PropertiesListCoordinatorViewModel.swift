@@ -17,6 +17,11 @@ final class PropertiesListCoordinatorViewModel:
     var relationsSearchData: PropertiesSearchData?
     var objectTypeData: EditorTypeObject?
     var showTypePicker = false
+    var typePropertiesToast: ToastBarData?
+
+    private(set) var preparedTypePropertiesSession: PreparedEditorPageSession?
+    @ObservationIgnored
+    private var typePreparationTask: Task<Void, Never>?
 
     let document: any BaseDocumentProtocol
 
@@ -90,11 +95,66 @@ final class PropertiesListCoordinatorViewModel:
     }
     
     func showTypeRelationsView(typeId: String) {
-        // The original Type editor mutates a different existing document and
-        // its schema. Its own prepared child is required before presentation.
-        guard preparedSession == nil else { return }
+        if let scope = originalEditorScope {
+            guard typePreparationTask == nil, objectTypeData == nil,
+                  preparedTypePropertiesSession == nil else { return }
+            do {
+                try scope.withCurrent {}
+                guard !typeId.isEmpty, !typeId.utf8.contains(0) else {
+                    throw EditorDocumentWriteError.rejected(.wrongContext)
+                }
+                // Capture the current ancestry before the asynchronous open.
+                // The selected type gets its own original document and owner.
+                let preparation = try PreparedEditorChildPreparation(owner: scope.owner)
+                let typeData = EditorTypeObject(objectId: typeId, spaceId: document.spaceId)
+                typePreparationTask = Task { [weak self] in
+                    guard let self else { return }
+                    defer { typePreparationTask = nil }
+                    do {
+                        let child = try await preparation.prepare(
+                            data: .init(objectId: typeId, spaceId: typeData.spaceId),
+                            requiredPermissions: OriginalEditorPropertyScope.listPermissions
+                        )
+                        do {
+                            try Task.checkCancellation()
+                            try withCurrentSource {
+                                preparedTypePropertiesSession = child
+                                objectTypeData = typeData
+                                AnytypeAnalytics.instance().logScreenEditType(route: .object)
+                            }
+                        } catch {
+                            child.retire()
+                            if preparedTypePropertiesSession === child {
+                                preparedTypePropertiesSession = nil
+                                objectTypeData = nil
+                            }
+                            throw error
+                        }
+                    } catch {
+                        try? withCurrentSource {
+                            typePropertiesToast = ToastBarData(Loc.error, type: .failure)
+                        }
+                    }
+                }
+            } catch {
+                try? withCurrentSource {
+                    typePropertiesToast = ToastBarData(Loc.error, type: .failure)
+                }
+            }
+            return
+        }
         AnytypeAnalytics.instance().logScreenEditType(route: .object)
         objectTypeData = EditorTypeObject(objectId: typeId, spaceId: document.spaceId)
+    }
+
+    func cancelTypePreparation() {
+        typePreparationTask?.cancel()
+    }
+
+    func didDismissTypeProperties() {
+        cancelTypePreparation()
+        preparedTypePropertiesSession?.retire()
+        preparedTypePropertiesSession = nil
     }
     
     func onTypeSelected(_ type: ObjectType) {

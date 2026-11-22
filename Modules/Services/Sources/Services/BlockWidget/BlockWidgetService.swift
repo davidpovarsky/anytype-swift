@@ -2,6 +2,21 @@ import Foundation
 import ProtobufMessages
 import AnytypeCore
 
+public enum OriginalBlockWidgetServiceBindingError: Error, Sendable {
+    case unsupportedOriginalDelegate
+}
+
+public enum OriginalBlockWidgetServiceBinding {
+    public static func requireOriginal(
+        _ service: any BlockWidgetServiceProtocol
+    ) throws -> any BlockWidgetServiceProtocol {
+        guard service is BlockWidgetService else {
+            throw OriginalBlockWidgetServiceBindingError.unsupportedOriginalDelegate
+        }
+        return service
+    }
+}
+
 public protocol BlockWidgetServiceProtocol: Sendable {
     func createWidgetBlock(contextId: String, sourceId: String, layout: BlockWidget.Layout, limit: Int, position: WidgetPosition) async throws
     func removeWidgetBlock(contextId: String, widgetBlockId: String) async throws

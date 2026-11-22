@@ -13,6 +13,16 @@ final class SubscriptionToggler: SubscriptionTogglerProtocol {
     private let objectSubscriptionService: any ObjectSubscriptionServiceProtocol = Container.shared.objectSubscriptionService()
     private let userDefaults: any UserDefaultsStorageProtocol = Container.shared.userDefaultsStorage()
     private let basicUserInfoStorage: any BasicUserInfoStorageProtocol = Container.shared.basicUserInfoStorage()
+
+    /// The prepared original reader keeps this delegate and its native service.
+    /// It cannot admit a substituted subscription implementation.
+    static func requireOriginal(_ service: any SubscriptionTogglerProtocol) throws -> SubscriptionToggler {
+        guard let original = service as? SubscriptionToggler else {
+            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+        }
+        _ = try OriginalObjectSubscriptionServiceBinding.requireOriginal(original.objectSubscriptionService)
+        return original
+    }
     
     func startSubscription(data: SubscriptionData) async throws -> SubscriptionTogglerResult {
         switch data {

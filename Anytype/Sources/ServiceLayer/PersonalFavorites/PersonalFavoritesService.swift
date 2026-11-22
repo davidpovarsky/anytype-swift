@@ -12,6 +12,18 @@ final class PersonalFavoritesService: PersonalFavoritesServiceProtocol {
 
     private let blockWidgetService: any BlockWidgetServiceProtocol = Container.shared.blockWidgetService()
 
+    /// Preserve the exact original delegate and its actual BlockWidget service.
+    /// A prepared target owner is supplied by the caller, never by this binding.
+    static func requireOriginal(
+        _ service: any PersonalFavoritesServiceProtocol
+    ) throws -> PersonalFavoritesService {
+        guard let original = service as? PersonalFavoritesService else {
+            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+        }
+        _ = try OriginalBlockWidgetServiceBinding.requireOriginal(original.blockWidgetService)
+        return original
+    }
+
     func toggle(objectId: String, personalWidgetsObject: any BaseDocumentProtocol) async throws {
         // `.innerFirst` mirrors desktop (`anyproto/anytype-ts#2161`) — wrappers must land at
         // the doc root, not nested inside `header`. With `.above(children.first?.id)` the

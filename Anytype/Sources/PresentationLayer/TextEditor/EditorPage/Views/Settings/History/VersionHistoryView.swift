@@ -6,8 +6,11 @@ struct VersionHistoryView: View {
     @State private var model: VersionHistoryViewModel
     @Environment(\.dismiss) private var dismiss
 
-    init(data: VersionHistoryData, output: (any VersionHistoryModuleOutput)?) {
-        _model = State(initialValue: VersionHistoryViewModel(data: data, output: output))
+    init(data: VersionHistoryData, output: (any VersionHistoryModuleOutput)?,
+         preparedSession: PreparedEditorPageSession? = nil) {
+        _model = State(initialValue: VersionHistoryViewModel(
+            data: data, output: output, preparedSession: preparedSession
+        ))
     }
     
     var body: some View {

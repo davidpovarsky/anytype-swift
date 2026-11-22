@@ -100,6 +100,7 @@ final class ObjectSettingsMenuViewModel {
         let permissions: Set<EditorDocumentWritePermission>
         switch action {
         case .archive: permissions = [.archive]
+        case .favorite: permissions = [.applyUneditableActions]
         case .locked: permissions = [.lock]
         case .duplicate: permissions = [.duplicate]
         case .makeAsTemplate: permissions = [.makeAsTemplate]

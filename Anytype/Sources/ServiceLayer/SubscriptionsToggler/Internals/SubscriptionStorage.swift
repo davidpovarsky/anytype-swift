@@ -2,6 +2,7 @@ import Foundation
 import Services
 @preconcurrency import Combine
 import AnytypeCore
+import ProtobufMessages
 
 protocol SubscriptionStorageProtocol: AnyObject, Sendable {
     var subId: String { get }
@@ -20,6 +21,7 @@ actor SubscriptionStorage: SubscriptionStorageProtocol {
     nonisolated let subId: String
     nonisolated let detailsStorage: ObjectDetailsStorage
     private let toggler: any SubscriptionTogglerProtocol
+    private let originalAccountDispatch: InvocationDispatchBinding?
     
     // MARK: - State
     
@@ -35,18 +37,36 @@ actor SubscriptionStorage: SubscriptionStorageProtocol {
     private let stateSubject = CurrentValueSubject<SubscriptionStorageState?, Never>(nil)
     nonisolated let statePublisher: AnyPublisher<SubscriptionStorageState, Never>
     
-    init(subId: String, detailsStorage: ObjectDetailsStorage, toggler: some SubscriptionTogglerProtocol) {
+    init(subId: String, detailsStorage: ObjectDetailsStorage, toggler: some SubscriptionTogglerProtocol,
+         originalAccountDispatch: InvocationDispatchBinding? = nil) {
         self.subId = subId
         self.detailsStorage = detailsStorage
         self.toggler = toggler
+        self.originalAccountDispatch = originalAccountDispatch
         self.statePublisher = stateSubject.compactMap { $0 }.eraseToAnyPublisher()
         handlerRegistration = Task { await setupHandler() }
     }
     
     deinit {
-        guard let data else { return }
-        Task { [data, toggler] in
-            try await toggler.stopSubscription(id: data.identifier)
+        let identifier: String
+        if let data {
+            identifier = data.identifier
+        } else if originalAccountDispatch != nil {
+            // The real subscribe RPC may finish after cancellation has already
+            // returned to its caller. Prepared acquisition retains this storage
+            // through that native drain; then clean up only its fresh owned ID.
+            identifier = subId
+        } else {
+            return
+        }
+        Task { [identifier, toggler, originalAccountDispatch] in
+            if let originalAccountDispatch {
+                try await InvocationDispatchContext.$binding.withValue(originalAccountDispatch) {
+                    try await toggler.stopSubscription(id: identifier)
+                }
+            } else {
+                try await toggler.stopSubscription(id: identifier)
+            }
         }
     }
     
@@ -114,7 +134,13 @@ actor SubscriptionStorage: SubscriptionStorageProtocol {
     
     func stopSubscription() async throws {
         guard let data else { return }
-        try await toggler.stopSubscription(id: data.identifier)
+        if let originalAccountDispatch {
+            try await InvocationDispatchContext.$binding.withValue(originalAccountDispatch) {
+                try await toggler.stopSubscription(id: data.identifier)
+            }
+        } else {
+            try await toggler.stopSubscription(id: data.identifier)
+        }
         self.data = nil
     }
     
