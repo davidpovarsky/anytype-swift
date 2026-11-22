@@ -1,0 +1,44 @@
+{
+  "task": "Original SpaceView authority prerequisite only",
+  "base": "b854e7f3f59690134bcabdef88527b61517d5ab5",
+  "fresh_upstream_develop": "d857b23ea540be33d6faab4f7a7a1a260ab578c1",
+  "merge_base": "d5650321577a209505a3277c8437b7608cff1cb9",
+  "classification": "UPSTREAM_OWNED, specifically scoped under standing owner authorization and root task",
+  "source_path": "Anytype/Sources/ServiceLayer/SpaceStorage/SpaceViewsStorage.swift",
+  "baseline_sha256": "df389b48c733580a77b04e600b43dd3c4fc886a2994ed4c76a735169e30f08f0",
+  "original_rule": "participantCanEdit && (!spaceView.isLegacyStream || isOwner)",
+  "source_read_hashes": {
+    "Anytype/Sources/ServiceLayer/SpaceStorage/Models/SpaceView.swift": "3e0eb5c308f1577f9ac0361025c93dc711acee3bae4ec538a3430c7bc10707c9",
+    "Anytype/Sources/ServiceLayer/ParticipantSpacesStorage/Model/SpacePermissions.swift": "e831c211f172ccf9f6f79d59db569ef7ce38d73486209a95134d684b9d53c2bb",
+    "Anytype/Sources/ServiceLayer/Account/AccountManager.swift": "954494a8c39f3c913dccb824a4064fdc1199ea46b0afbd9c54fd35f7105b224b",
+    "Modules/AnytypeCore/AnytypeCore/Utils/AtomicStorage.swift": "5197893967990bb38bcbc9d6584f4b52eff3e7624ff2a9f6c7ff8e18e6789add",
+    "Anytype/Sources/ServiceLayer/SpaceStorage/SpaceViewsSubscriptionBuilder.swift": "10dd55771e2bd5fb83c6ed387bf8c081542fea68ace7029b6c1264820d611ef6",
+    "Anytype/Sources/ServiceLayer/SubscriptionsToggler/Internals/SubscriptionStorage.swift": "6dd4b130d7177dc6e97ad44edca6922d3fdc42d9a47f540eb07222be3ed1b730",
+    "Anytype/Sources/ServiceLayer/SubscriptionsToggler/Internals/SubscriptionStorageProvider.swift": "0c61fb0f3bfbc2b42b8992741108179f459240958627afe53b714b027e5edb6c",
+    "Modules/AnytypeCore/AnytypeCore/Utils/AtomicPublishedStorage.swift": "1cd20ec97865ea32fb56948b1a0c9fc902433fbf99c4c17bdd3b3c8d9afe137b",
+    "Modules/AnytypeCore/AnytypeCore/Utils/Synchronized colections/SynchronizedDictionary.swift": "8a65129f10093e643f35fb0e58e3892975bd1e1dd56dd6c9f0a2400ee530c8db",
+    "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteLifetime.swift": "451054685e2ff0c30371d384904be831412eec16c2a5e16c660d2f1891921eb4",
+    "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift": "b0ae02be8c28c22246d29bf927cb154e10019d841f3b831771f968a8938f7d46",
+    "Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift": "42d619b79a0f68794163fd3cfdb1261292237b215e2554dfb35677897eb975e9",
+    "Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift": "87e53d36d677f5d7943c022ab1e778816c1f29922950519473d95d4823601f7a",
+    "Anytype/Sources/ServiceLayer/ParticipantSpaceStorage/ParticipantSpacesStorage.swift": "f6a761b04d4af9a19e9fa851fbc9eb07ba21d21f47b9e792b52c4ffa42fa0896"
+  },
+  "tests": "22 new controls PASS once; no historical suite replay",
+  "candidate_sha256": "f1570f8cff28d87152ea455ded6bc0bdfeb729e0beb3a70e3a47fb06b4710a57",
+  "candidate_v1_sha256": "3bbe6cbe90ca7de2aa1953aac01a354f62bc1d49d559e529babdd555bb3b8c47",
+  "source_review_corrections": [
+    "source deinit retirement",
+    "synchronous starting-attempt cancellation retirement"
+  ],
+  "source_review_approved": true,
+  "source_commit": "37731bcfdfda320b3a58356b54719e904c399810",
+  "language_mode": "Swift 5, strict-concurrency complete; Swift 6.3.3 Windows toolchain",
+  "fixture_warnings": {
+    "warningCount": 22,
+    "uniqueMessages": [
+      "converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races\r"
+    ],
+    "onlyFixtureDispatcher": true,
+    "productWarnings": []
+  }
+}
