@@ -42,7 +42,7 @@ The first actual Linux run, `45035204985` attempt 1 at `f784bbb71963a57ba142e33b
 
 The second actual Linux run, `45036034258` attempt 1 at `4a8fcc2a845e130889f38efd12caafe03db731b6`, compiled the complete 198-file original model target and then failed in `SnapshotWire`: four map calls referred to nonexistent `_ProtobufString`. The pinned runtime's `FieldTypes.swift` declares public `ProtobufString`; its own generated Struct uses that field type. The correction changes only those four calls to `SwiftProtobuf.ProtobufString`. All 27 second-run intake/evidence files, including actual `Package.resolved`, remain under `evidence/linux-semantic-run-45036034258`; runner RESULT SHA256 is `fc89a903b59d5408f5d2f8ce6996b0ac1d76195f92db2d2f61e81d230c5b7a7d`. No semantic case executed, and the prior 40/13 controls were not replayed. Full dependency-backed compilation and the 30 semantic cases still require execution at the next reviewed immutable head.
 
-Full semantic integration execution, actual Apple composition/typecheck of the held-read bridge, one real native observation, stable whole-graph native authority, genuine import-map authority, closed source/commit consumption, durable mapping and ACK remain open. Same-ID or metadata mismatches remain unproven; they never authorize replacement objects or extra exclusions.
+Actual Apple composition/typecheck of the held-read bridge, one real native observation, stable whole-graph native authority, genuine import-map authority, closed source/commit consumption, durable mapping and ACK remain open. Same-ID or metadata mismatches remain unproven; they never authorize replacement objects or extra exclusions.
 
 ## Primary source pins
 
@@ -52,3 +52,11 @@ Full semantic integration execution, actual Apple composition/typecheck of the h
 - SwiftProtobuf: [`c6fe6442e6a64250495669325044052e113e990c`](https://github.com/apple/swift-protobuf/tree/c6fe6442e6a64250495669325044052e113e990c); peer inspected `BinaryDecoder.swift` blob `3407f73abcb9454e2192600bec09e4a765e1f311` for map-entry loss.
 - ZIPFoundation: [`22787ffb59de99e5dc1fbfe80b19c97a904ad48d`](https://github.com/weichsel/ZIPFoundation/tree/22787ffb59de99e5dc1fbfe80b19c97a904ad48d), the existing 0.9.20 pin.
 - Ubuntu 24.04 runner documentation blob `7fa7e1aeaa474591fccf5973dd2f85c2cf6f5529` advertises Swift 6.4.2. The prepared job records the actual version and refuses drift rather than silently changing the reviewed compiler.
+
+## Verified portable semantic result
+
+Run `45037906356` attempt 1 at corrected source `4d73ccd6c0ff2e744c3abdf0b138779c17e45163` compiled and passed all 30 new semantic cases using actual Linux Swift 6.4.2 in Swift 6 language mode. Its exact original model closure contains 197 Models files plus the unchanged original `export_report.pb.swift`; both dependency revisions match the pins above. All four production comparator files and the executable test source match their committed blobs. No previous suite was rerun.
+
+The 29 raw intake files are retained under `evidence/linux-semantic-run-45037906356`. Runner RESULT SHA256 is `23ca9dceda9e4ad0bf6b015eaf8500efb96d51717c02df00043e6ace8a4903f7`; artifact `14760810820` has digest `sha256:7209c140e4bc4910f46ff145ffa2956685cc131a5990f8e1441e95ef1763cf65`. Every command log and compiled candidate source hash was independently reconciled with the result and source manifest. Compiler deprecation warnings remain in the raw logs; no compiler errors or skipped cases occurred.
+
+This is an actual portable semantic execution over synthetic original-format archives. It does not execute the original native engine, compile the Apple held-read bridge, observe a real native body, establish atomic whole-graph authority, or authorize a mapping/COMMIT/ACK. Those downstream gates remain explicit. This evidence-only child changes no product source, workflow, runner, dependency or test assertion and requests no further semantic run.

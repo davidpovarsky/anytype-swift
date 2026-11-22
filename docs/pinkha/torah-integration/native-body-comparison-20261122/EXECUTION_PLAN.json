@@ -1,11 +1,11 @@
 {
-  "status": "CORRECTIVE_CANDIDATE_NOT_DISPATCHED",
+  "status": "PASS_PORTABLE_SEMANTICS_NATIVE_GATES_OPEN",
   "source_base": "b5162d777e3ebc5c4c0d044e02b52347c0c3dd6e",
-  "candidate_branch": "codex/otzaria-native-body-protobuf-typefix-20261122",
+  "candidate_branch": "codex/otzaria-native-body-semantic-evidence-20261122",
   "workflow": ".github/workflows/otzaria-native-body-semantics.yml",
   "activation_branch": "codex/otzaria-native-body-semantics-run-20261122",
   "dispatch_owner": "/root",
-  "activation_rule": "Root reviews the corrective immutable head, then fast-forwards the existing isolated activation branch exactly once. No automatic retry.",
+  "activation_rule": "No new semantic run is requested. Preserve this qualified source closure; root separately reviews any future Apple integration/native execution.",
   "runtime": {
     "runner": "ubuntu-24.04",
     "expected_swift_version": "6.4.2",
@@ -43,14 +43,13 @@
   ],
   "on_failure": "Preserve all output and failing exact source; no automatic retry. Fix only concrete failing closure after review.",
   "remaining_gates": [
-    "actual full semantic integration execution",
     "actual Apple held-read bridge composition",
     "real original native export observation",
     "stable native whole-graph authority",
     "genuine import-map authority",
     "closed source/commit and durable mapping/ACK"
   ],
-  "candidate_parent": "4a8fcc2a845e130889f38efd12caafe03db731b6",
+  "candidate_parent": "4d73ccd6c0ff2e744c3abdf0b138779c17e45163",
   "prior_actual_runs": [
     {
       "id": 45035204985,
@@ -70,5 +69,14 @@
       "reason": "SnapshotWire used nonexistent _ProtobufString instead of the pinned public ProtobufString map field type",
       "runner_result_sha256": "fc89a903b59d5408f5d2f8ce6996b0ac1d76195f92db2d2f61e81d230c5b7a7d"
     }
-  ]
+  ],
+  "qualified_source_commit": "4d73ccd6c0ff2e744c3abdf0b138779c17e45163",
+  "completed_semantic_run": {
+    "id": 45037906356,
+    "attempt": 1,
+    "source": "4d73ccd6c0ff2e744c3abdf0b138779c17e45163",
+    "tests_passed": 30,
+    "native_executions": 0,
+    "result_sha256": "23ca9dceda9e4ad0bf6b015eaf8500efb96d51717c02df00043e6ace8a4903f7"
+  }
 }
