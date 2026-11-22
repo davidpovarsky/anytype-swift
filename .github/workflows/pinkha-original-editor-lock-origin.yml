@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: original-editor-lock-origin-${{ github.ref }}
@@ -21,6 +22,7 @@ jobs:
       PYTHONDONTWRITEBYTECODE: '1'
       DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
       LOCK_EVIDENCE: build/original-editor-lock-origin-evidence
+      EXPECTED_APP_BRANCH: codex/otzaria-original-editor-lock-origin-20261122
     steps:
       - name: Checkout exact resolver source
         uses: actions/checkout@v4
@@ -39,6 +41,20 @@ jobs:
         run: |
           python3 Tools/Hanlin/prepare_sdk.py --source build/original-editor-lock-hanlin-source
           python3 Tools/Hanlin/prepare_sdk.py --check
+      - name: Verify exact original Heart binary required by package manifests
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git switch --force-create "$EXPECTED_APP_BRANCH" "$GITHUB_SHA"
+          python3 Tools/Hanlin/prepare_original_editor_heart.py \
+            --source-run-id 44203168617 \
+            --output build/original-editor-lock-verified-heart --evidence build/original-editor-lock-heart-evidence/source
+          python3 Tools/PinkhaNativeDerived/install_verified_heart.py \
+            --archive build/original-editor-lock-verified-heart/Pinkha-Universal-Verified-Heart-r14.tar.gz \
+            --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json \
+            --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch \
+            --app-source "$GITHUB_WORKSPACE" --source-run-id 44203168617 \
+            --expected-app-branch "$EXPECTED_APP_BRANCH" --evidence build/original-editor-lock-heart-evidence/install
       - name: Observe actual resolver metadata and recheck frozen pins
         run: python3 Tools/OriginalEditor/refresh_package_origin.py
       - name: Retain exact before after command and source evidence
@@ -46,6 +62,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Original-Editor-Lock-Origin-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ env.LOCK_EVIDENCE }}
+          path: |
+            ${{ env.LOCK_EVIDENCE }}
+            build/original-editor-lock-heart-evidence
           if-no-files-found: error
           retention-days: 14
