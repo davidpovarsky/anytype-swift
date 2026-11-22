@@ -18,8 +18,8 @@ import sys
 import time
 
 PIN = "d98420b1113536afd08cde6de9a5816f6d27ffff"
-ORIGIN = "20cb8998211eaefa5ddb00ef60ff2462dd3271e9"
-ORIGIN_TREE = "be05778c6a9e6412d181ced642694daee3baf30b"
+ORIGIN = "13f63c2dff32ff8ca6b864748843822fcdd0d004"
+ORIGIN_TREE = "90cc6f5adbbcc9f01f38b24766378d38adc0f453"
 INPUT_FIELDS = (
     "GoFiles", "CgoFiles", "CFiles", "CXXFiles", "MFiles", "HFiles", "FFiles",
     "SFiles", "SwigFiles", "SwigCXXFiles", "SysoFiles", "EmbedFiles",
@@ -324,7 +324,7 @@ def main():
         origin_path = manifest["origin_packet_path"]
         origin = safe_path(control, origin_path)
         if git(control, "rev-parse", "HEAD:" + origin_path) != ORIGIN_TREE:
-            raise RuntimeError("the frozen 94-file origin packet changed")
+            raise RuntimeError("the frozen reviewed origin packet changed")
         # The tree binds the entire retained origin packet; individual checks also
         # bind the exact bytes read and installed by this process.
         for entry in manifest["origin_inputs"]:
