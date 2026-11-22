@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "job": {
+    "id": "job_0d6392db4d1a",
+    "type": "job_result",
+    "source": "script_run@host_7ec8382e82747448",
+    "severity": "warning",
+    "tool": "script_run",
+    "host": "host_7ec8382e82747448",
+    "status": "failed",
+    "exit_code": 1,
+    "created_at": 1795354098.369211,
+    "started_at": "2026-11-22T13:28:18.446200+00:00",
+    "finished_at": "2026-11-22T13:33:54.730774+00:00",
+    "duration_s": 336.28,
+    "error": null,
+    "output_truncated": false,
+    "timeout_s": 3500,
+    "read": true,
+    "notified": {
+      "telegram": null,
+      "resend": null
+    },
+    "notify_spec": {},
+    "output": "Traceback (most recent call last):\r\n  File \"C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_d1f643d100354c83b25945f12f2da182\\script.py\", line 9, in <module>\r\n    p=subprocess.run(['gh','api','repos/davidpovarsky/anytype-swift/actions/runs/'+rid],capture_output=True,timeout=45);(out/'terminal-run.json').write_bytes(p.stdout)\r\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\subprocess.py\", line 550, in run\r\n    stdout, stderr = process.communicate(input, timeout=timeout)\r\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\subprocess.py\", line 1209, in communicate\r\n    stdout, stderr = self._communicate(input, endtime, timeout)\r\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\subprocess.py\", line 1630, in _communicate\r\n    raise TimeoutExpired(self.args, orig_timeout)\r\nsubprocess.TimeoutExpired: Command '['gh', 'api', 'repos/davidpovarsky/anytype-swift/actions/runs/45027606300']' timed out after 45 seconds"
+  }
+}
