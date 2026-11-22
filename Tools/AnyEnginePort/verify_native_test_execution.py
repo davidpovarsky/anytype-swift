@@ -139,13 +139,19 @@ SOURCE_PATHS["ui-ios-remaining"] = [
 SOURCE_PATHS["native-ui-remaining"] = SOURCE_PATHS["native-ui"]
 SOURCE_PATHS["native-ui-entry"] = SOURCE_PATHS["native-ui"]
 SOURCE_PATHS["native-ui-followup"] = SOURCE_PATHS["native-ui"]
-EXACT_PROFILES = frozenset({"native-ui-entry", "native-ui-followup", "archive-roundtrip"})
+EXACT_PROFILES = frozenset({"native-ui-entry", "native-ui-followup", "archive-roundtrip", "native-custom-type"})
 
 # This is a real export/import/remap/cold-reopen journey, separate from picker observation.
 PROFILES["archive-roundtrip"] = {
     "NativeLaunchTests": ["testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies"],
 }
 SOURCE_PATHS["archive-roundtrip"] = SOURCE_PATHS["native-ui"]
+
+# One additional real custom Type UI journey; old profiles are unchanged.
+PROFILES["native-custom-type"] = {
+    "NativeLaunchTests": ["testCustomCanonicalTypeTransitionPreservesNativeDocumentAcrossColdReopen"],
+}
+SOURCE_PATHS["native-custom-type"] = SOURCE_PATHS["native-ui"]
 
 def require(condition, message):
     if not condition:

@@ -1544,6 +1544,187 @@ final class NativeLaunchTests: XCTestCase {
     }
     // END_CANONICAL_ARCHIVE_ROUNDTRIP_V1
 
+    // BEGIN_NATIVE_CUSTOM_TYPE_UI_V1
+    func testCustomCanonicalTypeTransitionPreservesNativeDocumentAcrossColdReopen() throws {
+        let scope = UUID(), contract = "pinkha-native-custom-type-ui-v1"
+        let suffix = String(scope.uuidString.prefix(8))
+        let app = makeApplication(scope: scope)
+        let createFlag = "--native-ui-custom-type-fixture-v1"
+        let auditFlag = "--native-ui-custom-type-audit-v1"
+        let spaceName = "Custom Type UI Space " + suffix
+        let documentName = "Custom Type UI Document " + suffix
+        let initialBody = "שלום סוג מסמך מותאם ABC 482 " + suffix
+        let appendedText = " — נשמר בסוג החדש 739"
+        let finalBody = initialBody + appendedText
+        let propertyValue = "ערך משותף " + suffix + " 864"
+
+        enum JourneyError: Error { case fixture, receipt, missingIdentity }
+        func fixture(_ phase: String) throws -> [String: Any] {
+            let row = app.descendants(matching: .any)
+                .matching(identifier: "any-native-ui-custom-type-fixture").firstMatch
+            waitFor(NSPredicate(format: "exists == true AND (value BEGINSWITH %@ OR value BEGINSWITH %@)",
+                                "ready|", "failed|"), object: row, timeout: 120)
+            guard let value = row.value as? String, value.hasPrefix("ready|"),
+                  value.utf8.count <= 32_774,
+                  let result = try JSONSerialization.jsonObject(with: Data(value.dropFirst(6).utf8)) as? [String: Any],
+                  result["contract"] as? String == contract, result["phase"] as? String == phase,
+                  let seed = result["seed"] as? [String: Any],
+                  seed["scopeUUID"] as? String == scope.uuidString,
+                  seed["eligible"] as? Bool == true,
+                  seed["canonicalEditorDataset"] as? String == "editor_blocks",
+                  seed["nativeWrites"] as? Int == 3,
+                  seed["documentWrites"] as? Int == 0,
+                  seed["bodyWrites"] as? Int == 0,
+                  seed["membershipWrites"] as? Int == 0,
+                  result["nativeWritesThisProcess"] as? Int == (phase == "prepare" ? 3 : 0) else {
+                throw JourneyError.fixture
+            }
+            return result
+        }
+        func identity(_ seed: [String: Any], _ key: String) throws -> String {
+            guard let value = seed[key] as? String, !value.isEmpty, value.utf8.count <= 1024,
+                  !value.contains("\0") else { throw JourneyError.missingIdentity }
+            return value
+        }
+        func bodyObservation(_ editor: XCUIElement, expected: String) throws -> [String: Any] {
+            waitFor(NSPredicate(format: "exists == true AND value == %@", expected), object: editor, timeout: 60)
+            guard let actual = editor.value as? String, Array(actual.utf8) == Array(expected.utf8),
+                  editor.identifier.hasPrefix("any-native-block-"),
+                  editor.identifier.count > "any-native-block-".count else { throw JourneyError.receipt }
+            XCTAssertEqual(Array(actual.utf8), Array(expected.utf8))
+            return ["nativeBlockID": String(editor.identifier.dropFirst("any-native-block-".count)),
+                    "sha256": SHA256.hash(data: Data(actual.utf8)).map { String(format: "%02x", $0) }.joined(),
+                    "utf8Count": actual.utf8.count]
+        }
+        func saved() {
+            let row = app.descendants(matching: .any).matching(identifier: "any-native-save-status").firstMatch
+            waitFor(NSPredicate(format: "exists == true AND value == %@", "saved"), object: row, timeout: 45)
+        }
+
+        app.launchArguments.append(createFlag)
+        app.launch()
+        defer { app.terminate() }
+        createOwnedWorkspace(app, spaceName: spaceName)
+        let prepared = try fixture("prepare")
+        guard let seed = prepared["seed"] as? [String: Any] else { throw JourneyError.fixture }
+        let typeID = try identity(seed, "typeID"), typeName = try identity(seed, "typeName")
+        let propertyID = try identity(seed, "propertyID"), pageName = try identity(seed, "pageTypeName")
+        XCTAssertNotEqual(typeID, "page")
+        XCTAssertNotEqual(typeName, pageName)
+        let propertyIdentifier = "any-native-property-property:v1:\(typeID.utf8.count):\(typeID):\(propertyID.utf8.count):\(propertyID)"
+
+        // Only the normal UI creates the Page/document/body and changes its Type.
+        createNamedItem(app, action: "any-native-new-document", title: documentName)
+        tapWhenEnabled(app.buttons["any-native-add-paragraph"], timeout: 60)
+        let blocks = app.textViews.matching(NSPredicate(format: "identifier BEGINSWITH %@", "any-native-block-"))
+        waitForNativeEditorInput(app, blocks.firstMatch)
+        blocks.firstMatch.tap(); blocks.firstMatch.typeText(initialBody)
+        tapWhenEnabled(app.buttons["any-native-editor-done"])
+        saved()
+        XCTAssertEqual(blocks.count, 1)
+        let beforeType = try bodyObservation(blocks.firstMatch, expected: initialBody)
+        let blockID = try identity(beforeType, "nativeBlockID")
+
+        tapWhenEnabled(app.buttons["any-native-document-properties"])
+        let type = app.descendants(matching: .any).matching(identifier: "any-native-property-type").firstMatch
+        waitFor(NSPredicate(format: "exists == true AND enabled == true AND value == %@", pageName),
+                object: type, timeout: 60)
+        type.tap()
+        tapWhenEnabled(app.buttons[typeName].firstMatch)
+        waitFor(NSPredicate(format: "exists == true AND enabled == true AND value == %@", typeName),
+                object: type, timeout: 45)
+        let property = app.buttons[propertyIdentifier]
+        revealNativeProperty(app, property)
+        tapWhenEnabled(property)
+        let field = app.descendants(matching: .any).matching(identifier: "any-native-property-value-input").firstMatch
+        waitUntilEnabled(field)
+        field.tap(); field.typeText(propertyValue)
+        tapWhenEnabled(app.buttons["any-native-property-save"])
+        revealNativeProperty(app, property)
+        waitFor(NSPredicate(format: "exists == true AND enabled == true AND value == %@", propertyValue),
+                object: property, timeout: 45)
+        revealNativeProperty(app, type, scrollDown: true)
+        XCTAssertEqual(type.value as? String, typeName)
+        tapWhenEnabled(app.buttons["any-native-property-close"])
+        let afterType = try bodyObservation(blocks.firstMatch, expected: initialBody)
+        XCTAssertEqual(afterType["nativeBlockID"] as? String, blockID)
+        XCTAssertEqual(blocks.count, 1)
+
+        // Command-Down uses the editor's actual text input to append at the end.
+        let editor = app.textViews["any-native-block-" + blockID]
+        waitForNativeEditorInput(app, editor)
+        editor.tap()
+        editor.typeKey(XCUIKeyboardKey.downArrow, modifierFlags: .command)
+        editor.typeText(appendedText)
+        tapWhenEnabled(app.buttons["any-native-editor-done"])
+        saved()
+        let afterEdit = try bodyObservation(editor, expected: finalBody)
+        XCTAssertEqual(blocks.count, 1)
+
+        let back = app.navigationBars.buttons.matching(
+            NSPredicate(format: "label == %@ OR label == %@", "ספרייה", "Library")).firstMatch
+        tapWhenEnabled(back)
+        let document = app.buttons[documentName].firstMatch
+        waitUntilEnabled(document, timeout: 60)
+        let rowIdentifier = document.identifier
+        guard rowIdentifier.hasPrefix("any-native-hierarchy-row-"),
+              rowIdentifier.count > "any-native-hierarchy-row-".count else { throw JourneyError.missingIdentity }
+        let objectID = String(rowIdentifier.dropFirst("any-native-hierarchy-row-".count))
+
+        // Fresh iOS process; the prepare flag is removed. The audit path only GETs
+        // the original three definitions and requires zero native fixture writes.
+        app.terminate()
+        app.launchArguments.removeAll { $0 == createFlag }
+        app.launchArguments.append(auditFlag)
+        XCTAssertFalse(app.launchArguments.contains(createFlag))
+        app.launch()
+        tapWhenEnabled(app.buttons["any-native-saved-account"].firstMatch, timeout: 60)
+        tapWhenEnabled(app.buttons[spaceName].firstMatch, timeout: 60)
+        let reopened = try fixture("audit")
+        guard let coldSeed = reopened["seed"] as? [String: Any],
+              NSDictionary(dictionary: seed).isEqual(to: coldSeed),
+              prepared["processID"] as? Int != reopened["processID"] as? Int,
+              prepared["ownerGeneration"] as? String != reopened["ownerGeneration"] as? String else {
+            throw JourneyError.receipt
+        }
+        let coldDocument = app.buttons[rowIdentifier]
+        waitUntilEnabled(coldDocument, timeout: 60)
+        XCTAssertEqual(coldDocument.label, documentName)
+        coldDocument.tap()
+        let afterCold = try bodyObservation(editor, expected: finalBody)
+        XCTAssertEqual(afterCold["nativeBlockID"] as? String, blockID)
+        XCTAssertEqual(blocks.count, 1)
+        tapWhenEnabled(app.buttons["any-native-document-properties"])
+        waitFor(NSPredicate(format: "exists == true AND enabled == true AND value == %@", typeName),
+                object: type, timeout: 60)
+        let coldTypeName = type.value as? String ?? ""
+        revealNativeProperty(app, property)
+        waitFor(NSPredicate(format: "exists == true AND enabled == true AND value == %@", propertyValue),
+                object: property, timeout: 45)
+
+        let receipt: [String: Any] = [
+            "schemaVersion": 1, "contract": "pinkha-native-custom-type-ui-journey-v1",
+            "method": "NativeLaunchTests/testCustomCanonicalTypeTransitionPreservesNativeDocumentAcrossColdReopen",
+            "scopeUUID": scope.uuidString, "documentName": documentName, "objectID": objectID,
+            "initialTypeID": "page", "initialTypeName": pageName,
+            "selectedTypeID": typeID, "selectedTypeName": typeName,
+            "coldTypeName": coldTypeName,
+            "propertyID": propertyID, "propertyValue": propertyValue,
+            "coldPropertyValue": property.value as? String ?? "",
+            "beforeType": beforeType, "afterType": afterType, "afterEdit": afterEdit, "afterCold": afterCold,
+            "prepare": prepared, "audit": reopened, "coldProcessReopen": true,
+            "creationFlagRemoved": !app.launchArguments.contains(createFlag),
+            "auditFlagPresent": app.launchArguments.filter { $0 == auditFlag }.count == 1,
+            "blockCountBefore": 1, "blockCountAfter": blocks.count
+        ]
+        let attachment = XCTAttachment(data: try JSONSerialization.data(withJSONObject: receipt, options: [.sortedKeys]),
+                                       uniformTypeIdentifier: "public.json")
+        attachment.name = "native-custom-type-transition-receipt"
+        attachment.lifetime = .keepAlways
+        self.add(attachment)
+    }
+    // END_NATIVE_CUSTOM_TYPE_UI_V1
+
     private func makeApplication(scope: UUID = UUID()) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments = [

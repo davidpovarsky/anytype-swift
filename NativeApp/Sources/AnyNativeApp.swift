@@ -8,6 +8,9 @@ import PinkhaAnyNative
 @MainActor
 struct AnyNativeApp: App {
     private let application: AnyNativeApplication?
+    #if DEBUG
+    private let customTypeFixture: NativeCustomTypeFixture?
+    #endif
 
     init() {
         do {
@@ -29,16 +32,38 @@ struct AnyNativeApp: App {
             directory = try AnyNativeApplication.defaultDataDirectory()
             service = "io.pinkha.anynative.accounts.v1"
             #endif
-            application = try AnyNativeApplication(dataDirectory: directory, credentialService: service)
+            let prepared = try AnyNativeApplication(dataDirectory: directory, credentialService: service)
+            #if DEBUG
+            let fixture = try NativeCustomTypeFixture.configured(arguments: ProcessInfo.processInfo.arguments,
+                dataDirectory: directory, credentialService: service)
+            customTypeFixture = fixture
+            #endif
+            application = prepared
         } catch {
             application = nil
+            #if DEBUG
+            customTypeFixture = nil
+            #endif
         }
     }
 
     var body: some Scene {
         WindowGroup {
             if let application {
+                #if DEBUG
                 AnyNativeRootView(application: application)
+                    .overlay(alignment: .bottom) {
+                        if let customTypeFixture {
+                            Text("Native custom Type fixture").font(.caption2)
+                                .accessibilityIdentifier("any-native-ui-custom-type-fixture")
+                                .accessibilityValue(customTypeFixture.accessibilityValue)
+                                .allowsHitTesting(false)
+                        }
+                    }
+                    .task { await customTypeFixture?.run(application: application) }
+                #else
+                AnyNativeRootView(application: application)
+                #endif
             } else {
                 ContentUnavailableView("לא ניתן לפתוח את האפליקציה",
                     systemImage: "exclamationmark.triangle",

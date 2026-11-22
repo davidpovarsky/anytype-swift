@@ -550,7 +550,7 @@ jobs:
           if [ "${{ inputs.validation_scope }}" = remaining ]; then
             selection=(-only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testCreateEditHanlinConsentBackgroundAndColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testSourceInspectorQuoteAndNoteSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testObserveCanonicalArchiveSystemPickers)
           elif [ "${{ inputs.validation_scope }}" = remaining-native-ui ]; then
-            selection=(-only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testCreateEditHanlinConsentBackgroundAndColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testSourceInspectorQuoteAndNoteSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies)
+            selection=(-only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testCreateEditHanlinConsentBackgroundAndColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testSourceInspectorQuoteAndNoteSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testCustomCanonicalTypeTransitionPreservesNativeDocumentAcrossColdReopen)
           fi
           xcodebuild build-for-testing "${selection[@]}" \
             -project NativeApp/AnyNative.xcodeproj \
@@ -574,6 +574,15 @@ jobs:
           python3 Tools/AnyEnginePort/verify_native_app_bundle.py \
             --bundle build/any-native-app-derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNative.app \
             --output build/any-patched-evidence/native-app-bundle.json
+      - name: Freeze the shared native app and UI runner before acceptance
+        id: native-shared-products
+        if: ${{ !cancelled() && inputs.validation_scope == 'remaining-native-ui' && steps.native-app-boundary.outcome == 'success' && steps.native-reuse.outcome == 'success' }}
+        shell: bash
+        run: |
+          python3 Tools/AnyEnginePort/verify_custom_type.py capture \
+            --derived build/any-native-app-derived \
+            --simulator-receipt build/any-patched-evidence/simulator.json \
+            --output build/any-patched-evidence/native-shared-products.json
       - name: Prepare owned Hanlin HTTPS provider for mounted acceptance
         id: provider-fixture
         if: ${{ !cancelled() && steps.native-ui-build.outcome == 'success' && steps.native-app-boundary.outcome == 'success' && (steps.ui-tests.outcome == 'success' || steps.ui-reuse.outcome == 'success') }}
@@ -593,11 +602,11 @@ jobs:
           if-no-files-found: warn
       - name: Run the native acceptance entry before dependent journeys
         id: native-ui-tests
-        if: ${{ !cancelled() && steps.provider-fixture.outcome == 'success' && (steps.ui-tests.outcome == 'success' || steps.ui-reuse.outcome == 'success') }}
+        if: ${{ !cancelled() && steps.provider-fixture.outcome == 'success' && (steps.ui-tests.outcome == 'success' || steps.ui-reuse.outcome == 'success') && (inputs.validation_scope != 'remaining-native-ui' || steps.native-shared-products.outcome == 'success') }}
         shell: bash
         run: |
           set -euo pipefail
-          selection=(-skip-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies)
+          selection=(-skip-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies -skip-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testCustomCanonicalTypeTransitionPreservesNativeDocumentAcrossColdReopen)
           if [ "${{ inputs.validation_scope }}" = remaining ]; then
             selection=(-only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testCreateEditHanlinConsentBackgroundAndColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testSourceInspectorQuoteAndNoteSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testObserveCanonicalArchiveSystemPickers)
           elif [ "${{ inputs.validation_scope }}" = remaining-native-ui ]; then
@@ -758,6 +767,7 @@ jobs:
             --output build/any-patched-evidence/archive-picker-observation-named-execution.json || gate_exit=1
           exit "$gate_exit"
       - name: Compare actual saved canonical archives after cold reopen
+        id: archive-roundtrip-postflight
         if: ${{ !cancelled() && steps.archive-roundtrip-tests.outcome == 'success' }}
         shell: bash
         run: |
@@ -772,6 +782,68 @@ jobs:
             --tests build/any-patched-evidence/archive-roundtrip-test-methods.json \
             --simulator-receipt build/any-patched-evidence/simulator.json \
             --output build/any-patched-evidence/archive-roundtrip/postflight.json
+      - name: Run one custom Type transition after entry, seven journeys and Files
+        id: native-custom-type-tests
+        if: ${{ !cancelled() && inputs.validation_scope == 'remaining-native-ui' && steps.native-shared-products.outcome == 'success' && steps.native-ui-tests.outcome == 'success' && steps.native-ui-followup-tests.outcome == 'success' && steps.archive-roundtrip-postflight.outcome == 'success' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 Tools/AnyEnginePort/verify_custom_type.py check \
+            --derived build/any-native-app-derived \
+            --simulator-receipt build/any-patched-evidence/simulator.json \
+            --frozen build/any-patched-evidence/native-shared-products.json \
+            --output build/any-patched-evidence/custom-type-products-preflight.json
+          set +e
+          xcodebuild test-without-building \
+            -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testCustomCanonicalTypeTransitionPreservesNativeDocumentAcrossColdReopen \
+            -project NativeApp/AnyNative.xcodeproj \
+            -scheme PinkhaAnyNativeApp \
+            -configuration Debug \
+            -destination "platform=iOS Simulator,id=$ANY_NATIVE_SIMULATOR_UDID" \
+            -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived" \
+            -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/custom-type.xcresult" \
+            -parallel-testing-enabled NO \
+            -test-timeouts-enabled YES \
+            -default-test-execution-time-allowance 360 \
+            -maximum-test-execution-time-allowance 360 \
+            ARCHS=arm64 ONLY_ACTIVE_ARCH=YES \
+            CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=YES CODE_SIGN_IDENTITY=- \
+            2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/custom-type.log"
+          test_exit=$?
+          set -e
+          named_exit=0
+          if [ -d "build/any-patched-evidence/custom-type.xcresult" ]; then
+            xcrun xcresulttool get test-results summary \
+              --path build/any-patched-evidence/custom-type.xcresult --format json \
+              > build/any-patched-evidence/custom-type-test-counts.json || true
+            xcrun xcresulttool get test-results tests \
+              --path build/any-patched-evidence/custom-type.xcresult --format json \
+              > build/any-patched-evidence/custom-type-test-methods.json || true
+          fi
+          python3 Tools/AnyEnginePort/verify_native_test_execution.py \
+            --profile native-custom-type --udid "${ANY_NATIVE_SIMULATOR_UDID:-}" \
+            --summary build/any-patched-evidence/custom-type-test-counts.json \
+            --tests build/any-patched-evidence/custom-type-test-methods.json \
+            --output build/any-patched-evidence/custom-type-named-execution.json || named_exit=1
+          if [ "$test_exit" -ne 0 ] || [ "$named_exit" -ne 0 ]; then exit 1; fi
+      - name: Verify exact Type, property, body and original native block after cold process reopen
+        if: ${{ !cancelled() && steps.native-custom-type-tests.outcome == 'success' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/any-patched-evidence/custom-type/attachments
+          xcrun xcresulttool export attachments \
+            --path build/any-patched-evidence/custom-type.xcresult \
+            --output-path build/any-patched-evidence/custom-type/attachments
+          python3 Tools/AnyEnginePort/verify_custom_type.py postflight \
+            --derived build/any-native-app-derived \
+            --simulator-receipt build/any-patched-evidence/simulator.json \
+            --frozen build/any-patched-evidence/native-shared-products.json \
+            --attachments build/any-patched-evidence/custom-type/attachments \
+            --summary build/any-patched-evidence/custom-type-test-counts.json \
+            --tests build/any-patched-evidence/custom-type-test-methods.json \
+            --previous build/any-patched-evidence \
+            --output build/any-patched-evidence/custom-type/postflight.json
       - name: Preserve bounded noncontent editor phase diagnostics
         if: ${{ always() && steps.native-ui-tests.outcome != 'skipped' }}
         shell: bash
