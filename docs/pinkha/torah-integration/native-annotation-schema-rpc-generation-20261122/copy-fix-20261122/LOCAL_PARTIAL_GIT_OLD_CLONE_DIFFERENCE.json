@@ -1,0 +1,148 @@
+{
+  "scope": "Local Git preparation controls only; no product, generator, native or app execution.",
+  "helper_sha256": "d93373d7580841c72036b6ec93cbefe34bc4b22814e0df9f3856c98d7cf92c46",
+  "commands": [
+    {
+      "label": "git-version",
+      "argv": [
+        "git",
+        "--version"
+      ],
+      "returncode": 0,
+      "stdout": "git version 2.56.1\n",
+      "stderr": ""
+    },
+    {
+      "label": "init",
+      "argv": [
+        "git",
+        "init",
+        "--initial-branch=fixture"
+      ],
+      "returncode": 0,
+      "stdout": "Initialized empty Git repository in /workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-1x9gm1xt/local-origin/.git/\n",
+      "stderr": ""
+    },
+    {
+      "label": "stage",
+      "argv": [
+        "git",
+        "add",
+        "."
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "commit",
+      "argv": [
+        "git",
+        "-c",
+        "user.name=Local preparation fixture",
+        "-c",
+        "user.email=fixture@example.invalid",
+        "commit",
+        "-m",
+        "Isolated partial Git fixture"
+      ],
+      "returncode": 0,
+      "stdout": "[fixture (root-commit) d8155b4] Isolated partial Git fixture\n 2 files changed, 1001 insertions(+)\n create mode 100644 keep/input.txt\n create mode 100644 omit/unfetched.bin\n",
+      "stderr": ""
+    },
+    {
+      "label": "head",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "returncode": 0,
+      "stdout": "d8155b48223ceef82553cb57ee6bdc02218c93e3\n",
+      "stderr": ""
+    },
+    {
+      "label": "allow-filter",
+      "argv": [
+        "git",
+        "config",
+        "uploadpack.allowFilter",
+        "true"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "partial-clone",
+      "argv": [
+        "git",
+        "clone",
+        "--filter=blob:none",
+        "--no-checkout",
+        "file:///workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-1x9gm1xt/local-origin",
+        "/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-1x9gm1xt/partial-input"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "Cloning into '/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-1x9gm1xt/partial-input'...\n"
+    },
+    {
+      "label": "sparse-scope",
+      "argv": [
+        "git",
+        "sparse-checkout",
+        "set",
+        "--no-cone",
+        "/keep/"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "materialize",
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "d8155b48223ceef82553cb57ee6bdc02218c93e3"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "HEAD is now at d8155b4 Isolated partial Git fixture\n"
+    },
+    {
+      "label": "missing-before",
+      "argv": [
+        "git",
+        "rev-list",
+        "--objects",
+        "--missing=print",
+        "HEAD"
+      ],
+      "returncode": 0,
+      "stdout": "d8155b48223ceef82553cb57ee6bdc02218c93e3\n372d9248fe9b4410fe3c30613ce6bdf22af3e0b7 \n42307f8a83a79e0983db58f4ac991e38af680e19 keep\n7250ab6df0f125b2141b3fa2ec3ee1a823815e15 keep/input.txt\nbc26ef889ac642db68448926cb3397be46a89935 omit\n?1cb0b6858b2db581e1dac44ba345a64bc0cfa1d4\n",
+      "stderr": ""
+    },
+    {
+      "label": "old-local-clone",
+      "argv": [
+        "git",
+        "clone",
+        "--no-hardlinks",
+        "--no-checkout",
+        "/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-1x9gm1xt/partial-input",
+        "/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-1x9gm1xt/old-copy"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "Cloning into '/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-1x9gm1xt/old-copy'...\ndone.\n"
+    }
+  ],
+  "git_version": "git version 2.56.1",
+  "status": "FAIL",
+  "error_type": "AssertionError",
+  "error": "('old-local-clone', 0, \"Cloning into '/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-1x9gm1xt/old-copy'...\\ndone.\\n\")",
+  "owned_fixture_removed": true
+}

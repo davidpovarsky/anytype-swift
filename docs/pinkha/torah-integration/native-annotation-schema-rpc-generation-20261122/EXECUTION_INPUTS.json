@@ -1,7 +1,7 @@
 {
   "schema": "otzaria.original-schema-rpc-generation-inputs/1",
   "status": "SOURCE_CANDIDATE_GENERATION_NOT_RUN",
-  "repository_base": "c21b9ebcbf255e6f4c02611069d8f40b75436a05",
+  "repository_base": "2e4a004778d5cc29afebaa4c278a2f1a8bf5c74d",
   "heart_base": "d98420b1113536afd08cde6de9a5816f6d27ffff",
   "swift_generator_base": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
   "swift_protobuf_base": "c6fe6442e6a64250495669325044052e113e990c",
@@ -18,8 +18,8 @@
   "control_inputs": [
     {
       "path": "generate_original_schema_rpc.py",
-      "bytes": 26172,
-      "sha256": "183648a9c0cf230b8ad9472c3d79d4f1703bee9d4eacb1e20357f3f1f233db5a"
+      "bytes": 26597,
+      "sha256": "3b19ae66152c5657974749b7817b95390a0108e2ebe21215aa1cfad2a7f7516d"
     },
     {
       "path": "TOOL_PINS.json",
@@ -70,6 +70,11 @@
       "path": "swift/Modules/ProtobufMessages/Sources/Invocation.swift",
       "bytes": 13890,
       "sha256": "7265a3ec902081f62c79c6fc56cb71b1ff81c687a595a3e15b78351cc9aa8dfd"
+    },
+    {
+      "path": "copy_materialized_checkout.py",
+      "bytes": 6048,
+      "sha256": "d93373d7580841c72036b6ec93cbefe34bc4b22814e0df9f3856c98d7cf92c46"
     }
   ],
   "original_inputs": [
@@ -451,5 +456,20 @@
   ],
   "original_script_edits": 0,
   "handwritten_generated_outputs": 0,
-  "scope": "Prepare actual generated source with two original same-toolchain lanes; no application/native runtime acceptance or production integration."
+  "scope": "Prepare actual generated source with two original same-toolchain lanes; no application/native runtime acceptance or production integration.",
+  "source_copy_correction": {
+    "actual_failed_run": 45052270280,
+    "failure_evidence_commit": "2e4a004778d5cc29afebaa4c278a2f1a8bf5c74d",
+    "failed_step": "baseline-clone-swift",
+    "materialized_sdk_copy": "Private filesystem copy, with exact commit/clean state/content/mode/disjoint identity readback; no remote clone or hydration",
+    "preserved_sparse_scopes": [
+      "/Makefile",
+      "/Scripts/",
+      "/Modules/ProtobufMessages/",
+      "/Modules/Services/",
+      "/Tools/anytype-swift-codegen",
+      "/Tools/anytype-swift-filesplit/"
+    ],
+    "actual_generation_and_compile": "NOT_RUN_FOR_THIS_CANDIDATE"
+  }
 }

@@ -1,0 +1,50 @@
+{
+  "schema": "otzaria.root-rpc-materialized-copy-source-review/1",
+  "utc": "2026-11-22T18:27:37.675498+00:00",
+  "status": "SOURCE_AND_RETAINED_LOCAL_PREPARATION_RESULTS_REVIEW_CLEAR",
+  "reviewed_executables": {
+    "generate_original_schema_rpc.py": {
+      "bytes": 26597,
+      "sha256": "3b19ae66152c5657974749b7817b95390a0108e2ebe21215aa1cfad2a7f7516d",
+      "git_blob": "4e0f8a1f4b0b17b13de6454efc459540a954efe8"
+    },
+    "copy_materialized_checkout.py": {
+      "bytes": 6048,
+      "sha256": "d93373d7580841c72036b6ec93cbefe34bc4b22814e0df9f3856c98d7cf92c46",
+      "git_blob": "e0d87dfcaaab5dc6d867773552322bfcec0cacdd"
+    },
+    "EXECUTION_INPUTS.json": {
+      "bytes": 19468,
+      "sha256": "48c43f21ac8f31b3c6bd7022e838273046c3baa001813bb598be6f4aaf35c7a6",
+      "git_blob": "4f7824e72dd74e28656080cf5d54266f72864206"
+    },
+    "otzaria-schema-rpc-generation.yml": {
+      "bytes": 4014,
+      "sha256": "44fb872134382c61c06b52c4a8cdb533bcbc22972a1fd020ec9f9a2a7eb719bf",
+      "git_blob": "89dc83d57d10c0ea713c5a877d096cb085d5cfad"
+    }
+  },
+  "complete_driver_inverse_to_actual_failed_source": "183648a9c0cf230b8ad9472c3d79d4f1703bee9d4eacb1e20357f3f1f233db5a",
+  "unchanged_original_driver_helpers": 7,
+  "unchanged_original_control_files": 10,
+  "control_inputs_verified": 12,
+  "original_input_commitments_preserved": 42,
+  "original_payloads_locally_rehashed": 17,
+  "local_publication_paths_verified": 20,
+  "retained_local_fixture_commands": 15,
+  "actual_private_copy_successes": 2,
+  "original_failed_actions_environment_reproduced": false,
+  "original_fixture_failure_evidence_preserved": true,
+  "source_review": [
+    "Full helper and one-hunk driver change reviewed; only sparse SDK lane preparation replaced.",
+    "Private Git metadata/files copied with complete membership/mode/hash equality, disjoint inodes, explicit local no-lazy-fetch reads, no shared storage and no remote hydration.",
+    "Both original lanes retain exact SDK HEAD and six sparse scopes; original tool recipes, proto afterimages and compile gates preserved.",
+    "One bounded180-second owned process per copy; any failure remains original failure evidence and parent cleanup ownership.",
+    "Final dedicated-branch workflow removes routing path filters and binds exact helper/manifest inputs. No cause is asserted for earlier zero-run routing.",
+    "Updated artifact verifier requires both genuine copy receipts plus37 terminal successful commands and unchanged original generated-source/compile acceptance."
+  ],
+  "review_scope_correction": "The initial root comparison also required old control repository_base c21b to remain unchanged; the sole other previous field change is the explicit neutral failure-evidence parent2e4, now required exactly. A subsequent local-path check incorrectly assumed all42 original input reference rows had packet copies. The packet preserves only selected reference copies; this review rehashes only those present and verifies all42 immutable input commitments remain byte-identical. Actual original checkout validation stays in the unchanged driver. No product, test result, generator or workflow source was altered by this review.",
+  "limitations": "Local Git2.56.1 partial repository preparation only; actual Actions Git2.56.0 failure remains separate. No generator, protocol compile, full SDK, native or application result granted.",
+  "new_tests_or_generators_by_review": 0,
+  "pending": "Neutral exact source publication/readback then one actual generation attempt."
+}

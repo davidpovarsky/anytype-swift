@@ -1,0 +1,23 @@
+--- failed-source/generate_original_schema_rpc.py
++++ copy-fix/generate_original_schema_rpc.py
+@@ -188,10 +188,17 @@
+             lanes[lane] = {}
+             for kind in ("heart", "swift"):
+                 target = work / (lane + "-" + kind)
+-                commands.require(lane + "-clone-" + kind, ["git", "clone", "--no-hardlinks", "--no-checkout", str(inputs[kind]), str(target)], control, 180)
+                 if kind == "swift":
+-                    commands.require(lane + "-sparse-swift", ["git", "sparse-checkout", "set", "--no-cone", *SWIFT_SPARSE], target, 30)
+-                commands.require(lane + "-checkout-" + kind, ["git", "checkout", "--detach", HEART if kind == "heart" else SDK], target, 180)
++                    # Copy the already materialized sparse checkout. A local Git
++                    # clone would serve omitted promisor objects via upload-pack.
++                    commands.require(lane + "-copy-materialized-swift", [
++                        sys.executable, "-I", str(packet / "copy_materialized_checkout.py"),
++                        "--source", str(inputs[kind]), "--target", str(target),
++                        "--expected-head", SDK, "--receipt", str(evidence / (lane.upper() + "_SDK_COPY.json")),
++                    ], control, 180)
++                else:
++                    commands.require(lane + "-clone-" + kind, ["git", "clone", "--no-hardlinks", "--no-checkout", str(inputs[kind]), str(target)], control, 180)
++                    commands.require(lane + "-checkout-" + kind, ["git", "checkout", "--detach", HEART], target, 180)
+                 lanes[lane][kind] = target
+         initial = {lane: {"heart": checked_tree(roots["heart"], NATIVE_INPUT_SCOPES, git), "swift": checked_tree(roots["swift"], SWIFT_INPUT_SCOPES, git)} for lane, roots in lanes.items()}
+         if initial["baseline"] != initial["candidate"]:

@@ -1,0 +1,51 @@
+{
+  "status": "SOURCE_REVIEW_CLEAR_FOR_MATERIALIZED_CHECKOUT_COPY",
+  "reviewer": "stageb_auth",
+  "at_utc": "2026-11-22T18:22:03.470979+00:00",
+  "files": [
+    {
+      "path": "heart_completion/schema_rpc_copy_fix/packet/copy_materialized_checkout.py",
+      "bytes": 6048,
+      "sha256": "d93373d7580841c72036b6ec93cbefe34bc4b22814e0df9f3856c98d7cf92c46"
+    },
+    {
+      "path": "heart_completion/schema_rpc_copy_fix/packet/generate_original_schema_rpc.py",
+      "bytes": 26597,
+      "sha256": "3b19ae66152c5657974749b7817b95390a0108e2ebe21215aa1cfad2a7f7516d"
+    },
+    {
+      "path": "heart_completion/schema_rpc_copy_fix/packet/EXECUTION_INPUTS.json",
+      "bytes": 19468,
+      "sha256": "48c43f21ac8f31b3c6bd7022e838273046c3baa001813bb598be6f4aaf35c7a6"
+    },
+    {
+      "path": "heart_completion/schema_rpc_copy_fix/DRIVER_DELTA.patch",
+      "bytes": 1881,
+      "sha256": "d5446be05781ab561145d407f01e49eb0379d01e35930c41ae1e76da6d9be115"
+    },
+    {
+      "path": "heart_completion/schema_rpc_copy_fix/LOCAL_PARTIAL_GIT_COPY_CONTROLS.json",
+      "bytes": 11914,
+      "sha256": "a606914a33e1ee6be595cd400a0c716d9c3a95f7a3743960ced3eac2a7a3f96c"
+    },
+    {
+      "path": "heart_completion/schema_rpc_copy_fix/LOCAL_PARTIAL_GIT_OLD_CLONE_DIFFERENCE.json",
+      "bytes": 4400,
+      "sha256": "f9a34cda289dd49768be0e5468ec2b7c3d06dbeac59c2a0603a927c85f223bc1"
+    }
+  ],
+  "driver_exact_inverse_sha256": "183648a9c0cf230b8ad9472c3d79d4f1703bee9d4eacb1e20357f3f1f233db5a",
+  "findings": [
+    "The new child inspects ordinary private Git storage, refuses linked worktrees/alternates/config indirection and explicit storage overrides, disables optional Git writes and lazy fetch, and requires the exact expected clean materialized head.",
+    "It requires fresh disjoint source/target/receipt roots, inventories regular files/directories including metadata before copying, preserves modes and compares copied membership/bytes, checks every copied file has a distinct file identity, and rechecks both inventories after Git inspection.",
+    "The parent retains the existing finite owned process-group boundary and 180-second child budget. Only Swift local clone/sparse/checkout is replaced; Heart cloning and all source/tool/baseline/candidate/generator/compile acceptance remain byte-exact after the one-hunk inverse.",
+    "The local partial-repository controls preserve the missing blob as missing, demonstrate private mutation, and reject alternates. Their Git2.56.1 old-clone success is explicitly retained as an environment difference, not falsely claimed reproduction of the actual Git2.56.0 failure."
+  ],
+  "limits": [
+    "This is bounded source review plus reading retained preparation-control receipts; no helper, fixture, generator, native test, compiler or workflow was executed by this reviewer.",
+    "The source is the runner-owned known original checkout; this review is not a general hostile-filesystem or arbitrary-Git-configuration security assessment.",
+    "Actual original Actions checkout copying and the subsequent generator outputs remain the next execution gate."
+  ],
+  "test_executions": 0,
+  "source_edits": 0
+}

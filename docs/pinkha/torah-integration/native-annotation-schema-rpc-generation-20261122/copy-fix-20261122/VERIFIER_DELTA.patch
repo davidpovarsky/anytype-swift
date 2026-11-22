@@ -1,0 +1,70 @@
+--- original-verifier.py
++++ copy-generation-verifier.py
+@@ -7,7 +7,7 @@
+ import stat
+ import zipfile
+ 
+-MANIFEST = "800c0745ddc36537c443e17f9d984c98a11fd22c4d825c4a935ffa4f8d264ee3"
++MANIFEST = "48c43f21ac8f31b3c6bd7022e838273046c3baa001813bb598be6f4aaf35c7a6"
+ PASS = "GENERATED_AND_MESSAGE_COMPILE_VERIFIED"
+ 
+ 
+@@ -109,14 +109,39 @@
+                     else:
+                         assert "capture_error" in items
+                         failure_counts[lane][kind] = items
++        copy_receipts = {}
++        for lane in ("baseline", "candidate"):
++            name = lane.upper() + "_SDK_COPY.json"
++            if name not in files:
++                continue
++            copied = read_json(name)
++            assert copied["status"] == "EXACT_PRIVATE_COPY"
++            assert copied["head"] == manifest["swift_generator_base"]
++            assert copied["source_and_copy_unchanged_after_readback"] is True
++            assert copied["file_identities_disjoint"] is True
++            assert copied["lazy_fetch_disabled_for_git_reads"] is True
++            assert copied["remote_clone_or_hydration"] is False
++            assert copied["files"] > 0 and copied["bytes"] > 0
++            assert len(copied["inventory_sha256"]) == 64
++            copy_receipts[lane] = copied
++        if len(copy_receipts) == 2:
++            assert copy_receipts["baseline"]["source"] == copy_receipts["candidate"]["source"]
++            assert copy_receipts["baseline"]["target"] != copy_receipts["candidate"]["target"]
++            assert copy_receipts["baseline"]["inventory_sha256"] == copy_receipts["candidate"]["inventory_sha256"]
+         verified_deltas = None
+         if result["status"] == PASS:
+-            assert len(commands) == 41
++            assert set(copy_receipts) == {"baseline", "candidate"}
++            assert len(commands) == 37
+             assert all(row["status"] == "TERMINAL" and row["returncode"] == 0 and
+                        row["effective_returncode"] == 0 and not row["timed_out"] and
+                        row["owned_group_drain_recorded"] for row in command_rows)
+             labels = {row["label"]: row for row in commands}
+             for lane in ("baseline", "candidate"):
++                copied = labels[lane + "-copy-materialized-swift"]["argv"]
++                assert copied[1] == "-I" and copied[2].endswith("/copy_materialized_checkout.py")
++                assert copied[copied.index("--expected-head") + 1] == manifest["swift_generator_base"]
++                assert copied[copied.index("--source") + 1] == copy_receipts[lane]["source"]
++                assert copied[copied.index("--target") + 1] == copy_receipts[lane]["target"]
+                 assert labels[lane + "-compile-generated-go"]["argv"] == ["go", "build", "./pb", "./pb/service"]
+                 assert labels[lane + "-typecheck-generated-swift"]["argv"][:3] == ["xcrun", "swiftc", "-typecheck"]
+                 for family in ("native", "swift"):
+@@ -153,7 +178,7 @@
+         return {"schema": "otzaria.independent-schema-rpc-generation-artifact-verification/1",
+                 "artifact": {"bytes": expected_size, "sha256": expected_sha256}, "head": head,
+                 "payloads_verified": len(rows), "control_inputs_locally_bound": len(manifest["control_inputs"]),
+-                "actual_result": result, "commands": command_rows, "generated_counts": generated_counts,
++                "actual_result": result, "commands": command_rows, "sdk_copy_receipts": copy_receipts, "generated_counts": generated_counts,
+                 "failure_time_counts": failure_counts, "verified_generated_deltas": verified_deltas,
+                 "scope": "Archive bytes, all indexed source/log payloads, source bindings, declared deltas and actual command outcomes only. Generated output semantics require separate review; full endpoint/Invocation/SDK/native acceptance remains open.",
+                 "tool_limit": "CI records actual generator executable hashes before/after use. Executable binaries and the complete OS/SDK closure are not part of this artifact and cannot be independently rehashed here.",
+@@ -166,7 +191,7 @@
+     parser.add_argument("--bytes", required=True, type=int)
+     parser.add_argument("--sha256", required=True)
+     parser.add_argument("--head", required=True)
+-    parser.add_argument("--packet", type=Path, default=Path(__file__).parent / "schema_rpc_generation_candidate")
++    parser.add_argument("--packet", type=Path, default=Path(__file__).parent / "packet")
+     parser.add_argument("--output", required=True, type=Path)
+     args = parser.parse_args()
+     result = verify(args.archive, args.bytes, args.sha256, args.head, args.packet)

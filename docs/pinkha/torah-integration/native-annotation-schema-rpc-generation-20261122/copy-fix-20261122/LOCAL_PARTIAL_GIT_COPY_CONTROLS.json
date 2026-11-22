@@ -1,0 +1,256 @@
+{
+  "scope": "Local Git preparation controls only; no product, generator, native or app execution.",
+  "helper_sha256": "d93373d7580841c72036b6ec93cbefe34bc4b22814e0df9f3856c98d7cf92c46",
+  "commands": [
+    {
+      "label": "git-version",
+      "argv": [
+        "git",
+        "--version"
+      ],
+      "returncode": 0,
+      "stdout": "git version 2.56.1\n",
+      "stderr": ""
+    },
+    {
+      "label": "init",
+      "argv": [
+        "git",
+        "init",
+        "--initial-branch=fixture"
+      ],
+      "returncode": 0,
+      "stdout": "Initialized empty Git repository in /workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/local-origin/.git/\n",
+      "stderr": ""
+    },
+    {
+      "label": "stage",
+      "argv": [
+        "git",
+        "add",
+        "."
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "commit",
+      "argv": [
+        "git",
+        "-c",
+        "user.name=Local preparation fixture",
+        "-c",
+        "user.email=fixture@example.invalid",
+        "commit",
+        "-m",
+        "Isolated partial Git fixture"
+      ],
+      "returncode": 0,
+      "stdout": "[fixture (root-commit) 69390cb] Isolated partial Git fixture\n 2 files changed, 1001 insertions(+)\n create mode 100644 keep/input.txt\n create mode 100644 omit/unfetched.bin\n",
+      "stderr": ""
+    },
+    {
+      "label": "head",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "returncode": 0,
+      "stdout": "69390cbd338e79da54a7e163cde4095d6f86d5c1\n",
+      "stderr": ""
+    },
+    {
+      "label": "allow-filter",
+      "argv": [
+        "git",
+        "config",
+        "uploadpack.allowFilter",
+        "true"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "partial-clone",
+      "argv": [
+        "git",
+        "clone",
+        "--filter=blob:none",
+        "--no-checkout",
+        "file:///workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/local-origin",
+        "/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/partial-input"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "Cloning into '/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/partial-input'...\n"
+    },
+    {
+      "label": "sparse-scope",
+      "argv": [
+        "git",
+        "sparse-checkout",
+        "set",
+        "--no-cone",
+        "/keep/"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "materialize",
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "69390cbd338e79da54a7e163cde4095d6f86d5c1"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "HEAD is now at 69390cb Isolated partial Git fixture\n"
+    },
+    {
+      "label": "missing-before",
+      "argv": [
+        "git",
+        "rev-list",
+        "--objects",
+        "--missing=print",
+        "HEAD"
+      ],
+      "returncode": 0,
+      "stdout": "69390cbd338e79da54a7e163cde4095d6f86d5c1\n372d9248fe9b4410fe3c30613ce6bdf22af3e0b7 \n42307f8a83a79e0983db58f4ac991e38af680e19 keep\n7250ab6df0f125b2141b3fa2ec3ee1a823815e15 keep/input.txt\nbc26ef889ac642db68448926cb3397be46a89935 omit\n?1cb0b6858b2db581e1dac44ba345a64bc0cfa1d4\n",
+      "stderr": ""
+    },
+    {
+      "label": "old-local-clone-diagnostic",
+      "argv": [
+        "git",
+        "clone",
+        "--no-hardlinks",
+        "--no-checkout",
+        "/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/partial-input",
+        "/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/old-copy"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "Cloning into '/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/old-copy'...\ndone.\n"
+    },
+    {
+      "label": "baseline-copy",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-I",
+        "/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/packet/copy_materialized_checkout.py",
+        "--source",
+        "/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/partial-input",
+        "--target",
+        "/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/baseline",
+        "--expected-head",
+        "69390cbd338e79da54a7e163cde4095d6f86d5c1",
+        "--receipt",
+        "/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/baseline.json"
+      ],
+      "returncode": 0,
+      "stdout": "{\"schema\": \"otzaria.materialized-original-checkout-copy/1\", \"status\": \"EXACT_PRIVATE_COPY\", \"source\": \"/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/partial-input\", \"target\": \"/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/baseline\", \"head\": \"69390cbd338e79da54a7e163cde4095d6f86d5c1\", \"files\": 36, \"directories\": 17, \"bytes\": 32089, \"inventory_sha256\": \"754f6cd58465e370b1ce3975ed0bf9f9f544fe3bd6f5eee53346684407e8e718\", \"source_and_copy_unchanged_after_readback\": true, \"file_identities_disjoint\": true, \"lazy_fetch_disabled_for_git_reads\": true, \"remote_clone_or_hydration\": false, \"scope\": \"Already materialized source and private Git metadata only; no generator or product execution.\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "candidate-copy",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-I",
+        "/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/packet/copy_materialized_checkout.py",
+        "--source",
+        "/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/partial-input",
+        "--target",
+        "/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/candidate",
+        "--expected-head",
+        "69390cbd338e79da54a7e163cde4095d6f86d5c1",
+        "--receipt",
+        "/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/candidate.json"
+      ],
+      "returncode": 0,
+      "stdout": "{\"schema\": \"otzaria.materialized-original-checkout-copy/1\", \"status\": \"EXACT_PRIVATE_COPY\", \"source\": \"/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/partial-input\", \"target\": \"/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/candidate\", \"head\": \"69390cbd338e79da54a7e163cde4095d6f86d5c1\", \"files\": 36, \"directories\": 17, \"bytes\": 32089, \"inventory_sha256\": \"754f6cd58465e370b1ce3975ed0bf9f9f544fe3bd6f5eee53346684407e8e718\", \"source_and_copy_unchanged_after_readback\": true, \"file_identities_disjoint\": true, \"lazy_fetch_disabled_for_git_reads\": true, \"remote_clone_or_hydration\": false, \"scope\": \"Already materialized source and private Git metadata only; no generator or product execution.\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "missing-after",
+      "argv": [
+        "git",
+        "rev-list",
+        "--objects",
+        "--missing=print",
+        "HEAD"
+      ],
+      "returncode": 0,
+      "stdout": "69390cbd338e79da54a7e163cde4095d6f86d5c1\n372d9248fe9b4410fe3c30613ce6bdf22af3e0b7 \n42307f8a83a79e0983db58f4ac991e38af680e19 keep\n7250ab6df0f125b2141b3fa2ec3ee1a823815e15 keep/input.txt\nbc26ef889ac642db68448926cb3397be46a89935 omit\n?1cb0b6858b2db581e1dac44ba345a64bc0cfa1d4\n",
+      "stderr": ""
+    },
+    {
+      "label": "reject-alternates",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-I",
+        "/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/packet/copy_materialized_checkout.py",
+        "--source",
+        "/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/partial-input",
+        "--target",
+        "/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/rejected-copy",
+        "--expected-head",
+        "69390cbd338e79da54a7e163cde4095d6f86d5c1",
+        "--receipt",
+        "/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/rejected.json"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/packet/copy_materialized_checkout.py\", line 120, in <module>\n    main()\n  File \"/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/packet/copy_materialized_checkout.py\", line 90, in main\n    inspect_checkout(source, args.expected_head)\n  File \"/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/packet/copy_materialized_checkout.py\", line 35, in inspect_checkout\n    raise RuntimeError(\"shared or alternate Git storage is refused\")\nRuntimeError: shared or alternate Git storage is refused\n"
+    }
+  ],
+  "git_version": "git version 2.56.1",
+  "status": "LOCAL_GIT_PREPARATION_CONTROLS_PASS",
+  "copies": {
+    "baseline": {
+      "schema": "otzaria.materialized-original-checkout-copy/1",
+      "status": "EXACT_PRIVATE_COPY",
+      "source": "/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/partial-input",
+      "target": "/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/baseline",
+      "head": "69390cbd338e79da54a7e163cde4095d6f86d5c1",
+      "files": 36,
+      "directories": 17,
+      "bytes": 32089,
+      "inventory_sha256": "754f6cd58465e370b1ce3975ed0bf9f9f544fe3bd6f5eee53346684407e8e718",
+      "source_and_copy_unchanged_after_readback": true,
+      "file_identities_disjoint": true,
+      "lazy_fetch_disabled_for_git_reads": true,
+      "remote_clone_or_hydration": false,
+      "scope": "Already materialized source and private Git metadata only; no generator or product execution."
+    },
+    "candidate": {
+      "schema": "otzaria.materialized-original-checkout-copy/1",
+      "status": "EXACT_PRIVATE_COPY",
+      "source": "/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/partial-input",
+      "target": "/workspace/scratch/22d6326e1023/heart_completion/schema_rpc_copy_fix/partial-git-copy-control-o_lzcrpp/candidate",
+      "head": "69390cbd338e79da54a7e163cde4095d6f86d5c1",
+      "files": 36,
+      "directories": 17,
+      "bytes": 32089,
+      "inventory_sha256": "754f6cd58465e370b1ce3975ed0bf9f9f544fe3bd6f5eee53346684407e8e718",
+      "source_and_copy_unchanged_after_readback": true,
+      "file_identities_disjoint": true,
+      "lazy_fetch_disabled_for_git_reads": true,
+      "remote_clone_or_hydration": false,
+      "scope": "Already materialized source and private Git metadata only; no generator or product execution."
+    }
+  },
+  "old_failure_reproduced": false,
+  "old_clone_diagnostic_scope": "This local Git/fixture is not the original Actions environment; its clone outcome does not override the retained actual failure.",
+  "unfetched_blob_remained_unfetched": true,
+  "candidate_mutation_isolated": true,
+  "shared_storage_rejected_before_target_creation": true,
+  "native_or_generator_executions": 0,
+  "owned_fixture_removed": true
+}

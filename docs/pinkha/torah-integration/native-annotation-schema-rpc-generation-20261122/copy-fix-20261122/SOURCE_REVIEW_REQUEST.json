@@ -1,0 +1,116 @@
+{
+  "schema": "otzaria.materialized-sdk-copy-source-review-request/1",
+  "status": "SOURCE_CANDIDATE_NO_ACTIVATION",
+  "prepared_utc": "2026-11-22T18:21:35.520745+00:00",
+  "parent": "2e4a004778d5cc29afebaa4c278a2f1a8bf5c74d",
+  "prior_actual_failure_run": 45052270280,
+  "prior_observer_terminal": "job_771b8c66be59 succeeded",
+  "executables": {
+    "generate_original_schema_rpc.py": {
+      "bytes": 26597,
+      "sha256": "3b19ae66152c5657974749b7817b95390a0108e2ebe21215aa1cfad2a7f7516d",
+      "git_blob": "4e0f8a1f4b0b17b13de6454efc459540a954efe8"
+    },
+    "copy_materialized_checkout.py": {
+      "bytes": 6048,
+      "sha256": "d93373d7580841c72036b6ec93cbefe34bc4b22814e0df9f3856c98d7cf92c46",
+      "git_blob": "e0d87dfcaaab5dc6d867773552322bfcec0cacdd"
+    },
+    "EXECUTION_INPUTS.json": {
+      "bytes": 19468,
+      "sha256": "48c43f21ac8f31b3c6bd7022e838273046c3baa001813bb598be6f4aaf35c7a6",
+      "git_blob": "4f7824e72dd74e28656080cf5d54266f72864206"
+    },
+    "otzaria-schema-rpc-generation.yml": {
+      "bytes": 4014,
+      "sha256": "44fb872134382c61c06b52c4a8cdb533bcbc22972a1fd020ec9f9a2a7eb719bf",
+      "git_blob": "89dc83d57d10c0ea713c5a877d096cb085d5cfad"
+    }
+  },
+  "original_helpers_byte_identical": [
+    "file_row",
+    "checked_tree",
+    "native_outputs",
+    "remove_owned_outputs",
+    "retain_outputs",
+    "compare_rows",
+    "safe_archive"
+  ],
+  "unchanged_original_controls": [
+    {
+      "path": "TOOL_PINS.json",
+      "bytes": 8732,
+      "sha256": "0b359513531cef0595314efcbfcaae0917f1cc7fca98d5e4afe86065e1807abd"
+    },
+    {
+      "path": "ORIGINAL_SOURCE_INDEX.json",
+      "bytes": 15194,
+      "sha256": "415c21ae0679e995526654fedd5828b6315a71ee9e5c4da92e3b6c9d49471fff"
+    },
+    {
+      "path": "SOURCE_CANDIDATE_INDEX.json",
+      "bytes": 1532,
+      "sha256": "7bc0898943c1dd1cdd0ddddf4a5976e2d73861c772562014c27c1346a8a946f8"
+    },
+    {
+      "path": "SOURCE_PEER_REVIEW.json",
+      "bytes": 2447,
+      "sha256": "bfb1b2f3dee275b16deefbaf0e6076adb693ee327f18f5fe1aadacf8ce653498"
+    },
+    {
+      "path": "GOFMT.json",
+      "bytes": 1314,
+      "sha256": "ca7af33c6d44b4602f77edb784f29de5feafe162a7c8960861a3ace1f8231bad"
+    },
+    {
+      "path": "native/core/annotation_schema.go",
+      "bytes": 5986,
+      "sha256": "cad2741edad5153d8e63552af7e3d18630b6d2d8fecd22f2f49a533fe4ca2e96"
+    },
+    {
+      "path": "native/pb/protos/commands.proto",
+      "bytes": 312798,
+      "sha256": "64b166598d1086a8dce63e449ca1f8dea00bc4a09315a6ef927408c94a331fd1"
+    },
+    {
+      "path": "native/pb/protos/service/service.proto",
+      "bytes": 47566,
+      "sha256": "230720100f85ec5658ae63b57a0541b27c8df2acd025e0502ad24c0dc4b0a7fe"
+    },
+    {
+      "path": "swift/Anytype/Sources/Pinkha/Torah/Annotations/OriginalAnnotationSchemaRegistration.swift",
+      "bytes": 2340,
+      "sha256": "22ca541163fe4439940fe2111e52ef158798eb6fbb5d4e72f9937521dd99e751"
+    },
+    {
+      "path": "swift/Modules/ProtobufMessages/Sources/Invocation.swift",
+      "bytes": 13890,
+      "sha256": "7265a3ec902081f62c79c6fc56cb71b1ff81c687a595a3e15b78351cc9aa8dfd"
+    }
+  ],
+  "unchanged_original_input_count": 42,
+  "source_families_and_tools_unchanged": true,
+  "native_or_generator_executions": 0,
+  "local_fixture_receipt": {
+    "bytes": 11914,
+    "sha256": "a606914a33e1ee6be595cd400a0c716d9c3a95f7a3743960ced3eac2a7a3f96c",
+    "git_blob": "016fc15f35bb9fb327b19a9cf7fb304a20e57a67"
+  },
+  "historical_fixture_limits": [
+    "Initial fixture incorrectly disabled lazy fetching during its materialization setup; retained failure predates helper execution.",
+    "A later local Git2.56.1 old-clone diagnostic returned0, unlike actual Actions Git2.56.0. The final fixture records this difference and qualifies only private copying, not reproducing that original failure."
+  ],
+  "new_expected_owned_command_count_on_full_success": 37,
+  "intake_verifier": {
+    "bytes": 12543,
+    "sha256": "ebdc303b096f969094fdf035cb238778dba99834b4315d343c70df397da6e00e",
+    "git_blob": "3eb8569988a9f6c4a145086562d4f65bb4f44b9c"
+  },
+  "finite_observer_template": {
+    "bytes": 6248,
+    "sha256": "e1beeacd82ffd5d6ebdcef6474be1a6c92250d734764d9ff3d0c4ea31eb5b6c9",
+    "git_blob": "b391d5a98a245143f1df0488347fb05d66d53d31"
+  },
+  "workflow_final_scope": "Exact dedicated branch only; paths filter removed as requested by root after original zero-run routing evidence. No causal claim that paths caused the prior absence.",
+  "finalized_utc": "2026-11-22T18:22:48.082840+00:00"
+}
