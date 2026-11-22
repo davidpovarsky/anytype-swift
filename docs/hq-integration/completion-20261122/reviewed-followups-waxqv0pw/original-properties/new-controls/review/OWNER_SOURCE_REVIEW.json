@@ -1,0 +1,38 @@
+{
+  "status": "BOUNDED_SOURCE_REVIEW_GO_NOT_COMPILED_NOT_EXECUTED",
+  "reviewer": "asana_audit",
+  "source": {
+    "file": "OwnerModalControls.swift",
+    "sha256": "9e8f3a0ab69e6fa41e95153c2ba94ffab064b4656a5fa6a9a0334eecb474d3c0"
+  },
+  "core_owner_canonical_sha256": "b0ae02be8c28c22246d29bf927cb154e10019d841f3b831771f968a8938f7d46",
+  "read_against_actual_methods": [
+    "admit",
+    "execute",
+    "scheduleDocumentAction",
+    "runScheduled",
+    "finish",
+    "finishDrained",
+    "rejection",
+    "withExclusiveRead",
+    "EditorDocumentWriteOperation.permit"
+  ],
+  "findings": [
+    "Original named action reserves before Task; exact pending count is inspected before the Task exists.",
+    "Actual childSourceBinding creates actual child Owner from explicit document values; parent tracking restrictions are not rewritten.",
+    "Invalid parent reentry and read-to-write upgrade are expected to fail with the actual unqualifiedDispatch error; failed-write capture remains rejected.",
+    "Missing permissions/source retirement prevent actual permit effect, with available-but-new generations unable to revive captured ownership.",
+    "Held read continuation preserves actual completion while completedWithoutOwnership(retired) suppresses successful publication."
+  ],
+  "limits": [
+    "Permit begin/finish runs in an explicit MainActor effect probe, not actual GCD/Lib dispatch.",
+    "No Factory, canonical service, native document, event delivery or UI is executed.",
+    "Runtime assertions are authored but not yet compiled or run."
+  ],
+  "concrete_remaining_source_blockers": [],
+  "modal_patch_sha256": "377ef209aa567db9f95728f54be101726befea96b2e2cc36b28d0ca3a8bb729d",
+  "combined_patch_sha256": "90605b0cb2576c87c3102729ef4784733fc4e24989045acd756b3b9d1f6d5a25",
+  "compiler_invoked": false,
+  "controls_executed": false,
+  "prior_suites_rerun": false
+}

@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "run": 44994836721,
+  "attempt": 1,
+  "head": "d5df214b50faafbae4b8eb3edcf8b27bcdc930b8",
+  "source_checkpoint": "03e13b269ea5cdaedbaa2a5955e5f1bdbd1448c1",
+  "phase": "ORIGINAL_FRAMEWORK_BUILD",
+  "actual_framework_command_attempted": true,
+  "semantic_framework_build_completed": false,
+  "external_consumer_executed": false,
+  "native_editor_ui_tests": 0,
+  "framework_command": {
+    "command": [
+      "xcodebuild",
+      "build",
+      "-project",
+      "/Users/runner/work/anytype-swift/anytype-swift/Anytype.xcodeproj",
+      "-scheme",
+      "AnytypeOriginalEditor",
+      "-configuration",
+      "Debug-Anytype",
+      "-destination",
+      "platform=iOS Simulator,id=8135B333-8662-4541-AF30-38167D833025",
+      "-derivedDataPath",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44994836721-1/producer-derived",
+      "-resultBundlePath",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-evidence/framework-build.xcresult",
+      "-onlyUsePackageVersionsFromResolvedFile",
+      "OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED $(ORIGINAL_EDITOR_SYMBOL_GRAPH_FLAGS)",
+      "ONLY_ACTIVE_ARCH=YES",
+      "ARCHS=arm64",
+      "SWIFT_OPTIMIZATION_LEVEL=-Onone",
+      "CODE_SIGN_IDENTITY=-",
+      "CODE_SIGNING_ALLOWED=YES",
+      "CODE_SIGNING_REQUIRED=YES",
+      "PROVISIONING_PROFILE_SPECIFIER="
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "finished_at": "2026-11-22T06:52:30.179673+00:00",
+    "returncode": 65,
+    "started_at": "2026-11-22T06:42:07.511585+00:00",
+    "stderr_sha256": "7b447eca7aa3f3c6f855dac631a36d8c4817219add5fe24171844f0a3aa54c10",
+    "stdout_sha256": "d748de4a34e63467020e094da09f7e169a812c7b294c5001c131fbfd6c294173",
+    "timed_out": false,
+    "timeout_seconds": 6000
+  },
+  "unique_source_diagnostics": [
+    {
+      "line": 38103,
+      "diagnostic": "/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuView.swift:27:25: error: failed to produce diagnostic for expression; please submit a bug report (https://swift.org/contributing/#reporting-bugs)",
+      "context": [
+        "SwiftDriverJobDiscovery normal arm64 Compiling SettingsAppearanceViewModel.swift, UIUserInterfaceStyle+Settings.swift, SettingsCoordinatorView.swift, SettingsCoordinatorViewModel.swift, FileStorageInfoBlock.swift, AutoDownloadSizeLimit.swift, AutoDownloadSizeLimitPickerView.swift, FileStorageView.swift, FileStorageViewModel.swift, SeedPhraseView.swift, KeychainPhraseView.swift, KeychainPhraseViewModel.swift, AnytypeRow.swift, PersonalizationModuleOutput.swift, PersonalizationView.swift, PersonalizationViewModel.swift, ProfileQRCodeView.swift, ProfileQRCodeViewModel.swift, PublishedSitesView.swift, PublishedSitesViewModel.swift, DisabledPushNotificationsBannerView.swift, DisabledPushNotificationsBannerViewModel.swift, PushNotificationsSettingsStatus.swift, PushNotificationsSettingsView.swift, PushNotificationsSettingsViewModel.swift (in target 'AnytypeOriginalEditor' from project 'Anytype')",
+        "",
+        "SwiftCompile normal arm64 Compiling\\ ObjectSettingsMenuView.swift,\\ ObjectSettingsMenuViewModel.swift,\\ PropertiesListCoordinatorView.swift,\\ PropertiesListCoordinatorViewModel.swift,\\ PropertiesListModuleOutput.swift,\\ PropertiesSection.swift,\\ PropertiesSectionBuilder.swift,\\ PropertyValuePlaceholderView.swift,\\ PropertiesListRowView.swift,\\ ObjectPropertiesBottomAlert.swift,\\ ObjectPropertiesView.swift,\\ ObjectPropertiesViewModel.swift,\\ PropertyDetails+Identifiable.swift,\\ TypePropertiesDropDelegate.swift,\\ TypePropertiesMoveHandler.swift,\\ TypePropertiesRow.swift,\\ TypePropertiesRowBuilder.swift,\\ TypePropertiesView.swift,\\ TypePropertiesViewModel.swift,\\ ObjectHeaderConstants.swift,\\ VirtualTrailingBlockSession.swift,\\ EditorCollectionView.swift,\\ EditorPageBlocksStateManager.swift,\\ EditorPageBlocksStateManagerDependencies.swift,\\ EditorPageController.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuView.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuViewModel.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Coordinator/PropertiesListCoordinatorView.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Coordinator/PropertiesListCoordinatorViewModel.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Coordinator/PropertiesListModuleOutput.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Entities/PropertiesSection.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Entities/PropertiesSectionBuilder.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/PropertiesListRowView/Subviews/PropertyValuePlaceholderView.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/PropertiesListRowView/PropertiesListRowView.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/Views/ObjectPropertiesBottomAlert.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesView.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesViewModel.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/PropertyDetails+Identifiable.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/TypePropertiesDropDelegate.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/TypePropertiesMoveHandler.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/TypePropertiesRow.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/TypePropertiesRowBuilder.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesView.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesViewModel.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/ObjectHeaderConstants.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/VirtualTrailingBlock/VirtualTrailingBlockSession.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorCollectionView.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageBlocksStateManager.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageBlocksStateManagerDependencies.swift /Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController.swift (in target 'AnytypeOriginalEditor' from project 'Anytype')",
+        "/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuView.swift:27:25: error: failed to produce diagnostic for expression; please submit a bug report (https://swift.org/contributing/#reporting-bugs)",
+        " 25 |     }",
+        " 26 | ",
+        " 27 |     var body: some View {",
+        "    |                         `- error: failed to produce diagnostic for expression; please submit a bug report (https://swift.org/contributing/#reporting-bugs)",
+        " 28 |         Menu {",
+        " 29 |             let sections = viewModel.menuConfig.sections",
+        ""
+      ]
+    },
+    {
+      "line": 38267,
+      "diagnostic": "/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/TypePropertiesMoveHandler.swift:28:47: error: call to main actor-isolated instance method 'validateDocument' in a synchronous nonisolated context [#ActorIsolatedCall]",
+      "context": [
+        "45 |             try await moveHandler.onMove(",
+        "46 |                 from: fromIndex,",
+        "",
+        "/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/TypePropertiesMoveHandler.swift:28:47: error: call to main actor-isolated instance method 'validateDocument' in a synchronous nonisolated context [#ActorIsolatedCall]",
+        " 26 |         if let originalEditorScope {",
+        " 27 |             try await originalEditorScope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {",
+        " 28 |                 try originalEditorScope.owner.validateDocument(document)",
+        "    |                                               `- error: call to main actor-isolated instance method 'validateDocument' in a synchronous nonisolated context [#ActorIsolatedCall]",
+        " 29 |             }",
+        " 30 |         }",
+        ""
+      ]
+    },
+    {
+      "line": 38283,
+      "diagnostic": "/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/TypePropertiesMoveHandler.swift:28:41: error: main actor-isolated property 'owner' can not be referenced from a nonisolated context",
+      "context": [
+        " 509 |         try validateOwnership()",
+        " 510 |         guard candidate === document else { throw EditorDocumentWriteError.rejected(.wrongContext) }",
+        "",
+        "/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/TypePropertiesMoveHandler.swift:28:41: error: main actor-isolated property 'owner' can not be referenced from a nonisolated context",
+        " 26 |         if let originalEditorScope {",
+        " 27 |             try await originalEditorScope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {",
+        " 28 |                 try originalEditorScope.owner.validateDocument(document)",
+        "    |                                         `- error: main actor-isolated property 'owner' can not be referenced from a nonisolated context",
+        " 29 |             }",
+        " 30 |         }",
+        ""
+      ]
+    }
+  ],
+  "source_controls_status": "PASS_SOURCE_CONTROLS_221",
+  "source_controls_tests_run": 221,
+  "macro_trust_restored": "EXACT_ORIGINAL_MACRO_TRUST_RESTORED",
+  "source_before_after_bytes_equal": true,
+  "download_count": 1,
+  "outer_archive_sha256": "fa79e539a86b95fa8cd2b9c39c4079b1e5a7261fab302ef6b8e44a3b343b86c3"
+}

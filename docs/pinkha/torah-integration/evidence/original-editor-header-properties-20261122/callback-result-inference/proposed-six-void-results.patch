@@ -1,0 +1,64 @@
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesViewModel.swift
+@@ -76,7 +76,7 @@
+         if let scope = originalEditorScope {
+             // Acquisition already used the fresh source-bound open. Never
+             // fall back to a raw cached document or restart its open here.
+-            guard (try? scope.withCurrent {
++            guard (try? scope.withCurrent { () -> Void in
+                 guard document.isOpened else {
+                     throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+                 }
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesViewModel.swift
+@@ -101,7 +101,7 @@
+         if preparedSession == nil && !document.isOpened {
+             try? await document.open()
+         }
+-        guard (try? withCurrentSource {
++        guard (try? withCurrentSource { () -> Void in
+             latestParsedProperties = document.parsedProperties
+             rebuildSections(from: document.parsedProperties)
+         }) != nil else { return }
+@@ -131,7 +131,7 @@
+         }
+ 
+         for await properties in document.parsedPropertiesPublisher.values {
+-            guard (try? withCurrentSource {
++            guard (try? withCurrentSource { () -> Void in
+                 latestParsedProperties = properties
+                 rebuildSections(from: properties)
+             }) != nil else { return }
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Coordinator/PropertiesListCoordinatorViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Coordinator/PropertiesListCoordinatorViewModel.swift
+@@ -64,7 +64,7 @@
+             editOriginalRelationValue(document: document, relationKey: relationKey, scope: scope)
+             return
+         }
+-        guard (try? withCurrentSource {
++        guard (try? withCurrentSource { () -> Void in
+             try preparedSession?.owner.validateDocument(document)
+         }) != nil else { return }
+         let relation = document.parsedProperties.installed.first { $0.key == relationKey }
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/VersionHistoryViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/VersionHistoryViewModel.swift
+@@ -68,7 +68,7 @@
+             subscription = participantsSubscription
+         }
+         for await participants in subscription.participantsPublisher.values {
+-            guard (try? withCurrentSource {
++            guard (try? withCurrentSource { () -> Void in
+                 participantsDict = [:]
+                 participants.forEach { participant in
+                     participantsDict[participant.id] = participant
+--- a/Anytype/Sources/PresentationLayer/ObjectCreationSettings/Views/Picker/TemplatePickerViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/ObjectCreationSettings/Views/Picker/TemplatePickerViewModel.swift
+@@ -119,7 +119,7 @@
+         )
+         for await templates in publisher.values {
+             if let documentWriteOwner {
+-                guard (try? documentWriteOwner.performSynchronousOperation(spaceId: data.spaceId, requiresEditing: false) {
++                guard (try? documentWriteOwner.performSynchronousOperation(spaceId: data.spaceId, requiresEditing: false) { () -> Void in
+                     updateItems(with: templates)
+                     setupDefaultItem()
+                 }) != nil else { return }

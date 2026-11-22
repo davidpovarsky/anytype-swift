@@ -50,4 +50,17 @@ struct PropertyInfoData: Identifiable {
     let target: PropertiesModuleTarget
     let mode: PropertyInfoViewMode
     let isReadOnly: Bool
+    let originalEditorScope: OriginalEditorPropertyScope?
+
+    init(name: String, objectId: String?, spaceId: String, target: PropertiesModuleTarget,
+         mode: PropertyInfoViewMode, isReadOnly: Bool,
+         originalEditorScope: OriginalEditorPropertyScope? = nil) {
+        self.name = name
+        self.objectId = objectId
+        self.spaceId = spaceId
+        self.target = target
+        self.mode = mode
+        self.isReadOnly = isReadOnly
+        self.originalEditorScope = originalEditorScope
+    }
 }

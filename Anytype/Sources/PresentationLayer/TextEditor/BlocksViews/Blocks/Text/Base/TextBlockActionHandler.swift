@@ -666,7 +666,8 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
     private func cut(range: NSRange) {
         guard !isVirtualUnmaterialized else { return }
         actionHandler.scheduleMutationTask { [self] in
-            try await pasteboardService?.cut(document: document, blocksIds: [info.id], selectedTextRange: range)
+            guard let pasteboardService else { return }
+            try await pasteboardService.cut(document: document, blocksIds: [info.id], selectedTextRange: range)
         }
     }
 

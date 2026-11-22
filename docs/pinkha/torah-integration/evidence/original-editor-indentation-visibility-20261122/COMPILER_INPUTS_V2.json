@@ -1,0 +1,106 @@
+{
+  "schema": 2,
+  "created_at": "2026-11-22T09:43:50.092613+00:00",
+  "source_ref": "7b594f6f28961258d81b0eb2e7a29c7b047bb1d2",
+  "candidate_sha256": "fc996c217bf56e7b1f07a81c034ac966e075f8fac7daa0d5fd3d6d6905622153",
+  "patch_sha256": "093d406efe1b2332f33066be6e56515e061696e72b345ffbf63453647affb933",
+  "compiled_inputs": [
+    {
+      "path": "BlockIndentationStyle.candidate.swift",
+      "sha256": "fc996c217bf56e7b1f07a81c034ac966e075f8fac7daa0d5fd3d6d6905622153",
+      "bytes": 608
+    },
+    {
+      "path": "portable-BlockIndentationStyle.swift",
+      "sha256": "0af96510df6739b2a80164f647326088af046eefd07a3ad0f0e455289990897e",
+      "bytes": 604
+    },
+    {
+      "path": "portable-LayoutConstants.swift",
+      "sha256": "12745b58a172c23e21f0c7229e02aad2bb7fad1b3ecd6f033f4d49d5417e2c80",
+      "bytes": 207
+    },
+    {
+      "path": "dependency-2-BlockLayoutDetails.swift",
+      "sha256": "e15d31a90d0037fc4e26dbbb7ac7d075f4ad69cf9adf6a1eb9b7e7672adb68d1",
+      "bytes": 191
+    },
+    {
+      "path": "ExternalConsumer.swift",
+      "sha256": "e44a2ef61bcd571097329487a702773baa1b4b22fa1e2993bba19a2bfed69626",
+      "bytes": 79
+    }
+  ],
+  "original_inputs": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/FlowLayout/Models/BlockIndentationStyle.swift",
+      "snapshot": "BlockIndentationStyle.before.swift",
+      "sha256": "7fe0c774f9748899659d3062aeef5ccf759bd0655fc5a5667a08c6caae2da605"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/FlowLayout/Models/LayoutConstants.swift",
+      "snapshot": "layout-0.swift",
+      "sha256": "10820ba34a2fef386f7e686ece013e033475359825d0e802c9d2663fecb36167"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/FlowLayout/Models/BlockLayoutDetails.swift",
+      "snapshot": "dependency-2-BlockLayoutDetails.swift",
+      "sha256": "e15d31a90d0037fc4e26dbbb7ac7d075f4ad69cf9adf6a1eb9b7e7672adb68d1"
+    }
+  ],
+  "compiler": {
+    "path": "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+    "sha256": "e1d0a0b20d95a92b22f4906e7ca331a7c8b89be86b2d9a2d215ac24f753e945a",
+    "version_lineage": "installed Swift6.3.3+Asserts; exact binary hash retained"
+  },
+  "runtime_bin": "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Runtimes\\6.3.3\\usr\\bin",
+  "runner_sha256": "b61ce5e74313d664a09e35d1915553598e0a0e801f9fbd045120b809e6d82225",
+  "expected_checks": [
+    "complete unchanged product candidate syntax",
+    "same-module portable original bodies and layout model compile",
+    "external type lookup rejects the now-internal enum"
+  ],
+  "prior_actual_apple_graph": {
+    "run_id": 45006133053,
+    "artifact_id": 14747819041,
+    "archive_sha256": "c9e75bf524bb2fc4c9ed25e16153bb494009cb9ebfb7ac824bf6009aba183c98",
+    "observed_public_symbols": [
+      "BlockIndentationStyle",
+      "BlockIndentationStyle.none",
+      "BlockIndentationStyle.quote",
+      "BlockIndentationStyle.callout"
+    ]
+  },
+  "limits": [
+    "Windows Swift access-control boundary with exactly two platform import substitutions: CoreFoundation -> genuine Foundation. The existing module supplies genuine CGFloat; no fabricated type/body/protocol/native substitute.",
+    "Complete Apple product candidate separately parsed unchanged. Windows compile is not the Apple symbol graph, full framework or native UI.",
+    "Full enum bodies/cases, full LayoutConstants and full BlockLayoutDetails unchanged beyond portable import mapping.",
+    "Actual7b59 Apple build/graph and first Windows missing-CoreFoundation RED retained. No old-positive/221/actor/cut/undo/metadata/permission/SQLite suite replay."
+  ],
+  "first_actual_red": {
+    "inputs_sha256": "b03477ef6dabffbc4749571410037dd2c61873a5119cdc6c158d2d7f9c2c3beb",
+    "execution_sha256": "a459ad451eed5ec7cae42cd462b91652c5fea873217905ff95dc8ca85c554290",
+    "stderr_sha256": "278993221e35da6d0b8dd26cd0edbd9315c9b30cc8cf61eb191ad6bbdb1fb332",
+    "diagnostic": "no such module 'CoreFoundation'",
+    "scope": "Windows dependency availability; module compile failed before external negative; no product failure or pass inferred",
+    "replayed": false
+  },
+  "import_mapping": [
+    {
+      "original_input": "BlockIndentationStyle.candidate.swift",
+      "original_sha256": "fc996c217bf56e7b1f07a81c034ac966e075f8fac7daa0d5fd3d6d6905622153",
+      "portable_input": "portable-BlockIndentationStyle.swift",
+      "portable_sha256": "0af96510df6739b2a80164f647326088af046eefd07a3ad0f0e455289990897e",
+      "only_change": "import CoreFoundation -> import Foundation",
+      "inverse_exact": true
+    },
+    {
+      "original_input": "layout-0.swift",
+      "original_sha256": "10820ba34a2fef386f7e686ece013e033475359825d0e802c9d2663fecb36167",
+      "portable_input": "portable-LayoutConstants.swift",
+      "portable_sha256": "12745b58a172c23e21f0c7229e02aad2bb7fad1b3ecd6f033f4d49d5417e2c80",
+      "only_change": "import CoreFoundation -> import Foundation",
+      "inverse_exact": true
+    }
+  ]
+}

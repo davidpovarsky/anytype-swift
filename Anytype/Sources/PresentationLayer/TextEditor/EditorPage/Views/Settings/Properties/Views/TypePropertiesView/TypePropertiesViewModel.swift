@@ -76,7 +76,7 @@ final class TypePropertiesViewModel {
         if let scope = originalEditorScope {
             // Acquisition already used the fresh source-bound open. Never
             // fall back to a raw cached document or restart its open here.
-            guard (try? scope.withCurrent {
+            guard (try? scope.withCurrent { () -> Void in
                 guard document.isOpened else {
                     throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
                 }

@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "ref": "56d5d0b68d9d46b93ea31fdc69873d5f1d9ee793",
+  "original_inputs": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/Common/Factories/AlertModel.swift",
+      "snapshot": "dependency-0-AlertModel.swift",
+      "git_blob": "20db90a18c2921df21fdc9ae1df683ef7f300a09",
+      "sha256": "7944356e1b56bbd22fb08e7bc20b4bf2e966acdb1844e87ca569628ce40a8421",
+      "bytes": 837
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Common/Factories/AlertsFactory.swift",
+      "snapshot": "factory-1-AlertsFactory.swift",
+      "git_blob": "d2671d19dabb49ce22a843bd7060bff434d06aff",
+      "sha256": "bd00be455286628a407bf58d44d59690a763d6eeada5b09a00cc3f26381351e7",
+      "bytes": 1163
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModel.swift",
+      "snapshot": "EditorPageViewModel.before.swift",
+      "git_blob": "971aee1513a195afffa3e289d3babeadb18f0610",
+      "sha256": "26821e5a7d417c85b6717b2f4c5901413b18c47b7287c707e46caae34ed2f4c9",
+      "bytes": 28022
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionHandlerProtocol.swift",
+      "snapshot": "dependency-2-BlockActionHandlerProtocol.swift",
+      "git_blob": "b2d1f214fd7eef7536e455e1783fb8edc743cae4",
+      "sha256": "61447ab08a7642b819ee0d4a88ba2195154b417ed7c2ab16709d0f50bce5953a",
+      "bytes": 6661
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Routing/Editor/EditorRouterProtocol.swift",
+      "snapshot": "routing-0-EditorRouterProtocol.swift",
+      "git_blob": "29eb28d2f25f0e0cc72bd5b856636d236dbe51b3",
+      "sha256": "908c2613b2a39f9a389ee633734024c61634e120a2d3cd0b3f62f255323f9df2",
+      "bytes": 2717
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Routing/Editor/EditorRouter.swift",
+      "snapshot": "routing-1-EditorRouter.swift",
+      "git_blob": "6189b8968a8722f9c5a7ce491dea9c06ac7de149",
+      "sha256": "f2175346cd759b135e35b2d6dd0789b26e3d38670e8153275d732f03ca620ffb",
+      "bytes": 19261
+    }
+  ],
+  "candidate_sha256": "b4f5af4ba13cdc13e8b6d2303e7a0c7a759f06e6060115216ae4b470dce34edc",
+  "patch_sha256": "ebff2a40ab450c760d529cb959a84e3fe9153d09ae95c155bba2e5453fd345c5",
+  "compiled_inputs": [
+    {
+      "path": "semantic-package/Tests/UndoAlertBoundary/Controls.swift",
+      "sha256": "2a3b45002454d2f8102afefab424a42e355952dbf1387bf989aea00b9b48f8d3",
+      "bytes": 4568
+    },
+    {
+      "path": "semantic-package/Tests/UndoAlertBoundary/DependencyProbes.swift",
+      "sha256": "4661a2632d84c81e23ff4296494a89691a0b76d1b6f8d663ec1147f2106c6e25",
+      "bytes": 3125
+    },
+    {
+      "path": "semantic-package/Tests/UndoAlertBoundary/OriginalAlertModel.swift",
+      "sha256": "cd4ad499b8ce084a4f18a660a48ffe0eeb642943354c60d2cb5e932352a9ed6d",
+      "bytes": 864
+    },
+    {
+      "path": "semantic-package/Tests/UndoAlertBoundary/OriginalScheduler.swift",
+      "sha256": "5c6fadb4e7e3fab882cad913727794f2b43f0af805cf859298b847e5be894e28",
+      "bytes": 1669
+    },
+    {
+      "path": "semantic-package/Tests/UndoAlertBoundary/OriginalShake.swift",
+      "sha256": "7854241b7e3186f4a22d33b3c82fb283697af4a5afa857c6e071f0e3dd1fd3de",
+      "bytes": 1063
+    }
+  ],
+  "red_model_sha256": "97c17dd488758407d1a86ef4959444059d1698b7afc90784beab15442854a758",
+  "package_sha256": "66e8d07427d79181b653c98e4d3b4c1906e21ffcff2214514496a3f0a6b062b4",
+  "module_cache": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-space-bind-20261122\\.build\\x86_64-unknown-windows-msvc\\debug\\ModuleCache",
+  "expected_tests": [
+    "undoAlertKeepsSynchronousTapReservationAndDeferredOriginalCall",
+    "undoAlertKeepsWeakModelLifetimeAndUnboundLegacyPath"
+  ],
+  "prior_tests_replayed": false,
+  "limits": [
+    "Complete original AlertModel compiles with only the reviewed two MainActor callback annotations; UIKit import is replaced by Foundation plus an explicitly labelled Style enum probe. Full original changed file is separately parsed.",
+    "Unchanged complete shakeMotionDidAppear body and actual four field types/MainActor declaration are retained; other ViewModel bodies and initialization are projected.",
+    "Exact existing generic scheduleMutationTask/default owner-context/scheduleOriginalEditorMutation signatures and bodies are retained. Other protocol requirements are not included.",
+    "EditorDocumentWriteOwner, scheduled admission, native object service, router, document and localization/style values are explicit disposable probes, not native authority. These controls do not requalify the real Owner/Invocation, native undo or UIKit.",
+    "Actual original AlertsFactory/Router are preserved as reviewed source dependencies but not compiled with substitute UIKit. Genuine Apple compilation must accept the actual UIKit handler and full module.",
+    "Expected-old actor compile error is distinguished from candidate semantic/runtime results. New tests cover per-tap registration before deferred work, cancel/presentation inactivity, rejected probe admission, weak-self release, exact object argument and nil-owner original scheduler branch. No old cut, composition, participant, Space, SQLite or UI tests run."
+  ]
+}

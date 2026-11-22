@@ -1,0 +1,120 @@
+import pathlib,hashlib,json,re,subprocess
+out=pathlib.Path(r"C:\Users\DAVID\AppData\Local\Temp\oe-textblock-existential-20261122")
+repo=pathlib.Path(r"C:\Users\DAVID\Code\anytype-original-editor-package-seal-20261121")
+head="d8416b161ba7af42e8459d612a94f7591470513e"
+package=out/"semantic-package";tests=package/"Tests/CutBoundary"
+assert not package.exists(),"Owned semantic fixture already exists; inspect rather than rewrite"
+tests.mkdir(parents=True)
+payload=json.loads(r'''{"fixture":"import Foundation\n\nstruct AnyPublisher<Output, Failure: Error>: Sendable {}\nfinal class PassthroughSubject<Output, Failure: Error>: Sendable {}\nstruct ObjectDetailsStorage: Sendable {}\nstruct ObjectDetails: Sendable {}\nstruct ParsedProperties: Sendable {}\nstruct ObjectPermissions: Sendable {}\nstruct SpaceSyncStatus: Sendable {}\nenum DocumentMode: Sendable { case page }\nenum BaseDocumentUpdate: Sendable { case changed }\nstruct BlockFocusPosition: Sendable {}\nstruct BlockInformation: Sendable, Equatable { let id: String }\nenum TextBlockContentConfiguration { struct Actions {} }\nprotocol LinkToSearchDelegate: AnyObject {}\nprotocol InfoContainerProtocol: Sendable {\n    func get(id: String) -> BlockInformation?\n}\nfinal class InfoContainerProbe: InfoContainerProtocol {\n    let values: [String: BlockInformation]\n    init(values: [String: BlockInformation]) { self.values = values }\n    func get(id: String) -> BlockInformation? { values[id] }\n}\nfinal class DocumentProbe: BaseDocumentProtocol {\n    let infoContainer: any InfoContainerProtocol\n    let objectId: String\n    let spaceId: String\n    let detailsStorage = ObjectDetailsStorage()\n    let children: [BlockInformation] = []\n    let parsedProperties = ParsedProperties()\n    let isLocked = false\n    let isEmpty = false\n    let isOpened = true\n    let mode: DocumentMode = .page\n    let details: ObjectDetails? = nil\n    let permissions = ObjectPermissions()\n    let syncStatus: SpaceSyncStatus? = nil\n    let syncPublisher = AnyPublisher<[BaseDocumentUpdate], Never>()\n    init(objectId: String, spaceId: String, block: BlockInformation) {\n        self.objectId = objectId\n        self.spaceId = spaceId\n        infoContainer = InfoContainerProbe(values: [block.id: block])\n    }\n    func subscibeFor(update: [BaseDocumentUpdate]) -> AnyPublisher<[BaseDocumentUpdate], Never> {\n        AnyPublisher()\n    }\n    @MainActor func open() async throws {}\n    @MainActor func update() async throws {}\n    @MainActor func close() async throws {}\n}\n@MainActor protocol VirtualTrailingBlockSessionProtocol: AnyObject {\n    var isMaterialized: Bool { get }\n}\n@MainActor final class VirtualSessionProbe: VirtualTrailingBlockSessionProtocol {\n    let isMaterialized: Bool\n    init(isMaterialized: Bool) { self.isMaterialized = isMaterialized }\n}\n\nenum CutProbeFailure: Error, Equatable { case backend }\nenum EditorDocumentWritePermission: Hashable { case edit }\nenum EditorDocumentWriteRejection: Sendable { case unqualifiedDispatch }\nenum EditorDocumentWriteError: Error {\n    case rejected(EditorDocumentWriteRejection)\n}\nstruct DocumentOwnedFileStaging {}\n@MainActor\nfinal class EditorDocumentWriteOwner {\n    var registrations: [String] = []\n    var validations: [ObjectIdentifier] = []\n    var completion: String?\n    private var isReleased = false\n    private var releaseWaiters: [CheckedContinuation<Void, Never>] = []\n    private var completionWaiters: [CheckedContinuation<String, Never>] = []\n    func scheduleMutation(contextId: String, requiredPermissions: Set<EditorDocumentWritePermission>) throws -> ScheduledCutProbe {\n        registrations.append(contextId)\n        return ScheduledCutProbe(owner: self)\n    }\n    func validateDocument(_ document: some BaseDocumentProtocol) throws {\n        validations.append(ObjectIdentifier(document))\n    }\n    func waitForRelease() async {\n        if isReleased { return }\n        await withCheckedContinuation { releaseWaiters.append($0) }\n    }\n    func release() {\n        isReleased = true\n        let waiters = releaseWaiters\n        releaseWaiters.removeAll()\n        for waiter in waiters { waiter.resume() }\n    }\n    func complete(_ value: String) {\n        completion = value\n        let waiters = completionWaiters\n        completionWaiters.removeAll()\n        for waiter in waiters { waiter.resume(returning: value) }\n    }\n    func waitForCompletion() async -> String {\n        if let completion { return completion }\n        return await withCheckedContinuation { completionWaiters.append($0) }\n    }\n}\n@MainActor\nstruct ScheduledCutProbe {\n    let owner: EditorDocumentWriteOwner\n    func run<Value: Sendable>(operation: @escaping @MainActor @Sendable () async throws -> Value) async throws -> Value {\n        await owner.waitForRelease()\n        do {\n            let value = try await operation()\n            owner.complete(\"success\")\n            return value\n        } catch {\n            owner.complete((error as? CutProbeFailure) == .backend ? \"backend-error\" : \"other-error\")\n            throw error\n        }\n    }\n}\n@MainActor\nprotocol BlockActionHandlerProtocol: AnyObject, Sendable {\n    var documentWriteOwner: EditorDocumentWriteOwner? { get }\n    var documentWriteContextID: String { get }\n}\n@MainActor\nfinal class ActionHandlerProbe: BlockActionHandlerProtocol {\n    let documentWriteOwner: EditorDocumentWriteOwner?\n    let documentWriteContextID: String\n    init(owner: EditorDocumentWriteOwner?, contextID: String) {\n        documentWriteOwner = owner\n        documentWriteContextID = contextID\n    }\n}\nstruct PasteboardPasteResult: Sendable {}\nprotocol PasteboardBlockServiceProtocol: AnyObject, Sendable {\n    var hasValidURL: Bool { get }\n    func pasteInsideBlock(objectId: String, spaceId: String, focusedBlockId: String, range: NSRange,\n                          handleLongOperation: @escaping () -> Void,\n                          completion: @escaping @MainActor (PasteboardPasteResult?) -> Void)\n    func pasteInSelectedBlocks(objectId: String, spaceId: String, selectedBlockIds: [String],\n                               handleLongOperation: @escaping () -> Void,\n                               completion: @escaping @MainActor (PasteboardPasteResult?) -> Void)\n    func copy(objectId: String, blockInfos: [BlockInformation], blocksIds: [String], selectedTextRange: NSRange) async throws\n    func cut(objectId: String, blockInfos: [BlockInformation], blocksIds: [String], selectedTextRange: NSRange) async throws\n}\nstruct CutObservation: Sendable, Equatable {\n    let objectId: String\n    let blockInfos: [BlockInformation]\n    let blocksIds: [String]\n    let range: NSRange\n}\nactor PasteboardBlockService: PasteboardBlockServiceProtocol {\n    nonisolated let hasValidURL = false\n    private let throwsBackend: Bool\n    private var observations: [CutObservation] = []\n    private var observers: [CheckedContinuation<CutObservation, Never>] = []\n    init(throwsBackend: Bool = false) { self.throwsBackend = throwsBackend }\n    @MainActor\n    static func bindOriginal(_ service: any PasteboardBlockServiceProtocol,\n                             owner: EditorDocumentWriteOwner,\n                             staging: DocumentOwnedFileStaging) throws -> any PasteboardBlockServiceProtocol {\n        service\n    }\n    nonisolated func pasteInsideBlock(objectId: String, spaceId: String, focusedBlockId: String, range: NSRange,\n                                     handleLongOperation: @escaping () -> Void,\n                                     completion: @escaping @MainActor (PasteboardPasteResult?) -> Void) {}\n    nonisolated func pasteInSelectedBlocks(objectId: String, spaceId: String, selectedBlockIds: [String],\n                                          handleLongOperation: @escaping () -> Void,\n                                          completion: @escaping @MainActor (PasteboardPasteResult?) -> Void) {}\n    func copy(objectId: String, blockInfos: [BlockInformation], blocksIds: [String], selectedTextRange: NSRange) async throws {}\n    func cut(objectId: String, blockInfos: [BlockInformation], blocksIds: [String], selectedTextRange: NSRange) async throws {\n        let value = CutObservation(objectId: objectId, blockInfos: blockInfos, blocksIds: blocksIds, range: selectedTextRange)\n        observations.append(value)\n        let waiting = observers\n        observers.removeAll()\n        for observer in waiting { observer.resume(returning: value) }\n        if throwsBackend { throw CutProbeFailure.backend }\n    }\n    func values() -> [CutObservation] { observations }\n    func firstObservation() async -> CutObservation {\n        if let first = observations.first { return first }\n        return await withCheckedContinuation { observers.append($0) }\n    }\n}\nstruct Container: Sendable {\n    static let shared = Container()\n    func pasteboardBlockService() -> any PasteboardBlockServiceProtocol { PasteboardBlockService() }\n}\n@MainActor\nprotocol CutBoundaryInvoking: AnyObject {\n    func invokeCut(_ range: NSRange)\n}\nenum CutBoundaryKind { case text, table }\n@MainActor\nfunc makeCutBoundary(kind: CutBoundaryKind, document: any BaseDocumentProtocol, info: BlockInformation,\n                     actionHandler: any BlockActionHandlerProtocol,\n                     service: (any PasteboardBlockDocumentServiceProtocol)?,\n                     virtualSession: (any VirtualTrailingBlockSessionProtocol)? = nil) -> any CutBoundaryInvoking {\n    switch kind {\n    case .text:\n        return TextBlockActionHandler(document: document, info: info, actionHandler: actionHandler,\n                                      service: service, virtualSession: virtualSession)\n    case .table:\n        return SimpleTablesTextBlockActionHandler(document: document, info: info, actionHandler: actionHandler,\n                                                  service: service)\n    }\n}\n","controls":"import Foundation\nimport Testing\n\n@MainActor\nprivate func verifyCutBoundary(_ kind: CutBoundaryKind) async throws {\n    let block = BlockInformation(id: \"original-block\")\n    let document = DocumentProbe(objectId: \"original-object\", spaceId: \"original-Space\", block: block)\n    let range = NSRange(location: 3, length: 7)\n    let expected = CutObservation(objectId: document.objectId, blockInfos: [block], blocksIds: [block.id], range: range)\n\n    let lower = PasteboardBlockService()\n    let owner = EditorDocumentWriteOwner()\n    let action = ActionHandlerProbe(owner: owner, contextID: document.objectId)\n    let unbound = PasteboardBlockDocumentService(service: lower)\n    let bound = try PasteboardBlockDocumentService.bindOriginal(unbound, owner: owner, staging: DocumentOwnedFileStaging())\n    let handler = makeCutBoundary(kind: kind, document: document, info: block, actionHandler: action, service: bound)\n    handler.invokeCut(range)\n    #expect(owner.registrations == [document.objectId])\n    #expect(owner.validations.isEmpty)\n    #expect(owner.completion == nil)\n    #expect(await lower.values().isEmpty)\n    owner.release()\n    #expect(await owner.waitForCompletion() == \"success\")\n    #expect(owner.validations == [ObjectIdentifier(document)])\n    #expect(await lower.values() == [expected])\n\n    let weakLower = PasteboardBlockService()\n    let weakOwner = EditorDocumentWriteOwner()\n    let weakAction = ActionHandlerProbe(owner: weakOwner, contextID: document.objectId)\n    var weakBound: (any PasteboardBlockDocumentServiceProtocol)? = try PasteboardBlockDocumentService.bindOriginal(\n        PasteboardBlockDocumentService(service: weakLower), owner: weakOwner, staging: DocumentOwnedFileStaging()\n    )\n    weak var releasedService = weakBound\n    let weakHandler = makeCutBoundary(kind: kind, document: document, info: block, actionHandler: weakAction, service: weakBound)\n    weakHandler.invokeCut(range)\n    #expect(weakOwner.registrations == [document.objectId])\n    weakBound = nil\n    #expect(releasedService == nil)\n    weakOwner.release()\n    #expect(await weakOwner.waitForCompletion() == \"success\")\n    #expect(weakOwner.validations.isEmpty)\n    #expect(await weakLower.values().isEmpty)\n\n    let failedLower = PasteboardBlockService(throwsBackend: true)\n    let failedOwner = EditorDocumentWriteOwner()\n    let failedBound = try PasteboardBlockDocumentService.bindOriginal(\n        PasteboardBlockDocumentService(service: failedLower), owner: failedOwner, staging: DocumentOwnedFileStaging()\n    )\n    let failedHandler = makeCutBoundary(\n        kind: kind, document: document, info: block,\n        actionHandler: ActionHandlerProbe(owner: failedOwner, contextID: document.objectId), service: failedBound\n    )\n    failedHandler.invokeCut(range)\n    #expect(failedOwner.registrations == [document.objectId])\n    failedOwner.release()\n    #expect(await failedOwner.waitForCompletion() == \"backend-error\")\n    #expect(failedOwner.validations == [ObjectIdentifier(document)])\n    #expect(await failedLower.values() == [expected])\n\n    let legacyLower = PasteboardBlockService()\n    let legacyService = PasteboardBlockDocumentService(service: legacyLower)\n    let legacyHandler = makeCutBoundary(\n        kind: kind, document: document, info: block,\n        actionHandler: ActionHandlerProbe(owner: nil, contextID: document.objectId), service: legacyService\n    )\n    legacyHandler.invokeCut(range)\n    #expect(await legacyLower.firstObservation() == expected)\n    #expect(legacyService.hasValidURL == false)\n    #expect(bound.hasValidURL == false)\n    #expect(failedBound.hasValidURL == false)\n}\n\n@Suite(.serialized)\nstruct OriginalCutVoidBoundaryControls {\n    @Test @MainActor\n    func textCutRetainsOriginalDeferredGenericServiceBoundaryAndVirtualGuard() async throws {\n        try await verifyCutBoundary(.text)\n        let block = BlockInformation(id: \"virtual-block\")\n        let document = DocumentProbe(objectId: \"virtual-object\", spaceId: \"original-Space\", block: block)\n        let lower = PasteboardBlockService()\n        let owner = EditorDocumentWriteOwner()\n        let service = PasteboardBlockDocumentService(service: lower)\n        let handler = makeCutBoundary(\n            kind: .text, document: document, info: block,\n            actionHandler: ActionHandlerProbe(owner: owner, contextID: document.objectId),\n            service: service, virtualSession: VirtualSessionProbe(isMaterialized: false)\n        )\n        handler.invokeCut(NSRange(location: 1, length: 2))\n        #expect(owner.registrations.isEmpty)\n        #expect(await lower.values().isEmpty)\n        #expect(service.hasValidURL == false)\n    }\n\n    @Test @MainActor\n    func tableCutRetainsOriginalDeferredGenericServiceBoundary() async throws {\n        try await verifyCutBoundary(.table)\n    }\n}\n"}''')
+def sha(b):return hashlib.sha256(b).hexdigest()
+def read(n):return (out/n).read_bytes()
+def imports(data):return re.sub(r"^import [^\n]+\n","",data.decode(),flags=re.M)
+def fn(text,token):
+ s=text.index(token);br=text.index("{",s);depth=1;i=br+1
+ while depth:
+  depth += (text[i]=="{")-(text[i]=="}");i+=1
+ return text[s:i]
+sources=[
+("Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandler.swift","TextBlockActionHandler.BASE.swift","TextBlockActionHandler.CANDIDATE.swift"),
+("Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/SimpleTable/Block/TextBlock/SimpleTablesTextBlockActionHandler.swift","SimpleTablesTextBlockActionHandler.swift","SimpleTablesTextBlockActionHandler.CANDIDATE.swift"),
+("Anytype/Sources/Models/Documents/Document/BaseDocumentProtocol.swift","BaseDocumentProtocol.swift",None),
+("Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionHandlerProtocol.swift","BlockActionHandlerProtocol.swift",None),
+("Anytype/Sources/ServiceLayer/Block/Pastboard/DocumentService/PasteboardBlockDocumentServiceProtocol.swift","PasteboardBlockDocumentServiceProtocol.swift",None),
+("Anytype/Sources/ServiceLayer/Block/Pastboard/DocumentService/PasteboardBlockDocumentService.swift","PasteboardBlockDocumentService.swift",None),
+("Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandlerProtocol.swift","TextBlockActionHandlerProtocol.swift",None)
+]
+originals=[]
+for path,base,candidate in sources:
+ b=read(base)
+ gb=subprocess.run(["git","show",head+":"+path],cwd=repo,stdout=subprocess.PIPE,stderr=subprocess.PIPE,check=True,timeout=35).stdout
+ assert b==gb,path
+ blob=subprocess.run(["git","rev-parse",head+":"+path],cwd=repo,stdout=subprocess.PIPE,stderr=subprocess.PIPE,check=True,timeout=30).stdout.decode().strip()
+ row={"path":path,"original_file":base,"git_blob":blob,"sha256":sha(b),"bytes":len(b)}
+ if candidate:
+  c=read(candidate)
+  old=fn(b.decode(),"    private func cut(range: NSRange)")
+  new=fn(c.decode(),"    private func cut(range: NSRange)")
+  assert new==old.replace("{ [self] in","{ [self] () -> Void in")
+  assert c==b.replace(old.encode(),new.encode())
+  row.update(candidate_file=candidate,candidate_sha256=sha(c))
+ originals.append(row)
+action=read("BlockActionHandlerProtocol.swift").decode()
+start=action.index("extension BlockActionHandlerProtocol {")
+end=action.index("\n    @discardableResult\n    func addBlock",start)
+extension=action[start:end]+"\n}\n"
+helper=action[action.index("/// This helper adds no write authority"):]
+scheduler="import Foundation\n\n"+extension+"\n"+helper
+(tests/"OriginalScheduler.swift").write_bytes(scheduler.encode())
+protocols="import Foundation\n\n"+imports(read("BaseDocumentProtocol.swift"))+"\n"+imports(read("PasteboardBlockDocumentServiceProtocol.swift"))+"\n"+imports(read("TextBlockActionHandlerProtocol.swift"))
+(tests/"OriginalProtocols.swift").write_bytes(protocols.encode())
+(tests/"OriginalPasteboardDocumentService.swift").write_bytes(("import Foundation\n\n"+imports(read("PasteboardBlockDocumentService.swift"))).encode())
+fields="""    private let document: any BaseDocumentProtocol
+    var info: BlockInformation
+    private let actionHandler: any BlockActionHandlerProtocol
+    private weak var pasteboardService: (any PasteboardBlockDocumentServiceProtocol)?
+    let resetSubject = PassthroughSubject<NSAttributedString?, Never>()
+    let focusSubject = PassthroughSubject<BlockFocusPosition, Never>()
+    func textBlockActions() -> TextBlockContentConfiguration.Actions { .init() }
+    func resetEmptyBlockFork() {}
+    func invokeCut(_ range: NSRange) { cut(range: range) }
+"""
+text_init="""    private var virtualBlockSession: (any VirtualTrailingBlockSessionProtocol)?
+    init(document: any BaseDocumentProtocol, info: BlockInformation, actionHandler: any BlockActionHandlerProtocol,
+         service: (any PasteboardBlockDocumentServiceProtocol)?, virtualSession: (any VirtualTrailingBlockSessionProtocol)?) {
+        self.document = document
+        self.info = info
+        self.actionHandler = actionHandler
+        self.pasteboardService = service
+        self.virtualBlockSession = virtualSession
+    }
+"""
+table_init="""    init(document: any BaseDocumentProtocol, info: BlockInformation, actionHandler: any BlockActionHandlerProtocol,
+         service: (any PasteboardBlockDocumentServiceProtocol)?) {
+        self.document = document
+        self.info = info
+        self.actionHandler = actionHandler
+        self.pasteboardService = service
+    }
+"""
+def handlers(candidate):
+ text=read("TextBlockActionHandler.CANDIDATE.swift" if candidate else "TextBlockActionHandler.BASE.swift").decode()
+ table=read("SimpleTablesTextBlockActionHandler.CANDIDATE.swift" if candidate else "SimpleTablesTextBlockActionHandler.swift").decode()
+ return ("import Foundation\n\n@MainActor\nfinal class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearchDelegate, CutBoundaryInvoking {\n"
+   +fields+text_init+fn(text,"    private var isVirtualUnmaterialized: Bool")+"\n"+fn(text,"    private func cut(range: NSRange)")+"\n}\n\n"
+   +"final class SimpleTablesTextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearchDelegate, CutBoundaryInvoking {\n"
+   +fields+table_init+fn(table,"    private func cut(range: NSRange)")+"\n}\n")
+(out/"RED_Handlers.swift").write_bytes(handlers(False).encode())
+(tests/"OriginalCutHandlers.swift").write_bytes(handlers(True).encode())
+for name,key in [("DependencyProbes.swift","fixture"),("Controls.swift","controls")]:
+ data=payload[key]
+ assert not re.search(r"[A-Za-z0-9_\]\)]!(?!=)",data),"No force unwraps in new controls"
+ (tests/name).write_bytes(data.encode())
+(package/"Package.swift").write_bytes(b'''// swift-tools-version: 6.0
+import PackageDescription
+let package = Package(
+    name: "OriginalCutVoidBoundary",
+    targets: [.testTarget(name: "CutBoundary")],
+    swiftLanguageModes: [.v5]
+)
+''')
+cache=pathlib.Path(r"C:\Users\DAVID\AppData\Local\Temp\oe-space-bind-20261122\.build\x86_64-unknown-windows-msvc\debug\ModuleCache")
+assert cache.is_dir()
+inputs={
+ "schema":1,"head":head,"original_inputs":originals,
+ "compiled_inputs":[{"path":p.relative_to(out).as_posix(),"sha256":sha(p.read_bytes()),"bytes":p.stat().st_size} for p in sorted(tests.glob("*.swift"))],
+ "red_projection_sha256":sha((out/"RED_Handlers.swift").read_bytes()),
+ "package_sha256":sha((package/"Package.swift").read_bytes()),"module_cache":str(cache),
+ "expected_tests":["textCutRetainsOriginalDeferredGenericServiceBoundaryAndVirtualGuard","tableCutRetainsOriginalDeferredGenericServiceBoundary"],
+ "prior_tests_replayed":False,
+ "limits":[
+  "Both exact complete original cut(range:) bodies compile unchanged except the approved explicit Void return annotations. Original field types/capture lists, MainActor source/inference and text virtual guard are retained; other handler bodies/initializer/UI are explicit fixture projections.",
+  "Complete original BaseDocumentProtocol, PasteboardBlockDocumentServiceProtocol and TextBlockActionHandlerProtocol declarations are included with imports projected. Complete original PasteboardBlockDocumentService implementation is included with external imports projected.",
+  "Exact original generic BlockActionHandlerProtocol.scheduleMutationTask and scheduleOriginalEditorMutation bodies/signatures are compiled. Unrelated BlockActionHandlerProtocol requirements are not included; the two actual owner/context requirements and default implementations are retained.",
+  "Owner/scheduled admission, lower pasteboard backend, Container, publisher/model/UI values are explicit disposable probes. This packet does not qualify original Owner lifetimes, native permission/Invocation/RPC, clipboard, Combine, actual UIKit interaction or a full editor/module build.",
+  "New controls observe synchronous registration, exact document identity, block/range flow through the original generic document service, weak-service absence after dispatch preparation, native-probe error propagation and unchanged nil-owner legacy routing. Original text virtual guard rejects before any registration.",
+  "Expected-old compiler reproduction and candidate controls are reported separately; Apple attributed only the original text handler. Simple-table annotation is a bounded analogous preventive compatibility candidate.",
+  "Existing completed Foundation module cache is reused without building/executing any previous target or assertions. No prior initialization, composition, permission or Owner controls are replayed."
+ ]}
+(out/"SEMANTIC_INPUTS.json").write_text(json.dumps(inputs,indent=2)+"\n",encoding="utf-8")
+(out/"prepare_semantic_control.py").write_bytes(pathlib.Path(__file__).read_bytes())
+print(json.dumps({"status":"FROZEN_NOT_EXECUTED","inputs_sha256":sha((out/"SEMANTIC_INPUTS.json").read_bytes()),"original_inputs":originals,"compiled_inputs":inputs["compiled_inputs"],"red_projection_sha256":inputs["red_projection_sha256"],"expected_tests":inputs["expected_tests"]}))

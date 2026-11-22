@@ -1,0 +1,12 @@
+{
+  "raw_receipt_sha256": "49bf7c4d4c64508c70086c85786ff7c16f71d0708d04dad6ead965632ecae5c8",
+  "corrected_receipt_sha256": "6cd265ef29f13e1a11dfd3056382576b5542518c4949f3056eba41fd5e40031b",
+  "actual_compiler_invocations": 1,
+  "source_bytes_command_times_exit_unchanged": true,
+  "source_test_rerun": false,
+  "correction": {
+    "mode": "Inherited from Sentinel script process",
+    "exact_path_recorded": false,
+    "correction": "The original wrapper filled cwd with the repository path without passing cwd to subprocess.run; that field was not an actual observation. All compiler and source paths in the actual invocation were absolute."
+  }
+}

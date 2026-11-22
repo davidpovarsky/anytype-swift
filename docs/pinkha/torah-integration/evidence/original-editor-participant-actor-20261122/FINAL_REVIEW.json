@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "status": "APPROVED_EXACT_ONE_LINE_ACTOR_HOP",
+  "frozen_source": "52e9e7563a160d61b0633275bc6b468e373b3c09",
+  "patch_sha256": "6b46c9f07e93faaa4f2578b80dca990ef5f3af6df37d47999d1cf70ad964f894",
+  "candidate_sha256": "83d27ed0b0440b298883592f7b04506aac6acbf9bf90c1efb3959d266e4cb001",
+  "root_review": "Root read complete226-line original and exact11-line diff; approved only await before original actor call, preserving captured account, channel-pin permissions, decoder and publication.",
+  "producer_review": "Read complete ParticipantsStorage and SubscriptionStorage. The latter already awaits actor callbacks and its original handler registration; no additional same-pattern correction.",
+  "independent_review": {
+    "agent": "native_completion",
+    "scope": "Three remaining exact snapshots from the sole149-file inventory; no rescan, edits, tests or compiler-certification claim.",
+    "files": [
+      {
+        "path": "Anytype/Sources/Models/Documents/Events/Model/EventBunchSubscribtion.swift",
+        "sha256": "a2f48aab873b8aa7107116a668ad24238ab442d7af0b23aafc35db9d31b617ed",
+        "finding": "Nonisolated addHandler Task already awaits addSubscriber; addHandlerAwaiting is actor-isolated registration."
+      },
+      {
+        "path": "Anytype/Sources/ServiceLayer/ActiveSpaceParticipantsStorage/ParticipantsSubscription.swift",
+        "sha256": "b698845b2d69be2342df2570c40e72205eb8dd5d337cf88ea94053b46bbf5e59",
+        "finding": "Init Task and prepared-owner read closure await startSubscription; that helper awaits original storage."
+      },
+      {
+        "path": "Anytype/Sources/ServiceLayer/Auth/AuthService.swift",
+        "sha256": "f82c4993614dcd2e70f4ccb6d6eeefcf46e5130d5c17f21dca59db3f04cf7075",
+        "finding": "No Task callback into a new actor helper; deferred transition completion uses captured manager/userInfo locals."
+      }
+    ]
+  },
+  "static_scope": "149 changed Swift files, five actor declarations; bounded same-pattern human review, not exhaustive semantic certification.",
+  "known_lifecycle_gap": "The separately reviewed original start/stop overlap is NOT fixed by this one-line compiler correction and remains in the isolated production branch.",
+  "actual_native_tests": 0,
+  "old_behavioral_suites_rerun": false
+}

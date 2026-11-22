@@ -392,7 +392,7 @@ final class ObjectSettingsViewModel {
 
     private func startParticipantSpaceViewSubscription() async {
         for await participantSpaceView in participantSpacesStorage.participantSpaceViewPublisher(spaceId: spaceId).values {
-            guard (try? withCurrentSource {
+            guard (try? withCurrentSource { () -> Void in
                 canManageChannelPins = participantSpaceView.canManageChannelPins
                 isSpaceOwner = participantSpaceView.isOwner
                 updateActions()
@@ -402,7 +402,7 @@ final class ObjectSettingsViewModel {
 
     private func startSpaceViewSubscription() async {
         for await spaceView in workspaceStorage.spaceViewPublisher(spaceId: spaceId).values {
-            guard (try? withCurrentSource {
+            guard (try? withCurrentSource { () -> Void in
                 chatNotificationMode = spaceView.effectiveNotificationMode(for: objectId)
                 updateSettings()
             }) != nil else { return }

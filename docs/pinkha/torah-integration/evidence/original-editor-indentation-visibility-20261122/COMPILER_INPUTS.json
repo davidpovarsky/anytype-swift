@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "created_at": "2026-11-22T09:41:49.601692+00:00",
+  "source_ref": "7b594f6f28961258d81b0eb2e7a29c7b047bb1d2",
+  "candidate_sha256": "fc996c217bf56e7b1f07a81c034ac966e075f8fac7daa0d5fd3d6d6905622153",
+  "patch_sha256": "093d406efe1b2332f33066be6e56515e061696e72b345ffbf63453647affb933",
+  "compiled_inputs": [
+    {
+      "path": "BlockIndentationStyle.candidate.swift",
+      "sha256": "fc996c217bf56e7b1f07a81c034ac966e075f8fac7daa0d5fd3d6d6905622153",
+      "bytes": 608
+    },
+    {
+      "path": "layout-0.swift",
+      "sha256": "10820ba34a2fef386f7e686ece013e033475359825d0e802c9d2663fecb36167",
+      "bytes": 211
+    },
+    {
+      "path": "dependency-2-BlockLayoutDetails.swift",
+      "sha256": "e15d31a90d0037fc4e26dbbb7ac7d075f4ad69cf9adf6a1eb9b7e7672adb68d1",
+      "bytes": 191
+    },
+    {
+      "path": "ExternalConsumer.swift",
+      "sha256": "e44a2ef61bcd571097329487a702773baa1b4b22fa1e2993bba19a2bfed69626",
+      "bytes": 79
+    }
+  ],
+  "original_inputs": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/FlowLayout/Models/BlockIndentationStyle.swift",
+      "snapshot": "BlockIndentationStyle.before.swift",
+      "sha256": "7fe0c774f9748899659d3062aeef5ccf759bd0655fc5a5667a08c6caae2da605"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/FlowLayout/Models/LayoutConstants.swift",
+      "snapshot": "layout-0.swift",
+      "sha256": "10820ba34a2fef386f7e686ece013e033475359825d0e802c9d2663fecb36167"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/FlowLayout/Models/BlockLayoutDetails.swift",
+      "snapshot": "dependency-2-BlockLayoutDetails.swift",
+      "sha256": "e15d31a90d0037fc4e26dbbb7ac7d075f4ad69cf9adf6a1eb9b7e7672adb68d1"
+    }
+  ],
+  "compiler": {
+    "path": "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+    "sha256": "e1d0a0b20d95a92b22f4906e7ca331a7c8b89be86b2d9a2d215ac24f753e945a",
+    "version_lineage": "installed Swift6.3.3+Asserts; exact binary hash retained"
+  },
+  "runtime_bin": "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Runtimes\\6.3.3\\usr\\bin",
+  "runner_sha256": "3674646090a737e9ac6e5a03b4684917671adca90c7bb4d1b40f5eec391a4ba4",
+  "expected_checks": [
+    "complete original candidate module and internal layout model compile",
+    "external type lookup rejects the now-internal enum"
+  ],
+  "prior_actual_apple_graph": {
+    "run_id": 45006133053,
+    "artifact_id": 14747819041,
+    "archive_sha256": "c9e75bf524bb2fc4c9ed25e16153bb494009cb9ebfb7ac824bf6009aba183c98",
+    "observed_public_symbols": [
+      "BlockIndentationStyle",
+      "BlockIndentationStyle.none",
+      "BlockIndentationStyle.quote",
+      "BlockIndentationStyle.callout"
+    ]
+  },
+  "limits": [
+    "Windows Swift access-control boundary only; not actual Apple symbol graph or native UI",
+    "Full unchanged original LayoutConstants and BlockLayoutDetails compile beside full one-keyword enum candidate; no type/body/protocol/native probes",
+    "Original Apple build/graph evidence retained without recompiling the old preimage",
+    "Two compiler commands; no prior221/actor/cut/undo/metadata/permission/SQLite cases"
+  ]
+}

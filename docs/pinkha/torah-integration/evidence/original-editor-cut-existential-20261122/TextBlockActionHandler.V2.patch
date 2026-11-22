@@ -1,0 +1,12 @@
+--- a/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandler.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandler.swift
+@@ -666,7 +666,8 @@
+     private func cut(range: NSRange) {
+         guard !isVirtualUnmaterialized else { return }
+         actionHandler.scheduleMutationTask { [self] in
+-            try await pasteboardService?.cut(document: document, blocksIds: [info.id], selectedTextRange: range)
++            guard let pasteboardService else { return }
++            try await pasteboardService.cut(document: document, blocksIds: [info.id], selectedTextRange: range)
+         }
+     }
+ 

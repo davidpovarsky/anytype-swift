@@ -64,8 +64,8 @@ final class SelectPropertyListViewModel {
         output?.onEditTap(option: option, completion: { [weak self] option in
             guard let self else { return }
             try? configuration.withCurrentOriginalProperty {
-                if let index = options.firstIndex(where: { $0.id == option.id }) {
-                    options[index] = option
+                if let index = self.options.firstIndex(where: { $0.id == option.id }) {
+                    self.options[index] = option
                 }
             }
         })

@@ -15,10 +15,20 @@ struct UndoRedoView: View {
         ))
     }
     
+    private var undoPreparation: (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))? {
+        guard model.hasDocumentWriteOwner else { return nil }
+        return { model.prepareUndo() }
+    }
+
+    private var redoPreparation: (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))? {
+        guard model.hasDocumentWriteOwner else { return nil }
+        return { model.prepareRedo() }
+    }
+
     var body: some View {
         HStack(spacing: 16) {
             
-            AsyncButton(prepareAction: model.hasDocumentWriteOwner ? { model.prepareUndo() } : nil) {
+            AsyncButton(prepareAction: undoPreparation) {
                 try await model.undo()
             } label: {
                 ItemView(
@@ -28,7 +38,7 @@ struct UndoRedoView: View {
             }
             .accessibilityIdentifier("editor-undo")
             
-            AsyncButton(prepareAction: model.hasDocumentWriteOwner ? { model.prepareRedo() } : nil) {
+            AsyncButton(prepareAction: redoPreparation) {
                 try await model.redo()
             } label: {
                 ItemView(

@@ -172,6 +172,21 @@ struct PublishToWebInternalView: View {
         }
     }
     
+    private var unpublishPreparation: (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))? {
+        guard model.hasPreparedSource else { return nil }
+        return { model.prepareUnpublish() }
+    }
+
+    private var updatePreparation: (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))? {
+        guard model.hasPreparedSource else { return nil }
+        return { model.preparePublish(action: .update) }
+    }
+
+    private var publishPreparation: (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))? {
+        guard model.hasPreparedSource else { return nil }
+        return { model.preparePublish(action: .create) }
+    }
+
     private var controlButtons: some View {
         VStack(spacing: 0) {
             Spacer.fixedHeight(16)
@@ -180,14 +195,14 @@ struct PublishToWebInternalView: View {
                 AsyncStandardButton(
                     Loc.unpublish,
                     style: .secondaryLarge,
-                    prepareAction: model.hasPreparedSource ? { model.prepareUnpublish() } : nil,
+                    prepareAction: unpublishPreparation,
                     action: { try await model.onUnpublishTap() }
                 )
                 
                 AsyncStandardButton(
                     Loc.update,
                     style: .primaryLarge,
-                    prepareAction: model.hasPreparedSource ? { model.preparePublish(action: .update) } : nil,
+                    prepareAction: updatePreparation,
                     action: { try await model.onPublishTap(action: .update) }
                 )
             }
@@ -203,7 +218,7 @@ struct PublishToWebInternalView: View {
             AsyncStandardButton(
                 Loc.publish,
                 style: .primaryLarge,
-                prepareAction: model.hasPreparedSource ? { model.preparePublish(action: .create) } : nil,
+                prepareAction: publishPreparation,
                 action: { try await model.onPublishTap(action: .create) }
             )
             

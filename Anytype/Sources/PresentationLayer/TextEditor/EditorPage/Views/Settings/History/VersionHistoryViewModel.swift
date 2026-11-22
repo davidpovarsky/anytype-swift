@@ -68,7 +68,7 @@ final class VersionHistoryViewModel {
             subscription = participantsSubscription
         }
         for await participants in subscription.participantsPublisher.values {
-            guard (try? withCurrentSource {
+            guard (try? withCurrentSource { () -> Void in
                 participantsDict = [:]
                 participants.forEach { participant in
                     participantsDict[participant.id] = participant

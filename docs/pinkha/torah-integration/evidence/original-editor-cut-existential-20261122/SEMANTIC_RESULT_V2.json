@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "status": "PASS_REUSED_OLD_CUT_ERROR_AND_TWO_NEW_GUARD_UNWRAP_CONTROLS",
+  "candidate_sha256": [
+    "906b29f184e3be133dee47ec6a6ff1b60af4e410b43cd8d93c4d6c61fd4993b0",
+    "6381d6125455923834f07e62d245386728dcac08eb3195b8d32bcd0bef6560e4"
+  ],
+  "inputs_sha256": "d50ba25b544b3c5ecfaa4f2dbf26d42d591cda4753a399addb5a9d4904828bb6",
+  "expected_red_errors": [
+    "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122\\RED_Handlers.swift:30:42: error: type 'any BaseDocumentProtocol' cannot conform to 'BaseDocumentProtocol' [#ProtocolTypeNonConformance]",
+    "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-textblock-existential-20261122\\RED_Handlers.swift:54:42: error: type 'any BaseDocumentProtocol' cannot conform to 'BaseDocumentProtocol' [#ProtocolTypeNonConformance]"
+  ],
+  "expected_red_exit": 1,
+  "expected_red_reexecuted": false,
+  "prior_candidate_failure_retained": true,
+  "new_tests": 2,
+  "tests": [
+    {
+      "classname": "CutBoundary.OriginalCutVoidBoundaryControls",
+      "name": "textCutRetainsOriginalDeferredGenericServiceBoundaryAndVirtualGuard()",
+      "time": "0.0101761"
+    },
+    {
+      "classname": "CutBoundary.OriginalCutVoidBoundaryControls",
+      "name": "tableCutRetainsOriginalDeferredGenericServiceBoundary()",
+      "time": "0.0033201"
+    }
+  ],
+  "xunit_sha256": "25af03a62bea38bd5085f0d99b29304996aa9a86a5cd415786d2e295f391b376",
+  "binary": {
+    "path": "semantic-package\\.build\\x86_64-unknown-windows-msvc\\debug\\OriginalCutVoidBoundaryPackageTests.xctest",
+    "sha256": "b0723a8d638926ee5a9b772da94c96263c820aa6730878fc363b17031f22f059",
+    "bytes": 766976
+  },
+  "all_inputs_unchanged": true,
+  "limits": [
+    "Both exact original cut(range:) bodies compile with only the reviewed local guard unwrap of the original weak service inside the same original scheduled closure. Original field types/capture lists, MainActor source/inference and text virtual guard are retained; other handler bodies/initializer/UI are explicit fixture projections.",
+    "Complete original BaseDocumentProtocol, PasteboardBlockDocumentServiceProtocol and TextBlockActionHandlerProtocol declarations are included with imports projected. Complete original PasteboardBlockDocumentService implementation is included with external imports projected.",
+    "Exact original generic BlockActionHandlerProtocol.scheduleMutationTask and scheduleOriginalEditorMutation bodies/signatures are compiled. Unrelated BlockActionHandlerProtocol requirements are not included; the two actual owner/context requirements and default implementations are retained.",
+    "Owner/scheduled admission, lower pasteboard backend, Container, publisher/model/UI values are explicit disposable probes. This packet does not qualify original Owner lifetimes, native permission/Invocation/RPC, clipboard, Combine, actual UIKit interaction or a full editor/module build.",
+    "New controls observe synchronous registration, exact document identity, block/range flow through the original generic document service, weak-service absence after dispatch preparation, native-probe error propagation and unchanged nil-owner legacy routing. Original text virtual guard rejects before any registration.",
+    "Actual initial old-source compilation reproduced the same existential error at both projected sites. The initial explicit-Void candidate failed the same two errors before any test execution. Exact old expectedRED is reused, not rerun; only the changed V2 handler projection is rebuilt against unchanged fixtures and assertions. Apple attributed only the original text handler; simple-table remains an analogous preventive source correction.",
+    "Existing completed Foundation module cache is reused without building/executing any previous target or assertions. No prior initialization, composition, permission or Owner controls are replayed."
+  ]
+}

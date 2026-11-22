@@ -24,8 +24,10 @@ final class TypePropertiesMoveHandler: Sendable {
     
     func onMove(from: Int, to: Int, relationRows: [TypePropertiesRow], document: any BaseDocumentProtocol) async throws {
         if let originalEditorScope {
-            try await originalEditorScope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
-                try originalEditorScope.owner.validateDocument(document)
+            try await MainActor.run {
+                try originalEditorScope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
+                    try originalEditorScope.owner.validateDocument(document)
+                }
             }
         }
         guard let fromRow = relationRows[safe: from], case let .relation(fromRelation) = fromRow else {

@@ -1,0 +1,35 @@
+C:\Users\DAVID\AppData\Local\Temp\oe-textblock-existential-20261122\RED_Handlers.swift:30:42: error: type 'any BaseDocumentProtocol' cannot conform to 'BaseDocumentProtocol' [#ProtocolTypeNonConformance]
+28 |         guard !isVirtualUnmaterialized else { return }
+29 |         actionHandler.scheduleMutationTask { [self] in
+30 |             try await pasteboardService?.cut(document: document, blocksIds: [info.id], selectedTextRange: range)
+   |                                          |- error: type 'any BaseDocumentProtocol' cannot conform to 'BaseDocumentProtocol' [#ProtocolTypeNonConformance]
+   |                                          `- note: only concrete types such as structs, enums and classes can conform to protocols
+31 |         }
+32 |     }
+
+C:\Users\DAVID\AppData\Local\Temp\oe-textblock-existential-20261122\semantic-package\Tests\CutBoundary\OriginalProtocols.swift:53:10: note: required by instance method 'cut(document:blocksIds:selectedTextRange:)' where 'some BaseDocumentProtocol' = 'any BaseDocumentProtocol'
+51 |     
+52 |     func copy(document: some BaseDocumentProtocol, blocksIds: [String], selectedTextRange: NSRange) async throws
+53 |     func cut(document: some BaseDocumentProtocol, blocksIds: [String], selectedTextRange: NSRange) async throws
+   |          `- note: required by instance method 'cut(document:blocksIds:selectedTextRange:)' where 'some BaseDocumentProtocol' = 'any BaseDocumentProtocol'
+54 | }
+55 | 
+
+C:\Users\DAVID\AppData\Local\Temp\oe-textblock-existential-20261122\RED_Handlers.swift:54:42: error: type 'any BaseDocumentProtocol' cannot conform to 'BaseDocumentProtocol' [#ProtocolTypeNonConformance]
+52 |     private func cut(range: NSRange) {
+53 |         actionHandler.scheduleMutationTask { [self] in
+54 |             try await pasteboardService?.cut(document: document, blocksIds: [info.id], selectedTextRange: range)
+   |                                          |- error: type 'any BaseDocumentProtocol' cannot conform to 'BaseDocumentProtocol' [#ProtocolTypeNonConformance]
+   |                                          `- note: only concrete types such as structs, enums and classes can conform to protocols
+55 |         }
+56 |     }
+
+C:\Users\DAVID\AppData\Local\Temp\oe-textblock-existential-20261122\semantic-package\Tests\CutBoundary\OriginalProtocols.swift:53:10: note: required by instance method 'cut(document:blocksIds:selectedTextRange:)' where 'some BaseDocumentProtocol' = 'any BaseDocumentProtocol'
+51 |     
+52 |     func copy(document: some BaseDocumentProtocol, blocksIds: [String], selectedTextRange: NSRange) async throws
+53 |     func cut(document: some BaseDocumentProtocol, blocksIds: [String], selectedTextRange: NSRange) async throws
+   |          `- note: required by instance method 'cut(document:blocksIds:selectedTextRange:)' where 'some BaseDocumentProtocol' = 'any BaseDocumentProtocol'
+54 | }
+55 | 
+
+[#ProtocolTypeNonConformance]: <https://docs.swift.org/compiler/documentation/diagnostics/protocol-type-non-conformance>

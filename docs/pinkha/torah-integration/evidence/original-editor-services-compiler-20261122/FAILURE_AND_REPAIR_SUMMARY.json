@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "run_id": 44978502186,
+  "head": "cb2df9baa201db0ce404ba37eac853424bae6204",
+  "conclusion": "failure",
+  "phase": "Services Swift compilation",
+  "framework_command": {
+    "command": [
+      "xcodebuild",
+      "build",
+      "-project",
+      "/Users/runner/work/anytype-swift/anytype-swift/Anytype.xcodeproj",
+      "-scheme",
+      "AnytypeOriginalEditor",
+      "-configuration",
+      "Debug-Anytype",
+      "-destination",
+      "platform=iOS Simulator,id=97B3BDDB-3A95-4514-9B3B-F781CD8251D3",
+      "-derivedDataPath",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44978502186-1/producer-derived",
+      "-resultBundlePath",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-evidence/framework-build.xcresult",
+      "-onlyUsePackageVersionsFromResolvedFile",
+      "OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED $(ORIGINAL_EDITOR_SYMBOL_GRAPH_FLAGS)",
+      "ONLY_ACTIVE_ARCH=YES",
+      "ARCHS=arm64",
+      "SWIFT_OPTIMIZATION_LEVEL=-Onone",
+      "CODE_SIGN_IDENTITY=-",
+      "CODE_SIGNING_ALLOWED=YES",
+      "CODE_SIGNING_REQUIRED=YES",
+      "PROVISIONING_PROFILE_SPECIFIER="
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "finished_at": "2026-11-22T03:12:28.601424+00:00",
+    "returncode": 65,
+    "started_at": "2026-11-22T03:00:17.940719+00:00",
+    "stderr_sha256": "170770cc6480013494ae72dabbb84eb36dc83c269611ebf1d25903f6491f72da",
+    "stdout_sha256": "8556e733d07370e3bcf6c26c626d0a07e4671fb3567c033fd4d3bfe5a7d8d474",
+    "timed_out": false,
+    "timeout_seconds": 6000
+  },
+  "compiler_diagnostics": [
+    "/Users/runner/work/anytype-swift/anytype-swift/Modules/Services/Sources/Services/Publishing/PublishingService.swift:67:26: error: thrown expression type 'Anytype_Rpc.Publishing.GetStatus.Response.Error' does not conform to 'Error'",
+    "/Users/runner/work/anytype-swift/anytype-swift/Modules/Services/Sources/Services/Templates/TemplatesService.swift:52:27: error: value of type 'ObjectDetails' has no member 'isTemplate'",
+    "/Users/runner/work/anytype-swift/anytype-swift/Modules/Services/Sources/Services/Templates/TemplatesService.swift:61:51: error: value of type 'ObjectDetails' has no member 'isObjectType'",
+    "/Users/runner/work/anytype-swift/anytype-swift/Modules/Services/Sources/Services/Templates/TemplatesService.swift:90:27: error: value of type 'ObjectDetails' has no member 'isTemplate'",
+    "/Users/runner/work/anytype-swift/anytype-swift/Modules/Services/Sources/Services/Templates/TemplatesService.swift:101:24: error: value of type 'ObjectDetails' has no member 'isObjectType'",
+    "/Users/runner/work/anytype-swift/anytype-swift/Modules/Services/Sources/Services/Templates/TemplatesService.swift:106:32: error: value of type 'ObjectDetails' has no member 'isTemplate'"
+  ],
+  "macro_target_progress": [
+    "SwiftEmitModule normal arm64 Emitting\\ module\\ for\\ EquatableMacros (in target 'EquatableMacros' from project 'Equatable')",
+    "Ld /Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44978502186-1/producer-derived/Build/Products/Debug-Anytype/EquatableMacros normal (in target 'EquatableMacros' from project 'Equatable')",
+    "CodeSign /Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44978502186-1/producer-derived/Build/Products/Debug-Anytype/EquatableMacros (in target 'EquatableMacros' from project 'Equatable')"
+  ],
+  "macro_trust_restored": {
+    "status": "EXACT_ORIGINAL_MACRO_TRUST_RESTORED",
+    "wrote_trust_store": true
+  },
+  "source_before_after_bytes_identical": true,
+  "source_controls_summary": {
+    "expected_count": 221,
+    "phase": "COMPLETE",
+    "schema": 1,
+    "scope": "Python source controls only; no Apple build or consumer qualification",
+    "status": "PASS_SOURCE_CONTROLS_221",
+    "tests_run": 221
+  },
+  "new_native_tests": 0,
+  "external_consumer_execution": "NOT_RUN",
+  "distribution_qualified": false,
+  "copied_files": [
+    {
+      "path": "failure/artifact-14737027101.zip",
+      "bytes": 1088166,
+      "sha256": "ee74d656be583028f8891a102197e06378bbd59bcdc282a63afc756400b8b7f0"
+    },
+    {
+      "path": "failure/terminal-run.json",
+      "bytes": 14712,
+      "sha256": "faea5b62a9fe2ffc728712769e0c1449a1aa1b0b37938382ec5640b8fb5697b7"
+    },
+    {
+      "path": "failure/terminal-jobs.json",
+      "bytes": 6525,
+      "sha256": "b20340b82e9a372092f5ded16b24607bf16a5ebb8777e029dbd632a62bfba5a6"
+    },
+    {
+      "path": "failure/terminal-artifacts.json",
+      "bytes": 1073,
+      "sha256": "8cfe4ca2a85832d6ebcebf33d4b6bb0ffdfdbf3893e47da648ac4ec4642072d2"
+    },
+    {
+      "path": "failure/framework-build.command.json",
+      "bytes": 1377,
+      "sha256": "9273b21d781ef977fbe55e8bfdc6d657eeeece2674bf37efcb595bb442aabdc6"
+    },
+    {
+      "path": "failure/macro-approval.json",
+      "bytes": 1162,
+      "sha256": "c78b66d4093313b3a54a35669909802e4a3104c1da04d61e0f4bc610f89c120d"
+    },
+    {
+      "path": "failure/macro-restoration.json",
+      "bytes": 83,
+      "sha256": "51783b887167e7f6517ba461170742c3ba9bb8dada5b6f6644f7a27dbc2e6088"
+    },
+    {
+      "path": "repair/EDIT_RECEIPT.json",
+      "bytes": 1627,
+      "sha256": "9e5c727499fbef8715d34822e6e8bbeeeda4a8a42f5a37e691239da8b9eff657"
+    },
+    {
+      "path": "repair/SYNTAX_RESULT.json",
+      "bytes": 1516,
+      "sha256": "b1c63867f41ef73dd3082a578d454004fdcb6d8ca5376c1b752d5dddff1598d4"
+    },
+    {
+      "path": "repair/services-compiler-repair.diff",
+      "bytes": 5544,
+      "sha256": "193976a37c950230fdcfaefe50b693c53067aa12b11de8c94a2eee41e9cb50a9"
+    }
+  ]
+}

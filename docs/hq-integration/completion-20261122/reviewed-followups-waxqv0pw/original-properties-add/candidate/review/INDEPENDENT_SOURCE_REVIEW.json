@@ -1,0 +1,62 @@
+{
+  "reviewed_at_utc": "2026-11-22T03:57:05.857936+00:00",
+  "reviewer": "/root/asana_audit",
+  "status": "SOURCE_REVIEW_GO_NO_APPLE_OR_NATIVE_CREDIT",
+  "base_source_commit": "388a3726e7a38cf47aaeb32948013c395b8b2b01",
+  "base_commit": "06b639ff196a66c19d22dda7ea28b47ce6801705",
+  "patch": {
+    "path": "original-property-add.patch",
+    "sha256": "0e909411da157ffa3e5f25980f016017fd46629827ed181d0d11cf0740b8171e",
+    "bytes": 21159
+  },
+  "source_manifest_sha256": "56076742798491e185477eda6c20cbd2eabae3cf032aae1ab6611cd53d3b75fa",
+  "files": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/PropertyValueFlow/PropertyValueCoordinator/OriginalEditorPropertyScope.swift",
+      "base_git_blob": "670fbf49fbd362b59525508c255423f98989055d",
+      "base_sha256": "3b8a24397fc5ebc659c28a81a693839faa1ac9cf9854a57de178240062856322",
+      "base_bytes": 19555,
+      "source_git_blob": "502f6c01d758ac3d74a24ecb6a3b35e308a5373a",
+      "source_sha256": "91b0377cf9ca047d23b85c1e73ae7494e32c121d95c7dbf3a7086ba2037b5dfd",
+      "source_bytes": 23646
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesViewModel.swift",
+      "base_git_blob": "4fd7ef3e865298cf3366ae8861e887ef54fd4fcb",
+      "base_sha256": "e24a0419fbf6a57021ac9d28051c246d5902bb776c4676c5bf5989f0815667be",
+      "base_bytes": 19949,
+      "source_git_blob": "b3a76a4025f80c6779010f5e174dc35e57af4eae",
+      "source_sha256": "89819a6eca0908f0a5b89cf7a3fb0649df71c1530bc56008d244c6497d495408",
+      "source_bytes": 28107
+    }
+  ],
+  "review_scope": [
+    "Read the full two-file delta and the surrounding published original model/Scope flow.",
+    "Both base bytes match the independently fetched Git-blob-verified 388a source; both candidate SHA256, Git blob and byte lengths match SOURCE_MANIFEST.",
+    "The Add-only async helper uses the already-qualified final original SearchMiddleService through OriginalSearchMiddleServiceBinding.requireOriginal, the existing SearchHelper.includeIdsFilter, and same-owner performRead allowing only ObjectSearch.",
+    "The actual type result must be exactly one record with byte-exact captured type ID and Space, original objectType layout, and an explicitly present nonempty/NUL-free protobuf string uniqueKey. The original template constant comparison replaces global ObjectTypeProvider cache/fallback.",
+    "Current source/operation identity and complete parent ObjectDetails/ObjectPermissions/raw type are checked after the actual read. The original includesDocument mapping retains raw details.type, resolvedLayout fallback, deleted/archive/hidden flags and exact internal-field presence predicates.",
+    "Canonical manifest remains a local operation snapshot from the original source/account-bound ObjectSearch/ObjectShow loader; UI hint stores only actual document details/properties/permissions and never manifest authority.",
+    "Original rows publish after canonical identity resolution; the additional actual type read only controls Add eligibility. Missing/ambiguous/retired data remains closed.",
+    "Each Add tap performs fresh canonical and type reads; full parent state, subscription identity, real task cancellation and request identity are checked before presenting exact same-object PropertiesSearchData.",
+    "The original featured/sidebar/conflicted/legacyFeatured exclusions and hidden IDs are preserved. Same scope, object and Space pass into the already-qualified modal path. Selection/save still own actual named before-Task mutation reservations.",
+    "Presentation Task starts only after the temporary synchronous read lease returns, and relationsSearchData publishes after its final temporary read returns without an intervening await.",
+    "The retained real subscription Task is assigned before first await; outer cancellation cancels that same handle synchronously, so guarded child publication sees cancellation before outer defer. Subscription/request identities prevent predecessor cleanup from clearing a successor.",
+    "The original nil subscription body, nil Add body after the new prepared-only branch, and existing onEditTap/addRelationToType/revealHiddenRelation/handleTapOnRelation functions are byte-identical."
+  ],
+  "resolved_prior_finding": {
+    "rejected_patch_sha256": "f348fa5d380cc0deee8c5bda52dc6cd4002fedf9bf88f948c3fdfbb971ed11cd",
+    "finding": "ObjectDetails.isTemplate derives through an unbound global type cache/fallback.",
+    "resolution": "The revised Add-only query classifies the actual original current-account type record and revalidates the captured parent afterwards."
+  },
+  "remaining_scope": [
+    "Apple compilation and actual Native Add modal/type query/cancellation/UI behavior remain unverified by this source review.",
+    "The optional Add hint can be absent when required identity or eligibility is unavailable; it grants no mutation authority.",
+    "Type/schema/dataview/library/native catalog routes and the separate object-type restriction picker remain outside this two-file increment.",
+    "No new tests, compiler, remote mutation, host mutation or CI dispatch was performed. Historical fourteen portable controls were not rerun."
+  ],
+  "compiler_invocations": 0,
+  "test_executions": 0,
+  "native_executions": 0,
+  "production_edits_by_reviewer": 0
+}

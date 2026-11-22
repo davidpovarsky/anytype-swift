@@ -1,0 +1,15 @@
+    private var unpublishPreparation: (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))? {
+        guard model.hasPreparedSource else { return nil }
+        return { model.prepareUnpublish() }
+    }
+
+    private var updatePreparation: (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))? {
+        guard model.hasPreparedSource else { return nil }
+        return { model.preparePublish(action: .update) }
+    }
+
+    private var publishPreparation: (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))? {
+        guard model.hasPreparedSource else { return nil }
+        return { model.preparePublish(action: .create) }
+    }
+

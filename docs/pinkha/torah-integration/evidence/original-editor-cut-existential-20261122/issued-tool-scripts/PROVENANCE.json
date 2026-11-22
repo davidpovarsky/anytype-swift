@@ -1,0 +1,49 @@
+{
+  "scope": "Exact tool-input script strings issued in this session, retained without replay. Host __file__ copies independently retained where emitted.",
+  "files": [
+    {
+      "name": "artifact_intake.py",
+      "sha256": "c0be3baba6a0d273a2a55b0d3043152dd79ebee6ef8584d567bab196f2f8c976",
+      "bytes": 3674
+    },
+    {
+      "name": "candidate_exact_extraction.py",
+      "sha256": "17ec6e356f14777290a4def0c455d8769887fe4318587c9dce66e209b8cd15b0",
+      "bytes": 2705
+    },
+    {
+      "name": "candidate_first_guard.py",
+      "sha256": "c1273421ea6f2ed4d9573bd05cc0d8f3a6e8011147758371f16c13e3a82a3cee",
+      "bytes": 2597
+    },
+    {
+      "name": "failure_retention.py",
+      "sha256": "ea0740da51f3fdbab3d16a1054076292e364a181b88257b4bc44387ed8efbfb2",
+      "bytes": 3929
+    },
+    {
+      "name": "related_source_review.py",
+      "sha256": "1de72dd85fc1b18446bde70c46c12c8c5a385f44b694fd445ec74afeb54e5486",
+      "bytes": 1296
+    },
+    {
+      "name": "semantic_execution.py",
+      "sha256": "6cf6752f290fff918dd90bb7871539147cfee337ac5bd9c17091e49aab8fd292",
+      "bytes": 6736
+    },
+    {
+      "name": "semantic_preparation.py",
+      "sha256": "e9204d19d4fd29ab15df814340d5ce52623ce72dd47330b326c70a837c29898c",
+      "bytes": 24034
+    },
+    {
+      "name": "table_candidate.py",
+      "sha256": "bbc44cf77045c37a7046c3215a18497975865436a5829ed8ecd3c713ab4a1213",
+      "bytes": 2099
+    }
+  ],
+  "preexecution_notes": [
+    "Initial candidate guard assumed CRLF and stopped before candidate/product write; corrected extraction locates exact cut member bytes while preserving canonical line endings.",
+    "Initial foreground execution request with timeout900 was rejected by tool invalid_payload before host execution. The one accepted run used background=true, job_ecbd048b1291."
+  ]
+}

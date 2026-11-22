@@ -1,0 +1,14 @@
+C:\Users\DAVID\AppData\Local\Temp\oe-unsplash-init-20261122\RED_UnsplashViewModel.swift:31:30: error: 'self' used in property access 'unsplashService' before all stored properties are initialized
+18 |     @Injected(\.unsplashService)
+19 |     private var unsplashService: any UnsplashServiceProtocol
+20 |     private let documentWriteOwner: EditorDocumentWriteOwner?
+   |                 `- note: 'self.documentWriteOwner' not initialized
+21 |     private(set) var isLoading: Bool = true
+22 |     private var searchTextChangedSubscription: AnyCancellable?
+   :
+29 |     ) {
+30 |         self.onItemSelect = onItemSelect
+31 |         self.unsplashService = unsplashService
+   |                              `- error: 'self' used in property access 'unsplashService' before all stored properties are initialized
+32 |         self.documentWriteOwner = documentWriteOwner
+33 | 

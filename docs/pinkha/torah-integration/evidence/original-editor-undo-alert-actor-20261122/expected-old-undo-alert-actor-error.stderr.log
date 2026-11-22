@@ -1,0 +1,17 @@
+C:\Users\DAVID\AppData\Local\Temp\oe-editorpage-actor-20261122\semantic-package\Tests\UndoAlertBoundary\OriginalShake.swift:21:40: error: call to main actor-isolated instance method 'scheduleMutationTask(operation:)' in a synchronous nonisolated context [#ActorIsolatedCall]
+19 |                 undoAction: { [weak self] in
+20 |                     guard let self = self else { return }
+21 |                     self.actionHandler.scheduleMutationTask {
+   |                                        `- error: call to main actor-isolated instance method 'scheduleMutationTask(operation:)' in a synchronous nonisolated context [#ActorIsolatedCall]
+22 |                         try await self.objectActionsService.undo(objectId: self.document.objectId)
+23 |                     }
+
+C:\Users\DAVID\AppData\Local\Temp\oe-editorpage-actor-20261122\semantic-package\Tests\UndoAlertBoundary\OriginalScheduler.swift:10:10: note: calls to instance method 'scheduleMutationTask(operation:)' from outside of its actor context are implicitly asynchronous
+ 8 |     /// wait in the MainActor queue. The same Owner retains real RPC completion.
+ 9 |     @discardableResult
+10 |     func scheduleMutationTask<Value: Sendable>(
+   |          `- note: calls to instance method 'scheduleMutationTask(operation:)' from outside of its actor context are implicitly asynchronous
+11 |         operation: @escaping @MainActor @Sendable () async throws -> Value
+12 |     ) -> Task<Value, Error> {
+
+[#ActorIsolatedCall]: <https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call>

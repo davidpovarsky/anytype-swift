@@ -1,0 +1,52 @@
+{
+  "status": "PASS_2_COMPLETE_SWIFT_FILES_SYNTAX",
+  "scope": "One syntax parse of the2 complete changed Swift files. No Apple SDK semantic/module typecheck or native execution.",
+  "source_base": "06b639ff196a66c19d22dda7ea28b47ce6801705",
+  "patch": {
+    "path": "original-property-add.patch",
+    "sha256": "0e909411da157ffa3e5f25980f016017fd46629827ed181d0d11cf0740b8171e",
+    "bytes": 21159
+  },
+  "inputs": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/PropertyValueFlow/PropertyValueCoordinator/OriginalEditorPropertyScope.swift",
+      "base_git_blob": "670fbf49fbd362b59525508c255423f98989055d",
+      "base_sha256": "3b8a24397fc5ebc659c28a81a693839faa1ac9cf9854a57de178240062856322",
+      "base_bytes": 19555,
+      "source_git_blob": "502f6c01d758ac3d74a24ecb6a3b35e308a5373a",
+      "source_sha256": "91b0377cf9ca047d23b85c1e73ae7494e32c121d95c7dbf3a7086ba2037b5dfd",
+      "source_bytes": 23646
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesViewModel.swift",
+      "base_git_blob": "4fd7ef3e865298cf3366ae8861e887ef54fd4fcb",
+      "base_sha256": "e24a0419fbf6a57021ac9d28051c246d5902bb776c4676c5bf5989f0815667be",
+      "base_bytes": 19949,
+      "source_git_blob": "b3a76a4025f80c6779010f5e174dc35e57af4eae",
+      "source_sha256": "89819a6eca0908f0a5b89cf7a3fb0649df71c1530bc56008d244c6497d495408",
+      "source_bytes": 28107
+    }
+  ],
+  "payload_sha256": "33a4c3d2af667eccc6ea19c8f44484f23bf4f46b518653337a509292b317fc39",
+  "compiler_processes": 1,
+  "prior_suites_rerun": false,
+  "started_at": "2026-11-22T03:57:36.121347+00:00",
+  "finished_at": "2026-11-22T03:57:36.993756+00:00",
+  "duration_s": 0.875,
+  "command": [
+    "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+    "-frontend",
+    "-parse",
+    "-target",
+    "arm64-apple-ios27.0-simulator",
+    "-D",
+    "DEBUG",
+    "C:\\Users\\DAVID\\Code\\Codex-Agent-HQ\\build\\property-add-source-0e909411-waxqv0pw-20261122\\source\\Anytype\\Sources\\PresentationLayer\\PropertyValueFlow\\PropertyValueCoordinator\\OriginalEditorPropertyScope.swift",
+    "C:\\Users\\DAVID\\Code\\Codex-Agent-HQ\\build\\property-add-source-0e909411-waxqv0pw-20261122\\source\\Anytype\\Sources\\PresentationLayer\\TextEditor\\EditorPage\\Views\\Settings\\Properties\\Views\\ObjectFieldsView\\ObjectPropertiesViewModel.swift"
+  ],
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "<unknown>:0: warning: SDK settings were ignored as 'SDKSettings.json' could not be parsed\r\n<unknown>:0: warning: using sysroot for 'Windows' but targeting 'iPhone'\r\n",
+  "Apple_typecheck": "NOT_RUN",
+  "Native": "NOT_RUN"
+}

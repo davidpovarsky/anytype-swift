@@ -1,0 +1,102 @@
+{
+  "source_head": "d5df214b50faafbae4b8eb3edcf8b27bcdc930b8",
+  "created_at": "2026-11-22T07:08:53.000890+00:00",
+  "candidates": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/TypePropertiesMoveHandler.swift",
+      "base_sha256": "96b5167c6d7b60ca91f416beb9922264d345ab90259490397993a121ac2821b7",
+      "base_blob": "53182a37838ae4a0f45491c156418b7d9df36e85",
+      "candidate_sha256": "963d014fe1292db9d61a2d0738500365ab416df2772bfdc7285c690ffac7dbb0",
+      "patch_sha256": "0d061790f09e6839719fa32a92c17099fd2221f7228ec9b5169a6f768616d0b2",
+      "basis": "observed compiler diagnostic",
+      "patch": "--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/TypePropertiesMoveHandler.swift\n+++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/TypePropertiesMoveHandler.swift\n@@ -22,12 +22,14 @@\n         self.originalEditorScope = originalEditorScope\n     }\n     \n     func onMove(from: Int, to: Int, relationRows: [TypePropertiesRow], document: any BaseDocumentProtocol) async throws {\n         if let originalEditorScope {\n-            try await originalEditorScope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {\n-                try originalEditorScope.owner.validateDocument(document)\n+            try await MainActor.run {\n+                try originalEditorScope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {\n+                    try originalEditorScope.owner.validateDocument(document)\n+                }\n             }\n         }\n         guard let fromRow = relationRows[safe: from], case let .relation(fromRelation) = fromRow else {\n             anytypeAssertionFailure(\"Wrong data for fromRow\", info: [\"fromIndex\": from.description, \"rows\": relationRows.description])\n             throw TypePropertiesMoveError.wrongDataForFromRow\n"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuView.swift",
+      "base_sha256": "8b3c495068a5eef2bd8eff16330948bd7a90a90e0fbd7cc8b66618e041dd37cc",
+      "base_blob": "851e43fc8e8ca8a59d9595394fb6d03166ed17f6",
+      "candidate_sha256": "c05646236ce6d23a2ad84a5502084625038bd6673d6f43b4ff83bf1f1f9df24b",
+      "patch_sha256": "232ac2d956fb987a316437a24f270fcb9dea53e7a0195dea1823fb8d719d6506",
+      "basis": "observed compiler diagnostic",
+      "patch": "--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuView.swift\n+++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuView.swift\n@@ -46,29 +46,42 @@\n         .task {\n             await viewModel.startTasks()\n         }\n         .anytypeSheet(isPresented: viewModel.showConflictAlert) {\n             ObjectSettingsResolveConflictAlert(\n-                prepareAction: viewModel.viewModel.hasPreparedSource ? { viewModel.prepareConflictReset() } : nil,\n-                publish: viewModel.viewModel.hasPreparedSource ? { action in\n-                    try viewModel.viewModel.withCurrentSource(action)\n-                } : nil\n+                prepareAction: conflictResetPreparation,\n+                publish: currentSourcePublication\n             ) {\n                 try await viewModel.onTapResolveConflictApprove()\n             }\n         }\n         .anytypeSheet(isPresented: viewModel.showDeleteChatConfirmation) {\n             ChatDeleteChatAlert(\n-                prepareAction: viewModel.viewModel.hasPreparedSource ? { viewModel.prepareArchiveConfirmation() } : nil,\n-                publish: viewModel.viewModel.hasPreparedSource ? { action in\n-                    try viewModel.viewModel.withCurrentSource(action)\n-                } : nil\n+                prepareAction: archiveConfirmationPreparation,\n+                publish: currentSourcePublication\n             ) {\n                 try await viewModel.viewModel.changeArchiveState()\n             }\n         }\n         .snackbar(toastBarData: viewModel.toastData)\n+    }\n+\n+    private var conflictResetPreparation: (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))? {\n+        guard viewModel.viewModel.hasPreparedSource else { return nil }\n+        return { viewModel.prepareConflictReset() }\n+    }\n+\n+    private var archiveConfirmationPreparation: (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))? {\n+        guard viewModel.viewModel.hasPreparedSource else { return nil }\n+        return { viewModel.prepareArchiveConfirmation() }\n+    }\n+\n+    private var currentSourcePublication: (@MainActor (@MainActor () -> Void) throws -> Void)? {\n+        guard viewModel.viewModel.hasPreparedSource else { return nil }\n+        return { action in\n+            try viewModel.viewModel.withCurrentSource(action)\n+        }\n     }\n \n     @ViewBuilder\n     private func renderSection(_ section: ObjectMenuSection) -> some View {\n         switch section.layout {\n"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebInternalView.swift",
+      "base_sha256": "12e9acb59175c584060ca871d78992758671b1589c311e0ac155752c426ecbdd",
+      "base_blob": "c653da11229210a3d5f3c2a6c18103800759351b",
+      "candidate_sha256": "cdb31c110295c8598bd6b62346aaa39b63c10ed145351e81baaa677fcc7b265c",
+      "patch_sha256": "3b14b694e6718f3fb9f88f4e1e18ad21a252af731ae362beab9fe62a6eee8df2",
+      "basis": "preventive exact same optional nested MainActor Sendable preparation pattern; no actual diagnostic",
+      "patch": "--- a/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebInternalView.swift\n+++ b/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebInternalView.swift\n@@ -170,26 +170,41 @@\n         } else {\n             publishButton\n         }\n     }\n     \n+    private var unpublishPreparation: (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))? {\n+        guard model.hasPreparedSource else { return nil }\n+        return { model.prepareUnpublish() }\n+    }\n+\n+    private var updatePreparation: (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))? {\n+        guard model.hasPreparedSource else { return nil }\n+        return { model.preparePublish(action: .update) }\n+    }\n+\n+    private var publishPreparation: (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))? {\n+        guard model.hasPreparedSource else { return nil }\n+        return { model.preparePublish(action: .create) }\n+    }\n+\n     private var controlButtons: some View {\n         VStack(spacing: 0) {\n             Spacer.fixedHeight(16)\n             \n             HStack(spacing: 8) {\n                 AsyncStandardButton(\n                     Loc.unpublish,\n                     style: .secondaryLarge,\n-                    prepareAction: model.hasPreparedSource ? { model.prepareUnpublish() } : nil,\n+                    prepareAction: unpublishPreparation,\n                     action: { try await model.onUnpublishTap() }\n                 )\n                 \n                 AsyncStandardButton(\n                     Loc.update,\n                     style: .primaryLarge,\n-                    prepareAction: model.hasPreparedSource ? { model.preparePublish(action: .update) } : nil,\n+                    prepareAction: updatePreparation,\n                     action: { try await model.onPublishTap(action: .update) }\n                 )\n             }\n             \n             Spacer.fixedHeight(16)\n@@ -201,11 +216,11 @@\n             Spacer.fixedHeight(16)\n             \n             AsyncStandardButton(\n                 Loc.publish,\n                 style: .primaryLarge,\n-                prepareAction: model.hasPreparedSource ? { model.preparePublish(action: .create) } : nil,\n+                prepareAction: publishPreparation,\n                 action: { try await model.onPublishTap(action: .create) }\n             )\n             \n             Spacer.fixedHeight(16)\n         }\n"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/PropertyValueFlow/PropertyValueCoordinator/OriginalEditorPropertyScope.swift",
+      "snapshot": "DEPENDENCY_0.swift",
+      "blob": "502f6c01d758ac3d74a24ecb6a3b35e308a5373a",
+      "sha256": "91b0377cf9ca047d23b85c1e73ae7494e32c121d95c7dbf3a7086ba2037b5dfd"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/TypePropertiesDropDelegate.swift",
+      "snapshot": "DEPENDENCY_1.swift",
+      "blob": "5cea218ff69187c158a1cc8ced2220e3daac35a2",
+      "sha256": "f359ad56b6ddec2c789eb34ad319cd02081431e3c16d015bd34522495a9920c3"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesViewModel.swift",
+      "snapshot": "DEPENDENCY_2.swift",
+      "blob": "06e8d1f08139735cccb7825dfe7ab3791f5a0933",
+      "sha256": "66a701a2dfc1dfd4f329d08ccaea7bf42cfd30b1b69abbc9d08abbe108e433d1"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettings/ObjectSettingsViewModel.swift",
+      "snapshot": "DEPENDENCY_3.swift",
+      "blob": "6c70767e8b15a1a98f99894621587b1f9343c3e7",
+      "sha256": "f474d32404784326e79c6d9792979e9da24e6537540abbd4e8b35141c601ae97"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuViewModel.swift",
+      "snapshot": "DEPENDENCY_4.swift",
+      "blob": "75c5a1d2ef2c318f63e8b8df612ede6b320fcf81",
+      "sha256": "093616e5a84f0f4d82ac5cc2bf2590013a2f63d3c7d86977e01b035071f6db54"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebInternalViewModel.swift",
+      "snapshot": "DEPENDENCY_5.swift",
+      "blob": "fd62f9608c3327326880e4cfcef051eff64bb573",
+      "sha256": "9fcc3be3fb834296f1ea697baed5b168d94f2966889407762cde33b4f1f6d0eb"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettings/Alerts/ObjectSettingsResolveConflictAlert.swift",
+      "snapshot": "DEPENDENCY_6.swift",
+      "blob": "ca6babe0e337433f3d0fc70841c78ec7015fd65a",
+      "sha256": "2eab87a2a00fa5b89257c0d2a14d7d43cf1d24878311303c9de65c03da628719"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Modules/Chat/Subviews/DeleteChatAlert/ChatDeleteChatAlert.swift",
+      "snapshot": "DEPENDENCY_7.swift",
+      "blob": "b57623ffd50b5e296e5b986854c22e9e7f896abc",
+      "sha256": "c93015db2b29b6863f2fc80edd61996e9e73097818b8faef8d695fd2b7f647cb"
+    },
+    {
+      "path": "Modules/DesignKit/Sources/DesignKit/Components/AsyncButton/AsyncStandardButton.swift",
+      "snapshot": "DEPENDENCY_8.swift",
+      "blob": "821dab970c949a575bb8c292d345298d3baacf8b",
+      "sha256": "bc776371c9fad8624aff29f95aa5f728219a21c9bd110d9870ec7072baa6bfd1"
+    },
+    {
+      "path": "Modules/DesignKit/Sources/DesignKit/Components/BottomAlert/BottomAlertButtonView.swift",
+      "snapshot": "DEPENDENCY_9.swift",
+      "blob": "46506b18085ff048ed7a28ff9264f08777f444f2",
+      "sha256": "9492069d37b7e0d3b371e0b51f880719615c76fbca364fe1382051e03eab9164"
+    },
+    {
+      "path": "Anytype/Sources/Models/Documents/Document/BaseDocumentProtocol.swift",
+      "snapshot": "DEPENDENCY_10.swift",
+      "blob": "ebd88df90a7355661c1adaa92000853df0410f9f",
+      "sha256": "c41dd53747e0f8245aac0c173e0738cbcb8419f717a8f73ae05a6f11479f3b10"
+    }
+  ],
+  "scope": "3 source-only candidate files, not yet applied, parsed, typechecked or qualified"
+}

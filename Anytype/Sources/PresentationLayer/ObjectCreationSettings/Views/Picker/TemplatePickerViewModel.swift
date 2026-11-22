@@ -1,4 +1,5 @@
 import Services
+import AnytypeCore
 @preconcurrency import Combine
 import SwiftUI
 
@@ -119,7 +120,7 @@ final class TemplatePickerViewModel: ObservableObject, OptionsItemProvider {
         )
         for await templates in publisher.values {
             if let documentWriteOwner {
-                guard (try? documentWriteOwner.performSynchronousOperation(spaceId: data.spaceId, requiresEditing: false) {
+                guard (try? documentWriteOwner.performSynchronousOperation(spaceId: data.spaceId, requiresEditing: false) { () -> Void in
                     updateItems(with: templates)
                     setupDefaultItem()
                 }) != nil else { return }

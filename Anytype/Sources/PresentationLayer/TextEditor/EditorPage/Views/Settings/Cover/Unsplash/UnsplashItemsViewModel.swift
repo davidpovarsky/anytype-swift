@@ -30,8 +30,8 @@ final class UnsplashViewModel: GridItemViewModelProtocol {
         documentWriteOwner: EditorDocumentWriteOwner? = nil
     ) {
         self.onItemSelect = onItemSelect
-        self.unsplashService = unsplashService
         self.documentWriteOwner = documentWriteOwner
+        self.unsplashService = unsplashService
 
         searchImages(query: "")
 

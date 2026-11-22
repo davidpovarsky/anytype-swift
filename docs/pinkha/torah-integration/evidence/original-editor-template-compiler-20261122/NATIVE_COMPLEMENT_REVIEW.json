@@ -1,0 +1,335 @@
+{
+  "schema": "otzaria.static-compatibility.complement-review.v1",
+  "base": "c89d6726c3b2ad6e418296c5ed0f7d705fb88433",
+  "head": "06d3366988be76c0fe6594f2e6fdc3257997fdd1",
+  "scope": "Remaining additional_weak_files weak-self/helper scopes, excluding SelectPropertyListViewModel assigned to root. Initial 13 helper files and 16 constructor-site audit reused from producer; no repeated source/test audit.",
+  "files": [
+    {
+      "path": "Anytype/Sources/Models/Documents/Document/BaseDocument.swift",
+      "sha256": "9a3a95a8df963d3dc2d2cfa4881254c48337baa492b622676339008c279d6552",
+      "lines": 571,
+      "weak_self_lines": [
+        166,
+        173,
+        247,
+        248,
+        342,
+        370,
+        377,
+        389
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Common/SwiftUI/PropertyDetailsViews/Object/Coordinator/ObjectPropertyListCoordinatorViewModel.swift",
+      "sha256": "6890595c02f8dd160f845261f9207dcacf5bbc4187b3c4fc4ef17fecd2ae3833",
+      "lines": 96,
+      "weak_self_lines": [
+        66,
+        72,
+        80
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Common/SwiftUI/PropertyDetailsViews/Object/ObjectPropertyListViewModel.swift",
+      "sha256": "99ece5c5d351570e9f11f99c527156e22bd9f9f527bb59fdfeb5c70ac47c6204",
+      "lines": 199,
+      "weak_self_lines": [
+        93
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Common/SwiftUI/PropertyDetailsViews/Select/Coordinator/SelectPropertyListCoordinatorViewModel.swift",
+      "sha256": "99e2acc6aebb891ae67b68c0c82bf047dff107676c67e0d51fdd9b422e62557d",
+      "lines": 120,
+      "weak_self_lines": [
+        40,
+        60,
+        84,
+        90,
+        98
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Flows/EditorPageFlow/EditorPageCoordinatorViewModel.swift",
+      "sha256": "ba6c0977e8239dbc5e1086846af145f1b6678f42dac047ff49043da861c4060b",
+      "lines": 221,
+      "weak_self_lines": [
+        58
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/ObjectCreationSettings/Views/Editing/TemplateEditingViewController.swift",
+      "sha256": "00adfc94e13c187167ebd13a548722b4dfe6556c4544dc7d2f3e2c4851fee2d5",
+      "lines": 120,
+      "weak_self_lines": [
+        25
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/PropertyValueFlow/PropertyValueCoordinator/PropertyValueCoordinatorViewModel.swift",
+      "sha256": "95d554936dc1462273f689b86a001acf0ffa166d423c94a7a77c6ba4b7bcf36a",
+      "lines": 321,
+      "weak_self_lines": [
+        57
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/AccessoryView/AccessoryViewStateManager.swift",
+      "sha256": "8bb93fef8b9e585e8132d3fa21b1db2ad9cfdd3154fa10d9168d8a963bda7ac8",
+      "lines": 519,
+      "weak_self_lines": [
+        80,
+        81,
+        86,
+        87,
+        92,
+        96
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/AccessoryView/SlashMenu/Handler/SlashMenuActionHandler.swift",
+      "sha256": "b0e289bd09a8601146fade148432da39b4b047d529f8dfbf954f28adb3ceb3c6",
+      "lines": 283,
+      "weak_self_lines": [
+        55,
+        86,
+        87,
+        126,
+        127,
+        249,
+        250
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteLifetime.swift",
+      "sha256": "451054685e2ff0c30371d384904be831412eec16c2a5e16c660d2f1891921eb4",
+      "lines": 164,
+      "weak_self_lines": [
+        109,
+        155
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/SimpleTable/Block/SimpleTableCellsBuilder.swift",
+      "sha256": "547d0cb89e96d6b95eb0542964ca3578871c159954f4ce9cce4689aa55ce9d30",
+      "lines": 306,
+      "weak_self_lines": [
+        123,
+        139,
+        155
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/SimpleTable/Block/TextBlock/SimpleTablesTextBlockActionHandler.swift",
+      "sha256": "e56b728efa118250ba7dc8f6eed68d48a9945db696c55ed4593b4848e2094f47",
+      "lines": 452,
+      "weak_self_lines": [
+        98,
+        101,
+        104,
+        107,
+        110,
+        113,
+        116,
+        121,
+        124,
+        127,
+        130,
+        133,
+        136,
+        139,
+        142,
+        145,
+        148,
+        254,
+        320
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandler.swift",
+      "sha256": "41ef1dc75c22d6617b629c31b3cd60b002ffacdb87b01373fa98bc3d37c10203",
+      "lines": 994,
+      "weak_self_lines": [
+        295,
+        298,
+        301,
+        304,
+        307,
+        310,
+        313,
+        318,
+        321,
+        324,
+        327,
+        330,
+        333,
+        336,
+        339,
+        342,
+        345,
+        348,
+        555,
+        589,
+        637
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView.swift",
+      "sha256": "68740ed592d7c3f57ab26245a1897c80a03b7fe50a6f171b2b30ee82f39ddd1f",
+      "lines": 470,
+      "weak_self_lines": [
+        17,
+        204,
+        222,
+        226,
+        318,
+        325
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageBlocksStateManager.swift",
+      "sha256": "9608d3a78ca0b19a4e3dd470845fb1cd5c9f184d30695aef54a2c6740e50d4c2",
+      "lines": 652,
+      "weak_self_lines": [
+        244,
+        261,
+        264,
+        286,
+        303,
+        313,
+        319,
+        353,
+        425,
+        460,
+        461,
+        472,
+        536,
+        538,
+        568,
+        621,
+        623
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController.swift",
+      "sha256": "76ebc228a6ecddcd08c11928e49c662a34da507d14d6528ebebb1812ad58aa45",
+      "lines": 864,
+      "weak_self_lines": [
+        93,
+        111,
+        259,
+        313,
+        317,
+        331,
+        334,
+        477,
+        484,
+        587,
+        607,
+        736,
+        783
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModel.swift",
+      "sha256": "26821e5a7d417c85b6717b2f4c5901413b18c47b7287c707e46caae34ed2f4c9",
+      "lines": 658,
+      "weak_self_lines": [
+        115,
+        119,
+        186,
+        190,
+        194,
+        198,
+        204,
+        216,
+        221,
+        299,
+        382,
+        450,
+        453,
+        456,
+        573
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewState.swift",
+      "sha256": "b69f832efe2abce6cb971bf96129fbc995ce78dde9d9b123e2dbec309e1b044b",
+      "lines": 34,
+      "weak_self_lines": [
+        29
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Models/BlockViewModelActions.swift",
+      "sha256": "afd2f3256028979791955b29155adf2a3e53e6dd5e8d5e2c8843c9c0273f0ada",
+      "lines": 108,
+      "weak_self_lines": [
+        48,
+        61,
+        88,
+        102
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Models/BlockViewModelBuilder.swift",
+      "sha256": "a7808dc9da25ae13370395d625a2c2e4ecfaeea83bc53fdc0bd69a701daf2645",
+      "lines": 569,
+      "weak_self_lines": [
+        120,
+        197,
+        203,
+        204,
+        208,
+        209,
+        214,
+        217,
+        220,
+        223,
+        251,
+        314,
+        331,
+        343,
+        354,
+        364,
+        383,
+        386,
+        397,
+        407,
+        426,
+        433,
+        457,
+        460,
+        487,
+        495,
+        507,
+        508
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Utils/EditorNavigationBarHelper/EditorNavigationBarHelper.swift",
+      "sha256": "0d3edfa803cc0f2994de31638467cfac5c5bb1492656d361c1ba42daab5a3620",
+      "lines": 421,
+      "weak_self_lines": [
+        173,
+        225
+      ]
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/SubscriptionsToggler/Internals/SubscriptionStorage.swift",
+      "sha256": "6dd4b130d7177dc6e97ad44edca6922d3fdc42d9a47f540eb07222be3ed1b730",
+      "lines": 239,
+      "weak_self_lines": [
+        150
+      ]
+    }
+  ],
+  "new_candidates": [],
+  "conclusion": "No additional analogous candidate in the reviewed scopes. Does not certify full Swift semantic compilation.",
+  "limitations": [
+    "No tests, Swift parsing, builds or product edits performed by reviewer.",
+    "Direct guard-rebound implicit self at the same closure level distinguished from nested helper/autoclosure member references.",
+    "Known four-file compiler repair remains necessary; Apple compile is authoritative."
+  ],
+  "reviewed_at": "2026-11-22T05:27:32.991409+00:00"
+}

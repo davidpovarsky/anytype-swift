@@ -8,6 +8,12 @@ import PinkhaKit
 final class PropertyInfoViewModel {
 
     private var identityRevision: Int = 0
+    private var isPerformingOriginalAction = false
+    private var originalCreationStarted = false
+    private(set) var createdOriginalProperty: PropertyDetails?
+
+    var hasOriginalEditorScope: Bool { originalEditorScope != nil }
+    var canEditTypeRestrictions: Bool { !isReadOnly && originalEditorScope == nil }
 
     var formatModel: NewPropertyFormatSectionView.Model {
         format.asViewModel
@@ -20,6 +26,9 @@ final class PropertyInfoViewModel {
     var isSaveButtonActive: Bool {
         _ = identityRevision
         guard name.isNotEmpty else { return false }
+        if originalEditorScope != nil {
+            return !isReadOnly && !isPerformingOriginalAction && !originalCreationStarted && originalDefinitionIsCurrent
+        }
         switch mode {
         case .create:
             return true
@@ -54,6 +63,9 @@ final class PropertyInfoViewModel {
         case .create:
             return false
         case .edit:
+            if originalEditorScope != nil {
+                return !isReadOnly && !isPerformingOriginalAction && originalDefinitionIsCurrent
+            }
             return !isReadOnly && PinkhaTorahPropertyPolicy.shared.canDeletePropertyDefinition(
                 propertyId: relationId, key: "", spaceId: spaceId
             )
@@ -74,6 +86,8 @@ final class PropertyInfoViewModel {
     private let spaceId: String
     @ObservationIgnored
     private let relationId: String
+    @ObservationIgnored
+    private let originalEditorScope: OriginalEditorPropertyScope?
 
     @ObservationIgnored
     @Injected(\.objectTypeProvider)
@@ -97,24 +111,27 @@ final class PropertyInfoViewModel {
         self.relationsInteractor = relationsInteractor
         self.output = output
         self.mode = data.mode
-        self.isReadOnly = data.isReadOnly || !PinkhaTorahPropertyPolicy.shared.canEditPropertyDefinition(
+        self.originalEditorScope = data.originalEditorScope
+        self.isReadOnly = data.isReadOnly || (data.originalEditorScope == nil && !PinkhaTorahPropertyPolicy.shared.canEditPropertyDefinition(
             propertyId: data.mode.relationId ?? "", key: "", spaceId: data.spaceId
-        )
+        ))
         
         self.name = data.name
         self.format = data.mode.format ?? SupportedPropertyFormat.object
         self.relationId = data.mode.relationId ?? ""
         handleFormatUpdate()
         data.mode.limitedObjectTypes.flatMap { updateTypesRestriction(objectTypeIds: $0) }
-        NotificationCenter.default.addObserver(
-            forName: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] notification in
-            guard let self else { return }
-            let notifiedSpace = notification.userInfo?["spaceId"] as? String
-            if notifiedSpace == nil || notifiedSpace == self.spaceId {
-                self.identityRevision &+= 1
+        if data.originalEditorScope == nil {
+            NotificationCenter.default.addObserver(
+                forName: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] notification in
+                guard let self else { return }
+                let notifiedSpace = notification.userInfo?["spaceId"] as? String
+                if notifiedSpace == nil || notifiedSpace == self.spaceId {
+                    self.identityRevision &+= 1
+                }
             }
         }
     }
@@ -126,6 +143,15 @@ final class PropertyInfoViewModel {
 extension PropertyInfoViewModel {
     
     func didTapFormatSection() {
+        if let scope = originalEditorScope {
+            try? scope.withCurrent {
+                guard !isReadOnly else { return }
+                output?.didAskToShowPropertyFormats(selectedFormat: format, onSelect: { [weak self] format in
+                    self?.updatePropertyFormat(format)
+                })
+            }
+            return
+        }
         guard PinkhaTorahPropertyPolicy.shared.canEditPropertyDefinition(propertyId: relationId, key: "", spaceId: spaceId) else { return }
         output?.didAskToShowPropertyFormats(selectedFormat: format, onSelect: { [weak self] format in
             self?.updatePropertyFormat(format)
@@ -133,13 +159,14 @@ extension PropertyInfoViewModel {
     }
     
     func didTapTypesRestrictionSection() {
+        guard originalEditorScope == nil else { return }
         guard PinkhaTorahPropertyPolicy.shared.canEditPropertyDefinition(propertyId: relationId, key: "", spaceId: spaceId) else { return }
         output?.didAskToShowObjectTypesSearch(selectedObjectTypesIds: objectTypeIds, onSelect: { [weak self] ids in
             self?.updateTypesRestriction(objectTypeIds: ids)
         })
     }
     
-    func didTapAddButton() {
+    func didTapAddButton(onCompletion: (@MainActor @Sendable () -> Void)? = nil) {
         let relationDetails = PropertyDetails(
             id: relationId,
             key: "",
@@ -154,6 +181,11 @@ extension PropertyInfoViewModel {
             isDeleted: false,
             spaceId: ""
         )
+
+        if let scope = originalEditorScope {
+            saveOriginalProperty(relationDetails, scope: scope, onCompletion: onCompletion)
+            return
+        }
         
         switch mode {
         case .create:
@@ -165,11 +197,88 @@ extension PropertyInfoViewModel {
     }
     
     func didTapDelete() async throws {
+        if let scope = originalEditorScope {
+            guard !isReadOnly, case let .edit(selectedId, _, _) = mode else {
+                throw OriginalEditorPropertyModalError.invalidPropertyIdentity
+            }
+            try scope.requireModalTarget(target, spaceId: spaceId)
+            let original = try OriginalObjectActionsServiceBinding.requireOriginal(objectActionsService)
+            try await scope.withSelectedModalProperty(id: selectedId, requiredPermissions: [.archive]) { _, actual, _ in
+                try await original.setArchive(objectIds: [actual.id], true)
+            }
+            try scope.withCurrent { toastData = ToastBarData(Loc.successfullyDeleted(name)) }
+            return
+        }
         guard case let .edit(relationId, _, _) = mode else { return }
         guard PinkhaTorahPropertyPolicy.shared.canDeletePropertyDefinition(propertyId: relationId, key: "", spaceId: spaceId) else { return }
         
         try await objectActionsService.setArchive(objectIds: [relationId], true)
         toastData = ToastBarData(Loc.successfullyDeleted(name))
+    }
+
+    func prepareDeleteAction(
+        onCompletion: @escaping @MainActor @Sendable () -> Void
+    ) -> (@MainActor @Sendable () -> (@MainActor @Sendable () async throws -> Void))? {
+        guard let scope = originalEditorScope else { return nil }
+        return { [self] in
+            scope.prepareAction(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
+                try await self.didTapDelete()
+                try scope.withCurrent { onCompletion() }
+            }
+        }
+    }
+
+    private var originalDefinitionIsCurrent: Bool {
+        guard let scope = originalEditorScope else { return false }
+        return (try? scope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
+            try scope.requireModalTarget(target, spaceId: spaceId)
+        }) != nil
+    }
+
+    private func saveOriginalProperty(
+        _ details: PropertyDetails, scope: OriginalEditorPropertyScope,
+        onCompletion: (@MainActor @Sendable () -> Void)?
+    ) {
+        guard !isReadOnly, !isPerformingOriginalAction, !originalCreationStarted else { return }
+        do {
+            try scope.requireModalTarget(target, spaceId: spaceId)
+            try scope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
+                isPerformingOriginalAction = true
+            }
+        } catch { reportOriginalFailure(scope); return }
+        let action = scope.prepareAction(requiredPermissions: OriginalEditorPropertyScope.listPermissions) { [self] in
+            guard let original = relationsInteractor as? PropertiesInteractor,
+                  original.originalEditorScope === scope else {
+                throw OriginalEditorPropertyModalError.unsupportedOriginalDelegate
+            }
+            let completed: PropertyDetails
+            switch mode {
+            case .create:
+                // Do not automatically repeat an uncertain native creation.
+                // Its original record is retained even if later attachment fails.
+                try scope.withCurrent { originalCreationStarted = true }
+                completed = try await original.createProperty(spaceId: spaceId, relation: details)
+                try scope.withCurrent { createdOriginalProperty = completed }
+                try await original.addPropertyToObject(objectId: scope.objectId, relation: completed)
+            case .edit:
+                completed = try await original.updateOriginalProperty(spaceId: spaceId, relation: details)
+            }
+            try scope.withActionCallback(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
+                onSuccessfullAction(relationDetails: completed)
+                onCompletion?()
+            }
+        }
+        Task { [self] in
+            do { try await action() }
+            catch { reportOriginalFailure(scope) }
+            try? scope.withCurrent { isPerformingOriginalAction = false }
+        }
+    }
+
+    private func reportOriginalFailure(_ scope: OriginalEditorPropertyScope) {
+        try? scope.withCurrent {
+            toastData = ToastBarData(Loc.error, type: .failure)
+        }
     }
     
     private func createRelation(_ relationDetails: PropertyDetails) {
@@ -224,11 +333,34 @@ extension PropertyInfoViewModel {
 extension PropertyInfoViewModel: PropertyInfoModuleInput {
     
     func updatePropertyFormat(_ newFormat: SupportedPropertyFormat) {
+        if let scope = originalEditorScope {
+            try? scope.withCurrent {
+                guard !isReadOnly, mode.canEditRelationType else { return }
+                format = newFormat
+                handleFormatUpdate()
+            }
+            return
+        }
         format = newFormat
         handleFormatUpdate()
     }
     
     func updateTypesRestriction(objectTypeIds: [String]) {
+        if let scope = originalEditorScope {
+            do {
+                try scope.withCurrent {
+                    guard objectTypeProvider is ObjectTypeProvider else {
+                        throw OriginalEditorPropertyModalError.unsupportedOriginalDelegate
+                    }
+                    let originalTypes = try objectTypeIds.map { try objectTypeProvider.objectType(id: $0) }
+                    guard originalTypes.allSatisfy({ $0.spaceId.utf8.elementsEqual(spaceId.utf8) }) else {
+                        throw EditorDocumentWriteError.rejected(.wrongContext)
+                    }
+                    objectTypes = originalTypes
+                }
+            } catch { reportOriginalFailure(scope) }
+            return
+        }
         objectTypes = objectTypeIds.compactMap {
             try? objectTypeProvider.objectType(id: $0)
         }

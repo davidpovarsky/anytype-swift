@@ -1,0 +1,71 @@
+[
+  {
+    "label": "swift-version",
+    "command": [
+      "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+      "--version"
+    ],
+    "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-settings-move-compile-20261122",
+    "wrapper_pid": 16940,
+    "started_at": "2026-11-22T07:13:24.403181+00:00",
+    "timeout_seconds": 30,
+    "phase": "TERMINAL",
+    "child_pid": 23460,
+    "returncode": 0,
+    "timed_out": false,
+    "finished_at": "2026-11-22T07:13:25.023565+00:00",
+    "stdout_sha256": "a2aa2d7dcd61b2f3db2c0e6ff30a1f0ab2d45f58a9542e79f6b7fa7111b09dd5",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "changed-three-file-syntax",
+    "command": [
+      "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+      "-frontend",
+      "-parse",
+      "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-settings-move-compile-20261122\\TypePropertiesMoveHandler.candidate.swift",
+      "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-settings-move-compile-20261122\\ObjectSettingsMenuView.candidate.swift",
+      "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-settings-move-compile-20261122\\PublishToWebInternalView.candidate.swift"
+    ],
+    "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-settings-move-compile-20261122",
+    "wrapper_pid": 16940,
+    "started_at": "2026-11-22T07:13:25.038171+00:00",
+    "timeout_seconds": 90,
+    "phase": "TERMINAL",
+    "child_pid": 29952,
+    "returncode": 0,
+    "timed_out": false,
+    "finished_at": "2026-11-22T07:13:25.629462+00:00",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "swift-testing-boundaries",
+    "command": [
+      "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swift.EXE",
+      "test",
+      "--verbose",
+      "--package-path",
+      "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-settings-move-compile-20261122\\boundary-package",
+      "--scratch-path",
+      "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-settings-move-compile-20261122\\boundary-package\\.build",
+      "--enable-swift-testing",
+      "--disable-xctest",
+      "--xunit-output",
+      "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-settings-move-compile-20261122\\BOUNDARY_TEST_RESULTS.xml",
+      "-Xswiftc",
+      "-strict-concurrency=complete"
+    ],
+    "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-settings-move-compile-20261122",
+    "wrapper_pid": 16940,
+    "started_at": "2026-11-22T07:13:25.636187+00:00",
+    "timeout_seconds": 420,
+    "phase": "TERMINAL",
+    "child_pid": 21356,
+    "returncode": 0,
+    "timed_out": false,
+    "finished_at": "2026-11-22T07:18:06.014257+00:00",
+    "stdout_sha256": "eed5394661257a24324009ed72c99950bfd40baf265b248e7504c5a8907bcf83",
+    "stderr_sha256": "672b06240b7582ef28e7c0d8a332dde7b2a82df2241fc7677b6cb59680d550e4"
+  }
+]

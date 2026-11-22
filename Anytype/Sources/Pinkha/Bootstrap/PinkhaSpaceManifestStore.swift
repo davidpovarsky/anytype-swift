@@ -22,6 +22,13 @@ public final class PinkhaSpaceManifestStore: PinkhaSpaceManifestStoreProtocol, @
 
     public init() {}
 
+    /// The prepared editor supplies its captured account/source read lease.
+    /// This enters the same canonical read body, never bootstrap or save.
+    func loadOriginalEditorManifest(spaceId: String) async throws -> PinkhaSpaceManifest? {
+        _ = try OriginalSearchMiddleServiceBinding.requireOriginal(searchMiddleService)
+        return try await loadManifest(spaceId: spaceId)
+    }
+
     public func discoverManifestObjectId(spaceId: String) async throws -> String? {
         // Heart derives uniqueKey from the tree header. Older Pinkha creation
         // supplied it as a detail, so also discover by the original stable name.

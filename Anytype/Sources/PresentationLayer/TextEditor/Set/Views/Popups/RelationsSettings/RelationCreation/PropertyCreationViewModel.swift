@@ -11,7 +11,10 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
     var rows: [SearchDataSection<PropertySearchData>] = []
     var newPropertyData: PropertyInfoData?
     var nativeLookupFailed = false
+    var preparedRouteUnavailable = false
     private var lastSearchText = ""
+    private var ownedSearchResults: [PropertyDetails] = []
+    private var ownedSearchID = UUID()
 
     @ObservationIgnored
     var dismiss: DismissAction?
@@ -51,6 +54,10 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
     }
     
     func search(text: String) async {
+        if let scope = data.originalEditorScope {
+            await searchOriginalProperties(text: text, scope: scope)
+            return
+        }
         lastSearchText = text
         let propertyFormats = SupportedPropertyFormat.allCases.filter {
             if text.isEmpty { return true }
@@ -121,11 +128,19 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
     }
     
     func retryNativeLookup() async {
+        if data.originalEditorScope != nil {
+            await search(text: lastSearchText)
+            return
+        }
         PinkhaTorahNativePropertyCatalog.shared.invalidate(spaceId: data.spaceId)
         await search(text: lastSearchText)
     }
 
     func onRowTap(_ row: PropertySearchData) {
+        if let scope = data.originalEditorScope {
+            onOriginalRowTap(row, scope: scope)
+            return
+        }
         Task {
             switch row {
             case .existing(let details):
@@ -151,6 +166,10 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
     }
     
     func onNewPropertyTap(name: String) {
+        if let scope = data.originalEditorScope {
+            presentOriginalProperty(name: name, format: .text, scope: scope)
+            return
+        }
         newPropertyData = PropertyInfoData(
             name: name,
             objectId: data.objectId,
@@ -163,6 +182,19 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
     
     // MARK: - PropertyInfoCoordinatorViewOutput
     func didPressConfirm(_ relation: PropertyDetails) {
+        if let scope = data.originalEditorScope {
+            do {
+                try scope.withActionCallback(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
+                    guard !relation.id.isEmpty, !relation.key.isEmpty,
+                          relation.spaceId.utf8.elementsEqual(scope.spaceId.utf8) else {
+                        throw OriginalEditorPropertyModalError.invalidPropertyIdentity
+                    }
+                    data.onRelationSelect(relation, true)
+                    dismiss?()
+                }
+            } catch { reportPreparedFailure(scope) }
+            return
+        }
         data.onRelationSelect(relation, true) // isNew = true
         dismiss?()
     }
@@ -247,6 +279,122 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
     }
     
     func addPropertyToObject(objectId: String, relation: PropertyDetails) async throws {
+        if let scope = data.originalEditorScope {
+            try scope.requireModalTarget(.object(objectId: objectId), spaceId: data.spaceId)
+            let identity = try await scope.loadModalPropertyIdentity()
+            try scope.requireModalProperty(relation, identity: identity)
+            let original = try scope.originalProperties(propertiesService)
+            return try await scope.perform(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
+                try await original.addProperties(objectId: objectId, propertiesDetails: [relation])
+            }
+        }
         try await propertiesService.addProperties(objectId: objectId, propertiesDetails: [relation])
+    }
+
+    private func searchOriginalProperties(text: String, scope: OriginalEditorPropertyScope) async {
+        let searchID = UUID()
+        do {
+            try scope.requireModalTarget(data.target, spaceId: data.spaceId)
+            try scope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
+                ownedSearchID = searchID
+                lastSearchText = text
+                ownedSearchResults = []
+                rows = []
+                preparedRouteUnavailable = false
+            }
+            let identity = try await scope.loadModalPropertyIdentity()
+            guard let original = searchService as? SearchService else {
+                throw OriginalEditorPropertyModalError.unsupportedOriginalDelegate
+            }
+            let excludedIds = searchExcludedIds
+            let result = try await scope.owner.performRead(
+                contextId: scope.objectId, spaceId: scope.spaceId,
+                rpcNames: ["ObjectSearch"], requiredPermissions: OriginalEditorPropertyScope.listPermissions
+            ) {
+                try await original.searchRelations(text: text, excludedIds: excludedIds, spaceId: scope.spaceId)
+            }
+            try Task.checkCancellation()
+            try scope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
+                guard ownedSearchID == searchID else { return }
+                let existing = result.filter { (try? scope.requireModalProperty($0, identity: identity)) != nil }
+                let formats = SupportedPropertyFormat.allCases.filter {
+                    text.isEmpty || $0.title.lowercased().contains(text.lowercased())
+                }
+                ownedSearchResults = existing
+                rows = .builder {
+                    if formats.isNotEmpty {
+                        SearchDataSection(searchData: formats.map { PropertySearchData.new($0) }, sectionName: Loc.propertiesFormats)
+                    }
+                    if existing.isNotEmpty {
+                        SearchDataSection(searchData: existing.map { PropertySearchData.existing($0) }, sectionName: Loc.existingProperties)
+                    }
+                }
+            }
+        } catch {
+            guard ownedSearchID == searchID else { return }
+            reportPreparedFailure(scope)
+        }
+    }
+
+    private func presentOriginalProperty(name: String, format: SupportedPropertyFormat,
+                                         scope: OriginalEditorPropertyScope) {
+        do {
+            try scope.requireModalTarget(data.target, spaceId: data.spaceId)
+            try scope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
+                newPropertyData = PropertyInfoData(
+                    name: name, objectId: data.objectId, spaceId: data.spaceId,
+                    target: data.target, mode: .create(format: format), isReadOnly: false,
+                    originalEditorScope: scope
+                )
+            }
+        } catch { reportPreparedFailure(scope) }
+    }
+
+    private func onOriginalRowTap(_ row: PropertySearchData, scope: OriginalEditorPropertyScope) {
+        switch row {
+        case .new(let format):
+            presentOriginalProperty(name: "", format: format, scope: scope)
+        case .existing(let selected):
+            // Reserve before Task creation. Selection comes from this current
+            // native search result; its property document is then opened anew.
+            let action = scope.prepareAction(requiredPermissions: OriginalEditorPropertyScope.listPermissions) { [self] in
+                try scope.requireModalTarget(data.target, spaceId: data.spaceId)
+                guard ownedSearchResults.contains(where: {
+                    $0.id.utf8.elementsEqual(selected.id.utf8) &&
+                    $0.key.utf8.elementsEqual(selected.key.utf8) &&
+                    $0.spaceId.utf8.elementsEqual(selected.spaceId.utf8)
+                }) else { throw OriginalEditorPropertyModalError.invalidPropertyIdentity }
+                let original = try OriginalObjectActionsServiceBinding.requireOriginal(objectActionsService)
+                let originalProperties = try scope.originalProperties(propertiesService)
+                let actual = try await scope.withSelectedModalProperty(
+                    id: selected.id, requiredPermissions: [.editDetails],
+                    beforeMutation: { [self] actual in
+                        guard actual.key.utf8.elementsEqual(selected.key.utf8), actual.format == selected.format else {
+                            throw OriginalEditorPropertyModalError.invalidPropertyIdentity
+                        }
+                        try await scope.perform(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
+                            try await originalProperties.addProperties(objectId: scope.objectId, propertiesDetails: [actual])
+                        }
+                    }
+                ) { _, actual, _ in
+                    try await original.updateBundledDetails(contextID: actual.id, details: [.lastUsedDate(Date.now)])
+                    return actual
+                }
+                try scope.withActionCallback(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
+                    data.onRelationSelect(actual, false)
+                    dismiss?()
+                }
+            }
+            Task { [self] in
+                do { try await action() }
+                catch { reportPreparedFailure(scope) }
+            }
+        }
+    }
+
+    private func reportPreparedFailure(_ scope: OriginalEditorPropertyScope) {
+        try? scope.withCurrent {
+            preparedRouteUnavailable = true
+        }
     }
 }

@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "status": "PASS_EXPECTED_OLD_ACTOR_ERROR_AND_TWO_NEW_UNDO_ALERT_BOUNDARY_GROUPS",
+  "candidate_sha256": "b4f5af4ba13cdc13e8b6d2303e7a0c7a759f06e6060115216ae4b470dce34edc",
+  "inputs_sha256": "c59911d8388694fd1337df5de6ebb5c1076fe4dbeb1b83328be70ca793dd2093",
+  "expected_red_errors": [
+    "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-editorpage-actor-20261122\\semantic-package\\Tests\\UndoAlertBoundary\\OriginalShake.swift:21:40: error: call to main actor-isolated instance method 'scheduleMutationTask(operation:)' in a synchronous nonisolated context [#ActorIsolatedCall]"
+  ],
+  "expected_red_exit": 1,
+  "new_tests": 2,
+  "tests": [
+    {
+      "classname": "UndoAlertBoundary.OriginalUndoAlertActorBoundaryControls",
+      "name": "undoAlertKeepsSynchronousTapReservationAndDeferredOriginalCall()",
+      "time": "0.0108247"
+    },
+    {
+      "classname": "UndoAlertBoundary.OriginalUndoAlertActorBoundaryControls",
+      "name": "undoAlertKeepsWeakModelLifetimeAndUnboundLegacyPath()",
+      "time": "0.0013953"
+    }
+  ],
+  "xunit_sha256": "0f5eba8c57efbf4076979dd42bb0be4e49e641deb1893ba963fb870a3d23c11e",
+  "binary": {
+    "path": "semantic-package\\.build\\x86_64-unknown-windows-msvc\\debug\\OriginalUndoAlertActorBoundaryPackageTests.xctest",
+    "sha256": "51f9f68ecb57414f6797d1b793f2b4504f6c1a8e78146198dc835b1d783a03cd",
+    "bytes": 523264
+  },
+  "all_inputs_unchanged": true,
+  "limits": [
+    "Complete original AlertModel compiles with only the reviewed two MainActor callback annotations; UIKit import is replaced by Foundation plus an explicitly labelled Style enum probe. Full original changed file is separately parsed.",
+    "Unchanged complete shakeMotionDidAppear body and actual four field types/MainActor declaration are retained; other ViewModel bodies and initialization are projected.",
+    "Exact existing generic scheduleMutationTask/default owner-context/scheduleOriginalEditorMutation signatures and bodies are retained. Other protocol requirements are not included.",
+    "EditorDocumentWriteOwner, scheduled admission, native object service, router, document and localization/style values are explicit disposable probes, not native authority. These controls do not requalify the real Owner/Invocation, native undo or UIKit.",
+    "Actual original AlertsFactory/Router are preserved as reviewed source dependencies but not compiled with substitute UIKit. Genuine Apple compilation must accept the actual UIKit handler and full module.",
+    "Expected-old actor compile error is distinguished from candidate semantic/runtime results. New tests cover per-tap registration before deferred work, cancel/presentation inactivity, rejected probe admission, weak-self release, exact object argument and nil-owner original scheduler branch. No old cut, composition, participant, Space, SQLite or UI tests run."
+  ]
+}

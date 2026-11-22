@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "actual_run": 44982412759,
+  "actual_head": "a5fffd7f0ead01b3086019f4c1bef7c01f3a699d",
+  "artifact_id": 14738955400,
+  "artifact_sha256": "36a8977310cfa3cb1e88b754dbc3aeaef7b6813b33013e94e9a9d4fb5cfc3dee",
+  "framework_build": {
+    "command": [
+      "xcodebuild",
+      "build",
+      "-project",
+      "/Users/runner/work/anytype-swift/anytype-swift/Anytype.xcodeproj",
+      "-scheme",
+      "AnytypeOriginalEditor",
+      "-configuration",
+      "Debug-Anytype",
+      "-destination",
+      "platform=iOS Simulator,id=6AE6E818-BD70-4471-B6D7-9BC103834335",
+      "-derivedDataPath",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44982412759-1/producer-derived",
+      "-resultBundlePath",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-evidence/framework-build.xcresult",
+      "-onlyUsePackageVersionsFromResolvedFile",
+      "OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED $(ORIGINAL_EDITOR_SYMBOL_GRAPH_FLAGS)",
+      "ONLY_ACTIVE_ARCH=YES",
+      "ARCHS=arm64",
+      "SWIFT_OPTIMIZATION_LEVEL=-Onone",
+      "CODE_SIGN_IDENTITY=-",
+      "CODE_SIGNING_ALLOWED=YES",
+      "CODE_SIGNING_REQUIRED=YES",
+      "PROVISIONING_PROFILE_SPECIFIER="
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "finished_at": "2026-11-22T04:00:16.804356+00:00",
+    "returncode": 65,
+    "started_at": "2026-11-22T03:51:29.389279+00:00",
+    "stderr_sha256": "2d4fd8cd4a8490be00c21b2c40e09d9030e03b7b845d3e9faf7a33dd5d36ab2b",
+    "stdout_sha256": "0cd806e7c0fe31c82e017c48a911b81b6c041c54f1dd819a6afac39d0efbf0fc",
+    "timed_out": false,
+    "timeout_seconds": 6000
+  },
+  "actual_errors": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettings/ObjectSettingsViewModel.swift",
+      "line": 399,
+      "diagnostic": "missing return in closure expected to return '(any (~Copyable & ~Escapable).Type)?'"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettings/ObjectSettingsViewModel.swift",
+      "line": 408,
+      "diagnostic": "missing return in closure expected to return '(any (~Copyable & ~Escapable).Type)?'"
+    }
+  ],
+  "unchanged_source_controls": 221,
+  "source_before_after_identical": true,
+  "macro_restoration": {
+    "status": "EXACT_ORIGINAL_MACRO_TRUST_RESTORED",
+    "wrote_trust_store": true
+  },
+  "repair_patch_sha256": "e583121edcd2231d72b5deeae22e24e8e3b8f016bf383132264d1cc928e35268",
+  "review": "Root independently read exact two-line diff, generic helper and both subscription bodies; approved explicit Void results with no owner/account/source gate or ordering change.",
+  "focused_new_inference_controls": 4,
+  "new_syntax_files": 1,
+  "full_apple_framework_repair_validation": "PENDING",
+  "native_editor_runtime_tests": 0,
+  "source_ownership": "Required bounded upstream-owned existing integration compiler repair; downstream unrelated schema work remains isolated.",
+  "upstream_develop_observed": "d857b23ea540be33d6faab4f7a7a1a260ab578c1",
+  "created_at": "2026-11-22T04:06:01.588288+00:00"
+}
