@@ -2,6 +2,12 @@ name: T5 actual local signed revocation
 
 on:
   workflow_call:
+    inputs:
+      runtime_profile:
+        description: Exact native runtime variant; method selection is fixed
+        type: string
+        required: false
+        default: r15-attachment-v1
 
 permissions:
   contents: read
@@ -13,6 +19,7 @@ jobs:
     env:
       T5_GO_IMAGE: golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8
       PYTHONDONTWRITEBYTECODE: '1'
+      T5_CURRENT_READ_PROFILE: ${{ inputs.runtime_profile }}
     steps:
       - name: Checkout exact controller and one native fixture
         uses: actions/checkout@v4
@@ -33,10 +40,19 @@ jobs:
           ref: d98420b1113536afd08cde6de9a5816f6d27ffff
           path: heart
           persist-credentials: false
-      - name: Check only new revocation receipt and privacy controls
+      - name: Check affected typed-denial and candidate composition controls
         run: |
           mkdir -p evidence/toolchain
-          python3 -B control/Tools/PinkhaNativeDerived/test_t5_signed_revocation.py -v > evidence/controller-controls.log 2>&1
+          python3 -B control/Tools/PinkhaNativeDerived/test_t5_signed_revocation.py -v \
+            SignedRevocationControls.test_current_denial_or_retired_space_both_require_exact_zero_payload \
+            SignedRevocationControls.test_successful_empty_query_is_not_a_denial \
+            SignedRevocationControls.test_payload_and_counts_cannot_hide_behind_an_error \
+            SignedRevocationControls.test_only_exact_native_authority_denial_retires_access \
+            SignedRevocationControls.test_component_requires_its_exact_one_actual_terminal \
+            > evidence/controller-controls.log 2>&1
+          T5_CURRENT_READ_SOURCE="$GITHUB_WORKSPACE/source" T5_CURRENT_READ_HEART="$GITHUB_WORKSPACE/heart" \
+            python3 -B control/Tools/PinkhaNativeDerived/test_current_read_runtime.py -v \
+            >> evidence/controller-controls.log 2>&1
       - name: Restore compatible compiled native dependencies
         id: cache
         uses: actions/cache/restore@v4
@@ -62,7 +78,7 @@ jobs:
             --mount "type=bind,src=$GITHUB_WORKSPACE/native-work,dst=/workspace/work" \
             --mount "type=bind,src=$GITHUB_WORKSPACE/evidence,dst=/workspace/evidence" \
             --mount "type=bind,src=$GITHUB_WORKSPACE/.t5-cache,dst=/cache" \
-            -e T5_GO_IMAGE -e GITHUB_RUN_ID -e GITHUB_RUN_ATTEMPT -e GITHUB_SHA \
+            -e T5_GO_IMAGE -e GITHUB_RUN_ID -e GITHUB_RUN_ATTEMPT -e GITHUB_SHA -e T5_CURRENT_READ_PROFILE \
             -e CC=gcc -e CXX=g++ -e GOTOOLCHAIN=local \
             -e GOMODCACHE=/cache/go-mod -e GOCACHE=/cache/go-build \
             -e GIT_OPTIONAL_LOCKS=0 -e PYTHONDONTWRITEBYTECODE=1 \

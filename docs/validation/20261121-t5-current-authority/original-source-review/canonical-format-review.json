@@ -1,0 +1,63 @@
+{
+  "status": "SOURCE_COMPOSITION_AND_SELECTED_CONTROLS_PASS",
+  "native_execution": "NOT_RUN",
+  "original_review_sha256": "abe7e78d9494cee32ef2a627f2c64da98ee96f15f4d6223de9ff4c211ae8b646",
+  "retained_controller_log_sha256": "1da6023967627407ee7cbd567209f9d969c7a8f67bb7ee18554902afcdf2bb88",
+  "retained_selected_control_methods": 8,
+  "controls_rerun": 0,
+  "paths": [
+    {
+      "path": "core/object.go",
+      "windows_crlf": true,
+      "canonical_after_sha256": "620f0800760b3db9440b530c6931ef33ae795fb940c9bc91add124e0f4546eec",
+      "gofmt_exact": true
+    },
+    {
+      "path": "core/block.go",
+      "windows_crlf": true,
+      "canonical_after_sha256": "01c9db826f331f9992286b34c5716c72ed9cf7437a622fc71162cc67e9b425e4",
+      "gofmt_exact": true
+    },
+    {
+      "path": "space/clientspace/space.go",
+      "windows_crlf": true,
+      "canonical_after_sha256": "6570cf7701c1a0bcf87032626e2cb8f83619fa62cdf7000fbde89b9cceda219c",
+      "gofmt_exact": true
+    },
+    {
+      "path": "core/application/pinkha_current_read.go",
+      "windows_crlf": true,
+      "canonical_after_sha256": "107cda73897f750644e6c3a3f23692b74382710409dd906088149e9e4d59e3b5",
+      "gofmt_exact": true
+    },
+    {
+      "path": "core/application/pinkha_current_read_test.go",
+      "windows_crlf": true,
+      "canonical_after_sha256": "ece83e0c058a27769ad85b6388622813f7792a5dfec0580feedfad7089b1979b",
+      "gofmt_exact": true
+    },
+    {
+      "path": "core/pinkha_current_read.go",
+      "windows_crlf": true,
+      "canonical_after_sha256": "aa07483e974039638b290591e2f73157303560a977ab82b968d4dcfd6a943df5",
+      "gofmt_exact": true
+    },
+    {
+      "path": "space/clientspace/pinkha_current_read.go",
+      "windows_crlf": true,
+      "canonical_after_sha256": "ca7bc57f9c15cde547c8cd14dfac8cc60193093c8eb094f04d5bc9653dd5a104",
+      "gofmt_exact": true
+    },
+    {
+      "path": "space/clientspace/pinkha_current_read_test.go",
+      "windows_crlf": true,
+      "canonical_after_sha256": "a81eebeacf12c72386f7ec82d5c23d12251c0d850b1b4ab5be8ce8653ae7766f",
+      "gofmt_exact": true
+    }
+  ],
+  "patch_sha256": "977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9",
+  "inventory_sha256": "d7ff255272a947c008b2bbbf951fff863b4b2469a37954c60a7cc22b0fa8301f",
+  "runtime_variant": "r15-attachment-current-read-v1",
+  "runtime_version": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-native-t5-lookup-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-torah-attachment-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-current-read-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9",
+  "diagnosis": "Windows git apply materialized CRLF; exact canonical LF candidate bytes parse and match gofmt. No product code or successful control rerun."
+}
