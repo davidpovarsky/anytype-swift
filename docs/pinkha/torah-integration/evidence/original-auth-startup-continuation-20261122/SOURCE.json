@@ -1,0 +1,39 @@
+{
+  "status": "STOP_CANCELLATION_DEADLOCK_FIXED_SOURCE_EXECUTION_PENDING",
+  "base": "b5162d777e3ebc5c4c0d044e02b52347c0c3dd6e",
+  "parent_stageb": "4cc56934121d73152a8d73f0b97cfea81ae3864b",
+  "files": [
+    {
+      "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+      "sha256": "a009c7e9d5e2b7fce143f59bcf2c2352ece76ae3f28dd6617997100b52563c7a",
+      "bytes": 9440,
+      "preimage_matches_b516": true
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Account/EditorAccountWriteTransition.swift",
+      "sha256": "11eddb8832b7a73b079665562b964073baef7fce3d6594ef3980915a9a429443",
+      "bytes": 4589,
+      "preimage_matches_b516": true
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Auth/AuthService.swift",
+      "sha256": "9ca5eb334ff4fc27140c1a41c6ed24477ef1a8a19ae396a3a556775b065a728f",
+      "bytes": 19501,
+      "preimage_matches_b516": true
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift",
+      "sha256": "bc0ccb3f962867031ab960df0210174591fd6b09f1e7aa4b7e6989fb60139af2",
+      "bytes": 18352,
+      "preimage_matches_b516": true
+    }
+  ],
+  "shared_release_controls": "Existing six results preserved; default attemptCaptures=[] retained; no replay",
+  "selected_space_controls": "Existing ten results preserved; source paths unchanged",
+  "focused_auth_execution": "NOT_RUN; focused controls in preparation",
+  "swift_parse": "NOT_RUN; no local compiler and Windows version command timed out before source",
+  "peer_review": "Peer found accepted-Stop caller cancellation and Stop-failure startup-drain deadlocks before final SDK composition; both actor paths corrected in this child",
+  "callsite_audit": "Bounded 14-file current-source review; GitHub index incomplete; compiler required for exhaustive signature validation",
+  "supersedes_auth_draft": "9351857cf66426ad2075d5f6cb8259c5442f443f",
+  "accepted_stop_ownership": "Unstructured cleanup Task owns Stop once admitted; caller cancellation reported only after actual cleanup; failure leaves previous retired attempt cleanup owned and allows Stop retry"
+}

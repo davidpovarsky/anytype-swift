@@ -3,74 +3,208 @@ import Factory
 import Services
 import HanlinHostContracts
 
-/// Thin downstream decorator: native authentication remains the single authentication owner.
-/// The existing remove-data choice is also the sole authority to erase Hanlin host metadata.
+/// Native Auth remains the account owner. These exact attempts only restrict
+/// the existing Hanlin shutdown/resume calls and admit original Back cancellation.
 actor PinkhaHanlinAuthService: AuthServiceProtocol {
     private let base: any AuthServiceProtocol
     private let accounts = Container.shared.accountManager()
     private var bootstrap: any PinkhaSpaceBootstrapServiceProtocol { Container.shared.pinkhaBootstrapService() }
-    private var changingAccount = false
+    private var current: OriginalAuthAttempt?
+    private var stopping: OriginalAuthAttempt?
+    private var successfulStopRequired = false
 
     init(base: any AuthServiceProtocol) { self.base = base }
 
     func createWallet() async throws -> String {
-        try beginAccountChange(); defer { changingAccount = false }
-        return try await base.createWallet()
+        let base = base
+        return try await perform(kind: .ordinary) { attempt in
+            try await OriginalAuthRequestContext.$parent.withValue(attempt) { try await base.createWallet() }
+        }
     }
+
     func walletRecovery(mnemonic: String) async throws {
-        try beginAccountChange(); defer { changingAccount = false }
-        try await base.walletRecovery(mnemonic: mnemonic)
+        let base = base
+        try await perform(kind: .ordinary) { attempt in
+            try await OriginalAuthRequestContext.$parent.withValue(attempt) { try await base.walletRecovery(mnemonic: mnemonic) }
+        }
     }
+
     func accountRecover() async throws {
-        try beginAccountChange(); defer { changingAccount = false }
-        try await base.accountRecover()
+        let base = base
+        try await perform(kind: .ordinary) { attempt in
+            try await OriginalAuthRequestContext.$parent.withValue(attempt) { try await base.accountRecover() }
+        }
     }
-    func mnemonicByEntropy(_ entropy: String) async throws -> String { try await base.mnemonicByEntropy(entropy) }
+
+    func mnemonicByEntropy(_ entropy: String) async throws -> String {
+        try await base.mnemonicByEntropy(entropy)
+    }
 
     func createAccount(name: String, iconOption: Int, imagePath: String) async throws -> AccountData {
-        try beginAccountChange(); defer { changingAccount = false }
-        try await PinkhaHanlinAccountOwner.shared.closeAccount(accounts.account.id, removeData: false)
-        await bootstrap.quiesceAccountOperations()
-        let account = try await base.createAccount(name: name, iconOption: iconOption, imagePath: imagePath)
-        try await bootstrap.resumeAccountOperations()
-        try await PinkhaHanlinAccountOwner.shared.accountDidOpen(account.id)
-        return account
+        let base = base
+        let bootstrap = bootstrap
+        let previousAccount = accounts.account.id
+        return try await perform(kind: .startup) { attempt in
+            try await self.stage(attempt) {
+                try await PinkhaHanlinAccountOwner.shared.closeAccount(previousAccount, removeData: false)
+            }
+            try await self.stage(attempt) { await bootstrap.quiesceAccountOperations() }
+            let account = try await self.stage(attempt) {
+                try await OriginalAuthRequestContext.$parent.withValue(attempt) {
+                    try await base.createAccount(name: name, iconOption: iconOption, imagePath: imagePath)
+                }
+            }
+            try await self.stage(attempt) { try await bootstrap.resumeAccountOperations() }
+            try await self.stage(attempt) {
+                try await MainActor.run {
+                    try attempt.validate()
+                    try PinkhaHanlinAccountOwner.shared.accountDidOpen(account.id)
+                }
+            }
+            return account
+        }
     }
 
     func selectAccount(id: String, preferredSpaceId: String) async throws -> AccountData {
-        try beginAccountChange(); defer { changingAccount = false }
-        try await PinkhaHanlinAccountOwner.shared.closeAccount(accounts.account.id, removeData: false)
-        await bootstrap.quiesceAccountOperations()
-        let account = try await base.selectAccount(id: id, preferredSpaceId: preferredSpaceId)
-        try await bootstrap.resumeAccountOperations()
-        try await PinkhaHanlinAccountOwner.shared.accountDidOpen(account.id)
-        return account
+        let base = base
+        let bootstrap = bootstrap
+        let previousAccount = accounts.account.id
+        return try await perform(kind: .startup) { attempt in
+            try await self.stage(attempt) {
+                try await PinkhaHanlinAccountOwner.shared.closeAccount(previousAccount, removeData: false)
+            }
+            try await self.stage(attempt) { await bootstrap.quiesceAccountOperations() }
+            let account = try await self.stage(attempt) {
+                try await OriginalAuthRequestContext.$parent.withValue(attempt) {
+                    try await base.selectAccount(id: id, preferredSpaceId: preferredSpaceId)
+                }
+            }
+            try await self.stage(attempt) { try await bootstrap.resumeAccountOperations() }
+            try await self.stage(attempt) {
+                try await MainActor.run {
+                    try attempt.validate()
+                    try PinkhaHanlinAccountOwner.shared.accountDidOpen(account.id)
+                }
+            }
+            return account
+        }
     }
 
     func logout(removeData: Bool) async throws {
-        try beginAccountChange(); defer { changingAccount = false }
-        try await PinkhaHanlinAccountOwner.shared.closeAccount(accounts.account.id, removeData: removeData)
-        await bootstrap.quiesceAccountOperations()
-        try await base.logout(removeData: removeData)
+        guard stopping == nil else { throw HanlinHostError.staleContext }
+        let previous = current
+        if let previous {
+            // Keep the existing busy rejection for destructive overlap. Only
+            // the real Back/logout(false) route supersedes a pending startup.
+            guard previous.kind == .startup, !removeData else { throw HanlinHostError.staleContext }
+        }
+        let stop = try OriginalAuthAttempt(kind: .stop)
+        stopping = stop
+        previous?.retire() // synchronous, also revokes the child's Auth attempt
+        let originalAccount = accounts.account.id
+        let bootstrap = bootstrap
+        // This accepted Stop must outlive cancellation of its UI caller. Its
+        // native child is the operation that releases any retired startup.
+        let cleanup = Task { [self] in
+            do {
+                // True removal keeps the original journal poison/flush/removal
+                // before native erasure. This path never overlaps a startup.
+                try await PinkhaHanlinAccountOwner.shared.closeAccount(originalAccount, removeData: removeData)
+                // Dispatch real original Stop before joining any retired startup
+                // or bootstrap stage. It can cancel native AccountSelect/Create.
+                try await OriginalAuthRequestContext.$parent.withValue(stop) {
+                    try await base.logout(removeData: removeData)
+                }
+                await previous?.waitForDrain()
+                await bootstrap.quiesceAccountOperations()
+                // An operation admitted before retirement may drain after Stop
+                // began. Reclose its non-destructive presentation state afterwards.
+                try await PinkhaHanlinAccountOwner.shared.closeAccount(originalAccount, removeData: false)
+                let finalAccount = accounts.account.id
+                if !finalAccount.utf8.elementsEqual(originalAccount.utf8) {
+                    try await PinkhaHanlinAccountOwner.shared.closeAccount(finalAccount, removeData: false)
+                }
+                successfulStopRequired = false
+                stop.finishOuter()
+                if stopping === stop { stopping = nil }
+            } catch {
+                stop.retire()
+                // Do not join a native startup after Stop failed: another Stop
+                // must remain admissible to release that retired operation.
+                successfulStopRequired = true
+                stop.finishOuter()
+                if stopping === stop { stopping = nil }
+                throw error
+            }
+        }
+        try await cleanup.value
+        try Task.checkCancellation()
     }
 
     func deleteAccount() async throws -> AccountStatus {
-        try beginAccountChange(); defer { changingAccount = false }
-        try await PinkhaHanlinAccountOwner.shared.closeAccount(accounts.account.id, removeData: false)
-        return try await base.deleteAccount()
+        let base = base
+        let account = accounts.account.id
+        return try await perform(kind: .ordinary) { attempt in
+            try await self.stage(attempt) {
+                try await PinkhaHanlinAccountOwner.shared.closeAccount(account, removeData: false)
+            }
+            return try await OriginalAuthRequestContext.$parent.withValue(attempt) { try await base.deleteAccount() }
+        }
     }
 
     func restoreAccount() async throws -> AccountStatus {
-        try beginAccountChange(); defer { changingAccount = false }
-        let status = try await base.restoreAccount()
-        try await PinkhaHanlinAccountOwner.shared.accountDidOpen(accounts.account.id)
-        return status
+        let base = base
+        return try await perform(kind: .ordinary) { attempt in
+            let status = try await OriginalAuthRequestContext.$parent.withValue(attempt) { try await base.restoreAccount() }
+            let account = self.accounts.account.id
+            try await self.stage(attempt) {
+                try await MainActor.run {
+                    try attempt.validate()
+                    try PinkhaHanlinAccountOwner.shared.accountDidOpen(account)
+                }
+            }
+            return status
+        }
     }
 
-    private func beginAccountChange() throws {
-        // Actor reentrancy must not select another account while removal awaits journal flushing,
-        // then let the original logout act on that newly selected account.
-        guard !changingAccount else { throw HanlinHostError.staleContext }
-        changingAccount = true
+    private func stage<Value: Sendable>(
+        _ attempt: OriginalAuthAttempt,
+        operation: @escaping @Sendable () async throws -> Value
+    ) async throws -> Value {
+        try requireCurrent(attempt)
+        let admissions = try attempt.admitStage()
+        defer { for admission in admissions { admission.cancel() } }
+        let result = try await operation()
+        try requireCurrent(attempt)
+        return result
+    }
+
+    private func perform<Value: Sendable>(
+        kind: OriginalAuthAttempt.Kind,
+        operation: @escaping @Sendable (OriginalAuthAttempt) async throws -> Value
+    ) async throws -> Value {
+        guard current == nil, stopping == nil, !successfulStopRequired else { throw HanlinHostError.staleContext }
+        let attempt = try OriginalAuthAttempt(kind: kind)
+        current = attempt
+        return try await withTaskCancellationHandler {
+            do {
+                let result = try await operation(attempt)
+                try requireCurrent(attempt)
+                attempt.finishOuter()
+                if current === attempt { current = nil }
+                return result
+            } catch {
+                attempt.retire()
+                attempt.finishOuter()
+                await attempt.waitForDrain()
+                if current === attempt { current = nil }
+                throw error
+            }
+        } onCancel: { attempt.retire() }
+    }
+
+    private func requireCurrent(_ attempt: OriginalAuthAttempt) throws {
+        guard current === attempt, stopping == nil else { throw HanlinHostError.staleContext }
+        try attempt.validate()
     }
 }
