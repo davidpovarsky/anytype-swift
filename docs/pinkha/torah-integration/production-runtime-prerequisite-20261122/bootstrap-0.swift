@@ -1,0 +1,153 @@
+import AnytypeCore
+import Services
+
+protocol LoginStateServiceProtocol: AnyObject, Sendable {
+    var isFirstLaunchAfterRegistration: Bool { get }
+    var isFirstLaunchAfterAuthorization: Bool { get }
+    func setupStateAfterLoginOrAuth(account: AccountData) async
+    func setupStateAfterAuth() async
+    func setupStateAfterRegistration(account: AccountData) async
+    func cleanStateAfterLogout() async
+    func setupStateBeforeLoginOrAuth() async
+}
+
+final class LoginStateService: LoginStateServiceProtocol, Sendable {
+    
+    private let isFirstLaunchAfterRegistrationStorage = AtomicStorage(false)
+    private let isFirstLaunchAfterAuthorizationStorage = AtomicStorage(false)
+    
+    var isFirstLaunchAfterRegistration: Bool {
+        isFirstLaunchAfterRegistrationStorage.value
+    }
+    
+    var isFirstLaunchAfterAuthorization: Bool {
+        isFirstLaunchAfterAuthorizationStorage.value
+    }
+    
+    private let objectTypeProvider: any ObjectTypeProviderProtocol = Container.shared.objectTypeProvider()
+    private let middlewareConfigurationProvider: any MiddlewareConfigurationProviderProtocol = Container.shared.middlewareConfigurationProvider()
+    private let expandedService: any ExpandedServiceProtocol = Container.shared.expandedService()
+    private let membershipStatusStorage: any MembershipStatusStorageProtocol = Container.shared.membershipStatusStorage()
+    private let propertyDetailsStorage: any PropertyDetailsStorageProtocol = Container.shared.propertyDetailsStorage()
+    private let workspacesStorage: any SpaceViewsStorageProtocol = Container.shared.spaceViewsStorage()
+    private let chatDetailsStorage: any ChatDetailsStorageProtocol = Container.shared.chatDetailsStorage()
+    private let accountParticipantsStorage: any ParticipantsStorageProtocol = Container.shared.participantsStorage()
+    private let objectsWithUnreadDiscussionsSubscription: any ObjectsWithUnreadDiscussionsSubscriptionProtocol = Container.shared.objectsWithUnreadDiscussionsSubscription()
+    private let participantSpacesStorage: any ParticipantSpacesStorageProtocol = Container.shared.participantSpacesStorage()
+    private let storeKitService: any StoreKitServiceProtocol = Container.shared.storeKitService()
+    private let syncStatusStorage: any SyncStatusStorageProtocol = Container.shared.syncStatusStorage()
+    private let p2pStatusStorage: any P2PStatusStorageProtocol = Container.shared.p2pStatusStorage()
+    private let networkConnectionStatusDaemon: any NetworkConnectionStatusDaemonProtocol = Container.shared.networkConnectionStatusDaemon()
+    private let userDefaults: any UserDefaultsStorageProtocol = Container.shared.userDefaultsStorage()
+    private let activeSpaceManager: any ActiveSpaceManagerProtocol = Container.shared.activeSpaceManager()
+    private let profileStorage: any ProfileStorageProtocol = Container.shared.profileStorage()
+    private let basicUserInfoStorage: any BasicUserInfoStorageProtocol = Container.shared.basicUserInfoStorage()
+    private let pushNotificationsPermissionService: any PushNotificationsPermissionServiceProtocol = Container.shared.pushNotificationsPermissionService()
+    private let spaceIconForNotificationsHandler: any SpaceIconForNotificationsHandlerProtocol = Container.shared.spaceIconForNotificationsHandler()
+    private let spaceFileUploadService: any SpaceFileUploadServiceProtocol = Container.shared.spaceFileUploadService()
+    private let appIconBadgeService: any AppIconBadgeServiceProtocol = Container.shared.appIconBadgeService()
+    private let chatMessagesPreviewsStorage: any ChatMessagesPreviewsStorageProtocol = Container.shared.chatMessagesPreviewsStorage()
+    private let crossSpaceTypesStorage: any CrossSpaceTypesStorageProtocol = Container.shared.crossSpaceTypesStorage()
+    private let crossSpaceParticipantsStorage: any CrossSpaceParticipantsStorageProtocol = Container.shared.crossSpaceParticipantsStorage()
+    private let thermalProfilerTrigger: any ThermalProfilerTriggerProtocol = Container.shared.thermalProfilerTrigger()
+    private let memoryPressureProfilerTrigger: any MemoryPressureProfilerTriggerProtocol = Container.shared.memoryPressureProfilerTrigger()
+    private let debugProfileEventHandler: any DebugProfileEventHandlerProtocol = Container.shared.debugProfileEventHandler()
+        
+    // MARK: - LoginStateServiceProtocol
+    
+    func setupStateAfterLoginOrAuth(account: AccountData) async {
+        middlewareConfigurationProvider.setupConfiguration(account: account)
+        WidgetSwipeTip.isFirstSession = false
+
+        await startSubscriptions()
+    }
+
+    func setupStateAfterAuth() async {
+        isFirstLaunchAfterAuthorizationStorage.value = true
+        WidgetSwipeTip.isFirstSession = false
+    }
+    
+    func setupStateAfterRegistration(account: AccountData) async {
+        isFirstLaunchAfterRegistrationStorage.value = true
+        WidgetSwipeTip.isFirstSession = true
+        middlewareConfigurationProvider.setupConfiguration(account: account)
+
+        await startSubscriptions()
+    }
+    
+    func cleanStateAfterLogout() async {
+        basicUserInfoStorage.cleanUserIdAfterLogout()
+        expandedService.clearData()
+        middlewareConfigurationProvider.removeCachedConfiguration()
+        pushNotificationsPermissionService.unregisterForRemoteNotifications()
+        spaceFileUploadService.cancelAllUploads()
+        // Live activity is memory-only and per account
+        await MainActor.run {
+            Container.shared.chatActivityStore().clearAll()
+        }
+        await stopSubscriptions()
+        // After the subscriptions stop nothing can write the old account's state back.
+        userDefaults.cleanStateAfterLogout()
+    }
+    
+    func setupStateBeforeLoginOrAuth() async {
+        await syncStatusStorage.startSubscription()
+        await p2pStatusStorage.startSubscription()
+    }
+    
+    // MARK: - Private
+    
+    private func startSubscriptions() async {
+        await workspacesStorage.startSubscription()
+        await chatDetailsStorage.startSubscription()
+        await chatMessagesPreviewsStorage.startSubscription()
+        await accountParticipantsStorage.startSubscription()
+        await objectsWithUnreadDiscussionsSubscription.startSubscription()
+        await participantSpacesStorage.startSubscription()
+        if FeatureFlags.unifiedSearch {
+            // Search deps (type captions, person chips, author attribution) - kept
+            // alive for the account lifetime, updates are rare
+            await crossSpaceTypesStorage.startSubscription()
+            await crossSpaceParticipantsStorage.startSubscription()
+        }
+        await networkConnectionStatusDaemon.start()
+        await storeKitService.startListenForTransactions()
+        await profileStorage.startSubscription()
+        await activeSpaceManager.startSubscription()
+        await spaceIconForNotificationsHandler.startUpdating()
+
+        await appIconBadgeService.startUpdating()
+        await thermalProfilerTrigger.startSubscription()
+        await memoryPressureProfilerTrigger.startSubscription()
+        await debugProfileEventHandler.startSubscription()
+
+        Task {
+            await membershipStatusStorage.startSubscription()
+        }
+    }
+    
+    private func stopSubscriptions() async {
+        await workspacesStorage.stopSubscription()
+        await chatDetailsStorage.stopSubscription()
+        await chatMessagesPreviewsStorage.stopSubscriptionAndClean()
+        await propertyDetailsStorage.stopSubscription()
+        await objectTypeProvider.stopSubscription()
+        await accountParticipantsStorage.stopSubscription()
+        await objectsWithUnreadDiscussionsSubscription.stopSubscription()
+        await participantSpacesStorage.stopSubscription()
+        await crossSpaceTypesStorage.stopSubscription()
+        await crossSpaceParticipantsStorage.stopSubscription()
+        await membershipStatusStorage.stopSubscriptionAndClean()
+        await syncStatusStorage.stopSubscriptionAndClean()
+        await p2pStatusStorage.stopSubscriptionAndClean()
+        await networkConnectionStatusDaemon.stop()
+        await storeKitService.stopListenForTransactions()
+        await profileStorage.stopSubscription()
+        await activeSpaceManager.stopSubscription()
+        await spaceIconForNotificationsHandler.stopUpdatingAndClearData()
+        await appIconBadgeService.stopUpdatingAndClearBadge()
+        await thermalProfilerTrigger.stopSubscriptionAndClean()
+        await memoryPressureProfilerTrigger.stopSubscriptionAndClean()
+        await debugProfileEventHandler.stopSubscriptionAndClean()
+    }
+}
