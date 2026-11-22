@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "base_head": "cb2df9baa201db0ce404ba37eac853424bae6204",
+  "upstream_observed": "d857b23ea540be33d6faab4f7a7a1a260ab578c1\trefs/heads/develop",
+  "failure_run": 44978502186,
+  "failure_artifact": 14737027101,
+  "failure_artifact_sha256": "ee74d656be583028f8891a102197e06378bbd59bcdc282a63afc756400b8b7f0",
+  "files": [
+    {
+      "path": "Modules/Services/Sources/Services/Publishing/PublishingService.swift",
+      "classification": "UPSTREAM_OWNED narrow correction of authorized integration",
+      "before_sha256": "340bfcaca9fb5f674785e413b314a10f08adf54bec8e0afe73f90457ccd23c5a",
+      "after_sha256": "f467ca77baea1a814cdb2a6eecc994678c66fe8db5ad2fe4ce2fe748c909fa27",
+      "before_git_blob": "4f58c0a5aaee9019f0daacb3ef2fb23cd9aa636b"
+    },
+    {
+      "path": "Modules/Services/Sources/Services/Templates/TemplatesService.swift",
+      "classification": "UPSTREAM_OWNED narrow correction of authorized integration",
+      "before_sha256": "c21f07ead3da5f365a2c858e9b54249d0df80fcf62d43aaf3d8c00ed94ace764",
+      "after_sha256": "2ce0b09239e2082841210fb075d74a0c6bcc092b44eb21f34ae716af4f7794e0",
+      "before_git_blob": "844a8992f1acbe55c7cc26ea27a9cc229d747918"
+    }
+  ],
+  "reason": "Repair actual Services cross-module compiler errors preserving original error and exact referenced template-type semantics",
+  "scope": "Only two original Services files. No generated protobuf/Heart, owner, caller, source, macro, package or wire changes.",
+  "authorization": "User standing all-development authorization plus root independent requested boundary review; product acceptance remains open."
+}

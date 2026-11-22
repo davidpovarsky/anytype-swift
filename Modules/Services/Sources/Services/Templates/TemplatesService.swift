@@ -49,7 +49,7 @@ final class TemplatesService: TemplatesServiceProtocol {
     public func cloneTemplate(blockId: String) async throws {
         if let requiredSpaceId {
             let details = try await objectDetails(objectId: blockId, spaceId: requiredSpaceId)
-            guard details.isTemplate else { throw OriginalTemplatesServiceBindingError.wrongObjectKind }
+            try await requireTemplate(details, spaceId: requiredSpaceId)
         }
         _ = try await ClientCommands.objectListDuplicate(.with {
             $0.objectIds = [blockId]
@@ -58,7 +58,7 @@ final class TemplatesService: TemplatesServiceProtocol {
     
     public func createTemplateFromObjectType(objectTypeId: String, spaceId: String) async throws -> String {
         let objectDetails = try await objectDetails(objectId: objectTypeId, spaceId: spaceId)
-        if requiredSpaceId != nil, !objectDetails.isObjectType {
+        if requiredSpaceId != nil, !objectDetails.resolvedLayoutValue.isObjectType {
             throw OriginalTemplatesServiceBindingError.wrongObjectKind
         }
         
@@ -87,7 +87,7 @@ final class TemplatesService: TemplatesServiceProtocol {
     public func deleteTemplate(templateId: String) async throws {
         if let requiredSpaceId {
             let details = try await objectDetails(objectId: templateId, spaceId: requiredSpaceId)
-            guard details.isTemplate else { throw OriginalTemplatesServiceBindingError.wrongObjectKind }
+            try await requireTemplate(details, spaceId: requiredSpaceId)
         }
         _ = try await ClientCommands.objectSetIsArchived(.with {
             $0.contextID = templateId
@@ -98,12 +98,12 @@ final class TemplatesService: TemplatesServiceProtocol {
     public func setTemplateAsDefaultForType(objectTypeId: String, templateId: String) async throws {
         if let requiredSpaceId {
             let type = try await objectDetails(objectId: objectTypeId, spaceId: requiredSpaceId)
-            guard type.isObjectType else { throw OriginalTemplatesServiceBindingError.wrongObjectKind }
+            guard type.resolvedLayoutValue.isObjectType else { throw OriginalTemplatesServiceBindingError.wrongObjectKind }
             if !templateId.isEmpty {
                 // Read and verify the actual selected template; its owner and
                 // the target type owner remain retained by the caller.
                 let template = try await objectDetails(objectId: templateId, spaceId: requiredSpaceId)
-                guard template.isTemplate else { throw OriginalTemplatesServiceBindingError.wrongObjectKind }
+                try await requireTemplate(template, spaceId: requiredSpaceId)
                 guard template.targetObjectType.utf8.elementsEqual(objectTypeId.utf8) else {
                     throw OriginalTemplatesServiceBindingError.wrongTemplateTarget
                 }
@@ -123,6 +123,20 @@ final class TemplatesService: TemplatesServiceProtocol {
     
     // MARK: - Private
     
+    /// The original app's isTemplate resolves details.type and checks that
+    /// ObjectType's unique key. Services cannot use the app-only cached provider.
+    /// Read that exact type through the existing strict same-Space ObjectShow
+    /// path, inheriting the current task-local owner and native dispatch permit.
+    private func requireTemplate(_ details: ObjectDetails, spaceId: String) async throws {
+        guard !details.type.isEmpty, !details.type.utf8.contains(0) else {
+            throw OriginalTemplatesServiceBindingError.wrongObjectKind
+        }
+        let type = try await objectDetails(objectId: details.type, spaceId: spaceId)
+        guard type.resolvedLayoutValue.isObjectType, type.uniqueKeyValue == .template else {
+            throw OriginalTemplatesServiceBindingError.wrongObjectKind
+        }
+    }
+
     private func objectDetails(objectId: String, spaceId: String) async throws -> ObjectDetails {
         if let requiredSpaceId, !spaceId.utf8.elementsEqual(requiredSpaceId.utf8) {
             throw OriginalTemplatesServiceBindingError.invalidSpace

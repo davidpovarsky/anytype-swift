@@ -62,9 +62,11 @@ public final class PublishingService: PublishingServiceProtocol {
     public func getStatus(spaceId: String, objectId: String) async throws -> PublishState? {
         do {
             return try await getStatus(spaceId: spaceId, objectId: objectId, requireExactAbsence: false)
-        } catch let error as Anytype_Rpc.Publishing.GetStatus.Response.Error {
-            if error.code == .null { return nil }
-            else { throw error }
+        } catch {
+            if let responseError = error as? Anytype_Rpc.Publishing.GetStatus.Response.Error,
+               responseError.code == .null { return nil }
+            // Preserve the original Swift.Error existential across the module boundary.
+            throw error
         }
     }
 
