@@ -1,0 +1,53 @@
+{
+  "reviewer": "clang_sdk",
+  "at": "2026-11-22T18:31:31.339641+00:00",
+  "status": "BOUNDED_SOURCE_REVIEW_CLEAR_NOT_COMPILED",
+  "source_sha256": "a63c93aeb4df66c5c70556f273b37a44eb6a46ebdfdcb27e1e0a649322eceeb2",
+  "source_git_blob": "ac6966ccf820e66b847cd2acd8c62bdb9cc9c4da",
+  "exact_inverse_preimage": {
+    "bytes": 15775,
+    "sha256": "bf33794809bff676321ae0265e0caf6539fd7feaa69edaf4d14829753c131ac1",
+    "git_blob": "66a2d5dd0237e883912b921c9fe7151df91a0d7a"
+  },
+  "source_index_sha256": "d11f24255975c58dc241bb9913c8e1506d7c8f350d9b1da5a27f7ae30f37b81e",
+  "references_verified": [
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "edce5b975b173059522f90adb71271fb95adf963",
+      "path": "Anytype/Sources/ServiceLayer/ServicesDI.swift",
+      "git_blob": "dfc2b87f5e688b6fb5b89e24d58799f65751ea67",
+      "bytes": 19148,
+      "sha256": "62d07a9d2040365fc03a127e63c5f84f3a67b2128ce1a89848578e2308bff1a5"
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "edce5b975b173059522f90adb71271fb95adf963",
+      "path": "Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift",
+      "git_blob": "21085b9a22f05d44ce4199005122a0a7e41e5d05",
+      "bytes": 21412,
+      "sha256": "7fc5fc32d5dd7f21d6133f72511ccc133dea9dbe6bdabcbc9a5e435deffa8da1"
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "edce5b975b173059522f90adb71271fb95adf963",
+      "path": "Anytype/Sources/ServiceLayer/SpaceStorage/SpaceViewsStorage.swift",
+      "git_blob": "57e247b98ef5d8898154794a4121a6b9ff69b931",
+      "bytes": 17829,
+      "sha256": "f1570f8cff28d87152ea455ded6bc0bdfeb729e0beb3a70e3a47fb06b4710a57"
+    }
+  ],
+  "rpc_composition_sha256": "22ca541163fe4439940fe2111e52ef158798eb6fbb5d4e72f9937521dd99e751",
+  "conclusions": [
+    "Method retains actual selected attempt ownership and introduces no caller-supplied account, Space, permission, isCurrent closure or generic source binding.",
+    "Concrete singleton storage resolution matches exact ServicesDI registrations. Both current permission getters return captured subscription-backed records and validate them.",
+    "Stored selected accountSpaceId and exact spaceViewId bind the getter result; the original workspaceBinding validates source/account/view generations before the existing restrictive operation composition.",
+    "Existing requiringSpaceEditPermission also matches permission captures against the original account capture and evaluates current SpacePermissions.canEdit before dispatch.",
+    "The narrow method delegates to the previously reviewed owned operation and history-copy path; it does not claim that stopSubscription synchronously acknowledges every native drain."
+  ],
+  "tests_or_generators_executed": 0,
+  "product_edits": 0,
+  "remaining": [
+    "Actual generated RPC namespace/type availability and SDK typecheck.",
+    "Native failure/cancellation/drain observations and later actual production destination callsite."
+  ]
+}

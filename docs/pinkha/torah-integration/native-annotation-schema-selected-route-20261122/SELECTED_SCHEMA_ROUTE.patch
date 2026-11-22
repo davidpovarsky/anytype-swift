@@ -1,0 +1,36 @@
+--- edce/Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift
++++ candidate/Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift
+@@ -35,6 +35,33 @@
+     func validate() throws {
+         try attempt.validate()
+         try attempt.validateReturnedInfo(accountInfo)
++    }
++
++    /// Registers only this actually selected Space's fixed annotation schema.
++    /// The original account/selection/view generations and current subscription
++    /// permissions remain internal. The response and drained history are
++    /// historical observations, not a reusable write, body or ACK authority.
++    @MainActor
++    func registerOriginalAnnotationSchema(
++        onDrained: @escaping @MainActor @Sendable (OriginalAnnotationSchemaCallHistory) -> Void
++    ) async throws -> Anytype_Rpc.Annotation.Schema.Register.Response {
++        try validate()
++        guard let participants = Container.shared.participantsStorage() as? ParticipantsStorage,
++              let spaceViews = Container.shared.spaceViewsStorage() as? SpaceViewsStorage else {
++            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
++        }
++        let spaceID = accountInfo.accountSpaceId
++        let participant = try participants.currentParticipantEditPermission(spaceId: spaceID)
++        let spaceView = try spaceViews.currentOriginalSpaceViewPermission(spaceId: spaceID)
++        guard spaceView.originalSpaceView.id.utf8.elementsEqual(accountInfo.spaceViewId.utf8) else {
++            throw EditorDocumentWriteError.rejected(.wrongContext)
++        }
++        let binding = try attempt.workspaceBinding()
++        try validate()
++        return try await binding.performOriginalAnnotationSchemaRegistration(
++            expectedAccountID: accountID, spaceID: spaceID,
++            participant: participant, spaceView: spaceView, onDrained: onDrained
++        )
+     }
+ 
+     func capture(
