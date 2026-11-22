@@ -80,8 +80,24 @@ final class ObjectSettingsViewModel {
     // of those actions are filtered out of the quick capture menu. Quick capture also
     // never activates the space, so its per-space `AccountInfo` is legitimately absent -
     // opening them there would assert on every space switch to compute nothing.
+    private enum PreparedWidgetKind: Hashable {
+        case channel
+        case personal
+    }
+
     @ObservationIgnored
-    private lazy var widgetObject: (any BaseDocumentProtocol)? = {
+    private var preparedWidgetSessions: [PreparedWidgetKind: PreparedEditorPageSession] = [:]
+    @ObservationIgnored
+    private var activePreparedWidgetSubscriptions: Set<PreparedWidgetKind> = []
+
+    // External sources never evaluate the original provider's untracked open
+    // Task. The retained target is acquired through the existing child factory.
+    private var widgetObject: (any BaseDocumentProtocol)? {
+        preparedSession == nil ? legacyWidgetObject : preparedWidgetSessions[.channel]?.document
+    }
+
+    @ObservationIgnored
+    private lazy var legacyWidgetObject: (any BaseDocumentProtocol)? = {
         guard !quickCapture else { return nil }
         guard let info = workspaceStorage.spaceInfo(spaceId: spaceId) else {
             anytypeAssertionFailure("info not found")
@@ -93,8 +109,12 @@ final class ObjectSettingsViewModel {
     // Uses per-space `AccountInfo` from `workspaceStorage` (not the global
     // `accountManager.account.info`) because personal widgets are per-space and
     // the global info can race app launch with `AccountData.empty`.
+    private var personalWidgetsObject: (any BaseDocumentProtocol)? {
+        preparedSession == nil ? legacyPersonalWidgetsObject : preparedWidgetSessions[.personal]?.document
+    }
+
     @ObservationIgnored
-    private lazy var personalWidgetsObject: (any BaseDocumentProtocol)? = {
+    private lazy var legacyPersonalWidgetsObject: (any BaseDocumentProtocol)? = {
         guard !quickCapture else { return nil }
         guard let info = workspaceStorage.spaceInfo(spaceId: spaceId) else {
             anytypeAssertionFailure("info not found for personal widgets")
@@ -231,7 +251,7 @@ final class ObjectSettingsViewModel {
         }
     }
 
-    /// Foreign widget/Space writers and not-yet-bound modal writers are not
+    /// Foreign channel/Space writers and not-yet-bound modal writers are not
     /// authorized by a page Owner. Keep their original nil route and visible
     /// menu entries; the prepared Host must fail closed until the exact target
     /// and its original service graph are qualified separately.
@@ -249,8 +269,8 @@ final class ObjectSettingsViewModel {
     func startDocumentTask() async {
         guard (try? withCurrentSource {}) != nil else { return }
         async let documentSub: () = startDocumentSubscription()
-        async let widgetSub: () = startWidgetDocSubscription(widgetObject)
-        async let personalWidgetSub: () = startWidgetDocSubscription(personalWidgetsObject)
+        async let widgetSub: () = startWidgetDocSubscription(kind: .channel)
+        async let personalWidgetSub: () = startWidgetDocSubscription(kind: .personal)
         async let participantSub: () = startParticipantSpaceViewSubscription()
         async let spaceViewSub: () = startSpaceViewSubscription()
         _ = await (documentSub, widgetSub, personalWidgetSub, participantSub, spaceViewSub)
@@ -261,6 +281,77 @@ final class ObjectSettingsViewModel {
             guard (try? withCurrentSource {}) != nil else { return }
             updateSettings()
             updateActions()
+        }
+    }
+
+    private func startWidgetDocSubscription(kind: PreparedWidgetKind) async {
+        guard let preparedSession else {
+            await startWidgetDocSubscription(kind == .channel ? widgetObject : personalWidgetsObject)
+            return
+        }
+        guard !quickCapture, activePreparedWidgetSubscriptions.insert(kind).inserted else { return }
+        defer { activePreparedWidgetSubscriptions.remove(kind) }
+        do {
+            let targetId = try withCurrentSource { try originalWidgetID(kind: kind) }
+            let childPreparation = try PreparedEditorChildPreparation(owner: preparedSession.owner)
+            let session = try await childPreparation.prepare(data: EditorPageObject(
+                objectId: targetId, spaceId: spaceId, mode: .handling, usecase: .embedded
+            ))
+            defer {
+                session.retire()
+                if preparedWidgetSessions[kind] === session {
+                    preparedWidgetSessions[kind] = nil
+                }
+            }
+            try Task.checkCancellation()
+            try withCurrentSource {
+                try validatePreparedWidget(session, kind: kind)
+                preparedWidgetSessions[kind] = session
+                updateActions()
+            }
+            for await _ in session.document.syncPublisher.values {
+                try Task.checkCancellation()
+                try withCurrentSource {
+                    try validatePreparedWidget(session, kind: kind)
+                    updateActions()
+                }
+            }
+        } catch {
+            // Acquisition failure never falls back to a cached/raw-open target.
+            // The visible original action rejects until this actual target is
+            // acquired; an attempted write still enters the parent failure latch.
+            return
+        }
+    }
+
+    private func originalWidgetID(kind: PreparedWidgetKind) throws -> String {
+        guard workspaceStorage is SpaceViewsStorage,
+              let info = workspaceStorage.spaceInfo(spaceId: spaceId) else {
+            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+        }
+        let targetId = kind == .channel ? info.widgetsId : info.personalWidgetsId
+        guard !targetId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              !targetId.utf8.elementsEqual(objectId.utf8) else {
+            throw EditorDocumentWriteError.rejected(.wrongContext)
+        }
+        return targetId
+    }
+
+    private func validatePreparedWidget(
+        _ session: PreparedEditorPageSession, kind: PreparedWidgetKind
+    ) throws {
+        let targetId = try originalWidgetID(kind: kind)
+        try session.owner.performSynchronousOperation(
+            contextId: targetId, spaceId: spaceId, requiresEditing: false
+        ) {
+            try session.owner.validateDocument(session.document)
+            guard session.document.isOpened, session.document.mode.isHandling,
+                  session.data.objectId.utf8.elementsEqual(targetId.utf8),
+                  session.data.spaceId.utf8.elementsEqual(spaceId.utf8),
+                  session.document.objectId.utf8.elementsEqual(targetId.utf8),
+                  session.document.spaceId.utf8.elementsEqual(spaceId.utf8) else {
+                throw EditorDocumentWriteError.rejected(.wrongContext)
+            }
         }
     }
 
@@ -475,7 +566,10 @@ final class ObjectSettingsViewModel {
     }
 
     func changeFavoriteState() async throws {
-        try requireQualifiedTarget()
+        if preparedSession != nil {
+            try await changePreparedFavoriteState()
+            return
+        }
         // TODO: IOS-5864 No dedicated favorite/unfavorite analytics event exists today.
         // Add `logFavoriteObject` / `logUnfavoriteObject` (or a unified
         // `logChangeFavoriteState(favorited:)`) once product confirms the event shape.
@@ -492,6 +586,42 @@ final class ObjectSettingsViewModel {
         try await personalFavoritesService.toggle(objectId: details.id, personalWidgetsObject: personalWidgetsObject)
         toastData = ToastBarData(wasFavorited ? Loc.unfavorited : Loc.favorited)
         dismiss.toggle()
+    }
+
+    private func changePreparedFavoriteState() async throws {
+        try await performAction(requiredPermissions: [.applyUneditableActions]) { [self] in
+            let session = try withCurrentSource {
+                guard let session = preparedWidgetSessions[.personal] else {
+                    throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+                }
+                try validatePreparedWidget(session, kind: .personal)
+                return session
+            }
+            let service = try PersonalFavoritesService.requireOriginal(personalFavoritesService)
+            let wasFavorited = try await session.owner.performMutation(
+                contextId: session.data.objectId,
+                onDrained: { [session] in withExtendedLifetime(session) {} }
+            ) { @MainActor [self] in
+                try withCurrentSource(requiredPermissions: [.applyUneditableActions]) {
+                    try validatePreparedWidget(session, kind: .personal)
+                    guard let details = document.details,
+                          details.id.utf8.elementsEqual(objectId.utf8),
+                          details.isVisibleLayout(spaceType: spaceType),
+                          !details.isTemplate,
+                          details.resolvedLayoutValue != .participant else {
+                        throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+                    }
+                }
+                let wasFavorited = session.document.containsWidgetFor(objectId: objectId)
+                try await service.toggle(objectId: objectId, personalWidgetsObject: session.document)
+                return wasFavorited
+            }
+            try withCurrentSource {
+                try validatePreparedWidget(session, kind: .personal)
+                toastData = ToastBarData(wasFavorited ? Loc.unfavorited : Loc.favorited)
+                dismiss.toggle()
+            }
+        }
     }
 
     func changeLockState() async throws {
