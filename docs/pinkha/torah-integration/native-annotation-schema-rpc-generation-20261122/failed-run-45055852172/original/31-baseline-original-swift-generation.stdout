@@ -1,0 +1,27 @@
+\033[1mIf you encounter issues with generation, run \033[32msetup-env\033[0m
+./Modules/ProtobufMessages/Scripts/generate.sh
+Using configuration file at '/Users/runner/work/anytype-swift/anytype-swift/build/Schema-RPC-Owned-Work/baseline-swift/Modules/ProtobufMessages/Scripts/Loc/sourcery.yml'
+Scanning sources...
+Found 1915 types in 392 files, 392 changed from last run.
+Loading templates...
+Loaded 1 templates.
+Generating code...
+Finished.
+Processing time 8.66 seconds
+./build/sourcery --config ./Modules/ProtobufMessages/sourcery.yml
+Using configuration file at './Modules/ProtobufMessages/sourcery.yml'
+Scanning sources...
+Found 1915 types in 392 files, 0 changed from last run.
+Loading templates...
+Loaded 1 templates.
+Generating code...
+Finished.
+Processing time 6.01 seconds
+./Tools/anytype-swift-codegen --yaml-path ./Modules/ProtobufMessages/anytypeGen.yml --project-dir ./Modules/ProtobufMessages --output-dir ./Modules/ProtobufMessages/Sources/Generated
+./build/swiftgen --config ./Modules/Services/swiftgen.yml
+Executing configuration file ./Modules/Services/swiftgen.yml
+File written: ../../Modules/Services/Sources/Generated/BundledPropertyKey+internalKeys.swift
+File written: ../../Modules/Services/Sources/Generated/BundledPropertyKey+SystemKeys.swift
+File written: ../../Modules/Services/Sources/Generated/ObjectTypeUniqueKey+Bundled.swift
+File written: ../../Modules/Services/Sources/Generated/BundledPropertyKey.swift
+File written: ../../Modules/Services/Sources/Generated/BundledPropertiesValueProvider.swift

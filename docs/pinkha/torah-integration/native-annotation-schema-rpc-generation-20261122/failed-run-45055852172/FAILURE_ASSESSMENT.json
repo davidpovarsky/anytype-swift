@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "status": "VERIFIED_ACTUAL_GENERATION_BASELINE_WITH_SWIFT_IMPORT_FAILURE",
+  "run_id": 45055852172,
+  "attempt": 1,
+  "source_head": "ca6eb576d0ac105ef260bc2703b7d0dc186a8656",
+  "artifact": {
+    "id": 14768420988,
+    "bytes": 11898059,
+    "sha256": "8d76ee6f186f32985c276dba1f79e2ee82e0db7c1ad9c259ce4c2350b43fc769",
+    "payloads_verified": 2986
+  },
+  "commands": {
+    "total": 33,
+    "success": 32,
+    "failure": 1,
+    "all_terminal_with_actual_owned_group_drain_record": true,
+    "owned_work_removed": true
+  },
+  "failed_command": {
+    "label": "baseline-typecheck-generated-swift",
+    "argv": [
+      "xcrun",
+      "swiftc",
+      "-typecheck",
+      "-module-name",
+      "OtzariaGeneratedProtocolMessages",
+      "-I",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Schema-RPC-Owned-Work/baseline-swift/build/swift-protobuf/.build/release/Modules",
+      "@/Users/runner/work/anytype-swift/anytype-swift/build/Schema-RPC-Owned-Work/baseline-swift-generated-inputs.rsp"
+    ],
+    "duration_seconds": 5.434,
+    "stderr_sha256": "fecf006b2ad901807174dfe573346551f02cda82e016888bde50fc73db9d5f97",
+    "error": "no such module 'SwiftProtobuf'"
+  },
+  "verified_successes": [
+    "Both materialized SDK copies complete and identical to the same1038-file original inventory, with private distinct file identities.",
+    "Exact-source SwiftProtobuf and file splitter builds and custom Gogo plugin builds return0.",
+    "Baseline original native generation returns0 with required fresh outputs retained.",
+    "Baseline original Swift generation returns0 with required fresh outputs retained.",
+    "Baseline go build ./pb ./pb/service returns0."
+  ],
+  "baseline_outputs": {
+    "native": 11,
+    "swift": 693,
+    "middleware": 37,
+    "failure_time_bytes_same_as_generated_snapshot": true,
+    "tracked_drift_counts": {
+      "native": 0,
+      "swift": 0
+    }
+  },
+  "candidate_generation": "NOT_REACHED; candidate failure-time payloads are original tracked bytes and confer no generation result.",
+  "unknowns": [
+    "The actual compiled SwiftProtobuf module tree and built generator binaries were not archived; only executable fingerprints and build logs are retained.",
+    "The hardcoded .build/release/Modules search directory failed; the actual module location is not observed by this artifact.",
+    "Final after-generation source/tool immutability checks were not reached after the failed Swift typecheck; no claim that those checks passed."
+  ],
+  "preservation": [
+    "Reuse these verified baseline output bytes for continuation where sufficient.",
+    "Do not rerun prior successful native suites or count fixture/source inspection as native acceptance."
+  ],
+  "integration_authority": false,
+  "full_sdk_typecheck": false,
+  "ios_build": false,
+  "native_tests_executed": 0
+}

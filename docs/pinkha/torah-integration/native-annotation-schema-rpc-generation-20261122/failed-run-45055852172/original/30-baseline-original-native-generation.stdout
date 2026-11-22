@@ -1,0 +1,23 @@
+Generating protobuf packages for lib (Go)...
+GOGO_NO_UNDERSCORE=1 GOGO_EXPORT_ONEOF_INTERFACE=1 protoc --gogofaster_out=Mgoogle/protobuf/timestamp.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/struct.proto=github.com/gogo/protobuf/types,Mpkg/lib/pb/model/protos/models.proto=github.com/anyproto/anytype-heart/pkg/lib/pb/model,Mpkg/lib/pb/model/protos/export_report.proto=github.com/anyproto/anytype-heart/pkg/lib/pb/model,Mpkg/lib/pb/model/protos/localstore.proto=github.com/anyproto/anytype-heart/pkg/lib/pb/model,,Mgoogle/protobuf/descriptor.proto=github.com/gogo/protobuf/protoc-gen-gogo/descriptor:./pkg/lib/pb/ pkg/lib/pb/model/protos/*.proto; mv pkg/lib/pb/pkg/lib/pb/model/*.go pkg/lib/pb/model/; rm -rf pkg/lib/pb/pkg
+GOGO_NO_UNDERSCORE=1 GOGO_EXPORT_ONEOF_INTERFACE=1 protoc --gogofaster_out=Mgoogle/protobuf/timestamp.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/struct.proto=github.com/gogo/protobuf/types,Mpkg/lib/pb/model/protos/models.proto=github.com/anyproto/anytype-heart/pkg/lib/pb/model,Mpkg/lib/pb/model/protos/export_report.proto=github.com/anyproto/anytype-heart/pkg/lib/pb/model,Mpkg/lib/pb/model/protos/localstore.proto=github.com/anyproto/anytype-heart/pkg/lib/pb/model,,Mgoogle/protobuf/descriptor.proto=github.com/gogo/protobuf/protoc-gen-gogo/descriptor:./pkg/lib/pb/ pkg/lib/pb/storage/protos/*.proto; mv pkg/lib/pb/pkg/lib/pb/storage/*.go pkg/lib/pb/storage/; rm -rf pkg/lib/pb/pkg
+Generating protobuf packages for mw (Go)...
+Generating protobuf packages for lib-server (Go)...
+mkdir -p .release
+make protos-swift
+Clear protobuf files
+Generating swift protobuf files
+Generated swift protobuf files at ./dist/ios/pb
+rm -rf protobuf
+mv dist/ios/protobuf protobuf
+mkdir -p protobuf/protos
+cp pb/protos/*.proto ./protobuf/protos
+cp pb/protos/service/*.proto ./protobuf/protos
+cp pkg/lib/pb/model/protos/*.proto ./protobuf/protos
+# Add system relations/types jsons
+mkdir -p json/
+cp pkg/lib/bundle/systemRelations.json ./json
+cp pkg/lib/bundle/relations.json ./json
+cp pkg/lib/bundle/systemTypes.json ./json
+cp pkg/lib/bundle/internalRelations.json ./json
+cp pkg/lib/bundle/internalTypes.json ./json

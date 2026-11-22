@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "job": {
+    "id": "job_5f514994ea96",
+    "type": "job_result",
+    "source": "script_run@host_7ec8382e82747448",
+    "severity": "info",
+    "tool": "script_run",
+    "host": "host_7ec8382e82747448",
+    "status": "succeeded",
+    "exit_code": 0,
+    "created_at": 1795372509.4601836,
+    "started_at": "2026-11-22T18:35:09.529300+00:00",
+    "finished_at": "2026-11-22T18:59:51.991348+00:00",
+    "duration_s": 1482.46,
+    "error": null,
+    "output_truncated": false,
+    "timeout_s": 3600,
+    "read": true,
+    "notified": {
+      "telegram": null,
+      "resend": null
+    },
+    "notify_spec": {},
+    "output": "{\"schema\": \"otzaria.finite-schema-rpc-generation-observer/1\", \"run_id\": 45055852172, \"expected_head\": \"ca6eb576d0ac105ef260bc2703b7d0dc186a8656\", \"events\": [{\"utc\": \"2026-11-22T18:35:11.133493+00:00\", \"event\": \"RUN_STATE\", \"status\": \"in_progress\", \"conclusion\": null}, {\"utc\": \"2026-11-22T18:54:34.129658+00:00\", \"event\": \"RUN_STATE\", \"status\": \"completed\", \"conclusion\": \"failure\"}, {\"utc\": \"2026-11-22T18:59:51.853750+00:00\", \"event\": \"ARTIFACT_VERIFIED\", \"artifact_id\": 14768420988, \"generation_status\": \"FAIL\"}], \"status\": \"TERMINAL_ARTIFACT_RETAINED\", \"owned_directory\": \"C:\\\\Users\\\\DAVID\\\\Code\\\\otzaria-schema-rpc-generation-observer-20261122-45055852172\", \"run\": {\"id\": 45055852172, \"head_sha\": \"ca6eb576d0ac105ef260bc2703b7d0dc186a8656\", \"head_branch\": \"codex/otzaria-schema-rpc-copy-20261122\", \"run_attempt\": 1, \"event\": \"push\", \"status\": \"completed\", \"conclusion\": \"failure\", \"html_url\": \"https://github.com/davidpovarsky/anytype-swift/actions/runs/45055852172\", \"created_at\": \"2026-11-22T18:34:27Z\", \"updated_at\": \"2026-11-22T18:53:45Z\"}, \"artifact\": {\"id\": 14768420988, \"name\": \"Otzaria-Schema-RPC-Generation-45055852172-1\", \"bytes\": 11898059, \"sha256\": \"8d76ee6f186f32985c276dba1f79e2ee82e0db7c1ad9c259ce4c2350b43fc769\", \"path\": \"C:\\\\Users\\\\DAVID\\\\Code\\\\otzaria-schema-rpc-generation-observer-20261122-45055852172\\\\generation-artifact.zip\", \"payloads\": 2986}, \"generation_result\": {\"commands\": 33, \"control_head\": \"ca6eb576d0ac105ef260bc2703b7d0dc186a8656\", \"error\": \"owned command failed: baseline-typecheck-generated-swift\", \"error_type\": \"RuntimeError\", \"finished_unix\": 1795373597.8869472, \"full_sdk_typecheck\": false, \"integration_authority\": false, \"ios_build\": false, \"manifest_sha256\": \"48c43f21ac8f31b3c6bd7022e838273046c3baa001813bb598be6f4aaf35c7a6\", \"native_tests_executed\": 0, \"owned_command_groups_drained\": true, \"owned_work_removed\": true, \"schema\": \"otzaria.original-schema-rpc-generation-result/1\", \"status\": \"FAIL\"}}"
+  }
+}

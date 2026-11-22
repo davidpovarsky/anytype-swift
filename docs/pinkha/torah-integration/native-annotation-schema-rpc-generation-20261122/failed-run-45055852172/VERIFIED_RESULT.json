@@ -1,0 +1,384 @@
+{
+  "schema": "otzaria.independent-schema-rpc-generation-artifact-verification/1",
+  "artifact": {
+    "bytes": 11898059,
+    "sha256": "8d76ee6f186f32985c276dba1f79e2ee82e0db7c1ad9c259ce4c2350b43fc769"
+  },
+  "head": "ca6eb576d0ac105ef260bc2703b7d0dc186a8656",
+  "payloads_verified": 2986,
+  "control_inputs_locally_bound": 12,
+  "actual_result": {
+    "commands": 33,
+    "control_head": "ca6eb576d0ac105ef260bc2703b7d0dc186a8656",
+    "error": "owned command failed: baseline-typecheck-generated-swift",
+    "error_type": "RuntimeError",
+    "finished_unix": 1795373597.8869472,
+    "full_sdk_typecheck": false,
+    "integration_authority": false,
+    "ios_build": false,
+    "manifest_sha256": "48c43f21ac8f31b3c6bd7022e838273046c3baa001813bb598be6f4aaf35c7a6",
+    "native_tests_executed": 0,
+    "owned_command_groups_drained": true,
+    "owned_work_removed": true,
+    "schema": "otzaria.original-schema-rpc-generation-result/1",
+    "status": "FAIL"
+  },
+  "commands": [
+    {
+      "label": "go-version",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "xcode-version",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "swift-version",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "swift-target",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "make-version",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "baseline-clone-heart",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "baseline-checkout-heart",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "baseline-copy-materialized-swift",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "candidate-clone-heart",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "candidate-checkout-heart",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "candidate-copy-materialized-swift",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "download-protoc",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "download-sourcery",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "download-swiftgen",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "protoc-version",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "sourcery-version",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "swiftgen-version",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "clone-swift-protobuf",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "checkout-swift-protobuf",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "build-original-swift-protobuf",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "build-original-filesplit",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "build-original-gogo-plugins",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "actual-gogo-module",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "buildinfo-protoc-gen-gogofaster",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "buildinfo-protoc-gen-gogofast",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "buildinfo-protoc-gen-doc",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "locate-swift",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "locate-swiftc",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "swift-protobuf-version",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "baseline-original-native-generation",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "baseline-original-swift-generation",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "baseline-compile-generated-go",
+      "status": "TERMINAL",
+      "returncode": 0,
+      "effective_returncode": 0,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    },
+    {
+      "label": "baseline-typecheck-generated-swift",
+      "status": "TERMINAL",
+      "returncode": 1,
+      "effective_returncode": 1,
+      "timed_out": false,
+      "started": true,
+      "owned_group_drain_recorded": true
+    }
+  ],
+  "sdk_copy_receipts": {
+    "baseline": {
+      "schema": "otzaria.materialized-original-checkout-copy/1",
+      "status": "EXACT_PRIVATE_COPY",
+      "source": "/Users/runner/work/anytype-swift/anytype-swift/build/Schema-RPC-Inputs/swift",
+      "target": "/Users/runner/work/anytype-swift/anytype-swift/build/Schema-RPC-Owned-Work/baseline-swift",
+      "head": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "files": 1038,
+      "directories": 133,
+      "bytes": 20082375,
+      "inventory_sha256": "ada10d9b15052a8a41de71f2017eda1d41e85a1f2289118d87ffe8fe5f50a890",
+      "source_and_copy_unchanged_after_readback": true,
+      "file_identities_disjoint": true,
+      "lazy_fetch_disabled_for_git_reads": true,
+      "remote_clone_or_hydration": false,
+      "scope": "Already materialized source and private Git metadata only; no generator or product execution."
+    },
+    "candidate": {
+      "schema": "otzaria.materialized-original-checkout-copy/1",
+      "status": "EXACT_PRIVATE_COPY",
+      "source": "/Users/runner/work/anytype-swift/anytype-swift/build/Schema-RPC-Inputs/swift",
+      "target": "/Users/runner/work/anytype-swift/anytype-swift/build/Schema-RPC-Owned-Work/candidate-swift",
+      "head": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "files": 1038,
+      "directories": 133,
+      "bytes": 20082375,
+      "inventory_sha256": "ada10d9b15052a8a41de71f2017eda1d41e85a1f2289118d87ffe8fe5f50a890",
+      "source_and_copy_unchanged_after_readback": true,
+      "file_identities_disjoint": true,
+      "lazy_fetch_disabled_for_git_reads": true,
+      "remote_clone_or_hydration": false,
+      "scope": "Already materialized source and private Git metadata only; no generator or product execution."
+    }
+  },
+  "generated_counts": {
+    "baseline": {
+      "middleware": 37,
+      "native": 11,
+      "swift": 693
+    },
+    "tracked": {
+      "native": 11,
+      "swift": 693
+    }
+  },
+  "failure_time_counts": {
+    "baseline": {
+      "heart": 32,
+      "swift": 730
+    },
+    "candidate": {
+      "heart": 11,
+      "swift": 693
+    }
+  },
+  "verified_generated_deltas": null,
+  "scope": "Archive bytes, all indexed source/log payloads, source bindings, declared deltas and actual command outcomes only. Generated output semantics require separate review; full endpoint/Invocation/SDK/native acceptance remains open.",
+  "tool_limit": "CI records actual generator executable hashes before/after use. Executable binaries and the complete OS/SDK closure are not part of this artifact and cannot be independently rehashed here.",
+  "native_or_app_reexecutions": 0
+}
