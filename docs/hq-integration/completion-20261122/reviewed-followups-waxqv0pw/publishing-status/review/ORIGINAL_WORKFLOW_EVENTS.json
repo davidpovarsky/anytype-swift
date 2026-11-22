@@ -1,0 +1,410 @@
+{
+  "base": "35a906a6c37b5ff796ff0e0acee7089e5d81b852",
+  "source_of_audit": "d1dbb3ef0f3ae8360b32a9ac2eb1010375d16aee",
+  "source_path": "docs/pinkha/torah-integration/evidence/m17-lock-resolution-waxqv0pw-20261122/PUBLICATION_SOURCE_PROVENANCE.json",
+  "branch": "codex/otzaria-reviewed-followups-waxqv0pw-20261122",
+  "workflow_events": [
+    {
+      "path": ".github/workflows/automerge.yaml",
+      "git_blob": "f6431cd77fbbcc9582810c11c7c10eef70972491",
+      "events": "on: pull_request_target",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/branch_build.yaml",
+      "git_blob": "43143cf9dabffe677ff2b208169e16786da6ab95",
+      "events": "on:\n  # Allows you to run this workflow manually from the Actions tab\n  workflow_dispatch:\n    inputs:\n      tf_comment:\n        description: 'TestFlight Comment'\n        default: ''\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/cla.yml",
+      "git_blob": "effe2846c316b350ee924fa7ff0f4af71d3985e7",
+      "events": "on:\n  issue_comment:\n    types: [created]\n  pull_request_target:\n    types: [opened,closed,synchronize]\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/claude-code-review.yml",
+      "git_blob": "20cae5ec7b3891c4e78ee6f45ad38e29d9fb1dcb",
+      "events": "on:\n  pull_request:\n    types: [opened, synchronize]\n    # Optional: Only run on specific file changes\n    # paths:\n    #   - \"src/**/*.ts\"\n    #   - \"src/**/*.tsx\"\n    #   - \"src/**/*.js\"\n    #   - \"src/**/*.jsx\"\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/claude.yml",
+      "git_blob": "3e5eca101463317678bc628da1d58204ebb78d8b",
+      "events": "on:\n  issue_comment:\n    types: [created]\n  pull_request_review_comment:\n    types: [created]\n  issues:\n    types: [opened, assigned]\n  pull_request_review:\n    types: [submitted]\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/dev_build.yaml",
+      "git_blob": "a0e2d4be49312c6016be75014a20c057ca4925bc",
+      "events": "on:\n  schedule:\n    # 05:00 UTC\n    - cron:  '0 5 * * 1-5'\n  workflow_dispatch:\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/generator_checks.yaml",
+      "git_blob": "5a34d86e9f049eb7d2bb572f2e5e2ae140ebbf0b",
+      "events": "on:\n  pull_request:\n  workflow_dispatch:\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/ipa.yaml",
+      "git_blob": "ba46aca106d2f6f0d2cff4a66c659063382b5054",
+      "events": "on:\n  workflow_dispatch:\n    inputs:\n      build_type:\n        description: \"App build type\"\n        required: false\n        default: release\n        type: choice\n        options:\n          - release\n          - dev\n  repository_dispatch:\n    types:\n      - trigger-build\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/license-checks.yml",
+      "git_blob": "09497d5483e8ba03a9945674c1826102e2d2af9e",
+      "events": "on:\n  pull_request:\n  workflow_dispatch:\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/link_issue_to_release.yaml",
+      "git_blob": "0d06849b03a79b783e0be0065cc74d8327c4383b",
+      "events": "on:\n  pull_request:\n    types: [closed]\n    branches:\n      - develop\n      - release\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-fast-ci.yml",
+      "git_blob": "d52d2ee18a963c55b240f29e54a5363fb7248e3e",
+      "events": "on:\n  push:\n    branches:\n      - pinkha/torah-associations-native-ux-persistence-localization-2026-10-20\n\n",
+      "push_branches": [
+        "pinkha/torah-associations-native-ux-persistence-localization-2026-10-20"
+      ],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-full-acceptance.yml",
+      "git_blob": "8e0ed6b3a09232f94c23021000a04e88637ba573",
+      "events": "on:\n  workflow_call:\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-hanlin-journal-probe.yml",
+      "git_blob": "a88f2a9011ff55d06e60ffaf6b918b00817bcfc0",
+      "events": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        required: true\n  workflow_dispatch:\n    inputs:\n      source_sha:\n        description: Exact immutable reviewed source SHA\n        type: string\n        required: true\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-heart-runtime.yml",
+      "git_blob": "eea7eedd6156cdd9005f567f5938a09bdb713912",
+      "events": "on:\n  workflow_call:\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-ipa-only.yml",
+      "git_blob": "46b675f865941e5dec6b9969a5ea514a357992a0",
+      "events": "on:\n  workflow_call:\n    inputs:\n      require_full_acceptance:\n        description: Require Full Acceptance success on the same SHA\n        type: boolean\n        default: true\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-native-derived.yml",
+      "git_blob": "8af5ecbdfe4503c69fa6dca252f223a6682a9421",
+      "events": "on:\n  workflow_call:\n    inputs:\n      heart_source_run_id:\n        type: string\n        default: ''\n      validation_scope:\n        type: string\n        default: all\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-native-diagnostics.yml",
+      "git_blob": "cc0710cd3afbab05636151a78cd0538ec3d1ac5d",
+      "events": "on:\n  workflow_call:\n    inputs:\n      source_run_id:\n        required: true\n        type: string\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-native-fast-ipa.yml",
+      "git_blob": "039181f83f06e7c378b221d4056a393b8f8006e3",
+      "events": "on:\n  workflow_dispatch:\n  workflow_call:\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-native-ipa-fast.yml",
+      "git_blob": "2b10b1a16194b101380129a7a604a8d894f51169",
+      "events": "on:\n  workflow_call:\n    inputs:\n      heart_source_run_id:\n        type: string\n        default: ''\n  workflow_dispatch:\n    inputs:\n      heart_source_run_id:\n        type: string\n        default: ''\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-original-editor-framework.yml",
+      "git_blob": "2bb3376d0fb30b289032aa4ec8e7426e02ad5b73",
+      "events": "on:\n  push:\n    branches:\n      - codex/otzaria-original-editor-framework-v10-reviewed-20261121\n\n",
+      "push_branches": [
+        "codex/otzaria-original-editor-framework-v10-reviewed-20261121"
+      ],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-original-editor.yml",
+      "git_blob": "38d96edfe9a3d73f6e60c67cdbfa1be586a2e2cb",
+      "events": "on:\n  workflow_call:\n    inputs:\n      heart_source_run_id:\n        required: true\n        type: string\n      expected_app_branch:\n        required: true\n        type: string\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-sdk06-tests.yml",
+      "git_blob": "904472035d600bc04f8d23a5726501120b6fa616",
+      "events": "on:\n  workflow_call:\n    inputs:\n      heart_source_run_id:\n        description: Successful run containing the exact verified universal r14 runtime\n        required: true\n        type: string\n      expected_app_branch:\n        description: Reviewed isolated integration branch; producer branches are not accepted\n        required: true\n        type: string\n      profile:\n        description: Explicit reviewed profile sdk06/editor/wave15-core/wave15-components; no arbitrary test selection\n        required: false\n        type: string\n        default: sdk06\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-simulator-ui27.yml",
+      "git_blob": "765e04a30bae655adba3f969d6be2602eb2e59ec",
+      "events": "on:\n  workflow_call:\n    inputs:\n      ui_scope:\n        type: string\n        default: FULL_SMOKE\n      heart_source_run_id:\n        type: string\n        required: true\n      acceptance_lane:\n        type: string\n        default: ''\n      acceptance_device:\n        type: string\n        default: ipad\n      acceptance_language:\n        type: string\n        default: en\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-account-lifecycle.yml",
+      "git_blob": "114726702a8fe06488aee6a4c50a39f95d0e6181",
+      "events": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-account-rpc.yml",
+      "git_blob": "7fc3e80ac4890313975099a27925cc2f860deb84",
+      "events": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-native-clients.yml",
+      "git_blob": "77748bd290add1632786fdcc6a17f22c3c571401",
+      "events": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n      scenario:\n        type: string\n        default: bootstrap\n      crash_after_commit:\n        type: boolean\n        default: false\n      observed_remove_after_reopen:\n        type: boolean\n        default: false\n      concurrent_replace_after_reopen:\n        type: boolean\n        default: false\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-native-operations.yml",
+      "git_blob": "c20ffdf200af318a6a6c23aa9ee526826aa50847",
+      "events": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-native-rpc.yml",
+      "git_blob": "269f64544ce56422a2d61321d89b66aff8abd49c",
+      "events": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-rpc-lifecycle-races.yml",
+      "git_blob": "e04873303bbe7111feaed31a879b89d675f0f216",
+      "events": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-rpc-space-close.yml",
+      "git_blob": "067ba8aa545721b7f196a9f969784c6443eca22a",
+      "events": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-account-pairs.yml",
+      "git_blob": "9bbb3b52b2cff975d3a24fd20dfdbbe32a7f1f41",
+      "events": "on:\n  workflow_call:\n    inputs:\n      include_freshness:\n        description: Run a fifth process with native index mutations after the compatibility sequence\n        type: boolean\n        default: false\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-apple-pair.yml",
+      "git_blob": "9b2ed7fd3ddbc005a39472e82d25ad10fecfe150",
+      "events": "on:\n  workflow_call:\n    inputs:\n      include_native_ui:\n        description: After five passing native phases reuse the retained r15 App for real Inspector UI on a separate fresh iPad\n        type: boolean\n        default: false\n      include_freshness:\n        description: After four passing compatibility phases run bounded host freshness in a fifth process\n        type: boolean\n        default: false\n      heart_r14_run_id:\n        type: string\n        required: true\n      heart_r15_run_id:\n        type: string\n        required: true\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-compatibility-pairs.yml",
+      "git_blob": "5a0532e4a08eb15ccb4344bbbb6a512bc5b79c1f",
+      "events": "on:\n  workflow_call:\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-coverage-proof.yml",
+      "git_blob": "29dc84e0347a4f3533e0d111f3f66b64d86ef263",
+      "events": "on:\n  workflow_call:\n    inputs:\n      component:\n        type: string\n        default: native-index\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-native-attachment.yml",
+      "git_blob": "03b3d9ac4b7329d53b05756043c197c15a714108",
+      "events": "on:\n  workflow_call:\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-native-pagination.yml",
+      "git_blob": "1447f095b4c2aa3f045cce7878cd2ab4a9ffe03f",
+      "events": "on:\n  workflow_call:\n    inputs:\n      heart_r15_run_id:\n        type: string\n        required: true\n      include_account_retry:\n        type: boolean\n        default: false\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-r15-runtime.yml",
+      "git_blob": "2141488688297c66e2c5c52842caed0baa3dc411",
+      "events": "on:\n  workflow_call:\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-tests.yaml",
+      "git_blob": "bca318a63250ef9c969aabac592acc318501ff40",
+      "events": "on:\n  push:\n    branches:\n      - 'pinkha/*'\n    paths:\n      - 'Modules/PinkhaKit/**'\n      - 'Anytype/Sources/Pinkha/**'\n      - '.github/workflows/pinkha-tests.yaml'\n  pull_request:\n    paths:\n      - 'Modules/PinkhaKit/**'\n      - 'Anytype/Sources/Pinkha/**'\n      - '.github/workflows/pinkha-tests.yaml'\n  workflow_dispatch:\n\n",
+      "push_branches": [
+        "pinkha/*"
+      ],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-ui27-release-gate.yml",
+      "git_blob": "3191a652743f75529a0656c8fd833fad6d3f0836",
+      "events": "on:\n  workflow_call:\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha-validation.yml",
+      "git_blob": "3e3e0e2cf2166f1b3bff7436df32a930371cb9aa",
+      "events": "on:\n  workflow_dispatch:\n    inputs:\n      build_type:\n        description: \"Build type\"\n        required: false\n        default: release\n        type: choice\n        options:\n          - release\n          - dev\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha_t2l_native_probe.yml",
+      "git_blob": "7ee1cddd62079f391b974544bee14bf4c4194c79",
+      "events": "on:\n  push:\n    branches:\n      - pinkha/torah-functional-ui-single-device-2026-10-18\n    paths:\n      - Anytype/Sources/Pinkha/Torah/Storage/**\n      - Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationPayloadCodec.swift\n      - Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationRepository.swift\n      - Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahCanonicalAssociations.swift\n      - Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Storage/**\n      - AnyTypeTests/Pinkha/TorahAssociationNativeMiddlewareProbeTests.swift\n      - AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift\n  workflow_dispatch:\n\n",
+      "push_branches": [
+        "pinkha/torah-functional-ui-single-device-2026-10-18"
+      ],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pinkha_u10_native_tests.yml",
+      "git_blob": "401bf536703c6d44daab1c0ca9f70a1f69aa23de",
+      "events": "on:\n  push:\n    branches:\n      - pinkha/upstream-u10-validation-2026-10-18\n    paths-ignore:\n      - docs/pinkha/torah-integration/UPSTREAM_U10_VALIDATION_2026-10-18.md\n  workflow_dispatch:\n\n",
+      "push_branches": [
+        "pinkha/upstream-u10-validation-2026-10-18"
+      ],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/pr_tests.yml",
+      "git_blob": "8178cefd864f3d97d38f6ddd34d447705ea3ba75",
+      "events": "on:\n  pull_request:\n  workflow_dispatch:\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/release_build.yaml",
+      "git_blob": "1ac147ff05ccf2340f7c764e8345b58fd3003def",
+      "events": "on:\n  # Allows you to run this workflow manually from the Actions tab\n  workflow_dispatch:\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/test_fastlane_build.yaml",
+      "git_blob": "27f744e5cab1e0637278efd8bfeb778306841ac2",
+      "events": "on:\n  workflow_dispatch:\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/torah-inspector-ipados27.yml",
+      "git_blob": "ef500af3cfd8daede4f08393ecdf20bae2c48300",
+      "events": "on:\n  workflow_dispatch:\n    inputs:\n      route:\n        description: Stage 1 route to run\n        type: choice\n        required: true\n        options:\n          - full-acceptance\n          - ipa-only\n          - native-derived\n          - native-ipa-fast\n          - native-ipa-repair\n          - native-diagnostics\n          - t5-coverage-proof\n          - t2-native-operations\n          - t2-native-rpc\n          - t2-account-rpc\n          - t2-native-clients\n          - t2-native-clients-offline\n          - t2-native-clients-crash\n          - t2-native-clients-observed-remove\n          - t2-native-clients-concurrent-replace\n          - t2-account-lifecycle\n          - t2-rpc-lifecycle-races\n          - t2-rpc-space-close\n          - simulator-ui27\n          - heart-runtime\n          - t5-r15-runtime\n          - t5-apple-pairs\n          - t5-apple-ui\n          - t5-native-pagination\n          - t5-native-account-retry\n          - t5-native-attachment\n          - sdk06-tests\n          - hanlin-journal-probe\n          - editor-host-tests\n          - otzaria-original-editor\n          - wave15-core-tests\n          - wave15-component-tests\n          - wave15-acceptance\n      t5_component:\n        description: Bounded T5 component; index-freshness also selects the fifth Apple phase\n        type: choice\n        options:\n          - native-index\n          - projection-cache\n          - native-rpc\n          - compatibility-pairs\n          - account-pairs\n          - index-freshness\n        default: native-index\n      ui_scope:\n        description: UI27 focused diagnostic selection; no release or full matrix acceptance\n        type: choice\n        options:\n          - FULL_SMOKE\n          - STARTUP_IPAD_DIAGNOSTIC\n          - NATIVE_CANCELLATION_DIAGNOSTIC\n        default: FULL_SMOKE\n      acceptance_lane:\n        description: Existing Wave-15 lane or six isolated Release lanes after Startup is working\n        type: choice\n        options:\n          - inspector\n          - inspector-search\n          - quote-drop\n          - properties\n          - properties-set\n          - editor\n          - canonical-properties\n          - hanlin-native\n          - hanlin-selection\n          - remaining-release\n        default: inspector\n      acceptance_device:\n        description: Disposable OS27 device family\n        type: choice\n        options:\n          - ipad\n          - iphone\n        default: ipad\n      acceptance_language:\n        description: Actual app language; current non-editor methods require en\n        type: choice\n        options:\n          - en\n          - he\n        default: en\n      source_run_id:\n        description: Verified Heart runtime run, or native evidence source for diagnostics\n        type: string\n        default: ''\n      t5_r15_run_id:\n        description: Original successful r15 runtime build for same-source Apple pairing\n        type: string\n        default: ''\n      native_test_scope:\n        description: Native acceptance scope (failed-ui reuses the accepted app)\n        type: choice\n        options:\n          - all\n          - failed-ui\n          - readonly-startup\n          - t5-wave1\n        default: all\n      require_full_acceptance:\n        description: Require Full Acceptance success before IPA packaging\n        type: boolean\n        default: true\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/update_cache.yaml",
+      "git_blob": "b25478e44b73d3b56760d497cf5539e939b7515f",
+      "events": "on:\n  schedule:\n    - cron:  '0 5 * * 6'\n  workflow_dispatch:\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/update_middleware.yaml",
+      "git_blob": "0e34a806c829c0279ab1c6ae850ddfcbcd3e5bed",
+      "events": "on:\n  workflow_dispatch:\n    inputs:\n      middle_version:\n        description: \"Middleware version\"\n        required: true\n        type: string\n      task_name:\n        description: \"Task name (e.g. IOS-123)\"\n        required: false\n        type: string\n  workflow_call:\n    inputs:\n      middle_version:\n        required: true\n        type: string\n      task_name:\n        required: false\n        type: string\n\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    },
+    {
+      "path": ".github/workflows/update_middleware_nightly.yaml",
+      "git_blob": "c90696be1928137d450b6b4b3078b40ec25bcb4e",
+      "events": "on:\n  workflow_dispatch:\n  schedule:\n    # Weekdays 03:00 UTC (adjust as needed)\n    - cron: \"0 3 * * 1-5\"\n\n# Parent must grant write permissions so the child can push commits/PRs\n",
+      "push_branches": [],
+      "neutral_matches": false,
+      "trigger_matches": false
+    }
+  ]
+}

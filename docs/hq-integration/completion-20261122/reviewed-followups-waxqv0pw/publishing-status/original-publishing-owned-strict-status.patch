@@ -1,0 +1,683 @@
+diff --git a/Anytype/Sources/PresentationLayer/Flows/PublishToWebCoordinator/PublishToWebCoordinator.swift b/Anytype/Sources/PresentationLayer/Flows/PublishToWebCoordinator/PublishToWebCoordinator.swift
+index d20f6d26b5038da320020ab90d60c701823b3dcf..4972fdb65925f0aafe487ca700ca1eede4950cb8 100644
+--- a/Anytype/Sources/PresentationLayer/Flows/PublishToWebCoordinator/PublishToWebCoordinator.swift
++++ b/Anytype/Sources/PresentationLayer/Flows/PublishToWebCoordinator/PublishToWebCoordinator.swift
+@@ -4,12 +4,12 @@ struct PublishToWebCoordinator: View {
+     
+     @StateObject private var model: PublishToWebCoordinatorModel
+     
+-    init(data: PublishToWebViewData) {
+-        _model = StateObject(wrappedValue: PublishToWebCoordinatorModel(data: data))
++    init(data: PublishToWebViewData, preparedSession: PreparedEditorPageSession? = nil) {
++        _model = StateObject(wrappedValue: PublishToWebCoordinatorModel(data: data, preparedSession: preparedSession))
+     }
+     
+     var body: some View {
+-        PublishToWebView(data: model.data, output: model)
++        PublishToWebView(data: model.data, output: model, preparedSession: model.preparedSession)
+             .sheet(isPresented: $model.showMembership) {
+                 MembershipCoordinator()
+             }
+diff --git a/Anytype/Sources/PresentationLayer/Flows/PublishToWebCoordinator/PublishToWebCoordinatorModel.swift b/Anytype/Sources/PresentationLayer/Flows/PublishToWebCoordinator/PublishToWebCoordinatorModel.swift
+index 305b8f6e41b3b7394d029bbe863eb275d9b43493..b13e7cf8520f1f6dd3e894baa1bbf1dd7e4434ff 100644
+--- a/Anytype/Sources/PresentationLayer/Flows/PublishToWebCoordinator/PublishToWebCoordinatorModel.swift
++++ b/Anytype/Sources/PresentationLayer/Flows/PublishToWebCoordinator/PublishToWebCoordinatorModel.swift
+@@ -17,22 +17,41 @@ final class PublishToWebCoordinatorModel: ObservableObject, PublishToWebModuleOu
+     @Published var safariUrl: URL?
+     
+     let data: PublishToWebViewData
++    let preparedSession: PreparedEditorPageSession?
+     
+-    init(data: PublishToWebViewData) {
++    init(data: PublishToWebViewData, preparedSession: PreparedEditorPageSession? = nil) {
+         self.data = data
++        self.preparedSession = preparedSession
++    }
++
++    private func publish(_ operation: () throws -> Void) {
++        guard let preparedSession else { try? operation(); return }
++        try? preparedSession.owner.performSynchronousOperation(
++            contextId: data.objectId, spaceId: data.spaceId, requiresEditing: false
++        ) {
++            try preparedSession.owner.validateDocument(preparedSession.document)
++            try operation()
++        }
+     }
+     
+     // MARK: - PublishToWebModuleOutput
+     
+     func onShowMembership() {
+-        showMembership = true
++        publish {
++            // Account membership is a separate original account route; a page
++            // source does not grant purchase or account-management authority.
++            guard preparedSession == nil else {
++                throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
++            }
++            showMembership = true
++        }
+     }
+     
+     func onSharePreview(url: URL) {
+-        sharedUrl = url
++        publish { sharedUrl = url }
+     }
+     
+     func onOpenPreview(url: URL) {
+-        safariUrl = url
++        publish { safariUrl = url }
+     }
+ }
+diff --git a/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebInternalView.swift b/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebInternalView.swift
+index bcfa0eeff6e35afff0bc737e0add6dcdf31f7b5f..c653da11229210a3d5f3c2a6c18103800759351b 100644
+--- a/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebInternalView.swift
++++ b/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebInternalView.swift
+@@ -7,8 +7,9 @@ struct PublishToWebInternalView: View {
+ 
+     @State private var model: PublishToWebInternalViewModel
+ 
+-    init(data: PublishToWebViewInternalData, output: (any PublishToWebModuleOutput)?) {
+-        _model = State(initialValue: PublishToWebInternalViewModel(data: data, output: output))
++    init(data: PublishToWebViewInternalData, output: (any PublishToWebModuleOutput)?,
++         preparedSession: PreparedEditorPageSession? = nil) {
++        _model = State(initialValue: PublishToWebInternalViewModel(data: data, output: output, preparedSession: preparedSession))
+     }
+     
+     var body: some View {
+@@ -179,12 +180,14 @@ struct PublishToWebInternalView: View {
+                 AsyncStandardButton(
+                     Loc.unpublish,
+                     style: .secondaryLarge,
++                    prepareAction: model.hasPreparedSource ? { model.prepareUnpublish() } : nil,
+                     action: { try await model.onUnpublishTap() }
+                 )
+                 
+                 AsyncStandardButton(
+                     Loc.update,
+                     style: .primaryLarge,
++                    prepareAction: model.hasPreparedSource ? { model.preparePublish(action: .update) } : nil,
+                     action: { try await model.onPublishTap(action: .update) }
+                 )
+             }
+@@ -200,6 +203,7 @@ struct PublishToWebInternalView: View {
+             AsyncStandardButton(
+                 Loc.publish,
+                 style: .primaryLarge,
++                prepareAction: model.hasPreparedSource ? { model.preparePublish(action: .create) } : nil,
+                 action: { try await model.onPublishTap(action: .create) }
+             )
+             
+diff --git a/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebInternalViewModel.swift b/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebInternalViewModel.swift
+index a96ac95e5777d5ea0c1df4e823fd35bbf2e0088c..fd62f9608c3327326880e4cfcef051eff64bb573 100644
+--- a/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebInternalViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebInternalViewModel.swift
+@@ -4,7 +4,7 @@ import Services
+ import AnytypeCore
+ import ProtobufMessages
+ 
+-enum PublishAction {
++enum PublishAction: Sendable {
+     case create
+     case update
+ }
+@@ -41,12 +41,15 @@ final class PublishToWebInternalViewModel: PublishingPreviewOutput {
+     private let spaceId: String
+     @ObservationIgnored
+     private let objectId: String
++    @ObservationIgnored
++    private let preparedSession: PreparedEditorPageSession?
+     
+     private var analyticsObjectType: AnalyticsObjectType {
+         return objectDetails.objectType.analyticsType
+     }
+     
+-    init(data: PublishToWebViewInternalData, output: (any PublishToWebModuleOutput)?) {
++    init(data: PublishToWebViewInternalData, output: (any PublishToWebModuleOutput)?,
++         preparedSession: PreparedEditorPageSession? = nil) {
+         spaceId = data.spaceId
+         objectId = data.objectId
+         domain = data.domain
+@@ -54,87 +57,193 @@ final class PublishToWebInternalViewModel: PublishingPreviewOutput {
+         objectDetails = data.objectDetails
+         spaceType = data.spaceType
+         self.output = output
++        self.preparedSession = preparedSession
+         
+         customPath = data.status?.uri ?? data.objectDetails.name
+         showJoinSpaceButton = data.status?.joinSpace ?? true
+         
+-        previewData = previewBuilder.buildPreviewData(
+-            from: data.objectDetails,
+-            spaceName: data.spaceName,
+-            showJoinButton: showJoinSpaceButton
+-        )
++        try? withCurrentSource {
++            previewData = previewBuilder.buildPreviewData(
++                from: data.objectDetails,
++                spaceName: data.spaceName,
++                showJoinButton: showJoinSpaceButton
++            )
++        }
++    }
++
++    var hasPreparedSource: Bool { preparedSession != nil }
++
++    private func withCurrentSource<Value>(_ operation: () throws -> Value) throws -> Value {
++        guard let preparedSession else { return try operation() }
++        return try preparedSession.owner.performSynchronousOperation(
++            contextId: objectId, spaceId: spaceId, requiresEditing: false
++        ) {
++            try preparedSession.owner.validateDocument(preparedSession.document)
++            guard objectDetails.id.utf8.elementsEqual(objectId.utf8),
++                  objectDetails.spaceId.utf8.elementsEqual(spaceId.utf8) else {
++                throw EditorDocumentWriteError.rejected(.wrongContext)
++            }
++            guard preparedSession.document.permissions.canPublish else {
++                throw EditorDocumentWriteError.rejected(.notEditable)
++            }
++            return try operation()
++        }
++    }
++
++    private func originalPublishingService() throws -> any PublishingServiceProtocol {
++        guard preparedSession != nil else { return publishingService }
++        guard let original = publishingService as? PublishingService else {
++            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
++        }
++        return original
++    }
++
++    private func getStatus(from service: any PublishingServiceProtocol) async throws -> PublishState? {
++        guard preparedSession != nil else {
++            return try await service.getStatus(spaceId: spaceId, objectId: objectId)
++        }
++        guard let original = service as? PublishingService else {
++            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
++        }
++        return try await original.getStatusForOriginalEditor(spaceId: spaceId, objectId: objectId)
++    }
++
++    private func validateStatusIdentity(_ value: PublishState?) throws {
++        guard preparedSession != nil, let value else { return }
++        guard value.objectId.utf8.elementsEqual(objectId.utf8),
++              value.spaceId.utf8.elementsEqual(spaceId.utf8) else {
++            throw EditorDocumentWriteError.rejected(.wrongContext)
++        }
++    }
++
++    func preparePublish(action: PublishAction) -> @MainActor @Sendable () async throws -> Void {
++        prepareAction { [self] in try await onPublishTap(action: action) }
++    }
++
++    func prepareUnpublish() -> @MainActor @Sendable () async throws -> Void {
++        prepareAction { [self] in try await onUnpublishTap() }
++    }
++
++    private func prepareAction(
++        operation: @escaping @MainActor @Sendable () async throws -> Void
++    ) -> @MainActor @Sendable () async throws -> Void {
++        guard let preparedSession else { return operation }
++        do {
++            let scheduled = try preparedSession.owner.scheduleDocumentAction(
++                contextId: objectId, requiredPermissions: [.publish]
++            )
++            return { try await scheduled.run(operation: operation) }
++        } catch {
++            return { throw error }
++        }
++    }
++
++    private func performAction(
++        operation: @MainActor @Sendable () async throws -> Void
++    ) async throws {
++        guard let preparedSession else { try await operation(); return }
++        try await preparedSession.owner.performDocumentAction(
++            contextId: objectId, requiredPermissions: [.publish]
++        ) { @MainActor [self] in
++            try withCurrentSource {}
++            try await operation()
++        }
+     }
+     
+     func onPublishTap(action: PublishAction) async throws {
+-        switch action {
+-        case .create:
+-            AnytypeAnalytics.instance().logClickShareObjectPublish(objectType: analyticsObjectType)
+-        case .update:
+-            AnytypeAnalytics.instance().logClickShareObjectUpdate(objectType: analyticsObjectType)
+-        }
+-        
+-        try await publishingService.create(spaceId: spaceId, objectId: objectId, uri: customPath, joinSpace: showJoinSpaceButton)
+-        status = try await publishingService.getStatus(spaceId: spaceId, objectId: objectId)
+-        
+-        if status.isNotNil {
++        try await performAction { [self] in
+             switch action {
+             case .create:
+-                AnytypeAnalytics.instance().logShareObjectPublish(objectType: analyticsObjectType)
+-                toastBarData = ToastBarData(Loc.PublishingToWeb.published)
++                AnytypeAnalytics.instance().logClickShareObjectPublish(objectType: analyticsObjectType)
+             case .update:
+-                AnytypeAnalytics.instance().logShareObjectUpdate(objectType: analyticsObjectType)
+-                toastBarData = ToastBarData(Loc.PublishingToWeb.updated)
++                AnytypeAnalytics.instance().logClickShareObjectUpdate(objectType: analyticsObjectType)
++            }
++
++            let service = try originalPublishingService()
++            try await service.create(spaceId: spaceId, objectId: objectId, uri: customPath, joinSpace: showJoinSpaceButton)
++            let updatedStatus = try await getStatus(from: service)
++
++            try withCurrentSource {
++                try validateStatusIdentity(updatedStatus)
++                status = updatedStatus
++                if status.isNotNil {
++                    switch action {
++                    case .create:
++                        AnytypeAnalytics.instance().logShareObjectPublish(objectType: analyticsObjectType)
++                        toastBarData = ToastBarData(Loc.PublishingToWeb.published)
++                    case .update:
++                        AnytypeAnalytics.instance().logShareObjectUpdate(objectType: analyticsObjectType)
++                        toastBarData = ToastBarData(Loc.PublishingToWeb.updated)
++                    }
++                }
++
++                UINotificationFeedbackGenerator().notificationOccurred(.success)
+             }
+         }
+-        
+-        UINotificationFeedbackGenerator().notificationOccurred(.success)
+     }
+     
+     func onUnpublishTap() async throws {
+-        AnytypeAnalytics.instance().logClickShareObjectUnpublish(objectType: analyticsObjectType)
+-        
+-        try await publishingService.remove(spaceId: spaceId, objectId: objectId)
+-        status = try await publishingService.getStatus(spaceId: spaceId, objectId: objectId)
+-        
+-        if status.isNil {
+-            AnytypeAnalytics.instance().logShareObjectUnpublish(objectType: analyticsObjectType)
+-            toastBarData = ToastBarData(Loc.PublishingToWeb.unpublished)
++        try await performAction { [self] in
++            AnytypeAnalytics.instance().logClickShareObjectUnpublish(objectType: analyticsObjectType)
++
++            let service = try originalPublishingService()
++            try await service.remove(spaceId: spaceId, objectId: objectId)
++            let updatedStatus = try await getStatus(from: service)
++
++            try withCurrentSource {
++                try validateStatusIdentity(updatedStatus)
++                status = updatedStatus
++                if status.isNil {
++                    AnytypeAnalytics.instance().logShareObjectUnpublish(objectType: analyticsObjectType)
++                    toastBarData = ToastBarData(Loc.PublishingToWeb.unpublished)
++                }
++
++                UINotificationFeedbackGenerator().notificationOccurred(.success)
++            }
+         }
+-        
+-        UINotificationFeedbackGenerator().notificationOccurred(.success)
+     }
+     
+     func onFreeDomainTap() {
+-        AnytypeAnalytics.instance().logClickUpgradePlanTooltip(type: .publish, route: .publish)
+-        output?.onShowMembership()
++        try? withCurrentSource {
++            AnytypeAnalytics.instance().logClickUpgradePlanTooltip(type: .publish, route: .publish)
++            output?.onShowMembership()
++        }
+     }
+     
+     func updatePreviewForJoinButton(_ showJoin: Bool) {
+-        AnytypeAnalytics.instance().logJoinSpaceButtonToPublish(objectType: analyticsObjectType, type: showJoin)
+-        previewData = previewBuilder.buildPreviewData(
+-            from: previewData,
+-            showJoinButton: showJoin
+-        )
++        try? withCurrentSource {
++            AnytypeAnalytics.instance().logJoinSpaceButtonToPublish(objectType: analyticsObjectType, type: showJoin)
++            previewData = previewBuilder.buildPreviewData(
++                from: previewData,
++                showJoinButton: showJoin
++            )
++        }
+     }
+     
+     // MARK: - PublishingPreviewOutput
+     
+     func onPreviewOpenWebPage() {
+-        AnytypeAnalytics.instance().logClickShareObjectOpenPage(objectType: analyticsObjectType, route: .menu)
+-        guard let publishedUrl = urlBuilder.buildPublishedUrl(domain: domain, customPath: customPath) else { return }
+-        output?.onOpenPreview(url: publishedUrl)
++        try? withCurrentSource {
++            AnytypeAnalytics.instance().logClickShareObjectOpenPage(objectType: analyticsObjectType, route: .menu)
++            guard let publishedUrl = urlBuilder.buildPublishedUrl(domain: domain, customPath: customPath) else { return }
++            output?.onOpenPreview(url: publishedUrl)
++        }
+     }
+     
+     func onPreviewShareLink() {
+-        AnytypeAnalytics.instance().logClickShareObjectShareLink(objectType: analyticsObjectType)
+-        guard let publishedUrl = urlBuilder.buildPublishedUrl(domain: domain, customPath: customPath) else { return }
+-        output?.onSharePreview(url: publishedUrl)
++        try? withCurrentSource {
++            AnytypeAnalytics.instance().logClickShareObjectShareLink(objectType: analyticsObjectType)
++            guard let publishedUrl = urlBuilder.buildPublishedUrl(domain: domain, customPath: customPath) else { return }
++            output?.onSharePreview(url: publishedUrl)
++        }
+     }
+     
+     func onPreviewCopyLink() {
+-        AnytypeAnalytics.instance().logClickShareObjectCopyUrl(objectType: analyticsObjectType)
+-        guard let publishedUrl = urlBuilder.buildPublishedUrl(domain: domain, customPath: customPath) else { return }
+-        UIPasteboard.general.string = publishedUrl.absoluteString
+-        toastBarData = ToastBarData(Loc.copiedToClipboard(Loc.link))
++        try? withCurrentSource {
++            AnytypeAnalytics.instance().logClickShareObjectCopyUrl(objectType: analyticsObjectType)
++            guard let publishedUrl = urlBuilder.buildPublishedUrl(domain: domain, customPath: customPath) else { return }
++            UIPasteboard.general.string = publishedUrl.absoluteString
++            toastBarData = ToastBarData(Loc.copiedToClipboard(Loc.link))
++        }
+     }
+ }
+diff --git a/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebView.swift b/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebView.swift
+index 79d9678d016b3143254adb58f0381715809ed4aa..c7b1f04612edddaab06249f2fff6ef0c32165cc2 100644
+--- a/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebView.swift
++++ b/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebView.swift
+@@ -7,8 +7,9 @@ struct PublishToWebView: View {
+     @State private var model: PublishToWebViewModel
+     private weak var output: (any PublishToWebModuleOutput)?
+ 
+-    init(data: PublishToWebViewData, output: (any PublishToWebModuleOutput)?) {
+-        _model = State(initialValue: PublishToWebViewModel(data: data))
++    init(data: PublishToWebViewData, output: (any PublishToWebModuleOutput)?,
++         preparedSession: PreparedEditorPageSession? = nil) {
++        _model = State(initialValue: PublishToWebViewModel(data: data, preparedSession: preparedSession))
+         self.output = output
+     }
+     
+@@ -20,7 +21,7 @@ struct PublishToWebView: View {
+             case .error(let error):
+                 ErrorStateView(message: error)
+             case .loaded(let data):
+-                PublishToWebInternalView(data: data, output: output)
++                PublishToWebInternalView(data: data, output: output, preparedSession: model.preparedSession)
+             }
+         }
+         .task { await model.onAppear() }
+diff --git a/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebViewModel.swift b/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebViewModel.swift
+index f1a8da6dfb9479e77f533a99ddafbf160ffe5301..3be257441c5d65a51a0ac9c13059474cf2d12c51 100644
+--- a/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/Modules/PublishToWeb/PublishToWebViewModel.swift
+@@ -30,13 +30,19 @@ final class PublishToWebViewModel {
+ 
+     private let spaceId: String
+     private let objectId: String
++    let preparedSession: PreparedEditorPageSession?
+     
+-    init(data: PublishToWebViewData) {
++    init(data: PublishToWebViewData, preparedSession: PreparedEditorPageSession? = nil) {
+         spaceId = data.spaceId
+         objectId = data.objectId
++        self.preparedSession = preparedSession
+     }
+     
+     func onAppear() async {
++        if preparedSession != nil {
++            await loadPreparedObject()
++            return
++        }
+         guard let domain = participantStorage.participants.first?.publishingDomain else {
+             anytypeAssertionFailure("No participants found for account")
+             state = .error(Loc.Publishing.Error.noDomain)
+@@ -79,4 +85,69 @@ final class PublishToWebViewModel {
+             state = .error(error.localizedDescription)
+         }
+     }
++
++    private func withCurrentSource<Value>(_ operation: () throws -> Value) throws -> Value {
++        guard let preparedSession else { return try operation() }
++        return try preparedSession.owner.performSynchronousOperation(
++            contextId: objectId, spaceId: spaceId, requiresEditing: false
++        ) {
++            try preparedSession.owner.validateDocument(preparedSession.document)
++            guard preparedSession.document.permissions.canPublish else {
++                throw EditorDocumentWriteError.rejected(.notEditable)
++            }
++            return try operation()
++        }
++    }
++
++    /// The prepared route reuses the exact already-open original document. It
++    /// never reacquires a raw document or changes its captured account binding.
++    private func loadPreparedObject() async {
++        guard let preparedSession else { return }
++        do {
++            let initial: PublishToWebViewInternalData? = try withCurrentSource {
++                guard let domain = participantStorage.participants.first?.publishingDomain else {
++                    anytypeAssertionFailure("No participants found for account")
++                    state = .error(Loc.Publishing.Error.noDomain)
++                    return nil
++                }
++                guard let details = preparedSession.document.details else {
++                    anytypeAssertionFailure("No details found object")
++                    state = .error(Loc.Publishing.Error.noObjectData)
++                    return nil
++                }
++                let spaceView = activeWorkspaceStorage.spaceView(spaceId: spaceId)
++                return PublishToWebViewInternalData(
++                    objectId: objectId, spaceId: spaceId, domain: domain, status: nil,
++                    objectDetails: details, spaceName: spaceView?.title ?? "",
++                    spaceType: spaceView?.spaceType ?? .regular
++                )
++            }
++            guard let initial else { return }
++            // PublishingService is the original public final implementation.
++            // Keep the injected instance; a substitute cannot bypass Invocation.
++            guard let original = publishingService as? PublishingService else {
++                throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
++            }
++            let status = try await preparedSession.owner.performRead(
++                contextId: objectId, spaceId: spaceId, rpcNames: ["PublishingGetStatus"]
++            ) { [objectId, spaceId] in
++                try await original.getStatusForOriginalEditor(spaceId: spaceId, objectId: objectId)
++            }
++            try withCurrentSource {
++                if let status {
++                    guard status.objectId.utf8.elementsEqual(objectId.utf8),
++                          status.spaceId.utf8.elementsEqual(spaceId.utf8) else {
++                        throw EditorDocumentWriteError.rejected(.wrongContext)
++                    }
++                }
++                state = .loaded(PublishToWebViewInternalData(
++                    objectId: initial.objectId, spaceId: initial.spaceId, domain: initial.domain,
++                    status: status, objectDetails: initial.objectDetails,
++                    spaceName: initial.spaceName, spaceType: initial.spaceType
++                ))
++            }
++        } catch {
++            try? withCurrentSource { state = .error(error.localizedDescription) }
++        }
++    }
+ }
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettings/ObjectSettingsViewModel.swift b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettings/ObjectSettingsViewModel.swift
+index bb8201df3535b6ebc6c6c571a14e844707bbbe3f..9f959f12b1f1837ea1c1998599072fbc80338984 100644
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettings/ObjectSettingsViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettings/ObjectSettingsViewModel.swift
+@@ -512,7 +512,6 @@ final class ObjectSettingsViewModel {
+     
+     func onTapPublishing() {
+         do {
+-            try requireQualifiedTarget()
+             try withCurrentSource(requiredPermissions: [.publish]) {
+                 if let details = document.details {
+                     AnytypeAnalytics.instance().logClickShareObject(objectType: details.objectType.analyticsType)
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuContainer.swift b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuContainer.swift
+index 81ecbd8fa65030c6d7cfa56983f234654e491c61..b3970872a91f5163ad31cc1b60b1b7020506ee8e 100644
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuContainer.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuContainer.swift
+@@ -51,7 +51,7 @@ struct ObjectSettingsMenuContainer<Label: View, AdditionalMenuItems: View>: View
+                 VersionHistoryCoordinatorView(data: $0, output: model, preparedSession: model.preparedSession)
+             }
+             .sheet(item: $model.publishingData) {
+-                PublishToWebCoordinator(data: $0)
++                PublishToWebCoordinator(data: $0, preparedSession: model.preparedSession)
+             }
+             .sheet(item: $model.chatEditData) { data in
+                 ChatCreateView(data: data)
+diff --git a/Modules/Services/Sources/Services/Publishing/PublishingService.swift b/Modules/Services/Sources/Services/Publishing/PublishingService.swift
+index e19d7cd9e82e4f4c9d09b5e37d00abebaf658e83..4f58c0a5aaee9019f0daacb3ef2fb23cd9aa636b 100644
+--- a/Modules/Services/Sources/Services/Publishing/PublishingService.swift
++++ b/Modules/Services/Sources/Services/Publishing/PublishingService.swift
+@@ -61,15 +61,30 @@ public final class PublishingService: PublishingServiceProtocol {
+     
+     public func getStatus(spaceId: String, objectId: String) async throws -> PublishState? {
+         do {
+-            let response = try await ClientCommands.publishingGetStatus(.with {
+-                $0.spaceID = spaceId
+-                $0.objectID = objectId
+-            }).invoke(ignoreLogErrors: .badInput, .noSuchObject, .noSuchSpace, .null)
+-            
+-            return PublishState(from: response.publish)
++            return try await getStatus(spaceId: spaceId, objectId: objectId, requireExactAbsence: false)
+         } catch let error as Anytype_Rpc.Publishing.GetStatus.Response.Error {
+             if error.code == .null { return nil }
+             else { throw error }
+         }
+     }
++
++    /// Source-owned callers require the exact original unpublished sentinel.
++    /// Legacy getStatus retains its existing error policy and injected route.
++    public func getStatusForOriginalEditor(spaceId: String, objectId: String) async throws -> PublishState? {
++        try await getStatus(spaceId: spaceId, objectId: objectId, requireExactAbsence: true)
++    }
++
++    private func getStatus(spaceId: String, objectId: String, requireExactAbsence: Bool) async throws -> PublishState? {
++        let invocation = ClientCommands.publishingGetStatus(.with {
++            $0.spaceID = spaceId
++            $0.objectID = objectId
++        })
++        let response: Anytype_Rpc.Publishing.GetStatus.Response?
++        if requireExactAbsence {
++            response = try await invocation.invokePublishingGetStatus()
++        } else {
++            response = try await invocation.invoke(ignoreLogErrors: .badInput, .noSuchObject, .noSuchSpace, .null)
++        }
++        return response.map { PublishState(from: $0.publish) }
++    }
+ }
+diff --git a/Modules/ProtobufMessages/Sources/Invocation.swift b/Modules/ProtobufMessages/Sources/Invocation.swift
+index 9c585ecb941c9e09ef4848fd9090e625b8880f7a..d2af2d24b0c2e7d7a29bdef70f0b16c47bea0dc9 100644
+--- a/Modules/ProtobufMessages/Sources/Invocation.swift
++++ b/Modules/ProtobufMessages/Sources/Invocation.swift
+@@ -2,6 +2,26 @@ import Foundation
+ import Combine
+ import SwiftProtobuf
+ 
++// ORIGINAL_PUBLISHING_STATUS_ABSENCE_BEGIN
++// The pinned original publishing service uses this one exact response for an
++// unpublished object. Code zero alone also carries transport/server failures.
++// Keep this a closed concrete-response rule, never a caller-provided exemption.
++private func isOriginalPublishingStatusAbsence<Response>(
++    messageName: String, response: Response
++) -> Bool {
++    guard messageName == "PublishingGetStatus",
++          let status = response as? Anytype_Rpc.Publishing.GetStatus.Response else { return false }
++    return status.hasError && status.error.code == .null
++        && status.error.description_p == "not found" && !status.hasPublish
++        && status.unknownFields.data.isEmpty && status.error.unknownFields.data.isEmpty
++}
++// ORIGINAL_PUBLISHING_STATUS_ABSENCE_END
++
++private enum InvocationResponsePolicy: Sendable, Equatable {
++    case original
++    case publishingStatusAbsence
++}
++
+ public struct Invocation<Request, Response>: Sendable where Request: Message & Sendable,
+                                                   Response: ResultWithError & Message & Sendable {
+     
+@@ -24,12 +44,27 @@ public struct Invocation<Request, Response>: Sendable where Request: Message & S
+         function: String = #function,
+         line: UInt = #line,
+         ignoreLogErrors: Response.Error.ErrorCode...
++    ) async throws -> Response {
++        try await invokeResponse(
++            requestMask: requestMask, responseMask: responseMask, qos: qos,
++            file: file, function: function, line: line,
++            ignoreLogErrors: ignoreLogErrors, responsePolicy: .original
++        )
++    }
++
++    private func invokeResponse(
++        requestMask: (@Sendable (inout Request) -> Void)?,
++        responseMask: (@Sendable (inout Response) -> Void)?,
++        qos: DispatchQoS.QoSClass,
++        file: StaticString, function: String, line: UInt,
++        ignoreLogErrors: [Response.Error.ErrorCode],
++        responsePolicy: InvocationResponsePolicy
+     ) async throws -> Response {
+         let dispatchBinding = InvocationDispatchContext.binding
+         do {
+             return try await withUncancellableHandler {
+                 try await internalInvoke(requestMask: requestMask, responseMask: responseMask, qos: qos,
+-                                         dispatchBinding: dispatchBinding)
++                                         dispatchBinding: dispatchBinding, responsePolicy: responsePolicy)
+             }
+         } catch let error as CancellationError {
+             // Ignore try Task.checkCancellation()
+@@ -49,7 +84,8 @@ public struct Invocation<Request, Response>: Sendable where Request: Message & S
+         requestMask: ((inout Request) -> Void)?,
+         responseMask: ((inout Response) -> Void)?,
+         qos: DispatchQoS.QoSClass,
+-        dispatchBinding: InvocationDispatchBinding?
++        dispatchBinding: InvocationDispatchBinding?,
++        responsePolicy: InvocationResponsePolicy
+     ) async throws -> Response {
+         
+         let result: Response
+@@ -78,6 +114,7 @@ public struct Invocation<Request, Response>: Sendable where Request: Message & S
+                         }
+                         let response = try invokeTask(request)
+                         succeeded = response.error.isNull
++                            || isOriginalPublishingStatusAbsence(messageName: messageName, response: response)
+                         cont.resume(returning: response)
+                     } catch {
+                         cont.resume(throwing: error)
+@@ -97,7 +134,12 @@ public struct Invocation<Request, Response>: Sendable where Request: Message & S
+         }
+         
+         if !result.error.isNull {
+-            throw result.error
++            guard responsePolicy == .publishingStatusAbsence,
++                  isOriginalPublishingStatusAbsence(messageName: messageName, response: result) else {
++                // Generic invoke keeps throwing the exact original error,
++                // including the expected absence consumed by legacy callers.
++                throw result.error
++            }
+         }
+         
+         if result.hasEvent {
+@@ -146,3 +188,22 @@ public struct Invocation<Request, Response>: Sendable where Request: Message & S
+         handler.logHandler(message: message)
+     }
+ }
++
++public extension Invocation where Request == Anytype_Rpc.Publishing.GetStatus.Request,
++                                  Response == Anytype_Rpc.Publishing.GetStatus.Response {
++    /// Exact original GetStatus response policy for source-owned callers. Uses
++    /// the same request, native invocation, cancellation and dispatch admission.
++    /// A genuine absent result becomes nil; every other original error escapes.
++    func invokePublishingGetStatus(
++        file: StaticString = #file, function: String = #function, line: UInt = #line
++    ) async throws -> Response? {
++        let response = try await invokeResponse(
++            requestMask: nil, responseMask: nil, qos: .default,
++            file: file, function: function, line: line,
++            ignoreLogErrors: [.badInput, .noSuchObject, .noSuchSpace, .null],
++            responsePolicy: .publishingStatusAbsence
++        )
++        return isOriginalPublishingStatusAbsence(messageName: messageName, response: response)
++            ? nil : response
++    }
++}

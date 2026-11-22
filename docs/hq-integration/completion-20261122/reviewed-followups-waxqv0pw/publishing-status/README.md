@@ -1,0 +1,11 @@
+# Original publishing ownership and exact status absence
+
+Ten existing source files connect the original publishing UI to its already prepared editor session and original final PublishingService. The same document owner reserves each original publishing task, admits its actual native calls and guards publication after awaits. Legacy nil-session behavior is retained.
+
+The pinned original publisher returns its not-found sentinel through Heart as a code-zero error with nonempty description. Previously the service consumed that error as absence after Invocation had marked the native operation failed; a successful unpublish followed by its status read could therefore poison the original save barrier. The closed concrete GetStatus classifier now recognizes only that exact absent response. Transport, malformed protobuf, wrong RPC/type/code, ambiguous payload and other errors still fail. The public generic invocation still throws the original response error; source-owned status reads use a typed strict entry through the same invocation body.
+
+Fourteen new controls passed using actual generated messages, cached actual SwiftProtobuf, exact production classifier/native-result/result-policy blocks, and unchanged production Owner/lifetime/operation/permit with explicit disposable document/effect inputs. Ten complete changed Swift files passed syntax parsing. No old suite or dependency build was repeated. These controls do not execute the full Invocation logging/events/cancellation pipeline, linked Services entry, Lib, network publishing, UIKit or Apple SDK typechecking. Those acceptance gates remain open.
+
+The source base is 35a906a6c37b5ff796ff0e0acee7089e5d81b852. All ten exact preimages also match the separately frozen producer fc03fcd713e2c449ad97c5d1e604a9433c2a309b; that producer is not changed by this publication. Its previous 29 delivered source files were independently verified byte-identical. The neutral branch matches none of the 49 actual original push workflows.
+
+SOURCE_PUBLICATION.json records the actual source commit and exact Git checks. FINAL.json on the SentinelX checkpoint records remote publication after the evidence commit. Earlier source-manifest pending labels, if present, are historical; the actual control and syntax receipts establish the bounded results above. No Native, SDK binary or product completion is asserted.

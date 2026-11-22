@@ -1,0 +1,25 @@
+{
+  "production_patch_unchanged": "bae4945918224d3afd259829745032eba2f3b82cfa0d47eadc6473d46ded2c4c",
+  "first_attempt": {
+    "edit_request": "hreq_71bc1ec58e684000",
+    "result": "Edit response timeout after 60 seconds; orchestration stopped before compiler dispatch.",
+    "diagnosis": "Sentinel diagnose was inconclusive; no whole-host outage or root cause was claimed.",
+    "read_only_verification_job": "job_af8c175b8850",
+    "verification_status": "timeout",
+    "verification_exit_code": -1,
+    "verification_started_at": "2026-11-22T02:29:26.190596+00:00",
+    "verification_finished_at": "2026-11-22T02:29:57.582569+00:00",
+    "followup_exact_transfer_read": "hreq_4d206e79ee854533: not_found",
+    "followup_exact_runner_read": "hreq_5b000d76092642cb: not_found",
+    "compiler_dispatched": false,
+    "tests_executed": false
+  },
+  "r2": {
+    "readback_proof": "STAGING_R2_READBACK.json",
+    "source_delta": "none",
+    "control_only_delta": "Exclusive save admission performs the real native drain; the control no longer treats an immediate isDrained MainActor snapshot as a completion oracle.",
+    "compiler_job": "job_a171e4de020f",
+    "compiler_jobs": 1,
+    "dependency_builds": 0
+  }
+}
