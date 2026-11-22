@@ -16,6 +16,33 @@ enum OriginalAnnotationObjectReadbackError: Error, Sendable, Equatable {
     case unavailableObject
 }
 
+
+struct OriginalAnnotationHeldReadObservation: Sendable {
+    let objectView: Anytype_Model_ObjectView
+    let rootDetails: Google_Protobuf_Struct
+
+    fileprivate init(objectView: Anytype_Model_ObjectView,
+                     rootDetails: Google_Protobuf_Struct) {
+        self.objectView = objectView
+        self.rootDetails = rootDetails
+    }
+}
+
+enum OriginalAnnotationHeldReadOutcome<Value: Sendable>: Sendable {
+    case completed(Value)
+    case completedWithoutCurrentOwnership(Value, error: any Error)
+}
+
+@MainActor
+private final class OriginalAnnotationHeldReadCompletion<Value: Sendable> {
+    enum State {
+        case notCompleted
+        case completed(Value)
+    }
+
+    var state: State = .notCompleted
+}
+
 /// A narrow read adapter for an already prepared original object. The request is
 /// data, not authority: only the retained original session and its captured
 /// account/source/document generations admit the actual native read.
@@ -107,6 +134,62 @@ final class OriginalAnnotationObjectReadback {
         return details
     }
 
+
+    func withFreshNativeObservation<Value: Sendable>(
+        consume: @MainActor @Sendable (OriginalAnnotationHeldReadObservation) throws -> Value
+    ) async throws -> OriginalAnnotationHeldReadOutcome<Value> {
+        try validateOwnedRuntime()
+        let identity = requestedIdentity
+        let completion = OriginalAnnotationHeldReadCompletion<Value>()
+        do {
+            let value = try await session.owner.withExclusiveRead(
+                contextId: identity.objectID,
+                spaceId: identity.scope.space,
+                rpcNames: ["ObjectShow"]
+            ) { [self] in
+                try await validateOwnedRuntime()
+                let response = try await ClientCommands.objectShow(.with {
+                    $0.contextID = identity.objectID
+                    $0.objectID = identity.objectID
+                    $0.spaceID = identity.scope.space
+                }).invoke(qos: .userInitiated)
+                return try await consumeFreshNativeResponse(
+                    response, completion: completion, consume: consume
+                )
+            }
+            try validateOwnedRuntime()
+            return .completed(value)
+        } catch {
+            switch completion.state {
+            case .notCompleted:
+                throw error
+            case let .completed(value):
+                return .completedWithoutCurrentOwnership(value, error: error)
+            }
+        }
+    }
+
+    private func consumeFreshNativeResponse<Value: Sendable>(
+        _ response: Anytype_Rpc.Object.Show.Response,
+        completion: OriginalAnnotationHeldReadCompletion<Value>,
+        consume: @MainActor @Sendable (OriginalAnnotationHeldReadObservation) throws -> Value
+    ) throws -> Value {
+        try validateOwnedRuntime()
+        _ = try Self.strictDetails(response, requestedIdentity: requestedIdentity)
+        guard let root = response.objectView.details.first(where: {
+            $0.id.utf8.elementsEqual(requestedIdentity.objectID.utf8)
+        }) else {
+            throw OriginalAnnotationObjectReadbackError.wrongObject
+        }
+        let observation = OriginalAnnotationHeldReadObservation(
+            objectView: response.objectView, rootDetails: root.details
+        )
+        let value = try consume(observation)
+        completion.state = .completed(value)
+        try validateOwnedRuntime()
+        return value
+    }
+
     private func validateOwnedRuntime() throws {
         try Task.checkCancellation()
         try accountCapture.validate()
@@ -125,7 +208,7 @@ final class OriginalAnnotationObjectReadback {
     /// present, but a missing or duplicate exact root row is never accepted.
     /// No name/layout/provider cache or indexed search substitutes for this read.
     private nonisolated static func strictDetails(
-        _ response: Anytype_Rpc.ObjectShow.Response,
+        _ response: Anytype_Rpc.Object.Show.Response,
         requestedIdentity: TorahAnnotationNativeIdentity
     ) throws -> ObjectDetails {
         let objectID = requestedIdentity.objectID

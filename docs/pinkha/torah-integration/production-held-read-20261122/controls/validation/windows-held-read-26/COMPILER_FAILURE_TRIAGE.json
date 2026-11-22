@@ -1,0 +1,140 @@
+{
+  "result": {
+    "schemaVersion": 1,
+    "status": "FAIL",
+    "execution": {
+      "schemaVersion": 1,
+      "args": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swift.exe",
+        "test",
+        "--package-path",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\h",
+        "--scratch-path",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\b",
+        "--configuration",
+        "debug",
+        "--jobs",
+        "4",
+        "--disable-xctest",
+        "--enable-swift-testing",
+        "--filter",
+        "OriginalHeldReadTests",
+        "--xunit-output",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\held-read-26.xml",
+        "--verbose"
+      ],
+      "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122",
+      "environment_overrides": {
+        "OTZARIA_HELD_READ_SWIFTPROTOBUF_CHECKOUT": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\omd-protobuf-20261122",
+        "PROTOBUF_NO_PROTOC": "true",
+        "NO_COLOR": "1",
+        "CLICOLOR": "0",
+        "PATH_prepend": "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin"
+      },
+      "parent_pid": 21992,
+      "timeout_s": 900,
+      "runner": {
+        "path": "C:\\Users\\DAVID\\Code\\anytype-original-held-read-20261122\\docs\\pinkha\\torah-integration\\production-held-read-20261122\\controls\\run-held-read-controls.py",
+        "bytes": 13419,
+        "sha256": "2dbc182a479489baed81e9254f93d088694350ec4d128d94694c3609d0a7033c"
+      },
+      "inputs": {
+        "path": "C:\\Users\\DAVID\\Code\\anytype-original-held-read-20261122\\docs\\pinkha\\torah-integration\\production-held-read-20261122\\controls\\INPUTS.json",
+        "bytes": 97274,
+        "sha256": "bf16b93b5ab6badcd405f436258f2b4e40d5069bdf58004f6249fa03adf241ad"
+      },
+      "child_pid": 1288,
+      "started_at": "2026-11-22T08:16:22.366427+00:00",
+      "exit_code": 1,
+      "timed_out": false,
+      "owned_timeout_cleanup": null,
+      "duration_s": 538.844,
+      "finished_at": "2026-11-22T08:25:21.171177+00:00",
+      "stdout": {
+        "path": "C:\\Users\\DAVID\\Code\\anytype-original-held-read-20261122\\docs\\pinkha\\torah-integration\\production-held-read-20261122\\controls\\validation\\windows-held-read-26\\swift-test.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "C:\\Users\\DAVID\\Code\\anytype-original-held-read-20261122\\docs\\pinkha\\torah-integration\\production-held-read-20261122\\controls\\validation\\windows-held-read-26\\swift-test.stderr",
+        "bytes": 2652212,
+        "sha256": "4f53ced819d80d6376f0350acc79939b3caa8c0006d75d541bd3c6c9412d460b"
+      }
+    },
+    "candidate_sha256": "dcb942bbbdc799989134da1f84256641ac750437749ca67d4412e352a0f0a252",
+    "inputs_sha256": "bf16b93b5ab6badcd405f436258f2b4e40d5069bdf58004f6249fa03adf241ad",
+    "source_inputs_unchanged": true,
+    "dependency_unchanged": true,
+    "original_test_methods": [
+      "testFreshBinaryViewAndRootPreservedInsideOriginalReadLineage",
+      "testLegacyFreshDetailsUsesSameStrictActualResponse",
+      "testMalformedRootAndDetailsRefuseConsumer",
+      "testNativeSpaceRequiresExactStringScope",
+      "testNativeTypeKindsCountsAndIdentifiersRefuseConsumer",
+      "testPresentStateKindsAndUnavailableValuesRefuseConsumer",
+      "testLinkedRowsAndFalseStatesPreserveUnqualifiedNativeType",
+      "testOwnerRetiredBeforeReadNeverDispatches",
+      "testAccountChangedBeforeReadNeverDispatches",
+      "testSourceRetiredBeforeReadNeverDispatches",
+      "testDocumentChangedBeforeReadNeverDispatches",
+      "testCancelledBeforeReadNeverDispatches",
+      "testOwnerRetiredDuringRPCRefusesConsumer",
+      "testAccountChangedDuringRPCRefusesConsumer",
+      "testSourceRetiredDuringRPCRefusesConsumer",
+      "testCancelledDuringRPCRefusesConsumer",
+      "testRPCFailurePreservesOriginalErrorAndNeverCallsConsumer",
+      "testCallbackErrorPreservedAfterEffectAndRetirement",
+      "testCallbackValueRetainedWhenItRetiresOwner",
+      "testCallbackValueRetainedWhenItCancelsCurrentTask",
+      "testReturnedValueSurvivesRetirementWithNativeCompletionPending",
+      "testReturnedValueSurvivesCancellationWithNativeCompletionPending",
+      "testDefaultMutationChildRejectedInsideHeldRead",
+      "testNestedExclusiveReadRefusedWithoutDroppingOuterBarrier",
+      "testChangedBasicAccountScopeRefusesRead",
+      "testSecondReadObservesSecondActualResponseWithoutCache"
+    ],
+    "expected_count": 26,
+    "scope": "Portable new adapter controls with genuine generated protobuf/Services values and original Owner/capture/binding. Explicit native RPC, prepared UI/document/DI and Combine/OS storage boundaries; no Apple/native engine/identity/body/COMMIT/ACK qualification.",
+    "binary_evidence_candidates": [],
+    "binary_evidence_complete": false,
+    "actual_compiler_sources_count": 210,
+    "actual_compiler_sources_archive": {
+      "path": "C:\\Users\\DAVID\\Code\\anytype-original-held-read-20261122\\docs\\pinkha\\torah-integration\\production-held-read-20261122\\controls\\validation\\windows-held-read-26\\actual-compiler-sources.zip",
+      "bytes": 414251,
+      "sha256": "b7fe87f75a9f143d58c45e768b979a453936fee34aae7ebfad13db197e477256"
+    },
+    "compiler_source_coverage": {
+      "status": "PASS",
+      "declared_target_swift_count": 115,
+      "covered_target_swift_count": 115,
+      "excluded_manifest": "harness/Package.swift",
+      "missing": [],
+      "byte_mismatches": []
+    },
+    "test_cases_unavailable": true
+  },
+  "diagnostics": [
+    {
+      "line": 626,
+      "context": "Target: x86_64-unknown-windows-msvc\nC:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swift-frontend.exe -frontend -emit-module -experimental-skip-non-inlinable-function-bodies-without-types C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\h\\tests\\HeldReadTests.swift -target x86_64-unknown-windows-msvc -disable-objc-interop -sdk C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Platforms\\6.3.3\\Windows.platform\\Developer\\SDKs\\Windows.sdk -I C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\b\\x86_64-unknown-windows-msvc\\debug\\Modules -I C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Platforms\\6.3.3\\Windows.platform\\Developer\\Library\\XCTest-6.3.3\\usr\\lib\\swift\\windows -I C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Platforms\\6.3.3\\Windows.platform\\Developer\\Library\\XCTest-6.3.3\\usr\\lib\\swift\\windows\\x86_64 -I C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Platforms\\6.3.3\\Windows.platform\\Developer\\Library\\Testing-6.3.3\\usr\\lib\\swift\\windows -no-color-diagnostics -Xcc -fno-color-diagnostics -enable-testing -g -debug-info-format=dwarf -dwarf-version=4 -module-cache-path C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\b\\x86_64-unknown-windows-msvc\\debug\\ModuleCache -static -swift-version 6 -Onone -D SWIFT_PACKAGE -D DEBUG -D SWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -enable-cross-import-overlays -empty-abi-descriptor -enable-anonymous-context-mangled-names -file-compilation-dir C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\h -Xcc -D_MT -Xcc -D_DLL -Xcc -Xclang -Xcc --dependent-lib=msvcrt -Xcc -gdwarf -no-auto-bridging-header-chaining -module-name OriginalHeldReadTests -package-name h -in-process-plugin-server-path C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\SwiftInProcPluginServer.dll -plugin-path C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin -plugin-path C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\local\\bin -emit-module-doc-path C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\b\\x86_64-unknown-windows-msvc\\debug\\Modules\\OriginalHeldReadTests.swiftdoc -emit-module-source-info-path C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\b\\x86_64-unknown-windows-msvc\\debug\\Modules\\OriginalHeldReadTests.swiftsourceinfo -serialize-diagnostics-path C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\b\\x86_64-unknown-windows-msvc\\debug\\OriginalHeldReadTests.build\\OriginalHeldReadTests.emit-module.dia -emit-dependencies-path C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\b\\x86_64-unknown-windows-msvc\\debug\\OriginalHeldReadTests.build\\OriginalHeldReadTests.emit-module.d -parse-as-library -o C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\b\\x86_64-unknown-windows-msvc\\debug\\Modules\\OriginalHeldReadTests.swiftmodule\nC:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swift-frontend.exe -frontend -c -primary-file C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\h\\tests\\HeldReadTests.swift -emit-dependencies-path C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\b\\x86_64-unknown-windows-msvc\\debug\\OriginalHeldReadTests.build\\HeldReadTests.d -emit-reference-dependencies-path C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\b\\x86_64-unknown-windows-msvc\\debug\\OriginalHeldReadTests.build\\HeldReadTests.swiftdeps -serialize-diagnostics-path C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\b\\x86_64-unknown-windows-msvc\\debug\\OriginalHeldReadTests.build\\HeldReadTests.dia -target x86_64-unknown-windows-msvc -disable-objc-interop -sdk C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Platforms\\6.3.3\\Windows.platform\\Developer\\SDKs\\Windows.sdk -I C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\b\\x86_64-unknown-windows-msvc\\debug\\Modules -I C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Platforms\\6.3.3\\Windows.platform\\Developer\\Library\\XCTest-6.3.3\\usr\\lib\\swift\\windows -I C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Platforms\\6.3.3\\Windows.platform\\Developer\\Library\\XCTest-6.3.3\\usr\\lib\\swift\\windows\\x86_64 -I C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Platforms\\6.3.3\\Windows.platform\\Developer\\Library\\Testing-6.3.3\\usr\\lib\\swift\\windows -no-color-diagnostics -Xcc -fno-color-diagnostics -enable-testing -g -debug-info-format=dwarf -dwarf-version=4 -module-cache-path C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\b\\x86_64-unknown-windows-msvc\\debug\\ModuleCache -static -swift-version 6 -Onone -D SWIFT_PACKAGE -D DEBUG -D SWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -enable-cross-import-overlays -empty-abi-descriptor -enable-anonymous-context-mangled-names -file-compilation-dir C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\h -Xcc -D_MT -Xcc -D_DLL -Xcc -Xclang -Xcc --dependent-lib=msvcrt -Xcc -gdwarf -no-auto-bridging-header-chaining -module-name OriginalHeldReadTests -package-name h -in-process-plugin-server-path C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\SwiftInProcPluginServer.dll -plugin-path C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin -plugin-path C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\local\\bin -autolink-library oldnames -autolink-library msvcrt -Xcc -D_MT -Xcc -D_DLL -parse-as-library -o C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\b\\x86_64-unknown-windows-msvc\\debug\\OriginalHeldReadTests.build\\HeldReadTests.swift.o -index-store-path C:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\b\\x86_64-unknown-windows-msvc\\debug\\index\\store -index-system-modules\nC:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\h\\tests\\HeldReadTests.swift:351:61: error: argument passed to call that takes no arguments\n\n349 |             for field in [Google_Protobuf_Value(stringValue: \"false\"),\n\n350 |                           Google_Protobuf_Value(numberValue: 0),\n\n351 |                           Google_Protobuf_Value(nullValue: .nullValue),\n\n    |                                                             `- error: argument passed to call that takes no arguments\n"
+    },
+    {
+      "line": 634,
+      "context": "\n351 |                           Google_Protobuf_Value(nullValue: .nullValue),\n\n    |                                                             `- error: argument passed to call that takes no arguments\n\n352 |                           Google_Protobuf_Value()] {\n\n353 |                 var response = original\n\n\n\nC:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\h\\tests\\HeldReadTests.swift:351:61: error: cannot infer contextual base in reference to member 'nullValue'\n"
+    },
+    {
+      "line": 642,
+      "context": "\n\n\nC:\\Users\\DAVID\\AppData\\Local\\Temp\\ohr-20261122\\h\\tests\\HeldReadTests.swift:351:61: error: cannot infer contextual base in reference to member 'nullValue'\n\n349 |             for field in [Google_Protobuf_Value(stringValue: \"false\"),\n\n350 |                           Google_Protobuf_Value(numberValue: 0),\n\n351 |                           Google_Protobuf_Value(nullValue: .nullValue),\n\n    |                                                             `- error: cannot infer contextual base in reference to member 'nullValue'\n"
+    },
+    {
+      "line": 650,
+      "context": "\n351 |                           Google_Protobuf_Value(nullValue: .nullValue),\n\n    |                                                             `- error: cannot infer contextual base in reference to member 'nullValue'\n\n352 |                           Google_Protobuf_Value()] {\n\n353 |                 var response = original\n\nerror: fatalError"
+    },
+    {
+      "line": 656,
+      "context": "\n353 |                 var response = original\n\nerror: fatalError"
+    }
+  ],
+  "stderrSHA256": "4f53ced819d80d6376f0350acc79939b3caa8c0006d75d541bd3c6c9412d460b",
+  "stderrBytes": 2652212
+}

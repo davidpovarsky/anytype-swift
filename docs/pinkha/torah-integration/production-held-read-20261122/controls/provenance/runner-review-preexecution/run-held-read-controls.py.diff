@@ -1,0 +1,64 @@
+--- before/run-held-read-controls.py
++++ after/run-held-read-controls.py
+@@ -140,14 +140,22 @@
+         "original_test_methods":inputs["testMethods"],"expected_count":26,
+         "scope":"Portable new adapter controls with genuine generated protobuf/Services values and original Owner/capture/binding. Explicit native RPC, prepared UI/document/DI and Combine/OS storage boundaries; no Apple/native engine/identity/body/COMMIT/ACK qualification."
+     }
+-    binaries=sorted(build.rglob("OriginalHeldReadControlsPackageTests.exe")) if build.exists() else []
+-    if binaries:
+-        assert len(binaries)==1
++    expected_binary_names={"OriginalHeldReadControlsPackageTests.exe","OriginalHeldReadControlsPackageTests.xctest"}
++    binaries=sorted(p for p in build.rglob("*") if p.name in expected_binary_names
++                    and p.is_file() and not p.is_symlink()) if build.exists() else []
++    binary_proven=False
++    result["binary_evidence_candidates"]=[str(p) for p in binaries]
++    if len(binaries)==1:
++        binary_raw=binaries[0].read_bytes()
+         result["test_binary"]=record(binaries[0])
+-        binary_zip=RESULT/"actual-test-binary.zip"
+-        with zipfile.ZipFile(binary_zip,"w",zipfile.ZIP_DEFLATED,compresslevel=9) as z:
+-            z.write(binaries[0],binaries[0].name)
+-        result["test_binary_archive"]=record(binary_zip)
++        result["test_binary"]["has_MZ_header"]=binary_raw[:2]==b"MZ"
++        if binary_raw[:2]==b"MZ":
++            binary_zip=RESULT/"actual-test-binary.zip"
++            with zipfile.ZipFile(binary_zip,"w",zipfile.ZIP_DEFLATED,compresslevel=9) as z:
++                z.writestr(binaries[0].name,binary_raw)
++            result["test_binary_archive"]=record(binary_zip)
++            binary_proven=True
++    result["binary_evidence_complete"]=binary_proven
+     command_files=[]
+     sources=set()
+     if build.exists():
+@@ -182,6 +190,22 @@
+     write_json(RESULT/"ACTUAL_COMPILER_SOURCES.json",compiled_sources)
+     result["actual_compiler_sources_count"]=len(compiled_sources)
+     result["actual_compiler_sources_archive"]=record(compiled_zip)
++    declared_target_sources={
++        (harness/Path(row["compiled"]).relative_to("harness")).resolve():row["sha256"]
++        for row in inputs["sourceInputs"]
++        if row["compiled"].endswith(".swift") and row["compiled"]!="harness/Package.swift"
++    }
++    missing_sources=sorted(str(p) for p in declared_target_sources if p not in sources)
++    mismatched_sources=sorted(str(p) for p,expected in declared_target_sources.items()
++                              if p in sources and digest(p.read_bytes())!=expected)
++    source_coverage=bool(declared_target_sources) and not missing_sources and not mismatched_sources
++    result["compiler_source_coverage"]={
++        "status":"PASS" if source_coverage else "FAIL",
++        "declared_target_swift_count":len(declared_target_sources),
++        "covered_target_swift_count":sum(p in sources for p in declared_target_sources),
++        "excluded_manifest":"harness/Package.swift",
++        "missing":missing_sources,"byte_mismatches":mismatched_sources
++    }
+     if xunit.exists():
+         shutil.copyfile(xunit,RESULT/"swift-testing-26.xml")
+         root=ET.parse(xunit).getroot()
+@@ -203,7 +227,7 @@
+         })
+         exact_names=len(names)==26 and sorted(names)==sorted(inputs["testMethods"])
+         result["exact_new_test_names"]=exact_names
+-        if code==0 and not timed_out and exact_names and len(cases)==26 and not any(
++        if code==0 and not timed_out and exact_names and len(cases)==26 and binary_proven and source_coverage and not any(
+             row["failures"] or row["errors"] or row["skipped"] for row in case_rows
+         ):
+             result["status"]="PASS"

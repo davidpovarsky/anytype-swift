@@ -1,0 +1,37 @@
+[
+  {
+    "args": [
+      "rg",
+      "-n",
+      "ObjectShow",
+      "Modules/ProtobufMessages/Sources",
+      "--glob",
+      "*.swift"
+    ],
+    "stdout": "Modules/ProtobufMessages/Sources\\Generated\\service+invocation.swift:720:        return Invocation(messageName: \"ObjectShow\", request: request) { request in\nModules/ProtobufMessages/Sources\\Generated\\service+invocation.swift:722:            let responseData = Lib.ServiceObjectShow(requestData) ?? Data()\nModules/ProtobufMessages/Sources\\Protocol\\Models\\Anytype_Model_Account.Auth.LocalApiScope.swift:19:      /// Used in WebClipper; AccountSelect(to be deprecated), ObjectSearch, ObjectShow, ObjectCreate, ObjectCreateFromURL, BlockPreview, BlockPaste, BroadcastPayloadEvent\n",
+    "exitCode": 0,
+    "stdoutSHA256": "94c67a9f0a1a6357143c7ef413641573ac9261c3ef937b6f8a81e330178bfec1"
+  },
+  {
+    "args": [
+      "rg",
+      "-n",
+      "Anytype_Rpc\\.ObjectShow|typealias[[:space:]]+ObjectShow|struct[[:space:]]+ObjectShow",
+      "Anytype",
+      "Modules",
+      "OriginalEditorFramework",
+      "--glob",
+      "*.swift"
+    ],
+    "stdout": "Anytype\\Sources\\Pinkha\\Torah\\Annotations\\OriginalAnnotationObjectReadback.swift:128:        _ response: Anytype_Rpc.ObjectShow.Response,\n",
+    "exitCode": 0,
+    "stdoutSHA256": "f1b4793d9d9094c0c0725c7cc4ee9a33c7f2ac917e8bf2b2d6e9fabaee5652de"
+  },
+  {
+    "path": "Modules/ProtobufMessages/Sources/Generated/service+invocation.swift",
+    "bytes": 199672,
+    "sha256": "e1d1f3e281cad2360030657d4636578ef984061e873e8963dd958f9bb4367cce",
+    "startLine": 717,
+    "excerpt": "    public static func objectShow(\n        _ request: Anytype_Rpc.Object.Show.Request = .init()\n    ) -> Invocation<Anytype_Rpc.Object.Show.Request, Anytype_Rpc.Object.Show.Response> {\n        return Invocation(messageName: \"ObjectShow\", request: request) { request in\n            let requestData = try request.serializedData()\n            let responseData = Lib.ServiceObjectShow(requestData) ?? Data()\n            return try Anytype_Rpc.Object.Show.Response(serializedBytes: responseData)\n        }\n    }\n\n"
+  }
+]
