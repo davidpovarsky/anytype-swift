@@ -1,0 +1,20 @@
+{
+  "negative_cases": [
+    {
+      "case": "changed_executed_source",
+      "reason": "Current portable source/dependency differs from original executed source",
+      "status": "REJECTED"
+    },
+    {
+      "case": "changed_original_log",
+      "reason": "Original evidence changed: association-test.log",
+      "status": "REJECTED"
+    }
+  ],
+  "new_swift_tests": 0,
+  "note": "Two new evidence-verifier negative checks only; no Swift/native/Apple code executed.",
+  "retained_methods": 20,
+  "source_sha256": "08b683e5f5f1318f591aaf5db676cd3e929cf15d20b6e86fc67b8c5c1b5870a4",
+  "status": "PASS_RETENTION_AUDIT",
+  "swift_test_reruns": 0
+}

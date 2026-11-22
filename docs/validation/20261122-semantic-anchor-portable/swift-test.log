@@ -1,0 +1,55 @@
+Building for debugging...
+[0/13] Write sources
+[2/13] Write swift-version-2807070033DA82CF.txt
+[4/15] Emitting module PinkhaKit
+[5/15] Compiling PinkhaKit PinkhaSemanticTextAnchor.swift
+[6/18] Wrapping AST for PinkhaKit for debugging
+[8/18] Compiling PinkhaKitTests PinkhaSemanticTextAnchorTests.swift
+[9/18] Emitting module PinkhaKitTests
+[10/19] C:\Users\DAVID\AppData\Local\Temp\pinkha-semantic-anchor-components-5zd70_ux\.build\x86_64-unknown-windows-msvc\debug\SemanticAnchorComponentsPackageDiscoveredTests.derived\all-discovered-tests.swift
+[11/19] Write sources
+[12/19] Wrapping AST for PinkhaKitTests for debugging
+[14/22] Compiling SemanticAnchorComponentsPackageDiscoveredTests PinkhaKitTests.swift
+[15/22] Emitting module SemanticAnchorComponentsPackageDiscoveredTests
+[16/22] Compiling SemanticAnchorComponentsPackageDiscoveredTests all-discovered-tests.swift
+[17/23] C:\Users\DAVID\AppData\Local\Temp\pinkha-semantic-anchor-components-5zd70_ux\.build\x86_64-unknown-windows-msvc\debug\SemanticAnchorComponentsPackageTests.derived\runner.swift
+[18/23] Write sources
+[19/25] Wrapping AST for SemanticAnchorComponentsPackageDiscoveredTests for debugging
+[21/25] Compiling SemanticAnchorComponentsPackageTests runner.swift
+[22/25] Emitting module SemanticAnchorComponentsPackageTests
+[23/26] Wrapping AST for SemanticAnchorComponentsPackageTests for debugging
+[24/26] Write Objects.LinkFileList
+[25/26] Linking SemanticAnchorComponentsPackageTests.xctest
+Build complete! (407.49s)
+Test Suite 'All tests' started at 2026-11-22 14:30:37.580
+Test Suite 'debug.xctest' started at 2026-11-22 14:30:37.657
+Test Suite 'debug.xctest' passed at 2026-11-22 14:30:37.657
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'All tests' passed at 2026-11-22 14:30:37.658
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+◊ Test run started.
+→ Testing Library Version: 6.3.3 (48d727cc1cf4eda)
+→ Target Platform: x86_64-unknown-windows-msvc
+◊ Suite "Durable semantic marker identity and transient editor transforms" started.
+◊ Test clipboardNeverClonesInternalIdentityAndCutUndoRestoresIt() started.
+◊ Test splitMergeRetainsIdentityAndResolvesCurrentNativeBlockIDs() started.
+◊ Test malformedFutureAndRedirectedMarkersAreRejected() started.
+◊ Test normalizedStringEqualityCannotAuthorizeAnUndoOrSourceReplacement() started.
+◊ Test ambiguousForeignAndMissingMarksNeverFallBackToTextOrOldOffsets() started.
+√ Test clipboardNeverClonesInternalIdentityAndCutUndoRestoresIt() passed after 0.112 seconds.
+√ Test ambiguousForeignAndMissingMarksNeverFallBackToTextOrOldOffsets() passed after 0.111 seconds.
+◊ Test replacementDeletionAndUndoHaveExplicitSemantics() started.
+◊ Test beforeInsideAndAfterEditsKeepNativeMarkerIdentity() started.
+◊ Test markerRoundtripBindsExactScopeAndContainsNoOffsets() started.
+◊ Test boundaryTypingDoesNotCaptureAdjacentText() started.
+◊ Test emojiNiqqudBoundsAndExistingLinksAreProtected() started.
+√ Test normalizedStringEqualityCannotAuthorizeAnUndoOrSourceReplacement() passed after 0.115 seconds.
+√ Test replacementDeletionAndUndoHaveExplicitSemantics() passed after 0.028 seconds.
+√ Test splitMergeRetainsIdentityAndResolvesCurrentNativeBlockIDs() passed after 0.143 seconds.
+√ Test boundaryTypingDoesNotCaptureAdjacentText() passed after 0.027 seconds.
+√ Test beforeInsideAndAfterEditsKeepNativeMarkerIdentity() passed after 0.029 seconds.
+√ Test emojiNiqqudBoundsAndExistingLinksAreProtected() passed after 0.031 seconds.
+√ Test malformedFutureAndRedirectedMarkersAreRejected() passed after 0.164 seconds.
+√ Test markerRoundtripBindsExactScopeAndContainsNoOffsets() passed after 0.090 seconds.
+√ Suite "Durable semantic marker identity and transient editor transforms" passed after 0.221 seconds.
+√ Test run with 10 tests in 1 suite passed after 0.224 seconds.

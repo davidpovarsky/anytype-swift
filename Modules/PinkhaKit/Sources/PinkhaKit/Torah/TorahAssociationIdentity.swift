@@ -21,6 +21,7 @@ public struct TorahAssociationIdentity: Sendable, Equatable, Hashable {
     public let providerID: String
     public let sourceIdentity: String
     public let instanceIdentity: String?
+    public let semanticTargetIdentity: String?
 
     public init(item: TorahAssociationItem, location: TorahAssociationLocation) {
         spaceId = Self.exact(location.spaceId)
@@ -33,13 +34,16 @@ public struct TorahAssociationIdentity: Sendable, Equatable, Hashable {
         // Context links deduplicate semantically. Quotes are separate captured excerpts unless
         // a retry carries the same stable association ID.
         instanceIdentity = item.role == .sourceQuote ? Self.exact(item.id) : nil
+        semanticTargetIdentity = TorahSemanticAnchorAssociation.identity(item, location: location)
     }
 
     public var storageKey: String {
-        [
+        let legacy = [
             spaceId, objectId, blockId ?? "", kind.rawValue, role.rawValue,
             providerID, sourceIdentity, instanceIdentity ?? ""
-        ].map(Self.lengthPrefixed).joined(separator: "|")
+        ]
+        let components = semanticTargetIdentity.map { legacy + [$0] } ?? legacy
+        return components.map(Self.lengthPrefixed).joined(separator: "|")
     }
 
     private static func exact(_ value: String) -> String {

@@ -1,0 +1,125 @@
+{
+  "manifestSHA256": "c92ac6453ff9e4a21761d954433259f1f2531dbe866a948e877da5891bb5ebf3",
+  "reviewer": "root",
+  "sourceFiles": 7,
+  "stagedFiles": 21,
+  "retainedVerification": {
+    "status": "PASS_RETAINED_PORTABLE_COMPONENT_CONTROLS_ONLY",
+    "compiler": "Swift version 6.3.3 (swift-6.3.3-RELEASE)\nTarget: x86_64-unknown-windows-msvc\nBuild config: +assertions",
+    "framework": "Swift Testing",
+    "passed": 20,
+    "failed": 0,
+    "skipped": 0,
+    "rerun_count": 0,
+    "scopes": [
+      {
+        "scope": "semantic_core",
+        "retained_passed_methods": [
+          "ambiguousForeignAndMissingMarksNeverFallBackToTextOrOldOffsets",
+          "beforeInsideAndAfterEditsKeepNativeMarkerIdentity",
+          "boundaryTypingDoesNotCaptureAdjacentText",
+          "clipboardNeverClonesInternalIdentityAndCutUndoRestoresIt",
+          "emojiNiqqudBoundsAndExistingLinksAreProtected",
+          "malformedFutureAndRedirectedMarkersAreRejected",
+          "markerRoundtripBindsExactScopeAndContainsNoOffsets",
+          "normalizedStringEqualityCannotAuthorizeAnUndoOrSourceReplacement",
+          "replacementDeletionAndUndoHaveExplicitSemantics",
+          "splitMergeRetainsIdentityAndResolvesCurrentNativeBlockIDs"
+        ],
+        "passed": 10,
+        "failed": 0,
+        "skipped": 0,
+        "executed_again": false,
+        "receipt_sha256": "f8fd5704a31cdd1b465e87e6850e3819ebb4573701474e3a52474e71bb776aef",
+        "log_sha256": "47c22d98702c2e1dd176a268066a5585e4d6a3911ea7537873a5a356fe0e2c29",
+        "original_direct_source_pins": [
+          "Sources/PinkhaKit/PinkhaSemanticTextAnchor.swift",
+          "Tests/PinkhaKitTests/PinkhaSemanticTextAnchorTests.swift"
+        ]
+      },
+      {
+        "scope": "any_inline_codec",
+        "retained_passed_methods": [
+          "aPastedLiteralCannotCreateOrCloneAnAnchor",
+          "capturesNeverReplaceExistingLinksOrSplitEmojiNiqqudOrUnknownSyntax",
+          "capturesStyledHebrewAndReopensThePersistedNativeField",
+          "editsBeforeWithinAfterAndAtBothBoundariesUseSharedSemantics",
+          "nativeMarkerSurvivesFormattingReplacementDeletionAndExactUndoBytes",
+          "reservedMalformedAndFutureMarkersStayExplicitlyUnsupported"
+        ],
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0,
+        "executed_again": false,
+        "receipt_sha256": "dd3beddc81911787c4e37b5ec402b833d3186de138c122bba949795cda5d70a5",
+        "log_sha256": "502ab876df7d01742348fc7ff795b6319f70488172950e9fba5df3c5d8091aea",
+        "original_direct_source_pins": [
+          "Sources/PinkhaAnyHost/AnyInlineMarkdown.swift",
+          "Tests/PinkhaAnyHostTests/AnySemanticAnchorCodecTests.swift"
+        ]
+      },
+      {
+        "scope": "semantic_association",
+        "retained_passed_methods": [
+          "differentPhrasesAndWholeDocumentRemainDifferentWhileSameMarkerRetriesDeduplicate",
+          "legacyStorageKeyIsByteForByteUnchangedAndUnknownTargetsNeverMasqueradeAsLegacy",
+          "nativePayloadRoundtripRetainsStableAssociationAndAnchorIDsWithoutOffsets",
+          "scopeAndStorageOwnershipMustMatchBeforeReadingOrWritingSemanticMetadata"
+        ],
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0,
+        "executed_again": false,
+        "receipt_sha256": "d0a42ccb4ec5769d969b50f11a358037a02f87db980af84e2c5d5ae13c085e81",
+        "log_sha256": "13d35abcdcef0458046910fa152221e5781dd72632dfdee8dae61a4044eec3c9",
+        "original_direct_source_pins": [
+          "Sources/PinkhaAnyHost/AnyInlineMarkdown.swift",
+          "Sources/PinkhaKit/PinkhaSemanticTextAnchor.swift",
+          "Sources/PinkhaKit/TorahAssociationIdentity.swift",
+          "Sources/PinkhaKit/TorahAssociationModels.swift",
+          "Sources/PinkhaKit/TorahAssociationRepository.swift",
+          "Sources/PinkhaKit/TorahSemanticAnchorAssociation.swift",
+          "Sources/TorahInspectorCore/Models.swift",
+          "Tests/PinkhaAnyHostTests/AnySemanticAnchorCodecTests.swift",
+          "Tests/PinkhaKitTests/PinkhaSemanticTextAnchorTests.swift",
+          "Tests/PinkhaKitTests/TorahSemanticAnchorAssociationTests.swift"
+        ]
+      }
+    ],
+    "current_source_sha256": {
+      "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyInlineMarkdown.swift": "226c314d3a116fd2379567e11f7e31c4544ceaa5133e23d00663967e62122d8a",
+      "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSemanticTextAnchor.swift": "bfefc94965cfe6dbdf910452eaec3a9530854a6d5b6a09a1a9b10339c6c30274",
+      "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationIdentity.swift": "85738df63c9ae987c1180c20e661cd21cd4acc20afcd376592f87ca32dcdb626",
+      "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationModels.swift": "0007274a78d39fd4c8e0105eb50cec106c807cf53735caa0de1f4a85cd7fbde1",
+      "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationRepository.swift": "63c789b1e14b85fb8032f2cf8fecb4fcb7e768453c03b9304e78ac77775fb66e",
+      "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahSemanticAnchorAssociation.swift": "17c469ea127bf01211c7e819c00a2e15ea07facbe2c6d86505a5f0fce82cb3f4",
+      "docs/validation/20261122-semantic-anchor-portable/dependency/TorahInspectorCoreModels.swift": "9e2341edbad496cda0710b7a5b48fb3a1ac85ffa0bd0cfae876f566205586706",
+      "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnySemanticAnchorCodecTests.swift": "dfcd0ff88e0dd295e48f2599bc9fa804e034ce37b90076200b57850e31d237aa",
+      "Modules/PinkhaKit/Tests/PinkhaKitTests/Editor/PinkhaSemanticTextAnchorTests.swift": "b9793ad7149a42d2d0941c1c038831faad1d8b5467be4df1583b0351e295f524",
+      "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/TorahSemanticAnchorAssociationTests.swift": "382c6801606f5b6f0bd8e66443a08d7e79cce3e339398011ea76142b5f724426"
+    },
+    "original_evidence_sha256": {
+      "result.json": "f8fd5704a31cdd1b465e87e6850e3819ebb4573701474e3a52474e71bb776aef",
+      "swift-test.log": "47c22d98702c2e1dd176a268066a5585e4d6a3911ea7537873a5a356fe0e2c29",
+      "any-codec-result.json": "dd3beddc81911787c4e37b5ec402b833d3186de138c122bba949795cda5d70a5",
+      "any-codec-test.log": "502ab876df7d01742348fc7ff795b6319f70488172950e9fba5df3c5d8091aea",
+      "association-result.json": "d0a42ccb4ec5769d969b50f11a358037a02f87db980af84e2c5d5ae13c085e81",
+      "association-test.log": "13d35abcdcef0458046910fa152221e5781dd72632dfdee8dae61a4044eec3c9"
+    },
+    "harness_provenance": "Observed final Package.swift is retained for review; no original before/after harness hash was recorded.",
+    "dependency_closure_note": "Core and codec receipts directly pin their own source/test pairs; the later association receipt pins all ten staged source files. No historical complete package manifest claim is made.",
+    "limits": {
+      "full_modules_compiled": false,
+      "native_any_write_reopen": "NOT_RUN",
+      "native_heart_write_reopen": "NOT_RUN",
+      "mounted_editor_acceptance": "NOT_RUN",
+      "apple_execution": "NOT_RUN",
+      "whole_block_clipboard_policy": "NOT_MOUNTED",
+      "editor_02_complete": false,
+      "engine_capability_enabled": false
+    },
+    "verifier_sha256": "08b683e5f5f1318f591aaf5db676cd3e929cf15d20b6e86fc67b8c5c1b5870a4"
+  },
+  "publication": "PENDING",
+  "nativeAndMountedAcceptance": "NOT_RUN"
+}

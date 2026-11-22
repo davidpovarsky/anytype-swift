@@ -1,5 +1,6 @@
 
 import Foundation
+import PinkhaKit
 
 public enum AnyInlineTextError: Error, Equatable, Sendable {
     case unsupportedMarkup, invalidUTF16Range, selectionCrossesMarkup, unsupportedFormattingChange
@@ -91,18 +92,92 @@ public struct AnyInlineMarkdown: Sendable, Equatable {
             return try replacingAcrossMarkup(displayRange: displayRange, withLiteral: text)
         }
         if literal { return (source as NSString).replacingCharacters(in: range, with: text) }
+        // A caret immediately outside a semantic marker must remain outside
+        // it. Ordinary links keep their existing editing behavior. The native
+        // source wrapper, not a saved selection offset, owns the anchor.
+        var semanticBoundary = false
+        if displayRange.length == 0 {
+            for container in containers where container.trait == nil {
+                guard runs.contains(where: { run in
+                    Self.contains(container.sourceRange, run.sourceRange) &&
+                    run.link.map(PinkhaSemanticTextAnchor.isReservedMarkerURL) == true
+                }) else { continue }
+                if displayRange.location == container.displayRange.location {
+                    range = .init(location: container.sourceRange.location, length: 0)
+                    semanticBoundary = true
+                    break
+                }
+                if displayRange.location == NSMaxRange(container.displayRange) {
+                    range = .init(location: NSMaxRange(container.sourceRange), length: 0)
+                    semanticBoundary = true
+                    break
+                }
+            }
+        }
         if text.isEmpty, let wrapper = containers.filter({ $0.displayRange == displayRange })
             .max(by: { $0.sourceRange.length < $1.sourceRange.length }) { range = wrapper.sourceRange }
         let active = runs.first(where: { NSIntersectionRange($0.displayRange, displayRange).length > 0 })
             ?? runs.last(where: { $0.displayRange.location < displayRange.location }) ?? runs.first
-        let replacement = active?.traits.contains(.code) == true ? text : Self.escapeLiteral(text)
+        let replacement = !semanticBoundary && active?.traits.contains(.code) == true ? text : Self.escapeLiteral(text)
         let result = (source as NSString).replacingCharacters(in: range, with: replacement)
         let projected = AnyInlineMarkdown(result)
         let expected = (display as NSString).replacingCharacters(in: displayRange, with: text)
         guard projected.isEditable, projected.display.utf8.elementsEqual(expected.utf8) else {
             throw AnyInlineTextError.unsupportedFormattingChange
         }
+        try validateSemanticReplacement(projected, range: displayRange, text: text)
         return result
+    }
+
+    /// Reconstructs current native markers; it never resolves from a prior
+    /// offset or from matching visible words. Literal code blocks have none.
+    public func semanticText() throws -> PinkhaSemanticText {
+        guard isEditable else { throw AnyInlineTextError.unsupportedMarkup }
+        let marks = try runs.compactMap { run -> PinkhaSemanticText.Mark? in
+            guard let url = run.link, PinkhaSemanticTextAnchor.isReservedMarkerURL(url) else { return nil }
+            return .init(anchor: try PinkhaSemanticTextAnchor(markerURL: url), range: run.displayRange)
+        }
+        return try .init(text: display, marks: marks)
+    }
+
+    /// Adds the canonical marker to the actual inline-Markdown field. All
+    /// unrelated native bytes and displayed style/link attributes survive.
+    /// Unknown/crossing syntax is refused rather than flattened to plain text.
+    public func capturing(_ anchor: PinkhaSemanticTextAnchor, displayRange range: NSRange) throws -> String {
+        guard !literal else { throw AnyInlineTextError.unsupportedFormattingChange }
+        let before = try semanticText()
+        let expected = try before.capturing(anchor, range: range,
+            occupiedLinkRanges: runs.filter { $0.link != nil }.map(\.displayRange)).after
+        var candidates = [NSRange]()
+        if let direct = try? sourceRange(for: range) { candidates.append(direct) }
+        if let formatted = try? formattingSourceRange(for: range), !candidates.contains(formatted) {
+            candidates.append(formatted)
+        }
+        for span in candidates {
+            let raw = (source as NSString).substring(with: span)
+            let result = (source as NSString).replacingCharacters(in: span,
+                with: "[" + raw + "](" + anchor.markerString + ")")
+            let projected = AnyInlineMarkdown(result)
+            guard projected.isEditable, projected.hasValidDelimiters,
+                  let actual = try? projected.semanticText(), actual == expected else { continue }
+            let original = styleMap(), changed = projected.styleMap()
+            let compatible = original.indices.allSatisfy { index in
+                var wanted = original[index]
+                if NSLocationInRange(index, range) { wanted.link = anchor.markerString }
+                return wanted == changed[index]
+            }
+            if compatible { return result }
+        }
+        throw AnyInlineTextError.selectionCrossesMarkup
+    }
+
+    private func validateSemanticReplacement(_ projected: Self, range: NSRange, text: String) throws {
+        let original = try semanticText()
+        guard !original.marks.isEmpty else { return }
+        let expected = try original.replacing(range, with: text).after
+        guard try projected.semanticText() == expected else {
+            throw AnyInlineTextError.unsupportedFormattingChange
+        }
     }
     private struct ReplacementPiece {
         let raw: String
@@ -213,7 +288,10 @@ public struct AnyInlineMarkdown: Sendable, Equatable {
         let inherited = DisplayStyle(traits: firstSelected.traits, link: firstSelected.link?.absoluteString)
         for choice in choices {
             let candidate = sourceText.replacingCharacters(in: sourceSpan, with: try serialize(pieces, markers: choice))
-            if validatesReplacement(candidate, range: range, text: text, inherited: inherited) { return candidate }
+            if validatesReplacement(candidate, range: range, text: text, inherited: inherited) {
+                try validateSemanticReplacement(Self(candidate), range: range, text: text)
+                return candidate
+            }
         }
         throw AnyInlineTextError.unsupportedFormattingChange
     }
@@ -528,7 +606,9 @@ public struct AnyInlineMarkdown: Sendable, Equatable {
                 if units[i] == 91, let labelEnd = closing([93, 40], after: i + 1, end: end),
                    let urlEnd = closing([41], after: labelEnd + 2, end: end) {
                     let target = String(decoding: units[(labelEnd + 2)..<urlEnd], as: UTF16.self)
-                    if let url = URL(string: target), ["http", "https"].contains(url.scheme?.lowercased() ?? ""),
+                    if let url = URL(string: target),
+                       (["http", "https"].contains(url.scheme?.lowercased() ?? "") ||
+                         (try? PinkhaSemanticTextAnchor(markerURL: url)) != nil),
                        !target.contains("("), !target.contains(" "), link == nil {
                         let displayStart = display.utf16.count
                         parse(i + 1, labelEnd, traits: traits, link: url,
