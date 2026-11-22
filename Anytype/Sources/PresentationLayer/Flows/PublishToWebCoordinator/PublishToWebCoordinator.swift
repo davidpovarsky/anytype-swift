@@ -4,12 +4,12 @@ struct PublishToWebCoordinator: View {
     
     @StateObject private var model: PublishToWebCoordinatorModel
     
-    init(data: PublishToWebViewData) {
-        _model = StateObject(wrappedValue: PublishToWebCoordinatorModel(data: data))
+    init(data: PublishToWebViewData, preparedSession: PreparedEditorPageSession? = nil) {
+        _model = StateObject(wrappedValue: PublishToWebCoordinatorModel(data: data, preparedSession: preparedSession))
     }
     
     var body: some View {
-        PublishToWebView(data: model.data, output: model)
+        PublishToWebView(data: model.data, output: model, preparedSession: model.preparedSession)
             .sheet(isPresented: $model.showMembership) {
                 MembershipCoordinator()
             }

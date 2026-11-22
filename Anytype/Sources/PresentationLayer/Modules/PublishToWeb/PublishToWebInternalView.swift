@@ -7,8 +7,9 @@ struct PublishToWebInternalView: View {
 
     @State private var model: PublishToWebInternalViewModel
 
-    init(data: PublishToWebViewInternalData, output: (any PublishToWebModuleOutput)?) {
-        _model = State(initialValue: PublishToWebInternalViewModel(data: data, output: output))
+    init(data: PublishToWebViewInternalData, output: (any PublishToWebModuleOutput)?,
+         preparedSession: PreparedEditorPageSession? = nil) {
+        _model = State(initialValue: PublishToWebInternalViewModel(data: data, output: output, preparedSession: preparedSession))
     }
     
     var body: some View {
@@ -179,12 +180,14 @@ struct PublishToWebInternalView: View {
                 AsyncStandardButton(
                     Loc.unpublish,
                     style: .secondaryLarge,
+                    prepareAction: model.hasPreparedSource ? { model.prepareUnpublish() } : nil,
                     action: { try await model.onUnpublishTap() }
                 )
                 
                 AsyncStandardButton(
                     Loc.update,
                     style: .primaryLarge,
+                    prepareAction: model.hasPreparedSource ? { model.preparePublish(action: .update) } : nil,
                     action: { try await model.onPublishTap(action: .update) }
                 )
             }
@@ -200,6 +203,7 @@ struct PublishToWebInternalView: View {
             AsyncStandardButton(
                 Loc.publish,
                 style: .primaryLarge,
+                prepareAction: model.hasPreparedSource ? { model.preparePublish(action: .create) } : nil,
                 action: { try await model.onPublishTap(action: .create) }
             )
             

@@ -61,15 +61,30 @@ public final class PublishingService: PublishingServiceProtocol {
     
     public func getStatus(spaceId: String, objectId: String) async throws -> PublishState? {
         do {
-            let response = try await ClientCommands.publishingGetStatus(.with {
-                $0.spaceID = spaceId
-                $0.objectID = objectId
-            }).invoke(ignoreLogErrors: .badInput, .noSuchObject, .noSuchSpace, .null)
-            
-            return PublishState(from: response.publish)
+            return try await getStatus(spaceId: spaceId, objectId: objectId, requireExactAbsence: false)
         } catch let error as Anytype_Rpc.Publishing.GetStatus.Response.Error {
             if error.code == .null { return nil }
             else { throw error }
         }
+    }
+
+    /// Source-owned callers require the exact original unpublished sentinel.
+    /// Legacy getStatus retains its existing error policy and injected route.
+    public func getStatusForOriginalEditor(spaceId: String, objectId: String) async throws -> PublishState? {
+        try await getStatus(spaceId: spaceId, objectId: objectId, requireExactAbsence: true)
+    }
+
+    private func getStatus(spaceId: String, objectId: String, requireExactAbsence: Bool) async throws -> PublishState? {
+        let invocation = ClientCommands.publishingGetStatus(.with {
+            $0.spaceID = spaceId
+            $0.objectID = objectId
+        })
+        let response: Anytype_Rpc.Publishing.GetStatus.Response?
+        if requireExactAbsence {
+            response = try await invocation.invokePublishingGetStatus()
+        } else {
+            response = try await invocation.invoke(ignoreLogErrors: .badInput, .noSuchObject, .noSuchSpace, .null)
+        }
+        return response.map { PublishState(from: $0.publish) }
     }
 }

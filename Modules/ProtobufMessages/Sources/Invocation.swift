@@ -2,6 +2,26 @@ import Foundation
 import Combine
 import SwiftProtobuf
 
+// ORIGINAL_PUBLISHING_STATUS_ABSENCE_BEGIN
+// The pinned original publishing service uses this one exact response for an
+// unpublished object. Code zero alone also carries transport/server failures.
+// Keep this a closed concrete-response rule, never a caller-provided exemption.
+private func isOriginalPublishingStatusAbsence<Response>(
+    messageName: String, response: Response
+) -> Bool {
+    guard messageName == "PublishingGetStatus",
+          let status = response as? Anytype_Rpc.Publishing.GetStatus.Response else { return false }
+    return status.hasError && status.error.code == .null
+        && status.error.description_p == "not found" && !status.hasPublish
+        && status.unknownFields.data.isEmpty && status.error.unknownFields.data.isEmpty
+}
+// ORIGINAL_PUBLISHING_STATUS_ABSENCE_END
+
+private enum InvocationResponsePolicy: Sendable, Equatable {
+    case original
+    case publishingStatusAbsence
+}
+
 public struct Invocation<Request, Response>: Sendable where Request: Message & Sendable,
                                                   Response: ResultWithError & Message & Sendable {
     
@@ -25,11 +45,26 @@ public struct Invocation<Request, Response>: Sendable where Request: Message & S
         line: UInt = #line,
         ignoreLogErrors: Response.Error.ErrorCode...
     ) async throws -> Response {
+        try await invokeResponse(
+            requestMask: requestMask, responseMask: responseMask, qos: qos,
+            file: file, function: function, line: line,
+            ignoreLogErrors: ignoreLogErrors, responsePolicy: .original
+        )
+    }
+
+    private func invokeResponse(
+        requestMask: (@Sendable (inout Request) -> Void)?,
+        responseMask: (@Sendable (inout Response) -> Void)?,
+        qos: DispatchQoS.QoSClass,
+        file: StaticString, function: String, line: UInt,
+        ignoreLogErrors: [Response.Error.ErrorCode],
+        responsePolicy: InvocationResponsePolicy
+    ) async throws -> Response {
         let dispatchBinding = InvocationDispatchContext.binding
         do {
             return try await withUncancellableHandler {
                 try await internalInvoke(requestMask: requestMask, responseMask: responseMask, qos: qos,
-                                         dispatchBinding: dispatchBinding)
+                                         dispatchBinding: dispatchBinding, responsePolicy: responsePolicy)
             }
         } catch let error as CancellationError {
             // Ignore try Task.checkCancellation()
@@ -49,7 +84,8 @@ public struct Invocation<Request, Response>: Sendable where Request: Message & S
         requestMask: ((inout Request) -> Void)?,
         responseMask: ((inout Response) -> Void)?,
         qos: DispatchQoS.QoSClass,
-        dispatchBinding: InvocationDispatchBinding?
+        dispatchBinding: InvocationDispatchBinding?,
+        responsePolicy: InvocationResponsePolicy
     ) async throws -> Response {
         
         let result: Response
@@ -78,6 +114,7 @@ public struct Invocation<Request, Response>: Sendable where Request: Message & S
                         }
                         let response = try invokeTask(request)
                         succeeded = response.error.isNull
+                            || isOriginalPublishingStatusAbsence(messageName: messageName, response: response)
                         cont.resume(returning: response)
                     } catch {
                         cont.resume(throwing: error)
@@ -97,7 +134,12 @@ public struct Invocation<Request, Response>: Sendable where Request: Message & S
         }
         
         if !result.error.isNull {
-            throw result.error
+            guard responsePolicy == .publishingStatusAbsence,
+                  isOriginalPublishingStatusAbsence(messageName: messageName, response: result) else {
+                // Generic invoke keeps throwing the exact original error,
+                // including the expected absence consumed by legacy callers.
+                throw result.error
+            }
         }
         
         if result.hasEvent {
@@ -144,5 +186,24 @@ public struct Invocation<Request, Response>: Sendable where Request: Message & S
             responseError: error
         )
         handler.logHandler(message: message)
+    }
+}
+
+public extension Invocation where Request == Anytype_Rpc.Publishing.GetStatus.Request,
+                                  Response == Anytype_Rpc.Publishing.GetStatus.Response {
+    /// Exact original GetStatus response policy for source-owned callers. Uses
+    /// the same request, native invocation, cancellation and dispatch admission.
+    /// A genuine absent result becomes nil; every other original error escapes.
+    func invokePublishingGetStatus(
+        file: StaticString = #file, function: String = #function, line: UInt = #line
+    ) async throws -> Response? {
+        let response = try await invokeResponse(
+            requestMask: nil, responseMask: nil, qos: .default,
+            file: file, function: function, line: line,
+            ignoreLogErrors: [.badInput, .noSuchObject, .noSuchSpace, .null],
+            responsePolicy: .publishingStatusAbsence
+        )
+        return isOriginalPublishingStatusAbsence(messageName: messageName, response: response)
+            ? nil : response
     }
 }
