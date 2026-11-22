@@ -1,0 +1,30 @@
+{
+  "base": "37f48119609747c01ee92cf597e4216f63b7bfa4",
+  "files": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginViewModel.swift",
+      "git_blob": "98658a311e242e82b18a980b8c470f8dd8a96433",
+      "sha256": "ff7c7ecb7f145758db6e75bc53a29017fc0340f73afe256f60b8d20d92738567",
+      "bytes": 7030
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Auth/PrimaryAuthView/PrimaryAuthViewModel.swift",
+      "git_blob": "58f4b0d1e4939686282b13f796753032bbe55b4c",
+      "sha256": "c918a04ea5188e78af700a1f98ee6c598265f2061f9ead1ce97bd5d0999128e8",
+      "bytes": 4683
+    },
+    {
+      "path": "Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorViewModel.swift",
+      "git_blob": "14e68010d2eecd8b832926472166a50369fb7ac5",
+      "sha256": "55fd60ad73dc5be35056c91067be5e36c18e8edfcc019c8fd8a93491d67963c2",
+      "bytes": 7803
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+      "git_blob": "d3820631ef1b344babf116ca8766e7c0dcf853df",
+      "sha256": "56a299e0ab38b2b8ae0e7b2d9e6038b00c64a6f3878897cb31b71cf5ef13fe22",
+      "bytes": 3681
+    }
+  ],
+  "matches": "37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorViewModel.swift:92:                try? await authService.logout(removeData: true)\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorViewModel.swift:134:            try await authService.walletRecovery(mnemonic: seed)\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorViewModel.swift:149:            let account = try await authService.selectAccount(id: id, preferredSpaceId: preferredSpaceId())\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/Pinkha/AI/PinkhaHanlinAccountOwner.swift:70:        let owned = presentations.values.filter { $0.account == key }.compactMap(\\.value)\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/Pinkha/AI/PinkhaHanlinAccountOwner.swift:75:        let openings = journals.filter { $0.value.account == key }\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinNativeAcceptanceDriver.swift:152:              host.session.context.namespace.account == fixture.accountID,\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinSelectionAcceptanceDriver.swift:105:              host.session.context.namespace.account == base.accountID,\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginViewModel.swift:119:        try? await authService.logout(removeData: false)\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginViewModel.swift:136:            try await authService.walletRecovery(mnemonic: phrase.trimmingCharacters(in: .whitespacesAndNewlines))\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginViewModel.swift:163:            try await authService.accountRecover()\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginViewModel.swift:178:            let account = try await authService.selectAccount(id: accountId, preferredSpaceId: \"\")\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/PresentationLayer/Auth/PrimaryAuthView/PrimaryAuthViewModel.swift:87:            state.mnemonic = try await authService.createWallet()\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/PresentationLayer/Auth/PrimaryAuthView/PrimaryAuthViewModel.swift:89:            let account = try await authService.createAccount(\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/PresentationLayer/Debug/Flows/InternalDebug/DebugMenuViewModel.swift:65:                try await authService.logout(removeData: false)\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/PresentationLayer/Debug/Flows/InternalDebug/DebugMenuViewModel.swift:105:            try await authService.logout(removeData: false)\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/PresentationLayer/Debug/Flows/PublicDebug/PublicDebugMenuViewModel.swift:73:            try await authService.logout(removeData: false)\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/PresentationLayer/Modules/HomeWidgets/Container/Views/Alerts/DashboardAccountDeletionAlert/DashboardAccountDeletionAlertModel.swift:21:            let status = try await authService.deleteAccount()\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/PresentationLayer/Modules/HomeWidgets/Container/Views/Alerts/DashboardAccountDeletionAlert/DashboardAccountDeletionAlertModel.swift:43:            try await authService.logout(removeData: true)\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/PresentationLayer/Modules/HomeWidgets/Container/Views/Alerts/DashboardLogoutAlert/DashboardLogoutAlertModel.swift:31:            try await authService.logout(removeData: false)\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/AuthService.swift:70:        accountManager.account = account\n37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Auth/AuthService.swift:132:        accountManager.account = account\n"
+}

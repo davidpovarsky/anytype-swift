@@ -1,0 +1,94 @@
+[
+  {
+    "label": "branch-must-not-exist",
+    "argv": [
+      "git",
+      "show-ref",
+      "--verify",
+      "--quiet",
+      "refs/heads/codex/otzaria-original-auth-startup-20261122"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-native-annotation-integration-20261122",
+    "exit_code": 1,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "exact-original-preimage",
+    "argv": [
+      "git",
+      "show",
+      "37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/Account/EditorAccountWriteTransition.swift"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-native-annotation-integration-20261122",
+    "exit_code": 0,
+    "stdout_sha256": "25d37aa7d7dfe1b018c3161eca54c42bb6f0e7394bfdbf6ea6af3182c429c6dc",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "create-owned-worktree",
+    "argv": [
+      "git",
+      "worktree",
+      "add",
+      "-b",
+      "codex/otzaria-original-auth-startup-20261122",
+      "C:\\Users\\DAVID\\Code\\anytype-original-auth-startup-20261122",
+      "37f48119609747c01ee92cf597e4216f63b7bfa4"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-native-annotation-integration-20261122",
+    "exit_code": 0,
+    "stdout_sha256": "36b0c2a19ba9413d300aae8f9fea2e3459872e97c4180f8672cc86d22b895f60",
+    "stderr_sha256": "6e6e93a2ffd0e659ff837ce580f31b8559848b7f851ae742e34e623f055775d5"
+  },
+  {
+    "label": "new-worktree-status",
+    "argv": [
+      "git",
+      "status",
+      "--porcelain",
+      "--untracked-files=all"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-auth-startup-20261122",
+    "exit_code": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "diff-check",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-auth-startup-20261122",
+    "exit_code": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "4ab6eccbc4e65b740f2e355f7f62942a3d615f246790786adb1f418e33a1ca74"
+  },
+  {
+    "label": "exact-source-diff",
+    "argv": [
+      "git",
+      "diff",
+      "--",
+      "Anytype/Sources/ServiceLayer/Account/EditorAccountWriteTransition.swift"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-auth-startup-20261122",
+    "exit_code": 0,
+    "stdout_sha256": "fdff7f7ec9deed1662dddfcb0987e58353e275e24b7f69b2278c88edfd29aa24",
+    "stderr_sha256": "4ab6eccbc4e65b740f2e355f7f62942a3d615f246790786adb1f418e33a1ca74"
+  },
+  {
+    "label": "changed-paths",
+    "argv": [
+      "git",
+      "diff",
+      "--name-only"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-auth-startup-20261122",
+    "exit_code": 0,
+    "stdout_sha256": "65af87a4a13228a6fe4dfafb992f3642e5de16e94daea11e27bde8a5c6d142e2",
+    "stderr_sha256": "4ab6eccbc4e65b740f2e355f7f62942a3d615f246790786adb1f418e33a1ca74"
+  }
+]

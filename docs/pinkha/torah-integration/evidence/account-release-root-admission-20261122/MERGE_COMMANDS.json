@@ -1,0 +1,194 @@
+[
+  {
+    "label": "initial-head",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "b28efb1d4c64d3006d345e544892726dafe49ecb8fb3ffde278dd7cc0b8d82f2",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "initial-clean",
+    "args": [
+      "status",
+      "--porcelain=v1"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "initial-branch",
+    "args": [
+      "branch",
+      "--show-current"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "209cc10601f695aa423b9ecaaebf0b35e9fa136fa48bf956031e1a441a097909",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "common-base",
+    "args": [
+      "merge-base",
+      "58651e46136d3b889f8c34afee720b3593d0f0f9",
+      "18668c3ec0521871c6993add297dbb91ffa8bef3"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "67927099a842c5bb86202b1116b872f152a1d1444be840b5ba9b015723683a13",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "base-tree",
+    "args": [
+      "ls-tree",
+      "-rz",
+      "37f48119609747c01ee92cf597e4216f63b7bfa4"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "27a5174345ec4d91f062ad842c07365bb0ac6ee7ddcaf726af825224cec7162e",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "left-tree",
+    "args": [
+      "ls-tree",
+      "-rz",
+      "58651e46136d3b889f8c34afee720b3593d0f0f9"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "9b93f5e55d54203656eb44d9b5b62e9fabc1d11a0f395091c39412d481dca0df",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "right-tree",
+    "args": [
+      "ls-tree",
+      "-rz",
+      "18668c3ec0521871c6993add297dbb91ffa8bef3"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "f7424ba7f4f8f9b4b67dee98232d8208a4dce91a366ca93dccc8d772ea9beed5",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "merge-reviewed-source",
+    "args": [
+      "merge",
+      "--no-ff",
+      "--no-commit",
+      "18668c3ec0521871c6993add297dbb91ffa8bef3"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "96bb6a194a796153cbd0c640642866371219451832063763d544b942a8d97c4e"
+  },
+  {
+    "label": "conflicts",
+    "args": [
+      "diff",
+      "--name-only",
+      "--diff-filter=U",
+      "-z"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "no-unmerged",
+    "args": [
+      "ls-files",
+      "-u"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "actual-index",
+    "args": [
+      "ls-files",
+      "-s",
+      "-z"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "bc1852d10ffee854949b491a515de2f3227328034edbd03183effb887fc95ab2",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "exact-transition-index",
+    "args": [
+      "show",
+      ":Anytype/Sources/ServiceLayer/Account/EditorAccountWriteTransition.swift"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "65a20edfdacbb8c5a51d647b2746a16f75ca9865984026cca5b6235f4fa4933e",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "exact-union-tree",
+    "args": [
+      "write-tree"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "d4981edf1b5bc8139b8fafafd3bc759c5c304ab18b0ecde9de7ad635349a90e9",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "merge-diff-check",
+    "args": [
+      "diff",
+      "--cached",
+      "--check"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "commit-source-merge",
+    "args": [
+      "commit",
+      "-m",
+      "merge(otzaria): integrate reviewed original account release seam [skip ci]"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "58f815f517e8651eccf5882dec86e7032751e1a3e1501811368463de3534730f",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "source-merge-head",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "0289d27d44bfe9c55fecb4484193b7ee452cefa26f546dd71e4bee33893b144c",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "source-merge-parents",
+    "args": [
+      "show",
+      "-s",
+      "--format=%P",
+      "HEAD"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "ba8b43b87b86738b88508d9338ee2db277cb0c18a0dc707695bee89e071cb32d",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "source-merge-tree",
+    "args": [
+      "rev-parse",
+      "HEAD^{tree}"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "d4981edf1b5bc8139b8fafafd3bc759c5c304ab18b0ecde9de7ad635349a90e9",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]
