@@ -1,0 +1,204 @@
+{
+  "schema": 1,
+  "reviewer": "/root/native_completion",
+  "decision": "APPROVED_WITH_EXPLICIT_PORTABLE_SCOPE",
+  "review_type": "Read-only complete source/assertion/projection and existing execution receipt review; no tests or compiler commands executed by reviewer",
+  "base": "b854e7f3f59690134bcabdef88527b61517d5ab5",
+  "participant16": {
+    "candidate_sha256": "0f5120fefcafb5763913114142f5ed467a178114d656ca2c01fa40db7c3855ca",
+    "input_manifest_sha256": "5a5cf79cf4661dd0f0dfc098f13308df2162b1dfc64b6f936003179d5b05ddeb",
+    "result_sha256": "cda769c3aab8bc48bee28a7ebd9632ca5ea36e00f7c9c5ce359babf609a00f8f",
+    "binary_sha256": "70727b2533ca91a83155350e7883ffd909cdf6c2f6d412a2bdf0244e5bf8a115",
+    "counts": {
+      "executed": 16,
+      "passed": 16
+    },
+    "compile_duration_s": 64.453,
+    "execute_duration_s": 4.219,
+    "exact_continuation": "Only await added at existing Task-to-publishParticipants actor hop; candidate75428, first failed semantic compile and all16 assertions retained unchanged.",
+    "full_actor_sha256": "356ff77e8f4f14e16da9df7059fbda6163126409b33f728bed0e24606944ab98",
+    "control_sha256": "4d04156a5c03b332038e1c50cdf836b16d95891f34454d98dd6a1212ae34960f",
+    "cases": [
+      "actual role state distinguishes native writer/admin/owner from read-only and unknown values",
+      "only the actual active participant status can mint edit-role capture",
+      "first denied or mismatched native record cannot be overridden by a later same-Space record",
+      "display-only change retains capture; owner-to-admin-to-writer retires every earlier security role",
+      "native participant replacement and removal revoke before the returned snapshot",
+      "an equal-string account generation change rejects the old capture and delayed role input",
+      "role capture requires exact original account source/token and byte-exact Space",
+      "stopped or earlier subscription context cannot restore, replace or revoke a later role",
+      "exact actor reserves start before suspension and refuses duplicate cached-state startup",
+      "reviewed start-stop-start interleaving drains owned start before one unsubscribe and never installs stale consumer",
+      "duplicate stop joins one teardown and roles retire before its asynchronous completion",
+      "original startup error settles a concurrent stop drain without stale publication or duplicate cleanup",
+      "cancelled original start settles and cleans up before any consumer or authority can escape",
+      "startup failure without concurrent stop follows the same owned teardown",
+      "failed unsubscribe blocks cached restart until explicit successful stop retry; old role never revives",
+      "actual publication wiring rejects old attempt after restart and actual AccountManager setter invalidates equal ID"
+    ]
+  },
+  "deinit1": {
+    "candidate_sha256": "7fc5fc32d5dd7f21d6133f72511ccc133dea9dbe6bdabcbc9a5e435deffa8da1",
+    "input_manifest_sha256": "44a3ae3b7c4a442a1466f0203bcbca8a4e888ae26ed00fa2862fe2aa94493c1b",
+    "result_sha256": "1aae0080ef6981d6654f2bf1e2fa465d2463f83b82f39fa2f9aeebe0263f69f4",
+    "binary_sha256": "6956a93a597e5f07a32f4b365b4f47a42cfade1b736f883ef07bed6238ae0037",
+    "counts": {
+      "executed": 1,
+      "passed": 1
+    },
+    "compile_duration_s": 54.453,
+    "execute_duration_s": 0.594,
+    "production_delta": "--- a/Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift\n+++ b/Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift\n@@ -370,6 +370,12 @@\n     }()\n     \n     private let subscriptionBuilder = AcountParticipantSubscriptionBuilder()\n+\n+    deinit {\n+        for permission in channelPinPermissions.value.values { permission.retire() }\n+        for permission in participantEditPermissions.value.values { permission.retire() }\n+        subscription?.cancel()\n+    }\n     \n     // MARK: - State\n \n",
+    "full_actor_sha256": "34523ab125d49d81cb2ed173925f3aceea280c52140c511f83a10ffa666abfd0",
+    "control_sha256": "bd3ad028023ca3cfb8b616de905c2edac72c63eb031f4db0fdbc4cebd9674787",
+    "verified_observations": [
+      "Actual weak actor reference becomes nil",
+      "Retained channel-pin and participant edit-role captures are rejected while original account capture remains current",
+      "Exactly one portable AsyncStream consumer cancellation and zero subscribers remain",
+      "Later decoded input cannot revive old captures",
+      "Native unsubscribe is not called by deinit; explicit probe stops == 0",
+      "Prior16 assertions are not present in the deinit compiled control source"
+    ]
+  },
+  "source_bindings": {
+    "original_git_blob_inputs": [
+      {
+        "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteLifetime.swift",
+        "git_blob": "19f81f5e1bb51b48a7fd46d30476a99105d9aea2",
+        "sha256": "451054685e2ff0c30371d384904be831412eec16c2a5e16c660d2f1891921eb4"
+      },
+      {
+        "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift",
+        "git_blob": "c90dd7f2ee0577d3496d81fd164fc238b79ea364",
+        "sha256": "b0ae02be8c28c22246d29bf927cb154e10019d841f3b831771f968a8938f7d46"
+      },
+      {
+        "path": "Modules/ProtobufMessages/Sources/InvocationDispatchBinding.swift",
+        "git_blob": "7f6862925605de7a15220f6c44dbf4d6d884113d",
+        "sha256": "e304f05ed114342795dbc3a603490311142d63f9a6a156bdcdafd68743e710cb"
+      },
+      {
+        "path": "Anytype/Sources/ServiceLayer/Account/AccountManager.swift",
+        "git_blob": "8b5d3d362f2c73b248b8b5b68e6ecda9a62f09e2",
+        "sha256": "954494a8c39f3c913dccb824a4064fdc1199ea46b0afbd9c54fd35f7105b224b"
+      },
+      {
+        "path": "Modules/Services/Sources/Models/Participant.swift",
+        "git_blob": "f353056528408195d5dbf42ac41b980b60cf5870",
+        "sha256": "a62eac1133d7ff69ca377bd160a8ef000ce82e6a116ae08acb50b9ed8c458234"
+      },
+      {
+        "path": "Anytype/Sources/Models/Extensions/Participant+Extensions.swift",
+        "git_blob": "d00b609f7d05a44a3ee7218442aae5ea63e869d3",
+        "sha256": "bdcd30821043e53459ea8429a0d034a32de470f5a947c5b728a62e9a4f530603"
+      },
+      {
+        "path": "Anytype/Sources/ServiceLayer/SubscriptionsToggler/Internals/SubscriptionStorage.swift",
+        "git_blob": "2c1b7b1148e0b5692d4455b8ba9d6b636e29ffe3",
+        "sha256": "6dd4b130d7177dc6e97ad44edca6922d3fdc42d9a47f540eb07222be3ed1b730"
+      },
+      {
+        "path": "Anytype/Sources/ServiceLayer/AccountParticipantsStorage/AcountParticipantSubscriptionBuilder.swift",
+        "git_blob": "c8f620d3f26d6dcf09450c2ba40c787158f5525d",
+        "sha256": "08fe0f892d8d6a216c65f29174fe600bb0d662c85f3e93ffe7f8687bd5e5ad5e"
+      },
+      {
+        "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ParticipantPermissions.swift",
+        "git_blob": "cacce9daad76cdc83f46ffc7ab0c25790fa01d3e",
+        "sha256": "5022bf16a8c3ef693a41d29e136ed053af79e2fd4ea4de5d41275a1b7980c798"
+      },
+      {
+        "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ParticipantStatus.swift",
+        "git_blob": "c4d11256c886cb60605f6ff77d37db84d85ce7df",
+        "sha256": "be78e48419db2f64f9e39e4c3108cb2ab74d8068133e5d06b24990a359fe2554"
+      }
+    ],
+    "compiled_inputs_16": [
+      {
+        "name": "AccountManager.swift",
+        "sha256": "be0b4358ba976cbe32a56b6746e30e793fc3a845ad27eb84ff9ac39e6a517390"
+      },
+      {
+        "name": "Binding.swift",
+        "sha256": "e304f05ed114342795dbc3a603490311142d63f9a6a156bdcdafd68743e710cb"
+      },
+      {
+        "name": "Capture.swift",
+        "sha256": "b267ee41ba4f6cc808a5c500afe78e83514009667b8df7d47b10d2a726fd1f4c"
+      },
+      {
+        "name": "Lifetime.swift",
+        "sha256": "451054685e2ff0c30371d384904be831412eec16c2a5e16c660d2f1891921eb4"
+      },
+      {
+        "name": "ParticipantRoleLifecycleControls.swift",
+        "sha256": "bd1945ff294653b01533f68648ab949a6f64f29f62b4d707340473c513eece3b"
+      },
+      {
+        "name": "ParticipantValues.swift",
+        "sha256": "2d266fbba864b38aa9cbb8f4015ecdfa5d9682f6049e76a332ae014dfbcbd401"
+      },
+      {
+        "name": "PortableDependencyProbes.swift",
+        "sha256": "17a4c31f6cb05b891f83a9f9bdf563cccf198982a0caa786f0ac305e3cbeba94"
+      }
+    ],
+    "compiled_inputs_deinit": [
+      {
+        "name": "AccountManager.swift",
+        "sha256": "be0b4358ba976cbe32a56b6746e30e793fc3a845ad27eb84ff9ac39e6a517390"
+      },
+      {
+        "name": "Binding.swift",
+        "sha256": "e304f05ed114342795dbc3a603490311142d63f9a6a156bdcdafd68743e710cb"
+      },
+      {
+        "name": "Capture.swift",
+        "sha256": "b267ee41ba4f6cc808a5c500afe78e83514009667b8df7d47b10d2a726fd1f4c"
+      },
+      {
+        "name": "Lifetime.swift",
+        "sha256": "451054685e2ff0c30371d384904be831412eec16c2a5e16c660d2f1891921eb4"
+      },
+      {
+        "name": "ParticipantDeinitControl.swift",
+        "sha256": "60e703d3c14ebfc2df36d4b93054eb1515515c22a0ea72c4351b22b2ff9c95e2"
+      },
+      {
+        "name": "ParticipantValues.swift",
+        "sha256": "2d266fbba864b38aa9cbb8f4015ecdfa5d9682f6049e76a332ae014dfbcbd401"
+      },
+      {
+        "name": "PortableDependencyProbes.swift",
+        "sha256": "a18ead190ca6f76791827301434ab3077334db35a37b5aac44050a156222f465"
+      }
+    ],
+    "full_production_actor_and_three_marked_regions_exact": true,
+    "original_protocol_exact": true,
+    "Lifetime_and_InvocationDispatchBinding": "Complete original files unchanged",
+    "AccountManager": "Complete original declarations; only external import lines excluded; AccountData/storage/publisher are explicitly portable probes",
+    "Capture": "Three exact original declaration slices: rejection enum, error enum and Capture struct. Intervening original declarations are excluded; bodies unchanged.",
+    "participant_value_enums": "Complete original native value enum bodies with declared SwiftProtobuf.Enum -> RawRepresentable/Hashable/Sendable conformance change for this portable control",
+    "portable_fixture_delta_for_deinit": "--- prior-probe\n+++ deinit-probe\n@@ -21,6 +21,7 @@\n     private struct State {\n         var value: Value?\n         var subscribers: [UUID: AsyncStream<Value>.Continuation] = [:]\n+        var cancelledSubscriptions = 0\n     }\n     private let state = AtomicStorage(State())\n     var values: AsyncStream<Value> {\n@@ -30,8 +31,11 @@\n             state.subscribers[id] = pair.continuation\n             return state.value\n         }\n-        pair.continuation.onTermination = { [weak self] _ in\n-            self?.state.access { _ = $0.subscribers.removeValue(forKey: id) }\n+        pair.continuation.onTermination = { [weak self] termination in\n+            self?.state.access { value in\n+                _ = value.subscribers.removeValue(forKey: id)\n+                if case .cancelled = termination { value.cancelledSubscriptions += 1 }\n+            }\n         }\n         if let current { pair.continuation.yield(current) }\n         return pair.stream\n@@ -43,6 +47,8 @@\n         }\n         for target in targets { target.yield(value) }\n     }\n+    var probeSubscriberCount: Int { state.value.subscribers.count }\n+    var probeCancelledSubscriptions: Int { state.value.cancelledSubscriptions }\n     func removeDuplicates() -> Self { self }\n     func eraseToAnyPublisher() -> Self { self }\n }\n"
+  },
+  "receipt_checks": [
+    "Every listed original source copied exactly from immutable b854 Git blob",
+    "All seven compiler input hashes match recorded INPUTS in each packet",
+    "All actual stdout/stderr stream hashes match EXECUTION commands",
+    "Parsed execute stdout equals RESULT exactly",
+    "Actual binary bytes match recorded SHA-256",
+    "All actual commands exit0 without timeout in successful packets",
+    "Previous semantic failure retained and contains no executed controls",
+    "Exact actual source projection copied without rewriting actor/helper bodies"
+  ],
+  "limits": [
+    "Portable dependency probes replace native decoder, RPC, Combine, Factory DI and native publisher/lock dependencies",
+    "Participant role remains only one prerequisite, not the complete native Space authority",
+    "These receipts do not qualify Apple module linking, native engine behavior, UI, release or production-device operation",
+    "The deinit case proves local lifetime retirement and consumer cancellation, not asynchronous native unsubscription"
+  ],
+  "requested_retention": "Author to retain exact original preparation/execution scripts for reproducibility; no replay requested",
+  "reexecuted_tests": false,
+  "source_edits_by_reviewer": false,
+  "reviewed_at": "2026-11-22T06:19:56.511569+00:00"
+}

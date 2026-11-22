@@ -1,0 +1,130 @@
+{
+  "schema": 1,
+  "base": "b854e7f3f59690134bcabdef88527b61517d5ab5",
+  "candidate_sha256": "7fc5fc32d5dd7f21d6133f72511ccc133dea9dbe6bdabcbc9a5e435deffa8da1",
+  "expected_controls": 1,
+  "prior_suites_rerun": false,
+  "actual_native_calls": 0,
+  "source_inputs": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteLifetime.swift",
+      "git_blob": "19f81f5e1bb51b48a7fd46d30476a99105d9aea2",
+      "sha256": "451054685e2ff0c30371d384904be831412eec16c2a5e16c660d2f1891921eb4"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift",
+      "git_blob": "c90dd7f2ee0577d3496d81fd164fc238b79ea364",
+      "sha256": "b0ae02be8c28c22246d29bf927cb154e10019d841f3b831771f968a8938f7d46"
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/InvocationDispatchBinding.swift",
+      "git_blob": "7f6862925605de7a15220f6c44dbf4d6d884113d",
+      "sha256": "e304f05ed114342795dbc3a603490311142d63f9a6a156bdcdafd68743e710cb"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Account/AccountManager.swift",
+      "git_blob": "8b5d3d362f2c73b248b8b5b68e6ecda9a62f09e2",
+      "sha256": "954494a8c39f3c913dccb824a4064fdc1199ea46b0afbd9c54fd35f7105b224b"
+    },
+    {
+      "path": "Modules/Services/Sources/Models/Participant.swift",
+      "git_blob": "f353056528408195d5dbf42ac41b980b60cf5870",
+      "sha256": "a62eac1133d7ff69ca377bd160a8ef000ce82e6a116ae08acb50b9ed8c458234"
+    },
+    {
+      "path": "Anytype/Sources/Models/Extensions/Participant+Extensions.swift",
+      "git_blob": "d00b609f7d05a44a3ee7218442aae5ea63e869d3",
+      "sha256": "bdcd30821043e53459ea8429a0d034a32de470f5a947c5b728a62e9a4f530603"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/SubscriptionsToggler/Internals/SubscriptionStorage.swift",
+      "git_blob": "2c1b7b1148e0b5692d4455b8ba9d6b636e29ffe3",
+      "sha256": "6dd4b130d7177dc6e97ad44edca6922d3fdc42d9a47f540eb07222be3ed1b730"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/AccountParticipantsStorage/AcountParticipantSubscriptionBuilder.swift",
+      "git_blob": "c8f620d3f26d6dcf09450c2ba40c787158f5525d",
+      "sha256": "08fe0f892d8d6a216c65f29174fe600bb0d662c85f3e93ffe7f8687bd5e5ad5e"
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ParticipantPermissions.swift",
+      "git_blob": "cacce9daad76cdc83f46ffc7ab0c25790fa01d3e",
+      "sha256": "5022bf16a8c3ef693a41d29e136ed053af79e2fd4ea4de5d41275a1b7980c798"
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Models/Anytype_Model_ParticipantStatus.swift",
+      "git_blob": "c4d11256c886cb60605f6ff77d37db84d85ce7df",
+      "sha256": "be78e48419db2f64f9e39e4c3108cb2ab74d8068133e5d06b24990a359fe2554"
+    }
+  ],
+  "projections": [
+    {
+      "name": "Lifetime.swift",
+      "transform": "complete original file unchanged"
+    },
+    {
+      "name": "Capture.swift",
+      "transform": "exact complete original rejection/error enums and Capture struct; no body rewrite",
+      "owner_source_sha256": "b0ae02be8c28c22246d29bf927cb154e10019d841f3b831771f968a8938f7d46"
+    },
+    {
+      "name": "Binding.swift",
+      "transform": "complete original file unchanged"
+    },
+    {
+      "name": "AccountManager.swift",
+      "transform": "complete original declarations, external imports removed; storage and AccountData are explicitly portable probes"
+    },
+    {
+      "name": "ParticipantValues.swift",
+      "transform": "complete original value type and enum bodies; SwiftProtobuf.Enum conformance replaced by RawRepresentable/Hashable/Sendable for value-only compilation; exact original canEdit/isModerator bodies; no native decoder or protobuf codec"
+    },
+    {
+      "name": "PortableDependencyProbes.swift",
+      "transform": "explicit disposable input/DI/publisher/subscription/lock probes, no native backend"
+    },
+    {
+      "name": "ParticipantDeinitControl.swift",
+      "transform": "Exact three production regions/protocol/complete actor including deinit, then one new actual-deallocation control; excludes prior16 assertions."
+    }
+  ],
+  "actor_bytes_sha256": "34523ab125d49d81cb2ed173925f3aceea280c52140c511f83a10ffa666abfd0",
+  "controls_sha256": "bd3ad028023ca3cfb8b616de905c2edac72c63eb031f4db0fdbc4cebd9674787",
+  "swift_inputs": [
+    {
+      "name": "AccountManager.swift",
+      "sha256": "be0b4358ba976cbe32a56b6746e30e793fc3a845ad27eb84ff9ac39e6a517390"
+    },
+    {
+      "name": "Binding.swift",
+      "sha256": "e304f05ed114342795dbc3a603490311142d63f9a6a156bdcdafd68743e710cb"
+    },
+    {
+      "name": "Capture.swift",
+      "sha256": "b267ee41ba4f6cc808a5c500afe78e83514009667b8df7d47b10d2a726fd1f4c"
+    },
+    {
+      "name": "Lifetime.swift",
+      "sha256": "451054685e2ff0c30371d384904be831412eec16c2a5e16c660d2f1891921eb4"
+    },
+    {
+      "name": "ParticipantDeinitControl.swift",
+      "sha256": "60e703d3c14ebfc2df36d4b93054eb1515515c22a0ea72c4351b22b2ff9c95e2"
+    },
+    {
+      "name": "ParticipantValues.swift",
+      "sha256": "2d266fbba864b38aa9cbb8f4015ecdfa5d9682f6049e76a332ae014dfbcbd401"
+    },
+    {
+      "name": "PortableDependencyProbes.swift",
+      "sha256": "a18ead190ca6f76791827301434ab3077334db35a37b5aac44050a156222f465"
+    }
+  ],
+  "scope": "New role and lifecycle behavior at real actor await/publication boundaries only; no native decoder/RPC/Combine/Apple/module/UI or full Space capability qualification.",
+  "prepared_at": "2026-11-22T06:11:37.587257+00:00",
+  "continuation_of": null,
+  "reason": "One newly affected actual actor deallocation boundary only. The previous16 cases remain frozen at0f input and are not rerun.",
+  "raw_previous_execution_sha256": "2eb5249c1eeb9b1f1389897fa6a991bd15d6b343f05c63691b4b2a1302448996",
+  "prior_16_assertions_replayed": false,
+  "source_scope": "Complete actual actor/helpers; no body rewrite. Portable dependency probes only gain cancellation observation counters."
+}

@@ -1,0 +1,73 @@
+import Foundation
+import Services
+
+extension ParticipantPermissions {
+    var title: String {
+        switch self {
+        case .reader:
+            return Loc.SpaceShare.Permissions.reader
+        case .writer:
+            return Loc.SpaceShare.Permissions.writer
+        case .owner:
+            return Loc.SpaceShare.Permissions.owner
+        case .admin:
+            return Loc.SpaceShare.Permissions.admin
+        case .noPermissions, .UNRECOGNIZED:
+            return rawValue.description
+        }
+    }
+
+    var grandTitle: String {
+        switch self {
+        case .reader, .noPermissions, .UNRECOGNIZED:
+            return Loc.SpaceShare.Permissions.Grand.view
+        case .writer, .owner, .admin:
+            return Loc.SpaceShare.Permissions.Grand.edit
+        }
+    }
+
+    var canEdit: Bool {
+        switch self {
+        case .reader, .noPermissions, .UNRECOGNIZED:
+            return false
+        case .writer, .owner, .admin:
+            return true
+        }
+    }
+
+    var isModerator: Bool {
+        switch self {
+        case .owner, .admin:
+            return true
+        case .reader, .writer, .noPermissions, .UNRECOGNIZED:
+            return false
+        }
+    }
+}
+
+extension Participant {
+    
+    var title: String {
+        localName.withPlaceholder
+    }
+    
+    var isOwner: Bool {
+        permission == .owner
+    }
+    
+    var canEdit: Bool {
+        permission.canEdit
+    }
+    
+    var displayGlobalName: String {
+        globalName.isNotEmpty ? globalName : identity
+    }
+    
+    var displayGlobalNameTruncated: String {
+        guard globalName.isEmpty else { return globalName }
+        
+        return identity.count > 14
+            ? "\(identity.prefix(6))...\(identity.suffix(6))"
+            : identity
+    }
+}

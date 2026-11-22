@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "candidate_sha256": "7fc5fc32d5dd7f21d6133f72511ccc133dea9dbe6bdabcbc9a5e435deffa8da1",
+  "input_manifest_sha256": "44a3ae3b7c4a442a1466f0203bcbca8a4e888ae26ed00fa2862fe2aa94493c1b",
+  "commands": [
+    {
+      "label": "full-candidate-syntax",
+      "parent_pid": 13780,
+      "child_pid": 27524,
+      "args": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+        "-frontend",
+        "-parse",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\candidate\\Anytype\\Sources\\ServiceLayer\\ParticipantStorage\\ParticipantsStorage.swift"
+      ],
+      "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-deinit-control",
+      "timeout_s": 60,
+      "started_at": "2026-11-22T06:11:55.403469+00:00",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_s": 0.734,
+      "finished_at": "2026-11-22T06:11:56.129896+00:00",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "cleanup_invoked": false
+    },
+    {
+      "label": "compile",
+      "parent_pid": 13780,
+      "child_pid": 23520,
+      "args": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+        "-parse-as-library",
+        "-swift-version",
+        "6",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-deinit-control\\AccountManager.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-deinit-control\\Binding.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-deinit-control\\Capture.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-deinit-control\\Lifetime.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-deinit-control\\ParticipantDeinitControl.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-deinit-control\\ParticipantValues.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-deinit-control\\PortableDependencyProbes.swift",
+        "-o",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-deinit-control\\participant-role-lifecycle-controls.exe"
+      ],
+      "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-deinit-control",
+      "timeout_s": 240,
+      "started_at": "2026-11-22T06:11:56.134795+00:00",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_s": 54.453,
+      "finished_at": "2026-11-22T06:12:50.582650+00:00",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "0526449446935ac52412edae6686a56b75b0a519b2909f5324488e012a698c81",
+      "cleanup_invoked": false
+    },
+    {
+      "label": "execute",
+      "parent_pid": 13780,
+      "child_pid": 17352,
+      "args": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-deinit-control\\participant-role-lifecycle-controls.exe"
+      ],
+      "cwd": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-original-annotation-authority-20261122\\role-deinit-control",
+      "timeout_s": 120,
+      "started_at": "2026-11-22T06:12:50.628141+00:00",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_s": 0.594,
+      "finished_at": "2026-11-22T06:12:51.210234+00:00",
+      "stdout_sha256": "c2744e6ec771bb5db1914dd87b7e5ec0a63c6bfb94e42517b22ee2734d821f20",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "cleanup_invoked": false
+    }
+  ],
+  "source_after_exact": true,
+  "old_suites_rerun": false,
+  "native_calls": 0,
+  "result": "PASS",
+  "binary_sha256": "6956a93a597e5f07a32f4b365b4f47a42cfade1b736f883ef07bed6238ae0037"
+}

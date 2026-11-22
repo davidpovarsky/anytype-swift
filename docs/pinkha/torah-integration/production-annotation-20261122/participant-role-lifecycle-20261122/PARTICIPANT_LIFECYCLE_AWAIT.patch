@@ -1,0 +1,11 @@
+--- a/Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift
++++ b/Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift
+@@ -435,7 +435,7 @@
+             for await state in subscriptionStorage.statePublisher.values {
+                 guard !Task.isCancelled else { return }
+                 let participants = state.items.compactMap { try? Participant(details: $0) }
+-                self?.publishParticipants(
++                await self?.publishParticipants(
+                     participants, channelPinContext: channelPinContext, attempt: attempt
+                 )
+             }
