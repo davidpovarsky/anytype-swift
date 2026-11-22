@@ -10,6 +10,7 @@ from pathlib import Path
 import t5_native_ui_evidence as evidence
 
 PROFILE = "r15-attachment-v1"
+PROFILES = frozenset({PROFILE, "r15-attachment-authorized-current-read-v1"})
 RELATIVE = "Library/Application Support/pinkha-t5-native-ui-mutations.json"
 COPY_NAME = "native-mutations.json"
 PASS = "PASS_ACTUAL_NATIVE_TYPE_CHANGE_AND_DELETE"
@@ -118,7 +119,7 @@ def validate(value, fixture):
 
 
 def capture(container, private, fixture, runtime_profile):
-    if runtime_profile != PROFILE:
+    if runtime_profile not in PROFILES:
         return {"status": "NOT_SELECTED", "actual_mutations": 0, "actual_observations": 0}
     source = Path(container) / RELATIVE
     evidence.require(source.is_file() and not source.is_symlink() and 0 < source.stat().st_size <= 64 * 1024

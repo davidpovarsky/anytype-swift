@@ -1,0 +1,27 @@
+{
+  "status": "FOCUSED_CONTROLLER_CONTROLS_PASS_NATIVE_NOT_RUN",
+  "base_commit": "b2fc3804426067dd1ec8318d6ea92a4bcb8e9545",
+  "owned_files": 15,
+  "patch_apply_check": "PASS",
+  "workflow_yaml_parse": "PASS",
+  "python_ast_parse": "PASS",
+  "controls": [
+    {
+      "command": "python -B Tools/PinkhaSimulatorGate/test_t5_remaining_freshness.py -v",
+      "passed": 8,
+      "failed": 0
+    },
+    {
+      "command": "python -B Tools/PinkhaSimulatorGate/test_coherent_heart_release.py -v",
+      "passed": 10,
+      "failed": 0
+    }
+  ],
+  "native_apple_execution": "NOT_RUN",
+  "swift_typecheck": "NOT_RUN_NO_LOCAL_SWIFT_COMPILER",
+  "original_runtime_pair_prefix_bytes": 41696,
+  "original_runtime_pair_prefix_sha256": "27d6b0d40618b33185a34e3378670e378ed9c1bbcfd1c828cd5569f8c27ace2a",
+  "patch_sha256": "9788478d639938fdf8d588cf9031052a0022bda37238d47eddd7385c287a6fd1",
+  "changes_require_new_modules": false,
+  "prior_pair_and_pagination_bodies_executed": false
+}

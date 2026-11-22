@@ -783,3 +783,245 @@ struct TorahT5RuntimePairTests {
         SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
     }
 }
+
+// The original runtime-pair suite above remains independently selectable.
+// This separate suite covers only the quote freshness stages missing from the
+// retained pagination proof; it never executes the original pair or pagination.
+private struct T5RemainingFreshnessReadback: Codable {
+    let objectID: String
+    let spaceID: String
+    let title: String
+    let typeKey: String
+    let canonicalRaw: String
+    let canonicalSHA256: String
+}
+
+private struct T5RemainingFreshnessObservation: Codable {
+    let name: String
+    let sourceReference: String
+    let spaceID: String
+    let serviceID: String
+    let serviceQueryOrdinal: Int
+    let nativeCandidatesBefore: [String]
+    let nativeCandidatesAfter: [String]
+    let targets: [T5ApplePairTarget]
+    let coverage: String
+    let limitations: [String]
+    let readbacks: [T5RemainingFreshnessReadback]
+    let quoteGraph: T5AppleFreshnessGraph
+    let quoteBlockTextSHA256: String?
+}
+
+private struct T5RemainingFreshnessReceipt: Codable {
+    let protocolVersion: String
+    let status: String
+    let token: String
+    let appSourceSHA: String
+    let runID: String
+    let runAttempt: String
+    let processID: Int32
+    let runtimeProfile: String
+    let runtimeVersion: String
+    let actualCapability: String
+    let accountID: String
+    let spaceID: String
+    let rootPathSHA256: String
+    let serverConfiguration: String
+    let ledger: T5ApplePairLedger
+    let originalCanonical: [String: String]
+    let serviceID: String
+    let serviceQueryCount: Int
+    let nativeMutationCounts: [String: Int]
+    let observations: [T5RemainingFreshnessObservation]
+    let accountStopCompleted: Bool
+    let accountNotRunningConfirmed: Bool
+    let appShutdownCompleted: Bool
+    let historicalPaginationInvocations: Int
+    let runtimePairPhasesExecuted: [String]
+    let mixedVersionAccepted: Bool
+    let wholeIndexCompleteness: String
+    let forcedNetworkOutage: String
+    let productLookupFlag: String
+}
+
+@Suite("T5 remaining native quote freshness", .serialized,
+       .enabled(if: ProcessInfo.processInfo.environment["PINKHA_T5_REMAINING_FRESHNESS"] == "1"))
+struct TorahT5RemainingFreshnessTests {
+    @Test("Same-service canonical quote move and live quote-block deletion")
+    @MainActor
+    func nativeQuoteMoveAndBlockDeletion() async throws {
+        try await TorahT5RuntimePairTests().runRemainingQuoteFreshness()
+    }
+}
+
+extension TorahT5RuntimePairTests {
+    @MainActor
+    fileprivate func runRemainingQuoteFreshness() async throws {
+        #if PINKHA_NATIVE_T5_LOOKUP_V1
+        let environment = ProcessInfo.processInfo.environment
+        try require(environment["PINKHA_SIMULATOR_UI_DISPOSABLE"] == "1"
+                    && environment["PINKHA_T5_REMAINING_FRESHNESS"] == "1", "fresh-disposable-scope-required")
+        let token = try requiredEnvironment("PINKHA_T5_FRESHNESS_TOKEN", environment)
+        let sourceSHA = try requiredEnvironment("PINKHA_T5_FRESHNESS_APP_SHA", environment)
+        let runID = try requiredEnvironment("PINKHA_T5_FRESHNESS_RUN_ID", environment)
+        let runAttempt = try requiredEnvironment("PINKHA_T5_FRESHNESS_RUN_ATTEMPT", environment)
+        let runtimeProfile = try requiredEnvironment("PINKHA_T5_FRESHNESS_RUNTIME_PROFILE", environment)
+        try require(token.count == 32 && token.allSatisfy(\.isHexDigit)
+                    && sourceSHA.count == 40 && sourceSHA.allSatisfy(\.isHexDigit)
+                    && runID.allSatisfy(\.isNumber) && Int(runAttempt).map({ $0 > 0 }) == true,
+                    "invalid-current-run-identity")
+        try require(runtimeProfile == "r15-attachment-authorized-current-read-v1", "explicit-coherent-runtime-required")
+        let version = try await ClientCommands.appGetVersion().invoke().version
+        try require(version == T5NativeRelatedLookupCapability.coherentRuntimeVersion, "actual-coherent-runtime-differs")
+        guard case .verified = try await AnytypeT5NativeRelatedLookup.current() else {
+            throw T5ApplePairFailure.invariant("actual-production-lookup-capability-unavailable")
+        }
+        let support = try #require(FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first)
+        let directory = support.appendingPathComponent("pinkha-t5-remaining-freshness", isDirectory: true)
+        try require(!FileManager.default.fileExists(atPath: directory.path), "existing-freshness-account-work")
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true,
+                                                attributes: [.posixPermissions: 0o700])
+        let root = Container.shared.localRepoService().middlewareRepoURL.resolvingSymlinksInPath().path
+        let expectedRoot = URL(fileURLWithPath: NSHomeDirectory(), isDirectory: true)
+            .appendingPathComponent("Library/Application Support/Anytype/middleware-go").resolvingSymlinksInPath().path
+        try require(root == expectedRoot, "freshness-native-root-outside-owned-container")
+        let rootSHA = hash(Data(root.utf8))
+        Container.shared.serverConfigurationStorage().setupCurrentConfiguration(config: .localOnly)
+        do {
+            let wallet = try await ClientCommands.walletCreate(.with { $0.rootPath = root }).invoke(responseMask: {
+                $0.mnemonic = "***"; $0.accountKey = "***"
+            })
+            try require(!wallet.mnemonic.isEmpty && !wallet.accountKey.isEmpty, "empty-freshness-private-credentials")
+            try writePrivate(T5ApplePairSecrets(token: token, mnemonic: wallet.mnemonic, accountKey: wallet.accountKey),
+                             to: directory.appendingPathComponent("secrets.json"))
+            let account = try await Container.shared.authService().createAccount(name: "T5 quote freshness", iconOption: 1, imagePath: "")
+            let space = try await Container.shared.workspaceService().createSpace(name: "T5 quote freshness",
+                iconOption: 1, accessType: .private, useCase: .none, withChat: false, spaceType: .regular)
+            _ = try await Container.shared.activeSpaceManager().setActiveSpace(spaceId: space.spaceID)
+            let ledger = try await prepareFixture(token: token, sourceSHA: sourceSHA, rootSHA: rootSHA,
+                                                 accountID: account.id, spaceID: space.spaceID)
+            try require(ledger.completedPhases.isEmpty && ledger.documents.count == 3, "historical-pair-must-not-execute")
+            var originals: [String: String] = [:]
+            for document in ledger.documents {
+                let value = try await details(document.objectID, spaceID: ledger.spaceID)
+                let raw = try #require(value.values[ledger.canonicalKey]?.stringValue)
+                try require(hash(Data(raw.utf8)) == document.canonicalSHA256, "prepared-original-canonical-differs")
+                originals[document.objectID] = raw
+            }
+            let quote = ledger.documents[2]
+            let quoteBlock = try #require(quote.blockID)
+            let originalQuote = try #require(originals[quote.objectID])
+            let movedQuote = try changedCanonical(originalQuote, unlink: false)
+            let ids = ledger.documents.map(\.objectID)
+            let service = AnytypeTorahSpaceRelatedDocumentsService(associations: AnytypeTorahAssociationRepository())
+            let serviceID = String(describing: ObjectIdentifier(service))
+            var observations: [T5RemainingFreshnessObservation] = []
+            var mutations: [String: Int] = [:]
+            var queryCount = 0
+
+            @MainActor
+            func observe(_ name: String, reference: String, candidates: [String], host: [Int],
+                         quoteRaw: String, reachable: Bool) async throws {
+                let before = try await waitForNativeCandidates(spaceID: ledger.spaceID, reference: reference, expected: candidates)
+                // One immediate call through the same production service after
+                // native membership converges. No host cache invalidation or
+                // service recreation can hide a stale quote result.
+                queryCount += 1
+                let snapshot = try await service.relatedDocuments(spaceID: ledger.spaceID,
+                    selection: TorahInspectorSelection(providerID: "sefaria", canonicalRef: reference))
+                let actual = snapshot.documents.map { T5ApplePairTarget(objectID: $0.objectID, blockID: $0.blockID, canUnlink: $0.canUnlink) }
+                    .sorted { $0.objectID < $1.objectID }
+                let wanted = host.map { index in
+                    let document = ledger.documents[index]
+                    return T5ApplePairTarget(objectID: document.objectID, blockID: document.blockID, canUnlink: document.blockID == nil)
+                }.sorted { $0.objectID < $1.objectID }
+                try require(actual == wanted, "immediate-same-service-quote-membership-differs")
+                let limits = snapshot.limitations.map { String(describing: $0) }.sorted()
+                try require(snapshot.coverage == .indexedTargetsOnly
+                    && limits == (reachable ? ["indexFreshnessUnverified"] : ["indexFreshnessUnverified", "staleCandidates"]),
+                    "quote-freshness-coverage-or-stale-disclosure-differs")
+                let after = try await waitForNativeCandidates(spaceID: ledger.spaceID, reference: reference, expected: candidates)
+                var readbacks: [T5RemainingFreshnessReadback] = []
+                var observedGraph: T5AppleFreshnessGraph?
+                var textSHA: String?
+                for document in ledger.documents {
+                    let response = try await show(document.objectID, spaceID: ledger.spaceID)
+                    let value = try rootDetails(response, objectID: document.objectID, spaceID: ledger.spaceID)
+                    let raw = try #require(value.values[ledger.canonicalKey]?.stringValue)
+                    let expected: String
+                    if document.objectID == quote.objectID { expected = quoteRaw }
+                    else { expected = try #require(originals[document.objectID]) }
+                    try require(raw == expected && !value.isArchived && !value.isDeleted
+                        && value.name == document.initialName, "quote-mutation-changed-unrelated-native-content")
+                    let typeKey = ObjectType(details: try await details(value.type, spaceID: ledger.spaceID)).uniqueKey.value
+                    try require(typeKey == document.typeKey, "quote-mutation-changed-native-type")
+                    readbacks.append(.init(objectID: document.objectID, spaceID: value.spaceId, title: value.name,
+                        typeKey: typeKey, canonicalRaw: raw, canonicalSHA256: hash(Data(raw.utf8))))
+                    if document.objectID == quote.objectID {
+                        let nodes = response.objectView.blocks.map { T5AppleFreshnessGraphNode(id: $0.id, childIDs: $0.childrenIds) }
+                        let graph = try await T5BlockReachability.evaluate(spaceID: ledger.spaceID, rootID: quote.objectID,
+                            nodes: nodes.map { .init(id: $0.id, childIDs: $0.childIDs) })
+                        try require(graph.isVerified && graph.reachableBlockIDs.contains(quoteBlock) == reachable,
+                                    "actual-quote-block-reachability-differs")
+                        if reachable {
+                            let block = try #require(response.objectView.blocks.first { $0.id == quoteBlock })
+                            guard case .text(let text) = block.content, text.text == quote.blockText else {
+                                throw T5ApplePairFailure.invariant("quote-body-text-changed")
+                            }
+                            textSHA = hash(Data(text.text.utf8))
+                        }
+                        observedGraph = .init(spaceID: ledger.spaceID, rootID: response.objectView.rootID,
+                            targetID: quoteBlock, targetReachable: reachable, nodes: nodes)
+                    }
+                }
+                observations.append(.init(name: name, sourceReference: reference, spaceID: ledger.spaceID,
+                    serviceID: serviceID, serviceQueryOrdinal: queryCount, nativeCandidatesBefore: before,
+                    nativeCandidatesAfter: after, targets: actual, coverage: snapshot.coverage.rawValue,
+                    limitations: limits, readbacks: readbacks, quoteGraph: try #require(observedGraph),
+                    quoteBlockTextSHA256: textSHA))
+            }
+
+            try await observe("baseline", reference: "Genesis 3:3", candidates: ids, host: [0, 1, 2], quoteRaw: originalQuote, reachable: true)
+            _ = try await ClientCommands.objectSetDetails(.with {
+                $0.contextID = quote.objectID; $0.details = [.with { $0.key = ledger.canonicalKey; $0.value = movedQuote.protobufValue }]
+            }).invoke()
+            mutations["ObjectSetDetails", default: 0] += 1
+            try await observe("moved_original", reference: "Genesis 3:3", candidates: Array(ids.prefix(2)), host: [0, 1], quoteRaw: movedQuote, reachable: true)
+            try await observe("moved_other", reference: "Genesis 3:4", candidates: [quote.objectID], host: [2], quoteRaw: movedQuote, reachable: true)
+            _ = try await ClientCommands.objectSetDetails(.with {
+                $0.contextID = quote.objectID; $0.details = [.with { $0.key = ledger.canonicalKey; $0.value = originalQuote.protobufValue }]
+            }).invoke()
+            mutations["ObjectSetDetails", default: 0] += 1
+            try await observe("restored_original", reference: "Genesis 3:3", candidates: ids, host: [0, 1, 2], quoteRaw: originalQuote, reachable: true)
+            try await observe("restored_other_empty", reference: "Genesis 3:4", candidates: [], host: [], quoteRaw: originalQuote, reachable: true)
+            _ = try await ClientCommands.blockListDelete(.with { $0.contextID = quote.objectID; $0.blockIds = [quoteBlock] }).invoke()
+            mutations["BlockListDelete", default: 0] += 1
+            try await observe("quote_block_removed", reference: "Genesis 3:3", candidates: ids, host: [0, 1], quoteRaw: originalQuote, reachable: false)
+            try require(observations.count == 6 && queryCount == 6
+                && mutations == ["ObjectSetDetails": 2, "BlockListDelete": 1], "remaining-freshness-scope-differs")
+            _ = try await ClientCommands.accountStop(.with { $0.removeData = false }).invoke()
+            do {
+                _ = try await ClientCommands.accountPreloadRemainingSpaces().invoke(ignoreLogErrors: .accountIsNotRunning)
+                throw T5ApplePairFailure.invariant("freshness-account-remains-running")
+            } catch let error as Anytype_Rpc.Account.PreloadRemainingSpaces.Response.Error where error.code == .accountIsNotRunning { }
+            _ = try await ClientCommands.appShutdown().invoke()
+            try writePrivate(T5RemainingFreshnessReceipt(protocolVersion: "pinkha-t5-remaining-quote-freshness-v1",
+                status: "PASS_ACTUAL_NATIVE_QUOTE_FRESHNESS", token: token, appSourceSHA: sourceSHA,
+                runID: runID, runAttempt: runAttempt, processID: ProcessInfo.processInfo.processIdentifier,
+                runtimeProfile: runtimeProfile, runtimeVersion: version, actualCapability: "verified",
+                accountID: account.id, spaceID: ledger.spaceID, rootPathSHA256: rootSHA, serverConfiguration: "localOnly",
+                ledger: ledger, originalCanonical: originals, serviceID: serviceID, serviceQueryCount: queryCount,
+                nativeMutationCounts: mutations, observations: observations, accountStopCompleted: true,
+                accountNotRunningConfirmed: true, appShutdownCompleted: true, historicalPaginationInvocations: 0,
+                runtimePairPhasesExecuted: [], mixedVersionAccepted: false, wholeIndexCompleteness: "NOT_PROVEN",
+                forcedNetworkOutage: "NOT_RUN", productLookupFlag: "OFF"), to: directory.appendingPathComponent("receipt.json"))
+            print("T5_REMAINING_QUOTE_FRESHNESS observations=6 host_queries=6 native_mutations=3")
+        } catch {
+            _ = try? await ClientCommands.appShutdown().invoke()
+            throw error
+        }
+        #else
+        throw T5ApplePairFailure.invariant("test-only-native-lookup-flag-required")
+        #endif
+    }
+}

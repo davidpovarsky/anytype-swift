@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "scope": "Python controller controls only; Apple execution NOT_RUN",
+  "command": [
+    "python",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_coherent_heart_release",
+    "test_t5_corrected_ui",
+    "test_t5_existing_build_readiness",
+    "test_wave15_batch.BatchControls.test_retained_heart_profile_is_exact_and_does_not_trim_existing_six_lane_profile",
+    "test_wave15_batch.BatchControls.test_retained_heart_batch_requires_three_original_preparations_six_ui_and_native_postflight",
+    "test_wave15_batch.BatchControls.test_corrected_runtime_profile_and_original_producer_survive_each_fresh_worker_lane",
+    "test_wave15_batch.BatchControls.test_retained_heart_worker_shares_only_build_with_three_fresh_devices",
+    "test_t5_native_ui.NativeUIEvidenceControls.test_cancellation_during_cleanup_or_publication_is_recorded_and_propagated"
+  ],
+  "test_count": 34,
+  "exit_code": 0,
+  "log_sha256": "e1a4137dea20bfeec86164db294f789e916cb9c6df9d0ed34015085c87bffd1b",
+  "checked_at": "2026-11-22T14:01:34.801408+00:00"
+}

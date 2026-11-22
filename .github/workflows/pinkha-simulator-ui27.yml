@@ -14,7 +14,7 @@ on:
         type: string
         required: true
       acceptance_lane:
-        description: Existing lane, SDK06 plus new text-ack cases, or reviewed Release preset
+        description: Existing lane, SDK06, or reviewed Release and coherent T5 preset
         type: string
         default: ''
       acceptance_device:
@@ -40,6 +40,8 @@ jobs:
       UI27_LANGUAGE: ${{ inputs.acceptance_language }}
       HEART_RUNTIME_PROFILE: ${{ inputs.runtime_profile }}
       HEART_SOURCE_RUN_ID: ${{ inputs.heart_source_run_id }}
+      UI27_CACHE_NAMESPACE: ${{ inputs.acceptance_lane == 'coherent-heart-release' && 'pinkha-ui27-coherent-compiled-v1' || 'pinkha-ui27-compiled-v2' }}
+      UI27_CACHE_CONFIGURATION: ${{ ((inputs.acceptance_lane == 'hanlin-native' || (inputs.acceptance_lane == 'hanlin-native-text-ack' || inputs.acceptance_lane == 'hanlin-native-shared-editor')) || inputs.acceptance_lane == 'hanlin-selection') && 'Debug-Anytype' || 'Release-Anytype' }}
     steps:
       - name: Checkout exact integration source
         uses: actions/checkout@v4
@@ -72,6 +74,11 @@ jobs:
       - name: Check existing-build shared-editor product and result binding
         if: ${{ inputs.acceptance_lane == 'hanlin-native-shared-editor' }}
         run: python3 -B Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py -v
+      - name: Check coherent same-build selection identity and cleanup controls
+        if: ${{ inputs.acceptance_lane == 'coherent-heart-release' }}
+        run: |
+          python3 -B Tools/PinkhaSimulatorGate/test_coherent_heart_release.py -v
+          python3 -B Tools/PinkhaSimulatorGate/test_t5_remaining_freshness.py -v
       - name: Verify actual Xcode27 and create disposable OS27 iPhone and iPad
         run: python3 Tools/PinkhaSimulatorGate/preflight.py --evidence build/ui27-evidence/preflight
       - name: Install the explicitly selected original verified runtime
@@ -95,9 +102,12 @@ jobs:
             build/ui27-derived/SDKExplicitPrecompiledModules
             build/ui27-derived/CompilationCache.noindex
             build/ui27-derived/info.plist
-          key: pinkha-ui27-compiled-v2-arm64-xcode27.0-${{ ((inputs.acceptance_lane == 'hanlin-native' || (inputs.acceptance_lane == 'hanlin-native-text-ack' || inputs.acceptance_lane == 'hanlin-native-shared-editor')) || inputs.acceptance_lane == 'hanlin-selection') && 'Debug-Anytype' || 'Release-Anytype' }}-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-${{ github.sha }}
+            build/ui27-derived-ui/Build
+            build/ui27-derived-ui/ModuleCache.noindex
+          key: ${{ env.UI27_CACHE_NAMESPACE }}-arm64-xcode27.0-${{ env.UI27_CACHE_CONFIGURATION }}-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-${{ github.sha }}
           restore-keys: |
-            pinkha-ui27-compiled-v2-arm64-xcode27.0-${{ ((inputs.acceptance_lane == 'hanlin-native' || (inputs.acceptance_lane == 'hanlin-native-text-ack' || inputs.acceptance_lane == 'hanlin-native-shared-editor')) || inputs.acceptance_lane == 'hanlin-selection') && 'Debug-Anytype' || 'Release-Anytype' }}-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-
+            ${{ env.UI27_CACHE_NAMESPACE }}-arm64-xcode27.0-${{ env.UI27_CACHE_CONFIGURATION }}-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-
+            pinkha-ui27-compiled-v2-arm64-xcode27.0-${{ env.UI27_CACHE_CONFIGURATION }}-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-
       - name: Reuse the preceding cache layout only when no v2 cache matched
         if: ${{ steps.ui27-cache.outputs.cache-matched-key == '' }}
         id: ui27-cache-legacy
@@ -139,12 +149,17 @@ jobs:
           path: build/ui27-evidence/Pinkha-Native-Derived-Evidence.zip
           if-no-files-found: error
           retention-days: 14
-      - name: Verify the owned SDK worker finished cleanup before caching
+      - name: Verify owned SDK or coherent workers finished cleanup before caching
         id: ui27-cache-readiness
-        if: ${{ always() && inputs.acceptance_lane == 'hanlin-native-shared-editor' && steps.wave15-execution.outcome != 'skipped' }}
-        run: python3 -B Tools/PinkhaSimulatorGate/run_owned_single_lane.py --check-cache-ready build/ui27-evidence
+        if: ${{ always() && (inputs.acceptance_lane == 'hanlin-native-shared-editor' || inputs.acceptance_lane == 'coherent-heart-release') && steps.wave15-execution.outcome != 'skipped' }}
+        run: |
+          controller=Tools/PinkhaSimulatorGate/run_owned_single_lane.py
+          if [ "$UI27_ACCEPTANCE_LANE" = "coherent-heart-release" ]; then
+            controller=Tools/PinkhaSimulatorGate/coherent_heart_release.py
+          fi
+          python3 -B "$controller" --check-cache-ready build/ui27-evidence
       - name: Preserve compatible compilation cache after success or failed tests
-        if: ${{ always() && (steps.actual-execution.outcome != 'skipped' || steps.wave15-execution.outcome != 'skipped') && (inputs.acceptance_lane != 'hanlin-native-shared-editor' || steps.ui27-cache-readiness.outcome == 'success') && steps.ui27-cache.outputs.cache-hit != 'true' && hashFiles('build/ui27-derived/Build/PinkhaSourceInputs.json') != '' }}
+        if: ${{ always() && (steps.actual-execution.outcome != 'skipped' || steps.wave15-execution.outcome != 'skipped') && ((inputs.acceptance_lane != 'hanlin-native-shared-editor' && inputs.acceptance_lane != 'coherent-heart-release') || steps.ui27-cache-readiness.outcome == 'success') && steps.ui27-cache.outputs.cache-hit != 'true' && hashFiles('build/ui27-derived/Build/PinkhaSourceInputs.json') != '' }}
         uses: actions/cache/save@v4
         with:
           path: |
@@ -155,4 +170,6 @@ jobs:
             build/ui27-derived/SDKExplicitPrecompiledModules
             build/ui27-derived/CompilationCache.noindex
             build/ui27-derived/info.plist
+            build/ui27-derived-ui/Build
+            build/ui27-derived-ui/ModuleCache.noindex
           key: ${{ steps.ui27-cache.outputs.cache-primary-key }}

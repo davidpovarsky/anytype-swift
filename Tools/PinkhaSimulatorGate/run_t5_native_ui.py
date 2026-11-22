@@ -266,8 +266,20 @@ def run_after_corrected_build(*, app, work, proof, build, selection, pair, ui, m
         runtime=profile.version, runtime_profile=profile.name, pair_boundary=None)
 
 
+def run_after_coherent_build(*, app, work, proof, build, selection, pair, ui, method_results,
+                             source, run_id, build_context, owned_device):
+    """Run the same journeys with this job's frozen coherent App and UI runner."""
+    import coherent_heart_release as coherent
+    profile = coherent.validate_build(build, source, pair, ui, build_context)
+    return _run_on_fresh_simulator(app=app, work=work, proof=proof, build=build, selection=selection,
+        pair=pair, ui=ui, method_results=method_results, source=source, run_id=run_id,
+        runtime=profile.version, runtime_profile=profile.name, pair_boundary=None,
+        build_context=build_context, owned_device=owned_device)
+
+
 def _run_on_fresh_simulator(*, app, work, proof, build, selection, pair, ui, method_results,
-                           source, run_id, runtime, runtime_profile, pair_boundary):
+                           source, run_id, runtime, runtime_profile, pair_boundary,
+                           build_context=None, owned_device=None):
     """One real native fixture and the existing UI journeys, shared by both routes."""
     private = work / "native-ui"
     public = proof / "native-ui"
@@ -314,9 +326,17 @@ def _run_on_fresh_simulator(*, app, work, proof, build, selection, pair, ui, met
         evidence.require(shutil.disk_usage(work).free >= 3 * 1024**3, "UI simulator disk reserve below3GiB")
         evidence.require(pair.git(app, "rev-parse", "HEAD") == source
                          and not pair.git(app, "status", "--porcelain", "--untracked-files=no"), "Published tracked App source changed")
-        evidence.require(Path(build["app"]).resolve().is_relative_to((work / "new").resolve())
-                         and Path(build["configuration"]).resolve().is_relative_to((work / "new").resolve()),
-                         "Application products are outside this pair's retained r15 build")
+        if build_context is None:
+            evidence.require(owned_device is None,
+                             "Historical UI route cannot take another controller's simulator")
+            evidence.require(Path(build["app"]).resolve().is_relative_to((work / "new").resolve())
+                             and Path(build["configuration"]).resolve().is_relative_to((work / "new").resolve()),
+                             "Application products are outside this pair's retained r15 build")
+        else:
+            import coherent_heart_release as coherent
+            coherent.validate_build(build, source, pair, ui, build_context)
+            evidence.require(owned_device is not None and owned_device.key == "t5-native-ui",
+                             "Coherent UI requires its original planned disposable simulator")
         evidence.require(ui.code_carriers(Path(build["app"]))["sha256"] == build["code_sha256"], "Retained r15 code bytes changed")
         if pair_boundary is not None:
             original_path, original_hash = original_pair_ledger(pair_boundary["container"], pair_boundary["fresh"])
@@ -325,12 +345,14 @@ def _run_on_fresh_simulator(*, app, work, proof, build, selection, pair, ui, met
         if pair_boundary is not None:
             _, paired = simulator_record(before, selection["udid"])
             evidence.require(paired.get("state") == "Shutdown", "The original pair simulator must remain shut down")
-        name = "Pinkha-T5UI-" + run_id + "-" + token[:12]
+        name = "Pinkha-T5UI-" + run_id + "-" + token[:12] if owned_device is None else owned_device.prepare()
         evidence.require(not any(item.get("name") == name for values in before.get("devices", {}).values() for item in values),
                          "Refuse an existing UI simulator name")
         _, created_log = command(["xcrun", "simctl", "create", name, selection["device"]["identifier"],
                                   selection["runtime"]["identifier"]], "create-ui-simulator")
         created = created_log.read_text(encoding="utf8").strip()
+        if owned_device is not None:
+            owned_device.record_created(created)
         after = inventory("simulators-after-create")
         owned = validate_owned_simulator(before, after, created, name, selection)
         ui_udid = created
@@ -373,7 +395,7 @@ def _run_on_fresh_simulator(*, app, work, proof, build, selection, pair, ui, met
                          "Native preparation root differs from the actual current container")
         (private / "fixture.json").write_bytes(fixture_path.read_bytes())
         record["native_mutations"] = native_mutations.capture(container, private, fixture, runtime_profile)
-        if runtime_profile == native_mutations.PROFILE:
+        if runtime_profile in native_mutations.PROFILES:
             evidence.require(record["native_mutations"]["receipt_sha256"] == original_identity.get("native_mutations_sha256"),
                              "Native mutation evidence changed after its original identity was frozen")
         installed = pair.app_container(ui_udid, "app")
@@ -386,22 +408,31 @@ def _run_on_fresh_simulator(*, app, work, proof, build, selection, pair, ui, met
         original_project = app / "PinkhaStage1Acceptance/PinkhaStage1Acceptance.xcodeproj/project.pbxproj"
         evidence.require("PinkhaT5NativeAcceptanceUITests.swift" in original_project.read_text(), "New T5 UI source is not registered in the original target")
         original_project_hash = evidence.digest(original_project)
-        generated_project = ui.ui_only_project(app)
-        ui_derived = private / "UI-DerivedData"
-        command(["xcodebuild", "build-for-testing", "-project", str(generated_project), "-scheme", "PinkhaPrebuiltUI",
-                 "-configuration", "Release-Anytype", "-destination", "platform=iOS Simulator,id=" + ui_udid,
-                 "-derivedDataPath", str(ui_derived), "-parallel-testing-enabled", "NO",
-                 *["-only-testing:PinkhaStage1AcceptanceUITests/" + method for method in [*evidence.METHODS.values(), r08.METHOD]],
-                 *pair.FLAGS], "build-ui-runner-only", 900)
+        if build_context is None:
+            generated_project = ui.ui_only_project(app)
+            ui_derived = private / "UI-DerivedData"
+            command(["xcodebuild", "build-for-testing", "-project", str(generated_project), "-scheme", "PinkhaPrebuiltUI",
+                     "-configuration", "Release-Anytype", "-destination", "platform=iOS Simulator,id=" + ui_udid,
+                     "-derivedDataPath", str(ui_derived), "-parallel-testing-enabled", "NO",
+                     *["-only-testing:PinkhaStage1AcceptanceUITests/" + method for method in [*evidence.METHODS.values(), r08.METHOD]],
+                     *pair.FLAGS], "build-ui-runner-only", 900)
+            record["ui_runner_builds"] = 1
+        else:
+            build_context.verify_current()
+            ui_derived = build_context.ui_derived
+            record.update(ui_runner_builds=0, ui_runner_reused_from_same_job=True,
+                          same_job_build_receipt_sha256=build["same_job_build_receipt_sha256"])
         evidence.require(evidence.digest(original_project) == original_project_hash, "Original UI project changed during runner preparation")
         evidence.require(ui.code_carriers(Path(build["app"]))["sha256"] == build["code_sha256"], "UI runner build changed the retained App")
-        record["ui_runner_builds"] = 1
         products = ui_derived / "Build/Products"
         runner = products / "Release-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests-Runner.app"
         info = plistlib.loads((runner / "Info.plist").read_bytes())
         evidence.require(info.get("CFBundleIdentifier") == "com.gloiiire.PinkhaStage1AcceptanceUITests.xctrunner", "Actual UI runner bundle identity differs")
         command(["xcrun", "simctl", "install", ui_udid, str(runner)], "install-ui-runner")
         configuration = ui.test_configuration(products, "PinkhaStage1AcceptanceUITests")
+        if build_context is not None:
+            evidence.require(configuration == build_context.ui_configuration,
+                             "Coherent UI must select this job's original frozen UI configuration")
         environment = {"PINKHA_NATIVE_UI_DISPOSABLE": "1", "PINKHA_T5_NATIVE_UI_FIXTURE_JSON": raw_fixture,
                        "PINKHA_T5_UI_TOKEN": token, "PINKHA_T5_UI_APP_SHA": source, "PINKHA_T5_UI_RUN_ID": run_id,
                        "PINKHA_UI27_APP_LANGUAGE": "en", "PINKHA_UI27_SELECTION_SCOPE": "WAVE15_ACCEPTANCE"}
@@ -437,6 +468,11 @@ def _run_on_fresh_simulator(*, app, work, proof, build, selection, pair, ui, met
     except BaseException as error:
         record_failure(error, "error_type")
     finally:
+        if build_context is not None:
+            try:
+                build_context.verify_current()
+            except BaseException as build_error:
+                record_failure(build_error, "frozen_build_error_type")
         if core_result_path is not None:
             try:
                 evidence.require(evidence.digest(core_result_path) == core_result_hash, "Independent core UI receipt changed during R08")

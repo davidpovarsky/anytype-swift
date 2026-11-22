@@ -462,6 +462,8 @@ def execute(args, receipt, *, build_context=None):
     configuration_name = selection["build_configuration"]
     if hanlin_lane is not None:
         flags[0] += " -D DEBUG"
+    if build_context is not None:
+        flags = build_context.lane_build_flags(args.lane, flags, configuration_name)
     native_suite = LANES[args.lane]["preparation"].split("/")[0]
     base = ["xcodebuild", "build-for-testing", "-configuration", configuration_name,
             "-destination", "platform=iOS Simulator,id=" + udid, "-parallel-testing-enabled", "NO"]

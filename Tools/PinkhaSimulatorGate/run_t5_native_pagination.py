@@ -85,9 +85,19 @@ def publish_native_evidence(work, proof, container, token):
     return True
 
 
-def execute_phase(*, app, work, build, udid, source, run_id, token, ui, method_results, account_retry=False, pending_only=False):
+def execute_phase(*, app, work, build, udid, source, run_id, token, ui, method_results, account_retry=False,
+                  pending_only=False, runtime_profile=None):
     from run_t5_native_ui import selected_configuration
     from t5_native_ui_evidence import validate_selection
+    pair.require(runtime_profile is None or (pending_only and not account_retry
+                 and runtime_profile == pending_evidence.COHERENT_RUNTIME_PROFILE),
+                 "Explicit coherent runtime selection is restricted to the pending nine queries")
+    if runtime_profile is not None:
+        pair.require(build.get("runtime_binding", {}).get("runtime_profile") == runtime_profile
+                     and ui.heart_profiles.verify_binding(build["runtime_binding"])
+                         == pending_evidence.expected_runtime_version(runtime_profile)
+                     and build.get("runtime_version") == pending_evidence.expected_runtime_version(runtime_profile),
+                     "Pending-nine runtime selection differs from the verified current App")
 
     directory = work / "phase"
     pair.require(not directory.exists(), "Fresh native pagination phase directory required")
@@ -107,6 +117,9 @@ def execute_phase(*, app, work, build, udid, source, run_id, token, ui, method_r
         if pending_only:
             environment.pop("PINKHA_T5_NATIVE_PAGINATION")
             environment["PINKHA_T5_ACCOUNT_RETRY_PENDING"] = "1"
+            if runtime_profile is not None:
+                environment["PINKHA_T5_ACCOUNT_RETRY_RUNTIME_PROFILE"] = runtime_profile
+                environment["PINKHA_T5_ACCOUNT_RETRY_RUNTIME_VERSION"] = pending_evidence.expected_runtime_version(runtime_profile)
         elif account_retry:
             environment["PINKHA_T5_ACCOUNT_RETRY"] = "1"
         if retry_selected:
@@ -167,7 +180,8 @@ def execute_phase(*, app, work, build, udid, source, run_id, token, ui, method_r
             retry_report = json.loads((directory / "account-retry-receipt.json").read_text(encoding="utf8"))
             counts = retry_evidence.validate_receipt(retry_report, report, (directory / state_filename).read_bytes(),
                 source=source, run_id=run_id, run_attempt=run_attempt, token=token, root_sha=observed["root"]["pathSHA256"],
-                credential_sha=credential_sha, current_directories=observed, execution_window=window, pending_only=pending_only)
+                credential_sha=credential_sha, current_directories=observed, execution_window=window,
+                pending_only=pending_only, runtime_profile=runtime_profile)
             record["account_retry_receipt_sha256"] = pair.digest(directory / "account-retry-receipt.json")
         record.update(status="PASS", native_process_id=state["processID"], receipt_sha256=pair.digest(directory / state_filename),
                       installed_code_sha256=build["code_sha256"], actual_counts=counts, actual_methods=methods)

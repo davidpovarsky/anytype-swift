@@ -34,6 +34,23 @@ def run_after_corrected_build(*, app, work, proof, build, selection, pair, ui, m
                  and build["runtime_binding"]["heart_source_run_id"] == native.pending_evidence.RUNTIME_RUN
                  and type(build.get("app_builds")) is int and build["app_builds"] == 1,
                  "Pending nine must reuse the one current corrected-r15 App build")
+    return _run_after_build(app=app, work=work, proof=proof, build=build, selection=selection,
+        pair=pair, ui=ui, method_results=method_results, source=source, run_id=run_id, profile=profile)
+
+
+def run_after_coherent_build(*, app, work, proof, build, selection, pair, ui, method_results,
+                             source, run_id, build_context, owned_device):
+    import coherent_heart_release as coherent
+    profile = coherent.validate_build(build, source, pair, ui, build_context)
+    pair.require(owned_device is not None and owned_device.key == "t5-pending-nine",
+                 "Pending nine requires its original planned disposable simulator")
+    return _run_after_build(app=app, work=work, proof=proof, build=build, selection=selection,
+        pair=pair, ui=ui, method_results=method_results, source=source, run_id=run_id,
+        profile=profile, build_context=build_context, owned_device=owned_device)
+
+
+def _run_after_build(*, app, work, proof, build, selection, pair, ui, method_results, source, run_id,
+                     profile, build_context=None, owned_device=None):
     private, public = work / "account-retry-pending", proof / "account-retry-pending"
     pair.require(not private.exists() and not public.exists(), "Fresh pending-nine work/evidence required")
     private.mkdir(mode=0o700)
@@ -51,13 +68,19 @@ def run_after_corrected_build(*, app, work, proof, build, selection, pair, ui, m
     published = False
     failure = None
     try:
-        pair.write(public / "retained-pagination.json", native.pending_evidence.validate_retained_source(app))
+        pair.write(public / "retained-pagination.json", native.pending_evidence.validate_retained_source(
+            app, runtime_binding=build["runtime_binding"] if build_context is not None else None))
         configuration = Path(build["configuration"])
         built, app_executable, _, test_executable = host.xctest_products(configuration)
-        pair.require(built.resolve() == Path(build["app"]).resolve()
-                     and built.resolve().is_relative_to((work / "new").resolve())
-                     and configuration.resolve().is_relative_to((work / "new").resolve()),
-                     "Pending-nine products are outside the current job's one App build")
+        pair.require(built.resolve() == Path(build["app"]).resolve(), "Pending-nine App identity differs")
+        if build_context is None:
+            pair.require(built.resolve().is_relative_to((work / "new").resolve())
+                         and configuration.resolve().is_relative_to((work / "new").resolve()),
+                         "Pending-nine products are outside the current job's one App build")
+        else:
+            pair.require(built.resolve() == build_context.built.resolve()
+                         and configuration == build_context.native_configuration,
+                         "Pending-nine products differ from the frozen coherent build")
         binding = dict(app_executable_sha256=pair.digest(app_executable),
                        test_executable_sha256=pair.digest(test_executable),
                        original_xctestrun_sha256=pair.digest(configuration),
@@ -65,6 +88,8 @@ def run_after_corrected_build(*, app, work, proof, build, selection, pair, ui, m
         receipt["built_products"] = binding
 
         def verify_binding():
+            if build_context is not None:
+                build_context.verify_current()
             pair.require(pair.git(app, "rev-parse", "HEAD") == source
                          and not pair.git(app, "status", "--porcelain", "--untracked-files=no"),
                          "Pending-nine published source changed")
@@ -75,7 +100,7 @@ def run_after_corrected_build(*, app, work, proof, build, selection, pair, ui, m
                          "Pending-nine App, XCTest or original configuration changed")
 
         verify_binding()
-        name = "Pinkha-T5R07-" + run_id + "-" + token[:12]
+        name = "Pinkha-T5R07-" + run_id + "-" + token[:12] if owned_device is None else owned_device.prepare()
         created_result, created = pair.run_logged(["xcrun", "simctl", "create", name, selection["device"]["identifier"],
                                       selection["runtime"]["identifier"]], app, public / "simulator", "create", 120)
         udid = created.read_text(encoding="utf-8").strip()
@@ -84,6 +109,8 @@ def run_after_corrected_build(*, app, work, proof, build, selection, pair, ui, m
                      and udid.lower() != selection["udid"].lower(),
                      "Actual fresh pending-nine creation must return a distinct simulator UUID")
         destination = dict(selection, udid=udid, name=name)
+        if owned_device is not None:
+            owned_device.record_created(udid)
         receipt.update(phase="SIMULATOR_READINESS", device_udid=udid, device_name=name,
                        creation=dict(command_return_code=created_result["return_code"], log_sha256=pair.digest(created),
                                      nonce=token, source_sha=source, run_id=run_id,
@@ -97,7 +124,8 @@ def run_after_corrected_build(*, app, work, proof, build, selection, pair, ui, m
         pair.write(public / "result.json", receipt)
         native_started = True
         counts = native.execute_phase(app=app, work=private, build=build, udid=udid, source=source,
-            run_id=run_id, token=token, ui=ui, method_results=method_results, pending_only=True)
+            run_id=run_id, token=token, ui=ui, method_results=method_results, pending_only=True,
+            runtime_profile=profile.name if build_context is not None else None)
         validate_counts(counts, pair)
         verify_binding()
         receipt.update(actual_counts=counts, raw_result_sha256=pair.digest(private / "phase/result.json"),

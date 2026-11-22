@@ -120,8 +120,9 @@ def failed_query(query, space):
 
 
 def validate_receipt(receipt, baseline, baseline_bytes, *, source, run_id, run_attempt, token, root_sha,
-                     credential_sha, current_directories, execution_window, pending_only=False):
+                     credential_sha, current_directories, execution_window, pending_only=False, runtime_profile=None):
     require(type(pending_only) is bool, "Explicit pending-only mode required")
+    require(runtime_profile is None or pending_only, "Runtime selection cannot change retained pagination acceptance")
     require(isinstance(baseline_bytes, bytes) and json.loads(baseline_bytes) == baseline,
             "The original starting-state receipt bytes are missing")
     prior_readbacks = None
@@ -130,7 +131,8 @@ def validate_receipt(receipt, baseline, baseline_bytes, *, source, run_id, run_a
         import t5_native_account_retry_pending_evidence as pending
         fixture = baseline
         baseline, prior_readbacks, fixtures = pending.validate_prepared_fixture(
-            fixture, source=source, run_id=run_id, token=token, root_sha=root_sha)
+            fixture, source=source, run_id=run_id, token=token, root_sha=root_sha,
+            runtime_profile=pending.RUNTIME_PROFILE if runtime_profile is None else runtime_profile)
         baseline_counts = {"actual_search_calls": 0}
         protocol, status = pending.PROTOCOL, pending.STATUS
     else:

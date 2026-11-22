@@ -1,4 +1,4 @@
-"""Fixed same-job Release/r14 profiles over existing Wave15 UI lanes.
+"""Fixed same-job Release profiles over existing Wave15 UI lanes.
 
 The existing lane executor remains the authority for native preparation, live
 runtime mapping, UI selection, language observations, and installed code bytes.
@@ -24,6 +24,7 @@ import type_preservation as preservation
 
 PROFILE = "remaining-release"
 RETAINED_HEART_PROFILE = "retained-heart-release"
+COHERENT_HEART_PROFILE = "coherent-heart-release"
 PROTOCOL = "pinkha-wave15-same-job-batch-v1"
 LANES = ("inspector", "inspector-search", "properties", "properties-set", "canonical-properties", "editor")
 COUNTS = (5, 1, 3, 2, 1, 3)
@@ -67,6 +68,9 @@ PROFILES = {
     RETAINED_HEART_PROFILE: BatchProfile(RETAINED_HEART_PROFILE,
         ("editor", "quote-drop", "properties-set"), (3, 1, 2),
         (PREPARATIONS[5], PREPARATIONS[0], PREPARATIONS[3])),
+    COHERENT_HEART_PROFILE: BatchProfile(COHERENT_HEART_PROFILE,
+        ("editor", "quote-drop", "properties-set"), (3, 1, 2),
+        (PREPARATIONS[5], PREPARATIONS[0], PREPARATIONS[3])),
 }
 
 
@@ -79,6 +83,16 @@ CONFIGURATION = "Release-Anytype"
 FLAGS = ["OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED", "ENABLE_TESTABILITY=YES",
          "ONLY_ACTIVE_ARCH=YES", "SWIFT_OPTIMIZATION_LEVEL=-Onone", "CODE_SIGN_IDENTITY=-",
          "CODE_SIGNING_ALLOWED=YES", "CODE_SIGNING_REQUIRED=YES", "PROVISIONING_PROFILE_SPECIFIER="]
+
+
+def profile_flags(profile):
+    profile_spec(profile)
+    if profile == COHERENT_HEART_PROFILE:
+        from run_t5_apple_pair import FLAGS as t5_flags
+        return list(t5_flags)
+    return list(FLAGS)
+
+
 # The existing workflow has a 120-minute execution step and a 150-minute job.
 # Leave 12 minutes outside the worker for owned cleanup and final publication.
 WORKER_SECONDS = 105 * 60
@@ -302,6 +316,13 @@ class FrozenBuild:
     runtime_receipt_sha256: str
     fixtures: dict
     device: dict | None = None
+    profile: str = PROFILE
+
+    def lane_build_flags(self, name, defaults, configuration):
+        require(name in profile_spec(self.profile).lanes and defaults == FLAGS
+                and configuration == CONFIGURATION,
+                "Same-job build cannot widen the reviewed Release lane selection")
+        return profile_flags(self.profile)
 
     def observed_artifacts(self):
         runner = self.ui_derived / "Build/Products" / (CONFIGURATION + "-iphonesimulator/PinkhaStage1AcceptanceUITests-Runner.app")
@@ -312,20 +333,20 @@ class FrozenBuild:
 
     def verify(self, app, head, identity, flags, configuration):
         require(app == self.app and head == self.source["source_sha"]
-                and flags == FLAGS and configuration == CONFIGURATION,
+                and flags == profile_flags(self.profile) and configuration == CONFIGURATION,
                 "Same-job source/configuration/flags differ")
         require(source_snapshot(app, self.shared) == self.source,
                 "Shared source, package locks or Hanlin snapshot changed")
         require(identity["hashes"] == self.candidate_hashes, "Shared candidate inputs changed")
         require(digest(self.runtime_receipt_path) == self.runtime_receipt_sha256,
-                "Verified r14 installation receipt changed")
+                "Verified runtime installation receipt changed")
         require(self.observed_artifacts() == self.artifacts,
                 "Selected built App, native test bundle, UI runner or original xctestrun changed")
 
     def verify_current(self):
         matrix = json.loads((self.app / "Tools/PinkhaSimulatorGate/required-coverage.json").read_text())
         self.verify(self.app, self.shared.git(self.app, "rev-parse", "HEAD"),
-                    self.shared.candidate_identity(self.app, matrix), FLAGS, CONFIGURATION)
+                    self.shared.candidate_identity(self.app, matrix), profile_flags(self.profile), CONFIGURATION)
 
     def confirm_empty_container(self, udid, evidence):
         require(self.device is not None and self.device["udid"] == udid, "Unowned fixture destination")
@@ -467,6 +488,8 @@ def validate_fresh_device_receipt(fresh, directory, udid):
 
 def build_once(args, lane, selections, receipt):
     shared = lane.shared
+    profile = profile_spec(receipt.get("profile", PROFILE)).name
+    flags = profile_flags(profile)
     app, evidence, derived = args.app.resolve(), args.evidence.resolve(), args.derived.resolve()
     require(derived.is_relative_to(app / "build") and evidence.is_relative_to(app / "build"),
             "Batch requires this checkout's job-owned build/evidence paths")
@@ -485,6 +508,13 @@ def build_once(args, lane, selections, receipt):
     identity = shared.candidate_identity(app, matrix)
     methods = [method for selection in selections for method in selection["methods"]]
     lane.source_methods(app, methods)
+    extra_native = []
+    if profile == COHERENT_HEART_PROFILE:
+        import coherent_heart_release as coherent
+        extra_native, extra_ui = coherent.build_selection(args, app, binding)
+        methods += extra_ui
+        lane.source_methods(app, extra_ui)
+        require(len(methods) == len(set(methods)), "Combined UI build contains duplicate methods")
     common = evidence / "batch-build"
     common.mkdir(parents=True, exist_ok=False)
     receipt.update(source=source, candidate_input_hashes=identity["hashes"],
@@ -498,11 +528,11 @@ def build_once(args, lane, selections, receipt):
             "Source or package inputs changed during cache preparation")
     base = ["xcodebuild", "build-for-testing", "-configuration", CONFIGURATION,
             "-destination", "platform=iOS Simulator,id=" + udid, "-parallel-testing-enabled", "NO"]
-    native_suites = sorted({selection["preparation"].split("/")[0] for selection in selections})
+    native_suites = sorted({selection["preparation"].split("/")[0] for selection in selections} | set(extra_native))
     postflight_suites = sorted({selection["postflight"].split("/")[0] for selection in selections if selection["postflight"]})
     require(postflight_suites == [preservation.SUITE], "Exactly one isolated postflight suite required")
     shared.command([*base, "-project", "Anytype.xcodeproj", "-scheme", "Anytype", "-derivedDataPath", str(derived),
-                    *["-only-testing:AnytypeTests/" + name for name in native_suites + postflight_suites], *FLAGS], app, common)
+                    *["-only-testing:AnytypeTests/" + name for name in native_suites + postflight_suites], *flags], app, common)
     require(source_snapshot(app, shared, stage="AFTER_APP_AND_NATIVE_TEST_BUILD") == source,
             "Source or package inputs changed during App/native test build")
     built = derived / "Build/Products" / (CONFIGURATION + "-iphonesimulator/Anytype.app")
@@ -514,7 +544,7 @@ def build_once(args, lane, selections, receipt):
             "Source or package inputs changed during UI-only project generation")
     ui_derived = derived.with_name(derived.name + "-ui")
     shared.command([*base, "-project", str(project), "-scheme", "PinkhaPrebuiltUI", "-derivedDataPath", str(ui_derived),
-                    *["-only-testing:PinkhaStage1AcceptanceUITests/" + method for method in methods], *FLAGS], app, common)
+                    *["-only-testing:PinkhaStage1AcceptanceUITests/" + method for method in methods], *flags], app, common)
     ui_configuration = shared.test_configuration(ui_derived / "Build/Products", "PinkhaStage1AcceptanceUITests")
     shared.command(["xcrun", "simctl", "shutdown", udid], app, common)
     native_bundles = tuple(sorted((derived / "Build/Products").rglob("AnytypeTests.xctest")))
@@ -522,10 +552,12 @@ def build_once(args, lane, selections, receipt):
     require(source_snapshot(app, shared, stage="AFTER_UI_RUNNER_BUILD") == source,
             "Source or package inputs changed during UI runner build")
     frozen = FrozenBuild(app, derived, ui_derived, built, native_configuration, ui_configuration, shared,
-                         source, identity["hashes"], {}, native_bundles, runtime_path, digest(runtime_path), {})
+                         source, identity["hashes"], {}, native_bundles, runtime_path, digest(runtime_path), {}, profile=profile)
     frozen = replace(frozen, artifacts=frozen.observed_artifacts())
     build_record = {"status": "SAME_JOB_SUCCESSFUL_BUILD_WITH_FROZEN_PRODUCTS", "source": source,
-                    "build_flags": FLAGS, "configuration": CONFIGURATION,
+                    "build_flags": flags, "configuration": CONFIGURATION, "profile": profile,
+                    "app_builds": 1, "ui_runner_builds": 1,
+                    "shipping_default_build": False,
                     "native_preparation_suites_built": native_suites, "native_postflight_suites_built": postflight_suites,
                     "ui_methods_built": methods,
                     "artifacts": frozen.artifacts, "runtime_receipt_sha256": frozen.runtime_receipt_sha256,
@@ -557,7 +589,7 @@ def validate_lane_pass(receipt, directory, selection, context):
             and receipt.get("run_id") == os.environ.get("GITHUB_RUN_ID")
             and receipt.get("run_attempt") == os.environ.get("GITHUB_RUN_ATTEMPT"),
             "Passing lane receipt has another source/run identity")
-    require(receipt.get("native_build_flags") == FLAGS
+    require(receipt.get("native_build_flags") == profile_flags(context.profile)
             and receipt.get("selection", {}).get("methods") == selection["methods"]
             and receipt["selection"].get("build_configuration") == CONFIGURATION,
             "Passing lane source selection/configuration differs")
@@ -666,6 +698,13 @@ def worker(args, lane, intent):
             shutdown = subprocess.run(["xcrun", "simctl", "shutdown", udid], capture_output=True, timeout=30)
             require(shutdown.returncode == 0, "Could not shut down the lane's owned simulator")
         else:
+            if spec.name == COHERENT_HEART_PROFILE:
+                import coherent_heart_release as coherent
+                require(args.deadline - time.monotonic() >= 60,
+                        "Coherent T5 selection has no remaining bounded worker budget")
+                receipt.update(phase="COHERENT_T5", current_lane=None)
+                write(evidence / "batch-worker.json", receipt)
+                receipt["coherent_t5"] = coherent.execute(args, frozen, preflight, receipt, intent)
             receipt.update(status="BATCH_PASS_ACCEPTANCE_REVIEW_PENDING" if all(
                 status == "LANE_PASS_ACCEPTANCE_REVIEW_PENDING" for status in receipt["lane_statuses"].values())
                 else "BATCH_FAILED_OBSERVED_TESTS", phase="COMPLETE")
@@ -679,6 +718,16 @@ def worker(args, lane, intent):
         if isinstance(error, KeyboardInterrupt):
             raise
     finally:
+        if spec.name == COHERENT_HEART_PROFILE:
+            import coherent_heart_release as coherent
+            try:
+                receipt["coherent_nested_cleanup"] = coherent.nested_cleanup(args)
+            except BaseException as error:
+                receipt["coherent_nested_cleanup"] = {"status": "FAIL", "error_type": type(error).__name__}
+                receipt["status"] = "CANCELLED" if isinstance(error, KeyboardInterrupt) else "BATCH_ABORTED_SETUP_OR_IDENTITY"
+            result_path = evidence / "coherent-t5/result.json"
+            if result_path.is_file():
+                receipt["coherent_t5_receipt"] = {"path": "coherent-t5/result.json", "sha256": digest(result_path)}
         receipt["finished_at"] = now()
         write(evidence / "batch-worker.json", receipt)
     return 0 if receipt["status"] == "BATCH_PASS_ACCEPTANCE_REVIEW_PENDING" else 1
@@ -834,7 +883,7 @@ def cleanup_owned(intent, evidence):
     deadline = time.monotonic() + CLEANUP_SECONDS
     report = {"status": "PASS", "devices": [], "inventory_queries": [], "started_at": now()}
     try:
-        for ownership in [*intent["preflight_devices"], *intent["lane_devices"]]:
+        for ownership in [*intent["preflight_devices"], *intent["lane_devices"], *intent.get("extra_devices", [])]:
             remaining = deadline - time.monotonic()
             require(remaining > 0, "Owned cleanup budget exhausted")
             directory = evidence / "lanes" / ownership.get("lane", "preflight")
@@ -901,7 +950,7 @@ def validate_worker_conclusion(receipt, intent, evidence, lane):
     require(digest(build_path) == receipt["build_receipt_sha256"], "Same-job successful build receipt changed")
     build = json.loads(build_path.read_text())
     require(build.get("status") == "SAME_JOB_SUCCESSFUL_BUILD_WITH_FROZEN_PRODUCTS"
-            and build.get("source") == receipt["source"] and build.get("build_flags") == FLAGS
+            and build.get("source") == receipt["source"] and build.get("build_flags") == profile_flags(spec.name)
             and build.get("configuration") == CONFIGURATION and build.get("previous_artifact_reuse") is False,
             "Passing worker has no exact successful same-job build")
     observed_udids, observed_spaces, observed_containers = set(), set(), set()
@@ -946,6 +995,16 @@ def validate_worker_conclusion(receipt, intent, evidence, lane):
             totals[total_key] += observed["original_counts"]["passedTests"]
     require(totals == {"native_preparations": spec.preparation_count, "ui_methods": spec.ui_count,
                       "native_postflights": spec.postflight_count}, "Original batch execution counts differ")
+    if spec.name == COHERENT_HEART_PROFILE:
+        import coherent_heart_release as coherent
+        reference = receipt.get("coherent_t5_receipt", {})
+        require(reference.get("path") == "coherent-t5/result.json"
+                and reference.get("sha256") == digest(evidence / "coherent-t5/result.json")
+                and receipt.get("coherent_nested_cleanup", {}).get("status") == "PASS"
+                and build.get("profile") == spec.name and build.get("app_builds") == 1
+                and build.get("ui_runner_builds") == 1 and build.get("shipping_default_build") is False,
+                "Passing coherent batch lacks its original one-build T5/cleanup evidence")
+        coherent.validate_results(evidence, intent, receipt, lane.shared)
 
 
 def publish_batch_observations(evidence, result):
@@ -1035,7 +1094,12 @@ def run(args, lane):
               "preflight_devices": list(preflight["selected"].values()),
               "lane_devices": [{"lane": name, "name": "Pinkha-UI27-" + os.environ["GITHUB_RUN_ID"] + "-batch-" + token + "-" + name,
                                 "device": template["device"], "runtime": template["runtime"]} for name in spec.lanes]}
-    require(not any(item.get("name") in {device["name"] for device in intent["lane_devices"]}
+    if spec.name == COHERENT_HEART_PROFILE:
+        import coherent_heart_release as coherent
+        require(getattr(args, "runtime_profile", None) == coherent.RUNTIME_PROFILE,
+                "The coherent batch cannot select a different runtime profile")
+        intent["extra_devices"] = coherent.extra_devices(template, token, intent["run_id"])
+    require(not any(item.get("name") in {device["name"] for device in [*intent["lane_devices"], *intent.get("extra_devices", [])]}
                     for items in baseline["devices"].values() for item in items), "Planned simulator name already exists")
     (evidence / "batch-simulator-baseline.json").write_bytes(baseline_raw)
     write(evidence / "batch-intent.json", intent)
@@ -1070,7 +1134,11 @@ def run(args, lane):
                    "--deadline", str(time.monotonic() + WORKER_SECONDS),
                    "--runtime-profile", getattr(args, "runtime_profile", "r14"),
                    "--heart-source-run-id", getattr(args, "heart_source_run_id", "")]
-        outcome = run_worker_command(command, args.app.resolve(), evidence / "batch-worker.log", WORKER_SECONDS)
+        if spec.name == COHERENT_HEART_PROFILE:
+            outcome = run_nested_worker_command(command, args.app.resolve(), evidence / "batch-worker.log",
+                                                WORKER_SECONDS, profile=spec.name)
+        else:
+            outcome = run_worker_command(command, args.app.resolve(), evidence / "batch-worker.log", WORKER_SECONDS)
         worker_receipt = json.loads((evidence / "batch-worker.json").read_text())
         validate_worker_conclusion(worker_receipt, intent, evidence, lane)
         result.update(worker=worker_receipt, worker_receipt_sha256=digest(evidence / "batch-worker.json"),
@@ -1100,6 +1168,9 @@ def run(args, lane):
             partial = evidence / "batch-worker.json"
             if partial.exists():
                 result["retained_worker_receipt"] = {"path": partial.name, "sha256": digest(partial)}
+            command_path = evidence / "batch-worker.command.json"
+            if spec.name == COHERENT_HEART_PROFILE and command_path.is_file():
+                result["retained_worker_command"] = {"path": command_path.name, "sha256": digest(command_path)}
             result["finished_at"] = now()
             write(evidence / "execution.json", result)
             if cancellation is not None:
@@ -1140,4 +1211,16 @@ if __name__ == "__main__":
     parser.add_argument("--runtime-profile", choices=lane.shared.heart_profiles.PROFILE_NAMES, default="r14")
     parser.add_argument("--heart-source-run-id", default="")
     arguments = parser.parse_args()
-    sys.exit(worker(arguments, lane, json.loads((arguments.evidence / "batch-intent.json").read_text())))
+    intent = json.loads((arguments.evidence / "batch-intent.json").read_text())
+    if intent.get("profile") == COHERENT_HEART_PROFILE:
+        cancelled = False
+
+        def cancel_coherent_worker(signum, frame):
+            global cancelled
+            if not cancelled:
+                cancelled = True
+                raise KeyboardInterrupt("Coherent batch worker cancelled")
+
+        for number in (signal.SIGTERM, signal.SIGINT):
+            signal.signal(number, cancel_coherent_worker)
+    sys.exit(worker(arguments, lane, intent))
