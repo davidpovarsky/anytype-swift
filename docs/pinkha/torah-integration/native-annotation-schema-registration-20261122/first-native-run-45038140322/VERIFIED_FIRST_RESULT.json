@@ -1,0 +1,63 @@
+{
+  "status": "VERIFIED_ACTUAL_12_PASS_1_FAIL",
+  "source": "60b8300c3506e53638c8ca883f82484de073fae8",
+  "run_id": 45038140322,
+  "attempt": 1,
+  "artifact_id": 14760254250,
+  "artifact_bytes": 3860363,
+  "artifact_sha256": "50ac79ce2728afa86feeff3c86ead0bdf21f9fec7ace16a743f6a451370c74ee",
+  "payloads_verified": 44,
+  "native_compile": "PASS",
+  "native_cases": {
+    "pass": 12,
+    "fail": 1
+  },
+  "case_results": {
+    "ActualRegistrationAndStrictReadback": "pass",
+    "RepeatedRegistrationDoesNotMutate": "pass",
+    "MissingAttachmentUsesOneNativeApply": "fail",
+    "VisibleColumnRemainsConflict": "pass",
+    "RootOnlyStopsAllCreation": "pass",
+    "DifferentActiveAccountIsRefused": "pass",
+    "CancelledBeforeAdmissionWritesNothing": "pass",
+    "NativeRootCollisionDoesNotInitialize": "pass",
+    "NativePopulatedCollisionDoesNotOverwrite": "pass",
+    "NativeReaderRoleCannotRegister": "pass",
+    "QueuedAccountStopDrainsWithCancellation": "pass",
+    "QueuedAccountSelectDrainsNativeApply": "pass",
+    "StopCancelsQueuedSelectWithoutDraining": "pass"
+  },
+  "first_failure": "MissingAttachmentUsesOneNativeApply refused before repair Apply because complete loaded type differed from strict persisted native state. The original artifact has no complete paired loaded/persisted snapshot for that point; cause is not yet established.",
+  "failed_case_events": [
+    {
+      "Time": "2026-11-22T15:30:38.484946Z",
+      "Action": "output",
+      "Package": "./core/block/object/objectcreator",
+      "Test": "TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply",
+      "Output": "    annotation_schema_registration_native_test.go:104: native registration phase=1 creates=0 apply=false returned=false disposition=INCOMPLETE_OR_UNRESOLVED error=native annotation schema registration conflicts with persisted state: loaded type differs from complete persisted native state\n"
+    },
+    {
+      "Time": "2026-11-22T15:30:38.485208Z",
+      "Action": "output",
+      "Package": "./core/block/object/objectcreator",
+      "Test": "TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply",
+      "Output": "    annotation_schema_registration_native_test.go:104: registration cannot resume after this failure: native annotation schema registration conflicts with persisted state: loaded type differs from complete persisted native state\n"
+    }
+  ],
+  "positive_registration": {
+    "actual_native_definitions": 18,
+    "unique_original_creates": 18,
+    "type_applies": 1,
+    "explicit_phases": 4,
+    "reported_native_pid": 22572
+  },
+  "composed_inputs_verified": 19,
+  "old_composed_inputs_preserved": 13,
+  "declared_input_count": 11329,
+  "source_format_equality": true,
+  "post_execution_source_recheck": true,
+  "owned_disposable_temp_removed": true,
+  "native_command_seconds": 25.58,
+  "binary_scope": "Runner-observed executable hashes/PID; executable bytes are absent from the artifact and were not independently rehashed.",
+  "scope": "Exact original native registration controls. Twelve passing children are preserved; the remaining repair failure is unresolved. No Swift/RPC, ordinary annotation create, body/map authority or ACK acceptance."
+}

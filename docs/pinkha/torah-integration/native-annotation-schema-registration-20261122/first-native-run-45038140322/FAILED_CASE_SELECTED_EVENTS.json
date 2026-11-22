@@ -1,0 +1,57 @@
+[
+  {
+    "Time": "2026-11-22T15:30:37.151846Z",
+    "Action": "run",
+    "Package": "./core/block/object/objectcreator",
+    "Test": "TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply"
+  },
+  {
+    "Time": "2026-11-22T15:30:37.768695Z",
+    "Action": "output",
+    "Package": "./core/block/object/objectcreator",
+    "Test": "TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply",
+    "Output": "    annotation_schema_registration_native_test.go:74: native registration phase=1 creates=0 apply=false returned=false disposition=CHANGED_WHILE_READING error=fixed schema context or persisted input changed while reading\n"
+  },
+  {
+    "Time": "2026-11-22T15:30:38.315956Z",
+    "Action": "output",
+    "Package": "./core/block/object/objectcreator",
+    "Test": "TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply",
+    "Output": "    annotation_schema_registration_native_test.go:74: native registration phase=2 creates=18 apply=true returned=true disposition=MATCHING_SCHEMA_OBSERVED error=<nil>\n"
+  },
+  {
+    "Time": "2026-11-22T15:30:38.338846Z",
+    "Action": "output",
+    "Package": "./core/block/object/objectcreator",
+    "Test": "TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply",
+    "Output": "    annotation_schema_registration_native_test.go:103: original copyout observation: disposition=1 attempt=1 error=<nil>\n"
+  },
+  {
+    "Time": "2026-11-22T15:30:38.484946Z",
+    "Action": "output",
+    "Package": "./core/block/object/objectcreator",
+    "Test": "TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply",
+    "Output": "    annotation_schema_registration_native_test.go:104: native registration phase=1 creates=0 apply=false returned=false disposition=INCOMPLETE_OR_UNRESOLVED error=native annotation schema registration conflicts with persisted state: loaded type differs from complete persisted native state\n"
+  },
+  {
+    "Time": "2026-11-22T15:30:38.485208Z",
+    "Action": "output",
+    "Package": "./core/block/object/objectcreator",
+    "Test": "TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply",
+    "Output": "    annotation_schema_registration_native_test.go:104: registration cannot resume after this failure: native annotation schema registration conflicts with persisted state: loaded type differs from complete persisted native state\n"
+  },
+  {
+    "Time": "2026-11-22T15:30:38.485253Z",
+    "Action": "output",
+    "Package": "./core/block/object/objectcreator",
+    "Test": "TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply",
+    "Output": "--- FAIL: TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply (1.33s)\n"
+  },
+  {
+    "Time": "2026-11-22T15:30:38.485275Z",
+    "Action": "fail",
+    "Package": "./core/block/object/objectcreator",
+    "Test": "TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply",
+    "Elapsed": 1.33
+  }
+]

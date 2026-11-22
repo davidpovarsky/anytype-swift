@@ -1,0 +1,147 @@
+{
+  "job": {
+    "id": "job_f5b0e1e2d441",
+    "status": "succeeded",
+    "exit_code": 0,
+    "started_at": "2026-11-22T15:25:03.110426+00:00",
+    "finished_at": "2026-11-22T15:35:23.151617+00:00"
+  },
+  "observation": {
+    "schema": "otzaria.finite-schema-registration-observer/1",
+    "run_id": 45038140322,
+    "expected_head": "60b8300c3506e53638c8ca883f82484de073fae8",
+    "events": [
+      {
+        "utc": "2026-11-22T15:25:04.883430+00:00",
+        "event": "RUN_STATE",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "utc": "2026-11-22T15:30:45.851563+00:00",
+        "event": "READ_FAILED",
+        "error_type": "TimeoutExpired"
+      },
+      {
+        "utc": "2026-11-22T15:32:21.314790+00:00",
+        "event": "READ_FAILED",
+        "error_type": "TimeoutExpired"
+      },
+      {
+        "utc": "2026-11-22T15:33:49.188960+00:00",
+        "event": "READ_FAILED",
+        "error_type": "TimeoutExpired"
+      },
+      {
+        "utc": "2026-11-22T15:34:51.248471+00:00",
+        "event": "RUN_STATE",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "utc": "2026-11-22T15:35:22.071203+00:00",
+        "event": "ARTIFACT_VERIFIED",
+        "artifact_id": 14760254250,
+        "native_status": "FAIL"
+      }
+    ],
+    "status": "TERMINAL_ARTIFACT_RETAINED",
+    "owned_directory": "C:\\Users\\DAVID\\Code\\otzaria-schema-registration-observer-20261122-45038140322",
+    "run": {
+      "id": 45038140322,
+      "head_sha": "60b8300c3506e53638c8ca883f82484de073fae8",
+      "head_branch": "codex/otzaria-annotation-schema-registration-20261122",
+      "run_attempt": 1,
+      "event": "push",
+      "status": "completed",
+      "conclusion": "failure",
+      "html_url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45038140322",
+      "created_at": "2026-11-22T15:24:29Z",
+      "updated_at": "2026-11-22T15:31:14Z"
+    },
+    "artifact": {
+      "id": 14760254250,
+      "name": "Otzaria-Annotation-Schema-Registration-45038140322-1",
+      "bytes": 3860363,
+      "sha256": "50ac79ce2728afa86feeff3c86ead0bdf21f9fec7ace16a743f6a451370c74ee",
+      "path": "C:\\Users\\DAVID\\Code\\otzaria-schema-registration-observer-20261122-45038140322\\native-artifact.zip",
+      "payloads": 44
+    },
+    "native_result": {
+      "status": "FAIL",
+      "control_head": "60b8300c3506e53638c8ca883f82484de073fae8",
+      "tests": {
+        "native": {
+          "binary_bytes": 173365858,
+          "binary_evidence_scope": "Runner-observed hashes; executable bytes are excluded from uploaded evidence and not independently rehashed by root.",
+          "binary_sha256_after": "4045f0fe5543bc9be9e9780c44e6feb757e83d5d8c75fc6027713e74c1e90e49",
+          "binary_sha256_before": "4045f0fe5543bc9be9e9780c44e6feb757e83d5d8c75fc6027713e74c1e90e49",
+          "binary_unchanged": true,
+          "buildinfo_sha256": "6111070086f4c7493b3e3044b3f32a99f8a0ee49e3135aa348bf0bf203cd2f19",
+          "compiled": true,
+          "effective_returncode": 1,
+          "execution_started": true,
+          "expected": [
+            "TestOtzariaAnnotationSchemaRegistration",
+            "TestOtzariaAnnotationSchemaRegistration/ActualRegistrationAndStrictReadback",
+            "TestOtzariaAnnotationSchemaRegistration/RepeatedRegistrationDoesNotMutate",
+            "TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply",
+            "TestOtzariaAnnotationSchemaRegistration/VisibleColumnRemainsConflict",
+            "TestOtzariaAnnotationSchemaRegistration/RootOnlyStopsAllCreation",
+            "TestOtzariaAnnotationSchemaRegistration/DifferentActiveAccountIsRefused",
+            "TestOtzariaAnnotationSchemaRegistration/CancelledBeforeAdmissionWritesNothing",
+            "TestOtzariaAnnotationSchemaRegistration/NativeRootCollisionDoesNotInitialize",
+            "TestOtzariaAnnotationSchemaRegistration/NativePopulatedCollisionDoesNotOverwrite",
+            "TestOtzariaAnnotationSchemaRegistration/NativeReaderRoleCannotRegister",
+            "TestOtzariaAnnotationSchemaRegistration/QueuedAccountStopDrainsWithCancellation",
+            "TestOtzariaAnnotationSchemaRegistration/QueuedAccountSelectDrainsNativeApply",
+            "TestOtzariaAnnotationSchemaRegistration/StopCancelsQueuedSelectWithoutDraining"
+          ],
+          "package_terminal": [
+            "fail"
+          ],
+          "pass": false,
+          "process_returncode": 1,
+          "selection": "^TestOtzariaAnnotationSchemaRegistration$/^(ActualRegistrationAndStrictReadback|RepeatedRegistrationDoesNotMutate|MissingAttachmentUsesOneNativeApply|VisibleColumnRemainsConflict|RootOnlyStopsAllCreation|DifferentActiveAccountIsRefused|CancelledBeforeAdmissionWritesNothing|NativeRootCollisionDoesNotInitialize|NativePopulatedCollisionDoesNotOverwrite|NativeReaderRoleCannotRegister|QueuedAccountStopDrainsWithCancellation|QueuedAccountSelectDrainsNativeApply|StopCancelsQueuedSelectWithoutDraining)$",
+          "started": [
+            "TestOtzariaAnnotationSchemaRegistration",
+            "TestOtzariaAnnotationSchemaRegistration/ActualRegistrationAndStrictReadback",
+            "TestOtzariaAnnotationSchemaRegistration/RepeatedRegistrationDoesNotMutate",
+            "TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply",
+            "TestOtzariaAnnotationSchemaRegistration/VisibleColumnRemainsConflict",
+            "TestOtzariaAnnotationSchemaRegistration/RootOnlyStopsAllCreation",
+            "TestOtzariaAnnotationSchemaRegistration/DifferentActiveAccountIsRefused",
+            "TestOtzariaAnnotationSchemaRegistration/CancelledBeforeAdmissionWritesNothing",
+            "TestOtzariaAnnotationSchemaRegistration/NativeRootCollisionDoesNotInitialize",
+            "TestOtzariaAnnotationSchemaRegistration/NativePopulatedCollisionDoesNotOverwrite",
+            "TestOtzariaAnnotationSchemaRegistration/NativeReaderRoleCannotRegister",
+            "TestOtzariaAnnotationSchemaRegistration/QueuedAccountStopDrainsWithCancellation",
+            "TestOtzariaAnnotationSchemaRegistration/QueuedAccountSelectDrainsNativeApply",
+            "TestOtzariaAnnotationSchemaRegistration/StopCancelsQueuedSelectWithoutDraining"
+          ],
+          "terminal": {
+            "TestOtzariaAnnotationSchemaRegistration": "fail",
+            "TestOtzariaAnnotationSchemaRegistration/ActualRegistrationAndStrictReadback": "pass",
+            "TestOtzariaAnnotationSchemaRegistration/CancelledBeforeAdmissionWritesNothing": "pass",
+            "TestOtzariaAnnotationSchemaRegistration/DifferentActiveAccountIsRefused": "pass",
+            "TestOtzariaAnnotationSchemaRegistration/MissingAttachmentUsesOneNativeApply": "fail",
+            "TestOtzariaAnnotationSchemaRegistration/NativePopulatedCollisionDoesNotOverwrite": "pass",
+            "TestOtzariaAnnotationSchemaRegistration/NativeReaderRoleCannotRegister": "pass",
+            "TestOtzariaAnnotationSchemaRegistration/NativeRootCollisionDoesNotInitialize": "pass",
+            "TestOtzariaAnnotationSchemaRegistration/QueuedAccountSelectDrainsNativeApply": "pass",
+            "TestOtzariaAnnotationSchemaRegistration/QueuedAccountStopDrainsWithCancellation": "pass",
+            "TestOtzariaAnnotationSchemaRegistration/RepeatedRegistrationDoesNotMutate": "pass",
+            "TestOtzariaAnnotationSchemaRegistration/RootOnlyStopsAllCreation": "pass",
+            "TestOtzariaAnnotationSchemaRegistration/StopCancelsQueuedSelectWithoutDraining": "pass",
+            "TestOtzariaAnnotationSchemaRegistration/VisibleColumnRemainsConflict": "pass"
+          },
+          "timed_out": false,
+          "unexpected": []
+        }
+      },
+      "error": null,
+      "error_type": null,
+      "owned_disposable_temp_removed": true
+    }
+  }
+}
