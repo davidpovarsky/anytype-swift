@@ -1,0 +1,270 @@
+[
+  {
+    "label": "branch-existence",
+    "args": [
+      "branch",
+      "--list",
+      "codex/otzaria-original-editor-composed-integration-20261122"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-native-annotation-integration-20261122",
+    "returncode": 0,
+    "started_at": "2026-11-22T10:37:05.036622+00:00",
+    "finished_at": "2026-11-22T10:37:05.241270+00:00",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "root-head",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-native-annotation-integration-20261122",
+    "returncode": 0,
+    "started_at": "2026-11-22T10:37:05.243258+00:00",
+    "finished_at": "2026-11-22T10:37:05.415494+00:00",
+    "stdout_sha256": "67927099a842c5bb86202b1116b872f152a1d1444be840b5ba9b015723683a13",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "root-clean",
+    "args": [
+      "status",
+      "--porcelain"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-native-annotation-integration-20261122",
+    "returncode": 0,
+    "started_at": "2026-11-22T10:37:05.417550+00:00",
+    "finished_at": "2026-11-22T10:37:06.029845+00:00",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "common-base",
+    "args": [
+      "merge-base",
+      "37f48119609747c01ee92cf597e4216f63b7bfa4",
+      "5c1d08e327bb8155248885e496cf64200932a812"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-native-annotation-integration-20261122",
+    "returncode": 0,
+    "started_at": "2026-11-22T10:37:06.032250+00:00",
+    "finished_at": "2026-11-22T10:37:06.262435+00:00",
+    "stdout_sha256": "de4d81d93145727921e0445c560268c8eb28bb97f38e2d68206d198a9a39b779",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "base-tree",
+    "args": [
+      "ls-tree",
+      "-r",
+      "-z",
+      "cb2df9baa201db0ce404ba37eac853424bae6204"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-native-annotation-integration-20261122",
+    "returncode": 0,
+    "started_at": "2026-11-22T10:37:06.263972+00:00",
+    "finished_at": "2026-11-22T10:37:06.583614+00:00",
+    "stdout_sha256": "2fd28b0eef1cb72419ea0dae2ab5c41484159166c9c1ae79e58bae04cb5a76d0",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "left-tree",
+    "args": [
+      "ls-tree",
+      "-r",
+      "-z",
+      "37f48119609747c01ee92cf597e4216f63b7bfa4"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-native-annotation-integration-20261122",
+    "returncode": 0,
+    "started_at": "2026-11-22T10:37:06.640715+00:00",
+    "finished_at": "2026-11-22T10:37:07.015787+00:00",
+    "stdout_sha256": "27a5174345ec4d91f062ad842c07365bb0ac6ee7ddcaf726af825224cec7162e",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "right-tree",
+    "args": [
+      "ls-tree",
+      "-r",
+      "-z",
+      "5c1d08e327bb8155248885e496cf64200932a812"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-native-annotation-integration-20261122",
+    "returncode": 0,
+    "started_at": "2026-11-22T10:37:07.072914+00:00",
+    "finished_at": "2026-11-22T10:37:07.451857+00:00",
+    "stdout_sha256": "c69578124f628c29d58af7f96f93a3e4ec0006ae8878427a72d235adb4ad2bd8",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "create-owned-integration-worktree",
+    "args": [
+      "worktree",
+      "add",
+      "-b",
+      "codex/otzaria-original-editor-composed-integration-20261122",
+      "C:\\Users\\DAVID\\Code\\anytype-original-editor-composed-integration-20261122",
+      "37f48119609747c01ee92cf597e4216f63b7bfa4"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-native-annotation-integration-20261122",
+    "returncode": 0,
+    "started_at": "2026-11-22T10:37:07.568700+00:00",
+    "finished_at": "2026-11-22T10:37:50.765617+00:00",
+    "stdout_sha256": "36b0c2a19ba9413d300aae8f9fea2e3459872e97c4180f8672cc86d22b895f60",
+    "stderr_sha256": "16e5f1123121f9e5392afd64a88deb401217d59c980facf530956d40d5412d60"
+  },
+  {
+    "label": "merge-original-producer",
+    "args": [
+      "merge",
+      "--no-ff",
+      "--no-commit",
+      "--no-edit",
+      "5c1d08e327bb8155248885e496cf64200932a812"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-editor-composed-integration-20261122",
+    "returncode": 1,
+    "started_at": "2026-11-22T10:37:50.770617+00:00",
+    "finished_at": "2026-11-22T10:37:59.852360+00:00",
+    "stdout_sha256": "6f0ff1b77ac35c4418bc4807f258814333ab5514b5ead68de0fc77a9c386cb4d",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "unmerged-paths",
+    "args": [
+      "diff",
+      "--name-only",
+      "--diff-filter=U",
+      "-z"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-editor-composed-integration-20261122",
+    "returncode": 0,
+    "started_at": "2026-11-22T10:37:59.855886+00:00",
+    "finished_at": "2026-11-22T10:38:00.585481+00:00",
+    "stdout_sha256": "aefee87599aa2cc0f85865234791f3b3f3e1d7c2ba22b6e6a0911a32d141a1d3",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "retained-root-participants",
+    "args": [
+      "show",
+      "37f48119609747c01ee92cf597e4216f63b7bfa4:Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-editor-composed-integration-20261122",
+    "returncode": 0,
+    "started_at": "2026-11-22T10:38:00.664087+00:00",
+    "finished_at": "2026-11-22T10:38:00.906012+00:00",
+    "stdout_sha256": "7fc5fc32d5dd7f21d6133f72511ccc133dea9dbe6bdabcbc9a5e435deffa8da1",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "stage-exact-participant-resolution",
+    "args": [
+      "add",
+      "--",
+      "Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-editor-composed-integration-20261122",
+    "returncode": 0,
+    "started_at": "2026-11-22T10:38:00.913118+00:00",
+    "finished_at": "2026-11-22T10:38:01.379080+00:00",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "exact-union-index",
+    "args": [
+      "ls-files",
+      "--stage",
+      "-z"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-editor-composed-integration-20261122",
+    "returncode": 0,
+    "started_at": "2026-11-22T10:38:01.390273+00:00",
+    "finished_at": "2026-11-22T10:38:01.717925+00:00",
+    "stdout_sha256": "8823d129f8a55f476f5cfcac7e5c6a29dcca946ef29d1238d3dc58e36825a8ed",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "merged-tree",
+    "args": [
+      "write-tree"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-editor-composed-integration-20261122",
+    "returncode": 0,
+    "started_at": "2026-11-22T10:38:01.854101+00:00",
+    "finished_at": "2026-11-22T10:38:02.163986+00:00",
+    "stdout_sha256": "d634fa12f9c212c916199602e3ef7828ba244c3a730f14f394b0620f9ef44b77",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "commit-source-union",
+    "args": [
+      "commit",
+      "-m",
+      "Merge original editor producer with native annotation lifecycle"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-editor-composed-integration-20261122",
+    "returncode": 0,
+    "started_at": "2026-11-22T10:38:02.167339+00:00",
+    "finished_at": "2026-11-22T10:38:03.157843+00:00",
+    "stdout_sha256": "7f35353baad035ec834458f35e967ef80a662ac625485aef7e9e5011a1ba5478",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "committed-head",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-editor-composed-integration-20261122",
+    "returncode": 0,
+    "started_at": "2026-11-22T10:38:03.168190+00:00",
+    "finished_at": "2026-11-22T10:38:03.453977+00:00",
+    "stdout_sha256": "1f16d12c11b3dfd004312e2da8c938d120f84eea01fda985bd575fe0fccf633b",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "committed-parents",
+    "args": [
+      "show",
+      "-s",
+      "--format=%P",
+      "HEAD"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-editor-composed-integration-20261122",
+    "returncode": 0,
+    "started_at": "2026-11-22T10:38:03.459251+00:00",
+    "finished_at": "2026-11-22T10:38:03.915256+00:00",
+    "stdout_sha256": "0d152d1db608f29e32d0c04bded1c58d08a5e9db42bc8f9947de89526135280a",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "committed-tree",
+    "args": [
+      "rev-parse",
+      "HEAD^{tree}"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-editor-composed-integration-20261122",
+    "returncode": 0,
+    "started_at": "2026-11-22T10:38:03.919838+00:00",
+    "finished_at": "2026-11-22T10:38:04.192349+00:00",
+    "stdout_sha256": "d634fa12f9c212c916199602e3ef7828ba244c3a730f14f394b0620f9ef44b77",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "clean-after-join",
+    "args": [
+      "status",
+      "--porcelain"
+    ],
+    "cwd": "C:\\Users\\DAVID\\Code\\anytype-original-editor-composed-integration-20261122",
+    "returncode": 0,
+    "started_at": "2026-11-22T10:38:04.197351+00:00",
+    "finished_at": "2026-11-22T10:38:05.063875+00:00",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

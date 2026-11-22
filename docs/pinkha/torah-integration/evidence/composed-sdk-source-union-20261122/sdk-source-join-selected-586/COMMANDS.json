@@ -1,0 +1,167 @@
+[
+  {
+    "label": "current-head",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "1f16d12c11b3dfd004312e2da8c938d120f84eea01fda985bd575fe0fccf633b",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "clean-before",
+    "args": [
+      "status",
+      "--porcelain"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "common-base",
+    "args": [
+      "merge-base",
+      "bfaa404efcfe6ea5ba753777772114879f13db71",
+      "58651e46136d3b889f8c34afee720b3593d0f0f9"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "67927099a842c5bb86202b1116b872f152a1d1444be840b5ba9b015723683a13",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "base-tree",
+    "args": [
+      "ls-tree",
+      "-r",
+      "-z",
+      "37f48119609747c01ee92cf597e4216f63b7bfa4"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "27a5174345ec4d91f062ad842c07365bb0ac6ee7ddcaf726af825224cec7162e",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "left-tree",
+    "args": [
+      "ls-tree",
+      "-r",
+      "-z",
+      "bfaa404efcfe6ea5ba753777772114879f13db71"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "e108379d00b6abd00ced2b2773254f14c331fb65309e4e162b522aedf009f540",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "right-tree",
+    "args": [
+      "ls-tree",
+      "-r",
+      "-z",
+      "58651e46136d3b889f8c34afee720b3593d0f0f9"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "9b93f5e55d54203656eb44d9b5b62e9fabc1d11a0f395091c39412d481dca0df",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "true-merge-selected-integration",
+    "args": [
+      "merge",
+      "--no-ff",
+      "--no-commit",
+      "--no-edit",
+      "58651e46136d3b889f8c34afee720b3593d0f0f9"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "96bb6a194a796153cbd0c640642866371219451832063763d544b942a8d97c4e"
+  },
+  {
+    "label": "unmerged-paths",
+    "args": [
+      "diff",
+      "--name-only",
+      "--diff-filter=U",
+      "-z"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "full-index",
+    "args": [
+      "ls-files",
+      "--stage",
+      "-z"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "3004dc5ed0caef264a2aa03c99730e2d1e1f20651edf77d7a28fc555d3a5cca8",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "write-tree",
+    "args": [
+      "write-tree"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "f34d5037a233fcd52520dd4956bf136788c054a02340b53eab4714ea7fa63505",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "commit-source-union",
+    "args": [
+      "commit",
+      "-m",
+      "Merge verified original selected-Space lifecycle into editor SDK"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "c6c20058c1c1e3dce3eb6dc05919b38b2a51d1d14bfdc695463b5c4f20ecdcc2",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "final-head",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "d30c78d030ad4ec0fce2e9ba882bf57594e626011937ee9fdfd7a33496d89109",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "actual-parents",
+    "args": [
+      "show",
+      "-s",
+      "--format=%P",
+      "HEAD"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "e20db333f00f7356a56a9d0b4245afa2ff7495f3043f444a07c754a80362521a",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "actual-tree",
+    "args": [
+      "rev-parse",
+      "HEAD^{tree}"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "f34d5037a233fcd52520dd4956bf136788c054a02340b53eab4714ea7fa63505",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "clean-final",
+    "args": [
+      "status",
+      "--porcelain"
+    ],
+    "returncode": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]
