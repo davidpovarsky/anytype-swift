@@ -1,0 +1,44 @@
+{
+  "failed_execution_artifact_sha256": "6de35e17b02a028451e365705cbc0f11813d0050200add6e4eed74b285749f66",
+  "failed_execution_run": "45043203916",
+  "new_apple_execution": "NOT_RUN",
+  "old_tests_executed": 0,
+  "original_controller_source": "e5f4697c9e8cbda7448e9cba59e64de5535ec28e",
+  "original_controls_report_sha256": "7aa150c574dddb7eecb0ff9e29e79a28e9f3246e7d3f8e78a945183b49d5f169",
+  "original_framework_build_run": "45035194823",
+  "reviewed_sources": [
+    {
+      "after_sha256": "a9c6e5335f58819cd1b5469c2cf72b27a9fb9f7ad215bc42687adc2f1a89b60d",
+      "before_sha256": "79aac1223de047c4b65d911e32f08138296ad022a89b2282c70ca8d5ebfb0bc5",
+      "excluded_unexecuted_function_bodies": [
+        "execute",
+        "load_helpers",
+        "main",
+        "prepare_harness",
+        "qualify_observation",
+        "source_snapshot",
+        "validate_execution"
+      ],
+      "original_ast_sha256": "a222135fe50d341c269eb7f3eb1a76b4d83463838e51b478becc3023caf7a48c",
+      "path": "Tools/PinkhaNativeDerived/coherent_apple/run_host.py",
+      "projection": "existing_fields_and_qualify_t5_wire_dependency_scope",
+      "retained_executed_functions": [
+        "fields",
+        "qualify_t5_wire"
+      ],
+      "scope": "Exact module imports/statements, declaration metadata, two executed bodies, and separately pinned contract.py"
+    },
+    {
+      "after_sha256": "d2f49d147f16e705b4c40610c4bbd53c88ed4d3e4f6f2fbe50d0486b76046da7",
+      "before_sha256": "0943860a99fee881c55187c68bd276fe5884276468e8ea460889f7fb251e7612",
+      "new_branch_condition_ast_sha256": "8ed2fe0eda1f422e8f81171abba72ebce22c7dae2e881955bed4f8ff00adf076",
+      "original_ast_sha256": "d5809fe24f8c7c5e273ab72c84f428cc8e583c60d49ca0f4cc9dc148039c2429",
+      "path": "Tools/PinkhaNativeDerived/coherent_runtime_admission.py",
+      "projected_ast_sha256": "d5809fe24f8c7c5e273ab72c84f428cc8e583c60d49ca0f4cc9dc148039c2429",
+      "projection": "qualify_apple_new_split_build_branch_to_unchanged_legacy_else",
+      "scope": "The four retained admission methods use only xcodebuild test, whose complete original statement remains the else branch. After removing the new branch, the entire admission module AST is identical; imports, constants, every other function and validation remain unchanged."
+    }
+  ],
+  "schemaVersion": 1,
+  "status": "REVIEWED_EXACT_BOOT_ORCHESTRATION_AND_LEGACY_ADMISSION_BRANCH"
+}

@@ -226,12 +226,21 @@ def execute(args, receipt, run):
     result = args.evidence / "coherent-heart.xcresult"
     try:
         run(["xcrun", "simctl", "boot", udid], "boot-owned-simulator")
-        run(["xcrun", "simctl", "bootstatus", udid, "-b"], "wait-owned-simulator", timeout=180)
-        run(["xcodebuild", "test", "-scheme", scheme, "-configuration", "Debug", "-destination", "platform=iOS Simulator,id=" + udid,
+        test_command = ["xcodebuild", "test-without-building", "-scheme", scheme, "-configuration", "Debug", "-destination", "platform=iOS Simulator,id=" + udid,
              "-derivedDataPath", str(args.work / "DerivedData"), *cache, "-disableAutomaticPackageResolution",
              "-parallel-testing-enabled", "NO", "-jobs", "4", "-test-timeouts-enabled", "YES",
              "-maximum-test-execution-time-allowance", "420", "-resultBundlePath", str(result),
-             "-only-testing:" + contract.TARGET + "/" + contract.METHOD], "ios-coherent-tests", cwd=harness, timeout=1800)
+             "-only-testing:" + contract.TARGET + "/" + contract.METHOD]
+        build_command = list(test_command)
+        build_command[1] = "build-for-testing"
+        build_command[build_command.index("-resultBundlePath") + 1] = str(args.evidence / "coherent-heart-build.xcresult")
+        # The required current harness build overlaps cold boot, as in the
+        # successful Any iPad-mini/iOS-27.2 bootstrap. This executes no tests.
+        run(build_command, "ios-coherent-build", cwd=harness, timeout=1800)
+        receipt["harness_build"] = dict(status="BUILT_CURRENT_HARNESS_NOT_EXECUTED", tests_executed=0,
+                                       boot_readiness="SEPARATE_BOUNDED_CHECK_REQUIRED")
+        run(["xcrun", "simctl", "bootstatus", udid, "-b"], "wait-owned-simulator", timeout=180)
+        run(test_command, "ios-coherent-tests", cwd=harness, timeout=1800)
         summary = original.command_json(run(["xcrun", "xcresulttool", "get", "test-results", "summary", "--path", str(result)], "xcresult-summary"))
         tree = original.command_json(run(["xcrun", "xcresulttool", "get", "test-results", "tests", "--path", str(result)], "xcresult-tests"))
         receipt["actual_execution"] = validate_execution(summary, tree, udid, args.control)
@@ -266,10 +275,32 @@ def execute(args, receipt, run):
         contract.save(args.evidence / "control-source-after.json", source_snapshot(args.control))
         receipt.update(status=contract.PASS, old_native_methods_executed=0, old_swift_methods_executed=0,
                        fresh_ios_process_reopen="NOT_RUN", app_capability="OFF")
+    except BaseException as error:
+        # Persist the first failure before diagnostic or cleanup subprocesses.
+        # A timed-out bootstatus may legitimately have an empty original log.
+        receipt["primary_failure"] = dict(error_type=type(error).__name__, error=str(error))
+        diagnostics = [(["xcrun", "simctl", "list", "devices", "-j"], "owned-simulator-failure-state", 15),
+                       (["/usr/bin/log", "show", "--last", "5m", "--style", "compact", "--predicate",
+                         'eventMessage CONTAINS "' + udid + '"'], "owned-simulator-failure-system-log", 20)]
+        for command, name, allowance in diagnostics:
+            try:
+                run(command, name, timeout=allowance)
+            except BaseException as diagnostic_error:
+                receipt.setdefault("diagnostic_failures", {})[name] = dict(
+                    error_type=type(diagnostic_error).__name__, error=str(diagnostic_error))
+        raise
     finally:
         for action in ("shutdown", "delete"):
-            completed = subprocess.run(["xcrun", "simctl", action, udid], capture_output=True, timeout=60)
-            receipt.setdefault("owned_simulator_cleanup", {})[action] = completed.returncode
+            try:
+                run(["xcrun", "simctl", action, udid], "cleanup-owned-simulator-" + action, timeout=30)
+                receipt.setdefault("owned_simulator_cleanup", {})[action] = dict(status="PASS_EXIT_0")
+            except BaseException as cleanup_error:
+                # Always attempt both bounded actions; neither can replace a
+                # build/readiness/XCTest error or its original diagnostic log.
+                receipt.setdefault("owned_simulator_cleanup", {})[action] = dict(
+                    status="FAIL", error_type=type(cleanup_error).__name__, error=str(cleanup_error))
+        receipt["owned_simulator_cleanup_status"] = ("COMPLETE" if all(
+            item["status"] == "PASS_EXIT_0" for item in receipt["owned_simulator_cleanup"].values()) else "INCOMPLETE")
 
 
 def main():
@@ -300,7 +331,9 @@ def main():
     for number in handlers:
         signal.signal(number, cancel)
     def run(command, name, env=None, cwd=None, timeout=900):
-        entry = dict(name=name, argv=list(map(str, command)), status="RUNNING"); receipt["commands"].append(entry)
+        started = datetime.now(timezone.utc)
+        entry = dict(name=name, argv=list(map(str, command)), status="RUNNING", timeout_seconds=timeout,
+                     started_at=started.isoformat()); receipt["commands"].append(entry)
         contract.save(path, receipt)
         log = args.evidence / (name + ".log")
         try:
@@ -309,8 +342,13 @@ def main():
             entry["status"] = "PASS_EXIT_0"
         except BaseException as error:
             entry["status"] = "CANCELLED" if isinstance(error, KeyboardInterrupt) else "FAIL"
+            entry.update(error_type=type(error).__name__, error=str(error))
             raise
         finally:
+            finished = datetime.now(timezone.utc)
+            entry.update(finished_at=finished.isoformat(), elapsed_seconds=(finished - started).total_seconds())
+            if log.is_file():
+                entry.update(log=log.name, log_bytes=log.stat().st_size, log_sha256=contract.digest(log))
             contract.save(path, receipt)
         return log
     try:

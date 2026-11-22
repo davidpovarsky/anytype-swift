@@ -876,7 +876,7 @@
       "to": "Tools/PinkhaNativeDerived/install_verified_heart.py",
       "baselineBlob": "1ed1f7fa90083cc110f4cb73ec69ac5973d34a1c",
       "replacementBlob": "04bab7f476492fe743b7e8d75bc8131c99afdf96",
-      "reason": "Admit explicit r14 or corrected r15-attachment-v1 runtime profiles while preserving the original r14 default and all binary/native source/patch integrity checks. The corrected profile binds the original producer source/run/attempt, full version and both artifact hashes through installation and observed app process. Add a separate coherent production-simulator admission path with exact original artifacts and no fixture fallback; retain original r14/corrected defaults. Admit a distinct successful Apple execution of the exact original completed framework build while retaining immutable failed-builder provenance, packaged receipts, current execution origin and all original source/byte/XCTest checks.",
+      "reason": "Admit explicit r14 or corrected r15-attachment-v1 runtime profiles while preserving the original r14 default and all binary/native source/patch integrity checks. The corrected profile binds the original producer source/run/attempt, full version and both artifact hashes through installation and observed app process. Add a separate coherent production-simulator admission path with exact original artifacts and no fixture fallback; retain original r14/corrected defaults. Admit a distinct successful Apple execution of the exact original completed framework build while retaining immutable failed-builder provenance, packaged receipts, current execution origin and all original source/byte/XCTest checks. Preserve the first host failure and build the required current harness during cold boot; admit the sole selected test-without-building only after its exact successful build and device readiness.",
       "sharedSources": [
         {
           "path": "Tools/PinkhaNativeDerived/heart_runtime_profile.py",
@@ -888,7 +888,7 @@
         },
         {
           "path": "Tools/PinkhaNativeDerived/coherent_runtime_admission.py",
-          "gitBlob": "72c9490f5727e698bd48170a78cc8c2f777f11ec"
+          "gitBlob": "70b8c6d33cafa8ddbc3a2398fccae234436014f5"
         },
         {
           "path": "Tools/PinkhaNativeDerived/coherent_apple/reuse_build.py",
@@ -896,7 +896,7 @@
         },
         {
           "path": "Tools/PinkhaNativeDerived/coherent_apple/run_host.py",
-          "gitBlob": "97627c455e01fe3bfb401da5fd2a59981450954f"
+          "gitBlob": "eb245bcd8ec877969061283116ff50b9e6d379f6"
         }
       ],
       "validation": [
@@ -906,7 +906,8 @@
         "New coherent admission checks are source-scoped; production simulator and fixture binaries are identified separately. Actual new Apple acceptance is recorded only after execution.",
         "Ten new two-origin build/source/extraction/AST and admission/observer controls passed with exact raw logs and dependency hashes in docs/validation/20261122-coherent-heart-apple-build/continuation-controls. These controller controls do not claim Apple or production execution.",
         "The original failed Apple host45035194823 remains FAIL before XCTest. Consumer admission requires a separate successful current execution, exact one-method xcresult/raw attachment replay and unchanged139 native files/shared Swift modules; both build origins remain visible.",
-        "Fresh route control retention pins both executed host functions and exact module/declaration/dependency AST; it does not call the changed whole host file unchanged. Legacy r14/corrected defaults and production-only installation remain preserved."
+        "Fresh route control retention pins both executed host functions and exact module/declaration/dependency AST; it does not call the changed whole host file unchanged. Legacy r14/corrected defaults and production-only installation remain preserved.",
+        "Two new boot/orchestration and strict split-build admission controls passed once; the original ten controls remain qualified by exact source/AST dependency reviews without rerun. See docs/validation/20261122-coherent-heart-apple-boot. Original failed run45043203916 has zero actual Apple methods; subsequent real execution remains required."
       ]
     },
     {

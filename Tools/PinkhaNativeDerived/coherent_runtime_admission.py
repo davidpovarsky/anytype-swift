@@ -490,10 +490,45 @@ def qualify_apple(proof, profile, producer, build, evidence, command, build_line
                 "Actual Apple execution differs from its qualified current controller or original build lineage")
     commands = receipt.get("commands", [])
     selected = [entry for entry in commands if entry.get("name") == "ios-coherent-tests"]
-    require(len(selected) == 1 and selected[0].get("status") == "PASS_EXIT_0"
-            and selected[0].get("argv", [])[:2] == ["xcodebuild", "test"]
-            and "-only-testing:CoherentHeartAuthorityHarnessTests/" + METHOD in selected[0]["argv"],
-            "Original Apple test process was not the selected successful journey")
+    if selected and selected[0].get("argv", [])[:2] == ["xcodebuild", "test-without-building"]:
+        test = selected[0]
+        require(len(selected) == 1 and test.get("status") == "PASS_EXIT_0"
+                and isinstance(test.get("argv"), list) and all(isinstance(value, str) for value in test["argv"])
+                and [value for value in test["argv"] if value.startswith("-only-testing:")] ==
+                    ["-only-testing:CoherentHeartAuthorityHarnessTests/" + METHOD]
+                and test["argv"].count("-resultBundlePath") == test["argv"].count("-destination") == 1,
+                "Split Apple execution is not the sole successful selected journey")
+        bundle_index = test["argv"].index("-resultBundlePath") + 1
+        destination_index = test["argv"].index("-destination") + 1
+        require(bundle_index < len(test["argv"]) and Path(test["argv"][bundle_index]).name == "coherent-heart.xcresult",
+                "Split Apple execution has another result bundle")
+        owned_udid = receipt.get("owned_simulator", {}).get("udid")
+        require(isinstance(owned_udid, str) and re.fullmatch(r"[0-9A-Fa-f-]{36}", owned_udid)
+                and owned_udid == receipt.get("actual_execution", {}).get("udid")
+                and destination_index < len(test["argv"])
+                and test["argv"][destination_index] == "platform=iOS Simulator,id=" + owned_udid,
+                "Split Apple execution is not bound to its actual owned destination")
+        expected_build = list(test["argv"])
+        expected_build[1] = "build-for-testing"
+        expected_build[bundle_index] = str(Path(expected_build[bundle_index]).with_name("coherent-heart-build.xcresult"))
+        built = [entry for entry in commands if entry.get("name") == "ios-coherent-build"]
+        boot = [entry for entry in commands if entry.get("name") == "boot-owned-simulator"]
+        waited = [entry for entry in commands if entry.get("name") == "wait-owned-simulator"]
+        require(len(built) == len(boot) == len(waited) == 1
+                and all(entry.get("status") == "PASS_EXIT_0" for entry in (built[0], boot[0], waited[0]))
+                and built[0].get("argv") == expected_build
+                and boot[0].get("argv") == ["xcrun", "simctl", "boot", receipt.get("owned_simulator", {}).get("udid")]
+                and waited[0].get("argv") == ["xcrun", "simctl", "bootstatus", receipt.get("owned_simulator", {}).get("udid"), "-b"]
+                and commands.index(boot[0]) < commands.index(built[0]) < commands.index(waited[0]) < commands.index(test)
+                and type(receipt.get("harness_build", {}).get("tests_executed")) is int
+                and receipt.get("harness_build") == dict(status="BUILT_CURRENT_HARNESS_NOT_EXECUTED", tests_executed=0,
+                                                        boot_readiness="SEPARATE_BOUNDED_CHECK_REQUIRED"),
+                "Split Apple execution lacks its exact preceding successful build and owned-device readiness")
+    else:
+        require(len(selected) == 1 and selected[0].get("status") == "PASS_EXIT_0"
+                and selected[0].get("argv", [])[:2] == ["xcodebuild", "test"]
+                and "-only-testing:CoherentHeartAuthorityHarnessTests/" + METHOD in selected[0]["argv"],
+                "Original Apple test process was not the selected successful journey")
     bundle = host / "coherent-heart.xcresult"
     require(bundle.is_dir() and (bundle / "Info.plist").is_file() and _file_map(bundle), "Missing original xcresult bundle")
     original_summary, original_tree = read_json(host / "xcresult-summary.log"), read_json(host / "xcresult-tests.log")

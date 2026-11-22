@@ -26,6 +26,12 @@ SELECTOR_SOURCE = {
 }
 LOGS = {"new-build-reuse-controls.log": (6, "OriginalBuildReuseControls"),
         "new-admission-controls.log": (4, "CoherentReuseAdmissionControls")}
+BOOT_EVIDENCE = "docs/validation/20261122-coherent-heart-apple-boot"
+BOOT_REVIEW_SHA = "65cbedb38544d7f98102cf1411fbcfdb717ee6ab17877e763840a21e103c7fd3"
+BOOT_REPORT_SHA = "bc6d1ca46ef7715ecefba5f67bca3e88fa24c4b75d4ed3b342e66006cfc6c13c"
+BOOT_SOURCE_PATHS = frozenset({"Tools/PinkhaNativeDerived/coherent_apple/run_host.py",
+                             "Tools/PinkhaNativeDerived/coherent_runtime_admission.py"})
+BOOT_CONTROL = "Tools/PinkhaSimulatorGate/test_coherent_boot_orchestration.py"
 
 
 def require(value, reason):
@@ -75,6 +81,38 @@ def qualify_exact_terminal_lf(raw, expected, review):
             "Source differs from the exact reviewed terminal-LF/Git/AST pair")
 
 
+def qualify_boot_source(raw, expected, review):
+    require(review.get("before_sha256") == expected and sha(raw) == review.get("after_sha256"),
+            "Source differs from the exact reviewed boot repair")
+    tree = ast.parse(raw)
+    if review.get("path") == "Tools/PinkhaNativeDerived/coherent_apple/run_host.py":
+        excluded = {"load_helpers", "validate_execution", "qualify_observation", "source_snapshot",
+                    "prepare_harness", "execute", "main"}
+        names = [node.name for node in tree.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))]
+        require(len(names) == len(set(names)) and set(names) == excluded | {"fields", "qualify_t5_wire"}
+                and review.get("excluded_unexecuted_function_bodies") == sorted(excluded)
+                and review.get("retained_executed_functions") == ["fields", "qualify_t5_wire"],
+                "Original host control function scope changed")
+        for node in tree.body:
+            if isinstance(node, ast.FunctionDef) and node.name in excluded:
+                node.body = [ast.Pass()]
+    else:
+        require(review.get("path") == "Tools/PinkhaNativeDerived/coherent_runtime_admission.py",
+                "Unreviewed boot source path")
+        functions = [node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name == "qualify_apple"]
+        require(len(functions) == 1, "Original admission function is missing or duplicated")
+        function = functions[0]
+        branches = [node for node in function.body if isinstance(node, ast.If)
+                    and ast_digest(ast.unparse(node.test).encode()) == review.get("new_branch_condition_ast_sha256")]
+        require(len(branches) == 1 and len(branches[0].orelse) == 1,
+                "Exact new split-build condition or unchanged legacy branch changed")
+        branch = branches[0]
+        index = function.body.index(branch)
+        function.body[index:index + 1] = branch.orelse
+    require(ast_digest(ast.unparse(tree).encode()) == review.get("original_ast_sha256"),
+            "A retained original control dependency changed outside the exact new execution branch")
+
+
 def qualify(control):
     root = control.resolve()
     raw = read(root, EVIDENCE + "/python-controls.json")
@@ -94,7 +132,16 @@ def qualify(control):
             and len(entries) == 3 and {entry.get("path") for entry in entries} == EQUIVALENCE_PATHS,
             "Unexpected source-equivalence scope")
     reviewed = {entry["path"]: entry for entry in entries}
-    observed_sources, applied_equivalence = {}, []
+    boot_raw = read(root, BOOT_EVIDENCE + "/orchestration-review.json")
+    require(sha(boot_raw) == BOOT_REVIEW_SHA, "Exact boot orchestration review changed")
+    boot = json.loads(boot_raw)
+    boot_entries = boot.get("reviewed_sources", [])
+    require(boot.get("status") == "REVIEWED_EXACT_BOOT_ORCHESTRATION_AND_LEGACY_ADMISSION_BRANCH"
+            and boot.get("original_controls_report_sha256") == REPORT_SHA
+            and len(boot_entries) == 2 and {entry.get("path") for entry in boot_entries} == BOOT_SOURCE_PATHS,
+            "Unexpected boot orchestration retention scope")
+    boot_reviewed = {entry["path"]: entry for entry in boot_entries}
+    observed_sources, applied_equivalence, applied_boot_review = {}, [], []
     for group, count in (("source_sha256", 13), ("input_sha256", 9)):
         entries = report.get(group, {})
         require(isinstance(entries, dict) and len(entries) == count, "Incomplete retained dependency/input map")
@@ -102,10 +149,14 @@ def qualify(control):
             require(re.fullmatch(r"[0-9a-f]{64}", expected or ""), "Malformed original dependency digest")
             current = read(root, name)
             if sha(current) != expected:
-                require(group == "source_sha256" and name in reviewed,
+                require(group == "source_sha256" and name in reviewed.keys() | boot_reviewed.keys(),
                         "Retained controller dependency/input changed: " + name)
-                qualify_exact_terminal_lf(current, expected, reviewed[name])
-                applied_equivalence.append(name)
+                if name in boot_reviewed:
+                    qualify_boot_source(current, expected, boot_reviewed[name])
+                    applied_boot_review.append(name)
+                else:
+                    qualify_exact_terminal_lf(current, expected, reviewed[name])
+                    applied_equivalence.append(name)
             if group == "source_sha256":
                 observed_sources[name] = sha(current)
     checks = report.get("checks", [])
@@ -123,6 +174,29 @@ def qualify(control):
                 and re.search(r"\nRan " + str(count) + r" tests in [0-9.]+s\n\nOK\n\Z", text)
                 and not re.search(r"FAIL|ERROR|SKIP|skipped", text), "Original control method outcomes differ")
         methods.extend(actual)
+    new_raw = read(root, BOOT_EVIDENCE + "/new-orchestration-controls.json")
+    require(sha(new_raw) == BOOT_REPORT_SHA, "Original new boot-control report changed")
+    new = json.loads(new_raw)
+    require(new.get("status") == "PASS_NEW_BOOT_ORCHESTRATION_CONTROLS_ONLY"
+            and new.get("passed") == 2 and new.get("failed") == new.get("skipped") == 0
+            and new.get("apple_execution") == "NOT_RUN" and new.get("simulators_created") == new.get("frameworks_built") == 0
+            and new.get("old_native_go_and_xctest_methods_executed") == new.get("old_python_test_methods_executed") == 0
+            and set(new.get("source_sha256", {})) == set(report["source_sha256"]) |
+                {"Tools/PinkhaSimulatorGate/simulator_selection.py", BOOT_CONTROL}
+            and new.get("input_sha256") == {name: value for name, value in report["input_sha256"].items() if name != PROOF},
+            "New boot-control scope or dependency inventory differs")
+    for name, expected in new["source_sha256"].items():
+        current = read(root, name)
+        if sha(current) != expected:
+            require(name in reviewed, "New boot-control dependency changed: " + name)
+            qualify_exact_terminal_lf(current, expected, reviewed[name])
+    new_log = read(root, BOOT_EVIDENCE + "/new-orchestration-controls.log", 128 * 1024)
+    require(sha(new_log) == new.get("log_sha256"), "Original new boot-control log changed")
+    new_text = new_log.decode("utf8")
+    new_methods = re.findall(r"^(test_\w+) \(__main__\.CoherentBootOrchestrationControls\.\1\) \.\.\. ok$", new_text, re.M)
+    require(len(new_methods) == len(set(new_methods)) == 2 and new_methods == new.get("methods")
+            and re.search(r"\nRan 2 tests in [0-9.]+s\n\nOK\n\Z", new_text)
+            and not re.search(r"FAIL|ERROR|SKIP|skipped", new_text), "Original new boot-control outcomes differ")
     observation_raw = read(root, EVIDENCE + "/selector-observation.json")
     require(sha(observation_raw) == SELECTOR_OBSERVATION_SHA, "Original selector observation record changed")
     observation = json.loads(observation_raw)
@@ -144,6 +218,9 @@ def qualify(control):
                 source_sha256=report["source_sha256"], input_sha256=report["input_sha256"],
                 observed_source_sha256=observed_sources, exact_source_equivalence_review_sha256=EQUIVALENCE_SHA,
                 applied_terminal_lf_equivalence=applied_equivalence,
+                applied_boot_source_review=applied_boot_review, boot_source_review_sha256=BOOT_REVIEW_SHA,
+                retained_new_orchestration_control_methods=2, new_orchestration_methods=new_methods,
+                new_orchestration_report_sha256=BOOT_REPORT_SHA, total_retained_python_methods=12,
                 source_python=report["python"], source_platform=report["platform"], tests_executed_this_run=0,
                 frameworks_built_this_run=0, apple_execution="NOT_RUN", production_binary_execution="NOT_RUN",
                 selector_observation=dict(evidence_kind="PRIOR_TOOL_OUTPUT_OBSERVATION_WITHOUT_RAW_UNITTEST_LOG",

@@ -1,0 +1,58 @@
+{
+  "apple_execution": "NOT_RUN",
+  "canonical_git_input_qualification": "PASS",
+  "exact_previously_reviewed_LF_inputs": [
+    {
+      "canonical_git_sha256": "0154ae5f6b0af197d62abc7eeb6233adbe3d469723a75e15e233e7ab5e37019a",
+      "exact_relation": "tested_bytes = canonical_git_bytes + one LF byte",
+      "path": "Tools/PinkhaNativeDerived/attachment_runtime.py",
+      "tested_sha256": "e3dc82fdc34c7ba0567f7b7afb48c3a8b499f7054cd3bbdb14fc2981ffeaec7d"
+    },
+    {
+      "canonical_git_sha256": "0ebbe2f6227418eac2c532b0058290158319ba9f786baaf445de444887e8c669",
+      "exact_relation": "tested_bytes = canonical_git_bytes + one LF byte",
+      "path": "Tools/PinkhaNativeDerived/build_custom_heart.py",
+      "tested_sha256": "a79710c1e48d970f082510c34f679995c14245ee5b09e70a80d63199a086d62b"
+    },
+    {
+      "canonical_git_sha256": "0f3286d5c3f84c5b892234b557028eed3125935db8ba843a838cb28be641ab18",
+      "exact_relation": "tested_bytes = canonical_git_bytes + one LF byte",
+      "path": "Tools/PinkhaNativeDerived/install_verified_heart.py",
+      "tested_sha256": "b68bb5a8e5c71075cd74b90724ba1d95f587d0e55b83dc78a8c6eaee3c778373"
+    }
+  ],
+  "python_test_methods_executed": 0,
+  "source_mutations_rejected": [
+    {
+      "mutation": "extra_terminal_LF",
+      "path": "Tools/PinkhaNativeDerived/coherent_apple/run_host.py",
+      "result": "REJECTED"
+    },
+    {
+      "mutation": "source_byte_change",
+      "path": "Tools/PinkhaNativeDerived/coherent_apple/run_host.py",
+      "result": "REJECTED"
+    },
+    {
+      "mutation": "retained_AST_change_even_with_matching_candidate_digest",
+      "path": "Tools/PinkhaNativeDerived/coherent_apple/run_host.py",
+      "result": "REJECTED"
+    },
+    {
+      "mutation": "extra_terminal_LF",
+      "path": "Tools/PinkhaNativeDerived/coherent_runtime_admission.py",
+      "result": "REJECTED"
+    },
+    {
+      "mutation": "source_byte_change",
+      "path": "Tools/PinkhaNativeDerived/coherent_runtime_admission.py",
+      "result": "REJECTED"
+    },
+    {
+      "mutation": "retained_AST_change_even_with_matching_candidate_digest",
+      "path": "Tools/PinkhaNativeDerived/coherent_runtime_admission.py",
+      "result": "REJECTED"
+    }
+  ],
+  "status": "PASS_NEW_RETENTION_VERIFICATION"
+}
