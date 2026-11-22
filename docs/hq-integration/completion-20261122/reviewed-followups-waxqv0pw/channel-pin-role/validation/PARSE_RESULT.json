@@ -1,0 +1,62 @@
+{
+  "job_id": "job_2a69d4dcf8fa",
+  "scope": "Only five complete changed Swift files; syntax with simulator target, no Apple SDK typecheck or native participant/UI execution.",
+  "patch_sha256": "c201268f1e3318dabd32b121ae5194ee64c14dee656ed668ebd720b4e600b735",
+  "archive_sha256": "642f5093d11552338257e6df6af2e539159ccdc25b72a3356fd2180d0e11b428",
+  "checkpoint": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\pin5-source-c201",
+  "inputs": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift",
+      "before_sha256": "6b42034d04d2437fd1fb219c85c485bac4dc57828e3424d2f3ba613117c67695",
+      "after_sha256": "b0ae02be8c28c22246d29bf927cb154e10019d841f3b831771f968a8938f7d46",
+      "after_bytes": 49230
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/ChannelPins/ChannelPinsService.swift",
+      "before_sha256": "fbc0de0ee09160676dde27a13e41b1c10e7103686a92c9232f011ebcc213332b",
+      "after_sha256": "846d9b8f10b8337988b54e6c1f0723b356dcc28b38ca3d636b0828df866d306f",
+      "after_bytes": 2055
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift",
+      "before_sha256": "115629e24ed1041bc6858b14b633e64030ef48e14fb2c85545ef6f8d396af619",
+      "after_sha256": "42d619b79a0f68794163fd3cfdb1261292237b215e2554dfb35677897eb975e9",
+      "after_bytes": 9627
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettings/ObjectSettingsViewModel.swift",
+      "before_sha256": "3f893fd54da11b98b0e41ebb628ac831ce4f8c66b0a4201d9c3e9a4a0adc187c",
+      "after_sha256": "b21d6765188bd43e9f72f3948eb75b6550ed0c6a92a4fead7bc29281e379d184",
+      "after_bytes": 38181
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuViewModel.swift",
+      "before_sha256": "436432ef54b1130cc53a9b027b61a1b8fe3a870cac8703deba900bc960aff7b8",
+      "after_sha256": "093616e5a84f0f4d82ac5cc2bf2590013a2f63d3c7d86977e01b035071f6db54",
+      "after_bytes": 7303
+    }
+  ],
+  "command": [
+    "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+    "-frontend",
+    "-parse",
+    "-target",
+    "arm64-apple-ios27.0-simulator",
+    "-D",
+    "DEBUG",
+    "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\pin5-source-c201\\source\\Anytype\\Sources\\PresentationLayer\\TextEditor\\Assembly\\Page\\EditorDocumentWriteOwner.swift",
+    "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\pin5-source-c201\\source\\Anytype\\Sources\\ServiceLayer\\ChannelPins\\ChannelPinsService.swift",
+    "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\pin5-source-c201\\source\\Anytype\\Sources\\ServiceLayer\\ParticipantStorage\\ParticipantsStorage.swift",
+    "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\pin5-source-c201\\source\\Anytype\\Sources\\PresentationLayer\\TextEditor\\EditorPage\\Views\\Settings\\ObjectSettings\\ObjectSettingsViewModel.swift",
+    "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\pin5-source-c201\\source\\Anytype\\Sources\\PresentationLayer\\TextEditor\\EditorPage\\Views\\Settings\\ObjectSettingsMenu\\ObjectSettingsMenuViewModel.swift"
+  ],
+  "compiler_processes": 1,
+  "started_at": "2026-11-22T01:54:43.383948+00:00",
+  "finished_at": "2026-11-22T01:54:44.008269+00:00",
+  "duration_s": 0.625,
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "<unknown>:0: warning: SDK settings were ignored as 'SDKSettings.json' could not be parsed\r\n<unknown>:0: warning: using sysroot for 'Windows' but targeting 'iPhone'\r\n",
+  "native": "NOT_RUN",
+  "apple_typecheck": "NOT_RUN"
+}

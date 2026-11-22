@@ -1,0 +1,566 @@
+--- a/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift
+@@ -192,6 +192,11 @@
+     }
+ }
+ 
++fileprivate func intersectOriginalRPCRestrictions(_ lhs: Set<String>?, _ rhs: Set<String>?) -> Set<String>? {
++    if let lhs, let rhs { return lhs.intersection(rhs) }
++    return lhs ?? rhs
++}
++
+ fileprivate enum EditorDocumentOperationContext {
+     @TaskLocal static var lineage = EditorDocumentOperationLineage()
+ }
+@@ -213,6 +218,7 @@
+     let captures: [EditorDocumentWriteCapture]
+     private let accountCapture: EditorDocumentWriteCapture?
+     fileprivate let parentOwner: EditorDocumentWriteOwner?
++    fileprivate let rpcRestriction: Set<String>?
+     let isCurrent: @MainActor () -> Bool
+ 
+     init(
+@@ -228,27 +234,42 @@
+             + (accountCapture.map { [$0] } ?? [])
+         self.isCurrent = isCurrent
+         parentOwner = nil
++        rpcRestriction = nil
+     }
+ 
+     private init(
+         inheriting original: Self,
+         parentOwner: EditorDocumentWriteOwner,
+         captures: [EditorDocumentWriteCapture],
++        rpcRestriction: Set<String>?,
+         isCurrent: @escaping @MainActor () -> Bool
+     ) {
+         lifetime = original.lifetime
+         accountCapture = original.accountCapture
+         self.parentOwner = parentOwner
+         self.captures = captures
++        self.rpcRestriction = intersectOriginalRPCRestrictions(original.rpcRestriction, rpcRestriction)
+         self.isCurrent = isCurrent
+     }
+ 
+     fileprivate func inheritingParent(
+         owner: EditorDocumentWriteOwner,
+         captures: [EditorDocumentWriteCapture],
++        rpcRestriction: Set<String>? = nil,
+         isCurrent: @escaping @MainActor () -> Bool
+     ) -> Self {
+-        Self(inheriting: self, parentOwner: owner, captures: captures, isCurrent: isCurrent)
++        Self(inheriting: self, parentOwner: owner, captures: captures,
++             rpcRestriction: rpcRestriction, isCurrent: isCurrent)
++    }
++
++    fileprivate func channelPinCapture(
++        _ permission: OriginalChannelPinPermission, spaceId: String
++    ) throws -> EditorDocumentWriteCapture {
++        try validate()
++        guard let accountCapture else {
++            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
++        }
++        return try permission.capture(matching: accountCapture, spaceId: spaceId)
+     }
+ 
+     var committedEventBinding: InvocationDispatchBinding? {
+@@ -330,7 +351,8 @@
+     ) throws -> InvocationDispatchPermit {
+         do {
+             try validate()
+-            guard lease.isAccepting, rpcNames.contains(messageName) else {
++            guard lease.isAccepting, rpcNames.contains(messageName),
++                  rpcRestriction?.contains(messageName) != false else {
+                 throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+             }
+             let captured = captures
+@@ -381,6 +403,8 @@
+         let contextId: String
+         let requiresEditing: Bool
+         let requiredPermissions: Set<EditorDocumentWritePermission>
++        let sourceCaptures: [EditorDocumentWriteCapture]
++        let rpcRestriction: Set<String>?
+         let lineage: EditorDocumentOperationLineage
+         let parentWork: EditorDocumentParentWork?
+         let onDrained: (@MainActor @Sendable () -> Void)?
+@@ -493,9 +517,21 @@
+         guard let originalSourceBinding else {
+             throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+         }
++        let inheritedID = EditorDocumentOperationLineage.current.leases[ObjectIdentifier(self)]
++        let entry = inheritedID.flatMap { pending[$0] }
++        if inheritedID != nil {
++            guard let entry, entry.operation.isAccepting else {
++                throw EditorDocumentWriteError.rejected(.invalidLease)
++            }
++        }
++        let sourceCaptures = entry?.sourceCaptures ?? []
++        for capture in sourceCaptures { try capture.validate() }
+         let captured = [try EditorDocumentWriteCapture(dispatchLifetime)]
+             + lifetimeBindings.map { EditorDocumentWriteCapture(source: $0.source, token: $0.token) }
+-        return originalSourceBinding.inheritingParent(owner: self, captures: captured) { [weak self] in
++            + sourceCaptures
++        return originalSourceBinding.inheritingParent(
++            owner: self, captures: captured, rpcRestriction: entry?.rpcRestriction
++        ) { [weak self] in
+             guard let self else { return false }
+             return (try? self.validateOwnership()) != nil
+         }
+@@ -561,6 +597,34 @@
+                               requiredPermissions: requiredPermissions, onDrained: onDrained)
+         defer { finish(lease) }
+         return try await execute(lease, operation: operation)
++    }
++
++    /// The original participant store supplies an opaque frozen role proof.
++    /// It only narrows this target owner's existing mutation lease and native
++    /// Invocation permit; no account, target or writer authority is replaced.
++    func performChannelPinMutation<Value: Sendable>(
++        contextId: String,
++        permission: OriginalChannelPinPermission,
++        onDrained: (@MainActor @Sendable () -> Void)? = nil,
++        operation: @Sendable () async throws -> Value
++    ) async throws -> Value {
++        do {
++            guard let originalSourceBinding else {
++                throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
++            }
++            let roleCapture = try originalSourceBinding.channelPinCapture(permission, spaceId: data.spaceId)
++            let lease = try admit(
++                contextId: contextId, requiresEditing: true, access: .mutation,
++                sourceCaptures: [roleCapture],
++                rpcRestriction: ["BlockCreateWidget", "BlockListDelete"],
++                onDrained: onDrained
++            )
++            defer { finish(lease) }
++            return try await execute(lease, operation: operation)
++        } catch {
++            recordWriteFailure()
++            throw error
++        }
+     }
+ 
+     /// Some original document actions (for example type details) are allowed
+@@ -738,7 +802,7 @@
+             let ownerCapture = try EditorDocumentWriteCapture(dispatchLifetime)
+             let captured = [ownerCapture] + lifetimeBindings.map {
+                 EditorDocumentWriteCapture(source: $0.source, token: $0.token)
+-            }
++            } + entry.sourceCaptures
+             let admissions = try EditorDocumentWriteCapture.acquireAll(captured)
+             defer { for admission in admissions { admission.cancel() } }
+             let value = try EditorDocumentOperationContext.$lineage.withValue(lineage) {
+@@ -748,6 +812,7 @@
+                                       requiredPermissions: entry.requiredPermissions) {
+                 throw EditorDocumentWriteError.completedWithoutOwnership(reason)
+             }
++            try validateSourceCaptures(entry.sourceCaptures, afterCompletion: true)
+             return value
+         } catch {
+             entry.operation.markFailed()
+@@ -805,6 +870,8 @@
+         access: EditorDocumentOperationAccess,
+         requiredPermissions: Set<EditorDocumentWritePermission> = [],
+         actionPermissionsOnly: Bool = false,
++        sourceCaptures: [EditorDocumentWriteCapture] = [],
++        rpcRestriction: Set<String>? = nil,
+         tracking: Bool = false,
+         phase: Phase = .ordinary,
+         onDrained: (@MainActor @Sendable () -> Void)? = nil,
+@@ -815,6 +882,11 @@
+         let predecessor = inheritedID.flatMap { pending[$0] }
+         let writeIntent = access.isMutation || predecessor?.writeIntent == true
+         let permissions = requiredPermissions.union(predecessor?.requiredPermissions ?? [])
++        let sourceCaptures = sourceCaptures + (predecessor?.sourceCaptures ?? [])
++        let rpcRestriction = intersectOriginalRPCRestrictions(
++            originalSourceBinding?.rpcRestriction,
++            intersectOriginalRPCRestrictions(predecessor?.rpcRestriction, rpcRestriction)
++        )
+         let inheritedActionScope = predecessor.map {
+             !$0.requiresEditing && !$0.requiredPermissions.isEmpty
+         } ?? false
+@@ -822,6 +894,7 @@
+         let requiresEditing = requiresEditing || (!permissions.isEmpty && !actionScope)
+             || predecessor?.requiresEditing == true
+         do {
++            try validateSourceCaptures(sourceCaptures)
+             if let reason = rejection(contextId: contextId, requiresEditing: requiresEditing,
+                                       requiredPermissions: permissions) {
+                 throw EditorDocumentWriteError.rejected(reason)
+@@ -846,7 +919,9 @@
+             }
+             pending[lease] = Pending(operation: operation, access: access, tracking: tracking,
+                 writeIntent: writeIntent, contextId: contextId, requiresEditing: requiresEditing,
+-                requiredPermissions: permissions, lineage: lineage, parentWork: parentWork, onDrained: onDrained, phase: phase)
++                requiredPermissions: permissions, sourceCaptures: sourceCaptures,
++                rpcRestriction: rpcRestriction, lineage: lineage,
++                parentWork: parentWork, onDrained: onDrained, phase: phase)
+             return lease
+         } catch {
+             if writeIntent { recordWriteFailure() }
+@@ -863,6 +938,7 @@
+         let binding = dispatchBinding(lease: lease)
+         let lineage = entry.lineage.dispatching(binding)
+         do {
++            try validateSourceCaptures(entry.sourceCaptures)
+             if let reason = rejection(contextId: entry.contextId, requiresEditing: entry.requiresEditing,
+                                       requiredPermissions: entry.requiredPermissions) {
+                 throw EditorDocumentWriteError.rejected(reason)
+@@ -874,6 +950,7 @@
+                                       requiredPermissions: entry.requiredPermissions) {
+                 throw EditorDocumentWriteError.completedWithoutOwnership(reason)
+             }
++            try validateSourceCaptures(entry.sourceCaptures, afterCompletion: true)
+             guard pending[lease] != nil else {
+                 throw EditorDocumentWriteError.completedWithoutOwnership(.invalidLease)
+             }
+@@ -894,20 +971,34 @@
+     private func prepareDispatch(lease: UUID, messageName: String) throws -> InvocationDispatchPermit {
+         guard let entry = pending[lease] else { throw EditorDocumentWriteError.rejected(.invalidLease) }
+         do {
++            try validateSourceCaptures(entry.sourceCaptures)
+             if let reason = rejection(contextId: entry.contextId, requiresEditing: entry.requiresEditing,
+                                       requiredPermissions: entry.requiredPermissions) {
+                 throw EditorDocumentWriteError.rejected(reason)
+             }
+             guard entry.operation.isAccepting else { throw EditorDocumentWriteError.rejected(.invalidLease) }
+             guard !entry.tracking, documentLifetimeSource != nil,
+-                  entry.access.permits(.read([messageName])) else {
++                  entry.access.permits(.read([messageName])),
++                  entry.rpcRestriction?.contains(messageName) != false else {
+                 throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+             }
+             let ownerCapture = try EditorDocumentWriteCapture(dispatchLifetime)
+             let captured = [ownerCapture] + lifetimeBindings.map { EditorDocumentWriteCapture(source: $0.source, token: $0.token) }
++                + entry.sourceCaptures
+             return entry.operation.permit { try EditorDocumentWriteCapture.acquireAll(captured) }
+         } catch {
+             entry.operation.markFailed()
++            throw error
++        }
++    }
++
++    private func validateSourceCaptures(
++        _ captures: [EditorDocumentWriteCapture], afterCompletion: Bool = false
++    ) throws {
++        do {
++            for capture in captures { try capture.validate() }
++        } catch {
++            if afterCompletion { throw EditorDocumentWriteError.completedWithoutOwnership(.retired) }
+             throw error
+         }
+     }
+--- a/Anytype/Sources/ServiceLayer/ChannelPins/ChannelPinsService.swift
++++ b/Anytype/Sources/ServiceLayer/ChannelPins/ChannelPinsService.swift
+@@ -22,6 +22,14 @@
+ 
+     private let blockWidgetService: any BlockWidgetServiceProtocol = Container.shared.blockWidgetService()
+ 
++    static func requireOriginal(_ service: any ChannelPinsServiceProtocol) throws -> ChannelPinsService {
++        guard let original = service as? ChannelPinsService else {
++            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
++        }
++        _ = try OriginalBlockWidgetServiceBinding.requireOriginal(original.blockWidgetService)
++        return original
++    }
++
+     func toggle(
+         objectId: String,
+         channelWidgetsObject: any BaseDocumentProtocol,
+--- a/Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift
++++ b/Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift
+@@ -5,6 +5,112 @@
+ import AsyncTools
+ import AsyncAlgorithms
+ 
++// ORIGINAL_CHANNEL_PIN_PERMISSION_BEGIN
++/// A frozen observation of the actual original participant subscription. Its
++/// constructors remain in this file; a caller cannot assert a role or account.
++struct OriginalChannelPinPermission: Sendable {
++    fileprivate let accountID: String
++    fileprivate let spaceID: String
++    fileprivate let accountCapture: EditorDocumentWriteCapture
++    fileprivate let roleCapture: EditorDocumentWriteCapture
++
++    fileprivate init(accountID: String, spaceID: String,
++                     accountCapture: EditorDocumentWriteCapture) throws {
++        self.accountID = accountID
++        self.spaceID = spaceID
++        self.accountCapture = accountCapture
++        roleCapture = try EditorDocumentWriteCapture(EditorDocumentWriteLifetime())
++    }
++
++    func validate() throws {
++        try accountCapture.validate()
++        try roleCapture.validate()
++    }
++
++    func capture(matching account: EditorDocumentWriteCapture, spaceId: String) throws -> EditorDocumentWriteCapture {
++        guard !accountID.isEmpty, spaceID.utf8.elementsEqual(spaceId.utf8),
++              accountCapture.source === account.source, accountCapture.token == account.token else {
++            throw EditorDocumentWriteError.rejected(.wrongContext)
++        }
++        try account.validate()
++        try validate()
++        return roleCapture
++    }
++
++    fileprivate func retire() { roleCapture.source.markUnavailable() }
++}
++
++/// Identity of one actual startSubscription attempt, not a new account/session
++/// generation. A delayed callback from a stopped attempt cannot mint a role.
++private final class OriginalChannelPinSubscriptionContext: Sendable {
++    let accountID: String
++    let accountCapture: EditorDocumentWriteCapture
++
++    init(accountID: String, accountCapture: EditorDocumentWriteCapture) {
++        self.accountID = accountID
++        self.accountCapture = accountCapture
++    }
++}
++
++/// Passive bookkeeping called only on the original ParticipantsStorage actor.
++/// The actual participant decoder supplies these observations; no RPC or writer
++/// implementation exists here. The returned immutable snapshot is thread-safe.
++private struct OriginalChannelPinPermissionState {
++    private var context: OriginalChannelPinSubscriptionContext?
++    private var permissions: [String: OriginalChannelPinPermission] = [:]
++
++    mutating func begin(accountID: String, accountCapture: EditorDocumentWriteCapture?) -> OriginalChannelPinSubscriptionContext? {
++        stop()
++        guard !accountID.isEmpty, let accountCapture,
++              (try? accountCapture.validate()) != nil else { return nil }
++        let context = OriginalChannelPinSubscriptionContext(accountID: accountID, accountCapture: accountCapture)
++        self.context = context
++        return context
++    }
++
++    @discardableResult
++    mutating func stop() -> [String: OriginalChannelPinPermission] {
++        context = nil
++        for permission in permissions.values { permission.retire() }
++        permissions.removeAll()
++        return permissions
++    }
++
++    mutating func receive(
++        _ roles: [(spaceID: String, isModerator: Bool)],
++        from candidate: OriginalChannelPinSubscriptionContext?
++    ) throws -> [String: OriginalChannelPinPermission] {
++        guard let context, context === candidate else {
++            // An older stopped subscription cannot replace a newer snapshot.
++            return permissions
++        }
++        guard (try? context.accountCapture.validate()) != nil else { return stop() }
++        var next: [String: OriginalChannelPinPermission] = [:]
++        var seen: Set<String> = []
++        for role in roles {
++            // Match the original participantSpaceView first-record semantics.
++            guard !role.spaceID.isEmpty, seen.insert(role.spaceID).inserted else { continue }
++            guard role.isModerator else { continue }
++            if let existing = permissions[role.spaceID], (try? existing.validate()) != nil {
++                next[role.spaceID] = existing
++            } else {
++                next[role.spaceID] = try OriginalChannelPinPermission(
++                    accountID: context.accountID, spaceID: role.spaceID,
++                    accountCapture: context.accountCapture
++                )
++            }
++        }
++        // Revocation precedes both the immutable snapshot and the original
++        // participant stream publication. Restoration creates a fresh token.
++        for (spaceID, permission) in permissions where next[spaceID] == nil {
++            permission.retire()
++        }
++        permissions = next
++        return permissions
++    }
++}
++// ORIGINAL_CHANNEL_PIN_PERMISSION_END
++
+ protocol ParticipantsStorageProtocol: AnyObject, Sendable {
+     var participants: [Participant] { get }
+     var participantsSequence: AnyAsyncSequence<[Participant]> { get }
+@@ -38,6 +144,8 @@
+     
+     private let stream = AsyncToManyStream<[Participant]>()
+     private var subscription: Task<Void, Never>?
++    private var channelPinPermissionState = OriginalChannelPinPermissionState()
++    private let channelPinPermissions = AtomicStorage<[String: OriginalChannelPinPermission]>([:])
+     
+     @LazyInjected(\.subscriptionStorageProvider)
+     private var subscriptionStorageProvider: any SubscriptionStorageProviderProtocol
+@@ -55,27 +163,64 @@
+     nonisolated var participants: [Participant] { stream.value ?? [] }
+     nonisolated var participantsSequence: AnyAsyncSequence<[Participant]> { stream.eraseToAnyAsyncSequence() }
+ 
++    /// Synchronous at the actual UI callback, before its original Task is
++    /// created. The snapshot is minted only by this original actor's updates.
++    nonisolated func currentChannelPinPermission(spaceId: String) throws -> OriginalChannelPinPermission {
++        guard let permission = channelPinPermissions.value[spaceId] else {
++            throw EditorDocumentWriteError.rejected(.notEditable)
++        }
++        try permission.validate()
++        return permission
++    }
++
+     func startSubscription() async {
+         guard subscription.isNil else {
+             anytypeAssertionFailure("You are trying to start ParticipantsStorage multiple times")
+             return
+         }
+         
++        let channelPinAccountCapture: EditorDocumentWriteCapture?
++        if accountManager is AccountManager, let lifetime = accountManager.editorWriteLifetime {
++            channelPinAccountCapture = try? EditorDocumentWriteCapture(lifetime)
++        } else {
++            channelPinAccountCapture = nil
++        }
++        let channelPinContext = channelPinPermissionState.begin(
++            accountID: accountManager.account.id, accountCapture: channelPinAccountCapture
++        )
++        channelPinPermissions.value = [:]
+         let data = subscriptionBuilder.build(accountId: accountManager.account.id, subId: subscriptionId)
+         try? await subscriptionStorage.startOrUpdateSubscription(data: data)
+         
+         subscription = Task { [weak self, subscriptionStorage] in
+             for await state in subscriptionStorage.statePublisher.values {
+                 let participants = state.items.compactMap { try? Participant(details: $0) }
+-                self?.stream.send(participants)
++                self?.publishParticipants(participants, channelPinContext: channelPinContext)
+             }
+         }
+     }
+ 
+     func stopSubscription() async {
++        // Stop pin admissions before the original asynchronous unsubscribe.
++        channelPinPermissions.value = channelPinPermissionState.stop()
+         try? await subscriptionStorage.stopSubscription()
+         subscription?.cancel()
+         subscription = nil
+         stream.clearLastValue()
+     }
+-}
++
++    private func publishParticipants(
++        _ participants: [Participant], channelPinContext: OriginalChannelPinSubscriptionContext?
++    ) {
++        do {
++            channelPinPermissions.value = try channelPinPermissionState.receive(
++                participants.map { (spaceID: $0.spaceId, isModerator: $0.permission.isModerator) },
++                from: channelPinContext
++            )
++        } catch {
++            channelPinPermissions.value = channelPinPermissionState.stop()
++        }
++        // Preserve the original decoded data and stream behavior unchanged.
++        stream.send(participants)
++    }
++}
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettings/ObjectSettingsViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettings/ObjectSettingsViewModel.swift
+@@ -238,6 +238,33 @@
+         }
+     }
+ 
++    /// Capture the actual original moderator role on the button's synchronous
++    /// call stack. An older queued intent cannot recapture a restored role.
++    func prepareChannelPinAction() -> @MainActor @Sendable () async throws -> Void {
++        guard let preparedSession else { return { [self] in try await changePinState() } }
++        do {
++            let scheduled = try preparedSession.owner.scheduleDocumentAction(
++                contextId: objectId, requiredPermissions: [.applyUneditableActions]
++            )
++            let selected = try withCurrentSource(requiredPermissions: [.applyUneditableActions]) {
++                guard let session = preparedWidgetSessions[.channel],
++                      let participants = Container.shared.participantsStorage() as? ParticipantsStorage else {
++                    throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
++                }
++                try validatePreparedWidget(session, kind: .channel)
++                let permission = try participants.currentChannelPinPermission(spaceId: spaceId)
++                return (session, permission)
++            }
++            return { [self] in
++                try await scheduled.run { @MainActor in
++                    try await changePreparedPinState(session: selected.0, permission: selected.1)
++                }
++            }
++        } catch {
++            return { throw error }
++        }
++    }
++
+     private func performAction<Value: Sendable>(
+         requiredPermissions: Set<EditorDocumentWritePermission>,
+         operation: @MainActor @Sendable () async throws -> Value
+@@ -251,7 +278,7 @@
+         }
+     }
+ 
+-    /// Foreign channel/Space writers and not-yet-bound modal writers are not
++    /// Foreign Space writers and not-yet-bound modal writers are not
+     /// authorized by a page Owner. Keep their original nil route and visible
+     /// menu entries; the prepared Host must fail closed until the exact target
+     /// and its original service graph are qualified separately.
+@@ -586,6 +613,46 @@
+         try await personalFavoritesService.toggle(objectId: details.id, personalWidgetsObject: personalWidgetsObject)
+         toastData = ToastBarData(wasFavorited ? Loc.unfavorited : Loc.favorited)
+         dismiss.toggle()
++    }
++
++    private func changePreparedPinState(
++        session: PreparedEditorPageSession, permission: OriginalChannelPinPermission
++    ) async throws {
++        try await performAction(requiredPermissions: [.applyUneditableActions]) { [self] in
++            let service = try ChannelPinsService.requireOriginal(channelPinsService)
++            try await session.owner.performChannelPinMutation(
++                contextId: session.data.objectId, permission: permission,
++                onDrained: { [session] in withExtendedLifetime(session) {} }
++            ) { @MainActor [self] in
++                let layout = try withCurrentSource(requiredPermissions: [.applyUneditableActions]) {
++                    try validatePreparedWidget(session, kind: .channel)
++                    guard let details = document.details,
++                          details.id.utf8.elementsEqual(objectId.utf8),
++                          details.isVisibleLayout(spaceType: spaceType), !details.isTemplate,
++                          details.resolvedLayoutValue != .participant,
++                          let layout = details.availableWidgetLayout.first else {
++                        throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
++                    }
++                    return layout
++                }
++                let wasPinned = session.document.widgetBlockIdFor(targetObjectId: objectId).isNotNil
++                try await service.toggle(
++                    objectId: objectId, channelWidgetsObject: session.document,
++                    layout: layout, limit: layout.limits.first ?? 0
++                )
++                // This nested original read inherits the same frozen role, so
++                // source loss after the RPC cannot publish stale success.
++                try session.owner.performSynchronousOperation(
++                    contextId: session.data.objectId, spaceId: spaceId, requiresEditing: false
++                ) {
++                    try withCurrentSource {
++                        try validatePreparedWidget(session, kind: .channel)
++                        toastData = ToastBarData(wasPinned ? Loc.unpinned : Loc.pinned)
++                        dismiss.toggle()
++                    }
++                }
++            }
++        }
+     }
+ 
+     private func changePreparedFavoriteState() async throws {
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuViewModel.swift
+@@ -97,6 +97,11 @@
+     }
+ 
+     func scheduleAction(_ action: ObjectAction) {
++        if case .pin = action, viewModel.hasPreparedSource {
++            let prepared = viewModel.prepareChannelPinAction()
++            Task { try await prepared() }
++            return
++        }
+         let permissions: Set<EditorDocumentWritePermission>
+         switch action {
+         case .archive: permissions = [.archive]

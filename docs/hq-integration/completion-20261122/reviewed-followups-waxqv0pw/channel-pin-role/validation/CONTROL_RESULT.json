@@ -1,0 +1,111 @@
+{
+  "job_id": "job_6dbed5826a5a",
+  "scope": "Eighteen NEW role-capture, revocation and actual Owner/Invocation permit controls only. Reuses actual shared lifecycle/operation/dispatch code and explicit prior document value inputs. No protobuf, Lib, account RPC, database or UIKit. ParticipantsStorage actor integration is source-reviewed/parsed, not natively executed.",
+  "patch_sha256": "c201268f1e3318dabd32b121ae5194ee64c14dee656ed668ebd720b4e600b735",
+  "archive_sha256": "8ba2f13d616048915dc6a1587f8b47179fc96e39465677947e70a84d5b9bc037",
+  "inputs": {
+    "scope": "Eighteen NEW role-capture, revocation and actual Owner/Invocation permit controls only. Reuses actual shared lifecycle/operation/dispatch code and explicit prior document value inputs. No protobuf, Lib, account RPC, database or UIKit. ParticipantsStorage actor integration is source-reviewed/parsed, not natively executed.",
+    "expected_controls": 18,
+    "prior_suites_rerun": false,
+    "files": [
+      {
+        "name": "Lifetime.swift",
+        "source": "anytype_writer_qualification/candidate/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteLifetime.swift",
+        "canonical_sha256": "451054685e2ff0c30371d384904be831412eec16c2a5e16c660d2f1891921eb4",
+        "staged_sha256": "451054685e2ff0c30371d384904be831412eec16c2a5e16c660d2f1891921eb4",
+        "transform": "remove module imports only; Foundation reimport"
+      },
+      {
+        "name": "Operation.swift",
+        "source": "anytype_writer_qualification/candidate/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOperation.swift",
+        "canonical_sha256": "d6a1034809671d7550e21c5da4e46e1065d21ca6438bb66c7e1f9ea869b9dc51",
+        "staged_sha256": "55804cf1a06b59dc80846ab4bc8b874a2d54ae28649288c5b49930267b9ae844",
+        "transform": "remove module imports only; Foundation reimport"
+      },
+      {
+        "name": "Binding.swift",
+        "source": "anytype_writer_qualification/candidate/Modules/ProtobufMessages/Sources/InvocationDispatchBinding.swift",
+        "canonical_sha256": "e304f05ed114342795dbc3a603490311142d63f9a6a156bdcdafd68743e710cb",
+        "staged_sha256": "e304f05ed114342795dbc3a603490311142d63f9a6a156bdcdafd68743e710cb",
+        "transform": "remove module imports only; Foundation reimport"
+      },
+      {
+        "name": "Owner.swift",
+        "source": "anytype_channel_pin_role_qualification/source/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift",
+        "canonical_sha256": "b0ae02be8c28c22246d29bf927cb154e10019d841f3b831771f968a8938f7d46",
+        "staged_sha256": "5ff93fe232eaed63519ce3721bf423c777d6d0b4d312f6d48c4bf8f6ca6b1adc",
+        "transform": "remove module imports only; Foundation reimport"
+      },
+      {
+        "name": "OriginalTypePermissionProbe.swift",
+        "source": "reused explicit portable document inputs from synchronous-action-controls.zip",
+        "canonical_sha256": "0708d577f19f0c382cec913b990e949716c543536c4166575ed60e96f5c33f6a",
+        "staged_sha256": "0708d577f19f0c382cec913b990e949716c543536c4166575ed60e96f5c33f6a",
+        "transform": "remove module imports only; Foundation reimport"
+      },
+      {
+        "name": "PreparedEditorPageDocument.swift",
+        "source": "reused explicit portable document inputs from synchronous-action-controls.zip",
+        "canonical_sha256": "42e595c324e46947d4b964070994a193478d57072931b92be1451f155e2cb32e",
+        "staged_sha256": "42e595c324e46947d4b964070994a193478d57072931b92be1451f155e2cb32e",
+        "transform": "remove module imports only; Foundation reimport"
+      },
+      {
+        "name": "RoleControls.swift",
+        "source": "exact marked production role state plus new role-only controls",
+        "canonical_sha256": "c2e2711f8da5bf7a747b10a125f66f89a71b153e136fe0701a48184992a27576",
+        "staged_sha256": "8ea9c64f0dd33804ad4d2862dc5ea5a9dc59ade37936e54c870c3aa17f707f9e",
+        "transform": "remove module imports only; Foundation reimport",
+        "role_region_sha256": "f40af80ab7ba4dbdc1c821498eff55a73ce13ca7075f603ad85339587a17e201",
+        "production_participants_sha256": "42d619b79a0f68794163fd3cfdb1261292237b215e2554dfb35677897eb975e9",
+        "control_sha256": "7f4130d99b807dfcfeda84dbfaecbfdb82e0c0b6659b9dde82dbdfe2e0dfddcc"
+      }
+    ],
+    "patch_sha256": "c201268f1e3318dabd32b121ae5194ee64c14dee656ed668ebd720b4e600b735"
+  },
+  "compiler_jobs": 1,
+  "started_at": "2026-11-22T01:52:19.558404+00:00",
+  "results": [
+    {
+      "label": "compile",
+      "argv": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.EXE",
+        "-swift-version",
+        "5",
+        "-strict-concurrency=complete",
+        "-parse-as-library",
+        "-j",
+        "1",
+        "-whole-module-optimization",
+        "-Onone",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\pin-controls-c201\\Lifetime.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\pin-controls-c201\\Operation.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\pin-controls-c201\\Binding.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\pin-controls-c201\\Owner.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\pin-controls-c201\\OriginalTypePermissionProbe.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\pin-controls-c201\\PreparedEditorPageDocument.swift",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\pin-controls-c201\\RoleControls.swift",
+        "-o",
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\pin-controls-c201\\p.exe"
+      ],
+      "exit_code": 0,
+      "duration_s": 38.71899999999732,
+      "stdout": "",
+      "stderr": "   Creating library C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\pin-controls-c201\\p.lib and object C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\pin-controls-c201\\p.exp\r\r\n"
+    },
+    {
+      "label": "execute",
+      "argv": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-followups-20261122\\pin-controls-c201\\p.exe"
+      ],
+      "exit_code": 0,
+      "duration_s": 0.35900000000401633,
+      "stdout": "{\r\n  \"cases\" : [\r\n    \"original moderator snapshot binds exact live account and Space\",\r\n    \"first actual participant record governs duplicate-Space role observations\",\r\n    \"admin-to-writer then restoration never revives the old capture\",\r\n    \"participant removal invalidates before returning the published snapshot\",\r\n    \"stop revokes before unsubscribe and delayed callback cannot recreate a role\",\r\n    \"old subscription cannot replace or revoke a newer account snapshot\",\r\n    \"account generation change rejects equal-string recapture and stale role updates\",\r\n    \"both unchanged original BlockWidget RPC names reach the actual dispatch permit\",\r\n    \"foreign Space role cannot authorize widget write\",\r\n    \"other actual account source cannot authorize equal-Space widget write\",\r\n    \"pin-specific entry retains the original exact target guard\",\r\n    \"pin scope cannot dispatch an unrelated original mutation RPC\",\r\n    \"prepare-to-real-GCD role loss denies old permit even after role restoration\",\r\n    \"nested generic mutation cannot discard the pin RPC restriction\",\r\n    \"derived child binding retains both the original parent and frozen role restriction\",\r\n    \"pin API does not upgrade an inherited pure read into write authority\",\r\n    \"role loss after real admitted body suppresses publication without inventing rollback\",\r\n    \"role revocation cannot drain an admitted GCD body or produce a successful save receipt\"\r\n  ],\r\n  \"executed\" : 18,\r\n  \"native_rpc_calls\" : 0,\r\n  \"native_ui\" : \"NOT_RUN\",\r\n  \"passed\" : 18,\r\n  \"scope\" : \"Actual role state, Owner, lifetime and dispatch-permit classes; explicit document and GCD probes only\"\r\n}\r\n",
+      "stderr": ""
+    }
+  ],
+  "native_rpc_calls": 0,
+  "apple_native": "NOT_RUN",
+  "status": "PASS_18_NEW_ROLE_CONTROLS",
+  "finished_at": "2026-11-22T01:52:58.648154+00:00"
+}

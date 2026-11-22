@@ -1,0 +1,54 @@
+{
+  "base_commit": "bbd11635598a77d98e7ffcb336fafee9a75eba10",
+  "depends_on_widget_patch": "9bebdf1044c0e119c256217c8c3ae42402044722e58f15d4848e684cf54b562f",
+  "patch_sha256": "c201268f1e3318dabd32b121ae5194ee64c14dee656ed668ebd720b4e600b735",
+  "patch_bytes": 27220,
+  "files": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift",
+      "before_sha256": "6b42034d04d2437fd1fb219c85c485bac4dc57828e3424d2f3ba613117c67695",
+      "after_sha256": "b0ae02be8c28c22246d29bf927cb154e10019d841f3b831771f968a8938f7d46",
+      "after_bytes": 49230
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/ChannelPins/ChannelPinsService.swift",
+      "before_sha256": "fbc0de0ee09160676dde27a13e41b1c10e7103686a92c9232f011ebcc213332b",
+      "after_sha256": "846d9b8f10b8337988b54e6c1f0723b356dcc28b38ca3d636b0828df866d306f",
+      "after_bytes": 2055
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift",
+      "before_sha256": "115629e24ed1041bc6858b14b633e64030ef48e14fb2c85545ef6f8d396af619",
+      "after_sha256": "42d619b79a0f68794163fd3cfdb1261292237b215e2554dfb35677897eb975e9",
+      "after_bytes": 9627
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettings/ObjectSettingsViewModel.swift",
+      "before_sha256": "3f893fd54da11b98b0e41ebb628ac831ce4f8c66b0a4201d9c3e9a4a0adc187c",
+      "after_sha256": "b21d6765188bd43e9f72f3948eb75b6550ed0c6a92a4fead7bc29281e379d184",
+      "after_bytes": 38181
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuViewModel.swift",
+      "before_sha256": "436432ef54b1130cc53a9b027b61a1b8fe3a870cac8703deba900bc960aff7b8",
+      "after_sha256": "093616e5a84f0f4d82ac5cc2bf2590013a2f63d3c7d86977e01b035071f6db54",
+      "after_bytes": 7303
+    }
+  ],
+  "scope": [
+    "Actual ParticipantsStorage supplies opaque account/Space/role captures, revoked before original stream publication or first unsubscribe await.",
+    "Only immutable passive role snapshots are read synchronously on the original pin UI callback before Task creation. No new role lookup after queueing.",
+    "Named performChannelPinMutation narrows the same existing Owner entry and original Invocation permit with the captured role and two actual BlockWidget RPC names.",
+    "Private source constraints inherit into nested admissions and child source binding without replacing account/parent lineage; no factory changes.",
+    "Original ChannelPinsService toggle body, nil route, widget geometry/layout/position and actual delegate remain unchanged.",
+    "Actual pin success publication runs inside the same role-constrained mutation via existing synchronous read; original successful effects are not rolled back on later loss."
+  ],
+  "validation": {
+    "whitespace": "PASS",
+    "exact_preimages": "PASS",
+    "portable_adversarial_controls": "PENDING",
+    "swift_syntax": "PENDING",
+    "apple_typecheck": "NOT_RUN",
+    "native_pin_role_event_save": "NOT_RUN"
+  }
+}

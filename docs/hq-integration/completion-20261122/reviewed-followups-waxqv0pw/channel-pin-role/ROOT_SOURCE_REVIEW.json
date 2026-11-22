@@ -1,0 +1,27 @@
+{
+  "reviewer": "/root",
+  "context": "sxc_WAXQV0PW",
+  "reviewed_patch_sha256": "c201268f1e3318dabd32b121ae5194ee64c14dee656ed668ebd720b4e600b735",
+  "decision": "GO_FOR_ISOLATED_SOURCE_INTEGRATION",
+  "reviewed_files": 5,
+  "findings": [],
+  "verified_relationships": [
+    "The actual original ParticipantsStorage actor alone mints the file-restricted role proof from decoded participant permission observations.",
+    "SourceBinding matches the exact frozen account lifetime object and token, plus exact Space. An equal account string or another valid lifetime does not authorize the target owner.",
+    "Role loss, removal, stop and stale subscription context fail closed; restoration cannot revive the old captured role.",
+    "The actual original pin callback reserves the existing parent write handle and captures the role before Task creation; abandoned reservations retain the existing failed-write and drain behavior.",
+    "The widget owner narrows its existing pending entry and original Invocation permit to BlockCreateWidget and BlockListDelete. Restrictions intersect and propagate through nested admissions and child source bindings.",
+    "Existing exact document, Space, source, account, permissions, lease and read-to-write restrictions remain in the same dispatch path.",
+    "Synchronous post-RPC publication is enclosed by the same captured role admission, with no claim of rollback for an already-admitted native effect.",
+    "The original ChannelPinsService.toggle implementation and actual final BlockWidget service delegate remain unchanged; no factory or second writer was added."
+  ],
+  "evidence": {
+    "new_portable_controls": "18 PASS; exact production role bookkeeping and Owner/lifetime/operation/permit classes with explicit disposable document/GCD probes",
+    "control_job": "job_6dbed5826a5a",
+    "syntax": "5 changed Swift files PASS",
+    "syntax_job": "job_2a69d4dcf8fa",
+    "old_suites_rerun": false,
+    "Apple_module_typecheck": "NOT_RUN",
+    "Native_actor_UI_pin_save": "NOT_RUN"
+  }
+}
