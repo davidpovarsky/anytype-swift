@@ -1,0 +1,65 @@
+{
+  "created_utc": "2026-11-23T12:14:07.845869+00:00",
+  "reviewer": "/root/original_rpc",
+  "source": "0a232149712dbdb925cec96e565dae925b2e09c3",
+  "original_heart": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "disposition": "ACCEPT_SOURCE_ONLY",
+  "product_path": "cmd/grpcserver/grpc.go",
+  "original_sha256": "3a860c3ccd9ae0ee477740080e922c9923cc5a2e21f0e80c7cec8c1301abda15",
+  "candidate_sha256": "f8b51e53788f60294f0dec5e5d772e8cf620c9f2f9e912d4852e7dc3da50380f",
+  "patch_sha256": "c47df09aa26c948c21496fbada1773d2d05b38a82cf4b8682fc259c837eccc5e",
+  "actual_reverse_apply_exact": true,
+  "reviewed_test_sha256": "5bc785e57ac13195353e5a5b764c0016f09899ba6ed3232e71cb142b194f6280",
+  "reviewed_test_bytes": 6211,
+  "test_functions": 3,
+  "primary_module_sources": [
+    {
+      "name": "github.com/grpc-ecosystem/grpc-opentracing@v0.0.0-20180507213350-8e809c8a8645/go/otgrpc/options.go",
+      "bytes": 2169,
+      "sha256": "af098d6a233c02bd73b80ef1c5019f142e01bb126eafa663f74effdb79042164",
+      "container_sha256": "0606bde24e978e9cd91ae45ca9e5222ce695c21a07ae02e77546496bf23b1c62"
+    },
+    {
+      "name": "github.com/grpc-ecosystem/grpc-opentracing@v0.0.0-20180507213350-8e809c8a8645/go/otgrpc/server.go",
+      "bytes": 4854,
+      "sha256": "982738d2573c5b1193f46ad67620d4efa8d856029b87cc06106ca21403b1cd2b",
+      "container_sha256": "0606bde24e978e9cd91ae45ca9e5222ce695c21a07ae02e77546496bf23b1c62"
+    },
+    {
+      "name": "github.com/grpc-ecosystem/go-grpc-middleware@v1.4.0/logging/zap/payload_interceptors.go",
+      "bytes": 6166,
+      "sha256": "93da02af494c6acf58cdef4d6687e3f5af2e240686b8f420ffc023506a09df70",
+      "container_sha256": "e4e1845280f93ea81648d0e48d3c17e6610c7916a49171f73c150fbde8fa9bc0"
+    },
+    {
+      "name": "github.com/opentracing/opentracing-go@v1.2.0/mocktracer/mocklogrecord.go",
+      "bytes": 2825,
+      "sha256": "4e07ea8b22678b72318f3376741f1750346d50cb11147440b8f969e35b4e5270",
+      "container_sha256": "9b1a75e9a454a0cf01a26c18e48cd321e3b300943ac5adb9098ba033dbd40db5"
+    },
+    {
+      "name": "github.com/opentracing/opentracing-go@v1.2.0/mocktracer/mockspan.go",
+      "bytes": 7312,
+      "sha256": "3471b2703cc1cc446a64689d660d7f46e0489a62ea282783332e460f2eeea61c",
+      "container_sha256": "9b1a75e9a454a0cf01a26c18e48cd321e3b300943ac5adb9098ba033dbd40db5"
+    },
+    {
+      "name": "github.com/opentracing/opentracing-go@v1.2.0/mocktracer/mocktracer.go",
+      "bytes": 3197,
+      "sha256": "7d70af98df91ca133d47844352fc76229ef86c35f6508e026681cf6533205de6",
+      "container_sha256": "9b1a75e9a454a0cf01a26c18e48cd321e3b300943ac5adb9098ba033dbd40db5"
+    }
+  ],
+  "findings": [
+    "Exact full-method exclusions cover AnnotationImport and AnnotationImportCancel; no prefix/client-controlled mask. Other full method identities retain the original payload decision.",
+    "Pinned zap PayloadUnaryServerInterceptor returns the same original handler directly when excluded, before request serialization or response serialization.",
+    "Pinned otgrpc default logPayloads is false. Selecting the same original interceptor without LogPayloads retains metadata parent span extraction, one original server span, request context, original response/error and span finishing.",
+    "Configured ordinary unary tracing, all stream tracing options and unrelated methods are inverse-exact. No span-inclusion false shortcut removes original spans.",
+    "Prepared tests invoke genuine pinned zap/otgrpc interceptors with explicitly synthetic wrapper payloads/test tracer and validate both directions, original handler identity/outcome, exact method policy, span/error behavior and unrelated configured payloads.",
+    "Source policy addresses these configured payload hooks only. Constant/sanitized native errors, business logging, Swift Invocation redaction and eventual generated method identities remain distinct composition obligations."
+  ],
+  "tests_compilers_gofmt_native_executed": false,
+  "source_or_packet_modified": false,
+  "zip_inputs": "Retained owner-authenticated module ZIP SHA256 values and exact original go.sum rows independently rechecked; no download or new execution",
+  "qualification": "No native/API/runtime acceptance inferred"
+}

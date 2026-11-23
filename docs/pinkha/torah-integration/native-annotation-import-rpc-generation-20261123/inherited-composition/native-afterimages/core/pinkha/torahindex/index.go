@@ -1,0 +1,535 @@
+// Package torahindex maintains local derived fields in Heart's existing native
+// Space collection. It never opens a second database or writes synced blocks.
+package torahindex
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"sync"
+	"sync/atomic"
+
+	anystore "github.com/anyproto/any-store"
+	"github.com/anyproto/anytype-heart/core/domain"
+	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
+	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+	torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
+)
+
+type Writer func(context.Context, string, *domain.Details) error
+type BeginWrite func(context.Context) (anystore.WriteTx, error)
+type BeginRead func(context.Context) (anystore.ReadTx, error)
+type ChangeHook func(context.Context, string, *domain.Details, *domain.Details) error
+
+// All state is owned by one Space store. The caller supplies Heart's notifying
+// transaction so subscriptions see the canonical and derived values together,
+// only after the root transaction commits, including during rebuild/recovery.
+type Index struct {
+	space     string
+	objects   anystore.Collection
+	begin     BeginWrite
+	write     Writer
+	snapshot  BeginRead
+	changed   ChangeHook
+	manifests sync.Map
+	active    atomic.Bool
+	recovery  atomic.Pointer[RecoveryStats]
+}
+
+func (i *Index) WithChangeHook(hook ChangeHook) *Index { i.changed = hook; return i }
+
+func (i *Index) writeProjected(ctx context.Context, id string, before, after *domain.Details) error {
+	if i.changed != nil {
+		if err := i.changed(ctx, id, before, after); err != nil {
+			return err
+		}
+	}
+	return i.write(ctx, id, after)
+}
+
+func New(space string, objects anystore.Collection, begin BeginWrite, write Writer, snapshot ...BeginRead) *Index {
+	index := &Index{space: space, objects: objects, begin: begin, write: write}
+	if len(snapshot) > 0 {
+		index.snapshot = snapshot[0]
+	}
+	return index
+}
+
+func (i *Index) Recover(ctx context.Context) error {
+	for _, key := range []string{torah.SourcesKey, torah.TopicsKey, torah.WordsKey, torah.CanonicalKeyKey} {
+		if err := i.objects.EnsureIndex(ctx, anystore.IndexInfo{Name: key, Fields: []string{key}, Sparse: true}); err != nil {
+			return fmt.Errorf("Torah membership index %s: %w", key, err)
+		}
+	}
+	tx, err := i.begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	if err = i.rows(tx.Context(), manifestFilter(), func(d *domain.Details) error { i.rememberManifest(d); return nil }); err != nil {
+		return err
+	}
+	if !i.active.Load() {
+		// A never-Pinkha Space has no rows in this sparse native index. A former
+		// binding still needs cleanup/recovery after its manifest was removed.
+		if err = i.rows(tx.Context(), map[string]any{torah.CanonicalKeyKey: map[string]any{"$exists": true}}, func(*domain.Details) error { i.active.Store(true); return nil }); err != nil {
+			return err
+		}
+		if !i.active.Load() {
+			return tx.Commit()
+		}
+	}
+	if err = i.rebuild(tx.Context()); err != nil {
+		return err
+	}
+	return tx.Commit()
+}
+
+// Update is the production ObjectStore write boundary. Incoming derived values
+// are discarded, even when an older client sends them, then rebuilt from the
+// original canonical payload. Projection errors fail closed for just that row.
+func (i *Index) Update(ctx context.Context, id string, details *domain.Details) error {
+	if details == nil || details.Len() == 0 {
+		return errors.New("empty details")
+	}
+	// Preserve the original native method's documented ID assignment, including
+	// callers that retain this Details pointer after the write.
+	details.SetString(bundle.RelationKeyId, id)
+	i.rememberManifest(details.Copy().SetString(bundle.RelationKeyId, id))
+	// No manifest has ever been observed in this Space. Preserve the original
+	// cheap write path; ordinary Anytype edits do not scan a Pinkha-free Space.
+	if !i.active.Load() {
+		return i.write(ctx, id, clear(details))
+	}
+	tx, err := i.begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	ctx = tx.Context()
+	before, err := i.read(ctx, id)
+	if err != nil && !errors.Is(err, anystore.ErrDocNotFound) {
+		return err
+	}
+	clean := clear(details)
+	if before != nil {
+		if bindingKey := before.GetString(domain.RelationKey(torah.CanonicalKeyKey)); bindingKey != "" {
+			clean.SetString(domain.RelationKey(torah.CanonicalKeyKey), bindingKey)
+		}
+	}
+	clean.SetString(bundle.RelationKeyId, id)
+	source := source{index: i}
+	binding, bindingErr := torah.ResolveBinding(ctx, source, i.space)
+	// Changes to a manifest or its canonical property invalidate every row in
+	// this Space, in the same transaction as the triggering native write.
+	rebind := isManifest(clean) || isManifest(before) || source.isCanonicalCandidate(ctx, id)
+	if bindingErr == nil && clean.GetString(bundle.RelationKeyRelationKey) == binding.CanonicalKey {
+		rebind = true
+	}
+	if bindingErr == nil && before != nil && before.GetString(bundle.RelationKeyRelationKey) == binding.CanonicalKey {
+		rebind = true
+	}
+	if rebind {
+		if err = i.writeProjected(ctx, id, before, clean); err != nil {
+			return err
+		}
+		if err = i.rebuild(ctx); err != nil {
+			return err
+		}
+	} else {
+		if bindingErr == nil {
+			i.project(binding, clean)
+		}
+		if err = i.writeProjected(ctx, id, before, clean); err != nil {
+			return err
+		}
+	}
+	return tx.Commit()
+}
+
+func (i *Index) rememberManifest(d *domain.Details) {
+	if isManifest(d) {
+		i.manifests.Store(d.GetString(bundle.RelationKeyId), struct{}{})
+		i.active.Store(true)
+	}
+}
+
+// LocalDetails projects the current editor state, which can be newer than the
+// asynchronously indexed row. It shares the native binding and projector; it
+// never writes canonical data or introduces a second persistent repository.
+func (i *Index) LocalDetails(ctx context.Context, details *domain.Details) (*domain.Details, error) {
+	if !i.active.Load() {
+		return nil, nil
+	}
+	if i.snapshot != nil {
+		tx, err := i.snapshot(ctx)
+		if err != nil {
+			return nil, err
+		}
+		defer tx.Commit()
+		ctx = tx.Context()
+	} else {
+		tx, err := i.begin(ctx)
+		if err != nil {
+			return nil, err
+		}
+		defer tx.Rollback()
+		ctx = tx.Context()
+	}
+	binding, bindingErr := torah.ResolveBinding(ctx, source{index: i}, i.space)
+	result := clear(details)
+	if key := details.GetString(domain.RelationKey(torah.CanonicalKeyKey)); key != "" {
+		result.SetString(domain.RelationKey(torah.CanonicalKeyKey), key)
+	}
+	if bindingErr == nil {
+		i.project(binding, result)
+		if isManifest(result) {
+			result.SetInt64(domain.RelationKey(torah.VersionKey), torah.Version)
+			result.SetString(domain.RelationKey(torah.CanonicalHashKey), binding.Generation)
+		}
+	}
+	keys := make([]domain.RelationKey, 0, len(torah.LocalKeys()))
+	for _, key := range torah.LocalKeys() {
+		keys = append(keys, domain.RelationKey(key))
+	}
+	return result.CopyOnlyKeys(keys...), nil
+}
+
+func manifestFilter() map[string]any {
+	return map[string]any{"$or": []any{
+		map[string]any{string(bundle.RelationKeyUniqueKey): torah.ManifestUniqueKey},
+		map[string]any{string(bundle.RelationKeyName): torah.ManifestUniqueKey},
+	}}
+}
+
+// Delete invalidates bindings before deleting the triggering row. The caller
+// uses the same notifying tx for the physical deletion and commit.
+func (i *Index) Delete(ctx context.Context, ids []string, remove func(context.Context) error) error {
+	if !i.active.Load() {
+		return remove(ctx)
+	}
+	tx, err := i.begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	rebind := false
+	for _, id := range ids {
+		if i.changed != nil {
+			before, readErr := i.read(tx.Context(), id)
+			if readErr != nil && !errors.Is(readErr, anystore.ErrDocNotFound) {
+				return readErr
+			}
+			if err = i.changed(tx.Context(), id, before, nil); err != nil {
+				return err
+			}
+		}
+		_, knownManifest := i.manifests.Load(id)
+		rebind = rebind || knownManifest || (source{index: i}).isCanonicalCandidate(tx.Context(), id)
+	}
+	if err = remove(tx.Context()); err != nil {
+		return err
+	}
+	if rebind {
+		if err = i.rebuild(tx.Context()); err != nil {
+			return err
+		}
+	}
+	return tx.Commit()
+}
+
+func (i *Index) Modify(ctx context.Context, id string, proc func(*domain.Details) (*domain.Details, bool, error), upsert bool,
+	nativeModify func(context.Context, string, func(*domain.Details) (*domain.Details, bool, error), bool) error) error {
+	if proc == nil {
+		return nil
+	}
+	tx, err := i.begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	previous, err := i.read(tx.Context(), id)
+	if errors.Is(err, anystore.ErrDocNotFound) {
+		if !upsert {
+			return nil
+		}
+	} else if err != nil {
+		return err
+	}
+	// Preserve native Modify's complete contract, including nil/id-only results,
+	// skipped missing rows, modifier failures and native notifications. Both
+	// writes remain invisible until the same root notifying transaction commits.
+	rebind := isManifest(previous) || (source{index: i}).isCanonicalCandidate(tx.Context(), id)
+	if err = nativeModify(tx.Context(), id, proc, upsert); err != nil {
+		return err
+	}
+	d, err := i.read(tx.Context(), id)
+	if errors.Is(err, anystore.ErrDocNotFound) {
+		return tx.Commit()
+	}
+	if err != nil {
+		return err
+	}
+	i.rememberManifest(d)
+	if rebind || isManifest(d) {
+		if err = i.rebuild(tx.Context()); err != nil {
+			return err
+		}
+	} else if d.Len() > 1 {
+		if err = i.Update(tx.Context(), id, d); err != nil {
+			return err
+		}
+	}
+	if i.changed != nil {
+		final, readErr := i.read(tx.Context(), id)
+		if readErr != nil && !errors.Is(readErr, anystore.ErrDocNotFound) {
+			return readErr
+		}
+		if err = i.changed(tx.Context(), id, previous, final); err != nil {
+			return err
+		}
+	}
+	return tx.Commit()
+}
+
+func clear(details *domain.Details) *domain.Details {
+	clean := details.Copy()
+	for _, key := range torah.LocalKeys() {
+		clean.Delete(domain.RelationKey(key))
+	}
+	return clean
+}
+
+func isManifest(d *domain.Details) bool {
+	return d != nil && (d.GetString(bundle.RelationKeyUniqueKey) == torah.ManifestUniqueKey || d.GetString(bundle.RelationKeyName) == torah.ManifestUniqueKey)
+}
+
+func (i *Index) read(ctx context.Context, id string) (*domain.Details, error) {
+	doc, err := i.objects.FindId(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return domain.NewDetailsFromAnyEnc(doc.Value())
+}
+
+func (i *Index) rows(ctx context.Context, filter any, visit func(*domain.Details) error) error {
+	iter, err := i.objects.Find(filter).Iter(ctx)
+	if err != nil {
+		return err
+	}
+	defer iter.Close()
+	for iter.Next() {
+		doc, e := iter.Doc()
+		if e != nil {
+			return e
+		}
+		d, e := domain.NewDetailsFromAnyEnc(doc.Value())
+		if e != nil {
+			return e
+		}
+		if e = visit(d); e != nil {
+			return e
+		}
+	}
+	return iter.Err()
+}
+
+func (i *Index) rebuild(ctx context.Context) (resultErr error) {
+	stats := RecoveryStats{}
+	defer func() { stats.Complete = resultErr == nil; i.recovery.Store(&stats) }()
+	binding, bindingErr := torah.ResolveBinding(ctx, source{index: i}, i.space)
+	// Keep only object IDs while traversing. Updating a live SQL cursor can skip
+	// or revisit rows. The payload stays in the original collection and tx.
+	ids, err := i.objectIDs(ctx)
+	if err != nil {
+		return err
+	}
+	for _, id := range ids {
+		stats.Scanned++
+		original, err := i.read(ctx, id)
+		if err != nil {
+			return err
+		}
+		if bindingErr == nil && reusableCache(binding, original) {
+			stats.Reused++
+			continue
+		}
+		stats.Recomputed++
+		d := clear(original)
+		if key := original.GetString(domain.RelationKey(torah.CanonicalKeyKey)); key != "" {
+			d.SetString(domain.RelationKey(torah.CanonicalKeyKey), key)
+		}
+		if bindingErr == nil {
+			i.project(binding, d)
+			if isManifest(d) {
+				d.SetInt64(domain.RelationKey(torah.VersionKey), torah.Version)
+				d.SetString(domain.RelationKey(torah.CanonicalHashKey), binding.Generation)
+			}
+		}
+		if !d.Equal(original) {
+			if err = i.writeProjected(ctx, id, original, d); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func (i *Index) project(binding torah.Binding, d *domain.Details) {
+	defer func() {
+		if isManifest(d) {
+			d.SetInt64(domain.RelationKey(torah.VersionKey), torah.Version)
+			d.SetString(domain.RelationKey(torah.CanonicalHashKey), binding.Generation)
+		}
+		sealCache(binding, d)
+	}()
+	// The opaque canonical field is never search-preview text, including on
+	// templates or objects that do not qualify for document-context Properties.
+	if d.Has(domain.RelationKey(binding.CanonicalKey)) {
+		d.SetString(domain.RelationKey(torah.CanonicalKeyKey), binding.CanonicalKey)
+	}
+	types := d.GetStringList(bundle.RelationKeyType)
+	// The pinned product engine writes type as a scalar. Older snapshots and
+	// native list fixtures can still carry a single-element list.
+	if typeID := d.GetString(bundle.RelationKeyType); typeID != "" {
+		types = []string{typeID}
+	}
+	if len(types) != 1 {
+		return
+	}
+	space := d.GetString(bundle.RelationKeySpaceId)
+	// The collection itself is per Space; a conflicting explicit ID is rejected.
+	if space != "" && space != i.space {
+		return
+	}
+	p, err := torah.Project(binding, torah.Input{
+		SpaceID: i.space, ObjectID: d.GetString(bundle.RelationKeyId), TypeID: types[0],
+		IsDocument: isUserDocument(d),
+		IsTemplate: d.Has(bundle.RelationKeyTargetObjectType),
+		IsDeleted:  d.GetBool(bundle.RelationKeyIsDeleted), IsArchived: d.GetBool(bundle.RelationKeyIsArchived),
+		Raw: []byte(d.GetString(domain.RelationKey(binding.CanonicalKey))),
+	})
+	if err == nil || errors.Is(err, torah.ErrMalformed) || errors.Is(err, torah.ErrUnsupported) {
+		d.SetString(domain.RelationKey(torah.CanonicalKeyKey), binding.CanonicalKey)
+	}
+	if err != nil {
+		if errors.Is(err, torah.ErrMalformed) || errors.Is(err, torah.ErrUnsupported) {
+			d.SetBool(domain.RelationKey(torah.ReadyKey), false)
+			d.SetInt64(domain.RelationKey(torah.VersionKey), torah.Version)
+			status := "MALFORMED"
+			if errors.Is(err, torah.ErrUnsupported) {
+				status = "UNSUPPORTED"
+			}
+			d.SetString(domain.RelationKey(torah.StatusKey), status)
+		}
+		return
+	}
+	for key, values := range map[string][]string{torah.SourcesKey: p.Sources, torah.TopicsKey: p.Topics, torah.WordsKey: p.Words} {
+		if len(values) > 0 {
+			d.SetStringList(domain.RelationKey(key), values)
+		}
+	}
+	labels, _ := json.Marshal(p.Labels)
+	d.SetString(domain.RelationKey(torah.LabelsKey), string(labels))
+	d.SetBool(domain.RelationKey(torah.ReadyKey), true)
+	d.SetString(domain.RelationKey(torah.StatusKey), "READY")
+	d.SetInt64(domain.RelationKey(torah.VersionKey), torah.Version)
+	d.SetString(domain.RelationKey(torah.CanonicalHashKey), p.CanonicalSHA256)
+}
+
+type source struct{ index *Index }
+
+func isUserDocument(d *domain.Details) bool {
+	if d == nil || isManifest(d) ||
+		d.GetBool(bundle.RelationKeyIsHidden) || d.GetString(bundle.RelationKeyUniqueKey) != "" ||
+		d.Has(bundle.RelationKeyRelationKey) || d.Has(bundle.RelationKeyRelationFormat) ||
+		d.Has(bundle.RelationKeyRecommendedLayout) {
+		return false
+	}
+	layout, ok := d.TryInt64(bundle.RelationKeyResolvedLayout)
+	if !ok {
+		layout, ok = d.TryInt64(bundle.RelationKeyLayout)
+	}
+	if !ok {
+		return false
+	}
+	switch model.ObjectTypeLayout(layout) {
+	case model.ObjectType_basic, model.ObjectType_note, model.ObjectType_todo,
+		model.ObjectType_set, model.ObjectType_collection, model.ObjectType_bookmark, model.ObjectType_profile:
+		return true
+	default:
+		return false
+	}
+}
+
+func (s source) isCanonicalCandidate(ctx context.Context, id string) bool {
+	candidates, err := s.Manifests(ctx, s.index.space)
+	if err != nil {
+		return false
+	}
+	for _, candidate := range candidates {
+		var m struct {
+			CanonicalID string `json:"documentAssociationsPropertyId"`
+		}
+		if json.Unmarshal(candidate.Raw, &m) == nil && m.CanonicalID == id {
+			return true
+		}
+	}
+	return false
+}
+
+func (s source) Manifests(ctx context.Context, space string) ([]torah.ManifestCandidate, error) {
+	if space != s.index.space {
+		return nil, torah.ErrBinding
+	}
+	var found []torah.ManifestCandidate
+	var readErr error
+	// Cache only candidate IDs, never a binding or payload. Read each candidate
+	// from the caller's actual transaction, so rollback/rebind cannot leave stale
+	// membership or leak another Space. A rolled-back new ID is harmless.
+	s.index.manifests.Range(func(id, _ any) bool {
+		d, err := s.index.read(ctx, id.(string))
+		if errors.Is(err, anystore.ErrDocNotFound) {
+			return true
+		}
+		if err != nil {
+			readErr = err
+			return false
+		}
+		if isManifest(d) && !d.GetBool(bundle.RelationKeyIsDeleted) && !d.GetBool(bundle.RelationKeyIsArchived) {
+			found = append(found, torah.ManifestCandidate{ObjectID: d.GetString(bundle.RelationKeyId), Raw: []byte(d.GetString(bundle.RelationKeyDescription))})
+		}
+		return true
+	})
+	return found, readErr
+}
+func (s source) CanonicalProperty(ctx context.Context, space, key string) (torah.PropertyDescriptor, error) {
+	if space != s.index.space {
+		return torah.PropertyDescriptor{}, torah.ErrBinding
+	}
+	manifests, err := s.Manifests(ctx, space)
+	if err != nil || len(manifests) != 1 {
+		return torah.PropertyDescriptor{}, torah.ErrBinding
+	}
+	var m struct {
+		CanonicalID string `json:"documentAssociationsPropertyId"`
+	}
+	if json.Unmarshal(manifests[0].Raw, &m) != nil {
+		return torah.PropertyDescriptor{}, torah.ErrBinding
+	}
+	d, err := s.index.read(ctx, m.CanonicalID)
+	if err != nil {
+		return torah.PropertyDescriptor{}, err
+	}
+	if !d.Has(bundle.RelationKeyRelationFormat) || d.GetInt64(bundle.RelationKeyLayout) != int64(model.ObjectType_relation) {
+		return torah.PropertyDescriptor{}, torah.ErrBinding
+	}
+	if d.GetBool(bundle.RelationKeyIsDeleted) || d.GetBool(bundle.RelationKeyIsArchived) {
+		return torah.PropertyDescriptor{}, torah.ErrBinding
+	}
+	if value := d.GetString(bundle.RelationKeySpaceId); value != "" && value != space {
+		return torah.PropertyDescriptor{}, torah.ErrBinding
+	}
+	return torah.PropertyDescriptor{ID: d.GetString(bundle.RelationKeyId), Key: d.GetString(bundle.RelationKeyRelationKey), Format: int(d.GetInt64(bundle.RelationKeyRelationFormat))}, nil
+}

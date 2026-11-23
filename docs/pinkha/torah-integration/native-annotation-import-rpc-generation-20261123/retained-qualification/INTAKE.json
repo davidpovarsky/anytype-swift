@@ -1,0 +1,106 @@
+{
+  "acceptance": "GENERATION_AND_MESSAGE_COMPILE_ONLY",
+  "all_indexed_bytes_sha256_and_git_blobs_match": true,
+  "archive_crc_verified_members": 2279,
+  "artifact": {
+    "bytes": 10822146,
+    "id": 14787700016,
+    "name": "Otzaria-Schema-RPC-Generation-45101449367-1",
+    "sha256": "ec13df1db9405ffa42b2ef76ec1bda7988ecee8dff1c3fcb1fd01c556a7cf80e"
+  },
+  "attempt": 1,
+  "baseline": "741 retained outputs authenticated from45055852172; original baseline native/Swift generation and Go compilation REUSED, not rerun; previously failed baseline Swift typecheck executed and passed now",
+  "baseline_drift_counts": {
+    "native": 0,
+    "swift": 0
+  },
+  "commands": {
+    "actual_count": 35,
+    "all_effective_returncodes_zero": true,
+    "all_owned_groups_drained": true,
+    "final_five": [
+      {
+        "duration_seconds": 504.791,
+        "label": "baseline-typecheck-generated-swift",
+        "returncode": 0,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "duration_seconds": 18.322,
+        "label": "candidate-original-native-generation",
+        "returncode": 0,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "328f9959e8c01916f91d65accba5fd8384fddd750012da9462a473c1079abde0"
+      },
+      {
+        "duration_seconds": 27.814,
+        "label": "candidate-original-swift-generation",
+        "returncode": 0,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "75c49e9c4626c0e6ddbacf2822496eefb21a0ec17923818f694670167788a292"
+      },
+      {
+        "duration_seconds": 29.852,
+        "label": "candidate-compile-generated-go",
+        "returncode": 0,
+        "stderr_sha256": "3a7ce98086fcfb70213188e3237526b568698b7617d95d3917c6aa5ab844ede7",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "duration_seconds": 465.668,
+        "label": "candidate-typecheck-generated-swift",
+        "returncode": 0,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "control_head": "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638",
+  "evidence_index_sha256": "30b72eb60cc0236b3fbf3fa360f795f8b9f784106baead83057a7dfb06aaa8c8",
+  "evidence_index_verified_rows": 2278,
+  "generated_counts": {
+    "baseline": {
+      "middleware": 37,
+      "native": 11,
+      "swift": 693
+    },
+    "candidate": {
+      "middleware": 37,
+      "native": 11,
+      "swift": 695
+    },
+    "tracked": {
+      "native": 11,
+      "swift": 693
+    }
+  },
+  "generated_delta_counts": {
+    "middleware": 6,
+    "native": 4,
+    "swift": 5
+  },
+  "generated_source_prefixes": {
+    "heart": "generated/candidate/native/",
+    "swift": "generated/candidate/swift/"
+  },
+  "not_executed": [
+    "endpoint compilation",
+    "Invocation compilation",
+    "SDK typecheck/runtime",
+    "native endpoint lifetime test",
+    "iOS app build",
+    "physical device"
+  ],
+  "observed_utc": "2026-11-23T03:26:40.220221+00:00",
+  "original_inputs_unchanged_except_two_candidate_protos": true,
+  "owned_work_removed": true,
+  "rebuilt_tool_hash_changes": [
+    "filesplit",
+    "protoc-gen-swift"
+  ],
+  "run_id": 45101449367,
+  "run_url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45101449367",
+  "schema": "otzaria.original-rpc-generated-evidence-intake/1",
+  "swift_delta_review": "Only two new Annotation model files and original generated invocation/error/localization additions; original errors retained. Endpoint and Invocation are not compiled by message-only gate."
+}

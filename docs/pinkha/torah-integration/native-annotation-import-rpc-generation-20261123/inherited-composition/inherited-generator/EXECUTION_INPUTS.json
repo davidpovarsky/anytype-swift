@@ -1,0 +1,493 @@
+{
+  "schema": "otzaria.original-schema-rpc-generation-inputs/1",
+  "status": "SOURCE_CANDIDATE_GENERATION_NOT_RUN",
+  "repository_base": "2e4a004778d5cc29afebaa4c278a2f1a8bf5c74d",
+  "heart_base": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "swift_generator_base": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+  "swift_protobuf_base": "c6fe6442e6a64250495669325044052e113e990c",
+  "schema_prerequisite": {
+    "source": "0896ae82864142e0b633278a8c5cb718ddf66e1e",
+    "run_id": 45046749798,
+    "outcome": "5 PASS / 0 FAIL / 0 SKIP; 12 earlier registration passes preserved",
+    "evidence_commit": "c21b9ebcbf255e6f4c02611069d8f40b75436a05"
+  },
+  "support": {
+    "path": "docs/pinkha/torah-integration/native-annotation-schema-native-defaults-20261122/run_native_defaults_repair.py",
+    "sha256": "aae68a25c0499d1bf61e98eca0ace9ffc48997823fdce9a775b22b239e904cdf"
+  },
+  "control_inputs": [
+    {
+      "path": "generate_original_schema_rpc.py",
+      "bytes": 28036,
+      "sha256": "2edac97dbc4a9a076acb548532bdb491f889b2fc7c453973059a3005f39edf4f"
+    },
+    {
+      "path": "TOOL_PINS.json",
+      "bytes": 8732,
+      "sha256": "0b359513531cef0595314efcbfcaae0917f1cc7fca98d5e4afe86065e1807abd"
+    },
+    {
+      "path": "ORIGINAL_SOURCE_INDEX.json",
+      "bytes": 15194,
+      "sha256": "415c21ae0679e995526654fedd5828b6315a71ee9e5c4da92e3b6c9d49471fff"
+    },
+    {
+      "path": "SOURCE_CANDIDATE_INDEX.json",
+      "bytes": 1532,
+      "sha256": "7bc0898943c1dd1cdd0ddddf4a5976e2d73861c772562014c27c1346a8a946f8"
+    },
+    {
+      "path": "SOURCE_PEER_REVIEW.json",
+      "bytes": 2447,
+      "sha256": "bfb1b2f3dee275b16deefbaf0e6076adb693ee327f18f5fe1aadacf8ce653498"
+    },
+    {
+      "path": "GOFMT.json",
+      "bytes": 1314,
+      "sha256": "ca7af33c6d44b4602f77edb784f29de5feafe162a7c8960861a3ace1f8231bad"
+    },
+    {
+      "path": "native/core/annotation_schema.go",
+      "bytes": 5986,
+      "sha256": "cad2741edad5153d8e63552af7e3d18630b6d2d8fecd22f2f49a533fe4ca2e96"
+    },
+    {
+      "path": "native/pb/protos/commands.proto",
+      "bytes": 312798,
+      "sha256": "64b166598d1086a8dce63e449ca1f8dea00bc4a09315a6ef927408c94a331fd1"
+    },
+    {
+      "path": "native/pb/protos/service/service.proto",
+      "bytes": 47566,
+      "sha256": "230720100f85ec5658ae63b57a0541b27c8df2acd025e0502ad24c0dc4b0a7fe"
+    },
+    {
+      "path": "swift/Anytype/Sources/Pinkha/Torah/Annotations/OriginalAnnotationSchemaRegistration.swift",
+      "bytes": 2340,
+      "sha256": "22ca541163fe4439940fe2111e52ef158798eb6fbb5d4e72f9937521dd99e751"
+    },
+    {
+      "path": "swift/Modules/ProtobufMessages/Sources/Invocation.swift",
+      "bytes": 13890,
+      "sha256": "7265a3ec902081f62c79c6fc56cb71b1ff81c687a595a3e15b78351cc9aa8dfd"
+    },
+    {
+      "path": "copy_materialized_checkout.py",
+      "bytes": 6048,
+      "sha256": "d93373d7580841c72036b6ec93cbefe34bc4b22814e0df9f3856c98d7cf92c46"
+    },
+    {
+      "path": "continuation_support.py",
+      "bytes": 9246,
+      "sha256": "c86ee99a6e5a94b5b9229b9badc53023447b20c648657e58aee5d699dc5334dd"
+    },
+    {
+      "path": "continuation-20261123/test_continuation.py",
+      "bytes": 6453,
+      "sha256": "61942000ba2d8fef749511134e2add588b384e95fb3e937a02c7eef8936cc113"
+    }
+  ],
+  "original_inputs": [
+    {
+      "repository": "anyproto/anytype-heart",
+      "ref": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": ".github/workflows/build.yml",
+      "git_blob": "3235602a10e270db58efd933516e4ad8b33039d7",
+      "sha256": "93fd50f198b10256a49f2272b0b238e246f3ecf365065324ecca0c3107cee9b4",
+      "bytes": 6571
+    },
+    {
+      "repository": "anyproto/anytype-heart",
+      "ref": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": ".github/workflows/nightly.yml",
+      "git_blob": "aa3660b81c12eef9d3c441a89215628448de7efc",
+      "sha256": "f2eeca04a04de3e10a607491dc79f3789a20ee3222db83051b80077901419d9b",
+      "bytes": 10579
+    },
+    {
+      "repository": "anyproto/anytype-heart",
+      "ref": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "Makefile",
+      "git_blob": "9e874b51aa03fed30564e79f9b5013367e294317",
+      "sha256": "7f40f85bc80203167961878eb4a1ae9d6cf2f2d22e5878fec444b1e7e506dba2",
+      "bytes": 208
+    },
+    {
+      "repository": "anyproto/anytype-heart",
+      "ref": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "go.mod",
+      "git_blob": "6cf5f865ace0b463e4e64257fc0700450fa1de96",
+      "bytes": 16202,
+      "sha256": "0c506b9ab921a9bfea985871c9c912d362147a6bb76e697ee62c51a2eb678de7"
+    },
+    {
+      "repository": "anyproto/anytype-heart",
+      "ref": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "go.sum",
+      "git_blob": "f0c61168bfca9773d88b441774e9b7a9e69b3a87",
+      "bytes": 132924,
+      "sha256": "7c873be1e5b4c65e5e46d18167ae6bc29f0f5b51c459a8398d75ab22f0b2432d"
+    },
+    {
+      "repository": "anyproto/anytype-heart",
+      "ref": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "makefiles/ci-compile-ios-lib.mk",
+      "git_blob": "0b74462e0758979a6fcbde85bd8b350606428f3d",
+      "sha256": "2b6ddb5119d68cc0b6526160bda61174888b898cff801fe35234103d07cfec82",
+      "bytes": 758
+    },
+    {
+      "repository": "anyproto/anytype-heart",
+      "ref": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "makefiles/ci-install-brew-and-node-deps.mk",
+      "git_blob": "76607d410656ba42f9e99d45743bcd38ce9a7cbf",
+      "sha256": "5da4f95ded781bc9c0c5fd76087e0813fe045a40e4aacfc48936dbd3016515c8",
+      "bytes": 972
+    },
+    {
+      "repository": "anyproto/anytype-heart",
+      "ref": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "makefiles/ci-swift-protos.mk",
+      "git_blob": "f9ebde0f1d9ae3c96ba22e866b1e065a01181980",
+      "sha256": "66093c91535227a085114f1843adc3f822b3c560e0f26fbda8978c82b9209f68",
+      "bytes": 546
+    },
+    {
+      "repository": "anyproto/anytype-heart",
+      "ref": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "makefiles/ios.mk",
+      "git_blob": "892a84f7e8705edce0bca2f4404c80d46e3232fb",
+      "sha256": "19a8cd58d62e4b1196a4e14704e8b3c1ac627713296e3a420de9ca67de9ab22a",
+      "bytes": 1996
+    },
+    {
+      "repository": "anyproto/anytype-heart",
+      "ref": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "makefiles/protos.mk",
+      "git_blob": "359a338d92749dc11823cca0a7e84cbf7507267c",
+      "sha256": "fa4d44a3ec1283b4ee909680bf52cff68c6e9e5015188bf08db39ca804950718",
+      "bytes": 5897
+    },
+    {
+      "repository": "anyproto/anytype-heart",
+      "ref": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "makefiles/setup.mk",
+      "git_blob": "13e4046add263fda533df7ebd81c457385d3685d",
+      "bytes": 2083,
+      "sha256": "1b13a21bca1a461af85ebca69d9fc9e2feeec153b014c809c96eb465ddf46d8e"
+    },
+    {
+      "repository": "anyproto/anytype-heart",
+      "ref": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "makefiles/tools.mk",
+      "git_blob": "229847262d4310c26557709917bb848615a27298",
+      "sha256": "e11bb2fc27abb4e8f55c27cefc9be55a8f107b99ce97173853f7886f0762d7a2",
+      "bytes": 3050
+    },
+    {
+      "repository": "anyproto/anytype-heart",
+      "ref": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "makefiles/vars.mk",
+      "git_blob": "fecd48069327f0f787d84702f5d86c73ac20c73e",
+      "sha256": "8b9d2a90b643e334a60da9d64f4cf671ff218060be0078fc4c36162641bd0137",
+      "bytes": 766
+    },
+    {
+      "repository": "anyproto/anytype-heart",
+      "ref": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "pb/protos/commands.proto",
+      "git_blob": "cd23f8eb61ed70275cacc33d421fda88705a4070",
+      "sha256": "a2cc54ff676f5d290267cabaa6fab52c7bb5737417c4911828d7f89b64217499",
+      "bytes": 308985
+    },
+    {
+      "repository": "anyproto/anytype-heart",
+      "ref": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "pb/protos/service/service.proto",
+      "git_blob": "03ae6f1b0400b6f8081e2d436ad1cd9b1089f781",
+      "sha256": "e6def87f94fe2946524c836926b89eab1673b89ff28adf4b1eb6ced247d74ba5",
+      "bytes": 47345
+    },
+    {
+      "repository": "apple/swift-protobuf",
+      "ref": "c6fe6442e6a64250495669325044052e113e990c",
+      "path": ".github/scripts/draft_release_protoc_artifactbundle.sh",
+      "git_blob": "30b40cdd2f95b8f97ddd44e64492ff80dac614a5",
+      "sha256": "23754229a41bf62715a9308f9a87e91820b1142b4cb1a567420c6230246e41bf",
+      "bytes": 6270
+    },
+    {
+      "repository": "apple/swift-protobuf",
+      "ref": "c6fe6442e6a64250495669325044052e113e990c",
+      "path": ".github/workflows/build.yml",
+      "git_blob": "f658bb5f42fabe0bbd4183e609757750ec1a3d36",
+      "sha256": "454178669d69189e763e128e7851c393f7fa752f72a7d195cc4f30d634d96866",
+      "bytes": 7781
+    },
+    {
+      "repository": "apple/swift-protobuf",
+      "ref": "c6fe6442e6a64250495669325044052e113e990c",
+      "path": ".github/workflows/draft_release_protoc_artifactbundle.yml",
+      "git_blob": "fdcdd87dae806958b7d20fb63f6b502beadb542f",
+      "sha256": "a1b39b586702b9c1bd8caacf3c2d5d3dd3ddc2eb802b617df2a99d13fe55fecd",
+      "bytes": 413
+    },
+    {
+      "repository": "apple/swift-protobuf",
+      "ref": "c6fe6442e6a64250495669325044052e113e990c",
+      "path": "Package.swift",
+      "git_blob": "22a614512e02f2d88fe56347e17d6394eaeef77d",
+      "sha256": "4e0baf10edc33515d22e02a6e4ecfda7d9a1b1b43cc164ef5c55382f1a0393ea",
+      "bytes": 4104
+    },
+    {
+      "repository": "apple/swift-protobuf",
+      "ref": "c6fe6442e6a64250495669325044052e113e990c",
+      "path": "README.md",
+      "git_blob": "67496ac27203d6f3f6d19712ba9d8771a52deb22",
+      "sha256": "041d92c7f5fd260a4723ad3e70c2a741ab14b1e9428e2a08512d96117f50910b",
+      "bytes": 11496
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "path": "Makefile",
+      "git_blob": "ea18aa0ecb23116d8c8ede71a64f69e0ecdd3d51",
+      "bytes": 2376,
+      "sha256": "2c5d5004221910c896c445e8465cbcd5d71dfaded31fe6fcaf97811e0781ff6b"
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "path": "Modules/ProtobufMessages/Scripts/Loc/Templates/error-localization.stencil",
+      "git_blob": "77a4985f3c61204817a0dc3509f75fc575c11539",
+      "bytes": 1744,
+      "sha256": "d820b98c8ac9e47c73f5b4aafd38f9ea807df7c11063c727fccffd7529c52a76"
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "path": "Modules/ProtobufMessages/Scripts/Loc/sourcery.yml",
+      "git_blob": "1fe6cd91328622b8139c9dc087d01633cc8afe3c",
+      "bytes": 200,
+      "sha256": "859d133dd3c6ada7eb83fe4f69c40037e532cc7c385d253e8b260313b7297fb3"
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "path": "Modules/ProtobufMessages/Scripts/generate.sh",
+      "git_blob": "a953eb4172c29efe899f7d7fdb72ed3637b12646",
+      "sha256": "7bcbb17ab56b3659f9763b0efebaa184f917260bb1d486111d6b984d2ffd0341",
+      "bytes": 255
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "path": "Modules/ProtobufMessages/Scripts/generate_models.sh",
+      "git_blob": "9c1abce0310e58ae2caa1e6d368887a2a5746dfb",
+      "sha256": "ea2b244c665884c79b16548a6ef3aa0c1ee711058be72391cbe7ed6670c74e51",
+      "bytes": 1525
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "path": "Modules/ProtobufMessages/Templates/invocation-adoption.stencil",
+      "git_blob": "cdd36fb97ce2666c10eb54eb667e5cc20eedb011",
+      "bytes": 302,
+      "sha256": "b0b8f2db843a97e80efd0ef90bf3a3beaca1842dbf57c70b7ddfd4f855923c45"
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "path": "Modules/ProtobufMessages/Templates/service.stencil",
+      "git_blob": "597e7816f1c17292bbc3aed04ecef7115ce6a05e",
+      "sha256": "c3c85d0725674ddbc939a5aeb1c88e8079ea1694b7a06fa7a72f60a0a8da7f37",
+      "bytes": 816
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "path": "Modules/ProtobufMessages/anytypeGen.yml",
+      "git_blob": "644dd536a6278070abed7b192020b8cc0194675e",
+      "sha256": "4283bc9d8687f19d2fe6d173e6d425e1a36a0280f6354e93d3406beb72afbff7",
+      "bytes": 143
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "path": "Modules/ProtobufMessages/sourcery.yml",
+      "git_blob": "278beadaf8fe1f5388f37be370bc70e73c3b0ab8",
+      "bytes": 178,
+      "sha256": "27c0202ae96a046b536773335ec398eebddde1b8109c54782d6da719ec837031"
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "path": "Modules/Services/Templates/relation-keys.stencil",
+      "git_blob": "c7d3d924390050b56e32ffe7f00fd9b35bd95521",
+      "bytes": 681,
+      "sha256": "407d88c17b6e19bebfb5144c56fec0ffb7acdfd9046195251e5397d7fd3fe494"
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "path": "Modules/Services/Templates/relation-list-keys.stencil",
+      "git_blob": "23b832c7319979a9e62832dfc9ceb46e5376b0c3",
+      "bytes": 259,
+      "sha256": "663a5dc01417afa3c662d27c79135962ada21a27cd2adc76b05679b91874961f"
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "path": "Modules/Services/Templates/relation-value-provider.stencil",
+      "git_blob": "a5c168061a86ebc45d9839874bd61d53c60fa5a8",
+      "bytes": 2535,
+      "sha256": "5e7ffc6d705bf3c4e7556a6e3faa7924a4a0c3124c445eb4d86029275fe61529"
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "path": "Modules/Services/Templates/type-uniqueKey.stencil",
+      "git_blob": "558cceb5b2ab546af6b943c89d13d0157d2f47d3",
+      "bytes": 536,
+      "sha256": "ebd620cfb50866c077b96d046c5a5bef344efefa46329fde70efc8c482177470"
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "path": "Modules/Services/swiftgen.yml",
+      "git_blob": "2cf015e941520dd646038f2fbd6baf8abaa1a557",
+      "bytes": 1060,
+      "sha256": "66946632dc353371415176802fbf2498dbfe89a685ed032ab2c5cb4b78942db4"
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "path": "Scripts/install-sourcery.sh",
+      "git_blob": "2750e6060f8ddd3efe257e7669ad8b91929d7e9a",
+      "bytes": 845,
+      "sha256": "ba28f8cd672053b4c49a9e8da63fab909a7bd89c26dd51e63fe82b387249fec0"
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "path": "Scripts/install-swiftprotobuf.sh",
+      "git_blob": "a4648f1eae7442a984ffd2d1159962b4f0999766",
+      "bytes": 1915,
+      "sha256": "caa418aae478c322066faf51b11dbf90f45b5378f2e8f24fa2926cd5e2512917"
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "path": "Tools/anytype-swift-filesplit/Makefile",
+      "git_blob": "0d61802553b606f48e7bc7222e5b8cea4e9dcca3",
+      "bytes": 421,
+      "sha256": "947d02985235011b1cde16a32d567cbde1e7a79b75bffd7b00b4534f2c1d5122"
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "path": "Tools/anytype-swift-filesplit/Package.resolved",
+      "git_blob": "537f4d3c42a5a86114eb052d363f5c7bad12bb9a",
+      "bytes": 678,
+      "sha256": "0f0738b20254fa37d53e97eac643e9b371fedd2787e2ec04d10e09a6b4f78fea"
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "path": "Tools/anytype-swift-filesplit/Package.swift",
+      "git_blob": "cee678e8594ca49d1a4ff448ff5bb0a60088e634",
+      "bytes": 1422,
+      "sha256": "68aac1a2a557f87a159dd581fb295032c1d884d75f572d13c2182d38f38d9a04"
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "path": "Tools/anytype-swift-filesplit/Sources/AnytypeSwiftFilesplit/MemberTypeSyntax+Extension.swift",
+      "git_blob": "02d40801b562d90448c23fbe0dd7ca228c7d2d3d",
+      "bytes": 806,
+      "sha256": "17f56188857452d2d262d09d4891030516c4203c31a5e196e152947aec17bdd2"
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "path": "Tools/anytype-swift-filesplit/Sources/AnytypeSwiftFilesplit/Parser.swift",
+      "git_blob": "12de1d5993fd2fa276a8dcc30328858e90ffe4e4",
+      "bytes": 6161,
+      "sha256": "695c257f7efedc907e7e45aaa88267e205c60cf6e9c929627890c62e0f49c561"
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "3be6ecab805b17e2c90fee897fdab45a0b03bfdc",
+      "path": "Tools/anytype-swift-filesplit/Sources/anytype-swift-filesplit/ServiceGeneratorCommand.swift",
+      "git_blob": "741f57bce04ad10ca93a1d4bb645df7db4d6fd55",
+      "bytes": 1250,
+      "sha256": "fa6f599a69f05d3705701507586b8eca3150fd568d3fa570a682688439495f31"
+    }
+  ],
+  "gogo_inputs": [
+    {
+      "repository": "anyproto/protobuf",
+      "ref": "6e325cf0ac38961052ccb19ed44d3917621eaf99",
+      "path": "Makefile",
+      "git_blob": "598f250b9b6ac38d81614d1093b73a0e6d3eae45",
+      "sha256": "69267138e72f6796df155970469551a6cc60b159cfaffebc5ca06ebb2ccf0f2a",
+      "bytes": 6113
+    }
+  ],
+  "proto_afterimages": [
+    {
+      "path": "pb/protos/commands.proto",
+      "retained_path": "native/pb/protos/commands.proto",
+      "bytes": 312798,
+      "sha256": "64b166598d1086a8dce63e449ca1f8dea00bc4a09315a6ef927408c94a331fd1",
+      "before_sha256": "a2cc54ff676f5d290267cabaa6fab52c7bb5737417c4911828d7f89b64217499"
+    },
+    {
+      "path": "pb/protos/service/service.proto",
+      "retained_path": "native/pb/protos/service/service.proto",
+      "bytes": 47566,
+      "sha256": "230720100f85ec5658ae63b57a0541b27c8df2acd025e0502ad24c0dc4b0a7fe",
+      "before_sha256": "e6def87f94fe2946524c836926b89eab1673b89ff28adf4b1eb6ced247d74ba5"
+    }
+  ],
+  "native_test_selectors": [],
+  "compile_scope": {
+    "go": [
+      "./pb",
+      "./pb/service"
+    ],
+    "swift": "Generated Sources/Protocol only, using genuine pinned SwiftProtobuf runtime on Darwin; complete SDK/Invocation/endpoint typecheck remains pending"
+  },
+  "generation_route": [
+    "make setup-protoc-go",
+    "make protos-go protos-server swift-protos",
+    "make generate-middle"
+  ],
+  "original_script_edits": 0,
+  "handwritten_generated_outputs": 0,
+  "scope": "Continue from authenticated original baseline output; rebuild unretained pinned tool products, run missing Swift baseline and first candidate generation/compilation. No app/runtime acceptance.",
+  "source_copy_correction": {
+    "actual_failed_run": 45052270280,
+    "failure_evidence_commit": "2e4a004778d5cc29afebaa4c278a2f1a8bf5c74d",
+    "failed_step": "baseline-clone-swift",
+    "materialized_sdk_copy": "Private filesystem copy, with exact commit/clean state/content/mode/disjoint identity readback; no remote clone or hydration",
+    "preserved_sparse_scopes": [
+      "/Makefile",
+      "/Scripts/",
+      "/Modules/ProtobufMessages/",
+      "/Modules/Services/",
+      "/Tools/anytype-swift-codegen",
+      "/Tools/anytype-swift-filesplit/"
+    ],
+    "actual_generation_and_compile": "NOT_RUN_FOR_THIS_CANDIDATE"
+  },
+  "baseline_reuse": {
+    "source": "ca6eb576d0ac105ef260bc2703b7d0dc186a8656",
+    "run": 45055852172,
+    "archive_sha256": "8d76ee6f186f32985c276dba1f79e2ee82e0db7c1ad9c259ce4c2350b43fc769",
+    "rows": 741,
+    "generation_and_go": "REUSED",
+    "swift_typecheck_and_candidate": "NEW_REQUIRED"
+  }
+}

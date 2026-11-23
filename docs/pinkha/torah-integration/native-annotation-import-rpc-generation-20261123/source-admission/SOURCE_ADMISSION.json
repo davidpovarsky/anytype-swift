@@ -1,0 +1,88 @@
+{
+  "admission": {
+    "composition": {
+      "bytes": 2600385,
+      "files": 159
+    },
+    "control_inputs": {
+      "bytes": 13676820,
+      "files": 182
+    },
+    "native_afterimages": 88,
+    "scope": "Source admission only; no generator/compiler/runtime execution."
+  },
+  "compilation_executed": false,
+  "generation_executed": false,
+  "head": "997e285617d57b31c4205976f01019819fa29a03",
+  "historical_artifact_authenticated": {
+    "archive_sha256": "ec13df1db9405ffa42b2ef76ec1bda7988ecee8dff1c3fcb1fd01c556a7cf80e",
+    "artifact_id": 14787700016,
+    "attempt": 1,
+    "run_id": 45101449367,
+    "scope": "Historical generation/message compilation reused without replay; no new Import/Cancel or native ABI credit.",
+    "source": "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638",
+    "verified_crc_members": 2279,
+    "verified_index_rows": 2278
+  },
+  "manifest_sha256": "c5950bad223380e20e158c8c824215509b438b02a3678fc885e90f99f982b81b",
+  "new_python_syntax": [
+    {
+      "bytes": 14824,
+      "git_blob": "80b05a3bb6362db78def75be00e60abcd8121bd8",
+      "path": "generation_support.py",
+      "sha256": "d4fe36cb3daa03a1c84a0a2b85b567a850a1b52ad50e438e58805d69f0567b99"
+    },
+    {
+      "bytes": 25330,
+      "git_blob": "c1f7072835c3dfaf54f7820fd66dd36c2e3c0139",
+      "path": "generate_original_import_rpc.py",
+      "sha256": "d89894269ad0fa1b36ccfafe0280958f749b86968f97cb098946d2cb7e5a3602"
+    },
+    {
+      "bytes": 3881,
+      "git_blob": "55ce055b6245c51a902b1c035417c603907765f5",
+      "path": "prepare_generation.py",
+      "sha256": "cd3e1b7798401337f8e48013feb5940820f19ca648ddd375624226c56c0ca9f5"
+    }
+  ],
+  "original_swift_generator_paths_verified": [
+    "Makefile",
+    "Modules/ProtobufMessages/Scripts/Loc/Templates/error-localization.stencil",
+    "Modules/ProtobufMessages/Scripts/Loc/sourcery.yml",
+    "Modules/ProtobufMessages/Scripts/generate.sh",
+    "Modules/ProtobufMessages/Scripts/generate_models.sh",
+    "Modules/ProtobufMessages/Templates/invocation-adoption.stencil",
+    "Modules/ProtobufMessages/Templates/service.stencil",
+    "Modules/ProtobufMessages/anytypeGen.yml",
+    "Modules/ProtobufMessages/sourcery.yml",
+    "Modules/Services/Templates/relation-keys.stencil",
+    "Modules/Services/Templates/relation-list-keys.stencil",
+    "Modules/Services/Templates/relation-value-provider.stencil",
+    "Modules/Services/Templates/type-uniqueKey.stencil",
+    "Modules/Services/swiftgen.yml",
+    "Scripts/install-sourcery.sh",
+    "Scripts/install-swiftprotobuf.sh",
+    "Tools/anytype-swift-filesplit/Makefile",
+    "Tools/anytype-swift-filesplit/Package.resolved",
+    "Tools/anytype-swift-filesplit/Package.swift",
+    "Tools/anytype-swift-filesplit/Sources/AnytypeSwiftFilesplit/MemberTypeSyntax+Extension.swift",
+    "Tools/anytype-swift-filesplit/Sources/AnytypeSwiftFilesplit/Parser.swift",
+    "Tools/anytype-swift-filesplit/Sources/anytype-swift-filesplit/ServiceGeneratorCommand.swift",
+    "Tools/anytype-swift-codegen"
+  ],
+  "prepared_rpc_cases": [
+    "TestAnnotationImportTransportRequestBoundaries",
+    "TestAnnotationImportTransportExactGeneratedEncoding",
+    "TestAnnotationImportTransportCompleteResponseLimit",
+    "TestAnnotationImportTransportContainerAndReportLimits",
+    "TestOwnedAnnotationImportNegativeAdmission",
+    "TestOwnedAnnotationCancellationMissIsNotDrain",
+    "TestAnnotationImportPayloadPolicyExactMethods",
+    "TestAnnotationImportPayloadLoggerSuppressesBothDirections",
+    "TestAnnotationImportTracingKeepsOriginalSpanAndErrorWithoutPayloads"
+  ],
+  "rpc_controls_executed": false,
+  "schema": "otzaria.original-import-generation-source-admission/1",
+  "scope": "Source closure, original input correspondence, prior artifact integrity and new script syntax only.",
+  "status": "PASS"
+}
