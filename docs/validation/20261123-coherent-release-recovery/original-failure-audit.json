@@ -1,0 +1,124 @@
+{
+  "archive": {
+    "bytes": 1701627,
+    "path": "/mnt/development/projects/diagnostics/anytype-release-20261123/run45047830860/artifact14766846844.zip",
+    "sha256": "ce14991f0dd4f483c9d8d6709e879601e9a15a29b751cb75043adf91836e272b"
+  },
+  "artifact_id": "14766846844",
+  "current_controller_replay": {
+    "current_lane": "editor",
+    "error": "Command '['xcrun', 'simctl', 'list', 'devices', '60CD03DC-044B-4473-B7E3-A106DEE62F4A', '--json']' timed out after 120 seconds",
+    "error_type": "TimeoutExpired",
+    "lane_statuses": {
+      "editor": "LANE_ABORTED_SETUP_OR_IDENTITY",
+      "properties-set": "NOT_RUN_SETUP",
+      "quote-drop": "NOT_RUN_SETUP"
+    },
+    "original_worker_failure_sha256": "09d2f4fcc3dd819bb33d7a393623a142e13a5c3a78673f07fee70ed41fe60e44",
+    "phase": "LANE",
+    "status": "BATCH_ABORTED_SETUP_OR_IDENTITY",
+    "supervisor_error": "Command '['ps', '-axo', 'pid=,pgid=,stat=']' timed out after 2 seconds",
+    "supervisor_error_type": "TimeoutExpired"
+  },
+  "job_id": "137286209954",
+  "job_log": {
+    "bytes": 102896,
+    "path": "/mnt/development/projects/diagnostics/anytype-release-20261123/run45047830860/job137286209954.log",
+    "sha256": "e17a7d0408009bde9028389f72c74e4e872ebbceb4b412eeb87baf7585cd0f10"
+  },
+  "kind": "ORIGINAL_FAILURE_AUDIT_NOT_ACCEPTANCE",
+  "nested_archive": {
+    "bytes": 1715347,
+    "path": "/mnt/development/projects/diagnostics/anytype-release-20261123/run45047830860/nested.zip",
+    "sha256": "640b9d4b3ceccd8265d6332056e42085a2d26df26af32f19d137396b869647a2"
+  },
+  "observed": {
+    "actual_worker_supervision_elapsed_seconds": 3589.663425,
+    "build_products_retained": false,
+    "build_reuse_eligible": false,
+    "cache_publication": "REFUSED_WITHOUT_PROVEN_QUIESCENCE",
+    "completed_heart_producer_evidence": "PREVIOUS_PRODUCER_REPLAY_ONLY",
+    "first_error": "Command '['xcrun', 'simctl', 'list', 'devices', '60CD03DC-044B-4473-B7E3-A106DEE62F4A', '--json']' timed out after 120 seconds",
+    "lane_statuses": {
+      "editor": "LANE_ABORTED_SETUP_OR_IDENTITY",
+      "properties-set": "NOT_RUN_SETUP",
+      "quote-drop": "NOT_RUN_SETUP"
+    },
+    "later_cleanup_error": "Command '['ps', '-axo', 'pid=,pgid=,stat=']' timed out after 2 seconds",
+    "new_apple_tests_executed": 0,
+    "original_outer_status": "BATCH_BUDGET_EXHAUSTED",
+    "original_worker_status": "BATCH_ABORTED_SETUP_OR_IDENTITY",
+    "successful_app_builds": 1,
+    "successful_ui_runner_builds": 1,
+    "t5_tests_executed": 0,
+    "worker_budget_seconds": 6300
+  },
+  "original_run_id": "45047830860",
+  "retained_originals": {
+    "batch-build/same-job-build.json": {
+      "original_bytes": 610060,
+      "original_sha256": "6e7ecf993ef855dcd64a4033a4c6b919b4567df139a020695fb3dc2ce7b74e4e",
+      "path": "original-run45047830860/batch-build/same-job-build.json.gz",
+      "stored_bytes": 120879,
+      "stored_sha256": "b6e1f78862dad2c70261edde8b63f74bf3c163ddfae5255663158b7e98df7635"
+    },
+    "batch-cleanup.json": {
+      "original_bytes": 2164,
+      "original_sha256": "05b4b7ba1773055aa230918388bb6110273cb0d850dd597109c91913e07b69bd",
+      "path": "original-run45047830860/batch-cleanup.json",
+      "stored_bytes": 2164,
+      "stored_sha256": "05b4b7ba1773055aa230918388bb6110273cb0d850dd597109c91913e07b69bd"
+    },
+    "batch-worker.command.json": {
+      "original_bytes": 1169,
+      "original_sha256": "53e4bcce47a855abcef9f5833c6b8fafa293f0b58bdc368a87f3a7f0c9b268d7",
+      "path": "original-run45047830860/batch-worker.command.json",
+      "stored_bytes": 1169,
+      "stored_sha256": "53e4bcce47a855abcef9f5833c6b8fafa293f0b58bdc368a87f3a7f0c9b268d7"
+    },
+    "batch-worker.json": {
+      "original_bytes": 1001060,
+      "original_sha256": "09d2f4fcc3dd819bb33d7a393623a142e13a5c3a78673f07fee70ed41fe60e44",
+      "path": "original-run45047830860/batch-worker.json.gz",
+      "stored_bytes": 288898,
+      "stored_sha256": "8e3d4b0128ee2ddaca44e470859e3c58d2b900996c6d07c760e513d904f935af"
+    },
+    "coherent-nested-cleanup.json": {
+      "original_bytes": 132,
+      "original_sha256": "cdae9c1d76b610b87ba29ecacdae9b7b173074995907d587ccc204c0dd13f105",
+      "path": "original-run45047830860/coherent-nested-cleanup.json",
+      "stored_bytes": 132,
+      "stored_sha256": "cdae9c1d76b610b87ba29ecacdae9b7b173074995907d587ccc204c0dd13f105"
+    },
+    "execution.json": {
+      "original_bytes": 3274,
+      "original_sha256": "e465772448b554d1ea3d7a94696ce300229ac3959f9579215e931bbc4ee9653f",
+      "path": "original-run45047830860/execution.json",
+      "stored_bytes": 3274,
+      "stored_sha256": "e465772448b554d1ea3d7a94696ce300229ac3959f9579215e931bbc4ee9653f"
+    },
+    "lanes/editor/execution.json": {
+      "original_bytes": 998485,
+      "original_sha256": "0c10ef6f57c9e079f50494d6e02c53c715021bed0245c5748cec5e84f8d6fbea",
+      "path": "original-run45047830860/lanes/editor/execution.json.gz",
+      "stored_bytes": 287960,
+      "stored_sha256": "16f5e5b0cfac0d7322a4d30a136f82176352859053a719b0b2428668a5fa1333"
+    },
+    "lanes/editor/fresh-device-query.json": {
+      "original_bytes": 208,
+      "original_sha256": "9ee89f21e3c66f584841a5b74b8bc545d475f3cde77e553cae7192bbe77fc8e6",
+      "path": "original-run45047830860/lanes/editor/fresh-device-query.json",
+      "stored_bytes": 208,
+      "stored_sha256": "9ee89f21e3c66f584841a5b74b8bc545d475f3cde77e553cae7192bbe77fc8e6"
+    }
+  },
+  "run_attempt": "1",
+  "scope": {
+    "actual_apple_continuation": "NOT_RUN",
+    "full_release_acceptance": false,
+    "implementation_only": true,
+    "physical_ipad_acceptance": false
+  },
+  "source_classification": "DOWNSTREAM_CONTROLLER",
+  "source_sha": "58b9de8f7a26d798e18e301ad1ed8be14f2a8c14"
+}

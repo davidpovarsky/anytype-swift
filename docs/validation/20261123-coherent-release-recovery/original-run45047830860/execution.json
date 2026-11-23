@@ -1,0 +1,95 @@
+{
+  "cleanup": {
+    "devices": [
+      {
+        "delete_exit_code": 0,
+        "name": "Pinkha-UI27-45047830860-iphone",
+        "status": "DELETED_OWNED_SIMULATOR",
+        "udid": "B3D0D1FF-BFCE-4D52-A2CB-F4E401283C7D"
+      },
+      {
+        "delete_exit_code": 0,
+        "name": "Pinkha-UI27-45047830860-ipad",
+        "status": "DELETED_OWNED_SIMULATOR",
+        "udid": "35E85586-586C-448A-BCDF-FE703103FC1F"
+      },
+      {
+        "delete_exit_code": 0,
+        "name": "Pinkha-UI27-45047830860-batch-561a380000204d5c889bc173a0e8b765-editor",
+        "shutdown_exit_code": 0,
+        "status": "DELETED_OWNED_SIMULATOR",
+        "udid": "60CD03DC-044B-4473-B7E3-A106DEE62F4A"
+      },
+      {
+        "name": "Pinkha-UI27-45047830860-batch-561a380000204d5c889bc173a0e8b765-quote-drop",
+        "status": "NOT_STARTED"
+      },
+      {
+        "name": "Pinkha-UI27-45047830860-batch-561a380000204d5c889bc173a0e8b765-properties-set",
+        "status": "NOT_STARTED"
+      },
+      {
+        "name": "Pinkha-UI27-45047830860-batch-561a380000204d5c889bc173a0e8b765-t5-pending-nine",
+        "status": "NOT_STARTED"
+      },
+      {
+        "name": "Pinkha-UI27-45047830860-batch-561a380000204d5c889bc173a0e8b765-t5-remaining-freshness",
+        "status": "NOT_STARTED"
+      },
+      {
+        "name": "Pinkha-UI27-45047830860-batch-561a380000204d5c889bc173a0e8b765-t5-native-ui",
+        "status": "NOT_STARTED"
+      }
+    ],
+    "finished_at": "2026-11-22T18:19:49.797768+00:00",
+    "inventory_queries": [
+      {
+        "elapsed_seconds": 3.653481,
+        "selector": "B3D0D1FF-BFCE-4D52-A2CB-F4E401283C7D",
+        "selector_kind": "OWNED_UDID",
+        "status": "RETURNED_VALID_SCOPED_INVENTORY",
+        "timeout_seconds": 120
+      },
+      {
+        "elapsed_seconds": 0.794367,
+        "selector": "35E85586-586C-448A-BCDF-FE703103FC1F",
+        "selector_kind": "OWNED_UDID",
+        "status": "RETURNED_VALID_SCOPED_INVENTORY",
+        "timeout_seconds": 120
+      },
+      {
+        "elapsed_seconds": 0.942973,
+        "selector": "60CD03DC-044B-4473-B7E3-A106DEE62F4A",
+        "selector_kind": "OWNED_UDID",
+        "status": "RETURNED_VALID_SCOPED_INVENTORY",
+        "timeout_seconds": 120
+      }
+    ],
+    "started_at": "2026-11-22T18:19:37.901563+00:00",
+    "status": "PASS"
+  },
+  "error": "Command '['ps', '-axo', 'pid=,pgid=,stat=']' timed out after 2 seconds",
+  "error_type": "TimeoutExpired",
+  "finished_at": "2026-11-22T18:19:49.885423+00:00",
+  "full_matrix_accepted": false,
+  "planned_native_postflights": 1,
+  "planned_native_preparations": 3,
+  "planned_ui_methods": 6,
+  "profile": "coherent-heart-release",
+  "protocol": "pinkha-wave15-same-job-batch-v1",
+  "release_accepted": false,
+  "retained_worker_command": {
+    "path": "batch-worker.command.json",
+    "sha256": "53e4bcce47a855abcef9f5833c6b8fafa293f0b58bdc368a87f3a7f0c9b268d7"
+  },
+  "retained_worker_receipt": {
+    "path": "batch-worker.json",
+    "sha256": "09d2f4fcc3dd819bb33d7a393623a142e13a5c3a78673f07fee70ed41fe60e44"
+  },
+  "run_attempt": "1",
+  "run_id": "45047830860",
+  "source_sha": "58b9de8f7a26d798e18e301ad1ed8be14f2a8c14",
+  "started_at": "2026-11-22T17:19:18.700935+00:00",
+  "status": "BATCH_BUDGET_EXHAUSTED",
+  "visual_review": "PENDING"
+}

@@ -370,7 +370,8 @@ def nested_cleanup(args):
     from run_owned_single_lane import verify_owned_group_stopped
     evidence, work = args.evidence.resolve(), private_work(args)
     records = []
-    roots = [work, evidence / "coherent-t5"]
+    roots = [work, evidence / "coherent-t5",
+             *[evidence / "lanes" / name / "owned-readiness" for name in batch.profile_spec(PROFILE).lanes]]
     for root in roots:
         if not root.exists():
             continue

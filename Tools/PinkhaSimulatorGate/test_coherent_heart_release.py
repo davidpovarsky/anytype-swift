@@ -101,7 +101,7 @@ class CoherentControls(unittest.TestCase):
                 test_configuration=lambda products, blueprint: native if blueprint == "AnytypeTests" else configuration)
             harness = SimpleNamespace(shared=shared, require_source_identity=Mock(), source_methods=Mock())
             receipt = {"profile": coherent.PROFILE}
-            with patch.dict(os.environ, GITHUB_RUN_ID=RUN, GITHUB_SHA=SOURCE), \
+            with patch.dict(os.environ, GITHUB_RUN_ID=RUN, GITHUB_RUN_ATTEMPT="1", GITHUB_SHA=SOURCE), \
                  patch.object(batch, "source_snapshot", return_value=source), \
                  patch.object(batch.FrozenBuild, "observed_artifacts", return_value={"controller_fixture_only": True}), \
                  patch.object(host_actions, "source_contract", return_value={"controller_fixture_only": True}), \

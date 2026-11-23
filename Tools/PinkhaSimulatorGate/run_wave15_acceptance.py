@@ -435,8 +435,13 @@ def execute(args, receipt, *, build_context=None):
                    candidate_input_hashes=identity["hashes"], runtime_installation=installation, phase="BUILD")
     shared.write(evidence / "selection-plan.json", selection)
     shared.write(evidence / "execution.json", receipt)
-    shared.command(["xcrun", "simctl", "boot", udid], app, evidence)
-    shared.command(["xcrun", "simctl", "bootstatus", udid, "-b"], app, evidence)
+    if build_context is not None and build_context.profile == "coherent-heart-release":
+        receipt["phase"] = "OWNED_SIMULATOR_READINESS"
+        shared.write(evidence / "execution.json", receipt)
+        build_context.prepare_fresh_device(udid, evidence)
+    else:
+        shared.command(["xcrun", "simctl", "boot", udid], app, evidence)
+        shared.command(["xcrun", "simctl", "bootstatus", udid, "-b"], app, evidence)
     if build_context is not None:
         build_context.confirm_empty_container(udid, evidence)
     observed_device_language = None
