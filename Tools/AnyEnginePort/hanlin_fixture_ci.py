@@ -252,10 +252,13 @@ def prepare(args: argparse.Namespace, result: dict) -> None:
     config_path = private_fixture / "private-config.json"
     # Record cleanup ownership before the child starts; no private values are logged.
     append_environment({OWNED_DIR_ENV: str(owned), CONFIG_ENV: str(config_path)})
-    run([sys.executable, str(FIXTURE), "start",
-         "--private-dir", str(private_fixture),
-         "--safe-result", str(args.safe_dir / "server-start.json")], timeout=90,
-        failure_reason="owned_fixture_start_failed")
+    from hanlin_fixture_start_observation import observe_start
+    starter = observe_start([sys.executable, str(FIXTURE), "start",
+        "--private-dir", str(private_fixture),
+        "--safe-result", str(args.safe_dir / "server-start.json")],
+        cwd=ROOT, private_dir=owned, safe_dir=args.safe_dir)
+    require(starter["outcome"] == "COMPLETED" and starter["returnCode"] == 0,
+            "owned_fixture_start_failed")
     values = validate_private_config(config_path, private_fixture)
     private_config = json.loads(config_path.read_text(encoding="utf-8"))
     ca = private_fixture / "root-ca.pem"

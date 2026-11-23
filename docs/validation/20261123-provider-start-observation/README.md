@@ -1,0 +1,7 @@
+# Owned provider starter observation
+
+The original UI run45108211949 successfully built its App/UI products but its provider starter failed with no retained child exit/error/output. This source adds finite diagnostic evidence at that exact boundary. It does not assert a network, certificate, process-status, or runtime cause for that original failure.
+
+Only prepare's starter call is replaced. The existing90-second budget, readiness/keychain checks, fixed failure reason, explicit owned directory and cleanup ownership remain. The original fixture source is unchanged. The observer stores exact captured stdout/stderr as mode0600 private files beneath the already owned0700 parent, outside the child fixture directory so its empty-directory contract is preserved. Existing cleanup removes those private files. Safe evidence contains timing, return/error classification, counts/hashes and optionally the byte-exact bounded FIXTURE_ERROR record only after strict duplicate-free parsing and a fixed source-derived code allowlist. Arbitrary output is never published.
+
+Two new controls are frozen and NOT_RUN: one actual short owned Python child with distinct raw private bytes and a safe finite failure, and one bounded boundary method for timeout/OSError/unknown/duplicate/extra-field/success outputs. Neither is a product test or an actual Apple provider-start proof. No previous controls are rerun.
