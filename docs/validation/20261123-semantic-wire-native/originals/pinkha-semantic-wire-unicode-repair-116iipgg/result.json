@@ -1,0 +1,45 @@
+{
+  "apple_execution": false,
+  "command": [
+    "C:\\Program Files\\Go\\bin\\go.exe",
+    "test",
+    "-json",
+    "-count=1",
+    "-p=2",
+    "-run=^TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode$/^(high-text|low-text|high-high-text|high-bmp-text|low-high-text|truncated-pair|literal-replacement|escaped-replacement)$",
+    "contract.go",
+    "wire.go",
+    "wire_test.go",
+    "wire_unicode_test.go"
+  ],
+  "exit_code": 0,
+  "expected_current_unicode_terminals": 8,
+  "log_sha256": "9290bf998b8fd784f6ab3aed8cb9b45bd9945ce1d1d1bb697a7bd1a7ad033e0d",
+  "native_page_executed": false,
+  "native_service_executed": false,
+  "old_wire_methods_executed": 0,
+  "original_failed_job": "job_22aa6071311a",
+  "source_after_sha256": {
+    "clientlibrary/service/pinkha_semantic_anchor.go": "da234f17b6e1811fc637d1c5ce5523fbf15bbc24d80465dafe8993e347082f80",
+    "clientlibrary/service/semantic_page_account_helpers_test.go": "b9bfd651ec488e5dc0a2b63f37d279e513b83be6d8a1d232c4c36961b070d571",
+    "clientlibrary/service/semantic_page_test.go": "052813535476b867132c9aa8e44f8f6386063e067546ecc1f16d8a5042b0fdf7",
+    "contract.go": "f15e9c4900e350605e9d71911adf50710e775b58aaa811d02be36e80976c52a8",
+    "pkg/lib/pinkha/semanticanchor/wire.go": "7105112fd30ed89a1ab37f59fbbeb699f95b6e3c8c4ebd7cb10d31cdd8168382",
+    "pkg/lib/pinkha/semanticanchor/wire_test.go": "cfd63049f3557fe89297b29fe95d553802ab7dc40ef7b7cd4f452b5a53890f78",
+    "pkg/lib/pinkha/semanticanchor/wire_unicode_test.go": "a4c0e2c9bc75b1508c2057abb8e454178a7ff0eaa91a3ecf1c9b5489a3eba5ee"
+  },
+  "source_before_sha256": {
+    "clientlibrary/service/pinkha_semantic_anchor.go": "da234f17b6e1811fc637d1c5ce5523fbf15bbc24d80465dafe8993e347082f80",
+    "clientlibrary/service/semantic_page_account_helpers_test.go": "b9bfd651ec488e5dc0a2b63f37d279e513b83be6d8a1d232c4c36961b070d571",
+    "clientlibrary/service/semantic_page_test.go": "052813535476b867132c9aa8e44f8f6386063e067546ecc1f16d8a5042b0fdf7",
+    "contract.go": "f15e9c4900e350605e9d71911adf50710e775b58aaa811d02be36e80976c52a8",
+    "pkg/lib/pinkha/semanticanchor/wire.go": "7105112fd30ed89a1ab37f59fbbeb699f95b6e3c8c4ebd7cb10d31cdd8168382",
+    "pkg/lib/pinkha/semanticanchor/wire_test.go": "cfd63049f3557fe89297b29fe95d553802ab7dc40ef7b7cd4f452b5a53890f78",
+    "pkg/lib/pinkha/semanticanchor/wire_unicode_test.go": "a4c0e2c9bc75b1508c2057abb8e454178a7ff0eaa91a3ecf1c9b5489a3eba5ee"
+  },
+  "source_stable": true,
+  "status": "PASS_REQUIRES_NAMED_AUDIT",
+  "toolchain": "go version go1.25.6 windows/amd64",
+  "unaffected_unicode_terminals_executed_again": 0,
+  "work": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\pinkha-semantic-wire-unicode-repair-116iipgg"
+}

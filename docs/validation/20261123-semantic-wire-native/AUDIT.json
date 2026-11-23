@@ -1,0 +1,359 @@
+{
+  "app_capability": "OFF",
+  "apple": "NOT_RUN",
+  "dependencies": {
+    "compiled_inputs": "contract.go and codec/test files; standard-library-only Go imports",
+    "component_manifest_sha256": "51c3b76b0ff6cc737c7a4660fa87c7314f568bdf842c1ab8e568cbbab25a916a",
+    "current_contract_sha256": "f15e9c4900e350605e9d71911adf50710e775b58aaa811d02be36e80976c52a8"
+  },
+  "fixed_component_files_preserved": 9,
+  "fixed_lease_sha256": "598e2fc9cd1173414f6e2afc1cd54672b7ec6fe72d1c4eda9a9687949677b814",
+  "http": "NOT_RUN",
+  "mounted_acceptance": "NOT_RUN",
+  "native_page_apply": "NOT_RUN",
+  "native_service_compile": "NOT_RUN",
+  "original_bytes_preserved": true,
+  "original_executions": [
+    {
+      "compiled_inputs": [
+        "contract.go",
+        "wire.go",
+        "wire_test.go"
+      ],
+      "leaf_count": 26,
+      "leaf_terminals": [
+        {
+          "name": "TestSemanticAnchorWireKeepsExactUTF16AndEveryOrderedNativeMark",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsAmbiguousUnknownNullAndUnboundedInput/case-alias",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsAmbiguousUnknownNullAndUnboundedInput/duplicate-mark",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsAmbiguousUnknownNullAndUnboundedInput/duplicate-snapshot",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsAmbiguousUnknownNullAndUnboundedInput/duplicate-top",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsAmbiguousUnknownNullAndUnboundedInput/fractional-offset",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsAmbiguousUnknownNullAndUnboundedInput/future-version",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsAmbiguousUnknownNullAndUnboundedInput/invalid-utf8",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsAmbiguousUnknownNullAndUnboundedInput/missing-field",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsAmbiguousUnknownNullAndUnboundedInput/null-marks",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsAmbiguousUnknownNullAndUnboundedInput/null-offset",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsAmbiguousUnknownNullAndUnboundedInput/null-snapshot",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsAmbiguousUnknownNullAndUnboundedInput/null-string",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsAmbiguousUnknownNullAndUnboundedInput/null-text",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsAmbiguousUnknownNullAndUnboundedInput/null-version",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsAmbiguousUnknownNullAndUnboundedInput/overflow-offset",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsAmbiguousUnknownNullAndUnboundedInput/oversized-wire",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsAmbiguousUnknownNullAndUnboundedInput/too-many-marks",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsAmbiguousUnknownNullAndUnboundedInput/trailing-object",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsAmbiguousUnknownNullAndUnboundedInput/unknown-authority",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsAmbiguousUnknownNullAndUnboundedInput/utf16-surrogate-offset",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireReplyRequiresWitnessAndKeepsNativeResponseEvents/invalid-digest",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireReplyRequiresWitnessAndKeepsNativeResponseEvents/missing-events",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireReplyRequiresWitnessAndKeepsNativeResponseEvents/oversized-events",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireReplyRequiresWitnessAndKeepsNativeResponseEvents/unchanged-digest",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireReplyRequiresWitnessAndKeepsNativeResponseEvents/wrong-marker",
+          "status": "PASS"
+        }
+      ],
+      "log_sha256": "8e7e910bb298cbd9382057e8e4ee227fdb07b4fc5f51d6c844095c59ddf3b167",
+      "named_top_level_methods": [
+        "TestSemanticAnchorWireKeepsExactUTF16AndEveryOrderedNativeMark",
+        "TestSemanticAnchorWireRejectsAmbiguousUnknownNullAndUnboundedInput",
+        "TestSemanticAnchorWireReplyRequiresWitnessAndKeepsNativeResponseEvents"
+      ],
+      "original_command": [
+        "C:\\Program Files\\Go\\bin\\go.exe",
+        "test",
+        "-json",
+        "-count=1",
+        "-p=2",
+        "-run=^TestSemanticAnchorWire",
+        "contract.go",
+        "wire.go",
+        "wire_test.go"
+      ],
+      "package_elapsed": 1.7029999999999998,
+      "package_status": "PASS",
+      "source_sha256": {
+        "contract.go": "f15e9c4900e350605e9d71911adf50710e775b58aaa811d02be36e80976c52a8",
+        "service/pinkha_semantic_anchor.go": "da234f17b6e1811fc637d1c5ce5523fbf15bbc24d80465dafe8993e347082f80",
+        "wire.go": "60425d6ccadca28ca3294e3b8d67efbd8e401891a9618a190ea9d68a17b241f1",
+        "wire_test.go": "cfd63049f3557fe89297b29fe95d553802ab7dc40ef7b7cd4f452b5a53890f78"
+      },
+      "stage": "pinkha-semantic-wire-controls-h21u4r3w"
+    },
+    {
+      "compiled_inputs": [
+        "contract.go",
+        "wire.go",
+        "wire_test.go",
+        "wire_unicode_test.go"
+      ],
+      "leaf_count": 14,
+      "leaf_terminals": [
+        {
+          "name": "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode/escaped-replacement",
+          "status": "FAIL"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode/high-bmp-text",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode/high-high-text",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode/high-identity",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode/high-text",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode/literal-backslash-param",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode/literal-replacement",
+          "status": "FAIL"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode/low-high-text",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode/low-param",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode/low-text",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode/truncated-pair",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode/valid-bmp",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode/valid-pair",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode/valid-uppercase-pair",
+          "status": "PASS"
+        }
+      ],
+      "log_sha256": "a706e9ed64ba586997a90dc22c97ab5c8a1af6e03c36a175af8713501fd0b1fc",
+      "named_top_level_methods": [
+        "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode"
+      ],
+      "original_command": [
+        "C:\\Program Files\\Go\\bin\\go.exe",
+        "test",
+        "-json",
+        "-count=1",
+        "-p=2",
+        "-run=^TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode$",
+        "contract.go",
+        "wire.go",
+        "wire_test.go",
+        "wire_unicode_test.go"
+      ],
+      "package_elapsed": 3.958,
+      "package_status": "FAIL",
+      "source_sha256": {
+        "clientlibrary/service/pinkha_semantic_anchor.go": "da234f17b6e1811fc637d1c5ce5523fbf15bbc24d80465dafe8993e347082f80",
+        "clientlibrary/service/semantic_page_account_helpers_test.go": "b9bfd651ec488e5dc0a2b63f37d279e513b83be6d8a1d232c4c36961b070d571",
+        "clientlibrary/service/semantic_page_test.go": "052813535476b867132c9aa8e44f8f6386063e067546ecc1f16d8a5042b0fdf7",
+        "contract.go": "f15e9c4900e350605e9d71911adf50710e775b58aaa811d02be36e80976c52a8",
+        "pkg/lib/pinkha/semanticanchor/wire.go": "7105112fd30ed89a1ab37f59fbbeb699f95b6e3c8c4ebd7cb10d31cdd8168382",
+        "pkg/lib/pinkha/semanticanchor/wire_test.go": "cfd63049f3557fe89297b29fe95d553802ab7dc40ef7b7cd4f452b5a53890f78",
+        "pkg/lib/pinkha/semanticanchor/wire_unicode_test.go": "1a35477d0a2d8922b5b8399564650168407a49042ec3b212f1cc54160a965445"
+      },
+      "stage": "pinkha-semantic-wire-unicode-49d4cdvz"
+    },
+    {
+      "compiled_inputs": [
+        "contract.go",
+        "wire.go",
+        "wire_test.go",
+        "wire_unicode_test.go"
+      ],
+      "leaf_count": 8,
+      "leaf_terminals": [
+        {
+          "name": "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode/escaped-replacement",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode/high-bmp-text",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode/high-high-text",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode/high-text",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode/literal-replacement",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode/low-high-text",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode/low-text",
+          "status": "PASS"
+        },
+        {
+          "name": "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode/truncated-pair",
+          "status": "PASS"
+        }
+      ],
+      "log_sha256": "9290bf998b8fd784f6ab3aed8cb9b45bd9945ce1d1d1bb697a7bd1a7ad033e0d",
+      "named_top_level_methods": [
+        "TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode"
+      ],
+      "original_command": [
+        "C:\\Program Files\\Go\\bin\\go.exe",
+        "test",
+        "-json",
+        "-count=1",
+        "-p=2",
+        "-run=^TestSemanticAnchorWireRejectsUnpairedEscapesWithoutChangingValidUnicode$/^(high-text|low-text|high-high-text|high-bmp-text|low-high-text|truncated-pair|literal-replacement|escaped-replacement)$",
+        "contract.go",
+        "wire.go",
+        "wire_test.go",
+        "wire_unicode_test.go"
+      ],
+      "package_elapsed": 4.061,
+      "package_status": "PASS",
+      "source_sha256": {
+        "clientlibrary/service/pinkha_semantic_anchor.go": "da234f17b6e1811fc637d1c5ce5523fbf15bbc24d80465dafe8993e347082f80",
+        "clientlibrary/service/semantic_page_account_helpers_test.go": "b9bfd651ec488e5dc0a2b63f37d279e513b83be6d8a1d232c4c36961b070d571",
+        "clientlibrary/service/semantic_page_test.go": "052813535476b867132c9aa8e44f8f6386063e067546ecc1f16d8a5042b0fdf7",
+        "contract.go": "f15e9c4900e350605e9d71911adf50710e775b58aaa811d02be36e80976c52a8",
+        "pkg/lib/pinkha/semanticanchor/wire.go": "7105112fd30ed89a1ab37f59fbbeb699f95b6e3c8c4ebd7cb10d31cdd8168382",
+        "pkg/lib/pinkha/semanticanchor/wire_test.go": "cfd63049f3557fe89297b29fe95d553802ab7dc40ef7b7cd4f452b5a53890f78",
+        "pkg/lib/pinkha/semanticanchor/wire_unicode_test.go": "a4c0e2c9bc75b1508c2057abb8e454178a7ff0eaa91a3ecf1c9b5489a3eba5ee"
+      },
+      "stage": "pinkha-semantic-wire-unicode-repair-116iipgg"
+    }
+  ],
+  "original_transferred_file_count": 27,
+  "process_reopen": "NOT_RUN",
+  "product_tests_executed_by_audit": 0,
+  "source_base": "e7fd39b763d3d0244996c207552096f169de85ed",
+  "source_sha256": {
+    "pkg/lib/pinkha/semanticanchor/wire.go": "7105112fd30ed89a1ab37f59fbbeb699f95b6e3c8c4ebd7cb10d31cdd8168382",
+    "pkg/lib/pinkha/semanticanchor/wire_test.go": "cfd63049f3557fe89297b29fe95d553802ab7dc40ef7b7cd4f452b5a53890f78",
+    "pkg/lib/pinkha/semanticanchor/wire_unicode_test.go": "a4c0e2c9bc75b1508c2057abb8e454178a7ff0eaa91a3ecf1c9b5489a3eba5ee"
+  },
+  "status": "PASS_ORIGINAL_WIRE_SOURCE_AND_NAMED_EXECUTION_AUDIT",
+  "toolchain": "go version go1.25.6 windows/amd64",
+  "unicode_fixture_repair": {
+    "affected_cases_reexecuted": [
+      "high-text",
+      "low-text",
+      "high-high-text",
+      "high-bmp-text",
+      "low-high-text",
+      "truncated-pair",
+      "literal-replacement",
+      "escaped-replacement"
+    ],
+    "current_product_source_unicode_leaf_passes": 14,
+    "old_26_leaves_scope": "Original pre-Unicode-preflight source only; unchanged body verified, not rerun against current codec",
+    "production_source_unchanged": true,
+    "reason": "The first text-quote token matched the JSON field name. Targeting the complete field/value pair repairs six invalid-escape cases and two valid-U+FFFD cases.",
+    "unaffected_passes_retained": [
+      "high-identity",
+      "low-param",
+      "valid-pair",
+      "valid-uppercase-pair",
+      "valid-bmp",
+      "literal-backslash-param"
+    ]
+  }
+}
