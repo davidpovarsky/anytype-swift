@@ -1,0 +1,33 @@
+{
+  "status": "PROPOSED_NOT_APPLIED",
+  "base": "0366b4e4e912ba11c5413516d215bc4a234aa3ca",
+  "paths": [
+    {
+      "path": "Anytype/Sources/ApplicationLayer/Launch/LaunchView.swift",
+      "before_sha256": "0d6fd5307276304cedb00fd5d4ec3c43f15882e7251322c23f9192b54e5bde32",
+      "after_sha256": "5aaff00e324964809e9470977e5b989bff1debd6c470d011a00b00acdccd080e",
+      "before_bytes": 1292,
+      "after_bytes": 1759,
+      "full_exact_inverse": true
+    },
+    {
+      "path": "Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorView.swift",
+      "before_sha256": "5a950c4df53f56202d1de00acb5a05f58a4056ea23374334a504ba419f50c191",
+      "after_sha256": "34a0c4d7eb28f568e354dc1af742b27b597602bd47584b95a681f38d9a127fb1",
+      "before_bytes": 2511,
+      "after_bytes": 2649,
+      "full_exact_inverse": true
+    }
+  ],
+  "internal_option_signature": "LaunchView.init(allowsDebugMenus: Bool = true)",
+  "standalone": "Zero-argument initializer retains true; unchanged layout/toggles/bindings/destinations when true.",
+  "embedded_coordinator": "Existing embedded constructor freezes allowsDebugMenus=false before use, independent of current/global/caller lookup.",
+  "facade_owner": "Root forwards allowsDebugMenus:false at both known embeddedInitial and pre-coordinator LaunchView callsites, including before caller exists.",
+  "guards": [
+    "both 10/5 tap toggles",
+    "both constant-false embedded sheet bindings",
+    "both destination construction bodies"
+  ],
+  "no_auth_authority_or_service_change": true,
+  "qualification": "Source proposal only; no parse/tests executed"
+}

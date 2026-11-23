@@ -1,0 +1,18 @@
+[
+  {
+    "before": "    @State private var showPublicDebugMenu = false\n\n    var body",
+    "after": "    @State private var showPublicDebugMenu = false\n    private let allowsDebugMenus: Bool\n\n    init(allowsDebugMenus: Bool = true) {\n        self.allowsDebugMenus = allowsDebugMenus\n    }\n\n    var body"
+  },
+  {
+    "before": "                .onTapGesture(count: 10) {\n                    showPrivateDebugMenu.toggle()",
+    "after": "                .onTapGesture(count: 10) {\n                    guard allowsDebugMenus else { return }\n                    showPrivateDebugMenu.toggle()"
+  },
+  {
+    "before": "                .onTapGesture(count: 5) {\n                    showPublicDebugMenu.toggle()",
+    "after": "                .onTapGesture(count: 5) {\n                    guard allowsDebugMenus else { return }\n                    showPublicDebugMenu.toggle()"
+  },
+  {
+    "before": "                .sheet(isPresented: $showPrivateDebugMenu) {\n                    DebugMenuView()\n                }\n                .sheet(isPresented: $showPublicDebugMenu) {\n                    PublicDebugMenuView()\n                }",
+    "after": "                .sheet(isPresented: allowsDebugMenus ? $showPrivateDebugMenu : .constant(false)) {\n                    if allowsDebugMenus {\n                        DebugMenuView()\n                    }\n                }\n                .sheet(isPresented: allowsDebugMenus ? $showPublicDebugMenu : .constant(false)) {\n                    if allowsDebugMenus {\n                        PublicDebugMenuView()\n                    }\n                }"
+  }
+]

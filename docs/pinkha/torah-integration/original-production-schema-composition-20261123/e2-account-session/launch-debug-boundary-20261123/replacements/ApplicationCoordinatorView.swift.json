@@ -1,0 +1,18 @@
+[
+  {
+    "before": "    private let embeddedHome: AnyView?\n",
+    "after": "    private let embeddedHome: AnyView?\n    private let allowsDebugMenus: Bool\n"
+  },
+  {
+    "before": "        embeddedHome = nil\n",
+    "after": "        embeddedHome = nil\n        allowsDebugMenus = true\n"
+  },
+  {
+    "before": "        embeddedHome = home\n",
+    "after": "        embeddedHome = home\n        allowsDebugMenus = false\n"
+  },
+  {
+    "before": "        case .launch:\n            LaunchView()",
+    "after": "        case .launch:\n            LaunchView(allowsDebugMenus: allowsDebugMenus)"
+  }
+]

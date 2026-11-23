@@ -9,12 +9,14 @@ struct ApplicationCoordinatorView: View {
     private let ownsConsumerTasks: Bool
     private let embeddedInitial: AnyView?
     private let embeddedHome: AnyView?
+    private let allowsDebugMenus: Bool
 
     init() {
         _model = State(initialValue: ApplicationCoordinatorViewModel())
         ownsConsumerTasks = true
         embeddedInitial = nil
         embeddedHome = nil
+        allowsDebugMenus = true
     }
 
     /// The external process owner retains the same original model and tasks.
@@ -24,6 +26,7 @@ struct ApplicationCoordinatorView: View {
         ownsConsumerTasks = false
         embeddedInitial = initial
         embeddedHome = home
+        allowsDebugMenus = false
     }
     
     var body: some View {
@@ -66,7 +69,7 @@ struct ApplicationCoordinatorView: View {
         case .auth:
             AuthCoordinatorView(originalEditorCaller: model.originalEditorCaller)
         case .launch:
-            LaunchView()
+            LaunchView(allowsDebugMenus: allowsDebugMenus)
         case .home:
             if let embeddedHome { embeddedHome } else { SpaceHubCoordinatorView() }
         case .delete:
