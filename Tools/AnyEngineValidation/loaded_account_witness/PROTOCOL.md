@@ -1,4 +1,4 @@
-# Loaded account and native ACL witness  opt-in candidate
+# Loaded account and native ACL witness - opt-in candidate
 
 Status: source only. No graph query, compilation, or new native method has run.
 
@@ -33,8 +33,8 @@ ACL ID, head, LastRecordId, identity and current permissions; mutable state and
 keys do not escape. Guest/custom identity, unknown permission, busy,
 unsupported, canceled and closed sources refuse.
 
-The order is application lifecycle!’ session!’ native ACL read lock!’ native
-per-Space gate!’ fresh same-DB ReadTx. Native read transaction/lease cleanup
+The order is application lifecycle -> session -> native ACL read lock -> native
+per-Space gate -> fresh same-DB ReadTx. Native read transaction/lease cleanup
 finishes before ACL release. Current provider identity is checked before and
 after capture. The detached state.a selects exactly one captured heads.h; that
 head must equal both the held native ACL head and LastRecordId. Final cache
@@ -100,7 +100,7 @@ offline readonly module resolution, explicit candidate modfile and both tags.
 No dependency download, tool installation, cache deletion or old test replay.
 A frozen source-only graph must precede build admission. Absolute build floor
 is 2.95 GB, active stop below 2.60 GB, final reserve 2.50 GB. Current conservative
-peak planning asks about 3.403.45 GB after source freeze; 2.95 GB alone is not an
+peak planning asks about 3.40-3.45 GB after source freeze; 2.95 GB alone is not an
 estimate of this full application's growth. Preserve every original failure,
 binary and per-method outcome; repair only demonstrated failures with separately
 frozen source and never replay already qualified methods.
