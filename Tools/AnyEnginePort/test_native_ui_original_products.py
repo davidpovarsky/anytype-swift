@@ -94,6 +94,19 @@ class OriginalNativeUIProductsControls(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     c.validate_original_api(r, a, j, fixed)
 
+        owned = "1A111111-2222-4333-8444-555555555555"
+        self.assertTrue(c.validate_owned_device_absence({"devices": {}}, owned)["ownedDeviceAbsent"])
+        foreign = {"devices": {"runtime": [{"udid": "AAAAAAAA-BBBB-4CCC-8DDD-EEEEEEEEEEEE"}]}}
+        self.assertEqual(c.validate_owned_device_absence(foreign, owned)["enumeratedDeviceCount"], 1)
+        malformed = [{}, {"devices": None}, {"devices": []}, {"devices": {"runtime": {}}},
+                     {"devices": {"runtime": [None]}}, {"devices": {"runtime": [{"udid": 4}]}},
+                     {"devices": {"runtime": [{"udid": "not-a-uuid"}]}},
+                     {"devices": {"runtime": [{"udid": owned.lower()}]}}]
+        for inventory in malformed:
+            with self.subTest(cleanup_inventory=inventory):
+                with self.assertRaises(ValueError):
+                    c.validate_owned_device_absence(inventory, owned)
+
     def test_restoration_preserves_modes_and_refuses_links_extras_missing_or_changed_bytes(self):
         with tempfile.TemporaryDirectory(prefix="native-ui-restore-control-") as directory:
             root = Path(directory)

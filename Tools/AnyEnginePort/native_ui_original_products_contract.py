@@ -20,7 +20,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
 CONTRACT_PATH = "Tools/AnyEnginePort/native-ui-original-products-451082.json"
-CONTRACT_SHA = "b549b7f1c16e221e8780e84d4fcad1fc693070a4e9705d04632c17cbf5b3e7a0"
+CONTRACT_SHA = "c3c152137febebbec644d72fa8c72e03c9657a52309360e57b36854d53846a32"
 WORKFLOW = ".github/workflows/pinkha-any-native-ui-original-products.yml"
 CENTRAL = ".github/workflows/torah-inspector-ipados27.yml"
 CONTROL_PATHS = (
@@ -103,13 +103,17 @@ def contract(root=ROOT):
     return result
 
 def source_functions(path, names):
-    text = regular(path, 2 * 1024**2).decode("utf-8")
-    tree = ast.parse(text)
+    raw = regular(path, 2 * 1024**2)
+    tree = ast.parse(raw.decode("utf-8"))
+    lines = raw.splitlines(keepends=True)
     result = {}
     for name in names:
         found = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == name]
         require(len(found) == 1, "one_fixed_helper_function_required")
-        result[name] = sha(ast.dump(found[0], include_attributes=False).encode())
+        node = found[0]
+        start = min([node.lineno] + [decorator.lineno for decorator in node.decorator_list])
+        # AST locates the exact slice; the pin is bytes, independent of host AST fields.
+        result[name] = sha(b"".join(lines[start - 1:node.end_lineno]))
     return result
 
 def provider_proof(fixed, root=ROOT):
@@ -512,3 +516,23 @@ def validate_admission_origin(record, fixed, ctx, locations):
             and retained["retainedMethodsExecutedThisRun"] == 0,
             "original_retained_scope_changed")
     validate_selection(record.get("selection"), fixed)
+
+def validate_owned_device_absence(inventory, owned_udid):
+    require(isinstance(inventory, dict) and isinstance(inventory.get("devices"), dict),
+            "explicit_device_inventory_dictionary_required")
+    require(isinstance(owned_udid, str) and str(uuid.UUID(owned_udid)).upper() == owned_udid,
+            "canonical_current_owned_uuid_required")
+    seen = set()
+    for runtime, rows in inventory["devices"].items():
+        require(isinstance(runtime, str) and bool(runtime) and isinstance(rows, list),
+                "typed_runtime_device_list_required")
+        for device in rows:
+            require(isinstance(device, dict) and isinstance(device.get("udid"), str),
+                    "typed_observed_device_uuid_required")
+            normalized = str(uuid.UUID(device["udid"])).upper()
+            require(normalized == device["udid"].upper() and normalized not in seen,
+                    "unique_canonical_observed_device_uuid_required")
+            seen.add(normalized)
+    require(owned_udid not in seen, "current_owned_device_still_present")
+    return {"completeDeviceInventory": True, "enumeratedDeviceCount": len(seen),
+            "ownedSimulatorUDID": owned_udid, "ownedDeviceAbsent": True}

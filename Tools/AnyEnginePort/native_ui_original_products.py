@@ -282,13 +282,13 @@ def cleanup_simulator():
     # An explicit post-delete inventory is required; timeout never proves absence.
     after = c.strict_json(c.public_command(["xcrun", "simctl", "list", "devices", "--json"],
                                            commands, "devices-after", timeout=30))
-    present = [d for rows in after.get("devices", {}).values() for d in rows
-               if str(d.get("udid", "")).upper() == udid]
-    c.require(not present and not any(e["command"] == "delete" for e in errors),
+    absence = c.validate_owned_device_absence(after, udid)
+    c.require(not any(e["command"] == "delete" for e in errors),
               "owned_simulator_deletion_not_proven")
     return {"schemaVersion": 1, "status": "OWNED_SIMULATOR_REMOVAL_OBSERVED", **ctx,
             "ownedSimulatorUDID": udid, "ownedSimulatorRemoved": True, "absenceProof": True,
-            "originalShutdownObservations": errors, "foreignSimulatorsTouched": False}
+            "originalShutdownObservations": errors, "absenceObservation": absence,
+            "foreignSimulatorsTouched": False}
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
