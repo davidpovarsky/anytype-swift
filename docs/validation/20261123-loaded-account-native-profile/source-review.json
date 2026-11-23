@@ -1,0 +1,155 @@
+{
+  "base": "8464d856b48fe55eaf2f5e582d2f7293ab457d80",
+  "compiler_failure": {
+    "guard_before_ram_or_container": true,
+    "image_compiler_tools_absent": true,
+    "old_query_failure_receipts_unchanged": true,
+    "original_result_sha256": "ca681802575e0fd0d135be251184b89949dde0f46a957755ff2c019fa5013a76"
+  },
+  "critical_entrypoints": [
+    "load_frozen_inputs",
+    "source_state",
+    "resource_guard",
+    "prepare_ram",
+    "copy_cache",
+    "native_command",
+    "main",
+    "native_audit.audit_method"
+  ],
+  "current_profile_cannot_be_used_as_native_execution_admission": true,
+  "destination_writes": false,
+  "eager_imports": [
+    "argparse",
+    "datetime",
+    "gzip",
+    "hashlib",
+    "importlib.util",
+    "json",
+    "os",
+    "pathlib",
+    "pwd",
+    "re",
+    "resource",
+    "selectors",
+    "shutil",
+    "signal",
+    "stat",
+    "struct",
+    "subprocess",
+    "sys",
+    "time"
+  ],
+  "exact_reused_functions": {
+    "adopt_owner_for_cleanup": {
+      "bytes_equal": true,
+      "sha256": "b6c260966e0144e7e3545b0dc63a20c1faac04acea033cf51c2ef43f86ccd0ff",
+      "source": "ram_projected_graph.py"
+    },
+    "decode_plan": {
+      "bytes_equal": true,
+      "sha256": "5c584a4ef2e07bfe4d01776808d75b13721faa004045ccfe66d2b43a6e3b0da8",
+      "source": "complete_projected_graph.py"
+    },
+    "encode_plan": {
+      "bytes_equal": true,
+      "sha256": "a1263fd0443063ce6590d25849b53d6c8f1bc11dfe428309c27dadf9e37304e8",
+      "source": "complete_projected_graph.py"
+    },
+    "process_credentials": {
+      "bytes_equal": true,
+      "sha256": "0d0c1a714ff986847a882f738d7f6b473f0694ee3e32d2b2ec77d8ebfa9f1ec4",
+      "source": "ram_projected_graph.py"
+    }
+  },
+  "four_native_methods": "NOT_RUN",
+  "helper_actual_call_names": [
+    "group_absent",
+    "operation_observe",
+    "register_owned_child",
+    "stop_owned"
+  ],
+  "helper_adapter_bindings": [
+    "ENTRY_CREDENTIALS",
+    "ATTEMPT"
+  ],
+  "late_imports": "load_module binds exact two files; no other repository import path is admitted",
+  "native_source_admission": false,
+  "native_source_changed": false,
+  "new_cache_clones": 0,
+  "new_containers": 0,
+  "new_files": {
+    "Tools/AnyEngineValidation/loaded_account_witness/NATIVE_PROTOCOL.md": {
+      "bytes": 11769,
+      "mode": "0644",
+      "sha256": "fa05fe80c1aef4d49726f770f6ba2e2fdc990a91874f1604fb8f8e8448d04270"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/native-compiler-support.json": {
+      "bytes": 11930,
+      "mode": "0644",
+      "sha256": "ca681802575e0fd0d135be251184b89949dde0f46a957755ff2c019fa5013a76"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/native-source.json": {
+      "bytes": 19218,
+      "mode": "0644",
+      "sha256": "8a158444dae86d197326aa358d3d5b770359f7830564ce21754de03d8143600a"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/native_audit.py": {
+      "bytes": 19297,
+      "mode": "0644",
+      "sha256": "49ce372e9a4bf22c8b513409c570aae1d8c9f0053a6ce218c461483c4c4d42ea"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/native_profile.py": {
+      "bytes": 64319,
+      "mode": "0644",
+      "sha256": "27d949273a921907edd98341692b57e0d78f1eb405fe07f7b3173ea537c94056"
+    }
+  },
+  "new_mounts": 0,
+  "new_native_builds": 0,
+  "new_source_queries": 0,
+  "old_methods_replayed": 0,
+  "pinned_prior_source_and_data": {
+    "Tools/AnyEngineValidation/loaded_account_witness/candidate.mod": {
+      "bytes": 16320,
+      "sha256": "73cbdd42c8002c7bf68561ebc11b14ac58aad5aa018a41b27d56adaa9b87636c"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/candidate.sum": {
+      "bytes": 132924,
+      "sha256": "7c873be1e5b4c65e5e46d18167ae6bc29f0f5b51c459a8398d75ab22f0b2432d"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/complete_projected_graph.py": {
+      "bytes": 30944,
+      "sha256": "5de50261d94fecea6ccf5b3f6f70870200c518d15b1d628bb29ca77b4418a806"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/ram_projected_graph.py": {
+      "bytes": 53275,
+      "sha256": "cd5e46269f566870489f338471f9c63e14dfd6a8dd842be221fed5b1cccff6cf"
+    },
+    "docs/validation/20261123-loaded-account-witness/offline-qualified/offline/dependency-plan-before.json.gz": {
+      "bytes": 846010,
+      "sha256": "6f67e22560bc001fcdb314b3cbdfe8d562f357d9d5a513691692c66cf9b83269"
+    },
+    "docs/validation/20261123-loaded-account-witness/offline-qualified/qualification.json": {
+      "bytes": 2518,
+      "sha256": "2fe6dc18b127cf6411a9b458230ab50523ac8eaa49146ab70eee884b8871eef8"
+    },
+    "docs/validation/20261123-loaded-account-witness/offline-qualified/query/generated-test-main.go": {
+      "bytes": 3282,
+      "sha256": "749604e1b5eba79ed351a8f0a09bdd64aca9412d833b887adc5140cb42515715"
+    }
+  },
+  "remaining_review": [
+    "finite native controller/auditor source",
+    "separate compiler image and true portable host-origin profile",
+    "actual execution and private custody"
+  ],
+  "repository_imports": [
+    "native_profile.py (actual main)",
+    "native_audit.py",
+    "ram_projected_graph.py (owned operations only)"
+  ],
+  "schema": "loaded-account-native-profile-source-review-v1",
+  "semantic_completeness": false,
+  "state": "BLOCKED_COMPILER_SUPPORT",
+  "static_python_ast_parse": "completed without imports or execution"
+}
