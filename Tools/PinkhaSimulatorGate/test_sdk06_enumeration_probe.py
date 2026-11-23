@@ -192,7 +192,11 @@ class EnumerationProbeControls(unittest.TestCase):
                 for key in ("EnvironmentVariables", "TestingEnvironmentVariables", "CommandLineArguments",
                             "TestHostPath", "TestBundlePath"):
                     self.assertEqual(target[key], initial["TestConfigurations"][0]["TestTargets"][0][key])
-                self.assertIn("AnotherSuite/previouslyDisabled()", target["SkipTestIdentifiers"])
+                self.assertEqual(target["SkipTestIdentifiers"],
+                    ["AnotherSuite/previouslyDisabled()"] +
+                    [name.removeprefix("AnytypeTests/") for name in variant["exclude"]])
+                self.assertEqual(target["OnlyTestIdentifiers"],
+                    [name.removeprefix("AnytypeTests/") for name in variant["include"]])
                 self.assertEqual(binding["copied_sha256"], probe.sha(destination))
                 self.assertEqual(original.read_bytes(), before)
             with self.assertRaises(ValueError):
@@ -204,12 +208,24 @@ class EnumerationProbeControls(unittest.TestCase):
     def test_every_bounded_xcode_variant_is_enumeration_only_with_no_build(self):
         value = selection()
         attempts = probe.variants(value)
-        self.assertEqual(len(attempts), 4)
+        self.assertEqual([item["name"] for item in attempts],
+            ["suites-minus-seven-cli", "parameter-signature-terminal-parens-cli"])
+        suites = ["AnytypeTests/" + name for name in probe.component.SUITES]
+        self.assertEqual(attempts[0]["include"], suites)
+        self.assertEqual(attempts[0]["cli"], suites)
+        self.assertEqual(attempts[0]["exclude"], value["excluded"])
+        self.assertEqual(attempts[0]["cli_skip"], value["excluded"])
+        self.assertEqual(len(attempts[0]["cli_skip"]), 7)
+        self.assertEqual(sum(not name.endswith("()") for name in attempts[0]["cli_skip"]), 3)
         parameterized = [item for item in value["selected"] if not item.endswith("()")]
-        self.assertTrue(all(item in attempts[0]["include"] for item in parameterized))
-        self.assertTrue(all(item in attempts[1]["cli"] for item in parameterized))
-        self.assertTrue(all(item + "()" in attempts[3]["include"] for item in parameterized))
-        self.assertEqual(attempts[2]["exclude"], value["excluded"])
+        nonparameterized = [item for item in value["selected"] if item.endswith("()")]
+        self.assertEqual(len(parameterized), 8)
+        self.assertEqual(len(nonparameterized), 15)
+        expected_cli = sorted(nonparameterized + [item + "()" for item in parameterized])
+        self.assertEqual(sorted(attempts[1]["include"]), expected_cli)
+        self.assertEqual(sorted(attempts[1]["cli"]), expected_cli)
+        self.assertEqual(attempts[1]["exclude"], [])
+        self.assertEqual(attempts[1]["cli_skip"], [])
         for attempt in attempts:
             command = probe.enumeration_command(Path("copied.xctestrun"),
                         "00000000-1111-4222-8333-444444444444", Path("enumeration.json"), Path("probe.xcresult"), attempt)
@@ -220,7 +236,12 @@ class EnumerationProbeControls(unittest.TestCase):
             self.assertNotIn("build", command)
             self.assertNotIn("build-for-testing", command)
             self.assertNotIn("-scheme", command)
-            self.assertEqual(command.count("-only-testing"), len(attempt["cli"]))
+            self.assertEqual([arg.removeprefix("-only-testing:") for arg in command
+                              if arg.startswith("-only-testing:")], attempt["cli"])
+            self.assertEqual([arg.removeprefix("-skip-testing:") for arg in command
+                              if arg.startswith("-skip-testing:")], attempt["cli_skip"])
+            self.assertEqual(probe.ENUMERATION_TIMEOUT_SECONDS, 600)
+            self.assertEqual(probe.ENUMERATION_TOTAL_SECONDS, 2400)
 
 
 if __name__ == "__main__":

@@ -228,13 +228,15 @@ def variants(selection):
     exact = selection["selected"]
     suites = ["AnytypeTests/" + name for name in component.SUITES]
     decorated = [name if name.endswith("()") else name + "()" for name in exact]
+    # Run 45102030139 left every plist-only variant disabled. Its explicit CLI
+    # selected 15 nonparameterized declarations, not the required 23. Do not
+    # repeat those probes or the earlier failed bare-method selector.
+    # Both alternatives below are unqualified outbound grammar hypotheses.
     return [
-        dict(name="exact-plist-only", include=exact, exclude=[], cli=[]),
-        dict(name="exact-separate-argv", include=exact, exclude=[], cli=exact),
-        dict(name="suites-minus-seven-plist", include=suites, exclude=selection["excluded"], cli=[]),
-        # A bounded syntax hypothesis, not an accepted identifier translation.
-        # Full original compiled identities remain the only admission target.
-        dict(name="parameter-signature-terminal-parens", include=decorated, exclude=[], cli=[]),
+        dict(name="suites-minus-seven-cli", include=suites, exclude=selection["excluded"],
+             cli=suites, cli_skip=selection["excluded"]),
+        dict(name="parameter-signature-terminal-parens-cli", include=decorated, exclude=[],
+             cli=decorated, cli_skip=[]),
     ]
 
 
@@ -279,8 +281,12 @@ def enumeration_command(configuration, udid, output, result_bundle, variant):
     require(owned.valid_udid(udid), "Owned simulator UUID required")
     command = ["xcodebuild", "test-without-building", "-xctestrun", str(configuration),
                "-destination", "platform=iOS Simulator,id=" + udid, "-parallel-testing-enabled", "NO"]
+    # Use the same suite CLI spelling as the original successful 30-method
+    # discovery, with explicit per-method exclusions in the first hypothesis.
     for identifier in variant["cli"]:
-        command += ["-only-testing", identifier]
+        command.append("-only-testing:" + identifier)
+    for identifier in variant.get("cli_skip", []):
+        command.append("-skip-testing:" + identifier)
     command += ["-enumerate-tests", "-test-enumeration-style", "flat", "-test-enumeration-format", "json",
                 "-test-enumeration-output-path", str(output), "-resultBundlePath", str(result_bundle)]
     require(command.count("-enumerate-tests") == 1 and "build-for-testing" not in command,
@@ -459,11 +465,13 @@ def execute(args, receipt):
         runner.run(["xcrun", "simctl", "boot", udid], "boot-owned-simulator", 90)
         runner.run(["xcrun", "simctl", "bootstatus", udid, "-b"], "wait-owned-simulator", 180)
         receipt["probes"] = []
+        candidates = variants(selection)
+        require(len(candidates) == 2, "Exactly two new selector hypotheses are allowed")
         deadline = time.monotonic() + ENUMERATION_TOTAL_SECONDS
         receipt["enumeration_limits"] = dict(per_command_seconds=ENUMERATION_TIMEOUT_SECONDS,
                                              all_variants_seconds=ENUMERATION_TOTAL_SECONDS,
-                                             maximum_variants=4, includes_test_host_startup=True)
-        for variant in variants(selection):
+                                             maximum_variants=len(candidates), includes_test_host_startup=True)
+        for variant in candidates:
             name = variant["name"]
             configuration = original.with_name("SDK06-" + nonce + "-" + name + ".xctestrun")
             binding = copied_configuration(original, configuration, variant, runtime=pair["runtime"])
