@@ -275,6 +275,8 @@ def _admit_prior_batch_cleanup(evidence, binding, known, attempted):
         return None
     import coherent_original_products as original
     intent, execution, report = [read(path) for path in paths]
+    require(all(isinstance(value, dict) for value in (intent, execution, report)),
+            "Prior batch cleanup metadata must contain objects")
     if not all(value.get("protocol") == original.PROTOCOL and value.get("profile") == batch.COHERENT_HEART_PROFILE
         and value.get("source_sha") == original.SOURCE and value.get("control_source_sha") == binding["source_sha"]
         and value.get("run_id") == binding["run_id"] and value.get("run_attempt") == binding["run_attempt"]
