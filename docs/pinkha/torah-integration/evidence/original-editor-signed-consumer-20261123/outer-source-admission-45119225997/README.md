@@ -1,0 +1,7 @@
+# Outer source admission correspondence
+
+Run 45119225997 at 8d175b386010148706354398d8ccde39a7ec50f4 failed before the actual continuation began because the unchanged workflow still read the prior driver digest from FOCUSED_CONTROLS.json. The accepted framework-role helper was not executed in Apple runtime. The authenticated artifact is the original empty runtime ZIP; it is not a runtime/signature result.
+
+The old receipt, actual failure log and upload are preserved byte for byte. The retained 12 test case identities, counts and raw logs are unchanged. The current composition now binds the separately reviewed driver and its two role-control sources, the current metadata receipt, and the already executed six role controls. Neither those six controls nor the old 12/6/2 controls are rerun for this bookkeeping change. Historical nested correspondence and its old receipt references remain historical.
+
+Before publication, execute the one unchanged workflow source-admission block and the unchanged driver source-admission segment against the final populated checkout. Validate every active referenced source/log receipt and the 71-member role packet index. Store exact raw output, command/exit and final Git identity in the owned preparation receipt. This does not simulate Darwin, native execution or CI identity and grants no StageB activation.

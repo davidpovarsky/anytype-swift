@@ -1,0 +1,54 @@
+{
+  "run_id": 45119225997,
+  "attempt": 1,
+  "head_sha": "8d175b386010148706354398d8ccde39a7ec50f4",
+  "interval_seconds": 120,
+  "timeout_seconds": 3300,
+  "start_utc": "2026-11-23T05:40:49.245376+00:00",
+  "argv": [
+    "runuser",
+    "-u",
+    "ubuntu",
+    "--",
+    "gh",
+    "run",
+    "watch",
+    "45119225997",
+    "--repo",
+    "davidpovarsky/anytype-swift",
+    "--exit-status",
+    "--compact",
+    "--interval",
+    "120"
+  ],
+  "watcher_python_pid": 2203271,
+  "manual_dispatches": 0,
+  "child_pid": 2203278,
+  "process_group": 2203278,
+  "finished_utc": "2026-11-23T05:50:56.015347+00:00",
+  "watch_exit_code": 1,
+  "watch_timed_out": false,
+  "child_returncode": 1,
+  "child_reaped": true,
+  "final_metadata_exit_code": 0,
+  "actual_status": "completed",
+  "actual_conclusion": "failure",
+  "streams": {
+    "watch-1.stdout.log": {
+      "bytes": 1578,
+      "sha256": "e37761592b13698a6dcfd9aaa889e26bf250ade9e2f6920901a9b459e1b30178"
+    },
+    "watch-1.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "watch-1.final-run.stdout.json": {
+      "bytes": 13119,
+      "sha256": "2e236377f6a6dbe1d4f69e486367f88a30041500ec53d104acd333ae77c7b4b2"
+    },
+    "watch-1.final-run.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

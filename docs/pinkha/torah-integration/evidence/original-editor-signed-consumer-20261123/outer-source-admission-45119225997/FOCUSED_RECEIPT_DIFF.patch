@@ -1,0 +1,67 @@
+diff --git a/docs/pinkha/torah-integration/evidence/original-editor-signed-consumer-20261123/FOCUSED_CONTROLS.json b/docs/pinkha/torah-integration/evidence/original-editor-signed-consumer-20261123/FOCUSED_CONTROLS.json
+index 84efb4a1e2..43fa103218 100644
+--- a/docs/pinkha/torah-integration/evidence/original-editor-signed-consumer-20261123/FOCUSED_CONTROLS.json
++++ b/docs/pinkha/torah-integration/evidence/original-editor-signed-consumer-20261123/FOCUSED_CONTROLS.json
+@@ -1,5 +1,5 @@
+ {
+-  "current_metadata_controls_sha256": "99c8b2e936e4dabddce59a457acee6f5f58dbaf594341b3dfa3869169061b015",
++  "current_metadata_controls_sha256": "0cc28bc29442fd9dd785e1a8eb51efc9eac903c3090716820acade95fa3b7b03",
+   "current_upload_metadata_tests_run": 6,
+   "errors": [],
+   "expected_ids": [
+@@ -70,7 +70,7 @@
+   },
+   "retained_original_receipt_sha256": "a40305fc78975379fb3c7f30c9eeefcdf0c1fa7f2d6aefc7317ef9a68bb3041e",
+   "skipped": [],
+-  "source_context": "CURRENT_COMPOSITION_WITH_UNCHANGED_RETAINED_12_AND_6_NEW_UPLOAD_CONTROLS",
++  "source_context": "CURRENT_COMPOSITION_WITH_UNCHANGED_RETAINED_12_METADATA6_RAW2_AND_SEPARATE_ROLE6",
+   "source_sha256": {
+     ".github/workflows/pinkha-original-editor-signed-consumer.yml": "6c7353b0707611df0e73fee4fcc8d2ea26008f45e6513723d0fd705d619f72e9",
+     "Tools/OriginalEditor/Consumer/ConsumerApp.swift": "9aa9f4036de1f6d9b8c3b0f6670ac4008f1772535d8f8c5f958184a2cd262aff",
+@@ -99,13 +99,14 @@
+     "Tools/OriginalEditor/reviewed_equatable_macro.json": "30fe40f94381a74c70089a89b1ef8360aa70f083aeb74e48c77cd62db12aed59",
+     "Tools/OriginalEditor/run_framework_acceptance.py": "a33697c071ee655dcba1deb5b9d18645b455ec746d91c543f5c0cbd87cb68c1a",
+     "Tools/OriginalEditor/run_runtime_continuation.py": "afa65f43eee960073c2fd440cca482013a63716181b90aaa3d8f616520ce5c07",
+-    "Tools/OriginalEditor/run_signed_consumer_continuation.py": "154c9257582d144489a61c1fe0f0ede017c4733c2cd6e6018def27e28b5440f8",
++    "Tools/OriginalEditor/run_signed_consumer_continuation.py": "aa9e20b2870e8b355db364587d2e3b140f47969e2aca58c4089df7350daf4302",
+     "Tools/OriginalEditor/run_source_controls.py": "ccaac5381c23be9840c84bfcf4ee65ebf955b603cf2d3ba3e5feeced1f2e2584",
+     "Tools/OriginalEditor/runtime_continuation_controls.py": "9e60d70fcd21c4efd5702dcdcfba79bab67c38b374e637e457151c7cb1b85abb",
+     "Tools/OriginalEditor/runtime_continuation_inputs.json": "51fc7e47df710254e29cf2ef6e4e9ceb8c83743d6b5e3f361099a7f7991fc032",
+     "Tools/OriginalEditor/runtime_continuation_observation.py": "6bc82f3a5676ffe5b0c00228ec5b7a6c630beb7b599a308b07c4787885391170",
+     "Tools/OriginalEditor/runtime_continuation_process.py": "d55f83a6eb3f3334356087813743dce773ec74b7c07695f2184d77c4a07d212f",
+     "Tools/OriginalEditor/signed_consumer_continuation_inputs.json": "3312d91952a8ece46c9861225fdb7c12376ebc0f05d1df08c83fddf027fb98f9",
++    "Tools/OriginalEditor/signed_consumer_framework_roles.py": "f1dc86b55fe92546b26dc999b756453246b0fdd147a48805170b754ca31e9ceb",
+     "Tools/OriginalEditor/test_amplitude_simulator_signing.py": "df86e8c42a2ff0a9b59df1bb86ae45480c714b606964ff3f80b097f09af805be",
+     "Tools/OriginalEditor/test_anycrypto_simulator_signing.py": "4f185389be983df6880006487ec7b105030347c8ccc865454c58ec44d82d9f8b",
+     "Tools/OriginalEditor/test_clang_product_closure.py": "6921b173e4aabd56c9bdf9aa71a3ae2aeb1d0bb5387bddbf8cebc6e48e8ee981",
+@@ -118,6 +119,7 @@
+     "Tools/OriginalEditor/test_host_framework_contract.py": "45b27cbe19368d45b088cd7e22f173296fb1ddba37ba35a10b1bb66893b342ec",
+     "Tools/OriginalEditor/test_observed_package_simulator_signing.py": "5159e13de9940087c9647ceca3215d9062fa264cbab7429487eb615710c6557b",
+     "Tools/OriginalEditor/test_signed_consumer_continuation.py": "c6694f168adece8dee79e1ee5f8aeb71e851d490bc6a70e1a06f0715e338409d",
++    "Tools/OriginalEditor/test_signed_consumer_framework_roles.py": "c7f0c1c42fc223e271acd338a0528773047f235f36b8aad13efd49e3cb9004ca",
+     "Tools/OriginalEditor/test_symbolgraph_import_context.py": "66c093f34212f84dd115087cda0662a32432bbd5e101374f88a5ee95757ce4fb",
+     "Tools/OriginalEditor/verify_reviewed_macro_controls.py": "9e7c00c9d99f4cba7777ccdd84c0ef6e6ff47d59e17e6266ba1a8d620f3cbddb"
+   },
+@@ -136,5 +138,21 @@
+     "test_signed_consumer_continuation.LaunchHelpStreams.test_oversized_help_is_rejected"
+   ],
+   "status": "PASS",
+-  "tests_run": 12
++  "tests_run": 12,
++  "framework_role_source_correspondence": {
++    "prior_receipt_sha256": "f7ebb8bcb7405407e4f58b1f0a7a948ae7e6f729ebbf3796c6b2d06afb8d7c68",
++    "prior_receipt_path": "outer-source-admission-45119225997/FOCUSED_CONTROLS.before.json",
++    "correspondence_path": "outer-source-admission-45119225997/FOCUSED_GATE_CORRESPONDENCE.json",
++    "correspondence_sha256": "c6ea83c622e0522eebee485838efdeeb504251386ad08922a8810c64d065d4d1",
++    "retained_12_reexecuted": false,
++    "current_metadata_controls_sha256": "0cc28bc29442fd9dd785e1a8eb51efc9eac903c3090716820acade95fa3b7b03",
++    "current_raw_capture_controls_sha256": "9884ad12e822ac7e3c82fe021f9ad7214b302221d8d95463a6e28b6083d2423c",
++    "current_framework_role_controls_sha256": "6887b15dc43ba092ea267a7c9cb94ae7025323078d2c0aaf892be68783b7a12e",
++    "new_current_composition_inputs": [
++      "Tools/OriginalEditor/signed_consumer_framework_roles.py",
++      "Tools/OriginalEditor/test_signed_consumer_framework_roles.py"
++    ],
++    "new_role_controls_reexecuted": false,
++    "role_control_source": "8d175b386010148706354398d8ccde39a7ec50f4"
++  }
+ }
