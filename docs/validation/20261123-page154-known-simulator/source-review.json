@@ -1,0 +1,80 @@
+{
+  "status": "FROZEN_SOURCE_POLICY_ONLY_NEW_CONTROLS_NOT_RUN",
+  "base_source": "5a6a05d9152553b1bee661eadc7b539b25b10ae1",
+  "original_failed_page_run": "45106989988",
+  "original_failed_page_artifact_sha256": "ee61c8f63113d40fb844a83cb5dab41954d2e89a4e1cc608c49aabde25012013",
+  "original_page_primary_timeout_seconds": 180,
+  "original_page_cleanup_timeouts_seconds": [
+    30,
+    30
+  ],
+  "prior_observed_pair_origin": {
+    "run_id": "45096079315",
+    "source_sha": "d254a4a1ccd9288f585ff9374088cbaf965b36b4",
+    "conclusion": "FAIL",
+    "artifact_sha256": "02b180cd51bf905161c7254c9daa41430de46803290df9cfc3e6eb20ba636f5d",
+    "preflight_member": "preflight/preflight.json",
+    "preflight_sha256": "277d97e146ad951da127bb4ee339c32079ce5ecf434047118bd98df38d39a349",
+    "execution_member": "execution.json",
+    "execution_sha256": "439507093898b297b5b007c69fc885ddf7baf95fcc67fa7aa5e9101a4ffd9426",
+    "actual_native_devices": [
+      {
+        "architecture": "arm64",
+        "deviceId": "6BA9F042-CEB5-49CF-9301-D8395698D8A5",
+        "deviceName": "Pinkha-UI27-45096079315-ipad",
+        "modelName": "iPad Pro 13-inch (M5)",
+        "osBuildNumber": "24A434",
+        "osVersion": "27.0",
+        "platform": "iOS Simulator"
+      }
+    ],
+    "actual_ui_devices": [
+      {
+        "architecture": "arm64",
+        "deviceId": "6BA9F042-CEB5-49CF-9301-D8395698D8A5",
+        "deviceName": "Pinkha-UI27-45096079315-ipad",
+        "modelName": "iPad Pro 13-inch (M5)",
+        "osBuildNumber": "24A434",
+        "osVersion": "27.0",
+        "platform": "iOS Simulator"
+      }
+    ],
+    "actual_native_passed": 1,
+    "actual_ui_passed": 1
+  },
+  "policy": {
+    "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+    "version": "27.0",
+    "build": "24A434",
+    "architecture": "arm64",
+    "device": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+    "model": "iPad17,4",
+    "fallback_allowed": false,
+    "original_uuid_reused": false,
+    "current_inventory_required": true,
+    "boot_budget_seconds": 180,
+    "cleanup_budget_seconds": 30
+  },
+  "source_sha256": {
+    "Tools/PinkhaSemanticAnchorWire/apple_consumer/consumer_simulator.py": "3282bc162cef0486cd334fbdeb2ed2dcdf79980acf1e8d675badd26f273f56e1",
+    "Tools/PinkhaSemanticAnchorWire/apple_consumer/test_consumer_simulator.py": "1e3bcb0951ec5ba92f7f3c3335426a238b99758d41bf9525d8a5d8fa55f7b7ae",
+    "Tools/PinkhaSemanticAnchorWire/apple_consumer/run.py": "17205ab71cdfd8111fc21e6d070a42f621be727e47df9457685557bd22ee12fe",
+    "Tools/PinkhaSimulatorGate/simulator_selection.py": "2309bb55b3752774bffc588a7c489392daa7ceb3b7279f6a9ec870899a1f1d5f"
+  },
+  "original_run_py_sha256": "b74fd3a9b0cb6e8c5dad637df56af011ae863fa3a3c2cb5b6bb9f8ba437ead58",
+  "exact_two_line_inverse_equal": true,
+  "shared_selection_helper_byte_identical": true,
+  "new_tests_executed": 0,
+  "old_tests_executed": 0,
+  "product_tests_executed": 0,
+  "fixture_sha256": {
+    "original-page-available-runtimes.log": "df0c2c31dd527d22170a291329a8886b9e06e467679406e626c68edec36a6bdd",
+    "original-page-available-device-types.log": "f663b275b7760a98ef28ff760c8efc49703530dd1b45c3d70fa755047bb799a0",
+    "original-hanlin-preflight.json": "277d97e146ad951da127bb4ee339c32079ce5ecf434047118bd98df38d39a349"
+  },
+  "limits": [
+    "No causal attribution to iOS27.2",
+    "No new Page154 acceptance",
+    "Prior lane failure and cleanup failures remain original"
+  ]
+}
