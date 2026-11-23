@@ -4,6 +4,7 @@ import AnytypeCore
 import HanlinMiniAppsBridge
 import ProtobufMessages
 import Services
+import SwiftProtobuf
 import Testing
 @testable import Anytype
 
@@ -113,6 +114,166 @@ struct PinkhaMiniAppsNativePreparationTests {
         let destination = try fixtureURL().deletingLastPathComponent().appendingPathComponent("miniapps-native-readback.json")
         try JSONSerialization.data(withJSONObject: proof, options: [.sortedKeys]).write(to: destination, options: .atomic)
         print("MINIAPPS_NATIVE_HEART_READBACK_PASS")
+    }
+
+    @Test("Apply selected text through the real editor adapter, retain native identity, and preserve newer content")
+    func applySelectedTextAndPreserveNewerNativeContent() async throws {
+        let environment = ProcessInfo.processInfo.environment
+        try #require(environment["PINKHA_SIMULATOR_UI_DISPOSABLE"] == "1")
+        let fixture = try JSONDecoder().decode([String: String].self, from: Data(contentsOf: fixtureURL()))
+        try #require(fixture["sourceSHA"] == environment["GITHUB_SHA"] && fixture["runID"] == environment["GITHUB_RUN_ID"])
+        let accountID = try #require(fixture["accountID"])
+        let spaceID = try #require(fixture["spaceID"])
+        let clock = ContinuousClock(), deadline = clock.now.advanced(by: .seconds(45))
+        while Container.shared.accountManager().account.id != accountID && clock.now < deadline {
+            try await Task.sleep(for: .milliseconds(100))
+        }
+        try #require(Container.shared.accountManager().account.id == accountID)
+        _ = try await Container.shared.activeSpaceManager().setActiveSpace(spaceId: spaceID)
+        let object = try await Container.shared.objectActionsService().createObject(
+            name: "MiniApps native adapter " + UUID().uuidString, typeUniqueKey: .page,
+            shouldDeleteEmptyObject: false, shouldSelectType: false, shouldSelectTemplate: false,
+            spaceId: spaceID, origin: .none, templateId: nil)
+        let state = EditorPageModuleAssembly().buildStateModel(
+            data: .init(objectId: object.id, spaceId: spaceID), output: nil, showHeader: true, torahSession: nil)
+        let document = state.model.document
+        try await document.open()
+        do {
+            // This method tests the native adapter, not another producer/UI journey.
+            // Its mailbox is isolated within the actual entitled shared container.
+            let shared = try #require(FileManager.default.containerURL(
+                forSecurityApplicationGroupIdentifier: "group.com.itorah.shared"))
+            let mailbox = shared.appendingPathComponent("native-adapter-" + UUID().uuidString, isDirectory: true)
+            let store = try MiniAppBridgeStore(containerURL: mailbox)
+            defer { try? FileManager.default.removeItem(at: mailbox) }
+            let prefix = "Prefix ", selected = "עברית 👨‍👩‍👧", suffix = " suffix"
+            let original = prefix + selected + suffix
+            let replacement = "חדש 🙂"
+            let expected = prefix + replacement + suffix
+            let blockID = try await Container.shared.blockService().addFirstBlock(contextId: object.id,
+                info: .empty(content: .text(.plain(original, contentType: .text))))
+            let childID = try await Container.shared.blockService().add(contextId: object.id, targetId: blockID,
+                info: .empty(content: .text(.plain("Unchanged child", contentType: .text))), position: .inner)
+            let siblingID = try await Container.shared.blockService().add(contextId: object.id, targetId: blockID,
+                info: .empty(content: .text(.plain("Unchanged sibling", contentType: .text))), position: .bottom)
+            let prefixMark = Anytype_Model_Block.Content.Text.Mark.with {
+                $0.type = .bold; $0.range = NSRange(location: 0, length: prefix.utf16.count).asMiddleware
+            }
+            let suffixMark = Anytype_Model_Block.Content.Text.Mark.with {
+                $0.type = .italic
+                $0.range = NSRange(location: (prefix + selected).utf16.count, length: suffix.utf16.count).asMiddleware
+            }
+            let marks = Anytype_Model_Block.Content.Text.Marks.with { $0.marks = [prefixMark, suffixMark] }
+            try await state.model.blockActionService.setText(contextId: object.id, blockId: blockID,
+                middlewareString: .init(text: original, marks: marks))
+            let before = try await Container.shared.objectLifecycleService().openForPreview(
+                contextId: object.id, spaceId: spaceID)
+            let originalBlock = try #require(before.blocks.first { $0.id == blockID })
+            try #require(originalBlock.text.text == original && originalBlock.text.marks == marks)
+            try #require(originalBlock.childrenIds == [childID])
+            let tree = Dictionary(uniqueKeysWithValues: before.blocks.map { ($0.id, $0.childrenIds) })
+            let request = try await selectionRequest(editor: state.viewController, store: store,
+                blockID: blockID, expectedText: original, selectedText: selected)
+            let result = MiniAppResult(requestID: request.id, operation: .replaceSelection,
+                items: [.init(kind: .text, text: replacement)])
+            _ = try store.enqueue(request)
+            try store.complete(result)
+            let preserved = try await PinkhaMiniAppsResultApplier.apply(
+                request: request, result: result, editor: state.viewController, store: store)
+            try #require(!preserved)
+            let replaced = try await Container.shared.objectLifecycleService().openForPreview(
+                contextId: object.id, spaceId: spaceID)
+            let replacementBlock = try #require(replaced.blocks.first { $0.id == blockID })
+            var shiftedSuffix = suffixMark
+            shiftedSuffix.range = NSRange(location: (prefix + replacement).utf16.count, length: suffix.utf16.count).asMiddleware
+            let expectedMarks = Anytype_Model_Block.Content.Text.Marks.with { $0.marks = [prefixMark, shiftedSuffix] }
+            try #require(replacementBlock.text.text == expected && replacementBlock.text.marks == expectedMarks)
+            try #require(replacementBlock.text.style == originalBlock.text.style)
+            try #require(Dictionary(uniqueKeysWithValues: replaced.blocks.map { ($0.id, $0.childrenIds) }) == tree)
+            try #require(replaced.blocks.first(where: { $0.id == childID })?.text.text == "Unchanged child")
+            try #require(replaced.blocks.first(where: { $0.id == siblingID })?.text.text == "Unchanged sibling")
+
+            let conflictRequest = try await selectionRequest(editor: state.viewController, store: store,
+                blockID: blockID, expectedText: expected, selectedText: replacement)
+            let newerText = expected + " — subsequent native edit"
+            try await state.model.blockActionService.setText(contextId: object.id, blockId: blockID,
+                middlewareString: .init(text: newerText, marks: expectedMarks))
+            let replayed = try await PinkhaMiniAppsResultApplier.apply(
+                request: request, result: result, editor: state.viewController, store: store)
+            try #require(!replayed)
+            let afterReplay = try await Container.shared.objectLifecycleService().openForPreview(
+                contextId: object.id, spaceId: spaceID)
+            try #require(afterReplay.blocks.first(where: { $0.id == blockID })?.text.text == newerText)
+            try #require(Dictionary(uniqueKeysWithValues: afterReplay.blocks.map { ($0.id, $0.childrenIds) }) == tree)
+            let alternate = "Preserved MiniApps result " + UUID().uuidString
+            let conflictResult = MiniAppResult(requestID: conflictRequest.id, operation: .replaceSelection,
+                items: [.init(kind: .text, text: alternate)])
+            _ = try store.enqueue(conflictRequest)
+            try store.complete(conflictResult)
+            let conflictPreserved = try await PinkhaMiniAppsResultApplier.apply(
+                request: conflictRequest, result: conflictResult, editor: state.viewController, store: store)
+            try #require(conflictPreserved)
+            let conflictReplayed = try await PinkhaMiniAppsResultApplier.apply(
+                request: conflictRequest, result: conflictResult, editor: state.viewController, store: store)
+            try #require(conflictReplayed)
+            try #require(try store.pendingResults(sourceAppID: PinkhaMiniAppsContext.sourceAppID).isEmpty)
+            try await document.close()
+            try await document.open()
+            let persisted = try await Container.shared.objectLifecycleService().openForPreview(
+                contextId: object.id, spaceId: spaceID)
+            let current = try #require(persisted.blocks.first { $0.id == blockID })
+            try #require(current.text.text == newerText && current.text.marks == expectedMarks)
+            try #require(current.childrenIds == [childID] && current.text.style == originalBlock.text.style)
+            try #require(persisted.blocks.first(where: { $0.id == childID })?.text.text == "Unchanged child")
+            try #require(persisted.blocks.first(where: { $0.id == siblingID })?.text.text == "Unchanged sibling")
+            let preservedOutputs = persisted.blocks.filter { $0.text.text == alternate }
+            try #require(preservedOutputs.count == 1 && persisted.blocks.count == before.blocks.count + 1)
+            let outputID = preservedOutputs[0].id
+            try #require(Set(persisted.blocks.map(\.id)).subtracting([outputID]) == Set(before.blocks.map(\.id)))
+            try #require(preservedOutputs[0].fields.fields[PinkhaMiniAppsResultApplier.receiptField]?.stringValue
+                == conflictRequest.id.uuidString.lowercased() + ":0")
+            for (id, children) in tree {
+                let actual = try #require(persisted.blocks.first { $0.id == id })
+                try #require(actual.childrenIds.filter { $0 != outputID } == children)
+            }
+            let proof: [String: Any] = ["status": "NATIVE_MINIAPPS_ADAPTER_PASS",
+                "sourceSHA": try #require(environment["GITHUB_SHA"]),
+                "runID": try #require(environment["GITHUB_RUN_ID"]), "objectID": object.id,
+                "blockID": blockID, "childID": childID, "siblingID": siblingID,
+                "requestIDs": [request.id.uuidString.lowercased(), conflictRequest.id.uuidString.lowercased()],
+                "preservedOutputBlockID": outputID, "preservedOutputCount": preservedOutputs.count,
+                "replacementPreservedBlockID": true, "replacementPreservedTree": true,
+                "nativeMarksPreserved": true, "replayPreservedNewerText": true,
+                "conflictPreservedNewerText": true, "producerRoundTrips": 0]
+            let destination = try fixtureURL().deletingLastPathComponent()
+                .appendingPathComponent("miniapps-native-adapter-readback.json")
+            try JSONSerialization.data(withJSONObject: proof, options: [.sortedKeys]).write(to: destination, options: .atomic)
+            try await document.close()
+            print("MINIAPPS_NATIVE_ADAPTER_READBACK_PASS")
+        } catch {
+            try? await document.close()
+            throw error
+        }
+    }
+
+    private func selectionRequest(editor: EditorPageController, store: MiniAppBridgeStore,
+                                  blockID: String, expectedText: String, selectedText: String) async throws -> MiniAppInvocation {
+        let context = try await PinkhaMiniAppsContext.capture(editor: editor, store: store)
+        let source = context.source
+        let data = Data(try #require(source.metadata["anytype.blocks"]).utf8)
+        let snapshots = try JSONDecoder().decode([PinkhaMiniAppsBlockSnapshot].self, from: data)
+        try #require(snapshots.first(where: { $0.id == blockID })?.text == expectedText)
+        let range = (expectedText as NSString).range(of: selectedText)
+        try #require(range.location != NSNotFound && range.length > 0)
+        var metadata = source.metadata
+        metadata["anytype.insertionAnchor"] = blockID
+        return MiniAppInvocation(appID: "nativeapp.textstudio", source: .init(
+            appID: source.appID, displayName: source.displayName, documentID: source.documentID,
+            documentTitle: source.documentTitle, revision: source.revision,
+            selection: .init(location: range.location, length: range.length, text: selectedText, blockIDs: [blockID]),
+            documentText: source.documentText, kind: source.kind, locator: source.locator,
+            sceneID: source.sceneID, metadata: metadata), inputs: [.init(kind: .text, text: selectedText)],
+            operation: .replaceSelection)
     }
 
     private func fixtureURL() throws -> URL {

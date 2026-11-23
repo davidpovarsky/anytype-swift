@@ -23,6 +23,7 @@ from owner_signing import verify as verify_owner_signing
 
 PREPARE = "PinkhaMiniAppsNativePreparationTests/prepareMiniAppsDocument"
 VERIFY = "PinkhaMiniAppsNativePreparationTests/verifyReturnedNativeDocument"
+ADAPTER = "PinkhaMiniAppsNativePreparationTests/applySelectedTextAndPreserveNewerNativeContent"
 UI_RETURN = "MiniAppsNativeAcceptanceUITests/testNativeEditorPickerTextStudioReturnAndColdReopen"
 UI_REPLAY = "MiniAppsNativeAcceptanceUITests/testDuplicateCallbackDoesNotInsertAgain"
 
@@ -94,7 +95,7 @@ def execute(args, receipt):
     require(not derived.exists(), "This focused build requires fresh products")
     receipt.update(source_sha=head, run_id=os.environ["GITHUB_RUN_ID"], run_attempt=os.environ["GITHUB_RUN_ATTEMPT"],
                    companion=producer, heart=installation, native_binding=binding, device=udid,
-                   selected_methods=[PREPARE, UI_RETURN, UI_REPLAY, VERIFY], configuration=owner["configuration"],
+                   selected_methods=[PREPARE, UI_RETURN, UI_REPLAY, VERIFY, ADAPTER], configuration=owner["configuration"],
                    owner_signing=owner,
                    release_accepted=False, physical_sharing="NOT_PROVEN_BY_SIMULATOR")
 
@@ -211,10 +212,19 @@ def execute(args, receipt):
     require(proof["status"] == "NATIVE_HEART_READBACK_PASS" and proof["sourceSHA"] == head
             and proof["requestIDs"] == [value.lower() for value in request_ids], "Final native readback receipt differs")
     write(evidence / "native-readback.json", proof)
+    test(native_configuration, "AnytypeTests", ADAPTER, "native-adapter")
+    adapter = json.loads((data_container() / "Library/Application Support/miniapps-native-adapter-readback.json").read_text())
+    require(adapter["status"] == "NATIVE_MINIAPPS_ADAPTER_PASS" and adapter["sourceSHA"] == head
+            and adapter["runID"] == os.environ["GITHUB_RUN_ID"] and adapter["producerRoundTrips"] == 0
+            and adapter["preservedOutputCount"] == 1, "Native selected-text adapter receipt differs")
+    for key in ("replacementPreservedBlockID", "replacementPreservedTree", "nativeMarksPreserved",
+                "replayPreservedNewerText", "conflictPreservedNewerText"):
+        require(adapter[key] is True, "Native adapter did not prove " + key)
+    write(evidence / "native-adapter-readback.json", adapter)
     require(git(app, "rev-parse", "HEAD") == head, "Source changed during native acceptance")
     verify_sdk(app / "Dependencies/Hanlin")
     receipt.update(status="MINIAPPS_TWO_APP_NATIVE_PASS", phase="COMPLETE",
-                   actual_native_preparation=1, actual_ui_methods=2, actual_native_readback=1,
+                   actual_native_preparation=1, actual_ui_methods=2, actual_native_readback=1, actual_native_adapter=1,
                    actual_companion_invocations=2, warm_callback=True, cold_callback=True,
                    physical_sharing="NOT_PROVEN_BY_SIMULATOR")
     save("COMPLETE")
