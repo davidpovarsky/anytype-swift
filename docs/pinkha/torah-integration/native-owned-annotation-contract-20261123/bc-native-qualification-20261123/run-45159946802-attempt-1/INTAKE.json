@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "created_utc": "2026-11-23T11:23:53.804246+00:00",
+  "repository": "davidpovarsky/anytype-swift",
+  "run_id": 45159946802,
+  "attempt": 1,
+  "source": "1ec511b046fff1c46aaeb8425b98932a19400ad2",
+  "source_tree": "5ad7c12f9244e168b618189682cf6413672cd312",
+  "branch": "codex/otzaria-native-import-qualification-20261123",
+  "workflow": ".github/workflows/otzaria-owned-annotation-import.yml",
+  "run_url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45159946802",
+  "actual_run_status": "completed",
+  "actual_run_conclusion": "failure",
+  "actual_run_updated_utc": "2026-11-23T11:06:58Z",
+  "job": {
+    "id": 137642463966,
+    "conclusion": "cancelled",
+    "runner_id": 0,
+    "runner_name": "",
+    "started_at": "2026-11-23T10:51:57Z",
+    "completed_at": "2026-11-23T11:06:57Z",
+    "executed_steps": 0
+  },
+  "original_check_annotation": "The job was not acquired by Runner of type hosted even after multiple attempts",
+  "classification": "HOSTED_RUNNER_ALLOCATION_FAILURE",
+  "artifacts": {
+    "total_count": 0,
+    "native_zip_available": false
+  },
+  "native_execution": {
+    "producer": "NOT_RUN",
+    "compilation": "NOT_RUN",
+    "actual_compiler_closure": "NOT_RUN",
+    "required_compiler_inputs_in_source_manifest": 87,
+    "actual_compiled_input_count": 0,
+    "parent": "NOT_RUN",
+    "PASS": 0,
+    "FAIL": 0,
+    "SKIP": 0,
+    "NOT_RUN": 9,
+    "leaves": [
+      {
+        "name": "text",
+        "status": "NOT_RUN"
+      },
+      {
+        "name": "format",
+        "status": "NOT_RUN"
+      },
+      {
+        "name": "nested",
+        "status": "NOT_RUN"
+      },
+      {
+        "name": "attachment",
+        "status": "NOT_RUN"
+      },
+      {
+        "name": "ExistingGraphIdentityRefused",
+        "status": "NOT_RUN"
+      },
+      {
+        "name": "CapturedAccountMismatchRefused",
+        "status": "NOT_RUN"
+      },
+      {
+        "name": "ActualFreshCreatorCollisionRefused",
+        "status": "NOT_RUN"
+      },
+      {
+        "name": "SignedReaderRevocationAfterPrepareRefused",
+        "status": "NOT_RUN"
+      },
+      {
+        "name": "RegisteredCancellationAndHistoricalAppRefusal",
+        "status": "NOT_RUN"
+      }
+    ]
+  },
+  "watcher": {
+    "job_id": "job_876d557ec9f1",
+    "pid": 2695019,
+    "exit_code": 0,
+    "process_absent": true,
+    "lock_released": true,
+    "lock_acquirable": true,
+    "finished_utc": "2026-11-23T11:07:19.748251+00:00",
+    "cadence_seconds": 120,
+    "window_limit_seconds": 3300
+  },
+  "source_scope": {
+    "active_gate_unchanged": true,
+    "source_reviews_are_native_results": false,
+    "historical_36_replayed": false,
+    "rpc_sdk_host_body_cold_or_ack_accepted": false
+  },
+  "next_action": {
+    "source_fix_supported": false,
+    "retry_performed": false,
+    "root_coordination_required": true,
+    "same_run_attempt_2_admitted_by_current_job_condition": false,
+    "proposed_continuation": "One explicitly authorized metadata-only child of the failed source with identical full Git tree, resulting in a distinct push run/attempt 1; no predicate or source-byte changes."
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "observed_utc": "2026-11-23T10:45:32.892196+00:00",
+  "reviewed_source": "815369ef8bbd08b45b955f29154f1a7ee4c60f9a",
+  "decision": "DRIVER_SEMANTICS_ACCEPTED_SUBJECT_TO_EXPLICIT_WORKFLOW_AND_FIXTURE_SUPERSESSION_NO_ACTIVATION_OF_815369",
+  "driver": {
+    "path": "docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-native-qualification-20261123/run_native_closed_import.py",
+    "bytes": 43076,
+    "sha256": "8e2a9bc91b2087858072a9221f33135433ee6cb3c273a94cdf03bbcbc98f7c1f",
+    "full_body_read": true,
+    "executed_or_imported": false
+  },
+  "execution_manifest_sha256": "03458b09cc2226daa7740da45c9494c976ac5ef48000ac0c4740fe07f1edb513",
+  "independent_source_correspondence": {
+    "path": "/mnt/development/projects/diagnostics/otzaria-native-closed-import-peer-review-20261123/SOURCE_CORRESPONDENCE_815369.json",
+    "sha256": "9524ae67c1ba86f1e422108df13a03494f7874d46206069c2ef45515804378a8",
+    "indexed_rows": 59,
+    "complete_packet_files": 60,
+    "retained_real_git_inputs": 48,
+    "frozen_candidate_files": 12,
+    "frozen_fixture_files": 2,
+    "control_rows": 5,
+    "unchanged_heart_model_proto_rpc_files": 11,
+    "original_module_hashes": {
+      "go.mod": "0c506b9ab921a9bfea985871c9c912d362147a6bb76e697ee62c51a2eb678de7",
+      "go.sum": "7c873be1e5b4c65e5e46d18167ae6bc29f0f5b51c459a8398d75ab22f0b2432d",
+      "tantivity_sha256.txt": "14a78977c8b08e3e976cfbe130a6092aaec707e7515aa1811326e1c028cd2948"
+    },
+    "compiler_inputs": {
+      "non_test_product": 81,
+      "additive_fixture": 2,
+      "original_generated_models": 4,
+      "total": 87
+    }
+  },
+  "source_closure_review": [
+    "Exact triggered control HEAD, workflow-manifest SHA and actual manifest Git bytes are admitted before execution.",
+    "Each retained input has actual byte length, SHA256, Git blob and HEAD-byte checks; local provenance was independently compared to its real original revision:path.",
+    "Frozen composition8815 maps35 r14 preimages,43 original ordered native inputs and12 candidate overlays to83 final afterimages; product composition remains62e5.",
+    "Two fixture files are additive and checked against sealed fixture92b;87 required compiler files are independently rederived and required in actual go list -deps -test -json closure.",
+    "Go1.26.5 Darwin ARM64, local toolchain, readonly modules, original Tantivy archive/link file hashes and actual emitted executable hash/build information are source-bound."
+  ],
+  "execution_review": {
+    "native_parent": "TestOtzariaOwnedAnnotationClosedNativeImport",
+    "selector": "^TestOtzariaOwnedAnnotationClosedNativeImport$",
+    "leaf_cases": [
+      "text",
+      "format",
+      "nested",
+      "attachment",
+      "ExistingGraphIdentityRefused",
+      "CapturedAccountMismatchRefused",
+      "ActualFreshCreatorCollisionRefused",
+      "SignedReaderRevocationAfterPrepareRefused",
+      "RegisteredCancellationAndHistoricalAppRefusal"
+    ],
+    "count": 1,
+    "actual_fixture_leaf_names_read": true,
+    "original_historical_selectors_selected": false,
+    "acceptance": "Exactly one run and PASS terminal for each of9 leaves and the parent; exactly one package PASS; no missing, fail, skip, duplicate or unexpected test.",
+    "actual_case_intake_saved_before_acceptance": true,
+    "process_owner_sha256": "017778c096eca985774bd1a4f1e1e117ac3dee6ac08082c2a9793273826aa196",
+    "process_owner_source_read": "Commands lines72-204, dependency_inputs222-254, native_library_inputs257-270.",
+    "process_ownership": "Original command intent persisted before Popen; new session/group id persisted before wait; finite monotonic budget; TERM then KILL applies to owned group and checks descendants even after parent exits; parent reaped; undrained group forces failure and preserves native data.",
+    "deadlines_seconds": {
+      "workflow_absolute_from_start": 6900,
+      "allowed_absolute_max_future": 7100,
+      "reserved_finalization": 180,
+      "native_test_timeout": 1800,
+      "native_command_timeout": 1950,
+      "original_compile_command_timeout": 3600,
+      "group_term_wait": 10,
+      "group_reap_wait": 10,
+      "group_absence_wait": 5
+    },
+    "environment": "Minimal original build/native variables; no provider credential inheritance; GOTOOLCHAIN local, GOWORK off, GOENV off, GOFLAGS readonly."
+  },
+  "finally_review": {
+    "compiled_native_or_collector_failure": "The independent finally path runs the actual composed source/dependency/module/link/executable checks regardless of native or collector success.",
+    "precomposition_failure": "If complete compose_native has not returned, stability remains NOT_REACHED and final acceptance is FAIL; no fabricated completed closure.",
+    "actual_checks": "Every declared Go input and composed product/test file, unchanged model/proto/RPC file, module checksum, available actual link inputs, available executable, exact control source rows and control HEAD.",
+    "cleanup": "Original process-group drain and real fixture operation/account/stage/directory cleanup facts gate removal. Failure is retained, not rewritten as cleanup success.",
+    "historic_missing_final_gate": "No retrospective substitution for historical45139622096."
+  },
+  "evidence_review": {
+    "native_json_intake_max_bytes": 134217728,
+    "native_fixture_json_max_bytes": 524288,
+    "registration_phase_json_max_bytes": 131072,
+    "maximum_registration_phases_per_native_owner": 21,
+    "archive_max_bytes": 1048576,
+    "archive_max_members": 512,
+    "archive_max_expanded_bytes": 8388608,
+    "structure": "Exact expected top-level directories and per-owner filenames; owned non-symlink paths and actual regular files; safe unique ZIP names, exact lengths, CRC/member payload hashes; all source ZIP members and native mapping-aware readback histories retained.",
+    "post_failure": "Original command/result files and raw evidence remain indexed even if acceptance/collector fails.",
+    "scope_limit": "Raw subprocess logs retain the original finite-process-owner behavior; this review does not claim a new universal per-stream byte ceiling or complete Apple SDK/generated-cgo header closure.",
+    "private_data": "Native wallet/account databases remain in owned work/TMPDIR; evidence upload path is separate. No Hanlin/provider action or SDK/Host acknowledgement is qualified."
+  },
+  "required_supersessions": [
+    {
+      "id": "CONTROL_CHECKOUT_HISTORY",
+      "found_by": "/root/original_rpc",
+      "status": "ROOT_ACCEPTED_FIX_PREPARATION",
+      "finding": "Template omitted fetch-depth; actions/checkout v4 defaults1, but main requires git diff against62e5. Full local mirror admission did not prove that shallow CI checkout has the base.",
+      "approved_fix": "Explicit control-checkout fetch-depth0, rebind exact template, manifest and API tree; Heart checkout remains separately pinned.",
+      "primary_source": "https://raw.githubusercontent.com/actions/checkout/v4/action.yml",
+      "primary_source_lines": [
+        69,
+        70,
+        71
+      ],
+      "primary_source_excerpt": "fetch-depth default: 1"
+    },
+    {
+      "id": "ACTUAL_ACCOUNT_STOP_OWNER",
+      "found_by": "/root",
+      "status": "FIXTURE_OWNER_PREPARING_SEPARATE_CORRECTION",
+      "finding": "Root found a30s stopActual timeout discards the pending actual Stop completion handle, allowing a second cleanup Stop.",
+      "owner_scope": "Retained per-Service completion record and joining before GetApp nil shortcut; product62e5 unchanged.",
+      "peer_scope": "Fixture logic correction was not reviewed or executed by this driver peer; new fixture revision/hash and driver constant/manifest must be explicitly rebound."
+    }
+  ],
+  "no_other_driver_semantic_blocker_found": true,
+  "required_next_review": "Read the superseding exact fixture/workflow/manifest/source-pin delta before activation; do not apply this receipt as acceptance of unrevised815369.",
+  "actions_not_performed": [
+    "Owner verifier",
+    "Synthetic controls",
+    "gofmt",
+    "Compiler/build",
+    "Native execution",
+    "Workflow dispatch",
+    "API polling",
+    "Source edits"
+  ]
+}
