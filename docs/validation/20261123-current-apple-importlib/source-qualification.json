@@ -1,0 +1,35 @@
+{
+  "AppleExecutions": 0,
+  "afterBytes": 52243,
+  "afterSHA256": "eafc05a212751bb644a96a0ad73bff139f8eff26cdcc59e1057bbf569f374593",
+  "base": "0a80bf7b3c4a77e0048af192d04cf4881ebf0137",
+  "beforeBytes": 52221,
+  "beforeSHA256": "f59fbf2bed1f2766111f9103e7b8af4022fb69161afd6d34d1202102228fed7c",
+  "newHostControlsExecuted": 0,
+  "observedOriginal": {
+    "artifactID": 14858644459,
+    "attempt": "1",
+    "executionOutcomeAudit": "Root owns exact original audit; no product count inferred here",
+    "owner": "root",
+    "reportedFailure": "cleanup-final.json firstFailure: AttributeError: module importlib has no attribute util",
+    "run": "45259107882",
+    "sourcePrefix": "1a66"
+  },
+  "oldControlsReplayed": 0,
+  "pageEntrypoint": "Already explicitly imports importlib.util before current_execution; source unchanged",
+  "path": "Tools/CurrentAppleValidation/current_execution.py",
+  "resource": {
+    "MemAvailable": 9894637568,
+    "allocatedBefore": 4038656,
+    "mntWrites": 0,
+    "writerCap": 8388608
+  },
+  "sourceFinding": "helpers calls importlib.util.find_spec but module originally imported only importlib",
+  "sourceScope": "One explicit standard-library import; all definitions and method selection unchanged",
+  "status": "SOURCE_ONLY_EXPLICIT_STDLIB_IMPORT",
+  "unchangedDefinitionASTs": 38,
+  "wholeFileInverse": {
+    "after": "import importlib\nimport importlib.util\n",
+    "before": "import importlib\n"
+  }
+}
