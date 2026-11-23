@@ -1,0 +1,497 @@
+Command line invocation:
+    /Applications/Xcode_27.app/Contents/Developer/usr/bin/xcodebuild test-without-building -xctestrun /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived-ui/Build/Products/UI27-wave15-hanlin-native.xctestrun -destination "platform=iOS Simulator,id=0460F921-D216-4BF9-ADD1-DB90B9CD7C84" -parallel-testing-enabled NO -test-timeouts-enabled YES -default-test-execution-time-allowance 300 -maximum-test-execution-time-allowance 300 "-only-testing:PinkhaStage1AcceptanceUITests/HanlinNativeAcceptanceUITests/testRealNativeConsentCreatePageAndAuthorityRevocation" -resultBundlePath /Users/runner/work/anytype-swift/anytype-swift/build/ui27-evidence/ui/wave15-hanlin-native.xcresult
+
+Writing result bundle at path:
+	/Users/runner/work/anytype-swift/anytype-swift/build/ui27-evidence/ui/wave15-hanlin-native.xcresult
+
+2026-11-23 11:46:39.604521+0000 PinkhaStage1AcceptanceUITests-Runner[55410:151033] [Default] Running tests...
+2026-11-23 11:46:39.908571+0000 PinkhaStage1AcceptanceUITests-Runner[55410:151033] [UIKit App Config] Update the Info.plist: Launch screens will soon be required.
+objc[55410]: Class UIAccessibilityLoaderWebShared is implemented in both /private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.8BHZEi/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebKit.axbundle/WebKit (0x10442c398) and /private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.8BHZEi/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebCore.axbundle/WebCore (0x10824c310). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'Selected tests' started at 2026-11-23 11:46:49.129.
+Test Suite 'PinkhaStage1AcceptanceUITests.xctest' started at 2026-11-23 11:46:49.130.
+Test Suite 'HanlinNativeAcceptanceUITests' started at 2026-11-23 11:46:49.130.
+Test Case '-[PinkhaStage1AcceptanceUITests.HanlinNativeAcceptanceUITests testRealNativeConsentCreatePageAndAuthorityRevocation]' started.
+    t =     0.01s Start Test at 2026-11-23 11:46:49.138
+    t =     1.15s Set Up
+    t =     1.16s     Setting device orientation to Portrait
+    t =     1.21s         Device orientation changed to Portrait
+    t =     1.32s         Wait for com.apple.springboard to idle
+    t =     1.62s Open io.anytype.app
+    t =     1.62s     Launch io.anytype.app
+    t =     2.05s         Setting up automation session
+    t =    10.30s         Wait for io.anytype.app to idle
+    t =    14.58s Wait for io.anytype.app to become Running Foreground
+    t =    14.59s Waiting 45.0s for Any (First Match) to exist
+    t =    15.65s     Checking `Expect predicate `existsNoRetry == 1` for object Any (First Match)`
+    t =    15.66s         Checking existence of `Any (First Match)`
+    t =    16.24s Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =    17.76s Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =    17.93s Added attachment named 'entry-hierarchy'
+    t =    17.93s Opening default application for URL anytype://object?objectId=bafyreia5i7thmzemydapzszqpcbn4alk2vzueadjtdrygyeh7r4boonete&spaceId=bafyreif2tft3oyrxvlmnpohwke3nbnp6d5wvkimobwp4lrkne2q6kw2mdy.z8qlulnqjtjb
+    t =    18.10s     Wait for io.anytype.app to idle
+    t =    19.13s     Wait for com.apple.springboard to idle
+    t =    20.18s Checking `Expect predicate `exists == 1 AND hittable == 1` for object Other (First Match)`
+    t =    20.18s     Checking existence of `Other (First Match)`
+    t =    21.40s     Find the Other (First Match)
+    t =    22.90s Find the "pinkha-ui27-editor:bafyreif2tft3oyrxvlmnpohwke3nbnp6d5wvkimobwp4lrkne2q6kw2mdy.z8qlulnqjtjb:bafyreia5i7thmzemydapzszqpcbn4alk2vzueadjtdrygyeh7r4boonete" Other
+    t =    24.25s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "pinkha.hanlin.open" Button`
+    t =    24.25s     Checking existence of `"pinkha.hanlin.open" Button`
+    t =    24.26s     Find the "pinkha.hanlin.open" Button
+    t =    24.28s Find the "pinkha.hanlin.open" Button
+    t =    24.33s Tap "pinkha.hanlin.open" Button
+    t =    24.33s     Wait for io.anytype.app to idle
+    t =    24.34s     Find the "pinkha.hanlin.open" Button
+    t =    24.36s     Check for interrupting elements affecting "pinkha.hanlin.open" Button
+    t =    24.50s         Wait for com.apple.springboard to idle
+    t =    24.65s     Synthesize event
+    t =    25.21s     Wait for io.anytype.app to idle
+    t =    27.47s Checking `Expect predicate `exists == 1 AND label IN {"AWAIT_READ_CONSENT", "NATIVE_ACCEPTANCE_FAIL", "FAIL_SETUP"}` for object "pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    27.47s     Checking existence of `"pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    27.49s     Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    27.51s Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    28.58s Checking `Expect predicate `exists == 1 AND hittable == 1` for object Button (First Match)`
+    t =    28.58s     Checking existence of `Button (First Match)`
+    t =    28.64s     Find the Button (First Match)
+    t =    28.77s Find the "pinkha.hanlin.share-context" Button
+    t =    28.85s Tap "pinkha.hanlin.share-context" Button
+    t =    28.85s     Wait for io.anytype.app to idle
+    t =    28.85s     Find the "pinkha.hanlin.share-context" Button
+    t =    28.89s     Check for interrupting elements affecting "pinkha.hanlin.share-context" Button
+    t =    28.99s         Wait for com.apple.springboard to idle
+    t =    29.03s     Synthesize event
+    t =    29.34s     Wait for io.anytype.app to idle
+    t =    30.87s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "pinkha.hanlin.consent.read-context.allow" Button`
+    t =    30.87s     Checking existence of `"pinkha.hanlin.consent.read-context.allow" Button`
+    t =    30.87s         Checking `Expect predicate `exists == 1` for object "pinkha.hanlin.consent.read-context" Other`
+    t =    30.87s             Checking existence of `"pinkha.hanlin.consent.read-context" Other`
+    t =    30.87s                 Checking `Expect predicate `exists == 1` for object "pinkha.hanlin.consent.read-context.title" StaticText`
+    t =    30.88s                     Checking existence of `"pinkha.hanlin.consent.read-context.title" StaticText`
+    t =    31.00s     Find the "pinkha.hanlin.consent.read-context.allow" Button
+    t =    31.06s Find the "pinkha.hanlin.consent.read-context.allow" Button
+    t =    31.11s Find the "pinkha.hanlin.consent.read-context.title" StaticText
+    t =    31.18s Find the "pinkha.hanlin.consent.read-context.allow" Button
+    t =    31.22s Tap "pinkha.hanlin.consent.read-context.allow" Button
+    t =    31.22s     Wait for io.anytype.app to idle
+    t =    31.22s     Find the "pinkha.hanlin.consent.read-context.allow" Button
+    t =    31.25s     Check for interrupting elements affecting "pinkha.hanlin.consent.read-context.allow" Button
+    t =    31.35s         Wait for com.apple.springboard to idle
+    t =    31.40s     Synthesize event
+    t =    31.74s     Wait for io.anytype.app to idle
+    t =    33.18s Checking `Expect predicate `exists == 1` for object "pinkha.hanlin.consent.create-page" Other`
+    t =    33.18s     Checking existence of `"pinkha.hanlin.consent.create-page" Other`
+    t =    33.18s         Checking `Expect predicate `exists == 1` for object "pinkha.hanlin.consent.create-page.title" StaticText`
+    t =    33.18s             Checking existence of `"pinkha.hanlin.consent.create-page.title" StaticText`
+    t =    33.23s Find the "pinkha.hanlin.consent.create-page.title" StaticText
+    t =    34.27s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "pinkha.hanlin.consent.create-page.cancel" Button`
+    t =    34.27s     Checking existence of `"pinkha.hanlin.consent.create-page.cancel" Button`
+    t =    34.27s         Checking `Expect predicate `exists == 1 AND hittable == 1` for object "pinkha.hanlin.consent.create-page.allow" Button`
+    t =    34.27s             Checking existence of `"pinkha.hanlin.consent.create-page.allow" Button`
+    t =    34.28s                 Checking `Expect predicate `exists == 1` for object StaticText (First Match)`
+    t =    34.28s                     Checking existence of `StaticText (First Match)`
+    t =    34.40s             Find the "pinkha.hanlin.consent.create-page.allow" Button
+    t =    34.46s     Find the "pinkha.hanlin.consent.create-page.cancel" Button
+    t =    34.51s Find the "pinkha.hanlin.consent.create-page.cancel" Button
+    t =    34.58s Find the "pinkha.hanlin.consent.create-page.allow" Button
+    t =    34.64s Checking existence of `StaticText (First Match)`
+    t =    34.66s Find the "pinkha.hanlin.consent.create-page.cancel" Button
+    t =    34.70s Find the "pinkha.hanlin.consent.create-page.allow" Button
+    t =    34.75s Find the Application 'io.anytype.app'
+    t =    35.34s Added attachment named 'hanlin-native-create-cancel-prompt'
+    t =    35.34s Tap "pinkha.hanlin.consent.create-page.cancel" Button
+    t =    35.34s     Wait for io.anytype.app to idle
+    t =    35.35s     Find the "pinkha.hanlin.consent.create-page.cancel" Button
+    t =    35.39s     Check for interrupting elements affecting "pinkha.hanlin.consent.create-page.cancel" Button
+    t =    35.50s         Wait for com.apple.springboard to idle
+    t =    35.53s     Synthesize event
+    t =    35.83s     Wait for io.anytype.app to idle
+    t =    37.48s Checking `Expect predicate `exists == 1` for object "pinkha.hanlin.consent.create-page" Other`
+    t =    37.48s     Checking existence of `"pinkha.hanlin.consent.create-page" Other`
+    t =    37.49s         Checking `Expect predicate `exists == 1` for object "pinkha.hanlin.consent.create-page.title" StaticText`
+    t =    37.49s             Checking existence of `"pinkha.hanlin.consent.create-page.title" StaticText`
+    t =    37.56s Find the "pinkha.hanlin.consent.create-page.title" StaticText
+    t =    38.67s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "pinkha.hanlin.consent.create-page.cancel" Button`
+    t =    38.67s     Checking existence of `"pinkha.hanlin.consent.create-page.cancel" Button`
+    t =    38.67s         Checking `Expect predicate `exists == 1 AND hittable == 1` for object "pinkha.hanlin.consent.create-page.allow" Button`
+    t =    38.67s             Checking existence of `"pinkha.hanlin.consent.create-page.allow" Button`
+    t =    38.68s                 Checking `Expect predicate `exists == 1` for object StaticText (First Match)`
+    t =    38.68s                     Checking existence of `StaticText (First Match)`
+    t =    38.83s             Find the "pinkha.hanlin.consent.create-page.allow" Button
+    t =    38.89s     Find the "pinkha.hanlin.consent.create-page.cancel" Button
+    t =    38.93s Find the "pinkha.hanlin.consent.create-page.cancel" Button
+    t =    38.97s Find the "pinkha.hanlin.consent.create-page.allow" Button
+    t =    39.02s Checking existence of `StaticText (First Match)`
+    t =    39.06s Find the "pinkha.hanlin.consent.create-page.cancel" Button
+    t =    39.09s Find the "pinkha.hanlin.consent.create-page.allow" Button
+    t =    39.14s Find the Application 'io.anytype.app'
+    t =    39.65s Added attachment named 'hanlin-native-create-confirm-prompt'
+    t =    39.65s Tap "pinkha.hanlin.consent.create-page.allow" Button
+    t =    39.65s     Wait for io.anytype.app to idle
+    t =    39.65s     Find the "pinkha.hanlin.consent.create-page.allow" Button
+    t =    39.71s     Check for interrupting elements affecting "pinkha.hanlin.consent.create-page.allow" Button
+    t =    39.81s         Wait for com.apple.springboard to idle
+    t =    39.87s     Synthesize event
+    t =    40.22s     Wait for io.anytype.app to idle
+    t =    41.75s Checking `Expect predicate `exists == 1 AND label IN {"READY_TO_CLOSE", "NATIVE_ACCEPTANCE_FAIL", "FAIL_SETUP"}` for object "pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    41.75s     Checking existence of `"pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    41.76s     Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    41.77s Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    41.78s Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    41.79s Find the Application 'io.anytype.app'
+    t =    42.30s Added attachment named 'hanlin-native-read-and-create-complete'
+    t =    43.35s Checking `Expect predicate `exists == 1 AND hittable == 1` for object Button (First Match)`
+    t =    43.35s     Checking existence of `Button (First Match)`
+    t =    43.42s     Find the Button (First Match)
+    t =    43.50s Find the "pinkha.hanlin.return-to-source" Button
+    t =    43.59s Tap "pinkha.hanlin.return-to-source" Button
+    t =    43.59s     Wait for io.anytype.app to idle
+    t =    43.59s     Find the "pinkha.hanlin.return-to-source" Button
+    t =    43.65s     Check for interrupting elements affecting "pinkha.hanlin.return-to-source" Button
+    t =    43.76s         Wait for com.apple.springboard to idle
+    t =    43.81s     Synthesize event
+    t =    44.13s     Wait for io.anytype.app to idle
+    t =    46.02s Checking `Expect predicate `exists == 1 AND label IN {"AWAIT_BACKGROUND_PRESENTATION", "NATIVE_ACCEPTANCE_FAIL", "FAIL_SETUP"}` for object "pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    46.02s     Checking existence of `"pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    46.03s     Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    46.05s Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    47.06s Checking `Expect predicate `exists == 1 AND hittable == 1` for object Other (First Match)`
+    t =    47.06s     Checking existence of `Other (First Match)`
+    t =    47.08s     Find the Other (First Match)
+    t =    47.12s Find the "pinkha-ui27-editor:bafyreif2tft3oyrxvlmnpohwke3nbnp6d5wvkimobwp4lrkne2q6kw2mdy.z8qlulnqjtjb:bafyreia5i7thmzemydapzszqpcbn4alk2vzueadjtdrygyeh7r4boonete" Other
+    t =    47.15s Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    47.16s Find the Application 'io.anytype.app'
+    t =    47.51s Added attachment named 'hanlin-native-original-document-return'
+    t =    48.53s Checking `Expect predicate `exists == 1 AND label IN {"AWAIT_BACKGROUND_PRESENTATION", "NATIVE_ACCEPTANCE_FAIL", "FAIL_SETUP"}` for object "pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    48.53s     Checking existence of `"pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    48.55s     Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    48.56s Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    49.60s Checking `Expect predicate `exists == 1 AND hittable == 1` for object Other (First Match)`
+    t =    49.60s     Checking existence of `Other (First Match)`
+    t =    49.62s     Find the Other (First Match)
+    t =    49.64s Find the "pinkha-ui27-editor:bafyreif2tft3oyrxvlmnpohwke3nbnp6d5wvkimobwp4lrkne2q6kw2mdy.z8qlulnqjtjb:bafyreia5i7thmzemydapzszqpcbn4alk2vzueadjtdrygyeh7r4boonete" Other
+    t =    50.71s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "pinkha.hanlin.open" Button`
+    t =    50.71s     Checking existence of `"pinkha.hanlin.open" Button`
+    t =    50.73s     Find the "pinkha.hanlin.open" Button
+    t =    50.76s Find the "pinkha.hanlin.open" Button
+    t =    50.79s Tap "pinkha.hanlin.open" Button
+    t =    50.79s     Wait for io.anytype.app to idle
+    t =    50.79s     Find the "pinkha.hanlin.open" Button
+    t =    50.80s     Check for interrupting elements affecting "pinkha.hanlin.open" Button
+    t =    50.86s         Wait for com.apple.springboard to idle
+    t =    50.90s     Synthesize event
+    t =    51.23s     Wait for io.anytype.app to idle
+    t =    53.29s Checking `Expect predicate `exists == 1 AND label IN {"AWAIT_BACKGROUND_READ_CONSENT", "NATIVE_ACCEPTANCE_FAIL", "FAIL_SETUP"}` for object "pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    53.29s     Checking existence of `"pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    53.30s     Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    53.31s Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    54.32s Checking `Expect predicate `exists == 1 AND hittable == 1` for object Button (First Match)`
+    t =    54.33s     Checking existence of `Button (First Match)`
+    t =    54.40s     Find the Button (First Match)
+    t =    54.52s Find the "pinkha.hanlin.share-context" Button
+    t =    54.59s Tap "pinkha.hanlin.share-context" Button
+    t =    54.59s     Wait for io.anytype.app to idle
+    t =    54.59s     Find the "pinkha.hanlin.share-context" Button
+    t =    54.63s     Check for interrupting elements affecting "pinkha.hanlin.share-context" Button
+    t =    54.72s         Wait for com.apple.springboard to idle
+    t =    54.76s     Synthesize event
+    t =    55.12s     Wait for io.anytype.app to idle
+    t =    56.49s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "pinkha.hanlin.consent.read-context.allow" Button`
+    t =    56.49s     Checking existence of `"pinkha.hanlin.consent.read-context.allow" Button`
+    t =    56.50s         Checking `Expect predicate `exists == 1` for object "pinkha.hanlin.consent.read-context" Other`
+    t =    56.50s             Checking existence of `"pinkha.hanlin.consent.read-context" Other`
+    t =    56.50s                 Checking `Expect predicate `exists == 1` for object "pinkha.hanlin.consent.read-context.title" StaticText`
+    t =    56.50s                     Checking existence of `"pinkha.hanlin.consent.read-context.title" StaticText`
+    t =    56.75s     Find the "pinkha.hanlin.consent.read-context.allow" Button
+    t =    56.79s Find the "pinkha.hanlin.consent.read-context.allow" Button
+    t =    56.83s Find the "pinkha.hanlin.consent.read-context.title" StaticText
+    t =    56.87s Find the "pinkha.hanlin.consent.read-context.allow" Button
+    t =    56.90s Tap "pinkha.hanlin.consent.read-context.allow" Button
+    t =    56.91s     Wait for io.anytype.app to idle
+    t =    56.91s     Find the "pinkha.hanlin.consent.read-context.allow" Button
+    t =    56.95s     Check for interrupting elements affecting "pinkha.hanlin.consent.read-context.allow" Button
+    t =    57.07s         Wait for com.apple.springboard to idle
+    t =    57.11s     Synthesize event
+    t =    57.41s     Wait for io.anytype.app to idle
+    t =    58.93s Checking `Expect predicate `exists == 1 AND label IN {"READY_FOR_BACKGROUND", "NATIVE_ACCEPTANCE_FAIL", "FAIL_SETUP"}` for object "pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    58.93s     Checking existence of `"pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    58.94s     Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    58.95s Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    58.96s Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    58.98s Find the Application 'io.anytype.app'
+    t =    59.47s Added attachment named 'hanlin-native-before-background'
+    t =    59.58s Added attachment named 'hanlin-native-before-home'
+    t =    59.94s Added attachment named 'hanlin-native-before-home-device'
+    t =    59.95s Pressing Home button
+    t =    60.43s Added attachment named 'hanlin-native-after-home-foreground'
+    t =    60.43s Open com.apple.springboard
+    t =    60.43s     Activate com.apple.springboard
+    t =    62.60s         Wait for com.apple.springboard to idle
+    t =    62.77s Wait for io.anytype.app to become Running Background
+    t =    62.77s Added attachment named 'hanlin-native-background-admission'
+    t =    63.33s Added attachment named 'hanlin-native-background-admission-device'
+    t =    63.34s Open io.anytype.app
+    t =    63.34s     Activate io.anytype.app
+    t =    63.47s         Wait for io.anytype.app to idle
+    t =    63.58s Wait for io.anytype.app to become Running Foreground
+    t =    64.63s Checking `Expect predicate `exists == 1 AND label IN {"AWAIT_STALE_CONSENT_PRESENTATION", "NATIVE_ACCEPTANCE_FAIL", "FAIL_SETUP"}` for object "pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    64.63s     Checking existence of `"pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    64.64s     Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    64.65s Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    64.65s Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    64.66s Find the Application 'io.anytype.app'
+    t =    64.98s Added attachment named 'hanlin-native-foreground-old-authority-denied'
+    t =    66.04s Checking `Expect predicate `exists == 1 AND hittable == 1` for object Other (First Match)`
+    t =    66.04s     Checking existence of `Other (First Match)`
+    t =    66.10s     Find the Other (First Match)
+    t =    66.17s Find the "pinkha-ui27-editor:bafyreif2tft3oyrxvlmnpohwke3nbnp6d5wvkimobwp4lrkne2q6kw2mdy.z8qlulnqjtjb:bafyreia5i7thmzemydapzszqpcbn4alk2vzueadjtdrygyeh7r4boonete" Other
+    t =    67.27s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "pinkha.hanlin.open" Button`
+    t =    67.27s     Checking existence of `"pinkha.hanlin.open" Button`
+    t =    67.28s     Find the "pinkha.hanlin.open" Button
+    t =    67.32s Find the "pinkha.hanlin.open" Button
+    t =    67.36s Tap "pinkha.hanlin.open" Button
+    t =    67.36s     Wait for io.anytype.app to idle
+    t =    67.36s     Find the "pinkha.hanlin.open" Button
+    t =    67.37s     Check for interrupting elements affecting "pinkha.hanlin.open" Button
+    t =    67.43s         Wait for com.apple.springboard to idle
+    t =    67.47s     Synthesize event
+    t =    67.79s     Wait for io.anytype.app to idle
+    t =    69.51s Checking `Expect predicate `exists == 1 AND label IN {"AWAIT_STALE_READ_CONSENT", "NATIVE_ACCEPTANCE_FAIL", "FAIL_SETUP"}` for object "pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    69.51s     Checking existence of `"pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    69.53s     Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    69.54s Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    70.58s Checking `Expect predicate `exists == 1 AND hittable == 1` for object Button (First Match)`
+    t =    70.58s     Checking existence of `Button (First Match)`
+    t =    70.67s     Find the Button (First Match)
+    t =    70.94s Find the "pinkha.hanlin.share-context" Button
+    t =    71.02s Tap "pinkha.hanlin.share-context" Button
+    t =    71.02s     Wait for io.anytype.app to idle
+    t =    71.03s     Find the "pinkha.hanlin.share-context" Button
+    t =    71.09s     Check for interrupting elements affecting "pinkha.hanlin.share-context" Button
+    t =    71.24s         Wait for com.apple.springboard to idle
+    t =    71.28s     Synthesize event
+    t =    71.59s     Wait for io.anytype.app to idle
+    t =    72.98s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "pinkha.hanlin.consent.read-context.allow" Button`
+    t =    72.98s     Checking existence of `"pinkha.hanlin.consent.read-context.allow" Button`
+    t =    72.98s         Checking `Expect predicate `exists == 1` for object "pinkha.hanlin.consent.read-context" Other`
+    t =    72.98s             Checking existence of `"pinkha.hanlin.consent.read-context" Other`
+    t =    73.01s                 Checking `Expect predicate `exists == 1` for object "pinkha.hanlin.consent.read-context.title" StaticText`
+    t =    73.02s                     Checking existence of `"pinkha.hanlin.consent.read-context.title" StaticText`
+    t =    73.08s     Find the "pinkha.hanlin.consent.read-context.allow" Button
+    t =    73.12s Find the "pinkha.hanlin.consent.read-context.allow" Button
+    t =    73.20s Find the "pinkha.hanlin.consent.read-context.title" StaticText
+    t =    73.24s Find the "pinkha.hanlin.consent.read-context.allow" Button
+    t =    74.35s Checking `Expect predicate `exists == 1 AND label IN {"READY_TO_LEAVE_WITH_PENDING_CONSENT", "NATIVE_ACCEPTANCE_FAIL", "FAIL_SETUP"}` for object "pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    74.36s     Checking existence of `"pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    74.42s     Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    74.45s Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    74.46s Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    74.47s Find the Application 'io.anytype.app'
+    t =    75.01s Added attachment named 'hanlin-native-pending-consent-before-document-exit'
+    t =    75.01s Opening default application for URL anytype://object?objectId=bafyreigymm5e4xu5udwvklda2uqtqdcjognaxfrjrlnbldoewwe4lmsnem&spaceId=bafyreif2tft3oyrxvlmnpohwke3nbnp6d5wvkimobwp4lrkne2q6kw2mdy.z8qlulnqjtjb
+    t =    75.12s     Wait for io.anytype.app to idle
+    t =    75.17s     Wait for com.apple.springboard to idle
+    t =    76.35s Checking `Expect predicate `exists == 1 AND hittable == 1` for object Other (First Match)`
+    t =    76.35s     Checking existence of `Other (First Match)`
+    t =    76.64s     Find the Other (First Match)
+    t =    77.14s Find the "pinkha-ui27-editor:bafyreif2tft3oyrxvlmnpohwke3nbnp6d5wvkimobwp4lrkne2q6kw2mdy.z8qlulnqjtjb:bafyreigymm5e4xu5udwvklda2uqtqdcjognaxfrjrlnbldoewwe4lmsnem" Other
+    t =    77.25s Checking existence of `"pinkha.hanlin.consent.read-context" Other`
+    t =    78.58s Checking `Expect predicate `exists == 1 AND label IN {"AWAIT_FRESH_PRESENTATION", "NATIVE_ACCEPTANCE_FAIL", "FAIL_SETUP"}` for object "pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    78.58s     Checking existence of `"pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    78.59s     Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    78.60s Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    78.61s Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    78.62s Find the Application 'io.anytype.app'
+    t =    78.94s Added attachment named 'hanlin-native-new-document-old-consent-denied'
+    t =    78.94s Opening default application for URL anytype://object?objectId=bafyreia5i7thmzemydapzszqpcbn4alk2vzueadjtdrygyeh7r4boonete&spaceId=bafyreif2tft3oyrxvlmnpohwke3nbnp6d5wvkimobwp4lrkne2q6kw2mdy.z8qlulnqjtjb
+    t =    79.00s     Wait for io.anytype.app to idle
+    t =    79.01s     Wait for com.apple.springboard to idle
+    t =    80.48s Checking `Expect predicate `exists == 1 AND hittable == 1` for object Other (First Match)`
+    t =    80.48s     Checking existence of `Other (First Match)`
+    t =    80.51s     Find the Other (First Match)
+    t =    80.57s Find the "pinkha-ui27-editor:bafyreif2tft3oyrxvlmnpohwke3nbnp6d5wvkimobwp4lrkne2q6kw2mdy.z8qlulnqjtjb:bafyreia5i7thmzemydapzszqpcbn4alk2vzueadjtdrygyeh7r4boonete" Other
+    t =    81.65s Checking `Expect predicate `exists == 1 AND hittable == 1` for object Other (First Match)`
+    t =    81.65s     Checking existence of `Other (First Match)`
+    t =    81.67s     Find the Other (First Match)
+    t =    81.70s Find the "pinkha-ui27-editor:bafyreif2tft3oyrxvlmnpohwke3nbnp6d5wvkimobwp4lrkne2q6kw2mdy.z8qlulnqjtjb:bafyreia5i7thmzemydapzszqpcbn4alk2vzueadjtdrygyeh7r4boonete" Other
+    t =    82.79s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "pinkha.hanlin.open" Button`
+    t =    82.79s     Checking existence of `"pinkha.hanlin.open" Button`
+    t =    82.81s     Find the "pinkha.hanlin.open" Button
+    t =    82.84s Find the "pinkha.hanlin.open" Button
+    t =    82.86s Tap "pinkha.hanlin.open" Button
+    t =    82.86s     Wait for io.anytype.app to idle
+    t =    82.87s     Find the "pinkha.hanlin.open" Button
+    t =    82.88s     Check for interrupting elements affecting "pinkha.hanlin.open" Button
+    t =    82.94s         Wait for com.apple.springboard to idle
+    t =    82.99s     Synthesize event
+    t =    83.33s     Wait for io.anytype.app to idle
+    t =    85.05s Checking `Expect predicate `exists == 1 AND label IN {"AWAIT_FRESH_READ_CONSENT", "NATIVE_ACCEPTANCE_FAIL", "FAIL_SETUP"}` for object "pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    85.05s     Checking existence of `"pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    85.06s     Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    85.07s Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    85.08s Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    86.13s Checking `Expect predicate `exists == 1 AND hittable == 1` for object Button (First Match)`
+    t =    86.13s     Checking existence of `Button (First Match)`
+    t =    86.17s     Find the Button (First Match)
+    t =    86.32s Find the "pinkha.hanlin.share-context" Button
+    t =    86.44s Tap "pinkha.hanlin.share-context" Button
+    t =    86.45s     Wait for io.anytype.app to idle
+    t =    86.46s     Find the "pinkha.hanlin.share-context" Button
+    t =    86.50s     Check for interrupting elements affecting "pinkha.hanlin.share-context" Button
+    t =    86.58s         Wait for com.apple.springboard to idle
+    t =    86.62s     Synthesize event
+    t =    86.95s     Wait for io.anytype.app to idle
+    t =    88.38s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "pinkha.hanlin.consent.read-context.allow" Button`
+    t =    88.38s     Checking existence of `"pinkha.hanlin.consent.read-context.allow" Button`
+    t =    88.38s         Checking `Expect predicate `exists == 1` for object "pinkha.hanlin.consent.read-context" Other`
+    t =    88.38s             Checking existence of `"pinkha.hanlin.consent.read-context" Other`
+    t =    88.38s                 Checking `Expect predicate `exists == 1` for object "pinkha.hanlin.consent.read-context.title" StaticText`
+    t =    88.38s                     Checking existence of `"pinkha.hanlin.consent.read-context.title" StaticText`
+    t =    88.45s     Find the "pinkha.hanlin.consent.read-context.allow" Button
+    t =    88.50s Find the "pinkha.hanlin.consent.read-context.allow" Button
+    t =    88.53s Find the "pinkha.hanlin.consent.read-context.title" StaticText
+    t =    88.56s Find the "pinkha.hanlin.consent.read-context.allow" Button
+    t =    88.57s Tap "pinkha.hanlin.consent.read-context.allow" Button
+    t =    88.57s     Wait for io.anytype.app to idle
+    t =    88.58s     Find the "pinkha.hanlin.consent.read-context.allow" Button
+    t =    88.60s     Check for interrupting elements affecting "pinkha.hanlin.consent.read-context.allow" Button
+    t =    88.67s         Wait for com.apple.springboard to idle
+    t =    88.70s     Synthesize event
+    t =    89.01s     Wait for io.anytype.app to idle
+    t =    90.45s Checking `Expect predicate `exists == 1 AND label IN {"READY_TO_CLOSE_FRESH", "NATIVE_ACCEPTANCE_FAIL", "FAIL_SETUP"}` for object "pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    90.45s     Checking existence of `"pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    90.46s     Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    90.46s Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    90.47s Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    90.47s Find the Application 'io.anytype.app'
+    t =    90.83s Added attachment named 'hanlin-native-fresh-original-document-consent'
+    t =    91.85s Checking `Expect predicate `exists == 1 AND hittable == 1` for object Button (First Match)`
+    t =    91.85s     Checking existence of `Button (First Match)`
+    t =    91.88s     Find the Button (First Match)
+    t =    91.96s Find the "pinkha.hanlin.close" Button
+    t =    92.02s Tap "pinkha.hanlin.close" Button
+    t =    92.02s     Wait for io.anytype.app to idle
+    t =    92.03s     Find the "pinkha.hanlin.close" Button
+    t =    92.06s     Check for interrupting elements affecting "pinkha.hanlin.close" Button
+    t =    92.15s         Wait for com.apple.springboard to idle
+    t =    92.20s     Synthesize event
+    t =    92.55s     Wait for io.anytype.app to idle
+    t =    94.23s Checking `Expect predicate `exists == 1 AND label IN {"NATIVE_ACCEPTANCE_PASS", "NATIVE_ACCEPTANCE_FAIL", "FAIL_SETUP"}` for object "pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    94.24s     Checking existence of `"pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    94.40s     Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    94.46s     Capturing element debug description
+    t =    95.44s         Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =    95.81s         Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =    96.50s         Find: Descendants matching type StaticText
+    t =    96.51s         Find: Elements matching predicate '"pinkha.hanlin.native-acceptance-status" IN identifiers'
+    t =    96.52s         Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =    96.58s         Find: Descendants matching type StaticText
+    t =    96.59s         Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =    97.25s Checking `Expect predicate `exists == 1 AND label IN {"NATIVE_ACCEPTANCE_PASS", "NATIVE_ACCEPTANCE_FAIL", "FAIL_SETUP"}` for object "pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    97.25s     Checking existence of `"pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    97.27s     Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    97.29s     Capturing element debug description
+    t =    97.87s         Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =    97.94s         Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =    97.98s         Find: Descendants matching type StaticText
+    t =    97.98s         Find: Elements matching predicate '"pinkha.hanlin.native-acceptance-status" IN identifiers'
+    t =    97.98s         Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =    98.04s         Find: Descendants matching type StaticText
+    t =    98.04s         Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =    98.25s Checking `Expect predicate `exists == 1 AND label IN {"NATIVE_ACCEPTANCE_PASS", "NATIVE_ACCEPTANCE_FAIL", "FAIL_SETUP"}` for object "pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    98.25s     Checking existence of `"pinkha.hanlin.native-acceptance-status" StaticText`
+    t =    98.26s     Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    98.28s Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =    99.39s Checking `Expect predicate `exists == 1 AND hittable == 1` for object Button (First Match)`
+    t =    99.40s     Checking existence of `Button (First Match)`
+    t =    99.41s         Checking `Expect predicate `exists == 1 AND hittable == 1` for object Button (First Match)`
+    t =    99.41s             Checking existence of `Button (First Match)`
+    t =    99.62s             Find the Button (First Match)
+    t =    99.85s             Capturing element debug description
+    t =   100.68s                 Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =   100.81s                 Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =   100.89s                 Find: Descendants matching type Button
+    t =   100.89s                 Find: Elements matching predicate 'label == "I am new here"'
+    t =   100.90s                 Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =   101.10s                 Find: Descendants matching type Button
+    t =   101.11s                 Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =   101.49s     Find the Button (First Match)
+    t =   101.58s     Capturing element debug description
+    t =   101.79s         Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =   101.89s         Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =   101.98s         Find: Descendants matching type Button
+    t =   101.98s         Find: Elements matching predicate 'label == "I already have a key"'
+    t =   101.99s         Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =   102.07s         Find: Descendants matching type Button
+    t =   102.08s         Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =   102.33s Checking `Expect predicate `exists == 1 AND hittable == 1` for object Button (First Match)`
+    t =   102.33s     Checking existence of `"I already have a key" Button`
+    t =   102.33s         Checking `Expect predicate `exists == 1 AND hittable == 1` for object Button (First Match)`
+    t =   102.34s             Checking existence of `"I am new here" Button`
+    t =   102.63s             Find the "I am new here" Button
+    t =   102.97s             Capturing element debug description
+    t =   103.17s                 Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =   103.21s                 Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =   103.25s                 Find: Descendants matching type Button
+    t =   103.25s                 Find: Elements matching predicate 'label == "I am new here"'
+    t =   103.25s                 Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =   103.29s                 Find: Descendants matching type Button
+    t =   103.29s                 Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =   103.39s     Find the "I already have a key" Button
+    t =   103.48s     Capturing element debug description
+    t =   103.85s         Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =   103.90s         Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =   103.95s         Find: Descendants matching type Button
+    t =   103.95s         Find: Elements matching predicate 'label == "I already have a key"'
+    t =   103.95s         Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =   103.99s         Find: Descendants matching type Button
+    t =   103.99s         Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =   104.38s Checking `Expect predicate `exists == 1 AND hittable == 1` for object Button (First Match)`
+    t =   104.38s     Checking existence of `"I already have a key" Button`
+    t =   104.38s         Checking `Expect predicate `exists == 1 AND hittable == 1` for object Button (First Match)`
+    t =   104.38s             Checking existence of `"I am new here" Button`
+    t =   104.47s             Find the "I am new here" Button
+    t =   104.57s             Capturing element debug description
+    t =   104.96s                 Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =   105.03s                 Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =   105.07s                 Find: Descendants matching type Button
+    t =   105.08s                 Find: Elements matching predicate 'label == "I am new here"'
+    t =   105.09s                 Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =   105.15s                 Find: Descendants matching type Button
+    t =   105.15s                 Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =   105.22s     Find the "I already have a key" Button
+    t =   105.35s Checking `Expect predicate `exists == 1 AND hittable == 1` for object Button (First Match)`
+    t =   105.35s     Checking existence of `"I am new here" Button`
+    t =   105.38s     Find the "I am new here" Button
+    t =   105.46s Find the "I already have a key" Button
+    t =   105.51s Find the "I am new here" Button
+    t =   105.55s Get number of matches for: Elements matching predicate 'label == "I already have a key"'
+    t =   105.57s Get number of matches for: Elements matching predicate 'label == "I am new here"'
+    t =   105.60s Get number of matches for: Elements matching predicate 'label == "Add a Channel Home?"'
+    t =   105.62s Get number of matches for: Elements matching predicate 'label == "Error: not logged in (unknownError)"'
+    t =   105.64s Get number of matches for: Elements matching predicate 'identifier == "SpaceHub" OR identifier == "NewSpaceButton"'
+    t =   105.66s Checking existence of `Other (First Match)`
+    t =   105.72s Find the "pinkha.hanlin.native-acceptance-status" StaticText
+    t =   105.75s Added attachment named 'hanlin-native-source-bound-result'
+    t =   105.75s Find the Application 'io.anytype.app'
+    t =   106.14s Added attachment named 'hanlin-native-authority-revocations-complete'
+    t =   106.14s Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =   106.28s Requesting snapshot of accessibility hierarchy for app with pid 55649
+    t =   106.30s Added attachment named 'final-hierarchy'
+    t =   106.32s Tear Down
+Test Case '-[PinkhaStage1AcceptanceUITests.HanlinNativeAcceptanceUITests testRealNativeConsentCreatePageAndAuthorityRevocation]' passed (107.066 seconds).
+Test Suite 'HanlinNativeAcceptanceUITests' passed at 2026-11-23 11:48:36.207.
+	 Executed 1 test, with 0 failures (0 unexpected) in 107.066 (107.076) seconds
+Test Suite 'PinkhaStage1AcceptanceUITests.xctest' passed at 2026-11-23 11:48:36.217.
+	 Executed 1 test, with 0 failures (0 unexpected) in 107.066 (107.087) seconds
+Test Suite 'Selected tests' passed at 2026-11-23 11:48:36.217.
+	 Executed 1 test, with 0 failures (0 unexpected) in 107.066 (107.089) seconds
+2026-11-23 11:48:37.181 xcodebuild[54708:149237] [MT] IDETestOperationsObserverDebug: 123.014 elapsed -- Testing started completed.
+2026-11-23 11:48:37.183 xcodebuild[54708:149237] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-11-23 11:48:37.183 xcodebuild[54708:149237] [MT] IDETestOperationsObserverDebug: 123.014 sec, +123.014 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/runner/work/anytype-swift/anytype-swift/build/ui27-evidence/ui/wave15-hanlin-native.xcresult
+
+** TEST EXECUTE SUCCEEDED **
+
+Testing started

@@ -1,0 +1,324 @@
+{
+  "status": "FAIL",
+  "phase": "UI",
+  "full_matrix_accepted": false,
+  "release_accepted": false,
+  "started_at": "2026-11-23T11:23:01.987948+00:00",
+  "source_sha": "aefb9740c0ac8d52aa2dbd89d389930851396104",
+  "run_id": "45163976036",
+  "run_attempt": "1",
+  "runtime_profile": "r15-attachment-authorized-current-read-v1",
+  "heart_source_run_id": "45091223011",
+  "heart_source_sha": "8b08033135f7cb508e813ab1d47d81c255037c07",
+  "native_build_succeeded": true,
+  "preparation": {
+    "status": "PASS",
+    "selected": [
+      "HanlinNativeAcceptancePreparationTests/prepareRealHostFixture"
+    ],
+    "phase": "EXECUTION",
+    "prefix": "prepare",
+    "command_exit_code": 0,
+    "time_budget": {
+      "default_seconds": 300,
+      "maximum_seconds": 300,
+      "method_seconds": {
+        "HanlinNativeAcceptancePreparationTests/prepareRealHostFixture": 300
+      },
+      "total_method_seconds": 300
+    },
+    "actual_devices": [
+      {
+        "architecture": "arm64",
+        "deviceId": "0460F921-D216-4BF9-ADD1-DB90B9CD7C84",
+        "deviceName": "Pinkha-UI27-45163976036-ipad",
+        "modelName": "iPad Pro 13-inch (M5)",
+        "osBuildNumber": "24A434",
+        "osVersion": "27.0",
+        "platform": "iOS Simulator"
+      }
+    ],
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "actual_methods": {
+      "HanlinNativeAcceptancePreparationTests/prepareRealHostFixture()": "Passed"
+    },
+    "public_diagnostics": {
+      "schema": 1,
+      "kind": "SELECTION",
+      "diagnostic_only": true,
+      "reported_status": "PASS",
+      "phase": "EXECUTION",
+      "expected_count": 1,
+      "command_exit_code": 0,
+      "error_category": "NOT_RECORDED",
+      "reported_counts": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "summary_counts": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "selector_results": [
+        {
+          "selector_index": 0,
+          "result": "Passed"
+        }
+      ],
+      "unexpected_method_count": 0,
+      "failures": [],
+      "omitted_failure_count": 0
+    }
+  },
+  "ui": {
+    "status": "PASS",
+    "selected": [
+      "HanlinNativeAcceptanceUITests/testRealNativeConsentCreatePageAndAuthorityRevocation"
+    ],
+    "phase": "EXECUTION",
+    "prefix": "wave15-hanlin-native",
+    "command_exit_code": 0,
+    "time_budget": {
+      "default_seconds": 300,
+      "maximum_seconds": 300,
+      "method_seconds": {
+        "HanlinNativeAcceptanceUITests/testRealNativeConsentCreatePageAndAuthorityRevocation": 300
+      },
+      "total_method_seconds": 300
+    },
+    "ui_scope": "WAVE15_ACCEPTANCE",
+    "expected_selected_methods": 1,
+    "release_accepted": false,
+    "full_matrix_accepted": false,
+    "actual_devices": [
+      {
+        "architecture": "arm64",
+        "deviceId": "0460F921-D216-4BF9-ADD1-DB90B9CD7C84",
+        "deviceName": "Pinkha-UI27-45163976036-ipad",
+        "modelName": "iPad Pro 13-inch (M5)",
+        "osBuildNumber": "24A434",
+        "osVersion": "27.0",
+        "platform": "iOS Simulator"
+      }
+    ],
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "actual_methods": {
+      "HanlinNativeAcceptanceUITests/testRealNativeConsentCreatePageAndAuthorityRevocation()": "Passed"
+    },
+    "public_diagnostics": {
+      "schema": 1,
+      "kind": "SELECTION",
+      "diagnostic_only": true,
+      "reported_status": "PASS",
+      "phase": "EXECUTION",
+      "expected_count": 1,
+      "command_exit_code": 0,
+      "error_category": "NOT_RECORDED",
+      "reported_counts": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "summary_counts": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "selector_results": [
+        {
+          "selector_index": 0,
+          "result": "Passed"
+        }
+      ],
+      "unexpected_method_count": 0,
+      "failures": [],
+      "omitted_failure_count": 0
+    }
+  },
+  "actual_ui_runtime_observation": {
+    "status": "FAIL_ACTUAL_UI_RUNTIME_NOT_BOUND",
+    "error_type": "TimeoutExpired",
+    "extra_app_launches": 0,
+    "every_launch_verified": false,
+    "diagnostics": {
+      "diagnostic_only": true,
+      "stage_duration_scope": "ENTIRE_NAMED_OPERATION_NOT_INDIVIDUAL_SUBPROCESS",
+      "stages": [
+        {
+          "stage": "prepare_data_container",
+          "attempts": 1,
+          "status": "RETURNED",
+          "started_at": 1795434376.808948,
+          "stage_elapsed_seconds": 0.4628714589998708,
+          "finished_at": 1795434377.271819
+        },
+        {
+          "stage": "prepare_installed_source",
+          "attempts": 1,
+          "status": "RETURNED",
+          "started_at": 1795434377.272418,
+          "stage_elapsed_seconds": 8.977690790999986,
+          "finished_at": 1795434386.250185
+        },
+        {
+          "stage": "poll_data_container",
+          "attempts": 23,
+          "status": "RETURNED",
+          "started_at": 1795434433.632376,
+          "stage_elapsed_seconds": 3.484443457999987,
+          "finished_at": 1795434437.116907
+        },
+        {
+          "stage": "read_native_phase_before",
+          "attempts": 22,
+          "status": "RETURNED",
+          "started_at": 1795434437.117073,
+          "stage_elapsed_seconds": 0.00022520799984704354,
+          "finished_at": 1795434437.117274
+        },
+        {
+          "stage": "validate_native_phase_before",
+          "attempts": 1,
+          "status": "RETURNED",
+          "started_at": 1795434437.118012,
+          "stage_elapsed_seconds": 0.0006264579999424313,
+          "finished_at": 1795434437.1186
+        },
+        {
+          "stage": "save_partial_phase_before",
+          "attempts": 1,
+          "status": "RETURNED",
+          "started_at": 1795434437.118671,
+          "stage_elapsed_seconds": 0.00043170900016775704,
+          "finished_at": 1795434437.119103
+        },
+        {
+          "stage": "map_installed_source",
+          "attempts": 1,
+          "status": "RETURNED",
+          "started_at": 1795434437.119432,
+          "stage_elapsed_seconds": 19.461764665999908,
+          "finished_at": 1795434456.581562
+        },
+        {
+          "stage": "map_running_process",
+          "attempts": 1,
+          "status": "FAILED",
+          "started_at": 1795434456.582222,
+          "stage_elapsed_seconds": 40.585314917000005,
+          "finished_at": 1795434497.167757
+        },
+        {
+          "stage": "export_final_data_container",
+          "attempts": 1,
+          "status": "RETURNED",
+          "started_at": 1795434526.001833,
+          "stage_elapsed_seconds": 1.673107582999819,
+          "finished_at": 1795434527.674697
+        },
+        {
+          "stage": "export_final_native_result",
+          "attempts": 1,
+          "status": "RETURNED",
+          "started_at": 1795434527.674751,
+          "stage_elapsed_seconds": 0.0010296660000221891,
+          "finished_at": 1795434527.675783
+        }
+      ],
+      "first_failure": {
+        "stage": "poll_data_container",
+        "error_type": "TimeoutExpired",
+        "command": [
+          "xcrun",
+          "simctl",
+          "get_app_container",
+          "0460F921-D216-4BF9-ADD1-DB90B9CD7C84",
+          "io.anytype.app",
+          "data"
+        ],
+        "command_timeout_seconds": 10,
+        "stage_elapsed_seconds": 10.254268417000048
+      },
+      "poll_timeout_retries": 1,
+      "partial_observations": {
+        "native_phase_before": {
+          "file": "partial-native-phase-before.json",
+          "sha256": "1e44a14460d2da59ecba773ec400792fdd1410d10aef5a30fb6bd16dede35bb9",
+          "identity": {
+            "fixtureID": "A40F4C37-AC94-49A1-B10E-2BC48F3E5D29",
+            "sourceSHA": "aefb9740c0ac8d52aa2dbd89d389930851396104",
+            "runID": "45163976036",
+            "runAttempt": "1",
+            "processID": 55649,
+            "startedAt": 817127235.513381,
+            "sessionID": "C0BD0C2E-1B9A-4EE8-8EFD-AEF1224CDB02",
+            "navigationContext": {
+              "account": "A5v7wicoFFsZw7ofnFntkqEovCUoFkbaRPTjxpRyWG1iYRQ8",
+              "app": "anytype",
+              "workspace": "bafyreif2tft3oyrxvlmnpohwke3nbnp6d5wvkimobwp4lrkne2q6kw2mdy.z8qlulnqjtjb",
+              "generation": "21EF188A-F1F3-473A-AA1C-66D1A45D4F5D",
+              "sceneID": "34583D1C-70EC-4E8B-AC15-CE46A1D096AF",
+              "objectReference": "bafyreia5i7thmzemydapzszqpcbn4alk2vzueadjtdrygyeh7r4boonete",
+              "space": "bafyreif2tft3oyrxvlmnpohwke3nbnp6d5wvkimobwp4lrkne2q6kw2mdy.z8qlulnqjtjb",
+              "selectionReferences": [],
+              "sourceRevision": "e9b04bba6b035ff1e9e7429f2b0003ec3aab25f311220310ea7d50e81ce27363"
+            }
+          },
+          "status": "OBSERVED_IDENTITY_RUNTIME_NOT_YET_BOUND"
+        },
+        "installed_source_returned": {
+          "file": "installed-app-source.json",
+          "installed_app_executable_sha256": "03a6fc5c7ae1571b15974b39d072edd80ce8242f49cf04378643f0513b086da8",
+          "built_app_executable_sha256": "03a6fc5c7ae1571b15974b39d072edd80ce8242f49cf04378643f0513b086da8",
+          "installed_code_carriers_sha256": "65115ee77c421eb851d36159ec0d17b88834b77521070f113d84da4cd16f763d",
+          "built_code_carriers_sha256": "65115ee77c421eb851d36159ec0d17b88834b77521070f113d84da4cd16f763d"
+        }
+      }
+    }
+  },
+  "hanlin_native_receipt": {
+    "status": "NATIVE_RECEIPT_VERIFIED_XCTEST_REQUIRED_SEPARATELY",
+    "fixture_id": "A40F4C37-AC94-49A1-B10E-2BC48F3E5D29",
+    "session_id": "C0BD0C2E-1B9A-4EE8-8EFD-AEF1224CDB02",
+    "process_id": 55649,
+    "created_object_id": "bafyreigymm5e4xu5udwvklda2uqtqdcjognaxfrjrlnbldoewwe4lmsnem",
+    "required_checks": 22,
+    "source_sha": "aefb9740c0ac8d52aa2dbd89d389930851396104",
+    "run_id": "45163976036",
+    "run_attempt": "1",
+    "provider_configured": false,
+    "presentation_count": 4,
+    "native_return": {
+      "request_id": "D1159331-C848-431F-8EC9-724503FFD172",
+      "context_scene_id": "34583D1C-70EC-4E8B-AC15-CE46A1D096AF",
+      "context_generation": "21EF188A-F1F3-473A-AA1C-66D1A45D4F5D",
+      "object_reference": "bafyreia5i7thmzemydapzszqpcbn4alk2vzueadjtdrygyeh7r4boonete",
+      "block_reference": null,
+      "scope": "originalDocumentOnly",
+      "selected_block_ui_verified": false
+    },
+    "logout_root_state": "auth",
+    "logout_root_ui_verified": false,
+    "document_exit_attribution": "navigationWithoutSceneTransition",
+    "invalidation_causes": {
+      "FDF9FDDB-B271-4056-8B04-590B78F9E4EF": "explicitCloseOrOwner",
+      "C0BD0C2E-1B9A-4EE8-8EFD-AEF1224CDB02": "explicitCloseOrOwner",
+      "65634E44-4D25-4DE0-A124-A0D36ECA219E": "nativeAuthorityChanged",
+      "CF9399E7-3308-4DB0-AD5A-3EF7D0F4A129": "explicitCloseOrOwner"
+    },
+    "full_sdk_acceptance": false
+  },
+  "error_type": "RuntimeError",
+  "error": "Actual UI runtime observer did not complete successfully",
+  "finished_at": "2026-11-23T11:49:06.786078+00:00",
+  "original_execution_sha256": "f6b6053e5e41948d1724ab8011c6b3798bff4b0d13741c571378d9e4749c28f8",
+  "original_execution_bytes": 1016508
+}

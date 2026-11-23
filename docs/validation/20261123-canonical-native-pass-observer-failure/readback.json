@@ -1,0 +1,67 @@
+{
+  "status": "ORIGINAL_NATIVE1_UI1_PASS_OBSERVER_FAIL",
+  "run_id": 45163976036,
+  "run_attempt": 1,
+  "host_source": "aefb9740c0ac8d52aa2dbd89d389930851396104",
+  "sdk_revision": "d49a4fd4115b8335105d2991bf74ab4d7f6aad2d",
+  "runtime_producer": 45091223011,
+  "overall_workflow": "FAILURE",
+  "original_preparation": {
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "method_seconds": 8.29396390914917
+  },
+  "original_ui": {
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "method_seconds": 107.06570589542389,
+    "checks_passed": 22,
+    "process_id": 55649,
+    "same_pid_at_entry_and_final": true,
+    "provider_configured": false
+  },
+  "background_admission": {
+    "application_state_raw": 3,
+    "springboard_state_raw": 4,
+    "shared_budget_seconds": 10,
+    "elapsed_since_budget_start": 2.3439090416666204,
+    "remaining_seconds": 7.65609095833338,
+    "native_scene_deltas": {
+      "sceneWillDeactivate": 1,
+      "applicationWillResignActive": 1,
+      "sceneDidActivate": 1,
+      "sceneDidEnterBackground": 1,
+      "applicationDidBecomeActive": 1,
+      "sceneWillEnterForeground": 1
+    }
+  },
+  "observer": {
+    "status": "FAIL_ACTUAL_UI_RUNTIME_NOT_BOUND",
+    "error_type": "TimeoutExpired",
+    "fresh_source_seconds": 19.461764665999908,
+    "process_mapping_seconds": 40.585314917000005,
+    "stop_utc": "2026-11-23T11:48:17.167757+00:00",
+    "native_finish_utc": "2026-11-23T11:48:26.954360+00:00",
+    "stopped_before_native_finish_seconds": 9.786602973937988,
+    "retained_first_failure_is_prior_retried_data_container_poll": true,
+    "fatal_command_not_retained": true,
+    "original_archive_has_runtime_mapping": false,
+    "source_installed_and_built_match": true,
+    "runtime_binding_recovered": false
+  },
+  "visual_review": {
+    "original_images_inspected": 10,
+    "original_image_files_in_archive": 12,
+    "transformed_images_used": 0
+  },
+  "scope_limits": [
+    "No live provider configured or exercised.",
+    "No SDK23/32 or ACK7 owner selector execution.",
+    "No full SDK/native runtime binding pass: required process mapping is absent.",
+    "Later32da installation is source-only and is not assigned these old-pin native results.",
+    "No native/UI replay or additional launch was performed by this readback."
+  ],
+  "recorded_at": "2026-11-23T12:06:38.633639+00:00"
+}
