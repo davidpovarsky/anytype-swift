@@ -1,0 +1,14 @@
+{
+  "status": "FAIL_EVIDENCE_DIFF_CHECK_ORIGINAL_LOG_WHITESPACE",
+  "product_results_unchanged": true,
+  "command": [
+    "git",
+    "diff",
+    "--cached",
+    "--check"
+  ],
+  "exit_code": 2,
+  "original_diagnostic": "docs/validation/20261123-heart-archive-dry-run/attempt2/build.log:270: trailing whitespace.",
+  "repair": "Mark original .log evidence as binary through a scoped .gitattributes; preserve original log bytes exactly.",
+  "source_diff_check": "Passed before source commits; no source changes in this evidence commit."
+}
