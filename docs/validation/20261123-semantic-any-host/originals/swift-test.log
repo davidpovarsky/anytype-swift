@@ -1,0 +1,579 @@
+Fetching https://github.com/davidpovarsky/TorahInspectorKit.git from cache
+Fetched https://github.com/davidpovarsky/TorahInspectorKit.git from cache (31.78s)
+Fetching https://github.com/apple/swift-asn1.git from cache
+Fetching https://github.com/apple/swift-crypto.git from cache
+warning: 'swift-crypto': skipping cache due to an error: Couldn’t fetch updates from remote repositories:
+    fatal: not a git repository (or any of the parent directories): .git
+warning: 'swift-asn1': skipping cache due to an error: Couldn’t fetch updates from remote repositories:
+    fatal: not a git repository (or any of the parent directories): .git
+[1/18987] Fetching swift-crypto
+[3039/21069] Fetching swift-crypto, swift-asn1
+Fetched https://github.com/apple/swift-asn1.git from cache (11.89s)
+Fetched https://github.com/apple/swift-crypto.git from cache (11.89s)
+Computing version for https://github.com/apple/swift-crypto.git
+Computed https://github.com/apple/swift-crypto.git at 3.12.3 (12.93s)
+Computing version for https://github.com/apple/swift-asn1.git
+Computed https://github.com/apple/swift-asn1.git at 1.7.4 (0.77s)
+Creating working copy for https://github.com/apple/swift-crypto.git
+Working copy of https://github.com/apple/swift-crypto.git resolved at 3.12.3
+Creating working copy for https://github.com/apple/swift-asn1.git
+Working copy of https://github.com/apple/swift-asn1.git resolved at 1.7.4
+Creating working copy for https://github.com/davidpovarsky/TorahInspectorKit.git
+Working copy of https://github.com/davidpovarsky/TorahInspectorKit.git resolved at 511454e49450cb2581ddf77f644146ff3e30dbef
+Building for debugging...
+[0/385] Write sources
+[8/385] Compiling fiat_p256_adx_sqr.S
+[9/385] Compiling fiat_curve25519_adx_mul.S
+[10/385] Compiling fiat_p256_adx_mul.S
+[11/385] Compiling fiat_curve25519_adx_square.S
+[12/385] Compiling md5-x86_64-linux.S
+[13/385] Compiling md5-586-linux.S
+[14/385] Compiling md5-x86_64-apple.S
+[15/385] Compiling md5-586-apple.S
+[16/385] Compiling chacha20_poly1305_x86_64-linux.S
+[17/385] Compiling chacha20_poly1305_x86_64-apple.S
+[18/385] Compiling chacha20_poly1305_armv8-win.S
+[19/385] Compiling chacha20_poly1305_armv8-linux.S
+[20/385] Compiling chacha20_poly1305_armv8-apple.S
+[21/385] Compiling chacha-x86_64-linux.S
+[22/385] Compiling chacha-x86_64-apple.S
+[23/385] Compiling chacha-x86-linux.S
+[24/385] Compiling chacha-x86-apple.S
+[25/385] Compiling chacha-armv8-win.S
+[26/385] Compiling chacha-armv8-linux.S
+[27/385] Compiling chacha-armv8-apple.S
+[28/385] Compiling chacha-armv4-linux.S
+[29/385] Compiling aes128gcmsiv-x86_64-linux.S
+[30/385] Compiling aes128gcmsiv-x86_64-apple.S
+[31/385] Compiling x86_64-mont5-linux.S
+[32/385] Compiling x86_64-mont5-apple.S
+[33/385] Compiling x86_64-mont-linux.S
+[34/385] Compiling x86_64-mont-apple.S
+[35/385] Compiling x86-mont-linux.S
+[36/385] Compiling x86-mont-apple.S
+[37/385] Compiling vpaes-x86_64-apple.S
+[37/385] Compiling vpaes-x86_64-linux.S
+[39/385] Compiling vpaes-x86-linux.S
+[40/385] Compiling vpaes-x86-apple.S
+[41/385] Compiling vpaes-armv8-win.S
+[42/385] Compiling vpaes-armv8-linux.S
+[43/385] Compiling vpaes-armv8-apple.S
+[44/385] Compiling vpaes-armv7-linux.S
+[45/385] Compiling sha512-x86_64-linux.S
+[46/385] Compiling sha512-x86_64-apple.S
+[47/385] Compiling sha512-armv8-win.S
+[48/385] Compiling sha512-armv8-linux.S
+[49/385] Compiling CCryptoBoringSSLShims shims.c
+[50/385] Compiling sha512-armv8-apple.S
+[51/385] Compiling sha512-armv4-linux.S
+[52/385] Compiling sha512-586-linux.S
+[53/385] Compiling sha512-586-apple.S
+[54/385] Compiling sha256-x86_64-apple.S
+[55/385] Compiling sha256-x86_64-linux.S
+[56/385] Compiling sha256-armv8-win.S
+[57/385] Compiling sha256-armv8-linux.S
+[58/385] Compiling sha256-armv8-apple.S
+[59/385] Compiling sha256-armv4-linux.S
+[60/385] Compiling sha256-586-linux.S
+[61/385] Compiling sha256-586-apple.S
+[62/385] Compiling sha1-x86_64-linux.S
+[63/385] Compiling sha1-x86_64-apple.S
+[64/385] Compiling sha1-armv8-win.S
+[65/385] Compiling sha1-armv8-linux.S
+[66/385] Compiling sha1-armv8-apple.S
+[67/385] Compiling sha1-armv4-large-linux.S
+[68/385] Compiling sha1-586-linux.S
+[69/385] Compiling sha1-586-apple.S
+[70/385] Compiling rsaz-avx2-linux.S
+[71/385] Compiling rsaz-avx2-apple.S
+[72/385] Compiling rdrand-x86_64-linux.S
+[73/385] Compiling rdrand-x86_64-apple.S
+[74/385] Compiling p256_beeu-x86_64-asm-linux.S
+[75/385] Compiling p256_beeu-x86_64-asm-apple.S
+[76/385] Compiling p256_beeu-armv8-asm-win.S
+[77/385] Compiling p256_beeu-armv8-asm-linux.S
+[78/385] Compiling p256_beeu-armv8-asm-apple.S
+[79/385] Compiling p256-x86_64-asm-linux.S
+[80/385] Compiling p256-x86_64-asm-apple.S
+[81/385] Compiling p256-armv8-asm-win.S
+[82/385] Compiling p256-armv8-asm-linux.S
+[83/385] Compiling p256-armv8-asm-apple.S
+[84/385] Compiling ghashv8-armv8-win.S
+[85/385] Compiling ghashv8-armv8-linux.S
+[86/385] Compiling ghashv8-armv8-apple.S
+[87/385] Compiling ghashv8-armv7-linux.S
+[88/385] Compiling ghash-x86_64-linux.S
+[89/385] Compiling ghash-x86_64-apple.S
+[90/385] Compiling ghash-x86-linux.S
+[91/385] Compiling ghash-x86-apple.S
+[92/385] Compiling ghash-ssse3-x86_64-linux.S
+[93/385] Compiling ghash-ssse3-x86_64-apple.S
+[94/385] Compiling ghash-ssse3-x86-linux.S
+[95/385] Compiling ghash-ssse3-x86-apple.S
+[96/385] Compiling ghash-neon-armv8-win.S
+[97/385] Compiling ghash-neon-armv8-linux.S
+[98/385] Compiling ghash-neon-armv8-apple.S
+[99/385] Compiling ghash-armv4-linux.S
+[100/385] Compiling co-586-linux.S
+[101/385] Compiling co-586-apple.S
+[102/385] Compiling bsaes-armv7-linux.S
+[103/385] Compiling bn-armv8-win.S
+[104/385] Compiling bn-armv8-linux.S
+[105/385] Compiling bn-armv8-apple.S
+[106/385] Compiling bn-586-linux.S
+[107/385] Compiling bn-586-apple.S
+[108/385] Compiling armv8-mont-win.S
+[109/385] Compiling armv8-mont-linux.S
+[110/385] Compiling armv8-mont-apple.S
+[111/385] Compiling armv4-mont-linux.S
+[112/385] Compiling aesv8-gcm-armv8-linux.S
+[112/385] Compiling aesv8-gcm-armv8-win.S
+[114/385] Compiling aesv8-gcm-armv8-apple.S
+[115/385] Compiling aesv8-armv8-win.S
+[116/385] Compiling aesv8-armv8-apple.S
+[117/385] Compiling aesv8-armv8-linux.S
+[118/385] Compiling aesv8-armv7-linux.S
+[119/385] Compiling aesni-x86_64-linux.S
+[120/385] Compiling aesni-x86_64-apple.S
+[121/385] Compiling aesni-x86-linux.S
+[122/385] Compiling aesni-x86-apple.S
+[123/385] Compiling aesni-gcm-x86_64-linux.S
+[124/385] Compiling aesni-gcm-x86_64-apple.S
+[125/385] Compiling aes-gcm-avx10-x86_64-linux.S
+[126/385] Compiling aes-gcm-avx10-x86_64-apple.S
+[127/385] Write swift-version-2807070033DA82CF.txt
+[128/385] Compiling a_strnid.cc
+[129/385] Compiling a_strex.cc
+[129/385] Compiling err_data.cc
+[131/385] Compiling x_sig.cc
+[132/385] Compiling x_val.cc
+[133/385] Compiling x_x509.cc
+[133/385] Compiling x_x509a.cc
+[133/385] Compiling x_spki.cc
+[136/385] Compiling x_pubkey.cc
+[136/385] Compiling x_req.cc
+[138/385] Compiling x_name.cc
+[139/385] Compiling x_algor.cc
+[140/385] Compiling x509spki.cc
+[141/385] Compiling x_exten.cc
+[142/385] Compiling x_attrib.cc
+[143/385] Compiling x_crl.cc
+[144/385] Compiling x_all.cc
+[145/385] Compiling x509rset.cc
+[146/385] Compiling x509name.cc
+[147/385] Compiling x509_txt.cc
+[148/385] Compiling x509cset.cc
+[149/385] Compiling x509_v3.cc
+[150/385] Compiling x509_vpm.cc
+[151/385] Compiling x509_vfy.cc
+[152/385] Compiling x509_trs.cc
+[153/385] Compiling x509_set.cc
+[154/385] Compiling x509_req.cc
+[155/385] Compiling x509_def.cc
+[156/385] Compiling x509_obj.cc
+[157/385] Compiling x509_d2.cc
+[158/385] Compiling x509_lu.cc
+[159/385] Compiling x509_ext.cc
+[160/385] Compiling x509.cc
+[161/385] Compiling x509_cmp.cc
+[162/385] Compiling x509_att.cc
+[163/385] Compiling v3_prn.cc
+[164/385] Compiling v3_skey.cc
+[165/385] Compiling v3_purp.cc
+[166/385] Compiling v3_utl.cc
+[167/385] Compiling v3_ocsp.cc
+[168/385] Compiling v3_pmaps.cc
+[169/385] Compiling v3_pcons.cc
+[170/385] Compiling v3_ncons.cc
+[171/385] Compiling v3_int.cc
+[172/385] Compiling v3_lib.cc
+[173/385] Compiling v3_info.cc
+[174/385] Compiling v3_ia5.cc
+[175/385] Compiling v3_genn.cc
+[176/385] Compiling v3_extku.cc
+[177/385] Compiling v3_enum.cc
+[178/385] Compiling v3_crld.cc
+[179/385] Compiling v3_cpols.cc
+[180/385] Compiling v3_conf.cc
+[181/385] Compiling v3_bcons.cc
+[182/385] Compiling v3_bitst.cc
+[183/385] Compiling v3_alt.cc
+[184/385] Compiling v3_akeya.cc
+[185/385] Compiling v3_akey.cc
+[186/385] Compiling t_x509a.cc
+[187/385] Compiling t_crl.cc
+[188/385] Compiling t_x509.cc
+[189/385] Compiling t_req.cc
+[190/385] Compiling i2d_pr.cc
+[191/385] Compiling name_print.cc
+[192/385] Compiling rsa_pss.cc
+[193/385] Compiling policy.cc
+[194/385] Compiling by_file.cc
+[195/385] Compiling by_dir.cc
+[196/385] Compiling asn1_gen.cc
+[197/385] Compiling a_digest.cc
+[198/385] Compiling algorithm.cc
+[199/385] Compiling a_verify.cc
+[200/385] Compiling a_sign.cc
+[201/385] Compiling voprf.cc
+[202/385] Compiling thread.cc
+[203/385] Compiling trust_token.cc
+[204/385] Compiling thread_win.cc
+[205/385] Compiling thread_pthread.cc
+[206/385] Compiling thread_none.cc
+[207/385] Compiling pmbtoken.cc
+[208/385] Compiling stack.cc
+[209/385] Compiling wots.cc
+[210/385] Compiling sha512.cc
+[211/385] Compiling thash.cc
+[212/385] Compiling slhdsa.cc
+[213/385] Compiling merkle.cc
+[214/385] Compiling fors.cc
+[214/385] Compiling siphash.cc
+[216/385] Compiling sha256.cc
+[216/385] Compiling sha1.cc
+[218/385] Compiling rsa_print.cc
+[219/385] Compiling rsa_extra.cc
+[220/385] Compiling rc4.cc
+[221/385] Compiling urandom.cc
+[222/385] Compiling refcount.cc
+[222/385] Compiling windows.cc
+[224/385] Compiling rsa_crypt.cc
+[225/385] Compiling rsa_asn1.cc
+[226/385] Compiling trusty.cc
+[227/385] Compiling rand_extra.cc
+[228/385] Compiling ios.cc
+[229/385] Compiling poly1305_arm_asm.S
+[230/385] Compiling getentropy.cc
+[231/385] Compiling passive.cc
+[232/385] Compiling deterministic.cc
+[233/385] Compiling fork_detect.cc
+[234/385] Compiling forkunsafe.cc
+[235/385] Compiling pool.cc
+[236/385] Compiling poly1305_vec.cc
+[237/385] Compiling poly1305_arm.cc
+[238/385] Compiling poly1305.cc
+[239/385] Compiling pkcs8.cc
+[239/385] Compiling pkcs8_x509.cc
+[241/385] Compiling pkcs7.cc
+[242/385] Compiling p5_pbev2.cc
+[243/385] Compiling pkcs7_x509.cc
+[244/385] Compiling pem_x509.cc
+[245/385] Compiling pem_xaux.cc
+[246/385] Compiling pem_pkey.cc
+[247/385] Compiling pem_pk8.cc
+[248/385] Compiling pem_oth.cc
+[249/385] Compiling pem_info.cc
+[250/385] Compiling pem_lib.cc
+[250/385] Compiling pem_all.cc
+[252/385] Compiling obj_xref.cc
+[253/385] Compiling mldsa.cc
+[254/385] Compiling obj.cc
+[255/385] Compiling mlkem.cc
+[256/385] Compiling poly_rq_mul.S
+[257/385] Compiling mem.cc
+[258/385] Compiling fips_shared_support.cc
+[259/385] Compiling md5.cc
+[260/385] Compiling lhash.cc
+[261/385] Compiling md4.cc
+[262/385] Compiling kyber.cc
+[263/385] Compiling hrss.cc
+[264/385] Compiling sign.cc
+[265/385] Compiling ex_data.cc
+[266/385] Compiling hpke.cc
+[267/385] Compiling print.cc
+[268/385] Compiling scrypt.cc
+[269/385] Compiling p_x25519.cc
+[270/385] Compiling pbkdf.cc
+[271/385] Compiling p_x25519_asn1.cc
+[272/385] Compiling p_rsa.cc
+[273/385] Compiling p_rsa_asn1.cc
+[274/385] Compiling p_hkdf.cc
+[275/385] Compiling p_ed25519.cc
+[276/385] Compiling p_ed25519_asn1.cc
+[277/385] Compiling p_ec_asn1.cc
+[278/385] Compiling p_ec.cc
+[279/385] Compiling p_dh.cc
+[280/385] Compiling p_dh_asn1.cc
+[280/385] Compiling bcm.cc
+[282/385] Compiling p_dsa_asn1.cc
+[283/385] Compiling evp_ctx.cc
+[284/385] Compiling evp.cc
+[285/385] Compiling evp_asn1.cc
+[286/385] Compiling err.cc
+[287/385] Compiling engine.cc
+[288/385] Compiling ecdsa_asn1.cc
+[289/385] Compiling ecdh_extra.cc
+[290/385] Compiling hash_to_curve.cc
+[291/385] Compiling ec_derive.cc
+[292/385] Compiling dsa_asn1.cc
+[293/385] Compiling ec_asn1.cc
+[294/385] Compiling dsa.cc
+[295/385] Compiling x25519-asm-arm.S
+[296/385] Compiling digest_extra.cc
+[297/385] Compiling params.cc
+[298/385] Compiling dh_asn1.cc
+[299/385] Compiling des.cc
+[300/385] Compiling spake25519.cc
+[301/385] Compiling curve25519_64_adx.cc
+[302/385] Compiling cpu_intel.cc
+[303/385] Compiling curve25519.cc
+[304/385] Compiling crypto.cc
+[305/385] Compiling cpu_arm_linux.cc
+[306/385] Compiling cpu_arm_freebsd.cc
+[307/385] Compiling cpu_aarch64_win.cc
+[308/385] Compiling cpu_aarch64_openbsd.cc
+[309/385] Compiling cpu_aarch64_sysreg.cc
+[310/385] Compiling cpu_aarch64_linux.cc
+[311/385] Compiling cpu_aarch64_fuchsia.cc
+[312/385] Compiling cpu_aarch64_apple.cc
+[313/385] Compiling conf.cc
+[314/385] Compiling tls_cbc.cc
+[315/385] Compiling e_rc4.cc
+[316/385] Compiling e_tls.cc
+[317/385] Compiling e_null.cc
+[318/385] Compiling e_rc2.cc
+[319/385] Compiling e_des.cc
+[320/385] Compiling derive_key.cc
+[321/385] Compiling e_chacha20poly1305.cc
+[322/385] Compiling e_aesctrhmac.cc
+[323/385] Compiling e_aesgcmsiv.cc
+[324/385] Compiling cipher_extra.cc
+[325/385] Compiling unicode.cc
+[326/385] Compiling chacha.cc
+[327/385] Compiling ber.cc
+[328/385] Compiling cbb.cc
+[329/385] Compiling cbs.cc
+[330/385] Compiling bn_asn1.cc
+[331/385] Compiling asn1_compat.cc
+[332/385] Compiling buf.cc
+[333/385] Compiling convert.cc
+[334/385] Compiling printf.cc
+[335/385] Compiling blake2.cc
+[336/385] Compiling pair.cc
+[337/385] Compiling hexdump.cc
+[338/385] Compiling file.cc
+[339/385] Compiling errno.cc
+[340/385] Compiling fd.cc
+[341/385] Compiling bio_mem.cc
+[342/385] Compiling bio.cc
+[343/385] Compiling base64.cc
+[344/385] Compiling tasn_typ.cc
+[345/385] Compiling tasn_fre.cc
+[346/385] Compiling tasn_utl.cc
+[347/385] Compiling posix_time.cc
+[348/385] Compiling tasn_new.cc
+[349/385] Compiling f_string.cc
+[350/385] Compiling tasn_enc.cc
+[351/385] Compiling tasn_dec.cc
+[352/385] Compiling f_int.cc
+[353/385] Compiling asn_pack.cc
+[354/385] Compiling asn1_par.cc
+[355/385] Compiling a_utctm.cc
+[356/385] Compiling a_type.cc
+[357/385] Compiling a_time.cc
+[358/385] Compiling a_octet.cc
+[359/385] Compiling asn1_lib.cc
+[360/385] Compiling a_mbstr.cc
+[361/385] Compiling a_object.cc
+[362/390] Compiling a_i2d_fp.cc
+[363/393] Compiling a_dup.cc
+[363/393] Compiling a_gentm.cc
+[365/393] Compiling a_int.cc
+[366/393] Compiling a_d2i_fp.cc
+[367/393] Compiling a_bool.cc
+[368/393] Compiling a_bitstr.cc
+[370/401] Compiling TorahInspectorCore TorahRelatedDocumentsAccessError.swift
+[371/402] Compiling TorahInspectorCore TorahSourceTransfer.swift
+[372/402] Emitting module CryptoBoringWrapper
+[373/402] Compiling CryptoBoringWrapper BoringSSLAEAD.swift
+[374/402] Compiling CryptoBoringWrapper EllipticCurvePoint.swift
+[375/402] Compiling CryptoBoringWrapper EllipticCurve.swift
+[376/402] Compiling CryptoBoringWrapper FiniteFieldArithmeticContext.swift
+[377/402] Compiling CryptoBoringWrapper ArbitraryPrecisionInteger.swift
+[378/402] Compiling CryptoBoringWrapper CryptoKitErrors_boring.swift
+[379/402] Compiling CryptoBoringWrapper RandomBytes.swift
+[381/403] Emitting module TorahInspectorCore
+[382/403] Compiling TorahInspectorCore ProviderProtocols.swift
+[383/403] Compiling TorahInspectorCore Models.swift
+[384/403] Compiling TorahInspectorCore TorahInspectorCoordinator.swift
+[385/403] Compiling TorahInspectorCore TorahInspectorRepository.swift
+[386/403] Compiling TorahInspectorCore TorahReaderScrollStateMachine.swift
+[386/403] Wrapping AST for CryptoBoringWrapper for debugging
+[388/403] Compiling TorahInspectorCore TorahToolSelectorStateMachine.swift
+[389/404] Wrapping AST for TorahInspectorCore for debugging
+[391/524] Compiling PinkhaKit TorahAssociationPayloadCodec.swift
+[392/524] Compiling PinkhaKit TorahAssociationRepository.swift
+[393/524] Compiling PinkhaKit TorahAuthorizedOperationRead.swift
+[394/524] Compiling PinkhaKit TorahCanonicalAssociations.swift
+[395/524] Compiling PinkhaKit TorahDerivedQueryProjection.swift
+[396/524] Compiling PinkhaKit TorahDocumentPropertyProjection.swift
+[397/530] Emitting module Crypto
+[398/530] Compiling PinkhaKit T5BlockReachability.swift
+[399/530] Compiling PinkhaKit PinkhaHierarchyReconciler.swift
+[400/530] Compiling PinkhaKit PinkhaNavigationDirectionPolicy.swift
+[401/530] Compiling PinkhaKit PinkhaTextDirectionMarker.swift
+[402/530] Compiling PinkhaKit PinkhaWritingDirectionPolicy.swift
+[403/530] Compiling PinkhaKit PinkhaSchemaRoles.swift
+[404/530] Compiling PinkhaKit PinkhaSpaceManifest.swift
+[405/530] Compiling PinkhaKit TorahNativePropertySchema.swift
+[406/530] Compiling PinkhaKit T5ExpandedRelatedDocumentsQuery.swift
+[407/530] Compiling PinkhaKit T5ExpandedRelatedTargets.swift
+[408/530] Compiling PinkhaKit PinkhaBootstrapOperations.swift
+[409/530] Compiling PinkhaKit PinkhaBootstrapProtocols.swift
+[410/530] Compiling PinkhaKit PinkhaSchemaMigrator.swift
+[411/530] Compiling PinkhaKit PinkhaSpaceBootstrapEngine.swift
+[412/530] Compiling PinkhaKit PinkhaRuntime.swift
+[413/530] Compiling PinkhaKit PinkhaSemanticTextAnchor.swift
+[414/530] Compiling PinkhaKit PinkhaSerialTextEditQueue.swift
+[415/530] Compiling PinkhaKit PinkhaTextInputRenderPolicy.swift
+[416/530] Compiling PinkhaKit PinkhaHierarchyBuilder.swift
+[417/530] Compiling PinkhaKit PinkhaHierarchyCodec.swift
+[418/530] Compiling PinkhaKit PinkhaHierarchyKeyBuilder.swift
+[419/530] Compiling PinkhaKit PinkhaHierarchyModels.swift
+[420/530] Compiling PinkhaKit PinkhaHierarchyMutationValidator.swift
+[421/530] Compiling PinkhaKit PinkhaHierarchyOrdering.swift
+[422/530] Compiling PinkhaKit SefariaReferenceProvider.swift
+[423/530] Compiling PinkhaKit SefariaRelationshipProvider.swift
+[424/530] Compiling PinkhaKit SefariaTextProvider.swift
+[425/530] Compiling PinkhaKit SefariaTopicProvider.swift
+[426/530] Compiling PinkhaKit TorahHTTPTransport.swift
+[427/530] Compiling PinkhaKit TorahTopicCache.swift
+[428/530] Compiling PinkhaKit T5NativeRelatedLookupCapability.swift
+[429/530] Compiling PinkhaKit T5NoteCreationFlow.swift
+[430/530] Compiling PinkhaKit T5SpaceRelatedDocumentsQuery.swift
+[431/530] Compiling PinkhaKit TorahAssociationIdentity.swift
+[432/530] Compiling PinkhaKit TorahAssociationModels.swift
+[433/530] Compiling PinkhaKit AnytypeTorahWorkspace.swift
+[434/530] Compiling PinkhaKit SefariaHierarchyProvider.swift
+[435/530] Compiling PinkhaKit TorahSourceHierarchy.swift
+[436/530] Compiling PinkhaKit SefariaClient.swift
+[437/530] Compiling PinkhaKit SefariaDisplayText.swift
+[441/530] Compiling Crypto PKCS8PrivateKey.swift
+[448/530] Compiling Crypto SEC1PrivateKey.swift
+[454/530] Compiling Crypto SubjectPublicKeyInfo.swift
+[455/530] Compiling Crypto CryptoKitErrors.swift
+[456/530] Compiling Crypto Digest_boring.swift
+[457/530] Compiling Crypto Digest.swift
+[458/530] Compiling Crypto Digests.swift
+[459/530] Compiling Crypto HashFunctions.swift
+[460/530] Compiling Crypto HashFunctions_SHA2.swift
+[461/530] Compiling Crypto HPKE-AEAD.swift
+[462/530] Compiling PinkhaKit TorahProviderProtocols.swift
+[463/530] Compiling PinkhaKit TorahProviderRegistry.swift
+[464/530] Compiling PinkhaKit TorahReferenceUtil.swift
+[465/530] Compiling PinkhaKit TorahSemanticAnchorAssociation.swift
+[466/530] Compiling Crypto ASN1Strings.swift
+[467/530] Compiling Crypto ArraySliceBigint.swift
+[468/530] Compiling Crypto GeneralizedTime.swift
+[469/530] Compiling Crypto ObjectIdentifier.swift
+[470/530] Compiling Crypto ECDSASignature.swift
+[471/530] Compiling Crypto PEMDocument.swift
+[472/530] Compiling PinkhaKit SefariaJSONText.swift
+[473/530] Compiling PinkhaKit SefariaLexicalProvider.swift
+[480/530] Compiling PinkhaKit TorahInspectorRepositoryFactory.swift
+[481/530] Compiling PinkhaKit TorahProviderModels.swift
+[496/539] Emitting module PinkhaKit
+[517/540] Wrapping AST for PinkhaKit for debugging
+[519/540] Compiling Crypto Signature.swift
+[520/540] Compiling Crypto CryptoKitErrors_boring.swift
+[521/540] Compiling Crypto RNG_boring.swift
+[522/540] Compiling Crypto SafeCompare_boring.swift
+[523/540] Compiling Crypto Zeroization_boring.swift
+[524/540] Compiling Crypto PrettyBytes.swift
+[525/540] Compiling Crypto SafeCompare.swift
+[526/540] Compiling Crypto SecureBytes.swift
+[527/540] Compiling Crypto Zeroization.swift
+[528/541] Wrapping AST for Crypto for debugging
+[530/553] Compiling PinkhaAnyEngine AnyGuardedTorahClaimsRepository.swift
+[531/553] Compiling PinkhaAnyEngine AnyGuardedTorahContract.swift
+[532/553] Compiling PinkhaAnyEngine AnyGuardedTorahLiveQuery.swift
+[533/553] Compiling PinkhaAnyEngine AnyGuardedTorahOperationRead.swift
+[534/553] Compiling PinkhaAnyEngine AnyHTTPClient.swift
+[535/553] Compiling PinkhaAnyEngine AnyJSON.swift
+[536/553] Compiling PinkhaAnyEngine AnyTorahClaimsRepository.swift
+[537/553] Emitting module PinkhaAnyEngine
+[538/553] Compiling PinkhaAnyEngine AnyTorahLiveQuery.swift
+[539/553] Compiling PinkhaAnyEngine AnySSEParser.swift
+[540/553] Compiling PinkhaAnyEngine AnyLiveQuery.swift
+[541/553] Compiling PinkhaAnyEngine AnyObjectCreationUncertain.swift
+[542/554] Compiling PinkhaAnyEngine AnyTorahOperation.swift
+[543/555] Wrapping AST for PinkhaAnyEngine for debugging
+[545/575] Compiling PinkhaAnyIntegration AnyTorahPreparedMutation.swift
+[546/575] Compiling PinkhaAnyIntegration AnyTorahRelatedDocuments.swift
+[547/577] Compiling PinkhaAnyIntegration AnyTorahSourceJSONGuard.swift
+[548/577] Compiling PinkhaAnyIntegration AnyTorahWorkspace.swift
+[549/577] Emitting module PinkhaAnyIntegration
+[550/577] Compiling PinkhaAnyIntegration AnyAuthorizedTorahOperationReader.swift
+[551/577] Compiling PinkhaAnyIntegration AnyConditionalPropertyFence.swift
+[552/577] Compiling PinkhaAnyIntegration AnyGuardedHTTPHierarchyRecordStore.swift
+[553/577] Compiling PinkhaAnyIntegration AnyGuardedTorahIndex.swift
+[554/577] Compiling PinkhaAnyIntegration AnyGuardedTorahOperationStore.swift
+[555/577] Compiling PinkhaAnyIntegration AnyHTTPHierarchyRecordStore.swift
+[556/577] Compiling PinkhaAnyIntegration AnyLexicographicPosition.swift
+[557/577] Compiling PinkhaAnyIntegration AnyNativeDocumentPolicy.swift
+[558/577] Compiling PinkhaAnyIntegration AnyTorahArchive.swift
+[559/577] Compiling PinkhaAnyIntegration AnyHierarchyArchiveRequest.swift
+[560/577] Compiling PinkhaAnyIntegration AnyHierarchyModels.swift
+[561/577] Compiling PinkhaAnyIntegration AnyHierarchyRepository.swift
+[562/577] Compiling PinkhaAnyIntegration AnyTorahAssociationRepository.swift
+[563/577] Compiling PinkhaAnyIntegration AnyTorahMigration.swift
+[564/577] Compiling PinkhaAnyIntegration AnyTorahNotesService.swift
+[565/577] Compiling PinkhaAnyIntegration AnyTorahObjectScope.swift
+[566/577] Compiling PinkhaAnyIntegration AnyTorahObservation.swift
+[567/578] Wrapping AST for PinkhaAnyIntegration for debugging
+[569/592] Compiling PinkhaAnyHost AnyNativeBlockCreator.swift
+[570/592] Compiling PinkhaAnyHost AnyNativeHistoryReader.swift
+[571/592] Emitting module PinkhaAnyHost
+[572/592] Compiling PinkhaAnyHost AnyApplicationSession.swift
+[573/592] Compiling PinkhaAnyHost AnyEditorDocumentStore.swift
+[574/592] Compiling PinkhaAnyHost AnyEditorSnapshot.swift
+[575/592] Compiling PinkhaAnyHost AnyHostAuthorizedTorahOperationReader.swift
+[576/592] Compiling PinkhaAnyHost AnyHostCanonical.swift
+[577/592] Compiling PinkhaAnyHost AnyInlineMarkdown.swift
+[578/592] Compiling PinkhaAnyHost AnyNativeNoteBootstrap.swift
+[579/592] Compiling PinkhaAnyHost AnyNativeObjectCreator.swift
+[580/592] Compiling PinkhaAnyHost AnyNativePropertyStore.swift
+[581/592] Compiling PinkhaAnyHost AnyNativeWorkflowBindings.swift
+[582/592] Compiling PinkhaAnyHost AnyProtectedCreationJournal.swift
+[583/593] Compiling PinkhaAnyHost AnySemanticAnchorDocument.swift
+[584/594] Wrapping AST for PinkhaAnyHost for debugging
+[586/596] Emitting module PinkhaSemanticHostControls
+[587/596] Compiling PinkhaSemanticHostControls AnySemanticAnchorDocumentTests.swift
+[588/597] C:\Users\DAVID\AppData\Local\Temp\pinkha-semantic-any-host-7pj8ejll\.build\x86_64-unknown-windows-msvc\debug\PinkhaSemanticNativeHostControlsPackageDiscoveredTests.derived\all-discovered-tests.swift
+[589/597] Write sources
+[590/597] Wrapping AST for PinkhaSemanticHostControls for debugging
+[592/600] Compiling PinkhaSemanticNativeHostControlsPackageDiscoveredTests PinkhaSemanticHostControls.swift
+[593/600] Emitting module PinkhaSemanticNativeHostControlsPackageDiscoveredTests
+[594/600] Compiling PinkhaSemanticNativeHostControlsPackageDiscoveredTests all-discovered-tests.swift
+[595/601] C:\Users\DAVID\AppData\Local\Temp\pinkha-semantic-any-host-7pj8ejll\.build\x86_64-unknown-windows-msvc\debug\PinkhaSemanticNativeHostControlsPackageTests.derived\runner.swift
+[596/601] Write sources
+[597/603] Wrapping AST for PinkhaSemanticNativeHostControlsPackageDiscoveredTests for debugging
+[599/603] Emitting module PinkhaSemanticNativeHostControlsPackageTests
+[600/603] Compiling PinkhaSemanticNativeHostControlsPackageTests runner.swift
+[601/604] Wrapping AST for PinkhaSemanticNativeHostControlsPackageTests for debugging
+[602/604] Write Objects.LinkFileList
+[603/604] Linking PinkhaSemanticNativeHostControlsPackageTests.xctest
+Build complete! (1549.29s)
+Test Suite 'Selected tests' started at 2026-11-22 18:16:01.826
+Test Suite 'AnySemanticAnchorDocumentTests' started at 2026-11-22 18:16:01.885
+Test Case 'AnySemanticAnchorDocumentTests.testCaptureAndResolveRefuseUnsupportedNativeSyntaxInsteadOfRetargetingOffsets' started at 2026-11-22 18:16:01.885
+Test Case 'AnySemanticAnchorDocumentTests.testCaptureAndResolveRefuseUnsupportedNativeSyntaxInsteadOfRetargetingOffsets' passed (0.024 seconds)
+Test Case 'AnySemanticAnchorDocumentTests.testCaptureRejectsExistingSameIdentityElsewhereAndUnreachableCopies' started at 2026-11-22 18:16:01.910
+Test Case 'AnySemanticAnchorDocumentTests.testCaptureRejectsExistingSameIdentityElsewhereAndUnreachableCopies' passed (0.095 seconds)
+Test Case 'AnySemanticAnchorDocumentTests.testCaptureUsesExistingVersionRunCASAndPreservesExactInverseAndOpaqueFields' started at 2026-11-22 18:16:02.005
+Test Case 'AnySemanticAnchorDocumentTests.testCaptureUsesExistingVersionRunCASAndPreservesExactInverseAndOpaqueFields' passed (0.021 seconds)
+Test Case 'AnySemanticAnchorDocumentTests.testPrepareRejectsVersionOwnerRunScopeDatasetAndUnknownFieldChanges' started at 2026-11-22 18:16:02.026
+Test Case 'AnySemanticAnchorDocumentTests.testPrepareRejectsVersionOwnerRunScopeDatasetAndUnknownFieldChanges' passed (0.048 seconds)
+Test Case 'AnySemanticAnchorDocumentTests.testReadbackRequiresExactMarkerFieldOneFragmentAndCurrentNativeOwner' started at 2026-11-22 18:16:02.074
+Test Case 'AnySemanticAnchorDocumentTests.testReadbackRequiresExactMarkerFieldOneFragmentAndCurrentNativeOwner' passed (0.084 seconds)
+Test Case 'AnySemanticAnchorDocumentTests.testResolveUsesCompleteCurrentNativeGraphAndReportsMissingAmbiguousOrForeign' started at 2026-11-22 18:16:02.158
+Test Case 'AnySemanticAnchorDocumentTests.testResolveUsesCompleteCurrentNativeGraphAndReportsMissingAmbiguousOrForeign' passed (0.035 seconds)
+Test Suite 'AnySemanticAnchorDocumentTests' passed at 2026-11-22 18:16:02.193
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.307 (0.307) seconds
+Test Suite 'Selected tests' passed at 2026-11-22 18:16:02.193
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.307 (0.307) seconds
+◊ Test run started.
+→ Testing Library Version: 6.3.3 (48d727cc1cf4eda)
+→ Target Platform: x86_64-unknown-windows-msvc
+√ Test run with 0 tests in 0 suites passed after 0.002 seconds.
