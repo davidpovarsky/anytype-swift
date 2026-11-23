@@ -1,6 +1,6 @@
 # Prepared inline-file HTTP candidate
 
-The native public HTTP implementation is qualified by three new top-level controls and 18 strict-input subcases on Linux ARM64. The first Swift handoff remains a retained failure of the live test fixture; public client and native production sources were unchanged. Apple and network acceptance remain open.
+The native public HTTP implementation is qualified by three new top-level controls and 18 strict-input subcases on Linux ARM64. The real Swift-to-native handoff is also qualified by one actual Swift XCTest and one independent native bridge test. The first fixture failure is retained; public client and native production sources were unchanged. Apple and network acceptance remain open.
 
 The immutable source manifest deliberately retains `OPT_IN_SOURCE_CANDIDATE_PENDING_QUALIFICATION`. Qualification receipts describe actual executions separately, so later evidence does not change the native source identity.
 
@@ -38,6 +38,14 @@ The opt-in native bridge is protected by the `pinkha_inline_http_bridge` build t
 The first live attempt is preserved in [bridge-attempt1-original](bridge-attempt1-original/failure.json). The empty file completed. The next preparation correctly reported `file-root-committed` because the same owner's payload root existed, while the Swift live fixture incorrectly required `file-prepared` again. The client reported failure; the native verifier refused acceptance and closed its owned server. No native source correction was made.
 
 A successful bridge qualification requires both the original one-method Swift XCTest receipt and the original native bridge pass, with independent native receipt/specification/Get/Open/status-event verification. It is not established by a `completed` JSON field alone.
+
+## Joined real Swift and native qualification
+
+[The joined qualification](bridge-qualified.json) binds both original terminals to the same fresh nonce, handshake and exact result bytes. The repaired live fixture required the exact first-file file-prepared stage, the second-file file-root-committed stage, the shared payload root and distinct row/file identities.
+
+The original Swift XCTest passed once in 0.284 seconds, using the already compiled opt-in binary with all source and binary hashes unchanged. The independent native bridge passed once in 34.86 seconds including handoff wait. It re-read both original specifications, complete/committed receipts and plaintext streams through the real SDK, and observed exactly two durable/cached local events. The owned native process group was gone afterward.
+
+Original Swift receipt/log, native status/log, fresh handshake and client observations are preserved in [bridge-attempt2-original](bridge-attempt2-original/native-qualified.json). Only the failed live integration method was repeated. The core 3/18 and portable Swift 12 scopes remain separate retained executions; they were not rerun for this fixture correction.
 
 ## Capability boundary
 
