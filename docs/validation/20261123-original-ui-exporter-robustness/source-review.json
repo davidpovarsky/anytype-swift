@@ -1,0 +1,45 @@
+{
+  "avfoundation_typecheck_or_execution": "NOT_RUN",
+  "base_commit": "c42acd98147b54f89dba7ef615b22ad561e6f94e",
+  "budget_increased": false,
+  "classification": "DOWNSTREAM_OWNED_DIAGNOSTIC_TOOLS_AND_ISOLATED_WORKFLOW_BRANCH",
+  "current_control_failures": 0,
+  "exact_original_timestamp_duration_privacy_guards": {
+    "!FileManager.default.fileExists(atPath: target.path)": true,
+    "CMTime(seconds: 0.1, preferredTimescale: 600)": true,
+    "Set(item.frames.map(\\.label)) == Set([\"post-action\", \"near-failure\"]) && item.frames.count == 2": true,
+    "actual.isFinite && abs(actual - frame.seconds) <= 0.5 && actual >= item.min_seconds && actual <= item.max_seconds": true,
+    "duration.isFinite && abs(duration - item.expected_duration_seconds) <= 5": true,
+    "frame.seconds.isFinite && frame.seconds >= item.min_seconds && frame.seconds <= item.max_seconds && frame.seconds < duration - 0.2": true,
+    "item.min_seconds > 100 && item.max_seconds > item.min_seconds": true
+  },
+  "files": {
+    ".github/workflows/pinkha-native-diagnostics.yml": "0e8be732729549324eabcb83865150a03b34191779d2bc07e62c59efc40ac134",
+    "Tools/AnyEnginePort/export_original_ui_timeline.py": "497940bf8db7fef80e42d5f94b0fe8dbf465228886d08d4de0ee12745e83d136",
+    "Tools/AnyEnginePort/extract_original_ui_stills.swift": "eedfd1c38f1613f9480145c45c5ed4e2894a9dcc661ec12c2558bdf31ee68ade",
+    "Tools/AnyEnginePort/tests/test_original_ui_timeline_outcomes.py": "ea2451d0d79c11531c8ca1831c54341b08be901cc1e5c68f61c3a6596eff9c46"
+  },
+  "first_exporter_byte_identical": true,
+  "first_exporter_sha256": "b28a56db0969f15d67812c35160c93c972cf19424077b119ccfd132f6c08d4fc",
+  "generic_workflow_route_byte_identical": true,
+  "no_mac_export_dispatched": true,
+  "observer_reviewed_commit": "be938dd8d860b4be3b8c8a407ba8cd22ed9a3f40",
+  "old_five_tests_byte_identical_and_not_rerun": true,
+  "only_failed_control_reexecuted": "test_invalid_or_timed_out_renderer_still_preserves_owned_process_diagnostics",
+  "original_first_control_attempt": {
+    "cause": "Fixture expected exactly 0.3 although subprocess records its slightly reduced remaining wait timeout",
+    "executed": 4,
+    "fail": 1,
+    "pass": 3
+  },
+  "prior_timeline_and_privacy_functions_byte_identical": true,
+  "product_tests_executed": 0,
+  "qualified_current_control_count": 4,
+  "swift_syntax_only": true,
+  "three_retained_current_controls": {
+    "test_coordinator_keeps_second_asset_and_both_backup_outputs_after_first_asset_failure": "6284508162a7794cba7ab3286f0a157941db30f4bee828c8dbc052ca60c84266",
+    "test_nonzero_renderer_preserves_complete_streams_and_first_typed_failure": "62d30269d742b0eddea3bc514a0ffee46705c696c9d26a84a402f6f0b9f9cb1d",
+    "test_overall_success_requires_both_exact_frame_pairs_and_backup_outcomes": "fc89abb4762f29ef64f19f73f0a405e9ed9e2a9b4dff6b3d0df76413dd3b026f"
+  },
+  "total_renderer_budget_seconds": 180
+}

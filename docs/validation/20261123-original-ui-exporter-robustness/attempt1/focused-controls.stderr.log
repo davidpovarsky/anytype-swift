@@ -1,0 +1,17 @@
+test_coordinator_keeps_second_asset_and_both_backup_outputs_after_first_asset_failure (test_original_ui_timeline_outcomes.OriginalUITimelineOutcomeTests.test_coordinator_keeps_second_asset_and_both_backup_outputs_after_first_asset_failure) ... ok
+test_invalid_or_timed_out_renderer_still_preserves_owned_process_diagnostics (test_original_ui_timeline_outcomes.OriginalUITimelineOutcomeTests.test_invalid_or_timed_out_renderer_still_preserves_owned_process_diagnostics) ... FAIL
+test_nonzero_renderer_preserves_complete_streams_and_first_typed_failure (test_original_ui_timeline_outcomes.OriginalUITimelineOutcomeTests.test_nonzero_renderer_preserves_complete_streams_and_first_typed_failure) ... ok
+test_overall_success_requires_both_exact_frame_pairs_and_backup_outcomes (test_original_ui_timeline_outcomes.OriginalUITimelineOutcomeTests.test_overall_success_requires_both_exact_frame_pairs_and_backup_outcomes) ... ok
+
+======================================================================
+FAIL: test_invalid_or_timed_out_renderer_still_preserves_owned_process_diagnostics (test_original_ui_timeline_outcomes.OriginalUITimelineOutcomeTests.test_invalid_or_timed_out_renderer_still_preserves_owned_process_diagnostics)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-wave15-original-ui-export-v2-20261123/Tools/AnyEnginePort/tests/test_original_ui_timeline_outcomes.py", line 81, in test_invalid_or_timed_out_renderer_still_preserves_owned_process_diagnostics
+    self.assertEqual(timed["process"]["timeout_seconds"], 0.3)
+AssertionError: 0.29998144041746855 != 0.3
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.497s
+
+FAILED (failures=1)

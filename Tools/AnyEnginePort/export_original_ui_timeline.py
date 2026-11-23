@@ -8,6 +8,7 @@ import math
 import plistlib
 import re
 import subprocess
+import time
 import zipfile
 
 import export_original_ui_failures as original
@@ -180,6 +181,72 @@ def attachment_path(root, attachment):
     return path
 
 
+def error_summary(error):
+    return {"type": type(error).__name__, "reason": str(error)[:500]}
+
+
+def recorded_stage(outcomes, name, operation):
+    """A failed owned item must not suppress independent admitted evidence."""
+    try:
+        value = operation()
+        outcomes[name] = {"status": value.get("status", "PASS"), "result": value}
+    except Exception as error:
+        outcomes[name] = {"status": "FAIL", "error": error_summary(error)}
+    return outcomes[name]
+
+
+def run_renderer(command, private_root, scope, *, timeout=180):
+    require(scope in CASES, "Unexpected renderer scope")
+    private_root.mkdir(parents=True, exist_ok=True)
+    stdout = private_root / (scope + ".stdout.log")
+    stderr = private_root / (scope + ".stderr.log")
+    record = {"argv": command, "timeout_seconds": timeout}
+    with stdout.open("xb") as out, stderr.open("xb") as err:
+        try:
+            require(timeout > 0, "Original renderer deadline exhausted before this asset")
+            process = subprocess.run(command, stdout=out, stderr=err, timeout=timeout)
+            record["exit_code"] = process.returncode
+        except Exception as error:
+            record["error"] = error_summary(error)
+            if isinstance(error, subprocess.TimeoutExpired):
+                record["timeout_seconds"] = error.timeout
+    record["private_streams"] = {
+        name: {"path": str(path), "bytes": path.stat().st_size, "sha256": original.digest(path)}
+        for name, path in (("stdout", stdout), ("stderr", stderr))
+    }
+    result = {"status": "FAIL", "process": record}
+    try:
+        require(stdout.stat().st_size <= 2 * 1024**2, "Renderer structured result exceeds bound")
+        rendered = json.loads(stdout.read_text())
+        require(isinstance(rendered, dict) and rendered.get("schema_version") == 2
+                and rendered.get("scope") == scope
+                and rendered.get("status") in ("PASS", "FAIL"), "Invalid typed renderer result")
+        result["rendered"] = rendered
+        if record.get("exit_code") == 0 and rendered["status"] == "PASS":
+            result["status"] = "PASS"
+    except Exception as error:
+        result["structured_result_error"] = error_summary(error)
+    # Complete process bytes remain separate from selected visual evidence.
+    (private_root / (scope + ".streams.json")).write_text(
+        json.dumps(record, indent=2, sort_keys=True) + "\n")
+    return result
+
+
+def complete_evidence(outcomes):
+    required = {*CASES, "backup-tap", "backup-switches"}
+    if set(outcomes) != required or any(outcomes[k].get("status") != "PASS" for k in required):
+        return False
+    for scope in CASES:
+        rendered = outcomes[scope].get("result", {}).get("rendered", {})
+        frames = rendered.get("frames", [])
+        if (rendered.get("scope") != scope or rendered.get("status") != "PASS"
+                or len(frames) != 2
+                or {x.get("label") for x in frames} != {"post-action", "near-failure"}
+                or any(x.get("scope") != scope or x.get("status") != "PASS" for x in frames)):
+            return False
+    return True
+
+
 def main():
     root = Path("build/original-any-ui-timeline-export").resolve()
     output = root / "selected"
@@ -187,8 +254,9 @@ def main():
     receipt = {
         "status": "NOT_RUN", "source_run_id": original.RUN, "source_commit": original.SOURCE,
         "archive_sha256": original.ARCHIVE_SHA, "prior_export": FIRST_EXPORT,
-        "product_tests_executed": 0, "no_product_execution": True, "selected": [], "commands": [],
-        "scope": "Read original result recordings privately; publish only timeline-backed post-onboarding stills and numeric backup-control evidence.",
+        "product_tests_executed": 0, "no_product_execution": True, "selected": [],
+        "outcomes": {}, "commands": [], "renderer_total_budget_seconds": 180,
+        "scope": "Original post-onboarding stills and sanitized numeric backup evidence; every required item must pass.",
     }
 
     def publish_metadata(name, value):
@@ -198,11 +266,9 @@ def main():
         return path
 
     try:
-        # Reuse the unchanged first exporter and its exact archive/identity guards.
         original.main()
         original_root = Path("build/original-any-ui-export").resolve()
-        first_receipt = original_root / "selected/receipt.json"
-        receipt["attachment_export_receipt_sha256"] = original.digest(first_receipt)
+        receipt["attachment_export_receipt_sha256"] = original.digest(original_root / "selected/receipt.json")
         receipt["unchanged_first_exporter_sha256"] = original.digest(Path(original.__file__))
         with zipfile.ZipFile(original_root / "original.zip") as zipped:
             log_bytes = zipped.read("native-ui-continuation.log")
@@ -211,8 +277,10 @@ def main():
         log = log_bytes.decode("utf-8")
         exported = original_root / "native-ui-continuation.xcresult-attachments"
         manifest = json.loads((exported / "manifest.json").read_text(encoding="utf-8-sig"))
-        plans = []
-        for scope, config in CASES.items():
+        render_deadline = None
+
+        def render_case(scope, config):
+            nonlocal render_deadline
             case = find_case(manifest, config["method"])
             matches = [a for a in case["attachments"]
                        if a.get("suggestedHumanReadableName") == config["recording"]]
@@ -223,64 +291,79 @@ def main():
             plan = timeline(log, scope, config)
             plan["recording_sha256"] = original.digest(video)
             plan["recording_bytes"] = video.stat().st_size
-            plan["video_path"] = str(video)
-            plans.append(plan)
-        render_plan = root / "private-render-plan.json"
-        render_plan.write_text(json.dumps({"cases": plans}))
-        command = ["xcrun", "swift", "Tools/AnyEnginePort/extract_original_ui_stills.swift",
-                   str(render_plan), str(output / "frames")]
-        result = subprocess.run(command, capture_output=True, text=True, timeout=180)
-        receipt["commands"].append({"argv": command, "exit_code": result.returncode,
-                                    "stderr": result.stderr[-4000:]})
-        require(result.returncode == 0, "Timeline-backed still extraction failed")
-        rendered = json.loads(result.stdout)
-        require(len(rendered["cases"]) == 2 and len(rendered["frames"]) == 4,
-                "Unexpected rendered still count")
-        receipt["media_observations"] = rendered
-        for plan in plans:
-            del plan["video_path"]
-        publish_metadata("original-timelines.json", {"cases": plans})
-        # Keep valid post-onboarding stills even if an original backup archive
-        # uses an unexpected encoding; the receipt still records that failure.
-        backup = find_case(manifest, BACKUP_METHOD)
-        taps = [a for a in backup["attachments"]
-                if a.get("suggestedHumanReadableName") == BACKUP_EVENT]
-        require(len(taps) == 1, "Missing exact original backup tap")
-        tap = attachment_path(exported, taps[0])
-        require(tap.stat().st_size == 1903, "Original backup tap size differs")
-        tap_data = sanitize_event(tap.read_bytes())
-        tap_data.update(source_name=BACKUP_EVENT, source_sha256=original.digest(tap))
-        publish_metadata("backup-tap-numeric-only.json", tap_data)
-        descriptions = [a for a in backup["attachments"]
-                        if a.get("suggestedHumanReadableName", "").startswith('Debug description for ' + chr(96) + '"0" Switch' + chr(96))]
-        require(len(descriptions) == 5, "Unexpected original backup debug count")
-        sanitized = []
-        for item in descriptions:
-            source = attachment_path(exported, item)
-            require(source.stat().st_size == 2504, "Original switch debug size differs")
-            value = sanitize_switches(source.read_bytes())
-            value["source_sha256"] = original.digest(source)
-            sanitized.append(value)
-        publish_metadata("backup-switch-values-only.json",
-                         {"cases": sanitized, "method": BACKUP_METHOD,
-                          "recovery_text_and_full_trees_not_published": True})
+            publish_metadata("original-timeline-" + scope + ".json", plan)
+            private_plan = {**plan, "video_path": str(video)}
+            render_plan = root / ("private-render-plan-" + scope + ".json")
+            render_plan.write_text(json.dumps({"cases": [private_plan]}))
+            command = ["xcrun", "swift", "Tools/AnyEnginePort/extract_original_ui_stills.swift",
+                       str(render_plan), str(output / "frames")]
+            if render_deadline is None:
+                render_deadline = time.monotonic() + 180
+            result = run_renderer(command, root / "private-process", scope,
+                                  timeout=max(0, render_deadline - time.monotonic()))
+            receipt["commands"].append(result["process"])
+            return result
+
+        for scope, config in CASES.items():
+            recorded_stage(receipt["outcomes"], scope, lambda s=scope, c=config: render_case(s, c))
+
+        def backup_tap():
+            backup = find_case(manifest, BACKUP_METHOD)
+            taps = [a for a in backup["attachments"]
+                    if a.get("suggestedHumanReadableName") == BACKUP_EVENT]
+            require(len(taps) == 1, "Missing exact original backup tap")
+            tap = attachment_path(exported, taps[0])
+            require(tap.stat().st_size == 1903, "Original backup tap size differs")
+            value = sanitize_event(tap.read_bytes())
+            value.update(source_name=BACKUP_EVENT, source_sha256=original.digest(tap))
+            publish_metadata("backup-tap-numeric-only.json", value)
+            return {"status": "PASS", "source_sha256": original.digest(tap)}
+
+        def backup_switches():
+            backup = find_case(manifest, BACKUP_METHOD)
+            descriptions = [a for a in backup["attachments"]
+                            if a.get("suggestedHumanReadableName", "").startswith(
+                                'Debug description for ' + chr(96) + '"0" Switch' + chr(96))]
+            require(len(descriptions) == 5, "Unexpected original backup debug count")
+            records = []
+            for item in descriptions:
+                observation = {"status": "FAIL"}
+                try:
+                    source = attachment_path(exported, item)
+                    require(source.stat().st_size == 2504, "Original switch debug size differs")
+                    value = sanitize_switches(source.read_bytes())
+                    value["source_sha256"] = original.digest(source)
+                    observation.update(status="PASS", sanitized=value)
+                except Exception as error:
+                    observation["error"] = error_summary(error)
+                records.append(observation)
+            publish_metadata("backup-switch-values-only.json", {
+                "cases": records, "method": BACKUP_METHOD,
+                "recovery_text_and_full_trees_not_published": True})
+            return {"status": "PASS" if all(x["status"] == "PASS" for x in records) else "FAIL",
+                    "attachment_count": len(records)}
+
+        recorded_stage(receipt["outcomes"], "backup-tap", backup_tap)
+        recorded_stage(receipt["outcomes"], "backup-switches", backup_switches)
+        receipt.update(
+            status="EXPORTED_ORIGINAL_TIMELINE_EVIDENCE_NOT_ACCEPTANCE"
+                if complete_evidence(receipt["outcomes"]) else "FAIL",
+            original_archive_verified=True, no_recordings_published=True,
+            no_backup_screen_or_full_tree_published=True)
+    except BaseException as error:
+        receipt.update(status="FAIL", error=error_summary(error))
+    finally:
+        # Inventory safe independent results even when another required item failed.
         for path in sorted(output.rglob("*")):
             if not path.is_file():
                 continue
             require(path.suffix in (".json", ".png"), "Refusing to publish recording or unfiltered attachment")
             require(path.stat().st_size <= 8 * 1024**2, "Selected output exceeded bound")
             receipt["selected"].append({"path": path.relative_to(output).as_posix(),
-                                         "bytes": path.stat().st_size, "sha256": original.digest(path)})
-        receipt.update(status="EXPORTED_ORIGINAL_TIMELINE_EVIDENCE_NOT_ACCEPTANCE",
-                       original_archive_verified=True, no_recordings_published=True,
-                       no_backup_screen_or_full_tree_published=True)
-    except BaseException as error:
-        receipt.update(status="FAIL", error_type=type(error).__name__, error=str(error))
-        raise
-    finally:
+                                        "bytes": path.stat().st_size, "sha256": original.digest(path)})
         publish_metadata("receipt.json", receipt)
         print(json.dumps({k: receipt[k] for k in ("status", "scope", "product_tests_executed")}))
-    return 0
+    return 0 if receipt["status"] == "EXPORTED_ORIGINAL_TIMELINE_EVIDENCE_NOT_ACCEPTANCE" else 1
 
 
 if __name__ == "__main__":

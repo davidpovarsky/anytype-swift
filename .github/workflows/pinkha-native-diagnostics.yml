@@ -84,3 +84,17 @@ jobs:
           path: build/original-any-ui-timeline-export/selected/
           if-no-files-found: error
           retention-days: 14
+      - name: Preserve complete owned renderer process diagnostics separately
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Any-Original-UI-Timeline-Process-45087682296
+          path: |
+            build/original-any-ui-timeline-export/private-process/hanlin.stdout.log
+            build/original-any-ui-timeline-export/private-process/hanlin.stderr.log
+            build/original-any-ui-timeline-export/private-process/hanlin.streams.json
+            build/original-any-ui-timeline-export/private-process/hierarchy-drag.stdout.log
+            build/original-any-ui-timeline-export/private-process/hierarchy-drag.stderr.log
+            build/original-any-ui-timeline-export/private-process/hierarchy-drag.streams.json
+          if-no-files-found: warn
+          retention-days: 14
