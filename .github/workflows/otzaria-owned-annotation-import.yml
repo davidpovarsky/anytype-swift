@@ -2,7 +2,7 @@ name: Original native closed annotation import qualification
 
 on:
   push:
-    branches: [codex/otzaria-native-import-qualification-20261123]
+    branches: [codex/otzaria-native-import-closure-20261123]
 
 permissions:
   contents: read
@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   original-native-closed-import:
-    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-native-import-qualification-20261123' && github.run_attempt == 1
+    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-native-import-closure-20261123' && github.run_attempt == 1
     runs-on: xcode-27
     timeout-minutes: 120
     env:
@@ -54,7 +54,7 @@ jobs:
           python3 -I docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-native-qualification-20261123/run_native_closed_import.py \
             --control-root "$GITHUB_WORKSPACE" \
             --control-head "$GITHUB_SHA" \
-            --execution-manifest-sha256 3d5e8de3750a14f447b1f0c03828785c13366241fad68a488cf3ae1c42b99c67 \
+            --execution-manifest-sha256 6598ede799ddf6a140c1d2cb90f80b32356807ddd522ec8a4b583910f7b8227f \
             --job-deadline-unix "$OTZARIA_NATIVE_IMPORT_DEADLINE" \
             --heart build/Heart-Owned-Annotation-Import \
             --work build/Heart-Owned-Annotation-Import-Work \
