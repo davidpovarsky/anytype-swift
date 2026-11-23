@@ -1,8 +1,9 @@
 """Pure source/project/descriptor projection for the pending SDK06 components.
 
-The original App and tests remain immutable. Seven @Test attributes are blanked
-and one SwiftProtobuf import is added in generated copies; declarations, arguments
-and function bodies remain unchanged.
+The original App and source inputs remain immutable. Generated copies blank seven
+@Test attributes, add one SwiftProtobuf import, and replace two fixture convenience
+constructors with the same concrete Error.init() and field assignments. Declarations,
+assertion expressions, and argument values are preserved.
 """
 from __future__ import annotations
 import copy
@@ -16,7 +17,7 @@ import xml.etree.ElementTree as ET
 import sdk06_compile_support as support
 
 CONTRACT = "Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json"
-CONTRACT_SHA = "1a7b1c84ee761c707ca7796facc80f72eb9922d9ef14264801e7f651c22d3f8b"
+CONTRACT_SHA = "2a46533f00fe61c69ee9b4022031d342642dc0569c43779c4732723382fdd9fd"
 SOURCE = "75bd6d7af18dfd511e85582ce7f994d2801b7703"
 PRODUCT = "SDK06PendingTests.xctest"
 SCHEME = "SDK06PendingComponents"
@@ -67,6 +68,24 @@ def projected_sources(inputs, fixed):
             require(digest(changed) == patch["projected_sha256"]
                     and bytes(changed).replace(after, before, 1) == raw,
                     "The authority import projection or complete inverse differs")
+            imported = bytes(changed)
+            fixture = fixed["authority_error_construction"]
+            require(fixture["path"] == name and len(fixture["patches"]) == 2
+                    and digest(imported) == fixture["input_sha256"],
+                    "The exact two authority fixture constructions are required")
+            for replacement in fixture["patches"]:
+                old, new = replacement["before"].encode(), replacement["after"].encode()
+                require(old != new and changed.count(old) == 1,
+                        "An exact authority fixture constructor changed")
+                changed = bytearray(changed.replace(old, new, 1))
+            inverse = bytes(changed)
+            for replacement in reversed(fixture["patches"]):
+                old, new = replacement["before"].encode(), replacement["after"].encode()
+                require(inverse.count(new) == 1,
+                        "The authority fixture constructor inverse is ambiguous")
+                inverse = inverse.replace(new, old, 1)
+            require(digest(changed) == fixture["projected_sha256"] and inverse == imported,
+                    "The complete authority fixture construction inverse differs")
         if name == EDITOR:
             last = 0
             for patch in fixed["attribute_patches"]:
@@ -88,7 +107,10 @@ def projected_sources(inputs, fixed):
             require(bytes(inverse) == raw, "The complete original Swift inverse differs")
         result[row["basename"]] = bytes(changed)
         observed[name] = {"original_sha256": digest(raw), "projected_sha256": digest(changed),
-                          "bytes": len(raw), "function_bodies_and_arguments_unchanged": True}
+                          "bytes": len(raw), "projected_bytes": len(changed),
+                          "function_bodies_and_arguments_unchanged": name != AUTHORITY,
+                          "fixture_constructor_replacements": 2 if name == AUTHORITY else 0,
+                          "declarations_assertions_and_argument_values_unchanged": True}
     require(sum(raw.count(b"@Test(") for raw in result.values()) == 23,
             "The generated sources must register exactly the pending23 tests")
     return result, observed
@@ -323,7 +345,9 @@ def write_project(control, app, destination, staged_app, original_products, *, w
                      "contract_sha256": CONTRACT_SHA, "inputs": receipt, "generated_files": files,
                      "removed_test_registrations": fixed["selection"]["excluded"],
                      "required_compiled_registrations": fixed["selection"]["selected"],
-                     "function_bodies_and_arguments_unchanged": True,
+                     "function_bodies_and_arguments_unchanged": False,
+                     "fixture_constructor_replacements": 2,
+                     "declarations_assertions_and_argument_values_unchanged": True,
                      "original_source_modified": False, "app_build_targets": 0,
                      "native_library_build_targets": 0, "component_test_bundle_targets": 1,
                      "package_build_targets": 0, "implicit_dependencies": False,

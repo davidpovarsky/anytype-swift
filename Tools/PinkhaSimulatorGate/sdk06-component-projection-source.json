@@ -43,6 +43,21 @@
       "offset": 26094
     }
   ],
+  "authority_error_construction": {
+    "input_sha256": "74fdde3fbe33df92d19d1afa57cfeebe07c69d977645ab111ed31386f8124f01",
+    "patches": [
+      {
+        "after": "                var responseError = Anytype_Rpc.Object.Show.Response.Error()\n                responseError.code = badInput ? .badInput : .unknownError\n                responseError.description_p = description\n                return responseError\n",
+        "before": "                return Anytype_Rpc.Object.Show.Response.Error.with {\n                    $0.code = badInput ? .badInput : .unknownError\n                    $0.description_p = description\n                }\n"
+      },
+      {
+        "after": "            var responseError = Anytype_Rpc.Object.Search.Response.Error()\n            responseError.code = badInput ? .badInput : .unknownError\n            responseError.description_p = description\n            return responseError\n",
+        "before": "            return Anytype_Rpc.Object.Search.Response.Error.with {\n                $0.code = badInput ? .badInput : .unknownError\n                $0.description_p = description\n            }\n"
+      }
+    ],
+    "path": "AnyTypeTests/Pinkha/TorahRelatedReadAuthorityMappingTests.swift",
+    "projected_sha256": "7ea462a83891972b94783a05f1a36f8618917cf4713334c9c37463b94a85046b"
+  },
   "authority_import_patch": {
     "after": "import ProtobufMessages\nimport SwiftProtobuf\n",
     "before": "import ProtobufMessages\n",
@@ -68,7 +83,7 @@
     "SWIFT_UPCOMING_FEATURE_REGION_BASED_ISOLATION": "YES"
   },
   "projected_editor_sha256": "12da168c20f9f820fc84485e204967d4c5595bd7688bd1aeb3086ccf9bbf5136",
-  "projection_kind": "SEVEN_PREVIOUSLY_PASSED_TEST_ATTRIBUTES_BLANKED_AND_ONE_SWIFTPROTOBUF_IMPORT_ADDED",
+  "projection_kind": "SEVEN_PREVIOUSLY_PASSED_TEST_ATTRIBUTES_BLANKED_ONE_IMPORT_ADDED_TWO_TYPED_ERROR_CONSTRUCTORS",
   "protocol": "sdk06-component-projection-source-v1",
   "required_argument_cases": 32,
   "selection": {

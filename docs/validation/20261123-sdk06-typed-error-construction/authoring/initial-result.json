@@ -1,0 +1,24 @@
+{
+  "created_at": 1795474501.0348542,
+  "duration_s": 35.67,
+  "error": null,
+  "exit_code": 1,
+  "finished_at": "2026-11-23T22:55:36.870254+00:00",
+  "host": "host_7ec8382e82747448",
+  "id": "job_1466803bf23d",
+  "notified": {
+    "resend": null,
+    "telegram": null
+  },
+  "notify_spec": {},
+  "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 184, in <module>\n  File \"/usr/lib/python3.12/pathlib.py\", line 1049, in write_text\n    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 1015, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/run/anytapy-wave15-source-overlay-20261123/sdk-typed-error-construction/.git/info/sparse-checkout'\nSDK typed-error source authoring failed; preserve the existing state before any continuation\r\nAt C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_eed8401b084d477986841d3c7d0cede8\\script.ps1:253 \r\nchar:28\r\n+ ... DE -ne 0) { throw 'SDK typed-error source authoring failed; preserve  ...\r\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (SDK typed-error...ny continuation:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : SDK typed-error source authoring failed; preserve the existing state before any continua \r\n   tion",
+  "output_truncated": false,
+  "read": false,
+  "severity": "warning",
+  "source": "script_run@host_7ec8382e82747448",
+  "started_at": "2026-11-23T22:55:01.198490+00:00",
+  "status": "failed",
+  "timeout_s": 180,
+  "tool": "script_run",
+  "type": "job_result"
+}

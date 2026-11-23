@@ -12,15 +12,15 @@ struct TorahRelatedReadAuthorityMappingTests {
     func nativeDenialRequiresExactTypedCodeAndDescription(objectShow: Bool) {
         func nativeError(_ description: String, badInput: Bool = true) -> any Error {
             if objectShow {
-                return Anytype_Rpc.Object.Show.Response.Error.with {
-                    $0.code = badInput ? .badInput : .unknownError
-                    $0.description_p = description
-                }
+                var responseError = Anytype_Rpc.Object.Show.Response.Error()
+                responseError.code = badInput ? .badInput : .unknownError
+                responseError.description_p = description
+                return responseError
             }
-            return Anytype_Rpc.Object.Search.Response.Error.with {
-                $0.code = badInput ? .badInput : .unknownError
-                $0.description_p = description
-            }
+            var responseError = Anytype_Rpc.Object.Search.Response.Error()
+            responseError.code = badInput ? .badInput : .unknownError
+            responseError.description_p = description
+            return responseError
         }
         #expect(AnytypeTorahRelatedReadFailure.classify(
             nativeError("PINKHA_CURRENT_SPACE_READ_DENIED_V1")) == .denied)

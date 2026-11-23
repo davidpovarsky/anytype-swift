@@ -1,0 +1,151 @@
+--- a/AnyTypeTests/Pinkha/TorahRelatedReadAuthorityMappingTests.swift
++++ b/AnyTypeTests/Pinkha/TorahRelatedReadAuthorityMappingTests.swift
+@@ -12,15 +12,15 @@
+     func nativeDenialRequiresExactTypedCodeAndDescription(objectShow: Bool) {
+         func nativeError(_ description: String, badInput: Bool = true) -> any Error {
+             if objectShow {
+-                return Anytype_Rpc.Object.Show.Response.Error.with {
+-                    $0.code = badInput ? .badInput : .unknownError
+-                    $0.description_p = description
+-                }
++                var responseError = Anytype_Rpc.Object.Show.Response.Error()
++                responseError.code = badInput ? .badInput : .unknownError
++                responseError.description_p = description
++                return responseError
+             }
+-            return Anytype_Rpc.Object.Search.Response.Error.with {
+-                $0.code = badInput ? .badInput : .unknownError
+-                $0.description_p = description
+-            }
++            var responseError = Anytype_Rpc.Object.Search.Response.Error()
++            responseError.code = badInput ? .badInput : .unknownError
++            responseError.description_p = description
++            return responseError
+         }
+         #expect(AnytypeTorahRelatedReadFailure.classify(
+             nativeError("PINKHA_CURRENT_SPACE_READ_DENIED_V1")) == .denied)
+--- a/Tools/PinkhaSimulatorGate/sdk06_component_projection.py
++++ b/Tools/PinkhaSimulatorGate/sdk06_component_projection.py
+@@ -1,8 +1,9 @@
+ """Pure source/project/descriptor projection for the pending SDK06 components.
+ 
+-The original App and tests remain immutable. Seven @Test attributes are blanked
+-and one SwiftProtobuf import is added in generated copies; declarations, arguments
+-and function bodies remain unchanged.
++The original App and source inputs remain immutable. Generated copies blank seven
++@Test attributes, add one SwiftProtobuf import, and replace two fixture convenience
++constructors with the same concrete Error.init() and field assignments. Declarations,
++assertion expressions, and argument values are preserved.
+ """
+ from __future__ import annotations
+ import copy
+@@ -16,7 +17,7 @@
+ import sdk06_compile_support as support
+ 
+ CONTRACT = "Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json"
+-CONTRACT_SHA = "1a7b1c84ee761c707ca7796facc80f72eb9922d9ef14264801e7f651c22d3f8b"
++CONTRACT_SHA = "2a46533f00fe61c69ee9b4022031d342642dc0569c43779c4732723382fdd9fd"
+ SOURCE = "75bd6d7af18dfd511e85582ce7f994d2801b7703"
+ PRODUCT = "SDK06PendingTests.xctest"
+ SCHEME = "SDK06PendingComponents"
+@@ -67,6 +68,24 @@
+             require(digest(changed) == patch["projected_sha256"]
+                     and bytes(changed).replace(after, before, 1) == raw,
+                     "The authority import projection or complete inverse differs")
++            imported = bytes(changed)
++            fixture = fixed["authority_error_construction"]
++            require(fixture["path"] == name and len(fixture["patches"]) == 2
++                    and digest(imported) == fixture["input_sha256"],
++                    "The exact two authority fixture constructions are required")
++            for replacement in fixture["patches"]:
++                old, new = replacement["before"].encode(), replacement["after"].encode()
++                require(old != new and changed.count(old) == 1,
++                        "An exact authority fixture constructor changed")
++                changed = bytearray(changed.replace(old, new, 1))
++            inverse = bytes(changed)
++            for replacement in reversed(fixture["patches"]):
++                old, new = replacement["before"].encode(), replacement["after"].encode()
++                require(inverse.count(new) == 1,
++                        "The authority fixture constructor inverse is ambiguous")
++                inverse = inverse.replace(new, old, 1)
++            require(digest(changed) == fixture["projected_sha256"] and inverse == imported,
++                    "The complete authority fixture construction inverse differs")
+         if name == EDITOR:
+             last = 0
+             for patch in fixed["attribute_patches"]:
+@@ -88,7 +107,10 @@
+             require(bytes(inverse) == raw, "The complete original Swift inverse differs")
+         result[row["basename"]] = bytes(changed)
+         observed[name] = {"original_sha256": digest(raw), "projected_sha256": digest(changed),
+-                          "bytes": len(raw), "function_bodies_and_arguments_unchanged": True}
++                          "bytes": len(raw), "projected_bytes": len(changed),
++                          "function_bodies_and_arguments_unchanged": name != AUTHORITY,
++                          "fixture_constructor_replacements": 2 if name == AUTHORITY else 0,
++                          "declarations_assertions_and_argument_values_unchanged": True}
+     require(sum(raw.count(b"@Test(") for raw in result.values()) == 23,
+             "The generated sources must register exactly the pending23 tests")
+     return result, observed
+@@ -323,7 +345,9 @@
+                      "contract_sha256": CONTRACT_SHA, "inputs": receipt, "generated_files": files,
+                      "removed_test_registrations": fixed["selection"]["excluded"],
+                      "required_compiled_registrations": fixed["selection"]["selected"],
+-                     "function_bodies_and_arguments_unchanged": True,
++                     "function_bodies_and_arguments_unchanged": False,
++                     "fixture_constructor_replacements": 2,
++                     "declarations_assertions_and_argument_values_unchanged": True,
+                      "original_source_modified": False, "app_build_targets": 0,
+                      "native_library_build_targets": 0, "component_test_bundle_targets": 1,
+                      "package_build_targets": 0, "implicit_dependencies": False,
+--- a/Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json
++++ b/Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json
+@@ -43,6 +43,21 @@
+       "offset": 26094
+     }
+   ],
++  "authority_error_construction": {
++    "input_sha256": "74fdde3fbe33df92d19d1afa57cfeebe07c69d977645ab111ed31386f8124f01",
++    "patches": [
++      {
++        "after": "                var responseError = Anytype_Rpc.Object.Show.Response.Error()\n                responseError.code = badInput ? .badInput : .unknownError\n                responseError.description_p = description\n                return responseError\n",
++        "before": "                return Anytype_Rpc.Object.Show.Response.Error.with {\n                    $0.code = badInput ? .badInput : .unknownError\n                    $0.description_p = description\n                }\n"
++      },
++      {
++        "after": "            var responseError = Anytype_Rpc.Object.Search.Response.Error()\n            responseError.code = badInput ? .badInput : .unknownError\n            responseError.description_p = description\n            return responseError\n",
++        "before": "            return Anytype_Rpc.Object.Search.Response.Error.with {\n                $0.code = badInput ? .badInput : .unknownError\n                $0.description_p = description\n            }\n"
++      }
++    ],
++    "path": "AnyTypeTests/Pinkha/TorahRelatedReadAuthorityMappingTests.swift",
++    "projected_sha256": "7ea462a83891972b94783a05f1a36f8618917cf4713334c9c37463b94a85046b"
++  },
+   "authority_import_patch": {
+     "after": "import ProtobufMessages\nimport SwiftProtobuf\n",
+     "before": "import ProtobufMessages\n",
+@@ -68,7 +83,7 @@
+     "SWIFT_UPCOMING_FEATURE_REGION_BASED_ISOLATION": "YES"
+   },
+   "projected_editor_sha256": "12da168c20f9f820fc84485e204967d4c5595bd7688bd1aeb3086ccf9bbf5136",
+-  "projection_kind": "SEVEN_PREVIOUSLY_PASSED_TEST_ATTRIBUTES_BLANKED_AND_ONE_SWIFTPROTOBUF_IMPORT_ADDED",
++  "projection_kind": "SEVEN_PREVIOUSLY_PASSED_TEST_ATTRIBUTES_BLANKED_ONE_IMPORT_ADDED_TWO_TYPED_ERROR_CONSTRUCTORS",
+   "protocol": "sdk06-component-projection-source-v1",
+   "required_argument_cases": 32,
+   "selection": {
+--- a/Tools/PinkhaSimulatorGate/sdk06-original-native-controller-source.json
++++ b/Tools/PinkhaSimulatorGate/sdk06-original-native-controller-source.json
+@@ -194,7 +194,7 @@
+     },
+     "Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json": {
+       "git_mode": "100644",
+-      "sha256": "1a7b1c84ee761c707ca7796facc80f72eb9922d9ef14264801e7f651c22d3f8b"
++      "sha256": "2a46533f00fe61c69ee9b4022031d342642dc0569c43779c4732723382fdd9fd"
+     },
+     "Tools/PinkhaSimulatorGate/sdk06-original-native-45139431216-1.json": {
+       "git_mode": "100644",
+@@ -222,7 +222,7 @@
+     },
+     "Tools/PinkhaSimulatorGate/sdk06_component_projection.py": {
+       "git_mode": "100644",
+-      "sha256": "857f525341ad5e789bd6dd0d85c7ceeea65d7a58dce80a72734dc73c62096c74"
++      "sha256": "1530c5a938e5458a78aaba48c75bc3be0d81fe5ad8ce76e96b3a85a510bc254f"
+     },
+     "Tools/PinkhaSimulatorGate/sdk06_enumeration_probe.py": {
+       "git_mode": "100644",
