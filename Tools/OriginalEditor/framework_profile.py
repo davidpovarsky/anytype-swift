@@ -7,6 +7,7 @@ import re
 import subprocess
 
 from pbx_source import loads, object_text, require
+from generated_import_source import verify_generated_source
 
 BRANCH = 'codex/otzaria-original-editor-complete-framework-20261123'
 REPOSITORY = 'davidpovarsky/anytype-swift'
@@ -208,8 +209,10 @@ def source_observation(root, environment=None):
     require(not git(root, 'status', '--porcelain', '--untracked-files=all', '--',
                     'Anytype/Sources', 'Anytype/Resources', 'Modules', 'OriginalEditorFramework',
                     'Tools/OriginalEditor', 'Anytype.xcodeproj'), 'Unreviewed source/resource files in the build closure')
+    generated_source = verify_generated_source(root, profile)
     trees = {}
-    for path, expected in profile['original_trees'].items():
+    for path in profile['original_trees']:
+        expected = generated_source['composed_product_trees'][path]
         actual = git(root, 'rev-parse', 'HEAD:' + path)
         require(actual == expected, 'Original source/resource tree differs: ' + path)
         trees[path] = actual
@@ -260,7 +263,8 @@ def source_observation(root, environment=None):
     return {'schema': 1, 'status': 'SOURCE_BOUND_FRAMEWORK_RUNTIME_NOT_RUN',
             'head_sha': head, 'run_id': environment['GITHUB_RUN_ID'], 'run_attempt': environment['GITHUB_RUN_ATTEMPT'],
             'reviewed_complete_source_sha': continuation['reviewed_source_sha'],
-            'original_trees': trees, 'project': project, 'source_inputs': records,
+            'original_trees': trees, 'generated_import_source': generated_source,
+            'project': project, 'source_inputs': records,
             'original_swift_sources': len(source_files), 'source_files': source_files,
             'framework_facade_sources': facades,
             'public_host_contract_sha256': profile['public_host_contract_sha256'],

@@ -1,0 +1,84 @@
+{
+  "at_utc": "2026-11-23T21:29:42.819022+00:00",
+  "cases": [
+    {
+      "name": "test_actual_committed_733_postimages_have_no_execution_credit",
+      "status": "ok"
+    },
+    {
+      "name": "test_changed_head_blob_cannot_hide_behind_matching_working_body",
+      "status": "ok"
+    },
+    {
+      "name": "test_changed_working_body_cannot_hide_behind_committed_blob",
+      "status": "ok"
+    },
+    {
+      "name": "test_complete_original_baseline_is_kept_separate_from_generated_modules",
+      "status": "ok"
+    },
+    {
+      "name": "test_expanded_scope_cannot_alias_original_application_source",
+      "status": "ok"
+    },
+    {
+      "name": "test_extra_generated_family_cannot_enter_the_sdk",
+      "status": "ok"
+    },
+    {
+      "name": "test_foreign_original_preimage_revision_is_rejected",
+      "status": "ok"
+    },
+    {
+      "name": "test_generation_source_cannot_grant_native_acceptance",
+      "status": "ok"
+    },
+    {
+      "name": "test_missing_middleware_member_is_rejected",
+      "status": "ok"
+    },
+    {
+      "name": "test_wrong_composed_tree_cannot_reuse_source_rows",
+      "status": "ok"
+    },
+    {
+      "name": "test_explicit_complete_continuation_retains_only_historical_credit",
+      "status": "ok"
+    }
+  ],
+  "command": [
+    "sudo",
+    "-u",
+    "ubuntu",
+    "-H",
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_generated_import_source",
+    "test_retained_complete_source.RetainedCompleteSourceControls.test_explicit_complete_continuation_retains_only_historical_credit"
+  ],
+  "generators_executed": 0,
+  "inputs_after": {
+    "Tools/OriginalEditor/framework_profile.json": "ae8f64f424a31929c991dad91f183e69f8281cc9408b40e225a89d11a3fcf0e3",
+    "Tools/OriginalEditor/framework_profile.py": "eea4640966652c8125125aac802cd58e0dc03617c52be70fa2391934d802665a",
+    "Tools/OriginalEditor/generated_import_source.py": "67038a787b940d2cc4747e5faee290cb3af700e650507edf25e2646b743906a9",
+    "Tools/OriginalEditor/test_generated_import_source.py": "948cb1563551debc8cf8a626e91eec59cca47523bfbb79967cebee886e8ec14d",
+    "docs/pinkha/torah-integration/evidence/original-editor-install-name-20261122/admission/INPUTS.json": "bd622f1f46eb68817aa27160b1577426052a89098eb3051a19a6da28bb8d626a"
+  },
+  "inputs_before": {
+    "Tools/OriginalEditor/framework_profile.json": "ae8f64f424a31929c991dad91f183e69f8281cc9408b40e225a89d11a3fcf0e3",
+    "Tools/OriginalEditor/framework_profile.py": "eea4640966652c8125125aac802cd58e0dc03617c52be70fa2391934d802665a",
+    "Tools/OriginalEditor/generated_import_source.py": "67038a787b940d2cc4747e5faee290cb3af700e650507edf25e2646b743906a9",
+    "Tools/OriginalEditor/test_generated_import_source.py": "948cb1563551debc8cf8a626e91eec59cca47523bfbb79967cebee886e8ec14d",
+    "docs/pinkha/torah-integration/evidence/original-editor-install-name-20261122/admission/INPUTS.json": "bd622f1f46eb68817aa27160b1577426052a89098eb3051a19a6da28bb8d626a"
+  },
+  "log_sha256": "ef8d67209ae1c6f8576cc91c2f6a93bc0307bb585a681c853af23e8a71a39366",
+  "native_executed": 0,
+  "returncode": 0,
+  "scope": "10 new generated source controls and one affected retained manifest control only; no prior55/245 suite replay and no CI identity fabricated",
+  "source_parent": "81115fe82b4ffbedd49ca69a573d85acafa67650",
+  "status": "PASS",
+  "typechecks_executed": 0
+}
