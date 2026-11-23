@@ -14,7 +14,7 @@ import re
 import stat
 
 ADMISSION_PATH = "Tools/PinkhaSimulatorGate/sdk06-retained-controls.json"
-ADMISSION_SHA256 = "544cd791e86207c2f57a07bfc19effce104e6a258a20eca6655b874eec8bcbe4"
+ADMISSION_SHA256 = "cb510c5380851626195f68b380ffa02bd5f58fddc9274529d156350079add6be"
 SCHEMA = "pinkha-sdk06-retained-controller-controls-v1"
 
 
@@ -452,6 +452,236 @@ def qualified_kernel_profile_view(admission, files):
         "methods_executed_now": 0, "selector_admission_claimed": False, "product_acceptance_claimed": False,
     }
 
+
+def fixed_dependency_control_outcomes(kind, record, events, log_raw, methods):
+    """Read only three fixed original batches; never turn snapshots into tests."""
+    batches = unittest_batches(log_raw)
+    require(len(batches) == 1 and batches[0]["count"] == len(methods)
+            and [entry["name"] for entry in batches[0]["methods"]] ==
+                [".".join(name.rsplit(".", 2)[-2:]) for name in methods],
+            "Dependency raw named outcomes differ")
+    require(record.get("status") == "PASS", "Original dependency control batch did not pass")
+    if kind == "basename-consumer":
+        require(record.get("source_sha") == "51dd4936221bcbf802b0bf1bcd54853337e0df3b"
+                and record.get("tests_run") == 2 and record.get("method_ids") == methods
+                and record.get("new_control_methods_executed") == 2
+                and record.get("old_control_methods_executed") == 0
+                and record.get("actual_product_tests_executed") == record.get("app_builds") == 0
+                and record.get("failures") == record.get("errors") == 0
+                and record.get("selector_admission_created") is False
+                and record.get("source_unchanged") is True,
+                "Basename consumer scope was relabelled")
+        require(events == [event for name in methods for event in
+                ({"event": "START", "test_id": name}, {"event": "PASS", "test_id": name})],
+                "Basename consumer named terminals differ")
+    elif kind == "coherent-nested":
+        require(record.get("source_commit") == "9980c31979bce6898bd1bf2f57b88a415e60d0d9"
+                and record.get("tests_run") == 2 and record.get("exception") is None
+                and record.get("old_controls_executed") == record.get("product_tests_executed") ==
+                    record.get("simulator_commands_executed") == 0
+                and record.get("source_before_after_unchanged") is True
+                and events == record.get("methods")
+                and [row.get("id") for row in events] == methods
+                and all(row.get("outcome") == "PASS" for row in events),
+                "Coherent nested named outcomes or execution scope differ")
+    else:
+        require(kind == "coherent-lookup" and len(methods) == 1
+                and record.get("source") == "20e90f32cc4071e775f5547dd5b93df78e7f54a3"
+                and record.get("method") == methods[0]
+                and record.get("new_control_methods") == 1
+                and record.get("old_control_methods") == record.get("product_methods") ==
+                    record.get("actual_simulator_queries") == 0
+                and record.get("errors") == record.get("failures") == record.get("skips") == 0
+                and record.get("subcases_passed") == 5 and record.get("before_after_unchanged") is True,
+                "Coherent lookup scope was relabelled")
+        expected = [{"event": "START", "test": methods[0]}]
+        expected += [{"event": "SUBCASE_PASS", "test": methods[0] + " (status='" + status + "')"}
+                     for status in ("RETURNED", "RETURNED", "TIMED_OUT", "OS_ERROR", "INTERRUPTED")]
+        expected += [{"event": "PASS", "test": methods[0]}]
+        require(events == expected, "Coherent lookup five original observations differ")
+    return list(methods)
+
+
+def post_profile_dependency_view(admission, files):
+    """Recover the fixed da6 view while separately binding every new branch."""
+    key = "post_profile_dependency_addendum"
+    extension = admission[key]
+    require(extension["protocol"] == "sdk06-post-profile-fixed-dependencies-v1"
+            and extension["prior_admission_sha256"] ==
+                "544cd791e86207c2f57a07bfc19effce104e6a258a20eca6655b874eec8bcbe4",
+            "Unknown fixed post-profile dependency origin")
+    prior_raw = files[extension["prior_admission_snapshot"]]
+    require(digest(prior_raw) == extension["prior_admission_sha256"],
+            "Original profile admission changed")
+    prior = decode_json(prior_raw)
+    normalized = decode_json(json.dumps(admission).encode())
+    normalized.pop(key)
+    additions = extension["proof_additions"]
+    permitted_tools = {
+        "Tools/PinkhaSimulatorGate/sdk06_basename_enumeration_probe.py",
+        "Tools/PinkhaSimulatorGate/sdk06-basename-probe-plan.json",
+        "Tools/PinkhaSimulatorGate/test_sdk06_basename_enumeration_probe.py",
+        "Tools/PinkhaSimulatorGate/test_sdk06_qualified_basename_selector.py",
+        "Tools/PinkhaSimulatorGate/coherent_heart_release.py",
+        "Tools/PinkhaSimulatorGate/run_t5_apple_pair.py",
+        "Tools/PinkhaSimulatorGate/coherent_container_observation.py",
+        "Tools/PinkhaSimulatorGate/test_coherent_container_observation.py",
+        "Tools/PinkhaSimulatorGate/test_coherent_original_nested_cleanup.py",
+        "Tools/PinkhaSimulatorGate/test_sdk06_dependency_composition.py",
+        ".github/workflows/pinkha-sdk06-basename-probe.yml",
+        ".github/workflows/torah-inspector-ipados27.yml",
+    }
+    permitted_prefixes = (
+        "docs/validation/20261123-sdk06-post-profile-composition/",
+        "docs/validation/20261123-sdk06-qualified-basename-selector/",
+        "docs/validation/20261123-sdk06-basename-probe/",
+        "docs/validation/20261123-coherent-nested-repair/",
+        "docs/validation/20261123-coherent-container-observation/",
+    )
+    require(len(additions) == len(set(additions))
+            and all(path in permitted_tools or path.startswith(permitted_prefixes) for path in additions),
+            "Unreviewed dependency proof addition")
+    normalized["proof_files"] = [row for row in normalized["proof_files"] if row["path"] not in additions]
+    for row in normalized["proof_files"]:
+        if row["path"] in extension["inverses"]:
+            row["sha256"] = extension["inverses"][row["path"]]["before_sha256"]
+    require(normalized == prior, "Existing profile admission changed outside exact dependency additions")
+
+    selector = "Tools/PinkhaSimulatorGate/sdk06_qualified_selector.py"
+    wave = "Tools/PinkhaSimulatorGate/wave15_batch.py"
+    supervisor = "Tools/PinkhaSimulatorGate/run_owned_single_lane.py"
+    shared = "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py"
+    released = {
+        wave, "Tools/PinkhaSimulatorGate/coherent_heart_release.py",
+        "Tools/PinkhaSimulatorGate/coherent_original_products.py",
+        "Tools/PinkhaSimulatorGate/run_t5_apple_pair.py",
+    }
+    require(set(extension["inverses"]) == released | {selector},
+            "Only the exact five composed dependency sources may differ")
+    selector_review = decode_json(files[extension["selector_source_review"]])
+    release_review = decode_json(files[extension["release_exact_edits"]])
+    lookup_review = decode_json(files[extension["lookup_qualification"]])
+    expected = {selector: [{"old": row["before"], "new": row["after"]}
+                           for row in selector_review["exact_source_edits"]]}
+    for row in release_review["edits"]:
+        require(row["path"] in released, "Unexpected Release source inverse")
+        expected.setdefault(row["path"], []).append({"old": row["before"], "new": row["after"]})
+    lookup = lookup_review["batch_exact_inverse"]
+    lookup_edit = {"old": lookup["before"], "new": lookup["after"]}
+    expected[wave].append(lookup_edit)
+    require(selector_review["full_inverse_exact"] is True
+            and release_review["base"] == "67809875752085047a395be4a751ace5dcbc7ad8"
+            and lookup["before_sha256"] == "795ecec97eeeacea37d6dea05dc038f487c90f526c251c59823221d5157231da"
+            and lookup["after_sha256"] == "0b743b54a62610d9cdb2b92a97e73b479ba347e241c1fa29eb8b8baa348aa5a0",
+            "The reviewed dependency source origins differ")
+    prior_files = dict(files)
+    for path, binding in extension["inverses"].items():
+        require(binding["edits"] == expected[path] and digest(files[path]) == binding["current_sha256"],
+                "Composed source or exact inverse changed")
+        restored = reverse_scoped_edits(files[path], binding["edits"], binding["before_sha256"])
+        require(restored == files[binding["snapshot"]], "Composed dependency did not recover exact prior bytes")
+        prior_files[path] = restored
+
+    # These are precisely the already reviewed SDK-only inverses. No AST/name
+    # deletion or arbitrary source exclusion is used.
+    sdk_wave = prior["composition_extension"]["inverses"][wave]["layers"]
+    require(len(sdk_wave) == 1, "Unexpected SDK batch inverse layers")
+    lookup_wave = reverse_scoped_edits(files[wave], sdk_wave[0]["edits"], lookup["after_sha256"])
+    nested_wave = reverse_scoped_edits(lookup_wave, [lookup_edit], lookup["before_sha256"])
+    baseline = {}
+    for path in (supervisor, shared):
+        data = prior_files[path]
+        profile_binding = prior["sdk_qualified_kernel_profile_addendum"]["inverses"].get(path)
+        if profile_binding is not None:
+            data = reverse_scoped_edits(data, profile_binding["edits"], profile_binding["before_sha256"])
+        binding = prior["composition_extension"]["inverses"][path]
+        for layer in binding["layers"]:
+            data = reverse_scoped_edits(data, layer["edits"], layer["result_sha256"])
+        require(data == files[binding["baseline_snapshot"]], "Original exercised dependency baseline differs")
+        baseline[path] = data
+
+    original_workflows = extension["original_workflow_snapshots"]
+    require(set(original_workflows) == {
+        ".github/workflows/pinkha-sdk06-basename-probe.yml",
+        ".github/workflows/torah-inspector-ipados27.yml"},
+        "Only the two original workflow data identities may use snapshots")
+    require(set(extension["batches"]) == {"basename-consumer", "coherent-nested", "coherent-lookup"},
+            "Unknown dependency qualification batch")
+    reports = {}
+    for kind, proof in extension["batches"].items():
+        require(files[proof["source_before"]] == files[proof["source_after"]],
+                "Original dependency sources changed during execution")
+        before = decode_json(files[proof["source_before"]])
+        record = decode_json(files[proof["receipt"]])
+        events = decode_json(files[proof["events"]])
+        methods = fixed_dependency_control_outcomes(kind, record, events, files[proof["log"]], proof["methods"])
+        if kind == "coherent-nested":
+            require(len(before) == 184 and record["source_inputs"] == 184
+                    and len(record["loaded_inputs"]) == 19,
+                    "Original184 inventory or actual19 loaded scope differs")
+            checked = record["loaded_inputs"]
+            require(all(before.get(path) == checksum for path, checksum in checked.items()),
+                    "Loaded Release source does not belong to its unchanged original snapshot")
+            views = {path: files[path] for path in checked}
+            views.update({wave: nested_wave, supervisor: baseline[supervisor], shared: baseline[shared]})
+            labels = {wave: "EXACT_ROOT_LOOKUP_AND_SDK_ALIAS_INVERSES",
+                      supervisor: "EXACT_ORIGINAL_COHERENT_BRANCH_BASELINE",
+                      shared: "EXACT_ORIGINAL_SHARED_EDITOR_BASELINE"}
+            original_count, loaded_count = 184, 19
+            require(record["log_sha256"] == digest(files[proof["log"]])
+                    and record["events_sha256"] == digest(files[proof["events"]]),
+                    "Original Release named log/event linkage changed")
+        else:
+            checked = {path: row["sha256"] for path, row in before["files"].items()}
+            labels = {}
+            if kind == "basename-consumer":
+                require(before["source_sha"] == record["source_sha"]
+                        and len(checked) == record["source_input_count"] == 29
+                        and len(before["loaded_modules"]) == record["loaded_source_count"] == 17,
+                        "Original basename29/17 source closure differs")
+                views = {path: prior_files[path] if path in released else files[path] for path in checked}
+                labels.update({path: "EXACT_PRE_RELEASE_DEPENDENCY_VIEW" for path in checked if path in released})
+                for path, snapshot in original_workflows.items():
+                    views[path] = files[snapshot]
+                    labels[path] = "ORIGINAL_OPAQUE_GIT_BLOB_DATA_NOT_CURRENT_WORKFLOW_EXECUTION"
+                original_count, loaded_count = 29, 17
+            else:
+                require(before["source"] == record["source"] and len(checked) == record["input_count"] == 4
+                        and len(before["loaded"]) == record["loaded_source_count"] == 2,
+                        "Original coherent lookup4/2 closure differs")
+                views = {path: files[path] for path in checked}
+                views[wave] = lookup_wave
+                labels[wave] = "EXACT_SDK_ALIAS_INVERSE_ONLY"
+                original_count, loaded_count = 4, 2
+            loaded = before["loaded_modules"] if kind == "basename-consumer" else before["loaded"]
+            require(all(path in checked and row["sha256"] == checked[path] for path, row in loaded.items()),
+                    "Original loaded source is outside its recorded snapshot")
+        require(set(views) == set(checked), "Unreviewed dependency view input")
+        for path, checksum in checked.items():
+            require(digest(views[path]) == checksum, "Untested dependency branch bytes: " + path)
+        declarations = test_declarations(files[proof["test_path"]])
+        require(len(declarations) == len(methods)
+                and {".".join(name.rsplit(".", 2)[-2:]) for name in methods} == set(declarations),
+                "Dependency test declaration inventory differs")
+        require(declarations == proof["declarations"], "Named dependency control source changed")
+        reports[kind] = {
+            "qualified_methods": methods, "original_source_inventory": original_count,
+            "actual_loaded_sources": loaded_count, "bound_scope_sha256": checked,
+            "explicit_source_views": labels, "methods_executed_now": 0,
+        }
+    return prior, prior_files, {
+        "status": "PASS_FIXED_POST_PROFILE_DEPENDENCY_COMPOSITION_ONLY",
+        "current_dependency_inputs": {path: digest(files[path]) for path in extension["inverses"]},
+        "recovered_prior_inputs": {path: digest(prior_files[path]) for path in extension["inverses"]},
+        "original_composition_history": 18, "retained_profile_composition_methods": 19,
+        "new_basename_consumer_methods": 2, "current_sdk_composition_methods": 21,
+        "separate_coherent_dependency_methods": 3, "retained_kernel_methods": 9,
+        "original_controller_methods_retained": 98, "original_lane_failures_preserved": True,
+        "batches": reports, "methods_executed_now": 0,
+        "selector_admission_claimed": False, "product_acceptance_claimed": False,
+    }
+
+
 def verify_retained_controls(app: Path):
     root = Path(app).resolve(strict=True)
     require(root.is_dir(), "Retained controls need the actual source root")
@@ -465,8 +695,12 @@ def verify_retained_controls(app: Path):
              for item in admission["proof_files"]}
     require(len(files) == len(admission["proof_files"]), "Duplicate proof path")
     historical_admission, historical_files, profile_receipt = admission, files, None
-    if admission.get("sdk_qualified_kernel_profile_addendum") is not None:
-        historical_admission, historical_files, profile_receipt = qualified_kernel_profile_view(admission, files)
+    dependency_receipt = None
+    if admission.get("post_profile_dependency_addendum") is not None:
+        historical_admission, historical_files, dependency_receipt = post_profile_dependency_view(admission, files)
+    if historical_admission.get("sdk_qualified_kernel_profile_addendum") is not None:
+        historical_admission, historical_files, profile_receipt = qualified_kernel_profile_view(
+            historical_admission, historical_files)
     composed_bases, composition_receipt = ({}, None)
     if historical_admission.get("composition_extension") is not None:
         composed_bases, composition_receipt = verify_frozen_composition(
@@ -474,6 +708,10 @@ def verify_retained_controls(app: Path):
     if profile_receipt is not None:
         composition_receipt["source_scope"] = "HISTORICAL_FROZEN_COMPOSITION"
         composition_receipt["historical_source_inputs"] = composition_receipt.pop("current_source_inputs")
+    if dependency_receipt is not None:
+        require(profile_receipt is not None, "Fixed dependency composition requires its retained profile origin")
+        profile_receipt["historical_tested_inputs"] = profile_receipt.pop("current_tested_inputs")
+        profile_receipt["source_scope"] = "HISTORICAL_PROFILE_DEPENDENCY_VIEW"
     sources = {}
     for item in admission["source_inputs"]:
         path = item["path"]
@@ -574,5 +812,6 @@ def verify_retained_controls(app: Path):
             "origins": admission["origins"], "current_catalog": catalog,
             "fixed_composition": composition_receipt,
             "sdk_qualified_kernel_profile": profile_receipt,
+            "qualified_dependency_composition": dependency_receipt,
             "source_inventory_sha256": digest(json.dumps(inventory, sort_keys=True, separators=(",", ":")).encode()),
             "scope_limit": "Controller evidence only; no original lane success, current XCTest, build or runtime acceptance."}
