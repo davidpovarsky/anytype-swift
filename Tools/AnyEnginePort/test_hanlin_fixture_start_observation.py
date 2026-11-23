@@ -63,6 +63,15 @@ class StarterObservationTests(unittest.TestCase):
                 self.assertFalse(result["providerReadinessAccepted"])
                 self.assertFalse((safe / "starter-fixed-error.original.json").exists())
                 self.assertNotIn(b"PRIVATE_", (safe / "starter-observation.json").read_bytes())
+        private, safe = self.dirs()
+        nested = safe / "must-not-upload-private"
+        nested.mkdir(mode=0o700)
+        with mock.patch.object(observation.subprocess, "run") as launched:
+            with self.assertRaisesRegex(ValueError, "invalid owned diagnostic directories"):
+                observation.observe_start(["owned-fixture-start"], cwd=private,
+                    private_dir=nested, safe_dir=safe)
+            launched.assert_not_called()
+        self.assertEqual(list(nested.iterdir()), [])
 
 
 if __name__ == "__main__":

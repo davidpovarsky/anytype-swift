@@ -45,7 +45,7 @@ def _fixed_error(raw: bytes) -> dict | None:
 
     try:
         value = json.loads(raw.decode("utf-8"), object_pairs_hook=unique)
-    except (UnicodeError, ValueError, TypeError):
+    except (UnicodeError, ValueError, TypeError, RecursionError):
         return None
     if not isinstance(value, dict) or set(value) != {"schema", "status", "code"}:
         return None
@@ -66,7 +66,8 @@ def observe_start(command: list[str], *, cwd: Path, private_dir: Path, safe_dir:
             or stat.S_IMODE(private.st_mode) != 0o700
             or (hasattr(os, "getuid") and private.st_uid != os.getuid())
             or not safe_dir.is_dir() or safe_dir.is_symlink()
-            or safe_dir.resolve().is_relative_to(private_dir.resolve())):
+            or safe_dir.resolve().is_relative_to(private_dir.resolve())
+            or private_dir.resolve().is_relative_to(safe_dir.resolve())):
         raise ValueError("invalid owned diagnostic directories")
     report = {
         "schemaVersion": 1,
