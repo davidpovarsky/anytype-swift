@@ -1,0 +1,138 @@
+{
+  "changed_functions": [
+    "save",
+    "bind",
+    "fresh_quiescence",
+    "main"
+  ],
+  "diff": {
+    "bytes": 6354,
+    "path": "/mnt/development/projects/diagnostics/loaded-account-witness-ram-graph-source-20261123/ram-custody-recovery-v2.diff",
+    "sha256": "fca30dd89daab5ecda8310e3deeaf79b2b70790699399ec3e8d5a4df1525fb77"
+  },
+  "earlier_observation": {
+    "comparison": "Its complete nine mount dictionaries equal original after ordering is ignored; raw list order differs.",
+    "path": "/mnt/development/projects/diagnostics/loaded-account-witness-ram-graph-source-20261123/ram-attempt2-recovery-observation-1.json",
+    "scope": "Independent earlier observation only; not the missing raw inspection of the failed recovery invocation.",
+    "sha256": "2184aedd8117b00880763c3e658987ef22018c9d4977612b901bb8e1343c74e7"
+  },
+  "free_bytes": 4020199424,
+  "invariants": {
+    "budget_bytes": 16777216,
+    "deadline_seconds": 120,
+    "mount_or_unmount_in_this_freeze": false,
+    "new_go_queries": 0,
+    "new_native_builds": 0,
+    "new_tests": 0,
+    "ordinary_unmount_only": true,
+    "original_failure_relabelled": false,
+    "source_query_profile_changed": false
+  },
+  "literal_inverses": [
+    {
+      "label": "new-recovery-output",
+      "new": "PRIOR = pathlib.Path(\"/mnt/development/projects/evidence/loaded-account-witness-20261123/ram-attempt2-custody-recovery\")\nOUT = pathlib.Path(\"/mnt/development/projects/evidence/loaded-account-witness-20261123/ram-attempt2-custody-recovery2\")",
+      "old": "OUT = pathlib.Path(\"/mnt/development/projects/evidence/loaded-account-witness-20261123/ram-attempt2-custody-recovery\")",
+      "scope": 3
+    },
+    {
+      "label": "shared-historical-budget",
+      "new": "def historical_size():\n    return sizes(ORIGINAL)+sizes(PRIOR)\n\ndef save(name,value):",
+      "old": "def save(name,value):",
+      "scope": 4
+    },
+    {
+      "label": "save-budget",
+      "new": "historical_size()+sizes(OUT)+len(raw)<=TOTAL",
+      "old": "sizes(ORIGINAL)+sizes(OUT)+len(raw)<=TOTAL",
+      "scope": 4
+    },
+    {
+      "label": "pin-prior-failure",
+      "new": "    require(set(x.name for x in PRIOR.iterdir())=={\"result.json\"} and (PRIOR/\"result.json\").stat().st_size==637 and\n            digest(PRIOR/\"result.json\")==\"de0c3f5bdb23ebad7ed240567416cf39bec9ab13673dd1951ae55ef3268e1f9e\",\"prior_failed_recovery_changed\")\n    module.TOTAL_OUTPUT=TOTAL-historical_size()",
+      "old": "    module.TOTAL_OUTPUT=TOTAL-sizes(ORIGINAL)",
+      "scope": 4
+    },
+    {
+      "label": "full-entry-destination-map",
+      "new": "def mount_bindings(rows):\n    require(isinstance(rows,list),\"container_mount_list_shape\")\n    mapped={}\n    for row in rows:\n        require(isinstance(row,dict) and isinstance(row.get(\"Destination\"),str) and row[\"Destination\"],\"container_mount_entry_shape\")\n        require(row[\"Destination\"] not in mapped,\"duplicate_container_mount_destination\")\n        mapped[row[\"Destination\"]]=row\n    return mapped\n\ndef fresh_quiescence(module,receipt,label):",
+      "old": "def fresh_quiescence(module):",
+      "scope": 1
+    },
+    {
+      "label": "persist-before-guards",
+      "new": "    observed=root_command([\"docker\",\"inspect\",CID],15)\n    receipt[\"container_observation\"]=observed\n    receipt[\"container_observation_original\"]=save(label+\"-container.json\",observed)\n    require(observed[\"primary_error\"]",
+      "old": "    observed=root_command([\"docker\",\"inspect\",CID],15)\n    require(observed[\"primary_error\"]",
+      "scope": 2
+    },
+    {
+      "label": "order-independent-full-entry-equality",
+      "new": "    for field in (\"Id\",\"Name\",\"Image\",\"Path\",\"Args\",\"Config\",\"HostConfig\"):\n        require(value[field]==old[field],\"current_container_binding_\"+field)\n    require(mount_bindings(value[\"Mounts\"])==mount_bindings(old[\"Mounts\"]),\"current_container_binding_Mounts\")",
+      "old": "    for field in (\"Id\",\"Name\",\"Image\",\"Path\",\"Args\",\"Config\",\"HostConfig\",\"Mounts\"):\n        require(value[field]==old[field],\"current_container_binding_\"+field)",
+      "scope": 1
+    },
+    {
+      "label": "caller-receipt-retained",
+      "new": "    receipt.update(container_state=value[\"State\"],original_processes=members,\n        process_scan_denied=denied,original_groups_absent=True,ram=mount,\n        meaning=\"later_independent_quiescence_does_not_rewrite_original_cleanup_failure\")\n    return receipt",
+      "old": "    return {\"container_observation\":observed,\"container_state\":value[\"State\"],\"original_processes\":members,\n        \"process_scan_denied\":denied,\"original_groups_absent\":True,\"ram\":mount,\n        \"meaning\":\"later_independent_quiescence_does_not_rewrite_original_cleanup_failure\"}",
+      "scope": 2
+    },
+    {
+      "label": "initial-caller-record",
+      "new": "        result[\"initial_quiescence\"]={}\n        fresh_quiescence(module,result[\"initial_quiescence\"],\"initial\")",
+      "old": "        result[\"initial_quiescence\"]=fresh_quiescence(module)",
+      "scope": 2
+    },
+    {
+      "label": "final-caller-record",
+      "new": "        result[\"pre_unmount_quiescence\"]={}\n        fresh_quiescence(module,result[\"pre_unmount_quiescence\"],\"pre-unmount\")",
+      "old": "        result[\"pre_unmount_quiescence\"]=fresh_quiescence(module)",
+      "scope": 2
+    },
+    {
+      "label": "final-shared-budget",
+      "new": "    result[\"combined_evidence_bytes\"]=historical_size()+sizes(OUT)",
+      "old": "    result[\"combined_evidence_bytes\"]=sizes(ORIGINAL)+sizes(OUT)",
+      "scope": 4
+    }
+  ],
+  "new_functions": [
+    "historical_size",
+    "mount_bindings"
+  ],
+  "original_source": {
+    "bytes": 12430,
+    "path": "/mnt/development/projects/diagnostics/loaded-account-witness-ram-graph-source-20261123/ram-custody-recovery.py",
+    "sha256": "849a9c658c5b821c7a7f7eb2fcaaad630438cc0b87936e9b8523f781d59db3f7"
+  },
+  "prior_failure": {
+    "bytes": 637,
+    "path": "/mnt/development/projects/evidence/loaded-account-witness-20261123/ram-attempt2-custody-recovery/result.json",
+    "raw_fresh_inspect_of_failed_invocation": "NOT_RECORDED",
+    "sha256": "de0c3f5bdb23ebad7ed240567416cf39bec9ab13673dd1951ae55ef3268e1f9e",
+    "status": "FAIL"
+  },
+  "schema": "loaded-account-witness-ram-custody-recovery-v2-source-review-v1",
+  "scopes": {
+    "1": "Duplicate-refusing destination-to-complete-mount-dictionary equality; every field preserved.",
+    "2": "Caller-visible fresh inspection record; raw observation persisted before any evaluation guard.",
+    "3": "Fresh recovery2 output; prior failure remains immutable.",
+    "4": "Prior exact 637-byte failed recovery included in the shared 16 MiB evidence budget."
+  },
+  "source": {
+    "bytes": 13622,
+    "path": "/mnt/development/projects/diagnostics/loaded-account-witness-ram-graph-source-20261123/ram-custody-recovery-v2.py",
+    "sha256": "2e9ea367a86d6732e96fd173c485eea147ab4c49cde93f4ef4cf6d8140d4d041"
+  },
+  "status": "FROZEN_NOT_EXECUTED",
+  "unchanged_functions": [
+    "require",
+    "digest",
+    "sizes",
+    "group_absent",
+    "root_command",
+    "interrupted"
+  ],
+  "utc": "2026-11-23T17:26:40.928796+00:00",
+  "whole_file_inverse": "849a9c658c5b821c7a7f7eb2fcaaad630438cc0b87936e9b8523f781d59db3f7"
+}

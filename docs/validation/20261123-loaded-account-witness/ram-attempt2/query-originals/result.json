@@ -1,0 +1,408 @@
+{
+  "actual_test_methods": 0,
+  "container_cleanup": null,
+  "environment": {
+    "CC": "gcc",
+    "CGO_ENABLED": "1",
+    "CGO_LDFLAGS": "-L/mnt/development/projects/worktrees/anytype-heart-semantic-page-20261123/deps/libs/linux-arm64-musl",
+    "CXX": "g++",
+    "GOARCH": "arm64",
+    "GOCACHE": "/dev/shm/pinkha-loaded-account-source-graph-20261123/go-cache",
+    "GOFLAGS": "-mod=readonly -p=1",
+    "GOMAXPROCS": "1",
+    "GOMEMLIMIT": "3072MiB",
+    "GOMODCACHE": "/mnt/development/projects/evidence/semantic-page-20261123-arm64/attempt4/cache/go-mod",
+    "GOOS": "linux",
+    "GOPATH": "/dev/shm/pinkha-loaded-account-source-graph-20261123/gopath",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOTMPDIR": "/dev/shm/pinkha-loaded-account-source-graph-20261123/tmp",
+    "GOTOOLCHAIN": "local",
+    "GOWORK": "off",
+    "PATH": "/mnt/development/projects/evidence/semantic-page-20261123-arm64/toolchains/go1.26.5/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "TMPDIR": "/dev/shm/pinkha-loaded-account-source-graph-20261123/tmp"
+  },
+  "expected_controller_sha": "bd5efdf894b068a4b2080245b03c9db4184652f3",
+  "final_errors": [
+    {
+      "error": {
+        "message": "docker_observation_failed_container-owned-kill",
+        "phase": "container",
+        "type": "RuntimeError"
+      },
+      "phase": "container-or-cli-cleanup"
+    },
+    {
+      "message": "retain_ram_after_container_cleanup_failure",
+      "phase": "ram-preservation-or-cleanup",
+      "type": "RuntimeError"
+    }
+  ],
+  "finished": "2026-11-23T17:06:24.347857+00:00",
+  "free_final": 4416200704,
+  "memory_available_final": 10067828736,
+  "memory_start_bytes": 4294967296,
+  "memory_stop_bytes": 2147483648,
+  "metadata_limit_bytes": 16777216,
+  "native_builds": 0,
+  "original_disk_graph_unchanged": "6aacb0c911aed49d88d9f0e7ef82b08a5ceab431139bb7b71f17c7d0aedfd23d",
+  "original_native_start_stop_final_unchanged": [
+    2950000000,
+    2600000000,
+    2500000000
+  ],
+  "primary_error": {
+    "message": "source_query_stdout_limit",
+    "type": "RuntimeError"
+  },
+  "protocol": "loaded-account-ram-cache-source-graph-v1",
+  "query": {
+    "additional_cleanup_errors": [
+      {
+        "message": "[Errno 1] Operation not permitted",
+        "phase": "cli-group",
+        "type": "PermissionError"
+      }
+    ],
+    "argv": [
+      "sudo",
+      "-n",
+      "docker",
+      "run",
+      "--pull=never",
+      "--name",
+      "pinkha-loaded-account-ram-graph-20261123",
+      "--cidfile",
+      "/mnt/development/projects/evidence/loaded-account-witness-20261123/ram-graph-attempt2/container.cid",
+      "--label",
+      "pinkha.loaded-account-witness.ram-graph=24dc6393b30e6d1d80ec28ff624060af9bb4327a",
+      "--network",
+      "none",
+      "--read-only",
+      "--user",
+      "1001:1001",
+      "--log-driver",
+      "none",
+      "--cpus",
+      "1",
+      "--memory",
+      "6g",
+      "--pids-limit",
+      "256",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--workdir",
+      "/mnt/development/projects/worktrees/anytype-heart-loaded-account-witness-20261123",
+      "--entrypoint",
+      "/mnt/development/projects/evidence/semantic-page-20261123-arm64/toolchains/go1.26.5/go/bin/go",
+      "--mount",
+      "type=bind,source=/mnt/development/projects/worktrees/anytype-heart-loaded-account-witness-20261123,target=/mnt/development/projects/worktrees/anytype-heart-loaded-account-witness-20261123,readonly",
+      "--mount",
+      "type=bind,source=/mnt/development/projects/worktrees/any-sync-loaded-account-witness-20261123,target=/mnt/development/projects/worktrees/any-sync-loaded-account-witness-20261123,readonly",
+      "--mount",
+      "type=bind,source=/mnt/development/projects/worktrees/anytype-wave15-loaded-account-witness-20261123/Tools/AnyEngineValidation/loaded_account_witness,target=/mnt/development/projects/worktrees/anytype-wave15-loaded-account-witness-20261123/Tools/AnyEngineValidation/loaded_account_witness,readonly",
+      "--mount",
+      "type=bind,source=/mnt/development/projects/evidence/semantic-page-20261123-arm64/toolchains/go1.26.5/go,target=/mnt/development/projects/evidence/semantic-page-20261123-arm64/toolchains/go1.26.5/go,readonly",
+      "--mount",
+      "type=bind,source=/mnt/development/projects/evidence/semantic-page-20261123-arm64/cache/go-mod,target=/mnt/development/projects/evidence/semantic-page-20261123-arm64/attempt4/cache/go-mod,readonly",
+      "--mount",
+      "type=bind,source=/dev/shm/pinkha-loaded-account-source-graph-20261123,target=/dev/shm/pinkha-loaded-account-source-graph-20261123",
+      "--mount",
+      "type=bind,source=/mnt/development/projects/worktrees/anytype-heart-semantic-page-20261123/deps/libs/linux-arm64-musl,target=/mnt/development/projects/worktrees/anytype-heart-semantic-page-20261123/deps/libs/linux-arm64-musl,readonly",
+      "--mount",
+      "type=bind,source=/mnt/development/projects/evidence/loaded-account-witness-20261123/ram-graph-attempt2,target=/mnt/development/projects/evidence/loaded-account-witness-20261123/ram-graph-attempt2,readonly",
+      "--mount",
+      "type=bind,source=/mnt/development/projects/evidence/loaded-account-witness-20261123/ram-graph-attempt2/image-data-empty,target=/var/lib/postgresql/data,readonly",
+      "--env",
+      "CC=gcc",
+      "--env",
+      "CGO_ENABLED=1",
+      "--env",
+      "CGO_LDFLAGS=-L/mnt/development/projects/worktrees/anytype-heart-semantic-page-20261123/deps/libs/linux-arm64-musl",
+      "--env",
+      "CXX=g++",
+      "--env",
+      "GOARCH=arm64",
+      "--env",
+      "GOCACHE=/dev/shm/pinkha-loaded-account-source-graph-20261123/go-cache",
+      "--env",
+      "GOFLAGS=-mod=readonly -p=1",
+      "--env",
+      "GOMAXPROCS=1",
+      "--env",
+      "GOMEMLIMIT=3072MiB",
+      "--env",
+      "GOMODCACHE=/mnt/development/projects/evidence/semantic-page-20261123-arm64/attempt4/cache/go-mod",
+      "--env",
+      "GOOS=linux",
+      "--env",
+      "GOPATH=/dev/shm/pinkha-loaded-account-source-graph-20261123/gopath",
+      "--env",
+      "GOPROXY=off",
+      "--env",
+      "GOSUMDB=off",
+      "--env",
+      "GOTMPDIR=/dev/shm/pinkha-loaded-account-source-graph-20261123/tmp",
+      "--env",
+      "GOTOOLCHAIN=local",
+      "--env",
+      "GOWORK=off",
+      "--env",
+      "PATH=/mnt/development/projects/evidence/semantic-page-20261123-arm64/toolchains/go1.26.5/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "--env",
+      "TMPDIR=/dev/shm/pinkha-loaded-account-source-graph-20261123/tmp",
+      "sha256:f2f98726820d0342055351c6e9d36e705f5bfffb3dd53ff556325114b08afb6d",
+      "list",
+      "-deps",
+      "-test",
+      "-json",
+      "-modfile=/mnt/development/projects/worktrees/anytype-wave15-loaded-account-witness-20261123/Tools/AnyEngineValidation/loaded_account_witness/candidate.mod",
+      "-tags",
+      "nogrpcserver nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg pinkha_loaded_account_witness pinkha_loaded_account_witness_acceptance",
+      "./core/application"
+    ],
+    "cleanup_error": {
+      "message": "docker_observation_failed_container-owned-kill",
+      "phase": "container",
+      "type": "RuntimeError"
+    },
+    "cleanup_group_initially_absent": false,
+    "cwd": "/mnt/development/projects/worktrees/anytype-heart-loaded-account-witness-20261123",
+    "elapsed_seconds": 48.151913427747786,
+    "finished": "2026-11-23T17:06:23.656728+00:00",
+    "free_after": 4416503808,
+    "group_absent_after_term": false,
+    "kill_sent": true,
+    "launch_attempted": true,
+    "minimum_free_bytes": 4416655360,
+    "minimum_memory_available_bytes": 10001584128,
+    "output_limit_observation": {
+      "bytes_observed_at_least": 8398396,
+      "stream": "stdout"
+    },
+    "owned_group_absent": false,
+    "pgid": 3073131,
+    "pid": 3073131,
+    "primary_error": {
+      "message": "source_query_stdout_limit",
+      "type": "RuntimeError"
+    },
+    "ram_before": {
+      "free_bytes": 67108864,
+      "free_inodes": 8188,
+      "identity": {
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "1",
+        "st_mode": "16832",
+        "st_uid": "1001"
+      },
+      "mount": {
+        "device": "0:71",
+        "filesystem": "tmpfs",
+        "mount_id": "738",
+        "options": "rw,nosuid,nodev,noexec,relatime",
+        "parent_id": "37",
+        "root": "/",
+        "source": "pinkha-loaded-account-source-graph-20261123",
+        "super_options": "rw,size=65536k,nr_inodes=8192,mode=700,uid=1001,gid=1001,inode64",
+        "target": "/dev/shm/pinkha-loaded-account-source-graph-20261123"
+      },
+      "total_bytes": 67108864,
+      "total_inodes": 8192
+    },
+    "resources_before": {
+      "disk_free": 4425084928,
+      "memory_available": 10140774400
+    },
+    "source_enumeration_only": true,
+    "started": "2026-11-23T17:05:35.504813+00:00",
+    "status": "FAILED",
+    "stderr": {
+      "path": "/mnt/development/projects/evidence/loaded-account-witness-20261123/ram-graph-attempt2/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "st_ctime_ns": "1795453535505332337",
+      "st_dev": "2064",
+      "st_gid": "1002",
+      "st_ino": "1472274",
+      "st_mode": "33152",
+      "st_mtime_ns": "1795453535505292817",
+      "st_nlink": "1",
+      "st_size": "0",
+      "st_uid": "1001"
+    },
+    "stderr_complete": false,
+    "stdout": {
+      "path": "/mnt/development/projects/evidence/loaded-account-witness-20261123/ram-graph-attempt2/stdout.log",
+      "sha256": "dbc81f587ab0e53b07b15947afe2933c4eda4c55391ba3564e6ee44924f594af",
+      "st_ctime_ns": "1795453558484166667",
+      "st_dev": "2064",
+      "st_gid": "1002",
+      "st_ino": "1472273",
+      "st_mode": "33152",
+      "st_mtime_ns": "1795453558484166667",
+      "st_nlink": "1",
+      "st_size": "8388608",
+      "st_uid": "1001"
+    },
+    "stdout_complete": false,
+    "term_sent": true
+  },
+  "ram_finalization": {
+    "created": true,
+    "empty_cache_initial": true,
+    "initial_mount": {
+      "free_bytes": 67108864,
+      "free_inodes": 8191,
+      "identity": {
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "1",
+        "st_mode": "16832",
+        "st_uid": "1001"
+      },
+      "mount": {
+        "device": "0:71",
+        "filesystem": "tmpfs",
+        "mount_id": "738",
+        "options": "rw,nosuid,nodev,noexec,relatime",
+        "parent_id": "37",
+        "root": "/",
+        "source": "pinkha-loaded-account-source-graph-20261123",
+        "super_options": "rw,size=65536k,nr_inodes=8192,mode=700,uid=1001,gid=1001,inode64",
+        "target": "/dev/shm/pinkha-loaded-account-source-graph-20261123"
+      },
+      "total_bytes": 67108864,
+      "total_inodes": 8192
+    },
+    "mounted": {
+      "identity": {
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "1",
+        "st_mode": "16832",
+        "st_uid": "1001"
+      },
+      "mount": {
+        "device": "0:71",
+        "filesystem": "tmpfs",
+        "mount_id": "738",
+        "options": "rw,nosuid,nodev,noexec,relatime",
+        "parent_id": "37",
+        "root": "/",
+        "source": "pinkha-loaded-account-source-graph-20261123",
+        "super_options": "rw,size=65536k,nr_inodes=8192,mode=700,uid=1001,gid=1001,inode64",
+        "target": "/dev/shm/pinkha-loaded-account-source-graph-20261123"
+      }
+    },
+    "parent": {
+      "st_dev": "31",
+      "st_gid": "0",
+      "st_ino": "1",
+      "st_mode": "17407",
+      "st_uid": "0"
+    },
+    "status": "MOUNTED_EMPTY",
+    "underlying_directory": {
+      "st_dev": "31",
+      "st_gid": "1001",
+      "st_ino": "70699",
+      "st_mode": "16832",
+      "st_uid": "1001"
+    }
+  },
+  "ram_inode_limit": 8192,
+  "ram_limit_bytes": 67108864,
+  "ram_preparation": {
+    "created": true,
+    "empty_cache_initial": true,
+    "initial_mount": {
+      "free_bytes": 67108864,
+      "free_inodes": 8191,
+      "identity": {
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "1",
+        "st_mode": "16832",
+        "st_uid": "1001"
+      },
+      "mount": {
+        "device": "0:71",
+        "filesystem": "tmpfs",
+        "mount_id": "738",
+        "options": "rw,nosuid,nodev,noexec,relatime",
+        "parent_id": "37",
+        "root": "/",
+        "source": "pinkha-loaded-account-source-graph-20261123",
+        "super_options": "rw,size=65536k,nr_inodes=8192,mode=700,uid=1001,gid=1001,inode64",
+        "target": "/dev/shm/pinkha-loaded-account-source-graph-20261123"
+      },
+      "total_bytes": 67108864,
+      "total_inodes": 8192
+    },
+    "mounted": {
+      "identity": {
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "1",
+        "st_mode": "16832",
+        "st_uid": "1001"
+      },
+      "mount": {
+        "device": "0:71",
+        "filesystem": "tmpfs",
+        "mount_id": "738",
+        "options": "rw,nosuid,nodev,noexec,relatime",
+        "parent_id": "37",
+        "root": "/",
+        "source": "pinkha-loaded-account-source-graph-20261123",
+        "super_options": "rw,size=65536k,nr_inodes=8192,mode=700,uid=1001,gid=1001,inode64",
+        "target": "/dev/shm/pinkha-loaded-account-source-graph-20261123"
+      }
+    },
+    "parent": {
+      "st_dev": "31",
+      "st_gid": "0",
+      "st_ino": "1",
+      "st_mode": "17407",
+      "st_uid": "0"
+    },
+    "status": "MOUNTED_EMPTY",
+    "underlying_directory": {
+      "st_dev": "31",
+      "st_gid": "1001",
+      "st_ino": "70699",
+      "st_mode": "16832",
+      "st_uid": "1001"
+    }
+  },
+  "retained_container_is_not_build_or_test_evidence": true,
+  "source_after": {
+    "bytes": 291549,
+    "encoding": "gzip-json",
+    "expanded_bytes": 1554508,
+    "expanded_sha256": "79fee4a93a499126d16fefe1d0e1d9d6af970e72eadd3c51b5eb9eeda6ed2d4c",
+    "path": "/mnt/development/projects/evidence/loaded-account-witness-20261123/ram-graph-attempt2/source-after.json.gz",
+    "sha256": "ff9f4542fd929155a2500aab22fef2a1c7c21574faed5b1544e253fd147c0eed"
+  },
+  "source_before": {
+    "bytes": 291549,
+    "encoding": "gzip-json",
+    "expanded_bytes": 1554508,
+    "expanded_sha256": "79fee4a93a499126d16fefe1d0e1d9d6af970e72eadd3c51b5eb9eeda6ed2d4c",
+    "path": "/mnt/development/projects/evidence/loaded-account-witness-20261123/ram-graph-attempt2/source-before.json.gz",
+    "sha256": "ff9f4542fd929155a2500aab22fef2a1c7c21574faed5b1544e253fd147c0eed"
+  },
+  "source_graph_budget_seconds": 120,
+  "source_graph_start_floor": 1090519040,
+  "source_graph_stop_floor": 1073741824,
+  "source_unchanged": true,
+  "started": "2026-11-23T17:05:33.639407+00:00",
+  "status": "FAILED",
+  "subsequent_error": {
+    "message": "source_query_failed",
+    "type": "RuntimeError"
+  }
+}
