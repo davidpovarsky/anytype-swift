@@ -1016,12 +1016,19 @@ final class NativeLaunchTests: XCTestCase {
     }
 
     private func hanlinComposerInput(_ app: XCUIApplication) -> XCUIElement {
-        // SwiftUI's axis:.vertical field may expose either native text-input
-        // role. Restrict to the actual retained placeholder, not a hidden model.
-        app.descendants(matching: .any).matching(NSPredicate(
-            format: "(elementType == %d OR elementType == %d) AND (label == %@ OR label == %@)",
-            XCUIElement.ElementType.textField.rawValue, XCUIElement.ElementType.textView.rawValue,
-            "שאל את Hanlin…", "Ask Hanlin…")).firstMatch
+        // The original configured chat visibly contains this canonical input.
+        // A SwiftUI vertical TextField need not expose its placeholder as its
+        // AX label. Use the retained composer's semantic scope and input role.
+        let inputs = app.descendants(matching: .any).matching(NSPredicate(
+            format: "identifier == %@ AND (elementType == %d OR elementType == %d)",
+            "pinkha.hanlin.composer",
+            XCUIElement.ElementType.textField.rawValue,
+            XCUIElement.ElementType.textView.rawValue))
+        let input = inputs.firstMatch
+        waitUntilEnabled(input)
+        XCTAssertEqual(inputs.count, 1, "The real Hanlin composer must expose one input.")
+        XCTAssertTrue(input.isHittable, "The mounted Hanlin input must accept a real tap.")
+        return input
     }
 
     private func sendHanlinPrompt(_ app: XCUIApplication, text: String) {
