@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "status": "PROPOSED_SOURCE_POLICY_NOT_GENERATED_OR_EXECUTED",
+  "protocol": "pinkha.annotation.import.v1",
+  "separation": "Request admission and post-native-result copy admission are distinct; neither grants account/Space authority or a Host ACK.",
+  "request": {
+    "archive_maximum_bytes": 1048576,
+    "archive_sha256_bytes": 32,
+    "attempt_secret_bytes": 32,
+    "attempt_secret_nonzero": true,
+    "identity_fields": [
+      "expectedAccountId",
+      "sourceSpaceId",
+      "sourceRootId",
+      "targetSpaceId"
+    ],
+    "maximum_utf8_bytes_per_identity": 16384,
+    "identities_nonempty_without_nul": true,
+    "source_basis": "Archive 1MiB is existing accepted annotation policy. Per-identity 16KiB is a NEW transport resource limit, aligned with but not inferred from the existing aggregate snapshot-header limit; actual original native account/Space/archive comparison remains required.",
+    "decode_boundary": "Generated protobuf decoding occurs before Middleware validation. These bounds prevent the new handler's native preparation/copy, not a claim that this handler validates before the unchanged generated decoder."
+  },
+  "result": {
+    "maximum_complete_encoded_protobuf_bytes": 2097152,
+    "maximum_utf8_bytes_per_string": 16384,
+    "maximum_mapping_rows_per_collection": 512,
+    "maximum_mapping_problem_rows": 16,
+    "maximum_file_observation_rows": 4096,
+    "maximum_export_report_issue_rows": 4096,
+    "maximum_native_archive_bytes": 1048576,
+    "maximum_source_snapshot_and_role_counts": 512,
+    "maximum_additional_contexts": 3,
+    "source_basis": {
+      "mapping": "Existing nativeMappingFactLimit=512 and problem list limit16 at cfc71a30498bba772aaf33f1ac08fdf65d1e0e3a mapping_observation.go.",
+      "archive": "Existing exact byte owner admits at most512 ZIP members,8MiB expanded,depth64 and262144 fields at2da5419f. These parser limits are unchanged.",
+      "file_observations": "Original OwnedImportOutcome.Files has one record per actual native/file event; it is not inherently bounded to one record per ZIP member.4096 is an explicit NEW wire container cap, not a claim about original native event counts.",
+      "export_report": "Actual original model.ExportReport has status/succeed/objectErrors/fileErrors and repeated Issue with objectId,severity,code,path,message.4096 is a NEW wire issue cap; exact report content is retained if admitted.",
+      "string": "16KiB per UTF8 string is a NEW wire resource cap. It is not the existing native ID maximum and does not truncate any field.",
+      "allocation_rationale": "4096 containers equals2MiB/512 and is an explicit conservative container-allocation policy, not a measured ABI size. The complete encoded2MiB cap is independently measured; mapping collections keep their existing512 ceiling."
+    },
+    "copy_order": [
+      "Original native operation closes Done only after Execute/workers/readback/staging cleanup.",
+      "The original immutable Result/getters retain their existing owned-copy behavior; this patch does not add a pre-copy introspection API to the frozen engine.",
+      "Validate finite counts, all string bytes and exact proto3 wire size on those owned values before constructing new protobuf row arrays.",
+      "Build the complete response and compare its real generated proto.Size with the preflight measurement before external marshal."
+    ],
+    "refusal": {
+      "disposition": "COPY_REFUSED",
+      "retained_finite_actual_facts": [
+        "registered",
+        "operationDone",
+        "nativeErrorPresent",
+        "nativeErrorCategory",
+        "cancellationRequested"
+      ],
+      "body_fields": "outcome/mapping/readback are all omitted together; no prefix/truncated graph/report is returned",
+      "host_semantics": "Actual Done does not resolve copied-body uncertainty or authorize mapping/ACK/reimport.",
+      "native_error_descriptions": "Only finite constant categories/descriptions are added; arbitrary error.Error strings are not transported by this new route. The admitted original ExportReport is copied exactly."
+    }
+  },
+  "cancellation": {
+    "automatic_sdk_calls_maximum": 2,
+    "second_call": "Only after an actual NOT_OBSERVED response while the one original Import's native history/drain is still pending.",
+    "same_private_tuple": true,
+    "waiter_cancellation_is_native_drain": false,
+    "release_requires": [
+      "actual original Import nativeResponseObservation and onDrained",
+      "all actual Cancel responses and their drain"
+    ],
+    "two_misses": "Unresolved on the SAME owner; no automatic new Import, loop, replacement or ACK.",
+    "status": "SDK source design acknowledged; concrete generated/native linkage remains pending."
+  },
+  "unchanged": {
+    "generic_nil_binding_import": true,
+    "owned_import_engine": true,
+    "account_stop": true,
+    "global_action_wire_65536": true,
+    "prior_native_source_gate": true
+  }
+}

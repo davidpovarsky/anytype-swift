@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "source_rows": [
+    {
+      "label": "native_mapping",
+      "repository": "swift",
+      "revision": "cfc71a30498bba772aaf33f1ac08fdf65d1e0e3a",
+      "path": "docs/pinkha/torah-integration/native-heart-lifetime-repair-20261123/native/core/block/import/mapping_observation.go",
+      "bytes": 9569,
+      "sha256": "7634efc97506c1b1f4f67ecfdbd7fab919b5843986261a445e258ef39b8a3fa6",
+      "git_blob": "1ab2bdce3c59e664b167c59bb656ed3fd3ca72dc",
+      "bounded_excerpts": [
+        {
+          "line": 7,
+          "text": "const nativeMappingFactLimit = 512"
+        },
+        {
+          "line": 113,
+          "text": "\tif len(sources) == 0 || len(sources) > nativeMappingFactLimit || len(generatedIDs) > nativeMappingFactLimit || len(keptIDs) > nativeMappingFactLimit || len(snapshotIDs) > nativeMappingFactLimit {"
+        },
+        {
+          "line": 166,
+          "text": "\tif len(b.problems) < 16 {"
+        },
+        {
+          "line": 173,
+          "text": "\tif len(b.assignmentOrder) >= nativeMappingFactLimit {"
+        },
+        {
+          "line": 191,
+          "text": "\tif len(b.aliases) >= nativeMappingFactLimit {"
+        }
+      ]
+    },
+    {
+      "label": "native_archive",
+      "repository": "swift",
+      "revision": "2da5419fa8b3e90ecca248ee9c83fd5055d8bca6",
+      "path": "docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/native/core/block/import/owned_annotation_archive.go",
+      "bytes": 23278,
+      "sha256": "3fb56e13a200956bb2c6db58c1f8ca2c9a0671b0bb64b1d2ad4ac318445b9066",
+      "git_blob": "c3a134d2e6dd66ef170f358e86ef9dce5883325c",
+      "bounded_excerpts": [
+        {
+          "line": 37,
+          "text": "\townedArchiveMaxMembers    = 512"
+        },
+        {
+          "line": 38,
+          "text": "\townedArchiveMaxExpanded   = 8 << 20"
+        },
+        {
+          "line": 40,
+          "text": "\townedArchiveMaxWireFields = 262144"
+        }
+      ]
+    },
+    {
+      "label": "original_export_report_proto",
+      "repository": "heart",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "pkg/lib/pb/model/protos/export_report.proto",
+      "bytes": 1317,
+      "sha256": "8b8c40a3664feeb122fcc83f6d1fcde74637f7ec56e89d7041ce44d12f168813",
+      "git_blob": "a6be823345eb09f6a9559f6a19d6b4249da32d49",
+      "bounded_excerpts": []
+    },
+    {
+      "label": "original_export_report_generated",
+      "repository": "heart",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "pkg/lib/pb/model/export_report.pb.go",
+      "bytes": 23622,
+      "sha256": "7807e37e52dd585646df2a4923c8bc816360d2d4b05a124f735080d6a6a632f5",
+      "git_blob": "7f51eda5663a2f9661a8bdde3ae18cbe4601e05c",
+      "bounded_excerpts": []
+    }
+  ],
+  "new_wire_string_and_container_caps_are_policy_proposals": true
+}
