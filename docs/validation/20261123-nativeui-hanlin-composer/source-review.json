@@ -1,0 +1,40 @@
+{
+  "status": "FIXTURE_CANDIDATE_SYNTAX_PASS_APPLE_EXECUTION_PENDING",
+  "base": "eba98492a2d39da2a9afd28357d02ff96ec48844",
+  "originalRun": 45087682296,
+  "originalSource": "7293e4fd0bcabdcdb643d5768b777b8e87ff1b73",
+  "originalArchiveSHA256": "6625e363c7cd9e4c256dfc116073687228db7a0564ae6f2aed8213eca089616b",
+  "changedDeclaration": "NativeLaunchTests.hanlinComposerInput",
+  "allOtherTestSourceBytesUnchanged": true,
+  "productSourceChanged": false,
+  "canonicalHanlinChanged": false,
+  "testFileBeforeSHA256": "9d5ae7f3072452c6f356ced5df6c5a24d74233a7aebc8d0c3a48d4a3eefad5ec",
+  "testFileAfterSHA256": "2d5adf6d45ed47dec909fe957fadeaff4a41563817b4b6441b11b80a0b0b1f1d",
+  "oldMemberSHA256": "ed0e06c6a60f8a2b1a7c56af0be95be95465dfeb385df496feaf21dd80c2f807",
+  "newMemberSHA256": "47928e372ab0b9e9e20ba12eadec22c3e55afc0ac315a302e215627fdd6b8440",
+  "originalEncodedFrames": [
+    {
+      "PTS": 161.27,
+      "sha256": "be307b95888b124a20ec59184e2b46d1780e4016019e1b44781cbc80bc801924"
+    },
+    {
+      "PTS": 168.748333,
+      "sha256": "2e9cb5333055bb1215553b125be0c5f9050da2a43e311aa518f6e85f22b262a1"
+    }
+  ],
+  "observed": "Configured Hanlin chat and real composer visible; no configuration error. Original label-only input query failed. Exact AX placeholder representation remains absent from original attachments.",
+  "preserved": "All typing, source UTF-8, context consent, provider trace, separate create consent, native body, order and cold reopen assertions. Both previously passed methods and every other helper are byte-identical.",
+  "requiredAcceptance": "One real failed Hanlin mounted journey on Apple; syntax check alone is not acceptance.",
+  "productTestsExecuted": 0,
+  "syntax": {
+    "argv": [
+      "/usr/local/bin/swiftc",
+      "-frontend",
+      "-parse",
+      "NativeApp/UITests/NativeLaunchTests.swift"
+    ],
+    "exitCode": 0,
+    "seconds": 0.052,
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}
