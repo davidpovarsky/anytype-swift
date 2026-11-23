@@ -116,6 +116,13 @@ class OriginalProjectPreservation(unittest.TestCase):
         self.denied(phase, duplicate)
 
 
+    def test_original_asset_constants_compiler_input_remains_required(self):
+        data = loads(CANDIDATE.decode())['objects']
+        target = data[PROFILE['framework_target_id']]
+        phase = next(key for key in target['buildPhases'] if data[key]['isa'] == 'PBXSourcesBuildPhase')
+        self.denied(phase, lambda value: value['files'].remove('DEF4FF66029A67D74B599A59'))
+
+
 class RealFilesystemExportControls(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()

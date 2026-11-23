@@ -131,12 +131,20 @@ def verify_project(raw, baseline, profile):
               if value.get('isa') == 'PBXGroup' and value.get('path') == 'OriginalEditorFramework']
     require(len(source_phases) == len(groups) == 1, 'Ambiguous complete facade source group or phase')
     source_ids, child_ids = source_phases[0]['files'], groups[0]['children']
-    require(len(source_ids) == len(set(source_ids)) == len(child_ids) == len(set(child_ids)) == 15,
-            'Incomplete or repeated facade compiler membership')
+    original_source_phases = [old[key] for key in original_target['buildPhases']
+                              if old[key]['isa'] == 'PBXSourcesBuildPhase']
+    require(len(original_source_phases) == 1, 'Ambiguous original explicit compiler source phase')
+    original_source_refs = [old[key]['fileRef'] for key in original_source_phases[0]['files']]
+    require(len(child_ids) == len(set(child_ids)) == 15
+            and len(original_source_refs) == len(set(original_source_refs))
+            and not set(original_source_refs) & set(child_ids)
+            and len(source_ids) == len(set(source_ids)) == len(child_ids) + len(original_source_refs),
+            'Incomplete or repeated original/facade compiler membership')
     references = [new[key] for key in source_ids]
     require(all(item.get('isa') == 'PBXBuildFile' and set(item) == {'isa', 'fileRef'} for item in references)
-            and {item['fileRef'] for item in references} == set(child_ids),
-            'Facade compiler inputs differ from the complete source group')
+            and len({item['fileRef'] for item in references}) == len(references)
+            and {item['fileRef'] for item in references} == set(child_ids) | set(original_source_refs),
+            'Compiler inputs differ from complete facades plus original explicit sources')
     require(all(new[key].get('isa') == 'PBXFileReference' and new[key].get('sourceTree') == '<group>'
                 and new[key].get('lastKnownFileType') == 'sourcecode.swift' for key in child_ids)
             and sorted('OriginalEditorFramework/' + new[key]['path'] for key in child_ids)
@@ -171,7 +179,8 @@ def verify_project(raw, baseline, profile):
         inverse = inverse.replace(object_text(inverse, key), object_text(baseline.decode(), key), 1)
     require(inverse.encode() == baseline, 'Complete original project inverse differs')
     return {'original_app_target_unchanged': True, 'original_objects': len(old),
-            'new_objects': len(added), 'complete_facade_compiler_inputs': len(source_ids),
+            'new_objects': len(added), 'complete_facade_compiler_inputs': len(child_ids),
+            'original_explicit_compiler_inputs': len(original_source_refs),
             'original_package_products': len(target['packageProductDependencies']),
             'shared_runtime_route': route,
             'framework_target_id': targets[0], 'only_excluded_source': 'ApplicationLayer/AppScene.swift',
