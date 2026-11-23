@@ -9,7 +9,7 @@ import hashlib
 import json
 
 MANIFEST = "Tools/PinkhaSimulatorGate/sdk06-tagged-composition.json"
-MANIFEST_SHA256 = "8d30cf445a125af9da99b8f90fdc4a818bd7c9ff1f7d457f175b52256e93149c"
+MANIFEST_SHA256 = "acdefbdbd9a5e10413ba7f7a7c7c0f3684a91e1b4d4851629cc0654948538879"
 HISTORICAL_PATHS = frozenset((
     "Tools/PinkhaSimulatorGate/run_owned_single_lane.py",
     "Tools/PinkhaSimulatorGate/coherent_original_products.py",

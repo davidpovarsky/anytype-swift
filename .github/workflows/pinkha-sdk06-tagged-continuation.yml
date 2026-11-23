@@ -22,7 +22,6 @@ jobs:
       - name: Checkout the current reviewed App and exact historical source objects
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: false
       - name: Select native ARM64 Python

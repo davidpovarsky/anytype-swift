@@ -1,0 +1,72 @@
+{
+  "status": "PASS_STATIC_EXACT_CHECKOUT_WIRING_AND_PIN_CORRECTION",
+  "source_before": "9c7400758f6eeb6c3ecd818a48f189c1e33cd265",
+  "reviewed_at": "2026-11-23T08:30:12.200834+00:00",
+  "primary_source_review": [
+    {
+      "url": "https://raw.githubusercontent.com/actions/checkout/v4/src/input-helper.ts",
+      "sha256": "0bcab16b2b550f1b92c6176b5f842500febee3ae8c8051cb62a95264d40db0af",
+      "bytes": 7286
+    },
+    {
+      "url": "https://raw.githubusercontent.com/actions/checkout/v4/src/ref-helper.ts",
+      "sha256": "711c01895acdc63a9c2d94c5c632cb77f9d0ec78602de713855410c8269553fb",
+      "bytes": 7487
+    },
+    {
+      "url": "https://raw.githubusercontent.com/actions/checkout/v4/src/git-source-provider.ts",
+      "sha256": "b1bf57713d94302decc7f440a1cd7daa24f205ddf677c52debeb654a5565d1a7",
+      "bytes": 11050
+    },
+    {
+      "url": "https://raw.githubusercontent.com/actions/checkout/v4/src/git-command-manager.ts",
+      "sha256": "fbb9ebec4e1c94f9641ffe123a4e47df4ae5ec2023617f8646ce30e1d3221bcf",
+      "bytes": 20616
+    }
+  ],
+  "prior_existing_workflow_source": "d254a4a1ccd9288f585ff9374088cbaf965b36b4",
+  "prior_existing_workflow_blob": "bdaf3d19d64b7e0407b7a3e4812dfb7aeb27a1bb",
+  "exact_changes": {
+    ".github/workflows/pinkha-sdk06-tagged-continuation.yml": {
+      "before_sha256": "fb926dea3dbda349b01aa3df4397c3abfb419d9ff3449690c8bcd2fb6b3a9365",
+      "after_sha256": "d139154c3bd4526571f269c392a09012f691294d0e3fdcdaefb6d4c198ca8f0c",
+      "before_bytes": 4679,
+      "after_bytes": 4646,
+      "whole_file_inverse_verified": true
+    },
+    "Tools/PinkhaSimulatorGate/sdk06-tagged-composition.json": {
+      "before_sha256": "8d30cf445a125af9da99b8f90fdc4a818bd7c9ff1f7d457f175b52256e93149c",
+      "after_sha256": "acdefbdbd9a5e10413ba7f7a7c7c0f3684a91e1b4d4851629cc0654948538879",
+      "before_bytes": 23669,
+      "after_bytes": 23669,
+      "whole_file_inverse_verified": true
+    },
+    "Tools/PinkhaSimulatorGate/sdk06_tagged_composition.py": {
+      "before_sha256": "abbe508b1c0c5d132b4d5529e9a261da8842b78f0e455d36330ea7fe1a5ef360",
+      "after_sha256": "7347998f3ba991ffa0574bb58ab8c95172dbc8aa6bda095290648bfa078ab92c",
+      "before_bytes": 10451,
+      "after_bytes": 10451,
+      "whole_file_inverse_verified": true
+    }
+  },
+  "app_checkout": "Default same-repository checkout@v4 binds both event ref and event SHA, including a targeted SHA fetch if origin branch advanced. Existing identity guard independently checks exact event SHA and approved actual local branch.",
+  "branch_guard_unchanged": true,
+  "controller_logic_change": "Only fixed composition manifest hash constant; all helper control flow byte-identical by exact inverse.",
+  "yaml_duplicate_key_check": "PASS",
+  "bash_syntax_run_blocks": [
+    2,
+    4,
+    5,
+    7,
+    8,
+    9,
+    10
+  ],
+  "old_new_control_methods_reexecuted": 0,
+  "apple_builds_or_methods": 0,
+  "actual_current_app_admission": "NOT_RUN",
+  "original_four_control_inputs_and_qualification": "Immutable source7f97 and retained originals; this separate static correction does not relabel or replay their execution.",
+  "fixed_tag_and_retention_manifests_unchanged": true,
+  "prior_static_reader_failure": "First pre-mutation check searched for literal GITHUB_SHA in current_identity, which instead receives binding[source_sha] from the unchanged lifecycle. Main was verified clean at same9c740 afterwards; no source edit/build/test took place. Actual current_identity and downstream guard are now read by exact AST function scope.",
+  "source_script_sha256": "e0a47c68ad665f6451437c9e326cf0584bd475a687db03bb0d0f3ca9d5ec0d94"
+}
