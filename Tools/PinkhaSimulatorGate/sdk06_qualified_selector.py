@@ -23,6 +23,65 @@ MAX_ARTIFACT_BYTES = 256 * 1024**2
 require = probe.require
 _PLAN_SEAL = object()
 
+BASENAME_VARIANT = "suites-minus-seven-three-parameter-basenames-cli"
+BASENAME_ENTRY = "Tools/PinkhaSimulatorGate/sdk06_basename_enumeration_probe.py"
+BASENAME_PLAN = "Tools/PinkhaSimulatorGate/sdk06-basename-probe-plan.json"
+BASENAME_PROOF_ROOT = "docs/validation/20261123-sdk06-basename-probe/original-45116213338"
+BASENAME_EXTRA_INPUTS = (
+    BASENAME_ENTRY, BASENAME_PLAN,
+    ".github/workflows/pinkha-sdk06-basename-probe.yml",
+    ".github/workflows/torah-inspector-ipados27.yml",
+    BASENAME_PROOF_ROOT + "/receipt.json",
+    BASENAME_PROOF_ROOT + "/suites-minus-seven-cli.enumeration.json",
+    BASENAME_PROOF_ROOT + "/enumerate-suites-minus-seven-cli.command.json",
+    BASENAME_PROOF_ROOT + "/original.xctestrun",
+    BASENAME_PROOF_ROOT + "/suites-minus-seven-cli.xctestrun",
+)
+BASENAME_CURRENT_INPUTS = (BASENAME_ENTRY, BASENAME_PLAN) + BASENAME_EXTRA_INPUTS[4:]
+BASENAME_FIXED_HASHES = {
+    "Tools/PinkhaSimulatorGate/sdk06_enumeration_probe.py":
+        "ce2987846cdd42ebab7702e7dff51068bfb15ee48a66011f621695dbd72ebbce",
+    BASENAME_ENTRY: "bf48d27955b94abc8bb3a93559ba608f94c818c7beeab1138b2e85b8911706cc",
+    BASENAME_PLAN: "9f812368d7b091e88e1346c16a81f8e993eb3f15c9b852379dd62aacc7532f22",
+}
+
+
+def _basename_source_scope(sources):
+    require(set(BASENAME_EXTRA_INPUTS) <= set(sources),
+            "All nine exact basename integrity inputs are required")
+    require(all(sources.get(path) == checksum for path, checksum in BASENAME_FIXED_HASHES.items()),
+            "The exact reviewed basename provider/plan/original probe must be pinned")
+
+
+def _basename_provider(control=None):
+    # Check bytes before importing this separate provider. No caller-supplied
+    # path, module, plan or import override is accepted.
+    root = Path(__file__).resolve().parents[2]
+    require(control is None or Path(control).resolve() == root,
+            "The basename provider must belong to the current owned controller")
+    for relative, checksum in BASENAME_FIXED_HASHES.items():
+        path = root / relative
+        require(path.is_file() and not path.is_symlink() and probe.sha(path) == checksum,
+                "Current fixed basename provider/plan/original probe bytes differ")
+    import importlib
+    fixed = importlib.import_module("sdk06_basename_enumeration_probe")
+    require(Path(fixed.__file__).resolve() == root / BASENAME_ENTRY
+            and fixed.VARIANT_NAME == BASENAME_VARIANT
+            and fixed.EXTRA_INTEGRITY_PATHS == BASENAME_EXTRA_INPUTS,
+            "Unexpected basename provider identity or extra source scope")
+    fixed._fixed_inputs()
+    return fixed
+
+
+def _candidate_variants(approved, selection):
+    if approved.get("qualified_variant") == BASENAME_VARIANT:
+        candidates = _basename_provider().fixed_candidates(selection)
+        require(len(candidates) == 1 and candidates[0].get("name") == BASENAME_VARIANT,
+                "Exactly the fixed basename request must match the actual probe")
+        return candidates
+    return probe.variants(selection)
+
+
 
 def source_functions(data, names):
     value = ast.parse(data.decode("utf-8"))
@@ -60,7 +119,17 @@ def original_control_sources(app, approved):
     require(source_functions((app / component_name).read_bytes(), names) ==
             source_functions(originals[component_name], names),
             "Current declaration/enumeration/result validators differ from the qualified originals")
-    return {probe_name: probe.sha(app / probe_name), component_name: probe.sha(app / component_name)}
+    grammar = {probe_name: probe.sha(app / probe_name), component_name: probe.sha(app / component_name)}
+    if approved.get("qualified_variant") == BASENAME_VARIANT:
+        _basename_source_scope(sources)
+        _basename_provider(app)
+        # Both invoking workflow blobs are bound above to the actual probe Git
+        # source. They are not executing code in this later current-App route.
+        for name in BASENAME_CURRENT_INPUTS:
+            require(name in originals and (app / name).read_bytes() == originals[name],
+                    "Current fixed basename provider/plan/proof differs from the qualified original")
+            grammar[name] = probe.sha(app / name)
+    return grammar
 
 
 def digest_bytes(value):
@@ -108,8 +177,9 @@ def admission(value):
     require(value["artifact_name"] == "Pinkha-SDK06-Enumeration-" + value["probe_run_id"] + "-" +
             value["probe_run_attempt"], "Probe artifact name differs")
     name = value["qualified_variant"]
-    require(name in {"suites-minus-seven-cli", "parameter-signature-terminal-parens-cli"},
-            "Only an actually qualified reviewed probe variant is supported")
+    if name != BASENAME_VARIANT:
+        require(name in {"suites-minus-seven-cli", "parameter-signature-terminal-parens-cli"},
+                "Only an actually qualified reviewed probe variant is supported")
     expected = {"receipt.json", "original.xctestrun", "originals/execution.json",
         "originals/shared-editor-components/compiled-suite-enumeration.json",
         name + ".enumeration.json", name + ".xctestrun",
@@ -123,7 +193,12 @@ def admission(value):
     require(isinstance(sources, dict) and len(sources) >= 5
             and "Tools/PinkhaSimulatorGate/sdk06_enumeration_probe.py" in sources,
             "Original loaded probe source closure missing")
+    if name == BASENAME_VARIANT:
+        _basename_source_scope(sources)
     for path, checksum in sources.items():
+        if name == BASENAME_VARIANT and path in BASENAME_EXTRA_INPUTS:
+            sha_value(checksum)
+            continue
         require(isinstance(path, str) and path.startswith("Tools/") and path.endswith(".py")
                 and "\\" not in path and all(p not in {"", ".", ".."} for p in path.split("/")),
                 "Unsafe probe dependency path")
@@ -195,7 +270,7 @@ def qualified_record(receipt, approved, selection):
         "entries": 5007, "status": "ORIGINAL_BYTES_RESTORED_ENUMERATION_ONLY"},
         "Original exact Products restoration is missing")
     require(receipt.get("selection_contract") == selection, "Original23+7 selection contract differs")
-    variants = probe.variants(selection)
+    variants = _candidate_variants(approved, selection)
     records = receipt.get("probes")
     require(isinstance(records, list) and 1 <= len(records) <= len(variants)
             and [row.get("name") for row in records] == [row["name"] for row in variants[:len(records)]],
