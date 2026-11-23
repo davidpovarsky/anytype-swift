@@ -166,3 +166,5 @@ The dedicated workflow is prepared from workflow.template.yml. The root
 integration owner publishes its exact API child only after reviewing the complete
 source, fixture and gate. There is no manual redispatch, default-branch change,
 or historical selector replay in this packet.
+
+Source-only admission passed at 815369ef8bbd08b45b955f29154f1a7ee4c60f9a against both actual original Git mirrors. The receipt is SOURCE_ONLY_ADMISSION.json. This is a source/provenance result; native compilation and all nine native leaves remain NOT_RUN.
