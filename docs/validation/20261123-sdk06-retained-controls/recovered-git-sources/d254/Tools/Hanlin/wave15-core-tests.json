@@ -1,0 +1,542 @@
+{
+  "schema": 1,
+  "scope": "EXISTING_WAVE15_UIKIT_AND_NATIVE_PROPERTIES_COMPONENTS_NOT_UI_ACCEPTANCE",
+  "source_snapshot": "15656bf3faeef0659fb8639a2e7f73727ad443b0",
+  "parameter_semantics_source": "https://developer.apple.com/documentation/testing/parameterizedtesting",
+  "suites": {
+    "PinkhaTextDirectionPersistenceTests": {
+      "path": "AnyTypeTests/Pinkha/PinkhaTextDirectionPersistenceTests.swift",
+      "source_lf_sha256": "d0249d5e6f229b417442d8cfcde3c9b0152a3bb0223edc3abb09d120aa4432c8",
+      "methods": {
+        "explicitAlignmentOrderingAndFailureIsolation": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "explicitAlignmentColdReopen": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "languageRenderingProducesZeroWrites": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "contextHasNoIdentityGate": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        }
+      }
+    },
+    "PinkhaTextDirectionUIKitAdapterTests": {
+      "path": "AnyTypeTests/Pinkha/PinkhaTextDirectionUIKitAdapterTests.swift",
+      "source_lf_sha256": "2ce86ed514569dfb5a838df0e78731b98233f71f1dfbeb2d1125f1a31a984efa",
+      "methods": {
+        "caretObservationIsNotAFocusRequest": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "languageRenderingIsDisplayOnly": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "nativeGlyphRenderingAndHitTesting": {
+          "parameters": [
+            {
+              "name": "hostUsesRight",
+              "type": "Bool"
+            },
+            {
+              "name": "text",
+              "type": "String"
+            }
+          ],
+          "argument_collections": [
+            [
+              false,
+              true
+            ],
+            [
+              "English text",
+              "English\nabc \u05d0\u05d1\u05d2\nHi \ud83d\udc69\ud83c\udffd\u200d\ud83d\udcbb"
+            ]
+          ],
+          "case_count": 4
+        },
+        "activeDisplayLayoutPreservesComposition": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "activeIMECompositionIsUntouched": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "placeholderAndCaretAlignment": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "ordinaryDocumentsAreNotGated": {
+          "parameters": [
+            {
+              "name": "typeId",
+              "type": "String"
+            }
+          ],
+          "argument_collections": [
+            [
+              "ordinary-note-type",
+              "ordinary-page-type"
+            ]
+          ],
+          "case_count": 2
+        },
+        "contentDirectionAndDefaultAlignmentAreIndependent": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "explicitAlignmentWins": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "oldAutomaticMarkerUsesCurrentLanguage": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "emptyToTypingToReturnToNextBlockLifecycle": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "appLevelHebrewDirectionOverridesDeviceLTR": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "oppositeDirectionContainersIsolateTextViews": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "editingPreparationRestoresTypingDefaults": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "nativeRowAttachmentProbe": {
+          "parameters": [
+            {
+              "name": "configureAfterAttachment",
+              "type": "Bool"
+            }
+          ],
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2
+        },
+        "nativeFocusRestoresEmptyDirection": {
+          "parameters": [
+            {
+              "name": "isRTL",
+              "type": "Bool"
+            }
+          ],
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2
+        },
+        "nativeBeginAndInsertionRestoreEmptyDirection": {
+          "parameters": [
+            {
+              "name": "isRTL",
+              "type": "Bool"
+            }
+          ],
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2
+        }
+      }
+    },
+    "PinkhaTextBlockLeadingMarkerAdapterTests": {
+      "path": "AnyTypeTests/Pinkha/PinkhaTextBlockLeadingMarkerAdapterTests.swift",
+      "source_lf_sha256": "8fabedacad6fa608829b74ee89505c8a3875f7f24c7e7c91208ee3868da888fb",
+      "methods": {
+        "widePinkhaRTLNumber": {
+          "parameters": [
+            {
+              "name": "number",
+              "type": "Int"
+            }
+          ],
+          "argument_collections": [
+            [
+              20,
+              99,
+              100
+            ]
+          ],
+          "case_count": 3
+        },
+        "widePinkhaLTRNumber": {
+          "parameters": [
+            {
+              "name": "number",
+              "type": "Int"
+            }
+          ],
+          "argument_collections": [
+            [
+              20,
+              99,
+              100
+            ]
+          ],
+          "case_count": 3
+        },
+        "ordinaryAnytypeWideNumber": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "narrowPinkhaNumber": {
+          "parameters": [
+            {
+              "name": "number",
+              "type": "Int"
+            }
+          ],
+          "argument_collections": [
+            [
+              1,
+              9,
+              10,
+              19
+            ]
+          ],
+          "case_count": 4
+        },
+        "physicalMarkerSide": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        }
+      }
+    },
+    "PinkhaNavigationGestureBridgeTests": {
+      "path": "AnyTypeTests/Pinkha/PinkhaNavigationGestureBridgeTests.swift",
+      "source_lf_sha256": "0e2c5ef181610fcdc6b6a9f4953d86f69060f9fc4d6d641b47571414572fc3fe",
+      "methods": {
+        "applicationDirectionPreservesOriginalRecognizers": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "liveStackAndDirectionDecideEligibility": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "progressFollowsEffectiveDirection": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        }
+      }
+    },
+    "TorahNativeUIParityTests": {
+      "path": "AnyTypeTests/Pinkha/TorahNativeUIParityTests.swift",
+      "source_lf_sha256": "c3c031f8a2edc3cb99ae57471a29c15b4f8477e4ad8203396a58073b4941019d",
+      "methods": {
+        "compactBlockOrnamentGeometry": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "blockOrnamentReuse": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "navigationFitUsesMeasuredWidths": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "rtlControlOrder": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "boundedDocumentSources": {
+          "parameters": [
+            {
+              "name": "count",
+              "type": "Int"
+            }
+          ],
+          "argument_collections": [
+            [
+              0,
+              1,
+              2,
+              3,
+              12
+            ]
+          ],
+          "case_count": 5
+        },
+        "compactSourceAddButtonGeometry": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "metadataPresentationPlacement": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "policyCanonicalAndOrderStorageDistinction": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "internalIdentityResolutionTriStateAndRecovery": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "nativeCatalogSearchAndIdentityGuards": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "freshDocumentNativeRowIsEditableByCanonicalPicker": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "headerVisibilityReactiveToTypeEligibility": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "presentationSourcesNoPermanentAddLabelAndSeparateCompactAdd": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "catalogLiveTypeRelationsAndZeroAssociationPropertiesSheet": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "canonicalTypeRefreshFences": {
+          "parameters": [
+            {
+              "name": "scenario",
+              "type": "String"
+            }
+          ],
+          "argument_collections": [
+            [
+              "canonical",
+              "same-type-aba",
+              "other-type",
+              "space-invalidation",
+              "cache-clear"
+            ]
+          ],
+          "case_count": 5
+        }
+      }
+    },
+    "TextBlockFocusLifecycleTests": {
+      "path": "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift",
+      "source_lf_sha256": "0b533aa0500b9a62043d1f5e49827e6be1ac2ce0f839fa6496b6da81ab26dcbf",
+      "methods": {
+        "reusedCellDoesNotPreserveDifferentPendingOwner": {
+          "parameters": [
+            {
+              "name": "composing",
+              "type": "Bool"
+            }
+          ],
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2
+        },
+        "sameInputOwnerSurvivesForkAndExplicitReplacementEndsComposition": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "pendingLocalTextSurvivesNativeReconfiguration": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "completedLocalTextAcceptsRemoteReplacement": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "nativeFocusObservationDistinguishesOutcomes": {
+          "parameters": [
+            {
+              "name": "outcome",
+              "type": "String"
+            }
+          ],
+          "argument_collections": [
+            [
+              "ineligible",
+              "refused",
+              "accepted"
+            ]
+          ],
+          "case_count": 3
+        },
+        "insertedCellUsesCurrentEditingBeforeFocus": {
+          "parameters": [
+            {
+              "name": "editing",
+              "type": "Bool"
+            }
+          ],
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2
+        },
+        "reusedCellUsesCurrentLockBeforeFocus": {
+          "parameters": [
+            {
+              "name": "newLocked",
+              "type": "Bool"
+            }
+          ],
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2
+        },
+        "initialFocusWaitsForAttachment": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "pendingFocusWaitsForKeyWindow": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "refusedFocusWaitsForWindowReadiness": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "explicitHandoffDoesNotReplayInitialCaret": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "staleFocusDoesNotSurviveRowLifetime": {
+          "parameters": [
+            {
+              "name": "change",
+              "type": "String"
+            }
+          ],
+          "argument_collections": [
+            [
+              "rebind",
+              "detach",
+              "editorContext"
+            ]
+          ],
+          "case_count": 3
+        },
+        "laterFocusSupersedesDetachedRequest": {
+          "parameters": [
+            {
+              "name": "useNativeEditing",
+              "type": "Bool"
+            }
+          ],
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2
+        },
+        "editingDenialCancelsPendingFocus": {
+          "parameters": [
+            {
+              "name": "locked",
+              "type": "Bool"
+            }
+          ],
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2
+        },
+        "focusedTextViewDoesNotReplayResponderAcquisition": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "consumedAndNewerFocusSurviveOldCallbacks": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "requestIdentityParticipatesInCellConfigurationEquality": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        }
+      }
+    }
+  },
+  "focus_regression_source_base": "7ecc723c3334c5361c25216ed97161b7d221c5e4",
+  "focus_native_observation_source_base": "5fa5fb572f90a9e7b6c97b99591d164ce280f0b8",
+  "shared_editor_ownership_source_base": "dcab781cc7df4f3b83da2199e24570abc2821462"
+}
