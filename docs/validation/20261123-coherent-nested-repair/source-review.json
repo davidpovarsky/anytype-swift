@@ -1,0 +1,69 @@
+{
+  "protocol": "pinkha-coherent-original-nested-repair-source-review-v1",
+  "baseline": "67809875752085047a395be4a751ace5dcbc7ad8",
+  "authority": "Parent approved only explicit original-Products nested anchor and future coherent cwd creation",
+  "production": {
+    "Tools/PinkhaSimulatorGate/coherent_heart_release.py": {
+      "before_sha256": "0ef77e89fb5957781974177479699b8f7539d718218d9aab94cd40ff0b93aeca",
+      "after_sha256": "04cd47bce88c1a312526d5d01bf948eeeb7a8d8d05f6b843578f926390fa5d6e",
+      "exact_inverse_recovers_baseline": true,
+      "changed_functions": [
+        "nested_cleanup"
+      ],
+      "added_functions": []
+    },
+    "Tools/PinkhaSimulatorGate/coherent_original_products.py": {
+      "before_sha256": "bed94e8e0a9b3f662f967a7a8d8bde87dad2ee5c6c05f380d40ad8a4c7c771ea",
+      "after_sha256": "d4e63a0dd1ab81c291a28460ffcee6c8f38285c55588698e24592b1e0dd72e15",
+      "exact_inverse_recovers_baseline": true,
+      "changed_functions": [],
+      "added_functions": [
+        "nested_cleanup_anchor"
+      ]
+    },
+    "Tools/PinkhaSimulatorGate/run_t5_apple_pair.py": {
+      "before_sha256": "9a0884a5f9ccacb3d0b5639abe06ad77faaf3990856a6efcc1318b5cd14245e5",
+      "after_sha256": "11e11ec19eca11d506f56b37ad8ff76bcdbc40a28a4c233b4e57cb86432b1340",
+      "exact_inverse_recovers_baseline": true,
+      "changed_functions": [
+        "run_logged"
+      ],
+      "added_functions": []
+    },
+    "Tools/PinkhaSimulatorGate/wave15_batch.py": {
+      "before_sha256": "845f6ee3b8a3325827dc976da41592924c619b943dc5942c0a1ac6f37fc13bd6",
+      "after_sha256": "795ecec97eeeacea37d6dea05dc038f487c90f526c251c59823221d5157231da",
+      "exact_inverse_recovers_baseline": true,
+      "changed_functions": [
+        "run_worker_command",
+        "worker"
+      ],
+      "added_functions": []
+    }
+  },
+  "unchanged_guard": {
+    "path": "Tools/PinkhaSimulatorGate/coherent_release_cleanup.py",
+    "sha256": "d6af82a33bf8b120cf9f1d641da1ce3efd843777a417abcfb3e15ab7893019f0",
+    "whole_file_unchanged": true
+  },
+  "unchanged_container_lookup": {
+    "path": "Tools/PinkhaSimulatorGate/wave15_batch.py",
+    "method": "FrozenBuild.confirm_empty_container",
+    "timeout_seconds": 30,
+    "whole_method_unchanged": true
+  },
+  "new_controls": {
+    "path": "Tools/PinkhaSimulatorGate/test_coherent_original_nested_cleanup.py",
+    "sha256": "d9eed94c35d4c9cfebf590bbd17c9ca510510c2cd2a657e59c1ac1ea3e8de364",
+    "methods": [
+      "test_current_fixed_roots_reject_foreign_origin_symlink_and_forged_cwd",
+      "test_future_coherent_original_records_actual_cwd_without_changing_default"
+    ],
+    "execution_status": "NOT_RUN"
+  },
+  "default_behavior": "No-origin cleanup still anchors at App; ordinary executor calls omit record_cwd and keep original receipt schema; no timeout/budget or kernel-helper change.",
+  "scope": "Only existing private work/coherent-t5/lane-readiness roots are traversed. Explicit origin validates current args and current run/attempt intent first. Original-products/originals is never scanned.",
+  "original_failure_retained": true,
+  "source_app_or_module_changes": 0,
+  "product_tests_executed": 0
+}

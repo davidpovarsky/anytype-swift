@@ -800,7 +800,8 @@ def worker(args, lane, intent, *, origin=None):
         if spec.name == COHERENT_HEART_PROFILE:
             import coherent_heart_release as coherent
             try:
-                receipt["coherent_nested_cleanup"] = coherent.nested_cleanup(args)
+                receipt["coherent_nested_cleanup"] = (coherent.nested_cleanup(args) if origin is None
+                    else coherent.nested_cleanup(args, origin=origin))
             except BaseException as error:
                 receipt["coherent_nested_cleanup"] = {"status": "FAIL", "error_type": type(error).__name__}
                 receipt["status"] = "CANCELLED" if isinstance(error, KeyboardInterrupt) else "BATCH_ABORTED_SETUP_OR_IDENTITY"
@@ -830,8 +831,10 @@ def terminate_owned(process):
     process.wait(timeout=5)
 
 
-def run_worker_command(command, cwd, log, timeout):
+def run_worker_command(command, cwd, log, timeout, *, record_cwd=False):
     record = {"status": "FAIL", "started_at": now(), "timeout_seconds": timeout, "argv": command}
+    if record_cwd:
+        record["cwd"] = str(cwd)
     process = None
     try:
         with log.open("xb") as stream:
