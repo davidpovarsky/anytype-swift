@@ -1,0 +1,14 @@
+{
+  "status": "FAILED_SWIFT_HANDOFF_FIXTURE",
+  "nativeTestMethod": "TestPreparedInlineFileHTTPBridge",
+  "nativeTopLevelPass": 0,
+  "nativeTopLevelFail": 1,
+  "originalSentinelJob": "job_d375e721adbb",
+  "sourceUnchanged": true,
+  "coreControlsReexecuted": false,
+  "clientCompleted": false,
+  "clientObservations": 0,
+  "rawNativeLogSHA256": "d9851a270755f89947213b5496573802fa9d14c381b193bf48e4ae56309b24db",
+  "boundary": "Swift reported HandoffFailure after the second inline-file prepare returned HTTP 200. Native test refused acceptance and cleaned up the owned server.",
+  "rootCause": "The Swift live fixture incorrectly required file-prepared for both files. After the first file creates the shared owner payload root, the second native preparation correctly reports file-root-committed. Native and Swift client production sources were unchanged."
+}

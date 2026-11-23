@@ -1,0 +1,64 @@
+{
+  "started_at": "2026-11-23T01:14:38.995975+00:00",
+  "cwd": "/mnt/development/projects/worktrees/any-inline-http-20261123",
+  "argv": [
+    "/usr/local/bin/go",
+    "test",
+    "-json",
+    "-count=1",
+    "-p=1",
+    "-mod=readonly",
+    "-timeout=360s",
+    "-tags=pinkha_inline_http_bridge",
+    "-run",
+    "^TestPreparedInlineFileHTTPBridge$",
+    "./internal/server"
+  ],
+  "env": {
+    "GOTOOLCHAIN": "local",
+    "GOWORK": "off",
+    "GOMAXPROCS": "1",
+    "CGO_ENABLED": "1",
+    "GOPATH": "/mnt/development/projects/diagnostics/inline-http-20261123/cache/go-path",
+    "GOMODCACHE": "/mnt/development/projects/evidence/semantic-page-20261123-arm64/cache/go-mod",
+    "GOCACHE": "/mnt/development/projects/diagnostics/inline-http-20261123/cache/go-build-glibc",
+    "GOTMPDIR": "/mnt/development/projects/diagnostics/inline-http-20261123/cache/go-tmp",
+    "TMPDIR": "/mnt/development/projects/diagnostics/inline-http-20261123/cache/tmp",
+    "PINKHA_INLINE_FILE_HANDSHAKE": "/mnt/development/projects/diagnostics/inline-http-20261123/bridge-attempt1/handshake.json",
+    "PINKHA_INLINE_FILE_RESULT": "/mnt/development/projects/diagnostics/inline-http-20261123/bridge-attempt1/swift-result.json"
+  },
+  "source_sha256": {
+    "internal/api/pinkha_migration_inline_file.go": "0c48357ec347c9c3e1566495525708fae77bba298f1da58fe7abf0bb1f19929b",
+    "internal/server/handlers_pinkha_migration_inline_file.go": "3af602b6f182e5646f1a7f640faec716c239e09056490626622cdffc233704ab",
+    "internal/server/handlers_pinkha_migration.go": "0e0e81f5c8c4ceb7267bc18583a13836bacad465b2dc1f2362f16a7e83ab3526",
+    "internal/server/handlers_pinkha_migration_inline_file_test.go": "9782d6700f73626fd8bd0821ce8f22016cf0227b9cf771aa98aec58245eb9626",
+    "internal/server/handlers_pinkha_migration_inline_file_bridge_test.go": "5ee8cd53e6492c5369867d59ef59bffc6c6af8b3a0b89ee26f8763aec9a1bfeb",
+    ".runtime-artifacts/sdk-source/internal/spaceimpl/migration_inline_file.go": "c1a87e93d3b838b6104a644b3f97ac390f4937e147434dc10cdab977d90199a9",
+    "go.mod": "5ce97a6907d80856350de81d641682745e9cac961d3f6a949f859075d7d8c549",
+    ".runtime-artifacts/sdk-source/go.mod": "c1b547a1f77dc3382e074d64b2247e8a71d83d2905f9f8e989facabf2e90f825",
+    "staging.yml": "a3fe3c21144c2c82afa03b58014752c6bca6e5a9f3e69a1bc1b2b38415434756"
+  },
+  "sourceManifestSHA256": "86598a7046ef135fa5dd2d0c2e559750f89ed8517fe4c1c753ce4457c13a009b",
+  "coreStatusSHA256": "35f0e2ebbe355e4c3243a18d5d2683fe74d0fc9683f514eb2f9320ef65e09a69",
+  "status": "failed",
+  "overall_budget_seconds": 480,
+  "coreControlsReexecuted": false,
+  "pid": 1878825,
+  "pgid": 1878825,
+  "exit_code": 1,
+  "elapsed_seconds": 60.773,
+  "finished_at": "2026-11-23T01:15:39.769882+00:00",
+  "source_unchanged": true,
+  "test_results": [
+    {
+      "Action": "fail",
+      "Test": "TestPreparedInlineFileHTTPBridge",
+      "Elapsed": 36.9
+    }
+  ],
+  "artifactSHA256": {
+    "go-test.jsonl": "d9851a270755f89947213b5496573802fa9d14c381b193bf48e4ae56309b24db",
+    "handshake.json": "3c2d0ec1eeed7cc8509fa8d82f2d90164507344ef3e1e55cebfb202d09c2fdd4",
+    "swift-result.json": "47d8be6c5b1dc24978a78e3083bacb664d00706614c5cc45321df4fd34d17968"
+  }
+}

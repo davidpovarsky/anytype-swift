@@ -1,0 +1,648 @@
+{
+  "schemaVersion": 1,
+  "frozenManifestSHA256": "bff726fc54530af8f3cc0361b5a041d1c46019a5584e877303ef88aaf60c9c44",
+  "sections": {
+    "any": {
+      "upstreamCommit": "88fae2e5ae7d0f46d6707567a3123081faa8de9a",
+      "frozenEffectiveTree": "03aa9a973995c831ed86d7a0ffb675519afe266a",
+      "candidateEffectiveTree": "0445217b25b4f4fcf4d2ce86e3a4eecfcfc5cd10",
+      "retainedUnchanged": [
+        {
+          "path": "go.mod",
+          "beforeSHA256": "5ce97a6907d80856350de81d641682745e9cac961d3f6a949f859075d7d8c549",
+          "afterSHA256": "5ce97a6907d80856350de81d641682745e9cac961d3f6a949f859075d7d8c549"
+        },
+        {
+          "path": "internal/api/blocks.go",
+          "beforeSHA256": "a77de53dbe8ffac602917ed94aa93cbe6ed033ac4f0c3a5a07767028f7d1de77",
+          "afterSHA256": "a77de53dbe8ffac602917ed94aa93cbe6ed033ac4f0c3a5a07767028f7d1de77"
+        },
+        {
+          "path": "internal/api/pinkha_migration.go",
+          "beforeSHA256": "fe779daf6cb1ffe0a43163a37a54caeb3119df57142544d4c01950939e0a5dbf",
+          "afterSHA256": "fe779daf6cb1ffe0a43163a37a54caeb3119df57142544d4c01950939e0a5dbf"
+        },
+        {
+          "path": "internal/api/pinkha_operation_read.go",
+          "beforeSHA256": "d52ca1ea317b0b7e402768d1d9687e4b7b790a6c50bce20b1d608ce32219e63e",
+          "afterSHA256": "d52ca1ea317b0b7e402768d1d9687e4b7b790a6c50bce20b1d608ce32219e63e"
+        },
+        {
+          "path": "internal/api/properties.go",
+          "beforeSHA256": "6fb8ddbc948b3a8eae9cfd451080859aa200e2de1fc15b1ef44ef49efe4aa4f4",
+          "afterSHA256": "6fb8ddbc948b3a8eae9cfd451080859aa200e2de1fc15b1ef44ef49efe4aa4f4"
+        },
+        {
+          "path": "internal/editor/api.go",
+          "beforeSHA256": "8e6a1d170e07fe4aee50598f0884353cd10046606ea1996d93e8f765b901cf3d",
+          "afterSHA256": "8e6a1d170e07fe4aee50598f0884353cd10046606ea1996d93e8f765b901cf3d"
+        },
+        {
+          "path": "internal/editor/migration_prepared.go",
+          "beforeSHA256": "bfd2cbb81a3d7b95132d34bb6d3a0cb1679be38ef58b9d12ea81cd3f20101738",
+          "afterSHA256": "bfd2cbb81a3d7b95132d34bb6d3a0cb1679be38ef58b9d12ea81cd3f20101738"
+        },
+        {
+          "path": "internal/editor/pinkha_patch.go",
+          "beforeSHA256": "79ccd26058d3f03b655f799231d6795d9448c1aa24a03802f99137157a9e520f",
+          "afterSHA256": "79ccd26058d3f03b655f799231d6795d9448c1aa24a03802f99137157a9e520f"
+        },
+        {
+          "path": "internal/markdown/pinkha_version.go",
+          "beforeSHA256": "e1674b706eac7a576fedb8168e583e4f3e78f678da8729108009b37867cf7ae9",
+          "afterSHA256": "e1674b706eac7a576fedb8168e583e4f3e78f678da8729108009b37867cf7ae9"
+        },
+        {
+          "path": "internal/pinkha/claims/contract_test.go",
+          "beforeSHA256": "72740a99fcc0f430ac31614d57fc085f606d34f29423585a06705c4127d898c2",
+          "afterSHA256": "72740a99fcc0f430ac31614d57fc085f606d34f29423585a06705c4127d898c2"
+        },
+        {
+          "path": "internal/pinkha/claims/document_policy.go",
+          "beforeSHA256": "3f40008a740bc078d408b419b35c8bd4f563a10c3ba36da19f916d0a190adf64",
+          "afterSHA256": "3f40008a740bc078d408b419b35c8bd4f563a10c3ba36da19f916d0a190adf64"
+        },
+        {
+          "path": "internal/pinkha/claims/module.go",
+          "beforeSHA256": "8723a17a3b0c2ca9dc13e4b9257164ed21fe4f5afe0a0613f6f7aa277d904494",
+          "afterSHA256": "8723a17a3b0c2ca9dc13e4b9257164ed21fe4f5afe0a0613f6f7aa277d904494"
+        },
+        {
+          "path": "internal/pinkha/claims/object_snapshot.go",
+          "beforeSHA256": "74ebf93d1ce809cef869ce47a8377cece12d6343a674dda26b3c345781c08b64",
+          "afterSHA256": "74ebf93d1ce809cef869ce47a8377cece12d6343a674dda26b3c345781c08b64"
+        },
+        {
+          "path": "internal/pinkha/claims/object_snapshot_test.go",
+          "beforeSHA256": "2cd60c0b0e56e4b6e28da8ea9eca5ecb7cf0a3405da1940c9c24582368024692",
+          "afterSHA256": "2cd60c0b0e56e4b6e28da8ea9eca5ecb7cf0a3405da1940c9c24582368024692"
+        },
+        {
+          "path": "internal/pinkha/claims/operation.go",
+          "beforeSHA256": "7817665ec71568f363eb262f19e2c71d36537b641043bc0a08273c6e034ffce7",
+          "afterSHA256": "7817665ec71568f363eb262f19e2c71d36537b641043bc0a08273c6e034ffce7"
+        },
+        {
+          "path": "internal/pinkha/claims/operation_read.go",
+          "beforeSHA256": "1112129769b930d21f4064823f004d6de0a9cc9d1d6565e253624c1cd6a35f62",
+          "afterSHA256": "1112129769b930d21f4064823f004d6de0a9cc9d1d6565e253624c1cd6a35f62"
+        },
+        {
+          "path": "internal/pinkha/claims/operation_read_test.go",
+          "beforeSHA256": "8a99c4021aa2cb9322c109c0bb3c9e7cb6bd0fdaaf493794dfbde40f51174f24",
+          "afterSHA256": "8a99c4021aa2cb9322c109c0bb3c9e7cb6bd0fdaaf493794dfbde40f51174f24"
+        },
+        {
+          "path": "internal/pinkha/claims/presentation.go",
+          "beforeSHA256": "5e9322cc7f033c7a28e6f309cf30089048172296f1c2e72f40e5f525d57ec0e2",
+          "afterSHA256": "5e9322cc7f033c7a28e6f309cf30089048172296f1c2e72f40e5f525d57ec0e2"
+        },
+        {
+          "path": "internal/pinkha/claims/read.go",
+          "beforeSHA256": "6975c3a74207e31bf348bd3ec8a7204985a5776317c77b857c92073a77bafd3f",
+          "afterSHA256": "6975c3a74207e31bf348bd3ec8a7204985a5776317c77b857c92073a77bafd3f"
+        },
+        {
+          "path": "internal/pinkha/claims/record.go",
+          "beforeSHA256": "d7fca028532f9d844c20adbb2ede8f5538f2392dd41f3ed6c5425c5df1f1d443",
+          "afterSHA256": "d7fca028532f9d844c20adbb2ede8f5538f2392dd41f3ed6c5425c5df1f1d443"
+        },
+        {
+          "path": "internal/pinkha/claims/related.go",
+          "beforeSHA256": "d41b7ed88e075925875d57d42397308d93c15f47ad1caba86f151f562127f525",
+          "afterSHA256": "d41b7ed88e075925875d57d42397308d93c15f47ad1caba86f151f562127f525"
+        },
+        {
+          "path": "internal/pinkha/claims/semantic.go",
+          "beforeSHA256": "30ec9d04f23c5bfd4ea379e77d07f6f2db3156458a814d0876ef77a010c58507",
+          "afterSHA256": "30ec9d04f23c5bfd4ea379e77d07f6f2db3156458a814d0876ef77a010c58507"
+        },
+        {
+          "path": "internal/pinkha/claims/semantic_test.go",
+          "beforeSHA256": "757a224dba602dead8ec55adf35a3d631a812489c58f5a3c9ad7c7b3796ac411",
+          "afterSHA256": "757a224dba602dead8ec55adf35a3d631a812489c58f5a3c9ad7c7b3796ac411"
+        },
+        {
+          "path": "internal/pinkha/claims/snapshot.go",
+          "beforeSHA256": "581eb1b38efb0929f705de1edd9668c7681f76a7dfe5372d4700708448078243",
+          "afterSHA256": "581eb1b38efb0929f705de1edd9668c7681f76a7dfe5372d4700708448078243"
+        },
+        {
+          "path": "internal/pinkha/derived/bound_claim.go",
+          "beforeSHA256": "396ceb51eedf057ec4abb23442ff08fc99a027540c0e9a96eecbc4e9412c71b4",
+          "afterSHA256": "396ceb51eedf057ec4abb23442ff08fc99a027540c0e9a96eecbc4e9412c71b4"
+        },
+        {
+          "path": "internal/pinkha/derived/projection.go",
+          "beforeSHA256": "486e31b5b7f509311d8d60ba35bbb0f4095bcadc96211091190b99bd74b3aea3",
+          "afterSHA256": "486e31b5b7f509311d8d60ba35bbb0f4095bcadc96211091190b99bd74b3aea3"
+        },
+        {
+          "path": "internal/pinkha/derived/properties.go",
+          "beforeSHA256": "c4374a825c533c13155441a45b63b08b137a1bbb48e4a0107aa0693d68ccd965",
+          "afterSHA256": "c4374a825c533c13155441a45b63b08b137a1bbb48e4a0107aa0693d68ccd965"
+        },
+        {
+          "path": "internal/pinkha/derived/readiness.go",
+          "beforeSHA256": "45bc67a85236741ea34738735822153879f22969ac4a3375ee1e29c22baa012c",
+          "afterSHA256": "45bc67a85236741ea34738735822153879f22969ac4a3375ee1e29c22baa012c"
+        },
+        {
+          "path": "internal/pinkha/migrationnative/inline_file_test.go",
+          "beforeSHA256": "c9dfa9f627515313985e21ac654693a66d2d6402a0b7a2760ff0f378a590ec30",
+          "afterSHA256": "c9dfa9f627515313985e21ac654693a66d2d6402a0b7a2760ff0f378a590ec30"
+        },
+        {
+          "path": "internal/pinkha/migrationnative/native_test.go",
+          "beforeSHA256": "539c78e9c135d944f49e03782bb43da169297d41fcf3b74da43d1189410c5721",
+          "afterSHA256": "539c78e9c135d944f49e03782bb43da169297d41fcf3b74da43d1189410c5721"
+        },
+        {
+          "path": "internal/pinkha/migrationnative/peer_test.go",
+          "beforeSHA256": "322236568ac674855cd02623213241b1cab8d4bbf033648ba731ef2ca4849ed0",
+          "afterSHA256": "322236568ac674855cd02623213241b1cab8d4bbf033648ba731ef2ca4849ed0"
+        },
+        {
+          "path": "internal/pinkha/migrationnative/testdata/local.yml",
+          "beforeSHA256": "a3fe3c21144c2c82afa03b58014752c6bca6e5a9f3e69a1bc1b2b38415434756",
+          "afterSHA256": "a3fe3c21144c2c82afa03b58014752c6bca6e5a9f3e69a1bc1b2b38415434756"
+        },
+        {
+          "path": "internal/server/handlers_blocks.go",
+          "beforeSHA256": "1144fc2ae1a4c6f0dcde35b234f0061c362cf6aba5687689d63259434f450b6c",
+          "afterSHA256": "1144fc2ae1a4c6f0dcde35b234f0061c362cf6aba5687689d63259434f450b6c"
+        },
+        {
+          "path": "internal/server/handlers_common.go",
+          "beforeSHA256": "3693280e37c7c304ab38ad0b44fc11a11fbdab9188fd2b06351c0ec1623363ac",
+          "afterSHA256": "3693280e37c7c304ab38ad0b44fc11a11fbdab9188fd2b06351c0ec1623363ac"
+        },
+        {
+          "path": "internal/server/handlers_objects.go",
+          "beforeSHA256": "509be58130afb88687381e1e89704d4c5681752bdd284c3d22d0556dfcc182af",
+          "afterSHA256": "509be58130afb88687381e1e89704d4c5681752bdd284c3d22d0556dfcc182af"
+        },
+        {
+          "path": "internal/server/handlers_pinkha.go",
+          "beforeSHA256": "696798e85fabd864cbde840743f18360710f176cb99ddac533dbe9cd4cc18e09",
+          "afterSHA256": "696798e85fabd864cbde840743f18360710f176cb99ddac533dbe9cd4cc18e09"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_block_cas_test.go",
+          "beforeSHA256": "d5f027aa89299aac3bd562a5a69562828e49edf1204afbdaa46c2a0bbbfff2fa",
+          "afterSHA256": "d5f027aa89299aac3bd562a5a69562828e49edf1204afbdaa46c2a0bbbfff2fa"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_create_test.go",
+          "beforeSHA256": "811774a803fc58f56bf66f1e7fcb75e69b0c80a38b77cba779b9b4f51af57844",
+          "afterSHA256": "811774a803fc58f56bf66f1e7fcb75e69b0c80a38b77cba779b9b4f51af57844"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_document_metadata_test.go",
+          "beforeSHA256": "8db84c1f834de9f6426efbac36667ed9ef8bce323b31fd5cb0844a796f72879f",
+          "afterSHA256": "8db84c1f834de9f6426efbac36667ed9ef8bce323b31fd5cb0844a796f72879f"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_document_policy.go",
+          "beforeSHA256": "b56388acda977b831d5a9a3ed6147249eb686fe44a65ecc42e62bee53f56c404",
+          "afterSHA256": "b56388acda977b831d5a9a3ed6147249eb686fe44a65ecc42e62bee53f56c404"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_document_policy_test.go",
+          "beforeSHA256": "6ae036ef08834e2fa5e70e6c9227cf3bf34eb9b4f79c21f4483b8ee0dab306ff",
+          "afterSHA256": "6ae036ef08834e2fa5e70e6c9227cf3bf34eb9b4f79c21f4483b8ee0dab306ff"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_migration_test.go",
+          "beforeSHA256": "2a1619037fab9db2ca716a20084072d78767f2d3f22d45233a6caa649ce0ad90",
+          "afterSHA256": "2a1619037fab9db2ca716a20084072d78767f2d3f22d45233a6caa649ce0ad90"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_object_snapshot.go",
+          "beforeSHA256": "9d76303270475830193ffe534f2da995b32601441a883abb9a076854a980afaa",
+          "afterSHA256": "9d76303270475830193ffe534f2da995b32601441a883abb9a076854a980afaa"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_operation_read.go",
+          "beforeSHA256": "f690db41e7f9b9b391fac6131dc03fe7b3037677940691bd2149c08cce5954f1",
+          "afterSHA256": "f690db41e7f9b9b391fac6131dc03fe7b3037677940691bd2149c08cce5954f1"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_operation_read_test.go",
+          "beforeSHA256": "877798eddf2aaed747acb6613163b7af9c34c317eb94d01c32fdd92eb9131b56",
+          "afterSHA256": "877798eddf2aaed747acb6613163b7af9c34c317eb94d01c32fdd92eb9131b56"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_property_cas_test.go",
+          "beforeSHA256": "38d80f7aab074a6e7cf1f6448d548ef28ab58a76a44e6dbbead7ee97b2a4d5d9",
+          "afterSHA256": "38d80f7aab074a6e7cf1f6448d548ef28ab58a76a44e6dbbead7ee97b2a4d5d9"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_property_noop_test.go",
+          "beforeSHA256": "4200d16907b823ee8d1d337d589e1d9473a33e76779b00e91c97627d5cdbee1b",
+          "afterSHA256": "4200d16907b823ee8d1d337d589e1d9473a33e76779b00e91c97627d5cdbee1b"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_snapshot.go",
+          "beforeSHA256": "0fe9f5c925b1b1ee77b77fca85d1607fecdf65784f7c08000681b4460e40dd45",
+          "afterSHA256": "0fe9f5c925b1b1ee77b77fca85d1607fecdf65784f7c08000681b4460e40dd45"
+        },
+        {
+          "path": "internal/server/handlers_properties.go",
+          "beforeSHA256": "b1279dbd52ec09c65e4e8ddb1653f938c955f25dca7f834c16ec7c7d012f74ad",
+          "afterSHA256": "b1279dbd52ec09c65e4e8ddb1653f938c955f25dca7f834c16ec7c7d012f74ad"
+        },
+        {
+          "path": "internal/server/pinkha_create.go",
+          "beforeSHA256": "37683e528016534dbce23629c66e3641c9a80e9ff3439f3269831a3654f3a403",
+          "afterSHA256": "37683e528016534dbce23629c66e3641c9a80e9ff3439f3269831a3654f3a403"
+        },
+        {
+          "path": "internal/server/pinkha_gateway.go",
+          "beforeSHA256": "c256ebf6b3c304edfb531ab5dda95dfb7a5ce26779322fc1714c5d1d4a27cee8",
+          "afterSHA256": "c256ebf6b3c304edfb531ab5dda95dfb7a5ce26779322fc1714c5d1d4a27cee8"
+        },
+        {
+          "path": "internal/server/pinkha_gateway_desktop.go",
+          "beforeSHA256": "5e438b552c2a48f7cad5780a57be7c6eb4d94cc8c22f282fc73098482d3c99d8",
+          "afterSHA256": "5e438b552c2a48f7cad5780a57be7c6eb4d94cc8c22f282fc73098482d3c99d8"
+        },
+        {
+          "path": "internal/server/pinkha_gateway_mobile.go",
+          "beforeSHA256": "10100dc0e960483bf190c6230932b1486bfd769137d5326c0627dad73a930272",
+          "afterSHA256": "10100dc0e960483bf190c6230932b1486bfd769137d5326c0627dad73a930272"
+        },
+        {
+          "path": "internal/server/pinkha_gateway_test.go",
+          "beforeSHA256": "f512ce89021723dc3dc200ac630a25ccaa696fde326c73ab59869503d076175a",
+          "afterSHA256": "f512ce89021723dc3dc200ac630a25ccaa696fde326c73ab59869503d076175a"
+        },
+        {
+          "path": "internal/server/pinkha_presentation.go",
+          "beforeSHA256": "7b56b17b9ae6826444681adfd54d66c73458d24535576c3e030b6f02969d6099",
+          "afterSHA256": "7b56b17b9ae6826444681adfd54d66c73458d24535576c3e030b6f02969d6099"
+        },
+        {
+          "path": "internal/server/pinkha_presentation_test.go",
+          "beforeSHA256": "766dee881a60b7019c96a7fce6196b5a673f35701442dc0f47e3f30f12f4c226",
+          "afterSHA256": "766dee881a60b7019c96a7fce6196b5a673f35701442dc0f47e3f30f12f4c226"
+        },
+        {
+          "path": "internal/server/pinkha_property_condition.go",
+          "beforeSHA256": "b7f4fa8669c32472627fc90efc8bb6ecbb9b2b5ed6eb5d98d9eff3c65690163e",
+          "afterSHA256": "b7f4fa8669c32472627fc90efc8bb6ecbb9b2b5ed6eb5d98d9eff3c65690163e"
+        },
+        {
+          "path": "internal/server/pinkha_property_validated.go",
+          "beforeSHA256": "5c821d2da6dd14001247af1322cf2ef88695177f2aa3df2445dfdb0352f9754d",
+          "afterSHA256": "5c821d2da6dd14001247af1322cf2ef88695177f2aa3df2445dfdb0352f9754d"
+        },
+        {
+          "path": "internal/server/pinkha_property_validated_test.go",
+          "beforeSHA256": "f21df5dfe6ce46b98e1c6adb6888c034d0f032f7ab9f58eb5e9e81a98ae403a8",
+          "afterSHA256": "f21df5dfe6ce46b98e1c6adb6888c034d0f032f7ab9f58eb5e9e81a98ae403a8"
+        },
+        {
+          "path": "internal/server/routes.go",
+          "beforeSHA256": "298cecd808ac2b28ca90dc5ab2e3632c221f33ff4647b726e99d7ff7875c4225",
+          "afterSHA256": "298cecd808ac2b28ca90dc5ab2e3632c221f33ff4647b726e99d7ff7875c4225"
+        },
+        {
+          "path": "internal/server/sdk.go",
+          "beforeSHA256": "e407f6d327e1b68eb08b765de161bbb2d502dd95f1222476e2480d64d189306e",
+          "afterSHA256": "e407f6d327e1b68eb08b765de161bbb2d502dd95f1222476e2480d64d189306e"
+        }
+      ],
+      "changedExisting": [
+        {
+          "path": "internal/server/handlers_pinkha_migration.go",
+          "beforeSHA256": "49d9e1a6d9d6c0b0758caabe2d1cf36283a1e7e855ff0f394703045b7803075e",
+          "afterSHA256": "0e0e81f5c8c4ceb7267bc18583a13836bacad465b2dc1f2362f16a7e83ab3526"
+        }
+      ],
+      "newPaths": [
+        "internal/api/pinkha_migration_inline_file.go",
+        "internal/server/handlers_pinkha_migration_inline_file.go",
+        "internal/server/handlers_pinkha_migration_inline_file_test.go",
+        "internal/server/handlers_pinkha_migration_inline_file_bridge_test.go"
+      ],
+      "noRemovedBaselinePaths": true
+    },
+    "sdk": {
+      "upstreamCommit": "854df54cdadd76006ae823cbd1b1d923138356d0",
+      "frozenEffectiveTree": "ae9bb6f8ef182b648c5a4423338797a79486dc5a",
+      "candidateEffectiveTree": "8b9df2cdcefb5aee3973df11a326652f5a2378f4",
+      "retainedUnchanged": [
+        {
+          "path": "handler/localguard.go",
+          "beforeSHA256": "848afc67387631330b962ca379e470b789a0bf6e5c77bba12ed975de91025a8e",
+          "afterSHA256": "848afc67387631330b962ca379e470b789a0bf6e5c77bba12ed975de91025a8e"
+        },
+        {
+          "path": "internal/commitguard/create.go",
+          "beforeSHA256": "b8ffee3166890a0251ba56355b6de7185692595952a7cae8af80e75e2679187b",
+          "afterSHA256": "b8ffee3166890a0251ba56355b6de7185692595952a7cae8af80e75e2679187b"
+        },
+        {
+          "path": "internal/commitguard/create_test.go",
+          "beforeSHA256": "96c6d52b1a386c7abad2af2b396df6ae5c1652c885bdc1ced85a5abc30ec38c7",
+          "afterSHA256": "96c6d52b1a386c7abad2af2b396df6ae5c1652c885bdc1ced85a5abc30ec38c7"
+        },
+        {
+          "path": "internal/commitguard/guard.go",
+          "beforeSHA256": "98ccaafb805f83d162e59ea75b436347f6f9255693b8aa563b9352e5d6d7cd02",
+          "afterSHA256": "98ccaafb805f83d162e59ea75b436347f6f9255693b8aa563b9352e5d6d7cd02"
+        },
+        {
+          "path": "internal/commitguard/guard_test.go",
+          "beforeSHA256": "8e202c50fbc92f40a60512b2e204102f6fd11250ea2a376993681db73e63e01f",
+          "afterSHA256": "8e202c50fbc92f40a60512b2e204102f6fd11250ea2a376993681db73e63e01f"
+        },
+        {
+          "path": "internal/commitguard/prepared.go",
+          "beforeSHA256": "13c4429c666d2450b6a1a544afec6a8b535549655437ca46fd5609e18ee16a1c",
+          "afterSHA256": "13c4429c666d2450b6a1a544afec6a8b535549655437ca46fd5609e18ee16a1c"
+        },
+        {
+          "path": "internal/commitguard/prepared_inline_file.go",
+          "beforeSHA256": "d5cb4dff66a9d71e1f57593c1e696a0033b3b3da99388da22daabbb27aa59618",
+          "afterSHA256": "d5cb4dff66a9d71e1f57593c1e696a0033b3b3da99388da22daabbb27aa59618"
+        },
+        {
+          "path": "internal/commitguard/prepared_inline_file_test.go",
+          "beforeSHA256": "6d1b9477a7709c1166edc882e4e05529dc3470dc8d5bd02d3b660acbe5036109",
+          "afterSHA256": "6d1b9477a7709c1166edc882e4e05529dc3470dc8d5bd02d3b660acbe5036109"
+        },
+        {
+          "path": "internal/commitguard/prepared_test.go",
+          "beforeSHA256": "d9a7dba0f3c6121a11a29a1bd32a45fb8884de1940719b517e03854f3249a925",
+          "afterSHA256": "d9a7dba0f3c6121a11a29a1bd32a45fb8884de1940719b517e03854f3249a925"
+        },
+        {
+          "path": "internal/crdt/guard_lookup_test.go",
+          "beforeSHA256": "d2cb7da2d6ed861abf7d7c2f7b3a33670a17ff386ad0e0b751403b6e37796139",
+          "afterSHA256": "d2cb7da2d6ed861abf7d7c2f7b3a33670a17ff386ad0e0b751403b6e37796139"
+        },
+        {
+          "path": "internal/crdt/localguard.go",
+          "beforeSHA256": "04556c84fd2c774ac659f1903a8f3710c934f75bb19e8c8bfdf54daf53679d51",
+          "afterSHA256": "04556c84fd2c774ac659f1903a8f3710c934f75bb19e8c8bfdf54daf53679d51"
+        },
+        {
+          "path": "internal/crdt/objectprecondition.go",
+          "beforeSHA256": "c428721ee14eb4fcc6beef49f5717d0b7c57caac833cd8ac90d1145c7544e730",
+          "afterSHA256": "c428721ee14eb4fcc6beef49f5717d0b7c57caac833cd8ac90d1145c7544e730"
+        },
+        {
+          "path": "internal/crdt/op.go",
+          "beforeSHA256": "1b2e3a0c308f7e3deb613aaaf27d81a81bd8453822c2695a765142903fa02d92",
+          "afterSHA256": "1b2e3a0c308f7e3deb613aaaf27d81a81bd8453822c2695a765142903fa02d92"
+        },
+        {
+          "path": "internal/migrationintent/inline_file.go",
+          "beforeSHA256": "31072f04507163e06277893a7fe893ed51b81a3fef9696fac903c2b813fb00c3",
+          "afterSHA256": "31072f04507163e06277893a7fe893ed51b81a3fef9696fac903c2b813fb00c3"
+        },
+        {
+          "path": "internal/migrationintent/inline_file_test.go",
+          "beforeSHA256": "73943efd736b68a2d6c0d2ba1f9cc54528945fd8a8470a750a05c63ca2e26480",
+          "afterSHA256": "73943efd736b68a2d6c0d2ba1f9cc54528945fd8a8470a750a05c63ca2e26480"
+        },
+        {
+          "path": "internal/migrationintent/numbers.go",
+          "beforeSHA256": "825cf4c7b06f03a6e8738f7a9ef2e3afc6e52c2a1c7748809212b01aa2846ea7",
+          "afterSHA256": "825cf4c7b06f03a6e8738f7a9ef2e3afc6e52c2a1c7748809212b01aa2846ea7"
+        },
+        {
+          "path": "internal/migrationintent/numbers_test.go",
+          "beforeSHA256": "5443619e63e8ac86f9638dfdc5c91859d24f2a76b06f9f5542b82a7922f2fd14",
+          "afterSHA256": "5443619e63e8ac86f9638dfdc5c91859d24f2a76b06f9f5542b82a7922f2fd14"
+        },
+        {
+          "path": "internal/migrationintent/store.go",
+          "beforeSHA256": "4c3a68d57f047404d38d0facd6c16a4e60f35ffd18619bbd22bddc4723749de6",
+          "afterSHA256": "4c3a68d57f047404d38d0facd6c16a4e60f35ffd18619bbd22bddc4723749de6"
+        },
+        {
+          "path": "internal/migrationintent/store_test.go",
+          "beforeSHA256": "364981062bac5c8e8ec9367cad80ea751c9dd997b262a94f82d33c559d90863e",
+          "afterSHA256": "364981062bac5c8e8ec9367cad80ea751c9dd997b262a94f82d33c559d90863e"
+        },
+        {
+          "path": "internal/object/conditional_noop_test.go",
+          "beforeSHA256": "e491a9840d57285fe97fad5c10b5fd5043a6abb9a6b78afaaa564c199dcd14b8",
+          "afterSHA256": "e491a9840d57285fe97fad5c10b5fd5043a6abb9a6b78afaaa564c199dcd14b8"
+        },
+        {
+          "path": "internal/object/create_current_writer_test.go",
+          "beforeSHA256": "78c09c7fd06ce0d7f8d05b4702e2050985eddba93b99e0f0442be99f3c8b2469",
+          "afterSHA256": "78c09c7fd06ce0d7f8d05b4702e2050985eddba93b99e0f0442be99f3c8b2469"
+        },
+        {
+          "path": "internal/object/current_writer.go",
+          "beforeSHA256": "22fb16a6e1a0d8754fba1b60af8875c8f85f930594e64debedbd3771584865cf",
+          "afterSHA256": "22fb16a6e1a0d8754fba1b60af8875c8f85f930594e64debedbd3771584865cf"
+        },
+        {
+          "path": "internal/object/current_writer_test.go",
+          "beforeSHA256": "211cc4f15bb7acc75c5c522d388cb5b2fe34b35e56f9321e089744bcca67ef2d",
+          "afterSHA256": "211cc4f15bb7acc75c5c522d388cb5b2fe34b35e56f9321e089744bcca67ef2d"
+        },
+        {
+          "path": "internal/object/localguard.go",
+          "beforeSHA256": "6bcdc5f5bd3ed92490691ad71090bad8d7a616bc451a3124323218f8072861d3",
+          "afterSHA256": "6bcdc5f5bd3ed92490691ad71090bad8d7a616bc451a3124323218f8072861d3"
+        },
+        {
+          "path": "internal/object/localguard_test.go",
+          "beforeSHA256": "794b40362cd13c127d1ebc0cc23bd76385f40728b47311d595eb4801083f3bde",
+          "afterSHA256": "794b40362cd13c127d1ebc0cc23bd76385f40728b47311d595eb4801083f3bde"
+        },
+        {
+          "path": "internal/object/migration_inline_file.go",
+          "beforeSHA256": "646634e33ba08ec08ab5728ffe058fc4b7569d55203f7f022fef252204edd213",
+          "afterSHA256": "646634e33ba08ec08ab5728ffe058fc4b7569d55203f7f022fef252204edd213"
+        },
+        {
+          "path": "internal/object/migration_prepared.go",
+          "beforeSHA256": "cc3920f4791c5620f3ebdfc150b268428d03683e7825f0f6a562359d1feb37c4",
+          "afterSHA256": "cc3920f4791c5620f3ebdfc150b268428d03683e7825f0f6a562359d1feb37c4"
+        },
+        {
+          "path": "internal/object/object.go",
+          "beforeSHA256": "8d9e88a0c5c4c6d1b9884cf6fd196c0b6506a3d0513e7ccf96a498211040d7a5",
+          "afterSHA256": "8d9e88a0c5c4c6d1b9884cf6fd196c0b6506a3d0513e7ccf96a498211040d7a5"
+        },
+        {
+          "path": "internal/object/object_row_cas_test.go",
+          "beforeSHA256": "243b7a5be045bc325859f535d132d4047cd22ea782f2b822a167f3af2061257d",
+          "afterSHA256": "243b7a5be045bc325859f535d132d4047cd22ea782f2b822a167f3af2061257d"
+        },
+        {
+          "path": "internal/properties/conditional_membership_version_test.go",
+          "beforeSHA256": "045aff4cb20bf43bc5f4e7d5cd29bb4415179970e66f7e211376fce27b6d87d0",
+          "afterSHA256": "045aff4cb20bf43bc5f4e7d5cd29bb4415179970e66f7e211376fce27b6d87d0"
+        },
+        {
+          "path": "internal/spaceimpl/current_writer.go",
+          "beforeSHA256": "8c7d8ca5f3eb931a3ad8825c15356dfc92dd0ca2cd82de6c612d6df0e65b1a5f",
+          "afterSHA256": "8c7d8ca5f3eb931a3ad8825c15356dfc92dd0ca2cd82de6c612d6df0e65b1a5f"
+        },
+        {
+          "path": "internal/spaceimpl/current_writer_test.go",
+          "beforeSHA256": "e59b459a1212a150eabbe27478ac15786bfe2b3d4b0027ee068a78589342c243",
+          "afterSHA256": "e59b459a1212a150eabbe27478ac15786bfe2b3d4b0027ee068a78589342c243"
+        },
+        {
+          "path": "internal/spaceimpl/history.go",
+          "beforeSHA256": "cad7a359a21005e56a273c2599a483351b37f6d287fc766389ee849459780374",
+          "afterSHA256": "cad7a359a21005e56a273c2599a483351b37f6d287fc766389ee849459780374"
+        },
+        {
+          "path": "internal/spaceimpl/migration_prepared.go",
+          "beforeSHA256": "9899687fdd3e2e3cf446ce1148eb8c976dfb43286c21bb6a4483cdb0ae068bfd",
+          "afterSHA256": "9899687fdd3e2e3cf446ce1148eb8c976dfb43286c21bb6a4483cdb0ae068bfd"
+        },
+        {
+          "path": "internal/spaceimpl/migration_prepared_test.go",
+          "beforeSHA256": "64940795a7bfc319ec88846eb659d2423699ab1954134fcf6c61405cb136f53d",
+          "afterSHA256": "64940795a7bfc319ec88846eb659d2423699ab1954134fcf6c61405cb136f53d"
+        },
+        {
+          "path": "internal/spaceimpl/object_conditional_test.go",
+          "beforeSHA256": "976fec4e98e3c36645c8df3350b280eb39c4b50ba1e476ed7d9a047cb88f340b",
+          "afterSHA256": "976fec4e98e3c36645c8df3350b280eb39c4b50ba1e476ed7d9a047cb88f340b"
+        },
+        {
+          "path": "internal/spaceimpl/object_create_current_writer.go",
+          "beforeSHA256": "cde13d3a1d2da002093b59dd68f68fd96c2a5a4ae0389d7f0e22ac4fde328a59",
+          "afterSHA256": "cde13d3a1d2da002093b59dd68f68fd96c2a5a4ae0389d7f0e22ac4fde328a59"
+        },
+        {
+          "path": "internal/spaceimpl/objects.go",
+          "beforeSHA256": "188b1b52a9234b76f8909b1a1c3a9b05a26f4a9e0b554452d448f7d06e65a333",
+          "afterSHA256": "188b1b52a9234b76f8909b1a1c3a9b05a26f4a9e0b554452d448f7d06e65a333"
+        },
+        {
+          "path": "internal/spaceimpl/properties_conditional.go",
+          "beforeSHA256": "b5f6c8370a6bdb95d2798998e8181248a403466c2950d18f0a60e314ba4b23c4",
+          "afterSHA256": "b5f6c8370a6bdb95d2798998e8181248a403466c2950d18f0a60e314ba4b23c4"
+        },
+        {
+          "path": "internal/spaceimpl/properties_conditional_noop_test.go",
+          "beforeSHA256": "109ac0608ed7ed8bcc5265f9c34439881d1cf2a4c86e265bbdb4e33039d57d09",
+          "afterSHA256": "109ac0608ed7ed8bcc5265f9c34439881d1cf2a4c86e265bbdb4e33039d57d09"
+        },
+        {
+          "path": "internal/spaceimpl/query.go",
+          "beforeSHA256": "c00bc0341f41f99f4bb6ae548c135676ef994c1ba342af76b7022547a4fbecc0",
+          "afterSHA256": "c00bc0341f41f99f4bb6ae548c135676ef994c1ba342af76b7022547a4fbecc0"
+        },
+        {
+          "path": "internal/spaceimpl/space.go",
+          "beforeSHA256": "1e6312fdcd16fbbffc3ba1144890d10f79889c3d7b788691770b0a1b9d5206d4",
+          "afterSHA256": "1e6312fdcd16fbbffc3ba1144890d10f79889c3d7b788691770b0a1b9d5206d4"
+        },
+        {
+          "path": "internal/spaceimpl/techspace_handle.go",
+          "beforeSHA256": "2026c327f86bdfb955c72802fffd458e0769317d3d8472e2f170f71b03032885",
+          "afterSHA256": "2026c327f86bdfb955c72802fffd458e0769317d3d8472e2f170f71b03032885"
+        },
+        {
+          "path": "internal/spaceimpl/unsupported.go",
+          "beforeSHA256": "58c45b4760668a7dcf5a0742191b458ddc06d88cebf4300d6f2a0a1e9c847af6",
+          "afterSHA256": "58c45b4760668a7dcf5a0742191b458ddc06d88cebf4300d6f2a0a1e9c847af6"
+        },
+        {
+          "path": "internal/spaceobjects/create_current_writer.go",
+          "beforeSHA256": "552c684b97b7a10faec5f7c790efa9a3710f130b085907e6c4408bf783a01aca",
+          "afterSHA256": "552c684b97b7a10faec5f7c790efa9a3710f130b085907e6c4408bf783a01aca"
+        },
+        {
+          "path": "internal/spaceobjects/localguard.go",
+          "beforeSHA256": "9d806826bb3d0eb3394a00759b746cf4e141508110952d9074245323614d27b3",
+          "afterSHA256": "9d806826bb3d0eb3394a00759b746cf4e141508110952d9074245323614d27b3"
+        },
+        {
+          "path": "internal/spaceobjects/migration_inline_file.go",
+          "beforeSHA256": "66725d902f31d49f10b2666fc135ecb427edf969e714481963dcc40d09c72eb0",
+          "afterSHA256": "66725d902f31d49f10b2666fc135ecb427edf969e714481963dcc40d09c72eb0"
+        },
+        {
+          "path": "internal/spaceobjects/migration_prepared.go",
+          "beforeSHA256": "2b9f4edc4c1874c4b36eabfbb477146801d2b0d0d09679f033b6f48740f1134a",
+          "afterSHA256": "2b9f4edc4c1874c4b36eabfbb477146801d2b0d0d09679f033b6f48740f1134a"
+        },
+        {
+          "path": "internal/spaceobjects/migration_prepared_test.go",
+          "beforeSHA256": "9966cbd4997b3bc4c3fb35f6ee00446cdfb35e69c281e01cf7cd8ec9b62e51ff",
+          "afterSHA256": "9966cbd4997b3bc4c3fb35f6ee00446cdfb35e69c281e01cf7cd8ec9b62e51ff"
+        },
+        {
+          "path": "internal/spaceobjects/native_conditional_noop_test.go",
+          "beforeSHA256": "f9e39706b2687c69e0d4f74303505636448463deb6a71c1cabb246cfb93d5ef9",
+          "afterSHA256": "f9e39706b2687c69e0d4f74303505636448463deb6a71c1cabb246cfb93d5ef9"
+        },
+        {
+          "path": "internal/spaceobjects/native_definitions.go",
+          "beforeSHA256": "bc09041f7e55dd6a56f1569bb4426c6619e431c5a5a425e39810488e77069c52",
+          "afterSHA256": "bc09041f7e55dd6a56f1569bb4426c6619e431c5a5a425e39810488e77069c52"
+        },
+        {
+          "path": "internal/spaceobjects/native_definitions_test.go",
+          "beforeSHA256": "db68d039c370f2374b8306744f1018d14cbb26f7a5337420d217af9c72e78876",
+          "afterSHA256": "db68d039c370f2374b8306744f1018d14cbb26f7a5337420d217af9c72e78876"
+        },
+        {
+          "path": "internal/spaceobjects/native_guard_test.go",
+          "beforeSHA256": "e0568929c50098d90f0694840328837dacef70ac7b48ab22c3de9591b264b5c5",
+          "afterSHA256": "e0568929c50098d90f0694840328837dacef70ac7b48ab22c3de9591b264b5c5"
+        },
+        {
+          "path": "internal/spaceobjects/store.go",
+          "beforeSHA256": "8a05a490df571b13f1159ce6fd80b1329eb188cd7ebb94c3ae27cecdd6537c17",
+          "afterSHA256": "8a05a490df571b13f1159ce6fd80b1329eb188cd7ebb94c3ae27cecdd6537c17"
+        },
+        {
+          "path": "space/current_writer.go",
+          "beforeSHA256": "57c1d050964179d656bd47b98f084d6997b8dd511980ce6f24e9bdc7bc47cefe",
+          "afterSHA256": "57c1d050964179d656bd47b98f084d6997b8dd511980ce6f24e9bdc7bc47cefe"
+        },
+        {
+          "path": "space/migration_inline_file.go",
+          "beforeSHA256": "55a573ef325f4d58782d0a8a4e181867b383c219210e973b690038fed97aa4cf",
+          "afterSHA256": "55a573ef325f4d58782d0a8a4e181867b383c219210e973b690038fed97aa4cf"
+        },
+        {
+          "path": "space/migration_prepared.go",
+          "beforeSHA256": "ba7a998e9891ab052de09ee4c6dd8ed05c1f53944ac2b1c2b72bfa6ad381e658",
+          "afterSHA256": "ba7a998e9891ab052de09ee4c6dd8ed05c1f53944ac2b1c2b72bfa6ad381e658"
+        },
+        {
+          "path": "space/modify.go",
+          "beforeSHA256": "60827e5056d7949633addacbb167e1889cce56fb70acee23a518a7db7d774a55",
+          "afterSHA256": "60827e5056d7949633addacbb167e1889cce56fb70acee23a518a7db7d774a55"
+        },
+        {
+          "path": "space/properties.go",
+          "beforeSHA256": "cfff8d3568f06c3a6b159d5a3ef434b11010af33b31218796b9cea46bf1dad4d",
+          "afterSHA256": "cfff8d3568f06c3a6b159d5a3ef434b11010af33b31218796b9cea46bf1dad4d"
+        },
+        {
+          "path": "space/snapshot.go",
+          "beforeSHA256": "42ae5aa7239be684320eba670a4d52412be613b20e2b388695a4ddd29af465ea",
+          "afterSHA256": "42ae5aa7239be684320eba670a4d52412be613b20e2b388695a4ddd29af465ea"
+        }
+      ],
+      "changedExisting": [
+        {
+          "path": "internal/spaceimpl/migration_inline_file.go",
+          "beforeSHA256": "17eedd0fb0cb05b28d644d590be0e40cf8da1b7685a129c11393ab1dc90178de",
+          "afterSHA256": "c1a87e93d3b838b6104a644b3f97ac390f4937e147434dc10cdab977d90199a9"
+        }
+      ],
+      "newPaths": [],
+      "noRemovedBaselinePaths": true
+    }
+  }
+}
