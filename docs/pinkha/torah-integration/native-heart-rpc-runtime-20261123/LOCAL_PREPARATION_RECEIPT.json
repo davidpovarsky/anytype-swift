@@ -1,0 +1,38 @@
+{
+  "schema": "otzaria.original-native-lifetime-preparation/1",
+  "source_review_commit": "cfd9c42901893f99af2bd42490e56a89a5f6963a",
+  "base": "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638",
+  "source_preflight": {
+    "status": "SOURCE_ONLY_PASS",
+    "exit_code": 0,
+    "stdout_sha256": "4d6b871ce1a53d80eb2999df9e41884b02a0182932ee9347b8a9f0f1087759cb",
+    "immutable_source_rows": 42
+  },
+  "syntax": {
+    "new_python_ast": "PASS",
+    "new_go_gofmt": "PASS; formatting and parsing only, not native typechecking"
+  },
+  "whitespace": {
+    "new_authored_files": "PASS",
+    "retained_original_patch": "Exact original patch context spaces preserved; ordinary diff --check reports patch-as-text whitespace and was not used to rewrite immutable original bytes"
+  },
+  "historical_runtime_controls_reexecuted": false,
+  "native_compilation": "NOT_RUN",
+  "native_execution": "NOT_RUN",
+  "unchanged_production_sources": 28,
+  "new_native_test_sources": 1,
+  "new_leaf_cases": [
+    "TestOtzariaOwnedImportNativeLifetime/OriginalProtobufImportAndReentrantRetirement",
+    "TestOtzariaOwnedImportNativeLifetime/RegisteredPreStartCancellationRequiresActualReturn"
+  ],
+  "external_mutations_by_preflight": false,
+  "user_data_accessed": false,
+  "generated_rpc_inputs_used": false,
+  "remaining_gates": [
+    "Coordinator source review",
+    "Exact manual workflow publication",
+    "Actual original Darwin compilation",
+    "Two new actual native runtime cases and original cleanup",
+    "Separate generated RPC endpoint/Invocation/selected-Space qualification"
+  ]
+}
