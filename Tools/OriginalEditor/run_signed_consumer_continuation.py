@@ -29,7 +29,7 @@ BRANCH = 'codex/otzaria-sdk-runtime-20261123'
 WORKFLOW = '.github/workflows/pinkha-original-editor-signed-consumer.yml'
 PACKET = 'docs/pinkha/torah-integration/evidence/original-editor-signed-consumer-20261123/'
 CONTROL_FILES = {WORKFLOW, *('Tools/OriginalEditor/' + name for name in (
-    'run_framework_acceptance.py', 'consumer_failure_capture.py',
+    'run_framework_acceptance.py', 'consumer_failure_capture.py', 'run_runtime_continuation.py',
     'run_signed_consumer_continuation.py', 'signed_consumer_continuation_inputs.json',
     'test_signed_consumer_continuation.py'))}
 QUALIFIED = 'ACTUAL_ORIGINAL_FRAMEWORK_EXTERNAL_IMPORT_LINK_RESOURCES_PASS'
@@ -220,14 +220,29 @@ def main():
         for path in ['Anytype.xcodeproj', 'OriginalEditorFramework']:
             require(not command('original-' + path, ['git', 'diff', '--name-only', producer['source_sha'], 'HEAD', '--', path]),
                     'Original project or facade changed')
+        control_packet = root / PACKET
+        controls = json.loads((control_packet / 'METADATA_CONTROLS.json').read_bytes())
+        require(controls['status'] == 'PASS' and controls['tests_run'] == len(set(controls['passed_ids'])) == 6
+                and controls['failed'] == controls['errors'] == controls['skipped'] == 0,
+                'Exact upload metadata controls did not pass')
+        for relative, expected in controls['source_sha256'].items():
+            require(digest(root / relative) == expected, 'Upload proof control source differs: ' + relative)
+        for relative, expected in controls['log_sha256'].items():
+            require(digest(control_packet / relative) == expected, 'Upload proof control log differs: ' + relative)
         actual = {'xcode': command('xcode', ['xcodebuild', '-version']),
                   'swift': command('swift', ['xcrun', 'swiftc', '--version']),
                   'sdk_version': command('sdk', ['xcrun', '--sdk', 'iphonesimulator', '--show-sdk-version'])}
         validate_toolchain(actual, inputs['toolchain'])
         run = api('actions/runs/' + str(producer['run_id']) + '/attempts/1', 'original-run')
         job = api('actions/jobs/' + str(producer['job_id']), 'original-job')
+        upload_log = github.require('original-job-upload-log',
+            ['gh', 'api', 'repos/' + REPOSITORY + '/actions/jobs/' + str(producer['job_id']) + '/logs'], root, 90)
+        require(upload_log.stat().st_size <= 4 * 1024 * 1024, 'Oversized original upload proof')
+        original_upload_log = upload_log.read_bytes()
         for label, item in inputs['artifacts'].items():
-            verify_metadata(producer, run, job, api('actions/artifacts/' + str(item['id']), 'metadata-' + label), item)
+            proof = verify_metadata(producer, run, job,
+                api('actions/artifacts/' + str(item['id']), 'metadata-' + label), item, upload_log=original_upload_log)
+            write_json(evidence / ('original-upload-binding-' + label + '.json'), proof)
         selected = read_original_evidence(download(inputs['artifacts']['evidence'], 'original-evidence'), inputs)
         original = selected['execution.json']
         app, app_inventory = restore_consumer(download(inputs['artifacts']['consumer'], 'signed-consumer'), work, original)

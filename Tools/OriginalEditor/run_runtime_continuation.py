@@ -74,7 +74,55 @@ def zip_members(zipped):
             result[path.as_posix()] = entry
     return result
 
-def verify_metadata(producer, run, job, artifact, expected_artifact):
+def verify_exact_upload_log(producer, upload, artifact, expected_artifact, raw):
+    """Bind the artifact to its exact successful action, without clock tolerance."""
+    require(isinstance(raw, bytes) and 0 < len(raw) <= 4 * 1024 * 1024,
+            'Missing bounded authenticated original upload log')
+    lines = raw.decode('utf-8-sig').splitlines()
+    starts = [i for i, line in enumerate(lines) if '##[group]Run ' in line]
+    blocks = []
+    for position, start in enumerate(starts):
+        end = starts[position + 1] if position + 1 < len(starts) else len(lines)
+        if lines[start].endswith('##[group]Run actions/upload-artifact@v4'):
+            block = lines[start:end]
+            if any(line.partition(' ')[2].strip() == 'name: ' + expected_artifact['name'] for line in block):
+                blocks.append(block)
+    require(len(blocks) == 1, 'Original artifact has no unique matching upload action')
+    block = blocks[0]
+    expected = [
+        'name: ' + expected_artifact['name'],
+        'SHA256 digest of uploaded artifact zip is ' + expected_artifact['sha256'],
+        'Artifact ' + expected_artifact['name'] + '.zip successfully finalized. Artifact ID ' + str(expected_artifact['id']),
+        'Artifact ' + expected_artifact['name'] + ' has been successfully uploaded! Final size is '
+            + str(expected_artifact['size_in_bytes']) + ' bytes. Artifact ID is ' + str(expected_artifact['id']),
+        'Artifact download URL: https://github.com/' + REPOSITORY + '/actions/runs/'
+            + str(producer['run_id']) + '/artifacts/' + str(expected_artifact['id']),
+    ]
+    instant = lambda value: datetime.fromisoformat(value.replace('Z', '+00:00'))
+    statements, positions = [], []
+    for message in expected:
+        found = [(i, line) for i, line in enumerate(block) if line.partition(' ')[2].strip() == message]
+        require(len(found) == 1, 'Original upload log does not bind exact artifact ID, size and digest')
+        index, line = found[0]
+        timestamp = line.partition(' ')[0]
+        # Job step metadata has whole-second precision. Compare the log's
+        # corresponding whole second, not the artifact service creation clock.
+        second = instant(timestamp).replace(microsecond=0)
+        require(instant(upload['started_at']) <= second <= instant(upload['completed_at']),
+                'Artifact finalization statement is outside the exact successful upload step')
+        positions.append(index)
+        statements.append({'timestamp': timestamp, 'message': message})
+    require(positions == sorted(set(positions)), 'Original upload finalization statements are out of order')
+    return {'status': 'EXACT_SUCCESSFUL_UPLOAD_LOG_ARTIFACT_BINDING',
+            'source_sha': producer['source_sha'], 'run_id': producer['run_id'], 'job_id': producer['job_id'],
+            'upload_step': expected_artifact['upload_step'], 'artifact_id': expected_artifact['id'],
+            'artifact_sha256': expected_artifact['sha256'], 'artifact_bytes': expected_artifact['size_in_bytes'],
+            'artifact_created_at': artifact['created_at'], 'step_started_at': upload['started_at'],
+            'step_completed_at': upload['completed_at'], 'authenticated_job_log_sha256': hashlib.sha256(raw).hexdigest(),
+            'statements': statements, 'timestamp_tolerance_applied': False}
+
+
+def verify_metadata(producer, run, job, artifact, expected_artifact, *, upload_log=None):
     require(run.get('id') == producer['run_id'] and run.get('run_attempt') == producer['run_attempt']
             and run.get('head_sha') == run.get('head_commit', {}).get('id') == producer['source_sha']
             and run.get('status') == 'completed' and run.get('conclusion') == 'failure'
@@ -105,9 +153,13 @@ def verify_metadata(producer, run, job, artifact, expected_artifact):
             and origin.get('head_branch') == producer['head_branch'], 'Original artifact belongs to another producer')
     instant = lambda s: datetime.fromisoformat(s.replace('Z', '+00:00'))
     created = instant(artifact['created_at'])
-    require(instant(upload['started_at']) <= created <= instant(upload['completed_at'])
-            and instant(job['started_at']) <= created <= instant(job['completed_at']),
+    require(instant(job['started_at']) <= created <= instant(job['completed_at']),
             'Original artifact was not created by its exact successful upload')
+    if upload_log is None:
+        require(instant(upload['started_at']) <= created <= instant(upload['completed_at']),
+                'Original artifact was not created by its exact successful upload')
+        return None
+    return verify_exact_upload_log(producer, upload, artifact, expected_artifact, upload_log)
 
 def verify_retained_phase(producer, evidence):
     for name, expected in producer['retained_input_sha256'].items():

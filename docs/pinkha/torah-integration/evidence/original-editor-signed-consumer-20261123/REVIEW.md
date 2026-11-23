@@ -13,3 +13,11 @@ FOCUSED_CONTROLS.json binds executed source and log hashes. Twelve controls pass
 
 ## Pending acceptance and rollback
 A new real Apple English/Hebrew runtime is NOT_RUN until its actual result is retained. Mounted editor/edit-save-reopen, StageB, device framework and physical acceptance remain separate mandatory gates. Do not set an SDK qualification pin before actual observations and simulator cleanup pass. Rollback reverts only this isolated CI continuation; existing retained evidence and all other worktrees remain preserved. Original successful build facts remain attributed to45060396175/de63125, and the continuation owns its separate source/run identity.
+
+## Exact successful upload proof continuation
+
+The first signed-consumer continuation run45102176289 at e827c0cc266a2d8193022b84d5da966ebe345865 failed before any product download or simulator creation. The original consumer artifact14769044048 has API created_at19:41:12Z, while its successful upload step has whole-second completed_at19:41:11Z. The authenticated original job137324774911 log records finalization at19:41:11.664007Z and the exact artifact ID, ZIP SHA256 and141878849-byte size.
+
+The optional proof verifies the original run/job/source, successful upload step, artifact origin, ID, exact name, size and digest; it binds ordered finalization statements in the authenticated job log to that step's recorded whole seconds. Artifact creation remains inside the exact original producer job. No timestamp tolerance, signature change, product rebuild, retry loop or runtime gate bypass is introduced. The old caller path without the log keeps its strict original predicate.
+
+Six new adverse metadata controls passed once on Oracle. The prior12 controls were not replayed: their tested driver/helper bytes and the prior test-module AST are unchanged; the original receipt remains byte-for-byte retained. Current source hashes bind the composition, and METADATA_CONTROLS.json independently binds the new metadata code, authentic fixtures and actual six-test log. Historical245/38 evidence is unchanged. Runtime qualification remains pending the new immutable retry; this packet claims no Apple runtime PASS.
