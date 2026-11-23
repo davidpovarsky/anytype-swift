@@ -1,0 +1,58 @@
+{
+  "base": "fa5651b96beab2148a3e928bfdc8620a9c24c1a5",
+  "files": {
+    "Tools/SimulatorBootInventoryDiagnostic/run.py": {
+      "afterSHA256": "557e81dc09503f50a6c0c9e2677697e13c2e61d761a6f039ab5eebfd44e0c469",
+      "beforeSHA256": "68f39cb8671b0d7dfa7aaffe586e1c5ac088a5375c26ba07aab93fba8a90cef7",
+      "edits": [
+        {
+          "after": "        self.records = {}\n        self.finalized_commands = {}\n        self.first_passive_failure = None\n        self.passive_observation_failures = []\n        self.count = len(list(self.directory.glob(\"*.log\")))\n",
+          "before": "        self.records = {}\n        self.count = len(list(self.directory.glob(\"*.log\")))\n"
+        },
+        {
+          "after": "    def _unavailable_passive_snapshot(self, label, owned_pgid, failure):\n        \"\"\"Only a durably recorded, safely reaped PS outcome may be deferred.\"\"\"\n        name = self.mode + \"-\" + label\n        record = self.records.get(name, {})\n        receipt = self.finalized_commands.get(name)\n        outcome = (\n            type(failure) is subprocess.TimeoutExpired\n            and failure.cmd == PS_ARGV and failure.timeout == PS_SECONDS\n        ) or (\n            type(failure) is subprocess.CalledProcessError\n            and failure.cmd == PS_ARGV and failure.returncode != 0\n            and failure.returncode == record.get(\"return_code\")\n        )\n        if not (\n            self.mode == \"execute\" and not self.cleanup_mode and outcome\n            and failure.__cause__ is None\n            and record.get(\"argv\") == PS_ARGV\n            and record.get(\"timeout_seconds\") == PS_SECONDS\n            and record.get(\"status\") == \"FAIL\"\n            and record.get(\"first_error\") == error(failure)\n            and record.get(\"secondary_errors\") == []\n            and record.get(\"sampling_changes_cleanup_timing\") is False\n            and type(record.get(\"pid\")) is int and record[\"pid\"] > 1\n            and record.get(\"pgid\") == record[\"pid\"]\n            and record.get(\"kernel_observation\", {}).get(\"pgid\") == record[\"pid\"]\n            and record.get(\"kernel_observation\", {}).get(\"outcome\") == \"ABSENT_ESRCH\"\n            and type(record.get(\"log_bytes\")) is int\n            and 0 <= record[\"log_bytes\"] <= MAX_FILE_BYTES\n            and isinstance(record.get(\"log_sha256\"), str)\n            and re.fullmatch(\"[0-9a-f]{64}\", record[\"log_sha256\"]) is not None\n            and isinstance(receipt, dict)\n            and receipt.get(\"path\") == \"commands/\" + name + \".command.json\"\n        ):\n            return None\n        return {\n            \"status\": \"UNAVAILABLE\",\n            \"reason\": \"PASSIVE_PS_COMMAND_FAILED\",\n            \"argv\": list(PS_ARGV),\n            \"owned_pgid\": owned_pgid,\n            \"error\": error(failure),\n            \"command_receipt\": dict(receipt),\n            \"log\": name + \".log\",\n            \"log_sha256\": record[\"log_sha256\"],\n            \"log_bytes\": record[\"log_bytes\"],\n            \"scope\": \"NO_PROCESS_ROWS_OR_SERVICE_ABSENCE_INFERRED\",\n        }\n\n    def _defer_passive_failures(self, failures, parent_command):\n        for failure, observation in failures:\n            if self.first_passive_failure is None:\n                self.first_passive_failure = failure\n            self.passive_observation_failures.append({\n                \"parent_command\": parent_command, **observation})\n\n    def initial_process_snapshot(self):\n        try:\n            return self.process_snapshot(\"initial-processes\", -1)\n        except BaseException as failure:\n            unavailable = self._unavailable_passive_snapshot(\"initial-processes\", -1, failure)\n            if unavailable is None:\n                raise\n            self._defer_passive_failures([(failure, unavailable)], None)\n            return unavailable\n\n    def run(self, argv, name, timeout, *, observe=None, sample_cleanup=False):\n",
+          "before": "    def run(self, argv, name, timeout, *, observe=None, sample_cleanup=False):\n"
+        },
+        {
+          "after": "        primary = None\n        passive_snapshot_failures = []\n        process = None\n        stream = None\n",
+          "before": "        primary = None\n        process = None\n        stream = None\n"
+        },
+        {
+          "after": "                    except BaseException as failure:\n                        record[\"secondary_errors\"].append({\"stage\": \"before_group_snapshot\", **error(failure)})\n                        primary = primary or failure\n                        unavailable = self._unavailable_passive_snapshot(\n                            name + \"-before-group-cleanup\", process.pid, failure)\n                        if unavailable is not None:\n                            record[\"before_group_cleanup\"] = unavailable\n                            passive_snapshot_failures.append((failure, unavailable))\n",
+          "before": "                    except BaseException as failure:\n                        record[\"secondary_errors\"].append({\"stage\": \"before_group_snapshot\", **error(failure)})\n                        primary = primary or failure\n"
+        },
+        {
+          "after": "                    except BaseException as failure:\n                        record[\"secondary_errors\"].append({\"stage\": \"after_group_snapshot\", **error(failure)})\n                        primary = primary or failure\n                        unavailable = self._unavailable_passive_snapshot(\n                            name + \"-after-group-cleanup\", process.pid, failure)\n                        if unavailable is not None:\n                            record[\"after_group_cleanup\"] = unavailable\n                            passive_snapshot_failures.append((failure, unavailable))\n",
+          "before": "                    except BaseException as failure:\n                        record[\"secondary_errors\"].append({\"stage\": \"after_group_snapshot\", **error(failure)})\n                        primary = primary or failure\n"
+        },
+        {
+          "after": "        continuation_eligible = bool(\n            sample_cleanup and primary\n            and any(primary is failure for failure, _ in passive_snapshot_failures)\n            and record.get(\"return_code\") == 0\n            and record.get(\"kernel_observation\", {}).get(\"outcome\") == \"ABSENT_ESRCH\"\n            and len(record[\"secondary_errors\"]) == len(passive_snapshot_failures)\n            and all(row[\"stage\"] in {\"before_group_snapshot\", \"after_group_snapshot\"}\n                    for row in record[\"secondary_errors\"])\n        )\n        record[\"first_error\"] = error(primary) if primary else None\n        record[\"status\"] = \"FAIL\" if primary else \"PASS\"\n        record[\"passive_continuation_eligible\"] = continuation_eligible\n        self.records[name] = record\n        try:\n            self.finalized_commands[name] = self.evidence.write(final, record, final=self.cleanup_mode)\n        except BaseException as preservation:\n            if primary:\n                raise primary from preservation\n            raise\n        if primary:\n            if continuation_eligible:\n                self._defer_passive_failures(passive_snapshot_failures, name)\n            else:\n                raise primary\n        return log\n",
+          "before": "        record[\"first_error\"] = error(primary) if primary else None\n        record[\"status\"] = \"FAIL\" if primary else \"PASS\"\n        self.records[name] = record\n        try:\n            self.evidence.write(final, record, final=self.cleanup_mode)\n        except BaseException as preservation:\n            if primary:\n                raise primary from preservation\n            raise\n        if primary:\n            raise primary\n        return log\n"
+        },
+        {
+          "after": "    state[\"initial_process_snapshot\"] = commands.initial_process_snapshot()\n",
+          "before": "    state[\"initial_process_snapshot\"] = commands.process_snapshot(\"initial-processes\", -1)\n"
+        },
+        {
+          "after": "    finally:\n        finalizing = True\n        if commands is not None:\n            state[\"passive_observation_failures\"] = list(commands.passive_observation_failures)\n            if commands.first_passive_failure is not None:\n                if primary is not None and primary is not commands.first_passive_failure:\n                    state[\"secondary_errors\"].append({\"stage\": \"later_diagnostic_failure\", **error(primary)})\n                primary = commands.first_passive_failure\n                state[\"primary_failure\"] = error(primary)\n        if commands is not None and before is not None:\n",
+          "before": "    finally:\n        finalizing = True\n        if commands is not None and before is not None:\n"
+        }
+      ]
+    },
+    "Tools/SimulatorBootInventoryDiagnostic/source-inputs.json": {
+      "afterSHA256": "81504ddea26c86f72508c680a8602cb815ebcde0913bc34e1d36df1e50168ca1",
+      "beforeSHA256": "af7a643643a757b5f51c880910ed663909df74f79e741fc380c61ec722e9cc3d",
+      "edits": [
+        {
+          "after": "\"bytes\": 56660",
+          "before": "\"bytes\": 51469"
+        },
+        {
+          "after": "557e81dc09503f50a6c0c9e2677697e13c2e61d761a6f039ab5eebfd44e0c469",
+          "before": "68f39cb8671b0d7dfa7aaffe586e1c5ac088a5375c26ba07aab93fba8a90cef7"
+        }
+      ]
+    }
+  },
+  "schema": "exact-literal-source-inverses-v1"
+}

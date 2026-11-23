@@ -1,0 +1,73 @@
+{
+  "authorization": "Root source-only continuation after original audit and D stage; no CI, simulator or product execution before independent review.",
+  "execution": {
+    "builds": 0,
+    "ciCalls": 0,
+    "controls": 0,
+    "productMethods": 0,
+    "repositoryImports": 0,
+    "simulatorCommands": 0
+  },
+  "original": {
+    "actualStatus": "FAIL",
+    "artifact": "14868069270",
+    "artifactSHA256": "f864ca79568ae2c791a0d93b6e0d82a6e86b0652c7d9c95527d1f003a4263cef",
+    "asanaStory": "1220832357473590",
+    "asanaTask": "1220709922704118",
+    "attempt": 1,
+    "cleanup": "INCOMPLETE",
+    "completionSHA256": "afa9a89f3501f36d641384a0674c81e06bcec14e6cf1688c3037c7fc2f6429a0",
+    "custodySHA256": "85eb644057a43385f7d812196c0f2e6f40973f3bc95ca2a1400d28cc8d6773de",
+    "qualificationSHA256": "0d1dab440b042e2777a45cfd2d7f8a5170fcd5a45cc973361b6aa5e517e8f511",
+    "run": "45278695997",
+    "source": "d99e79697c679476d511b59319ad0505e7e99ddd",
+    "unrun": [
+      "bootstatus",
+      "postboot-original-30",
+      "additional-diagnostic-120"
+    ]
+  },
+  "proposedReviewCases": [
+    {
+      "case": "Initial exact PS timeout/nonzero with durable record and group absent",
+      "expected": "UNAVAILABLE; continue to owned create; original PS remains main primary and overall FAIL"
+    },
+    {
+      "case": "Before or after PS outcome failure with successful parent and all required guards",
+      "expected": "Parent receipt FAIL; continue remaining authorized sequence; chronological first PS retained"
+    },
+    {
+      "case": "Parent timeout/nonzero before PS failure",
+      "expected": "Parent failure remains first and stops; PS failure retained as later original evidence"
+    },
+    {
+      "case": "PS failure before later parent group/I/O/resource failure",
+      "expected": "Stop; PS remains first, later guard failure retained; no continued command"
+    },
+    {
+      "case": "Previously deferred PS failure followed by later bootstatus/query/parse failure",
+      "expected": "Stop when critical error occurs; main restores earlier PS primary and records later critical error"
+    },
+    {
+      "case": "PS malformed output, decode failure, missing durable receipt, secondary I/O/capacity error or unproved group",
+      "expected": "Immediate stop; no passive admission and no fabricated empty process sample"
+    },
+    {
+      "case": "Original 30-second query TimeoutExpired after safe PS defer",
+      "expected": "Unchanged exact-argv/30-seconds/ABSENT_ESRCH condition controls at most one labeled120 observation; original failures both retained"
+    }
+  ],
+  "schema": "owned-simulator-passive-observation-continuation-v1",
+  "scope": [
+    "Exact PS TimeoutExpired or CalledProcessError only; complete durable original record, no secondary guard failure, own group timely ABSENT_ESRCH",
+    "Initial PS pure outcome may become explicitly UNAVAILABLE and remain first overall failure",
+    "Before/after samples may be deferred only after parent exits zero, own cleanup succeeds, all evidence/resource guards pass, and its final FAIL receipt is durable",
+    "No process rows, count, service absence or liveness inferred from an unavailable sample",
+    "Original exception object retained in memory and selected as primary before main final cleanup; later diagnostic error stays in secondary_errors",
+    "Parent record and each failed PS record remain FAIL; overall status and exit remain FAIL",
+    "Unknown parsing/encoding/evidence/capacity/signal/cleanup failures stop",
+    "Original thirty-second query and conditional one 120-second block byte-exact",
+    "No profile, deadline, signal policy, simulator ownership, product selector or common-controller change"
+  ],
+  "sourceBase": "fa5651b96beab2148a3e928bfdc8620a9c24c1a5"
+}

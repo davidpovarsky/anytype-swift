@@ -401,6 +401,9 @@ class Commands:
         self.deadline, self.mode = deadline, mode
         self.cleanup_mode = False
         self.records = {}
+        self.finalized_commands = {}
+        self.first_passive_failure = None
+        self.passive_observation_failures = []
         self.count = len(list(self.directory.glob("*.log")))
         require(self.count <= MAX_COMMANDS, "existing_command_count_exceeded")
 
@@ -431,6 +434,70 @@ class Commands:
                     row for row in rows if any(token in Path(row["comm"]).name for token in SERVICE_NAMES)],
                 "scope": "SAMPLED_PROCESS_METADATA_NOT_A_LIVENESS_OR_CAUSATION_PROOF"}
 
+    def _unavailable_passive_snapshot(self, label, owned_pgid, failure):
+        """Only a durably recorded, safely reaped PS outcome may be deferred."""
+        name = self.mode + "-" + label
+        record = self.records.get(name, {})
+        receipt = self.finalized_commands.get(name)
+        outcome = (
+            type(failure) is subprocess.TimeoutExpired
+            and failure.cmd == PS_ARGV and failure.timeout == PS_SECONDS
+        ) or (
+            type(failure) is subprocess.CalledProcessError
+            and failure.cmd == PS_ARGV and failure.returncode != 0
+            and failure.returncode == record.get("return_code")
+        )
+        if not (
+            self.mode == "execute" and not self.cleanup_mode and outcome
+            and failure.__cause__ is None
+            and record.get("argv") == PS_ARGV
+            and record.get("timeout_seconds") == PS_SECONDS
+            and record.get("status") == "FAIL"
+            and record.get("first_error") == error(failure)
+            and record.get("secondary_errors") == []
+            and record.get("sampling_changes_cleanup_timing") is False
+            and type(record.get("pid")) is int and record["pid"] > 1
+            and record.get("pgid") == record["pid"]
+            and record.get("kernel_observation", {}).get("pgid") == record["pid"]
+            and record.get("kernel_observation", {}).get("outcome") == "ABSENT_ESRCH"
+            and type(record.get("log_bytes")) is int
+            and 0 <= record["log_bytes"] <= MAX_FILE_BYTES
+            and isinstance(record.get("log_sha256"), str)
+            and re.fullmatch("[0-9a-f]{64}", record["log_sha256"]) is not None
+            and isinstance(receipt, dict)
+            and receipt.get("path") == "commands/" + name + ".command.json"
+        ):
+            return None
+        return {
+            "status": "UNAVAILABLE",
+            "reason": "PASSIVE_PS_COMMAND_FAILED",
+            "argv": list(PS_ARGV),
+            "owned_pgid": owned_pgid,
+            "error": error(failure),
+            "command_receipt": dict(receipt),
+            "log": name + ".log",
+            "log_sha256": record["log_sha256"],
+            "log_bytes": record["log_bytes"],
+            "scope": "NO_PROCESS_ROWS_OR_SERVICE_ABSENCE_INFERRED",
+        }
+
+    def _defer_passive_failures(self, failures, parent_command):
+        for failure, observation in failures:
+            if self.first_passive_failure is None:
+                self.first_passive_failure = failure
+            self.passive_observation_failures.append({
+                "parent_command": parent_command, **observation})
+
+    def initial_process_snapshot(self):
+        try:
+            return self.process_snapshot("initial-processes", -1)
+        except BaseException as failure:
+            unavailable = self._unavailable_passive_snapshot("initial-processes", -1, failure)
+            if unavailable is None:
+                raise
+            self._defer_passive_failures([(failure, unavailable)], None)
+            return unavailable
+
     def run(self, argv, name, timeout, *, observe=None, sample_cleanup=False):
         require(isinstance(argv, list) and argv and all(isinstance(x, str) and "\x00" not in x for x in argv),
                 "invalid_command_argv")
@@ -452,6 +519,7 @@ class Commands:
                   "sampling_changes_cleanup_timing": bool(sample_cleanup),
                   "signals": [], "secondary_errors": []}
         primary = None
+        passive_snapshot_failures = []
         process = None
         stream = None
         try:
@@ -503,6 +571,11 @@ class Commands:
                     except BaseException as failure:
                         record["secondary_errors"].append({"stage": "before_group_snapshot", **error(failure)})
                         primary = primary or failure
+                        unavailable = self._unavailable_passive_snapshot(
+                            name + "-before-group-cleanup", process.pid, failure)
+                        if unavailable is not None:
+                            record["before_group_cleanup"] = unavailable
+                            passive_snapshot_failures.append((failure, unavailable))
                 try:
                     terminate_owned(process, record["signals"])
                     record["kernel_observation"] = _sdk06_kernel_group_observation(
@@ -520,6 +593,11 @@ class Commands:
                     except BaseException as failure:
                         record["secondary_errors"].append({"stage": "after_group_snapshot", **error(failure)})
                         primary = primary or failure
+                        unavailable = self._unavailable_passive_snapshot(
+                            name + "-after-group-cleanup", process.pid, failure)
+                        if unavailable is not None:
+                            record["after_group_cleanup"] = unavailable
+                            passive_snapshot_failures.append((failure, unavailable))
             if stream is not None:
                 try:
                     stream.flush()
@@ -540,17 +618,30 @@ class Commands:
         except BaseException as failure:
             record["secondary_errors"].append({"stage": "final_log_or_capacity", **error(failure)})
             primary = primary or failure
+        continuation_eligible = bool(
+            sample_cleanup and primary
+            and any(primary is failure for failure, _ in passive_snapshot_failures)
+            and record.get("return_code") == 0
+            and record.get("kernel_observation", {}).get("outcome") == "ABSENT_ESRCH"
+            and len(record["secondary_errors"]) == len(passive_snapshot_failures)
+            and all(row["stage"] in {"before_group_snapshot", "after_group_snapshot"}
+                    for row in record["secondary_errors"])
+        )
         record["first_error"] = error(primary) if primary else None
         record["status"] = "FAIL" if primary else "PASS"
+        record["passive_continuation_eligible"] = continuation_eligible
         self.records[name] = record
         try:
-            self.evidence.write(final, record, final=self.cleanup_mode)
+            self.finalized_commands[name] = self.evidence.write(final, record, final=self.cleanup_mode)
         except BaseException as preservation:
             if primary:
                 raise primary from preservation
             raise
         if primary:
-            raise primary
+            if continuation_eligible:
+                self._defer_passive_failures(passive_snapshot_failures, name)
+            else:
+                raise primary
         return log
 
     def json(self, argv, name, timeout=30, **kwargs):
@@ -759,7 +850,7 @@ def diagnostic(commands, state):
             require(path.read_text().strip() == DEVELOPER, "selected_developer_directory_changed")
         if label == "host-architecture":
             require(path.read_text().strip() == "arm64", "non_native_host")
-    state["initial_process_snapshot"] = commands.process_snapshot("initial-processes", -1)
+    state["initial_process_snapshot"] = commands.initial_process_snapshot()
     item = create_one(commands, "PinkhaInventory-" + commands.context["run_id"] + "-"
                       + commands.context["run_attempt"], state)
     state["phase"] = "CREATED_PREBOOT_IDENTITY_VERIFIED"
@@ -924,6 +1015,13 @@ def main():
         state["primary_failure"] = state["primary_failure"] or error(failure)
     finally:
         finalizing = True
+        if commands is not None:
+            state["passive_observation_failures"] = list(commands.passive_observation_failures)
+            if commands.first_passive_failure is not None:
+                if primary is not None and primary is not commands.first_passive_failure:
+                    state["secondary_errors"].append({"stage": "later_diagnostic_failure", **error(primary)})
+                primary = commands.first_passive_failure
+                state["primary_failure"] = error(primary)
         if commands is not None and before is not None:
             commands.cleanup_mode = True
             try:
