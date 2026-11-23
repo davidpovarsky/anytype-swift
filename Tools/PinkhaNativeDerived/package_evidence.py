@@ -24,6 +24,7 @@ with zipfile.ZipFile(destination, 'w', compression=zipfile.ZIP_DEFLATED) as arch
         # its manifest never points at files omitted by this archive filter.
         early_products = parts in {
             ('sdk06-early-products', 'BuildProducts.tar.gz'),
+            ('sdk06-ui', 'sdk06-early-products', 'BuildProducts.tar.gz'),
             ('coherent-native-early-products', 'BuildProducts.tar.gz'),
             ('coherent-ui-early-products', 'BuildProducts.tar.gz'),
         }

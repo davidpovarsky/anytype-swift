@@ -19,6 +19,19 @@ import wave15_batch as batch
 import run_owned_single_lane as groups
 
 PROTOCOL = "pinkha-coherent-original-preflight-v1"
+SDK_PROFILE = "sdk06-qualified"
+SDK_PROTOCOL = "pinkha-sdk06-qualified-preflight-v1"
+
+
+def profile_protocol(profile):
+    require(profile in (None, SDK_PROFILE), "Unknown owned preflight profile")
+    return PROTOCOL if profile is None else SDK_PROTOCOL
+
+
+def profile_name(profile):
+    profile_protocol(profile)
+    return batch.COHERENT_HEART_PROFILE if profile is None else SDK_PROFILE
+
 ROOT = Path(__file__).resolve().parents[2]
 PREPARE_SECONDS = 360.0
 KINDS = ("iphone", "ipad")
@@ -69,7 +82,9 @@ def actual_host():
 
 class Commands:
     def __init__(self, control, directory, receipt, checkpoint, *, clock=time.monotonic,
-                 execute=batch.run_worker_command, stopped=groups.verify_owned_group_stopped):
+                 execute=batch.run_worker_command, stopped=groups.verify_owned_group_stopped, profile=None):
+        profile_protocol(profile)
+        self.profile = profile
         self.control, self.directory, self.receipt, self.checkpoint = control, directory, receipt, checkpoint
         self.clock, self.execute, self.stopped = clock, execute, stopped
 
@@ -97,7 +112,7 @@ class Commands:
                 if primary is None: primary = error
         try:
             record["owned_group_quiescence"] = self.stopped(
-                path.with_suffix(".command.json"), cleanup_profile=batch.COHERENT_HEART_PROFILE)
+                path.with_suffix(".command.json"), cleanup_profile=profile_name(self.profile))
         except BaseException as error:
             record["quiescence_failure"] = dict(error_type=type(error).__name__, error=str(error),
                 timeout_observations=getattr(error, "timeout_observations", []),
@@ -157,10 +172,10 @@ def capture_created(directory, planned, intent, path, record, selected, checkpoi
         raise
 
 
-def prepare(control, evidence, binding, *, factory=Commands, host=actual_host, clock=time.monotonic):
+def prepare(control, evidence, binding, *, factory=Commands, host=actual_host, clock=time.monotonic, profile=None):
     directory = evidence / "preflight"
     directory.mkdir(parents=True, exist_ok=False)
-    receipt = dict(protocol=PROTOCOL, status="RUNNING", phase="ADMISSION", selected={},
+    receipt = dict(protocol=profile_protocol(profile), status="RUNNING", phase="ADMISSION", selected={},
                    ui_tests_executed=0, started_at=batch.now(), **binding)
     checkpoint = lambda: save(directory / "preflight.json", receipt)
     checkpoint()
@@ -173,7 +188,10 @@ def prepare(control, evidence, binding, *, factory=Commands, host=actual_host, c
         return runner.run(argv, name, min(maximum, remaining), observe=observe)
     try:
         identity(binding); host()
-        runner = factory(control, directory, receipt, checkpoint, clock=clock)
+        if profile is None:
+            runner = factory(control, directory, receipt, checkpoint, clock=clock)
+        else:
+            runner = factory(control, directory, receipt, checkpoint, clock=clock, profile=profile)
         head = run(["git", "-C", str(control), "rev-parse", "HEAD"], "controller-head", 30).read_text().strip()
         require(head == binding["source_sha"], "Preflight must use the current controller checkout")
         dirty = run(["git", "-C", str(control), "status", "--porcelain", "--untracked-files=no"],
@@ -187,7 +205,7 @@ def prepare(control, evidence, binding, *, factory=Commands, host=actual_host, c
             output.write(inventory_path.read_bytes())
         planned, baseline = planned_devices(inventory, binding)
         lifecycle = directory / "lifecycle"
-        intent = dict(protocol=PROTOCOL, profile=batch.COHERENT_HEART_PROFILE, **binding,
+        intent = dict(protocol=profile_protocol(profile), profile=profile_name(profile), **binding,
             baseline_udids=baseline, baseline_inventory_sha256=batch.digest(inventory_path),
             preflight_devices=[], lane_devices=planned, created_at=batch.now())
         save(lifecycle / "intent.json", intent, original=True)
@@ -220,11 +238,11 @@ def prepare(control, evidence, binding, *, factory=Commands, host=actual_host, c
     return receipt
 
 
-def admitted_journal(directory, binding):
+def admitted_journal(directory, binding, *, profile=None):
     lifecycle = directory / "lifecycle"
     intent = read(lifecycle / "intent.json")
     identity(binding)
-    require(intent.get("protocol") == PROTOCOL and intent.get("profile") == batch.COHERENT_HEART_PROFILE
+    require(intent.get("protocol") == profile_protocol(profile) and intent.get("profile") == profile_name(profile)
             and all(intent.get(key) == value for key, value in binding.items()), "Preflight journal source/run/attempt differs")
     inventory_path = directory / "simulator-inventory.log"
     require(batch.digest(inventory_path) == intent.get("baseline_inventory_sha256"), "Original pre-create baseline changed")
@@ -317,12 +335,12 @@ def prior_batch_cleanup(evidence, binding, known, attempted, *, observation=None
         return None
 
 
-def cleanup(control, evidence, binding, *, policy=batch.cleanup_owned, host=actual_host):
+def cleanup(control, evidence, binding, *, policy=batch.cleanup_owned, host=actual_host, profile=None):
     directory = evidence / "preflight"
     directory.mkdir(parents=True, exist_ok=True)
     destination = directory / "lifecycle-cleanup.json"
     require(not destination.exists(), "Preserve the original lifecycle cleanup receipt")
-    receipt = dict(protocol=PROTOCOL, action="cleanup", status="RUNNING", started_at=batch.now(), **binding)
+    receipt = dict(protocol=profile_protocol(profile), action="cleanup", status="RUNNING", started_at=batch.now(), **binding)
     save(destination, receipt, original=True)
     try:
         lifecycle = directory / "lifecycle"
@@ -331,7 +349,10 @@ def cleanup(control, evidence, binding, *, policy=batch.cleanup_owned, host=actu
             receipt.update(status="NO_OWNED_CREATION", cleanup_commands=0)
         else:
             identity(binding)
-            intent, known, attempted = admitted_journal(directory, binding)
+            if profile is None:
+                intent, known, attempted = admitted_journal(directory, binding)
+            else:
+                intent, known, attempted = admitted_journal(directory, binding, profile=profile)
             receipt.update(intent_sha256=batch.digest(lifecycle / "intent.json"), attempted_creations=attempted,
                            known_owned_udids=[row["udid"] for row in known])
             if attempted == 0:
@@ -343,7 +364,12 @@ def cleanup(control, evidence, binding, *, policy=batch.cleanup_owned, host=actu
                 require(head == binding["source_sha"], "Cleanup controller checkout differs")
                 admission = {}
                 receipt["prior_batch_cleanup_admission"] = admission
-                prior = prior_batch_cleanup(evidence, binding, known, attempted, observation=admission)
+                if profile is None:
+                    prior = prior_batch_cleanup(evidence, binding, known, attempted, observation=admission)
+                else:
+                    # An SDK current-build journal can never borrow coherent original-Products cleanup.
+                    admission["status"] = "SDK_PROFILE_REQUIRES_ITS_OWN_JOURNAL_CLEANUP"
+                    prior = None
                 if prior is not None:
                     receipt.update(status="PASS", prior_batch_cleanup=prior, cleanup_commands=0)
                     receipt["finished_at"] = batch.now()

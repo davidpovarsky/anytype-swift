@@ -259,7 +259,7 @@ def validate_results(summary, tree, expected, udid):
     return actual
 
 
-def execute(app, configuration, udid, expected_app, evidence, shared):
+def execute(app, configuration, udid, expected_app, evidence, shared, *, selector_plan=None):
     host.require(not evidence.exists() or not any(evidence.iterdir()),
                  "Refuse stale shared-editor component evidence")
     evidence.mkdir(parents=True, exist_ok=True)
@@ -291,14 +291,23 @@ def execute(app, configuration, udid, expected_app, evidence, shared):
                "source": source, "built_products": hashes}
     shared.write(evidence / "execution.json", receipt)
     try:
-        enumeration = enumerate_selection(app, base, evidence, shared, source)
+        if selector_plan is None:
+            enumeration = enumerate_selection(app, base, evidence, shared, source)
+        else:
+            from sdk06_qualified_selector import QualifiedSelectorPlan
+            host.require(isinstance(selector_plan, QualifiedSelectorPlan), "A sealed actual selector plan is required")
+            enumeration = selector_plan.enumerate_current(app, base, evidence, shared, source)
         receipt["enumeration"] = enumeration
         selected_configuration = enumeration["selected_configuration"]
         verify_binding()
         selected_base = list(base)
         selected_base[selected_base.index("-xctestrun") + 1] = selected_configuration["path"]
-        command = [*selected_base, *["-only-testing:" + identifier for identifier in enumeration["xcode_method_selectors"]],
-                   "-resultBundlePath", str(bundle)]
+        if selector_plan is None:
+            command = [*selected_base, *["-only-testing:" + identifier for identifier in enumeration["xcode_method_selectors"]],
+                       "-resultBundlePath", str(bundle)]
+        else:
+            command = [*selected_base, *selector_plan.execution_arguments(enumeration),
+                       "-resultBundlePath", str(bundle)]
         receipt.update(phase="EXECUTION", command=command)
         shared.write(evidence / "execution.json", receipt)
         shared.run_xctest(command, app, evidence, bundle, RESULT_PREFIX,
