@@ -238,7 +238,7 @@ final class SemanticAnchorPage154MountedUITests: XCTestCase {
         sourceText.doubleTap()
         let started = ProcessInfo.processInfo.systemUptime
         let deadline = started + 20
-        let matches = app.descendants(matching: .any).matching(
+        let matches = app.descendants(matching: .menuItem).matching(
             NSPredicate(format: "label == %@", "Create text anchor"))
         enum MenuFailure: Error { case admission(String) }
         var trace: [String: Any] = [

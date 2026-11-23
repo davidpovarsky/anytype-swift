@@ -15,10 +15,10 @@ import re
 import stat
 import xml.etree.ElementTree as ET
 
-PLAN_SHA256 = "ab399ceba07a88db6e572bccfdf00b0455a24887dcf6b6ae7a6443c4b8356bba"
+PLAN_SHA256 = "d7f2a98ce38d338092af814f075c2fd02ada145bdb5e4e4f57aa82da36527f49"
 APP_COMMIT = "68148339c275268795360d71d519a5baf003adf8"
 UI_PATH = "PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift"
-UI_SHA256 = "ad527c3082a29932af15ddc5a0bcaca7da5585845960cdebbdab65b4f50a78e2"
+UI_SHA256 = "711cfe8660bdb315a2b40d85e67a41ba79d846303a93d2a7460c77d8e0cd99a1"
 ORIGINAL_UI_SHA256 = "468139db53be7dac0570ea16c7fec918332f44107927d6043a9bcc4469773c8b"
 TARGET = "PinkhaStage1AcceptanceUITests"
 SELECTOR = TARGET + "/SemanticAnchorPage154MountedUITests/testActualTextSelectionCancelThenCreateAndColdReopen"

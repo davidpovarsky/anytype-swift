@@ -1,0 +1,133 @@
+{
+  "actual_failure": {
+    "actual_method": "SemanticAnchorPage154MountedUITests/testActualTextSelectionCancelThenCreateAndColdReopen()",
+    "artifact_bytes": 32650234,
+    "artifact_id": 14842632494,
+    "artifact_sha256": "4d4b9c837846a4ceb900ddaee1ad9637be3746160f65e76768f47bc50d2e84a0",
+    "attempt": 1,
+    "ax_sha256": "cdfa5f07355a266081376ef9dcd6e9a1164ab42c05c469978951e98710f1c5ae",
+    "menu_trace_sha256": "2186ec852130dd00cb430db45241cfc46f265ea1ed5adb04a6b7b8f55422226b",
+    "observed_types": [
+      "MenuItem",
+      "StaticText child"
+    ],
+    "outcome": "FAIL",
+    "reason": "menu-action-ambiguous",
+    "run": 45222136118,
+    "source": "9178f18736244851657279761ad492618fab53c1",
+    "tap_attempts": 0
+  },
+  "after": {
+    "PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift": {
+      "bytes": 22654,
+      "sha256": "711cfe8660bdb315a2b40d85e67a41ba79d846303a93d2a7460c77d8e0cd99a1"
+    },
+    "Tools/PinkhaSemanticAnchorWire/apple_mounted/warning-ui-inputs.json": {
+      "bytes": 4190,
+      "sha256": "d7f2a98ce38d338092af814f075c2fd02ada145bdb5e4e4f57aa82da36527f49"
+    },
+    "Tools/PinkhaSemanticAnchorWire/apple_mounted/warning_profile.py": {
+      "bytes": 12752,
+      "sha256": "fa561fa2823047cd92177920779dbebc0ced35d3fce9869773b05a374932adbf"
+    }
+  },
+  "base": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba",
+  "before": {
+    "PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift": {
+      "bytes": 22649,
+      "sha256": "ad527c3082a29932af15ddc5a0bcaca7da5585845960cdebbdab65b4f50a78e2"
+    },
+    "Tools/PinkhaSemanticAnchorWire/apple_mounted/warning-ui-inputs.json": {
+      "bytes": 4190,
+      "sha256": "ab399ceba07a88db6e572bccfdf00b0455a24887dcf6b6ae7a6443c4b8356bba"
+    },
+    "Tools/PinkhaSemanticAnchorWire/apple_mounted/warning_profile.py": {
+      "bytes": 12752,
+      "sha256": "837a246cec6e5bf0aa4f6e5a1005acade0c052e3c2c675a6b8696a5a5a09e19f"
+    }
+  },
+  "branch": "codex/chatgpt-wave15-page-menuitem-selector-20261123",
+  "invariants": {
+    "coordinates": false,
+    "deadline_seconds": 20,
+    "downstream_assertions_unchanged": true,
+    "exact_label": "Create text anchor",
+    "fixture_or_service_injection": false,
+    "native_text_actions": [
+      "tap",
+      "doubleTap"
+    ],
+    "new_builds": 0,
+    "new_test_executions": 0,
+    "one_native_menu_tap": true,
+    "physical_ipad": "NOT_RUN",
+    "product_acceptance": "NOT_RUN",
+    "unique_hittable_enabled_exists": true
+  },
+  "plan_inverse": "Only candidate UI SHA and that UI row SHA/bytes change; all other plan fields equal.",
+  "profile_inverse": "Only UI_SHA256 and PLAN_SHA256 value replacements; inverse restores whole previous file.",
+  "retained_sdk_source": {
+    "Tools/PinkhaSimulatorGate/sdk06-original-native-controller-source.json": "8d3045bc1dbe2f943b73b26e5d92c57f5523a9d3771d0800b6689040df889987",
+    "Tools/PinkhaSimulatorGate/sdk06_component_projection.py": "0ec892f3725732d1ea984d9b99e9c989c0c8eb980442aa7211d2d3141a816d0b"
+  },
+  "schema": "page154-menuitem-source-qualification-v1",
+  "source_inputs": {
+    "PinkhaStage1Acceptance/PinkhaStage1Acceptance.xcodeproj/project.pbxproj": {
+      "bytes": 12598,
+      "origin": "app",
+      "sha256": "38219484965210d09a25d6a68f2e46c71ae7682028a55f1e27834075a73acef2",
+      "source_commit": "68148339c275268795360d71d519a5baf003adf8"
+    },
+    "PinkhaStage1Acceptance/PinkhaStage1Acceptance.xcodeproj/xcshareddata/xcschemes/PinkhaStage1Acceptance.xcscheme": {
+      "bytes": 3429,
+      "origin": "app",
+      "sha256": "43660974b215776ef4539c961a4ef75a7da8e1a21a08c4f0b1a12538e33fb845",
+      "source_commit": "68148339c275268795360d71d519a5baf003adf8"
+    },
+    "PinkhaStage1Acceptance/Tests/AnytypeComprehensiveAcceptanceUITests.swift": {
+      "bytes": 28184,
+      "origin": "app",
+      "sha256": "c07f549a39ea3069098353776bb7bb78766cdc0136b3b25257e591ae6d586579",
+      "source_commit": "68148339c275268795360d71d519a5baf003adf8"
+    },
+    "PinkhaStage1Acceptance/Tests/HanlinNativeAcceptanceUITests.swift": {
+      "bytes": 26662,
+      "origin": "app",
+      "sha256": "8af3eea788ab5383d754bd8fdd8ca8443e9cbf44cde34eb5ae2323bd90849824",
+      "source_commit": "68148339c275268795360d71d519a5baf003adf8"
+    },
+    "PinkhaStage1Acceptance/Tests/HanlinSelectionAcceptanceUITests.swift": {
+      "bytes": 13939,
+      "origin": "app",
+      "sha256": "5136113b10452d86ed5befcf46cb35b7262fc123268b6249421441aa6209cb61",
+      "source_commit": "68148339c275268795360d71d519a5baf003adf8"
+    },
+    "PinkhaStage1Acceptance/Tests/PinkhaStage1AcceptanceUITests.swift": {
+      "bytes": 67409,
+      "origin": "app",
+      "sha256": "14f825b44c562d6e12e83f86b95531f040759584e8b5b4ad1286bf415ea70621",
+      "source_commit": "68148339c275268795360d71d519a5baf003adf8"
+    },
+    "PinkhaStage1Acceptance/Tests/PinkhaT5NativeAcceptanceUITests.swift": {
+      "bytes": 29193,
+      "origin": "app",
+      "sha256": "a2244cf16250ab64e4827ef25feec76c62a581df842a64f93810620b72ae75d0",
+      "source_commit": "68148339c275268795360d71d519a5baf003adf8"
+    },
+    "PinkhaStage1Acceptance/Tests/PinkhaTorahQuoteAcceptanceUITests.swift": {
+      "bytes": 18677,
+      "origin": "app",
+      "sha256": "84ce38f69f4eac25e19a768f1fc63cfd4bde0b7c6f78e46a7bc7f23f33d1f477",
+      "source_commit": "68148339c275268795360d71d519a5baf003adf8"
+    },
+    "PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift": {
+      "bytes": 22654,
+      "origin": "controller",
+      "sha256": "711cfe8660bdb315a2b40d85e67a41ba79d846303a93d2a7460c77d8e0cd99a1",
+      "source_commit": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba"
+    }
+  },
+  "status": "SOURCE_REPAIR_REVIEW_REQUIRED",
+  "ui_inverse": "Exact one .any to .menuItem replacement restores entire previous UI source.",
+  "utc": "2026-11-23T17:32:28.357724+00:00"
+}
