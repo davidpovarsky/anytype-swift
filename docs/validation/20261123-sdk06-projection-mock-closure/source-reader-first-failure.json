@@ -1,0 +1,28 @@
+{
+  "cause": "Optional explicit PBX filename grep returned1 because no literal filename entry was found; no target membership claim was made. Subsequent exact source/Git reads succeeded.",
+  "imports": 0,
+  "original": {
+    "cleanup": true,
+    "command": [
+      "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_becf31ec53b94c2b8acc99cfe09f65fc\\sentinelx_bootstrap.ps1",
+      "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_becf31ec53b94c2b8acc99cfe09f65fc\\script.ps1"
+    ],
+    "cwd": null,
+    "duration": 1.06,
+    "hub_request_id": "hreq_b2438569382f42de",
+    "interpreter": "powershell",
+    "ok": false,
+    "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 14, in <module>\n  File \"<stdin>\", line 6, in git\nRuntimeError: (('grep', '-n', 'BlockMarkupChangerMock.swift', '75bd6d7af18dfd511e85582ce7f994d2801b7703', '--', 'Anytype.xcodeproj/project.pbxproj'), 1, '')\nSDK original source declaration read failed\r\nAt C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_becf31ec53b94c2b8acc99cfe09f65fc\\script.ps1:19 \r\nchar:25\r\n+ ... TEXITCODE -ne 0){throw 'SDK original source declaration read failed'}\r\n+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (SDK original so...ion read failed:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : SDK original source declaration read failed",
+    "returncode": 1,
+    "sudo": false
+  },
+  "stage": "read-only source discovery",
+  "tests": 0,
+  "writes": 0
+}

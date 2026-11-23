@@ -1,0 +1,166 @@
+--- a/Tools/AnyEngineValidation/loaded_account_witness/portable/compiler_producer.py
++++ b/Tools/AnyEngineValidation/loaded_account_witness/portable/compiler_producer.py
+@@ -199,70 +199,81 @@
+         started = time.monotonic()
+         child = None
+         error = None
+-        with stdout.open("xb") as fo, stderr.open("xb") as fe:
++        fo = fe = None
++        try:
++            fo = stdout.open("xb")
++            fe = stderr.open("xb")
++            if not cleanup:
++                require(time.monotonic() - self.started < TOTAL_SECONDS, "producer_total_deadline")
++                record["resources_before"] = resources(self.out)
++            child = subprocess.Popen(argv, cwd=ROOT, env=ENV, stdin=subprocess.DEVNULL,
++                                     stdout=fo, stderr=fe, start_new_session=True,
++                                     preexec_fn=lambda: resource.setrlimit(resource.RLIMIT_AS, (4 * GIB, 4 * GIB)))
++            record.update(started=True, pid=child.pid, pgid=child.pid)
+             try:
++                observed_group = os.getpgid(child.pid)
++            except ProcessLookupError:
++                require(child.poll() is not None, "unexplained_owned_leader_absence")
++            else:
++                require(observed_group == child.pid, "owned_group_identity")
++            while child.poll() is None:
++                require(time.monotonic() - started < seconds, "command_timeout")
++                require(stdout.stat().st_size <= RAW_CAP and stderr.stat().st_size <= RAW_CAP, "raw_output_limit")
++                if file_cap is not None and file_cap[0].exists():
++                    require(file_cap[0].stat().st_size <= file_cap[1], "image_archive_limit")
+                 if not cleanup:
+                     require(time.monotonic() - self.started < TOTAL_SECONDS, "producer_total_deadline")
+-                    record["resources_before"] = resources(self.out)
+-                child = subprocess.Popen(argv, cwd=ROOT, env=ENV, stdin=subprocess.DEVNULL,
+-                                         stdout=fo, stderr=fe, start_new_session=True,
+-                                         preexec_fn=lambda: resource.setrlimit(resource.RLIMIT_AS, (4 * GIB, 4 * GIB)))
+-                record.update(started=True, pid=child.pid, pgid=child.pid)
++                    resources(self.out)
++                time.sleep(0.25)
++            record["returncode"] = child.wait()
++            require(time.monotonic() - started <= seconds, "command_finished_after_deadline")
++            require(stdout.stat().st_size <= RAW_CAP and stderr.stat().st_size <= RAW_CAP, "raw_output_limit")
++            if not cleanup:
++                require(time.monotonic() - self.started < TOTAL_SECONDS, "producer_total_deadline")
++                record["resources_after"] = resources(self.out)
++            require(child.returncode in accepted, "command_exit_%s" % child.returncode)
++        except BaseException as exc:
++            error = exc
++            record["primary_error"] = {"type": type(exc).__name__, "message": str(exc)}
++        finally:
++            if child is not None:
+                 try:
+-                    observed_group = os.getpgid(child.pid)
+-                except ProcessLookupError:
+-                    require(child.poll() is not None, "unexplained_owned_leader_absence")
+-                else:
+-                    require(observed_group == child.pid, "owned_group_identity")
+-                while child.poll() is None:
+-                    require(time.monotonic() - started < seconds, "command_timeout")
+-                    require(stdout.stat().st_size <= RAW_CAP and stderr.stat().st_size <= RAW_CAP, "raw_output_limit")
+-                    if file_cap is not None and file_cap[0].exists():
+-                        require(file_cap[0].stat().st_size <= file_cap[1], "image_archive_limit")
+-                    if not cleanup:
+-                        require(time.monotonic() - self.started < TOTAL_SECONDS, "producer_total_deadline")
+-                        resources(self.out)
+-                    time.sleep(0.25)
+-                record["returncode"] = child.wait()
+-                require(time.monotonic() - started <= seconds, "command_finished_after_deadline")
+-                require(stdout.stat().st_size <= RAW_CAP and stderr.stat().st_size <= RAW_CAP, "raw_output_limit")
+-                if not cleanup:
+-                    require(time.monotonic() - self.started < TOTAL_SECONDS, "producer_total_deadline")
+-                    record["resources_after"] = resources(self.out)
+-                require(child.returncode in accepted, "command_exit_%s" % child.returncode)
+-            except BaseException as exc:
+-                error = exc
+-                record["primary_error"] = {"type": type(exc).__name__, "message": str(exc)}
+-            finally:
+-                if child is not None:
+-                    try:
+-                        record["owned_group_cleanup"] = stop_group(child)
+-                    except BaseException as exc:
+-                        record["cleanup_error"] = {"type": type(exc).__name__, "message": str(exc)}
+-                        if error is None:
+-                            error = exc
+-                record["elapsed_seconds"] = time.monotonic() - started
+-                record["persistence_errors"] = []
+-                for label, operation in (
+-                    ("stdout_flush", lambda: (fo.flush(), os.fsync(fo.fileno()))),
+-                    ("stderr_flush", lambda: (fe.flush(), os.fsync(fe.fileno()))),
+-                    ("stdout", lambda: file_row(stdout, RAW_CAP)),
+-                    ("stderr", lambda: file_row(stderr, RAW_CAP)),
+-                ):
+-                    try:
+-                        value = operation()
+-                        if label in ("stdout", "stderr"):
+-                            record[label] = value
+-                    except BaseException as exc:
+-                        record["persistence_errors"].append({"phase": label, "type": type(exc).__name__, "message": str(exc)})
+-                        if error is None:
+-                            error = exc
+-                try:
+-                    save(prefix.with_suffix(".json"), record)
++                    record["owned_group_cleanup"] = stop_group(child)
+                 except BaseException as exc:
+-                    record["persistence_errors"].append({"phase": "receipt", "type": type(exc).__name__, "message": str(exc)})
++                    record["cleanup_error"] = {"type": type(exc).__name__, "message": str(exc)}
+                     if error is None:
+                         error = exc
++            record["elapsed_seconds"] = time.monotonic() - started
++            record["persistence_errors"] = []
++            for label, operation in (
++                ("stdout_flush", lambda: None if fo is None else (fo.flush(), os.fsync(fo.fileno()))),
++                ("stderr_flush", lambda: None if fe is None else (fe.flush(), os.fsync(fe.fileno()))),
++                ("stdout", lambda: file_row(stdout, RAW_CAP)),
++                ("stderr", lambda: file_row(stderr, RAW_CAP)),
++            ):
++                try:
++                    value = operation()
++                    if label in ("stdout", "stderr"):
++                        record[label] = value
++                except BaseException as exc:
++                    record["persistence_errors"].append({"phase": label, "type": type(exc).__name__, "message": str(exc)})
++                    if error is None:
++                        error = exc
++            for label, stream in (("stdout_close", fo), ("stderr_close", fe)):
++                if stream is None:
++                    continue
++                try:
++                    stream.close()
++                except BaseException as exc:
++                    record["persistence_errors"].append({"phase": label, "type": type(exc).__name__, "message": str(exc)})
++                    if error is None:
++                        error = exc
++            try:
++                save(prefix.with_suffix(".json"), record)
++            except BaseException as exc:
++                record["persistence_errors"].append({"phase": "receipt", "type": type(exc).__name__, "message": str(exc)})
++                if error is None:
++                    error = exc
+         if error is not None:
+             raise error
+         return stdout.read_bytes(), stderr.read_bytes(), record
+@@ -594,10 +605,21 @@
+         result["containers"] = p.containers
+         result["elapsed_seconds"] = time.monotonic() - p.started
+         result["public_evidence_scope"] = "package/source/tool/image data only; no credentials or native fixture"
+-        save(out / "result.json", result)
+-        for sig, handler in original_handlers.items():
+-            signal.signal(sig, handler)
++        try:
++            save(out / "result.json", result)
++        except BaseException as exc:
++            result["final_errors"].append({"phase": "final_result_persistence", "type": type(exc).__name__, "message": str(exc)})
++            result["status"] = "FAILED"
++        finally:
++            for sig, handler in original_handlers.items():
++                try:
++                    signal.signal(sig, handler)
++                except BaseException as exc:
++                    result["final_errors"].append({"phase": "signal_restoration", "signal": int(sig),
++                                                   "type": type(exc).__name__, "message": str(exc)})
++                    result["status"] = "FAILED"
+     print(json.dumps({"status": result["status"], "result": str(out / "result.json"),
++                      "primary_error": result["primary_error"], "final_errors": result["final_errors"],
+                       "native_builds": 0, "native_tests": 0}, sort_keys=True))
+     return 0 if result["primary_error"] is None and not result["final_errors"] else 1
+ 

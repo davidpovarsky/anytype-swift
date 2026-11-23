@@ -1,0 +1,63 @@
+{
+  "actual_loaded_repository_module_set": [
+    "__main__",
+    "compiler_bind_order_control",
+    "compiler_bind_order_subject"
+  ],
+  "base_audit_commit": "2964787763672f808de94615510ede6dbb7c598c",
+  "current_producer_sha256": "d883a313a78b95b1b06939bf4242b3ea8e80998a4f618a144757177db12fceb9",
+  "exact_inverse": {
+    "count": 1,
+    "current": "        require(isinstance(host[\"Binds\"], list)\n                and all(isinstance(value, str) for value in host[\"Binds\"])\n                and sorted(host[\"Binds\"]) == sorted(owned[\"binds\"]), \"container_bindings\")\n",
+    "original": "        require(host[\"Binds\"] == owned[\"binds\"], \"container_bindings\")\n",
+    "path": "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler_producer.py",
+    "whole_file_restored": true
+  },
+  "inputs_sha256": "4a65cb7ba65e2ff0ec57ebdc365a4c518e8f3577e468ed5cc0553da8ebe41595",
+  "manifest_itself_independently_sha_and_Git_bound": true,
+  "original_producer_sha256": "0fd72d2024a5b3a1bdccb5cb9392a5ae8b646f685b0c56493c7f44feb62370e3",
+  "original_source_cause_sha256": "619eb732c1adf9fbb79524b744fbcc6e0be15db2688742d41e1403c953d6d35a",
+  "other_production_functions_byte_exact": 25,
+  "positive_originals": 2,
+  "production_changed_functions": [
+    "Producer.check_container"
+  ],
+  "profile": {
+    "RAM_only": true,
+    "address_space_cap": 536870912,
+    "evidence_cap": 2097152,
+    "git_seconds": 12,
+    "memory_available_min": 2147483648,
+    "new_docker_go_native_product_actions": 0,
+    "ordinary_uid": 1001,
+    "outer_seconds_max": 90,
+    "owned_git_TERM_KILL_seconds": [
+      2,
+      2
+    ],
+    "total_seconds": 60,
+    "writer_allocated_cap": 8388608
+  },
+  "retained_inactive_inputs": [
+    ".github/workflows/pinkha-loaded-account-arm64-compiler.yml",
+    "Tools/AnyEngineValidation/loaded_account_witness/native-compiler-support.json",
+    "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-acquire.sh",
+    "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-contract.json",
+    "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-install.sh"
+  ],
+  "schema": "compiler-bind-order-review-v1",
+  "status": "FROZEN_NOT_RUN",
+  "synthetic_negative_bind_cases": 17,
+  "synthetic_positive_order": 1,
+  "test_method_count": 1,
+  "test_sha256": "d28326e7cef79147c94d61dc576bb0587b83656a9bcb85023fda59919fa129d6",
+  "unqualified": [
+    "compiler_runtime",
+    "package_acquisition",
+    "compiler_image_artifact",
+    "four_native_account_controls",
+    "semantic_completeness",
+    "destination_authority"
+  ],
+  "wrapper_sha256": "6ba69e92b94fa90a22e0baf61397fc37e61c2f06d30b3eb46881ec333117f548"
+}

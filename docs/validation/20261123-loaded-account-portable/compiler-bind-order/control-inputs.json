@@ -1,0 +1,96 @@
+{
+  "historical_origin": {
+    "attempt": 1,
+    "cleanup": "FAILED",
+    "run_id": 45262244082,
+    "source": "56b4caafae1c0898b483717abed495f2e3b9281b",
+    "status": "FAILED"
+  },
+  "inputs": {
+    ".github/workflows/pinkha-loaded-account-arm64-compiler.yml": {
+      "bytes": 1689,
+      "physical_mode": "33188",
+      "sha256": "d21711d98031fb8a2ef585e81bed98c9c3bb5acc3f8388d2f84046c718fd6f64"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/native-compiler-support.json": {
+      "bytes": 11930,
+      "physical_mode": "33152",
+      "sha256": "ca681802575e0fd0d135be251184b89949dde0f46a957755ff2c019fa5013a76"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-acquire.sh": {
+      "bytes": 1537,
+      "physical_mode": "33188",
+      "sha256": "1845ef270a6bf93f892aa2ea429179a3cd0a122fca383ec59b720270d6a85bc4"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-contract.json": {
+      "bytes": 3439,
+      "physical_mode": "33188",
+      "sha256": "377d9b906724a23adc65eea04d7d9a9942b0f64337a268dcbc6865204941738f"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-install.sh": {
+      "bytes": 1801,
+      "physical_mode": "33188",
+      "sha256": "53e39efb1fb49bc61680cb5bf39bf2f3608a8bdcf4eb8567c4446deaeaa2f932"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler_producer.py": {
+      "bytes": 34315,
+      "physical_mode": "33188",
+      "sha256": "d883a313a78b95b1b06939bf4242b3ea8e80998a4f618a144757177db12fceb9"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/portable/test_compiler_bind_order.py": {
+      "bytes": 6887,
+      "physical_mode": "33204",
+      "sha256": "d28326e7cef79147c94d61dc576bb0587b83656a9bcb85023fda59919fa129d6"
+    },
+    "docs/validation/20261123-loaded-account-portable/compiler-bind-order/run-control.py": {
+      "bytes": 13685,
+      "physical_mode": "33204",
+      "sha256": "6ba69e92b94fa90a22e0baf61397fc37e61c2f06d30b3eb46881ec333117f548"
+    },
+    "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/audit/member-map.json": {
+      "bytes": 28927,
+      "physical_mode": "33204",
+      "sha256": "cf1619940af2395943ceb932c172177983dd429b2ccba2d84aafea574bebfef4"
+    },
+    "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/audit/source-cause-audit.json": {
+      "bytes": 9334,
+      "physical_mode": "33204",
+      "sha256": "619eb732c1adf9fbb79524b744fbcc6e0be15db2688742d41e1403c953d6d35a"
+    },
+    "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/commands/002-before-blob-00.stdout": {
+      "bytes": 34172,
+      "physical_mode": "33204",
+      "sha256": "0fd72d2024a5b3a1bdccb5cb9392a5ae8b646f685b0c56493c7f44feb62370e3"
+    },
+    "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/commands/019-acquire-inspect-before.stdout": {
+      "bytes": 9535,
+      "physical_mode": "33204",
+      "sha256": "189b5927c03c373b6a19111ae090ebac806f850ec1cd01198a3264febde16d1d"
+    },
+    "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/commands/021-acquire-cleanup-before.stdout": {
+      "bytes": 9535,
+      "physical_mode": "33204",
+      "sha256": "6e74af6a6be3b4696096dc9704f08266d3f351ac242ab62137cd0d64f5efece2"
+    },
+    "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/result.json": {
+      "bytes": 91290,
+      "physical_mode": "33204",
+      "sha256": "3c3f2cdecf58d3b95092f4371fc43877637e88dfd0e92474ca9799e150f5b275"
+    },
+    "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/source-after.json": {
+      "bytes": 4021,
+      "physical_mode": "33204",
+      "sha256": "8113ba9ffdaf26b0a88142d92ba84e67aab6abcd410403205e8a1de5c0da2094"
+    },
+    "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/source-before.json": {
+      "bytes": 4021,
+      "physical_mode": "33204",
+      "sha256": "8113ba9ffdaf26b0a88142d92ba84e67aab6abcd410403205e8a1de5c0da2094"
+    }
+  },
+  "method": "test_original_docker_bind_order_accepts_only_exact_owned_multiset",
+  "native_tests": 0,
+  "old_controls_replayed": 0,
+  "schema": "compiler-bind-order-frozen-inputs-v1",
+  "scope": "Actual current check_container against two retained original Docker inspections, one synthetic order and17 negative mutations; no container/package/native action."
+}

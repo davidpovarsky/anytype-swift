@@ -1,0 +1,19 @@
+{
+  "base_commit": "1eefb4c9fc02e780d8c178f8d2941a1f96131290",
+  "before_sha256": "b1993cf1235626601b0f36d6b42a398b3e3fa5ab10d8d41d540ab5950499dbbb",
+  "central_file_modified": false,
+  "literal_hunks": [
+    {
+      "after": "          - loaded-account-arm64-compiler\n          - coherent-heart-native\n",
+      "before": "          - coherent-heart-native\n"
+    },
+    {
+      "after": "  loaded-account-arm64-compiler:\n    if: ${{ inputs.route == 'loaded-account-arm64-compiler' }}\n    uses: ./.github/workflows/pinkha-loaded-account-arm64-compiler.yml\n    with:\n      source_sha: ${{ github.sha }}\n\n  coherent-heart-native:\n",
+      "before": "  coherent-heart-native:\n"
+    }
+  ],
+  "path": ".github/workflows/torah-inspector-ipados27.yml",
+  "proposed_after_sha256": "d492679fff22b32e8ef3f77c501de2cfbd1e3bebc68a52cb0f86698c6ed83887",
+  "root_must_preserve_other_authored_routes": true,
+  "whole_file_inverse_equal": true
+}

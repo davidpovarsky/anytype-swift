@@ -157,6 +157,9 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
                 finish(id)
                 presentMessage(PinkhaSemanticAnchorStrings.created)
             } catch {
+#if DEBUG && targetEnvironment(simulator)
+                if let editor { PinkhaSemanticAnchorMountedObserver.applyFailed(editor: editor, pending: pending, error: error) }
+#endif
                 guard activeID == id, owns(selection, focused: false) else { finish(id); return }
                 finish(id)
                 presentMessage(PinkhaSemanticAnchorStrings.message(for: error))

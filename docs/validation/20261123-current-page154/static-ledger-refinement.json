@@ -1,0 +1,10 @@
+{
+  "correctedAuthorSHA256": "19db55c971390e5d226637f6fc85fad362dab18ad98a08d7b664f389ee347964",
+  "originalAuthorSHA256": "05a0370a0012ad1750ba5eea978c7e3f606eed95afe8cab67e7f4da2b4803f86",
+  "originalGeneratedLedgerPreserved": "docs/validation/20261123-current-page154/pre-freeze-ledger-v1",
+  "reason": "Static scanner initially included inactive __main__ imports from wave15_batch. Exclude the exact inactive main guard, avoiding unrelated SDK runtime bindings. No repository imports or executions occurred.",
+  "wholeFileInverse": {
+    "after": "        if isinstance(node,(ast.FunctionDef,ast.AsyncFunctionDef,ast.ClassDef)):continue\n        if isinstance(node,ast.If) and ast.unparse(node.test) == \"__name__ == '__main__'\":continue\n",
+    "before": "        if isinstance(node,(ast.FunctionDef,ast.AsyncFunctionDef,ast.ClassDef)):continue\n"
+  }
+}

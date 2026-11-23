@@ -1,0 +1,24 @@
+{
+  "activation": "Use the central workflow existing opt-in selector field with exact equality to routeOption.",
+  "centralSourceNotEdited": true,
+  "compositionRequirements": [
+    "Preserve every existing route/default/concurrency/permission.",
+    "Add one unique option and exact inline job; no reusable-workflow call.",
+    "Root records actual whole-central before/after inverse and rebinds only SDK85 central input row, retaining sorted preload order.",
+    "Keep standalone workflow bytes unchanged: Page ledger pins them.",
+    "Before dispatch Anytype/Modules trees must match the projected Page ledger."
+  ],
+  "jobKey": "current-page154-mounted",
+  "jobYAML": "  current-page154-mounted:\n    runs-on: xcode-27\n    timeout-minutes: 150\n    permissions:\n      contents: read\n      actions: read\n    env:\n      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer\n      PYTHONDONTWRITEBYTECODE: '1'\n      GIT_OPTIONAL_LOCKS: '0'\n      GH_TOKEN: ${{ github.token }}\n      EVIDENCE: build/current-page154-${{ github.run_id }}-${{ github.run_attempt }}/evidence\n    steps:\n      - name: Checkout the exact current Page154 App and controller source\n        uses: actions/checkout@v4\n        with:\n          ref: ${{ github.sha }}\n          fetch-depth: 0\n          persist-credentials: false\n      - name: Bind the dispatched local branch without advancing its commit\n        shell: bash\n        run: |\n          set -euo pipefail\n          test \"$(git rev-parse HEAD)\" = \"$GITHUB_SHA\"\n          test \"$GITHUB_REF\" = \"refs/heads/$GITHUB_REF_NAME\"\n          test \"$GITHUB_REF_NAME\" = \"codex/chatgpt-wave15-shared-20261121\"\n          current_branch=\"$(git branch --show-current)\"\n          if [ -z \"$current_branch\" ]; then\n            git switch -c \"$GITHUB_REF_NAME\"\n          else\n            test \"$current_branch\" = \"$GITHUB_REF_NAME\"\n          fi\n          test \"$(git rev-parse HEAD)\" = \"$GITHUB_SHA\"\n      - name: Select native ARM64 Python\n        uses: actions/setup-python@v5\n        with:\n          python-version: '3.12'\n          architecture: arm64\n      - name: Checkout the exact public canonical Hanlin source\n        uses: actions/checkout@v4\n        with:\n          repository: davidpovarsky/hanlin-ai\n          ref: 116cc6be0654a5d11bc56ba00e0310031107ee36\n          path: .ci/hanlin-source\n          persist-credentials: false\n      - name: Build current App and UI once, then execute necessary setup and the one failed journey\n        id: execute\n        timeout-minutes: 130\n        shell: bash\n        run: |\n          set -euo pipefail\n          python3 -B Tools/CurrentAppleValidation/page154_current.py execute --expected-source \"$GITHUB_SHA\"\n      - name: Finalize only journaled current-run resources even after failure\n        if: ${{ always() && steps.execute.outcome != 'skipped' }}\n        timeout-minutes: 8\n        shell: bash\n        run: |\n          set -euo pipefail\n          python3 -B Tools/CurrentAppleValidation/page154_current.py cleanup --expected-source \"$GITHUB_SHA\"\n      - name: Preserve current App and UI Products, original results, private diagnostics and cleanup\n        if: always()\n        uses: actions/upload-artifact@v4\n        with:\n          name: Current-Page154-Mounted-${{ github.run_id }}-${{ github.run_attempt }}\n          path: |\n            ${{ env.EVIDENCE }}\n          retention-days: 30\n          if-no-files-found: error\n",
+  "mode": "ROOT_COMPOSES_INLINE_JOB_AND_ONE_OPTION",
+  "newReusableWorkflowReferences": 0,
+  "routeOption": "current-page154-mounted",
+  "schema": "current-page154-inline-route-data-v1",
+  "sdkManifestNotEdited": true,
+  "standaloneWorkflow": ".github/workflows/pinkha-current-page154-mounted.yml",
+  "standaloneWorkflowSHA256": "419f942971e900de94a17b86b97abbc675885003174180b1440bd200f60f65ce",
+  "workflowPermissions": {
+    "actions": "read",
+    "contents": "read"
+  }
+}

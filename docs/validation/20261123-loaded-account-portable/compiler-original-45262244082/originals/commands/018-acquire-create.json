@@ -1,0 +1,106 @@
+{
+  "argv": [
+    "/usr/bin/docker",
+    "create",
+    "--name",
+    "pinkha-c-compiler-45262244082-1-acquire",
+    "--platform",
+    "linux/arm64",
+    "--network",
+    "bridge",
+    "--memory",
+    "2147483648",
+    "--memory-swap",
+    "2147483648",
+    "--cpus",
+    "2",
+    "--pids-limit",
+    "128",
+    "--log-driver",
+    "none",
+    "--stop-signal",
+    "SIGTERM",
+    "--tmpfs",
+    "/var/lib/postgresql/data:rw,noexec,nosuid,nodev,size=16777216,mode=0700",
+    "--entrypoint",
+    "/bin/sh",
+    "--label",
+    "org.anytapy.scope=loaded-account-compiler",
+    "--label",
+    "org.anytapy.run=45262244082",
+    "--label",
+    "org.anytapy.attempt=1",
+    "--label",
+    "org.anytapy.source=56b4caafae1c0898b483717abed495f2e3b9281b",
+    "--label",
+    "org.anytapy.phase=acquire",
+    "--volume",
+    "/home/runner/work/anytype-swift/anytype-swift/Tools/AnyEngineValidation/loaded_account_witness/portable:/scripts:ro",
+    "--volume",
+    "/home/runner/work/_temp/pinkha-loaded-account-compiler/acquire:/out:rw",
+    "postgres@sha256:f2f98726820d0342055351c6e9d36e705f5bfffb3dd53ff556325114b08afb6d",
+    "/scripts/compiler-acquire.sh"
+  ],
+  "cleanup_error": null,
+  "elapsed_seconds": 0.25420355699998254,
+  "name": "acquire-create",
+  "owned_group_cleanup": {
+    "already_absent": true,
+    "returncode": 0
+  },
+  "persistence_errors": [],
+  "pgid": 2663,
+  "pid": 2663,
+  "primary_error": null,
+  "resources_after": {
+    "free_bytes": 113516990464,
+    "memory_available_bytes": 15472697344,
+    "outputs": {
+      "files": 59,
+      "logical_bytes": 105762
+    }
+  },
+  "resources_before": {
+    "free_bytes": 113517109248,
+    "memory_available_bytes": 15476383744,
+    "outputs": {
+      "files": 59,
+      "logical_bytes": 105697
+    }
+  },
+  "returncode": 0,
+  "started": true,
+  "stderr": {
+    "bytes": 0,
+    "path": "/home/runner/work/_temp/pinkha-loaded-account-compiler/commands/018-acquire-create.stderr",
+    "physical": {
+      "st_ctime_ns": "1795466607619301961",
+      "st_dev": "2049",
+      "st_gid": "1001",
+      "st_ino": "6045310",
+      "st_mode": "33152",
+      "st_mtime_ns": "1795466607619301961",
+      "st_nlink": "1",
+      "st_size": "0",
+      "st_uid": "1001"
+    },
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stdout": {
+    "bytes": 65,
+    "path": "/home/runner/work/_temp/pinkha-loaded-account-compiler/commands/018-acquire-create.stdout",
+    "physical": {
+      "st_ctime_ns": "1795466607641441113",
+      "st_dev": "2049",
+      "st_gid": "1001",
+      "st_ino": "6045309",
+      "st_mode": "33152",
+      "st_mtime_ns": "1795466607641441113",
+      "st_nlink": "1",
+      "st_size": "65",
+      "st_uid": "1001"
+    },
+    "sha256": "823bde790120e0b9de38f69f5ef26a583d8fa8c059beb85124962cef52a8b96a"
+  },
+  "timeout_seconds": 30
+}

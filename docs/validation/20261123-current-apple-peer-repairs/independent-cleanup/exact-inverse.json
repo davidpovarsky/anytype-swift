@@ -1,0 +1,10 @@
+{
+  "afterSHA256": "9fcc420df5d51be004b659f47cb601dff833109e18dfd56ae685f2a119c0e2ad",
+  "base": "90bdd11dbacc7fc86dea3c0316d935c723784879",
+  "beforeSHA256": "344313e648eb11e7714c553169f0a98a49b587c9c670333fc9505894828175d5",
+  "new": "        primary = None\n        try:\n            outcome[\"provider\"] = provider(commands, \"cleanup\", None, evidence)\n        except BaseException as failure:\n            outcome[\"providerFailure\"] = error(failure)\n            primary = failure\n        try:\n            owned = recover_owned(commands, evidence)\n            outcome[\"devices\"] = cleanup_devices(commands, evidence, owned)\n            c.require(all(r[\"owned_simulator_cleanup_status\"] == \"COMPLETE\" for r in outcome[\"devices\"]),\n                      \"prior_or_current_cleanup_incomplete\")\n        except BaseException as failure:\n            outcome[\"deviceFailure\"] = error(failure)\n            primary = primary or failure\n        try:\n            outcome[\"loadedAfter\"] = recheck(source)\n        except BaseException as failure:\n            outcome[\"loadedFailure\"] = error(failure)\n            primary = primary or failure\n        if primary:\n            raise primary\n        outcome[\"status\"] = \"PASS\"",
+  "occurrences": 1,
+  "old": "        outcome[\"provider\"] = provider(commands, \"cleanup\", None, evidence)\n        owned = recover_owned(commands, evidence)\n        outcome[\"devices\"] = cleanup_devices(commands, evidence, owned)\n        c.require(all(r[\"owned_simulator_cleanup_status\"] == \"COMPLETE\" for r in outcome[\"devices\"]),\n                  \"prior_or_current_cleanup_incomplete\")\n        outcome[\"loadedAfter\"] = recheck(source)\n        outcome[\"status\"] = \"PASS\"",
+  "scope": "Only cleanup_only provider/device/loaded-check independence; no source admission, helper, selection or deadline change.",
+  "wholeFileInverse": true
+}

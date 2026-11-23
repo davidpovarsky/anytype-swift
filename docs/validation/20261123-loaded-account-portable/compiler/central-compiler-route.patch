@@ -1,0 +1,23 @@
+--- a/.github/workflows/torah-inspector-ipados27.yml
++++ b/.github/workflows/torah-inspector-ipados27.yml
+@@ -44,6 +44,7 @@
+           - t5-corrected-ui
+           - t5-signed-revocation
+           - t5-current-read-proof
++          - loaded-account-arm64-compiler
+           - coherent-heart-native
+           - coherent-heart-apple
+           - coherent-heart-peers
+@@ -278,6 +279,12 @@
+     uses: ./.github/workflows/pinkha-t5-signed-revocation.yml
+     with:
+       runtime_profile: r15-attachment-current-read-v1
++
++  loaded-account-arm64-compiler:
++    if: ${{ inputs.route == 'loaded-account-arm64-compiler' }}
++    uses: ./.github/workflows/pinkha-loaded-account-arm64-compiler.yml
++    with:
++      source_sha: ${{ github.sha }}
+ 
+   coherent-heart-native:
+     if: ${{ inputs.route == 'coherent-heart-native' }}

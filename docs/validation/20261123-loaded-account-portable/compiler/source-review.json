@@ -1,0 +1,96 @@
+{
+  "base_commit": "1eefb4c9fc02e780d8c178f8d2941a1f96131290",
+  "central_route_patch": "central-compiler-route.patch",
+  "containers_created": 0,
+  "existing_source_files_modified": [],
+  "followup": "failure-finalization-review.json",
+  "go_queries": 0,
+  "native_builds": 0,
+  "native_methods_executed": 0,
+  "prior_native_profile": "BLOCKED_COMPILER_SUPPORT_UNCHANGED",
+  "prior_source_freeze": "1b3579734f60b50adc031a578fa9553493ee9191",
+  "producer_executions": 0,
+  "repository_python_imports": [],
+  "root_publication_dispatch_owner": true,
+  "runtime_inputs": {
+    ".github/workflows/pinkha-loaded-account-arm64-compiler.yml": {
+      "bytes": 1689,
+      "classification": "DOWNSTREAM_OWNED_NEW",
+      "mode": "33188",
+      "sha256": "d21711d98031fb8a2ef585e81bed98c9c3bb5acc3f8388d2f84046c718fd6f64"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/native-compiler-support.json": {
+      "bytes": 11930,
+      "classification": "RETAINED_ORIGINAL_UNCHANGED",
+      "mode": "33152",
+      "sha256": "ca681802575e0fd0d135be251184b89949dde0f46a957755ff2c019fa5013a76"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-acquire.sh": {
+      "bytes": 1537,
+      "classification": "DOWNSTREAM_OWNED_NEW",
+      "mode": "33188",
+      "sha256": "1845ef270a6bf93f892aa2ea429179a3cd0a122fca383ec59b720270d6a85bc4"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-contract.json": {
+      "bytes": 3439,
+      "classification": "DOWNSTREAM_OWNED_NEW",
+      "mode": "33188",
+      "sha256": "377d9b906724a23adc65eea04d7d9a9942b0f64337a268dcbc6865204941738f"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-install.sh": {
+      "bytes": 1801,
+      "classification": "DOWNSTREAM_OWNED_NEW",
+      "mode": "33188",
+      "sha256": "53e39efb1fb49bc61680cb5bf39bf2f3608a8bdcf4eb8567c4446deaeaa2f932"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler_producer.py": {
+      "bytes": 34172,
+      "classification": "DOWNSTREAM_OWNED_NEW",
+      "mode": "33188",
+      "sha256": "0fd72d2024a5b3a1bdccb5cb9392a5ae8b646f685b0c56493c7f44feb62370e3"
+    }
+  },
+  "schema": 1,
+  "state": "SOURCE_ONLY_NOT_EXECUTED",
+  "static_checks": [
+    {
+      "check": "ast.parse",
+      "module_imported": false,
+      "path": "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler_producer.py",
+      "status": "PASS"
+    },
+    {
+      "check": "sh -n",
+      "path": "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-acquire.sh",
+      "script_executed": false,
+      "status": "PASS",
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "check": "sh -n",
+      "path": "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-install.sh",
+      "script_executed": false,
+      "status": "PASS",
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "stdlib_imports": [
+    "import argparse",
+    "import hashlib",
+    "import json",
+    "import os",
+    "import pathlib",
+    "import platform",
+    "import re",
+    "import resource",
+    "import shutil",
+    "import signal",
+    "import stat",
+    "import subprocess",
+    "import sys",
+    "import time"
+  ],
+  "subsequent_consumer_requires_actual_artifact_admission": true
+}

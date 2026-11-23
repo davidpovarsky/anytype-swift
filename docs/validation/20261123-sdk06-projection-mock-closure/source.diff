@@ -1,0 +1,64 @@
+--- a/Tools/PinkhaSimulatorGate/sdk06_component_projection.py
++++ b/Tools/PinkhaSimulatorGate/sdk06_component_projection.py
+@@ -15,7 +15,7 @@
+ import sdk06_compile_support as support
+ 
+ CONTRACT = "Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json"
+-CONTRACT_SHA = "a15e303257382028ca0e1836d0c369d635a52bfded9fcede5b008445471b1c7a"
++CONTRACT_SHA = "90b20a136785a90609881790f8fcc6bd7bd6c6a8a23b7015c778d64cfa0e111a"
+ SOURCE = "75bd6d7af18dfd511e85582ce7f994d2801b7703"
+ PRODUCT = "SDK06PendingTests.xctest"
+ SCHEME = "SDK06PendingComponents"
+@@ -37,7 +37,7 @@
+     raw = (Path(control) / CONTRACT).read_bytes()
+     require(digest(raw) == CONTRACT_SHA, "The fixed component projection contract changed")
+     value = json.loads(raw)
+-    require(value["source_sha"] == SOURCE and len(value["source_files"]) == 7
++    require(value["source_sha"] == SOURCE and len(value["source_files"]) == 8
+             and len(value["attribute_patches"]) == 7
+             and len(value["selection"]["selected"]) == 23
+             and len(value["selection"]["excluded"]) == 7
+@@ -47,7 +47,7 @@
+ 
+ 
+ def projected_sources(inputs, fixed):
+-    require(set(inputs) == set(fixed["source_files"]), "The exact seven Swift inputs are required")
++    require(set(inputs) == set(fixed["source_files"]), "The exact eight Swift inputs are required")
+     result, observed = {}, {}
+     for name, row in fixed["source_files"].items():
+         raw = inputs[name]
+--- a/Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json
++++ b/Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json
+@@ -165,6 +165,12 @@
+       "git_blob": "3cc73bcd160c360fd52333230b7442cbb9c3ed86",
+       "sha256": "3fa0ed72e6adc3bf950bc7913c7fd9caaba96201356508874eed5d626123645f"
+     },
++    "AnytypeTests/Markdown/Mocks/BlockMarkupChangerMock.swift": {
++      "basename": "BlockMarkupChangerMock.swift",
++      "bytes": 1430,
++      "git_blob": "f57396ea7d25adb32eccbaa5baaa090a1ccfd193",
++      "sha256": "3648c5cda4541c0b5297cce33835132a0ebea72f521a66917360cc0bf9dc48cc"
++    },
+     "AnytypeTests/Markdown/Mocks/InfoContainerMock.swift": {
+       "basename": "InfoContainerMock.swift",
+       "bytes": 1714,
+--- a/Tools/PinkhaSimulatorGate/sdk06-original-native-controller-source.json
++++ b/Tools/PinkhaSimulatorGate/sdk06-original-native-controller-source.json
+@@ -194,7 +194,7 @@
+     },
+     "Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json": {
+       "git_mode": "100644",
+-      "sha256": "a15e303257382028ca0e1836d0c369d635a52bfded9fcede5b008445471b1c7a"
++      "sha256": "90b20a136785a90609881790f8fcc6bd7bd6c6a8a23b7015c778d64cfa0e111a"
+     },
+     "Tools/PinkhaSimulatorGate/sdk06-original-native-45139431216-1.json": {
+       "git_mode": "100644",
+@@ -222,7 +222,7 @@
+     },
+     "Tools/PinkhaSimulatorGate/sdk06_component_projection.py": {
+       "git_mode": "100644",
+-      "sha256": "14604065db98d414c4cfd4c74104e3316638ed26aeda5e1ca53f2b073f7fd299"
++      "sha256": "d8ac49cf7fa8b9baa3f80525c053dd3bc38450674aaaf38de2a28fd95ec66725"
+     },
+     "Tools/PinkhaSimulatorGate/sdk06_enumeration_probe.py": {
+       "git_mode": "100644",

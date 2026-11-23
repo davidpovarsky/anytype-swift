@@ -1,0 +1,245 @@
+[
+    {
+        "Id": "c361fa718873ac711d53d3e3d94bc7cd780921528a04acca546efb142281dd83",
+        "Created": "2026-11-23T20:43:27.632075547Z",
+        "Path": "/bin/sh",
+        "Args": [
+            "/scripts/compiler-acquire.sh"
+        ],
+        "State": {
+            "Status": "created",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "0001-01-01T00:00:00Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "Image": "sha256:31b7df755869f3d5b0a8a87e0f29ea85cac62a522f008681d304e311160d181f",
+        "ResolvConfPath": "",
+        "HostnamePath": "",
+        "HostsPath": "",
+        "LogPath": "",
+        "Name": "/pinkha-c-compiler-45262244082-1-acquire",
+        "RestartCount": 0,
+        "Driver": "overlay2",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": [
+                "/home/runner/work/_temp/pinkha-loaded-account-compiler/acquire:/out:rw",
+                "/home/runner/work/anytype-swift/anytype-swift/Tools/AnyEngineValidation/loaded_account_witness/portable:/scripts:ro"
+            ],
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "none",
+                "Config": {}
+            },
+            "NetworkMode": "bridge",
+            "PortBindings": {},
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "CapAdd": null,
+            "CapDrop": null,
+            "CgroupnsMode": "private",
+            "Dns": [],
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": false,
+            "SecurityOpt": null,
+            "Tmpfs": {
+                "/var/lib/postgresql/data": "rw,noexec,nosuid,nodev,size=16777216,mode=0700"
+            },
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 2147483648,
+            "NanoCpus": 2000000000,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 2147483648,
+            "MemorySwappiness": null,
+            "OomKillDisable": false,
+            "PidsLimit": 128,
+            "Ulimits": [],
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "MaskedPaths": [
+                "/proc/asound",
+                "/proc/acpi",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/sys/firmware",
+                "/sys/devices/virtual/powercap"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "GraphDriver": {
+            "Data": {
+                "ID": "c361fa718873ac711d53d3e3d94bc7cd780921528a04acca546efb142281dd83",
+                "LowerDir": "/var/lib/docker/overlay2/1f85f36015a8bf63e9269d54c497f47531b6e95c4e8c4b86c56faea0b2a60a6a-init/diff:/var/lib/docker/overlay2/8a0bd5ffffd2415fe00cda61b6eb5604d4008109d356616fbe2361eb72334a2c/diff:/var/lib/docker/overlay2/392df44669238485c88f1562c3901d0340af8abad9d3ef0b7f1a63dbae35774a/diff:/var/lib/docker/overlay2/bcfef7fa7abb775997f55692c0e838e8a91ffbfb2f0ccb50f57c26b9b5f66320/diff:/var/lib/docker/overlay2/6ac910523a72312428c76d44c5c1b3498d6947acb0ff4b253d811ed4b80178da/diff:/var/lib/docker/overlay2/87a5311dd36e8ce928584d7a88319997804a2f9d83604dde0d9dad17daa81a4f/diff:/var/lib/docker/overlay2/8edc7493db90efa1013a399770628c246f4aa8907511956602004414e02c618b/diff:/var/lib/docker/overlay2/7589283a755b6390a5fb6645ec23a90a7c33aeca0125e6cac3161e9f513f8e8d/diff:/var/lib/docker/overlay2/3f02e723a03876587e779e683dfaba405d049e938168a35f8d7a133b88264aa0/diff:/var/lib/docker/overlay2/32dc174ad34eabcbf2b4c340bdaa7dbdd1cb4fd20df17ae0f2d26f86e62b644f/diff:/var/lib/docker/overlay2/bd03be694de7ea39b74f23bea15583ef24f3de0958dba9091855a9f26c655ee3/diff",
+                "MergedDir": "/var/lib/docker/overlay2/1f85f36015a8bf63e9269d54c497f47531b6e95c4e8c4b86c56faea0b2a60a6a/merged",
+                "UpperDir": "/var/lib/docker/overlay2/1f85f36015a8bf63e9269d54c497f47531b6e95c4e8c4b86c56faea0b2a60a6a/diff",
+                "WorkDir": "/var/lib/docker/overlay2/1f85f36015a8bf63e9269d54c497f47531b6e95c4e8c4b86c56faea0b2a60a6a/work"
+            },
+            "Name": "overlay2"
+        },
+        "Mounts": [
+            {
+                "Type": "bind",
+                "Source": "/home/runner/work/anytype-swift/anytype-swift/Tools/AnyEngineValidation/loaded_account_witness/portable",
+                "Destination": "/scripts",
+                "Mode": "ro",
+                "RW": false,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "bind",
+                "Source": "/home/runner/work/_temp/pinkha-loaded-account-compiler/acquire",
+                "Destination": "/out",
+                "Mode": "rw",
+                "RW": true,
+                "Propagation": "rprivate"
+            }
+        ],
+        "Config": {
+            "Hostname": "c361fa718873",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": true,
+            "AttachStderr": true,
+            "ExposedPorts": {
+                "5432/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GOSU_VERSION=1.20",
+                "LANG=en_US.utf8",
+                "PG_MAJOR=16",
+                "PG_VERSION=16.16",
+                "PG_SHA256=9d5cd8633043b75740d5d59749c6b7365e6aeb53c47098b1a5e80bb18f87881a",
+                "DOCKER_PG_LLVM_DEPS=llvm21-dev \t\tclang21",
+                "PGDATA=/var/lib/postgresql/data"
+            ],
+            "Cmd": [
+                "/scripts/compiler-acquire.sh"
+            ],
+            "Image": "postgres@sha256:f2f98726820d0342055351c6e9d36e705f5bfffb3dd53ff556325114b08afb6d",
+            "Volumes": {
+                "/var/lib/postgresql/data": {}
+            },
+            "WorkingDir": "/",
+            "Entrypoint": [
+                "/bin/sh"
+            ],
+            "OnBuild": null,
+            "Labels": {
+                "org.anytapy.attempt": "1",
+                "org.anytapy.phase": "acquire",
+                "org.anytapy.run": "45262244082",
+                "org.anytapy.scope": "loaded-account-compiler",
+                "org.anytapy.source": "56b4caafae1c0898b483717abed495f2e3b9281b"
+            },
+            "StopSignal": "SIGTERM"
+        },
+        "NetworkSettings": {
+            "Bridge": "",
+            "SandboxID": "",
+            "SandboxKey": "",
+            "Ports": {},
+            "HairpinMode": false,
+            "LinkLocalIPv6Address": "",
+            "LinkLocalIPv6PrefixLen": 0,
+            "SecondaryIPAddresses": null,
+            "SecondaryIPv6Addresses": null,
+            "EndpointID": "",
+            "Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "IPAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "MacAddress": "",
+            "Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "MacAddress": "",
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "",
+                    "EndpointID": "",
+                    "Gateway": "",
+                    "IPAddress": "",
+                    "IPPrefixLen": 0,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": null
+                }
+            }
+        }
+    }
+]

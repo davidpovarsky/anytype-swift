@@ -1,0 +1,76 @@
+"""Exact 14fa cleanup policy with scoped dependencies for the new current-App caller."""
+from __future__ import annotations
+import subprocess
+import time
+from types import SimpleNamespace
+from uuid import UUID
+import contracts as current
+import current_execution as driver
+
+def valid_uuid(value):
+    try:
+        return isinstance(value, str) and str(UUID(value)).upper() == value
+    except (ValueError, TypeError, AttributeError):
+        return False
+
+contract = SimpleNamespace(require=current.require, digest=driver.digest)
+execution = SimpleNamespace(command_json=driver.read)
+proof = SimpleNamespace(uuid=valid_uuid)
+TOTAL_SECONDS = 60.0
+ORIGINAL_POLICY_SHA256 = "14fa818cdf6c2cf8b7b1f78c075bad8e98240bf1f40d2d50acf6fb3c5fd74cc6"
+
+def cleanup_owned_simulator(run, receipt, udid, *, clock=time.monotonic):
+    contract.require(proof.uuid(udid) and receipt.get("owned_simulator", {}).get("udid") == udid,
+                     "Cleanup must address the originally created simulator")
+    started = clock()
+    deadline = started + TOTAL_SECONDS
+    actions = receipt.setdefault("owned_simulator_cleanup", {})
+    shutdown_timeout = False
+    for action in ("shutdown", "delete"):
+        argv = ["xcrun", "simctl", action, udid]
+        budget = min(30.0, max(0.0, deadline - clock()))
+        try:
+            contract.require(budget > 0, "Original simulator cleanup budget exhausted")
+            run(argv, "cleanup-owned-simulator-" + action, timeout=budget)
+            actions[action] = dict(status="PASS_EXIT_0")
+        except BaseException as error:
+            actions[action] = dict(status="FAIL", error_type=type(error).__name__, error=str(error))
+            if action == "shutdown":
+                shutdown_timeout = (isinstance(error, subprocess.TimeoutExpired)
+                    and error.cmd == argv and 0 < error.timeout <= budget)
+    complete = all(actions.get(action, {}).get("status") == "PASS_EXIT_0"
+                   for action in ("shutdown", "delete"))
+    if not complete and shutdown_timeout and actions.get("delete", {}).get("status") == "PASS_EXIT_0":
+        reconciliation = dict(status="NOT_PROVEN", original_shutdown_status="FAIL",
+                              delete_status="PASS_EXIT_0", total_budget_seconds=TOTAL_SECONDS)
+        receipt["owned_simulator_cleanup_reconciliation"] = reconciliation
+        try:
+            budget = min(10.0, max(0.0, deadline - clock()))
+            contract.require(budget > 0, "No original cleanup budget remains for absence observation")
+            argv = ["xcrun", "simctl", "list", "devices", udid, "-j"]
+            path = run(argv, "cleanup-owned-simulator-confirm-absent", timeout=budget)
+            contract.require(path.is_file() and not path.is_symlink() and path.stat().st_size <= 1024**2,
+                             "Owned absence inventory must be a bounded original regular log")
+            inventory = execution.command_json(path)
+            contract.require(set(inventory) == {"devices"} and isinstance(inventory["devices"], dict),
+                             "Owned absence inventory has an unexpected shape")
+            contract.require(all(isinstance(runtime, str) and isinstance(devices, list)
+                                 for runtime, devices in inventory["devices"].items()),
+                             "Owned absence inventory has malformed runtime entries")
+            # A present owned device or any unrelated entry is not absence.
+            # This query never grants permission to signal or delete another ID.
+            contract.require(all(not devices for devices in inventory["devices"].values()),
+                             "The exact owned-UDID query did not establish absence")
+            reconciliation.update(status="VERIFIED_ABSENT_AFTER_DELETE", command=argv,
+                                  inventory_sha256=contract.digest(path))
+            complete = True
+        except BaseException as error:
+            reconciliation.update(error_type=type(error).__name__, error=str(error))
+    finished = clock()
+    within_budget = finished <= deadline
+    receipt["owned_simulator_cleanup_budget"] = dict(
+        total_seconds=TOTAL_SECONDS, elapsed_seconds=finished - started, within_budget=within_budget)
+    # Successful subprocess exit may still arrive late after its owned-group
+    # finalization. The original deadline also applies to that observed outcome.
+    complete = complete and within_budget
+    receipt["owned_simulator_cleanup_status"] = "COMPLETE" if complete else "INCOMPLETE"

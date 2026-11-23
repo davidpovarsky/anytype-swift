@@ -1,0 +1,15 @@
+{
+  "path": ".github/workflows/torah-inspector-ipados27.yml",
+  "before_sha256": "218a91395ca8d0fb5381f3580cc3a302f1eec4cb763be69647b762102ad7f1d8",
+  "after_sha256": "bb013372040bce985470686674f0cef8a1d5f56ebf21e3a01669d047ac174238",
+  "added_option": "loaded-account-arm64-compiler",
+  "appended_inline_job": "  compiler:\n    if: ${{ inputs.route == 'loaded-account-arm64-compiler' }}\n    permissions:\n      contents: read\n    concurrency:\n      group: pinkha-loaded-account-compiler-${{ github.ref }}\n      cancel-in-progress: false\n    runs-on: ubuntu-24.04-arm\n    timeout-minutes: 30\n    steps:\n      - name: Checkout exact compiler-producer controller\n        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683\n        with:\n          ref: ${{ github.sha }}\n          fetch-depth: 1\n          persist-credentials: false\n          sparse-checkout-cone-mode: false\n          sparse-checkout: |\n            /Tools/AnyEngineValidation/loaded_account_witness/portable/\n            /Tools/AnyEngineValidation/loaded_account_witness/native-compiler-support.json\n            /.github/workflows/pinkha-loaded-account-arm64-compiler.yml\n\n      - name: Acquire signed compiler packages and assemble an offline image\n        env:\n          EXPECTED_SOURCE_SHA: ${{ inputs.source_sha || github.sha }}\n        run: python3 -B Tools/AnyEngineValidation/loaded_account_witness/portable/compiler_producer.py --execute\n\n      - name: Preserve original compiler evidence and exact image bytes\n        if: always()\n        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02\n        with:\n          name: Pinkha-Loaded-Account-ARM64-Compiler-${{ github.run_id }}-${{ github.run_attempt }}\n          path: ${{ runner.temp }}/pinkha-loaded-account-compiler\n          include-hidden-files: true\n          compression-level: 0\n          if-no-files-found: error\n          retention-days: 14\n",
+  "all_existing_yaml_values_exact": true,
+  "sdk_before_sha256": "983f420de34ef884c654d1a305b5ddf02024c80f4577a46d7fa068d8d1a1bddd",
+  "sdk_after_sha256": "a92efe23a4488c7ab7d40f243ba81a8fb9d7b5263e5872f352328cb532e770d7",
+  "sdk_changed_rows": [
+    "Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json",
+    "Tools/PinkhaSimulatorGate/sdk06_component_projection.py",
+    ".github/workflows/torah-inspector-ipados27.yml"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "after": "        let parsedBefore = try Anytype_Rpc.Object.Show.Response(\n            serializedBytes: Self.data(\"capture-before-object-show.pb\"))\n        let parsedAfter = try Anytype_Rpc.Object.Show.Response(\n            serializedBytes: Self.data(\"capture-after-object-show.pb\"))\n        before = parsedBefore\n        after = parsedAfter\n        let block = try XCTUnwrap(parsedBefore.objectView.blocks.first {\n",
+  "after_bytes": 11311,
+  "after_sha256": "12582a1736660f75d0a62820920bfc3095cf2ad8b60ac24412004703bacdd412",
+  "before": "        before = try .init(serializedBytes: Self.data(\"capture-before-object-show.pb\"))\n        after = try .init(serializedBytes: Self.data(\"capture-after-object-show.pb\"))\n        let block = try XCTUnwrap(before.objectView.blocks.first {\n",
+  "before_bytes": 11147,
+  "before_sha256": "d4b9d62737e1fa5c0eedf64f9ec5c1fed4fba6271a4854ba619791d51cd2abcf",
+  "builds": 0,
+  "path": "Modules/ProtobufMessages/Tests/ProtobufMessagesTests/PinkhaHeartSemanticAnchorObservationTests.swift",
+  "production_files_changed": 0,
+  "protocol": "page-apply-observation-initializer-local-correction-v1",
+  "reason": "Use local parsed protobuf values in the initializer; XCTUnwrap autoclosure no longer reads a stored property of incompletely initialized self.",
+  "source": "2c9e5152966cdd185b3ceb454bb3a879f244ddf6",
+  "swift_parse": "NOT_RUN",
+  "test_method_and_eight_scenarios_unchanged": true,
+  "tests": 0,
+  "whole_file_inverse_exact": true
+}

@@ -1,0 +1,162 @@
+{
+  "limits": [
+    "Real Commands.run body; injected Popen/wait/terminate/kernel and exactly one final I/O failure per scenario.",
+    "Original exception object retained for six late-I/O failures; failure with no prior error remains FAIL.",
+    "Final log metadata is explicit UNAVAILABLE/null if digest/stat cannot be obtained.",
+    "No actual product process, simulator, old control or Apple/native build execution."
+  ],
+  "loaded": {
+    "contracts": {
+      "path": "/run/anytapy-wave15-source-overlay-20261123/editor/Tools/CurrentAppleValidation/contracts.py",
+      "sha256": "46ec90e911ad622646bdf8fe3fdf67351ac7b576a66af7abb07e5a0e06051ab3"
+    },
+    "current_execution": {
+      "path": "/run/anytapy-wave15-source-overlay-20261123/editor/Tools/CurrentAppleValidation/current_execution.py",
+      "sha256": "f59fbf2bed1f2766111f9103e7b8af4022fb69161afd6d34d1202102228fed7c"
+    }
+  },
+  "newMethods": 1,
+  "originals": {
+    "attempt1/close-original/control-observation.json": {
+      "bytes": 1207,
+      "sha256": "2ef621a1dc0022d071725aa168c6085c0ad8910cc32c9503eab8f553fb4d7eee"
+    },
+    "attempt1/close-original/new-control-command.command.json": {
+      "bytes": 892,
+      "sha256": "0e2ab3638e97643f3b2d150a576f66b913ee05175baee0d0f2a82f2da3853809"
+    },
+    "attempt1/close-original/new-control-command.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "attempt1/close-original/new-control-command.started.json": {
+      "bytes": 331,
+      "sha256": "895a21d37bcf230d762dad0bd77b8093d36b12bb5b3ba1dc43b13ba6ac564fc6"
+    },
+    "attempt1/digest-original/control-observation.json": {
+      "bytes": 1161,
+      "sha256": "7f18206120a49d5482728267c40850893b461dc753c34aa765c5b93b4ddf0ccd"
+    },
+    "attempt1/digest-original/new-control-command.command.json": {
+      "bytes": 845,
+      "sha256": "171dbda2b82f8202b0cd3141918a2dc6f55025df6f4246e08aea93d177980e4b"
+    },
+    "attempt1/digest-original/new-control-command.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "attempt1/digest-original/new-control-command.started.json": {
+      "bytes": 331,
+      "sha256": "16df572b9b7aefd1334ea31f8e88e9bf74171d7aa7e0da5d4ae77341f9e1eee0"
+    },
+    "attempt1/digest-without-original/control-observation.json": {
+      "bytes": 1156,
+      "sha256": "35a0530d54901604641f495ba8c3d465b2b866aef98a6f8a1352513d38720448"
+    },
+    "attempt1/digest-without-original/new-control-command.command.json": {
+      "bytes": 835,
+      "sha256": "a8db28eeb93789dfdcc4a84d6cc5a9d59113e9c567b1cebc3c16115f080787fd"
+    },
+    "attempt1/digest-without-original/new-control-command.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "attempt1/digest-without-original/new-control-command.started.json": {
+      "bytes": 331,
+      "sha256": "e07144fca7bd3cb283ee36729fc4a89e09ad8c4a7dbfb7655a339fda8897a38f"
+    },
+    "attempt1/events.json": {
+      "bytes": 858,
+      "sha256": "3fb77d5c93f4ea5b15bf9c26df4c9f61321b98a45c4be3ac77fb4265b8a71c24"
+    },
+    "attempt1/flush-original/control-observation.json": {
+      "bytes": 1213,
+      "sha256": "0d8e63c71a7b3687cab4e47bf0cfe16bc8b270b916aedb81ee8ed918293c20c8"
+    },
+    "attempt1/flush-original/new-control-command.command.json": {
+      "bytes": 898,
+      "sha256": "26661cc48756609bba5179857717f3487cfc9d25db9ad5479d92ba52047032b9"
+    },
+    "attempt1/flush-original/new-control-command.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "attempt1/flush-original/new-control-command.started.json": {
+      "bytes": 331,
+      "sha256": "66c51dafc167f7bdcd5b6e5ec4d9695bfa1832024365c27df1501f53ee6977c2"
+    },
+    "attempt1/fsync-original/control-observation.json": {
+      "bytes": 1213,
+      "sha256": "631f36cd156214ed5810c9f87838aa0dffeea265127ea407a4cf6734c948fc67"
+    },
+    "attempt1/fsync-original/new-control-command.command.json": {
+      "bytes": 898,
+      "sha256": "efae86d4be6ff862f82b6777433c11cfb6a1871c6e06856146deca4e07a433cf"
+    },
+    "attempt1/fsync-original/new-control-command.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "attempt1/fsync-original/new-control-command.started.json": {
+      "bytes": 331,
+      "sha256": "5a4f19906bf42b820bde74241b97b04ee8ba25acb17713c5b2195e430009941e"
+    },
+    "attempt1/receipt-original/control-observation.json": {
+      "bytes": 1051,
+      "sha256": "578935c08edf25ca23a9debd68b0d12c4d275e1317eba02cc8f8410ee8cb9d4a"
+    },
+    "attempt1/receipt-original/new-control-command.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "attempt1/receipt-original/new-control-command.started.json": {
+      "bytes": 331,
+      "sha256": "d5ffe2c9f9ca67c74c0598bf142fa2e17e59196fcba695f6566c1a9955cb77d0"
+    },
+    "attempt1/result.json": {
+      "bytes": 836,
+      "sha256": "93a70a1add6d487bf54800ffd2762f04c5fc95e585afd316c578ceb64ce65df9"
+    },
+    "attempt1/source-after.json": {
+      "bytes": 572,
+      "sha256": "cb9196d3c8f068af90924486ac655223cadcfe69d30f8bb26d05fba80c276367"
+    },
+    "attempt1/source-before.json": {
+      "bytes": 572,
+      "sha256": "cb9196d3c8f068af90924486ac655223cadcfe69d30f8bb26d05fba80c276367"
+    },
+    "attempt1/stat-original/control-observation.json": {
+      "bytes": 1156,
+      "sha256": "802e6dddf1b3474e49a7780702e25b814d98c964503f90d6b3dde64085bc4e89"
+    },
+    "attempt1/stat-original/new-control-command.command.json": {
+      "bytes": 842,
+      "sha256": "c6512df89d5a942c09c4e0402d3fd1ee17f7ea17093f546dcb7b530a6d388dde"
+    },
+    "attempt1/stat-original/new-control-command.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "attempt1/stat-original/new-control-command.started.json": {
+      "bytes": 331,
+      "sha256": "6b8cf9a1bb7bbd862ae19dd745b92b2f9c0ee1951b0b44fc4404c6a1fc1b0014"
+    },
+    "control-execution.json": {
+      "bytes": 957,
+      "sha256": "c21ab5a8890c25e7fe0cc5abab6cccfc8a0a6f8046f9768595440936a0920b9d"
+    },
+    "control.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "control.stdout": {
+      "bytes": 740,
+      "sha256": "c1c7a2ce81eb34caea82d7d15facce4634f474ea96303cbc935bbe3dca636825"
+    }
+  },
+  "schema": "current-apple-first-error-io-qualification/v1",
+  "sourceBeforeAfterExact": true,
+  "sourceCommit": "b2ba2d34edc01fa692638effd38b50a18d6bf95e",
+  "status": "PASS",
+  "subcases": 7
+}

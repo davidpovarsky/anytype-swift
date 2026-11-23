@@ -1,0 +1,19 @@
+{
+  "afterSHA256": "f59fbf2bed1f2766111f9103e7b8af4022fb69161afd6d34d1202102228fed7c",
+  "base": "772e50a1222257a7241bf09fa61dde1edf5a4c92",
+  "beforeSHA256": "9fcc420df5d51be004b659f47cb601dff833109e18dfd56ae685f2a119c0e2ad",
+  "hunks": [
+    {
+      "new": "        stream = log.open(\"xb\")\n        try:\n            try:",
+      "occurrences": 1,
+      "old": "        with log.open(\"xb\") as stream:\n            try:"
+    },
+    {
+      "new": "                try:\n                    stream.flush()\n                    os.fsync(stream.fileno())\n                except BaseException as failure:\n                    record.setdefault(\"preservationFailures\", []).append(\n                        {\"stage\": \"final_log_flush\", **error(failure)})\n                    primary = primary or failure\n        finally:\n            try:\n                stream.close()\n            except BaseException as failure:\n                record.setdefault(\"preservationFailures\", []).append(\n                    {\"stage\": \"log_close\", **error(failure)})\n                primary = primary or failure\n        record.update(finished=time.time(), logSHA256=None, logBytes=None, logMetadataStatus=\"UNAVAILABLE\")\n        try:\n            record.update(logSHA256=digest(log), logBytes=log.stat().st_size, logMetadataStatus=\"AVAILABLE\")\n        except BaseException as failure:\n            record.setdefault(\"preservationFailures\", []).append(\n                {\"stage\": \"final_log_metadata\", **error(failure)})\n            primary = primary or failure",
+      "occurrences": 1,
+      "old": "                stream.flush()\n                os.fsync(stream.fileno())\n        record.update(finished=time.time(), logSHA256=digest(log), logBytes=log.stat().st_size)"
+    }
+  ],
+  "scope": "Commands.run final flush/close/log-metadata preservation only; exact old owned process/kernel helper bodies and limits retained.",
+  "wholeFileInverse": true
+}

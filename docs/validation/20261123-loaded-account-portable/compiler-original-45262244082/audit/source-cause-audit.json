@@ -1,0 +1,256 @@
+{
+  "account_or_semantic_authority": false,
+  "all_actual_commands_exit_zero": true,
+  "all_owned_command_groups_observed_absent": true,
+  "archive": {
+    "artifact_id": 14860902326,
+    "bytes": 328616,
+    "path": "C:\\Users\\DAVID\\AppData\\Local\\SentinelX\\anytapy-immutable-evidence\\loaded-account-compiler-original-45262244082-1\\original-14860902326.zip",
+    "sha256": "543e97bbd659ed25b78aad7eed340340524894051eebcd209328914c63545ddb"
+  },
+  "audit_scope": "Read retained originals only; no CI API, artifact download, container, build or product execution.",
+  "cause": "The exact declared bind multiset was returned in reversed order; original check_container used ordered-list equality before acquire-start and again during cleanup.",
+  "compiler_image_produced": false,
+  "consumer_admission": false,
+  "container_not_started_as_of_original_inspections": true,
+  "container_observations": [
+    {
+      "actual_binds": [
+        "/home/runner/work/_temp/pinkha-loaded-account-compiler/acquire:/out:rw",
+        "/home/runner/work/anytype-swift/anytype-swift/Tools/AnyEngineValidation/loaded_account_witness/portable:/scripts:ro"
+      ],
+      "declared_binds": [
+        "/home/runner/work/anytype-swift/anytype-swift/Tools/AnyEngineValidation/loaded_account_witness/portable:/scripts:ro",
+        "/home/runner/work/_temp/pinkha-loaded-account-compiler/acquire:/out:rw"
+      ],
+      "equal_as_complete_multiset": true,
+      "equal_as_ordered_list": false,
+      "exact_mount_rows": true,
+      "original_command": "acquire-inspect-before",
+      "original_stdout": {
+        "bytes": 9535,
+        "path": "/home/runner/work/_temp/pinkha-loaded-account-compiler/commands/019-acquire-inspect-before.stdout",
+        "physical": {
+          "st_ctime_ns": "1795466607887426982",
+          "st_dev": "2049",
+          "st_gid": "1001",
+          "st_ino": "6045346",
+          "st_mode": "33152",
+          "st_mtime_ns": "1795466607887426982",
+          "st_nlink": "1",
+          "st_size": "9535",
+          "st_uid": "1001"
+        },
+        "sha256": "189b5927c03c373b6a19111ae090ebac806f850ec1cd01198a3264febde16d1d"
+      },
+      "state": {
+        "Dead": false,
+        "Error": "",
+        "ExitCode": 0,
+        "FinishedAt": "0001-01-01T00:00:00Z",
+        "OOMKilled": false,
+        "Paused": false,
+        "Pid": 0,
+        "Restarting": false,
+        "Running": false,
+        "StartedAt": "0001-01-01T00:00:00Z",
+        "Status": "created"
+      }
+    },
+    {
+      "actual_binds": [
+        "/home/runner/work/_temp/pinkha-loaded-account-compiler/acquire:/out:rw",
+        "/home/runner/work/anytype-swift/anytype-swift/Tools/AnyEngineValidation/loaded_account_witness/portable:/scripts:ro"
+      ],
+      "declared_binds": [
+        "/home/runner/work/anytype-swift/anytype-swift/Tools/AnyEngineValidation/loaded_account_witness/portable:/scripts:ro",
+        "/home/runner/work/_temp/pinkha-loaded-account-compiler/acquire:/out:rw"
+      ],
+      "equal_as_complete_multiset": true,
+      "equal_as_ordered_list": false,
+      "exact_mount_rows": true,
+      "original_command": "acquire-cleanup-before",
+      "original_stdout": {
+        "bytes": 9535,
+        "path": "/home/runner/work/_temp/pinkha-loaded-account-compiler/commands/021-acquire-cleanup-before.stdout",
+        "physical": {
+          "st_ctime_ns": "1795466608397397688",
+          "st_dev": "2049",
+          "st_gid": "1001",
+          "st_ino": "6045352",
+          "st_mode": "33152",
+          "st_mtime_ns": "1795466608397397688",
+          "st_nlink": "1",
+          "st_size": "9535",
+          "st_uid": "1001"
+        },
+        "sha256": "6e74af6a6be3b4696096dc9704f08266d3f351ac242ab62137cd0d64f5efece2"
+      },
+      "state": {
+        "Dead": false,
+        "Error": "",
+        "ExitCode": 0,
+        "FinishedAt": "0001-01-01T00:00:00Z",
+        "OOMKilled": false,
+        "Paused": false,
+        "Pid": 0,
+        "Restarting": false,
+        "Running": false,
+        "StartedAt": "0001-01-01T00:00:00Z",
+        "Status": "created"
+      }
+    }
+  ],
+  "context": {
+    "job": "compiler",
+    "ref": "refs/heads/codex/chatgpt-wave15-shared-20261121",
+    "run_attempt": "1",
+    "run_id": "45262244082",
+    "source_sha": "56b4caafae1c0898b483717abed495f2e3b9281b",
+    "workflow_ref": "davidpovarsky/anytype-swift/.github/workflows/torah-inspector-ipados27.yml@refs/heads/codex/chatgpt-wave15-shared-20261121"
+  },
+  "destination_writes_permitted": false,
+  "go_queries": 0,
+  "historical_cleanup_pass": false,
+  "host_tool_before_after_equal": true,
+  "host_tools": {
+    "docker": {
+      "bytes": 41651784,
+      "path": "/usr/bin/docker",
+      "physical": {
+        "st_ctime_ns": "1794865068776405656",
+        "st_dev": "2049",
+        "st_gid": "0",
+        "st_ino": "99862",
+        "st_mode": "33261",
+        "st_mtime_ns": "1742915275000000000",
+        "st_nlink": "1",
+        "st_size": "41651784",
+        "st_uid": "0"
+      },
+      "sha256": "94128e4afada0d46de642165e79dd70beb08e6775014648013283ed901b68248"
+    },
+    "git": {
+      "bytes": 4524480,
+      "path": "/usr/bin/git",
+      "physical": {
+        "st_ctime_ns": "1794864193765645944",
+        "st_dev": "2049",
+        "st_gid": "0",
+        "st_ino": "96813",
+        "st_mode": "33261",
+        "st_mtime_ns": "1794354549000000000",
+        "st_nlink": "1",
+        "st_size": "4524480",
+        "st_uid": "0"
+      },
+      "sha256": "d97f40df79a102f9b0449f9e6e1455e783770417f7776377a77902cdea8c4b19"
+    }
+  },
+  "loaded_before_after_equal": true,
+  "loaded_source": {
+    "__main__": {
+      "bytes": 34172,
+      "path": "/home/runner/work/anytype-swift/anytype-swift/Tools/AnyEngineValidation/loaded_account_witness/portable/compiler_producer.py",
+      "physical": {
+        "st_ctime_ns": "1795466595796811752",
+        "st_dev": "2049",
+        "st_gid": "1001",
+        "st_ino": "6040959",
+        "st_mode": "33188",
+        "st_mtime_ns": "1795466595796811752",
+        "st_nlink": "1",
+        "st_size": "34172",
+        "st_uid": "1001"
+      },
+      "sha256": "0fd72d2024a5b3a1bdccb5cb9392a5ae8b646f685b0c56493c7f44feb62370e3"
+    }
+  },
+  "native_builds": 0,
+  "native_tests": 0,
+  "original_cleanup": [
+    {
+      "error": {
+        "message": "container_bindings",
+        "type": "Refusal"
+      },
+      "kind": "acquire",
+      "name": "pinkha-c-compiler-45262244082-1-acquire"
+    }
+  ],
+  "original_command_count": 36,
+  "original_final_errors": [
+    {
+      "message": "compiler_container_cleanup_failed",
+      "phase": "owned_cleanup",
+      "type": "Refusal"
+    }
+  ],
+  "original_members_verified": 114,
+  "original_primary_error": {
+    "message": "container_bindings",
+    "type": "Refusal"
+  },
+  "original_status": "FAILED",
+  "original_uncompressed_bytes": 310746,
+  "package_acquisition_started": false,
+  "resources_final": {
+    "free_bytes": 113516785664,
+    "memory_available_bytes": 15484989440,
+    "outputs": {
+      "files": 113,
+      "logical_bytes": 219456
+    }
+  },
+  "resources_start": {
+    "free_bytes": 113815273472,
+    "memory_available_bytes": 15535271936,
+    "outputs": {
+      "files": 0,
+      "logical_bytes": 0
+    }
+  },
+  "schema": "loaded-account-compiler-original-source-cause-audit-v1",
+  "source_before_after_equal": true,
+  "source_bindings": {
+    ".github/workflows/pinkha-loaded-account-arm64-compiler.yml": {
+      "actual_physical_tuple_before_after_equal": true,
+      "bytes": 1689,
+      "git_blob": "823958381b4fd11cb785ec0714c523186e8ae50d",
+      "sha256": "d21711d98031fb8a2ef585e81bed98c9c3bb5acc3f8388d2f84046c718fd6f64"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/native-compiler-support.json": {
+      "actual_physical_tuple_before_after_equal": true,
+      "bytes": 11930,
+      "git_blob": "096616419afdf853163387f0738759a69ad417ac",
+      "sha256": "ca681802575e0fd0d135be251184b89949dde0f46a957755ff2c019fa5013a76"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-acquire.sh": {
+      "actual_physical_tuple_before_after_equal": true,
+      "bytes": 1537,
+      "git_blob": "7667329902b36c77b79cf3e85d775b3d87c5042a",
+      "sha256": "1845ef270a6bf93f892aa2ea429179a3cd0a122fca383ec59b720270d6a85bc4"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-contract.json": {
+      "actual_physical_tuple_before_after_equal": true,
+      "bytes": 3439,
+      "git_blob": "3cb89d90ab0b3599cb63c575be5ffac44687afdf",
+      "sha256": "377d9b906724a23adc65eea04d7d9a9942b0f64337a268dcbc6865204941738f"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-install.sh": {
+      "actual_physical_tuple_before_after_equal": true,
+      "bytes": 1801,
+      "git_blob": "91e0e6d977031740b1bf46c96bdbb876317f716f",
+      "sha256": "53e39efb1fb49bc61680cb5bf39bf2f3608a8bdcf4eb8567c4446deaeaa2f932"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler_producer.py": {
+      "actual_physical_tuple_before_after_equal": true,
+      "bytes": 34172,
+      "git_blob": "08f6c33c619b5a145146fb5ebfefe20a214a417d",
+      "sha256": "0fd72d2024a5b3a1bdccb5cb9392a5ae8b646f685b0c56493c7f44feb62370e3"
+    }
+  },
+  "source_control_tests": 0,
+  "status": "PASS_ORIGINAL_DIAGNOSIS",
+  "time_utc": "2026-11-23T20:55:22Z"
+}
