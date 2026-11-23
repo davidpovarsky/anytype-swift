@@ -50,6 +50,8 @@ on:
           - semantic-anchor-native
           - semantic-page-apple-runtime
           - semantic-page-apple-consumer
+          - semantic-page-apple-mounted
+          - coherent-original-products
           - prepared-migration-apple
           - prepared-inline-file-apple
           - sdk06-enumeration-probe
@@ -305,6 +307,14 @@ jobs:
       native_artifact_run_id: ${{ inputs.source_run_id }}
       native_producer_commit: ${{ inputs.prepared_native_producer_commit }}
       native_artifact_run_attempt: ${{ inputs.prepared_native_artifact_run_attempt }}
+
+  semantic-page-apple-mounted:
+    if: ${{ inputs.route == 'semantic-page-apple-mounted' }}
+    uses: ./.github/workflows/pinkha-semantic-page-apple-mounted.yml
+
+  coherent-original-products:
+    if: ${{ inputs.route == 'coherent-original-products' }}
+    uses: ./.github/workflows/pinkha-coherent-original-products.yml
 
   semantic-page-apple-consumer:
     if: ${{ inputs.route == 'semantic-page-apple-consumer' }}

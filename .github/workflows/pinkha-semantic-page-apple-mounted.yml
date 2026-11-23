@@ -1,0 +1,50 @@
+name: Run mounted Page154 selection and cold reopen from original Products
+
+on:
+  workflow_dispatch: {}
+  workflow_call: {}
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  original-products-mounted:
+    runs-on: xcode-27
+    timeout-minutes: 120
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+      GH_TOKEN: ${{ github.token }}
+      ATTEMPT: build/page154-mounted-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - name: Checkout exact reviewed mounted controller and committed admission
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: build/page154-mounted-${{ github.run_id }}-${{ github.run_attempt }}/app
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Select native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Execute one new preparation and the actual mounted Cancel Create reopen journey
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$ATTEMPT/artifact"
+          python3 -B "$ATTEMPT/app/Tools/PinkhaSemanticAnchorWire/apple_mounted/run.py" \
+            --app "$ATTEMPT/app" \
+            --admission "$ATTEMPT/app/Tools/PinkhaSemanticAnchorWire/apple_mounted/admissions/45106989988-1.json" \
+            --work "$ATTEMPT/work" --evidence "$ATTEMPT/artifact/evidence" \
+            2>&1 | tee "$ATTEMPT/artifact/controller.log"
+      - name: Preserve original admission and every current execution observation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Semantic-Page-Mounted-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/page154-mounted-${{ github.run_id }}-${{ github.run_attempt }}/artifact/
+          retention-days: 14
+          if-no-files-found: error

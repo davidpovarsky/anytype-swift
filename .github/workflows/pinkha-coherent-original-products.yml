@@ -1,0 +1,87 @@
+name: Continue original Release Products with distinct build and execution origins
+
+on:
+  workflow_dispatch: {}
+  workflow_call: {}
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  original-products-release:
+    runs-on: xcode-27
+    timeout-minutes: 150
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+      GH_TOKEN: ${{ github.token }}
+      EVIDENCE: build/coherent-original-products-${{ github.run_id }}-${{ github.run_attempt }}/evidence
+      PRIVATE_WORK: build/coherent-original-products-${{ github.run_id }}-${{ github.run_attempt }}/private
+    steps:
+      - name: Checkout exact current controller with immutable original source history
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Bind the local controller branch to the exact dispatched commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$GITHUB_REF" = "refs/heads/$GITHUB_REF_NAME"
+          case "$GITHUB_REF_NAME" in
+            codex/chatgpt-wave15-*) ;;
+            *) exit 1 ;;
+          esac
+          current_branch="$(git branch --show-current)"
+          if [ -z "$current_branch" ]; then
+            git switch -c "$GITHUB_REF_NAME"
+          else
+            test "$current_branch" = "$GITHUB_REF_NAME"
+          fi
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - name: Select native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Prepare current disposable devices with durable exact ownership
+        id: prepare-owned
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$EVIDENCE"
+          python3 -B Tools/PinkhaSimulatorGate/coherent_original_preflight.py prepare \
+            --control "$GITHUB_WORKSPACE" --evidence "$GITHUB_WORKSPACE/$EVIDENCE" \
+            2>&1 | tee "$EVIDENCE/preflight-controller.log"
+      - name: Restore original d254 Products and execute only unrun Release scopes
+        id: actual-execution
+        timeout-minutes: 120
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B Tools/PinkhaSimulatorGate/coherent_original_products.py \
+            --control "$GITHUB_WORKSPACE" --evidence "$GITHUB_WORKSPACE/$EVIDENCE" \
+            --work "$GITHUB_WORKSPACE/$PRIVATE_WORK" \
+            2>&1 | tee "$EVIDENCE/original-products-controller.log"
+      - name: Complete exact owned preflight cleanup even after early failure
+        if: ${{ always() && steps.prepare-owned.outcome != 'skipped' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B Tools/PinkhaSimulatorGate/coherent_original_preflight.py cleanup \
+            --control "$GITHUB_WORKSPACE" --evidence "$GITHUB_WORKSPACE/$EVIDENCE" \
+            2>&1 | tee "$EVIDENCE/preflight-cleanup-controller.log"
+      - name: Package original logs and current acceptance observations
+        if: always()
+        run: python3 -B Tools/PinkhaNativeDerived/package_evidence.py "$EVIDENCE"
+      - name: Preserve exact original provenance and current results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Coherent-Original-Products-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.EVIDENCE }}/Pinkha-Native-Derived-Evidence.zip
+          retention-days: 14
+          if-no-files-found: error
