@@ -214,11 +214,11 @@ def stop_owned(child, record):
 def interrupt(signum, _frame):
     raise InterruptedError("owned_graph_signal_"+str(signum))
 
-def query_command(argv):
+def query_command(argv, record):
     global CURRENT
-    record = {"argv":argv,"cwd":str(HEART),"started":now(),"status":"FAILED",
+    record.update({"argv":argv,"cwd":str(HEART),"started":now(),"status":"FAILED",
               "primary_error":None,"cleanup_error":None,"owned_group_absent":False,
-              "stdout_complete":False,"stderr_complete":False,"source_enumeration_only":True}
+              "stdout_complete":False,"stderr_complete":False,"source_enumeration_only":True})
     files = {}
     streams = {}
     child = None
@@ -799,15 +799,19 @@ def main():
         require(image.returncode==0 and json.loads(image.stdout)[0]["Id"]==IMAGE,"pinned_image_unavailable")
         require(set(json.loads(image.stdout)[0]["Config"].get("Volumes") or {})=={"/var/lib/postgresql/data"},"unreviewed_image_volume")
         record["ram_preparation"] = ram_prepare()
-        query = query_command(query_argv())
+        query = {}
         record["query"] = query
+        query_command(query_argv(),query)
         require(query["status"]=="PASS","source_query_failed")
         plan = dependency_plan((ATTEMPT/"stdout.log").read_bytes())
         record["dependency_plan"] = save_map(ATTEMPT/"dependency-plan.json.gz",plan)
         record["dependency_files"] = len(plan["inputs"])
         record["packages"] = len(plan["packages"])
     except BaseException as error:
-        record["primary_error"] = {"type":type(error).__name__,"message":str(error)}
+        observed_error = {"type":type(error).__name__,"message":str(error)}
+        record["primary_error"] = query.get("primary_error") if query and query.get("primary_error") is not None else observed_error
+        if record["primary_error"] is not observed_error:
+            record["subsequent_error"] = observed_error
     finally:
         record["container_cleanup"] = query.get("container_cleanup") if query else {"state":"NOT_STARTED"}
         if query and query.get("cleanup_error") is not None:

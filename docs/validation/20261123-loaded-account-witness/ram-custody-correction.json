@@ -1,0 +1,28 @@
+{
+  "actual_mounts_queries_builds_tests": 0,
+  "corrected_sha256": "e5905005b7f367b26ff744a68ed0edd3498a04b2f1a83f17c349025b474a6f5e",
+  "correction": "Caller owns and publishes the same mutable query record before invocation; launch and cleanup fields remain visible after any exception. Original query failure remains primary; any subsequent exception is retained separately.",
+  "finding": "A final query receipt persistence exception could prevent return of the local record, causing main to pass None to RAM cleanup.",
+  "literal_hunks": [
+    {
+      "label": "caller-owned-record",
+      "new": "def query_command(argv, record):\n    global CURRENT\n    record.update({\"argv\":argv,\"cwd\":str(HEART),\"started\":now(),\"status\":\"FAILED\",\n              \"primary_error\":None,\"cleanup_error\":None,\"owned_group_absent\":False,\n              \"stdout_complete\":False,\"stderr_complete\":False,\"source_enumeration_only\":True})",
+      "old": "def query_command(argv):\n    global CURRENT\n    record = {\"argv\":argv,\"cwd\":str(HEART),\"started\":now(),\"status\":\"FAILED\",\n              \"primary_error\":None,\"cleanup_error\":None,\"owned_group_absent\":False,\n              \"stdout_complete\":False,\"stderr_complete\":False,\"source_enumeration_only\":True}"
+    },
+    {
+      "label": "visible-before-any-launch",
+      "new": "        query = {}\n        record[\"query\"] = query\n        query_command(query_argv(),query)",
+      "old": "        query = query_command(query_argv())\n        record[\"query\"] = query"
+    },
+    {
+      "label": "first-error-retained",
+      "new": "    except BaseException as error:\n        observed_error = {\"type\":type(error).__name__,\"message\":str(error)}\n        record[\"primary_error\"] = query.get(\"primary_error\") if query and query.get(\"primary_error\") is not None else observed_error\n        if record[\"primary_error\"] is not observed_error:\n            record[\"subsequent_error\"] = observed_error\n    finally:\n        record[\"container_cleanup\"] = query.get(\"container_cleanup\") if query else {\"state\":\"NOT_STARTED\"}",
+      "old": "    except BaseException as error:\n        record[\"primary_error\"] = {\"type\":type(error).__name__,\"message\":str(error)}\n    finally:\n        record[\"container_cleanup\"] = query.get(\"container_cleanup\") if query else {\"state\":\"NOT_STARTED\"}"
+    }
+  ],
+  "original_sha256": "42fade38df72be4c5faeab9fdd6aa255b9a506f6cce1495e019b5c66955bf70b",
+  "protocol": "ram-graph-custody-correction-v1",
+  "scope": "No source/module/tool/tag/mount/budget/cache/native/test changes",
+  "unexecuted_original_commit": "6e143ebed0fff86441889654cc753dabfa50b42f",
+  "whole_file_inverse": true
+}
