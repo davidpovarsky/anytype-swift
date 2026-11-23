@@ -1,0 +1,23 @@
+test_actual_descriptor_mode_app_dependency_and_exact_field_refusals (test_native_ui_runner_reuse.RetainedRunnerControls.test_actual_descriptor_mode_app_dependency_and_exact_field_refusals) ... ok
+test_original_runner_restore_origin_ledger_and_zero_build_separation (test_native_ui_runner_reuse.RetainedRunnerControls.test_original_runner_restore_origin_ledger_and_zero_build_separation) ... ERROR
+
+======================================================================
+ERROR: test_original_runner_restore_origin_ledger_and_zero_build_separation (test_native_ui_runner_reuse.RetainedRunnerControls.test_original_runner_restore_origin_ledger_and_zero_build_separation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-wave15-native-ui-runner-continuation-20261123/Tools/AnyEnginePort/test_native_ui_runner_reuse.py", line 181, in test_original_runner_restore_origin_ledger_and_zero_build_separation
+    restored = reuse.restore_tree(archive, work, manifest)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-native-ui-runner-continuation-20261123/Tools/AnyEnginePort/native_ui_runner_reuse.py", line 280, in restore_tree
+    return verify_tree(work, manifest, {"protocol": PROFILE, "descriptors": {}})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-native-ui-runner-continuation-20261123/Tools/AnyEnginePort/native_ui_runner_reuse.py", line 233, in verify_tree
+    contract.require(work.is_dir() and work.resolve() == work and not work.is_symlink()
+  File "/mnt/development/projects/worktrees/anytype-wave15-native-ui-runner-continuation-20261123/Tools/AnyEnginePort/native_ui_transition_contract.py", line 39, in require
+    raise ValueError(code)
+ValueError: canonical_private_restored_runner_root_required
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.213s
+
+FAILED (errors=1)

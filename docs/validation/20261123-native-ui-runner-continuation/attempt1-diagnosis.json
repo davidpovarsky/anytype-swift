@@ -1,0 +1,158 @@
+{
+  "approvedCorrection": "work.chmod(0700) immediately after fresh mkdir; keep exact verifier and all existing helpers unchanged",
+  "builds": 0,
+  "firstMethod": "PASS",
+  "loadedAfter": 27,
+  "loadedBefore": 26,
+  "oldMethods": 0,
+  "originalObservations": {
+    "error": {
+      "cleanup": true,
+      "command": [
+        "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_a808b7727d5442a9929b866cf16ce5ef\\sentinelx_bootstrap.ps1",
+        "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_a808b7727d5442a9929b866cf16ce5ef\\script.ps1"
+      ],
+      "cwd": null,
+      "duration": 0.81,
+      "interpreter": "powershell",
+      "ok": true,
+      "output": "{\"path\": \"/mnt/development/projects/diagnostics/native-ui-runner-continuation-controls-20261123/attempt1/original-tests.log\", \"sha256\": \"f8a507da7634d9b27aa56f9e5607ece9d4440d9ab2195279820b0ef333804068\", \"log\": \"test_actual_descriptor_mode_app_dependency_and_exact_field_refusals (test_native_ui_runner_reuse.RetainedRunnerControls.test_actual_descriptor_mode_app_dependency_and_exact_field_refusals) ... ok\\ntest_original_runner_restore_origin_ledger_and_zero_build_separation (test_native_ui_runner_reuse.RetainedRunnerControls.test_original_runner_restore_origin_ledger_and_zero_build_separation) ... ERROR\\n\\n======================================================================\\nERROR: test_original_runner_restore_origin_ledger_and_zero_build_separation (test_native_ui_runner_reuse.RetainedRunnerControls.test_original_runner_restore_origin_ledger_and_zero_build_separation)\\n----------------------------------------------------------------------\\nTraceback (most recent call last):\\n  File \\\"/mnt/development/projects/worktrees/anytype-wave15-native-ui-runner-continuation-20261123/Tools/AnyEnginePort/test_native_ui_runner_reuse.py\\\", line 181, in test_original_runner_restore_origin_ledger_and_zero_build_separation\\n    restored = reuse.restore_tree(archive, work, manifest)\\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \\\"/mnt/development/projects/worktrees/anytype-wave15-native-ui-runner-continuation-20261123/Tools/AnyEnginePort/native_ui_runner_reuse.py\\\", line 280, in restore_tree\\n    return verify_tree(work, manifest, {\\\"protocol\\\": PROFILE, \\\"descriptors\\\": {}})\\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \\\"/mnt/development/projects/worktrees/anytype-wave15-native-ui-runner-continuation-20261123/Tools/AnyEnginePort/native_ui_runner_reuse.py\\\", line 233, in verify_tree\\n    contract.require(work.is_dir() and work.resolve() == work and not work.is_symlink()\\n  File \\\"/mnt/development/projects/worktrees/anytype-wave15-native-ui-runner-continuation-20261123/Tools/AnyEnginePort/native_ui_transition_contract.py\\\", line 39, in require\\n    raise ValueError(code)\\nValueError: canonical_private_restored_runner_root_required\\n\\n----------------------------------------------------------------------\\nRan 2 tests in 0.213s\\n\\nFAILED (errors=1)\\n\", \"events\": [{\"at\": \"2026-11-23T14:27:14.628543+00:00\", \"outcome\": \"START\", \"test\": \"test_native_ui_runner_reuse.RetainedRunnerControls.test_actual_descriptor_mode_app_dependency_and_exact_field_refusals\"}, {\"at\": \"2026-11-23T14:27:14.751278+00:00\", \"outcome\": \"PASS\", \"test\": \"test_native_ui_runner_reuse.RetainedRunnerControls.test_actual_descriptor_mode_app_dependency_and_exact_field_refusals\"}, {\"at\": \"2026-11-23T14:27:14.753908+00:00\", \"outcome\": \"START\", \"test\": \"test_native_ui_runner_reuse.RetainedRunnerControls.test_original_runner_restore_origin_ledger_and_zero_build_separation\"}, {\"at\": \"2026-11-23T14:27:14.838108+00:00\", \"exception\": \"ValueError\", \"message\": \"canonical_private_restored_runner_root_required\", \"outcome\": \"ERROR\", \"test\": \"test_native_ui_runner_reuse.RetainedRunnerControls.test_original_runner_restore_origin_ledger_and_zero_build_separation\"}]}",
+      "returncode": 0,
+      "sudo": false
+    },
+    "modes": {
+      "cleanup": true,
+      "command": [
+        "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_45f677561fd249d5bf6b40a10d9bdb8f\\sentinelx_bootstrap.ps1",
+        "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_45f677561fd249d5bf6b40a10d9bdb8f\\script.ps1"
+      ],
+      "cwd": null,
+      "duration": 1.03,
+      "interpreter": "powershell",
+      "ok": true,
+      "output": "{\"paths\": [{\"path\": \"/mnt/development/projects/diagnostics\", \"mode\": \"0o2775\", \"uid\": 1001, \"gid\": 1002, \"canonical\": true, \"symlink\": false}, {\"path\": \"/mnt/development/projects/diagnostics/native-ui-runner-continuation-controls-20261123\", \"mode\": \"0o2700\", \"uid\": 1001, \"gid\": 1002, \"canonical\": true, \"symlink\": false}, {\"path\": \"/mnt/development/projects/diagnostics/native-ui-runner-continuation-controls-20261123/attempt1\", \"mode\": \"0o2700\", \"uid\": 1001, \"gid\": 1002, \"canonical\": true, \"symlink\": false}, {\"path\": \"/mnt/development/projects/diagnostics/native-ui-runner-continuation-controls-20261123/attempt1/temporary-controls\", \"mode\": \"0o2700\", \"uid\": 1001, \"gid\": 1002, \"canonical\": true, \"symlink\": false}]}",
+      "returncode": 0,
+      "sudo": false
+    },
+    "source": {
+      "cleanup": true,
+      "command": [
+        "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_46d00fd5768e45c69d261708f0453ea8\\sentinelx_bootstrap.ps1",
+        "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_46d00fd5768e45c69d261708f0453ea8\\script.ps1"
+      ],
+      "cwd": null,
+      "duration": 0.79,
+      "interpreter": "powershell",
+      "ok": true,
+      "output": "{\"safe_relative\": \"def safe_relative(name):\\n    path = PurePosixPath(name)\\n    require(isinstance(name, str) and name and not path.is_absolute() and \\\"\\\\\\\\\\\" not in name\\n            and \\\"\\\\x00\\\" not in name and all(p not in {\\\".\\\", \\\"..\\\", \\\"\\\"} for p in name.split(\\\"/\\\"))\\n            and path.as_posix() == name, \\\"unsafe_original_member_path\\\")\\n    return path\", \"restore_tar\": \"def restore_tar(archive, products, entries):\\n    require(not products.exists(), \\\"fresh_products_destination_required\\\")\\n    expected = {x[\\\"name\\\"]: x for x in entries}\\n    require(len(expected) == len(entries) and expected, \\\"unique_original_product_inventory_required\\\")\\n    for name in expected:\\n        safe_relative(name)\\n    products.mkdir(parents=True)\\n    seen = set()\\n    with tarfile.open(archive, \\\"r:gz\\\") as stream:\\n        for entry in stream:\\n            name = entry.name\\n            safe_relative(name)\\n            wanted = expected.get(name)\\n            require(wanted is not None and name not in seen, \\\"unadmitted_or_duplicate_product_entry\\\")\\n            seen.add(name)\\n            kind = \\\"directory\\\" if entry.isdir() else \\\"file\\\" if entry.isfile() else \\\"forbidden\\\"\\n            require(kind == wanted[\\\"kind\\\"] and entry.mode == wanted[\\\"mode\\\"]\\n                    and entry.size == wanted[\\\"bytes\\\"], \\\"product_entry_type_mode_or_size_changed\\\")\\n            target = products / name\\n            require(target.resolve().is_relative_to(products.resolve()) and not target.is_symlink(),\\n                    \\\"product_restore_path_escape\\\")\\n            if entry.isdir():\\n                target.mkdir(parents=True, exist_ok=True)\\n            else:\\n                target.parent.mkdir(parents=True, exist_ok=True)\\n                with stream.extractfile(entry) as source, target.open(\\\"xb\\\") as output:\\n                    shutil.copyfileobj(source, output)\\n                require(file_sha(target) == wanted[\\\"sha256\\\"], \\\"restored_product_bytes_changed\\\")\\n            target.chmod(entry.mode)\\n    require(seen == set(expected), \\\"missing_original_product_entry\\\")\", \"entries\": [{\"name\": \"Build/Products/Debug-iphonesimulator\", \"bytes\": 0, \"kind\": \"directory\", \"mode\": 493}, {\"name\": \"Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app\", \"bytes\": 0, \"kind\": \"directory\", \"mode\": 493}, {\"name\": \"Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns\", \"bytes\": 0, \"kind\": \"directory\", \"mode\": 493}, {\"name\": \"Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest\", \"bytes\": 0, \"kind\": \"directory\", \"mode\": 493}, {\"name\": \"Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest/_CodeSignature\", \"bytes\": 0, \"kind\": \"directory\", \"mode\": 493}, {\"name\": \"Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/_CodeSignature\", \"bytes\": 0, \"kind\": \"directory\", \"mode\": 493}, {\"name\": \"Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests.swiftmodule\", \"bytes\": 0, \"kind\": \"directory\", \"mode\": 493}, {\"name\": \"Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests.swiftmodule/Project\", \"bytes\": 0, \"kind\": \"directory\", \"mode\": 493}], \"current_umask_note\": \"Read-only; no recreation or test execution\"}",
+      "returncode": 0,
+      "sudo": false
+    }
+  },
+  "originals": [
+    {
+      "bytes": 7128,
+      "copiedPath": "docs/validation/20261123-native-ui-runner-continuation/attempt1-originals/attempt1/events.jsonl",
+      "originalPath": "/mnt/development/projects/diagnostics/native-ui-runner-continuation-controls-20261123/attempt1/events.jsonl",
+      "sha256": "de0798e403a16eb503a7b714c1fc4f52a17aee497dc88f7dd0ce20e1e759f7f1"
+    },
+    {
+      "bytes": 1317,
+      "copiedPath": "docs/validation/20261123-native-ui-runner-continuation/attempt1-originals/attempt1/invocation.json",
+      "originalPath": "/mnt/development/projects/diagnostics/native-ui-runner-continuation-controls-20261123/attempt1/invocation.json",
+      "sha256": "45447fcdc877f76262b82f0da614f73aaa4195dbf8d294867b551a64c5c8186d"
+    },
+    {
+      "bytes": 5410,
+      "copiedPath": "docs/validation/20261123-native-ui-runner-continuation/attempt1-originals/attempt1/loaded-after.json",
+      "originalPath": "/mnt/development/projects/diagnostics/native-ui-runner-continuation-controls-20261123/attempt1/loaded-after.json",
+      "sha256": "640213500b1c45f91503b85a0852920ace7d7af73c04e5146a8de1df54703d2b"
+    },
+    {
+      "bytes": 5203,
+      "copiedPath": "docs/validation/20261123-native-ui-runner-continuation/attempt1-originals/attempt1/loaded-before.json",
+      "originalPath": "/mnt/development/projects/diagnostics/native-ui-runner-continuation-controls-20261123/attempt1/loaded-before.json",
+      "sha256": "b28eec761fe67b37de2cb40fdd050c520603fd161e2eea249ca2d913ccb89c80"
+    },
+    {
+      "bytes": 1036,
+      "copiedPath": "docs/validation/20261123-native-ui-runner-continuation/attempt1-originals/attempt1/original-files.json",
+      "originalPath": "/mnt/development/projects/diagnostics/native-ui-runner-continuation-controls-20261123/attempt1/original-files.json",
+      "sha256": "d0b41665ae7215525a67b7b70c52b4861193fec840656fd03181531bffd32684"
+    },
+    {
+      "bytes": 2090,
+      "copiedPath": "docs/validation/20261123-native-ui-runner-continuation/attempt1-originals/attempt1/original-tests.log",
+      "originalPath": "/mnt/development/projects/diagnostics/native-ui-runner-continuation-controls-20261123/attempt1/original-tests.log",
+      "sha256": "f8a507da7634d9b27aa56f9e5607ece9d4440d9ab2195279820b0ef333804068"
+    },
+    {
+      "bytes": 1795,
+      "copiedPath": "docs/validation/20261123-native-ui-runner-continuation/attempt1-originals/attempt1/receipt.json",
+      "originalPath": "/mnt/development/projects/diagnostics/native-ui-runner-continuation-controls-20261123/attempt1/receipt.json",
+      "sha256": "8c1f71b3014d2f027a5d2b45efabd0aa791a92b3283a221fe1d765a88ef0842a"
+    },
+    {
+      "bytes": 53144,
+      "copiedPath": "docs/validation/20261123-native-ui-runner-continuation/attempt1-originals/attempt1/source-after.json",
+      "originalPath": "/mnt/development/projects/diagnostics/native-ui-runner-continuation-controls-20261123/attempt1/source-after.json",
+      "sha256": "14583c638ece320ba16567611ca94052855b4db142fdd221671f4ba7d2de4344"
+    },
+    {
+      "bytes": 53144,
+      "copiedPath": "docs/validation/20261123-native-ui-runner-continuation/attempt1-originals/attempt1/source-before.json",
+      "originalPath": "/mnt/development/projects/diagnostics/native-ui-runner-continuation-controls-20261123/attempt1/source-before.json",
+      "sha256": "14583c638ece320ba16567611ca94052855b4db142fdd221671f4ba7d2de4344"
+    },
+    {
+      "bytes": 1087,
+      "copiedPath": "docs/validation/20261123-native-ui-runner-continuation/attempt1-originals/launch-result.json",
+      "originalPath": "/mnt/development/projects/diagnostics/native-ui-runner-continuation-controls-20261123/launch-result.json",
+      "sha256": "276f8b16022861d3d4fc99a77a03710d2ceeadfc41d7066d8262a4e07c2cef60"
+    },
+    {
+      "bytes": 0,
+      "copiedPath": "docs/validation/20261123-native-ui-runner-continuation/attempt1-originals/process.stderr",
+      "originalPath": "/mnt/development/projects/diagnostics/native-ui-runner-continuation-controls-20261123/process.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1679,
+      "copiedPath": "docs/validation/20261123-native-ui-runner-continuation/attempt1-originals/process.stdout",
+      "originalPath": "/mnt/development/projects/diagnostics/native-ui-runner-continuation-controls-20261123/process.stdout",
+      "sha256": "783cbdea37a6777ea24f838b3157021bd9b4572ce2f12f6f7639ea7310bb4b7a"
+    },
+    {
+      "bytes": 16428,
+      "copiedPath": "docs/validation/20261123-native-ui-runner-continuation/attempt1-originals/run-controls.py",
+      "originalPath": "/mnt/development/projects/diagnostics/native-ui-runner-continuation-controls-20261123/run-controls.py",
+      "sha256": "bbe9a25798f8d9f635d4a8b6bb64dac1fccf502d2a0dbed12cc36443a8125a58"
+    }
+  ],
+  "overall": "FAIL",
+  "productTests": 0,
+  "protocol": "retained-ui-runner-attempt1-preserved-v1",
+  "rootCause": "New owned work.mkdir(0700) inherits setgid from Oracle diagnostics02775; verify_tree correctly rejects resulting02700. Temporary fixture removed on exception; surviving ancestor modes directly observed. Existing extractor leaves work-root mode untouched.",
+  "secondMethod": "ERROR",
+  "source": "86de1704c4bf40528de10f6d2a80e6f852a1d0bb",
+  "sourceInputs": 164,
+  "sourceUnchanged": true
+}

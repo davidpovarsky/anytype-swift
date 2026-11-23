@@ -1,0 +1,40 @@
+{
+  "actualMethodsPassed": [
+    "test_native_ui_runner_reuse.RetainedRunnerControls.test_actual_descriptor_mode_app_dependency_and_exact_field_refusals"
+  ],
+  "actualMethodsStarted": [
+    "test_native_ui_runner_reuse.RetainedRunnerControls.test_actual_descriptor_mode_app_dependency_and_exact_field_refusals",
+    "test_native_ui_runner_reuse.RetainedRunnerControls.test_original_runner_restore_origin_ledger_and_zero_build_separation"
+  ],
+  "actualSubcasesFailed": 0,
+  "actualSubcasesPassed": 13,
+  "builds": 0,
+  "claim": "Offline new controller controls only; no Mac execution, App acceptance, or original failure relabelling",
+  "elapsedSeconds": 0.5168246850371361,
+  "failure": {
+    "message": "new_controls_not_all_successful",
+    "traceback": "Traceback (most recent call last):\n  File \"/mnt/development/projects/diagnostics/native-ui-runner-continuation-controls-20261123/run-controls.py\", line 272, in main\n    require(result.testsRun == 2 and not result.skipped and result.wasSuccessful(),\n  File \"/mnt/development/projects/diagnostics/native-ui-runner-continuation-controls-20261123/run-controls.py\", line 38, in require\n    raise RuntimeError(message)\nRuntimeError: new_controls_not_all_successful\n",
+    "type": "RuntimeError"
+  },
+  "finalCapacity": {
+    "freeBytes": 3085877248,
+    "observedAt": "2026-11-23T14:27:14.948755+00:00",
+    "reserveBytes": 2500000000
+  },
+  "loadedAfter": 27,
+  "loadedBefore": 26,
+  "oldMethods": 0,
+  "productTests": 0,
+  "protocol": "pinkha-native-ui-retained-runner-controls-v1",
+  "source": "86de1704c4bf40528de10f6d2a80e6f852a1d0bb",
+  "sourceInputs": 164,
+  "sourceUnchanged": true,
+  "status": "FAIL",
+  "testResult": {
+    "errors": 1,
+    "failures": 0,
+    "methods": 2,
+    "skips": 0,
+    "wasSuccessful": false
+  }
+}
