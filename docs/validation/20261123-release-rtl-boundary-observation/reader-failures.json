@@ -1,0 +1,33 @@
+{
+  "candidate_display": {
+    "candidate_store_completed": true,
+    "error": "ReferenceError: TextEncoder is not defined",
+    "scope": "in-memory metadata display only",
+    "source_files_written": 0,
+    "tests": 0
+  },
+  "diagnostic_filename": {
+    "duration": 0.88,
+    "ok": true,
+    "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 6, in <module>\nAssertionError",
+    "returncode": 1
+  },
+  "large_source_display": {
+    "_truncation": {
+      "continuation_available": false,
+      "delivered_bytes": 124418,
+      "execution_status": "completed",
+      "original_bytes": 145806,
+      "response_truncated": true
+    },
+    "claim": "No complete historical output claim; existing immutable source-analysis and narrower source receipts remain authoritative.",
+    "full_original_tool_output_copied": false,
+    "returncode": 0
+  },
+  "spindump_hash_api": {
+    "duration": 1.05,
+    "ok": true,
+    "output": "Method invocation failed because [System.Security.Cryptography.SHA256] does not contain a method named 'HashData'.\r\nAt line:17 char:3\r\n+   $sha=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashDat ...\r\n+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : InvalidOperation: (:) [], ParentContainsErrorRecordException\r\n    + FullyQualifiedErrorId : MethodNotFound",
+    "returncode": 1
+  }
+}

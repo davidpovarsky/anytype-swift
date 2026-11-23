@@ -1,0 +1,226 @@
+{
+  "builds": 0,
+  "ci_mutations": 0,
+  "hierarchy_move": {
+    "action": "Keep existing failed Move method unchanged. If the necessary new product run still stalls, capture the earlier context-menu/animation lifecycle window; do not change XCTest quiescence or widen timeout.",
+    "actual": "HierarchyMove remains FAIL at the 360-second test bound. Passing SourceDrag and all22 previous passes are retained without execution.",
+    "artifact": {
+      "bytes": 268882511,
+      "id": 14841645595,
+      "sha256": "de5009597792cbd863cc657af21ce583407b7094491d7576dd11160f2afa6434"
+    },
+    "attempt": 4,
+    "conclusion": "Both long idle waits precede Move event and destination/native move; the source does not establish a backend deadlock. Deleting about2 seconds of useful evidence does not explain or fix the two60-second waits.",
+    "metadata_packet": {
+      "path": "/mnt/development/projects/diagnostics/native-ui-retained-45196775684-attempt4-result-20261123/audit-metadata-packet1.zip",
+      "sha256": "9a8228e3f52eadba215d440f4db6322ba9ef50bb1b6938e8454520eac7416963"
+    },
+    "original_log": {
+      "bytes": 237038,
+      "member": "originals/native-ui-transition-candidate/native-ui-continuation/test.log",
+      "sha256": "6b9f39677986877114f9a2e7ba770eae8c66bcb2a07e9f7276cb1cfbf940dde8"
+    },
+    "run_id": 45196775684,
+    "source_boundary": "Original full label draggable is nested inside the open Button with contextMenu. Separate Scope B moves drag ownership to a sibling handle; any improvement to Move waits is still unproved.",
+    "source_commit": "5fc0a95dc1f8573ff55dfcae1f4ae04c1a7cee33",
+    "spindump": {
+      "archive": "C:\\Users\\DAVID\\AppData\\Local\\SentinelX\\anytapy-immutable-evidence\\native-ui-retained-original-45196775684-4\\original-14841645595.zip",
+      "bounded_animation_frames": [
+        {
+          "line": 168,
+          "text": "                                                                                                                                                                        156  -[XCUIApplication _waitForQuiescenceAsPreEvent:] + 96 (XCUIAutomation + 51192) [0x105fe87f8] 1-156"
+        },
+        {
+          "line": 169,
+          "text": "                                                                                                                                                                          156  -[XCUIApplicationProcess waitForQuiescenceIncludingAnimationsIdle:usingActivity:isPreEvent:] + 332 (XCUIAutomation + 91504) [0x105ff2570] 1-156"
+        },
+        {
+          "line": 172,
+          "text": "                                                                                                                                                                                156  __92-[XCUIApplicationProcess waitForQuiescenceIncludingAnimationsIdle:usingActivity:isPreEvent:]_block_invoke + 136 (XCUIAutomation + 91716) [0x105ff2644] 1-156"
+        },
+        {
+          "line": 713,
+          "text": "                                1  __58-[XCTRunnerAutomationSession notifyWhenMainRunLoopIsIdle:]_block_invoke.266 + 20 (XCUIAutomation + 38424) [0x105fe5618] 156"
+        },
+        {
+          "line": 714,
+          "text": "                                  1  __75-[XCUIApplicationProcess _initiateQuiescenceChecksIncludingAnimationsIdle:]_block_invoke + 80 (XCUIAutomation + 92564) [0x105ff2994] 156"
+        }
+      ],
+      "bytes": 13686038,
+      "entry": "native-ui-transition-candidate/native-ui-continuation/private-attachments/4C8661A8-EB02-4460-BBE6-6B92AA8BBDF7.txt",
+      "extraction_performed": false,
+      "headers": [
+        {
+          "line": 1,
+          "text": "Date/Time:        2026-11-23 16:42:14.764 +0000"
+        },
+        {
+          "line": 2,
+          "text": "End time:         2026-11-23 16:42:19.751 +0000"
+        },
+        {
+          "line": 3,
+          "text": "OS Version:       macOS 27.0.1 (Build 26A434)"
+        },
+        {
+          "line": 5,
+          "text": "Report Version:   73"
+        },
+        {
+          "line": 15,
+          "text": "Command:          PinkhaAnyNativeUITests-Runner"
+        },
+        {
+          "line": 22,
+          "text": "Parent:           launchd_sim [2225]"
+        },
+        {
+          "line": 24,
+          "text": "PID:              6192"
+        },
+        {
+          "line": 27,
+          "text": "Duration:         4.99s"
+        },
+        {
+          "line": 28,
+          "text": "Steps:            464 (10ms sampling interval)"
+        },
+        {
+          "line": 30,
+          "text": "Hardware model:   VirtualMac2,1"
+        },
+        {
+          "line": 70,
+          "text": "Parent:           launchd_sim [2225]"
+        }
+      ],
+      "line_count": 133188,
+      "processes": [
+        {
+          "line": 61,
+          "text": "Process:          PinkhaAnyNativeUITests-Runner [6192]"
+        },
+        {
+          "line": 80908,
+          "text": "Process:          PinkhaAnyNative [36582]"
+        },
+        {
+          "line": 105635,
+          "text": "Process:          SimMetalHost (AnyNativePort-451 [2221]"
+        },
+        {
+          "line": 105708,
+          "text": "Process:          SimMetalHost (AnyNativePort-451 [2222]"
+        },
+        {
+          "line": 105781,
+          "text": "Process:          SimMetalHost (AnyNativePort-451 [2223]"
+        },
+        {
+          "line": 118210,
+          "text": "Process:          SpringBoard [2229]"
+        },
+        {
+          "line": 120803,
+          "text": "Process:          testmanagerd [4703]"
+        },
+        {
+          "line": 120849,
+          "text": "Process:          testmanagerd [6182]"
+        },
+        {
+          "line": 123696,
+          "text": "Process:          UIKitSystem [516]"
+        },
+        {
+          "line": 129088,
+          "text": "Process:          xcodebuild [6022]"
+        }
+      ],
+      "sha256": "73b7bb6be1d930329d432fcda608d33640f8f2f8ba74c5ad8a952e7f615254ff"
+    },
+    "spindump_limit": "Recorded at final timeout with cold reopened AppPID36582; earlier menu AppPID26920. It cannot locate the cause of the two earlier menu idle waits.",
+    "timeline_seconds": {
+      "actual_move_event": 299.02,
+      "body_verification": 330.08,
+      "cold_launch": 312.27,
+      "context_menu_idle_before_move_event": [
+        238.26,
+        298.29
+      ],
+      "context_menu_idle_first": [
+        173.77,
+        233.81
+      ],
+      "destination_event": 307.99,
+      "hidden_preference_restoration": 351,
+      "library_ready": 310.94,
+      "move_sheet_ready": 302.22,
+      "source_row_absent": 309.83,
+      "timeout": 360
+    }
+  },
+  "operational_reader_failures": [
+    {
+      "outcome": "Wrong assumed Diagnostics filename; AssertionError before writes. Correct actual declaration is PinkhaStage1AcceptanceState.swift.",
+      "record": "reader-failures.json",
+      "scope": "Bounded diagnostic declaration lookup"
+    },
+    {
+      "outcome": "Source read succeeded but its tool display was truncated; narrower original reads used. No historical source output is represented as complete.",
+      "scope": "Oversized cached-source display"
+    },
+    {
+      "outcome": "Unsupported static SHA256.HashData; source attachment remained unchanged. Corrected API inspected the same original entry; no archive download or extraction.",
+      "record": "reader-failures.json",
+      "scope": "Windows spindump in-memory read"
+    },
+    {
+      "outcome": "TextEncoder absent in orchestration isolate after candidate store. No source writes or executions.",
+      "record": "reader-failures.json",
+      "scope": "In-memory candidate display"
+    }
+  ],
+  "production_source_changes_in_investigation": 0,
+  "rtl": {
+    "actual": "prepareRealApplicationState: 0 PASS, 1 FAIL. Original expectation356 observed typing paragraph raw0 rather than raw1 before third line; later input continued, then a separate Return/focus failure.",
+    "actual_missing_observation": "No original paired paragraph-direction observation spans the first real shouldChange call.",
+    "apple_documentation": {
+      "limitation": "This general API behavior does not identify the actual reset source in the failed run.",
+      "statement": "Apple documents clearing typingAttributes when selection changes.",
+      "url": "https://developer.apple.com/documentation/uikit/uitextview/typingattributes"
+    },
+    "attempt": 4,
+    "language_boundary": "The original preparation explicitly forces RTL on navigation and controller views. Original English/en_GB descriptor settings are not by themselves an explanation.",
+    "next_evidence": "Original unchanged assertion plus synchronous paired primitive observations around the first actual delegate return; separate current Anytype App/test build needed, not performed.",
+    "original_app_commit": "d254a4a1ccd9288f585ff9374088cbaf965b36b4",
+    "retained_failure": "The new diagnostic keeps original expectation356 byte-exact and before the added record. No old result is relabelled.",
+    "run_id": 45190599065,
+    "source_diagnostic_commit": "7c7ed6e96efc997b499bcad9899fbbb29bd91985",
+    "source_mechanism": "Exact empty-row TextBlockContentView shouldChange calls prepareForEditing before the original action. Existing adapter test source models an attribute reset before real delegate insertion; no old test is rerun."
+  },
+  "schema": "release-rtl-and-native-ui-move-investigation/v1",
+  "scope": "Retained original evidence and immutable source reads only; no product or test execution.",
+  "targets": {
+    "native_ui": {
+      "app": "PinkhaAnyNative.app",
+      "configuration": "Debug",
+      "project": "NativeApp/AnyNative.xcodeproj",
+      "scheme": "PinkhaAnyNativeApp",
+      "scope": "Separate new App/runner for the four unresolved methods. SourceDrag+22 retained, no execution.",
+      "tests": "PinkhaAnyNativeUITests"
+    },
+    "release": {
+      "app": "Anytype.app",
+      "configuration": "Release-Anytype",
+      "project": "Anytype.xcodeproj",
+      "scheme": "Anytype",
+      "scope": "New Return3 plus unresolved preparation/paired RTL observations; exact enumeration required later.",
+      "tests": "AnytypeTests"
+    },
+    "shared_build_claim": false
+  },
+  "tests": 0
+}
