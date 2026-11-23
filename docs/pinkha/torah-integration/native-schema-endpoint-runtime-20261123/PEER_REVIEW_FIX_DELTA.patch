@@ -1,0 +1,65 @@
+diff --git a/docs/pinkha/torah-integration/native-schema-endpoint-runtime-20261123/native/clientlibrary/service/annotation_schema_endpoint_native_test.go b/docs/pinkha/torah-integration/native-schema-endpoint-runtime-20261123/native/clientlibrary/service/annotation_schema_endpoint_native_test.go
+index ee7d693867..146a433ac9 100644
+--- a/docs/pinkha/torah-integration/native-schema-endpoint-runtime-20261123/native/clientlibrary/service/annotation_schema_endpoint_native_test.go
++++ b/docs/pinkha/torah-integration/native-schema-endpoint-runtime-20261123/native/clientlibrary/service/annotation_schema_endpoint_native_test.go
+@@ -285,6 +285,10 @@ func newEndpointFixture(t *testing.T) *endpointFixture {
+ 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Minute)
+ 	t.Cleanup(cancel)
+ 	directory := t.TempDir()
++	f := &endpointFixture{ctx: ctx, directory: directory}
++	// Register before any setup can activate the app and then fail. Cleanup
++	// runs before this owned t.TempDir is removed, including setup failures.
++	t.Cleanup(func() { f.stop(t) })
+ 	initial := mw.InitialSetParameters(ctx, &pb.RpcInitialSetParametersRequest{
+ 		Platform: "test", Version: "1.0.0", Workdir: directory,
+ 		LogLevel: "error", DoNotSaveLogs: true, DoNotSendTelemetry: true,
+@@ -313,7 +317,7 @@ func newEndpointFixture(t *testing.T) *endpointFixture {
+ 	if !ok {
+ 		t.Fatal("actual original object creator lacks the accepted native observer")
+ 	}
+-	f := &endpointFixture{
++	*f = endpointFixture{
+ 		ctx: ctx, directory: directory,
+ 		accountID: app.MustComponent[accountservice.Service](native).Account().SignKey.GetPublic().Account(),
+ 		spaces:    app.MustComponent[space.Service](native), blocks: app.MustComponent[*block.Service](native),
+@@ -322,7 +326,6 @@ func newEndpointFixture(t *testing.T) *endpointFixture {
+ 	if f.accountID == "" {
+ 		t.Fatal("actual wallet/account identity is absent")
+ 	}
+-	t.Cleanup(func() { f.stop(t) })
+ 	return f
+ }
+ 
+@@ -509,6 +512,13 @@ func newEndpointOtherIdentity(t *testing.T, ctx context.Context) crypto.PubKey {
+ 	other := application.New()
+ 	other.SetClientVersion("test", "1.0.0")
+ 	directory := t.TempDir()
++	// The actual second account must also stop before its owned directory
++	// cleanup when wallet/account creation or component checks fail.
++	t.Cleanup(func() {
++		if other.GetApp() != nil {
++			endpointNoError(t, other.AccountStop(&pb.RpcAccountStopRequest{RemoveData: true}))
++		}
++	})
+ 	_, _, err := other.WalletCreate(&pb.RpcWalletCreateRequest{RootPath: directory})
+ 	endpointNoError(t, err)
+ 	other.SetEventSender(event.NewCallbackSender(func(*pb.Event) {}))
+@@ -520,7 +530,6 @@ func newEndpointOtherIdentity(t *testing.T, ctx context.Context) crypto.PubKey {
+ 	if account == nil || other.GetApp() == nil {
+ 		t.Fatal("second actual native account is absent")
+ 	}
+-	t.Cleanup(func() { endpointNoError(t, other.AccountStop(&pb.RpcAccountStopRequest{RemoveData: true})) })
+ 	return app.MustComponent[accountservice.Service](other.GetApp()).Account().SignKey.GetPublic()
+ }
+ 
+@@ -546,8 +555,9 @@ func (f *endpointFixture) receipt(t *testing.T, name string, values map[string]a
+ 	values["swift_invocation_qualified"] = false
+ 	raw, err := json.MarshalIndent(values, "", "  ")
+ 	endpointNoError(t, err)
+-	f.write(t, name, append(raw, '\n'))
+-	digest := sha256.Sum256(raw)
++	payload := append(raw, '\n')
++	f.write(t, name, payload)
++	digest := sha256.Sum256(payload)
+ 	t.Logf("actual native endpoint receipt=%s sha256=%s", name, hex.EncodeToString(digest[:]))
+ }
