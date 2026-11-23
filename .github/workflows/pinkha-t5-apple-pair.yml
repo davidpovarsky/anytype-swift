@@ -43,11 +43,26 @@ jobs:
         with:
           python-version: '3.12'
           architecture: arm64
+      - name: Read immutable Hanlin pin from the checked-out host
+        id: hanlin-pin
+        run: |
+          python3 - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          root = Path(".")
+          lock = root / "HanlinSDK.lock.json"
+          record = json.loads((lock if lock.exists() else root / "Tools/Hanlin/source.json").read_text())
+          revision = record["revision"]
+          if not re.fullmatch(r"[a-f0-9]{40}", revision):
+              raise SystemExit("An immutable canonical Hanlin revision is required")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              output.write("revision=" + revision + "\n")
+          PY
       - name: Checkout the canonical Hanlin SDK source
         uses: actions/checkout@v4
         with:
           repository: davidpovarsky/hanlin-ai
-          ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+          ref: ${{ steps.hanlin-pin.outputs.revision }}
           path: build/t5-apple-hanlin-source
           persist-credentials: false
       - name: Prepare and verify the exact SDK dependency
