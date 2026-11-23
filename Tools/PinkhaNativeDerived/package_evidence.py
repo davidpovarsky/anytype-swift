@@ -22,7 +22,12 @@ with zipfile.ZipFile(destination, 'w', compression=zipfile.ZIP_DEFLATED) as arch
         # xcresulttool exports media and UI snapshots with several suffixes,
         # including no suffix. Preserve the whole exported attachment set so
         # its manifest never points at files omitted by this archive filter.
-        if (path.suffix in {'.log', '.json', '.png', '.txt'}
+        early_products = parts in {
+            ('sdk06-early-products', 'BuildProducts.tar.gz'),
+            ('coherent-native-early-products', 'BuildProducts.tar.gz'),
+            ('coherent-ui-early-products', 'BuildProducts.tar.gz'),
+        }
+        if (early_products or path.suffix in {'.log', '.json', '.png', '.txt'}
                 or any(part.endswith(('.xcresult', '-attachments')) for part in parts)):
             archive.write(path, path.relative_to(root).as_posix())
 print(destination)
