@@ -19,6 +19,7 @@ import shutil
 import subprocess
 import sys
 import tarfile
+import time
 from uuid import uuid4
 import zipfile
 
@@ -52,6 +53,63 @@ XCTESTRUN_SHA = "eb7baf907400841fd1a5e7a687ad0a843e12ff6ddab958d8037fed90a7e767d
 SOURCE_INPUTS_SHA = "8fdd584e5eecf8fdabc1bf6059070dc662d2f1e6d7ba75706ed89517c98fa4f8"
 PROBE_PASS = "EXACT23_ENUMERATED_PRODUCT_TESTS_NOT_RUN"
 PROBE_FAIL = "NO_SELECTOR_QUALIFIED_PRODUCT_TESTS_NOT_RUN"
+
+# The original descriptor is separately pinned by XCTESTRUN_SHA. Only its one
+# ephemeral runtime-library token may be relocated; all other injection bytes
+# and the immutable restored descriptor remain unchanged.
+ORIGINAL_MAIN_THREAD_CHECKER = (
+    "/var/run/com.apple.security.cryptexd/mnt/"
+    "com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.DPYuL8/"
+    "Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/"
+    "Contents/Resources/RuntimeRoot/usr/lib/libMainThreadChecker.dylib"
+)
+ENUMERATION_TIMEOUT_SECONDS = 600
+ENUMERATION_TOTAL_SECONDS = 2400
+
+
+def normalize_runtime_injection(target, runtime):
+    """Relocate only the exact original runtime token in the copied target."""
+    require(isinstance(runtime, dict) and runtime.get("isAvailable") is True
+            and isinstance(runtime.get("identifier"), str)
+            and runtime["identifier"].startswith("com.apple.CoreSimulator.SimRuntime.iOS-27-")
+            and "arm64" in runtime.get("supportedArchitectures", []),
+            "Actual available ARM64 iOS27 runtime required for injection")
+    raw_root = runtime.get("runtimeRoot")
+    require(isinstance(raw_root, str) and raw_root.startswith("/") and ":" not in raw_root
+            and "\x00" not in raw_root, "Invalid current runtime root")
+    runtime_root = Path(raw_root).resolve(strict=True)
+    library = (runtime_root / "usr/lib/libMainThreadChecker.dylib").resolve(strict=True)
+    require(library.is_relative_to(runtime_root) and library.is_file()
+            and library.stat().st_size > 4, "Current runtime injection library is not an owned regular file")
+    with library.open("rb") as stream:
+        magic = stream.read(4)
+    require(magic in {b"\xcf\xfa\xed\xfe", b"\xfe\xed\xfa\xcf",
+                      b"\xca\xfe\xba\xbe", b"\xbe\xba\xfe\xca",
+                      b"\xca\xfe\xba\xbf", b"\xbf\xba\xfe\xca"},
+            "Current runtime injection library is not Mach-O")
+    environment = target.get("TestingEnvironmentVariables")
+    require(isinstance(environment, dict), "Missing original testing injection environment")
+    injected = environment.get("DYLD_INSERT_LIBRARIES")
+    require(isinstance(injected, str), "Missing original injected library chain")
+    tokens = injected.split(":")
+    require(tokens.count(ORIGINAL_MAIN_THREAD_CHECKER) == 1
+            and sum(token.endswith("/libMainThreadChecker.dylib") for token in tokens) == 1,
+            "Only the exact original single MainThreadChecker token may be relocated")
+    replacement = str(library)
+    require(":" not in replacement, "Invalid current injection library path")
+    relocated = [replacement if token == ORIGINAL_MAIN_THREAD_CHECKER else token for token in tokens]
+    environment["DYLD_INSERT_LIBRARIES"] = ":".join(relocated)
+    return dict(original_token=ORIGINAL_MAIN_THREAD_CHECKER, replacement_token=replacement,
+                library_sha256=sha(library), library_bytes=library.stat().st_size,
+                runtime_identifier=runtime["identifier"], runtime_version=runtime.get("version"),
+                runtime_build=runtime.get("buildversion"),
+                change_scope="ONE_EXACT_TOKEN_IN_COPIED_TESTING_ENVIRONMENT_ONLY")
+
+
+def enumeration_budget(deadline, now):
+    require(isinstance(deadline, (int, float)) and isinstance(now, (int, float))
+            and deadline > now, "Overall enumeration deadline exhausted")
+    return min(ENUMERATION_TIMEOUT_SECONDS, deadline - now)
 
 
 def require(value, reason):
@@ -180,7 +238,7 @@ def variants(selection):
     ]
 
 
-def copied_configuration(original, destination, variant):
+def copied_configuration(original, destination, variant, *, runtime=None):
     before = original.read_bytes()
     original_value = plistlib.loads(before)
     component.scoped_configuration(original, destination, variant["include"], sys.modules[__name__])
@@ -194,14 +252,23 @@ def copied_configuration(original, destination, variant):
     additions = [item.removeprefix("AnytypeTests/") for item in variant["exclude"]]
     if additions:
         target["SkipTestIdentifiers"] = list(dict.fromkeys(old_skip + additions))
-        with destination.open("wb") as stream:
-            plistlib.dump(value, stream, sort_keys=False)
-    require({key: val for key, val in target.items() if key not in {"OnlyTestIdentifiers", "SkipTestIdentifiers"}} ==
+    injection = normalize_runtime_injection(target, runtime) if runtime is not None else None
+    with destination.open("wb") as stream:
+        plistlib.dump(value, stream, sort_keys=False)
+    # Restore only the recorded exact token in the comparison, never a whole
+    # environment exemption. All other non-selection values must remain equal.
+    comparison = plistlib.loads(plistlib.dumps(target))
+    if injection:
+        comparison["TestingEnvironmentVariables"]["DYLD_INSERT_LIBRARIES"] = (
+            comparison["TestingEnvironmentVariables"]["DYLD_INSERT_LIBRARIES"].replace(
+                injection["replacement_token"], injection["original_token"]))
+    require({key: val for key, val in comparison.items() if key not in {"OnlyTestIdentifiers", "SkipTestIdentifiers"}} ==
             {key: val for key, val in original_target.items() if key not in {"OnlyTestIdentifiers", "SkipTestIdentifiers"}},
             "Non-selection target configuration changed")
     require(original.read_bytes() == before, "Original xctestrun was modified")
     return dict(original_sha256=sha(original), copied_sha256=sha(destination),
-                only=target["OnlyTestIdentifiers"], skip=target.get("SkipTestIdentifiers", []))
+                only=target["OnlyTestIdentifiers"], skip=target.get("SkipTestIdentifiers", []),
+                runtime_injection=injection)
 
 
 # The existing scoped_configuration helper expects this narrow digest interface.
@@ -392,16 +459,21 @@ def execute(args, receipt):
         runner.run(["xcrun", "simctl", "boot", udid], "boot-owned-simulator", 90)
         runner.run(["xcrun", "simctl", "bootstatus", udid, "-b"], "wait-owned-simulator", 180)
         receipt["probes"] = []
+        deadline = time.monotonic() + ENUMERATION_TOTAL_SECONDS
+        receipt["enumeration_limits"] = dict(per_command_seconds=ENUMERATION_TIMEOUT_SECONDS,
+                                             all_variants_seconds=ENUMERATION_TOTAL_SECONDS,
+                                             maximum_variants=4, includes_test_host_startup=True)
         for variant in variants(selection):
             name = variant["name"]
             configuration = original.with_name("SDK06-" + nonce + "-" + name + ".xctestrun")
-            binding = copied_configuration(original, configuration, variant)
+            binding = copied_configuration(original, configuration, variant, runtime=pair["runtime"])
             shutil.copyfile(configuration, args.evidence / (name + ".xctestrun"))
             output = args.evidence / (name + ".enumeration.json")
             record = dict(name=name, status="NOT_QUALIFIED", binding=binding, actual_product_tests_executed=0)
             receipt["probes"].append(record)
             command = enumeration_command(configuration, udid, output, args.evidence / (name + ".xcresult"), variant)
-            _, outcome = runner.run(command, "enumerate-" + name, 240, check=False)
+            _, outcome = runner.run(command, "enumerate-" + name,
+                                    enumeration_budget(deadline, time.monotonic()), check=False)
             require(sha(original) == binding["original_sha256"] and sha(configuration) == binding["copied_sha256"],
                     "Original or candidate descriptor changed during enumeration")
             record["command_return_code"] = outcome["return_code"]
