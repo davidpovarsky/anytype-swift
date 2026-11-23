@@ -61,7 +61,7 @@ public struct AnyHeartSpaceMigrationDryRun: Sendable {
 
     public struct Payload: Sendable {
         public enum Classification: String, Sendable {
-            case withinPreparedInlineByteBound, requiresOtherFileStorage, remoteOnly, missing
+            case withinPreparedInlineByteBound, requiresOtherFileStorage, remoteOnly, missing, unresolvedBinding
         }
         public let path: String?
         public let byteCount: Int?
@@ -112,6 +112,7 @@ public struct AnyHeartSpaceMigrationDryRun: Sendable {
             case blockConversionRequired, unsupportedObjectKind
             case fileOwnerMappingRequired, inlineFileConversionRequired
             case fileStorageUnsupported, remoteFileRecoveryRequired, missingFileBytes
+            case fileIdentityUnresolved, filePathUnresolved, propertyDictionaryPathUnresolved
         }
         public let code: Code
         public let identity: Identity
@@ -174,7 +175,14 @@ public struct AnyHeartSpaceMigrationDryRun: Sendable {
             .map { Data($0.path.utf8) })
         for property in archive.properties { propertyKeys[Data(property.internalKey.utf8)] = property.internalKey }
         let dictionaryPath = archive.index["manifest"]?["properties"]?.string
-        let byPath = Dictionary(uniqueKeysWithValues: archive.originalEntries.map { ($0.path, $0) })
+        let byPath = Dictionary(uniqueKeysWithValues: archive.originalEntries.map { (Data($0.path.utf8), $0) })
+        let entryDigests = Dictionary(uniqueKeysWithValues: archive.entrySHA256.map { (Data($0.key.utf8), $0.value) })
+        let propertiesBySpelling = Dictionary(grouping: archive.properties, by: { Data($0.spelling.utf8) })
+        let fileManifest = Dictionary(uniqueKeysWithValues: archive.filePathsByObjectID.map {
+            (Data($0.key.utf8), (identity: $0.key, path: $0.value))
+        })
+        let fileObjectIDs = Set(archive.objects.filter { $0.kind == "file" || $0.kind == "file_object" }
+            .map { Data($0.sourceID.utf8) })
 
         for object in archive.objects {
             let objectID = identity(.object, object.sourceID)
@@ -217,16 +225,24 @@ public struct AnyHeartSpaceMigrationDryRun: Sendable {
             }
             let values = object.native["properties"]?.object ?? [:]
             let legend = object.native["property_internal_keys"]?.object ?? [:]
+            let rawValues = Dictionary(uniqueKeysWithValues: values.map { (Data($0.key.utf8), $0.value) })
+            let rawLegend = Dictionary(uniqueKeysWithValues: legend.map { (Data($0.key.utf8), $0.value) })
             var spellings: [Data: String] = [:]
             for key in Array(values.keys) + Array(legend.keys) { spellings[Data(key.utf8)] = key }
             for spelling in spellings.values.sorted(by: Self.stringOrder) {
                 let id = identity(.propertyUse, spelling, owner: object.sourceID)
-                let declaredKey = legend[spelling]?.string
-                // Swift String dictionary equality is canonically equivalent.
-                // A native internal-key reference must match the original UTF-8.
-                let resolvedKey = object.propertyInternalKeys[spelling].flatMap {
-                    definitions[Data($0.utf8)] == nil ? nil : $0
-                }
+                let spellingBytes = Data(spelling.utf8)
+                let value = rawValues[spellingBytes], legendValue = rawLegend[spellingBytes]
+                let declaredKey = legendValue?.string
+                // Recheck every cross-dictionary join using exact UTF-8.
+                // String equality may alias both spellings and internal keys.
+                let resolvedKey: String?
+                if let declaredKey {
+                    resolvedKey = definitions[Data(declaredKey.utf8)] == nil ? nil : declaredKey
+                } else if legendValue == nil, let candidates = propertiesBySpelling[spellingBytes],
+                          candidates.count == 1 {
+                    resolvedKey = candidates[0].internalKey
+                } else { resolvedKey = nil }
                 let sourceKey = resolvedKey ?? declaredKey
                 var references = [objectID]
                 if let key = sourceKey {
@@ -236,26 +252,30 @@ public struct AnyHeartSpaceMigrationDryRun: Sendable {
                     references.append(identity(.property, key))
                 }
                 var locations: [Location] = []
-                if values[spelling] != nil { locations.append(location(object.path, "/properties/" + Self.pointer(spelling))) }
-                if legend[spelling] != nil { locations.append(location(object.path, "/property_internal_keys/" + Self.pointer(spelling))) }
-                try add(id, locations: locations, values: values[spelling].map { [$0] } ?? [],
+                if value != nil { locations.append(location(object.path, "/properties/" + Self.pointer(spelling))) }
+                if legendValue != nil { locations.append(location(object.path, "/property_internal_keys/" + Self.pointer(spelling))) }
+                try add(id, locations: locations, values: value.map { [$0] } ?? [],
                         references: references,
                         disposition: resolvedKey == nil ? .unresolvedSourceIdentity : .requiresConversion)
                 if resolvedKey == nil { issue(.propertyIdentityUnresolved, id) }
-                if values[spelling] == nil { issue(.propertyValueMissing, id) }
+                if value == nil { issue(.propertyValueMissing, id) }
                 else { issue(.propertyConversionRequired, id) }
             }
             if object.kind == "file" || object.kind == "file_object" {
                 let id = identity(.file, object.sourceID)
                 let payload: Payload
                 var locations = [location(object.path)]
-                if let path = archive.filePathsByObjectID[object.sourceID],
-                   let entry = byPath[path], let digest = archive.entrySHA256[path] {
-                    let inline = entry.bytes.count < 4096
-                    payload = Payload(path: path, byteCount: entry.bytes.count, sha256: digest,
-                                      classification: inline ? .withinPreparedInlineByteBound : .requiresOtherFileStorage)
-                    locations.append(location(path))
-                    issue(inline ? .inlineFileConversionRequired : .fileStorageUnsupported, id)
+                if let path = fileManifest[Data(object.sourceID.utf8)]?.path {
+                    if let entry = byPath[Data(path.utf8)], let digest = entryDigests[Data(path.utf8)] {
+                        let inline = entry.bytes.count < 4096
+                        payload = Payload(path: path, byteCount: entry.bytes.count, sha256: digest,
+                                          classification: inline ? .withinPreparedInlineByteBound : .requiresOtherFileStorage)
+                        locations.append(location(entry.path))
+                        issue(inline ? .inlineFileConversionRequired : .fileStorageUnsupported, id)
+                    } else {
+                        payload = Payload(path: path, byteCount: nil, sha256: nil, classification: .unresolvedBinding)
+                        issue(.filePathUnresolved, id)
+                    }
                 } else if object.native["file_remote"] != nil {
                     payload = Payload(path: nil, byteCount: nil, sha256: nil, classification: .remoteOnly)
                     issue(.remoteFileRecoveryRequired, id)
@@ -268,6 +288,20 @@ public struct AnyHeartSpaceMigrationDryRun: Sendable {
                 // The file object's identity is not an inferred native owner.
                 issue(.fileOwnerMappingRequired, id)
             }
+        }
+        // The inspector can accept canonically equivalent String joins. Keep
+        // unmatched raw manifest identities separate from file-object rows.
+        for manifest in fileManifest.values.sorted(by: { Self.stringOrder($0.identity, $1.identity) })
+            where !fileObjectIDs.contains(Data(manifest.identity.utf8)) {
+            let id = identity(.file, manifest.identity)
+            let entry = byPath[Data(manifest.path.utf8)]
+            let digest = entryDigests[Data(manifest.path.utf8)]
+            let payload = Payload(path: manifest.path, byteCount: entry?.bytes.count, sha256: digest,
+                                  classification: .unresolvedBinding)
+            try add(id, locations: entry.map { [location($0.path)] } ?? [], values: [.string(manifest.path)],
+                    payload: payload, disposition: .unresolvedSourceIdentity)
+            issue(.fileIdentityUnresolved, id); issue(.fileOwnerMappingRequired, id)
+            if entry == nil { issue(.filePathUnresolved, id) }
         }
 
         var ambiguousTypes = Set<Identity>()
@@ -284,8 +318,11 @@ public struct AnyHeartSpaceMigrationDryRun: Sendable {
             let definition = definitions[bytes]
             // An unresolved legend identity still has an explicit inventory row.
             var locations: [Location] = []
-            if let path = dictionaryPath, definition != nil, let offset = definitionOffsets[bytes] {
+            let dictionaryBound = dictionaryPath.map { byPath[Data($0.utf8)] != nil } ?? false
+            if let path = dictionaryPath, dictionaryBound, definition != nil, let offset = definitionOffsets[bytes] {
                 locations.append(location(path, "/properties/" + String(offset)))
+            } else if definition != nil {
+                issue(.propertyDictionaryPathUnresolved, id)
             }
             let uses = propertyUses[bytes] ?? []
             if definition == nil {
@@ -293,7 +330,7 @@ public struct AnyHeartSpaceMigrationDryRun: Sendable {
                 issue(.propertyIdentityUnresolved, id)
             }
             try add(id, locations: locations, values: definition.map { [$0.native] } ?? [],
-                    references: uses, disposition: definition == nil ? .unresolvedSourceIdentity : .requiresMapping)
+                    references: uses, disposition: definition == nil || !dictionaryBound ? .unresolvedSourceIdentity : .requiresMapping)
         }
 
         var supplied: [Identity: Mapping] = [:]
@@ -338,7 +375,7 @@ public struct AnyHeartSpaceMigrationDryRun: Sendable {
         }
         var entries: [RetainedEntry] = []
         for entry in archive.originalEntries {
-            guard let hash = archive.entrySHA256[entry.path] else {
+            guard let hash = entryDigests[Data(entry.path.utf8)] else {
                 throw AnyHeartSpaceDryRunError.identityCollision("missing inspected entry digest")
             }
             entries.append(RetainedEntry(path: entry.path, byteCount: entry.bytes.count, sha256: hash,

@@ -30,8 +30,13 @@ name cannot substitute for a source type identity.
 Identity equality and report symbols use length-framed raw UTF-8, including
 kind, source Space and optional owning object. A block ID in another object,
 a file ID and an object ID are different identities. The consumer rechecks
-property-definition membership by exact UTF-8; Swift's canonically equivalent
-String dictionary lookup cannot establish a native property identity.
+every property value/legend/spelling/definition join by exact UTF-8. File
+manifest identities and payload paths, property-dictionary paths and entry
+digests also require exact raw membership. Swift's canonically equivalent
+String dictionary lookup cannot establish a source identity or source location.
+Unmatched manifest file identities receive separate unresolved rows. Missing
+raw paths never receive an invented JSON-pointer location; all original values
+and entries remain distinguishable.
 
 Mappings are proposals only. Wrong-Space, wrong-kind, malformed and duplicate
 requests refuse. Unbound proposals remain visible. Distinct type/property
@@ -59,7 +64,7 @@ archive never becomes proof of an empty native Space.
 
 ## New qualification scope
 
-Sixteen new focused XCTest methods cover complete identity/entry accounting,
+Eighteen new focused XCTest methods cover complete identity/entry accounting,
 owner and kind namespaces, block hierarchy, property ambiguity/unused metadata,
 exact Unicode identity, malformed/duplicate proposals, target aliasing, duplicate
 type declarations, file boundaries/recovery/owner refusal, byte and numeric

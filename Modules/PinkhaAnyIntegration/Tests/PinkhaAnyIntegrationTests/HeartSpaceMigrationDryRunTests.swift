@@ -370,4 +370,76 @@ final class HeartSpaceMigrationDryRunTests: XCTestCase {
         XCTAssertTrue(result.issues.contains { $0.code == .unboundMapping })
         assertNotAdmitted(result)
     }
+
+    func testCrossDictionaryPropertySpellingsAndDictionaryPathsRequireExactUTF8() throws {
+        let composed = "\u{00e9}", decomposed = "e\u{0301}"
+        let actualPath = "dictionaries/" + composed + ".json"
+        let declaredPath = "dictionaries/" + decomposed + ".json"
+        let definitionValue = definition("known", spelling: decomposed)
+        let result = try plan([
+            try index(["properties": .string(declaredPath)]),
+            try entry(actualPath, .object(["formatVersion": .string("2.0"), "properties": .array([definitionValue])])),
+            try page("p", extra: [
+                "properties": .object([composed: .string("one-value")]),
+                "property_internal_keys": .object([decomposed: .string("known")])
+            ])
+        ])
+        let valueRow = try row(result, .propertyUse, composed, owner: "p")
+        let legendRow = try row(result, .propertyUse, decomposed, owner: "p")
+        XCTAssertNotEqual(valueRow.identity, legendRow.identity)
+        XCTAssertEqual(valueRow.sourceValues, [.string("one-value")])
+        XCTAssertTrue(legendRow.sourceValues.isEmpty)
+        XCTAssertEqual(valueRow.disposition, .unresolvedSourceIdentity)
+        XCTAssertEqual(valueRow.references, [identity(.object, "p")])
+        XCTAssertEqual(valueRow.locations.map { Data($0.jsonPointer.utf8) }, [Data(("/properties/" + composed).utf8)])
+        XCTAssertEqual(legendRow.locations.map { Data($0.jsonPointer.utf8) },
+                       [Data(("/property_internal_keys/" + decomposed).utf8)])
+        let property = try row(result, .property, "known")
+        XCTAssertEqual(property.sourceValues, [definitionValue])
+        XCTAssertTrue(property.locations.isEmpty)
+        XCTAssertEqual(property.disposition, .unresolvedSourceIdentity)
+        XCTAssertTrue(result.issues.contains { $0.code == .propertyDictionaryPathUnresolved && $0.identity == property.identity })
+        XCTAssertEqual(result.entries.filter { Data($0.path.utf8) == Data(actualPath.utf8) }.count, 1)
+        XCTAssertFalse(result.entries.contains { Data($0.path.utf8) == Data(declaredPath.utf8) })
+        assertNotAdmitted(result)
+    }
+
+    func testFileManifestIdentityAndPayloadPathsCannotJoinCanonicalUnicodeAliases() throws {
+        let composed = "\u{00e9}", decomposed = "e\u{0301}"
+        let bytes = Data([0, 255, 5])
+        let identityAlias = try plan([
+            try index(["files": .object([decomposed: .string("payload.bin")])]),
+            try page(composed, extra: ["kind": .string("file_object")]),
+            Entry(path: "payload.bin", bytes: bytes)
+        ])
+        XCTAssertEqual(identityAlias.coverage.entitiesByKind[.file], 2)
+        let objectFile = try row(identityAlias, .file, composed)
+        let manifestFile = try row(identityAlias, .file, decomposed)
+        XCTAssertEqual(objectFile.payload?.classification, .missing)
+        XCTAssertNil(objectFile.payload?.sha256)
+        XCTAssertEqual(manifestFile.disposition, .unresolvedSourceIdentity)
+        XCTAssertEqual(manifestFile.payload?.classification, .unresolvedBinding)
+        XCTAssertEqual(manifestFile.payload?.sha256, AnyContentDigest.sha256(bytes))
+        XCTAssertTrue(manifestFile.references.isEmpty)
+        XCTAssertEqual(identityAlias.entries.first { $0.path == "payload.bin" }?.identities, [manifestFile.identity])
+        XCTAssertTrue(identityAlias.issues.contains { $0.code == .fileIdentityUnresolved && $0.identity == manifestFile.identity })
+
+        let declaredPath = "payload/" + decomposed + ".bin"
+        let actualPath = "payload/" + composed + ".bin"
+        let pathAlias = try plan([
+            try index(["files": .object(["file": .string(declaredPath)])]),
+            try page("file", extra: ["kind": .string("file_object")]),
+            Entry(path: actualPath, bytes: bytes)
+        ])
+        let unresolved = try row(pathAlias, .file, "file")
+        XCTAssertEqual(unresolved.payload?.classification, .unresolvedBinding)
+        XCTAssertNil(unresolved.payload?.sha256)
+        XCTAssertNil(unresolved.payload?.byteCount)
+        XCTAssertEqual(unresolved.locations.map(\.entryPath), ["objects/file.json"])
+        let retained = try XCTUnwrap(pathAlias.entries.first { Data($0.path.utf8) == Data(actualPath.utf8) })
+        XCTAssertEqual(retained.sha256, AnyContentDigest.sha256(bytes))
+        XCTAssertTrue(retained.identities.isEmpty)
+        XCTAssertTrue(pathAlias.issues.contains { $0.code == .filePathUnresolved && $0.identity == unresolved.identity })
+        assertNotAdmitted(identityAlias); assertNotAdmitted(pathAlias)
+    }
 }

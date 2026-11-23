@@ -7,12 +7,12 @@
   "network": "NOT_RUN",
   "new_downstream_files": {
     "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartSpaceMigrationDryRun.swift": {
-      "bytes": 21377,
-      "sha256": "0edec7fca020e0277d1a497e27e167e8d035c661b8efda4dae60544dd5eac238"
+      "bytes": 24167,
+      "sha256": "c96bc27e447087cfe845b311cd21e5d99d68b4815b5d337848a4f54ee03b274c"
     },
     "Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/HeartSpaceMigrationDryRunTests.swift": {
-      "bytes": 24782,
-      "sha256": "8539571ccc9d574a3ee937b93203ead1284997a6372066b532fed9c8965b3f0d"
+      "bytes": 29378,
+      "sha256": "5d67bcc07aa11350e289035b43699faed2c58cf7e3457a4ed897fb0957ea9abb"
     }
   },
   "new_selected_methods": [
@@ -31,11 +31,14 @@
     "testMappingIdentityUsesExactUTF8WithoutUnicodeNormalizationOrCaseGuessing",
     "testExcessMappingInputIsRejectedBeforeAnyPartialReportIsReturned",
     "testUnsupportedObjectsBlocksAndPropertyFormatsRemainExplicitAndUnconverted",
-    "testEmptySuppliedArchiveStillRequiresNativeAdmissionAndKeepsUnboundProposal"
+    "testEmptySuppliedArchiveStillRequiresNativeAdmissionAndKeepsUnboundProposal",
+    "testCrossDictionaryPropertySpellingsAndDictionaryPathsRequireExactUTF8",
+    "testFileManifestIdentityAndPayloadPathsCannotJoinCanonicalUnicodeAliases"
   ],
   "old_product_methods_to_execute": 0,
   "permits_destination_writes": false,
   "physical_device": "NOT_RUN",
+  "prior_unexecuted_source_checkpoint": "23139c70fefdfa8ca200a3858f08d96905d37088",
   "retained_module_files": {
     "Modules/PinkhaAnyEngine/.gitignore": "b3efa649727b627bb9cf390f6faa4d22d46f13dfbdafdcd67396b46eb8a5738f",
     "Modules/PinkhaAnyEngine/Evidence/.gitattributes": "2e1aa059eff9eea6ed72db24cf3e2ed291287dacb19388ed8c8e2e78025088c3",
@@ -245,6 +248,7 @@
     "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/TorahSemanticAnchorAssociationTests.swift": "382c6801606f5b6f0bd8e66443a08d7e79cce3e339398011ea76142b5f724426",
     "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/TorahTestSupport.swift": "7bce68cfc1fd6d92be4a1580749616e469e02b8bd23ff8edb8368347a0b66a64"
   },
+  "review_followup": "Require exact raw UTF8 for cross-dictionary property joins and manifest ID/path joins; preserve unresolved identities and omit unproved locations.",
   "status": "SOURCE_FROZEN_BEFORE_NEW_CONTROL_EXECUTION",
   "upstream_develop_sha": "d857b23ea540be33d6faab4f7a7a1a260ab578c1"
 }
