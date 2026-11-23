@@ -180,7 +180,8 @@ class Commands:
         record = {"context": self.context, "argv": argv, "cwd": str(ROOT), "timeoutSeconds": timeout,
                   "status": "FAIL", "started": time.time(), "environmentValuesRecorded": False}
         process, primary = None, None
-        with log.open("xb") as stream:
+        stream = log.open("xb")
+        try:
             try:
                 process = subprocess.Popen(argv, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT,
                                            start_new_session=True)
@@ -215,9 +216,27 @@ class Commands:
                         record["cleanupFailure"] = error(failure)
                         primary = primary or failure
                     record["returnCode"] = process.returncode
-                stream.flush()
-                os.fsync(stream.fileno())
-        record.update(finished=time.time(), logSHA256=digest(log), logBytes=log.stat().st_size)
+                try:
+                    stream.flush()
+                    os.fsync(stream.fileno())
+                except BaseException as failure:
+                    record.setdefault("preservationFailures", []).append(
+                        {"stage": "final_log_flush", **error(failure)})
+                    primary = primary or failure
+        finally:
+            try:
+                stream.close()
+            except BaseException as failure:
+                record.setdefault("preservationFailures", []).append(
+                    {"stage": "log_close", **error(failure)})
+                primary = primary or failure
+        record.update(finished=time.time(), logSHA256=None, logBytes=None, logMetadataStatus="UNAVAILABLE")
+        try:
+            record.update(logSHA256=digest(log), logBytes=log.stat().st_size, logMetadataStatus="AVAILABLE")
+        except BaseException as failure:
+            record.setdefault("preservationFailures", []).append(
+                {"stage": "final_log_metadata", **error(failure)})
+            primary = primary or failure
         if primary:
             record["firstFailure"] = error(primary)
         else:
