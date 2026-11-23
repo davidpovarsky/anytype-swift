@@ -20,6 +20,7 @@ import zipfile
 from consumer_failure_capture import combine_launch_help, prepare_launch_capture, read_regular
 from framework_install_names import verify_consumer_install_name
 from framework_products import inventory, verify_observation
+from signed_consumer_framework_roles import derive_original_framework_roles, verify_embedded_frameworks
 from run_runtime_continuation import require, verify_metadata, zip_members, validate_toolchain
 from runtime_continuation_process import Commands, digest, write_json
 from runtime_continuation_observation import runtime_environment, cleanup_owned_simulator, validate_ownership
@@ -31,7 +32,8 @@ PACKET = 'docs/pinkha/torah-integration/evidence/original-editor-signed-consumer
 CONTROL_FILES = {WORKFLOW, *('Tools/OriginalEditor/' + name for name in (
     'run_framework_acceptance.py', 'consumer_failure_capture.py', 'run_runtime_continuation.py',
     'run_signed_consumer_continuation.py', 'signed_consumer_continuation_inputs.json',
-    'test_signed_consumer_continuation.py'))}
+    'test_signed_consumer_continuation.py', 'signed_consumer_framework_roles.py',
+    'test_signed_consumer_framework_roles.py'))}
 QUALIFIED = 'ACTUAL_ORIGINAL_FRAMEWORK_EXTERNAL_IMPORT_LINK_RESOURCES_PASS'
 
 
@@ -76,6 +78,9 @@ def read_original_evidence(archive, inputs):
                 and public['public_host_scope_verified'] and public['qualification_spi_scope_verified']
                 and public['public_original_editor_or_writer_declarations'] == []
                 and e['actual_public_surface'] == public, 'Original public/SPI admission differs')
+        selected['_authenticated_framework_roles'] = derive_original_framework_roles(
+            lambda name: inner.read(members[name]),
+            selected['framework-distribution.json'], e['retained_signed_consumer'])
         return selected
 
 
@@ -245,6 +250,16 @@ def main():
             require(digest(root / relative) == expected, 'Raw capture source differs: ' + relative)
         for relative, expected in capture_controls['log_sha256'].items():
             require(digest(control_packet / relative) == expected, 'Raw capture log differs: ' + relative)
+        role_controls = json.loads((control_packet / 'framework-role-admission/FRAMEWORK_ROLE_CONTROLS.json').read_bytes())
+        require(role_controls['status'] == 'PASS'
+                and role_controls['tests_run'] == len(set(role_controls['passed_ids'])) == 6
+                and role_controls['failed'] == role_controls['errors'] == role_controls['skipped'] == 0,
+                'Original framework role controls did not pass')
+        for relative, expected in role_controls['source_sha256'].items():
+            require(digest(root / relative) == expected, 'Framework role control source differs: ' + relative)
+        for relative, expected in role_controls['log_sha256'].items():
+            require(digest(control_packet / 'framework-role-admission' / relative) == expected,
+                    'Framework role control log differs: ' + relative)
         actual = {'xcode': command('xcode', ['xcodebuild', '-version']),
                   'swift': command('swift', ['xcrun', 'swiftc', '--version']),
                   'sdk_version': command('sdk', ['xcrun', '--sdk', 'iphonesimulator', '--show-sdk-version'])}
@@ -266,9 +281,10 @@ def main():
         command('consumer-signature', ['codesign', '--verify', '--strict', app])
         load = verify_consumer_install_name(app)
         write_json(evidence / 'actual-consumer-install-names.json', load)
-        for name in selected['framework-distribution.json']['frameworks']:
-            require(inventory(app / 'Frameworks' / name) == inventory(distribution / 'Frameworks' / name),
-                    'Retained signed consumer uses a different framework: ' + name)
+        roles = selected['_authenticated_framework_roles']
+        write_json(evidence / 'original-framework-roles.json', roles)
+        binding = verify_embedded_frameworks(app, distribution, selected['framework-distribution.json'], roles)
+        write_json(evidence / 'original-dynamic-embed-binding.json', binding)
         oracle = selected['independent-original-resource-oracles.json']
         result.update(original_framework_build='REUSED_SUCCESSFUL_ORIGINAL_PRODUCER',
                       external_consumer_build='REUSED_SUCCESSFUL_ORIGINAL_PRODUCER',

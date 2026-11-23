@@ -1,0 +1,47 @@
+{
+  "automatic_retry": false,
+  "consumer_builds": 0,
+  "error": "Retained signed consumer uses a different framework: Lib.framework",
+  "error_type": "RuntimeError",
+  "finished_at": "2026-11-23T04:59:30.803913+00:00",
+  "framework_builds": 0,
+  "framework_producer": {
+    "failed_step": "Build the genuine framework and execute the separate binary consumer",
+    "head_branch": "codex/otzaria-original-editor-framework-v13-body-reviewed-20261122",
+    "job_id": 137324774911,
+    "job_name": "original-editor-framework",
+    "repository": "davidpovarsky/anytype-swift",
+    "repository_id": 1289863025,
+    "required_steps": [
+      "Bind original app sources resources packages and the additive target",
+      "Prepare and verify the original SDK snapshot",
+      "Verify actual Xcode27 and create original owned OS27 simulators",
+      "Verify the recorded original Heart producer and exact binary slices"
+    ],
+    "run_attempt": 1,
+    "run_id": 45060396175,
+    "source_sha": "de63125b97cd5b91a1fa4f4b71d03738076e735f",
+    "workflow_path": ".github/workflows/pinkha-original-editor-framework.yml"
+  },
+  "framework_source_sha": "de63125b97cd5b91a1fa4f4b71d03738076e735f",
+  "kind": "ORIGINAL_SIGNED_CONSUMER_RUNTIME_CONTINUATION",
+  "native_editor_ui_tests": 0,
+  "owned_simulator_cleanup_completed": true,
+  "phase": "INPUT_ADMISSION",
+  "runtime_qualification_producer": {
+    "control_sha": "4aa7b02b8e4cb8c124dd59ddb656746481d9aa6a",
+    "head_branch": "codex/otzaria-sdk-runtime-20261123",
+    "job_name": "original-editor-signed-consumer",
+    "repository": "davidpovarsky/anytype-swift",
+    "repository_id": 1289863025,
+    "run_attempt": 1,
+    "run_id": 45106338448,
+    "workflow_path": ".github/workflows/pinkha-original-editor-signed-consumer.yml"
+  },
+  "schema": 2,
+  "simulator_attempts": 0,
+  "source_controls_replayed": 0,
+  "started_at": "2026-11-23T04:58:55.105203+00:00",
+  "status": "FAIL",
+  "verified_runtime_observations": []
+}

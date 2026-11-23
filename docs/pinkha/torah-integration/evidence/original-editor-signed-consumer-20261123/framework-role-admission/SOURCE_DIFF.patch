@@ -1,0 +1,395 @@
+--- a/Tools/OriginalEditor/run_signed_consumer_continuation.py
++++ b/Tools/OriginalEditor/run_signed_consumer_continuation.py
+@@ -20,6 +20,7 @@
+ from consumer_failure_capture import combine_launch_help, prepare_launch_capture, read_regular
+ from framework_install_names import verify_consumer_install_name
+ from framework_products import inventory, verify_observation
++from signed_consumer_framework_roles import derive_original_framework_roles, verify_embedded_frameworks
+ from run_runtime_continuation import require, verify_metadata, zip_members, validate_toolchain
+ from runtime_continuation_process import Commands, digest, write_json
+ from runtime_continuation_observation import runtime_environment, cleanup_owned_simulator, validate_ownership
+@@ -31,7 +32,8 @@
+ CONTROL_FILES = {WORKFLOW, *('Tools/OriginalEditor/' + name for name in (
+     'run_framework_acceptance.py', 'consumer_failure_capture.py', 'run_runtime_continuation.py',
+     'run_signed_consumer_continuation.py', 'signed_consumer_continuation_inputs.json',
+-    'test_signed_consumer_continuation.py'))}
++    'test_signed_consumer_continuation.py', 'signed_consumer_framework_roles.py',
++    'test_signed_consumer_framework_roles.py'))}
+ QUALIFIED = 'ACTUAL_ORIGINAL_FRAMEWORK_EXTERNAL_IMPORT_LINK_RESOURCES_PASS'
+ 
+ 
+@@ -76,6 +78,9 @@
+                 and public['public_host_scope_verified'] and public['qualification_spi_scope_verified']
+                 and public['public_original_editor_or_writer_declarations'] == []
+                 and e['actual_public_surface'] == public, 'Original public/SPI admission differs')
++        selected['_authenticated_framework_roles'] = derive_original_framework_roles(
++            lambda name: inner.read(members[name]),
++            selected['framework-distribution.json'], e['retained_signed_consumer'])
+         return selected
+ 
+ 
+@@ -245,6 +250,16 @@
+             require(digest(root / relative) == expected, 'Raw capture source differs: ' + relative)
+         for relative, expected in capture_controls['log_sha256'].items():
+             require(digest(control_packet / relative) == expected, 'Raw capture log differs: ' + relative)
++        role_controls = json.loads((control_packet / 'framework-role-admission/FRAMEWORK_ROLE_CONTROLS.json').read_bytes())
++        require(role_controls['status'] == 'PASS'
++                and role_controls['tests_run'] == len(set(role_controls['passed_ids'])) == 6
++                and role_controls['failed'] == role_controls['errors'] == role_controls['skipped'] == 0,
++                'Original framework role controls did not pass')
++        for relative, expected in role_controls['source_sha256'].items():
++            require(digest(root / relative) == expected, 'Framework role control source differs: ' + relative)
++        for relative, expected in role_controls['log_sha256'].items():
++            require(digest(control_packet / 'framework-role-admission' / relative) == expected,
++                    'Framework role control log differs: ' + relative)
+         actual = {'xcode': command('xcode', ['xcodebuild', '-version']),
+                   'swift': command('swift', ['xcrun', 'swiftc', '--version']),
+                   'sdk_version': command('sdk', ['xcrun', '--sdk', 'iphonesimulator', '--show-sdk-version'])}
+@@ -266,9 +281,10 @@
+         command('consumer-signature', ['codesign', '--verify', '--strict', app])
+         load = verify_consumer_install_name(app)
+         write_json(evidence / 'actual-consumer-install-names.json', load)
+-        for name in selected['framework-distribution.json']['frameworks']:
+-            require(inventory(app / 'Frameworks' / name) == inventory(distribution / 'Frameworks' / name),
+-                    'Retained signed consumer uses a different framework: ' + name)
++        roles = selected['_authenticated_framework_roles']
++        write_json(evidence / 'original-framework-roles.json', roles)
++        binding = verify_embedded_frameworks(app, distribution, selected['framework-distribution.json'], roles)
++        write_json(evidence / 'original-dynamic-embed-binding.json', binding)
+         oracle = selected['independent-original-resource-oracles.json']
+         result.update(original_framework_build='REUSED_SUCCESSFUL_ORIGINAL_PRODUCER',
+                       external_consumer_build='REUSED_SUCCESSFUL_ORIGINAL_PRODUCER',
+--- /dev/null
++++ b/Tools/OriginalEditor/signed_consumer_framework_roles.py
+@@ -0,0 +1,162 @@
++"""Admit the original producer's static/DYLIB partition without rebuilding."""
++import hashlib
++import json
++from pathlib import Path, PurePosixPath
++import re
++
++from framework_products import inventory
++
++
++def require(condition, message):
++    if not condition:
++        raise RuntimeError(message)
++
++
++def header_role(raw, binary):
++    require(isinstance(raw, bytes) and 0 < len(raw) <= 2 * 1024**2,
++            'Missing or oversized original framework header')
++    try:
++        text = raw.decode('utf-8')
++    except UnicodeDecodeError as error:
++        raise RuntimeError('Original framework header is not UTF-8') from error
++    rows, locations, archives = [], [], 0
++    for line in text.splitlines():
++        stripped = line.strip()
++        if stripped.startswith(('MH_', 'FAT_')):
++            row = re.fullmatch(
++                r'MH_MAGIC(?:_64)?\s+\S+\s+\S+\s+0x[0-9a-fA-F]+\s+(\S+)\s+\d+\s+\d+(?:\s+.*)?',
++                stripped)
++            require(row is not None, 'Unknown original Mach-O header row')
++            rows.append(row.group(1))
++        if line.startswith('Archive : '):
++            archives += 1
++            location = line.removeprefix('Archive : ')
++            locations.append(location)
++        elif line.startswith('/'):
++            locations.append(line)
++    require(rows and locations, 'Original framework header has no typed image')
++    require(all(location == binary + ':' or location.startswith(binary + ' (architecture ')
++                or location.startswith(binary + '(') for location in locations),
++            'Original framework header names a different binary')
++    kinds = set(rows)
++    if kinds == {'DYLIB'} and archives == 0:
++        role = 'DYLIB_EMBED'
++    elif kinds == {'OBJECT'} and archives > 0:
++        role = 'STATIC_ARCHIVE_DISTRIBUTION_ONLY'
++    else:
++        raise RuntimeError('Unknown or mixed original framework image kinds')
++    require(bool(re.search(r'\bDYLIB\b', text)) == (role == 'DYLIB_EMBED'),
++            'Header classification differs from original producer selection')
++    return role, len(rows), archives
++
++
++def derive_original_framework_roles(read_member, exported, retained_consumer):
++    """read_member must read the already digest-authenticated original archive."""
++    frameworks = exported['frameworks']
++    files = exported['files']
++    require(isinstance(frameworks, list) and frameworks
++            and len(frameworks) == len(set(frameworks)), 'Duplicate or missing original frameworks')
++    require(all(isinstance(name, str) and re.fullmatch(r'[A-Za-z0-9_.+-]+\.framework', name)
++                for name in frameworks), 'Invalid original framework name')
++    file_frameworks = {path.split('/')[1] for path in files if path.startswith('Frameworks/')}
++    require(file_frameworks == set(frameworks), 'Original declared distribution framework set differs')
++    rows = []
++    for index, name in enumerate(frameworks):
++        stem = 'framework-header-' + str(index)
++        try:
++            raw_command = read_member(stem + '.command.json')
++            stdout = read_member(stem + '.stdout.log')
++            stderr = read_member(stem + '.stderr.log')
++        except (KeyError, FileNotFoundError) as error:
++            raise RuntimeError('Missing original framework header receipt: ' + name) from error
++        command = json.loads(raw_command)
++        argv = command.get('command')
++        executable = name.removesuffix('.framework')
++        require(isinstance(argv, list) and len(argv) == 3 and argv[:2] == ['otool', '-hv']
++                and isinstance(argv[2], str) and PurePosixPath(argv[2]).is_absolute()
++                and PurePosixPath(argv[2]).parts[-4:] == ('distribution', 'Frameworks', name, executable),
++                'Original header command index/name/binary differs: ' + name)
++        require('Frameworks/' + name + '/' + executable in files
++                and 'Frameworks/' + name + '/Info.plist' in files,
++                'Original header executable is absent from the admitted distribution')
++        require(type(command.get('returncode')) is int and command['returncode'] == 0
++                and command.get('timed_out') is False, 'Original header command did not succeed')
++        require(hashlib.sha256(stdout).hexdigest() == command.get('stdout_sha256')
++                and hashlib.sha256(stderr).hexdigest() == command.get('stderr_sha256'),
++                'Original header command stream commitment differs')
++        role, image_count, archive_count = header_role(stdout, argv[2])
++        rows.append({
++            'name': name, 'original_index': index, 'executable': executable, 'role': role,
++            'command_sha256': hashlib.sha256(raw_command).hexdigest(),
++            'stdout_sha256': command['stdout_sha256'], 'stderr_sha256': command['stderr_sha256'],
++            'image_count': image_count, 'archive_count': archive_count,
++            'command_exit_code': 0, 'timed_out': False,
++        })
++    dynamic = sorted(row['name'] for row in rows if row['role'] == 'DYLIB_EMBED')
++    static = sorted(row['name'] for row in rows if row['role'] == 'STATIC_ARCHIVE_DISTRIBUTION_ONLY')
++    require('AnytypeOriginalEditor.framework' in dynamic, 'Original dynamic editor is absent')
++    directories = retained_consumer['directories']
++    original_app_dirs = sorted(path.removeprefix('Frameworks/') for path in directories
++                               if path.startswith('Frameworks/') and path.count('/') == 1)
++    original_app_file_dirs = {path.split('/')[1] for path in retained_consumer['file_modes']
++                             if path.startswith('Frameworks/')}
++    require(original_app_dirs == dynamic and original_app_file_dirs == set(dynamic),
++            'Original signed consumer membership differs from the original DYLIB selection')
++    return {
++        'schema': 'otzaria.original-producer.framework-roles/1',
++        'frameworks': frameworks, 'dynamic_embeds': dynamic, 'static_distribution_only': static,
++        'original_header_receipts': rows, 'original_signed_app_directories': original_app_dirs,
++        'scope': 'Authenticated original producer role partition; no runtime qualification',
++    }
++
++
++def verify_embedded_frameworks(app, distribution, exported, roles):
++    """Keep complete byte equality for every genuine dynamic embed."""
++    app, distribution = Path(app), Path(distribution)
++    frameworks = exported['frameworks']
++    require(roles.get('schema') == 'otzaria.original-producer.framework-roles/1'
++            and roles['frameworks'] == frameworks, 'Original role proof belongs to a different distribution')
++    dynamic, static = roles['dynamic_embeds'], roles['static_distribution_only']
++    require(len(dynamic) == len(set(dynamic)) and len(static) == len(set(static))
++            and set(dynamic).isdisjoint(static) and set(dynamic) | set(static) == set(frameworks),
++            'Original role proof has missing, duplicate or extra frameworks')
++    require(len(roles['original_header_receipts']) == len(frameworks)
++            and [row['name'] for row in roles['original_header_receipts']] == frameworks,
++            'Original role proof lost its indexed command binding')
++    require(dynamic == sorted(row['name'] for row in roles['original_header_receipts']
++                              if row['role'] == 'DYLIB_EMBED')
++            and static == sorted(row['name'] for row in roles['original_header_receipts']
++                                 if row['role'] == 'STATIC_ARCHIVE_DISTRIBUTION_ONLY'),
++            'Original role partition differs from its authenticated header rows')
++    app_root, distribution_root = app / 'Frameworks', distribution / 'Frameworks'
++    require(app_root.is_dir() and not app_root.is_symlink()
++            and distribution_root.is_dir() and not distribution_root.is_symlink(),
++            'Original framework roots are absent or aliased')
++    app_entries, distribution_entries = list(app_root.iterdir()), list(distribution_root.iterdir())
++    require(all(path.is_dir() and not path.is_symlink() for path in app_entries + distribution_entries),
++            'Unknown non-directory or aliased framework entry')
++    require(sorted(path.name for path in app_entries) == dynamic,
++            'Signed app has a missing, extra or static framework embed')
++    require(sorted(path.name for path in distribution_entries) == sorted(frameworks),
++            'Restored complete distribution framework set differs')
++    checked = {}
++    for name in frameworks:
++        source_files = inventory(distribution_root / name)
++        expected_files = {path.removeprefix('Frameworks/' + name + '/'): value
++                          for path, value in exported['files'].items()
++                          if path.startswith('Frameworks/' + name + '/')}
++        require(source_files and source_files == expected_files,
++                'Restored framework bytes differ from the complete original inventory: ' + name)
++        if name in static:
++            require(not (app_root / name).exists(), 'Original static archive was embedded into the signed app')
++            continue
++        app_files = inventory(app_root / name)
++        require(app_files == source_files, 'Signed dynamic framework inventory differs: ' + name)
++        checked[name] = {'files': len(app_files), 'bytes': sum(row['bytes'] for row in app_files.values())}
++    return {
++        'schema': 'otzaria.original-producer.dynamic-embed-binding/1',
++        'status': 'EXACT_ORIGINAL_DYNAMIC_EMBED_SET_AND_BYTES_PASS',
++        'dynamic_frameworks': checked, 'static_distribution_only': static,
++        'complete_distribution_frameworks_checked': len(frameworks),
++        'runtime_execution': False, 'binary_mutations': 0,
++    }
+--- /dev/null
++++ b/Tools/OriginalEditor/test_signed_consumer_framework_roles.py
+@@ -0,0 +1,166 @@
++import copy
++import hashlib
++import json
++from pathlib import Path
++import shutil
++import tempfile
++import unittest
++
++from framework_products import inventory
++from signed_consumer_framework_roles import (
++    derive_original_framework_roles, header_role, verify_embedded_frameworks,
++)
++
++
++PACKET = Path(__file__).resolve().parents[2] / (
++    'docs/pinkha/torah-integration/evidence/'
++    'original-editor-signed-consumer-20261123/framework-role-admission'
++)
++
++
++class OriginalFrameworkRolesTests(unittest.TestCase):
++    @classmethod
++    def setUpClass(cls):
++        cls.exported = json.loads((PACKET / 'original-framework-distribution.json').read_bytes())
++        cls.retained = json.loads((PACKET / 'original-consumer-retention.json').read_bytes())
++        cls.members = {path.name: path.read_bytes() for path in (PACKET / 'original-headers').iterdir()
++                       if path.is_file()}
++        cls.roles = derive_original_framework_roles(cls.members.__getitem__, cls.exported, cls.retained)
++
++    def fixture(self, root):
++        # Deliberate tiny UNIT files, never original products or runtime evidence.
++        distribution, app = root / 'distribution', root / 'consumer.app'
++        (distribution / 'Frameworks').mkdir(parents=True)
++        (app / 'Frameworks').mkdir(parents=True)
++        for name in self.exported['frameworks']:
++            directory = distribution / 'Frameworks' / name
++            directory.mkdir()
++            (directory / name.removesuffix('.framework')).write_bytes(('UNIT_BINARY:' + name).encode())
++            (directory / 'Info.plist').write_bytes(('UNIT_INFO:' + name).encode())
++            (directory / '_CodeSignature').mkdir()
++            (directory / '_CodeSignature/CodeResources').write_bytes(('UNIT_RESOURCE_SEAL:' + name).encode())
++            if name in self.roles['dynamic_embeds']:
++                shutil.copytree(directory, app / 'Frameworks' / name)
++        exported = {'frameworks': list(self.exported['frameworks']), 'files': inventory(distribution)}
++        return app, distribution, exported
++
++    def test_authentic_original_headers_select_exact_retained_signed_app(self):
++        self.assertEqual(len(self.roles['frameworks']), 17)
++        self.assertEqual(len(self.roles['dynamic_embeds']), 15)
++        self.assertEqual(self.roles['static_distribution_only'], ['Lib.framework', 'Sentry.framework'])
++        self.assertEqual(self.roles['original_signed_app_directories'], self.roles['dynamic_embeds'])
++        self.assertEqual([r['original_index'] for r in self.roles['original_header_receipts']], list(range(17)))
++        self.assertTrue(all(r['command_exit_code'] == 0 and r['timed_out'] is False
++                            for r in self.roles['original_header_receipts']))
++        with tempfile.TemporaryDirectory(prefix='otzaria-framework-role-unit-') as directory:
++            app, distribution, exported = self.fixture(Path(directory))
++            result = verify_embedded_frameworks(app, distribution, exported, self.roles)
++            self.assertEqual(len(result['dynamic_frameworks']), 15)
++            self.assertEqual(result['complete_distribution_frameworks_checked'], 17)
++            self.assertFalse(result['runtime_execution'])
++
++    def test_tampered_missing_failed_or_misbound_original_receipts_rejected(self):
++        stem = 'framework-header-0'
++        changes = []
++        for stream in ['stdout', 'stderr']:
++            members = dict(self.members)
++            members[stem + '.' + stream + '.log'] += b'altered'
++            changes.append(members)
++        for key, value in [('returncode', 1), ('returncode', False), ('timed_out', True)]:
++            members = dict(self.members)
++            command = json.loads(members[stem + '.command.json'])
++            command[key] = value
++            members[stem + '.command.json'] = json.dumps(command).encode()
++            changes.append(members)
++        members = dict(self.members)
++        command = json.loads(members[stem + '.command.json'])
++        command['command'][2] = '/other/distribution/Frameworks/Lib.framework/Lib'
++        members[stem + '.command.json'] = json.dumps(command).encode()
++        changes.append(members)
++        members = dict(self.members)
++        del members[stem + '.stdout.log']
++        changes.append(members)
++        members = dict(self.members)
++        members[stem + '.command.json'] = members['framework-header-1.command.json']
++        changes.append(members)
++        for number, members in enumerate(changes):
++            with self.subTest(mutation=number), self.assertRaises(RuntimeError):
++                derive_original_framework_roles(members.__getitem__, self.exported, self.retained)
++        duplicate = copy.deepcopy(self.exported)
++        duplicate['frameworks'].append(duplicate['frameworks'][0])
++        with self.assertRaises(RuntimeError):
++            derive_original_framework_roles(self.members.__getitem__, duplicate, self.retained)
++
++    def test_unknown_mixed_or_nonarchive_object_headers_rejected(self):
++        command = json.loads(self.members['framework-header-3.command.json'])
++        binary = command['command'][2]
++        dynamic = self.members['framework-header-3.stdout.log']
++        object_row = b'MH_MAGIC_64 ARM64 ALL 0x00 OBJECT 1 32 0x00\n'
++        invalid = [
++            b'', b'\xff', dynamic.replace(b'DYLIB', b'BUNDLE'),
++            dynamic + object_row, b'Archive : ' + binary.encode() + b'\n' + dynamic,
++            dynamic.replace(b'DYLIB', b'OBJECT'),
++            dynamic.replace(binary.encode(), b'/wrong/framework/binary'),
++        ]
++        for raw in invalid:
++            with self.subTest(header_sha256=hashlib.sha256(raw).hexdigest()), self.assertRaises(RuntimeError):
++                header_role(raw, binary)
++
++    def test_missing_extra_or_static_signed_app_embeds_rejected(self):
++        for mutation in ['missing', 'extra', 'Lib.framework', 'Sentry.framework']:
++            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory(prefix='otzaria-framework-role-unit-') as directory:
++                app, distribution, exported = self.fixture(Path(directory))
++                if mutation == 'missing':
++                    shutil.rmtree(app / 'Frameworks' / self.roles['dynamic_embeds'][0])
++                elif mutation == 'extra':
++                    (app / 'Frameworks/Unexpected.framework').mkdir()
++                else:
++                    shutil.copytree(distribution / 'Frameworks' / mutation, app / 'Frameworks' / mutation)
++                with self.assertRaises(RuntimeError):
++                    verify_embedded_frameworks(app, distribution, exported, self.roles)
++
++    def test_dynamic_byte_size_member_and_resource_changes_rejected(self):
++        for mutation in ['same-size-bytes', 'size', 'missing-info', 'resource-seal']:
++            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory(prefix='otzaria-framework-role-unit-') as directory:
++                app, distribution, exported = self.fixture(Path(directory))
++                framework = app / 'Frameworks/AnytypeOriginalEditor.framework'
++                binary = framework / 'AnytypeOriginalEditor'
++                if mutation == 'same-size-bytes':
++                    raw = binary.read_bytes()
++                    binary.write_bytes(bytes([raw[0] ^ 1]) + raw[1:])
++                elif mutation == 'size':
++                    binary.write_bytes(binary.read_bytes() + b'changed')
++                elif mutation == 'missing-info':
++                    (framework / 'Info.plist').unlink()
++                else:
++                    (framework / '_CodeSignature/CodeResources').write_bytes(b'altered-unit-seal')
++                with self.assertRaises(RuntimeError):
++                    verify_embedded_frameworks(app, distribution, exported, self.roles)
++
++    def test_static_inventory_role_name_and_alias_changes_rejected(self):
++        for mutation in ['static-bytes', 'static-missing', 'missing-role', 'forged-role', 'duplicate-role', 'alias']:
++            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory(prefix='otzaria-framework-role-unit-') as directory:
++                app, distribution, exported = self.fixture(Path(directory))
++                roles = copy.deepcopy(self.roles)
++                if mutation == 'static-bytes':
++                    (distribution / 'Frameworks/Lib.framework/Lib').write_bytes(b'changed-unit-static')
++                elif mutation == 'static-missing':
++                    shutil.rmtree(distribution / 'Frameworks/Sentry.framework')
++                elif mutation == 'missing-role':
++                    roles['frameworks'] = roles['frameworks'][:-1]
++                elif mutation == 'forged-role':
++                    roles['static_distribution_only'].remove('Lib.framework')
++                    roles['dynamic_embeds'].append('Lib.framework')
++                    roles['dynamic_embeds'].sort()
++                elif mutation == 'duplicate-role':
++                    roles['dynamic_embeds'].append(roles['dynamic_embeds'][0])
++                else:
++                    target = app / 'Frameworks' / roles['dynamic_embeds'][0]
++                    shutil.rmtree(target)
++                    target.symlink_to(distribution / 'Frameworks' / roles['dynamic_embeds'][0], target_is_directory=True)
++                with self.assertRaises(RuntimeError):
++                    verify_embedded_frameworks(app, distribution, exported, roles)
++
++
++if __name__ == '__main__':
++    unittest.main()
