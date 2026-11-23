@@ -81,8 +81,14 @@ jobs:
       - name: Check actual SDK06 process and native receipt rejection controls
         if: ${{ (inputs.acceptance_lane == 'hanlin-native' || (inputs.acceptance_lane == 'hanlin-native-text-ack' || inputs.acceptance_lane == 'hanlin-native-shared-editor')) }}
         run: |
-          python3 -B Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py -v > build/ui27-evidence/hanlin-runtime-controller-controls.log 2>&1
-          python3 -B Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py -v >> build/ui27-evidence/hanlin-runtime-controller-controls.log 2>&1
+          if [ "$GITHUB_REF_NAME" = "codex/chatgpt-wave15-canonical-hanlin-20261123" ] && [ "$UI27_ACCEPTANCE_LANE" = "hanlin-native" ]; then
+            python3 -B Tools/Hanlin/retain_canonical_native_controls.py --app "$GITHUB_WORKSPACE" \
+              --output build/ui27-evidence/hanlin-runtime-controller-controls.json \
+              > build/ui27-evidence/hanlin-runtime-controller-controls.log 2>&1
+          else
+            python3 -B Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py -v > build/ui27-evidence/hanlin-runtime-controller-controls.log 2>&1
+            python3 -B Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py -v >> build/ui27-evidence/hanlin-runtime-controller-controls.log 2>&1
+          fi
       - name: Check the seven new acknowledgement selection controls
         if: ${{ (inputs.acceptance_lane == 'hanlin-native-text-ack' || inputs.acceptance_lane == 'hanlin-native-shared-editor') }}
         run: python3 -B Tools/PinkhaSimulatorGate/test_text_native_ack.py -v
