@@ -334,6 +334,21 @@ def verify_rejections(fixtures, manifest, specimens):
     return {"path": path.name, "sha256": sha(path.read_bytes()), "cases": len(rows)}
 
 
+def verify_fixture_inventory(fixtures):
+    registration = json.loads(safe(fixtures, "schema-registration.json").read_bytes())
+    phases = registration.get("registration_calls")
+    require(type(phases) is int and 1 <= phases <= 21
+            and registration.get("registration_complete") is True,
+            "Native schema history has no bounded completed registration inventory")
+    expected = {kind + suffix for kind in SPECIMENS
+                for suffix in (".zip", "-manifest.json", "-export-report.json")}
+    expected |= {"native-export-cleanup.json", "archive-admission-rejections.json",
+                 "schema-registration.json"}
+    expected |= {"schema-registration-%02d.json" % phase for phase in range(phases)}
+    require({path.name for path in fixtures.iterdir()} == expected,
+            "Unexpected specimen evidence files")
+
+
 def execute_target(support, commands, go, heart, work, evidence, target, result):
     name = target["name"]
     binary = work / (name + ".test")
@@ -498,11 +513,7 @@ def main():
         result["derived_rejection_receipt"] = verify_rejections(fixtures, manifest, specimens)
         require(verify_specimens(fixtures) == (specimens, native_cleanup),
                 "Real native specimens changed during archive admission")
-        expected_fixtures = {kind + suffix for kind in SPECIMENS
-                             for suffix in (".zip", "-manifest.json", "-export-report.json")}
-        expected_fixtures |= {"native-export-cleanup.json", "archive-admission-rejections.json"}
-        require({path.name for path in fixtures.iterdir()} == expected_fixtures,
-                "Unexpected specimen evidence files")
+        verify_fixture_inventory(fixtures)
         for entry in closure["files"]:
             require(support.digest(entry["path"]) == entry["sha256"],
                     "Declared native input changed during execution")

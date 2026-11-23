@@ -1,0 +1,48 @@
+{
+  "disposition_source": {
+    "path": "docs/pinkha/torah-integration/native-annotation-schema-readback-20261122/native/core/block/object/objectcreator/fixed_schema_observer.go",
+    "revision": "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638",
+    "sha256": "f591939d759e733a37e776d189de36d597ddd30cab284142f82aa8de9de51d89"
+  },
+  "final": {
+    "actual_type_apply_calls": 1,
+    "body_ack_authority": false,
+    "fixture_setup_only": true,
+    "matching_native_definitions": 18,
+    "native_import_activated": false,
+    "readiness": "original native observer and positive unique index rows",
+    "registration_calls": 2,
+    "registration_complete": true,
+    "schema": 1,
+    "unique_actual_creates": 18
+  },
+  "phase_00_creation_observations": {
+    "17_relation_after_dispositions": 1,
+    "type_after_disposition": 5,
+    "type_after_meaning": "FixedSchemaChangedWhileReading"
+  },
+  "phase_00_is_real_unresolved_history_not_hidden": true,
+  "phases": [
+    {
+      "actual_creates": 18,
+      "error_category": "unresolved",
+      "file": "fixtures/schema-registration-00.json",
+      "observation_disposition": "INCOMPLETE_OR_UNRESOLVED",
+      "phase": 0,
+      "sha256": "1c5e58e1ae37383e9e556c404c788af694ce16c2951305c90698e079ffdfb54d",
+      "type_apply_invoked": false,
+      "type_apply_returned": false
+    },
+    {
+      "actual_creates": 0,
+      "error_category": "none",
+      "file": "fixtures/schema-registration-01.json",
+      "observation_disposition": "MATCHING_SCHEMA_OBSERVED",
+      "phase": 1,
+      "sha256": "00882f4ec3a6264a0206bc631767bbc8e1d41f730570af020e93cf6ecf034b44",
+      "type_apply_invoked": true,
+      "type_apply_returned": true
+    }
+  ],
+  "same_18_actual_native_ids_across_history": true
+}

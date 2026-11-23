@@ -1,0 +1,36 @@
+{
+  "actual_original_registration_phases_retained": 2,
+  "artifact_sha256": "428f7c124649d7d40067b31704b63742a9da17e35425a9f8a3b1ab89839c9df9",
+  "cases": [
+    {
+      "case": "unchanged_original_collector_reproduces_actual_failure",
+      "outcome": "EXPECTED_REFUSAL",
+      "reason": "Unexpected specimen evidence files"
+    },
+    {
+      "archive_controls_reexecuted": false,
+      "case": "candidate_accepts_all_authentic_fixture_evidence",
+      "fixture_files": 17,
+      "native_exports_reexecuted": false,
+      "outcome": "PASS"
+    },
+    {
+      "case": "unexpected_file_remains_rejected",
+      "outcome": "EXPECTED_REFUSAL",
+      "reason": "Unexpected specimen evidence files"
+    },
+    {
+      "case": "out_of_bound_phase_inventory_rejected",
+      "outcome": "EXPECTED_REFUSAL",
+      "reason": "Native schema history has no bounded completed registration inventory"
+    }
+  ],
+  "driver_sha256": "47029216a7dc983488c6be8fdfec41771dade67049bd3f04888fb9b833efd06f",
+  "native_cases_replayed": 0,
+  "original_specimen_and_rejection_verifiers_reused_without_changes": true,
+  "phase_history_trimmed": false,
+  "source_native_run": 45139622096,
+  "status": "OFFLINE_COLLECTOR_ONLY_CONTROLS_PASS",
+  "unreached_global_source_stability_gate_remains_unreached": true,
+  "workflow_conclusion_unchanged": "failure"
+}

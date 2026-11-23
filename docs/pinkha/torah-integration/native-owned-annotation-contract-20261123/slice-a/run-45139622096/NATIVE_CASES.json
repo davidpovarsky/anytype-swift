@@ -1,0 +1,397 @@
+{
+  "archive_admission": {
+    "fail": 0,
+    "pass": 32,
+    "skip": 0
+  },
+  "native_exports": {
+    "fail": 0,
+    "pass": 4,
+    "skip": 0
+  },
+  "native_replay": false,
+  "targets": [
+    {
+      "basis": "execute_target records ACTUAL_NATIVE_CASES_PASSED only after its individual post-execution digest equality check.",
+      "binary_not_retained": true,
+      "compile_command": {
+        "absolute_command_deadline_unix": 1795430843,
+        "argv": [
+          "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+          "test",
+          "-c",
+          "-p",
+          "2",
+          "-o",
+          "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Native-Archive-Owned-Work/native_exports.test",
+          "./core/application"
+        ],
+        "child_started_unix": 1795424211.4901161,
+        "cleanup": [
+          {
+            "drained": true,
+            "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+            "unix": 1795424480.418763
+          }
+        ],
+        "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Native-Archive",
+        "duration_seconds": 268.94,
+        "effective_returncode": 0,
+        "effective_timeout_seconds": 3600.0,
+        "label": "compile-native_exports",
+        "pid": 3868,
+        "process_group_id": 3868,
+        "requested_timeout_seconds": 3600,
+        "returncode": 0,
+        "start_new_session": true,
+        "started_unix": 1795424211.485791,
+        "status": "TERMINAL",
+        "stderr": "09-compile-native_exports.stderr",
+        "stderr_sha256": "316a463b2b30d8fc37ef93b5e75663ddcdb739b0eb859c8613916323cc2e08d4",
+        "stdout": "09-compile-native_exports.stdout",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timed_out": false
+      },
+      "execution_command": {
+        "absolute_command_deadline_unix": 1795430843,
+        "argv": [
+          "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+          "tool",
+          "test2json",
+          "-t",
+          "-p",
+          "github.com/anyproto/anytype-heart/core/application",
+          "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Native-Archive-Owned-Work/native_exports.test",
+          "-test.v=test2json",
+          "-test.run=^TestOtzariaOwnedAnnotationNativeExports$",
+          "-test.count=1",
+          "-test.timeout=16m"
+        ],
+        "child_started_unix": 1795424480.7975419,
+        "cleanup": [
+          {
+            "drained": true,
+            "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+            "unix": 1795424487.798229
+          }
+        ],
+        "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Native-Archive",
+        "duration_seconds": 7.013,
+        "effective_returncode": 0,
+        "effective_timeout_seconds": 1020.0,
+        "label": "execute-native_exports",
+        "pid": 14137,
+        "process_group_id": 14137,
+        "requested_timeout_seconds": 1020,
+        "returncode": 0,
+        "start_new_session": true,
+        "started_unix": 1795424480.791046,
+        "status": "TERMINAL",
+        "stderr": "11-execute-native_exports.stderr",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "11-execute-native_exports.stdout",
+        "stdout_sha256": "a0059990b65cc3031b16dd3349b65074f74ec5996c3804b802ad5887deecfa43",
+        "timed_out": false
+      },
+      "individual_before_after_binary_digest_check_reached": true,
+      "leaves": [
+        {
+          "action": "pass",
+          "elapsed": 0.16,
+          "test": "TestOtzariaOwnedAnnotationNativeExports/text"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0.03,
+          "test": "TestOtzariaOwnedAnnotationNativeExports/format"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0.05,
+          "test": "TestOtzariaOwnedAnnotationNativeExports/nested"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0.06,
+          "test": "TestOtzariaOwnedAnnotationNativeExports/attachment"
+        }
+      ],
+      "name": "native_exports",
+      "native_binary": {
+        "bytes": 171977922,
+        "path": "native_exports.test",
+        "retained_in_artifact": false,
+        "sha256": "2bded4db7539bec46e7c5bfb26fdebe64b72fccca1df09f1a4be74e2209e406c"
+      },
+      "parent": {
+        "action": "pass",
+        "elapsed": 4.68,
+        "test": "TestOtzariaOwnedAnnotationNativeExports"
+      },
+      "raw_json_events": 8258,
+      "raw_stdout": "11-execute-native_exports.stdout",
+      "raw_stdout_sha256": "a0059990b65cc3031b16dd3349b65074f74ec5996c3804b802ad5887deecfa43"
+    },
+    {
+      "basis": "execute_target records ACTUAL_NATIVE_CASES_PASSED only after its individual post-execution digest equality check.",
+      "binary_not_retained": true,
+      "compile_command": {
+        "absolute_command_deadline_unix": 1795430843,
+        "argv": [
+          "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+          "test",
+          "-c",
+          "-p",
+          "2",
+          "-o",
+          "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Native-Archive-Owned-Work/archive_admission.test",
+          "./core/block/import"
+        ],
+        "child_started_unix": 1795424488.280473,
+        "cleanup": [
+          {
+            "drained": true,
+            "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+            "unix": 1795424523.198373
+          }
+        ],
+        "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Native-Archive",
+        "duration_seconds": 34.966,
+        "effective_returncode": 0,
+        "effective_timeout_seconds": 3600.0,
+        "label": "compile-archive_admission",
+        "pid": 14415,
+        "process_group_id": 14415,
+        "requested_timeout_seconds": 3600,
+        "returncode": 0,
+        "start_new_session": true,
+        "started_unix": 1795424488.2409952,
+        "status": "TERMINAL",
+        "stderr": "12-compile-archive_admission.stderr",
+        "stderr_sha256": "0a1c70ee90329a349776501de9d69c2d739dae4ca1d2917b233ee77ace8741cb",
+        "stdout": "12-compile-archive_admission.stdout",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timed_out": false
+      },
+      "execution_command": {
+        "absolute_command_deadline_unix": 1795430843,
+        "argv": [
+          "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+          "tool",
+          "test2json",
+          "-t",
+          "-p",
+          "github.com/anyproto/anytype-heart/core/block/import",
+          "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Native-Archive-Owned-Work/archive_admission.test",
+          "-test.v=test2json",
+          "-test.run=^TestOtzariaOwnedAnnotationArchive$",
+          "-test.count=1",
+          "-test.timeout=8m"
+        ],
+        "child_started_unix": 1795424523.439362,
+        "cleanup": [
+          {
+            "drained": true,
+            "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+            "unix": 1795424524.7503061
+          }
+        ],
+        "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Native-Archive",
+        "duration_seconds": 1.319,
+        "effective_returncode": 0,
+        "effective_timeout_seconds": 540.0,
+        "label": "execute-archive_admission",
+        "pid": 15301,
+        "process_group_id": 15301,
+        "requested_timeout_seconds": 540,
+        "returncode": 0,
+        "start_new_session": true,
+        "started_unix": 1795424523.4324548,
+        "status": "TERMINAL",
+        "stderr": "14-execute-archive_admission.stderr",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "14-execute-archive_admission.stdout",
+        "stdout_sha256": "09d6fef18b60cceddef32b92669d3730246d6c9f0569786c99c8f5639d41035d",
+        "timed_out": false
+      },
+      "individual_before_after_binary_digest_check_reached": true,
+      "leaves": [
+        {
+          "action": "pass",
+          "elapsed": 0.01,
+          "test": "TestOtzariaOwnedAnnotationArchive/Original_text"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0.01,
+          "test": "TestOtzariaOwnedAnnotationArchive/Original_format"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0.01,
+          "test": "TestOtzariaOwnedAnnotationArchive/Original_nested"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0.01,
+          "test": "TestOtzariaOwnedAnnotationArchive/Original_attachment"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0.02,
+          "test": "TestOtzariaOwnedAnnotationArchive/ImmutableExclusiveOwnedStaging"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0.02,
+          "test": "TestOtzariaOwnedAnnotationArchive/CancellationAndIdentityComparisons"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/CompressedBudget"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/HiddenPrefix"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/TrailingBytes"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/TraversalPath"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/AbsolutePath"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/BackslashPath"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/CaseAliasedDuplicate"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/SymlinkMember"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/ExpandedBudget"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0.01,
+          "test": "TestOtzariaOwnedAnnotationArchive/UnexpectedMetadata"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0.01,
+          "test": "TestOtzariaOwnedAnnotationArchive/MissingBinary"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0.01,
+          "test": "TestOtzariaOwnedAnnotationArchive/UnclaimedBinary"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/FileSourceOutside"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/FileSourceURL"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/FileSourceNested"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/MissingOriginalFileInfo"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/DuplicateSingular"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/DuplicateMapKey"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/CanonicalMapCollision"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/DuplicateOneof"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/UnknownSnapshotField"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/WireDepthBudget"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/CRCFailure"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/EncryptedFlags"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/LocalCentralNameMismatch"
+        },
+        {
+          "action": "pass",
+          "elapsed": 0,
+          "test": "TestOtzariaOwnedAnnotationArchive/DescriptorMismatch"
+        }
+      ],
+      "name": "archive_admission",
+      "native_binary": {
+        "bytes": 119126418,
+        "path": "archive_admission.test",
+        "retained_in_artifact": false,
+        "sha256": "cc3a7a853dc2649728afdf64dc3ab012f31c4ef2277ee3160be5eaf0cd790cbd"
+      },
+      "parent": {
+        "action": "pass",
+        "elapsed": 0.38,
+        "test": "TestOtzariaOwnedAnnotationArchive"
+      },
+      "raw_json_events": 135,
+      "raw_stdout": "14-execute-archive_admission.stdout",
+      "raw_stdout_sha256": "09d6fef18b60cceddef32b92669d3730246d6c9f0569786c99c8f5639d41035d"
+    }
+  ]
+}
