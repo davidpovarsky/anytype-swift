@@ -1,0 +1,678 @@
+{
+  "actual_product_tests_executed": 0,
+  "app_builds": 0,
+  "commands": [
+    {
+      "argv": [
+        "xcodebuild",
+        "-version"
+      ],
+      "finished_at": "2026-11-23T06:08:39.662097+00:00",
+      "name": "xcode-version",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-basename-enumeration-45121824215-1/evidence/xcode-version.log",
+      "output_sha256": "694b44731d0b415c5b11d844151e466d7f5e200a95627efda377f232f1a6ab77",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "absence_source": "KERNEL_ESRCH",
+        "budget_seconds": 10,
+        "kernel_group_observation": {
+          "after_monotonic": 174.340420125,
+          "before_monotonic": 174.340382166,
+          "deadline_monotonic": 184.340351583,
+          "errno": 3,
+          "error_type": "ProcessLookupError",
+          "operation": "os.killpg",
+          "outcome": "ABSENT_ESRCH",
+          "pgid": 2543,
+          "signal": 0
+        },
+        "live_members": 0,
+        "observations": 0,
+        "pgid": 2543,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T06:08:34.784572+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 60,
+      "worker_pid": 2543
+    },
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/davidpovarsky/anytype-swift/actions/artifacts/14782666651"
+      ],
+      "finished_at": "2026-11-23T06:08:40.976155+00:00",
+      "name": "original-artifact-api",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-basename-enumeration-45121824215-1/evidence/original-artifact-api.log",
+      "output_sha256": "b77984e05db3dfd9fdc5b13fa223c1eba252fc9d26af6edc4a21b2db3ab1d8e1",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "absence_source": "KERNEL_ESRCH",
+        "budget_seconds": 10,
+        "kernel_group_observation": {
+          "after_monotonic": 175.651638583,
+          "before_monotonic": 175.651591541,
+          "deadline_monotonic": 185.651582291,
+          "errno": 3,
+          "error_type": "ProcessLookupError",
+          "operation": "os.killpg",
+          "outcome": "ABSENT_ESRCH",
+          "pgid": 2771,
+          "signal": 0
+        },
+        "live_members": 0,
+        "observations": 0,
+        "pgid": 2771,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T06:08:39.667682+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 60,
+      "worker_pid": 2771
+    },
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/davidpovarsky/anytype-swift/actions/runs/45087685319/attempts/1"
+      ],
+      "finished_at": "2026-11-23T06:08:41.483023+00:00",
+      "name": "original-run-api",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-basename-enumeration-45121824215-1/evidence/original-run-api.log",
+      "output_sha256": "f7cd0bc107eeb32a8a2d9f7ba6b4dc77eb1bdaa86cb4a171f7eed25b6dd9e38e",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "absence_source": "KERNEL_ESRCH",
+        "budget_seconds": 10,
+        "kernel_group_observation": {
+          "after_monotonic": 176.1578495,
+          "before_monotonic": 176.1578335,
+          "deadline_monotonic": 186.157829375,
+          "errno": 3,
+          "error_type": "ProcessLookupError",
+          "operation": "os.killpg",
+          "outcome": "ABSENT_ESRCH",
+          "pgid": 2773,
+          "signal": 0
+        },
+        "live_members": 0,
+        "observations": 0,
+        "pgid": 2773,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T06:08:40.980476+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 60,
+      "worker_pid": 2773
+    },
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/davidpovarsky/anytype-swift/actions/artifacts/14782666651/zip"
+      ],
+      "finished_at": "2026-11-23T06:08:53.123587+00:00",
+      "name": "download-original-products",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-basename-enumeration-45121824215-1/work/original-github-artifact.zip",
+      "output_sha256": "6e22d77dcf964edef2c88a6c5d1b6375c21c9bb9213fab761e0d64b349d95450",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "absence_source": "KERNEL_ESRCH",
+        "budget_seconds": 10,
+        "kernel_group_observation": {
+          "after_monotonic": 187.799019708,
+          "before_monotonic": 187.798900291,
+          "deadline_monotonic": 197.798879916,
+          "errno": 3,
+          "error_type": "ProcessLookupError",
+          "operation": "os.killpg",
+          "outcome": "ABSENT_ESRCH",
+          "pgid": 2775,
+          "signal": 0
+        },
+        "live_members": 0,
+        "observations": 0,
+        "pgid": 2775,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T06:08:41.486038+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 300,
+      "worker_pid": 2775
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "list",
+        "runtimes",
+        "-j"
+      ],
+      "finished_at": "2026-11-23T06:09:22.347997+00:00",
+      "name": "simulator-runtimes",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-basename-enumeration-45121824215-1/evidence/simulator-runtimes.log",
+      "output_sha256": "4dfd7ed4ca1ae202c1c252293eb60dba65c37eeeb6b8bb6b78394da9ecf48e3a",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "absence_source": "KERNEL_ESRCH",
+        "budget_seconds": 10,
+        "kernel_group_observation": {
+          "after_monotonic": 217.004180916,
+          "before_monotonic": 217.004093375,
+          "deadline_monotonic": 227.004076458,
+          "errno": 3,
+          "error_type": "ProcessLookupError",
+          "operation": "os.killpg",
+          "outcome": "ABSENT_ESRCH",
+          "pgid": 3416,
+          "signal": 0
+        },
+        "live_members": 0,
+        "observations": 0,
+        "pgid": 3416,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T06:09:15.811414+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 30,
+      "worker_pid": 3416
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "list",
+        "devicetypes",
+        "-j"
+      ],
+      "finished_at": "2026-11-23T06:09:22.695994+00:00",
+      "name": "simulator-types",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-basename-enumeration-45121824215-1/evidence/simulator-types.log",
+      "output_sha256": "f663b275b7760a98ef28ff760c8efc49703530dd1b45c3d70fa755047bb799a0",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "absence_source": "KERNEL_ESRCH",
+        "budget_seconds": 10,
+        "kernel_group_observation": {
+          "after_monotonic": 217.350188125,
+          "before_monotonic": 217.350162791,
+          "deadline_monotonic": 227.350156541,
+          "errno": 3,
+          "error_type": "ProcessLookupError",
+          "operation": "os.killpg",
+          "outcome": "ABSENT_ESRCH",
+          "pgid": 3597,
+          "signal": 0
+        },
+        "live_members": 0,
+        "observations": 0,
+        "pgid": 3597,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T06:09:22.357073+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 30,
+      "worker_pid": 3597
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "create",
+        "SDK06Enumeration-b63e2e4f590e4ccdba284ebd6b0671b1",
+        "com.apple.CoreSimulator.SimDeviceType.iPad-mini-A20-Pro",
+        "com.apple.CoreSimulator.SimRuntime.iOS-27-2"
+      ],
+      "finished_at": "2026-11-23T06:09:23.230669+00:00",
+      "name": "create-owned-simulator",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-basename-enumeration-45121824215-1/evidence/create-owned-simulator.log",
+      "output_sha256": "6d6c2bf317dc90617cb5b00d4b01e7ba229cc96f1ea4c06082c6694c34b9b506",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "absence_source": "KERNEL_ESRCH",
+        "budget_seconds": 10,
+        "kernel_group_observation": {
+          "after_monotonic": 217.884278416,
+          "before_monotonic": 217.884267541,
+          "deadline_monotonic": 227.884264458,
+          "errno": 3,
+          "error_type": "ProcessLookupError",
+          "operation": "os.killpg",
+          "outcome": "ABSENT_ESRCH",
+          "pgid": 3665,
+          "signal": 0
+        },
+        "live_members": 0,
+        "observations": 0,
+        "pgid": 3665,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T06:09:22.702168+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 60,
+      "worker_pid": 3665
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "boot",
+        "94C92C50-2E38-4B9D-864B-D52AB93B4EF6"
+      ],
+      "finished_at": "2026-11-23T06:09:29.681867+00:00",
+      "name": "boot-owned-simulator",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-basename-enumeration-45121824215-1/evidence/boot-owned-simulator.log",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "absence_source": "KERNEL_ESRCH",
+        "budget_seconds": 10,
+        "kernel_group_observation": {
+          "after_monotonic": 224.580794583,
+          "before_monotonic": 224.580711333,
+          "deadline_monotonic": 234.580684708,
+          "errno": 3,
+          "error_type": "ProcessLookupError",
+          "operation": "os.killpg",
+          "outcome": "ABSENT_ESRCH",
+          "pgid": 3680,
+          "signal": 0
+        },
+        "live_members": 0,
+        "observations": 0,
+        "pgid": 3680,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T06:09:23.234683+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 90,
+      "worker_pid": 3680
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "bootstatus",
+        "94C92C50-2E38-4B9D-864B-D52AB93B4EF6",
+        "-b"
+      ],
+      "finished_at": "2026-11-23T06:11:47.390340+00:00",
+      "name": "wait-owned-simulator",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-basename-enumeration-45121824215-1/evidence/wait-owned-simulator.log",
+      "output_sha256": "d40ef5ab57b3474540de412a1b231064d2bbb711cc4cdb237ce0c9b300de5d02",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "absence_source": "KERNEL_ESRCH",
+        "budget_seconds": 10,
+        "kernel_group_observation": {
+          "after_monotonic": 362.050197208,
+          "before_monotonic": 362.050135208,
+          "deadline_monotonic": 372.050133041,
+          "errno": 3,
+          "error_type": "ProcessLookupError",
+          "operation": "os.killpg",
+          "outcome": "ABSENT_ESRCH",
+          "pgid": 3777,
+          "signal": 0
+        },
+        "live_members": 0,
+        "observations": 0,
+        "pgid": 3777,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T06:09:30.273507+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 180,
+      "worker_pid": 3777
+    },
+    {
+      "argv": [
+        "xcodebuild",
+        "test-without-building",
+        "-xctestrun",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-basename-enumeration-45121824215-1/work/restored/Build/Products/SDK06-b63e2e4f590e4ccdba284ebd6b0671b1-suites-minus-seven-three-parameter-basenames-cli.xctestrun",
+        "-destination",
+        "platform=iOS Simulator,id=94C92C50-2E38-4B9D-864B-D52AB93B4EF6",
+        "-parallel-testing-enabled",
+        "NO",
+        "-only-testing:AnytypeTests/TextBlockFocusLifecycleTests",
+        "-only-testing:AnytypeTests/SimpleTableTextPersistenceTests",
+        "-only-testing:AnytypeTests/TorahRelatedReadAuthorityMappingTests",
+        "-skip-testing:AnytypeTests/TextBlockFocusLifecycleTests/consumedAndNewerFocusSurviveOldCallbacks()",
+        "-skip-testing:AnytypeTests/TextBlockFocusLifecycleTests/editingDenialCancelsPendingFocus",
+        "-skip-testing:AnytypeTests/TextBlockFocusLifecycleTests/focusedTextViewDoesNotReplayResponderAcquisition()",
+        "-skip-testing:AnytypeTests/TextBlockFocusLifecycleTests/laterFocusSupersedesDetachedRequest",
+        "-skip-testing:AnytypeTests/TextBlockFocusLifecycleTests/nativeFocusObservationDistinguishesOutcomes",
+        "-skip-testing:AnytypeTests/TextBlockFocusLifecycleTests/pendingFocusWaitsForKeyWindow()",
+        "-skip-testing:AnytypeTests/TextBlockFocusLifecycleTests/refusedFocusWaitsForWindowReadiness()",
+        "-enumerate-tests",
+        "-test-enumeration-style",
+        "flat",
+        "-test-enumeration-format",
+        "json",
+        "-test-enumeration-output-path",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-basename-enumeration-45121824215-1/evidence/suites-minus-seven-three-parameter-basenames-cli.enumeration.json",
+        "-resultBundlePath",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-basename-enumeration-45121824215-1/evidence/suites-minus-seven-three-parameter-basenames-cli.xcresult"
+      ],
+      "finished_at": "2026-11-23T06:15:17.692296+00:00",
+      "name": "enumerate-suites-minus-seven-three-parameter-basenames-cli",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-basename-enumeration-45121824215-1/evidence/enumerate-suites-minus-seven-three-parameter-basenames-cli.log",
+      "output_sha256": "1a3d100c44f68e1d7edb71fc6d0ce6566da8c86ea749c4b415be9cdf31e9456b",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "absence_source": "KERNEL_ESRCH",
+        "budget_seconds": 10,
+        "kernel_group_observation": {
+          "after_monotonic": 572.18790925,
+          "before_monotonic": 572.1878105,
+          "deadline_monotonic": 582.187782625,
+          "errno": 3,
+          "error_type": "ProcessLookupError",
+          "operation": "os.killpg",
+          "outcome": "ABSENT_ESRCH",
+          "pgid": 4463,
+          "signal": 0
+        },
+        "live_members": 0,
+        "observations": 0,
+        "pgid": 4463,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T06:11:48.574640+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 600,
+      "worker_pid": 4463
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "shutdown",
+        "94C92C50-2E38-4B9D-864B-D52AB93B4EF6"
+      ],
+      "finished_at": "2026-11-23T06:15:33.542876+00:00",
+      "name": "cleanup-owned-shutdown",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-basename-enumeration-45121824215-1/evidence/cleanup-owned-shutdown.log",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "absence_source": "KERNEL_ESRCH",
+        "budget_seconds": 10,
+        "kernel_group_observation": {
+          "after_monotonic": 588.021961333,
+          "before_monotonic": 588.021828333,
+          "deadline_monotonic": 598.021785833,
+          "errno": 3,
+          "error_type": "ProcessLookupError",
+          "operation": "os.killpg",
+          "outcome": "ABSENT_ESRCH",
+          "pgid": 5803,
+          "signal": 0
+        },
+        "live_members": 0,
+        "observations": 0,
+        "pgid": 5803,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T06:15:17.760913+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 30,
+      "worker_pid": 5803
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "delete",
+        "94C92C50-2E38-4B9D-864B-D52AB93B4EF6"
+      ],
+      "finished_at": "2026-11-23T06:15:38.237409+00:00",
+      "name": "cleanup-owned-delete",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-basename-enumeration-45121824215-1/evidence/cleanup-owned-delete.log",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "absence_source": "KERNEL_ESRCH",
+        "budget_seconds": 10,
+        "kernel_group_observation": {
+          "after_monotonic": 592.704300083,
+          "before_monotonic": 592.704283208,
+          "deadline_monotonic": 602.704277333,
+          "errno": 3,
+          "error_type": "ProcessLookupError",
+          "operation": "os.killpg",
+          "outcome": "ABSENT_ESRCH",
+          "pgid": 6005,
+          "signal": 0
+        },
+        "live_members": 0,
+        "observations": 0,
+        "pgid": 6005,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T06:15:33.592881+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 30,
+      "worker_pid": 6005
+    }
+  ],
+  "control_source_hashes": {
+    ".github/workflows/pinkha-sdk06-basename-probe.yml": "084142af3a6c38cf227e87a2952146931b65e63e1a47f4f8488930d06a22d5d2",
+    ".github/workflows/torah-inspector-ipados27.yml": "c4dbb1df4461bc2515dc28f183b5ab1896b805a629679ea55ad24f46325c9be9",
+    "Tools/Hanlin/host_command.py": "5f09813c5719f5ea3920c003e58ac6b2b5633f276686bf6c5ef8bc6f9f39a807",
+    "Tools/Hanlin/related_read_authority_profile.py": "c5480b895c917d8268841c64c7875f7d42414fe999489fa27587d017c6e0f0d9",
+    "Tools/Hanlin/run_host_tests.py": "106d40df8594c067fdcc389d0ac93e3055a01247d431b13563f9d6e0d1c3403d",
+    "Tools/Hanlin/shared_editor_profile.py": "77d27d083f8073ad027cd28e98f2e2986aaee1cb2e31d2931287e33a4f8497c8",
+    "Tools/Hanlin/shared_table_profile.py": "5c99f5e10adcd2930fd0fe8476d178f15bb8cd9c11174be8a5f849ae12470397",
+    "Tools/Hanlin/wave15_core_profile.py": "f544619607be0d25e74cff541ac66418b76df11abcd9c15c0ca774d6cbd5d96a",
+    "Tools/PinkhaSimulatorGate/destination_artifacts.py": "55c076f86990e74c2b3908a1474f1bb224c7ca52f00d1f9fe162f40be8814280",
+    "Tools/PinkhaSimulatorGate/run_owned_single_lane.py": "098ad2c7b480ba74644cb35259bf9abc817af47a9611df6d580c18b466dac359",
+    "Tools/PinkhaSimulatorGate/sdk06-basename-probe-plan.json": "9f812368d7b091e88e1346c16a81f8e993eb3f15c9b852379dd62aacc7532f22",
+    "Tools/PinkhaSimulatorGate/sdk06_basename_enumeration_probe.py": "bf48d27955b94abc8bb3a93559ba608f94c818c7beeab1138b2e85b8911706cc",
+    "Tools/PinkhaSimulatorGate/sdk06_enumeration_probe.py": "ce2987846cdd42ebab7702e7dff51068bfb15ee48a66011f621695dbd72ebbce",
+    "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py": "ff25ef9fc14630a67decf242b327c53111cfb8b77e0c2f10511a46a926aef8f0",
+    "Tools/PinkhaSimulatorGate/simulator_selection.py": "2309bb55b3752774bffc588a7c489392daa7ceb3b7279f6a9ec870899a1f1d5f",
+    "Tools/PinkhaSimulatorGate/type_preservation.py": "602a91987a6995f0218840744af0d88c2ea5c65d34c4edba7f030808c5007b44",
+    "Tools/PinkhaSimulatorGate/wave15_batch.py": "845f6ee3b8a3325827dc976da41592924c619b943dc5942c0a1ac6f37fc13bd6",
+    "Tools/PinkhaSimulatorGate/wave15_diagnostics.py": "c1ca1fe8857e6ce71b91ffb49ff54627815cbfe44beaa1bbb7328c9bb7a55397",
+    "docs/validation/20261123-sdk06-basename-probe/original-45116213338/enumerate-suites-minus-seven-cli.command.json": "6524952d73c632823b11155fb2ca7af312e76f2c9fe20b805b006b0824be8e2a",
+    "docs/validation/20261123-sdk06-basename-probe/original-45116213338/original.xctestrun": "eb7baf907400841fd1a5e7a687ad0a843e12ff6ddab958d8037fed90a7e767d1",
+    "docs/validation/20261123-sdk06-basename-probe/original-45116213338/receipt.json": "4b3fb7d87d9bccb323ae666610e222aab995ace60c29b181b8ba94937dc85697",
+    "docs/validation/20261123-sdk06-basename-probe/original-45116213338/suites-minus-seven-cli.enumeration.json": "764e03eb77e5c02032bc55c815f12a3fb21890e83a9da592022cdbe9c2bf59aa",
+    "docs/validation/20261123-sdk06-basename-probe/original-45116213338/suites-minus-seven-cli.xctestrun": "254c043788f70cd50487c8669c51a207534c4e8cb488837bb96db155eccc50c6"
+  },
+  "control_source_sha": "61f5c66ce1d4583c702e63634d33f35ae6fff2db",
+  "control_sources_unchanged": true,
+  "enumeration_limits": {
+    "all_variants_seconds": 2400,
+    "includes_test_host_startup": true,
+    "maximum_variants": 1,
+    "per_command_seconds": 600
+  },
+  "error": "No bounded selector variant qualified exact23",
+  "error_type": "ValueError",
+  "finished_at": "2026-11-23T06:15:45.840434+00:00",
+  "full_matrix_accepted": false,
+  "original_artifact_id": 14782666651,
+  "original_artifact_sha256": "6e22d77dcf964edef2c88a6c5d1b6375c21c9bb9213fab761e0d64b349d95450",
+  "original_products_sha256": "7a741f05df92143622a7d07b07682260c0c2281c4b700586fd80839bbc282822",
+  "original_products_unchanged": true,
+  "original_run_attempt": "1",
+  "original_run_id": "45087685319",
+  "original_source_sha": "7293e4fd0bcabdcdb643d5768b777b8e87ff1b73",
+  "owned_simulator": {
+    "nonce": "b63e2e4f590e4ccdba284ebd6b0671b1",
+    "selection": {
+      "architecture": "arm64",
+      "compatibilityEvidence": "runtime.supportedDeviceTypes AND installed type version bounds",
+      "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-A20-Pro",
+      "productFamily": "iPad",
+      "runtimeBuild": "24B8117",
+      "runtimeIdentifier": "com.apple.CoreSimulator.SimRuntime.iOS-27-2",
+      "runtimeVersion": "27.2"
+    },
+    "udid": "94C92C50-2E38-4B9D-864B-D52AB93B4EF6"
+  },
+  "owned_simulator_cleanup": {
+    "delete": {
+      "return_code": 0,
+      "status": "PASS"
+    },
+    "shutdown": {
+      "return_code": 0,
+      "status": "PASS"
+    }
+  },
+  "probes": [
+    {
+      "actual_product_tests_executed": 0,
+      "binding": {
+        "copied_sha256": "6045fa46b3f73e4ff1ba299c09786dec0be0490e3d6beacb08a9b4d54fa1709c",
+        "only": [
+          "TextBlockFocusLifecycleTests",
+          "SimpleTableTextPersistenceTests",
+          "TorahRelatedReadAuthorityMappingTests"
+        ],
+        "original_sha256": "eb7baf907400841fd1a5e7a687ad0a843e12ff6ddab958d8037fed90a7e767d1",
+        "runtime_injection": {
+          "change_scope": "ONE_EXACT_TOKEN_IN_COPIED_TESTING_ENVIRONMENT_ONLY",
+          "library_bytes": 338880,
+          "library_sha256": "d65ca6a91895733d029413de1ad236c7131a433520c4dd538e24a62c9163e4a0",
+          "original_token": "/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.DPYuL8/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/usr/lib/libMainThreadChecker.dylib",
+          "replacement_token": "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.2.8117.0.XtPqAq/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.2.simruntime/Contents/Resources/RuntimeRoot/usr/lib/libMainThreadChecker.dylib",
+          "runtime_build": "24B8117",
+          "runtime_identifier": "com.apple.CoreSimulator.SimRuntime.iOS-27-2",
+          "runtime_version": "27.2"
+        },
+        "skip": [
+          "TextBlockFocusLifecycleTests/consumedAndNewerFocusSurviveOldCallbacks()",
+          "TextBlockFocusLifecycleTests/editingDenialCancelsPendingFocus",
+          "TextBlockFocusLifecycleTests/focusedTextViewDoesNotReplayResponderAcquisition()",
+          "TextBlockFocusLifecycleTests/laterFocusSupersedesDetachedRequest",
+          "TextBlockFocusLifecycleTests/nativeFocusObservationDistinguishesOutcomes",
+          "TextBlockFocusLifecycleTests/pendingFocusWaitsForKeyWindow()",
+          "TextBlockFocusLifecycleTests/refusedFocusWaitsForWindowReadiness()"
+        ]
+      },
+      "command_return_code": 0,
+      "name": "suites-minus-seven-three-parameter-basenames-cli",
+      "qualification_failure": {
+        "error": "Probe did not enumerate exactly the requested23 methods",
+        "error_type": "ValueError"
+      },
+      "status": "NOT_QUALIFIED"
+    }
+  ],
+  "protocol": "sdk06-original-products-enumeration-only-v1",
+  "release_accepted": false,
+  "restored_products": {
+    "entries": 5007,
+    "status": "ORIGINAL_BYTES_RESTORED_ENUMERATION_ONLY"
+  },
+  "run_attempt": "1",
+  "run_id": "45121824215",
+  "sdk06_accepted": false,
+  "selection_contract": {
+    "declarations": [
+      "AnytypeTests/SimpleTableTextPersistenceTests/acceptedSnapshotSurvivesViewReuse()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/defocusCommitsTheDeferredSearchBuffer()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/laterDraftKeepsTheLatestAcceptedSnapshot()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/markdownAddBlockDoesNotContinueAfterOwnerRebind(returnToOriginalID:)",
+      "AnytypeTests/SimpleTableTextPersistenceTests/markdownCommandsKeepCapturedTextBeforeLaterTyping(addBlock:)",
+      "AnytypeTests/SimpleTableTextPersistenceTests/markdownStyleWaitsForEarlierNativeWrite()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/nativeRejectionKeepsTheTableDirty()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/queuedMarkdownCommandIsRetiredWhenRowChanges()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/replacementClaimsPendingOwnershipBeforePublication(asyncEntry:)",
+      "AnytypeTests/SimpleTableTextPersistenceTests/rowRebindCannotWriteIntoTheNewOwner()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/structuralKeyWaitsForAcceptedText()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/completedLocalTextAcceptsRemoteReplacement()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/consumedAndNewerFocusSurviveOldCallbacks()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/editingDenialCancelsPendingFocus(locked:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/explicitHandoffDoesNotReplayInitialCaret()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/focusedTextViewDoesNotReplayResponderAcquisition()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/initialFocusWaitsForAttachment()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/insertedCellUsesCurrentEditingBeforeFocus(editing:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/laterFocusSupersedesDetachedRequest(useNativeEditing:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/nativeFocusObservationDistinguishesOutcomes(outcome:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/pendingFocusWaitsForKeyWindow()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/pendingLocalTextSurvivesNativeReconfiguration()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/refusedFocusWaitsForWindowReadiness()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/requestIdentityParticipatesInCellConfigurationEquality()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/reusedCellDoesNotPreserveDifferentPendingOwner(composing:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/reusedCellUsesCurrentLockBeforeFocus(newLocked:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/sameInputOwnerSurvivesForkAndExplicitReplacementEndsComposition()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/staleFocusDoesNotSurviveRowLifetime(change:)",
+      "AnytypeTests/TorahRelatedReadAuthorityMappingTests/nativeDenialRequiresExactTypedCodeAndDescription(objectShow:)",
+      "AnytypeTests/TorahRelatedReadAuthorityMappingTests/providerAndTransportDescriptionsCannotForgeNativeAuthority()"
+    ],
+    "excluded": [
+      "AnytypeTests/TextBlockFocusLifecycleTests/consumedAndNewerFocusSurviveOldCallbacks()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/editingDenialCancelsPendingFocus(locked:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/focusedTextViewDoesNotReplayResponderAcquisition()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/laterFocusSupersedesDetachedRequest(useNativeEditing:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/nativeFocusObservationDistinguishesOutcomes(outcome:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/pendingFocusWaitsForKeyWindow()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/refusedFocusWaitsForWindowReadiness()"
+    ],
+    "selected": [
+      "AnytypeTests/SimpleTableTextPersistenceTests/acceptedSnapshotSurvivesViewReuse()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/defocusCommitsTheDeferredSearchBuffer()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/laterDraftKeepsTheLatestAcceptedSnapshot()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/markdownAddBlockDoesNotContinueAfterOwnerRebind(returnToOriginalID:)",
+      "AnytypeTests/SimpleTableTextPersistenceTests/markdownCommandsKeepCapturedTextBeforeLaterTyping(addBlock:)",
+      "AnytypeTests/SimpleTableTextPersistenceTests/markdownStyleWaitsForEarlierNativeWrite()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/nativeRejectionKeepsTheTableDirty()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/queuedMarkdownCommandIsRetiredWhenRowChanges()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/replacementClaimsPendingOwnershipBeforePublication(asyncEntry:)",
+      "AnytypeTests/SimpleTableTextPersistenceTests/rowRebindCannotWriteIntoTheNewOwner()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/structuralKeyWaitsForAcceptedText()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/completedLocalTextAcceptsRemoteReplacement()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/explicitHandoffDoesNotReplayInitialCaret()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/initialFocusWaitsForAttachment()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/insertedCellUsesCurrentEditingBeforeFocus(editing:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/pendingLocalTextSurvivesNativeReconfiguration()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/requestIdentityParticipatesInCellConfigurationEquality()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/reusedCellDoesNotPreserveDifferentPendingOwner(composing:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/reusedCellUsesCurrentLockBeforeFocus(newLocked:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/sameInputOwnerSurvivesForkAndExplicitReplacementEndsComposition()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/staleFocusDoesNotSurviveRowLifetime(change:)",
+      "AnytypeTests/TorahRelatedReadAuthorityMappingTests/nativeDenialRequiresExactTypedCodeAndDescription(objectShow:)",
+      "AnytypeTests/TorahRelatedReadAuthorityMappingTests/providerAndTransportDescriptionsCannotForgeNativeAuthority()"
+    ],
+    "test_plan": "AnytypeTests"
+  },
+  "selector_hypothesis": {
+    "name": "suites-minus-seven-three-parameter-basenames-cli",
+    "plan_sha256": "9f812368d7b091e88e1346c16a81f8e993eb3f15c9b852379dd62aacc7532f22",
+    "prior_run_id": "45116213338",
+    "status_at_dispatch": "UNQUALIFIED_ENUMERATION_HYPOTHESIS"
+  },
+  "started_at": "2026-11-23T06:08:34.065259+00:00",
+  "status": "NO_SELECTOR_QUALIFIED_PRODUCT_TESTS_NOT_RUN"
+}
