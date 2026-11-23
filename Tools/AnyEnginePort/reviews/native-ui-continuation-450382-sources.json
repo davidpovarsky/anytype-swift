@@ -42,14 +42,16 @@
     {
       "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeArchiveTransfer.swift",
       "beforeSHA256": "613a85b5fab49ed8fe3bd15b9987c8c965b63a3f318e37e6164364d56c3b631d",
-      "afterSHA256": "f8377cc7365b42dc15fe265dbcd57dde84de767d214d517130d297e5fbed3bf6",
+      "afterSHA256": "caa4f7eecf97201acc09a325ea186e5f6a5a85231ca180f5ada6ab1ccbb98aef",
       "beforeGitBlob": "499a86475aa176488949b95e917ff93d92d05b5b",
-      "afterGitBlob": "0e1384decf5138e2b9e0d62dfb41a8064d69b966",
-      "scope": "export_directory_default_only",
+      "afterGitBlob": "f25910c7b21ab9acf0a188c2c3a50919fa126934",
+      "scope": "inactive_archive_directory_and_separate_presenters",
       "declarations": [
-        "AnyNativeArchiveTransferView.body fileExporter"
+        "AnyNativeArchiveTransferView",
+        "exportArchiveButton(in:)",
+        "importArchiveButton(in:)"
       ],
-      "reason": "One native fileDialogDefaultDirectory modifier is attached after the existing fileExporter. The importer default, data, destination mapping and body checks remain unchanged. The Files journey is not retained and must execute again; retained entry/quote/focus never invokes this export sheet."
+      "reason": "One native fileDialogDefaultDirectory modifier is attached after the existing fileExporter. The importer default, data, destination mapping and body checks remain unchanged. The Files journey is not retained and must execute again; retained entry/quote/focus never invokes this export sheet. Separate exporter/importer presenters now attach to their respective buttons and receive the concrete validated Exports URL before presentation; visible saved folder feedback derives only from the actual success callback. The archive sheet is inactive in every retained journey; archive encoding and exact readback contracts remain unchanged."
     },
     {
       "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
@@ -130,9 +132,9 @@
     {
       "path": "NativeApp/UITests/NativeLaunchTests.swift",
       "beforeSHA256": "f4cc433fe98ab1e6ffe9af3c6d3db0a46e71ec7f0f61ddd1e6d4c29cc1b33f53",
-      "afterSHA256": "69e841cf6ea3f4af46fa6a51e20e645702710e70d14a330f42601ec467bc0371",
+      "afterSHA256": "9d5ae7f3072452c6f356ced5df6c5a24d74233a7aebc8d0c3a48d4a3eefad5ec",
       "beforeGitBlob": "cbd759da5bed37ac9c35582b4b3b0924c8ba19a6",
-      "afterGitBlob": "5870d91beaf7885231edd757147b686ee2e7d3c5",
+      "afterGitBlob": "6aba18c5f28dc08c8ee0e032568846e6b8a72d7b",
       "scope": "failed_journey_controllers_only",
       "declarations": [
         "testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType",
@@ -144,7 +146,7 @@
         "testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies",
         "configureHanlinThroughNormalFields"
       ],
-      "reason": "Exact controller changes only in six previously failed journeys, Files, and the private Hanlin field helper whose only caller is the failed Hanlin journey. Whole remaining file including passed entry, quote/Note, custom Type and common helpers is byte-identical to original07."
+      "reason": "Exact controller changes only in six previously failed journeys, Files, and the private Hanlin field helper whose only caller is the failed Hanlin journey. Whole remaining file including passed entry, quote/Note, custom Type and common helpers is byte-identical to original07. Only the failed SourceDrag final redundant close and the failed Files nested save helper changed; all retained methods and common helpers remain byte-identical. The Files helper now additionally requires the folder returned by the actual native success callback."
     },
     {
       "path": "NativeApp/AnyNative.xcodeproj/project.pbxproj",

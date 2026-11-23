@@ -40,7 +40,7 @@ SCOPES = {
     PROJECT: "new_history_ui_test_target_registration",
     "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift": "alignment_picker_and_inactive_history_presentation",
     "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift": "related_result_accessibility_only",
-    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeArchiveTransfer.swift": "export_directory_default_only",
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeArchiveTransfer.swift": "inactive_archive_directory_and_separate_presenters",
     "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatView.swift": "connection_field_accessibility_only",
     **{path: "unexecuted_readonly_history" for path in HISTORY_PATHS},
 }

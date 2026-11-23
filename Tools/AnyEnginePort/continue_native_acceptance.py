@@ -9,9 +9,11 @@ from pathlib import Path, PurePosixPath
 import re
 import stat
 import subprocess
+import sys
 import zipfile
 
 import native_continuation_sources as sources
+import native_ui_followup_retention as followup
 import reuse_uikit_execution as original
 import reuse_uikit_unaffected_eight as eight
 import verify_focus_handoff_execution as focus
@@ -23,12 +25,14 @@ RUN = "45038244641"
 REPOSITORY = "davidpovarsky/anytype-swift"
 BRANCH = "codex/chatgpt-wave15-shared-20261121"
 CONTINUATION_BRANCH = "codex/chatgpt-wave15-acceptance-continuation-20261122"
+FOLLOWUP_BRANCH = "codex/chatgpt-wave15-ui-qualified-continuation-20261123"
 MANIFEST = "Tools/AnyEnginePort/reviews/native-ui-continuation-450382-originals.json"
 MANIFEST_SHA = "1f8d5aedfa8bb16fc7eb7ed21cef45376897f6d2ddd305642cac5c77a33cbb93"
 SELF = "Tools/AnyEnginePort/continue_native_acceptance.py"
 HELPERS = (SELF, "Tools/AnyEnginePort/native_continuation_sources.py",
            "Tools/AnyEnginePort/verify_native_test_execution.py",
-           "Tools/AnyEnginePort/verify_custom_type.py")
+           "Tools/AnyEnginePort/verify_custom_type.py",
+           "Tools/AnyEnginePort/native_ui_followup_retention.py")
 PROFILE = "native-ui-continuation-six"
 HISTORY_PROFILE = "native-history"
 ENTRY = "NativeLaunchTests/testCreateEditHanlinConsentBackgroundAndColdReopen"
@@ -234,7 +238,7 @@ def context(evidence, root=ROOT):
     run, commit, _ = github_context()
     udid, simulator, _ = verify_simulator(evidence / "simulator.json", run)
     require(run != RUN and os.environ.get("GITHUB_REPOSITORY") == REPOSITORY and
-            os.environ.get("GITHUB_REF") in {"refs/heads/" + BRANCH, "refs/heads/" + CONTINUATION_BRANCH},
+            os.environ.get("GITHUB_REF") in {"refs/heads/" + name for name in (BRANCH, CONTINUATION_BRANCH, FOLLOWUP_BRANCH)},
             "consumer_run_scope_mismatch")
     attempt = os.environ.get("GITHUB_RUN_ATTEMPT", "")
     require(attempt.isdigit() and int(attempt) > 0, "consumer_attempt_missing")
@@ -261,11 +265,14 @@ def qualify_retention(evidence, root=ROOT):
     require(current_binding == {**prior_binding, "consumerCommit": ctx["consumerCommit"]} and
             sha(read(root / "Modules/PinkhaAnyRuntime/Vendor/native-artifact.json")) == prior_binding["artifactReceiptSHA256"],
             "retained_native_binary_or_source_binding_changed")
-    return {"schemaVersion": 1, "status": "VERIFIED_REUSE", "scope": "verified_original_any_acceptance_subset",
+    qualified = {"schemaVersion": 1, "status": "VERIFIED_REUSE", "scope": "verified_original_any_acceptance_subset",
             "fullAcceptance": False, "testsExecutedThisRun": 0, **ctx, **originals,
             "sourceProof": sources.verify_sources(ctx["consumerCommit"], root),
             "verificationSources": {path: sha(read(root / path)) for path in HELPERS},
             "claimBoundary": "Twenty methods retain their actual original run and source. No original failed batch is relabeled and no current execution is inferred."}
+    if (evidence / followup.DIRECTORY).exists():
+        return followup.extend_retention(qualified, evidence, sys.modules[__name__], root)
+    return qualified
 
 
 def validate_admission(path, root=ROOT):
@@ -294,7 +301,9 @@ def current_stage(evidence, stem, profile, ctx, root=ROOT):
 
 def previous_stages(evidence, admission, root=ROOT):
     retained = validate_admission(admission, root)
-    six = current_stage(evidence, "native-ui-continuation", PROFILE, retained, root)
+    profile = retained.get("currentProfile", PROFILE)
+    require(profile in {PROFILE, followup.PROFILE}, "unknown_current_continuation_profile")
+    current = current_stage(evidence, "native-ui-continuation", profile, retained, root)
     files = current_stage(evidence, "archive-roundtrip", "archive-roundtrip", retained, root)
     proof = data(evidence / "archive-roundtrip/postflight.json")
     require(proof.get("status") == "PASS" and proof.get("commit") == retained["consumerCommit"] and
@@ -311,7 +320,7 @@ def previous_stages(evidence, admission, root=ROOT):
             transcript.get("phase") == 6 and transcript.get("responsesDelivered") == 6,
             "current_hanlin_provider_contract_incomplete")
     return {"retainedAdmissionSHA256": sha(read(admission)), "retainedEntryAndQuoteExecutedThisRun": 0,
-            "currentSix": six, "currentFiles": files,
+            ("currentFour" if profile == followup.PROFILE else "currentSix"): current, "currentFiles": files,
             "currentProviderContractSHA256": sha(read(evidence / "hanlin-provider/provider-contract.json")),
             "currentFilesPostflightSHA256": sha(read(evidence / "archive-roundtrip/postflight.json"))}
 
@@ -328,9 +337,9 @@ def aggregate(evidence, admission, include_history, root=ROOT):
         stages["currentHistory"] = current_stage(evidence, "native-history", HISTORY_PROFILE, retained, root)
     return {"schemaVersion": 1, "status": "PASS_CONTINUATION", "scope": "qualified_missing_native_ui_journeys",
             "consumerCommit": retained["consumerCommit"], "consumerRunID": retained["consumerRunID"],
-            "retainedMethodCount": 20, "retainedMethodsExecutedThisRun": 0,
+            "retainedMethodCount": retained["retainedMethodCount"], "retainedMethodsExecutedThisRun": 0,
             "retainedMethodsWithOrigins": retained["retainedMethodsWithOrigins"],
-            "currentExecutedMethodCount": 9 if include_history else 8,
+            "currentExecutedMethodCount": len(execution.expected_methods(retained.get("currentProfile", PROFILE))) + 2 + int(include_history),
             "historyExecution": "PASS" if include_history else "NOT_RUN",
             "originalFailedBatchStatus": "FAIL", "fullAcceptance": False,
             "wholeAPP01": "OPEN", "physicalDeviceAcceptance": "NOT_RUN", "stages": stages}
@@ -343,13 +352,18 @@ def main():
     parser.add_argument("--download", type=Path)
     parser.add_argument("--admission", type=Path)
     parser.add_argument("--include-history", action="store_true")
+    parser.add_argument("--followup-450876", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     record = {"schemaVersion": 1, "status": "FAIL", "action": args.action, "fullAcceptance": False}
     require(not args.output.exists(), "cannot_replace_original_continuation_receipt")
     try:
         if args.action == "retain":
-            fetch_originals(args.download, args.evidence / RETAINED_DIR)
+            if args.followup_450876:
+                followup.fetch_originals(args.download, args.evidence / followup.DIRECTORY,
+                                         args.evidence / RETAINED_DIR, sys.modules[__name__])
+            else:
+                fetch_originals(args.download, args.evidence / RETAINED_DIR)
             record = qualify_retention(args.evidence)
         else:
             record = aggregate(args.evidence, args.admission, args.include_history)

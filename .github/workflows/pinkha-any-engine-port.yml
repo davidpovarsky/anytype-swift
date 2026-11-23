@@ -454,7 +454,7 @@ jobs:
         run: |
           set -euo pipefail
           test "${{ inputs.focus_handoff_validation }}" != true
-          python3 Tools/AnyEnginePort/continue_native_acceptance.py retain \
+          python3 Tools/AnyEnginePort/continue_native_acceptance.py retain --followup-450876 \
             --evidence build/any-patched-evidence \
             --download build/any-continuation-download \
             --output build/any-patched-evidence/native-continuation-retained.json
@@ -828,7 +828,7 @@ jobs:
             --tests "build/any-patched-evidence/native-ui-followup-test-methods.json" \
             --output "build/any-patched-evidence/native-ui-followup-named-execution.json" || named_exit=1
           if [ "$test_exit" -ne 0 ] || [ "$named_exit" -ne 0 ]; then exit 1; fi
-      - name: Execute only six originally failed native journeys
+      - name: Execute only four still-failed native journeys
         id: native-ui-continuation-tests
         if: ${{ !cancelled() && inputs.validation_scope == 'remaining-native-ui-continuation' && steps.ui-continuation.outcome == 'success' && steps.native-shared-products.outcome == 'success' && steps.provider-fixture.outcome == 'success' }}
         shell: bash
@@ -841,7 +841,7 @@ jobs:
             --continuation build/any-patched-evidence/native-continuation-retained.json \
             --output build/any-patched-evidence/native-ui-continuation-products-preflight.json
           set +e
-          xcodebuild test-without-building -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen \
+          xcodebuild test-without-building -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen \
             -xctestrun "${ANY_NATIVE_XCTESTRUN:?original native test configuration missing}" \
             -destination "platform=iOS Simulator,id=$ANY_NATIVE_SIMULATOR_UDID" \
             -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/native-ui-continuation.xcresult" \
@@ -864,7 +864,7 @@ jobs:
               > build/any-patched-evidence/native-ui-continuation-test-methods.json || true
           fi
           python3 Tools/AnyEnginePort/verify_native_test_execution.py \
-            --profile native-ui-continuation-six --udid "${ANY_NATIVE_SIMULATOR_UDID:-}" \
+            --profile native-ui-continuation-four --udid "${ANY_NATIVE_SIMULATOR_UDID:-}" \
             --summary build/any-patched-evidence/native-ui-continuation-test-counts.json \
             --tests build/any-patched-evidence/native-ui-continuation-test-methods.json \
             --output build/any-patched-evidence/native-ui-continuation-named-execution.json || named_exit=1

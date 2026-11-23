@@ -165,13 +165,22 @@ PROFILES["native-ui-continuation-six"] = {
     ],
 }
 SOURCE_PATHS["native-ui-continuation-six"] = SOURCE_PATHS["native-ui"]
+# Two actual later passes retain their original source/run separately.
+PROFILES["native-ui-continuation-four"] = {
+    "NativeLaunchTests": [name for name in PROFILES["native-ui-continuation-six"]["NativeLaunchTests"]
+                         if name not in {
+                             "testExplicitHebrewDirectionAndAlignmentSurviveColdReopen",
+                             "testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen",
+                         }],
+}
+SOURCE_PATHS["native-ui-continuation-four"] = SOURCE_PATHS["native-ui"]
 PROFILES["native-history"] = {
     "NativeHistoryTests": [
         "testSavedHebrewVersionsRemainReadOnlyAcrossCloseBackgroundAndColdReopen",
     ],
 }
 SOURCE_PATHS["native-history"] = ["NativeApp/UITests/NativeHistoryTests.swift"]
-EXACT_PROFILES = EXACT_PROFILES | {"native-ui-continuation-six", "native-history"}
+EXACT_PROFILES = EXACT_PROFILES | {"native-ui-continuation-six", "native-ui-continuation-four", "native-history"}
 
 def require(condition, message):
     if not condition:
