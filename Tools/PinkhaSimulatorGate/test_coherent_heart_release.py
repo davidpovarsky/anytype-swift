@@ -282,10 +282,14 @@ class CoherentControls(unittest.TestCase):
             args = SimpleNamespace(app=app, derived=app / "build/derived", evidence=app / "build/proof")
             work = coherent.private_work(args)
             original = work / "native-ui/commands/test.owned.command.json"
-            batch.write(original, dict(worker_pid=12345, owned_group_cleanup="TERM_THEN_KILL"))
+            command = dict(worker_pid=12345, owned_group_cleanup="TERM_THEN_KILL",
+                           argv=["synthetic", "owned-command"], cwd=str(work), return_code=0, status="COMPLETE")
+            batch.write(original, command)
             metadata = original.with_name("test.command.json")
             batch.write(metadata, dict(original_owned_command=original.name,
-                original_owned_command_sha256=batch.digest(original), owned_group_quiescence={"status": "PASS"}))
+                original_owned_command_sha256=batch.digest(original), owned_group_quiescence={"status": "PASS"},
+                argv=command["argv"], cwd=command["cwd"], return_code=command["return_code"],
+                controller_process_id=command["worker_pid"], owned_group_termination=command["owned_group_cleanup"]))
             with patch.object(supervisor, "verify_owned_group_stopped", return_value={"status": "PASS", "pgid": 12345, "live_members": 0}):
                 self.assertEqual(coherent.nested_cleanup(args)["groups_checked"], 1)
                 original.write_text("{}")

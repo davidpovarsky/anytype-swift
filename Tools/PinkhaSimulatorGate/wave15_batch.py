@@ -355,8 +355,9 @@ class FrozenBuild:
                 and self.device["udid"] == udid, "Coherent readiness requires its new owned simulator")
         require(json.loads((evidence / "owned-simulator.json").read_bytes()) == self.device,
                 "Coherent readiness differs from the original created-device receipt")
+        from coherent_release_cleanup import readiness_commands
         return simulator.ensure_ready(app=self.app, evidence=evidence / "owned-readiness",
-            selection=self.device, expected_name=self.device["name"], pair=pair,
+            selection=self.device, expected_name=self.device["name"], pair=readiness_commands(pair),
             require_initial_shutdown=True)
 
     def confirm_empty_container(self, udid, evidence):
@@ -990,8 +991,16 @@ def cleanup_owned(intent, evidence):
             for action in (["shutdown"] if item["state"] != "Shutdown" else []) + ["delete"]:
                 remaining = deadline - time.monotonic()
                 require(remaining > 0, "Owned cleanup budget exhausted")
-                result = subprocess.run(["xcrun", "simctl", action, device["udid"]], capture_output=True,
-                                        timeout=min(20, remaining))
+                try:
+                    result = subprocess.run(["xcrun", "simctl", action, device["udid"]], capture_output=True,
+                                            timeout=min(20, remaining))
+                except subprocess.TimeoutExpired as error:
+                    if action != "delete" or intent.get("profile") != COHERENT_HEART_PROFILE:
+                        raise
+                    from coherent_release_cleanup import reconcile_delete_timeout
+                    reconcile_delete_timeout(device, error, entry=entry, report=report,
+                                             baseline_udids=intent["baseline_udids"], deadline=deadline)
+                    continue
                 entry[action + "_exit_code"] = result.returncode
                 require(result.returncode == 0, "Owned simulator cleanup failed")
             entry["status"] = "DELETED_OWNED_SIMULATOR"

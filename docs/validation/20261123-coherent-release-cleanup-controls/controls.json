@@ -1,0 +1,44 @@
+{
+  "affected_existing_distinct_controls_passed": 6,
+  "apple_builds_executed": 0,
+  "apple_product_methods_executed": 0,
+  "base_sha": "3fb3defb40c02de9af4ca880e27520595c0ce5ba",
+  "coherent_single_ps_timeout_seconds": "remaining original 10-second budget",
+  "default_single_ps_timeout_seconds": 2,
+  "evidence_sha256": {
+    "changed-controls-and-existing-guards.log": "ff09d8701e8a75a118781ba88d5f6b9b66f45dbe7643bd584a4ec2fefcdd58a9",
+    "corrected-original-linkage-fixture.log": "c983b22f448eea0cbcd3d3eb2fa658b2ec2eb02c78080bcf72cc631701b4161a",
+    "new-controls-attempt1.log": "3a74589ff8999d55bd398615e04793cc28485534ff05e8467444af7753f70637",
+    "original-batch-cleanup.json": "a27ce06092cd64d7950361f88aa8d4228e3e95e047242ec4c18bc90484e602c9",
+    "original-boot.command.json": "ddd43ae374744310ac5ea9f4ee1e78c006d7b360158f5e4c8ffea06d74be6881",
+    "original-boot.owned.command.json": "33a31c4e11679edfc6106b2c1fe29ddbe509ace7ccaccf89a594cc1809d1f41a",
+    "original-products-structural-audit.json": "10fe7f8e27e34e7a5b46bc581df3b41908d7ed9f626eadfebd3b523487789f9f",
+    "original-readiness.json": "57e5c79fa665b378403f94004db936b927dde23fc1136f2e457cc8130a711fff",
+    "original-worker-failure-summary.json": "3af6f23a4f12c2076199b62443fddb3015dc80e1ef9b6040d24fd13275146432"
+  },
+  "limitations": [
+    "Original failure remains failure",
+    "No Apple runtime acceptance or cache publication",
+    "Product archives structurally exact; reuse still requires source/carrier admission and copied-descriptor runtime adaptation"
+  ],
+  "new_distinct_controls_passed": 14,
+  "original_control_attempts_preserved": true,
+  "original_outcome": "FAIL_BEFORE_ANY_PRODUCT_METHOD",
+  "original_outer_artifact_id": 14786515753,
+  "original_outer_bytes": 829528196,
+  "original_outer_sha256": "a35f701fdf32977c0c9f605be9ee70fe424c754dcdd47c5321c85e00e3733ea4",
+  "original_run_id": "45095838065",
+  "original_source_sha": "d254a4a1ccd9288f585ff9374088cbaf965b36b4",
+  "same_process_cleanup_budget_seconds": 10,
+  "same_simulator_cleanup_budget_seconds": 180,
+  "schema": "pinkha-coherent-release-cleanup-controls-v1",
+  "source_sha256": {
+    "Tools/PinkhaSimulatorGate/coherent_heart_release.py": "92969e39ad79817d172cfe80d891ee784c68918f1e6db4b7c37cee41972cc518",
+    "Tools/PinkhaSimulatorGate/coherent_release_cleanup.py": "f3f80cc9c2f3b8ab4fe97f6eeeef431e6b1f6f1d8ef83362b61919c91045ce10",
+    "Tools/PinkhaSimulatorGate/run_owned_single_lane.py": "af8cd802c899698375f05116768a638588a936300adaf1753e068a85c7056380",
+    "Tools/PinkhaSimulatorGate/run_t5_apple_pair.py": "abd51fe1f68547e4a190f9b58475fb002f0128c4ef5aaf45d5aaf69968221267",
+    "Tools/PinkhaSimulatorGate/test_coherent_heart_release.py": "5fb6fe5fc28f1621ce91420a39563307c1f8f3543c85f149afc83ca9d8afde6a",
+    "Tools/PinkhaSimulatorGate/test_coherent_release_cleanup_budget.py": "dc1eaa0528de277263d158d4e7479405eaf3eacf5db5b3d9e9afe1c1291c110f",
+    "Tools/PinkhaSimulatorGate/wave15_batch.py": "767f1ac266209b9067afcf635a1067cafd5e6bbaa776dac11b5be6324486a3e5"
+  }
+}

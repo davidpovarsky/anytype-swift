@@ -20,7 +20,10 @@ PROTOCOL = "pinkha-owned-single-lane-v1"
 PASS = "SUPERVISED_LANE_PASS_ACCEPTANCE_REVIEW_PENDING"
 
 
-def verify_owned_group_stopped(command_path, *, seconds=10):
+def verify_owned_group_stopped(command_path, *, seconds=10, cleanup_profile=None):
+    owned.require(cleanup_profile in (None, owned.COHERENT_HEART_PROFILE)
+                  and (cleanup_profile is None or seconds == 10),
+                  "Only the explicit coherent profile may use its unchanged 10-second cleanup budget")
     record = json.loads(command_path.read_bytes())
     pgid = record.get("worker_pid")
     owned.require(type(pgid) is int and pgid > 1 and pgid != os.getpgrp()
@@ -35,7 +38,9 @@ def verify_owned_group_stopped(command_path, *, seconds=10):
         owned.require(remaining > 0, "Owned process group did not stop within its cleanup budget")
         # Read only numeric identities/state. No process names, global signals
         # or unrelated process-group operations are used.
-        probe_timeout = min(2, remaining)
+        # Coherent Release exhausted this budget after a read-only ps timeout. Allow one
+        # probe to use the remaining original 10s; ordinary callers retain 2s.
+        probe_timeout = min(10 if cleanup_profile == owned.COHERENT_HEART_PROFILE else 2, remaining)
         observations += 1
         try:
             output = subprocess.check_output(["ps", "-axo", "pid=,pgid=,stat="], text=True,

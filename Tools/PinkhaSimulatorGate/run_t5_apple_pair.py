@@ -416,13 +416,14 @@ def terminate_owned(process):
     process.wait(timeout=10)
 
 
-def run_logged(argv, cwd, directory, name, timeout, check=True, output=None):
+def run_logged(argv, cwd, directory, name, timeout, check=True, output=None, *, cleanup_profile=None):
     # Reuse the same owned executor and quiescence check as the package/SDK
     # supervisors. A completed xcodebuild parent can leave compiler children;
     # the next stage and cache publication must wait for its own group only.
     import wave15_batch as owned
     from run_owned_single_lane import verify_owned_group_stopped
 
+    require(cleanup_profile in (None, owned.COHERENT_HEART_PROFILE), "Unknown command cleanup profile")
     directory.mkdir(parents=True, exist_ok=True)
     log_path = output or directory / (name + ".log")
     command_path = log_path.with_suffix(".command.json")
@@ -432,6 +433,8 @@ def run_logged(argv, cwd, directory, name, timeout, check=True, output=None):
             "Refuse stale command output or ownership evidence")
     metadata = dict(argv=[str(item) for item in argv], cwd=str(cwd), status="FAILED",
                     started_at=datetime.now(timezone.utc).isoformat(), timeout_seconds=timeout)
+    if cleanup_profile is not None:
+        metadata["cleanup_profile"] = cleanup_profile
     previous = {number: signal.getsignal(number) for number in (signal.SIGTERM, signal.SIGINT)}
     previous_env = {key: os.environ.get(key) for key in ("GH_PROMPT_DISABLED", "GH_DEBUG")}
     cancelled = finalizing = False
@@ -470,12 +473,15 @@ def run_logged(argv, cwd, directory, name, timeout, check=True, output=None):
                     metadata.update(controller_process_id=original["worker_pid"],
                                     return_code=original.get("return_code"),
                                     owned_group_termination=original.get("owned_group_cleanup"))
-                    metadata["owned_group_quiescence"] = verify_owned_group_stopped(command_path)
+                    metadata["owned_group_quiescence"] = verify_owned_group_stopped(
+                        command_path, **({"cleanup_profile": cleanup_profile} if cleanup_profile is not None else {}))
                 else:
                     metadata["owned_group_quiescence"] = {"status": "NOT_STARTED"}
         except BaseException as error:
             cleanup_failure = error
-            metadata.update(status="FAILED_PROCESS_CLEANUP", cleanup_error_type=type(error).__name__)
+            metadata.update(status="FAILED_PROCESS_CLEANUP", cleanup_error_type=type(error).__name__,
+                            cleanup_error=str(error),
+                            cleanup_probe_timeouts=getattr(error, "timeout_observations", []))
         try:
             if command_path.is_file():
                 command_path.rename(original_path)

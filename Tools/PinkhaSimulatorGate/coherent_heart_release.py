@@ -366,33 +366,23 @@ def validate_results(evidence, intent, worker, ui, *, require_release_fixtures=T
 
 
 def nested_cleanup(args):
-    """All nested T5 command groups must be drained before cache publication."""
-    from run_owned_single_lane import verify_owned_group_stopped
+    """Recheck exact original groups while retaining any earlier command failure."""
+    from coherent_release_cleanup import audit_nested_receipts
     evidence, work = args.evidence.resolve(), private_work(args)
-    records = []
     roots = [work, evidence / "coherent-t5",
              *[evidence / "lanes" / name / "owned-readiness" for name in batch.profile_spec(PROFILE).lanes]]
-    for root in roots:
-        if not root.exists():
-            continue
-        for path in sorted(root.rglob("*.command.json")):
-            if root != work and {"actual", "actual-native"}.intersection(path.relative_to(root).parts):
-                continue  # Published projections are checked against their private originals above.
-            batch.require(not path.is_symlink() and path.resolve().is_relative_to(root.resolve()),
-                          "Nested command receipt escaped its owned work")
-            data = json.loads(path.read_bytes())
-            if "worker_pid" in data:
-                state = verify_owned_group_stopped(path)
-                records.append(dict(path=str(path.relative_to(args.app.resolve())), sha256=batch.digest(path), **state))
-            elif "original_owned_command" in data:
-                original = path.parent / data["original_owned_command"]
-                batch.require(original.parent == path.parent and original.is_file()
-                              and batch.digest(original) == data.get("original_owned_command_sha256")
-                              and data.get("owned_group_quiescence", {}).get("status") == "PASS",
-                              "Nested T5 command lacks its original completed owned cleanup")
-    result = dict(status="PASS", original_owned_commands=records, groups_checked=len(records), finished_at=batch.now())
-    batch.write(evidence / "coherent-nested-cleanup.json", result)
-    return dict(status="PASS", groups_checked=len(records), path="coherent-nested-cleanup.json",
+    result = dict(status="RUNNING", original_owned_commands=[], groups_checked=0,
+                  evidence_scope="CLEANUP_ONLY_ORIGINAL_COMMAND_AND_PRODUCT_STATUS_UNCHANGED")
+    try:
+        audit_nested_receipts(roots, args.app.resolve(), work, result)
+        result["status"] = "PASS"
+    except BaseException as error:
+        result.update(status="FAIL", error_type=type(error).__name__, error=str(error))
+        raise
+    finally:
+        result["finished_at"] = batch.now()
+        batch.write(evidence / "coherent-nested-cleanup.json", result)
+    return dict(status="PASS", groups_checked=result["groups_checked"], path="coherent-nested-cleanup.json",
                 sha256=batch.digest(evidence / "coherent-nested-cleanup.json"))
 
 
