@@ -117,10 +117,10 @@
   },
   "controls": [
     {
-      "bytes": 45222,
-      "git_blob": "cffc321573507e32e633ba0cc1fd55b1d429d413",
+      "bytes": 52741,
+      "git_blob": "567c13e43b9f7790ed3d84f78faf53fde9ff3cd0",
       "path": "run_native_closed_import.py",
-      "sha256": "51949bd80ca2a68a545d5d57cf7c872cdc257ad3a208e81e7d5d37ae0ad98088"
+      "sha256": "e35ea82d63a35106b3e265f57998e3d49e58610e80022eb7aa9e6b00fd214e58"
     },
     {
       "bytes": 3011,
@@ -198,6 +198,12 @@
   "historical_selectors_replayed": false,
   "native_selector": "^TestOtzariaOwnedAnnotationClosedNativeImport$",
   "new_rpc_or_generated_source": false,
+  "observer_repair": {
+    "bytes": 2256,
+    "git_blob": "6f31f8ee400fb30ec04af193be3a1b8fd1d38036",
+    "path": "observer-repair-20261123/REPAIR_INPUTS.json",
+    "sha256": "5dce16285bf28001e330ca3879d2661644f517a284a0423d4250daea1032e2fa"
+  },
   "original_model_and_rpc_inputs": [
     {
       "bytes": 28683,
@@ -272,7 +278,7 @@
     "tantivity_sha256.txt": "14a78977c8b08e3e976cfbe130a6092aaec707e7515aa1811326e1c028cd2948"
   },
   "production_import_activated": false,
-  "required_compiler_input_count": 87,
+  "required_compiler_input_count": 88,
   "required_compiler_inputs": {
     "core/application/account_create.go": "d0726be42c7f3bedb1479113ec90310296f2a551d04d64dad06d0a8a863ed4b4",
     "core/application/account_create_from_export.go": "5d7f91dc44d7c04f445a3b22ccc692c525a94c8b61cc5ac696764fe03c69db21",
@@ -283,7 +289,7 @@
     "core/application/application.go": "30d0110b028f009d5b447faff657def67e2605e44bcbb85fa6ffc437b0f686f2",
     "core/application/owned_annotation_import.go": "c3b4c650efab4c4f3e1c8b6e5daeda4d30d523bf8461c833c00be10126843ff8",
     "core/application/owned_annotation_import_export_test.go": "b61a7c550c3b2fe8291f818772c34ea4572843094e8aea6ceff706bb5b25a5be",
-    "core/application/owned_annotation_import_native_test.go": "0a2974ab89ca2dd701e36b823a33a5aa6d4b54659faa647c323cea0b1f7fe924",
+    "core/application/owned_annotation_import_native_test.go": "3f54464ab2dc860e79f41f55d6b4a0813409828a4e3d8c5d5a596e4666ffc422",
     "core/application/owned_import_admission.go": "3ed41b1989e03d087c393d04b5b3c3a5d6a813830e4c42bebb6f2c4d727e67ee",
     "core/block/detailservice/pinkha_torah.go": "d39dd006cb20dcbdd91a851a96faf82a42e277b80d0f190a4a7e532831a4768e",
     "core/block/editor/basic/details.go": "0ac058091f7ab161aec3d462d3cfa3e844af980cb0d5cecf2400b64360f7f033",
@@ -320,7 +326,8 @@
     "core/block/object/objectcreator/fixed_schema_observer.go": "f591939d759e733a37e776d189de36d597ddd30cab284142f82aa8de9de51d89",
     "core/block/object/objectcreator/fixed_schema_replay.go": "47de485bc746070ee5791cac1efc67e84da31c5477cdb4ad577d62c53310adc7",
     "core/block/object/objectcreator/fixed_schema_snapshot.go": "3a404738380ca7b8a6e59c93a377b85927ed4383fed560385f5920f86631e5df",
-    "core/block/object/objectcreator/owned_annotation_observer.go": "73de2d6301d7715bc2f2efaa3df90f26b5dc8f10b8739b87240205ea541b9441",
+    "core/block/object/objectcreator/owned_annotation_bundled_persistence_test.go": "f465d41dad0e04c240afcb47285e7b80a7c95f87d224dff8f39883156415930d",
+    "core/block/object/objectcreator/owned_annotation_observer.go": "920134235ae79c0c0ea3924603f2dbba8e86088b06bea10d60a6f25cd9ef1459",
     "core/block/object/objectcreator/relation_option.go": "bcdee6e9747c14361c80153ade1ab969650c689db2f8219e3bef061a3c7e32e7",
     "core/block/object/objectlink/dependent_objects.go": "7ae9edb1d19dadae1d9585ed2b3f2b8f637ef67b51912fc23edc0c91a6891602",
     "core/block/owned_file_upload.go": "a81179424c4d7b9a0dc12b44adccb1e30f364b14c7073433adbd8ceacb46d7bd",
@@ -363,7 +370,7 @@
     "space/internal/components/migration/readonlyfixer/relationsfixer.go": "003cfd50944f9b31920ae4060146bbbaf42c713191595b51582a16f5d94935b8"
   },
   "schema": 1,
-  "scope": "Genuine original native same-account full annotation graph import and historical mapping-aware body readback, with direct actual creator collision, prior-identity/account/ACL refusals and real registered cancellation/drain. No production RPC, Swift Invocation, Host authority, cold reopen or body ACK.",
+  "scope": "Genuine original native same-account full annotation graph import and historical mapping-aware body readback, with direct actual creator collision, prior-identity/account/ACL refusals and real registered cancellation/drain. No production RPC, Swift Invocation, Host authority, cold reopen or body ACK. Explicit three-row post-base observer/fixture repair and new original bundled persistence semantic control; original native acceptance and historical source packets preserved.",
   "source_inputs": [
     {
       "bytes": 8403,

@@ -1,0 +1,77 @@
+{
+  "status": "LOCAL_COLLECTOR_GUARD_CONTROLS_PASS",
+  "scope": "Synthetic JSON collector controls only; original native semantic selector and Native9 remain NOT_RUN",
+  "runner_sha256": "e35ea82d63a35106b3e265f57998e3d49e58610e80022eb7aa9e6b00fd214e58",
+  "created_utc": "2026-11-23T18:06:39.876038+00:00",
+  "control_count": 11,
+  "controls": [
+    {
+      "name": "complete_exact_original_control",
+      "expected_acceptance": true,
+      "observed_status": "PASS",
+      "control": "PASS"
+    },
+    {
+      "name": "missing_parent",
+      "expected_acceptance": false,
+      "observed_status": "FAIL_OR_INCOMPLETE",
+      "control": "PASS"
+    },
+    {
+      "name": "duplicate_leaf_run",
+      "expected_acceptance": false,
+      "observed_status": "FAIL_OR_INCOMPLETE",
+      "control": "PASS"
+    },
+    {
+      "name": "duplicate_leaf_terminal",
+      "expected_acceptance": false,
+      "observed_status": "FAIL_OR_INCOMPLETE",
+      "control": "PASS"
+    },
+    {
+      "name": "missing_leaf_terminal",
+      "expected_acceptance": false,
+      "observed_status": "FAIL_OR_INCOMPLETE",
+      "control": "PASS"
+    },
+    {
+      "name": "leaf_failure",
+      "expected_acceptance": false,
+      "observed_status": "FAIL_OR_INCOMPLETE",
+      "control": "PASS"
+    },
+    {
+      "name": "leaf_skip",
+      "expected_acceptance": false,
+      "observed_status": "FAIL_OR_INCOMPLETE",
+      "control": "PASS"
+    },
+    {
+      "name": "unexpected_test",
+      "expected_acceptance": false,
+      "observed_status": "FAIL_OR_INCOMPLETE",
+      "control": "PASS"
+    },
+    {
+      "name": "missing_package_terminal",
+      "expected_acceptance": false,
+      "observed_status": "FAIL_OR_INCOMPLETE",
+      "control": "PASS"
+    },
+    {
+      "name": "empty_log",
+      "expected_acceptance": false,
+      "observed_status": "FAIL_OR_INCOMPLETE",
+      "control": "PASS"
+    },
+    {
+      "name": "malformed_json",
+      "expected_acceptance": false,
+      "observed_status": "JSONDecodeError",
+      "control": "PASS"
+    }
+  ],
+  "native_execution": false,
+  "workflow_activation": false
+}

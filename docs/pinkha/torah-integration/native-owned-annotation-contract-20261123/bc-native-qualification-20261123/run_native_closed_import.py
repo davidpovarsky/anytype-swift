@@ -22,6 +22,11 @@ CANDIDATE_REVISION = "62e5f1c9d62c99cc00debfe7e1975557eeec32fa"
 FIXTURE_REVISION = "1159fbaf4b223515676a95b30b3600d210b71417"
 SUPPORT_SHA256 = "017778c096eca985774bd1a4f1e1e117ac3dee6ac08082c2a9793273826aa196"
 COMPOSITION_SHA256 = "8815e407d60607903bfb4b340dd86a1229c521d10e6fb993108cd97c747a02a9"
+OBSERVER_REPAIR = "observer-repair-20261123"
+OBSERVER_REPAIR_SHA256 = "5dce16285bf28001e330ca3879d2661644f517a284a0423d4250daea1032e2fa"
+SEMANTIC_PARENT = "TestOwnedAnnotationBundledPersistedDefinitionContract"
+SEMANTIC_LEAVES = ("ot-objectType", "ot-participant", "rel-name", "rel-sourceObject",
+                   "rel-revision", "unsupported-bundled-key")
 SPECIMENS = ("text", "format", "nested", "attachment")
 PARENT = "TestOtzariaOwnedAnnotationClosedNativeImport"
 LEAVES = SPECIMENS + (
@@ -74,6 +79,47 @@ def read_bound(root, path, row, require_head=True):
     return raw
 
 
+def read_observer_repair(control, manifest):
+    raw = read_bound(control, PACKET + "/" + OBSERVER_REPAIR + "/REPAIR_INPUTS.json",
+                     manifest["observer_repair"])
+    require(sha(raw) == OBSERVER_REPAIR_SHA256, "Reviewed observer repair differs")
+    repair = json.loads(raw)
+    require(repair["schema"] == 1
+            and repair["previous_control"] == "9934ccf396139fd8ff4367dd416b0460f23d49df"
+            and repair["previous_native_run"] == 45225259295
+            and repair["semantic_selector"] == "^" + SEMANTIC_PARENT + "$",
+            "Wrong observer repair lineage or semantic selector")
+    expected = {
+        "core/block/object/objectcreator/owned_annotation_observer.go":
+            "73de2d6301d7715bc2f2efaa3df90f26b5dc8f10b8739b87240205ea541b9441",
+        "core/application/owned_annotation_import_native_test.go":
+            "0a2974ab89ca2dd701e36b823a33a5aa6d4b54659faa647c323cea0b1f7fe924",
+        "core/block/object/objectcreator/owned_annotation_bundled_persistence_test.go": None,
+    }
+    require(len(repair["inputs"]) == 3
+            and {row["native_path"]: row["base_sha256"] for row in repair["inputs"]} == expected,
+            "Observer repair changed an unreviewed native path")
+    for row in repair["inputs"]:
+        require(row["path"] == OBSERVER_REPAIR + "/native/" + row["native_path"],
+                "Observer repair source path differs")
+        after = read_bound(control, PACKET + "/" + row["path"], row)
+        if row["base_sha256"] is None:
+            continue
+        before = safe(control, row["base_source_path"]).read_bytes()
+        require(sha(before) == row["base_sha256"]
+                and before == git(control, "show", "HEAD:" + row["base_source_path"]),
+                "Frozen observer/fixture preimage changed")
+        if row["native_path"].endswith("owned_annotation_observer.go"):
+            old = "\trequired := domain.NewDetails()\n\trequired.SetString(bundle.RelationKeyUniqueKey, key.Marshal())\n".encode()
+            new = "\t// Native signed headers already establish the exact kind and internal key.\n\t// uniqueKey is an original derived/local field, never persisted Details.\n\trequired := domain.NewDetails()\n".encode()
+        else:
+            old = "\t\t\tt.Fatal(\"uncertain/conflicting native prerequisite cannot be installed again or treated as ready\")\n".encode()
+            new = "\t\t\tf.receipt(t, \"schema-prerequisite-failure.json\", map[string]any{\n\t\t\t\t\"schema_key\": key.Marshal(), \"disposition\": uint8(actual.Disposition),\n\t\t\t\t\"require_persisted_match\": require,\n\t\t\t\t\"persisted_head_count\":    len(actual.PersistedHeads), \"archive_head_count\": len(actual.ArchiveHeads),\n\t\t\t\t\"installer_retry_performed\": false, \"readiness_accepted\": false,\n\t\t\t})\n\t\t\tt.Fatalf(\"uncertain/conflicting native prerequisite cannot be installed again or treated as ready: key=%s disposition=%d\", key.Marshal(), actual.Disposition)\n".encode()
+        require(before.count(old) == 1 and after == before.replace(old, new, 1),
+                "Observer/fixture changed outside its exact reviewed inverse")
+    return repair
+
+
 def source_admission(control, manifest, original_repository=None, original_heart=None):
     require(manifest["schema"] == 1 and manifest["heart_base"] == HEART
             and manifest["candidate_revision"] == CANDIDATE_REVISION
@@ -101,14 +147,16 @@ def source_admission(control, manifest, original_repository=None, original_heart
             and len(manifest["original_model_and_rpc_inputs"]) == 11
             and manifest["original_module_hashes"] == composition["original_module_hashes"],
             "Original source/support/model/test inventory differs")
+    repair = read_observer_repair(control, manifest)
     required = {row["path"]: row["sha256"]
                 for row in composition["final_composed_changed_native_files"]
                 if not row["path"].endswith("_test.go")}
     required.update({row["native_path"]: row["sha256"] for row in manifest["test_inputs"]})
     required.update({row["path"]: row["sha256"] for row in manifest["original_model_and_rpc_inputs"]
                      if row["path"] in COMPILED_ORIGINAL_MODELS})
+    required.update({row["native_path"]: row["sha256"] for row in repair["inputs"]})
     require(required == manifest["required_compiler_inputs"]
-            and len(required) == manifest["required_compiler_input_count"] == 87,
+            and len(required) == manifest["required_compiler_input_count"] == 88,
             "Actual required original compiler input inventory differs")
     for row in manifest["controls"]:
         read_bound(control, PACKET + "/" + row["path"], row)
@@ -144,7 +192,9 @@ def source_admission(control, manifest, original_repository=None, original_heart
         for name, digest in manifest["original_module_hashes"].items():
             require(sha(git(original_heart, "show", HEART + ":" + name)) == digest,
                     "Original module/native dependency checksum differs")
-        for row in manifest["test_inputs"]:
+        new_tests = manifest["test_inputs"] + [row for row in repair["inputs"]
+                                                if row["base_sha256"] is None]
+        for row in new_tests:
             result = subprocess.run(["git", "-C", str(original_heart), "cat-file", "-e",
                                      HEART + ":" + row["native_path"]],
                                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=30)
@@ -230,12 +280,26 @@ def compose_native(control, heart, inputs, manifest, composition, support, comma
         path.write_bytes(safe(control, PACKET + "/" + row["path"]).read_bytes())
         require(support.digest(path) == row["sha256"], "Sealed native test afterimage differs")
         composed[row["native_path"]] = row["sha256"]
+    repair = read_observer_repair(control, manifest)
+    for row in repair["inputs"]:
+        path = safe(heart, row["native_path"])
+        before = row["base_sha256"]
+        require((path.is_file() and support.digest(path) == before)
+                if before is not None else not path.exists(),
+                "Reviewed observer repair preimage differs: " + row["native_path"])
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(read_bound(control, PACKET + "/" + row["path"], row))
+        require(support.digest(path) == row["sha256"], "Reviewed observer repair bytes differ")
+        composed[row["native_path"]] = row["sha256"]
+    require(len(composed) == 86, "Explicit native afterimage inventory differs")
     required = {name: digest for name, digest in composed.items()
                 if not name.endswith("_test.go")}
     required.update({row["native_path"]: row["sha256"] for row in manifest["test_inputs"]})
     required.update({row["path"]: row["sha256"] for row in manifest["original_model_and_rpc_inputs"]
                      if row["path"] in COMPILED_ORIGINAL_MODELS})
-    require(len(required) == manifest["required_compiler_input_count"],
+    required.update({row["native_path"]: row["sha256"] for row in repair["inputs"]})
+    require(required == manifest["required_compiler_inputs"]
+            and len(required) == manifest["required_compiler_input_count"],
             "Complete required native compiler coverage differs")
     status = git(heart, "status", "--porcelain", "--untracked-files=all").decode().splitlines()
     require(all(row[:2] in (" M", "??") and row[3:] in composed for row in status),
@@ -247,10 +311,33 @@ def compose_native(control, heart, inputs, manifest, composition, support, comma
         "reviewed_candidate_revision": CANDIDATE_REVISION,
         "sealed_fixture_revision": FIXTURE_REVISION,
         "all_native_afterimages": composed, "required_actual_compiler_coverage": required,
+        "explicit_post_base_observer_repair": repair,
+        "observer_repair_manifest_sha256": OBSERVER_REPAIR_SHA256,
         "original_selected_tests_not_replayed": True,
         "new_generated_or_rpc_inputs": False, "production_import_activated": False,
     })
     return composed, required
+
+
+def semantic_case_intake(path):
+    require(path.is_file() and path.stat().st_size <= 8 * 1024 * 1024,
+            "Focused semantic JSON log missing or beyond intake bound")
+    events = [json.loads(line) for line in path.read_text().splitlines()]
+    expected = {SEMANTIC_PARENT} | {SEMANTIC_PARENT + "/" + leaf for leaf in SEMANTIC_LEAVES}
+    rows = {}
+    for name in sorted(expected):
+        actions = [event.get("Action") for event in events if event.get("Test") == name]
+        rows[name] = {"run_count": actions.count("run"),
+                      "terminal_actions": [value for value in actions if value in ("pass", "fail", "skip")]}
+    unexpected = sorted({event["Test"] for event in events if event.get("Test") and event["Test"] not in expected})
+    package = [event["Action"] for event in events
+               if not event.get("Test") and event.get("Action") in ("pass", "fail", "skip")]
+    passed = not unexpected and package == ["pass"] and all(
+        row["run_count"] == 1 and row["terminal_actions"] == ["pass"] for row in rows.values())
+    return {"status": "PASS" if passed else "FAIL_OR_INCOMPLETE", "cases": rows,
+            "leaf_count": len(SEMANTIC_LEAVES), "unexpected_test_names": unexpected,
+            "package_terminal_actions": package, "scope": "New original bundled persistence semantic control only",
+            "historical_selectors_replayed": False}
 
 
 def native_case_intake(path):
@@ -540,7 +627,9 @@ def main():
         print(json.dumps({"status": "SOURCE_ONLY_PASS", "checkout_sha": args.control_head,
                           "checkout_tree": git(control, "rev-parse", "HEAD^{tree}").decode().strip(),
                           "manifest_sha256": sha(manifest_raw), "frozen_original_native_inputs": 43,
-                          "frozen_candidate_source_files": 12, "new_native_test_files": 2,
+                          "frozen_candidate_source_files": 12, "new_native_test_files": 3,
+                           "explicit_observer_repair_manifest_sha256": OBSERVER_REPAIR_SHA256,
+                           "required_compiler_inputs": manifest["required_compiler_input_count"],
                           "sealed_candidate_revision": CANDIDATE_REVISION,
                           "sealed_fixture_revision": FIXTURE_REVISION,
                           "original_git_source_bytes_checked": args.original_repository is not None,
@@ -583,6 +672,8 @@ def main():
               "candidate_revision": CANDIDATE_REVISION, "fixture_revision": FIXTURE_REVISION,
               "heart_base": HEART, "execution_manifest_sha256": sha(manifest_raw),
               "native_cases": "NOT_RUN", "fixture_evidence": "NOT_REACHED",
+               "bundled_persistence_semantic_control": "NOT_RUN",
+               "observer_repair_manifest_sha256": OBSERVER_REPAIR_SHA256,
               "post_execution_source_module_link_stability": "NOT_REACHED",
               "historical_selectors_replayed": False, "production_import_activated": False,
               "swift_invocation_qualified": False, "cold_reopen_qualified": False,
@@ -603,7 +694,9 @@ def main():
         commands.require("clang-version", ["xcrun", "--sdk", "macosx", "clang", "--version"], heart, 30)
         result["actual_toolchain"] = {"go": version, "go_path": go,
                                      "go_sha256": support.digest(go), "xcode": xcode}
-        format_names = [row["native_path"] for row in manifest["candidate_inputs"] + manifest["test_inputs"]]
+        repair = read_observer_repair(control, manifest)
+        format_names = sorted({row["native_path"] for row in
+                               manifest["candidate_inputs"] + manifest["test_inputs"] + repair["inputs"]})
         formatting = commands.require("new-native-source-format",
                                       [str(Path(go).with_name("gofmt")), "-l",
                                        *[str(heart / name) for name in format_names]], heart, 30)
@@ -617,13 +710,15 @@ def main():
         require(native_libraries == manifest["expected_tantivy_inputs"], "Actual original link bytes differ")
         env["CGO_LDFLAGS"] = "-L" + str(heart / "deps/libs/darwin-arm64")
         listing = commands.require("declared-native-inputs",
-                                   [go, "list", "-deps", "-test", "-json", "./core/application", "./core"],
+                                   [go, "list", "-deps", "-test", "-json", "./core/application", "./core",
+                                     "./core/block/object/objectcreator"],
                                    heart, 1200)
         closure = support.dependency_inputs(listing, heart,
                                            [{"path": name, "sha256": digest}
                                             for name, digest in sorted(required.items())])
         selected = {"github.com/anyproto/anytype-heart/core/application",
-                    "github.com/anyproto/anytype-heart/core"}
+                    "github.com/anyproto/anytype-heart/core",
+                    "github.com/anyproto/anytype-heart/core/block/object/objectcreator"}
         require(selected.issubset({row["import_path"] for row in closure["packages"]}),
                 "Actual Go declaration omits an original selected compile package")
         closure["selected_original_packages"] = sorted(selected)
@@ -653,6 +748,15 @@ def main():
         binary_info = (binary, record)
         result["actual_native_binary"] = record
         commands.require("native-binary-buildinfo", [go, "version", "-m", str(binary)], heart, 30)
+        semantic_code, semantic_output, _ = commands.run("execute-bundled-persistence-control", [
+            go, "test", "-json", "-p", "2", "-count=1", "-timeout=3m",
+            "-run=^" + SEMANTIC_PARENT + "$", "./core/block/object/objectcreator"], heart, 600)
+        semantic = semantic_case_intake(semantic_output)
+        result["bundled_persistence_semantic_control"] = semantic
+        support.write_json(evidence / "BUNDLED_PERSISTENCE_CONTROL.json", semantic)
+        support.write_json(evidence / "RESULT.json", result)
+        require(semantic_code == 0 and semantic["status"] == "PASS",
+                "Original bundled persistence semantic control did not pass once")
         result["native_cases"] = "EXECUTION_REQUESTED"
         support.write_json(evidence / "RESULT.json", result)
         native_started = True

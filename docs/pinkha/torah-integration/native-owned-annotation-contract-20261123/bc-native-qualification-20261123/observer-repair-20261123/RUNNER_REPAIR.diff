@@ -1,0 +1,136 @@
+--- before/run_native_closed_import.py
++++ after/run_native_closed_import.py
+@@ -24,0 +25,5 @@
++OBSERVER_REPAIR = "observer-repair-20261123"
++OBSERVER_REPAIR_SHA256 = "5dce16285bf28001e330ca3879d2661644f517a284a0423d4250daea1032e2fa"
++SEMANTIC_PARENT = "TestOwnedAnnotationBundledPersistedDefinitionContract"
++SEMANTIC_LEAVES = ("ot-objectType", "ot-participant", "rel-name", "rel-sourceObject",
++                   "rel-revision", "unsupported-bundled-key")
+@@ -74,0 +80,41 @@
++
++
++def read_observer_repair(control, manifest):
++    raw = read_bound(control, PACKET + "/" + OBSERVER_REPAIR + "/REPAIR_INPUTS.json",
++                     manifest["observer_repair"])
++    require(sha(raw) == OBSERVER_REPAIR_SHA256, "Reviewed observer repair differs")
++    repair = json.loads(raw)
++    require(repair["schema"] == 1
++            and repair["previous_control"] == "9934ccf396139fd8ff4367dd416b0460f23d49df"
++            and repair["previous_native_run"] == 45225259295
++            and repair["semantic_selector"] == "^" + SEMANTIC_PARENT + "$",
++            "Wrong observer repair lineage or semantic selector")
++    expected = {
++        "core/block/object/objectcreator/owned_annotation_observer.go":
++            "73de2d6301d7715bc2f2efaa3df90f26b5dc8f10b8739b87240205ea541b9441",
++        "core/application/owned_annotation_import_native_test.go":
++            "0a2974ab89ca2dd701e36b823a33a5aa6d4b54659faa647c323cea0b1f7fe924",
++        "core/block/object/objectcreator/owned_annotation_bundled_persistence_test.go": None,
++    }
++    require(len(repair["inputs"]) == 3
++            and {row["native_path"]: row["base_sha256"] for row in repair["inputs"]} == expected,
++            "Observer repair changed an unreviewed native path")
++    for row in repair["inputs"]:
++        require(row["path"] == OBSERVER_REPAIR + "/native/" + row["native_path"],
++                "Observer repair source path differs")
++        after = read_bound(control, PACKET + "/" + row["path"], row)
++        if row["base_sha256"] is None:
++            continue
++        before = safe(control, row["base_source_path"]).read_bytes()
++        require(sha(before) == row["base_sha256"]
++                and before == git(control, "show", "HEAD:" + row["base_source_path"]),
++                "Frozen observer/fixture preimage changed")
++        if row["native_path"].endswith("owned_annotation_observer.go"):
++            old = "\trequired := domain.NewDetails()\n\trequired.SetString(bundle.RelationKeyUniqueKey, key.Marshal())\n".encode()
++            new = "\t// Native signed headers already establish the exact kind and internal key.\n\t// uniqueKey is an original derived/local field, never persisted Details.\n\trequired := domain.NewDetails()\n".encode()
++        else:
++            old = "\t\t\tt.Fatal(\"uncertain/conflicting native prerequisite cannot be installed again or treated as ready\")\n".encode()
++            new = "\t\t\tf.receipt(t, \"schema-prerequisite-failure.json\", map[string]any{\n\t\t\t\t\"schema_key\": key.Marshal(), \"disposition\": uint8(actual.Disposition),\n\t\t\t\t\"require_persisted_match\": require,\n\t\t\t\t\"persisted_head_count\":    len(actual.PersistedHeads), \"archive_head_count\": len(actual.ArchiveHeads),\n\t\t\t\t\"installer_retry_performed\": false, \"readiness_accepted\": false,\n\t\t\t})\n\t\t\tt.Fatalf(\"uncertain/conflicting native prerequisite cannot be installed again or treated as ready: key=%s disposition=%d\", key.Marshal(), actual.Disposition)\n".encode()
++        require(before.count(old) == 1 and after == before.replace(old, new, 1),
++                "Observer/fixture changed outside its exact reviewed inverse")
++    return repair
+@@ -103,0 +150 @@
++    repair = read_observer_repair(control, manifest)
+@@ -109,0 +157 @@
++    required.update({row["native_path"]: row["sha256"] for row in repair["inputs"]})
+@@ -111 +159 @@
+-            and len(required) == manifest["required_compiler_input_count"] == 87,
++            and len(required) == manifest["required_compiler_input_count"] == 88,
+@@ -147 +195,3 @@
+-        for row in manifest["test_inputs"]:
++        new_tests = manifest["test_inputs"] + [row for row in repair["inputs"]
++                                                if row["base_sha256"] is None]
++        for row in new_tests:
+@@ -232,0 +283,12 @@
++    repair = read_observer_repair(control, manifest)
++    for row in repair["inputs"]:
++        path = safe(heart, row["native_path"])
++        before = row["base_sha256"]
++        require((path.is_file() and support.digest(path) == before)
++                if before is not None else not path.exists(),
++                "Reviewed observer repair preimage differs: " + row["native_path"])
++        path.parent.mkdir(parents=True, exist_ok=True)
++        path.write_bytes(read_bound(control, PACKET + "/" + row["path"], row))
++        require(support.digest(path) == row["sha256"], "Reviewed observer repair bytes differ")
++        composed[row["native_path"]] = row["sha256"]
++    require(len(composed) == 86, "Explicit native afterimage inventory differs")
+@@ -238 +300,3 @@
+-    require(len(required) == manifest["required_compiler_input_count"],
++    required.update({row["native_path"]: row["sha256"] for row in repair["inputs"]})
++    require(required == manifest["required_compiler_inputs"]
++            and len(required) == manifest["required_compiler_input_count"],
+@@ -249,0 +314,2 @@
++        "explicit_post_base_observer_repair": repair,
++        "observer_repair_manifest_sha256": OBSERVER_REPAIR_SHA256,
+@@ -253,0 +320,21 @@
++
++
++def semantic_case_intake(path):
++    require(path.is_file() and path.stat().st_size <= 8 * 1024 * 1024,
++            "Focused semantic JSON log missing or beyond intake bound")
++    events = [json.loads(line) for line in path.read_text().splitlines()]
++    expected = {SEMANTIC_PARENT} | {SEMANTIC_PARENT + "/" + leaf for leaf in SEMANTIC_LEAVES}
++    rows = {}
++    for name in sorted(expected):
++        actions = [event.get("Action") for event in events if event.get("Test") == name]
++        rows[name] = {"run_count": actions.count("run"),
++                      "terminal_actions": [value for value in actions if value in ("pass", "fail", "skip")]}
++    unexpected = sorted({event["Test"] for event in events if event.get("Test") and event["Test"] not in expected})
++    package = [event["Action"] for event in events
++               if not event.get("Test") and event.get("Action") in ("pass", "fail", "skip")]
++    passed = not unexpected and package == ["pass"] and all(
++        row["run_count"] == 1 and row["terminal_actions"] == ["pass"] for row in rows.values())
++    return {"status": "PASS" if passed else "FAIL_OR_INCOMPLETE", "cases": rows,
++            "leaf_count": len(SEMANTIC_LEAVES), "unexpected_test_names": unexpected,
++            "package_terminal_actions": package, "scope": "New original bundled persistence semantic control only",
++            "historical_selectors_replayed": False}
+@@ -543 +630,3 @@
+-                          "frozen_candidate_source_files": 12, "new_native_test_files": 2,
++                          "frozen_candidate_source_files": 12, "new_native_test_files": 3,
++                           "explicit_observer_repair_manifest_sha256": OBSERVER_REPAIR_SHA256,
++                           "required_compiler_inputs": manifest["required_compiler_input_count"],
+@@ -585,0 +675,2 @@
++               "bundled_persistence_semantic_control": "NOT_RUN",
++               "observer_repair_manifest_sha256": OBSERVER_REPAIR_SHA256,
+@@ -606 +697,3 @@
+-        format_names = [row["native_path"] for row in manifest["candidate_inputs"] + manifest["test_inputs"]]
++        repair = read_observer_repair(control, manifest)
++        format_names = sorted({row["native_path"] for row in
++                               manifest["candidate_inputs"] + manifest["test_inputs"] + repair["inputs"]})
+@@ -620 +713,2 @@
+-                                   [go, "list", "-deps", "-test", "-json", "./core/application", "./core"],
++                                   [go, "list", "-deps", "-test", "-json", "./core/application", "./core",
++                                     "./core/block/object/objectcreator"],
+@@ -626 +720,2 @@
+-                    "github.com/anyproto/anytype-heart/core"}
++                    "github.com/anyproto/anytype-heart/core",
++                    "github.com/anyproto/anytype-heart/core/block/object/objectcreator"}
+@@ -655,0 +751,9 @@
++        semantic_code, semantic_output, _ = commands.run("execute-bundled-persistence-control", [
++            go, "test", "-json", "-p", "2", "-count=1", "-timeout=3m",
++            "-run=^" + SEMANTIC_PARENT + "$", "./core/block/object/objectcreator"], heart, 600)
++        semantic = semantic_case_intake(semantic_output)
++        result["bundled_persistence_semantic_control"] = semantic
++        support.write_json(evidence / "BUNDLED_PERSISTENCE_CONTROL.json", semantic)
++        support.write_json(evidence / "RESULT.json", result)
++        require(semantic_code == 0 and semantic["status"] == "PASS",
++                "Original bundled persistence semantic control did not pass once")

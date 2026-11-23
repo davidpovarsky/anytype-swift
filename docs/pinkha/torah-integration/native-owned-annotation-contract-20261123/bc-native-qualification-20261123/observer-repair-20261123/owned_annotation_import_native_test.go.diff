@@ -1,0 +1,11 @@
+--- before/core/application/owned_annotation_import_native_test.go
++++ after/core/application/owned_annotation_import_native_test.go
+@@ -1336 +1336,7 @@
+-			t.Fatal("uncertain/conflicting native prerequisite cannot be installed again or treated as ready")
++			f.receipt(t, "schema-prerequisite-failure.json", map[string]any{
++				"schema_key": key.Marshal(), "disposition": uint8(actual.Disposition),
++				"require_persisted_match": require,
++				"persisted_head_count":    len(actual.PersistedHeads), "archive_head_count": len(actual.ArchiveHeads),
++				"installer_retry_performed": false, "readiness_accepted": false,
++			})
++			t.Fatalf("uncertain/conflicting native prerequisite cannot be installed again or treated as ready: key=%s disposition=%d", key.Marshal(), actual.Disposition)

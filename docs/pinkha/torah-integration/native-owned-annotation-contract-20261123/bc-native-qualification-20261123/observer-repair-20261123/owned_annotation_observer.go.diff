@@ -1,0 +1,7 @@
+--- before/core/block/object/objectcreator/owned_annotation_observer.go
++++ after/core/block/object/objectcreator/owned_annotation_observer.go
+@@ -160,0 +161,2 @@
++	// Native signed headers already establish the exact kind and internal key.
++	// uniqueKey is an original derived/local field, never persisted Details.
+@@ -162 +163,0 @@
+-	required.SetString(bundle.RelationKeyUniqueKey, key.Marshal())
