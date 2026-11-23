@@ -1,0 +1,183 @@
+{
+  "protocol": "page154-mounted-45174292731-attempt2-original-audit-v1",
+  "audit_status": "PASS_ORIGINAL_EVIDENCE_AUDIT",
+  "actual_run_status": "FAIL",
+  "run": {
+    "id": "45174292731",
+    "attempt": "2",
+    "source_sha": "e4edea19ce716280f4087f8b9571ad2b4f6f94c5",
+    "job_id": "137706252365",
+    "runner_id": "1000024671"
+  },
+  "original": {
+    "artifact_id": "14822310800",
+    "name": "Pinkha-Semantic-Page-Mounted-45174292731-2",
+    "bytes": 29209045,
+    "sha256": "e7ac823612bc9474b282f2cbe69e0fc5bb8fd8e55900456af0696571e9161441",
+    "downloads": 1,
+    "metadata_seal_sha256": "385a97e1a92fd059fda2ac80907e1d581ea15fded0c65842b7828cb9e811f452",
+    "original_acquisition_status": "FAIL_FINAL_OWNER_ASSERTION",
+    "metadata_recovery_status": "VERIFIED_ORIGINAL_ZIP_WITH_METADATA_RECOVERY",
+    "metadata_failure_history": [
+      "Default Administrators owner instead of DAVID; downloader had already passed length/full SHA and renamed original",
+      "Owner-only correction set Archive bit; strict attribute invariant failed",
+      "Exact original attributes=1 restored after explicit root authorization; file identity, creation/mtime, length, nonowner ACL and parent unchanged"
+    ],
+    "repeat_downloads": 0,
+    "carrier_rehashes_during_recovery_and_audit": 0
+  },
+  "outcomes": [
+    {
+      "selector": "AnytypeTests/SemanticAnchorPage154MountedPreparationTests/testPrepareOwnedPage154MountedFixture",
+      "result": "PASS",
+      "actual_executions": 1,
+      "duration_seconds": 5.284433960914612,
+      "started": "2026-11-23T13:03:45.775Z",
+      "finished": "2026-11-23T13:03:51.065Z",
+      "summary_sha256": "61e23ff2ae69d35623de887a6a30d2c4649cf194fc6eba404c994f7d5401338d",
+      "test_tree_sha256": "d6463adf682e95b6b1c0449ef0fd1bd145c5a053e8a2c358c8eb7f7e5f31e25b",
+      "raw_log_sha256": "eada86b0bfc144b025cb0d80e6711f89851e0331bc03ecf60279706c91611a8f",
+      "replay_authorized": false
+    },
+    {
+      "selector": "PinkhaStage1AcceptanceUITests/SemanticAnchorPage154MountedUITests/testActualTextSelectionCancelThenCreateAndColdReopen",
+      "result": "FAIL",
+      "actual_executions": 1,
+      "duration_seconds": 76.90653109550476,
+      "started": "2026-11-23T13:04:44.053Z",
+      "finished": "2026-11-23T13:06:00.977Z",
+      "summary_sha256": "3b56a34cee4df03642fd0472017ee77a9f5eea388624bcd2880372b700cf15ba",
+      "test_tree_sha256": "3bb116eb33e8b92f6430f9ca8d9e518131917a79e412872adb0a21dc5592ca1a",
+      "raw_log_sha256": "acff65e82c2460833d82f91b99298ec3d3802373729dfe273cde7e7ec387514a"
+    }
+  ],
+  "first_failure": {
+    "source_sha": "68148339c275268795360d71d519a5baf003adf8",
+    "path": "PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift",
+    "source_file_sha256": "468139db53be7dac0570ea16c7fec918332f44107927d6043a9bcc4469773c8b",
+    "line": 152,
+    "assertion": "XCTAssertTrue(home.waitForExistence(timeout: 60))",
+    "observed_activity": "App foreground launch followed by 60-second home readiness wait; assertion failed before object URL open or selection",
+    "ax_attachment": "evidence/ui/actual-attachments/525F1D9E-F5F5-47EB-8A7D-261A6F7808CA.txt",
+    "ax_bytes": 6762,
+    "ax_sha256": "799cc9add2639ed36ba185ede2d06593d4e996e70e0396fdc11c2ad23d931905",
+    "observed_modal": {
+      "title": "Warning",
+      "message": "You launch app with a unstable middleware. Don't use your production vault. Your vault may be broken.",
+      "buttons": [
+        "Logout from current vault",
+        "Continue with current vault"
+      ]
+    },
+    "app_pid": 6590,
+    "source_supported_explanation": "InitialCoordinator stops startup while this unstable-runtime warning is presented; the real Continue button transitions to login/launch. The mounted runner does not handle this transition.",
+    "unexecuted": [
+      "object deep-link",
+      "native text selection",
+      "Cancel confirmation",
+      "Create confirmation",
+      "semantic anchor Apply/publication",
+      "independent native readback",
+      "cold editor reopen"
+    ]
+  },
+  "sources": {
+    "compiled_app_sha": "68148339c275268795360d71d519a5baf003adf8",
+    "controller_sha": "e4edea19ce716280f4087f8b9571ad2b4f6f94c5",
+    "before_after_byte_equal": true,
+    "app_map": {
+      "count": 12033,
+      "sha256": "533bb8ad8eed3607521bef3517ff3a7cd53728956872180209cd9280d48e365d"
+    },
+    "controller_map": {
+      "count": 14377,
+      "sha256": "a01df2dfc56c5e0bcd5e7dfa2e16ff842ba20dcbe07090c390bd1d7fae7624a6"
+    },
+    "source_read_hashes": [
+      {
+        "path": "Anytype/Sources/PresentationLayer/Flows/InitialCoordinator/InitialCoordinatorView.swift",
+        "sha256": "946e8ec909952b6709f7fa431304b4299ba3731200ad21e9c71521035115074f"
+      },
+      {
+        "path": "Anytype/Sources/PresentationLayer/Flows/InitialCoordinator/InitialCoordinatorViewModel.swift",
+        "sha256": "1c9abbffd2ea247870878bbab839ea56e4971ef2d375d823830f9a7e7d82ffe2"
+      },
+      {
+        "path": "Anytype/Sources/Utilities/UserDefaults/UserDefaultsStorage.swift",
+        "sha256": "bb3b77d754719a90e5b6b258d34a5fa4e301f3efeff0f27aeda4140c1f182bf6"
+      },
+      {
+        "path": "AnyTypeTests/Pinkha/SemanticAnchorPage154MountedPreparationTests.swift",
+        "sha256": "2344f028661930632be1114b609e86c89b039593e4b7687ca4204c6b4eecf3c8"
+      },
+      {
+        "path": "Anytype/Sources/Pinkha/Diagnostics/PinkhaSemanticAnchorMountedFixture.swift",
+        "sha256": "bcad0f7f9276b0d437e136f59796069d2168a0c5e99f336a523fa6806eb2886c"
+      },
+      {
+        "path": "Tools/PinkhaSemanticAnchorWire/apple_mounted/run.py",
+        "source_sha": "e4edea19ce716280f4087f8b9571ad2b4f6f94c5",
+        "sha256": "2d121e47aef3c3a24672110278893bbb3cc0aded833d9fbb74f4005b439382a6"
+      }
+    ]
+  },
+  "evidence_counts": {
+    "parent_summary_pass_counter": 0,
+    "parent_counter_is_only_final_success_assignment": true,
+    "independently_retained_preparation_pass": 1,
+    "commands": 24,
+    "separate_command_originals": 23,
+    "kernel_esrch_passes": 24,
+    "only_nonzero_command": "ui/actual-owned-one exit65",
+    "native_products_original_entries": 5008,
+    "ui_products_original_entries": 30,
+    "new_builds": 0
+  },
+  "cleanup": {
+    "udid": "2FD32273-AF82-4EB5-863F-7786F1393514",
+    "shutdown_exit": 0,
+    "delete_exit": 0,
+    "total_budget_seconds": 60,
+    "observed_elapsed_seconds": 11.175321042000178,
+    "source_and_descriptor_integrity": true,
+    "restored_products_integrity": true
+  },
+  "state_retention": {
+    "fixture_json_bytes": 791,
+    "fixture_sha256": "ea6a192e5a26ba0949f11b838878981c1793494823c2d1cec577c063f4524266",
+    "fixture_equals_native_xctest_attachment": true,
+    "preparation_pid": 5515,
+    "same_container_before_after_ui_failure": true,
+    "account_store_backup_present": false,
+    "keychain_backup_present": false,
+    "safe_capture_receipt_present": false,
+    "safe_reopen_receipt_present": false,
+    "simulator_deleted": true,
+    "original_state_reuse_supported": false,
+    "explanation": "Controller intentionally copies only three safe synthetic JSON files and excludes account store/keychain; only fixture is present. Its IDs/two block payloads cannot reconstruct the account. The native fixture additionally has a two-hour age gate."
+  },
+  "proposed_next_review": {
+    "no_action_performed": true,
+    "compiled_app_native_products_reusable": true,
+    "compiled_ui_journey_has_no_warning_handler": true,
+    "smallest_source_candidate": "Bounded real-UI warning acknowledgement in UI runner only, preserving App/native Products and downstream journey assertions; root must authorize any new runner build.",
+    "fresh_fixture_required": true,
+    "fresh_fixture_accounting": "If authorized, fresh fixture setup is a new physical setup necessity with original preparation PASS retained; never claim original simulator state survived, never count replay as new acceptance.",
+    "retry_authorized": false
+  },
+  "limitations": [
+    "The original full xcresult bundles remain in the immutable carrier; macOS xcresulttool output is bound to actual original commands, not rerun locally.",
+    "Selected entry hashes/lengths and carrier provenance were checked; no independent ZIP CRC claim is made by this .NET metadata reader.",
+    "Warning modal establishes the first blocked transition only; deeper semantic/native/editor behavior has not run.",
+    "Current source snapshots are original before/after byte comparisons; this audit does not claim a new live simulator state or fresh build."
+  ],
+  "audit_read_presentation_failures": [
+    "First metadata inventory reader used Measure-Object on ordered dictionaries and failed before writes; corrected reader retained.",
+    "Two debug-description attachment strings contain control0x1a; their raw hashes were preserved; JSON presentation escaped that control only.",
+    "One overlarge enumeration tool response was transport-truncated; no original changed; exact enum count was then computed in a bounded original reader."
+  ],
+  "oracle_writes": 0,
+  "new_tests": 0,
+  "new_builds": 0,
+  "new_ci_dispatches": 0
+}

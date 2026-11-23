@@ -1,0 +1,71 @@
+{
+  "app_commit": "68148339c275268795360d71d519a5baf003adf8",
+  "rows": [
+    {
+      "excerpts": [
+        {
+          "first_line": 42,
+          "last_line": 45,
+          "text": "    func contunueWithoutLogout() {\n        showLoginOrAuth()\n        userDefaults.showUnstableMiddlewareError = false\n    }"
+        },
+        {
+          "first_line": 107,
+          "last_line": 122,
+          "text": "    private func checkTestVersion() {\n        #if DEBUG || RELEASE_NIGHTLY\n        Task { @MainActor in\n            do {\n                let version = try await middlewareConfigurationProvider.libraryVersion()\n                let isUnstableVersion = !version.hasPrefix(\"v\")\n                if isUnstableVersion {\n                    if (basicUserInfoStorage.usersId.isEmpty || userDefaults.showUnstableMiddlewareError) {\n                        showWarningAlert.toggle()\n                    } else {\n                        showLoginOrAuth()\n                    }\n                } else {\n                    showLoginOrAuth()\n                    userDefaults.showUnstableMiddlewareError = true\n                }"
+        }
+      ],
+      "path": "Anytype/Sources/PresentationLayer/Flows/InitialCoordinator/InitialCoordinatorViewModel.swift",
+      "sha256": "1c9abbffd2ea247870878bbab839ea56e4971ef2d375d823830f9a7e7d82ffe2"
+    },
+    {
+      "excerpts": [
+        {
+          "first_line": 29,
+          "last_line": 31,
+          "text": "final class UserDefaultsStorage: UserDefaultsStorageProtocol, @unchecked Sendable {\n    @UserDefault(\"showUnstableMiddlewareError\", defaultValue: true)\n    var showUnstableMiddlewareError: Bool"
+        }
+      ],
+      "path": "Anytype/Sources/Utilities/UserDefaults/UserDefaultsStorage.swift",
+      "sha256": "bb3b77d754719a90e5b6b258d34a5fa4e301f3efeff0f27aeda4140c1f182bf6"
+    },
+    {
+      "excerpts": [
+        {
+          "first_line": 4,
+          "last_line": 15,
+          "text": "@propertyWrapper\npublic struct UserDefault<T: Codable & Sendable>: Sendable {\n    private let storage: UserDefaultStorage<T>\n\n    public init(_ key: String, defaultValue: T) {\n        self.storage = UserDefaultStorage(key: key, defaultValue: defaultValue)\n    }\n\n    public var wrappedValue: T {\n        get { storage.value }\n        set { storage.value = newValue }\n    }"
+        }
+      ],
+      "path": "Modules/AnytypeCore/AnytypeCore/Utils/UserDefaultWrapper/UserDefaultWrapper.swift",
+      "sha256": "c2388e18257e83686b49e6dce85fcf28499aeed0a0fa39ab66f69daa677c0edf"
+    },
+    {
+      "excerpts": [
+        {
+          "first_line": 23,
+          "last_line": 33,
+          "text": "    public init(key: String, defaultValue: T) {\n        self.key = key\n        self.defaultValue = defaultValue\n        \n        // Read value from UserDefaults\n        if let data = UserDefaults.standard.object(forKey: key) as? Data,\n           let value = try? JSONDecoder().decode(T.self, from: data) {\n            self.data = value\n        } else {\n            self.data = defaultValue\n        }"
+        },
+        {
+          "first_line": 36,
+          "last_line": 56,
+          "text": "    public var value: T {\n        get {\n            lock.lock()\n            defer { lock.unlock() }\n            return data\n        }\n        set {\n            lock.lock()\n            defer { lock.unlock() }\n            \n            data = newValue\n            \n            if let optional = newValue as? AnyOptional, optional.isNil {\n                UserDefaults.standard.removeObject(forKey: key)\n            } else {\n                // Convert newValue to data\n                let data = try? JSONEncoder().encode(newValue)\n                \n                // Set value to UserDefaults\n                UserDefaults.standard.set(data, forKey: key)\n            }"
+        }
+      ],
+      "path": "Modules/AnytypeCore/AnytypeCore/Utils/UserDefaultWrapper/UserDefaultStorage.swift",
+      "sha256": "9dad09d0c2d072ef6862dd42cd1440b80af7e58bd7567083bcda15f5ff3fb0ee"
+    },
+    {
+      "excerpts": [
+        {
+          "first_line": 439,
+          "last_line": 441,
+          "text": "    var userDefaultsStorage: Factory< any UserDefaultsStorageProtocol> {\n        self { UserDefaultsStorage() }.singleton\n    }"
+        }
+      ],
+      "path": "Anytype/Sources/ServiceLayer/ServicesDI.swift",
+      "sha256": "62d07a9d2040365fc03a127e63c5f84f3a67b2128ce1a89848578e2308bff1a5"
+    }
+  ],
+  "scope": "read-only original App source; expected cold behavior, not an actual cold UI result"
+}
