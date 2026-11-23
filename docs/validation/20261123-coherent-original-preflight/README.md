@@ -51,3 +51,10 @@ failures before creation and unknown partial-create identity checks. These are
 synthetic controller controls only; actual Mac preflight and product execution
 are NOT_RUN until their original execution receipts exist. No old control
 suite or product tests are rerun for this change.
+
+A separate diagnostic follow-up preserves the qualified group's exact
+timeout_observations and quiescence_observation on its failure receipt, including
+a late zero-member observation. A focused eighth control checks those fields
+while preserving the original create timeout and original command JSON.
+The first seven controls retain their actual source-bound attempt1 evidence;
+they are not rerun for this metadata-only addition.

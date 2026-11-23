@@ -240,5 +240,35 @@ class CoherentOriginalPreflightControls(unittest.TestCase):
                 self.assertEqual(signals, [])
 
 
+    def test_quiescence_timeout_and_late_zero_observations_remain_on_original_failed_command(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); receipt = {}
+            argv = ["xcrun", "simctl", "create", "synthetic-owned-control", "type", "runtime"]
+            primary = subprocess.TimeoutExpired(argv, 30)
+            later = RuntimeError("Owned zero-member observation returned after its original cleanup deadline")
+            later.timeout_observations = [dict(observation=1, timeout_seconds=10)]
+            later.quiescence_observation = dict(status="FAIL_DEADLINE", pgid=701, live_members=0,
+                observations=2, budget_seconds=10, cleanup_profile=owned.batch.COHERENT_HEART_PROFILE)
+            def execute(command, cwd, path, timeout):
+                path.write_text("")
+                owned.save(path.with_suffix(".command.json"),
+                    dict(argv=command, return_code=-9, worker_pid=701,
+                         owned_group_cleanup="TERM_THEN_KILL", error_type="TimeoutExpired"), original=True)
+                raise primary
+            def stopped(path, *, cleanup_profile):
+                self.assertEqual(cleanup_profile, owned.batch.COHERENT_HEART_PROFILE)
+                raise later
+            runner = owned.Commands(root, root, receipt, lambda: None, execute=execute, stopped=stopped)
+            with self.assertRaises(subprocess.TimeoutExpired) as observed:
+                runner.run(argv, "create-diagnostic-control", 30)
+            self.assertIs(observed.exception, primary)
+            detail = receipt["commands"][0]["quiescence_failure"]
+            self.assertEqual(detail["timeout_observations"], later.timeout_observations)
+            self.assertEqual(detail["quiescence_observation"], later.quiescence_observation)
+            original_record = owned.read(root / "create-diagnostic-control.command.json")
+            self.assertEqual(original_record["error_type"], "TimeoutExpired")
+            self.assertNotIn("quiescence_failure", original_record)
+
+
 if __name__ == "__main__":
     unittest.main()

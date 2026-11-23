@@ -99,7 +99,9 @@ class Commands:
             record["owned_group_quiescence"] = self.stopped(
                 path.with_suffix(".command.json"), cleanup_profile=batch.COHERENT_HEART_PROFILE)
         except BaseException as error:
-            record["quiescence_failure"] = dict(error_type=type(error).__name__, error=str(error))
+            record["quiescence_failure"] = dict(error_type=type(error).__name__, error=str(error),
+                timeout_observations=getattr(error, "timeout_observations", []),
+                quiescence_observation=getattr(error, "quiescence_observation", None))
             if primary is None: primary = error
         record.update(name=name, log_sha256=batch.digest(path) if path.is_file() else None)
         self.receipt.setdefault("commands", []).append(record)
