@@ -212,6 +212,10 @@ public struct AnyNativeLibraryView: View {
                 if item.isPending || model.pendingMoves.contains(item.objectID) { ProgressView() }
                 if item.kind == .folder { Image(systemName: "chevron.forward").foregroundStyle(.secondary) }
             }
+            // Keep the drag source on the label, independently of the Button's
+            // context-menu interaction. Include the row's open spacer area.
+            .contentShape(Rectangle())
+            .draggable("pinkha-any-node|\(model.session.workspace.spaceID)|\(item.objectID)")
         }
         .accessibilityIdentifier("any-native-hierarchy-row-\(item.objectID)")
         .contextMenu {
@@ -225,7 +229,6 @@ public struct AnyNativeLibraryView: View {
                 removeItem = item.native
             }.disabled(!model.canWrite)
         }
-        .draggable("pinkha-any-node|\(model.session.workspace.spaceID)|\(item.objectID)")
         .dropDestination(for: String.self) { payloads, _ in
             guard model.canWrite, payloads.count == 1 else { return false }
             let parts = payloads[0].split(separator: "|", omittingEmptySubsequences: false).map(String.init)
