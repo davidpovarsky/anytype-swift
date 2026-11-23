@@ -4,6 +4,7 @@ The existing lane writes execution.json. This supervisor preserves that receipt,
 owns one worker process group, and finishes cleanup before cache publication.
 """
 import argparse
+import errno
 import json
 import os
 from pathlib import Path
@@ -20,6 +21,43 @@ PROTOCOL = "pinkha-owned-single-lane-v1"
 PASS = "SUPERVISED_LANE_PASS_ACCEPTANCE_REVIEW_PENDING"
 
 
+def _sdk06_kernel_group_observation(pgid, deadline):
+    """Read only exact owned PGID existence; only timely ESRCH proves absence."""
+    before = time.monotonic()
+    observation = dict(operation="os.killpg", signal=0, pgid=pgid, errno=None,
+                       before_monotonic=before, deadline_monotonic=deadline,
+                       after_monotonic=before, outcome="NOT_QUERIED")
+
+    def fail(error, status):
+        error.timeout_observations = []
+        error.quiescence_observation = dict(status=status, pgid=pgid,
+            live_members=0 if observation["outcome"] == "ABSENT_ESRCH" else None,
+            observations=0, kernel_group_observation=dict(observation))
+        return error
+
+    if before >= deadline:
+        raise fail(RuntimeError("SDK kernel observation has no remaining original cleanup budget"),
+                   "FAIL_DEADLINE")
+    original_error = None
+    try:
+        os.killpg(pgid, 0)
+    except OSError as error:
+        original_error = error
+        observation.update(errno=error.errno, error_type=type(error).__name__)
+    observation["after_monotonic"] = time.monotonic()
+    if original_error is not None:
+        if original_error.errno != errno.ESRCH:
+            observation["outcome"] = "KERNEL_QUERY_ERROR"
+            raise fail(original_error, "FAIL_KERNEL_QUERY")
+        observation["outcome"] = "ABSENT_ESRCH"
+    else:
+        observation["outcome"] = "GROUP_EXISTS"
+    if observation["after_monotonic"] > deadline:
+        raise fail(RuntimeError("SDK kernel observation returned after the original cleanup deadline"),
+                   "FAIL_DEADLINE") from original_error
+    return observation
+
+
 def verify_owned_group_stopped(command_path, *, seconds=10, cleanup_profile=None):
     owned.require(cleanup_profile in (None, owned.COHERENT_HEART_PROFILE, "semantic-page154", "sdk06-enumeration")
                   and (cleanup_profile is None or seconds == 10),
@@ -31,6 +69,13 @@ def verify_owned_group_stopped(command_path, *, seconds=10, cleanup_profile=None
                   and not record.get("cleanup_error_type"),
                   "Owned worker cleanup was not completed")
     deadline = time.monotonic() + seconds
+    kernel_observation = None
+    if cleanup_profile == "sdk06-enumeration":
+        kernel_observation = _sdk06_kernel_group_observation(pgid, deadline)
+        if kernel_observation["outcome"] == "ABSENT_ESRCH":
+            return dict(status="PASS", pgid=pgid, live_members=0, observations=0,
+                        timeout_observations=[], budget_seconds=seconds,
+                        absence_source="KERNEL_ESRCH", kernel_group_observation=kernel_observation)
     observations = 0
     timeout_observations = []
     while True:
@@ -48,6 +93,10 @@ def verify_owned_group_stopped(command_path, *, seconds=10, cleanup_profile=None
         except subprocess.TimeoutExpired as error:
             timeout_observations.append(dict(observation=observations, timeout_seconds=probe_timeout))
             error.timeout_observations = list(timeout_observations)
+            if kernel_observation is not None:
+                error.quiescence_observation = dict(status="FAIL_PS_AFTER_KERNEL_GROUP_EXISTS",
+                    pgid=pgid, live_members=None, observations=observations,
+                    kernel_group_observation=kernel_observation)
             if time.monotonic() >= deadline:
                 raise
             continue
@@ -61,6 +110,8 @@ def verify_owned_group_stopped(command_path, *, seconds=10, cleanup_profile=None
         if not live:
             observed = {"status": "PASS", "pgid": pgid, "live_members": 0, "observations": observations,
                         "timeout_observations": timeout_observations, "budget_seconds": seconds}
+            if kernel_observation is not None:
+                observed["kernel_group_observation"] = kernel_observation
             if cleanup_profile is not None and time.monotonic() > deadline:
                 observed.update(status="FAIL_DEADLINE", cleanup_profile=cleanup_profile)
                 error = RuntimeError("Owned zero-member observation returned after its original cleanup deadline")
