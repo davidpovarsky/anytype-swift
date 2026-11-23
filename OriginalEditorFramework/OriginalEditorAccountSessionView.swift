@@ -15,11 +15,11 @@ internal struct OriginalEditorAccountSessionView: View {
             } else if let coordinator = owner.coordinator {
                 ApplicationCoordinatorView(
                     model: coordinator,
-                    initial: AnyView(LaunchView()),
+                    initial: AnyView(LaunchView(allowsDebugMenus: false)),
                     home: AnyView(spacePicker)
                 )
             } else {
-                LaunchView()
+                LaunchView(allowsDebugMenus: false)
             }
         }
     }
