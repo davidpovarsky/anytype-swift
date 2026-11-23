@@ -1,0 +1,160 @@
+{
+  "schema": "owned-simulator-diagnostic-independent-source-peer-v1",
+  "status": "PASS_NO_DEMONSTRATED_SOURCE_BLOCKER",
+  "head": "fa5651b96beab2148a3e928bfdc8620a9c24c1a5",
+  "worktree": "/run/anytapy-wave15-source-overlay-20261123/simulator-diagnostic",
+  "sourceFiles": {
+    "Tools/SimulatorBootInventoryDiagnostic/profile.json": {
+      "bytes": 1009,
+      "sha256": "dc4f757611e7f620ba2fecccd3d870508036d2dcfcfabe93f0a1a294e98b03d4",
+      "git": "100644 blob 65922f023e00cdab858d363a86bc789ebf9391e8\tTools/SimulatorBootInventoryDiagnostic/profile.json"
+    },
+    "Tools/SimulatorBootInventoryDiagnostic/run.py": {
+      "bytes": 51469,
+      "sha256": "68f39cb8671b0d7dfa7aaffe586e1c5ac088a5375c26ba07aab93fba8a90cef7",
+      "git": "100644 blob e3a893f873498abcdaf798bcdd5c8ee1bbeb9c90\tTools/SimulatorBootInventoryDiagnostic/run.py"
+    },
+    "Tools/SimulatorBootInventoryDiagnostic/source-inputs.json": {
+      "bytes": 724,
+      "sha256": "af7a643643a757b5f51c880910ed663909df74f79e741fc380c61ec722e9cc3d",
+      "git": "100644 blob 98de203bcb883c9e3b2a54c93cfee23641102c40\tTools/SimulatorBootInventoryDiagnostic/source-inputs.json"
+    },
+    "docs/validation/20261123-owned-simulator-inventory-diagnostic/INLINE-central-packet.json": {
+      "bytes": 4202,
+      "sha256": "546cabcdf215bdc7d3105821d95e529011b92356d5fb20136fe6503787669125",
+      "git": "100644 blob 831597c438a670aff8abd032d165bc66103067b0\tdocs/validation/20261123-owned-simulator-inventory-diagnostic/INLINE-central-packet.json"
+    },
+    "docs/validation/20261123-owned-simulator-inventory-diagnostic/PROTOCOL.md": {
+      "bytes": 7794,
+      "sha256": "c91a0e52284727c749e70bb2ad469cbc912f9212a225ccd1f865e8d3664e27b6",
+      "git": "100644 blob 49fbacea0d6619c7843a10e0a9dc61510bdd9d1e\tdocs/validation/20261123-owned-simulator-inventory-diagnostic/PROTOCOL.md"
+    },
+    "docs/validation/20261123-owned-simulator-inventory-diagnostic/README.md": {
+      "bytes": 910,
+      "sha256": "958d98cd401674adcdf28132de8e177cb0cd85e13b7ce024dfb299a0abcfb3d8",
+      "git": "100644 blob e3361c9c5539e78ce870b7cba109f20d6bce9a41\tdocs/validation/20261123-owned-simulator-inventory-diagnostic/README.md"
+    },
+    "docs/validation/20261123-owned-simulator-inventory-diagnostic/prior-original-evidence.json": {
+      "bytes": 889,
+      "sha256": "ed500057c477b205a6031e66db32572149371997a870fdd6f1524dc052138cee",
+      "git": "100644 blob aee89213d301792888ee44d429b7929577e0e2f4\tdocs/validation/20261123-owned-simulator-inventory-diagnostic/prior-original-evidence.json"
+    },
+    "docs/validation/20261123-owned-simulator-inventory-diagnostic/qualified-body-inverses.json": {
+      "bytes": 3747,
+      "sha256": "bb96392168fc48ce03dd2e21b97dd3c838d3f49a03db5351efa9999ed1b563b3",
+      "git": "100644 blob 6133f0173ae9ce12023780d044513fa8d45739d8\tdocs/validation/20261123-owned-simulator-inventory-diagnostic/qualified-body-inverses.json"
+    },
+    "docs/validation/20261123-owned-simulator-inventory-diagnostic/source-review.json": {
+      "bytes": 8200,
+      "sha256": "168b91ae25b6c7897e67c378aeb480fc4f1a773212341684b66bf8522a67da09",
+      "git": "100644 blob 796e65ae20cee49b71d3f28566e5e490fcead484\tdocs/validation/20261123-owned-simulator-inventory-diagnostic/source-review.json"
+    },
+    ".github/workflows/pinkha-owned-simulator-inventory-diagnostic.yml": {
+      "bytes": 3939,
+      "sha256": "d30fe8e4011225763cab8dc72906f717dc38c85a97a4118f0eafb0754aace405",
+      "git": "100644 blob 1c3b3d5864aa109851e61b6594f61aa108b9e958\t.github/workflows/pinkha-owned-simulator-inventory-diagnostic.yml"
+    }
+  },
+  "staticVerification": {
+    "status": "PASS_STATIC_SOURCE_INVERSES",
+    "head": "fa5651b96beab2148a3e928bfdc8620a9c24c1a5",
+    "literalBodyProofs": [
+      {
+        "function": "_sdk06_kernel_group_observation",
+        "exact": true,
+        "sha256": "d581843c94632933612d54d46036eb777ac15b154c13088cce90a0e7fced325a",
+        "bytes": 1665
+      },
+      {
+        "function": "_require",
+        "exact": true,
+        "sha256": "2a6c889a65d24aa3bb08bfb0be9aa29de5208cd1cb27b52d51e10fa7e5826111",
+        "bytes": 88
+      },
+      {
+        "function": "_version",
+        "exact": true,
+        "sha256": "ae7d7d3ae904a13a3ffd12965572976df6fbedf957631c73fb06cb66e7b8e07a",
+        "bytes": 476
+      },
+      {
+        "function": "_unique",
+        "exact": true,
+        "sha256": "0accd29ac10ab9b9a7619a25c5f42dc876c579f638dac337dc100dfff88dee3a",
+        "bytes": 470
+      },
+      {
+        "function": "choose_pair",
+        "exact": true,
+        "sha256": "1007cdb896e59eeed14bb00f53898a5ddfeb1b9ef2d02bafb5bdf00730aa7f7f",
+        "bytes": 3184
+      },
+      {
+        "function": "cleanup_owned_simulator",
+        "exact": true,
+        "sha256": "776043fdb9864a01b6f249e0b5660da27ec98db6fd228e4b7ab2bc659705df99",
+        "bytes": 3795
+      },
+      {
+        "function": "terminate_owned",
+        "inverseExact": true,
+        "substitutions": 3,
+        "sha256": "5d507f893ec3c1202c922998f7eadd25a4fa79ee294b9a8e4e974ee89a3cd5fc"
+      }
+    ],
+    "inlineJobEqualsStandaloneExceptRequiredRouteIf": true,
+    "fixedManifestRows": 3,
+    "currentSourceUnchanged": true,
+    "repositoryImports": 0,
+    "simulatorCommands": 0,
+    "tests": 0,
+    "builds": 0
+  },
+  "reviewedBoundaries": [
+    "Commands.run preserves an existing timeout/command/observation error while recording later snapshots, owned-group cleanup, flush/close/digest/stat/capacity and persistence errors separately.",
+    "Every command starts one owned session. Only that PID/PGID is signaled; process snapshots never authorize signaling service PIDs. Six existing helper bodies remain exact; terminate_owned differs only signature and two signal-recording calls.",
+    "Creation captures the original fresh UUID into memory and a context/source-bound journal before later group finalization. Recovery rechecks the original intent/baseline/start record/argv/cwd/log hash; unknown creation is INCOMPLETE.",
+    "The original exact UUID query remains30seconds. Exactly its TimeoutExpired plus a timely exact-group ESRCH permits one separately labeled120second read-only observation; original failure remains the primary and overall failure.",
+    "Qualified shutdown/delete cleanup is attempted independently in main finalization, with one durable claim preventing repeated attempts. Missing/unfinished ownership or cleanup is never treated as absence.",
+    "1200second global admission reserves240seconds for cleanup/source finalization; per-command and output accounting remain finite. Output limits are explicitly sampled, not hard quotas.",
+    "The standalone workflow and central inline packet are parsed-equivalent after removing only the route condition."
+  ],
+  "environmentPreflight": {
+    "actualXcodeSelectPOriginalLocated": false,
+    "primaryDocumentation": "https://developer.apple.com/documentation/xcode/configuring-command-line-tools-settings",
+    "finding": "Apple documents print-path as the active directory and DEVELOPER_DIR as its per-process override. The script inherits the environment and requires the exact override. No demonstrated need for global --switch.",
+    "classification": "SOURCE_AND_DOCUMENTATION_REASONING_NOT_A_NEW_MAC_OBSERVATION"
+  },
+  "limitations": [
+    "No simulator command, diagnostic, product test, App build, native build or repository import ran in this review.",
+    "Process samples may miss ancestors/descendants and cannot establish service causation.",
+    "Synchronous filesystem calls are not a hard global process deadline; the finite workflow step remains an outer limit.",
+    "A durable result written before a subsequent restoration/unlock error may be superseded by compact final stdout and nonzero actual exit; both originals must be retained."
+  ],
+  "priorReaderEvents": [
+    {
+      "scope": "read-only inventory reader",
+      "outcome": "FAIL_BEFORE_CANDIDATE_READ",
+      "cause": "First filename filter included an unrelated nonmaterialized old workflow pinkha-native-diagnostics.yml; narrowed to exact changed workflow without modifying source.",
+      "originalResult": {
+        "ok": true,
+        "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 12, in <module>\n  File \"/usr/lib/python3.12/pathlib.py\", line 1021, in read_bytes\n    with self.open(mode='rb') as f:\n         ^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 1015, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/run/anytapy-wave15-source-overlay-20261123/simulator-diagnostic/.github/workflows/pinkha-native-diagnostics.yml'",
+        "duration": 2.03,
+        "returncode": 1
+      }
+    },
+    {
+      "scope": "local tool-code parse",
+      "outcome": "NO_REMOTE_EXECUTION",
+      "cause": "Unescaped workflow expression in a JavaScript raw template; corrected only reader quoting before remote invocation."
+    }
+  ],
+  "executions": {
+    "repositoryImports": 0,
+    "simulatorCommands": 0,
+    "tests": 0,
+    "builds": 0,
+    "ciMutations": 0,
+    "sourceEdits": 0
+  }
+}
