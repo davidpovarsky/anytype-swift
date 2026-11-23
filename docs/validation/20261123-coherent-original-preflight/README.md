@@ -66,3 +66,5 @@ journal still permits the unchanged scoped fallback cleanup. The original bad
 report is not overwritten. Cancellation is not swallowed by this admission
 boundary. One additional focused control covers that fallback, with the eight
 earlier control methods retained without rerun.
+
+The original one-method optional-proof execution passed on source df954ac08d4d81c281813bdfca0207e716e4e9cf at 2026-11-23T04:15:55.483284+00:00. Its unchanged-input audit binds all 18 loaded repository files to that commit. The current distinct catalog is nine methods: seven original, one diagnostic and one optional-proof control; the eight earlier methods were retained without rerun. Original logs, exact named events and commands are copied byte for byte into attempt3-optional-proof/.
