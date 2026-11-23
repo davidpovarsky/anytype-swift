@@ -1,0 +1,75 @@
+{
+  "inputs": [
+    {
+      "bytes": 34408,
+      "excerpts": [
+        {
+          "first_line": 167,
+          "last_line": 173,
+          "text": "The -json flag causes the package data to be printed in JSON format\ninstead of using the template format. The JSON flag can optionally be\nprovided with a set of comma-separated required field names to be output.\nIf so, those required fields will always appear in JSON output, but\nothers may be omitted to save work in computing the JSON struct.\n\nThe -compiled flag causes list to set CompiledGoFiles to the Go source"
+        },
+        {
+          "first_line": 375,
+          "last_line": 388,
+          "text": "func (v *jsonFlag) Set(s string) error {\n\tif v, err := strconv.ParseBool(s); err == nil {\n\t\tlistJson = v\n\t\treturn nil\n\t}\n\tlistJson = true\n\tif *v == nil {\n\t\t*v = make(map[string]bool)\n\t}\n\tfor f := range strings.SplitSeq(s, \",\") {\n\t\t(*v)[f] = true\n\t}\n\treturn nil\n}"
+        },
+        {
+          "first_line": 451,
+          "last_line": 470,
+          "text": "\tif listJson {\n\t\tdo = func(x any) {\n\t\t\tif !listJsonFields.needAll() {\n\t\t\t\t//  Set x to a copy of itself with all non-requested fields cleared.\n\t\t\t\tv := reflect.New(reflect.TypeOf(x).Elem()).Elem() // do is always called with a non-nil pointer.\n\t\t\t\tv.Set(reflect.ValueOf(x).Elem())\n\t\t\t\tfor i := 0; i < v.NumField(); i++ {\n\t\t\t\t\tif !listJsonFields.needAny(v.Type().Field(i).Name) {\n\t\t\t\t\t\tv.Field(i).SetZero()\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tx = v.Interface()\n\t\t\t}\n\t\t\tb, err := json.MarshalIndent(x, \"\", \"\\t\")\n\t\t\tif err != nil {\n\t\t\t\tout.Flush()\n\t\t\t\tbase.Fatalf(\"%s\", err)\n\t\t\t}\n\t\t\tout.Write(b)\n\t\t\tout.Write(nl)"
+        },
+        {
+          "first_line": 615,
+          "last_line": 631,
+          "text": "\t\tSuppressEmbedFiles: !*listExport && !listJsonFields.needAny(\"EmbedFiles\", \"TestEmbedFiles\", \"XTestEmbedFiles\"),\n\t}\n\tpkgs := load.PackagesAndErrors(moduleLoaderState, ctx, pkgOpts, args)\n\tif !*listE {\n\t\tw := 0\n\t\tfor _, pkg := range pkgs {\n\t\t\tif pkg.Error != nil {\n\t\t\t\tbase.Errorf(\"%v\", pkg.Error)\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\tpkgs[w] = pkg\n\t\t\tw++\n\t\t}\n\t\tpkgs = pkgs[:w]\n\t\tbase.ExitIfErrors()\n\t}\n"
+        },
+        {
+          "first_line": 714,
+          "last_line": 741,
+          "text": "\t// Do we need to run a build to gather information?\n\tneedStale := (listJson && listJsonFields.needAny(\"Stale\", \"StaleReason\")) || strings.Contains(*listFmt, \".Stale\")\n\tif needStale || *listExport || *listCompiled {\n\t\tb := work.NewBuilder(\"\", moduleLoaderState.VendorDirOrEmpty)\n\t\tif *listE {\n\t\t\tb.AllowErrors = true\n\t\t}\n\t\tdefer func() {\n\t\t\tif err := b.Close(); err != nil {\n\t\t\t\tbase.Fatal(err)\n\t\t\t}\n\t\t}()\n\n\t\tb.IsCmdList = true\n\t\tb.NeedExport = *listExport\n\t\tb.NeedCompiledGoFiles = *listCompiled\n\t\tif cfg.BuildCover {\n\t\t\tload.PrepareForCoverageBuild(moduleLoaderState, pkgs)\n\t\t}\n\t\ta := &work.Action{}\n\t\t// TODO: Use pkgsFilter?\n\t\tfor _, p := range pkgs {\n\t\t\tif len(p.GoFiles)+len(p.CgoFiles) > 0 {\n\t\t\t\ta.Deps = append(a.Deps, b.AutoAction(moduleLoaderState, work.ModeInstall, work.ModeInstall, p))\n\t\t\t}\n\t\t}\n\t\tb.Do(ctx, a)\n\t}"
+        },
+        {
+          "first_line": 791,
+          "last_line": 813,
+          "text": "\tif listJsonFields.needAny(\"Deps\", \"DepsErrors\") {\n\t\tall := pkgs\n\t\t// Make sure we iterate through packages in a postorder traversal,\n\t\t// which load.PackageList guarantees. If *listDeps, then all is\n\t\t// already in PackageList order. Otherwise, calling load.PackageList\n\t\t// provides the guarantee. In the case of an import cycle, the last package\n\t\t// visited in the cycle, importing the first encountered package in the cycle,\n\t\t// is visited first. The cycle import error will be bubbled up in the traversal\n\t\t// order up to the first package in the cycle, covering all the packages\n\t\t// in the cycle.\n\t\tif !*listDeps {\n\t\t\tall = load.PackageList(pkgs)\n\t\t}\n\t\tif listJsonFields.needAny(\"Deps\") {\n\t\t\tfor _, p := range all {\n\t\t\t\tcollectDeps(p)\n\t\t\t}\n\t\t}\n\t\tif listJsonFields.needAny(\"DepsErrors\") {\n\t\t\tfor _, p := range all {\n\t\t\t\tcollectDepsErrors(p)\n\t\t\t}\n\t\t}"
+        }
+      ],
+      "path": "/mnt/development/projects/evidence/semantic-page-20261123-arm64/toolchains/go1.26.5/go/src/cmd/go/internal/list/list.go",
+      "sha256": "a3c8ef6c48c8d2bab6af1f82f0e5b89274bed94f4ace5c78ca8cf879865bb47c"
+    },
+    {
+      "bytes": 113594,
+      "excerpts": [
+        {
+          "first_line": 499,
+          "last_line": 505,
+          "text": "// needsBuild reports whether the Action (which must be mode \"build\") needs\n// to produce the built output.\nfunc (b *Builder) needsBuild(a *Action) bool {\n\treturn !b.IsCmdList && a.needBuild || b.NeedExport\n}\n\nconst ("
+        },
+        {
+          "first_line": 528,
+          "last_line": 535,
+          "text": "\n\tcachedBuild := false\n\tneedCovMeta := p.Internal.Cover.GenMeta\n\tneed := bit(needBuild, !b.IsCmdList && buildAction.needBuild || b.NeedExport) |\n\t\tbit(needCgoHdr, b.needCgoHdr(buildAction)) |\n\t\tbit(needVet, buildAction.needVet) |\n\t\tbit(needCovMetaFile, needCovMeta) |\n\t\tbit(needCompiledGoFiles, b.NeedCompiledGoFiles)"
+        },
+        {
+          "first_line": 561,
+          "last_line": 573,
+          "text": "\t\t// Source files might be cached, even if the full action is not\n\t\t// (e.g., go list -compiled -find).\n\t\tif !cachedBuild && need&needCompiledGoFiles != 0 {\n\t\t\tif err := b.loadCachedCompiledGoFiles(buildAction); err == nil {\n\t\t\t\tneed &^= needCompiledGoFiles\n\t\t\t}\n\t\t}\n\n\t\tif need == 0 {\n\t\t\treturn &checkCacheProvider{need: need}, nil\n\t\t}\n\t\tdefer b.flushOutput(a)\n\t}"
+        }
+      ],
+      "path": "/mnt/development/projects/evidence/semantic-page-20261123-arm64/toolchains/go1.26.5/go/src/cmd/go/internal/work/exec.go",
+      "sha256": "e1be568f9b0faa30bc065cddfe433628a21fc55c52b17938038b153ee7e118c2"
+    }
+  ],
+  "observations": [
+    "The -json= option accepts a fixed top-level field list.",
+    "The encoder clears only unrequested top-level fields; Module remains the full nested value.",
+    "All three requested Embed fields retain embed collection.",
+    "DepsErrors remains computed when Deps is omitted.",
+    "Omitted Stale/StaleReason avoids the unconsumed cache/build-info path.",
+    "IsCmdList without NeedExport suppresses actual build outputs."
+  ],
+  "query_count": 0,
+  "schema": "pinned-go-json-field-projection-source-review-v1",
+  "source_program_sha256": "cd5e46269f566870489f338471f9c63e14dfd6a8dd842be221fed5b1cccff6cf",
+  "status": "SOURCE_REVIEW_ONLY_NOT_EXECUTED"
+}

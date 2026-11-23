@@ -1,0 +1,244 @@
+--- ram_graph.py@bd5efdf
++++ ram_projected_graph.py
+@@ -1,8 +1,9 @@
+ #!/usr/bin/env python3
+-"""One separately admitted RAM-cache source query; no native build or tests.
+-
+-The original graph.py and its disk/native resource limits remain unchanged.
++"""Projected RAM-cache source query with scoped owned-process cleanup.
++
++The original graph.py and ram_graph.py remain unchanged and hash-bound.
+ All owned RAM bytes are archived and verified before a normal owned unmount.
++No native build or test is requested.
+ """
+ import argparse
+ import hashlib
+@@ -10,6 +11,7 @@
+ import json
+ import os
+ import pathlib
++import pwd
+ import re
+ import selectors
+ import shutil
+@@ -21,6 +23,41 @@
+ import time
+ from datetime import datetime, timezone
+ 
++
++# This standalone entry has no repository imports. Adopt the original owner
++# before resolving any project path, reading source/data, or invoking Git.
++# The saved UID is process-local and is consumed only by stop_owned below.
++ORDINARY_UID = 1001
++ORDINARY_GID = 1001
++ORDINARY_GROUPS = [4, 24, 27, 30, 104, 1001]
++OWNED_CHILDREN = {}
++
++def process_credentials():
++    return {"uids":list(os.getresuid()),"gids":list(os.getresgid()),
++            "groups":sorted(os.getgroups())}
++
++def adopt_owner_for_cleanup():
++    if not sys.flags.isolated or not sys.dont_write_bytecode:
++        raise RuntimeError("isolated_no_bytecode_python_entry_required")
++    initial = process_credentials()
++    if initial!={"uids":[0,0,0],"gids":[0,0,0],"groups":[0]}:
++        raise RuntimeError("expected_privileged_entry_identity")
++    if os.environ.get("SUDO_UID")!="1001" or os.environ.get("SUDO_GID")!="1001":
++        raise RuntimeError("expected_original_sudo_owner")
++    account = pwd.getpwuid(ORDINARY_UID)
++    if account.pw_gid!=ORDINARY_GID or sorted(os.getgrouplist(account.pw_name,ORDINARY_GID))!=ORDINARY_GROUPS:
++        raise RuntimeError("original_ordinary_groups_changed")
++    os.setgroups(ORDINARY_GROUPS)
++    os.setresgid(ORDINARY_GID,ORDINARY_GID,ORDINARY_GID)
++    os.setresuid(ORDINARY_UID,ORDINARY_UID,0)
++    final = process_credentials()
++    if final!={"uids":[1001,1001,0],"gids":[1001,1001,1001],"groups":ORDINARY_GROUPS}:
++        raise RuntimeError("ordinary_source_owner_adoption_failed")
++    return {"entry":initial,"adopted":final,"persistent_permissions_changed":False,
++            "saved_uid_scope":"only_registered_child_stop_owned"}
++
++ENTRY_CREDENTIALS = adopt_owner_for_cleanup() if __name__=="__main__" else None
++
+ HERE = pathlib.Path(__file__).resolve().parent
+ CONTROL = HERE.parents[2]
+ HEART = pathlib.Path("/mnt/development/projects/worktrees/anytype-heart-loaded-account-witness-20261123")
+@@ -28,15 +65,16 @@
+ HEART_SHA = "24dc6393b30e6d1d80ec28ff624060af9bb4327a"
+ SYNC_SHA = "c005bd6cde8d8f8a6007c35f06894f3d89f9f07c"
+ EVIDENCE = pathlib.Path("/mnt/development/projects/evidence/loaded-account-witness-20261123")
+-ATTEMPT = EVIDENCE / "ram-graph-attempt2"
+-RAM = pathlib.Path("/dev/shm/pinkha-loaded-account-source-graph-20261123")
++ATTEMPT = EVIDENCE / "ram-projected-graph-attempt1"
++RAM = pathlib.Path("/dev/shm/pinkha-loaded-account-projected-source-20261123")
+ RAM_BYTES = 64 * 1024 * 1024
+ RAM_INODES = 8192
+-RAM_SOURCE = "pinkha-loaded-account-source-graph-20261123"
++RAM_SOURCE = "pinkha-loaded-account-projected-source-20261123"
+ RAM_ARCHIVE_LIMIT = 5 * 1024 * 1024
+ MEM_START = 4 * 1024**3
+ MEM_STOP = 2 * 1024**3
+ ORIGINAL_GRAPH_SHA = "6aacb0c911aed49d88d9f0e7ef82b08a5ceab431139bb7b71f17c7d0aedfd23d"
++ORIGINAL_RAM_GRAPH_SHA = "3b7b1802213811b57174e93e7de0ea52b712c4e76c34d0f89c14889eeba21ba3"
+ RAM_STATE = None
+ GENERATED = {}
+ CACHE = pathlib.Path("/mnt/development/projects/evidence/semantic-page-20261123-arm64/attempt4/cache")
+@@ -46,8 +84,8 @@
+ LIBDIR = pathlib.Path("/mnt/development/projects/worktrees/anytype-heart-semantic-page-20261123/deps/libs/linux-arm64-musl")
+ LIBRARY = LIBDIR / "libtantivy_go.a"
+ IMAGE = "sha256:f2f98726820d0342055351c6e9d36e705f5bfffb3dd53ff556325114b08afb6d"
+-NAME = "pinkha-loaded-account-ram-graph-20261123"
+-LABEL = "pinkha.loaded-account-witness.ram-graph"
++NAME = "pinkha-loaded-account-projected-ram-graph-20261123"
++LABEL = "pinkha.loaded-account-witness.projected-ram-graph"
+ TAGS = "nogrpcserver nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg pinkha_loaded_account_witness pinkha_loaded_account_witness_acceptance"
+ GO_SHA256 = "22201b57b855105df064a291863c3fc04f22a7431187a9205122aff42a0c825b"
+ LIB_SHA256 = "efee68b0fdf23fd8c1c630f10f4cad497bbbcb7372b6b985933324ebe730a601"
+@@ -61,6 +99,9 @@
+ STDERR_LIMIT = 1 * 1024 * 1024
+ METADATA_LIMIT = 6 * 1024 * 1024
+ QUERY_SECONDS = 120
++JSON_FIELDS = (
++    "ImportPath","Dir","ForTest","Standard","Module","Name","Error","DepsErrors","GoFiles","CgoFiles","CFiles","CXXFiles","MFiles","HFiles","FFiles","SFiles","SwigFiles","SwigCXXFiles","SysoFiles","EmbedFiles","TestGoFiles","XTestGoFiles","TestEmbedFiles","XTestEmbedFiles"
++)
+ DOCKER = ["sudo", "-n", "docker"]
+ CURRENT = None
+ 
+@@ -165,6 +206,7 @@
+     require(re.fullmatch(r"[0-9a-f]{40}",control_sha) is not None,"invalid_controller_identity")
+     require(CACHE.is_symlink() and os.readlink(CACHE)=="../cache" and CACHE.resolve()==CACHE_REAL,"qualified_cache_spelling_changed")
+     require(sha(HERE/"graph.py")==ORIGINAL_GRAPH_SHA,"original_graph_source_changed")
++    require(sha(HERE/"ram_graph.py")==ORIGINAL_RAM_GRAPH_SHA,"original_ram_graph_source_changed")
+     require(sha(GO)==GO_SHA256,"go_tool_identity_changed")
+     require(sha(LIBRARY)==LIB_SHA256,"tantivy_library_identity_changed")
+     require(sha(HERE/"candidate.mod")==MOD_SHA256 and sha(HERE/"candidate.sum")==SUM_SHA256,"candidate_module_inputs_changed")
+@@ -186,7 +228,7 @@
+     except ProcessLookupError:
+         return True
+ 
+-def stop_owned(child, record):
++def _stop_owned_body(child, record):
+     require(record.get("pid")==child.pid and record.get("pgid")==child.pid,"owned_cleanup_pid_pgid_binding")
+     child.poll()
+     absent = group_absent(child.pid)
+@@ -210,6 +252,56 @@
+         if absent:
+             return
+     require(absent,"owned_process_group_survived_kill")
++
++def register_owned_child(child,record):
++    require(type(child) is subprocess.Popen and record.get("pid")==child.pid and
++            record.get("pgid")==child.pid and child not in OWNED_CHILDREN,
++            "register_actual_owned_child")
++    OWNED_CHILDREN[child] = (child.pid,child.pid,id(record))
++
++def stop_owned(child,record):
++    require(type(child) is subprocess.Popen and
++            OWNED_CHILDREN.get(child)==(child.pid,child.pid,id(record)),
++            "privileged_cleanup_requires_registered_popen")
++    ordinary = {"uids":[1001,1001,0],"gids":[1001,1001,1001],"groups":ORDINARY_GROUPS}
++    proof = {"ordinary_before":process_credentials(),"restored":False}
++    record["cleanup_privilege"] = proof
++    require(ENTRY_CREDENTIALS is not None and proof["ordinary_before"]==ordinary,
++            "privileged_cleanup_entry_binding")
++    first_error = None
++    # Defer handled signals across the finite existing TERM/KILL cleanup.
++    # A pending signal is delivered only after ordinary identity is restored.
++    prior_mask = signal.pthread_sigmask(signal.SIG_BLOCK,{signal.SIGTERM,signal.SIGINT})
++    try:
++        os.seteuid(0)
++        proof["during_cleanup"] = process_credentials()
++        require(proof["during_cleanup"]=={"uids":[1001,0,0],"gids":[1001,1001,1001],"groups":ORDINARY_GROUPS},
++                "privileged_cleanup_identity")
++        _stop_owned_body(child,record)
++    except BaseException as error:
++        first_error = error
++        proof["first_error"] = {"type":type(error).__name__,"message":str(error)}
++    finally:
++        # No project/file/Git operation is performed with effective UID zero.
++        try:
++            os.seteuid(ORDINARY_UID)
++            proof["ordinary_after"] = process_credentials()
++            proof["restored"] = proof["ordinary_after"]==ordinary
++        except BaseException as error:
++            proof["restoration_error"] = {"type":type(error).__name__,"message":str(error)}
++        if not proof["restored"]:
++            # A failure to restore must never continue into project I/O.
++            os.write(2,(json.dumps({"fatal":"ordinary_identity_restore_failed","cleanup":proof})+"\n").encode())
++            os._exit(126)
++        try:
++            signal.pthread_sigmask(signal.SIG_SETMASK,prior_mask)
++        except BaseException as error:
++            proof["pending_signal_after_restoration"] = {"type":type(error).__name__,"message":str(error)}
++            if first_error is None:
++                first_error = error
++    if first_error is not None:
++        raise first_error
++    del OWNED_CHILDREN[child]
+ 
+ def interrupt(signum, _frame):
+     raise InterruptedError("owned_graph_signal_"+str(signum))
+@@ -238,6 +330,7 @@
+         CURRENT = child
+         record.update(pid=child.pid,pgid=os.getpgid(child.pid))
+         require(child.pid==record["pgid"],"owned_cli_process_group")
++        register_owned_child(child,record)
+         for name,stream in (("stdout",child.stdout),("stderr",child.stderr)):
+             os.set_blocking(stream.fileno(),False)
+             selector.register(stream,selectors.EVENT_READ,name)
+@@ -315,6 +408,7 @@
+         child = subprocess.Popen(argv,stdout=subprocess.PIPE,stderr=subprocess.PIPE,start_new_session=True)
+         observation.update(pid=child.pid,pgid=os.getpgid(child.pid))
+         require(observation["pgid"]==child.pid,"docker_observation_group_binding")
++        register_owned_child(child,observation)
+         for name,stream in (("stdout",child.stdout),("stderr",child.stderr)):
+             streams[name] = stream
+             os.set_blocking(stream.fileno(),False)
+@@ -385,7 +479,7 @@
+         args += ["--mount","type=bind,source="+str(source)+",target="+str(destination)+("" if writable else ",readonly")]
+     for key,value in sorted(environment().items()):
+         args += ["--env",key+"="+value]
+-    args += [IMAGE,"list","-deps","-test","-json","-modfile="+str(HERE/"candidate.mod"),"-tags",TAGS,"./core/application"]
++    args += [IMAGE,"list","-deps","-test","-json="+",".join(JSON_FIELDS),"-modfile="+str(HERE/"candidate.mod"),"-tags",TAGS,"./core/application"]
+     return args
+ 
+ def validate_owned_container(value,cid):
+@@ -776,14 +870,15 @@
+     parser.add_argument("--execute",action="store_true")
+     args = parser.parse_args()
+     require(args.execute,"explicit_source_graph_execution_flag_required")
+-    require(os.getuid()==1001,"expected_oracle_owner_required")
++    require(ENTRY_CREDENTIALS is not None and process_credentials()==ENTRY_CREDENTIALS["adopted"],
++            "expected_oracle_owner_required")
+     resource_guard(start=True)
+     require(not ATTEMPT.exists(),"preserve_prior_graph_attempt")
+     EVIDENCE.mkdir(mode=0o700,exist_ok=True)
+     ATTEMPT.mkdir(mode=0o700)
+     for name in ("image-data-empty",):
+         (ATTEMPT/name).mkdir(mode=0o700)
+-    record = {"protocol":"loaded-account-ram-cache-source-graph-v1","started":now(),"status":"FAILED",
++    record = {"protocol":"loaded-account-projected-ram-source-graph-v1","started":now(),"status":"FAILED",
+               "primary_error":None,"final_errors":[],"native_builds":0,"actual_test_methods":0,
+               "source_graph_start_floor":START_FREE,"source_graph_stop_floor":STOP_FREE,
+               "source_graph_budget_seconds":QUERY_SECONDS,"metadata_limit_bytes":TOTAL_OUTPUT,
+@@ -791,7 +886,9 @@
+               "ram_limit_bytes":RAM_BYTES,"ram_inode_limit":RAM_INODES,
+               "memory_start_bytes":MEM_START,"memory_stop_bytes":MEM_STOP,
+               "original_native_start_stop_final_unchanged":[2950000000,2600000000,2500000000],
+-              "original_disk_graph_unchanged":ORIGINAL_GRAPH_SHA}
++              "original_disk_graph_unchanged":ORIGINAL_GRAPH_SHA,
++              "original_ram_graph_unchanged":ORIGINAL_RAM_GRAPH_SHA,
++              "json_projection_fields":list(JSON_FIELDS),"privileged_cleanup_entry":ENTRY_CREDENTIALS}
+     before = None
+     query = None
+     try:
+@@ -832,6 +929,9 @@
+             record["source_unchanged"] = True
+         except BaseException as error:
+             record["final_errors"].append({"phase":"source-integrity","type":type(error).__name__,"message":str(error)})
++        record["ordinary_credentials_final"] = process_credentials()
++        if record["ordinary_credentials_final"]!=ENTRY_CREDENTIALS["adopted"]:
++            record["final_errors"].append({"phase":"ordinary-credentials-final","type":"RuntimeError","message":"ordinary_credentials_changed"})
+         record["memory_available_final"] = memory_available()
+         if record["memory_available_final"]<MEM_STOP:
+             record["final_errors"].append({"phase":"final-memory","available_bytes":record["memory_available_final"],"minimum":MEM_STOP})

@@ -1,0 +1,102 @@
+[
+  {
+    "label": "projected-profile-description",
+    "new": "\"\"\"Projected RAM-cache source query with scoped owned-process cleanup.\n\nThe original graph.py and ram_graph.py remain unchanged and hash-bound.\nAll owned RAM bytes are archived and verified before a normal owned unmount.\nNo native build or test is requested.\n\"\"\"",
+    "old": "\"\"\"One separately admitted RAM-cache source query; no native build or tests.\n\nThe original graph.py and its disk/native resource limits remain unchanged.\nAll owned RAM bytes are archived and verified before a normal owned unmount.\n\"\"\""
+  },
+  {
+    "label": "identity-stdlib-import",
+    "new": "import pathlib\nimport pwd\n",
+    "old": "import pathlib\n"
+  },
+  {
+    "label": "ordinary-owner-before-project-operations",
+    "new": "\n\n# This standalone entry has no repository imports. Adopt the original owner\n# before resolving any project path, reading source/data, or invoking Git.\n# The saved UID is process-local and is consumed only by stop_owned below.\nORDINARY_UID = 1001\nORDINARY_GID = 1001\nORDINARY_GROUPS = [4, 24, 27, 30, 104, 1001]\nOWNED_CHILDREN = {}\n\ndef process_credentials():\n    return {\"uids\":list(os.getresuid()),\"gids\":list(os.getresgid()),\n            \"groups\":sorted(os.getgroups())}\n\ndef adopt_owner_for_cleanup():\n    if not sys.flags.isolated or not sys.dont_write_bytecode:\n        raise RuntimeError(\"isolated_no_bytecode_python_entry_required\")\n    initial = process_credentials()\n    if initial!={\"uids\":[0,0,0],\"gids\":[0,0,0],\"groups\":[0]}:\n        raise RuntimeError(\"expected_privileged_entry_identity\")\n    if os.environ.get(\"SUDO_UID\")!=\"1001\" or os.environ.get(\"SUDO_GID\")!=\"1001\":\n        raise RuntimeError(\"expected_original_sudo_owner\")\n    account = pwd.getpwuid(ORDINARY_UID)\n    if account.pw_gid!=ORDINARY_GID or sorted(os.getgrouplist(account.pw_name,ORDINARY_GID))!=ORDINARY_GROUPS:\n        raise RuntimeError(\"original_ordinary_groups_changed\")\n    os.setgroups(ORDINARY_GROUPS)\n    os.setresgid(ORDINARY_GID,ORDINARY_GID,ORDINARY_GID)\n    os.setresuid(ORDINARY_UID,ORDINARY_UID,0)\n    final = process_credentials()\n    if final!={\"uids\":[1001,1001,0],\"gids\":[1001,1001,1001],\"groups\":ORDINARY_GROUPS}:\n        raise RuntimeError(\"ordinary_source_owner_adoption_failed\")\n    return {\"entry\":initial,\"adopted\":final,\"persistent_permissions_changed\":False,\n            \"saved_uid_scope\":\"only_registered_child_stop_owned\"}\n\nENTRY_CREDENTIALS = adopt_owner_for_cleanup() if __name__==\"__main__\" else None\n\nHERE = pathlib.Path(__file__).resolve().parent\n",
+    "old": "\nHERE = pathlib.Path(__file__).resolve().parent\n"
+  },
+  {
+    "label": "new-attempt",
+    "new": "ATTEMPT = EVIDENCE / \"ram-projected-graph-attempt1\"",
+    "old": "ATTEMPT = EVIDENCE / \"ram-graph-attempt2\""
+  },
+  {
+    "label": "new-ram-path",
+    "new": "RAM = pathlib.Path(\"/dev/shm/pinkha-loaded-account-projected-source-20261123\")",
+    "old": "RAM = pathlib.Path(\"/dev/shm/pinkha-loaded-account-source-graph-20261123\")"
+  },
+  {
+    "label": "new-ram-name",
+    "new": "RAM_SOURCE = \"pinkha-loaded-account-projected-source-20261123\"",
+    "old": "RAM_SOURCE = \"pinkha-loaded-account-source-graph-20261123\""
+  },
+  {
+    "label": "old-ram-source-pin",
+    "new": "ORIGINAL_GRAPH_SHA = \"6aacb0c911aed49d88d9f0e7ef82b08a5ceab431139bb7b71f17c7d0aedfd23d\"\nORIGINAL_RAM_GRAPH_SHA = \"3b7b1802213811b57174e93e7de0ea52b712c4e76c34d0f89c14889eeba21ba3\"",
+    "old": "ORIGINAL_GRAPH_SHA = \"6aacb0c911aed49d88d9f0e7ef82b08a5ceab431139bb7b71f17c7d0aedfd23d\""
+  },
+  {
+    "label": "new-container-name",
+    "new": "NAME = \"pinkha-loaded-account-projected-ram-graph-20261123\"",
+    "old": "NAME = \"pinkha-loaded-account-ram-graph-20261123\""
+  },
+  {
+    "label": "new-container-label",
+    "new": "LABEL = \"pinkha.loaded-account-witness.projected-ram-graph\"",
+    "old": "LABEL = \"pinkha.loaded-account-witness.ram-graph\""
+  },
+  {
+    "label": "exact-parser-projection-constant",
+    "new": "QUERY_SECONDS = 120\nJSON_FIELDS = (\n    \"ImportPath\",\"Dir\",\"ForTest\",\"Standard\",\"Module\",\"Name\",\"Error\",\"DepsErrors\",\"GoFiles\",\"CgoFiles\",\"CFiles\",\"CXXFiles\",\"MFiles\",\"HFiles\",\"FFiles\",\"SFiles\",\"SwigFiles\",\"SwigCXXFiles\",\"SysoFiles\",\"EmbedFiles\",\"TestGoFiles\",\"XTestGoFiles\",\"TestEmbedFiles\",\"XTestEmbedFiles\"\n)\n",
+    "old": "QUERY_SECONDS = 120\n"
+  },
+  {
+    "label": "old-ram-profile-retention",
+    "new": "    require(sha(HERE/\"graph.py\")==ORIGINAL_GRAPH_SHA,\"original_graph_source_changed\")\n    require(sha(HERE/\"ram_graph.py\")==ORIGINAL_RAM_GRAPH_SHA,\"original_ram_graph_source_changed\")",
+    "old": "    require(sha(HERE/\"graph.py\")==ORIGINAL_GRAPH_SHA,\"original_graph_source_changed\")"
+  },
+  {
+    "label": "old-stop-body-name",
+    "new": "def _stop_owned_body(child, record):",
+    "old": "def stop_owned(child, record):"
+  },
+  {
+    "label": "registered-only-privileged-stop-wrapper",
+    "new": "def register_owned_child(child,record):\n    require(type(child) is subprocess.Popen and record.get(\"pid\")==child.pid and\n            record.get(\"pgid\")==child.pid and child not in OWNED_CHILDREN,\n            \"register_actual_owned_child\")\n    OWNED_CHILDREN[child] = (child.pid,child.pid,id(record))\n\ndef stop_owned(child,record):\n    require(type(child) is subprocess.Popen and\n            OWNED_CHILDREN.get(child)==(child.pid,child.pid,id(record)),\n            \"privileged_cleanup_requires_registered_popen\")\n    ordinary = {\"uids\":[1001,1001,0],\"gids\":[1001,1001,1001],\"groups\":ORDINARY_GROUPS}\n    proof = {\"ordinary_before\":process_credentials(),\"restored\":False}\n    record[\"cleanup_privilege\"] = proof\n    require(ENTRY_CREDENTIALS is not None and proof[\"ordinary_before\"]==ordinary,\n            \"privileged_cleanup_entry_binding\")\n    first_error = None\n    # Defer handled signals across the finite existing TERM/KILL cleanup.\n    # A pending signal is delivered only after ordinary identity is restored.\n    prior_mask = signal.pthread_sigmask(signal.SIG_BLOCK,{signal.SIGTERM,signal.SIGINT})\n    try:\n        os.seteuid(0)\n        proof[\"during_cleanup\"] = process_credentials()\n        require(proof[\"during_cleanup\"]=={\"uids\":[1001,0,0],\"gids\":[1001,1001,1001],\"groups\":ORDINARY_GROUPS},\n                \"privileged_cleanup_identity\")\n        _stop_owned_body(child,record)\n    except BaseException as error:\n        first_error = error\n        proof[\"first_error\"] = {\"type\":type(error).__name__,\"message\":str(error)}\n    finally:\n        # No project/file/Git operation is performed with effective UID zero.\n        try:\n            os.seteuid(ORDINARY_UID)\n            proof[\"ordinary_after\"] = process_credentials()\n            proof[\"restored\"] = proof[\"ordinary_after\"]==ordinary\n        except BaseException as error:\n            proof[\"restoration_error\"] = {\"type\":type(error).__name__,\"message\":str(error)}\n        if not proof[\"restored\"]:\n            # A failure to restore must never continue into project I/O.\n            os.write(2,(json.dumps({\"fatal\":\"ordinary_identity_restore_failed\",\"cleanup\":proof})+\"\\n\").encode())\n            os._exit(126)\n        try:\n            signal.pthread_sigmask(signal.SIG_SETMASK,prior_mask)\n        except BaseException as error:\n            proof[\"pending_signal_after_restoration\"] = {\"type\":type(error).__name__,\"message\":str(error)}\n            if first_error is None:\n                first_error = error\n    if first_error is not None:\n        raise first_error\n    del OWNED_CHILDREN[child]\n\ndef interrupt(signum, _frame):",
+    "old": "def interrupt(signum, _frame):"
+  },
+  {
+    "label": "register-query-child",
+    "new": "        require(child.pid==record[\"pgid\"],\"owned_cli_process_group\")\n        register_owned_child(child,record)",
+    "old": "        require(child.pid==record[\"pgid\"],\"owned_cli_process_group\")"
+  },
+  {
+    "label": "register-observer-child",
+    "new": "        require(observation[\"pgid\"]==child.pid,\"docker_observation_group_binding\")\n        register_owned_child(child,observation)",
+    "old": "        require(observation[\"pgid\"]==child.pid,\"docker_observation_group_binding\")"
+  },
+  {
+    "label": "projected-go-argv",
+    "new": "[IMAGE,\"list\",\"-deps\",\"-test\",\"-json=\"+\",\".join(JSON_FIELDS),",
+    "old": "[IMAGE,\"list\",\"-deps\",\"-test\",\"-json\","
+  },
+  {
+    "label": "entry-ordinary-identity-guard",
+    "new": "    require(ENTRY_CREDENTIALS is not None and process_credentials()==ENTRY_CREDENTIALS[\"adopted\"],\n            \"expected_oracle_owner_required\")",
+    "old": "    require(os.getuid()==1001,\"expected_oracle_owner_required\")"
+  },
+  {
+    "label": "new-receipt-protocol",
+    "new": "record = {\"protocol\":\"loaded-account-projected-ram-source-graph-v1\"",
+    "old": "record = {\"protocol\":\"loaded-account-ram-cache-source-graph-v1\""
+  },
+  {
+    "label": "receipt-privilege-and-field-bindings",
+    "new": "\"original_disk_graph_unchanged\":ORIGINAL_GRAPH_SHA,\n              \"original_ram_graph_unchanged\":ORIGINAL_RAM_GRAPH_SHA,\n              \"json_projection_fields\":list(JSON_FIELDS),\"privileged_cleanup_entry\":ENTRY_CREDENTIALS}",
+    "old": "\"original_disk_graph_unchanged\":ORIGINAL_GRAPH_SHA}"
+  },
+  {
+    "label": "final-ordinary-identity-guard",
+    "new": "        record[\"ordinary_credentials_final\"] = process_credentials()\n        if record[\"ordinary_credentials_final\"]!=ENTRY_CREDENTIALS[\"adopted\"]:\n            record[\"final_errors\"].append({\"phase\":\"ordinary-credentials-final\",\"type\":\"RuntimeError\",\"message\":\"ordinary_credentials_changed\"})\n        record[\"memory_available_final\"] = memory_available()",
+    "old": "        record[\"memory_available_final\"] = memory_available()"
+  }
+]

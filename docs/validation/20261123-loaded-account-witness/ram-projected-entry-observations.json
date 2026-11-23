@@ -1,0 +1,58 @@
+{
+  "schema": "source-only-entry-identity-observations-v1",
+  "root_probe_original_stdout": "{\"resuid\": [0, 0, 0], \"resgid\": [0, 0, 0], \"groups\": [0], \"sudo_uid\": \"1001\", \"sudo_gid\": \"1001\"}",
+  "ordinary_probe_exact_line": "{\"ordinary_ids\": {\"resuid\": [1001, 1001, 1001], \"resgid\": [1001, 1001, 1001], \"groups\": [4, 24, 27, 30, 104, 1001]}}",
+  "nss_probe_exact_line": "{\"nss_uid\": 1001, \"nss_gid\": 1001, \"nss_groups\": [4, 24, 27, 30, 104, 1001]}",
+  "root_probe": {
+    "resuid": [
+      0,
+      0,
+      0
+    ],
+    "resgid": [
+      0,
+      0,
+      0
+    ],
+    "groups": [
+      0
+    ],
+    "sudo_uid": "1001",
+    "sudo_gid": "1001"
+  },
+  "ordinary_probe": {
+    "ordinary_ids": {
+      "resuid": [
+        1001,
+        1001,
+        1001
+      ],
+      "resgid": [
+        1001,
+        1001,
+        1001
+      ],
+      "groups": [
+        4,
+        24,
+        27,
+        30,
+        104,
+        1001
+      ]
+    }
+  },
+  "nss_probe": {
+    "nss_uid": 1001,
+    "nss_gid": 1001,
+    "nss_groups": [
+      4,
+      24,
+      27,
+      30,
+      104,
+      1001
+    ]
+  },
+  "scope": "Read-only identity observations before profile execution; no credential transition/query performed."
+}
