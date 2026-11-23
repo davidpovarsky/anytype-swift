@@ -24,9 +24,12 @@ public enum AnyEmbeddedBuild: String, Sendable, Codable {
     case upstreamV050
     case pinkhaNativeV1
     case pinkhaPreparedMigrationCandidateV1
+    case pinkhaPreparedInlineMigrationCandidateV1
 
     public static var linked: Self {
-        #if PINKHA_PREPARED_MIGRATION_RUNTIME
+        #if PINKHA_PREPARED_INLINE_MIGRATION_RUNTIME
+        return .pinkhaPreparedInlineMigrationCandidateV1
+        #elseif PINKHA_PREPARED_MIGRATION_RUNTIME
         return .pinkhaPreparedMigrationCandidateV1
         #elseif PINKHA_NATIVE_RUNTIME
         return .pinkhaNativeV1
@@ -40,6 +43,7 @@ public enum AnyEmbeddedBuild: String, Sendable, Codable {
         case .upstreamV050: return "any v0.5.0 "
         case .pinkhaNativeV1: return "any v0.5.0-pinkha.1 "
         case .pinkhaPreparedMigrationCandidateV1: return "any v0.5.0-pinkha.prepared.1 "
+        case .pinkhaPreparedInlineMigrationCandidateV1: return "any v0.5.0-pinkha.prepared.inline.1 "
         }
     }
 }

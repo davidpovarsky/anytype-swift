@@ -1,0 +1,61 @@
+{
+  "activeNewXCTestSyntax": "PASS",
+  "manifestModeChecks": [
+    {
+      "mode": null,
+      "read": null,
+      "result": "PASS",
+      "runtimeFlags": [],
+      "testFlags": []
+    },
+    {
+      "mode": "verified-v1",
+      "read": null,
+      "result": "PASS",
+      "runtimeFlags": [
+        "PINKHA_NATIVE_RUNTIME"
+      ],
+      "testFlags": []
+    },
+    {
+      "mode": "verified-prepared-v1",
+      "read": null,
+      "result": "PASS",
+      "runtimeFlags": [
+        "PINKHA_NATIVE_RUNTIME",
+        "PINKHA_PREPARED_MIGRATION_RUNTIME"
+      ],
+      "testFlags": [
+        "PINKHA_PREPARED_MIGRATION_ACCEPTANCE"
+      ]
+    },
+    {
+      "mode": "verified-prepared-inline-v1",
+      "read": null,
+      "result": "PASS",
+      "runtimeFlags": [
+        "PINKHA_NATIVE_RUNTIME",
+        "PINKHA_PREPARED_INLINE_MIGRATION_RUNTIME"
+      ],
+      "testFlags": [
+        "PINKHA_PREPARED_INLINE_MIGRATION_ACCEPTANCE"
+      ]
+    },
+    {
+      "mode": "verified-v1",
+      "read": "candidate-v10",
+      "result": "PASS",
+      "runtimeFlags": [
+        "PINKHA_NATIVE_RUNTIME"
+      ],
+      "testFlags": [
+        "PINKHA_AUTHORIZED_READ_CANDIDATE"
+      ]
+    }
+  ],
+  "newTestSHA256": "ab60925b31502972fad2025476ac3e5b11de9ef3870eb606f7ef002712425b2b",
+  "oldTestsExecuted": 0,
+  "status": "STATIC_CHECKS_PASS_APPLE_BUILD_AND_XCTEST_NOT_RUN",
+  "swift": "6.4.3 aarch64-unknown-linux-gnu",
+  "unchangedExistingPreparedTestSHA256": "ba446f2a78f475517439111169cd6d4c33541bff470d848e63b7bf6207d0818f"
+}
