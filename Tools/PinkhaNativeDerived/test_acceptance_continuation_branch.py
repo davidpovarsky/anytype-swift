@@ -7,6 +7,7 @@ unrelated UI controllers; no omitted dependency participates in that function.
 """
 import ast
 import copy
+import json
 from pathlib import Path
 import re
 import unittest
@@ -17,6 +18,7 @@ import install_verified_heart as installer
 
 CONTINUATION = "codex/chatgpt-wave15-acceptance-continuation-20261122"
 SHARED = "codex/chatgpt-wave15-shared-20261121"
+CANONICAL = "codex/chatgpt-wave15-canonical-hanlin-20261123"
 SOURCE = "58b9de8f7a26d798e18e301ad1ed8be14f2a8c14"
 REPOSITORY = "davidpovarsky/anytype-swift"
 
@@ -71,7 +73,7 @@ class ContinuationBranchTests(unittest.TestCase):
         self.assertEqual(shared_result["source_branch"], SHARED)
         self.assertEqual(shared_result["source_sha"], SOURCE)
         for branch in installer.APPROVED_BRANCHES:
-            if branch != CONTINUATION:
+            if branch not in (CONTINUATION, CANONICAL):
                 self.assertEqual(admission.expected_producer_branch(branch), branch)
         for field, value in (
             ("head_branch", CONTINUATION), ("head_branch", CONTINUATION + "-unreviewed"),
@@ -87,6 +89,60 @@ class ContinuationBranchTests(unittest.TestCase):
                 verify(changed, CONTINUATION)
         with self.assertRaises(RuntimeError):
             verify(original, CONTINUATION + "-unreviewed")
+
+
+class CanonicalConsumerBranchTests(unittest.TestCase):
+    def test_exact_native_and_component_candidate_identity_is_required(self):
+        native_identity = wave15_identity()["require_source_identity"]
+        source = Path(__file__).resolve().parents[1] / "Hanlin/run_host_tests.py"
+        tree = ast.parse(source.read_text())
+        constants = {"BRANCH", "CONSUMER_BRANCH", "ANY_ENGINE_BRANCH", "UI_RESUME_BRANCH", "SHARED_BRANCH", "APPROVED_BRANCHES"}
+        functions = {"require", "require_identity"}
+        nodes = [node for node in tree.body if
+                 (isinstance(node, ast.Assign) and len(node.targets) == 1
+                  and isinstance(node.targets[0], ast.Name) and node.targets[0].id in constants)
+                 or (isinstance(node, ast.FunctionDef) and node.name in functions)]
+        self.assertEqual(len(nodes), len(constants) + len(functions))
+        namespace = {"re": re}
+        exec(compile(ast.Module(body=nodes, type_ignores=[]), str(source), "exec"), namespace)
+        component_identity = namespace["require_identity"]
+        self.assertIn(CANONICAL, installer.APPROVED_BRANCHES)
+        native_identity(SOURCE, SOURCE, CANONICAL, "refs/heads/" + CANONICAL)
+        component_identity(SOURCE, SOURCE, CANONICAL, CANONICAL, "45091223011", "1")
+        for branch, head, ref in (
+            (CANONICAL + "-unreviewed", SOURCE, "refs/heads/" + CANONICAL + "-unreviewed"),
+            (CANONICAL, SOURCE, "refs/heads/" + SHARED),
+            (CANONICAL, "0" * 40, "refs/heads/" + CANONICAL),
+        ):
+            with self.subTest(branch=branch, head=head), self.assertRaises(ValueError):
+                native_identity(head, SOURCE, branch, ref)
+        for actual, expected, head in ((CANONICAL, SHARED, SOURCE), (SHARED, CANONICAL, SOURCE),
+                                      (CANONICAL, CANONICAL, "0" * 40),
+                                      (CANONICAL + "-unreviewed", CANONICAL + "-unreviewed", SOURCE)):
+            with self.subTest(actual=actual, expected=expected), self.assertRaises(ValueError):
+                component_identity(head, SOURCE, actual, expected, "45091223011", "1")
+        self.assertNotIn(CANONICAL + "-unreviewed", installer.APPROVED_BRANCHES)
+
+    def test_original_current_producer_remains_bound_to_shared_branch(self):
+        root = Path(__file__).resolve().parents[2]
+        path = root / "docs/validation/20261123-canonical-native-admission/producer-current.json"
+        original = json.loads(path.read_text())
+        def verify(value, consumer=CANONICAL):
+            return profiles.validate_producer(value, "45091223011", REPOSITORY,
+                                               admission.expected_producer_branch(consumer), profiles.COHERENT)
+        current = verify(original)
+        self.assertEqual(current, verify(original, SHARED))
+        self.assertEqual(current["source_sha"], "8b08033135f7cb508e813ab1d47d81c255037c07")
+        self.assertEqual(current["source_branch"], SHARED)
+        for field, value in (("head_branch", CANONICAL), ("id", 45091223012),
+                             ("conclusion", "failure"), ("run_attempt", 0),
+                             ("head_sha", "0" * 40), ("path", ".github/workflows/unreviewed.yml")):
+            changed = copy.deepcopy(original)
+            changed[field] = value
+            with self.subTest(field=field), self.assertRaises(RuntimeError):
+                verify(changed)
+        with self.assertRaises(RuntimeError):
+            verify(original, CANONICAL + "-unreviewed")
 
 
 if __name__ == "__main__":

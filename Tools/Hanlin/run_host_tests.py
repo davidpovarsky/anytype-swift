@@ -27,7 +27,8 @@ CONSUMER_BRANCH = "codex/chatgpt-wave15-hanlin-consumer-20261119"
 ANY_ENGINE_BRANCH = "codex/any-engine-port-20261119"
 UI_RESUME_BRANCH = "codex/chatgpt-wave15-ui-resume-20261119"
 SHARED_BRANCH = "codex/chatgpt-wave15-shared-20261121"
-APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH, UI_RESUME_BRANCH, ANY_ENGINE_BRANCH, SHARED_BRANCH)
+APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH, UI_RESUME_BRANCH, ANY_ENGINE_BRANCH, SHARED_BRANCH,
+                     "codex/chatgpt-wave15-canonical-hanlin-20261123")
 CONFIGURATION = "Debug-Anytype"
 SUITES = {
     "HanlinHostAdapterTests": 35,
@@ -527,7 +528,6 @@ def execute(args, receipt):
     ipad = preflight["selected"]["ipad"]
     udid = ipad["udid"]
     expected, sources = expected_methods(app, profile)
-    pin = json.loads((app / "Tools/Hanlin/source.json").read_text())
     snapshot = verify(app / "Dependencies/Hanlin")
     write(evidence / "hanlin-snapshot.json", snapshot)
     installation = json.loads((evidence / "heart/heart-installation.json").read_text())
@@ -545,7 +545,7 @@ def execute(args, receipt):
                    profile=profile.value, selection=["AnytypeTests/" + name for name in
                        (sorted(expected) if profile is HostTestProfile.SHARED_EDITOR else profile.suites)],
                    expected_methods=sorted(expected),
-                   test_source_hashes=sources, hanlin_revision=pin["revision"], heart=installation, **binding,
+                   test_source_hashes=sources, hanlin_revision=snapshot["revision"], heart=installation, **binding,
                    hanlin_snapshot_sha256=sha256(evidence / "hanlin-snapshot.json"), phase="SIMULATOR_BOOT")
     if profile in {HostTestProfile.CORE, HostTestProfile.COMPONENTS}:
         receipt["core_manifest_sha256"] = sha256(core_profile.MANIFEST_PATH)

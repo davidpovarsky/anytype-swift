@@ -1,0 +1,84 @@
+{
+  "schema": "pinkha-canonical-native-control-reuse-v1",
+  "consumer_branch": "codex/chatgpt-wave15-canonical-hanlin-20261123",
+  "base_source": "494ae1341b0351387626dc3ff45d033cd55394f0",
+  "owner_proof_source": "4eb4d17f03b36e7d3db1123ec74714d9062b3e46",
+  "owner_helper_path": "Tools/PinkhaSimulatorGate/sdk06_retained_controls.py",
+  "owner_helper_sha256": "77164c4481d7b2124148576e37f236cd2aa103c03a09bda92ae17a86dff37d97",
+  "owner_manifest_path": "Tools/PinkhaSimulatorGate/sdk06-retained-controls.json",
+  "owner_manifest_sha256": "cc05f8cb2f95a41d65d5a4cdd01ac140bb4e6572d25e6476912bcc7fa3820e58",
+  "import_receipt": {
+    "path": "docs/validation/20261123-canonical-native-admission/native-control-import-closure.json",
+    "sha256": "23f7953a879502fb715836aa5503fc98cb6e86f41c3b410bf10a7e272cabf535"
+  },
+  "source_inputs": [
+    "Tools/Hanlin/host_command.py",
+    "Tools/Hanlin/related_read_authority_profile.py",
+    "Tools/Hanlin/run_host_tests.py",
+    "Tools/Hanlin/shared_editor_profile.py",
+    "Tools/Hanlin/shared_table_profile.py",
+    "Tools/Hanlin/wave15-core-tests.json",
+    "Tools/Hanlin/wave15_core_profile.py",
+    "Tools/PinkhaNativeDerived/attachment_runtime.py",
+    "Tools/PinkhaNativeDerived/build_custom_heart.py",
+    "Tools/PinkhaNativeDerived/build_native_ipa.py",
+    "Tools/PinkhaNativeDerived/heart_runtime_profile.py",
+    "Tools/PinkhaNativeDerived/rerun_original_ui.py",
+    "Tools/PinkhaNativeDerived/validate_wave1.py",
+    "Tools/PinkhaSimulatorGate/compiled_products.py",
+    "Tools/PinkhaSimulatorGate/destination_artifacts.py",
+    "Tools/PinkhaSimulatorGate/early_build_products.py",
+    "Tools/PinkhaSimulatorGate/hanlin_acceptance_evidence.py",
+    "Tools/PinkhaSimulatorGate/hanlin_selection_evidence.py",
+    "Tools/PinkhaSimulatorGate/hanlin_ui_runtime.py",
+    "Tools/PinkhaSimulatorGate/run_ui27.py",
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py",
+    "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py",
+    "Tools/PinkhaSimulatorGate/simulator_identity.py",
+    "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py",
+    "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+    "Tools/PinkhaSimulatorGate/text_native_ack.py",
+    "Tools/PinkhaSimulatorGate/type_preservation.py",
+    "Tools/PinkhaSimulatorGate/validate_release.py",
+    "Tools/PinkhaSimulatorGate/wave15_diagnostics.py"
+  ],
+  "source_deltas": {
+    "Tools/Hanlin/run_host_tests.py": {
+      "current_sha256": "0c88e8886e5b04aaee099962f38067e32c80bdaf889bf39bffb424fd04be3c0b",
+      "reviewed_base_sha256": "106d40df8594c067fdcc389d0ac93e3055a01247d431b13563f9d6e0d1c3403d",
+      "replacements": [
+        {
+          "current": "APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH, UI_RESUME_BRANCH, ANY_ENGINE_BRANCH, SHARED_BRANCH,\n                     \"codex/chatgpt-wave15-canonical-hanlin-20261123\")",
+          "original": "APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH, UI_RESUME_BRANCH, ANY_ENGINE_BRANCH, SHARED_BRANCH)"
+        },
+        {
+          "current": "    snapshot = verify(app / \"Dependencies/Hanlin\")\n",
+          "original": "    pin = json.loads((app / \"Tools/Hanlin/source.json\").read_text())\n    snapshot = verify(app / \"Dependencies/Hanlin\")\n"
+        },
+        {
+          "current": "hanlin_revision=snapshot[\"revision\"]",
+          "original": "hanlin_revision=pin[\"revision\"]"
+        }
+      ],
+      "scope": "Only exact candidate branch admission and the verified SDK snapshot revision; native observer/receipt/UI code unchanged."
+    },
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": {
+      "current_sha256": "28b9ee92e8b5eb1159c4b87c6cafa8be3fd7a492714bea2d36a8a37ebdfe494d",
+      "reviewed_base_sha256": "3b617ea3258f92f8573c1761376f7917901ed0bd035caf8cde7c155a189e0fba",
+      "replacements": [
+        {
+          "current": "APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH, UI_RESUME_BRANCH, SHARED_BRANCH, CONTINUATION_BRANCH,\n                     \"codex/chatgpt-wave15-canonical-hanlin-20261123\")",
+          "original": "APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH, UI_RESUME_BRANCH, SHARED_BRANCH, CONTINUATION_BRANCH)"
+        }
+      ],
+      "scope": "Only exact candidate branch admission and the verified SDK snapshot revision; native observer/receipt/UI code unchanged."
+    }
+  },
+  "modules": {
+    "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py": 49,
+    "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py": 20
+  },
+  "native_controller_methods": 69,
+  "controller_methods_executed_now": 0,
+  "product_tests_executed_now": 0
+}

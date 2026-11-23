@@ -1,0 +1,713 @@
+{
+  "schemaVersion": 2,
+  "base": "586c98bcc17dee425664224e508fc0e8df277678",
+  "head": "494ae1341b0351387626dc3ff45d033cd55394f0",
+  "checkedTree": "c8c32b90b5bee67ae0129be7c9e738cb992c2dc5",
+  "baseIsAncestor": true,
+  "protectedPaths": [
+    "Anytype/Sources",
+    "AnyTypeTests",
+    "Modules",
+    "Tools/TorahNativeOperations",
+    "Tools/PinkhaNativeDerived",
+    "Tools/Hanlin/source.json"
+  ],
+  "baselineFileCount": 5790,
+  "currentFileCount": 6275,
+  "unchangedBaselineFileCount": 5692,
+  "reviewedRefactors": [
+    {
+      "kind": "import_only",
+      "from": "AnyTypeTests/Pinkha/HanlinHostAdapterTests.swift",
+      "to": "AnyTypeTests/Pinkha/HanlinHostAdapterTests.swift",
+      "baselineBlob": "6d5d7fc0bd08ef53625a98ee8ea8b307b6a7494e",
+      "replacementBlob": "45a334e3445ef249650b01531b0a772b892e236c"
+    },
+    {
+      "kind": "import_only",
+      "from": "AnyTypeTests/Pinkha/HanlinHostReadWriteTests.swift",
+      "to": "AnyTypeTests/Pinkha/HanlinHostReadWriteTests.swift",
+      "baselineBlob": "6362f4442cc1d4e8ddc7bf23f725394b91b165c1",
+      "replacementBlob": "485dba8bd3d7cfa6d108b86bb39d5eeb36fe47e9"
+    },
+    {
+      "kind": "import_only",
+      "from": "AnyTypeTests/Pinkha/HanlinHostWriteTests.swift",
+      "to": "AnyTypeTests/Pinkha/HanlinHostWriteTests.swift",
+      "baselineBlob": "1239c61b24961fc1d141fbff89ac78737d178205",
+      "replacementBlob": "c2520bf3ae046ab788279f34126a32084c71fbf0"
+    },
+    {
+      "kind": "import_only",
+      "from": "AnyTypeTests/Pinkha/HanlinSDKConsumerTests.swift",
+      "to": "AnyTypeTests/Pinkha/HanlinSDKConsumerTests.swift",
+      "baselineBlob": "05e1049b7e37e063856ebae5e1f85829520f189d",
+      "replacementBlob": "a10ec0ea4c421266bbdf139952f4bcbefc7bdf88"
+    },
+    {
+      "kind": "refactor",
+      "from": "AnyTypeTests/Pinkha/PinkhaTextDirectionUIKitAdapterTests.swift",
+      "to": "AnyTypeTests/Pinkha/PinkhaTextDirectionUIKitAdapterTests.swift",
+      "baselineBlob": "964c291053ac7aabb67ea759171967198ae45b50",
+      "replacementBlob": "3a502235a2337e9a3cc61a363dcaf4362322c407"
+    },
+    {
+      "kind": "refactor",
+      "from": "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift",
+      "to": "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift",
+      "baselineBlob": "fd6a031c343d39d21dec10af38dff66b2ca1db79",
+      "replacementBlob": "8f91d07910a8a5864733fdec3245f9454271656f"
+    },
+    {
+      "kind": "refactor",
+      "from": "AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift",
+      "to": "AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift",
+      "baselineBlob": "cab7dcb9c0e5ca7bb08db419f9181b3e8184cec3",
+      "replacementBlob": "24135b5070aaceec764e245a033c4b14bd58d059"
+    },
+    {
+      "kind": "refactor",
+      "from": "AnyTypeTests/Pinkha/TorahT5RuntimePairTests.swift",
+      "to": "AnyTypeTests/Pinkha/TorahT5RuntimePairTests.swift",
+      "baselineBlob": "5196feb1e5edd3ae3e271e84e106cae678d291b5",
+      "replacementBlob": "fa8a0acbb5f2ee56cb42e6528a4abdee52a91912"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/FrameworkExtensions/UIKit/UITextView+Convenience.swift",
+      "to": "Anytype/Sources/FrameworkExtensions/UIKit/UITextView+Convenience.swift",
+      "baselineBlob": "6009396c62e1f6223156806e6c9243abff2002cf",
+      "replacementBlob": "749fb99dad0fb8911ba87ae959fee564d6b4372c"
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAccountOwner.swift",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinAccountOwner.swift",
+      "baselineBlob": "78879033beca81fdb03feb272409de8253e99e33",
+      "replacementBlob": "ab218008e6b1dd12f98dce1ec322423b17b71d38"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+      "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+      "baselineBlob": "d3820631ef1b344babf116ca8766e7c0dcf853df",
+      "replacementBlob": "4c2d03b7c988402de5f860a3263f4c1a138b305a"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatPresentation.swift",
+      "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatPresentation.swift",
+      "baselineBlob": "810af73f1ecf45b3ea40827aa7549b12f7f3d1bc",
+      "replacementBlob": "35f5857ca3de7c98c3e33358a3af2f7138364ba3"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatView.swift",
+      "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatView.swift",
+      "baselineBlob": "0ddff522e7645ea19c3d4c319396177e355c4172",
+      "replacementBlob": "8a1129ab3e5a7aa64fe07c71ea8fd6667bd72164"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinConsentController.swift",
+      "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinConsentController.swift",
+      "baselineBlob": "77a0f004e65614150cdf47052c7b32405f35d929",
+      "replacementBlob": "bc724411115857868216661f1bcce06a673f2372"
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinHostAdapter.swift",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinHostAdapter.swift",
+      "baselineBlob": "05a8ecc07cef6d8b011067eba86ffb7fd4f8ffa9",
+      "replacementBlob": "862fcdd097fbb11cc9e88a4c9a3c054fc5891ad8"
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinInvocationEnvelope.swift",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinInvocationEnvelope.swift",
+      "baselineBlob": "affd0d0c40fd674400e90f8f8bf02790efc6eef8",
+      "replacementBlob": "bc91bef3fecee60984de375707ce9476eec038c0"
+    },
+    {
+      "kind": "import_only",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinNativeAccess.swift",
+      "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinNativeAccess.swift",
+      "baselineBlob": "bbbd048e3d8fcc88d087b9078433617b076957db",
+      "replacementBlob": "185bdd1cec0418464cdee1ec4959774fc72b3eb1"
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinNavigationLedger.swift",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinNavigationLedger.swift",
+      "baselineBlob": "c208f6d030c5a292411f277c675a0fc1fcbac469",
+      "replacementBlob": "ec735d630453f268d1bb54cf732e4b316679633d"
+    },
+    {
+      "kind": "import_only",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinReadConsent.swift",
+      "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinReadConsent.swift",
+      "baselineBlob": "cb005cde3ce590069742ffd16fb805957bb920d3",
+      "replacementBlob": "c1e3e00b71cca7f1d72ad723bb1a49f68d118fa9"
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinReadConsentDecision.swift",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinReadConsentDecision.swift",
+      "baselineBlob": "34161a0dd405f2ba30c81720ef7e8908be855fe8",
+      "replacementBlob": "e3b0b2029c6d029b4a765b4ffb2bad7d5e4b9c63"
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinReadRace.swift",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinReadRace.swift",
+      "baselineBlob": "355e27e6b0be3483bb432d5a52a0ed776872b7a1",
+      "replacementBlob": "355e27e6b0be3483bb432d5a52a0ed776872b7a1"
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinRevocationFence.swift",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinRevocationFence.swift",
+      "baselineBlob": "dc7187a0d10af6571c823c8e1e825cede0b70152",
+      "replacementBlob": "e8dab382970755a0b4fd09ae8277aa282a0ed2f5"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinStrings.swift",
+      "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinStrings.swift",
+      "baselineBlob": "657037395091ea052a863058aca1d9c2d8566d57",
+      "replacementBlob": "e10a6b62d7b462176c627640104437a60f14c2b7"
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/Resources/PinkhaHanlin.xcstrings",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/Resources/PinkhaHanlin.xcstrings",
+      "baselineBlob": "52ba2e3fd9bc0709250538541d11154c0bd84707",
+      "replacementBlob": "52ba2e3fd9bc0709250538541d11154c0bd84707"
+    },
+    {
+      "kind": "import_only",
+      "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageContext.swift",
+      "to": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageContext.swift",
+      "baselineBlob": "70b73f0c411d28e1cf91d3bab214a6e9e3e9c7d0",
+      "replacementBlob": "d9f00e352f1a774f1f5244286d4db8449547dd91"
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePagePlan.swift",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinCreatePagePlan.swift",
+      "baselineBlob": "c9ca732c3e0760dc9f37b0bb75bf886bc035d3b7",
+      "replacementBlob": "79e4b39465e0cc6f81e84710f943cb52b6b28b96"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageRunner.swift",
+      "to": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageRunner.swift",
+      "baselineBlob": "8ff879e4cf8ef04cb367be3b801829a047bebc80",
+      "replacementBlob": "ba462e58e2b1982d0dd3d826035a75c35146a7dd"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinReadWriteHost.swift",
+      "to": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinReadWriteHost.swift",
+      "baselineBlob": "26c4b78b33caf7acf497bef95359fe2764404300",
+      "replacementBlob": "a550b00c063733f292d9ca28207516bcb69fe8ff"
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinWriteJournal.swift",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinWriteJournal.swift",
+      "baselineBlob": "aca54480a6977009e1a1ac66806154964b51be29",
+      "replacementBlob": "14bfb33ab6c03564a93a224d2b0ce4dfe0ba1efd"
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinWritePreflight.swift",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinWritePreflight.swift",
+      "baselineBlob": "47e4c65a2bfaaa6b25a6a33409434162cc22c0fb",
+      "replacementBlob": "09c35a3314ba70aee812d9cfe9aa7dbd985bc2c6"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinNativeAcceptanceDriver.swift",
+      "to": "Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinNativeAcceptanceDriver.swift",
+      "baselineBlob": "9c76e9647d81be61e30d8f5e6b4fd7eacf56354e",
+      "replacementBlob": "4aa5f9a18777bb54836eced82e17f6ac0f149516"
+    },
+    {
+      "kind": "import_only",
+      "from": "Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinSelectionAcceptanceDriver.swift",
+      "to": "Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinSelectionAcceptanceDriver.swift",
+      "baselineBlob": "3b4a4ae46a47affd56a2736dbbb84a474800dbac",
+      "replacementBlob": "9b94dfe7eb6813f740c6e6544da6412c021df8ba"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Diagnostics/PinkhaStage1AcceptanceState.swift",
+      "to": "Anytype/Sources/Pinkha/Diagnostics/PinkhaStage1AcceptanceState.swift",
+      "baselineBlob": "60768e4fd4c27348a4f06ffb8c4af21648ed6f1c",
+      "replacementBlob": "4af9af99df35f9589f1e7235599650e3bc992d8b"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Torah/Storage/AnytypeTorahAssociationRepository.swift",
+      "to": "Anytype/Sources/Pinkha/Torah/Storage/AnytypeTorahAssociationRepository.swift",
+      "baselineBlob": "2284761604e2b85b144576f8d7921bfb9e5c413f",
+      "replacementBlob": "8e9ce51c2954cd1987cb375d4f0e47df7633203a"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Torah/Storage/TorahAssociationMutationCoordinator.swift",
+      "to": "Anytype/Sources/Pinkha/Torah/Storage/TorahAssociationMutationCoordinator.swift",
+      "baselineBlob": "426348a96cc36c0352bfa41cb22e4062f384bc91",
+      "replacementBlob": "41d4e0bad794905ffccba81f9b9aaf44cac2f312"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+      "to": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+      "baselineBlob": "a468f25f991134984ae2963b23b649f0c8018f6f",
+      "replacementBlob": "f720544ee832268919a3fa712ac258f7b5651d72"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift",
+      "to": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift",
+      "baselineBlob": "7f758686f68268e36e97f6455105f136204b8068",
+      "replacementBlob": "c62d24fce1ef49b35ec3e910f2f080e4faa3f715"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchPresenter.swift",
+      "to": "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchPresenter.swift",
+      "baselineBlob": "78ffb0306652b260c4aa130da45e48ee436264c8",
+      "replacementBlob": "744fef52142f93425f1e1f3c78e8c2f73dd0af3f"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/CustomTextView+UITextViewDelegate.swift",
+      "to": "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/CustomTextView+UITextViewDelegate.swift",
+      "baselineBlob": "6590a967d23f3bb39cac38acc37b970e45749ab8",
+      "replacementBlob": "1a33b924ba79094f97c46b4f4b0e448f80838efa"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Base/EditorViewListCell.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Base/EditorViewListCell.swift",
+      "baselineBlob": "74f777bcc082c8174230c6ff77f0578f5a4ec710",
+      "replacementBlob": "93678c2418fc43be33fba005124ae5e65e6e2968"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/SimpleTable/Block/TextBlock/SimpleTablesTextBlockActionHandler.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/SimpleTable/Block/TextBlock/SimpleTablesTextBlockActionHandler.swift",
+      "baselineBlob": "2884859133941f7beceed98cb271c94a63af6931",
+      "replacementBlob": "b85547a6b4396edc9261b4d38182e581f725f119"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandler.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandler.swift",
+      "baselineBlob": "6f91eb88f75a00fb2368041ffef669c7d454ce44",
+      "replacementBlob": "4d4116a5bd6b9a28f775eb1e7db3b58c5a929fd1"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandlerProtocol.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandlerProtocol.swift",
+      "baselineBlob": "d539964dd3ae19938a844dd59603e4f960eebb51",
+      "replacementBlob": "0d2827fc0bf654e46f2e18b4448bf390416e6d1f"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentConfiguration.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentConfiguration.swift",
+      "baselineBlob": "92e7e878000fb2d6374d44239aa6eb27628fa378",
+      "replacementBlob": "ab3461aca8bffa1bebbd95c20b63dc1054aac679"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView+TextViewDelegate.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView+TextViewDelegate.swift",
+      "baselineBlob": "9a4544a8be50e8cd096a67970fb3ef0472660fad",
+      "replacementBlob": "3da236ac47747409114d91e96bacdec89e23ca0b"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView.swift",
+      "baselineBlob": "05e3e4c43a7cb8c75e17472c2ec03a058ca4b1f2",
+      "replacementBlob": "c950387a3dc3f56fed27b250a0b61affc3205138"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockViewModel.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockViewModel.swift",
+      "baselineBlob": "304aaa7f19f7f05e62ffe437e53c167e5cadfe62",
+      "replacementBlob": "7c7e18d3ea54eec5ba889d2f726d18e67e5eeec8"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController.swift",
+      "baselineBlob": "98e3b6cda8a4e40bba0bbc0c320e06ea53302df6",
+      "replacementBlob": "9fec8f99396cc187f085f157a6e4d49d3eaa0edc"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionHandler.swift",
+      "to": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionHandler.swift",
+      "baselineBlob": "7303378c65854f78919f833b464ad02ed263d86f",
+      "replacementBlob": "059f8ff55ad71d595b044e675e384bc7f362cba4"
+    },
+    {
+      "kind": "refactor",
+      "from": "Modules/PinkhaKit/Package.swift",
+      "to": "Modules/PinkhaKit/Package.swift",
+      "baselineBlob": "eb19331cb8b675b0271f2252a5453463e3f50b88",
+      "replacementBlob": "89d37550451cc28118cbffe547e5c634ff0f0235"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/PinkhaNativeDerived/build_t5_r15_runtime.py",
+      "to": "Tools/PinkhaNativeDerived/build_t5_r15_runtime.py",
+      "baselineBlob": "902714a86076e264392e240b9447dfba8a9cf83d",
+      "replacementBlob": "ff4f3274cadab843dff980629e180a19007b0c94"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/PinkhaNativeDerived/install_verified_heart.py",
+      "to": "Tools/PinkhaNativeDerived/install_verified_heart.py",
+      "baselineBlob": "1ed1f7fa90083cc110f4cb73ec69ac5973d34a1c",
+      "replacementBlob": "495537f19a1b4c701716a48cdfa5519cff20f5a3"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/.gitattributes",
+      "to": "Tools/TorahNativeOperations/.gitattributes",
+      "baselineBlob": "2655264460bca46deff3497efb8a1233c8997869",
+      "replacementBlob": "cc86ae0be62e2bde9112a37847a1ca7557fd12b2"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/account_lifecycle/native_handler_test.go",
+      "to": "Tools/TorahNativeOperations/account_lifecycle/native_handler_test.go",
+      "baselineBlob": "78e978a6b1cd435d0e5a2e91c7814c20da0aaab3",
+      "replacementBlob": "af53735407bc497a64d96ae3bf247db678303cc3"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/account_rpc/fixture.json",
+      "to": "Tools/TorahNativeOperations/account_rpc/fixture.json",
+      "baselineBlob": "6245a69974537887e6af2976a686a08ba95fb316",
+      "replacementBlob": "f84a9293f6fe0732c01f3ac9bbd4451f4b68fa59"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/account_rpc/native_rpc_account_test.go",
+      "to": "Tools/TorahNativeOperations/account_rpc/native_rpc_account_test.go",
+      "baselineBlob": "de7ff2b087963e0fe77f7a2208d3dd438a701154",
+      "replacementBlob": "5c8bbe5514c7ceb7f42aded6c17eaf8d3a4c1015"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/heart-registration.json",
+      "to": "Tools/TorahNativeOperations/heart-registration.json",
+      "baselineBlob": "3ad5533be23d1e1c154f94cf8dd61bf7f0ef974c",
+      "replacementBlob": "cdbccc94cc1bf6cc7960fbc1848fd59d13ac1c6f"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/heart-registration.patch",
+      "to": "Tools/TorahNativeOperations/heart-registration.patch",
+      "baselineBlob": "042e11ce1d6f3ec107dea08e0b1e9375dde0a9c3",
+      "replacementBlob": "8b8ab4054ba4b759fbfdc58fb7972b96cc013509"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/native_client_concurrent_replace.py",
+      "to": "Tools/TorahNativeOperations/native_client_concurrent_replace.py",
+      "baselineBlob": "2f1ee234259d9954b2339120eb7106c77daac5e6",
+      "replacementBlob": "9b30539764d9f429d80c7fe68feb3f5a47fbd749"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/native_client_diagnostics.py",
+      "to": "Tools/TorahNativeOperations/native_client_diagnostics.py",
+      "baselineBlob": "fc51e9c5025c7a57ba87bd58ea0f6bf8c8097fd8",
+      "replacementBlob": "c52ee11cab81f34e619363d336687d413f1b47d8"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/block/editor/pinkha_torah_test.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/block/editor/pinkha_torah_test.go",
+      "baselineBlob": "4edd7f61b5906838e7e0c7958194d3388c78d9e1",
+      "replacementBlob": "436dd21db470adfe6e3545f8320e1155264ff54f"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_commit_guard.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_commit_guard.go",
+      "baselineBlob": "dab12f6feca39455a2e9ef36c54f2e0d99d98c37",
+      "replacementBlob": "ed3cf8b0de72a24aec4add738a2973ff8395757b"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_commit_guard_test.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_commit_guard_test.go",
+      "baselineBlob": "9b2a7e16b008de0358b4c1e3b8d30dbc7b7cb081",
+      "replacementBlob": "509a1f9907f1d303f4797c2523aa41ac682e65d3"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_host.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_host.go",
+      "baselineBlob": "bb36d0e65dec64a2c05033ead140f8a896f7bf20",
+      "replacementBlob": "a298c3db4dca42953ec451ca2a2521e80e14b9e8"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_read_authority_test.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_read_authority_test.go",
+      "baselineBlob": "33ef0d4fc7953f1630edc4560d4fe5909fe22ad3",
+      "replacementBlob": "fbffa84311cb21e7c7ad8137c1eacbc489916046"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_registration_test.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_registration_test.go",
+      "baselineBlob": "d700a00dbddbacadf852936de08a698411c1ec2f",
+      "replacementBlob": "8091158521701441e6dd732f5de60c00dba28946"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_transport_test.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_transport_test.go",
+      "baselineBlob": "047a04cd54147d7b1117644c39e9d0b75cce0523",
+      "replacementBlob": "4112d4f8c99f2cd8d39542dc2b42042f169685fb"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_write_authority_test.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_write_authority_test.go",
+      "baselineBlob": "8f314c4edb968663866b4ab07321486526a285fb",
+      "replacementBlob": "12822dbfd1c1b9e17b3dfa0d3202c33d9a77455b"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/block/editor/torahopsobject/object.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/block/editor/torahopsobject/object.go",
+      "baselineBlob": "7e7d71fcfaaffcc9996d92d33a0042a7243bf29e",
+      "replacementBlob": "2728123bb03ed3d94a6a392e5eeb652565cfdb26"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/block/object/treemanager/pinkha_torah_test.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/block/object/treemanager/pinkha_torah_test.go",
+      "baselineBlob": "0f0ec75a70f1577b763eeda2be1a93c3e12cbb39",
+      "replacementBlob": "954b7ecb804b0635de6318b362fda725d79bab5c"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/block/source/sourceimpl/pinkha_torah_test.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/block/source/sourceimpl/pinkha_torah_test.go",
+      "baselineBlob": "086b6c5b3d4b4389ac04f0b9b5e789db69fff6da",
+      "replacementBlob": "9fbfbe1203d4d36893b93229cd9ef32576e28da0"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/pinkha_torah_operations.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/pinkha_torah_operations.go",
+      "baselineBlob": "720c68c91de56286be17cb5a7403970d5b8751a2",
+      "replacementBlob": "b109b9ec3f3fe6dab74242b57674ca51dfdc0e5f"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/internal/pinkhat2test/native.go",
+      "to": "Tools/TorahNativeOperations/overlay/internal/pinkhat2test/native.go",
+      "baselineBlob": "6f6911e83603cfad931c183e8004f8c9b799b7d8",
+      "replacementBlob": "629b8e5bdc311e59d8eb39799592fa58eaca90ba"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/rpc/heart-rpc.json",
+      "to": "Tools/TorahNativeOperations/rpc/heart-rpc.json",
+      "baselineBlob": "a7dda78696383487c37a99eecce6c70fbfb1739a",
+      "replacementBlob": "b409ee058cf24444b79b59479c28f785ad6fe666"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/run_account_rpc.py",
+      "to": "Tools/TorahNativeOperations/run_account_rpc.py",
+      "baselineBlob": "ab47a4f66e18cc38f4926f779038f915f850739d",
+      "replacementBlob": "c4288ea524d0f2f36db6a31a9be4cca2d36b0d01"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/run_native_clients.py",
+      "to": "Tools/TorahNativeOperations/run_native_clients.py",
+      "baselineBlob": "0154175baad0c9f992eba073eb01893b96ca79f2",
+      "replacementBlob": "352f598f8afebbda138716f4d330906c1eba20b7"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/run_native_operations.py",
+      "to": "Tools/TorahNativeOperations/run_native_operations.py",
+      "baselineBlob": "d0c15ff7370a160720119ea4a73b460f9199cee8",
+      "replacementBlob": "aa5306e6c0aacd86c4c0a6808ebfe6306b3c0e9b"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/test_native_client_concurrent_replace.py",
+      "to": "Tools/TorahNativeOperations/test_native_client_concurrent_replace.py",
+      "baselineBlob": "0e00ed4c75bc244d19e2a01967e34f7445504a13",
+      "replacementBlob": "da472a4f3a8c227f0751ce1984f3ae9926e3bc3c"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/test_native_clients.py",
+      "to": "Tools/TorahNativeOperations/test_native_clients.py",
+      "baselineBlob": "e2a01476665a6d8ad7ae2df108ed3600a851ca5d",
+      "replacementBlob": "52813438aa17c6ecd1910b143d140d1a86c6f491"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/test_run_native_operations.py",
+      "to": "Tools/TorahNativeOperations/test_run_native_operations.py",
+      "baselineBlob": "31d2e1a24b2e61c0778db85d6bd11bd74f09baf4",
+      "replacementBlob": "a1b0c830dbd64957f14ba46f7209ee406e3d380b"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/two_clients/fixture.json",
+      "to": "Tools/TorahNativeOperations/two_clients/fixture.json",
+      "baselineBlob": "406d8603cf786b2d2a47450860ed7dda3df47709",
+      "replacementBlob": "36e2e2e0fc7866087226e0877a929bd8ffc61420"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/two_clients/native-read-observation.patch",
+      "to": "Tools/TorahNativeOperations/two_clients/native-read-observation.patch",
+      "baselineBlob": "a92f15cf4cca4e740840d291d866e83fd2a88080",
+      "replacementBlob": "e51cae83bba608ca87a5be1ebcb48bfa10e2a455"
+    },
+    {
+      "kind": "refactor",
+      "from": "AnyTypeTests/Pinkha/TorahT5UIAcceptancePreparationTests.swift",
+      "to": "AnyTypeTests/Pinkha/TorahT5UIAcceptancePreparationTests.swift",
+      "baselineBlob": "62fe7bcd241211919a679807137f41cb0322995f",
+      "replacementBlob": "ec1ed3d7302e2505990384d715bb86113f23121c"
+    },
+    {
+      "kind": "refactor",
+      "from": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NativeRelatedLookupCapability.swift",
+      "to": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NativeRelatedLookupCapability.swift",
+      "baselineBlob": "940b1dc6c1ac9b6ff8ced049e8bfdf479086214e",
+      "replacementBlob": "16becdac6e33a646f9f013ab7970a7bb63688ddf"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/run_native_rpc.py",
+      "to": "Tools/TorahNativeOperations/run_native_rpc.py",
+      "baselineBlob": "3945481c470d4ec4f1a8458275f5ccc9c9e0a5a8",
+      "replacementBlob": "4686f1ae47333d6aa3cebb3450b3d801aeb76d4c"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/run_native_rpc_container.sh",
+      "to": "Tools/TorahNativeOperations/run_native_rpc_container.sh",
+      "baselineBlob": "cf76434bf22bf63788d7834357c88fb628f70add",
+      "replacementBlob": "90db65297cc5637c503104cd4d36ff6c92f19b5a"
+    },
+    {
+      "kind": "refactor",
+      "from": "Modules/ProtobufMessages/Package.swift",
+      "to": "Modules/ProtobufMessages/Package.swift",
+      "baselineBlob": "57972496dd061849f48c79d6d147c518dfa39826",
+      "replacementBlob": "1561c57d165fb767e0bff7fbba1bf4f83df993ce"
+    },
+    {
+      "kind": "refactor",
+      "from": "Modules/ProtobufMessages/Sources/Invocation.swift",
+      "to": "Modules/ProtobufMessages/Sources/Invocation.swift",
+      "baselineBlob": "75147606621653a013e2995570b22fd93cd29e2d",
+      "replacementBlob": "d71dca5c6ab8e7518c3c24128b2bc63860b59084"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift",
+      "to": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift",
+      "baselineBlob": "4fdb3aec1b4bfecabdf612695bc6a264a0311aae",
+      "replacementBlob": "c17304bc6249f14866ef51c6d07a60820d7d7966"
+    },
+    {
+      "kind": "refactor",
+      "from": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationIdentity.swift",
+      "to": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationIdentity.swift",
+      "baselineBlob": "94c331df5db784c05e8e06e2b983d11ec909ae2c",
+      "replacementBlob": "0b8eed85ecb18b2c3745c9eb3153042939cf526e"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/PinkhaNativeDerived/package_evidence.py",
+      "to": "Tools/PinkhaNativeDerived/package_evidence.py",
+      "baselineBlob": "e55d2a959296630686a60aa5d927a3b4c34401f9",
+      "replacementBlob": "23237cc9b8250906f527417b7e963672f2c2a5c9"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Models/Documents/Document/BaseDocument.swift",
+      "to": "Anytype/Sources/Models/Documents/Document/BaseDocument.swift",
+      "baselineBlob": "2a4fc80da565759559ab0e050c1510e7a1d3413d",
+      "replacementBlob": "7ba871812e4e02277a980401789d5467f749ac4f"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Models/Documents/Events/EventsListener.swift",
+      "to": "Anytype/Sources/Models/Documents/Events/EventsListener.swift",
+      "baselineBlob": "dfda71cd00f47d2d349a48304a36cc43616789ec",
+      "replacementBlob": "2233bb7b77e5869e490665a717429ba3c348ba6d"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Models/Documents/Events/Model/EventsBunch.swift",
+      "to": "Anytype/Sources/Models/Documents/Events/Model/EventsBunch.swift",
+      "baselineBlob": "b82ecc767eaa43c32a7df9aaacef8102b50dddde",
+      "replacementBlob": "d28e55bd1e31bbb3380b52661f1b2603e6f421f3"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/Views/TextViewWithPlaceholder.swift",
+      "to": "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/Views/TextViewWithPlaceholder.swift",
+      "baselineBlob": "5d62468f0c9df9080d11e4b22ff20ba90c2c8c14",
+      "replacementBlob": "1a062a51bda497e6b90cac4ef7806a1fd58468f8"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModel.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModel.swift",
+      "baselineBlob": "8baf1dbe2cb71db66589b0f2ac6f74908124cab3",
+      "replacementBlob": "e52ca495557489c0e71efa20d0165290cb43b212"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/ServiceLayer/DocumentsProvider/DocumentsProvider.swift",
+      "to": "Anytype/Sources/ServiceLayer/DocumentsProvider/DocumentsProvider.swift",
+      "baselineBlob": "4a65ab9d733aec50a54142a0d2bf67fa0754b706",
+      "replacementBlob": "c2084935888ac6d0a46f508be1ea6ddfd42663dd"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/Hanlin/source.json",
+      "to": "Tools/Hanlin/source.json",
+      "baselineBlob": "0ac43dc444fa2234c2eb11fb9bebf129dbe4fb94",
+      "replacementBlob": "0229fcf31942ffb3e56d5d8bdc25872dd5c1070f"
+    }
+  ],
+  "unreviewedChangedExistingFiles": [],
+  "inventoryCapabilityCount": 38,
+  "inventorySourceCount": 320,
+  "inventoryErrors": [],
+  "sourceRetentionPassed": true,
+  "semanticEquivalence": "REQUIRES_INDEPENDENT_TEST_AND_REVIEW_EVIDENCE",
+  "productParity": "NOT_PROVEN_BY_SOURCE_RETENTION"
+}

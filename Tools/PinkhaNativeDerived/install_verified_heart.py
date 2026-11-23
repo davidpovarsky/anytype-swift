@@ -21,6 +21,7 @@ APPROVED_BRANCHES = [
     "codex/chatgpt-wave15-ui-resume-20261119",
     "codex/chatgpt-wave15-shared-20261121",
     "codex/chatgpt-wave15-acceptance-continuation-20261122",
+    "codex/chatgpt-wave15-canonical-hanlin-20261123",
 ]
 
 

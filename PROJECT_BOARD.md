@@ -53,3 +53,22 @@ Older completed/superseded items that still have historical value.
 ## 2026-11-23 — Canonical Hanlin SDK producer repin
 
 The isolated canonical SDK candidate now selects published Hanlin d49a4fd4115b8335105d2991bf74ab4d7f6aad2d, including the shared aggregate JSONSchema resource correction. Actual sparse installation and immutable source proof passed for the original eight products (579 original files,14 directories,zero native targets). Host implementation, package configuration and active-owner controllers are unchanged. Prior four source-guard controls are retained without repetition. Evidence: docs/validation/20261123-canonical-hanlin-sdk-repin. Native acceptance remains NOT_RUN and requires coordination with the existing SDK06 owner; no CI dispatch by this lane.
+
+
+## 2026-11-23 — Canonical consumer native admission
+
+The actual current shared Swift closure matches qualified Apple producer
+45091223011 at 8b080331 (116 original module files, exact map SHA 1e3e5dda).
+The older 450466 source is not valid for this composition. The isolated
+canonical branch now delegates its report revision to the already verified
+SDK snapshot and is explicitly admitted by the existing strict consumer
+guards. No host Swift, native source, runtime validator or product selector
+was changed.
+
+The plain native route retains the original 69 controller outcomes through
+their exact 29-file dependency closure, original named logs and reviewed
+admission-only deltas. Six new controls passed; no old controls or product
+tests were repeated. Latest SDK06 owner run 45121824215 remains a failed
+enumeration-only selector experiment, with zero product tests. The separate
+canonical native preparation1+UI1 gate is prepared but NOT_RUN at publication.
+Evidence and ownership: docs/validation/20261123-canonical-native-admission.

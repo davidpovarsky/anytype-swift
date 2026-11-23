@@ -31,7 +31,8 @@ CONSUMER_BRANCH = "codex/chatgpt-wave15-hanlin-consumer-20261119"
 UI_RESUME_BRANCH = "codex/chatgpt-wave15-ui-resume-20261119"
 SHARED_BRANCH = "codex/chatgpt-wave15-shared-20261121"
 CONTINUATION_BRANCH = "codex/chatgpt-wave15-acceptance-continuation-20261122"
-APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH, UI_RESUME_BRANCH, SHARED_BRANCH, CONTINUATION_BRANCH)
+APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH, UI_RESUME_BRANCH, SHARED_BRANCH, CONTINUATION_BRANCH,
+                     "codex/chatgpt-wave15-canonical-hanlin-20261123")
 EDITOR_DEVICE_PREFERENCES_TIMEOUT_SECONDS = 120
 LANES = {
     "hanlin-selection": {
