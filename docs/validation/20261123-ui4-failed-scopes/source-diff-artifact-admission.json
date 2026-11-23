@@ -1,0 +1,50 @@
+{
+  "all_findings_bound_to_exact_raw_diff": [
+    [
+      "docs/validation/20261123-ui4-failed-scopes/scope-a-source.diff",
+      "73",
+      "trailing whitespace."
+    ],
+    [
+      "docs/validation/20261123-ui4-failed-scopes/scope-a-source.diff",
+      "74",
+      "trailing whitespace."
+    ],
+    [
+      "docs/validation/20261123-ui4-failed-scopes/scope-a-source.diff",
+      "86",
+      "trailing whitespace."
+    ],
+    [
+      "docs/validation/20261123-ui4-failed-scopes/scope-a-source.diff",
+      "116",
+      "trailing whitespace."
+    ],
+    [
+      "docs/validation/20261123-ui4-failed-scopes/scope-a-source.diff",
+      "119",
+      "trailing whitespace."
+    ],
+    [
+      "docs/validation/20261123-ui4-failed-scopes/scope-a-source.diff",
+      "136",
+      "trailing whitespace."
+    ]
+  ],
+  "decision": "Preserve original diff bytes including context-only space lines; check every other staged path without alteration.",
+  "first_whole-index_check": "FAIL; original output was not emitted by assertion",
+  "fresh_exact_check": {
+    "returncode": 2,
+    "stderr": "",
+    "stdout": "docs/validation/20261123-ui4-failed-scopes/scope-a-source.diff:73: trailing whitespace.\n+ \ndocs/validation/20261123-ui4-failed-scopes/scope-a-source.diff:74: trailing whitespace.\n+ \ndocs/validation/20261123-ui4-failed-scopes/scope-a-source.diff:86: trailing whitespace.\n+ \ndocs/validation/20261123-ui4-failed-scopes/scope-a-source.diff:116: trailing whitespace.\n+ \ndocs/validation/20261123-ui4-failed-scopes/scope-a-source.diff:119: trailing whitespace.\n+ \ndocs/validation/20261123-ui4-failed-scopes/scope-a-source.diff:136: trailing whitespace.\n+ \n"
+  },
+  "raw_diff_sha256": "09f0898b31948957a1157779f87b63cef6786fd108194e90aa1e12d9b871c9fa",
+  "remaining_all_staged_paths_check": {
+    "returncode": 0,
+    "stderr": "",
+    "stdout": ""
+  },
+  "scope": "literal-original-diff-artifact-formatting",
+  "source_or_test_changes": false,
+  "test_methods_executed": 0
+}

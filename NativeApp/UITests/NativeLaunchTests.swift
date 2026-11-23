@@ -1765,12 +1765,14 @@ final class NativeLaunchTests: XCTestCase {
             let deadline = started + 15
             var navigation: [String] = []
             var observedExports = false
+            var pinkhaIconTarget: [String: Any] = [:]
             defer {
                 let record: [String: Any] = [
                     "schema": "archive-files-directory-navigation/v1",
                     "phase": phase, "budgetSeconds": 15,
                     "elapsedSeconds": ProcessInfo.processInfo.systemUptime - started,
                     "attemptedActions": navigation, "observedExports": observedExports,
+                    "pinkhaIconTarget": pinkhaIconTarget,
                     "fallbackOrRetry": false
                 ]
                 if let data = try? JSONSerialization.data(withJSONObject: record, options: [.sortedKeys]) {
@@ -1839,9 +1841,39 @@ final class NativeLaunchTests: XCTestCase {
                 root.cells.matching(NSPredicate(format: "label == %@ OR label BEGINSWITH %@", name, name + ","))
             }
             let pinkha = try ready(folder("Pinkha"), stage: "pinkha_folder")
-            _ = try remaining("before_pinkha_folder_tap")
-            navigation.append("pinkha_folder")
-            pinkha.tap()
+            guard pinkha.identifier == "Pinkha, Container" else {
+                try fail("pinkha_container_identity_changed")
+            }
+            // The original failed Files AX contains this single Image inside
+            // the exact Pinkha Container cell. Target the icon itself once;
+            // the cell center lies in the separate name area in that evidence.
+            let icons = pinkha.descendants(matching: .image)
+            let icon = try ready(icons, stage: "pinkha_folder_icon")
+            _ = try remaining("before_pinkha_icon_geometry")
+            let cellFrame = pinkha.frame
+            let iconFrame = icon.frame
+            let geometry = [cellFrame.minX, cellFrame.minY, cellFrame.width, cellFrame.height,
+                            iconFrame.minX, iconFrame.minY, iconFrame.width, iconFrame.height]
+            guard geometry.allSatisfy(\.isFinite),
+                  cellFrame.width > 0, cellFrame.height > 0,
+                  iconFrame.width > 0, iconFrame.height > 0,
+                  cellFrame.contains(iconFrame) else {
+                try fail("pinkha_icon_not_finitely_contained")
+            }
+            pinkhaIconTarget = [
+                "type": icon.elementType.rawValue,
+                "cellFrame": [cellFrame.minX, cellFrame.minY, cellFrame.width, cellFrame.height],
+                "iconFrame": [iconFrame.minX, iconFrame.minY, iconFrame.width, iconFrame.height],
+                "initialUniqueImageDescendant": true, "initialFrameContainedInCell": true
+            ]
+            guard icons.count == 1, pinkha.exists, pinkha.isEnabled, pinkha.isHittable,
+                  icon.exists, icon.isEnabled, icon.isHittable,
+                  pinkha.frame == cellFrame, icon.frame == iconFrame else {
+                try fail("pinkha_icon_changed_before_tap")
+            }
+            _ = try remaining("before_pinkha_folder_icon_tap")
+            navigation.append("pinkha_folder_icon")
+            icon.tap() // One observed UI target; no coordinate fallback or retap.
             _ = try remaining("after_pinkha_folder")
             _ = try ready(app.buttons.matching(NSPredicate(
                 format: "label == %@ OR label BEGINSWITH %@", "Pinkha", "Pinkha,")),

@@ -1,0 +1,104 @@
+{
+  "AppUnchanged": true,
+  "acquisition_programs": [
+    {
+      "bytes": 2956,
+      "path": "/mnt/development/projects/diagnostics/ui4-immutable-swift-ai-sdk-source-20261123/acquire-immutable-source.py",
+      "sha256": "e7f6fd32f13b2801e93d03bfbc5edb4d40defea4458a815b63add1fd72ae232b"
+    },
+    {
+      "bytes": 3169,
+      "path": "/mnt/development/projects/diagnostics/ui4-immutable-swift-ai-sdk-source-20261123/acquire-source-files1.py",
+      "sha256": "15aa0d4b1e86cb9d46cea1df9978037bd32a1a89ef06859677b56bd1c74dfb0c"
+    },
+    {
+      "bytes": 3124,
+      "path": "/mnt/development/projects/diagnostics/ui4-immutable-swift-ai-sdk-source-20261123/acquire-source-files2.py",
+      "sha256": "f2608241bc755be53614fb739cd709ca7868c01c8af19dfd75c07b95cc3e9427"
+    },
+    {
+      "bytes": 3022,
+      "path": "/mnt/development/projects/diagnostics/ui4-immutable-swift-ai-sdk-source-20261123/acquire-source-files3.py",
+      "sha256": "10c88ff1a40e64152c3542925a824699fa0a835efe56a70e267fb5aa51efe29a"
+    }
+  ],
+  "authorizations": [
+    "root source-only from e0ba",
+    "strict auth + fixed safe rejection classification",
+    "single observed Files icon hypothesis within same15s"
+  ],
+  "base": "e0baacaa70a4b7594395f6e2576df42cfaa1c8c7",
+  "branch": "codex/chatgpt-wave15-ui4-failed-scope-20261123",
+  "builds": 0,
+  "capacity": {
+    "free_after": 2975125504,
+    "free_before": 2978099200,
+    "minimum_free": 2520000000
+  },
+  "ci_dispatches": 0,
+  "hierarchyMoveUnchanged": true,
+  "operational_read_failure": {
+    "observed": "ssh ConnectTimeout10s",
+    "operation": "read-only-current-library-source",
+    "remote_execution": false,
+    "returncode": 1
+  },
+  "schema": "ui4-failed-scope-source-draft/v1",
+  "scope": "A-authentication-diagnostic-and-Files-target-only",
+  "source": [
+    {
+      "candidate_bytes": 36265,
+      "candidate_sha256": "cb9906df0ac181fdb16b940cbdaa208afa2212fc285689a198d69a1cca7bf787",
+      "classification": "DOWNSTREAM_OWNED_TEST_OR_FIXTURE",
+      "exact_inverse": true,
+      "hunks": [
+        {
+          "new": "MAX_REQUESTS = 256\nAUTHENTICATION_OBSERVATION_SCHEMA = \"hanlin-authentication-rejection/v1\"\nPREFIX",
+          "old": "MAX_REQUESTS = 256\nPREFIX"
+        },
+        {
+          "new": "        self.report_lock = threading.Lock()\n        self.first_authentication_rejection = None\n        self.connection_slots",
+          "old": "        self.report_lock = threading.Lock()\n        self.connection_slots"
+        },
+        {
+          "new": "    def record_authentication_rejection(self, method: str, path: str, values: list[str]):\n        # Fixed route classes and booleans only: never retain a header value,\n        # token, token hash/length, body, URL query, or arbitrary request path.\n        routes = {\n            (\"GET\", \"/__fixture/status\"): \"control_status\",\n            (\"POST\", \"/__fixture/scenario\"): \"control_scenario\",\n            (\"POST\", \"/__fixture/shutdown\"): \"control_shutdown\",\n            (\"POST\", \"/v1/chat/completions\"): \"model_chat_completions\",\n        }\n        observation = {\n            \"schema\": AUTHENTICATION_OBSERVATION_SCHEMA,\n            \"routeClass\": routes.get((method, path), \"unrecognized\"),\n            \"authorizationHeaderCount\": len(values),\n            \"singleBearerPrefix\": len(values) == 1 and values[0].startswith(\"Bearer \"),\n            \"exactExpectedBearer\": False,\n            \"credentialMaterialRecorded\": False,\n        }\n        with self.report_lock:\n            if self.first_authentication_rejection is None:\n                self.first_authentication_rejection = observation\n\n    def persist(self):\n        with self.report_lock:\n            value = self.protocol_state.summary()\n            value[\"httpRequests\"] = self.request_count\n            value[\"rootCAFingerprintSHA256\"] = self.config[\"rootCAFingerprintSHA256\"]\n            if self.first_authentication_rejection is not None:\n                value[\"authenticationRejection\"] = dict(self.first_authentication_rejection)\n            atomic_json(Path(self.config[\"safeResultPath\"]), value)\n",
+          "old": "    def persist(self):\n        with self.report_lock:\n            value = self.protocol_state.summary()\n            value[\"httpRequests\"] = self.request_count\n            value[\"rootCAFingerprintSHA256\"] = self.config[\"rootCAFingerprintSHA256\"]\n            atomic_json(Path(self.config[\"safeResultPath\"]), value)\n"
+        },
+        {
+          "new": "        try:\n            require(len(values) == 1 and hmac.compare_digest(values[0].encode(\"utf-8\"), (\"Bearer \" + token).encode(\"ascii\")),\n                    \"request_authentication\", 401)\n        except FixtureError:\n            # Preserve the original authentication exception and rejection path.\n            # The observation is in memory; the existing _failure/persist path\n            # writes it to the same finite safe fixture report before cleanup.\n            try:\n                self.server.record_authentication_rejection(self.command, self.path, values)\n            except Exception:\n                pass  # Optional diagnostics cannot replace the original 401.\n            raise\n",
+          "old": "        require(len(values) == 1 and hmac.compare_digest(values[0].encode(\"utf-8\"), (\"Bearer \" + token).encode(\"ascii\")),\n                \"request_authentication\", 401)\n"
+        }
+      ],
+      "original_bytes": 34369,
+      "original_sha256": "afe281d0dca77d47d672d182c156d9ce5ec5a7c9a7644819515c546473d3c714",
+      "path": "Tools/AnyEngineValidation/HanlinProviderFixture/fixture.py"
+    },
+    {
+      "candidate_bytes": 145275,
+      "candidate_sha256": "27006fdd050c5cec8210237854af305459aa67e7912746aa75338ceb113f792a",
+      "classification": "DOWNSTREAM_OWNED_TEST_OR_FIXTURE",
+      "exact_inverse": true,
+      "hunks": [
+        {
+          "new": "            var observedExports = false\n            var pinkhaIconTarget: [String: Any] = [:]\n            defer {",
+          "old": "            var observedExports = false\n            defer {"
+        },
+        {
+          "new": "                    \"attemptedActions\": navigation, \"observedExports\": observedExports,\n                    \"pinkhaIconTarget\": pinkhaIconTarget,\n                    \"fallbackOrRetry\": false",
+          "old": "                    \"attemptedActions\": navigation, \"observedExports\": observedExports,\n                    \"fallbackOrRetry\": false"
+        },
+        {
+          "new": "            let pinkha = try ready(folder(\"Pinkha\"), stage: \"pinkha_folder\")\n            guard pinkha.identifier == \"Pinkha, Container\" else {\n                try fail(\"pinkha_container_identity_changed\")\n            }\n            // The original failed Files AX contains this single Image inside\n            // the exact Pinkha Container cell. Target the icon itself once;\n            // the cell center lies in the separate name area in that evidence.\n            let icons = pinkha.descendants(matching: .image)\n            let icon = try ready(icons, stage: \"pinkha_folder_icon\")\n            _ = try remaining(\"before_pinkha_icon_geometry\")\n            let cellFrame = pinkha.frame\n            let iconFrame = icon.frame\n            let geometry = [cellFrame.minX, cellFrame.minY, cellFrame.width, cellFrame.height,\n                            iconFrame.minX, iconFrame.minY, iconFrame.width, iconFrame.height]\n            guard geometry.allSatisfy(\\.isFinite),\n                  cellFrame.width > 0, cellFrame.height > 0,\n                  iconFrame.width > 0, iconFrame.height > 0,\n                  cellFrame.contains(iconFrame) else {\n                try fail(\"pinkha_icon_not_finitely_contained\")\n            }\n            pinkhaIconTarget = [\n                \"type\": icon.elementType.rawValue,\n                \"cellFrame\": [cellFrame.minX, cellFrame.minY, cellFrame.width, cellFrame.height],\n                \"iconFrame\": [iconFrame.minX, iconFrame.minY, iconFrame.width, iconFrame.height],\n                \"initialUniqueImageDescendant\": true, \"initialFrameContainedInCell\": true\n            ]\n            guard icons.count == 1, pinkha.exists, pinkha.isEnabled, pinkha.isHittable,\n                  icon.exists, icon.isEnabled, icon.isHittable,\n                  pinkha.frame == cellFrame, icon.frame == iconFrame else {\n                try fail(\"pinkha_icon_changed_before_tap\")\n            }\n            _ = try remaining(\"before_pinkha_folder_icon_tap\")\n            navigation.append(\"pinkha_folder_icon\")\n            icon.tap() // One observed UI target; no coordinate fallback or retap.\n            _ = try remaining(\"after_pinkha_folder\")",
+          "old": "            let pinkha = try ready(folder(\"Pinkha\"), stage: \"pinkha_folder\")\n            _ = try remaining(\"before_pinkha_folder_tap\")\n            navigation.append(\"pinkha_folder\")\n            pinkha.tap()\n            _ = try remaining(\"after_pinkha_folder\")"
+        }
+      ],
+      "original_bytes": 143267,
+      "original_sha256": "1d0b0f4a66d4ebfe1af522ef38372525c3ec8c452cc82963fe346e77d0608d72",
+      "path": "NativeApp/UITests/NativeLaunchTests.swift"
+    }
+  ],
+  "sourceDragPassRetained": true,
+  "tests_executed": 0,
+  "upstreamOrVendorEdits": false,
+  "worktree": "/mnt/development/projects/worktrees/anytype-wave15-ui4-failed-scope-20261123"
+}

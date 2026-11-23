@@ -1,0 +1,23 @@
+{
+  "failures": [
+    {
+      "details": {
+        "op": "exec",
+        "reason": "[WinError 206] The filename or extension is too long"
+      },
+      "error": "spawn_failed",
+      "hub_request_id": "hreq_e61291f318374883",
+      "message": "The agent could not start the process ([WinError 206] The filename or extension is too long), so nothing ran. If the reason is 'Too many open files', the agent process is out of file descriptors: restart it from the host (it can't restart itself in that state).",
+      "ok": false
+    },
+    {
+      "duration": 1.03,
+      "ok": true,
+      "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 16, in <module>\n  File \"<stdin>\", line 9, in guard\nAssertionError",
+      "returncode": 1
+    }
+  ],
+  "first_remote_execution": false,
+  "second_remote_writes": 0,
+  "test_executions": 0
+}

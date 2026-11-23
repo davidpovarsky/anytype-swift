@@ -1,0 +1,46 @@
+{
+  "builds": 0,
+  "decision": "Use exact known base-commit identity as command-local -c arguments; no shared/global config change.",
+  "fresh_diagnosis": {
+    "author": {
+      "returncode": 128,
+      "stderr": "Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'ubuntu@torah-social.(none)')\n",
+      "stdout": ""
+    },
+    "base_author": {
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "davidpovarsky <your-email@example.com>\ndavidpovarsky <your-email@example.com>\n"
+    },
+    "committer": {
+      "returncode": 128,
+      "stderr": "Committer identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'ubuntu@torah-social.(none)')\n",
+      "stdout": ""
+    },
+    "free": 2435293184,
+    "hooks": {
+      "returncode": 1,
+      "stderr": "",
+      "stdout": ""
+    },
+    "sign": {
+      "returncode": 1,
+      "stderr": "",
+      "stdout": ""
+    },
+    "status": {
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "M  NativeApp/UITests/NativeLaunchTests.swift\nM  Tools/AnyEngineValidation/HanlinProviderFixture/fixture.py\nA  docs/validation/20261123-ui4-failed-scopes/PROTOCOL.md\nA  docs/validation/20261123-ui4-failed-scopes/scope-a-source-draft.json\nA  docs/validation/20261123-ui4-failed-scopes/scope-a-source-review.json\nA  docs/validation/20261123-ui4-failed-scopes/scope-a-source.diff\nA  docs/validation/20261123-ui4-failed-scopes/source-and-original-audit.zip\nA  docs/validation/20261123-ui4-failed-scopes/source-freeze-operational-failures.json\nA  docs/validation/20261123-ui4-failed-scopes/source-trace.json\n"
+    }
+  },
+  "original_commit_stderr": "not emitted by the first check_output exception; fresh independent git-var diagnostics retained below",
+  "original_source_freeze_attempt": {
+    "duration": 1.01,
+    "ok": true,
+    "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 75, in <module>\n  File \"<stdin>\", line 10, in git\n  File \"/usr/lib/python3.12/subprocess.py\", line 466, in check_output\n    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/subprocess.py\", line 571, in run\n    raise CalledProcessError(retcode, process.args,\nsubprocess.CalledProcessError: Command '['git', '-c', 'gc.auto=0', '-C', '/mnt/development/projects/worktrees/anytype-wave15-ui4-failed-scope-20261123', 'commit', '-m', 'fix(ui): prepare bounded Files target and safe Hanlin diagnostics']' returned non-zero exit status 128.",
+    "returncode": 1
+  },
+  "scope": "source-only-commit-identity-recovery",
+  "test_executions": 0
+}

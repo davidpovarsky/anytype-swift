@@ -35,6 +35,7 @@ from protocol import CONTRACT, MODEL, MAX_BODY, FixtureError, Protocol, canonica
 CONFIG_NAME = "private-config.json"
 MAX_CONNECTIONS = 8
 MAX_REQUESTS = 256
+AUTHENTICATION_OBSERVATION_SCHEMA = "hanlin-authentication-rejection/v1"
 PREFIX = "TEST_RUNNER_PINKHA_HANLIN_FIXTURE_"
 
 
@@ -313,6 +314,7 @@ class FixtureServer(http.server.ThreadingHTTPServer):
         self.config_path = config_path
         self.protocol_state = Protocol(config["runID"])
         self.report_lock = threading.Lock()
+        self.first_authentication_rejection = None
         self.connection_slots = threading.BoundedSemaphore(MAX_CONNECTIONS)
         self.request_lock = threading.Lock()
         self.request_count = 0
@@ -389,11 +391,34 @@ class FixtureServer(http.server.ThreadingHTTPServer):
         self.protocol_state.reject("request_handler_failed")
         self.persist()  # Never print exception, request headers or peer input.
 
+    def record_authentication_rejection(self, method: str, path: str, values: list[str]):
+        # Fixed route classes and booleans only: never retain a header value,
+        # token, token hash/length, body, URL query, or arbitrary request path.
+        routes = {
+            ("GET", "/__fixture/status"): "control_status",
+            ("POST", "/__fixture/scenario"): "control_scenario",
+            ("POST", "/__fixture/shutdown"): "control_shutdown",
+            ("POST", "/v1/chat/completions"): "model_chat_completions",
+        }
+        observation = {
+            "schema": AUTHENTICATION_OBSERVATION_SCHEMA,
+            "routeClass": routes.get((method, path), "unrecognized"),
+            "authorizationHeaderCount": len(values),
+            "singleBearerPrefix": len(values) == 1 and values[0].startswith("Bearer "),
+            "exactExpectedBearer": False,
+            "credentialMaterialRecorded": False,
+        }
+        with self.report_lock:
+            if self.first_authentication_rejection is None:
+                self.first_authentication_rejection = observation
+
     def persist(self):
         with self.report_lock:
             value = self.protocol_state.summary()
             value["httpRequests"] = self.request_count
             value["rootCAFingerprintSHA256"] = self.config["rootCAFingerprintSHA256"]
+            if self.first_authentication_rejection is not None:
+                value["authenticationRejection"] = dict(self.first_authentication_rejection)
             atomic_json(Path(self.config["safeResultPath"]), value)
 
     def begin_request(self):
@@ -446,8 +471,18 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
     def _authorized(self, token: str):
         values = self.headers.get_all("Authorization", [])
-        require(len(values) == 1 and hmac.compare_digest(values[0].encode("utf-8"), ("Bearer " + token).encode("ascii")),
-                "request_authentication", 401)
+        try:
+            require(len(values) == 1 and hmac.compare_digest(values[0].encode("utf-8"), ("Bearer " + token).encode("ascii")),
+                    "request_authentication", 401)
+        except FixtureError:
+            # Preserve the original authentication exception and rejection path.
+            # The observation is in memory; the existing _failure/persist path
+            # writes it to the same finite safe fixture report before cleanup.
+            try:
+                self.server.record_authentication_rejection(self.command, self.path, values)
+            except Exception:
+                pass  # Optional diagnostics cannot replace the original 401.
+            raise
 
     def _body(self, maximum: int):
         lengths = self.headers.get_all("Content-Length", [])
