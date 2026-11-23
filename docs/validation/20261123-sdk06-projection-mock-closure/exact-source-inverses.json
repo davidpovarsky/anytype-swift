@@ -1,0 +1,48 @@
+{
+  "base": "b15cd58e376461b066df7fd1639946bb8dca5848",
+  "files": {
+    "Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json": {
+      "after_sha256": "90b20a136785a90609881790f8fcc6bd7bd6c6a8a23b7015c778d64cfa0e111a",
+      "before_sha256": "a15e303257382028ca0e1836d0c369d635a52bfded9fcede5b008445471b1c7a",
+      "replacements": [
+        {
+          "after": "    \"AnytypeTests/Markdown/Mocks/BlockMarkupChangerMock.swift\": {\n      \"basename\": \"BlockMarkupChangerMock.swift\",\n      \"bytes\": 1430,\n      \"git_blob\": \"f57396ea7d25adb32eccbaa5baaa090a1ccfd193\",\n      \"sha256\": \"3648c5cda4541c0b5297cce33835132a0ebea72f521a66917360cc0bf9dc48cc\"\n    },\n    \"AnytypeTests/Markdown/Mocks/InfoContainerMock.swift\": {",
+          "before": "    \"AnytypeTests/Markdown/Mocks/InfoContainerMock.swift\": {"
+        }
+      ]
+    },
+    "Tools/PinkhaSimulatorGate/sdk06-original-native-controller-source.json": {
+      "after_sha256": "9906658d0e6647b44e266659a6502c28ed617187c6887cb421943a9fbd290b41",
+      "before_sha256": "6338515deb87121b0bb592a66e2abe99c3cd06dec2fa006ec6e7848604a294da",
+      "replacements": [
+        {
+          "after": "\"sha256\": \"d8ac49cf7fa8b9baa3f80525c053dd3bc38450674aaaf38de2a28fd95ec66725\"",
+          "before": "\"sha256\": \"14604065db98d414c4cfd4c74104e3316638ed26aeda5e1ca53f2b073f7fd299\""
+        },
+        {
+          "after": "\"sha256\": \"90b20a136785a90609881790f8fcc6bd7bd6c6a8a23b7015c778d64cfa0e111a\"",
+          "before": "\"sha256\": \"a15e303257382028ca0e1836d0c369d635a52bfded9fcede5b008445471b1c7a\""
+        }
+      ]
+    },
+    "Tools/PinkhaSimulatorGate/sdk06_component_projection.py": {
+      "after_sha256": "d8ac49cf7fa8b9baa3f80525c053dd3bc38450674aaaf38de2a28fd95ec66725",
+      "before_sha256": "14604065db98d414c4cfd4c74104e3316638ed26aeda5e1ca53f2b073f7fd299",
+      "replacements": [
+        {
+          "after": "CONTRACT_SHA = \"90b20a136785a90609881790f8fcc6bd7bd6c6a8a23b7015c778d64cfa0e111a\"",
+          "before": "CONTRACT_SHA = \"a15e303257382028ca0e1836d0c369d635a52bfded9fcede5b008445471b1c7a\""
+        },
+        {
+          "after": "len(value[\"source_files\"]) == 8",
+          "before": "len(value[\"source_files\"]) == 7"
+        },
+        {
+          "after": "\"The exact eight Swift inputs are required\"",
+          "before": "\"The exact seven Swift inputs are required\""
+        }
+      ]
+    }
+  },
+  "protocol": "sdk06-projection-mock-inverse-v1"
+}

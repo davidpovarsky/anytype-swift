@@ -15,7 +15,7 @@ import xml.etree.ElementTree as ET
 import sdk06_compile_support as support
 
 CONTRACT = "Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json"
-CONTRACT_SHA = "a15e303257382028ca0e1836d0c369d635a52bfded9fcede5b008445471b1c7a"
+CONTRACT_SHA = "90b20a136785a90609881790f8fcc6bd7bd6c6a8a23b7015c778d64cfa0e111a"
 SOURCE = "75bd6d7af18dfd511e85582ce7f994d2801b7703"
 PRODUCT = "SDK06PendingTests.xctest"
 SCHEME = "SDK06PendingComponents"
@@ -37,7 +37,7 @@ def contract(control):
     raw = (Path(control) / CONTRACT).read_bytes()
     require(digest(raw) == CONTRACT_SHA, "The fixed component projection contract changed")
     value = json.loads(raw)
-    require(value["source_sha"] == SOURCE and len(value["source_files"]) == 7
+    require(value["source_sha"] == SOURCE and len(value["source_files"]) == 8
             and len(value["attribute_patches"]) == 7
             and len(value["selection"]["selected"]) == 23
             and len(value["selection"]["excluded"]) == 7
@@ -47,7 +47,7 @@ def contract(control):
 
 
 def projected_sources(inputs, fixed):
-    require(set(inputs) == set(fixed["source_files"]), "The exact seven Swift inputs are required")
+    require(set(inputs) == set(fixed["source_files"]), "The exact eight Swift inputs are required")
     result, observed = {}, {}
     for name, row in fixed["source_files"].items():
         raw = inputs[name]

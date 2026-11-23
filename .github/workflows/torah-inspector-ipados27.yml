@@ -59,6 +59,7 @@ on:
           - native-ui-transition-candidate
           - native-ui-runner-continuation
           - current-native-ui-failed
+          - loaded-account-arm64-compiler
           - prepared-migration-apple
           - prepared-inline-file-apple
           - sdk06-enumeration-probe
@@ -698,3 +699,41 @@ jobs:
     with:
       source_sha: ${{ github.sha }}
       runtime_run: ${{ inputs.source_run_id }}
+
+  compiler:
+    if: ${{ inputs.route == 'loaded-account-arm64-compiler' }}
+    permissions:
+      contents: read
+    concurrency:
+      group: pinkha-loaded-account-compiler-${{ github.ref }}
+      cancel-in-progress: false
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact compiler-producer controller
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Tools/AnyEngineValidation/loaded_account_witness/portable/
+            /Tools/AnyEngineValidation/loaded_account_witness/native-compiler-support.json
+            /.github/workflows/pinkha-loaded-account-arm64-compiler.yml
+
+      - name: Acquire signed compiler packages and assemble an offline image
+        env:
+          EXPECTED_SOURCE_SHA: ${{ inputs.source_sha || github.sha }}
+        run: python3 -B Tools/AnyEngineValidation/loaded_account_witness/portable/compiler_producer.py --execute
+
+      - name: Preserve original compiler evidence and exact image bytes
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Pinkha-Loaded-Account-ARM64-Compiler-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/pinkha-loaded-account-compiler
+          include-hidden-files: true
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 14
