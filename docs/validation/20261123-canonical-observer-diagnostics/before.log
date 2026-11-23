@@ -1,0 +1,24 @@
+test_recovered_poll_preserves_the_later_terminal_mapping_failure (Tools.Hanlin.test_canonical_native_observer_diagnostics.CanonicalObserverDiagnosticTests.test_recovered_poll_preserves_the_later_terminal_mapping_failure) ... 
+  test_recovered_poll_preserves_the_later_terminal_mapping_failure (Tools.Hanlin.test_canonical_native_observer_diagnostics.CanonicalObserverDiagnosticTests.test_recovered_poll_preserves_the_later_terminal_mapping_failure) (case='vmmap') ... FAIL
+  test_recovered_poll_preserves_the_later_terminal_mapping_failure (Tools.Hanlin.test_canonical_native_observer_diagnostics.CanonicalObserverDiagnosticTests.test_recovered_poll_preserves_the_later_terminal_mapping_failure) (case='process-identity') ... FAIL
+
+======================================================================
+FAIL: test_recovered_poll_preserves_the_later_terminal_mapping_failure (Tools.Hanlin.test_canonical_native_observer_diagnostics.CanonicalObserverDiagnosticTests.test_recovered_poll_preserves_the_later_terminal_mapping_failure) (case='vmmap')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-canonical-hanlin-sdk-20261123/Tools/Hanlin/test_canonical_native_observer_diagnostics.py", line 109, in test_recovered_poll_preserves_the_later_terminal_mapping_failure
+    self.assertIsNotNone(last, "Recovered polling must not hide the later fatal command")
+AssertionError: unexpectedly None : Recovered polling must not hide the later fatal command
+
+======================================================================
+FAIL: test_recovered_poll_preserves_the_later_terminal_mapping_failure (Tools.Hanlin.test_canonical_native_observer_diagnostics.CanonicalObserverDiagnosticTests.test_recovered_poll_preserves_the_later_terminal_mapping_failure) (case='process-identity')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-canonical-hanlin-sdk-20261123/Tools/Hanlin/test_canonical_native_observer_diagnostics.py", line 109, in test_recovered_poll_preserves_the_later_terminal_mapping_failure
+    self.assertIsNotNone(last, "Recovered polling must not hide the later fatal command")
+AssertionError: unexpectedly None : Recovered polling must not hide the later fatal command
+
+----------------------------------------------------------------------
+Ran 1 test in 0.517s
+
+FAILED (failures=2)

@@ -1,0 +1,70 @@
+{
+  "schema": "pinkha-canonical-observer-diagnostics-qualification-v1",
+  "observer_path": "Tools/PinkhaSimulatorGate/hanlin_ui_runtime.py",
+  "current_observer_sha256": "b3e17426b4d2c00bce4164ebb19ba484e00507fe1a24f937ac95f22d63a7306e",
+  "reviewed_observer_sha256": "65f4607ed9dd82fb7842398f4cc62ad2ec3b8ff8c5498b25f50f62ebefef6e02",
+  "control": {
+    "path": "Tools/Hanlin/test_canonical_native_observer_diagnostics.py",
+    "sha256": "3eb4eac113272431a04993ec1b56fa8e0966778d6315710afa7e74e071b30f75"
+  },
+  "fixture": {
+    "path": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+    "sha256": "5b626c0018f474b5cc34218dc3170a169aa67f3129654ea072c1a035d41b2d65"
+  },
+  "current_declarations": {
+    "CanonicalObserverDiagnosticTests.test_recovered_poll_preserves_the_later_terminal_mapping_failure": "8a0c7b04cdf1e5bd96486cba0e8a715ec64903f88e50a8b20ca930c2dad73740"
+  },
+  "actual_control_methods": 1,
+  "actual_control_cases": 2,
+  "actual_seconds": "0.514",
+  "old_controller_methods_rerun": 0,
+  "native_tests_executed": 0,
+  "before_log": "docs/validation/20261123-canonical-observer-diagnostics/before.log",
+  "after_log": "docs/validation/20261123-canonical-observer-diagnostics/after.log",
+  "case_traces": {
+    "vmmap": {
+      "before": "docs/validation/20261123-canonical-observer-diagnostics/before/vmmap.json",
+      "after": "docs/validation/20261123-canonical-observer-diagnostics/after/vmmap.json"
+    },
+    "process-identity": {
+      "before": "docs/validation/20261123-canonical-observer-diagnostics/before/process-identity.json",
+      "after": "docs/validation/20261123-canonical-observer-diagnostics/after/process-identity.json"
+    }
+  },
+  "proof_files": [
+    {
+      "path": "docs/validation/20261123-canonical-observer-diagnostics/before.log",
+      "sha256": "f6d217511453f12c879b314728cccebfd8280ae364af30b7a67b19d114058cca"
+    },
+    {
+      "path": "docs/validation/20261123-canonical-observer-diagnostics/after.log",
+      "sha256": "713f43e2fab55e0b53b503f71b5eb23108c7ea8cec82bdeaa36523da5037c96a"
+    },
+    {
+      "path": "docs/validation/20261123-canonical-observer-diagnostics/before/vmmap.json",
+      "sha256": "7dd880b24ce7a1abf17113d8698468278d77c1dbee261a2861e36aef08d94b2d"
+    },
+    {
+      "path": "docs/validation/20261123-canonical-observer-diagnostics/before/process-identity.json",
+      "sha256": "1fd9b629d2c727c83c1987f2d4af62573c956d3cea25f5adb4771a2ee1b03352"
+    },
+    {
+      "path": "docs/validation/20261123-canonical-observer-diagnostics/after/vmmap.json",
+      "sha256": "3f5a45fc384390099c451cb27b2ba24d031a4b70c4d92d2d7a5caa0345ec6e01"
+    },
+    {
+      "path": "docs/validation/20261123-canonical-observer-diagnostics/after/process-identity.json",
+      "sha256": "0c06d47cd56dfd19806aed5149d7524a08c83d1e9bd43a2c13b6db2d85b845a5"
+    }
+  ],
+  "native_original_run": {
+    "id": 45163976036,
+    "source": "aefb9740c0ac8d52aa2dbd89d389930851396104",
+    "sdk": "d49a4fd4115b8335105d2991bf74ab4d7f6aad2d",
+    "preparation": "PASS_1",
+    "ui": "PASS_1_ALL_22_CHECKS",
+    "runtime_observer": "FAIL_ACTUAL_UI_RUNTIME_NOT_BOUND",
+    "failure_preserved": true
+  },
+  "scope_limit": "Additive bounded diagnostic metadata only. No new native/Apple test, budget increase, launch, authority or qualification change. Existing native failure is not retroactively repaired."
+}

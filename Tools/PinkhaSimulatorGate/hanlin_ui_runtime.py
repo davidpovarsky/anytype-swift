@@ -168,6 +168,9 @@ class NativeUIRuntimeObserver:
             with self.diagnostic_lock:
                 record.update(status=status, stage_elapsed_seconds=elapsed,
                               finished_at=datetime.now(timezone.utc).timestamp())
+                if failure is not None:
+                    record["last_failure"] = {**failure, "attempt": record["attempts"],
+                                              "stage_elapsed_seconds": elapsed}
                 if failure is not None and self.diagnostic_failure is None:
                     self.diagnostic_failure = {**failure, "stage_elapsed_seconds": elapsed}
 

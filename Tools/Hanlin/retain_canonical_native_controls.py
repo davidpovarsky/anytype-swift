@@ -14,7 +14,7 @@ from pathlib import Path
 import subprocess
 
 POLICY_PATH = "Tools/Hanlin/canonical-native-control-reuse.json"
-POLICY_SHA256 = "54c85e4d911c5a48d7221c54938a8a67bb322ae6b1035b5dbd119e700e40bfff"
+POLICY_SHA256 = "7e710d3ee7437d516a4bb138721ca3acec49574ce4546d4b7d0a020d7ea05ef8"
 BRANCH = "codex/chatgpt-wave15-canonical-hanlin-20261123"
 
 
@@ -35,6 +35,86 @@ def bootstrap_read(root, name, expected):
     raw = path.read_bytes()
     require(sha(raw) == expected, "Changed native-control admission: " + name)
     return raw
+
+
+def verify_observer_diagnostics(root, policy, original):
+    """Qualify only the exact additive diagnostic bytes before prior-source reuse."""
+    item = policy["observer_diagnostics_extension"]
+    proof = original.decode_json(original.read_bound(root, item["path"], item["sha256"]))
+    require(proof["schema"] == "pinkha-canonical-observer-diagnostics-qualification-v1"
+            and proof["actual_control_methods"] == 1 and proof["actual_control_cases"] == 2
+            and proof["old_controller_methods_rerun"] == proof["native_tests_executed"] == 0,
+            "Unknown observer diagnostic qualification")
+    path = proof["observer_path"]
+    require(path == "Tools/PinkhaSimulatorGate/hanlin_ui_runtime.py",
+            "Diagnostic qualification changed its production target")
+    current = original.read_bound(root, path, proof["current_observer_sha256"])
+    addition = ('                if failure is not None:\n'
+                '                    record["last_failure"] = {**failure, "attempt": record["attempts"],\n'
+                '                                              "stage_elapsed_seconds": elapsed}\n').encode()
+    require(current.count(addition) == 1, "Diagnostic insertion is not exact")
+    retained = current.replace(addition, b"", 1)
+    require(sha(retained) == proof["reviewed_observer_sha256"],
+            "Observer changed beyond the reviewed diagnostic insertion")
+    control = proof["control"]
+    control_source = original.read_bound(root, control["path"], control["sha256"])
+    fixture = proof["fixture"]
+    original.read_bound(root, fixture["path"], fixture["sha256"])
+    declarations = original.test_declarations(control_source)
+    require(declarations == proof["current_declarations"] and len(declarations) == 1,
+            "Diagnostic control declaration changed")
+    files = {entry["path"]: original.read_bound(root, entry["path"], entry["sha256"])
+             for entry in proof["proof_files"]}
+    require(len(files) == len(proof["proof_files"]), "Duplicate diagnostic evidence")
+    batches = original.unittest_batches(files[proof["after_log"]])
+    require(len(batches) == 1 and batches[0]["count"] == 1
+            and batches[0]["seconds"] == proof["actual_seconds"]
+            and {entry["name"] for entry in batches[0]["methods"]} == set(declarations)
+            and b"FAILED (failures=2)" in files[proof["before_log"]],
+            "Diagnostic change lacks exact before failure and named PASS")
+    commands = {"vmmap": ["/usr/bin/vmmap", "-w", "51457"],
+                "process-identity": ["ps", "-ww", "-p", "51457", "-o", "lstart=", "-o", "comm="]}
+    require(set(proof["case_traces"]) == set(commands), "Diagnostic case scope changed")
+    for case, command in commands.items():
+        for phase in ("before", "after"):
+            trace = original.decode_json(files[proof["case_traces"][case][phase]])
+            expected = proof["reviewed_observer_sha256"] if phase == "before" else proof["current_observer_sha256"]
+            require(trace["case"] == case and trace["observerSHA256"] == expected
+                    and trace["controlSHA256"] == control["sha256"] and trace["fixtureSHA256"] == fixture["sha256"]
+                    and trace["scope"] == "DETERMINISTIC_OBSERVER_CONTROL_NOT_APPLE_ACCEPTANCE"
+                    and trace["oldControllerMethodsExecuted"] == trace["nativeTestsExecuted"] == 0,
+                    "Diagnostic case is not bound to its actual source")
+            observation = trace["observation"]
+            diagnostic = observation["diagnostics"]
+            stages = {entry["stage"]: entry for entry in diagnostic["stages"]}
+            require(trace["sameTerminalError"] and trace["errorType"] == "TimeoutExpired"
+                    and trace["mappedPIDs"] == [51457] and trace["sourceVerifications"] == 2
+                    and len(trace["commands"]) == 3 and len(set(trace["deadlines"])) == 1
+                    and trace["finalDeadline"] <= trace["deadlines"][0]
+                    and trace["continuityCalls"] == [] and trace["qualificationRejected"]
+                    and not trace["qualificationFileExists"] and observation["extra_app_launches"] == 0
+                    and observation["status"] == "FAIL_ACTUAL_UI_RUNTIME_NOT_BOUND",
+                    "Diagnostic case changed execution or admitted a failed observation")
+            require(diagnostic["first_failure"]["stage"] == "poll_data_container"
+                    and diagnostic["poll_timeout_retries"] == 1
+                    and stages["poll_data_container"]["status"] == "RETURNED"
+                    and stages["map_running_process"]["status"] == "FAILED"
+                    and "private " not in json.dumps(diagnostic),
+                    "Diagnostic case lost the original failure or exposed command output")
+            last = stages["map_running_process"].get("last_failure")
+            if phase == "before":
+                require(last is None, "Original missing terminal diagnostic was not reproduced")
+            else:
+                require(last["command"] == command and last["attempt"] == 1
+                        and last["command_timeout_seconds"] == 8.5
+                        and stages["poll_data_container"]["last_failure"]["attempt"] == 1,
+                        "New diagnostic failed to retain bounded per-stage failures")
+    return path, retained, {"status": "PASS_SOURCE_BOUND_DIAGNOSTIC_CONTROL_ONLY",
+        "qualification_sha256": item["sha256"], "control_methods": 1, "control_cases": 2,
+        "current_observer_sha256": proof["current_observer_sha256"],
+        "retained_observer_sha256": proof["reviewed_observer_sha256"],
+        "methods_executed_now": 0, "native_tests_executed_now": 0,
+        "scope_limit": "Additive stage failure metadata only; original native observer failure remains."}
 
 
 def verify_observer_budget(root, policy, original, sources, reviewed_sources):
@@ -135,13 +215,15 @@ def verify(app):
             and set(policy["source_inputs"]) == set(imported["source_inputs"]) | {"Tools/Hanlin/wave15-core-tests.json"},
             "Actual native-controller input closure differs")
     original_inputs = {item["path"]: item for item in admission["source_inputs"]}
-    sources, reviewed_sources = {}, {}
+    diagnostic_path, projected_observer, diagnostics = verify_observer_diagnostics(root, policy, original)
+    sources, reviewed_sources, timing_sources = {}, {}, {}
     for path in policy["source_inputs"]:
         item = original_inputs[path]
         delta = policy["source_deltas"].get(path)
         current = original.read_bound(root, path, delta["current_sha256"] if delta else item["current_sha256"])
+        retained_current = projected_observer if path == diagnostic_path else current
         if path in imported["source_inputs"]:
-            require(sha(current) == imported["source_inputs"][path]["sha256"], "Imported source closure changed")
+            require(sha(retained_current) == imported["source_inputs"][path]["sha256"], "Imported source closure changed")
         reviewed = current
         if delta:
             text = current.decode("utf-8")
@@ -171,8 +253,9 @@ def verify(app):
         else:
             require(mode in {"qualified_observer_production", "qualified_observer_tests"}, "Unknown source retention")
         sources[path] = current
+        timing_sources[path] = retained_current
         reviewed_sources[path] = reviewed
-    budget = verify_observer_budget(root, policy, original, sources, reviewed_sources)
+    budget = verify_observer_budget(root, policy, original, timing_sources, reviewed_sources)
     observer = admission["observer_extension"]
     review = original.decode_json(proofs[observer["review"]])
     require(review["actual_control_passes"] == 7 and review["old_controls_rerun"] == 0
@@ -230,6 +313,7 @@ def verify(app):
             "controller_methods_executed_now": 0, "product_tests_executed_now": 0,
             "source_inputs": {path: sha(raw) for path, raw in sources.items()}, "catalog": catalog,
             "supplemental_observer_budget": budget,
+            "supplemental_observer_diagnostics": diagnostics,
             "original_failed_run": "45096079315", "original_failure_preserved": True,
             "scope_limit": "Original Python native-lane controls only. Current app build, live mapping, native1/UI1 and SDK23/32+ACK remain separate."}
 
