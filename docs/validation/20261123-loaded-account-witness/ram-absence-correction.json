@@ -1,0 +1,42 @@
+{
+  "actual_original_tuple": {
+    "returncode": 1,
+    "stderr": "error: no such object: pinkha-loaded-account-ram-graph-20261123\n",
+    "stdout": "[]\n"
+  },
+  "actual_queries_so_far": 0,
+  "all_resource_source_tag_module_native_boundaries_unchanged": true,
+  "corrected_program_sha256": "3b7b1802213811b57174e93e7de0ea52b712c4e76c34d0f89c14889eeba21ba3",
+  "literal_hunks": [
+    {
+      "label": "preserve-original-attempt",
+      "new": "ATTEMPT = EVIDENCE / \"ram-graph-attempt2\"",
+      "old": "ATTEMPT = EVIDENCE / \"ram-graph-attempt1\""
+    },
+    {
+      "label": "fixed-observed-absence-tuple",
+      "new": "def exact_container_absence(result):\n    return (result.returncode==1 and result.stdout==b\"[]\\n\" and\n            result.stderr==(\"error: no such object: \"+NAME+\"\\n\").encode(\"ascii\"))\n\ndef owned_container_cleanup():",
+      "old": "def owned_container_cleanup():"
+    },
+    {
+      "label": "no-cid-typed-absence",
+      "new": "        require(exact_container_absence(result),\"container_state_unknown_without_cid\")",
+      "old": "        require(result.returncode!=0 and b\"No such object\" in result.stderr,\"container_state_unknown_without_cid\")"
+    },
+    {
+      "label": "preflight-typed-absence",
+      "new": "        require(exact_container_absence(absence),\"container_name_already_present_or_unobservable\")",
+      "old": "        require(absence.returncode!=0 and b\"No such object\" in absence.stderr,\"container_name_already_present_or_unobservable\")"
+    }
+  ],
+  "new_attempt_queries": 0,
+  "new_scope": "Only exact observed typed absence and fresh attempt2 path; both absence callsites share same fixed tuple. No fuzzy or case-insensitive acceptance.",
+  "new_status": "FROZEN_NOT_RUN",
+  "original_absence_receipt_sha256": "aa2d93ee2c2e08c91f42fec34bd10b9795ae3a1d2a67f52d74c725e12adac306",
+  "original_evidence_commit": "96c7ed0f8f693caea62b21956704c3b2abfcbea1",
+  "original_execution_controller": "47e054b2d23fec7ce6540ee3e380b7e079d00832",
+  "original_failure_audit_sha256": "7706c9be4599cc159624156f8b7df3bcb25fdb40d00520913f450998efed6fb8",
+  "original_program_sha256": "e5905005b7f367b26ff744a68ed0edd3498a04b2f1a83f17c349025b474a6f5e",
+  "protocol": "ram-graph-actual-absence-correction-v1",
+  "whole_inverse": true
+}

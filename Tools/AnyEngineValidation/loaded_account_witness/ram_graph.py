@@ -28,7 +28,7 @@ SYNC = pathlib.Path("/mnt/development/projects/worktrees/any-sync-loaded-account
 HEART_SHA = "24dc6393b30e6d1d80ec28ff624060af9bb4327a"
 SYNC_SHA = "c005bd6cde8d8f8a6007c35f06894f3d89f9f07c"
 EVIDENCE = pathlib.Path("/mnt/development/projects/evidence/loaded-account-witness-20261123")
-ATTEMPT = EVIDENCE / "ram-graph-attempt1"
+ATTEMPT = EVIDENCE / "ram-graph-attempt2"
 RAM = pathlib.Path("/dev/shm/pinkha-loaded-account-source-graph-20261123")
 RAM_BYTES = 64 * 1024 * 1024
 RAM_INODES = 8192
@@ -407,11 +407,15 @@ def validate_owned_container(value,cid):
     require(value["HostConfig"]["NanoCpus"]==1_000_000_000 and value["HostConfig"]["Memory"]==6*1024**3 and value["HostConfig"]["PidsLimit"]==256,"container_resource_binding_changed")
     require(set(value["HostConfig"]["CapDrop"] or [])=={"ALL"} and "no-new-privileges" in value["HostConfig"]["SecurityOpt"],"container_privilege_binding_changed")
 
+def exact_container_absence(result):
+    return (result.returncode==1 and result.stdout==b"[]\n" and
+            result.stderr==("error: no such object: "+NAME+"\n").encode("ascii"))
+
 def owned_container_cleanup():
     cidpath = ATTEMPT/"container.cid"
     if not cidpath.exists():
         result = docker_observe(["inspect",NAME],"container-no-cid")
-        require(result.returncode!=0 and b"No such object" in result.stderr,"container_state_unknown_without_cid")
+        require(exact_container_absence(result),"container_state_unknown_without_cid")
         return {"state":"ABSENT","container_started":False}
     require(cidpath.is_file() and not cidpath.is_symlink(),"container_cid_not_regular")
     cid = cidpath.read_text().strip()
@@ -794,7 +798,7 @@ def main():
         before = source_snapshot(args.expected_controller_sha)
         record["source_before"] = save_map(ATTEMPT/"source-before.json.gz",before)
         absence = docker_observe(["inspect",NAME],"container-preflight-absence")
-        require(absence.returncode!=0 and b"No such object" in absence.stderr,"container_name_already_present_or_unobservable")
+        require(exact_container_absence(absence),"container_name_already_present_or_unobservable")
         image = docker_observe(["image","inspect",IMAGE],"image-original")
         require(image.returncode==0 and json.loads(image.stdout)[0]["Id"]==IMAGE,"pinned_image_unavailable")
         require(set(json.loads(image.stdout)[0]["Config"].get("Volumes") or {})=={"/var/lib/postgresql/data"},"unreviewed_image_volume")
