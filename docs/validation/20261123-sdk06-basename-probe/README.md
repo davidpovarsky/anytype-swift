@@ -1,7 +1,9 @@
 # One fixed SDK06 basename enumeration hypothesis
 
-Source-only checkpoint; the one new offline control has not run. No Mac build or
-product test was executed, and no selector admission exists.
+The initial source-only checkpoint is preserved in source-review.json. Exactly
+one new offline control passed at351b9bc; qualification.json and root-review.json
+bind its original evidence. No Mac build or product test was executed, and no
+actual selector admission exists.
 
 Original run 45116213338 attempt 1 at 4eb4d17f03b36e7d3db1123ec74714d9062b3e46
 returned 26 enabled and 913 disabled methods without enumeration errors. All 23
