@@ -8,8 +8,8 @@
   "owner_manifest_path": "Tools/PinkhaSimulatorGate/sdk06-retained-controls.json",
   "owner_manifest_sha256": "cc05f8cb2f95a41d65d5a4cdd01ac140bb4e6572d25e6476912bcc7fa3820e58",
   "import_receipt": {
-    "path": "docs/validation/20261123-canonical-native-admission/native-control-import-closure.json",
-    "sha256": "23f7953a879502fb715836aa5503fc98cb6e86f41c3b410bf10a7e272cabf535"
+    "path": "docs/validation/20261123-canonical-macro-authorization/native-control-import-closure.json",
+    "sha256": "71db6f501056ee8ad42935f19e9001a36afe439d462a81bb54e934049fc75a86"
   },
   "source_inputs": [
     "Tools/Hanlin/host_command.py",
@@ -63,15 +63,19 @@
       "scope": "Only exact candidate branch admission and the verified SDK snapshot revision; native observer/receipt/UI code unchanged."
     },
     "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": {
-      "current_sha256": "28b9ee92e8b5eb1159c4b87c6cafa8be3fd7a492714bea2d36a8a37ebdfe494d",
+      "current_sha256": "4ed50eb96b9c9c883899297509628e4ba192760aa7f77160e9d10f30a610536c",
       "reviewed_base_sha256": "3b617ea3258f92f8573c1761376f7917901ed0bd035caf8cde7c155a189e0fba",
       "replacements": [
         {
           "current": "APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH, UI_RESUME_BRANCH, SHARED_BRANCH, CONTINUATION_BRANCH,\n                     \"codex/chatgpt-wave15-canonical-hanlin-20261123\")",
           "original": "APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH, UI_RESUME_BRANCH, SHARED_BRANCH, CONTINUATION_BRANCH)"
+        },
+        {
+          "current": "        if (args.lane == \"hanlin-native\"\n                and os.environ.get(\"GITHUB_REF\") == \"refs/heads/codex/chatgpt-wave15-canonical-hanlin-20261123\"):\n            # The preceding exact-source macro gate resolved the immutable lock.\n            base.append(\"-disableAutomaticPackageResolution\")\n",
+          "original": ""
         }
       ],
-      "scope": "Only exact candidate branch admission and the verified SDK snapshot revision; native observer/receipt/UI code unchanged."
+      "scope": "Exact candidate branch admission and lock-only compile flag for its plain native lane, after separately reviewed macro source/fingerprint authorization; original native observer, receipt and UI selection logic unchanged."
     }
   },
   "modules": {

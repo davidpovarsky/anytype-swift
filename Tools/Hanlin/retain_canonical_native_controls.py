@@ -14,7 +14,7 @@ from pathlib import Path
 import subprocess
 
 POLICY_PATH = "Tools/Hanlin/canonical-native-control-reuse.json"
-POLICY_SHA256 = "25773e452cabf62eac2dca31b9a9051928c0d249a3ca5533a94e4c455ffc527b"
+POLICY_SHA256 = "019b7bf0a735fe547a0f0d8ec9677157b4d2c347478edb216b21a157b6f95d5a"
 BRANCH = "codex/chatgpt-wave15-canonical-hanlin-20261123"
 
 

@@ -481,6 +481,10 @@ def execute(args, receipt, *, build_context=None):
     base = ["xcodebuild", "build-for-testing", "-configuration", configuration_name,
             "-destination", "platform=iOS Simulator,id=" + udid, "-parallel-testing-enabled", "NO"]
     if build_context is None:
+        if (args.lane == "hanlin-native"
+                and os.environ.get("GITHUB_REF") == "refs/heads/codex/chatgpt-wave15-canonical-hanlin-20261123"):
+            # The preceding exact-source macro gate resolved the immutable lock.
+            base.append("-disableAutomaticPackageResolution")
         shared.command([*base, "-project", "Anytype.xcodeproj", "-scheme", "Anytype",
                         "-derivedDataPath", str(derived), "-only-testing:AnytypeTests/" + native_suite,
                         *(["-only-testing:AnytypeTests/" + preservation.SUITE] if args.lane == "properties-set" else []),

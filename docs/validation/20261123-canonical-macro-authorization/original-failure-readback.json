@@ -1,0 +1,77 @@
+{
+  "run_id": 45127350746,
+  "run_attempt": 1,
+  "source_sha": "5f00e14996d3ef8b4d93290a80db21797cb928ce",
+  "sdk_sha": "d49a4fd4115b8335105d2991bf74ab4d7f6aad2d",
+  "conclusion": "failure",
+  "phase": "BUILD",
+  "artifact": {
+    "id": 14798256276,
+    "name": "Pinkha-UI27-hanlin-native-45127350746-1",
+    "size_in_bytes": 656496,
+    "digest": "sha256:6f4901a830ba81e0bfdd05c22a57b4ec4038f7feb3d11b3b281b1301d7035ade"
+  },
+  "actual_error": [
+    "/Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/SourcePackages/checkouts/equatable/Package.swift:PACKAGE-TARGET:EquatableMacros: error: Macro \u201cEquatableMacros\u201d from package \u201cEquatable\u201d must be enabled before it can be used"
+  ],
+  "failed_build_commands": [
+    "ComputeTargetDependencyGraph",
+    "Building project Anytype for testing with scheme Anytype"
+  ],
+  "before_failure_passed_steps": [
+    "Set up job",
+    "Checkout exact integration source",
+    "Select compatible native ARM64 Python",
+    "Read immutable Hanlin pin from the checked-out host",
+    "Checkout the immutable canonical Hanlin source",
+    "Prepare the exact SDK before resolving the integrated application",
+    "Check actual SDK06 process and native receipt rejection controls",
+    "Verify actual Xcode27 and create disposable OS27 iPhone and iPad",
+    "Install the explicitly selected original verified runtime",
+    "Restore compatible compilation cache without indexing state",
+    "Reuse the preceding cache layout only when no v2 cache matched"
+  ],
+  "source_bound_receipts": {
+    "execution.json": {
+      "bytes": 1005876,
+      "sha256": "8a7431516bc70702570cb792977973cfe0146e10e21be0efc3d861c4f4a3fb38"
+    },
+    "command-02.log": {
+      "bytes": 102510,
+      "sha256": "51cf08a3782e06f868d13309df02f665fc976f8b87f02b569ad25a398440e96b"
+    },
+    "hanlin-snapshot.json": {
+      "bytes": 194784,
+      "sha256": "414b64e1df4b6a5ce0b7ac72d49722f2b25f2979cda1953f560592de0906afd2"
+    },
+    "heart/heart-installation.json": {
+      "bytes": 3727,
+      "sha256": "02bd9c498c4de90b9cb5c5bd1d886beac7b4bc1171809be6f9470b4f3b59cdaa"
+    },
+    "hanlin-runtime-controller-controls.json": {
+      "bytes": 20715,
+      "sha256": "033da2a432ad3e4573d236801b4e2b7c90c7bbb557ad5d88f29a4f0b12d434b8"
+    },
+    "preflight/preflight.json": {
+      "bytes": 43057,
+      "sha256": "72f8cc5cf9d7d508d20fddf9cba58fdc7d8f729bee1a299fcd5b146abc9dc5a4"
+    },
+    "selection-plan.json": {
+      "bytes": 593,
+      "sha256": "4ce7cc086012b47ddea9682a1bd497409328fd34596ea6d1f674886ed140605f"
+    }
+  },
+  "current_native_preparation": "NOT_RUN",
+  "current_ui": "NOT_RUN",
+  "current_screenshots": 0,
+  "original69_reexecuted": 0,
+  "runtime_producer_run": "45091223011",
+  "runtime_producer_source": "8b08033135f7cb508e813ab1d47d81c255037c07",
+  "retry_scope": {
+    "preparation": "HanlinNativeAcceptancePreparationTests/prepareRealHostFixture",
+    "ui": "HanlinNativeAcceptanceUITests/testRealNativeConsentCreatePageAndAuthorityRevocation",
+    "device": "ipad",
+    "language": "en",
+    "sdk23_32_and_ack7": "NOT_SELECTED"
+  }
+}
