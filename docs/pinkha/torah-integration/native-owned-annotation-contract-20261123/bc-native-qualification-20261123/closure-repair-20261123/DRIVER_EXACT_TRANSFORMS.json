@@ -1,0 +1,38 @@
+[
+  {
+    "before": "def stability(control, head, heart, manifest, composition, composed, closure, native_libraries, binary_info, support):",
+    "after": "def stability(control, head, heart, manifest, composition, composed, closure, native_libraries, binary_info, support, core_binary_info=None):"
+  },
+  {
+    "before": "def stability(",
+    "after": "def compile_only_binary_stability(binary_info, support):\n    if binary_info is None:\n        return False\n    binary, record = binary_info\n    require(binary.is_file() and not binary.is_symlink(),\n            \"Original core compile-only output is not an owned regular file\")\n    require(binary.stat().st_size == record[\"bytes\"]\n            and support.digest(binary) == record[\"sha256\"],\n            \"Actual original core compile-only binary changed\")\n    return True\n\n\ndef stability("
+  },
+  {
+    "before": "    require(source_admission(control, manifest) == composition, \"Control source composition changed\")",
+    "after": "    core_checked = compile_only_binary_stability(core_binary_info, support)\n    require(source_admission(control, manifest) == composition, \"Control source composition changed\")"
+  },
+  {
+    "before": "            \"actual_native_binary_checked\": binary_info is not None,",
+    "after": "            \"actual_native_binary_checked\": binary_info is not None,\n            \"actual_core_compile_only_binary_checked\": core_checked,\n            \"original_core_tests_executed\": False,"
+  },
+  {
+    "before": "    composed, closure, native_libraries, binary_info = {}, None, None, None",
+    "after": "    composed, closure, native_libraries, binary_info, core_binary_info = {}, None, None, None, None"
+  },
+  {
+    "before": "[go, \"list\", \"-deps\", \"-test\", \"-json\", \"./core/application\"],",
+    "after": "[go, \"list\", \"-deps\", \"-test\", \"-json\", \"./core/application\", \"./core\"],"
+  },
+  {
+    "before": "        support.write_json(evidence / \"DECLARED_NATIVE_INPUTS.json\", closure)",
+    "after": "        selected = {\"github.com/anyproto/anytype-heart/core/application\",\n                    \"github.com/anyproto/anytype-heart/core\"}\n        require(selected.issubset({row[\"import_path\"] for row in closure[\"packages\"]}),\n                \"Actual Go declaration omits an original selected compile package\")\n        closure[\"selected_original_packages\"] = sorted(selected)\n        support.write_json(evidence / \"DECLARED_NATIVE_INPUTS.json\", closure)"
+  },
+  {
+    "before": "        binary = work / \"owned-annotation-import.test\"",
+    "after": "        core_binary = work / \"original-core-compile-only.test\"\n        commands.require(\"compile-original-core-only\",\n                         [go, \"test\", \"-c\", \"-p\", \"2\", \"-o\", str(core_binary), \"./core\"],\n                         heart, 3600)\n        require(core_binary.is_file() and not core_binary.is_symlink()\n                and core_binary.stat().st_size > 0,\n                \"Actual original compiler emitted no core compile-only test binary\")\n        core_record = {\"name\": core_binary.name, \"bytes\": core_binary.stat().st_size,\n                       \"sha256\": support.digest(core_binary), \"retained_in_artifact\": False,\n                       \"package\": \"github.com/anyproto/anytype-heart/core\",\n                       \"execution\": \"NOT_EXECUTED_COMPILE_ONLY\"}\n        core_binary_info = (core_binary, core_record)\n        result[\"actual_core_compile_only_binary\"] = core_record\n        commands.require(\"core-compile-only-binary-buildinfo\",\n                         [go, \"version\", \"-m\", str(core_binary)], heart, 30)\n        binary = work / \"owned-annotation-import.test\""
+  },
+  {
+    "before": "                                  composed, closure, native_libraries, binary_info, support)",
+    "after": "                                  composed, closure, native_libraries, binary_info, support, core_binary_info)"
+  }
+]

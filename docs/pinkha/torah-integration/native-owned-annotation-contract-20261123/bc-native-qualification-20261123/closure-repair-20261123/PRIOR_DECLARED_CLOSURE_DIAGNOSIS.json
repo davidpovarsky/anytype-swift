@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "observed_utc": "2026-11-23T11:49:51.339940+00:00",
+  "run_id": 45165374342,
+  "attempt": 1,
+  "source": "ce1e78576de6a3d586e849d5990d008944ff2777",
+  "artifact_sha256": "79d683c0f22ef9a0624e4329bc6a7362520be9c99c93067697d38cf2bb1a7415",
+  "index_rows_verified": 21,
+  "zip_members_verified": 22,
+  "commands_all_terminal_zero_and_drained": 8,
+  "actual_go_list_argv": [
+    "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+    "list",
+    "-deps",
+    "-test",
+    "-json",
+    "./core/application"
+  ],
+  "actual_go_list_exit": 0,
+  "actual_declared_package_variants": 1481,
+  "native_declared_package_variants": 355,
+  "required_paths": 87,
+  "declared_required_paths_present": 86,
+  "required_paths_absent_from_requested_package_closure": [
+    "core/details.go"
+  ],
+  "original_native_module_package_requested": "./core/application",
+  "root_core_declared": false,
+  "all85_composed_source_hashes_match_frozen_manifest": true,
+  "compiler_and_native_leaves": "NOT_RUN",
+  "root_cause": "The gate requires the full composed source closure but only requests the application package declaration; the original core-facing file is outside that requested dependency graph. This is not a Go compile diagnostic."
+}

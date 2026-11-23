@@ -107,8 +107,9 @@ The native run requires a fresh original Heart checkout, applies the actual r14
 patch to its 35 exact preimages and all remaining ordered overlays, and compares
 all83 resulting native files. The two test files are additive. Eighty-seven
 product/test/model inputs must be present with exact hashes in the actual
-original Go-declared application test closure. Two original r14 test files for
-other packages remain source-bound but are not selected or replayed.
+original Go-declared combined application and core test closures. The original
+core package is compiled separately without executing its tests. Two original
+r14 test files for other packages remain source-bound but are not replayed.
 
 The unchanged original Commands owner (SHA256
 017778c096eca985774bd1a4f1e1e117ac3dee6ac08082c2a9793273826aa196)
@@ -118,8 +119,10 @@ native compiler is Go1.26.5 on Darwin ARM64 with the original Tantivy archive an
 library hashes. Actual Xcode/clang/Go metadata and the emitted native binary
 hash/build information are retained.
 
-One genuine application test binary is compiled and the exact new parent
-selector is executed once with count1. Raw test2json records are retained before
+A distinct original core test binary is compiled with go test -c and never
+executed. Its actual hash/build information and final integrity check are
+retained separately. One genuine application test binary is then compiled and
+the exact new parent selector is executed once with count1. Raw test2json records are retained before
 any acceptance calculation. Leaf, parent and package outcomes remain distinct.
 Missing or failed cases never become a zero-failure report.
 
@@ -190,3 +193,32 @@ packet/tree is held and must not be activated; the replacement will bind the
 corrected fixture, template, manifest and source parent.
 
 The corrected source-only admission passed at 9c791ed0a5216150ba4b818a29664d5f91ee5f86. SOURCE_ONLY_ADMISSION_REPAIRED.json retains its actual receipt; WORKFLOW_PREPARATION_REPAIRED.json binds the superseding workflow. Neither result claims that CI checkout, Go compilation or native execution has occurred.
+
+## Actual declaration failure and minimal closure repair
+
+Run45159946802 at1ec511b046fff1c46aaeb8425b98932a19400ad2 received no
+hosted runner and executed zero steps. The source-tree-identical continuation
+run45165374342 atce1e78576de6a3d586e849d5990d008944ff2777 acquired a real
+Apple runner, completed eight actual commands and stopped before compilation:
+the Go declaration for ./core/application covered86 of the87 required source
+paths. The missing original core/details.go belongs to the separate ./core
+package. Both failures remain historical; all nine native leaves are NOT_RUN.
+The complete authenticated intake is published at0c446224b7090849172576ef3be5b9f23845ce38.
+
+closure-repair-20261123 retains the exact prior intake, actual declaration
+diagnosis, complete old driver and inverseable repair. The revised declaration
+requests both actual original packages. All87 required source hashes, all85
+composed source hashes, original module/link inputs, frozen12-file candidate,
+two fixture files, nine native cases and application execution call are
+unchanged. The new core compilation has its own nonexecuted binary, real
+build information and finally-path integrity check. No historical native
+selector is replayed to obtain this additional compilation coverage.
+
+Four focused source-only controls exercise the new integrity helper with
+ordinary filesystem bytes: unchanged regular bytes, same-size content change,
+same-byte symlink, and absence of an observed output. They are not native
+binaries or a fabricated Go declaration. The new combined dependency listing,
+core/application compilation and nine native leaves remain NOT_RUN until the
+separately reviewed dedicated workflow executes. The workflow template changes
+only the two isolated branch bindings; its toolchain, deadlines, original
+process-group owner, fixture and execution assertions are unchanged.

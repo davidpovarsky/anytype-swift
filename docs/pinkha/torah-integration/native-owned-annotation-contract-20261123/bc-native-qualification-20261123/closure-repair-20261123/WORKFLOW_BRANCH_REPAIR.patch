@@ -1,0 +1,20 @@
+--- a/workflow.template.yml
++++ b/workflow.template.yml
+@@ -2,7 +2,7 @@
+ 
+ on:
+   push:
+-    branches: [codex/otzaria-native-import-qualification-20261123]
++    branches: [codex/otzaria-native-import-closure-20261123]
+ 
+ permissions:
+   contents: read
+@@ -13,7 +13,7 @@
+ 
+ jobs:
+   original-native-closed-import:
+-    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-native-import-qualification-20261123' && github.run_attempt == 1
++    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-native-import-closure-20261123' && github.run_attempt == 1
+     runs-on: xcode-27
+     timeout-minutes: 120
+     env:

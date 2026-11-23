@@ -1,0 +1,92 @@
+--- a/run_native_closed_import.py
++++ b/run_native_closed_import.py
+@@ -450,7 +450,19 @@
+             "scope": "Historical local native qualification only; no production RPC/Swift/Host ACK/cold reopen."}
+ 
+ 
+-def stability(control, head, heart, manifest, composition, composed, closure, native_libraries, binary_info, support):
++def compile_only_binary_stability(binary_info, support):
++    if binary_info is None:
++        return False
++    binary, record = binary_info
++    require(binary.is_file() and not binary.is_symlink(),
++            "Original core compile-only output is not an owned regular file")
++    require(binary.stat().st_size == record["bytes"]
++            and support.digest(binary) == record["sha256"],
++            "Actual original core compile-only binary changed")
++    return True
++
++
++def stability(control, head, heart, manifest, composition, composed, closure, native_libraries, binary_info, support, core_binary_info=None):
+     checked_files = 0
+     if closure is not None:
+         for row in closure["files"]:
+@@ -468,6 +480,7 @@
+     if binary_info is not None:
+         binary, record = binary_info
+         require(support.digest(binary) == record["sha256"], "Actual compiled/executed native binary changed")
++    core_checked = compile_only_binary_stability(core_binary_info, support)
+     require(source_admission(control, manifest) == composition, "Control source composition changed")
+     require(git(control, "rev-parse", "HEAD").decode().strip() == head, "Exact control revision changed")
+     return {"status": "PASS", "declared_dependency_files_checked": checked_files,
+@@ -477,6 +490,8 @@
+             "original_module_checksums_checked": sorted(manifest["original_module_hashes"]),
+             "actual_link_inputs_checked": native_libraries is not None,
+             "actual_native_binary_checked": binary_info is not None,
++            "actual_core_compile_only_binary_checked": core_checked,
++            "original_core_tests_executed": False,
+             "control_source_rechecked": True}
+ 
+ 
+@@ -573,7 +588,7 @@
+               "swift_invocation_qualified": False, "cold_reopen_qualified": False,
+               "body_ack_authority": False}
+     support.write_json(evidence / "RESULT.json", result)
+-    composed, closure, native_libraries, binary_info = {}, None, None, None
++    composed, closure, native_libraries, binary_info, core_binary_info = {}, None, None, None, None
+     native_started, native_all_pass, all_gates_pass = False, False, False
+     try:
+         composed, required = compose_native(control, heart, inputs, manifest, composition,
+@@ -602,12 +617,32 @@
+         require(native_libraries == manifest["expected_tantivy_inputs"], "Actual original link bytes differ")
+         env["CGO_LDFLAGS"] = "-L" + str(heart / "deps/libs/darwin-arm64")
+         listing = commands.require("declared-native-inputs",
+-                                   [go, "list", "-deps", "-test", "-json", "./core/application"],
++                                   [go, "list", "-deps", "-test", "-json", "./core/application", "./core"],
+                                    heart, 1200)
+         closure = support.dependency_inputs(listing, heart,
+                                            [{"path": name, "sha256": digest}
+                                             for name, digest in sorted(required.items())])
++        selected = {"github.com/anyproto/anytype-heart/core/application",
++                    "github.com/anyproto/anytype-heart/core"}
++        require(selected.issubset({row["import_path"] for row in closure["packages"]}),
++                "Actual Go declaration omits an original selected compile package")
++        closure["selected_original_packages"] = sorted(selected)
+         support.write_json(evidence / "DECLARED_NATIVE_INPUTS.json", closure)
++        core_binary = work / "original-core-compile-only.test"
++        commands.require("compile-original-core-only",
++                         [go, "test", "-c", "-p", "2", "-o", str(core_binary), "./core"],
++                         heart, 3600)
++        require(core_binary.is_file() and not core_binary.is_symlink()
++                and core_binary.stat().st_size > 0,
++                "Actual original compiler emitted no core compile-only test binary")
++        core_record = {"name": core_binary.name, "bytes": core_binary.stat().st_size,
++                       "sha256": support.digest(core_binary), "retained_in_artifact": False,
++                       "package": "github.com/anyproto/anytype-heart/core",
++                       "execution": "NOT_EXECUTED_COMPILE_ONLY"}
++        core_binary_info = (core_binary, core_record)
++        result["actual_core_compile_only_binary"] = core_record
++        commands.require("core-compile-only-binary-buildinfo",
++                         [go, "version", "-m", str(core_binary)], heart, 30)
+         binary = work / "owned-annotation-import.test"
+         commands.require("compile-original-closed-import",
+                          [go, "test", "-c", "-p", "2", "-o", str(binary), "./core/application"],
+@@ -649,7 +684,7 @@
+         if composed:
+             try:
+                 check = stability(control, args.control_head, heart, manifest, composition,
+-                                  composed, closure, native_libraries, binary_info, support)
++                                  composed, closure, native_libraries, binary_info, support, core_binary_info)
+                 result["post_execution_source_module_link_stability"] = check
+                 support.write_json(evidence / "POST_EXECUTION_STABILITY.json", check)
+             except BaseException as error:
