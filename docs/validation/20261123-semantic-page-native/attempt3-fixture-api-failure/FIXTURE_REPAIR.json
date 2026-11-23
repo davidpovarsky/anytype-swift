@@ -1,0 +1,11 @@
+{
+  "after_sha256": "cee4a6eaf9c847914fb8af130aa89f0471032623d7e339f6ef95744594c265fa",
+  "all_other_native_paths_unchanged": 153,
+  "before_sha256": "052813535476b867132c9aa8e44f8f6386063e067546ecc1f16d8a5042b0fdf7",
+  "changed_native_paths": [
+    "clientlibrary/service/semantic_page_test.go"
+  ],
+  "correction": "Use actual clientspace.Space.Do at two read-only fixture accesses; it performs GetObject plus native Lock/Unlock just like the intended generic cache.Do, without requiring unrelated GetObjectByFullID interface conformance.",
+  "native_methods_executed": 0,
+  "production_sources_changed": 0
+}

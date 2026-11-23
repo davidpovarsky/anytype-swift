@@ -2,7 +2,7 @@
 
 This source is a separate 154-path candidate: the exact qualified 139-file Heart patch, the current repaired nine semantic component files, three wire codec files, one byte-service entry and two Page test files. `page-source.json` pins every path and the unchanged native module files. It does not modify the frozen 148-path component route or its source manifest.
 
-The three files in `page-native` are byte-for-byte copies of the original 22 November candidate. The helper declaration scan found no collision with the composed native service package. They were not compiled or executed by the earlier wire receipts.
+The three files in `page-native` are byte-for-byte copies of the original 22 November candidate. The helper declaration scan found no collision with the composed native service package. They were not compiled or executed by the earlier wire receipts. The later native compile exposed two fixture cache.Do calls whose generic interface does not match clientspace.Space; those two read-only accesses now use the actual Space.Do method, with the same native object lock.
 
 ## Selected behavior
 

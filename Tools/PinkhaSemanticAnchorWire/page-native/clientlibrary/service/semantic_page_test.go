@@ -12,7 +12,6 @@ import (
 
 	"github.com/anyproto/any-sync/commonspace/object/tree/objecttree"
 	"github.com/anyproto/any-sync/util/crypto"
-	"github.com/anyproto/anytype-heart/core/block/cache"
 	"github.com/anyproto/anytype-heart/core/block/editor/smartblock"
 	"github.com/anyproto/anytype-heart/core/block/source/sourceimpl"
 	"github.com/anyproto/anytype-heart/core/domain"
@@ -89,7 +88,7 @@ func semanticPageCurrent(t *testing.T, account *t2AccountState) (*model.Block, [
 	t.Helper()
 	var block *model.Block
 	var heads []string
-	err := cache.Do[smartblock.SmartBlock](t2Space(t, account.SpaceID), account.DocumentID, func(object smartblock.SmartBlock) error {
+	err := t2Space(t, account.SpaceID).Do(account.DocumentID, func(object smartblock.SmartBlock) error {
 		require.Equal(t, account.SpaceID, object.SpaceID())
 		require.Equal(t, account.DocumentID, object.Id())
 		picked := object.Pick(account.BlockID)
@@ -161,7 +160,7 @@ func semanticPageMarkEvent(t *testing.T, messages []*pb.EventMessage, blockID st
 func semanticPageStoredPayload(t *testing.T, value *semanticPageState, parent, phase string, after semanticanchor.Snapshot) string {
 	t.Helper()
 	var rawSHA string
-	err := cache.Do[smartblock.SmartBlock](t2Space(t, value.Account.SpaceID), value.Account.DocumentID, func(object smartblock.SmartBlock) error {
+	err := t2Space(t, value.Account.SpaceID).Do(value.Account.DocumentID, func(object smartblock.SmartBlock) error {
 		tree := object.Tree()
 		require.Equal(t, value.Account.DocumentID, tree.Id())
 		storage := tree.Storage()
