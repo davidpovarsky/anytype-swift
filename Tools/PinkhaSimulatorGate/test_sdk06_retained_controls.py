@@ -122,5 +122,95 @@ class RetainedControllerAdmissionTests(unittest.TestCase):
             admission.verify_retained_controls(self.app, overrides={relative: admission.digest(data)})
 
 
+    def test_fixed_composition_retains_98_only_with_exact_views_and_original_11_plus_7_plus_9(self):
+        receipt = admission.verify_retained_controls(self.app)
+        composed = receipt["fixed_composition"]
+        self.assertEqual(receipt["current_control_methods"], 98)
+        self.assertEqual(receipt["retained_original_methods"], 91)
+        self.assertEqual(receipt["qualified_observer_methods"], 7)
+        self.assertEqual(composed["composition_methods_qualified"], 18)
+        self.assertEqual(composed["kernel_methods_qualified"], 9)
+        self.assertEqual((composed["retained_original_passes"], composed["repaired_former_errors"]), (11, 7))
+        self.assertTrue(composed["original_failed_attempt_preserved"])
+        self.assertFalse(composed["selector_admission_claimed"])
+        self.assertFalse(composed["product_acceptance_claimed"])
+        self.assertEqual(composed["methods_executed_now"], 0)
+        self.assertEqual(len(composed["qualified_methods"]), 27)
+        extension = self.contract["composition_extension"]
+        self.assertEqual(len(extension["inverses"]), 6)
+        for relative in extension["inverses"]:
+            with self.subTest(changed_hook=relative):
+                path = self.app / relative
+                original = path.read_bytes()
+                try:
+                    path.write_bytes(original + b"\n# unadmitted composition change\n")
+                    with self.assertRaisesRegex(admission.RetainedControlError, "Unadmitted"):
+                        admission.verify_retained_controls(self.app)
+                finally:
+                    path.write_bytes(original)
+        supervisor = "Tools/PinkhaSimulatorGate/run_owned_single_lane.py"
+        layer = copy.deepcopy(extension["inverses"][supervisor]["layers"][0])
+        layer["edits"][-1]["new"] += "\n# an unreviewed inverse must not apply"
+        with self.assertRaisesRegex(admission.RetainedControlError, "composition hunk"):
+            admission.reverse_scoped_edits((self.app / supervisor).read_bytes(),
+                                          layer["edits"], layer["result_sha256"])
+        original_attempt = next(item for item in extension["attempts"] if item["id"] == "qualified-attempt1")
+        events = json.loads((self.app / original_attempt["events"]).read_text())
+        failed = next(item for item in events if item.get("status") == "ERROR")
+        failed["status"] = "PASS"
+        with self.assertRaisesRegex(admission.RetainedControlError, "outcomes disagree"):
+            admission.focused_outcomes(json.dumps(events).encode(),
+                                       (self.app / original_attempt["log"]).read_bytes(),
+                                       (self.app / original_attempt["result"]).read_bytes())
+
+
+
+    def test_sdk_qualified_profile_addendum_preserves_history_and_rejects_scope_relabelling(self):
+        receipt = admission.verify_retained_controls(self.app)
+        profile = receipt["sdk_qualified_kernel_profile"]
+        self.assertEqual(receipt["current_control_methods"], 98)
+        self.assertEqual(receipt["fixed_composition"]["composition_methods_qualified"], 18)
+        self.assertEqual(receipt["fixed_composition"]["source_scope"], "HISTORICAL_FROZEN_COMPOSITION")
+        self.assertNotIn("current_source_inputs", receipt["fixed_composition"])
+        self.assertEqual((profile["unchanged_original_composition_methods_retained"],
+                          profile["directly_affected_composition_methods_requalified"],
+                          profile["new_profile_methods_qualified"]), (17, 1, 1))
+        self.assertEqual(profile["current_composition_methods_qualified"], 19)
+        self.assertEqual(profile["original_kernel_methods_retained"], 9)
+        self.assertFalse(profile["original_18_history_relabelled"])
+        self.assertEqual(profile["methods_executed_now"], 0)
+        self.assertFalse(profile["selector_admission_claimed"])
+        self.assertFalse(profile["product_acceptance_claimed"])
+        extension = self.contract["sdk_qualified_kernel_profile_addendum"]
+        for relative in extension["inverses"]:
+            path = self.app / relative
+            original = path.read_bytes()
+            try:
+                path.write_bytes(original + b"\n# unadmitted profile or fixture bytes\n")
+                with self.assertRaisesRegex(admission.RetainedControlError, "Unadmitted"):
+                    admission.verify_retained_controls(self.app)
+            finally:
+                path.write_bytes(original)
+        files = {row["path"]: (self.app / row["path"]).read_bytes()
+                 for row in self.contract["proof_files"]}
+        malformed = copy.deepcopy(self.contract)
+        production = "Tools/PinkhaSimulatorGate/run_owned_single_lane.py"
+        malformed["sdk_qualified_kernel_profile_addendum"]["inverses"][production]["edits"][0]["new"] = (
+            '    if cleanup_profile in ("sdk06-enumeration", "sdk06-qualified", "arbitrary"):\n')
+        with self.assertRaisesRegex(admission.RetainedControlError, "predicate alias"):
+            admission.qualified_kernel_profile_view(malformed, files)
+        proof = extension["original_pair"]
+        result = json.loads(files[proof["result"]])
+        result["old_control_methods_executed"] = 0
+        with self.assertRaisesRegex(admission.RetainedControlError, "affected/new execution scope"):
+            admission.qualified_profile_pair_outcomes(files[proof["events"]], files[proof["log"]],
+                json.dumps(result).encode(), proof["methods"], proof["source_sha"])
+        events = json.loads(files[proof["events"]])
+        events[-1]["status"] = "FAIL"
+        with self.assertRaisesRegex(admission.RetainedControlError, "named terminal"):
+            admission.qualified_profile_pair_outcomes(json.dumps(events).encode(), files[proof["log"]],
+                files[proof["result"]], proof["methods"], proof["source_sha"])
+
+
 if __name__ == "__main__":
     unittest.main()

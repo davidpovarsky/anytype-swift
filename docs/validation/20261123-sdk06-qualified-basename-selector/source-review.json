@@ -1,0 +1,63 @@
+{
+  "actual_product_tests_executed": 0,
+  "after_sha256": "10b0edde7478ac2953cfa5f06c25fa3112ee84c7091e694f78da83fb2f419921",
+  "base_source_sha": "bde43969d70ab6eb74599c890267c12e6696c863",
+  "before_sha256": "922ff3c3793e0370df6dc145082c9c5703211b8e817ec105aff321d1ac9be3c9",
+  "current_selector_admission": null,
+  "default_behavior": "All old branches reconstruct exactly; only the literal fixed basename variant enters the new provider and exact extra-path scope.",
+  "exact_source_edits": [
+    {
+      "after": "_PLAN_SEAL = object()\n\nBASENAME_VARIANT = \"suites-minus-seven-three-parameter-basenames-cli\"\nBASENAME_ENTRY = \"Tools/PinkhaSimulatorGate/sdk06_basename_enumeration_probe.py\"\nBASENAME_PLAN = \"Tools/PinkhaSimulatorGate/sdk06-basename-probe-plan.json\"\nBASENAME_PROOF_ROOT = \"docs/validation/20261123-sdk06-basename-probe/original-45116213338\"\nBASENAME_EXTRA_INPUTS = (\n    BASENAME_ENTRY, BASENAME_PLAN,\n    \".github/workflows/pinkha-sdk06-basename-probe.yml\",\n    \".github/workflows/torah-inspector-ipados27.yml\",\n    BASENAME_PROOF_ROOT + \"/receipt.json\",\n    BASENAME_PROOF_ROOT + \"/suites-minus-seven-cli.enumeration.json\",\n    BASENAME_PROOF_ROOT + \"/enumerate-suites-minus-seven-cli.command.json\",\n    BASENAME_PROOF_ROOT + \"/original.xctestrun\",\n    BASENAME_PROOF_ROOT + \"/suites-minus-seven-cli.xctestrun\",\n)\nBASENAME_CURRENT_INPUTS = (BASENAME_ENTRY, BASENAME_PLAN) + BASENAME_EXTRA_INPUTS[4:]\nBASENAME_FIXED_HASHES = {\n    \"Tools/PinkhaSimulatorGate/sdk06_enumeration_probe.py\":\n        \"ce2987846cdd42ebab7702e7dff51068bfb15ee48a66011f621695dbd72ebbce\",\n    BASENAME_ENTRY: \"bf48d27955b94abc8bb3a93559ba608f94c818c7beeab1138b2e85b8911706cc\",\n    BASENAME_PLAN: \"9f812368d7b091e88e1346c16a81f8e993eb3f15c9b852379dd62aacc7532f22\",\n}\n\n\ndef _basename_source_scope(sources):\n    require(set(BASENAME_EXTRA_INPUTS) <= set(sources),\n            \"All nine exact basename integrity inputs are required\")\n    require(all(sources.get(path) == checksum for path, checksum in BASENAME_FIXED_HASHES.items()),\n            \"The exact reviewed basename provider/plan/original probe must be pinned\")\n\n\ndef _basename_provider(control=None):\n    # Check bytes before importing this separate provider. No caller-supplied\n    # path, module, plan or import override is accepted.\n    root = Path(__file__).resolve().parents[2]\n    require(control is None or Path(control).resolve() == root,\n            \"The basename provider must belong to the current owned controller\")\n    for relative, checksum in BASENAME_FIXED_HASHES.items():\n        path = root / relative\n        require(path.is_file() and not path.is_symlink() and probe.sha(path) == checksum,\n                \"Current fixed basename provider/plan/original probe bytes differ\")\n    import importlib\n    fixed = importlib.import_module(\"sdk06_basename_enumeration_probe\")\n    require(Path(fixed.__file__).resolve() == root / BASENAME_ENTRY\n            and fixed.VARIANT_NAME == BASENAME_VARIANT\n            and fixed.EXTRA_INTEGRITY_PATHS == BASENAME_EXTRA_INPUTS,\n            \"Unexpected basename provider identity or extra source scope\")\n    fixed._fixed_inputs()\n    return fixed\n\n\ndef _candidate_variants(approved, selection):\n    if approved.get(\"qualified_variant\") == BASENAME_VARIANT:\n        candidates = _basename_provider().fixed_candidates(selection)\n        require(len(candidates) == 1 and candidates[0].get(\"name\") == BASENAME_VARIANT,\n                \"Exactly the fixed basename request must match the actual probe\")\n        return candidates\n    return probe.variants(selection)\n\n",
+      "before": "_PLAN_SEAL = object()\n"
+    },
+    {
+      "after": "    grammar = {probe_name: probe.sha(app / probe_name), component_name: probe.sha(app / component_name)}\n    if approved.get(\"qualified_variant\") == BASENAME_VARIANT:\n        _basename_source_scope(sources)\n        _basename_provider(app)\n        # Both invoking workflow blobs are bound above to the actual probe Git\n        # source. They are not executing code in this later current-App route.\n        for name in BASENAME_CURRENT_INPUTS:\n            require(name in originals and (app / name).read_bytes() == originals[name],\n                    \"Current fixed basename provider/plan/proof differs from the qualified original\")\n            grammar[name] = probe.sha(app / name)\n    return grammar",
+      "before": "    return {probe_name: probe.sha(app / probe_name), component_name: probe.sha(app / component_name)}"
+    },
+    {
+      "after": "    if name != BASENAME_VARIANT:\n        require(name in {\"suites-minus-seven-cli\", \"parameter-signature-terminal-parens-cli\"},\n                \"Only an actually qualified reviewed probe variant is supported\")",
+      "before": "    require(name in {\"suites-minus-seven-cli\", \"parameter-signature-terminal-parens-cli\"},\n            \"Only an actually qualified reviewed probe variant is supported\")"
+    },
+    {
+      "after": "    if name == BASENAME_VARIANT:\n        _basename_source_scope(sources)\n    for path, checksum in sources.items():\n        if name == BASENAME_VARIANT and path in BASENAME_EXTRA_INPUTS:\n            sha_value(checksum)\n            continue\n        require(isinstance(path, str) and path.startswith(\"Tools/\") and path.endswith(\".py\")",
+      "before": "    for path, checksum in sources.items():\n        require(isinstance(path, str) and path.startswith(\"Tools/\") and path.endswith(\".py\")"
+    },
+    {
+      "after": "    variants = _candidate_variants(approved, selection)\n",
+      "before": "    variants = probe.variants(selection)\n"
+    }
+  ],
+  "full_inverse_ast_equal": true,
+  "full_inverse_exact": true,
+  "new_controls": {
+    "methods": [
+      "test_basename_provider_and_exact_nine_source_inputs_are_bound_without_extending_legacy_paths",
+      "test_basename_record_current_enumeration_and_execution_keep_exact23_and_identical_seven_skips"
+    ],
+    "path": "Tools/PinkhaSimulatorGate/test_sdk06_qualified_basename_selector.py",
+    "sha256": "9f08ab566307a643eb0c1feeb6611194ca8691019bfe7203283635f012e6d859",
+    "status": "NOT_RUN"
+  },
+  "old_control_methods_executed": 0,
+  "planned_control_scope": "Two new methods only. Synthetic metadata/partial sealed plumbing fixtures cannot satisfy full load_plan and create no usable or committed admission.",
+  "production_path": "Tools/PinkhaSimulatorGate/sdk06_qualified_selector.py",
+  "provider_component_source": "3a4cf321c37c31c3443b15a556ec50cefe0d306e",
+  "provider_control_evidence": "3821668b64540a1dbd4bdbcf85e0fac4cabf8a26",
+  "schema": "sdk06-qualified-basename-selector-source-v1",
+  "status": "SOURCE_FROZEN_TWO_NEW_CONTROLS_NOT_RUN",
+  "unchanged_original_functions_and_classes": [
+    "source_functions",
+    "digest_bytes",
+    "exact_keys",
+    "sha_value",
+    "positive",
+    "read",
+    "original_api",
+    "selection_from_source",
+    "validate_original_copy",
+    "validate_original_command",
+    "QualifiedSelectorPlan",
+    "load_plan"
+  ],
+  "workflow_scope": "Original new/central workflow blobs are pinned by actual probe source and receipt. Current executing grammar pins the provider/plan/five original proof inputs; no claim that later central workflow is the original probe invocation."
+}

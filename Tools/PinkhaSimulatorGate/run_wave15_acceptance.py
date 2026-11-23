@@ -409,6 +409,18 @@ def execute(args, receipt, *, build_context=None):
         selection["shared_editor_components"] = shared_editor
         selection["requested_lane"] = shared_editor_existing_build.LANE
         receipt["shared_editor_components"] = {"status": "NOT_RUN", **shared_editor}
+    sdk_selector_plan = getattr(args, "sdk06_qualified_selector_plan", None)
+    if sdk_selector_plan is not None:
+        require(build_context is None and shared_editor is not None and acknowledgement is not None,
+                "Qualified SDK selectors require the explicit current single Debug App build")
+        sdk_selector_plan.verify()
+    sdk_tagged_plan = getattr(args, "sdk06_tagged_selection_plan", None)
+    if sdk_tagged_plan is not None:
+        from sdk06_tagged_selector import TaggedSelectionPlan
+        require(sdk_selector_plan is None and isinstance(sdk_tagged_plan, TaggedSelectionPlan)
+                and build_context is None and shared_editor is not None and acknowledgement is not None,
+                "Tagged SDK selection requires its explicit current single Debug App build")
+        sdk_tagged_plan.verify()
     hanlin_lane = HANLIN_LANES.get(args.lane)
     source_methods(app, selection["methods"])
     head = shared.git(app, "rev-parse", "HEAD")
@@ -533,8 +545,17 @@ def execute(args, receipt, *, build_context=None):
         shared.write(evidence / "execution.json", receipt)
         component_evidence = evidence / "shared-editor-components"
         try:
-            receipt["shared_editor_components"] = shared_editor_existing_build.execute(
-                app, native_configuration, udid, built, component_evidence, shared)
+            if sdk_tagged_plan is not None:
+                receipt["shared_editor_components"] = shared_editor_existing_build.execute(
+                    app, native_configuration, udid, built, component_evidence, shared,
+                    tagged_plan=sdk_tagged_plan)
+            elif sdk_selector_plan is None:
+                receipt["shared_editor_components"] = shared_editor_existing_build.execute(
+                    app, native_configuration, udid, built, component_evidence, shared)
+            else:
+                receipt["shared_editor_components"] = shared_editor_existing_build.execute(
+                    app, native_configuration, udid, built, component_evidence, shared,
+                    selector_plan=sdk_selector_plan)
         finally:
             component_receipt = component_evidence / "execution.json"
             if component_receipt.is_file():
@@ -595,6 +616,11 @@ def execute(args, receipt, *, build_context=None):
         require(ui_derived == build_context.ui_derived, "Same-job UI runner directory differs")
         build_context.verify(app, head, identity, flags, configuration_name)
         receipt["ui_build_mode"] = (build_context.record_build_mode() if original_products else "SAME_JOB_FROZEN_BUILD")
+    if sdk_selector_plan is not None or sdk_tagged_plan is not None:
+        from sdk06_qualified_continuation import capture_later_ui
+        receipt["ui_early_products"] = capture_later_ui(ui_derived, evidence,
+            source_sha=head, run_id=receipt["run_id"], run_attempt=receipt["run_attempt"], build_flags=flags)
+        shared.write(evidence / "execution.json", receipt)
     receipt["phase"] = "UI_RUNTIME_PREPARATION"
     shared.write(evidence / "execution.json", receipt)
     runtime_identity = {

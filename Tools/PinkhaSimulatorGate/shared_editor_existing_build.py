@@ -259,7 +259,8 @@ def validate_results(summary, tree, expected, udid):
     return actual
 
 
-def execute(app, configuration, udid, expected_app, evidence, shared):
+def execute(app, configuration, udid, expected_app, evidence, shared, *, selector_plan=None, tagged_plan=None):
+    host.require(selector_plan is None or tagged_plan is None, "Selector routes cannot be combined")
     host.require(not evidence.exists() or not any(evidence.iterdir()),
                  "Refuse stale shared-editor component evidence")
     evidence.mkdir(parents=True, exist_ok=True)
@@ -273,6 +274,8 @@ def execute(app, configuration, udid, expected_app, evidence, shared):
     selected_configuration = None
 
     def verify_binding():
+        if tagged_plan is not None:
+            tagged_plan.verify()
         host.require(source_contract(app) == source, "Shared-editor/table/authority source changed during execution")
         host.require(shared.digest(app_executable) == hashes["app_executable"]
                      and shared.digest(test_executable) == hashes["test_executable"]
@@ -291,14 +294,30 @@ def execute(app, configuration, udid, expected_app, evidence, shared):
                "source": source, "built_products": hashes}
     shared.write(evidence / "execution.json", receipt)
     try:
-        enumeration = enumerate_selection(app, base, evidence, shared, source)
+        if tagged_plan is not None:
+            from sdk06_tagged_selector import TaggedSelectionPlan
+            host.require(isinstance(tagged_plan, TaggedSelectionPlan), "A sealed current tag source plan is required")
+            enumeration = tagged_plan.enumerate_current(app, base, evidence, shared, source)
+        elif selector_plan is None:
+            enumeration = enumerate_selection(app, base, evidence, shared, source)
+        else:
+            from sdk06_qualified_selector import QualifiedSelectorPlan
+            host.require(isinstance(selector_plan, QualifiedSelectorPlan), "A sealed actual selector plan is required")
+            enumeration = selector_plan.enumerate_current(app, base, evidence, shared, source)
         receipt["enumeration"] = enumeration
         selected_configuration = enumeration["selected_configuration"]
         verify_binding()
         selected_base = list(base)
         selected_base[selected_base.index("-xctestrun") + 1] = selected_configuration["path"]
-        command = [*selected_base, *["-only-testing:" + identifier for identifier in enumeration["xcode_method_selectors"]],
-                   "-resultBundlePath", str(bundle)]
+        if tagged_plan is not None:
+            command = [*selected_base, *tagged_plan.execution_arguments(enumeration, selected_base),
+                       "-resultBundlePath", str(bundle)]
+        elif selector_plan is None:
+            command = [*selected_base, *["-only-testing:" + identifier for identifier in enumeration["xcode_method_selectors"]],
+                       "-resultBundlePath", str(bundle)]
+        else:
+            command = [*selected_base, *selector_plan.execution_arguments(enumeration),
+                       "-resultBundlePath", str(bundle)]
         receipt.update(phase="EXECUTION", command=command)
         shared.write(evidence / "execution.json", receipt)
         shared.run_xctest(command, app, evidence, bundle, RESULT_PREFIX,

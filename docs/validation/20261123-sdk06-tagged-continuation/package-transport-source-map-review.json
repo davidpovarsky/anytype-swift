@@ -1,0 +1,80 @@
+{
+  "schema": "sdk06-package-transport-one-row-map-review-v1",
+  "source_before": "636acc2a86bb5cafa608d8bd815f140ebd22eb34",
+  "first_gate_sha256": "89b0c040080bc429149accab2de74a1d28708486a06a724aad17a84cf5612fb9",
+  "first_gate_original_bytes_preserved": true,
+  "map_path": "docs/any-engine-port/SOURCE_REFACTOR_MAP.json",
+  "changed_record_index": 90,
+  "before_map_sha256": "29700d9c5049a5fcb2e4b93094a046e45a4a63836c7625862a346ebdfead09c4",
+  "after_map_sha256": "74e362705d1e0263e7ca223519f475cda2113994422c67594a27c3b47c967e66",
+  "exact_whole_map_inverse": true,
+  "before_record": {
+    "kind": "refactor",
+    "from": "Tools/PinkhaNativeDerived/package_evidence.py",
+    "to": "Tools/PinkhaNativeDerived/package_evidence.py",
+    "baselineBlob": "e55d2a959296630686a60aa5d927a3b4c34401f9",
+    "replacementBlob": "23237cc9b8250906f527417b7e963672f2c2a5c9",
+    "reason": "Preserve successful original SDK06/coherent native/coherent UI BuildProducts tar archives in the existing evidence ZIP before later admission can fail. Admit exactly three scope paths; all original suffix, xcresult, and attachment preservation stays unchanged.",
+    "sharedSources": [
+      {
+        "path": "Tools/PinkhaSimulatorGate/early_build_products.py",
+        "gitBlob": "7b93fac2ac72d070b12abe2ea03ec64d764e238a"
+      }
+    ],
+    "validation": [
+      "Root reviewed the exact seven-line package filter diff in worker02a3873c and retained original evidence behavior; no application, SDK, native transport, or acceptance assertions changed.",
+      "Four new focused controls passed with original log SHA256 d0a6d67db43adf1296378aec67d9e5ece260732b7994ea68d78d120dfbbb89e4, including actual ZIP transport and preservation before controlled first admission failure. No existing tests rerun.",
+      "Archives are observed build bytes only, with build_reuse_enabled=false; exact dependency, code-signature, runtime, current-source and actual-execution qualification remain mandatory.",
+      "Reviewed e1 literal semantic-page154 addition to the existing capture scope allowlist only. Original archive/member/mode/byte preservation behavior and other scopes remain unchanged; this capture itself never admits product reuse or acceptance."
+    ]
+  },
+  "after_record": {
+    "kind": "refactor",
+    "from": "Tools/PinkhaNativeDerived/package_evidence.py",
+    "to": "Tools/PinkhaNativeDerived/package_evidence.py",
+    "baselineBlob": "e55d2a959296630686a60aa5d927a3b4c34401f9",
+    "replacementBlob": "417f08e4f6efeedd128b5cb2020b79e9c5e315df",
+    "reason": "Preserve successful original SDK06/coherent native/coherent UI BuildProducts tar archives in the existing evidence ZIP before later admission can fail. Admit exactly the original three scope paths plus sdk06-ui/sdk06-early-products/BuildProducts.tar.gz for the later SDK UI build. All original suffix, xcresult, attachment preservation and archive exclusions stay unchanged.",
+    "sharedSources": [
+      {
+        "path": "Tools/PinkhaSimulatorGate/early_build_products.py",
+        "gitBlob": "7b93fac2ac72d070b12abe2ea03ec64d764e238a"
+      }
+    ],
+    "validation": [
+      "Root reviewed the exact seven-line package filter diff in worker02a3873c and retained original evidence behavior; no application, SDK, native transport, or acceptance assertions changed.",
+      "Four new focused controls passed with original log SHA256 d0a6d67db43adf1296378aec67d9e5ece260732b7994ea68d78d120dfbbb89e4, including actual ZIP transport and preservation before controlled first admission failure. No existing tests rerun.",
+      "Archives are observed build bytes only, with build_reuse_enabled=false; exact dependency, code-signature, runtime, current-source and actual-execution qualification remain mandatory.",
+      "Reviewed e1 literal semantic-page154 addition to the existing capture scope allowlist only. Original archive/member/mode/byte preservation behavior and other scopes remain unchanged; this capture itself never admits product reuse or acceptance.",
+      "The sole additional package allowlist member is ('sdk06-ui', 'sdk06-early-products', 'BuildProducts.tar.gz'); removing that exact line recovers original blob 23237cc9b8250906f527417b7e963672f2c2a5c9. Existing named transport method test_sdk06_qualified_lifecycle.QualifiedLifecycleControls.test_later_ui_archive_survives_exact_transport_and_other_archives_stay_excluded passed in the original attempt1 log SHA256 d78c980ac92726a90811df9956fcc42fa95e121d1aacd5d384680828bae6e8e8; source-before/after SHA256 54e5fce7dba955dd5554398140e47be2f3fc425abdb0656fdf7a4b4593ab8e17 binds actual package SHA256 8400bd4ac7bbc61871b51f1021c3dbbb1de5800094e07129417a784d24337309. That method executed the packager, verified exact archive and manifest ZIP bytes, and rejected an unrelated archive. The original aggregate attempt remains FAILED (errors=7); only this named retained PASS supports this mapping. No old control or product method was rerun."
+    ]
+  },
+  "package_source_unchanged": true,
+  "package_current_blob": "417f08e4f6efeedd128b5cb2020b79e9c5e315df",
+  "package_sha256": "8400bd4ac7bbc61871b51f1021c3dbbb1de5800094e07129417a784d24337309",
+  "exact_one_line_source_inverse_to_prior_blob": "23237cc9b8250906f527417b7e963672f2c2a5c9",
+  "original_named_pass": "test_sdk06_qualified_lifecycle.QualifiedLifecycleControls.test_later_ui_archive_survives_exact_transport_and_other_archives_stay_excluded",
+  "original_log_sha256": "d78c980ac92726a90811df9956fcc42fa95e121d1aacd5d384680828bae6e8e8",
+  "original_source_before_after_sha256": "54e5fce7dba955dd5554398140e47be2f3fc425abdb0656fdf7a4b4593ab8e17",
+  "original_aggregate_conclusion": "FAILED (errors=7)",
+  "retained_scope": "ONLY_THE_ALREADY_PASSED_NAMED_TRANSPORT_METHOD",
+  "actual_four_control_inputs_unchanged_except_review_map": true,
+  "actual_40_loaded_control_sources_byte_identical": true,
+  "original_four_control_qualification_immutable": true,
+  "reexecuted_old_or_new_control_methods": 0,
+  "product_builds_or_methods": 0,
+  "failed_gate_transport_copies": {
+    "first-source-retention-process.json": {
+      "sha256": "57bafbed2201316357afb43953cf1a39118f5f73190c286094ce8f05de63b847",
+      "bytes": 629
+    },
+    "first-source-retention-process.stdout": {
+      "sha256": "89b0c040080bc429149accab2de74a1d28708486a06a724aad17a84cf5612fb9",
+      "bytes": 34173
+    },
+    "first-source-retention-process.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  }
+}

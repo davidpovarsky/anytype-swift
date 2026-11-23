@@ -1,0 +1,39 @@
+test_sdk_qualified_profile_addendum_preserves_history_and_rejects_scope_relabelling (test_sdk06_retained_controls.RetainedControllerAdmissionTests.test_sdk_qualified_profile_addendum_preserves_history_and_rejects_scope_relabelling) ... ERROR
+test_exact_composed_dependencies_preserve_original_scopes_and_reject_unreviewed_source_or_events (test_sdk06_dependency_composition.DependencyCompositionControls.test_exact_composed_dependencies_preserve_original_scopes_and_reject_unreviewed_source_or_events) ... ERROR
+
+======================================================================
+ERROR: test_sdk_qualified_profile_addendum_preserves_history_and_rejects_scope_relabelling (test_sdk06_retained_controls.RetainedControllerAdmissionTests.test_sdk_qualified_profile_addendum_preserves_history_and_rejects_scope_relabelling)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/test_sdk06_retained_controls.py", line 169, in test_sdk_qualified_profile_addendum_preserves_history_and_rejects_scope_relabelling
+    receipt = admission.verify_retained_controls(self.app)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 704, in verify_retained_controls
+    files = {item["path"]: read_bound(root, item["path"], item["sha256"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 59, in read_bound
+    require(digest(data) == expected, "Unadmitted retained-control bytes: " + relative)
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 27, in require
+    raise RetainedControlError(message)
+sdk06_retained_controls.RetainedControlError: Unadmitted retained-control bytes: Tools/PinkhaSimulatorGate/test_sdk06_dependency_composition.py
+
+======================================================================
+ERROR: test_exact_composed_dependencies_preserve_original_scopes_and_reject_unreviewed_source_or_events (test_sdk06_dependency_composition.DependencyCompositionControls.test_exact_composed_dependencies_preserve_original_scopes_and_reject_unreviewed_source_or_events)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/test_sdk06_dependency_composition.py", line 25, in test_exact_composed_dependencies_preserve_original_scopes_and_reject_unreviewed_source_or_events
+    actual = retained.verify_retained_controls(app)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 704, in verify_retained_controls
+    files = {item["path"]: read_bound(root, item["path"], item["sha256"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 59, in read_bound
+    require(digest(data) == expected, "Unadmitted retained-control bytes: " + relative)
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 27, in require
+    raise RetainedControlError(message)
+sdk06_retained_controls.RetainedControlError: Unadmitted retained-control bytes: Tools/PinkhaSimulatorGate/test_sdk06_dependency_composition.py
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.118s
+
+FAILED (errors=2)

@@ -59,7 +59,7 @@ def _sdk06_kernel_group_observation(pgid, deadline):
 
 
 def verify_owned_group_stopped(command_path, *, seconds=10, cleanup_profile=None):
-    owned.require(cleanup_profile in (None, owned.COHERENT_HEART_PROFILE, "semantic-page154", "sdk06-enumeration")
+    owned.require(cleanup_profile in (None, owned.COHERENT_HEART_PROFILE, "semantic-page154", "sdk06-enumeration", "sdk06-qualified")
                   and (cleanup_profile is None or seconds == 10),
                   "Only an explicit Apple consumer profile may use its unchanged 10-second cleanup budget")
     record = json.loads(command_path.read_bytes())
@@ -70,7 +70,7 @@ def verify_owned_group_stopped(command_path, *, seconds=10, cleanup_profile=None
                   "Owned worker cleanup was not completed")
     deadline = time.monotonic() + seconds
     kernel_observation = None
-    if cleanup_profile in ("sdk06-enumeration", owned.COHERENT_HEART_PROFILE):
+    if cleanup_profile in ("sdk06-enumeration", "sdk06-qualified", owned.COHERENT_HEART_PROFILE):
         kernel_observation = _sdk06_kernel_group_observation(pgid, deadline)
         if kernel_observation["outcome"] == "ABSENT_ESRCH":
             return dict(status="PASS", pgid=pgid, live_members=0, observations=0,
@@ -122,7 +122,8 @@ def verify_owned_group_stopped(command_path, *, seconds=10, cleanup_profile=None
         time.sleep(min(0.05, max(0, deadline - time.monotonic())))
 
 
-def supervise(command, cwd, evidence, *, context, cleanup, timeout=owned.WORKER_SECONDS):
+def supervise(command, cwd, evidence, *, context, cleanup, timeout=owned.WORKER_SECONDS, cleanup_profile=None):
+    owned.require(cleanup_profile in (None, "sdk06-qualified"), "Only the explicit qualified SDK supervisor may opt in")
     evidence.mkdir(parents=True, exist_ok=True)
     destination = evidence / "single-lane-supervisor.json"
     owned.require(not destination.exists(), "Refuse stale supervisor evidence")
@@ -164,9 +165,17 @@ def supervise(command, cwd, evidence, *, context, cleanup, timeout=owned.WORKER_
     finally:
         finalizing = True
         try:
-            result["owned_group_quiescence"] = verify_owned_group_stopped(evidence / "single-lane-worker.command.json")
+            if cleanup_profile is None:
+                result["owned_group_quiescence"] = verify_owned_group_stopped(evidence / "single-lane-worker.command.json")
+            else:
+                result["owned_group_quiescence"] = verify_owned_group_stopped(
+                    evidence / "single-lane-worker.command.json", cleanup_profile=cleanup_profile)
         except BaseException as error:
             result["owned_group_quiescence"] = {"status": "FAIL", "error_type": type(error).__name__, "error": str(error)}
+            if cleanup_profile is not None:
+                result["owned_group_quiescence"].update(
+                    timeout_observations=getattr(error, "timeout_observations", []),
+                    quiescence_observation=getattr(error, "quiescence_observation", None))
             if isinstance(error, KeyboardInterrupt):
                 cancelled = True
             if result["status"] == PASS:

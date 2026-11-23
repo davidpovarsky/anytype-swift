@@ -1,0 +1,142 @@
+{
+  "Tools/PinkhaNativeDerived/package_evidence.py": {
+    "after_sha256": "8400bd4ac7bbc61871b51f1021c3dbbb1de5800094e07129417a784d24337309",
+    "before_sha256": "c67072225f7ccacb561cb8605f34dfa96d4c1c0bdf5f2291ba145990d9414963",
+    "edits": [
+      {
+        "new": "            ('sdk06-early-products', 'BuildProducts.tar.gz'),\n            ('sdk06-ui', 'sdk06-early-products', 'BuildProducts.tar.gz'),",
+        "old": "            ('sdk06-early-products', 'BuildProducts.tar.gz'),"
+      }
+    ]
+  },
+  "Tools/PinkhaSimulatorGate/coherent_original_preflight.py": {
+    "after_sha256": "a6e0fb5f0df3f44bc8cf247e76be45cded8736308ab3349318c66fb9f549ea11",
+    "before_sha256": "dd658ab2bcb72655f90316cac46678d37b9251dbd613325f34c2b7b285a5f6c3",
+    "edits": [
+      {
+        "new": "PROTOCOL = \"pinkha-coherent-original-preflight-v1\"\nSDK_PROFILE = \"sdk06-qualified\"\nSDK_PROTOCOL = \"pinkha-sdk06-qualified-preflight-v1\"\n\n\ndef profile_protocol(profile):\n    require(profile in (None, SDK_PROFILE), \"Unknown owned preflight profile\")\n    return PROTOCOL if profile is None else SDK_PROTOCOL\n\n\ndef profile_name(profile):\n    profile_protocol(profile)\n    return batch.COHERENT_HEART_PROFILE if profile is None else SDK_PROFILE\n",
+        "old": "PROTOCOL = \"pinkha-coherent-original-preflight-v1\""
+      },
+      {
+        "new": "                 execute=batch.run_worker_command, stopped=groups.verify_owned_group_stopped, profile=None):\n        profile_protocol(profile)\n        self.profile = profile\n        self.control",
+        "old": "                 execute=batch.run_worker_command, stopped=groups.verify_owned_group_stopped):\n        self.control"
+      },
+      {
+        "new": "path.with_suffix(\".command.json\"), cleanup_profile=profile_name(self.profile))",
+        "old": "path.with_suffix(\".command.json\"), cleanup_profile=batch.COHERENT_HEART_PROFILE)"
+      },
+      {
+        "new": "def prepare(control, evidence, binding, *, factory=Commands, host=actual_host, clock=time.monotonic, profile=None):",
+        "old": "def prepare(control, evidence, binding, *, factory=Commands, host=actual_host, clock=time.monotonic):"
+      },
+      {
+        "new": "    receipt = dict(protocol=profile_protocol(profile), status=\"RUNNING\", phase=\"ADMISSION\", selected={},",
+        "old": "    receipt = dict(protocol=PROTOCOL, status=\"RUNNING\", phase=\"ADMISSION\", selected={},"
+      },
+      {
+        "new": "        if profile is None:\n            runner = factory(control, directory, receipt, checkpoint, clock=clock)\n        else:\n            runner = factory(control, directory, receipt, checkpoint, clock=clock, profile=profile)",
+        "old": "        runner = factory(control, directory, receipt, checkpoint, clock=clock)"
+      },
+      {
+        "new": "        intent = dict(protocol=profile_protocol(profile), profile=profile_name(profile), **binding,",
+        "old": "        intent = dict(protocol=PROTOCOL, profile=batch.COHERENT_HEART_PROFILE, **binding,"
+      },
+      {
+        "new": "def admitted_journal(directory, binding, *, profile=None):",
+        "old": "def admitted_journal(directory, binding):"
+      },
+      {
+        "new": "    require(intent.get(\"protocol\") == profile_protocol(profile) and intent.get(\"profile\") == profile_name(profile)",
+        "old": "    require(intent.get(\"protocol\") == PROTOCOL and intent.get(\"profile\") == batch.COHERENT_HEART_PROFILE"
+      },
+      {
+        "new": "def cleanup(control, evidence, binding, *, policy=batch.cleanup_owned, host=actual_host, profile=None):",
+        "old": "def cleanup(control, evidence, binding, *, policy=batch.cleanup_owned, host=actual_host):"
+      },
+      {
+        "new": "    receipt = dict(protocol=profile_protocol(profile), action=\"cleanup\", status=\"RUNNING\", started_at=batch.now(), **binding)",
+        "old": "    receipt = dict(protocol=PROTOCOL, action=\"cleanup\", status=\"RUNNING\", started_at=batch.now(), **binding)"
+      },
+      {
+        "new": "            if profile is None:\n                intent, known, attempted = admitted_journal(directory, binding)\n            else:\n                intent, known, attempted = admitted_journal(directory, binding, profile=profile)",
+        "old": "            intent, known, attempted = admitted_journal(directory, binding)"
+      },
+      {
+        "new": "                if profile is None:\n                    prior = prior_batch_cleanup(evidence, binding, known, attempted, observation=admission)\n                else:\n                    # An SDK current-build journal can never borrow coherent original-Products cleanup.\n                    admission[\"status\"] = \"SDK_PROFILE_REQUIRES_ITS_OWN_JOURNAL_CLEANUP\"\n                    prior = None",
+        "old": "                prior = prior_batch_cleanup(evidence, binding, known, attempted, observation=admission)"
+      }
+    ]
+  },
+  "Tools/PinkhaSimulatorGate/run_owned_single_lane.py": {
+    "after_sha256": "4c778b55751992ac62a4ff7caae3f9ac816ff1382fb741535b152f6ca49b644e",
+    "before_sha256": "72d3ea9028133a11a1d148fcb04d2f59e0757a804cbc5e9480ebdb07e6ccd361",
+    "edits": [
+      {
+        "new": "cleanup_profile in (None, owned.COHERENT_HEART_PROFILE, \"semantic-page154\", \"sdk06-enumeration\", \"sdk06-qualified\")",
+        "old": "cleanup_profile in (None, owned.COHERENT_HEART_PROFILE, \"semantic-page154\", \"sdk06-enumeration\")"
+      },
+      {
+        "new": "def supervise(command, cwd, evidence, *, context, cleanup, timeout=owned.WORKER_SECONDS, cleanup_profile=None):\n    owned.require(cleanup_profile in (None, \"sdk06-qualified\"), \"Only the explicit qualified SDK supervisor may opt in\")\n    evidence.mkdir",
+        "old": "def supervise(command, cwd, evidence, *, context, cleanup, timeout=owned.WORKER_SECONDS):\n    evidence.mkdir"
+      },
+      {
+        "new": "            if cleanup_profile is None:\n                result[\"owned_group_quiescence\"] = verify_owned_group_stopped(evidence / \"single-lane-worker.command.json\")\n            else:\n                result[\"owned_group_quiescence\"] = verify_owned_group_stopped(\n                    evidence / \"single-lane-worker.command.json\", cleanup_profile=cleanup_profile)",
+        "old": "            result[\"owned_group_quiescence\"] = verify_owned_group_stopped(evidence / \"single-lane-worker.command.json\")"
+      },
+      {
+        "new": "            result[\"owned_group_quiescence\"] = {\"status\": \"FAIL\", \"error_type\": type(error).__name__, \"error\": str(error)}\n            if cleanup_profile is not None:\n                result[\"owned_group_quiescence\"].update(\n                    timeout_observations=getattr(error, \"timeout_observations\", []),\n                    quiescence_observation=getattr(error, \"quiescence_observation\", None))\n            if isinstance(error, KeyboardInterrupt):",
+        "old": "            result[\"owned_group_quiescence\"] = {\"status\": \"FAIL\", \"error_type\": type(error).__name__, \"error\": str(error)}\n            if isinstance(error, KeyboardInterrupt):"
+      }
+    ]
+  },
+  "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": {
+    "after_sha256": "17094ffede123d25c9ee06b119aa831dcc90476aad4707366bab54aafdb1cf5a",
+    "before_sha256": "3b617ea3258f92f8573c1761376f7917901ed0bd035caf8cde7c155a189e0fba",
+    "edits": [
+      {
+        "new": "    sdk_selector_plan = getattr(args, \"sdk06_qualified_selector_plan\", None)\n    if sdk_selector_plan is not None:\n        require(build_context is None and shared_editor is not None and acknowledgement is not None,\n                \"Qualified SDK selectors require the explicit current single Debug App build\")\n        sdk_selector_plan.verify()\n    hanlin_lane = HANLIN_LANES.get(args.lane)\n    source_methods(app, selection[\"methods\"])",
+        "old": "    hanlin_lane = HANLIN_LANES.get(args.lane)\n    source_methods(app, selection[\"methods\"])"
+      },
+      {
+        "new": "            if sdk_selector_plan is None:\n                receipt[\"shared_editor_components\"] = shared_editor_existing_build.execute(\n                    app, native_configuration, udid, built, component_evidence, shared)\n            else:\n                receipt[\"shared_editor_components\"] = shared_editor_existing_build.execute(\n                    app, native_configuration, udid, built, component_evidence, shared,\n                    selector_plan=sdk_selector_plan)",
+        "old": "            receipt[\"shared_editor_components\"] = shared_editor_existing_build.execute(\n                app, native_configuration, udid, built, component_evidence, shared)"
+      },
+      {
+        "new": "    if sdk_selector_plan is not None:\n        from sdk06_qualified_continuation import capture_later_ui\n        receipt[\"ui_early_products\"] = capture_later_ui(ui_derived, evidence,\n            source_sha=head, run_id=receipt[\"run_id\"], run_attempt=receipt[\"run_attempt\"], build_flags=flags)\n        shared.write(evidence / \"execution.json\", receipt)\n    receipt[\"phase\"] = \"UI_RUNTIME_PREPARATION\"\n    shared.write(evidence / \"execution.json\", receipt)",
+        "old": "    receipt[\"phase\"] = \"UI_RUNTIME_PREPARATION\"\n    shared.write(evidence / \"execution.json\", receipt)"
+      }
+    ]
+  },
+  "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py": {
+    "after_sha256": "635a609c9641b57e54b54cb11344f5f0d247326a07311b96588657edc055a25e",
+    "before_sha256": "ff25ef9fc14630a67decf242b327c53111cfb8b77e0c2f10511a46a926aef8f0",
+    "edits": [
+      {
+        "new": "def execute(app, configuration, udid, expected_app, evidence, shared, *, selector_plan=None):",
+        "old": "def execute(app, configuration, udid, expected_app, evidence, shared):"
+      },
+      {
+        "new": "        if selector_plan is None:\n            enumeration = enumerate_selection(app, base, evidence, shared, source)\n        else:\n            from sdk06_qualified_selector import QualifiedSelectorPlan\n            host.require(isinstance(selector_plan, QualifiedSelectorPlan), \"A sealed actual selector plan is required\")\n            enumeration = selector_plan.enumerate_current(app, base, evidence, shared, source)",
+        "old": "        enumeration = enumerate_selection(app, base, evidence, shared, source)"
+      },
+      {
+        "new": "        if selector_plan is None:\n            command = [*selected_base, *[\"-only-testing:\" + identifier for identifier in enumeration[\"xcode_method_selectors\"]],\n                       \"-resultBundlePath\", str(bundle)]\n        else:\n            command = [*selected_base, *selector_plan.execution_arguments(enumeration),\n                       \"-resultBundlePath\", str(bundle)]",
+        "old": "        command = [*selected_base, *[\"-only-testing:\" + identifier for identifier in enumeration[\"xcode_method_selectors\"]],\n                   \"-resultBundlePath\", str(bundle)]"
+      }
+    ]
+  },
+  "Tools/PinkhaSimulatorGate/wave15_batch.py": {
+    "after_sha256": "65fd15d01baf4c4b89598f4797dc84ed4bc51f919c681cb8c4197927e2c7547e",
+    "before_sha256": "845f6ee3b8a3325827dc976da41592924c619b943dc5942c0a1ac6f37fc13bd6",
+    "edits": [
+      {
+        "new": "if action != \"delete\" or intent.get(\"profile\") not in (COHERENT_HEART_PROFILE, \"sdk06-qualified\"):",
+        "old": "if action != \"delete\" or intent.get(\"profile\") != COHERENT_HEART_PROFILE:"
+      },
+      {
+        "new": "        if intent.get(\"profile\") in (COHERENT_HEART_PROFILE, \"sdk06-qualified\"):\n            require(time.monotonic() <= deadline, \"Owned cleanup completed after its original 180-second deadline\")",
+        "old": "        if intent.get(\"profile\") == COHERENT_HEART_PROFILE:\n            require(time.monotonic() <= deadline, \"Owned cleanup completed after its original 180-second deadline\")"
+      }
+    ]
+  }
+}

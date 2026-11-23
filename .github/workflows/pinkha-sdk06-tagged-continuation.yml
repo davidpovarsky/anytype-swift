@@ -1,0 +1,95 @@
+name: SDK06 current Debug build with the fixed pending23 tag
+
+on:
+  workflow_call: {}
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  tagged-current-sdk06:
+    runs-on: xcode-27
+    timeout-minutes: 150
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+      GH_TOKEN: ${{ github.token }}
+      SDK_WORK: build/sdk06-tagged-work-${{ github.run_id }}-${{ github.run_attempt }}
+      SDK_EVIDENCE: build/sdk06-tagged-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - name: Checkout the current reviewed App and exact historical source objects
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Select native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Admit only reviewed tag metadata and explicitly historical controller evidence
+        run: |
+          python3 -B Tools/PinkhaSimulatorGate/sdk06_tagged_continuation.py admit \
+            --app "$GITHUB_WORKSPACE" --work "$SDK_WORK" --evidence "$SDK_EVIDENCE" --derived build/ui27-derived
+      - name: Checkout the immutable canonical Hanlin source
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/hanlin-ai
+          ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+          path: .ci/hanlin-source
+          persist-credentials: false
+      - name: Prepare the exact Hanlin source snapshot
+        run: |
+          python3 -B Tools/Hanlin/prepare_sdk.py --source .ci/hanlin-source
+          python3 -B Tools/Hanlin/prepare_sdk.py --check
+          cp Dependencies/Hanlin/.pinkha-source.json "$SDK_EVIDENCE/hanlin-snapshot.json"
+      - name: Install the separately qualified current composition runtime
+        run: |
+          python3 -B Tools/PinkhaNativeDerived/download_heart_runtime.py \
+            --runtime-profile r15-attachment-authorized-current-read-v1 --source-run-id 45091223011 \
+            --app-source "$GITHUB_WORKSPACE" --expected-app-branch "$GITHUB_REF_NAME" \
+            --work "build/sdk06-tagged-heart-${{ github.run_id }}-${{ github.run_attempt }}" \
+            --evidence "$SDK_EVIDENCE/heart"
+      - name: Restore only the exact compatible d254 compilation cache
+        id: original-compilation-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            build/ui27-derived/Build
+            build/ui27-derived/SourcePackages
+            build/ui27-derived/ModuleCache.noindex
+            build/ui27-derived/SDKStatCaches.noindex
+            build/ui27-derived/SDKExplicitPrecompiledModules
+            build/ui27-derived/CompilationCache.noindex
+            build/ui27-derived/info.plist
+            build/ui27-derived-ui/Build
+            build/ui27-derived-ui/ModuleCache.noindex
+          key: pinkha-ui27-compiled-v2-arm64-xcode27.0-Debug-Anytype-039ba744ad174afaafa75d5ab1365ef3bd59d490bbb0c9e0573c4e1c49f9799a-d254a4a1ccd9288f585ff9374088cbaf965b36b4
+      - name: Create and durably journal only this attempt's owned simulator pair
+        run: |
+          python3 -B Tools/PinkhaSimulatorGate/sdk06_tagged_continuation.py prepare \
+            --app "$GITHUB_WORKSPACE" --work "$SDK_WORK" --evidence "$SDK_EVIDENCE" --derived build/ui27-derived
+      - name: Build current Debug App once and require actual exact23 tag enumeration before execution
+        timeout-minutes: 110
+        run: |
+          python3 -B Tools/PinkhaSimulatorGate/sdk06_tagged_continuation.py execute \
+            --app "$GITHUB_WORKSPACE" --work "$SDK_WORK" --evidence "$SDK_EVIDENCE" --derived build/ui27-derived
+      - name: Finish only this exact attempt's owned simulator cleanup
+        if: always()
+        run: |
+          python3 -B Tools/PinkhaSimulatorGate/sdk06_tagged_continuation.py cleanup \
+            --app "$GITHUB_WORKSPACE" --work "$SDK_WORK" --evidence "$SDK_EVIDENCE" --derived build/ui27-derived
+      - name: Preserve original native and UI Products plus all actual diagnostics
+        if: always()
+        run: python3 -B Tools/PinkhaNativeDerived/package_evidence.py "$SDK_EVIDENCE"
+      - name: Retain exact current SDK06 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-SDK06-Tagged-Continuation-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/sdk06-tagged-evidence-${{ github.run_id }}-${{ github.run_attempt }}/Pinkha-Native-Derived-Evidence.zip
+          retention-days: 14
+          if-no-files-found: error

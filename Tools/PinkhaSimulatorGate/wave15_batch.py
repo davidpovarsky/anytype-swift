@@ -1011,7 +1011,7 @@ def cleanup_owned(intent, evidence):
                     result = subprocess.run(["xcrun", "simctl", action, device["udid"]], capture_output=True,
                                             timeout=min(20, remaining))
                 except subprocess.TimeoutExpired as error:
-                    if action != "delete" or intent.get("profile") != COHERENT_HEART_PROFILE:
+                    if action != "delete" or intent.get("profile") not in (COHERENT_HEART_PROFILE, "sdk06-qualified"):
                         raise
                     from coherent_release_cleanup import reconcile_delete_timeout
                     reconcile_delete_timeout(device, error, entry=entry, report=report,
@@ -1020,7 +1020,7 @@ def cleanup_owned(intent, evidence):
                 entry[action + "_exit_code"] = result.returncode
                 require(result.returncode == 0, "Owned simulator cleanup failed")
             entry["status"] = "DELETED_OWNED_SIMULATOR"
-        if intent.get("profile") == COHERENT_HEART_PROFILE:
+        if intent.get("profile") in (COHERENT_HEART_PROFILE, "sdk06-qualified"):
             require(time.monotonic() <= deadline, "Owned cleanup completed after its original 180-second deadline")
     except BaseException as error:
         report.update(status="CANCELLED" if isinstance(error, KeyboardInterrupt) else "FAIL",

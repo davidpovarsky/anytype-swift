@@ -81,12 +81,13 @@
       "from": "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift",
       "to": "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift",
       "baselineBlob": "fd6a031c343d39d21dec10af38dff66b2ca1db79",
-      "replacementBlob": "8f91d07910a8a5864733fdec3245f9454271656f",
-      "reason": "Retain the old focus lifecycle cases and add four methods/five invocations for pending edits, acknowledged remote replacement, reused handler identity and same-handler fork/composition ownership.",
+      "replacementBlob": "64f93b699bc91e19432e23d4aac48c7a447fbc45",
+      "reason": "Retain the old focus lifecycle cases and add four methods/five invocations for pending edits, acknowledged remote replacement, reused handler identity and same-handler fork/composition ownership. Add only the fixed pending SDK06 tag to the ten selected @Test attributes; the exact literal inverse restores the previously reviewed complete file, with all seventeen bodies/signatures/arguments and seven excluded declarations unchanged.",
       "sharedSources": [],
       "validation": [
         "Reviewed integration diff and exact replacement blob retained.",
-        "Shared pure editor evidence: docs/validation/20261121-shared-editor-unit. Native UIKit/Properties acceptance is a separate gate and remains unclaimed by this map."
+        "Shared pure editor evidence: docs/validation/20261121-shared-editor-unit. Native UIKit/Properties acceptance is a separate gate and remains unclaimed by this map.",
+        "docs/validation/20261123-sdk06-tagged-continuation: fixed metadata inverse to 7de5fe65902af25b5421f4cb215ca31c4b3580bf. Previous evidence is retained as historical scope; no prior test is rerun or relabelled, and current tagged XCTest selection remains NOT_RUN until actual exact23 enumeration and32-case validation."
       ]
     },
     {
@@ -1568,8 +1569,8 @@
       "from": "Tools/PinkhaNativeDerived/package_evidence.py",
       "to": "Tools/PinkhaNativeDerived/package_evidence.py",
       "baselineBlob": "e55d2a959296630686a60aa5d927a3b4c34401f9",
-      "replacementBlob": "23237cc9b8250906f527417b7e963672f2c2a5c9",
-      "reason": "Preserve successful original SDK06/coherent native/coherent UI BuildProducts tar archives in the existing evidence ZIP before later admission can fail. Admit exactly three scope paths; all original suffix, xcresult, and attachment preservation stays unchanged.",
+      "replacementBlob": "417f08e4f6efeedd128b5cb2020b79e9c5e315df",
+      "reason": "Preserve successful original SDK06/coherent native/coherent UI BuildProducts tar archives in the existing evidence ZIP before later admission can fail. Admit exactly the original three scope paths plus sdk06-ui/sdk06-early-products/BuildProducts.tar.gz for the later SDK UI build. All original suffix, xcresult, attachment preservation and archive exclusions stay unchanged.",
       "sharedSources": [
         {
           "path": "Tools/PinkhaSimulatorGate/early_build_products.py",
@@ -1580,7 +1581,8 @@
         "Root reviewed the exact seven-line package filter diff in worker02a3873c and retained original evidence behavior; no application, SDK, native transport, or acceptance assertions changed.",
         "Four new focused controls passed with original log SHA256 d0a6d67db43adf1296378aec67d9e5ece260732b7994ea68d78d120dfbbb89e4, including actual ZIP transport and preservation before controlled first admission failure. No existing tests rerun.",
         "Archives are observed build bytes only, with build_reuse_enabled=false; exact dependency, code-signature, runtime, current-source and actual-execution qualification remain mandatory.",
-        "Reviewed e1 literal semantic-page154 addition to the existing capture scope allowlist only. Original archive/member/mode/byte preservation behavior and other scopes remain unchanged; this capture itself never admits product reuse or acceptance."
+        "Reviewed e1 literal semantic-page154 addition to the existing capture scope allowlist only. Original archive/member/mode/byte preservation behavior and other scopes remain unchanged; this capture itself never admits product reuse or acceptance.",
+        "The sole additional package allowlist member is ('sdk06-ui', 'sdk06-early-products', 'BuildProducts.tar.gz'); removing that exact line recovers original blob 23237cc9b8250906f527417b7e963672f2c2a5c9. Existing named transport method test_sdk06_qualified_lifecycle.QualifiedLifecycleControls.test_later_ui_archive_survives_exact_transport_and_other_archives_stay_excluded passed in the original attempt1 log SHA256 d78c980ac92726a90811df9956fcc42fa95e121d1aacd5d384680828bae6e8e8; source-before/after SHA256 54e5fce7dba955dd5554398140e47be2f3fc425abdb0656fdf7a4b4593ab8e17 binds actual package SHA256 8400bd4ac7bbc61871b51f1021c3dbbb1de5800094e07129417a784d24337309. That method executed the packager, verified exact archive and manifest ZIP bytes, and rejected an unrelated archive. The original aggregate attempt remains FAILED (errors=7); only this named retained PASS supports this mapping. No old control or product method was rerun."
       ]
     },
     {

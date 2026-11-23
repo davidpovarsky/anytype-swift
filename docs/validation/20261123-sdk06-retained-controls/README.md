@@ -51,10 +51,10 @@ rejects an unknown source/proof hash, a symlink input, unsafe path, missing or
 duplicate named outcome, a skipped/failed batch, incomplete terminal or unmatched
 current method declaration. It has no caller-supplied exception map.
 
-The separately proposed SDK continuation composition remains **unadmitted**.
-Its final six-file hooks, exact source review and actual new control receipts
-must be frozen and reviewed before any extension is added. The existing five
-modules do not confer coverage on newly added controller behavior.
+At the original baseline checkpoint the SDK continuation composition was **unadmitted**.
+The later fixed extension is documented separately under composition and binds
+its frozen hooks and actual new control receipts. The existing five modules
+do not confer coverage on newly added controller behavior.
 
 ## New validation
 

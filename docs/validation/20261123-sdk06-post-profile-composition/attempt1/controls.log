@@ -1,0 +1,51 @@
+test_sdk_qualified_profile_addendum_preserves_history_and_rejects_scope_relabelling (test_sdk06_retained_controls.RetainedControllerAdmissionTests.test_sdk_qualified_profile_addendum_preserves_history_and_rejects_scope_relabelling) ... ERROR
+test_exact_composed_dependencies_preserve_original_scopes_and_reject_unreviewed_source_or_events (test_sdk06_dependency_composition.DependencyCompositionControls.test_exact_composed_dependencies_preserve_original_scopes_and_reject_unreviewed_source_or_events) ... ERROR
+
+======================================================================
+ERROR: test_sdk_qualified_profile_addendum_preserves_history_and_rejects_scope_relabelling (test_sdk06_retained_controls.RetainedControllerAdmissionTests.test_sdk_qualified_profile_addendum_preserves_history_and_rejects_scope_relabelling)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/test_sdk06_retained_controls.py", line 169, in test_sdk_qualified_profile_addendum_preserves_history_and_rejects_scope_relabelling
+    receipt = admission.verify_retained_controls(self.app)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 700, in verify_retained_controls
+    historical_admission, historical_files, dependency_receipt = post_profile_dependency_view(admission, files)
+                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 617, in post_profile_dependency_view
+    methods = fixed_dependency_control_outcomes(kind, record, events, files[proof["log"]], proof["methods"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 458, in fixed_dependency_control_outcomes
+    batches = unittest_batches(log_raw)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 106, in unittest_batches
+    require(line == "OK" and all(item["outcome"] == "ok" for item in pending),
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 27, in require
+    raise RetainedControlError(message)
+sdk06_retained_controls.RetainedControlError: Original controller batch did not pass every named method
+
+======================================================================
+ERROR: test_exact_composed_dependencies_preserve_original_scopes_and_reject_unreviewed_source_or_events (test_sdk06_dependency_composition.DependencyCompositionControls.test_exact_composed_dependencies_preserve_original_scopes_and_reject_unreviewed_source_or_events)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/test_sdk06_dependency_composition.py", line 25, in test_exact_composed_dependencies_preserve_original_scopes_and_reject_unreviewed_source_or_events
+    actual = retained.verify_retained_controls(app)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 700, in verify_retained_controls
+    historical_admission, historical_files, dependency_receipt = post_profile_dependency_view(admission, files)
+                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 617, in post_profile_dependency_view
+    methods = fixed_dependency_control_outcomes(kind, record, events, files[proof["log"]], proof["methods"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 458, in fixed_dependency_control_outcomes
+    batches = unittest_batches(log_raw)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 106, in unittest_batches
+    require(line == "OK" and all(item["outcome"] == "ok" for item in pending),
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 27, in require
+    raise RetainedControlError(message)
+sdk06_retained_controls.RetainedControlError: Original controller batch did not pass every named method
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.361s
+
+FAILED (errors=2)

@@ -8,7 +8,7 @@ import UIKit
 @MainActor
 struct TextBlockFocusLifecycleTests {
     @Test("A reused row must render a different pending owner, including its old marked buffer",
-          arguments: [false, true])
+          .tags(.pinkhaSDK06Pending23), arguments: [false, true])
     func reusedCellDoesNotPreserveDifferentPendingOwner(composing: Bool) async throws {
         let fixture = try TextBlockFocusWindow()
         defer { fixture.close() }
@@ -42,7 +42,7 @@ struct TextBlockFocusLifecycleTests {
         #expect(input.markedTextRange == nil)
     }
 
-    @Test("A handler keeps input through its block fork; only an explicit replacement ends composition")
+    @Test("A handler keeps input through its block fork; only an explicit replacement ends composition", .tags(.pinkhaSDK06Pending23))
     func sameInputOwnerSurvivesForkAndExplicitReplacementEndsComposition() async throws {
         let fixture = try TextBlockFocusWindow()
         defer { fixture.close() }
@@ -79,7 +79,7 @@ struct TextBlockFocusLifecycleTests {
         #expect(input.markedTextRange == nil)
     }
 
-    @Test("An unacknowledged local word survives stale and empty native row configurations")
+    @Test("An unacknowledged local word survives stale and empty native row configurations", .tags(.pinkhaSDK06Pending23))
     func pendingLocalTextSurvivesNativeReconfiguration() async throws {
         let fixture = try TextBlockFocusWindow()
         defer { fixture.close() }
@@ -112,7 +112,7 @@ struct TextBlockFocusLifecycleTests {
         }
     }
 
-    @Test("A completed local write accepts subsequent remote and undo replacements")
+    @Test("A completed local write accepts subsequent remote and undo replacements", .tags(.pinkhaSDK06Pending23))
     func completedLocalTextAcceptsRemoteReplacement() async throws {
         let fixture = try TextBlockFocusWindow()
         defer { fixture.close() }
@@ -211,7 +211,7 @@ struct TextBlockFocusLifecycleTests {
     }
 
     @Test("A newly inserted row uses its collection's actual editing state for initial focus",
-          arguments: [false, true])
+          .tags(.pinkhaSDK06Pending23), arguments: [false, true])
     func insertedCellUsesCurrentEditingBeforeFocus(editing: Bool) async throws {
         let fixture = try TextBlockFocusWindow()
         defer { fixture.close() }
@@ -251,7 +251,7 @@ struct TextBlockFocusLifecycleTests {
     }
 
     @Test("A reused collection cell applies the new owner's lock before its one-shot focus",
-          arguments: [false, true])
+          .tags(.pinkhaSDK06Pending23), arguments: [false, true])
     func reusedCellUsesCurrentLockBeforeFocus(newLocked: Bool) async throws {
         let fixture = try TextBlockFocusWindow()
         defer { fixture.close() }
@@ -299,7 +299,7 @@ struct TextBlockFocusLifecycleTests {
         }
     }
 
-    @Test("An initial request survives detached configuration and a same-row echo")
+    @Test("An initial request survives detached configuration and a same-row echo", .tags(.pinkhaSDK06Pending23))
     func initialFocusWaitsForAttachment() async throws {
         let fixture = try TextBlockFocusWindow()
         defer { fixture.close() }
@@ -370,7 +370,7 @@ struct TextBlockFocusLifecycleTests {
         #expect(row.textView.textView.selectedRange == NSRange(location: row.textView.textView.text.utf16.count, length: 0))
     }
 
-    @Test("A synchronous Enter handoff supersedes the deferred caret request")
+    @Test("A synchronous Enter handoff supersedes the deferred caret request", .tags(.pinkhaSDK06Pending23))
     func explicitHandoffDoesNotReplayInitialCaret() async throws {
         let fixture = try TextBlockFocusWindow()
         defer { fixture.close() }
@@ -390,7 +390,7 @@ struct TextBlockFocusLifecycleTests {
     }
 
     @Test("Rebind, detach and editor replacement invalidate the queued request",
-          arguments: ["rebind", "detach", "editorContext"])
+          .tags(.pinkhaSDK06Pending23), arguments: ["rebind", "detach", "editorContext"])
     func staleFocusDoesNotSurviveRowLifetime(change: String) async throws {
         let fixture = try TextBlockFocusWindow()
         defer { fixture.close() }
@@ -534,7 +534,7 @@ struct TextBlockFocusLifecycleTests {
         #expect(next.textView.textView.selectedRange == NSRange(location: 0, length: 0))
     }
 
-    @Test("Equal row content still delivers a new request, while a plain echo does not")
+    @Test("Equal row content still delivers a new request, while a plain echo does not", .tags(.pinkhaSDK06Pending23))
     func requestIdentityParticipatesInCellConfigurationEquality() async throws {
         let fixture = try TextBlockFocusWindow()
         defer { fixture.close() }

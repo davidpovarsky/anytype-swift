@@ -1,0 +1,27 @@
+{
+  "actual_following_terminal": "ok\\n",
+  "diagnostic_sequence_utf8": "COHERENT_ORIGINAL_CWD_CONTROL {\"coherentOwnedPID\": 2215159, \"coherentReturnCode\": 0, \"defaultOriginalCwdFieldAbsent\": true, \"defaultOwnedPID\": 2215162, \"nestedCleanup\": \"PASS\", \"nestedGroupsChecked\": 1, \"originalBytesUnchangedAfterNestedCleanup\": true, \"originalCwdMatchesActualProcess\": true, \"originalSHA256\": \"52068f76fcc1faeaa601a3f6c485a9ad8686a0053bddd48240ef61a4efcd8a62\", \"productTestsExecuted\": 0}\n",
+  "failed_attempt_preserved": "e34bcb2af3075675526ce663ea59b7c5b486e3e3",
+  "legacy_unittest_batches_changed": false,
+  "methods_to_execute_after_review": [
+    "test_sdk06_retained_controls.RetainedControllerAdmissionTests.test_sdk_qualified_profile_addendum_preserves_history_and_rejects_scope_relabelling",
+    "test_sdk06_dependency_composition.DependencyCompositionControls.test_exact_composed_dependencies_preserve_original_scopes_and_reject_unreviewed_source_or_events"
+  ],
+  "old_controls_rerun": 0,
+  "original_log_path": "docs/validation/20261123-coherent-nested-repair/attempt1/controls.log",
+  "original_log_sha256": "27efe77166d4ec098b9008a4b3727c5dd49c55dd5922f513d67beca577aa8700",
+  "original_source": "b7c74c8bac972dedf47f7382ffaeb6f66e424737",
+  "schema": "sdk06-fixed-original-interleaved-log-parser-v1",
+  "selector_admission_created": false,
+  "source_edits": {
+    "Tools/PinkhaSimulatorGate/sdk06_retained_controls.py": {
+      "after_sha256": "cf07b4268fe59a2fbdd531e6a09d568db8cac818ce8a948980af74153bbdf141",
+      "before_sha256": "4a201059fd68d8e380dfe1dd42b574ddbd7a820fe50ec6afe05046e71b79ef0c"
+    },
+    "Tools/PinkhaSimulatorGate/test_sdk06_dependency_composition.py": {
+      "after_sha256": "20a3eca8a3359e33d74732eabacec55bbe1e12351abc670b5fa9481ed81d0592",
+      "before_sha256": "c445cb10fd8b39dfedf8debb7f8c04abae26045d8a83c10e629a1881e05e57b5"
+    }
+  },
+  "tests_executed_on_corrected_source": 0
+}

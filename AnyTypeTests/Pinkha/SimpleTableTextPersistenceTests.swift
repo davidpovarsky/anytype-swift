@@ -8,7 +8,7 @@ import UIKit
 @Suite("Table text shared persistence", .serialized)
 @MainActor
 struct SimpleTableTextPersistenceTests {
-    @Test("A table delegate freezes text before its view is reused")
+    @Test("A table delegate freezes text before its view is reused", .tags(.pinkhaSDK06Pending23))
     func acceptedSnapshotSurvivesViewReuse() async throws {
         let fixture = SimpleTableTextFixture()
         let entered = SimpleTableTextGate()
@@ -31,7 +31,7 @@ struct SimpleTableTextPersistenceTests {
         #expect(fixture.writes.count == 1)
     }
 
-    @Test("Later table drafts coalesce behind the in-flight native acknowledgement")
+    @Test("Later table drafts coalesce behind the in-flight native acknowledgement", .tags(.pinkhaSDK06Pending23))
     func laterDraftKeepsTheLatestAcceptedSnapshot() async throws {
         let fixture = SimpleTableTextFixture()
         let firstEntered = SimpleTableTextGate()
@@ -63,7 +63,7 @@ struct SimpleTableTextPersistenceTests {
         #expect(!fixture.handler.hasPendingTextChanges)
     }
 
-    @Test("Native rejection retains the table draft until an actual retry succeeds")
+    @Test("Native rejection retains the table draft until an actual retry succeeds", .tags(.pinkhaSDK06Pending23))
     func nativeRejectionKeepsTheTableDirty() async throws {
         let fixture = SimpleTableTextFixture()
         let text = NSAttributedString(string: "retry table text").sendable()
@@ -81,7 +81,7 @@ struct SimpleTableTextPersistenceTests {
         #expect(!fixture.handler.hasPendingTextChanges)
     }
 
-    @Test("Ending a search-owned table edit commits the captured local buffer")
+    @Test("Ending a search-owned table edit commits the captured local buffer", .tags(.pinkhaSDK06Pending23))
     func defocusCommitsTheDeferredSearchBuffer() async throws {
         let fixture = SimpleTableTextFixture()
         let entered = SimpleTableTextGate()
@@ -108,7 +108,7 @@ struct SimpleTableTextPersistenceTests {
         #expect(!fixture.handler.hasPendingTextChanges)
     }
 
-    @Test("Rebinding a nonforking table handler retires the previous row draft")
+    @Test("Rebinding a nonforking table handler retires the previous row draft", .tags(.pinkhaSDK06Pending23))
     func rowRebindCannotWriteIntoTheNewOwner() async throws {
         let fixture = SimpleTableTextFixture()
         let input = UITextView()
@@ -125,7 +125,7 @@ struct SimpleTableTextPersistenceTests {
         #expect(!fixture.handler.hasPendingTextChanges)
     }
 
-    @Test("A table structural key waits for the pending text acknowledgement")
+    @Test("A table structural key waits for the pending text acknowledgement", .tags(.pinkhaSDK06Pending23))
     func structuralKeyWaitsForAcceptedText() async throws {
         let entered = SimpleTableTextGate()
         let release = SimpleTableTextGate()
@@ -156,7 +156,7 @@ struct SimpleTableTextPersistenceTests {
     }
 
     @Test("Explicit replacements claim dirty ownership before publishing their live value",
-          arguments: [false, true])
+          .tags(.pinkhaSDK06Pending23), arguments: [false, true])
     func replacementClaimsPendingOwnershipBeforePublication(asyncEntry: Bool) async throws {
         let fixture = SimpleTableTextFixture()
         let entered = SimpleTableTextGate()
@@ -189,7 +189,7 @@ struct SimpleTableTextPersistenceTests {
         withExtendedLifetime(subscription) {}
     }
 
-    @Test("Markdown styling publishes synchronously and joins the same native writer")
+    @Test("Markdown styling publishes synchronously and joins the same native writer", .tags(.pinkhaSDK06Pending23))
     func markdownStyleWaitsForEarlierNativeWrite() async throws {
         let markdown = SimpleTableMarkdownListener()
         let fixture = SimpleTableTextFixture(markdownListener: markdown)
@@ -226,7 +226,7 @@ struct SimpleTableTextPersistenceTests {
     }
 
     @Test("Markdown structural commands keep their captured text before subsequent typing",
-          arguments: [false, true])
+          .tags(.pinkhaSDK06Pending23), arguments: [false, true])
     func markdownCommandsKeepCapturedTextBeforeLaterTyping(addBlock: Bool) async throws {
         let markdown = SimpleTableMarkdownListener()
         let fixture = SimpleTableTextFixture(markdownListener: markdown)
@@ -271,7 +271,7 @@ struct SimpleTableTextPersistenceTests {
     }
 
     @Test("An in-flight markdown add cannot continue after row ownership changes, even if the ID returns",
-          arguments: [false, true])
+          .tags(.pinkhaSDK06Pending23), arguments: [false, true])
     func markdownAddBlockDoesNotContinueAfterOwnerRebind(returnToOriginalID: Bool) async throws {
         let markdown = SimpleTableMarkdownListener()
         let fixture = SimpleTableTextFixture(markdownListener: markdown)
@@ -301,7 +301,7 @@ struct SimpleTableTextPersistenceTests {
         #expect(!fixture.handler.hasPendingTextChanges)
     }
 
-    @Test("A queued markdown type change is retired before it can touch a newly bound row")
+    @Test("A queued markdown type change is retired before it can touch a newly bound row", .tags(.pinkhaSDK06Pending23))
     func queuedMarkdownCommandIsRetiredWhenRowChanges() async throws {
         let markdown = SimpleTableMarkdownListener()
         let fixture = SimpleTableTextFixture(markdownListener: markdown)

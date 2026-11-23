@@ -1,0 +1,48 @@
+{
+  "status": "SOURCE_FROZEN_NEW_COMPOSITION_CONTROL_NOT_RUN",
+  "base_composition_source": "692074770249afaeb386c019b6c3abe781a3c199",
+  "baseline_component_methods_retained_without_rerun": 4,
+  "baseline_test_remainder_ast_equal": true,
+  "baseline_helper_declarations_byte_identical": [
+    "RetainedControlError",
+    "require",
+    "digest",
+    "decode_json",
+    "read_bound",
+    "declaration_bytes",
+    "test_declarations",
+    "unittest_batches",
+    "wave_scope",
+    "namespace_tree",
+    "observer_remainder"
+  ],
+  "main_exact_three_hunk_inverse_equals_baseline": true,
+  "retained_controller_methods_unchanged": 98,
+  "historical_qualified_composition_methods": 18,
+  "historical_kernel_methods": 9,
+  "new_methods_to_execute": [
+    "test_fixed_composition_retains_98_only_with_exact_views_and_original_11_plus_7_plus_9"
+  ],
+  "new_tests_executed": 0,
+  "old_tests_executed": 0,
+  "product_tests_executed": 0,
+  "new_source_sha256": {
+    "Tools/PinkhaSimulatorGate/sdk06_retained_controls.py": "823c9b1de3b196a6a3cb1755ead973ff5235c0b7db65a59014ce3e8bb7560e39",
+    "Tools/PinkhaSimulatorGate/test_sdk06_retained_controls.py": "4cfe3b17e9072b70ce85821e5e28598f2dec6c943014efb4817b6b93aa007e5a",
+    "Tools/PinkhaSimulatorGate/sdk06-retained-controls.json": "e529e563a43dcaa4ca043abbc6bc0c0419c669434ed5e3a9c600a3eadfbfbbb5"
+  },
+  "exact_main_edits": [
+    {
+      "old": "    require(len(files) == len(admission[\"proof_files\"]), \"Duplicate proof path\")\n    sources = {}",
+      "new": "    require(len(files) == len(admission[\"proof_files\"]), \"Duplicate proof path\")\n    composed_bases, composition_receipt = ({}, None)\n    if admission.get(\"composition_extension\") is not None:\n        composed_bases, composition_receipt = verify_frozen_composition(admission[\"composition_extension\"], files)\n    sources = {}"
+    },
+    {
+      "old": "        current = read_bound(root, path, item[\"current_sha256\"])\n        original = files[item[\"original_snapshot\"]]",
+      "new": "        current = read_bound(root, path, item[\"current_sha256\"])\n        if path in composed_bases:\n            require(digest(composed_bases[path]) == item[\"composition_base_sha256\"],\n                    \"Retained dependency baseline is not the admitted composition view\")\n            current = composed_bases[path]\n        original = files[item[\"original_snapshot\"]]"
+    },
+    {
+      "old": "            \"origins\": admission[\"origins\"], \"current_catalog\": catalog,",
+      "new": "            \"origins\": admission[\"origins\"], \"current_catalog\": catalog,\n            \"fixed_composition\": composition_receipt,"
+    }
+  ]
+}
