@@ -1,0 +1,707 @@
+{
+  "actual_counts": {
+    "errors": 0,
+    "failures": 0,
+    "run": 1,
+    "skipped": 0
+  },
+  "commands": [
+    {
+      "argv": [
+        "/usr/bin/git",
+        "-c",
+        "core.packedGitWindowSize=16m",
+        "-c",
+        "core.packedGitLimit=64m",
+        "-C",
+        "/run/anytapy-wave15-source-overlay-20261123/native",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cleanup": {
+        "absent": true,
+        "actions": []
+      },
+      "cleanup_error": null,
+      "elapsed_seconds": 0.06530689634382725,
+      "name": "before-head",
+      "persistence_errors": [],
+      "pgid": 3239950,
+      "pid": 3239950,
+      "primary_error": null,
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "-c",
+        "core.packedGitWindowSize=16m",
+        "-c",
+        "core.packedGitLimit=64m",
+        "-C",
+        "/run/anytapy-wave15-source-overlay-20261123/native",
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all"
+      ],
+      "cleanup": {
+        "absent": true,
+        "actions": []
+      },
+      "cleanup_error": null,
+      "elapsed_seconds": 0.12237510550767183,
+      "name": "before-status",
+      "persistence_errors": [],
+      "pgid": 3239951,
+      "pid": 3239951,
+      "primary_error": null,
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "-c",
+        "core.packedGitWindowSize=16m",
+        "-c",
+        "core.packedGitLimit=64m",
+        "-C",
+        "/run/anytapy-wave15-source-overlay-20261123/native",
+        "ls-files",
+        "--stage",
+        "-z",
+        "--",
+        ".github/workflows/pinkha-loaded-account-arm64-compiler.yml",
+        "Tools/AnyEngineValidation/loaded_account_witness/native-compiler-support.json",
+        "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-acquire.sh",
+        "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-contract.json",
+        "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-install.sh",
+        "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler_producer.py",
+        "Tools/AnyEngineValidation/loaded_account_witness/portable/test_compiler_bind_order.py",
+        "docs/validation/20261123-loaded-account-portable/compiler-bind-order/control-inputs.json",
+        "docs/validation/20261123-loaded-account-portable/compiler-bind-order/run-control.py",
+        "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/audit/member-map.json",
+        "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/audit/source-cause-audit.json",
+        "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/commands/002-before-blob-00.stdout",
+        "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/commands/019-acquire-inspect-before.stdout",
+        "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/commands/021-acquire-cleanup-before.stdout",
+        "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/result.json",
+        "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/source-after.json",
+        "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/source-before.json"
+      ],
+      "cleanup": {
+        "absent": true,
+        "actions": []
+      },
+      "cleanup_error": null,
+      "elapsed_seconds": 0.06895139720290899,
+      "name": "before-index",
+      "persistence_errors": [],
+      "pgid": 3239952,
+      "pid": 3239952,
+      "primary_error": null,
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "-c",
+        "core.packedGitWindowSize=16m",
+        "-c",
+        "core.packedGitLimit=64m",
+        "-C",
+        "/run/anytapy-wave15-source-overlay-20261123/native",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cleanup": {
+        "absent": true,
+        "actions": []
+      },
+      "cleanup_error": null,
+      "elapsed_seconds": 0.0653349757194519,
+      "name": "after-head",
+      "persistence_errors": [],
+      "pgid": 3239953,
+      "pid": 3239953,
+      "primary_error": null,
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "-c",
+        "core.packedGitWindowSize=16m",
+        "-c",
+        "core.packedGitLimit=64m",
+        "-C",
+        "/run/anytapy-wave15-source-overlay-20261123/native",
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all"
+      ],
+      "cleanup": {
+        "absent": true,
+        "actions": []
+      },
+      "cleanup_error": null,
+      "elapsed_seconds": 0.06537233665585518,
+      "name": "after-status",
+      "persistence_errors": [],
+      "pgid": 3239954,
+      "pid": 3239954,
+      "primary_error": null,
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "-c",
+        "core.packedGitWindowSize=16m",
+        "-c",
+        "core.packedGitLimit=64m",
+        "-C",
+        "/run/anytapy-wave15-source-overlay-20261123/native",
+        "ls-files",
+        "--stage",
+        "-z",
+        "--",
+        ".github/workflows/pinkha-loaded-account-arm64-compiler.yml",
+        "Tools/AnyEngineValidation/loaded_account_witness/native-compiler-support.json",
+        "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-acquire.sh",
+        "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-contract.json",
+        "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-install.sh",
+        "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler_producer.py",
+        "Tools/AnyEngineValidation/loaded_account_witness/portable/test_compiler_bind_order.py",
+        "docs/validation/20261123-loaded-account-portable/compiler-bind-order/control-inputs.json",
+        "docs/validation/20261123-loaded-account-portable/compiler-bind-order/run-control.py",
+        "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/audit/member-map.json",
+        "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/audit/source-cause-audit.json",
+        "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/commands/002-before-blob-00.stdout",
+        "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/commands/019-acquire-inspect-before.stdout",
+        "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/commands/021-acquire-cleanup-before.stdout",
+        "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/result.json",
+        "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/source-after.json",
+        "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/source-before.json"
+      ],
+      "cleanup": {
+        "absent": true,
+        "actions": []
+      },
+      "cleanup_error": null,
+      "elapsed_seconds": 0.06524461600929499,
+      "name": "after-index",
+      "persistence_errors": [],
+      "pgid": 3239955,
+      "pid": 3239955,
+      "primary_error": null,
+      "returncode": 0
+    }
+  ],
+  "controller_pid": 3239949,
+  "docker_invocations": 0,
+  "elapsed_seconds": 0.5401306701824069,
+  "events": [
+    {
+      "event": "START",
+      "method": "compiler_bind_order_control.CompilerBindOrderOriginalControl.test_original_docker_bind_order_accepts_only_exact_owned_multiset"
+    },
+    {
+      "event": "PASS",
+      "method": "compiler_bind_order_control.CompilerBindOrderOriginalControl.test_original_docker_bind_order_accepts_only_exact_owned_multiset"
+    }
+  ],
+  "final_errors": [],
+  "historical_cleanup_status": "FAILED",
+  "historical_producer_status": "FAILED",
+  "loaded_after": {
+    "__main__": {
+      "bytes": 13685,
+      "git_blob": "925bf068fe80832d58f259001a492f3ad20bf818",
+      "physical": {
+        "st_ctime_ns": "1795468454539113123",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "1990",
+        "st_mode": "33204",
+        "st_mtime_ns": "1795468454539113123",
+        "st_nlink": "1",
+        "st_size": "13685",
+        "st_uid": "1001"
+      },
+      "sha256": "6ba69e92b94fa90a22e0baf61397fc37e61c2f06d30b3eb46881ec333117f548"
+    },
+    "compiler_bind_order_control": {
+      "bytes": 6887,
+      "git_blob": "eb9d1bcd3b6934f6a883d7de503070fc9b9b7c20",
+      "physical": {
+        "st_ctime_ns": "1795468306638449083",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "1988",
+        "st_mode": "33204",
+        "st_mtime_ns": "1795468306638449083",
+        "st_nlink": "1",
+        "st_size": "6887",
+        "st_uid": "1001"
+      },
+      "sha256": "d28326e7cef79147c94d61dc576bb0587b83656a9bcb85023fda59919fa129d6"
+    },
+    "compiler_bind_order_subject": {
+      "bytes": 34315,
+      "git_blob": "443bfb396faa61fa9d3c697af45bb7e3366f3097",
+      "physical": {
+        "st_ctime_ns": "1795468306636369151",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "576",
+        "st_mode": "33188",
+        "st_mtime_ns": "1795468306636369151",
+        "st_nlink": "1",
+        "st_size": "34315",
+        "st_uid": "1001"
+      },
+      "sha256": "d883a313a78b95b1b06939bf4242b3ea8e80998a4f618a144757177db12fceb9"
+    }
+  },
+  "loaded_before": {
+    "__main__": {
+      "bytes": 13685,
+      "git_blob": "925bf068fe80832d58f259001a492f3ad20bf818",
+      "physical": {
+        "st_ctime_ns": "1795468454539113123",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "1990",
+        "st_mode": "33204",
+        "st_mtime_ns": "1795468454539113123",
+        "st_nlink": "1",
+        "st_size": "13685",
+        "st_uid": "1001"
+      },
+      "sha256": "6ba69e92b94fa90a22e0baf61397fc37e61c2f06d30b3eb46881ec333117f548"
+    },
+    "compiler_bind_order_control": {
+      "bytes": 6887,
+      "git_blob": "eb9d1bcd3b6934f6a883d7de503070fc9b9b7c20",
+      "physical": {
+        "st_ctime_ns": "1795468306638449083",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "1988",
+        "st_mode": "33204",
+        "st_mtime_ns": "1795468306638449083",
+        "st_nlink": "1",
+        "st_size": "6887",
+        "st_uid": "1001"
+      },
+      "sha256": "d28326e7cef79147c94d61dc576bb0587b83656a9bcb85023fda59919fa129d6"
+    },
+    "compiler_bind_order_subject": {
+      "bytes": 34315,
+      "git_blob": "443bfb396faa61fa9d3c697af45bb7e3366f3097",
+      "physical": {
+        "st_ctime_ns": "1795468306636369151",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "576",
+        "st_mode": "33188",
+        "st_mtime_ns": "1795468306636369151",
+        "st_nlink": "1",
+        "st_size": "34315",
+        "st_uid": "1001"
+      },
+      "sha256": "d883a313a78b95b1b06939bf4242b3ea8e80998a4f618a144757177db12fceb9"
+    }
+  },
+  "method": "test_original_docker_bind_order_accepts_only_exact_owned_multiset",
+  "native_builds": 0,
+  "native_tests": 0,
+  "observations": [
+    {
+      "case": "019-acquire-inspect-before",
+      "origin": "original Docker inspection",
+      "outcome": "ACCEPTED_COMPLETE_OWNED_BIND_MULTISET"
+    },
+    {
+      "case": "021-acquire-cleanup-before",
+      "origin": "original Docker inspection",
+      "outcome": "ACCEPTED_COMPLETE_OWNED_BIND_MULTISET"
+    },
+    {
+      "case": "declared-order",
+      "origin": "synthetic order only",
+      "outcome": "ACCEPTED"
+    },
+    {
+      "case": "missing-all",
+      "origin": "synthetic negative mutation",
+      "outcome": "REFUSED_CONTAINER_BINDINGS"
+    },
+    {
+      "case": "missing-script",
+      "origin": "synthetic negative mutation",
+      "outcome": "REFUSED_CONTAINER_BINDINGS"
+    },
+    {
+      "case": "missing-output",
+      "origin": "synthetic negative mutation",
+      "outcome": "REFUSED_CONTAINER_BINDINGS"
+    },
+    {
+      "case": "extra",
+      "origin": "synthetic negative mutation",
+      "outcome": "REFUSED_CONTAINER_BINDINGS"
+    },
+    {
+      "case": "extra-duplicate",
+      "origin": "synthetic negative mutation",
+      "outcome": "REFUSED_CONTAINER_BINDINGS"
+    },
+    {
+      "case": "replacement-duplicate",
+      "origin": "synthetic negative mutation",
+      "outcome": "REFUSED_CONTAINER_BINDINGS"
+    },
+    {
+      "case": "changed-source",
+      "origin": "synthetic negative mutation",
+      "outcome": "REFUSED_CONTAINER_BINDINGS"
+    },
+    {
+      "case": "changed-destination",
+      "origin": "synthetic negative mutation",
+      "outcome": "REFUSED_CONTAINER_BINDINGS"
+    },
+    {
+      "case": "changed-read-mode",
+      "origin": "synthetic negative mutation",
+      "outcome": "REFUSED_CONTAINER_BINDINGS"
+    },
+    {
+      "case": "changed-write-mode",
+      "origin": "synthetic negative mutation",
+      "outcome": "REFUSED_CONTAINER_BINDINGS"
+    },
+    {
+      "case": "extra-propagation",
+      "origin": "synthetic negative mutation",
+      "outcome": "REFUSED_CONTAINER_BINDINGS"
+    },
+    {
+      "case": "empty-string",
+      "origin": "synthetic negative mutation",
+      "outcome": "REFUSED_CONTAINER_BINDINGS"
+    },
+    {
+      "case": "non-string",
+      "origin": "synthetic negative mutation",
+      "outcome": "REFUSED_CONTAINER_BINDINGS"
+    },
+    {
+      "case": "null",
+      "origin": "synthetic negative mutation",
+      "outcome": "REFUSED_CONTAINER_BINDINGS"
+    },
+    {
+      "case": "string",
+      "origin": "synthetic negative mutation",
+      "outcome": "REFUSED_CONTAINER_BINDINGS"
+    },
+    {
+      "case": "tuple",
+      "origin": "synthetic negative mutation",
+      "outcome": "REFUSED_CONTAINER_BINDINGS"
+    },
+    {
+      "case": "object",
+      "origin": "synthetic negative mutation",
+      "outcome": "REFUSED_CONTAINER_BINDINGS"
+    }
+  ],
+  "old_controls_replayed": 0,
+  "primary_error": null,
+  "python_executable": "/usr/bin/python3",
+  "python_version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "resources_final": {
+    "evidence_bytes": 23971,
+    "memory_available": 10075938816,
+    "writer_allocated_bytes": 5287936
+  },
+  "schema": "compiler-bind-order-one-new-control-v1",
+  "source_after": {
+    ".github/workflows/pinkha-loaded-account-arm64-compiler.yml": {
+      "bytes": 1689,
+      "git_blob": "823958381b4fd11cb785ec0714c523186e8ae50d",
+      "physical": {
+        "st_ctime_ns": "1795464693923712029",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "918",
+        "st_mode": "33188",
+        "st_mtime_ns": "1795464693923712029",
+        "st_nlink": "1",
+        "st_size": "1689",
+        "st_uid": "1001"
+      },
+      "sha256": "d21711d98031fb8a2ef585e81bed98c9c3bb5acc3f8388d2f84046c718fd6f64"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/native-compiler-support.json": {
+      "bytes": 11930,
+      "git_blob": "096616419afdf853163387f0738759a69ad417ac",
+      "physical": {
+        "st_ctime_ns": "1795464233136850951",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "208",
+        "st_mode": "33152",
+        "st_mtime_ns": "1795464233136850951",
+        "st_nlink": "1",
+        "st_size": "11930",
+        "st_uid": "1001"
+      },
+      "sha256": "ca681802575e0fd0d135be251184b89949dde0f46a957755ff2c019fa5013a76"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-acquire.sh": {
+      "bytes": 1537,
+      "git_blob": "7667329902b36c77b79cf3e85d775b3d87c5042a",
+      "physical": {
+        "st_ctime_ns": "1795464358346499638",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "275",
+        "st_mode": "33188",
+        "st_mtime_ns": "1795464358346499638",
+        "st_nlink": "1",
+        "st_size": "1537",
+        "st_uid": "1001"
+      },
+      "sha256": "1845ef270a6bf93f892aa2ea429179a3cd0a122fca383ec59b720270d6a85bc4"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-contract.json": {
+      "bytes": 3439,
+      "git_blob": "3cb89d90ab0b3599cb63c575be5ffac44687afdf",
+      "physical": {
+        "st_ctime_ns": "1795464783516864524",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "921",
+        "st_mode": "33188",
+        "st_mtime_ns": "1795464783516864524",
+        "st_nlink": "1",
+        "st_size": "3439",
+        "st_uid": "1001"
+      },
+      "sha256": "377d9b906724a23adc65eea04d7d9a9942b0f64337a268dcbc6865204941738f"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler-install.sh": {
+      "bytes": 1801,
+      "git_blob": "91e0e6d977031740b1bf46c96bdbb876317f716f",
+      "physical": {
+        "st_ctime_ns": "1795464363830773566",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "276",
+        "st_mode": "33188",
+        "st_mtime_ns": "1795464363830773566",
+        "st_nlink": "1",
+        "st_size": "1801",
+        "st_uid": "1001"
+      },
+      "sha256": "53e39efb1fb49bc61680cb5bf39bf2f3608a8bdcf4eb8567c4446deaeaa2f932"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/portable/compiler_producer.py": {
+      "bytes": 34315,
+      "git_blob": "443bfb396faa61fa9d3c697af45bb7e3366f3097",
+      "physical": {
+        "st_ctime_ns": "1795468306636369151",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "576",
+        "st_mode": "33188",
+        "st_mtime_ns": "1795468306636369151",
+        "st_nlink": "1",
+        "st_size": "34315",
+        "st_uid": "1001"
+      },
+      "sha256": "d883a313a78b95b1b06939bf4242b3ea8e80998a4f618a144757177db12fceb9"
+    },
+    "Tools/AnyEngineValidation/loaded_account_witness/portable/test_compiler_bind_order.py": {
+      "bytes": 6887,
+      "git_blob": "eb9d1bcd3b6934f6a883d7de503070fc9b9b7c20",
+      "physical": {
+        "st_ctime_ns": "1795468306638449083",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "1988",
+        "st_mode": "33204",
+        "st_mtime_ns": "1795468306638449083",
+        "st_nlink": "1",
+        "st_size": "6887",
+        "st_uid": "1001"
+      },
+      "sha256": "d28326e7cef79147c94d61dc576bb0587b83656a9bcb85023fda59919fa129d6"
+    },
+    "docs/validation/20261123-loaded-account-portable/compiler-bind-order/control-inputs.json": {
+      "bytes": 4538,
+      "git_blob": "fe84114a9e629806fb3e8ba45b85916012ddd279",
+      "physical": {
+        "st_ctime_ns": "1795468454542548783",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "1991",
+        "st_mode": "33204",
+        "st_mtime_ns": "1795468454542548783",
+        "st_nlink": "1",
+        "st_size": "4538",
+        "st_uid": "1001"
+      },
+      "sha256": "4a65cb7ba65e2ff0ec57ebdc365a4c518e8f3577e468ed5cc0553da8ebe41595"
+    },
+    "docs/validation/20261123-loaded-account-portable/compiler-bind-order/run-control.py": {
+      "bytes": 13685,
+      "git_blob": "925bf068fe80832d58f259001a492f3ad20bf818",
+      "physical": {
+        "st_ctime_ns": "1795468454539113123",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "1990",
+        "st_mode": "33204",
+        "st_mtime_ns": "1795468454539113123",
+        "st_nlink": "1",
+        "st_size": "13685",
+        "st_uid": "1001"
+      },
+      "sha256": "6ba69e92b94fa90a22e0baf61397fc37e61c2f06d30b3eb46881ec333117f548"
+    },
+    "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/audit/member-map.json": {
+      "bytes": 28927,
+      "git_blob": "f448e48ed6e0ac9bffb02c9c164353f64c5d259b",
+      "physical": {
+        "st_ctime_ns": "1795468149563459375",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "1721",
+        "st_mode": "33204",
+        "st_mtime_ns": "1795468149563459375",
+        "st_nlink": "1",
+        "st_size": "28927",
+        "st_uid": "1001"
+      },
+      "sha256": "cf1619940af2395943ceb932c172177983dd429b2ccba2d84aafea574bebfef4"
+    },
+    "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/audit/source-cause-audit.json": {
+      "bytes": 9334,
+      "git_blob": "5be85d706a7d9eef500270bbd7cdbda1952e2f97",
+      "physical": {
+        "st_ctime_ns": "1795468149564441941",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "1726",
+        "st_mode": "33204",
+        "st_mtime_ns": "1795468149564441941",
+        "st_nlink": "1",
+        "st_size": "9334",
+        "st_uid": "1001"
+      },
+      "sha256": "619eb732c1adf9fbb79524b744fbcc6e0be15db2688742d41e1403c953d6d35a"
+    },
+    "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/commands/002-before-blob-00.stdout": {
+      "bytes": 34172,
+      "git_blob": "08f6c33c619b5a145146fb5ebfefe20a214a417d",
+      "physical": {
+        "st_ctime_ns": "1795468149565458946",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "1743",
+        "st_mode": "33204",
+        "st_mtime_ns": "1795468149565458946",
+        "st_nlink": "1",
+        "st_size": "34172",
+        "st_uid": "1001"
+      },
+      "sha256": "0fd72d2024a5b3a1bdccb5cb9392a5ae8b646f685b0c56493c7f44feb62370e3"
+    },
+    "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/commands/019-acquire-inspect-before.stdout": {
+      "bytes": 9535,
+      "git_blob": "8e8d294b6ac051297b08ebb467a3056fd67f9432",
+      "physical": {
+        "st_ctime_ns": "1795468149568505843",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "1794",
+        "st_mode": "33204",
+        "st_mtime_ns": "1795468149568505843",
+        "st_nlink": "1",
+        "st_size": "9535",
+        "st_uid": "1001"
+      },
+      "sha256": "189b5927c03c373b6a19111ae090ebac806f850ec1cd01198a3264febde16d1d"
+    },
+    "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/commands/021-acquire-cleanup-before.stdout": {
+      "bytes": 9535,
+      "git_blob": "5b98db18c87062334b0da64457dff394d264597c",
+      "physical": {
+        "st_ctime_ns": "1795468149568917286",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "1800",
+        "st_mode": "33204",
+        "st_mtime_ns": "1795468149568917286",
+        "st_nlink": "1",
+        "st_size": "9535",
+        "st_uid": "1001"
+      },
+      "sha256": "6e74af6a6be3b4696096dc9704f08266d3f351ac242ab62137cd0d64f5efece2"
+    },
+    "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/result.json": {
+      "bytes": 91290,
+      "git_blob": "d5a70d58a036f642d6bb014ec0f65a4b2aaf7e34",
+      "physical": {
+        "st_ctime_ns": "1795468149571959143",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "1843",
+        "st_mode": "33204",
+        "st_mtime_ns": "1795468149571959143",
+        "st_nlink": "1",
+        "st_size": "91290",
+        "st_uid": "1001"
+      },
+      "sha256": "3c3f2cdecf58d3b95092f4371fc43877637e88dfd0e92474ca9799e150f5b275"
+    },
+    "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/source-after.json": {
+      "bytes": 4021,
+      "git_blob": "91a2b5ec2e26326059622fdf188094d148d7f3d2",
+      "physical": {
+        "st_ctime_ns": "1795468149572075943",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "1844",
+        "st_mode": "33204",
+        "st_mtime_ns": "1795468149572075943",
+        "st_nlink": "1",
+        "st_size": "4021",
+        "st_uid": "1001"
+      },
+      "sha256": "8113ba9ffdaf26b0a88142d92ba84e67aab6abcd410403205e8a1de5c0da2094"
+    },
+    "docs/validation/20261123-loaded-account-portable/compiler-original-45262244082/originals/source-before.json": {
+      "bytes": 4021,
+      "git_blob": "91a2b5ec2e26326059622fdf188094d148d7f3d2",
+      "physical": {
+        "st_ctime_ns": "1795468149572148984",
+        "st_dev": "71",
+        "st_gid": "1001",
+        "st_ino": "1845",
+        "st_mode": "33204",
+        "st_mtime_ns": "1795468149572148984",
+        "st_nlink": "1",
+        "st_size": "4021",
+        "st_uid": "1001"
+      },
+      "sha256": "8113ba9ffdaf26b0a88142d92ba84e67aab6abcd410403205e8a1de5c0da2094"
+    }
+  },
+  "source_head": "864dcd4051f5fd05446ca371929f14bbc8483a32",
+  "status": "PASS_ONE_NEW_CONTROL"
+}
