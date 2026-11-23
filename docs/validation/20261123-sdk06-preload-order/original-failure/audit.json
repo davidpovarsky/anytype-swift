@@ -1,0 +1,87 @@
+{
+  "archiveRestorationStarted": false,
+  "artifact": "14850775236",
+  "attempt": "1",
+  "auditMode": "bounded original ZIP/selected original job log and exact Git source; no replay",
+  "callChain": [
+    "main",
+    "admit",
+    "verify_controller",
+    "preload_current_sources",
+    "require"
+  ],
+  "cleanupCommands": 0,
+  "cleanupReceiptStatus": "NO_OWNED_CREATION",
+  "componentBuilds": 0,
+  "failure": "Current production preloads must equal the fixed declared closure",
+  "job": "137914443694",
+  "newArtifactDownloads": 0,
+  "oneSelectedLogFetchOnly": true,
+  "originalJobLog": {
+    "bytes": 74473,
+    "sha256": "13d7ef8be6da3fb7177d834dde658cfd1a0847d3d16d95c0127d774926a3e537"
+  },
+  "originals": {
+    "Pinkha-Native-Derived-Evidence.zip": {
+      "bytes": 395,
+      "sha256": "dc5d6761562e774e83d0436ac62e8d53d6871fbd9afb4cfd593bc0548ab96568"
+    },
+    "intent.json": {
+      "bytes": 537,
+      "sha256": "8f3acbec21698b00445fdfe2268accf33cd15cab30ba7808cc1dd4b1eadbbff3"
+    },
+    "job137914443694.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "job137914443694.stdout.log": {
+      "bytes": 74473,
+      "sha256": "13d7ef8be6da3fb7177d834dde658cfd1a0847d3d16d95c0127d774926a3e537"
+    },
+    "lifecycle-cleanup.json": {
+      "bytes": 351,
+      "sha256": "27de420b1d572012da236fe3a29ece686e1244710d1919cdf89031db1fbbb66a"
+    },
+    "original-14850775236.zip": {
+      "bytes": 525,
+      "sha256": "6b6756e708502fd9e0554c357f070c1079fcd592da0b453837e4e5e87bf33776"
+    },
+    "read-selected-job-log.py": {
+      "bytes": 4009,
+      "sha256": "2de2811e86bc63606167b24ac549f6dc48f6fe2f9012ad35c001bc70b0c9a506"
+    },
+    "result.json": {
+      "bytes": 1107,
+      "sha256": "ec5978ede455545ad45381f0f231eb54cca61c70e378ebdc8292342fae40670f"
+    }
+  },
+  "ownedSimulatorCreated": false,
+  "physicalOriginalArtifact": "/mnt/development/projects/diagnostics/sdk06-compile-support-45237901921-attempt1-result-20261123/original-14850775236.zip",
+  "productMethods": 0,
+  "protocol": "sdk06-preload-order-original-failure-audit-v1",
+  "remainingUnknowns": [
+    "restoration on corrected current controller",
+    "actual component compilation/linkage",
+    "exact 23-method/32-case result",
+    "subsequent UI and acknowledgment acceptance"
+  ],
+  "run": "45237901921",
+  "selectedJobLogFetchReceipt": {
+    "bytes": 1107,
+    "sha256": "ec5978ede455545ad45381f0f231eb54cca61c70e378ebdc8292342fae40670f"
+  },
+  "source": "1a09867d88f475fd2b3192fabc4dd803986e5281",
+  "sourceDerived": {
+    "declaredInputs": 85,
+    "moduleMappings": 70,
+    "originalSupportIndexZeroBased": 66,
+    "preloads": 67,
+    "priorPureControlDoesNotProveActualPreloaderExecution": true,
+    "productionGuardByteSHA256": "ba1dab0f02c508acbc222234d7930ee159bfc5d30f6ce3c47269d9a5b93025a6",
+    "requiredSupportIndexZeroBased": 33,
+    "setsEqual": true
+  },
+  "status": "FAILED_CURRENT_CONTROLLER_ADMISSION",
+  "uiBuilds": 0,
+  "windowsJobLogOrigin": "C:\\Users\\DAVID\\AppData\\Local\\SentinelX\\anytapy-immutable-evidence\\sdk06-compile-support-original-45237901921-1\\selected-job-log1"
+}

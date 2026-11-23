@@ -1,0 +1,22 @@
+{
+  "_notice": "You have 21 unread SentinelX notification(s) (job results and/or announcements). Call notifications_check to read them.",
+  "cleanup": true,
+  "command": [
+    "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+    "-NoProfile",
+    "-NonInteractive",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_1e17649dd3f949b3be70617fd3366545\\sentinelx_bootstrap.ps1",
+    "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_1e17649dd3f949b3be70617fd3366545\\script.ps1"
+  ],
+  "cwd": null,
+  "duration": 2.15,
+  "hub_request_id": "hreq_fa21048e86b447a6",
+  "interpreter": "powershell",
+  "ok": false,
+  "output": "Preparing worktree (new branch 'codex/chatgpt-wave15-sdk-preload-order-20261123')\nTraceback (most recent call last):\n  File \"<stdin>\", line 203, in <module>\n  File \"<stdin>\", line 14, in git\n  File \"/usr/lib/python3.12/subprocess.py\", line 466, in check_output\n    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/subprocess.py\", line 571, in run\n    raise CalledProcessError(retcode, process.args,\nsubprocess.CalledProcessError: Command '['git', '-C', '/mnt/development/projects/worktrees/anytype-wave15-sdk-preload-order-20261123', 'diff', '--cached', '--check', '--', '.', ':(exclude)docs/validation/20261123-sdk06-preload-order/original-failure/job137914443694.stdout.log']' returned non-zero exit status 2.\npreload source freeze failed; preserve partial state\r\nAt C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_1e17649dd3f949b3be70617fd3366545\\script.ps1:230 \r\nchar:25\r\n+ ... CODE -ne 0){throw 'preload source freeze failed; preserve partial sta ...\r\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (preload source ...e partial state:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : preload source freeze failed; preserve partial state",
+  "returncode": 1,
+  "sudo": false
+}
