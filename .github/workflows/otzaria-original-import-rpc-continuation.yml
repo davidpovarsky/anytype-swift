@@ -1,0 +1,99 @@
+name: Original Import RPC continuation
+
+on:
+  push:
+    branches:
+      - codex/otzaria-import-rpc-continuation-20261123
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: otzaria-original-import-rpc-continuation-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  continue-original-import-rpc:
+    if: ${{ github.run_attempt == 1 }}
+    runs-on: xcode-27
+    timeout-minutes: 120
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Fix absolute owned continuation deadline
+        run: |
+          echo "OTZARIA_IMPORT_RPC_JOB_DEADLINE=$(( $(date +%s) + 6900 ))" >> "$GITHUB_ENV"
+      - name: Checkout exact continuation source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /.github/workflows/otzaria-original-import-rpc-continuation.yml
+            /Tools/OriginalEditor/ImportRPC/
+            /docs/pinkha/torah-integration/native-annotation-import-rpc-generation-20261123/
+      - name: Select actual ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Install exact original Go toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache: false
+      - name: Checkout immutable original Heart
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: build/Import-RPC-Inputs/heart
+          persist-credentials: false
+      - name: Checkout immutable original generator and typed history source
+        uses: actions/checkout@v4
+        with:
+          ref: 997e285617d57b31c4205976f01019819fa29a03
+          path: build/Import-RPC-Inputs/swift
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Makefile
+            /Scripts/
+            /Modules/ProtobufMessages/
+            /Modules/Services/
+            /Tools/anytype-swift-codegen
+            /Tools/anytype-swift-filesplit/
+      - name: Checkout exact original SwiftProtobuf source
+        uses: actions/checkout@v4
+        with:
+          repository: apple/swift-protobuf
+          ref: c6fe6442e6a64250495669325044052e113e990c
+          path: build/Import-RPC-Inputs/swift-protobuf
+          persist-credentials: false
+      - name: Diagnose exact source boundary and complete missing RPC qualification
+        run: |
+          python3 -I Tools/OriginalEditor/ImportRPC/continue_original_import_generation.py \
+            --control-root "$GITHUB_WORKSPACE" \
+            --control-head "$GITHUB_SHA" \
+            --packet docs/pinkha/torah-integration/native-annotation-import-rpc-generation-20261123 \
+            --manifest-sha256 c5950bad223380e20e158c8c824215509b438b02a3678fc885e90f99f982b81b \
+            --pin Tools/OriginalEditor/ImportRPC/continuation-pin.json \
+            --pin-sha256 89065b262353f985b658d20374ad2bdaef893e6981da508a1b9c0d6fb670c59c \
+            --heart-input build/Import-RPC-Inputs/heart \
+            --swift-input build/Import-RPC-Inputs/swift \
+            --plugin-input build/Import-RPC-Inputs/swift-protobuf \
+            --work build/Import-RPC-Continuation-Owned-Work \
+            --evidence build/Import-RPC-Continuation-Evidence \
+            --job-deadline-unix "$OTZARIA_IMPORT_RPC_JOB_DEADLINE"
+      - name: Retain original generated source and actual continuation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otzaria-Import-RPC-Continuation-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/Import-RPC-Continuation-Evidence
+          include-hidden-files: true
+          if-no-files-found: warn
+          compression-level: 6
+          retention-days: 14
