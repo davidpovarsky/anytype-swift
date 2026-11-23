@@ -166,7 +166,7 @@ final class SemanticAnchorPage154MountedUITests: XCTestCase {
         let deadline = started + 60
         var trace: [String: Any] = [
             "protocol": "pinkha-page154-native-startup-warning-v1",
-            "phase": phase, "runID": fixture.runID, "runAttempt": fixture.runAttempt,
+            "phase": phase, "sourceSHA": fixture.sourceSHA, "runID": fixture.runID, "runAttempt": fixture.runAttempt,
             "nonce": fixture.nonce, "budgetSeconds": 60, "continueTaps": 0,
             "status": "STARTED"
         ]
@@ -219,6 +219,7 @@ final class SemanticAnchorPage154MountedUITests: XCTestCase {
             }
             try require(home.waitForExistence(timeout: remaining()), "home-not-ready")
             try require(!warning.exists, "native-warning-remained-or-returned")
+            trace["admittedElapsedSeconds"] = 60 - (try remaining())
             trace["status"] = "HOME_READY"
         } catch {
             trace["status"] = "FAIL"

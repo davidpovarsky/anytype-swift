@@ -9,7 +9,7 @@
          var route = URLComponents()
          route.scheme = "anytype"; route.host = "object"
          route.queryItems = [URLQueryItem(name: "objectId", value: fixture.objectID),
-@@ -157,6 +157,77 @@
+@@ -157,6 +157,78 @@
          XCUIDevice.shared.system.open(try XCTUnwrap(route.url))
          try requireHittable(sourceText, timeout: 45)
      }
@@ -22,7 +22,7 @@
 +        let deadline = started + 60
 +        var trace: [String: Any] = [
 +            "protocol": "pinkha-page154-native-startup-warning-v1",
-+            "phase": phase, "runID": fixture.runID, "runAttempt": fixture.runAttempt,
++            "phase": phase, "sourceSHA": fixture.sourceSHA, "runID": fixture.runID, "runAttempt": fixture.runAttempt,
 +            "nonce": fixture.nonce, "budgetSeconds": 60, "continueTaps": 0,
 +            "status": "STARTED"
 +        ]
@@ -75,6 +75,7 @@
 +            }
 +            try require(home.waitForExistence(timeout: remaining()), "home-not-ready")
 +            try require(!warning.exists, "native-warning-remained-or-returned")
++            trace["admittedElapsedSeconds"] = 60 - (try remaining())
 +            trace["status"] = "HOME_READY"
 +        } catch {
 +            trace["status"] = "FAIL"

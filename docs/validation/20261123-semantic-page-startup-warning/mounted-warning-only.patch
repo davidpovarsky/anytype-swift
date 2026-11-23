@@ -1,0 +1,104 @@
+--- a/Tools/PinkhaSemanticAnchorWire/apple_mounted/run.py
++++ b/Tools/PinkhaSemanticAnchorWire/apple_mounted/run.py
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env python3
+-"""Execute only the separately owned mounted preparation and UI journey, without rebuilding."""
++"""Execute the owned mounted journey; opt-in warning continuation builds only its UI runner."""
+ from __future__ import annotations
+ import argparse
+ from datetime import datetime, timezone
+@@ -158,9 +158,16 @@
+     app_inputs = origins["app_inputs"]
+     proof.require(args.admission.relative_to(ROOT).as_posix() in inputs, "Admission file must be committed")
+     plan = proof.read(HERE / "source-plan.json")
+-    proof.require(all(inputs.get(path) == app_inputs.get(path) == row["sha256"]
+-                      for path, row in plan["files"].items()),
+-                  "Frozen mounted App/UI source plan differs")
++    warning_plan = None
++    if args.startup_warning_ui:
++        import warning_profile
++        import warning_runner
++        warning_plan = warning_profile.read_plan()
++        receipt["warning_source_admission"] = warning_profile.source_admission(plan, inputs, app_inputs, warning_plan)
++    else:
++        proof.require(all(inputs.get(path) == app_inputs.get(path) == row["sha256"]
++                          for path, row in plan["files"].items()),
++                      "Frozen mounted App/UI source plan differs")
+     binding = proof.native.binding(dict(sourceSHA=approved["consumer_sha"],
+         runID=os.environ.get("GITHUB_RUN_ID"), runAttempt=os.environ.get("GITHUB_RUN_ATTEMPT"), nonce=uuid4().hex))
+     args.work.mkdir(parents=True); args.evidence.mkdir(parents=True)
+@@ -173,6 +180,9 @@
+     owned_udid = None; primary = None; finalizing = False; cancelled = False
+     original_descriptors = []; copied_descriptors = []; restores = []
+     creation_command = None
++    warning = (warning_runner.WarningContinuation(args, binding, head, warning_plan, proof, consumer, receipt)
++               if warning_plan is not None else None)
++    warning_ui_admission = None
+     previous = {}
+     def cancel(signum, frame):
+         nonlocal cancelled
+@@ -253,21 +263,31 @@
+         receipt["owned_simulator"] = {"udid": owned_udid, "selection": pair["selection"], "nonce": binding["nonce"]}
+         runner.run(["xcrun", "simctl", "boot", owned_udid], "boot-owned-simulator", 90)
+         runner.run(["xcrun", "simctl", "bootstatus", owned_udid, "-b"], "wait-owned-simulator", 180)
++        if warning is not None:
++            receipt["phase"] = "BUILD_ONLY_NEW_WARNING_UI_RUNNER"
++            ui_original, warning_ui_admission = warning.build(runner, owned_udid)
++            original_descriptors.append((ui_original, proof.digest(ui_original)))
+         prep = native_original.with_name("MountedPrep-" + binding["nonce"] + ".xctestrun")
+         prep_proof = proof.copied_descriptor(native_original, prep, proof.PREP, binding,
+             runtime=pair["runtime"], approved=approved["native_descriptor"])
+         copied_descriptors.append((prep, prep_proof["copied_sha256"]))
+         proof.save(args.evidence / "preparation-descriptor.json", prep_proof)
+         shutil.copyfile(prep, args.evidence / "preparation-bound.xctestrun")
+-        receipt["phase"] = "ACTUAL_NEW_PREPARATION"
++        receipt["phase"] = "FRESH_SETUP_FOR_FAILED_UI" if warning is not None else "ACTUAL_NEW_PREPARATION"
++        if warning is not None:
++            receipt["fresh_fixture_setup_commands_started"] = 1
+         receipt["preparation_commands_started"] = 1
+         receipt["preparation_execution"] = enumerate_and_run(runner, prep, owned_udid, proof.PREP,
+             prep_proof["enumeration_plan"], args.evidence / "preparation", receipt)
+         fixture_path = copy_original_fixture(runner, owned_udid, args.evidence, "pinkha-semantic-page154-mounted-fixture.json")
+         fixture = proof.read(fixture_path, 65_536); proof.fixture(fixture, binding)
+-        ui = ui_original.with_name("MountedUI-" + binding["nonce"] + ".xctestrun")
++        if warning is not None:
++            warning.setup(receipt["preparation_execution"], fixture)
++        ui = ui_original.with_name(("Page154-" if warning is not None else "MountedUI-")
++                                   + binding["nonce"] + ".xctestrun")
+         ui_proof = proof.copied_descriptor(ui_original, ui, proof.UI, binding,
+-            runtime=pair["runtime"], approved=approved["ui_descriptor"], fixture=fixture, app_path=app)
++            runtime=pair["runtime"], approved=warning_ui_admission or approved["ui_descriptor"],
++            fixture=fixture, app_path=app)
+         copied_descriptors.append((ui, ui_proof["copied_sha256"]))
+         proof.save(args.evidence / "ui-descriptor.json", ui_proof)
+         shutil.copyfile(ui, args.evidence / "ui-bound.xctestrun")
+@@ -281,7 +301,10 @@
+         receipt["mounted_proof"] = proof.observations(fixture, captured, reopened, capture_path.read_bytes(), binding)
+         receipt["ui_observation_attachments"] = ui_attachments(args.evidence / "ui/actual-attachments",
+             owned_udid, captured, reopened)
+-        receipt.update(status=proof.PASS, phase="COMPLETE", new_preparation_methods_passed=1, new_ui_methods_passed=1)
++        if warning is not None:
++            warning.observations(args.evidence / "ui/actual-attachments", owned_udid)
++        receipt.update(status=proof.PASS, phase="COMPLETE",
++                       new_preparation_methods_passed=0 if warning is not None else 1, new_ui_methods_passed=1)
+     except BaseException as error:
+         primary = error; receipt.update(status="FAIL", error_type=type(error).__name__, error=str(error))
+     finally:
+@@ -320,6 +343,8 @@
+             primary = mounted_cleanup.finalize_mounted_simulator(runner, receipt, owned_udid, primary)
+         try:
+             final_origins = mounted_source_origins.verify_current(origins, consumer)
++            if warning is not None:
++                warning.finish(copied_descriptors)
+             for path, expected in original_descriptors + copied_descriptors:
+                 proof.require(proof.digest(path) == expected, "Original or copied descriptor changed")
+             receipt["restored_products_unchanged"] = []
+@@ -344,6 +369,8 @@
+     parser = argparse.ArgumentParser(description=__doc__)
+     for name in ("controller", "app", "admission", "work", "evidence"):
+         parser.add_argument("--" + name, type=Path, required=True)
++    parser.add_argument("--startup-warning-ui", action="store_true",
++                        help="Build only the changed warning-transition UI runner; native preparation is fresh setup")
+     args = parser.parse_args()
+     for name in ("controller", "app", "admission", "work", "evidence"):
+         setattr(args, name, getattr(args, name).resolve())

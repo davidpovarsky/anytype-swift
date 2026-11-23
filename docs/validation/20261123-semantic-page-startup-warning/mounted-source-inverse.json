@@ -1,0 +1,51 @@
+{
+  "builds": 0,
+  "candidate_sha256": "07472e82fc3197c74c49bdf29b62e8cbb4783df944d05c24e745bc2f7f0db83f",
+  "default_opt_in": false,
+  "inverse_exact": true,
+  "original_sha256": "2d121e47aef3c3a24672110278893bbb3cc0aded833d9fbb74f4005b439382a6",
+  "path": "Tools/PinkhaSemanticAnchorWire/apple_mounted/run.py",
+  "substitutions": [
+    [
+      "\"\"\"Execute only the separately owned mounted preparation and UI journey, without rebuilding.\"\"\"",
+      "\"\"\"Execute the owned mounted journey; opt-in warning continuation builds only its UI runner.\"\"\""
+    ],
+    [
+      "    proof.require(all(inputs.get(path) == app_inputs.get(path) == row[\"sha256\"]\n                      for path, row in plan[\"files\"].items()),\n                  \"Frozen mounted App/UI source plan differs\")",
+      "    warning_plan = None\n    if args.startup_warning_ui:\n        import warning_profile\n        import warning_runner\n        warning_plan = warning_profile.read_plan()\n        receipt[\"warning_source_admission\"] = warning_profile.source_admission(plan, inputs, app_inputs, warning_plan)\n    else:\n        proof.require(all(inputs.get(path) == app_inputs.get(path) == row[\"sha256\"]\n                          for path, row in plan[\"files\"].items()),\n                      \"Frozen mounted App/UI source plan differs\")"
+    ],
+    [
+      "    creation_command = None\n    previous = {}",
+      "    creation_command = None\n    warning = (warning_runner.WarningContinuation(args, binding, head, warning_plan, proof, consumer, receipt)\n               if warning_plan is not None else None)\n    warning_ui_admission = None\n    previous = {}"
+    ],
+    [
+      "        runner.run([\"xcrun\", \"simctl\", \"bootstatus\", owned_udid, \"-b\"], \"wait-owned-simulator\", 180)\n        prep =",
+      "        runner.run([\"xcrun\", \"simctl\", \"bootstatus\", owned_udid, \"-b\"], \"wait-owned-simulator\", 180)\n        if warning is not None:\n            receipt[\"phase\"] = \"BUILD_ONLY_NEW_WARNING_UI_RUNNER\"\n            ui_original, warning_ui_admission = warning.build(runner, owned_udid)\n            original_descriptors.append((ui_original, proof.digest(ui_original)))\n        prep ="
+    ],
+    [
+      "        receipt[\"phase\"] = \"ACTUAL_NEW_PREPARATION\"",
+      "        receipt[\"phase\"] = \"FRESH_SETUP_FOR_FAILED_UI\" if warning is not None else \"ACTUAL_NEW_PREPARATION\"\n        if warning is not None:\n            receipt[\"fresh_fixture_setup_commands_started\"] = 1"
+    ],
+    [
+      "        fixture = proof.read(fixture_path, 65_536); proof.fixture(fixture, binding)\n        ui = ui_original.with_name(\"MountedUI-\" + binding[\"nonce\"] + \".xctestrun\")",
+      "        fixture = proof.read(fixture_path, 65_536); proof.fixture(fixture, binding)\n        if warning is not None:\n            warning.setup(receipt[\"preparation_execution\"], fixture)\n        ui = ui_original.with_name((\"Page154-\" if warning is not None else \"MountedUI-\")\n                                   + binding[\"nonce\"] + \".xctestrun\")"
+    ],
+    [
+      "            runtime=pair[\"runtime\"], approved=approved[\"ui_descriptor\"], fixture=fixture, app_path=app)",
+      "            runtime=pair[\"runtime\"], approved=warning_ui_admission or approved[\"ui_descriptor\"],\n            fixture=fixture, app_path=app)"
+    ],
+    [
+      "        receipt.update(status=proof.PASS, phase=\"COMPLETE\", new_preparation_methods_passed=1, new_ui_methods_passed=1)",
+      "        if warning is not None:\n            warning.observations(args.evidence / \"ui/actual-attachments\", owned_udid)\n        receipt.update(status=proof.PASS, phase=\"COMPLETE\",\n                       new_preparation_methods_passed=0 if warning is not None else 1, new_ui_methods_passed=1)"
+    ],
+    [
+      "            final_origins = mounted_source_origins.verify_current(origins, consumer)\n            for path, expected",
+      "            final_origins = mounted_source_origins.verify_current(origins, consumer)\n            if warning is not None:\n                warning.finish(copied_descriptors)\n            for path, expected"
+    ],
+    [
+      "    args = parser.parse_args()",
+      "    parser.add_argument(\"--startup-warning-ui\", action=\"store_true\",\n                        help=\"Build only the changed warning-transition UI runner; native preparation is fresh setup\")\n    args = parser.parse_args()"
+    ]
+  ],
+  "tests": 0
+}
