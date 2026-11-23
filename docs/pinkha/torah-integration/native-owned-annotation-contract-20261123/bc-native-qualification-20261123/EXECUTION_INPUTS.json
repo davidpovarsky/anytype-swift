@@ -117,10 +117,10 @@
   },
   "controls": [
     {
-      "bytes": 52741,
-      "git_blob": "567c13e43b9f7790ed3d84f78faf53fde9ff3cd0",
+      "bytes": 58999,
+      "git_blob": "ac36f95a12c1b270f4f9929c02e6aa23f7286c2e",
       "path": "run_native_closed_import.py",
-      "sha256": "e35ea82d63a35106b3e265f57998e3d49e58610e80022eb7aa9e6b00fd214e58"
+      "sha256": "08a8cec0f4193d8a47c4d90749c6963b773c77646ba4a494aa306dea685b8f2e"
     },
     {
       "bytes": 3011,
@@ -169,8 +169,15 @@
       "git_blob": "ea15741404b5119f6d9f085e53ab03b313ff43df",
       "path": "PREACTIVATION_REPAIRS.json",
       "sha256": "801177ef0312ba6dd8c6046036b67452e15bfb9f48e2b1e80879d695ad9940e4"
+    },
+    {
+      "bytes": 6586,
+      "git_blob": "eea14b7322594ff050dc487c41bdd9fc900122e7",
+      "path": "schema-diagnostic-20261123/semantic_reuse.py",
+      "sha256": "b39380540acd8224c0db506e943b0782d2a44765cd11aadca6732362b36ce440"
     }
   ],
+  "diagnostic_only": true,
   "expected_leaf_cases": [
     "text",
     "format",
@@ -196,7 +203,7 @@
   "fixture_revision": "1159fbaf4b223515676a95b30b3600d210b71417",
   "heart_base": "d98420b1113536afd08cde6de9a5816f6d27ffff",
   "historical_selectors_replayed": false,
-  "native_selector": "^TestOtzariaOwnedAnnotationClosedNativeImport$",
+  "native_selector": "^TestOtzariaOwnedAnnotationClosedNativeImport$/^text$",
   "new_rpc_or_generated_source": false,
   "observer_repair": {
     "bytes": 2256,
@@ -289,7 +296,7 @@
     "core/application/application.go": "30d0110b028f009d5b447faff657def67e2605e44bcbb85fa6ffc437b0f686f2",
     "core/application/owned_annotation_import.go": "c3b4c650efab4c4f3e1c8b6e5daeda4d30d523bf8461c833c00be10126843ff8",
     "core/application/owned_annotation_import_export_test.go": "b61a7c550c3b2fe8291f818772c34ea4572843094e8aea6ceff706bb5b25a5be",
-    "core/application/owned_annotation_import_native_test.go": "3f54464ab2dc860e79f41f55d6b4a0813409828a4e3d8c5d5a596e4666ffc422",
+    "core/application/owned_annotation_import_native_test.go": "6bb6d93c536a70fac3d84b7993492142775145304abc5176c3052e8b90ea3979",
     "core/application/owned_import_admission.go": "3ed41b1989e03d087c393d04b5b3c3a5d6a813830e4c42bebb6f2c4d727e67ee",
     "core/block/detailservice/pinkha_torah.go": "d39dd006cb20dcbdd91a851a96faf82a42e277b80d0f190a4a7e532831a4768e",
     "core/block/editor/basic/details.go": "0ac058091f7ab161aec3d462d3cfa3e844af980cb0d5cecf2400b64360f7f033",
@@ -310,7 +317,7 @@
     "core/block/import/mapping_observation.go": "7634efc97506c1b1f4f67ecfdbd7fab919b5843986261a445e258ef39b8a3fa6",
     "core/block/import/mapping_observation_processor.go": "154bbade29f59a5431a5d69aaa00130e0545408b7c9647dccb25561b362be480",
     "core/block/import/owned_annotation_archive.go": "3fb56e13a200956bb2c6db58c1f8ca2c9a0671b0bb64b1d2ad4ac318445b9066",
-    "core/block/import/owned_annotation_comparison.go": "3f0f0f1145d26c193a0498c900612705678f00fa0dfae7545855165145748ae2",
+    "core/block/import/owned_annotation_comparison.go": "f58a39eead208bc3a567f282f3a64007b17bfdfb16f0d8f9905a3c25a9410c72",
     "core/block/import/owned_annotation_graph.go": "5876f9cf88b25ba1efe90c3c402beff95f7d5ed6220859e7fc8884aa962d3d95",
     "core/block/import/owned_annotation_readback.go": "ee7f1513bdef055ce0484cca7ac8af8f3bc0497995483472f618e60475c9a909",
     "core/block/import/owned_import_dependencies.go": "30d8f5af2c6b488b02f338550dba0e8ccb4eec44052a8bcb2cdb923aef555891",
@@ -370,7 +377,22 @@
     "space/internal/components/migration/readonlyfixer/relationsfixer.go": "003cfd50944f9b31920ae4060146bbbaf42c713191595b51582a16f5d94935b8"
   },
   "schema": 1,
-  "scope": "Genuine original native same-account full annotation graph import and historical mapping-aware body readback, with direct actual creator collision, prior-identity/account/ACL refusals and real registered cancellation/drain. No production RPC, Swift Invocation, Host authority, cold reopen or body ACK. Explicit three-row post-base observer/fixture repair and new original bundled persistence semantic control; original native acceptance and historical source packets preserved.",
+  "schema_diagnostic": {
+    "bytes": 6358,
+    "git_blob": "7de680a094d34a26b7e94fec06801a553ea35afe",
+    "path": "schema-diagnostic-20261123/DIAGNOSTIC_INPUTS.json",
+    "sha256": "89290dfe5b13676fac85f4048752d055e2ae4c0af544cab6e100e23ac07161fd"
+  },
+  "scope": "Genuine original native same-account full annotation graph import and historical mapping-aware body readback, with direct actual creator collision, prior-identity/account/ACL refusals and real registered cancellation/drain. No production RPC, Swift Invocation, Host authority, cold reopen or body ACK. Explicit three-row post-base observer/fixture repair and new original bundled persistence semantic control; original native acceptance and historical source packets preserved. Diagnostic-only original text leaf: retain the exact failed normalized schema comparison without relaxing any predicate. Prior six semantic leaves are reused only after complete declared input and toolchain equality.",
+  "selected_leaf_cases": [
+    "text"
+  ],
+  "semantic_reuse": {
+    "bytes": 3095,
+    "git_blob": "65409cb2a8079e35978a2ae8d97c67db28049804",
+    "path": "schema-diagnostic-20261123/SEMANTIC_REUSE.json",
+    "sha256": "690fed460572eb6facdf66ae9447ee9b34e28d4cccf3a901fbe49638a14d3aa6"
+  },
   "source_inputs": [
     {
       "bytes": 8403,

@@ -1,0 +1,48 @@
+{
+  "body_mapping_drain_assertions_unchanged": true,
+  "inputs": [
+    {
+      "append": "\n// A mismatch remains the same refusal. These bounded copies are historical\n// diagnostics only; they cannot admit a schema or authorize any import effect.\ntype ownedAnnotationSchemaMismatchError struct {\n\tcause      error\n\tdiagnostic []byte\n}\n\nfunc (e *ownedAnnotationSchemaMismatchError) Error() string { return e.cause.Error() }\nfunc (e *ownedAnnotationSchemaMismatchError) Unwrap() error { return e.cause }\nfunc (e *ownedAnnotationSchemaMismatchError) OwnedAnnotationSchemaDiagnostic() []byte {\n\treturn append([]byte(nil), e.diagnostic...)\n}\n\nfunc ownedAnnotationSchemaMismatch(plan *ownedAnnotationMemberPlan, source, target *pb.SnapshotWithType) error {\n\tcause := ownedAnnotationRefused(\"source_target_schema_semantics_differ\")\n\tconst snapshotLimit = 256 << 10\n\tconst jsonLimit = 1 << 20\n\trecord := map[string]any{\n\t\t\"schema\": 1, \"schema_key\": plan.nativeKey.Marshal(),\n\t\t\"source_object_id\": plan.sourceID, \"target_object_id\": plan.expectedTarget,\n\t\t\"refusal\": cause.Error(), \"comparator_result\": false,\n\t\t\"snapshot_limit_bytes\": snapshotLimit, \"json_view_limit_bytes\": jsonLimit,\n\t\t\"normalized_at_actual_failed_comparison\": true, \"import_accepted\": false,\n\t}\n\tfor _, side := range []struct {\n\t\tname  string\n\t\tvalue *pb.SnapshotWithType\n\t}{{\"source\", source}, {\"target\", target}} {\n\t\tprefix := \"normalized_\" + side.name + \"_\"\n\t\tsize := proto.Size(side.value)\n\t\trecord[prefix+\"declared_bytes\"] = size\n\t\trecord[prefix+\"truncated\"] = false\n\t\tif size < 0 || size > snapshotLimit {\n\t\t\trecord[prefix+\"status\"] = \"OMITTED_SIZE_LIMIT\"\n\t\t\tcontinue\n\t\t}\n\t\traw, err := proto.Marshal(side.value)\n\t\trecord[prefix+\"actual_bytes\"] = len(raw)\n\t\tif err != nil {\n\t\t\trecord[prefix+\"status\"] = \"OMITTED_MARSHAL_FAILURE\"\n\t\t\tcontinue\n\t\t}\n\t\tif len(raw) != size || len(raw) > snapshotLimit {\n\t\t\trecord[prefix+\"status\"] = \"OMITTED_SIZE_MISMATCH\"\n\t\t\tcontinue\n\t\t}\n\t\trecord[prefix+\"protobuf\"] = raw\n\t\trecord[prefix+\"status\"] = \"COMPLETE\"\n\t\t// The protobuf bytes above retain every field; this JSON view only\n\t\t// makes the same copied message convenient to inspect.\n\t\tview, viewErr := json.Marshal(side.value)\n\t\trecord[prefix+\"json_view_bytes\"] = len(view)\n\t\tif viewErr != nil {\n\t\t\trecord[prefix+\"json_view_status\"] = \"OMITTED_MARSHAL_FAILURE\"\n\t\t} else if len(view) > jsonLimit {\n\t\t\trecord[prefix+\"json_view_status\"] = \"OMITTED_SIZE_LIMIT\"\n\t\t} else {\n\t\t\trecord[prefix+\"json_view\"] = json.RawMessage(view)\n\t\t\trecord[prefix+\"json_view_status\"] = \"COMPLETE\"\n\t\t}\n\t}\n\traw, err := json.Marshal(record)\n\tif err != nil || len(raw) > 3<<20 {\n\t\t// Diagnostics must never replace or suppress the original refusal.\n\t\treturn cause\n\t}\n\treturn &ownedAnnotationSchemaMismatchError{cause: cause, diagnostic: raw}\n}\n",
+      "base_sha256": "3f0f0f1145d26c193a0498c900612705678f00fa0dfae7545855165145748ae2",
+      "base_source_path": "docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-candidate-20261123/native/core/block/import/owned_annotation_comparison.go",
+      "bytes": 18517,
+      "changes": [
+        {
+          "after": "\t\"context\"\n\t\"encoding/json\"\n",
+          "before": "\t\"context\"\n"
+        },
+        {
+          "after": "\t\treturn ownedAnnotationSchemaMismatch(plan, left, right)\n",
+          "before": "\t\treturn ownedAnnotationRefused(\"source_target_schema_semantics_differ\")\n"
+        }
+      ],
+      "git_blob": "b4a50a1b03f87a824f9430c92172458434064790",
+      "native_path": "core/block/import/owned_annotation_comparison.go",
+      "path": "schema-diagnostic-20261123/native/core/block/import/owned_annotation_comparison.go",
+      "sha256": "f58a39eead208bc3a567f282f3a64007b17bfdfb16f0d8f9905a3c25a9410c72"
+    },
+    {
+      "append": "",
+      "base_sha256": "3f54464ab2dc860e79f41f55d6b4a0813409828a4e3d8c5d5a596e4666ffc422",
+      "base_source_path": "docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-native-qualification-20261123/observer-repair-20261123/native/core/application/owned_annotation_import_native_test.go",
+      "bytes": 75956,
+      "changes": [
+        {
+          "after": "\tschemaDiagnostic := map[string]any{\"available\": false, \"written\": false, \"truncated\": false}\n\tvar mismatch interface{ OwnedAnnotationSchemaDiagnostic() []byte }\n\tif errors.As(result.Err(), &mismatch) {\n\t\traw := mismatch.OwnedAnnotationSchemaDiagnostic()\n\t\tschemaDiagnostic[\"available\"] = true\n\t\tschemaDiagnostic[\"bytes\"] = len(raw)\n\t\tif len(raw) == 0 || len(raw) > 3<<20 || !json.Valid(raw) {\n\t\t\tschemaDiagnostic[\"status\"] = \"OMITTED_INVALID_OR_OVERSIZED\"\n\t\t} else if err := ownedClosedWrite(f.evidence, kind+\"-schema-comparison-diagnostic.json\", raw); err != nil {\n\t\t\tschemaDiagnostic[\"status\"] = \"WRITE_FAILED\"\n\t\t\tt.Log(\"historical schema diagnostic could not be retained; original refusal is unchanged\")\n\t\t} else {\n\t\t\tschemaDiagnostic[\"status\"] = \"COMPLETE\"\n\t\t\tschemaDiagnostic[\"written\"] = true\n\t\t}\n\t}\n\tvalues := map[string]any{\n\t\t\"schema_comparison_diagnostic\": schemaDiagnostic,\n\t\t\"actual_done_observed\":         complete, \"target_space\": result.TargetSpaceID(),",
+          "before": "\tvalues := map[string]any{\n\t\t\"actual_done_observed\": complete, \"target_space\": result.TargetSpaceID(),"
+        }
+      ],
+      "git_blob": "d519abc14d8558763502dce9f11d6cfd98698505",
+      "native_path": "core/application/owned_annotation_import_native_test.go",
+      "path": "schema-diagnostic-20261123/native/core/application/owned_annotation_import_native_test.go",
+      "sha256": "6bb6d93c536a70fac3d84b7993492142775145304abc5176c3052e8b90ea3979"
+    }
+  ],
+  "native_selector": "^TestOtzariaOwnedAnnotationClosedNativeImport$/^text$",
+  "original_refusal_preserved": true,
+  "previous_control": "32103fc9a1930def33bac4f09c4bd5b6a2deca5c",
+  "previous_native_run": 45235615911,
+  "production_import_activated": false,
+  "schema": 1,
+  "scope": "Bounded copies at the unchanged actual schema comparator refusal; original text leaf only; no semantic predicate changes."
+}

@@ -24,6 +24,9 @@ SUPPORT_SHA256 = "017778c096eca985774bd1a4f1e1e117ac3dee6ac08082c2a9793273826aa1
 COMPOSITION_SHA256 = "8815e407d60607903bfb4b340dd86a1229c521d10e6fb993108cd97c747a02a9"
 OBSERVER_REPAIR = "observer-repair-20261123"
 OBSERVER_REPAIR_SHA256 = "5dce16285bf28001e330ca3879d2661644f517a284a0423d4250daea1032e2fa"
+SCHEMA_DIAGNOSTIC = "schema-diagnostic-20261123"
+SCHEMA_DIAGNOSTIC_SHA256 = "89290dfe5b13676fac85f4048752d055e2ae4c0af544cab6e100e23ac07161fd"
+SEMANTIC_REUSE_SHA256 = "690fed460572eb6facdf66ae9447ee9b34e28d4cccf3a901fbe49638a14d3aa6"
 SEMANTIC_PARENT = "TestOwnedAnnotationBundledPersistedDefinitionContract"
 SEMANTIC_LEAVES = ("ot-objectType", "ot-participant", "rel-name", "rel-sourceObject",
                    "rel-revision", "unsupported-bundled-key")
@@ -120,13 +123,95 @@ def read_observer_repair(control, manifest):
     return repair
 
 
+def read_schema_diagnostic(control, manifest):
+    raw = read_bound(control, PACKET + "/" + SCHEMA_DIAGNOSTIC + "/DIAGNOSTIC_INPUTS.json",
+                     manifest["schema_diagnostic"])
+    require(sha(raw) == SCHEMA_DIAGNOSTIC_SHA256, "Reviewed diagnostic overlay differs")
+    diagnostic = json.loads(raw)
+    require(diagnostic["schema"] == 1
+            and diagnostic["previous_control"] == "32103fc9a1930def33bac4f09c4bd5b6a2deca5c"
+            and diagnostic["previous_native_run"] == 45235615911
+            and diagnostic["native_selector"] == "^" + PARENT + "$/^text$"
+            and diagnostic["original_refusal_preserved"] is True
+            and diagnostic["body_mapping_drain_assertions_unchanged"] is True,
+            "Diagnostic lineage or unchanged refusal scope differs")
+    expected = {
+        "core/block/import/owned_annotation_comparison.go":
+            "3f0f0f1145d26c193a0498c900612705678f00fa0dfae7545855165145748ae2",
+        "core/application/owned_annotation_import_native_test.go":
+            "3f54464ab2dc860e79f41f55d6b4a0813409828a4e3d8c5d5a596e4666ffc422",
+    }
+    require(len(diagnostic["inputs"]) == 2 and
+            {row["native_path"]: row["base_sha256"] for row in diagnostic["inputs"]} == expected,
+            "Diagnostic overlay changed an unreviewed native path")
+    for row in diagnostic["inputs"]:
+        require(row["path"] == SCHEMA_DIAGNOSTIC + "/native/" + row["native_path"],
+                "Diagnostic native source path differs")
+        before = safe(control, row["base_source_path"]).read_bytes()
+        require(sha(before) == row["base_sha256"]
+                and before == git(control, "show", diagnostic["previous_control"] + ":" + row["base_source_path"])
+                and before == git(control, "show", "HEAD:" + row["base_source_path"]),
+                "Accepted diagnostic preimage differs")
+        expected_after = before.decode()
+        for change in row["changes"]:
+            require(expected_after.count(change["before"]) == 1, "Diagnostic inverse is not unique")
+            expected_after = expected_after.replace(change["before"], change["after"], 1)
+        expected_after += row["append"]
+        require(read_bound(control, PACKET + "/" + row["path"], row) == expected_after.encode(),
+                "Diagnostic source escaped its exact inverse")
+    proof_raw = read_bound(control, PACKET + "/" + SCHEMA_DIAGNOSTIC + "/SEMANTIC_REUSE.json",
+                           manifest["semantic_reuse"])
+    require(sha(proof_raw) == SEMANTIC_REUSE_SHA256, "Accepted prior semantic evidence differs")
+    proof = json.loads(proof_raw)
+    require(proof["source_sha"] == diagnostic["previous_control"]
+            and proof["run_id"] == 45235615911 and proof["run_attempt"] == 1
+            and proof["artifact_id"] == 14850421633
+            and proof["artifact_sha256"] == "ad8fe006be11b093e93e1a04c59b14a01a14c0b1f656fef7f014c92d83cc360e"
+            and proof["semantic_control"]["status"] == "PASS"
+            and proof["semantic_control"]["leaf_count"] == 6,
+            "Prior semantic success is not the authenticated accepted execution")
+    return diagnostic
+
+
+def reuse_semantic_control(control, manifest, listing, closure, heart, evidence):
+    path = SCHEMA_DIAGNOSTIC + "/semantic_reuse.py"
+    row = next(row for row in manifest["controls"] if row["path"] == path)
+    read_bound(control, PACKET + "/" + path, row)
+    spec = importlib.util.spec_from_file_location("accepted_semantic_input_equality", safe(control, PACKET + "/" + path))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    proof = json.loads(read_bound(control, PACKET + "/" + SCHEMA_DIAGNOSTIC + "/SEMANTIC_REUSE.json",
+                                  manifest["semantic_reuse"]))
+    actual = module.semantic_dependency_fingerprint(listing, closure, heart)
+    require(actual == proof["semantic_dependency_fingerprint"],
+            "Actual semantic dependency inputs differ; prior six passes cannot be reused")
+    toolchains = {}
+    for name in ("03-go-version.stdout", "04-xcode-version.stdout", "05-clang-version.stdout"):
+        raw = safe(evidence, name).read_bytes()
+        actual_identity = {"bytes": len(raw), "sha256": sha(raw)}
+        require(actual_identity == proof["authenticated_source_files"][name],
+                "Actual semantic toolchain differs from accepted native execution: " + name)
+        toolchains[name] = actual_identity
+    return {
+        "status": "REUSED_PASS", "executed_this_run": False,
+        "previous_source": proof["source_sha"], "previous_run": proof["run_id"],
+        "previous_artifact_id": proof["artifact_id"],
+        "previous_artifact_sha256": proof["artifact_sha256"],
+        "actual_declared_input_equality": actual, "actual_toolchain_equality": toolchains,
+        "prior_actual_six_leaf_control": proof["semantic_control"],
+        "production_import_activated": False,
+    }
+
+
 def source_admission(control, manifest, original_repository=None, original_heart=None):
     require(manifest["schema"] == 1 and manifest["heart_base"] == HEART
             and manifest["candidate_revision"] == CANDIDATE_REVISION
             and manifest["fixture_revision"] == FIXTURE_REVISION,
             "Native source identities differ")
-    require(manifest["native_selector"] == "^" + PARENT + "$"
+    require(manifest["native_selector"] == "^" + PARENT + "$/^text$"
             and manifest["expected_leaf_cases"] == list(LEAVES)
+            and manifest["selected_leaf_cases"] == ["text"]
+            and manifest["diagnostic_only"] is True
             and manifest["historical_selectors_replayed"] is False
             and manifest["production_import_activated"] is False
             and manifest["new_rpc_or_generated_source"] is False,
@@ -148,6 +233,7 @@ def source_admission(control, manifest, original_repository=None, original_heart
             and manifest["original_module_hashes"] == composition["original_module_hashes"],
             "Original source/support/model/test inventory differs")
     repair = read_observer_repair(control, manifest)
+    diagnostic = read_schema_diagnostic(control, manifest)
     required = {row["path"]: row["sha256"]
                 for row in composition["final_composed_changed_native_files"]
                 if not row["path"].endswith("_test.go")}
@@ -155,6 +241,7 @@ def source_admission(control, manifest, original_repository=None, original_heart
     required.update({row["path"]: row["sha256"] for row in manifest["original_model_and_rpc_inputs"]
                      if row["path"] in COMPILED_ORIGINAL_MODELS})
     required.update({row["native_path"]: row["sha256"] for row in repair["inputs"]})
+    required.update({row["native_path"]: row["sha256"] for row in diagnostic["inputs"]})
     require(required == manifest["required_compiler_inputs"]
             and len(required) == manifest["required_compiler_input_count"] == 88,
             "Actual required original compiler input inventory differs")
@@ -281,6 +368,7 @@ def compose_native(control, heart, inputs, manifest, composition, support, comma
         require(support.digest(path) == row["sha256"], "Sealed native test afterimage differs")
         composed[row["native_path"]] = row["sha256"]
     repair = read_observer_repair(control, manifest)
+    diagnostic = read_schema_diagnostic(control, manifest)
     for row in repair["inputs"]:
         path = safe(heart, row["native_path"])
         before = row["base_sha256"]
@@ -291,6 +379,13 @@ def compose_native(control, heart, inputs, manifest, composition, support, comma
         path.write_bytes(read_bound(control, PACKET + "/" + row["path"], row))
         require(support.digest(path) == row["sha256"], "Reviewed observer repair bytes differ")
         composed[row["native_path"]] = row["sha256"]
+    for row in diagnostic["inputs"]:
+        path = safe(heart, row["native_path"])
+        require(path.is_file() and support.digest(path) == row["base_sha256"],
+                "Diagnostic overlay preimage differs: " + row["native_path"])
+        path.write_bytes(read_bound(control, PACKET + "/" + row["path"], row))
+        require(support.digest(path) == row["sha256"], "Diagnostic overlay afterimage differs")
+        composed[row["native_path"]] = row["sha256"]
     require(len(composed) == 86, "Explicit native afterimage inventory differs")
     required = {name: digest for name, digest in composed.items()
                 if not name.endswith("_test.go")}
@@ -298,6 +393,7 @@ def compose_native(control, heart, inputs, manifest, composition, support, comma
     required.update({row["path"]: row["sha256"] for row in manifest["original_model_and_rpc_inputs"]
                      if row["path"] in COMPILED_ORIGINAL_MODELS})
     required.update({row["native_path"]: row["sha256"] for row in repair["inputs"]})
+    required.update({row["native_path"]: row["sha256"] for row in diagnostic["inputs"]})
     require(required == manifest["required_compiler_inputs"]
             and len(required) == manifest["required_compiler_input_count"],
             "Complete required native compiler coverage differs")
@@ -313,6 +409,8 @@ def compose_native(control, heart, inputs, manifest, composition, support, comma
         "all_native_afterimages": composed, "required_actual_compiler_coverage": required,
         "explicit_post_base_observer_repair": repair,
         "observer_repair_manifest_sha256": OBSERVER_REPAIR_SHA256,
+        "explicit_post_repair_schema_diagnostic": diagnostic,
+        "schema_diagnostic_manifest_sha256": SCHEMA_DIAGNOSTIC_SHA256,
         "original_selected_tests_not_replayed": True,
         "new_generated_or_rpc_inputs": False, "production_import_activated": False,
     })
@@ -635,6 +733,8 @@ def main():
                           "original_git_source_bytes_checked": args.original_repository is not None,
                           "original_heart_bytes_checked": args.original_heart_repository is not None,
                           "workflow_published": workflow_published,
+                          "diagnostic_only": True, "selected_native_leaves": ["text"],
+                          "schema_diagnostic_manifest_sha256": SCHEMA_DIAGNOSTIC_SHA256,
                           "workflow_sha256": sha(expected_workflow),
                           "native_compilation": False, "native_execution": False,
                           "production_import_activated": False, "historical_selectors_replayed": False,
@@ -674,6 +774,8 @@ def main():
               "native_cases": "NOT_RUN", "fixture_evidence": "NOT_REACHED",
                "bundled_persistence_semantic_control": "NOT_RUN",
                "observer_repair_manifest_sha256": OBSERVER_REPAIR_SHA256,
+               "schema_diagnostic_manifest_sha256": SCHEMA_DIAGNOSTIC_SHA256,
+               "diagnostic_only": True, "selected_native_leaves": ["text"],
               "post_execution_source_module_link_stability": "NOT_REACHED",
               "historical_selectors_replayed": False, "production_import_activated": False,
               "swift_invocation_qualified": False, "cold_reopen_qualified": False,
@@ -695,8 +797,9 @@ def main():
         result["actual_toolchain"] = {"go": version, "go_path": go,
                                      "go_sha256": support.digest(go), "xcode": xcode}
         repair = read_observer_repair(control, manifest)
+        diagnostic = read_schema_diagnostic(control, manifest)
         format_names = sorted({row["native_path"] for row in
-                               manifest["candidate_inputs"] + manifest["test_inputs"] + repair["inputs"]})
+                               manifest["candidate_inputs"] + manifest["test_inputs"] + repair["inputs"] + diagnostic["inputs"]})
         formatting = commands.require("new-native-source-format",
                                       [str(Path(go).with_name("gofmt")), "-l",
                                        *[str(heart / name) for name in format_names]], heart, 30)
@@ -748,21 +851,16 @@ def main():
         binary_info = (binary, record)
         result["actual_native_binary"] = record
         commands.require("native-binary-buildinfo", [go, "version", "-m", str(binary)], heart, 30)
-        semantic_code, semantic_output, _ = commands.run("execute-bundled-persistence-control", [
-            go, "test", "-json", "-p", "2", "-count=1", "-timeout=3m",
-            "-run=^" + SEMANTIC_PARENT + "$", "./core/block/object/objectcreator"], heart, 600)
-        semantic = semantic_case_intake(semantic_output)
+        semantic = reuse_semantic_control(control, manifest, listing, closure, heart, evidence)
         result["bundled_persistence_semantic_control"] = semantic
         support.write_json(evidence / "BUNDLED_PERSISTENCE_CONTROL.json", semantic)
         support.write_json(evidence / "RESULT.json", result)
-        require(semantic_code == 0 and semantic["status"] == "PASS",
-                "Original bundled persistence semantic control did not pass once")
         result["native_cases"] = "EXECUTION_REQUESTED"
         support.write_json(evidence / "RESULT.json", result)
         native_started = True
         code, output, _ = commands.run("execute-original-closed-import", [
             go, "tool", "test2json", "-t", "-p", "github.com/anyproto/anytype-heart/core/application",
-            str(binary), "-test.v=test2json", "-test.run=^" + PARENT + "$",
+            str(binary), "-test.v=test2json", "-test.run=" + manifest["native_selector"],
             "-test.count=1", "-test.timeout=30m"], heart, 1950)
         # Preserve actual per-leaf/parent data before requiring success. The
         # finally block checks global source stability even when this fails.
