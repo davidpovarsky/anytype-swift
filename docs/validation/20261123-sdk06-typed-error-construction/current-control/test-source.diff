@@ -1,0 +1,160 @@
+--- a/Tools/PinkhaSimulatorGate/test_sdk06_component_projection.py
++++ b/Tools/PinkhaSimulatorGate/test_sdk06_component_projection.py
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env python3
+-"""One new composed control using actual original SDK Swift/descriptor bytes.
++"""One corrected composed control using actual original SDK Swift/descriptor bytes.
+ 
+ This is pure host validation. Generated path fixtures are not an App binary,
+ compiled module closure, successful Xcode build, or actual XCTest enumeration.
+@@ -18,7 +18,7 @@
+ import sdk06_component_projection as projection
+ 
+ ROOT = Path(__file__).resolve().parents[2]
+-FIXTURES = ROOT / "docs/validation/20261123-sdk06-component-projection/control-data"
++FIXTURES = ROOT / "docs/validation/20261123-sdk06-typed-error-construction/current-control/control-data"
+ METHOD = "test_actual_source_projection_unit_only_graph_descriptor_and_registration"
+ 
+ 
+@@ -35,8 +35,8 @@
+     def test_actual_source_projection_unit_only_graph_descriptor_and_registration(self):
+         fixed = projection.contract(ROOT)
+         source = {name: fixture(row["basename"]) for name, row in fixed["source_files"].items()}
+-        with self.subTest(scope="actual_seven_original_git_blobs_and_exact_pending_scope"):
+-            self.assertEqual(len(source), 7)
++        with self.subTest(scope="actual_eight_original_git_blobs_and_exact_pending_scope"):
++            self.assertEqual(len(source), 8)
+             self.assertEqual(fixed["source_sha"], "75bd6d7af18dfd511e85582ce7f994d2801b7703")
+             self.assertEqual(set(fixed["selection"]["declarations"]),
+                              set(fixed["selection"]["selected"]) | set(fixed["selection"]["excluded"]))
+@@ -51,8 +51,8 @@
+                 self.assertEqual(hashlib.sha256(raw).hexdigest(), row["sha256"])
+ 
+         projected, observations = projection.projected_sources(source, fixed)
+-        with self.subTest(scope="seven_metadata_only_patches_with_complete_original_inverse"):
+-            self.assertEqual(len(projected), 7)
++        with self.subTest(scope="exact_source_transforms_with_complete_original_inverse"):
++            self.assertEqual(len(projected), 8)
+             self.assertEqual(sum(raw.count(b"@Test(") for raw in projected.values()), 23)
+             editor_before = source[projection.EDITOR]
+             editor_after = projected[fixed["source_files"][projection.EDITOR]["basename"]]
+@@ -77,7 +77,32 @@
+                                 if i not in positions))
+             for name, original in source.items():
+                 basename = fixed["source_files"][name]["basename"]
+-                if name != projection.EDITOR:
++                if name == projection.AUTHORITY:
++                    authority = fixed["authority_error_construction"]
++                    self.assertEqual(authority["path"], name)
++                    self.assertEqual(len(authority["patches"]), 2)
++                    authority_after = projected[basename]
++                    self.assertEqual(authority_after, (ROOT / name).read_bytes())
++                    self.assertEqual(hashlib.sha256(authority_after).hexdigest(),
++                                     authority["projected_sha256"])
++                    for kind in ("Show", "Search"):
++                        self.assertEqual(authority_after.count(
++                            ("Anytype_Rpc.Object." + kind + ".Response.Error()").encode()), 1)
++                    authority_inverse = authority_after
++                    for patch in reversed(authority["patches"]):
++                        before, after = patch["before"].encode(), patch["after"].encode()
++                        self.assertEqual(authority_inverse.count(after), 1)
++                        authority_inverse = authority_inverse.replace(after, before, 1)
++                    self.assertEqual(hashlib.sha256(authority_inverse).hexdigest(),
++                                     authority["input_sha256"])
++                    imported = fixed["authority_import_patch"]
++                    self.assertEqual(hashlib.sha256(authority_inverse).hexdigest(),
++                                     imported["projected_sha256"])
++                    self.assertEqual(authority_inverse.count(imported["after"].encode()), 1)
++                    authority_inverse = authority_inverse.replace(
++                        imported["after"].encode(), imported["before"].encode(), 1)
++                    self.assertEqual(authority_inverse, original)
++                elif name != projection.EDITOR:
+                     self.assertEqual(projected[basename], original)
+                 self.assertIs(observations[name]["function_bodies_and_arguments_unchanged"],
+                               name != projection.AUTHORITY)
+@@ -98,6 +123,15 @@
+         bad_projection = copy.deepcopy(fixed)
+         bad_projection["projected_editor_sha256"] = "0" * 64
+         corruptions.append(("changed_projected_identity", source, bad_projection))
++        bad_constructor = copy.deepcopy(fixed)
++        bad_constructor["authority_error_construction"]["patches"][0]["before"] += " "
++        corruptions.append(("changed_constructor_preimage", source, bad_constructor))
++        bad_constructor_result = copy.deepcopy(fixed)
++        bad_constructor_result["authority_error_construction"]["patches"][0]["after"] += " "
++        corruptions.append(("changed_constructor_postimage", source, bad_constructor_result))
++        bad_authority_identity = copy.deepcopy(fixed)
++        bad_authority_identity["authority_error_construction"]["projected_sha256"] = "0" * 64
++        corruptions.append(("changed_authority_projected_identity", source, bad_authority_identity))
+         for name, inputs, contract in corruptions:
+             with self.subTest(refusal=name):
+                 with self.assertRaises(ValueError):
+@@ -129,6 +163,7 @@
+         original_copy = copy.deepcopy(original_descriptor)
+         with tempfile.TemporaryDirectory(prefix="sdk06-projection-host-control-") as temporary:
+             root = Path(temporary).resolve()
++            root.chmod(0o700)
+             app_source = root / "immutable-original-source"
+             for name, raw in source.items():
+                 path = app_source / name
+@@ -158,8 +193,9 @@
+                 configurations = objects[target["buildConfigurationList"]]["buildConfigurations"]
+                 self.assertEqual(len(configurations), 1)
+                 settings = objects[configurations[0]]["buildSettings"]
+-                self.assertEqual(settings["TEST_HOST"], str(staged_app / "Anytype"))
+-                self.assertEqual(settings["BUNDLE_LOADER"], "$(TEST_HOST)")
++                self.assertEqual(settings["TEST_HOST"], "")
++                self.assertEqual(settings["BUNDLE_LOADER"], str(staged_app / "Anytype"))
++                self.assertEqual(settings["OTHER_LDFLAGS"], [str(staged_app / "Anytype.debug.dylib")])
+                 self.assertEqual(settings["PRODUCT_MODULE_NAME"], "AnytypeTests")
+                 self.assertEqual(settings["PRODUCT_NAME"], "SDK06PendingTests")
+                 self.assertEqual(settings["SWIFT_INCLUDE_PATHS"], [str(original_configuration)])
+@@ -171,7 +207,7 @@
+                 phases = [objects[x] for x in target["buildPhases"]]
+                 self.assertEqual([x["isa"] for x in phases],
+                                  ["PBXSourcesBuildPhase", "PBXFrameworksBuildPhase", "PBXResourcesBuildPhase"])
+-                self.assertEqual(len(phases[0]["files"]), 7)
++                self.assertEqual(len(phases[0]["files"]), 8)
+                 self.assertEqual(phases[1]["files"], [])
+                 self.assertEqual(phases[2]["files"], [])
+                 refs = [objects[objects[x]["fileRef"]]["path"] for x in phases[0]["files"]]
+@@ -182,13 +218,39 @@
+                 self.assertEqual(generated["component_test_bundle_targets"], 1)
+                 self.assertFalse(generated["implicit_dependencies"])
+                 self.assertFalse(generated["original_source_modified"])
++                self.assertFalse(generated["function_bodies_and_arguments_unchanged"])
++                self.assertEqual(generated["fixture_constructor_replacements"], 2)
++                self.assertTrue(generated["declarations_assertions_and_argument_values_unchanged"])
++                self.assertNotIn("compile_support", generated)
+             with self.subTest(scope="actual_generated_source_and_single_scheme_binding"):
+                 actual_generated = {
+                     p.relative_to(destination).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
+                     for p in destination.rglob("*") if p.is_file()
+                 }
+                 self.assertEqual(actual_generated, generated["generated_files"])
+-                self.assertEqual(len(actual_generated), 10)
++                expected_generated = {"Sources/" + name for name in projected} | {
++                    "SDK06PendingComponents.xcodeproj/project.pbxproj",
++                    "SDK06PendingComponents.xcodeproj/xcshareddata/xcschemes/SDK06PendingComponents.xcscheme",
++                    "SDK06PendingComponents.xcodeproj/project.xcworkspace/contents.xcworkspacedata",
++                }
++                self.assertEqual(len(expected_generated), 11)
++                self.assertEqual(set(actual_generated), expected_generated)
++                expected_directories = {
++                    "Sources", "SDK06PendingComponents.xcodeproj",
++                    "SDK06PendingComponents.xcodeproj/xcshareddata",
++                    "SDK06PendingComponents.xcodeproj/xcshareddata/xcschemes",
++                    "SDK06PendingComponents.xcodeproj/project.xcworkspace",
++                    "SDK06PendingComponents.xcodeproj/project.xcworkspace/xcshareddata",
++                    "SDK06PendingComponents.xcodeproj/project.xcworkspace/xcshareddata/swiftpm",
++                    "SDK06PendingComponents.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/configuration",
++                }
++                self.assertEqual({p.relative_to(destination).as_posix()
++                                  for p in destination.rglob("*") if p.is_dir()}, expected_directories)
++                for relative in ("xcshareddata", "xcshareddata/swiftpm",
++                                 "xcshareddata/swiftpm/configuration"):
++                    directory = project / "project.xcworkspace" / relative
++                    self.assertFalse(directory.is_symlink())
++                    self.assertEqual(directory.stat().st_mode & 0o7777, 0o777)
+                 workspace = ET.fromstring(
+                     (project / "project.xcworkspace/contents.xcworkspacedata").read_bytes())
+                 self.assertEqual(workspace.tag, "Workspace")
