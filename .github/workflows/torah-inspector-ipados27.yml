@@ -51,6 +51,7 @@ on:
           - semantic-page-apple-runtime
           - semantic-page-apple-consumer
           - semantic-page-apple-mounted
+          - semantic-page-startup-warning
           - coherent-original-products
           - native-ui-original-products
           - native-ui-transition-candidate
@@ -324,6 +325,10 @@ jobs:
       native_artifact_run_id: ${{ inputs.source_run_id }}
       native_producer_commit: ${{ inputs.prepared_native_producer_commit }}
       native_artifact_run_attempt: ${{ inputs.prepared_native_artifact_run_attempt }}
+
+  semantic-page-startup-warning:
+    if: ${{ inputs.route == 'semantic-page-startup-warning' }}
+    uses: ./.github/workflows/pinkha-semantic-page-startup-warning.yml
 
   semantic-page-apple-mounted:
     if: ${{ inputs.route == 'semantic-page-apple-mounted' }}

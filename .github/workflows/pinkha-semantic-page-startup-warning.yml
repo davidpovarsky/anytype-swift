@@ -1,0 +1,57 @@
+name: Continue Page154 through the native startup warning with a new UI-only runner
+
+on:
+  workflow_dispatch: {}
+  workflow_call: {}
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  startup-warning-mounted:
+    runs-on: xcode-27
+    timeout-minutes: 120
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+      GH_TOKEN: ${{ github.token }}
+      ATTEMPT: build/page154-mounted-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - name: Checkout exact reviewed mounted controller and committed admission
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: build/page154-mounted-${{ github.run_id }}-${{ github.run_attempt }}/controller
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Checkout immutable source of the original compiled App
+        uses: actions/checkout@v4
+        with:
+          ref: 68148339c275268795360d71d519a5baf003adf8
+          path: build/page154-mounted-${{ github.run_id }}-${{ github.run_attempt }}/app
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Select native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Build only the corrected UI runner and recreate the necessary fixture for the failed journey
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$ATTEMPT/artifact"
+          python3 -B "$ATTEMPT/controller/Tools/PinkhaSemanticAnchorWire/apple_mounted/run.py" \
+            --controller "$ATTEMPT/controller" --app "$ATTEMPT/app" \
+            --admission "$ATTEMPT/controller/Tools/PinkhaSemanticAnchorWire/apple_mounted/admissions/45116855451-1.json" \
+            --work "$ATTEMPT/work" --evidence "$ATTEMPT/artifact/evidence" --startup-warning-ui \
+            2>&1 | tee "$ATTEMPT/artifact/controller.log"
+      - name: Preserve original admission and every current execution observation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Semantic-Page-Startup-Warning-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/page154-mounted-${{ github.run_id }}-${{ github.run_attempt }}/artifact/
+          retention-days: 14
+          if-no-files-found: error

@@ -1,0 +1,57 @@
+{
+  "actual_retained_new_host_methods": 1,
+  "actual_retained_new_host_subcases": 7,
+  "all_other_baseline_paths_unchanged": true,
+  "base": "5f21049dc223d70a8408c84ca9a1e45fe6ea3f78",
+  "central_literal_edits": [
+    [
+      "          - semantic-page-apple-mounted\n",
+      "          - semantic-page-apple-mounted\n          - semantic-page-startup-warning\n"
+    ],
+    [
+      "  semantic-page-apple-mounted:\n",
+      "  semantic-page-startup-warning:\n    if: ${{ inputs.route == 'semantic-page-startup-warning' }}\n    uses: ./.github/workflows/pinkha-semantic-page-startup-warning.yml\n\n  semantic-page-apple-mounted:\n"
+    ]
+  ],
+  "composed_donor_head": "faa5b2f93665cb39802bca9bece4e575aabd72c0",
+  "donor": "9d5749b618b287ba9420e797fa88012bb46dd5cb",
+  "failed_ui_methods_to_execute": 1,
+  "fresh_preparation_setup_invocations": 1,
+  "host_controls_replayed_now": 0,
+  "native_app_builds_to_execute": 0,
+  "new_preparation_acceptance_credit": 0,
+  "new_ui_runner_builds_to_execute": 1,
+  "new_workflow": ".github/workflows/pinkha-semantic-page-startup-warning.yml",
+  "original_app_source": "68148339c275268795360d71d519a5baf003adf8",
+  "pre_authoring_template_failure": {
+    "kind": "local JavaScript parse error before remote call",
+    "remote_mutations": 0
+  },
+  "preserved_donor_paths": 32,
+  "qualification_sha256": "6e0a0975e4c83d971b9eecd4885a1b45526f496c52ba0cfa23a49d9e72f15447",
+  "route": "semantic-page-startup-warning",
+  "source_integrator_sha256": "af3caa2f735162dd347ce9977f82cae6d836b7533aad30bdc2f7804363c70ce1",
+  "status": "SOURCE_COMPOSED_QUALIFIED_NEW_HOST_CONTROL_RETAINED_APPLE_NOT_RUN",
+  "workflow_literal_derivation": [
+    [
+      "name: Run mounted Page154 selection and cold reopen from original Products",
+      "name: Continue Page154 through the native startup warning with a new UI-only runner"
+    ],
+    [
+      "  original-products-mounted:\n",
+      "  startup-warning-mounted:\n"
+    ],
+    [
+      "      - name: Execute one new preparation and the actual mounted Cancel Create reopen journey",
+      "      - name: Build only the corrected UI runner and recreate the necessary fixture for the failed journey"
+    ],
+    [
+      "            --work \"$ATTEMPT/work\" --evidence \"$ATTEMPT/artifact/evidence\" \\\n",
+      "            --work \"$ATTEMPT/work\" --evidence \"$ATTEMPT/artifact/evidence\" --startup-warning-ui \\\n"
+    ],
+    [
+      "          name: Pinkha-Semantic-Page-Mounted-",
+      "          name: Pinkha-Semantic-Page-Startup-Warning-"
+    ]
+  ]
+}
