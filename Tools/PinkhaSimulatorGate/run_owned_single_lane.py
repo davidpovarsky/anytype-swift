@@ -29,15 +29,24 @@ def verify_owned_group_stopped(command_path, *, seconds=10):
                   "Owned worker cleanup was not completed")
     deadline = time.monotonic() + seconds
     observations = 0
+    timeout_observations = []
     while True:
         remaining = deadline - time.monotonic()
         owned.require(remaining > 0, "Owned process group did not stop within its cleanup budget")
         # Read only numeric identities/state. No process names, global signals
         # or unrelated process-group operations are used.
-        output = subprocess.check_output(["ps", "-axo", "pid=,pgid=,stat="], text=True,
-                                         timeout=min(2, remaining))
-        live = []
+        probe_timeout = min(2, remaining)
         observations += 1
+        try:
+            output = subprocess.check_output(["ps", "-axo", "pid=,pgid=,stat="], text=True,
+                                             timeout=probe_timeout)
+        except subprocess.TimeoutExpired as error:
+            timeout_observations.append(dict(observation=observations, timeout_seconds=probe_timeout))
+            error.timeout_observations = list(timeout_observations)
+            if time.monotonic() >= deadline:
+                raise
+            continue
+        live = []
         for line in output.splitlines():
             fields = line.split()
             owned.require(len(fields) == 3 and fields[0].isdigit() and fields[1].isdigit(),
@@ -45,7 +54,8 @@ def verify_owned_group_stopped(command_path, *, seconds=10):
             if int(fields[1]) == pgid and not fields[2].startswith("Z"):
                 live.append(int(fields[0]))
         if not live:
-            return {"status": "PASS", "pgid": pgid, "live_members": 0, "observations": observations}
+            return {"status": "PASS", "pgid": pgid, "live_members": 0, "observations": observations,
+                    "timeout_observations": timeout_observations, "budget_seconds": seconds}
         time.sleep(min(0.05, max(0, deadline - time.monotonic())))
 
 
