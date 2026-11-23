@@ -848,12 +848,27 @@ def cleanup_only(profile, expected, provider):
         commands = Commands(evidence, context, helpers(source))
         commands.cleanup_mode = True
         outcome["groups"] = unfinished_groups(commands)
-        outcome["provider"] = provider(commands, "cleanup", None, evidence)
-        owned = recover_owned(commands, evidence)
-        outcome["devices"] = cleanup_devices(commands, evidence, owned)
-        c.require(all(r["owned_simulator_cleanup_status"] == "COMPLETE" for r in outcome["devices"]),
-                  "prior_or_current_cleanup_incomplete")
-        outcome["loadedAfter"] = recheck(source)
+        primary = None
+        try:
+            outcome["provider"] = provider(commands, "cleanup", None, evidence)
+        except BaseException as failure:
+            outcome["providerFailure"] = error(failure)
+            primary = failure
+        try:
+            owned = recover_owned(commands, evidence)
+            outcome["devices"] = cleanup_devices(commands, evidence, owned)
+            c.require(all(r["owned_simulator_cleanup_status"] == "COMPLETE" for r in outcome["devices"]),
+                      "prior_or_current_cleanup_incomplete")
+        except BaseException as failure:
+            outcome["deviceFailure"] = error(failure)
+            primary = primary or failure
+        try:
+            outcome["loadedAfter"] = recheck(source)
+        except BaseException as failure:
+            outcome["loadedFailure"] = error(failure)
+            primary = primary or failure
+        if primary:
+            raise primary
         outcome["status"] = "PASS"
     except BaseException as failure:
         outcome["firstFailure"] = error(failure)
