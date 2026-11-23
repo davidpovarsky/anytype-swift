@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/mnt/development/projects/diagnostics/sdk06-projection-composition-20261123/integrate-sdk-projection.py", line 45, in <module>
+    git('cherry-pick',*CHAIN)
+  File "/mnt/development/projects/diagnostics/sdk06-projection-composition-20261123/integrate-sdk-projection.py", line 12, in git
+    return subprocess.check_output(['git','-c','gc.auto=0','-c','user.name=davidpovarsky','-c','user.email=your-email@example.com','-C',str(W),*args],stderr=subprocess.PIPE,timeout=80)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['git', '-c', 'gc.auto=0', '-c', 'user.name=davidpovarsky', '-c', 'user.email=your-email@example.com', '-C', '/mnt/development/projects/worktrees/anytype-wave15-shared-20261123', 'cherry-pick', '4d5f5b36a2db58b906df40a2eec2fd296baf9338', '8ebeda993843835098c7fe3168bde9e99dfec3fe']' returned non-zero exit status 1.
