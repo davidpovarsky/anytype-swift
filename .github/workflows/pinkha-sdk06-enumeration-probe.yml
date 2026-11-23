@@ -1,0 +1,44 @@
+name: Enumerate SDK06 original Products without building or executing tests
+
+on:
+  workflow_call: {}
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  original-products-enumeration:
+    runs-on: xcode-27
+    timeout-minutes: 40
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+      GH_TOKEN: ${{ github.token }}
+      ATTEMPT: build/sdk06-enumeration-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - name: Checkout the exact reviewed enumeration controller and original source history
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: build/sdk06-enumeration-${{ github.run_id }}-${{ github.run_attempt }}/control
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Select native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Enumerate bounded selector variants against the immutable original Products
+        run: |
+          python3 -B "$ATTEMPT/control/Tools/PinkhaSimulatorGate/sdk06_enumeration_probe.py" \
+            --control "$ATTEMPT/control" --work "$ATTEMPT/work" --evidence "$ATTEMPT/evidence"
+      - name: Preserve every original selection and owned-process observation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-SDK06-Enumeration-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/sdk06-enumeration-${{ github.run_id }}-${{ github.run_attempt }}/evidence/
+          retention-days: 14
+          if-no-files-found: error

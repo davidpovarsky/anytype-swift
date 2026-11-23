@@ -1,0 +1,2933 @@
+{
+  "origin_artifact_id": 14782666651,
+  "origin_execution_sha256": "2c5dd3601567cc28fd1a0f240e14da7c675d1b4653c91840cbebbada80699e01",
+  "execution": {
+    "source_sha": "7293e4fd0bcabdcdb643d5768b777b8e87ff1b73",
+    "run_id": "45087685319",
+    "run_attempt": "1",
+    "native_build_succeeded": true,
+    "phase": "SHARED_EDITOR_COMPONENTS",
+    "error": "Compiled pending selection differs from the exact23 methods; no tests executed",
+    "shared_editor_components": {
+      "source": {
+        "methods": [
+          "SimpleTableTextPersistenceTests/acceptedSnapshotSurvivesViewReuse",
+          "SimpleTableTextPersistenceTests/defocusCommitsTheDeferredSearchBuffer",
+          "SimpleTableTextPersistenceTests/laterDraftKeepsTheLatestAcceptedSnapshot",
+          "SimpleTableTextPersistenceTests/markdownAddBlockDoesNotContinueAfterOwnerRebind",
+          "SimpleTableTextPersistenceTests/markdownCommandsKeepCapturedTextBeforeLaterTyping",
+          "SimpleTableTextPersistenceTests/markdownStyleWaitsForEarlierNativeWrite",
+          "SimpleTableTextPersistenceTests/nativeRejectionKeepsTheTableDirty",
+          "SimpleTableTextPersistenceTests/queuedMarkdownCommandIsRetiredWhenRowChanges",
+          "SimpleTableTextPersistenceTests/replacementClaimsPendingOwnershipBeforePublication",
+          "SimpleTableTextPersistenceTests/rowRebindCannotWriteIntoTheNewOwner",
+          "SimpleTableTextPersistenceTests/structuralKeyWaitsForAcceptedText",
+          "TextBlockFocusLifecycleTests/completedLocalTextAcceptsRemoteReplacement",
+          "TextBlockFocusLifecycleTests/explicitHandoffDoesNotReplayInitialCaret",
+          "TextBlockFocusLifecycleTests/initialFocusWaitsForAttachment",
+          "TextBlockFocusLifecycleTests/insertedCellUsesCurrentEditingBeforeFocus",
+          "TextBlockFocusLifecycleTests/pendingLocalTextSurvivesNativeReconfiguration",
+          "TextBlockFocusLifecycleTests/requestIdentityParticipatesInCellConfigurationEquality",
+          "TextBlockFocusLifecycleTests/reusedCellDoesNotPreserveDifferentPendingOwner",
+          "TextBlockFocusLifecycleTests/reusedCellUsesCurrentLockBeforeFocus",
+          "TextBlockFocusLifecycleTests/sameInputOwnerSurvivesForkAndExplicitReplacementEndsComposition",
+          "TextBlockFocusLifecycleTests/staleFocusDoesNotSurviveRowLifetime",
+          "TorahRelatedReadAuthorityMappingTests/nativeDenialRequiresExactTypedCodeAndDescription",
+          "TorahRelatedReadAuthorityMappingTests/providerAndTransportDescriptionsCannotForgeNativeAuthority"
+        ],
+        "source_hashes": {
+          "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift": "0b533aa0500b9a62043d1f5e49827e6be1ac2ce0f839fa6496b6da81ab26dcbf",
+          "AnyTypeTests/Pinkha/SimpleTableTextPersistenceTests.swift": "dbe44987c62f85dc1a26571d0effc8a2138e9aaf6657eec1d469a8517e294166",
+          "AnyTypeTests/Pinkha/TorahRelatedReadAuthorityMappingTests.swift": "07675b9e09777ebb5fc503bafcd814dcc10fefb0a950d5ff6231da7b3f51e8b1"
+        },
+        "expected_methods": 23,
+        "declared_invocations": 32,
+        "profile": "shared-editor-table-and-related-authority",
+        "compiled_declarations": {
+          "TextBlockFocusLifecycleTests/reusedCellDoesNotPreserveDifferentPendingOwner": "AnytypeTests/TextBlockFocusLifecycleTests/reusedCellDoesNotPreserveDifferentPendingOwner(composing:)",
+          "TextBlockFocusLifecycleTests/sameInputOwnerSurvivesForkAndExplicitReplacementEndsComposition": "AnytypeTests/TextBlockFocusLifecycleTests/sameInputOwnerSurvivesForkAndExplicitReplacementEndsComposition()",
+          "TextBlockFocusLifecycleTests/pendingLocalTextSurvivesNativeReconfiguration": "AnytypeTests/TextBlockFocusLifecycleTests/pendingLocalTextSurvivesNativeReconfiguration()",
+          "TextBlockFocusLifecycleTests/completedLocalTextAcceptsRemoteReplacement": "AnytypeTests/TextBlockFocusLifecycleTests/completedLocalTextAcceptsRemoteReplacement()",
+          "TextBlockFocusLifecycleTests/nativeFocusObservationDistinguishesOutcomes": "AnytypeTests/TextBlockFocusLifecycleTests/nativeFocusObservationDistinguishesOutcomes(outcome:)",
+          "TextBlockFocusLifecycleTests/insertedCellUsesCurrentEditingBeforeFocus": "AnytypeTests/TextBlockFocusLifecycleTests/insertedCellUsesCurrentEditingBeforeFocus(editing:)",
+          "TextBlockFocusLifecycleTests/reusedCellUsesCurrentLockBeforeFocus": "AnytypeTests/TextBlockFocusLifecycleTests/reusedCellUsesCurrentLockBeforeFocus(newLocked:)",
+          "TextBlockFocusLifecycleTests/initialFocusWaitsForAttachment": "AnytypeTests/TextBlockFocusLifecycleTests/initialFocusWaitsForAttachment()",
+          "TextBlockFocusLifecycleTests/pendingFocusWaitsForKeyWindow": "AnytypeTests/TextBlockFocusLifecycleTests/pendingFocusWaitsForKeyWindow()",
+          "TextBlockFocusLifecycleTests/refusedFocusWaitsForWindowReadiness": "AnytypeTests/TextBlockFocusLifecycleTests/refusedFocusWaitsForWindowReadiness()",
+          "TextBlockFocusLifecycleTests/explicitHandoffDoesNotReplayInitialCaret": "AnytypeTests/TextBlockFocusLifecycleTests/explicitHandoffDoesNotReplayInitialCaret()",
+          "TextBlockFocusLifecycleTests/staleFocusDoesNotSurviveRowLifetime": "AnytypeTests/TextBlockFocusLifecycleTests/staleFocusDoesNotSurviveRowLifetime(change:)",
+          "TextBlockFocusLifecycleTests/laterFocusSupersedesDetachedRequest": "AnytypeTests/TextBlockFocusLifecycleTests/laterFocusSupersedesDetachedRequest(useNativeEditing:)",
+          "TextBlockFocusLifecycleTests/editingDenialCancelsPendingFocus": "AnytypeTests/TextBlockFocusLifecycleTests/editingDenialCancelsPendingFocus(locked:)",
+          "TextBlockFocusLifecycleTests/focusedTextViewDoesNotReplayResponderAcquisition": "AnytypeTests/TextBlockFocusLifecycleTests/focusedTextViewDoesNotReplayResponderAcquisition()",
+          "TextBlockFocusLifecycleTests/consumedAndNewerFocusSurviveOldCallbacks": "AnytypeTests/TextBlockFocusLifecycleTests/consumedAndNewerFocusSurviveOldCallbacks()",
+          "TextBlockFocusLifecycleTests/requestIdentityParticipatesInCellConfigurationEquality": "AnytypeTests/TextBlockFocusLifecycleTests/requestIdentityParticipatesInCellConfigurationEquality()",
+          "SimpleTableTextPersistenceTests/acceptedSnapshotSurvivesViewReuse": "AnytypeTests/SimpleTableTextPersistenceTests/acceptedSnapshotSurvivesViewReuse()",
+          "SimpleTableTextPersistenceTests/laterDraftKeepsTheLatestAcceptedSnapshot": "AnytypeTests/SimpleTableTextPersistenceTests/laterDraftKeepsTheLatestAcceptedSnapshot()",
+          "SimpleTableTextPersistenceTests/nativeRejectionKeepsTheTableDirty": "AnytypeTests/SimpleTableTextPersistenceTests/nativeRejectionKeepsTheTableDirty()",
+          "SimpleTableTextPersistenceTests/defocusCommitsTheDeferredSearchBuffer": "AnytypeTests/SimpleTableTextPersistenceTests/defocusCommitsTheDeferredSearchBuffer()",
+          "SimpleTableTextPersistenceTests/rowRebindCannotWriteIntoTheNewOwner": "AnytypeTests/SimpleTableTextPersistenceTests/rowRebindCannotWriteIntoTheNewOwner()",
+          "SimpleTableTextPersistenceTests/structuralKeyWaitsForAcceptedText": "AnytypeTests/SimpleTableTextPersistenceTests/structuralKeyWaitsForAcceptedText()",
+          "SimpleTableTextPersistenceTests/replacementClaimsPendingOwnershipBeforePublication": "AnytypeTests/SimpleTableTextPersistenceTests/replacementClaimsPendingOwnershipBeforePublication(asyncEntry:)",
+          "SimpleTableTextPersistenceTests/markdownStyleWaitsForEarlierNativeWrite": "AnytypeTests/SimpleTableTextPersistenceTests/markdownStyleWaitsForEarlierNativeWrite()",
+          "SimpleTableTextPersistenceTests/markdownCommandsKeepCapturedTextBeforeLaterTyping": "AnytypeTests/SimpleTableTextPersistenceTests/markdownCommandsKeepCapturedTextBeforeLaterTyping(addBlock:)",
+          "SimpleTableTextPersistenceTests/markdownAddBlockDoesNotContinueAfterOwnerRebind": "AnytypeTests/SimpleTableTextPersistenceTests/markdownAddBlockDoesNotContinueAfterOwnerRebind(returnToOriginalID:)",
+          "SimpleTableTextPersistenceTests/queuedMarkdownCommandIsRetiredWhenRowChanges": "AnytypeTests/SimpleTableTextPersistenceTests/queuedMarkdownCommandIsRetiredWhenRowChanges()",
+          "TorahRelatedReadAuthorityMappingTests/nativeDenialRequiresExactTypedCodeAndDescription": "AnytypeTests/TorahRelatedReadAuthorityMappingTests/nativeDenialRequiresExactTypedCodeAndDescription(objectShow:)",
+          "TorahRelatedReadAuthorityMappingTests/providerAndTransportDescriptionsCannotForgeNativeAuthority": "AnytypeTests/TorahRelatedReadAuthorityMappingTests/providerAndTransportDescriptionsCannotForgeNativeAuthority()"
+        },
+        "unselected_existing_methods": [
+          "TextBlockFocusLifecycleTests/consumedAndNewerFocusSurviveOldCallbacks",
+          "TextBlockFocusLifecycleTests/editingDenialCancelsPendingFocus",
+          "TextBlockFocusLifecycleTests/focusedTextViewDoesNotReplayResponderAcquisition",
+          "TextBlockFocusLifecycleTests/laterFocusSupersedesDetachedRequest",
+          "TextBlockFocusLifecycleTests/nativeFocusObservationDistinguishesOutcomes",
+          "TextBlockFocusLifecycleTests/pendingFocusWaitsForKeyWindow",
+          "TextBlockFocusLifecycleTests/refusedFocusWaitsForWindowReadiness"
+        ],
+        "components": {
+          "shared-editor": {
+            "expected_methods": 10,
+            "declared_invocations": 15
+          },
+          "shared-table": {
+            "expected_methods": 11,
+            "declared_invocations": 14
+          },
+          "related-read-authority": {
+            "expected_methods": 2,
+            "declared_invocations": 3
+          }
+        }
+      }
+    }
+  },
+  "discovery": {
+    "errors": [],
+    "values": [
+      {
+        "disabledTests": [
+          {
+            "identifier": "AnytypeTests/AccountInfoPersonalWidgetsTests/emptyAccountInfo_returnsEmptyAndAsserts()"
+          },
+          {
+            "identifier": "AnytypeTests/AccountInfoPersonalWidgetsTests/emptySpaceId_returnsEmptyAndAsserts()"
+          },
+          {
+            "identifier": "AnytypeTests/AccountInfoPersonalWidgetsTests/spaceIdWithMultipleDots_replacesOnlyFirstDot()"
+          },
+          {
+            "identifier": "AnytypeTests/AccountInfoPersonalWidgetsTests/spaceIdWithOneDot_replacesDot()"
+          },
+          {
+            "identifier": "AnytypeTests/AccountInfoPersonalWidgetsTests/spaceIdWithoutDot_leftAsIs()"
+          },
+          {
+            "identifier": "AnytypeTests/ActivityJSONTests/capsNestingDepth()"
+          },
+          {
+            "identifier": "AnytypeTests/ActivityJSONTests/copyAsJsonKeepsEveryCallInOrderWithResults()"
+          },
+          {
+            "identifier": "AnytypeTests/ActivityJSONTests/duplicateKeyKeepsFirstPositionAndLastValue()"
+          },
+          {
+            "identifier": "AnytypeTests/ActivityJSONTests/keepsKeyOrderAndNumberLexemes()"
+          },
+          {
+            "identifier": "AnytypeTests/ActivityJSONTests/presentResultReplacesEvenFalsyValues(_:)"
+          },
+          {
+            "identifier": "AnytypeTests/ActivityJSONTests/preservesUnicodeZeroWidthAndEscapes()"
+          },
+          {
+            "identifier": "AnytypeTests/ActivityJSONTests/previews()"
+          },
+          {
+            "identifier": "AnytypeTests/ActivityJSONTests/rejectsInvalidUTF8InsideStrings()"
+          },
+          {
+            "identifier": "AnytypeTests/ActivityJSONTests/rejectsMalformedInput(_:)"
+          },
+          {
+            "identifier": "AnytypeTests/ActivityJSONTests/rejectsPayloadsOverTheTransportLimit()"
+          },
+          {
+            "identifier": "AnytypeTests/ActivityJSONTests/retentionQualification(_:_:)"
+          },
+          {
+            "identifier": "AnytypeTests/ActivityJSONTests/shallowMergeKeepsPositionsReplacesWholeValuesAndAppendsNewKeys()"
+          },
+          {
+            "identifier": "AnytypeTests/ActivityJSONTests/snapshotHidesReservedKeysFromMetadataRows()"
+          },
+          {
+            "identifier": "AnytypeTests/ActivityJSONTests/sortedKeysSerializationIgnoresKeyOrder()"
+          },
+          {
+            "identifier": "AnytypeTests/AnytypeRelativeDateTimeFormatterTests/test14DaysAgo()"
+          },
+          {
+            "identifier": "AnytypeTests/AnytypeRelativeDateTimeFormatterTests/test7DaysAgo()"
+          },
+          {
+            "identifier": "AnytypeTests/AnytypeRelativeDateTimeFormatterTests/testFutureDate()"
+          },
+          {
+            "identifier": "AnytypeTests/AnytypeRelativeDateTimeFormatterTests/testMonth()"
+          },
+          {
+            "identifier": "AnytypeTests/AnytypeRelativeDateTimeFormatterTests/testMonthAndYear()"
+          },
+          {
+            "identifier": "AnytypeTests/AnytypeRelativeDateTimeFormatterTests/testToday()"
+          },
+          {
+            "identifier": "AnytypeTests/AnytypeRelativeDateTimeFormatterTests/testTomorrow()"
+          },
+          {
+            "identifier": "AnytypeTests/AnytypeRelativeDateTimeFormatterTests/testYesterday()"
+          },
+          {
+            "identifier": "AnytypeTests/ArrayMoveTests/testMove(_:_:_:)"
+          },
+          {
+            "identifier": "AnytypeTests/AttributedStringConverterTests/testConvertOneBoldMarkup()"
+          },
+          {
+            "identifier": "AnytypeTests/AttributedStringConverterTests/testConvertOneCodeMarkup()"
+          },
+          {
+            "identifier": "AnytypeTests/AttributedStringConverterTests/testConvertOneItalicMarkup()"
+          },
+          {
+            "identifier": "AnytypeTests/AttributedStringConverterTests/testConvertOneStrikethroughMarkup()"
+          },
+          {
+            "identifier": "AnytypeTests/AttributedStringConverterTests/testConvertThreeStrikethroughMarkupsWithDifferentValues()"
+          },
+          {
+            "identifier": "AnytypeTests/AttributedStringConverterTests/testNotConvertBoldCodeItalicMarksupsIntoOne()"
+          },
+          {
+            "identifier": "AnytypeTests/AttributedStringConverterTests/testNotConvertBoldItalicCodeMarksupsIntoOne()"
+          },
+          {
+            "identifier": "AnytypeTests/AttributedStringConverterTests/testNotConvertCodeItalicBoldMarksupsIntoOne()"
+          },
+          {
+            "identifier": "AnytypeTests/AttributedStringConverterTests/testThatThreeNighboringCodeMarkupsConvertToOne()"
+          },
+          {
+            "identifier": "AnytypeTests/AttributedStringConverterTests/testThatThreeNighboringStrikethroughMarkupsConvertToOne()"
+          },
+          {
+            "identifier": "AnytypeTests/BadgeTotalCalculatorTests/chat_allMode_addsUnreadCounter()"
+          },
+          {
+            "identifier": "AnytypeTests/BadgeTotalCalculatorTests/chat_archivedDetail_skipped()"
+          },
+          {
+            "identifier": "AnytypeTests/BadgeTotalCalculatorTests/chat_forceMutedChannel_skipped()"
+          },
+          {
+            "identifier": "AnytypeTests/BadgeTotalCalculatorTests/chat_mentionsMode_addsMentionCounterOnly()"
+          },
+          {
+            "identifier": "AnytypeTests/BadgeTotalCalculatorTests/discussion_allMode_addsUnreadMessageCount()"
+          },
+          {
+            "identifier": "AnytypeTests/BadgeTotalCalculatorTests/discussion_allMode_addsUnsubscribedMentionsOnTop()"
+          },
+          {
+            "identifier": "AnytypeTests/BadgeTotalCalculatorTests/discussion_allMode_unsubscribedMentionOnly()"
+          },
+          {
+            "identifier": "AnytypeTests/BadgeTotalCalculatorTests/discussion_ignoresForceMuteIds()"
+          },
+          {
+            "identifier": "AnytypeTests/BadgeTotalCalculatorTests/discussion_inactiveSpace_skipped()"
+          },
+          {
+            "identifier": "AnytypeTests/BadgeTotalCalculatorTests/discussion_mentionsMode_addsTotalMentions()"
+          },
+          {
+            "identifier": "AnytypeTests/BadgeTotalCalculatorTests/discussion_missingSpaceView_skipped()"
+          },
+          {
+            "identifier": "AnytypeTests/BadgeTotalCalculatorTests/discussion_nothingMode_skipped()"
+          },
+          {
+            "identifier": "AnytypeTests/BadgeTotalCalculatorTests/discussion_oneToOneSpace_mentionsModeNotApplied()"
+          },
+          {
+            "identifier": "AnytypeTests/BadgeTotalCalculatorTests/emptyInputs_totalIsZero()"
+          },
+          {
+            "identifier": "AnytypeTests/BadgeTotalCalculatorTests/mixed_chatPlusDiscussion_inSameSpace_sums()"
+          },
+          {
+            "identifier": "AnytypeTests/BadgeTotalCalculatorTests/modeChange_sameInputs_differentTotals()"
+          },
+          {
+            "identifier": "AnytypeTests/BadgeTotalCalculatorTests/multiSpace_differentModes_sumIndependently()"
+          },
+          {
+            "identifier": "AnytypeTests/BeginingOfTextMarkdownListenerTests/testStartOfTextMarkdowns()"
+          },
+          {
+            "identifier": "AnytypeTests/BeginingOfTextMarkdownListenerTests/testTypingALotTextOnce()"
+          },
+          {
+            "identifier": "AnytypeTests/BlockForkRebinderRollbackTests/rollbackClearsPendingFocusForReplacementId()"
+          },
+          {
+            "identifier": "AnytypeTests/BlockForkRebinderRollbackTests/rollbackWithoutLiveRowFreesAliasAndFabricatedInfo()"
+          },
+          {
+            "identifier": "AnytypeTests/BlockForkRebinderRollbackTests/rollbackWithoutPriorRebindKeepsForeignFocusSubject()"
+          },
+          {
+            "identifier": "AnytypeTests/BlockIdGeneratorTests/concurrentMintsAreUnique()"
+          },
+          {
+            "identifier": "AnytypeTests/BlockIdGeneratorTests/counterIncrementsBetweenMints()"
+          },
+          {
+            "identifier": "AnytypeTests/BlockIdGeneratorTests/mintedIdHasBsonObjectIdShape()"
+          },
+          {
+            "identifier": "AnytypeTests/BlockIdGeneratorTests/mintedIdsAreUnique()"
+          },
+          {
+            "identifier": "AnytypeTests/BlockIdGeneratorTests/randomComponentIsStablePerProcess()"
+          },
+          {
+            "identifier": "AnytypeTests/BlockIdGeneratorTests/timestampBeforeEpochClampsToZero()"
+          },
+          {
+            "identifier": "AnytypeTests/BlockIdGeneratorTests/timestampPrefixEncodesBigEndianUnixTime()"
+          },
+          {
+            "identifier": "AnytypeTests/BlockInformationConverterFieldsTests/preservesEmptyFields()"
+          },
+          {
+            "identifier": "AnytypeTests/BlockInformationConverterFieldsTests/preservesExistingFields()"
+          },
+          {
+            "identifier": "AnytypeTests/BlockRowIdentityMapTests/aliasResolvesBothDirections()"
+          },
+          {
+            "identifier": "AnytypeTests/BlockRowIdentityMapTests/chainsResolveTransitively()"
+          },
+          {
+            "identifier": "AnytypeTests/BlockRowIdentityMapTests/duplicateRegistrationsAreRefused()"
+          },
+          {
+            "identifier": "AnytypeTests/BlockRowIdentityMapTests/newIdAbsentWithoutRestoredOldIdIsNotUndo()"
+          },
+          {
+            "identifier": "AnytypeTests/BlockRowIdentityMapTests/pendingReplaceIsNotMistakenForUndo()"
+          },
+          {
+            "identifier": "AnytypeTests/BlockRowIdentityMapTests/removeAliasRestoresIdentityResolution()"
+          },
+          {
+            "identifier": "AnytypeTests/BlockRowIdentityMapTests/undoDetectedOnlyAfterReplaceWasSeenApplied()"
+          },
+          {
+            "identifier": "AnytypeTests/BlockRowIdentityMapTests/unknownIdResolvesToItself()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/addressesAreUnionedAcrossInterfacesFirstSeenFirst()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/backgroundCancelsAPendingRestart()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/backgroundStopsAndForegroundRestartsWithFreshRefs()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/briefFlapWithinTheDebounceIsNotReportedLost()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/burstIsDebouncedIntoOneReport()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/daemonErrorsRestartWithExponentialBackoffCappedAtThirtySeconds()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/denialArrivingAfterReactivationGetsOneRetry()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/doesNotStartWithoutForeground()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/doesNotStartWithoutObserver()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/duplicateBrowseAddDoesNotRestartTheResolve()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/hostTargetChangeReplacesTheAddressLookup()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/lateCallbackFromAReplacedSessionIsIgnored()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/lookupErrorDropsOnlyThatInstance()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/lookupPolicyDenialStopsAndReports()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/loopbackAndUnspecifiedAddressesAreDroppedButLinkLocalIsKept()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/lostIsReportedOnlyWhenGoneFromAllInterfaces()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/lostThenRediscoveredPeerIsReportedAgain()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/nameConflictRetriesRegistrationThreeTimesAfterFiveSeconds()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/newObserverReplacesTheRunningOne()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/newObserverRetriesAfterPolicyDenied()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/otherErrorsRestartWithBackoff()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/ownInstanceIsSkipped()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/ownStopDoesNotReportPeersLost()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/peerIsReportedAgainAfterItsResolutionRecoversAndLostAfterItLeaves()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/peerIsReportedAgainWhenItsAddressesReturn()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/peerNeverReportedIsNotReportedLost()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/peerWithoutAddressesIsNotReported()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/peersAreReportedAgainAfterForeground()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/policyDeniedAtStartReportsAndStops()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/policyDeniedIsRetriedWhenTheSceneReactivates()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/policyDeniedReportsAndStaysStoppedUntilTheNextForeground()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/reAddedInterfaceMovesToTheEndOfTheOrder()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/reactivationInTheBackgroundDoesNotStart()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/reactivationWithoutADenialLeavesTheRunningSessionAlone()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/registrationDaemonErrorRestartsTheWholeEngine()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/removeObserverDuringResolveIgnoresTheLateResult()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/removeObserverStops()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/reportPairsAddressesOnlyWithTheirOwnPort()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/resolveDaemonErrorRestartsTheWholeEngine()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/resolveErrorDropsOnlyThatInstance()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/startsWithObserverInForegroundAndRegistersUnderPeerId()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/stopCancelsAPendingConflictRetry()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/stopDeallocatesRegistrationBeforeEverythingElse()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/successfulRegistrationReportsHealthyState()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/successfulRegistrationResetsBackoff()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/synchronousLookupDenialStopsWithoutAnOrphanReport()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/synchronousRegisterFailureDoesNotStartAnOrphanBrowse()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/synchronousResolveDaemonErrorRestartsTheWholeEngine()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/unchangedStateIsNotReportedAgain()"
+          },
+          {
+            "identifier": "AnytypeTests/BonjourDiscoveryEngineTests/withdrawnRegistrationIsRetriedLikeAConflict()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/aRejectedUpdateIsNotFreshActivity()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/duplicateMessageIsNotNew()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/equalGenericSnapshotsCountOnce()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/failureWinsTheRunState()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/firstTailMakesEarlyRunsPlaceable()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/freshActivityIsTrackedPerSender()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/historyAtOrBeforeTheTailIsNotABoundary()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/knownCallUpdatesStayInTheirClosedRun()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/laterSnapshotsNeverCloseRuns()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/leavingDropsTransientStatuses()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/lifecycleOnlyMovesForward()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/liveMessageAfterReturningClosesTheGapRunWithoutIt()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/messageClosesTheRunButNotTheCall()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/messageFromTheSenderClearsItsTransientStatus()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/messageFromTheSenderEndsItsFreshActivity()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/newCallAfterReturningStartsAFreshRun()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/newIdFirstSeenAsTerminalCreatesAnItem()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/oneItemPerToolCall()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/reattachingAfterTheTailMovedClosesTheOpenRunWithoutAMessage()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/reattachingWithTheSameTailKeepsTheRunOpen()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/repeatedGenericSnapshotBecomesTheLatestTextAgain()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/repeatedMessageIdsAreDeduplicated()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/sameIdFromAnotherSenderIsAnotherCall()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/secondPublisherJoiningARunIsALayoutChange()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/silentRunningCallGoesStaleNotFailed()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/terminalOutcomeCannotFlip()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/terminalUpdateWithoutStatusStillAddsAResult()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/textOnlyBetweenEqualSnapshotsStartsANewEntry()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/textOnlyEventsNeverSplitARun()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/textOnlyStatusIsTransient()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/unknownOrMissingStatusShowsNoBadge()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityJournalTests/unknownStatusLaterBecomesKnown()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityPayloadsTests/blankOrMissingTextFallsBackToDefault(_:)"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityPayloadsTests/emptyDataObjectIsTextOnly()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityPayloadsTests/statusDecodesReplyToAndToolCall()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityPayloadsTests/topics()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityPayloadsTests/typingDecodeIgnoresUnknownFieldsAndKeepsBlockId()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityPayloadsTests/typingDecodeRejectsMissingSession(_:)"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityPayloadsTests/typingRoundTrip()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityPayloadsTests/typingStopHasNoReplyTo()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityTextTests/accessibilityLabelSpeaksTheGlyph()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityTextTests/announcesFinishAndFailureOnly()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityTextTests/callStatusLabels()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityTextTests/missingTextReadsTyping()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityTextTests/runLine()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityTextTests/runLineCountsActivitiesWhenMixed()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityTextTests/typingLabels()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityTimelineRunsTests/closedRunsPrecedeTheirMessageAndTheOpenRunFollowsTheTail()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityTimelineRunsTests/openRunWaitsForTheTailThenFollowsTheNewestMessage()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityTimelineRunsTests/runClosedByADeletedMessageStaysWhereItStarted()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatActivityTimelineRunsTests/runsFromUnknownParticipantsAreSkipped()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatInputLinkParserTests/testHandleInput(_:_:_:_:)"
+          },
+          {
+            "identifier": "AnytypeTests/ChatInputLinkParserTests/testHandlePaste(_:_:)"
+          },
+          {
+            "identifier": "AnytypeTests/ChatMessageLimitsTests/checkLimit()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatMessageLimitsTests/checkLimitWithDelay()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatMessageLimitsTests/checkLimitWithLessCornerDelay()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatMessageLimitsTests/checkLimitWithTwoTimes()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatTypingPublisherTests/editingAnExistingMessageEndsTyping()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatTypingPublisherTests/leavingTheScreenStopsTyping()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatTypingPublisherTests/nothingWithoutWriteRightsOrBeforeTheDiscussionExists()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatTypingPublisherTests/publishesOnUserEditsAndStopsOnce()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatTypingPublisherTests/replyTargetTravelsWithTyping()"
+          },
+          {
+            "identifier": "AnytypeTests/ChatTypingPublisherTests/turningTheSettingOffSendsTheOwedStop()"
+          },
+          {
+            "identifier": "AnytypeTests/ContactsSorterTests/allCriteriaCombined()"
+          },
+          {
+            "identifier": "AnytypeTests/ContactsSorterTests/bothHaveGlobalNameSortsByName()"
+          },
+          {
+            "identifier": "AnytypeTests/ContactsSorterTests/emptyContactsReturnsEmpty()"
+          },
+          {
+            "identifier": "AnytypeTests/ContactsSorterTests/globalNameFirstWhenSpaceCountEqual()"
+          },
+          {
+            "identifier": "AnytypeTests/ContactsSorterTests/missingSpaceCountTreatedAsZero()"
+          },
+          {
+            "identifier": "AnytypeTests/ContactsSorterTests/nameSortIsCaseInsensitive()"
+          },
+          {
+            "identifier": "AnytypeTests/ContactsSorterTests/singleContactReturnsSame()"
+          },
+          {
+            "identifier": "AnytypeTests/ContactsSorterTests/sortByNameWhenSpaceCountAndGlobalNameEqual()"
+          },
+          {
+            "identifier": "AnytypeTests/ContactsSorterTests/sortBySpaceCountDescending()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionActivityJournalTests/aDifferentReplyToClosesTheRunWithoutAComment()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionActivityJournalTests/anOlderCommentFromTheSenderDoesNotCloseALaterRun()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionActivityJournalTests/eachSenderHasItsOwnRun()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionActivityJournalTests/knownCallUpdatesAndTextOnlyNeverCloseARun()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionActivityJournalTests/otherAuthorsDoNotCloseTheRun()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionActivityJournalTests/theSendersOwnCommentClosesAndOwnsTheRun()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionActivityPlacementTests/replyToADeepReplyResolvesToTheThread()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionActivityPlacementTests/runClosedByADeletedOrPagedOutCommentIsHidden()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionActivityPlacementTests/runClosedByAReplyToChangeStaysInItsThread()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionActivityPlacementTests/runWithoutReplyToGoesToTheRootThenUnderItsComment()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionActivityPlacementTests/textOnlyStatusFollowsReplyTo()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionActivityPlacementTests/typingFollowsReplyTo()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionActivityPlacementTests/unloadedReplyToFallsBackAndMovesInOnLoad()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockItemSpacingTests/bottomSpacing_bulleted_is0()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockItemSpacingTests/bottomSpacing_divider_is0()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockItemSpacingTests/bottomSpacing_heading_is0()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockItemSpacingTests/bottomSpacing_quote_is12()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockItemSpacingTests/bottomSpacing_subheading_is0()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockItemSpacingTests/bottomSpacing_text_is0()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockItemSpacingTests/bottomSpacing_title_is0()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockItemSpacingTests/topSpacing_bulleted_is12()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockItemSpacingTests/topSpacing_callout_is8()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockItemSpacingTests/topSpacing_checkbox_is12()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockItemSpacingTests/topSpacing_divider_is8()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockItemSpacingTests/topSpacing_heading_is16()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockItemSpacingTests/topSpacing_numbered_is12()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockItemSpacingTests/topSpacing_quote_is12()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockItemSpacingTests/topSpacing_subheading_is12()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockItemSpacingTests/topSpacing_text_is8()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockItemSpacingTests/topSpacing_title_is20()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockItemSpacingTests/topSpacing_toggle_is8()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockItemSpacingTests/topSpacing_unsupported_is8()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockMappingTests/description_mapsToText()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockMappingTests/header1_mapsToTitle()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockMappingTests/header2_mapsToHeading()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockMappingTests/header3_mapsToSubheading()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockMappingTests/header4_mapsToSubheading()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockMappingTests/numberedBlocks_counterIncrementsSequentially()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockMappingTests/numberedBlocks_counterResetsAfterNonNumbered()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockMappingTests/paragraph_mapsToText()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockMappingTests/titleStyle_mapsToTitle()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockPaddingTests/emptyBlocks_returnsEmpty()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockPaddingTests/firstBlock_alwaysGetsZero_regardlessOfType()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockPaddingTests/preservesBlockContent()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockPaddingTests/quoteToHeading_usesHeadingTopSpacing()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockPaddingTests/quoteToQuote_uses12()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockPaddingTests/quoteToText_usesQuoteBottomSpacing()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockPaddingTests/singleBlock_getsZeroTopPadding()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockPaddingTests/textQuoteText_fullSequence()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockPaddingTests/textTitleBullet_fullSequence()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockPaddingTests/textToQuote_usesQuoteTopSpacing()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockPaddingTests/textToText_uses8()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionBlockPaddingTests/textToTitle_usesTitleTopSpacing()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionCoordinatorDataCodableTests/decodeLegacyPayloadWithoutMessageId()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionCoordinatorDataCodableTests/roundTripWithMessageId()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionCoordinatorDataCodableTests/roundTripWithNilDiscussionId()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionCoordinatorDataCodableTests/roundTripWithoutMessageId()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionMessageBuilderThreadingTests/allOrphans_returnsEmptySections()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionMessageBuilderThreadingTests/discussionDivider_insertedBetweenRoots_notBeforeFirst()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionMessageBuilderThreadingTests/discussionDivider_multipleRoots_dividerBetweenEach()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionMessageBuilderThreadingTests/discussionDivider_noDividerBeforeFirstRoot()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionMessageBuilderThreadingTests/flatListOrdering_multipleThreads_repliesFollowTheirRoot()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionMessageBuilderThreadingTests/isLastReply_trueOnlyForLastReplyInThread()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionMessageBuilderThreadingTests/isReplyFlag_trueForReplies_falseForRoots()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionMessageBuilderThreadingTests/replyModelAndReply_nilForAllMessages()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionMessageCountObserverTests/chatUpdateMessageCount_matchingSubId_emitsNewCount()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionMessageCountObserverTests/chatUpdateMessageCount_nonMatchingSubId_ignored()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionMessageCountObserverTests/duplicateCount_notEmitted()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionMessageCountObserverTests/startObserving_differentChatId_unsubscribesPreviousThenSubscribesNew()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionMessageCountObserverTests/startObserving_emitsInitialCountFromResponse()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionMessageCountObserverTests/startObserving_sameChatIdTwice_subscribesOnce()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionMessageCountObserverTests/startObserving_subscribesWithChatIdAndLimitOne()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionMessageCountObserverTests/stopObserving_callsUnsubscribeWithMatchingSubId()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionMessageCountObserverTests/stopObserving_whenNotObserving_noUnsubscribeCall()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionMessageCountObserverTests/subscribeFailure_clearsStateSoRetryProceeds()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionTextBuilderFontTests/callout_returnsCalloutRegular()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionTextBuilderFontTests/checkbox_returnsCalloutRegular()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionTextBuilderFontTests/description_returnsCalloutRegular()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionTextBuilderFontTests/header1_returnsTitle()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionTextBuilderFontTests/header2_returnsHeading()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionTextBuilderFontTests/header3_returnsSubheading()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionTextBuilderFontTests/header4_returnsSubheading()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionTextBuilderFontTests/marked_returnsCalloutRegular()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionTextBuilderFontTests/numbered_returnsCalloutRegular()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionTextBuilderFontTests/paragraph_returnsCalloutRegular()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionTextBuilderFontTests/quote_returnsCalloutRegular()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionTextBuilderFontTests/titleStyle_returnsTitle()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionTextBuilderFontTests/toggle_returnsCalloutRegular()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionTextBuilderMarkTests/linkMark_doesNotSetUnderline()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionTextBuilderMarkTests/linkMark_setsForegroundColorToAccent()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionTextBuilderMarkTests/mentionMark_setsForegroundColorToAccent()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionTextBuilderMarkTests/objectMark_setsForegroundColorToAccent()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionThreadGrouperTests/allRepliesNoRoots_allFilteredAsOrphans()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionThreadGrouperTests/basicThreadGrouping_rootWithTwoReplies()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionThreadGrouperTests/cycleDetection_mutualReplies_bothOrphaned()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionThreadGrouperTests/cycleDetection_selfReferencingMessage_treatedAsOrphan()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionThreadGrouperTests/deepReplyChain_allGroupedUnderRoot()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionThreadGrouperTests/duplicateMessageIDs_lastOneWins()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionThreadGrouperTests/emptyMessages()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionThreadGrouperTests/findRootParent_cyclicChain_returnsNil()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionThreadGrouperTests/findRootParent_directReply_returnsParentId()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionThreadGrouperTests/findRootParent_nestedReplyChain_returnsRootId()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionThreadGrouperTests/findRootParent_orphanReply_returnsNil()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionThreadGrouperTests/findRootParent_rootMessage_returnsOwnId()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionThreadGrouperTests/forkedChain_multipleRepliesToSameIntermediate()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionThreadGrouperTests/multipleThreads_eachGroupedSeparately()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionThreadGrouperTests/orphanReply_parentNotInMessages_isFiltered()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionThreadGrouperTests/replies_sortedByOrderIDWithinThread()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionThreadGrouperTests/replyToReplyChain_resolvedToRootParent()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionThreadGrouperTests/rootMessages_preserveInputOrder()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionThreadGrouperTests/singleRootMessage()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionThreadGrouperTests/threeNodeCycle_allFiltered()"
+          },
+          {
+            "identifier": "AnytypeTests/DiscussionThreadGrouperTests/transitiveOrphan_chainToMissingParent()"
+          },
+          {
+            "identifier": "AnytypeTests/EditorSetMarkdownHelpertests/test_changePage()"
+          },
+          {
+            "identifier": "AnytypeTests/EditorSetMarkdownHelpertests/test_changePage_wrong_number()"
+          },
+          {
+            "identifier": "AnytypeTests/EditorSetMarkdownHelpertests/test_goBackwardRow()"
+          },
+          {
+            "identifier": "AnytypeTests/EditorSetMarkdownHelpertests/test_goBackwardRow_first_row()"
+          },
+          {
+            "identifier": "AnytypeTests/EditorSetMarkdownHelpertests/test_goForwardRow()"
+          },
+          {
+            "identifier": "AnytypeTests/EditorSetMarkdownHelpertests/test_goForwardRow_last_row()"
+          },
+          {
+            "identifier": "AnytypeTests/EditorSetMarkdownHelpertests/test_updatePageCount_add_visible_pages_v1()"
+          },
+          {
+            "identifier": "AnytypeTests/EditorSetMarkdownHelpertests/test_updatePageCount_add_visible_pages_v2()"
+          },
+          {
+            "identifier": "AnytypeTests/EditorSetMarkdownHelpertests/test_updatePageCount_add_visible_pages_v3()"
+          },
+          {
+            "identifier": "AnytypeTests/EditorSetMarkdownHelpertests/test_updatePageCount_bigger_amount()"
+          },
+          {
+            "identifier": "AnytypeTests/EditorSetMarkdownHelpertests/test_updatePageCount_empty_initial_state_one_page()"
+          },
+          {
+            "identifier": "AnytypeTests/EditorSetMarkdownHelpertests/test_updatePageCount_empty_initial_state_ten_pages()"
+          },
+          {
+            "identifier": "AnytypeTests/EditorSetMarkdownHelpertests/test_updatePageCount_for_showMore_logic_when_ignorePageLimit()"
+          },
+          {
+            "identifier": "AnytypeTests/EditorSetMarkdownHelpertests/test_updatePageCount_remove_visible_pages()"
+          },
+          {
+            "identifier": "AnytypeTests/EditorSetMarkdownHelpertests/test_updatePageCount_remove_visible_pages_and_update_entire_row()"
+          },
+          {
+            "identifier": "AnytypeTests/EditorSetMarkdownHelpertests/test_updatePageCount_remove_visible_pages_and_update_entire_row_and_selected_page()"
+          },
+          {
+            "identifier": "AnytypeTests/EditorSetMarkdownHelpertests/test_updatePageCount_remove_visible_pages_and_update_entire_row_v2()"
+          },
+          {
+            "identifier": "AnytypeTests/EditorSetMarkdownHelpertests/test_updatePageCount_remove_visible_pages_and_update_selected_page()"
+          },
+          {
+            "identifier": "AnytypeTests/EditorSetMarkdownHelpertests/test_updatePageCount_same_amount()"
+          },
+          {
+            "identifier": "AnytypeTests/EditorSetMarkdownHelpertests/test_updatePageCount_smaller_amount()"
+          },
+          {
+            "identifier": "AnytypeTests/EditorSetMarkdownHelpertests/test_updatePageCount_zero()"
+          },
+          {
+            "identifier": "AnytypeTests/EmojiTests/test_createFromString_to_String()"
+          },
+          {
+            "identifier": "AnytypeTests/FocusSubjectsHolderRekeyTests/rekeyMovesTheSameSubjectInstanceToTheNewId()"
+          },
+          {
+            "identifier": "AnytypeTests/FocusSubjectsHolderRekeyTests/rekeyWithoutExistingSubjectIsANoOp()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/badSchemaIsRejectedRatherThanIgnoringForeignTarget()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/cancelAfterReadKeepsOriginalNoWriteReceiptAndSuppressesDelivery()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/cancelBeforeDispatchDoesNotRead()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/cancelledOrExpiredNativeReturnNeverRunsMountValidation()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/cancelledRaceNeverBeginsQueuedDispatch()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/catalogNeverAdvertisesWriteAndConsentStartsUnavailable()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/conditionalAndIndependentWritesAlwaysFailBeforeNativeDispatch()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/duplicateAndChangedArgumentsNeverReadTwice()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/expiredDeadlineAndOutputOverflowFailWithoutPayloadLeak()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/foreignReadSnapshotCannotBeDelivered()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/nativePromptAllowsBeforeDisappearanceAndRevalidatesOwner()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/nativePromptProgrammaticDismissalDeniesPendingAllow()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/nativeReturnCannotAcknowledgeQueuedOrDifferentMountedTargets()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/nativeReturnHandoffCannotBeMintedTwiceOrForAnAliasedTarget()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/nativeReturnReceiptCompletesOnceWithoutRearmingExecution()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/nativeReturnScopeLossPreservesQueuedReceiptWithoutRetry()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/nativeSelectionChangedOrderAndUnicodeAliasCannotRearmAuthority()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/nativeSelectionCurrentValueIsCheckedWithoutSkippingFirstEmission()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/nativeSelectionDoneAndReselectCannotRestoreEitherFence()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/nativeSelectionTableAndNonselectionModesUseTheEmittedValue()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/navigationReusedIDWithChangedTargetOrContextIsRejected()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/noncooperativeReadCancellationCompletesBeforeCallback()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/noncooperativeReadTimesOutBeforeCallbackAndLateResultCannotReplaceReceipt()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/oldNativeAllowCannotResolveReplacementPrompt()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/opaqueProviderIDIsNotLossilySanitized()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/originalReceiptPrecedesStalePostReadDeliveryRejection()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/presentationFenceCannotBeRearmed()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/queueIsNotPresentationAndExactMountAcknowledgementIsRequired()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/reentrantNativeReturnCancellationCannotPublishMountedReceipt()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/revokeDuringProgressAwaitPreventsNativeRead()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/scopedReadReturnsWhitelistedTextAndMetadataOnlyReceipt()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/signalRevocationResolvesPendingConsentOnceAndLateAllowCannotAuthorize()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/staleAccountSpaceSceneGenerationSelectionRevisionAreRejected()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/taskCancellationWinsBeforeQueuedNativeAllow()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostAdapterTests/unknownPermissionOrConsentDoesNotDispatch()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostReadWriteTests/CASAndExpectedRevisionCannotEnterEitherDelegate()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostReadWriteTests/cancellationBeforeRouteClaimPreventsRead()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostReadWriteTests/cancellationDuringProgressReachesTheCorrectRealReadAdapter()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostReadWriteTests/changedEnvelopeAndProviderRemintConflictAfterCapabilityDisappears()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostReadWriteTests/changedExpiredDeadlineAndInvalidatedReplayNeverInventNewNotDispatchedEffect()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostReadWriteTests/changedSessionIsRejectedBeforeDelegateEffects()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostReadWriteTests/exactReplayAfterConsentLossKeepsOriginalEffectInsteadOfNewRefusal()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostReadWriteTests/exactReplayAfterItsDeadlineExpiresPreservesOriginalEffect()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostReadWriteTests/journalReadinessQueryCannotAdmitUnresolvedOrForeignScope()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostReadWriteTests/malformedKnownArgumentsAndProviderConflictAfterCapabilityLoss()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostReadWriteTests/navigationRemainsQueuedAndInvalidationPreservesOriginalMetadata()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostReadWriteTests/opaqueProviderIdentityIsExactAndCannotBeReminted()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostReadWriteTests/readOnlyFallbackPreservesActualConsentAndOmitsUninstalledWrite()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostReadWriteTests/replayAndChangedEnvelopeAreRejectedBeforeAnotherDelegateRun()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostReadWriteTests/sameSessionReadRoutesToActualAdapterAndExposesMetadataOnly()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostReadWriteTests/staleRoutesDescriptorsRevisionsOriginsGrantsAndSchemasAreRefused()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostReadWriteTests/validCreateDTOIsRefusedBeforeProgressApprovalOrNativeRead()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostReadWriteTests/writePreflightDenialPreventsRunnerAndRetainsOriginalMetadata()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostReadWriteTests/writePreflightErrorsPreserveSafeCodesWithoutRunnerEntry()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostReadWriteTests/writeRunnerResultsAndErrorsKeepTheirOriginalDisposition()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostWriteTests/existingObjectCASAndReadOnlyNeverProduceCreationPlan()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostWriteTests/explicitRemovalErasesOnlyOriginalAccountAndLateCallbackCannotRecreateIt()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostWriteTests/failedExclusiveAppendNeverAcknowledgesReservationAndPoisonsOwnerWithoutCleanup()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostWriteTests/journalReopenRejectsChangedDirectoryAndRecordModes()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostWriteTests/journalReopenRejectsExistingFilesAndSymlinksWithoutMutation()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostWriteTests/onlyExactNonnumericTitleSchemaIsPrepared()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostWriteTests/originalScopeAndExclusiveOwnerCannotBeReplacedByAnotherSceneOrSpace()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostWriteTests/partialAndUnknownRecordsFailClosedWithoutDeletion()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostWriteTests/pendingReservationSurvivesOwnerReopenAndNeverAutoRetries()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostWriteTests/protectionReadbackRejectsWrongPresentValues()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostWriteTests/removalPreservesMetadataWhoseAccountOwnershipCannotBeVerified()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostWriteTests/replayConflictAndProviderCallRemintAreRejected()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostWriteTests/reservationBlocksAllNewWritesUntilOriginalOutcomeIsKnown()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostWriteTests/titleIdentityUsesExactBytesAndMetadataDoesNotEncodeBusinessTitle()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinHostWriteTests/uncertainMayRefineToCommittedButCannotBeDowngradedOrRetargeted()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinNativeAcceptancePreparationTests/prepareRealHostFixture()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinSDKConsumerTests/canonicalDispatcherBudgetsReachReadAndReplayOnlyReceipt(budget:)"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinSDKConsumerTests/canonicalEnvelopeCanPrepareOnlyExactConfirmedCreationShape()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinSDKConsumerTests/canonicalLargerEnvelopeDoesNotRelaxHostPayloadCap()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinSDKConsumerTests/foreignIdempotencyKeyCannotBecomeAuthority()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinSDKConsumerTests/providerConfigurationUsesCanonicalEngineContractAndRejectsEmbeddedCredentials()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinSDKConsumerTests/smallCallerBudgetRejectsPayloadAndKeepsOriginalReceipt()"
+          },
+          {
+            "identifier": "AnytypeTests/HanlinSelectionAcceptancePreparationTests/prepareSelectedBlockFixture()"
+          },
+          {
+            "identifier": "AnytypeTests/HomePathTests/testCurrentHomeNilWhenOnlyRoot()"
+          },
+          {
+            "identifier": "AnytypeTests/HomePathTests/testCurrentHomeNilWhenPathEmpty()"
+          },
+          {
+            "identifier": "AnytypeTests/HomePathTests/testCurrentHomeReturnsIndexOne()"
+          },
+          {
+            "identifier": "AnytypeTests/HomePathTests/testPopMany()"
+          },
+          {
+            "identifier": "AnytypeTests/HomePathTests/testPopOne()"
+          },
+          {
+            "identifier": "AnytypeTests/HomePathTests/testPopToRootMany()"
+          },
+          {
+            "identifier": "AnytypeTests/HomePathTests/testPopToRootOne()"
+          },
+          {
+            "identifier": "AnytypeTests/HomePathTests/testPushMany()"
+          },
+          {
+            "identifier": "AnytypeTests/HomePathTests/testPushOne()"
+          },
+          {
+            "identifier": "AnytypeTests/HomePathTests/testPushSameMuptiple()"
+          },
+          {
+            "identifier": "AnytypeTests/HomePathTests/testPushSameOne()"
+          },
+          {
+            "identifier": "AnytypeTests/HomePathTests/testReplaceHomeOnRootlessPath()"
+          },
+          {
+            "identifier": "AnytypeTests/HomePathTests/testReplaceHomeOnValidPath()"
+          },
+          {
+            "identifier": "AnytypeTests/HomePathTests/testReplaceHomeSameValueNoOp()"
+          },
+          {
+            "identifier": "AnytypeTests/HomePathTests/testReplaceLastMany()"
+          },
+          {
+            "identifier": "AnytypeTests/HomePathTests/testReplaceLastOne()"
+          },
+          {
+            "identifier": "AnytypeTests/HomeSectionsStorageTests/isolationBetweenSpaces()"
+          },
+          {
+            "identifier": "AnytypeTests/HomeSectionsStorageTests/publisherEmitsCurrentValueOnSubscribe()"
+          },
+          {
+            "identifier": "AnytypeTests/HomeSectionsStorageTests/publisherEmitsOnUpdate()"
+          },
+          {
+            "identifier": "AnytypeTests/HomeSectionsStorageTests/publisherIgnoresUnrelatedSpaceUpdates()"
+          },
+          {
+            "identifier": "AnytypeTests/HomeSectionsStorageTests/returnsDefaultWhenNoRecordExists()"
+          },
+          {
+            "identifier": "AnytypeTests/HomeSectionsStorageTests/setAndGetRoundTrip()"
+          },
+          {
+            "identifier": "AnytypeTests/HomeWidgetsViewModelTests/awaitPrewarm_storageHasBothDocs_setsBothObjects()"
+          },
+          {
+            "identifier": "AnytypeTests/HomeWidgetsViewModelTests/awaitPrewarm_storageNotPreloaded_leavesObjectsNil()"
+          },
+          {
+            "identifier": "AnytypeTests/HomeWidgetsViewModelTests/widgetObjects_areNilOnInit()"
+          },
+          {
+            "identifier": "AnytypeTests/InlineMarkdownListenerTests/test_AllCases()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_deleteAtTheBegining_last_children()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_deleteAtTheBegining_not_last_children()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_deleteAtTheBegining_one_children()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_deleteAtTheBegining_one_children_of_page()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_delete_bulleted()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_delete_bulleted_with_children()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_delete_callout()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_delete_description()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_delete_quote()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_delete_text()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_delete_text_first_block_in_page_with_title_without_description()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_delete_text_first_block_in_page_without_title_and_description()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_delete_text_first_block_in_page_without_title_with_description()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_delete_text_second_block_in_page_without_title_and_description()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_delete_text_with_children()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_delete_title()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_delete_toggle()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_delete_toggle_with_children()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterAtTheBegining()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterAtTheBegining_bulleted()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterAtTheBegining_description()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterAtTheBegining_title()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterAtTheBegining_toggle()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterAtTheEnd()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterAtTheEnd_bulleted()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterAtTheEnd_bulleted_with_children()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterAtTheEnd_callout()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterAtTheEnd_closed_toggle()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterAtTheEnd_closed_toggle_with_children()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterAtTheEnd_header()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterAtTheEnd_open_toggle()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterAtTheEnd_open_toggle_with_children()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterAtTheEnd_quote()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterAtTheEnd_title()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterInside()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterInside_at_the_start()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterInside_bullited()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterInside_description()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterInside_header()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterInside_quote()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterInside_title()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterInside_toggle_closed()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterInside_toggle_closed_with_children()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterInside_toggle_open()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterInside_toggle_open_with_children()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterInside_with_children()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterOnEmpty_bulleted()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterOnEmpty_bulleted_with_children()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterOnEmpty_closed_toggle()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterOnEmpty_closed_toggle_with_children()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterOnEmpty_open_toggle()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterOnEmpty_open_toggle_with_children()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterOnEmpty_text()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardActionHandlerTests/test_enterOnEmpty_text_with_children()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardInsertedBlocksStorageTests/consumeReturnsOnlyMatchingIdsAndRemovesThem()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardInsertedBlocksStorageTests/consumeWithNoMatchesLeavesPendingIdsIntact()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardInsertedBlocksStorageTests/evictionDropsTheOldestPendingId()"
+          },
+          {
+            "identifier": "AnytypeTests/KeyboardInsertedBlocksStorageTests/registrationIsDeduplicated()"
+          },
+          {
+            "identifier": "AnytypeTests/MembershipTierRecommendationTests/recommended_currentTierNotInLoadedList_isNil()"
+          },
+          {
+            "identifier": "AnytypeTests/MembershipTierRecommendationTests/recommended_midTier_isNextTier()"
+          },
+          {
+            "identifier": "AnytypeTests/MembershipTierRecommendationTests/recommended_noTierAndEmptyTiers_isNil()"
+          },
+          {
+            "identifier": "AnytypeTests/MembershipTierRecommendationTests/recommended_noTier_isFirstAvailableTier()"
+          },
+          {
+            "identifier": "AnytypeTests/MembershipTierRecommendationTests/recommended_topTier_isNil()"
+          },
+          {
+            "identifier": "AnytypeTests/MembershipTierRecommendationTests/showAnyName_nameAlreadyClaimed_isFalse()"
+          },
+          {
+            "identifier": "AnytypeTests/MembershipTierRecommendationTests/showAnyName_noTier_isFalse()"
+          },
+          {
+            "identifier": "AnytypeTests/MembershipTierRecommendationTests/showAnyName_pending_isFalse()"
+          },
+          {
+            "identifier": "AnytypeTests/MembershipTierRecommendationTests/showAnyName_tierWithAnyNameAndNoNameSet_isTrue()"
+          },
+          {
+            "identifier": "AnytypeTests/MembershipTierRecommendationTests/showAnyName_tierWithoutAnyName_isFalse()"
+          },
+          {
+            "identifier": "AnytypeTests/MessageAttachmentsGridLayoutBuilderTests/testVariants(expectedResult:)"
+          },
+          {
+            "identifier": "AnytypeTests/MyFavoritesListViewModelTests/init_withArchivedTarget_filtersRowOut()"
+          },
+          {
+            "identifier": "AnytypeTests/MyFavoritesListViewModelTests/init_withDeletedTarget_filtersRowOut()"
+          },
+          {
+            "identifier": "AnytypeTests/MyFavoritesListViewModelTests/init_withEmptyDoc_seedsEmptyRows()"
+          },
+          {
+            "identifier": "AnytypeTests/MyFavoritesListViewModelTests/init_withFavoriteWidgetsInDoc_seedsRows()"
+          },
+          {
+            "identifier": "AnytypeTests/MyFavoritesListViewModelTests/init_withLibrarySourceWidget_filtersRowOut()"
+          },
+          {
+            "identifier": "AnytypeTests/MyFavoritesListViewModelTests/init_withUnsupportedLayout_filtersRowOut()"
+          },
+          {
+            "identifier": "AnytypeTests/MyFavoritesListViewModelTests/subscription_emittingNewWidget_appendsRow()"
+          },
+          {
+            "identifier": "AnytypeTests/MyFavoritesListViewModelTests/subscription_emittingSameStructure_keepsRowsIdentical()"
+          },
+          {
+            "identifier": "AnytypeTests/MyFavoritesListViewModelTests/subscription_sameStructure_keepsOptimisticReorder()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsAggregatorTests/discussionPresentButNotSubscribed_treatedAsUnsubscribed()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsAggregatorTests/emptyItems_returnsEmptyDict()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsAggregatorTests/groupsByDistinctSpaces()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsAggregatorTests/mentionOnlyParent_excludesMessageCountFromUnsubscribed()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsAggregatorTests/mentionOnlyParent_includedWithMentionContribution()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsAggregatorTests/mentions_mixedParents_combineSubscribedAndUnsubscribed()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsAggregatorTests/mentions_subscribedParent_unsubscribedCountIsZero()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsAggregatorTests/mentions_unsubscribedParent_totalEqualsUnsubscribed()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsAggregatorTests/nonParentLayoutsIgnored()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsAggregatorTests/parentWithNoMentionAndNoSubscription_dropped()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsAggregatorTests/parents_includesBothMentionOnlyAndSubscribed()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsAggregatorTests/parents_lastMessageDateComesFromDiscussion()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsAggregatorTests/parents_populatedWithIdAndName()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsAggregatorTests/parents_sortedByLastMessageDateDescNilLast()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsAggregatorTests/parents_subscribedParent_carriesPerParentCounters()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsAggregatorTests/parents_unsubscribedMentionOnly_carriesRawMessageCount_andIsSubscribedFalse()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsAggregatorTests/subscribedParentWithZeroCounters_keepsZeroContribution()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsAggregatorTests/subscribedParent_contributesMessagesAndMentions()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsAggregatorTests/sumsAcrossParentsInSameSpace()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsSubscriptionBuilderTests/build_discussionBranch_isPlainLayoutFilter()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsSubscriptionBuilderTests/build_identifierMatchesSubscriptionId()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsSubscriptionBuilderTests/build_includesAllConsumerKeys()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsSubscriptionBuilderTests/build_parentBranch_filtersByLayoutsArchiveStateAndCounters()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsSubscriptionBuilderTests/build_topLevelFilterIsOrOfTwoBranches()"
+          },
+          {
+            "identifier": "AnytypeTests/ObjectsWithUnreadDiscussionsSubscriptionBuilderTests/subscriptionId_isStable()"
+          },
+          {
+            "identifier": "AnytypeTests/ParentObjectUnreadBadgeBuilderTests/build_copiesAllParentCounters()"
+          },
+          {
+            "identifier": "AnytypeTests/ParentObjectUnreadBadgeBuilderTests/build_modeNothing_propagates()"
+          },
+          {
+            "identifier": "AnytypeTests/ParentObjectUnreadBadgeBuilderTests/build_nilSpaceView_defaultsToModeAll()"
+          },
+          {
+            "identifier": "AnytypeTests/ParentObjectUnreadBadgeBuilderTests/build_picksSpaceLevelMode_notPerObjectOverride()"
+          },
+          {
+            "identifier": "AnytypeTests/ParentObjectUnreadBadgeBuilderTests/build_unsubscribedParent_carriesIsSubscribedFalse()"
+          },
+          {
+            "identifier": "AnytypeTests/ParentObjectUnreadBadgeTests/hasMentions_trueWhenCountPositive()"
+          },
+          {
+            "identifier": "AnytypeTests/ParentObjectUnreadBadgeTests/hasVisibleCounters_trueWhenEitherMentionsOrCounter()"
+          },
+          {
+            "identifier": "AnytypeTests/ParentObjectUnreadBadgeTests/muted_trueWhenModeNotAll()"
+          },
+          {
+            "identifier": "AnytypeTests/ParentObjectUnreadBadgeTests/shouldShowUnreadCounter_subscribedNothingMode_false()"
+          },
+          {
+            "identifier": "AnytypeTests/ParentObjectUnreadBadgeTests/shouldShowUnreadCounter_subscribedWithUnread_modeAll()"
+          },
+          {
+            "identifier": "AnytypeTests/ParentObjectUnreadBadgeTests/shouldShowUnreadCounter_subscribedWithZeroCount_false()"
+          },
+          {
+            "identifier": "AnytypeTests/ParentObjectUnreadBadgeTests/shouldShowUnreadCounter_unsubscribed_alwaysFalse()"
+          },
+          {
+            "identifier": "AnytypeTests/ParentObjectUnreadBadgeTests/titleColor_secondaryWhenNothingMode_otherwisePrimary()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaBootstrapStateManagerTests/oldAccountCompletionCannotPublishIntoReplacementClaim()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaBootstrapStateManagerTests/onlyOneProvisioningOwner()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaNativeTextAcknowledgementTests/canonicallyEquivalentUTF8RequiresNativeWrite()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaNativeTextAcknowledgementTests/failedPayloadDoesNotRewriteANewRemoteValue()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaNativeTextAcknowledgementTests/identicalInFlightCallbackWaitsForTheNativeResult()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaNativeTextAcknowledgementTests/laterTextIsSerializedAfterFailedNativeWrite()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaNativeTextAcknowledgementTests/optimisticFailureRequiresNativeRetry()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaNativeTextAcknowledgementTests/queuedReversalPreservesTheFinalAcceptedText()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaNativeTextAcknowledgementTests/unchangedNativeSnapshotDoesNotWrite()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaNavigationGestureBridgeTests/applicationDirectionPreservesOriginalRecognizers()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaNavigationGestureBridgeTests/liveStackAndDirectionDecideEligibility()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaNavigationGestureBridgeTests/progressFollowsEffectiveDirection()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaStage1AcceptancePreparationTests/prepareRealApplicationState()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextBlockLeadingMarkerAdapterTests/narrowPinkhaNumber(number:)"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextBlockLeadingMarkerAdapterTests/ordinaryAnytypeWideNumber()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextBlockLeadingMarkerAdapterTests/physicalMarkerSide()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextBlockLeadingMarkerAdapterTests/widePinkhaLTRNumber(number:)"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextBlockLeadingMarkerAdapterTests/widePinkhaRTLNumber(number:)"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextDirectionPersistenceTests/contextHasNoIdentityGate()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextDirectionPersistenceTests/explicitAlignmentColdReopen()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextDirectionPersistenceTests/explicitAlignmentOrderingAndFailureIsolation()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextDirectionPersistenceTests/languageRenderingProducesZeroWrites()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextDirectionUIKitAdapterTests/activeDisplayLayoutPreservesComposition()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextDirectionUIKitAdapterTests/activeIMECompositionIsUntouched()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextDirectionUIKitAdapterTests/appLevelHebrewDirectionOverridesDeviceLTR()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextDirectionUIKitAdapterTests/caretObservationIsNotAFocusRequest()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextDirectionUIKitAdapterTests/contentDirectionAndDefaultAlignmentAreIndependent()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextDirectionUIKitAdapterTests/editingPreparationRestoresTypingDefaults()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextDirectionUIKitAdapterTests/emptyToTypingToReturnToNextBlockLifecycle()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextDirectionUIKitAdapterTests/explicitAlignmentWins()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextDirectionUIKitAdapterTests/languageRenderingIsDisplayOnly()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextDirectionUIKitAdapterTests/nativeBeginAndInsertionRestoreEmptyDirection(isRTL:)"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextDirectionUIKitAdapterTests/nativeFocusRestoresEmptyDirection(isRTL:)"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextDirectionUIKitAdapterTests/nativeGlyphRenderingAndHitTesting(hostUsesRight:text:)"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextDirectionUIKitAdapterTests/nativeRowAttachmentProbe(configureAfterAttachment:)"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextDirectionUIKitAdapterTests/oldAutomaticMarkerUsesCurrentLanguage()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextDirectionUIKitAdapterTests/oppositeDirectionContainersIsolateTextViews()"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextDirectionUIKitAdapterTests/ordinaryDocumentsAreNotGated(typeId:)"
+          },
+          {
+            "identifier": "AnytypeTests/PinkhaTextDirectionUIKitAdapterTests/placeholderAndCaretAlignment()"
+          },
+          {
+            "identifier": "AnytypeTests/PinnedSectionViewModelTests/init_invokesRecentStateManager_once()"
+          },
+          {
+            "identifier": "AnytypeTests/PinnedSectionViewModelTests/init_whenNoParticipantForSpace_seedsReadonly()"
+          },
+          {
+            "identifier": "AnytypeTests/PinnedSectionViewModelTests/init_whenParticipantCanEdit_seedsReadwrite()"
+          },
+          {
+            "identifier": "AnytypeTests/PinnedSectionViewModelTests/init_withEmptyDoc_seedsEmptyWidgetBlocks()"
+          },
+          {
+            "identifier": "AnytypeTests/PinnedSectionViewModelTests/init_withUnresolvableWidget_filtersItOut()"
+          },
+          {
+            "identifier": "AnytypeTests/PinnedSectionViewModelTests/init_withWidgetBlocksInDoc_seedsWidgetBlocks()"
+          },
+          {
+            "identifier": "AnytypeTests/PinnedSectionViewModelTests/subscription_emittingNewState_updatesWidgetBlocks()"
+          },
+          {
+            "identifier": "AnytypeTests/PinnedSectionViewModelTests/subscription_emittingSameState_keepsWidgetBlocksEqual()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureDraftTests/bodyOnlyAndAttachmentOnlyDraftsAreNotEmpty()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureDraftTests/clearedDraftNavigatesEvenAfterEditing()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureDraftTests/copyVerificationChecksAllTextAndRepeatedAttachments()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureDraftTests/deletedAndArchivedObjectsAreNeverDrafts()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureDraftTests/discoveryRequestsEveryConsumedFieldAndEveryParticipant()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureDraftTests/draftFlagRequiresExplicitValue()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureDraftTests/editedTextMovesUnlessDestinationHoldsContent()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureDraftTests/explicitPublishedFlagWinsOverHidden()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureDraftTests/fullyEmptyDraftCanBeCleanedUpWithOrWithoutPlaceholderBlocks()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureDraftTests/headerTextSurvivesEvenWhenDetailsHaveNotCaughtUp()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureDraftTests/knownForeignCreatorIsRejectedButUnknownParticipantDoesNotHideDraft()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureDraftTests/legacyHiddenDraftSurvivesMissingFlagAndCreator()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureDraftTests/nestedAndUnsupportedBlocksPreventCleanup()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureDraftTests/onlyDraftsWithIndexedContentMarkTheirSpace()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureDraftTests/partialDiscoveryRetainsKnownDraftsWithoutClaimingAbsence()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureDraftTests/textLandingDoesNotProveAttachmentWasCopied()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureDraftTests/titleOrDescriptionAlonePreventsEmptyDraftCleanup()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureDraftTests/untouchedRestoredDraftNavigatesWithoutPrompt()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureDraftTests/whitespaceIsPreservedInsteadOfBeingTreatedAsFullyEmpty()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureInputObserverTests/inputIsObservedEvenWhenEditorInterceptsIt(_:)"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureInputObserverTests/installingAndRemovingObserverDoesNotCountAsInput()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureInputObserverTests/movingObserverRestoresPreviousTextViewWithoutOverwritingReplacementDelegate()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureInputObserverTests/otherDelegateCallbacksAreForwarded()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureLifecycleTests/cleanupSurvivesCancellationOfPresentationTask()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureLifecycleTests/dismissingDuringSendOrAnotherOperationDoesNotCleanUp()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureLifecycleTests/dismissingEditedButApparentlyEmptyDraftDoesNotRacePendingText()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureLifecycleTests/dismissingUntouchedEmptyDraftRunsCleanup()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureLifecycleTests/keepBothNeverAutoDeletesTheSourceEvenIfItBecameEmpty()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureLifecycleTests/switchingAwayFromEditedEmptyDraftPreservesIt()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureLifecycleTests/switchingDoesNotWaitForOldDraftCleanupButDismissalDoes()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureServiceTests/attachmentOnlyDraftIsProtected()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureServiceTests/cancellationBeforeDeleteKeepsTheDraftAndPointer()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureServiceTests/cleanupDoesNotClearReplacementPointer()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureServiceTests/clearedDraftIsNotResurrectedByStaleSearch()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureServiceTests/descriptionAndNestedBodyTextAreProtected()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureServiceTests/emptyDraftIsPermanentlyDeletedBeforePointerIsCleared()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureServiceTests/failedDeletePreservesPointer()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureServiceTests/failedReadNeverDeletesOrClearsPointer()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureServiceTests/legacyDraftIsResolvedWithoutWritingDraftFlag(preferLocalHint:)"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureServiceTests/missingSnapshotRootOrDetailsNeverAuthorizesDeletion()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureServiceTests/publishedArchivedDeletedAndForeignObjectsAreProtected()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureServiceTests/publishingFlaggedDraftClearsBothFlagsInOneWrite()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureServiceTests/publishingLegacyDraftWritesOnlyHiddenFlag()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureServiceTests/unconvertibleBlockPreventsCleanup()"
+          },
+          {
+            "identifier": "AnytypeTests/QuickCaptureServiceTests/visibleDraftIsNotAutoDeleted()"
+          },
+          {
+            "identifier": "AnytypeTests/RelativeDateFormatterTests/testFutureDate()"
+          },
+          {
+            "identifier": "AnytypeTests/RelativeDateFormatterTests/testOldDate()"
+          },
+          {
+            "identifier": "AnytypeTests/RelativeDateFormatterTests/testToday()"
+          },
+          {
+            "identifier": "AnytypeTests/RelativeDateFormatterTests/testTomorrow()"
+          },
+          {
+            "identifier": "AnytypeTests/RelativeDateFormatterTests/testYesterday()"
+          },
+          {
+            "identifier": "AnytypeTests/SetContentViewDataBuilderTests/testBuildChatPreview_AttachmentTruncation_LimitsTo3()"
+          },
+          {
+            "identifier": "AnytypeTests/SetContentViewDataBuilderTests/testBuildChatPreview_CountersPropagation()"
+          },
+          {
+            "identifier": "AnytypeTests/SetContentViewDataBuilderTests/testBuildChatPreview_EmptyPreviewsArray_ReturnsNil()"
+          },
+          {
+            "identifier": "AnytypeTests/SetContentViewDataBuilderTests/testBuildChatPreview_NilSpaceView_UsesDefaultNotificationMode()"
+          },
+          {
+            "identifier": "AnytypeTests/SetContentViewDataBuilderTests/testBuildChatPreview_PreviewWithoutLastMessage_ReturnsNil()"
+          },
+          {
+            "identifier": "AnytypeTests/SetContentViewDataBuilderTests/testBuildChatPreview_ValidPreview_BuildsCompleteModel()"
+          },
+          {
+            "identifier": "AnytypeTests/SetContentViewDataBuilderTests/testDictionaryConversion_EmptyArray_EmptyDictionary()"
+          },
+          {
+            "identifier": "AnytypeTests/SetContentViewDataBuilderTests/testDictionaryConversion_MultipleUniqueItems()"
+          },
+          {
+            "identifier": "AnytypeTests/SetContentViewDataBuilderTests/testDictionaryConversion_SingleItem_SingleEntry()"
+          },
+          {
+            "identifier": "AnytypeTests/SetContentViewDataBuilderTests/testDictionaryLookup_PerformanceImpact()"
+          },
+          {
+            "identifier": "AnytypeTests/SetContentViewDataBuilderTests/testNonGalleryView_ReturnsNil()"
+          },
+          {
+            "identifier": "AnytypeTests/SetContentViewDataBuilderTests/testNoneCover_BookmarkWithPicture_ReturnsNil()"
+          },
+          {
+            "identifier": "AnytypeTests/SetContentViewDataBuilderTests/testPictureCover_EmptyPicture_ReturnsNil()"
+          },
+          {
+            "identifier": "AnytypeTests/SetContentViewDataBuilderTests/testPictureCover_ImageInStorage_ReturnsImageCover()"
+          },
+          {
+            "identifier": "AnytypeTests/SetContentViewDataBuilderTests/testPictureCover_NonImageTarget_ReturnsNil()"
+          },
+          {
+            "identifier": "AnytypeTests/SetContentViewDataBuilderTests/testPictureCover_TargetMissing_ReturnsNil()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testCheckboxMove_WritesTargetChecked()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testCheckboxMove_WritesTargetUnchecked()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testMove_DateTarget_Ignored()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testMove_GroupsNotLoaded_Ignored()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testMove_UnresolvedTarget_Ignored()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testPrefill_CheckboxColumn()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testPrefill_NoValueColumns_Nil()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testPrefill_StatusColumn()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testPrefill_TagCombinationColumn()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testStatusMove_ReplacesValue()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testStatusMove_ToNoValueColumn_Unsets()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testStringList_ListValue()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testStringList_NilOrEmpty()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testStringList_ScalarValue()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testTagMove_FromCombinationColumn_RemovesAllSourceIds()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testTagMove_FromNoValueColumn_AddsTargetIds()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testTagMove_NoEffectiveChange_Ignored()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testTagMove_PreservesOtherTags()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testTagMove_TargetAlreadyPresent_NoDuplicates()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testTagMove_ToCombinationColumn_AddsAllTargetIds()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testTagMove_ToNoValueColumn_RemovesOnlySourceIds()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testTagMove_UnresolvedSourceAndUnreadableCurrentValue_Ignored()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testTagMove_UnresolvedSourceToNoValue_Ignored()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanCardMoveTests/testTagMove_UnresolvedSource_AddsWithoutRemoving()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanColumnHeaderTests/testCheckboxGroup_UsesDisplayName()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanColumnHeaderTests/testStatusGroup_BackgroundColorFromOption()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanColumnHeaderTests/testStatusGroup_BackgroundColorUnresolved_Nil()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanColumnHeaderTests/testStatusGroup_ResolvedOption()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanColumnHeaderTests/testStatusGroup_UnresolvedOption_FallsBackToUncategorized()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanColumnHeaderTests/testTagGroup_CombinationColumn_ResolvesAllIds()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanColumnHeaderTests/testTagGroup_EmptyIds_Uncategorized()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanReorderTests/testEmptyColumn_FullyLoaded()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanReorderTests/testLoadedEqualsTotal_FullyLoaded()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanReorderTests/testLoadedExceedsTotal_FullyLoaded()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanReorderTests/testPartiallyLoadedColumn_NotFullyLoaded()"
+          },
+          {
+            "identifier": "AnytypeTests/SetKanbanReorderTests/testUnknownTotal_FailsClosed()"
+          },
+          {
+            "identifier": "AnytypeTests/SimulatorAcceptancePreparationTests/prepareRealUIFixture()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceCardUnreadEntriesTests/formatCompactPreview_atLimit_noPlusN()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceCardUnreadEntriesTests/formatCompactPreview_empty_returnsNil()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceCardUnreadEntriesTests/formatCompactPreview_overLimit_appendsPlusRemaining()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceCardUnreadEntriesTests/formatCompactPreview_underLimit_joinsWithCommas()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceCardUnreadEntriesTests/merge_appliesNamePlaceholderToBlankParent()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceCardUnreadEntriesTests/merge_chatAndDiscussion_sortsByDateDesc()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceCardUnreadEntriesTests/merge_emptyInputs_returnsEmpty()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceCardUnreadEntriesTests/merge_undatedEntries_goLast()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceDiscussionsUnreadInfoTests/emptyParents_allTotalsAreZero()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceDiscussionsUnreadInfoTests/parents_hasUnreadMention_derivedFromCount()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceDiscussionsUnreadInfoTests/totalMentionCount_sumsAll()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceDiscussionsUnreadInfoTests/unreadMessageCount_sumsSubscribedOnly()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceDiscussionsUnreadInfoTests/unsubscribedMentionCount_excludesSubscribed()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceHubRememberedLastMessageDatesTests/archivedChatCountsAsArrivedWithoutMessage()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceHubRememberedLastMessageDatesTests/arrivedPreviewWinsOverRememberedDate()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceHubRememberedLastMessageDatesTests/arrivedPreviewWithoutMessageDropsRememberedDate()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceHubRememberedLastMessageDatesTests/newSpaceWithPreviewIsRemembered()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceHubRememberedLastMessageDatesTests/partialPreviewSetKeepsDatesOfSpacesStillLoading()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceHubRememberedLastMessageDatesTests/rememberedDateOrdersSpaceAheadOfNewerJoinDate()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceHubRememberedLastMessageDatesTests/spaceNeverSeenBeforeHasNoDate()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceHubRememberedLastMessageDatesTests/spaceWithoutPreviewUsesRememberedDate()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceHubSpacesStorageVisibleParentsTests/allMode_keepsAllParentsWithCounters()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceHubSpacesStorageVisibleParentsTests/anyMode_dropsFullyCaughtUpSubscribedParent()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceHubSpacesStorageVisibleParentsTests/emptyInput_returnsEmpty()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceHubSpacesStorageVisibleParentsTests/mentionsMode_keepsAllParentsWithCounters()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceHubSpacesStorageVisibleParentsTests/mutedMultichat_keepsOnlyMentionParents()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceHubSpacesStorageVisibleParentsTests/oneToOneMuted_keepsAllParentsWithCounters()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceInfoViewModelTests/init_withCachedSpaceView_seedsAllFields()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceInfoViewModelTests/init_withNoCachedSpaceView_keepsDefaults()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceInfoViewModelTests/init_withOneToOneSpace_routesToOneToOneBranch()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceInfoViewModelTests/init_withSharedSpace_doesNotRouteToPrivateChannelFallback()"
+          },
+          {
+            "identifier": "AnytypeTests/SpaceInfoViewModelTests/startSubscriptions_secondEmission_updatesState()"
+          },
+          {
+            "identifier": "AnytypeTests/SpacePreviewCountersBuilderTests/combinedChatAndDiscussion_unreadAndMentionsSum()"
+          },
+          {
+            "identifier": "AnytypeTests/SpacePreviewCountersBuilderTests/discussionOnly_allMode_contributesUnreadAndMentions()"
+          },
+          {
+            "identifier": "AnytypeTests/SpacePreviewCountersBuilderTests/discussionOnly_mutedMode_hidesUnreadKeepsMentions()"
+          },
+          {
+            "identifier": "AnytypeTests/SpacePreviewCountersBuilderTests/forceAll_chatInMutedSpace_keepsUnreadHighlighted()"
+          },
+          {
+            "identifier": "AnytypeTests/SpacePreviewCountersBuilderTests/forceMute_chatHidesUnreadOnSpaceWithModeAll()"
+          },
+          {
+            "identifier": "AnytypeTests/SpacePreviewCountersBuilderTests/multichatAllMode_unreadAndMentionsHighlighted()"
+          },
+          {
+            "identifier": "AnytypeTests/SpacePreviewCountersBuilderTests/multichatMentionsMode_unreadMutedMentionsHighlighted()"
+          },
+          {
+            "identifier": "AnytypeTests/SpacePreviewCountersBuilderTests/multichatMutedMode_hidesUnreadKeepsMentions()"
+          },
+          {
+            "identifier": "AnytypeTests/SpacePreviewCountersBuilderTests/oneToOne_dropsMentionsFromChat()"
+          },
+          {
+            "identifier": "AnytypeTests/SpacePreviewCountersBuilderTests/oneToOne_mutedDoesNotHideUnread()"
+          },
+          {
+            "identifier": "AnytypeTests/SpacePreviewCountersBuilderTests/unreadReactions_inAllMode_highlighted()"
+          },
+          {
+            "identifier": "AnytypeTests/SpacePreviewCountersBuilderTests/unreadReactions_inMentionsMode_muted()"
+          },
+          {
+            "identifier": "AnytypeTests/SpacePushNotificationsModeShouldShowUnreadCounterTests/defaultIsSubscribed_isTrue()"
+          },
+          {
+            "identifier": "AnytypeTests/SpacePushNotificationsModeShouldShowUnreadCounterTests/subscribed_modeAll_returnsTrue()"
+          },
+          {
+            "identifier": "AnytypeTests/SpacePushNotificationsModeShouldShowUnreadCounterTests/subscribed_modeMentions_returnsTrue()"
+          },
+          {
+            "identifier": "AnytypeTests/SpacePushNotificationsModeShouldShowUnreadCounterTests/subscribed_modeNothing_returnsFalse_whenMuteAndHideOn()"
+          },
+          {
+            "identifier": "AnytypeTests/SpacePushNotificationsModeShouldShowUnreadCounterTests/unsubscribed_returnsFalse_evenWithUnread()"
+          },
+          {
+            "identifier": "AnytypeTests/SpacePushNotificationsModeShouldShowUnreadCounterTests/zeroCount_returnsFalse_inAllModes()"
+          },
+          {
+            "identifier": "AnytypeTests/SubscriptionStorageRaceTests/eventDuringInflightSubscribeSurvivesReseed()"
+          },
+          {
+            "identifier": "AnytypeTests/SubscriptionStorageRaceTests/reSubscribeClearsStaleRecords()"
+          },
+          {
+            "identifier": "AnytypeTests/SubscriptionStorageRaceTests/replayedAddIsDedupedAgainstResponseSnapshot()"
+          },
+          {
+            "identifier": "AnytypeTests/SubscriptionStorageRaceTests/replayedAddWithRealAfterIdIsPositioned()"
+          },
+          {
+            "identifier": "AnytypeTests/SubscriptionStorageRaceTests/warmPathSeedsFromResponseRecords()"
+          },
+          {
+            "identifier": "AnytypeTests/SubscriptionTogglerOperationsTests/testAdd(_:_:_:)"
+          },
+          {
+            "identifier": "AnytypeTests/SubscriptionTogglerOperationsTests/testMove(_:_:_:)"
+          },
+          {
+            "identifier": "AnytypeTests/SubscriptionTogglerOperationsTests/testRemove(_:_:)"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeMiddlewarePrepareTests/prepareNativeState()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeMiddlewareRelaunchTests/reopenNativeStateAfterHostTermination()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/acknowledgementLossReconcilesByReadback()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/concurrentMutationsRetainEveryAssociation()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/documentHeaderUsesCanonicalSnapshot()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/documentKindsSurviveFreshRepository()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/documentMutationPreservesTwoBlockRecords()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/dragOperationsStaySeparated()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/embeddedSearchAlwaysLinksToTheDocumentContext()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/embeddedSearchOpenKeepsOuterSelectionAndStandaloneSheetState()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/embeddedSearchRejectsStaleSourceResolution()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/embeddedTopicAndWordLinksPreserveKinds()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/identicalSourceAcrossScopesRemainsDistinct()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/inactiveDocumentCannotReceiveEmbeddedLink()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/invalidNativePayloadsFailClosed()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/linkedBlockOpeningRoutesByAssociationShape()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/localeAndQuoteContentAreNonDestructive()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/propertyCompositionKeepsOriginalRows()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/propertyPermissionAndRequestGuards()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/propertyPickerCancellationAndRapidTaps()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/propertyProjectionRefreshesWithoutDuplicateStorage()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/propertyRoutesResetCategoryAndTarget()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/resolvedVerseSelection()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/scopedRemovalDoesNotTouchOtherTargets()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/searchStateRejectsStaleResponses()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/staleRefreshCannotReplaceDocumentAssociations()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/targetAndPermissionGuards()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/uncertainWriteIsNotReportedAsSaved()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/unlinkedDocumentHeaderChipIsRejected()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahAssociationNativeRepositoryTests/wrongTypedNativePropertyFailsClosed()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahCanonicalManifestIsolationTests/canonicalLinkingAllKindsSucceeds()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahCanonicalManifestIsolationTests/canonicalLookupIgnoresUnrelatedNativeSchemaFailure()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahCanonicalManifestIsolationTests/canonicalLookupRejectsOtherSpace()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahCanonicalManifestIsolationTests/canonicalRepositoryOperationsSucceedWhileUIEditingBlocked()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahCanonicalManifestIsolationTests/protocolExtensionDefaultDelegates()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahNativeDerivedProductIntegrationTests/originalProductPipeline()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahNativeUIParityTests/blockOrnamentReuse()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahNativeUIParityTests/boundedDocumentSources(count:)"
+          },
+          {
+            "identifier": "AnytypeTests/TorahNativeUIParityTests/canonicalTypeRefreshFences(scenario:)"
+          },
+          {
+            "identifier": "AnytypeTests/TorahNativeUIParityTests/catalogLiveTypeRelationsAndZeroAssociationPropertiesSheet()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahNativeUIParityTests/compactBlockOrnamentGeometry()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahNativeUIParityTests/compactSourceAddButtonGeometry()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahNativeUIParityTests/freshDocumentNativeRowIsEditableByCanonicalPicker()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahNativeUIParityTests/headerVisibilityReactiveToTypeEligibility()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahNativeUIParityTests/internalIdentityResolutionTriStateAndRecovery()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahNativeUIParityTests/metadataPresentationPlacement()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahNativeUIParityTests/nativeCatalogSearchAndIdentityGuards()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahNativeUIParityTests/navigationFitUsesMeasuredWidths()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahNativeUIParityTests/policyCanonicalAndOrderStorageDistinction()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahNativeUIParityTests/presentationSourcesNoPermanentAddLabelAndSeparateCompactAdd()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahNativeUIParityTests/rtlControlOrder()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahQuoteInsertionTests/delayedDropDoesNotRegainAuthorityOnReactivation()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahQuoteInsertionTests/deniedDropDoesNotCreateTextOrMetadata()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahQuoteInsertionTests/dropDeduplicationIsPerGesture()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahQuoteInsertionTests/dropLifetimeIsIndependentOfInspectorPresentation()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahQuoteInsertionTests/inspectorInsertionPersistsConfirmedCanonicalMetadata()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahQuoteInsertionTests/lateBlockResponseDoesNotMutateTheNewLifetime()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahQuoteInsertionTests/lateInspectorResponseDoesNotReplaceNewSelectionStatus()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahQuoteInsertionTests/metadataWriteRevalidatesAfterSuspendedNativeRead(cancel:)"
+          },
+          {
+            "identifier": "AnytypeTests/TorahQuoteInsertionTests/revocationDuringBlockResponseStopsMetadata()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahQuoteInsertionTests/staleInspectorInsertionIsRejected(dismiss:)"
+          },
+          {
+            "identifier": "AnytypeTests/TorahRelatedDocumentActionTests/cancelledUnlinkDoesNotMutateAfterRead()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahRelatedDocumentActionTests/changedRootSelectionRejectsCapturedCallbacks()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahRelatedDocumentActionTests/dismissedInspectorCallbacksAreRetired()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahRelatedDocumentActionTests/lateUnlinkFailureIsIgnoredAfterDocumentLifetimeEnds(isNote:)"
+          },
+          {
+            "identifier": "AnytypeTests/TorahRelatedDocumentActionTests/noteUnlinkStopsBeforeBothSourceAndOriginMutationWhenRevoked()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahRelatedDocumentActionTests/relatedNavigationPreservesBlockTarget()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahRelatedDocumentActionTests/relatedNavigationRequiresCurrentSpaceAndLifetime()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahRelatedDocumentActionTests/unlinkRechecksAuthorityAfterSuspendedRead()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahRelatedDocumentActionTests/unlinkRejectsDeniedAuthorityAtEntry()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahRelatedDocumentActionTests/unlinkRejectsForeignSpaceBeforeRead()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahRelatedDocumentActionTests/unlinkRemovesOnlyTheSelectedCanonicalSource()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahSearchLayoutScreenshotTests/testDeterministicTorahSearchLayoutEvidence()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahSearchLayoutScreenshotTests/testNativeDocumentSourcesRefreshInLTR()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahSearchLayoutScreenshotTests/testNativeDocumentSourcesRefreshInRTL()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahSearchLayoutScreenshotTests/testPresentationDocumentSourcesRefreshInLTR()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahSearchLayoutScreenshotTests/testPresentationDocumentSourcesRefreshInRTL()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahSearchLayoutTests/associationStripHasDeterministicHeight()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahSearchLayoutTests/documentAndBlockCopyRemainDistinct()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahSearchLayoutTests/longAssociationStripScrollsHorizontally()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahSearchLayoutTests/persistenceFeedbackRemainsInline()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahSearchLayoutTests/productionCompositionsHaveOneSearchField()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahSearchLayoutTests/savedStateDoesNotCreateStandaloneRow()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahSearchLayoutTests/torahAssetGlyphsStayInsideSearchCellSlots()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahSearchLayoutTests/unrelatedAssetRowsRemainUnchanged()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahStage2TypePreservationTests/verifyExistingTypeRoundtrip()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahT5NativeAccountRetryPendingTests/nativeStoppedAccountPendingNineOnly()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahT5NativeAccountRetryTests/nativeStoppedAccountErrorAndSameServiceRetry()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahT5NativePaginationTests/nativePaginationCurrentSpaceAndMutationAcceptance()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahT5RemainingFreshnessTests/nativeQuoteMoveAndBlockDeletion()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahT5RuntimePairTests/realSameAccountRuntimePairPhase()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahT5UIAcceptancePreparationTests/prepareFreshNativeUIFixture()"
+          },
+          {
+            "identifier": "AnytypeTests/TorahWave1IntegrationTests/realNativeQueryAndNoteLifecycle()"
+          },
+          {
+            "identifier": "AnytypeTests/TypingPublishPolicyTests/continuedTypingRepublishesAtMostEveryTwoSeconds()"
+          },
+          {
+            "identifier": "AnytypeTests/TypingPublishPolicyTests/editWithNewReplyTargetBypassesTheThrottle()"
+          },
+          {
+            "identifier": "AnytypeTests/TypingPublishPolicyTests/emptiedComposerStops()"
+          },
+          {
+            "identifier": "AnytypeTests/TypingPublishPolicyTests/emptyEditWithoutTypingPublishesNothing()"
+          },
+          {
+            "identifier": "AnytypeTests/TypingPublishPolicyTests/firstEditPublishesAtOnce()"
+          },
+          {
+            "identifier": "AnytypeTests/TypingPublishPolicyTests/replyTargetChangeRepublishesAtOnce()"
+          },
+          {
+            "identifier": "AnytypeTests/TypingPublishPolicyTests/replyTargetChangeWithoutTypingPublishesNothing()"
+          },
+          {
+            "identifier": "AnytypeTests/TypingPublishPolicyTests/sendBlurLeaveOrBackgroundStopAtOnceOnlyWhenOwed()"
+          },
+          {
+            "identifier": "AnytypeTests/TypingPublishPolicyTests/settingOffPublishesNothing()"
+          },
+          {
+            "identifier": "AnytypeTests/TypingPublishPolicyTests/stopsThreeSecondsAfterTheLastEdit()"
+          },
+          {
+            "identifier": "AnytypeTests/TypingPublishPolicyTests/turningOffMidTypingSendsTheOwedStopOnce()"
+          },
+          {
+            "identifier": "AnytypeTests/TypingRosterTests/aMessageFromThatIdentityClearsIt()"
+          },
+          {
+            "identifier": "AnytypeTests/TypingRosterTests/activeFalseRemovesTheEntry()"
+          },
+          {
+            "identifier": "AnytypeTests/TypingRosterTests/dropsOwnEchoOwnAccountAndEditorPresence()"
+          },
+          {
+            "identifier": "AnytypeTests/TypingRosterTests/expiresFiveSecondsAfterTheLastRefresh()"
+          },
+          {
+            "identifier": "AnytypeTests/TypingRosterTests/refreshWithSameStateIsNotAVisibleChange()"
+          },
+          {
+            "identifier": "AnytypeTests/TypingRosterTests/showsOnePersonOnceWithTheLatestReplyTarget()"
+          },
+          {
+            "identifier": "AnytypeTests/TypingRosterTests/stoppingOneSessionKeepsTheOther()"
+          },
+          {
+            "identifier": "AnytypeTests/URLHttpTests/testHttps(_:_:_:)"
+          },
+          {
+            "identifier": "AnytypeTests/UnifiedSearchChipModelTests/refinementPackageKeepsCurrentChannelWithinLimit()"
+          },
+          {
+            "identifier": "AnytypeTests/UnifiedSearchChipModelTests/refinementPackageLimitsEachIndividualGroup()"
+          },
+          {
+            "identifier": "AnytypeTests/UnifiedSearchChipModelTests/refinementPackageOmitsSelectorForEmptyGroup()"
+          },
+          {
+            "identifier": "AnytypeTests/UnifiedSearchChipModelTests/refinementPackagePutsSelectorsBeforeIndividualSuggestions()"
+          },
+          {
+            "identifier": "AnytypeTests/UnifiedSearchStateTests/addingSpaceScopeConvertsTypeFocusIntoTypeFilter()"
+          },
+          {
+            "identifier": "AnytypeTests/UnifiedSearchTypeSorterTests/sorted_deduplicatesByUniqueKeyKeepingMostRecentlyUsedInstance()"
+          },
+          {
+            "identifier": "AnytypeTests/UnifiedSearchTypeSorterTests/sorted_ordersByLastUsedDateDescendingThenNameAscending()"
+          },
+          {
+            "identifier": "AnytypeTests/UniversalLinkParserTests/testCreateHiLinkURL()"
+          },
+          {
+            "identifier": "AnytypeTests/UniversalLinkParserTests/testCreateUniversalLinkURL()"
+          },
+          {
+            "identifier": "AnytypeTests/UniversalLinkParserTests/testCreateUrlWithSpecialCharacters()"
+          },
+          {
+            "identifier": "AnytypeTests/UniversalLinkParserTests/testHiLinkEmptyIdentity()"
+          },
+          {
+            "identifier": "AnytypeTests/UniversalLinkParserTests/testHiLinkEmptyKey()"
+          },
+          {
+            "identifier": "AnytypeTests/UniversalLinkParserTests/testHiLinkNormal()"
+          },
+          {
+            "identifier": "AnytypeTests/UniversalLinkParserTests/testHiLinkOnlyIdentity()"
+          },
+          {
+            "identifier": "AnytypeTests/UniversalLinkParserTests/testHiLinkRoundTrip()"
+          },
+          {
+            "identifier": "AnytypeTests/UniversalLinkParserTests/testHiLinkRoundTripSpecialCharacters()"
+          },
+          {
+            "identifier": "AnytypeTests/UniversalLinkParserTests/testHiLinkSpecialChars()"
+          },
+          {
+            "identifier": "AnytypeTests/UniversalLinkParserTests/testNormal()"
+          },
+          {
+            "identifier": "AnytypeTests/UniversalLinkParserTests/testOnlyHostWithSlash()"
+          },
+          {
+            "identifier": "AnytypeTests/UniversalLinkParserTests/testOnlyHostWithoutSlash()"
+          },
+          {
+            "identifier": "AnytypeTests/UniversalLinkParserTests/testOnlyInviteId()"
+          },
+          {
+            "identifier": "AnytypeTests/UniversalLinkParserTests/testOnlyInviteIdWithEmptyKeyId()"
+          },
+          {
+            "identifier": "AnytypeTests/UniversalLinkParserTests/testOnlyKeyId()"
+          },
+          {
+            "identifier": "AnytypeTests/UniversalLinkParserTests/testOnlyKeyIdWithEmptyInvite()"
+          },
+          {
+            "identifier": "AnytypeTests/UniversalLinkParserTests/testParseWithEncoding()"
+          },
+          {
+            "identifier": "AnytypeTests/UnreadSectionRowDataTests/equatableDistinguishesById()"
+          },
+          {
+            "identifier": "AnytypeTests/UnreadSectionRowDataTests/sortByLastMessageDate_descending_nilSortsAsDistantPast()"
+          },
+          {
+            "identifier": "AnytypeTests/WidgetsObjectsStorageTests/clear_dropsCurrentStateAndAllowsReopen()"
+          },
+          {
+            "identifier": "AnytypeTests/WidgetsObjectsStorageTests/prepare_differentSpace_dropsPreviousAndOpensNew()"
+          },
+          {
+            "identifier": "AnytypeTests/WidgetsObjectsStorageTests/prepare_openThrows_stillExposesDocs()"
+          },
+          {
+            "identifier": "AnytypeTests/WidgetsObjectsStorageTests/prepare_opensBothDocsForSpace()"
+          },
+          {
+            "identifier": "AnytypeTests/WidgetsObjectsStorageTests/prepare_sameSpaceTwice_doesNotReopen()"
+          },
+          {
+            "identifier": "AnytypeTests/WidgetsObjectsStorageTests/waitForReady_unknownSpace_returnsImmediately()"
+          }
+        ],
+        "enabledTests": [
+          {
+            "identifier": "AnytypeTests/SimpleTableTextPersistenceTests/acceptedSnapshotSurvivesViewReuse()"
+          },
+          {
+            "identifier": "AnytypeTests/SimpleTableTextPersistenceTests/defocusCommitsTheDeferredSearchBuffer()"
+          },
+          {
+            "identifier": "AnytypeTests/SimpleTableTextPersistenceTests/laterDraftKeepsTheLatestAcceptedSnapshot()"
+          },
+          {
+            "identifier": "AnytypeTests/SimpleTableTextPersistenceTests/markdownAddBlockDoesNotContinueAfterOwnerRebind(returnToOriginalID:)"
+          },
+          {
+            "identifier": "AnytypeTests/SimpleTableTextPersistenceTests/markdownCommandsKeepCapturedTextBeforeLaterTyping(addBlock:)"
+          },
+          {
+            "identifier": "AnytypeTests/SimpleTableTextPersistenceTests/markdownStyleWaitsForEarlierNativeWrite()"
+          },
+          {
+            "identifier": "AnytypeTests/SimpleTableTextPersistenceTests/nativeRejectionKeepsTheTableDirty()"
+          },
+          {
+            "identifier": "AnytypeTests/SimpleTableTextPersistenceTests/queuedMarkdownCommandIsRetiredWhenRowChanges()"
+          },
+          {
+            "identifier": "AnytypeTests/SimpleTableTextPersistenceTests/replacementClaimsPendingOwnershipBeforePublication(asyncEntry:)"
+          },
+          {
+            "identifier": "AnytypeTests/SimpleTableTextPersistenceTests/rowRebindCannotWriteIntoTheNewOwner()"
+          },
+          {
+            "identifier": "AnytypeTests/SimpleTableTextPersistenceTests/structuralKeyWaitsForAcceptedText()"
+          },
+          {
+            "identifier": "AnytypeTests/TextBlockFocusLifecycleTests/completedLocalTextAcceptsRemoteReplacement()"
+          },
+          {
+            "identifier": "AnytypeTests/TextBlockFocusLifecycleTests/consumedAndNewerFocusSurviveOldCallbacks()"
+          },
+          {
+            "identifier": "AnytypeTests/TextBlockFocusLifecycleTests/editingDenialCancelsPendingFocus(locked:)"
+          },
+          {
+            "identifier": "AnytypeTests/TextBlockFocusLifecycleTests/explicitHandoffDoesNotReplayInitialCaret()"
+          },
+          {
+            "identifier": "AnytypeTests/TextBlockFocusLifecycleTests/focusedTextViewDoesNotReplayResponderAcquisition()"
+          },
+          {
+            "identifier": "AnytypeTests/TextBlockFocusLifecycleTests/initialFocusWaitsForAttachment()"
+          },
+          {
+            "identifier": "AnytypeTests/TextBlockFocusLifecycleTests/insertedCellUsesCurrentEditingBeforeFocus(editing:)"
+          },
+          {
+            "identifier": "AnytypeTests/TextBlockFocusLifecycleTests/laterFocusSupersedesDetachedRequest(useNativeEditing:)"
+          },
+          {
+            "identifier": "AnytypeTests/TextBlockFocusLifecycleTests/nativeFocusObservationDistinguishesOutcomes(outcome:)"
+          },
+          {
+            "identifier": "AnytypeTests/TextBlockFocusLifecycleTests/pendingFocusWaitsForKeyWindow()"
+          },
+          {
+            "identifier": "AnytypeTests/TextBlockFocusLifecycleTests/pendingLocalTextSurvivesNativeReconfiguration()"
+          },
+          {
+            "identifier": "AnytypeTests/TextBlockFocusLifecycleTests/refusedFocusWaitsForWindowReadiness()"
+          },
+          {
+            "identifier": "AnytypeTests/TextBlockFocusLifecycleTests/requestIdentityParticipatesInCellConfigurationEquality()"
+          },
+          {
+            "identifier": "AnytypeTests/TextBlockFocusLifecycleTests/reusedCellDoesNotPreserveDifferentPendingOwner(composing:)"
+          },
+          {
+            "identifier": "AnytypeTests/TextBlockFocusLifecycleTests/reusedCellUsesCurrentLockBeforeFocus(newLocked:)"
+          },
+          {
+            "identifier": "AnytypeTests/TextBlockFocusLifecycleTests/sameInputOwnerSurvivesForkAndExplicitReplacementEndsComposition()"
+          },
+          {
+            "identifier": "AnytypeTests/TextBlockFocusLifecycleTests/staleFocusDoesNotSurviveRowLifetime(change:)"
+          },
+          {
+            "identifier": "AnytypeTests/TorahRelatedReadAuthorityMappingTests/nativeDenialRequiresExactTypedCodeAndDescription(objectShow:)"
+          },
+          {
+            "identifier": "AnytypeTests/TorahRelatedReadAuthorityMappingTests/providerAndTransportDescriptionsCannotForgeNativeAuthority()"
+          }
+        ],
+        "testPlan": "AnytypeTests"
+      }
+    ]
+  }
+}
