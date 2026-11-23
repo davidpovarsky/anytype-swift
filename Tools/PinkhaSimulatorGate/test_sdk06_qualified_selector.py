@@ -24,7 +24,20 @@ UDID = "90000000-0000-4000-8000-000000000009"
 
 
 def source_selection():
-    source = selected.component.source_contract(APP)
+    # Preserve the real three tracked source bytes while modelling the case-
+    # insensitive Xcode synchronized root inside a disposable Linux fixture.
+    with tempfile.TemporaryDirectory() as temporary:
+        fixture = Path(temporary)
+        for name, checksum in selected.probe.SOURCES.items():
+            data = (APP / name).read_bytes()
+            assert hashlib.sha256(data).hexdigest() == checksum
+            path = fixture / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+        (fixture / "AnytypeTests").symlink_to("AnyTypeTests", target_is_directory=True)
+        tracked = ("\0".join(selected.probe.SOURCES) + "\0").encode()
+        with mock.patch.object(selected.component.subprocess, "check_output", return_value=tracked):
+            source = selected.component.source_contract(fixture)
     return source, selected.selection_from_source(source)
 
 
