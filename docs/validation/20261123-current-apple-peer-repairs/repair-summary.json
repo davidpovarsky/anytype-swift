@@ -1,0 +1,38 @@
+{
+  "actualNewMethods": 3,
+  "actualSubcases": 19,
+  "base": "44b3950e75e00b3e8e8236dc9831184f6deeabbe",
+  "baseSHA256": "af8591ee3f165cc676f12449d9cef33bac6cd28c8feb60c36f5e3e669626ef99",
+  "builds": 0,
+  "changedDefinitions": [
+    "Commands.run",
+    "raw_terminal",
+    "cleanup_only"
+  ],
+  "custody": "RAM only pending root independent durable Windows source/evidence custody; no /mnt writes.",
+  "finalSHA256": "f59fbf2bed1f2766111f9103e7b8af4022fb69161afd6d34d1202102228fed7c",
+  "newControls": {
+    "first-error-io": 7,
+    "independent-cleanup": 4,
+    "marker": 8
+  },
+  "oldControls": 0,
+  "otherDefinitionsExact": 32,
+  "productMethods": 0,
+  "retainedPassingChecks": {
+    "independent-cleanup": {
+      "finalASTExact": true,
+      "method": "cleanup_only",
+      "sourceCommit": "d87d694bec66bcf748635bde2dfa28f5603c67b6"
+    },
+    "marker": {
+      "finalASTExact": true,
+      "method": "raw_terminal",
+      "sourceCommit": "05f48c5b97e880edcc5a38e1c1599d81023d8ac3"
+    }
+  },
+  "runtimePath": "Tools/CurrentAppleValidation/current_execution.py",
+  "schema": "current-apple-peer-repairs-summary/v1",
+  "scope": "Only three peer-found defects; fixed selection/source/native/default policy unchanged.",
+  "wholeFileInverseTo44b": true
+}
