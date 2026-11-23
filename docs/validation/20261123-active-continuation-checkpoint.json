@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
-  "observedUTC": "2026-11-23T06:57:41.580699+00:00",
-  "previousPublishedSharedHead": "051401f411a5f59090678cffb0cc3c0f8e581de3",
-  "integratedSourceHead": "4cb74256684a886fa3c24d49305878856b31fe40",
+  "observedUTC": "2026-11-23T07:15:52.328178+00:00",
+  "previousPublishedSharedHead": "75d59780b9604b0392a0a8d4f4b7ce85c43188dd",
+  "integratedSourceHead": "f5f470f03bdcda285f3dd2817af43c27e1af15b0",
   "owners": {
     "root": "Shared integration, publication, Asana and sole consolidated CI observer; SDK basename terminal audit",
     "acceptance_map": "New UI original Products controller/workflow with separate App and control origins",
@@ -10,41 +10,31 @@
     "editor_migration": "Qualified native localstore witness; native source/identity census and future Page154 Products admission"
   },
   "activeRuns": {
-    "page154App": {
-      "id": 45116855451,
-      "sourceSHA": "68148339c275268795360d71d519a5baf003adf8",
-      "branch": "codex/chatgpt-wave15-semantic-known-simulator-20261123",
-      "url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45116855451",
-      "createdAtUTC": "2026-11-23T05:17:39Z",
-      "lastKnownStatus": "completed",
-      "conclusion": "success",
-      "observedStatusUTC": "2026-11-23T06:39:30.916291+00:00",
-      "terminalAuditOwner": "sdk_ci",
-      "watcherJob": "job_e3a5ebecd1db"
-    },
-    "sdk06Basename": {
-      "id": 45121824215,
-      "sourceSHA": "61f5c66ce1d4583c702e63634d33f35ae6fff2db",
-      "branch": "codex/chatgpt-wave15-sdk06-basename-probe-20261123",
-      "url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45121824215",
-      "createdAtUTC": "2026-11-23T06:05:31Z",
-      "lastKnownStatus": "completed",
-      "conclusion": "failure",
-      "observedStatusUTC": "2026-11-23T06:39:30.917800+00:00",
-      "terminalAuditOwner": "root",
-      "watcherJob": "job_e3a5ebecd1db"
-    },
-    "releaseRepairedOriginalProducts": {
-      "id": 45122453940,
-      "sourceSHA": "cb50b5a8698f3d32423dbc4b171449556fba5478",
+    "nativeUIOriginalProducts": {
+      "id": 45127756584,
+      "sourceSHA": "75d59780b9604b0392a0a8d4f4b7ce85c43188dd",
       "branch": "codex/chatgpt-wave15-shared-20261121",
-      "url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45122453940",
-      "createdAtUTC": "2026-11-23T06:11:26Z",
+      "attempt": 1,
+      "url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45127756584",
       "lastKnownStatus": "completed",
-      "conclusion": "failure",
-      "observedStatusUTC": "2026-11-23T06:39:30.918382+00:00",
-      "terminalAuditOwner": "root",
-      "watcherJob": "job_e3a5ebecd1db"
+      "lastKnownConclusion": "failure",
+      "observedStatusUTC": "2026-11-23T07:14:52.405711+00:00",
+      "owner": "root",
+      "watcherOwner": "root",
+      "terminalAuditOwner": "root"
+    },
+    "coherentKernelOriginalProducts": {
+      "id": 45129057825,
+      "sourceSHA": "a69d0967c1dad4b9476b04af2b681474983e0b96",
+      "branch": "codex/chatgpt-wave15-coherent-kernel-20261123",
+      "attempt": 1,
+      "url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45129057825",
+      "lastKnownStatus": "queued",
+      "lastKnownConclusion": null,
+      "observedStatusUTC": "2026-11-23T07:14:52.406352+00:00",
+      "owner": "root",
+      "watcherOwner": "root",
+      "terminalAuditOwner": "root"
     }
   },
   "qualifiedEvidence": {
@@ -402,6 +392,30 @@
       "futureCurrentMethods": 7,
       "priorRetainedMethods": 22,
       "actualAppleContinuation": "NOT_DISPATCHED"
+    },
+    "page154ActualAppBoundary": {
+      "source": "68148339c275268795360d71d519a5baf003adf8",
+      "runID": 45116855451,
+      "actualNewNativeMethodsPassed": 1,
+      "actualCommands": 23,
+      "nativeOriginalCopies": 121,
+      "sourceBeforeAfterEntries": 12033,
+      "rootGitBlobsRead": 47,
+      "rootReview": "docs/validation/20261123-page154-app-success/root-review/root-review.json",
+      "rootReviewSHA256": "9ee74166954495a20c469e7dd5d7bec2af4bb4eba6572f6a874ae2318bb2a403",
+      "mountedAcceptance": "NOT_RUN",
+      "physicalDevice": "NOT_RUN"
+    },
+    "coherentKernelSourceBatch": {
+      "source": "1c4b690b7776e8330a4b3bfb34dcc37b0f76d65d",
+      "originalEvidence": "0976cc8575313ccd0360f7fddbedc27cbddacae9",
+      "newMethodsPassed": 2,
+      "sourceInputs": 300,
+      "loadedInputs": 9,
+      "retainedMethodsRerun": 0,
+      "rootReview": "docs/validation/20261123-coherent-kernel-source-batch/root-review.json",
+      "rootReviewSHA256": "1d5f7dc18d5dbcfefea3027d852c4836b6e63c3d4bd848600a3a57028e7d1658",
+      "actualContinuationRun": 45129057825
     }
   },
   "boundaries": [
@@ -427,7 +441,11 @@
       "newAppBuildsRequested": 0,
       "newUIBuildsRequested": 0,
       "actualContinuation": 45122453940,
-      "watcherJob": "job_e3a5ebecd1db"
+      "watcherJob": "job_e3a5ebecd1db",
+      "status": "KERNEL_SOURCE_BATCH_CONTINUATION_DISPATCHED",
+      "actualRunID": 45129057825,
+      "publishedSource": "a69d0967c1dad4b9476b04af2b681474983e0b96",
+      "newBuilds": 0
     },
     "page154Mounted": {
       "phase": "WORKFLOW_AND_CONTROLLER_INTEGRATED_WAITING_ORIGINAL_CONSUMER_ARTIFACT",
@@ -438,7 +456,15 @@
       "newUIBuildsRequested": 0,
       "preservedAppBranch": "codex/chatgpt-wave15-page154-mounted-origin-20261123",
       "preservedAppSource": "5a6a05d9152553b1bee661eadc7b539b25b10ae1",
-      "reasonForSeparateBranch": "Preserve exact original consumer App inputs while shared receives new Integration source"
+      "reasonForSeparateBranch": "Preserve exact original consumer App inputs while shared receives new Integration source",
+      "status": "ORIGINAL_PRODUCTS_ADMITTED_KNOWN_PAIR_ADAPTER_QUALIFICATION_IN_PROGRESS",
+      "originalAdmissionCommit": "8a6d64ba152ba3aa4bb4376d070f63f5c9daceca",
+      "admissionSHA256": "17c37d842009b23d50ab2222383c1f025242aa2e61f1828cf1bc1a346b5ed7e5",
+      "nativeEntries": 5008,
+      "uiEntries": 30,
+      "productInputsIdentical": 6321,
+      "rootReviewSHA256": "9ee74166954495a20c469e7dd5d7bec2af4bb4eba6572f6a874ae2318bb2a403",
+      "actualMountedMethods": 0
     },
     "heartArchiveDryRun": {
       "owner": "editor_migration",
@@ -467,14 +493,23 @@
       "phase": "ISOLATED_SELECTOR_AND_CONTINUATION_CONTROLLER_PREPARATION",
       "actualSelectorAdmission": "PENDING_GENUINE_PROBE_RESULT",
       "newCurrentAppBuild": "NOT_DISPATCHED",
-      "oldRoutes": "PRESERVED"
+      "oldRoutes": "PRESERVED",
+      "status": "LOCAL_COMPOSITION_TWO_NEW_METHODS_PASS_SELECTOR_ACTUAL_STILL_FAIL",
+      "source": "e51f396cc76424477f952844c8f83d781d03b3f8",
+      "evidence": "7de5fe65902af25b5421f4cb215ca31c4b3580bf",
+      "rootReviewSHA256": "02ee64a496ed89a02aea4aeefb2bac81107534d6ad078156db9b9256c2df20eb",
+      "newProductMethods": 0
     },
     "nativeUIOriginalProducts": {
       "phase": "SEPARATE_ORIGIN_CONTROLLER_AND_WORKFLOW_IN_PREPARATION",
       "originalRun": 45108211949,
       "originalApplicationSource": "4b09cc5478c60c1c6728a54f2a27a115637a835b",
       "newBuildsRequested": 0,
-      "retainedMethodsNotToRerun": 22
+      "retainedMethodsNotToRerun": 22,
+      "status": "DISPATCHED",
+      "actualRunID": 45127756584,
+      "publishedSource": "75d59780b9604b0392a0a8d4f4b7ce85c43188dd",
+      "newBuilds": 0
     }
   },
   "oracleCapacity": {
@@ -486,20 +521,22 @@
     "originalArchivesPreserved": 3,
     "qualifiedProductFilesPreserved": 11,
     "worktreesRemoved": 0,
-    "otherProjectsChanged": 0
+    "otherProjectsChanged": 0,
+    "latestFreeBytes": 2537910272,
+    "latestObservedUTC": "2026-11-23T07:15:52.328178+00:00"
   },
   "consolidatedObserver": {
-    "directory": "/mnt/development/projects/diagnostics/anytype-consolidated-ci-observer-window3-20261123",
-    "job": "job_e3a5ebecd1db",
+    "directory": "/mnt/development/projects/diagnostics/anytype-consolidated-ci-observer-window4-20261123",
+    "job": "job_34d8534eb019",
     "intervalSeconds": 120,
     "maximumSeconds": 3300,
     "sourceSHA256": "cb70ad88dcf6967b7a3326400203c57ef45b47104d571120407bd62aa1bbf0f0",
-    "previousWindowOriginal": "/mnt/development/projects/diagnostics/anytype-consolidated-ci-observer-window2-20261123",
+    "previousWindowOriginal": "window3 ALL_TARGETS_TERMINAL; original termination receipt retained in window4",
     "previousPIDGoneVerified": true,
     "individualWatchersActive": 0,
     "terminalArtifactOwnersSeparate": true,
     "rootOwnedTargetUpdates": "APPEND_ONLY_EXACT_IDENTITIES",
-    "latestLocalSnapshotUTC": "2026-11-23T06:17:07.289537+00:00"
+    "latestLocalSnapshotUTC": "2026-11-23T07:14:52.406888+00:00"
   },
   "terminalRunHistory": [
     {
@@ -614,6 +651,45 @@
       "primaryFailure": "GET_APP_CONTAINER_TIMEOUT30",
       "nestedCleanup": "FAIL",
       "finalFullIntegrity": "NOT_REACHED"
+    },
+    {
+      "id": 45116855451,
+      "sourceSHA": "68148339c275268795360d71d519a5baf003adf8",
+      "branch": "codex/chatgpt-wave15-semantic-known-simulator-20261123",
+      "url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45116855451",
+      "createdAtUTC": "2026-11-23T05:17:39Z",
+      "lastKnownStatus": "completed",
+      "conclusion": "success",
+      "observedStatusUTC": "2026-11-23T07:15:52.328178+00:00",
+      "terminalAuditOwner": "sdk_ci",
+      "watcherJob": "job_e3a5ebecd1db",
+      "lastKnownConclusion": "success"
+    },
+    {
+      "id": 45121824215,
+      "sourceSHA": "61f5c66ce1d4583c702e63634d33f35ae6fff2db",
+      "branch": "codex/chatgpt-wave15-sdk06-basename-probe-20261123",
+      "url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45121824215",
+      "createdAtUTC": "2026-11-23T06:05:31Z",
+      "lastKnownStatus": "completed",
+      "conclusion": "failure",
+      "observedStatusUTC": "2026-11-23T07:15:52.328178+00:00",
+      "terminalAuditOwner": "root",
+      "watcherJob": "job_e3a5ebecd1db",
+      "lastKnownConclusion": "failure"
+    },
+    {
+      "id": 45122453940,
+      "sourceSHA": "cb50b5a8698f3d32423dbc4b171449556fba5478",
+      "branch": "codex/chatgpt-wave15-shared-20261121",
+      "url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45122453940",
+      "createdAtUTC": "2026-11-23T06:11:26Z",
+      "lastKnownStatus": "completed",
+      "conclusion": "failure",
+      "observedStatusUTC": "2026-11-23T07:15:52.328178+00:00",
+      "terminalAuditOwner": "root",
+      "watcherJob": "job_e3a5ebecd1db",
+      "lastKnownConclusion": "failure"
     }
   ]
 }
