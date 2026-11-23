@@ -53,7 +53,7 @@ struct PinkhaMiniAppsContext {
                     length: selected.text.utf16.count, text: selected.text, blockIDs: [blockID])
             }
             // Flush the visible original edit through the same native text service before leaving.
-            if document.permissions.canEditBlocks, document.details?.isReadonly == false {
+            if !document.isLocked, document.permissions.canEditBlocks, document.details?.isReadonly == false {
                 try validateSource()
                 try await model.blockActionService.setText(contextId: document.objectId,
                     blockId: blockID, middlewareString: AttributedTextConverter.asMiddleware(attributedText: attributed))
@@ -80,7 +80,7 @@ struct PinkhaMiniAppsContext {
             "anytype.spaceID": document.spaceId,
             "anytype.blocks": String(decoding: snapshotData, as: UTF8.self)
         ]
-        if let anchor = selectedIDs.last ?? focusID ?? snapshots.last?.id {
+        if let anchor = blocks.last(where: { selectedIDs.contains($0.id) })?.id ?? focusID ?? snapshots.last?.id {
             metadata["anytype.insertionAnchor"] = anchor
         }
         let source = MiniAppSourceContext(appID: sourceAppID, displayName: "Anytype",
@@ -107,8 +107,13 @@ struct PinkhaMiniAppsContext {
                 let fileType = response.suggestedFilename.flatMap { UTType(filenameExtension: ($0 as NSString).pathExtension) }
                 let nativeType: UTType = file.contentType == .image ? .image :
                     file.contentType == .audio ? .audio : file.contentType == .video ? .video : .data
-                inputs.append(try store.importAttachment(at: local, name: response.suggestedFilename,
-                    typeIdentifier: (mimeType ?? fileType ?? nativeType).identifier))
+                let name = response.suggestedFilename
+                let typeIdentifier = (mimeType ?? fileType ?? nativeType).identifier
+                let attachment = try await Task.detached(priority: .utility) {
+                    try store.importAttachment(at: local, name: name, typeIdentifier: typeIdentifier)
+                }.value
+                try validateSource()
+                inputs.append(attachment)
             case .bookmark(let bookmark):
                 if let url = bookmark.source?.url {
                     inputs.append(.init(kind: .url, url: url, typeIdentifier: "public.url"))
