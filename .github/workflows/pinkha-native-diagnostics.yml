@@ -13,6 +13,7 @@ permissions:
 
 jobs:
   export:
+    if: ${{ inputs.source_run_id != '45087682296' }}
     runs-on: xcode-27
     timeout-minutes: 15
     steps:
@@ -52,5 +53,34 @@ jobs:
         with:
           name: Pinkha-Native-XCTest-Diagnostics
           path: Pinkha-Native-XCTest-Diagnostics.zip
+          if-no-files-found: error
+          retention-days: 14
+
+  export-any-original:
+    if: ${{ inputs.source_run_id == '45087682296' }}
+    name: Export original Any UI failure evidence
+    runs-on: xcode-27
+    timeout-minutes: 12
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout exact diagnostic source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Export only selected original failure evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+        run: python3 -B Tools/AnyEnginePort/export_original_ui_failures.py
+      - name: Preserve selected original attachments and exact export receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Any-Original-UI-Failure-Evidence-45087682296
+          path: build/original-any-ui-export/selected/
           if-no-files-found: error
           retention-days: 14
