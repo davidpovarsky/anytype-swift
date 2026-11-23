@@ -1,0 +1,35 @@
+{
+  "status": "CONFIGURATION_AND_ENTITLEMENTS_MATCH_CONTAINER_ACCESS_NOT_YET_RUN",
+  "identities": [
+    {
+      "bundle_identifier": "io.anytype.app",
+      "compilation_condition": "DEBUG",
+      "application_group": "group.io.anytype.app.dev",
+      "entitlement_section_sha256": "548a928b254f8910ebb43ea79fe9abc7e5f2fd3901b12bcc2d3ff2472f88f13c",
+      "executable_sha256": "7c0ff314c99253d92ff8904fce23035c6cfa2247b3595fb5ad3677f331322f82",
+      "bundle_role": "application"
+    },
+    {
+      "bundle_identifier": "io.anytype.app.AnytypeNotificationExtension",
+      "compilation_condition": "DEBUG",
+      "application_group": "group.io.anytype.app.dev",
+      "entitlement_section_sha256": "ecb7bf0f124a342c76053b793cf745b5a040c698936d363e5d880ba025a6053a",
+      "executable_sha256": "bbdc1396b735804f6f4928ea8300df4358497a813a773412e352fa2b0a4daa50",
+      "bundle_role": "shared_group_extension"
+    },
+    {
+      "bundle_identifier": "io.anytype.app.AnytypeShareExtension",
+      "compilation_condition": "DEBUG",
+      "application_group": "group.io.anytype.app.dev",
+      "entitlement_section_sha256": "24439f1f4b3eabb75e8865073f2ae9f25b9a582667c9952c815b9a7934683ea3",
+      "executable_sha256": "b35869d79c0844aab74f9dc762dfca5a8f30a031e86882952193ac241f1b753c",
+      "bundle_role": "shared_group_extension"
+    },
+    {
+      "bundle_identifier": "io.anytype.app.homewidget",
+      "compilation_condition": "DEBUG",
+      "executable_sha256": "6b8d6f18d33aa224deff654ec8a11591f741a62d7a4069061a38f64242c0d31e",
+      "bundle_role": "widget_without_shared_group"
+    }
+  ]
+}

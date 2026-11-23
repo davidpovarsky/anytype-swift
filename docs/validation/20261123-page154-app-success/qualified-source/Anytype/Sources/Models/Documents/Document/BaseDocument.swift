@@ -1,0 +1,522 @@
+import ProtobufMessages
+import Services
+import Combine
+import AnytypeCore
+import Foundation
+import PinkhaKit
+
+final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
+    
+    // MARK: - State from Containers
+    
+    var isLocked: Bool { infoContainer.get(id: objectId)?.isLocked ?? false }
+    var details: ObjectDetails? { detailsStorage.get(id: objectId) }
+    var objectRestrictions: ObjectRestrictions { restrictionsContainer.restrictions }
+    
+    // MARK: - Local state
+    let objectId: String
+    let spaceId: String
+    let mode: DocumentMode
+    
+    @Atomic
+    private(set) var children = [BlockInformation]()
+    @Atomic
+    private(set) var isOpened = false
+    @Atomic
+    private(set) var parsedProperties = ParsedProperties.empty
+    @Atomic
+    private(set) var permissions = ObjectPermissions()
+    @Atomic
+    private(set) var syncStatus: SpaceSyncStatus?
+    
+    let infoContainer: any InfoContainerProtocol
+    let restrictionsContainer: ObjectRestrictionsContainer
+    let detailsStorage: ObjectDetailsStorage
+    
+    private let objectLifecycleService: any ObjectLifecycleServiceProtocol
+    private let eventsListener: any EventsListenerProtocol
+    @Injected(\.propertiesBuilder)
+    private var relationBuilder: any PropertiesBuilderProtocol
+    @Injected(\.syncStatusStorage)
+    private var syncStatusStorage: any SyncStatusStorageProtocol
+    @Injected(\.historyVersionsService)
+    private var historyVersionsService: any HistoryVersionsServiceProtocol
+    private let propertyDetailsStorage: any PropertyDetailsStorageProtocol
+    private let objectTypeProvider: any ObjectTypeProviderProtocol
+    private let accountParticipantsStorage: any ParticipantsStorageProtocol
+    private let viewModelSetter: any DocumentViewModelSetterProtocol
+
+    private let basicUserInfoStorage: any BasicUserInfoStorageProtocol = Container.shared.basicUserInfoStorage()
+    
+    
+    // MARK: - Local private state
+    @Atomic
+    private var participantIsEditor: Bool = false
+    private var subscriptions = [AnyCancellable]()
+    @Atomic
+    private var parsedRelationDependedDetailsEvents = [DocumentUpdate]()
+    private var openTask: Task<Void, any Error>?
+    
+    // MARK: - Sync Handle
+    var syncPublisher: AnyPublisher<[BaseDocumentUpdate], Never> {
+        return syncSubject
+            .merge(with: Just(isOpened ? [.general] : []))
+            .filter { $0.isNotEmpty }
+            .eraseToAnyPublisher()
+    }
+    private var syncSubject = PassthroughSubject<[BaseDocumentUpdate], Never>()
+        
+    init(
+        objectId: String,
+        spaceId: String,
+        mode: DocumentMode,
+        objectLifecycleService: some ObjectLifecycleServiceProtocol,
+        propertyDetailsStorage: some PropertyDetailsStorageProtocol,
+        objectTypeProvider: some ObjectTypeProviderProtocol,
+        accountParticipantsStorage: some ParticipantsStorageProtocol,
+        eventsListener: some EventsListenerProtocol,
+        viewModelSetter: some DocumentViewModelSetterProtocol,
+        infoContainer: some InfoContainerProtocol,
+        restrictionsContainer: ObjectRestrictionsContainer,
+        detailsStorage: ObjectDetailsStorage
+    ) {
+        self.objectId = objectId
+        self.spaceId = spaceId
+        self.mode = mode
+        self.eventsListener = eventsListener
+        self.viewModelSetter = viewModelSetter
+        self.objectLifecycleService = objectLifecycleService
+        self.propertyDetailsStorage = propertyDetailsStorage
+        self.objectTypeProvider = objectTypeProvider
+        self.accountParticipantsStorage = accountParticipantsStorage
+        self.infoContainer = infoContainer
+        self.restrictionsContainer = restrictionsContainer
+        self.detailsStorage = detailsStorage
+        
+        setup()
+    }
+    
+    deinit {
+        guard mode.isHandling, isOpened, basicUserInfoStorage.usersId.isNotEmpty else { return }
+        Task.detached(priority: .userInitiated) { [objectLifecycleService, objectId, spaceId] in
+            try await objectLifecycleService.close(contextId: objectId, spaceId: spaceId)
+        }
+    }
+    
+    // MARK: - BaseDocumentProtocol
+    
+    @MainActor
+    func open() async throws {
+        switch mode {
+        case .handling:
+            guard !isOpened else { return }
+            if openTask.isNil {
+                openTask = Task { [weak self, objectId, spaceId, objectLifecycleService] in
+                    let model = try await objectLifecycleService.open(contextId: objectId, spaceId: spaceId)
+                    self?.setupView(model)
+                }
+            }
+            try await openTask?.value
+        case .preview:
+            if openTask.isNil {
+                openTask = Task { [weak self] in
+                    try await self?.updateDocumentPreview()
+                }
+            }
+            try await openTask?.value
+        case .version(let versionId):
+            if openTask.isNil {
+                openTask = Task { [weak self] in
+                    try await self?.updateDocumentVersion(versionId)
+                }
+            }
+            try await openTask?.value
+        }
+    }
+    
+    @MainActor
+    func update() async throws {
+        switch mode {
+        case .handling:
+            anytypeAssertionFailure("Document was created in `handling` mode. You can't update it")
+        case .preview:
+            try await updateDocumentPreview()
+        case .version(let versionId):
+            try await updateDocumentVersion(versionId)
+        }
+    }
+    
+    @MainActor
+    func close() async throws {
+        guard mode.isHandling, isOpened, basicUserInfoStorage.usersId.isNotEmpty else { return }
+        try await objectLifecycleService.close(contextId: objectId, spaceId: spaceId)
+        isOpened = false
+    }
+    
+    var isEmpty: Bool {
+        let filteredBlocks = children.filter { $0.isFeaturedRelations || $0.isText }
+        
+        if filteredBlocks.count > 0 { return false }
+        let allTextChilds = children.filter(\.isText)
+        
+        if allTextChilds.count > 1 { return false }
+        
+        return allTextChilds.first?.content.isEmpty ?? false
+    }
+    
+    func subscibeFor(update: [BaseDocumentUpdate]) -> AnyPublisher<[BaseDocumentUpdate], Never> {
+        return syncSubject
+            .merge(with: Just(isOpened ? update : []))
+            .map { syncUpdate in
+                if syncUpdate.contains(.general) {
+                    return update
+                }
+                return update.filter { syncUpdate.contains($0) }
+            }
+            .filter { $0.isNotEmpty }
+            .eraseToAnyPublisher()
+    }
+    
+    // MARK: - Private methods
+    
+    @MainActor
+    private func updateDocumentPreview() async throws {
+        let model = try await objectLifecycleService.openForPreview(contextId: objectId, spaceId: spaceId)
+        setupView(model)
+    }
+    
+    @MainActor
+    private func updateDocumentVersion(_ versionId: String) async throws {
+        let model = try await historyVersionsService.showVersion(objectId: objectId, versionId: versionId)
+        setupView(model)
+    }
+    
+    private func setup() {
+        eventsListener.setOnUpdateReceice({ [weak self] updates in
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+            let fence = PinkhaHeartSemanticAnchorPublication.current
+#endif
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+                if let fence {
+                    fence.withCurrentMainDelivery(spaceID: self.spaceId, objectID: self.objectId) {
+                        PinkhaHeartSemanticAnchorPublication.$current.withValue(fence) {
+#if DEBUG && targetEnvironment(simulator)
+                            PinkhaSemanticAnchorMountedObserver.documentPublished(document: self, fence: fence)
+#endif
+                            self.triggerSync(updates: updates)
+                        }
+                    }
+                    return
+                }
+#endif
+                self.triggerSync(updates: updates)
+            }
+        })
+        if mode.isHandling {
+            eventsListener.startListening()
+        }
+    }
+    
+    private func makeChildren() -> [BlockInformation] {
+        guard let model = infoContainer.get(id: objectId) else {
+            return children
+        }
+        let flat = model.flatChildrenTree(container: infoContainer)
+        var seen = Set<String>()
+        seen.reserveCapacity(flat.count)
+        var unique = [BlockInformation]()
+        unique.reserveCapacity(flat.count)
+        for info in flat {
+            if seen.insert(info.id).inserted {
+                unique.append(info)
+            }
+        }
+        if unique.count != flat.count {
+            anytypeAssertionFailure(
+                "Duplicate block ids in flat children tree",
+                info: ["objectId": objectId, "duplicates": "\(flat.count - unique.count)"]
+            )
+        }
+        return unique
+    }
+    
+    private func triggerSync(updates: [DocumentUpdate]) {
+        
+        // Notify only when document is set to prevent invalid initial state
+        guard isOpened else { return }
+        
+        var docUpdates = updates.flatMap { update -> [BaseDocumentUpdate] in
+            switch update {
+            case .general, .relationDetails:
+                return [.general]
+            case .block(let blockId):
+                return [.block(blockId: blockId)]
+            case .details(let id):
+                return [.details(id: id)]
+            case .unhandled(let blockId):
+                return [.unhandled(blockId: blockId)]
+            case .syncStatus:
+                return [.syncStatus]
+            case .restrictions, .close:
+                return [] // A lot of casese for update relations
+            }
+        }
+        
+        let permissioUpdates = triggerUpdatePermissions(updates: updates)
+        docUpdates.append(contentsOf: permissioUpdates)
+        
+        let relationUpdates = triggerUpdateRelations(updates: updates, permissionsChanged: permissioUpdates.isNotEmpty)
+        docUpdates.append(contentsOf: relationUpdates)
+        
+        if updates.contains(where: { $0 == .general || $0.isBlock }) {
+            let newChildren = makeChildren()
+            if newChildren != children {
+                children = newChildren
+                docUpdates.append(.children)
+            }
+        }
+        
+        if updates.contains(.close) {
+            isOpened = false
+        }
+        
+        if docUpdates.isNotEmpty {
+            syncSubject.send(docUpdates)
+        }
+    }
+    
+    @MainActor
+    private func setupView(_ model: ObjectViewModel) {
+        viewModelSetter.objectViewUpdate(model)
+        // Start subscription before document is marked as opened
+        setupSubscriptions()
+        isOpened = true
+        triggerSync(updates: [.general])
+    }
+
+    @MainActor
+    private func setupSubscriptions() {
+        syncStatusStorage.statusPublisher(spaceId: spaceId).sink { [weak self] info in
+            self?.syncStatus = info.status
+            self?.triggerSync(updates: [.syncStatus])
+        }.store(in: &subscriptions)
+        
+        Task { @MainActor [weak self, accountParticipantsStorage, spaceId] in
+            for await canEdit in accountParticipantsStorage.canEditSequence(spaceId: spaceId) {
+                self?.participantIsEditor = canEdit
+                self?.triggerSync(updates: [.restrictions])
+            }
+        }
+        .cancellable()
+        .store(in: &subscriptions)
+
+        let initialTypeId = details?.type.isEmpty == false ? details?.type : objectId
+        Task { [spaceId, initialTypeId] in
+            await PinkhaTorahNativePropertyCatalog.shared.ensureSpaceAndTypeReady(
+                spaceId: spaceId,
+                typeId: initialTypeId
+            )
+        }
+        .cancellable()
+        .store(in: &subscriptions)
+
+        objectTypeProvider.syncPublisher
+            .receiveOnMain()
+            .sink { [weak self] _ in
+                self?.triggerSync(updates: [.relationDetails])
+            }
+            .store(in: &subscriptions)
+        
+        NotificationCenter.default.publisher(for: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification)
+            .receiveOnMain()
+            .sink { [weak self] notification in
+                guard let self else { return }
+                if let notifiedSpace = notification.userInfo?["spaceId"] as? String,
+                   notifiedSpace != self.spaceId {
+                    return
+                }
+                self.triggerSync(updates: [.relationDetails])
+            }
+            .store(in: &subscriptions)
+
+        propertyDetailsStorage.relationsDetailsPublisher(spaceId: spaceId)
+            .receiveOnMain()
+            .sink { [weak self] details in
+                guard let self, let objectDetails = self.details else { return }
+                
+                let recommendedIds = Set(
+                    objectDetails.recommendedRelations +
+                    objectDetails.recommendedFeaturedRelations +
+                    objectDetails.recommendedHiddenRelations +
+                    objectDetails.objectType.recommendedRelations +
+                    objectDetails.objectType.recommendedFeaturedRelations +
+                    objectDetails.objectType.recommendedHiddenRelations
+                )
+                let valueKeys = Set(objectDetails.values.map(\.key) + objectDetails.featuredRelations)
+                let contains = details.contains {
+                    valueKeys.contains($0.key) ||
+                    recommendedIds.contains($0.id) ||
+                    TorahNativePropertyDefinition.definition(for: $0.key) != nil
+                }
+                if contains {
+                    triggerSync(updates: [.relationDetails])
+                }
+            }
+            .store(in: &subscriptions)
+    }
+    
+    private func triggerUpdateRelations(updates: [DocumentUpdate], permissionsChanged: Bool) -> [BaseDocumentUpdate] {
+        guard let details else { return [] }
+        
+        var updatesForRelations: [DocumentUpdate] = [.general, .relationDetails, .details(id: objectId)]
+        updatesForRelations.append(contentsOf: parsedRelationDependedDetailsEvents)
+        updatesForRelations.append(.details(id: details.type))
+        
+        guard updates.contains(where: { updatesForRelations.contains($0) }) || permissionsChanged else { return [] }
+
+        if updates.contains(.details(id: objectId)), !details.type.isEmpty {
+            let currentSpaceId = spaceId
+            let currentTypeId = details.type
+            Task {
+                await PinkhaTorahNativePropertyCatalog.shared.ensureSpaceAndTypeReady(
+                    spaceId: currentSpaceId,
+                    typeId: currentTypeId
+                )
+            }
+        }
+
+        guard let newRelations = buildRelations(details: details) else { return [] }
+        
+        let dependedObjectIds = newRelations.all.flatMap(\.dependedObjects)
+        parsedRelationDependedDetailsEvents = dependedObjectIds.map { .details(id: $0) }
+        if parsedProperties != newRelations {
+            parsedProperties = newRelations
+            return [.relations]
+        }
+        
+        return []
+    }
+    
+    private func buildRelations(details: ObjectDetails) -> ParsedProperties? {
+        if details.isTemplate {
+            return buildRelationsForTemplate(details: details)
+        } else {
+            return buildRelationsForObject(details: details)
+        }
+    }
+    
+    private func buildRelationsForTemplate(details: ObjectDetails) -> ParsedProperties? {
+        guard let targetObjectType = try? objectTypeProvider.objectType(id: details.targetObjectType) else {
+            return nil
+        }
+        
+        let objectKeys = details.values.map(\.key).filter { key in
+            TorahNativePropertyDefinition.definition(for: key) == nil || details.stringArrayValue(for: TorahNativePropertyDefinition.attachedPropertiesKey).contains(key)
+        }
+        let objectRelations = propertyDetailsStorage.relationsDetails(keys: objectKeys, spaceId: spaceId)
+        
+        let objectFeaturedRelations = propertyDetailsStorage.relationsDetails(
+            ids:  details.featuredRelations, spaceId: spaceId
+        )
+
+        let typeRelIds = PinkhaTorahNativePropertyCatalog.shared.resolvedTypeRelationIds(
+            typeId: targetObjectType.id,
+            fallbackRecommended: targetObjectType.recommendedRelations,
+            fallbackFeatured: targetObjectType.recommendedFeaturedRelations,
+            fallbackHidden: targetObjectType.recommendedHiddenRelations,
+            spaceId: spaceId
+        )
+
+        let recommendedRelations = PinkhaTorahNativePropertyCatalog.shared.resolveRelationDetails(
+            ids: typeRelIds.recommended, from: propertyDetailsStorage, spaceId: spaceId
+        )
+        
+        let recommendedFeaturedRelations = PinkhaTorahNativePropertyCatalog.shared.resolveRelationDetails(
+            ids: typeRelIds.featured, from: propertyDetailsStorage, spaceId: spaceId
+        )
+        
+        let recommendedHiddenRelations = PinkhaTorahNativePropertyCatalog.shared.resolveRelationDetails(
+            ids: typeRelIds.hidden, from: propertyDetailsStorage, spaceId: spaceId
+        )
+        
+        return relationBuilder.parsedProperties(
+            objectProperties: objectRelations,
+            objectFeaturedProperties: objectFeaturedRelations,
+            recommendedProperties: recommendedRelations,
+            recommendedFeaturedProperties: recommendedFeaturedRelations,
+            recommendedHiddenProperties: recommendedHiddenRelations,
+            objectId: objectId,
+            propertyValuesIsLocked: !permissions.canEditRelationValues,
+            storage: detailsStorage
+        )
+    }
+    
+    private func buildRelationsForObject(details: ObjectDetails) -> ParsedProperties {
+        let objectKeys = details.values.map(\.key).filter { key in
+            TorahNativePropertyDefinition.definition(for: key) == nil || details.stringArrayValue(for: TorahNativePropertyDefinition.attachedPropertiesKey).contains(key)
+        }
+        let objectRelations = propertyDetailsStorage.relationsDetails(keys: objectKeys, spaceId: spaceId)
+        
+        let objectFeaturedRelations = propertyDetailsStorage.relationsDetails(
+            keys: details.featuredRelations, spaceId: spaceId
+        )
+
+        let typeRelIds = PinkhaTorahNativePropertyCatalog.shared.resolvedTypeRelationIds(
+            typeId: details.objectType.id,
+            fallbackRecommended: details.objectType.recommendedRelations,
+            fallbackFeatured: details.objectType.recommendedFeaturedRelations,
+            fallbackHidden: details.objectType.recommendedHiddenRelations,
+            spaceId: spaceId
+        )
+
+        let recommendedRelations = PinkhaTorahNativePropertyCatalog.shared.resolveRelationDetails(
+            ids: typeRelIds.recommended, from: propertyDetailsStorage, spaceId: spaceId
+        )
+        
+        let recommendedFeaturedRelations = PinkhaTorahNativePropertyCatalog.shared.resolveRelationDetails(
+            ids: typeRelIds.featured, from: propertyDetailsStorage, spaceId: spaceId
+        )
+        
+        let recommendedHiddenRelations = PinkhaTorahNativePropertyCatalog.shared.resolveRelationDetails(
+            ids: typeRelIds.hidden, from: propertyDetailsStorage, spaceId: spaceId
+        )
+        
+        let attachedNative = objectRelations.filter { TorahNativePropertyDefinition.definition(for: $0.key) != nil }
+        let attachedIds = Set(attachedNative.map(\.id))
+        let visibleRecommended = recommendedRelations + attachedNative.filter { property in
+            !recommendedRelations.contains { $0.id == property.id } && !recommendedFeaturedRelations.contains { $0.id == property.id }
+        }
+        return relationBuilder.parsedProperties(
+            objectProperties: objectRelations,
+            objectFeaturedProperties: objectFeaturedRelations,
+            recommendedProperties: visibleRecommended,
+            recommendedFeaturedProperties: recommendedFeaturedRelations,
+            recommendedHiddenProperties: recommendedHiddenRelations.filter { !attachedIds.contains($0.id) },
+            objectId: objectId,
+            propertyValuesIsLocked: !permissions.canEditRelationValues,
+            storage: detailsStorage
+        )
+    }
+    
+    private func triggerUpdatePermissions(updates: [DocumentUpdate]) -> [BaseDocumentUpdate] {
+        let updatesForPermissions: [DocumentUpdate] = [.general, .details(id: objectId), .block(blockId: objectId), .restrictions]
+        guard updates.contains(where: { updatesForPermissions.contains($0) }) else { return [] }
+        
+        let newPermissios = ObjectPermissions(
+            details: details ?? ObjectDetails(id: ""),
+            isLocked: isLocked,
+            participantCanEdit: participantIsEditor, 
+            isVersionMode: mode.isVersion,
+            objectRestrictions: objectRestrictions.objectRestriction
+        )
+        
+        if permissions != newPermissios {
+            permissions = newPermissios
+            return [.permissions]
+        }
+        
+        return []
+    }
+}
