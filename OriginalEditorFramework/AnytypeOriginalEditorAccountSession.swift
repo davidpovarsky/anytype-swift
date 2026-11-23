@@ -103,6 +103,20 @@ public final class AnytypeOriginalEditorAccountSession {
         try validateCurrent()
         return selection
     }
+
+    /// Narrow a real Host saved-source lifetime with this SAME already-selected
+    /// runtime attempt. The original frozen tokens must still match; display
+    /// identities cannot replace a retired account/selection/permission capture.
+    internal func originalAnnotationImportSourceBinding(
+        lifetime: EditorDocumentWriteLifetime,
+        sourceIsCurrent: @escaping @MainActor () -> Bool
+    ) throws -> EditorDocumentWriteSourceBinding {
+        try validateCurrent()
+        return try owner.makeAnnotationImportSourceBinding(
+            session: self, selection: selection,
+            sourceLifetime: lifetime, sourceIsCurrent: sourceIsCurrent
+        )
+    }
 }
 
 /// One immutable original middleware/environment installation per process.
@@ -558,6 +572,47 @@ internal final class OriginalEditorAccountRuntimeAttempt {
         guard selectedSession === session, !isClosing, !isClosed else {
             throw AnytypeOriginalEditorAccountSession.SessionError.retired
         }
+    }
+
+    fileprivate func makeAnnotationImportSourceBinding(
+        session: AnytypeOriginalEditorAccountSession,
+        selection: OriginalActiveSpaceSelection,
+        sourceLifetime: EditorDocumentWriteLifetime,
+        sourceIsCurrent: @escaping @MainActor () -> Bool
+    ) throws -> EditorDocumentWriteSourceBinding {
+        try validate(session: session, selection: selection)
+        try capture.validate()
+        // selectOriginalSpace freezes exactly account, selection, participant
+        // and Space-view captures before the original schema registration.
+        guard selectionRestrictions.count == 4,
+              let originalAccount = selectionRestrictions.first,
+              let actualAccount = Container.shared.accountManager().editorWriteLifetime,
+              actualAccount === originalAccount.source else {
+            throw AnytypeOriginalEditorAccountSession.SessionError.originalServiceUnavailable
+        }
+        let frozen = [capture] + selectionRestrictions
+        for restriction in frozen { try restriction.validate() }
+        let binding = try EditorDocumentWriteSourceBinding(
+            lifetime: sourceLifetime,
+            accountLifetime: actualAccount,
+            additionalLifetimes: frozen.map(\.source),
+            isCurrent: {
+                guard (try? session.validateCurrent()) != nil else { return false }
+                return sourceIsCurrent()
+            }
+        )
+        // This constructor observes existing lifetimes. Require every observed
+        // token to equal the already-held original token; a later generation
+        // that looks like the same account/Space can never be recaptured here.
+        for restriction in frozen {
+            guard binding.captures.contains(where: {
+                $0.source === restriction.source && $0.token == restriction.token
+            }) else {
+                throw AnytypeOriginalEditorAccountSession.SessionError.retired
+            }
+        }
+        try binding.validate()
+        return binding
     }
 
     private func reportFailure(_ error: any Error) {
