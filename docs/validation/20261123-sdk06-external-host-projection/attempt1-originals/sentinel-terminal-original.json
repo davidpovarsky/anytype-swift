@@ -1,0 +1,36 @@
+{
+  "content": [
+    {
+      "text": "{\"ok\":true,\"job\":{\"id\":\"job_dacee38d6ea4\",\"type\":\"job_result\",\"source\":\"script_run@host_7ec8382e82747448\",\"severity\":\"warning\",\"tool\":\"script_run\",\"host\":\"host_7ec8382e82747448\",\"status\":\"failed\",\"exit_code\":1,\"created_at\":1795450769.9695287,\"started_at\":\"2026-11-23T16:19:30.048676+00:00\",\"finished_at\":\"2026-11-23T16:19:31.797465+00:00\",\"duration_s\":1.75,\"error\":null,\"output_truncated\":false,\"timeout_s\":120,\"read\":false,\"notified\":{\"telegram\":null,\"resend\":null},\"notify_spec\":{},\"output\":\"{\\\"buildsRequested\\\": 0, \\\"cleanupFailure\\\": null, \\\"cleanupObservations\\\": [], \\\"elapsed\\\": 0.5171216586604714, \\\"finalFree\\\": 2611621888, \\\"newMethodsRequested\\\": 1, \\\"oldMethodsRequested\\\": 0, \\\"ownedGroupAbsent\\\": true, \\\"pgid\\\": 2946658, \\\"pid\\\": 2946658, \\\"primaryFailure\\\": {\\\"message\\\": \\\"('control_exit', 1)\\\", \\\"traceback\\\": \\\"Traceback (most recent call last):\\\\n  File \\\\\\\"/mnt/development/projects/diagnostics/sdk06-external-host-projection-launch-20261123.py\\\\\\\", line 57, in <module>\\\\n    assert rc==0,(\\\\\\\"control_exit\\\\\\\",rc)\\\\n           ^^^^^\\\\nAssertionError: ('control_exit', 1)\\\\n\\\", \\\"type\\\": \\\"AssertionError\\\"}, \\\"productMethodsRequested\\\": 0, \\\"returncode\\\": 1, \\\"source\\\": \\\"145648c8388bdd01db9023e447f42fee3cfbcb20\\\", \\\"startFree\\\": 2613768192, \\\"status\\\": \\\"FAIL\\\", \\\"wrapperSHA256\\\": \\\"4a1da2bc4bf5a278a9e7d1c3348da296f490fa45a0ea1ad3c5703b5ec64b0ab2\\\"}\\nThe exact new SDK control did not qualify; preserve originals\\r\\nAt C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_1a282f504c1845bbb555c00c8b47a3fc\\\\script.ps1:10 \\r\\nchar:25\\r\\n+ ... CODE -ne 0){throw 'The exact new SDK control did not qualify; preserv ...\\r\\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\r\\n    + CategoryInfo          : OperationStopped: (The exact new S...serve originals:String) [], RuntimeException\\r\\n    + FullyQualifiedErrorId : The exact new SDK control did not qualify; preserve originals\"}}",
+      "type": "text"
+    }
+  ],
+  "isError": false,
+  "structuredContent": {
+    "job": {
+      "created_at": 1795450769.9695287,
+      "duration_s": 1.75,
+      "error": null,
+      "exit_code": 1,
+      "finished_at": "2026-11-23T16:19:31.797465+00:00",
+      "host": "host_7ec8382e82747448",
+      "id": "job_dacee38d6ea4",
+      "notified": {
+        "resend": null,
+        "telegram": null
+      },
+      "notify_spec": {},
+      "output": "{\"buildsRequested\": 0, \"cleanupFailure\": null, \"cleanupObservations\": [], \"elapsed\": 0.5171216586604714, \"finalFree\": 2611621888, \"newMethodsRequested\": 1, \"oldMethodsRequested\": 0, \"ownedGroupAbsent\": true, \"pgid\": 2946658, \"pid\": 2946658, \"primaryFailure\": {\"message\": \"('control_exit', 1)\", \"traceback\": \"Traceback (most recent call last):\\n  File \\\"/mnt/development/projects/diagnostics/sdk06-external-host-projection-launch-20261123.py\\\", line 57, in <module>\\n    assert rc==0,(\\\"control_exit\\\",rc)\\n           ^^^^^\\nAssertionError: ('control_exit', 1)\\n\", \"type\": \"AssertionError\"}, \"productMethodsRequested\": 0, \"returncode\": 1, \"source\": \"145648c8388bdd01db9023e447f42fee3cfbcb20\", \"startFree\": 2613768192, \"status\": \"FAIL\", \"wrapperSHA256\": \"4a1da2bc4bf5a278a9e7d1c3348da296f490fa45a0ea1ad3c5703b5ec64b0ab2\"}\nThe exact new SDK control did not qualify; preserve originals\r\nAt C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_1a282f504c1845bbb555c00c8b47a3fc\\script.ps1:10 \r\nchar:25\r\n+ ... CODE -ne 0){throw 'The exact new SDK control did not qualify; preserv ...\r\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (The exact new S...serve originals:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : The exact new SDK control did not qualify; preserve originals",
+      "output_truncated": false,
+      "read": false,
+      "severity": "warning",
+      "source": "script_run@host_7ec8382e82747448",
+      "started_at": "2026-11-23T16:19:30.048676+00:00",
+      "status": "failed",
+      "timeout_s": 120,
+      "tool": "script_run",
+      "type": "job_result"
+    },
+    "ok": true
+  }
+}

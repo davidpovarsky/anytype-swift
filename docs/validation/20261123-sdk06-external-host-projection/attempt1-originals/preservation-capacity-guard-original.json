@@ -1,0 +1,31 @@
+{
+  "content": [
+    {
+      "text": "{\"ok\":false,\"interpreter\":\"powershell\",\"sudo\":false,\"cwd\":null,\"cleanup\":true,\"command\":[\"C:\\\\WINDOWS\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.EXE\",\"-NoProfile\",\"-NonInteractive\",\"-ExecutionPolicy\",\"Bypass\",\"-File\",\"C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_8980525c9141464e9da1b254498429d9\\\\sentinelx_bootstrap.ps1\",\"C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_8980525c9141464e9da1b254498429d9\\\\script.ps1\"],\"output\":\"Traceback (most recent call last):\\n  File \\\"<stdin>\\\", line 36, in <module>\\n  File \\\"<stdin>\\\", line 12, in put\\n  File \\\"<stdin>\\\", line 10, in guard\\nAssertionError\\npreservation failed\\r\\nAt C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_8980525c9141464e9da1b254498429d9\\\\script.ps1:58 \\r\\nchar:25\\r\\n+ if($LASTEXITCODE -ne 0){throw 'preservation failed'}\\r\\n+                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~\\r\\n    + CategoryInfo          : OperationStopped: (preservation failed:String) [], RuntimeException\\r\\n    + FullyQualifiedErrorId : preservation failed\",\"duration\":1.76,\"returncode\":1,\"_notice\":\"You have 12 unread SentinelX notification(s) (job results and/or announcements). Call notifications_check to read them.\",\"hub_request_id\":\"hreq_72d5598213044b22\"}",
+      "type": "text"
+    }
+  ],
+  "isError": false,
+  "structuredContent": {
+    "_notice": "You have 12 unread SentinelX notification(s) (job results and/or announcements). Call notifications_check to read them.",
+    "cleanup": true,
+    "command": [
+      "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_8980525c9141464e9da1b254498429d9\\sentinelx_bootstrap.ps1",
+      "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_8980525c9141464e9da1b254498429d9\\script.ps1"
+    ],
+    "cwd": null,
+    "duration": 1.76,
+    "hub_request_id": "hreq_72d5598213044b22",
+    "interpreter": "powershell",
+    "ok": false,
+    "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 36, in <module>\n  File \"<stdin>\", line 12, in put\n  File \"<stdin>\", line 10, in guard\nAssertionError\npreservation failed\r\nAt C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_8980525c9141464e9da1b254498429d9\\script.ps1:58 \r\nchar:25\r\n+ if($LASTEXITCODE -ne 0){throw 'preservation failed'}\r\n+                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (preservation failed:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : preservation failed",
+    "returncode": 1,
+    "sudo": false
+  }
+}

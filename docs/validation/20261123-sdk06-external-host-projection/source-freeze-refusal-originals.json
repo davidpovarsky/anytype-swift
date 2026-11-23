@@ -1,0 +1,122 @@
+{
+  "first_seal_capacity_refusal": {
+    "content": [
+      {
+        "text": "{\"ok\":false,\"interpreter\":\"powershell\",\"sudo\":false,\"cwd\":null,\"cleanup\":true,\"command\":[\"C:\\\\WINDOWS\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.EXE\",\"-NoProfile\",\"-NonInteractive\",\"-ExecutionPolicy\",\"Bypass\",\"-File\",\"C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_8980525c9141464e9da1b254498429d9\\\\sentinelx_bootstrap.ps1\",\"C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_8980525c9141464e9da1b254498429d9\\\\script.ps1\"],\"output\":\"Traceback (most recent call last):\\n  File \\\"<stdin>\\\", line 36, in <module>\\n  File \\\"<stdin>\\\", line 12, in put\\n  File \\\"<stdin>\\\", line 10, in guard\\nAssertionError\\npreservation failed\\r\\nAt C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_8980525c9141464e9da1b254498429d9\\\\script.ps1:58 \\r\\nchar:25\\r\\n+ if($LASTEXITCODE -ne 0){throw 'preservation failed'}\\r\\n+                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~\\r\\n    + CategoryInfo          : OperationStopped: (preservation failed:String) [], RuntimeException\\r\\n    + FullyQualifiedErrorId : preservation failed\",\"duration\":1.76,\"returncode\":1,\"_notice\":\"You have 12 unread SentinelX notification(s) (job results and/or announcements). Call notifications_check to read them.\",\"hub_request_id\":\"hreq_72d5598213044b22\"}",
+        "type": "text"
+      }
+    ],
+    "isError": false,
+    "structuredContent": {
+      "_notice": "You have 12 unread SentinelX notification(s) (job results and/or announcements). Call notifications_check to read them.",
+      "cleanup": true,
+      "command": [
+        "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_8980525c9141464e9da1b254498429d9\\sentinelx_bootstrap.ps1",
+        "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_8980525c9141464e9da1b254498429d9\\script.ps1"
+      ],
+      "cwd": null,
+      "duration": 1.76,
+      "hub_request_id": "hreq_72d5598213044b22",
+      "interpreter": "powershell",
+      "ok": false,
+      "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 36, in <module>\n  File \"<stdin>\", line 12, in put\n  File \"<stdin>\", line 10, in guard\nAssertionError\npreservation failed\r\nAt C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_8980525c9141464e9da1b254498429d9\\script.ps1:58 \r\nchar:25\r\n+ if($LASTEXITCODE -ne 0){throw 'preservation failed'}\r\n+                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (preservation failed:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : preservation failed",
+      "returncode": 1,
+      "sudo": false
+    }
+  },
+  "preceding_full_raw_log_lint_stop": {
+    "content": [
+      {
+        "text": "{\"ok\":false,\"interpreter\":\"powershell\",\"sudo\":false,\"cwd\":null,\"cleanup\":true,\"command\":[\"C:\\\\WINDOWS\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.EXE\",\"-NoProfile\",\"-NonInteractive\",\"-ExecutionPolicy\",\"Bypass\",\"-File\",\"C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_6eb7601ecbbd4c899398e7243ecb7c88\\\\sentinelx_bootstrap.ps1\",\"C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_6eb7601ecbbd4c899398e7243ecb7c88\\\\script.ps1\"],\"output\":\"Traceback (most recent call last):\\n  File \\\"<stdin>\\\", line 71, in <module>\\n  File \\\"<stdin>\\\", line 31, in commit\\n  File \\\"<stdin>\\\", line 13, in git\\n  File \\\"/usr/lib/python3.12/subprocess.py\\\", line 466, in check_output\\n    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,\\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \\\"/usr/lib/python3.12/subprocess.py\\\", line 571, in run\\n    raise CalledProcessError(retcode, process.args,\\nsubprocess.CalledProcessError: Command '['git', '-C', '/mnt/development/projects/worktrees/anytype-wave15-sdk-external-host-projection-20261123', 'diff', '--cached', '--check']' returned non-zero exit status 2.\\nsource-only failure preservation/fixture freeze failed\\r\\nAt C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_6eb7601ecbbd4c899398e7243ecb7c88\\\\script.ps1:136 \\r\\nchar:25\\r\\n+ ... CODE -ne 0){throw 'source-only failure preservation/fixture freeze fa ...\\r\\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\r\\n    + CategoryInfo          : OperationStopped: (source-only fai...e freeze failed:String) [], RuntimeException\\r\\n    + FullyQualifiedErrorId : source-only failure preservation/fixture freeze failed\",\"duration\":1.69,\"returncode\":1,\"hub_request_id\":\"hreq_67758d47e4264a09\"}",
+        "type": "text"
+      }
+    ],
+    "isError": false,
+    "structuredContent": {
+      "cleanup": true,
+      "command": [
+        "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_6eb7601ecbbd4c899398e7243ecb7c88\\sentinelx_bootstrap.ps1",
+        "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_6eb7601ecbbd4c899398e7243ecb7c88\\script.ps1"
+      ],
+      "cwd": null,
+      "duration": 1.69,
+      "hub_request_id": "hreq_67758d47e4264a09",
+      "interpreter": "powershell",
+      "ok": false,
+      "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 71, in <module>\n  File \"<stdin>\", line 31, in commit\n  File \"<stdin>\", line 13, in git\n  File \"/usr/lib/python3.12/subprocess.py\", line 466, in check_output\n    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/subprocess.py\", line 571, in run\n    raise CalledProcessError(retcode, process.args,\nsubprocess.CalledProcessError: Command '['git', '-C', '/mnt/development/projects/worktrees/anytype-wave15-sdk-external-host-projection-20261123', 'diff', '--cached', '--check']' returned non-zero exit status 2.\nsource-only failure preservation/fixture freeze failed\r\nAt C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_6eb7601ecbbd4c899398e7243ecb7c88\\script.ps1:136 \r\nchar:25\r\n+ ... CODE -ne 0){throw 'source-only failure preservation/fixture freeze fa ...\r\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (source-only fai...e freeze failed:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : source-only failure preservation/fixture freeze failed",
+      "returncode": 1,
+      "sudo": false
+    }
+  },
+  "previous_original_log_check": {
+    "content": [
+      {
+        "text": "{\"ok\":true,\"interpreter\":\"powershell\",\"sudo\":false,\"cwd\":null,\"cleanup\":true,\"command\":[\"C:\\\\WINDOWS\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.EXE\",\"-NoProfile\",\"-NonInteractive\",\"-ExecutionPolicy\",\"Bypass\",\"-File\",\"C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_4e2ba530b22d4f618238a4ff0c6f7666\\\\sentinelx_bootstrap.ps1\",\"C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_4e2ba530b22d4f618238a4ff0c6f7666\\\\script.ps1\"],\"output\":\"{\\\"returncode\\\": 2, \\\"stdout\\\": \\\"docs/validation/20261123-sdk06-external-host-projection/attempt1-originals/attempt1/original-tests.log:1: trailing whitespace.\\\\n+test_actual_link_carriers_build_only_host_and_frozen_workspace (test_sdk06_external_host_projection.SDK06ExternalHostProjectionControl.test_actual_link_carriers_build_only_host_and_frozen_workspace) ... \\\\n\\\", \\\"stderr\\\": \\\"\\\", \\\"free\\\": 2063978496, \\\"head\\\": \\\"145648c8388bdd01db9023e447f42fee3cfbcb20\\\"}\",\"duration\":1.6,\"returncode\":0}",
+        "type": "text"
+      }
+    ],
+    "isError": false,
+    "structuredContent": {
+      "cleanup": true,
+      "command": [
+        "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_4e2ba530b22d4f618238a4ff0c6f7666\\sentinelx_bootstrap.ps1",
+        "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_4e2ba530b22d4f618238a4ff0c6f7666\\script.ps1"
+      ],
+      "cwd": null,
+      "duration": 1.6,
+      "interpreter": "powershell",
+      "ok": true,
+      "output": "{\"returncode\": 2, \"stdout\": \"docs/validation/20261123-sdk06-external-host-projection/attempt1-originals/attempt1/original-tests.log:1: trailing whitespace.\\n+test_actual_link_carriers_build_only_host_and_frozen_workspace (test_sdk06_external_host_projection.SDK06ExternalHostProjectionControl.test_actual_link_carriers_build_only_host_and_frozen_workspace) ... \\n\", \"stderr\": \"\", \"free\": 2063978496, \"head\": \"145648c8388bdd01db9023e447f42fee3cfbcb20\"}",
+      "returncode": 0,
+      "sudo": false
+    }
+  },
+  "source_two_gb_refusal": {
+    "content": [
+      {
+        "text": "{\"ok\":false,\"interpreter\":\"powershell\",\"sudo\":false,\"cwd\":null,\"cleanup\":true,\"command\":[\"C:\\\\WINDOWS\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.EXE\",\"-NoProfile\",\"-NonInteractive\",\"-ExecutionPolicy\",\"Bypass\",\"-File\",\"C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_4a2b090cbf524450867ae2adf07ba098\\\\sentinelx_bootstrap.ps1\",\"C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_4a2b090cbf524450867ae2adf07ba098\\\\script.ps1\"],\"output\":\"Traceback (most recent call last):\\n  File \\\"<stdin>\\\", line 36, in <module>\\n  File \\\"<stdin>\\\", line 17, in guard\\nAssertionError\\nsource freeze resume stopped; preserve state\\r\\nAt C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_4a2b090cbf524450867ae2adf07ba098\\\\script.ps1:118 \\r\\nchar:25\\r\\n+ ... EXITCODE -ne 0){throw 'source freeze resume stopped; preserve state'}\\r\\n+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\r\\n    + CategoryInfo          : OperationStopped: (source freeze r... preserve state:String) [], RuntimeException\\r\\n    + FullyQualifiedErrorId : source freeze resume stopped; preserve state\",\"duration\":1.01,\"returncode\":1,\"hub_request_id\":\"hreq_4e9dc6b9122343eb\"}",
+        "type": "text"
+      }
+    ],
+    "isError": false,
+    "structuredContent": {
+      "cleanup": true,
+      "command": [
+        "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_4a2b090cbf524450867ae2adf07ba098\\sentinelx_bootstrap.ps1",
+        "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_4a2b090cbf524450867ae2adf07ba098\\script.ps1"
+      ],
+      "cwd": null,
+      "duration": 1.01,
+      "hub_request_id": "hreq_4e9dc6b9122343eb",
+      "interpreter": "powershell",
+      "ok": false,
+      "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 36, in <module>\n  File \"<stdin>\", line 17, in guard\nAssertionError\nsource freeze resume stopped; preserve state\r\nAt C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_4a2b090cbf524450867ae2adf07ba098\\script.ps1:118 \r\nchar:25\r\n+ ... EXITCODE -ne 0){throw 'source freeze resume stopped; preserve state'}\r\n+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (source freeze r... preserve state:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : source freeze resume stopped; preserve state",
+      "returncode": 1,
+      "sudo": false
+    }
+  }
+}

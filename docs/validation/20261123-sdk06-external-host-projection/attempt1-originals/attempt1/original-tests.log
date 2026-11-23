@@ -1,0 +1,21 @@
+test_actual_link_carriers_build_only_host_and_frozen_workspace (test_sdk06_external_host_projection.SDK06ExternalHostProjectionControl.test_actual_link_carriers_build_only_host_and_frozen_workspace) ... 
+  test_actual_link_carriers_build_only_host_and_frozen_workspace (test_sdk06_external_host_projection.SDK06ExternalHostProjectionControl.test_actual_link_carriers_build_only_host_and_frozen_workspace) (scope='exact_observed_workspace_tree_is_frozen_before_build') ... FAIL
+
+======================================================================
+FAIL: test_actual_link_carriers_build_only_host_and_frozen_workspace (test_sdk06_external_host_projection.SDK06ExternalHostProjectionControl.test_actual_link_carriers_build_only_host_and_frozen_workspace) (scope='exact_observed_workspace_tree_is_frozen_before_build')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk-external-host-projection-20261123/Tools/PinkhaSimulatorGate/test_sdk06_external_host_projection.py", line 156, in test_actual_link_carriers_build_only_host_and_frozen_workspace
+    self.assertEqual(actual[name], expected[name], name)
+AssertionError: {'kind': 'directory', 'mode': 1517, 'bytes': 0} != {'kind': 'directory', 'mode': 493, 'bytes': 0}
+- {'bytes': 0, 'kind': 'directory', 'mode': 1517}
+?                                           ^^^^
+
++ {'bytes': 0, 'kind': 'directory', 'mode': 493}
+?                                           ^^^
+ : Source/SDK06PendingComponents.xcodeproj
+
+----------------------------------------------------------------------
+Ran 1 test in 0.167s
+
+FAILED (failures=1)
