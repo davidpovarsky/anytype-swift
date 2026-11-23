@@ -1,0 +1,13 @@
+# Native Page capture and cold process reopen: two actual methods passed
+
+Executed source: 43babda573466d9c0f85a98ee4b2d6cb70fdb17a. Candidate154 manifest: 2f76212f9fcd749aeb9e806b941e0fd0b54eba17e5cc842adb81c7eb3bae0f38. Binary: ad6872c62bfed92a087d8d6e35b0284306b547ace48ea0b0c186c595d4725d02.
+
+The selected methods TestSemanticAnchorNativePageCaptureAndWire and TestSemanticAnchorNativePageColdReopen each emitted an actual named run/pass and package pass. They ran as different native process IDs [33558, 33641], against one owned disposable LocalOnly account and persisted store. Both phases stopped the native account; no previous qualified method was rerun.
+
+The first phase refused changed full text, an unselected changed mark, and an unknown authority field without appending native history. The accepted byte-service request added one native semantic link mark, preserved the complete block with explicit empty Restrictions, returned the actual native ResponseEvent, and verified/decrypted the exact signed stored native change through the original decoder. The second process recovered the same private account, selected it, reopened the Space, read the same complete anchored block and signed change, and refused the duplicate identity without history changes.
+
+The profile is the pinned existing ARM64 Alpine/musl image, official Go1.26.5 archive, exact Tantivy archive, module files and genproto replacement recorded in build.json/toolchain.json. The container was disconnected from all Docker networks; the controller verified loopback-only interfaces. Source154 and binary hashes were rechecked after each phase. Whitelisted original Go event metadata (without Output) and each private raw-log SHA are preserved. Wallet secrets, raw stdout and account stores remain private.
+
+All original failures remain separate. Attempt4 really failed because unchanged Base.Diff materializes absent Restrictions as an empty message; this candidate initializes explicit empty Restrictions exactly as upstream text fixtures do. The full-block assertion was retained. This PASS does not assert preservation of raw absent/present-empty message identity for arbitrary preexisting blocks. Attempt5 was blocked before compilation by the original AccountStop metrics file in the source cwd; runtime files now use private phase directories. The initial attempt6 outer launcher expired before tests; the qualified binary was continued without rebuilding.
+
+Native Page Apply and process reopen are PASS in this scope. Apple generated SDK symbol, Swift adapter callability and mounted editor acceptance remain NOT_RUN. App capability remains OFF.
