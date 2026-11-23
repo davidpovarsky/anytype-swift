@@ -1,0 +1,59 @@
+{
+  "observedUTC": "2026-11-23T03:58:12.370981+00:00",
+  "status": "SOURCE_INTEGRATION_REVIEW_COMPLETED_ADDITIONAL_DISPATCH_GATES_PENDING",
+  "integrations": [
+    {
+      "original": "e71244d5810e8c64b2450e9e485c2bb34dc842b2",
+      "integrated": "0a034a1e5e3e0156e09aca91df28815af0e23d03"
+    },
+    {
+      "original": "bc29685e6fdd842023b9045908d9c5622827dfc8",
+      "integrated": "5bd91d688321944f98620dd22936e25b11744761"
+    },
+    {
+      "original": "a8da1d1e7960e087ede4613d6d1163a6358e699c",
+      "integrated": "c7799120a4d65878d245c084ef7baee22c9c0b1b"
+    }
+  ],
+  "mappedSharedSources": [
+    {
+      "mappedFrom": "AnyTypeTests/Pinkha/TorahT5RuntimePairTests.swift",
+      "path": "Tools/PinkhaSimulatorGate/t5_remaining_freshness.py",
+      "oldBlob": "d389a64559a922a395018b9f1c97c91d57773d46",
+      "newBlob": "3c7d0d1b520f1794c1f940a7670a2ef843841839"
+    },
+    {
+      "mappedFrom": "AnyTypeTests/Pinkha/TorahT5RuntimePairTests.swift",
+      "path": "Tools/PinkhaSimulatorGate/coherent_heart_release.py",
+      "oldBlob": "fc4b0be2824d45bff024c02be1f97b09ec4061ea",
+      "newBlob": "cfd3d7362a958127cf0d3da5346ae94fda75c9f5"
+    }
+  ],
+  "releaseOriginalEvidence": {
+    "sourceFilesMatchedGit": 7,
+    "defaultFunctionsByteIdentical": 15,
+    "controlCatalog": 5,
+    "earlierFourPassOneFailPreserved": true,
+    "wholeMacRestore": "NOT_RUN",
+    "actualProductMethods": "NOT_RUN",
+    "remainingReview": "Exact attempt2 tested-source recovery plus one new final intent-path control"
+  },
+  "mountedCleanup": {
+    "originalEvidenceFilesVerified": 7,
+    "sourceInputsMatchedGit": 8,
+    "newAdapterControlsPassed": 4,
+    "originalPolicyBodyBytesAndASTEqual": true,
+    "previousMountedControlsRetained": 14,
+    "previousPolicyControlsRetained": 9,
+    "sourcePlanSHA256": "19806530ea3f492ff221efac5a5430ec46893fb7066bf5294afaa06a390ad42f",
+    "actualMacCleanup": "NOT_RUN"
+  },
+  "dispatchBlockers": [
+    "Release new durable preflight ownership adapter and its controls",
+    "Release final intent-path control and exact evidence lineage",
+    "Mounted original consumer artifact concrete admission"
+  ],
+  "rootProductTestReruns": 0,
+  "currentSharedAppAcceptance": "NOT_CLAIMED",
+  "fullReleaseAcceptance": "NOT_CLAIMED"
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "pinkha-any-native-ui-cancelled-build-audit-v1",
+  "run_id": "45103242359",
+  "source_sha": "4b09cc5478c60c1c6728a54f2a27a115637a835b",
+  "conclusion": "cancelled",
+  "artifact_id": 14787603452,
+  "artifact_sha256": "510fe1a77eeeaa2d8d3683cc2e88c0c45e3228a185b5c44fb59f4b6d762cde6c",
+  "artifact_bytes": 470256,
+  "current_methods_executed": 0,
+  "current_build_success": false,
+  "current_products_archive_present": false,
+  "compiler_error_demonstrated": false,
+  "cancellation_actor_observed": false,
+  "cancellation_cause": "NOT_EXPOSED_BY_RUN_JOB_ORIGINAL_LOG",
+  "original_build_log_sha256": "f70b22cac1d64d0b4d540b9168807d8d28a1c1a6150241efae1586ebbb7705d1",
+  "original_job_log_sha256": "37b14d723a2ef22c64e6c806580af94ec95fe647ac7f91c171c28d855e998d38",
+  "owned_job_started_at": "2026-11-23T03:36:05Z",
+  "owned_job_completed_at": "2026-11-23T03:45:48Z",
+  "build_step": {
+    "name": "Build the selected native executable and UI tests once",
+    "status": "completed",
+    "conclusion": "cancelled",
+    "number": 27,
+    "started_at": "2026-11-23T03:37:21Z",
+    "completed_at": "2026-11-23T03:44:35Z"
+  },
+  "stage_evidence": {
+    "hanlin_provider": "NO_FIXTURE_DIRECTORY_WAS_CREATED",
+    "current_ui_journeys": "NOT_RUN",
+    "current_files": "NOT_RUN",
+    "current_type": "NOT_RUN",
+    "current_history": "NOT_RUN"
+  },
+  "observations": [
+    "The build log contains the invocation, build settings, and Resolve Package Graph, with no compiler output or build terminal.",
+    "The job log reports The operation was canceled; no compiler rejection is present.",
+    "The workflow has cancel-in-progress=false and no timeout on this build step.",
+    "The top-level current run exposes no canceling_actor; triggering_actor is not evidence of who cancelled.",
+    "All named test-result files in the archive are under retained-* original evidence directories."
+  ],
+  "actual_build_last_observation": "Resolve Package Graph",
+  "build_subprocess_exit_code": null,
+  "build_subprocess_terminal_observed": false,
+  "configured_job_timeout_minutes": 120,
+  "configured_build_step_timeout": null,
+  "preserved_retained_methods": 22,
+  "original_product_paths_in_current_artifact": []
+}
