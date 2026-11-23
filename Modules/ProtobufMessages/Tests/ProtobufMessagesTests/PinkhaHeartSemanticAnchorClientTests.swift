@@ -28,7 +28,8 @@ private final class HeartCaptureProbe {
     private var readCount = 0
 
     init() throws {
-        plan = try HeartCaptureFixture.plan()
+        let fixturePlan = try HeartCaptureFixture.plan()
+        plan = fixturePlan
         before = try HeartCaptureFixture.before()
         after = try HeartCaptureFixture.after()
         reply = try HeartCaptureFixture.data("capture-applied-response.json")
@@ -37,7 +38,7 @@ private final class HeartCaptureProbe {
             $0.account = .with { $0.id = "fixture-owned-account"; $0.status.statusType = .active }
         })
         let space = lifetime.beforeInvocation(name: "WorkspaceOpen",
-            request: Anytype_Rpc.Workspace.Open.Request.with { $0.spaceID = plan.request.spaceID })
+            request: Anytype_Rpc.Workspace.Open.Request.with { $0.spaceID = fixturePlan.request.spaceID })
         lifetime.completedInvocation(space, response: Anytype_Rpc.Workspace.Open.Response.with {
             $0.info = .with { $0.workspaceObjectID = "fixture-native-workspace" }
         })
