@@ -1,0 +1,78 @@
+name: Original native annotation schema endpoint
+
+on:
+  push:
+    branches: [codex/otzaria-heart-endpoint-20261123]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: otzaria-original-native-endpoint-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  original-native-endpoint:
+    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-heart-endpoint-20261123' && github.run_attempt == 1
+    runs-on: xcode-27
+    timeout-minutes: 120
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+    steps:
+      - name: Fix the absolute native execution deadline
+        run: |
+          echo "OTZARIA_NATIVE_ENDPOINT_DEADLINE=$(( $(date +%s) + 6900 ))" >> "$GITHUB_ENV"
+      - name: Checkout the exact isolated endpoint source packet
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout: |
+            docs/pinkha/torah-integration/native-schema-endpoint-runtime-20261123
+      - name: Select actual ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Install the exact original Go toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache: false
+      - name: Checkout the immutable accepted RPC generation evidence
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/anytype-swift
+          ref: f9b37d7809c08a100a10417a7f699302c758ca8f
+          path: build/Accepted-RPC-Generation
+          persist-credentials: false
+          sparse-checkout: |
+            docs/pinkha/torah-integration/native-annotation-schema-rpc-generation-20261122/generated-run-45101449367
+      - name: Checkout the immutable original Heart base
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: build/Heart-Native-Endpoint
+          persist-credentials: false
+      - name: Execute the five new original native endpoint cases
+        run: |
+          python3 -I docs/pinkha/torah-integration/native-schema-endpoint-runtime-20261123/run_native_endpoint.py \
+            --control-root "$GITHUB_WORKSPACE" \
+            --control-head "$GITHUB_SHA" \
+            --execution-manifest-sha256 531651dda3588a66bc640eeb94adf1d0f9338f5ed5c580936bb26d6aa3536d55 \
+            --job-deadline-unix "$OTZARIA_NATIVE_ENDPOINT_DEADLINE" \
+            --heart build/Heart-Native-Endpoint \
+            --work build/Heart-Native-Endpoint-Owned-Work \
+            --evidence build/Heart-Native-Endpoint-Evidence \
+            --generation-root build/Accepted-RPC-Generation \
+            --generation-archive build/Accepted-RPC-Generation/docs/pinkha/torah-integration/native-annotation-schema-rpc-generation-20261122/generated-run-45101449367/original-rpc-generation.zip
+      - name: Retain actual endpoint source compiler wire and phase evidence including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otzaria-Original-Native-Schema-Endpoint-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/Heart-Native-Endpoint-Evidence
+          if-no-files-found: warn
+          compression-level: 6
+          retention-days: 14
