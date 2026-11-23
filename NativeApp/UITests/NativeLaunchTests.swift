@@ -1406,6 +1406,12 @@ final class NativeLaunchTests: XCTestCase {
                 .matching(identifier: "any-native-archive-exported-file").firstMatch
             waitFor(NSPredicate(format: "exists == true AND value == %@", filename),
                     object: exported, timeout: 45)
+            // The destination comes from the real successful Files callback,
+            // independently of the requested directory and visible picker title.
+            let folder = app.descendants(matching: .any)
+                .matching(identifier: "any-native-archive-exported-directory").firstMatch
+            waitFor(NSPredicate(format: "exists == true AND value == %@", "Exports"),
+                    object: folder, timeout: 45)
         }
         func importUsingFiles(named filename: String) throws {
             let basename = String(filename.dropLast(".json".count))

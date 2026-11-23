@@ -316,6 +316,7 @@ public struct AnyNativeArchiveTransferView: View {
     @State private var showsExporter = false
     @State private var showsImporter = false
     @State private var exportedFileName: String?
+    @State private var exportedFolderName: String?
     @State private var exportsDirectory: URL?
     @Environment(\.dismiss) private var dismiss
 
@@ -332,19 +333,19 @@ public struct AnyNativeArchiveTransferView: View {
                         "הקובץ מכיל קישורי מקורות קנוניים והיסטוריית המקור שלהם. טקסט המסמך וקבצים מצורפים אינם נכללים.",
                         "This file contains canonical source associations and their provenance. Document text and attachments are not included."))
                         .font(.footnote).foregroundStyle(.secondary)
-                    Button(AnyUIErrorText.text("ייצוא קישורי המקורות", "Export source associations"),
-                           systemImage: "square.and.arrow.up") {
-                        Task {
-                            if let file = await model.exportFile() { export = file; showsExporter = true }
-                        }
-                    }.disabled(model.isBusy || exportsDirectory == nil).accessibilityIdentifier("any-native-archive-export")
-                    Button(AnyUIErrorText.text("בחירת קובץ לייבוא", "Choose archive to import"),
-                           systemImage: "square.and.arrow.down") { showsImporter = true }
-                        .disabled(!model.canChangeMapping || exportsDirectory == nil).accessibilityIdentifier("any-native-archive-import")
+                    if let directory = exportsDirectory {
+                        exportArchiveButton(in: directory)
+                        importArchiveButton(in: directory)
+                    }
                     if let exportedFileName {
                         LabeledContent(AnyUIErrorText.text("הקובץ שיוצא", "Exported archive"), value: exportedFileName)
                             .accessibilityIdentifier("any-native-archive-exported-file")
                             .accessibilityValue(exportedFileName)
+                    }
+                    if let exportedFolderName {
+                        LabeledContent(AnyUIErrorText.text("נשמר בתיקייה", "Saved in folder"), value: exportedFolderName)
+                            .accessibilityIdentifier("any-native-archive-exported-directory")
+                            .accessibilityValue(exportedFolderName)
                     }
                 }
                 if let archive = model.archive {
@@ -427,21 +428,6 @@ public struct AnyNativeArchiveTransferView: View {
                 Button(AnyUIErrorText.text("סיום", "Done")) { dismiss() }
                     .accessibilityIdentifier("any-native-archive-close")
             }}
-            .fileExporter(isPresented: $showsExporter, document: export, contentType: .json,
-                          defaultFilename: "source-associations") { result in
-                switch result {
-                case .success(let url): exportedFileName = url.lastPathComponent
-                case .failure(let error): model.message = AnyUIErrorText.describe(error)
-                }
-            }
-            .fileDialogDefaultDirectory(exportsDirectory)
-            .fileImporter(isPresented: $showsImporter, allowedContentTypes: [.json]) { result in
-                switch result {
-                case .success(let url): Task { await model.loadFile(url) }
-                case .failure(let error): model.message = AnyUIErrorText.describe(error)
-                }
-            }
-            .fileDialogDefaultDirectory(exportsDirectory)
             .task {
                 model.activate()
                 do { exportsDirectory = try Self.userExportsDirectory() }
@@ -449,6 +435,49 @@ public struct AnyNativeArchiveTransferView: View {
             }
             .onDisappear { if !document.showsArchiveTransfer { model.deactivate() } }
         }
+    }
+
+    // Each real system dialog belongs to its initiating button. Both presenters
+    // are first constructed with the validated directory, never an initial nil.
+    private func exportArchiveButton(in directory: URL) -> some View {
+        Button(AnyUIErrorText.text("ייצוא קישורי המקורות", "Export source associations"),
+               systemImage: "square.and.arrow.up") {
+            Task {
+                if let file = await model.exportFile() { export = file; showsExporter = true }
+            }
+        }
+        .disabled(model.isBusy)
+        .accessibilityIdentifier("any-native-archive-export")
+        .fileExporter(isPresented: $showsExporter, document: export, contentType: .json,
+                      defaultFilename: "source-associations") { result in
+            switch result {
+            case .success(let url):
+                exportedFileName = url.lastPathComponent
+                let folder = url.deletingLastPathComponent()
+                let name = (try? folder.resourceValues(forKeys: [.localizedNameKey]))?.localizedName
+                    ?? folder.lastPathComponent
+                // Display the returned destination's human name, never a
+                // private container path or an internal provider UUID.
+                exportedFolderName = !name.isEmpty && UUID(uuidString: name) == nil
+                    ? name : AnyUIErrorText.text("התיקייה שנבחרה", "Selected folder")
+            case .failure(let error): model.message = AnyUIErrorText.describe(error)
+            }
+        }
+        .fileDialogDefaultDirectory(directory)
+    }
+
+    private func importArchiveButton(in directory: URL) -> some View {
+        Button(AnyUIErrorText.text("בחירת קובץ לייבוא", "Choose archive to import"),
+               systemImage: "square.and.arrow.down") { showsImporter = true }
+            .disabled(!model.canChangeMapping)
+            .accessibilityIdentifier("any-native-archive-import")
+            .fileImporter(isPresented: $showsImporter, allowedContentTypes: [.json]) { result in
+                switch result {
+                case .success(let url): Task { await model.loadFile(url) }
+                case .failure(let error): model.message = AnyUIErrorText.describe(error)
+                }
+            }
+            .fileDialogDefaultDirectory(directory)
     }
 
     /// Documents is intentionally user-visible in Files. Native storage and
