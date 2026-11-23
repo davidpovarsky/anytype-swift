@@ -1,0 +1,32 @@
+--- a/core/application/owned_import_native_test.go
++++ b/core/application/owned_import_native_test.go
+@@ -53,8 +53,16 @@
+ 			t.Fatal("actual original importer did not complete in the declared target Space")
+ 		}
+ 		mapping, observed := first.NativeMappingObservation()
+-		if !observed || !mapping.CompleteForSelectedSnapshots() || len(first.NativeMappingProblems()) != 0 {
+-			t.Fatal("actual original protobuf import lacks its complete copied source observation")
++		problems := first.NativeMappingProblems()
++		if len(problems) > 16 {
++			t.Fatal("actual native mapping problem observation exceeded its fixed bound")
++		}
++		if !observed || !mapping.CompleteForSelectedSnapshots() || len(problems) != 0 {
++			t.Fatalf("actual original protobuf import lacks its complete copied source observation: observed=%t complete=%t problems=%v",
++				observed, mapping.CompleteForSelectedSnapshots(), problems)
++		}
++		if first.ProcessID() != "" || mapping.ProcessID() != "" || mapping.TraceID() == "" {
++			t.Fatal("actual original no-progress import did not preserve its empty progress ID and native trace")
+ 		}
+ 		var targetID string
+ 		for _, row := range mapping.SourceAssignments() {
+@@ -139,7 +147,9 @@
+ 			"source_space": sourceSpace.Id(), "target_space": targetSpace.Id(),
+ 			"source_object": sourceID, "mapped_native_object": targetID,
+ 			"actual_first_import_returned": true, "actual_native_readback": true,
+-			"actual_second_apply_reentered_stop": true, "stop_was_pending_before_drain": true,
++			"actual_no_progress_id_absent":         first.ProcessID() == "" && mapping.ProcessID() == "",
++			"actual_original_import_trace_present": mapping.TraceID() != "",
++			"actual_second_apply_reentered_stop":   true, "stop_was_pending_before_drain": true,
+ 			"done_remained_open_while_native_apply_blocked":      true,
+ 			"actual_canceled_execute_returned_before_final_stop": true,
+ 			"final_account_stop_and_lease_release":               true, "ack_authority": false,

@@ -1,0 +1,201 @@
+{
+  "schema_version": 1,
+  "run_id": 45105771388,
+  "run_attempt": 1,
+  "event": "push",
+  "repository": "davidpovarsky/anytype-swift",
+  "head_sha": "54169c763c2178fc1e796dfbe92a675d9c21a0b3",
+  "heart_base": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "artifact_id": 14790861121,
+  "artifact_name": "Otzaria-Original-Heart-Native-Lifetime-45105771388-1",
+  "archive_path": "/mnt/development/projects/diagnostics/otzaria-heart-native-runtime-20261123/45105771388/original-heart-native-lifetime.zip",
+  "archive_bytes": 2819573,
+  "archive_sha256": "9358c6636a4b175d56596b09f56c3e4a898b30252dd5548d55fd9f89f057586d",
+  "github_digest_matched": true,
+  "crc_valid_members": 37,
+  "indexed_members_verified": 36,
+  "all_evidence_rows_verified": true,
+  "all_14_command_groups_drained": true,
+  "native_compile_passed": true,
+  "native_binary_identity": {
+    "bytes": 171969842,
+    "sha256": "1227d19d2b635afcd99d05cc88f849f855ea6bb605c2c0ca4954b9dc98394dd3"
+  },
+  "native_binary_retained": false,
+  "go": {
+    "path": "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+    "sha256": "3925fc3221ac440ebf7c35361ff663bed0c7bdb2e0a157b75fe993607ffe0a19",
+    "version": "go version go1.26.5 darwin/arm64"
+  },
+  "declared_native_files": 11312,
+  "declared_native_packages": 1478,
+  "required_product_test_coverage": [
+    {
+      "path": "core/application/account_create.go",
+      "sha256": "d0726be42c7f3bedb1479113ec90310296f2a551d04d64dad06d0a8a863ed4b4"
+    },
+    {
+      "path": "core/application/account_create_from_export.go",
+      "sha256": "5d7f91dc44d7c04f445a3b22ccc692c525a94c8b61cc5ac696764fe03c69db21"
+    },
+    {
+      "path": "core/application/account_move.go",
+      "sha256": "7a0e25f0423b1304d86022e83e4b76ee259a31ab9d9aa7a056ef71d4d7bbfb6a"
+    },
+    {
+      "path": "core/application/account_select.go",
+      "sha256": "814b9c0a857df43032bf96c3fd1869570db2abfa5b25f0ceca6b798db3ed8dbd"
+    },
+    {
+      "path": "core/application/account_stop.go",
+      "sha256": "fe6b79b2491996b11b2f18fe8724084bfb658926c44a4612179a79293ae53f2a"
+    },
+    {
+      "path": "core/application/application.go",
+      "sha256": "30d0110b028f009d5b447faff657def67e2605e44bcbb85fa6ffc437b0f686f2"
+    },
+    {
+      "path": "core/application/owned_import_admission.go",
+      "sha256": "3ed41b1989e03d087c393d04b5b3c3a5d6a813830e4c42bebb6f2c4d727e67ee"
+    },
+    {
+      "path": "core/application/owned_import_native_test.go",
+      "sha256": "857e7f6b421542a51c597a9332050374cfde9035760b949e30a8b981142a376d"
+    },
+    {
+      "path": "core/block/editor/file/file.go",
+      "sha256": "e95704f380d684ab98af21569887cb135aa6d5120fac11632516d1c914f9a688"
+    },
+    {
+      "path": "core/block/editor/file/owned_upload.go",
+      "sha256": "efc65e213af2fe07c93f551eb96495261835d899c01b274cbab45a43a3abb05a"
+    },
+    {
+      "path": "core/block/import/common/objectid/file_upload_provider.go",
+      "sha256": "afbc0ce4174ad0bcf337bbfef76ce5c56084c392f9cc5eb513a4692b4077b030"
+    },
+    {
+      "path": "core/block/import/common/objectid/fileobject.go",
+      "sha256": "2037d827213fc28330d2f89d4eebd1062e88bd000188afcc543f7fd15e92c5ae"
+    },
+    {
+      "path": "core/block/import/common/objectid/oldfile.go",
+      "sha256": "d86a1be57c61b320c99cdfa3c5268c428de2017c1a3071fa4451f61671c21014"
+    },
+    {
+      "path": "core/block/import/common/objectid/provider.go",
+      "sha256": "250fa16b3d17a19a741029ffd5fe6c71d3c3dfd2b0e43550879e078db5e95109"
+    },
+    {
+      "path": "core/block/import/common/syncer/syncer.go",
+      "sha256": "607899ccf2e0b993093709b40630445525ae7e0234209beda8013f552463873a"
+    },
+    {
+      "path": "core/block/import/common/types.go",
+      "sha256": "458829293a09663646e6a76d6d8cc4e7325359b2e2e8619bb4960e8e36509149"
+    },
+    {
+      "path": "core/block/import/mapping_observation.go",
+      "sha256": "851c5ad1a2c65e3698816bf8be5ccdd85e4074d9afb3b3f3dd79d5758e6be9cf"
+    },
+    {
+      "path": "core/block/import/mapping_observation_processor.go",
+      "sha256": "154bbade29f59a5431a5d69aaa00130e0545408b7c9647dccb25561b362be480"
+    },
+    {
+      "path": "core/block/import/owned_import_dependencies.go",
+      "sha256": "f6bc99b3c2de3e41aea66f9c3b3b68822e2af5fa200469e34049c8a4fca00993"
+    },
+    {
+      "path": "core/block/import/owned_import_drain.go",
+      "sha256": "00348d426f9b4eb721df0c369cba5c15fea181f80eeefbd100d639a1e9c68609"
+    },
+    {
+      "path": "core/block/import/owned_import_files.go",
+      "sha256": "742f8e30b8878973ad9a30418b94643cf7c7d812b4563b20851b72530074d2fb"
+    },
+    {
+      "path": "core/block/import/owned_import_finalize.go",
+      "sha256": "0d407ac175f316ff4c1ba77bf9d0ff2f72af0019a53b7442e734740d0a6b4155"
+    },
+    {
+      "path": "core/block/import/owned_import_operation.go",
+      "sha256": "8fba0afe60bd32ed51707ca43ed0beb7a45e30470a32811e290a6aaef4073b13"
+    },
+    {
+      "path": "core/block/import/pb/converter.go",
+      "sha256": "9542dc143969622b7264d6de7e83c86eea1ad4756dcd21268616884e787445ee"
+    },
+    {
+      "path": "core/block/import/processor.go",
+      "sha256": "bc2ee47724a4f32615a5b5a81f3a3eb25779f273c94fa543ea82169788c7bba6"
+    },
+    {
+      "path": "core/block/import/types.go",
+      "sha256": "d701d6d5e6c7a66e361c3f2db4b623fa8745423477d78ec289eb53b133e54140"
+    },
+    {
+      "path": "core/block/owned_file_upload.go",
+      "sha256": "a81179424c4d7b9a0dc12b44adccb1e30f364b14c7073433adbd8ceacb46d7bd"
+    },
+    {
+      "path": "core/files/fileuploader/owned_upload.go",
+      "sha256": "ff9f23846495b2bc0151078f0002c95a5a48e35ebf2e3356221370a74ff4ce19"
+    },
+    {
+      "path": "core/files/fileuploader/uploader.go",
+      "sha256": "494ffda93ed6fe3023bd24833f38cd6de299d344c698b3b7a6f325c8e12c5a6a"
+    }
+  ],
+  "native_execution_returncode": 1,
+  "native_execution_timed_out": false,
+  "actual_leaf_results": [
+    {
+      "Time": "2026-11-23T04:48:49.091686Z",
+      "Action": "fail",
+      "Test": "TestOtzariaOwnedImportNativeLifetime/OriginalProtobufImportAndReentrantRetirement",
+      "Elapsed": 5.4
+    },
+    {
+      "Time": "2026-11-23T04:48:52.459349Z",
+      "Action": "pass",
+      "Test": "TestOtzariaOwnedImportNativeLifetime/RegisteredPreStartCancellationRequiresActualReturn",
+      "Elapsed": 3.37
+    }
+  ],
+  "native_leaf_pass": 1,
+  "native_leaf_fail": 1,
+  "native_leaf_skip": 0,
+  "passed_prestart_receipt": {
+    "bytes": 337,
+    "path": "registered-prestart-cancellation.json",
+    "sha256": "b73d2dfe4934d06d3573c790e131e78a7eccde4389c56bdaa13b47b37e0e816b"
+  },
+  "passed_prestart_semantics": {
+    "ack_authority": false,
+    "actual_canceled_execute_returned": true,
+    "actual_dependency_construction": true,
+    "actual_wallet_account_and_lease": true,
+    "cancellation_was_not_completion": true,
+    "final_account_stop_and_lease_release": true,
+    "registered_before_start": true,
+    "stop_pending_before_actual_execute_return": true
+  },
+  "failed_leaf_assertion": "owned_import_native_test.go:57: actual original protobuf import lacks its complete copied source observation",
+  "failed_leaf_stage": "after actual original import returned; before mapped native readback and reentrant Apply",
+  "reported_finite_mapping_problems_in_failed_artifact": false,
+  "deterministic_source_defect": {
+    "original_no_progress_process_id": "empty string",
+    "original_noop_source": "d98420b1113536afd08cde6de9a5816f6d27ffff:core/block/process/noop.go",
+    "owned_constructor_uses_original_noop": true,
+    "processor_copies_actual_progress_id": true,
+    "mapping_finish_incorrectly_requires_nonempty_process_id": true,
+    "other_possible_mapping_problems_not_observed": true
+  },
+  "owned_native_temporary_removed": true,
+  "production_caller_qualified": false,
+  "durable_cold_reopen_qualified": false,
+  "ack_authority": false,
+  "new_tests_or_reruns_in_intake": false,
+  "intake_at_utc": "2026-11-23T04:57:33.419865+00:00"
+}

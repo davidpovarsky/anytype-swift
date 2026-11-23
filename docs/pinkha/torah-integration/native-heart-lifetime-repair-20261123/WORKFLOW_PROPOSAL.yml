@@ -1,0 +1,68 @@
+name: Original Heart no-progress mapping and reentrant lifetime
+
+on:
+  push:
+    branches: [codex/otzaria-heart-lifetime-repair-20261123]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: otzaria-heart-native-lifetime-repair-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  original-native-lifetime-repair:
+    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-heart-lifetime-repair-20261123' && github.run_attempt == 1
+    runs-on: xcode-27
+    timeout-minutes: 120
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+    steps:
+      - name: Fix the absolute native execution deadline
+        run: |
+          echo "OTZARIA_HEART_NATIVE_DEADLINE=$(( $(date +%s) + 6900 ))" >> "$GITHUB_ENV"
+      - name: Checkout the exact isolated source packet
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout: |
+            docs/pinkha/torah-integration/native-heart-rpc-runtime-20261123
+            docs/pinkha/torah-integration/native-heart-lifetime-repair-20261123
+      - name: Select actual ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Install the exact original Go toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache: false
+      - name: Checkout the immutable original Heart base
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: build/Heart-Native-Runtime
+          persist-credentials: false
+      - name: Execute only the corrected native import and reentrant retirement case
+        run: |
+          python3 -I docs/pinkha/torah-integration/native-heart-lifetime-repair-20261123/run_focused_native_lifetime.py \
+            --control-root "$GITHUB_WORKSPACE" \
+            --control-head "$GITHUB_SHA" \
+            --execution-manifest-sha256 98385a58672ba05ca375ed351c45a9597ab41a8998fb8c1bf1175fd749bc5319 \
+            --job-deadline-unix "$OTZARIA_HEART_NATIVE_DEADLINE" \
+            --heart build/Heart-Native-Runtime \
+            --work build/Heart-Native-Runtime-Owned-Work \
+            --evidence build/Heart-Native-Runtime-Evidence
+      - name: Retain actual source, build and native evidence including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otzaria-Original-Heart-Lifetime-Repair-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/Heart-Native-Runtime-Evidence
+          if-no-files-found: warn
+          compression-level: 6
+          retention-days: 14

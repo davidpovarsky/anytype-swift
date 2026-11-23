@@ -1,0 +1,128 @@
+--- a/run_native_lifetime.py
++++ b/run_focused_native_lifetime.py
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env python3
+-"""Execute only the two new genuine original Heart owned-import lifetime cases."""
++"""Execute the corrected original import/reentry case and reuse the authentic prior prestart PASS."""
+ import argparse
+ import hashlib
+ import importlib.util
+@@ -13,7 +13,8 @@
+ import sys
+ import time
+ 
+-PACKET = "docs/pinkha/torah-integration/native-heart-rpc-runtime-20261123"
++PACKET = "docs/pinkha/torah-integration/native-heart-lifetime-repair-20261123"
++BASE_PACKET = "docs/pinkha/torah-integration/native-heart-rpc-runtime-20261123"
+ HEART = "d98420b1113536afd08cde6de9a5816f6d27ffff"
+ SUPPORT_SHA256 = "017778c096eca985774bd1a4f1e1e117ac3dee6ac08082c2a9793273826aa196"
+ 
+@@ -40,7 +41,7 @@
+     for entry in manifest["source_inputs"]:
+         require(entry["destination"] not in destinations, "Duplicate materialized source")
+         destinations.add(entry["destination"])
+-        retained = PACKET + "/retained-inputs/" + entry["destination"]
++        retained = BASE_PACKET + "/retained-inputs/" + entry["destination"]
+         raw = safe(control, retained).read_bytes()
+         require(raw == git(control, "show", "HEAD:" + retained), "Dirty retained original source input")
+         blob = hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
+@@ -79,13 +80,20 @@
+     spec.loader.exec_module(support)
+     return support, inputs, inventory
+ 
++def verify_reused_prestart(control, packet, manifest):
++    # This authored helper is hashed and Git-bound by control_inputs first.
++    path = packet / "verify_reused_prestart.py"
++    namespace = {}
++    exec(compile(path.read_bytes(), str(path), "exec"), namespace)
++    return namespace["verify"](control, packet, manifest)
++
+ def install_native(support, commands, inputs, heart, packet, manifest, evidence):
+     require(git(heart, "rev-parse", "HEAD").decode().strip() == HEART, "Original Heart checkout differs")
+     require(not git(heart, "status", "--porcelain", "--untracked-files=all").strip(), "Original Heart checkout is not fresh")
+     for name, digest in manifest["original_module_hashes"].items():
+         require(support.digest(heart / name) == digest, "Original module/native checksum differs")
+     original = json.loads((inputs / "support/ORIGINAL_COMPILE_INPUTS.json").read_bytes())
+-    require(original["final_product_hashes"] == manifest["unchanged_product_hashes"],
++    require(original["final_product_hashes"] == manifest["baseline_product_hashes"],
+             "The previously compiled 28-file lifetime closure changed")
+     patch = inputs / "r14/native-heart-integration.patch"
+     inventory = json.loads((inputs / "r14/native-heart-integration.json").read_bytes())
+@@ -104,9 +112,30 @@
+         "--root", str(heart), "--packet", str(inputs / "lifetime"),
+         "--output", str(evidence / "LIFETIME_OVERLAY.json"),
+     ], heart, 30)
+-    required = dict(manifest["unchanged_product_hashes"])
++    required = dict(manifest["baseline_product_hashes"])
+     for name, digest in required.items():
+         require(support.digest(heart / name) == digest, "Previously compiled product source changed: " + name)
++    repairs = []
++    for repair in manifest["product_repairs"]:
++        name = repair["native_path"]
++        require(name in required and required[name] == repair["before_sha256"],
++                "Correction is not based on the actual previously compiled source")
++        target = safe(heart, name)
++        require(support.digest(target) == repair["before_sha256"], "Original correction beforeimage differs")
++        data = safe(packet, repair["path"]).read_bytes()
++        require(sha(data) == repair["after_sha256"], "Reviewed correction afterimage differs")
++        target.write_bytes(data)
++        required[name] = support.digest(target)
++        repairs.append({"path": name, "before_sha256": repair["before_sha256"],
++                        "after_sha256": required[name], "scope": "No-progress mapping observation only"})
++    require(len(repairs) == 1 and repairs[0]["path"] == "core/block/import/mapping_observation.go",
++            "Unexpected product correction scope")
++    require(support.digest(heart / "core/block/process/noop.go") == manifest["original_noop_sha256"],
++            "Original no-progress implementation changed")
++    support.write_json(evidence / "MAPPING_NO_PROGRESS_CORRECTION.json", {
++        "product_repairs": repairs, "whole_product_tree_unchanged": False,
++        "original_noop_unchanged": True, "synthetic_process_id_created": False,
++    })
+     name = manifest["test_file"].removeprefix("native/")
+     target = safe(heart, name)
+     require(not target.exists(), "Native test path already exists")
+@@ -161,10 +190,12 @@
+     manifest = json.loads(manifest_raw)
+     require(git(control, "rev-parse", "HEAD").decode().strip() == args.control_head, "Workflow source differs")
+     controls = control_inputs(control, packet, manifest)
++    reused_prestart = verify_reused_prestart(control, packet, manifest)
+     if args.source_only:
+         rows = read_sources(control, manifest)
+         print(json.dumps({"status": "SOURCE_ONLY_PASS", "checkout_sha": args.control_head,
+                           "immutable_source_rows": len(rows), "controls": controls,
++                          "reused_prestart": reused_prestart,
+                           "native_execution": False, "provider_called": False}, indent=2))
+         return 0
+     heart, work, evidence = (p.resolve() for p in (args.heart, args.work, args.evidence))
+@@ -190,8 +221,10 @@
+     result = {"status": "STARTED_NOT_ACCEPTED", "control_head": args.control_head,
+               "heart_base": HEART, "execution_manifest_sha256": sha(manifest_raw),
+               "historical_controls_replayed": False, "native_result": "NOT_RUN",
+-              "scope": manifest["scope"], "source_inputs": source_rows, "control_inputs": controls}
++              "scope": manifest["scope"], "source_inputs": source_rows, "control_inputs": controls,
++              "product_repairs": manifest["product_repairs"], "reused_prestart": reused_prestart}
+     support.write_json(evidence / "RESULT.json", result)
++    support.write_json(evidence / "REUSED_PRESTART_PROOF.json", reused_prestart)
+     success = False
+     try:
+         required, composed = install_native(support, commands, inputs, heart, packet, manifest, evidence)
+@@ -235,7 +268,7 @@
+             "-test.count=1", "-test.timeout=26m",
+         ], heart, 1650)
+         result["native_cases"] = verify_native_results(output, manifest["expected_cases"])
+-        for name in ("original-import-reentrant-retirement.json", "registered-prestart-cancellation.json"):
++        for name in ("original-import-reentrant-retirement.json",):
+             require((evidence / name).is_file(), "Actual native phase receipt absent")
+             result.setdefault("native_receipts", []).append({"path": name, "sha256": support.digest(evidence / name)})
+         for entry in closure["files"]:
+@@ -246,8 +279,9 @@
+         require(support.digest(binary) == result["native_binary"]["sha256"], "Executed native binary changed")
+         control_inputs(control, packet, manifest)
+         read_sources(control, manifest)
+-        result["native_result"] = "TWO_ACTUAL_NATIVE_CASES_PASSED"
+-        result["status"], success = "PASS_NATIVE_LIFETIME_ONLY", True
++        result["native_result"] = "ONE_ACTUAL_NATIVE_REENTRANT_CASE_PASSED"
++        result["prior_prestart_pass_reused_without_reexecution"] = True
++        result["status"], success = "PASS_NATIVE_REENTRANT_WITH_REUSED_PRESTART", True
+     except BaseException as error:
+         result.update(status="FAIL", error_type=type(error).__name__, error=str(error))
+     finally:

@@ -1,0 +1,14 @@
+--- a/core/block/import/mapping_observation.go
++++ b/core/block/import/mapping_observation.go
+@@ -205,7 +205,10 @@
+ }
+ 
+ func (b *nativeMappingBuilder) finish(traceID, processID, targetSpaceID string, eligible bool) (NativeProtobufImportMappingObservation, []string) {
+-	if !eligible || traceID == "" || processID == "" || targetSpaceID == "" {
++	// Original process.NewNoOp has no progress process ID. Keep that copied
++	// observation empty; the actual Execute-generated trace remains required.
++	// A progress ID is neither an assignment prerequisite nor authority.
++	if !eligible || traceID == "" || targetSpaceID == "" {
+ 		b.problem("execution-not-eligible")
+ 	}
+ 	if len(b.assignments) != len(b.selected) {
