@@ -55,6 +55,7 @@ on:
           - coherent-original-products
           - native-ui-original-products
           - native-ui-transition-candidate
+          - native-ui-runner-continuation
           - prepared-migration-apple
           - prepared-inline-file-apple
           - sdk06-enumeration-probe
@@ -341,6 +342,10 @@ jobs:
   native-ui-transition-candidate:
     if: ${{ inputs.route == 'native-ui-transition-candidate' }}
     uses: ./.github/workflows/pinkha-any-native-ui-transition-candidate.yml
+
+  native-ui-runner-continuation:
+    if: ${{ inputs.route == 'native-ui-runner-continuation' }}
+    uses: ./.github/workflows/pinkha-any-native-ui-runner-continuation.yml
 
   coherent-original-products:
     if: ${{ inputs.route == 'coherent-original-products' }}

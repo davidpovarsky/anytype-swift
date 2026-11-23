@@ -1,0 +1,330 @@
+{
+  "protocol": "native-ui-transition-attempt2-original-audit-v1",
+  "status": "ORIGINAL_FAILURE_AUDITED",
+  "run_id": "45174286335",
+  "attempt": 2,
+  "producer_source": "e4edea19ce716280f4087f8b9571ad2b4f6f94c5",
+  "compiled_application_source": "4b09cc5478c60c1c6728a54f2a27a115637a835b",
+  "job_id": "137703567478",
+  "runner_id": "1000024670",
+  "artifact": {
+    "id": "14819304346",
+    "name": "Native-UI-Transition-Candidate-45174286335-2",
+    "bytes": 52772893,
+    "sha256": "2bae694d8939a803a58728be3abc7e10610913fd8b720144e65015c25abbdae9",
+    "archive": "original-14819304346.zip",
+    "downloads": 1,
+    "acquisition_receipt_sha256": "6f2be6bd2c9d876560eb6d0dd850e33a2cb0bd07a685e5bc28acd03b893bc9cf"
+  },
+  "archive_inventory": {
+    "entries": 2947,
+    "uncompressed_bytes": 62678370,
+    "unsafe_or_duplicate_names": 0,
+    "selected_originals": 43,
+    "selected_bytes": 296699,
+    "selected_index_sha256": "c944f02d995cb25155e98eb9760f87880ce727f82bd69a011d7a6fa6c8cad7df"
+  },
+  "new_build": {
+    "ui_runner_builds": 1,
+    "application_builds": 0,
+    "native_library_builds": 0,
+    "tests_by_build": 0,
+    "build_receipt_sha256": "b012a77b3c04d3d2a1c7897089489fafb78bed4619d1335643bec194fcce10ba",
+    "status": "BUILT_UI_ONLY_RUNNER_ORIGINAL_APP_UNCHANGED",
+    "original_app_unchanged": true
+  },
+  "runner_preservation": {
+    "archive": {
+      "member": "native-ui-transition-candidate/UIRunnerProducts.tar.gz",
+      "bytes": 383490,
+      "sha256": "32da1f656253f5a762ed1ded46a3d6812a404e2fba135674b881d472ef066bbc"
+    },
+    "product_entries": 20,
+    "generated_source_entries": 4,
+    "file_payload_bytes": 1374930,
+    "products_manifest_sha256": "da1f0a04dbb3588e1d07d9e14a0a47c4313ce1f7ad793711b72a5c081f9f6f22",
+    "all_products_bytes_modes_types_match": true,
+    "generated_sources_match_separate_manifest": true,
+    "links": 0,
+    "products_extracted": false,
+    "mac_restoration": "NOT_RUN"
+  },
+  "enumeration": [
+    {
+      "scope": "native-ui-continuation",
+      "sha256": "d2bac9a98c91c92c11dd7672c1b98d0a19297f941720e4bf00435d5f194395b5",
+      "errors": [],
+      "enabled": [
+        "PinkhaAnyNativeUITests/NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen()",
+        "PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen()",
+        "PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType()",
+        "PinkhaAnyNativeUITests/NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens()"
+      ],
+      "disabled_count": 10,
+      "plan": "PinkhaAnyNativeTransitionUI"
+    },
+    {
+      "scope": "archive-roundtrip",
+      "sha256": "1f8eb8ce15346c8edfc1ebc9a92206708d3636880c0f145b1ba8b69ff4d22b1e",
+      "errors": [],
+      "enabled": [
+        "PinkhaAnyNativeUITests/NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies()"
+      ],
+      "disabled_count": 13,
+      "plan": "PinkhaAnyNativeTransitionUI"
+    }
+  ],
+  "actual": {
+    "passed": 0,
+    "failed": 5,
+    "skipped": 0,
+    "named": [
+      {
+        "scope": "native-ui-continuation",
+        "identifier": "NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen()",
+        "outcome": "Failed",
+        "failure": "Crash: PinkhaAnyNativeUITests-Runner at _XCTRunnerRunTests",
+        "summary_sha256": "e5a2f799a7e5eb560d745f7b447fbae227e5c44a5b14b34a6ff28b996b38881e"
+      },
+      {
+        "scope": "native-ui-continuation",
+        "identifier": "NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen()",
+        "outcome": "Failed",
+        "failure": "No target application path specified via test configuration: <XCTestConfiguration: 0x104b28600>",
+        "summary_sha256": "e5a2f799a7e5eb560d745f7b447fbae227e5c44a5b14b34a6ff28b996b38881e"
+      },
+      {
+        "scope": "native-ui-continuation",
+        "identifier": "NativeLaunchTests/testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType()",
+        "outcome": "Failed",
+        "failure": "No target application path specified via test configuration: <XCTestConfiguration: 0x104b28600>",
+        "summary_sha256": "e5a2f799a7e5eb560d745f7b447fbae227e5c44a5b14b34a6ff28b996b38881e"
+      },
+      {
+        "scope": "native-ui-continuation",
+        "identifier": "NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens()",
+        "outcome": "Failed",
+        "failure": "No target application path specified via test configuration: <XCTestConfiguration: 0x104b28600>",
+        "summary_sha256": "e5a2f799a7e5eb560d745f7b447fbae227e5c44a5b14b34a6ff28b996b38881e"
+      },
+      {
+        "scope": "archive-roundtrip",
+        "identifier": "NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies()",
+        "outcome": "Failed",
+        "failure": "No target application path specified via test configuration: <XCTestConfiguration: 0x106f24480>",
+        "summary_sha256": "531509d1f6c06ec724385099fcd8cee1016795b6a3dc3ce980cbcfdb7f10c89c"
+      }
+    ],
+    "retained_22_methods_executed": 0,
+    "history": "NOT_RUN",
+    "custom_type": "NOT_RUN",
+    "physical_device": "NOT_RUN",
+    "product_acceptance": false
+  },
+  "descriptor_evidence": {
+    "original_template_sha256": "b6776d94b84addf78c585549efca102a4ceb6a8a62f05da0bce083437485b4c0",
+    "working_original_sha256": "67228dbc1e1636b9e877d487528ea1fa37023a9a3ff8e53c8d92a94d38c897e6",
+    "working_original_carrier_sha256": "d30b144798580d7533e309aca2d3acf60191a94a7a9f025e04b89192c7d79ba8",
+    "executed_copies": [
+      {
+        "stage": "native-ui-continuation",
+        "executed_copy_sha256": "b9e36164a754822eee79b2fe7ec2d34c8aa375ee850cc57386e4bb7a8e1655b3",
+        "exact_reconstruction": true,
+        "UseUITargetAppProvidedByTests": true,
+        "UITargetAppPath": "/Users/runner/work/anytype-swift/anytype-swift/build/any-native-app-derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNative.app",
+        "UITargetAppBundleIdentifier": "io.pinkha.anynative.dev",
+        "DependentProductPaths": [
+          "__TESTROOT__/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app",
+          "__TESTROOT__/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest"
+        ],
+        "OnlyTestIdentifiers": [
+          "NativeLaunchTests/testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType",
+          "NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen",
+          "NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens",
+          "NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen"
+        ]
+      },
+      {
+        "stage": "archive-roundtrip",
+        "executed_copy_sha256": "e5e4045e1968594f2f39171bf5d78fbff4d552d116992f0f816a6d2956f38a5f",
+        "exact_reconstruction": true,
+        "UseUITargetAppProvidedByTests": true,
+        "UITargetAppPath": "/Users/runner/work/anytype-swift/anytype-swift/build/any-native-app-derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNative.app",
+        "UITargetAppBundleIdentifier": "io.pinkha.anynative.dev",
+        "DependentProductPaths": [
+          "__TESTROOT__/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app",
+          "__TESTROOT__/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest"
+        ],
+        "OnlyTestIdentifiers": [
+          "NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies"
+        ]
+      }
+    ],
+    "working_mode_key_absent": true,
+    "working_original_app_dependency_present": true,
+    "runtime_target_path": null,
+    "runtime_target_bundle_id": null,
+    "source_function": "Tools/AnyEnginePort/native_ui_transition_contract.py:descriptor_bytes",
+    "source_file_sha256": "42d56e2193643fde5ae6f329b63a123fee89a2ef22d858e3bea8aeb94cd0d3d5",
+    "finding": "The executed clones preserve UseUITargetAppProvidedByTests=true and omit the App from DependentProductPaths despite adding UITargetAppPath and UITargetAppBundleIdentifier. The actual XCTest configuration has no target App. The preserved working descriptor omits that conflicting mode and explicitly lists the App dependency. The proposed correction is not yet executed."
+  },
+  "hanlin_crash": {
+    "log_sha256": "99c2e97381978bc7a2eab045dfd5b5af572269953cc787280464c82f77f3406d",
+    "sequence": [
+      "Hanlin method started",
+      "XCUIApplication.init assertion",
+      "freed pointer was not the last allocation",
+      "SIGABRT in Swift XCTest error-observation/deallocation",
+      "XCTest restarted and reported the remaining three named initialization failures"
+    ],
+    "independent_runtime_crash_root_cause_proved": false
+  },
+  "provider": {
+    "prepared": true,
+    "requests": 0,
+    "phase": 0,
+    "verification": "FAIL",
+    "cleanup": "OWNED_FIXTURE_STOPPED_AND_PRIVATE_MATERIAL_REMOVED"
+  },
+  "cleanup": {
+    "test_groups": [
+      {
+        "scope": "native-ui-continuation",
+        "quiescence": {
+          "absenceSource": "KERNEL_ESRCH",
+          "budgetSeconds": 10,
+          "kernelObservation": {
+            "after_monotonic": 709.748753875,
+            "before_monotonic": 709.748436458,
+            "deadline_monotonic": 719.748272291,
+            "errno": 3,
+            "error_type": "ProcessLookupError",
+            "operation": "os.killpg",
+            "outcome": "ABSENT_ESRCH",
+            "pgid": 8758,
+            "signal": 0
+          },
+          "liveMembers": 0,
+          "pgid": 8758,
+          "scope": "pinkha-native-ui-original-products-readiness-v1",
+          "status": "PASS"
+        }
+      },
+      {
+        "scope": "archive-roundtrip",
+        "quiescence": {
+          "absenceSource": "KERNEL_ESRCH",
+          "budgetSeconds": 10,
+          "kernelObservation": {
+            "after_monotonic": 764.896245041,
+            "before_monotonic": 764.896171375,
+            "deadline_monotonic": 774.896033458,
+            "errno": 3,
+            "error_type": "ProcessLookupError",
+            "operation": "os.killpg",
+            "outcome": "ABSENT_ESRCH",
+            "pgid": 14420,
+            "signal": 0
+          },
+          "liveMembers": 0,
+          "pgid": 14420,
+          "scope": "pinkha-native-ui-original-products-readiness-v1",
+          "status": "PASS"
+        }
+      }
+    ],
+    "simulator_removed": true,
+    "absence": {
+      "completeDeviceInventory": true,
+      "enumeratedDeviceCount": 40,
+      "ownedDeviceAbsent": true,
+      "ownedSimulatorUDID": "B91A40C9-6AA4-4CC1-B6B2-9CFD8B0DA996"
+    }
+  },
+  "source_integrity": {
+    "direct_and_loaded_maps_unchanged": true,
+    "views": [
+      {
+        "stage": "build",
+        "before_keys": [
+          "direct",
+          "loaded",
+          "moduleOrigins",
+          "qualifiedOwnedHelpers"
+        ],
+        "after_keys": [
+          "direct",
+          "loaded"
+        ],
+        "common_equal": {
+          "direct": true,
+          "loaded": true
+        },
+        "missing_after": [
+          "qualifiedOwnedHelpers",
+          "moduleOrigins"
+        ],
+        "new_after": []
+      },
+      {
+        "stage": "native-ui-continuation",
+        "before_keys": [
+          "direct",
+          "loaded",
+          "moduleOrigins",
+          "qualifiedOwnedHelpers"
+        ],
+        "after_keys": [
+          "direct",
+          "loaded"
+        ],
+        "common_equal": {
+          "direct": true,
+          "loaded": true
+        },
+        "missing_after": [
+          "qualifiedOwnedHelpers",
+          "moduleOrigins"
+        ],
+        "new_after": []
+      },
+      {
+        "stage": "archive-roundtrip",
+        "before_keys": [
+          "direct",
+          "loaded",
+          "moduleOrigins",
+          "qualifiedOwnedHelpers"
+        ],
+        "after_keys": [
+          "direct",
+          "loaded"
+        ],
+        "common_equal": {
+          "direct": true,
+          "loaded": true
+        },
+        "missing_after": [
+          "qualifiedOwnedHelpers",
+          "moduleOrigins"
+        ],
+        "new_after": []
+      }
+    ],
+    "postflight_shape_note": "The postflight returns direct and loaded maps. Admission-only qualifiedOwnedHelpers/moduleOrigins are present only in the before envelope; whole-envelope inequality is not source drift."
+  },
+  "primary_documentation": {
+    "url": "https://developer.apple.com/documentation/xcuiautomation/xcuiapplication/init%28%29",
+    "supports": "The zero-argument initializer uses the application's Xcode test-target configuration.",
+    "flag_semantics_documented_by_this_source": false
+  },
+  "limits": {
+    "no_old_tests_replayed": true,
+    "no_ci_retry": true,
+    "no_controller_source_mutation": true,
+    "oracle_writes": 0,
+    "original_failure_preserved": true,
+    "full_acceptance": false,
+    "current_shared_application_acceptance": false
+  }
+}

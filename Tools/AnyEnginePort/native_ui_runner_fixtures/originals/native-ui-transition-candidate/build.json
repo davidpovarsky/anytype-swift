@@ -1,0 +1,151 @@
+{
+  "applicationBuildsThisRun": 0,
+  "applicationCommit": "4b09cc5478c60c1c6728a54f2a27a115637a835b",
+  "candidateSwiftSHA256": "1d0b0f4a66d4ebfe1af522ef38372525c3ec8c452cc82963fe346e77d0608d72",
+  "command": [
+    "xcodebuild",
+    "build-for-testing",
+    "-project",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/native-ui-transition-candidate/source/AnyNativeTransitionUI.xcodeproj",
+    "-scheme",
+    "PinkhaAnyNativeTransitionUI",
+    "-configuration",
+    "Debug",
+    "-destination",
+    "platform=iOS Simulator,id=B91A40C9-6AA4-4CC1-B6B2-9CFD8B0DA996",
+    "-derivedDataPath",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/native-ui-transition-candidate/derived",
+    "-resultBundlePath",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/any-patched-evidence/native-ui-transition-candidate/build.xcresult",
+    "-parallel-testing-enabled",
+    "NO",
+    "-disableAutomaticPackageResolution",
+    "-skipPackageUpdates",
+    "ARCHS=arm64",
+    "ONLY_ACTIVE_ARCH=YES",
+    "CODE_SIGNING_ALLOWED=YES",
+    "CODE_SIGNING_REQUIRED=YES",
+    "CODE_SIGN_IDENTITY=-",
+    "DEVELOPMENT_TEAM=",
+    "-only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType",
+    "-only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen",
+    "-only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens",
+    "-only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen",
+    "-only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies"
+  ],
+  "contract": "pinkha-native-ui-failed-transition-candidate-v1",
+  "controlCommit": "e4edea19ce716280f4087f8b9571ad2b4f6f94c5",
+  "currentRunAttempt": 2,
+  "currentRunID": "45174286335",
+  "currentSharedAppAcceptance": false,
+  "fullAcceptance": false,
+  "generatedProjectSHA256": "732984ab1aa59b34042763838ef0b3e3039904d64ed7942dc65961a118401a33",
+  "nativeLibraryBuildsThisRun": 0,
+  "originalAdmissionSHA256": "6fceb8ca89024a5bba4a2683138c85871d468f322a74c5e8fc28a19eaadd68f4",
+  "originalApplicationCodeCarriersSHA256": "1b65a33d9a0effa835c8bc320fdd779a732e444b44e00073b5ec397b2d142b51",
+  "originalArtifact": {
+    "bytes": 37844727,
+    "id": 14792209655,
+    "name": "any-engine-port-ios-patched-runtime-4b09cc5478c60c1c6728a54f2a27a115637a835b",
+    "sha256": "e3e8dd71771a165453165dc268197d18c719d8008f3d4a64296aad5fe10b57a1"
+  },
+  "originalDescriptor": {
+    "path": "/Users/runner/work/anytype-swift/anytype-swift/build/native-ui-transition-candidate/derived/Build/Products/PinkhaAnyNativeTransitionUI_iphonesimulator27.0-arm64.xctestrun",
+    "sha256": "b6776d94b84addf78c585549efca102a4ceb6a8a62f05da0bce083437485b4c0"
+  },
+  "originalProductsUnchanged": true,
+  "ownedCommand": {
+    "originalCommandSHA256": "2b960d909c68460b56f9667dc328a7bfbd5ac7082b4ba1513d0b0349688627f5",
+    "originalLogSHA256": "e3491d9b4708801c68e45939dc1ebbcf8dc8fd76093a01c0f67b4894095b4a86",
+    "ownedQuiescence": {
+      "absenceSource": "KERNEL_ESRCH",
+      "budgetSeconds": 10,
+      "kernelObservation": {
+        "after_monotonic": 541.073931291,
+        "before_monotonic": 541.073771125,
+        "deadline_monotonic": 551.072862833,
+        "errno": 3,
+        "error_type": "ProcessLookupError",
+        "operation": "os.killpg",
+        "outcome": "ABSENT_ESRCH",
+        "pgid": 3599,
+        "signal": 0
+      },
+      "liveMembers": 0,
+      "pgid": 3599,
+      "scope": "pinkha-native-ui-original-products-readiness-v1",
+      "status": "PASS"
+    },
+    "return_code": 0,
+    "timed_out": false
+  },
+  "ownedSimulatorUDID": "B91A40C9-6AA4-4CC1-B6B2-9CFD8B0DA996",
+  "preservedRunnerProducts": {
+    "bytes": 383490,
+    "path": "UIRunnerProducts.tar.gz",
+    "phase": "AFTER_BUILD_BEFORE_PRODUCT_EXECUTION",
+    "sha256": "32da1f656253f5a762ed1ded46a3d6812a404e2fba135674b881d472ef066bbc"
+  },
+  "retainedMethodCount": 22,
+  "retainedMethodsExecutedThisRun": 0,
+  "runnerProductsSHA256": "da1f0a04dbb3588e1d07d9e14a0a47c4313ce1f7ad793711b72a5c081f9f6f22",
+  "schemaVersion": 1,
+  "sourceAfter": {
+    "direct": {
+      ".github/workflows/pinkha-any-native-ui-transition-candidate.yml": "45f4d2f875042d41fc7f20d2ac6e9c04ddcd7ef915f387222c9b98e8a43f7b39",
+      ".github/workflows/torah-inspector-ipados27.yml": "9134e362da5dc7b056dbfa7a3ce75115f11bbfb49cb297682937c46d6c8a9b4b",
+      "NativeApp/AnyNative.xcodeproj/project.pbxproj": "7282befe3104df28a3e0f5feef05a018bc515c68cf443307de65dbe977e33532",
+      "NativeApp/AnyNative.xcodeproj/xcshareddata/xcschemes/PinkhaAnyNativeApp.xcscheme": "f208c605b78e849e18defc7c759f3588dc9ab9b3f3bdd7502257c605da9db308",
+      "NativeApp/UITests/NativeHistoryTests.swift": "f104bcd9722dfac94c90c947e4879447f081f2898149809966f0fb4ccea6230b",
+      "NativeApp/UITests/NativeLaunchTests.swift": "1d0b0f4a66d4ebfe1af522ef38372525c3ec8c452cc82963fe346e77d0608d72",
+      "Tools/AnyEnginePort/native_ui_transition.py": "9ee60b309f4a5f43741bd3b55d7e03222e21519c8157aca5a6c99141e3fba4d7",
+      "Tools/AnyEnginePort/native_ui_transition_contract.py": "42d56e2193643fde5ae6f329b63a123fee89a2ef22d858e3bea8aeb94cd0d3d5",
+      "Tools/AnyEnginePort/native_ui_transition_project.py": "3c666726a42f9e42b481f82e45d90362079c0c0ff062192e4b5c3461ea1f02ec",
+      "docs/validation/20261123-native-ui-transition-candidate/test-source-inverse.json": "8f0ba3e6be24ad6d3c19b55a968a432104c3a4e76fc716196dc982a77ad09a59"
+    },
+    "loaded": {
+      "current": {
+        "commit": "e4edea19ce716280f4087f8b9571ad2b4f6f94c5",
+        "files": {
+          "Tools/AnyEnginePort/hanlin_fixture_ci.py": "b48b79324d9076d235449510ed5499556d2b16c14aa1cc2a3397db5861132d14",
+          "Tools/AnyEnginePort/native_ui_original_products.py": "29dad87b9fe7654e1f3ad044e403bcbdfa83c42b123876c6f78739bb8f9f86aa",
+          "Tools/AnyEnginePort/native_ui_original_products_contract.py": "4e31edb56b0446cea77e95dc2e61f8c706ebe3a2d7c85f2957651f73e645812f",
+          "Tools/AnyEnginePort/native_ui_original_products_readiness.py": "bec3ed7c2c52b979b00b5b6e480921fed3bb640c17f43ac99106f0c0a4182d55",
+          "Tools/AnyEnginePort/native_ui_original_products_results.py": "9ff56c0a3dc86d8d284332b478542cdee6cbc6ac4b90054728d03420a3166c8a",
+          "Tools/AnyEnginePort/native_ui_transition.py": "9ee60b309f4a5f43741bd3b55d7e03222e21519c8157aca5a6c99141e3fba4d7",
+          "Tools/AnyEnginePort/native_ui_transition_contract.py": "42d56e2193643fde5ae6f329b63a123fee89a2ef22d858e3bea8aeb94cd0d3d5",
+          "Tools/AnyEnginePort/native_ui_transition_project.py": "3c666726a42f9e42b481f82e45d90362079c0c0ff062192e4b5c3461ea1f02ec",
+          "Tools/PinkhaSimulatorGate/coherent_controller_sources.py": "493fa855797fd52a27f10d68406342676a35f325bac67acedeb27ded3b945008",
+          "Tools/PinkhaSimulatorGate/destination_artifacts.py": "55c076f86990e74c2b3908a1474f1bb224c7ca52f00d1f9fe162f40be8814280",
+          "Tools/PinkhaSimulatorGate/owned_simulator_readiness.py": "42be87c8f6e9cb4911b6f5e8a009d0e17aa8d43bf1c259f91534fda7e70d1d09",
+          "Tools/PinkhaSimulatorGate/run_owned_single_lane.py": "5d976901b73b5bc5e519ead3a89952220d8149e710561d92acc9f36e46247414",
+          "Tools/PinkhaSimulatorGate/simulator_selection.py": "2309bb55b3752774bffc588a7c489392daa7ceb3b7279f6a9ec870899a1f1d5f",
+          "Tools/PinkhaSimulatorGate/type_preservation.py": "602a91987a6995f0218840744af0d88c2ea5c65d34c4edba7f030808c5007b44",
+          "Tools/PinkhaSimulatorGate/wave15_batch.py": "75e923d8c9718553d80c6aa3fd5338f06e2622e275ba10bc5537d03c4ba03193",
+          "Tools/PinkhaSimulatorGate/wave15_diagnostics.py": "c1ca1fe8857e6ce71b91ffb49ff54627815cbfe44beaa1bbb7328c9bb7a55397"
+        },
+        "origin": "CURRENT_CONTROL_CHECKOUT",
+        "root": "/Users/runner/work/anytype-swift/anytype-swift"
+      },
+      "originalApp": {
+        "commit": "4b09cc5478c60c1c6728a54f2a27a115637a835b",
+        "files": {
+          "Tools/AnyEnginePort/continue_native_acceptance.py": "1503cdbc81051777504941039c832ded4d93cbf224f7ddac7ea7d24ca76ebedb",
+          "Tools/AnyEnginePort/native_continuation_sources.py": "f45a0d9b09f19bdbee95029eedfd2e7211f0651abf40e357bbf2df332ed6b0ca",
+          "Tools/AnyEnginePort/native_ui_followup_retention.py": "c858a11ba0a9e9eea33641013198eaad8acfbd32452c4ec829933c88d7250da9",
+          "Tools/AnyEnginePort/reuse_uikit_execution.py": "1d0f2c7b821cc80bc2d2309605bf0b7bd0c835fed6c699541d4f7a87922f9f8b",
+          "Tools/AnyEnginePort/reuse_uikit_unaffected_eight.py": "56596559359b60c27e8302785720f8f456ce384ad375c8ee3a038002694baecc",
+          "Tools/AnyEnginePort/verify_archive_roundtrip.py": "5573eefcbf9eae9eea905210d15726ce7684f5529766531d4926eda39c7e2f29",
+          "Tools/AnyEnginePort/verify_custom_type.py": "6322e8f63d7c5864359c2a10f7b4f30773c96855c461840c5238f87211ddc864",
+          "Tools/AnyEnginePort/verify_focus_handoff_execution.py": "3b6799f003a1e526e66b6c35dbe34a727f0b2a736cc7a6690d8575805642bc1c",
+          "Tools/AnyEnginePort/verify_native_test_execution.py": "bd8f295934757612e2d5d71bf943f5ef93b3d883936d9bba572c6cfad9370b73"
+        },
+        "origin": "IMMUTABLE_ORIGINAL_APP",
+        "root": "/Users/runner/work/_temp/native-ui-original-app-45174286335-2"
+      }
+    }
+  },
+  "status": "BUILT_UI_ONLY_RUNNER_ORIGINAL_APP_UNCHANGED",
+  "testsExecutedByBuild": 0,
+  "uiRunnerBuildInvocations": 1
+}

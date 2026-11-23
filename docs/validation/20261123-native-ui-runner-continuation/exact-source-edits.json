@@ -1,0 +1,117 @@
+{
+  "base": "856130b141ce29e5095effe80a04e6108b7995f3",
+  "files": {
+    ".github/workflows/torah-inspector-ipados27.yml": {
+      "afterSHA256": "452a7877b42eed110b651af3c5cc7cd415a891391babbd826727960a9f9ef458",
+      "beforeSHA256": "9134e362da5dc7b056dbfa7a3ce75115f11bbfb49cb297682937c46d6c8a9b4b",
+      "literalInverse": [
+        {
+          "after": "          - native-ui-transition-candidate\n          - native-ui-runner-continuation\n",
+          "before": "          - native-ui-transition-candidate\n"
+        },
+        {
+          "after": "  native-ui-runner-continuation:\n    if: ${{ inputs.route == 'native-ui-runner-continuation' }}\n    uses: ./.github/workflows/pinkha-any-native-ui-runner-continuation.yml\n\n  coherent-original-products:\n",
+          "before": "  coherent-original-products:\n"
+        }
+      ],
+      "wholeFileInverse": true
+    },
+    "Tools/AnyEnginePort/native_ui_transition.py": {
+      "afterSHA256": "e23b62040beb044492371a81c621f89a83d168c6c9c253e43aa3041919ec65bc",
+      "beforeSHA256": "9ee60b309f4a5f43741bd3b55d7e03222e21519c8157aca5a6c99141e3fba4d7",
+      "literalInverse": [
+        {
+          "after": "def admitted_build(state, *, restored_runner=None):\n    if restored_runner is not None:\n        from native_ui_runner_reuse import require_reference\n        return require_reference(restored_runner).verify(state)\n    value = original.data(BUILD_RECEIPT)\n",
+          "before": "def admitted_build(state):\n    value = original.data(BUILD_RECEIPT)\n"
+        },
+        {
+          "after": "def execute(stage, *, restored_runner=None):\n",
+          "before": "def execute(stage):\n"
+        },
+        {
+          "after": "    build_record, original_descriptor = admitted_build(state, restored_runner=restored_runner)\n",
+          "before": "    build_record, original_descriptor = admitted_build(state)\n"
+        },
+        {
+          "after": "    if restored_runner is None:\n        raw, binding = contract.descriptor_bytes(\n            contract.regular(original_descriptor), products=PRODUCTS,\n            original_app=state[\"application\"], stage=stage)\n    else:\n        raw, binding = restored_runner.descriptor_bytes(\n            contract.regular(original_descriptor), state, stage)\n    with descriptor.open(\"xb\") as stream:\n        stream.write(raw)\n        if restored_runner is not None:\n            stream.flush()\n            os.fsync(stream.fileno())\n    if restored_runner is not None:\n        descriptor.chmod(0o600)\n",
+          "before": "    raw, binding = contract.descriptor_bytes(\n        contract.regular(original_descriptor), products=PRODUCTS,\n        original_app=state[\"application\"], stage=stage)\n    with descriptor.open(\"xb\") as stream:\n        stream.write(raw)\n"
+        },
+        {
+          "after": "    dump(directory / \"descriptor-binding.json\", binding)\n    if restored_runner is not None:\n        restored_runner.register_descriptor(stage, descriptor, directory / \"descriptor-binding.json\", state)\n    plan = contract.command(stage, descriptor, state[\"admission\"][\"ownedSimulatorUDID\"],\n                            directory / \"original.xcresult\")\n    if restored_runner is not None:\n        plan.update(restored_runner.record_fields())\n        plan[\"runnerOrigin\"] = \"RETAINED_ORIGINAL_UI_RUNNER\"\n",
+          "before": "    dump(directory / \"descriptor-binding.json\", binding)\n    plan = contract.command(stage, descriptor, state[\"admission\"][\"ownedSimulatorUDID\"],\n                            directory / \"original.xcresult\")\n"
+        },
+        {
+          "after": "               \"uiRunnerBuildInvocations\": 1, \"buildReceiptSHA256\": owned.digest(\n                   BUILD_RECEIPT if restored_runner is None else restored_runner.build_receipt_path()),\n",
+          "before": "               \"uiRunnerBuildInvocations\": 1, \"buildReceiptSHA256\": owned.digest(BUILD_RECEIPT),\n"
+        },
+        {
+          "after": "               \"completeStageAcceptance\": False, \"partialNamed\": None}\n    if restored_runner is not None:\n        outcome.update(restored_runner.record_fields())\n    first = None\n",
+          "before": "               \"completeStageAcceptance\": False, \"partialNamed\": None}\n    first = None\n"
+        },
+        {
+          "after": "        admitted_build(state, restored_runner=restored_runner)\n        outcome[\"testCommandInvoked\"] = True\n",
+          "before": "        admitted_build(state)\n        outcome[\"testCommandInvoked\"] = True\n"
+        },
+        {
+          "after": "        ui.current()\n        admitted_build(state, restored_runner=restored_runner)\n",
+          "before": "        ui.current()\n        admitted_build(state)\n"
+        },
+        {
+          "after": "                  \"mixedOrigin\": (\"ORIGINAL_APP_WITH_CURRENT_UI_ONLY_RUNNER\" if restored_runner is None\n                                  else \"ORIGINAL_APP_WITH_RETAINED_ORIGINAL_UI_RUNNER\")}\n",
+          "before": "                  \"mixedOrigin\": \"ORIGINAL_APP_WITH_CURRENT_UI_ONLY_RUNNER\"}\n"
+        },
+        {
+          "after": "def final(*, restored_runner=None):\n",
+          "before": "def final():\n"
+        },
+        {
+          "after": "              \"customType\": \"NOT_RUN\", \"history\": \"NOT_RUN\", \"physicalDevice\": \"NOT_RUN\"}\n    if restored_runner is not None:\n        result.update(restored_runner.record_fields())\n    first = None\n    try:\n        admitted_build(state, restored_runner=restored_runner)\n",
+          "before": "              \"customType\": \"NOT_RUN\", \"history\": \"NOT_RUN\", \"physicalDevice\": \"NOT_RUN\"}\n    first = None\n    try:\n        admitted_build(state)\n"
+        },
+        {
+          "after": "                             \"stage_receipt_origin_changed\")\n            if restored_runner is not None:\n                contract.require(all(value.get(k) == v for k, v in restored_runner.record_fields().items())\n                                 and value[\"buildReceiptSHA256\"] == owned.digest(restored_runner.build_receipt_path()),\n                                 \"retained_runner_stage_origin_changed\")\n            binding_path = EVIDENCE / stage / \"descriptor-binding.json\"\n",
+          "before": "                             \"stage_receipt_origin_changed\")\n            binding_path = EVIDENCE / stage / \"descriptor-binding.json\"\n"
+        },
+        {
+          "after": "        result[\"status\"] = (\"FIVE_FAILED_SCOPES_PASSED_IN_ORIGINAL_APP_WITH_NEW_UI_RUNNER\"\n                            if restored_runner is None else\n                            \"FIVE_FAILED_SCOPES_PASSED_WITH_ORIGINAL_APP_AND_RETAINED_UI_RUNNER\")\n",
+          "before": "        result[\"status\"] = \"FIVE_FAILED_SCOPES_PASSED_IN_ORIGINAL_APP_WITH_NEW_UI_RUNNER\"\n"
+        }
+      ],
+      "wholeFileInverse": true
+    }
+  },
+  "newWorkflowDerivation": [
+    [
+      "name: Failed native UI transitions with original application",
+      "name: Failed UI scopes with original application and retained runner"
+    ],
+    [
+      "  native-ui-transition-candidate:\n    name: Five failed scopes with a new UI-only runner and original App",
+      "  native-ui-runner-continuation:\n    name: Five failed scopes with retained original UI runner and App"
+    ],
+    [
+      "      - name: Build and preserve only the new UI runner",
+      "      - name: Restore the exact original failed-run UI runner without building"
+    ],
+    [
+      "        run: python3 -B Tools/AnyEnginePort/native_ui_transition.py build",
+      "        run: python3 -B Tools/AnyEnginePort/native_ui_runner_continuation.py restore"
+    ],
+    [
+      "Tools/AnyEnginePort/native_ui_transition.py execute",
+      "Tools/AnyEnginePort/native_ui_runner_continuation.py execute"
+    ],
+    [
+      "Tools/AnyEnginePort/native_ui_transition.py final",
+      "Tools/AnyEnginePort/native_ui_runner_continuation.py final"
+    ],
+    [
+      "      - name: Preserve all original current evidence and the new UI Products",
+      "      - name: Preserve original App and runner origins plus all current outcomes"
+    ],
+    [
+      "          name: Native-UI-Transition-Candidate-",
+      "          name: Native-UI-Retained-Runner-"
+    ]
+  ]
+}

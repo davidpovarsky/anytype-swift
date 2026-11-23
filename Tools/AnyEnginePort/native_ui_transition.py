@@ -235,7 +235,10 @@ def build():
     return record
 
 
-def admitted_build(state):
+def admitted_build(state, *, restored_runner=None):
+    if restored_runner is not None:
+        from native_ui_runner_reuse import require_reference
+        return require_reference(restored_runner).verify(state)
     value = original.data(BUILD_RECEIPT)
     contract.require(value.get("status") == "BUILT_UI_ONLY_RUNNER_ORIGINAL_APP_UNCHANGED"
                      and all(value.get(k) == v for k, v in context_record(state).items())
@@ -348,11 +351,11 @@ def archive_semantics(state, directory, attachments):
             "bodyProofBoundary": "Retained UI body/cold assertions; candidate changes only Files navigation."}
 
 
-def execute(stage):
+def execute(stage, *, restored_runner=None):
     contract.require(stage in contract.STAGES, "only_five_failed_scopes_authorized")
     state = setup()
     verify_device(state)
-    build_record, original_descriptor = admitted_build(state)
+    build_record, original_descriptor = admitted_build(state, restored_runner=restored_runner)
     directory = EVIDENCE / stage
     contract.require(not directory.exists(), "no_stage_replay_in_current_owned_run")
     directory.mkdir(mode=0o700)
@@ -360,24 +363,41 @@ def execute(stage):
     dump(directory / "source-before.json", source_before)
     descriptor = PRODUCTS / contract.COPY_NAMES[stage]
     contract.require(not descriptor.exists(), "fresh_sibling_candidate_descriptor_required")
-    raw, binding = contract.descriptor_bytes(
-        contract.regular(original_descriptor), products=PRODUCTS,
-        original_app=state["application"], stage=stage)
+    if restored_runner is None:
+        raw, binding = contract.descriptor_bytes(
+            contract.regular(original_descriptor), products=PRODUCTS,
+            original_app=state["application"], stage=stage)
+    else:
+        raw, binding = restored_runner.descriptor_bytes(
+            contract.regular(original_descriptor), state, stage)
     with descriptor.open("xb") as stream:
         stream.write(raw)
+        if restored_runner is not None:
+            stream.flush()
+            os.fsync(stream.fileno())
+    if restored_runner is not None:
+        descriptor.chmod(0o600)
     binding["copiedSHA256"] = contract.sha(raw)
     binding["copiedPath"] = str(descriptor)
     dump(directory / "descriptor-binding.json", binding)
+    if restored_runner is not None:
+        restored_runner.register_descriptor(stage, descriptor, directory / "descriptor-binding.json", state)
     plan = contract.command(stage, descriptor, state["admission"]["ownedSimulatorUDID"],
                             directory / "original.xcresult")
+    if restored_runner is not None:
+        plan.update(restored_runner.record_fields())
+        plan["runnerOrigin"] = "RETAINED_ORIGINAL_UI_RUNNER"
     enumeration_file = directory / "enumeration.json"
     enumeration_command = contract.enumeration_command(plan, enumeration_file)
     dump(directory / "plan.json", {**plan, "enumerationCommand": enumeration_command})
     outcome = {"schemaVersion": 1, "status": "FAIL", **context_record(state), "stage": stage,
-               "uiRunnerBuildInvocations": 1, "buildReceiptSHA256": owned.digest(BUILD_RECEIPT),
+               "uiRunnerBuildInvocations": 1, "buildReceiptSHA256": owned.digest(
+                   BUILD_RECEIPT if restored_runner is None else restored_runner.build_receipt_path()),
                "descriptorBindingSHA256": owned.digest(directory / "descriptor-binding.json"),
                "planSHA256": owned.digest(directory / "plan.json"), "testCommandInvoked": False,
                "completeStageAcceptance": False, "partialNamed": None}
+    if restored_runner is not None:
+        outcome.update(restored_runner.record_fields())
     first = None
     errors = []
     try:
@@ -389,7 +409,7 @@ def execute(stage):
         # Exact descriptor bytes and full CLI selectors bind enumeration to XCTest.
         contract.require(owned.digest(descriptor) == binding["copiedSHA256"],
                          "descriptor_changed_after_enumeration")
-        admitted_build(state)
+        admitted_build(state, restored_runner=restored_runner)
         outcome["testCommandInvoked"] = True
         timeout = len(contract.STAGES[stage][2]) * contract.STAGES[stage][1] + 300
         result, _ = owned.run_owned(plan["command"], directory / "test.log", timeout)
@@ -437,7 +457,7 @@ def execute(stage):
     try:
         outcome["sourceAfter"] = recheck_sources(state, source_before)
         ui.current()
-        admitted_build(state)
+        admitted_build(state, restored_runner=restored_runner)
         contract.require(owned.digest(descriptor) == binding["copiedSHA256"],
                          "copied_descriptor_changed_after_execution")
         outcome["originalProductsUnchanged"] = True
@@ -461,7 +481,8 @@ def execute(stage):
         output = {"actual": proof, "validatorSHA256": owned.digest(Path(execution.__file__)),
                   "installedOriginalApplication": installed_app(state, directory),
                   "testLogSHA256": owned.digest(directory / "test.log"),
-                  "mixedOrigin": "ORIGINAL_APP_WITH_CURRENT_UI_ONLY_RUNNER"}
+                  "mixedOrigin": ("ORIGINAL_APP_WITH_CURRENT_UI_ONLY_RUNNER" if restored_runner is None
+                                  else "ORIGINAL_APP_WITH_RETAINED_ORIGINAL_UI_RUNNER")}
         if stage == "archive-roundtrip":
             output["archive"] = archive_semantics(state, directory, directory / "private-attachments")
         return output
@@ -473,15 +494,17 @@ def execute(stage):
     return outcome
 
 
-def final():
+def final(*, restored_runner=None):
     state = setup()
     result = {"schemaVersion": 1, **context_record(state), "status": "INCOMPLETE",
               "uiRunnerBuildInvocations": 1, "currentMethods": {},
               "originalFailedRun451483RemainsFailure": True,
               "customType": "NOT_RUN", "history": "NOT_RUN", "physicalDevice": "NOT_RUN"}
+    if restored_runner is not None:
+        result.update(restored_runner.record_fields())
     first = None
     try:
-        admitted_build(state)
+        admitted_build(state, restored_runner=restored_runner)
         result["originalProductsUnchanged"] = True
         for stage in contract.STAGES:
             path = EVIDENCE / stage / "result.json"
@@ -490,6 +513,10 @@ def final():
             value = original.data(path)
             contract.require(value.get("stage") == stage and all(value.get(k) == v for k, v in context_record(state).items()),
                              "stage_receipt_origin_changed")
+            if restored_runner is not None:
+                contract.require(all(value.get(k) == v for k, v in restored_runner.record_fields().items())
+                                 and value["buildReceiptSHA256"] == owned.digest(restored_runner.build_receipt_path()),
+                                 "retained_runner_stage_origin_changed")
             binding_path = EVIDENCE / stage / "descriptor-binding.json"
             binding = original.data(binding_path)
             contract.require(value["descriptorBindingSHA256"] == owned.digest(binding_path)
@@ -517,7 +544,9 @@ def final():
         result["cleanupOriginalSHA256"] = {
             "provider": owned.digest(original.EVIDENCE / "hanlin-provider/cleanup.json"),
             "simulator": owned.digest(original.EVIDENCE / "native-ui-original-simulator-cleanup.json")}
-        result["status"] = "FIVE_FAILED_SCOPES_PASSED_IN_ORIGINAL_APP_WITH_NEW_UI_RUNNER"
+        result["status"] = ("FIVE_FAILED_SCOPES_PASSED_IN_ORIGINAL_APP_WITH_NEW_UI_RUNNER"
+                            if restored_runner is None else
+                            "FIVE_FAILED_SCOPES_PASSED_WITH_ORIGINAL_APP_AND_RETAINED_UI_RUNNER")
     except BaseException as error:
         first = error
         result["firstFailure"] = owned.error_record(error)
