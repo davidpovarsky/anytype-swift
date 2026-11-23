@@ -1,0 +1,55 @@
+{
+  "observedUTC": "2026-11-23T02:21:43.425774+00:00",
+  "sharedBeforeEvidence": "70c6aa3447baae2d8e2681228fb50236c4c60b3b",
+  "uiContinuation": {
+    "branch": "codex/chatgpt-wave15-ui-qualified-continuation-20261123",
+    "commit": "e5f83a261b9accdfd67889e298c048092c365d06",
+    "retainedMethods": 22,
+    "newControls": 8,
+    "actualRepairedTests": "NOT_RUN"
+  },
+  "runs": {
+    "release": {
+      "id": 45095838065,
+      "watcher": "root",
+      "job": "job_5a3627a2457e"
+    },
+    "hanlin": {
+      "id": 45096079315,
+      "watcher": "sdk_ci",
+      "job": "job_208fdf2ead70"
+    },
+    "inline": {
+      "id": 45097067212,
+      "producer": "PASS_AUDITED",
+      "consumer": "PENDING",
+      "watcher": "root",
+      "job": "job_eb718be450ec"
+    },
+    "sdkEnumeration": {
+      "id": 45097260936,
+      "watcher": "root",
+      "job": "job_c4d1a489d0e8"
+    },
+    "originalUITimeline": {
+      "id": 45097808288,
+      "watcher": "acceptance_map"
+    },
+    "semanticPage154": {
+      "id": 45098093058,
+      "watcher": "sdk_ci",
+      "job": "job_f34368758cba"
+    }
+  },
+  "owners": {
+    "root": "Integration, publication, exact22 UI continuation, Release/inline/enumeration audit and Asana",
+    "acceptance_map": "Original UI timeline and narrow Any UI repairs; SourceDragafbc and Fileseba qualified syntax only",
+    "editor_migration": "Semantic native Page2 retained; typed Swift22 compilation, candidate editor action/confirmation and generation fence",
+    "sdk_ci": "Hanlin/Page154 watches, actual154 SDK consumer and independent boundary reviews"
+  },
+  "boundaries": [
+    "No previous qualified product test reruns solely for new commits.",
+    "All original failures remain preserved.",
+    "No broad full Space migration, mounted editor, physical-device or full release acceptance claim."
+  ]
+}

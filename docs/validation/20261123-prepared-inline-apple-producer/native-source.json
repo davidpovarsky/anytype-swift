@@ -1,0 +1,920 @@
+{
+  "schemaVersion": 1,
+  "version": "v0.5.0-pinkha.prepared.inline.1",
+  "sourceManifestSHA256": "86598a7046ef135fa5dd2d0c2e559750f89ed8517fe4c1c753ce4457c13a009b",
+  "sources": {
+    "any": {
+      "upstreamCommit": "88fae2e5ae7d0f46d6707567a3123081faa8de9a",
+      "resolvedUpstreamCommit": "88fae2e5ae7d0f46d6707567a3123081faa8de9a",
+      "patchSHA256": "20a52256d65b8469144542fdef7fd953edcaf28930ba35dd870b037de25c8e46",
+      "upstreamTagObject": null,
+      "testedLocalCommit": "88fae2e5ae7d0f46d6707567a3123081faa8de9a",
+      "files": [
+        {
+          "path": "go.mod",
+          "gitBlob": "4d7ada1cfb568dd505f076c790677d562b292847",
+          "worktreeSHA256": "5ce97a6907d80856350de81d641682745e9cac961d3f6a949f859075d7d8c549",
+          "bytes": 8371,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/api/blocks.go",
+          "gitBlob": "ffa7702090b9d30bff3c3325f21f93f165fc7445",
+          "worktreeSHA256": "a77de53dbe8ffac602917ed94aa93cbe6ed033ac4f0c3a5a07767028f7d1de77",
+          "bytes": 2747,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/api/pinkha_migration.go",
+          "gitBlob": "a3c67c82ed3cdc5782a2e3ba4437ec715df0c1e6",
+          "worktreeSHA256": "fe779daf6cb1ffe0a43163a37a54caeb3119df57142544d4c01950939e0a5dbf",
+          "bytes": 1006,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/api/pinkha_migration_inline_file.go",
+          "gitBlob": "9e1e06762724bd9fee7970a200f760c55de79e91",
+          "worktreeSHA256": "0c48357ec347c9c3e1566495525708fae77bba298f1da58fe7abf0bb1f19929b",
+          "bytes": 911,
+          "origin": "prepared-inline-file-http-v1"
+        },
+        {
+          "path": "internal/api/pinkha_operation_read.go",
+          "gitBlob": "fcb6f95d88f8cf2a0f85d980c0e02eb3aebd762c",
+          "worktreeSHA256": "d52ca1ea317b0b7e402768d1d9687e4b7b790a6c50bce20b1d608ce32219e63e",
+          "bytes": 1167,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/api/properties.go",
+          "gitBlob": "8db806d304c05ec561173e6e50232736898c8b92",
+          "worktreeSHA256": "6fb8ddbc948b3a8eae9cfd451080859aa200e2de1fc15b1ef44ef49efe4aa4f4",
+          "bytes": 1002,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/editor/api.go",
+          "gitBlob": "6a96b130c4458104882385c97c00cf02c053c02c",
+          "worktreeSHA256": "8e6a1d170e07fe4aee50598f0884353cd10046606ea1996d93e8f765b901cf3d",
+          "bytes": 14840,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/editor/migration_prepared.go",
+          "gitBlob": "ca36bd401bffaaea60cebdec09140e259c9e0ba7",
+          "worktreeSHA256": "bfd2cbb81a3d7b95132d34bb6d3a0cb1679be38ef58b9d12ea81cd3f20101738",
+          "bytes": 944,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/editor/pinkha_patch.go",
+          "gitBlob": "e1303336dc64eed30d7776afff5e79bbdfecf599",
+          "worktreeSHA256": "79ccd26058d3f03b655f799231d6795d9448c1aa24a03802f99137157a9e520f",
+          "bytes": 1755,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/markdown/pinkha_version.go",
+          "gitBlob": "33ca5535370e3595182e43c2687704228ba2e0a6",
+          "worktreeSHA256": "e1674b706eac7a576fedb8168e583e4f3e78f678da8729108009b37867cf7ae9",
+          "bytes": 540,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/claims/contract_test.go",
+          "gitBlob": "390fd8dd8a6d0ed6bbdb010448c22d7136118dc4",
+          "worktreeSHA256": "72740a99fcc0f430ac31614d57fc085f606d34f29423585a06705c4127d898c2",
+          "bytes": 5521,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/claims/document_policy.go",
+          "gitBlob": "d1544bd1ca53c7cc6f4e86e7ba2b859d18c29271",
+          "worktreeSHA256": "3f40008a740bc078d408b419b35c8bd4f563a10c3ba36da19f916d0a190adf64",
+          "bytes": 2960,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/claims/module.go",
+          "gitBlob": "83694f984230fed570bc005dc088d4508122f444",
+          "worktreeSHA256": "8723a17a3b0c2ca9dc13e4b9257164ed21fe4f5afe0a0613f6f7aa277d904494",
+          "bytes": 13545,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/claims/object_snapshot.go",
+          "gitBlob": "f0fedbf99d43bdda56168c4187dfb3a27f69e0aa",
+          "worktreeSHA256": "74ebf93d1ce809cef869ce47a8377cece12d6343a674dda26b3c345781c08b64",
+          "bytes": 5402,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/claims/object_snapshot_test.go",
+          "gitBlob": "6234f5d761ab1a4377184e4e5832855eb44b0d60",
+          "worktreeSHA256": "2cd60c0b0e56e4b6e28da8ea9eca5ecb7cf0a3405da1940c9c24582368024692",
+          "bytes": 7490,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/claims/operation.go",
+          "gitBlob": "db28bc7bb11558e445d78792eb5e6a07b620cbae",
+          "worktreeSHA256": "7817665ec71568f363eb262f19e2c71d36537b641043bc0a08273c6e034ffce7",
+          "bytes": 6795,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/claims/operation_read.go",
+          "gitBlob": "23ad03a551af13439e3378cf1c756192ae2a5071",
+          "worktreeSHA256": "1112129769b930d21f4064823f004d6de0a9cc9d1d6565e253624c1cd6a35f62",
+          "bytes": 8447,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/claims/operation_read_test.go",
+          "gitBlob": "7ffadbba75e8e013b74430264a1e77fa8f3f6709",
+          "worktreeSHA256": "8a99c4021aa2cb9322c109c0bb3c9e7cb6bd0fdaaf493794dfbde40f51174f24",
+          "bytes": 9068,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/claims/presentation.go",
+          "gitBlob": "73b4a40ce355ac429f962b9323e4565942b402d7",
+          "worktreeSHA256": "5e9322cc7f033c7a28e6f309cf30089048172296f1c2e72f40e5f525d57ec0e2",
+          "bytes": 899,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/claims/read.go",
+          "gitBlob": "8d088cdea400e21fae19473297e9b6f600a73122",
+          "worktreeSHA256": "6975c3a74207e31bf348bd3ec8a7204985a5776317c77b857c92073a77bafd3f",
+          "bytes": 8024,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/claims/record.go",
+          "gitBlob": "0acc6802ffa52bc8b72519f17624e0b53ff5e2f8",
+          "worktreeSHA256": "d7fca028532f9d844c20adbb2ede8f5538f2392dd41f3ed6c5425c5df1f1d443",
+          "bytes": 5133,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/claims/related.go",
+          "gitBlob": "3071b5f666a2a05fa903f14c4f13523bd0744889",
+          "worktreeSHA256": "d41b7ed88e075925875d57d42397308d93c15f47ad1caba86f151f562127f525",
+          "bytes": 6659,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/claims/semantic.go",
+          "gitBlob": "4467bf9c6bb59ff97594122dc3d0d4b39c28c930",
+          "worktreeSHA256": "30ec9d04f23c5bfd4ea379e77d07f6f2db3156458a814d0876ef77a010c58507",
+          "bytes": 4691,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/claims/semantic_test.go",
+          "gitBlob": "b59577b6099508b31731c80ec05cd530897c920c",
+          "worktreeSHA256": "757a224dba602dead8ec55adf35a3d631a812489c58f5a3c9ad7c7b3796ac411",
+          "bytes": 4682,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/claims/snapshot.go",
+          "gitBlob": "a6f452bc4cc6dcca447f899b6c3b9616cf05ff9f",
+          "worktreeSHA256": "581eb1b38efb0929f705de1edd9668c7681f76a7dfe5372d4700708448078243",
+          "bytes": 2767,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/derived/bound_claim.go",
+          "gitBlob": "3028be6bd7c77165710addfa0a7784f5c80cb23b",
+          "worktreeSHA256": "396ceb51eedf057ec4abb23442ff08fc99a027540c0e9a96eecbc4e9412c71b4",
+          "bytes": 3315,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/derived/projection.go",
+          "gitBlob": "41465e6a9722b51226ab6508a332252b4ac8fa6f",
+          "worktreeSHA256": "486e31b5b7f509311d8d60ba35bbb0f4095bcadc96211091190b99bd74b3aea3",
+          "bytes": 8159,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/derived/properties.go",
+          "gitBlob": "47f85831954df10cf45d16b59f74d8f81c84aff1",
+          "worktreeSHA256": "c4374a825c533c13155441a45b63b08b137a1bbb48e4a0107aa0693d68ccd965",
+          "bytes": 1264,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/derived/readiness.go",
+          "gitBlob": "4b550a65d662a3213cc451cdd0d6d73eccfd3793",
+          "worktreeSHA256": "45bc67a85236741ea34738735822153879f22969ac4a3375ee1e29c22baa012c",
+          "bytes": 1974,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/migrationnative/inline_file_test.go",
+          "gitBlob": "c6a2ebd824be21b428c0ff129100529f2a358bc2",
+          "worktreeSHA256": "c9dfa9f627515313985e21ac654693a66d2d6402a0b7a2760ff0f378a590ec30",
+          "bytes": 15460,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/migrationnative/native_test.go",
+          "gitBlob": "720c361593380b1adcaf558fe204f46076b71d9f",
+          "worktreeSHA256": "539c78e9c135d944f49e03782bb43da169297d41fcf3b74da43d1189410c5721",
+          "bytes": 10830,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/migrationnative/peer_test.go",
+          "gitBlob": "91eb432a26572378ad69c46e51754635e36d4600",
+          "worktreeSHA256": "322236568ac674855cd02623213241b1cab8d4bbf033648ba731ef2ca4849ed0",
+          "bytes": 8353,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/pinkha/migrationnative/testdata/local.yml",
+          "gitBlob": "4e4db9d5cf34b05f9159651ccfc808eb165645ae",
+          "worktreeSHA256": "a3fe3c21144c2c82afa03b58014752c6bca6e5a9f3e69a1bc1b2b38415434756",
+          "bytes": 1137,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/handlers_blocks.go",
+          "gitBlob": "43e51bbf739545723f388b5f60d0649eeda02eab",
+          "worktreeSHA256": "1144fc2ae1a4c6f0dcde35b234f0061c362cf6aba5687689d63259434f450b6c",
+          "bytes": 7545,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/handlers_common.go",
+          "gitBlob": "843d05db34433b93d440438187ba8dba515bd668",
+          "worktreeSHA256": "3693280e37c7c304ab38ad0b44fc11a11fbdab9188fd2b06351c0ec1623363ac",
+          "bytes": 23000,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/handlers_objects.go",
+          "gitBlob": "6fd7109806941ecfa0c40dac0fa7e588e504c2b4",
+          "worktreeSHA256": "509be58130afb88687381e1e89704d4c5681752bdd284c3d22d0556dfcc182af",
+          "bytes": 11760,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/handlers_pinkha.go",
+          "gitBlob": "c164061ea06f432ec5b9552ddc101509d64310de",
+          "worktreeSHA256": "696798e85fabd864cbde840743f18360710f176cb99ddac533dbe9cd4cc18e09",
+          "bytes": 8556,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_block_cas_test.go",
+          "gitBlob": "a30206bc2db2d38249c7de83e89061173b273774",
+          "worktreeSHA256": "d5f027aa89299aac3bd562a5a69562828e49edf1204afbdaa46c2a0bbbfff2fa",
+          "bytes": 8142,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_create_test.go",
+          "gitBlob": "0718198c19aeedd7d722ee21d8d5d390c580ed74",
+          "worktreeSHA256": "811774a803fc58f56bf66f1e7fcb75e69b0c80a38b77cba779b9b4f51af57844",
+          "bytes": 4563,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_document_metadata_test.go",
+          "gitBlob": "124af2380e978b1aca8db9565ad835e0a84c0b38",
+          "worktreeSHA256": "8db84c1f834de9f6426efbac36667ed9ef8bce323b31fd5cb0844a796f72879f",
+          "bytes": 8227,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_document_policy.go",
+          "gitBlob": "a50ba8f9c3b76cc68df840fefcd76082c0b61af0",
+          "worktreeSHA256": "b56388acda977b831d5a9a3ed6147249eb686fe44a65ecc42e62bee53f56c404",
+          "bytes": 1007,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_document_policy_test.go",
+          "gitBlob": "6b95cbdb52d2b39c0723c047525091afa36cb9bd",
+          "worktreeSHA256": "6ae036ef08834e2fa5e70e6c9227cf3bf34eb9b4f79c21f4483b8ee0dab306ff",
+          "bytes": 14358,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_migration.go",
+          "gitBlob": "5f9858aea69cbb777de1e586ca1fc5c9f6edc47a",
+          "worktreeSHA256": "0e0e81f5c8c4ceb7267bc18583a13836bacad465b2dc1f2362f16a7e83ab3526",
+          "bytes": 9707,
+          "origin": "prepared-inline-file-http-v1"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_migration_inline_file.go",
+          "gitBlob": "ad9d74b59ca7af9518d2d112b01675ab9dc8b2ea",
+          "worktreeSHA256": "3af602b6f182e5646f1a7f640faec716c239e09056490626622cdffc233704ab",
+          "bytes": 5139,
+          "origin": "prepared-inline-file-http-v1"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_migration_inline_file_bridge_test.go",
+          "gitBlob": "100d48c4afedfd289b1a2e6efde24a796629c794",
+          "worktreeSHA256": "5ee8cd53e6492c5369867d59ef59bffc6c6af8b3a0b89ee26f8763aec9a1bfeb",
+          "bytes": 7423,
+          "origin": "prepared-inline-file-http-v1"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_migration_inline_file_test.go",
+          "gitBlob": "41acb202da4bab693bae9ecf2d8a98fa388a0f27",
+          "worktreeSHA256": "9782d6700f73626fd8bd0821ce8f22016cf0227b9cf771aa98aec58245eb9626",
+          "bytes": 13921,
+          "origin": "prepared-inline-file-http-v1"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_migration_test.go",
+          "gitBlob": "28130129ec3ad4c99e3eed5a93f051b1a71f0986",
+          "worktreeSHA256": "2a1619037fab9db2ca716a20084072d78767f2d3f22d45233a6caa649ce0ad90",
+          "bytes": 6803,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_object_snapshot.go",
+          "gitBlob": "ed4d8d3d6c15eeefd887361d843a7f2336da5f66",
+          "worktreeSHA256": "9d76303270475830193ffe534f2da995b32601441a883abb9a076854a980afaa",
+          "bytes": 3181,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_operation_read.go",
+          "gitBlob": "11460ea47c9089ee590eefcb03e0dda5d0e02781",
+          "worktreeSHA256": "f690db41e7f9b9b391fac6131dc03fe7b3037677940691bd2149c08cce5954f1",
+          "bytes": 4284,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_operation_read_test.go",
+          "gitBlob": "3aecf61524ddeacd9f742bc28e4e12ce9615e2aa",
+          "worktreeSHA256": "877798eddf2aaed747acb6613163b7af9c34c317eb94d01c32fdd92eb9131b56",
+          "bytes": 6129,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_property_cas_test.go",
+          "gitBlob": "1a70d0f05f7760614fb908c5e29bc7e78dca9b03",
+          "worktreeSHA256": "38d80f7aab074a6e7cf1f6448d548ef28ab58a76a44e6dbbead7ee97b2a4d5d9",
+          "bytes": 8541,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_property_noop_test.go",
+          "gitBlob": "4c3ab7890761d7e4a6801f7ba61f40c3455e763c",
+          "worktreeSHA256": "4200d16907b823ee8d1d337d589e1d9473a33e76779b00e91c97627d5cdbee1b",
+          "bytes": 8615,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_snapshot.go",
+          "gitBlob": "676d6b926708dde169eedfd951d95341911fef2c",
+          "worktreeSHA256": "0fe9f5c925b1b1ee77b77fca85d1607fecdf65784f7c08000681b4460e40dd45",
+          "bytes": 3141,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/handlers_properties.go",
+          "gitBlob": "c3f609ad41d6e36fdf0983f85138b119fe75981a",
+          "worktreeSHA256": "b1279dbd52ec09c65e4e8ddb1653f938c955f25dca7f834c16ec7c7d012f74ad",
+          "bytes": 14401,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/pinkha_create.go",
+          "gitBlob": "3bf5c1bf9324d33f0998968546d48e2882cc836f",
+          "worktreeSHA256": "37683e528016534dbce23629c66e3641c9a80e9ff3439f3269831a3654f3a403",
+          "bytes": 1154,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/pinkha_gateway.go",
+          "gitBlob": "741d18b92f212476654a9dd42d7bae2e397ced80",
+          "worktreeSHA256": "c256ebf6b3c304edfb531ab5dda95dfb7a5ce26779322fc1714c5d1d4a27cee8",
+          "bytes": 720,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/pinkha_gateway_desktop.go",
+          "gitBlob": "05d477eb8d31185d8f2d4c67ec09a6fa8b2c4ce0",
+          "worktreeSHA256": "5e438b552c2a48f7cad5780a57be7c6eb4d94cc8c22f282fc73098482d3c99d8",
+          "bytes": 68,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/pinkha_gateway_mobile.go",
+          "gitBlob": "c929485894613aa68dfdd53850cfe42263fb2e02",
+          "worktreeSHA256": "10100dc0e960483bf190c6230932b1486bfd769137d5326c0627dad73a930272",
+          "bytes": 66,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/pinkha_gateway_test.go",
+          "gitBlob": "915e15a65ed4275d680ec1348cb5884fda4bae33",
+          "worktreeSHA256": "f512ce89021723dc3dc200ac630a25ccaa696fde326c73ab59869503d076175a",
+          "bytes": 3168,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/pinkha_presentation.go",
+          "gitBlob": "c5185c3e330809ea1a829b6225eb4ec6ee46181e",
+          "worktreeSHA256": "7b56b17b9ae6826444681adfd54d66c73458d24535576c3e030b6f02969d6099",
+          "bytes": 2010,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/pinkha_presentation_test.go",
+          "gitBlob": "76597f0701c57f6b5d2860a2b49c0d43eca1e5fd",
+          "worktreeSHA256": "766dee881a60b7019c96a7fce6196b5a673f35701442dc0f47e3f30f12f4c226",
+          "bytes": 1159,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/pinkha_property_condition.go",
+          "gitBlob": "b9f95f6d9f4c711216681eda361dabb33186e4a5",
+          "worktreeSHA256": "b7f4fa8669c32472627fc90efc8bb6ecbb9b2b5ed6eb5d98d9eff3c65690163e",
+          "bytes": 6475,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/pinkha_property_validated.go",
+          "gitBlob": "d9d9cafed8428abb8b01090a2264871768b6a55d",
+          "worktreeSHA256": "5c821d2da6dd14001247af1322cf2ef88695177f2aa3df2445dfdb0352f9754d",
+          "bytes": 1750,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/pinkha_property_validated_test.go",
+          "gitBlob": "afe376f85b30bbe7e39fe27fb2a75f059e72dbba",
+          "worktreeSHA256": "f21df5dfe6ce46b98e1c6adb6888c034d0f032f7ab9f58eb5e9e81a98ae403a8",
+          "bytes": 1262,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/routes.go",
+          "gitBlob": "18818f98a03d5b6e684e9424b78195e8e58efba9",
+          "worktreeSHA256": "298cecd808ac2b28ca90dc5ab2e3632c221f33ff4647b726e99d7ff7875c4225",
+          "bytes": 12031,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/server/sdk.go",
+          "gitBlob": "87572ba3917b8492420901e87bfa3621c00b0600",
+          "worktreeSHA256": "e407f6d327e1b68eb08b765de161bbb2d502dd95f1222476e2480d64d189306e",
+          "bytes": 17223,
+          "origin": "retained frozen v11"
+        }
+      ],
+      "testedEffectiveTree": "0445217b25b4f4fcf4d2ce86e3a4eecfcfc5cd10",
+      "testedWorkingTreeIncludesUncommittedChanges": true,
+      "testedWorkingTreeRevision": "prepared-inline-file-http-v1-unqualified-source"
+    },
+    "sdk": {
+      "upstreamCommit": "854df54cdadd76006ae823cbd1b1d923138356d0",
+      "resolvedUpstreamCommit": "854df54cdadd76006ae823cbd1b1d923138356d0",
+      "patchSHA256": "d76dac41b4fe9008d2ea558dd043ed507063a41f1ecf80172b598e1a7a5a31b1",
+      "upstreamTagObject": "b161a0475479bbe7d9d693bc496c6fdd90c3969b",
+      "testedLocalCommit": "854df54cdadd76006ae823cbd1b1d923138356d0",
+      "files": [
+        {
+          "path": "handler/localguard.go",
+          "gitBlob": "092eb9ed17f39007034f16d76ef38f9b8d41658a",
+          "worktreeSHA256": "848afc67387631330b962ca379e470b789a0bf6e5c77bba12ed975de91025a8e",
+          "bytes": 668,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/commitguard/create.go",
+          "gitBlob": "b028c0d75933738c377e17a6f04a76d5c75b8aaf",
+          "worktreeSHA256": "b8ffee3166890a0251ba56355b6de7185692595952a7cae8af80e75e2679187b",
+          "bytes": 2566,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/commitguard/create_test.go",
+          "gitBlob": "1b887963f573283e4a03af9ab695f3892dd74ebd",
+          "worktreeSHA256": "96c6d52b1a386c7abad2af2b396df6ae5c1652c885bdc1ced85a5abc30ec38c7",
+          "bytes": 5425,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/commitguard/guard.go",
+          "gitBlob": "d8811f7af5669eab48957a38c43a5a34fe032a93",
+          "worktreeSHA256": "98ccaafb805f83d162e59ea75b436347f6f9255693b8aa563b9352e5d6d7cd02",
+          "bytes": 9976,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/commitguard/guard_test.go",
+          "gitBlob": "b44d334d5367366ad544664b911f1c60ad7ec9b1",
+          "worktreeSHA256": "8e202c50fbc92f40a60512b2e204102f6fd11250ea2a376993681db73e63e01f",
+          "bytes": 9324,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/commitguard/prepared.go",
+          "gitBlob": "4024de2feebec5e9045778e133e8a80ec64221d7",
+          "worktreeSHA256": "13c4429c666d2450b6a1a544afec6a8b535549655437ca46fd5609e18ee16a1c",
+          "bytes": 6290,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/commitguard/prepared_inline_file.go",
+          "gitBlob": "25aed0d0e7a3943458bc986deea7b86cbc3d30dd",
+          "worktreeSHA256": "d5cb4dff66a9d71e1f57593c1e696a0033b3b3da99388da22daabbb27aa59618",
+          "bytes": 8302,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/commitguard/prepared_inline_file_test.go",
+          "gitBlob": "3185b1b86b6db0dd6a5883ade967cd3641e8d312",
+          "worktreeSHA256": "6d1b9477a7709c1166edc882e4e05529dc3470dc8d5bd02d3b660acbe5036109",
+          "bytes": 8601,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/commitguard/prepared_test.go",
+          "gitBlob": "87498741572e4b77500164abf3dfb9a77f113838",
+          "worktreeSHA256": "d9a7dba0f3c6121a11a29a1bd32a45fb8884de1940719b517e03854f3249a925",
+          "bytes": 6779,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/crdt/guard_lookup_test.go",
+          "gitBlob": "8ec9865d5754e8b896177389cf6555ef76081422",
+          "worktreeSHA256": "d2cb7da2d6ed861abf7d7c2f7b3a33670a17ff386ad0e0b751403b6e37796139",
+          "bytes": 1592,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/crdt/localguard.go",
+          "gitBlob": "428605443d57b9521aebecd99a863c93a8fd38c9",
+          "worktreeSHA256": "04556c84fd2c774ac659f1903a8f3710c934f75bb19e8c8bfdf54daf53679d51",
+          "bytes": 5308,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/crdt/objectprecondition.go",
+          "gitBlob": "5ccce2014693ae060b31f512d1fa2d64f68a5774",
+          "worktreeSHA256": "c428721ee14eb4fcc6beef49f5717d0b7c57caac833cd8ac90d1145c7544e730",
+          "bytes": 1033,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/crdt/op.go",
+          "gitBlob": "def138604819f003c6c22fcbcaf5b30dc1156945",
+          "worktreeSHA256": "1b2e3a0c308f7e3deb613aaaf27d81a81bd8453822c2695a765142903fa02d92",
+          "bytes": 10045,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/migrationintent/inline_file.go",
+          "gitBlob": "be45a630afb7206ce4c9bf05cd3050a1ed2c5036",
+          "worktreeSHA256": "31072f04507163e06277893a7fe893ed51b81a3fef9696fac903c2b813fb00c3",
+          "bytes": 5536,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/migrationintent/inline_file_test.go",
+          "gitBlob": "ba699dc770969d2187f847f6f2c0d38ccbaef1a0",
+          "worktreeSHA256": "73943efd736b68a2d6c0d2ba1f9cc54528945fd8a8470a750a05c63ca2e26480",
+          "bytes": 6210,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/migrationintent/numbers.go",
+          "gitBlob": "341de456669dad43bcc7f2336105149f58ba980e",
+          "worktreeSHA256": "825cf4c7b06f03a6e8738f7a9ef2e3afc6e52c2a1c7748809212b01aa2846ea7",
+          "bytes": 1569,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/migrationintent/numbers_test.go",
+          "gitBlob": "07c2e0d8907ca6c157d69534df09ab1e19fa6631",
+          "worktreeSHA256": "5443619e63e8ac86f9638dfdc5c91859d24f2a76b06f9f5542b82a7922f2fd14",
+          "bytes": 615,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/migrationintent/store.go",
+          "gitBlob": "274b5f0d46a78568fa8ae62ea617a1ed03b2c562",
+          "worktreeSHA256": "4c3a68d57f047404d38d0facd6c16a4e60f35ffd18619bbd22bddc4723749de6",
+          "bytes": 13752,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/migrationintent/store_test.go",
+          "gitBlob": "a269d26bd0b60fc8c8f7e15dc4f4c45305d645c1",
+          "worktreeSHA256": "364981062bac5c8e8ec9367cad80ea751c9dd997b262a94f82d33c559d90863e",
+          "bytes": 8704,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/object/conditional_noop_test.go",
+          "gitBlob": "7fb8d5eddc9a6ee1c144cf6922e9129e8501647d",
+          "worktreeSHA256": "e491a9840d57285fe97fad5c10b5fd5043a6abb9a6b78afaaa564c199dcd14b8",
+          "bytes": 4448,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/object/create_current_writer_test.go",
+          "gitBlob": "727d00bb0e9a003b5a5756e21650c89980fdc822",
+          "worktreeSHA256": "78c09c7fd06ce0d7f8d05b4702e2050985eddba93b99e0f0442be99f3c8b2469",
+          "bytes": 3206,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/object/current_writer.go",
+          "gitBlob": "2007d8ee30285ba0c8760617b06bc59a9962a9b4",
+          "worktreeSHA256": "22fb16a6e1a0d8754fba1b60af8875c8f85f930594e64debedbd3771584865cf",
+          "bytes": 1482,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/object/current_writer_test.go",
+          "gitBlob": "6ad01a23b28bd2f9d88c2daa274c7851fd12153c",
+          "worktreeSHA256": "211cc4f15bb7acc75c5c522d388cb5b2fe34b35e56f9321e089744bcca67ef2d",
+          "bytes": 6123,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/object/localguard.go",
+          "gitBlob": "694078688e63bcef15f99fc4e1bf26416db1531c",
+          "worktreeSHA256": "6bcdc5f5bd3ed92490691ad71090bad8d7a616bc451a3124323218f8072861d3",
+          "bytes": 1122,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/object/localguard_test.go",
+          "gitBlob": "2b51a1db6f2e58b1cb2e4a4e6891d118b1f476ff",
+          "worktreeSHA256": "794b40362cd13c127d1ebc0cc23bd76385f40728b47311d595eb4801083f3bde",
+          "bytes": 2710,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/object/migration_inline_file.go",
+          "gitBlob": "7f969f6cff0d6fe545a335bd491ce3ddcf6d5959",
+          "worktreeSHA256": "646634e33ba08ec08ab5728ffe058fc4b7569d55203f7f022fef252204edd213",
+          "bytes": 7240,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/object/migration_prepared.go",
+          "gitBlob": "c602388336b154c1cab19eac96b3b1a575ec2d12",
+          "worktreeSHA256": "cc3920f4791c5620f3ebdfc150b268428d03683e7825f0f6a562359d1feb37c4",
+          "bytes": 12152,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/object/object.go",
+          "gitBlob": "b1e97d6677e722aac6661f7994bb0c84999e8fb7",
+          "worktreeSHA256": "8d9e88a0c5c4c6d1b9884cf6fd196c0b6506a3d0513e7ccf96a498211040d7a5",
+          "bytes": 49931,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/object/object_row_cas_test.go",
+          "gitBlob": "efd2497435224893832523b8d51eedea86e602de",
+          "worktreeSHA256": "243b7a5be045bc325859f535d132d4047cd22ea782f2b822a167f3af2061257d",
+          "bytes": 6594,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/properties/conditional_membership_version_test.go",
+          "gitBlob": "7883f002d36ccacbe7069e8d00abf49fcb2d1cc8",
+          "worktreeSHA256": "045aff4cb20bf43bc5f4e7d5cd29bb4415179970e66f7e211376fce27b6d87d0",
+          "bytes": 2304,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceimpl/current_writer.go",
+          "gitBlob": "70ee70cb9549b5a5b2671177c006611e6af12105",
+          "worktreeSHA256": "8c7d8ca5f3eb931a3ad8825c15356dfc92dd0ca2cd82de6c612d6df0e65b1a5f",
+          "bytes": 1608,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceimpl/current_writer_test.go",
+          "gitBlob": "a90004f29dadfc36b9610b07bc17f600e24071dd",
+          "worktreeSHA256": "e59b459a1212a150eabbe27478ac15786bfe2b3d4b0027ee068a78589342c243",
+          "bytes": 1314,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceimpl/history.go",
+          "gitBlob": "833b1171824a5f20b6070999a51d7500b424be01",
+          "worktreeSHA256": "cad7a359a21005e56a273c2599a483351b37f6d287fc766389ee849459780374",
+          "bytes": 14839,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceimpl/migration_inline_file.go",
+          "gitBlob": "35eb1a09a7c9bc0aaf0e237592431f7eeacd24ef",
+          "worktreeSHA256": "c1a87e93d3b838b6104a644b3f97ac390f4937e147434dc10cdab977d90199a9",
+          "bytes": 5061,
+          "origin": "prepared-inline-file-http-v1"
+        },
+        {
+          "path": "internal/spaceimpl/migration_prepared.go",
+          "gitBlob": "7a8ae9a939ca4b5eb9a3cc9c909d6bf2ae25562f",
+          "worktreeSHA256": "9899687fdd3e2e3cf446ce1148eb8c976dfb43286c21bb6a4483cdb0ae068bfd",
+          "bytes": 12679,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceimpl/migration_prepared_test.go",
+          "gitBlob": "2e2e5d2c9d005cdce612bbbbf0d00ffbd627d84f",
+          "worktreeSHA256": "64940795a7bfc319ec88846eb659d2423699ab1954134fcf6c61405cb136f53d",
+          "bytes": 617,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceimpl/object_conditional_test.go",
+          "gitBlob": "59321d229b5b8f1222974ff5e201a36a9526cd9a",
+          "worktreeSHA256": "976fec4e98e3c36645c8df3350b280eb39c4b50ba1e476ed7d9a047cb88f340b",
+          "bytes": 1397,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceimpl/object_create_current_writer.go",
+          "gitBlob": "189aef4531e9bf96532319c10b791bfe6a659077",
+          "worktreeSHA256": "cde13d3a1d2da002093b59dd68f68fd96c2a5a4ae0389d7f0e22ac4fde328a59",
+          "bytes": 1973,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceimpl/objects.go",
+          "gitBlob": "adfc0d466857f2394e43bb9447da22cf041958a3",
+          "worktreeSHA256": "188b1b52a9234b76f8909b1a1c3a9b05a26f4a9e0b554452d448f7d06e65a333",
+          "bytes": 18709,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceimpl/properties_conditional.go",
+          "gitBlob": "a92712eebdadac0481c0408c90269946ff9b642d",
+          "worktreeSHA256": "b5f6c8370a6bdb95d2798998e8181248a403466c2950d18f0a60e314ba4b23c4",
+          "bytes": 3991,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceimpl/properties_conditional_noop_test.go",
+          "gitBlob": "93310f7452d1c2da24bea65f2f81b43fa4f701a3",
+          "worktreeSHA256": "109ac0608ed7ed8bcc5265f9c34439881d1cf2a4c86e265bbdb4e33039d57d09",
+          "bytes": 641,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceimpl/query.go",
+          "gitBlob": "fa28812ab5d78d4eb0066ad93062ada3285bea38",
+          "worktreeSHA256": "c00bc0341f41f99f4bb6ae548c135676ef994c1ba342af76b7022547a4fbecc0",
+          "bytes": 29095,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceimpl/space.go",
+          "gitBlob": "9eba12b79258970443bd13ab5076c1981902e6e7",
+          "worktreeSHA256": "1e6312fdcd16fbbffc3ba1144890d10f79889c3d7b788691770b0a1b9d5206d4",
+          "bytes": 37455,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceimpl/techspace_handle.go",
+          "gitBlob": "be2f6d1dc219d3cb3359bf76ff9484a58d2a2fd0",
+          "worktreeSHA256": "2026c327f86bdfb955c72802fffd458e0769317d3d8472e2f170f71b03032885",
+          "bytes": 22581,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceimpl/unsupported.go",
+          "gitBlob": "176f5fd5abcf818ea95fe8e6da9cecbd047d885f",
+          "worktreeSHA256": "58c45b4760668a7dcf5a0742191b458ddc06d88cebf4300d6f2a0a1e9c847af6",
+          "bytes": 10615,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceobjects/create_current_writer.go",
+          "gitBlob": "8576f36ed0f61aa8e82c16792f39ca2f4d91dc07",
+          "worktreeSHA256": "552c684b97b7a10faec5f7c790efa9a3710f130b085907e6c4408bf783a01aca",
+          "bytes": 1996,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceobjects/localguard.go",
+          "gitBlob": "f775e249d157e645fff1c094c90f794eb358c76f",
+          "worktreeSHA256": "9d806826bb3d0eb3394a00759b746cf4e141508110952d9074245323614d27b3",
+          "bytes": 11058,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceobjects/migration_inline_file.go",
+          "gitBlob": "3c8782abe2dca0be645e70136529dc00208a1c59",
+          "worktreeSHA256": "66725d902f31d49f10b2666fc135ecb427edf969e714481963dcc40d09c72eb0",
+          "bytes": 8513,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceobjects/migration_prepared.go",
+          "gitBlob": "cda1e27adfe66d62943078ab9122de774ebbadd1",
+          "worktreeSHA256": "2b9f4edc4c1874c4b36eabfbb477146801d2b0d0d09679f033b6f48740f1134a",
+          "bytes": 6794,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceobjects/migration_prepared_test.go",
+          "gitBlob": "02c42ba5874d295d1f9d20f2311c3c343f19dc70",
+          "worktreeSHA256": "9966cbd4997b3bc4c3fb35f6ee00446cdfb35e69c281e01cf7cd8ec9b62e51ff",
+          "bytes": 8617,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceobjects/native_conditional_noop_test.go",
+          "gitBlob": "3d1b83ce356bd5cdcc56f4197fa6d584f6c55854",
+          "worktreeSHA256": "f9e39706b2687c69e0d4f74303505636448463deb6a71c1cabb246cfb93d5ef9",
+          "bytes": 6362,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceobjects/native_definitions.go",
+          "gitBlob": "318c302305ca0691359f96f4998fb3d7358dbe4b",
+          "worktreeSHA256": "bc09041f7e55dd6a56f1569bb4426c6619e431c5a5a425e39810488e77069c52",
+          "bytes": 9806,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceobjects/native_definitions_test.go",
+          "gitBlob": "d7a3ceca711aa5f93e546e52e99176ef4f2c4f84",
+          "worktreeSHA256": "db68d039c370f2374b8306744f1018d14cbb26f7a5337420d217af9c72e78876",
+          "bytes": 11048,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceobjects/native_guard_test.go",
+          "gitBlob": "6e0246dbdd12dddf03411626463b67a34db6e314",
+          "worktreeSHA256": "e0568929c50098d90f0694840328837dacef70ac7b48ab22c3de9591b264b5c5",
+          "bytes": 5943,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "internal/spaceobjects/store.go",
+          "gitBlob": "c33f86ba18a47e1fe9c5cdacbca55ee93c039497",
+          "worktreeSHA256": "8a05a490df571b13f1159ce6fd80b1329eb188cd7ebb94c3ae27cecdd6537c17",
+          "bytes": 141449,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "space/current_writer.go",
+          "gitBlob": "84236f20d8794f61a853bbd5f28d061ad6b49c8e",
+          "worktreeSHA256": "57c1d050964179d656bd47b98f084d6997b8dd511980ce6f24e9bdc7bc47cefe",
+          "bytes": 3481,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "space/migration_inline_file.go",
+          "gitBlob": "5149dbf13672bf5d68a22de1a95383a26d07e274",
+          "worktreeSHA256": "55a573ef325f4d58782d0a8a4e181867b383c219210e973b690038fed97aa4cf",
+          "bytes": 1448,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "space/migration_prepared.go",
+          "gitBlob": "1938060170df9e06134761d1f01b2244edb738c5",
+          "worktreeSHA256": "ba7a998e9891ab052de09ee4c6dd8ed05c1f53944ac2b1c2b72bfa6ad381e658",
+          "bytes": 2893,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "space/modify.go",
+          "gitBlob": "bced110a66dd20403b9ecccd593c20c85ec9ea50",
+          "worktreeSHA256": "60827e5056d7949633addacbb167e1889cce56fb70acee23a518a7db7d774a55",
+          "bytes": 11908,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "space/properties.go",
+          "gitBlob": "b01abdef3849ff6ad519d746754e99e569fd5030",
+          "worktreeSHA256": "cfff8d3568f06c3a6b159d5a3ef434b11010af33b31218796b9cea46bf1dad4d",
+          "bytes": 3901,
+          "origin": "retained frozen v11"
+        },
+        {
+          "path": "space/snapshot.go",
+          "gitBlob": "a26e743293280db731acaacc22b1965666458d3a",
+          "worktreeSHA256": "42ae5aa7239be684320eba670a4d52412be613b20e2b388695a4ddd29af465ea",
+          "bytes": 762,
+          "origin": "retained frozen v11"
+        }
+      ],
+      "testedEffectiveTree": "8b9df2cdcefb5aee3973df11a326652f5a2378f4",
+      "testedWorkingTreeIncludesUncommittedChanges": true,
+      "testedWorkingTreeRevision": "prepared-inline-file-http-v1-unqualified-source"
+    }
+  }
+}
