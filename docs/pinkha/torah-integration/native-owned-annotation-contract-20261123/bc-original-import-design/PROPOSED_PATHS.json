@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "status": "PROPOSED_ONLY_NO_PRODUCT_EDIT_PERMISSION",
+  "current_edit_allowlist": [
+    "docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-original-import-design/**"
+  ],
+  "B1_new": [
+    "core/block/import/owned_annotation_graph.go",
+    "core/block/import/common/objectcreator/owned_annotation.go"
+  ],
+  "B1_existing": [
+    "core/block/import/owned_import_dependencies.go",
+    "core/block/import/processor.go",
+    "core/block/import/common/objectcreator/objectcreator.go"
+  ],
+  "B1_conditional_not_currently_needed": [
+    "core/block/import/common/objectcreator/task.go"
+  ],
+  "C_new": [
+    "core/block/import/owned_annotation_readback.go",
+    "core/block/import/owned_annotation_comparison.go"
+  ],
+  "C_existing": [
+    "core/block/import/owned_import_operation.go"
+  ],
+  "B2_native_permission_owner_hook": {
+    "status": "EXACT_NEW_SCOPE_REQUIRED_BEFORE_PRODUCT_EDIT",
+    "source_trace_only": [
+      "anytype-heart:core/block/object/objectcache/tree.go",
+      "any-sync:commonspace/objecttreebuilder/treebuilder.go",
+      "any-sync:commonspace/object/tree/synctree/synctree.go",
+      "any-sync:commonspace/spacestorage/spacestorage.go",
+      "any-sync:commonspace/object/tree/objecttree/objecttree.go"
+    ],
+    "no_dependency_edit_or_activation": true
+  },
+  "gates": [
+    "authenticated genuine Slice A specimens",
+    "exact member and semantic field policy",
+    "concrete minimal B1 and C hunks",
+    "separately reviewed native current-permission boundary",
+    "new discriminating original native execution"
+  ],
+  "unchanged": [
+    "existing Slice A three native files",
+    "all importer/proto/generated/SDK/Host product",
+    "all workflows",
+    "all accepted lifetime/endpoint evidence"
+  ]
+}
