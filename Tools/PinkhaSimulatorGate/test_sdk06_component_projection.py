@@ -79,7 +79,10 @@ class SDK06ComponentProjectionControl(unittest.TestCase):
                 basename = fixed["source_files"][name]["basename"]
                 if name != projection.EDITOR:
                     self.assertEqual(projected[basename], original)
-                self.assertTrue(observations[name]["function_bodies_and_arguments_unchanged"])
+                self.assertIs(observations[name]["function_bodies_and_arguments_unchanged"],
+                              name != projection.AUTHORITY)
+                self.assertEqual(observations[name]["fixture_constructor_replacements"],
+                                 2 if name == projection.AUTHORITY else 0)
 
         corruptions = []
         missing = dict(source)

@@ -1,0 +1,37 @@
+{
+  "base": "e1aa58f26a2eb9a553aa39cbd51e8fe21ed23a94",
+  "builds": 0,
+  "controls_imported_or_executed": 0,
+  "expected": {
+    "AUTHORITY": {
+      "fixture_constructor_replacements": 2,
+      "function_bodies_and_arguments_unchanged": false
+    },
+    "other_seven_sources": {
+      "fixture_constructor_replacements": 0,
+      "function_bodies_and_arguments_unchanged": true
+    }
+  },
+  "historical_evidence_modified": false,
+  "inverse": {
+    "after": "                self.assertIs(observations[name][\"function_bodies_and_arguments_unchanged\"],\n                              name != projection.AUTHORITY)\n                self.assertEqual(observations[name][\"fixture_constructor_replacements\"],\n                                 2 if name == projection.AUTHORITY else 0)\n",
+    "before": "                self.assertTrue(observations[name][\"function_bodies_and_arguments_unchanged\"])\n"
+  },
+  "module_preload_changes": 0,
+  "new_bytes": 20959,
+  "new_sha256": "1c8cf4ac69fab15bcf175af8a9a19cf2812826dc02c05397bcfd70f2f6d0a695",
+  "old_bytes": 20737,
+  "old_sha256": "2233135a6b83c874744005998f38d4adf48ff77344f567fae26df620e15dd4da",
+  "path": "Tools/PinkhaSimulatorGate/test_sdk06_component_projection.py",
+  "preexisting_scope_limitation": "This correction does not adapt the historical seven-source fixtures, old host-link assertions, or non-editor original-byte equality to earlier admitted generator changes. No full current-control compatibility or runtime PASS is claimed.",
+  "protocol": "sdk06-typed-error-current-metadata-expectation-v1",
+  "reason": "Match truthful per-source metadata for the two AUTHORITY fixture constructor changes; preserve original result and all other current checks.",
+  "runtime_file_hashes_unchanged": {
+    "AnyTypeTests/Pinkha/TorahRelatedReadAuthorityMappingTests.swift": "7ea462a83891972b94783a05f1a36f8618917cf4713334c9c37463b94a85046b",
+    "Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json": "2a46533f00fe61c69ee9b4022031d342642dc0569c43779c4732723382fdd9fd",
+    "Tools/PinkhaSimulatorGate/sdk06-original-native-controller-source.json": "b5774ddb06e240fa71dc5504247837b61d338c87ecbb1fd613fc31a9adb33fa0",
+    "Tools/PinkhaSimulatorGate/sdk06_component_projection.py": "1530c5a938e5458a78aaba48c75bc3be0d81fe5ad8ce76e96b3a85a510bc254f"
+  },
+  "runtime_manifest_inputs_changed": 0,
+  "status": "SOURCE_ONLY_NOT_RUN"
+}
