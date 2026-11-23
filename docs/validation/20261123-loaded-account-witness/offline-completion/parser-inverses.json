@@ -1,0 +1,27 @@
+{
+  "schema": "exact-parser-inverses-v1",
+  "original_profile_sha256": "cd5e46269f566870489f338471f9c63e14dfd6a8dd842be221fed5b1cccff6cf",
+  "function": "dependency_plan",
+  "forward_hunks": [
+    {
+      "old": "                    require(path.stat().st_size<=128*1024,\"generated_test_main_size\")\n                    raw_generated = path.read_bytes()",
+      "new": "                    original_generated = generated_original(path)\n                    require(int(original_generated[\"st_size\"])<=128*1024,\"generated_test_main_size\")\n                    raw_generated = preserved_generated_bytes(path,original_generated)"
+    },
+    {
+      "old": "                    require(path.resolve()==path and path.is_relative_to(RAM/\"go-cache\"),\"generated_test_main_escape\")\n                    preserve_generated(path,raw_generated)",
+      "new": "                    require(original_generated[\"path\"]==str(path) and path.is_relative_to(RAM/\"go-cache\"),\"generated_test_main_escape\")\n                    bind_generated(path,raw_generated,original_generated)"
+    },
+    {
+      "old": "                resolved = path.resolve()\n                require(generated or any(resolved.is_relative_to(root) for root in allowed),\"unbound_dependency_root\")\n                inputs[str(path)] = dict(row(path),resolved_path=str(resolved),generated_test_main=generated)",
+      "new": "                resolved = path if generated else path.resolve()\n                require(generated or any(resolved.is_relative_to(root) for root in allowed),\"unbound_dependency_root\")\n                inputs[str(path)] = dict(dependency_row(path),resolved_path=str(resolved),generated_test_main=generated)"
+    },
+    {
+      "old": "                inputs[str(path)] = dict(row(path),resolved_path=str(resolved))",
+      "new": "                inputs[str(path)] = dict(dependency_row(path),resolved_path=str(resolved))"
+    },
+    {
+      "old": "return {\"protocol\":\"loaded-account-ram-cache-source-graph-v1\"",
+      "new": "return {\"protocol\":\"loaded-account-offline-projected-source-graph-v1\""
+    }
+  ]
+}
