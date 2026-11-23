@@ -2,7 +2,7 @@ name: Original native annotation archive admission
 
 on:
   push:
-    branches: [codex/otzaria-native-archive-readiness-20261123]
+    branches: [codex/otzaria-native-annotation-budget-20261123]
 
 permissions:
   contents: read
@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   original-native-archive:
-    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-native-archive-readiness-20261123' && github.run_attempt == 1
+    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-native-annotation-budget-20261123' && github.run_attempt == 1
     runs-on: xcode-27
     timeout-minutes: 120
     env:
@@ -51,7 +51,7 @@ jobs:
           python3 -I docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/slice-a/run_native_archive.py \
             --control-root "$GITHUB_WORKSPACE" \
             --control-head "$GITHUB_SHA" \
-            --execution-manifest-sha256 54b5945e160e7807a7db23550a195dbb5390c00646f174e87d938cb43b8a28db \
+            --execution-manifest-sha256 34c60165bc4f98530055b96d514a756515ac0270ca76f2abd876299eb62db61d \
             --job-deadline-unix "$OTZARIA_NATIVE_ARCHIVE_DEADLINE" \
             --heart build/Heart-Native-Archive \
             --work build/Heart-Native-Archive-Owned-Work \
