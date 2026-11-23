@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "status": "STATIC_WORKFLOW_ORDER_REVIEW_PASS_ACTUAL_REPAIR_NOT_RUN",
+  "at": "2026-11-23T07:31:25.369682+00:00",
+  "base": "29a112ca18da7f9169e3e11909ed3e2ce34de5c3",
+  "changedPath": ".github/workflows/pinkha-any-native-ui-original-products.yml",
+  "beforeSHA256": "e7b8ba289a091bbd73f6aae0f9262854860e3ac63b0f48c6042d06400adf2c1e",
+  "afterSHA256": "4d3e49e948275bb1c09cb3c67235b6ddaa4cff042ee2cbf94225340354f1202e",
+  "exactInverse": {
+    "removeOnce": "      - name: Request owned cold boot before original Products admission\n        id: boot\n        if: ${{ !cancelled() && steps.simulator.outcome == 'success' }}\n        run: |\n          python3 -B Tools/AnyEnginePort/hanlin_fixture_ci.py boot \\\n            --simulator-receipt build/any-patched-evidence/simulator.json \\\n            --safe-dir build/any-patched-evidence/hanlin-provider\n",
+    "replaceOnce": {
+      "from": "        if: ${{ !cancelled() && steps.simulator.outcome == 'success' && steps.boot.outcome == 'success' }}\n",
+      "to": "        if: ${{ !cancelled() && steps.simulator.outcome == 'success' }}\n"
+    }
+  },
+  "wholeOriginalWorkflowRecovered": true,
+  "allExistingStepDefinitionsIdenticalAfterExactInverse": true,
+  "phaseOrder": [
+    "simulator",
+    "boot",
+    "admission",
+    "provider"
+  ],
+  "admissionRequiresBootSuccess": true,
+  "newBootCommandBashSyntaxValid": true,
+  "unchangedSources": {
+    "Tools/AnyEnginePort/hanlin_fixture_ci.py": "b48b79324d9076d235449510ed5499556d2b16c14aa1cc2a3397db5861132d14",
+    "Tools/AnyEnginePort/hanlin_fixture_start_observation.py": "3f5fc06dc8449b6ea1f75c8e7b122b857ce69f0715118febaaaee9377fe2a8d3",
+    "Tools/AnyEnginePort/native_ui_original_products.py": "29dad87b9fe7654e1f3ad044e403bcbdfa83c42b123876c6f78739bb8f9f86aa",
+    "Tools/AnyEnginePort/native_ui_original_products_contract.py": "4e31edb56b0446cea77e95dc2e61f8c706ebe3a2d7c85f2957651f73e645812f",
+    "Tools/AnyEnginePort/native_ui_original_products_results.py": "9ff56c0a3dc86d8d284332b478542cdee6cbc6ac4b90054728d03420a3166c8a",
+    "Tools/AnyEnginePort/native-ui-original-products-451082.json": "c3c152137febebbec644d72fa8c72e03c9657a52309360e57b36854d53846a32"
+  },
+  "readinessBudgetSeconds": 120,
+  "newBuilds": 0,
+  "newLocalTestsExecuted": 0,
+  "priorQualifiedTestsRerun": 0,
+  "pendingProductMethods": 7,
+  "retainedProductMethods": 22,
+  "historicalBootReceiptSHA256": "39b766a9dd2bb96bf315d20448b82b1d5a496422929580d73b000267ea232ea8",
+  "historicalBootClaim": "Only actual original boot request; no named unit PASS or readiness inferred. Fixed legacy pending text mentions build, but new route builds zero.",
+  "actualFailureRun": 45127756584,
+  "actualFailureRootReviewSHA256": "f46aa1b447e38380fa8f8c81d4aa66c64be3f5d3326f66ec587095d44c0d09ea",
+  "reason": "Request existing owned cold boot while required original Products admission runs, matching the already-designed provider staging. Failure cause remains unknown; overlap is not a readiness guarantee.",
+  "independentReviewer": "/root/acceptance_map read-only source/ownership/order review"
+}
