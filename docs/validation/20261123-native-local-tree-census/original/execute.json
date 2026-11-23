@@ -1,0 +1,53 @@
+{
+  "actual_new_interleaving_proofs": 0,
+  "command": {
+    "argv": [
+      "/mnt/development/toolchains/go1.27.4/go/bin/go",
+      "tool",
+      "test2json",
+      "-t",
+      "-p",
+      "github.com/anyproto/anytype-heart/core/pinkha/localstorewitness",
+      "/mnt/development/projects/evidence/local-tree-census-20261123/attempt1/products/local-tree-census.test",
+      "-test.v=test2json",
+      "-test.run=^(TestLocalTreeCensusNativeStorageRelationships|TestLocalTreeCensusUsesCapturedCheckpointWithoutLiveReads|TestLocalTreeCensusRetainsUnknownRowsAndExactTypedIdentities|TestLocalTreeCensusReportsMissingCrossTreeAndACLReferences|TestLocalTreeCensusQualificationLimitsAndPrivateReceipt)$",
+      "-test.timeout=90s",
+      "-test.count=1"
+    ],
+    "cwd": "/mnt/development/projects/worktrees/anytype-heart-local-tree-census-20261123",
+    "elapsed_seconds": 1.7544799065217376,
+    "finished": "2026-11-23T07:51:04.254060+00:00",
+    "free_bytes_after": 2895007744,
+    "free_bytes_before": 2901946368,
+    "interruption": null,
+    "original_log_bytes": 17019,
+    "original_log_sha256": "0971eeaad282250ef9d60ef2fc0ce7e200ec854b373ea3bcf26c2aac66d76146",
+    "owned_pgid": 2314833,
+    "owned_pid": 2314833,
+    "owned_process_group_absent": true,
+    "returncode": 0,
+    "started": "2026-11-23T07:51:02.499521+00:00",
+    "timeout_seconds": 120
+  },
+  "controller_sha256": "cdbd2e4b685340c5c489976d3205b63810fd825a11ab25d8d05050b67e5d1696",
+  "controller_source_sha": "5d6ec4b42db00ec01737ea150b4e288be9ab3743",
+  "error": {
+    "message": "private_pair_directory_mode",
+    "type": "RuntimeError"
+  },
+  "finished": "2026-11-23T07:51:04.256738+00:00",
+  "free_bytes_final": 2894278656,
+  "hasNativeSourceAdmission": false,
+  "manifest_sha256": "fdc88476018f7e32cdb6be9ceb03db47957b5cc6fd6430285992704fad77608c",
+  "native_source_sha": "35c169e7a39e3dafc0a1281f56a1fe37fce57533",
+  "new_methods_executed": 0,
+  "old_methods_executed": 0,
+  "permitsDestinationWrites": false,
+  "private_auditor_sha256": "915973cfad4f0587a8ddd8fd8d975160a300e41592cb2205fd40bcf2eea2855c",
+  "production_capability_issuer": false,
+  "scope": "captured-local-tree-storage-census-only-v1",
+  "semanticIdentityCensusComplete": false,
+  "stage": "execute",
+  "started": "2026-11-23T07:50:59.872599+00:00",
+  "status": "FAILED"
+}
