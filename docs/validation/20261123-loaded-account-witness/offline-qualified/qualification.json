@@ -1,0 +1,55 @@
+{
+  "actual_scope_counts": {
+    "new_native_builds": 0,
+    "new_native_controls": 0,
+    "offline_query_replays": 0,
+    "source_queries_total_this_loaded_account_stage": 2
+  },
+  "destination_writes": false,
+  "four_native_controls": "NOT_RUN",
+  "later_final_origin": {
+    "identity": "separate actual external auditor",
+    "matched_rows": 28,
+    "original_producer_file_match_only": true,
+    "result_sha256": "a7cc6026df730b812e836d575f0450156cb3b58acfbe722998f55fca8d99f8e1",
+    "source_sha256": "91d4c4df7b802929650c48d55dad097b349e5402647a238aa93869abd5b35662",
+    "status": "PASS_LATER_CURRENT_CONTROLLER_AUDIT"
+  },
+  "migration_completeness": false,
+  "native_build_admission": false,
+  "offline_origin": {
+    "codec_roundtrip": true,
+    "controller": "1b98b7a01acc3b08d48c30c566d207f499a103d2",
+    "dependency_pair_sha256": "6f67e22560bc001fcdb314b3cbdfe8d562f357d9d5a513691692c66cf9b83269",
+    "input_rows": 11627,
+    "later_ordinary_rows": 11626,
+    "missing_historical_current_after": "NOT_RECREATED",
+    "missing_historical_loaded_after": "NOT_RECREATED",
+    "modules": 204,
+    "original_aggregate_status": "FAILED",
+    "original_generated_rows": 1,
+    "packages": 1455,
+    "program": "5de50261d94fecea6ccf5b3f6f70870200c518d15b1d628bb29ca77b4418a806",
+    "result_sha256": "cedb78b0e5478e9697fec61e16f5da175bed7a50d2d371583d6a34c7361e2b9c"
+  },
+  "preserved_originals": "All external original files remain unchanged; selected identical before/after pairs are represented by one byte-exact copy plus explicit pair linkage.",
+  "qualification_scope": "source graph plus separate later current-controller audit",
+  "query_origin": {
+    "actual_query_return_code": 0,
+    "cleanup_custody": "PASS",
+    "controller": "0f57f72e3f447d0bb67ffef783d22539094d9ad9",
+    "original_aggregate_status": "FAILED",
+    "program": "cd5e46269f566870489f338471f9c63e14dfd6a8dd842be221fed5b1cccff6cf",
+    "result_sha256": "249c5a4a5a16ce7f39669925d03e804c8dab1517899c487179d123912b66601f",
+    "stdout_complete": true
+  },
+  "read_provenance": {
+    "captured_source_tools": "original before/after rows also matched current bytes",
+    "codec": "lossless column representation; all values/types/presence retained",
+    "generated_source": "original captured metadata and original preserved bytes",
+    "ordinary_dependencies": "new reads during offline completion"
+  },
+  "schema": "qualified-offline-source-stage-v1",
+  "semantic_source_admission": false,
+  "status": "PASS_COMPOSED_SOURCE_STAGE"
+}
