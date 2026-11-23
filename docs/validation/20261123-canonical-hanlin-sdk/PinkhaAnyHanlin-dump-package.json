@@ -1,0 +1,522 @@
+{
+  "cLanguageStandard": null,
+  "cxxLanguageStandard": null,
+  "defaultLocalization": "en",
+  "dependencies": [
+    {
+      "fileSystem": [
+        {
+          "identity": "hanlin",
+          "nameForTargetDependencyResolutionOnly": "HanlinSDK",
+          "path": "/mnt/development/projects/worktrees/anytype-canonical-hanlin-sdk-20261123/Dependencies/Hanlin",
+          "productFilter": null,
+          "traits": [
+            {
+              "name": "default"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fileSystem": [
+        {
+          "identity": "pinkhaanyhost",
+          "path": "/mnt/development/projects/worktrees/anytype-canonical-hanlin-sdk-20261123/Modules/PinkhaAnyHost",
+          "productFilter": null,
+          "traits": [
+            {
+              "name": "default"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fileSystem": [
+        {
+          "identity": "pinkhaanyengine",
+          "path": "/mnt/development/projects/worktrees/anytype-canonical-hanlin-sdk-20261123/Modules/PinkhaAnyEngine",
+          "productFilter": null,
+          "traits": [
+            {
+              "name": "default"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fileSystem": [
+        {
+          "identity": "pinkhaanyintegration",
+          "path": "/mnt/development/projects/worktrees/anytype-canonical-hanlin-sdk-20261123/Modules/PinkhaAnyIntegration",
+          "productFilter": null,
+          "traits": [
+            {
+              "name": "default"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceControl": [
+        {
+          "identity": "swift-crypto",
+          "location": {
+            "remote": [
+              {
+                "urlString": "https://github.com/apple/swift-crypto.git"
+              }
+            ]
+          },
+          "productFilter": null,
+          "requirement": {
+            "exact": [
+              "3.12.3"
+            ]
+          },
+          "traits": [
+            {
+              "name": "default"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceControl": [
+        {
+          "identity": "swift-markdown",
+          "location": {
+            "remote": [
+              {
+                "urlString": "https://github.com/swiftlang/swift-markdown.git"
+              }
+            ]
+          },
+          "productFilter": null,
+          "requirement": {
+            "revision": [
+              "25cb61d3482054b09ae76ca4f281b1bfe7fe5a43"
+            ]
+          },
+          "traits": [
+            {
+              "name": "default"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "name": "PinkhaAnyHanlin",
+  "packageKind": {
+    "root": [
+      "/mnt/development/projects/worktrees/anytype-canonical-hanlin-sdk-20261123/Modules/PinkhaAnyHanlin"
+    ]
+  },
+  "pkgConfig": null,
+  "platforms": [
+    {
+      "options": [],
+      "platformName": "ios",
+      "version": "27.0"
+    },
+    {
+      "options": [],
+      "platformName": "macos",
+      "version": "26.0"
+    }
+  ],
+  "products": [
+    {
+      "name": "PinkhaHanlinCore",
+      "settings": [],
+      "targets": [
+        "PinkhaHanlinCore"
+      ],
+      "type": {
+        "library": [
+          "automatic"
+        ]
+      }
+    },
+    {
+      "name": "PinkhaAnyHanlin",
+      "settings": [],
+      "targets": [
+        "PinkhaAnyHanlin"
+      ],
+      "type": {
+        "library": [
+          "automatic"
+        ]
+      }
+    },
+    {
+      "name": "PinkhaHanlinUI",
+      "settings": [],
+      "targets": [
+        "PinkhaHanlinUI"
+      ],
+      "type": {
+        "library": [
+          "automatic"
+        ]
+      }
+    },
+    {
+      "name": "PinkhaAnyHanlinProbe",
+      "settings": [],
+      "targets": [
+        "PinkhaAnyHanlinProbe"
+      ],
+      "type": {
+        "executable": null
+      }
+    }
+  ],
+  "providers": null,
+  "swiftLanguageVersions": [
+    "6"
+  ],
+  "targets": [
+    {
+      "dependencies": [
+        {
+          "product": [
+            "HanlinHostContracts",
+            "HanlinSDK",
+            null,
+            null
+          ]
+        },
+        {
+          "product": [
+            "HanlinPlatformContracts",
+            "HanlinSDK",
+            null,
+            null
+          ]
+        },
+        {
+          "product": [
+            "Crypto",
+            "swift-crypto",
+            null,
+            null
+          ]
+        }
+      ],
+      "exclude": [],
+      "name": "PinkhaHanlinCore",
+      "packageAccess": true,
+      "resources": [],
+      "settings": [],
+      "type": "regular"
+    },
+    {
+      "dependencies": [
+        {
+          "byName": [
+            "PinkhaHanlinCore",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaAnyHost",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaAnyEngine",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaAnyIntegration",
+            null
+          ]
+        },
+        {
+          "product": [
+            "HanlinHostContracts",
+            "HanlinSDK",
+            null,
+            null
+          ]
+        },
+        {
+          "product": [
+            "HanlinPlatformContracts",
+            "HanlinSDK",
+            null,
+            null
+          ]
+        },
+        {
+          "product": [
+            "Markdown",
+            "swift-markdown",
+            null,
+            null
+          ]
+        }
+      ],
+      "exclude": [],
+      "name": "PinkhaAnyHanlin",
+      "packageAccess": true,
+      "resources": [],
+      "settings": [],
+      "type": "regular"
+    },
+    {
+      "dependencies": [
+        {
+          "byName": [
+            "PinkhaHanlinCore",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaAnyHanlin",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaAnyHost",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaAnyEngine",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaAnyIntegration",
+            null
+          ]
+        },
+        {
+          "product": [
+            "HanlinHostContracts",
+            "HanlinSDK",
+            null,
+            null
+          ]
+        },
+        {
+          "product": [
+            "HanlinAgentCore",
+            "HanlinSDK",
+            null,
+            {
+              "platformNames": [
+                "ios"
+              ]
+            }
+          ]
+        },
+        {
+          "product": [
+            "HanlinPersistenceAdapters",
+            "HanlinSDK",
+            null,
+            {
+              "platformNames": [
+                "ios"
+              ]
+            }
+          ]
+        },
+        {
+          "product": [
+            "HanlinChatCore",
+            "HanlinSDK",
+            null,
+            {
+              "platformNames": [
+                "ios"
+              ]
+            }
+          ]
+        },
+        {
+          "product": [
+            "HanlinScriptUI",
+            "HanlinSDK",
+            null,
+            {
+              "platformNames": [
+                "ios"
+              ]
+            }
+          ]
+        },
+        {
+          "product": [
+            "HanlinChatUI",
+            "HanlinSDK",
+            null,
+            {
+              "platformNames": [
+                "ios"
+              ]
+            }
+          ]
+        },
+        {
+          "product": [
+            "HanlinPresentationKit",
+            "HanlinSDK",
+            null,
+            {
+              "platformNames": [
+                "ios"
+              ]
+            }
+          ]
+        }
+      ],
+      "exclude": [],
+      "name": "PinkhaHanlinUI",
+      "packageAccess": true,
+      "resources": [
+        {
+          "path": "Resources",
+          "rule": {
+            "process": {}
+          }
+        }
+      ],
+      "settings": [],
+      "type": "regular"
+    },
+    {
+      "dependencies": [
+        {
+          "byName": [
+            "PinkhaAnyHanlin",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaHanlinCore",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaAnyHost",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaAnyEngine",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaAnyIntegration",
+            null
+          ]
+        },
+        {
+          "product": [
+            "HanlinHostContracts",
+            "HanlinSDK",
+            null,
+            null
+          ]
+        },
+        {
+          "product": [
+            "HanlinPlatformContracts",
+            "HanlinSDK",
+            null,
+            null
+          ]
+        }
+      ],
+      "exclude": [],
+      "name": "PinkhaAnyHanlinProbe",
+      "packageAccess": true,
+      "resources": [],
+      "settings": [],
+      "type": "executable"
+    },
+    {
+      "dependencies": [
+        {
+          "byName": [
+            "PinkhaAnyHanlin",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaHanlinCore",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaAnyHost",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaAnyEngine",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaAnyIntegration",
+            null
+          ]
+        },
+        {
+          "product": [
+            "HanlinHostContracts",
+            "HanlinSDK",
+            null,
+            null
+          ]
+        },
+        {
+          "product": [
+            "HanlinPlatformContracts",
+            "HanlinSDK",
+            null,
+            null
+          ]
+        }
+      ],
+      "exclude": [],
+      "name": "PinkhaAnyHanlinTests",
+      "packageAccess": true,
+      "resources": [],
+      "settings": [],
+      "type": "test"
+    }
+  ],
+  "toolsVersion": {
+    "_version": "6.2.0"
+  },
+  "traits": []
+}

@@ -16,8 +16,7 @@ let package = Package(
         .package(url: "https://github.com/davidpovarsky/TorahInspectorKit.git",
                  revision: "511454e49450cb2581ddf77f644146ff3e30dbef"),
         .package(path: "../PinkhaAnyHanlin"),
-        .package(path: "../../Dependencies/Hanlin/Packages/HanlinAgentSDK"),
-        .package(path: "../../Dependencies/Hanlin/Packages/HanlinPlatform")
+        .package(name: "HanlinSDK", path: "../../Dependencies/Hanlin"),
     ],
     targets: [
         .target(name: "PinkhaAnyNative", dependencies: ["PinkhaAnyRuntime", "PinkhaAnyUI",
@@ -29,7 +28,7 @@ let package = Package(
             .product(name: "TorahInspectorCore", package: "TorahInspectorKit"),
             .product(name: "PinkhaAnyHanlin", package: "PinkhaAnyHanlin"),
             .product(name: "PinkhaHanlinCore", package: "PinkhaAnyHanlin"),
-            .product(name: "HanlinHostContracts", package: "HanlinAgentSDK"),
-            .product(name: "HanlinPlatformContracts", package: "HanlinPlatform")])
+            .product(name: "HanlinHostContracts", package: "HanlinSDK"),
+            .product(name: "HanlinPlatformContracts", package: "HanlinSDK")])
     ]
 )

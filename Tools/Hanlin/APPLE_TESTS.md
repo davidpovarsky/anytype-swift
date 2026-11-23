@@ -41,9 +41,9 @@ fallback to the missing historical artifact. `startup` above names the caller's
 actual startup job; adapt the job dependency to the reviewed dispatcher.
 
 The workflow uses only `github.token` with contents/actions read permission.
-Hanlin is public and is checked out at immutable revision
-`116cc6be0654a5d11bc56ba00e0310031107ee36`. `prepare_sdk.py` materializes the exact
-three local packages before any SPM resolution. It never changes the producer
+Hanlin is public and is checked out at the immutable revision in
+`HanlinSDK.lock.json`. `prepare_sdk.py` invokes the shared sparse installer for the exact
+selected product closure before any SPM resolution. It never changes the producer
 repository. No certificate, model key, middleware download secret, or provider
 call is introduced. Simulator signing uses the existing native lane's ad-hoc
 flags. Fresh DerivedData prevents accepting stale test products.

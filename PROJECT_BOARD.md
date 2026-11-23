@@ -14,6 +14,8 @@ Potential improvements, features, optimizations, or architectural ideas.
 
 ## Discoveries & Tips
 
+- 2026-11-23: Canonical Hanlin uses one pinned selected-product checkout. Keep the existing SDK06 source marker API, but verify original Git blobs, complete source-directory membership and regenerated manifest before trusting it. A self-reported hash must not admit a modified dependency. The integration branch leaves enumeration, quiescence and native runtime qualification with their existing owners.
+
 Useful technical discoveries, undocumented behavior, shortcuts, implementation tricks, platform behavior, or reusable knowledge discovered while working.
 
 ## Experiments / Investigations

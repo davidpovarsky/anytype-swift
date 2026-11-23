@@ -1,0 +1,160 @@
+{
+  "workflows": [
+    {
+      "path": ".github/workflows/pinkha-any-engine-port.yml",
+      "checkoutJobs": [
+        "apple-packages",
+        "ios-native-runtime"
+      ],
+      "allOtherWorkflowSemanticsUnchanged": true,
+      "sha256": "5d3d2bab2ad58e989b5dc2af320302729a269b46cfcd1bf19f29a1a7d20993a1"
+    },
+    {
+      "path": ".github/workflows/pinkha-heart-dependencies.yml",
+      "checkoutJobs": [
+        "resolve-only"
+      ],
+      "allOtherWorkflowSemanticsUnchanged": true,
+      "sha256": "5903527f40d33c455c0ea805d15a0a6f0af183e0880de62d942b65b501af0e3b"
+    },
+    {
+      "path": ".github/workflows/pinkha-related-read-authority.yml",
+      "checkoutJobs": [
+        "related-components"
+      ],
+      "allOtherWorkflowSemanticsUnchanged": true,
+      "sha256": "cb6a7515302b835834342befabb3413f44294717ce1b924e04878754937dd992"
+    },
+    {
+      "path": ".github/workflows/pinkha-sdk06-tests.yml",
+      "checkoutJobs": [
+        "sdk06-host-tests"
+      ],
+      "allOtherWorkflowSemanticsUnchanged": true,
+      "sha256": "ba10153075ece1ca82e860d2996cd8d6699db9c7b0e276e9b87763f9959727cf"
+    },
+    {
+      "path": ".github/workflows/pinkha-semantic-page-apple-consumer.yml",
+      "checkoutJobs": [
+        "actual-page154-app-consumer"
+      ],
+      "allOtherWorkflowSemanticsUnchanged": true,
+      "sha256": "9355a82d56b823b578c63bd1ee4678775cfe7f8eabc300be80b97cfc790b0c2d"
+    },
+    {
+      "path": ".github/workflows/pinkha-simulator-ui27.yml",
+      "checkoutJobs": [
+        "actual-native-and-ui"
+      ],
+      "allOtherWorkflowSemanticsUnchanged": true,
+      "sha256": "334438565cdd5c83fe784aed87c2cfc441357dbcada4b43454e90634682d457a"
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-apple-pair.yml",
+      "checkoutJobs": [
+        "actual-apple-pair"
+      ],
+      "allOtherWorkflowSemanticsUnchanged": true,
+      "sha256": "4306433c7ed80573c801163509f97043f2451db6f030fc6c589208156e473282"
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-corrected-ui.yml",
+      "checkoutJobs": [
+        "actual-corrected-ui"
+      ],
+      "allOtherWorkflowSemanticsUnchanged": true,
+      "sha256": "bd8664c4f9d5b4358515b02db46d2b304c9f9dc63ab688bbc3819ac409475a8d"
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-native-pagination.yml",
+      "checkoutJobs": [
+        "actual-native-pagination"
+      ],
+      "allOtherWorkflowSemanticsUnchanged": true,
+      "sha256": "74ae99bdab42c69e5e49a350e2032e4f6a9567efcde720aaa4ed09ebd01d2c34"
+    }
+  ],
+  "pinReaderControls": [
+    {
+      "case": "current",
+      "exit": 0,
+      "output": "revision=2548eac1155239e76cb1a2c6d978e00131340e1f\n",
+      "status": "PASS"
+    },
+    {
+      "case": "legacy",
+      "exit": 0,
+      "output": "revision=116cc6be0654a5d11bc56ba00e0310031107ee36\n",
+      "status": "PASS"
+    },
+    {
+      "case": "malformed-new",
+      "exit": 1,
+      "output": "",
+      "status": "PASS"
+    },
+    {
+      "case": "relocated-current",
+      "exit": 0,
+      "output": "revision=2548eac1155239e76cb1a2c6d978e00131340e1f\n",
+      "status": "PASS"
+    }
+  ],
+  "packages": [
+    {
+      "package": "Modules/PinkhaAnyHanlin",
+      "name": "PinkhaAnyHanlin",
+      "canonicalRootDependencies": [
+        {
+          "fileSystem": [
+            {
+              "identity": "hanlin",
+              "nameForTargetDependencyResolutionOnly": "HanlinSDK",
+              "path": "/mnt/development/projects/worktrees/anytype-canonical-hanlin-sdk-20261123/Dependencies/Hanlin",
+              "productFilter": null,
+              "traits": [
+                {
+                  "name": "default"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "result": "PASS_DUMP_PACKAGE_ONLY",
+      "manifestSHA256": "9e9a3fff34e1f8e9064439856f6b5275b0bb774a62a33db0ddfe2858136498c9"
+    },
+    {
+      "package": "Modules/PinkhaAnyNative",
+      "name": "PinkhaAnyNative",
+      "canonicalRootDependencies": [
+        {
+          "fileSystem": [
+            {
+              "identity": "hanlin",
+              "nameForTargetDependencyResolutionOnly": "HanlinSDK",
+              "path": "/mnt/development/projects/worktrees/anytype-canonical-hanlin-sdk-20261123/Dependencies/Hanlin",
+              "productFilter": null,
+              "traits": [
+                {
+                  "name": "default"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "result": "PASS_DUMP_PACKAGE_ONLY",
+      "manifestSHA256": "260200fbfe7fb732f84769fdd6d628e3db080a690e1e5f5c94aec131c6cf23ac"
+    }
+  ],
+  "pythonSyntax": "PASS",
+  "nativeBuildAndRuntime": "NOT_RUN",
+  "previousValidationAttempt": {
+    "status": "FAILED_ASSERTION_IN_AD_HOC_REPORTER",
+    "cause": "Reporter used nonexistent nameForTargetDependencyResolution key; actual SwiftPM output uses nameForTargetDependencyResolutionOnly",
+    "productSourceFix": "NONE",
+    "requiredCorrection": "Read the observed actual dump field; original first dump showed the correct SDK dependency",
+    "pinReaderCases": "Same four logical cases; not eight distinct tests"
+  }
+}

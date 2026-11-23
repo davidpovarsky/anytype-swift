@@ -12,9 +12,7 @@ let package = Package(
         .executable(name: "PinkhaAnyHanlinProbe", targets: ["PinkhaAnyHanlinProbe"])
     ],
     dependencies: [
-        .package(path: "../../Dependencies/Hanlin/Packages/HanlinAgentSDK"),
-        .package(path: "../../Dependencies/Hanlin/Packages/HanlinPlatform"),
-        .package(path: "../../Dependencies/Hanlin/Packages/HanlinPresentationSDK"),
+        .package(name: "HanlinSDK", path: "../../Dependencies/Hanlin"),
         .package(path: "../PinkhaAnyHost"),
         .package(path: "../PinkhaAnyEngine"),
         .package(path: "../PinkhaAnyIntegration"),
@@ -24,35 +22,35 @@ let package = Package(
     ],
     targets: [
         .target(name: "PinkhaHanlinCore", dependencies: [
-            .product(name: "HanlinHostContracts", package: "HanlinAgentSDK"),
-            .product(name: "HanlinPlatformContracts", package: "HanlinPlatform"),
+            .product(name: "HanlinHostContracts", package: "HanlinSDK"),
+            .product(name: "HanlinPlatformContracts", package: "HanlinSDK"),
             .product(name: "Crypto", package: "swift-crypto")
         ]),
         .target(name: "PinkhaAnyHanlin", dependencies: [
             "PinkhaHanlinCore", "PinkhaAnyHost", "PinkhaAnyEngine", "PinkhaAnyIntegration",
-            .product(name: "HanlinHostContracts", package: "HanlinAgentSDK"),
-            .product(name: "HanlinPlatformContracts", package: "HanlinPlatform"),
+            .product(name: "HanlinHostContracts", package: "HanlinSDK"),
+            .product(name: "HanlinPlatformContracts", package: "HanlinSDK"),
             .product(name: "Markdown", package: "swift-markdown")
         ]),
         .target(name: "PinkhaHanlinUI", dependencies: [
             "PinkhaHanlinCore", "PinkhaAnyHanlin", "PinkhaAnyHost", "PinkhaAnyEngine", "PinkhaAnyIntegration",
-            .product(name: "HanlinHostContracts", package: "HanlinAgentSDK"),
-            .product(name: "HanlinAgentCore", package: "HanlinAgentSDK", condition: .when(platforms: [.iOS])),
-            .product(name: "HanlinPersistenceAdapters", package: "HanlinAgentSDK", condition: .when(platforms: [.iOS])),
-            .product(name: "HanlinChatCore", package: "HanlinPlatform", condition: .when(platforms: [.iOS])),
-            .product(name: "HanlinScriptUI", package: "HanlinPlatform", condition: .when(platforms: [.iOS])),
-            .product(name: "HanlinChatUI", package: "HanlinPresentationSDK", condition: .when(platforms: [.iOS])),
-            .product(name: "HanlinPresentationKit", package: "HanlinPresentationSDK", condition: .when(platforms: [.iOS]))
+            .product(name: "HanlinHostContracts", package: "HanlinSDK"),
+            .product(name: "HanlinAgentCore", package: "HanlinSDK", condition: .when(platforms: [.iOS])),
+            .product(name: "HanlinPersistenceAdapters", package: "HanlinSDK", condition: .when(platforms: [.iOS])),
+            .product(name: "HanlinChatCore", package: "HanlinSDK", condition: .when(platforms: [.iOS])),
+            .product(name: "HanlinScriptUI", package: "HanlinSDK", condition: .when(platforms: [.iOS])),
+            .product(name: "HanlinChatUI", package: "HanlinSDK", condition: .when(platforms: [.iOS])),
+            .product(name: "HanlinPresentationKit", package: "HanlinSDK", condition: .when(platforms: [.iOS]))
         ], resources: [.process("Resources")]),
         .executableTarget(name: "PinkhaAnyHanlinProbe", dependencies: [
             "PinkhaAnyHanlin", "PinkhaHanlinCore", "PinkhaAnyHost", "PinkhaAnyEngine", "PinkhaAnyIntegration",
-            .product(name: "HanlinHostContracts", package: "HanlinAgentSDK"),
-            .product(name: "HanlinPlatformContracts", package: "HanlinPlatform")
+            .product(name: "HanlinHostContracts", package: "HanlinSDK"),
+            .product(name: "HanlinPlatformContracts", package: "HanlinSDK")
         ]),
         .testTarget(name: "PinkhaAnyHanlinTests", dependencies: [
             "PinkhaAnyHanlin", "PinkhaHanlinCore", "PinkhaAnyHost", "PinkhaAnyEngine", "PinkhaAnyIntegration",
-            .product(name: "HanlinHostContracts", package: "HanlinAgentSDK"),
-            .product(name: "HanlinPlatformContracts", package: "HanlinPlatform")
+            .product(name: "HanlinHostContracts", package: "HanlinSDK"),
+            .product(name: "HanlinPlatformContracts", package: "HanlinSDK")
         ])
     ],
     swiftLanguageModes: [.v6]

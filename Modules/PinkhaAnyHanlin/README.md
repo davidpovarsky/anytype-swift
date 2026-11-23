@@ -1,6 +1,6 @@
 # Hanlin on the Any engine
 
-This package keeps the existing Hanlin host policy in one shared implementation and supplies an Any-specific native I/O binding. It consumes the canonical Hanlin SDK archive prepared by Tools/Hanlin/prepare_sdk.py at 116cc6be0654a5d11bc56ba00e0310031107ee36. It does not implement a second SDK dispatcher, grant store, model provider, or conversation format.
+This package keeps the existing Hanlin host policy in one shared implementation and supplies an Any-specific native I/O binding. It consumes the selected original Hanlin SDK products declared in HanlinSDK.lock.json, prepared as one immutable canonical Git checkout by Tools/Hanlin/prepare_sdk.py and the shared SDK installer. It does not implement a second SDK dispatcher, grant store, model provider, or conversation format.
 
 ## Products and application boundary
 

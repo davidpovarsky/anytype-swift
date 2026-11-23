@@ -1652,6 +1652,41 @@
       "validation": [
         "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json."
       ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/Hanlin/source.json",
+      "to": "Tools/Hanlin/source.json",
+      "baselineBlob": "0ac43dc444fa2234c2eb11fb9bebf129dbe4fb94",
+      "replacementBlob": "0229fcf31942ffb3e56d5d8bdc25872dd5c1070f",
+      "reason": "Resolve the single canonical SDK revision/products from HanlinSDK.lock.json, preserving original repository, Swift AI revision and minimum OS. All existing host implementation remains unchanged. The current-parent module manifests and lock are bound as exact shared sources.",
+      "validation": "docs/validation/20261123-canonical-hanlin-sdk: source/blob/complete selected-directory proof; four real-file rejection controls; actual package manifest dumps; preserved host dependency revisions; Apple/native acceptance remains separate.",
+      "sharedSources": [
+        {
+          "path": "HanlinSDK.lock.json",
+          "gitBlob": "76d41bacf42c1ac80c299b4f29f7f9a401ff0337"
+        },
+        {
+          "path": "Tools/Hanlin/prepare_sdk.py",
+          "gitBlob": "8fb9ee965948c1a2d5cfbc7914a36b391371d4a8"
+        },
+        {
+          "path": "Modules/PinkhaAnyHanlin/Package.swift",
+          "gitBlob": "9d0fe9b21dc984772931ec4d7a8b0c5d5f6776bd"
+        },
+        {
+          "path": "Modules/PinkhaAnyHanlin/Package.resolved",
+          "gitBlob": "876a0d62addd0355d5767275feb76b373c0028a0"
+        },
+        {
+          "path": "Modules/PinkhaAnyHanlin/README.md",
+          "gitBlob": "794592c806126c71a4a55756daffce2fa1a0eb05"
+        },
+        {
+          "path": "Modules/PinkhaAnyNative/Package.swift",
+          "gitBlob": "d183f6bea67b525c112a2dcaa8b7e05e8f7eca3b"
+        }
+      ]
     }
   ],
   "integration": {

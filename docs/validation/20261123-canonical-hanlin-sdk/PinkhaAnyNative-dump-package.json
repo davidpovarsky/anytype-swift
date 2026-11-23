@@ -1,0 +1,341 @@
+{
+  "cLanguageStandard": null,
+  "cxxLanguageStandard": null,
+  "defaultLocalization": null,
+  "dependencies": [
+    {
+      "fileSystem": [
+        {
+          "identity": "pinkhaanyruntime",
+          "path": "/mnt/development/projects/worktrees/anytype-canonical-hanlin-sdk-20261123/Modules/PinkhaAnyRuntime",
+          "productFilter": null,
+          "traits": [
+            {
+              "name": "default"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fileSystem": [
+        {
+          "identity": "pinkhaanyui",
+          "path": "/mnt/development/projects/worktrees/anytype-canonical-hanlin-sdk-20261123/Modules/PinkhaAnyUI",
+          "productFilter": null,
+          "traits": [
+            {
+              "name": "default"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fileSystem": [
+        {
+          "identity": "pinkhaanyhost",
+          "path": "/mnt/development/projects/worktrees/anytype-canonical-hanlin-sdk-20261123/Modules/PinkhaAnyHost",
+          "productFilter": null,
+          "traits": [
+            {
+              "name": "default"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fileSystem": [
+        {
+          "identity": "pinkhaanyengine",
+          "path": "/mnt/development/projects/worktrees/anytype-canonical-hanlin-sdk-20261123/Modules/PinkhaAnyEngine",
+          "productFilter": null,
+          "traits": [
+            {
+              "name": "default"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fileSystem": [
+        {
+          "identity": "pinkhaanyintegration",
+          "path": "/mnt/development/projects/worktrees/anytype-canonical-hanlin-sdk-20261123/Modules/PinkhaAnyIntegration",
+          "productFilter": null,
+          "traits": [
+            {
+              "name": "default"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fileSystem": [
+        {
+          "identity": "pinkhakit",
+          "path": "/mnt/development/projects/worktrees/anytype-canonical-hanlin-sdk-20261123/Modules/PinkhaKit",
+          "productFilter": null,
+          "traits": [
+            {
+              "name": "default"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fileSystem": [
+        {
+          "identity": "pinkhatorahpresentation",
+          "path": "/mnt/development/projects/worktrees/anytype-canonical-hanlin-sdk-20261123/Modules/PinkhaTorahPresentation",
+          "productFilter": null,
+          "traits": [
+            {
+              "name": "default"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sourceControl": [
+        {
+          "identity": "torahinspectorkit",
+          "location": {
+            "remote": [
+              {
+                "urlString": "https://github.com/davidpovarsky/TorahInspectorKit.git"
+              }
+            ]
+          },
+          "productFilter": null,
+          "requirement": {
+            "revision": [
+              "511454e49450cb2581ddf77f644146ff3e30dbef"
+            ]
+          },
+          "traits": [
+            {
+              "name": "default"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fileSystem": [
+        {
+          "identity": "pinkhaanyhanlin",
+          "path": "/mnt/development/projects/worktrees/anytype-canonical-hanlin-sdk-20261123/Modules/PinkhaAnyHanlin",
+          "productFilter": null,
+          "traits": [
+            {
+              "name": "default"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fileSystem": [
+        {
+          "identity": "hanlin",
+          "nameForTargetDependencyResolutionOnly": "HanlinSDK",
+          "path": "/mnt/development/projects/worktrees/anytype-canonical-hanlin-sdk-20261123/Dependencies/Hanlin",
+          "productFilter": null,
+          "traits": [
+            {
+              "name": "default"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "name": "PinkhaAnyNative",
+  "packageKind": {
+    "root": [
+      "/mnt/development/projects/worktrees/anytype-canonical-hanlin-sdk-20261123/Modules/PinkhaAnyNative"
+    ]
+  },
+  "pkgConfig": null,
+  "platforms": [
+    {
+      "options": [],
+      "platformName": "ios",
+      "version": "27.0"
+    }
+  ],
+  "products": [
+    {
+      "name": "PinkhaAnyNative",
+      "settings": [],
+      "targets": [
+        "PinkhaAnyNative"
+      ],
+      "type": {
+        "library": [
+          "automatic"
+        ]
+      }
+    }
+  ],
+  "providers": null,
+  "swiftLanguageVersions": null,
+  "targets": [
+    {
+      "dependencies": [
+        {
+          "byName": [
+            "PinkhaAnyRuntime",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaAnyUI",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaAnyHost",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaAnyEngine",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaAnyIntegration",
+            null
+          ]
+        },
+        {
+          "product": [
+            "PinkhaHanlinCore",
+            "PinkhaAnyHanlin",
+            null,
+            null
+          ]
+        }
+      ],
+      "exclude": [],
+      "name": "PinkhaAnyNative",
+      "packageAccess": true,
+      "resources": [],
+      "settings": [],
+      "type": "regular"
+    },
+    {
+      "dependencies": [
+        {
+          "byName": [
+            "PinkhaAnyNative",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaAnyRuntime",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaAnyEngine",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaAnyHost",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaAnyIntegration",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaAnyUI",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaKit",
+            null
+          ]
+        },
+        {
+          "byName": [
+            "PinkhaTorahPresentation",
+            null
+          ]
+        },
+        {
+          "product": [
+            "TorahInspectorCore",
+            "TorahInspectorKit",
+            null,
+            null
+          ]
+        },
+        {
+          "product": [
+            "PinkhaAnyHanlin",
+            "PinkhaAnyHanlin",
+            null,
+            null
+          ]
+        },
+        {
+          "product": [
+            "PinkhaHanlinCore",
+            "PinkhaAnyHanlin",
+            null,
+            null
+          ]
+        },
+        {
+          "product": [
+            "HanlinHostContracts",
+            "HanlinSDK",
+            null,
+            null
+          ]
+        },
+        {
+          "product": [
+            "HanlinPlatformContracts",
+            "HanlinSDK",
+            null,
+            null
+          ]
+        }
+      ],
+      "exclude": [],
+      "name": "PinkhaAnyNativeTests",
+      "packageAccess": true,
+      "resources": [],
+      "settings": [],
+      "type": "test"
+    }
+  ],
+  "toolsVersion": {
+    "_version": "6.2.0"
+  },
+  "traits": []
+}

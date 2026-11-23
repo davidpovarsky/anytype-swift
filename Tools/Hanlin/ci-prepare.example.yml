@@ -1,16 +1,15 @@
 # Insert AFTER the Anytype checkout and BEFORE package resolution or xcodebuild.
-# hanlin-ai is public; no additional secret or writable token is required.
-- name: Checkout pinned canonical Hanlin source
+- name: Read the canonical SDK lock
+  id: hanlin-pin
+  run: python3 Tools/Hanlin/prepare_sdk.py --github-output "$GITHUB_OUTPUT"
+- name: Checkout immutable public canonical Hanlin source
   uses: actions/checkout@v4
   with:
     repository: davidpovarsky/hanlin-ai
-    ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+    ref: ${{ steps.hanlin-pin.outputs.revision }}
     path: .ci/hanlin-source
     persist-credentials: false
-
-- name: Prepare canonical nested Hanlin packages
-  shell: bash
+- name: Prepare one canonical selected Hanlin profile
   run: |
-    set -euo pipefail
     python3 Tools/Hanlin/prepare_sdk.py --source .ci/hanlin-source
     python3 Tools/Hanlin/prepare_sdk.py --check

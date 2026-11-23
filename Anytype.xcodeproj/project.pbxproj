@@ -736,9 +736,7 @@
 			packageReferences = (
 				FA8100012F111900006805CC /* XCLocalSwiftPackageReference "PinkhaTorahPresentation" */,
 				FA7100012F111900006805CC /* XCLocalSwiftPackageReference "PinkhaAnyHanlin" */,
-				FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinAgentSDK" */,
-				FA6100022F111800006805CC /* XCLocalSwiftPackageReference "HanlinPlatform" */,
-				FA6100032F111800006805CC /* XCLocalSwiftPackageReference "HanlinPresentationSDK" */,
+				FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinSDK" */,
 				5333421A262E249100238121 /* XCRemoteSwiftPackageReference "FloatingPanel" */,
 				1259300326F3A5C500B115CD /* XCRemoteSwiftPackageReference "Highlightr" */,
 				1259300C26F3A6AE00B115CD /* XCRemoteSwiftPackageReference "Kingfisher" */,
@@ -2110,17 +2108,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinAgentSDK" */ = {
+		FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinSDK" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = Dependencies/Hanlin/Packages/HanlinAgentSDK;
-		};
-		FA6100022F111800006805CC /* XCLocalSwiftPackageReference "HanlinPlatform" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Dependencies/Hanlin/Packages/HanlinPlatform;
-		};
-		FA6100032F111800006805CC /* XCLocalSwiftPackageReference "HanlinPresentationSDK" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Dependencies/Hanlin/Packages/HanlinPresentationSDK;
+			relativePath = Dependencies/Hanlin;
 		};
 		FA7100012F111900006805CC /* XCLocalSwiftPackageReference "PinkhaAnyHanlin" */ = {
 			isa = XCLocalSwiftPackageReference;
@@ -2538,62 +2528,62 @@
 		};
 		FA6200012F111800006805CC /* HanlinHostContracts */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinAgentSDK" */;
+			package = FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinSDK" */;
 			productName = HanlinHostContracts;
 		};
 		FA6200022F111800006805CC /* HanlinPlatformContracts */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FA6100022F111800006805CC /* XCLocalSwiftPackageReference "HanlinPlatform" */;
+			package = FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinSDK" */;
 			productName = HanlinPlatformContracts;
 		};
 		FA6200032F111800006805CC /* HanlinAgentCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinAgentSDK" */;
+			package = FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinSDK" */;
 			productName = HanlinAgentCore;
 		};
 		FA6200042F111800006805CC /* HanlinPersistenceAdapters */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinAgentSDK" */;
+			package = FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinSDK" */;
 			productName = HanlinPersistenceAdapters;
 		};
 		FA6200052F111800006805CC /* HanlinChatCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FA6100022F111800006805CC /* XCLocalSwiftPackageReference "HanlinPlatform" */;
+			package = FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinSDK" */;
 			productName = HanlinChatCore;
 		};
 		FA6200062F111800006805CC /* HanlinScriptUI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FA6100022F111800006805CC /* XCLocalSwiftPackageReference "HanlinPlatform" */;
+			package = FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinSDK" */;
 			productName = HanlinScriptUI;
 		};
 		FA6200072F111800006805CC /* HanlinChatUI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FA6100032F111800006805CC /* XCLocalSwiftPackageReference "HanlinPresentationSDK" */;
+			package = FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinSDK" */;
 			productName = HanlinChatUI;
 		};
 		FA6200082F111800006805CC /* HanlinPresentationKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FA6100032F111800006805CC /* XCLocalSwiftPackageReference "HanlinPresentationSDK" */;
+			package = FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinSDK" */;
 			productName = HanlinPresentationKit;
 		};
 		FA6201012F111800006805CC /* HanlinHostContracts */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinAgentSDK" */;
+			package = FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinSDK" */;
 			productName = HanlinHostContracts;
 		};
 		FA6201022F111800006805CC /* HanlinPlatformContracts */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FA6100022F111800006805CC /* XCLocalSwiftPackageReference "HanlinPlatform" */;
+			package = FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinSDK" */;
 			productName = HanlinPlatformContracts;
 		};
 		FA6201032F111800006805CC /* HanlinAgentCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinAgentSDK" */;
+			package = FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinSDK" */;
 			productName = HanlinAgentCore;
 		};
 		FA6201042F111800006805CC /* HanlinChatCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = FA6100022F111800006805CC /* XCLocalSwiftPackageReference "HanlinPlatform" */;
+			package = FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinSDK" */;
 			productName = HanlinChatCore;
 		};
 		FA7200012F111900006805CC /* PinkhaHanlinCore */ = {

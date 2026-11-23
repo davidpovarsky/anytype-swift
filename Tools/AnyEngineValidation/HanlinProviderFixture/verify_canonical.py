@@ -20,7 +20,6 @@ from fixture import atomic_json
 from protocol import (ALLOW_CALL, CANCEL_CALL, CREATE_TOOL, MARKERS, MODEL,
                       READ_CALL, READ_TOOL, canonical, digest, require, text_chunks, tool_chunks)
 
-PIN = "116cc6be0654a5d11bc56ba00e0310031107ee36"
 SOURCE = "Packages/HanlinPlatform/Tests/HanlinChatCoreTests/ProviderConformance/ProviderResponseFixtures.swift"
 SOURCE_SHA = "de14c4620dfe2f8b49eb104eb22ca1467efa85ab31ff2968547d0cfb00e9f17a"
 
@@ -86,11 +85,22 @@ def main():
     protocol_path = Path(__file__).with_name("protocol.py")
     helper_path = repo / "Tools/AnyEngineValidation/run_native_torah_probe.py"
     producer_before = {str(p): digest(p.read_bytes()) for p in (Path(__file__), protocol_path, helper_path)}
-    original = subprocess.run(["git", "-C", args.hanlin_source, "show", PIN + ":" + SOURCE],
+    pin = json.loads((repo / "HanlinSDK.lock.json").read_text())["revision"]
+    original = subprocess.run(["git", "--no-replace-objects", "-C", args.hanlin_source, "show", pin + ":" + SOURCE],
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=20, check=False)
     require(original.returncode == 0 and digest(original.stdout) == SOURCE_SHA, "canonical_source_pin")
-    materialized = repo / "Dependencies/Hanlin" / SOURCE
-    require(materialized.read_bytes() == original.stdout, "canonical_materialized_source")
+
+    def installed_source():
+        installed = repo / "Dependencies/Hanlin"
+        head = subprocess.check_output(["git", "--no-replace-objects", "-C", str(installed), "rev-parse", "HEAD"],
+                                       timeout=20, text=True).strip()
+        require(head == pin, "canonical_installed_revision")
+        return subprocess.check_output(["git", "--no-replace-objects", "-C", str(installed), "show", pin + ":" + SOURCE],
+                                       timeout=20)
+
+    # The selected product profile does not materialize unrelated test trees.
+    # Compare the exact original fixture Git object from the pinned installation.
+    require(installed_source() == original.stdout, "canonical_installed_source")
     source = original.stdout.decode("utf-8")
     begin = source.index("    public static func openAIChatTextChunks(")
     end = source.index("    public static let richOpaqueReasoningDetailsJSONValue", begin)
@@ -136,9 +146,9 @@ def main():
                 "canonical_response_contract")
     (output / "canonical-chunks.json").write_bytes(run.stdout)
     producer_after = {str(p): digest(p.read_bytes()) for p in (Path(__file__), protocol_path, helper_path)}
-    stable = materialized.read_bytes() == original.stdout and producer_before == producer_after
+    stable = installed_source() == original.stdout and producer_before == producer_after
     result = {"schema": 1, "status": "PASS" if stable else "FAIL", "scope": "pinned_original_Swift_fixture_contract_equivalence_only",
-              "hanlinCommit": PIN, "sourcePath": SOURCE, "sourceSHA256": SOURCE_SHA,
+              "hanlinCommit": pin, "sourcePath": SOURCE, "sourceSHA256": SOURCE_SHA,
               "generatedSourceSHA256": digest(swift_path.read_bytes()),
               "unalteredMethodsSHA256": digest(methods.encode()), "unalteredHelperSHA256": digest(helper.encode()),
               "vectors": len(inputs), "events": sum(map(len, actual)), "compileExitCode": compile_exit,
