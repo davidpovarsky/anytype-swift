@@ -1,0 +1,529 @@
+{
+  "files": [
+    {
+      "bytes": 78996,
+      "path": "/mnt/development/projects/diagnostics/sdk06-external-host-45223678862-attempt1-result-20261123/compile-support-assessment1/swiftpm-PIFBuilder.swift",
+      "relative": "Sources/XCBuildSupport/PIFBuilder.swift",
+      "selected": [
+        {
+          "line": 673,
+          "text": ""
+        },
+        {
+          "line": 674,
+          "text": "            // Also propagate this search path to all direct and indirect clients."
+        },
+        {
+          "line": 675,
+          "text": "            impartedSettings[.HEADER_SEARCH_PATHS, default: [\"$(inherited)\"]].append(clangTarget.includeDir.pathString)"
+        },
+        {
+          "line": 676,
+          "text": ""
+        },
+        {
+          "line": 677,
+          "text": "            if !self.fileSystem.exists(clangTarget.moduleMapPath) {"
+        },
+        {
+          "line": 678,
+          "text": "                impartedSettings[.OTHER_SWIFT_FLAGS, default: [\"$(inherited)\"]] +="
+        },
+        {
+          "line": 679,
+          "text": "                    [\"-Xcc\", \"-fmodule-map-file=\\(moduleMapFile)\"]"
+        },
+        {
+          "line": 680,
+          "text": ""
+        },
+        {
+          "line": 681,
+          "text": "                moduleMapFileContents = \"\"\""
+        },
+        {
+          "line": 682,
+          "text": "                module \\(target.c99name) {"
+        },
+        {
+          "line": 683,
+          "text": "                    umbrella \"\\(clangTarget.includeDir.pathString)\""
+        },
+        {
+          "line": 684,
+          "text": "                    export *"
+        },
+        {
+          "line": 685,
+          "text": "                }"
+        },
+        {
+          "line": 686,
+          "text": "                \"\"\""
+        },
+        {
+          "line": 687,
+          "text": ""
+        },
+        {
+          "line": 688,
+          "text": "                shouldImpartModuleMap = true"
+        },
+        {
+          "line": 689,
+          "text": "            } else {"
+        },
+        {
+          "line": 690,
+          "text": "                moduleMapFileContents = nil"
+        },
+        {
+          "line": 691,
+          "text": "                shouldImpartModuleMap = false"
+        },
+        {
+          "line": 692,
+          "text": "            }"
+        },
+        {
+          "line": 693,
+          "text": "        } else if let swiftTarget = target.underlying as? SwiftModule {"
+        },
+        {
+          "line": 694,
+          "text": "            isSwiftModule = true"
+        },
+        {
+          "line": 695,
+          "text": "            try settings.addSwiftVersionSettings(target: swiftTarget, parameters: self.parameters)"
+        },
+        {
+          "line": 696,
+          "text": ""
+        },
+        {
+          "line": 697,
+          "text": "            // Generate ObjC compatibility header for Swift library targets."
+        },
+        {
+          "line": 698,
+          "text": "            settings[.SWIFT_OBJC_INTERFACE_HEADER_DIR] = \"$(OBJROOT)/GeneratedModuleMaps/$(PLATFORM_NAME)\""
+        },
+        {
+          "line": 699,
+          "text": "            settings[.SWIFT_OBJC_INTERFACE_HEADER_NAME] = \"\\(target.name)-Swift.h\""
+        },
+        {
+          "line": 700,
+          "text": ""
+        },
+        {
+          "line": 701,
+          "text": "            settings.addCommonSwiftSettings(package: self.package, target: target, parameters: self.parameters)"
+        },
+        {
+          "line": 702,
+          "text": ""
+        },
+        {
+          "line": 703,
+          "text": "            moduleMapFileContents = \"\"\""
+        },
+        {
+          "line": 704,
+          "text": "            module \\(target.c99name) {"
+        },
+        {
+          "line": 705,
+          "text": "                header \"\\(target.name)-Swift.h\""
+        },
+        {
+          "line": 706,
+          "text": "                export *"
+        },
+        {
+          "line": 707,
+          "text": "            }"
+        },
+        {
+          "line": 708,
+          "text": "            \"\"\""
+        },
+        {
+          "line": 709,
+          "text": ""
+        },
+        {
+          "line": 710,
+          "text": "            shouldImpartModuleMap = true"
+        },
+        {
+          "line": 711,
+          "text": "        } else {"
+        },
+        {
+          "line": 712,
+          "text": "            throw InternalError(\"unexpected target\")"
+        },
+        {
+          "line": 713,
+          "text": "        }"
+        },
+        {
+          "line": 714,
+          "text": ""
+        },
+        {
+          "line": 715,
+          "text": "        if let moduleMapFileContents {"
+        },
+        {
+          "line": 716,
+          "text": "            settings[.MODULEMAP_PATH] = moduleMapFile"
+        },
+        {
+          "line": 717,
+          "text": "            settings[.MODULEMAP_FILE_CONTENTS] = moduleMapFileContents"
+        },
+        {
+          "line": 718,
+          "text": "        }"
+        },
+        {
+          "line": 719,
+          "text": ""
+        },
+        {
+          "line": 720,
+          "text": "        // Pass the path of the module map up to all direct and indirect clients."
+        },
+        {
+          "line": 721,
+          "text": "        if shouldImpartModuleMap {"
+        },
+        {
+          "line": 722,
+          "text": "            impartedSettings[.OTHER_CFLAGS, default: [\"$(inherited)\"]].append(\"-fmodule-map-file=\\(moduleMapFile)\")"
+        },
+        {
+          "line": 723,
+          "text": "        }"
+        },
+        {
+          "line": 724,
+          "text": "        impartedSettings[.OTHER_LDRFLAGS] = []"
+        },
+        {
+          "line": 725,
+          "text": ""
+        },
+        {
+          "line": 726,
+          "text": "        if target.underlying.isCxx {"
+        },
+        {
+          "line": 727,
+          "text": "            impartedSettings[.OTHER_LDFLAGS, default: [\"$(inherited)\"]].append(\"-lc++\")"
+        },
+        {
+          "line": 728,
+          "text": "        }"
+        },
+        {
+          "line": 729,
+          "text": ""
+        },
+        {
+          "line": 730,
+          "text": "        // radar://112671586 supress unnecessary warnings"
+        },
+        {
+          "line": 731,
+          "text": "        impartedSettings[.OTHER_LDFLAGS, default: [\"$(inherited)\"]].append(\"-Wl,-no_warn_duplicate_libraries\")"
+        },
+        {
+          "line": 732,
+          "text": ""
+        },
+        {
+          "line": 733,
+          "text": "        self.addSources(target.sources, to: pifTarget)"
+        },
+        {
+          "line": 734,
+          "text": ""
+        },
+        {
+          "line": 735,
+          "text": "        // Handle the target's dependencies (but don't link against them)."
+        },
+        {
+          "line": 801,
+          "text": "                impartedSettings[.OTHER_LDFLAGS, default: [\"$(inherited)\"]] += result.libs"
+        },
+        {
+          "line": 802,
+          "text": "            }"
+        },
+        {
+          "line": 803,
+          "text": "        }"
+        },
+        {
+          "line": 804,
+          "text": ""
+        },
+        {
+          "line": 805,
+          "text": "        impartedSettings[.OTHER_LDRFLAGS] = []"
+        },
+        {
+          "line": 806,
+          "text": "        impartedSettings[.OTHER_CFLAGS, default: [\"$(inherited)\"]] +="
+        },
+        {
+          "line": 807,
+          "text": "            [\"-fmodule-map-file=\\(systemTarget.moduleMapPath)\"] + cFlags"
+        },
+        {
+          "line": 808,
+          "text": "        impartedSettings[.OTHER_SWIFT_FLAGS, default: [\"$(inherited)\"]] +="
+        },
+        {
+          "line": 809,
+          "text": "            [\"-Xcc\", \"-fmodule-map-file=\\(systemTarget.moduleMapPath)\"] + cFlags"
+        },
+        {
+          "line": 810,
+          "text": "        let impartedBuildProperties = PIF.ImpartedBuildProperties(settings: impartedSettings)"
+        },
+        {
+          "line": 811,
+          "text": ""
+        },
+        {
+          "line": 812,
+          "text": "        // Create an aggregate PIF target (which doesn't have an actual product)."
+        },
+        {
+          "line": 813,
+          "text": "        let pifTarget = addAggregateTarget(guid: target.pifTargetGUID, name: target.name)"
+        },
+        {
+          "line": 814,
+          "text": "        pifTarget.addBuildConfiguration("
+        },
+        {
+          "line": 815,
+          "text": "            name: \"Debug\","
+        },
+        {
+          "line": 816,
+          "text": "            settings: PIF.BuildSettings(),"
+        },
+        {
+          "line": 817,
+          "text": "            impartedBuildProperties: impartedBuildProperties"
+        },
+        {
+          "line": 818,
+          "text": "        )"
+        },
+        {
+          "line": 819,
+          "text": "        pifTarget.addBuildConfiguration("
+        },
+        {
+          "line": 820,
+          "text": "            name: \"Release\","
+        },
+        {
+          "line": 821,
+          "text": "            settings: PIF.BuildSettings(),"
+        },
+        {
+          "line": 822,
+          "text": "            impartedBuildProperties: impartedBuildProperties"
+        }
+      ],
+      "sha256": "5a2d0cdd3159538e3ba88b7a88fea690091cb751b73467bbf155b8d04a4dfc97",
+      "url": "https://raw.githubusercontent.com/swiftlang/swift-package-manager/767391fa8ed575c94a8719ec13580287bdb2b323/Sources/XCBuildSupport/PIFBuilder.swift"
+    },
+    {
+      "bytes": 10241,
+      "path": "/mnt/development/projects/diagnostics/sdk06-external-host-45223678862-attempt1-result-20261123/compile-support-assessment1/swiftpm-Module.swift",
+      "relative": "Sources/PackageModel/Module/Module.swift",
+      "selected": [
+        {
+          "line": 160,
+          "text": ""
+        },
+        {
+          "line": 161,
+          "text": "    @discardableResult"
+        },
+        {
+          "line": 162,
+          "text": "    public func applyAlias() -> Bool {"
+        },
+        {
+          "line": 163,
+          "text": "        // If there's an alias for this module, rename"
+        },
+        {
+          "line": 164,
+          "text": "        if let alias = moduleAliases?[name] {"
+        },
+        {
+          "line": 165,
+          "text": "            self.name = alias"
+        },
+        {
+          "line": 166,
+          "text": "            self.c99name = alias.spm_mangledToC99ExtendedIdentifier()"
+        },
+        {
+          "line": 167,
+          "text": "            return true"
+        },
+        {
+          "line": 168,
+          "text": "        }"
+        },
+        {
+          "line": 169,
+          "text": "        return false"
+        },
+        {
+          "line": 170,
+          "text": "    }"
+        },
+        {
+          "line": 171,
+          "text": ""
+        },
+        {
+          "line": 172,
+          "text": "    /// The dependencies of this module."
+        },
+        {
+          "line": 173,
+          "text": "    public let dependencies: [Dependency]"
+        },
+        {
+          "line": 174,
+          "text": ""
+        },
+        {
+          "line": 175,
+          "text": "    /// The language-level module name."
+        },
+        {
+          "line": 176,
+          "text": "    public private(set) var c99name: String"
+        },
+        {
+          "line": 177,
+          "text": ""
+        },
+        {
+          "line": 178,
+          "text": "    /// The bundle name, if one is being generated."
+        },
+        {
+          "line": 179,
+          "text": "    public var bundleName: String? {"
+        },
+        {
+          "line": 244,
+          "text": "        self.path = path"
+        },
+        {
+          "line": 245,
+          "text": "        self.sources = sources"
+        },
+        {
+          "line": 246,
+          "text": "        self.resources = resources"
+        },
+        {
+          "line": 247,
+          "text": "        self.ignored = ignored"
+        },
+        {
+          "line": 248,
+          "text": "        self.others = others"
+        },
+        {
+          "line": 249,
+          "text": "        self.dependencies = dependencies"
+        },
+        {
+          "line": 250,
+          "text": "        self.c99name = self.name.spm_mangledToC99ExtendedIdentifier()"
+        },
+        {
+          "line": 251,
+          "text": "        self.packageAccess = packageAccess"
+        },
+        {
+          "line": 252,
+          "text": "        self.buildSettings = buildSettings"
+        },
+        {
+          "line": 253,
+          "text": "        self.buildSettingsDescription = buildSettingsDescription"
+        },
+        {
+          "line": 254,
+          "text": "        self.pluginUsages = pluginUsages"
+        },
+        {
+          "line": 255,
+          "text": "        self.usesUnsafeFlags = usesUnsafeFlags"
+        },
+        {
+          "line": 256,
+          "text": "        self.implicit = implicit"
+        },
+        {
+          "line": 257,
+          "text": "    }"
+        },
+        {
+          "line": 258,
+          "text": "}"
+        },
+        {
+          "line": 259,
+          "text": ""
+        },
+        {
+          "line": 260,
+          "text": "extension Module: Hashable {"
+        },
+        {
+          "line": 261,
+          "text": "    public func hash(into hasher: inout Hasher) {"
+        },
+        {
+          "line": 262,
+          "text": "        hasher.combine(ObjectIdentifier(self))"
+        },
+        {
+          "line": 263,
+          "text": "    }"
+        }
+      ],
+      "sha256": "4fa8ec9d93d3f9d6719fa14287e5fbbd08955582cd18b61485418190e219844a",
+      "url": "https://raw.githubusercontent.com/swiftlang/swift-package-manager/767391fa8ed575c94a8719ec13580287bdb2b323/Sources/PackageModel/Module/Module.swift"
+    }
+  ],
+  "purpose": "Primary implementation reference for explicitly new module-map generation; not proof of preserved original Apple-generated bytes.",
+  "reference_api": {
+    "bytes": 365,
+    "sha256": "e5c018d827e8935416649cac71f2ea2eee412cde38b95b0f7f990ebd5ec63238",
+    "url": "https://api.github.com/repos/swiftlang/swift-package-manager/git/ref/heads/main"
+  },
+  "reference_commit": "767391fa8ed575c94a8719ec13580287bdb2b323"
+}

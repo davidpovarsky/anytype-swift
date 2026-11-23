@@ -1,0 +1,2734 @@
+{
+  "directory": "/mnt/development/projects/diagnostics/sdk06-external-host-45223678862-attempt1-result-20261123/compile-support-assessment1",
+  "logical_package_bytes": 68820,
+  "packages": [
+    {
+      "bytes": 49820,
+      "git_blob": "5f672759e94bcb25449aaecaea1ba484d5381813",
+      "identity": "firebase-ios-sdk",
+      "path": "/mnt/development/projects/diagnostics/sdk06-external-host-45223678862-attempt1-result-20261123/compile-support-assessment1/firebase-ios-sdk-Package.swift",
+      "pin": {
+        "identity": "firebase-ios-sdk",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/firebase/firebase-ios-sdk",
+        "state": {
+          "revision": "6318278e8e64d21f0fdcc69004395e4d34048aaf",
+          "version": "11.8.1"
+        }
+      },
+      "selected": [
+        {
+          "line": 22,
+          "text": "let firebaseVersion = \"11.8.1\""
+        },
+        {
+          "line": 23,
+          "text": ""
+        },
+        {
+          "line": 24,
+          "text": "let package = Package("
+        },
+        {
+          "line": 25,
+          "text": "  name: \"Firebase\","
+        },
+        {
+          "line": 26,
+          "text": "  platforms: [.iOS(.v12), .macCatalyst(.v13), .macOS(.v10_15), .tvOS(.v13), .watchOS(.v7)],"
+        },
+        {
+          "line": 27,
+          "text": "  products: ["
+        },
+        {
+          "line": 28,
+          "text": "    .library("
+        },
+        {
+          "line": 29,
+          "text": "      name: \"FirebaseAnalytics\","
+        },
+        {
+          "line": 30,
+          "text": "      targets: [\"FirebaseAnalyticsTarget\"]"
+        },
+        {
+          "line": 31,
+          "text": "    ),"
+        },
+        {
+          "line": 32,
+          "text": "    // Adding this library to your project is enough for it to take effect. The module"
+        },
+        {
+          "line": 33,
+          "text": "    // does not need to be imported into any source files."
+        },
+        {
+          "line": 34,
+          "text": "    .library("
+        },
+        {
+          "line": 35,
+          "text": "      name: \"FirebaseAnalyticsWithoutAdIdSupport\","
+        },
+        {
+          "line": 36,
+          "text": "      targets: [\"FirebaseAnalyticsWithoutAdIdSupportTarget\"]"
+        },
+        {
+          "line": 37,
+          "text": "    ),"
+        },
+        {
+          "line": 38,
+          "text": "    // Adding this library to your project is enough for it to take effect. The module"
+        },
+        {
+          "line": 39,
+          "text": "    // does not need to be imported into any source files."
+        },
+        {
+          "line": 40,
+          "text": "    .library("
+        },
+        {
+          "line": 41,
+          "text": "      name: \"FirebaseAnalyticsOnDeviceConversion\","
+        },
+        {
+          "line": 42,
+          "text": "      targets: [\"FirebaseAnalyticsOnDeviceConversionTarget\"]"
+        },
+        {
+          "line": 43,
+          "text": "    ),"
+        },
+        {
+          "line": 44,
+          "text": "    .library("
+        },
+        {
+          "line": 45,
+          "text": "      name: \"FirebaseAuth\","
+        },
+        {
+          "line": 46,
+          "text": "      targets: [\"FirebaseAuth\"]"
+        },
+        {
+          "line": 47,
+          "text": "    ),"
+        },
+        {
+          "line": 48,
+          "text": "    .library("
+        },
+        {
+          "line": 70,
+          "text": "      targets: [\"FirebaseStorageCombineSwift\"]"
+        },
+        {
+          "line": 71,
+          "text": "    ),"
+        },
+        {
+          "line": 72,
+          "text": "    .library("
+        },
+        {
+          "line": 73,
+          "text": "      name: \"FirebaseCore\","
+        },
+        {
+          "line": 74,
+          "text": "      targets: [\"FirebaseCore\"]"
+        },
+        {
+          "line": 75,
+          "text": "    ),"
+        },
+        {
+          "line": 76,
+          "text": "    .library("
+        },
+        {
+          "line": 77,
+          "text": "      name: \"FirebaseCrashlytics\","
+        },
+        {
+          "line": 78,
+          "text": "      targets: [\"FirebaseCrashlytics\"]"
+        },
+        {
+          "line": 79,
+          "text": "    ),"
+        },
+        {
+          "line": 80,
+          "text": "    .library("
+        },
+        {
+          "line": 81,
+          "text": "      name: \"FirebaseDatabase\","
+        },
+        {
+          "line": 82,
+          "text": "      targets: [\"FirebaseDatabase\"]"
+        },
+        {
+          "line": 83,
+          "text": "    ),"
+        },
+        {
+          "line": 84,
+          "text": "    .library("
+        },
+        {
+          "line": 85,
+          "text": "      name: \"FirebaseDynamicLinks\","
+        },
+        {
+          "line": 86,
+          "text": "      targets: [\"FirebaseDynamicLinksTarget\"]"
+        },
+        {
+          "line": 87,
+          "text": "    ),"
+        },
+        {
+          "line": 88,
+          "text": "    .library("
+        },
+        {
+          "line": 89,
+          "text": "      name: \"FirebaseFirestore\","
+        },
+        {
+          "line": 90,
+          "text": "      targets: [\"FirebaseFirestoreTarget\"]"
+        },
+        {
+          "line": 91,
+          "text": "    ),"
+        },
+        {
+          "line": 92,
+          "text": "    .library("
+        },
+        {
+          "line": 93,
+          "text": "      name: \"FirebaseFunctions\","
+        },
+        {
+          "line": 94,
+          "text": "      targets: [\"FirebaseFunctions\"]"
+        },
+        {
+          "line": 95,
+          "text": "    ),"
+        },
+        {
+          "line": 96,
+          "text": "    .library("
+        },
+        {
+          "line": 98,
+          "text": "      targets: [\"FirebaseInAppMessagingTarget\"]"
+        },
+        {
+          "line": 99,
+          "text": "    ),"
+        },
+        {
+          "line": 100,
+          "text": "    .library("
+        },
+        {
+          "line": 101,
+          "text": "      name: \"FirebaseInstallations\","
+        },
+        {
+          "line": 102,
+          "text": "      targets: [\"FirebaseInstallations\"]"
+        },
+        {
+          "line": 103,
+          "text": "    ),"
+        },
+        {
+          "line": 104,
+          "text": "    .library("
+        },
+        {
+          "line": 105,
+          "text": "      name: \"FirebaseMessaging\","
+        },
+        {
+          "line": 106,
+          "text": "      targets: [\"FirebaseMessaging\"]"
+        },
+        {
+          "line": 107,
+          "text": "    ),"
+        },
+        {
+          "line": 108,
+          "text": "    .library("
+        },
+        {
+          "line": 109,
+          "text": "      name: \"FirebaseMLModelDownloader\","
+        },
+        {
+          "line": 110,
+          "text": "      targets: [\"FirebaseMLModelDownloader\"]"
+        },
+        {
+          "line": 111,
+          "text": "    ),"
+        },
+        {
+          "line": 112,
+          "text": "    .library("
+        },
+        {
+          "line": 113,
+          "text": "      name: \"FirebasePerformance\","
+        },
+        {
+          "line": 114,
+          "text": "      targets: [\"FirebasePerformanceTarget\"]"
+        },
+        {
+          "line": 115,
+          "text": "    ),"
+        },
+        {
+          "line": 116,
+          "text": "    .library("
+        },
+        {
+          "line": 117,
+          "text": "      name: \"FirebaseRemoteConfig\","
+        },
+        {
+          "line": 118,
+          "text": "      targets: [\"FirebaseRemoteConfig\"]"
+        },
+        {
+          "line": 119,
+          "text": "    ),"
+        },
+        {
+          "line": 120,
+          "text": "    .library("
+        },
+        {
+          "line": 121,
+          "text": "      name: \"FirebaseStorage\","
+        },
+        {
+          "line": 122,
+          "text": "      targets: [\"FirebaseStorage\"]"
+        },
+        {
+          "line": 123,
+          "text": "    ),"
+        },
+        {
+          "line": 124,
+          "text": "    .library("
+        },
+        {
+          "line": 125,
+          "text": "      name: \"FirebaseVertexAI\","
+        },
+        {
+          "line": 126,
+          "text": "      targets: [\"FirebaseVertexAI\"]"
+        },
+        {
+          "line": 127,
+          "text": "    ),"
+        },
+        {
+          "line": 128,
+          "text": "  ],"
+        },
+        {
+          "line": 175,
+          "text": "  ],"
+        },
+        {
+          "line": 176,
+          "text": "  targets: ["
+        },
+        {
+          "line": 177,
+          "text": "    .target("
+        },
+        {
+          "line": 178,
+          "text": "      name: \"Firebase\","
+        },
+        {
+          "line": 179,
+          "text": "      path: \"CoreOnly/Sources\","
+        },
+        {
+          "line": 180,
+          "text": "      publicHeadersPath: \"./\""
+        },
+        {
+          "line": 181,
+          "text": "    ),"
+        },
+        {
+          "line": 182,
+          "text": "    .target("
+        },
+        {
+          "line": 183,
+          "text": "      name: \"FirebaseCore\","
+        },
+        {
+          "line": 184,
+          "text": "      dependencies: ["
+        },
+        {
+          "line": 185,
+          "text": "        \"Firebase\","
+        },
+        {
+          "line": 186,
+          "text": "        \"FirebaseCoreInternal\","
+        },
+        {
+          "line": 187,
+          "text": "        .product(name: \"GULEnvironment\", package: \"GoogleUtilities\"),"
+        },
+        {
+          "line": 188,
+          "text": "        .product(name: \"GULLogger\", package: \"GoogleUtilities\"),"
+        },
+        {
+          "line": 189,
+          "text": "      ],"
+        },
+        {
+          "line": 190,
+          "text": "      path: \"FirebaseCore/Sources\","
+        },
+        {
+          "line": 191,
+          "text": "      resources: [.process(\"Resources/PrivacyInfo.xcprivacy\")],"
+        },
+        {
+          "line": 192,
+          "text": "      publicHeadersPath: \"Public\","
+        },
+        {
+          "line": 193,
+          "text": "      cSettings: ["
+        },
+        {
+          "line": 194,
+          "text": "        .headerSearchPath(\"../..\"),"
+        },
+        {
+          "line": 195,
+          "text": "        .define(\"Firebase_VERSION\", to: firebaseVersion),"
+        },
+        {
+          "line": 196,
+          "text": "        // TODO: - Add support for cflags cSetting so that we can set the -fno-autolink option"
+        },
+        {
+          "line": 197,
+          "text": "      ],"
+        },
+        {
+          "line": 198,
+          "text": "      linkerSettings: ["
+        },
+        {
+          "line": 199,
+          "text": "        .linkedFramework(\"UIKit\", .when(platforms: [.iOS, .macCatalyst, .tvOS])),"
+        },
+        {
+          "line": 200,
+          "text": "        .linkedFramework(\"AppKit\", .when(platforms: [.macOS])),"
+        },
+        {
+          "line": 201,
+          "text": "      ]"
+        },
+        {
+          "line": 202,
+          "text": "    ),"
+        },
+        {
+          "line": 203,
+          "text": "    .testTarget("
+        },
+        {
+          "line": 204,
+          "text": "      name: \"CoreUnit\","
+        },
+        {
+          "line": 205,
+          "text": "      dependencies: ["
+        },
+        {
+          "line": 206,
+          "text": "        \"FirebaseCore\","
+        },
+        {
+          "line": 220,
+          "text": "    // When depending on `FirebaseCoreExtension`, also depend on `FirebaseCore`"
+        },
+        {
+          "line": 221,
+          "text": "    // to avoid potential linker issues."
+        },
+        {
+          "line": 222,
+          "text": "    .target("
+        },
+        {
+          "line": 223,
+          "text": "      name: \"FirebaseCoreExtension\","
+        },
+        {
+          "line": 224,
+          "text": "      path: \"FirebaseCore/Extension\","
+        },
+        {
+          "line": 225,
+          "text": "      resources: [.process(\"Resources/PrivacyInfo.xcprivacy\")],"
+        },
+        {
+          "line": 226,
+          "text": "      publicHeadersPath: \".\","
+        },
+        {
+          "line": 227,
+          "text": "      cSettings: ["
+        },
+        {
+          "line": 228,
+          "text": "        .headerSearchPath(\"../../\"),"
+        },
+        {
+          "line": 229,
+          "text": "      ]"
+        },
+        {
+          "line": 230,
+          "text": "    ),"
+        },
+        {
+          "line": 231,
+          "text": ""
+        },
+        {
+          "line": 232,
+          "text": "    // MARK: - Firebase Core Internal"
+        },
+        {
+          "line": 233,
+          "text": ""
+        },
+        {
+          "line": 234,
+          "text": "    // Shared collection of APIs for internal FirebaseCore usage."
+        },
+        {
+          "line": 235,
+          "text": "    .target("
+        },
+        {
+          "line": 236,
+          "text": "      name: \"FirebaseCoreInternal\","
+        },
+        {
+          "line": 237,
+          "text": "      dependencies: ["
+        },
+        {
+          "line": 238,
+          "text": "        .product(name: \"GULNSData\", package: \"GoogleUtilities\"),"
+        },
+        {
+          "line": 239,
+          "text": "      ],"
+        },
+        {
+          "line": 240,
+          "text": "      path: \"FirebaseCore/Internal/Sources\","
+        },
+        {
+          "line": 241,
+          "text": "      resources: [.process(\"Resources/PrivacyInfo.xcprivacy\")]"
+        },
+        {
+          "line": 242,
+          "text": "    ),"
+        },
+        {
+          "line": 243,
+          "text": "    .testTarget("
+        },
+        {
+          "line": 244,
+          "text": "      name: \"FirebaseCoreInternalTests\","
+        },
+        {
+          "line": 245,
+          "text": "      dependencies: ["
+        },
+        {
+          "line": 246,
+          "text": "        \"FirebaseCoreInternal\","
+        },
+        {
+          "line": 247,
+          "text": "      ],"
+        },
+        {
+          "line": 248,
+          "text": "      path: \"FirebaseCore/Internal/Tests\""
+        },
+        {
+          "line": 249,
+          "text": "    ),"
+        },
+        {
+          "line": 250,
+          "text": ""
+        },
+        {
+          "line": 251,
+          "text": "    .target("
+        },
+        {
+          "line": 252,
+          "text": "      name: \"FirebaseABTesting\","
+        },
+        {
+          "line": 253,
+          "text": "      dependencies: [\"FirebaseCore\"],"
+        },
+        {
+          "line": 254,
+          "text": "      path: \"FirebaseABTesting/Sources\","
+        },
+        {
+          "line": 255,
+          "text": "      resources: [.process(\"Resources/PrivacyInfo.xcprivacy\")],"
+        },
+        {
+          "line": 256,
+          "text": "      publicHeadersPath: \"Public\","
+        },
+        {
+          "line": 257,
+          "text": "      cSettings: ["
+        },
+        {
+          "line": 258,
+          "text": "        .headerSearchPath(\"../../\"),"
+        },
+        {
+          "line": 259,
+          "text": "      ]"
+        },
+        {
+          "line": 774,
+          "text": "    ),"
+        },
+        {
+          "line": 775,
+          "text": ""
+        },
+        {
+          "line": 776,
+          "text": "    .target("
+        },
+        {
+          "line": 777,
+          "text": "      name: \"FirebaseInstallations\","
+        },
+        {
+          "line": 778,
+          "text": "      dependencies: ["
+        },
+        {
+          "line": 779,
+          "text": "        \"FirebaseCore\","
+        },
+        {
+          "line": 780,
+          "text": "        .product(name: \"FBLPromises\", package: \"Promises\"),"
+        },
+        {
+          "line": 781,
+          "text": "        .product(name: \"GULEnvironment\", package: \"GoogleUtilities\"),"
+        },
+        {
+          "line": 782,
+          "text": "        .product(name: \"GULUserDefaults\", package: \"GoogleUtilities\"),"
+        },
+        {
+          "line": 783,
+          "text": "      ],"
+        },
+        {
+          "line": 784,
+          "text": "      path: \"FirebaseInstallations/Source/Library\","
+        },
+        {
+          "line": 785,
+          "text": "      resources: [.process(\"Resources/PrivacyInfo.xcprivacy\")],"
+        },
+        {
+          "line": 786,
+          "text": "      publicHeadersPath: \"Public\","
+        },
+        {
+          "line": 787,
+          "text": "      cSettings: ["
+        },
+        {
+          "line": 788,
+          "text": "        .headerSearchPath(\"../../../\"),"
+        },
+        {
+          "line": 789,
+          "text": "      ],"
+        },
+        {
+          "line": 790,
+          "text": "      linkerSettings: ["
+        },
+        {
+          "line": 791,
+          "text": "        .linkedFramework(\"Security\"),"
+        },
+        {
+          "line": 792,
+          "text": "      ]"
+        },
+        {
+          "line": 793,
+          "text": "    ),"
+        },
+        {
+          "line": 794,
+          "text": ""
+        },
+        {
+          "line": 795,
+          "text": "    .target("
+        },
+        {
+          "line": 796,
+          "text": "      name: \"FirebaseMLModelDownloader\","
+        },
+        {
+          "line": 797,
+          "text": "      dependencies: ["
+        },
+        {
+          "line": 798,
+          "text": "        \"FirebaseCore\","
+        },
+        {
+          "line": 799,
+          "text": "        \"FirebaseCoreExtension\","
+        },
+        {
+          "line": 800,
+          "text": "        \"FirebaseInstallations\","
+        },
+        {
+          "line": 817,
+          "text": "    ),"
+        },
+        {
+          "line": 818,
+          "text": ""
+        },
+        {
+          "line": 819,
+          "text": "    .target("
+        },
+        {
+          "line": 820,
+          "text": "      name: \"FirebaseMessaging\","
+        },
+        {
+          "line": 821,
+          "text": "      dependencies: ["
+        },
+        {
+          "line": 822,
+          "text": "        \"FirebaseCore\","
+        },
+        {
+          "line": 823,
+          "text": "        \"FirebaseInstallations\","
+        },
+        {
+          "line": 824,
+          "text": "        .product(name: \"GULAppDelegateSwizzler\", package: \"GoogleUtilities\"),"
+        },
+        {
+          "line": 825,
+          "text": "        .product(name: \"GULEnvironment\", package: \"GoogleUtilities\"),"
+        },
+        {
+          "line": 826,
+          "text": "        .product(name: \"GULReachability\", package: \"GoogleUtilities\"),"
+        },
+        {
+          "line": 827,
+          "text": "        .product(name: \"GULUserDefaults\", package: \"GoogleUtilities\"),"
+        },
+        {
+          "line": 828,
+          "text": "        .product(name: \"GoogleDataTransport\", package: \"GoogleDataTransport\"),"
+        },
+        {
+          "line": 829,
+          "text": "        .product(name: \"nanopb\", package: \"nanopb\"),"
+        },
+        {
+          "line": 830,
+          "text": "      ],"
+        },
+        {
+          "line": 831,
+          "text": "      path: \"FirebaseMessaging/Sources\","
+        },
+        {
+          "line": 832,
+          "text": "      resources: [.process(\"Resources/PrivacyInfo.xcprivacy\")],"
+        },
+        {
+          "line": 833,
+          "text": "      publicHeadersPath: \"Public\","
+        },
+        {
+          "line": 834,
+          "text": "      cSettings: ["
+        },
+        {
+          "line": 835,
+          "text": "        .headerSearchPath(\"../../\"),"
+        },
+        {
+          "line": 836,
+          "text": "        .define(\"PB_FIELD_32BIT\", to: \"1\"),"
+        },
+        {
+          "line": 837,
+          "text": "        .define(\"PB_NO_PACKED_STRUCTS\", to: \"1\"),"
+        },
+        {
+          "line": 838,
+          "text": "        .define(\"PB_ENABLE_MALLOC\", to: \"1\"),"
+        },
+        {
+          "line": 839,
+          "text": "      ],"
+        },
+        {
+          "line": 840,
+          "text": "      linkerSettings: ["
+        },
+        {
+          "line": 841,
+          "text": "        .linkedFramework(\"SystemConfiguration\", .when(platforms: [.iOS, .macOS, .tvOS])),"
+        },
+        {
+          "line": 842,
+          "text": "      ]"
+        },
+        {
+          "line": 843,
+          "text": "    ),"
+        }
+      ],
+      "sha256": "ad62935cf78e383bd531391f1038c6933c8a74705d4cc5a47ff7e39ccffdccfb",
+      "url": "https://raw.githubusercontent.com/firebase/firebase-ios-sdk/6318278e8e64d21f0fdcc69004395e4d34048aaf/Package.swift"
+    },
+    {
+      "bytes": 2981,
+      "git_blob": "d49077b3eedb0afa6f6c67abb0b63b687cd8cd0b",
+      "identity": "googledatatransport",
+      "path": "/mnt/development/projects/diagnostics/sdk06-external-host-45223678862-attempt1-result-20261123/compile-support-assessment1/googledatatransport-Package.swift",
+      "pin": {
+        "identity": "googledatatransport",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/google/GoogleDataTransport.git",
+        "state": {
+          "revision": "617af071af9aa1d6a091d59a202910ac482128f9",
+          "version": "10.1.0"
+        }
+      },
+      "selected": [
+        {
+          "line": 18,
+          "text": "import PackageDescription"
+        },
+        {
+          "line": 19,
+          "text": ""
+        },
+        {
+          "line": 20,
+          "text": "let package = Package("
+        },
+        {
+          "line": 21,
+          "text": "  name: \"GoogleDataTransport\","
+        },
+        {
+          "line": 22,
+          "text": "  platforms: [.iOS(.v12), .macOS(.v10_15), .tvOS(.v13), .watchOS(.v7)],"
+        },
+        {
+          "line": 23,
+          "text": "  products: ["
+        },
+        {
+          "line": 24,
+          "text": "    .library("
+        },
+        {
+          "line": 25,
+          "text": "      name: \"GoogleDataTransport\","
+        },
+        {
+          "line": 26,
+          "text": "      targets: [\"GoogleDataTransport\"]"
+        },
+        {
+          "line": 27,
+          "text": "    ),"
+        },
+        {
+          "line": 28,
+          "text": "  ],"
+        },
+        {
+          "line": 29,
+          "text": "  dependencies: ["
+        },
+        {
+          "line": 30,
+          "text": "    .package("
+        },
+        {
+          "line": 31,
+          "text": "      url: \"https://github.com/firebase/nanopb.git\","
+        },
+        {
+          "line": 32,
+          "text": "      \"2.30910.0\" ..< \"2.30911.0\""
+        },
+        {
+          "line": 33,
+          "text": "    ),"
+        },
+        {
+          "line": 34,
+          "text": "    .package("
+        },
+        {
+          "line": 35,
+          "text": "      url: \"https://github.com/google/promises.git\","
+        },
+        {
+          "line": 36,
+          "text": "      \"2.4.0\" ..< \"3.0.0\""
+        },
+        {
+          "line": 37,
+          "text": "    ),"
+        },
+        {
+          "line": 38,
+          "text": "  ],"
+        },
+        {
+          "line": 39,
+          "text": "  // TODO: Restructure directory structure to simplify the excludes here."
+        },
+        {
+          "line": 40,
+          "text": "  targets: ["
+        },
+        {
+          "line": 41,
+          "text": "    .target("
+        },
+        {
+          "line": 42,
+          "text": "      name: \"GoogleDataTransport\","
+        },
+        {
+          "line": 43,
+          "text": "      dependencies: ["
+        },
+        {
+          "line": 44,
+          "text": "        .product(name: \"nanopb\", package: \"nanopb\"),"
+        },
+        {
+          "line": 45,
+          "text": "        .product(name: \"FBLPromises\", package: \"Promises\"),"
+        },
+        {
+          "line": 46,
+          "text": "      ],"
+        },
+        {
+          "line": 47,
+          "text": "      path: \"GoogleDataTransport\","
+        },
+        {
+          "line": 48,
+          "text": "      exclude: ["
+        },
+        {
+          "line": 49,
+          "text": "        \"generate_project.sh\","
+        },
+        {
+          "line": 50,
+          "text": "        \"GDTCCTWatchOSTestApp/\","
+        },
+        {
+          "line": 51,
+          "text": "        \"GDTWatchOSTestApp/\","
+        },
+        {
+          "line": 52,
+          "text": "        \"GDTCCTTestApp/\","
+        },
+        {
+          "line": 53,
+          "text": "        \"GDTTestApp/\","
+        },
+        {
+          "line": 54,
+          "text": "        \"GDTCCTTests/\","
+        },
+        {
+          "line": 55,
+          "text": "        \"GDTCORTests/\","
+        },
+        {
+          "line": 56,
+          "text": "        \"ProtoSupport/\","
+        },
+        {
+          "line": 57,
+          "text": "      ],"
+        },
+        {
+          "line": 58,
+          "text": "      sources: ["
+        },
+        {
+          "line": 59,
+          "text": "        \"GDTCORLibrary\","
+        },
+        {
+          "line": 60,
+          "text": "        \"GDTCCTLibrary\","
+        },
+        {
+          "line": 61,
+          "text": "      ],"
+        },
+        {
+          "line": 62,
+          "text": "      resources: [.process(\"Resources/PrivacyInfo.xcprivacy\")],"
+        },
+        {
+          "line": 63,
+          "text": "      publicHeadersPath: \"GDTCORLibrary/Public\","
+        },
+        {
+          "line": 64,
+          "text": "      cSettings: ["
+        },
+        {
+          "line": 65,
+          "text": "        .headerSearchPath(\"../\"),"
+        },
+        {
+          "line": 66,
+          "text": "        .define(\"GDTCOR_VERSION\", to: \"0.0.1\"),"
+        },
+        {
+          "line": 67,
+          "text": "        .define(\"PB_FIELD_32BIT\", to: \"1\"),"
+        },
+        {
+          "line": 68,
+          "text": "        .define(\"PB_NO_PACKED_STRUCTS\", to: \"1\"),"
+        },
+        {
+          "line": 69,
+          "text": "        .define(\"PB_ENABLE_MALLOC\", to: \"1\"),"
+        },
+        {
+          "line": 70,
+          "text": "      ],"
+        },
+        {
+          "line": 71,
+          "text": "      linkerSettings: ["
+        },
+        {
+          "line": 72,
+          "text": "        .linkedFramework("
+        },
+        {
+          "line": 73,
+          "text": "          \"SystemConfiguration\","
+        },
+        {
+          "line": 74,
+          "text": "          .when(platforms: [.iOS, .macOS, .tvOS, .macCatalyst])"
+        },
+        {
+          "line": 75,
+          "text": "        ),"
+        },
+        {
+          "line": 76,
+          "text": "        .linkedFramework(\"CoreTelephony\", .when(platforms: [.macOS, .iOS, .macCatalyst])),"
+        },
+        {
+          "line": 77,
+          "text": "      ]"
+        },
+        {
+          "line": 78,
+          "text": "    ),"
+        },
+        {
+          "line": 79,
+          "text": "    .testTarget("
+        },
+        {
+          "line": 80,
+          "text": "      name: \"swift-test\","
+        },
+        {
+          "line": 81,
+          "text": "      dependencies: ["
+        },
+        {
+          "line": 82,
+          "text": "        \"GoogleDataTransport\","
+        },
+        {
+          "line": 83,
+          "text": "      ],"
+        },
+        {
+          "line": 84,
+          "text": "      path: \"SwiftPMTests/swift-test\""
+        },
+        {
+          "line": 85,
+          "text": "    ),"
+        },
+        {
+          "line": 86,
+          "text": "    .testTarget("
+        }
+      ],
+      "sha256": "cc3625630d23d21f92ab6941a6280f7f489b528e776dbf3174af7424627bd6b9",
+      "url": "https://raw.githubusercontent.com/google/GoogleDataTransport/617af071af9aa1d6a091d59a202910ac482128f9/Package.swift"
+    },
+    {
+      "bytes": 7245,
+      "git_blob": "fdc1ddfdb25b240f1919f90578cbed16cd1650f5",
+      "identity": "googleutilities",
+      "path": "/mnt/development/projects/diagnostics/sdk06-external-host-45223678862-attempt1-result-20261123/compile-support-assessment1/googleutilities-Package.swift",
+      "pin": {
+        "identity": "googleutilities",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/google/GoogleUtilities.git",
+        "state": {
+          "revision": "53156c7ec267db846e6b64c9f4c4e31ba4cf75eb",
+          "version": "8.0.2"
+        }
+      },
+      "selected": [
+        {
+          "line": 22,
+          "text": "  platforms: [.iOS(.v12), .macOS(.v10_15), .tvOS(.v13), .watchOS(.v7)],"
+        },
+        {
+          "line": 23,
+          "text": "  products: ["
+        },
+        {
+          "line": 24,
+          "text": "    .library("
+        },
+        {
+          "line": 25,
+          "text": "      name: \"GULAppDelegateSwizzler\","
+        },
+        {
+          "line": 26,
+          "text": "      targets: [\"GoogleUtilities-AppDelegateSwizzler\"]"
+        },
+        {
+          "line": 27,
+          "text": "    ),"
+        },
+        {
+          "line": 28,
+          "text": "    .library("
+        },
+        {
+          "line": 29,
+          "text": "      name: \"GULEnvironment\","
+        },
+        {
+          "line": 30,
+          "text": "      targets: [\"GoogleUtilities-Environment\"]"
+        },
+        {
+          "line": 31,
+          "text": "    ),"
+        },
+        {
+          "line": 32,
+          "text": "    .library("
+        },
+        {
+          "line": 33,
+          "text": "      name: \"GULLogger\","
+        },
+        {
+          "line": 34,
+          "text": "      targets: [\"GoogleUtilities-Logger\"]"
+        },
+        {
+          "line": 35,
+          "text": "    ),"
+        },
+        {
+          "line": 36,
+          "text": "    .library("
+        },
+        {
+          "line": 37,
+          "text": "      name: \"GULMethodSwizzler\","
+        },
+        {
+          "line": 38,
+          "text": "      targets: [\"GoogleUtilities-MethodSwizzler\"]"
+        },
+        {
+          "line": 39,
+          "text": "    ),"
+        },
+        {
+          "line": 40,
+          "text": "    .library("
+        },
+        {
+          "line": 41,
+          "text": "      name: \"GULNetwork\","
+        },
+        {
+          "line": 42,
+          "text": "      targets: [\"GoogleUtilities-Network\"]"
+        },
+        {
+          "line": 43,
+          "text": "    ),"
+        },
+        {
+          "line": 44,
+          "text": "    .library("
+        },
+        {
+          "line": 45,
+          "text": "      name: \"GULNSData\","
+        },
+        {
+          "line": 46,
+          "text": "      targets: [\"GoogleUtilities-NSData\"]"
+        },
+        {
+          "line": 47,
+          "text": "    ),"
+        },
+        {
+          "line": 48,
+          "text": "    .library("
+        },
+        {
+          "line": 49,
+          "text": "      name: \"GULReachability\","
+        },
+        {
+          "line": 50,
+          "text": "      targets: [\"GoogleUtilities-Reachability\"]"
+        },
+        {
+          "line": 51,
+          "text": "    ),"
+        },
+        {
+          "line": 52,
+          "text": "    .library("
+        },
+        {
+          "line": 53,
+          "text": "      name: \"GULSwizzlerTestHelpers\","
+        },
+        {
+          "line": 54,
+          "text": "      targets: [\"GoogleUtilities-SwizzlerTestHelpers\"]"
+        },
+        {
+          "line": 55,
+          "text": "    ),"
+        },
+        {
+          "line": 56,
+          "text": "    .library("
+        },
+        {
+          "line": 57,
+          "text": "      name: \"GULUserDefaults\","
+        },
+        {
+          "line": 58,
+          "text": "      targets: [\"GoogleUtilities-UserDefaults\"]"
+        },
+        {
+          "line": 59,
+          "text": "    ),"
+        },
+        {
+          "line": 60,
+          "text": "  ],"
+        },
+        {
+          "line": 61,
+          "text": "  dependencies: ["
+        },
+        {
+          "line": 62,
+          "text": "    // TODO: restore OCMock when https://github.com/erikdoe/ocmock/pull/537"
+        },
+        {
+          "line": 63,
+          "text": "    // gets merged to fix Xcode 15.3 builds."
+        },
+        {
+          "line": 64,
+          "text": "    .package("
+        },
+        {
+          "line": 65,
+          "text": "      url: \"https://github.com/paulb777/ocmock.git\","
+        },
+        {
+          "line": 66,
+          "text": "      revision: \"173955e93e6ee6999a10729ab67e4b4efdd1db6d\""
+        },
+        {
+          "line": 67,
+          "text": "    ),"
+        },
+        {
+          "line": 68,
+          "text": "  ],"
+        },
+        {
+          "line": 69,
+          "text": "  targets: ["
+        },
+        {
+          "line": 70,
+          "text": "    .target("
+        },
+        {
+          "line": 71,
+          "text": "      name: \"GoogleUtilities-AppDelegateSwizzler\","
+        },
+        {
+          "line": 72,
+          "text": "      dependencies: [\"GoogleUtilities-Environment\","
+        },
+        {
+          "line": 73,
+          "text": "                     \"GoogleUtilities-Logger\","
+        },
+        {
+          "line": 74,
+          "text": "                     \"GoogleUtilities-Network\"],"
+        },
+        {
+          "line": 75,
+          "text": "      path: \"GoogleUtilities/AppDelegateSwizzler\","
+        },
+        {
+          "line": 76,
+          "text": "      exclude: [\"README.md\"],"
+        },
+        {
+          "line": 77,
+          "text": "      resources: [.process(\"Resources/PrivacyInfo.xcprivacy\")],"
+        },
+        {
+          "line": 78,
+          "text": "      publicHeadersPath: \"Public\","
+        },
+        {
+          "line": 79,
+          "text": "      cSettings: ["
+        },
+        {
+          "line": 80,
+          "text": "        .headerSearchPath(\"../../\"),"
+        },
+        {
+          "line": 81,
+          "text": "      ]"
+        },
+        {
+          "line": 82,
+          "text": "    ),"
+        },
+        {
+          "line": 83,
+          "text": "    .target("
+        },
+        {
+          "line": 84,
+          "text": "      name: \"GoogleUtilities-Environment\","
+        },
+        {
+          "line": 85,
+          "text": "      dependencies: ["
+        },
+        {
+          "line": 86,
+          "text": "        \"third-party-IsAppEncrypted\","
+        },
+        {
+          "line": 87,
+          "text": "      ],"
+        },
+        {
+          "line": 88,
+          "text": "      path: \"GoogleUtilities/Environment\","
+        },
+        {
+          "line": 89,
+          "text": "      resources: [.process(\"Resources/PrivacyInfo.xcprivacy\")],"
+        },
+        {
+          "line": 90,
+          "text": "      publicHeadersPath: \"Public\","
+        },
+        {
+          "line": 91,
+          "text": "      cSettings: ["
+        },
+        {
+          "line": 92,
+          "text": "        .headerSearchPath(\"../../\"),"
+        },
+        {
+          "line": 93,
+          "text": "      ]"
+        },
+        {
+          "line": 94,
+          "text": "    ),"
+        },
+        {
+          "line": 95,
+          "text": ""
+        },
+        {
+          "line": 96,
+          "text": "    .target("
+        },
+        {
+          "line": 97,
+          "text": "      name: \"third-party-IsAppEncrypted\","
+        },
+        {
+          "line": 98,
+          "text": "      path: \"third_party/IsAppEncrypted\","
+        },
+        {
+          "line": 99,
+          "text": "      exclude: [\"LICENSE\"],"
+        },
+        {
+          "line": 100,
+          "text": "      publicHeadersPath: \"Public\","
+        },
+        {
+          "line": 101,
+          "text": "      cSettings: ["
+        },
+        {
+          "line": 102,
+          "text": "        .headerSearchPath(\"../../\"),"
+        },
+        {
+          "line": 103,
+          "text": "      ]"
+        },
+        {
+          "line": 104,
+          "text": "    ),"
+        },
+        {
+          "line": 105,
+          "text": ""
+        },
+        {
+          "line": 106,
+          "text": "    .target("
+        },
+        {
+          "line": 107,
+          "text": "      name: \"GoogleUtilities-Logger\","
+        },
+        {
+          "line": 108,
+          "text": "      dependencies: [\"GoogleUtilities-Environment\"],"
+        },
+        {
+          "line": 109,
+          "text": "      path: \"GoogleUtilities/Logger\","
+        },
+        {
+          "line": 110,
+          "text": "      resources: [.process(\"Resources/PrivacyInfo.xcprivacy\")],"
+        },
+        {
+          "line": 111,
+          "text": "      publicHeadersPath: \"Public\","
+        },
+        {
+          "line": 112,
+          "text": "      cSettings: ["
+        },
+        {
+          "line": 113,
+          "text": "        .headerSearchPath(\"../../\"),"
+        },
+        {
+          "line": 114,
+          "text": "      ]"
+        },
+        {
+          "line": 115,
+          "text": "    ),"
+        },
+        {
+          "line": 116,
+          "text": ""
+        },
+        {
+          "line": 117,
+          "text": "    .target("
+        },
+        {
+          "line": 118,
+          "text": "      name: \"GoogleUtilities-MethodSwizzler\","
+        },
+        {
+          "line": 119,
+          "text": "      dependencies: [\"GoogleUtilities-Logger\"],"
+        },
+        {
+          "line": 120,
+          "text": "      path: \"GoogleUtilities/MethodSwizzler\","
+        },
+        {
+          "line": 121,
+          "text": "      resources: [.process(\"Resources/PrivacyInfo.xcprivacy\")],"
+        },
+        {
+          "line": 122,
+          "text": "      publicHeadersPath: \"Public\","
+        },
+        {
+          "line": 123,
+          "text": "      cSettings: ["
+        },
+        {
+          "line": 124,
+          "text": "        .headerSearchPath(\"../../\"),"
+        },
+        {
+          "line": 125,
+          "text": "      ]"
+        },
+        {
+          "line": 126,
+          "text": "    ),"
+        },
+        {
+          "line": 127,
+          "text": "    .target("
+        },
+        {
+          "line": 128,
+          "text": "      name: \"GoogleUtilities-Network\","
+        },
+        {
+          "line": 129,
+          "text": "      dependencies: [\"GoogleUtilities-Logger\","
+        },
+        {
+          "line": 130,
+          "text": "                     \"GoogleUtilities-NSData\","
+        },
+        {
+          "line": 131,
+          "text": "                     \"GoogleUtilities-Reachability\"],"
+        },
+        {
+          "line": 132,
+          "text": "      path: \"GoogleUtilities/Network\","
+        },
+        {
+          "line": 133,
+          "text": "      resources: [.process(\"Resources/PrivacyInfo.xcprivacy\")],"
+        },
+        {
+          "line": 134,
+          "text": "      publicHeadersPath: \"Public\","
+        },
+        {
+          "line": 135,
+          "text": "      cSettings: ["
+        },
+        {
+          "line": 136,
+          "text": "        .headerSearchPath(\"../..\"),"
+        },
+        {
+          "line": 137,
+          "text": "      ]"
+        },
+        {
+          "line": 138,
+          "text": "    ),"
+        },
+        {
+          "line": 139,
+          "text": "    .target("
+        },
+        {
+          "line": 140,
+          "text": "      name: \"GoogleUtilities-NSData\","
+        },
+        {
+          "line": 141,
+          "text": "      dependencies: [],"
+        },
+        {
+          "line": 142,
+          "text": "      path: \"GoogleUtilities/NSData+zlib\","
+        },
+        {
+          "line": 143,
+          "text": "      resources: [.process(\"Resources/PrivacyInfo.xcprivacy\")],"
+        },
+        {
+          "line": 144,
+          "text": "      publicHeadersPath: \"Public\","
+        },
+        {
+          "line": 145,
+          "text": "      cSettings: ["
+        },
+        {
+          "line": 146,
+          "text": "        .headerSearchPath(\"../..\"),"
+        },
+        {
+          "line": 147,
+          "text": "      ],"
+        },
+        {
+          "line": 148,
+          "text": "      linkerSettings: ["
+        },
+        {
+          "line": 149,
+          "text": "        .linkedLibrary(\"z\"),"
+        },
+        {
+          "line": 150,
+          "text": "      ]"
+        },
+        {
+          "line": 151,
+          "text": "    ),"
+        },
+        {
+          "line": 152,
+          "text": "    .target("
+        },
+        {
+          "line": 153,
+          "text": "      name: \"GoogleUtilities-Reachability\","
+        },
+        {
+          "line": 154,
+          "text": "      dependencies: [\"GoogleUtilities-Logger\"],"
+        },
+        {
+          "line": 155,
+          "text": "      path: \"GoogleUtilities/Reachability\","
+        },
+        {
+          "line": 156,
+          "text": "      resources: [.process(\"Resources/PrivacyInfo.xcprivacy\")],"
+        },
+        {
+          "line": 157,
+          "text": "      publicHeadersPath: \"Public\","
+        },
+        {
+          "line": 158,
+          "text": "      cSettings: ["
+        },
+        {
+          "line": 159,
+          "text": "        .headerSearchPath(\"../../\"),"
+        },
+        {
+          "line": 160,
+          "text": "      ]"
+        },
+        {
+          "line": 161,
+          "text": "    ),"
+        },
+        {
+          "line": 162,
+          "text": "    .target("
+        },
+        {
+          "line": 163,
+          "text": "      name: \"GoogleUtilities-UserDefaults\","
+        },
+        {
+          "line": 164,
+          "text": "      dependencies: [\"GoogleUtilities-Logger\"],"
+        },
+        {
+          "line": 165,
+          "text": "      path: \"GoogleUtilities/UserDefaults\","
+        },
+        {
+          "line": 166,
+          "text": "      resources: [.process(\"Resources/PrivacyInfo.xcprivacy\")],"
+        },
+        {
+          "line": 167,
+          "text": "      publicHeadersPath: \"Public\","
+        },
+        {
+          "line": 168,
+          "text": "      cSettings: ["
+        },
+        {
+          "line": 169,
+          "text": "        .headerSearchPath(\"../../\"),"
+        },
+        {
+          "line": 170,
+          "text": "      ]"
+        },
+        {
+          "line": 171,
+          "text": "    ),"
+        },
+        {
+          "line": 172,
+          "text": "    .target("
+        },
+        {
+          "line": 173,
+          "text": "      name: \"GoogleUtilities-SwizzlerTestHelpers\","
+        },
+        {
+          "line": 174,
+          "text": "      dependencies: [\"GoogleUtilities-MethodSwizzler\"],"
+        },
+        {
+          "line": 175,
+          "text": "      path: \"GoogleUtilities/SwizzlerTestHelpers\","
+        },
+        {
+          "line": 176,
+          "text": "      publicHeadersPath: \"Public\","
+        },
+        {
+          "line": 177,
+          "text": "      cSettings: ["
+        },
+        {
+          "line": 178,
+          "text": "        .headerSearchPath(\"../../\"),"
+        },
+        {
+          "line": 179,
+          "text": "      ]"
+        },
+        {
+          "line": 180,
+          "text": "    ),"
+        },
+        {
+          "line": 181,
+          "text": "    .testTarget("
+        },
+        {
+          "line": 182,
+          "text": "      name: \"swift-test\","
+        },
+        {
+          "line": 183,
+          "text": "      dependencies: ["
+        },
+        {
+          "line": 184,
+          "text": "        \"GoogleUtilities-AppDelegateSwizzler\","
+        },
+        {
+          "line": 185,
+          "text": "        \"GoogleUtilities-Environment\","
+        },
+        {
+          "line": 186,
+          "text": "        \"GoogleUtilities-Logger\","
+        },
+        {
+          "line": 187,
+          "text": "        \"GoogleUtilities-MethodSwizzler\","
+        },
+        {
+          "line": 188,
+          "text": "        \"GoogleUtilities-Network\","
+        },
+        {
+          "line": 189,
+          "text": "        \"GoogleUtilities-NSData\","
+        },
+        {
+          "line": 190,
+          "text": "        \"GoogleUtilities-Reachability\","
+        },
+        {
+          "line": 191,
+          "text": "        \"GoogleUtilities-UserDefaults\","
+        },
+        {
+          "line": 192,
+          "text": "      ],"
+        },
+        {
+          "line": 193,
+          "text": "      path: \"SwiftPMTests/swift-test\""
+        },
+        {
+          "line": 194,
+          "text": "    ),"
+        },
+        {
+          "line": 195,
+          "text": "    .testTarget("
+        },
+        {
+          "line": 196,
+          "text": "      name: \"objc-import-test\","
+        },
+        {
+          "line": 197,
+          "text": "      dependencies: ["
+        },
+        {
+          "line": 198,
+          "text": "        \"GoogleUtilities-AppDelegateSwizzler\","
+        },
+        {
+          "line": 199,
+          "text": "        \"GoogleUtilities-Environment\","
+        }
+      ],
+      "sha256": "d213cadcc3ec4eba4d3a6fef0c001b5a8ba4e6087807f9a0d4ca85de46bc8a03",
+      "url": "https://raw.githubusercontent.com/google/GoogleUtilities/53156c7ec267db846e6b64c9f4c4e31ba4cf75eb/Package.swift"
+    },
+    {
+      "bytes": 1471,
+      "git_blob": "f53b7c4fcf7dee6f687c71f4560677f1bc0ac703",
+      "identity": "nanopb",
+      "path": "/mnt/development/projects/diagnostics/sdk06-external-host-45223678862-attempt1-result-20261123/compile-support-assessment1/nanopb-Package.swift",
+      "pin": {
+        "identity": "nanopb",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/firebase/nanopb.git",
+        "state": {
+          "revision": "b7e1104502eca3a213b46303391ca4d3bc8ddec1",
+          "version": "2.30910.0"
+        }
+      },
+      "selected": [
+        {
+          "line": 4,
+          "text": "import PackageDescription"
+        },
+        {
+          "line": 5,
+          "text": ""
+        },
+        {
+          "line": 6,
+          "text": "let package = Package("
+        },
+        {
+          "line": 7,
+          "text": "  name: \"nanopb\","
+        },
+        {
+          "line": 8,
+          "text": "  products: ["
+        },
+        {
+          "line": 9,
+          "text": "    .library("
+        },
+        {
+          "line": 10,
+          "text": "      name: \"nanopb\","
+        },
+        {
+          "line": 11,
+          "text": "      targets: [\"nanopb\"]"
+        },
+        {
+          "line": 12,
+          "text": "    )"
+        },
+        {
+          "line": 13,
+          "text": "  ],"
+        },
+        {
+          "line": 14,
+          "text": ""
+        },
+        {
+          "line": 15,
+          "text": "  targets: ["
+        },
+        {
+          "line": 16,
+          "text": "    .target("
+        },
+        {
+          "line": 17,
+          "text": "      name: \"nanopb\","
+        },
+        {
+          "line": 18,
+          "text": "      path: \".\","
+        },
+        {
+          "line": 19,
+          "text": "      sources: ["
+        },
+        {
+          "line": 20,
+          "text": "        \"pb.h\","
+        },
+        {
+          "line": 21,
+          "text": "        \"pb_common.h\","
+        },
+        {
+          "line": 22,
+          "text": "        \"pb_common.c\","
+        },
+        {
+          "line": 23,
+          "text": "        \"pb_decode.h\","
+        },
+        {
+          "line": 24,
+          "text": "        \"pb_decode.c\","
+        },
+        {
+          "line": 25,
+          "text": "        \"pb_encode.h\","
+        },
+        {
+          "line": 26,
+          "text": "        \"pb_encode.c\""
+        },
+        {
+          "line": 27,
+          "text": "      ],"
+        },
+        {
+          "line": 28,
+          "text": "      resources: [.process(\"spm_resources/PrivacyInfo.xcprivacy\")],"
+        },
+        {
+          "line": 29,
+          "text": "      publicHeadersPath: \"spm_headers\","
+        },
+        {
+          "line": 30,
+          "text": "      cSettings: ["
+        },
+        {
+          "line": 31,
+          "text": "        .define(\"PB_FIELD_32BIT\", to: \"1\"),"
+        },
+        {
+          "line": 32,
+          "text": "        .define(\"PB_NO_PACKED_STRUCTS\", to: \"1\"),"
+        },
+        {
+          "line": 33,
+          "text": "        .define(\"PB_ENABLE_MALLOC\", to: \"1\"),"
+        },
+        {
+          "line": 34,
+          "text": "      ]"
+        },
+        {
+          "line": 35,
+          "text": "    ),"
+        },
+        {
+          "line": 36,
+          "text": "    .testTarget("
+        },
+        {
+          "line": 37,
+          "text": "      name: \"swift-test\","
+        },
+        {
+          "line": 38,
+          "text": "      dependencies: ["
+        },
+        {
+          "line": 39,
+          "text": "        \"nanopb\","
+        },
+        {
+          "line": 40,
+          "text": "      ],"
+        },
+        {
+          "line": 41,
+          "text": "      path: \"spm-test/swift\","
+        },
+        {
+          "line": 42,
+          "text": "      cSettings: ["
+        },
+        {
+          "line": 43,
+          "text": "        .headerSearchPath(\"../\"),"
+        },
+        {
+          "line": 44,
+          "text": "        .define(\"PB_FIELD_32BIT\", to: \"1\"),"
+        },
+        {
+          "line": 45,
+          "text": "        .define(\"PB_NO_PACKED_STRUCTS\", to: \"1\"),"
+        },
+        {
+          "line": 46,
+          "text": "        .define(\"PB_ENABLE_MALLOC\", to: \"1\"),"
+        },
+        {
+          "line": 47,
+          "text": "      ]"
+        },
+        {
+          "line": 48,
+          "text": "    ),"
+        },
+        {
+          "line": 49,
+          "text": "    .testTarget("
+        },
+        {
+          "line": 50,
+          "text": "      name: \"objc-test\","
+        },
+        {
+          "line": 51,
+          "text": "      dependencies: ["
+        },
+        {
+          "line": 52,
+          "text": "        \"nanopb\","
+        }
+      ],
+      "sha256": "587f10beea90055c8ebf778a01a17ae52c8ce0dcb181d79dfe3c8b20601c01fe",
+      "url": "https://raw.githubusercontent.com/firebase/nanopb/b7e1104502eca3a213b46303391ca4d3bc8ddec1/Package.swift"
+    },
+    {
+      "bytes": 2753,
+      "git_blob": "f3aee5b2185cb6a481350a5c71d1cd0e4204712d",
+      "identity": "promises",
+      "path": "/mnt/development/projects/diagnostics/sdk06-external-host-45223678862-attempt1-result-20261123/compile-support-assessment1/promises-Package.swift",
+      "pin": {
+        "identity": "promises",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/google/promises.git",
+        "state": {
+          "revision": "540318ecedd63d883069ae7f1ed811a2df00b6ac",
+          "version": "2.4.0"
+        }
+      },
+      "selected": [
+        {
+          "line": 25,
+          "text": "  name: \"Promises\","
+        },
+        {
+          "line": 26,
+          "text": "  products: ["
+        },
+        {
+          "line": 27,
+          "text": "    .library("
+        },
+        {
+          "line": 28,
+          "text": "      name: \"FBLPromises\","
+        },
+        {
+          "line": 29,
+          "text": "      targets: ["
+        },
+        {
+          "line": 30,
+          "text": "        \"FBLPromises\","
+        },
+        {
+          "line": 31,
+          "text": "      ]"
+        },
+        {
+          "line": 32,
+          "text": "    ),"
+        },
+        {
+          "line": 33,
+          "text": "    .library("
+        },
+        {
+          "line": 34,
+          "text": "      name: \"FBLPromisesTestHelpers\","
+        },
+        {
+          "line": 35,
+          "text": "      targets: ["
+        },
+        {
+          "line": 36,
+          "text": "        \"FBLPromisesTestHelpers\","
+        },
+        {
+          "line": 37,
+          "text": "      ]"
+        },
+        {
+          "line": 38,
+          "text": "    ),"
+        },
+        {
+          "line": 39,
+          "text": "    .library("
+        },
+        {
+          "line": 40,
+          "text": "      name: \"Promises\","
+        },
+        {
+          "line": 41,
+          "text": "      targets: ["
+        },
+        {
+          "line": 42,
+          "text": "        \"Promises\","
+        },
+        {
+          "line": 43,
+          "text": "      ]"
+        },
+        {
+          "line": 44,
+          "text": "    ),"
+        },
+        {
+          "line": 45,
+          "text": "    .library("
+        },
+        {
+          "line": 46,
+          "text": "      name: \"PromisesTestHelpers\","
+        },
+        {
+          "line": 47,
+          "text": "      targets: ["
+        },
+        {
+          "line": 48,
+          "text": "        \"PromisesTestHelpers\","
+        },
+        {
+          "line": 49,
+          "text": "      ]"
+        },
+        {
+          "line": 50,
+          "text": "    ),"
+        },
+        {
+          "line": 51,
+          "text": "  ],"
+        },
+        {
+          "line": 52,
+          "text": "  targets: ["
+        },
+        {
+          "line": 53,
+          "text": "    .target("
+        },
+        {
+          "line": 54,
+          "text": "      name: \"FBLPromises\","
+        },
+        {
+          "line": 55,
+          "text": "      resources: ["
+        },
+        {
+          "line": 56,
+          "text": "        .process(\"Resources/PrivacyInfo.xcprivacy\")"
+        },
+        {
+          "line": 57,
+          "text": "      ]"
+        },
+        {
+          "line": 58,
+          "text": "    ),"
+        },
+        {
+          "line": 59,
+          "text": "    .target("
+        },
+        {
+          "line": 60,
+          "text": "      name: \"FBLPromisesTestHelpers\","
+        },
+        {
+          "line": 61,
+          "text": "      dependencies: ["
+        },
+        {
+          "line": 62,
+          "text": "        \"FBLPromises\","
+        },
+        {
+          "line": 63,
+          "text": "      ]"
+        },
+        {
+          "line": 64,
+          "text": "    ),"
+        },
+        {
+          "line": 65,
+          "text": "    .testTarget("
+        },
+        {
+          "line": 66,
+          "text": "      name: \"FBLPromisesTests\","
+        },
+        {
+          "line": 67,
+          "text": "      dependencies: ["
+        },
+        {
+          "line": 68,
+          "text": "        \"FBLPromisesTestHelpers\","
+        },
+        {
+          "line": 69,
+          "text": "      ]"
+        },
+        {
+          "line": 70,
+          "text": "    ),"
+        },
+        {
+          "line": 71,
+          "text": "    .testTarget("
+        },
+        {
+          "line": 72,
+          "text": "      name: \"FBLPromisesInteroperabilityTests\","
+        },
+        {
+          "line": 73,
+          "text": "      dependencies: ["
+        },
+        {
+          "line": 74,
+          "text": "        \"FBLPromisesTestHelpers\","
+        },
+        {
+          "line": 75,
+          "text": "        \"PromisesTestHelpers\","
+        },
+        {
+          "line": 76,
+          "text": "      ]"
+        },
+        {
+          "line": 77,
+          "text": "    ),"
+        }
+      ],
+      "sha256": "eb32f91d5fc905ca23564bc11c79741f83323bcaa9beb9e140f457310ddb5208",
+      "url": "https://raw.githubusercontent.com/google/promises/540318ecedd63d883069ae7f1ed811a2df00b6ac/Package.swift"
+    },
+    {
+      "bytes": 2221,
+      "git_blob": "6cdf00ff5a798d94f72e10a2f8e9495edea57a60",
+      "identity": "swift-cmark",
+      "path": "/mnt/development/projects/diagnostics/sdk06-external-host-45223678862-attempt1-result-20261123/compile-support-assessment1/swift-cmark-Package.swift",
+      "pin": {
+        "identity": "swift-cmark",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/swiftlang/swift-cmark.git",
+        "state": {
+          "revision": "08ddb528923cc1a6527e02b7a1aee9e516ca749a",
+          "version": "0.9.0"
+        }
+      },
+      "selected": [
+        {
+          "line": 17,
+          "text": "#endif"
+        },
+        {
+          "line": 18,
+          "text": ""
+        },
+        {
+          "line": 19,
+          "text": "let package = Package("
+        },
+        {
+          "line": 20,
+          "text": "    name: \"cmark-gfm\","
+        },
+        {
+          "line": 21,
+          "text": "    products: ["
+        },
+        {
+          "line": 22,
+          "text": "        // Products define the executables and libraries a package produces, and make them visible to other packages."
+        },
+        {
+          "line": 23,
+          "text": "        .library("
+        },
+        {
+          "line": 24,
+          "text": "            name: \"cmark-gfm\","
+        },
+        {
+          "line": 25,
+          "text": "            targets: [\"cmark-gfm\"]),"
+        },
+        {
+          "line": 26,
+          "text": "        .library("
+        },
+        {
+          "line": 27,
+          "text": "            name: \"cmark-gfm-extensions\","
+        },
+        {
+          "line": 28,
+          "text": "            targets: [\"cmark-gfm-extensions\"]),"
+        },
+        {
+          "line": 29,
+          "text": "        .executable("
+        },
+        {
+          "line": 30,
+          "text": "            name: \"cmark-gfm-bin\","
+        },
+        {
+          "line": 31,
+          "text": "            targets: [\"cmark-gfm-bin\"]),"
+        },
+        {
+          "line": 32,
+          "text": "        .executable(name: \"api_test\","
+        },
+        {
+          "line": 33,
+          "text": "            targets: [\"api_test\"])"
+        },
+        {
+          "line": 34,
+          "text": "    ],"
+        },
+        {
+          "line": 35,
+          "text": "    targets: ["
+        },
+        {
+          "line": 36,
+          "text": "        .target(name: \"cmark-gfm\","
+        },
+        {
+          "line": 37,
+          "text": "          path: \"src\","
+        },
+        {
+          "line": 38,
+          "text": "          exclude: ["
+        },
+        {
+          "line": 39,
+          "text": "            \"scanners.re\","
+        },
+        {
+          "line": 40,
+          "text": "            \"libcmark-gfm.pc.in\","
+        },
+        {
+          "line": 41,
+          "text": "            \"config.h.in\","
+        },
+        {
+          "line": 42,
+          "text": "            \"CMakeLists.txt\","
+        },
+        {
+          "line": 43,
+          "text": "          ],"
+        },
+        {
+          "line": 44,
+          "text": "          cSettings: cSettings"
+        },
+        {
+          "line": 45,
+          "text": "        ),"
+        },
+        {
+          "line": 46,
+          "text": "        .target(name: \"cmark-gfm-extensions\","
+        },
+        {
+          "line": 47,
+          "text": "          dependencies: ["
+        },
+        {
+          "line": 48,
+          "text": "            \"cmark-gfm\","
+        },
+        {
+          "line": 49,
+          "text": "          ],"
+        },
+        {
+          "line": 50,
+          "text": "          path: \"extensions\","
+        },
+        {
+          "line": 51,
+          "text": "          exclude: ["
+        },
+        {
+          "line": 52,
+          "text": "            \"CMakeLists.txt\","
+        },
+        {
+          "line": 53,
+          "text": "            \"ext_scanners.re\","
+        },
+        {
+          "line": 54,
+          "text": "          ],"
+        },
+        {
+          "line": 55,
+          "text": "          cSettings: cSettings"
+        },
+        {
+          "line": 56,
+          "text": "        ),"
+        },
+        {
+          "line": 57,
+          "text": "        .target(name: \"cmark-gfm-bin\","
+        },
+        {
+          "line": 58,
+          "text": "          dependencies: ["
+        },
+        {
+          "line": 59,
+          "text": "            \"cmark-gfm\","
+        },
+        {
+          "line": 60,
+          "text": "            \"cmark-gfm-extensions\","
+        },
+        {
+          "line": 61,
+          "text": "          ],"
+        },
+        {
+          "line": 62,
+          "text": "          path: \"bin\","
+        },
+        {
+          "line": 63,
+          "text": "          sources: ["
+        },
+        {
+          "line": 64,
+          "text": "            \"main.c\","
+        },
+        {
+          "line": 65,
+          "text": "          ]"
+        },
+        {
+          "line": 66,
+          "text": "        ),"
+        },
+        {
+          "line": 67,
+          "text": "        .target(name: \"api_test\","
+        },
+        {
+          "line": 68,
+          "text": "          dependencies: ["
+        },
+        {
+          "line": 69,
+          "text": "            \"cmark-gfm\","
+        },
+        {
+          "line": 70,
+          "text": "            \"cmark-gfm-extensions\","
+        },
+        {
+          "line": 71,
+          "text": "          ],"
+        },
+        {
+          "line": 72,
+          "text": "          path: \"api_test\","
+        },
+        {
+          "line": 73,
+          "text": "          exclude: ["
+        },
+        {
+          "line": 74,
+          "text": "            \"CMakeLists.txt\","
+        },
+        {
+          "line": 75,
+          "text": "          ]"
+        },
+        {
+          "line": 76,
+          "text": "        )"
+        },
+        {
+          "line": 77,
+          "text": "    ]"
+        },
+        {
+          "line": 78,
+          "text": ")"
+        }
+      ],
+      "sha256": "60c2250cbae9160395168d8eb3a11aa8b49177b8fd12d8f69bc0b71a83665ee4",
+      "url": "https://raw.githubusercontent.com/swiftlang/swift-cmark/08ddb528923cc1a6527e02b7a1aee9e516ca749a/Package.swift"
+    },
+    {
+      "bytes": 2329,
+      "git_blob": "94629bec3559f102d3c16adbbc0cac258cf8d91a",
+      "identity": "swift-markdown",
+      "path": "/mnt/development/projects/diagnostics/sdk06-external-host-45223678862-attempt1-result-20261123/compile-support-assessment1/swift-markdown-Package.swift",
+      "pin": {
+        "identity": "swift-markdown",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/swiftlang/swift-markdown.git",
+        "state": {
+          "revision": "25cb61d3482054b09ae76ca4f281b1bfe7fe5a43"
+        }
+      },
+      "selected": [
+        {
+          "line": 38,
+          "text": "            name: \"MarkdownTests\","
+        },
+        {
+          "line": 39,
+          "text": "            dependencies: [\"Markdown\"],"
+        },
+        {
+          "line": 40,
+          "text": "            resources: [.process(\"Visitors/Everything.md\")]),"
+        },
+        {
+          "line": 41,
+          "text": "        .target(name: \"CAtomic\"),"
+        },
+        {
+          "line": 42,
+          "text": "    ],"
+        },
+        {
+          "line": 43,
+          "text": "    swiftLanguageModes: [.v5]"
+        },
+        {
+          "line": 44,
+          "text": ")"
+        },
+        {
+          "line": 45,
+          "text": ""
+        },
+        {
+          "line": 46,
+          "text": "// If the `SWIFTCI_USE_LOCAL_DEPS` environment variable is set,"
+        },
+        {
+          "line": 47,
+          "text": "// we're building in the Swift.org CI system alongside other projects in the Swift toolchain and"
+        },
+        {
+          "line": 48,
+          "text": "// we can depend on local versions of our dependencies instead of fetching them remotely."
+        },
+        {
+          "line": 49,
+          "text": "if ProcessInfo.processInfo.environment[\"SWIFTCI_USE_LOCAL_DEPS\"] == nil {"
+        },
+        {
+          "line": 50,
+          "text": "    // Building standalone, so fetch all dependencies remotely."
+        },
+        {
+          "line": 51,
+          "text": "    package.dependencies += ["
+        },
+        {
+          "line": 52,
+          "text": "        .package(url: \"https://github.com/swiftlang/swift-cmark.git\", from: \"0.9.0\"),"
+        },
+        {
+          "line": 53,
+          "text": "    ]"
+        },
+        {
+          "line": 54,
+          "text": "    "
+        },
+        {
+          "line": 55,
+          "text": "    // SwiftPM command plugins are only supported by Swift version 5.6 and later."
+        },
+        {
+          "line": 56,
+          "text": "    #if swift(>=5.6)"
+        },
+        {
+          "line": 57,
+          "text": "    package.dependencies += ["
+        },
+        {
+          "line": 58,
+          "text": "        .package(url: \"https://github.com/apple/swift-docc-plugin\", from: \"1.1.0\"),"
+        },
+        {
+          "line": 59,
+          "text": "    ]"
+        },
+        {
+          "line": 60,
+          "text": "    #endif"
+        },
+        {
+          "line": 61,
+          "text": "} else {"
+        },
+        {
+          "line": 62,
+          "text": "    // Building in the Swift.org CI system, so rely on local versions of dependencies."
+        },
+        {
+          "line": 63,
+          "text": "    package.dependencies += ["
+        },
+        {
+          "line": 64,
+          "text": "        .package(path: \"../cmark\"),"
+        }
+      ],
+      "sha256": "8dd8e12eee0938fd6d3627ca83bb8ad395f6a73375e51f6169b0a12a59b9cc3c",
+      "url": "https://raw.githubusercontent.com/swiftlang/swift-markdown/25cb61d3482054b09ae76ca4f281b1bfe7fe5a43/Package.swift"
+    }
+  ]
+}

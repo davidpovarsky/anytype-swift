@@ -12,6 +12,8 @@ import plistlib
 import re
 import xml.etree.ElementTree as ET
 
+import sdk06_compile_support as support
+
 CONTRACT = "Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json"
 CONTRACT_SHA = "a15e303257382028ca0e1836d0c369d635a52bfded9fcede5b008445471b1c7a"
 SOURCE = "75bd6d7af18dfd511e85582ce7f994d2801b7703"
@@ -96,7 +98,7 @@ def object_id(value):
     return hashlib.sha256(value.encode()).hexdigest()[:24].upper()
 
 
-def project_value(source_names, staged_app, original_products, fixed):
+def project_value(source_names, staged_app, original_products, fixed, *, compile_support=None):
     require(sorted(source_names) == sorted(row["basename"] for row in fixed["source_files"].values()),
             "An unreviewed source entered the isolated target")
     require(all(re.fullmatch(r"[A-Za-z0-9_]+\.swift", name) for name in source_names),
@@ -153,6 +155,10 @@ def project_value(source_names, staged_app, original_products, fixed):
         "LD_RUNPATH_SEARCH_PATHS": ["@executable_path/Frameworks", "@loader_path/Frameworks"],
         **fixed["original_swift_features"],
     }
+    if compile_support is not None:
+        require(type(compile_support) is support.FixedCompileSupport,
+                "Only the concrete fixed compile-support packet is admitted")
+        settings.update(compile_support.settings())
     for prefix, values in (("project", {}), ("target", settings)):
         objects[ids[prefix + "-config"]] = {"isa": "XCBuildConfiguration",
                                             "buildSettings": values, "name": "Debug-Anytype"}
@@ -264,7 +270,8 @@ def descriptor_value(original, original_products_root, staged_app, test_bundle):
     return value
 
 
-def write_project(control, app, destination, staged_app, original_products):
+def write_project(control, app, destination, staged_app, original_products, *, with_compile_support=False):
+    require(type(with_compile_support) is bool, "The fixed compile-support opt-in must be boolean")
     fixed = contract(control)
     require(not destination.exists() and not destination.is_symlink(),
             "The component source/project root must be fresh")
@@ -274,7 +281,9 @@ def write_project(control, app, destination, staged_app, original_products):
         require(path.is_file() and not path.is_symlink(), "Original Swift source is absent")
         inputs[name] = path.read_bytes()
     sources, receipt = projected_sources(inputs, fixed)
-    value, ids = project_value(list(sources), staged_app, original_products, fixed)
+    compile_support = support.materialize(control, destination) if with_compile_support else None
+    value, ids = project_value(list(sources), staged_app, original_products, fixed,
+                              compile_support=compile_support)
     project = destination / "SDK06PendingComponents.xcodeproj"
     (destination / "Sources").mkdir(parents=True)
     (project / "xcshareddata/xcschemes").mkdir(parents=True)
@@ -304,4 +313,5 @@ def write_project(control, app, destination, staged_app, original_products):
                      "function_bodies_and_arguments_unchanged": True,
                      "original_source_modified": False, "app_build_targets": 0,
                      "native_library_build_targets": 0, "component_test_bundle_targets": 1,
-                     "package_build_targets": 0, "implicit_dependencies": False}
+                     "package_build_targets": 0, "implicit_dependencies": False,
+                     **({"compile_support": compile_support.receipt()} if compile_support is not None else {})}

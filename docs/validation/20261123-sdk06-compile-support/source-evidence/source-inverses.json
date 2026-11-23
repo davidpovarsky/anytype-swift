@@ -1,0 +1,72 @@
+{
+  "base": "e0baacaa70a4b7594395f6e2576df42cfaa1c8c7",
+  "controller": {
+    "after_sha256": "338607c77a36158187183e817192b2339ead2722ee6c6fae3601e7350e62d67e",
+    "before_sha256": "8d3045bc1dbe2f943b73b26e5d92c57f5523a9d3771d0800b6689040df889987",
+    "input_counts": [
+      82,
+      85
+    ],
+    "module_counts": [
+      69,
+      70
+    ],
+    "only_updated_inputs": [
+      "Tools/PinkhaSimulatorGate/sdk06_component_projection.py",
+      "Tools/PinkhaSimulatorGate/sdk06_projected_components.py",
+      "Tools/PinkhaSimulatorGate/sdk06_compile_support.py",
+      "Tools/PinkhaSimulatorGate/sdk06-compile-support.json",
+      "Tools/PinkhaSimulatorGate/sdk06-compile-support-source.json.gz"
+    ],
+    "preload_counts": [
+      66,
+      67
+    ],
+    "semantic_inverse_exact": true
+  },
+  "execution": "NOT_RUN",
+  "original_app_source": "75bd6d7af18dfd511e85582ce7f994d2801b7703",
+  "paths": {
+    "Tools/PinkhaSimulatorGate/sdk06_component_projection.py": {
+      "after_sha256": "14604065db98d414c4cfd4c74104e3316638ed26aeda5e1ca53f2b073f7fd299",
+      "before_sha256": "0ec892f3725732d1ea984d9b99e9c989c0c8eb980442aa7211d2d3141a816d0b",
+      "hunks": [
+        {
+          "after": "import xml.etree.ElementTree as ET\n\nimport sdk06_compile_support as support\n",
+          "before": "import xml.etree.ElementTree as ET\n"
+        },
+        {
+          "after": "def project_value(source_names, staged_app, original_products, fixed, *, compile_support=None):",
+          "before": "def project_value(source_names, staged_app, original_products, fixed):"
+        },
+        {
+          "after": "    if compile_support is not None:\n        require(type(compile_support) is support.FixedCompileSupport,\n                \"Only the concrete fixed compile-support packet is admitted\")\n        settings.update(compile_support.settings())\n    for prefix, values in ((\"project\", {}), (\"target\", settings)):\n",
+          "before": "    for prefix, values in ((\"project\", {}), (\"target\", settings)):\n"
+        },
+        {
+          "after": "def write_project(control, app, destination, staged_app, original_products, *, with_compile_support=False):\n    require(type(with_compile_support) is bool, \"The fixed compile-support opt-in must be boolean\")\n    fixed = contract(control)\n",
+          "before": "def write_project(control, app, destination, staged_app, original_products):\n    fixed = contract(control)\n"
+        },
+        {
+          "after": "    compile_support = support.materialize(control, destination) if with_compile_support else None\n    value, ids = project_value(list(sources), staged_app, original_products, fixed,\n                              compile_support=compile_support)\n",
+          "before": "    value, ids = project_value(list(sources), staged_app, original_products, fixed)\n"
+        },
+        {
+          "after": "                     \"package_build_targets\": 0, \"implicit_dependencies\": False,\n                     **({\"compile_support\": compile_support.receipt()} if compile_support is not None else {})}\n",
+          "before": "                     \"package_build_targets\": 0, \"implicit_dependencies\": False}\n"
+        }
+      ]
+    },
+    "Tools/PinkhaSimulatorGate/sdk06_projected_components.py": {
+      "after_sha256": "335f2184b500b87eb59d32431222eeb8d878fe8a844bf3eb73c44211447be53b",
+      "before_sha256": "9b1f2f91127963029b19a3287c2a06ef288c4893cb9fcc4f5654c95db7e2f1f6",
+      "hunks": [
+        {
+          "after": "            project, projected = projection.write_project(self.origin.control, app, generated, staged, products,\n                                                          with_compile_support=True)\n",
+          "before": "            project, projected = projection.write_project(self.origin.control, app, generated, staged, products)\n"
+        }
+      ]
+    }
+  },
+  "protocol": "sdk06-compile-support-literal-inverses-v1"
+}

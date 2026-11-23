@@ -1,0 +1,792 @@
+{
+  "controller_source": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba",
+  "counts": {
+    "app_builds": 0,
+    "component_bundle_build_attempts": 1,
+    "native_library_builds": 0,
+    "old_methods_replayed": 0,
+    "pending_sdk_invocations_not_run": 32,
+    "pending_sdk_methods_not_run": 23,
+    "product_method_failures": 0,
+    "product_method_passes": 0,
+    "product_method_starts": 0
+  },
+  "current_controller_sources_unchanged": true,
+  "final_integrity": {
+    "completed_new_products_bound": false,
+    "descriptor_bound": false,
+    "enumeration_bound": false,
+    "errors": [],
+    "generated_source_bound": true,
+    "original_failure_preserved": true,
+    "source_products_archive_bound": true,
+    "staged_original_app_bound": true,
+    "status": "PASS"
+  },
+  "inner": {
+    "bytes": 4736744,
+    "entries": 75,
+    "sha256": "1c199c5e12bce164bd990fdc9a168cb8cf064727414ef96d644ebc19634b9800"
+  },
+  "next_scope": "Exact pinned compile-support header/module-map closure assessment only. No new build, product execution, CI retry, or generator edit performed by this audit.",
+  "original_carrier": {
+    "bytes": 4740540,
+    "sha256": "76eac456f50c9552bf34376c96fcaad9b00da0433fdb8fc9a09b265cf6bbdec8"
+  },
+  "original_native_origin": {
+    "mode": "ORIGINAL_NATIVE_PRODUCTS_EXACT_RESTORATION",
+    "original_artifact_id": 14803859457,
+    "original_artifact_sha256": "af9ae3c1736b7eea395160c5cebabfe394bc11cfe083cc62df682ce870dea81b",
+    "original_descriptor_sha256": "4a2868235a870acf7567dfed7e00bd95079189cc9cc757c07cc28498265bedc2",
+    "original_native_archive_sha256": "478d17c0517a983830410d80b1f9630e42fb09e2293a2360d91ebf887a7ed18a",
+    "original_product_tests_executed": 0,
+    "original_run_attempt": "1",
+    "original_run_id": "45139431216",
+    "original_source_sha": "75bd6d7af18dfd511e85582ce7f994d2801b7703",
+    "original_workflow_conclusion": "failure"
+  },
+  "original_native_products_unchanged": true,
+  "owned_process_group": {
+    "absence_source": "KERNEL_ESRCH",
+    "budget_seconds": 10,
+    "kernel_group_observation": {
+      "after_monotonic": 889.893483166,
+      "before_monotonic": 889.878933625,
+      "deadline_monotonic": 899.87801125,
+      "errno": 3,
+      "error_type": "ProcessLookupError",
+      "operation": "os.killpg",
+      "outcome": "ABSENT_ESRCH",
+      "pgid": 8316,
+      "signal": 0
+    },
+    "live_members": 0,
+    "observations": 0,
+    "pgid": 8316,
+    "status": "PASS",
+    "timeout_observations": []
+  },
+  "owned_simulator_cleanup": {
+    "action": "cleanup",
+    "attempted_creations": 2,
+    "cleanup_admitted_intent_sha256": "e09804f6414f4d50334d01c277961eff2a2530a76d6ff0806ce03c6215034be6",
+    "fallback_cleanup": {
+      "devices": [
+        {
+          "delete_exit_code": 0,
+          "name": "Pinkha-UI27-45223678862-iphone",
+          "status": "DELETED_OWNED_SIMULATOR",
+          "udid": "8AA26597-0312-4CEF-B921-B23FB269162D"
+        },
+        {
+          "delete_exit_code": 0,
+          "name": "Pinkha-UI27-45223678862-ipad",
+          "shutdown_exit_code": 0,
+          "status": "DELETED_OWNED_SIMULATOR",
+          "udid": "83722B0C-AF3C-427F-BD50-F3560E8C4369"
+        }
+      ],
+      "finished_at": "2026-11-23T17:21:18.070800+00:00",
+      "inventory_queries": [
+        {
+          "elapsed_seconds": 11.23466,
+          "selector": "8AA26597-0312-4CEF-B921-B23FB269162D",
+          "selector_kind": "OWNED_UDID",
+          "status": "RETURNED_VALID_SCOPED_INVENTORY",
+          "timeout_seconds": 120
+        },
+        {
+          "elapsed_seconds": 0.576053,
+          "selector": "83722B0C-AF3C-427F-BD50-F3560E8C4369",
+          "selector_kind": "OWNED_UDID",
+          "status": "RETURNED_VALID_SCOPED_INVENTORY",
+          "timeout_seconds": 120
+        }
+      ],
+      "started_at": "2026-11-23T17:20:52.975387+00:00",
+      "status": "PASS"
+    },
+    "fallback_cleanup_sha256": "c4c3216e6c9e017fe3c5c5c301babc1a4ed270dc1323c6df10381004b01fe815",
+    "finished_at": "2026-11-23T17:21:18.080408+00:00",
+    "intent_sha256": "e09804f6414f4d50334d01c277961eff2a2530a76d6ff0806ce03c6215034be6",
+    "known_owned_udids": [
+      "8AA26597-0312-4CEF-B921-B23FB269162D",
+      "83722B0C-AF3C-427F-BD50-F3560E8C4369"
+    ],
+    "prior_batch_cleanup_admission": {
+      "status": "SDK_PROFILE_REQUIRES_ITS_OWN_JOURNAL_CLEANUP"
+    },
+    "protocol": "pinkha-sdk06-qualified-preflight-v1",
+    "run_attempt": "1",
+    "run_id": "45223678862",
+    "source_sha": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba",
+    "started_at": "2026-11-23T17:20:52.877323+00:00",
+    "status": "PASS"
+  },
+  "partial_archive": {
+    "bytes": 21610,
+    "completed_test_executable": false,
+    "sha256": "dadc711dee1a45cc238f473b4dd0ae4a18692ae3afe4b0dd10989d33f025d363",
+    "verified_entries": 23
+  },
+  "primary_failure": {
+    "error": "Owned command failed: projected-component-build",
+    "error_lines": [
+      {
+        "line": 146,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 147,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 148,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 149,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 150,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 151,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 152,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 153,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 154,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 155,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 156,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 157,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 158,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 159,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 160,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 161,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 162,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 163,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 164,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 165,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 166,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 167,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 168,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 169,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 170,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 171,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 172,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 173,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 174,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 175,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 176,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 177,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 178,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 179,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 180,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 181,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 182,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 183,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 184,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 185,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 186,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 187,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 188,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 189,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 190,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 191,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 192,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 193,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 194,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 195,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 196,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 197,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 198,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 199,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 200,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 201,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 202,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 203,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 204,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 205,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 206,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 207,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 208,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 209,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 210,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 211,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 212,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 213,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 214,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 215,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 216,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 217,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 218,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 219,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 220,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 221,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 222,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 223,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 224,
+        "text": "error: Unable to resolve module dependency: 'FirebaseCore' (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 227,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 228,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 229,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 230,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 231,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 232,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 233,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 234,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 235,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 236,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 237,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 238,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 239,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 240,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 241,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 242,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 243,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 244,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 245,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 246,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 247,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 248,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 249,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 250,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 251,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 252,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 253,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 254,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 255,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 256,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 257,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 258,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 259,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 260,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 261,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 262,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 263,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 264,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 265,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 266,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 267,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 268,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 269,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 270,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 271,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 272,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 273,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 274,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 275,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 276,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 277,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 278,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 279,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 280,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 281,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 282,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 283,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 284,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 285,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 286,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 287,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 288,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 289,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 290,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 291,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 292,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 293,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 294,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 295,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 296,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 297,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 298,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 299,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 300,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 301,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 302,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 303,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 304,
+        "text": "error: Clang dependency scanning failure:  (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      },
+      {
+        "line": 305,
+        "text": "error: Unable to resolve module dependency: 'FirebaseMessaging' (in target 'AnytypeTests' from project 'SDK06PendingComponents')"
+      }
+    ],
+    "error_type": "ValueError",
+    "finished_at": "2026-11-23T17:18:21.896924+00:00",
+    "phase": "TEST_BUNDLE_BUILD",
+    "return_code": 65,
+    "started_at": "2026-11-23T17:13:12.145765+00:00"
+  },
+  "progressed_stages": {
+    "actual_compile_dependency_scan_reached": true,
+    "missing_test_host_error_absent": true,
+    "successful_link_claimed": false,
+    "three_precreated_workspace_directories_exact": true
+  },
+  "protocol": "sdk06-external-host-original-failure-audit-v1",
+  "reader_limitations_preserved": [
+    "Read-only reader incorrectly included mutable access time in whole-stat equality; no archive mutation.",
+    "Immutable identity fields compared; access-time movement recorded separately.",
+    "Read-only reader attempted UTF-8 decoding of binary Info.plist; no archive mutation.",
+    "Reader completed; transport output was truncated, so it was not accepted as complete parsed evidence.",
+    "Bounded selected-output reader completed; no archive mutation."
+  ],
+  "run_attempt": 1,
+  "run_id": 45223678862,
+  "status": "QUALIFIED_ORIGINAL_BUILD_FAILURE",
+  "ui_status": "NOT_RUN"
+}

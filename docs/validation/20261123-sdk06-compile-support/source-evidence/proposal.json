@@ -1,0 +1,277 @@
+{
+  "conditional_edges": {
+    "cmark_config": "config.h is included only if CMARK_USE_CMAKE_HEADERS is defined; neither original consumer compile nor proposed settings defines it.",
+    "firebase_optional_imports": "CoreOnly Firebase.h uses __has_include guards; none are promoted to newly supplied unrelated Firebase APIs.",
+    "platform_headers": "Foundation/UIKit/UserNotifications/SystemConfiguration/ObjC/C standard/POSIX headers remain supplied by the actual pinned Apple SDK; AppKit/WatchKit/Windows branches are conditional.",
+    "proof_is_source_only": true
+  },
+  "failed_controller_source": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba",
+  "five_custom_maps_unchanged": [
+    {
+      "identity": "firebase-ios-sdk",
+      "path": "CoreOnly/Sources/module.modulemap",
+      "text": "module Firebase {\n  export *\n  header \"Firebase.h\"\n}"
+    },
+    {
+      "identity": "promises",
+      "path": "Sources/FBLPromises/include/module.modulemap",
+      "text": "module FBLPromises {\n    umbrella header \"FBLPromises.h\"\n\n    header \"FBLPromise.h\"\n    header \"FBLPromiseError.h\"\n    header \"FBLPromise+All.h\"\n    header \"FBLPromise+Always.h\"\n    header \"FBLPromise+Any.h\"\n    header \"FBLPromise+Async.h\"\n    header \"FBLPromise+Await.h\"\n    header \"FBLPromise+Catch.h\"\n    header \"FBLPromise+Delay.h\"\n    header \"FBLPromise+Do.h\"\n    header \"FBLPromise+Race.h\"\n    header \"FBLPromise+Recover.h\"\n    header \"FBLPromise+Reduce.h\"\n    header \"FBLPromise+Retry.h\"\n    header \"FBLPromise+Testing.h\"\n    header \"FBLPromise+Then.h\"\n    header \"FBLPromise+Timeout.h\"\n    header \"FBLPromise+Validate.h\"\n    header \"FBLPromise+Wrap.h\"\n\n    exclude header \"FBLPromisePrivate.h\"\n\n    export *\n}\n"
+    },
+    {
+      "identity": "swift-cmark",
+      "path": "extensions/include/module.modulemap",
+      "text": "\nmodule cmark_gfm_extensions {\n  header \"cmark-gfm-core-extensions.h\"\n}\n\n"
+    },
+    {
+      "identity": "swift-cmark",
+      "path": "src/include/module.modulemap",
+      "text": "module cmark_gfm {\n    header \"cmark-gfm.h\"\n    header \"cmark-gfm_config.h\"\n    header \"cmark-gfm-extension_api.h\"\n    header \"buffer.h\"\n    header \"chunk.h\"\n    header \"cmark_ctype.h\"\n    header \"export.h\"\n    header \"footnotes.h\"\n    header \"houdini.h\"\n    header \"html.h\"\n    header \"inlines.h\"\n    header \"iterator.h\"\n    header \"map.h\"\n    header \"node.h\"\n    header \"parser.h\"\n    header \"plugin.h\"\n    header \"references.h\"\n    header \"registry.h\"\n    header \"render.h\"\n    header \"scanners.h\"\n    header \"syntax_extension.h\"\n    header \"utf8.h\"\n    export *\n}\n"
+    },
+    {
+      "identity": "swift-markdown",
+      "path": "Sources/CAtomic/include/module.modulemap",
+      "text": "module CAtomic {\n  header \"CAtomic.h\"\n  export *\n}\n"
+    }
+  ],
+  "no_claims": {
+    "app_or_native_rebuild": false,
+    "new_bundle_links": false,
+    "new_bundle_runs": false,
+    "new_support_compiles": false,
+    "original_cache_available": false,
+    "product_acceptance": false
+  },
+  "observed_original_unique_maps": 18,
+  "original_app_source": "75bd6d7af18dfd511e85582ce7f994d2801b7703",
+  "original_package_resolved_sha256": "e1f20cfcd191832a49f3f94925aa314968d8ee9e344d6fac9a4aa30f2d90cc4f",
+  "packages": [
+    {
+      "identity": "firebase-ios-sdk",
+      "revision": "6318278e8e64d21f0fdcc69004395e4d34048aaf",
+      "root_query_sha256": "56890d921d9147941120c2adc096c0995ea33dde92546fc85db8ccd7a8176241",
+      "url": "https://api.github.com/repos/firebase/firebase-ios-sdk/git/trees/6318278e8e64d21f0fdcc69004395e4d34048aaf?recursive=1"
+    },
+    {
+      "identity": "googledatatransport",
+      "revision": "617af071af9aa1d6a091d59a202910ac482128f9",
+      "root_query_sha256": "da5b7238dd7e517be9e8b412ca96db56ad205f0c2e687b0a19d146afb19bc76c",
+      "url": "https://api.github.com/repos/google/GoogleDataTransport/git/trees/617af071af9aa1d6a091d59a202910ac482128f9?recursive=1"
+    },
+    {
+      "identity": "googleutilities",
+      "revision": "53156c7ec267db846e6b64c9f4c4e31ba4cf75eb",
+      "root_query_sha256": "5db083433225cb7eca4d409b5e200d08ad441c4088b633d0359ce0e7562d968f",
+      "url": "https://api.github.com/repos/google/GoogleUtilities/git/trees/53156c7ec267db846e6b64c9f4c4e31ba4cf75eb?recursive=1"
+    },
+    {
+      "identity": "nanopb",
+      "revision": "b7e1104502eca3a213b46303391ca4d3bc8ddec1",
+      "root_query_sha256": "e938dfefbdee4af70d726bcf5db62a4cdbd5a55a0134bbed975efc79c04c5707",
+      "url": "https://api.github.com/repos/firebase/nanopb/git/trees/b7e1104502eca3a213b46303391ca4d3bc8ddec1?recursive=1"
+    },
+    {
+      "identity": "promises",
+      "revision": "540318ecedd63d883069ae7f1ed811a2df00b6ac",
+      "root_query_sha256": "18745f2c387273e08e03382445636d192849ac8b640fa1fba93fccfcbb8bcc34",
+      "url": "https://api.github.com/repos/google/promises/git/trees/540318ecedd63d883069ae7f1ed811a2df00b6ac?recursive=1"
+    },
+    {
+      "identity": "swift-cmark",
+      "revision": "08ddb528923cc1a6527e02b7a1aee9e516ca749a",
+      "root_query_sha256": "eb592fb203defd8c57c18c902a743a48c61b723706d1be02b633ac38fe009246",
+      "url": "https://api.github.com/repos/swiftlang/swift-cmark/git/trees/08ddb528923cc1a6527e02b7a1aee9e516ca749a?recursive=1"
+    },
+    {
+      "identity": "swift-markdown",
+      "revision": "25cb61d3482054b09ae76ca4f281b1bfe7fe5a43",
+      "root_query_sha256": "15f85b1951cd1c5084a0a34be078d952c3683913473702f8b6892a4563570c1f",
+      "url": "https://api.github.com/repos/swiftlang/swift-markdown/git/trees/25cb61d3482054b09ae76ca4f281b1bfe7fe5a43?recursive=1"
+    }
+  ],
+  "primary_generation_reference": {
+    "commit": "767391fa8ed575c94a8719ec13580287bdb2b323",
+    "index_sha256": "5fcbde4171bc347e0c2d19fdd3d8101dd0cd8d2ca4505662438b6a1fa58e7af0",
+    "relationship": "Primary SwiftPM implementation support for newly derived maps; not proof of absent original Xcode-generated bytes."
+  },
+  "proposed_runtime_header_map_bytes": 319317,
+  "proposed_runtime_regular_header_map_files": 105,
+  "protocol": "sdk06-compile-support-proposed-scope-v1",
+  "runtime_estimate": {
+    "additional_license_files": "Package license texts may be preserved separately outside compile include roots; not compiler inputs.",
+    "header_payload_bytes": 319317,
+    "new_map_template_bytes": 1853,
+    "provenance_metadata_estimate_max_bytes": 500000,
+    "source_packet_compressed_estimate_max_bytes": 200000
+  },
+  "source_proposal": {
+    "caller": "Tools/PinkhaSimulatorGate/sdk06_projected_components.py",
+    "caller_scope": "One literal opt-in current projected build call; no workflow or generic override. Support inside generated project tree is covered by existing exact inventory/archive/final-failure checks.",
+    "controller_admission": "Update exact affected source/data hashes and preload new helper in fixed current manifest, preserving original App origin and prior proof inputs.",
+    "generator": "Tools/PinkhaSimulatorGate/sdk06_component_projection.py",
+    "generator_scope": "Fixed optional support in project_value/write_project; exact default inverse. Only18 HEADER_SEARCH_PATHS and explicit -Xcc -fmodule-map-file arguments. Host/dylib/runtime descriptor/Swift bodies/registration gates unchanged.",
+    "new_control": "Exactly one new composed actual-packet method: materialization/map/argv/default inverse and corruption/generated-map drift/extra-file/symlink refusals. No prior methods replayed.",
+    "new_fixed_manifest": "Tools/PinkhaSimulatorGate/sdk06-compile-support.json",
+    "new_fixed_packet": "Tools/PinkhaSimulatorGate/sdk06-compile-support-source.json.gz",
+    "new_helper": "Tools/PinkhaSimulatorGate/sdk06_compile_support.py"
+  },
+  "status": "SOURCE_PROPOSAL_NOT_IMPLEMENTED_OR_EXECUTED",
+  "symlink_materialization": [
+    {
+      "identity": "nanopb",
+      "link_blob": "e2be14d9fb962eb826f1f9fe27012fd98ffca155",
+      "link_path": "spm_headers/nanopb/pb.h",
+      "link_text": "../../pb.h",
+      "target_blob": "2bd45685029cab742f9337d0b49fa1e76b2d2874",
+      "target_bytes": 23308,
+      "target_path": "pb.h"
+    },
+    {
+      "identity": "nanopb",
+      "link_blob": "9449ad84b9dd4a0dbf0a32536721865983dd4a26",
+      "link_path": "spm_headers/nanopb/pb_common.h",
+      "link_text": "../../pb_common.h",
+      "target_blob": "60b3d37491446fa18b4f8d2003cd6b287d41d6bd",
+      "target_bytes": 1421,
+      "target_path": "pb_common.h"
+    },
+    {
+      "identity": "nanopb",
+      "link_blob": "d8288c703283371847f3348b2a242c31e91de4f0",
+      "link_path": "spm_headers/nanopb/pb_decode.h",
+      "link_text": "../../pb_decode.h",
+      "target_blob": "3577c2016610aa565743e4a0d9373a891184358f",
+      "target_bytes": 6591,
+      "target_path": "pb_decode.h"
+    },
+    {
+      "identity": "nanopb",
+      "link_blob": "3236a5f5a55e2fd694777d6273914945e0c0da57",
+      "link_path": "spm_headers/nanopb/pb_encode.h",
+      "link_text": "../../pb_encode.h",
+      "target_blob": "b1d822f30292f6bc37ebf9398d08e0d76161222d",
+      "target_bytes": 6292,
+      "target_path": "pb_encode.h"
+    }
+  ],
+  "thirteen_new_maps": [
+    {
+      "module_name": "GoogleUtilities_UserDefaults",
+      "new_map_path": "GeneratedModuleMaps-iphonesimulator/GoogleUtilities-UserDefaults.modulemap",
+      "new_template": "module GoogleUtilities_UserDefaults {\n    umbrella \"${SUPPORT_ROOT}/SourcePackages/googleutilities/GoogleUtilities/UserDefaults/Public\"\n    export *\n}\n",
+      "original_generated_bytes_preserved": false,
+      "package": "googleutilities",
+      "public_root": "GoogleUtilities/UserDefaults/Public",
+      "target_name": "GoogleUtilities-UserDefaults"
+    },
+    {
+      "module_name": "GoogleUtilities_Network",
+      "new_map_path": "GeneratedModuleMaps-iphonesimulator/GoogleUtilities-Network.modulemap",
+      "new_template": "module GoogleUtilities_Network {\n    umbrella \"${SUPPORT_ROOT}/SourcePackages/googleutilities/GoogleUtilities/Network/Public\"\n    export *\n}\n",
+      "original_generated_bytes_preserved": false,
+      "package": "googleutilities",
+      "public_root": "GoogleUtilities/Network/Public",
+      "target_name": "GoogleUtilities-Network"
+    },
+    {
+      "module_name": "GoogleUtilities_NSData",
+      "new_map_path": "GeneratedModuleMaps-iphonesimulator/GoogleUtilities-NSData.modulemap",
+      "new_template": "module GoogleUtilities_NSData {\n    umbrella \"${SUPPORT_ROOT}/SourcePackages/googleutilities/GoogleUtilities/NSData+zlib/Public\"\n    export *\n}\n",
+      "original_generated_bytes_preserved": false,
+      "package": "googleutilities",
+      "public_root": "GoogleUtilities/NSData+zlib/Public",
+      "target_name": "GoogleUtilities-NSData"
+    },
+    {
+      "module_name": "GoogleUtilities_AppDelegateSwizzler",
+      "new_map_path": "GeneratedModuleMaps-iphonesimulator/GoogleUtilities-AppDelegateSwizzler.modulemap",
+      "new_template": "module GoogleUtilities_AppDelegateSwizzler {\n    umbrella \"${SUPPORT_ROOT}/SourcePackages/googleutilities/GoogleUtilities/AppDelegateSwizzler/Public\"\n    export *\n}\n",
+      "original_generated_bytes_preserved": false,
+      "package": "googleutilities",
+      "public_root": "GoogleUtilities/AppDelegateSwizzler/Public",
+      "target_name": "GoogleUtilities-AppDelegateSwizzler"
+    },
+    {
+      "module_name": "GoogleUtilities_Logger",
+      "new_map_path": "GeneratedModuleMaps-iphonesimulator/GoogleUtilities-Logger.modulemap",
+      "new_template": "module GoogleUtilities_Logger {\n    umbrella \"${SUPPORT_ROOT}/SourcePackages/googleutilities/GoogleUtilities/Logger/Public\"\n    export *\n}\n",
+      "original_generated_bytes_preserved": false,
+      "package": "googleutilities",
+      "public_root": "GoogleUtilities/Logger/Public",
+      "target_name": "GoogleUtilities-Logger"
+    },
+    {
+      "module_name": "GoogleUtilities_Environment",
+      "new_map_path": "GeneratedModuleMaps-iphonesimulator/GoogleUtilities-Environment.modulemap",
+      "new_template": "module GoogleUtilities_Environment {\n    umbrella \"${SUPPORT_ROOT}/SourcePackages/googleutilities/GoogleUtilities/Environment/Public\"\n    export *\n}\n",
+      "original_generated_bytes_preserved": false,
+      "package": "googleutilities",
+      "public_root": "GoogleUtilities/Environment/Public",
+      "target_name": "GoogleUtilities-Environment"
+    },
+    {
+      "module_name": "third_party_IsAppEncrypted",
+      "new_map_path": "GeneratedModuleMaps-iphonesimulator/third-party-IsAppEncrypted.modulemap",
+      "new_template": "module third_party_IsAppEncrypted {\n    umbrella \"${SUPPORT_ROOT}/SourcePackages/googleutilities/third_party/IsAppEncrypted/Public\"\n    export *\n}\n",
+      "original_generated_bytes_preserved": false,
+      "package": "googleutilities",
+      "public_root": "third_party/IsAppEncrypted/Public",
+      "target_name": "third-party-IsAppEncrypted"
+    },
+    {
+      "module_name": "GoogleUtilities_Reachability",
+      "new_map_path": "GeneratedModuleMaps-iphonesimulator/GoogleUtilities-Reachability.modulemap",
+      "new_template": "module GoogleUtilities_Reachability {\n    umbrella \"${SUPPORT_ROOT}/SourcePackages/googleutilities/GoogleUtilities/Reachability/Public\"\n    export *\n}\n",
+      "original_generated_bytes_preserved": false,
+      "package": "googleutilities",
+      "public_root": "GoogleUtilities/Reachability/Public",
+      "target_name": "GoogleUtilities-Reachability"
+    },
+    {
+      "module_name": "GoogleDataTransport",
+      "new_map_path": "GeneratedModuleMaps-iphonesimulator/GoogleDataTransport.modulemap",
+      "new_template": "module GoogleDataTransport {\n    umbrella \"${SUPPORT_ROOT}/SourcePackages/googledatatransport/GoogleDataTransport/GDTCORLibrary/Public\"\n    export *\n}\n",
+      "original_generated_bytes_preserved": false,
+      "package": "googledatatransport",
+      "public_root": "GoogleDataTransport/GDTCORLibrary/Public",
+      "target_name": "GoogleDataTransport"
+    },
+    {
+      "module_name": "nanopb",
+      "new_map_path": "GeneratedModuleMaps-iphonesimulator/nanopb.modulemap",
+      "new_template": "module nanopb {\n    umbrella \"${SUPPORT_ROOT}/SourcePackages/nanopb/spm_headers\"\n    export *\n}\n",
+      "original_generated_bytes_preserved": false,
+      "package": "nanopb",
+      "public_root": "spm_headers",
+      "target_name": "nanopb"
+    },
+    {
+      "module_name": "FirebaseInstallations",
+      "new_map_path": "GeneratedModuleMaps-iphonesimulator/FirebaseInstallations.modulemap",
+      "new_template": "module FirebaseInstallations {\n    umbrella \"${SUPPORT_ROOT}/SourcePackages/firebase-ios-sdk/FirebaseInstallations/Source/Library/Public\"\n    export *\n}\n",
+      "original_generated_bytes_preserved": false,
+      "package": "firebase-ios-sdk",
+      "public_root": "FirebaseInstallations/Source/Library/Public",
+      "target_name": "FirebaseInstallations"
+    },
+    {
+      "module_name": "FirebaseCore",
+      "new_map_path": "GeneratedModuleMaps-iphonesimulator/FirebaseCore.modulemap",
+      "new_template": "module FirebaseCore {\n    umbrella \"${SUPPORT_ROOT}/SourcePackages/firebase-ios-sdk/FirebaseCore/Sources/Public\"\n    export *\n}\n",
+      "original_generated_bytes_preserved": false,
+      "package": "firebase-ios-sdk",
+      "public_root": "FirebaseCore/Sources/Public",
+      "target_name": "FirebaseCore"
+    },
+    {
+      "module_name": "FirebaseMessaging",
+      "new_map_path": "GeneratedModuleMaps-iphonesimulator/FirebaseMessaging.modulemap",
+      "new_template": "module FirebaseMessaging {\n    umbrella \"${SUPPORT_ROOT}/SourcePackages/firebase-ios-sdk/FirebaseMessaging/Sources/Public\"\n    export *\n}\n",
+      "original_generated_bytes_preserved": false,
+      "package": "firebase-ios-sdk",
+      "public_root": "FirebaseMessaging/Sources/Public",
+      "target_name": "FirebaseMessaging"
+    }
+  ],
+  "verified_primary_header_blob_bytes": 319378,
+  "verified_primary_header_blob_count": 109
+}
