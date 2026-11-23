@@ -54,9 +54,11 @@ on:
           - semantic-page-startup-warning
           - sdk06-projected-components
           - coherent-original-products
+          - current-release-return-rtl
           - native-ui-original-products
           - native-ui-transition-candidate
           - native-ui-runner-continuation
+          - current-native-ui-failed
           - prepared-migration-apple
           - prepared-inline-file-apple
           - sdk06-enumeration-probe
@@ -348,6 +350,10 @@ jobs:
     if: ${{ inputs.route == 'native-ui-runner-continuation' }}
     uses: ./.github/workflows/pinkha-any-native-ui-runner-continuation.yml
 
+  current-native-ui-failed:
+    if: ${{ inputs.route == 'current-native-ui-failed' }}
+    uses: ./.github/workflows/pinkha-current-native-ui-failed.yml
+
   sdk06-projected-components:
     if: ${{ inputs.route == 'sdk06-projected-components' }}
     uses: ./.github/workflows/pinkha-sdk06-original-native-continuation.yml
@@ -357,6 +363,10 @@ jobs:
   coherent-original-products:
     if: ${{ inputs.route == 'coherent-original-products' }}
     uses: ./.github/workflows/pinkha-coherent-original-products.yml
+
+  current-release-return-rtl:
+    if: ${{ inputs.route == 'current-release-return-rtl' }}
+    uses: ./.github/workflows/pinkha-current-release-return-rtl.yml
 
   semantic-page-apple-consumer:
     if: ${{ inputs.route == 'semantic-page-apple-consumer' }}
