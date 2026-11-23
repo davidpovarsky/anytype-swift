@@ -577,7 +577,7 @@ func (f *ownedExportFixture) export(t *testing.T, s *ownedExportSpecimen) {
 		inventory = append(inventory, row)
 	}
 	root := snapshots[s.RootID]
-	if root == nil || !slices.Contains(root.Snapshot.Data.ObjectTypes, f.typeKey.String()) ||
+	if root == nil || !slices.Contains(root.Snapshot.Data.ObjectTypes, f.typeKey.URL()) ||
 		domain.NewDetailsFromProto(root.Snapshot.Data.Details).GetString(bundle.RelationKeySpaceId) != f.spc.Id() {
 		t.Fatal("actual export lacks its native annotation root/type/Space")
 	}

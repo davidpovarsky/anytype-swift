@@ -33,7 +33,7 @@ import (
 )
 
 const (
-	ownedArchiveMaxBytes      = 65536
+	ownedArchiveMaxBytes      = 1048576
 	ownedArchiveMaxMembers    = 512
 	ownedArchiveMaxExpanded   = 8 << 20
 	ownedArchiveMaxWireDepth  = 64

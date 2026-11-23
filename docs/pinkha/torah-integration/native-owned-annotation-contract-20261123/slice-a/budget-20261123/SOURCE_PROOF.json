@@ -1,0 +1,48 @@
+{
+  "SDK_Host_policy_implementation_pending": true,
+  "archive_controls_historical_pass": false,
+  "authored_paths": [
+    {
+      "candidate_bytes": 23278,
+      "candidate_sha256": "3fb56e13a200956bb2c6db58c1f8ca2c9a0671b0bb64b1d2ad4ac318445b9066",
+      "inverse_restores_exact_source": true,
+      "patch": "owned_annotation_archive.go.patch",
+      "path": "docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/native/core/block/import/owned_annotation_archive.go",
+      "preimage_revision": "9357b53ff8230128d1f3340118ec152770feb12a",
+      "preimage_sha256": "565e0b8545c4c69a48b6983793df801ef4210933bf72a2694b5311c53aced735"
+    },
+    {
+      "candidate_bytes": 21694,
+      "candidate_sha256": "4adace712198e85f389b926c218573bf73d355fb0625b6983e1a6d32ecf644a4",
+      "inverse_restores_exact_source": true,
+      "patch": "owned_annotation_archive_test.go.patch",
+      "path": "docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/native/core/block/import/owned_annotation_archive_test.go",
+      "preimage_revision": "9357b53ff8230128d1f3340118ec152770feb12a",
+      "preimage_sha256": "a234e88527c590fc24cc729053b323a2a134a16f3a83e5553f798f13b91a03e3"
+    },
+    {
+      "candidate_bytes": 28932,
+      "candidate_sha256": "7a97d78db68ddedbd9555e683e5f16a18f2015f3f5894cbd14c6d97765f8ea86",
+      "inverse_restores_exact_source": true,
+      "patch": "owned_annotation_export_native_test.go.patch",
+      "path": "docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/native/core/application/owned_annotation_export_native_test.go",
+      "preimage_revision": "9357b53ff8230128d1f3340118ec152770feb12a",
+      "preimage_sha256": "a59c2f6eb6424d943d238d13d47f9701c5fc7eeda0a29ddd26b428553b48c1eb"
+    }
+  ],
+  "base": "9357b53ff8230128d1f3340118ec152770feb12a",
+  "control_semantic_delta": "Existing CompressedBudget leaf tests exact inclusive limit and one-byte-over order; all other31 leaves unchanged",
+  "expected_archive_leaf_count": 32,
+  "fixture_semantic_delta": "Only original exported TypeKey.String()->TypeKey.URL() membership",
+  "go_compile_or_tests_executed": false,
+  "gofmt_pass": true,
+  "native_go_semantic_delta": "Only compressed archive ceiling65536->1048576",
+  "native_runtime_qualified": false,
+  "original_importer_changed": false,
+  "policy_sha256": "818bd440374cd49072f018065d300209bd2dafc506ec16d8c2c686736bde7077",
+  "policy_source_revision": "c067f5c5d5afc5d2679bdc371163d3018cc71a7b",
+  "preparation_note": "Initial no-checkout worktree required explicit checkout of selected six paths before edit; no source edit/commit was made by the failed pre-read attempt.",
+  "schema": 1,
+  "status": "SOURCE_PREPARED_NOT_RUN",
+  "workflow_activated": false
+}

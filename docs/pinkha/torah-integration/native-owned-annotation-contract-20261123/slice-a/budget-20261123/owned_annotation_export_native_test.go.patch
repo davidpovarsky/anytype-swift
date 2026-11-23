@@ -1,0 +1,11 @@
+--- a/docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/native/core/application/owned_annotation_export_native_test.go
++++ b/docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/native/core/application/owned_annotation_export_native_test.go
+@@ -577,7 +577,7 @@
+ 		inventory = append(inventory, row)
+ 	}
+ 	root := snapshots[s.RootID]
+-	if root == nil || !slices.Contains(root.Snapshot.Data.ObjectTypes, f.typeKey.String()) ||
++	if root == nil || !slices.Contains(root.Snapshot.Data.ObjectTypes, f.typeKey.URL()) ||
+ 		domain.NewDetailsFromProto(root.Snapshot.Data.Details).GetString(bundle.RelationKeySpaceId) != f.spc.Id() {
+ 		t.Fatal("actual export lacks its native annotation root/type/Space")
+ 	}

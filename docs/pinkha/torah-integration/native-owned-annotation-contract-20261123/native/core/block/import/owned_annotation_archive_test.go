@@ -133,7 +133,30 @@ func TestOtzariaOwnedAnnotationArchive(t *testing.T) {
 			}
 		}
 	})
-	refused("CompressedBudget", "compressed_budget", base, append(bytes.Clone(base.raw), make([]byte, ownedArchiveMaxBytes)...))
+	t.Run("CompressedBudget", func(t *testing.T) {
+		if ownedArchiveMaxBytes != 1048576 || len(base.raw) >= ownedArchiveMaxBytes {
+			t.Fatal("approved annotation byte policy or genuine probe base changed")
+		}
+		// Padded derivatives are boundary probes, not original export specimens.
+		// At the inclusive limit, the intentionally wrong digest must be reached;
+		// one byte over must be refused before digest or ZIP/model admission.
+		atLimit := make([]byte, ownedArchiveMaxBytes)
+		copy(atLimit, base.raw)
+		_, err := inspectOwnedAnnotationArchive(context.Background(), atLimit, [32]byte{}, base.root, base.space)
+		if err == nil || !strings.Contains(err.Error(), "digest_mismatch") {
+			t.Fatalf("inclusive byte boundary did not reach digest admission: %v", err)
+		}
+		overLimit := append(atLimit, 0)
+		_, err = inspectOwnedAnnotationArchive(context.Background(), overLimit, [32]byte{}, base.root, base.space)
+		if err == nil || !strings.Contains(err.Error(), "compressed_budget") {
+			t.Fatalf("one-byte-over boundary did not refuse before digest admission: %v", err)
+		}
+		inclusiveHash, overHash := sha256.Sum256(atLimit), sha256.Sum256(overLimit)
+		record = append(record, map[string]any{"case": "CompressedBudget", "base_specimen": base.name,
+			"base_sha256": base.hash, "inclusive_bytes": len(atLimit), "inclusive_sha256": hex.EncodeToString(inclusiveHash[:]),
+			"inclusive_refusal": "digest_mismatch", "variant_bytes": len(overLimit),
+			"variant_sha256": hex.EncodeToString(overHash[:]), "refusal": "compressed_budget"})
+	})
 	refused("HiddenPrefix", "zip_framing", base, append([]byte("hidden"), base.raw...))
 	refused("TrailingBytes", "zip_framing", base, append(bytes.Clone(base.raw), []byte("trailing")...))
 	rootMember, rootBody := ownedArchiveRootMember(t, base)
