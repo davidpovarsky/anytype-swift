@@ -1,0 +1,290 @@
+{
+  "schema": 1,
+  "status": "PASS",
+  "scope": "EXACT_FOUNDATION_FIFO_AND_AUTH_CAPTURE_CONTROLS_ONLY",
+  "combine_executed": false,
+  "registration_actors_executed": false,
+  "apple_or_lib_or_native_execution": false,
+  "historical_controls_reexecuted": false,
+  "required_cases": [
+    "fifo-empty-frontier",
+    "fifo-held-and-frozen-frontiers",
+    "fifo-canceled-waiter-retained",
+    "fifo-end-rejects-unresolved",
+    "fifo-terminated-yield-rejected",
+    "fifo-concurrent-enqueue",
+    "auth-frozen-parent-and-restriction",
+    "auth-retired-restriction-rejected",
+    "auth-permit-rechecks-restriction",
+    "auth-admitted-restriction-real-completion-drain"
+  ],
+  "commands": [
+    {
+      "label": "swift-version",
+      "argv": [
+        "swift",
+        "--version"
+      ],
+      "started_at": "2026-11-23T07:31:52.335416+00:00",
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "59360730c588801a672c1118d5d1debc93581f6b74e6a82d5d8cbda1b4a729ce",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "unprojected-parse-1",
+      "argv": [
+        "swiftc",
+        "-frontend",
+        "-parse",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/Anytype/Sources/ServiceLayer/Auth/AuthService.swift"
+      ],
+      "started_at": "2026-11-23T07:31:52.450047+00:00",
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "unprojected-parse-2",
+      "argv": [
+        "swiftc",
+        "-frontend",
+        "-parse",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/Anytype/Sources/ServiceLayer/Account/AccountEventHandler.swift"
+      ],
+      "started_at": "2026-11-23T07:31:52.514746+00:00",
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "unprojected-parse-3",
+      "argv": [
+        "swiftc",
+        "-frontend",
+        "-parse",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/Anytype/Sources/ServiceLayer/File/FileErrorEventHandler.swift"
+      ],
+      "started_at": "2026-11-23T07:31:52.580186+00:00",
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "unprojected-parse-4",
+      "argv": [
+        "swiftc",
+        "-frontend",
+        "-parse",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/Modules/ProtobufMessages/Sources/ServiceMessageHandlerAdapter.swift"
+      ],
+      "started_at": "2026-11-23T07:31:52.645467+00:00",
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "portable-compile",
+      "argv": [
+        "swiftc",
+        "-swift-version",
+        "6",
+        "-parse-as-library",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/docs/pinkha/torah-integration/original-production-schema-composition-20261123/e2-account-session/four-source-prerequisite/controls-attempt-1/ExactFoundationFourSourceControls.swift",
+        "-o",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/docs/pinkha/torah-integration/original-production-schema-composition-20261123/e2-account-session/four-source-prerequisite/controls-attempt-1/four-source-controls"
+      ],
+      "started_at": "2026-11-23T07:31:52.710379+00:00",
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "case-1",
+      "argv": [
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/docs/pinkha/torah-integration/original-production-schema-composition-20261123/e2-account-session/four-source-prerequisite/controls-attempt-1/four-source-controls",
+        "fifo-empty-frontier"
+      ],
+      "started_at": "2026-11-23T07:31:54.735443+00:00",
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "9e6247f033ac3a24cbc73f008e68158b6b3bfc5e7cc1fe5c971873f2815a254c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "case-2",
+      "argv": [
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/docs/pinkha/torah-integration/original-production-schema-composition-20261123/e2-account-session/four-source-prerequisite/controls-attempt-1/four-source-controls",
+        "fifo-held-and-frozen-frontiers"
+      ],
+      "started_at": "2026-11-23T07:31:54.753024+00:00",
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "bc883ad7170e7406669968c869ca77ac0a5d61bb27df3f31a4c5333f15c084fc",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "case-3",
+      "argv": [
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/docs/pinkha/torah-integration/original-production-schema-composition-20261123/e2-account-session/four-source-prerequisite/controls-attempt-1/four-source-controls",
+        "fifo-canceled-waiter-retained"
+      ],
+      "started_at": "2026-11-23T07:31:54.771612+00:00",
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "bdf4fd354c22387077c1c59e83938e0662f74f56c6ebbf0d19f3b3ca23037130",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "case-4",
+      "argv": [
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/docs/pinkha/torah-integration/original-production-schema-composition-20261123/e2-account-session/four-source-prerequisite/controls-attempt-1/four-source-controls",
+        "fifo-end-rejects-unresolved"
+      ],
+      "started_at": "2026-11-23T07:31:54.789042+00:00",
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "3a0967321d12ec379ab6b6d43368a76126a251ef4814c7465ddfb14514895caa",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "case-5",
+      "argv": [
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/docs/pinkha/torah-integration/original-production-schema-composition-20261123/e2-account-session/four-source-prerequisite/controls-attempt-1/four-source-controls",
+        "fifo-terminated-yield-rejected"
+      ],
+      "started_at": "2026-11-23T07:31:54.806340+00:00",
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "2b91a1bdc5ceb92eb72266b19d7bd42bfc2729580cd6e170125047ea97e136b9",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "case-6",
+      "argv": [
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/docs/pinkha/torah-integration/original-production-schema-composition-20261123/e2-account-session/four-source-prerequisite/controls-attempt-1/four-source-controls",
+        "fifo-concurrent-enqueue"
+      ],
+      "started_at": "2026-11-23T07:31:54.824090+00:00",
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "2fa2ea981472d572859ce95e2f6165213912493359fb052dff62a808e6798211",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "case-7",
+      "argv": [
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/docs/pinkha/torah-integration/original-production-schema-composition-20261123/e2-account-session/four-source-prerequisite/controls-attempt-1/four-source-controls",
+        "auth-frozen-parent-and-restriction"
+      ],
+      "started_at": "2026-11-23T07:31:54.842209+00:00",
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "6bdea5c477349d781fde79fd556b85ce98604ce6ace5b7c9d9d9d265d9554168",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "case-8",
+      "argv": [
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/docs/pinkha/torah-integration/original-production-schema-composition-20261123/e2-account-session/four-source-prerequisite/controls-attempt-1/four-source-controls",
+        "auth-retired-restriction-rejected"
+      ],
+      "started_at": "2026-11-23T07:31:54.859674+00:00",
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "6743ed8d3e970996025763d271f39ecfcc32aa8ee33545160dd77a56d019d8b6",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "case-9",
+      "argv": [
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/docs/pinkha/torah-integration/original-production-schema-composition-20261123/e2-account-session/four-source-prerequisite/controls-attempt-1/four-source-controls",
+        "auth-permit-rechecks-restriction"
+      ],
+      "started_at": "2026-11-23T07:31:54.877216+00:00",
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "8cbb92608bf286a82afe8585876f9008863bcb5618c5741a0ad31f601cb7113f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "case-10",
+      "argv": [
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/docs/pinkha/torah-integration/original-production-schema-composition-20261123/e2-account-session/four-source-prerequisite/controls-attempt-1/four-source-controls",
+        "auth-admitted-restriction-real-completion-drain"
+      ],
+      "started_at": "2026-11-23T07:31:54.894751+00:00",
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "6626bd6c29256bbf9afe04b11025cb3a94d06d10dd2bd6a8be2b5a7f3ca36309",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "passed": [
+    {
+      "name": "fifo-empty-frontier",
+      "actual_output": "PASS fifo-empty-frontier assertions=1"
+    },
+    {
+      "name": "fifo-held-and-frozen-frontiers",
+      "actual_output": "PASS fifo-held-and-frozen-frontiers assertions=6"
+    },
+    {
+      "name": "fifo-canceled-waiter-retained",
+      "actual_output": "PASS fifo-canceled-waiter-retained assertions=4"
+    },
+    {
+      "name": "fifo-end-rejects-unresolved",
+      "actual_output": "PASS fifo-end-rejects-unresolved assertions=3"
+    },
+    {
+      "name": "fifo-terminated-yield-rejected",
+      "actual_output": "PASS fifo-terminated-yield-rejected assertions=2"
+    },
+    {
+      "name": "fifo-concurrent-enqueue",
+      "actual_output": "PASS fifo-concurrent-enqueue assertions=3"
+    },
+    {
+      "name": "auth-frozen-parent-and-restriction",
+      "actual_output": "PASS auth-frozen-parent-and-restriction assertions=6"
+    },
+    {
+      "name": "auth-retired-restriction-rejected",
+      "actual_output": "PASS auth-retired-restriction-rejected assertions=2"
+    },
+    {
+      "name": "auth-permit-rechecks-restriction",
+      "actual_output": "PASS auth-permit-rechecks-restriction assertions=2"
+    },
+    {
+      "name": "auth-admitted-restriction-real-completion-drain",
+      "actual_output": "PASS auth-admitted-restriction-real-completion-drain assertions=4"
+    }
+  ],
+  "source_admission": "PASS",
+  "extraction_sha256": "da09370fb3bec94d98f0e22b957cbd71cdf3b9f8c5560cbea559de3f48aa1293",
+  "binary_sha256": "d1ea41f5bb09650d5afedd9e229a7627ee603969e39aea7eaa1e9b80d588c482",
+  "finished_at": "2026-11-23T07:31:54.912511+00:00"
+}

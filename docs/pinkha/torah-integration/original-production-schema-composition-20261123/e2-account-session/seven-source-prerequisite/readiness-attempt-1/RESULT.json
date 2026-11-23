@@ -1,0 +1,204 @@
+{
+  "schema": 1,
+  "status": "PASS",
+  "scope": "EXACT_FOUNDATION_BARRIER_ONLY_NOT_COMBINE_UI_AUTH_OR_NATIVE",
+  "base": "d1ca51352734bd21a4943e7e094ac3ae95519c1e",
+  "commands": [
+    {
+      "label": "swift-version",
+      "argv": [
+        "swift",
+        "--version"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "59360730c588801a672c1118d5d1debc93581f6b74e6a82d5d8cbda1b4a729ce",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "unprojected-model-parse",
+      "argv": [
+        "swiftc",
+        "-frontend",
+        "-parse",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorViewModel.swift"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "portable-compile",
+      "argv": [
+        "swiftc",
+        "-swift-version",
+        "6",
+        "-parse-as-library",
+        "/mnt/development/projects/diagnostics/otzaria-original-production-e2-20261123/readiness-attempt-1/ExactFoundationReadinessControls.swift",
+        "-o",
+        "/mnt/development/projects/diagnostics/otzaria-original-production-e2-20261123/readiness-attempt-1/readiness-controls"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "case-1",
+      "argv": [
+        "/mnt/development/projects/diagnostics/otzaria-original-production-e2-20261123/readiness-attempt-1/readiness-controls",
+        "no-demand-is-not-ready"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "3f1af9ea71f2b441265d2dd5ea62a8c9f5443157e393feabca563541ec866669",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "case-2",
+      "argv": [
+        "/mnt/development/projects/diagnostics/otzaria-original-production-e2-20261123/readiness-attempt-1/readiness-controls",
+        "forwarded-demand-admits"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "c45a2e117680ea5dc9e69e8779cdee699a8a8bc0aee6f2fa98e79c01847fe27d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "case-3",
+      "argv": [
+        "/mnt/development/projects/diagnostics/otzaria-original-production-e2-20261123/readiness-attempt-1/readiness-controls",
+        "terminal-before-acknowledgment-wins"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "97daabdd6c0d32453846daeddac7f95fb3fdb0238f6327bc3912058ca63f2a29",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "case-4",
+      "argv": [
+        "/mnt/development/projects/diagnostics/otzaria-original-production-e2-20261123/readiness-attempt-1/readiness-controls",
+        "terminal-after-demand-invalidates"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "523d46417e6346db90ae2a3ea6709c4d780bfbb0bd21e4128bb354b332c25ec7",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "case-5",
+      "argv": [
+        "/mnt/development/projects/diagnostics/otzaria-original-production-e2-20261123/readiness-attempt-1/readiness-controls",
+        "cancelled-waiter-closes-readiness"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "4e26e6c748dc55a6cfc87833a46ec4d02648abcd3498011edcc09852215f9027",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "case-6",
+      "argv": [
+        "/mnt/development/projects/diagnostics/otzaria-original-production-e2-20261123/readiness-attempt-1/readiness-controls",
+        "pending-wait-receives-demand"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "3052c5c746f70019cc4c77d03d8bae71a35017378e86b13b58cd7198144e40ad",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "case-7",
+      "argv": [
+        "/mnt/development/projects/diagnostics/otzaria-original-production-e2-20261123/readiness-attempt-1/readiness-controls",
+        "one-of-two-terminated-does-not-admit"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "af0509ed38683c4722c10747c616bc2c55fe0e13c3359dc428436d6549ac5b16",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "case-8",
+      "argv": [
+        "/mnt/development/projects/diagnostics/otzaria-original-production-e2-20261123/readiness-attempt-1/readiness-controls",
+        "concurrent-end-remains-terminal"
+      ],
+      "returncode": 0,
+      "timed_out": false,
+      "child_reaped": true,
+      "stdout_sha256": "82d53e9e313fed7785f9c64449deb4cad1ae7bd4b9a2b24c1c65d3df4dc33bd5",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "required_cases": [
+    "no-demand-is-not-ready",
+    "forwarded-demand-admits",
+    "terminal-before-acknowledgment-wins",
+    "terminal-after-demand-invalidates",
+    "cancelled-waiter-closes-readiness",
+    "pending-wait-receives-demand",
+    "one-of-two-terminated-does-not-admit",
+    "concurrent-end-remains-terminal"
+  ],
+  "passed": [
+    {
+      "name": "no-demand-is-not-ready",
+      "actual_output": "PASS no-demand-is-not-ready assertions=1"
+    },
+    {
+      "name": "forwarded-demand-admits",
+      "actual_output": "PASS forwarded-demand-admits assertions=1"
+    },
+    {
+      "name": "terminal-before-acknowledgment-wins",
+      "actual_output": "PASS terminal-before-acknowledgment-wins assertions=3"
+    },
+    {
+      "name": "terminal-after-demand-invalidates",
+      "actual_output": "PASS terminal-after-demand-invalidates assertions=3"
+    },
+    {
+      "name": "cancelled-waiter-closes-readiness",
+      "actual_output": "PASS cancelled-waiter-closes-readiness assertions=4"
+    },
+    {
+      "name": "pending-wait-receives-demand",
+      "actual_output": "PASS pending-wait-receives-demand assertions=1"
+    },
+    {
+      "name": "one-of-two-terminated-does-not-admit",
+      "actual_output": "PASS one-of-two-terminated-does-not-admit assertions=2"
+    },
+    {
+      "name": "concurrent-end-remains-terminal",
+      "actual_output": "PASS concurrent-end-remains-terminal assertions=64"
+    }
+  ],
+  "apple_execution": false,
+  "combine_execution": false,
+  "ui_execution": false,
+  "native_account_execution": false,
+  "model_sha256": "d41038df72752ed3ea01a78e2fc0f005d32f4f386334a50a51a0f34f32a89b87",
+  "extracted_original_bytes": 2844,
+  "extracted_original_sha256": "f8d4f692d2c9e74a1080581dcd9df71e7829b661530b726b3a7a9fb738003bc9",
+  "harness_sha256": "99658c73393a3539d13464d38627a5a136e948578e68f96a6b98621f35e98ccd",
+  "combined_sha256": "34645d258a688ac747ba4915480928e7c69510d4cd639930a41e184d358b72d3",
+  "source_replacements": [],
+  "excluded_real_combine_forwarders": "Retained in original source; Apple Combine controls remain required.",
+  "binary_sha256": "a557ea073820a52a6beca845731b858d884d01472a3372ef7fb45f2f78366e17",
+  "finished_utc": "2026-11-23T06:20:33.232019+00:00"
+}

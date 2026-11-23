@@ -79,6 +79,41 @@ final class ApplicationCoordinatorViewModel {
         }
     }
     
+
+    /// The embedded process owner retains this task beyond presentation.
+    /// Standalone callers keep the original zero-argument path above.
+    func startAccountStateHandler(readiness: OriginalApplicationConsumerDemand) async {
+        defer { readiness.end() }
+        await withTaskCancellationHandler {
+            guard !Task.isCancelled else { return }
+            let publisher = await accountEventHandler.accountStatusPublisher
+            guard !Task.isCancelled else { return }
+            for await status in OriginalDemandObservingPublisher(
+                upstream: publisher, readiness: readiness
+            ).values {
+                await handleAccountStatus(status)
+            }
+        } onCancel: {
+            readiness.end()
+        }
+    }
+
+    func startFileHandler(readiness: OriginalApplicationConsumerDemand) async {
+        defer { readiness.end() }
+        await withTaskCancellationHandler {
+            guard !Task.isCancelled else { return }
+            let publisher = await fileErrorEventHandler.fileLimitReachedPublisher
+            guard !Task.isCancelled else { return }
+            for await _ in OriginalDemandObservingPublisher(
+                upstream: publisher, readiness: readiness
+            ).values {
+                handleFileLimitReachedError()
+            }
+        } onCancel: {
+            readiness.end()
+        }
+    }
+
     // MARK: - Subscription handler
 
     private func handleAccountStatus(_ status: AccountStatus) async {
@@ -198,5 +233,167 @@ final class ApplicationCoordinatorViewModel {
 
     private func handleFileLimitReachedError() {
         toastBarData = ToastBarData(Loc.FileStorage.limitError, type: .neutral)
+    }
+}
+
+
+/// One original downstream consumer's initial demand and terminal state.
+/// This is an internal startup barrier, not an account or write capability.
+final class OriginalApplicationConsumerDemand: @unchecked Sendable {
+    enum ReadinessError: Error {
+        case consumerEnded
+        case demandNotForwarded
+        case alreadyWaiting
+    }
+
+    private enum State {
+        case waiting
+        case requested
+        case ended
+    }
+
+    private let lock = NSLock()
+    private var state: State = .waiting
+    private var waiter: CheckedContinuation<Void, Error>?
+    private let onEnd: @Sendable () -> Void
+
+    init(onEnd: @escaping @Sendable () -> Void = {}) {
+        self.onEnd = onEnd
+    }
+
+    /// Called only after a positive request returned from the original
+    /// upstream subscription. Completion/cancellation during that call wins.
+    func didForwardPositiveDemand() {
+        lock.lock()
+        guard case .waiting = state else {
+            lock.unlock()
+            return
+        }
+        state = .requested
+        let continuation = waiter
+        waiter = nil
+        lock.unlock()
+        continuation?.resume()
+    }
+
+    func end() {
+        lock.lock()
+        guard case .ended = state else {
+            state = .ended
+            let continuation = waiter
+            waiter = nil
+            lock.unlock()
+            continuation?.resume(throwing: ReadinessError.consumerEnded)
+            onEnd()
+            return
+        }
+        lock.unlock()
+    }
+
+    /// A synchronous admission fact, checked again after every startup await.
+    /// It does not claim continuous demand or change AsyncPublisher buffering.
+    func validateRequested() throws {
+        lock.lock()
+        defer { lock.unlock() }
+        switch state {
+        case .requested: return
+        case .waiting: throw ReadinessError.demandNotForwarded
+        case .ended: throw ReadinessError.consumerEnded
+        }
+    }
+
+    func waitUntilRequested() async throws {
+        try await withTaskCancellationHandler {
+            try Task.checkCancellation()
+            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                lock.lock()
+                switch state {
+                case .waiting:
+                    guard waiter == nil else {
+                        lock.unlock()
+                        continuation.resume(throwing: ReadinessError.alreadyWaiting)
+                        return
+                    }
+                    waiter = continuation
+                    lock.unlock()
+                case .requested:
+                    lock.unlock()
+                    continuation.resume()
+                case .ended:
+                    lock.unlock()
+                    continuation.resume(throwing: ReadinessError.consumerEnded)
+                }
+            }
+            try Task.checkCancellation()
+            try validateRequested()
+        } onCancel: {
+            self.end()
+        }
+    }
+}
+
+/// An observation-only forwarder around the actual publisher. It adds no
+/// buffering, scheduling, values, replay or demand.
+private struct OriginalDemandObservingPublisher<Upstream: Publisher>: Publisher {
+    typealias Output = Upstream.Output
+    typealias Failure = Upstream.Failure
+
+    let upstream: Upstream
+    let readiness: OriginalApplicationConsumerDemand
+
+    func receive<S: Subscriber>(subscriber: S) where S.Input == Output, S.Failure == Failure {
+        upstream.receive(subscriber: OriginalDemandObservingSubscriber(
+            downstream: subscriber, readiness: readiness
+        ))
+    }
+}
+
+private final class OriginalDemandObservingSubscriber<Downstream: Subscriber>: Subscriber {
+    typealias Input = Downstream.Input
+    typealias Failure = Downstream.Failure
+
+    private let downstream: Downstream
+    private let readiness: OriginalApplicationConsumerDemand
+
+    init(downstream: Downstream, readiness: OriginalApplicationConsumerDemand) {
+        self.downstream = downstream
+        self.readiness = readiness
+    }
+
+    func receive(subscription: any Subscription) {
+        downstream.receive(subscription: OriginalDemandObservingSubscription(
+            upstream: subscription, readiness: readiness
+        ))
+    }
+
+    func receive(_ input: Input) -> Subscribers.Demand {
+        downstream.receive(input)
+    }
+
+    func receive(completion: Subscribers.Completion<Failure>) {
+        readiness.end()
+        downstream.receive(completion: completion)
+    }
+}
+
+private final class OriginalDemandObservingSubscription: Subscription {
+    private let upstream: any Subscription
+    private let readiness: OriginalApplicationConsumerDemand
+
+    init(upstream: any Subscription, readiness: OriginalApplicationConsumerDemand) {
+        self.upstream = upstream
+        self.readiness = readiness
+    }
+
+    func request(_ demand: Subscribers.Demand) {
+        upstream.request(demand)
+        if demand > .none {
+            readiness.didForwardPositiveDemand()
+        }
+    }
+
+    func cancel() {
+        readiness.end()
+        upstream.cancel()
     }
 }

@@ -1,0 +1,499 @@
+diff --git a/Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorView.swift b/Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorView.swift
+index 635249c36d..6e276e2cd6 100644
+--- a/Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorView.swift
++++ b/Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorView.swift
+@@ -4,8 +4,27 @@ import AnytypeCore
+ 
+ struct ApplicationCoordinatorView: View {
+     
+-    @State private var model = ApplicationCoordinatorViewModel()
++    @State private var model: ApplicationCoordinatorViewModel
+     @Environment(\.dismissAllPresented) private var dismissAllPresented
++    private let ownsConsumerTasks: Bool
++    private let embeddedInitial: AnyView?
++    private let embeddedHome: AnyView?
++
++    init() {
++        _model = State(initialValue: ApplicationCoordinatorViewModel())
++        ownsConsumerTasks = true
++        embeddedInitial = nil
++        embeddedHome = nil
++    }
++
++    /// The external process owner retains the same original model and tasks.
++    /// This initializer does not create another model or start authentication.
++    init(model: ApplicationCoordinatorViewModel, initial: AnyView, home: AnyView) {
++        _model = State(initialValue: model)
++        ownsConsumerTasks = false
++        embeddedInitial = initial
++        embeddedHome = home
++    }
+     
+     var body: some View {
+         ZStack {
+@@ -15,16 +34,16 @@ struct ApplicationCoordinatorView: View {
+             model.setDismissAllPresented(dismissAllPresented: dismissAllPresented)
+         }
+         .task {
+-            await model.startAppStateHandler()
++            if ownsConsumerTasks { await model.startAppStateHandler() }
+         }
+         .task {
+-            await model.startAccountStateHandler()
++            if ownsConsumerTasks { await model.startAccountStateHandler() }
+         }
+         .task {
+-            await model.startEncryptionKeyEventHandler()
++            if ownsConsumerTasks { await model.startEncryptionKeyEventHandler() }
+         }
+         .task {
+-            await model.startFileHandler()
++            if ownsConsumerTasks { await model.startFileHandler() }
+         }
+         .task(item: model.selectAccountTaskId) { accountId in
+             await model.selectAccount(id: accountId)
+@@ -43,13 +62,13 @@ struct ApplicationCoordinatorView: View {
+     private var applicationView: some View {
+         switch model.applicationState {
+         case .initial:
+-            InitialCoordinatorView()
++            if let embeddedInitial { embeddedInitial } else { InitialCoordinatorView() }
+         case .auth:
+             AuthCoordinatorView()
+         case .launch:
+             LaunchView()
+         case .home:
+-            SpaceHubCoordinatorView()
++            if let embeddedHome { embeddedHome } else { SpaceHubCoordinatorView() }
+         case .delete:
+             model.deleteAccount()
+         }
+diff --git a/Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorViewModel.swift b/Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorViewModel.swift
+index 14e68010d2..eceeda47ff 100644
+--- a/Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorViewModel.swift
++++ b/Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorViewModel.swift
+@@ -79,6 +79,41 @@ final class ApplicationCoordinatorViewModel {
+         }
+     }
+     
++
++    /// The embedded process owner retains this task beyond presentation.
++    /// Standalone callers keep the original zero-argument path above.
++    func startAccountStateHandler(readiness: OriginalApplicationConsumerDemand) async {
++        defer { readiness.end() }
++        await withTaskCancellationHandler {
++            guard !Task.isCancelled else { return }
++            let publisher = await accountEventHandler.accountStatusPublisher
++            guard !Task.isCancelled else { return }
++            for await status in OriginalDemandObservingPublisher(
++                upstream: publisher, readiness: readiness
++            ).values {
++                await handleAccountStatus(status)
++            }
++        } onCancel: {
++            readiness.end()
++        }
++    }
++
++    func startFileHandler(readiness: OriginalApplicationConsumerDemand) async {
++        defer { readiness.end() }
++        await withTaskCancellationHandler {
++            guard !Task.isCancelled else { return }
++            let publisher = await fileErrorEventHandler.fileLimitReachedPublisher
++            guard !Task.isCancelled else { return }
++            for await _ in OriginalDemandObservingPublisher(
++                upstream: publisher, readiness: readiness
++            ).values {
++                handleFileLimitReachedError()
++            }
++        } onCancel: {
++            readiness.end()
++        }
++    }
++
+     // MARK: - Subscription handler
+ 
+     private func handleAccountStatus(_ status: AccountStatus) async {
+@@ -200,3 +235,165 @@ final class ApplicationCoordinatorViewModel {
+         toastBarData = ToastBarData(Loc.FileStorage.limitError, type: .neutral)
+     }
+ }
++
++
++/// One original downstream consumer's initial demand and terminal state.
++/// This is an internal startup barrier, not an account or write capability.
++final class OriginalApplicationConsumerDemand: @unchecked Sendable {
++    enum ReadinessError: Error {
++        case consumerEnded
++        case demandNotForwarded
++        case alreadyWaiting
++    }
++
++    private enum State {
++        case waiting
++        case requested
++        case ended
++    }
++
++    private let lock = NSLock()
++    private var state: State = .waiting
++    private var waiter: CheckedContinuation<Void, Error>?
++    private let onEnd: @Sendable () -> Void
++
++    init(onEnd: @escaping @Sendable () -> Void = {}) {
++        self.onEnd = onEnd
++    }
++
++    /// Called only after a positive request returned from the original
++    /// upstream subscription. Completion/cancellation during that call wins.
++    func didForwardPositiveDemand() {
++        lock.lock()
++        guard case .waiting = state else {
++            lock.unlock()
++            return
++        }
++        state = .requested
++        let continuation = waiter
++        waiter = nil
++        lock.unlock()
++        continuation?.resume()
++    }
++
++    func end() {
++        lock.lock()
++        guard case .ended = state else {
++            state = .ended
++            let continuation = waiter
++            waiter = nil
++            lock.unlock()
++            continuation?.resume(throwing: ReadinessError.consumerEnded)
++            onEnd()
++            return
++        }
++        lock.unlock()
++    }
++
++    /// A synchronous admission fact, checked again after every startup await.
++    /// It does not claim continuous demand or change AsyncPublisher buffering.
++    func validateRequested() throws {
++        lock.lock()
++        defer { lock.unlock() }
++        switch state {
++        case .requested: return
++        case .waiting: throw ReadinessError.demandNotForwarded
++        case .ended: throw ReadinessError.consumerEnded
++        }
++    }
++
++    func waitUntilRequested() async throws {
++        try await withTaskCancellationHandler {
++            try Task.checkCancellation()
++            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
++                lock.lock()
++                switch state {
++                case .waiting:
++                    guard waiter == nil else {
++                        lock.unlock()
++                        continuation.resume(throwing: ReadinessError.alreadyWaiting)
++                        return
++                    }
++                    waiter = continuation
++                    lock.unlock()
++                case .requested:
++                    lock.unlock()
++                    continuation.resume()
++                case .ended:
++                    lock.unlock()
++                    continuation.resume(throwing: ReadinessError.consumerEnded)
++                }
++            }
++            try Task.checkCancellation()
++            try validateRequested()
++        } onCancel: {
++            self.end()
++        }
++    }
++}
++
++/// An observation-only forwarder around the actual publisher. It adds no
++/// buffering, scheduling, values, replay or demand.
++private struct OriginalDemandObservingPublisher<Upstream: Publisher>: Publisher {
++    typealias Output = Upstream.Output
++    typealias Failure = Upstream.Failure
++
++    let upstream: Upstream
++    let readiness: OriginalApplicationConsumerDemand
++
++    func receive<S: Subscriber>(subscriber: S) where S.Input == Output, S.Failure == Failure {
++        upstream.receive(subscriber: OriginalDemandObservingSubscriber(
++            downstream: subscriber, readiness: readiness
++        ))
++    }
++}
++
++private final class OriginalDemandObservingSubscriber<Downstream: Subscriber>: Subscriber {
++    typealias Input = Downstream.Input
++    typealias Failure = Downstream.Failure
++
++    private let downstream: Downstream
++    private let readiness: OriginalApplicationConsumerDemand
++
++    init(downstream: Downstream, readiness: OriginalApplicationConsumerDemand) {
++        self.downstream = downstream
++        self.readiness = readiness
++    }
++
++    func receive(subscription: any Subscription) {
++        downstream.receive(subscription: OriginalDemandObservingSubscription(
++            upstream: subscription, readiness: readiness
++        ))
++    }
++
++    func receive(_ input: Input) -> Subscribers.Demand {
++        downstream.receive(input)
++    }
++
++    func receive(completion: Subscribers.Completion<Failure>) {
++        readiness.end()
++        downstream.receive(completion: completion)
++    }
++}
++
++private final class OriginalDemandObservingSubscription: Subscription {
++    private let upstream: any Subscription
++    private let readiness: OriginalApplicationConsumerDemand
++
++    init(upstream: any Subscription, readiness: OriginalApplicationConsumerDemand) {
++        self.upstream = upstream
++        self.readiness = readiness
++    }
++
++    func request(_ demand: Subscribers.Demand) {
++        upstream.request(demand)
++        if demand > .none {
++            readiness.didForwardPositiveDemand()
++        }
++    }
++
++    func cancel() {
++        readiness.end()
++        upstream.cancel()
++    }
++}
+diff --git a/Anytype/Sources/ApplicationLayer/GlobalEnv/AppInterfaceStyle.swift b/Anytype/Sources/ApplicationLayer/GlobalEnv/AppInterfaceStyle.swift
+index 9283ad3fa1..ecda5a18e9 100644
+--- a/Anytype/Sources/ApplicationLayer/GlobalEnv/AppInterfaceStyle.swift
++++ b/Anytype/Sources/ApplicationLayer/GlobalEnv/AppInterfaceStyle.swift
+@@ -7,6 +7,7 @@ import SwiftUI
+ final class AppInterfaceStyle {
+     
+     private weak var window: UIWindow?
++    private weak var scopedRoot: UIViewController?
+     private(set) var defaultStyle: UIUserInterfaceStyle
+     private var defaultStyleOverride: UIUserInterfaceStyle?
+     
+@@ -18,6 +19,13 @@ final class AppInterfaceStyle {
+         self.defaultStyle = Container.shared.userDefaultsStorage().userInterfaceStyle
+     }
+     
++    @MainActor
++    init(rootViewController: UIViewController) {
++        self.scopedRoot = rootViewController
++        self.defaultStyle = Container.shared.userDefaultsStorage().userInterfaceStyle
++        rootViewController.overrideUserInterfaceStyle = defaultStyle
++    }
++
+     @MainActor
+     func setDefaultStyle(_ style: UIUserInterfaceStyle) {
+         defaultStyle = style
+@@ -33,6 +41,10 @@ final class AppInterfaceStyle {
+     
+     @MainActor
+     private func updateUserInterfaceStyle() {
++        if let scopedRoot {
++            scopedRoot.overrideUserInterfaceStyle = defaultStyleOverride ?? defaultStyle
++            return
++        }
+         if let defaultStyleOverride {
+             window?.overrideUserInterfaceStyle = defaultStyleOverride
+             return
+@@ -74,3 +86,10 @@ extension View {
+         self.modifier(OverrideDefaultInterfaceStyleModifier(style: style))
+     }
+ }
++
++extension View {
++    @MainActor
++    func setAppInterfaceStyleEnv(rootViewController: UIViewController) -> some View {
++        environment(\.appInterfaceStyle, AppInterfaceStyle(rootViewController: rootViewController))
++    }
++}
+diff --git a/Anytype/Sources/ApplicationLayer/GlobalEnv/KeyboardDismiss.swift b/Anytype/Sources/ApplicationLayer/GlobalEnv/KeyboardDismiss.swift
+index 515b0664f9..94c6675bd0 100644
+--- a/Anytype/Sources/ApplicationLayer/GlobalEnv/KeyboardDismiss.swift
++++ b/Anytype/Sources/ApplicationLayer/GlobalEnv/KeyboardDismiss.swift
+@@ -4,14 +4,23 @@ import SwiftUI
+ struct KeyboardDismiss {
+     
+     private weak var window: UIWindow?
++    private weak var scopedView: UIView?
+     
+     init(window: UIWindow?) {
+         self.window = window
+     }
+     
++    init(view: UIView?) {
++        self.scopedView = view
++    }
++
+     @MainActor
+     func callAsFunction() {
+-        window?.endEditing(true)
++        if let scopedView {
++            scopedView.endEditing(true)
++        } else {
++            window?.endEditing(true)
++        }
+     }
+ }
+ 
+@@ -24,3 +33,9 @@ extension View {
+         environment(\.keyboardDismiss, KeyboardDismiss(window: window))
+     }
+ }
++
++extension View {
++    func setKeyboardDismissEnv(view: UIView?) -> some View {
++        environment(\.keyboardDismiss, KeyboardDismiss(view: view))
++    }
++}
+diff --git a/Anytype/Sources/ApplicationLayer/GlobalEnv/PresentedDismiss.swift b/Anytype/Sources/ApplicationLayer/GlobalEnv/PresentedDismiss.swift
+index 6f22190973..17db011e87 100644
+--- a/Anytype/Sources/ApplicationLayer/GlobalEnv/PresentedDismiss.swift
++++ b/Anytype/Sources/ApplicationLayer/GlobalEnv/PresentedDismiss.swift
+@@ -5,15 +5,28 @@ import AnytypeCore
+ struct DismissAllPresented: Equatable {
+ 
+     private weak var window: UIWindow?
++    private weak var scopedRoot: UIViewController?
+ 
+     init(window: UIWindow?) {
+         self.window = window
+     }
+ 
++    init(rootViewController: UIViewController?) {
++        self.scopedRoot = rootViewController
++    }
++
+     func callAsFunction(animated: Bool = true) async {
+         await withCheckedContinuation { continuation in
+-            Task { @MainActor [weak window] in
+-                if let root = window?.rootViewController,
++            Task { @MainActor [weak window, weak scopedRoot] in
++                if let scopedRoot {
++                    // Dismiss descendants only; never dismiss the embedded
++                    // account presentation or a host window's controller.
++                    guard scopedRoot.presentedViewController != nil else {
++                        continuation.resume()
++                        return
++                    }
++                    scopedRoot.dismiss(animated: animated) { continuation.resume() }
++                } else if let root = window?.rootViewController,
+                    !FeatureFlags.fixAvatarTapFreeze || root.presentedViewController != nil {
+                     root.dismiss(animated: animated, completion: {
+                         continuation.resume()
+@@ -35,3 +48,9 @@ extension View {
+         environment(\.dismissAllPresented, DismissAllPresented(window: window))
+     }
+ }
++
++extension View {
++    func setPresentedDismissEnv(rootViewController: UIViewController?) -> some View {
++        environment(\.dismissAllPresented, DismissAllPresented(rootViewController: rootViewController))
++    }
++}
+diff --git a/Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift b/Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift
+index 4f86624cc4..63bdc310e4 100644
+--- a/Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift
++++ b/Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift
+@@ -271,15 +271,21 @@ actor LoginStateService: LoginStateServiceProtocol, Sendable {
+         }
+         await networkConnectionStatusDaemon.start()
+         try validate(owner, source: source)
+-        await storeKitService.startListenForTransactions()
++        if OriginalRuntimeEnvironment.deploymentMode == .standalone {
++            await storeKitService.startListenForTransactions()
++        }
+         try validate(owner, source: source)
+         await profileStorage.startSubscription()
+         try validate(owner, source: source)
+         await activeSpaceManager.startSubscription()
+         try validate(owner, source: source)
+-        await spaceIconForNotificationsHandler.startUpdating()
++        if OriginalRuntimeEnvironment.deploymentMode == .standalone {
++            await spaceIconForNotificationsHandler.startUpdating()
++        }
+         try validate(owner, source: source)
+-        await appIconBadgeService.startUpdating()
++        if OriginalRuntimeEnvironment.deploymentMode == .standalone {
++            await appIconBadgeService.startUpdating()
++        }
+         try validate(owner, source: source)
+         await thermalProfilerTrigger.startSubscription()
+         try validate(owner, source: source)
+@@ -369,11 +375,17 @@ actor LoginStateService: LoginStateServiceProtocol, Sendable {
+         await syncStatusStorage.stopSubscriptionAndClean()
+         await p2pStatusStorage.stopSubscriptionAndClean()
+         await networkConnectionStatusDaemon.stop()
+-        await storeKitService.stopListenForTransactions()
++        if OriginalRuntimeEnvironment.deploymentMode == .standalone {
++            await storeKitService.stopListenForTransactions()
++        }
+         await profileStorage.stopSubscription()
+         await activeSpaceManager.stopSubscription()
+-        await spaceIconForNotificationsHandler.stopUpdatingAndClearData()
+-        await appIconBadgeService.stopUpdatingAndClearBadge()
++        if OriginalRuntimeEnvironment.deploymentMode == .standalone {
++            await spaceIconForNotificationsHandler.stopUpdatingAndClearData()
++        }
++        if OriginalRuntimeEnvironment.deploymentMode == .standalone {
++            await appIconBadgeService.stopUpdatingAndClearBadge()
++        }
+         await thermalProfilerTrigger.stopSubscriptionAndClean()
+         await memoryPressureProfilerTrigger.stopSubscriptionAndClean()
+         await debugProfileEventHandler.stopSubscriptionAndClean()
+diff --git a/Anytype/Sources/ServiceLayer/PushNotifications/PushNotificationsPermissionService.swift/PushNotificationsPermissionService.swift b/Anytype/Sources/ServiceLayer/PushNotifications/PushNotificationsPermissionService.swift/PushNotificationsPermissionService.swift
+index d903803c1e..2b9a7806a1 100644
+--- a/Anytype/Sources/ServiceLayer/PushNotifications/PushNotificationsPermissionService.swift/PushNotificationsPermissionService.swift
++++ b/Anytype/Sources/ServiceLayer/PushNotifications/PushNotificationsPermissionService.swift/PushNotificationsPermissionService.swift
+@@ -39,6 +39,7 @@ final class PushNotificationsPermissionService: PushNotificationsPermissionServi
+     }
+     
+     func requestAuthorizationAndRegisterIfNeeded() async -> Bool {
++        guard OriginalRuntimeEnvironment.deploymentMode == .standalone else { return false }
+         do {
+             let granted = try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
+             if granted {
+@@ -52,6 +53,7 @@ final class PushNotificationsPermissionService: PushNotificationsPermissionServi
+     }
+     
+     func registerForRemoteNotificationsIfNeeded() async {        
++        guard OriginalRuntimeEnvironment.deploymentMode == .standalone else { return }
+         let status = await authorizationStatus()
+         if status == .authorized {
+             registerForRemoteNotifications()
+@@ -59,12 +61,14 @@ final class PushNotificationsPermissionService: PushNotificationsPermissionServi
+     }
+     
+     func unregisterForRemoteNotifications() {
++        guard OriginalRuntimeEnvironment.deploymentMode == .standalone else { return }
+         DispatchQueue.main.async {
+             UIApplication.shared.unregisterForRemoteNotifications()
+         }
+     }
+     
+     private func registerForRemoteNotifications() {
++        guard OriginalRuntimeEnvironment.deploymentMode == .standalone else { return }
+         DispatchQueue.main.async {
+             UIApplication.shared.registerForRemoteNotifications()
+         }

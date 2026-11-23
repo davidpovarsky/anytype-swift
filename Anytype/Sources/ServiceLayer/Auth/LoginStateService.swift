@@ -271,15 +271,21 @@ actor LoginStateService: LoginStateServiceProtocol, Sendable {
         }
         await networkConnectionStatusDaemon.start()
         try validate(owner, source: source)
-        await storeKitService.startListenForTransactions()
+        if OriginalRuntimeEnvironment.deploymentMode == .standalone {
+            await storeKitService.startListenForTransactions()
+        }
         try validate(owner, source: source)
         await profileStorage.startSubscription()
         try validate(owner, source: source)
         await activeSpaceManager.startSubscription()
         try validate(owner, source: source)
-        await spaceIconForNotificationsHandler.startUpdating()
+        if OriginalRuntimeEnvironment.deploymentMode == .standalone {
+            await spaceIconForNotificationsHandler.startUpdating()
+        }
         try validate(owner, source: source)
-        await appIconBadgeService.startUpdating()
+        if OriginalRuntimeEnvironment.deploymentMode == .standalone {
+            await appIconBadgeService.startUpdating()
+        }
         try validate(owner, source: source)
         await thermalProfilerTrigger.startSubscription()
         try validate(owner, source: source)
@@ -369,11 +375,17 @@ actor LoginStateService: LoginStateServiceProtocol, Sendable {
         await syncStatusStorage.stopSubscriptionAndClean()
         await p2pStatusStorage.stopSubscriptionAndClean()
         await networkConnectionStatusDaemon.stop()
-        await storeKitService.stopListenForTransactions()
+        if OriginalRuntimeEnvironment.deploymentMode == .standalone {
+            await storeKitService.stopListenForTransactions()
+        }
         await profileStorage.stopSubscription()
         await activeSpaceManager.stopSubscription()
-        await spaceIconForNotificationsHandler.stopUpdatingAndClearData()
-        await appIconBadgeService.stopUpdatingAndClearBadge()
+        if OriginalRuntimeEnvironment.deploymentMode == .standalone {
+            await spaceIconForNotificationsHandler.stopUpdatingAndClearData()
+        }
+        if OriginalRuntimeEnvironment.deploymentMode == .standalone {
+            await appIconBadgeService.stopUpdatingAndClearBadge()
+        }
         await thermalProfilerTrigger.stopSubscriptionAndClean()
         await memoryPressureProfilerTrigger.stopSubscriptionAndClean()
         await debugProfileEventHandler.stopSubscriptionAndClean()

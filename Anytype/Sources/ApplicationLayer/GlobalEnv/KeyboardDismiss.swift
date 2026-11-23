@@ -4,14 +4,23 @@ import SwiftUI
 struct KeyboardDismiss {
     
     private weak var window: UIWindow?
+    private weak var scopedView: UIView?
     
     init(window: UIWindow?) {
         self.window = window
     }
     
+    init(view: UIView?) {
+        self.scopedView = view
+    }
+
     @MainActor
     func callAsFunction() {
-        window?.endEditing(true)
+        if let scopedView {
+            scopedView.endEditing(true)
+        } else {
+            window?.endEditing(true)
+        }
     }
 }
 
@@ -22,5 +31,11 @@ extension EnvironmentValues {
 extension View {
     func setKeyboardDismissEnv(window: UIWindow?) -> some View {
         environment(\.keyboardDismiss, KeyboardDismiss(window: window))
+    }
+}
+
+extension View {
+    func setKeyboardDismissEnv(view: UIView?) -> some View {
+        environment(\.keyboardDismiss, KeyboardDismiss(view: view))
     }
 }

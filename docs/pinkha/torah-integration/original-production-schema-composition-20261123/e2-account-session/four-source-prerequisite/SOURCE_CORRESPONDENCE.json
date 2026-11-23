@@ -1,0 +1,63 @@
+{
+  "base": "d1ca51352734bd21a4943e7e094ac3ae95519c1e",
+  "approved_paths": [
+    {
+      "path": "Anytype/Sources/ServiceLayer/Auth/AuthService.swift",
+      "before_sha256": "eb50a9b249575508910416a6dc775637a7a2cf2639297a8bf858b547f3586c22",
+      "proposal_sha256": "702f0886f3394f099cae4eb126ce3dea6c963cc346762a59af2079fd3db2a9c7",
+      "after_sha256": "702f0886f3394f099cae4eb126ce3dea6c963cc346762a59af2079fd3db2a9c7",
+      "transforms": []
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Account/AccountEventHandler.swift",
+      "before_sha256": "5ad6b99af0a64983301dcaad5fdcecc5a67d158c920fe93f7e54f65233a431f8",
+      "proposal_sha256": "2fc5b3d732672200c48746294ebac3f83b531c6281ce84783cc3c32ab87473cb",
+      "after_sha256": "391809baed8e930e21f25ea2b132b6d17f59a77832fddc608ddcf5267df84b0d",
+      "transforms": [
+        {
+          "kind": "reviewed_api_name_correction",
+          "from": "OriginalRuntimeEnvironment.mode",
+          "to": "OriginalRuntimeEnvironment.deploymentMode",
+          "occurrences": 3
+        }
+      ]
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/File/FileErrorEventHandler.swift",
+      "before_sha256": "7b6fc441ad5dafed1121eeac7e43f99b285e2b224dac6bf1c251ce407708877d",
+      "proposal_sha256": "0b88245caf703bcff84002eebce8eb083ec4e61f7c91a2e79f5720a0d3ca7908",
+      "after_sha256": "5da653858cb0350734f84a996f5ab37e4f42dfa5551a51a0eb39dd800f6c0eab",
+      "transforms": [
+        {
+          "kind": "reviewed_api_name_correction",
+          "from": "OriginalRuntimeEnvironment.mode",
+          "to": "OriginalRuntimeEnvironment.deploymentMode",
+          "occurrences": 2
+        }
+      ]
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/ServiceMessageHandlerAdapter.swift",
+      "before_sha256": "d1424fb57ac57e138615d92562fffe28aa388b0527f55af1ed9a71a3bb656ede",
+      "proposal_sha256": "0cc6ed401a5ba7ff57aa927a64b4ac74c386d07570263e52bed8f7bd3c001b97",
+      "after_sha256": "a58a35ca8af21b1c69a836739f53d9325c851cd5962852b4c29b02d59313c235",
+      "transforms": [
+        {
+          "kind": "explicit_canceled_waiter_and_retained_close_scope_comments_only"
+        }
+      ]
+    }
+  ],
+  "seven_previously_accepted_afterimages_unchanged": {
+    "Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorView.swift": "6a8aa5b411e0c63f36779cff3c34bf583d8664f6a96cc73466d2cdc29e667bfb",
+    "Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorViewModel.swift": "d41038df72752ed3ea01a78e2fc0f005d32f4f386334a50a51a0f34f32a89b87",
+    "Anytype/Sources/ApplicationLayer/GlobalEnv/AppInterfaceStyle.swift": "e46168fe5d4901761bf0a29ac273b5193b2664332140ebac76cef1add6bfc084",
+    "Anytype/Sources/ApplicationLayer/GlobalEnv/KeyboardDismiss.swift": "72eac6b87f0e696a087ec29d9f4bbe516ba346137b72b4f842a5afb76a004ebe",
+    "Anytype/Sources/ApplicationLayer/GlobalEnv/PresentedDismiss.swift": "1971df75f9c6afe5192840efaafe2024404b7d32789aae413254258994514ccb",
+    "Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift": "c6178cc42a39b9ee787115bbf9aac935e3aa402ce5abb3a50b61c1a037ea6dcb",
+    "Anytype/Sources/ServiceLayer/PushNotifications/PushNotificationsPermissionService.swift/PushNotificationsPermissionService.swift": "457d23b5bc436e7665feb0666c530213d17cc63d565fa6a10251ebcb5f615b9d"
+  },
+  "extra_auth_wrapper_models_views_applied": false,
+  "event_bunch_subscriber_changed": false,
+  "native_or_apple_qualification": false
+}

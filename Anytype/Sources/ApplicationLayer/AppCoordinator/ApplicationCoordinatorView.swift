@@ -4,8 +4,27 @@ import AnytypeCore
 
 struct ApplicationCoordinatorView: View {
     
-    @State private var model = ApplicationCoordinatorViewModel()
+    @State private var model: ApplicationCoordinatorViewModel
     @Environment(\.dismissAllPresented) private var dismissAllPresented
+    private let ownsConsumerTasks: Bool
+    private let embeddedInitial: AnyView?
+    private let embeddedHome: AnyView?
+
+    init() {
+        _model = State(initialValue: ApplicationCoordinatorViewModel())
+        ownsConsumerTasks = true
+        embeddedInitial = nil
+        embeddedHome = nil
+    }
+
+    /// The external process owner retains the same original model and tasks.
+    /// This initializer does not create another model or start authentication.
+    init(model: ApplicationCoordinatorViewModel, initial: AnyView, home: AnyView) {
+        _model = State(initialValue: model)
+        ownsConsumerTasks = false
+        embeddedInitial = initial
+        embeddedHome = home
+    }
     
     var body: some View {
         ZStack {
@@ -15,16 +34,16 @@ struct ApplicationCoordinatorView: View {
             model.setDismissAllPresented(dismissAllPresented: dismissAllPresented)
         }
         .task {
-            await model.startAppStateHandler()
+            if ownsConsumerTasks { await model.startAppStateHandler() }
         }
         .task {
-            await model.startAccountStateHandler()
+            if ownsConsumerTasks { await model.startAccountStateHandler() }
         }
         .task {
-            await model.startEncryptionKeyEventHandler()
+            if ownsConsumerTasks { await model.startEncryptionKeyEventHandler() }
         }
         .task {
-            await model.startFileHandler()
+            if ownsConsumerTasks { await model.startFileHandler() }
         }
         .task(item: model.selectAccountTaskId) { accountId in
             await model.selectAccount(id: accountId)
@@ -43,13 +62,13 @@ struct ApplicationCoordinatorView: View {
     private var applicationView: some View {
         switch model.applicationState {
         case .initial:
-            InitialCoordinatorView()
+            if let embeddedInitial { embeddedInitial } else { InitialCoordinatorView() }
         case .auth:
             AuthCoordinatorView()
         case .launch:
             LaunchView()
         case .home:
-            SpaceHubCoordinatorView()
+            if let embeddedHome { embeddedHome } else { SpaceHubCoordinatorView() }
         case .delete:
             model.deleteAccount()
         }

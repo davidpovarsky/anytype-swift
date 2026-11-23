@@ -1,0 +1,5 @@
+# Seven independent E2 source prerequisites
+
+This packet preserves the actual seven approved source edits, their before/after correspondence and eight executed Foundation readiness controls (79 assertions). The exact new barrier is extracted without semantic replacements; real Combine forwarding, UIKit, authentication and native runtime are unqualified. The existing Model handler bodies remain exact original bytes; the added overloads only observe actual demand/termination. Push and LoginState changes only scope the stated standalone side effects. Original standalone constructors and scoped presentation deltas remain reviewable in the full source diff.
+
+The two new account-session facade files and project additions have not been written. Closing an untouched auth page cannot blindly call AccountStop; late original recovery callbacks need their frozen original caller ownership. A separate proposal will provide the explicit construction/operation drain boundary. This packet supplies no usable account session, new ABI or acceptance pin.

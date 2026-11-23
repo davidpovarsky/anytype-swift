@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "status": "PASS",
+  "scope": "EXACT_FOUNDATION_FIFO_AND_AUTH_CAPTURE_CONTROLS_ONLY",
+  "combine_executed": false,
+  "registration_actors_executed": false,
+  "apple_or_lib_or_native_execution": false,
+  "historical_controls_reexecuted": false,
+  "required_cases": [
+    "fifo-empty-frontier",
+    "fifo-held-and-frozen-frontiers",
+    "fifo-canceled-waiter-retained",
+    "fifo-end-rejects-unresolved",
+    "fifo-terminated-yield-rejected",
+    "fifo-concurrent-enqueue",
+    "auth-frozen-parent-and-restriction",
+    "auth-retired-restriction-rejected",
+    "auth-permit-rechecks-restriction",
+    "auth-admitted-restriction-real-completion-drain"
+  ],
+  "passed": [
+    {
+      "name": "fifo-empty-frontier",
+      "actual_output": "PASS fifo-empty-frontier assertions=1"
+    },
+    {
+      "name": "fifo-held-and-frozen-frontiers",
+      "actual_output": "PASS fifo-held-and-frozen-frontiers assertions=6"
+    },
+    {
+      "name": "fifo-canceled-waiter-retained",
+      "actual_output": "PASS fifo-canceled-waiter-retained assertions=4"
+    },
+    {
+      "name": "fifo-end-rejects-unresolved",
+      "actual_output": "PASS fifo-end-rejects-unresolved assertions=3"
+    },
+    {
+      "name": "fifo-terminated-yield-rejected",
+      "actual_output": "PASS fifo-terminated-yield-rejected assertions=2"
+    },
+    {
+      "name": "fifo-concurrent-enqueue",
+      "actual_output": "PASS fifo-concurrent-enqueue assertions=3"
+    },
+    {
+      "name": "auth-frozen-parent-and-restriction",
+      "actual_output": "PASS auth-frozen-parent-and-restriction assertions=6"
+    },
+    {
+      "name": "auth-retired-restriction-rejected",
+      "actual_output": "PASS auth-retired-restriction-rejected assertions=2"
+    },
+    {
+      "name": "auth-permit-rechecks-restriction",
+      "actual_output": "PASS auth-permit-rechecks-restriction assertions=2"
+    },
+    {
+      "name": "auth-admitted-restriction-real-completion-drain",
+      "actual_output": "PASS auth-admitted-restriction-real-completion-drain assertions=4"
+    }
+  ],
+  "source_admission": "PASS",
+  "extraction_sha256": "da09370fb3bec94d98f0e22b957cbd71cdf3b9f8c5560cbea559de3f48aa1293",
+  "binary_sha256": "d1ea41f5bb09650d5afedd9e229a7627ee603969e39aea7eaa1e9b80d588c482",
+  "finished_at": "2026-11-23T07:31:54.912511+00:00"
+}

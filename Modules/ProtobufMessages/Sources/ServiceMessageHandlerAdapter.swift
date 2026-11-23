@@ -37,6 +37,25 @@ public class ServiceMessageHandlerAdapter: @unchecked Sendable {
         handlers.append(WeakHandler(handler))
     }
 
+    /// Waits only for callbacks already accepted by the original FIFO.
+    /// This is not native account/import shutdown or future-event authority.
+    /// Cancellation does not cancel native work or release this retained wait.
+    /// The accepted frontier must finish (or the original consumer must end);
+    /// only afterward can cancellation be reported to this caller. A closed
+    /// presentation must retain and join its own close task separately.
+    public func waitForPendingEventDelivery() async throws {
+        let listener = currentListener()
+        guard let listener else { throw OriginalEventDeliveryFence.Failure.ended }
+        try await listener.waitForPendingEventDelivery()
+        try Task.checkCancellation()
+    }
+
+    private func currentListener() -> ServiceMessageHandler? {
+        lock.lock()
+        defer { lock.unlock() }
+        return listener
+    }
+
     private func currentHandlers() -> [WeakHandler] {
         lock.lock()
         defer { lock.unlock() }
@@ -67,12 +86,17 @@ fileprivate final class ServiceMessageHandler: NSObject, Sendable, ServiceMessag
     // Chunks are buffered in arrival order and drained by a single consumer.
     private let continuation: AsyncStream<Data>.Continuation
     private let consumer: Task<Void, Never>
+    private let deliveryFence: OriginalEventDeliveryFence
 
     init(handler: @escaping @Sendable (_: Anytype_Event) async -> Void) {
         let (stream, continuation) = AsyncStream.makeStream(of: Data.self)
         self.continuation = continuation
+        let deliveryFence = OriginalEventDeliveryFence()
+        self.deliveryFence = deliveryFence
         self.consumer = Task {
+            defer { deliveryFence.end() }
             for await data in stream {
+                defer { deliveryFence.didDeliverOne() }
                 guard let event = try? Anytype_Event(serializedBytes: data) else { continue }
                 Self.log(event: event)
                 await handler(event)
@@ -87,7 +111,11 @@ fileprivate final class ServiceMessageHandler: NSObject, Sendable, ServiceMessag
 
     public func handle(_ data: Data?) {
         guard let data else { return }
-        continuation.yield(data)
+        deliveryFence.enqueue(data, into: continuation)
+    }
+
+    func waitForPendingEventDelivery() async throws {
+        try await deliveryFence.waitForCurrentFrontier()
     }
 
     private static func log(event: Anytype_Event) {
@@ -103,5 +131,87 @@ fileprivate final class ServiceMessageHandler: NSObject, Sendable, ServiceMessag
             responseError: nil
         )
         handler.logHandler(message: message)
+    }
+}
+
+/// Completion frontier for the existing one-consumer stream. No event bytes,
+/// event identities, account tokens or second buffer are stored here.
+private final class OriginalEventDeliveryFence: @unchecked Sendable {
+    enum Failure: Error { case ended, counterExhausted, invalidCompletion }
+    private let lock = NSLock()
+    private var accepted: UInt64 = 0
+    private var delivered: UInt64 = 0
+    private var failure: Failure?
+    private var waiters: [(target: UInt64, continuation: CheckedContinuation<Void, Error>)] = []
+
+    func enqueue(_ data: Data, into continuation: AsyncStream<Data>.Continuation) {
+        lock.lock()
+        var failed: [CheckedContinuation<Void, Error>] = []
+        if failure == nil {
+            if accepted == UInt64.max {
+                failed = failLocked(.counterExhausted)
+            } else {
+                accepted += 1
+            }
+        }
+        // Counter order and the original stream's enqueue order share this
+        // lock. The original consumer/handler cannot acknowledge beforehand.
+        switch continuation.yield(data) {
+        case .enqueued:
+            break
+        case .dropped, .terminated:
+            failed += failLocked(.ended)
+        @unknown default:
+            failed += failLocked(.ended)
+        }
+        let reason = failure
+        lock.unlock()
+        if let reason { for waiter in failed { waiter.resume(throwing: reason) } }
+    }
+
+    func didDeliverOne() {
+        lock.lock()
+        guard failure == nil else { lock.unlock(); return }
+        guard delivered < accepted else {
+            let failed = failLocked(.invalidCompletion)
+            lock.unlock()
+            for waiter in failed { waiter.resume(throwing: Failure.invalidCompletion) }
+            return
+        }
+        delivered += 1
+        let completed = waiters.filter { $0.target <= delivered }.map(\.continuation)
+        waiters.removeAll { $0.target <= delivered }
+        lock.unlock()
+        for waiter in completed { waiter.resume() }
+    }
+
+    func waitForCurrentFrontier() async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            lock.lock()
+            if let failure {
+                lock.unlock()
+                continuation.resume(throwing: failure)
+            } else if delivered == accepted {
+                lock.unlock()
+                continuation.resume()
+            } else {
+                waiters.append((accepted, continuation))
+                lock.unlock()
+            }
+        }
+    }
+
+    func end() {
+        lock.lock()
+        let failed = failLocked(.ended)
+        lock.unlock()
+        for waiter in failed { waiter.resume(throwing: Failure.ended) }
+    }
+
+    private func failLocked(_ reason: Failure) -> [CheckedContinuation<Void, Error>] {
+        if failure == nil { failure = reason }
+        let failed = waiters.map(\.continuation)
+        waiters.removeAll()
+        return failed
     }
 }

@@ -28,9 +28,15 @@ final class OriginalAuthAttempt: Sendable {
     private let parent: OriginalAuthAttempt?
     private let parentObservations: [EditorDocumentWriteLifetime.Observation]
 
-    init(kind: Kind, parent: OriginalAuthAttempt? = OriginalAuthRequestContext.parent) throws {
+    init(
+        kind: Kind,
+        parent: OriginalAuthAttempt? = OriginalAuthRequestContext.parent,
+        restricting restrictions: [EditorDocumentWriteCapture] = []
+    ) throws {
         try Task.checkCancellation()
         try parent?.validate()
+        for restriction in restrictions { try restriction.validate() }
+        let inheritedCaptures = (parent?.captures ?? []) + restrictions
         let lifetime = EditorDocumentWriteLifetime()
         let capture = try EditorDocumentWriteCapture(lifetime)
         guard let outer = lifetime.admitOperation(capture.token) else {
@@ -40,8 +46,8 @@ final class OriginalAuthAttempt: Sendable {
         self.lifetime = lifetime
         self.outer = outer
         self.parent = parent
-        captures = (parent?.captures ?? []) + [capture]
-        parentObservations = (parent?.captures ?? []).map { value in
+        captures = inheritedCaptures + [capture]
+        parentObservations = inheritedCaptures.map { value in
             value.source.observe(value.token) { lifetime.markUnavailable() }
         }
     }

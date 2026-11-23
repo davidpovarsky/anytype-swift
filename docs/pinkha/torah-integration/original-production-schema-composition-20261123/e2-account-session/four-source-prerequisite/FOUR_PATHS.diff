@@ -1,0 +1,448 @@
+diff --git a/Anytype/Sources/ServiceLayer/Account/AccountEventHandler.swift b/Anytype/Sources/ServiceLayer/Account/AccountEventHandler.swift
+index 0ed0e2baf2..654c3c5232 100644
+--- a/Anytype/Sources/ServiceLayer/Account/AccountEventHandler.swift
++++ b/Anytype/Sources/ServiceLayer/Account/AccountEventHandler.swift
+@@ -1,4 +1,5 @@
+ import Foundation
++import AnytypeCore
+ import ProtobufMessages
+ @preconcurrency import Combine
+ import Services
+@@ -11,9 +12,15 @@ protocol AccountEventHandlerProtocol: Sendable {
+     var accountStatusPublisher: AnyPublisher<AccountStatus, Never> { get async }
+ }
+ 
+-actor AccountEventHandler: AccountEventHandlerProtocol {
++actor AccountEventHandler: AccountEventHandlerProtocol, OriginalEmbeddedAccountEventRegistration {
+     
+     private var cancellable: AnyCancellable?
++    // Embedded preparation retains one actual original registration task.
++    // Concurrent callers share its result; no duplicate handler is installed.
++    private var embeddedRegistrationGeneration = UUID()
++    private var pendingEmbeddedRegistration: (id: UUID, task: Task<OriginalEmbeddedAccountEventInstallation, Error>)?
++    private var embeddedInstallation: OriginalEmbeddedAccountEventInstallation?
++
+     @Injected(\.accountManager)
+     private var accountManager: any AccountManagerProtocol
+     
+@@ -30,7 +37,13 @@ actor AccountEventHandler: AccountEventHandlerProtocol {
+         return accountStatusSubject.eraseToAnyPublisher()
+     }
+     
+-    func startSubscription() {
++    func startSubscription() async {
++        if OriginalRuntimeEnvironment.deploymentMode == .embeddedEditor {
++            // The closed bootstrap calls the throwing path below and checks
++            // its actual installation capture before wallet recovery.
++            _ = try? await startEmbeddedSubscription()
++            return
++        }
+         guard cancellable == nil else { return }
+         
+         cancellable = EventBunchSubscribtion.default.addHandler { [weak self] events in
+@@ -39,9 +52,66 @@ actor AccountEventHandler: AccountEventHandlerProtocol {
+     }
+     
+     func stopSubscription() {
++        if OriginalRuntimeEnvironment.deploymentMode == .embeddedEditor {
++            embeddedRegistrationGeneration = UUID()
++            pendingEmbeddedRegistration?.task.cancel()
++            pendingEmbeddedRegistration = nil
++            embeddedInstallation?.retire()
++            embeddedInstallation = nil
++        }
+         cancellable = nil
+     }
+     
++    func startEmbeddedSubscription() async throws -> EditorDocumentWriteCapture {
++        guard OriginalRuntimeEnvironment.deploymentMode == .embeddedEditor else {
++            throw EditorDocumentWriteError.rejected(.retired)
++        }
++        try Task.checkCancellation()
++        if let installation = embeddedInstallation {
++            try installation.capture.validate()
++            return installation.capture
++        }
++        // An unproven legacy cancellation token is never registration evidence.
++        guard cancellable == nil else { throw EditorDocumentWriteError.rejected(.retired) }
++        let registration: (id: UUID, task: Task<OriginalEmbeddedAccountEventInstallation, Error>)
++        if let pending = pendingEmbeddedRegistration {
++            registration = pending
++        } else {
++            let id = UUID()
++            let generation = embeddedRegistrationGeneration
++            let task = Task { [self] in
++                try await installEmbeddedRegistration(id: id, generation: generation)
++            }
++            registration = (id, task)
++            pendingEmbeddedRegistration = registration
++        }
++        let installation = try await registration.task.value
++        try Task.checkCancellation()
++        guard embeddedInstallation === installation else {
++            throw EditorDocumentWriteError.rejected(.retired)
++        }
++        try installation.capture.validate()
++        return installation.capture
++    }
++
++    private func installEmbeddedRegistration(id: UUID, generation: UUID) async throws -> OriginalEmbeddedAccountEventInstallation {
++        defer {
++            if pendingEmbeddedRegistration?.id == id { pendingEmbeddedRegistration = nil }
++        }
++        let subscription = await EventBunchSubscribtion.default.addHandlerAwaiting { [weak self] events in
++            await self?.handle(events: events)
++        }
++        let installation = try OriginalEmbeddedAccountEventInstallation(subscription: subscription)
++        guard !Task.isCancelled, embeddedRegistrationGeneration == generation,
++              pendingEmbeddedRegistration?.id == id, embeddedInstallation == nil else {
++            installation.retire()
++            throw EditorDocumentWriteError.rejected(.retired)
++        }
++        cancellable = subscription
++        embeddedInstallation = installation
++        return installation
++    }
++
+     // MARK: - Private
+     
+     private func handle(events: EventsBunch) {
+@@ -72,3 +142,28 @@ actor AccountEventHandler: AccountEventHandlerProtocol {
+         accountStatusSubject.send(newStatus)
+     }
+ }
++
++// Internal source-readiness seam. It grants no native/account authority.
++protocol OriginalEmbeddedAccountEventRegistration: Sendable {
++    func startEmbeddedSubscription() async throws -> EditorDocumentWriteCapture
++}
++
++private final class OriginalEmbeddedAccountEventInstallation: @unchecked Sendable {
++    let capture: EditorDocumentWriteCapture
++    private let lifetime: EditorDocumentWriteLifetime
++    private let subscription: AnyCancellable
++
++    init(subscription: AnyCancellable) throws {
++        let lifetime = EditorDocumentWriteLifetime()
++        self.capture = try EditorDocumentWriteCapture(lifetime)
++        self.lifetime = lifetime
++        self.subscription = subscription
++    }
++
++    func retire() {
++        lifetime.markUnavailable()
++        subscription.cancel()
++    }
++
++    deinit { retire() }
++}
+diff --git a/Anytype/Sources/ServiceLayer/Auth/AuthService.swift b/Anytype/Sources/ServiceLayer/Auth/AuthService.swift
+index d9ab374acc..e1e3065535 100644
+--- a/Anytype/Sources/ServiceLayer/Auth/AuthService.swift
++++ b/Anytype/Sources/ServiceLayer/Auth/AuthService.swift
+@@ -28,9 +28,15 @@ final class OriginalAuthAttempt: Sendable {
+     private let parent: OriginalAuthAttempt?
+     private let parentObservations: [EditorDocumentWriteLifetime.Observation]
+ 
+-    init(kind: Kind, parent: OriginalAuthAttempt? = OriginalAuthRequestContext.parent) throws {
++    init(
++        kind: Kind,
++        parent: OriginalAuthAttempt? = OriginalAuthRequestContext.parent,
++        restricting restrictions: [EditorDocumentWriteCapture] = []
++    ) throws {
+         try Task.checkCancellation()
+         try parent?.validate()
++        for restriction in restrictions { try restriction.validate() }
++        let inheritedCaptures = (parent?.captures ?? []) + restrictions
+         let lifetime = EditorDocumentWriteLifetime()
+         let capture = try EditorDocumentWriteCapture(lifetime)
+         guard let outer = lifetime.admitOperation(capture.token) else {
+@@ -40,8 +46,8 @@ final class OriginalAuthAttempt: Sendable {
+         self.lifetime = lifetime
+         self.outer = outer
+         self.parent = parent
+-        captures = (parent?.captures ?? []) + [capture]
+-        parentObservations = (parent?.captures ?? []).map { value in
++        captures = inheritedCaptures + [capture]
++        parentObservations = inheritedCaptures.map { value in
+             value.source.observe(value.token) { lifetime.markUnavailable() }
+         }
+     }
+diff --git a/Anytype/Sources/ServiceLayer/File/FileErrorEventHandler.swift b/Anytype/Sources/ServiceLayer/File/FileErrorEventHandler.swift
+index 81e87fd00e..2a7f54a896 100644
+--- a/Anytype/Sources/ServiceLayer/File/FileErrorEventHandler.swift
++++ b/Anytype/Sources/ServiceLayer/File/FileErrorEventHandler.swift
+@@ -1,4 +1,5 @@
+ import Foundation
++import AnytypeCore
+ import ProtobufMessages
+ @preconcurrency import Combine
+ 
+@@ -8,12 +9,18 @@ protocol FileErrorEventHandlerProtocol: AnyObject, Sendable {
+     func startSubscription() async
+ }
+ 
+-actor FileErrorEventHandler: FileErrorEventHandlerProtocol {
++actor FileErrorEventHandler: FileErrorEventHandlerProtocol, OriginalEmbeddedFileEventRegistration {
+     
+     // MARK: - Private properties
+     
+     private let fileLimitReachedSubject = PassthroughSubject<Void, Never>()
+     private var cancellable: AnyCancellable?
++    // Embedded preparation retains one actual original registration task.
++    // Concurrent callers share its result; no duplicate handler is installed.
++    private var embeddedRegistrationGeneration = UUID()
++    private var pendingEmbeddedRegistration: (id: UUID, task: Task<OriginalEmbeddedFileEventInstallation, Error>)?
++    private var embeddedInstallation: OriginalEmbeddedFileEventInstallation?
++
+     
+     // MARK: - FileErrorEventHandlerProtocol
+     
+@@ -21,7 +28,13 @@ actor FileErrorEventHandler: FileErrorEventHandlerProtocol {
+         fileLimitReachedSubject.eraseToAnyPublisher()
+     }
+     
+-    func startSubscription() {
++    func startSubscription() async {
++        if OriginalRuntimeEnvironment.deploymentMode == .embeddedEditor {
++            // The closed bootstrap calls the throwing path below and checks
++            // its actual installation capture before wallet recovery.
++            _ = try? await startEmbeddedSubscription()
++            return
++        }
+         guard cancellable == nil else { return }
+         
+         cancellable = EventBunchSubscribtion.default.addHandler { [weak self] events in
+@@ -29,6 +42,56 @@ actor FileErrorEventHandler: FileErrorEventHandlerProtocol {
+         }
+     }
+     
++    func startEmbeddedSubscription() async throws -> EditorDocumentWriteCapture {
++        guard OriginalRuntimeEnvironment.deploymentMode == .embeddedEditor else {
++            throw EditorDocumentWriteError.rejected(.retired)
++        }
++        try Task.checkCancellation()
++        if let installation = embeddedInstallation {
++            try installation.capture.validate()
++            return installation.capture
++        }
++        // An unproven legacy cancellation token is never registration evidence.
++        guard cancellable == nil else { throw EditorDocumentWriteError.rejected(.retired) }
++        let registration: (id: UUID, task: Task<OriginalEmbeddedFileEventInstallation, Error>)
++        if let pending = pendingEmbeddedRegistration {
++            registration = pending
++        } else {
++            let id = UUID()
++            let generation = embeddedRegistrationGeneration
++            let task = Task { [self] in
++                try await installEmbeddedRegistration(id: id, generation: generation)
++            }
++            registration = (id, task)
++            pendingEmbeddedRegistration = registration
++        }
++        let installation = try await registration.task.value
++        try Task.checkCancellation()
++        guard embeddedInstallation === installation else {
++            throw EditorDocumentWriteError.rejected(.retired)
++        }
++        try installation.capture.validate()
++        return installation.capture
++    }
++
++    private func installEmbeddedRegistration(id: UUID, generation: UUID) async throws -> OriginalEmbeddedFileEventInstallation {
++        defer {
++            if pendingEmbeddedRegistration?.id == id { pendingEmbeddedRegistration = nil }
++        }
++        let subscription = await EventBunchSubscribtion.default.addHandlerAwaiting { [weak self] events in
++            await self?.handle(events: events)
++        }
++        let installation = try OriginalEmbeddedFileEventInstallation(subscription: subscription)
++        guard !Task.isCancelled, embeddedRegistrationGeneration == generation,
++              pendingEmbeddedRegistration?.id == id, embeddedInstallation == nil else {
++            installation.retire()
++            throw EditorDocumentWriteError.rejected(.retired)
++        }
++        cancellable = subscription
++        embeddedInstallation = installation
++        return installation
++    }
++
+     // MARK: - Private
+     
+     private func handle(events: EventsBunch) {
+@@ -42,3 +105,28 @@ actor FileErrorEventHandler: FileErrorEventHandlerProtocol {
+         }
+     }
+ }
++
++// Internal source-readiness seam. It grants no native/account authority.
++protocol OriginalEmbeddedFileEventRegistration: Sendable {
++    func startEmbeddedSubscription() async throws -> EditorDocumentWriteCapture
++}
++
++private final class OriginalEmbeddedFileEventInstallation: @unchecked Sendable {
++    let capture: EditorDocumentWriteCapture
++    private let lifetime: EditorDocumentWriteLifetime
++    private let subscription: AnyCancellable
++
++    init(subscription: AnyCancellable) throws {
++        let lifetime = EditorDocumentWriteLifetime()
++        self.capture = try EditorDocumentWriteCapture(lifetime)
++        self.lifetime = lifetime
++        self.subscription = subscription
++    }
++
++    func retire() {
++        lifetime.markUnavailable()
++        subscription.cancel()
++    }
++
++    deinit { retire() }
++}
+diff --git a/Modules/ProtobufMessages/Sources/ServiceMessageHandlerAdapter.swift b/Modules/ProtobufMessages/Sources/ServiceMessageHandlerAdapter.swift
+index e0a1b8055d..239686f8fc 100644
+--- a/Modules/ProtobufMessages/Sources/ServiceMessageHandlerAdapter.swift
++++ b/Modules/ProtobufMessages/Sources/ServiceMessageHandlerAdapter.swift
+@@ -37,6 +37,25 @@ public class ServiceMessageHandlerAdapter: @unchecked Sendable {
+         handlers.append(WeakHandler(handler))
+     }
+ 
++    /// Waits only for callbacks already accepted by the original FIFO.
++    /// This is not native account/import shutdown or future-event authority.
++    /// Cancellation does not cancel native work or release this retained wait.
++    /// The accepted frontier must finish (or the original consumer must end);
++    /// only afterward can cancellation be reported to this caller. A closed
++    /// presentation must retain and join its own close task separately.
++    public func waitForPendingEventDelivery() async throws {
++        let listener = currentListener()
++        guard let listener else { throw OriginalEventDeliveryFence.Failure.ended }
++        try await listener.waitForPendingEventDelivery()
++        try Task.checkCancellation()
++    }
++
++    private func currentListener() -> ServiceMessageHandler? {
++        lock.lock()
++        defer { lock.unlock() }
++        return listener
++    }
++
+     private func currentHandlers() -> [WeakHandler] {
+         lock.lock()
+         defer { lock.unlock() }
+@@ -67,12 +86,17 @@ fileprivate final class ServiceMessageHandler: NSObject, Sendable, ServiceMessag
+     // Chunks are buffered in arrival order and drained by a single consumer.
+     private let continuation: AsyncStream<Data>.Continuation
+     private let consumer: Task<Void, Never>
++    private let deliveryFence: OriginalEventDeliveryFence
+ 
+     init(handler: @escaping @Sendable (_: Anytype_Event) async -> Void) {
+         let (stream, continuation) = AsyncStream.makeStream(of: Data.self)
+         self.continuation = continuation
++        let deliveryFence = OriginalEventDeliveryFence()
++        self.deliveryFence = deliveryFence
+         self.consumer = Task {
++            defer { deliveryFence.end() }
+             for await data in stream {
++                defer { deliveryFence.didDeliverOne() }
+                 guard let event = try? Anytype_Event(serializedBytes: data) else { continue }
+                 Self.log(event: event)
+                 await handler(event)
+@@ -87,7 +111,11 @@ fileprivate final class ServiceMessageHandler: NSObject, Sendable, ServiceMessag
+ 
+     public func handle(_ data: Data?) {
+         guard let data else { return }
+-        continuation.yield(data)
++        deliveryFence.enqueue(data, into: continuation)
++    }
++
++    func waitForPendingEventDelivery() async throws {
++        try await deliveryFence.waitForCurrentFrontier()
+     }
+ 
+     private static func log(event: Anytype_Event) {
+@@ -105,3 +133,85 @@ fileprivate final class ServiceMessageHandler: NSObject, Sendable, ServiceMessag
+         handler.logHandler(message: message)
+     }
+ }
++
++/// Completion frontier for the existing one-consumer stream. No event bytes,
++/// event identities, account tokens or second buffer are stored here.
++private final class OriginalEventDeliveryFence: @unchecked Sendable {
++    enum Failure: Error { case ended, counterExhausted, invalidCompletion }
++    private let lock = NSLock()
++    private var accepted: UInt64 = 0
++    private var delivered: UInt64 = 0
++    private var failure: Failure?
++    private var waiters: [(target: UInt64, continuation: CheckedContinuation<Void, Error>)] = []
++
++    func enqueue(_ data: Data, into continuation: AsyncStream<Data>.Continuation) {
++        lock.lock()
++        var failed: [CheckedContinuation<Void, Error>] = []
++        if failure == nil {
++            if accepted == UInt64.max {
++                failed = failLocked(.counterExhausted)
++            } else {
++                accepted += 1
++            }
++        }
++        // Counter order and the original stream's enqueue order share this
++        // lock. The original consumer/handler cannot acknowledge beforehand.
++        switch continuation.yield(data) {
++        case .enqueued:
++            break
++        case .dropped, .terminated:
++            failed += failLocked(.ended)
++        @unknown default:
++            failed += failLocked(.ended)
++        }
++        let reason = failure
++        lock.unlock()
++        if let reason { for waiter in failed { waiter.resume(throwing: reason) } }
++    }
++
++    func didDeliverOne() {
++        lock.lock()
++        guard failure == nil else { lock.unlock(); return }
++        guard delivered < accepted else {
++            let failed = failLocked(.invalidCompletion)
++            lock.unlock()
++            for waiter in failed { waiter.resume(throwing: Failure.invalidCompletion) }
++            return
++        }
++        delivered += 1
++        let completed = waiters.filter { $0.target <= delivered }.map(\.continuation)
++        waiters.removeAll { $0.target <= delivered }
++        lock.unlock()
++        for waiter in completed { waiter.resume() }
++    }
++
++    func waitForCurrentFrontier() async throws {
++        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
++            lock.lock()
++            if let failure {
++                lock.unlock()
++                continuation.resume(throwing: failure)
++            } else if delivered == accepted {
++                lock.unlock()
++                continuation.resume()
++            } else {
++                waiters.append((accepted, continuation))
++                lock.unlock()
++            }
++        }
++    }
++
++    func end() {
++        lock.lock()
++        let failed = failLocked(.ended)
++        lock.unlock()
++        for waiter in failed { waiter.resume(throwing: Failure.ended) }
++    }
++
++    private func failLocked(_ reason: Failure) -> [CheckedContinuation<Void, Error>] {
++        if failure == nil { failure = reason }
++        let failed = waiters.map(\.continuation)
++        waiters.removeAll()
++        return failed
++    }
++}

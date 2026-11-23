@@ -39,6 +39,7 @@ final class PushNotificationsPermissionService: PushNotificationsPermissionServi
     }
     
     func requestAuthorizationAndRegisterIfNeeded() async -> Bool {
+        guard OriginalRuntimeEnvironment.deploymentMode == .standalone else { return false }
         do {
             let granted = try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
             if granted {
@@ -52,6 +53,7 @@ final class PushNotificationsPermissionService: PushNotificationsPermissionServi
     }
     
     func registerForRemoteNotificationsIfNeeded() async {        
+        guard OriginalRuntimeEnvironment.deploymentMode == .standalone else { return }
         let status = await authorizationStatus()
         if status == .authorized {
             registerForRemoteNotifications()
@@ -59,12 +61,14 @@ final class PushNotificationsPermissionService: PushNotificationsPermissionServi
     }
     
     func unregisterForRemoteNotifications() {
+        guard OriginalRuntimeEnvironment.deploymentMode == .standalone else { return }
         DispatchQueue.main.async {
             UIApplication.shared.unregisterForRemoteNotifications()
         }
     }
     
     private func registerForRemoteNotifications() {
+        guard OriginalRuntimeEnvironment.deploymentMode == .standalone else { return }
         DispatchQueue.main.async {
             UIApplication.shared.registerForRemoteNotifications()
         }
