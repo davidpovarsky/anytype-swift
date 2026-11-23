@@ -1,8 +1,18 @@
 name: SDK06 original native Products with exact pending23 tag selection
 
 on:
-  workflow_call: {}
-  workflow_dispatch: {}
+  workflow_call:
+    inputs:
+      component_projection:
+        type: boolean
+        required: false
+        default: false
+  workflow_dispatch:
+    inputs:
+      component_projection:
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: read
@@ -50,9 +60,13 @@ jobs:
       - name: Require actual exact23 selection before pending SDK tests and the first UI-only build
         timeout-minutes: 110
         run: |
+          projection_args=()
+          if [ "${{ inputs.component_projection }}" = "true" ]; then
+            projection_args=(--component-projection)
+          fi
           python3 -B Tools/PinkhaSimulatorGate/sdk06_original_native_continuation.py execute \
             --control "$GITHUB_WORKSPACE" --original-app build/sdk06-original-app \
-            --work "$SDK_WORK" --evidence "$SDK_EVIDENCE" --derived "$SDK_DERIVED"
+            --work "$SDK_WORK" --evidence "$SDK_EVIDENCE" --derived "$SDK_DERIVED" "${projection_args[@]}"
       - name: Finish only this exact attempt's owned simulator cleanup
         if: always()
         run: |
@@ -65,10 +79,20 @@ jobs:
           mkdir -p "$SDK_EVIDENCE"
           python3 -B Tools/PinkhaNativeDerived/package_evidence.py "$SDK_EVIDENCE"
       - name: Retain exact SDK06 original-native continuation evidence
-        if: always()
+        if: ${{ always() && !inputs.component_projection }}
         uses: actions/upload-artifact@v4
         with:
           name: Pinkha-SDK06-Original-Native-${{ github.run_id }}-${{ github.run_attempt }}
           path: build/sdk06-original-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}/Pinkha-Native-Derived-Evidence.zip
+          retention-days: 14
+          if-no-files-found: error
+      - name: Retain projected component sources and Products with original App evidence
+        if: ${{ always() && inputs.component_projection }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-SDK06-Projected-Components-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            build/sdk06-original-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}/Pinkha-Native-Derived-Evidence.zip
+            build/sdk06-original-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}/shared-editor-components/SDK06PendingProducts.tar.gz
           retention-days: 14
           if-no-files-found: error

@@ -350,7 +350,9 @@ jobs:
 
   sdk06-projected-components:
     if: ${{ inputs.route == 'sdk06-projected-components' }}
-    uses: ./.github/workflows/pinkha-sdk06-projected-components.yml
+    uses: ./.github/workflows/pinkha-sdk06-original-native-continuation.yml
+    with:
+      component_projection: true
 
   coherent-original-products:
     if: ${{ inputs.route == 'coherent-original-products' }}
