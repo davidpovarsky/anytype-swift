@@ -1,0 +1,164 @@
+{
+  "status": "PASS_INDEPENDENT_SOURCE_AND_RECEIPT_REVIEW_NO_NEW_EXECUTION",
+  "reviewed_at": "2026-11-23T04:19:13.691663+00:00",
+  "writer_worktree": "/mnt/development/projects/worktrees/anytype-wave15-coherent-original-preflight-20261123",
+  "writer_source": "7a5f20eed370748b0e53f4ff4bb0578e8e70c358",
+  "base_source": "e4f9523be8b0c4fdcaf7727b60a55a5229ad990a",
+  "shared_integrated_source": "3b9d7a6b91c035a05170cf6c80e6ea5ffd74d319",
+  "sdk_integration_source": "fd6f3357cd03da840c00b54a6248dd1a3553ba07",
+  "original_scopes": [
+    {
+      "name": "attempt1",
+      "source_sha": "0fea54e8d33210c01ee438d0d4dbfd4dd200121a",
+      "audit_sha256": "05709dd00cbd81ac405d52274c915b658f0a0367f5b44b7462b8fdbfd585a8b3",
+      "original_files_sha256": {
+        "command.json": "2bae0910c33e344d0685dc9d255bcb222b884430d64d3bf5ee622fe6d225d314",
+        "controls.log": "c9b741a46948fac213e50b8e01c80d3281007f7ea09b2b5c605f3adb079d72bb",
+        "events.json": "fb089f11241862136d71c6db3ec9ce5e02e9cb1b4c0994e59557f3755887e5f5",
+        "result.json": "fca86575714ab43fe043e562789450d0d4786eb115c2f1627cffcefc55cd1464",
+        "run_controls.py": "4cca14d57391476c0fe8ebb9e6bba4c171762a5d18d185d0f6f4600be28455d1",
+        "source-after.json": "50bb8c46670dfa750c1b92f96d6f024e6e1350f8b542c9623bf523bbd841ff80",
+        "source-before.json": "50bb8c46670dfa750c1b92f96d6f024e6e1350f8b542c9623bf523bbd841ff80"
+      },
+      "external_original_copies_exact": true,
+      "named_methods": [
+        "test_failure_before_creation_records_first_error_and_cleanup_does_not_scan",
+        "test_original_create_timeout_survives_later_group_failure_with_uuid_already_saved",
+        "test_preexisting_names_and_baseline_uuid_never_authorize_cleanup",
+        "test_prior_batch_cleanup_requires_exact_current_origin_and_journal_owned_uuids",
+        "test_second_create_failure_keeps_first_owner_and_cleans_only_exact_owned_identity",
+        "test_success_persists_original_pair_and_first_uuid_before_second_create",
+        "test_unknown_partial_create_never_cleans_baseline_or_foreign_type"
+      ],
+      "exact_start_pass_pairs": 7,
+      "failed_or_skipped": 0,
+      "loaded_git_inputs_verified": 18,
+      "source_before_after_identical": true,
+      "elapsed_seconds": 0.6264526303857565,
+      "actual_mac_preflight": "NOT_RUN",
+      "actual_product_methods": 0
+    },
+    {
+      "name": "attempt2-diagnostic",
+      "source_sha": "8ae1318bb71221d02c26315f8b1ba6ff929fac4c",
+      "audit_sha256": "681e18839da4cdc8bc6dde91fa274b9926d2804ae2306cc0d9d29c130ce6d905",
+      "original_files_sha256": {
+        "command.json": "102fea0860a590db044706d8e8e1bb61b4207c94bf346093a8a3f06ea2d2c9ca",
+        "controls.log": "a79524aec7028dcd0878f93f4db2d19dafd863869466d84c9cf7bf16112099be",
+        "events.json": "30a43921909277a0b1c339b68be56755f5e2607f976d79321767dccc40b6f0d2",
+        "result.json": "cc0bd0f8d784ba72077927c588fdf38f639f5de006ab2e45b7e423950f35182e",
+        "run_controls.py": "2d282c001229a2e5a69710baf4568f9c144fb37c35d3cc8cb40b7e1b22689af2",
+        "source-after.json": "7405aab0155eda04e3d30148dd49cb9bb600fb974992f4e1cce53c63a5f977b4",
+        "source-before.json": "7405aab0155eda04e3d30148dd49cb9bb600fb974992f4e1cce53c63a5f977b4"
+      },
+      "external_original_copies_exact": true,
+      "named_methods": [
+        "test_quiescence_timeout_and_late_zero_observations_remain_on_original_failed_command"
+      ],
+      "exact_start_pass_pairs": 1,
+      "failed_or_skipped": 0,
+      "loaded_git_inputs_verified": 18,
+      "source_before_after_identical": true,
+      "elapsed_seconds": 0.018466304056346416,
+      "actual_mac_preflight": "NOT_RUN",
+      "actual_product_methods": 0
+    },
+    {
+      "name": "attempt3-optional-proof",
+      "source_sha": "df954ac08d4d81c281813bdfca0207e716e4e9cf",
+      "audit_sha256": "64b3a17dad1571ec87d788a552a9312615ba4b2418f1f241cd3fd53290799f10",
+      "original_files_sha256": {
+        "command.json": "56d393ea3847ba7c24c355b531eefbb00c01eac82c68995ae99269b4b05c9d6b",
+        "controls.log": "2c6a4a7fd4eaecd313753c76c6e72827c3659c79902ae51088cd7569a5883792",
+        "events.json": "bae2613b33ea88c41afe732d4afcf7cda228cb0813704b35fa50ffe381c1c407",
+        "result.json": "eb4ef0ceb201a00e724e3e4fb16e5898db1d7837b043bfac2b356056463b38d2",
+        "run_controls.py": "9ac27a0c2cdefbc47d48c6e48cae5cfea348034b363b04b7b4bcbf37212c1099",
+        "source-after.json": "99ecc81fa7adaea48c0a570e32e24b5dade14e2ff82b18751dca27782f76c853",
+        "source-before.json": "99ecc81fa7adaea48c0a570e32e24b5dade14e2ff82b18751dca27782f76c853"
+      },
+      "external_original_copies_exact": true,
+      "named_methods": [
+        "test_unreadable_optional_batch_proof_records_observation_and_uses_owned_fallback"
+      ],
+      "exact_start_pass_pairs": 1,
+      "failed_or_skipped": 0,
+      "loaded_git_inputs_verified": 18,
+      "source_before_after_identical": true,
+      "elapsed_seconds": 0.2753529278561473,
+      "actual_mac_preflight": "NOT_RUN",
+      "actual_product_methods": 0
+    }
+  ],
+  "distinct_passed_controller_methods": 9,
+  "original_named_start_pass_pairs": 9,
+  "previous_methods_rerun": 0,
+  "review_tests_run": 0,
+  "review_product_tests_run": 0,
+  "review_archive_inspections": 0,
+  "source_retention": {
+    "original_seven_and_helper_test_declarations_byte_identical": true,
+    "diagnostic_delta_only_two_exception_observation_keywords": true,
+    "optional_wrapper_guard_admission_delta_reverted_ast_recovers_prior_helper": true,
+    "removing_only_two_added_test_methods_recovers_original_complete_test_ast": true,
+    "final_production_and_test_bytes_equal_last_executed_source_and_shared": true,
+    "helper_sha256": "dd658ab2bcb72655f90316cac46678d37b9251dbd613325f34c2b7b285a5f6c3",
+    "test_sha256": "e69d79c3ad9610fc8d8879705da73f9d949104667718f3532970b0747f3fc055"
+  },
+  "existing_policy_bytes_unchanged": {
+    "Tools/PinkhaSimulatorGate/preflight.py": "0e1c6491e8bb30d9e97cf65cf3b820a8860d0a32237676f2c3a7613668ddee66",
+    "Tools/PinkhaSimulatorGate/wave15_batch.py": "845f6ee3b8a3325827dc976da41592924c619b943dc5942c0a1ac6f37fc13bd6",
+    "Tools/PinkhaSimulatorGate/coherent_release_cleanup.py": "d6af82a33bf8b120cf9f1d641da1ce3efd843777a417abcfb3e15ab7893019f0",
+    "Tools/PinkhaSimulatorGate/coherent_original_products.py": "bed94e8e0a9b3f662f967a7a8d8bde87dad2ee5c6c05f380d40ad8a4c7c771ea"
+  },
+  "shared_sdk_integration": {
+    "exact_loaded_inputs_unchanged": [
+      "coherent_original_preflight",
+      "coherent_original_products",
+      "destination_artifacts",
+      "host_command",
+      "preflight",
+      "related_read_authority_profile",
+      "run_host_tests",
+      "shared_editor_existing_build",
+      "shared_editor_profile",
+      "shared_table_profile",
+      "simulator_selection",
+      "test_coherent_original_preflight",
+      "type_preservation",
+      "wave15_batch",
+      "wave15_core_profile",
+      "wave15_diagnostics"
+    ],
+    "changed_loaded_inputs": [
+      "run_owned_single_lane",
+      "sdk06_enumeration_probe"
+    ],
+    "supervisor_delta_only_new_sdk_profile_allowlist_item": true,
+    "coherent_profile_control_flow_and_ten_second_deadline_unchanged": true,
+    "normalizer_body_unchanged": true,
+    "normalizer_declaration_sha256": "a693725ffb05ef625d51fd3fad313c6d65056f8f3133cdf90e8aff3c1cd05f1e",
+    "sdk_other_than_Commands_run_ast_identical": true,
+    "preflight_uses_own_commands_with_coherent_profile": true
+  },
+  "app_scope_preserved": {
+    "paths": [
+      "Anytype",
+      "AnyTypeTests",
+      "Modules",
+      "NativeApp",
+      "Dependencies",
+      "Protobuf",
+      "Package.swift",
+      "Package.resolved",
+      "Anytype.xcodeproj"
+    ],
+    "base_to_shared_diff_empty": true,
+    "immutable_future_app_origin": "d254a4a1ccd9288f585ff9374088cbaf965b36b4",
+    "current_preflight_origin": "ACTUAL_CURRENT_CONTROLLER_COMMIT"
+  },
+  "limitations": [
+    "Synthetic controller controls only; actual Mac preflight NOT_RUN.",
+    "No new Apple build, simulator command, product method, archive inspection, or CI dispatch performed by this review.",
+    "Original scoped receipts remain bound to their recorded Git source; current reuse relies on the explicit declaration/dependency comparison above."
+  ]
+}
