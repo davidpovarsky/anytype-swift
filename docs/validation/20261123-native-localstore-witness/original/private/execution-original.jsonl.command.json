@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "/mnt/development/toolchains/go1.27.4/go/bin/go",
+    "tool",
+    "test2json",
+    "-t",
+    "-p",
+    "github.com/anyproto/anytype-heart/core/pinkha/localstorewitness",
+    "/mnt/development/projects/evidence/localstore-witness-20261123/attempt1/products/localstore-witness.test",
+    "-test.v=test2json",
+    "-test.run=^(TestLocalStoreWitnessNativeConcurrentTransaction|TestLocalStoreWitnessOwnershipAndCancellation|TestLocalStoreWitnessLimitsAndNativeBinding|TestLocalStoreWitnessIteratorAndTransactionFailures|TestLocalStoreWitnessDecodedEncodingRoundTrip|TestLocalStoreWitnessUnqualifiedAndPrivateOutput)$",
+    "-test.timeout=90s",
+    "-test.count=1"
+  ],
+  "cwd": "/mnt/development/projects/worktrees/anytype-heart-localstore-witness-20261123",
+  "elapsed_seconds": 2.0045742401853204,
+  "finished": "2026-11-23T05:55:05.321644+00:00",
+  "free_bytes_after": 3154927616,
+  "free_bytes_before": 3163000832,
+  "interruption": null,
+  "original_log_bytes": 27020,
+  "original_log_sha256": "4b9433e01a5f65cb8981524e7911de0bdc425be09c2f24e7ce9e407c7c33f745",
+  "owned_pgid": 2219874,
+  "owned_pid": 2219874,
+  "owned_process_group_absent": true,
+  "returncode": 0,
+  "started": "2026-11-23T05:55:03.317048+00:00",
+  "timeout_seconds": 120
+}

@@ -1,20 +1,62 @@
-# Native local-store witness: source candidate
+# Native local-store witness: six new methods passed
 
-This checkpoint contains a bounded fixture-owned native transaction witness candidate.
-Compilation and product execution are NOT_RUN at this source commit.
+## Actual result
 
-The exact API, detached decoded-value codec, ownership boundary, native transaction
-interleaving and six selected methods are frozen in
-Tools/AnyEngineValidation/native_localstore_witness/PROTOCOL.md.
-Source copies, original native source commits, inspected dependency ZIP bindings and
-the explicit new Go1.27.4 ARM64/glibc profile are in source.json alongside it.
+At 2026-11-23 05:55 UTC, the six newly selected top-level methods passed.
+Their 15 scoped subcases bring the original named start/pass pairs to 21.
+There were no failures, skips, or reruns of previously qualified methods.
+
+The real native interleaving used one read transaction whose collection inventory
+completed before an independent owned writer committed through an actual native
+WriteTx. The first captured witness retained 5 collections / 7 rows and the prior
+state and binary payload. A direct native state read observed the committed state.
+A later transaction captured 6 collections / 9 rows, the changed state/payload,
+the inserted row, and the newly registered collection.
+
+The independent auditor parses the two private length-framed witnesses and their
+decoded-value encodings. It verified exact owner/Space continuity, old/new state
+fields, unchanged other native rows, binary payload bytes, Unicode spellings,
+collection coverage totals, and both full private witness digests.
+
+## Source and evidence
 
 Native source: 74b5f2c844ac3879125888c538d5990af3db3cb8.
-Original 862e98d16b6ae55207a41b53a036d8b7660a189a was reviewed before compilation:
-its receipt initializer mismatch was repaired in one line, with zero tests or builds
-on that original source. Pre-execution originals are retained separately.
+Controller/source freeze: e49f9b137a24dfb3507b3d932ed09382ec58e0b2.
+Compiled binary SHA-256:
+99036b6b74b9914f9fd008d1f97a2d02146e0de55baf2dd4cd8a2b81a07636d2
+(25,485,911 bytes; 53 actual dependency modules).
 
-The candidate preserves nativeSnapshotProofRequired and nativeIdentityCensusRequired.
-hasNativeSourceAdmission=false and permitsDestinationWrites=false remain unconditional.
-No production authorization adapter, whole semantic snapshot, file payload census,
-Swift/App/mounted acceptance, remote replica completeness, or migration is claimed.
+Six explicit native Git inputs and 4,039 resolved source/dependency paths stayed
+unchanged before and after compilation/execution (4,040 unique paths).
+The original binary, raw logs, 17 owned native databases and two private witnesses
+remain on Oracle. Git receives safe counts/hashes, exact safe original metadata,
+the event whitelist, source bindings and the independent auditor, not private data.
+
+See qualification.json, original-artifacts.json and original/independent-audit.json.
+The API/codec/execution contract remains frozen in
+Tools/AnyEngineValidation/native_localstore_witness/PROTOCOL.md.
+
+## Original pre-execution finding retained
+
+Original native source 862e98d16b6ae55207a41b53a036d8b7660a189a was reviewed but
+never compiled or executed. Root found an initializer field-name mismatch and
+missing explicit InventoryScope. Commit 74b5f2c corrected that one initializer
+line before the single actual build/run. Test source was unchanged.
+The source preparation/review record remains in pre-execution-originals.json.
+
+The explicitly authorized idle Swift cache reclamation is separately preserved
+in capacity-reclaim-original.json. Both older qualified Swift products matched
+their original Git-bound hashes before and after removal of only that cache.
+
+## Acceptance boundary
+
+This proves fixture-owned coverage of registered native local collection decoded
+rows within one real read transaction. The detached encoding is a validated
+re-encoding of values exposed by native Doc.Value, not original SQLite BLOB/page bytes.
+
+The candidate has no production capability issuer. Unknown collections remain
+unresolved. nativeSnapshotProofRequired and nativeIdentityCensusRequired remain true;
+hasNativeSourceAdmission=false and permitsDestinationWrites=false.
+No full semantic object/block/type/property/file census, production authorization,
+remote-replica completeness, whole migration, Swift/App or mounted Apple acceptance
+is claimed.
