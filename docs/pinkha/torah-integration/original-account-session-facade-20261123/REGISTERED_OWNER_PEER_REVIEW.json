@@ -1,0 +1,61 @@
+{
+  "scope": "READ_ONLY_REGISTERED_OWNER_SOURCE_PREPARATION_REVIEW",
+  "reviewer": "/root/original_rpc",
+  "reviewed_base": "257c49a5871c62611d88fab00a8124c7ff072166",
+  "reviewed_path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+  "diff_path": "/mnt/development/projects/diagnostics/otzaria-original-production-20261123/e2-forwarding-proposal/REGISTERED_OWNER_PROPOSAL.diff",
+  "diff_bytes": 19780,
+  "diff_sha256": "87f84cc2b6c34c49044fa19d9948972d88e3c24b1049e18134f92d97b8211025",
+  "preimage_sha256": "a009c7e9d5e2b7fce143f59bcf2c2352ece76ae3f28dd6617997100b52563c7a",
+  "candidate_sha256": "fb22c11488fd017cb977061850d4118b4b6cf88fb0549270234ef0ac169afe7c",
+  "candidate_bytes": 26451,
+  "all_seven_hunk_preimages_match_frozen_base": true,
+  "facade_sha256": "df9e63fd62185d7adbaa17180ac0a95f3148424367f77b5b261890c4d72e4a1e",
+  "decision": "ACCEPT_FOR_SOURCE_PREPARATION",
+  "findings": [
+    {
+      "boundary": "Atomic construction",
+      "finding": "All throwing caller/capture creation precedes final actor owner assignment and nonthrowing return. Facade stores that actual return before later validation."
+    },
+    {
+      "boundary": "Frozen parent lineage",
+      "finding": "Each original Auth attempt keeps its actual original parent and the immutable caller restriction. Temporary UI-operation attempts do not replace OriginalAuthRequestContext.parent, so a successful startup is not retired merely because that temporary view operation ends."
+    },
+    {
+      "boundary": "Actual native completion",
+      "finding": "Auth forwarding and named auxiliary dispatch use original capture admissions; completion releases those admissions. No task cancellation is substituted for actual native completion."
+    },
+    {
+      "boundary": "Close ownership",
+      "finding": "Synchronous retirement stops future admissions. The retained close joins an already accepted Stop or calls original logout(false) before awaiting a retired startup. Historical close alone removes a retired parent restriction; unrelated Invocation binding is rejected."
+    },
+    {
+      "boundary": "Failed Stop and explicit retry",
+      "finding": "A failing original Stop throws before retired-start join and before close receipt. The same registered caller and failed-close state remain retained. Only explicit retry admits another close attempt."
+    },
+    {
+      "boundary": "Drain-only untouched landing",
+      "finding": "Without admitted startup or an actual Stop, close waits original caller/attempt operations and returns neverStartedDrained. No synthetic Stop success is created."
+    },
+    {
+      "boundary": "Facade integration",
+      "finding": "Only successful authentication-close receipt allows the facade to continue selection join, original FIFO frontier and consumer-task joins. releaseAfterRuntimeDrain independently refuses pending/failed auth close and does not claim those facade-specific facts."
+    }
+  ],
+  "primary_sources_read": [
+    "Anytype/Sources/ServiceLayer/Auth/AuthService.swift",
+    "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+    "Modules/Services/Sources/Services/Auth/AuthMiddleService.swift",
+    "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteLifetime.swift",
+    "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift",
+    "Anytype/Sources/ServiceLayer/ServicesDI.swift"
+  ],
+  "qualification": {
+    "sdk_source_edits": false,
+    "tests_run_for_peer_review": false,
+    "framework_compile": "NOT_RUN",
+    "apple_runtime": "NOT_RUN",
+    "native_stop_execution": "NOT_RUN"
+  },
+  "limitations": "This source review establishes compatibility and preserved ownership paths, not executed cancellation/Stop behavior. The full forwarded UI call sites, concrete composed framework compilation and real original native/SDK qualification remain separate gates."
+}
