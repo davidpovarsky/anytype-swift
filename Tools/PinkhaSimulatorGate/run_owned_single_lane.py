@@ -21,7 +21,7 @@ PASS = "SUPERVISED_LANE_PASS_ACCEPTANCE_REVIEW_PENDING"
 
 
 def verify_owned_group_stopped(command_path, *, seconds=10, cleanup_profile=None):
-    owned.require(cleanup_profile in (None, owned.COHERENT_HEART_PROFILE, "semantic-page154")
+    owned.require(cleanup_profile in (None, owned.COHERENT_HEART_PROFILE, "semantic-page154", "sdk06-enumeration")
                   and (cleanup_profile is None or seconds == 10),
                   "Only an explicit Apple consumer profile may use its unchanged 10-second cleanup budget")
     record = json.loads(command_path.read_bytes())

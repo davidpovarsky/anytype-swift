@@ -1,0 +1,41 @@
+{
+  "base": "e4f9523be8b0c4fdcaf7727b60a55a5229ad990a",
+  "original_run": "45107006017",
+  "original_artifact_id": 14788672678,
+  "original_artifact_sha256": "acd637db484b1272b76a80e4d26e3115c80ea1c53d55503d22ec4ce01f7246be",
+  "original_artifact_bytes": 511990,
+  "original_diagnostic_directory": "/mnt/development/projects/diagnostics/sdk06-selector-cli-continuation-20261123/original-14788672678",
+  "original_receipt_sha256": "e7793a4fd15541eb9c641f09830ce36f7c2e5a1db0fe6197b22aec0754384bc4",
+  "source_review": {
+    "Tools/PinkhaSimulatorGate/sdk06_enumeration_probe.py": {
+      "before_sha256": "9169a1cdbd1e5c49b5f7a4b49e125e902a20e00627f2a8b0ae0dc866ec685468",
+      "after_sha256": "ce2987846cdd42ebab7702e7dff51068bfb15ee48a66011f621695dbd72ebbce",
+      "changed_functions": [
+        "Commands.run"
+      ],
+      "all_other_function_declarations_byte_identical": true,
+      "unchanged_function_count": 21,
+      "normalize_runtime_injection_sha256": "a693725ffb05ef625d51fd3fad313c6d65056f8f3133cdf90e8aff3c1cd05f1e",
+      "normalizer_body_unchanged": true,
+      "reversing_only_documented_edits_recovers_entire_base_file": true
+    },
+    "Tools/PinkhaSimulatorGate/run_owned_single_lane.py": {
+      "before_sha256": "62ceea2f2f2a4f87e231616fd865801195dc012ff762276d5a3e0089ad55edb0",
+      "after_sha256": "72d3ea9028133a11a1d148fcb04d2f59e0757a804cbc5e9480ebdb07e6ccd361",
+      "changed_functions": [
+        "verify_owned_group_stopped"
+      ],
+      "all_other_function_declarations_byte_identical": true,
+      "unchanged_function_count": 3,
+      "reversing_only_documented_edits_recovers_entire_base_file": true
+    }
+  },
+  "new_controls_passed": 3,
+  "prior_controls_rerun": 0,
+  "selector_variants_executed": 0,
+  "apple_builds": 0,
+  "apple_product_tests": 0,
+  "original_cleanup_status": "FAIL_PRESERVED",
+  "original_final_integrity_status": "FAIL_PRESERVED",
+  "current_apple_continuation_status": "NOT_RUN"
+}

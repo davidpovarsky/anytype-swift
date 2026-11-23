@@ -1,0 +1,422 @@
+{
+  "actual_product_tests_executed": 0,
+  "app_builds": 0,
+  "commands": [
+    {
+      "argv": [
+        "xcodebuild",
+        "-version"
+      ],
+      "finished_at": "2026-11-23T03:51:00.234719+00:00",
+      "name": "xcode-version",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-enumeration-45107006017-1/evidence/xcode-version.log",
+      "output_sha256": "694b44731d0b415c5b11d844151e466d7f5e200a95627efda377f232f1a6ab77",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "budget_seconds": 10,
+        "live_members": 0,
+        "observations": 1,
+        "pgid": 5539,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T03:50:57.831560+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 60,
+      "worker_pid": 5539
+    },
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/davidpovarsky/anytype-swift/actions/artifacts/14782666651"
+      ],
+      "finished_at": "2026-11-23T03:51:01.050251+00:00",
+      "name": "original-artifact-api",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-enumeration-45107006017-1/evidence/original-artifact-api.log",
+      "output_sha256": "b77984e05db3dfd9fdc5b13fa223c1eba252fc9d26af6edc4a21b2db3ab1d8e1",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "budget_seconds": 10,
+        "live_members": 0,
+        "observations": 1,
+        "pgid": 5546,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T03:51:00.287987+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 60,
+      "worker_pid": 5546
+    },
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/davidpovarsky/anytype-swift/actions/runs/45087685319/attempts/1"
+      ],
+      "finished_at": "2026-11-23T03:51:01.374396+00:00",
+      "name": "original-run-api",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-enumeration-45107006017-1/evidence/original-run-api.log",
+      "output_sha256": "f7cd0bc107eeb32a8a2d9f7ba6b4dc77eb1bdaa86cb4a171f7eed25b6dd9e38e",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "budget_seconds": 10,
+        "live_members": 0,
+        "observations": 1,
+        "pgid": 5549,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T03:51:01.080925+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 60,
+      "worker_pid": 5549
+    },
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/davidpovarsky/anytype-swift/actions/artifacts/14782666651/zip"
+      ],
+      "finished_at": "2026-11-23T03:51:50.805102+00:00",
+      "name": "download-original-products",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-enumeration-45107006017-1/work/original-github-artifact.zip",
+      "output_sha256": "6e22d77dcf964edef2c88a6c5d1b6375c21c9bb9213fab761e0d64b349d95450",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "budget_seconds": 10,
+        "live_members": 0,
+        "observations": 1,
+        "pgid": 5553,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T03:51:01.403275+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 300,
+      "worker_pid": 5553
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "list",
+        "runtimes",
+        "-j"
+      ],
+      "finished_at": "2026-11-23T03:52:14.729337+00:00",
+      "name": "simulator-runtimes",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-enumeration-45107006017-1/evidence/simulator-runtimes.log",
+      "output_sha256": "05cf7caaa750e8c2e6960ed702055c64d4fdb2f8d0c3c70c1359959fb0c13af9",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "budget_seconds": 10,
+        "live_members": 0,
+        "observations": 1,
+        "pgid": 7564,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T03:52:09.387614+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 30,
+      "worker_pid": 7564
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "list",
+        "devicetypes",
+        "-j"
+      ],
+      "finished_at": "2026-11-23T03:52:15.153441+00:00",
+      "name": "simulator-types",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-enumeration-45107006017-1/evidence/simulator-types.log",
+      "output_sha256": "f663b275b7760a98ef28ff760c8efc49703530dd1b45c3d70fa755047bb799a0",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "budget_seconds": 10,
+        "live_members": 0,
+        "observations": 1,
+        "pgid": 7670,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T03:52:14.762828+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 30,
+      "worker_pid": 7670
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "create",
+        "SDK06Enumeration-3e0e4a787c484a41b1d58b374d2a435d",
+        "com.apple.CoreSimulator.SimDeviceType.iPad-mini-A20-Pro",
+        "com.apple.CoreSimulator.SimRuntime.iOS-27-2"
+      ],
+      "finished_at": "2026-11-23T03:52:15.886426+00:00",
+      "name": "create-owned-simulator",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-enumeration-45107006017-1/evidence/create-owned-simulator.log",
+      "output_sha256": "67fda83de699fb97a5497be21fc768c2602f22c4f8ccd5592b42bb30309e2442",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "budget_seconds": 10,
+        "live_members": 0,
+        "observations": 1,
+        "pgid": 7779,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T03:52:15.236425+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 60,
+      "worker_pid": 7779
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "boot",
+        "93F3925A-4FE7-44CC-B8C5-928CE8FE1B16"
+      ],
+      "finished_at": "2026-11-23T03:52:21.037094+00:00",
+      "name": "boot-owned-simulator",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-enumeration-45107006017-1/evidence/boot-owned-simulator.log",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "budget_seconds": 10,
+        "live_members": 0,
+        "observations": 1,
+        "pgid": 7880,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T03:52:15.909544+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 90,
+      "worker_pid": 7880
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "bootstatus",
+        "93F3925A-4FE7-44CC-B8C5-928CE8FE1B16",
+        "-b"
+      ],
+      "finished_at": "2026-11-23T03:53:14.523350+00:00",
+      "name": "wait-owned-simulator",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-enumeration-45107006017-1/evidence/wait-owned-simulator.log",
+      "output_sha256": "26ce682b2d17be784153de9e29df856e7459138dda99b145362d595bd1309766",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "quiescence_failure": {
+        "error": "Command '['ps', '-axo', 'pid=,pgid=,stat=']' timed out after 0.4591560000000072 seconds",
+        "error_type": "TimeoutExpired"
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T03:52:23.134723+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 180,
+      "worker_pid": 8025
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "shutdown",
+        "93F3925A-4FE7-44CC-B8C5-928CE8FE1B16"
+      ],
+      "error_type": "TimeoutExpired",
+      "finished_at": "2026-11-23T03:54:03.532675+00:00",
+      "name": "cleanup-owned-shutdown",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-enumeration-45107006017-1/evidence/cleanup-owned-shutdown.log",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "budget_seconds": 10,
+        "live_members": 0,
+        "observations": 1,
+        "pgid": 8279,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": -15,
+      "started_at": "2026-11-23T03:53:28.436957+00:00",
+      "status": "TIMED_OUT",
+      "timeout_seconds": 30,
+      "worker_pid": 8279
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "delete",
+        "93F3925A-4FE7-44CC-B8C5-928CE8FE1B16"
+      ],
+      "error_type": "TimeoutExpired",
+      "finished_at": "2026-11-23T03:54:41.643305+00:00",
+      "name": "cleanup-owned-delete",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-enumeration-45107006017-1/evidence/cleanup-owned-delete.log",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "quiescence_failure": {
+        "error": "Command '['ps', '-axo', 'pid=,pgid=,stat=']' timed out after 2 seconds",
+        "error_type": "TimeoutExpired"
+      },
+      "return_code": -15,
+      "started_at": "2026-11-23T03:54:09.294163+00:00",
+      "status": "TIMED_OUT",
+      "timeout_seconds": 30,
+      "worker_pid": 8405
+    }
+  ],
+  "control_source_hashes": {
+    "Tools/Hanlin/host_command.py": "5f09813c5719f5ea3920c003e58ac6b2b5633f276686bf6c5ef8bc6f9f39a807",
+    "Tools/Hanlin/related_read_authority_profile.py": "c5480b895c917d8268841c64c7875f7d42414fe999489fa27587d017c6e0f0d9",
+    "Tools/Hanlin/run_host_tests.py": "106d40df8594c067fdcc389d0ac93e3055a01247d431b13563f9d6e0d1c3403d",
+    "Tools/Hanlin/shared_editor_profile.py": "77d27d083f8073ad027cd28e98f2e2986aaee1cb2e31d2931287e33a4f8497c8",
+    "Tools/Hanlin/shared_table_profile.py": "5c99f5e10adcd2930fd0fe8476d178f15bb8cd9c11174be8a5f849ae12470397",
+    "Tools/Hanlin/wave15_core_profile.py": "f544619607be0d25e74cff541ac66418b76df11abcd9c15c0ca774d6cbd5d96a",
+    "Tools/PinkhaSimulatorGate/destination_artifacts.py": "55c076f86990e74c2b3908a1474f1bb224c7ca52f00d1f9fe162f40be8814280",
+    "Tools/PinkhaSimulatorGate/run_owned_single_lane.py": "62ceea2f2f2a4f87e231616fd865801195dc012ff762276d5a3e0089ad55edb0",
+    "Tools/PinkhaSimulatorGate/sdk06_enumeration_probe.py": "9169a1cdbd1e5c49b5f7a4b49e125e902a20e00627f2a8b0ae0dc866ec685468",
+    "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py": "ff25ef9fc14630a67decf242b327c53111cfb8b77e0c2f10511a46a926aef8f0",
+    "Tools/PinkhaSimulatorGate/simulator_selection.py": "2309bb55b3752774bffc588a7c489392daa7ceb3b7279f6a9ec870899a1f1d5f",
+    "Tools/PinkhaSimulatorGate/type_preservation.py": "602a91987a6995f0218840744af0d88c2ea5c65d34c4edba7f030808c5007b44",
+    "Tools/PinkhaSimulatorGate/wave15_batch.py": "20b5e7cf53c78a139d1daefdef9c638f5c650259b8248d3fa0b2d394f310a825",
+    "Tools/PinkhaSimulatorGate/wave15_diagnostics.py": "c1ca1fe8857e6ce71b91ffb49ff54627815cbfe44beaa1bbb7328c9bb7a55397"
+  },
+  "control_source_sha": "1e9ee4de8ac2051020d9fd0cb181b8f68498e184",
+  "error": "Command '['ps', '-axo', 'pid=,pgid=,stat=']' timed out after 0.4591560000000072 seconds",
+  "error_type": "TimeoutExpired",
+  "final_integrity_failure": {
+    "error": "Command '['git', '-C', '/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-enumeration-45107006017-1/control', 'status', '--porcelain', '--untracked-files=no']' timed out after 30 seconds",
+    "error_type": "TimeoutExpired"
+  },
+  "finished_at": "2026-11-23T03:55:26.486301+00:00",
+  "full_matrix_accepted": false,
+  "original_artifact_id": 14782666651,
+  "original_artifact_sha256": "6e22d77dcf964edef2c88a6c5d1b6375c21c9bb9213fab761e0d64b349d95450",
+  "original_products_sha256": "7a741f05df92143622a7d07b07682260c0c2281c4b700586fd80839bbc282822",
+  "original_run_attempt": "1",
+  "original_run_id": "45087685319",
+  "original_source_sha": "7293e4fd0bcabdcdb643d5768b777b8e87ff1b73",
+  "owned_simulator": {
+    "nonce": "3e0e4a787c484a41b1d58b374d2a435d",
+    "selection": {
+      "architecture": "arm64",
+      "compatibilityEvidence": "runtime.supportedDeviceTypes AND installed type version bounds",
+      "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-A20-Pro",
+      "productFamily": "iPad",
+      "runtimeBuild": "24B8117",
+      "runtimeIdentifier": "com.apple.CoreSimulator.SimRuntime.iOS-27-2",
+      "runtimeVersion": "27.2"
+    },
+    "udid": "93F3925A-4FE7-44CC-B8C5-928CE8FE1B16"
+  },
+  "owned_simulator_cleanup": {
+    "delete": {
+      "error": "Command '['xcrun', 'simctl', 'delete', '93F3925A-4FE7-44CC-B8C5-928CE8FE1B16']' timed out after 30 seconds",
+      "error_type": "TimeoutExpired",
+      "status": "FAIL"
+    },
+    "shutdown": {
+      "error": "Command '['xcrun', 'simctl', 'shutdown', '93F3925A-4FE7-44CC-B8C5-928CE8FE1B16']' timed out after 30 seconds",
+      "error_type": "TimeoutExpired",
+      "status": "FAIL"
+    }
+  },
+  "protocol": "sdk06-original-products-enumeration-only-v1",
+  "release_accepted": false,
+  "restored_products": {
+    "entries": 5007,
+    "status": "ORIGINAL_BYTES_RESTORED_ENUMERATION_ONLY"
+  },
+  "run_attempt": "1",
+  "run_id": "45107006017",
+  "sdk06_accepted": false,
+  "selection_contract": {
+    "declarations": [
+      "AnytypeTests/SimpleTableTextPersistenceTests/acceptedSnapshotSurvivesViewReuse()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/defocusCommitsTheDeferredSearchBuffer()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/laterDraftKeepsTheLatestAcceptedSnapshot()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/markdownAddBlockDoesNotContinueAfterOwnerRebind(returnToOriginalID:)",
+      "AnytypeTests/SimpleTableTextPersistenceTests/markdownCommandsKeepCapturedTextBeforeLaterTyping(addBlock:)",
+      "AnytypeTests/SimpleTableTextPersistenceTests/markdownStyleWaitsForEarlierNativeWrite()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/nativeRejectionKeepsTheTableDirty()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/queuedMarkdownCommandIsRetiredWhenRowChanges()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/replacementClaimsPendingOwnershipBeforePublication(asyncEntry:)",
+      "AnytypeTests/SimpleTableTextPersistenceTests/rowRebindCannotWriteIntoTheNewOwner()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/structuralKeyWaitsForAcceptedText()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/completedLocalTextAcceptsRemoteReplacement()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/consumedAndNewerFocusSurviveOldCallbacks()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/editingDenialCancelsPendingFocus(locked:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/explicitHandoffDoesNotReplayInitialCaret()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/focusedTextViewDoesNotReplayResponderAcquisition()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/initialFocusWaitsForAttachment()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/insertedCellUsesCurrentEditingBeforeFocus(editing:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/laterFocusSupersedesDetachedRequest(useNativeEditing:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/nativeFocusObservationDistinguishesOutcomes(outcome:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/pendingFocusWaitsForKeyWindow()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/pendingLocalTextSurvivesNativeReconfiguration()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/refusedFocusWaitsForWindowReadiness()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/requestIdentityParticipatesInCellConfigurationEquality()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/reusedCellDoesNotPreserveDifferentPendingOwner(composing:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/reusedCellUsesCurrentLockBeforeFocus(newLocked:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/sameInputOwnerSurvivesForkAndExplicitReplacementEndsComposition()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/staleFocusDoesNotSurviveRowLifetime(change:)",
+      "AnytypeTests/TorahRelatedReadAuthorityMappingTests/nativeDenialRequiresExactTypedCodeAndDescription(objectShow:)",
+      "AnytypeTests/TorahRelatedReadAuthorityMappingTests/providerAndTransportDescriptionsCannotForgeNativeAuthority()"
+    ],
+    "excluded": [
+      "AnytypeTests/TextBlockFocusLifecycleTests/consumedAndNewerFocusSurviveOldCallbacks()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/editingDenialCancelsPendingFocus(locked:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/focusedTextViewDoesNotReplayResponderAcquisition()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/laterFocusSupersedesDetachedRequest(useNativeEditing:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/nativeFocusObservationDistinguishesOutcomes(outcome:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/pendingFocusWaitsForKeyWindow()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/refusedFocusWaitsForWindowReadiness()"
+    ],
+    "selected": [
+      "AnytypeTests/SimpleTableTextPersistenceTests/acceptedSnapshotSurvivesViewReuse()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/defocusCommitsTheDeferredSearchBuffer()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/laterDraftKeepsTheLatestAcceptedSnapshot()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/markdownAddBlockDoesNotContinueAfterOwnerRebind(returnToOriginalID:)",
+      "AnytypeTests/SimpleTableTextPersistenceTests/markdownCommandsKeepCapturedTextBeforeLaterTyping(addBlock:)",
+      "AnytypeTests/SimpleTableTextPersistenceTests/markdownStyleWaitsForEarlierNativeWrite()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/nativeRejectionKeepsTheTableDirty()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/queuedMarkdownCommandIsRetiredWhenRowChanges()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/replacementClaimsPendingOwnershipBeforePublication(asyncEntry:)",
+      "AnytypeTests/SimpleTableTextPersistenceTests/rowRebindCannotWriteIntoTheNewOwner()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/structuralKeyWaitsForAcceptedText()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/completedLocalTextAcceptsRemoteReplacement()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/explicitHandoffDoesNotReplayInitialCaret()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/initialFocusWaitsForAttachment()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/insertedCellUsesCurrentEditingBeforeFocus(editing:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/pendingLocalTextSurvivesNativeReconfiguration()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/requestIdentityParticipatesInCellConfigurationEquality()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/reusedCellDoesNotPreserveDifferentPendingOwner(composing:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/reusedCellUsesCurrentLockBeforeFocus(newLocked:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/sameInputOwnerSurvivesForkAndExplicitReplacementEndsComposition()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/staleFocusDoesNotSurviveRowLifetime(change:)",
+      "AnytypeTests/TorahRelatedReadAuthorityMappingTests/nativeDenialRequiresExactTypedCodeAndDescription(objectShow:)",
+      "AnytypeTests/TorahRelatedReadAuthorityMappingTests/providerAndTransportDescriptionsCannotForgeNativeAuthority()"
+    ],
+    "test_plan": "AnytypeTests"
+  },
+  "started_at": "2026-11-23T03:50:57.545772+00:00",
+  "status": "NO_SELECTOR_QUALIFIED_PRODUCT_TESTS_NOT_RUN"
+}

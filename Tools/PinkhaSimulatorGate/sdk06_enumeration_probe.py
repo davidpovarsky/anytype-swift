@@ -329,9 +329,12 @@ class Commands:
             primary = error
             record = json.loads(path.with_suffix(".command.json").read_bytes())
         try:
-            record["owned_group_quiescence"] = supervisor.verify_owned_group_stopped(path.with_suffix(".command.json"))
+            record["owned_group_quiescence"] = supervisor.verify_owned_group_stopped(
+                path.with_suffix(".command.json"), cleanup_profile="sdk06-enumeration")
         except BaseException as error:
-            record["quiescence_failure"] = dict(error_type=type(error).__name__, error=str(error))
+            record["quiescence_failure"] = dict(error_type=type(error).__name__, error=str(error),
+                timeout_observations=getattr(error, "timeout_observations", []),
+                quiescence_observation=getattr(error, "quiescence_observation", None))
             if primary is None:
                 primary = error
         record.update(name=name, output_path=str(path), output_sha256=sha(path) if path.is_file() else None)
