@@ -79,7 +79,7 @@ internal enum AnytypeOriginalEditorRestoreQualification {
                     }
                 }
                 let originalBytes = try OriginalEditorArchiveFiles.readArchive(
-                    archiveURL, in: directory, maximumBytes: 65_536
+                    archiveURL, in: directory, maximumBytes: OriginalAnnotationPayloadBudget.maximumArchiveBytes
                 )
                 guard originalBytes == snapshot.nativeArchiveBytes else {
                     throw AnytypeOriginalEditorSnapshotError.archiveChanged
@@ -144,7 +144,7 @@ internal enum AnytypeOriginalEditorRestoreQualification {
                 try requireString(rootDetails[0].details, "oldAnytypeID", equals: source.objectID)
                 try requireString(rootDetails[0].details, "sourceFilePath", equals: expectedSourcePath)
                 guard try OriginalEditorArchiveFiles.readArchive(
-                    archiveURL, in: directory, maximumBytes: 65_536
+                    archiveURL, in: directory, maximumBytes: OriginalAnnotationPayloadBudget.maximumArchiveBytes
                 ) == originalBytes else {
                     throw AnytypeOriginalEditorSnapshotError.archiveChanged
                 }

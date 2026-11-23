@@ -1,0 +1,73 @@
+{
+  "source_sha": "257c49a5871c62611d88fab00a8124c7ff072166",
+  "proposed_worktree": "/mnt/development/projects/worktrees/anytype-otzaria-original-annotation-budget-20261123",
+  "proposed_branch": "codex/otzaria-original-annotation-budget-20261123",
+  "files": [
+    {
+      "path": "OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift",
+      "bytes": 18348,
+      "sha256": "ed135a4369313d14493b9b05f9d1efef414da21144f6119b970bc6e88a8389a2",
+      "planned_product_edit": true
+    },
+    {
+      "path": "OriginalEditorFramework/OriginalAnnotationNativeArchiveLayout.swift",
+      "bytes": 8234,
+      "sha256": "982470bc1bd237eb053edcb8081a53c96baf53a9eba75c408baaced0cc7f7560",
+      "planned_product_edit": true
+    },
+    {
+      "path": "OriginalEditorFramework/AnytypeOriginalEditorNativeBodyReadback.swift",
+      "bytes": 9440,
+      "sha256": "75611166127dffd8c1b7c0ee03ff99f4eaa7fed9ca4c565be3e320840fc715b4",
+      "planned_product_edit": true
+    },
+    {
+      "path": "OriginalEditorFramework/AnytypeOriginalEditorRestoreQualification.swift",
+      "bytes": 17082,
+      "sha256": "16abee4efc3781aa855f7da4c958e358e487b56ef15f851d679f959bb2cad589",
+      "planned_product_edit": true
+    },
+    {
+      "path": "OriginalEditorFramework/AnytypeOriginalEditorNativeFixture.swift",
+      "bytes": 25356,
+      "sha256": "491759ed0032c24f103716f27672a1f2357a7cb2a10d670a5a5fca92d5cbf088",
+      "planned_product_edit": false
+    },
+    {
+      "path": "OriginalEditorFramework/AnytypeOriginalEditorHost.swift",
+      "bytes": 13577,
+      "sha256": "a83337834a54d70db883076e0556316c85aae4bdf03b14d8400293936ba3cb2a",
+      "planned_product_edit": false
+    }
+  ],
+  "allowed_four_product_paths": [
+    "OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift",
+    "OriginalEditorFramework/OriginalAnnotationNativeArchiveLayout.swift",
+    "OriginalEditorFramework/AnytypeOriginalEditorNativeBodyReadback.swift",
+    "OriginalEditorFramework/AnytypeOriginalEditorRestoreQualification.swift"
+  ],
+  "unmodified_boundaries": {
+    "NativeFixture": "65536 explicit owned attachment-download limit remains; not an archive caller",
+    "HostBinding": "public identities/auth authority unchanged; string identities require nonempty/noNUL, no individual byte max; aggregate canonical header16384 remains"
+  },
+  "approved_policy": {
+    "source_commit": "c067f5c5d5afc5d2679bdc371163d3018cc71a7b",
+    "sha256": "818bd440374cd49072f018065d300209bd2dafc506ec16d8c2c686736bde7077",
+    "archive": 1048576,
+    "header": 16384,
+    "prefix": 16,
+    "body": 1064976,
+    "envelope_owned_by_root": 2097152
+  },
+  "proposed_behavior": [
+    "internal fixed annotation budget constants; no new public authority or changed public signatures",
+    "existing public maximumBodyBytes:Int remains explicit and honors65536 if caller supplies it; valid upper limit1064976",
+    "archive decode/frame/capture independently enforce1048576 even when whole-body caller budget is1064976",
+    "archive capture read receives min(archiveCap,callerBodyBudget)",
+    "retain generic attachment read65536 wrapper; factor same no-follow/inode/mtime/ctime implementation into private bounded archive-versus-file ceiling path",
+    "BodyReadback intended body usesbody budget, export archive usesarchive budget; RestoreQualification two archive reads usearchive budget",
+    "header framing/magic/version/canonicalization/report/provenance and source-lifetime checks remain exact"
+  ],
+  "product_edits_performed": 0,
+  "qualification": "NOT_RUN"
+}

@@ -1,0 +1,367 @@
+{
+  "budget_source": "a89b44388dbcb139dc9d6a38c2d243fd7e8ef4b1",
+  "closed_constructor_graph": [
+    {
+      "result": "Exact facade fallback passes allowsDebugMenus:false.",
+      "route": "Before any registered caller/coordinator exists",
+      "source": "9503b2ff6ef53958cb6e63830ce28a647c6ee35f"
+    },
+    {
+      "result": "Exact facade initial AnyView passes allowsDebugMenus:false.",
+      "route": "Embedded initial state",
+      "source": "9503b2ff6ef53958cb6e63830ce28a647c6ee35f"
+    },
+    {
+      "result": "Existing embedded initializer freezes false; launch forwards that immutable property.",
+      "route": "Original coordinator launch state",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "result": "Both gestures refuse false before toggle; both sheet bindings are constant false; both original admin constructions require true.",
+      "route": "Launch gestures/sheets/destinations",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "result": "Existing exact dbfc immutable nonnil caller binds each debug sheet false and prevents original admin construction.",
+      "route": "Auth/Login",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "result": "Exact0366 immutable caller check prevents model toggle and original debug sheet construction.",
+      "route": "Migration",
+      "source": "0366b4e4e912ba11c5413516d215bc4a234aa3ca"
+    },
+    {
+      "result": "Original default coordinator uses true; LaunchView default is true; original layout, gesture counts, writable bindings and complete admin destinations remain.",
+      "route": "Standalone",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "result": "Unchanged original routes remain outside the closed bootstrap home, which is the neutral original QuickCapture picker.",
+      "route": "Regular Settings/Experimental",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    }
+  ],
+  "composition_performed_by_reviewer": false,
+  "composition_product_count": 33,
+  "composition_rows": [
+    {
+      "bytes": 2649,
+      "git_blob": "1e24e4fdc4129d89d05c925b0d211b1a89feca27",
+      "path": "Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorView.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "34a0c4d7eb28f568e354dc1af742b27b597602bd47584b95a681f38d9a127fb1",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 17037,
+      "git_blob": "e7ee5c7885dda142a9069a74093b21dbc1eac1f8",
+      "path": "Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorViewModel.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "55f8ab3a4d74815243f67f4414d1ce9f88b0855c927aadce1dc98dd3f6fa5bd7",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 1759,
+      "git_blob": "3d0d41a8357dac2d80007fc701221819305c4850",
+      "path": "Anytype/Sources/ApplicationLayer/Launch/LaunchView.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "5aaff00e324964809e9470977e5b989bff1debd6c470d011a00b00acdccd080e",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 27064,
+      "git_blob": "5dc7604d679d95dc3745db4bea488c83d2981830",
+      "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "0553bb3279e6319adc44679ede574c2e0c10ed695f17c22d04f7346e7ca499f6",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 2248,
+      "git_blob": "5ce8e0e89702a30c73f44687173afceab29466b2",
+      "path": "Anytype/Sources/PresentationLayer/Auth/AuthCoordinatorView.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "fcab9b92f3d94c50f00c951a7efa0d130a5623614230fa0425e983da5fa84abd",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 2367,
+      "git_blob": "c216bc9c7001274e3879ed30df66f1ba085f28a7",
+      "path": "Anytype/Sources/PresentationLayer/Auth/DeletedAccount/DeletedAccountView.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "d3211fc11e918ddbef113b83ad16a481ebb2484e1f9e3edf7ce2ce424e42e8b1",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 3220,
+      "git_blob": "ca2a24660c8275c6fbe988024634cffc03788a59",
+      "path": "Anytype/Sources/PresentationLayer/Auth/DeletedAccount/DeletedAccountViewModel.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "663e1d5fc97741643d7c065379187875bd42ce1536012c5ae9aa3d858b9cb186",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 3034,
+      "git_blob": "98d0402c5bc79d63e8b940bcefeccab679fd60fd",
+      "path": "Anytype/Sources/PresentationLayer/Auth/Join/JoinView/EmailCollectionView/EmailCollectionViewModel.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "043659bf1542051b3b11d9be3e3078765c3b33cd2a7ad84d1359dc3f6f73c985",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 2852,
+      "git_blob": "6173f4692e18ced69c9768c02391d7dca72e2ddb",
+      "path": "Anytype/Sources/PresentationLayer/Auth/Join/JoinView/JoinView.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "3b935fe0dd9ccf3bab6245c8c6e07d715a7fd1af17b1d47821fee6796af2508c",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 4010,
+      "git_blob": "c9b3728d4c56847fcaae7c0067084f27c3ebe0b8",
+      "path": "Anytype/Sources/PresentationLayer/Auth/Join/JoinView/JoinViewModel.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "4d1ea101013ebe5a8a78908e95c7888704403e25b1bb8820f99fea3be00a0a73",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 2380,
+      "git_blob": "b3711beb922cc3cceae7570e806273b5d056c5d5",
+      "path": "Anytype/Sources/PresentationLayer/Auth/Join/Shared/KeyPhraseView/KeyPhraseViewModel.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "896b364d146d5ad1492a4adc20207dd0da1c40ff3daed9e54b0fcbe4d1ca2aa7",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 790,
+      "git_blob": "cfddb25694be80e80b9936b53c26c5f70c74432d",
+      "path": "Anytype/Sources/PresentationLayer/Auth/Join/Shared/Models/JoinFlowState.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "4322001cb3890eb3c740099e39c6761f4b88d05db1e2a05ee96e43af9db75dcd",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 1341,
+      "git_blob": "9392bf5e2aafde5e1e52443ee548d3c5a3ff5e9b",
+      "path": "Anytype/Sources/PresentationLayer/Auth/Login/LoginCoordinatorView.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "572b5331bbddb2ed818d5e7c517c8112ebe35eefe8ba2a996b3f535d3c810359",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 5292,
+      "git_blob": "2b02a6824402704f5a703bbcb10f10631cf578ed",
+      "path": "Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginView.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "f146e0f6540e539f4699d9afd04538739c10c75b2eaa982cb5dfa640a876605a",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 19288,
+      "git_blob": "0a6823bc09b8f50c22cddba849a8af4899866446",
+      "path": "Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginViewModel.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "b32966f4f5e0535a524d8b7712af7f97bb265521e2c4540dcd8f13d36cf9feb3",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 3839,
+      "git_blob": "28fa8a095bc1d3855b1eb725ede6fc183b6251e3",
+      "path": "Anytype/Sources/PresentationLayer/Auth/PrimaryAuthView/PrimaryAuthView.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "63f3476380eaace86701dcbe69440845b638c4605f995605b6748ba631218050",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 7247,
+      "git_blob": "e2986444d360c94d463688a430169a636fb43f62",
+      "path": "Anytype/Sources/PresentationLayer/Auth/PrimaryAuthView/PrimaryAuthViewModel.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "02d0e0f79328b6e92cd935eb91e4aabb3d0e25f95866daeda3727a7e595634c9",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 761,
+      "git_blob": "a3730ce56609d2b7cdd20b23440a02eac8891566",
+      "path": "Anytype/Sources/PresentationLayer/Flows/ServerConfiguration/ServerConfigurationCoordinatorView.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "f9a8582568e039d2ebff3f8bde5c66102b3a761242df3f73bf46662d02e26512",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 628,
+      "git_blob": "6100f04354bb35ee227180fc1afc17893f700846",
+      "path": "Anytype/Sources/PresentationLayer/Flows/ServerConfiguration/ServerConfigurationCoordinatorViewModel.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "2f401d888afd004562ae2da108388f355717945d596f6550e6552ef76e19da2e",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 816,
+      "git_blob": "1e4776970938569575f21dc2076f51919069961e",
+      "path": "Anytype/Sources/PresentationLayer/Migration/Coordinator/MigrationCoordinatorView.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "85b821b154ba0fd528d5ad9e59191af9b805b5d8ed69110d88947e66daf4e35e",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 562,
+      "git_blob": "67f870739c6a77693fdc88b9aad408d38240a665",
+      "path": "Anytype/Sources/PresentationLayer/Migration/Coordinator/MigrationCoordinatorViewModel.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "c93b4bef7ddca8dda01eb133a33812f755f14e44964a2ae847b67f5287303f78",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 6439,
+      "git_blob": "468bcdc3f2b54f2b4128cc2911cda72cdb46fbe9",
+      "path": "Anytype/Sources/PresentationLayer/Migration/MigrationViewModel.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "5fd45335fbf54670782702633844c9b1d8288c82d2d711c34e1dbf46d1ea237f",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 2576,
+      "git_blob": "b6a6baf63b98a76649b25697c025b87c8719b989",
+      "path": "Anytype/Sources/PresentationLayer/Modules/ServerConfiguration/ServerConfigurationView.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "4b55c0052473f4c70cd7445779f275b2a5e0ae39176d0c387964fbb1c9235576",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 2791,
+      "git_blob": "120db5f8a065146a142eda05bac8b7556760c5e4",
+      "path": "Anytype/Sources/PresentationLayer/Modules/ServerConfiguration/ServerConfigurationViewModel.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "6dc9b21170e9619faf848202d6c64ce7159354fd9df895598bced001e858380c",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 465,
+      "git_blob": "01cf838c7f30416c751de541cbf1d8fe7b64bec9",
+      "path": "Anytype/Sources/PresentationLayer/Modules/ServerDocumentPicker/ServerDocumentPickerView.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "12b88bd5f4de8647e648229ceeb34cc3c385b6dfafcc912d1fbaa6bfb9058a64",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 1238,
+      "git_blob": "e50b5147c9f24a9116316521129b94e4406c7cce",
+      "path": "Anytype/Sources/PresentationLayer/Modules/ServerDocumentPicker/ServerDocumentPickerViewModel.swift",
+      "scope": "registered_forwarding_with_debug_guards",
+      "sha256": "33c4cbd9b797040b714eb3cccbf7c70ea0b08020b27545637dc24f800e846a3a",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e"
+    },
+    {
+      "bytes": 152304,
+      "git_blob": "8896009c3900235e67900b5c28e8bb644ba192ba",
+      "path": "Anytype.xcodeproj/project.pbxproj",
+      "scope": "facade_with_explicit_embedded_launch",
+      "sha256": "0285b9aab9ce557704f2813b396c3caaf09be8ad748d5840a32334de24f67f09",
+      "source": "9503b2ff6ef53958cb6e63830ce28a647c6ee35f"
+    },
+    {
+      "bytes": 30073,
+      "git_blob": "5907fd6a8ba6dcf05293016473763c786abff4be",
+      "path": "OriginalEditorFramework/AnytypeOriginalEditorAccountSession.swift",
+      "scope": "facade_with_explicit_embedded_launch",
+      "sha256": "df9e63fd62185d7adbaa17180ac0a95f3148424367f77b5b261890c4d72e4a1e",
+      "source": "9503b2ff6ef53958cb6e63830ce28a647c6ee35f"
+    },
+    {
+      "bytes": 3460,
+      "git_blob": "9cc87f6e188f4f1c9bb4f3115123e34484f06977",
+      "path": "OriginalEditorFramework/OriginalEditorAccountSessionView.swift",
+      "scope": "facade_with_explicit_embedded_launch",
+      "sha256": "34e48d29da382bc3d57b04464281cf038ac47acd51ae6f5dc029946f7dff1302",
+      "source": "9503b2ff6ef53958cb6e63830ce28a647c6ee35f"
+    },
+    {
+      "bytes": 9547,
+      "git_blob": "5256929a9d88e42fe964a9a4a12bc84531ca763f",
+      "path": "OriginalEditorFramework/AnytypeOriginalEditorNativeBodyReadback.swift",
+      "scope": "annotation_budget",
+      "sha256": "184a3b76459ae3639b320fcbc7e56ec19b918ae2e4e4446e3283664e28767a9a",
+      "source": "a89b44388dbcb139dc9d6a38c2d243fd7e8ef4b1"
+    },
+    {
+      "bytes": 17172,
+      "git_blob": "a1fecdf2f3056c17e1ed13bd7674a52e409af109",
+      "path": "OriginalEditorFramework/AnytypeOriginalEditorRestoreQualification.swift",
+      "scope": "annotation_budget",
+      "sha256": "caf382f12da10f2ce4c733e2e9dc040d6b95ee54979a5be77d9c769c5de5f353",
+      "source": "a89b44388dbcb139dc9d6a38c2d243fd7e8ef4b1"
+    },
+    {
+      "bytes": 19419,
+      "git_blob": "0566359389438ef583f34a048d95caf9071ee01e",
+      "path": "OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift",
+      "scope": "annotation_budget",
+      "sha256": "ec25cbe3196372a4fa3743294cdf153227cca98d6ee9b6a07a036392696143c8",
+      "source": "a89b44388dbcb139dc9d6a38c2d243fd7e8ef4b1"
+    },
+    {
+      "bytes": 9492,
+      "git_blob": "6cabe5e47ccf21c5a1072d076447e353cf8280ef",
+      "path": "OriginalEditorFramework/OriginalAnnotationNativeArchiveLayout.swift",
+      "scope": "annotation_budget",
+      "sha256": "79026401d870977a8a99ee8686b714fbf689b79089f32d7751a87aabcb49e222",
+      "source": "a89b44388dbcb139dc9d6a38c2d243fd7e8ef4b1"
+    }
+  ],
+  "controls_or_compile_replayed": false,
+  "decision": "ACCEPT_EXACT_CLOSED_BOOTSTRAP_SOURCE_BOUNDARY_FOR_REVIEWED_33_PATH_COMPOSITION",
+  "facade_parent": "84a023191803f58879fe29c5756612b469ff12ef",
+  "facade_source": "9503b2ff6ef53958cb6e63830ce28a647c6ee35f",
+  "facade_view": {
+    "after_sha256": "34e48d29da382bc3d57b04464281cf038ac47acd51ae6f5dc029946f7dff1302",
+    "before_sha256": "1087f84053bab68ebd5895b27bf47256781dab04207d16d4c1dfb4edc8bcaf2f",
+    "exact_callsite_replacements": 2,
+    "full_file_inverse_exact": true,
+    "path": "OriginalEditorFramework/OriginalEditorAccountSessionView.swift",
+    "runtime_and_project_unchanged": true
+  },
+  "indexes": [
+    {
+      "index_sha256": "6ff7cbd8d002bd1e84e086e7bde7b2b3b277fc9b586d0a2f2403899144575c91",
+      "packet_files": 14,
+      "prefix": "docs/pinkha/torah-integration/original-production-schema-composition-20261123/e2-account-session/launch-debug-boundary-20261123",
+      "source": "40f2413f29a92b201b04b9745ad1f485e736522e",
+      "verified_rows": 13
+    },
+    {
+      "index_sha256": "59bd98c98dd0f12929c5e70706f86e1327cf5b523d58810a12ee77fdd2bd35c0",
+      "packet_files": 6,
+      "prefix": "docs/pinkha/torah-integration/original-account-session-facade-20261123/launch-debug-boundary-20261123",
+      "source": "9503b2ff6ef53958cb6e63830ce28a647c6ee35f",
+      "verified_rows": 5
+    }
+  ],
+  "launch_approved_diff_sha256": "2126496a3646c76aa3866bf3ac85e07b04a641359cbfefbc9cd3c4e4f17e4cc9",
+  "launch_full_two_file_inverse_exact": true,
+  "launch_rows": [
+    {
+      "after_sha256": "5aaff00e324964809e9470977e5b989bff1debd6c470d011a00b00acdccd080e",
+      "before_sha256": "0d6fd5307276304cedb00fd5d4ec3c43f15882e7251322c23f9192b54e5bde32",
+      "path": "Anytype/Sources/ApplicationLayer/Launch/LaunchView.swift"
+    },
+    {
+      "after_sha256": "34a0c4d7eb28f568e354dc1af742b27b597602bd47584b95a681f38d9a127fb1",
+      "before_sha256": "5a950c4df53f56202d1de00acb5a05f58a4056ea23374334a504ba419f50c191",
+      "path": "Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorView.swift"
+    }
+  ],
+  "original_coordinator_caller_construction": [
+    {
+      "line": 384,
+      "text": "let model = ApplicationCoordinatorViewModel(originalEditorCaller: caller)"
+    }
+  ],
+  "previous_migration_and_launch_findings": "Preserved as authentic earlier-source findings; exact reviewed followups close their source construction paths.",
+  "qualification": "Static source/provenance only. Actual Apple typecheck/framework/native account/Stop/UI/editor/device acceptance still required.",
+  "registered_parent": "0366b4e4e912ba11c5413516d215bc4a234aa3ca",
+  "registered_source": "40f2413f29a92b201b04b9745ad1f485e736522e",
+  "reviewed_utc": "2026-11-23T11:19:22.792576+00:00",
+  "schema_version": 1
+}

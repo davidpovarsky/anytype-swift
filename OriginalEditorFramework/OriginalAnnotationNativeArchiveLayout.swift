@@ -1,5 +1,30 @@
 import Foundation
 
+/// Fixed byte budgets for the annotation's untouched native archive and frame.
+/// This is data admission only; no account, Space or write authority is granted.
+internal enum OriginalAnnotationPayloadBudget {
+    static let maximumArchiveBytes = 1_048_576
+    static let maximumHeaderBytes = 16_384
+    static let framePrefixBytes = 16
+    static let maximumBodyBytes = framePrefixBytes + maximumHeaderBytes + maximumArchiveBytes
+
+    static func acceptsBodyLimit(_ maximum: Int) -> Bool {
+        maximum > framePrefixBytes && maximum <= maximumBodyBytes
+    }
+
+    static func acceptsArchiveBytes(_ count: Int, maximumBodyBytes: Int) -> Bool {
+        acceptsBodyLimit(maximumBodyBytes) && count >= 0
+            && count <= maximumArchiveBytes && count <= maximumBodyBytes
+    }
+
+    static func acceptsFrame(headerBytes: Int, archiveBytes: Int, maximumBodyBytes: Int) -> Bool {
+        guard acceptsArchiveBytes(archiveBytes, maximumBodyBytes: maximumBodyBytes),
+              headerBytes > 0, headerBytes <= maximumHeaderBytes else { return false }
+        // Both operands are independently bounded before addition.
+        return framePrefixBytes + headerBytes + archiveBytes <= maximumBodyBytes
+    }
+}
+
 /// A bounded inventory of the original exporter's ordinary ZIP framing. This
 /// does not decompress, extract paths, decode native objects or establish owner
 /// authority. ZIP64, encryption and alternate path encodings are unsupported.
@@ -24,7 +49,7 @@ internal struct OriginalAnnotationNativeArchiveLayout: Sendable {
         case unindexedData
     }
 
-    static let maximumArchiveBytes = 65_536
+    static let maximumArchiveBytes = OriginalAnnotationPayloadBudget.maximumArchiveBytes
     static let maximumEntries = 512
     static let maximumExpandedBytes = 8 * 1_024 * 1_024
     let entries: [Entry]

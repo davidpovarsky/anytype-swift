@@ -1,0 +1,11 @@
+# Reviewed original SDK source composition
+
+This isolated source checkpoint composes exactly33 product paths relative to the accepted prerequisite257c49a5871c62611d88fab00a8124c7ff072166. The direct parent40f2413 contains the reviewed26-path original account/UI forwarding union, including the separate Migration and Launch debug boundaries. Exact facade9503b2ff contains the reviewed account-session/view/project membership and both explicit-false pre-caller Launch sites. Exact budgeta89b443 contains only the four reviewed annotation body/archive budget paths. All33 complete afterimages match their individual accepted source; all95 newly imported product/evidence paths match their real source bytes. No conflict or hand-authored merge occurred.
+
+The registered original auth service, frozen presentation caller, original account event/demand/FIFO boundaries, whole operation lifetime, retained failed-Stop retry contract and true recovery-task join remain exactly as reviewed. Standalone constructors retain their original behavior. Embedded Debug destinations are source-guarded even before caller creation. This is not account/UI runtime acceptance.
+
+The only new execution here is one syntax-only parse of the actual composed facade View containing its two new option calls. Existing22 forwarding controls, previous prerequisite controls and the annotation budget controls remain historical source-bound evidence and were not replayed or relabeled as new execution. Raw .diff evidence remains byte-identical, including original context whitespace.
+
+Existing native Lib, generated-source prerequisites, producer tools, historical profiles and workflows remain unchanged. This checkpoint has not built a new framework, linked the new native schema export, run Apple/Combine/UI/account bootstrap, imported a body or qualified device/runtime behavior. Production requires the separately composed native mobile ABI and an explicit new admission profile. The older signed external consumer EN/HE result and current canonical StageB lane cannot be transferred to these changed sources.
+
+The source inputs and old branch refs are preserved. This is a single source-composition commit on a new isolated branch; the imported accepted commits are recorded as content provenance, not asserted as additional Git parents. No push or CI activation is part of this checkpoint.

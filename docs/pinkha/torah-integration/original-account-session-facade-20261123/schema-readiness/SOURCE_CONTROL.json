@@ -1,0 +1,90 @@
+{
+  "scope": "SOURCE_ONLY_PROTOCOL_PREDICATE_AND_EXACT_INVERSE",
+  "source_before_sha256": "365c5226e2b79e05a8be231bdcbacd20d68cb6aaaf00f8c3440de3ea918d72bd",
+  "source_after_sha256": "df9e63fd62185d7adbaa17180ac0a95f3148424367f77b5b261890c4d72e4a1e",
+  "source_after_bytes": 30073,
+  "native_contract": "Whole MATCHING_SCHEMA_OBSERVED is minted only by original Register after original coherent readback of 18 fixed definitions, type layout and final currentness. The client consumes that result; it does not create a replacement schema or permission.",
+  "guards": {
+    "whole_inverse_exact_to_checkpoint": true,
+    "schema_response_retained_immediately_after_normal_return_before_later_validation": true,
+    "actual_on_drained_history_same_response_join_preserved": true,
+    "native_registration_protocol_and_account_space_join_preserved": true,
+    "same_caller_selection_permissions_current_before_gate": true,
+    "new_expressions_byte_equal_to_identifier_only_projection": true
+  },
+  "native_contract_sources": [
+    {
+      "source": "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638",
+      "path": "docs/pinkha/torah-integration/native-annotation-schema-registration-20261122/native/core/pinkha/annotationschema/register.go",
+      "sha256": "a14d21693fa8e60fe7e4d581295816a7e9a73919e61eafd5fd1532b9928cd9fc",
+      "bytes": 12479
+    },
+    {
+      "source": "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638",
+      "path": "docs/pinkha/torah-integration/native-annotation-schema-readback-20261122/native/core/pinkha/annotationschema/observe.go",
+      "sha256": "06eac0c21b0974863a197f8f1a3ae80804c5d97d3e4a49e8f775e9cccc1cc193",
+      "bytes": 9880
+    },
+    {
+      "source": "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638",
+      "path": "docs/pinkha/torah-integration/native-annotation-schema-readback-20261122/native/core/pinkha/annotationschema/type_layout.go",
+      "sha256": "574f1fc23e9387c59167fdeac72b6a4d727f4c6c782b03ed2a99593a0e7ad312",
+      "bytes": 6266
+    },
+    {
+      "source": "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638",
+      "path": "docs/pinkha/torah-integration/native-annotation-schema-readback-20261122/native/core/pinkha/annotationschema/definition.go",
+      "sha256": "cce970f838d91d9f3f06af5e4f2511afc6838c69704deaa4099ba9c392996eac",
+      "bytes": 3520
+    },
+    {
+      "source": "257c49a5871c62611d88fab00a8124c7ff072166",
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Annotation.Schema.swift",
+      "sha256": "6f7b730998604982c2bf64bb88682bbe3af2c29d7389a5cf11748dcca1877908",
+      "bytes": 44638
+    }
+  ],
+  "portable_control": {
+    "compiler_command": [
+      "/usr/local/bin/swiftc",
+      "-swift-version",
+      "6",
+      "-strict-concurrency=complete",
+      "/mnt/development/projects/worktrees/anytype-original-account-session-facade-20261123/docs/pinkha/torah-integration/original-account-session-facade-20261123/schema-readiness/PredicateControl.swift",
+      "-o",
+      "/tmp/otzaria-e2-facade-readiness-3xai5wxk/predicate-control"
+    ],
+    "compiler_version": "Swift version 6.4.3 (swift-6.4.3-RELEASE)\nTarget: aarch64-unknown-linux-gnu\n",
+    "source_sha256": "88a9d9780d555e0d26db5fcc5bd0b1752d217e10da7724dbb3068c5361a9cd1e",
+    "binary_sha256": "a8a560025605ccbf8271e573590e26da2e061db5e3dfc40fe1930e11e2065b58",
+    "result": "PASS: 78 primitive protocol predicate cases; native/framework qualification NOT_RUN",
+    "exit_code": 0,
+    "cases": 78,
+    "native_rpc_invoked": false,
+    "framework_or_apple_compilation": "NOT_RUN"
+  },
+  "preparation_failure_preserved": "First control setup could not create a directory beneath a root-owned diagnostics parent; no compiler or control executed in that attempt. Source edit and checkpoint had completed. The successful control uses a new ubuntu-owned temporary directory without changing any existing permissions.",
+  "qualification": "Integrated schema/native/client runtime remains NOT_RUN. The whole source is preparation against pending SDK-owned internal caller interfaces.",
+  "files": {
+    "COMPILE.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "READINESS.diff": {
+      "bytes": 1866,
+      "sha256": "b77039508da785ca274ebc38b347fd51308f8d45176bde7260040e57a99d7ac9"
+    },
+    "PredicateControl.swift": {
+      "bytes": 1526,
+      "sha256": "88a9d9780d555e0d26db5fcc5bd0b1752d217e10da7724dbb3068c5361a9cd1e"
+    },
+    "PREIMAGE.swift": {
+      "bytes": 29704,
+      "sha256": "365c5226e2b79e05a8be231bdcbacd20d68cb6aaaf00f8c3440de3ea918d72bd"
+    },
+    "EXECUTION.log": {
+      "bytes": 84,
+      "sha256": "2bba6c0cc7ba934aecee59f48b0005781f236a7cc8ee8a2703a1b33929ead4f4"
+    }
+  }
+}

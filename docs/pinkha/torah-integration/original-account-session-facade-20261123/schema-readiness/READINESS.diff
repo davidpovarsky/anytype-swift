@@ -1,0 +1,28 @@
+--- a/OriginalEditorFramework/AnytypeOriginalEditorAccountSession.swift
++++ b/OriginalEditorFramework/AnytypeOriginalEditorAccountSession.swift
+@@ -513,11 +513,12 @@
+         let response = try await selected.registerOriginalAnnotationSchema { history in
+             operation.record(history)
+         }
+-        // Retain historical response even if the original call or later
+-        // currentness check fails. No late/cancelled response mints readiness.
++        // The onDrained history above also retains failed/cancelled native
++        // calls. Retain this normal return before later throwing currentness
++        // checks; historical evidence alone never mints readiness.
++        schemaResponse = response
+         try validateStartup(requireDemand: true)
+         try selected.validate()
+-        schemaResponse = response
+         try validateReadySelection(selected)
+ 
+         let session = try AnytypeOriginalEditorAccountSession(owner: self, selection: selected)
+@@ -540,6 +541,9 @@
+               response.registration.appAdmitted,
+               response.registration.schemaProtocol.utf8.elementsEqual(OriginalAnnotationNativeMetadata.protocolValue.utf8),
+               response.registration.hasObservation,
++              response.registration.observation.disposition.utf8.elementsEqual("MATCHING_SCHEMA_OBSERVED".utf8),
++              response.registration.observation.hasTypeLayout,
++              response.registration.observation.typeLayout.disposition.utf8.elementsEqual("MATCHING_SCHEMA_OBSERVED".utf8),
+               response.registration.observation.accountIdentity.utf8.elementsEqual(selection.accountID.utf8),
+               response.registration.observation.spaceID.utf8.elementsEqual(selection.accountInfo.accountSpaceId.utf8) else {
+             throw AnytypeOriginalEditorAccountSession.SessionError.unobservedSchemaCompletion
