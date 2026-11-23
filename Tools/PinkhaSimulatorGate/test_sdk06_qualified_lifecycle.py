@@ -37,8 +37,9 @@ class QualifiedLifecycleControls(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             path = Path(temp) / "owned.command.json"
             path.write_text(json.dumps(dict(worker_pid=92001, owned_group_cleanup="TERM_THEN_KILL")))
-            for final, expected in [(1.0, "PASS"), (11.0, "FAIL_DEADLINE")]:
-                with self.subTest(final=final), mock.patch.object(groups.time, "monotonic", side_effect=[0.0, 0.0, final]), \
+            for final, expected in [(4.0, "PASS"), (11.0, "FAIL_DEADLINE")]:
+                with self.subTest(final=final), mock.patch.object(groups.time, "monotonic", side_effect=[0.0, 1.0, 2.0, 3.0, final]), \
+                     mock.patch.object(groups.os, "killpg", return_value=None), \
                      mock.patch.object(groups.subprocess, "check_output", return_value="") as query:
                     if expected == "PASS":
                         result = groups.verify_owned_group_stopped(path, cleanup_profile="sdk06-qualified")
@@ -48,7 +49,7 @@ class QualifiedLifecycleControls(unittest.TestCase):
                             groups.verify_owned_group_stopped(path, cleanup_profile="sdk06-qualified")
                         self.assertEqual(caught.exception.quiescence_observation["status"], expected)
                         self.assertEqual(caught.exception.quiescence_observation["live_members"], 0)
-                    self.assertEqual(query.call_args.kwargs["timeout"], 10)
+                    self.assertEqual(query.call_args.kwargs["timeout"], 7)
             with self.assertRaises(RuntimeError):
                 groups.verify_owned_group_stopped(path, cleanup_profile="arbitrary")
 

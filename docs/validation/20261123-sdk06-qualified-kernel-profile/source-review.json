@@ -1,0 +1,85 @@
+{
+  "affected_fixture": {
+    "actual_remaining_ps_seconds": 7,
+    "after_sha256": "34db8a14f71ebc72305b38204287332a669706b5a8740d4d6243afc0c42a6112",
+    "before_sha256": "3d82e996dc8ddea23f24ed82c89110b93eeb82b2eb4edd49ad9f35d48aadcab1",
+    "changed_method_only": "test_explicit_sdk_quiescence_uses_same_ten_seconds_and_rejects_late_zero",
+    "clock_values": [
+      0,
+      1,
+      2,
+      3,
+      "final = 4 PASS or 11 FAIL"
+    ],
+    "explicit_precondition": "os.killpg returns success: exact owned group exists; retain actual ps fallback",
+    "inverse": [
+      {
+        "new": "            for final, expected in [(4.0, \"PASS\"), (11.0, \"FAIL_DEADLINE\")]:\n                with self.subTest(final=final), mock.patch.object(groups.time, \"monotonic\", side_effect=[0.0, 1.0, 2.0, 3.0, final]), \\\n                     mock.patch.object(groups.os, \"killpg\", return_value=None), \\\n                     mock.patch.object(groups.subprocess, \"check_output\", return_value=\"\") as query:\n",
+        "old": "            for final, expected in [(1.0, \"PASS\"), (11.0, \"FAIL_DEADLINE\")]:\n                with self.subTest(final=final), mock.patch.object(groups.time, \"monotonic\", side_effect=[0.0, 0.0, final]), \\\n                     mock.patch.object(groups.subprocess, \"check_output\", return_value=\"\") as query:\n"
+      },
+      {
+        "new": "                    self.assertEqual(query.call_args.kwargs[\"timeout\"], 7)\n",
+        "old": "                    self.assertEqual(query.call_args.kwargs[\"timeout\"], 10)\n"
+      }
+    ],
+    "method": "test_sdk06_qualified_lifecycle.QualifiedLifecycleControls.test_explicit_sdk_quiescence_uses_same_ten_seconds_and_rejects_late_zero",
+    "original_total_seconds": 10,
+    "path": "Tools/PinkhaSimulatorGate/test_sdk06_qualified_lifecycle.py"
+  },
+  "execution_plan": {
+    "all_other_test_methods": 0,
+    "directly_affected_methods": 1,
+    "mac_builds": 0,
+    "new_methods": 1,
+    "product_tests": 0,
+    "selector_admission_claimed": false
+  },
+  "new_test": {
+    "method": "test_sdk06_qualified_kernel_profile.QualifiedKernelProfileControls.test_sdk_qualified_kernel_wiring_preserves_identity_fallback_and_original_deadline",
+    "path": "Tools/PinkhaSimulatorGate/test_sdk06_qualified_kernel_profile.py",
+    "scenarios": [
+      "timely ESRCH bypasses ps",
+      "existing owned group falls back with original remaining budget",
+      "EPERM preserves original failure",
+      "late ESRCH cannot pass",
+      "late actual zero from fallback cannot pass"
+    ],
+    "sha256": "15a03b754a7ae57805c2a4536e381092fd410b8c6ef26f9a6ce10979b9240886"
+  },
+  "production": {
+    "after_sha256": "ac9884d8cef901397ab64dfd827b580767a1a57407ce6e0bcf3b1bf93dc92a65",
+    "before_sha256": "7d266674be2443afef0b184545af53b56cebfe2cc8361d830913cd50ef77b0cc",
+    "entire_file_ast_equal_after_inverse": true,
+    "exact_inverse_recovers_entire_file": true,
+    "inverse": [
+      {
+        "new": "    if cleanup_profile in (\"sdk06-enumeration\", \"sdk06-qualified\"):\n",
+        "old": "    if cleanup_profile == \"sdk06-enumeration\":\n"
+      }
+    ],
+    "new_verify_sha256": "156b4713f3d459547526e2b084c68f95f63adab7361d84f2937f9ee489444e40",
+    "old_verify_sha256": "5c4dbd105755112303c95eb7c026b0c8c6dcb99f2e2410b151370a84a762c7b2",
+    "path": "Tools/PinkhaSimulatorGate/run_owned_single_lane.py",
+    "unchanged_functions": {
+      "_sdk06_kernel_group_observation": "64b42d7ffdd3a24bb53335b2032f9f235eb541e3014b814a0579599e355ca4b0",
+      "main": "cec6b415ebba3ad8bf229650c2c3c920ed0584f3fd5c864808927d12e12d08ee",
+      "preflight_intent": "1645130e6998ce17bcab34650038c0e3fd8a63fd27dc0307ec9efa877a8b5bde",
+      "supervise": "8f82d938e38aada4be7ddc553e40b9c27efbe01d4da814728716489b87bf9229"
+    }
+  },
+  "retention": {
+    "fixed_admission_addendum_required_before_use": true,
+    "kernel_9_not_to_be_rerun": true,
+    "kernel_helper_byte_identical": true,
+    "original_18_history_preserved": true,
+    "other_17_not_to_be_rerun": true,
+    "unchanged_profiles": [
+      "default None",
+      "coherent-heart-release",
+      "semantic-page154",
+      "sdk06-enumeration"
+    ]
+  },
+  "source_base": "52873e93b1d9d530f7608c64fcda7e34c2354289",
+  "status": "FROZEN_SOURCE_ONLY_EXECUTION_NOT_RUN"
+}
