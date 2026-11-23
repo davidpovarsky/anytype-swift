@@ -829,6 +829,39 @@ extension Anytype_Rpc.Account.Stop.Response.Error: LocalizedError {
     }
 }
 
+extension Anytype_Rpc.Annotation.Schema.Register.Response.Error: LocalizedError {
+    public var errorDescription: String? {
+        let localizeError = localizeError()
+        if !localizeError.isEmpty {
+            return localizeError
+        }
+        return "Error: \(description_p) (\(code))"
+    }
+
+    private func localizeError() -> String {
+        switch code {
+            case .null:
+                return ""
+            case .unknownError:
+                return ""
+            case .badInput:
+                return LocHelper.tr(table: "LocalizableError", key: "Annotation.Schema.Register.badInput")
+            case .unresolved:
+                return LocHelper.tr(table: "LocalizableError", key: "Annotation.Schema.Register.unresolved")
+            case .conflict:
+                return LocHelper.tr(table: "LocalizableError", key: "Annotation.Schema.Register.conflict")
+            case .canceled:
+                return LocHelper.tr(table: "LocalizableError", key: "Annotation.Schema.Register.canceled")
+            case .runtimeUnavailable:
+                return LocHelper.tr(table: "LocalizableError", key: "Annotation.Schema.Register.runtimeUnavailable")
+            case .permissionDenied:
+                return LocHelper.tr(table: "LocalizableError", key: "Annotation.Schema.Register.permissionDenied")
+            case .UNRECOGNIZED:
+                return ""
+        }
+    }
+}
+
 extension Anytype_Rpc.App.GetVersion.Response.Error: LocalizedError {
     public var errorDescription: String? {
         let localizeError = localizeError()

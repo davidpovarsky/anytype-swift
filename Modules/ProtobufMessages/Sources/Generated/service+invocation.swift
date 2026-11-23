@@ -3464,4 +3464,14 @@ public struct ClientCommands {
         }
     }
 
+    public static func annotationSchemaRegister(
+        _ request: Anytype_Rpc.Annotation.Schema.Register.Request = .init()
+    ) -> Invocation<Anytype_Rpc.Annotation.Schema.Register.Request, Anytype_Rpc.Annotation.Schema.Register.Response> {
+        return Invocation(messageName: "AnnotationSchemaRegister", request: request) { request in
+            let requestData = try request.serializedData()
+            let responseData = Lib.ServiceAnnotationSchemaRegister(requestData) ?? Data()
+            return try Anytype_Rpc.Annotation.Schema.Register.Response(serializedBytes: responseData)
+        }
+    }
+
 }
