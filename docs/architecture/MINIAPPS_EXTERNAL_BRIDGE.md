@@ -24,10 +24,11 @@ The existing text API has no atomic compare-and-swap or combined text/receipt tr
 
 | Configuration | Existing identity | Existing group | Added group |
 |---|---|---|---|
-| Debug / Debug-Anytype | io.anytype.app.dev | group.io.anytype.app.dev | group.com.itorah.shared |
+| Debug / Release-Nightly | io.anytype.app.dev | group.io.anytype.app.dev | group.com.itorah.shared |
+| Debug-Anytype | io.anytype.app | group.io.anytype.app.dev | group.com.itorah.shared |
 | Release-Anytype | io.anytype.app | group.io.anytype.app | group.com.itorah.shared |
 
-Source DEVELOPMENT_TEAM remains J3NXTX3T5S. The companion apps use owner team NA6HPWARQ2. Physical sharing requires the owner's verified registered fork identity and matching group profiles. No such identity was found in the inspected tracked Anytype workflows/scripts/fastlane/docs; existing IPA lanes are unsigned. Simulator execution is separate from physical signing.
+Source DEVELOPMENT_TEAM remains J3NXTX3T5S. The companion apps use owner team NA6HPWARQ2. Physical sharing requires the owner's verified registered fork identity and matching group profiles. The tracked project has no owner signing/group override and its existing IPA lanes are unsigned. The live Apple account audit has located registered owner bundle families; their exact profile/native-group pairing is still being verified. Simulator execution is separate from physical signing.
 
 ## Validation
 
@@ -43,7 +44,7 @@ Logs: docs/validation/20261123-miniapps-consumer. These portable checks do not c
 
 ## Focused Apple acceptance source
 
-The SDK is pinned to c93c16a9adf513e16b176a3a1b7f99126e33a8d3. A source-only miniapps-native lane extends the existing manual dispatcher through route=wave15-acceptance and acceptance_lane=miniapps-native; no workflow YAML is changed. It uses the unchanged coherent Heart admitted by run45091223011 and the exact companion specified in Tools/MiniApps/producer.json, verifying the actual GitHub artifact, producer manifest and executable hash. The initially selected producer run45270839882 failed toolchain/disk preflight before compilation; dispatch is held for its repaired successor and a real app artifact.
+The SDK is pinned to c2791d54aba1a82ea8125a8dc26e22f2cf82bb7f. A source-only miniapps-native lane extends the existing manual dispatcher through route=wave15-acceptance and acceptance_lane=miniapps-native; no workflow YAML is changed. It uses the unchanged coherent Heart admitted by run45091223011 and the exact companion specified in Tools/MiniApps/producer.json, verifying the actual GitHub artifact, producer manifest and executable hash. The initially selected producer run45270839882 failed toolchain/disk preflight before compilation; the repaired producer is run45279691350 at the exact pinned source above, and consumer dispatch remains held until its real app artifact exists.
 
 The new selection is prepareMiniAppsDocument (one disposable native account/Space/Page), testNativeEditorPickerTextStudioReturnAndColdReopen (two actual producer/editor invocations: a warm return and a return that must launch the terminated source without manual navigation, followed by cold document reopen), testDuplicateCallbackDoesNotInsertAgain, and verifyReturnedNativeDocument (independent saved Heart block count and original identity). The source app's actual App Group entitlements and both completed journals are recorded; the two independent request markers and native block counts must survive duplicate callbacks and cold reopen. Actual execution is pending; declaration and syntax checks are not runtime acceptance.
 
