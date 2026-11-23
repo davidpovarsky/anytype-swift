@@ -136,6 +136,22 @@ def project(directory, source):
     return out
 
 
+def select_ipad_runtime(runtimes):
+    eligible = []
+    for runtime in runtimes:
+        version = runtime.get('version', '').split('.')
+        pads = [d for d in runtime.get('supportedDeviceTypes', []) if d.get('productFamily') == 'iPad']
+        if (runtime.get('isAvailable') and 'arm64' in runtime.get('supportedArchitectures', [])
+                and runtime.get('identifier', '').startswith('com.apple.CoreSimulator.SimRuntime.iOS-27-')
+                and version and version[0] == '27' and all(v.isdigit() for v in version) and pads):
+            eligible.append((tuple(int(v) for v in version), runtime, sorted(pads, key=lambda d: d['identifier'])))
+    require(eligible, 'No observed available arm64 iOS 27 runtime supports iPad')
+    newest = max(item[0] for item in eligible)
+    chosen = [item for item in eligible if item[0] == newest]
+    require(len(chosen) == 1, 'Ambiguous highest iPad-capable iOS 27 runtime')
+    return chosen[0][1], chosen[0][2][0]
+
+
 def execute(args, receipt):
     root, work, evidence = args.root.resolve(), args.work.resolve(), args.evidence.resolve()
     require(work.is_relative_to(root / 'build') and evidence.is_relative_to(root / 'build'),
@@ -229,17 +245,30 @@ def execute(args, receipt):
             'Consumer is not linked to the actual shared dynamic provider')
     command('signature', ['codesign', '--verify', '--deep', '--strict', app])
     receipt['binary_identity'] = {RUNTIME: digest(binary), NAME: digest(app / NAME)}
+    # Preserve this signed build before runtime; any subsequent runtime-only
+    # continuation must reuse these exact bytes instead of rebuilding accepted code.
+    archive = evidence / 'shared-runtime-app.zip'
+    command('retain-signed-app', ['ditto', '-c', '-k', '--keepParent', str(app), str(archive)], 120)
+    app_inventory = {p.relative_to(app).as_posix(): {'bytes': p.stat().st_size, 'sha256': digest(p)}
+                     for p in sorted(app.rglob('*')) if p.is_file()}
+    write(evidence / 'retained-native-products.json', {
+        'schema': 1, 'status': 'BUILD_LINK_EMBED_SIGNATURE_AND_DEFINITIONS_PASS_RUNTIME_NOT_RUN',
+        'source_sha': head, 'run_id': os.environ['GITHUB_RUN_ID'],
+        'run_attempt': os.environ['GITHUB_RUN_ATTEMPT'], 'source_inputs': inputs,
+        'binary_identity': receipt['binary_identity'], 'app_inventory': app_inventory,
+        'archive_sha256': digest(archive), 'archive_bytes': archive.stat().st_size,
+        'stageb_qualified': False,
+    })
     receipt['phase'] = 'SINGLE_PROVIDER_RUNTIME_OBSERVATION'
     runtimes = json.loads(command('runtimes', ['xcrun', 'simctl', 'list', 'runtimes', '--json']))['runtimes']
-    selected = [r for r in runtimes if r.get('isAvailable') and r['identifier'].startswith('com.apple.CoreSimulator.SimRuntime.iOS-27')]
-    require(len(selected) == 1, 'Expected one actual available iOS 27 runtime')
-    runtime = selected[0]['identifier']
-    devices = json.loads(command('devices', ['xcrun', 'simctl', 'list', 'devices', 'available', '--json']))['devices'][runtime]
-    pads = [d for d in devices if 'iPad' in d['name'] and d.get('deviceTypeIdentifier')]
-    require(pads, 'No observed compatible iPad device type')
+    selected, device_type = select_ipad_runtime(runtimes)
+    runtime = selected['identifier']
+    receipt['selected_runtime'] = {k: selected[k] for k in ['identifier', 'version', 'buildversion', 'supportedArchitectures']}
+    receipt['selected_device_type'] = device_type
+    write(evidence / 'selected-simulator.json', {'runtime': receipt['selected_runtime'], 'device_type': device_type})
     udid = command('create', ['xcrun', 'simctl', 'create',
                              'OtzariaSharedFirebase-' + os.environ['GITHUB_RUN_ID'],
-                             pads[0]['deviceTypeIdentifier'], runtime]).strip()
+                             device_type['identifier'], runtime]).strip()
     receipt['owned_simulator'] = udid
     try:
         command('boot', ['xcrun', 'simctl', 'boot', udid])
