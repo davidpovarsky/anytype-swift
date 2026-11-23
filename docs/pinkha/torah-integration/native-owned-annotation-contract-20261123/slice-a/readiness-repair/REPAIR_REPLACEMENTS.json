@@ -1,0 +1,22 @@
+[
+  [
+    "\"encoding/json\"\n",
+    "\"encoding/json\"\n\t\"errors\"\n"
+  ],
+  [
+    "\"github.com/anyproto/anytype-heart/pkg/lib/core/smartblock\"\n",
+    "\"github.com/anyproto/anytype-heart/pkg/lib/core/smartblock\"\n\t\"github.com/anyproto/anytype-heart/pkg/lib/database\"\n\t\"github.com/anyproto/anytype-heart/pkg/lib/localstore/objectstore\"\n"
+  ],
+  [
+    "\tcreator   objectcreator.Service\n",
+    "\tcreator   objectcreator.Service\n\tobserver  objectcreator.FixedSchemaObserver\n\tstore     objectstore.ObjectStore\n"
+  ],
+  [
+    "\tf.creator = app.MustComponent[objectcreator.Service](native)\n",
+    "\tf.creator = app.MustComponent[objectcreator.Service](native)\n\tvar hasObserver bool\n\tf.observer, hasObserver = f.creator.(objectcreator.FixedSchemaObserver)\n\tif !hasObserver {\n\t\tt.Fatal(\"actual original fixed schema observer missing\")\n\t}\n\tf.store = app.MustComponent[objectstore.ObjectStore](native)\n"
+  ],
+  [
+    "\tregistration, err := annotationschema.Register(ctx, service, f.accountID, id)\n\townedExportNoError(t, err)\n\tif registration.Observation.Disposition != annotationschema.MatchingObserved || !registration.AppAdmitted {\n\t\tt.Fatal(\"actual original registrar/readback was not qualified\")\n\t}\n",
+    "\tf.registerSchema(t)\n"
+  ]
+]

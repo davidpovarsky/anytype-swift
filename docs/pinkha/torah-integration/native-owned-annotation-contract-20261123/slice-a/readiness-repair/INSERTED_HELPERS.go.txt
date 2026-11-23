@@ -1,0 +1,197 @@
+// The genuine endpoint qualification already exercises this original registrar
+// as a bounded sequence of retained histories. A single call may safely return
+// unresolved after some unique native creates; it does not roll those back.
+func (f *ownedExportFixture) registerSchema(t *testing.T) {
+	t.Helper()
+	definitions, err := annotationschema.Definitions()
+	ownedExportNoError(t, err)
+	if len(definitions) != 18 {
+		t.Fatal("original annotation schema definition count changed")
+	}
+	seen := map[string]bool{}
+	applies := 0
+	phases := 0
+	var ready *annotationschema.Registration
+	for ; phases < 21; phases++ {
+		value, registerErr := annotationschema.Register(f.ctx, f.service, f.accountID, f.spc.Id())
+		category := ownedExportRegistrationCategory(registerErr)
+		f.recordSchemaPhase(t, phases, value, registerErr, category)
+		if !value.AppAdmitted {
+			t.Fatal("actual original registrar lost application admission history")
+		}
+		for _, creation := range value.Creations {
+			if !creation.Invoked {
+				continue
+			}
+			id := creation.Before.ObjectID
+			if id == "" || seen[id] || creation.ReturnedObjectID != id {
+				t.Fatal("an uncertain or repeated original native creation cannot be resumed")
+			}
+			seen[id] = true
+		}
+		if value.TypeApplyInvoked {
+			applies++
+			if !value.TypeApplyReturned {
+				t.Fatal("successful initial registration requires its original Apply to return")
+			}
+		}
+		if registerErr == nil {
+			ready = &value
+			break
+		}
+		if category != "unresolved" {
+			ownedExportNoError(t, registerErr)
+		}
+		// The unchanged original observer and positive index read are the
+		// readiness evidence. Later Register calls may create only untouched
+		// definitions; incomplete/conflicting or uncertain roots are refused.
+		f.waitSchemaReadiness(t, f.spc, definitions, seen)
+	}
+	if ready == nil || len(seen) != 18 || applies != 1 {
+		t.Fatal("export setup did not execute eighteen unique creates and one actual type Apply")
+	}
+	if ready.Observation.Disposition != annotationschema.MatchingObserved || !ready.AppAdmitted ||
+		ready.Observation.AccountIdentity != f.accountID || ready.Observation.SpaceID != f.spc.Id() ||
+		len(ready.Observation.Definitions) != len(definitions) {
+		t.Fatal("actual original registrar/readback was not qualified")
+	}
+	for _, entry := range ready.Observation.Definitions {
+		if entry.Index != annotationschema.IndexMatch || entry.PersistedStateConflict ||
+			entry.Native.Disposition != objectcreator.FixedSchemaPersistedMatch || !seen[entry.Native.ObjectID] {
+			t.Fatal("actual original final schema readback differs from its unique creation history")
+		}
+	}
+	payload, err := json.MarshalIndent(map[string]any{
+		"schema": 1, "registration_calls": phases + 1, "unique_actual_creates": len(seen),
+		"actual_type_apply_calls": applies, "matching_native_definitions": len(definitions),
+		"registration_complete": true, "readiness": "original native observer and positive unique index rows",
+		"fixture_setup_only": true, "native_import_activated": false, "body_ack_authority": false,
+	}, "", "  ")
+	ownedExportNoError(t, err)
+	ownedExportNoError(t, ownedExportWrite(f.evidence, "schema-registration.json", append(payload, '\n')))
+}
+
+// This preserves the precedence of the actual endpoint's resumable category.
+// Cancellation and registration conflict never become an unresolved continuation.
+func ownedExportRegistrationCategory(err error) string {
+	switch {
+	case err == nil:
+		return "none"
+	case errors.Is(err, context.Canceled), errors.Is(err, context.DeadlineExceeded):
+		return "canceled"
+	case errors.Is(err, annotationschema.ErrRegistrationConflict):
+		return "conflict"
+	case errors.Is(err, annotationschema.ErrRegistrationUnresolved), errors.Is(err, objectcreator.ErrFixedSchemaChanged):
+		return "unresolved"
+	default:
+		return "other"
+	}
+}
+
+// Retain actual call phases before any success, continuation or identity assertion.
+// These are historical native identities and heads, not write/body/ACK authority.
+func (f *ownedExportFixture) recordSchemaPhase(t *testing.T, phase int, value annotationschema.Registration, err error, category string) {
+	t.Helper()
+	native := func(observation objectcreator.FixedSchemaObservation) map[string]any {
+		key := ""
+		if observation.NativeKey != nil {
+			key = observation.NativeKey.Marshal()
+		}
+		return map[string]any{
+			"disposition": uint32(observation.Disposition), "native_key": key,
+			"account_id": observation.AccountIdentity, "space_id": observation.SpaceID,
+			"object_id": observation.ObjectID, "acl_id": observation.ACLID, "acl_head": observation.ACLHead,
+			"persisted_heads": slices.Clone(observation.PersistedHeads),
+			"archive_id":      observation.ArchiveID, "archive_heads": slices.Clone(observation.ArchiveHeads),
+		}
+	}
+	creations := make([]map[string]any, 0, len(value.Creations))
+	for _, creation := range value.Creations {
+		creations = append(creations, map[string]any{
+			"before": native(creation.Before), "after": native(creation.After),
+			"invoked": creation.Invoked, "returned_object_id": creation.ReturnedObjectID,
+		})
+	}
+	definitions := make([]map[string]any, 0, len(value.Observation.Definitions))
+	for _, definition := range value.Observation.Definitions {
+		definitions = append(definitions, map[string]any{
+			"native": native(definition.Native), "index": string(definition.Index),
+			"persisted_state_conflict": definition.PersistedStateConflict,
+		})
+	}
+	raw, marshalErr := json.MarshalIndent(map[string]any{
+		"schema": 1, "phase": phase, "error_category": category,
+		"fixed_schema_changed": errors.Is(err, objectcreator.ErrFixedSchemaChanged),
+		"app_admitted":         value.AppAdmitted, "observation_disposition": string(value.Observation.Disposition),
+		"observation_account_id": value.Observation.AccountIdentity, "observation_space_id": value.Observation.SpaceID,
+		"definitions": definitions, "creations": creations,
+		"type_apply_invoked": value.TypeApplyInvoked, "type_apply_returned": value.TypeApplyReturned,
+		"historical_call_phase_only": true, "body_ack_authority": false,
+	}, "", "  ")
+	ownedExportNoError(t, marshalErr)
+	if phase < 0 || phase >= 21 || len(creations) > 18 || len(definitions) > 18 || len(raw)+1 > 128<<10 {
+		t.Fatal("actual original registration history exceeds its fixed fixture evidence bound")
+	}
+	payload := append(raw, '\n')
+	name := fmt.Sprintf("schema-registration-%02d.json", phase)
+	ownedExportNoError(t, ownedExportWrite(f.evidence, name, payload))
+	sum := sha256.Sum256(payload)
+	t.Logf("actual original registration phase %d: %s sha256=%x", phase, name, sum)
+}
+
+func (f *ownedExportFixture) waitSchemaReadiness(t *testing.T, spc clientspace.Space, definitions []objectcreator.FixedSchemaDefinition, known map[string]bool) {
+	t.Helper()
+	deadline := time.Now().Add(30 * time.Second)
+	for {
+		ready := true
+		for _, definition := range definitions {
+			value, err := f.observer.ObserveFixedSchema(f.ctx, spc, definition)
+			if errors.Is(err, objectcreator.ErrFixedSchemaChanged) {
+				ready = false
+				continue
+			}
+			ownedExportNoError(t, err)
+			if value.Disposition == objectcreator.FixedSchemaRootOnlyIncomplete || value.Disposition == objectcreator.FixedSchemaPopulatedConflict {
+				t.Fatal("native uncertainty/conflict cannot be retried by export setup")
+			}
+			if known[value.ObjectID] && value.Disposition != objectcreator.FixedSchemaPersistedMatch {
+				ready = false
+			}
+			if value.Disposition != objectcreator.FixedSchemaPersistedMatch {
+				continue
+			}
+			key, expected := bundle.RelationKeyUniqueKey, definition.Key.Marshal()
+			if expected != annotationschema.TypeUniqueKey {
+				key, expected = bundle.RelationKeyRelationKey, definition.Key.InternalKey()
+			}
+			rows, err := f.store.SpaceIndex(spc.Id()).QueryRaw(&database.Filters{FilterObj: database.FilterEq{
+				Key: key, Cond: model.BlockContentDataviewFilter_Equal, Value: domain.String(expected),
+			}}, 2, 0)
+			ownedExportNoError(t, err)
+			if len(rows) == 0 {
+				ready = false
+				continue
+			}
+			if len(rows) != 1 || rows[0].Details == nil || rows[0].Details.GetString(bundle.RelationKeyId) != value.ObjectID {
+				t.Fatal("actual native index is ambiguous or names another object")
+			}
+			for field, expected := range definition.Required.Iterate() {
+				if !rows[0].Details.Has(field) || !rows[0].Details.Get(field).Equal(expected) {
+					t.Fatal("actual native positive index row conflicts with required schema")
+				}
+			}
+		}
+		if ready {
+			return
+		}
+		if time.Now().After(deadline) {
+			t.Fatal("original read-only readiness did not converge; native creation is not retried")
+		}
+		select {
+		case <-f.ctx.Done():
+			t.Fatal(f.ctx.Err())
+		case <-time.After(100 * time.Millisecond):
+		}
+	}
+}
+

@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "first_export_run": 45125326998,
+  "failed_source": "fabd2fd824ce819b28dfad01fc24b204e3391bab",
+  "failed_artifact": 14796205075,
+  "failed_archive_sha256": "7c87d6897acf5ee454f3005e3ba4b5915324044625b5ed475c8642e0e40143d3",
+  "failed_leaf_exports_started": 0,
+  "failed_leaf_archive_started": 0,
+  "actual_single_call_fixture_contract_mismatch": true,
+  "exact_failed_run_low_level_guard_not_retained": true,
+  "prior_actual_endpoint_run": 45108043207,
+  "prior_endpoint_source": "53b52d380c3a87d25275bb391367b37eb5428d3d",
+  "prior_endpoint_evidence_commit": "d9cc82a997e239700fc30e31b5e9c30c6a21e9e1",
+  "prior_endpoint_artifact": 14793282290,
+  "prior_endpoint_archive_sha256": "ee97925cb570ffaee7f89f6eef09ab6c907a720228a91b664bcb5c4877e20035",
+  "actual_generated_fields_source": "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638",
+  "actual_generated_fields_run": 45101449367,
+  "actual_generated_commands_pb_sha256": "387d03d13946c9ee5ae03d8fbfac85600010b384d524b3d7dc001484590937e9",
+  "actual_wire_history": [
+    {
+      "path": "registration-00.pb",
+      "bytes": 35867,
+      "sha256": "7963c3552d7cdaa83c3389c30dfda6154697961444d60801e8d7216c765b5e8e",
+      "error_code": 3,
+      "error_name": "UNRESOLVED",
+      "error_description": "fixed schema context or persisted input changed while reading",
+      "app_admitted": true,
+      "creation_rows": 17,
+      "invoked_creation_rows": 17,
+      "last_creation_before_disposition": 4,
+      "last_creation_after_disposition": 5,
+      "last_creation_returned_id_matches_before": true,
+      "type_apply_invoked": false,
+      "type_apply_returned": false
+    },
+    {
+      "path": "registration-01.pb",
+      "bytes": 27027,
+      "sha256": "f4e2acbf655d31c4219de536e1dbf614612e27d68548432007dbfd5423a0159f",
+      "error_code": 0,
+      "error_name": "NULL",
+      "error_description": "",
+      "app_admitted": true,
+      "creation_rows": 1,
+      "invoked_creation_rows": 1,
+      "type_apply_invoked": true,
+      "type_apply_returned": true
+    }
+  ],
+  "original_native_dispositions": {
+    "1": "FixedSchemaPersistedMatch",
+    "4": "FixedSchemaLocallyMissing",
+    "5": "FixedSchemaChangedWhileReading"
+  },
+  "meaning": "The accepted original endpoint used the same unresolved error and actual per-definition history to observe stable matching native state before creating only the remaining untouched definition. The new export fixture incorrectly required the entire schema to finish in one Register call.",
+  "not_claimed": [
+    "Exact ErrFixedSchemaChanged return site in the failed export run",
+    "Rollback or zero prior schema writes",
+    "General production registrar retry policy",
+    "Current export or archive runtime PASS"
+  ],
+  "native_reexecution": false
+}
