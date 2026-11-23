@@ -1,0 +1,48 @@
+name: Exact shared Firebase signed runtime continuation
+
+on:
+  push:
+    branches:
+      - codex/otzaria-shared-runtime-continuation-20261123
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: shared-runtime-continuation-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  exact-signed-runtime:
+    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-shared-runtime-continuation-20261123'
+    runs-on: xcode-27
+    timeout-minutes: 25
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Restore exact signed bytes and diagnose actual runtime
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 Tools/OriginalEditor/SharedRuntime/resume_probe.py --root "$GITHUB_WORKSPACE" \
+            --work "build/shared-runtime-resume-${{ github.run_id }}-${{ github.run_attempt }}" \
+            --evidence build/shared-runtime-resume-evidence
+      - name: Preserve runtime observation and launch diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: OriginalEditor-SharedFirebase-Resume-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/shared-runtime-resume-evidence
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 14
