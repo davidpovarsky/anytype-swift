@@ -62,3 +62,13 @@ The new test module covers the fixed admission and its refusal boundaries only.
 It imports no prior test module and executes no old controller method. Original
 proof/source hashing is read-only verification, not a repeated control run.
 Actual new execution receipts are recorded separately after source freeze.
+
+### Actual new-control receipt
+
+Source freeze 5fe8ccd913966822942904d81e8a3ac961685eba executed exactly four new
+admission methods: **4 PASS, 0 FAIL**, original unittest duration 1.785 seconds.
+All 95 current source/proof inputs were unchanged before and after execution.
+The loaded repository-module inventory contains only the new admission and its
+new test module. No prior controller test, XCTest or product test was loaded or
+rerun. Original log/event/runner/source inventories and terminal receipt are
+copied byte for byte under attempt1; the external originals remain preserved.
