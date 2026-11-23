@@ -22,3 +22,7 @@ The isolated writer begins at a36c3154. Baseline-only bb65e411 copies exactly tw
 The temporary Git fixture is an additional malformed-source case. It does not substitute for actual current and original App module/Git coverage. These controls claim no actual Apple readiness, current product behavior or migration authority.
 
 control-inputs.json fixes source/data identities before execution. Execution will retain actual loaded module origins, before/after source maps, named outcomes and raw owned-command evidence externally and in safe qualification records. No older controls or product methods will be rerun.
+
+## Pre-execution eager-import correction
+
+Initial source 12558ae358022d4a6060b1f2066f890e729a7150 was never imported or tested. Independent review identified run_ui27's explicit PinkhaNativeDerived import path. The six eager modules are now physically materialized and exactly bound to published 75bd6d7, bringing declared Python inputs to 36 current plus nine immutable App sources (70 total inputs including fixed data). These modules perform no eager file-data reads; attachment profile values used at import are source literals. No driver, helper, test method or workflow bytes changed in this input-only correction. The same two new methods remain unexecuted pending peer confirmation.

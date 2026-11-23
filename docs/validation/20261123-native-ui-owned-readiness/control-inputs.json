@@ -6,6 +6,22 @@
   "composedHelperBaseline": "163d66392ea135dc6488b61a092517eff9a8e459",
   "composedHelperOriginal": "ab9943cfe3aa77a100685560c84dc2fa930a6328",
   "currentRoot": "/mnt/development/projects/worktrees/anytype-wave15-native-ui-readiness-20261123",
+  "eagerClosureCorrection": {
+    "additionalEagerFileDataReads": "None in these six modules; attachment profile values are source literals",
+    "additionalInputs": [
+      "Tools/PinkhaNativeDerived/build_custom_heart.py",
+      "Tools/PinkhaNativeDerived/build_native_ipa.py",
+      "Tools/PinkhaNativeDerived/validate_wave1.py",
+      "Tools/PinkhaNativeDerived/rerun_original_ui.py",
+      "Tools/PinkhaNativeDerived/heart_runtime_profile.py",
+      "Tools/PinkhaNativeDerived/attachment_runtime.py"
+    ],
+    "currentPythonSources": 36,
+    "oldMethodsOrControlsExecuted": 0,
+    "originalAppPythonSources": 9,
+    "reason": "run_ui27 explicitly prepends PinkhaNativeDerived and eagerly imports its helpers",
+    "source": "sdk_ci independent read-only review"
+  },
   "inputs": [
     {
       "bytes": 18525,
@@ -454,12 +470,55 @@
       "path": "docs/validation/20261123-provider-start-observation/source-review.json",
       "role": "workflow under control or fixed admission/provider data; no blanket execution claim",
       "sha256": "55820aef47ddc1178d1a9f84b5f4ef08b23ba19e3446f8801749aee420e94b19"
+    },
+    {
+      "bytes": 12945,
+      "origin": "current",
+      "path": "Tools/PinkhaNativeDerived/build_custom_heart.py",
+      "role": "eager Python import reached through run_ui27 explicit PinkhaNativeDerived path; no build function executed",
+      "sha256": "0ebbe2f6227418eac2c532b0058290158319ba9f786baaf445de444887e8c669"
+    },
+    {
+      "bytes": 20302,
+      "origin": "current",
+      "path": "Tools/PinkhaNativeDerived/build_native_ipa.py",
+      "role": "eager Python import reached through run_ui27 explicit PinkhaNativeDerived path; no build function executed",
+      "sha256": "c9e35a228779ae761d36cef204a32148ffdd3a338c9ede11dde6df4ebee21055"
+    },
+    {
+      "bytes": 11158,
+      "origin": "current",
+      "path": "Tools/PinkhaNativeDerived/validate_wave1.py",
+      "role": "eager Python import reached through run_ui27 explicit PinkhaNativeDerived path; no build function executed",
+      "sha256": "743ddea3e4e42640070035fe7d149d148dfff1cbdc852ef464c8c19da07253a0"
+    },
+    {
+      "bytes": 17012,
+      "origin": "current",
+      "path": "Tools/PinkhaNativeDerived/rerun_original_ui.py",
+      "role": "eager Python import reached through run_ui27 explicit PinkhaNativeDerived path; no build function executed",
+      "sha256": "ec5688909921942e94f792cdde0a02baa7b5f9b2f9e0b3bde3df3a877f299279"
+    },
+    {
+      "bytes": 18158,
+      "origin": "current",
+      "path": "Tools/PinkhaNativeDerived/heart_runtime_profile.py",
+      "role": "eager Python import reached through run_ui27 explicit PinkhaNativeDerived path; no build function executed",
+      "sha256": "d354e5ccf20bfbdbeaf9f61a0043bfcbb137400b835f8b34e910453c35995001"
+    },
+    {
+      "bytes": 11989,
+      "origin": "current",
+      "path": "Tools/PinkhaNativeDerived/attachment_runtime.py",
+      "role": "eager Python import reached through run_ui27 explicit PinkhaNativeDerived path; no build function executed",
+      "sha256": "0154ae5f6b0af197d62abc7eeb6233adbe3d469723a75e15e233e7ab5e37019a"
     }
   ],
   "no_apple_or_product_commands_executed": true,
   "no_old_test_methods_selected": true,
   "originalAppCommit": "4b09cc5478c60c1c6728a54f2a27a115637a835b",
   "originalAppRoot": "/mnt/development/projects/worktrees/anytype-wave15-ui-qualified-continuation-20261123",
+  "priorNeverExecutedSource": "12558ae358022d4a6060b1f2066f890e729a7150",
   "publishedCurrentControlOrigin": "75bd6d7af18dfd511e85582ce7f994d2801b7703",
   "sourceBase": "a36c31542671f4bb94405855bd94c1ef8eb5464b",
   "status": "SOURCE_FROZEN_CONTROLS_NOT_RUN",

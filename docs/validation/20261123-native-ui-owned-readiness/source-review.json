@@ -13,6 +13,7 @@
       "sha256": "17b3b349025ede11e4e4081fdd664cd0eb3cf6a1f9e7fe1ed41a0b888f42d189"
     }
   },
+  "allExistingDeclaredCurrentPythonInputsEqualPublishedSource": "75bd6d7af18dfd511e85582ce7f994d2801b7703",
   "baselineOnlyExcludeFromIntegration": [
     "bb65e41150c3d5e1a40f6441ad3a252507e38a7e",
     "163d66392ea135dc6488b61a092517eff9a8e459"
@@ -45,11 +46,28 @@
     "originalAppSourceUnchanged": true,
     "product_methods_executed": 0
   },
-  "controlInputsSHA256": "3e3e8522095b48eb6a95b82211dc8890d4f0aea7107b8e4ca614fb480794fa47",
+  "controlInputsSHA256": "1193dcef9d33e36d0b8eebd84149891cabd5948072dfdc88122a74a30cd8bf1f",
+  "eagerClosureCorrection": {
+    "additionalEagerFileDataReads": "None in these six modules; attachment profile values are source literals",
+    "additionalInputs": [
+      "Tools/PinkhaNativeDerived/build_custom_heart.py",
+      "Tools/PinkhaNativeDerived/build_native_ipa.py",
+      "Tools/PinkhaNativeDerived/validate_wave1.py",
+      "Tools/PinkhaNativeDerived/rerun_original_ui.py",
+      "Tools/PinkhaNativeDerived/heart_runtime_profile.py",
+      "Tools/PinkhaNativeDerived/attachment_runtime.py"
+    ],
+    "currentPythonSources": 36,
+    "oldMethodsOrControlsExecuted": 0,
+    "originalAppPythonSources": 9,
+    "reason": "run_ui27 explicitly prepends PinkhaNativeDerived and eagerly imports its helpers",
+    "source": "sdk_ci independent read-only review"
+  },
   "originalFailures": {
     "45127756584": "Admitted 216 original Products; provider cold boot readiness failed before fixture start; precise low-level cause unknown; zero product methods.",
     "451319": "Boot requested before admission; initial git rev-parse HEAD timed out after 30s before first App command. Caller is ambiguous between control_context and provider.github_context; zero product methods."
   },
+  "priorNeverExecutedSource": "12558ae358022d4a6060b1f2066f890e729a7150",
   "publishedCurrentControlOrigin": "75bd6d7af18dfd511e85582ce7f994d2801b7703",
   "qualifiedSDKOrigin": "ab9943cfe3aa77a100685560c84dc2fa930a6328",
   "rootOriginalAudit": {
