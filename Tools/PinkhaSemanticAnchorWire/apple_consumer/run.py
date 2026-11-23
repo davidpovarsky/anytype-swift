@@ -27,7 +27,7 @@ import early_build_products
 import run_owned_single_lane as supervisor
 import run_ui27 as shared
 import shared_editor_existing_build as component
-import simulator_selection
+import consumer_simulator
 import wave15_batch as owned
 import ui_build
 
@@ -231,7 +231,7 @@ def execute(args, receipt):
         proof.require(version.read_text().startswith("Xcode 27."), "Actual Xcode27 required")
         runtimes = runner.json(["xcrun", "simctl", "list", "runtimes", "-j"], "available-runtimes", 30)
         devices = runner.json(["xcrun", "simctl", "list", "devicetypes", "-j"], "available-device-types", 30)
-        pair = simulator_selection.choose_pair(runtimes, devices, product_family="iPad", major=27, architecture="arm64")
+        pair = consumer_simulator.choose_pair(runtimes, devices)
         path, _ = runner.run(["xcrun", "simctl", "create", "Page154Consumer-" + run_binding["nonce"],
                               pair["device"]["identifier"], pair["runtime"]["identifier"]],
                              "create-owned-simulator", 60)
