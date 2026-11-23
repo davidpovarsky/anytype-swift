@@ -1,0 +1,61 @@
+{
+  "observedUTC": "2026-11-23T05:16:15.998282+00:00",
+  "status": "PASS_NEW_EXPLICIT_SIMULATOR_POLICY_CONTROLS_ONLY",
+  "testedSource": "ebabf8dc7d91592ac957414c10cff0daad3f3e3d",
+  "evidenceCommit": "1213e2a4e84ca52c55df5335bc9beef66d7d8ef0",
+  "newNamedControls": 4,
+  "oldControlRuns": 0,
+  "productMethods": 0,
+  "simulatorCommands": 0,
+  "beforeAfterInputs": {
+    "Tools/PinkhaSemanticAnchorWire/apple_consumer/consumer_simulator.py": "3282bc162cef0486cd334fbdeb2ed2dcdf79980acf1e8d675badd26f273f56e1",
+    "Tools/PinkhaSemanticAnchorWire/apple_consumer/run.py": "17205ab71cdfd8111fc21e6d070a42f621be727e47df9457685557bd22ee12fe",
+    "Tools/PinkhaSemanticAnchorWire/apple_consumer/test_consumer_simulator.py": "1e3bcb0951ec5ba92f7f3c3335426a238b99758d41bf9525d8a5d8fa55f7b7ae",
+    "Tools/PinkhaSimulatorGate/simulator_selection.py": "2309bb55b3752774bffc588a7c489392daa7ceb3b7279f6a9ec870899a1f1d5f",
+    "docs/validation/20261123-page154-known-simulator/README.md": "f3d787c4bdd1f2b031fd48a58366b6a115dfea5fb11b7b55411048d96030519b",
+    "docs/validation/20261123-page154-known-simulator/original-hanlin-preflight.json": "277d97e146ad951da127bb4ee339c32079ce5ecf434047118bd98df38d39a349",
+    "docs/validation/20261123-page154-known-simulator/original-page-available-device-types.log": "f663b275b7760a98ef28ff760c8efc49703530dd1b45c3d70fa755047bb799a0",
+    "docs/validation/20261123-page154-known-simulator/original-page-available-runtimes.log": "df0c2c31dd527d22170a291329a8886b9e06e467679406e626c68edec36a6bdd",
+    "docs/validation/20261123-page154-known-simulator/source-review.json": "797519940f0714c9c484c66fb41af2d71c4a12eeb74abe1a6853f7987f39f3e2"
+  },
+  "allNineInputsMatchedTestedGit": true,
+  "postTestDocumentationOnlyChanges": [
+    "docs/validation/20261123-page154-known-simulator/README.md"
+  ],
+  "rawNamedEventsSHA256": "a76a6562e92bc567a2695e3c42ef62ac22b52f7da516800993c8db7683ffbe3b",
+  "originalTestLogSHA256": "d5f4857dd7965bb1b39b5fa8b5d3d139a05cb4ff9f47060cecb51c514b284753",
+  "originalReceiptSHA256": "bace80a4b136e3a3b09a8d8b09661eb26efaffd4f5fdda45231ebdd72313f721",
+  "realImportedModules": [
+    "/mnt/development/projects/worktrees/anytype-wave15-semantic-known-simulator-20261123/Tools/PinkhaSemanticAnchorWire/apple_consumer/consumer_simulator.py",
+    "/mnt/development/projects/worktrees/anytype-wave15-semantic-known-simulator-20261123/Tools/PinkhaSemanticAnchorWire/apple_consumer/test_consumer_simulator.py",
+    "/mnt/development/projects/worktrees/anytype-wave15-semantic-known-simulator-20261123/Tools/PinkhaSimulatorGate/simulator_selection.py"
+  ],
+  "unchangedAppSourceOrigin": "1e9ee4de8ac2051020d9fd0cb181b8f68498e184",
+  "unchangedGitAppInputCount": 6038,
+  "unchangedGitAppInputSHA256": "86a53d95007760f4560b5fb9b2a584ddf65dc62d1a018c10bc3938dbb68e599a",
+  "allDiffOutsideToolsDocsWorkflowsEmpty": true,
+  "consumerTwoLineInverseByteExact": true,
+  "unchangedSelectorSHA256": "2309bb55b3752774bffc588a7c489392daa7ceb3b7279f6a9ec870899a1f1d5f",
+  "explicitPolicy": {
+    "POLICY": "page154-observed-ipad27-m5-16gb-v1",
+    "RUNTIME_ID": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+    "RUNTIME_VERSION": "27.0",
+    "RUNTIME_BUILD": "24A434",
+    "DEVICE_ID": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+    "MODEL_ID": "iPad17,4",
+    "ARCHITECTURE": "arm64"
+  },
+  "originalHanlinMembersReadFromRetainedArchive": {
+    "carrier": "/mnt/development/projects/evidence/20261123-hanlin-native-45096079315/Pinkha-Native-Derived-Evidence.zip",
+    "preflightSHA256": "277d97e146ad951da127bb4ee339c32079ce5ecf434047118bd98df38d39a349",
+    "executionSHA256": "439507093898b297b5b007c69fc885ddf7baf95fcc67fa7aa5e9101a4ffd9426",
+    "wholeArchiveRescanned": false
+  },
+  "originalPageInventoriesMatched": true,
+  "limits": [
+    "Known prior compatibility is not proof that27.2 caused the failed boot or that Page154 will succeed.",
+    "No fallback, old UUID reuse, new product acceptance or removal of the original failed run.",
+    "Fresh creation,180-second bootstatus and30-second cleanup deadlines remain unchanged.",
+    "Actual App build/native XCTest and mounted UI require their own original CI outputs."
+  ]
+}
