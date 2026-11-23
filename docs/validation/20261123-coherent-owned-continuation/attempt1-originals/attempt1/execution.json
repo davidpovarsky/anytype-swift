@@ -1,0 +1,295 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "/mnt/development/projects/worktrees/anytype-wave15-coherent-owned-continuation-20261123/docs/validation/20261123-coherent-owned-continuation/run-controls.py",
+    "--evidence",
+    "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1"
+  ],
+  "controller_commit": "9abf690fd418f042313ee627029ed862715b22a5",
+  "error": "One or more new controls did not pass",
+  "error_type": "ValueError",
+  "errors": 5,
+  "failures": 0,
+  "finished_at": "2026-11-23T09:08:23.971489+00:00",
+  "free_bytes_after": 2833776640,
+  "free_bytes_before": 2835435520,
+  "limitations": [
+    "Four new controller/ownership controls only",
+    "Injected simulator command results are not native or UI acceptance",
+    "Original actual eleven kernel observations remain a separate retained scope"
+  ],
+  "loaded_after_count": 26,
+  "loaded_before_count": 22,
+  "methods_passed": [
+    "test_coherent_owned_continuation.CoherentOwnedContinuationTests.test_construction_and_first_selection_bind_original_ownership_and_retained_outputs",
+    "test_coherent_owned_continuation.CoherentOwnedContinuationTests.test_new_create_callback_persists_uuid_before_later_owned_failure",
+    "test_coherent_owned_continuation.CoherentOwnedContinuationTests.test_outer_coherent_caller_forwards_profile_and_retains_original_failures"
+  ],
+  "methods_run": 4,
+  "methods_started": [
+    "test_coherent_owned_continuation.CoherentOwnedContinuationTests.test_construction_and_first_selection_bind_original_ownership_and_retained_outputs",
+    "test_coherent_owned_continuation.CoherentOwnedContinuationTests.test_new_create_callback_persists_uuid_before_later_owned_failure",
+    "test_coherent_owned_continuation.CoherentOwnedContinuationTests.test_outer_coherent_caller_forwards_profile_and_retains_original_failures",
+    "test_coherent_owned_continuation.CoherentOwnedContinuationTests.test_cleanup_snapshot_checks_live_bytes_closure_and_intent_without_git"
+  ],
+  "old_control_methods_executed": 0,
+  "original_artifacts": {
+    "control-produced-originals/actual-source-admission/batch-intent.json": {
+      "bytes": 2379,
+      "sha256": "6f1da07a0345c8224992a1709434dfdd5b55e17babf07da9902febb4d175f200"
+    },
+    "control-produced-originals/actual-source-admission/batch-simulator-baseline.json": {
+      "bytes": 347,
+      "sha256": "9ec0752704fe31e40a5ccbf084724fac683688768e3cd64b164ffd5392958844"
+    },
+    "control-produced-originals/actual-source-admission/coherent-cleanup-source-check.json": {
+      "bytes": 532,
+      "sha256": "3da313ec95a72337f8fb7e254a6fd4cceae3df4a22ff3387db02a6bf70c6c37a"
+    },
+    "control-produced-originals/actual-source-admission/coherent-nested-cleanup.json": {
+      "bytes": 214,
+      "sha256": "f3ea0fc1e394d8984859c9841c2f81a4b2bf64c58c5dacf5890b84d1fecd51aa"
+    },
+    "control-produced-originals/actual-source-admission/control-only.json": {
+      "bytes": 975,
+      "sha256": "fa56d821715b491b1dfc766068355c4a4d2c4e3d2e8e0d96f979c7eae206bec7"
+    },
+    "control-produced-originals/actual-source-admission/control-source-snapshots/2431561/20af9fdb887bbe76ae0b5cc4dde92209cf0523b12317773a664665733acadabd.json": {
+      "bytes": 10558,
+      "sha256": "448fc2458675e2d958b70fa854c1d0ebab557c9fcaf6fd54c5d86d4a23b3ae2f"
+    },
+    "control-produced-originals/construction-success/batch-intent.json": {
+      "bytes": 2225,
+      "sha256": "edc3730797b4ea091f6fe65a3be9364389fe37cb58bc408e1c43f41e5bdfea9e"
+    },
+    "control-produced-originals/construction-success/batch-simulator-baseline.json": {
+      "bytes": 347,
+      "sha256": "9ec0752704fe31e40a5ccbf084724fac683688768e3cd64b164ffd5392958844"
+    },
+    "control-produced-originals/construction-success/control-only.json": {
+      "bytes": 3767,
+      "sha256": "6d65d3301a0846fb0523c73f62e8be1da50b03447b11a5584d24f1fb2206416f"
+    },
+    "control-produced-originals/construction-success/lanes/editor/construction/command-journal.json": {
+      "bytes": 1406,
+      "sha256": "953e7065618c97fcaf425d74928835179a5fbdc9c81090e470704e46104c7200"
+    },
+    "control-produced-originals/construction-success/lanes/editor/construction/create.command.json": {
+      "bytes": 449,
+      "sha256": "86571975a8cfa6c830fd77ac71ea82a1fc6490b4b088676be3f76deae2e8134a"
+    },
+    "control-produced-originals/construction-success/lanes/editor/construction/create.log": {
+      "bytes": 37,
+      "sha256": "cab35d30eee0daac4a2fa08368e9e6c6d2e6ea431a03ce3a9ccd562da18699b8"
+    },
+    "control-produced-originals/construction-success/lanes/editor/construction/create.observation.json": {
+      "bytes": 647,
+      "sha256": "6ee1315de52e72868754c12043cdbc921074c2e85a661e638f37f4047db62805"
+    },
+    "control-produced-originals/construction-success/lanes/editor/construction/created-proof.json": {
+      "bytes": 1133,
+      "sha256": "80271684dde3e680955c5fa9c75d3bf93053464eb8a65e911252722ed9c8b8b8"
+    },
+    "control-produced-originals/construction-success/lanes/editor/construction/first-selection-attempt.json": {
+      "bytes": 931,
+      "sha256": "cc3243740cbe5ed53d20076db736be2fba19436d91bb9a3c09a5cfe9f489021e"
+    },
+    "control-produced-originals/construction-success/lanes/editor/construction/intent.json": {
+      "bytes": 1044,
+      "sha256": "af75027481bc2a48458e5d7006f1f3545fdaa77cb04a2f62c18c5a696862e858"
+    },
+    "control-produced-originals/construction-success/lanes/editor/construction/post-preparation-container.command.json": {
+      "bytes": 340,
+      "sha256": "60aef7ca02e4f536a3587e7956c7e6d4cdece2b5e077216cba585b7f4db28650"
+    },
+    "control-produced-originals/construction-success/lanes/editor/construction/post-preparation-container.json": {
+      "bytes": 744,
+      "sha256": "8f8f7e557662fab2c532abf1d05fa83e09469b852fcff47a741f8b41a7df9b68"
+    },
+    "control-produced-originals/construction-success/lanes/editor/construction/post-preparation-container.log": {
+      "bytes": 95,
+      "sha256": "b4df4e07e069b423d2f923f108b5f43048ce60c1e8b0e61a61cbabf32ae0b5ba"
+    },
+    "control-produced-originals/construction-success/lanes/editor/construction/post-preparation-container.observation.json": {
+      "bytes": 558,
+      "sha256": "c1de122e2df854628c9359b3949d708c8756a40f008b9d7e16eec06cfeda69c2"
+    },
+    "control-produced-originals/construction-success/lanes/editor/fixture-isolation.json": {
+      "bytes": 271,
+      "sha256": "887ece936bc10990463850f2ed5d6f0edc2c0883088a136fb8188de772930427"
+    },
+    "control-produced-originals/construction-success/lanes/editor/fresh-container.json": {
+      "bytes": 1093,
+      "sha256": "c6ec18e24949e9993b34ba898d04f8df01a5cffedd7a534927533b757d1e9dcb"
+    },
+    "control-produced-originals/construction-success/lanes/editor/owned-readiness/before.json": {
+      "bytes": 398,
+      "sha256": "c6b7e2ddf13ad38186098b6bbe357c4aab5a8fe35563a76202d7505924be8234"
+    },
+    "control-produced-originals/construction-success/lanes/editor/owned-readiness/boot-status.command.json": {
+      "bytes": 243,
+      "sha256": "330059780bdfb1c2dac4a818be66402bd21e27f480c0b20dd01f38955a66696b"
+    },
+    "control-produced-originals/construction-success/lanes/editor/owned-readiness/boot-status.log": {
+      "bytes": 22,
+      "sha256": "b2eac2cf20646e8a154a1800ef808ff44df7a9091d17ac653abe18f0f918fd5d"
+    },
+    "control-produced-originals/construction-success/lanes/editor/owned-readiness/boot.command.json": {
+      "bytes": 227,
+      "sha256": "33a877afc47785625d2ff9b1de43c28378ae84fcbd2470590787d8ed0cccb8ed"
+    },
+    "control-produced-originals/construction-success/lanes/editor/owned-readiness/readiness.json": {
+      "bytes": 863,
+      "sha256": "64496d5337b9d9de3934ac01480f9a0885bbb6496240afb824315403bc1ddbe5"
+    },
+    "control-produced-originals/construction-success/lanes/editor/owned-simulator.json": {
+      "bytes": 342,
+      "sha256": "50407be8564379a397c4c81a9a9349bfd6daf6e0ad967356db0c72d1ce010a1e"
+    },
+    "control-produced-originals/construction-success/lanes/editor/selection-plan.json": {
+      "bytes": 110,
+      "sha256": "a70157e538e7a555ccd177b1a8bae1be2f46ad75b0e47f136b616e0dccec04d7"
+    },
+    "control-produced-originals/create-failure-0/batch-intent.json": {
+      "bytes": 2229,
+      "sha256": "fc6624a32acdc0606c58c0885e9d04147a567ef711393ca8e1e14e8e242d18f5"
+    },
+    "control-produced-originals/create-failure-0/batch-simulator-baseline.json": {
+      "bytes": 347,
+      "sha256": "9ec0752704fe31e40a5ccbf084724fac683688768e3cd64b164ffd5392958844"
+    },
+    "control-produced-originals/create-failure-0/coherent-nested-cleanup.json": {
+      "bytes": 654,
+      "sha256": "979c5b9c227bebef87ce6c0ac8e1678c5d23239920f3564fa3a61b5be34851c0"
+    },
+    "control-produced-originals/create-failure-0/control-only.json": {
+      "bytes": 1728,
+      "sha256": "5bfae577364546fd3081e95b1d6424b1fb9d702d2151b6a5a4e0b87419308e5e"
+    },
+    "control-produced-originals/create-failure-0/lanes/editor/construction/command-journal.json": {
+      "bytes": 757,
+      "sha256": "3421929d6cd7e9d992676d93168ccdc94bff21e0c9393139f7bc0e8a2b957c63"
+    },
+    "control-produced-originals/create-failure-0/lanes/editor/construction/create.command.json": {
+      "bytes": 447,
+      "sha256": "3e6a421ef79e0d634c2079dcf04701ca490c60d7b4f2a7664779997c17884f5c"
+    },
+    "control-produced-originals/create-failure-0/lanes/editor/construction/create.log": {
+      "bytes": 37,
+      "sha256": "cab35d30eee0daac4a2fa08368e9e6c6d2e6ea431a03ce3a9ccd562da18699b8"
+    },
+    "control-produced-originals/create-failure-0/lanes/editor/construction/create.observation.json": {
+      "bytes": 645,
+      "sha256": "fd80f8d44cba110037cb1987d64769c7e47df557a1e035e3ad1c77852d38c5a5"
+    },
+    "control-produced-originals/create-failure-0/lanes/editor/construction/created-proof.json": {
+      "bytes": 1133,
+      "sha256": "21176b577922404adad3c2f3c3f7bcec34d5aa1b1acdcea952b9e819a04152f6"
+    },
+    "control-produced-originals/create-failure-0/lanes/editor/construction/intent.json": {
+      "bytes": 1044,
+      "sha256": "84241d1e287dd70ba08ba512266c62795d8141d0193756d934ac6b1671646d2b"
+    },
+    "control-produced-originals/create-failure-0/lanes/editor/owned-simulator.json": {
+      "bytes": 342,
+      "sha256": "50407be8564379a397c4c81a9a9349bfd6daf6e0ad967356db0c72d1ce010a1e"
+    },
+    "control-produced-originals/create-failure-1/batch-intent.json": {
+      "bytes": 2229,
+      "sha256": "a28337a7126e00292f36c746f54d65cd3757e532aa4141ffd9480011f777ddda"
+    },
+    "control-produced-originals/create-failure-1/batch-simulator-baseline.json": {
+      "bytes": 347,
+      "sha256": "9ec0752704fe31e40a5ccbf084724fac683688768e3cd64b164ffd5392958844"
+    },
+    "control-produced-originals/create-failure-1/coherent-nested-cleanup.json": {
+      "bytes": 658,
+      "sha256": "51f049a86c1aaf3d3cd3e5c15e638ecb9c8e0d96cb7cb0938dd974185d5ea9fe"
+    },
+    "control-produced-originals/create-failure-1/control-only.json": {
+      "bytes": 1729,
+      "sha256": "99fef26122599ee14583c2beea3bae5c584240c9335148d17fc57a40c777e22b"
+    },
+    "control-produced-originals/create-failure-1/lanes/editor/construction/command-journal.json": {
+      "bytes": 1047,
+      "sha256": "15f727ef9787412e365744acb8c01805c8c25742f9ca7e315e0f924cdbc47fcc"
+    },
+    "control-produced-originals/create-failure-1/lanes/editor/construction/create.command.json": {
+      "bytes": 451,
+      "sha256": "9c2bfe64800c28afd32a202c5a076b0121e7de31e9ed31ef2b503977a346e361"
+    },
+    "control-produced-originals/create-failure-1/lanes/editor/construction/create.log": {
+      "bytes": 37,
+      "sha256": "cab35d30eee0daac4a2fa08368e9e6c6d2e6ea431a03ce3a9ccd562da18699b8"
+    },
+    "control-produced-originals/create-failure-1/lanes/editor/construction/create.observation.json": {
+      "bytes": 895,
+      "sha256": "2220822eaa6e2bb44867e08a6f2aec6b2534c9d68146e68796bde545273bd584"
+    },
+    "control-produced-originals/create-failure-1/lanes/editor/construction/created-proof.json": {
+      "bytes": 1133,
+      "sha256": "f4d17fbe641622521c0c978340f76142d6935baf768b0417fb5f699960410031"
+    },
+    "control-produced-originals/create-failure-1/lanes/editor/construction/intent.json": {
+      "bytes": 1044,
+      "sha256": "b7e4365c8a182df0db5e60a9e77815cf9ec8cd91e817d3f5032017fd88e580ad"
+    },
+    "control-produced-originals/create-failure-1/lanes/editor/owned-simulator.json": {
+      "bytes": 342,
+      "sha256": "50407be8564379a397c4c81a9a9349bfd6daf6e0ad967356db0c72d1ce010a1e"
+    },
+    "events.jsonl": {
+      "bytes": 15027,
+      "sha256": "491a39c2cfccd31edc0aa85aa98247eda1f97ccd54245dcf3b14e72b8b355c37"
+    },
+    "loaded-after.json": {
+      "bytes": 5166,
+      "sha256": "dce5c4b4bde2a7a6edadea439cf7a25da7f9382aab9c38e4bea9a3b91f5d87ea"
+    },
+    "loaded-before.json": {
+      "bytes": 4356,
+      "sha256": "03353a6d518775304d3237116873f2149fca605ca29a38c07be5664c0c9133e3"
+    },
+    "original.stderr": {
+      "bytes": 10112,
+      "sha256": "455281e1235d1960727d13e57e3909825b032ca7e01acc5ce73dd2887da6e2cb"
+    },
+    "original.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source-after.json": {
+      "bytes": 23396,
+      "sha256": "c1e5401f107a2ce1fce9311b1acbbf90552ed57b78acff5072217bc28c3470a3"
+    },
+    "source-before.json": {
+      "bytes": 23396,
+      "sha256": "c1e5401f107a2ce1fce9311b1acbbf90552ed57b78acff5072217bc28c3470a3"
+    }
+  },
+  "product_methods_executed": 0,
+  "protocol": "pinkha-coherent-owned-continuation-controls-v1",
+  "python": {
+    "executable": "/usr/bin/python3",
+    "platform": "Linux-6.17.0-1020-oracle-aarch64-with-glibc2.39",
+    "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "reserve_bytes": 2500000000,
+  "selected_tests": [
+    "CoherentOwnedContinuationTests.test_construction_and_first_selection_bind_original_ownership_and_retained_outputs",
+    "CoherentOwnedContinuationTests.test_new_create_callback_persists_uuid_before_later_owned_failure",
+    "CoherentOwnedContinuationTests.test_outer_coherent_caller_forwards_profile_and_retains_original_failures",
+    "CoherentOwnedContinuationTests.test_cleanup_snapshot_checks_live_bytes_closure_and_intent_without_git"
+  ],
+  "simulator_commands_executed": 0,
+  "skipped": 0,
+  "source_before_after_identical": true,
+  "source_commit": "3a6f932925a7cadd37490b91eed59c27f58da446",
+  "started_at": "2026-11-23T09:08:20.987661+00:00",
+  "status": "FAIL",
+  "stderr_sha256": "455281e1235d1960727d13e57e3909825b032ca7e01acc5ce73dd2887da6e2cb",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "subtests_failed": 5,
+  "subtests_passed": 22
+}

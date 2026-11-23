@@ -1,0 +1,36 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "create",
+        "Pinkha-UI27-45199900001-batch-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-editor",
+        "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+        "com.apple.CoreSimulator.SimRuntime.iOS-27-0"
+      ],
+      "cwd": "/tmp/coherent-create-failure-zkaqli6r/control",
+      "log_sha256": "cab35d30eee0daac4a2fa08368e9e6c6d2e6ea431a03ce3a9ccd562da18699b8",
+      "name": "create",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "quiescence_failure": {
+        "error": "Command '['owned-query']' timed out after 10 seconds",
+        "error_type": "TimeoutExpired",
+        "quiescence_observation": {
+          "absence_proved": false,
+          "status": "UNKNOWN"
+        },
+        "timeout_observations": [
+          {
+            "observation": 1,
+            "timeout_seconds": 10
+          }
+        ]
+      },
+      "return_code": 0,
+      "status": "COMPLETE",
+      "timeout_seconds": 30,
+      "worker_pid": 42120
+    }
+  ]
+}

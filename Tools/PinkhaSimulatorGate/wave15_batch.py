@@ -730,12 +730,16 @@ def worker(args, lane, intent, *, origin=None):
                                                 observation=observation)
             require(not any(item.get("name") == ownership["name"] for items in inventory["devices"].values() for item in items),
                     "Refuse an existing batch simulator name")
-            udid = subprocess.check_output(["xcrun", "simctl", "create", ownership["name"],
-                ownership["device"]["identifier"], ownership["runtime"]["identifier"]], text=True, timeout=30).strip()
-            device = {**ownership, "udid": udid}
-            require(udid.lower() not in {item.lower() for item in intent["baseline_udids"]},
-                    "Created batch simulator reused a baseline identity")
-            write(directory / "owned-simulator.json", device)
+            if origin is not None:
+                device = origin.create_owned_device(intent, ownership, directory)
+                udid = device["udid"]
+            else:
+                udid = subprocess.check_output(["xcrun", "simctl", "create", ownership["name"],
+                    ownership["device"]["identifier"], ownership["runtime"]["identifier"]], text=True, timeout=30).strip()
+                device = {**ownership, "udid": udid}
+                require(udid.lower() not in {item.lower() for item in intent["baseline_udids"]},
+                        "Created batch simulator reused a baseline identity")
+                write(directory / "owned-simulator.json", device)
             observation = {"lane": name, "phase": "AFTER_CREATE"}
             receipt["device_queries"].append(observation)
             inventory = scoped_device_inventory(device, timeout=SCOPED_DEVICE_QUERY_SECONDS,
@@ -933,12 +937,13 @@ def run_nested_worker_command(command, cwd, log, timeout, *, profile):
         write(path, record)
         if process is not None and cleanup_failure is None:
             try:
-                record["owned_group_quiescence"] = verify_owned_group_stopped(path)
+                record["owned_group_quiescence"] = verify_owned_group_stopped(path, cleanup_profile=profile)
             except BaseException as error:
                 cleanup_failure = error
                 record.update(status="FAILED_PROCESS_CLEANUP", cleanup_error_type=type(error).__name__,
                               cleanup_error=str(error),
-                              cleanup_probe_timeouts=getattr(error, "timeout_observations", []))
+                              cleanup_probe_timeouts=getattr(error, "timeout_observations", []),
+                              cleanup_quiescence_observation=getattr(error, "quiescence_observation", None))
             write(path, record)
     if failure is not None:
         raise failure
@@ -1082,7 +1087,10 @@ def validate_worker_conclusion(receipt, intent, evidence, lane, *, origin=None):
         observed_udids.add(device["udid"].lower())
         fresh = json.loads((path.parent / "fresh-container.json").read_text())
         fixture = json.loads((path.parent / "fixture-isolation.json").read_text())
-        validate_fresh_device_receipt(fresh, path.parent, device["udid"])
+        if origin is not None:
+            origin.validate_fresh_receipt(fresh, path.parent, device, intent)
+        else:
+            validate_fresh_device_receipt(fresh, path.parent, device["udid"])
         if spec.name == COHERENT_HEART_PROFILE:
             validate_coherent_readiness(path.parent, device)
             require(fresh.get("readiness_receipt_sha256") == digest(path.parent / "owned-readiness/readiness.json"),

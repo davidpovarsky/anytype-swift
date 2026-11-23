@@ -425,6 +425,8 @@ def nested_cleanup(args, *, origin=None):
                   evidence_scope="CLEANUP_ONLY_ORIGINAL_COMMAND_AND_PRODUCT_STATUS_UNCHANGED")
     try:
         anchor = args.app.resolve() if origin is None else origin.nested_cleanup_anchor(args)
+        if origin is not None:
+            roots.extend(origin.construction_cleanup_roots(args))
         audit_nested_receipts(roots, anchor, work, result)
         result["status"] = "PASS"
     except BaseException as error:

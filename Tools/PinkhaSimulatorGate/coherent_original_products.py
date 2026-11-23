@@ -9,6 +9,8 @@ from pathlib import Path
 import argparse
 import copy
 import hashlib
+import importlib
+import importlib.util
 import json
 import os
 import platform
@@ -69,6 +71,20 @@ ARCHIVES = {
 }
 require = batch.require
 sha = batch.digest
+
+# Only this explicit continuation preloads its cleanup and later T5 entry points.
+# They must be canonical before any of their code is trusted for source admission.
+CLEANUP_MODULE_NAMES = (
+    "coherent_original_products", "coherent_cleanup_snapshot",
+    "coherent_controller_sources", "coherent_release_cleanup",
+    "coherent_fresh_construction", "coherent_original_preflight",
+    "run_owned_single_lane", "owned_simulator_readiness",
+    "coherent_heart_release", "run_t5_apple_pair", "run_t5_native_ui",
+    "t5_account_retry_existing_build", "t5_host_actions", "t5_remaining_freshness",
+    "run_ui27", "validate_release",
+)
+CLEANUP_MODULES = {name: "Tools/PinkhaSimulatorGate/" + name + ".py"
+                   for name in CLEANUP_MODULE_NAMES}
 
 
 def origin_fields():
@@ -248,6 +264,25 @@ class OriginalProductsContext(batch.FrozenBuild):
     def record_build_mode(self):
         return "ORIGINAL_PRODUCTS_EXACT_RESTORATION"
 
+    def confirm_empty_container(self, udid, evidence):
+        import coherent_fresh_construction as construction
+        require(self.device is not None and self.device["udid"] == udid,
+                "Original-Products construction destination differs")
+        return construction.confirm(self.origin, self.device, evidence)
+
+    def run_selection(self, app, configuration, blueprint, udid, selections, environment, evidence, prefix, app_path=None):
+        import coherent_fresh_construction as construction
+        first = construction.selection_attempt(self.origin, self, configuration, blueprint,
+                                               udid, selections, evidence, prefix)
+        result = super().run_selection(app, configuration, blueprint, udid, selections,
+                                       environment, evidence, prefix, app_path)
+        construction.preparation_returned(self.origin, udid, first, result)
+        return result
+
+    def prepared_container(self, udid, evidence, preparation):
+        import coherent_fresh_construction as construction
+        return construction.prepared_container(self.origin, self, udid, evidence, preparation)
+
     def verify_kit(self):
         return self.origin.verify_kit(self.app)
 
@@ -268,8 +303,46 @@ class ContinuationOrigin:
         self.original_build = None
         self.manifests = {}
         self.context = None
+        self._constructions = {}
+        self._cleanup_sources = None
+        self._cleanup_intent_sha = None
+        self._cleanup_source_records = set()
+
+    def _cleanup_identity(self):
+        return dict(control_source_sha=self.control_sha, run_id=os.environ.get("GITHUB_RUN_ID"),
+                    run_attempt=os.environ.get("GITHUB_RUN_ATTEMPT"), github_sha=os.environ.get("GITHUB_SHA"),
+                    control=str(self.control), app=str(self.app), evidence=str(self.evidence),
+                    process_id=os.getpid())
+
+    def _preload_cleanup_sources(self):
+        """Validate every required resolution before importing this fixed closure."""
+        def exact(name, relative):
+            path = self.control / relative
+            require(path.is_file() and not path.is_symlink() and path.resolve() == path,
+                    "Required canonical cleanup source is missing or aliased")
+            module = sys.modules.get(name)
+            if module is None:
+                specification = importlib.util.find_spec(name)
+                origin = None if specification is None else specification.origin
+            else:
+                origin = getattr(module, "__file__", None)
+                specification = getattr(module, "__spec__", None)
+                require(specification is None or specification.origin == origin,
+                        "Required cleanup module has inconsistent source origins")
+            require(isinstance(origin, str) and Path(origin).absolute() == path
+                    and Path(origin).resolve() == path,
+                    "Required cleanup module resolves outside the canonical controller")
+        for name, relative in CLEANUP_MODULES.items():
+            exact(name, relative)
+        for name in CLEANUP_MODULES:
+            importlib.import_module(name)
+        for name, relative in CLEANUP_MODULES.items():
+            exact(name, relative)
 
     def verify_control(self):
+        # Include worker-finally and T5 pre-build imports before the first Git map.
+        self._preload_cleanup_sources()
+        import coherent_cleanup_snapshot as snapshots
         require(self.control_sha == os.environ.get("GITHUB_SHA")
                 and subprocess.check_output(["git", "-C", str(self.control), "rev-parse", "HEAD"],
                                             text=True).strip() == self.control_sha,
@@ -278,7 +351,19 @@ class ContinuationOrigin:
         require(branch.startswith("codex/chatgpt-wave15-") and os.environ.get("GITHUB_REF") == "refs/heads/" + branch,
                 "Actual published controller branch differs")
         from coherent_controller_sources import control_sources
-        return control_sources(self.control, self.control_sha)
+        hashes = control_sources(self.control, self.control_sha)
+        self._cleanup_sources = snapshots.admit(self.control, self.control_sha,
+            self._cleanup_identity(), hashes, self._cleanup_sources, required_modules=CLEANUP_MODULES)
+        identity = self._cleanup_sources.digest()
+        if identity not in self._cleanup_source_records:
+            from coherent_original_preflight import save
+            path = self.evidence / "control-source-snapshots" / str(os.getpid()) / (identity + ".json")
+            save(path, dict(protocol="pinkha-coherent-cleanup-source-snapshot-v1",
+                snapshot_sha256=identity, identity=self._cleanup_identity(),
+                controller_source_hashes=hashes, loaded_module_names=dict(self._cleanup_sources.module_names)),
+                original=True)
+            self._cleanup_source_records.add(identity)
+        return hashes
 
     def bind_intent(self, intent):
         self.verify_control()
@@ -290,6 +375,15 @@ class ContinuationOrigin:
 
     def validate_intent(self, intent):
         self.verify_control()
+        self._validate_intent_fields(intent)
+        path = self.evidence / "batch-intent.json"
+        if path.is_file() and not path.is_symlink():
+            require(json.loads(path.read_bytes()) == intent, "Live original-Products intent differs")
+            observed = sha(path)
+            require(self._cleanup_intent_sha in (None, observed), "Admitted live intent changed")
+            self._cleanup_intent_sha = observed
+
+    def _validate_intent_fields(self, intent):
         require(intent.get("protocol") == PROTOCOL and intent.get("continuation") == NAME
                 and intent.get("source_sha") == SOURCE and intent.get("control_source_sha") == self.control_sha
                 and intent.get("build_origin") == origin_fields()
@@ -311,13 +405,63 @@ class ContinuationOrigin:
         require(intent_path.is_file() and not intent_path.is_symlink()
                 and intent_path.stat().st_size <= 2 * 1024 * 1024,
                 "Current original-Products cleanup intent is missing or unbounded")
-        self.validate_intent(json.loads(intent_path.read_bytes()))
+        require(self._cleanup_sources is not None and self._cleanup_intent_sha is not None
+                and sha(intent_path) == self._cleanup_intent_sha,
+                "Nested cleanup has no unchanged live admitted intent")
+        from coherent_original_preflight import save
+        checked = dict(status="FAIL", control_source_sha=self.control_sha,
+                       run_id=os.environ.get("GITHUB_RUN_ID"), run_attempt=os.environ.get("GITHUB_RUN_ATTEMPT"),
+                       process_id=os.getpid(), original_intent_sha256=self._cleanup_intent_sha)
+        try:
+            checked.update(self._cleanup_sources.verify(self._cleanup_identity()))
+            self._validate_intent_fields(json.loads(intent_path.read_bytes()))
+            self.verify_admission()
+        except BaseException as error:
+            checked.update(status="FAIL", error_type=type(error).__name__, error=str(error))
+            raise
+        finally:
+            save(self.evidence / "coherent-cleanup-source-check.json", checked, original=True)
         require(self.evidence.is_relative_to(self.control / "build")
                 and self.evidence != self.control / "build"
                 and not self.evidence.is_relative_to(self.app)
                 and not self.app.is_relative_to(self.evidence),
                 "Current evidence and immutable App cleanup roots are not separately owned")
         return self.control
+
+    def construction_cleanup_roots(self, args):
+        """Only the fixed current intended lanes contribute new command originals."""
+        import coherent_fresh_construction as construction
+        require(args is self.args and args.evidence.resolve() == self.evidence
+                and args.app.resolve() == self.app, "Construction cleanup arguments differ")
+        path = self.evidence / "batch-intent.json"
+        intent = construction.read(path, self.evidence)
+        require(self._cleanup_intent_sha is not None and sha(path) == self._cleanup_intent_sha,
+                "Construction cleanup has no unchanged live admitted intent")
+        self._validate_intent_fields(intent)
+        planned = intent.get("lane_devices")
+        lanes = batch.profile_spec(batch.COHERENT_HEART_PROFILE).lanes
+        require(isinstance(planned, list) and len(planned) == len(lanes)
+                and all(isinstance(item, dict) for item in planned)
+                and tuple(item.get("lane") for item in planned) == lanes,
+                "Construction cleanup requires the exact three current intended lanes")
+        roots = []
+        for item in planned:
+            construction.identity(self, intent, item)
+            root = self.evidence / "lanes" / item["lane"] / "construction"
+            require(root.resolve() == root and root.is_relative_to(self.evidence)
+                    and not root.is_symlink() and (not root.exists() or root.is_dir()),
+                    "Construction cleanup root is foreign or aliased")
+            roots.append(root)
+        return roots
+
+    def create_owned_device(self, intent, planned, directory):
+        import coherent_fresh_construction as construction
+        self._validate_intent_fields(intent)
+        return construction.create(self, intent, planned, directory)
+
+    def validate_fresh_receipt(self, fresh, directory, device, intent):
+        import coherent_fresh_construction as construction
+        return construction.validate_saved(self, fresh, directory, device, intent)
 
     def worker_command(self, default):
         require(default[0] == sys.executable and default[1] == "-B", "Unexpected worker interpreter")

@@ -1,0 +1,55 @@
+{
+  "actual_release_continuation": "NOT_RUN",
+  "audit_reader_correction": "One wrong metadata policy path corrected; original failure preserved; no product/control execution by either reader.",
+  "base": "75bd6d7af18dfd511e85582ce7f994d2801b7703",
+  "candidate": "6acab36f450ce411a8614f23e55cb14a5602ed58",
+  "complete_controller_methods": 4,
+  "from_main": "9cafd32811e50f4e883efb034888d7ce1e349c02",
+  "historical_dependency_overlays_applied": false,
+  "integrated_at": "2026-11-23T10:31:11.292524+00:00",
+  "new_tests_or_builds": 0,
+  "original_audit_copies": [
+    {
+      "bytes": 10719,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-root-review-20261123/audit-original-reader.py",
+      "path": "audit-original-reader.py",
+      "sha256": "a47c14812f352dff8e7ed30d5568b2b40adcaafe3791a0af36609f3fcc130b24"
+    },
+    {
+      "bytes": 10719,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-root-review-20261123/audit-corrected-reader.py",
+      "path": "audit-corrected-reader.py",
+      "sha256": "7899c962224044b761f760824ad4a963f09e8cd3ab7a59bdac052dd170fcfd8b"
+    },
+    {
+      "bytes": 661,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-root-review-20261123/original-reader-failure.json",
+      "path": "original-reader-failure.json",
+      "sha256": "230bfcf3a1f0c4f559a12c30226bf1775534fcc07a2fad070d70ba327a30485b"
+    },
+    {
+      "bytes": 3285,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-root-review-20261123/corrected-reader-tool-result.json",
+      "path": "corrected-reader-tool-result.json",
+      "sha256": "58e07d264e9f8031c3dc99146f2aa92011adbfba7fa4e49c073783720f3b2a31"
+    },
+    {
+      "bytes": 3051,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-root-review-20261123/root-review.json",
+      "path": "root-review.json",
+      "sha256": "8c8315360d01b34cc40d6bed5a6918fc5a884245ff08d3620cdf5a1c2d6d3804"
+    }
+  ],
+  "package_policy_sha256": "8400bd4ac7bbc61871b51f1021c3dbbb1de5800094e07129417a784d24337309",
+  "source_file_count": 7,
+  "source_patch_sha256": "d88abc00125f9f2f0946c413fbc42995b1ee8b8026d886908fb96575e7c9916a",
+  "source_paths": [
+    "Tools/PinkhaSimulatorGate/coherent_cleanup_snapshot.py",
+    "Tools/PinkhaSimulatorGate/coherent_fresh_construction.py",
+    "Tools/PinkhaSimulatorGate/coherent_original_products.py",
+    "Tools/PinkhaSimulatorGate/coherent_heart_release.py",
+    "Tools/PinkhaSimulatorGate/wave15_batch.py",
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py",
+    "Tools/PinkhaSimulatorGate/test_coherent_owned_continuation.py"
+  ]
+}

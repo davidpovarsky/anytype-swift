@@ -1,0 +1,357 @@
+{
+  "actual_production_git_admitted_module_names": 47,
+  "actual_production_git_admitted_source_count": 47,
+  "before_after_identical": true,
+  "before_after_source_inputs": 70,
+  "controller_commit": "9abf690fd418f042313ee627029ed862715b22a5",
+  "errors": 5,
+  "failure_boundary": "Five new assertion expectations used ValueError; the existing batch.require guard raised RuntimeError.",
+  "failures": 0,
+  "loaded_after": 26,
+  "loaded_before": 22,
+  "methods_passed": [
+    "test_coherent_owned_continuation.CoherentOwnedContinuationTests.test_construction_and_first_selection_bind_original_ownership_and_retained_outputs",
+    "test_coherent_owned_continuation.CoherentOwnedContinuationTests.test_new_create_callback_persists_uuid_before_later_owned_failure",
+    "test_coherent_owned_continuation.CoherentOwnedContinuationTests.test_outer_coherent_caller_forwards_profile_and_retains_original_failures"
+  ],
+  "methods_started": [
+    "test_coherent_owned_continuation.CoherentOwnedContinuationTests.test_construction_and_first_selection_bind_original_ownership_and_retained_outputs",
+    "test_coherent_owned_continuation.CoherentOwnedContinuationTests.test_new_create_callback_persists_uuid_before_later_owned_failure",
+    "test_coherent_owned_continuation.CoherentOwnedContinuationTests.test_outer_coherent_caller_forwards_profile_and_retains_original_failures",
+    "test_coherent_owned_continuation.CoherentOwnedContinuationTests.test_cleanup_snapshot_checks_live_bytes_closure_and_intent_without_git"
+  ],
+  "nonpassing_methods": [
+    "test_coherent_owned_continuation.CoherentOwnedContinuationTests.test_cleanup_snapshot_checks_live_bytes_closure_and_intent_without_git"
+  ],
+  "originals": {
+    "attempt1/control-produced-originals/actual-source-admission/batch-intent.json": {
+      "bytes": 2379,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/actual-source-admission/batch-intent.json",
+      "sha256": "6f1da07a0345c8224992a1709434dfdd5b55e17babf07da9902febb4d175f200"
+    },
+    "attempt1/control-produced-originals/actual-source-admission/batch-simulator-baseline.json": {
+      "bytes": 347,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/actual-source-admission/batch-simulator-baseline.json",
+      "sha256": "9ec0752704fe31e40a5ccbf084724fac683688768e3cd64b164ffd5392958844"
+    },
+    "attempt1/control-produced-originals/actual-source-admission/coherent-cleanup-source-check.json": {
+      "bytes": 532,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/actual-source-admission/coherent-cleanup-source-check.json",
+      "sha256": "3da313ec95a72337f8fb7e254a6fd4cceae3df4a22ff3387db02a6bf70c6c37a"
+    },
+    "attempt1/control-produced-originals/actual-source-admission/coherent-nested-cleanup.json": {
+      "bytes": 214,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/actual-source-admission/coherent-nested-cleanup.json",
+      "sha256": "f3ea0fc1e394d8984859c9841c2f81a4b2bf64c58c5dacf5890b84d1fecd51aa"
+    },
+    "attempt1/control-produced-originals/actual-source-admission/control-only.json": {
+      "bytes": 975,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/actual-source-admission/control-only.json",
+      "sha256": "fa56d821715b491b1dfc766068355c4a4d2c4e3d2e8e0d96f979c7eae206bec7"
+    },
+    "attempt1/control-produced-originals/actual-source-admission/control-source-snapshots/2431561/20af9fdb887bbe76ae0b5cc4dde92209cf0523b12317773a664665733acadabd.json": {
+      "bytes": 10558,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/actual-source-admission/control-source-snapshots/2431561/20af9fdb887bbe76ae0b5cc4dde92209cf0523b12317773a664665733acadabd.json",
+      "sha256": "448fc2458675e2d958b70fa854c1d0ebab557c9fcaf6fd54c5d86d4a23b3ae2f"
+    },
+    "attempt1/control-produced-originals/construction-success/batch-intent.json": {
+      "bytes": 2225,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/batch-intent.json",
+      "sha256": "edc3730797b4ea091f6fe65a3be9364389fe37cb58bc408e1c43f41e5bdfea9e"
+    },
+    "attempt1/control-produced-originals/construction-success/batch-simulator-baseline.json": {
+      "bytes": 347,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/batch-simulator-baseline.json",
+      "sha256": "9ec0752704fe31e40a5ccbf084724fac683688768e3cd64b164ffd5392958844"
+    },
+    "attempt1/control-produced-originals/construction-success/control-only.json": {
+      "bytes": 3767,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/control-only.json",
+      "sha256": "6d65d3301a0846fb0523c73f62e8be1da50b03447b11a5584d24f1fb2206416f"
+    },
+    "attempt1/control-produced-originals/construction-success/lanes/editor/construction/command-journal.json": {
+      "bytes": 1406,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/lanes/editor/construction/command-journal.json",
+      "sha256": "953e7065618c97fcaf425d74928835179a5fbdc9c81090e470704e46104c7200"
+    },
+    "attempt1/control-produced-originals/construction-success/lanes/editor/construction/create.command.json": {
+      "bytes": 449,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/lanes/editor/construction/create.command.json",
+      "sha256": "86571975a8cfa6c830fd77ac71ea82a1fc6490b4b088676be3f76deae2e8134a"
+    },
+    "attempt1/control-produced-originals/construction-success/lanes/editor/construction/create.log": {
+      "bytes": 37,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/lanes/editor/construction/create.log",
+      "sha256": "cab35d30eee0daac4a2fa08368e9e6c6d2e6ea431a03ce3a9ccd562da18699b8"
+    },
+    "attempt1/control-produced-originals/construction-success/lanes/editor/construction/create.observation.json": {
+      "bytes": 647,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/lanes/editor/construction/create.observation.json",
+      "sha256": "6ee1315de52e72868754c12043cdbc921074c2e85a661e638f37f4047db62805"
+    },
+    "attempt1/control-produced-originals/construction-success/lanes/editor/construction/created-proof.json": {
+      "bytes": 1133,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/lanes/editor/construction/created-proof.json",
+      "sha256": "80271684dde3e680955c5fa9c75d3bf93053464eb8a65e911252722ed9c8b8b8"
+    },
+    "attempt1/control-produced-originals/construction-success/lanes/editor/construction/first-selection-attempt.json": {
+      "bytes": 931,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/lanes/editor/construction/first-selection-attempt.json",
+      "sha256": "cc3243740cbe5ed53d20076db736be2fba19436d91bb9a3c09a5cfe9f489021e"
+    },
+    "attempt1/control-produced-originals/construction-success/lanes/editor/construction/intent.json": {
+      "bytes": 1044,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/lanes/editor/construction/intent.json",
+      "sha256": "af75027481bc2a48458e5d7006f1f3545fdaa77cb04a2f62c18c5a696862e858"
+    },
+    "attempt1/control-produced-originals/construction-success/lanes/editor/construction/post-preparation-container.command.json": {
+      "bytes": 340,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/lanes/editor/construction/post-preparation-container.command.json",
+      "sha256": "60aef7ca02e4f536a3587e7956c7e6d4cdece2b5e077216cba585b7f4db28650"
+    },
+    "attempt1/control-produced-originals/construction-success/lanes/editor/construction/post-preparation-container.json": {
+      "bytes": 744,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/lanes/editor/construction/post-preparation-container.json",
+      "sha256": "8f8f7e557662fab2c532abf1d05fa83e09469b852fcff47a741f8b41a7df9b68"
+    },
+    "attempt1/control-produced-originals/construction-success/lanes/editor/construction/post-preparation-container.log": {
+      "bytes": 95,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/lanes/editor/construction/post-preparation-container.log",
+      "sha256": "b4df4e07e069b423d2f923f108b5f43048ce60c1e8b0e61a61cbabf32ae0b5ba"
+    },
+    "attempt1/control-produced-originals/construction-success/lanes/editor/construction/post-preparation-container.observation.json": {
+      "bytes": 558,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/lanes/editor/construction/post-preparation-container.observation.json",
+      "sha256": "c1de122e2df854628c9359b3949d708c8756a40f008b9d7e16eec06cfeda69c2"
+    },
+    "attempt1/control-produced-originals/construction-success/lanes/editor/fixture-isolation.json": {
+      "bytes": 271,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/lanes/editor/fixture-isolation.json",
+      "sha256": "887ece936bc10990463850f2ed5d6f0edc2c0883088a136fb8188de772930427"
+    },
+    "attempt1/control-produced-originals/construction-success/lanes/editor/fresh-container.json": {
+      "bytes": 1093,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/lanes/editor/fresh-container.json",
+      "sha256": "c6ec18e24949e9993b34ba898d04f8df01a5cffedd7a534927533b757d1e9dcb"
+    },
+    "attempt1/control-produced-originals/construction-success/lanes/editor/owned-readiness/before.json": {
+      "bytes": 398,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/lanes/editor/owned-readiness/before.json",
+      "sha256": "c6b7e2ddf13ad38186098b6bbe357c4aab5a8fe35563a76202d7505924be8234"
+    },
+    "attempt1/control-produced-originals/construction-success/lanes/editor/owned-readiness/boot-status.command.json": {
+      "bytes": 243,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/lanes/editor/owned-readiness/boot-status.command.json",
+      "sha256": "330059780bdfb1c2dac4a818be66402bd21e27f480c0b20dd01f38955a66696b"
+    },
+    "attempt1/control-produced-originals/construction-success/lanes/editor/owned-readiness/boot-status.log": {
+      "bytes": 22,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/lanes/editor/owned-readiness/boot-status.log",
+      "sha256": "b2eac2cf20646e8a154a1800ef808ff44df7a9091d17ac653abe18f0f918fd5d"
+    },
+    "attempt1/control-produced-originals/construction-success/lanes/editor/owned-readiness/boot.command.json": {
+      "bytes": 227,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/lanes/editor/owned-readiness/boot.command.json",
+      "sha256": "33a877afc47785625d2ff9b1de43c28378ae84fcbd2470590787d8ed0cccb8ed"
+    },
+    "attempt1/control-produced-originals/construction-success/lanes/editor/owned-readiness/readiness.json": {
+      "bytes": 863,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/lanes/editor/owned-readiness/readiness.json",
+      "sha256": "64496d5337b9d9de3934ac01480f9a0885bbb6496240afb824315403bc1ddbe5"
+    },
+    "attempt1/control-produced-originals/construction-success/lanes/editor/owned-simulator.json": {
+      "bytes": 342,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/lanes/editor/owned-simulator.json",
+      "sha256": "50407be8564379a397c4c81a9a9349bfd6daf6e0ad967356db0c72d1ce010a1e"
+    },
+    "attempt1/control-produced-originals/construction-success/lanes/editor/selection-plan.json": {
+      "bytes": 110,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/construction-success/lanes/editor/selection-plan.json",
+      "sha256": "a70157e538e7a555ccd177b1a8bae1be2f46ad75b0e47f136b616e0dccec04d7"
+    },
+    "attempt1/control-produced-originals/create-failure-0/batch-intent.json": {
+      "bytes": 2229,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/create-failure-0/batch-intent.json",
+      "sha256": "fc6624a32acdc0606c58c0885e9d04147a567ef711393ca8e1e14e8e242d18f5"
+    },
+    "attempt1/control-produced-originals/create-failure-0/batch-simulator-baseline.json": {
+      "bytes": 347,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/create-failure-0/batch-simulator-baseline.json",
+      "sha256": "9ec0752704fe31e40a5ccbf084724fac683688768e3cd64b164ffd5392958844"
+    },
+    "attempt1/control-produced-originals/create-failure-0/coherent-nested-cleanup.json": {
+      "bytes": 654,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/create-failure-0/coherent-nested-cleanup.json",
+      "sha256": "979c5b9c227bebef87ce6c0ac8e1678c5d23239920f3564fa3a61b5be34851c0"
+    },
+    "attempt1/control-produced-originals/create-failure-0/control-only.json": {
+      "bytes": 1728,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/create-failure-0/control-only.json",
+      "sha256": "5bfae577364546fd3081e95b1d6424b1fb9d702d2151b6a5a4e0b87419308e5e"
+    },
+    "attempt1/control-produced-originals/create-failure-0/lanes/editor/construction/command-journal.json": {
+      "bytes": 757,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/create-failure-0/lanes/editor/construction/command-journal.json",
+      "sha256": "3421929d6cd7e9d992676d93168ccdc94bff21e0c9393139f7bc0e8a2b957c63"
+    },
+    "attempt1/control-produced-originals/create-failure-0/lanes/editor/construction/create.command.json": {
+      "bytes": 447,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/create-failure-0/lanes/editor/construction/create.command.json",
+      "sha256": "3e6a421ef79e0d634c2079dcf04701ca490c60d7b4f2a7664779997c17884f5c"
+    },
+    "attempt1/control-produced-originals/create-failure-0/lanes/editor/construction/create.log": {
+      "bytes": 37,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/create-failure-0/lanes/editor/construction/create.log",
+      "sha256": "cab35d30eee0daac4a2fa08368e9e6c6d2e6ea431a03ce3a9ccd562da18699b8"
+    },
+    "attempt1/control-produced-originals/create-failure-0/lanes/editor/construction/create.observation.json": {
+      "bytes": 645,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/create-failure-0/lanes/editor/construction/create.observation.json",
+      "sha256": "fd80f8d44cba110037cb1987d64769c7e47df557a1e035e3ad1c77852d38c5a5"
+    },
+    "attempt1/control-produced-originals/create-failure-0/lanes/editor/construction/created-proof.json": {
+      "bytes": 1133,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/create-failure-0/lanes/editor/construction/created-proof.json",
+      "sha256": "21176b577922404adad3c2f3c3f7bcec34d5aa1b1acdcea952b9e819a04152f6"
+    },
+    "attempt1/control-produced-originals/create-failure-0/lanes/editor/construction/intent.json": {
+      "bytes": 1044,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/create-failure-0/lanes/editor/construction/intent.json",
+      "sha256": "84241d1e287dd70ba08ba512266c62795d8141d0193756d934ac6b1671646d2b"
+    },
+    "attempt1/control-produced-originals/create-failure-0/lanes/editor/owned-simulator.json": {
+      "bytes": 342,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/create-failure-0/lanes/editor/owned-simulator.json",
+      "sha256": "50407be8564379a397c4c81a9a9349bfd6daf6e0ad967356db0c72d1ce010a1e"
+    },
+    "attempt1/control-produced-originals/create-failure-1/batch-intent.json": {
+      "bytes": 2229,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/create-failure-1/batch-intent.json",
+      "sha256": "a28337a7126e00292f36c746f54d65cd3757e532aa4141ffd9480011f777ddda"
+    },
+    "attempt1/control-produced-originals/create-failure-1/batch-simulator-baseline.json": {
+      "bytes": 347,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/create-failure-1/batch-simulator-baseline.json",
+      "sha256": "9ec0752704fe31e40a5ccbf084724fac683688768e3cd64b164ffd5392958844"
+    },
+    "attempt1/control-produced-originals/create-failure-1/coherent-nested-cleanup.json": {
+      "bytes": 658,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/create-failure-1/coherent-nested-cleanup.json",
+      "sha256": "51f049a86c1aaf3d3cd3e5c15e638ecb9c8e0d96cb7cb0938dd974185d5ea9fe"
+    },
+    "attempt1/control-produced-originals/create-failure-1/control-only.json": {
+      "bytes": 1729,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/create-failure-1/control-only.json",
+      "sha256": "99fef26122599ee14583c2beea3bae5c584240c9335148d17fc57a40c777e22b"
+    },
+    "attempt1/control-produced-originals/create-failure-1/lanes/editor/construction/command-journal.json": {
+      "bytes": 1047,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/create-failure-1/lanes/editor/construction/command-journal.json",
+      "sha256": "15f727ef9787412e365744acb8c01805c8c25742f9ca7e315e0f924cdbc47fcc"
+    },
+    "attempt1/control-produced-originals/create-failure-1/lanes/editor/construction/create.command.json": {
+      "bytes": 451,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/create-failure-1/lanes/editor/construction/create.command.json",
+      "sha256": "9c2bfe64800c28afd32a202c5a076b0121e7de31e9ed31ef2b503977a346e361"
+    },
+    "attempt1/control-produced-originals/create-failure-1/lanes/editor/construction/create.log": {
+      "bytes": 37,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/create-failure-1/lanes/editor/construction/create.log",
+      "sha256": "cab35d30eee0daac4a2fa08368e9e6c6d2e6ea431a03ce3a9ccd562da18699b8"
+    },
+    "attempt1/control-produced-originals/create-failure-1/lanes/editor/construction/create.observation.json": {
+      "bytes": 895,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/create-failure-1/lanes/editor/construction/create.observation.json",
+      "sha256": "2220822eaa6e2bb44867e08a6f2aec6b2534c9d68146e68796bde545273bd584"
+    },
+    "attempt1/control-produced-originals/create-failure-1/lanes/editor/construction/created-proof.json": {
+      "bytes": 1133,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/create-failure-1/lanes/editor/construction/created-proof.json",
+      "sha256": "f4d17fbe641622521c0c978340f76142d6935baf768b0417fb5f699960410031"
+    },
+    "attempt1/control-produced-originals/create-failure-1/lanes/editor/construction/intent.json": {
+      "bytes": 1044,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/create-failure-1/lanes/editor/construction/intent.json",
+      "sha256": "b7e4365c8a182df0db5e60a9e77815cf9ec8cd91e817d3f5032017fd88e580ad"
+    },
+    "attempt1/control-produced-originals/create-failure-1/lanes/editor/owned-simulator.json": {
+      "bytes": 342,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/control-produced-originals/create-failure-1/lanes/editor/owned-simulator.json",
+      "sha256": "50407be8564379a397c4c81a9a9349bfd6daf6e0ad967356db0c72d1ce010a1e"
+    },
+    "attempt1/events.jsonl": {
+      "bytes": 15027,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/events.jsonl",
+      "sha256": "491a39c2cfccd31edc0aa85aa98247eda1f97ccd54245dcf3b14e72b8b355c37"
+    },
+    "attempt1/execution.json": {
+      "bytes": 14765,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/execution.json",
+      "sha256": "e9e566eb8c19a972c146a6b24583d5c1dc0a03e7ae826e54e5aa94e23a59df2d"
+    },
+    "attempt1/loaded-after.json": {
+      "bytes": 5166,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/loaded-after.json",
+      "sha256": "dce5c4b4bde2a7a6edadea439cf7a25da7f9382aab9c38e4bea9a3b91f5d87ea"
+    },
+    "attempt1/loaded-before.json": {
+      "bytes": 4356,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/loaded-before.json",
+      "sha256": "03353a6d518775304d3237116873f2149fca605ca29a38c07be5664c0c9133e3"
+    },
+    "attempt1/original.stderr": {
+      "bytes": 10112,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/original.stderr",
+      "sha256": "455281e1235d1960727d13e57e3909825b032ca7e01acc5ce73dd2887da6e2cb"
+    },
+    "attempt1/original.stdout": {
+      "bytes": 0,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/original.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "attempt1/source-after.json": {
+      "bytes": 23396,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/source-after.json",
+      "sha256": "c1e5401f107a2ce1fce9311b1acbbf90552ed57b78acff5072217bc28c3470a3"
+    },
+    "attempt1/source-before.json": {
+      "bytes": 23396,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/attempt1/source-before.json",
+      "sha256": "c1e5401f107a2ce1fce9311b1acbbf90552ed57b78acff5072217bc28c3470a3"
+    },
+    "launch-attempt1/launch.json": {
+      "bytes": 606,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/launch-attempt1/launch.json",
+      "sha256": "6beff0ff6fdf5def88b66b51dbfb546b4b8d74ef07cbcb1d407068b7154ad9bc"
+    },
+    "launch-attempt1/original.stderr": {
+      "bytes": 0,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/launch-attempt1/original.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "launch-attempt1/original.stdout": {
+      "bytes": 233,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/launch-attempt1/original.stdout",
+      "sha256": "46734b31d2d52f8b856b8d0e52f6570318c971f9f28516e420e4831a316e49a4"
+    },
+    "launch-attempt1/result.json": {
+      "bytes": 852,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-owned-continuation-controls-20261123/launch-attempt1/result.json",
+      "sha256": "b4165a3a9843031b42f1832adf184c210036fde3986e5fb8bcd775ee74caf092"
+    }
+  },
+  "product_methods": 0,
+  "product_source_change_indicated": false,
+  "protocol": "pinkha-coherent-owned-attempt1-original-seal-v1",
+  "raw_whitespace_observation": {
+    "description": "Original unittest progress line ends with a space; preserved byte-for-byte. Only this original stream is excluded from the source-oriented diff whitespace check.",
+    "line": 4,
+    "path": "attempt1/original.stderr"
+  },
+  "simulator_commands": 0,
+  "skipped": 0,
+  "source_commit": "3a6f932925a7cadd37490b91eed59c27f58da446",
+  "status": "PRESERVED_ORIGINAL_FAIL_WITH_THREE_RETAINED_PASSES",
+  "subtests_failed": 5,
+  "subtests_passed": 22
+}

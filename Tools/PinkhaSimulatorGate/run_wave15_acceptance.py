@@ -580,7 +580,10 @@ def execute(args, receipt, *, build_context=None):
     shared.write(evidence / "execution.json", receipt)
     if preparation["status"] != "PASS":
         raise SelectionFailure("The actual native fixture did not pass")
-    container = Path(subprocess.check_output(["xcrun", "simctl", "get_app_container", udid, "io.anytype.app", "data"], text=True).strip())
+    if original_products:
+        container = build_context.prepared_container(udid, evidence, preparation)
+    else:
+        container = Path(subprocess.check_output(["xcrun", "simctl", "get_app_container", udid, "io.anytype.app", "data"], text=True).strip())
     raw_fixture = (container / "Library/Application Support" / LANES[args.lane]["fixture"]).read_text(encoding="utf-8")
     if hanlin_lane is not None:
         require(len(raw_fixture.encode("utf-8")) <= 16384, "Oversized native SDK fixture")
