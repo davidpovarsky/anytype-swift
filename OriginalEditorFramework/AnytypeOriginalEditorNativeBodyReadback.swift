@@ -88,7 +88,7 @@ extension AnytypeOriginalEditorHost {
             throw OriginalAnnotationHistoricalBodyReadbackError.unsupportedBodyFormat
         }
         let intended = try AnytypeOriginalEditorSnapshot(
-            bodyBytes: intendedBodyBytes, maximumBodyBytes: 65_536
+            bodyBytes: intendedBodyBytes, maximumBodyBytes: OriginalAnnotationPayloadBudget.maximumBodyBytes
         )
         let provenance = intended.provenance
         guard provenance.accountID.utf8.elementsEqual(binding.accountID.utf8),
@@ -127,7 +127,8 @@ extension AnytypeOriginalEditorHost {
                     throw OriginalAnnotationHistoricalBodyReadbackError.incompleteNativeExport
                 }
                 let archiveBytes = try OriginalEditorArchiveFiles.readArchive(
-                    URL(fileURLWithPath: exported.path), in: directory, maximumBytes: 65_536
+                    URL(fileURLWithPath: exported.path), in: directory,
+                    maximumBytes: OriginalAnnotationPayloadBudget.maximumArchiveBytes
                 )
                 let actual = try OriginalAnnotationNativeArchiveComparison(
                     archiveBytes: archiveBytes, rootID: binding.objectID, spaceID: binding.spaceID,

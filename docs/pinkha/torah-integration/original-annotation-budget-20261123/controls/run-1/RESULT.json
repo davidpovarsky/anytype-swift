@@ -1,0 +1,423 @@
+{
+  "binaries": [
+    {
+      "bytes": 206632,
+      "path": "/mnt/development/projects/diagnostics/otzaria-original-annotation-budget-20261123/controls/candidate-controls",
+      "sha256": "2055f4ab6679a70907655d7e373f5eb1835beda70ecdc1f82b4fcbc0d094eed4"
+    },
+    {
+      "bytes": 98136,
+      "path": "/mnt/development/projects/diagnostics/otzaria-original-annotation-budget-20261123/controls/original-controls",
+      "sha256": "c6b20f612706f3017fb27b26e76052bdf6e6a9b575f8e1b3b89088ec2c0dc896"
+    }
+  ],
+  "candidate": {
+    "assertions": 1214,
+    "native_body_or_restore_qualified": false,
+    "passed": [
+      "canonical-policy-correspondence",
+      "legacy-and-extreme-caller-limits",
+      "independent-archive-budget",
+      "framed-body-header-and-legacy-boundaries",
+      "actual-original-export-layout-text",
+      "actual-original-export-layout-format",
+      "actual-original-export-layout-nested",
+      "actual-original-export-layout-attachment",
+      "synthetic-zip-exact-archive-maximum",
+      "synthetic-zip-one-over-archive-maximum"
+    ],
+    "scope": "FOUNDATION_BUDGET_AND_ZIP_LAYOUT_ONLY",
+    "status": "PASS",
+    "swift_snapshot_native_modules_compiled": false
+  },
+  "command_count": 11,
+  "commands": [
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "--",
+        "git",
+        "apply",
+        "--reverse",
+        "--check",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-annotation-budget-20261123/docs/pinkha/torah-integration/original-annotation-budget-20261123/FOUR_PATHS.diff"
+      ],
+      "child_reaped": true,
+      "cwd": "/mnt/development/projects/diagnostics/otzaria-original-annotation-budget-20261123/controls/inverse",
+      "exit_code": 0,
+      "finished_at": "2026-11-23T08:35:38.822448+00:00",
+      "index": 0,
+      "name": "reverse-check",
+      "pid": 2373988,
+      "process_group_gone": true,
+      "started_at": "2026-11-23T08:35:38.814577+00:00",
+      "stderr": {
+        "bytes": 0,
+        "path": "controls/run-1/00-reverse-check.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "controls/run-1/00-reverse-check.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timed_out": false,
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "--",
+        "git",
+        "apply",
+        "--reverse",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-annotation-budget-20261123/docs/pinkha/torah-integration/original-annotation-budget-20261123/FOUR_PATHS.diff"
+      ],
+      "child_reaped": true,
+      "cwd": "/mnt/development/projects/diagnostics/otzaria-original-annotation-budget-20261123/controls/inverse",
+      "exit_code": 0,
+      "finished_at": "2026-11-23T08:35:38.838969+00:00",
+      "index": 1,
+      "name": "reverse-apply",
+      "pid": 2373990,
+      "process_group_gone": true,
+      "started_at": "2026-11-23T08:35:38.823051+00:00",
+      "stderr": {
+        "bytes": 0,
+        "path": "controls/run-1/01-reverse-apply.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "controls/run-1/01-reverse-apply.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timed_out": false,
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "--",
+        "/usr/local/bin/swiftc",
+        "--version"
+      ],
+      "child_reaped": true,
+      "cwd": "/mnt/development/projects/worktrees/anytype-otzaria-original-annotation-budget-20261123",
+      "exit_code": 0,
+      "finished_at": "2026-11-23T08:35:38.954943+00:00",
+      "index": 2,
+      "name": "swift-version",
+      "pid": 2373992,
+      "process_group_gone": true,
+      "started_at": "2026-11-23T08:35:38.840707+00:00",
+      "stderr": {
+        "bytes": 0,
+        "path": "controls/run-1/02-swift-version.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 76,
+        "path": "controls/run-1/02-swift-version.stdout",
+        "sha256": "59360730c588801a672c1118d5d1debc93581f6b74e6a82d5d8cbda1b4a729ce"
+      },
+      "timed_out": false,
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "--",
+        "/usr/local/bin/swiftc",
+        "-frontend",
+        "-parse",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-annotation-budget-20261123/OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift"
+      ],
+      "child_reaped": true,
+      "cwd": "/mnt/development/projects/worktrees/anytype-otzaria-original-annotation-budget-20261123",
+      "exit_code": 0,
+      "finished_at": "2026-11-23T08:35:39.020020+00:00",
+      "index": 3,
+      "name": "syntax-1",
+      "pid": 2373995,
+      "process_group_gone": true,
+      "started_at": "2026-11-23T08:35:38.955620+00:00",
+      "stderr": {
+        "bytes": 0,
+        "path": "controls/run-1/03-syntax-1.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "controls/run-1/03-syntax-1.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timed_out": false,
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "--",
+        "/usr/local/bin/swiftc",
+        "-frontend",
+        "-parse",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-annotation-budget-20261123/OriginalEditorFramework/OriginalAnnotationNativeArchiveLayout.swift"
+      ],
+      "child_reaped": true,
+      "cwd": "/mnt/development/projects/worktrees/anytype-otzaria-original-annotation-budget-20261123",
+      "exit_code": 0,
+      "finished_at": "2026-11-23T08:35:39.085089+00:00",
+      "index": 4,
+      "name": "syntax-2",
+      "pid": 2373998,
+      "process_group_gone": true,
+      "started_at": "2026-11-23T08:35:39.020789+00:00",
+      "stderr": {
+        "bytes": 0,
+        "path": "controls/run-1/04-syntax-2.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "controls/run-1/04-syntax-2.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timed_out": false,
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "--",
+        "/usr/local/bin/swiftc",
+        "-frontend",
+        "-parse",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-annotation-budget-20261123/OriginalEditorFramework/AnytypeOriginalEditorNativeBodyReadback.swift"
+      ],
+      "child_reaped": true,
+      "cwd": "/mnt/development/projects/worktrees/anytype-otzaria-original-annotation-budget-20261123",
+      "exit_code": 0,
+      "finished_at": "2026-11-23T08:35:39.150927+00:00",
+      "index": 5,
+      "name": "syntax-3",
+      "pid": 2374001,
+      "process_group_gone": true,
+      "started_at": "2026-11-23T08:35:39.085751+00:00",
+      "stderr": {
+        "bytes": 0,
+        "path": "controls/run-1/05-syntax-3.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "controls/run-1/05-syntax-3.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timed_out": false,
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "--",
+        "/usr/local/bin/swiftc",
+        "-frontend",
+        "-parse",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-annotation-budget-20261123/OriginalEditorFramework/AnytypeOriginalEditorRestoreQualification.swift"
+      ],
+      "child_reaped": true,
+      "cwd": "/mnt/development/projects/worktrees/anytype-otzaria-original-annotation-budget-20261123",
+      "exit_code": 0,
+      "finished_at": "2026-11-23T08:35:39.216271+00:00",
+      "index": 6,
+      "name": "syntax-4",
+      "pid": 2374007,
+      "process_group_gone": true,
+      "started_at": "2026-11-23T08:35:39.151808+00:00",
+      "stderr": {
+        "bytes": 0,
+        "path": "controls/run-1/06-syntax-4.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "controls/run-1/06-syntax-4.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timed_out": false,
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "--",
+        "/usr/local/bin/swiftc",
+        "-swift-version",
+        "6",
+        "-O",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-annotation-budget-20261123/OriginalEditorFramework/OriginalAnnotationNativeArchiveLayout.swift",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-annotation-budget-20261123/docs/pinkha/torah-integration/original-annotation-budget-20261123/controls/AnnotationBudgetControls.swift",
+        "-o",
+        "/mnt/development/projects/diagnostics/otzaria-original-annotation-budget-20261123/controls/candidate-controls"
+      ],
+      "child_reaped": true,
+      "cwd": "/mnt/development/projects/worktrees/anytype-otzaria-original-annotation-budget-20261123",
+      "exit_code": 0,
+      "finished_at": "2026-11-23T08:35:46.151674+00:00",
+      "index": 7,
+      "name": "candidate-compile",
+      "pid": 2374010,
+      "process_group_gone": true,
+      "started_at": "2026-11-23T08:35:39.216952+00:00",
+      "stderr": {
+        "bytes": 0,
+        "path": "controls/run-1/07-candidate-compile.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "controls/run-1/07-candidate-compile.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timed_out": false,
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "--",
+        "/mnt/development/projects/diagnostics/otzaria-original-annotation-budget-20261123/controls/candidate-controls",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-annotation-budget-20261123/docs/pinkha/torah-integration/original-annotation-budget-20261123",
+        "/mnt/development/projects/diagnostics/otzaria-original-annotation-budget-20261123/controls/synthetic"
+      ],
+      "child_reaped": true,
+      "cwd": "/mnt/development/projects/worktrees/anytype-otzaria-original-annotation-budget-20261123",
+      "exit_code": 0,
+      "finished_at": "2026-11-23T08:35:46.216668+00:00",
+      "index": 8,
+      "name": "candidate-controls",
+      "pid": 2374130,
+      "process_group_gone": true,
+      "started_at": "2026-11-23T08:35:46.152393+00:00",
+      "stderr": {
+        "bytes": 0,
+        "path": "controls/run-1/08-candidate-controls.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 1347,
+        "path": "controls/run-1/08-candidate-controls.stdout",
+        "sha256": "b46e2c6b384d67f716024004d75df910cc93796eaeb3bd197c9bd71675d70f84"
+      },
+      "timed_out": false,
+      "timeout_seconds": 60
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "--",
+        "/usr/local/bin/swiftc",
+        "-swift-version",
+        "6",
+        "-O",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-annotation-budget-20261123/docs/pinkha/torah-integration/original-annotation-budget-20261123/before/OriginalEditorFramework/OriginalAnnotationNativeArchiveLayout.swift",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-annotation-budget-20261123/docs/pinkha/torah-integration/original-annotation-budget-20261123/controls/OriginalArchiveLimitControls.swift",
+        "-o",
+        "/mnt/development/projects/diagnostics/otzaria-original-annotation-budget-20261123/controls/original-controls"
+      ],
+      "child_reaped": true,
+      "cwd": "/mnt/development/projects/worktrees/anytype-otzaria-original-annotation-budget-20261123",
+      "exit_code": 0,
+      "finished_at": "2026-11-23T08:35:49.588809+00:00",
+      "index": 9,
+      "name": "original-compile",
+      "pid": 2374132,
+      "process_group_gone": true,
+      "started_at": "2026-11-23T08:35:46.217350+00:00",
+      "stderr": {
+        "bytes": 0,
+        "path": "controls/run-1/09-original-compile.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "controls/run-1/09-original-compile.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timed_out": false,
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "--",
+        "/mnt/development/projects/diagnostics/otzaria-original-annotation-budget-20261123/controls/original-controls",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-annotation-budget-20261123/docs/pinkha/torah-integration/original-annotation-budget-20261123"
+      ],
+      "child_reaped": true,
+      "cwd": "/mnt/development/projects/worktrees/anytype-otzaria-original-annotation-budget-20261123",
+      "exit_code": 0,
+      "finished_at": "2026-11-23T08:35:49.605405+00:00",
+      "index": 10,
+      "name": "original-controls",
+      "pid": 2374154,
+      "process_group_gone": true,
+      "started_at": "2026-11-23T08:35:49.589436+00:00",
+      "stderr": {
+        "bytes": 0,
+        "path": "controls/run-1/10-original-controls.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 428,
+        "path": "controls/run-1/10-original-controls.stdout",
+        "sha256": "8ee5cd7f4ed6167a32e275ca7ee6edf7f3ee9b63914c6efc3288ff5a37b7240c"
+      },
+      "timed_out": false,
+      "timeout_seconds": 60
+    }
+  ],
+  "complete_snapshot_modules_compiled": false,
+  "finished_at": "2026-11-23T08:35:49.606362+00:00",
+  "native_or_apple_runtime_executed": false,
+  "original_source_baseline": {
+    "assertions": 8,
+    "native_body_or_restore_qualified": false,
+    "passed": [
+      "text",
+      "format",
+      "nested",
+      "attachment"
+    ],
+    "scope": "NEW_CONTROLS_OF_UNCHANGED_ORIGINAL_LAYOUT_ON_ACTUAL_EXPORT_BYTES",
+    "status": "PASS"
+  },
+  "production_import_authority_granted": false,
+  "scope": "SOURCE_AND_FOUNDATION_ZIP_LAYOUT_ONLY",
+  "source_base": "257c49a5871c62611d88fab00a8124c7ff072166",
+  "started_at": "2026-11-23T08:35:38.715030+00:00",
+  "status": "PASS"
+}

@@ -1,0 +1,55 @@
+{
+  "admission_order": [
+    "Check raw archive length before clone/digest/ZIP/protobuf work",
+    "Keep header length positive and <=16384",
+    "Check raw framed body length before base64 encode or frame parsing",
+    "Check encoded base64 character budget before decoded allocation",
+    "Check total envelope J before JSON decode and after canonical JSON encode",
+    "Charge preserved unknown/private fields to actual total J; never assume constant metadata overhead"
+  ],
+  "annotation_envelope_max_bytes": 2097152,
+  "archive_max_bytes": 1048576,
+  "archive_max_expanded_bytes": 8388608,
+  "archive_max_members": 512,
+  "forbidden": [
+    "truncate or omit members to fit",
+    "automatic annotation-to-document conversion",
+    "fabricated authoritative Header or snapshot",
+    "native-only cap enlargement with stale SDK/Host bounds",
+    "production import activation from this source policy"
+  ],
+  "formulas": {
+    "base64": "L = 4 * ceil(B / 3)",
+    "envelope": "J = L + E; E is actual canonical complete envelope with empty bytesBase64, including preserved unknown/private fields",
+    "snapshot": "B = 16 + H + A"
+  },
+  "host_runtime_qualified": false,
+  "native_runtime_qualified": false,
+  "native_wire_max_depth": 64,
+  "native_wire_max_fields": 262144,
+  "owners": {
+    "host": "/root",
+    "native": "/root/asana_scope",
+    "sdk": "/root/original_sdk"
+  },
+  "policy_id": "otzaria-original-annotation-payload-v1-20261123",
+  "preserved": [
+    "original frame format and exact archive bytes",
+    "original canonical header and report/provenance validation",
+    "unknown/private annotation envelope fields",
+    "ZIP paths/framing/CRC and original generated protobuf ambiguity rules",
+    "full genuine exported graph and file bodies",
+    "global ActionWireCodec remains65536"
+  ],
+  "schema": 1,
+  "sdk_runtime_qualified": false,
+  "snapshot_base64_max_characters": 1419968,
+  "snapshot_body_max_bytes": 1064976,
+  "snapshot_fixed_overhead_bytes": 16,
+  "snapshot_format_u32_bytes": 4,
+  "snapshot_header_length_u32_bytes": 4,
+  "snapshot_header_max_bytes": 16384,
+  "snapshot_magic_bytes": 8,
+  "status": "APPROVED_SOURCE_POLICY_NATIVE_SDK_HOST_IMPLEMENTATION_PENDING",
+  "unrelated_action_wire_max_bytes_unchanged": 65536
+}

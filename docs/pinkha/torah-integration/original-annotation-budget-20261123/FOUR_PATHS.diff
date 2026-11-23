@@ -1,0 +1,178 @@
+diff --git a/OriginalEditorFramework/AnytypeOriginalEditorNativeBodyReadback.swift b/OriginalEditorFramework/AnytypeOriginalEditorNativeBodyReadback.swift
+index 573be83526..5256929a9d 100644
+--- a/OriginalEditorFramework/AnytypeOriginalEditorNativeBodyReadback.swift
++++ b/OriginalEditorFramework/AnytypeOriginalEditorNativeBodyReadback.swift
+@@ -88,7 +88,7 @@ extension AnytypeOriginalEditorHost {
+             throw OriginalAnnotationHistoricalBodyReadbackError.unsupportedBodyFormat
+         }
+         let intended = try AnytypeOriginalEditorSnapshot(
+-            bodyBytes: intendedBodyBytes, maximumBodyBytes: 65_536
++            bodyBytes: intendedBodyBytes, maximumBodyBytes: OriginalAnnotationPayloadBudget.maximumBodyBytes
+         )
+         let provenance = intended.provenance
+         guard provenance.accountID.utf8.elementsEqual(binding.accountID.utf8),
+@@ -127,7 +127,8 @@ extension AnytypeOriginalEditorHost {
+                     throw OriginalAnnotationHistoricalBodyReadbackError.incompleteNativeExport
+                 }
+                 let archiveBytes = try OriginalEditorArchiveFiles.readArchive(
+-                    URL(fileURLWithPath: exported.path), in: directory, maximumBytes: 65_536
++                    URL(fileURLWithPath: exported.path), in: directory,
++                    maximumBytes: OriginalAnnotationPayloadBudget.maximumArchiveBytes
+                 )
+                 let actual = try OriginalAnnotationNativeArchiveComparison(
+                     archiveBytes: archiveBytes, rootID: binding.objectID, spaceID: binding.spaceID,
+diff --git a/OriginalEditorFramework/AnytypeOriginalEditorRestoreQualification.swift b/OriginalEditorFramework/AnytypeOriginalEditorRestoreQualification.swift
+index ff3e502502..a1fecdf2f3 100644
+--- a/OriginalEditorFramework/AnytypeOriginalEditorRestoreQualification.swift
++++ b/OriginalEditorFramework/AnytypeOriginalEditorRestoreQualification.swift
+@@ -79,7 +79,7 @@ internal enum AnytypeOriginalEditorRestoreQualification {
+                     }
+                 }
+                 let originalBytes = try OriginalEditorArchiveFiles.readArchive(
+-                    archiveURL, in: directory, maximumBytes: 65_536
++                    archiveURL, in: directory, maximumBytes: OriginalAnnotationPayloadBudget.maximumArchiveBytes
+                 )
+                 guard originalBytes == snapshot.nativeArchiveBytes else {
+                     throw AnytypeOriginalEditorSnapshotError.archiveChanged
+@@ -144,7 +144,7 @@ internal enum AnytypeOriginalEditorRestoreQualification {
+                 try requireString(rootDetails[0].details, "oldAnytypeID", equals: source.objectID)
+                 try requireString(rootDetails[0].details, "sourceFilePath", equals: expectedSourcePath)
+                 guard try OriginalEditorArchiveFiles.readArchive(
+-                    archiveURL, in: directory, maximumBytes: 65_536
++                    archiveURL, in: directory, maximumBytes: OriginalAnnotationPayloadBudget.maximumArchiveBytes
+                 ) == originalBytes else {
+                     throw AnytypeOriginalEditorSnapshotError.archiveChanged
+                 }
+diff --git a/OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift b/OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift
+index cea6c015f1..0566359389 100644
+--- a/OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift
++++ b/OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift
+@@ -56,10 +56,10 @@ public struct AnytypeOriginalEditorSnapshot: Sendable {
+     public let exportedObjectCount: Int32
+ 
+     private static let magic = Data([0x41, 0x54, 0x4f, 0x53, 0x4e, 0x41, 0x50, 0x00])
+-    private static let prefixByteCount = 16
+-    private static let maximumHeaderBytes = 16_384
++    private static let prefixByteCount = OriginalAnnotationPayloadBudget.framePrefixBytes
++    private static let maximumHeaderBytes = OriginalAnnotationPayloadBudget.maximumHeaderBytes
+     /// The host must also enforce its entire JSON/base64 envelope limit.
+-    private static let absoluteMaximumBodyBytes = 65_536
++    private static let absoluteMaximumBodyBytes = OriginalAnnotationPayloadBudget.maximumBodyBytes
+ 
+     private struct Header: Codable, Sendable {
+         let archiveFormat: String
+@@ -108,6 +108,9 @@ public struct AnytypeOriginalEditorSnapshot: Sendable {
+             expectedRevision: header.provenance.capturedAgainstRevision,
+             sourceWitnessSHA256: header.provenance.sourceWitnessSHA256
+         )
++        guard OriginalAnnotationPayloadBudget.acceptsArchiveBytes(
++            bytes.count - boundary, maximumBodyBytes: maximumBodyBytes
++        ) else { throw AnytypeOriginalEditorSnapshotError.bodyTooLarge }
+         let archive = bytes.subdata(in: boundary..<bytes.count)
+         guard header.archiveFormat == "anytype.protobuf.zip",
+               header.archiveByteCount == archive.count,
+@@ -133,7 +136,9 @@ public struct AnytypeOriginalEditorSnapshot: Sendable {
+         binding: AnytypeOriginalEditorBinding, maximumBodyBytes: Int
+     ) throws -> Self {
+         try validateLimit(maximumBodyBytes)
+-        guard archive.count <= maximumBodyBytes else {
++        guard OriginalAnnotationPayloadBudget.acceptsArchiveBytes(
++            archive.count, maximumBodyBytes: maximumBodyBytes
++        ) else {
+             throw AnytypeOriginalEditorSnapshotError.bodyTooLarge
+         }
+         let report = try Anytype_Model_ExportReport(serializedBytes: reportBytes)
+@@ -147,8 +152,10 @@ public struct AnytypeOriginalEditorSnapshot: Sendable {
+             exportReport: reportBytes
+         )
+         let encodedHeader = try encodeHeader(header)
+-        guard encodedHeader.count <= maximumHeaderBytes,
+-              prefixByteCount + encodedHeader.count + archive.count <= maximumBodyBytes else {
++        guard OriginalAnnotationPayloadBudget.acceptsFrame(
++            headerBytes: encodedHeader.count, archiveBytes: archive.count,
++            maximumBodyBytes: maximumBodyBytes
++        ) else {
+             throw AnytypeOriginalEditorSnapshotError.bodyTooLarge
+         }
+         var framed = magic
+@@ -264,7 +271,8 @@ extension AnytypeOriginalEditorHost {
+                 )
+                 let archiveURL = URL(fileURLWithPath: response.path)
+                 let archive = try OriginalEditorArchiveFiles.readArchive(
+-                    archiveURL, in: directory, maximumBytes: maximumBodyBytes
++                    archiveURL, in: directory,
++                    maximumBytes: min(maximumBodyBytes, OriginalAnnotationPayloadBudget.maximumArchiveBytes)
+                 )
+                 let snapshot = try AnytypeOriginalEditorSnapshot.frame(
+                     archive: archive, reportBytes: reportBytes, responseCount: response.succeed,
+@@ -315,13 +323,24 @@ internal enum OriginalEditorArchiveFiles {
+         guard archive.pathExtension == "zip" else {
+             throw AnytypeOriginalEditorSnapshotError.unsafeArchivePath
+         }
+-        return try readOwnedRegularFile(archive, in: directory, maximumBytes: maximumBytes)
++        return try readOwnedRegularFile(
++            archive, in: directory, maximumBytes: maximumBytes,
++            allowedMaximumBytes: OriginalAnnotationPayloadBudget.maximumArchiveBytes
++        )
+     }
+ 
+     /// The native qualification consumer also uses this same bounded, no-follow
+     /// read for an original FileDownload result in its exclusively owned directory.
+     static func readOwnedRegularFile(_ archive: URL, in directory: URL, maximumBytes: Int) throws -> Data {
+-        guard maximumBytes > 0, maximumBytes <= 65_536 else {
++        // The existing attachment qualification caller retains its smaller cap.
++        try readOwnedRegularFile(archive, in: directory, maximumBytes: maximumBytes,
++                                 allowedMaximumBytes: 65_536)
++    }
++
++    private static func readOwnedRegularFile(
++        _ archive: URL, in directory: URL, maximumBytes: Int, allowedMaximumBytes: Int
++    ) throws -> Data {
++        guard maximumBytes > 0, maximumBytes <= allowedMaximumBytes else {
+             throw AnytypeOriginalEditorSnapshotError.invalidLimit
+         }
+         guard archive.isFileURL,
+diff --git a/OriginalEditorFramework/OriginalAnnotationNativeArchiveLayout.swift b/OriginalEditorFramework/OriginalAnnotationNativeArchiveLayout.swift
+index 3cdccf7770..6cabe5e47c 100644
+--- a/OriginalEditorFramework/OriginalAnnotationNativeArchiveLayout.swift
++++ b/OriginalEditorFramework/OriginalAnnotationNativeArchiveLayout.swift
+@@ -1,5 +1,30 @@
+ import Foundation
+ 
++/// Fixed byte budgets for the annotation's untouched native archive and frame.
++/// This is data admission only; no account, Space or write authority is granted.
++internal enum OriginalAnnotationPayloadBudget {
++    static let maximumArchiveBytes = 1_048_576
++    static let maximumHeaderBytes = 16_384
++    static let framePrefixBytes = 16
++    static let maximumBodyBytes = framePrefixBytes + maximumHeaderBytes + maximumArchiveBytes
++
++    static func acceptsBodyLimit(_ maximum: Int) -> Bool {
++        maximum > framePrefixBytes && maximum <= maximumBodyBytes
++    }
++
++    static func acceptsArchiveBytes(_ count: Int, maximumBodyBytes: Int) -> Bool {
++        acceptsBodyLimit(maximumBodyBytes) && count >= 0
++            && count <= maximumArchiveBytes && count <= maximumBodyBytes
++    }
++
++    static func acceptsFrame(headerBytes: Int, archiveBytes: Int, maximumBodyBytes: Int) -> Bool {
++        guard acceptsArchiveBytes(archiveBytes, maximumBodyBytes: maximumBodyBytes),
++              headerBytes > 0, headerBytes <= maximumHeaderBytes else { return false }
++        // Both operands are independently bounded before addition.
++        return framePrefixBytes + headerBytes + archiveBytes <= maximumBodyBytes
++    }
++}
++
+ /// A bounded inventory of the original exporter's ordinary ZIP framing. This
+ /// does not decompress, extract paths, decode native objects or establish owner
+ /// authority. ZIP64, encryption and alternate path encodings are unsupported.
+@@ -24,7 +49,7 @@ internal struct OriginalAnnotationNativeArchiveLayout: Sendable {
+         case unindexedData
+     }
+ 
+-    static let maximumArchiveBytes = 65_536
++    static let maximumArchiveBytes = OriginalAnnotationPayloadBudget.maximumArchiveBytes
+     static let maximumEntries = 512
+     static let maximumExpandedBytes = 8 * 1_024 * 1_024
+     let entries: [Entry]

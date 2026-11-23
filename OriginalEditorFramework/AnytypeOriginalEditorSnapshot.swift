@@ -56,10 +56,10 @@ public struct AnytypeOriginalEditorSnapshot: Sendable {
     public let exportedObjectCount: Int32
 
     private static let magic = Data([0x41, 0x54, 0x4f, 0x53, 0x4e, 0x41, 0x50, 0x00])
-    private static let prefixByteCount = 16
-    private static let maximumHeaderBytes = 16_384
+    private static let prefixByteCount = OriginalAnnotationPayloadBudget.framePrefixBytes
+    private static let maximumHeaderBytes = OriginalAnnotationPayloadBudget.maximumHeaderBytes
     /// The host must also enforce its entire JSON/base64 envelope limit.
-    private static let absoluteMaximumBodyBytes = 65_536
+    private static let absoluteMaximumBodyBytes = OriginalAnnotationPayloadBudget.maximumBodyBytes
 
     private struct Header: Codable, Sendable {
         let archiveFormat: String
@@ -108,6 +108,9 @@ public struct AnytypeOriginalEditorSnapshot: Sendable {
             expectedRevision: header.provenance.capturedAgainstRevision,
             sourceWitnessSHA256: header.provenance.sourceWitnessSHA256
         )
+        guard OriginalAnnotationPayloadBudget.acceptsArchiveBytes(
+            bytes.count - boundary, maximumBodyBytes: maximumBodyBytes
+        ) else { throw AnytypeOriginalEditorSnapshotError.bodyTooLarge }
         let archive = bytes.subdata(in: boundary..<bytes.count)
         guard header.archiveFormat == "anytype.protobuf.zip",
               header.archiveByteCount == archive.count,
@@ -133,7 +136,9 @@ public struct AnytypeOriginalEditorSnapshot: Sendable {
         binding: AnytypeOriginalEditorBinding, maximumBodyBytes: Int
     ) throws -> Self {
         try validateLimit(maximumBodyBytes)
-        guard archive.count <= maximumBodyBytes else {
+        guard OriginalAnnotationPayloadBudget.acceptsArchiveBytes(
+            archive.count, maximumBodyBytes: maximumBodyBytes
+        ) else {
             throw AnytypeOriginalEditorSnapshotError.bodyTooLarge
         }
         let report = try Anytype_Model_ExportReport(serializedBytes: reportBytes)
@@ -147,8 +152,10 @@ public struct AnytypeOriginalEditorSnapshot: Sendable {
             exportReport: reportBytes
         )
         let encodedHeader = try encodeHeader(header)
-        guard encodedHeader.count <= maximumHeaderBytes,
-              prefixByteCount + encodedHeader.count + archive.count <= maximumBodyBytes else {
+        guard OriginalAnnotationPayloadBudget.acceptsFrame(
+            headerBytes: encodedHeader.count, archiveBytes: archive.count,
+            maximumBodyBytes: maximumBodyBytes
+        ) else {
             throw AnytypeOriginalEditorSnapshotError.bodyTooLarge
         }
         var framed = magic
@@ -264,7 +271,8 @@ extension AnytypeOriginalEditorHost {
                 )
                 let archiveURL = URL(fileURLWithPath: response.path)
                 let archive = try OriginalEditorArchiveFiles.readArchive(
-                    archiveURL, in: directory, maximumBytes: maximumBodyBytes
+                    archiveURL, in: directory,
+                    maximumBytes: min(maximumBodyBytes, OriginalAnnotationPayloadBudget.maximumArchiveBytes)
                 )
                 let snapshot = try AnytypeOriginalEditorSnapshot.frame(
                     archive: archive, reportBytes: reportBytes, responseCount: response.succeed,
@@ -315,13 +323,24 @@ internal enum OriginalEditorArchiveFiles {
         guard archive.pathExtension == "zip" else {
             throw AnytypeOriginalEditorSnapshotError.unsafeArchivePath
         }
-        return try readOwnedRegularFile(archive, in: directory, maximumBytes: maximumBytes)
+        return try readOwnedRegularFile(
+            archive, in: directory, maximumBytes: maximumBytes,
+            allowedMaximumBytes: OriginalAnnotationPayloadBudget.maximumArchiveBytes
+        )
     }
 
     /// The native qualification consumer also uses this same bounded, no-follow
     /// read for an original FileDownload result in its exclusively owned directory.
     static func readOwnedRegularFile(_ archive: URL, in directory: URL, maximumBytes: Int) throws -> Data {
-        guard maximumBytes > 0, maximumBytes <= 65_536 else {
+        // The existing attachment qualification caller retains its smaller cap.
+        try readOwnedRegularFile(archive, in: directory, maximumBytes: maximumBytes,
+                                 allowedMaximumBytes: 65_536)
+    }
+
+    private static func readOwnedRegularFile(
+        _ archive: URL, in directory: URL, maximumBytes: Int, allowedMaximumBytes: Int
+    ) throws -> Data {
+        guard maximumBytes > 0, maximumBytes <= allowedMaximumBytes else {
             throw AnytypeOriginalEditorSnapshotError.invalidLimit
         }
         guard archive.isFileURL,
