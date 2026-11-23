@@ -30,3 +30,21 @@ relabeling of an originalERROR asPASS. It has not run at source freeze.
 No caller-supplied exception or override map exists. The full fixed admission is
 SHA256-pinned in the verifier. The extension does not execute any old or newly
 qualified controller method; it verifies their already recorded evidence.
+
+## Actual new admission-control execution
+
+At frozen source0f798ba9a3a4353e51019394e9acb99835db1363, the one explicitly
+selected new composition method passed:1PASS,0FAIL, original unittest duration
+1.639seconds. All154 actual source/proof inputs were unchanged. The loaded
+repository modules were only the retained-control verifier and its test module.
+
+The original98, baseline4, composition18 and kernel9 controls were not rerun.
+The original failed attempt and its sevenERROR outcomes remain preserved.
+The actual new log, named START/PASS events, runner, loaded-module list,
+source-before/after inventories and receipt are copied byte for byte under
+attempt1; the external original attempt directory remains intact.
+
+SDK peer review inspected only the public call/receipt boundary and found no
+demonstrated blocker: actual current hashes stay separate from recovered
+baseline views, the receipt stays deterministic for before/after comparison,
+and originalERROR outcomes cannot qualify asPASS. The peer ran no tests.
