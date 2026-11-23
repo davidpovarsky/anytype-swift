@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "status": "PROPOSED_TOOLING_NOT_IMPLEMENTED",
+  "baseline": "f8bc89c6a96552582ecf070ff920cc86f92868d4",
+  "proposed_branch": "codex/otzaria-original-production-native-sdk-20261123",
+  "new_tooling_allowlist": [
+    "Tools/OriginalEditorProduction/production_profile.json",
+    "Tools/OriginalEditorProduction/production_profile.py",
+    "Tools/OriginalEditorProduction/native_composition.json",
+    "Tools/OriginalEditorProduction/prepare_native.py",
+    "Tools/OriginalEditorProduction/public_host_contract.json",
+    "Tools/OriginalEditorProduction/public_surface.py",
+    "Tools/OriginalEditorProduction/run_production_acceptance.py",
+    "Tools/OriginalEditorProduction/Consumer/ProductionConsumerApp.swift",
+    "Tools/OriginalEditorProduction/test_production_admission.py",
+    ".github/workflows/otzaria-original-editor-production.yml"
+  ],
+  "existing_paths_to_edit": [],
+  "current_original_swift_files": 2255,
+  "current_framework_facade_files": 14,
+  "current_expected_original_compiler_inputs": 2269,
+  "native_heart_base": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "native_required_slices": [
+    {
+      "platform": "ios",
+      "variant": null,
+      "architectures": [
+        "arm64"
+      ]
+    },
+    {
+      "platform": "ios",
+      "variant": "simulator",
+      "architectures": [
+        "arm64",
+        "x86_64"
+      ]
+    }
+  ],
+  "recommended_framework_configuration": "Release-Anytype",
+  "framework_required_slices": [
+    {
+      "platform": "ios",
+      "variant": null,
+      "architectures": [
+        "arm64"
+      ]
+    },
+    {
+      "platform": "ios",
+      "variant": "simulator",
+      "architectures": [
+        "arm64",
+        "x86_64"
+      ]
+    }
+  ],
+  "runtime_architecture": "arm64",
+  "same_toolchain_only": true,
+  "device_runtime_claim": false,
+  "device_signing_claim": false,
+  "final_native_composition": null,
+  "final_import_cancel_generation": null,
+  "final_closed_swift_import_source": null,
+  "all_unfinalized_inputs_refuse_activation": true,
+  "historical_producer_untouched": true,
+  "producer_builds_started": 0
+}

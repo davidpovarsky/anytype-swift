@@ -1,0 +1,50 @@
+{
+  "source": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "files": [
+    {
+      "heart_path": "go.mod",
+      "evidence_path": "original-heart/go.mod",
+      "bytes": 16202,
+      "sha256": "0c506b9ab921a9bfea985871c9c912d362147a6bb76e697ee62c51a2eb678de7",
+      "git_blob": "6cf5f865ace0b463e4e64257fc0700450fa1de96"
+    },
+    {
+      "heart_path": "go.sum",
+      "evidence_path": "original-heart/go.sum",
+      "bytes": 132924,
+      "sha256": "7c873be1e5b4c65e5e46d18167ae6bc29f0f5b51c459a8398d75ab22f0b2432d",
+      "git_blob": "f0c61168bfca9773d88b441774e9b7a9e69b3a87"
+    },
+    {
+      "heart_path": "cmd/iosrepack/main.go",
+      "evidence_path": "original-heart/cmd/iosrepack/main.go",
+      "bytes": 4507,
+      "sha256": "703a0b03533e562a9eed83166542e9e27ababc608d78ab29275526eeccb35a48",
+      "git_blob": "d2d94287d3227e1fe16c837a2f217d4e14c43a55"
+    },
+    {
+      "heart_path": "tantivity_sha256.txt",
+      "evidence_path": "original-heart/tantivity_sha256.txt",
+      "bytes": 1156,
+      "sha256": "14a78977c8b08e3e976cfbe130a6092aaec707e7515aa1811326e1c028cd2948",
+      "git_blob": "4244554ca575acc4d44fe344ad4ad741c3bf9860"
+    }
+  ],
+  "declared_go_version": "1.26.5",
+  "declared_mobile_version": "v0.0.0-20250218173827-cd096645fcd3",
+  "repack_exact_framework_paths": [
+    "ios-arm64/Lib.framework/Lib",
+    "ios-arm64_x86_64-simulator/Lib.framework/Lib"
+  ],
+  "repack_exact_thin_architectures": {
+    "ios-arm64": [
+      "arm64"
+    ],
+    "ios-arm64_x86_64-simulator": [
+      "arm64",
+      "x86_64"
+    ]
+  },
+  "repack_operations": "Original ar extraction and ar -qc static archive composition, then lipo into the exact device/simulator paths",
+  "scope": "Read-only pinned source facts; no binary product observed or generated"
+}
