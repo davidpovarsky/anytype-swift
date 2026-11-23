@@ -15,6 +15,7 @@ import sys
 from uuid import uuid4
 
 import contract
+import cleanup
 import descriptor
 import execution
 import proof
@@ -207,15 +208,7 @@ def run_simulator(control, work, evidence, receipt, run, environment, package, s
                 receipt["compiled_products_unchanged"] = False
                 receipt["compiled_product_verification_failure"] = dict(
                     error_type=type(product_error).__name__, error=str(product_error))
-        for action in ("shutdown", "delete"):
-            try:
-                run(["xcrun", "simctl", action, udid], "cleanup-owned-simulator-" + action, timeout=30)
-                receipt.setdefault("owned_simulator_cleanup", {})[action] = dict(status="PASS_EXIT_0")
-            except BaseException as cleanup_error:
-                receipt.setdefault("owned_simulator_cleanup", {})[action] = dict(status="FAIL",
-                    error_type=type(cleanup_error).__name__, error=str(cleanup_error))
-        receipt["owned_simulator_cleanup_status"] = ("COMPLETE" if all(
-            value["status"] == "PASS_EXIT_0" for value in receipt["owned_simulator_cleanup"].values()) else "INCOMPLETE")
+        cleanup.cleanup_owned_simulator(run, receipt, udid)
 
 
 def execute(args, receipt, run):

@@ -1,0 +1,79 @@
+{
+  "status": "QUALIFIED_ORIGINAL_PRODUCT_PASS_WITH_ORIGINAL_WORKFLOW_CLEANUP_FAILURE",
+  "originalRunID": "45101724348",
+  "originalRunAttempt": 1,
+  "executedSourceSHA": "ae8642a43e1b2a76346219e19085f4e3e56aec39",
+  "artifact": {
+    "id": 14786636216,
+    "bytes": 471862,
+    "sha256": "febfa5a29d0f4ad6bfd110618cdaec2f1ee6925c880c57d3c8eaf7406902038a"
+  },
+  "originalReceiptSHA256": "7a9f5020d7911ad3028f2ad9ee9eeeee3e389c2eca37bd1c32c2e699ae3dae86",
+  "actualAttachmentSHA256": "d602b92f86b32ff77b9cbfa01154576494fad76a2de254c5ccf055efbbb34d08",
+  "originalWorkflowConclusion": "failure",
+  "actualProductExecution": {
+    "counts": {
+      "totalTestCount": 1,
+      "passedTests": 1,
+      "failedTests": 0,
+      "skippedTests": 0
+    },
+    "actual_cases": {
+      "AnyPreparedInlineFileRuntimeTests/testManagedInlineFilesSurviveOrderlyReopenWithExactNativeBytes()": "Passed"
+    },
+    "selected_method": "PinkhaAnyRuntimeTests/AnyPreparedInlineFileRuntimeTests/testManagedInlineFilesSurviveOrderlyReopenWithExactNativeBytes",
+    "device": {
+      "architecture": "arm64",
+      "deviceId": "DC20C505-8314-42B2-B90F-766F8E8260E7",
+      "deviceName": "PreparedInlineFile-a47ea65ec2ad4bfdb2dfd7928f2bc003",
+      "modelName": "iPad mini (A20 Pro)",
+      "osBuildNumber": "24B8117",
+      "osVersion": "27.2",
+      "platform": "iOS Simulator"
+    }
+  },
+  "verifiedObservations": {
+    "receipt_observations": 14,
+    "ordinary_content_readbacks": 4,
+    "orderly_reopens": 2,
+    "completed_cleanup": true,
+    "limits": {
+      "restartKind": "orderly-native-sdk-store-same-xctest-process",
+      "osProcessCrash": "NOT_RUN",
+      "lostHTTPAcknowledgement": "NOT_INJECTED",
+      "networkSynchronization": "NOT_RUN",
+      "SSEDelivery": "NOT_EVALUATED_TRANSIENT",
+      "fullSpaceMigration": "NOT_PROVEN"
+    }
+  },
+  "originalSourceFilesVerified": 505,
+  "currentInlineModuleFilesIdentical": 257,
+  "compiledProductInventoryEntriesIdentical": 57,
+  "commandLogHashesVerified": 18,
+  "nativeRuntimeReused": true,
+  "oldNativeAndSwiftTestsRerun": 0,
+  "originalCleanup": {
+    "shutdown": {
+      "status": "FAIL",
+      "error_type": "TimeoutExpired",
+      "error": "Command '['xcrun', 'simctl', 'shutdown', 'DC20C505-8314-42B2-B90F-766F8E8260E7']' timed out after 30 seconds"
+    },
+    "delete": {
+      "status": "PASS_EXIT_0"
+    }
+  },
+  "originalCleanupAbsenceQuery": "NOT_RUN",
+  "repairedScope": "Only an exact owned shutdown timeout followed by delete exit0 may be reconciled by a bounded scoped original-UDID absence query within the same60second total. Original failure is retained. Every completion checks the final monotonic deadline.",
+  "repairedActualMacCleanup": "NOT_RUN",
+  "rootProductTestsRerun": 0,
+  "controls": {
+    "originalNewControls": 8,
+    "originalLogSHA256": "e9debf0f30b5649bdbe26d43edceeac0db88523e73323dc709e40ba582766ca1",
+    "priorHelperSHA256": "b5ab80a5844cdb3471da92be47631e7cf218eb9e437a81c2e038b7e18d8fa3f8",
+    "lateCompletionControl": 1,
+    "lateControlLogSHA256": "8130e8d7f361added43960fa34200d15fe581e4de138df485be9f81bd77782ed",
+    "oldMethodsRerun": 0,
+    "finalHelperSHA256": "14fa818cdf6c2cf8b7b1f78c075bad8e98240bf1f40d2d50acf6fb3c5fd74cc6"
+  },
+  "review": "Independent peer identified missing post-command deadline check; fixed and specifically verified on late successful delete and late successful absence query. Eight prior controls remain byte-identical; no product retest or historical relabelling."
+}
