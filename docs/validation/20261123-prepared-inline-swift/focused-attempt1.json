@@ -1,0 +1,56 @@
+{
+  "status": "FAIL",
+  "started": "2026-11-23T00:41:28.732449+00:00",
+  "command": [
+    "swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-wave15-inline-http-20261123/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/mnt/development/build-cache/anytype-inline-swift-20261123",
+    "--cache-path",
+    "/mnt/development/build-cache/swift-package-cache",
+    "--disable-automatic-resolution",
+    "-j",
+    "1",
+    "--filter",
+    "NativePreparedInlineFileMigrationTests"
+  ],
+  "toolchain": "Swift version 6.4.3 (swift-6.4.3-RELEASE)\nTarget: aarch64-unknown-linux-gnu",
+  "pins": [
+    {
+      "identity": "swift-crypto",
+      "head": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+      "status": ""
+    },
+    {
+      "identity": "swift-asn1",
+      "head": "917b472dbe53ba699cbb0495f9a95a084bc6364d",
+      "status": ""
+    },
+    {
+      "identity": "TorahInspectorKit",
+      "head": "511454e49450cb2581ddf77f644146ff3e30dbef",
+      "status": ""
+    }
+  ],
+  "sourceFiles": 186,
+  "exitCode": 1,
+  "sourceUnchanged": true,
+  "terminalCases": [
+    "Test Case 'NativePreparedInlineFileMigrationTests.testBoundedInputRejectsOversizeAndInvalidMetadataWithoutTruncation' failed (0.033 seconds)",
+    "Test Case 'NativePreparedInlineFileMigrationTests.testCapabilitiesCannotAdvertiseAnUnboundedOrWrongScopeContract' passed (0.002 seconds)",
+    "Test Case 'NativePreparedInlineFileMigrationTests.testChangedReservedIdentityOrRegressingStageStopsBeforeCommit' passed (0.03 seconds)",
+    "Test Case 'NativePreparedInlineFileMigrationTests.testCommitAdvancesTwoDurableStagesAndCompletedRetryDoesNotWrite' passed (0.006 seconds)",
+    "Test Case 'NativePreparedInlineFileMigrationTests.testDeletedModifiedAndObsoleteNeverAllocateOrCommitAgain' passed (0.012 seconds)",
+    "Test Case 'NativePreparedInlineFileMigrationTests.testExactBytesAndMetadataSurviveTheWireAtBothSizeBounds' passed (0.008 seconds)",
+    "Test Case 'NativePreparedInlineFileMigrationTests.testLogicalIdentityKeepsChangedInputAsACollisionAndSeparatesScopes' passed (0.012 seconds)",
+    "Test Case 'NativePreparedInlineFileMigrationTests.testLostAcknowledgementAtEitherStageReconcilesBeforeRemainingWrite' passed (0.002 seconds)",
+    "Test Case 'NativePreparedInlineFileMigrationTests.testNoProgressOrDisabledCapabilityDoesNotStartARetryLoop' passed (0.001 seconds)",
+    "Test Case 'NativePreparedInlineFileMigrationTests.testOwnerOrStoreChangeStopsBeforeTheNextDurableStage' passed (0.001 seconds)",
+    "Test Case 'NativePreparedInlineFileMigrationTests.testPrepareUsesDedicatedRouteAndExactImmutableEnvelope' passed (0.001 seconds)",
+    "Test Case 'NativePreparedInlineFileMigrationTests.testReceiptBindsOwnerContentEveryReservedIdentityAndStage' passed (0.001 seconds)"
+  ],
+  "logSHA256": "a421ad5b415bd782ffa8db618948d3f9089061aed0807dc4e1ac654f8fc53c66",
+  "finished": "2026-11-23T00:48:20.061613+00:00"
+}

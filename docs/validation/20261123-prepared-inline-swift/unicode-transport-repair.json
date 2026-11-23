@@ -1,0 +1,25 @@
+{
+  "cause": "Raw PowerShell-to-SSH script transport replaced non-ASCII fixture literals with question marks; product source unchanged.",
+  "transport": "ASCII-only JSON Unicode escapes decoded by Python json.loads.",
+  "changedTestMethods": [
+    "testBoundedInputRejectsOversizeAndInvalidMetadataWithoutTruncation",
+    "testExactBytesAndMetadataSurviveTheWireAtBothSizeBounds"
+  ],
+  "unchangedTestMethods": [
+    "testCapabilitiesCannotAdvertiseAnUnboundedOrWrongScopeContract",
+    "testChangedReservedIdentityOrRegressingStageStopsBeforeCommit",
+    "testCommitAdvancesTwoDurableStagesAndCompletedRetryDoesNotWrite",
+    "testDeletedModifiedAndObsoleteNeverAllocateOrCommitAgain",
+    "testLogicalIdentityKeepsChangedInputAsACollisionAndSeparatesScopes",
+    "testLostAcknowledgementAtEitherStageReconcilesBeforeRemainingWrite",
+    "testNoProgressOrDisabledCapabilityDoesNotStartARetryLoop",
+    "testOwnerOrStoreChangeStopsBeforeTheNextDurableStage",
+    "testPrepareUsesDedicatedRouteAndExactImmutableEnvelope",
+    "testReceiptBindsOwnerContentEveryReservedIdentityAndStage"
+  ],
+  "unchangedHelperAndOtherTestBytes": true,
+  "productSHA256": "4c134d514014b021bfd346ca93fe11f2cbc4af12ee6c263e9b42276e0065591f",
+  "originalTestSHA256": "f32070e3b54278f0cfcc9926ce002a10221cb16e7abdc1d1a1edcbbb6c87ba84",
+  "correctedTestSHA256": "aaa192da53441cc780ce565ebd4c5016b9a2e5899f86aa88376a179e1985e49d",
+  "hebrewScalarPresent": true
+}

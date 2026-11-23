@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "command": [
+    "swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-wave15-inline-http-20261123/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/mnt/development/build-cache/anytype-inline-swift-20261123",
+    "--cache-path",
+    "/mnt/development/build-cache/swift-package-cache",
+    "--disable-automatic-resolution",
+    "-j",
+    "1",
+    "--filter",
+    "NativePreparedInlineFileMigrationTests.test(BoundedInputRejectsOversizeAndInvalidMetadataWithoutTruncation|ExactBytesAndMetadataSurviveTheWireAtBothSizeBounds)$"
+  ],
+  "exitCode": 0,
+  "sourceUnchanged": true,
+  "terminalCases": [
+    "Test Case 'NativePreparedInlineFileMigrationTests.testBoundedInputRejectsOversizeAndInvalidMetadataWithoutTruncation' passed (0.009 seconds)",
+    "Test Case 'NativePreparedInlineFileMigrationTests.testExactBytesAndMetadataSurviveTheWireAtBothSizeBounds' passed (0.003 seconds)"
+  ],
+  "retainedUnchangedMethods": 10,
+  "productSourceUnchanged": true,
+  "logSHA256": "e23d7b7cf87fd2f2cb1a0d8fc665ec277c54de3aeb66b8d8e53043c223cbf7f6",
+  "httpTestCompiledButNotExecuted": true,
+  "started": "2026-11-23T00:53:42.508473+00:00",
+  "finished": "2026-11-23T00:53:58.994785+00:00"
+}

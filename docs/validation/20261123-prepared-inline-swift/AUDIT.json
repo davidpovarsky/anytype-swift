@@ -1,0 +1,59 @@
+{
+  "actualNativeHTTP": "NOT_RUN",
+  "actualRepairMethods": 2,
+  "apple": "NOT_RUN",
+  "baseCommit": "1bfede896cc4876a6d757ca2c32b4a2805575c6e",
+  "currentMethodCount": 12,
+  "dependencyPins": [
+    {
+      "head": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+      "identity": "swift-crypto",
+      "status": ""
+    },
+    {
+      "head": "917b472dbe53ba699cbb0495f9a95a084bc6364d",
+      "identity": "swift-asn1",
+      "status": ""
+    },
+    {
+      "head": "511454e49450cb2581ddf77f644146ff3e30dbef",
+      "identity": "TorahInspectorKit",
+      "status": ""
+    }
+  ],
+  "firstAttempt": {
+    "assertionFailures": 2,
+    "failedMethods": 1,
+    "logSHA256": "a421ad5b415bd782ffa8db618948d3f9089061aed0807dc4e1ac654f8fc53c66",
+    "passedMethods": 11
+  },
+  "fullHostModuleAndTestTargetCompile": "PASS_LINUX_ARM64",
+  "fullMigrationAccepted": false,
+  "generalFileCapability": 0,
+  "legacyObjectBlockMethodsRerun": 0,
+  "liveHTTPMethodCompiled": true,
+  "physicalDevice": "NOT_RUN",
+  "repair": {
+    "failedMethods": 0,
+    "logSHA256": "e23d7b7cf87fd2f2cb1a0d8fc665ec277c54de3aeb66b8d8e53043c223cbf7f6",
+    "passedMethods": 2
+  },
+  "retainedUnchangedMethods": 10,
+  "sourceProof": {
+    "changedFixtureMethods": [
+      "testBoundedInputRejectsOversizeAndInvalidMetadataWithoutTruncation",
+      "testExactBytesAndMetadataSurviveTheWireAtBothSizeBounds"
+    ],
+    "currentSourceFiles": 187,
+    "currentSources": {
+      "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedInlineFileMigration.swift": "4c134d514014b021bfd346ca93fe11f2cbc4af12ee6c263e9b42276e0065591f",
+      "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativePreparedInlineFileHTTPTests.swift": "79baeffd9ee05209c6f1cb45e30fbd8a7cb99684480ce04ceb8b1dd9e0514819",
+      "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativePreparedInlineFileMigrationTests.swift": "aaa192da53441cc780ce565ebd4c5016b9a2e5899f86aa88376a179e1985e49d"
+    },
+    "existingSourcesMatchedBase": 184,
+    "productionSourceUnchangedAcrossAttempts": true,
+    "unchangedRetainedMethodBodiesAndHelpers": true
+  },
+  "status": "PASS_12_CURRENT_INLINE_CLIENT_METHODS",
+  "toolchain": "Swift version 6.4.3 (swift-6.4.3-RELEASE)\nTarget: aarch64-unknown-linux-gnu"
+}
