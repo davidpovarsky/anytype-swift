@@ -1,0 +1,173 @@
+{
+  "schema": 1,
+  "status": "ACTUAL_FAILURE_DIAGNOSED_SOURCE_REPAIR_REVIEWED_NOT_EXECUTED",
+  "recorded_at": "2026-11-23T20:24:14.627151+00:00",
+  "failed_run": 45251406927,
+  "run_attempt": 1,
+  "source_sha": "2f73090b0cf199fa778093f005db3cddff48c391",
+  "artifact": {
+    "id": 14857242771,
+    "bytes": 3124653,
+    "sha256": "b46162fbf5093ee9fcf809b2154b3b8ca2601ed0552c02ef0b69951d61f87e12"
+  },
+  "native_counts": {
+    "PASS": 0,
+    "FAIL": 1,
+    "NOT_RUN": 8,
+    "SKIP": 0
+  },
+  "schema_key": "ot-pinkhatorahannotationv1",
+  "source_relation": {
+    "key": "rel-lastOpenedDate",
+    "source_id": "bafyreihj7a2cqhlfhpyi7suzxhnftqkrxlziap26oqpvm2m4bytseabyt4",
+    "target_id": "bafyreifmjzmksqnuse2qeovdcal7eagryjqfp6hsvqg6b2mkw2ovgn63qe",
+    "catalog_key_source": "core/relationutils/recommended.go defaultHiddenRelationKeys and prepareRelationIds",
+    "actual_named_original_install_and_persist_logs": [
+      {
+        "event_time": "2026-11-23T19:50:27.709144Z",
+        "test": "TestOtzariaOwnedAnnotationClosedNativeImport",
+        "output": "2026-11-23T19:50:27.707Z\tDEBUG\tanytype-mw-state\tobject bafyreihj7a2cqhlfhpyi7suzxhnftqkrxlziap26oqpvm2m4bytseabyt4 (Last opened date) has 0 object types instead of 1\n"
+      },
+      {
+        "event_time": "2026-11-23T19:50:27.709159Z",
+        "test": "TestOtzariaOwnedAnnotationClosedNativeImport",
+        "output": "2026-11-23T19:50:27.707Z\tDEBUG\tcommon.commonspace.objecttree\tfinished adding content\t{\"treeId\": \"bafyreihj7a2cqhlfhpyi7suzxhnftqkrxlziap26oqpvm2m4bytseabyt4\", \"head\": \"bafyreidxt4gf7v6rrqcs4wwjkbdcgidzdligioeurq3zbh224ohgrtcyjy\"}\n"
+      },
+      {
+        "event_time": "2026-11-23T19:50:27.709172Z",
+        "test": "TestOtzariaOwnedAnnotationClosedNativeImport",
+        "output": "2026-11-23T19:50:27.708Z\tINFO\tobjectCreator\tinstall new object\t{\"id\": \"bafyreihj7a2cqhlfhpyi7suzxhnftqkrxlziap26oqpvm2m4bytseabyt4\"}\n"
+      },
+      {
+        "event_time": "2026-11-23T19:50:30.266046Z",
+        "test": "TestOtzariaOwnedAnnotationClosedNativeImport/text",
+        "output": "2026-11-23T19:50:30.265Z\tDEBUG\tanytype-mw-state\tobject bafyreifmjzmksqnuse2qeovdcal7eagryjqfp6hsvqg6b2mkw2ovgn63qe (Last opened date) has 0 object types instead of 1\n"
+      },
+      {
+        "event_time": "2026-11-23T19:50:30.266332Z",
+        "test": "TestOtzariaOwnedAnnotationClosedNativeImport/text",
+        "output": "2026-11-23T19:50:30.266Z\tDEBUG\tcommon.commonspace.objecttree\tfinished adding content\t{\"treeId\": \"bafyreifmjzmksqnuse2qeovdcal7eagryjqfp6hsvqg6b2mkw2ovgn63qe\", \"head\": \"bafyreicoq635zgw2a36qnsnadpwbwwil4n57rwklkgv4fei2pqoecqlafq\"}\n"
+      },
+      {
+        "event_time": "2026-11-23T19:50:30.267077Z",
+        "test": "TestOtzariaOwnedAnnotationClosedNativeImport/text",
+        "output": "2026-11-23T19:50:30.267Z\tINFO\tobjectCreator\tinstall new object\t{\"id\": \"bafyreifmjzmksqnuse2qeovdcal7eagryjqfp6hsvqg6b2mkw2ovgn63qe\"}\n"
+      }
+    ]
+  },
+  "authentic_export": {
+    "path": "fixtures/source/text.zip",
+    "bytes": 79979,
+    "sha256": "ec9df0b1df43bb98cb1cee83ee1d43ce6cb6001d194b4ec646ff589a6b2d36c9",
+    "crc_all_members_verified": true,
+    "member_count": 67,
+    "type_member": "types/bafyreiaffjrbp3wrtgofeahmm4umpvkfzpybd76t5xqs2t7tmnp73e5vai.pb",
+    "type_bytes": 4985,
+    "type_sha256": "1a50957fd2a2a7aba8e411d780b0391679c099b94ad0973f43e9bdff5c368a77",
+    "source_relation_cid_present_in_type": true,
+    "source_relation_member_absent": true,
+    "missing_object_not_in_raw_type": true
+  },
+  "original_compiled_contract_sources": [
+    {
+      "path": "core/block/export/collection.go",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "bytes": 27992,
+      "sha256": "82879153c8af03a1cdafcc2ba5164ac9c1c21f0c216cc99b61b53883cb5d0199",
+      "git_blob": "3667f017d5bed48e1fceb88f775e4cc5f8e20deb",
+      "actual_compiler_declared_row": {
+        "bytes": 27992,
+        "path": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Owned-Annotation-Import/core/block/export/collection.go",
+        "sha256": "82879153c8af03a1cdafcc2ba5164ac9c1c21f0c216cc99b61b53883cb5d0199"
+      }
+    },
+    {
+      "path": "core/block/editor/state/details.go",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "bytes": 6568,
+      "sha256": "ecf1de3ae95f72f9cc8aa353da9853a85f65ce7df75ea57c4339f510a57ba7fe",
+      "git_blob": "b4585809665a602e3b74d32fefdb92a1249b1053",
+      "actual_compiler_declared_row": {
+        "bytes": 6568,
+        "path": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Owned-Annotation-Import/core/block/editor/state/details.go",
+        "sha256": "ecf1de3ae95f72f9cc8aa353da9853a85f65ce7df75ea57c4339f510a57ba7fe"
+      }
+    },
+    {
+      "path": "core/block/editor/template/collection.go",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "bytes": 21143,
+      "sha256": "538f2636da445262f3d5d9e9cc7f2b147bbb3c49849bf7a445ad8d7ff05c6307",
+      "git_blob": "4af16f6be23e57204843807521a508342ffea482",
+      "actual_compiler_declared_row": {
+        "bytes": 21143,
+        "path": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Owned-Annotation-Import/core/block/editor/template/collection.go",
+        "sha256": "538f2636da445262f3d5d9e9cc7f2b147bbb3c49849bf7a445ad8d7ff05c6307"
+      }
+    },
+    {
+      "path": "core/relationutils/recommended.go",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "bytes": 7744,
+      "sha256": "d9391b51a0a4dcce70d0aff24d30d5effb2f236d1b38a58b5f6546054febed05",
+      "git_blob": "b36c1cfcc155bfc2f3ca0eaeb6098a5d4b5b8596",
+      "actual_compiler_declared_row": {
+        "bytes": 7744,
+        "path": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Owned-Annotation-Import/core/relationutils/recommended.go",
+        "sha256": "d9391b51a0a4dcce70d0aff24d30d5effb2f236d1b38a58b5f6546054febed05"
+      }
+    },
+    {
+      "path": "core/block/import/common/common.go",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "bytes": 13529,
+      "sha256": "4216c1ed01c9cbbe287f30616a2fc4acef95a214a2fc212db9c51501d596ce0f",
+      "git_blob": "7edf2d02075d4b3ba80a6f05d87a142df3dd895d",
+      "actual_compiler_declared_row": {
+        "bytes": 13529,
+        "path": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Owned-Annotation-Import/core/block/import/common/common.go",
+        "sha256": "4216c1ed01c9cbbe287f30616a2fc4acef95a214a2fc212db9c51501d596ce0f"
+      }
+    },
+    {
+      "path": "core/block/simple/base/base.go",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "bytes": 3288,
+      "sha256": "a840e66a5cb704bb3cfa591d6d70db984bd315ea13507ce875c5265710fa5d54",
+      "git_blob": "c4a0a0dd7cb2985df66a02a27a3e8c7c9c173d55",
+      "actual_compiler_declared_row": {
+        "bytes": 3288,
+        "path": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Owned-Annotation-Import/core/block/simple/base/base.go",
+        "sha256": "a840e66a5cb704bb3cfa591d6d70db984bd315ea13507ce875c5265710fa5d54"
+      }
+    },
+    {
+      "path": "pkg/lib/pb/model/models.pb.go",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "bytes": 1180139,
+      "sha256": "1e7bea1584323e3d69fb7a9f1cbe0815ab274cc1b847508b3c3c6feb9a4ad99d",
+      "git_blob": "5a07a9a96731786a6fb849ab56002c735b10aba2",
+      "actual_compiler_declared_row": {
+        "bytes": 1180139,
+        "path": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Owned-Annotation-Import/pkg/lib/pb/model/models.pb.go",
+        "sha256": "1e7bea1584323e3d69fb7a9f1cbe0815ab274cc1b847508b3c3c6feb9a4ad99d"
+      }
+    }
+  ],
+  "causal_trace": [
+    "Original FillRecommendedRelations derives and installs default lastOpenedDate on both Spaces; actual native logs name and persist both different space-derived objects.",
+    "Original object-type dataview contains lastOpenedDate, but exporter only walks dataview columns for set/collection layouts; AllRelationKeys covers detail keys, not recommended relation-ID values.",
+    "Original selected export therefore omits this relation member even though recommendedHiddenRelations still refers to its source CID.",
+    "Compatibility remaps only genuine archive members. Original getNewObjectsIDForRelation changes this unknown CID to _missing_object. The original raw exported type contains no such sentinel.",
+    "Original Base.Diff materializes nil restrictions to an empty restrictions struct on owned operands; empty/empty emits no persisted restriction change. Exported in-memory dataview has an explicit zero-length restrictions message while target replay has no restrictions message."
+  ],
+  "repair_scope": [
+    "Add only object-type layout to original dataview collection path so real relation-key lookup/export provides the missing schema member.",
+    "Use original Base.Diff on two owned identical block copies and require zero events before existing full proto.Equal comparison.",
+    "Preserve all five restriction flags, hidden relations, nested body, mapping/readiness and lifecycle predicates."
+  ],
+  "fresh_native_controls": "NOT_RUN",
+  "production_import_activated": false,
+  "prior_six_semantic_passes": "Preserved as authentic history; fresh execution required because product changes the full declared dependency closure.",
+  "rpc_union_qualified": false
+}

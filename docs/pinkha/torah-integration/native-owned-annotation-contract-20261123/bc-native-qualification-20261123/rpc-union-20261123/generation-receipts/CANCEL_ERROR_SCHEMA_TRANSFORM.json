@@ -1,0 +1,24 @@
+{
+  "after": {
+    "bytes": 319366,
+    "git_blob": "f19c06e973c2b4bcbaa60fa45c9b6f1938b71a82",
+    "path": "pb/protos/commands.proto",
+    "sha256": "2e8de56d9d3be2a0344f0ee2867d2595ea411c24d7e2ad504a5edacb6bf57fc0"
+  },
+  "after_fragment": "            message Cancel {\n                message Request {\n                    string importProtocol = 1;\n                    string expectedAccountId = 2;\n                    string sourceSpaceId = 3;\n                    string sourceRootId = 4;\n                    string targetSpaceId = 5;\n                    bytes archiveSHA256 = 6;\n                    bytes attemptSecret = 7;\n                }\n\n                message Response {\n                    Error error = 1;\n                    string importProtocol = 2;\n                    Disposition disposition = 3;\n                    enum Disposition {\n                        // In particular, this is not evidence of no native work.\n                        NOT_OBSERVED = 0;\n                        REQUESTED = 1;\n                        DONE_OBSERVED = 2;\n                    }\n                    message Error {\n                        Code code = 1;\n                        string description = 2;\n                        enum Code {\n                            NULL = 0;\n                            BAD_INPUT = 1;\n                            RUNTIME_UNAVAILABLE = 2;\n                            UNKNOWN_ERROR = 3;\n                        }\n                    }\n                }\n            }\n        }\n",
+  "before": {
+    "bytes": 319319,
+    "git_blob": "f08c2559697251cfc9fa5eda9c60fd95e106c3ae",
+    "path": "pb/protos/commands.proto",
+    "sha256": "af3fc3b92541048116ec73ec1a9b5c516a352e097f2c0aa9172e9ff6db5ffda2"
+  },
+  "before_fragment": "            message Cancel {\n                message Request {\n                    string importProtocol = 1;\n                    string expectedAccountId = 2;\n                    string sourceSpaceId = 3;\n                    string sourceRootId = 4;\n                    string targetSpaceId = 5;\n                    bytes archiveSHA256 = 6;\n                    bytes attemptSecret = 7;\n                }\n\n                message Response {\n                    Error error = 1;\n                    string importProtocol = 2;\n                    Disposition disposition = 3;\n                    enum Disposition {\n                        // In particular, this is not evidence of no native work.\n                        NOT_OBSERVED = 0;\n                        REQUESTED = 1;\n                        DONE_OBSERVED = 2;\n                    }\n                    message Error {\n                        Code code = 1;\n                        string description = 2;\n                        enum Code {\n                            NULL = 0;\n                            BAD_INPUT = 1;\n                            RUNTIME_UNAVAILABLE = 2;\n                        }\n                    }\n                }\n            }\n        }\n",
+  "existing_values_preserved": true,
+  "native_path": "pb/protos/commands.proto",
+  "wire_values": {
+    "BAD_INPUT": 1,
+    "NULL": 0,
+    "RUNTIME_UNAVAILABLE": 2,
+    "UNKNOWN_ERROR": 3
+  }
+}

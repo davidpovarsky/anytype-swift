@@ -1,0 +1,1560 @@
+[
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "go",
+      "version"
+    ],
+    "child_started_unix": 1795466668.62497,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466668.732629
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 0.113,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "go-version",
+    "pid": 2636,
+    "process_group_id": 2636,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466668.6208,
+    "status": "TERMINAL",
+    "stderr": "01-go-version.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "01-go-version.stdout",
+    "stdout_sha256": "278375c8a03c34bb0f855154850de7c4f217fd3b8cdf37986819e3f05d0a4c33",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "xcodebuild",
+      "-version"
+    ],
+    "child_started_unix": 1795466668.745857,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466669.086646
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 0.352,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "xcode-version",
+    "pid": 2637,
+    "process_group_id": 2637,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466668.7356958,
+    "status": "TERMINAL",
+    "stderr": "02-xcode-version.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "02-xcode-version.stdout",
+    "stdout_sha256": "694b44731d0b415c5b11d844151e466d7f5e200a95627efda377f232f1a6ab77",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "gh",
+      "api",
+      "repos/davidpovarsky/anytype-swift/actions/runs/45233570129"
+    ],
+    "child_started_unix": 1795466669.122429,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466669.7424471
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 0.628,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 60.0,
+    "label": "reuse-continuation-run",
+    "pid": 2639,
+    "process_group_id": 2639,
+    "requested_timeout_seconds": 60,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466669.1163409,
+    "status": "TERMINAL",
+    "stderr": "03-reuse-continuation-run.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "03-reuse-continuation-run.stdout",
+    "stdout_sha256": "c671522695c022fdb87ffdf727661dce04cb3109066f019022586d962184a3b0",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "gh",
+      "api",
+      "repos/davidpovarsky/anytype-swift/actions/artifacts/14848418669"
+    ],
+    "child_started_unix": 1795466669.755308,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466670.153205
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 0.406,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 60.0,
+    "label": "reuse-continuation-artifact",
+    "pid": 2640,
+    "process_group_id": 2640,
+    "requested_timeout_seconds": 60,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466669.748202,
+    "status": "TERMINAL",
+    "stderr": "04-reuse-continuation-artifact.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "04-reuse-continuation-artifact.stdout",
+    "stdout_sha256": "484ded78b28d01f3c1f126c42b0f1ab2b354da37a95c540a77e87189b2cd51aa",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "gh",
+      "api",
+      "repos/davidpovarsky/anytype-swift/actions/artifacts/14848418669/zip"
+    ],
+    "child_started_unix": 1795466670.161858,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466672.19656
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 2.044,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 240.0,
+    "label": "download-actual-continuation",
+    "pid": 2642,
+    "process_group_id": 2642,
+    "requested_timeout_seconds": 240,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466670.156325,
+    "status": "TERMINAL",
+    "stderr": "05-download-actual-continuation.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "05-download-actual-continuation.stdout",
+    "stdout_sha256": "caa9e6cf0efc9c0a016a5471ec34814ef4f575bb316114b0c42bf7770e084c4f",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "gh",
+      "api",
+      "repos/davidpovarsky/anytype-swift/actions/runs/45248571613"
+    ],
+    "child_started_unix": 1795466674.2396328,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466674.8060129
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 0.579,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 60.0,
+    "label": "reuse-compile-failure-run",
+    "pid": 2648,
+    "process_group_id": 2648,
+    "requested_timeout_seconds": 60,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466674.229682,
+    "status": "TERMINAL",
+    "stderr": "06-reuse-compile-failure-run.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "06-reuse-compile-failure-run.stdout",
+    "stdout_sha256": "d64d048d5b271c9bcce26abed3a351c31309ca63d1087cfb7f80e0b977d825dc",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "gh",
+      "api",
+      "repos/davidpovarsky/anytype-swift/actions/artifacts/14855596411"
+    ],
+    "child_started_unix": 1795466674.8188438,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466675.143445
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 0.336,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 60.0,
+    "label": "reuse-compile-failure-artifact",
+    "pid": 2649,
+    "process_group_id": 2649,
+    "requested_timeout_seconds": 60,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466674.8103108,
+    "status": "TERMINAL",
+    "stderr": "07-reuse-compile-failure-artifact.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "07-reuse-compile-failure-artifact.stdout",
+    "stdout_sha256": "194cfba047c58ece0bd37d8a96155d73c200c7ffd1258583c28d43d29baa8a10",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "gh",
+      "api",
+      "repos/davidpovarsky/anytype-swift/actions/artifacts/14855596411/zip"
+    ],
+    "child_started_unix": 1795466675.158014,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466677.276472
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 2.13,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 240.0,
+    "label": "download-actual-compile-failure",
+    "pid": 2651,
+    "process_group_id": 2651,
+    "requested_timeout_seconds": 240,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466675.148515,
+    "status": "TERMINAL",
+    "stderr": "08-download-actual-compile-failure.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "08-download-actual-compile-failure.stdout",
+    "stdout_sha256": "e8c0e6eda24264e8d017da901da06dcdaa5707fe0a6c700fe02d787fddb45e0e",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "git",
+      "clone",
+      "--no-hardlinks",
+      "--no-checkout",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Inputs/heart",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-heart"
+    ],
+    "child_started_unix": 1795466678.1316211,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466678.8081212
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 0.687,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 180.0,
+    "label": "clone-original-heart",
+    "pid": 2681,
+    "process_group_id": 2681,
+    "requested_timeout_seconds": 180,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466678.123331,
+    "status": "TERMINAL",
+    "stderr": "09-clone-original-heart.stderr",
+    "stderr_sha256": "9e932628262f6155852eaddeb657d2b84e5dbea0457f47e876f0180550000631",
+    "stdout": "09-clone-original-heart.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "git",
+      "checkout",
+      "--detach",
+      "d98420b1113536afd08cde6de9a5816f6d27ffff"
+    ],
+    "child_started_unix": 1795466678.819214,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466679.502932
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-heart",
+    "duration_seconds": 0.694,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 120.0,
+    "label": "checkout-original-heart",
+    "pid": 2765,
+    "process_group_id": 2765,
+    "requested_timeout_seconds": 120,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466678.812068,
+    "status": "TERMINAL",
+    "stderr": "10-checkout-original-heart.stderr",
+    "stderr_sha256": "772a1b98925e4b79149ccb13974387624d86f69d2353ec3792bed642ef518ab2",
+    "stdout": "10-checkout-original-heart.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "git",
+      "add",
+      "--",
+      "cmd/grpcserver/grpc.go",
+      "core/annotation_import.go",
+      "core/annotation_schema.go",
+      "core/application/account_create.go",
+      "core/application/account_create_from_export.go",
+      "core/application/account_move.go",
+      "core/application/account_select.go",
+      "core/application/account_stop.go",
+      "core/application/active_app_admission.go",
+      "core/application/application.go",
+      "core/application/owned_annotation_import.go",
+      "core/application/owned_import_admission.go",
+      "core/block/detailservice/pinkha_torah.go",
+      "core/block/editor/basic/details.go",
+      "core/block/editor/file/file.go",
+      "core/block/editor/file/owned_upload.go",
+      "core/block/editor/smartblock/detailsinject.go",
+      "core/block/editor/smartblock/pinkha_torah.go",
+      "core/block/editor/state/change.go",
+      "core/block/export/anyblock/anyblock.go",
+      "core/block/import/common/objectcreator/objectcreator.go",
+      "core/block/import/common/objectcreator/owned_annotation.go",
+      "core/block/import/common/objectid/file_upload_provider.go",
+      "core/block/import/common/objectid/fileobject.go",
+      "core/block/import/common/objectid/oldfile.go",
+      "core/block/import/common/objectid/provider.go",
+      "core/block/import/common/syncer/syncer.go",
+      "core/block/import/common/types.go",
+      "core/block/import/mapping_observation.go",
+      "core/block/import/mapping_observation_processor.go",
+      "core/block/import/owned_annotation_archive.go",
+      "core/block/import/owned_annotation_comparison.go",
+      "core/block/import/owned_annotation_graph.go",
+      "core/block/import/owned_annotation_readback.go",
+      "core/block/import/owned_import_dependencies.go",
+      "core/block/import/owned_import_drain.go",
+      "core/block/import/owned_import_files.go",
+      "core/block/import/owned_import_finalize.go",
+      "core/block/import/owned_import_operation.go",
+      "core/block/import/pb/converter.go",
+      "core/block/import/processor.go",
+      "core/block/import/types.go",
+      "core/block/object/objectcreator/fixed_schema_acl.go",
+      "core/block/object/objectcreator/fixed_schema_creation.go",
+      "core/block/object/objectcreator/fixed_schema_observer.go",
+      "core/block/object/objectcreator/fixed_schema_replay.go",
+      "core/block/object/objectcreator/fixed_schema_snapshot.go",
+      "core/block/object/objectcreator/owned_annotation_observer.go",
+      "core/block/object/objectcreator/relation_option.go",
+      "core/block/object/objectlink/dependent_objects.go",
+      "core/block/owned_file_upload.go",
+      "core/block/simple/dataview/dataview.go",
+      "core/block/source/sourceimpl/source.go",
+      "core/converter/pbc/pbc.go",
+      "core/converter/pbjson/pbjson.go",
+      "core/details.go",
+      "core/files/fileuploader/owned_upload.go",
+      "core/files/fileuploader/uploader.go",
+      "core/indexer/fulltext.go",
+      "core/indexer/pinkha_torah.go",
+      "core/pinkha/annotationschema/definition.go",
+      "core/pinkha/annotationschema/definition/definition.go",
+      "core/pinkha/annotationschema/observe.go",
+      "core/pinkha/annotationschema/register.go",
+      "core/pinkha/annotationschema/register_type_layout.go",
+      "core/pinkha/annotationschema/type_layout.go",
+      "core/pinkha/torah/binding.go",
+      "core/pinkha/torah/projection.go",
+      "core/pinkha/torah/properties.go",
+      "core/pinkha/torah/readiness.go",
+      "core/pinkha/torahindex/index.go",
+      "core/pinkha/torahindex/recovery_cache.go",
+      "core/pinkha/torahtransport/import.go",
+      "core/pinkha/torahtransport/json_fields.go",
+      "core/pinkha/torahvalues/values.go",
+      "pb/protos/commands.proto",
+      "pb/protos/service/service.proto",
+      "pkg/lib/bundle/pinkha_torah.go",
+      "pkg/lib/database/filter.go",
+      "pkg/lib/localstore/objectstore/spaceindex/delete.go",
+      "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah.go",
+      "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext.go",
+      "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext_test.go",
+      "pkg/lib/localstore/objectstore/spaceindex/store.go",
+      "pkg/lib/localstore/objectstore/spaceindex/update.go",
+      "space/internal/components/migration/readonlyfixer/pinkha_torah.go",
+      "space/internal/components/migration/readonlyfixer/pinkha_torah_test.go",
+      "space/internal/components/migration/readonlyfixer/relationsfixer.go"
+    ],
+    "child_started_unix": 1795466679.617483,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466679.966665
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-heart",
+    "duration_seconds": 0.358,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 60.0,
+    "label": "seal-native-composition-index",
+    "pid": 2768,
+    "process_group_id": 2768,
+    "requested_timeout_seconds": 60,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466679.610946,
+    "status": "TERMINAL",
+    "stderr": "11-seal-native-composition-index.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "11-seal-native-composition-index.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "git",
+      "write-tree"
+    ],
+    "child_started_unix": 1795466679.975457,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466680.2731688
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-heart",
+    "duration_seconds": 0.306,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "read-native-composition-tree",
+    "pid": 2770,
+    "process_group_id": 2770,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466679.97036,
+    "status": "TERMINAL",
+    "stderr": "12-read-native-composition-tree.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "12-read-native-composition-tree.stdout",
+    "stdout_sha256": "3116ba2b4f3fa4e5c79723529ade21eeaef63ab5220503c57ac68ad96c44a324",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "git",
+      "add",
+      "--",
+      "clientlibrary/service/service.pb.go",
+      "docs/proto.md",
+      "pb/changes.pb.go",
+      "pb/commands.pb.go",
+      "pb/events.pb.go",
+      "pb/service/service.pb.go",
+      "pb/snapshot.pb.go",
+      "pkg/lib/pb/model/export_report.pb.go",
+      "pkg/lib/pb/model/localstore.pb.go",
+      "pkg/lib/pb/model/models.pb.go",
+      "pkg/lib/pb/storage/file.pb.go"
+    ],
+    "child_started_unix": 1795466680.321804,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466680.5309598
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-heart",
+    "duration_seconds": 0.222,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 60.0,
+    "label": "seal-actual-generated-native",
+    "pid": 2771,
+    "process_group_id": 2771,
+    "requested_timeout_seconds": 60,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466680.3114738,
+    "status": "TERMINAL",
+    "stderr": "13-seal-actual-generated-native.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "13-seal-actual-generated-native.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "git",
+      "write-tree"
+    ],
+    "child_started_unix": 1795466680.541675,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466680.6140852
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-heart",
+    "duration_seconds": 0.081,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "actual-generated-native-tree",
+    "pid": 2772,
+    "process_group_id": 2772,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466680.535392,
+    "status": "TERMINAL",
+    "stderr": "14-actual-generated-native-tree.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "14-actual-generated-native-tree.stdout",
+    "stdout_sha256": "7af7177398e492e565f195e1eb859ca55b0cfb35be45326f2a740e6a3e7d1a1e",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "git",
+      "add",
+      "--",
+      "pb/protos/commands.proto"
+    ],
+    "child_started_unix": 1795466680.624167,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466680.698623
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-heart",
+    "duration_seconds": 0.081,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 60.0,
+    "label": "seal-reviewed-cancel-schema",
+    "pid": 2773,
+    "process_group_id": 2773,
+    "requested_timeout_seconds": 60,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466680.620063,
+    "status": "TERMINAL",
+    "stderr": "15-seal-reviewed-cancel-schema.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "15-seal-reviewed-cancel-schema.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
+      "-I",
+      "/Users/runner/work/anytype-swift/anytype-swift/docs/pinkha/torah-integration/native-annotation-import-rpc-generation-20261123/retained-original/copy_materialized_checkout.py",
+      "--source",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Inputs/swift",
+      "--target",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-swift",
+      "--expected-head",
+      "997e285617d57b31c4205976f01019819fa29a03",
+      "--receipt",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Evidence/SWIFT_COPY.json"
+    ],
+    "child_started_unix": 1795466681.2946959,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466721.790076
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 40.512,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 180.0,
+    "label": "copy-original-swift-input",
+    "pid": 2779,
+    "process_group_id": 2779,
+    "requested_timeout_seconds": 180,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466681.289695,
+    "status": "TERMINAL",
+    "stderr": "16-copy-original-swift-input.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "16-copy-original-swift-input.stdout",
+    "stdout_sha256": "9ae6078899c9ebc808ca1853a690a35ea3e1e6d8d12329e3722b244930f4d456",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "curl",
+      "--fail",
+      "--location",
+      "--silent",
+      "--show-error",
+      "--connect-timeout",
+      "20",
+      "--max-time",
+      "180",
+      "--output",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/repair-tools/protoc-32.1.artifactbundle.zip",
+      "https://github.com/apple/swift-protobuf/releases/download/protoc-artifactbundle-v32.1/protoc-32.1.artifactbundle.zip"
+    ],
+    "child_started_unix": 1795466723.260139,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466723.849298
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 0.6,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 190.0,
+    "label": "download-original-protoc",
+    "pid": 3482,
+    "process_group_id": 3482,
+    "requested_timeout_seconds": 190,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466723.251806,
+    "status": "TERMINAL",
+    "stderr": "17-download-original-protoc.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "17-download-original-protoc.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "curl",
+      "--fail",
+      "--location",
+      "--silent",
+      "--show-error",
+      "--connect-timeout",
+      "20",
+      "--max-time",
+      "180",
+      "--output",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/repair-tools/sourcery-2.2.6.zip",
+      "https://github.com/krzysztofzablocki/Sourcery/releases/download/2.2.6/sourcery-2.2.6.zip"
+    ],
+    "child_started_unix": 1795466724.0889668,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466724.955913
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 0.879,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 190.0,
+    "label": "download-original-sourcery",
+    "pid": 3565,
+    "process_group_id": 3565,
+    "requested_timeout_seconds": 190,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466724.078429,
+    "status": "TERMINAL",
+    "stderr": "18-download-original-sourcery.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "18-download-original-sourcery.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/repair-tools/protoc/bin/protoc",
+      "--version"
+    ],
+    "child_started_unix": 1795466725.671268,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466725.7281091
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 0.086,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "original-protoc-version",
+    "pid": 3567,
+    "process_group_id": 3567,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466725.645134,
+    "status": "TERMINAL",
+    "stderr": "19-original-protoc-version.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "19-original-protoc-version.stdout",
+    "stdout_sha256": "cb83470564374f90144c3ac7480d04d54c925f1364561780d6d8d6b427430e8c",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/repair-tools/sourcery/bin/sourcery",
+      "--version"
+    ],
+    "child_started_unix": 1795466725.7442508,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466725.820715
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 0.089,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "original-sourcery-version",
+    "pid": 3568,
+    "process_group_id": 3568,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466725.7349901,
+    "status": "TERMINAL",
+    "stderr": "20-original-sourcery-version.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "20-original-sourcery-version.stdout",
+    "stdout_sha256": "f74029b9ad220f7a272f438a0cb6a2bb7399011db7dcfb5d4d2f4e8b0991c600",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "git",
+      "clone",
+      "--no-hardlinks",
+      "--no-checkout",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Inputs/plugin",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-swift/build/swift-protobuf"
+    ],
+    "child_started_unix": 1795466725.837127,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466726.08538
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 0.259,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 180.0,
+    "label": "clone-original-swift-protobuf",
+    "pid": 3569,
+    "process_group_id": 3569,
+    "requested_timeout_seconds": 180,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466725.827861,
+    "status": "TERMINAL",
+    "stderr": "21-clone-original-swift-protobuf.stderr",
+    "stderr_sha256": "f84b37f42fd4bb0da505c882f086c4e95ea813c964a517bb9ee3c12e8b7ef97a",
+    "stdout": "21-clone-original-swift-protobuf.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "git",
+      "checkout",
+      "--detach",
+      "c6fe6442e6a64250495669325044052e113e990c"
+    ],
+    "child_started_unix": 1795466726.0933518,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466726.457044
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-swift/build/swift-protobuf",
+    "duration_seconds": 0.371,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 60.0,
+    "label": "checkout-original-swift-protobuf",
+    "pid": 3574,
+    "process_group_id": 3574,
+    "requested_timeout_seconds": 60,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466726.0888839,
+    "status": "TERMINAL",
+    "stderr": "22-checkout-original-swift-protobuf.stderr",
+    "stderr_sha256": "bbbde1585bc4570194e28352f168010dec03342a48e93b14167d2051571b88ad",
+    "stdout": "22-checkout-original-swift-protobuf.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "swift",
+      "build",
+      "-c",
+      "release"
+    ],
+    "child_started_unix": 1795466726.469342,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466849.093824
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-swift/build/swift-protobuf",
+    "duration_seconds": 122.638,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 1500.0,
+    "label": "build-original-swift-protobuf",
+    "pid": 3575,
+    "process_group_id": 3575,
+    "requested_timeout_seconds": 1500,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466726.46144,
+    "status": "TERMINAL",
+    "stderr": "23-build-original-swift-protobuf.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "23-build-original-swift-protobuf.stdout",
+    "stdout_sha256": "cbe1f2721685e1e7a9ecbd78938ba7e5a45816de24cdb4e2d6a7640a67e5c5ed",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "swift",
+      "build",
+      "-c",
+      "release",
+      "--show-bin-path"
+    ],
+    "child_started_unix": 1795466849.11678,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795466858.4609458
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-swift/build/swift-protobuf",
+    "duration_seconds": 9.407,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 60.0,
+    "label": "original-swift-protobuf-bin-path",
+    "pid": 7332,
+    "process_group_id": 7332,
+    "requested_timeout_seconds": 60,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466849.101983,
+    "status": "TERMINAL",
+    "stderr": "24-original-swift-protobuf-bin-path.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "24-original-swift-protobuf-bin-path.stdout",
+    "stdout_sha256": "2063e11f8111833ccad6b9697aa85c054e0ee61e877b95e150706e25ca2558cb",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "make",
+      "SHELL=/bin/bash",
+      ".SHELLFLAGS=-e -o pipefail -c",
+      "setup-file-splitter"
+    ],
+    "child_started_unix": 1795466858.741597,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795467612.043971
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-swift",
+    "duration_seconds": 753.492,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 1800.0,
+    "label": "build-original-filesplit",
+    "pid": 7478,
+    "process_group_id": 7478,
+    "requested_timeout_seconds": 1800,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795466858.581456,
+    "status": "TERMINAL",
+    "stderr": "25-build-original-filesplit.stderr",
+    "stderr_sha256": "178bfb33c5efd360d810e78e296fe4a44ec2799534df8d0408382ca5392533b2",
+    "stdout": "25-build-original-filesplit.stdout",
+    "stdout_sha256": "1057e6fc66d19c050d4c064396ed59ce145bd7f7d626c00c14f7efce16272aa7",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "make",
+      "SHELL=/bin/bash",
+      ".SHELLFLAGS=-e -o pipefail -c",
+      "setup-protoc-go"
+    ],
+    "child_started_unix": 1795467612.108544,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795467645.554048
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-heart",
+    "duration_seconds": 33.466,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 1200.0,
+    "label": "build-original-gogo-plugins",
+    "pid": 31126,
+    "process_group_id": 31126,
+    "requested_timeout_seconds": 1200,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795467612.0946329,
+    "status": "TERMINAL",
+    "stderr": "26-build-original-gogo-plugins.stderr",
+    "stderr_sha256": "01b02cf73e9a76de9070203fadbde563c0a479e94b84bafc9b83e4d152688f91",
+    "stdout": "26-build-original-gogo-plugins.stdout",
+    "stdout_sha256": "3e57339ff35de06bf55677d29070856a2fb7cee628923deceb2758fd27ac365e",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "go",
+      "list",
+      "-m",
+      "-json",
+      "github.com/gogo/protobuf"
+    ],
+    "child_started_unix": 1795467645.571939,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795467645.59603
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-heart",
+    "duration_seconds": 0.035,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 60.0,
+    "label": "actual-original-gogo-module",
+    "pid": 32895,
+    "process_group_id": 32895,
+    "requested_timeout_seconds": 60,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795467645.5625112,
+    "status": "TERMINAL",
+    "stderr": "27-actual-original-gogo-module.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "27-actual-original-gogo-module.stdout",
+    "stdout_sha256": "50300009d9ff5b30a597bbce4cb418889ad8fcb8615f188da368b1f2c1b387ce",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "go",
+      "version",
+      "-m",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-heart/deps/protoc-gen-gogofaster"
+    ],
+    "child_started_unix": 1795467645.6096761,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795467645.637242
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-heart",
+    "duration_seconds": 0.034,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "buildinfo-protoc-gen-gogofaster",
+    "pid": 32896,
+    "process_group_id": 32896,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795467645.60544,
+    "status": "TERMINAL",
+    "stderr": "28-buildinfo-protoc-gen-gogofaster.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "28-buildinfo-protoc-gen-gogofaster.stdout",
+    "stdout_sha256": "bfb9addd8bf04181cec71d765db0636afd1203317b0790ec7afea472d6068aff",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "go",
+      "version",
+      "-m",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-heart/deps/protoc-gen-gogofast"
+    ],
+    "child_started_unix": 1795467645.645188,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795467645.66716
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-heart",
+    "duration_seconds": 0.028,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "buildinfo-protoc-gen-gogofast",
+    "pid": 32897,
+    "process_group_id": 32897,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795467645.640259,
+    "status": "TERMINAL",
+    "stderr": "29-buildinfo-protoc-gen-gogofast.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "29-buildinfo-protoc-gen-gogofast.stdout",
+    "stdout_sha256": "a033a0223f05e47aa0807dbe2f8a4e013866a6bc0c885eeae894f08f8c47d72e",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "go",
+      "version",
+      "-m",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-heart/deps/protoc-gen-doc"
+    ],
+    "child_started_unix": 1795467645.674036,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795467645.719672
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-heart",
+    "duration_seconds": 0.051,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "buildinfo-protoc-gen-doc",
+    "pid": 32898,
+    "process_group_id": 32898,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795467645.670016,
+    "status": "TERMINAL",
+    "stderr": "30-buildinfo-protoc-gen-doc.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "30-buildinfo-protoc-gen-doc.stdout",
+    "stdout_sha256": "9e46abdb4a991fae46a7f22bb1be69b04e33dcf4790ecf93393c3d598e7613d3",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "xcrun",
+      "--find",
+      "swift"
+    ],
+    "child_started_unix": 1795467645.7370539,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795467645.7662988
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 0.047,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "locate-swift",
+    "pid": 32899,
+    "process_group_id": 32899,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795467645.722698,
+    "status": "TERMINAL",
+    "stderr": "31-locate-swift.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "31-locate-swift.stdout",
+    "stdout_sha256": "8d9a6d3bebad2aacd65dc263085b25b2829163c5cde1a4f4895e0194314137d3",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "xcrun",
+      "--find",
+      "swiftc"
+    ],
+    "child_started_unix": 1795467645.777986,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795467649.488201
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 3.717,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "locate-swiftc",
+    "pid": 32900,
+    "process_group_id": 32900,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795467645.773793,
+    "status": "TERMINAL",
+    "stderr": "32-locate-swiftc.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "32-locate-swiftc.stdout",
+    "stdout_sha256": "53f8198707bfa8c5a1caf68b3133b927a362e37dd57cb50a800456865698408e",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "protoc",
+      "-I",
+      ".",
+      "--gogofaster_out=Mgoogle/protobuf/timestamp.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/struct.proto=github.com/gogo/protobuf/types,Mpkg/lib/pb/model/protos/models.proto=github.com/anyproto/anytype-heart/pkg/lib/pb/model,Mpkg/lib/pb/model/protos/export_report.proto=github.com/anyproto/anytype-heart/pkg/lib/pb/model,Mpkg/lib/pb/model/protos/localstore.proto=github.com/anyproto/anytype-heart/pkg/lib/pb/model,,Mgoogle/protobuf/descriptor.proto=github.com/gogo/protobuf/protoc-gen-gogo/descriptor:.",
+      "./pb/protos/commands.proto"
+    ],
+    "child_started_unix": 1795467653.086721,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795467655.614746
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-heart",
+    "duration_seconds": 2.568,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 600.0,
+    "label": "original-protoc-changed-go-commands",
+    "pid": 32911,
+    "process_group_id": 32911,
+    "requested_timeout_seconds": 600,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795467653.0494459,
+    "status": "TERMINAL",
+    "stderr": "33-original-protoc-changed-go-commands.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "33-original-protoc-changed-go-commands.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "make",
+      "SHELL=/bin/bash",
+      ".SHELLFLAGS=-e -o pipefail -c",
+      "protos-docs"
+    ],
+    "child_started_unix": 1795467655.626573,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795467656.0303948
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-heart",
+    "duration_seconds": 0.413,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 600.0,
+    "label": "original-proto-documentation",
+    "pid": 33146,
+    "process_group_id": 33146,
+    "requested_timeout_seconds": 600,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795467655.620716,
+    "status": "TERMINAL",
+    "stderr": "34-original-proto-documentation.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "34-original-proto-documentation.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "protoc",
+      "-I",
+      "./",
+      "--swift_opt=FileNaming=DropPath",
+      "--swift_opt=Visibility=Public",
+      "--swift_out=/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/raw-swift-commands",
+      "pb/protos/commands.proto"
+    ],
+    "child_started_unix": 1795467656.046667,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795467674.1004438
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-heart",
+    "duration_seconds": 18.068,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 600.0,
+    "label": "original-protoc-changed-raw-swift",
+    "pid": 33228,
+    "process_group_id": 33228,
+    "requested_timeout_seconds": 600,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795467656.036754,
+    "status": "TERMINAL",
+    "stderr": "35-original-protoc-changed-raw-swift.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "35-original-protoc-changed-raw-swift.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "sed",
+      "-i.bak",
+      "-E",
+      "/import[[:space:]]+\"google\\/protobuf\\//! s#(import[[:space:]]+\")([^\"/]+/)*([^\"/]+\\.proto)\"#\\1\\3\"#g",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-swift/Dependencies/Middleware/protobuf/protos/commands.proto"
+    ],
+    "child_started_unix": 1795467674.1425972,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795467674.173292
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-swift",
+    "duration_seconds": 0.051,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 60.0,
+    "label": "original-flatten-changed-proto-imports",
+    "pid": 33623,
+    "process_group_id": 33623,
+    "requested_timeout_seconds": 60,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795467674.123934,
+    "status": "TERMINAL",
+    "stderr": "36-original-flatten-changed-proto-imports.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "36-original-flatten-changed-proto-imports.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "protoc",
+      "--plugin=protoc-gen-swift=/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-swift/build/swift-protobuf/.build/out/Products/Release/protoc-gen-swift",
+      "--swift_opt=FileNaming=DropPath",
+      "--swift_opt=Visibility=Public",
+      "--swift_out=/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-swift/Dependencies/Middleware/genmodels",
+      "--proto_path=/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-swift/Dependencies/Middleware/protobuf/protos",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-swift/Dependencies/Middleware/protobuf/protos/commands.proto"
+    ],
+    "child_started_unix": 1795467674.180654,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795467690.916608
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-swift",
+    "duration_seconds": 16.775,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 600.0,
+    "label": "original-protoc-changed-swift-models",
+    "pid": 33624,
+    "process_group_id": 33624,
+    "requested_timeout_seconds": 600,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795467674.176851,
+    "status": "TERMINAL",
+    "stderr": "37-original-protoc-changed-swift-models.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "37-original-protoc-changed-swift-models.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-swift/build/anytype-swift-filesplit-v1",
+      "--path",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-swift/Dependencies/Middleware/genmodels/commands.pb.swift",
+      "--output-dir",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-swift/Modules/ProtobufMessages/Sources/Protocol/Commands",
+      "--other-name",
+      "CommandsOther.swift"
+    ],
+    "child_started_unix": 1795467691.054465,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795467692.190305
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-swift",
+    "duration_seconds": 1.147,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 600.0,
+    "label": "original-split-changed-commands",
+    "pid": 34012,
+    "process_group_id": 34012,
+    "requested_timeout_seconds": 600,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795467691.04582,
+    "status": "TERMINAL",
+    "stderr": "38-original-split-changed-commands.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "38-original-split-changed-commands.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/repair-tools/sourcery/bin/sourcery",
+      "--config",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-swift/Modules/ProtobufMessages/Scripts/Loc/sourcery.yml"
+    ],
+    "child_started_unix": 1795467692.1992981,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795467700.853311
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-swift",
+    "duration_seconds": 8.688,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 600.0,
+    "label": "original-generate-changed-error-localization",
+    "pid": 34204,
+    "process_group_id": 34204,
+    "requested_timeout_seconds": 600,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795467692.1942852,
+    "status": "TERMINAL",
+    "stderr": "39-original-generate-changed-error-localization.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "39-original-generate-changed-error-localization.stdout",
+    "stdout_sha256": "2a175239155e0795ca7c05744f0d7cfef4afbca452270b53be91bf62864938f9",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "git",
+      "add",
+      "--",
+      "pb/protos/commands.proto",
+      "clientlibrary/service/service.pb.go",
+      "docs/proto.md",
+      "pb/changes.pb.go",
+      "pb/commands.pb.go",
+      "pb/events.pb.go",
+      "pb/service/service.pb.go",
+      "pb/snapshot.pb.go",
+      "pkg/lib/pb/model/export_report.pb.go",
+      "pkg/lib/pb/model/localstore.pb.go",
+      "pkg/lib/pb/model/models.pb.go",
+      "pkg/lib/pb/storage/file.pb.go"
+    ],
+    "child_started_unix": 1795467701.771731,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795467701.95985
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-heart",
+    "duration_seconds": 0.199,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 60.0,
+    "label": "seal-repaired-native-output",
+    "pid": 34656,
+    "process_group_id": 34656,
+    "requested_timeout_seconds": 60,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795467701.763154,
+    "status": "TERMINAL",
+    "stderr": "40-seal-repaired-native-output.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "40-seal-repaired-native-output.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "git",
+      "write-tree"
+    ],
+    "child_started_unix": 1795467701.970619,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795467701.9981492
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-heart",
+    "duration_seconds": 0.048,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "actual-repaired-native-tree",
+    "pid": 34658,
+    "process_group_id": 34658,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795467701.965914,
+    "status": "TERMINAL",
+    "stderr": "41-actual-repaired-native-tree.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "41-actual-repaired-native-tree.stdout",
+    "stdout_sha256": "f10f4c856b86f9a7bbb53bfd08ed89cb797cc17cd9fe0827b777e988bb256d79",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795476929,
+    "argv": [
+      "xcrun",
+      "swiftc",
+      "-frontend",
+      "-typecheck",
+      "-module-name",
+      "OtzariaGeneratedImportProtocol",
+      "-I",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-swift/build/swift-protobuf/.build/out/Products/Release",
+      "@/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/changed-swift-primary-inputs.rsp"
+    ],
+    "child_started_unix": 1795467702.0526998,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795467702.510137
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Import-RPC-Cancel-Generation-Owned-Work/candidate-swift",
+    "duration_seconds": 0.494,
+    "effective_returncode": 1,
+    "effective_timeout_seconds": 1200.0,
+    "label": "typecheck-changed-original-swift-primary-files",
+    "pid": 34659,
+    "process_group_id": 34659,
+    "requested_timeout_seconds": 1200,
+    "returncode": 1,
+    "start_new_session": true,
+    "started_unix": 1795467702.0364218,
+    "status": "TERMINAL",
+    "stderr": "42-typecheck-changed-original-swift-primary-files.stderr",
+    "stderr_sha256": "d091a34143ce81040f4186c19f0bc13b1f571273037ea882d0487dfc9a13f700",
+    "stdout": "42-typecheck-changed-original-swift-primary-files.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  }
+]

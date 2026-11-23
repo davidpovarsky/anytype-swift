@@ -82,6 +82,117 @@ def read_bound(root, path, row, require_head=True):
     return raw
 
 
+
+def load_union_module(control, manifest, relative, module_name):
+    row = next(row for row in manifest["controls"] if row["path"] == relative)
+    read_bound(control, PACKET + "/" + relative, row)
+    spec = importlib.util.spec_from_file_location(module_name, safe(control, PACKET + "/" + relative))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def read_source_union(control, manifest, composition, original_repository=None, original_heart=None):
+    module = load_union_module(control, manifest, "rpc-union-20261123/source_union.py", "native_source_union")
+    union = module.admit(control=control, packet_name=PACKET, manifest=manifest,
+                         composition=composition, read_bound=read_bound, safe=safe, git=git,
+                         original_repository=original_repository, original_heart=original_heart)
+    model_paths = {row["path"] for row in manifest["original_model_and_rpc_inputs"]}
+    overrides = {row["native_path"]: {key: row[key] for key in ("bytes", "sha256", "git_blob")}
+                 for row in union["overlays"] if row["native_path"] in model_paths}
+    require(overrides == manifest["approved_original_model_overrides"],
+            "Original model/proto/RPC overrides differ from qualified union layers")
+    return module, union
+
+
+def execute_union_controls(control, manifest, composition, commands, go, heart, work, evidence,
+                           closure, listing, declaration_command, core_binary_info,
+                           native_binary_info, core_compile_command, native_compile_command,
+                           support, result):
+    module, union = read_source_union(control, manifest, composition)
+    repair_module = load_union_module(control, manifest,
+        "schema-closure-repair-20261123/schema_closure_controls.py", "schema_closure_controls")
+    focused, _ = repair_module.run_controls(commands=commands, go=go, heart=heart, work=work,
+                                            evidence=evidence, declaration=closure, repair=union["repair"])
+    result["schema_closure_controls"] = focused
+    support.write_json(evidence / "RESULT.json", result)
+    require(focused["status"] == "PASS" and focused["leaf_pass"] == 11,
+            "Original schema closure controls did not all pass")
+
+    semantic_binary = work / "bundled-persistence-control.test"
+    commands.require("compile-original-bundled-persistence",
+                     [go, "test", "-c", "-p", "2", "-o", str(semantic_binary),
+                      "./core/block/object/objectcreator"], heart, 1800)
+    semantic_record = {"path": str(semantic_binary), "bytes": semantic_binary.stat().st_size,
+                       "sha256": support.digest(semantic_binary),
+                       "compile_command": dict(commands.items[-1])}
+    support.write_json(evidence / "BUNDLED_PERSISTENCE_BINARY.json", semantic_record)
+    commands.require("bundled-persistence-binary-buildinfo",
+                     [go, "version", "-m", str(semantic_binary)], heart, 30)
+    code, output, _ = commands.run("execute-original-bundled-persistence", [
+        go, "tool", "test2json", "-t", "-p",
+        "github.com/anyproto/anytype-heart/core/block/object/objectcreator",
+        str(semantic_binary), "-test.v=test2json", "-test.run=^" + SEMANTIC_PARENT + "$",
+        "-test.count=1", "-test.timeout=5m"], heart, 330)
+    semantic = semantic_case_intake(output)
+    semantic.update(executed_this_run=True, effective_command_returncode=code,
+                    binary_unchanged=support.digest(semantic_binary) == semantic_record["sha256"],
+                    previous_six_passes_reused=False,
+                    reason="Actual exporter/generated dependency closure changed; fresh six required")
+    result["bundled_persistence_semantic_control"] = semantic
+    support.write_json(evidence / "BUNDLED_PERSISTENCE_CONTROL.json", semantic)
+    support.write_json(evidence / "RESULT.json", result)
+    require(code == 0 and semantic["status"] == "PASS" and semantic["binary_unchanged"],
+            "Original six bundled persistence leaves did not all pass")
+
+    qualified = union["qualified"]
+    rpc_module = load_union_module(control, manifest, qualified["rpc_helper"]["path"], "union_rpc_controls")
+    existing = {}
+    for package, binary_info, receipt in [
+        ("./core", core_binary_info, core_compile_command),
+        ("./core/application", native_binary_info, native_compile_command),
+    ]:
+        binary, row = binary_info
+        existing[package] = {"path": str(binary), "bytes": row["bytes"],
+                             "sha256": row["sha256"], "compile_command": receipt}
+    composition_path = evidence / "COMPOSED_NATIVE_SOURCES.json"
+    result["rpc_union_controls"] = rpc_module.execute(
+        heart=heart, work=work, evidence=evidence, commands=commands, go_executable=go,
+        control_spec_path=safe(control, PACKET + "/" + qualified["rpc_control_spec"]["path"]),
+        control_spec_sha256=qualified["rpc_control_spec"]["sha256"],
+        union_manifest_path=composition_path, union_manifest_sha256=support.digest(composition_path),
+        declaration_path=evidence / "DECLARED_NATIVE_INPUTS.json",
+        declaration_stdout=listing, declaration_command=declaration_command,
+        generated_index_path=safe(control, PACKET + "/" + qualified["generated_index"]["path"]),
+        generated_index_sha256=qualified["generated_index"]["sha256"],
+        existing_binaries=existing)
+    support.write_json(evidence / "RESULT.json", result)
+    require(result["rpc_union_controls"]["status"] == "PASS", "Fresh union RPC controls did not pass")
+
+
+def union_control_stability(work, evidence, support, result):
+    records = []
+    focused_path = evidence / "SCHEMA_CLOSURE_CONTROLS.json"
+    if focused_path.is_file():
+        focused = json.loads(focused_path.read_text())
+        result["schema_closure_controls"] = focused
+        records += focused["binaries"]
+    semantic_path = evidence / "BUNDLED_PERSISTENCE_BINARY.json"
+    if semantic_path.is_file():
+        records.append(json.loads(semantic_path.read_text()))
+    rpc_path = evidence / "rpc-controls/RESULT.json"
+    if rpc_path.is_file():
+        rpc = json.loads(rpc_path.read_text())
+        result["rpc_union_controls"] = rpc
+        records += [entry["identity"] for entry in rpc["binaries"].values()]
+    for row in records:
+        path = Path(row["path"]).resolve()
+        require(path.is_relative_to(work.resolve()) and path.is_file() and not path.is_symlink()
+                and path.stat().st_size == row["bytes"] and support.digest(path) == row["sha256"],
+                "Actually compiled union control binary changed after execution")
+    return {"status": "PASS", "actual_control_binary_receipts_checked": len(records),
+            "full_source_stability_owner": "original_native_driver"}
+
 def read_observer_repair(control, manifest):
     raw = read_bound(control, PACKET + "/" + OBSERVER_REPAIR + "/REPAIR_INPUTS.json",
                      manifest["observer_repair"])
@@ -208,13 +319,13 @@ def source_admission(control, manifest, original_repository=None, original_heart
             and manifest["candidate_revision"] == CANDIDATE_REVISION
             and manifest["fixture_revision"] == FIXTURE_REVISION,
             "Native source identities differ")
-    require(manifest["native_selector"] == "^" + PARENT + "$/^text$"
+    require(manifest["native_selector"] == "^" + PARENT + "$"
             and manifest["expected_leaf_cases"] == list(LEAVES)
-            and manifest["selected_leaf_cases"] == ["text"]
-            and manifest["diagnostic_only"] is True
+            and manifest["selected_leaf_cases"] == list(LEAVES)
+            and manifest["diagnostic_only"] is False
             and manifest["historical_selectors_replayed"] is False
             and manifest["production_import_activated"] is False
-            and manifest["new_rpc_or_generated_source"] is False,
+            and manifest["new_rpc_or_generated_source"] is True,
             "Native qualification scope differs")
     composition_raw = read_bound(control, CANDIDATE + "/SOURCE_COMPOSITION.json",
                                  manifest["composition"])
@@ -242,9 +353,18 @@ def source_admission(control, manifest, original_repository=None, original_heart
                      if row["path"] in COMPILED_ORIGINAL_MODELS})
     required.update({row["native_path"]: row["sha256"] for row in repair["inputs"]})
     required.update({row["native_path"]: row["sha256"] for row in diagnostic["inputs"]})
-    require(required == manifest["required_compiler_inputs"]
-            and len(required) == manifest["required_compiler_input_count"] == 88,
-            "Actual required original compiler input inventory differs")
+    require(required == manifest["pre_union_required_compiler_inputs"] and len(required) == 88,
+            "Frozen diagnostic compiler inventory differs")
+    union_module, union = read_source_union(control, manifest, composition,
+                                            original_repository, original_heart)
+    prior = {row["path"]: row["sha256"] for row in composition["final_composed_changed_native_files"]}
+    for rows in (manifest["test_inputs"], repair["inputs"], diagnostic["inputs"]):
+        prior.update({row["native_path"]: row["sha256"] for row in rows})
+    final, required = union_module.expected_union(union, prior, required)
+    require(final == manifest["final_union_afterimages"]
+            and required == manifest["required_compiler_inputs"]
+            and len(required) == manifest["required_compiler_input_count"],
+            "Exact union afterimages or required compiler inventory differs")
     for row in manifest["controls"]:
         read_bound(control, PACKET + "/" + row["path"], row)
     for row in manifest["source_inputs"]:
@@ -310,11 +430,13 @@ def load_support(control, manifest, work):
     return support, inputs
 
 
-def original_models(heart, manifest):
-    for row in manifest["original_model_and_rpc_inputs"]:
-        raw = safe(heart, row["path"]).read_bytes()
+def original_models(heart, manifest, after_union=False):
+    for original in manifest["original_model_and_rpc_inputs"]:
+        row = (manifest["approved_original_model_overrides"].get(original["path"], original)
+               if after_union else original)
+        raw = safe(heart, original["path"]).read_bytes()
         require(len(raw) == row["bytes"] and sha(raw) == row["sha256"]
-                and blob(raw) == row["git_blob"], "Unchanged original model/proto/RPC input differs")
+                and blob(raw) == row["git_blob"], "Exact original/approved model/proto/RPC input differs")
 
 
 def compose_native(control, heart, inputs, manifest, composition, support, commands, evidence):
@@ -394,15 +516,39 @@ def compose_native(control, heart, inputs, manifest, composition, support, comma
                      if row["path"] in COMPILED_ORIGINAL_MODELS})
     required.update({row["native_path"]: row["sha256"] for row in repair["inputs"]})
     required.update({row["native_path"]: row["sha256"] for row in diagnostic["inputs"]})
-    require(required == manifest["required_compiler_inputs"]
+    require(required == manifest["pre_union_required_compiler_inputs"] and len(required) == 88,
+            "Frozen diagnostic compiler coverage differs")
+    union_module, union = read_source_union(control, manifest, composition)
+    final, required = union_module.expected_union(union, composed, required)
+    composed = union_module.apply(union=union, control=control, packet_name=PACKET, heart=heart,
+                                  composed=composed, read_bound=read_bound, safe=safe)
+    require(composed == final == manifest["final_union_afterimages"]
+            and required == manifest["required_compiler_inputs"]
             and len(required) == manifest["required_compiler_input_count"],
-            "Complete required native compiler coverage differs")
+            "Complete qualified union compiler coverage differs")
     status = git(heart, "status", "--porcelain", "--untracked-files=all").decode().splitlines()
     require(all(row[:2] in (" M", "??") and row[3:] in composed for row in status),
             "Unexpected native source mutation")
     for name, digest in composed.items():
         require(support.digest(heart / name) == digest, "Composed product/test source differs")
-    original_models(heart, manifest)
+    original_models(heart, manifest, after_union=True)
+    commands.require("seal-qualified-union-index", ["git", "add", "--", *sorted(composed)], heart, 60)
+    native_tree = commands.require("seal-qualified-union-tree", ["git", "write-tree"], heart, 30).read_text().strip()
+    require(native_tree == manifest["expected_union_native_tree"], "Actual canonical union Git tree differs")
+    source_prefix = "qualified-native-source"
+    for name, digest in sorted(composed.items()):
+        target = safe(evidence, source_prefix + "/" + name)
+        require(not target.exists(), "Retained qualified source body already exists")
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(safe(heart, name).read_bytes())
+        require(support.digest(target) == digest, "Retained qualified source body differs")
+    tree_receipt = {"heart_base": HEART,
+                    "heart_base_tree": git(heart, "rev-parse", "HEAD^{tree}").decode().strip(),
+                    "canonical_union_tree": native_tree, "approved_file_count": len(composed),
+                    "source_prefix": source_prefix,
+                    "generation_provenance": union["qualified"],
+                    "original_module_hashes": manifest["original_module_hashes"]}
+    support.write_json(evidence / "QUALIFIED_NATIVE_TREE.json", tree_receipt)
     support.write_json(evidence / "COMPOSED_NATIVE_SOURCES.json", {
         "reviewed_candidate_revision": CANDIDATE_REVISION,
         "sealed_fixture_revision": FIXTURE_REVISION,
@@ -411,8 +557,13 @@ def compose_native(control, heart, inputs, manifest, composition, support, comma
         "observer_repair_manifest_sha256": OBSERVER_REPAIR_SHA256,
         "explicit_post_repair_schema_diagnostic": diagnostic,
         "schema_diagnostic_manifest_sha256": SCHEMA_DIAGNOSTIC_SHA256,
-        "original_selected_tests_not_replayed": True,
-        "new_generated_or_rpc_inputs": False, "production_import_activated": False,
+        "explicit_qualified_union": union,
+        "canonical_union_tree": native_tree, "qualified_native_source_prefix": source_prefix,
+        "actual_union_file_rows": [
+            {"path": name, "bytes": (heart / name).stat().st_size, "sha256": digest,
+             "git_blob": blob((heart / name).read_bytes())} for name, digest in sorted(composed.items())],
+        "original_unrelated_tests_not_replayed": True,
+        "new_generated_or_rpc_inputs": True, "production_import_activated": False,
     })
     return composed, required
 
@@ -657,7 +808,7 @@ def stability(control, head, heart, manifest, composition, composed, closure, na
     for name, digest in composed.items():
         require(support.digest(heart / name) == digest,
                 "Composed product/test source changed after execution")
-    original_models(heart, manifest)
+    original_models(heart, manifest, after_union=True)
     for name, digest in manifest["original_module_hashes"].items():
         require(support.digest(heart / name) == digest, "Original module/native checksum changed")
     if native_libraries is not None:
@@ -665,13 +816,18 @@ def stability(control, head, heart, manifest, composition, composed, closure, na
     if binary_info is not None:
         binary, record = binary_info
         require(support.digest(binary) == record["sha256"], "Actual compiled/executed native binary changed")
+    require(git(heart, "write-tree").decode().strip() == manifest["expected_union_native_tree"],
+            "Canonical union index changed after execution")
+    require(not git(heart, "diff", "--name-only").strip(),
+            "Tracked union source differs from its sealed index")
     core_checked = compile_only_binary_stability(core_binary_info, support)
     require(source_admission(control, manifest) == composition, "Control source composition changed")
     require(git(control, "rev-parse", "HEAD").decode().strip() == head, "Exact control revision changed")
     return {"status": "PASS", "declared_dependency_files_checked": checked_files,
             "declared_dependency_closure_available": closure is not None,
             "composed_native_files_checked": len(composed),
-            "unchanged_original_model_proto_rpc_files_checked": len(manifest["original_model_and_rpc_inputs"]),
+            "original_or_qualified_model_proto_rpc_files_checked": len(manifest["original_model_and_rpc_inputs"]),
+            "explicit_qualified_model_overrides": sorted(manifest["approved_original_model_overrides"]),
             "original_module_checksums_checked": sorted(manifest["original_module_hashes"]),
             "actual_link_inputs_checked": native_libraries is not None,
             "actual_native_binary_checked": binary_info is not None,
@@ -733,7 +889,9 @@ def main():
                           "original_git_source_bytes_checked": args.original_repository is not None,
                           "original_heart_bytes_checked": args.original_heart_repository is not None,
                           "workflow_published": workflow_published,
-                          "diagnostic_only": True, "selected_native_leaves": ["text"],
+                          "diagnostic_only": False, "selected_native_leaves": list(LEAVES),
+                          "new_schema_control_leaves": 11, "fresh_semantic_leaves": 6,
+                          "fresh_rpc_cases": 9, "fresh_generated_panic_cases": 1,
                           "schema_diagnostic_manifest_sha256": SCHEMA_DIAGNOSTIC_SHA256,
                           "workflow_sha256": sha(expected_workflow),
                           "native_compilation": False, "native_execution": False,
@@ -775,7 +933,8 @@ def main():
                "bundled_persistence_semantic_control": "NOT_RUN",
                "observer_repair_manifest_sha256": OBSERVER_REPAIR_SHA256,
                "schema_diagnostic_manifest_sha256": SCHEMA_DIAGNOSTIC_SHA256,
-               "diagnostic_only": True, "selected_native_leaves": ["text"],
+               "diagnostic_only": False, "selected_native_leaves": list(LEAVES),
+               "schema_closure_controls": "NOT_RUN", "rpc_union_controls": "NOT_RUN",
               "post_execution_source_module_link_stability": "NOT_REACHED",
               "historical_selectors_replayed": False, "production_import_activated": False,
               "swift_invocation_qualified": False, "cold_reopen_qualified": False,
@@ -798,8 +957,11 @@ def main():
                                      "go_sha256": support.digest(go), "xcode": xcode}
         repair = read_observer_repair(control, manifest)
         diagnostic = read_schema_diagnostic(control, manifest)
+        _, union = read_source_union(control, manifest, composition)
         format_names = sorted({row["native_path"] for row in
-                               manifest["candidate_inputs"] + manifest["test_inputs"] + repair["inputs"] + diagnostic["inputs"]})
+                               manifest["candidate_inputs"] + manifest["test_inputs"] + repair["inputs"]
+                               + diagnostic["inputs"] + union["overlays"]
+                               if row["native_path"].endswith(".go")})
         formatting = commands.require("new-native-source-format",
                                       [str(Path(go).with_name("gofmt")), "-l",
                                        *[str(heart / name) for name in format_names]], heart, 30)
@@ -814,14 +976,20 @@ def main():
         env["CGO_LDFLAGS"] = "-L" + str(heart / "deps/libs/darwin-arm64")
         listing = commands.require("declared-native-inputs",
                                    [go, "list", "-deps", "-test", "-json", "./core/application", "./core",
-                                     "./core/block/object/objectcreator"],
+                                     "./core/block/object/objectcreator", "./core/block/export",
+                                     "./core/block/import", "./cmd/grpcserver", "./clientlibrary/service"],
                                    heart, 1200)
+        declaration_command = dict(commands.items[-1])
         closure = support.dependency_inputs(listing, heart,
                                            [{"path": name, "sha256": digest}
                                             for name, digest in sorted(required.items())])
         selected = {"github.com/anyproto/anytype-heart/core/application",
                     "github.com/anyproto/anytype-heart/core",
-                    "github.com/anyproto/anytype-heart/core/block/object/objectcreator"}
+                    "github.com/anyproto/anytype-heart/core/block/object/objectcreator",
+                    "github.com/anyproto/anytype-heart/core/block/export",
+                    "github.com/anyproto/anytype-heart/core/block/import",
+                    "github.com/anyproto/anytype-heart/cmd/grpcserver",
+                    "github.com/anyproto/anytype-heart/clientlibrary/service"}
         require(selected.issubset({row["import_path"] for row in closure["packages"]}),
                 "Actual Go declaration omits an original selected compile package")
         closure["selected_original_packages"] = sorted(selected)
@@ -830,13 +998,14 @@ def main():
         commands.require("compile-original-core-only",
                          [go, "test", "-c", "-p", "2", "-o", str(core_binary), "./core"],
                          heart, 3600)
+        core_compile_command = dict(commands.items[-1])
         require(core_binary.is_file() and not core_binary.is_symlink()
                 and core_binary.stat().st_size > 0,
                 "Actual original compiler emitted no core compile-only test binary")
         core_record = {"name": core_binary.name, "bytes": core_binary.stat().st_size,
                        "sha256": support.digest(core_binary), "retained_in_artifact": False,
                        "package": "github.com/anyproto/anytype-heart/core",
-                       "execution": "NOT_EXECUTED_COMPILE_ONLY"}
+                       "execution": "FRESH_ADDITIVE_RPC_CONTROLS_REQUIRED; ORIGINAL_UNRELATED_TESTS_NOT_REPLAYED"}
         core_binary_info = (core_binary, core_record)
         result["actual_core_compile_only_binary"] = core_record
         commands.require("core-compile-only-binary-buildinfo",
@@ -845,16 +1014,16 @@ def main():
         commands.require("compile-original-closed-import",
                          [go, "test", "-c", "-p", "2", "-o", str(binary), "./core/application"],
                          heart, 3600)
+        native_compile_command = dict(commands.items[-1])
         require(binary.is_file() and binary.stat().st_size > 0, "Actual original compiler emitted no native test")
         record = {"name": binary.name, "bytes": binary.stat().st_size,
                   "sha256": support.digest(binary), "retained_in_artifact": False}
         binary_info = (binary, record)
         result["actual_native_binary"] = record
         commands.require("native-binary-buildinfo", [go, "version", "-m", str(binary)], heart, 30)
-        semantic = reuse_semantic_control(control, manifest, listing, closure, heart, evidence)
-        result["bundled_persistence_semantic_control"] = semantic
-        support.write_json(evidence / "BUNDLED_PERSISTENCE_CONTROL.json", semantic)
-        support.write_json(evidence / "RESULT.json", result)
+        execute_union_controls(control, manifest, composition, commands, go, heart, work, evidence,
+                               closure, listing, declaration_command, core_binary_info, binary_info,
+                               core_compile_command, native_compile_command, support, result)
         result["native_cases"] = "EXECUTION_REQUESTED"
         support.write_json(evidence / "RESULT.json", result)
         native_started = True
@@ -887,6 +1056,7 @@ def main():
             try:
                 check = stability(control, args.control_head, heart, manifest, composition,
                                   composed, closure, native_libraries, binary_info, support, core_binary_info)
+                check["additional_union_control_binaries"] = union_control_stability(work, evidence, support, result)
                 result["post_execution_source_module_link_stability"] = check
                 support.write_json(evidence / "POST_EXECUTION_STABILITY.json", check)
             except BaseException as error:

@@ -1,0 +1,112 @@
+{
+  "body_mapping_drain_assertions_unchanged": true,
+  "diagnosis": {
+    "bytes": 9416,
+    "git_blob": "70697a1d1bfa31cd35ba5d87f379138ebd6f542c",
+    "path": "schema-closure-repair-20261123/DIAGNOSIS.json",
+    "sha256": "586e28bed3eb77c72a6ea711ce26d0d57083b0afeb6b6c8b4c1a3e39ab12afba"
+  },
+  "diff": {
+    "bytes": 1945,
+    "git_blob": "c4239f3ba24a7c1691d6ab77e0b959ca76d54b0f",
+    "path": "schema-closure-repair-20261123/NATIVE.diff",
+    "sha256": "b6ec058b386a3aa5484b918bbd890ac3ec2305e08686a88af28cc5485e3d1a86"
+  },
+  "heart_base": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "inputs": [
+    {
+      "base_original_revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "base_sha256": "82879153c8af03a1cdafcc2ba5164ac9c1c21f0c216cc99b61b53883cb5d0199",
+      "base_source_path": "docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-native-qualification-20261123/schema-closure-repair-20261123/original/core/block/export/collection.go",
+      "bytes": 28086,
+      "changes": [
+        {
+          "after": "return details.GetInt64(bundle.RelationKeyResolvedLayout) == int64(model.ObjectType_collection) ||\n\t\tdetails.GetInt64(bundle.RelationKeyResolvedLayout) == int64(model.ObjectType_set) ||\n\t\tdetails.GetInt64(bundle.RelationKeyResolvedLayout) == int64(model.ObjectType_objectType)",
+          "before": "return details.GetInt64(bundle.RelationKeyResolvedLayout) == int64(model.ObjectType_collection) ||\n\t\tdetails.GetInt64(bundle.RelationKeyResolvedLayout) == int64(model.ObjectType_set)"
+        }
+      ],
+      "git_blob": "c058e27a0fbe4d94b02e94cb74df219eaea6b45c",
+      "native_path": "core/block/export/collection.go",
+      "path": "schema-closure-repair-20261123/native/core/block/export/collection.go",
+      "sha256": "aab78dcc4f5bc5cfd06221a8e32541ffacd1b1a357451bbcd22600fc86d57197"
+    },
+    {
+      "base_sha256": null,
+      "base_source_path": null,
+      "bytes": 2647,
+      "changes": [],
+      "git_blob": "6f98118e3561d4012930c9be0eafd171c2d52b7f",
+      "native_path": "core/block/export/owned_annotation_schema_closure_test.go",
+      "path": "schema-closure-repair-20261123/native/core/block/export/owned_annotation_schema_closure_test.go",
+      "sha256": "33e9e2a3a3921a267aced0bd6d770d10be1d4c56a23be25918ebfeceae984a0a"
+    },
+    {
+      "base_control_revision": "2f73090b0cf199fa778093f005db3cddff48c391",
+      "base_sha256": "f58a39eead208bc3a567f282f3a64007b17bfdfb16f0d8f9905a3c25a9410c72",
+      "base_source_path": "docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-native-qualification-20261123/schema-diagnostic-20261123/native/core/block/import/owned_annotation_comparison.go",
+      "bytes": 19089,
+      "changes": [
+        {
+          "after": "\t\"github.com/anyproto/anytype-heart/core/block/import/markdown/anymark\"\n\t\"github.com/anyproto/anytype-heart/core/block/simple/base\"\n",
+          "before": "\t\"github.com/anyproto/anytype-heart/core/block/import/markdown/anymark\"\n"
+        },
+        {
+          "after": "\t\tids[b.Id] = true\n\t\t// Original Base.Diff treats nil and all-false restrictions identically\n\t\t// and materializes an empty value without emitting a persisted change.\n\t\t// Apply that original behavior only to these owned comparison copies;\n\t\t// all non-empty restrictions and every other field remain compared.\n\t\tother := proto.Clone(b).(*model.Block)\n\t\tchanges, err := base.NewBase(b).Diff(\"\", base.NewBase(other))\n\t\tif err != nil || len(changes) != 0 {\n\t\t\treturn nil, ownedAnnotationRefused(\"original_block_self_comparison\")\n\t\t}\n",
+          "before": "\t\tids[b.Id] = true\n"
+        }
+      ],
+      "git_blob": "ad1e0d79f9d0bbcaa4d02b6018e6474ff32a6352",
+      "native_path": "core/block/import/owned_annotation_comparison.go",
+      "path": "schema-closure-repair-20261123/native/core/block/import/owned_annotation_comparison.go",
+      "sha256": "a23fdaab58600296008268b0bc48caa5de0379ee39b67e5c47e9dad76b911df8"
+    },
+    {
+      "base_sha256": null,
+      "base_source_path": null,
+      "bytes": 5201,
+      "changes": [],
+      "git_blob": "4cfe8c3225c3cc300b2f5b7dc450bc125611eb7b",
+      "native_path": "core/block/import/owned_annotation_schema_restrictions_test.go",
+      "path": "schema-closure-repair-20261123/native/core/block/import/owned_annotation_schema_restrictions_test.go",
+      "sha256": "9623f541a15eadfc6f1a55ce1398b7a0ca891a38556284549119126087813db7"
+    }
+  ],
+  "new_control_groups": {
+    "github.com/anyproto/anytype-heart/core/block/export": {
+      "leaves": [
+        "object_type_original_hidden_column",
+        "plain_page_does_not_gain_type_closure"
+      ],
+      "parent": "TestOtzariaObjectTypeDataviewExportClosure"
+    },
+    "github.com/anyproto/anytype-heart/core/block/import": {
+      "leaves": [
+        "original_diff_nil_empty_no_event",
+        "replayed_nil_matches_exported_empty",
+        "refuse_changed_read",
+        "refuse_changed_edit",
+        "refuse_changed_remove",
+        "refuse_changed_drag",
+        "refuse_changed_drop_on",
+        "refuse_changed_hidden_relation",
+        "refuse_changed_nested_body"
+      ],
+      "parent": "TestOtzariaOriginalSchemaRestrictionSemantics"
+    }
+  },
+  "new_control_leaf_count": 11,
+  "original_native_leaves_required": 9,
+  "original_refusal_unchanged": true,
+  "original_semantic_leaves_required_fresh": 6,
+  "previous_control": "2f73090b0cf199fa778093f005db3cddff48c391",
+  "previous_native_run": 45251406927,
+  "production_import_activated": false,
+  "root_source_review": {
+    "bytes": 781,
+    "git_blob": "95db3c9ae9fb157be5ce207327f00716552f3214",
+    "path": "schema-closure-repair-20261123/ROOT_SOURCE_REVIEW.json",
+    "sha256": "615254441385e750e57f9f04c9ee0b2cd4030e7f62386fd7e3fcc32e2a4de48f"
+  },
+  "schema": 1,
+  "scope": "Exact original object-type dataview export closure and original Base.Diff restrictions semantics; full proto.Equal and all Native9 test bodies retained."
+}

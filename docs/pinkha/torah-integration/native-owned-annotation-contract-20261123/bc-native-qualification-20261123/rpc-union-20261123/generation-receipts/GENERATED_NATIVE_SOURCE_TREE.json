@@ -1,0 +1,97 @@
+{
+  "base": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "generated_inputs": [
+    {
+      "bytes": 602248,
+      "git_blob": "42cc271a6f7376ed32abf0819a210885a64a9633",
+      "path": "clientlibrary/service/service.pb.go",
+      "sha256": "f8c44fe9326583de4876c40418913c3d9811a08386364dc0fa25b4e2dbd3e9eb"
+    },
+    {
+      "bytes": 1070146,
+      "git_blob": "6fc630bea5c5ccfcc3f1b94ba5876e1facb99014",
+      "path": "docs/proto.md",
+      "sha256": "5ef58509d52d69f4cff2e247b84a88c420e2fe66d056ed6272bc49a3ac6c68f6"
+    },
+    {
+      "bytes": 251298,
+      "git_blob": "9159854322653eb3b60c6570f93812a31db7246b",
+      "path": "pb/changes.pb.go",
+      "sha256": "8cd42aca2e459f4f56cfd9e62f3cc757b41efe418463a01ad1ede42bcde58f7d"
+    },
+    {
+      "bytes": 8699329,
+      "git_blob": "418dd04cab44e6a107af071778193a1888b0a7d8",
+      "path": "pb/commands.pb.go",
+      "sha256": "d19db5c0a985a15ec7c7fb26d8921ddd4f3d8e3b0e1ee029b87afc0a9e81d3e9"
+    },
+    {
+      "bytes": 1745048,
+      "git_blob": "2279b7f113129da32a137326c449db4defe78b03",
+      "path": "pb/events.pb.go",
+      "sha256": "193176bcb802bf4ddee2184d32db05d51d9adcc6fc3965c84da0da8419b20e2e"
+    },
+    {
+      "bytes": 630360,
+      "git_blob": "467e42296666fe9694be986189727c1766099ab5",
+      "path": "pb/service/service.pb.go",
+      "sha256": "95ab8cae67c94e7008feac48587a54bb71936b2a64b09dff829fe156d6cbb5bb"
+    },
+    {
+      "bytes": 28683,
+      "git_blob": "ad99f520a1b0c2c57ed59305fb7dba4fb8a71b74",
+      "path": "pb/snapshot.pb.go",
+      "sha256": "1f7db6d8380e6ed78cae661da45771d70604ef56ac330a73140ecff538c534d0"
+    },
+    {
+      "bytes": 23622,
+      "git_blob": "7f51eda5663a2f9661a8bdde3ae18cbe4601e05c",
+      "path": "pkg/lib/pb/model/export_report.pb.go",
+      "sha256": "7807e37e52dd585646df2a4923c8bc816360d2d4b05a124f735080d6a6a632f5"
+    },
+    {
+      "bytes": 78064,
+      "git_blob": "b4ddd45f74a67144f0dec6a8b0546a82165e6266",
+      "path": "pkg/lib/pb/model/localstore.pb.go",
+      "sha256": "9134446c1b21ca7cde249576fcb8113be83baeb8f612b55a806564a2723e9e9d"
+    },
+    {
+      "bytes": 1180139,
+      "git_blob": "5a07a9a96731786a6fb849ab56002c735b10aba2",
+      "path": "pkg/lib/pb/model/models.pb.go",
+      "sha256": "1e7bea1584323e3d69fb7a9f1cbe0815ab274cc1b847508b3c3c6feb9a4ad99d"
+    },
+    {
+      "bytes": 57336,
+      "git_blob": "23ae5ea465398c1be44b2ca53fa70993cb77590b",
+      "path": "pkg/lib/pb/storage/file.pb.go",
+      "sha256": "5356e29250cebd32650465134f58edf029cf64f02903eb1b185b26b445bf27e3"
+    }
+  ],
+  "native_source_tree": "995327648a4e4523c37208251ba54b47bccb2ab4",
+  "prior_generated_tree": "4220d7d1fdf039a41a42a9b457248514b6971bc2",
+  "schema_transform": {
+    "after": {
+      "bytes": 319366,
+      "git_blob": "f19c06e973c2b4bcbaa60fa45c9b6f1938b71a82",
+      "path": "pb/protos/commands.proto",
+      "sha256": "2e8de56d9d3be2a0344f0ee2867d2595ea411c24d7e2ad504a5edacb6bf57fc0"
+    },
+    "after_fragment": "            message Cancel {\n                message Request {\n                    string importProtocol = 1;\n                    string expectedAccountId = 2;\n                    string sourceSpaceId = 3;\n                    string sourceRootId = 4;\n                    string targetSpaceId = 5;\n                    bytes archiveSHA256 = 6;\n                    bytes attemptSecret = 7;\n                }\n\n                message Response {\n                    Error error = 1;\n                    string importProtocol = 2;\n                    Disposition disposition = 3;\n                    enum Disposition {\n                        // In particular, this is not evidence of no native work.\n                        NOT_OBSERVED = 0;\n                        REQUESTED = 1;\n                        DONE_OBSERVED = 2;\n                    }\n                    message Error {\n                        Code code = 1;\n                        string description = 2;\n                        enum Code {\n                            NULL = 0;\n                            BAD_INPUT = 1;\n                            RUNTIME_UNAVAILABLE = 2;\n                            UNKNOWN_ERROR = 3;\n                        }\n                    }\n                }\n            }\n        }\n",
+    "before": {
+      "bytes": 319319,
+      "git_blob": "f08c2559697251cfc9fa5eda9c60fd95e106c3ae",
+      "path": "pb/protos/commands.proto",
+      "sha256": "af3fc3b92541048116ec73ec1a9b5c516a352e097f2c0aa9172e9ff6db5ffda2"
+    },
+    "before_fragment": "            message Cancel {\n                message Request {\n                    string importProtocol = 1;\n                    string expectedAccountId = 2;\n                    string sourceSpaceId = 3;\n                    string sourceRootId = 4;\n                    string targetSpaceId = 5;\n                    bytes archiveSHA256 = 6;\n                    bytes attemptSecret = 7;\n                }\n\n                message Response {\n                    Error error = 1;\n                    string importProtocol = 2;\n                    Disposition disposition = 3;\n                    enum Disposition {\n                        // In particular, this is not evidence of no native work.\n                        NOT_OBSERVED = 0;\n                        REQUESTED = 1;\n                        DONE_OBSERVED = 2;\n                    }\n                    message Error {\n                        Code code = 1;\n                        string description = 2;\n                        enum Code {\n                            NULL = 0;\n                            BAD_INPUT = 1;\n                            RUNTIME_UNAVAILABLE = 2;\n                        }\n                    }\n                }\n            }\n        }\n",
+    "existing_values_preserved": true,
+    "native_path": "pb/protos/commands.proto",
+    "wire_values": {
+      "BAD_INPUT": 1,
+      "NULL": 0,
+      "RUNTIME_UNAVAILABLE": 2,
+      "UNKNOWN_ERROR": 3
+    }
+  }
+}

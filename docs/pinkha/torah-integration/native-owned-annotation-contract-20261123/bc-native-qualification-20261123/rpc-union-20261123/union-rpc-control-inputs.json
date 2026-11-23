@@ -1,0 +1,83 @@
+{
+  "schema": "otzaria.native-union-rpc-control-inputs/1",
+  "scope": "Exactly original RPC9 plus generated Cancel panic control; caller owns one final source union and command owner. No source composition, generators, Swift typecheck, historical tests or ABI build.",
+  "groups": [
+    {
+      "label": "transport-size",
+      "package": "./core",
+      "test_names": [
+        "TestAnnotationImportTransportRequestBoundaries",
+        "TestAnnotationImportTransportExactGeneratedEncoding",
+        "TestAnnotationImportTransportCompleteResponseLimit",
+        "TestAnnotationImportTransportContainerAndReportLimits"
+      ],
+      "source": {
+        "bytes": 9529,
+        "git_blob": "d0011440e549b02ba8a0635084c3ed6d4cdcb0ae",
+        "path": "core/annotation_import_test.go",
+        "sha256": "4f5c4fab26df0d19f023c38939fe159ca17f4e0516e2fa3ba194e60709cda4ec"
+      }
+    },
+    {
+      "label": "owned-cancel",
+      "package": "./core/application",
+      "test_names": [
+        "TestOwnedAnnotationImportNegativeAdmission",
+        "TestOwnedAnnotationCancellationMissIsNotDrain"
+      ],
+      "source": {
+        "bytes": 2134,
+        "git_blob": "dc503517d3adce9948dc62a5362fcbdff2215d4d",
+        "path": "core/application/owned_annotation_import_test.go",
+        "sha256": "99b1d5e2b7fd1b6434a3b6193b10573a44a2a230e35e8a6b8a227dc4d21b70fa"
+      }
+    },
+    {
+      "label": "payload-logging",
+      "package": "./cmd/grpcserver",
+      "test_names": [
+        "TestAnnotationImportPayloadPolicyExactMethods",
+        "TestAnnotationImportPayloadLoggerSuppressesBothDirections",
+        "TestAnnotationImportTracingKeepsOriginalSpanAndErrorWithoutPayloads"
+      ],
+      "source": {
+        "bytes": 6211,
+        "git_blob": "fec9ef62644b2a4b4630cb87bf0d6514ba152c2a",
+        "path": "cmd/grpcserver/annotation_import_payload_test.go",
+        "sha256": "5bc785e57ac13195353e5a5b764c0016f09899ba6ed3232e71cb142b194f6280"
+      }
+    },
+    {
+      "label": "generated-cancel-panic",
+      "package": "./clientlibrary/service",
+      "test_names": [
+        "TestAnnotationImportCancelGeneratedPanicIsUnobservedFailure"
+      ],
+      "source": {
+        "path": "clientlibrary/service/annotation_import_cancel_error_test.go",
+        "bytes": 2600,
+        "sha256": "3813026ff1a0834524b77ba5b83b1528879bd84011ab5d512a687ba09656c11b",
+        "git_blob": "ec9cc4a42ce5140d413c62ed5693dddba9d11d37"
+      }
+    }
+  ],
+  "generated_native_paths": [
+    "clientlibrary/service/service.pb.go",
+    "docs/proto.md",
+    "pb/changes.pb.go",
+    "pb/commands.pb.go",
+    "pb/events.pb.go",
+    "pb/service/service.pb.go",
+    "pb/snapshot.pb.go",
+    "pkg/lib/pb/model/export_report.pb.go",
+    "pkg/lib/pb/model/localstore.pb.go",
+    "pkg/lib/pb/model/models.pb.go",
+    "pkg/lib/pb/storage/file.pb.go"
+  ],
+  "binary_toolchain": {
+    "version": "go1.26.5",
+    "GOOS": "darwin",
+    "GOARCH": "arm64"
+  },
+  "original_control_manifest_sha256": "c5950bad223380e20e158c8c824215509b438b02a3678fc885e90f99f982b81b"
+}

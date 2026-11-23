@@ -1,0 +1,38 @@
+--- a/core/block/export/collection.go
++++ b/core/block/export/collection.go
+@@ -352,7 +352,8 @@
+ 
+ func isObjectWithDataview(details *domain.Details) bool {
+ 	return details.GetInt64(bundle.RelationKeyResolvedLayout) == int64(model.ObjectType_collection) ||
+-		details.GetInt64(bundle.RelationKeyResolvedLayout) == int64(model.ObjectType_set)
++		details.GetInt64(bundle.RelationKeyResolvedLayout) == int64(model.ObjectType_set) ||
++		details.GetInt64(bundle.RelationKeyResolvedLayout) == int64(model.ObjectType_objectType)
+ }
+ 
+ func getDataviewRelations(state *state.State) ([]string, error) {
+--- a/core/block/import/owned_annotation_comparison.go
++++ b/core/block/import/owned_annotation_comparison.go
+@@ -10,6 +10,7 @@
+ 	"github.com/anyproto/anytype-heart/core/block/editor/template"
+ 	"github.com/anyproto/anytype-heart/core/block/import/common"
+ 	"github.com/anyproto/anytype-heart/core/block/import/markdown/anymark"
++	"github.com/anyproto/anytype-heart/core/block/simple/base"
+ 	"github.com/anyproto/anytype-heart/core/converter/pbc"
+ 	"github.com/anyproto/anytype-heart/core/domain"
+ 	"github.com/anyproto/anytype-heart/core/domain/objectorigin"
+@@ -176,6 +177,15 @@
+ 			return nil, ownedAnnotationRefused("non_unique_body_block")
+ 		}
+ 		ids[b.Id] = true
++		// Original Base.Diff treats nil and all-false restrictions identically
++		// and materializes an empty value without emitting a persisted change.
++		// Apply that original behavior only to these owned comparison copies;
++		// all non-empty restrictions and every other field remain compared.
++		other := proto.Clone(b).(*model.Block)
++		changes, err := base.NewBase(b).Diff("", base.NewBase(other))
++		if err != nil || len(changes) != 0 {
++			return nil, ownedAnnotationRefused("original_block_self_comparison")
++		}
+ 	}
+ 	// The inventory order of independent protobuf blocks is not child order.
+ 	// ChildrenIds, text/marks and every nested repeated field remain untouched.

@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "scope": "Local collector semantics only; no Go/native test execution or product acceptance",
+  "status": "PASS",
+  "helper_sha256": "ea99506fef564ffa19fc503503988e7fc447aad862b12b925bc96cc0439d3245",
+  "controls": [
+    {
+      "name": "exact-export",
+      "status": "PASS",
+      "acceptance_expected": true,
+      "actual_status": "PASS"
+    },
+    {
+      "name": "exact-import",
+      "status": "PASS",
+      "acceptance_expected": true,
+      "actual_status": "PASS"
+    },
+    {
+      "name": "missing-leaf",
+      "status": "PASS",
+      "acceptance_expected": false,
+      "actual_status": "FAIL_OR_INCOMPLETE"
+    },
+    {
+      "name": "duplicate-run",
+      "status": "PASS",
+      "acceptance_expected": false,
+      "actual_status": "FAIL_OR_INCOMPLETE"
+    },
+    {
+      "name": "duplicate-terminal",
+      "status": "PASS",
+      "acceptance_expected": false,
+      "actual_status": "FAIL_OR_INCOMPLETE"
+    },
+    {
+      "name": "reject-fail",
+      "status": "PASS",
+      "acceptance_expected": false,
+      "actual_status": "FAIL_OR_INCOMPLETE"
+    },
+    {
+      "name": "reject-skip",
+      "status": "PASS",
+      "acceptance_expected": false,
+      "actual_status": "FAIL_OR_INCOMPLETE"
+    },
+    {
+      "name": "missing-parent",
+      "status": "PASS",
+      "acceptance_expected": false,
+      "actual_status": "FAIL_OR_INCOMPLETE"
+    },
+    {
+      "name": "foreign-package",
+      "status": "PASS",
+      "acceptance_expected": false,
+      "actual_status": "FAIL_OR_INCOMPLETE"
+    },
+    {
+      "name": "unexpected-test",
+      "status": "PASS",
+      "acceptance_expected": false,
+      "actual_status": "FAIL_OR_INCOMPLETE"
+    },
+    {
+      "name": "missing-package-terminal",
+      "status": "PASS",
+      "acceptance_expected": false,
+      "actual_status": "FAIL_OR_INCOMPLETE"
+    },
+    {
+      "name": "empty-log",
+      "status": "PASS",
+      "acceptance_expected": false,
+      "actual_status": "FAIL_OR_INCOMPLETE"
+    },
+    {
+      "name": "malformed-json",
+      "status": "PASS",
+      "acceptance_expected": false
+    },
+    {
+      "name": "bounded-intake",
+      "status": "PASS",
+      "acceptance_expected": false
+    }
+  ],
+  "control_count": 14,
+  "native_execution": false
+}
