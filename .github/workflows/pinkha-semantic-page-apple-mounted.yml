@@ -37,7 +37,7 @@ jobs:
           mkdir -p "$ATTEMPT/artifact"
           python3 -B "$ATTEMPT/app/Tools/PinkhaSemanticAnchorWire/apple_mounted/run.py" \
             --app "$ATTEMPT/app" \
-            --admission "$ATTEMPT/app/Tools/PinkhaSemanticAnchorWire/apple_mounted/admissions/45106989988-1.json" \
+            --admission "$ATTEMPT/app/Tools/PinkhaSemanticAnchorWire/apple_mounted/admissions/45116855451-1.json" \
             --work "$ATTEMPT/work" --evidence "$ATTEMPT/artifact/evidence" \
             2>&1 | tee "$ATTEMPT/artifact/controller.log"
       - name: Preserve original admission and every current execution observation

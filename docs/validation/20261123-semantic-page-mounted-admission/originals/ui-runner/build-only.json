@@ -1,0 +1,65 @@
+{
+  "acceptance": "NOT_RUN",
+  "blueprint": "PinkhaStage1AcceptanceUITests",
+  "build_flags": [
+    "OTHER_SWIFT_FLAGS=$(inherited) -D DEBUG -D PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 -D PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1",
+    "ENABLE_TESTABILITY=YES",
+    "ONLY_ACTIVE_ARCH=YES",
+    "SWIFT_OPTIMIZATION_LEVEL=-Onone",
+    "CODE_SIGN_IDENTITY=-",
+    "CODE_SIGNING_ALLOWED=YES",
+    "CODE_SIGNING_REQUIRED=YES",
+    "PROVISIONING_PROFILE_SPECIFIER="
+  ],
+  "builds_started": 1,
+  "builds_succeeded": 1,
+  "configuration": "Debug-Anytype",
+  "descriptor": {
+    "blueprint": "PinkhaStage1AcceptanceUITests",
+    "executable_sha256": "145652d0c79cb69964fba7578ac9c3a245a1ebe07d4c9dcb538ab2b231d7a41f",
+    "format_version": 1,
+    "test_bundle_path": "__TESTHOST__/PlugIns/PinkhaStage1AcceptanceUITests.xctest",
+    "test_host_path": "__TESTROOT__/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests-Runner.app"
+  },
+  "early_products": {
+    "archive_bytes": 1678428,
+    "archive_path": "ui-runner/semantic-page154-early-products/BuildProducts.tar.gz",
+    "archive_sha256": "06fb6afb7b35fe42c1cfaafa1425908df23824f4dda25b1c163d53ea3a6b9783",
+    "build_reuse_enabled": false,
+    "capture_phase": "AFTER_BUILD_BEFORE_ADMISSION",
+    "entries": 30,
+    "manifest_path": "ui-runner/semantic-page154-early-products/manifest.json",
+    "manifest_sha256": "c8b3f2d54cc7246e6289960a344db85132c665a535c7a3d0a99257c6ebfc3913",
+    "status": "OBSERVED_PRODUCTS_ARCHIVED_BEFORE_ADMISSION"
+  },
+  "generated_project": "PinkhaStage1Acceptance/PinkhaPrebuiltUI.xcodeproj",
+  "generated_project_files_sha256": {
+    "project.pbxproj": "9920d0f13da23f1405eafd0e031ae19c550e01a7197406245c903fcfe9512801",
+    "xcshareddata/xcschemes/PinkhaPrebuiltUI.xcscheme": "edb4fe227d098c2fd15d5a9c00cab19fdbb1ef535a06eb650f07ded95491a2d5"
+  },
+  "mounted_source_origin_sha": "9d7dbdd68da2e3d48ec84664c50954b9c9ec6762",
+  "original_project_files_sha256": {
+    "project.pbxproj": "38219484965210d09a25d6a68f2e46c71ae7682028a55f1e27834075a73acef2",
+    "xcshareddata/xcschemes/PinkhaStage1Acceptance.xcscheme": "43660974b215776ef4539c961a4ef75a7da8e1a21a08c4f0b1a12538e33fb845"
+  },
+  "original_xctestrun": {
+    "path": "ui-runner/original.xctestrun",
+    "products_path": "Build/Products/PinkhaPrebuiltUI_iphonesimulator27.0-arm64.xctestrun",
+    "sha256": "55fe94261dc5360fd9c5e3b90532e393d273070b8ade7655c6695666eac9e165"
+  },
+  "preparation_executions": 0,
+  "preparation_selector": "AnytypeTests/SemanticAnchorPage154MountedPreparationTests/testPrepareOwnedPage154MountedFixture",
+  "product_integrity": {
+    "archive_sha256": "06fb6afb7b35fe42c1cfaafa1425908df23824f4dda25b1c163d53ea3a6b9783",
+    "build_reuse_admission": "SEPARATE_REVIEW_REQUIRED",
+    "entries": 30,
+    "exact_added_descriptors": {},
+    "manifest_sha256": "c8b3f2d54cc7246e6289960a344db85132c665a535c7a3d0a99257c6ebfc3913",
+    "status": "ALL_ORIGINAL_PRODUCT_ENTRIES_UNCHANGED"
+  },
+  "scheme": "PinkhaPrebuiltUI",
+  "selector": "PinkhaStage1AcceptanceUITests/SemanticAnchorPage154MountedUITests/testActualTextSelectionCancelThenCreateAndColdReopen",
+  "source_plan_sha256": "19806530ea3f492ff221efac5a5430ec46893fb7066bf5294afaa06a390ad42f",
+  "status": "BUILD_ONLY_ORIGINAL_PRODUCTS_PRESERVED",
+  "ui_executions": 0
+}
