@@ -330,7 +330,7 @@ def audit_private_pairs(root, receipts):
         for path in (census, witness):
             mode = path.lstat().st_mode
             require(stat.S_ISREG(mode) and stat.S_IMODE(mode) == 0o600, "private_pair_file_mode")
-        require(stat.S_IMODE(census.parent.stat().st_mode) == 0o700, "private_pair_directory_mode")
+        require(stat.S_IMODE(census.parent.stat().st_mode) in {0o700, 0o2700}, "private_pair_directory_mode")
         parsed[label], result[label] = parse_census(census.read_bytes(), witness.read_bytes(), receipts[label])
         dirs[label] = census.parent
     before, after = parsed["captured-old"], parsed["captured-new"]

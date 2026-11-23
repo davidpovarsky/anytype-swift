@@ -1,0 +1,11 @@
+# Audit-only continuation of the captured tree census
+
+The original native execution at controller 5d6ec4b42db00ec01737ea150b4e288be9ab3743 and native 35c169e7a39e3dafc0a1281f56a1fe37fce57533 ran exactly five new methods. All five emitted one original START and PASS, with zero native failure or skip. The native command exited 0 and the owned process group was observed absent. All 42 source/schema/controller inputs and 4,045 native dependency inputs were identical through the final snapshots.
+
+The original wrapper remains FAILED. Its independent private-file audit compared Python stat.S_IMODE to exactly 0700. The actual owned private directory chain is 02700: owner access is 0700, group and other permissions are zero, and the additional 02000 bit is inherited setgid. The unchanged Go fixture correctly checked Mode().Perm()==0700, which covers the ordinary permission bits.
+
+The follow-up changes exactly the private-directory mode predicate from equality with 0700 to membership in {0700,02700}. No arbitrary permission mask or other special bit is admitted. Every regular pair file still requires exactly 0600. The original old auditor is retained by Git commit and its recorded SHA256; reversing this one literal predicate recovers all original auditor bytes. No chmod, rename, rebuild, native method or prior control is performed.
+
+The separate audit_existing.py entrypoint only reads the exact original build/execution receipts, original raw native events, six original private witness/census pairs, original binary and declared source/dependency files. It binds the old failed wrapper and five actual native passes separately from the current auditor source. Before and after metadata records include each pair's hash, byte count, inode, device, UID, GID and exact mode, and the three private ancestor modes. The audit must leave all source, original bytes, private metadata and input hashes unchanged.
+
+A successful continuation reports PASS_AUDIT_ONLY_RETAINED_NATIVE_FIVE and original_execute_remains=FAILED. Native source admission, semantic completeness and destination writes remain false. This is independent read-only validation of already produced data, not a second native execution or a reinterpretation of the original wrapper exit code.

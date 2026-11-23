@@ -1,6 +1,6 @@
 {
   "kind": "native-local-tree-storage-census-source-v1",
-  "status": "SOURCE_FROZEN_NOT_COMPILED_NOT_RUN",
+  "status": "FROZEN_AUDIT_ONLY_FOLLOWUP_ORIGINAL_NATIVE_FIVE_PASS",
   "native_parent_sha": "102f6243edb17068048869b85bc151f177897a68",
   "native_source_sha": "35c169e7a39e3dafc0a1281f56a1fe37fce57533",
   "heart_base": "d98420b1113536afd08cde6de9a5816f6d27ffff",
@@ -255,8 +255,8 @@
     "storj.io/drpc": "v1.0.0"
   },
   "controller_sha256": "cdbd2e4b685340c5c489976d3205b63810fd825a11ab25d8d05050b67e5d1696",
-  "private_auditor_sha256": "915973cfad4f0587a8ddd8fd8d975160a300e41592cb2205fd40bcf2eea2855c",
-  "protocol_sha256": "3cc260ea5960a18690a2063734f46c0452edf2a27145d5cd743f65b0caa783e4",
+  "private_auditor_sha256": "ba50ca27ff8d6456832171a1e3554c54c5a845fdf984ead87b31fda6fb8edc2f",
+  "protocol_sha256": "e26852e89d186ee38981924f6da7e4189ddf1e26cdc25c01a4c7d7e8c918676a",
   "package": "./core/pinkha/localstorewitness",
   "go_binary_sha256": "59c65090beeda377c09007eb8fae1c6aadf0a7b551e65ee13d461092d29e8005",
   "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
@@ -331,5 +331,116 @@
     "no_shared_cache_deletion": true,
     "no_dependency_downloads": true,
     "execution_requires_parent_review_and_capacity": true
+  },
+  "audit_continuation_sha256": "1ed63d510a70d19a2c6e295e2240640afffeba0b277a993906473dc223313241",
+  "audit_followup": {
+    "scope": "INDEPENDENT_READ_OF_SIX_ORIGINAL_PRIVATE_PAIRS_ONLY",
+    "status": "SOURCE_FROZEN_AUDIT_NOT_RUN",
+    "original_source_sha": "5d6ec4b42db00ec01737ea150b4e288be9ab3743",
+    "original_manifest_sha256": "fdc88476018f7e32cdb6be9ceb03db47957b5cc6fd6430285992704fad77608c",
+    "original_auditor_sha256": "915973cfad4f0587a8ddd8fd8d975160a300e41592cb2205fd40bcf2eea2855c",
+    "original_wrapper_outcome": "FAILED",
+    "original_failure_reason": "private_pair_directory_mode",
+    "original_native_outcome": "FIVE_DISTINCT_METHODS_PASS_ZERO_FAIL_SKIP",
+    "retained_native_source_sha": "35c169e7a39e3dafc0a1281f56a1fe37fce57533",
+    "retained_native_binary_sha256": "4721b54afc0052d28de4e20043287d0da245dbd92818f611ce82fac59d0bba2c",
+    "original_artifacts": {
+      "build.json": {
+        "sha256": "20836a217bcdfcafbb769efbe77c087a2525b3aa9607e3b2ede84533f38f249b",
+        "bytes": 3707
+      },
+      "execute.json": {
+        "sha256": "7890eb0eecf6ba580fe82f1d62a250db52a1cf7f7f3fc0f8c97cc121efa9dd58",
+        "bytes": 2320
+      },
+      "build-source-before.json": {
+        "sha256": "d4d6ec2d1be33d6a908e116cffc60f103cf4d57ea08bf050fe31bfb4f2207f08",
+        "bytes": 7359
+      },
+      "build-source-after.json": {
+        "sha256": "d4d6ec2d1be33d6a908e116cffc60f103cf4d57ea08bf050fe31bfb4f2207f08",
+        "bytes": 7359
+      },
+      "build-source-final.json": {
+        "sha256": "d4d6ec2d1be33d6a908e116cffc60f103cf4d57ea08bf050fe31bfb4f2207f08",
+        "bytes": 7359
+      },
+      "execute-source-before.json": {
+        "sha256": "d4d6ec2d1be33d6a908e116cffc60f103cf4d57ea08bf050fe31bfb4f2207f08",
+        "bytes": 7359
+      },
+      "execute-source-final.json": {
+        "sha256": "d4d6ec2d1be33d6a908e116cffc60f103cf4d57ea08bf050fe31bfb4f2207f08",
+        "bytes": 7359
+      },
+      "dependency-inputs-before.json": {
+        "sha256": "439f1b99678e5ca1af96923ed7cd7d86afab4e0e4095fedebce655250ddc8eeb",
+        "bytes": 696184
+      },
+      "dependency-inputs-after-build.json": {
+        "sha256": "439f1b99678e5ca1af96923ed7cd7d86afab4e0e4095fedebce655250ddc8eeb",
+        "bytes": 696184
+      },
+      "build-dependency-inputs-final.json": {
+        "sha256": "439f1b99678e5ca1af96923ed7cd7d86afab4e0e4095fedebce655250ddc8eeb",
+        "bytes": 696184
+      },
+      "execute-dependency-inputs-final.json": {
+        "sha256": "439f1b99678e5ca1af96923ed7cd7d86afab4e0e4095fedebce655250ddc8eeb",
+        "bytes": 696184
+      },
+      "safe-events.json": {
+        "sha256": "28242d15e2af281540cda8a1cd38045fbec1ec845e69eb9c71baf28dc76cdc36",
+        "bytes": 7978
+      },
+      "safe-native-receipts.json": {
+        "sha256": "13fa0dc561fbd0b3571f26e727029b24202cbcb21dcc1a9348edf4d64f138fe5",
+        "bytes": 11020
+      },
+      "resolved-modules.json": {
+        "sha256": "25dd6fa3726d3ac73d9362621a06f042570b6ea8a0d836c99e4052139d1d9660",
+        "bytes": 31944
+      },
+      "binary-buildinfo-original.txt": {
+        "sha256": "997c6a098a9bd5490b3fb7446b9b757d3284b4116b0518ebbd789204b1b83e4d",
+        "bytes": 5349
+      },
+      "private/build-original.log": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "private/build-original.log.command.json": {
+        "sha256": "8f4f851206f3ca58816d804d7f884be5cb86956dbb71a96ae1d756ef0c9210a3",
+        "bytes": 899
+      },
+      "private/execution-original.jsonl": {
+        "sha256": "0971eeaad282250ef9d60ef2fc0ce7e200ec854b373ea3bcf26c2aac66d76146",
+        "bytes": 17019
+      },
+      "private/execution-original.jsonl.command.json": {
+        "sha256": "2ae2926bd64400f9c8f830400f11fe8ff5d8fddf517d5250eb5a4dde9fad47b1",
+        "bytes": 1253
+      }
+    },
+    "original_source_inputs": 42,
+    "original_native_dependency_inputs": 4045,
+    "literal_inverse": {
+      "before": "require(stat.S_IMODE(census.parent.stat().st_mode) == 0o700, \"private_pair_directory_mode\")",
+      "after": "require(stat.S_IMODE(census.parent.stat().st_mode) in {0o700, 0o2700}, \"private_pair_directory_mode\")"
+    },
+    "allowed_private_directory_modes": [
+      "0700",
+      "02700"
+    ],
+    "required_pair_file_mode": "0600",
+    "additional_special_bits_allowed": [
+      "setgid_only"
+    ],
+    "group_and_other_permissions": 0,
+    "original_observed_directory_mode": "02700",
+    "chmod_performed": false,
+    "new_builds": 0,
+    "new_native_methods_executed": 0,
+    "original_execute_receipt_relabelled": false
   }
 }
