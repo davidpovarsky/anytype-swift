@@ -1,0 +1,29 @@
+{
+  "base": "67809875752085047a395be4a751ace5dcbc7ad8",
+  "before_sha256": "72d3ea9028133a11a1d148fcb04d2f59e0757a804cbc5e9480ebdb07e6ccd361",
+  "after_sha256": "098ad2c7b480ba74644cb35259bf9abc817af47a9611df6d580c18b466dac359",
+  "edits": [
+    [
+      "import argparse\n",
+      "import argparse\nimport errno\n"
+    ],
+    [
+      "def verify_owned_group_stopped(command_path, *, seconds=10, cleanup_profile=None):",
+      "def _sdk06_kernel_group_observation(pgid, deadline):\n    \"\"\"Read only exact owned PGID existence; only timely ESRCH proves absence.\"\"\"\n    before = time.monotonic()\n    observation = dict(operation=\"os.killpg\", signal=0, pgid=pgid, errno=None,\n                       before_monotonic=before, deadline_monotonic=deadline,\n                       after_monotonic=before, outcome=\"NOT_QUERIED\")\n\n    def fail(error, status):\n        error.timeout_observations = []\n        error.quiescence_observation = dict(status=status, pgid=pgid,\n            live_members=0 if observation[\"outcome\"] == \"ABSENT_ESRCH\" else None,\n            observations=0, kernel_group_observation=dict(observation))\n        return error\n\n    if before >= deadline:\n        raise fail(RuntimeError(\"SDK kernel observation has no remaining original cleanup budget\"),\n                   \"FAIL_DEADLINE\")\n    original_error = None\n    try:\n        os.killpg(pgid, 0)\n    except OSError as error:\n        original_error = error\n        observation.update(errno=error.errno, error_type=type(error).__name__)\n    observation[\"after_monotonic\"] = time.monotonic()\n    if original_error is not None:\n        if original_error.errno != errno.ESRCH:\n            observation[\"outcome\"] = \"KERNEL_QUERY_ERROR\"\n            raise fail(original_error, \"FAIL_KERNEL_QUERY\")\n        observation[\"outcome\"] = \"ABSENT_ESRCH\"\n    else:\n        observation[\"outcome\"] = \"GROUP_EXISTS\"\n    if observation[\"after_monotonic\"] > deadline:\n        raise fail(RuntimeError(\"SDK kernel observation returned after the original cleanup deadline\"),\n                   \"FAIL_DEADLINE\") from original_error\n    return observation\n\n\ndef verify_owned_group_stopped(command_path, *, seconds=10, cleanup_profile=None):"
+    ],
+    [
+      "    deadline = time.monotonic() + seconds\n    observations = 0",
+      "    deadline = time.monotonic() + seconds\n    kernel_observation = None\n    if cleanup_profile == \"sdk06-enumeration\":\n        kernel_observation = _sdk06_kernel_group_observation(pgid, deadline)\n        if kernel_observation[\"outcome\"] == \"ABSENT_ESRCH\":\n            return dict(status=\"PASS\", pgid=pgid, live_members=0, observations=0,\n                        timeout_observations=[], budget_seconds=seconds,\n                        absence_source=\"KERNEL_ESRCH\", kernel_group_observation=kernel_observation)\n    observations = 0"
+    ],
+    [
+      "            error.timeout_observations = list(timeout_observations)\n            if time.monotonic() >= deadline:",
+      "            error.timeout_observations = list(timeout_observations)\n            if kernel_observation is not None:\n                error.quiescence_observation = dict(status=\"FAIL_PS_AFTER_KERNEL_GROUP_EXISTS\",\n                    pgid=pgid, live_members=None, observations=observations,\n                    kernel_group_observation=kernel_observation)\n            if time.monotonic() >= deadline:"
+    ],
+    [
+      "                        \"timeout_observations\": timeout_observations, \"budget_seconds\": seconds}\n            if cleanup_profile is not None",
+      "                        \"timeout_observations\": timeout_observations, \"budget_seconds\": seconds}\n            if kernel_observation is not None:\n                observed[\"kernel_group_observation\"] = kernel_observation\n            if cleanup_profile is not None"
+    ]
+  ],
+  "exact_inverse_source_equals_base": true,
+  "exact_inverse_ast_equals_base": true
+}
