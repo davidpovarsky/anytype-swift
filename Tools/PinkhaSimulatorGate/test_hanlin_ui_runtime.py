@@ -389,20 +389,23 @@ class ObserverControls(unittest.TestCase):
         self.assertIsNone(self.observer.observation)
         self.assertEqual(self.mapped_pids, [])
 
-    def test_poll_timeout_records_command_stage_and_bound_without_retry_or_mapping(self):
+    def test_poll_timeout_retains_first_failure_and_stops_at_original_total_deadline(self):
         command = ["xcrun", "simctl", "get_app_container", UDID, "io.anytype.app", "data"]
         error = gate.subprocess.TimeoutExpired(command, 10, output=b"private stdout", stderr=b"private stderr")
         calls = []
         def query(argv, **kwargs):
             calls.append(argv)
             if len(calls) > 1:
+                self.observer.deadline = time.monotonic() - 1
                 raise error
             return str(self.container) + "\n"
         with patch.object(gate.subprocess, "check_output", side_effect=query):
             self.observe()
         summary = self.observer.summary()
         failure = summary["diagnostics"]["first_failure"]
-        self.assertIs(self.observer.error, error)
+        self.assertIsInstance(self.observer.error, RuntimeError)
+        self.assertIn("timed out", str(self.observer.error))
+        self.assertEqual(summary["diagnostics"]["poll_timeout_retries"], 1)
         self.assertEqual((failure["stage"], failure["command"], failure["command_timeout_seconds"]),
                          ("poll_data_container", command, 10))
         self.assertGreaterEqual(failure["stage_elapsed_seconds"], 0)
@@ -413,6 +416,98 @@ class ObserverControls(unittest.TestCase):
         self.assertNotIn("private stderr", json.dumps(summary))
         with self.assertRaisesRegex(RuntimeError, "did not complete"):
             self.qualify(self.final())
+
+    def poll_timeout_case(self, *, after_timeout=None, timeout_command=None):
+        command = ["xcrun", "simctl", "get_app_container", UDID, "io.anytype.app", "data"]
+        calls, deadlines = [], []
+        def query(argv, **kwargs):
+            calls.append(argv)
+            deadlines.append(self.observer.deadline)
+            self.assertEqual(argv, command)
+            self.assertGreater(kwargs["timeout"], 0)
+            self.assertLessEqual(kwargs["timeout"], gate.COMMAND_SECONDS)
+            if len(calls) == 2:
+                if after_timeout:
+                    after_timeout()
+                raise gate.subprocess.TimeoutExpired(timeout_command or command, 10,
+                    output=b"private stdout", stderr=b"private stderr")
+            return str(self.container) + "\n"
+        with patch.object(gate.subprocess, "check_output", side_effect=query):
+            self.observe()
+        return calls, deadlines
+
+    def test_one_poll_timeout_recovers_same_native_identity_with_original_deadline(self):
+        calls, deadlines = self.poll_timeout_case()
+        self.assertIsNone(self.observer.error)
+        self.assertEqual(len(calls), 4)
+        self.assertEqual(deadlines[0], deadlines[1])
+        self.assertEqual(deadlines[1], deadlines[2])
+        self.assertLessEqual(deadlines[3], deadlines[2])
+        self.assertEqual(self.mapped_pids, [51457])
+        result = self.qualify(self.final())
+        self.assertEqual(result["status"], "PASS_ACTUAL_UI_PROCESS_RUNTIME")
+        diagnostics = self.observer.summary()["diagnostics"]
+        self.assertEqual(diagnostics["poll_timeout_retries"], 1)
+        self.assertEqual(diagnostics["first_failure"]["stage"], "poll_data_container")
+        self.assertEqual(diagnostics["first_failure"]["command_timeout_seconds"], 10)
+        self.assertNotIn("private stdout", json.dumps(diagnostics))
+        self.assertNotIn("private stderr", json.dumps(diagnostics))
+
+    def test_cancelled_poll_timeout_does_not_issue_another_query_or_map(self):
+        calls, _ = self.poll_timeout_case(after_timeout=self.observer.stop_event.set)
+        self.assertEqual(len(calls), 2)
+        self.assertIn("cancelled", str(self.observer.error))
+        self.assertEqual(self.mapped_pids, [])
+        self.assertIsNone(self.observer.observation)
+
+    def test_timeout_of_another_command_is_not_retried(self):
+        calls, _ = self.poll_timeout_case(timeout_command=["xcrun", "simctl", "list"])
+        self.assertEqual(len(calls), 2)
+        self.assertIn("not the bounded", str(self.observer.error))
+        self.assertEqual(self.observer.poll_timeout_retries, 0)
+        self.assertEqual(self.mapped_pids, [])
+
+    def test_recovered_poll_still_rejects_changed_original_fixture(self):
+        calls, _ = self.poll_timeout_case(
+            after_timeout=lambda: (self.support / gate.FIXTURE).write_text(self.raw_fixture + " "))
+        self.assertEqual(len(calls), 3)
+        self.assertIn("fixture bytes", str(self.observer.error))
+        self.assertEqual(self.mapped_pids, [])
+        self.assertIsNone(self.observer.observation)
+
+    def test_recovered_poll_cannot_admit_stale_or_finished_native_phase(self):
+        original_phase = self.phase
+        def finished_phase():
+            return {**original_phase(), "phase": "NATIVE_ACCEPTANCE_PASS", "finishedAt": apple_now()}
+        self.phase = finished_phase
+        calls, _ = self.poll_timeout_case()
+        self.assertEqual(len(calls), 3)
+        self.assertIsNotNone(self.observer.error)
+        self.assertEqual(self.mapped_pids, [])
+        self.assertIsNone(self.observer.observation)
+
+    def test_continuous_poll_timeouts_use_fixed_budget_without_extending_deadline(self):
+        command = ["xcrun", "simctl", "get_app_container", UDID, "io.anytype.app", "data"]
+        calls = []
+        deadline = []
+        def query(argv, **kwargs):
+            calls.append(argv)
+            if len(calls) == 1:
+                return str(self.container) + "\n"
+            if len(calls) == 2:
+                self.observer.deadline = time.monotonic() + 0.3
+                deadline.append(self.observer.deadline)
+            else:
+                self.assertEqual(self.observer.deadline, deadline[0])
+            raise gate.subprocess.TimeoutExpired(command, kwargs["timeout"],
+                output=b"private stdout", stderr=b"private stderr")
+        with patch.object(gate.subprocess, "check_output", side_effect=query):
+            self.observe()
+        self.assertEqual(len(calls), 3)
+        self.assertEqual(self.observer.poll_timeout_retries, 2)
+        self.assertIn("timed out", str(self.observer.error))
+        self.assertEqual(self.mapped_pids, [])
+        self.assertEqual(self.observer.summary()["diagnostics"]["partial_observations"], {})
 
     def test_installed_source_timeout_retains_original_live_phase_without_qualifying_it(self):
         command = ["xcrun", "simctl", "get_app_container", UDID, "io.anytype.app", "app"]

@@ -127,6 +127,7 @@ class NativeUIRuntimeObserver:
         self.diagnostic_stages = {}
         self.diagnostic_failure = None
         self.partial_observations = {}
+        self.poll_timeout_retries = 0
         self.finalization_receipt = None
 
     def diagnostic_operation(self, stage, operation, *, transient=()):
@@ -180,6 +181,7 @@ class NativeUIRuntimeObserver:
                 "stage_duration_scope": "ENTIRE_NAMED_OPERATION_NOT_INDIVIDUAL_SUBPROCESS",
                 "stages": list(self.diagnostic_stages.values()),
                 "first_failure": self.diagnostic_failure,
+                "poll_timeout_retries": self.poll_timeout_retries,
                 "partial_observations": self.partial_observations}))
 
     def persist_summary(self, *, write_file=True):
@@ -227,7 +229,20 @@ class NativeUIRuntimeObserver:
         try:
             while True:
                 self.timeout()
-                container = self.diagnostic_operation("poll_data_container", lambda: self.container(self.timeout))
+                try:
+                    container = self.diagnostic_operation("poll_data_container", lambda: self.container(self.timeout))
+                except subprocess.TimeoutExpired as error:
+                    # Only transient lookup of this owned simulator may be
+                    # polled again. Preserve the original failure diagnostics;
+                    # never reset either deadline or reuse a previous path.
+                    expected = ["xcrun", "simctl", "get_app_container", self.udid, "io.anytype.app", "data"]
+                    require(error.cmd == expected and isinstance(error.timeout, (int, float))
+                            and 0 < error.timeout <= COMMAND_SECONDS,
+                            "Timeout was not the bounded owned data-container poll")
+                    with self.diagnostic_lock:
+                        self.poll_timeout_retries += 1
+                    self.stop_event.wait(min(0.25, self.timeout()))
+                    continue
                 try:
                     before_raw = self.diagnostic_operation("read_native_phase_before",
                         lambda: stable_bytes(container / SUPPORT / RESULT),
