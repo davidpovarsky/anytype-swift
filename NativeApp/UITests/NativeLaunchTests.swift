@@ -129,7 +129,73 @@ final class NativeLaunchTests: XCTestCase {
         let body = "שלום היררכיה ומאפיינים 456"
         app.launch()
         defer { app.terminate() }
-        createOwnedWorkspace(app, spaceName: spaceName)
+        // Keep this diagnosis local to the one failed journey. It records no
+        // labels, text, recovery phrase, screenshot or complete AX tree.
+        func observeBackupControl(_ phase: String, row: XCUIElement, control: XCUIElement) {
+            func state(_ element: XCUIElement) -> [String: Any] {
+                guard element.exists else { return ["exists": false] }
+                let rawValue = element.value as? String
+                let value = rawValue == "0" || rawValue == "1" ? rawValue! : "unavailable"
+                let frame = element.frame
+                return ["exists": true, "enabled": element.isEnabled,
+                        "hittable": element.isHittable, "value": value,
+                        "frame": [frame.minX, frame.minY, frame.width, frame.height]]
+            }
+            let appState = app.state
+            let record: [String: Any] = [
+                "schemaVersion": 1, "phase": phase, "ownedScope": scope.uuidString,
+                "utcEpochSeconds": Date().timeIntervalSince1970,
+                "testRunnerPID": ProcessInfo.processInfo.processIdentifier,
+                "appPIDSource": "Matching original XCTest synthesized-event attachment",
+                "appState": appState.rawValue,
+                "appRunningForeground": appState == .runningForeground,
+                "windowCount": app.windows.count,
+                "nativeSceneStateAvailable": false, "nativeResetReasonAvailable": false,
+                "row": state(row), "control": state(control)
+            ]
+            let data = (try? JSONSerialization.data(withJSONObject: record, options: [.sortedKeys]))
+                ?? Data("{\"diagnosticEncodingFailed\":true}".utf8)
+            let observation = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
+            observation.name = "native-backup-control-observation-" + phase
+            observation.lifetime = .keepAlways
+            add(observation)
+        }
+
+        tapWhenEnabled(app.buttons["any-native-account-create"])
+        let backup = app.switches["any-native-backup-acknowledged"]
+        do {
+            let row = backup
+            waitUntilEnabled(row, timeout: 60)
+            // The executed iOS 27 AX trees expose a SwiftUI Toggle row containing
+            // a separate physical Switch. A row tap left all five owned accounts
+            // unacknowledged; target that observed child control exactly once.
+            let switches = row.descendants(matching: .switch)
+            let control = switches.firstMatch
+            waitUntilEnabled(control, timeout: 10)
+            XCTAssertEqual(switches.count, 1, "Expected one physical backup switch")
+            waitFor(NSPredicate(format: "hittable == true AND value == %@", "0"),
+                    object: control, timeout: 10)
+            // Geometry only: never capture the recovery phrase or a complete tree.
+            let frames = XCTAttachment(string: "row=\(row.frame)\ncontrol=\(control.frame)")
+            frames.name = "native-backup-acknowledgement-control-frames"
+            frames.lifetime = .keepAlways
+            add(frames)
+            observeBackupControl("before-tap", row: row, control: control)
+            control.tap()
+            observeBackupControl("after-tap", row: row, control: control)
+            waitFor(NSPredicate(format: "value == %@", "1"), object: control, timeout: 10)
+            waitFor(NSPredicate(format: "value == %@", "1"), object: row, timeout: 10)
+            observeBackupControl("acknowledged", row: row, control: control)
+        }
+        // Acknowledge through the same UI as a person; never read or print the
+        // recovery phrase from the accessibility tree.
+        tapWhenEnabled(app.buttons["any-native-backup-continue"])
+        let spaceNameField = app.textFields["any-native-space-name"]
+        waitUntilEnabled(spaceNameField)
+        spaceNameField.tap()
+        spaceNameField.typeText(String(spaceName))
+        tapWhenEnabled(app.buttons["any-native-space-create"])
+        tapWhenEnabled(app.buttons["any-native-workspace-setup"], timeout: 90)
 
         createNamedItem(app, action: "any-native-new-folder", title: folderA)
         waitUntilEnabled(app.buttons[folderA].firstMatch, timeout: 60)
