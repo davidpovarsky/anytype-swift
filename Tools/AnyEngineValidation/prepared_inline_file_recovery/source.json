@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "protocol": "pinkha-inline-native-process-recovery-v1",
+  "status": "SOURCE_FROZEN_NOT_EXECUTED",
+  "sourceOrigin": "c4623749e25e1851351fbcf554608e0090f55e90",
+  "retainedCandidateManifest": "Tools/AnyEngineValidation/evidence/native-prepared-inline-file-http-v1-candidate-source.json",
+  "retainedCandidateManifestSHA256": "86598a7046ef135fa5dd2d0c2e559750f89ed8517fe4c1c753ce4457c13a009b",
+  "any": {
+    "upstream": "88fae2e5ae7d0f46d6707567a3123081faa8de9a",
+    "candidateTree": "0445217b25b4f4fcf4d2ce86e3a4eecfcfc5cd10",
+    "candidateCommit": "78cecf10f4c7eca8995fc013008ce0aa50096438",
+    "fixtureCommit": "d7e720d6f9dc9eb5215f48105d49d124c8455764",
+    "fixtureTree": "424cc8c53dfa974c966e3a4beb474ff3818402f1",
+    "retainedFiles": 850,
+    "newTestFiles": 2,
+    "changedProductFiles": 0
+  },
+  "sdk": {
+    "upstream": "854df54cdadd76006ae823cbd1b1d923138356d0",
+    "candidateTree": "8b9df2cdcefb5aee3973df11a326652f5a2378f4",
+    "candidateCommit": "7dbab79b5c607077c0f4eebce942dcecd710551a",
+    "retainedFiles": 683,
+    "changedFiles": 0
+  },
+  "profile": {
+    "go": "go1.27.4",
+    "GOOS": "linux",
+    "GOARCH": "arm64",
+    "libc": "glibc",
+    "GOMAXPROCS": 1,
+    "buildParallelism": 1,
+    "tag": "pinkha_inline_recovery",
+    "mod": "readonly",
+    "maximumInlineBytes": 4095
+  },
+  "selectors": [
+    "TestPreparedInlineFileActualProcessCrashRecovery",
+    "TestPreparedInlineFileActualLostHTTPAcknowledgementRecovery"
+  ],
+  "childSelector": "TestPreparedInlineFileRecoveryChild",
+  "qualifiedProductMethods": 0,
+  "newScopesNotOldReruns": true,
+  "files": [
+    {
+      "anyPath": "internal/server/handlers_pinkha_migration_inline_file_recovery_test.go",
+      "fixturePath": "Tools/AnyEngineValidation/prepared_inline_file_recovery/handlers_pinkha_migration_inline_file_recovery_test.go",
+      "sha256": "475fe0c2022a3b90764a9e9ca1b4ec37c2249ad61b715eaca57f52a855493141",
+      "bytes": 24422
+    },
+    {
+      "anyPath": "internal/server/handlers_pinkha_migration_inline_file_recovery_child_test.go",
+      "fixturePath": "Tools/AnyEngineValidation/prepared_inline_file_recovery/handlers_pinkha_migration_inline_file_recovery_child_test.go",
+      "sha256": "ee49c25189f9f7fe2b01651f99e4ba024dfa63c72074a2d2470037ad49bc2a4b",
+      "bytes": 13908
+    }
+  ],
+  "limitations": {
+    "swiftClientAcceptance": false,
+    "AppleAcceptance": false,
+    "powerLossDurability": false,
+    "networkAcceptance": false,
+    "notificationOutboxDelivery": false,
+    "fullMigrationComplete": false,
+    "generalFileCapability": 0
+  },
+  "reviewedOriginalFixtureCommit": "7f16bd5a0224adab4b441462d77a6944a6a68746",
+  "postReviewDelta": "Retain actual child PGID and raw WaitStatus; no execution flow or product changes."
+}
