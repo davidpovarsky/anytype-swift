@@ -1,0 +1,21 @@
+{
+  "cleanup": true,
+  "command": [
+    "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+    "-NoProfile",
+    "-NonInteractive",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_562293a2e9df4573aa1676abd1e7e09e\\sentinelx_bootstrap.ps1",
+    "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_562293a2e9df4573aa1676abd1e7e09e\\script.ps1"
+  ],
+  "cwd": null,
+  "duration": 1.72,
+  "hub_request_id": "hreq_4db12df33ee04bee",
+  "interpreter": "powershell",
+  "ok": false,
+  "output": "Preparing worktree (new branch 'codex/chatgpt-wave15-sdk-external-host-projection-20261123')\nThe following paths and/or pathspecs matched paths that exist\noutside of your sparse-checkout definition, so will not be\nupdated in the index:\nTools/PinkhaSimulatorGate/test_sdk06_external_host_projection.py\ndocs/validation/20261123-sdk06-external-host-projection/README.md\ndocs/validation/20261123-sdk06-external-host-projection/control-inputs.json\ndocs/validation/20261123-sdk06-external-host-projection/evidence-inputs.json\ndocs/validation/20261123-sdk06-external-host-projection/exact-source-inverses.json\ndocs/validation/20261123-sdk06-external-host-projection/originals/SDK06PendingProducts.tar.gz\ndocs/validation/20261123-sdk06-external-host-projection/originals/actual-source-observations.json\ndocs/validation/20261123-sdk06-external-host-projection/originals/execution.json\ndocs/validation/20261123-sdk06-external-host-projection/originals/first-tar-reader-failure.json\ndocs/validation/20261123-sdk06-external-host-projection/originals/original-link-observation.json\ndocs/validation/20261123-sdk06-external-host-projection/originals/partial-tar-inventory.json\ndocs/validation/20261123-sdk06-external-host-projection/originals/prior-controller-source.json\ndocs/validation/20261123-sdk06-external-host-projection/originals/prior-generator.py\ndocs/validation/20261123-sdk06-external-host-projection/originals/prior-run-controls.py\ndocs/validation/20261123-sdk06-external-host-projection/originals/projected-component-build.log\ndocs/validation/20261123-sdk06-external-host-projection/originals/source-projection.json\ndocs/validation/20261123-sdk06-external-host-projection/run-controls.py\ndocs/validation/20261123-sdk06-external-host-projection/source-review.json\nhint: If you intend to update such entries, try one of the following:\nhint: * Use the --sparse option.\nhint: * Disable or modify the sparsity rules.\nhint: Disable this message with \"git config advice.updateSparsePath false\"\nTraceback (most recent call last):\n  File \"<stdin>\", line 146, in <module>\n  File \"<stdin>\", line 19, in git\n  File \"/usr/lib/python3.12/subprocess.py\", line 466, in check_output\n    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/subprocess.py\", line 571, in run\n    raise CalledProcessError(retcode, process.args,\nsubprocess.CalledProcessError: Command '['git', '-C', '/mnt/development/projects/worktrees/anytype-wave15-sdk-external-host-projection-20261123', 'add', '--', 'Tools/PinkhaSimulatorGate/sdk06_component_projection.py', 'Tools/PinkhaSimulatorGate/sdk06-original-native-controller-source.json', 'Tools/PinkhaSimulatorGate/test_sdk06_external_host_projection.py', 'docs/validation/20261123-sdk06-external-host-projection']' returned non-zero exit status 1.\nSDK external-host source authoring failed\r\nAt C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_562293a2e9df4573aa1676abd1e7e09e\\script.ps1:167 \r\nchar:25\r\n+ ... ASTEXITCODE -ne 0){throw 'SDK external-host source authoring failed'}\r\n+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (SDK external-ho...uthoring failed:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : SDK external-host source authoring failed",
+  "returncode": 1,
+  "sudo": false
+}

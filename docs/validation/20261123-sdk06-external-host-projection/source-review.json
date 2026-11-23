@@ -1,0 +1,52 @@
+{
+  "base": "5180bc5fd4b1d45475ad068153257fce4ae0e169",
+  "builds": 0,
+  "claim": "Source freeze only; real external linkage and Xcode acceptance NOT_RUN",
+  "contractAfter": "8d3045bc1dbe2f943b73b26e5d92c57f5523a9d3771d0800b6689040df889987",
+  "contractBefore": "ddc7588bb76ae2e80dc73926313d5e0192954625a1d48111ea919a134ed812da",
+  "contractRowsChanged": 1,
+  "contractScope": "Exactly the generator input digest row; all other input identities unchanged",
+  "fullTreeIntegrityUnchanged": true,
+  "generatorAfter": "0ec892f3725732d1ea984d9b99e9c989c0c8eb980442aa7211d2d3141a816d0b",
+  "generatorBefore": "0e1cbbdfca69200e3d673b66fde53fac1a08be0cf74e5e7f0ee13066fccc427f",
+  "generatorChangedFunctions": [
+    "project_value",
+    "write_project"
+  ],
+  "inference": "An empty build-only TEST_HOST removes the app-host build-graph requirement while explicit link inputs preserve the original symbol carriers. Actual compilation remains required.",
+  "newMethod": "SDK06ExternalHostProjectionControl.test_actual_link_carriers_build_only_host_and_frozen_workspace",
+  "newMethods": 1,
+  "observedCause": "Actual Xcode test planning refused the external TEST_HOST. The exact staged shim existed. The original successful linker command used both that shim and the debug dylib.",
+  "oldMethods": 0,
+  "precreatedDirectoriesExactly": 3,
+  "primaryReferences": [
+    {
+      "facts": [
+        "BUNDLE_LOADER specifies the loader used to resolve bundle symbols",
+        "ENABLE_DEBUG_DYLIB separates main app code into the debug dylib"
+      ],
+      "url": "https://developer.apple.com/documentation/xcode/build-settings-reference.md"
+    }
+  ],
+  "productMethods": 0,
+  "protocol": "sdk06-external-host-source-review-v1",
+  "rootAuthorization": "Generator-only repair and one new affected control; no CI dispatch/main mutation",
+  "runtimeDescriptorFunctionSHA256": "bb590da122d782150e41bd63271b9ad86ec8c52b0ce978f45d4afe3b875fc4bf",
+  "scope": "DOWNSTREAM_OWNED Python generator only; no original App/Swift/native/module or runtime descriptor changes",
+  "unchangedGeneratorFunctions": {
+    "contract": "132958e6620e9e0a3c03081c551d479a91c787078ed5bf2bbc955b5f16d10a60",
+    "descriptor_value": "bb590da122d782150e41bd63271b9ad86ec8c52b0ce978f45d4afe3b875fc4bf",
+    "digest": "884bb01e185f2d9d9430301d9fae0ad420aa9c9ab5ec6be9c82587a6bf0ed525",
+    "object_id": "1a855022aa1262e5d806f08a6aedda335f6ff3364df6b8acddaca1f06c1163ba",
+    "openstep": "0e2e53407ea85903c840f7f86c38c4d51abbe24263b27f01b8ed87c53b4237eb",
+    "projected_sources": "eb50cb9b27db485471a3357aeaad07d3feb7b97aa7471d833007a8da774e3914",
+    "require": "fba5518dbbe127c5d736b6a2ef99ebbb28b24be84759bc3ce649d93a6815e637",
+    "require_pending_registration": "e6b4c79c2079538a2f79e267c58e85ad21efbd4b2306cdbda963c908647767bc",
+    "scheme_bytes": "41805da93acfe0ade61dc1a275e61a0b6742b9dc665a1f311c4d26282d31634f"
+  },
+  "wrapperAfter": "4a1da2bc4bf5a278a9e7d1c3348da296f490fa45a0ea1ad3c5703b5ec64b0ab2",
+  "wrapperBefore": "cbae1b66026d71512ded14193e72a7c56e8372d82c93dda621142e91ea92dadb",
+  "wrapperFunctionsChanged": [
+    "main"
+  ]
+}

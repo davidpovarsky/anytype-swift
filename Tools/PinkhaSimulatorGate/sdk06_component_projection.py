@@ -140,7 +140,10 @@ def project_value(source_names, staged_app, original_products, fixed):
         "CODE_SIGNING_ALLOWED": "YES", "CODE_SIGNING_REQUIRED": "YES",
         "PROVISIONING_PROFILE_SPECIFIER": "", "PRODUCT_BUNDLE_IDENTIFIER": "com.AnytypeTests",
         "PRODUCT_NAME": "SDK06PendingTests", "PRODUCT_MODULE_NAME": TARGET,
-        "TEST_HOST": str(staged_app / "Anytype"), "BUNDLE_LOADER": "$(TEST_HOST)",
+        # This graph only builds the bundle; its separately preserved runtime
+        # descriptor still injects it into the original staged App.
+        "TEST_HOST": "", "BUNDLE_LOADER": str(staged_app / "Anytype"),
+        "OTHER_LDFLAGS": [str(staged_app / "Anytype.debug.dylib")],
         "TEST_TARGET_NAME": "", "TARGETED_DEVICE_FAMILY": "1,2",
         "SUPPORTS_MACCATALYST": "NO", "SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD": "NO",
         "SWIFT_INCLUDE_PATHS": [str(original_products)],
@@ -285,6 +288,13 @@ def write_project(control, app, destination, staged_app, original_products):
     (workspace / "contents.xcworkspacedata").write_bytes(
         b'<?xml version="1.0" encoding="UTF-8"?>\n'
         b'<Workspace version="1.0"><FileRef location="self:"></FileRef></Workspace>\n')
+    # Xcode materialized precisely these three empty directories in the failed
+    # original build. Freeze them before the unchanged whole-tree admission.
+    for relative in ("xcshareddata", "xcshareddata/swiftpm",
+                     "xcshareddata/swiftpm/configuration"):
+        directory = workspace / relative
+        directory.mkdir(mode=0o777)
+        directory.chmod(0o777)
     files = {path.relative_to(destination).as_posix(): digest(path.read_bytes())
              for path in sorted(destination.rglob("*")) if path.is_file()}
     return project, {"protocol": "sdk06-component-source-projection-v1", "source_sha": SOURCE,

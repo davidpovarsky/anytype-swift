@@ -1,0 +1,62 @@
+{
+  "base": "5180bc5fd4b1d45475ad068153257fce4ae0e169",
+  "production": [
+    {
+      "after": "0ec892f3725732d1ea984d9b99e9c989c0c8eb980442aa7211d2d3141a816d0b",
+      "before": "0e1cbbdfca69200e3d673b66fde53fac1a08be0cf74e5e7f0ee13066fccc427f",
+      "hunks": [
+        {
+          "after": "        # This graph only builds the bundle; its separately preserved runtime\n        # descriptor still injects it into the original staged App.\n        \"TEST_HOST\": \"\", \"BUNDLE_LOADER\": str(staged_app / \"Anytype\"),\n        \"OTHER_LDFLAGS\": [str(staged_app / \"Anytype.debug.dylib\")],\n",
+          "before": "        \"TEST_HOST\": str(staged_app / \"Anytype\"), \"BUNDLE_LOADER\": \"$(TEST_HOST)\",\n"
+        },
+        {
+          "after": "    # Xcode materialized precisely these three empty directories in the failed\n    # original build. Freeze them before the unchanged whole-tree admission.\n    for relative in (\"xcshareddata\", \"xcshareddata/swiftpm\",\n                     \"xcshareddata/swiftpm/configuration\"):\n        directory = workspace / relative\n        directory.mkdir(mode=0o777)\n        directory.chmod(0o777)\n    files = {path.relative_to(destination).as_posix(): digest(path.read_bytes())\n",
+          "before": "    files = {path.relative_to(destination).as_posix(): digest(path.read_bytes())\n"
+        }
+      ],
+      "path": "Tools/PinkhaSimulatorGate/sdk06_component_projection.py"
+    },
+    {
+      "after": "8d3045bc1dbe2f943b73b26e5d92c57f5523a9d3771d0800b6689040df889987",
+      "before": "ddc7588bb76ae2e80dc73926313d5e0192954625a1d48111ea919a134ed812da",
+      "hunks": [
+        {
+          "after": "0ec892f3725732d1ea984d9b99e9c989c0c8eb980442aa7211d2d3141a816d0b",
+          "before": "0e1cbbdfca69200e3d673b66fde53fac1a08be0cf74e5e7f0ee13066fccc427f"
+        }
+      ],
+      "path": "Tools/PinkhaSimulatorGate/sdk06-original-native-controller-source.json"
+    }
+  ],
+  "wrapper_base": "docs/validation/20261123-sdk06-component-projection/run-controls.py",
+  "wrapper_literal_replacements": [
+    [
+      "One new pure SDK projection control; no compiler or product execution.",
+      "One new external-host projection control; no compiler or product execution."
+    ],
+    [
+      "sdk06-component-projection-pure-control-v1",
+      "sdk06-external-host-projection-control-v1"
+    ],
+    [
+      "docs/validation/20261123-sdk06-component-projection",
+      "docs/validation/20261123-sdk06-external-host-projection"
+    ],
+    [
+      "test_sdk06_component_projection",
+      "test_sdk06_external_host_projection"
+    ],
+    [
+      "test_actual_source_projection_unit_only_graph_descriptor_and_registration",
+      "test_actual_link_carriers_build_only_host_and_frozen_workspace"
+    ],
+    [
+      "SDK06ComponentProjectionControl",
+      "SDK06ExternalHostProjectionControl"
+    ],
+    [
+      "One pure source/project/descriptor/registration control only; no actual compilation, module linkage, test enumeration, XCTest or App acceptance",
+      "One affected host-link/workspace pure control only; no actual compilation, linkage, enumeration, XCTest or App acceptance"
+    ]
+  ]
+}

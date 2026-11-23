@@ -1,0 +1,30 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"ok\":false,\"interpreter\":\"powershell\",\"sudo\":false,\"cwd\":null,\"cleanup\":true,\"command\":[\"C:\\\\WINDOWS\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.EXE\",\"-NoProfile\",\"-NonInteractive\",\"-ExecutionPolicy\",\"Bypass\",\"-File\",\"C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_5a557ebff3704ced949886d8371ca3f2\\\\sentinelx_bootstrap.ps1\",\"C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_5a557ebff3704ced949886d8371ca3f2\\\\script.ps1\"],\"output\":\"Traceback (most recent call last):\\n  File \\\"<stdin>\\\", line 7, in <module>\\nAssertionError: Source\\nBounded actual partial tar analysis failed\\r\\nAt C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_5a557ebff3704ced949886d8371ca3f2\\\\script.ps1:18 \\r\\nchar:25\\r\\n+ ... STEXITCODE -ne 0){throw 'Bounded actual partial tar analysis failed'}\\r\\n+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\r\\n    + CategoryInfo          : OperationStopped: (Bounded actual ...analysis failed:String) [], RuntimeException\\r\\n    + FullyQualifiedErrorId : Bounded actual partial tar analysis failed\",\"duration\":1.61,\"returncode\":1,\"hub_request_id\":\"hreq_e2c7628a43194e7d\"}"
+    }
+  ],
+  "structuredContent": {
+    "ok": false,
+    "interpreter": "powershell",
+    "sudo": false,
+    "cwd": null,
+    "cleanup": true,
+    "command": [
+      "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_5a557ebff3704ced949886d8371ca3f2\\sentinelx_bootstrap.ps1",
+      "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_5a557ebff3704ced949886d8371ca3f2\\script.ps1"
+    ],
+    "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 7, in <module>\nAssertionError: Source\nBounded actual partial tar analysis failed\r\nAt C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_5a557ebff3704ced949886d8371ca3f2\\script.ps1:18 \r\nchar:25\r\n+ ... STEXITCODE -ne 0){throw 'Bounded actual partial tar analysis failed'}\r\n+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (Bounded actual ...analysis failed:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : Bounded actual partial tar analysis failed",
+    "duration": 1.61,
+    "returncode": 1,
+    "hub_request_id": "hreq_e2c7628a43194e7d"
+  },
+  "isError": false
+}

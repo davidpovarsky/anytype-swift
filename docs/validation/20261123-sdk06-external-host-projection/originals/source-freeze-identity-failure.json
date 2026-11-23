@@ -1,0 +1,21 @@
+{
+  "cleanup": true,
+  "command": [
+    "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+    "-NoProfile",
+    "-NonInteractive",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_f4b2164812b948d791961f1c6424c1dc\\sentinelx_bootstrap.ps1",
+    "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_f4b2164812b948d791961f1c6424c1dc\\script.ps1"
+  ],
+  "cwd": null,
+  "duration": 1.57,
+  "hub_request_id": "hreq_46cc856f93024efc",
+  "interpreter": "powershell",
+  "ok": false,
+  "output": "Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'ubuntu@torah-social.(none)')\nTraceback (most recent call last):\n  File \"<stdin>\", line 36, in <module>\n  File \"<stdin>\", line 11, in git\n  File \"/usr/lib/python3.12/subprocess.py\", line 466, in check_output\n    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/subprocess.py\", line 571, in run\n    raise CalledProcessError(retcode, process.args,\nsubprocess.CalledProcessError: Command '['git', '-C', '/mnt/development/projects/worktrees/anytype-wave15-sdk-external-host-projection-20261123', 'commit', '-m', 'fix(sdk06): preserve external App link carriers for test bundle build']' returned non-zero exit status 128.\nSDK source freeze failed\r\nAt C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_f4b2164812b948d791961f1c6424c1dc\\script.ps1:53 \r\nchar:25\r\n+ if($LASTEXITCODE -ne 0){throw 'SDK source freeze failed'}\r\n+                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (SDK source freeze failed:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : SDK source freeze failed",
+  "returncode": 1,
+  "sudo": false
+}
