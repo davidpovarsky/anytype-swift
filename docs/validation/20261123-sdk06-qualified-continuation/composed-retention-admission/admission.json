@@ -1,0 +1,936 @@
+{
+  "admission_sha256": "e529e563a43dcaa4ca043abbc6bc0c0419c669434ed5e3a9c600a3eadfbfbbb5",
+  "controller_methods_executed_now": 0,
+  "current_catalog": [
+    {
+      "declaration_sha256": "5403eb1121ef4796b2e79bd826dd7cc5f55deddc6f7b5171d50dfc7c46c6b6ac",
+      "method": "ObserverControls.test_only_actual_receipt_pid_is_mapped_and_final_native_bytes_remain_bound",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "d2d45d5688c7aecd7c60c97c448ccb91fc26abde76d7ff14ce004357915e8391",
+      "method": "ObserverControls.test_mapping_uses_remaining_budget_without_extending_the_total_deadline",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "dfa1dc1199b2499f015b1cf4f4e2d7bf81adac9e8c6206b7c5cce8d3a0af41db",
+      "method": "ObserverControls.test_preexisting_receipt_is_rejected_before_observer_or_mapping",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "7df2988c98a01acdc3431ce74f2478a20528d317cded866861e6f5e725352f6b",
+      "method": "ObserverControls.test_stale_wrong_source_and_already_finished_receipts_cannot_start_mapping",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "c29c10c3ca03167cb0b4f5ce19f4195794a2e98762489f57eb7cc828e99a3284",
+      "method": "ObserverControls.test_changed_native_fixture_bytes_reject_before_any_mapping",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "7554904e289862c5a4d411cd2ecdce013a556b2b8daa72f49d957572430cb8a3",
+      "method": "ObserverControls.test_changed_pre_ui_executable_carriers_cannot_be_rebased_at_mapping",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "d0835f0fe5fc70630a862d3ff7706a88eed834c0527392d6e24e461f09d7692c",
+      "method": "ObserverControls.test_another_simulators_application_path_cannot_qualify_the_ui_receipt",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "6ed51f1cc209d9901d4f4b251ec0fe4523e3460d7d0952483a4ff55f37b74a72",
+      "method": "ObserverControls.test_phase_update_is_allowed_but_native_identity_change_during_mapping_is_rejected",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "2d70998fe2ce0794fba185bc5386cdcc8cd12bad8e28509fd8401f521a94fa70",
+      "method": "ObserverControls.test_ordinary_atomic_phase_progress_preserves_one_process",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "dcd2df1a179686cc8c779b34e1d70563c74d5ce857ce419f0ed85b307783b122",
+      "method": "ObserverControls.test_final_receipt_cannot_switch_pid_session_start_source_or_raw_bytes",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "b027df37ede6839f2c343eabdddbfb2621725729bda4074d20b4589751880fb3",
+      "method": "ObserverControls.test_mapping_after_native_finish_is_not_retroactive_runtime_proof",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "004d961a31ee548966484ac09965223316153dcd5009a41abcd67c3fcccddaf4",
+      "method": "ObserverControls.test_cancellation_joins_observer_without_launching_or_killing_any_app",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "5ef0b4391f1d48c3e6e778c365cc287b0dc1b2cd9b073455d1d72bf5b0fb5fce",
+      "method": "ObserverControls.test_partial_start_cancellation_joins_real_worker_and_exports_original_failure",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "9ad4df4b8680e73304fb9ee1b42ce293ff0f798b8a7b85a65b0df7cfdb743ce2",
+      "method": "ObserverControls.test_failure_before_thread_start_preserves_error_and_failure_export",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "e73af8565def3f318ddc1da94cbfd949681f320d57e87dd7aa1bf26b7caf9311",
+      "method": "ObserverControls.test_stop_write_error_preserves_primary_cancellation_and_exports_remaining_evidence",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "7e4efbf2e7274b614305efb4ee005540eee63f7c5a984409a9d1f07e5604bb05",
+      "method": "ObserverControls.test_stop_write_error_without_primary_fails_closed_after_remaining_exports",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "a6c91307e19326ab971087e7523633aad2c4bef470de68ba65aab9de9bdde09d",
+      "method": "ObserverControls.test_final_receipt_error_preserves_original_selection_failure",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "e0652d157933ab89a35f0333f80b24a4adabb177d63e8dc9a5b2887282e7e4ee",
+      "method": "ObserverControls.test_atomic_receipt_replacement_preserves_primary_cancellation",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "e8c3bb738016f19a847b6dae62aa45f16c384da32d2e8ee0376483c7ccfd0859",
+      "method": "ObserverControls.test_final_receipt_error_without_primary_fails_closed",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "8a99c75b6a598bbca6956c4dbbd783f7a5652e05a5344e9ab102bc16986b7557",
+      "method": "ObserverControls.test_console_error_preserves_primary_and_still_exports_original_native_bytes",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "b31e87f8df26864a0849b6d6d28e865af40ed6c6931e380c76ab7de629082c99",
+      "method": "ObserverControls.test_mapping_uses_the_same_deadline_and_cannot_qualify_after_timeout",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "fc385edd141986122d0eea324705cb9ebb1b5e0b52c86a979ec98a90fd2dbd2d",
+      "method": "ObserverControls.test_poll_timeout_retains_first_failure_and_stops_at_original_total_deadline",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "observer-qualified"
+    },
+    {
+      "declaration_sha256": "1c18a642dc9eac638266b8f6d818ec7b327db080ef35084d3052d8938b7f4857",
+      "method": "ObserverControls.test_one_poll_timeout_recovers_same_native_identity_with_original_deadline",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "observer-qualified"
+    },
+    {
+      "declaration_sha256": "27b178a08d69486cb623425c5e2ef013cf53788fe330194080dd75b47825c54f",
+      "method": "ObserverControls.test_cancelled_poll_timeout_does_not_issue_another_query_or_map",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "observer-qualified"
+    },
+    {
+      "declaration_sha256": "3eebc655b40ae63f78fb54c3555908aff7229c8b1d7b3fcb8dca1b9b6074ae19",
+      "method": "ObserverControls.test_timeout_of_another_command_is_not_retried",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "observer-qualified"
+    },
+    {
+      "declaration_sha256": "feaaad9fe767023ddddb23f607fc7d814306894ca7f11d50016b93e4006a9d56",
+      "method": "ObserverControls.test_recovered_poll_still_rejects_changed_original_fixture",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "observer-qualified"
+    },
+    {
+      "declaration_sha256": "f0720ca9c07c4d35c7ad1027ca95fb9f37ba0c5f462bf83b3ea623f7ae37f3c4",
+      "method": "ObserverControls.test_recovered_poll_cannot_admit_stale_or_finished_native_phase",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "observer-qualified"
+    },
+    {
+      "declaration_sha256": "43bb4be5141d5b6bdc685d10aa1a550c96cbab6a5fd2b30163f7c0e707aff058",
+      "method": "ObserverControls.test_continuous_poll_timeouts_use_fixed_budget_without_extending_deadline",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "observer-qualified"
+    },
+    {
+      "declaration_sha256": "08e9cc547c921c02dfa5e2f9acae211aa1683e0d98e6d8d47c18f8309f7f8ae5",
+      "method": "ObserverControls.test_installed_source_timeout_retains_original_live_phase_without_qualifying_it",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "9fcba0f9fc74c9cf12a0fe4b96199806a08bf72aa2a00cfa509dfb3d5f35e511",
+      "method": "ObserverControls.test_vmmap_timeout_preserves_collected_source_and_does_not_rerun_mapping",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "a5f2efedbc02f39257bc67176b8d3e4b8dfe9a374110d5f57aaa2ddb004f89f5",
+      "method": "ObserverControls.test_after_mapping_timeout_retains_mapping_metadata_but_cannot_be_a_pass",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "514d4d5936c1b7f78dd279b9a5dfe39def87422767213887ad9ae19cb8c639d6",
+      "method": "ObserverControls.test_diagnostic_duration_is_stage_elapsed_and_first_failure_survives_later_reads",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "cededd4944c2908d8e252b891aadda71f5e3ba2d56778cb036526d341a92ec3b",
+      "method": "ObserverControls.test_repeated_polls_have_bounded_diagnostics_and_transient_reads_stay_distinct",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "4d2aa3fc74498cc0fda66169c737304899667383df85e8dfc75ed6cb675e72e3",
+      "method": "ObserverControls.test_diagnostic_command_overflow_and_private_error_text_are_not_published",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "e4cd4f5c0804af501720c82caece412fb002702911b3789798e95d5668301f9a",
+      "method": "ObserverControls.test_diagnostics_do_not_change_original_deadlines_or_add_a_launch",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "9e276bcbbbd4d987d56952bc8a646ef579c96ed9fcc7c2c9eb0f48857f8fa68d",
+      "method": "ObserverControls.test_finalizer_export_timeout_is_persisted_after_exports_in_disk_and_execution_receipt",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "0e934318a71b2a54a0a918bee99d82af6c34e114a519c336b214b2b784d74143",
+      "method": "ObserverControls.test_boundary_timeout_is_persisted_in_disk_and_previously_finalized_execution_receipt",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "683bf1dc372d7ccae564934f85443615bd5c42a90dc83b8ddf285c92bd29a98c",
+      "method": "ObserverControls.test_final_snapshot_write_failure_does_not_replace_the_original_export_timeout",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "d664dfef2e35023c2d00cb6a0a56ca52e9949165dc64af18212f6f55aea6c258",
+      "method": "ObserverControls.test_boundary_diagnostic_write_failure_preserves_primary_and_success_cannot_write_qualification",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "494e83a427bbfae36e858ca2965d6c2358dd52e7c9903a9ed0312e52c5fd52c0",
+      "method": "ObserverControls.test_atomic_file_replacement_during_read_is_not_a_stable_snapshot",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "3e6abb34c7bdfd7986277b49a025ce6aaf74b2b4e081038b94a6946c0bda231b",
+      "method": "ObserverControls.test_duplicate_keys_and_symlinked_receipts_are_not_admitted",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "0102193feda9077fefe3c1be3be102643afebdc1b7cf3b9c37e429cf7c01ef9b",
+      "method": "TemporaryRootControls.test_real_temporary_parent_alias_is_resolved_without_relaxing_receipt_symlink_guard",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "cca456bbca547876550ab9782c7a59bc2836325986428fb14aa4091e9d1cf526",
+      "method": "ExistingProcessMappingControls.test_existing_process_mapping_has_no_launch_and_each_command_is_bounded",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "23d6b58d1d511807ee28f01d8b9d1426952bcf5882a1750692907cdc286186bf",
+      "method": "ExistingProcessMappingControls.test_legacy_probe_wrapper_retains_its_single_launch_and_mapping",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "173dc85eb5548216b83d8efe8d7d677ada03c238217bef7bf45baf6df9264a56",
+      "method": "ExistingProcessMappingControls.test_wrong_mapped_pid_or_missing_entrypoint_is_rejected",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "f8bc79cc5f04439b20298da869021ac27fb0a882484eb08c9f234defe458a923",
+      "method": "ExistingProcessMappingControls.test_process_executable_or_start_identity_change_is_rejected",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "a2040693298485ab31fafb8365e318215921c694ee730041db9fc44338d5a719",
+      "method": "ExistingProcessMappingControls.test_changed_main_or_missing_runtime_marker_is_rejected",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "877cde36b8a5891bc42b55dbd6b745bcbe1a8b47986dc0e9d15a3d27a1552b9e",
+      "method": "ExistingProcessMappingControls.test_actual_ui_boundaries_must_match_mapped_pid_not_original_probe",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "3565e06b0ceec9be5d3dedb530b7b5b13325b8d06d1e2d4bba7e80e1aa6c398e",
+      "method": "ExistingProcessMappingControls.test_missing_hierarchy_or_changed_post_ui_code_carrier_cannot_qualify",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "proof_batch": "runtime-original"
+    },
+    {
+      "declaration_sha256": "3ba8c8d40772c099ae61601ae86c371ba97f6d05765c27ca4466fc23383d9f51",
+      "method": "HanlinNativeEvidenceTests.test_complete_receipt_does_not_itself_claim_sdk_acceptance",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py",
+      "proof_batch": "native-evidence-original"
+    },
+    {
+      "declaration_sha256": "4f71b6b12aa58d6c1e0eac444e4ae3a97b995aa1ac404a83b8fa3c0768033c2a",
+      "method": "HanlinNativeEvidenceTests.test_completed_authority_checks_cannot_replace_the_original_logout_root_transition",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py",
+      "proof_batch": "native-evidence-original"
+    },
+    {
+      "declaration_sha256": "35adc250a2ff59fd7006fcee9793b235ca5a471bdb641d994c8cf652e459337a",
+      "method": "HanlinNativeEvidenceTests.test_missing_or_unmounted_native_return_cannot_pass_from_label",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py",
+      "proof_batch": "native-evidence-original"
+    },
+    {
+      "declaration_sha256": "e7ae4019155db8911d82765db588d6c044c2f2dd36a1aec2f41a4a35f26cd30d",
+      "method": "HanlinNativeEvidenceTests.test_native_return_requires_the_queued_request_and_original_session",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py",
+      "proof_batch": "native-evidence-original"
+    },
+    {
+      "declaration_sha256": "b1a888c662a941af99217415add6a7c69722f53bdbb2d6949f6615280a5fe3d9",
+      "method": "HanlinNativeEvidenceTests.test_native_return_cannot_change_any_original_context_field",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py",
+      "proof_batch": "native-evidence-original"
+    },
+    {
+      "declaration_sha256": "f72fd7fc914b69f9e8e8676c297c68e7aa5a25446dbcdb02e52eb99712f0d742",
+      "method": "HanlinNativeEvidenceTests.test_original_navigation_anchor_must_match_fixture_and_document_only_scope",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py",
+      "proof_batch": "native-evidence-original"
+    },
+    {
+      "declaration_sha256": "7ecc1478140d13e283e97dac0e16a61e029a42db08090f8b2ce16364bf6b73e1",
+      "method": "HanlinNativeEvidenceTests.test_native_return_rejects_foreign_object_or_selected_block_target",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py",
+      "proof_batch": "native-evidence-original"
+    },
+    {
+      "declaration_sha256": "44e0485e674dcae6c4fcf643d68cf8f18747d141ded3cbb5d15ce7c88d4f3c2e",
+      "method": "HanlinNativeEvidenceTests.test_native_return_and_anchor_schemas_cannot_drop_fields_or_add_claims",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py",
+      "proof_batch": "native-evidence-original"
+    },
+    {
+      "declaration_sha256": "88685a8f84a68ac2c2509057c8961bb15062213de6198220a12ed54eb2d78d67",
+      "method": "HanlinNativeEvidenceTests.test_actual_return_still_requires_closed_host_read_and_create_denial",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py",
+      "proof_batch": "native-evidence-original"
+    },
+    {
+      "declaration_sha256": "021eb8c5424f9c45b2b21ff01948cdf06e4297059f8005306bf3a5f908a99336",
+      "method": "HanlinNativeEvidenceTests.test_four_real_presentation_identities_cannot_be_missing_or_reused",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py",
+      "proof_batch": "native-evidence-original"
+    },
+    {
+      "declaration_sha256": "55dff378f23e1f2966729b541b2c7caa210e608f816aa4e82f80317a7b99942d",
+      "method": "HanlinNativeEvidenceTests.test_invalidation_must_be_observed_for_exactly_the_four_presentations",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py",
+      "proof_batch": "native-evidence-original"
+    },
+    {
+      "declaration_sha256": "1434a3542501d68c4914a4be3c575f5b813ae6cbbf726c1624729cc0fcd354a8",
+      "method": "HanlinNativeEvidenceTests.test_scene_evidence_requires_exact_nonnegative_integer_counters",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py",
+      "proof_batch": "native-evidence-original"
+    },
+    {
+      "declaration_sha256": "46765142a0c8ab63f1a22288696731fc9e515e1b73b48ba9f92af64f3b11d327",
+      "method": "HanlinNativeEvidenceTests.test_background_requires_both_directions_and_disjoint_deltas_fit_total",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py",
+      "proof_batch": "native-evidence-original"
+    },
+    {
+      "declaration_sha256": "ac9c5f8fc00c8421201d2145319596b0247810560eebf777d91c37009b5774b8",
+      "method": "HanlinNativeEvidenceTests.test_document_exit_retains_observed_causal_scope",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py",
+      "proof_batch": "native-evidence-original"
+    },
+    {
+      "declaration_sha256": "fee9290642a0447d2ec1b154c4f7a14d998f3121d90ed78af2a6b095effcf4ff",
+      "method": "HanlinNativeEvidenceTests.test_fixture_preserves_exact_native_json",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py",
+      "proof_batch": "native-evidence-original"
+    },
+    {
+      "declaration_sha256": "32f23ca6ce3358599bbf1ec95d13a778d9d1cc55d0f26abc227ed952fcfa9530",
+      "method": "HanlinNativeEvidenceTests.test_foreign_run_attempt_source_or_nonce_rejected",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py",
+      "proof_batch": "native-evidence-original"
+    },
+    {
+      "declaration_sha256": "2f2e832ef60a836736c5c95164a3c2daf4ea2887651a01dfa98600e0a56e6ad0",
+      "method": "HanlinNativeEvidenceTests.test_native_fixture_rejects_stale_future_or_wrong_nonce",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py",
+      "proof_batch": "native-evidence-original"
+    },
+    {
+      "declaration_sha256": "503f5cdb8212f2ea15346988ea8da9a968877757623d4a21eb13a3d8299b8dc9",
+      "method": "HanlinNativeEvidenceTests.test_label_without_all_exact_boolean_checks_is_rejected",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py",
+      "proof_batch": "native-evidence-original"
+    },
+    {
+      "declaration_sha256": "ee924d4b0f971534f30b31734038e1a384475cad938e1e5035e63eac7511b5b1",
+      "method": "HanlinNativeEvidenceTests.test_failure_provider_missing_commit_and_fake_process_are_rejected",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py",
+      "proof_batch": "native-evidence-original"
+    },
+    {
+      "declaration_sha256": "f0d4f8fd91615573851fa852ea3931b45043b386692c28b0eacbc645c9c706bb",
+      "method": "HanlinNativeEvidenceTests.test_result_dates_cannot_precede_fixture_or_run_into_the_future",
+      "module": "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py",
+      "proof_batch": "native-evidence-original"
+    },
+    {
+      "declaration_sha256": "e3c65a92b175a3dff2b5c5024e884eb9ccd0c3af78e3f4ed60b2d3ca38e9fe1f",
+      "method": "TextNativeAcknowledgementControls.test_original_lane_does_not_repeat_components",
+      "module": "Tools/PinkhaSimulatorGate/test_text_native_ack.py",
+      "proof_batch": "ack-original"
+    },
+    {
+      "declaration_sha256": "e68ba4790695035249b9483669b073a2bd89244b2d6063b6532a9b114b1b081c",
+      "method": "TextNativeAcknowledgementControls.test_exact_current_source_selects_only_seven_new_methods",
+      "module": "Tools/PinkhaSimulatorGate/test_text_native_ack.py",
+      "proof_batch": "ack-original"
+    },
+    {
+      "declaration_sha256": "8d94f81d8db5fa2d991cf7d78858ee3bff4de117b4de110673d44d731f85a3f0",
+      "method": "TextNativeAcknowledgementControls.test_missing_duplicate_extra_and_parameterized_declarations_fail",
+      "module": "Tools/PinkhaSimulatorGate/test_text_native_ack.py",
+      "proof_batch": "ack-original"
+    },
+    {
+      "declaration_sha256": "cef4e297aa11046b4dffbef89e472fde78ecb957a4bdb567d082efe32f8c5a9e",
+      "method": "TextNativeAcknowledgementControls.test_complete_actual_result_keeps_component_limit",
+      "module": "Tools/PinkhaSimulatorGate/test_text_native_ack.py",
+      "proof_batch": "ack-original"
+    },
+    {
+      "declaration_sha256": "e68c0fffab1211c491be5e36107b272db0bc80d485248ee62d99ce36558383c1",
+      "method": "TextNativeAcknowledgementControls.test_incomplete_skipped_or_relabelled_execution_fails",
+      "module": "Tools/PinkhaSimulatorGate/test_text_native_ack.py",
+      "proof_batch": "ack-original"
+    },
+    {
+      "declaration_sha256": "567bb380602c9a7764c23338b5882ffe61c998a95e136160037e393488cea09d",
+      "method": "ExistingBuildTests.test_one_build_enumerates_exact23_then_proves_all32_actual_cases",
+      "module": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "proof_batch": "shared-original"
+    },
+    {
+      "declaration_sha256": "2c590ed5eff11a46ff92ac6e718a0d1ce48212267d256a2e72eb84d5948aebfd",
+      "method": "ExistingBuildTests.test_discovery_errors_missing_duplicate_disabled_and_signature_drift_never_execute",
+      "module": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "proof_batch": "shared-original"
+    },
+    {
+      "declaration_sha256": "f710216422dc7a49c4b723c8ca73a3db1876281d0123d936285300a8e00e01a0",
+      "method": "ExistingBuildTests.test_exact_selection_enumeration_rejects_zero_extra_or_disabled_before_execution",
+      "module": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "proof_batch": "shared-original"
+    },
+    {
+      "declaration_sha256": "5963924389e7647b84d01f24291b8d7ced22b12167ad48fb3ae9e390aa171db4",
+      "method": "ExistingBuildTests.test_old_editor_table_only_result_cannot_qualify_the_authority_extension",
+      "module": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "proof_batch": "shared-original"
+    },
+    {
+      "declaration_sha256": "1287092ba89ebdde77a1bb697046ab5966302806ccc1687a13909bddbf7096d9",
+      "method": "ExistingBuildTests.test_authority_compiled_signature_drift_prevents_any_component_execution",
+      "module": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "proof_batch": "shared-original"
+    },
+    {
+      "declaration_sha256": "bb44cd42f08c1bd2fc58a01d4dcc77709a163b6ea6892a7cfd019dde99132c2f",
+      "method": "ExistingBuildTests.test_wrong_app_product_is_rejected_before_xcode",
+      "module": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "proof_batch": "shared-original"
+    },
+    {
+      "declaration_sha256": "3c677013f9639ad9eaca9694281454198b86c6f8da061759f13d3a7e7626d227",
+      "method": "ExistingBuildTests.test_missing_duplicate_or_nonpassing_arguments_in_any_group_cannot_hide_in_summary",
+      "module": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "proof_batch": "shared-original"
+    },
+    {
+      "declaration_sha256": "9c3074b93f42dcc4b06af99a66cb3187cbcbe4408fc351b4bfb35721f70f54ae",
+      "method": "ExistingBuildTests.test_unrequested_actual_method_is_rejected_even_after_correct_enumeration",
+      "module": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "proof_batch": "shared-original"
+    },
+    {
+      "declaration_sha256": "279e3c33842633d1d2561cce3c665f6504ade8a203ccc1377c5e3e759213c0ae",
+      "method": "ExistingBuildTests.test_source_mutation_during_enumeration_prevents_execution",
+      "module": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "proof_batch": "shared-original"
+    },
+    {
+      "declaration_sha256": "3decc2dcfdb4e99e6b9dfb3f08231f2bbb4bd2c77b088ed65efa8483acb83a2f",
+      "method": "ExistingBuildTests.test_source_mutation_during_execution_is_rejected",
+      "module": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "proof_batch": "shared-original"
+    },
+    {
+      "declaration_sha256": "e19155e39e73e20a8afcddb7e33b1f8a2f22ddce492efb27a84a1122f602bb1d",
+      "method": "ExistingBuildTests.test_mutated_app_test_or_configuration_is_rejected_before_or_after_execution",
+      "module": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "proof_batch": "shared-original"
+    },
+    {
+      "declaration_sha256": "98969ffde175d8e36d25c048b6acd70141954f2614e93d58770e4b47c9fc367d",
+      "method": "ExistingBuildTests.test_stale_evidence_is_rejected_before_xcode",
+      "module": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "proof_batch": "shared-original"
+    },
+    {
+      "declaration_sha256": "383a456367ba8880d47ada41676833880a1078e77f70d79f788036d28d0df76c",
+      "method": "ExistingBuildTests.test_ambiguous_disabled_or_unknown_original_configuration_never_executes",
+      "module": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "proof_batch": "shared-original"
+    },
+    {
+      "declaration_sha256": "f1d8ab5756f0f481f06dbdb0066fee3d1f4599c00dd861940c808bffabfcce1d",
+      "method": "ExistingBuildTests.test_existing_skip_cannot_be_silently_reenabled_by_a_scoped_copy",
+      "module": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "proof_batch": "shared-original"
+    },
+    {
+      "declaration_sha256": "a40c4be1428dc36b8a54cbc9d01ef0fd1a55e2bfd06da8363cbfb45b6e47e345",
+      "method": "ExistingBuildTests.test_selected_configuration_mutation_before_or_after_execution_is_rejected",
+      "module": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "proof_batch": "shared-original"
+    },
+    {
+      "declaration_sha256": "9f7ff99931bbd537a5f34ad2ee74b558b0ed889e8f5f2964133149b6475d31e0",
+      "method": "ExistingBuildTests.test_fresh_owned_nonce_preserves_cached_other_run_configuration_files",
+      "module": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "proof_batch": "shared-original"
+    },
+    {
+      "declaration_sha256": "47b9745c78f326aa170fd7cd41cacb6eae2180aad5384fb8b40e97864836c000",
+      "method": "SelectorRepairTests.test_parameterized_filter_mapping_preserves_exact_full_identity_and_32_cases",
+      "module": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "proof_batch": "shared-original"
+    },
+    {
+      "declaration_sha256": "a67a159a82b6501d2938ee4c63abdadb9b72e3b92b92d7a48a14c66129016f95",
+      "method": "SelectorRepairTests.test_original_full_parameter_signature_filters_reproduce_15_only_refusal",
+      "module": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "proof_batch": "shared-original"
+    },
+    {
+      "declaration_sha256": "f0abf7f02b12b2838b16164a339c56c7a3a23f892cf349bd005454b52baf7807",
+      "method": "SelectorRepairTests.test_mapped_filter_still_rejects_changed_full_signature_before_execution",
+      "module": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "proof_batch": "shared-original"
+    },
+    {
+      "declaration_sha256": "915ac68c8c29771d14c05a8ae9cfc1b161ac76ddcb6f8efae3729cee5389328f",
+      "method": "SelectorRepairTests.test_selector_mapping_refuses_overloads_unknown_or_unscoped_identities",
+      "module": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "proof_batch": "shared-original"
+    },
+    {
+      "declaration_sha256": "ff739928a8ccef6a7d8d6244c71a6cca2bb484d4134d602f8a7abc6064681feb",
+      "method": "TrackedContractTests.test_actual_tracked_profiles_keep_exact_pending_selection_and_original_ack7",
+      "module": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "proof_batch": "shared-original"
+    },
+    {
+      "declaration_sha256": "1544546256a164bb39178ab642fa0ed5081b0a7195d2fc4ce5158627bdee484e",
+      "method": "TrackedContractTests.test_authority_source_requires_both_exact_native_types_and_literal_arguments",
+      "module": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "proof_batch": "shared-original"
+    },
+    {
+      "declaration_sha256": "3b341b194124a9053d4198381a62e1cc0084b817816441bf7c6d32f46141f5fe",
+      "method": "ContinuationBranchTests.test_exact_consumer_branch_head_and_ref_are_still_required",
+      "module": "Tools/PinkhaNativeDerived/test_acceptance_continuation_branch.py",
+      "proof_batch": "branch-original"
+    },
+    {
+      "declaration_sha256": "c62b21c0d1a4dee97ddf1685b52adc5e028b18d475cc0df9f321c528b90e8395",
+      "method": "ContinuationBranchTests.test_continuation_maps_only_to_the_original_shared_producer",
+      "module": "Tools/PinkhaNativeDerived/test_acceptance_continuation_branch.py",
+      "proof_batch": "branch-original"
+    }
+  ],
+  "current_control_methods": 98,
+  "fixed_composition": {
+    "composition_methods_qualified": 18,
+    "current_source_inputs": {
+      ".github/workflows/pinkha-sdk06-qualified-continuation.yml": "db541a83660263256d0e06b04b21d46379227b6beff6d866da59fa76ee3d46d6",
+      "AnyTypeTests/Pinkha/SimpleTableTextPersistenceTests.swift": "dbe44987c62f85dc1a26571d0effc8a2138e9aaf6657eec1d469a8517e294166",
+      "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift": "0b533aa0500b9a62043d1f5e49827e6be1ac2ce0f839fa6496b6da81ab26dcbf",
+      "AnyTypeTests/Pinkha/TorahRelatedReadAuthorityMappingTests.swift": "07675b9e09777ebb5fc503bafcd814dcc10fefb0a950d5ff6231da7b3f51e8b1",
+      "Tools/Hanlin/host_command.py": "5f09813c5719f5ea3920c003e58ac6b2b5633f276686bf6c5ef8bc6f9f39a807",
+      "Tools/Hanlin/related_read_authority_profile.py": "c5480b895c917d8268841c64c7875f7d42414fe999489fa27587d017c6e0f0d9",
+      "Tools/Hanlin/run_host_tests.py": "106d40df8594c067fdcc389d0ac93e3055a01247d431b13563f9d6e0d1c3403d",
+      "Tools/Hanlin/shared_editor_profile.py": "77d27d083f8073ad027cd28e98f2e2986aaee1cb2e31d2931287e33a4f8497c8",
+      "Tools/Hanlin/shared_table_profile.py": "5c99f5e10adcd2930fd0fe8476d178f15bb8cd9c11174be8a5f849ae12470397",
+      "Tools/Hanlin/wave15_core_profile.py": "f544619607be0d25e74cff541ac66418b76df11abcd9c15c0ca774d6cbd5d96a",
+      "Tools/PinkhaNativeDerived/attachment_runtime.py": "0154ae5f6b0af197d62abc7eeb6233adbe3d469723a75e15e233e7ab5e37019a",
+      "Tools/PinkhaNativeDerived/build_custom_heart.py": "0ebbe2f6227418eac2c532b0058290158319ba9f786baaf445de444887e8c669",
+      "Tools/PinkhaNativeDerived/build_native_ipa.py": "c9e35a228779ae761d36cef204a32148ffdd3a338c9ede11dde6df4ebee21055",
+      "Tools/PinkhaNativeDerived/heart_runtime_profile.py": "d354e5ccf20bfbdbeaf9f61a0043bfcbb137400b835f8b34e910453c35995001",
+      "Tools/PinkhaNativeDerived/package_evidence.py": "8400bd4ac7bbc61871b51f1021c3dbbb1de5800094e07129417a784d24337309",
+      "Tools/PinkhaNativeDerived/rerun_original_ui.py": "ec5688909921942e94f792cdde0a02baa7b5f9b2f9e0b3bde3df3a877f299279",
+      "Tools/PinkhaNativeDerived/validate_wave1.py": "743ddea3e4e42640070035fe7d149d148dfff1cbdc852ef464c8c19da07253a0",
+      "Tools/PinkhaSimulatorGate/coherent_original_preflight.py": "a6e0fb5f0df3f44bc8cf247e76be45cded8736308ab3349318c66fb9f549ea11",
+      "Tools/PinkhaSimulatorGate/coherent_original_products.py": "bed94e8e0a9b3f662f967a7a8d8bde87dad2ee5c6c05f380d40ad8a4c7c771ea",
+      "Tools/PinkhaSimulatorGate/coherent_release_cleanup.py": "d6af82a33bf8b120cf9f1d641da1ce3efd843777a417abcfb3e15ab7893019f0",
+      "Tools/PinkhaSimulatorGate/compiled_products.py": "fecbf688eef39388aef7fac6990cfa6b391b72be35f34bee9aaa9f7c96eae7cf",
+      "Tools/PinkhaSimulatorGate/destination_artifacts.py": "55c076f86990e74c2b3908a1474f1bb224c7ca52f00d1f9fe162f40be8814280",
+      "Tools/PinkhaSimulatorGate/early_build_products.py": "9c982fb2c15614be6f42a4c244a7a98726e48fee33d276fffae02acde5be9e3b",
+      "Tools/PinkhaSimulatorGate/hanlin_acceptance_evidence.py": "8552b94f2034d4a1ddfcd363ca02526ff7c843030d65790ceb048efcde2056e4",
+      "Tools/PinkhaSimulatorGate/hanlin_selection_evidence.py": "25afba17f7083d0e41481f9464217ab665c4d8f11f20c94c4b99ce3f2a3c3336",
+      "Tools/PinkhaSimulatorGate/hanlin_ui_runtime.py": "e7c844559fbc7680cd2dbbe7c1eebb0561ecfb2f10305bef0f9b85e95665922c",
+      "Tools/PinkhaSimulatorGate/preflight.py": "0e1c6491e8bb30d9e97cf65cf3b820a8860d0a32237676f2c3a7613668ddee66",
+      "Tools/PinkhaSimulatorGate/run_owned_single_lane.py": "7d266674be2443afef0b184545af53b56cebfe2cc8361d830913cd50ef77b0cc",
+      "Tools/PinkhaSimulatorGate/run_ui27.py": "9222c3ea0258ce5002f72e2b60b58c64f27857c15f653a49ff2a0edacc8cf5de",
+      "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": "17094ffede123d25c9ee06b119aa831dcc90476aad4707366bab54aafdb1cf5a",
+      "Tools/PinkhaSimulatorGate/sdk06_enumeration_probe.py": "ce2987846cdd42ebab7702e7dff51068bfb15ee48a66011f621695dbd72ebbce",
+      "Tools/PinkhaSimulatorGate/sdk06_qualified_continuation.py": "46694ebaeeacd5b41b5d62dc0c8cb460192bba28c97ac59cb5451ca3567b2068",
+      "Tools/PinkhaSimulatorGate/sdk06_qualified_selector.py": "922ff3c3793e0370df6dc145082c9c5703211b8e817ec105aff321d1ac9be3c9",
+      "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py": "635a609c9641b57e54b54cb11344f5f0d247326a07311b96588657edc055a25e",
+      "Tools/PinkhaSimulatorGate/simulator_identity.py": "930330e48559e4c3e016e005ea03bdb89d030e239b9fc3e14e5a76aa31aa561e",
+      "Tools/PinkhaSimulatorGate/simulator_selection.py": "2309bb55b3752774bffc588a7c489392daa7ceb3b7279f6a9ec870899a1f1d5f",
+      "Tools/PinkhaSimulatorGate/test_coherent_original_preflight.py": "e69d79c3ad9610fc8d8879705da73f9d949104667718f3532970b0747f3fc055",
+      "Tools/PinkhaSimulatorGate/test_sdk06_kernel_quiescence.py": "1e7565fa47cb91d6f8316e7790837a4c91ab63a4940c0968dd0eff50ded1a52d",
+      "Tools/PinkhaSimulatorGate/test_sdk06_qualified_lifecycle.py": "3d82e996dc8ddea23f24ed82c89110b93eeb82b2eb4edd49ad9f35d48aadcab1",
+      "Tools/PinkhaSimulatorGate/test_sdk06_qualified_selector.py": "42706094786b0f51b4af5c99869f37a83b34b53420ebf150441fb522a4de226e",
+      "Tools/PinkhaSimulatorGate/text_native_ack.py": "b6b1cc2c4332897c0d466b95d0b4e00126d32f16cc400b2176b8d3da4ad9ed2a",
+      "Tools/PinkhaSimulatorGate/type_preservation.py": "602a91987a6995f0218840744af0d88c2ea5c65d34c4edba7f030808c5007b44",
+      "Tools/PinkhaSimulatorGate/validate_release.py": "2b4162be85c3164a4d75869f67b3bfe9e58fac033a581d6f6f57d38e639961e0",
+      "Tools/PinkhaSimulatorGate/wave15_batch.py": "65fd15d01baf4c4b89598f4797dc84ed4bc51f919c681cb8c4197927e2c7547e",
+      "Tools/PinkhaSimulatorGate/wave15_diagnostics.py": "c1ca1fe8857e6ce71b91ffb49ff54627815cbfe44beaa1bbb7328c9bb7a55397"
+    },
+    "kernel_methods_qualified": 9,
+    "methods_executed_now": 0,
+    "original_composition_manifest_sha256": "6bb7e07b074b4360d7884adbadf4ba5ccf97f9216b6033d8fc6ff57d42659f7d",
+    "original_failed_attempt_preserved": true,
+    "product_acceptance_claimed": false,
+    "qualified_methods": [
+      "test_sdk06_kernel_quiescence.SDKKernelQuiescenceControls.test_existing_group_falls_through_to_ps_with_original_remaining_budget",
+      "test_sdk06_kernel_quiescence.SDKKernelQuiescenceControls.test_existing_group_then_ps_timeout_preserves_both_original_observations",
+      "test_sdk06_kernel_quiescence.SDKKernelQuiescenceControls.test_expired_before_query_and_late_existing_group_cannot_reset_deadline",
+      "test_sdk06_kernel_quiescence.SDKKernelQuiescenceControls.test_late_esrch_is_retained_but_cannot_pass",
+      "test_sdk06_kernel_quiescence.SDKKernelQuiescenceControls.test_original_owned_receipt_must_pass_before_any_kernel_query",
+      "test_sdk06_kernel_quiescence.SDKKernelQuiescenceControls.test_other_existing_profiles_never_call_the_kernel_fast_path",
+      "test_sdk06_kernel_quiescence.SDKKernelQuiescenceControls.test_permission_and_other_kernel_errors_preserve_original_failure",
+      "test_sdk06_kernel_quiescence.SDKKernelQuiescenceControls.test_real_owned_process_exit_has_kernel_absence_and_original_receipt",
+      "test_sdk06_kernel_quiescence.SDKKernelQuiescenceControls.test_timely_esrch_proves_actual_absence_without_ps",
+      "test_sdk06_qualified_lifecycle.QualifiedLifecycleControls.test_explicit_sdk_quiescence_uses_same_ten_seconds_and_rejects_late_zero",
+      "test_sdk06_qualified_lifecycle.QualifiedLifecycleControls.test_later_ui_archive_survives_exact_transport_and_other_archives_stay_excluded",
+      "test_sdk06_qualified_lifecycle.QualifiedLifecycleControls.test_sdk_cleanup_rejects_delete_success_after_original_deadline",
+      "test_sdk06_qualified_lifecycle.QualifiedLifecycleControls.test_sdk_delete_timeout_routes_same_owner_and_original180_deadline",
+      "test_sdk06_qualified_lifecycle.QualifiedLifecycleControls.test_sdk_journal_uses_own_protocol_and_never_reuses_coherent_cleanup",
+      "test_sdk06_qualified_lifecycle.QualifiedLifecycleControls.test_sdk_supervisor_preserves_first_failure_and_late_group_observations",
+      "test_sdk06_qualified_lifecycle.QualifiedLifecycleControls.test_workflow_admits_before_build_and_cannot_repeat_five_qualified_control_files",
+      "test_sdk06_qualified_selector.QualifiedSelectorControls.test_actual_source_binds_all23_and_seven_exclusions",
+      "test_sdk06_qualified_selector.QualifiedSelectorControls.test_api_replay_source_attempt_and_artifact_are_rejected",
+      "test_sdk06_qualified_selector.QualifiedSelectorControls.test_current_enumeration_and_execution_preserve_identical_qualified_cli",
+      "test_sdk06_qualified_selector.QualifiedSelectorControls.test_current_missing_parameterized_method_blocks_any_execution_arguments",
+      "test_sdk06_qualified_selector.QualifiedSelectorControls.test_extraction_accepts_only_pinned_bytes_and_rejects_unsafe_inventory",
+      "test_sdk06_qualified_selector.QualifiedSelectorControls.test_failed_probe_product_claims_and_unqualified_cleanup_are_rejected",
+      "test_sdk06_qualified_selector.QualifiedSelectorControls.test_missing_real_committed_admission_stops_before_api_or_work_creation",
+      "test_sdk06_qualified_selector.QualifiedSelectorControls.test_original_command_cannot_change_exclusions_or_owned_process_identity",
+      "test_sdk06_qualified_selector.QualifiedSelectorControls.test_original_git_closure_and_current_result_validator_are_bound",
+      "test_sdk06_qualified_selector.QualifiedSelectorControls.test_unexecuted_or_reordered_variant_is_not_a_qualified_plan",
+      "test_sdk06_qualified_selector.QualifiedSelectorControls.test_unsealed_plan_and_changed_original_evidence_are_rejected"
+    ],
+    "recovered_baseline_inputs": {
+      "Tools/PinkhaNativeDerived/package_evidence.py": "c67072225f7ccacb561cb8605f34dfa96d4c1c0bdf5f2291ba145990d9414963",
+      "Tools/PinkhaSimulatorGate/coherent_original_preflight.py": "dd658ab2bcb72655f90316cac46678d37b9251dbd613325f34c2b7b285a5f6c3",
+      "Tools/PinkhaSimulatorGate/run_owned_single_lane.py": "72d3ea9028133a11a1d148fcb04d2f59e0757a804cbc5e9480ebdb07e6ccd361",
+      "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": "3b617ea3258f92f8573c1761376f7917901ed0bd035caf8cde7c155a189e0fba",
+      "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py": "ff25ef9fc14630a67decf242b327c53111cfb8b77e0c2f10511a46a926aef8f0",
+      "Tools/PinkhaSimulatorGate/wave15_batch.py": "845f6ee3b8a3325827dc976da41592924c619b943dc5942c0a1ac6f37fc13bd6"
+    },
+    "repaired_former_errors": 7,
+    "retained_original_passes": 11,
+    "selector_admission_claimed": false,
+    "status": "PASS_FIXED_CONTROLLER_COMPOSITION_ONLY"
+  },
+  "original_lane_conclusions": {
+    "45087685319": "failure",
+    "45096079315": "FAIL"
+  },
+  "original_proof_batches": [
+    {
+      "batch_index": 0,
+      "count": 43,
+      "id": "runtime-original",
+      "log": "docs/validation/20261123-sdk06-retained-controls/original-45096079315/hanlin-runtime-controller-controls.log",
+      "log_batch_count": 2,
+      "log_sha256": "a30bcd69b2dc61a481cdb7b012b47d0a141263cf1223ccb7134d875ad8d842c8",
+      "methods": [
+        "ExistingProcessMappingControls.test_actual_ui_boundaries_must_match_mapped_pid_not_original_probe",
+        "ExistingProcessMappingControls.test_changed_main_or_missing_runtime_marker_is_rejected",
+        "ExistingProcessMappingControls.test_existing_process_mapping_has_no_launch_and_each_command_is_bounded",
+        "ExistingProcessMappingControls.test_legacy_probe_wrapper_retains_its_single_launch_and_mapping",
+        "ExistingProcessMappingControls.test_missing_hierarchy_or_changed_post_ui_code_carrier_cannot_qualify",
+        "ExistingProcessMappingControls.test_process_executable_or_start_identity_change_is_rejected",
+        "ExistingProcessMappingControls.test_wrong_mapped_pid_or_missing_entrypoint_is_rejected",
+        "ObserverControls.test_after_mapping_timeout_retains_mapping_metadata_but_cannot_be_a_pass",
+        "ObserverControls.test_another_simulators_application_path_cannot_qualify_the_ui_receipt",
+        "ObserverControls.test_atomic_file_replacement_during_read_is_not_a_stable_snapshot",
+        "ObserverControls.test_atomic_receipt_replacement_preserves_primary_cancellation",
+        "ObserverControls.test_boundary_diagnostic_write_failure_preserves_primary_and_success_cannot_write_qualification",
+        "ObserverControls.test_boundary_timeout_is_persisted_in_disk_and_previously_finalized_execution_receipt",
+        "ObserverControls.test_cancellation_joins_observer_without_launching_or_killing_any_app",
+        "ObserverControls.test_changed_native_fixture_bytes_reject_before_any_mapping",
+        "ObserverControls.test_changed_pre_ui_executable_carriers_cannot_be_rebased_at_mapping",
+        "ObserverControls.test_console_error_preserves_primary_and_still_exports_original_native_bytes",
+        "ObserverControls.test_diagnostic_command_overflow_and_private_error_text_are_not_published",
+        "ObserverControls.test_diagnostic_duration_is_stage_elapsed_and_first_failure_survives_later_reads",
+        "ObserverControls.test_diagnostics_do_not_change_original_deadlines_or_add_a_launch",
+        "ObserverControls.test_duplicate_keys_and_symlinked_receipts_are_not_admitted",
+        "ObserverControls.test_failure_before_thread_start_preserves_error_and_failure_export",
+        "ObserverControls.test_final_receipt_cannot_switch_pid_session_start_source_or_raw_bytes",
+        "ObserverControls.test_final_receipt_error_preserves_original_selection_failure",
+        "ObserverControls.test_final_receipt_error_without_primary_fails_closed",
+        "ObserverControls.test_final_snapshot_write_failure_does_not_replace_the_original_export_timeout",
+        "ObserverControls.test_finalizer_export_timeout_is_persisted_after_exports_in_disk_and_execution_receipt",
+        "ObserverControls.test_installed_source_timeout_retains_original_live_phase_without_qualifying_it",
+        "ObserverControls.test_mapping_after_native_finish_is_not_retroactive_runtime_proof",
+        "ObserverControls.test_mapping_uses_remaining_budget_without_extending_the_total_deadline",
+        "ObserverControls.test_mapping_uses_the_same_deadline_and_cannot_qualify_after_timeout",
+        "ObserverControls.test_only_actual_receipt_pid_is_mapped_and_final_native_bytes_remain_bound",
+        "ObserverControls.test_ordinary_atomic_phase_progress_preserves_one_process",
+        "ObserverControls.test_partial_start_cancellation_joins_real_worker_and_exports_original_failure",
+        "ObserverControls.test_phase_update_is_allowed_but_native_identity_change_during_mapping_is_rejected",
+        "ObserverControls.test_poll_timeout_records_command_stage_and_bound_without_retry_or_mapping",
+        "ObserverControls.test_preexisting_receipt_is_rejected_before_observer_or_mapping",
+        "ObserverControls.test_repeated_polls_have_bounded_diagnostics_and_transient_reads_stay_distinct",
+        "ObserverControls.test_stale_wrong_source_and_already_finished_receipts_cannot_start_mapping",
+        "ObserverControls.test_stop_write_error_preserves_primary_cancellation_and_exports_remaining_evidence",
+        "ObserverControls.test_stop_write_error_without_primary_fails_closed_after_remaining_exports",
+        "ObserverControls.test_vmmap_timeout_preserves_collected_source_and_does_not_rerun_mapping",
+        "TemporaryRootControls.test_real_temporary_parent_alias_is_resolved_without_relaxing_receipt_symlink_guard"
+      ],
+      "seconds": "4.170"
+    },
+    {
+      "batch_index": 1,
+      "count": 20,
+      "id": "native-evidence-original",
+      "log": "docs/validation/20261123-sdk06-retained-controls/original-45096079315/hanlin-runtime-controller-controls.log",
+      "log_batch_count": 2,
+      "log_sha256": "a30bcd69b2dc61a481cdb7b012b47d0a141263cf1223ccb7134d875ad8d842c8",
+      "methods": [
+        "HanlinNativeEvidenceTests.test_actual_return_still_requires_closed_host_read_and_create_denial",
+        "HanlinNativeEvidenceTests.test_background_requires_both_directions_and_disjoint_deltas_fit_total",
+        "HanlinNativeEvidenceTests.test_complete_receipt_does_not_itself_claim_sdk_acceptance",
+        "HanlinNativeEvidenceTests.test_completed_authority_checks_cannot_replace_the_original_logout_root_transition",
+        "HanlinNativeEvidenceTests.test_document_exit_retains_observed_causal_scope",
+        "HanlinNativeEvidenceTests.test_failure_provider_missing_commit_and_fake_process_are_rejected",
+        "HanlinNativeEvidenceTests.test_fixture_preserves_exact_native_json",
+        "HanlinNativeEvidenceTests.test_foreign_run_attempt_source_or_nonce_rejected",
+        "HanlinNativeEvidenceTests.test_four_real_presentation_identities_cannot_be_missing_or_reused",
+        "HanlinNativeEvidenceTests.test_invalidation_must_be_observed_for_exactly_the_four_presentations",
+        "HanlinNativeEvidenceTests.test_label_without_all_exact_boolean_checks_is_rejected",
+        "HanlinNativeEvidenceTests.test_missing_or_unmounted_native_return_cannot_pass_from_label",
+        "HanlinNativeEvidenceTests.test_native_fixture_rejects_stale_future_or_wrong_nonce",
+        "HanlinNativeEvidenceTests.test_native_return_and_anchor_schemas_cannot_drop_fields_or_add_claims",
+        "HanlinNativeEvidenceTests.test_native_return_cannot_change_any_original_context_field",
+        "HanlinNativeEvidenceTests.test_native_return_rejects_foreign_object_or_selected_block_target",
+        "HanlinNativeEvidenceTests.test_native_return_requires_the_queued_request_and_original_session",
+        "HanlinNativeEvidenceTests.test_original_navigation_anchor_must_match_fixture_and_document_only_scope",
+        "HanlinNativeEvidenceTests.test_result_dates_cannot_precede_fixture_or_run_into_the_future",
+        "HanlinNativeEvidenceTests.test_scene_evidence_requires_exact_nonnegative_integer_counters"
+      ],
+      "seconds": "0.007"
+    },
+    {
+      "batch_index": 0,
+      "count": 5,
+      "id": "ack-original",
+      "log": "docs/validation/20261123-sdk06-retained-controls/original-45087685319/original-job-137409920728.log",
+      "log_batch_count": 3,
+      "log_sha256": "752e3ca7d3d94e9dd3f90f38583130b72bc92527f3822cc9a24033ea40ee6c4b",
+      "methods": [
+        "TextNativeAcknowledgementControls.test_complete_actual_result_keeps_component_limit",
+        "TextNativeAcknowledgementControls.test_exact_current_source_selects_only_seven_new_methods",
+        "TextNativeAcknowledgementControls.test_incomplete_skipped_or_relabelled_execution_fails",
+        "TextNativeAcknowledgementControls.test_missing_duplicate_extra_and_parameterized_declarations_fail",
+        "TextNativeAcknowledgementControls.test_original_lane_does_not_repeat_components"
+      ],
+      "seconds": "0.022"
+    },
+    {
+      "batch_index": 1,
+      "count": 22,
+      "id": "shared-original",
+      "log": "docs/validation/20261123-sdk06-retained-controls/original-45087685319/original-job-137409920728.log",
+      "log_batch_count": 3,
+      "log_sha256": "752e3ca7d3d94e9dd3f90f38583130b72bc92527f3822cc9a24033ea40ee6c4b",
+      "methods": [
+        "ExistingBuildTests.test_ambiguous_disabled_or_unknown_original_configuration_never_executes",
+        "ExistingBuildTests.test_authority_compiled_signature_drift_prevents_any_component_execution",
+        "ExistingBuildTests.test_discovery_errors_missing_duplicate_disabled_and_signature_drift_never_execute",
+        "ExistingBuildTests.test_exact_selection_enumeration_rejects_zero_extra_or_disabled_before_execution",
+        "ExistingBuildTests.test_existing_skip_cannot_be_silently_reenabled_by_a_scoped_copy",
+        "ExistingBuildTests.test_fresh_owned_nonce_preserves_cached_other_run_configuration_files",
+        "ExistingBuildTests.test_missing_duplicate_or_nonpassing_arguments_in_any_group_cannot_hide_in_summary",
+        "ExistingBuildTests.test_mutated_app_test_or_configuration_is_rejected_before_or_after_execution",
+        "ExistingBuildTests.test_old_editor_table_only_result_cannot_qualify_the_authority_extension",
+        "ExistingBuildTests.test_one_build_enumerates_exact23_then_proves_all32_actual_cases",
+        "ExistingBuildTests.test_selected_configuration_mutation_before_or_after_execution_is_rejected",
+        "ExistingBuildTests.test_source_mutation_during_enumeration_prevents_execution",
+        "ExistingBuildTests.test_source_mutation_during_execution_is_rejected",
+        "ExistingBuildTests.test_stale_evidence_is_rejected_before_xcode",
+        "ExistingBuildTests.test_unrequested_actual_method_is_rejected_even_after_correct_enumeration",
+        "ExistingBuildTests.test_wrong_app_product_is_rejected_before_xcode",
+        "SelectorRepairTests.test_mapped_filter_still_rejects_changed_full_signature_before_execution",
+        "SelectorRepairTests.test_original_full_parameter_signature_filters_reproduce_15_only_refusal",
+        "SelectorRepairTests.test_parameterized_filter_mapping_preserves_exact_full_identity_and_32_cases",
+        "SelectorRepairTests.test_selector_mapping_refuses_overloads_unknown_or_unscoped_identities",
+        "TrackedContractTests.test_actual_tracked_profiles_keep_exact_pending_selection_and_original_ack7",
+        "TrackedContractTests.test_authority_source_requires_both_exact_native_types_and_literal_arguments"
+      ],
+      "seconds": "0.588"
+    },
+    {
+      "batch_index": 2,
+      "count": 2,
+      "id": "branch-original",
+      "log": "docs/validation/20261123-sdk06-retained-controls/original-45087685319/original-job-137409920728.log",
+      "log_batch_count": 3,
+      "log_sha256": "752e3ca7d3d94e9dd3f90f38583130b72bc92527f3822cc9a24033ea40ee6c4b",
+      "methods": [
+        "ContinuationBranchTests.test_continuation_maps_only_to_the_original_shared_producer",
+        "ContinuationBranchTests.test_exact_consumer_branch_head_and_ref_are_still_required"
+      ],
+      "seconds": "0.007"
+    },
+    {
+      "batch_index": 0,
+      "count": 7,
+      "id": "observer-qualified",
+      "log": "docs/validation/20261123-hanlin-container-poll/focused-controls.log",
+      "log_batch_count": 1,
+      "log_sha256": "9de7171e151525a65b13aa9153dd3777437d45a2bf552e3461a9819329bb4a94",
+      "methods": [
+        "ObserverControls.test_cancelled_poll_timeout_does_not_issue_another_query_or_map",
+        "ObserverControls.test_continuous_poll_timeouts_use_fixed_budget_without_extending_deadline",
+        "ObserverControls.test_one_poll_timeout_recovers_same_native_identity_with_original_deadline",
+        "ObserverControls.test_poll_timeout_retains_first_failure_and_stops_at_original_total_deadline",
+        "ObserverControls.test_recovered_poll_cannot_admit_stale_or_finished_native_phase",
+        "ObserverControls.test_recovered_poll_still_rejects_changed_original_fixture",
+        "ObserverControls.test_timeout_of_another_command_is_not_retried"
+      ],
+      "seconds": "1.087"
+    }
+  ],
+  "origins": {
+    "hanlin": {
+      "conclusion": "FAIL",
+      "execution": "docs/validation/20261123-sdk06-retained-controls/original-45096079315/execution.json",
+      "original_outer_sha256": "02b180cd51bf905161c7254c9daa41430de46803290df9cfc3e6eb20ba636f5d",
+      "run_attempt": 1,
+      "run_id": 45096079315,
+      "source_sha": "d254a4a1ccd9288f585ff9374088cbaf965b36b4"
+    },
+    "observer": {
+      "count": 7,
+      "old_controls_rerun": 0,
+      "review": "docs/validation/20261123-hanlin-container-poll/review.json",
+      "source_sha": "be938dd8d860b4be3b8c8a407ba8cd22ed9a3f40"
+    },
+    "sdk": {
+      "conclusion": "failure",
+      "identity": "docs/validation/20261123-sdk06-retained-controls/original-45087685319/original-job-identity.json",
+      "job_id": 137409920728,
+      "run_attempt": 1,
+      "run_id": 45087685319,
+      "source_sha": "7293e4fd0bcabdcdb643d5768b777b8e87ff1b73"
+    }
+  },
+  "product_tests_executed_now": 0,
+  "qualified_observer_methods": 7,
+  "retained_original_methods": 91,
+  "retired_historical_methods": 1,
+  "schema": "pinkha-sdk06-retained-controller-controls-v1",
+  "scope_limit": "Controller evidence only; no original lane success, current XCTest, build or runtime acceptance.",
+  "source_inputs": {
+    "AnyTypeTests/Pinkha/PinkhaNativeTextAcknowledgementTests.swift": "1605f4cd1ed577938852c40320413ec62ed50403ade123497f65c395346954e8",
+    "AnyTypeTests/Pinkha/SimpleTableTextPersistenceTests.swift": "dbe44987c62f85dc1a26571d0effc8a2138e9aaf6657eec1d469a8517e294166",
+    "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift": "0b533aa0500b9a62043d1f5e49827e6be1ac2ce0f839fa6496b6da81ab26dcbf",
+    "AnyTypeTests/Pinkha/TorahRelatedReadAuthorityMappingTests.swift": "07675b9e09777ebb5fc503bafcd814dcc10fefb0a950d5ff6231da7b3f51e8b1",
+    "Tools/Hanlin/host_command.py": "5f09813c5719f5ea3920c003e58ac6b2b5633f276686bf6c5ef8bc6f9f39a807",
+    "Tools/Hanlin/related_read_authority_profile.py": "c5480b895c917d8268841c64c7875f7d42414fe999489fa27587d017c6e0f0d9",
+    "Tools/Hanlin/run_host_tests.py": "106d40df8594c067fdcc389d0ac93e3055a01247d431b13563f9d6e0d1c3403d",
+    "Tools/Hanlin/shared_editor_profile.py": "77d27d083f8073ad027cd28e98f2e2986aaee1cb2e31d2931287e33a4f8497c8",
+    "Tools/Hanlin/shared_table_profile.py": "5c99f5e10adcd2930fd0fe8476d178f15bb8cd9c11174be8a5f849ae12470397",
+    "Tools/Hanlin/test_shared_editor_profile.py": "9395367442aa377ab2b4ce59e0b810f04b2e0af370bfb4e0301ead129c45a1ac",
+    "Tools/Hanlin/wave15-core-tests.json": "b5437f4148b3d76d9deb0e697eac96b20430216396cd00e2fcc9df48976198f2",
+    "Tools/Hanlin/wave15_core_profile.py": "f544619607be0d25e74cff541ac66418b76df11abcd9c15c0ca774d6cbd5d96a",
+    "Tools/PinkhaNativeDerived/attachment_runtime.py": "0154ae5f6b0af197d62abc7eeb6233adbe3d469723a75e15e233e7ab5e37019a",
+    "Tools/PinkhaNativeDerived/build_custom_heart.py": "0ebbe2f6227418eac2c532b0058290158319ba9f786baaf445de444887e8c669",
+    "Tools/PinkhaNativeDerived/build_native_ipa.py": "c9e35a228779ae761d36cef204a32148ffdd3a338c9ede11dde6df4ebee21055",
+    "Tools/PinkhaNativeDerived/coherent_runtime_admission.py": "3abc33c74a65d3bd3eec1183c33f1ece79bee0665821dfbf29f1a5d1842f4983",
+    "Tools/PinkhaNativeDerived/heart_runtime_profile.py": "d354e5ccf20bfbdbeaf9f61a0043bfcbb137400b835f8b34e910453c35995001",
+    "Tools/PinkhaNativeDerived/install_verified_heart.py": "fe643439f65e1e20282607d95865c02937a5501d58125834a5cd4bef2532176a",
+    "Tools/PinkhaNativeDerived/rerun_original_ui.py": "ec5688909921942e94f792cdde0a02baa7b5f9b2f9e0b3bde3df3a877f299279",
+    "Tools/PinkhaNativeDerived/test_acceptance_continuation_branch.py": "8e675bab3796f3fcea6c7256e5f3e4200fae3ae219dd988f9dba7d42f78f7ee7",
+    "Tools/PinkhaNativeDerived/validate_wave1.py": "743ddea3e4e42640070035fe7d149d148dfff1cbdc852ef464c8c19da07253a0",
+    "Tools/PinkhaSimulatorGate/compiled_products.py": "fecbf688eef39388aef7fac6990cfa6b391b72be35f34bee9aaa9f7c96eae7cf",
+    "Tools/PinkhaSimulatorGate/destination_artifacts.py": "55c076f86990e74c2b3908a1474f1bb224c7ca52f00d1f9fe162f40be8814280",
+    "Tools/PinkhaSimulatorGate/early_build_products.py": "9c982fb2c15614be6f42a4c244a7a98726e48fee33d276fffae02acde5be9e3b",
+    "Tools/PinkhaSimulatorGate/hanlin_acceptance_evidence.py": "8552b94f2034d4a1ddfcd363ca02526ff7c843030d65790ceb048efcde2056e4",
+    "Tools/PinkhaSimulatorGate/hanlin_selection_evidence.py": "25afba17f7083d0e41481f9464217ab665c4d8f11f20c94c4b99ce3f2a3c3336",
+    "Tools/PinkhaSimulatorGate/hanlin_ui_runtime.py": "e7c844559fbc7680cd2dbbe7c1eebb0561ecfb2f10305bef0f9b85e95665922c",
+    "Tools/PinkhaSimulatorGate/run_ui27.py": "9222c3ea0258ce5002f72e2b60b58c64f27857c15f653a49ff2a0edacc8cf5de",
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": "17094ffede123d25c9ee06b119aa831dcc90476aad4707366bab54aafdb1cf5a",
+    "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py": "635a609c9641b57e54b54cb11344f5f0d247326a07311b96588657edc055a25e",
+    "Tools/PinkhaSimulatorGate/simulator_identity.py": "930330e48559e4c3e016e005ea03bdb89d030e239b9fc3e14e5a76aa31aa561e",
+    "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py": "68ba603f2d41e3b249d66cbeb51432c25a9680309e5a682a1f634aae879bf9c8",
+    "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py": "38b29c4835bd9aa290ec66a2e786065894507497628303cfcc3f420f358c3c59",
+    "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py": "b4f2cea82d84bcaed1d1ee96bd8f7718be84b0dec5181e4f5d4e3ed799cbf975",
+    "Tools/PinkhaSimulatorGate/test_text_native_ack.py": "967a5e743c0c217d7baae721cb43fc14dcc2e857715d98578884676647a6995a",
+    "Tools/PinkhaSimulatorGate/text_native_ack.py": "b6b1cc2c4332897c0d466b95d0b4e00126d32f16cc400b2176b8d3da4ad9ed2a",
+    "Tools/PinkhaSimulatorGate/type_preservation.py": "602a91987a6995f0218840744af0d88c2ea5c65d34c4edba7f030808c5007b44",
+    "Tools/PinkhaSimulatorGate/validate_release.py": "2b4162be85c3164a4d75869f67b3bfe9e58fac033a581d6f6f57d38e639961e0",
+    "Tools/PinkhaSimulatorGate/wave15_diagnostics.py": "c1ca1fe8857e6ce71b91ffb49ff54627815cbfe44beaa1bbb7328c9bb7a55397"
+  },
+  "source_inventory_sha256": "bb4ab0bd654cfdcc28ea794859ec13087c8d3e79166aef874b6ef62b1dce2020",
+  "source_root": "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123",
+  "status": "PASS_RETAINED_CONTROLLER_CONTROLS_ONLY"
+}
