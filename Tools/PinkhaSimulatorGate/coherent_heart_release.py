@@ -415,7 +415,7 @@ def validate_results(evidence, intent, worker, ui, *, require_release_fixtures=T
                 independent_native_fixture_spaces=len(spaces), additional_app_builds=0, additional_ui_runner_builds=0)
 
 
-def nested_cleanup(args):
+def nested_cleanup(args, *, origin=None):
     """Recheck exact original groups while retaining any earlier command failure."""
     from coherent_release_cleanup import audit_nested_receipts
     evidence, work = args.evidence.resolve(), private_work(args)
@@ -424,7 +424,8 @@ def nested_cleanup(args):
     result = dict(status="RUNNING", original_owned_commands=[], groups_checked=0,
                   evidence_scope="CLEANUP_ONLY_ORIGINAL_COMMAND_AND_PRODUCT_STATUS_UNCHANGED")
     try:
-        audit_nested_receipts(roots, args.app.resolve(), work, result)
+        anchor = args.app.resolve() if origin is None else origin.nested_cleanup_anchor(args)
+        audit_nested_receipts(roots, anchor, work, result)
         result["status"] = "PASS"
     except BaseException as error:
         result.update(status="FAIL", error_type=type(error).__name__, error=str(error))

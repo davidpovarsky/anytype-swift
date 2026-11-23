@@ -454,7 +454,8 @@ def run_logged(argv, cwd, directory, name, timeout, check=True, output=None, *, 
     os.environ["GH_PROMPT_DISABLED"] = "1"
     os.environ.pop("GH_DEBUG", None)
     try:
-        outcome = owned.run_worker_command([str(item) for item in argv], cwd, log_path, timeout)
+        outcome = owned.run_worker_command([str(item) for item in argv], cwd, log_path, timeout,
+            **({"record_cwd": True} if cleanup_profile == owned.COHERENT_HEART_PROFILE else {}))
         metadata.update(return_code=outcome["return_code"],
                         status="SUCCESS" if outcome["return_code"] == 0 else "FAILED")
     except BaseException as error:

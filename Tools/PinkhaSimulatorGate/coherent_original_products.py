@@ -301,6 +301,23 @@ class ContinuationOrigin:
                 and intent.get("profile") == batch.COHERENT_HEART_PROFILE,
                 "Original-Products worker intent differs")
 
+    def nested_cleanup_anchor(self, args):
+        """Bind only current fixed receipt roots to this explicit two-origin run."""
+        require(args is self.args and args.app.resolve() == self.app
+                and args.evidence.resolve() == self.evidence,
+                "Nested cleanup arguments differ from the original-Products origin")
+        intent_path = self.evidence / "batch-intent.json"
+        require(intent_path.is_file() and not intent_path.is_symlink()
+                and intent_path.stat().st_size <= 2 * 1024 * 1024,
+                "Current original-Products cleanup intent is missing or unbounded")
+        self.validate_intent(json.loads(intent_path.read_bytes()))
+        require(self.evidence.is_relative_to(self.control / "build")
+                and self.evidence != self.control / "build"
+                and not self.evidence.is_relative_to(self.app)
+                and not self.app.is_relative_to(self.evidence),
+                "Current evidence and immutable App cleanup roots are not separately owned")
+        return self.control
+
     def worker_command(self, default):
         require(default[0] == sys.executable and default[1] == "-B", "Unexpected worker interpreter")
         return [*default[:2], str(Path(__file__).resolve()), *default[3:],

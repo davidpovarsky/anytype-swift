@@ -1,0 +1,39 @@
+{
+  "base": "67809875752085047a395be4a751ace5dcbc7ad8",
+  "edits": [
+    {
+      "path": "Tools/PinkhaSimulatorGate/wave15_batch.py",
+      "before": "                receipt[\"coherent_nested_cleanup\"] = coherent.nested_cleanup(args)",
+      "after": "                receipt[\"coherent_nested_cleanup\"] = (coherent.nested_cleanup(args) if origin is None\n                    else coherent.nested_cleanup(args, origin=origin))"
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/wave15_batch.py",
+      "before": "def run_worker_command(command, cwd, log, timeout):\n    record = {\"status\": \"FAIL\", \"started_at\": now(), \"timeout_seconds\": timeout, \"argv\": command}\n    process = None",
+      "after": "def run_worker_command(command, cwd, log, timeout, *, record_cwd=False):\n    record = {\"status\": \"FAIL\", \"started_at\": now(), \"timeout_seconds\": timeout, \"argv\": command}\n    if record_cwd:\n        record[\"cwd\"] = str(cwd)\n    process = None"
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/run_t5_apple_pair.py",
+      "before": "        outcome = owned.run_worker_command([str(item) for item in argv], cwd, log_path, timeout)",
+      "after": "        outcome = owned.run_worker_command([str(item) for item in argv], cwd, log_path, timeout,\n            **({\"record_cwd\": True} if cleanup_profile == owned.COHERENT_HEART_PROFILE else {}))"
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/coherent_heart_release.py",
+      "before": "def nested_cleanup(args):",
+      "after": "def nested_cleanup(args, *, origin=None):"
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/coherent_heart_release.py",
+      "before": "        audit_nested_receipts(roots, args.app.resolve(), work, result)",
+      "after": "        anchor = args.app.resolve() if origin is None else origin.nested_cleanup_anchor(args)\n        audit_nested_receipts(roots, anchor, work, result)"
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/coherent_original_products.py",
+      "before": "    def worker_command(self, default):\n",
+      "after": "    def nested_cleanup_anchor(self, args):\n        \"\"\"Bind only current fixed receipt roots to this explicit two-origin run.\"\"\"\n        require(args is self.args and args.app.resolve() == self.app\n                and args.evidence.resolve() == self.evidence,\n                \"Nested cleanup arguments differ from the original-Products origin\")\n        intent_path = self.evidence / \"batch-intent.json\"\n        require(intent_path.is_file() and not intent_path.is_symlink()\n                and intent_path.stat().st_size <= 2 * 1024 * 1024,\n                \"Current original-Products cleanup intent is missing or unbounded\")\n        self.validate_intent(json.loads(intent_path.read_bytes()))\n        require(self.evidence.is_relative_to(self.control / \"build\")\n                and self.evidence != self.control / \"build\"\n                and not self.evidence.is_relative_to(self.app)\n                and not self.app.is_relative_to(self.evidence),\n                \"Current evidence and immutable App cleanup roots are not separately owned\")\n        return self.control\n\n    def worker_command(self, default):\n"
+    }
+  ],
+  "default_guard_changed": false,
+  "original_receipts_rewritten": false,
+  "get_app_container_timeout_seconds": 30,
+  "get_app_container_source_changed": false
+}
