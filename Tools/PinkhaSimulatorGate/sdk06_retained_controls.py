@@ -14,7 +14,7 @@ import re
 import stat
 
 ADMISSION_PATH = "Tools/PinkhaSimulatorGate/sdk06-retained-controls.json"
-ADMISSION_SHA256 = "e529e563a43dcaa4ca043abbc6bc0c0419c669434ed5e3a9c600a3eadfbfbbb5"
+ADMISSION_SHA256 = "544cd791e86207c2f57a07bfc19effce104e6a258a20eca6655b874eec8bcbe4"
 SCHEMA = "pinkha-sdk06-retained-controller-controls-v1"
 
 
@@ -329,6 +329,129 @@ def verify_frozen_composition(extension, files):
     }
 
 
+
+def qualified_profile_pair_outcomes(events_raw, log_raw, result_raw, methods, source_sha):
+    """Admit only the original one-new/one-affected SDK profile pair."""
+    result, events = decode_json(result_raw), decode_json(events_raw)
+    require(result.get("source_sha") == source_sha and result.get("status") == "PASS"
+            and result.get("tests_run") == 2 and result.get("failures") == result.get("errors") == 0
+            and result.get("source_unchanged") is True, "Original SDK profile pair did not pass unchanged")
+    require(result.get("old_control_methods_executed") == 1
+            and result.get("directly_affected_control_methods_executed") == 1
+            and result.get("new_control_methods_executed") == 1
+            and result.get("other_previously_passed_methods_executed") == 0
+            and result.get("original_18_suite_repeated") is False
+            and result.get("original_kernel9_repeated") is False
+            and result.get("product_tests_executed") == result.get("mac_builds") == 0,
+            "Original SDK profile affected/new execution scope was relabelled")
+    require(result.get("selected_methods") == methods and len(methods) == len(set(methods)) == 2,
+            "Original SDK profile method selection differs")
+    require(isinstance(events, list) and len(events) == 4, "Original SDK profile pair events differ")
+    for index, name in enumerate(methods):
+        start, terminal = events[2 * index:2 * index + 2]
+        require(start.get("event") == "start" and start.get("name") == name
+                and terminal == {"event": "terminal", "name": name, "status": "PASS"},
+                "Original SDK profile named terminal is missing or changed")
+    batches = unittest_batches(log_raw)
+    require(len(batches) == 1 and batches[0]["count"] == 2
+            and [entry["name"] for entry in batches[0]["methods"]]
+                == [".".join(name.rsplit(".", 2)[-2:]) for name in methods]
+            and digest(log_raw) == result.get("logs_sha256"),
+            "Original SDK profile events/raw outcomes disagree")
+    return list(methods)
+
+
+def qualified_kernel_profile_view(admission, files):
+    """Recover the one exact preceding admission; actual new bytes stay pinned."""
+    key = "sdk_qualified_kernel_profile_addendum"
+    extension = admission[key]
+    require(extension["protocol"] == "sdk06-qualified-kernel-profile-fixed-v1"
+            and extension["profile"] == "sdk06-qualified",
+            "Unknown fixed SDK-qualified kernel profile")
+    production = "Tools/PinkhaSimulatorGate/run_owned_single_lane.py"
+    fixture = "Tools/PinkhaSimulatorGate/test_sdk06_qualified_lifecycle.py"
+    new_test = "Tools/PinkhaSimulatorGate/test_sdk06_qualified_kernel_profile.py"
+    require(set(extension["inverses"]) == {production, fixture}, "SDK profile inverse scope differs")
+    require(extension["inverses"][production]["edits"] == [{
+        "old": '    if cleanup_profile == "sdk06-enumeration":\n',
+        "new": '    if cleanup_profile in ("sdk06-enumeration", "sdk06-qualified"):\n'}],
+        "Only the exact SDK-qualified predicate alias is admitted")
+    prior = decode_json(files[extension["prior_admission_snapshot"]])
+    require(digest(files[extension["prior_admission_snapshot"]]) == extension["prior_admission_sha256"],
+            "Original fixed composition admission changed")
+    normalized = decode_json(json.dumps(admission).encode())
+    normalized.pop(key)
+    additions = extension["proof_additions"]
+    require(len(additions) == len(set(additions))
+            and all(path == new_test or path.startswith(
+                "docs/validation/20261123-sdk06-qualified-kernel-profile/") for path in additions),
+            "SDK profile proof scope is not the fixed additive boundary")
+    normalized["proof_files"] = [row for row in normalized["proof_files"] if row["path"] not in additions]
+    for row in normalized["proof_files"]:
+        if row["path"] in extension["inverses"]:
+            row["sha256"] = extension["inverses"][row["path"]]["before_sha256"]
+    for row in normalized["source_inputs"]:
+        if row["path"] == production:
+            row["current_sha256"] = extension["inverses"][production]["before_sha256"]
+    require(normalized == prior, "Existing fixed admission changed outside the reviewed profile addendum")
+
+    prior_files = dict(files)
+    for path, binding in extension["inverses"].items():
+        require(digest(files[path]) == binding["current_sha256"], "Current SDK profile source differs")
+        restored = reverse_scoped_edits(files[path], binding["edits"], binding["before_sha256"])
+        require(restored == files[binding["snapshot"]], "Original SDK profile source view differs")
+        prior_files[path] = restored
+    proof = extension["original_pair"]
+    require(files[proof["source_before"]] == files[proof["source_after"]],
+            "Original SDK profile pair changed source during execution")
+    tested = decode_json(files[proof["source_before"]])
+    require(tested == extension["tested_inputs"] and len(tested) == 44,
+            "Original SDK profile dependency closure differs")
+    for path, expected in tested.items():
+        require(path in files and digest(files[path]) == expected,
+                "Untested SDK profile source/dependency: " + path)
+    methods = qualified_profile_pair_outcomes(files[proof["events"]], files[proof["log"]],
+        files[proof["result"]], proof["methods"], proof["source_sha"])
+    affected = proof["methods"][0]
+    require(affected == "test_sdk06_qualified_lifecycle.QualifiedLifecycleControls."
+            "test_explicit_sdk_quiescence_uses_same_ten_seconds_and_rejects_late_zero"
+            and proof["methods"][1] == "test_sdk06_qualified_kernel_profile.QualifiedKernelProfileControls."
+            "test_sdk_qualified_kernel_wiring_preserves_identity_fallback_and_original_deadline",
+            "Unknown SDK profile affected/new method")
+    previous_tree = ast.parse(prior_files[fixture].decode("utf-8"))
+    current_tree = ast.parse(files[fixture].decode("utf-8"))
+    def method(tree):
+        klass = next(node for node in tree.body if isinstance(node, ast.ClassDef)
+                     and node.name == "QualifiedLifecycleControls")
+        found = [(index, node) for index, node in enumerate(klass.body)
+                 if isinstance(node, ast.FunctionDef) and node.name == affected.rsplit(".", 1)[-1]]
+        require(len(found) == 1, "Affected SDK lifecycle method is missing or repeated")
+        return klass, found[0]
+    old_class, (_, original) = method(previous_tree)
+    current_class, (index, _) = method(current_tree)
+    current_class.body[index] = original
+    require(ast.dump(previous_tree, include_attributes=False) == ast.dump(current_tree, include_attributes=False),
+            "Other original lifecycle declarations/helpers changed")
+    for path, full_name in ((fixture, methods[0]), (new_test, methods[1])):
+        short = ".".join(full_name.rsplit(".", 2)[-2:])
+        require(test_declarations(files[path]).get(short) == proof["declaration_sha256"][full_name],
+                "Original SDK profile named declaration differs")
+    require(len(test_declarations(files[new_test])) == 1, "Unexecuted SDK profile controls were added")
+    return prior, prior_files, {
+        "status": "PASS_FIXED_SDK_QUALIFIED_KERNEL_PROFILE_ONLY",
+        "profile": "sdk06-qualified", "source_scope": "EXACT_NEW_PROFILE_AND_AFFECTED_FIXTURE",
+        "qualified_source_sha": proof["source_sha"], "current_tested_inputs": tested,
+        "historical_composition_methods_preserved": 18,
+        "unchanged_original_composition_methods_retained": 17,
+        "directly_affected_composition_methods_requalified": 1,
+        "new_profile_methods_qualified": 1, "current_composition_methods_qualified": 19,
+        "original_kernel_methods_retained": 9, "original_18_history_relabelled": False,
+        "qualified_methods": methods, "current_source_inputs": {
+            path: digest(files[path]) for path in (production, fixture, new_test)},
+        "recovered_prior_sources": {path: digest(prior_files[path]) for path in extension["inverses"]},
+        "methods_executed_now": 0, "selector_admission_claimed": False, "product_acceptance_claimed": False,
+    }
+
 def verify_retained_controls(app: Path):
     root = Path(app).resolve(strict=True)
     require(root.is_dir(), "Retained controls need the actual source root")
@@ -341,9 +464,16 @@ def verify_retained_controls(app: Path):
     files = {item["path"]: read_bound(root, item["path"], item["sha256"])
              for item in admission["proof_files"]}
     require(len(files) == len(admission["proof_files"]), "Duplicate proof path")
+    historical_admission, historical_files, profile_receipt = admission, files, None
+    if admission.get("sdk_qualified_kernel_profile_addendum") is not None:
+        historical_admission, historical_files, profile_receipt = qualified_kernel_profile_view(admission, files)
     composed_bases, composition_receipt = ({}, None)
-    if admission.get("composition_extension") is not None:
-        composed_bases, composition_receipt = verify_frozen_composition(admission["composition_extension"], files)
+    if historical_admission.get("composition_extension") is not None:
+        composed_bases, composition_receipt = verify_frozen_composition(
+            historical_admission["composition_extension"], historical_files)
+    if profile_receipt is not None:
+        composition_receipt["source_scope"] = "HISTORICAL_FROZEN_COMPOSITION"
+        composition_receipt["historical_source_inputs"] = composition_receipt.pop("current_source_inputs")
     sources = {}
     for item in admission["source_inputs"]:
         path = item["path"]
@@ -443,5 +573,6 @@ def verify_retained_controls(app: Path):
             "source_inputs": inventory, "original_proof_batches": admission["batches"],
             "origins": admission["origins"], "current_catalog": catalog,
             "fixed_composition": composition_receipt,
+            "sdk_qualified_kernel_profile": profile_receipt,
             "source_inventory_sha256": digest(json.dumps(inventory, sort_keys=True, separators=(",", ":")).encode()),
             "scope_limit": "Controller evidence only; no original lane success, current XCTest, build or runtime acceptance."}

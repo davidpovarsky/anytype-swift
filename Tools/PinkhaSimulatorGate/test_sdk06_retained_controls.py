@@ -165,5 +165,52 @@ class RetainedControllerAdmissionTests(unittest.TestCase):
 
 
 
+    def test_sdk_qualified_profile_addendum_preserves_history_and_rejects_scope_relabelling(self):
+        receipt = admission.verify_retained_controls(self.app)
+        profile = receipt["sdk_qualified_kernel_profile"]
+        self.assertEqual(receipt["current_control_methods"], 98)
+        self.assertEqual(receipt["fixed_composition"]["composition_methods_qualified"], 18)
+        self.assertEqual(receipt["fixed_composition"]["source_scope"], "HISTORICAL_FROZEN_COMPOSITION")
+        self.assertNotIn("current_source_inputs", receipt["fixed_composition"])
+        self.assertEqual((profile["unchanged_original_composition_methods_retained"],
+                          profile["directly_affected_composition_methods_requalified"],
+                          profile["new_profile_methods_qualified"]), (17, 1, 1))
+        self.assertEqual(profile["current_composition_methods_qualified"], 19)
+        self.assertEqual(profile["original_kernel_methods_retained"], 9)
+        self.assertFalse(profile["original_18_history_relabelled"])
+        self.assertEqual(profile["methods_executed_now"], 0)
+        self.assertFalse(profile["selector_admission_claimed"])
+        self.assertFalse(profile["product_acceptance_claimed"])
+        extension = self.contract["sdk_qualified_kernel_profile_addendum"]
+        for relative in extension["inverses"]:
+            path = self.app / relative
+            original = path.read_bytes()
+            try:
+                path.write_bytes(original + b"\n# unadmitted profile or fixture bytes\n")
+                with self.assertRaisesRegex(admission.RetainedControlError, "Unadmitted"):
+                    admission.verify_retained_controls(self.app)
+            finally:
+                path.write_bytes(original)
+        files = {row["path"]: (self.app / row["path"]).read_bytes()
+                 for row in self.contract["proof_files"]}
+        malformed = copy.deepcopy(self.contract)
+        production = "Tools/PinkhaSimulatorGate/run_owned_single_lane.py"
+        malformed["sdk_qualified_kernel_profile_addendum"]["inverses"][production]["edits"][0]["new"] = (
+            '    if cleanup_profile in ("sdk06-enumeration", "sdk06-qualified", "arbitrary"):\n')
+        with self.assertRaisesRegex(admission.RetainedControlError, "predicate alias"):
+            admission.qualified_kernel_profile_view(malformed, files)
+        proof = extension["original_pair"]
+        result = json.loads(files[proof["result"]])
+        result["old_control_methods_executed"] = 0
+        with self.assertRaisesRegex(admission.RetainedControlError, "affected/new execution scope"):
+            admission.qualified_profile_pair_outcomes(files[proof["events"]], files[proof["log"]],
+                json.dumps(result).encode(), proof["methods"], proof["source_sha"])
+        events = json.loads(files[proof["events"]])
+        events[-1]["status"] = "FAIL"
+        with self.assertRaisesRegex(admission.RetainedControlError, "named terminal"):
+            admission.qualified_profile_pair_outcomes(json.dumps(events).encode(), files[proof["log"]],
+                files[proof["result"]], proof["methods"], proof["source_sha"])
+
+
 if __name__ == "__main__":
     unittest.main()
