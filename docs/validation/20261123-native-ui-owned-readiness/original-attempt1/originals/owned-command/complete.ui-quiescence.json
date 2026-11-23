@@ -1,0 +1,33 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-c",
+    "import json,os;print(json.dumps({'pid':os.getpid(),'pgid':os.getpgrp()}),flush=True)"
+  ],
+  "cwd": "/mnt/development/projects/worktrees/anytype-wave15-native-ui-readiness-20261123",
+  "kernelBudgetSeconds": 10,
+  "originalCommandSHA256": "46ac036c20213769245d93d74ff8404b28c66b8afdf0dcbb1223a9a9fe77695e",
+  "originalLogSHA256": "7e598c7ffa64ea25f29bcc469f487f463c09d6cd8a4939d3ec39957593fe96e4",
+  "quiescence": {
+    "absenceSource": "KERNEL_ESRCH",
+    "budgetSeconds": 10,
+    "kernelObservation": {
+      "after_monotonic": 6950714.739836956,
+      "before_monotonic": 6950714.739822556,
+      "deadline_monotonic": 6950724.739820596,
+      "errno": 3,
+      "error_type": "ProcessLookupError",
+      "operation": "os.killpg",
+      "outcome": "ABSENT_ESRCH",
+      "pgid": 2384686,
+      "signal": 0
+    },
+    "liveMembers": 0,
+    "pgid": 2384686,
+    "scope": "pinkha-native-ui-original-products-readiness-v1",
+    "status": "PASS"
+  },
+  "scope": "pinkha-native-ui-original-products-readiness-v1",
+  "status": "PASS",
+  "timeoutSeconds": 5
+}

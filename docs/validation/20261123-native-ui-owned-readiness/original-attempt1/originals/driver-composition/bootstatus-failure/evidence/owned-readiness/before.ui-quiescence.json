@@ -1,0 +1,33 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-c",
+    "print('{\"devices\": {\"com.apple.CoreSimulator.SimRuntime.iOS-27-2\": [{\"udid\": \"A413A413-8117-4B09-A413-A413A413A413\", \"name\": \"AnyNativePort-90000000001\", \"deviceTypeIdentifier\": \"com.apple.CoreSimulator.SimDeviceType.iPad-mini-A20-Pro\", \"state\": \"Shutdown\", \"isAvailable\": true}]}}',flush=True)"
+  ],
+  "cwd": "/mnt/development/projects/worktrees/anytype-wave15-native-ui-readiness-20261123",
+  "kernelBudgetSeconds": 10,
+  "originalCommandSHA256": "d4cb267cf2eb1158ff5a467fe20478083d60de3aac1ff32ac6c9e6a676cbb9c5",
+  "originalLogSHA256": "6cbdb6bd6c483e5e96ae0cbb96348d3f1da9da9f885261c6f4dfcf51500324f4",
+  "quiescence": {
+    "absenceSource": "KERNEL_ESRCH",
+    "budgetSeconds": 10,
+    "kernelObservation": {
+      "after_monotonic": 6950715.507234324,
+      "before_monotonic": 6950715.507216244,
+      "deadline_monotonic": 6950725.507214204,
+      "errno": 3,
+      "error_type": "ProcessLookupError",
+      "operation": "os.killpg",
+      "outcome": "ABSENT_ESRCH",
+      "pgid": 2384846,
+      "signal": 0
+    },
+    "liveMembers": 0,
+    "pgid": 2384846,
+    "scope": "pinkha-native-ui-original-products-readiness-v1",
+    "status": "PASS"
+  },
+  "scope": "pinkha-native-ui-original-products-readiness-v1",
+  "status": "PASS",
+  "timeoutSeconds": 60
+}

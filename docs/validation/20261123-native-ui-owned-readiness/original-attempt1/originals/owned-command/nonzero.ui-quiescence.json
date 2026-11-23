@@ -1,0 +1,22 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-c",
+    "import sys;print('owned-control-exit-9',flush=True);sys.exit(9)"
+  ],
+  "commandFailure": {
+    "message": "Command '['/usr/bin/python3', '-c', \"import sys;print('owned-control-exit-9',flush=True);sys.exit(9)\"]' returned non-zero exit status 9.",
+    "type": "CalledProcessError"
+  },
+  "cwd": "/mnt/development/projects/worktrees/anytype-wave15-native-ui-readiness-20261123",
+  "kernelBudgetSeconds": 10,
+  "originalCommandSHA256": "ce1d55662f8d4c89cbdafb497802c039861e4a1040f1eae898b994fb3eb10bd8",
+  "originalLogSHA256": "13eed8f3e5c719f897bb45a78149de9939689e1f4a83165168d5c2c7d3ccec21",
+  "quiescenceFailure": {
+    "message": "[Errno 1] synthetic kernel observation refusal",
+    "type": "PermissionError"
+  },
+  "scope": "pinkha-native-ui-original-products-readiness-v1",
+  "status": "FAIL",
+  "timeoutSeconds": 5
+}

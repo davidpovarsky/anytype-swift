@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/mnt/development/projects/evidence/native-ui-owned-readiness-20261123/attempt1/controller.py", line 171, in main
+    assert result.isSuccessful() and not result.skipped and result.testsRun == 2
+           ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RecordedResult' object has no attribute 'isSuccessful'. Did you mean: 'wasSuccessful'?

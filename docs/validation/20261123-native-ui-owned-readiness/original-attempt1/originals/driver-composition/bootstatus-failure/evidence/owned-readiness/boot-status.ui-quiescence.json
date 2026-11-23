@@ -1,0 +1,37 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-c",
+    "import sys;print('CONTROL_BOOTSTATUS',flush=True);sys.exit(13)"
+  ],
+  "commandFailure": {
+    "message": "Command '['/usr/bin/python3', '-c', \"import sys;print('CONTROL_BOOTSTATUS',flush=True);sys.exit(13)\"]' returned non-zero exit status 13.",
+    "type": "CalledProcessError"
+  },
+  "cwd": "/mnt/development/projects/worktrees/anytype-wave15-native-ui-readiness-20261123",
+  "kernelBudgetSeconds": 10,
+  "originalCommandSHA256": "212c01d73eaff160be2c34266a299773003a7767677721a90e0a849e01b95823",
+  "originalLogSHA256": "00b91ee9d53802ed4c2a0f7d9a5c8a8af46b5fe08552514c099011601cf48981",
+  "quiescence": {
+    "absenceSource": "KERNEL_ESRCH",
+    "budgetSeconds": 10,
+    "kernelObservation": {
+      "after_monotonic": 6950715.585957717,
+      "before_monotonic": 6950715.585944237,
+      "deadline_monotonic": 6950725.585942837,
+      "errno": 3,
+      "error_type": "ProcessLookupError",
+      "operation": "os.killpg",
+      "outcome": "ABSENT_ESRCH",
+      "pgid": 2384848,
+      "signal": 0
+    },
+    "liveMembers": 0,
+    "pgid": 2384848,
+    "scope": "pinkha-native-ui-original-products-readiness-v1",
+    "status": "PASS"
+  },
+  "scope": "pinkha-native-ui-original-products-readiness-v1",
+  "status": "FAIL",
+  "timeoutSeconds": 180
+}

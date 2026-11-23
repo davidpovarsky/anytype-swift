@@ -1,0 +1,64 @@
+{
+  "actualAppleCommandsExecuted": 0,
+  "actualCIAdmissionClaimed": false,
+  "observations": [
+    {
+      "phase": "current_admission"
+    },
+    {
+      "phase": "both_real_git_closures"
+    },
+    {
+      "actualOwnedControlArgv": [
+        "/usr/bin/python3",
+        "-c",
+        "print('{\"devices\": {\"com.apple.CoreSimulator.SimRuntime.iOS-27-2\": [{\"udid\": \"A413A413-8117-4B09-A413-A413A413A413\", \"name\": \"AnyNativePort-90000000001\", \"deviceTypeIdentifier\": \"com.apple.CoreSimulator.SimDeviceType.iPad-mini-A20-Pro\", \"state\": \"Shutdown\", \"isAvailable\": true}]}}',flush=True)"
+      ],
+      "appleCommandExecuted": false,
+      "phase": "controlled_simulator_command",
+      "requested": [
+        "xcrun",
+        "simctl",
+        "list",
+        "devices",
+        "A413A413-8117-4B09-A413-A413A413A413",
+        "--json"
+      ],
+      "timeoutSeconds": 60
+    },
+    {
+      "actualOwnedControlArgv": [
+        "/usr/bin/python3",
+        "-c",
+        "print('CONTROL_BOOT_REQUEST_ONLY',flush=True)"
+      ],
+      "appleCommandExecuted": false,
+      "phase": "controlled_simulator_command",
+      "requested": [
+        "xcrun",
+        "simctl",
+        "boot",
+        "A413A413-8117-4B09-A413-A413A413A413"
+      ],
+      "timeoutSeconds": 120
+    },
+    {
+      "actualOwnedControlArgv": [
+        "/usr/bin/python3",
+        "-c",
+        "import sys;print('CONTROL_BOOTSTATUS',flush=True);sys.exit(0)"
+      ],
+      "appleCommandExecuted": false,
+      "phase": "controlled_simulator_command",
+      "requested": [
+        "xcrun",
+        "simctl",
+        "bootstatus",
+        "A413A413-8117-4B09-A413-A413A413A413",
+        "-b"
+      ],
+      "timeoutSeconds": 180
+    }
+  ],
+  "productMethodsExecuted": 0
+}
