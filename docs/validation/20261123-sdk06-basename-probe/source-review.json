@@ -1,6 +1,19 @@
 {
   "app_builds": 0,
   "base_source_sha": "e9bf81c3bcda40dbd330eda59985674a815e101c",
+  "central_route": {
+    "after_sha256": "c4dbb1df4461bc2515dc28f183b5ab1896b805a629679ea55ad24f46325c9be9",
+    "before_sha256": "547aa1adb9a7cd25e09431e57b4a7751ae2d4f35649873c150d2db5b8a6e4c0d",
+    "exact_additions": [
+      "          - sdk06-basename-probe\n",
+      "\n  sdk06-basename-probe:\n    if: ${{ inputs.route == 'sdk06-basename-probe' }}\n    uses: ./.github/workflows/pinkha-sdk06-basename-probe.yml\n"
+    ],
+    "exact_inverse": true,
+    "only_new_job": "sdk06-basename-probe",
+    "only_new_option": "sdk06-basename-probe",
+    "prior_jobs_preserved": 51,
+    "yaml_structure_otherwise_identical": true
+  },
   "control_tests_executed": 0,
   "copied_execute_sha256": "c36a925a2335a9997cf4d430f8aacc3ddced80c5c177b1710b19b4269b474dee",
   "current_selector_admission": null,
@@ -33,6 +46,7 @@
   ],
   "new_source_hashes": {
     ".github/workflows/pinkha-sdk06-basename-probe.yml": "084142af3a6c38cf227e87a2952146931b65e63e1a47f4f8488930d06a22d5d2",
+    ".github/workflows/torah-inspector-ipados27.yml": "c4dbb1df4461bc2515dc28f183b5ab1896b805a629679ea55ad24f46325c9be9",
     "Tools/PinkhaSimulatorGate/sdk06-basename-probe-plan.json": "9f812368d7b091e88e1346c16a81f8e993eb3f15c9b852379dd62aacc7532f22",
     "Tools/PinkhaSimulatorGate/sdk06_basename_enumeration_probe.py": "bf48d27955b94abc8bb3a93559ba608f94c818c7beeab1138b2e85b8911706cc",
     "Tools/PinkhaSimulatorGate/test_sdk06_basename_enumeration_probe.py": "91552b6aa3dce316e159774231857399beaf173a342e1991c0e4ead171821b9c"

@@ -35,7 +35,9 @@ describes scoped command-line test selection. These support this bounded
 hypothesis but do not establish Xcode27's exact parameterized matching behavior.
 The authoritative links are recorded in source-review.json.
 
-Root owns publication, central route integration and any one actual dispatch.
+The central dispatcher adds only the sdk06-basename-probe option and its one
+reusable-workflow job; every prior job and option is unchanged. Root owns
+publication and any one actual dispatch.
 All new files are downstream controller/workflow/proof files. No application,
 frozen native source, source-retention map or existing controller was changed.
 Rollback is removal of this separate route; original routes are byte-identical.
