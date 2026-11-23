@@ -182,24 +182,31 @@ def execute(args, receipt):
         value = json.loads(path.read_text())
         if value.get("completed"):
             journals.append((path, value))
-    require(len(journals) == 1, "Expected one actual completed host receipt")
-    journal = journals[0][1]
-    request_id = journal["requestID"]
-    require(journal["completed"] and len(journal["insertedBlocks"]) == 1, "Native insertion receipt is incomplete")
-    write(evidence / "completed-host-receipt.json", journal)
-    ui_env["PINKHA_MINIAPPS_REQUEST_ID"] = request_id
+    require(len(journals) == 2, "Expected actual completed warm and cold host receipts")
+    ordered_journals = []
+    for key in ("returnedText", "coldReturnedText"):
+        matches = [value for _, value in journals
+                   if [item.get("text") for item in value.get("additions", [])] == [fixture[key]]]
+        require(len(matches) == 1 and len(matches[0]["insertedBlocks"]) == 1,
+                "The actual warm/cold native insertion receipt is incomplete")
+        ordered_journals.append(matches[0])
+    request_ids = [journal["requestID"] for journal in ordered_journals]
+    require(len(set(request_ids)) == 2, "Warm and cold invocations must have separate durable identities")
+    write(evidence / "completed-host-receipts.json", ordered_journals)
+    callbacks = dict(PINKHA_MINIAPPS_REQUEST_ID=request_ids[0], PINKHA_MINIAPPS_COLD_REQUEST_ID=request_ids[1])
+    ui_env.update(callbacks)
     test(ui_configuration, "PinkhaStage1AcceptanceUITests", UI_REPLAY, "replay-ui", ui_env)
-    test(native_configuration, "AnytypeTests", VERIFY, "native-readback",
-         {"PINKHA_MINIAPPS_REQUEST_ID": request_id})
+    test(native_configuration, "AnytypeTests", VERIFY, "native-readback", callbacks)
     proof_path = data_container() / "Library/Application Support/miniapps-native-readback.json"
     proof = json.loads(proof_path.read_text())
     require(proof["status"] == "NATIVE_HEART_READBACK_PASS" and proof["sourceSHA"] == head
-            and proof["requestID"] == request_id.lower(), "Final native readback receipt differs")
+            and proof["requestIDs"] == [value.lower() for value in request_ids], "Final native readback receipt differs")
     write(evidence / "native-readback.json", proof)
     require(git(app, "rev-parse", "HEAD") == head, "Source changed during native acceptance")
     verify_sdk(app / "Dependencies/Hanlin")
     receipt.update(status="MINIAPPS_TWO_APP_NATIVE_PASS", phase="COMPLETE",
                    actual_native_preparation=1, actual_ui_methods=2, actual_native_readback=1,
+                   actual_companion_invocations=2, warm_callback=True, cold_callback=True,
                    physical_sharing="NOT_PROVEN_BY_SIMULATOR")
     save("COMPLETE")
 

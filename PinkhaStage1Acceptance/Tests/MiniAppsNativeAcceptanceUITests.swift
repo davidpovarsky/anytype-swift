@@ -30,28 +30,12 @@ final class MiniAppsNativeAcceptanceUITests: XCTestCase {
             .waitForExistence(timeout: 15))
         source.launch()
         try openSource()
-        let grid = source.buttons["pinkha.miniapps.open"].firstMatch
-        XCTAssertTrue(grid.waitForExistence(timeout: 30))
-        XCTAssertTrue(grid.isHittable)
-        grid.tap()
-        let textStudio = source.buttons["miniapps-launch-nativeapp.textstudio"].firstMatch
-        XCTAssertTrue(textStudio.waitForExistence(timeout: 30),
-            "The producer must publish its catalog into the actual common App Group")
-        screenshot("miniapps-shared-picker")
-        textStudio.tap()
-        XCTAssertTrue(companion.wait(for: .runningForeground, timeout: 30))
-        let input = companion.textViews["miniapps.textstudio.editor"].firstMatch
-        XCTAssertTrue(input.waitForExistence(timeout: 30))
-        XCTAssertEqual(input.value as? String ?? "", "", "A toolbar insertion starts with empty input")
-        input.tap()
-        input.typeText(try XCTUnwrap(fixture["returnedText"]))
-        screenshot("miniapps-external-textstudio")
-        let returnText = companion.buttons["miniapps.textstudio.return"]
-        XCTAssertTrue(returnText.waitForExistence(timeout: 15))
-        returnText.tap()
-        XCTAssertTrue(source.wait(for: .runningForeground, timeout: 30))
+        try returnThroughTextStudio(text: XCTUnwrap(fixture["returnedText"]), terminateSource: false)
+        try expectNativeText(keys: ["originalText", "returnedText"])
+        screenshot("miniapps-original-editor-warm-return")
+        try returnThroughTextStudio(text: XCTUnwrap(fixture["coldReturnedText"]), terminateSource: true)
         try expectNativeText()
-        screenshot("miniapps-original-editor-return")
+        screenshot("miniapps-original-editor-cold-callback")
         source.terminate()
         XCTAssertTrue(source.wait(for: .notRunning, timeout: 15))
         source.launch()
@@ -62,17 +46,21 @@ final class MiniAppsNativeAcceptanceUITests: XCTestCase {
     }
 
     func testDuplicateCallbackDoesNotInsertAgain() throws {
-        let requestID = try XCTUnwrap(ProcessInfo.processInfo.environment["PINKHA_MINIAPPS_REQUEST_ID"])
+        let environment = ProcessInfo.processInfo.environment
+        let requestIDs = [try XCTUnwrap(environment["PINKHA_MINIAPPS_REQUEST_ID"]),
+                          try XCTUnwrap(environment["PINKHA_MINIAPPS_COLD_REQUEST_ID"])]
         source.launch()
         try openSource()
-        var callback = URLComponents()
-        callback.scheme = try XCTUnwrap(ProcessInfo.processInfo.environment["PINKHA_MINIAPPS_SOURCE_SCHEME"])
-        callback.host = "miniapps"
-        callback.path = "/return"
-        callback.queryItems = [URLQueryItem(name: "request", value: requestID)]
-        let url = try XCTUnwrap(callback.url)
-        XCUIDevice.shared.system.open(url)
-        XCUIDevice.shared.system.open(url)
+        for requestID in requestIDs {
+            var callback = URLComponents()
+            callback.scheme = try XCTUnwrap(environment["PINKHA_MINIAPPS_SOURCE_SCHEME"])
+            callback.host = "miniapps"
+            callback.path = "/return"
+            callback.queryItems = [URLQueryItem(name: "request", value: requestID)]
+            let url = try XCTUnwrap(callback.url)
+            XCUIDevice.shared.system.open(url)
+            XCUIDevice.shared.system.open(url)
+        }
         try expectNativeText()
         screenshot("miniapps-duplicate-callback")
         source.terminate()
@@ -93,8 +81,37 @@ final class MiniAppsNativeAcceptanceUITests: XCTestCase {
         XCTAssertTrue(source.buttons["pinkha.miniapps.open"].firstMatch.waitForExistence(timeout: 30))
     }
 
-    private func expectNativeText() throws {
-        for key in ["originalText", "returnedText"] {
+    private func returnThroughTextStudio(text: String, terminateSource: Bool) throws {
+        let grid = source.buttons["pinkha.miniapps.open"].firstMatch
+        XCTAssertTrue(grid.waitForExistence(timeout: 30))
+        XCTAssertTrue(grid.isHittable)
+        grid.tap()
+        let textStudio = source.buttons["miniapps-launch-nativeapp.textstudio"].firstMatch
+        XCTAssertTrue(textStudio.waitForExistence(timeout: 30),
+            "The producer must publish its catalog into the actual common App Group")
+        screenshot(terminateSource ? "miniapps-cold-shared-picker" : "miniapps-warm-shared-picker")
+        textStudio.tap()
+        XCTAssertTrue(companion.wait(for: .runningForeground, timeout: 30))
+        let input = companion.textViews["miniapps.textstudio.editor"].firstMatch
+        XCTAssertTrue(input.waitForExistence(timeout: 30))
+        XCTAssertEqual(input.value as? String ?? "", "", "Each toolbar insertion starts with independent empty input")
+        if terminateSource {
+            source.terminate()
+            XCTAssertTrue(source.wait(for: .notRunning, timeout: 15))
+            XCTAssertTrue(companion.wait(for: .runningForeground, timeout: 15))
+        }
+        input.tap()
+        input.typeText(text)
+        screenshot(terminateSource ? "miniapps-cold-external-textstudio" : "miniapps-warm-external-textstudio")
+        let returnText = companion.buttons["miniapps.textstudio.return"]
+        XCTAssertTrue(returnText.waitForExistence(timeout: 15))
+        returnText.tap()
+        // The cold case intentionally receives no manual source.launch/openSource aid.
+        XCTAssertTrue(source.wait(for: .runningForeground, timeout: 45))
+    }
+
+    private func expectNativeText(keys: [String] = ["originalText", "returnedText", "coldReturnedText"]) throws {
+        for key in keys {
             let text = try XCTUnwrap(fixture[key])
             let visible = source.descendants(matching: .any).matching(
                 NSPredicate(format: "value == %@ OR label == %@", text, text)).firstMatch

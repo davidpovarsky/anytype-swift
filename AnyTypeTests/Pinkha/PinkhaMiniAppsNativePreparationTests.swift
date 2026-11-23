@@ -58,7 +58,8 @@ struct PinkhaMiniAppsNativePreparationTests {
             "sourceSHA": try #require(environment["GITHUB_SHA"]),
             "runID": try #require(environment["GITHUB_RUN_ID"]),
             "accountID": account.id, "spaceID": space.spaceID, "objectID": object.id,
-            "blockID": blockID, "originalText": original, "returnedText": returned
+            "blockID": blockID, "originalText": original, "returnedText": returned,
+            "coldReturnedText": "חזרה לאפליקציה שנסגרה 🙂 " + nonce
         ]
         try JSONSerialization.data(withJSONObject: fixture, options: [.sortedKeys])
             .write(to: destination, options: .withoutOverwriting)
@@ -77,7 +78,10 @@ struct PinkhaMiniAppsNativePreparationTests {
         let objectID = try #require(fixture["objectID"])
         let original = try #require(fixture["originalText"])
         let returned = try #require(fixture["returnedText"])
+        let coldReturned = try #require(fixture["coldReturnedText"])
         let requestID = try #require(environment["PINKHA_MINIAPPS_REQUEST_ID"]).lowercased()
+        let coldRequestID = try #require(environment["PINKHA_MINIAPPS_COLD_REQUEST_ID"]).lowercased()
+        try #require(requestID != coldRequestID)
         let clock = ContinuousClock()
         let deadline = clock.now.advanced(by: .seconds(45))
         while Container.shared.accountManager().account.id != accountID && clock.now < deadline {
@@ -89,17 +93,21 @@ struct PinkhaMiniAppsNativePreparationTests {
         try #require(view.rootID == objectID)
         let originals = view.blocks.filter { $0.text.text == original }
         let results = view.blocks.filter { $0.text.text == returned }
+        let coldResults = view.blocks.filter { $0.text.text == coldReturned }
         try #require(originals.count == 1 && originals[0].id == fixture["blockID"])
-        try #require(results.count == 1)
+        try #require(results.count == 1 && coldResults.count == 1)
+        try #require(results[0].id != coldResults[0].id)
         try #require(results[0].fields.fields[PinkhaMiniAppsResultApplier.receiptField]?.stringValue == requestID + ":0")
+        try #require(coldResults[0].fields.fields[PinkhaMiniAppsResultApplier.receiptField]?.stringValue == coldRequestID + ":0")
         let store = try MiniAppBridgeStore(appGroupIdentifier: "group.com.itorah.shared")
         try #require(try store.pendingResults(sourceAppID: PinkhaMiniAppsContext.sourceAppID)
-            .allSatisfy { $0.requestID.uuidString.lowercased() != requestID })
+            .allSatisfy { ![requestID, coldRequestID].contains($0.requestID.uuidString.lowercased()) })
         let proof: [String: Any] = ["status": "NATIVE_HEART_READBACK_PASS",
             "sourceSHA": try #require(environment["GITHUB_SHA"]),
-            "runID": try #require(environment["GITHUB_RUN_ID"]), "requestID": requestID,
+            "runID": try #require(environment["GITHUB_RUN_ID"]), "requestIDs": [requestID, coldRequestID],
             "objectID": objectID, "originalBlockID": originals[0].id, "returnedBlockID": results[0].id,
-            "originalCount": originals.count, "returnedCount": results.count]
+            "coldReturnedBlockID": coldResults[0].id,
+            "originalCount": originals.count, "returnedCount": results.count, "coldReturnedCount": coldResults.count]
         let destination = try fixtureURL().deletingLastPathComponent().appendingPathComponent("miniapps-native-readback.json")
         try JSONSerialization.data(withJSONObject: proof, options: [.sortedKeys]).write(to: destination, options: .atomic)
         print("MINIAPPS_NATIVE_HEART_READBACK_PASS")
