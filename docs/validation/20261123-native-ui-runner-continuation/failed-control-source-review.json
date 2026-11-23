@@ -1,0 +1,79 @@
+{
+  "attempt1Evidence": "63a6d28f1ceba3758910ca8a46654ce70ebffb0d",
+  "constraints": {
+    "builds": 0,
+    "oldMethods": 0,
+    "productMethods": 0,
+    "retainedFirstMethodReplays": 0
+  },
+  "failedMethodOnly": "test_original_runner_restore_origin_ledger_and_zero_build_separation",
+  "imports": 0,
+  "originalSource": "86de1704c4bf40528de10f6d2a80e6f852a1d0bb",
+  "overallAttempt1": "FAIL",
+  "production": {
+    "after": "    work.mkdir(mode=0o700)\n    work.chmod(0o700)\n    stage = work / \".original-extraction\"\n",
+    "afterSHA256": "43a3fae5a8f9220259fc11354da0ce7204bf5d0ce2a63564e5efc3c9edb47ca5",
+    "before": "    work.mkdir(mode=0o700)\n    stage = work / \".original-extraction\"\n",
+    "beforeSHA256": "2f736fff47cd8220c15f9349fe66565b3ab8f47b60e255b3a6099723d533d2d3",
+    "onlyChangedFunction": "restore_tree",
+    "path": "Tools/AnyEnginePort/native_ui_runner_reuse.py",
+    "unchangedFunctionsAndClasses": [
+      "RetainedRunner",
+      "compose_descriptor",
+      "current_inputs",
+      "extract_originals",
+      "fixed",
+      "layout",
+      "original_metadata",
+      "preload",
+      "read_ledger",
+      "reference",
+      "require_reference",
+      "restore",
+      "validate_api",
+      "verify_tree",
+      "write_bytes",
+      "write_json"
+    ],
+    "wholeFileInverse": true
+  },
+  "protocol": "retained-ui-runner-owned-root-mode-correction-v1",
+  "retainedFirstMethod": "test_actual_descriptor_mode_app_dependency_and_exact_field_refusals",
+  "retryExecuted": false,
+  "testSourceUnchanged": "ff09d6aae27a5d874ddf9510a1c7726a533084e0f76891750e1ce56724bd0aeb",
+  "wrapper": {
+    "failedOnlySHA256": "3e31a3bd5b6da808021851557708278dba4c338ab34132099fa374db0678a1a6",
+    "literalInverse": [
+      {
+        "after": "\"\"\"Only the previously failed retained-runner control; first PASS is retained.\"\"\"",
+        "before": "\"\"\"Exactly two new offline retained-UI-runner controls, with original evidence.\"\"\""
+      },
+      {
+        "after": "PROTOCOL = \"pinkha-native-ui-retained-runner-failed-control-v1\"",
+        "before": "PROTOCOL = \"pinkha-native-ui-retained-runner-controls-v1\""
+      },
+      {
+        "after": "MANIFEST_REL = NAMESPACE + \"/failed-control-inputs.json\"",
+        "before": "MANIFEST_REL = NAMESPACE + \"/control-inputs.json\""
+      },
+      {
+        "after": "WRAPPER_REL = NAMESPACE + \"/run-failed-control.py\"",
+        "before": "WRAPPER_REL = NAMESPACE + \"/run-controls.py\""
+      },
+      {
+        "after": "DECLARED_METHODS = (\n    \"test_actual_descriptor_mode_app_dependency_and_exact_field_refusals\",\n    \"test_original_runner_restore_origin_ledger_and_zero_build_separation\",\n)\nMETHODS = (\"test_original_runner_restore_origin_ledger_and_zero_build_separation\",)",
+        "before": "METHODS = (\n    \"test_actual_descriptor_mode_app_dependency_and_exact_field_refusals\",\n    \"test_original_runner_restore_origin_ledger_and_zero_build_separation\",\n)"
+      },
+      {
+        "after": "require(set(actual) == set(DECLARED_METHODS) and len(actual) == 2, \"unchanged_two_declarations_required\")",
+        "before": "require(set(actual) == set(METHODS) and len(actual) == 2, \"exact_two_new_methods_required\")"
+      },
+      {
+        "after": "require(result.testsRun == 1 and not result.skipped and result.wasSuccessful(),",
+        "before": "require(result.testsRun == 2 and not result.skipped and result.wasSuccessful(),"
+      }
+    ],
+    "originalSHA256": "bbe9a25798f8d9f635d4a8b6bb64dac1fccf502d2a0dbed12cc36443a8125a58",
+    "wholeFileInverse": true
+  }
+}

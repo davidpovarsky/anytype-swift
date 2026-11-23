@@ -266,6 +266,7 @@ def verify_tree(work, manifest, ledger, *, pending=None):
 def restore_tree(archive, work, manifest):
     contract.require(not work.exists(), "fresh_retained_runner_root_required")
     work.mkdir(mode=0o700)
+    work.chmod(0o700)
     stage = work / ".original-extraction"
     original.restore_tar(archive, stage, manifest["entries"])
     (work / "derived").mkdir(mode=0o700)
