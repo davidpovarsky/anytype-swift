@@ -1,0 +1,266 @@
+{
+  "protocol": "pinkha-coherent-original-products-terminal-audit-v1",
+  "audited_at": "2026-11-23T05:31:45.469657+00:00",
+  "run_id": 45111287072,
+  "run_attempt": 1,
+  "control_source_sha": "67809875752085047a395be4a751ace5dcbc7ad8",
+  "app_source_sha": "d254a4a1ccd9288f585ff9374088cbaf965b36b4",
+  "original_run_id": 45095838065,
+  "job_id": 137483985035,
+  "status": "ORIGINAL_FAILURE_CLASSIFIED_NO_PRODUCT_ACCEPTANCE",
+  "original_artifact": {
+    "id": 14792685148,
+    "bytes": 2188153,
+    "sha256": "2e099ec1f4509dfda4bbe577f73ba8121667e2e06afdb45296a37c8fe35459b2",
+    "inner_sha256": "00bb9af7158f2d54ba0b7deb474cf16e4682a50308b89c4e4b1db02e666e05b6",
+    "downloaded_once": true
+  },
+  "original_job_log": {
+    "path": "original-job-137483985035.log",
+    "sha256": "e11f621926b42018df24de0f224c75ad7390f3414c78357c7fbd092f864df070"
+  },
+  "product_scope": {
+    "app_builds_this_run": 0,
+    "ui_runner_builds_this_run": 0,
+    "native_preparations_executed": 0,
+    "ui_methods_executed": 0,
+    "native_postflights_executed": 0,
+    "t5_methods_executed": 0,
+    "xcresult_members": 0,
+    "lane_statuses": {
+      "editor": "LANE_ABORTED_SETUP_OR_IDENTITY",
+      "properties-set": "NOT_RUN_SETUP",
+      "quote-drop": "NOT_RUN_SETUP"
+    },
+    "current_shared_app_accepted": false,
+    "release_accepted": false,
+    "original_builds": {
+      "app": 1,
+      "ui": 1
+    }
+  },
+  "restoration": {
+    "status": "ORIGINAL_PRODUCTS_ADMITTED_TESTS_NOT_RUN",
+    "admission_sha256": "4899f15f02fea77151bd8be3dc999be3e0f4b82c6fa141696b28acea621fb6c2",
+    "source_proof": {
+      "input_manifest_sha256": "4bd980bf67ad0132fe352050e913fa688535de1cad2e5a498672e658eec6a67e",
+      "middleware_inputs_not_rebuilt": true,
+      "source_sha": "d254a4a1ccd9288f585ff9374088cbaf965b36b4",
+      "tracked_regular_files_compared": 11468
+    },
+    "restored_entries": {
+      "native": {
+        "entries": 5211,
+        "status": "ORIGINAL_PRODUCTS_RESTORED_BEFORE_TESTS"
+      },
+      "ui": {
+        "entries": 30,
+        "status": "ORIGINAL_PRODUCTS_RESTORED_BEFORE_TESTS"
+      }
+    },
+    "restored_active_artifacts_sha256": "772aac4641052dc959a827ec658e0c5f887aa4ca6b2c66052b1bf4e8b8a5291b",
+    "descriptor_original_sha256": {
+      "native": "bb5ad72cd33aad76393485995c0e2962add59f0b43492eb08b703ee3de66c7a3",
+      "ui": "79b6773b6d751721cc52c66f30d4e24ac5250790f11668f35e61df341fd06cf6"
+    },
+    "descriptor_copied_sha256": {
+      "native": "631cd8b8541ab0b361804d78cafd178f00fba4f5ab1901a7a76108255168deda",
+      "ui": "af3cafbe5f8f96ca4a336b05311cca48b68f496d8546f347c5ca0f33d32a6f8a"
+    },
+    "kit_binding": {
+      "kit_sha": "511454e49450cb2581ddf77f644146ff3e30dbef",
+      "original_lock_sha256": "e1f20cfcd191832a49f3f94925aa314968d8ee9e344d6fac9a4aa30f2d90cc4f",
+      "source_packages_restored": false,
+      "status": "ORIGINAL_BUILD_LOCK_PIN_REVALIDATED_NOT_CHECKOUT"
+    },
+    "every_archived_entry_build_origin_verified": false
+  },
+  "readiness": {
+    "status": "OWNED_SIMULATOR_READY",
+    "original_sha256": "79b9a153ecd2b827140862115f28d93b0fe31ae84a259af63fe6c686e8774dd5",
+    "original_device": {
+      "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+      "isAvailable": true,
+      "name": "Pinkha-UI27-45111287072-batch-6d401e28422f4c688e4d73f74f26a853-editor",
+      "runtime_identifier": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+      "state": "Shutdown",
+      "udid": "DF186BE6-061D-4AC5-A211-A5A380446B52"
+    },
+    "commands": [
+      {
+        "name": "before",
+        "argv": [
+          "xcrun",
+          "simctl",
+          "list",
+          "devices",
+          "DF186BE6-061D-4AC5-A211-A5A380446B52",
+          "--json"
+        ],
+        "started_at": "2026-11-23T05:17:08.240546+00:00",
+        "finished_at": "2026-11-23T05:17:08.810752+00:00",
+        "return_code": 0,
+        "timeout_seconds": 60,
+        "owned_group": {
+          "budget_seconds": 10,
+          "live_members": 0,
+          "observations": 1,
+          "pgid": 3771,
+          "status": "PASS",
+          "timeout_observations": []
+        },
+        "original_sha256": "0ae0a3ffc1d114f72afeb4713a32b9f65701bd688abb1c0ea3d6a572b8aa4c9b",
+        "projection_sha256": "ee284b03b781ca5359dd0f8c64625422b29b88bc416110222bfd1041ca6b90d0",
+        "projection_cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/coherent-original-products-45111287072-1/private/App",
+        "original_has_cwd": false
+      },
+      {
+        "name": "boot",
+        "argv": [
+          "xcrun",
+          "simctl",
+          "boot",
+          "DF186BE6-061D-4AC5-A211-A5A380446B52"
+        ],
+        "started_at": "2026-11-23T05:17:08.862808+00:00",
+        "finished_at": "2026-11-23T05:17:12.081532+00:00",
+        "return_code": 0,
+        "timeout_seconds": 120,
+        "owned_group": {
+          "budget_seconds": 10,
+          "live_members": 0,
+          "observations": 1,
+          "pgid": 3786,
+          "status": "PASS",
+          "timeout_observations": []
+        },
+        "original_sha256": "057f2865fe7022276dd3082678f0230c5f39a23cb59edd9fb66795e87c89e9d2",
+        "projection_sha256": "490c6aa1932a0f5f6288dec81d2776e9868212f45f9b57488d2feecf97243015",
+        "projection_cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/coherent-original-products-45111287072-1/private/App",
+        "original_has_cwd": false
+      },
+      {
+        "name": "boot-status",
+        "argv": [
+          "xcrun",
+          "simctl",
+          "bootstatus",
+          "DF186BE6-061D-4AC5-A211-A5A380446B52",
+          "-b"
+        ],
+        "started_at": "2026-11-23T05:17:14.409784+00:00",
+        "finished_at": "2026-11-23T05:19:39.682577+00:00",
+        "return_code": 0,
+        "timeout_seconds": 180,
+        "owned_group": {
+          "budget_seconds": 10,
+          "live_members": 0,
+          "observations": 1,
+          "pgid": 3866,
+          "status": "PASS",
+          "timeout_observations": []
+        },
+        "original_sha256": "7b43e29bffb1e3903a9bb1ececaabc91ce3ed7425ff41a2e5227405e06dc5e2a",
+        "projection_sha256": "3a0d00c9a2021a5cb3bf49196feb8a301ce452d6c53c7dd35285ac1844a1d9a5",
+        "projection_cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/coherent-original-products-45111287072-1/private/App",
+        "original_has_cwd": false
+      }
+    ],
+    "tests_executed": 0
+  },
+  "first_failure": {
+    "phase_label": "OWNED_SIMULATOR_READINESS",
+    "actual_boundary": "FRESH_CONTAINER_BEFORE_FIRST_APP_INSTALL",
+    "error_type": "TimeoutExpired",
+    "error": "Command '['xcrun', 'simctl', 'get_app_container', 'DF186BE6-061D-4AC5-A211-A5A380446B52', 'io.anytype.app', 'data']' timed out after 30 seconds",
+    "timeout_seconds": 30,
+    "original_lane_receipt_sha256": "539f466e6a4de390410ec637288728afdca9c895d7e9a63948e7550fe07feed2",
+    "readiness_failed": false,
+    "container_outcome": "TIMEOUT_NOT_ABSENCE_PROOF",
+    "command_receipt_or_partial_output_retained": false
+  },
+  "cleanup": {
+    "outer_worker_group": {
+      "budget_seconds": 10,
+      "live_members": 0,
+      "observations": 2,
+      "pgid": 1956,
+      "status": "PASS",
+      "timeout_observations": [
+        {
+          "observation": 1,
+          "timeout_seconds": 2
+        }
+      ]
+    },
+    "outer_simulators": {
+      "status": "PASS",
+      "deleted": [
+        {
+          "delete_exit_code": 0,
+          "name": "Pinkha-UI27-45111287072-ipad",
+          "status": "DELETED_OWNED_SIMULATOR",
+          "udid": "2DC856BE-F525-4128-97E9-D39C5617B9FE"
+        },
+        {
+          "delete_exit_code": 0,
+          "name": "Pinkha-UI27-45111287072-iphone",
+          "status": "DELETED_OWNED_SIMULATOR",
+          "udid": "9F0D1518-0728-4636-B614-057C707DA0F5"
+        },
+        {
+          "delete_exit_code": 0,
+          "name": "Pinkha-UI27-45111287072-batch-6d401e28422f4c688e4d73f74f26a853-editor",
+          "shutdown_exit_code": 0,
+          "status": "DELETED_OWNED_SIMULATOR",
+          "udid": "DF186BE6-061D-4AC5-A211-A5A380446B52"
+        }
+      ],
+      "not_started": 5,
+      "sha256": "aab8a3bc06d9d1b31d7604aacdd8646a7ff9ae20bba2911d32bf6dd608644370"
+    },
+    "nested": {
+      "status": "FAIL",
+      "groups_checked": 0,
+      "error": "Nested receipt root escaped the owned App work",
+      "sha256": "1543354e6c2eb12992a917e2858eee0d2a5f09b89c3fe7dd8e253fec4efd7ef8",
+      "app_anchor": "/Users/runner/work/anytype-swift/anytype-swift/build/coherent-original-products-45111287072-1/private/App",
+      "actual_current_readiness_root": "/Users/runner/work/anytype-swift/anytype-swift/build/coherent-original-products-45111287072-1/evidence/lanes/editor/owned-readiness",
+      "additional_source_proved_cwd_mismatch": true
+    },
+    "preflight": {
+      "status": "PASS",
+      "new_commands": 0,
+      "reuse": "REUSED_EXACT_CURRENT_BATCH_CLEANUP",
+      "sha256": "f7103db9b95c5beaa18c341c398eb655cbf720051fcbba47eb5e4550012ee5a7"
+    },
+    "overall_cleanup_pass": false
+  },
+  "final_integrity": {
+    "status": "NOT_REACHED_OR_NOT_RECORDED",
+    "preexecution_original_products_source_checks": "PASS",
+    "final_source_or_product_integrity_pass_claimed": false
+  },
+  "source_review": {
+    "path": "source-review.json",
+    "sha256": "771b7b916facbb7900ee6ac11958f5da8a3451e5e81997fd99f2adedee2e348e"
+  },
+  "original_evidence_bindings": {
+    "execution.json": "f1a58705c7187d70859443b71d01cb6728e8a5e826dbc714cbab032a5ef44ed6",
+    "batch-worker.json": "8e34ad0cc4eb0eed7aa2e51f939839136ed78a7b09a6746e342c02de2c738568",
+    "batch-worker.command.json": "8a5f1d7d6c8dfe52f7dd7bb43cb7fdc6df00085576f3cae7b9c1fe7ebc9ee505",
+    "lanes/editor/execution.json": "539f466e6a4de390410ec637288728afdca9c895d7e9a63948e7550fe07feed2",
+    "original-products/admission.json": "4899f15f02fea77151bd8be3dc999be3e0f4b82c6fa141696b28acea621fb6c2",
+    "preflight/preflight.json": "ba31b20763af71892ed64ed5506fe3d4fe2bb9a2246f666083fbf844960881f3",
+    "coherent-nested-cleanup.json": "1543354e6c2eb12992a917e2858eee0d2a5f09b89c3fe7dd8e253fec4efd7ef8",
+    "batch-cleanup.json": "aab8a3bc06d9d1b31d7604aacdd8646a7ff9ae20bba2911d32bf6dd608644370",
+    "preflight/lifecycle-cleanup.json": "f7103db9b95c5beaa18c341c398eb655cbf720051fcbba47eb5e4550012ee5a7"
+  },
+  "limitations": [
+    "No new or prior product acceptance is inferred from successful restoration/readiness.",
+    "The 30-second get_app_container timeout is preserved, not classified as a missing container.",
+    "Nested cleanup failed before auditing any original group.",
+    "No final full App/Product/source integrity observation exists after the lane exception.",
+    "No additional downloads, product builds, XCTest methods or CI dispatches were performed by this audit."
+  ]
+}
