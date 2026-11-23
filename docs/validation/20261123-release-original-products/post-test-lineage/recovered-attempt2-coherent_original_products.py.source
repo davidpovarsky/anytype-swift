@@ -1,0 +1,741 @@
+"""Execute the unrun d254 Release scopes from exactly pinned original Products.
+
+The App checkout and all compiled carriers retain run 45095838065's identity.
+Only the controller has the current CI identity. No build command is available
+in this opt-in route; the existing same-job route keeps its original contract.
+"""
+from dataclasses import dataclass, replace
+from pathlib import Path
+import argparse
+import copy
+import hashlib
+import json
+import os
+import platform
+import plistlib
+import re
+import shutil
+import signal
+import subprocess
+import sys
+import zipfile
+
+if __name__ == "__main__":
+    sys.modules["coherent_original_products"] = sys.modules[__name__]
+
+import wave15_batch as batch
+import sdk06_enumeration_probe as products
+
+PROTOCOL = "pinkha-coherent-original-products-continuation-v1"
+NAME = "coherent-original-products-release"
+ROLE = "coherent-original-products"
+REFERENCE = "original_products_admission_sha256"
+SAME_JOB_REFERENCE = "same_job_build_receipt_sha256"
+SOURCE = "d254a4a1ccd9288f585ff9374088cbaf965b36b4"
+SOURCE_TREE = "6066ff99e232d81ecad94395b038fdd8c15239a0"
+RUN = "45095838065"
+ATTEMPT = "1"
+REPOSITORY = "davidpovarsky/anytype-swift"
+ARTIFACT_ID = 14786515753
+ARTIFACT_NAME = "Pinkha-UI27-coherent-heart-release-45095838065-1"
+OUTER_SHA = "a35f701fdf32977c0c9f605be9ee70fe424c754dcdd47c5321c85e00e3733ea4"
+OUTER_BYTES = 829528196
+INNER_NAME = "Pinkha-Native-Derived-Evidence.zip"
+BUILD_SHA = "87834f312a69f814623c2fa8d14d07f017e0902dbf512d49717397c862fffca2"
+WORKER_SHA = "abb010c4d88571e997ffa2226ebc3f8a5e5b3bdb3b502940944379cd07cdda3d"
+INSTALLATION_SHA = "24a97623936badbdc57a06a108adf619c5a0ab9d48fb57488df181ca980ed32b"
+HEART_BUILD_SHA = "f924c22b612bf456fafd754f66152905110e0e6556bf1b6f858dc09e2a6cc9a0"
+SOURCE_INPUTS_SHA = "4bd980bf67ad0132fe352050e913fa688535de1cad2e5a498672e658eec6a67e"
+HANLIN_SHA = "87b87db6bff6e577acbcfc7b76490e31a588b387f390291146f79d01f5f2e51c"
+HEART_SOURCE_RUN = "45091223011"
+HEART_SOURCE_SHA = "8b08033135f7cb508e813ab1d47d81c255037c07"
+HEART_BUILD_RUN = "45035194823"
+HEART_BUILD_SOURCE = "78b8b6168f0a750d2b742d94b78c95aa4abf579a"
+RUNTIME = "r15-attachment-authorized-current-read-v1"
+XCODE = "Xcode 27.0\nBuild version 27A266a"
+MTC = ("/var/run/com.apple.security.cryptexd/mnt/"
+       "com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.1Q2C7p/"
+       "Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/"
+       "Contents/Resources/RuntimeRoot/usr/lib/libMainThreadChecker.dylib")
+ARCHIVES = {
+    "native": dict(scope="coherent-native", sha="4bc9d1394dd3c35ca898d2536718a5146783ae55e4a193fa36b1bae1eaf3088e",
+        bytes=845684125, entries=5211, manifest="8ee7e7d211986610c4b3d0516637165b0e783454062825cd7d64278ed0b3d257",
+        descriptor="Anytype_AnytypeTests_iphonesimulator27.0-arm64.xctestrun",
+        descriptor_sha="bb5ad72cd33aad76393485995c0e2962add59f0b43492eb08b703ee3de66c7a3"),
+    "ui": dict(scope="coherent-ui", sha="e9352d44ce8c2bb5781f4f5674472c57bf7da68d2f95055b60bae2c2b27495b5",
+        bytes=1522647, entries=30, manifest="cee5221a8813b6fca9b2d10e6652ed663014b7624bdf4c13c9e1e4dc8ccb1f18",
+        descriptor="PinkhaPrebuiltUI_iphonesimulator27.0-arm64.xctestrun",
+        descriptor_sha="79b6773b6d751721cc52c66f30d4e24ac5250790f11668f35e61df341fd06cf6"),
+}
+require = batch.require
+sha = batch.digest
+
+
+def origin_fields():
+    return dict(repository=REPOSITORY, run_id=RUN, run_attempt=ATTEMPT,
+                source_sha=SOURCE, artifact_id=ARTIFACT_ID, artifact_sha256=OUTER_SHA,
+                original_build_receipt_sha256=BUILD_SHA)
+
+
+def validate_origins(value, control_sha, run_id, run_attempt):
+    require(value.get("protocol") == PROTOCOL and value.get("continuation") == NAME
+            and value.get("build_origin") == origin_fields(), "Exact original Release build origin required")
+    require(re.fullmatch(r"[0-9a-f]{40}", control_sha or "") and control_sha != SOURCE
+            and value.get("execution_origin") == dict(control_source_sha=control_sha,
+                run_id=run_id, run_attempt=run_attempt)
+            and str(run_id).isdigit() and str(run_attempt).isdigit(),
+            "Actual distinct controller execution origin required")
+    require(value.get("app_source_sha") == SOURCE and value.get("source_tree_sha") == SOURCE_TREE,
+            "Original App source cannot be relabelled as the controller or current App")
+    require(all(type(value.get(k)) is int and value[k] == n for k, n in
+            (("app_builds_this_run", 0), ("ui_runner_builds_this_run", 0),
+             ("original_app_builds", 1), ("original_ui_runner_builds", 1),
+             ("original_product_tests_executed", 0))), "Exact original and current build counts required")
+    require(value.get("current_shared_app_accepted") is False
+            and value.get("previous_test_acceptance_reused") is False
+            and value.get("every_archived_entry_build_origin_verified") is False,
+            "Continuation widened its source or acceptance claim")
+
+
+def reference(build):
+    if build.get("role") == ROLE:
+        require(build.get("build_origin_protocol") == PROTOCOL
+                and re.fullmatch(r"[0-9a-f]{64}", build.get(REFERENCE, ""))
+                and SAME_JOB_REFERENCE not in build, "Invalid original-Products reference")
+        return {REFERENCE: build[REFERENCE]}
+    return {SAME_JOB_REFERENCE: build[SAME_JOB_REFERENCE]}
+
+
+def reference_matches(record, build):
+    expected = reference(build)
+    forbidden = SAME_JOB_REFERENCE if REFERENCE in expected else REFERENCE
+    return forbidden not in record and all(record.get(k) == v for k, v in expected.items())
+
+
+def reuse_fields(build):
+    key = "ui_runner_reused_from_original_products" if build.get("role") == ROLE else "ui_runner_reused_from_same_job"
+    return {key: True, **reference(build)}
+
+
+def reuse_matches(record, build):
+    key = "ui_runner_reused_from_original_products" if build.get("role") == ROLE else "ui_runner_reused_from_same_job"
+    forbidden = "ui_runner_reused_from_same_job" if build.get("role") == ROLE else "ui_runner_reused_from_original_products"
+    return record.get(key) is True and forbidden not in record and reference_matches(record, build)
+
+
+def counts():
+    import coherent_heart_release as coherent
+    return {**coherent.COUNTS, "app_builds": 0, "ui_runner_builds": 0}
+
+
+def validate_counts(value):
+    expected = counts()
+    require(isinstance(value, dict) and set(value) == set(expected)
+            and all(type(value[k]) is int and value[k] == v for k, v in expected.items()),
+            "Original-Products continuation requires every actual behavior and zero new builds")
+
+
+def validate_runtime(installation, native_build):
+    require(installation.get("status") == "PASS"
+            and installation.get("app_source_sha") == SOURCE
+            and installation.get("source_run_id") == HEART_SOURCE_RUN
+            and installation.get("producer", {}).get("source_sha") == HEART_SOURCE_SHA
+            and installation.get("build_producer", {}).get("run_id") == HEART_BUILD_RUN
+            and installation.get("build_producer", {}).get("source_sha") == HEART_BUILD_SOURCE
+            and installation.get("heart_build_receipt_sha256") == HEART_BUILD_SHA
+            and installation.get("runtime_profile") == RUNTIME
+            and installation.get("installed_fixture") is False
+            and installation.get("target_architecture") == "arm64"
+            and installation.get("target_environment") == "simulator",
+            "Original native build and Swift composition origins differ")
+    require(native_build.get("github_run_id") == HEART_BUILD_RUN
+            and native_build.get("integration_sha") == HEART_BUILD_SOURCE
+            and native_build.get("runtime_variant") == RUNTIME
+            and native_build.get("expected_app_get_version") == installation.get("expected_app_get_version"),
+            "Original native build receipt does not bind the installed runtime")
+
+
+def validate_carriers(actual, original):
+    require(isinstance(original.get("active_modes"), dict) and original["active_modes"]
+            and actual.get("active_modes") == original["active_modes"],
+            "Restored active executable or directory modes differ")
+    require(actual.get("app") == original.get("app")
+            and actual.get("ui_runner") == original.get("ui_runner"),
+            "Restored active App or UI runner carrier bytes/modes differ")
+    old = original.get("native_test_bundles", {})
+    current = actual.get("native_test_bundles", {})
+    require(len(old) == len(current) == 1
+            and next(iter(old)).endswith("/Anytype.app/PlugIns/AnytypeTests.xctest")
+            and next(iter(current)).endswith("/Anytype.app/PlugIns/AnytypeTests.xctest")
+            and next(iter(old.values())) == next(iter(current.values())),
+            "Restored actual native XCTest carrier differs")
+
+
+def copied_runtime_descriptor(original, destination, specification, runtime, *, ui=False):
+    raw = original.read_bytes()
+    require(hashlib.sha256(raw).hexdigest() == specification["descriptor_sha"],
+            "Runtime relocation requires the exact original Release descriptor")
+    payload = plistlib.loads(raw)
+    if ui:
+        require(payload.get("__xctestrun_metadata__", {}).get("FormatVersion", 1) == 1,
+                "Original UI descriptor format differs")
+        targets = [value for value in payload.values() if isinstance(value, dict) and value.get("BlueprintName")]
+        require(len(targets) == 1 and targets[0].get("BlueprintName") == "PinkhaStage1AcceptanceUITests"
+                and targets[0].get("UseUITargetAppProvidedByTests") is True
+                and "UITargetAppPath" not in targets[0], "Original UI target binding differs")
+    else:
+        require(payload.get("__xctestrun_metadata__", {}).get("FormatVersion") == 2,
+                "Original native descriptor format differs")
+        configurations = payload.get("TestConfigurations", [])
+        require(len(configurations) == 1, "One original native test configuration required")
+        targets = configurations[0].get("TestTargets", [])
+        require({t.get("BlueprintName") for t in targets} == {"DeepLinksTests", "AnytypeCoreTests", "AnytypeTests"}
+                and len(targets) == 3, "Original native target inventory differs")
+    before = copy.deepcopy(payload)
+    observations = [products.normalize_runtime_injection(target, runtime, expected_original_token=MTC)
+                    for target in targets]
+    check = copy.deepcopy(payload)
+    def reverse(value):
+        if isinstance(value, dict):
+            env = value.get("TestingEnvironmentVariables")
+            if isinstance(env, dict) and "DYLD_INSERT_LIBRARIES" in env:
+                env["DYLD_INSERT_LIBRARIES"] = ":".join(
+                    MTC if token == observations[0]["replacement_token"] else token
+                    for token in env["DYLD_INSERT_LIBRARIES"].split(":"))
+            for child in value.values():
+                reverse(child)
+        elif isinstance(value, list):
+            for child in value:
+                reverse(child)
+    reverse(check)
+    require(check == before, "Descriptor changed outside its exact admitted runtime token")
+    with destination.open("xb") as output:
+        plistlib.dump(payload, output)
+    require(original.read_bytes() == raw, "Original Release descriptor was modified")
+    return dict(original_sha256=hashlib.sha256(raw).hexdigest(), copied_sha256=sha(destination),
+                original_path=str(original), copied_path=str(destination), targets=observations)
+
+
+@dataclass(frozen=True)
+class OriginalProductsContext(batch.FrozenBuild):
+    origin: object = None
+
+    def observed_artifacts(self):
+        return {**super().observed_artifacts(), "active_modes": self.origin.active_modes(observed=True)}
+
+    def verify(self, app, head, identity, flags, configuration):
+        self.origin.verify_control()
+        require(head == SOURCE and self.source["source_sha"] == SOURCE,
+                "Restored context cannot accept a current App source")
+        super().verify(app, head, identity, flags, configuration)
+        self.origin.verify_admission()
+        self.origin.verify_originals()
+        self.origin.verify_kit(app)
+
+    def validate_execution_identity(self, app, preflight):
+        self.origin.verify_control()
+        require(app.resolve() == self.app and self.shared.git(app, "rev-parse", "HEAD") == SOURCE,
+                "Original immutable App checkout differs")
+        require(preflight.get("source_sha") == self.origin.control_sha
+                and preflight.get("run_id") == os.environ["GITHUB_RUN_ID"]
+                and preflight.get("run_attempt") == os.environ["GITHUB_RUN_ATTEMPT"],
+                "Current preflight/controller identity differs from original App origin")
+        self.verify_current()
+
+    def build_reference(self):
+        return {REFERENCE: self.origin.admission_sha}
+
+    def record_build_mode(self):
+        return "ORIGINAL_PRODUCTS_EXACT_RESTORATION"
+
+    def verify_kit(self):
+        return self.origin.verify_kit(self.app)
+
+
+class ContinuationOrigin:
+    protocol = PROTOCOL
+    reference_key = REFERENCE
+
+    def __init__(self, args):
+        self.args = args
+        self.control = args.control.resolve()
+        self.app = args.app.resolve()
+        self.evidence = args.evidence.resolve()
+        self.originals = self.evidence / "original-products/originals"
+        self.admission_path = self.evidence / "original-products/admission.json"
+        self.control_sha = subprocess.check_output(["git", "-C", str(self.control), "rev-parse", "HEAD"], text=True).strip()
+        self.admission_sha = None
+        self.original_build = None
+        self.manifests = {}
+        self.context = None
+
+    def verify_control(self):
+        require(self.control_sha == os.environ.get("GITHUB_SHA")
+                and subprocess.check_output(["git", "-C", str(self.control), "rev-parse", "HEAD"],
+                                            text=True).strip() == self.control_sha,
+                "Actual controller checkout differs from GITHUB_SHA")
+        branch = subprocess.check_output(["git", "-C", str(self.control), "branch", "--show-current"], text=True).strip()
+        require(branch.startswith("codex/chatgpt-wave15-") and os.environ.get("GITHUB_REF") == "refs/heads/" + branch,
+                "Actual published controller branch differs")
+        return products.control_sources(self.control, self.control_sha)
+
+    def bind_intent(self, intent):
+        self.verify_control()
+        intent.update(protocol=PROTOCOL, continuation=NAME, source_sha=SOURCE,
+                      control_source_sha=self.control_sha, build_origin=origin_fields(),
+                      app_builds_this_run=0, ui_runner_builds_this_run=0)
+        return intent
+
+    def validate_intent(self, intent):
+        self.verify_control()
+        require(intent.get("protocol") == PROTOCOL and intent.get("continuation") == NAME
+                and intent.get("source_sha") == SOURCE and intent.get("control_source_sha") == self.control_sha
+                and intent.get("build_origin") == origin_fields()
+                and intent.get("run_id") == os.environ.get("GITHUB_RUN_ID")
+                and intent.get("run_attempt") == os.environ.get("GITHUB_RUN_ATTEMPT")
+                and intent.get("profile") == batch.COHERENT_HEART_PROFILE,
+                "Original-Products worker intent differs")
+
+    def worker_command(self, default):
+        require(default[0] == sys.executable and default[1] == "-B", "Unexpected worker interpreter")
+        return [*default[:2], str(Path(__file__).resolve()), *default[3:],
+                "--control", str(self.control)]
+
+    def record_fields(self):
+        return dict(continuation=NAME, control_source_sha=self.control_sha, build_origin=origin_fields(),
+                    app_builds_this_run=0, ui_runner_builds_this_run=0,
+                    current_shared_app_accepted=False, previous_test_acceptance_reused=False)
+
+    def verify_kit(self, app):
+        import run_ui27 as ui
+        path = "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
+        expected = self.original_build["source"]["package_locks"][path]
+        require(sha(app / path) == expected, "Original compiled App package lock changed")
+        lock = json.loads((app / path).read_bytes())
+        pins = [p["state"]["revision"] for p in lock["pins"] if p["identity"].casefold() == "torahinspectorkit"]
+        require(pins == [ui.KIT]
+                and ('revision: "' + ui.KIT + '"') in (app / "Modules/PinkhaKit/Package.swift").read_text()
+                and ('revision = ' + ui.KIT + ';') in (app / "Anytype.xcodeproj/project.pbxproj").read_text(),
+                "Original compiled Kit pins differ")
+        return dict(status="ORIGINAL_BUILD_LOCK_PIN_REVALIDATED_NOT_CHECKOUT",
+                    kit_sha=ui.KIT, original_lock_sha256=expected, source_packages_restored=False)
+
+    def _original_json(self, name, expected=None):
+        path = self.originals / name
+        raw = path.read_bytes()
+        require(len(raw) <= 8_000_000 and (expected is None or hashlib.sha256(raw).hexdigest() == expected),
+                "Original bounded evidence bytes differ: " + name)
+        return json.loads(raw)
+
+    def load_original_metadata(self):
+        self.original_build = self._original_json("batch-build/same-job-build.json", BUILD_SHA)
+        self.original_worker = self._original_json("batch-worker.json", WORKER_SHA)
+        installation = self._original_json("heart/heart-installation.json", INSTALLATION_SHA)
+        native = self._original_json("heart/custom-heart-build.json", HEART_BUILD_SHA)
+        validate_runtime(installation, native)
+        build = self.original_build
+        require(build.get("status") == "SAME_JOB_SUCCESSFUL_BUILD_WITH_FROZEN_PRODUCTS"
+                and build.get("source", {}).get("source_sha") == SOURCE
+                and build["source"].get("source_tree_sha") == SOURCE_TREE
+                and build.get("profile") == batch.COHERENT_HEART_PROFILE
+                and build.get("configuration") == batch.CONFIGURATION
+                and build.get("build_flags") == batch.profile_flags(batch.COHERENT_HEART_PROFILE)
+                and type(build.get("app_builds")) is int and build["app_builds"] == 1
+                and type(build.get("ui_runner_builds")) is int and build["ui_runner_builds"] == 1
+                and build.get("previous_artifact_reuse") is False
+                and self.original_worker.get("build_receipt_sha256") == BUILD_SHA
+                and self.original_worker.get("status") == "BATCH_ABORTED_SETUP_OR_IDENTITY"
+                and self.original_worker.get("phase") == "LANE",
+                "Original successful build or zero-execution failure boundary differs")
+        # The artifact is fixed to this pre-native-readiness failure, not a
+        # generic failed run from which completed tests might be replayed.
+        lane = self._original_json("lanes/editor/execution.json")
+        require(lane.get("phase") == "OWNED_SIMULATOR_READINESS"
+                and not any(key in lane for key in ("preparation", "ui", "postflight")),
+                "Original Release methods were already attempted")
+        self.manifests = {}
+        for key, spec in ARCHIVES.items():
+            manifest = self._original_json(spec["scope"] + "-early-products/manifest.json", spec["manifest"])
+            require(manifest.get("source_sha") == SOURCE and manifest.get("run_id") == RUN
+                    and manifest.get("run_attempt") == ATTEMPT
+                    and manifest.get("archive_sha256") == spec["sha"]
+                    and manifest.get("archive_bytes") == spec["bytes"]
+                    and len(manifest.get("products", {})) == spec["entries"]
+                    and manifest.get("build_flags") == batch.profile_flags(batch.COHERENT_HEART_PROFILE)
+                    and manifest.get("capture_phase") == "AFTER_BUILD_BEFORE_ADMISSION"
+                    and manifest.get("build_reuse_enabled") is False
+                    and manifest.get("every_entry_build_origin_verified") is False,
+                    "Exact original pre-admission archive scope differs")
+            self.manifests[key] = manifest
+        return installation
+
+    def download_original(self, private):
+        target = self.evidence / "original-products"
+        target.mkdir(parents=True, exist_ok=False)
+        commands = target / "commands"
+        commands.mkdir()
+        download = dict(protocol=PROTOCOL, status="RUNNING", commands=[])
+        runner = products.Commands(self.control, commands, download)
+        api = runner.json(["gh", "api", "repos/" + REPOSITORY + "/actions/artifacts/" + str(ARTIFACT_ID)],
+                          "original-artifact-api")
+        require(api.get("id") == ARTIFACT_ID and api.get("name") == ARTIFACT_NAME
+                and api.get("size_in_bytes") == OUTER_BYTES and api.get("digest") == "sha256:" + OUTER_SHA
+                and api.get("expired") is False
+                and api.get("workflow_run", {}).get("id") == int(RUN)
+                and api["workflow_run"].get("head_sha") == SOURCE,
+                "Original Release artifact API identity differs")
+        run = runner.json(["gh", "api", "repos/" + REPOSITORY + "/actions/runs/" + RUN + "/attempts/" + ATTEMPT],
+                          "original-run-api")
+        require(run.get("id") == int(RUN) and run.get("run_attempt") == int(ATTEMPT)
+                and run.get("head_sha") == SOURCE and run.get("event") == "workflow_dispatch"
+                and run.get("status") == "completed" and run.get("conclusion") == "failure"
+                and run.get("path") == ".github/workflows/torah-inspector-ipados27.yml"
+                and run.get("repository", {}).get("full_name") == REPOSITORY,
+                "Original Release run identity differs")
+        outer = private / "original-github-artifact.zip"
+        runner.run(["gh", "api", "repos/" + REPOSITORY + "/actions/artifacts/" + str(ARTIFACT_ID) + "/zip"],
+                   "download-original-products", timeout=300, destination=outer)
+        require(outer.stat().st_size == OUTER_BYTES and sha(outer) == OUTER_SHA, "Original outer artifact bytes differ")
+        inner = private / INNER_NAME
+        with zipfile.ZipFile(outer) as archive:
+            require(archive.namelist() == [INNER_NAME], "Unexpected original outer archive members")
+            with archive.open(INNER_NAME) as source, inner.open("xb") as output:
+                shutil.copyfileobj(source, output, 1024 * 1024)
+        names = ["batch-intent.json", "batch-worker.json", "batch-build/same-job-build.json",
+                 "heart/heart-installation.json", "heart/custom-heart-build.json", "hanlin-snapshot.json",
+                 "preflight/preflight.json", "lanes/editor/execution.json", "batch-build/runtime-copies.json"]
+        names += [spec["scope"] + "-early-products/manifest.json" for spec in ARCHIVES.values()]
+        self.originals.mkdir()
+        archives = {}
+        with zipfile.ZipFile(inner) as archive:
+            require(len(archive.namelist()) == len(set(archive.namelist())), "Duplicate original evidence members")
+            require(not any(name.endswith(".xcresult") or ".xcresult/" in name
+                            or name.startswith("coherent-t5/") for name in archive.namelist()),
+                    "Fixed original Release artifact contains unexpected executed product evidence")
+            for name in names:
+                require(archive.getinfo(name).file_size <= 8_000_000, "Unbounded original metadata")
+                path = self.originals / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(archive.read(name))
+            for key, spec in ARCHIVES.items():
+                name = spec["scope"] + "-early-products/BuildProducts.tar.gz"
+                require(archive.getinfo(name).file_size == spec["bytes"], "Original Products archive size differs")
+                path = private / (key + "-BuildProducts.tar.gz")
+                with archive.open(name) as source, path.open("xb") as output:
+                    shutil.copyfileobj(source, output, 1024 * 1024)
+                require(sha(path) == spec["sha"], "Original Products archive hash differs")
+                archives[key] = path
+        download.update(status="EXACT_ORIGINAL_ARTIFACT_DOWNLOADED", build_origin=origin_fields())
+        batch.write(target / "download.json", download)
+        return archives
+
+    def verify_source_inputs(self, derived):
+        path = derived / "Build/PinkhaSourceInputs.json"
+        require(sha(path) == SOURCE_INPUTS_SHA, "Original source-input inventory differs")
+        source = json.loads(path.read_bytes())
+        require(source.get("source_sha") == SOURCE and len(source.get("inputs", {})) == 11477,
+                "Original compiled source inventory identity differs")
+        tracked = subprocess.check_output(["git", "-C", str(self.app), "ls-files", "-z"]).decode().split("\0")
+        checked = 0
+        for name in filter(None, tracked):
+            actual = self.app / name
+            if actual.is_symlink() or not actual.is_file():
+                continue
+            require(actual.resolve().is_relative_to(self.app)
+                    and source["inputs"].get(name, {}).get("sha256") == sha(actual),
+                    "Original App checkout bytes differ from compiled source: " + name)
+            checked += 1
+        require(checked > 10000, "Original App source closure is incomplete")
+        return dict(source_sha=SOURCE, input_manifest_sha256=SOURCE_INPUTS_SHA,
+                    tracked_regular_files_compared=checked, middleware_inputs_not_rebuilt=True)
+
+    def active_modes(self, *, observed):
+        result = {}
+        prefixes = {"native": "Build/Products/Release-Anytype-iphonesimulator/Anytype.app",
+                    "ui": "Build/Products/Release-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests-Runner.app"}
+        for key, prefix in prefixes.items():
+            derived = self.args.derived.resolve()
+            if key == "ui":
+                derived = derived.with_name(derived.name + "-ui")
+            for name, entry in self.manifests[key]["products"].items():
+                if name != prefix and not name.startswith(prefix + "/"):
+                    continue
+                mode = entry["mode"]
+                if observed:
+                    path = derived / name
+                    require(not path.is_symlink()
+                            and ((entry["kind"] == "file" and path.is_file())
+                                 or (entry["kind"] == "directory" and path.is_dir())),
+                            "Original active carrier entry kind differs")
+                    mode = path.stat().st_mode & 0o7777
+                result[key + "/" + name] = mode
+        require(result, "Original active carrier mode inventory is empty")
+        return result
+
+    def original_carriers(self):
+        return {**self.original_build["artifacts"], "active_modes": self.active_modes(observed=False)}
+
+    def verify_originals(self, *, all_products=False):
+        for key, spec in ARCHIVES.items():
+            derived = self.args.derived.resolve()
+            if key == "ui":
+                derived = derived.with_name(derived.name + "-ui")
+            require(sha(derived / "Build/Products" / spec["descriptor"]) == spec["descriptor_sha"]
+                    and sha(self.originals / (spec["scope"] + "-early-products/manifest.json")) == spec["manifest"],
+                    "Immutable original descriptor or manifest changed")
+            if all_products:
+                products.product_manifest_unchanged(derived, self.manifests[key])
+        require(sha(self.args.derived.resolve() / "Build/PinkhaSourceInputs.json") == SOURCE_INPUTS_SHA,
+                "Original source-input proof changed")
+
+    def verify_admission(self):
+        require(self.admission_sha and sha(self.admission_path) == self.admission_sha, "Continuation admission changed")
+        value = json.loads(self.admission_path.read_bytes())
+        validate_origins(value, self.control_sha, os.environ["GITHUB_RUN_ID"], os.environ["GITHUB_RUN_ATTEMPT"])
+        return value
+
+
+    def _context(self, runtime_path, source, candidate, artifacts=None):
+        import run_ui27 as ui
+        derived = self.args.derived.resolve()
+        ui_derived = derived.with_name(derived.name + "-ui")
+        built = derived / "Build/Products/Release-Anytype-iphonesimulator/Anytype.app"
+        value = OriginalProductsContext(
+            app=self.app, derived=derived, ui_derived=ui_derived, built=built,
+            native_configuration=derived / "Build/Products/UI27-OriginalProducts-native.xctestrun",
+            ui_configuration=ui_derived / "Build/Products/UI27-OriginalProducts-ui.xctestrun",
+            shared=ui, source=source, candidate_hashes=candidate, artifacts=artifacts or {},
+            native_bundles=(built / "PlugIns/AnytypeTests.xctest",),
+            runtime_receipt_path=runtime_path, runtime_receipt_sha256=INSTALLATION_SHA,
+            fixtures={}, profile=batch.COHERENT_HEART_PROFILE, origin=self)
+        return value if artifacts else replace(value, artifacts=value.observed_artifacts())
+
+    def restore(self, args, lane, receipt):
+        self.verify_control()
+        receipt.update(source={"source_sha": SOURCE}, phase="ORIGINAL_PRODUCTS_ADMISSION", **self.record_fields())
+        batch.write(self.evidence / "batch-worker.json", receipt)
+        require(args.runtime_profile == RUNTIME and args.heart_source_run_id == HEART_SOURCE_RUN,
+                "Fixed original native runtime/composition producer required")
+        require(self.app == args.app.resolve() and args.derived.resolve().is_relative_to(self.app / "build"),
+                "Original restoration must remain in its fresh owned App workspace")
+        private = self.app / "build/original-products-private"
+        private.mkdir(parents=True, exist_ok=False)
+        archives = self.download_original(private)
+        installation = self.load_original_metadata()
+        preflight = json.loads((self.evidence / "preflight/preflight.json").read_bytes())
+        original_preflight = self._original_json("preflight/preflight.json")
+        require(preflight.get("xcode") == original_preflight.get("xcode") == XCODE
+                and preflight.get("host_architecture") == "arm64", "Original Xcode build/architecture differs")
+        current_runtime = preflight["selected"]["ipad"]["runtime"]
+        original_runtime = original_preflight["selected"]["ipad"]["runtime"]
+        require(all(current_runtime.get(k) == original_runtime.get(k) for k in
+                    ("identifier", "version", "buildversion")), "Original simulator runtime build differs")
+        runtime_path = self.evidence / "heart/heart-installation.json"
+        runtime_path.parent.mkdir(parents=True, exist_ok=False)
+        runtime_path.write_bytes((self.originals / "heart/heart-installation.json").read_bytes())
+        for target, original, expected in (
+            (self.app / "Dependencies/Hanlin/.pinkha-source.json", "hanlin-snapshot.json", HANLIN_SHA),
+            (self.app / "Dependencies/Middleware/PinkhaNativeHeartBuild.json", "heart/custom-heart-build.json", HEART_BUILD_SHA)):
+            require(not target.exists() and not target.is_symlink(), "Refuse existing generated dependency metadata")
+            raw = (self.originals / original).read_bytes()
+            require(hashlib.sha256(raw).hexdigest() == expected, "Original dependency metadata differs")
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(raw)
+        restoration, normalization = {}, {}
+        for key, spec in ARCHIVES.items():
+            derived = args.derived.resolve()
+            if key == "ui":
+                derived = derived.with_name(derived.name + "-ui")
+            restoration[key] = products.extract_products(archives[key], derived, self.manifests[key])
+            configuration = derived / "Build/Products" / spec["descriptor"]
+            normalized = configuration.with_name("UI27-OriginalProducts-" + key + ".xctestrun")
+            normalization[key] = copied_runtime_descriptor(configuration, normalized, spec, current_runtime, ui=key == "ui")
+        source_proof = self.verify_source_inputs(args.derived.resolve())
+        source = batch.source_snapshot(self.app, lane.shared, stage="ORIGINAL_PRODUCTS_ADMISSION")
+        expected = self.original_build["source"]
+        require(all(source.get(k) == expected.get(k) for k in
+                    ("source_sha", "source_tree_sha", "package_locks", "hanlin_snapshot_sha256")),
+                "Immutable App checkout differs from original build source/dependencies")
+        matrix = json.loads((self.app / "Tools/PinkhaSimulatorGate/required-coverage.json").read_bytes())
+        identity = lane.shared.candidate_identity(self.app, matrix)
+        require(identity["hashes"] == self.original_worker["candidate_input_hashes"],
+                "Original compiled App/Module/UI input closure differs")
+        context = self._context(runtime_path, source, identity["hashes"])
+        validate_carriers(context.artifacts, self.original_carriers())
+        kit = self.verify_kit(self.app)
+        carrier_evidence = self.evidence / "original-products/carriers"
+        carrier_evidence.mkdir()
+        lane.shared.verify_signed_simulator(context.built, carrier_evidence)
+        lane.shared.verify_runtime_copies(context.built, installation["native_marker"].encode(), carrier_evidence)
+        original_runtime_copies = self._original_json("batch-build/runtime-copies.json")
+        observed_runtime_copies = json.loads((carrier_evidence / "runtime-copies.json").read_bytes())
+        require(observed_runtime_copies == original_runtime_copies, "Restored embedded runtime carriers differ")
+        binding = lane.shared.runtime_binding(self.app, self.evidence, SOURCE, args, installation)
+        admission = dict(protocol=PROTOCOL, continuation=NAME, build_origin=origin_fields(),
+            execution_origin=dict(control_source_sha=self.control_sha, run_id=os.environ["GITHUB_RUN_ID"],
+                                  run_attempt=os.environ["GITHUB_RUN_ATTEMPT"]),
+            app_source_sha=SOURCE, source_tree_sha=SOURCE_TREE, source_checkout=source,
+            app_builds_this_run=0, ui_runner_builds_this_run=0, original_app_builds=1, original_ui_runner_builds=1,
+            original_product_tests_executed=0, current_shared_app_accepted=False,
+            previous_test_acceptance_reused=False, every_archived_entry_build_origin_verified=False,
+            source_proof=source_proof, source_packages_restored=False, hanlin_source_checkout_restored=False,
+            kit_binding=kit, runtime_binding=binding, original_runtime_installation_sha256=INSTALLATION_SHA,
+            original_native_build_receipt_sha256=HEART_BUILD_SHA, restored_entries=restoration,
+            descriptor_normalization=normalization,
+            restored_active_artifacts_sha256=batch.canonical_hash(context.artifacts),
+            controller_source_hashes=self.verify_control(), status="ORIGINAL_PRODUCTS_ADMITTED_TESTS_NOT_RUN")
+        validate_origins(admission, self.control_sha, os.environ["GITHUB_RUN_ID"], os.environ["GITHUB_RUN_ATTEMPT"])
+        batch.write(self.admission_path, admission)
+        self.admission_sha = sha(self.admission_path)
+        self.context = context
+        receipt.update(source=source, candidate_input_hashes=identity["hashes"],
+            preflight_sha256=sha(self.evidence / "preflight/preflight.json"),
+            runtime_installation=installation, **binding, phase="ORIGINAL_PRODUCTS_ADMITTED",
+            build_receipt_sha256=self.admission_sha, original_build_receipt_sha256=BUILD_SHA)
+        batch.write(self.evidence / "batch-worker.json", receipt)
+        context.verify_current()
+        return context, preflight
+
+    def load_context(self, expected_sha):
+        if self.original_build is None:
+            self.load_original_metadata()
+        require(sha(self.admission_path) == expected_sha, "Worker original-Products admission differs")
+        self.admission_sha = expected_sha
+        admission = self.verify_admission()
+        runtime_path = self.evidence / "heart/heart-installation.json"
+        context = self._context(runtime_path, admission["source_checkout"],
+                                self.original_worker["candidate_input_hashes"])
+        require(batch.canonical_hash(context.artifacts) == admission["restored_active_artifacts_sha256"],
+                "Original active products changed after admission")
+        validate_carriers(context.artifacts, self.original_carriers())
+        self.context = context
+        context.verify_current()
+        return context
+
+    def make_build(self, context, receipt, ui, pair):
+        import coherent_heart_release as coherent
+        context.verify_current()
+        admission = self.verify_admission()
+        installation = json.loads(context.runtime_receipt_path.read_bytes())
+        binding = ui.heart_profiles.installed_binding(context.app, installation, SOURCE, RUNTIME, HEART_SOURCE_RUN)
+        profile = coherent.require_runtime(self.args, binding, ui)
+        carriers = ui.code_carriers(context.built)
+        value = dict(role=ROLE, build_origin_protocol=PROTOCOL, app_source_sha=SOURCE,
+            build_origin=origin_fields(), execution_origin=admission["execution_origin"],
+            flags=batch.profile_flags(batch.COHERENT_HEART_PROFILE),
+            runtime_version=profile.version, runtime_binding=binding,
+            package_lock_hashes=context.source["package_locks"],
+            hanlin_snapshot_sha256=HANLIN_SHA, kit_sha=ui.KIT,
+            code_sha256=carriers["sha256"], code_carriers=carriers,
+            app=str(context.built), configuration=str(context.native_configuration),
+            ui_configuration=str(context.ui_configuration),
+            app_builds=0, ui_runner_builds=0, original_app_builds=1, original_ui_runner_builds=1,
+            original_build_receipt_sha256=BUILD_SHA, **{REFERENCE: self.admission_sha},
+            current_shared_app_accepted=False, shipping_default_build=False,
+            full_matrix_accepted=False, release_accepted=False)
+        self.validate_build(value, SOURCE, pair, ui, context)
+        return value
+
+    def validate_build(self, build, source, pair, ui, context):
+        require(isinstance(context, OriginalProductsContext) and context.origin is self
+                and source == SOURCE, "Explicit original-Products context required")
+        context.verify_current()
+        profile = ui.heart_profiles.select(RUNTIME)
+        require(build.get("role") == ROLE and build.get("build_origin_protocol") == PROTOCOL
+                and build.get("app_source_sha") == SOURCE and build.get("build_origin") == origin_fields()
+                and build.get("execution_origin") == self.verify_admission()["execution_origin"]
+                and build.get(REFERENCE) == self.admission_sha and SAME_JOB_REFERENCE not in build
+                and build.get("original_build_receipt_sha256") == BUILD_SHA
+                and build.get("flags") == pair.FLAGS == batch.profile_flags(batch.COHERENT_HEART_PROFILE)
+                and build.get("runtime_version") == profile.version
+                and ui.heart_profiles.verify_binding(build["runtime_binding"]) == profile.version
+                and build.get("runtime_binding") == self.verify_admission()["runtime_binding"],
+                "Original-Products source/runtime/provenance differs")
+        require(all(type(build.get(k)) is int and build[k] == n for k, n in
+                    (("app_builds", 0), ("ui_runner_builds", 0),
+                     ("original_app_builds", 1), ("original_ui_runner_builds", 1)))
+                and build.get("current_shared_app_accepted") is False,
+                "Original-Products build counts or scope differ")
+        require(Path(build["app"]).resolve() == context.built
+                and Path(build["configuration"]).resolve() == context.native_configuration
+                and Path(build["ui_configuration"]).resolve() == context.ui_configuration
+                and build.get("code_sha256") == ui.code_carriers(context.built)["sha256"]
+                and build.get("hanlin_snapshot_sha256") == HANLIN_SHA and build.get("kit_sha") == ui.KIT
+                and build.get("package_lock_hashes") == context.source["package_locks"],
+                "Original active code or dependency identity differs")
+        return profile
+
+    def validate_worker_build(self, receipt, intent, evidence):
+        self.validate_intent(intent)
+        require(receipt.get("protocol") == PROTOCOL and receipt.get("continuation") == NAME
+                and receipt.get("source", {}).get("source_sha") == SOURCE
+                and receipt.get("control_source_sha") == self.control_sha
+                and receipt.get("original_build_receipt_sha256") == BUILD_SHA,
+                "Original-Products worker origin differs")
+        self.load_context(receipt["build_receipt_sha256"])
+        self.verify_originals(all_products=True)
+        return self.verify_admission()
+
+    def validate_saved_build(self, build, source, worker):
+        import run_t5_apple_pair as pair
+        import run_ui27 as ui
+        context = self.load_context(worker["build_receipt_sha256"])
+        return self.validate_build(build, source, pair, ui, context)
+
+
+def main():
+    parser = argparse.ArgumentParser(__doc__)
+    parser.add_argument("--control", type=Path, required=True)
+    parser.add_argument("--evidence", type=Path, required=True)
+    parser.add_argument("--work", type=Path)
+    parser.add_argument("--app", type=Path)
+    parser.add_argument("--derived", type=Path)
+    parser.add_argument("--worker", action="store_true")
+    parser.add_argument("--deadline", type=float)
+    parser.add_argument("--runtime-profile", default=RUNTIME, choices=[RUNTIME])
+    parser.add_argument("--heart-source-run-id", default=HEART_SOURCE_RUN, choices=[HEART_SOURCE_RUN])
+    args = parser.parse_args()
+    require(platform.system() == "Darwin" and platform.machine() == "arm64", "Actual Apple ARM64 host required")
+    args.control = args.control.resolve()
+    args.evidence = args.evidence.resolve()
+    work = (args.work or args.control / "build/coherent-original-products-private").resolve()
+    if not args.worker:
+        require(args.app is None and args.derived is None and args.deadline is None,
+                "Parent controller determines its original App and Products paths")
+        require(work.is_relative_to(args.control / "build") and not work.exists()
+                and args.evidence.is_relative_to(args.control / "build"),
+                "Fresh controller-owned work/evidence roots required")
+        work.mkdir(parents=True)
+        args.app = work / "App"
+        args.derived = args.app / "build/ui27-derived"
+    else:
+        require(args.app is not None and args.derived is not None and args.deadline is not None,
+                "Explicit original worker paths and budget required")
+    args.app, args.derived = args.app.resolve(), args.derived.resolve()
+    args.device, args.language, args.lane = "ipad", "en", batch.COHERENT_HEART_PROFILE
+    origin = ContinuationOrigin(args)
+    origin.verify_control()
+    import run_wave15_acceptance as lane
+    if args.worker:
+        intent = json.loads((args.evidence / "batch-intent.json").read_bytes())
+        origin.validate_intent(intent)
+        cancelled = False
+        def cancel_worker(signum, frame):
+            nonlocal cancelled
+            if not cancelled:
+                cancelled = True
+                raise KeyboardInterrupt("Original-Products worker cancelled")
+        for number in (signal.SIGTERM, signal.SIGINT):
+            signal.signal(number, cancel_worker)
+        return batch.worker(args, lane, intent, origin=origin)
+    require((args.evidence / "preflight/preflight.json").is_file(),
+            "Current real Xcode27 disposable preflight is required before continuation")
+    subprocess.run(["git", "-C", str(args.control), "worktree", "add", "--detach", str(args.app), SOURCE],
+                   check=True, timeout=120)
+    require(subprocess.check_output(["git", "-C", str(args.app), "rev-parse", "HEAD"], text=True).strip() == SOURCE,
+            "Original App checkout identity differs")
+    return batch.run(args, lane, origin=origin)
+
+
+if __name__ == "__main__":
+    sys.exit(main())

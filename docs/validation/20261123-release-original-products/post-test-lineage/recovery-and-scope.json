@@ -1,0 +1,108 @@
+{
+  "status": "RECOVERED_BY_EXACT_RECORDED_SHA_NOT_ORIGINALLY_ARCHIVED",
+  "recorded_attempt2_source_sha256": "573eb84a6cc1e5b4e01c341992505e863dda714b6a894b934bb5deadacdd3274",
+  "recovered_source_sha256": "573eb84a6cc1e5b4e01c341992505e863dda714b6a894b934bb5deadacdd3274",
+  "committed_e712_source_sha256": "bed94e8e0a9b3f662f967a7a8d8bde87dad2ee5c6c05f380d40ad8a4c7c771ea",
+  "recovery_method": "Reverse exactly the three post-test edits from committed e712 source; require equality to the previously recorded attempt2 SHA256.",
+  "original_archived_at_test_time": false,
+  "recovered_bytes_equal_recorded_tested_identity": true,
+  "changed_functions": [
+    "ContinuationOrigin.bind_intent",
+    "ContinuationOrigin.validate_intent",
+    "ContinuationOrigin.restore"
+  ],
+  "unchanged_exercised_guard_scopes": {
+    "origin": [
+      {
+        "function": "origin_fields",
+        "unchanged": true,
+        "sha256": "5bb2990b592745fa6f7e42367920caf1241ae2dc3ffe7fb09c9c6dd8e07aa960"
+      },
+      {
+        "function": "validate_origins",
+        "unchanged": true,
+        "sha256": "606097d7371d11ea09f14e261d9d93e7d0b95a8e54fba42098534796b3d8c0ef"
+      }
+    ],
+    "carrier": [
+      {
+        "function": "validate_carriers",
+        "unchanged": true,
+        "sha256": "19f08a437f102b65806b1fcfacb0d258d440ecb6b38e5bf9ba8ecdcb1798b21e"
+      },
+      {
+        "function": "ContinuationOrigin.active_modes",
+        "unchanged": true,
+        "sha256": "ecdd07bcbd9814cb0434cc16a9fe57f8f9151ccfdee6bc4cebd3abbb1f20a18f"
+      }
+    ],
+    "runtime": [
+      {
+        "function": "validate_runtime",
+        "unchanged": true,
+        "sha256": "4a0d8bf11b397b8f9be808015b928d387616ae1bfc6c163492460f8cf6d45e29"
+      }
+    ],
+    "descriptor": [
+      {
+        "function": "copied_runtime_descriptor",
+        "unchanged": true,
+        "sha256": "299984ed3e80d62d13e35f9c4252ea65d3ce50d0645c4965a707f725a2985b5a"
+      }
+    ],
+    "counts_and_reference": [
+      {
+        "function": "counts",
+        "unchanged": true,
+        "sha256": "42035c25bda8bfc300e0d2e796cf112330135ceeb1a06125f777e42fb380eee5"
+      },
+      {
+        "function": "validate_counts",
+        "unchanged": true,
+        "sha256": "ac6255b7650400f982e6f52deef0b512b65143fabcab0c058061c2247c76f893"
+      },
+      {
+        "function": "reference",
+        "unchanged": true,
+        "sha256": "18f0f0bb2ac79bcf57481ab4a9c776b78fc2802efafb2be81d927eabe6a52d3a"
+      },
+      {
+        "function": "reference_matches",
+        "unchanged": true,
+        "sha256": "30146642a66dd9b391bc8b97ad044575a1df6d14635b924b216c488bd243db7a"
+      },
+      {
+        "function": "reuse_fields",
+        "unchanged": true,
+        "sha256": "a32629801e0b5c66b60ef6fe99b9f703b9047f69159a58425db5164a92e75974"
+      },
+      {
+        "function": "reuse_matches",
+        "unchanged": true,
+        "sha256": "691496768ec17eb467a0a8391de3d960bbf607151111f5bdb2521db484f6d0b9"
+      }
+    ]
+  },
+  "unchanged_external_guard_sources": {
+    "Tools/PinkhaSimulatorGate/coherent_heart_release.py": "0ef77e89fb5957781974177479699b8f7539d718218d9aab94cd40ff0b93aeca",
+    "Tools/PinkhaSimulatorGate/wave15_batch.py": "845f6ee3b8a3325827dc976da41592924c619b943dc5942c0a1ac6f37fc13bd6",
+    "Tools/PinkhaSimulatorGate/sdk06_enumeration_probe.py": "9169a1cdbd1e5c49b5f7a4b49e125e902a20e00627f2a8b0ae0dc866ec685468"
+  },
+  "restore_delta": "Only replace the imported enumeration-only restoration label with the explicit new pre-test restoration label.",
+  "new_path_guards": "One new focused control required; no retained method rerun.",
+  "external_source_identity_checks": {
+    "coherent_heart_release.py": {
+      "recorded_attempt1_sha256": "0ef77e89fb5957781974177479699b8f7539d718218d9aab94cd40ff0b93aeca",
+      "current_sha256": "0ef77e89fb5957781974177479699b8f7539d718218d9aab94cd40ff0b93aeca"
+    },
+    "wave15_batch.py": {
+      "recorded_attempt1_sha256": "845f6ee3b8a3325827dc976da41592924c619b943dc5942c0a1ac6f37fc13bd6",
+      "current_sha256": "845f6ee3b8a3325827dc976da41592924c619b943dc5942c0a1ac6f37fc13bd6"
+    },
+    "sdk06_enumeration_probe.py": {
+      "normalizer_dependency_commit": "624ab72014",
+      "dependency_blob_sha256": "9169a1cdbd1e5c49b5f7a4b49e125e902a20e00627f2a8b0ae0dc866ec685468",
+      "current_sha256": "9169a1cdbd1e5c49b5f7a4b49e125e902a20e00627f2a8b0ae0dc866ec685468"
+    }
+  }
+}

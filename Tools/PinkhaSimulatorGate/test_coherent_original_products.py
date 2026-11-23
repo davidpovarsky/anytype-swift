@@ -117,6 +117,52 @@ class OriginalProductsControls(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             coherent.validate_build(build, original.SOURCE, None, None, None)
 
+    def test_current_intent_binds_exact_owned_app_and_products_paths(self):
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        import os
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary).resolve()
+            control = root / "Control"
+            app = control / "build/owned/App"
+            derived = app / "build/Native"
+            derived.mkdir(parents=True)
+            def owner(app_path=app, products_path=derived):
+                value = original.ContinuationOrigin.__new__(original.ContinuationOrigin)
+                value.control = control
+                value.app = app_path.resolve()
+                value.args = SimpleNamespace(derived=products_path)
+                value.control_sha = "a" * 40
+                value.verify_control = lambda: {}
+                return value
+            def seed():
+                return dict(profile=batch.COHERENT_HEART_PROFILE, run_id="90000001", run_attempt="1")
+            with patch.dict(os.environ, {"GITHUB_RUN_ID": "90000001", "GITHUB_RUN_ATTEMPT": "1"}):
+                current = owner()
+                intent = current.bind_intent(seed())
+                self.assertEqual(intent["original_app_checkout"], str(app))
+                self.assertEqual(intent["original_products_directory"], str(derived))
+                self.assertEqual(intent["control_source_sha"], current.control_sha)
+                self.assertEqual(intent["source_sha"], original.SOURCE)
+                current.validate_intent(intent)
+                for key, invalid in (
+                    ("original_app_checkout", str(control / "build/foreign/App")),
+                    ("original_products_directory", str(app / "build/Other")),
+                    ("original_products_directory", str(app / "build/../Other")),
+                    ("original_app_checkout", None)):
+                    with self.subTest(key=key, invalid=invalid), self.assertRaises(RuntimeError):
+                        current.validate_intent(dict(intent, **{key: invalid}))
+                for outside_app, outside_products in (
+                    (root / "Foreign/App", root / "Foreign/App/build/Native"),
+                    (control / "build/../../Foreign/App", root / "Foreign/App/build/Native"),
+                    (app, control / "build/Other/Native"),
+                    (app, app / "build/../../EscapingProducts")):
+                    with self.subTest(app=str(outside_app), products=str(outside_products)):
+                        outside = owner(outside_app, outside_products)
+                        bound = outside.bind_intent(seed())
+                        with self.assertRaises(RuntimeError):
+                            outside.validate_intent(bound)
+
     def test_both_pinned_original_descriptors_only_relocate_their_exact_runtime_token(self):
         fixture = Path(__file__).resolve().parents[2] / "docs/validation/20261123-release-original-products/originals"
         with tempfile.TemporaryDirectory() as temporary:

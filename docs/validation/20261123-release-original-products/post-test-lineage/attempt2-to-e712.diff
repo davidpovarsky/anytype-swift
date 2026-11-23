@@ -1,0 +1,13 @@
+--- recovered-attempt2-573eb84a.py
++++ committed-e712-bed94e8e.py
+@@ -285,0 +286 @@
++                      original_app_checkout=str(self.app), original_products_directory=str(self.args.derived.resolve()),
+@@ -293,0 +295,4 @@
++                and intent.get("original_app_checkout") == str(self.app)
++                and intent.get("original_products_directory") == str(self.args.derived.resolve())
++                and self.app.is_relative_to(self.control / "build")
++                and self.args.derived.resolve().is_relative_to(self.app / "build")
+@@ -549 +554,2 @@
+-            restoration[key] = products.extract_products(archives[key], derived, self.manifests[key])
++            restored = products.extract_products(archives[key], derived, self.manifests[key])
++            restoration[key] = dict(entries=restored["entries"], status="ORIGINAL_PRODUCTS_RESTORED_BEFORE_TESTS")
