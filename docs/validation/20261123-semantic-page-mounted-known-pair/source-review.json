@@ -1,9 +1,71 @@
 {
   "actual_loaded_source_set": "To be recorded by the single new control runner",
+  "added_unchanged_git_dependencies": {
+    "Tools/Hanlin/host_command.py": {
+      "bytes": 4236,
+      "git": {
+        "kind": "blob",
+        "mode": "100644",
+        "oid": "4fd63c36dbaf47ede3267ee40b76e1a19828c241"
+      },
+      "sha256": "5f09813c5719f5ea3920c003e58ac6b2b5633f276686bf6c5ef8bc6f9f39a807"
+    },
+    "Tools/Hanlin/related_read_authority_profile.py": {
+      "bytes": 1397,
+      "git": {
+        "kind": "blob",
+        "mode": "100644",
+        "oid": "a46e642477a8fb0c16a7526d39e7f43b5ac7ea84"
+      },
+      "sha256": "c5480b895c917d8268841c64c7875f7d42414fe999489fa27587d017c6e0f0d9"
+    },
+    "Tools/Hanlin/run_host_tests.py": {
+      "bytes": 39409,
+      "git": {
+        "kind": "blob",
+        "mode": "100644",
+        "oid": "85efec75356c8fadcd13a09a7cb0c5dd722d89b0"
+      },
+      "sha256": "106d40df8594c067fdcc389d0ac93e3055a01247d431b13563f9d6e0d1c3403d"
+    },
+    "Tools/Hanlin/shared_editor_profile.py": {
+      "bytes": 1745,
+      "git": {
+        "kind": "blob",
+        "mode": "100644",
+        "oid": "c486549fb852eb9360fd8e07e75444fcbbf613b4"
+      },
+      "sha256": "77d27d083f8073ad027cd28e98f2e2986aaee1cb2e31d2931287e33a4f8497c8"
+    },
+    "Tools/Hanlin/shared_table_profile.py": {
+      "bytes": 1914,
+      "git": {
+        "kind": "blob",
+        "mode": "100644",
+        "oid": "606f097b8af28c2c561afef848b9829b729dde4f"
+      },
+      "sha256": "5c99f5e10adcd2930fd0fe8476d178f15bb8cd9c11174be8a5f849ae12470397"
+    },
+    "Tools/Hanlin/wave15_core_profile.py": {
+      "bytes": 7868,
+      "git": {
+        "kind": "blob",
+        "mode": "100644",
+        "oid": "ebf9f9a1c8fbaaf0463e44e8f4e8a0d0b5835631"
+      },
+      "sha256": "f544619607be0d25e74cff541ac66418b76df11abcd9c15c0ca774d6cbd5d96a"
+    }
+  },
   "base_sha": "8a6d64ba152ba3aa4bb4376d070f63f5c9daceca",
   "builds": 0,
-  "declared_frozen_source_and_fixture_count": 166,
+  "controller_and_new_test_bytes_unchanged": true,
+  "declared_frozen_source_and_fixture_count": 172,
   "fallback_allowed": false,
+  "first_attempt": {
+    "reason": "Sparse checkout omitted already-committed Tools/Hanlin import dependency",
+    "receipt_sha256": "ca0d292fc1b7b6602ef0d13cf45309251a82f93dcd9093d0f89ff8575b70aa86",
+    "status": "ERROR"
+  },
   "fixed_admission_sha256": "17c37d842009b23d50ab2222383c1f025242aa2e61f1828cf1bc1a346b5ed7e5",
   "freeze_auditor_sha256": "8414a6d508b50eb5097eba9dc53101d1cc6352285887ba2a6973692eaa804169",
   "helper_source_sha256": "3282bc162cef0486cd334fbdeb2ed2dcdf79980acf1e8d675badd26f273f56e1",
@@ -19,7 +81,7 @@
   "mounted_source_plan_sha256": "19806530ea3f492ff221efac5a5430ec46893fb7066bf5294afaa06a390ad42f",
   "new_method_count": 1,
   "new_selector": "test_mounted_known_pair.MountedKnownPairAdapterControl.test_mounted_import_and_owned_region_use_qualified_pair_without_fallback",
-  "new_tests_executed": 0,
+  "new_tests_executed": 1,
   "original_admission_files": {
     "docs/validation/20261123-semantic-page-mounted-admission/.gitattributes": "e2700b3d64d784dfd57f99b4a8e47d3569b13ccd4c12a0f07d3691c4b139e143",
     "docs/validation/20261123-semantic-page-mounted-admission/README.md": "ee35ee821ef62bd3e8fffce2b1ffcbcf82ebeef2ca08e18286db6661104006df",
@@ -59,12 +121,15 @@
     "inventory": 60
   },
   "physical_device": "NOT_RUN",
+  "prior_frozen_source_sha": "ad7425fd60bb2c76e943c9cfc77af8e6984cb845",
+  "prior_source_review_sha256": "264cf5c2fdac46c22b467a4cebb8629c246f9708c9e89227addd8a8ca401708a",
   "product_tests_executed": 0,
   "qualified_component_origin": "68148339c275268795360d71d519a5baf003adf8",
   "qualified_consumer_exact_two_line_inverse_equal": true,
   "qualified_consumer_sha256": "17205ab71cdfd8111fc21e6d070a42f621be727e47df9457685557bd22ee12fe",
   "retained_policy_methods": 4,
   "retained_policy_reruns": 0,
+  "selected_retry_status": "NOT_RUN",
   "shared_selector_source_sha256": "2309bb55b3752774bffc588a7c489392daa7ceb3b7279f6a9ec870899a1f1d5f",
   "source_sha256": {
     "Tools/AnyEngineValidation/prepared_inline_file_apple/build.py": "c17f8d4af59cbaf232840c8770415b7a44dd171d2fc054dc45a934b0b0ea0bcb",
@@ -77,6 +142,12 @@
     "Tools/AnyEngineValidation/prepared_inline_file_apple/test_admission.py": "ffd9528d658c0ebf5a5a5e7efda13fd64a615b2eed9bdbf2cbecb041b2838dc6",
     "Tools/AnyEngineValidation/prepared_inline_file_apple/test_cleanup.py": "8b2a799cb5cc3590354ee422df4d112242e4fd72f2568ff7f1fd33e3971c79ba",
     "Tools/AnyEngineValidation/prepared_inline_file_apple/test_inline_proof.py": "333991b79e237d707be6b7de7e88721d8a6017623d6dc550cbf4d7beb192eecf",
+    "Tools/Hanlin/host_command.py": "5f09813c5719f5ea3920c003e58ac6b2b5633f276686bf6c5ef8bc6f9f39a807",
+    "Tools/Hanlin/related_read_authority_profile.py": "c5480b895c917d8268841c64c7875f7d42414fe999489fa27587d017c6e0f0d9",
+    "Tools/Hanlin/run_host_tests.py": "106d40df8594c067fdcc389d0ac93e3055a01247d431b13563f9d6e0d1c3403d",
+    "Tools/Hanlin/shared_editor_profile.py": "77d27d083f8073ad027cd28e98f2e2986aaee1cb2e31d2931287e33a4f8497c8",
+    "Tools/Hanlin/shared_table_profile.py": "5c99f5e10adcd2930fd0fe8476d178f15bb8cd9c11174be8a5f849ae12470397",
+    "Tools/Hanlin/wave15_core_profile.py": "f544619607be0d25e74cff541ac66418b76df11abcd9c15c0ca774d6cbd5d96a",
     "Tools/PinkhaNativeDerived/attachment_runtime.py": "0154ae5f6b0af197d62abc7eeb6233adbe3d469723a75e15e233e7ab5e37019a",
     "Tools/PinkhaNativeDerived/build_custom_heart.py": "0ebbe2f6227418eac2c532b0058290158319ba9f786baaf445de444887e8c669",
     "Tools/PinkhaNativeDerived/build_native_ipa.py": "c9e35a228779ae761d36cef204a32148ffdd3a338c9ede11dde6df4ebee21055",
@@ -234,5 +305,7 @@
     "docs/validation/20261123-page154-known-simulator/original-page-available-device-types.log": "f663b275b7760a98ef28ff760c8efc49703530dd1b45c3d70fa755047bb799a0",
     "docs/validation/20261123-page154-known-simulator/original-page-available-runtimes.log": "df0c2c31dd527d22170a291329a8886b9e06e467679406e626c68edec36a6bdd"
   },
-  "status": "FROZEN_SOURCE_ONE_NEW_MOUNTED_ADAPTER_CONTROL_NOT_RUN"
+  "static_import_closure_sha256": "2e7335a3b0c2a36cd1bca33ac7fbc1f01fcbbd0d73a242ec157863f384437b8e",
+  "static_import_module_count": 33,
+  "status": "REFROZEN_EXACT_IMPORT_CLOSURE_FAILED_NEW_METHOD_ONLY_NOT_RERUN"
 }

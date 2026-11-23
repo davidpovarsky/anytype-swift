@@ -1,0 +1,24 @@
+test_mounted_import_and_owned_region_use_qualified_pair_without_fallback (test_mounted_known_pair.MountedKnownPairAdapterControl.test_mounted_import_and_owned_region_use_qualified_pair_without_fallback) ... ERROR
+
+======================================================================
+ERROR: test_mounted_import_and_owned_region_use_qualified_pair_without_fallback (test_mounted_known_pair.MountedKnownPairAdapterControl.test_mounted_import_and_owned_region_use_qualified_pair_without_fallback)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-wave15-page154-mounted-admission-20261123/Tools/PinkhaSemanticAnchorWire/apple_mounted/test_mounted_known_pair.py", line 32, in test_mounted_import_and_owned_region_use_qualified_pair_without_fallback
+    spec.loader.exec_module(mounted)
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/mnt/development/projects/worktrees/anytype-wave15-page154-mounted-admission-20261123/Tools/PinkhaSemanticAnchorWire/apple_mounted/run.py", line 28, in <module>
+    spec.loader.exec_module(consumer)
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/mnt/development/projects/worktrees/anytype-wave15-page154-mounted-admission-20261123/Tools/PinkhaSemanticAnchorWire/apple_consumer/run.py", line 29, in <module>
+    import shared_editor_existing_build as component
+  File "/mnt/development/projects/worktrees/anytype-wave15-page154-mounted-admission-20261123/Tools/PinkhaSimulatorGate/shared_editor_existing_build.py", line 19, in <module>
+    import run_host_tests as host
+ModuleNotFoundError: No module named 'run_host_tests'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.128s
+
+FAILED (errors=1)
