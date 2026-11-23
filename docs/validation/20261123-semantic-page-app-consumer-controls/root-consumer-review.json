@@ -1,5 +1,5 @@
 {
-  "status": "PREPARED_HOLD_FOR_MOUNTED_BUILD_ONLY_AND_EXPLICIT_SELECTOR_FOLLOWUP",
+  "status": "READY_FOR_SEPARATE_ACTUAL_APP_BOUNDARY_AND_UI_BUILD_ONLY",
   "consumerSource": "e1a563d871d3647962ccdd3590fc1d6032fd4aa9",
   "integratedConsumer": "d6de4b0c80d4b557ab14c5328e3f71be05defc9e",
   "cleanupDependencies": [
@@ -21,13 +21,47 @@
   "rootTestsRerun": 0,
   "newDispatcherRoute": "semantic-page-apple-consumer",
   "existingDispatcherJobsUnchanged": true,
-  "dispatchBlockers": [
-    "Update pinned App/mounted/UI target sources after9d7dbdd.",
-    "Build and preserve existing UI runner only, without executing mounted methods or repeating boundary.",
-    "Use exact full selector argv for both enumeration and execution; actual SDK451020 proves plist-only zero enabled vs15 plain declarations with explicit argv.",
-    "Call explicit semantic-page154 quiescence profile and preserve late/timeout observations."
-  ],
+  "dispatchBlockers": [],
   "actualAppCompilation": "NOT_RUN",
   "actualNativeBoundaryXCTest": "NOT_RUN",
-  "mountedUI": "NOT_RUN"
+  "mountedUI": "NOT_RUN",
+  "consumerFollowup": "3384c160c989c3edd935b95f06152995fffd6b54",
+  "followupIntegrated": "1f20e4347f3d781817163ea73b7d43cdf8d55e88",
+  "verifiedCurrentCandidatePins": 34,
+  "uiPlanAdmission": "PASS_EXACT_FROZEN_PROJECT_AND_SOURCE_PLAN",
+  "newFollowupControls": 9,
+  "originalConsumerControlsRetained": 14,
+  "exactNativePlan": "AnytypeTests",
+  "exactSelectorArguments": "Separate full -only-testing selector for enumeration and execution",
+  "ownedQuiescence": "Explicit semantic-page154 profile; same10second deadline including successful late observations",
+  "UIExecution": "NOT_RUN_BUILD_ONLY_ARCHIVE_FOR_LATER_NEW_FIXTURE_AND_JOURNEY",
+  "dispatchReadyAt": "2026-11-23T03:35:14.991168+00:00",
+  "sourceGuardReview": {
+    "firstAttempt": "source-retention-attempt1.json",
+    "firstAttemptSHA256": "95f42c68d4fc8502d3cc4131480cc403cf12631a37751ac617613997b1a2a418",
+    "firstOutcome": "FAIL_TWO_STALE_REVIEWED_HELPER_BLOBS",
+    "reviewedCorrections": [
+      {
+        "from": "AnyTypeTests/Pinkha/TorahT5RuntimePairTests.swift",
+        "reviewedDependencies": [
+          {
+            "path": "Tools/PinkhaSimulatorGate/coherent_heart_release.py",
+            "previousBlob": "2b2113946f5c49c78c4d7336659491d3171817ec",
+            "currentBlob": "fc4b0be2824d45bff024c02be1f97b09ec4061ea"
+          }
+        ]
+      },
+      {
+        "from": "Tools/PinkhaNativeDerived/package_evidence.py",
+        "reviewedDependencies": [
+          {
+            "path": "Tools/PinkhaSimulatorGate/early_build_products.py",
+            "previousBlob": "a571e77463e9039e0d42610927daa7c99378e7a2",
+            "currentBlob": "7b93fac2ac72d070b12abe2ea03ec64d764e238a"
+          }
+        ]
+      }
+    ],
+    "productTestsRerun": 0
+  }
 }
