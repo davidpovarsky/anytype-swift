@@ -1,0 +1,33 @@
+{
+  "ack_authority": false,
+  "actual_prior_native_receipt": {
+    "ack_authority": false,
+    "actual_canceled_execute_returned": true,
+    "actual_dependency_construction": true,
+    "actual_wallet_account_and_lease": true,
+    "cancellation_was_not_completion": true,
+    "final_account_stop_and_lease_release": true,
+    "registered_before_start": true,
+    "stop_pending_before_actual_execute_return": true
+  },
+  "actual_prior_passes": 1,
+  "archive_sha256": "9358c6636a4b175d56596b09f56c3e4a898b30252dd5548d55fd9f89f057586d",
+  "artifact_id": 14790861121,
+  "case": "TestOtzariaOwnedImportNativeLifetime/RegisteredPreStartCancellationRequiresActualReturn",
+  "changed_finish_reachable_in_reused_precanceled_path": false,
+  "changed_product_path": "core/block/import/mapping_observation.go",
+  "mapping_body_or_cold_reopen_qualified_by_reuse": false,
+  "new_native_selector": "^TestOtzariaOwnedImportNativeLifetime$/^OriginalProtobufImportAndReentrantRetirement$",
+  "passed_case_and_shared_helpers_byte_identical": true,
+  "passed_case_and_shared_helpers_sha256": "10559b646d21ee4477243619d091cef01d5d8d23cba7e2a49a89fa53d7a9c8e7",
+  "path_reason": "Actual prior context.Canceled outcome; unchanged beginRun returns before mapping reset, defer registration and mapping finish.",
+  "path_reason_kind": "source-path proof tied to authentic prior native case",
+  "prior_overall_result": "FAIL",
+  "receipt_sha256": "b73d2dfe4934d06d3573c790e131e78a7eccde4389c56bdaa13b47b37e0e816b",
+  "reexecuted_here": false,
+  "run_attempt": 1,
+  "run_id": 45105771388,
+  "source": "54169c763c2178fc1e796dfbe92a675d9c21a0b3",
+  "status": "AUTHENTIC_PRESTART_NATIVE_PASS_REUSED",
+  "whole_product_tree_unchanged": false
+}
