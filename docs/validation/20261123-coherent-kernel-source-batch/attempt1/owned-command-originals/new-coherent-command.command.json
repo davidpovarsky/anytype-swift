@@ -1,0 +1,39 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "-c",
+    "print('COHERENT_NEW_SCOPE')"
+  ],
+  "cleanup_profile": "coherent-heart-release",
+  "controller_process_id": 2271599,
+  "cwd": "/tmp/coherent-kernel-control-mq_351wr",
+  "finished_at": "2026-11-23T06:58:41.054414+00:00",
+  "original_owned_command": "new-coherent-command.owned.command.json",
+  "original_owned_command_sha256": "2950ecbd4b8ba53513ad26b4816b008df5f661441d893a2d735e80946c60ec44",
+  "owned_group_quiescence": {
+    "absence_source": "KERNEL_ESRCH",
+    "budget_seconds": 10,
+    "kernel_group_observation": {
+      "after_monotonic": 6944192.884619899,
+      "before_monotonic": 6944192.884605419,
+      "deadline_monotonic": 6944202.884603419,
+      "errno": 3,
+      "error_type": "ProcessLookupError",
+      "operation": "os.killpg",
+      "outcome": "ABSENT_ESRCH",
+      "pgid": 2271599,
+      "signal": 0
+    },
+    "live_members": 0,
+    "observations": 0,
+    "pgid": 2271599,
+    "status": "PASS",
+    "timeout_observations": []
+  },
+  "owned_group_termination": "TERM_THEN_KILL",
+  "return_code": 0,
+  "started_at": "2026-11-23T06:58:41.018139+00:00",
+  "status": "SUCCESS",
+  "timeout_seconds": 15
+}
