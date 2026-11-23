@@ -1,0 +1,27 @@
+{
+  "tantivy_initial_reader": {
+    "ok": true,
+    "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 25, in <module>\nAssertionError",
+    "duration": 1.07,
+    "returncode": 1
+  },
+  "tantivy_corrected_reader": {
+    "ok": true,
+    "output": "{\"result\": \"/mnt/development/projects/diagnostics/loaded-account-witness-source-20261123/tantivy-input-bytes.json\", \"result_sha256\": \"75a085cb6dae984bab5cb236a9ae6b3bed14fafd191d5537d037c5e08481b8ba\", \"library\": {\"path\": \"/mnt/development/projects/worktrees/anytype-heart-semantic-page-20261123/deps/libs/linux-arm64-musl/libtantivy_go.a\", \"sha256\": \"efee68b0fdf23fd8c1c630f10f4cad497bbbcb7372b6b985933324ebe730a601\", \"metadata\": {\"st_dev\": \"2064\", \"st_ino\": \"4754438\", \"st_size\": \"59821546\", \"st_mode\": \"33152\", \"st_uid\": \"1001\", \"st_gid\": \"1001\", \"st_nlink\": \"1\", \"st_mtime_ns\": \"1795397933845340767\", \"st_ctime_ns\": \"1795397933845340767\"}}, \"archive_sha256\": \"0a4a9143388977df41a174075ce05cd6aee2821da6425b5b9f9d591fe35d3756\", \"member\": {\"name\": \"./libtantivy_go.a\", \"size\": 59821546, \"mode\": 420, \"sha256\": \"efee68b0fdf23fd8c1c630f10f4cad497bbbcb7372b6b985933324ebe730a601\"}}\n<stdin>:24: SyntaxWarning: invalid decimal literal\n<stdin>:25: SyntaxWarning: invalid decimal literal",
+    "duration": 1.31,
+    "returncode": 0
+  },
+  "post_read_json_parse_error": "A local summarizer initially attempted to decode the entire tool-output string including appended SyntaxWarnings. It was corrected to parse the existing first JSON line; the native reader was not rerun for that summarizer error.",
+  "graph_source_preflight": {
+    "ok": true,
+    "output": "{\"free\": 2570534912, \"roots\": {\"control\": {\"head\": \"fa50f627889cd01a73dcdb1762973577e3aebb2b\", \"special_source_entries\": [], \"status\": \"?? Tools/AnyEngineValidation/loaded_account_witness/candidate.mod\\n?? Tools/AnyEngineValidation/loaded_account_witness/candidate.sum\\n?? Tools/AnyEngineValidation/loaded_account_witness/module-source.json\\n\"}, \"heart\": {\"head\": \"24dc6393b30e6d1d80ec28ff624060af9bb4327a\", \"special_source_entries\": [], \"status\": \"\"}, \"sync\": {\"head\": \"c005bd6cde8d8f8a6007c35f06894f3d89f9f07c\", \"special_source_entries\": [], \"status\": \"\"}}}",
+    "duration": 0.71,
+    "returncode": 0
+  },
+  "graph_assembly": {
+    "ok": true,
+    "output": "{\"files\": {\"graph.py\": {\"bytes\": 29810, \"sha256\": \"6aacb0c911aed49d88d9f0e7ef82b08a5ceab431139bb7b71f17c7d0aedfd23d\"}, \"PROTOCOL.md\": {\"bytes\": 8699, \"sha256\": \"6ee9c96bbd40c24bb66e2747cb4ce760048be544c32f60fe839e3495c3b08b77\"}}, \"assembly_path\": \"/mnt/development/projects/diagnostics/loaded-account-witness-source-20261123/graph-source-freeze/assembly.json\", \"assembly_sha256\": \"6eca4143cd9ad531359bce63d82144e6a8c5ccc1e3d977b2ac0e1782e8b035e0\", \"free_after\": \"2569531392\", \"queries_builds_tests\": 0}",
+    "duration": 0.72,
+    "returncode": 0
+  }
+}

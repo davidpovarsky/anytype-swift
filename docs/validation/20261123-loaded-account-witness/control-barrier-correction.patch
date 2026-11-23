@@ -1,0 +1,148 @@
+diff --git a/core/application/loaded_witness_fixture_test.go b/core/application/loaded_witness_fixture_test.go
+index ed096580c..e821d3589 100644
+--- a/core/application/loaded_witness_fixture_test.go
++++ b/core/application/loaded_witness_fixture_test.go
+@@ -11,7 +11,9 @@ import (
+ 	"fmt"
+ 	"os"
+ 	"path/filepath"
++	"runtime"
+ 	"sort"
++	"sync"
+ 	"testing"
+ 	"time"
+ 
+@@ -252,27 +254,72 @@ func (f *loadedAccountFixture) privateNote(t *testing.T, label string, data map[
+ 	loadedFixtureWrite(t, filepath.Join(f.dir, label+".json"), append(raw, '\n'))
+ }
+ 
+-// Only real observable mutex state is used to coordinate the blocked caller.
+-// This does not synthesize a success result or invoke the capture implementation.
+-func waitLoadedSessionHeld(t *testing.T, service *Service, done <-chan error) {
+-	t.Helper()
+-	timer := time.NewTimer(5 * time.Second)
+-	defer timer.Stop()
+-	ticker := time.NewTicker(time.Millisecond)
+-	defer ticker.Stop()
++// The observer forwards the real context unchanged. It publishes only a copied
++// function-name stack when native lockSpace asks for its actual Done channel.
++// The fixture already holds that same gate. This is a test-only callsite
++// observation, not a success injection or proof that a later closer has blocked.
++type loadedWitnessGateObservation struct {
++	Functions []string `json:"functions"`
++}
++
++type loadedWitnessGateContext struct {
++	context.Context
++	once    sync.Once
++	reached chan loadedWitnessGateObservation
++}
++
++func (c *loadedWitnessGateContext) Done() <-chan struct{} {
++	channel := c.Context.Done()
++	var pcs [32]uintptr
++	n := runtime.Callers(2, pcs[:])
++	frames := runtime.CallersFrames(pcs[:n])
++	names := make([]string, 0, n)
+ 	for {
+-		if !service.appSessionsLock.TryLock() {
+-			return
++		frame, more := frames.Next()
++		names = append(names, frame.Function)
++		if !more {
++			break
+ 		}
+-		service.appSessionsLock.Unlock()
+-		select {
+-		case err := <-done:
+-			t.Fatal("capture ended before the real session gate was observed:", err)
+-		case <-timer.C:
+-			t.Fatal("actual capture did not acquire the session gate")
+-		case <-ticker.C:
++	}
++	required := []string{
++		"github.com/anyproto/anytype-heart/space/spacecore/storage/anystorage.(*storageService).lockSpace",
++		"github.com/anyproto/anytype-heart/space/spacecore/storage/anystorage.(*LocalSnapshotCapability).AcquireWitnessLease",
++		"github.com/anyproto/anytype-heart/core/pinkha/localstorewitness.CaptureNativeOwned",
++		"github.com/anyproto/anytype-heart/core/application.(*Service).CaptureLoadedAccountWitness",
++	}
++	matched := 0
++	for _, want := range required {
++		for _, name := range names {
++			if name == want {
++				matched++
++				break
++			}
+ 		}
+ 	}
++	if matched == len(required) {
++		c.once.Do(func() {
++			select {
++			case c.reached <- loadedWitnessGateObservation{Functions: names}:
++			default:
++			}
++		})
++	}
++	return channel
++}
++
++func waitLoadedNativeGate(t *testing.T, observed <-chan loadedWitnessGateObservation, done <-chan error) loadedWitnessGateObservation {
++	t.Helper()
++	timer := time.NewTimer(5 * time.Second)
++	defer timer.Stop()
++	select {
++	case value := <-observed:
++		return value
++	case err := <-done:
++		t.Fatal("capture ended before the real native gate callsite:", err)
++	case <-timer.C:
++		t.Fatal("actual capture did not reach the owned native gate callsite")
++	}
++	return loadedWitnessGateObservation{}
+ }
+ 
+ func loadedScopeName(scope model.AccountAuthLocalApiScope) string {
+diff --git a/core/application/loaded_witness_test.go b/core/application/loaded_witness_test.go
+index d8828e3dc..e4c4f419b 100644
+--- a/core/application/loaded_witness_test.go
++++ b/core/application/loaded_witness_test.go
+@@ -209,6 +209,7 @@ func TestLoadedAccountWitnessACLAndSessionCancellationReleaseActualLocks(t *test
+ 	if err != nil {
+ 		t.Fatal(err)
+ 	}
++	defer canceledLease.Close()
+ 	cancelLease()
+ 	if err = canceledLease.CheckCurrent(); !errors.Is(err, context.Canceled) {
+ 		t.Fatal("canceled lease remained current:", err)
+@@ -239,15 +240,19 @@ func TestLoadedAccountWitnessACLAndSessionCancellationReleaseActualLocks(t *test
+ 	defer nativeLease.Close()
+ 	captureCtx, cancelCapture := context.WithCancel(f.ctx)
+ 	defer cancelCapture()
++	observedContext := &loadedWitnessGateContext{Context: captureCtx, reached: make(chan loadedWitnessGateObservation, 1)}
++	if observedContext.Done() != captureCtx.Done() {
++		t.Fatal("observer changed the real cancellation channel")
++	}
+ 	done := make(chan error, 1)
+ 	go func() {
+-		w, captureErr := f.service.CaptureLoadedAccountWitness(captureCtx, f.token, f.request())
++		w, captureErr := f.service.CaptureLoadedAccountWitness(observedContext, f.token, f.request())
+ 		if w != nil {
+ 			captureErr = errors.Join(captureErr, errors.New("canceled blocked capture produced witness"))
+ 		}
+ 		done <- captureErr
+ 	}()
+-	waitLoadedSessionHeld(t, f.service, done)
++	gateObservation := waitLoadedNativeGate(t, observedContext.reached, done)
+ 	if f.service.lock.TryLock() {
+ 		f.service.lock.Unlock()
+ 		t.Fatal("blocked capture did not retain its actual application read lock")
+@@ -293,7 +298,8 @@ func TestLoadedAccountWitnessACLAndSessionCancellationReleaseActualLocks(t *test
+ 	f.preserve(t, "after-cancellation", w, map[string]any{
+ 		"actualACLWriterBusyRefused": true, "concreteACLForwarderRefused": true, "concreteSpaceForwarderRefused": true, "copiedLeaseOperationsRefused": 3, "zeroLeaseCloseRefused": true,
+ 		"genuineLeaseClosedThenReacquired": true, "canceledRealLeaseReleased": true,
+-		"actualNativeGateBlockedCapture": true, "actualSessionMutexObservedHeld": true,
++		"actualNativeGateHeldByFixture": true, "nativeGateCallsiteObservation": gateObservation,
++		"sessionLockPassedBeforeNativeGate": true, "contextObserverPreservedOriginalChannel": true,
+ 		"actualApplicationReadLockObservedHeld": true, "normalSessionCloseCompleted": true,
+ 		"cancellationPreserved": true, "actualGateHolderUnaffected": true,
+ 	})
