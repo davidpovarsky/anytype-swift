@@ -714,6 +714,9 @@ jobs:
         run: |
           continuation=()
           if [ "${{ inputs.validation_scope }}" = remaining-native-ui-continuation ]; then
+            python3 Tools/AnyEnginePort/preserve_native_resolution.py \
+              --evidence build/any-patched-evidence/native-package-resolution \
+              --derived build/any-native-app-derived
             continuation=(--continuation build/any-patched-evidence/native-continuation-retained.json)
           fi
           python3 Tools/AnyEnginePort/verify_custom_type.py capture "${continuation[@]}" \
@@ -839,11 +842,8 @@ jobs:
             --output build/any-patched-evidence/native-ui-continuation-products-preflight.json
           set +e
           xcodebuild test-without-building -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen \
-            -project NativeApp/AnyNative.xcodeproj \
-            -scheme PinkhaAnyNativeApp \
-            -configuration Debug \
+            -xctestrun "${ANY_NATIVE_XCTESTRUN:?original native test configuration missing}" \
             -destination "platform=iOS Simulator,id=$ANY_NATIVE_SIMULATOR_UDID" \
-            -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived" \
             -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/native-ui-continuation.xcresult" \
             -parallel-testing-enabled NO \
             -test-timeouts-enabled YES \
@@ -880,13 +880,15 @@ jobs:
             archive_allowance=1800
           fi
           selection=(-only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies)
+          target=(-project NativeApp/AnyNative.xcodeproj -scheme PinkhaAnyNativeApp -configuration Debug
+                  -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived")
+          if [ "${{ inputs.validation_scope }}" = remaining-native-ui-continuation ]; then
+            target=(-xctestrun "${ANY_NATIVE_XCTESTRUN:?original native test configuration missing}")
+          fi
           set +e
           xcodebuild test-without-building "${selection[@]}" \
-            -project NativeApp/AnyNative.xcodeproj \
-            -scheme PinkhaAnyNativeApp \
-            -configuration Debug \
+            "${target[@]}" \
             -destination "platform=iOS Simulator,id=$ANY_NATIVE_SIMULATOR_UDID" \
-            -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived" \
             -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/archive-roundtrip.xcresult" \
             -parallel-testing-enabled NO \
             -test-timeouts-enabled YES \
@@ -982,14 +984,16 @@ jobs:
             --simulator-receipt build/any-patched-evidence/simulator.json \
             --frozen build/any-patched-evidence/native-shared-products.json \
             --output build/any-patched-evidence/custom-type-products-preflight.json
+          target=(-project NativeApp/AnyNative.xcodeproj -scheme PinkhaAnyNativeApp -configuration Debug
+                  -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived")
+          if [ "${{ inputs.validation_scope }}" = remaining-native-ui-continuation ]; then
+            target=(-xctestrun "${ANY_NATIVE_XCTESTRUN:?original native test configuration missing}")
+          fi
           set +e
           xcodebuild test-without-building \
             -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testCustomCanonicalTypeTransitionPreservesNativeDocumentAcrossColdReopen \
-            -project NativeApp/AnyNative.xcodeproj \
-            -scheme PinkhaAnyNativeApp \
-            -configuration Debug \
+            "${target[@]}" \
             -destination "platform=iOS Simulator,id=$ANY_NATIVE_SIMULATOR_UDID" \
-            -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived" \
             -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/custom-type.xcresult" \
             -parallel-testing-enabled NO \
             -test-timeouts-enabled YES \
@@ -1052,11 +1056,8 @@ jobs:
             --output build/any-patched-evidence/native-history-products-preflight.json
           set +e
           xcodebuild test-without-building -only-testing:PinkhaAnyNativeUITests/NativeHistoryTests/testSavedHebrewVersionsRemainReadOnlyAcrossCloseBackgroundAndColdReopen \
-            -project NativeApp/AnyNative.xcodeproj \
-            -scheme PinkhaAnyNativeApp \
-            -configuration Debug \
+            -xctestrun "${ANY_NATIVE_XCTESTRUN:?original native test configuration missing}" \
             -destination "platform=iOS Simulator,id=$ANY_NATIVE_SIMULATOR_UDID" \
-            -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived" \
             -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/native-history.xcresult" \
             -parallel-testing-enabled NO \
             -test-timeouts-enabled YES \
