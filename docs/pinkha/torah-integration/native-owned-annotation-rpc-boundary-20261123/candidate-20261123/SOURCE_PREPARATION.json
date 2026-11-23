@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "base": "b29fb2b7c6f4c0ad1dda6d59ab6c64948feeba0a",
-  "product_paths": 5,
-  "new_boundary_test_sources": 2,
+  "product_paths": 6,
+  "new_boundary_test_sources": 3,
   "go_sources": [
     {
       "path": "native/core/annotation_import.go",
@@ -33,6 +33,18 @@
       "bytes": 5180,
       "sha256": "5b75a2e0edd0660ec13c27fa8134d5a453267351147afdf6918ae1c353ee7043",
       "gofmt_parse_and_exact_format": true
+    },
+    {
+      "path": "native/cmd/grpcserver/grpc.go",
+      "bytes": 12135,
+      "sha256": "f8b51e53788f60294f0dec5e5d772e8cf620c9f2f9e912d4852e7dc3da50380f",
+      "gofmt_parse_and_exact_format": true
+    },
+    {
+      "path": "native/cmd/grpcserver/annotation_import_payload_test.go",
+      "bytes": 6211,
+      "sha256": "5bc785e57ac13195353e5a5b764c0016f09899ba6ed3232e71cb142b194f6280",
+      "gofmt_parse_and_exact_format": true
     }
   ],
   "native_or_portable_tests_executed": false,
@@ -40,5 +52,5 @@
   "protobuf_typecheck": false,
   "framework_or_sdk_activation": false,
   "original_native9_gate_edited": false,
-  "invariant_inverse_rows": 4
+  "invariant_inverse_rows": 5
 }

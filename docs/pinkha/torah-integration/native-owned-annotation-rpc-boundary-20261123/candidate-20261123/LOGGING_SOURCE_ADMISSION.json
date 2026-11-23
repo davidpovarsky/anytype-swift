@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "created_utc": "2026-11-23T12:05:40.244293+00:00",
+  "supersedes_logging_pending_at": "b46ad51dbf70e3835b338d25e12c3a01fc305ac5",
+  "whole_grpc_inverse_exact": true,
+  "pinned_module_go_sum_verification": [
+    {
+      "module": "github.com/grpc-ecosystem/grpc-opentracing",
+      "version": "v0.0.0-20180507213350-8e809c8a8645",
+      "url": "https://proxy.golang.org/github.com/grpc-ecosystem/grpc-opentracing/@v/v0.0.0-20180507213350-8e809c8a8645.zip",
+      "zip_bytes": 88686,
+      "zip_sha256": "0606bde24e978e9cd91ae45ca9e5222ce695c21a07ae02e77546496bf23b1c62",
+      "go_sum_h1": "h1:MJG/KsmcqMwFAkh8mTnAwhyKoB+sTAnY4CACC110tbU=",
+      "original_go_sum_verified": true,
+      "retained_sources": [
+        "github.com/grpc-ecosystem/grpc-opentracing@v0.0.0-20180507213350-8e809c8a8645/go/otgrpc/options.go",
+        "github.com/grpc-ecosystem/grpc-opentracing@v0.0.0-20180507213350-8e809c8a8645/go/otgrpc/server.go"
+      ]
+    },
+    {
+      "module": "github.com/grpc-ecosystem/go-grpc-middleware",
+      "version": "v1.4.0",
+      "url": "https://proxy.golang.org/github.com/grpc-ecosystem/go-grpc-middleware/@v/v1.4.0.zip",
+      "zip_bytes": 167856,
+      "zip_sha256": "e4e1845280f93ea81648d0e48d3c17e6610c7916a49171f73c150fbde8fa9bc0",
+      "go_sum_h1": "h1:UH//fgunKIs4JdUbpDl1VZCDaL56wXCB/5+wF6uHfaI=",
+      "original_go_sum_verified": true,
+      "retained_sources": [
+        "github.com/grpc-ecosystem/go-grpc-middleware@v1.4.0/logging/zap/payload_interceptors.go"
+      ]
+    },
+    {
+      "module": "github.com/opentracing/opentracing-go",
+      "version": "v1.2.0",
+      "url": "https://proxy.golang.org/github.com/opentracing/opentracing-go/@v/v1.2.0.zip",
+      "zip_bytes": 49529,
+      "zip_sha256": "9b1a75e9a454a0cf01a26c18e48cd321e3b300943ac5adb9098ba033dbd40db5",
+      "go_sum_h1": "h1:uEJPy/1a5RIPAJ0Ov+OIO8OxWu77jEv+1B0VhjKrZUs=",
+      "original_go_sum_verified": true,
+      "retained_sources": [
+        "github.com/opentracing/opentracing-go@v1.2.0/mocktracer/mocklogrecord.go",
+        "github.com/opentracing/opentracing-go@v1.2.0/mocktracer/mockspan.go",
+        "github.com/opentracing/opentracing-go@v1.2.0/mocktracer/mocktracer.go"
+      ]
+    }
+  ],
+  "actual_original_inputs": [
+    {
+      "path": "go.mod",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "bytes": 16202,
+      "sha256": "0c506b9ab921a9bfea985871c9c912d362147a6bb76e697ee62c51a2eb678de7",
+      "git_blob": "6cf5f865ace0b463e4e64257fc0700450fa1de96"
+    },
+    {
+      "path": "go.sum",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "bytes": 132924,
+      "sha256": "7c873be1e5b4c65e5e46d18167ae6bc29f0f5b51c459a8398d75ab22f0b2432d",
+      "git_blob": "f0c61168bfca9773d88b441774e9b7a9e69b3a87"
+    },
+    {
+      "path": "core/auth.go",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "bytes": 8724,
+      "sha256": "8728023610527579bca72bea1e303dd25394fbb8b7c06bf13d1534cbd2bc2d26",
+      "git_blob": "174dd6c910ae433c7eb1d2cc23960e55f277dfbf"
+    },
+    {
+      "path": "core/auth_debug.go",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "bytes": 298,
+      "sha256": "f309f9ef905457b840af50b6b4b9026426c82dc2046c4148e471fff4ce05e36a",
+      "git_blob": "2245188345ef0731cfc7954b3d9ccf4d5482b8cc"
+    },
+    {
+      "path": "pb/service/service.pb.go",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "bytes": 624676,
+      "sha256": "598ee061f1c873ac38e237e74ff2cd4111a047d8102615823dd74e1c1d3cb244",
+      "git_blob": "4e8dbadadd581260d77da29418bfdb5419b930a6"
+    }
+  ],
+  "exact_new_idl_methods": [
+    "/anytype.ClientCommands/AnnotationImport",
+    "/anytype.ClientCommands/AnnotationImportCancel"
+  ],
+  "original_noauth_and_limited_allowlists_unchanged_and_exclude_new_methods": true,
+  "new_test_source": {
+    "path": "native/cmd/grpcserver/annotation_import_payload_test.go",
+    "bytes": 6211,
+    "sha256": "5bc785e57ac13195353e5a5b764c0016f09899ba6ed3232e71cb142b194f6280",
+    "package_matches_original_main": true,
+    "gofmt_parse_and_format": true,
+    "focused_functions": 3,
+    "executed": false
+  },
+  "preparation_attempts": [
+    {
+      "result": "LOCAL_MATCHER_REFUSED",
+      "cause": "The first source-only regular expression expected no space before the IDL parenthesis; the authentic declarations use a space. No compiler or native execution occurred."
+    },
+    {
+      "result": "PASS_SOURCE_CORRESPONDENCE",
+      "correction": "Match the authentic protobuf grammar whitespace and require exactly one declaration per exact name; product IDL unchanged."
+    }
+  ],
+  "native_or_portable_tests_executed": false,
+  "generator_or_framework_activated": false,
+  "scope": "Read-only actual-source/module identity and exact inverse verification. Interceptor semantics are prepared test sources, not a runtime PASS."
+}

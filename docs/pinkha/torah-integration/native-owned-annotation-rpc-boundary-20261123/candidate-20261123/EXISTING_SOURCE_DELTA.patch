@@ -390,3 +390,54 @@
 +    rpc AnnotationImport (anytype.Rpc.Annotation.Import.Request) returns (anytype.Rpc.Annotation.Import.Response);
 +    rpc AnnotationImportCancel (anytype.Rpc.Annotation.Import.Cancel.Request) returns (anytype.Rpc.Annotation.Import.Cancel.Response);
  }
+--- a/cmd/grpcserver/grpc.go
++++ b/cmd/grpcserver/grpc.go
+@@ -146,8 +146,8 @@
+ 
+ 	grpcDebug, _ := strconv.Atoi(os.Getenv("ANYTYPE_GRPC_LOG"))
+ 	if grpcDebug > 0 {
+-		decider := func(_ context.Context, _ string, _ interface{}) bool {
+-			return true
++		decider := func(_ context.Context, fullMethod string, _ interface{}) bool {
++			return annotationImportPayloadsAllowed(fullMethod)
+ 		}
+ 
+ 		grpcLogger := logging.LoggerNotSugared("grpc")
+@@ -194,7 +194,10 @@
+ 			streamOptions = append(streamOptions, otgrpc.LogPayloads())
+ 		}
+ 
+-		unaryInterceptors = append(unaryInterceptors, otgrpc.OpenTracingServerInterceptor(tracer, unaryOptions...))
++		unaryInterceptors = append(unaryInterceptors, annotationImportTraceBoundary(
++			otgrpc.OpenTracingServerInterceptor(tracer, unaryOptions...),
++			otgrpc.OpenTracingServerInterceptor(tracer),
++		))
+ 		streamInterceptors = append(streamInterceptors, otgrpc.OpenTracingStreamServerInterceptor(tracer, streamOptions...))
+ 	}
+ 
+@@ -352,3 +355,25 @@
+ 	}
+ 	return resp
+ }
++
++// annotationImportPayloadsAllowed preserves the original payload policy for
++// every other full method identity. No prefix or caller-controlled mask is used.
++func annotationImportPayloadsAllowed(fullMethod string) bool {
++	switch fullMethod {
++	case "/anytype.ClientCommands/AnnotationImport", "/anytype.ClientCommands/AnnotationImportCancel":
++		return false
++	default:
++		return true
++	}
++}
++
++// annotationImportTraceBoundary retains the original tracer/span/error handling
++// for both routes. Only the exact two commands omit the LogPayloads option.
++func annotationImportTraceBoundary(withConfiguredPayloads, withoutPayloads grpc.UnaryServerInterceptor) grpc.UnaryServerInterceptor {
++	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
++		if !annotationImportPayloadsAllowed(info.FullMethod) {
++			return withoutPayloads(ctx, req, info, handler)
++		}
++		return withConfiguredPayloads(ctx, req, info, handler)
++	}
++}

@@ -1,6 +1,6 @@
 # Original Annotation Import RPC source draft
 
-This packet prepares five native product afterimages and two focused boundary-test sources. It has not been generated, compiled, linked, dispatched or qualified natively. The running Native9 qualification is a separate, frozen source tree.
+This packet prepares six native product afterimages and three focused boundary-test sources. It has not been generated, compiled, linked, dispatched or qualified natively. The separate frozen Native9 source reached a declaration-coverage failure before compilation or execution in run 45165374342; its nine leaves remain NOT_RUN.
 
 ## Original ownership
 
@@ -30,6 +30,12 @@ The new test sources are transport/negative-admission controls only, not fake na
 
 No generated output was handwritten. The actual original commands/service generator inputs are preserved, with only the new nested Import/Cancel definitions and two service declarations appended. Existing schema registration and all B1/C import engine files are unchanged.
 
-Native C/gRPC request/response logging and Swift per-command masking must be source-reviewed before activation because archive bytes and the private cancellation secret are sensitive. Logging review is pending in this draft; no route has been activated.
+## Exact native payload logging boundary
+
+The native C proxy has no general request/response payload logger. Its original metrics path can retain an error description; the new handlers use fixed nonpayload descriptions. The original gRPC debug and trace options can log full request/response bodies. The one-file additive change in cmd/grpcserver/grpc.go excludes exactly /anytype.ClientCommands/AnnotationImport and /anytype.ClientCommands/AnnotationImportCancel from the original payload logger. For tracing, it selects the same original OpenTracing interceptor without LogPayloads for these two commands, retaining real span creation, completion and error handling. All other full method identities keep their original configured behavior; stream tracing is unchanged.
+
+GRPC_PAYLOAD_EXCLUSION.patch and the complete original file prove the whole inverse. The exact three interceptor/mocktracer module ZIPs are retained and verified against the original Heart go.sum h1 values; this is dependency-source identity, not runtime evidence. The new three Go interceptor tests use explicit synthetic protobuf messages and a test tracer around the actual original interceptors. They cover exact method matching, both payload directions, real handler identity, configured/unconfigured tracing and span/error preservation. These tests are NOT_RUN. The real original auth allowlists do not contain either new command; default gRPC Full-session admission remains unchanged.
+
+Swift diagnostic request-copy masking of archive and attemptSecret is still a separate required closed-adapter obligation. No generator, C/mobile export, gRPC server, SDK or framework route has been activated.
 
 There is no public ACK, fresh current-permission receipt, cold reopen, durable mapping or automatic retry claim. The Host must independently join the real saved row/body/revision and actual original captured owner after native Done. Local rich-body saves still produce zero outbox deliveries; no synthetic outbox row may be introduced to reuse an unrelated delivery fence.

@@ -1,38 +1,57 @@
 {
   "schema": 1,
   "base": "b29fb2b7c6f4c0ad1dda6d59ab6c64948feeba0a",
-  "product_afterimages": 5,
-  "focused_test_sources": 2,
+  "extension_parent": "b46ad51dbf70e3835b338d25e12c3a01fc305ac5",
+  "product_afterimages": 6,
+  "focused_test_sources": 3,
   "rows": [
     {
       "path": "EXISTING_SOURCE_DELTA.patch",
-      "bytes": 15556,
-      "sha256": "b22c61ec844b9402a636c5a952f70da1539e92a656a31a5322d633dcf0c9ced4",
-      "git_blob": "dfd57e392343955befcf22c988f53e4e801384c4"
+      "bytes": 17574,
+      "sha256": "54e114e23a3033106bde95f18cb60143188eca588d163d22a9b68731c7b9b408",
+      "git_blob": "481125000c32e36c088ebe1c2666f4c3c366b042"
+    },
+    {
+      "path": "GRPC_PAYLOAD_EXCLUSION.json",
+      "bytes": 658,
+      "sha256": "5f73633d715e2dc37d3f6e268f2cacfbfed700f6f621452ce6d4ad66c2d62e1b",
+      "git_blob": "57cc5dc0d5ef63b1b1bd8dd38abef402d34f7a1f"
+    },
+    {
+      "path": "GRPC_PAYLOAD_EXCLUSION.patch",
+      "bytes": 2018,
+      "sha256": "c47df09aa26c948c21496fbada1773d2d05b38a82cf4b8682fc259c837eccc5e",
+      "git_blob": "94e8fff07496ed2a1e3da0f05edaa35e3fbe876e"
     },
     {
       "path": "INPUT_PREIMAGES.json",
-      "bytes": 1944,
-      "sha256": "57fb2728b481e6033ec25bdb00ff292c04727e7cd59e518c44f8d9ae3ee7a729",
-      "git_blob": "60b6db568f3a21ece29872906f689c6cabdb9ace"
+      "bytes": 2282,
+      "sha256": "000618161ac8b70e30db6070111a4d86ee0d2450c2b70d82bb2362b2f8783889",
+      "git_blob": "a5b0aa1b3c3c9bcb76f649aadafa3f165eacd444"
+    },
+    {
+      "path": "LOGGING_SOURCE_ADMISSION.json",
+      "bytes": 4890,
+      "sha256": "0f8cc3a1453aac1676402dbac4e82d16b6249910a6a8efc265c14f6b13252e0a",
+      "git_blob": "a8e396c1f22c86f25b70ee5aeccbeba1a4acfe51"
     },
     {
       "path": "README.md",
-      "bytes": 5081,
-      "sha256": "049efd144b0b3c52cf024b756c45a0af47974b3d5af74fd3938d2df0cdaa85e3",
-      "git_blob": "4afc5d13765341df02546712a0bd67b8f9b078dc"
+      "bytes": 6593,
+      "sha256": "a9856f572ac5531c1e3f0db101bad0514493818941f7abc5fa6aa575c4c916e8",
+      "git_blob": "5c2f6413ca90087dd711a975f131999b92075c29"
     },
     {
       "path": "SOURCE_INVERSE.json",
-      "bytes": 2418,
-      "sha256": "5ed4d47135100a68564185060eaf73e02b1353eedbebd2dc8d0cb31405c0b558",
-      "git_blob": "dea0f7208c9d496200f85638f2e068e8ec49df56"
+      "bytes": 2825,
+      "sha256": "612c9641df9280b66fbed62c1e80be6becee4b3e41604b6691e2492fc41d9392",
+      "git_blob": "d1c72cdd068129d3e7aa3fa449a7271fab6596e7"
     },
     {
       "path": "SOURCE_PREPARATION.json",
-      "bytes": 1490,
-      "sha256": "28e850793e60b2d42beb2290d6f32971f3a376f0ccb3d903805f861190c67211",
-      "git_blob": "a31a5f0e1a175a89a0dfc5a775c8e95548c335f3"
+      "bytes": 1933,
+      "sha256": "1ec76dcbe682d27c3d967bd508eeaaa82854d251e727ad402c52c6cb5c8663f1",
+      "git_blob": "34ef539e3e6c158a3ecee335d3f12aa93bfef6d7"
     },
     {
       "path": "WIRE_POLICY_PROPOSAL.json",
@@ -45,6 +64,78 @@
       "bytes": 2857,
       "sha256": "9a421aae7b35a450acf330e20f3a50ff6dac961280c4fcd5d29e305af3d64893",
       "git_blob": "b5c13e6bddfbe3ea87823d2b91958fec3c728ecf"
+    },
+    {
+      "path": "logging-module-inputs/SOURCE_INTAKE.json",
+      "bytes": 2073,
+      "sha256": "d5b1b32d38d7ad7b074bdb953e91d823ddf719dc81acedb78bfebfe1dd5cf6e1",
+      "git_blob": "b5bc183ff0089cd09f398c804568dc38e4fd8658"
+    },
+    {
+      "path": "logging-module-inputs/go-grpc-middleware-v1.4.0.zip",
+      "bytes": 167856,
+      "sha256": "e4e1845280f93ea81648d0e48d3c17e6610c7916a49171f73c150fbde8fa9bc0",
+      "git_blob": "b75620c3960eb6d68cde91f65797ad65d73cea30"
+    },
+    {
+      "path": "logging-module-inputs/grpc-opentracing-v0.0.0-20180507213350-8e809c8a8645.zip",
+      "bytes": 88686,
+      "sha256": "0606bde24e978e9cd91ae45ca9e5222ce695c21a07ae02e77546496bf23b1c62",
+      "git_blob": "45fbda5ddddf96b12476c1b7424baafaf9987904"
+    },
+    {
+      "path": "logging-module-inputs/opentracing-go-v1.2.0.zip",
+      "bytes": 49529,
+      "sha256": "9b1a75e9a454a0cf01a26c18e48cd321e3b300943ac5adb9098ba033dbd40db5",
+      "git_blob": "c191511fe613c6652103dbb231b3e705efda9060"
+    },
+    {
+      "path": "logging-preimages/core/auth.go",
+      "bytes": 8724,
+      "sha256": "8728023610527579bca72bea1e303dd25394fbb8b7c06bf13d1534cbd2bc2d26",
+      "git_blob": "174dd6c910ae433c7eb1d2cc23960e55f277dfbf"
+    },
+    {
+      "path": "logging-preimages/core/auth_debug.go",
+      "bytes": 298,
+      "sha256": "f309f9ef905457b840af50b6b4b9026426c82dc2046c4148e471fff4ce05e36a",
+      "git_blob": "2245188345ef0731cfc7954b3d9ccf4d5482b8cc"
+    },
+    {
+      "path": "logging-preimages/go.mod",
+      "bytes": 16202,
+      "sha256": "0c506b9ab921a9bfea985871c9c912d362147a6bb76e697ee62c51a2eb678de7",
+      "git_blob": "6cf5f865ace0b463e4e64257fc0700450fa1de96"
+    },
+    {
+      "path": "logging-preimages/go.sum",
+      "bytes": 132924,
+      "sha256": "7c873be1e5b4c65e5e46d18167ae6bc29f0f5b51c459a8398d75ab22f0b2432d",
+      "git_blob": "f0c61168bfca9773d88b441774e9b7a9e69b3a87"
+    },
+    {
+      "path": "logging-preimages/grpc.go",
+      "bytes": 11016,
+      "sha256": "3a860c3ccd9ae0ee477740080e922c9923cc5a2e21f0e80c7cec8c1301abda15",
+      "git_blob": "24604028dd33afb32a82631337bdec8e3abdfbdc"
+    },
+    {
+      "path": "logging-preimages/pb/service/service.pb.go",
+      "bytes": 624676,
+      "sha256": "598ee061f1c873ac38e237e74ff2cd4111a047d8102615823dd74e1c1d3cb244",
+      "git_blob": "4e8dbadadd581260d77da29418bfdb5419b930a6"
+    },
+    {
+      "path": "native/cmd/grpcserver/annotation_import_payload_test.go",
+      "bytes": 6211,
+      "sha256": "5bc785e57ac13195353e5a5b764c0016f09899ba6ed3232e71cb142b194f6280",
+      "git_blob": "fec9ef62644b2a4b4630cb87bf0d6514ba152c2a"
+    },
+    {
+      "path": "native/cmd/grpcserver/grpc.go",
+      "bytes": 12135,
+      "sha256": "f8b51e53788f60294f0dec5e5d772e8cf620c9f2f9e912d4852e7dc3da50380f",
+      "git_blob": "ee565ce8b774967d9fffc440d799d70d0e250e0c"
     },
     {
       "path": "native/core/annotation_import.go",
@@ -88,9 +179,5 @@
       "sha256": "0701992c7e4cdcd151cf172b93ed00d7df65bdd8d32b0685179a63ac39a5f39e",
       "git_blob": "4b9b56593392870021fc124b72e15e315e523ad4"
     }
-  ],
-  "row_count": 14,
-  "source_only": true,
-  "generation_compilation_execution": "NOT_RUN",
-  "logging_review": "PENDING"
+  ]
 }
