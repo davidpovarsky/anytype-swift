@@ -1,0 +1,37 @@
+{
+  "status": "PASS_EXACT_DIAGNOSTIC_REPAIR_REVIEW",
+  "source_commit": "a27a0a6cb02fcbc2cc15ee1a96b654d6cb71ff63",
+  "verified_changed_file_hashes": {
+    ".github/workflows/pinkha-native-diagnostics.yml": "0e8be732729549324eabcb83865150a03b34191779d2bc07e62c59efc40ac134",
+    "Tools/AnyEnginePort/export_original_ui_timeline.py": "497940bf8db7fef80e42d5f94b0fe8dbf465228886d08d4de0ee12745e83d136",
+    "Tools/AnyEnginePort/extract_original_ui_stills.swift": "eedfd1c38f1613f9480145c45c5ed4e2894a9dcc661ec12c2558bdf31ee68ade",
+    "Tools/AnyEnginePort/tests/test_original_ui_timeline_outcomes.py": "ea2451d0d79c11531c8ca1831c54341b08be901cc1e5c68f61c3a6596eff9c46"
+  },
+  "controls": {
+    "original_attempt": {
+      "passed": 3,
+      "failed": 1
+    },
+    "repaired_only": {
+      "passed": 1,
+      "failed": 0
+    },
+    "qualified_current": 4,
+    "old_five_rerun": 0
+  },
+  "unchanged_guard_functions": [
+    "timeline",
+    "sanitize_switches",
+    "sanitize_event",
+    "find_case",
+    "attachment_path",
+    "require"
+  ],
+  "renderer_budget_seconds": 180,
+  "original_timestamp_duration_privacy_guards_preserved": 7,
+  "full_streams_separate_exact_paths": 6,
+  "AVFoundation_execution": "NOT_RUN",
+  "new_Mac_dispatches": 0,
+  "product_tests": 0,
+  "scope": "Each exact original asset/frame and backup outcome is preserved independently; overall failure remains until all required outputs pass. Original cause is not invented."
+}
