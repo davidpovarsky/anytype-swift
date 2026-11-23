@@ -51,6 +51,7 @@ final class MiniAppsNativeAcceptanceUITests: XCTestCase {
                           try XCTUnwrap(environment["PINKHA_MINIAPPS_COLD_REQUEST_ID"])]
         source.launch()
         try openSource()
+        // Public XCUIApplication.open(_:) targets this exact installed source app.
         for requestID in requestIDs {
             var callback = URLComponents()
             callback.scheme = try XCTUnwrap(environment["PINKHA_MINIAPPS_SOURCE_SCHEME"])
@@ -58,8 +59,8 @@ final class MiniAppsNativeAcceptanceUITests: XCTestCase {
             callback.path = "/return"
             callback.queryItems = [URLQueryItem(name: "request", value: requestID)]
             let url = try XCTUnwrap(callback.url)
-            XCUIDevice.shared.system.open(url)
-            XCUIDevice.shared.system.open(url)
+            source.open(url)
+            source.open(url)
         }
         try expectNativeText()
         screenshot("miniapps-duplicate-callback")
@@ -77,7 +78,7 @@ final class MiniAppsNativeAcceptanceUITests: XCTestCase {
         route.host = "object"
         route.queryItems = [URLQueryItem(name: "objectId", value: try XCTUnwrap(fixture["objectID"])),
                             URLQueryItem(name: "spaceId", value: try XCTUnwrap(fixture["spaceID"]))]
-        XCUIDevice.shared.system.open(try XCTUnwrap(route.url))
+        source.open(try XCTUnwrap(route.url))
         XCTAssertTrue(source.buttons["pinkha.miniapps.open"].firstMatch.waitForExistence(timeout: 30))
     }
 
