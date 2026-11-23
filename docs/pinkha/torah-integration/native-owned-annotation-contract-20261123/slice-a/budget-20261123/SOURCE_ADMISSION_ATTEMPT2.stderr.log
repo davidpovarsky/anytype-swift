@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-otzaria-native-annotation-budget-20261123/docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/slice-a/run_native_archive.py", line 555, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-otzaria-native-annotation-budget-20261123/docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/slice-a/run_native_archive.py", line 400, in main
+    require(status in ("A", "M") and (name.startswith(PACKET + "/" + SLICE + "/")
+  File "/mnt/development/projects/worktrees/anytype-otzaria-native-annotation-budget-20261123/docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/slice-a/run_native_archive.py", line 38, in require
+    raise RuntimeError(reason)
+RuntimeError: Change outside the owned source/gate preparation boundary

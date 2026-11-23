@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-otzaria-native-annotation-budget-20261123/docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/slice-a/run_native_archive.py", line 555, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-otzaria-native-annotation-budget-20261123/docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/slice-a/run_native_archive.py", line 385, in main
+    rows = read_sources(control, manifest, original_repository=args.original_repository)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-otzaria-native-annotation-budget-20261123/docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/slice-a/run_native_archive.py", line 73, in read_sources
+    raw = safe(control, retained).read_bytes()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1021, in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/mnt/development/projects/worktrees/anytype-otzaria-native-annotation-budget-20261123/docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/slice-a/retained-inputs/native/core/block/object/objectcreator/fixed_schema_snapshot.go'
