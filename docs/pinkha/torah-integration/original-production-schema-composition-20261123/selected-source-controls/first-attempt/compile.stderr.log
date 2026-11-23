@@ -1,0 +1,57 @@
+/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/docs/pinkha/torah-integration/original-production-schema-composition-20261123/selected-source-controls/ActualSelectedSource.swift:747:23: error: cannot find type 'Anytype_Rpc' in scope
+ 745 |     func registerOriginalAnnotationSchema(
+ 746 |         onDrained: @escaping @MainActor @Sendable (OriginalAnnotationSchemaCallHistory) -> Void
+ 747 |     ) async throws -> Anytype_Rpc.Annotation.Schema.Register.Response {
+     |                       `- error: cannot find type 'Anytype_Rpc' in scope
+ 748 |         try validate()
+ 749 |         guard let participants = Container.shared.participantsStorage() as? ParticipantsStorage,
+
+/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/docs/pinkha/torah-integration/original-production-schema-composition-20261123/selected-source-controls/ActualSelectedSource.swift:746:52: error: cannot find type 'OriginalAnnotationSchemaCallHistory' in scope
+ 744 |     @MainActor
+ 745 |     func registerOriginalAnnotationSchema(
+ 746 |         onDrained: @escaping @MainActor @Sendable (OriginalAnnotationSchemaCallHistory) -> Void
+     |                                                    `- error: cannot find type 'OriginalAnnotationSchemaCallHistory' in scope
+ 747 |     ) async throws -> Anytype_Rpc.Annotation.Schema.Register.Response {
+ 748 |         try validate()
+
+/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/docs/pinkha/torah-integration/original-production-schema-composition-20261123/selected-source-controls/ActualSelectedSource.swift:687:62: warning: 'withValue(_:operation:isolation:file:line:)' is deprecated: Prefer the 'nonisolated(nonsending)' overload with stricter execution on caller context semantics: withValue(_:operation:file:line:) [#DeprecatedDeclaration]
+ 685 |         do {
+ 686 |             let value = try await EditorDocumentOperationContext.$lineage.withValue(lineage) {
+ 687 |                 try await InvocationDispatchContext.$binding.withValue(binding, operation: operation)
+     |                                                              `- warning: 'withValue(_:operation:isolation:file:line:)' is deprecated: Prefer the 'nonisolated(nonsending)' overload with stricter execution on caller context semantics: withValue(_:operation:file:line:) [#DeprecatedDeclaration]
+ 688 |             }
+ 689 |             try validate()
+
+/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/docs/pinkha/torah-integration/original-production-schema-composition-20261123/selected-source-controls/ActualSelectedSource.swift:749:77: error: cannot find type 'ParticipantsStorage' in scope
+ 747 |     ) async throws -> Anytype_Rpc.Annotation.Schema.Register.Response {
+ 748 |         try validate()
+ 749 |         guard let participants = Container.shared.participantsStorage() as? ParticipantsStorage,
+     |                                                                             `- error: cannot find type 'ParticipantsStorage' in scope
+ 750 |               let spaceViews = Container.shared.spaceViewsStorage() as? SpaceViewsStorage else {
+ 751 |             throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+
+/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/docs/pinkha/torah-integration/original-production-schema-composition-20261123/selected-source-controls/ActualSelectedSource.swift:749:51: error: value of type 'Container' has no member 'participantsStorage'
+ 747 |     ) async throws -> Anytype_Rpc.Annotation.Schema.Register.Response {
+ 748 |         try validate()
+ 749 |         guard let participants = Container.shared.participantsStorage() as? ParticipantsStorage,
+     |                                                   `- error: value of type 'Container' has no member 'participantsStorage'
+ 750 |               let spaceViews = Container.shared.spaceViewsStorage() as? SpaceViewsStorage else {
+ 751 |             throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+
+/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/docs/pinkha/torah-integration/original-production-schema-composition-20261123/selected-source-controls/ActualSelectedSource.swift:750:49: error: value of type 'Container' has no member 'spaceViewsStorage'
+ 748 |         try validate()
+ 749 |         guard let participants = Container.shared.participantsStorage() as? ParticipantsStorage,
+ 750 |               let spaceViews = Container.shared.spaceViewsStorage() as? SpaceViewsStorage else {
+     |                                                 `- error: value of type 'Container' has no member 'spaceViewsStorage'
+ 751 |             throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+ 752 |         }
+
+/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/docs/pinkha/torah-integration/original-production-schema-composition-20261123/selected-source-controls/ActualSelectedSource.swift:761:34: error: value of type 'EditorDocumentWriteSourceBinding' has no member 'performOriginalAnnotationSchemaRegistration'
+ 759 |         let binding = try attempt.workspaceBinding()
+ 760 |         try validate()
+ 761 |         return try await binding.performOriginalAnnotationSchemaRegistration(
+     |                                  `- error: value of type 'EditorDocumentWriteSourceBinding' has no member 'performOriginalAnnotationSchemaRegistration'
+ 762 |             expectedAccountID: accountID, spaceID: spaceID,
+ 763 |             participant: participant, spaceView: spaceView, onDrained: onDrained
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>

@@ -1,0 +1,88 @@
+{
+  "schema": 1,
+  "status": "FAIL",
+  "source_sha256_before": "eb2149555d76d0903d3ea92f439e0f8b1597438d1913992fffd693c6f62610b0",
+  "source_sha256_after": "eb2149555d76d0903d3ea92f439e0f8b1597438d1913992fffd693c6f62610b0",
+  "commands": [
+    {
+      "name": "compiler-version",
+      "argv": [
+        "swiftc",
+        "--version"
+      ],
+      "exit_code": 0,
+      "seconds": 0.115954,
+      "stdout.log": {
+        "bytes": 76,
+        "sha256": "59360730c588801a672c1118d5d1debc93581f6b74e6a82d5d8cbda1b4a729ce"
+      },
+      "stderr.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "compile",
+      "argv": [
+        "swiftc",
+        "-swift-version",
+        "6",
+        "-parse-as-library",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/docs/pinkha/torah-integration/original-production-schema-composition-20261123/selected-source-controls/ActualSelectedSource.swift",
+        "-o",
+        "/mnt/development/projects/diagnostics/otzaria-original-production-selected-source-20261123/selected-source-controls"
+      ],
+      "exit_code": 1,
+      "seconds": 0.516716,
+      "stdout.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr.log": {
+        "bytes": 5764,
+        "sha256": "c8d8e5dfe596b17654b33db0a3d3cec41e1a2325b0ee62d6217084ea1469a1d0"
+      }
+    },
+    {
+      "name": "parse-EditorDocumentWriteOwner",
+      "argv": [
+        "swiftc",
+        "-frontend",
+        "-parse",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift"
+      ],
+      "exit_code": 0,
+      "seconds": 0.064739,
+      "stdout.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "parse-AnytypeOriginalEditorHost",
+      "argv": [
+        "swiftc",
+        "-frontend",
+        "-parse",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/OriginalEditorFramework/AnytypeOriginalEditorHost.swift"
+      ],
+      "exit_code": 0,
+      "seconds": 0.064217,
+      "stdout.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "native_calls": 0,
+  "Apple_UiKit": "NOT_RUN",
+  "historical_controls": "NOT_REPLAYED"
+}

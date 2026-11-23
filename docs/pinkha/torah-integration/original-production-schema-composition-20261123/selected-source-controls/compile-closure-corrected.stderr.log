@@ -1,0 +1,9 @@
+/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/docs/pinkha/torah-integration/original-production-schema-composition-20261123/selected-source-controls/ActualSelectedSource.swift:687:62: warning: 'withValue(_:operation:isolation:file:line:)' is deprecated: Prefer the 'nonisolated(nonsending)' overload with stricter execution on caller context semantics: withValue(_:operation:file:line:) [#DeprecatedDeclaration]
+ 685 |         do {
+ 686 |             let value = try await EditorDocumentOperationContext.$lineage.withValue(lineage) {
+ 687 |                 try await InvocationDispatchContext.$binding.withValue(binding, operation: operation)
+     |                                                              `- warning: 'withValue(_:operation:isolation:file:line:)' is deprecated: Prefer the 'nonisolated(nonsending)' overload with stricter execution on caller context semantics: withValue(_:operation:file:line:) [#DeprecatedDeclaration]
+ 688 |             }
+ 689 |             try validate()
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>

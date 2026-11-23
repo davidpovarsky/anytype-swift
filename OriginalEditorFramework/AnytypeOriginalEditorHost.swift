@@ -257,28 +257,50 @@ extension AnytypeOriginalEditorModule {
                 accountLifetime: accountLifetime,
                 isCurrent: sourceCheck
             )
-            let data = EditorPageObject(objectId: binding.objectID, spaceId: binding.spaceID, mode: .handling)
-            let navigationProvider = ViewControllerProvider()
-            let navigationContext = NavigationContext(viewControllerProvider: navigationProvider)
-            let session = try await PreparedEditorPageSessionFactory.prepare(
-                data: data, sourceBinding: sourceBinding, navigationContext: navigationContext
+            return try await makeHost(
+                binding: binding, sourceLifetime: sourceLifetime,
+                sourceBinding: sourceBinding, accountManager: accountManager
             )
-            // Keep the original coordinator as the real output and modal owner;
-            // the already acquired root session is never opened a second time.
-            let coordinator = try EditorPageCoordinatorViewModel(
-                preparedSession: session, showHeader: true
-            )
-            let host = AnytypeOriginalEditorHost(
-                binding: binding, preparedSession: session, coordinator: coordinator,
-                navigationProvider: navigationProvider,
-                sourceLifetime: sourceLifetime, accountManager: accountManager
-            )
-            try host.validateCurrentSource()
-            return host
         } catch {
             sourceLifetime.retire()
             throw error
         }
+    }
+
+    /// Shared original construction for an already claimed host source. Callers
+    /// retain the one-use claim and retire that source on failure. The exact
+    /// captured binding reaches the original prepared session without recapture.
+    @MainActor
+    internal static func makeHost(
+        binding: AnytypeOriginalEditorBinding,
+        sourceLifetime: AnytypeOriginalEditorSourceLifetime,
+        sourceBinding: EditorDocumentWriteSourceBinding,
+        accountManager: any AccountManagerProtocol
+    ) async throws -> AnytypeOriginalEditorHost {
+        guard sourceLifetime.binding == binding,
+              sourceBinding.lifetime === sourceLifetime.lifetime else {
+            throw AnytypeOriginalEditorHostError.invalidBinding
+        }
+        try sourceBinding.validate()
+        let data = EditorPageObject(objectId: binding.objectID, spaceId: binding.spaceID, mode: .handling)
+        let navigationProvider = ViewControllerProvider()
+        let navigationContext = NavigationContext(viewControllerProvider: navigationProvider)
+        let session = try await PreparedEditorPageSessionFactory.prepare(
+            data: data, sourceBinding: sourceBinding, navigationContext: navigationContext
+        )
+        // Keep the original coordinator as the real output and modal owner;
+        // the already acquired root session is never opened a second time.
+        let coordinator = try EditorPageCoordinatorViewModel(
+            preparedSession: session, showHeader: true
+        )
+        let host = AnytypeOriginalEditorHost(
+            binding: binding, preparedSession: session, coordinator: coordinator,
+            navigationProvider: navigationProvider,
+            sourceLifetime: sourceLifetime, accountManager: accountManager
+        )
+        try sourceBinding.validate()
+        try host.validateCurrentSource()
+        return host
     }
 
 }

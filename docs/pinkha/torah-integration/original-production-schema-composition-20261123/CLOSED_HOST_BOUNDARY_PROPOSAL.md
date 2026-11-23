@@ -1,6 +1,6 @@
 # Proposed closed Host boundary after schema composition
 
-This is a bounded implementation design awaiting review of the native owned-import protocol. The only implemented product composition on this branch is the eight-file schema/Invocation/selected-Space patch. No method described as proposed below exists yet or grants runtime qualification.
+This is a bounded implementation design awaiting review of the native owned-import protocol. At its initial publication, the implemented product composition was the eight-file schema/Invocation/selected-Space patch. The later approved two-existing-path restriction/factory prerequisite is recorded in selected-source-controls/README.md; the new public closed session, native import adapter and external account bootstrap remain proposals. No source preparation grants runtime qualification.
 
 ## Base and existing originals
 

@@ -282,6 +282,21 @@ struct EditorDocumentWriteSourceBinding {
         isCurrent = original.isCurrent
     }
 
+    /// Narrow the same host/account source to the original selected attempt.
+    /// Equal Space IDs or a later account generation cannot replace its capture.
+    func requiringOriginalSelectedSpace(_ selection: OriginalActiveSpaceSelection) throws -> Self {
+        try validate()
+        guard let accountCapture else {
+            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+        }
+        let selectedCapture = try selection.capture(
+            matching: accountCapture, spaceId: selection.accountInfo.accountSpaceId
+        )
+        let restricted = Self(restricting: self, additionalCaptures: [selectedCapture])
+        try restricted.validate()
+        return restricted
+    }
+
     func requiringSpaceEditPermission(
         participant: OriginalParticipantEditPermission,
         spaceView: OriginalSpaceViewPermission,

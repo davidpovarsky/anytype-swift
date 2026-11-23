@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "status": "PASS",
+  "source_sha256_before": "5b44ab36b8b6174a152ee404bc5af14e2eafb47f2be6d7feb870e68c9c84b7b0",
+  "source_sha256_after": "5b44ab36b8b6174a152ee404bc5af14e2eafb47f2be6d7feb870e68c9c84b7b0",
+  "commands": [
+    {
+      "name": "compile-closure-corrected",
+      "argv": [
+        "swiftc",
+        "-swift-version",
+        "6",
+        "-parse-as-library",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/docs/pinkha/torah-integration/original-production-schema-composition-20261123/selected-source-controls/ActualSelectedSource.swift",
+        "-o",
+        "/mnt/development/projects/diagnostics/otzaria-original-production-selected-source-20261123/selected-source-controls"
+      ],
+      "exit_code": 0,
+      "seconds": 1.57181,
+      "stdout.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr.log": {
+        "bytes": 1142,
+        "sha256": "8cf4608fc92959616b4059041157c1074c4fc22454c3a4f3dc9b516dbda0d061"
+      }
+    },
+    {
+      "name": "controls",
+      "argv": [
+        "/mnt/development/projects/diagnostics/otzaria-original-production-selected-source-20261123/selected-source-controls"
+      ],
+      "exit_code": 0,
+      "seconds": 0.032831,
+      "stdout.log": {
+        "bytes": 955,
+        "sha256": "213e366800aa34274a20843e6d030af4a95f9bb8a27ae0a9070a85e93f9a7fb7"
+      },
+      "stderr.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "native_calls": 0,
+  "Apple_UIKit": "NOT_RUN",
+  "historical_controls": "NOT_REPLAYED",
+  "compiler_version_and_unchanged_product_parses": "REUSED_FIRST_ATTEMPT_EXECUTION_WITH_EXACT_PRODUCT_HASHES",
+  "closure_correction": "SELECTION_CORRESPONDENCE.json",
+  "binary": {
+    "path": "/mnt/development/projects/diagnostics/otzaria-original-production-selected-source-20261123/selected-source-controls",
+    "bytes": 401024,
+    "sha256": "bf78c774dd97a34d3272bc697f02a3d0d303483adcaa8d86514633d2fbd59b06"
+  },
+  "controls": {
+    "account_bootstrap": "NOT_RUN",
+    "actual_parent_writer_runtime": "NOT_RUN_IDENTITY_FIXTURE_ONLY",
+    "Apple_native": "NOT_RUN",
+    "controls": [
+      "preserves original lifetime, all captures, parent identity and intersected RPC restriction",
+      "rejects a source without an original private account capture",
+      "same account and Space data do not replace another original account lifetime",
+      "reopened account generation cannot recapture authority for an older source",
+      "selection retirement closes a prepared original permit before begin even after reopening",
+      "actual SpaceView subscription retirement propagates through original selection capture",
+      "selection restriction retains host currentness predicate and original lifetime retirement",
+      "actual source dispatch preserves inherited named RPC restriction"
+    ],
+    "device": "NOT_RUN",
+    "executed": 8,
+    "historical_245_and_38": "NOT_REPLAYED",
+    "native_rpc_calls": 0,
+    "passed": 8,
+    "status": "PORTABLE_SELECTED_SOURCE_BOUNDARY_PASS",
+    "UIKit": "NOT_RUN"
+  }
+}

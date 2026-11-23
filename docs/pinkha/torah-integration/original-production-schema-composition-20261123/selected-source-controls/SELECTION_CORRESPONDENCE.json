@@ -1,0 +1,12 @@
+{
+  "status": "EXACT_ORIGINAL_SELECTION_CAPTURE_AND_ATTEMPT_CORRESPONDENCE",
+  "original_revision": "de63125b97cd5b91a1fa4f4b71d03738076e735f",
+  "current_revision": "205ab05033f13106f9408a09ffe7544209329ead",
+  "original_extract_sha256": "ce032211d0561c241078a743dc90093f42ab1129504ee8b158fa00fa2ca64806",
+  "current_extract_sha256": "9c405808d2ca5fc6d74758483be9e6f7df65056c61babb8fb1628c51a1f4b922",
+  "only_difference": "    }\n\n    /// Registers only this actually selected Space's fixed annotation schema.\n    /// The original account/selection/view generations and current subscription\n    /// permissions remain internal. The response and drained history are\n    /// historical observations, not a reusable write, body or ACK authority.\n    @MainActor\n    func registerOriginalAnnotationSchema(\n        onDrained: @escaping @MainActor @Sendable (OriginalAnnotationSchemaCallHistory) -> Void\n    ) async throws -> Anytype_Rpc.Annotation.Schema.Register.Response {\n        try validate()\n        guard let participants = Container.shared.participantsStorage() as? ParticipantsStorage,\n              let spaceViews = Container.shared.spaceViewsStorage() as? SpaceViewsStorage else {\n            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)\n        }\n        let spaceID = accountInfo.accountSpaceId\n        let participant = try participants.currentParticipantEditPermission(spaceId: spaceID)\n        let spaceView = try spaceViews.currentOriginalSpaceViewPermission(spaceId: spaceID)\n        guard spaceView.originalSpaceView.id.utf8.elementsEqual(accountInfo.spaceViewId.utf8) else {\n            throw EditorDocumentWriteError.rejected(.wrongContext)\n        }\n        let binding = try attempt.workspaceBinding()\n        try validate()\n        return try await binding.performOriginalAnnotationSchemaRegistration(\n            expectedAccountID: accountID, spaceID: spaceID,\n            participant: participant, spaceView: spaceView, onDrained: onDrained\n        )\n",
+  "generated_schema_registration_compilation": "NOT_RUN_IN_PORTABLE_PROBE",
+  "actual_product_files_changed": false,
+  "first_compile_failure": "first-attempt/compile.stderr.log",
+  "first_product_parse_results": "first-attempt/EXECUTION.json"
+}
