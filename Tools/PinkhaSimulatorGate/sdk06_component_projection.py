@@ -1,7 +1,8 @@
 """Pure source/project/descriptor projection for the pending SDK06 components.
 
-The original App and tests remain immutable. Only seven @Test attributes are
-blanked in a generated source copy; all declarations, arguments and bodies stay.
+The original App and tests remain immutable. Seven @Test attributes are blanked
+and one SwiftProtobuf import is added in generated copies; declarations, arguments
+and function bodies remain unchanged.
 """
 from __future__ import annotations
 import copy
@@ -15,13 +16,14 @@ import xml.etree.ElementTree as ET
 import sdk06_compile_support as support
 
 CONTRACT = "Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json"
-CONTRACT_SHA = "90b20a136785a90609881790f8fcc6bd7bd6c6a8a23b7015c778d64cfa0e111a"
+CONTRACT_SHA = "1a7b1c84ee761c707ca7796facc80f72eb9922d9ef14264801e7f651c22d3f8b"
 SOURCE = "75bd6d7af18dfd511e85582ce7f994d2801b7703"
 PRODUCT = "SDK06PendingTests.xctest"
 SCHEME = "SDK06PendingComponents"
 TARGET = "AnytypeTests"
 MODE = "CURRENT_COMPONENT_TEST_BUNDLE_WITH_ORIGINAL_APP"
 EDITOR = "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift"
+AUTHORITY = "AnyTypeTests/Pinkha/TorahRelatedReadAuthorityMappingTests.swift"
 
 
 def require(value, message):
@@ -54,6 +56,17 @@ def projected_sources(inputs, fixed):
         require(type(raw) is bytes and len(raw) == row["bytes"]
                 and digest(raw) == row["sha256"], "An original Swift input changed: " + name)
         changed = bytearray(raw)
+        if name == AUTHORITY:
+            patch = fixed["authority_import_patch"]
+            before, after = patch["before"].encode(), patch["after"].encode()
+            require(patch["path"] == name and before == b"import ProtobufMessages\n"
+                    and after == before + b"import SwiftProtobuf\n"
+                    and raw.count(before) == 1 and b"import SwiftProtobuf" not in raw,
+                    "Only the exact missing SwiftProtobuf import may be added")
+            changed = bytearray(raw.replace(before, after, 1))
+            require(digest(changed) == patch["projected_sha256"]
+                    and bytes(changed).replace(after, before, 1) == raw,
+                    "The authority import projection or complete inverse differs")
         if name == EDITOR:
             last = 0
             for patch in fixed["attribute_patches"]:

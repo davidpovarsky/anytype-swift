@@ -1,6 +1,7 @@
 import Foundation
 import Testing
 import ProtobufMessages
+import SwiftProtobuf
 import TorahInspectorCore
 @testable import Anytype
 
