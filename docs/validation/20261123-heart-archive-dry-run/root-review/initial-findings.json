@@ -1,0 +1,21 @@
+{
+  "status": "CONCRETE_SOURCE_REVIEW_FINDINGS_BEFORE_ANY_EXECUTION",
+  "reviewed_at": "2026-11-23T04:39:54.838398+00:00",
+  "source": "23139c70fefdfa8ca200a3858f08d96905d37088",
+  "file": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartSpaceMigrationDryRun.swift",
+  "sha256": "0edec7fca020e0277d1a497e27e167e8d035c661b8efda4dae60544dd5eac238",
+  "findings": [
+    {
+      "boundary": "property values, legend, resolved key and spelling dictionaries",
+      "failure": "Raw Data identities were distinct, but String-indexed lookups could canonically alias values and invent JSON-pointer locations for an absent spelling. Definition-key membership alone did not establish raw spelling ownership."
+    },
+    {
+      "boundary": "file manifest IDs, file paths, declared property dictionary paths",
+      "failure": "String-indexed joins could associate canonically equivalent but byte-distinct source identifiers or entry paths; unmatched manifest file identities needed explicit unresolved inventory rows."
+    }
+  ],
+  "requested_scope": "Use raw-byte joins within the new consumer, preserve unmatched identities and all original data, never assign a pointer to an absent raw source path. Keep the previously qualified inspector unchanged.",
+  "author_confirmation": "No compile/test had started;23139 remains an unexecuted source checkpoint. Two new focused controls added before first execution, for18 never-executed methods.",
+  "actual_methods_executed_by_review": 0,
+  "native_writes_requested": false
+}

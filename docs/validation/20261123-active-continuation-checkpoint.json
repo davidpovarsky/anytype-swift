@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
-  "observedUTC": "2026-11-23T04:32:11.665871+00:00",
-  "previousPublishedSharedHead": "67809875752085047a395be4a751ace5dcbc7ad8",
-  "integratedSourceHead": "3b9d7a6b91c035a05170cf6c80e6ea5ffd74d319",
+  "observedUTC": "2026-11-23T04:53:32.997332+00:00",
+  "previousPublishedSharedHead": "5a6a05d9152553b1bee661eadc7b539b25b10ae1",
+  "integratedSourceHead": "2740204c400e37d48b9df29dc1eb0e49685d6b90",
   "owners": {
-    "root": "Shared integration, publication, Asana, Oracle capacity and sole SDK enumeration45110648504 watcher",
-    "acceptance_map": "Sole UI45108211949 and Release45111287072 watchers/terminal audits; bounded independent source review",
-    "sdk_ci": "Sole Page154 consumer45106989988 watcher, original artifact download and native boundary audit",
-    "editor_migration": "Mounted controller, exact consumer artifact Products admission, new preparation and mounted journey"
+    "root": "Shared integration, publication, Asana and sole consolidated observer for four CI runs; SDK terminal audit",
+    "acceptance_map": "UI/Release terminal artifact audits; independent reviews and isolated SDK retained-control component",
+    "sdk_ci": "Page154 original artifact/native audit; isolated qualified-selector SDK continuation",
+    "editor_migration": "Page154 original Products inventory/admission; qualified dry-run and isolated new native crash/lost-ack fixture"
   },
   "activeRuns": {
     "ui": {
@@ -15,49 +15,61 @@
       "url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45108211949",
       "sourceSHA": "4b09cc5478c60c1c6728a54f2a27a115637a835b",
       "owner": "acceptance_map",
-      "watcherJob": "job_6403f672f366",
-      "lastKnownStatus": "QUEUED",
+      "watcherJob": "job_741112953517",
+      "lastKnownStatus": "queued",
       "createdAtUTC": "2026-11-23T03:49:26Z",
       "priorCancelledRun": 45103242359,
       "priorCurrentMethodsExecuted": 0,
       "priorCurrentProductsAvailable": false,
       "retainedMethods": 22,
-      "sourceOrInputChanges": false
+      "sourceOrInputChanges": false,
+      "watcherOwner": "root",
+      "observedStatusUTC": "2026-11-23T04:53:26.422025+00:00",
+      "terminalAuditOwner": "acceptance_map"
     },
     "page154App": {
       "id": 45106989988,
       "url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45106989988",
       "sourceSHA": "1e9ee4de8ac2051020d9fd0cb181b8f68498e184",
       "owner": "sdk_ci",
-      "watcherJob": "job_5a691b7ffecb",
-      "lastKnownStatus": "QUEUED_NO_TERMINAL_RECEIPT",
-      "scope": "One new actual App boundary XCTest followed by UI runner BUILD_ONLY"
+      "watcherJob": "job_741112953517",
+      "lastKnownStatus": "queued",
+      "scope": "One new actual App boundary XCTest followed by UI runner BUILD_ONLY",
+      "watcherOwner": "root",
+      "observedStatusUTC": "2026-11-23T04:53:26.422486+00:00",
+      "terminalAuditOwner": "sdk_ci"
     },
     "sdk06Enumeration": {
       "id": 45110648504,
       "url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45110648504",
       "sourceSHA": "fd6f3357cd03da840c00b54a6248dd1a3553ba07",
       "owner": "root",
-      "watcherJob": "job_568c0ae7d4e3",
-      "lastKnownStatus": "queued",
+      "watcherJob": "job_741112953517",
+      "lastKnownStatus": "in_progress",
       "observedStatusSource": "dispatch API receipt",
       "createdAtUTC": "2026-11-23T04:14:41Z",
       "priorRun": 45107006017,
       "priorEnumerationCommands": 0,
-      "scope": "Two still-unexecuted selector hypotheses, zero builds and zero product methods"
+      "scope": "Two still-unexecuted selector hypotheses, zero builds and zero product methods",
+      "watcherOwner": "root",
+      "observedStatusUTC": "2026-11-23T04:53:26.423012+00:00",
+      "terminalAuditOwner": "root"
     },
     "releaseOriginalProducts": {
       "id": 45111287072,
       "url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45111287072",
       "sourceSHA": "67809875752085047a395be4a751ace5dcbc7ad8",
       "owner": "acceptance_map",
-      "watcherJob": "job_6384af93dfc9",
+      "watcherJob": "job_741112953517",
       "lastKnownStatus": "queued",
       "createdAtUTC": "2026-11-23T04:20:45Z",
       "originalRun": 45095838065,
       "originalAppSource": "d254a4a1ccd9288f585ff9374088cbaf965b36b4",
       "newAppBuilds": 0,
-      "newUIBuilds": 0
+      "newUIBuilds": 0,
+      "watcherOwner": "root",
+      "observedStatusUTC": "2026-11-23T04:53:26.423489+00:00",
+      "terminalAuditOwner": "acceptance_map"
     }
   },
   "qualifiedEvidence": {
@@ -169,6 +181,20 @@
       "cleanup": "SHUTDOWN_AND_DELETE_TIMED_OUT",
       "finalSourceAndProductIntegrity": "NOT_PROVEN",
       "rootAuditSHA256": "0816e33f1af4ab07a200ea8329cd50f953c8fc1158777bad2ec0f54dbbd92666"
+    },
+    "heartArchiveDryRun": {
+      "actualSource": "f4d3e604bfa5b92a8d7afc1cbfe6887a8833400c",
+      "distinctNewMethodsPassed": 18,
+      "failures": 0,
+      "skips": 0,
+      "olderMethodsRerun": 0,
+      "originalFilesVerified": 22,
+      "sourceAndDependencyEntriesVerified": 1443,
+      "preservedTestProducts": 2,
+      "rootReviewSHA256": "01bf010b4009176ff486ed70f0a32ab3a08e568cc68339e11579bbeee552a327",
+      "nativeSourceAdmission": false,
+      "permitsDestinationWrites": false,
+      "fullMigrationAcceptance": "NOT_PROVEN"
     }
   },
   "boundaries": [
@@ -206,15 +232,32 @@
       "admission": "NOT_CREATED",
       "actualMountedJourney": "NOT_RUN",
       "newAppBuildsRequested": 0,
-      "newUIBuildsRequested": 0
+      "newUIBuildsRequested": 0,
+      "preservedAppBranch": "codex/chatgpt-wave15-page154-mounted-origin-20261123",
+      "preservedAppSource": "5a6a05d9152553b1bee661eadc7b539b25b10ae1",
+      "reasonForSeparateBranch": "Preserve exact original consumer App inputs while shared receives new Integration source"
     },
     "heartArchiveDryRun": {
       "owner": "editor_migration",
-      "phase": "ISOLATED_NEW_SOURCE_WORK",
+      "phase": "INTEGRATED_EIGHTEEN_NEW_METHODS_AND_ROOT_AUDIT_PASS",
       "base": "67809875752085047a395be4a751ace5dcbc7ad8",
       "destinationWritesPermitted": false,
       "nativeSnapshotAndIdentityCensusRequired": true,
-      "fullMigrationAcceptance": "NOT_PROVEN"
+      "fullMigrationAcceptance": "NOT_PROVEN",
+      "integratedLineage": [
+        {
+          "original": "23139c70fefdfa8ca200a3858f08d96905d37088",
+          "integrated": "d330b80815bc5fd65e2a12b95a11688e76f08c1a"
+        },
+        {
+          "original": "f4d3e604bfa5b92a8d7afc1cbfe6887a8833400c",
+          "integrated": "32d0206eeffdf51660e5842060168aa3b2227fc2"
+        },
+        {
+          "original": "2b297308b8d609c607dc3dcd907d6afea1edef6d",
+          "integrated": "2740204c400e37d48b9df29dc1eb0e49685d6b90"
+        }
+      ]
     },
     "qualifiedSDKConsumer": {
       "owner": "sdk_ci",
@@ -234,5 +277,14 @@
     "qualifiedProductFilesPreserved": 11,
     "worktreesRemoved": 0,
     "otherProjectsChanged": 0
+  },
+  "consolidatedObserver": {
+    "sentinelJob": "job_741112953517",
+    "intervalSeconds": 120,
+    "priorObserversStopped": true,
+    "reason": "SHARED_GITHUB_CORE_RATE_LIMIT",
+    "failureIsCIOutcome": false,
+    "journal": "/mnt/development/projects/diagnostics/anytype-consolidated-ci-observer-20261123",
+    "latestObservedUTC": "2026-11-23T04:53:26.423996+00:00"
   }
 }
