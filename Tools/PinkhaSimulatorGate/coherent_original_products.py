@@ -277,7 +277,8 @@ class ContinuationOrigin:
         branch = subprocess.check_output(["git", "-C", str(self.control), "branch", "--show-current"], text=True).strip()
         require(branch.startswith("codex/chatgpt-wave15-") and os.environ.get("GITHUB_REF") == "refs/heads/" + branch,
                 "Actual published controller branch differs")
-        return products.control_sources(self.control, self.control_sha)
+        from coherent_controller_sources import control_sources
+        return control_sources(self.control, self.control_sha)
 
     def bind_intent(self, intent):
         self.verify_control()

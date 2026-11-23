@@ -1,0 +1,35 @@
+{
+  "status": "FROZEN_REVIEW_REQUIRED_NOT_RUN",
+  "base": "1f520ea7ea3a1eafc1cede59741900fc5db883bd",
+  "sourceChanges": {
+    "Tools/PinkhaSimulatorGate/run_owned_single_lane.py": {
+      "beforeSHA256": "098ad2c7b480ba74644cb35259bf9abc817af47a9611df6d580c18b466dac359",
+      "afterSHA256": "489f5460b9321ae190a0a970b8a18d7d94c2bf6f89c2c54e21bfd37432cc4a0f",
+      "old": "    if cleanup_profile == \"sdk06-enumeration\":\n",
+      "new": "    if cleanup_profile in (\"sdk06-enumeration\", owned.COHERENT_HEART_PROFILE):\n",
+      "wholeOriginalRecovered": true
+    },
+    "Tools/PinkhaSimulatorGate/coherent_original_products.py": {
+      "beforeSHA256": "d4e63a0dd1ab81c291a28460ffcee6c8f38285c55588698e24592b1e0dd72e15",
+      "afterSHA256": "0a4f5baf10d3fc19c902d7c9286375063e0f442ae7513637e513045629649a89",
+      "old": "        return products.control_sources(self.control, self.control_sha)\n",
+      "new": "        from coherent_controller_sources import control_sources\n        return control_sources(self.control, self.control_sha)\n",
+      "wholeOriginalRecovered": true
+    }
+  },
+  "newFiles": {
+    "Tools/PinkhaSimulatorGate/coherent_controller_sources.py": "493fa855797fd52a27f10d68406342676a35f325bac67acedeb27ded3b945008",
+    "Tools/PinkhaSimulatorGate/test_coherent_kernel_sources.py": "613aa368644b5a202c3f659d94c74f28dadd3972ea32a7ff31857f0e023907b0"
+  },
+  "newControls": [
+    "CoherentKernelAndSourceControls.test_coherent_owned_readiness_and_nested_cleanup_use_exact_kernel_absence",
+    "CoherentKernelAndSourceControls.test_single_git_batch_preserves_exact_loaded_closure_and_rejects_corruption"
+  ],
+  "oldControlsRequested": 0,
+  "productMethodsRequested": 0,
+  "existingKernelHelperBodyUnchanged": true,
+  "originalSDKKernelControlsRetained": 9,
+  "kernelBudgetSeconds": 10,
+  "sourceGitProcessTimeoutSeconds": 30,
+  "onlyExplicitOriginalProductsSourceReaderChanged": true
+}
