@@ -21,6 +21,7 @@ final class MigrationCoordinatorViewModel: MigrationModuleOutput {
     }
     
     func onDebugTap() {
+        guard data.originalEditorCaller == nil else { return }
         showPublicDebugMenu.toggle()
     }
 }

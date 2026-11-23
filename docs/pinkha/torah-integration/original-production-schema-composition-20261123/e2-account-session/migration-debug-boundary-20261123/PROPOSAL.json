@@ -1,0 +1,49 @@
+{
+  "status": "PROPOSED_NOT_APPLIED",
+  "base_source": "dbfc60976b574ce752734736f6d4eabe74578e5f",
+  "original_coordinators_also_exact_at": "257c49a5871c62611d88fab00a8124c7ff072166",
+  "changed_paths": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/Migration/Coordinator/MigrationCoordinatorView.swift",
+      "before_sha256": "ec4c8963cdcaf393338af0c826f1ce83c565592f861dcf33c45c070a22186af0",
+      "after_sha256": "85b821b154ba0fd528d5ad9e59191af9b805b5d8ed69110d88947e66daf4e35e",
+      "original_bytes": 682,
+      "proposed_bytes": 816,
+      "exact_inverse_to_original": true
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Migration/Coordinator/MigrationCoordinatorViewModel.swift",
+      "before_sha256": "6d0a814bd9fff74719b587d928bada83db08510009bccf4b962a59de93fc1398",
+      "after_sha256": "c93b4bef7ddca8dda01eb133a33812f755f14e44964a2ae847b67f5287303f78",
+      "original_bytes": 499,
+      "proposed_bytes": 562,
+      "exact_inverse_to_original": true
+    }
+  ],
+  "source_inputs": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/Migration/MigrationViewModel.swift",
+      "sha256": "5fd45335fbf54670782702633844c9b1d8288c82d2d711c34e1dbf46d1ea237f",
+      "bytes": 6439
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Migration/MigrationView.swift",
+      "sha256": "306be85e0db4c694b68d5ed25ded221eed5c847a88728da937d0575c8dfbb0f1",
+      "bytes": 3864
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginViewModel.swift",
+      "sha256": "b32966f4f5e0535a524d8b7712af7f97bb265521e2c4540dcd8f13d36cf9feb3",
+      "bytes": 19288
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Auth/Login/LoginCoordinatorView.swift",
+      "sha256": "572b5331bbddb2ed818d5e7c517c8112ebe35eefe8ba2a996b3f535d3c810359",
+      "bytes": 1341
+    }
+  ],
+  "frozen_23_product_paths_untouched": true,
+  "authorization": "Prepare exact two-coordinator proposal for root review before applying",
+  "behavior": "Embedded immutable non-nil caller rejects the existing debug toggle and gives the existing sheet a constant-false binding with a second construction guard. Nil-caller standalone toggle/binding/PublicDebugMenuView body remains exact. MigrationReadMore, actual native migration, current caller admission and completion remain untouched.",
+  "runtime_qualification": "NOT_RUN"
+}

@@ -16,8 +16,10 @@ struct MigrationCoordinatorView: View {
         .sheet(isPresented: $model.showMigrationInfo) {
             MigrationReadMoreView()
         }
-        .sheet(isPresented: $model.showPublicDebugMenu) {
-            PublicDebugMenuView()
+        .sheet(isPresented: model.data.originalEditorCaller == nil ? $model.showPublicDebugMenu : .constant(false)) {
+            if model.data.originalEditorCaller == nil {
+                PublicDebugMenuView()
+            }
         }
     }
 }

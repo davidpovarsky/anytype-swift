@@ -1,0 +1,5 @@
+# Migration debug presentation boundary
+
+The source-bound route is the existing Login error path constructing MigrationModuleData with the same immutable originalEditorCaller; LoginCoordinatorView presents MigrationCoordinatorView(data:). That coordinator stores the same data in its model as let. MigrationView's five-tap invokes MigrationViewModel.onDebugTap, whose current caller action invokes the original output; the coordinator output currently toggles showPublicDebugMenu and the unguarded sheet constructs PublicDebugMenuView.
+
+The proposed two hunks stop this exact embedded route before the toggle and before sheet construction. The guard is the immutable data's captured caller optional, never a later global owner or string inference. Standalone nil-caller behavior retains the original toggle, writable binding and destination. No new debug/admin ownership engine, no global Debug changes, and no migration or auth service change. The 23-source dbfc checkpoint and all its controls remain byte-frozen. Full source before/after and exact inverse are retained; actual SwiftUI/Apple execution is still pending.

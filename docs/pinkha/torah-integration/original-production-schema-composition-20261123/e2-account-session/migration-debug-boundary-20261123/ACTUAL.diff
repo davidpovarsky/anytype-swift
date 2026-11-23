@@ -1,0 +1,29 @@
+diff --git a/Anytype/Sources/PresentationLayer/Migration/Coordinator/MigrationCoordinatorView.swift b/Anytype/Sources/PresentationLayer/Migration/Coordinator/MigrationCoordinatorView.swift
+index b2d0cc373c..1e47769709 100644
+--- a/Anytype/Sources/PresentationLayer/Migration/Coordinator/MigrationCoordinatorView.swift
++++ b/Anytype/Sources/PresentationLayer/Migration/Coordinator/MigrationCoordinatorView.swift
+@@ -16,8 +16,10 @@ struct MigrationCoordinatorView: View {
+         .sheet(isPresented: $model.showMigrationInfo) {
+             MigrationReadMoreView()
+         }
+-        .sheet(isPresented: $model.showPublicDebugMenu) {
+-            PublicDebugMenuView()
++        .sheet(isPresented: model.data.originalEditorCaller == nil ? $model.showPublicDebugMenu : .constant(false)) {
++            if model.data.originalEditorCaller == nil {
++                PublicDebugMenuView()
++            }
+         }
+     }
+ }
+diff --git a/Anytype/Sources/PresentationLayer/Migration/Coordinator/MigrationCoordinatorViewModel.swift b/Anytype/Sources/PresentationLayer/Migration/Coordinator/MigrationCoordinatorViewModel.swift
+index 7c442d1b9f..67f870739c 100644
+--- a/Anytype/Sources/PresentationLayer/Migration/Coordinator/MigrationCoordinatorViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/Migration/Coordinator/MigrationCoordinatorViewModel.swift
+@@ -21,6 +21,7 @@ final class MigrationCoordinatorViewModel: MigrationModuleOutput {
+     }
+     
+     func onDebugTap() {
++        guard data.originalEditorCaller == nil else { return }
+         showPublicDebugMenu.toggle()
+     }
+ }

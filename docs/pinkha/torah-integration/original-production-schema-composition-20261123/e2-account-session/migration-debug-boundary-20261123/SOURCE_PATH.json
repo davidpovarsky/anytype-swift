@@ -1,0 +1,190 @@
+[
+  {
+    "path": "Anytype/Sources/PresentationLayer/Migration/MigrationViewModel.swift",
+    "hits": [
+      {
+        "line": 5,
+        "context": [
+          "import Services",
+          "",
+          "struct MigrationModuleData: Identifiable {",
+          "    let id: String",
+          "    let onFinish: () async -> Void",
+          "    let originalEditorCaller: OriginalEditorAuthCaller?",
+          "",
+          "    init(",
+          "        id: String, onFinish: @escaping () async -> Void,"
+        ]
+      },
+      {
+        "line": 31,
+        "context": [
+          "",
+          "    @ObservationIgnored",
+          "    private let data: MigrationModuleData",
+          "    @ObservationIgnored",
+          "    private var activeProcess: Process?",
+          "",
+          "    var progress: CGFloat = 0",
+          "    var startFlowId: String?",
+          "    var dismiss = false"
+        ]
+      },
+      {
+        "line": 54,
+        "context": [
+          "    // MARK: - Initializer",
+          "    ",
+          "    init(data: MigrationModuleData, output: (any MigrationModuleOutput)?) {",
+          "        self.data = data",
+          "        self.output = output",
+          "    }",
+          "    ",
+          "    func startFlow() async {",
+          "        guard let caller = data.originalEditorCaller else {"
+        ]
+      },
+      {
+        "line": 94,
+        "context": [
+          "    }",
+          "    ",
+          "    func onDebugTap() {",
+          "        try? OriginalEditorAuthCaller.withUIAction(data.originalEditorCaller) {",
+          "            output?.onDebugTap()",
+          "",
+          "        }",
+          "    }",
+          "    "
+        ]
+      },
+      {
+        "line": 96,
+        "context": [
+          "    func onDebugTap() {",
+          "        try? OriginalEditorAuthCaller.withUIAction(data.originalEditorCaller) {",
+          "            output?.onDebugTap()",
+          "",
+          "        }",
+          "    }",
+          "    ",
+          "    private func subscribeOnProcess() async {",
+          "        processSubscription?.cancel()"
+        ]
+      }
+    ]
+  },
+  {
+    "path": "Anytype/Sources/PresentationLayer/Migration/MigrationView.swift",
+    "hits": [
+      {
+        "line": 10,
+        "context": [
+          "    private let topOffcet: CGFloat = UIDevice.isPad ? 310 : 180",
+          "",
+          "    init(data: MigrationModuleData, output: (any MigrationModuleOutput)?) {",
+          "        _model = State(initialValue: MigrationViewModel(data: data, output: output))",
+          "    }",
+          "    ",
+          "    var body: some View {",
+          "        content",
+          "            .task(item: model.startFlowId) { _ in"
+        ]
+      },
+      {
+        "line": 23,
+        "context": [
+          "            }",
+          "            .padding(.horizontal, 20)",
+          "            .onTapGesture(count: 5) {",
+          "                model.onDebugTap()",
+          "            }",
+          "    }",
+          "    ",
+          "    @ViewBuilder",
+          "    private var content: some View {"
+        ]
+      },
+      {
+        "line": 24,
+        "context": [
+          "            .padding(.horizontal, 20)",
+          "            .onTapGesture(count: 5) {",
+          "                model.onDebugTap()",
+          "            }",
+          "    }",
+          "    ",
+          "    @ViewBuilder",
+          "    private var content: some View {",
+          "        switch model.state {"
+        ]
+      }
+    ]
+  },
+  {
+    "path": "Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginViewModel.swift",
+    "hits": [
+      {
+        "line": 460,
+        "context": [
+          "            guard acceptsOriginalUI else { return }",
+          "            output?.onOpenMigrationSelected(",
+          "                data: MigrationModuleData(",
+          "                    id: accountId,",
+          "                    onFinish: { [weak self, caller = originalEditorCaller] in",
+          "                        guard caller?.isCurrent ?? true else { return }",
+          "                        await self?.selectAccount()",
+          "                    },",
+          "                    originalEditorCaller: originalEditorCaller"
+        ]
+      },
+      {
+        "line": 466,
+        "context": [
+          "                        await self?.selectAccount()",
+          "                    },",
+          "                    originalEditorCaller: originalEditorCaller",
+          "                )",
+          "            )",
+          "        } catch {",
+          "            guard acceptsOriginalUI else { return }",
+          "            errorText = Loc.selectVaultError",
+          "        }"
+        ]
+      }
+    ]
+  },
+  {
+    "path": "Anytype/Sources/PresentationLayer/Auth/Login/LoginCoordinatorView.swift",
+    "hits": [
+      {
+        "line": 14,
+        "context": [
+          "    ",
+          "    var body: some View {",
+          "        LoginView(output: model, originalEditorCaller: originalEditorCaller)",
+          "            .cameraPermissionAlert(isPresented: $model.showOpenSettingsURL)",
+          "            .sheet(isPresented: originalEditorCaller == nil ? $model.showPublicDebugMenu : .constant(false)) {",
+          "                // Whole-app debug administration is outside embedded account bootstrap.",
+          "                // Keep the complete original standalone destination.",
+          "                if originalEditorCaller == nil {",
+          "                    PublicDebugMenuView()"
+        ]
+      },
+      {
+        "line": 27,
+        "context": [
+          "            }",
+          "            .fullScreenCover(item: $model.migrationData) {",
+          "                MigrationCoordinatorView(data: $0)",
+          "            }",
+          "            .sheet(item: $model.qrCodeScannerData) { data in",
+          "                QrCodeScannerView(qrCode: data.entropy, error: data.error)",
+          "            }",
+          "    }",
+          "}"
+        ]
+      }
+    ]
+  }
+]

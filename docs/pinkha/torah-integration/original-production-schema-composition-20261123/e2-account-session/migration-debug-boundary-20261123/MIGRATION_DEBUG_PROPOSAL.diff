@@ -1,0 +1,25 @@
+--- a/Anytype/Sources/PresentationLayer/Migration/Coordinator/MigrationCoordinatorView.swift
++++ b/Anytype/Sources/PresentationLayer/Migration/Coordinator/MigrationCoordinatorView.swift
+@@ -16,8 +16,10 @@
+         .sheet(isPresented: $model.showMigrationInfo) {
+             MigrationReadMoreView()
+         }
+-        .sheet(isPresented: $model.showPublicDebugMenu) {
+-            PublicDebugMenuView()
++        .sheet(isPresented: model.data.originalEditorCaller == nil ? $model.showPublicDebugMenu : .constant(false)) {
++            if model.data.originalEditorCaller == nil {
++                PublicDebugMenuView()
++            }
+         }
+     }
+ }
+--- a/Anytype/Sources/PresentationLayer/Migration/Coordinator/MigrationCoordinatorViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/Migration/Coordinator/MigrationCoordinatorViewModel.swift
+@@ -21,6 +21,7 @@
+     }
+     
+     func onDebugTap() {
++        guard data.originalEditorCaller == nil else { return }
+         showPublicDebugMenu.toggle()
+     }
+ }
