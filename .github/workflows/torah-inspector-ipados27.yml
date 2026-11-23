@@ -352,7 +352,74 @@ jobs:
 
   current-native-ui-failed:
     if: ${{ inputs.route == 'current-native-ui-failed' }}
-    uses: ./.github/workflows/pinkha-current-native-ui-failed.yml
+    permissions:
+      contents: read
+      actions: read
+    runs-on: xcode-27
+    timeout-minutes: 150
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_OPTIONAL_LOCKS: '0'
+      GH_TOKEN: ${{ github.token }}
+      EVIDENCE: build/current-apple-native-ui-failed-${{ github.run_id }}-${{ github.run_attempt }}/evidence
+    steps:
+      - name: Checkout the exact current App and controller source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Bind the dispatched local branch without advancing its commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$GITHUB_REF" = "refs/heads/$GITHUB_REF_NAME"
+          test "$GITHUB_REF_NAME" = "codex/chatgpt-wave15-shared-20261121"
+          current_branch="$(git branch --show-current)"
+          if [ -z "$current_branch" ]; then
+            git switch -c "$GITHUB_REF_NAME"
+          else
+            test "$current_branch" = "$GITHUB_REF_NAME"
+          fi
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - name: Select native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Checkout the exact public canonical Hanlin source
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/hanlin-ai
+          ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+          path: .ci/hanlin-source
+          persist-credentials: false
+      - name: Build the current App once and execute only this fixed unresolved scope
+        id: execute
+        timeout-minutes: 130
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B Tools/CurrentAppleValidation/native_ui_failed.py execute --expected-source "$GITHUB_SHA"
+      - name: Finalize only journaled current-run resources even after an early failure
+        if: ${{ always() && steps.execute.outcome != 'skipped' }}
+        timeout-minutes: 8
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B Tools/CurrentAppleValidation/native_ui_failed.py cleanup --expected-source "$GITHUB_SHA"
+      - name: Preserve original Products, commands, results and cleanup without filtering raw streams
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Current-NativeApp-Unresolved-UI-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ env.EVIDENCE }}
+            build/any-patched-evidence/hanlin-provider
+          retention-days: 30
+          if-no-files-found: error
 
   sdk06-projected-components:
     if: ${{ inputs.route == 'sdk06-projected-components' }}
@@ -366,7 +433,73 @@ jobs:
 
   current-release-return-rtl:
     if: ${{ inputs.route == 'current-release-return-rtl' }}
-    uses: ./.github/workflows/pinkha-current-release-return-rtl.yml
+    permissions:
+      contents: read
+      actions: read
+    runs-on: xcode-27
+    timeout-minutes: 150
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_OPTIONAL_LOCKS: '0'
+      GH_TOKEN: ${{ github.token }}
+      EVIDENCE: build/current-apple-release-return-rtl-${{ github.run_id }}-${{ github.run_attempt }}/evidence
+    steps:
+      - name: Checkout the exact current App and controller source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Bind the dispatched local branch without advancing its commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$GITHUB_REF" = "refs/heads/$GITHUB_REF_NAME"
+          test "$GITHUB_REF_NAME" = "codex/chatgpt-wave15-shared-20261121"
+          current_branch="$(git branch --show-current)"
+          if [ -z "$current_branch" ]; then
+            git switch -c "$GITHUB_REF_NAME"
+          else
+            test "$current_branch" = "$GITHUB_REF_NAME"
+          fi
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - name: Select native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Checkout the exact public canonical Hanlin source
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/hanlin-ai
+          ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+          path: .ci/hanlin-source
+          persist-credentials: false
+      - name: Build the current App once and execute only this fixed unresolved scope
+        id: execute
+        timeout-minutes: 130
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B Tools/CurrentAppleValidation/release_return_rtl.py execute --expected-source "$GITHUB_SHA"
+      - name: Finalize only journaled current-run resources even after an early failure
+        if: ${{ always() && steps.execute.outcome != 'skipped' }}
+        timeout-minutes: 8
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B Tools/CurrentAppleValidation/release_return_rtl.py cleanup --expected-source "$GITHUB_SHA"
+      - name: Preserve original Products, commands, results and cleanup without filtering raw streams
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Current-Anytype-Release-Return-RTL-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ env.EVIDENCE }}
+          retention-days: 30
+          if-no-files-found: error
 
   semantic-page-apple-consumer:
     if: ${{ inputs.route == 'semantic-page-apple-consumer' }}
