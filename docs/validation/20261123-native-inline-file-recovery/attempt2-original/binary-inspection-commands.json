@@ -1,0 +1,67 @@
+[
+  {
+    "argv": [
+      "/usr/local/bin/go",
+      "version",
+      "-m",
+      "/mnt/development/projects/evidence/inline-recovery-20261123/attempt2/qualified-products/inline-recovery.test"
+    ],
+    "returncode": 0,
+    "path": "binary-buildinfo-original.txt",
+    "sha256": "ec7557186b2bcf6380af16b0e9791a37516a20e541d1136b5710877c4689887f",
+    "bytes": 13729,
+    "productExecution": false
+  },
+  {
+    "argv": [
+      "/usr/local/bin/go",
+      "tool",
+      "buildid",
+      "/mnt/development/projects/evidence/inline-recovery-20261123/attempt2/qualified-products/inline-recovery.test"
+    ],
+    "returncode": 0,
+    "path": "binary-buildid-original.txt",
+    "sha256": "214a0d917ed5badc1a92930041ab5235597b952b918eec7f639129e2051b0a2a",
+    "bytes": 84,
+    "productExecution": false
+  },
+  {
+    "argv": [
+      "/usr/local/bin/go",
+      "env",
+      "GOVERSION",
+      "GOOS",
+      "GOARCH",
+      "CC",
+      "CXX"
+    ],
+    "returncode": 0,
+    "path": "compiler-profile-original.txt",
+    "sha256": "e01c30bf9b1d528741fc77b724a3bb9ec1b8cc8dc17018fe6ff4ba5ac84b63a9",
+    "bytes": 29,
+    "productExecution": false
+  },
+  {
+    "argv": [
+      "gcc",
+      "-dumpfullversion",
+      "-dumpversion"
+    ],
+    "returncode": 0,
+    "path": "gcc-version-original.txt",
+    "sha256": "bb6aade8c4ca40cae9cb1be8abe12377f651fccd82954af74ec61703b6608fc5",
+    "bytes": 7,
+    "productExecution": false
+  },
+  {
+    "argv": [
+      "getconf",
+      "GNU_LIBC_VERSION"
+    ],
+    "returncode": 0,
+    "path": "libc-version-original.txt",
+    "sha256": "e78219876cbb3a4271b8644a89d469ccdd95b82433f72784c61a9dd2f88b1192",
+    "bytes": 11,
+    "productExecution": false
+  }
+]
