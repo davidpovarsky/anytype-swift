@@ -32,7 +32,7 @@ from observed_package_simulator_signing import (PROFILES as OBSERVED_PACKAGE_PRO
                                                prepare_observed_package_simulator_export)
 from pbx_source import require
 from framework_install_names import verify_framework_install_name, verify_consumer_install_name
-from consumer_failure_capture import prepare_launch_capture
+from consumer_failure_capture import prepare_launch_capture, combine_launch_help, read_regular
 from framework_consumer_retention import retain_built_consumer
 
 
@@ -496,7 +496,9 @@ def execute(args, receipt):
     data = Path(command(['xcrun', 'simctl', 'get_app_container', udid, bundle_id, 'data'], root, evidence, 'actual-consumer-data-container', 30).strip())
     require(Path(installed).is_dir() and data.is_dir() and udid in Path(installed).parts and udid in data.parts,
             'Actual consumer containers are not in the owned simulator')
-    launch_help = command(['xcrun', 'simctl', 'help', 'launch'], root, evidence, 'actual-simctl-launch-help', 15)
+    launch_stdout = command(['xcrun', 'simctl', 'help', 'launch'], root, evidence, 'actual-simctl-launch-help', 15)
+    launch_stderr, _ = read_regular(evidence / 'actual-simctl-launch-help.stderr.log', 65536)
+    launch_help = combine_launch_help(launch_stdout, launch_stderr.decode(errors='replace'))
     for language in ['en', 'he']:
         nonce = str(uuid.uuid4()).upper()
         name = 'consumer-' + language

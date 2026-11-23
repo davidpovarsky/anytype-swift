@@ -1,0 +1,89 @@
+name: Original editor exact signed consumer runtime
+
+on:
+  push:
+    branches:
+      - codex/otzaria-sdk-runtime-20261123
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: original-editor-signed-consumer-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  original-editor-signed-consumer:
+    if: github.repository == 'davidpovarsky/anytype-swift' && github.run_attempt == 1
+    runs-on: xcode-27
+    timeout-minutes: 45
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      CONTINUATION_WORK: build/signed-consumer-work-${{ github.run_id }}
+      CONTINUATION_EVIDENCE: build/signed-consumer-evidence
+    steps:
+      - name: Fix the finite execution deadline
+        run: echo "OTZARIA_SIGNED_DEADLINE=$(( $(date +%s) + 2300 ))" >> "$GITHUB_ENV"
+      - name: Checkout exact source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Select ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Admit already executed focused source controls
+        run: |
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          packet = Path('docs/pinkha/torah-integration/evidence/original-editor-signed-consumer-20261123')
+          receipt = json.loads((packet / 'FOCUSED_CONTROLS.json').read_bytes())
+          assert receipt['status'] == 'PASS'
+          assert receipt['tests_run'] == len(receipt['passed_ids']) == len(set(receipt['passed_ids'])) == 12
+          assert sorted(receipt['passed_ids']) == sorted(receipt['started_ids']) == sorted(receipt['expected_ids'])
+          assert not receipt['failures'] and not receipt['errors'] and not receipt['skipped']
+          for path, expected in receipt['source_sha256'].items():
+              assert hashlib.sha256(Path(path).read_bytes()).hexdigest() == expected, path
+          for path, expected in receipt['log_sha256'].items():
+              assert hashlib.sha256((packet / path).read_bytes()).hexdigest() == expected, path
+          print('Retained 12 source-bound controls; no test replay and no Apple runtime credit.')
+          PY
+      - name: Qualify exact signed consumer in English and Hebrew
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 Tools/OriginalEditor/run_signed_consumer_continuation.py \
+            --work "$CONTINUATION_WORK" --evidence "$CONTINUATION_EVIDENCE" \
+            --deadline-unix "$OTZARIA_SIGNED_DEADLINE"
+      - name: Preserve actual runtime evidence
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, os, zipfile
+          from pathlib import Path
+          root = Path(os.environ['CONTINUATION_EVIDENCE'])
+          root.mkdir(parents=True, exist_ok=True)
+          target = root.parent / 'signed-consumer-evidence.zip'
+          with zipfile.ZipFile(target, 'x', zipfile.ZIP_DEFLATED, compresslevel=6) as output:
+              for path in sorted(root.rglob('*')):
+                  assert not path.is_symlink()
+                  if path.is_file():
+                      # A failed binary download is owned evidence by digest, not an SDK artifact.
+                      if path.parent.name == 'downloads' and path.suffix == '.stdout' and path.stat().st_size > 2 * 1024 * 1024:
+                          continue
+                      output.write(path, path.relative_to(root).as_posix())
+          PY
+      - name: Upload original signed consumer runtime evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otzaria-Original-Editor-Signed-Consumer-Runtime-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/signed-consumer-evidence.zip
+          if-no-files-found: error
+          retention-days: 14

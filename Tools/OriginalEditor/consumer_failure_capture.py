@@ -83,10 +83,21 @@ def validate_launch(original_argv, language, udid):
                                      'he_IL' if language == 'he' else 'en_US'], 'Unexpected original consumer launch')
 
 
+def combine_launch_help(stdout, stderr):
+    """Use both authentic streams after the owned help command succeeds."""
+    require(isinstance(stdout, str) and isinstance(stderr, str)
+            and len(stdout) + len(stderr) < 65536, 'Expected bounded simctl help streams')
+    text = stdout + '\n' + stderr
+    require(re.search(r'--stdout(?:=|\s|<|\[)', text)
+            and re.search(r'--stderr(?:=|\s|<|\[)', text),
+            'Actual simctl does not advertise the required output options')
+    return text
+
+
 def prepare_launch_capture(evidence, preflight, installed, original_argv, language, launch_help):
     """Add only stdout/stderr destinations to this exact original launch.
 
-    launch_help must be stdout from this producer's successful, bounded
+    launch_help must combine both streams from this producer's successful, bounded
     `xcrun simctl help launch`. The returned original command still controls
     launch timeout and error handling. It is never executed by this helper.
     """
