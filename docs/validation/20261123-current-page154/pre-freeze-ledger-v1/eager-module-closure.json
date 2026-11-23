@@ -1,0 +1,367 @@
+{
+  "fixedCommonRuntime": "f59fbf2bed1f2766111f9103e7b8af4022fb69161afd6d34d1202102228fed7c",
+  "helperTrees": {
+    "Tools/AnyEngineValidation/HanlinProviderFixture": "5ba0833e6ef3c82c006a6de1cae7bf5f45d689b1",
+    "Tools/Hanlin": "0d359c6fd85c9a5ea7fe9849023eacba2dc443cf",
+    "Tools/PinkhaNativeDerived": "f9e685655d30cf24322079ba5be9ba281ec8f420",
+    "Tools/PinkhaSemanticAnchorWire": "4ae012916ffa05eb17b4a947be1436cac4fea3f6",
+    "docs/validation/20261123-semantic-page-native/attempt6-page-pass": "3108ff1c69abe042c7e284012660937c2a11c6b9"
+  },
+  "inputRows": 58,
+  "moduleCount": 50,
+  "modules": {
+    "attachment_runtime": {
+      "eagerRepositoryImports": {},
+      "path": "Tools/PinkhaNativeDerived/attachment_runtime.py",
+      "sha256": "0154ae5f6b0af197d62abc7eeb6233adbe3d469723a75e15e233e7ab5e37019a"
+    },
+    "build_custom_heart": {
+      "eagerRepositoryImports": {},
+      "path": "Tools/PinkhaNativeDerived/build_custom_heart.py",
+      "sha256": "0ebbe2f6227418eac2c532b0058290158319ba9f786baaf445de444887e8c669"
+    },
+    "build_native_ipa": {
+      "eagerRepositoryImports": {
+        "build_custom_heart": "Tools/PinkhaNativeDerived/build_custom_heart.py"
+      },
+      "path": "Tools/PinkhaNativeDerived/build_native_ipa.py",
+      "sha256": "c9e35a228779ae761d36cef204a32148ffdd3a338c9ede11dde6df4ebee21055"
+    },
+    "cleanup_policy": {
+      "eagerRepositoryImports": {
+        "contracts": "Tools/CurrentAppleValidation/contracts.py",
+        "current_execution": "Tools/CurrentAppleValidation/current_execution.py"
+      },
+      "path": "Tools/CurrentAppleValidation/cleanup_policy.py",
+      "sha256": "d4b6b6df0df5c94b4aeeabef0c6716d097be27fd2a6739298f9d186092bea291"
+    },
+    "compiled_products": {
+      "eagerRepositoryImports": {
+        "validate_release": "Tools/PinkhaSimulatorGate/validate_release.py"
+      },
+      "path": "Tools/PinkhaSimulatorGate/compiled_products.py",
+      "sha256": "fecbf688eef39388aef7fac6990cfa6b391b72be35f34bee9aaa9f7c96eae7cf"
+    },
+    "consumer_contract": {
+      "eagerRepositoryImports": {},
+      "path": "Tools/PinkhaSemanticAnchorWire/apple_consumer/consumer_contract.py",
+      "sha256": "235eae83ac85a8c280a10cf570e6675b87d11f6059c2ed46a2a12fda7c2df894"
+    },
+    "consumer_simulator": {
+      "eagerRepositoryImports": {
+        "simulator_selection": "Tools/PinkhaSimulatorGate/simulator_selection.py"
+      },
+      "path": "Tools/PinkhaSemanticAnchorWire/apple_consumer/consumer_simulator.py",
+      "sha256": "3282bc162cef0486cd334fbdeb2ed2dcdf79980acf1e8d675badd26f273f56e1"
+    },
+    "continue_native_acceptance": {
+      "eagerRepositoryImports": {
+        "native_continuation_sources": "Tools/AnyEnginePort/native_continuation_sources.py",
+        "reuse_uikit_execution": "Tools/AnyEnginePort/reuse_uikit_execution.py",
+        "reuse_uikit_unaffected_eight": "Tools/AnyEnginePort/reuse_uikit_unaffected_eight.py",
+        "verify_archive_roundtrip": "Tools/AnyEnginePort/verify_archive_roundtrip.py",
+        "verify_focus_handoff_execution": "Tools/AnyEnginePort/verify_focus_handoff_execution.py",
+        "verify_native_test_execution": "Tools/AnyEnginePort/verify_native_test_execution.py"
+      },
+      "path": "Tools/AnyEnginePort/continue_native_acceptance.py",
+      "sha256": "befa4f7974aaed9b8b936c0457a6acec5454c2d48c8f483740ca9810c14d2098"
+    },
+    "contracts": {
+      "eagerRepositoryImports": {},
+      "path": "Tools/CurrentAppleValidation/contracts.py",
+      "sha256": "46ec90e911ad622646bdf8fe3fdf67351ac7b576a66af7abb07e5a0e06051ab3"
+    },
+    "current_execution": {
+      "eagerRepositoryImports": {
+        "contracts": "Tools/CurrentAppleValidation/contracts.py"
+      },
+      "path": "Tools/CurrentAppleValidation/current_execution.py",
+      "sha256": "f59fbf2bed1f2766111f9103e7b8af4022fb69161afd6d34d1202102228fed7c"
+    },
+    "current_page_native_producer": {
+      "eagerRepositoryImports": {},
+      "path": "Tools/PinkhaSemanticAnchorWire/apple_runtime/contract.py",
+      "sha256": "7b273904ce7f57d079ff0ba1b3881453a1ae23ad07fd268c7e2c35080ced4a9e"
+    },
+    "destination_artifacts": {
+      "eagerRepositoryImports": {},
+      "path": "Tools/PinkhaSimulatorGate/destination_artifacts.py",
+      "sha256": "55c076f86990e74c2b3908a1474f1bb224c7ca52f00d1f9fe162f40be8814280"
+    },
+    "early_build_products": {
+      "eagerRepositoryImports": {},
+      "path": "Tools/PinkhaSimulatorGate/early_build_products.py",
+      "sha256": "9c982fb2c15614be6f42a4c244a7a98726e48fee33d276fffae02acde5be9e3b"
+    },
+    "hanlin_acceptance_evidence": {
+      "eagerRepositoryImports": {},
+      "path": "Tools/PinkhaSimulatorGate/hanlin_acceptance_evidence.py",
+      "sha256": "8552b94f2034d4a1ddfcd363ca02526ff7c843030d65790ceb048efcde2056e4"
+    },
+    "hanlin_fixture_ci": {
+      "eagerRepositoryImports": {},
+      "path": "Tools/AnyEnginePort/hanlin_fixture_ci.py",
+      "sha256": "b48b79324d9076d235449510ed5499556d2b16c14aa1cc2a3397db5861132d14"
+    },
+    "hanlin_selection_evidence": {
+      "eagerRepositoryImports": {
+        "hanlin_acceptance_evidence": "Tools/PinkhaSimulatorGate/hanlin_acceptance_evidence.py"
+      },
+      "path": "Tools/PinkhaSimulatorGate/hanlin_selection_evidence.py",
+      "sha256": "25afba17f7083d0e41481f9464217ab665c4d8f11f20c94c4b99ce3f2a3c3336"
+    },
+    "hanlin_ui_runtime": {
+      "eagerRepositoryImports": {
+        "hanlin_acceptance_evidence": "Tools/PinkhaSimulatorGate/hanlin_acceptance_evidence.py"
+      },
+      "path": "Tools/PinkhaSimulatorGate/hanlin_ui_runtime.py",
+      "sha256": "e7c844559fbc7680cd2dbbe7c1eebb0561ecfb2f10305bef0f9b85e95665922c"
+    },
+    "heart_runtime_profile": {
+      "eagerRepositoryImports": {
+        "attachment_runtime": "Tools/PinkhaNativeDerived/attachment_runtime.py"
+      },
+      "path": "Tools/PinkhaNativeDerived/heart_runtime_profile.py",
+      "sha256": "d354e5ccf20bfbdbeaf9f61a0043bfcbb137400b835f8b34e910453c35995001"
+    },
+    "host_command": {
+      "eagerRepositoryImports": {},
+      "path": "Tools/Hanlin/host_command.py",
+      "sha256": "5f09813c5719f5ea3920c003e58ac6b2b5633f276686bf6c5ef8bc6f9f39a807"
+    },
+    "mounted_contract": {
+      "eagerRepositoryImports": {
+        "consumer_contract": "Tools/PinkhaSemanticAnchorWire/apple_consumer/consumer_contract.py"
+      },
+      "path": "Tools/PinkhaSemanticAnchorWire/apple_mounted/mounted_contract.py",
+      "sha256": "0fa1af7e7b3f45d0eec8f1aa4c2d4a4ef97d5ca1c4e94f8838ba69e3eeab28ff"
+    },
+    "native_continuation_sources": {
+      "eagerRepositoryImports": {},
+      "path": "Tools/AnyEnginePort/native_continuation_sources.py",
+      "sha256": "fe74ca6ed78f26f008c79da674e87f6a51b9f5f82bfe2e697bbb1d90e9002465"
+    },
+    "native_ui_failed": {
+      "eagerRepositoryImports": {
+        "contracts": "Tools/CurrentAppleValidation/contracts.py",
+        "current_execution": "Tools/CurrentAppleValidation/current_execution.py"
+      },
+      "path": "Tools/CurrentAppleValidation/native_ui_failed.py",
+      "sha256": "1c3a00a7cbf7af8553e942decf1cb7f7ead137dd3f38b2e859fc09ae281cf327"
+    },
+    "native_ui_transition_contract": {
+      "eagerRepositoryImports": {},
+      "path": "Tools/AnyEnginePort/native_ui_transition_contract.py",
+      "sha256": "42d56e2193643fde5ae6f329b63a123fee89a2ef22d858e3bea8aeb94cd0d3d5"
+    },
+    "page154_contract": {
+      "eagerRepositoryImports": {
+        "contracts": "Tools/CurrentAppleValidation/contracts.py"
+      },
+      "path": "Tools/CurrentAppleValidation/page154_contract.py",
+      "sha256": "0b6d2cf343ae802c27426c1f2ca4bf14cac995090d8abe08646f72fdf2650eaa"
+    },
+    "page154_current": {
+      "eagerRepositoryImports": {
+        "contracts": "Tools/CurrentAppleValidation/contracts.py",
+        "current_execution": "Tools/CurrentAppleValidation/current_execution.py",
+        "page154_contract": "Tools/CurrentAppleValidation/page154_contract.py"
+      },
+      "path": "Tools/CurrentAppleValidation/page154_current.py",
+      "sha256": "53f440265e048f3bb17d89eac7cd37e96b02814f1fe0421da42fa5f45b5db968"
+    },
+    "related_read_authority_profile": {
+      "eagerRepositoryImports": {
+        "wave15_core_profile": "Tools/Hanlin/wave15_core_profile.py"
+      },
+      "path": "Tools/Hanlin/related_read_authority_profile.py",
+      "sha256": "c5480b895c917d8268841c64c7875f7d42414fe999489fa27587d017c6e0f0d9"
+    },
+    "release_return_rtl": {
+      "eagerRepositoryImports": {
+        "contracts": "Tools/CurrentAppleValidation/contracts.py",
+        "current_execution": "Tools/CurrentAppleValidation/current_execution.py"
+      },
+      "path": "Tools/CurrentAppleValidation/release_return_rtl.py",
+      "sha256": "85cc937924b99bd6cab2c9afa0e0186cd02af0d4879126e123bc8f73e6ebd8b0"
+    },
+    "rerun_original_ui": {
+      "eagerRepositoryImports": {
+        "build_custom_heart": "Tools/PinkhaNativeDerived/build_custom_heart.py",
+        "build_native_ipa": "Tools/PinkhaNativeDerived/build_native_ipa.py"
+      },
+      "path": "Tools/PinkhaNativeDerived/rerun_original_ui.py",
+      "sha256": "ec5688909921942e94f792cdde0a02baa7b5f9b2f9e0b3bde3df3a877f299279"
+    },
+    "reuse_uikit_execution": {
+      "eagerRepositoryImports": {
+        "verify_native_test_execution": "Tools/AnyEnginePort/verify_native_test_execution.py"
+      },
+      "path": "Tools/AnyEnginePort/reuse_uikit_execution.py",
+      "sha256": "1d0f2c7b821cc80bc2d2309605bf0b7bd0c835fed6c699541d4f7a87922f9f8b"
+    },
+    "reuse_uikit_unaffected_eight": {
+      "eagerRepositoryImports": {
+        "reuse_uikit_execution": "Tools/AnyEnginePort/reuse_uikit_execution.py",
+        "verify_native_test_execution": "Tools/AnyEnginePort/verify_native_test_execution.py"
+      },
+      "path": "Tools/AnyEnginePort/reuse_uikit_unaffected_eight.py",
+      "sha256": "56596559359b60c27e8302785720f8f456ce384ad375c8ee3a038002694baecc"
+    },
+    "run_host_tests": {
+      "eagerRepositoryImports": {
+        "host_command": "Tools/Hanlin/host_command.py",
+        "shared_editor_profile": "Tools/Hanlin/shared_editor_profile.py",
+        "wave15_core_profile": "Tools/Hanlin/wave15_core_profile.py"
+      },
+      "path": "Tools/Hanlin/run_host_tests.py",
+      "sha256": "106d40df8594c067fdcc389d0ac93e3055a01247d431b13563f9d6e0d1c3403d"
+    },
+    "run_owned_single_lane": {
+      "eagerRepositoryImports": {
+        "wave15_batch": "Tools/PinkhaSimulatorGate/wave15_batch.py"
+      },
+      "path": "Tools/PinkhaSimulatorGate/run_owned_single_lane.py",
+      "sha256": "5d976901b73b5bc5e519ead3a89952220d8149e710561d92acc9f36e46247414"
+    },
+    "run_ui27": {
+      "eagerRepositoryImports": {
+        "build_custom_heart": "Tools/PinkhaNativeDerived/build_custom_heart.py",
+        "build_native_ipa": "Tools/PinkhaNativeDerived/build_native_ipa.py",
+        "compiled_products": "Tools/PinkhaSimulatorGate/compiled_products.py",
+        "heart_runtime_profile": "Tools/PinkhaNativeDerived/heart_runtime_profile.py",
+        "rerun_original_ui": "Tools/PinkhaNativeDerived/rerun_original_ui.py",
+        "simulator_identity": "Tools/PinkhaSimulatorGate/simulator_identity.py",
+        "validate_release": "Tools/PinkhaSimulatorGate/validate_release.py",
+        "validate_wave1": "Tools/PinkhaNativeDerived/validate_wave1.py",
+        "wave15_diagnostics": "Tools/PinkhaSimulatorGate/wave15_diagnostics.py"
+      },
+      "path": "Tools/PinkhaSimulatorGate/run_ui27.py",
+      "sha256": "9222c3ea0258ce5002f72e2b60b58c64f27857c15f653a49ff2a0edacc8cf5de"
+    },
+    "run_wave15_acceptance": {
+      "eagerRepositoryImports": {
+        "early_build_products": "Tools/PinkhaSimulatorGate/early_build_products.py",
+        "hanlin_acceptance_evidence": "Tools/PinkhaSimulatorGate/hanlin_acceptance_evidence.py",
+        "hanlin_selection_evidence": "Tools/PinkhaSimulatorGate/hanlin_selection_evidence.py",
+        "hanlin_ui_runtime": "Tools/PinkhaSimulatorGate/hanlin_ui_runtime.py",
+        "run_ui27": "Tools/PinkhaSimulatorGate/run_ui27.py",
+        "shared_editor_existing_build": "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py",
+        "text_native_ack": "Tools/PinkhaSimulatorGate/text_native_ack.py",
+        "type_preservation": "Tools/PinkhaSimulatorGate/type_preservation.py",
+        "wave15_diagnostics": "Tools/PinkhaSimulatorGate/wave15_diagnostics.py"
+      },
+      "path": "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py",
+      "sha256": "e2a66621e6ef2385e10a5eb8b09c9e1e0a48b2fdc0e244b4fe38bf1ba13be47e"
+    },
+    "shared_editor_existing_build": {
+      "eagerRepositoryImports": {
+        "related_read_authority_profile": "Tools/Hanlin/related_read_authority_profile.py",
+        "run_host_tests": "Tools/Hanlin/run_host_tests.py",
+        "shared_editor_profile": "Tools/Hanlin/shared_editor_profile.py",
+        "shared_table_profile": "Tools/Hanlin/shared_table_profile.py"
+      },
+      "path": "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py",
+      "sha256": "b4573d61a6fadad7e266dfb88f7f6c25683d05552d99ab70acf86e7ef9715ae6"
+    },
+    "shared_editor_profile": {
+      "eagerRepositoryImports": {
+        "wave15_core_profile": "Tools/Hanlin/wave15_core_profile.py"
+      },
+      "path": "Tools/Hanlin/shared_editor_profile.py",
+      "sha256": "77d27d083f8073ad027cd28e98f2e2986aaee1cb2e31d2931287e33a4f8497c8"
+    },
+    "shared_table_profile": {
+      "eagerRepositoryImports": {
+        "wave15_core_profile": "Tools/Hanlin/wave15_core_profile.py"
+      },
+      "path": "Tools/Hanlin/shared_table_profile.py",
+      "sha256": "5c99f5e10adcd2930fd0fe8476d178f15bb8cd9c11174be8a5f849ae12470397"
+    },
+    "simulator_identity": {
+      "eagerRepositoryImports": {
+        "validate_release": "Tools/PinkhaSimulatorGate/validate_release.py"
+      },
+      "path": "Tools/PinkhaSimulatorGate/simulator_identity.py",
+      "sha256": "930330e48559e4c3e016e005ea03bdb89d030e239b9fc3e14e5a76aa31aa561e"
+    },
+    "simulator_selection": {
+      "eagerRepositoryImports": {},
+      "path": "Tools/PinkhaSimulatorGate/simulator_selection.py",
+      "sha256": "2309bb55b3752774bffc588a7c489392daa7ceb3b7279f6a9ec870899a1f1d5f"
+    },
+    "text_native_ack": {
+      "eagerRepositoryImports": {},
+      "path": "Tools/PinkhaSimulatorGate/text_native_ack.py",
+      "sha256": "b6b1cc2c4332897c0d466b95d0b4e00126d32f16cc400b2176b8d3da4ad9ed2a"
+    },
+    "type_preservation": {
+      "eagerRepositoryImports": {
+        "destination_artifacts": "Tools/PinkhaSimulatorGate/destination_artifacts.py"
+      },
+      "path": "Tools/PinkhaSimulatorGate/type_preservation.py",
+      "sha256": "602a91987a6995f0218840744af0d88c2ea5c65d34c4edba7f030808c5007b44"
+    },
+    "validate_release": {
+      "eagerRepositoryImports": {},
+      "path": "Tools/PinkhaSimulatorGate/validate_release.py",
+      "sha256": "2b4162be85c3164a4d75869f67b3bfe9e58fac033a581d6f6f57d38e639961e0"
+    },
+    "validate_wave1": {
+      "eagerRepositoryImports": {
+        "build_custom_heart": "Tools/PinkhaNativeDerived/build_custom_heart.py",
+        "build_native_ipa": "Tools/PinkhaNativeDerived/build_native_ipa.py"
+      },
+      "path": "Tools/PinkhaNativeDerived/validate_wave1.py",
+      "sha256": "743ddea3e4e42640070035fe7d149d148dfff1cbdc852ef464c8c19da07253a0"
+    },
+    "verify_archive_roundtrip": {
+      "eagerRepositoryImports": {
+        "verify_native_test_execution": "Tools/AnyEnginePort/verify_native_test_execution.py"
+      },
+      "path": "Tools/AnyEnginePort/verify_archive_roundtrip.py",
+      "sha256": "5573eefcbf9eae9eea905210d15726ce7684f5529766531d4926eda39c7e2f29"
+    },
+    "verify_focus_handoff_execution": {
+      "eagerRepositoryImports": {
+        "reuse_uikit_execution": "Tools/AnyEnginePort/reuse_uikit_execution.py",
+        "reuse_uikit_unaffected_eight": "Tools/AnyEnginePort/reuse_uikit_unaffected_eight.py",
+        "verify_native_test_execution": "Tools/AnyEnginePort/verify_native_test_execution.py"
+      },
+      "path": "Tools/AnyEnginePort/verify_focus_handoff_execution.py",
+      "sha256": "3b6799f003a1e526e66b6c35dbe34a727f0b2a736cc7a6690d8575805642bc1c"
+    },
+    "verify_native_test_execution": {
+      "eagerRepositoryImports": {},
+      "path": "Tools/AnyEnginePort/verify_native_test_execution.py",
+      "sha256": "af126a59d47fec07b0d465c0077c812fb5f52cfcadf71a2da22cebb969e21b91"
+    },
+    "warning_profile": {
+      "eagerRepositoryImports": {},
+      "path": "Tools/PinkhaSemanticAnchorWire/apple_mounted/warning_profile.py",
+      "sha256": "fa561fa2823047cd92177920779dbebc0ced35d3fce9869773b05a374932adbf"
+    },
+    "wave15_batch": {
+      "eagerRepositoryImports": {
+        "run_wave15_acceptance": "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py",
+        "type_preservation": "Tools/PinkhaSimulatorGate/type_preservation.py",
+        "wave15_diagnostics": "Tools/PinkhaSimulatorGate/wave15_diagnostics.py"
+      },
+      "path": "Tools/PinkhaSimulatorGate/wave15_batch.py",
+      "sha256": "75e923d8c9718553d80c6aa3fd5338f06e2622e275ba10bc5537d03c4ba03193"
+    },
+    "wave15_core_profile": {
+      "eagerRepositoryImports": {},
+      "path": "Tools/Hanlin/wave15_core_profile.py",
+      "sha256": "f544619607be0d25e74cff541ac66418b76df11abcd9c15c0ca774d6cbd5d96a"
+    },
+    "wave15_diagnostics": {
+      "eagerRepositoryImports": {},
+      "path": "Tools/PinkhaSimulatorGate/wave15_diagnostics.py",
+      "sha256": "c1ca1fe8857e6ce71b91ffb49ff54627815cbfe44beaa1bbb7328c9bb7a55397"
+    }
+  },
+  "productionImported": false,
+  "scope": "AST-only static closure; no import/load claim",
+  "testModulesImported": false
+}

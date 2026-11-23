@@ -1,0 +1,19 @@
+{
+  "AppleExecutions": 0,
+  "afterSHA256": "0b6d2cf343ae802c27426c1f2ca4bf14cac995090d8abe08646f72fdf2650eaa",
+  "allOtherBytesUnchanged": true,
+  "beforeSHA256": "fc562627296f14b4e3752d17c6a5957ac40c6bd23bf195ec592094f62364dd92",
+  "hostControlsExecuted": 0,
+  "peer": "acceptance_map, read-only, no imports/execution",
+  "scope": "Two missing retained descriptor shape guards; pre-execution source only",
+  "wholeFileInverse": [
+    {
+      "after": "    version = original.get(\"__xctestrun_metadata__\", {}).get(\"FormatVersion\")\n    require(type(version) is int and version == expected_version, \"page_descriptor_format_changed\")",
+      "before": "    require(original.get(\"__xctestrun_metadata__\", {}).get(\"FormatVersion\") == expected_version,\n            \"page_descriptor_format_changed\")"
+    },
+    {
+      "after": "        require(isinstance(target, dict) and target.get(\"BlueprintName\", blueprint) == blueprint\n                and target.get(\"IsUITestBundle\") is True\n",
+      "before": "        require(isinstance(target, dict) and target.get(\"IsUITestBundle\") is True\n"
+    }
+  ]
+}
