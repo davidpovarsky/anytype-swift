@@ -1,0 +1,56 @@
+{
+  "all_donor_bytes_modes_exact": true,
+  "all_other_baseline_tree_entries_unchanged": true,
+  "baseline": "856130b141ce29e5095effe80a04e6108b7995f3",
+  "donor_chain": [
+    "c853f6b68860f037d014c17cb2d268b8e9c1631a",
+    "97563de533579b0705eed0ad0028bdaa944ff470",
+    "c9b8d0a8aa784faad389f7a4bf5a702fa7e06ba5",
+    "24e3fdaffaf8ad6152a13cc6ca4c7bd8be3d820d"
+  ],
+  "donor_changed_path_count": 133,
+  "integrated_donor_head": "0a7e71d8228578053d4fb2c12936951c9163fc38",
+  "new_builds": 0,
+  "new_tests_executed": 0,
+  "prior_sdk_ui_page_gate": {
+    "path": "/mnt/development/projects/diagnostics/sdk-ui-page-composition-20261123/source-retention-before-dispatch.json",
+    "scope": "Retained source gate; current Release delta is composed explicitly here.",
+    "sha256": "bb83fb04b5b14ea48482e2c44e4ab98f15994d8f694487719af097a1cbe473e4"
+  },
+  "product_runtime_status": "NOT_RUN_CURRENT_RELEASE_SOURCE",
+  "protocol": "release-order-source-composition-v1",
+  "recorded_at": "2026-11-23T14:02:17.843992+00:00",
+  "release_source": {
+    "current": "423bb279972950fc3118c99af948ad846f5507a93823219fd75fb38b1efee2d8",
+    "exact_inverse_hunks": 2,
+    "inverse_manifest_sha256": "adab8960c348d0c2241622eae58e01322612de8bdaa675f0f31b16c53e8916fd",
+    "path": "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py",
+    "qualified_before": "1d08140358381855e3c143fd48e8b392bc15aeb9fc07a08d51d5390c3afd21d0",
+    "sdk_branch_exclusion": "SDK06OriginalNativeContext is a separate dataclass; production requires build_context is None and lane hanlin-native, so original_products is False and both construction calls remain unreachable.",
+    "whole_file_inverse_matches_baseline": true
+  },
+  "retained_qualification": {
+    "current_import_methods_executed": 0,
+    "historical_after_available": false,
+    "historical_failure_not_relabelled": true,
+    "original_control_status": "FAIL",
+    "original_named_passes": 1,
+    "original_subcase_passes": 3,
+    "path": "docs/validation/20261123-release-selection-order/qualification.json",
+    "sha256": "1f3f2c1ac92fa5c77f99c0340fa917835fb0b0edf8916b14979e4a183c72bd6a",
+    "supplemental_current_import_status": "PASS"
+  },
+  "sdk_contract": {
+    "changed_rows": [
+      "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py"
+    ],
+    "current_sha256": "ae953b0651953d69ed25747cca53b84856f9f92b63540e9f3f1ea8f0f39410a1",
+    "input_rows_verified": 78,
+    "other_inputs_unchanged": true,
+    "other_json_fields_byte_unchanged": true,
+    "path": "Tools/PinkhaSimulatorGate/sdk06-original-native-controller-source.json",
+    "tested_before_sha256": "aded7fbbe277ecbb56cf4648e862505002dadc72cca963ea43377c2d439fe35b"
+  },
+  "status": "PASS_SOURCE_COMPOSITION_NO_TEST_REPLAY",
+  "tests_replayed": 0
+}
