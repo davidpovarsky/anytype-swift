@@ -27,3 +27,13 @@ The existing external-owner route is pinned to different App75bd products. Canon
 Fresh GitHub readback showed external-owner run 45223678862/1 on shared283c completed FAILURE at 17:21:38 UTC. Its failed step is the exact23/continuation lane and the outer failed log reports “Original lane has not passed.” This lane did not acquire the external owner's artifact, interpret uninspected internal counts, repair their code or dispatch a retry. The owner retains diagnosis and next-execution responsibility.
 
 This handoff performed only Git/JSON/log/cache-metadata reads. It ran no compiler, product test, simulator, binary enumeration or duplicate watcher, and changed no shared/editor branch or worktree.
+
+## Firebase support-closure pointer for the existing owner
+
+The owner's later authenticated result (Asana comment 1220832184215336) identifies missing FirebaseCore and FirebaseMessaging during dependency scanning; all SDK23/32 and ACK7 product methods remain NOT_RUN. Their source-only support-closure work remains authoritative.
+
+The already acquired successful canonical build log records **19** explicit Clang module maps in its Anytype app driver, including CAtomic. The owner's original App75bd AnytypeTests driver has **18**. These are distinct commands and are not interchangeable. compile-support-handoff.json preserves the exact original canonical commands, line numbers, 19 map paths, Firebase header paths and source hashes.
+
+FirebaseCore.modulemap and FirebaseMessaging.modulemap are referenced under build/ui27-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/. Public headers are referenced under build/ui27-derived/SourcePackages/checkouts/firebase-ios-sdk/FirebaseCore/Sources/Public and FirebaseMessaging/Sources/Public (with related Installations and CoreOnly paths recorded). The original workflow retains Build and SourcePackages in exact-source cache 10983997745. There are **zero** Firebase map/header entries in the captured Build/Products manifest. The individual cached header/map bytes have not been acquired or independently hashed.
+
+Both original App75bd and canonical988f Git locks, plus the actual canonical resolved-pin receipt, pin firebase-ios-sdk **11.8.1** at **6318278e8e64d21f0fdcc69004395e4d34048aaf**. The complete lock files have different hashes; only this exact dependency lineage is asserted. The existing owner can use these pointers while retaining their original App/native binaries and exact23 gate. No support-closure implementation or additional execution was performed here.
