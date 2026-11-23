@@ -15,7 +15,7 @@ class SemanticPage154CleanupProfileControl(unittest.TestCase):
             path.write_text(json.dumps(dict(worker_pid=987654, owned_group_cleanup="TERM_THEN_KILL")))
             for profile, expected in [(None, 2), ("coherent-heart-release", 7), ("semantic-page154", 7)]:
                 with self.subTest(profile=profile), \
-                     patch.object(supervisor.time, "monotonic", side_effect=[0, 3]), \
+                     patch.object(supervisor.time, "monotonic", side_effect=[0, 3] if profile is None else [0, 3, 4]), \
                      patch.object(supervisor.subprocess, "check_output", return_value="1 1 Ss\n") as probe:
                     actual = supervisor.verify_owned_group_stopped(path, cleanup_profile=profile)
                     self.assertEqual(probe.call_args.kwargs["timeout"], expected)

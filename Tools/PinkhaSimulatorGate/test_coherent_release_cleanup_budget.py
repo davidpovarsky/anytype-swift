@@ -46,7 +46,7 @@ class ReleaseCleanupControls(unittest.TestCase):
     def test_coherent_probe_uses_remaining_ten_seconds_and_requires_actual_zero(self):
         with tempfile.TemporaryDirectory() as temporary:
             path, _ = owned_receipt(Path(temporary))
-            with patch.object(supervisor.time, "monotonic", side_effect=[0, 3]), \
+            with patch.object(supervisor.time, "monotonic", side_effect=[0, 3, 4]), \
                  patch.object(supervisor.subprocess, "check_output", return_value="1 1 Ss\n") as probe:
                 actual = supervisor.verify_owned_group_stopped(path, cleanup_profile=PROFILE)
             self.assertEqual(probe.call_args.kwargs["timeout"], 7)

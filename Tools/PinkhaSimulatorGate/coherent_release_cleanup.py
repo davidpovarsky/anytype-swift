@@ -88,7 +88,8 @@ def audit_nested_receipts(roots, app, private_work, report):
             report["groups_checked"] = report.get("groups_checked", 0) + 1
         except BaseException as error:
             row.update(status="FAIL", error_type=type(error).__name__, error=str(error),
-                       timeout_observations=getattr(error, "timeout_observations", []))
+                       timeout_observations=getattr(error, "timeout_observations", []),
+                       quiescence_observation=getattr(error, "quiescence_observation", None))
             raise
 
 

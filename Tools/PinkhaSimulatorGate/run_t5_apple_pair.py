@@ -481,7 +481,8 @@ def run_logged(argv, cwd, directory, name, timeout, check=True, output=None, *, 
             cleanup_failure = error
             metadata.update(status="FAILED_PROCESS_CLEANUP", cleanup_error_type=type(error).__name__,
                             cleanup_error=str(error),
-                            cleanup_probe_timeouts=getattr(error, "timeout_observations", []))
+                            cleanup_probe_timeouts=getattr(error, "timeout_observations", []),
+                            cleanup_observation=getattr(error, "quiescence_observation", None))
         try:
             if command_path.is_file():
                 command_path.rename(original_path)

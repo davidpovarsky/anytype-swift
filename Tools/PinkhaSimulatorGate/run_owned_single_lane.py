@@ -59,8 +59,15 @@ def verify_owned_group_stopped(command_path, *, seconds=10, cleanup_profile=None
             if int(fields[1]) == pgid and not fields[2].startswith("Z"):
                 live.append(int(fields[0]))
         if not live:
-            return {"status": "PASS", "pgid": pgid, "live_members": 0, "observations": observations,
-                    "timeout_observations": timeout_observations, "budget_seconds": seconds}
+            observed = {"status": "PASS", "pgid": pgid, "live_members": 0, "observations": observations,
+                        "timeout_observations": timeout_observations, "budget_seconds": seconds}
+            if cleanup_profile is not None and time.monotonic() > deadline:
+                observed.update(status="FAIL_DEADLINE", cleanup_profile=cleanup_profile)
+                error = RuntimeError("Owned zero-member observation returned after its original cleanup deadline")
+                error.timeout_observations = list(timeout_observations)
+                error.quiescence_observation = observed
+                raise error
+            return observed
         time.sleep(min(0.05, max(0, deadline - time.monotonic())))
 
 

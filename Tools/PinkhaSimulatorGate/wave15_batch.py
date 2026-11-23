@@ -1004,6 +1004,8 @@ def cleanup_owned(intent, evidence):
                 entry[action + "_exit_code"] = result.returncode
                 require(result.returncode == 0, "Owned simulator cleanup failed")
             entry["status"] = "DELETED_OWNED_SIMULATOR"
+        if intent.get("profile") == COHERENT_HEART_PROFILE:
+            require(time.monotonic() <= deadline, "Owned cleanup completed after its original 180-second deadline")
     except BaseException as error:
         report.update(status="CANCELLED" if isinstance(error, KeyboardInterrupt) else "FAIL",
                       error_type=type(error).__name__, error=str(error))
