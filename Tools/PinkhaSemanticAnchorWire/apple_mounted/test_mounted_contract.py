@@ -105,6 +105,35 @@ def archive(root, *, external=False):
     return target, manifest
 
 
+
+def descriptor(root, selector, *, version=2, token=None, name="original.xctestrun"):
+    blueprint = selector.split("/")[0]
+    target = dict(BlueprintName=blueprint, TestBundlePath="__TESTHOST__/PlugIns/" + blueprint + ".xctest",
+        TestHostPath="__TESTROOT__/Debug/Host.app/Host", TestingEnvironmentVariables={"EXACT": "original"},
+        EnvironmentVariables={"UNRELATED": "retained"}, OnlyTestIdentifiers=["Old/testOld"])
+    if selector == proof.UI: target["IsUITestBundle"] = True
+    if token is not None:
+        target["TestingEnvironmentVariables"]["DYLD_INSERT_LIBRARIES"] = (
+            "/unchanged/first.dylib:" + token + ":__TESTROOT__/unchanged-last.dylib")
+    metadata = {"FormatVersion": version, "OriginalMarker": "retained"}
+    payload = {"__xctestrun_metadata__": metadata}
+    if version == 2: payload["TestConfigurations"] = [{"Name": "Default", "TestTargets": [target]}]
+    else: payload[blueprint] = target
+    original = root / name
+    original.write_bytes(plistlib.dumps(payload))
+    approved = {"sha256": proof.digest(original), "main_thread_checker_token": token}
+    return original, target, approved
+
+
+def actual_runtime_control(root):
+    library = root / "runtime/usr/lib/libMainThreadChecker.dylib"
+    library.parent.mkdir(parents=True)
+    library.write_bytes(b"\xcf\xfa\xed\xfe" + b"synthetic controller control, never executed")
+    return {"isAvailable": True, "identifier": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+            "supportedArchitectures": ["arm64"], "runtimeRoot": str(root / "runtime"),
+            "version": "27.0", "buildversion": "control-build"}, library
+
+
 class MountedControllerControls(unittest.TestCase):
     def test_original_native_selection_cancel_capture_and_distinct_cold_receipts_are_bound(self):
         values = sample()
@@ -144,20 +173,129 @@ class MountedControllerControls(unittest.TestCase):
 
     def test_copied_selector_and_binding_preserve_original_host_and_testing_environment(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp); original = root / "original.xctestrun"; destination = root / "mounted.xctestrun"
-            target = dict(BlueprintName="AnytypeTests", TestBundlePath="__TESTHOST__/PlugIns/AnytypeTests.xctest",
-                TestHostPath="__TESTROOT__/Debug/Anytype.app/Anytype", TestingEnvironmentVariables={"EXACT": "original"},
-                EnvironmentVariables={"UNRELATED": "retained"}, OnlyTestIdentifiers=["Old/testOld"])
-            original.write_bytes(plistlib.dumps({"__xctestrun_metadata__": {"FormatVersion": 2},
-                "TestConfigurations": [{"TestTargets": [target]}]}))
+            root = Path(tmp); destination = root / "mounted.xctestrun"
+            original, target, approved = descriptor(root, proof.PREP)
             before = original.read_bytes()
-            receipt = proof.copied_descriptor(original, destination, proof.PREP, BINDING)
+            receipt = proof.copied_descriptor(original, destination, proof.PREP, BINDING,
+                runtime={}, approved=approved)
             copied = plistlib.loads(destination.read_bytes())["TestConfigurations"][0]["TestTargets"][0]
             self.assertEqual(original.read_bytes(), before)
             self.assertEqual(copied["TestingEnvironmentVariables"], target["TestingEnvironmentVariables"])
+            self.assertEqual(copied["TestHostPath"], target["TestHostPath"])
             self.assertEqual(receipt["selector"], proof.PREP)
+            self.assertEqual(receipt["enumeration_plan"], "AnytypeTests")
+            self.assertEqual(receipt["runtime_injection"]["status"], "ABSENCE_PRESERVED")
             with self.assertRaises(ValueError):
-                proof.copied_descriptor(destination, root / "replayed.xctestrun", proof.PREP, BINDING)
+                proof.copied_descriptor(destination, root / "replayed.xctestrun", proof.PREP, BINDING,
+                    runtime={}, approved=dict(approved, sha256=proof.digest(destination)))
+
+    def test_v1_ui_exact_single_blueprint_preserves_format_and_rejects_named_or_ambiguous_shapes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); app = root / "App.app"; app.mkdir()
+            original, target, approved = descriptor(root, proof.UI, version=1)
+            before = original.read_bytes()
+            receipt = proof.copied_descriptor(original, root / "bound.xctestrun", proof.UI, BINDING,
+                runtime={}, approved=approved, fixture=sample()[0], app_path=app)
+            copied = plistlib.loads((root / "bound.xctestrun").read_bytes())
+            self.assertEqual(original.read_bytes(), before)
+            self.assertEqual(set(copied), {"__xctestrun_metadata__", "PinkhaStage1AcceptanceUITests"})
+            self.assertEqual(copied["__xctestrun_metadata__"], plistlib.loads(before)["__xctestrun_metadata__"])
+            self.assertEqual(copied["PinkhaStage1AcceptanceUITests"]["TestHostPath"], target["TestHostPath"])
+            self.assertEqual(receipt["format_version"], 1)
+            self.assertIsNone(receipt["enumeration_plan"])
+            self.assertEqual(receipt["enumeration_plan_policy"], "OBSERVED_METADATA_FOR_EXACT_UNNAMED_V1_UI")
+            for index, mode in enumerate(("extra-target", "named-plan", "named-config", "disabled", "ui-v2", "native-v1")):
+                selected = proof.PREP if mode == "native-v1" else proof.UI
+                candidate, _, bound = descriptor(root, selected, version=2 if mode == "ui-v2" else 1,
+                    name="shape-" + str(index) + ".xctestrun")
+                value = plistlib.loads(candidate.read_bytes())
+                if mode == "extra-target": value["OtherUITests"] = copy.deepcopy(value["PinkhaStage1AcceptanceUITests"])
+                if mode == "named-plan": value["__xctestrun_metadata__"]["TestPlanName"] = "Unexpected"
+                if mode == "named-config": value["PinkhaStage1AcceptanceUITests"]["TestConfigurationName"] = "Unexpected"
+                if mode == "disabled": value["PinkhaStage1AcceptanceUITests"]["IsEnabled"] = False
+                candidate.write_bytes(plistlib.dumps(value)); bound["sha256"] = proof.digest(candidate)
+                with self.subTest(mode=mode), self.assertRaises(ValueError):
+                    proof.copied_descriptor(candidate, root / ("refused-" + str(index) + ".xctestrun"),
+                        selected, BINDING, runtime={}, approved=bound,
+                        **({"fixture": sample()[0], "app_path": app} if selected == proof.UI else {}))
+
+    def test_descriptor_hash_and_explicit_injection_absence_are_admitted_before_copy(self):
+        token = "/original-reviewed-runtime/usr/lib/libMainThreadChecker.dylib"
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for index, mode in enumerate(("wrong-sha", "missing-pin", "unexpected-token", "unexpected-absence",
+                                          "duplicate-token", "relative-pin", "escaping-pin")):
+                present = token if mode in ("unexpected-token", "duplicate-token") else None
+                original, target, approved = descriptor(root, proof.PREP, token=present,
+                    name="original-" + str(index) + ".xctestrun")
+                if mode == "wrong-sha": approved["sha256"] = "0" * 64
+                if mode == "missing-pin": approved.pop("main_thread_checker_token")
+                if mode == "unexpected-token": approved["main_thread_checker_token"] = None
+                if mode == "unexpected-absence": approved["main_thread_checker_token"] = token
+                if mode == "relative-pin": approved["main_thread_checker_token"] = "relative/libMainThreadChecker.dylib"
+                if mode == "escaping-pin": approved["main_thread_checker_token"] = "/original/../libMainThreadChecker.dylib"
+                if mode == "duplicate-token":
+                    value = plistlib.loads(original.read_bytes())
+                    value["TestConfigurations"][0]["TestTargets"][0]["TestingEnvironmentVariables"]["DYLD_INSERT_LIBRARIES"] += ":" + token
+                    original.write_bytes(plistlib.dumps(value)); approved["sha256"] = proof.digest(original)
+                before = original.read_bytes(); destination = root / ("refused-" + str(index) + ".xctestrun")
+                with self.subTest(mode=mode), self.assertRaises(ValueError):
+                    proof.copied_descriptor(original, destination, proof.PREP, BINDING,
+                        runtime={}, approved=approved)
+                self.assertEqual(original.read_bytes(), before)
+                self.assertFalse(destination.exists())
+            original, _, approved = descriptor(root, proof.PREP, name="absent-environment.xctestrun")
+            value = plistlib.loads(original.read_bytes())
+            value["TestConfigurations"][0]["TestTargets"][0].pop("TestingEnvironmentVariables")
+            original.write_bytes(plistlib.dumps(value)); approved["sha256"] = proof.digest(original)
+            destination = root / "absence-preserved.xctestrun"
+            result = proof.copied_descriptor(original, destination, proof.PREP, BINDING, runtime={}, approved=approved)
+            self.assertNotIn("TestingEnvironmentVariables", plistlib.loads(destination.read_bytes())["TestConfigurations"][0]["TestTargets"][0])
+            self.assertEqual(result["runtime_injection"]["status"], "ABSENCE_PRESERVED")
+
+    def test_pinned_injection_relocates_only_one_token_and_reverses_all_other_fields(self):
+        token = "/exact-admitted-page-runtime/usr/lib/libMainThreadChecker.dylib"
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); runtime, library = actual_runtime_control(root)
+            app = root / "App.app"; app.mkdir()
+            for index, selected in enumerate((proof.PREP, proof.UI)):
+                original, target, approved = descriptor(root, selected, version=2 if selected == proof.PREP else 1,
+                    token=token, name="original-" + str(index) + ".xctestrun")
+                before = original.read_bytes(); destination = root / ("bound-" + str(index) + ".xctestrun")
+                result = proof.copied_descriptor(original, destination, selected, BINDING,
+                    runtime=runtime, approved=approved,
+                    **({"fixture": sample()[0], "app_path": app} if selected == proof.UI else {}))
+                value = plistlib.loads(destination.read_bytes())
+                copied = value["TestConfigurations"][0]["TestTargets"][0] if selected == proof.PREP else value["PinkhaStage1AcceptanceUITests"]
+                injected = copied["TestingEnvironmentVariables"]["DYLD_INSERT_LIBRARIES"]
+                self.assertEqual(injected, target["TestingEnvironmentVariables"]["DYLD_INSERT_LIBRARIES"].replace(token, str(library)))
+                reversed_environment = copy.deepcopy(copied["TestingEnvironmentVariables"])
+                reversed_environment["DYLD_INSERT_LIBRARIES"] = injected.replace(str(library), token)
+                self.assertEqual(reversed_environment, target["TestingEnvironmentVariables"])
+                self.assertEqual(original.read_bytes(), before)
+                self.assertEqual(result["runtime_injection"]["original_descriptor_sha256"], approved["sha256"])
+                self.assertEqual(result["runtime_injection"]["original_token"], token)
+                self.assertEqual(result["runtime_injection"]["library_sha256"], proof.digest(library))
+                self.assertEqual(result["runtime_injection"]["helper_sha256"], proof.RUNTIME_HELPER_SHA256)
+                self.assertTrue(result["all_other_testing_environment_fields_unchanged"])
+                self.assertFalse(result["original_testing_environment_unchanged"])
+
+    def test_native_plan_identity_and_observed_unnamed_ui_plan_cannot_weaken_exact_selection(self):
+        result = proof.exact_enumeration("AnytypeTests", {proof.PREP}, set(), proof.PREP, "AnytypeTests")
+        self.assertEqual(result["plan"], "AnytypeTests")
+        for plan in ("Anytype", "", "Unexpected"):
+            with self.subTest(native_plan=plan), self.assertRaises(ValueError):
+                proof.exact_enumeration(plan, {proof.PREP}, set(), proof.PREP, "AnytypeTests")
+        for observed in ("control-observed-no-named-plan", ""):
+            result = proof.exact_enumeration(observed, {proof.UI}, set(), proof.UI, None)
+            self.assertEqual(result["plan"], observed)
+        for enabled, disabled, expected in (({proof.UI, proof.PREP}, set(), None),
+                                             ({proof.PREP}, set(), None),
+                                             ({proof.UI}, {proof.UI}, None),
+                                             (set(), set(), None),
+                                             ({proof.UI}, set(), "inferred-scheme-name")):
+            with self.subTest(enabled=enabled, expected=expected), self.assertRaises(ValueError):
+                proof.exact_enumeration("observed", enabled, disabled, proof.UI, expected)
 
     def test_actual_enum_and_execution_always_supply_full_only_testing_argv(self):
         for selector in (proof.PREP, proof.UI):

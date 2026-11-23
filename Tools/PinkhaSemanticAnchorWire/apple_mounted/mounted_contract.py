@@ -40,9 +40,23 @@ def read(path, maximum=64 * 1024**2):
         parse_constant=lambda value: (_ for _ in ()).throw(ValueError("Nonfinite JSON")))
 
 
+def descriptor_admission(value, selector):
+    native.keys(value, {"sha256", "main_thread_checker_token"})
+    native.hex_value(value["sha256"])
+    require(selector in (PREP, UI), "Unowned descriptor admission")
+    token = value["main_thread_checker_token"]
+    require(token is None or (isinstance(token, str) and 0 < len(token) <= 4096
+            and token.startswith("/") and token.isprintable() and ":" not in token
+            and all(part not in {".", ".."} for part in token.split("/"))
+            and token.endswith("/libMainThreadChecker.dylib")),
+            "Pin the exact original MainThreadChecker token or explicit absence")
+    return value
+
+
 def admission(value):
     native.keys(value, {"consumer_run", "consumer_attempt", "consumer_sha", "artifact_id", "artifact_bytes",
-                        "artifact_sha256", "native_manifest_sha256", "ui_manifest_sha256"})
+                        "artifact_sha256", "native_manifest_sha256", "ui_manifest_sha256",
+                        "native_descriptor", "ui_descriptor"})
     for name in ("consumer_run", "consumer_attempt"):
         require(isinstance(value[name], str) and re.fullmatch("[1-9][0-9]{0,19}", value[name]), "Invalid original CI identity")
     native.hex_value(value["consumer_sha"], 40)
@@ -51,6 +65,8 @@ def admission(value):
     require(type(value["artifact_id"]) is int and value["artifact_id"] > 0
             and type(value["artifact_bytes"]) is int and 0 < value["artifact_bytes"] <= 2 * MAX_ARCHIVE,
             "Invalid original artifact identity/size")
+    descriptor_admission(value["native_descriptor"], PREP)
+    descriptor_admission(value["ui_descriptor"], UI)
     return value
 
 
@@ -182,24 +198,93 @@ def exact_original_descriptor(products, original_bytes):
     return found[0]
 
 
-def copied_descriptor(original, destination, selector, binding, *, fixture=None, app_path=None):
+RUNTIME_HELPER_SHA256 = "9169a1cdbd1e5c49b5f7a4b49e125e902a20e00627f2a8b0ae0dc866ec685468"
+
+
+def relocated_injection(target, runtime, approved):
+    """Change only a source token already bound to the immutable descriptor."""
+    before = copy.deepcopy(target.get("TestingEnvironmentVariables", {}))
+    require(isinstance(before, dict)
+            and all(isinstance(k, str) and isinstance(v, str) for k, v in before.items()),
+            "Invalid original testing environment")
+    injected = before.get("DYLD_INSERT_LIBRARIES")
+    tokens = [] if injected is None else injected.split(":")
+    matching = [token for token in tokens if token.rsplit("/", 1)[-1] == "libMainThreadChecker.dylib"]
+    expected = approved["main_thread_checker_token"]
+    if expected is None:
+        require(not matching, "Admitted MainThreadChecker absence differs from original descriptor")
+        return {"status": "ABSENCE_PRESERVED", "original_token": None,
+                "original_descriptor_sha256": approved["sha256"]}
+    require(matching == [expected] and tokens.count(expected) == 1,
+            "Only the descriptor-pinned single MainThreadChecker token may change")
+    # The ordinary SDK caller retains its original default token/profile. This
+    # caller must supply a different token explicitly, after descriptor admission.
+    sys.path.insert(0, str(HERE.parents[1] / "PinkhaSimulatorGate"))
+    import sdk06_enumeration_probe as runtime_helper
+    require(digest(Path(runtime_helper.__file__)) == RUNTIME_HELPER_SHA256,
+            "Reviewed per-descriptor runtime normalizer bytes differ")
+    result = runtime_helper.normalize_runtime_injection(target, runtime, expected_original_token=expected)
+    exact = copy.deepcopy(before)
+    exact["DYLD_INSERT_LIBRARIES"] = ":".join(
+        result["replacement_token"] if token == expected else token for token in tokens)
+    require(target.get("TestingEnvironmentVariables") == exact,
+            "Runtime normalization changed another testing-environment field")
+    return dict(result, status="EXACT_PINNED_TOKEN_RELOCATED",
+                original_descriptor_sha256=approved["sha256"], helper_sha256=RUNTIME_HELPER_SHA256)
+
+
+def copied_descriptor(original, destination, selector, binding, *, runtime, approved, fixture=None, app_path=None):
     native.binding(binding)
+    descriptor_admission(approved, selector)
     require(selector in (PREP, UI) and original != destination
             and original.parent.resolve() == destination.parent.resolve()
+            and original.is_file() and not original.is_symlink()
             and not destination.exists(), "Fresh exact mounted descriptor required")
     raw = original.read_bytes()
+    require(hashlib.sha256(raw).hexdigest() == approved["sha256"],
+            "Original descriptor differs from reviewed SHA-256")
     value = plistlib.loads(raw)
-    require(value.get("__xctestrun_metadata__", {}).get("FormatVersion") == 2
-            and len(value.get("TestConfigurations", [])) == 1, "One original v2 configuration required")
-    configuration = value["TestConfigurations"][0]
+    require(isinstance(value, dict) and isinstance(value.get("__xctestrun_metadata__"), dict),
+            "Original descriptor metadata missing")
+    version = value["__xctestrun_metadata__"].get("FormatVersion")
     blueprint, suite, method = selector.split("/")
-    found = [target for target in configuration.get("TestTargets", []) if target.get("BlueprintName") == blueprint]
-    require(len(found) == 1 and found[0].get("IsEnabled", True) is True, "Required compiled test target absent")
-    target = found[0]; before = copy.deepcopy(target)
+    configuration = None
+    if type(version) is int and version == 2 and selector == PREP:
+        require(isinstance(value.get("TestConfigurations"), list)
+                and len(value["TestConfigurations"]) == 1, "One original v2 configuration required")
+        configuration = value["TestConfigurations"][0]
+        require(isinstance(configuration, dict) and isinstance(configuration.get("TestTargets"), list),
+                "Original v2 targets missing")
+        found = [target for target in configuration["TestTargets"]
+                 if isinstance(target, dict) and target.get("BlueprintName") == blueprint]
+        require(len(found) == 1, "Required compiled test target absent or ambiguous")
+        target = found[0]
+    else:
+        require(type(version) is int and version == 1 and selector == UI
+                and set(value) == {"__xctestrun_metadata__", blueprint}
+                and isinstance(value[blueprint], dict),
+                "Only one exact UI blueprint is admitted in a v1 descriptor")
+        def unnamed(node):
+            if isinstance(node, dict):
+                for key, child in node.items():
+                    normalized = key.replace("_", "").lower()
+                    require("testplan" not in normalized and "testconfiguration" not in normalized
+                            and normalized != "configurationname",
+                            "Unexpected named plan/configuration in the frozen v1 UI descriptor")
+                    unnamed(child)
+            elif isinstance(node, list):
+                for child in node: unnamed(child)
+        unnamed(value)
+        target = value[blueprint]
+        require(target.get("BlueprintName", blueprint) == blueprint
+                and target.get("IsUITestBundle") is True, "Original v1 UI target differs")
+    require(target.get("IsEnabled", True) is True, "Required compiled test target disabled")
+    before = copy.deepcopy(target)
     existing = target.get("EnvironmentVariables", {})
     require(isinstance(existing, dict) and all(isinstance(k, str) and isinstance(v, str) for k, v in existing.items())
             and not any(k.startswith("PINKHA_") or k.startswith("TEST_RUNNER_PINKHA_") for k in existing),
             "Original descriptor has stale candidate environment")
+    injection = relocated_injection(target, runtime, approved)
     additions = {"PINKHA_SIMULATOR_UI_DISPOSABLE": "1",
                  "PINKHA_SEMANTIC_MOUNTED_PREPARE" if selector == PREP else "PINKHA_SEMANTIC_MOUNTED_TESTING": "1"}
     for key, suffix in (("sourceSHA", "SOURCE_SHA"), ("runID", "RUN_ID"), ("runAttempt", "RUN_ATTEMPT"), ("nonce", "NONCE")):
@@ -214,17 +299,40 @@ def copied_descriptor(original, destination, selector, binding, *, fixture=None,
         require(fixture is None and app_path is None, "Preparation cannot receive a UI fixture")
     target["EnvironmentVariables"] = existing | additions
     target["OnlyTestIdentifiers"] = [suite + "/" + method]
-    configuration["TestTargets"] = [target]
-    with destination.open("xb") as output:
-        plistlib.dump(value, output, sort_keys=False)
+    if configuration is not None: configuration["TestTargets"] = [target]
     restored = copy.deepcopy(target)
     for key in ("EnvironmentVariables", "OnlyTestIdentifiers", "UITargetAppPath"):
         if key in before: restored[key] = before[key]
         else: restored.pop(key, None)
+    if injection["status"] == "EXACT_PINNED_TOKEN_RELOCATED":
+        current = restored["TestingEnvironmentVariables"]["DYLD_INSERT_LIBRARIES"].split(":")
+        replacement = injection["replacement_token"]
+        require(current.count(replacement) == 1, "Relocated testing token became ambiguous")
+        restored["TestingEnvironmentVariables"]["DYLD_INSERT_LIBRARIES"] = ":".join(
+            injection["original_token"] if token == replacement else token for token in current)
     require(restored == before and original.read_bytes() == raw, "Non-binding descriptor fields changed")
+    with destination.open("xb") as output:
+        plistlib.dump(value, output, sort_keys=False)
     return {"original_sha256": digest(original), "copied_sha256": digest(destination),
             "selector": selector, "binding": binding, "environment_keys": sorted(additions),
+            "format_version": version, "enumeration_plan": "AnytypeTests" if selector == PREP else None,
+            "enumeration_plan_policy": "EXACT_NATIVE_NAMED_PLAN" if selector == PREP else
+                "OBSERVED_METADATA_FOR_EXACT_UNNAMED_V1_UI",
+            "runtime_injection": injection,
+            "all_other_testing_environment_fields_unchanged": True,
             "original_testing_environment_unchanged": target.get("TestingEnvironmentVariables") == before.get("TestingEnvironmentVariables")}
+
+
+def exact_enumeration(plan, enabled, disabled, selector, expected_plan):
+    require(selector in (PREP, UI) and isinstance(plan, str)
+            and ((selector == PREP and plan == expected_plan == "AnytypeTests")
+                 or (selector == UI and expected_plan is None)),
+            "Native plan must be AnytypeTests; unnamed v1 UI records its actual plan metadata")
+    blueprint, suite, method = selector.split("/")
+    actual = [value.removeprefix(blueprint + "/").removesuffix("()") for value in enabled]
+    require(actual == [suite + "/" + method] and not enabled.intersection(disabled),
+            "Actual compiled selection differs from exact owned new method")
+    return {"plan": plan, "enabled": sorted(enabled)}
 
 
 def xctest_command(descriptor, udid, selector, *, enumeration=None, result=None):

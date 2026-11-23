@@ -88,17 +88,14 @@ def product_inputs(inputs):
             if not path.startswith(("Tools/", ".github/", "docs/"))}
 
 
-def enumerate_and_run(runner, descriptor, udid, selector, evidence, receipt):
+def enumerate_and_run(runner, descriptor, udid, selector, expected_plan, evidence, receipt):
     evidence.mkdir()
     scoped = consumer.Commands(ROOT, evidence, receipt)
     listing = evidence / "enumeration.json"
     scoped.run(proof.xctest_command(descriptor, udid, selector, enumeration=listing),
                "enumerate-exact-owned-one", 600)
     plan, enabled, disabled = consumer.component.enumerated_identifiers(proof.read(listing))
-    blueprint, suite, method = selector.split("/")
-    actual = [value.removeprefix(blueprint + "/").removesuffix("()") for value in enabled]
-    proof.require(actual == [suite + "/" + method] and not enabled.intersection(disabled),
-                  "Actual compiled selection differs from exact owned new method")
+    enumeration = proof.exact_enumeration(plan, enabled, disabled, selector, expected_plan)
     result = evidence / "actual.xcresult"
     failure = None
     try:
@@ -114,7 +111,7 @@ def enumerate_and_run(runner, descriptor, udid, selector, evidence, receipt):
     if failure: raise failure
     verified = proof.exact_execution(proof.read(evidence / "actual-summary.json"),
         proof.read(evidence / "actual-tests.json"), udid, selector)
-    verified["enumeration"] = {"plan": plan, "enabled": sorted(enabled), "sha256": proof.digest(listing)}
+    verified["enumeration"] = dict(enumeration, sha256=proof.digest(listing))
     return verified
 
 
@@ -248,24 +245,27 @@ def execute(args, receipt):
         runner.run(["xcrun", "simctl", "boot", owned_udid], "boot-owned-simulator", 90)
         runner.run(["xcrun", "simctl", "bootstatus", owned_udid, "-b"], "wait-owned-simulator", 180)
         prep = native_original.with_name("MountedPrep-" + binding["nonce"] + ".xctestrun")
-        prep_proof = proof.copied_descriptor(native_original, prep, proof.PREP, binding)
+        prep_proof = proof.copied_descriptor(native_original, prep, proof.PREP, binding,
+            runtime=pair["runtime"], approved=approved["native_descriptor"])
         copied_descriptors.append((prep, prep_proof["copied_sha256"]))
         proof.save(args.evidence / "preparation-descriptor.json", prep_proof)
         shutil.copyfile(prep, args.evidence / "preparation-bound.xctestrun")
         receipt["phase"] = "ACTUAL_NEW_PREPARATION"
         receipt["preparation_commands_started"] = 1
         receipt["preparation_execution"] = enumerate_and_run(runner, prep, owned_udid, proof.PREP,
-            args.evidence / "preparation", receipt)
+            prep_proof["enumeration_plan"], args.evidence / "preparation", receipt)
         fixture_path = copy_original_fixture(runner, owned_udid, args.evidence, "pinkha-semantic-page154-mounted-fixture.json")
         fixture = proof.read(fixture_path, 65_536); proof.fixture(fixture, binding)
         ui = ui_original.with_name("MountedUI-" + binding["nonce"] + ".xctestrun")
-        ui_proof = proof.copied_descriptor(ui_original, ui, proof.UI, binding, fixture=fixture, app_path=app)
+        ui_proof = proof.copied_descriptor(ui_original, ui, proof.UI, binding,
+            runtime=pair["runtime"], approved=approved["ui_descriptor"], fixture=fixture, app_path=app)
         copied_descriptors.append((ui, ui_proof["copied_sha256"]))
         proof.save(args.evidence / "ui-descriptor.json", ui_proof)
         shutil.copyfile(ui, args.evidence / "ui-bound.xctestrun")
         receipt["phase"] = "ACTUAL_NEW_MOUNTED_JOURNEY"
         receipt["ui_commands_started"] = 1
-        receipt["ui_execution"] = enumerate_and_run(runner, ui, owned_udid, proof.UI, args.evidence / "ui", receipt)
+        receipt["ui_execution"] = enumerate_and_run(runner, ui, owned_udid, proof.UI,
+            ui_proof["enumeration_plan"], args.evidence / "ui", receipt)
         capture_path = copy_original_fixture(runner, owned_udid, args.evidence, "pinkha-semantic-page154-mounted-capture.json")
         reopen_path = copy_original_fixture(runner, owned_udid, args.evidence, "pinkha-semantic-page154-mounted-reopen.json")
         captured = proof.read(capture_path, 65_536); reopened = proof.read(reopen_path, 65_536)
