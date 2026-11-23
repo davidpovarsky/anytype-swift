@@ -1,0 +1,37 @@
+{
+  "command": [
+    "nice",
+    "-n",
+    "10",
+    "swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-wave15-inline-http-20261123/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/mnt/development/build-cache/anytype-inline-swift-20261123",
+    "--cache-path",
+    "/mnt/development/build-cache/swift-package-cache",
+    "--disable-automatic-resolution",
+    "-j",
+    "1",
+    "-Xswiftc",
+    "-DPINKHA_PREPARED_INLINE_HTTP_ACCEPTANCE",
+    "list"
+  ],
+  "defaultListingReused": true,
+  "defaultOriginalLogSHA256": "bfb26a1092549dd842f78e570bdadaec87cbbb430c779849f135260b66f69cd5",
+  "defaultOriginalReceiptSHA256": "179e81db10dba9d02cfec9a267ed3e0d66555f8ff0de985a3a08ebafc66d0097",
+  "elapsedSeconds": 199.19,
+  "error": "[]",
+  "exitCode": 0,
+  "finishedAt": "2026-11-23T01:08:07.139474+00:00",
+  "gate": "PINKHA_PREPARED_INLINE_HTTP_ACCEPTANCE",
+  "liveMethodMatches": [
+    "PinkhaAnyHostTests.NativePreparedInlineFileHTTPTests/testRealNativeInlineFilesRoundTripThroughThePublicSwiftClient"
+  ],
+  "logSHA256": "8f3a21701c8ba549833c81296fa858c4d0b5cc4a2083634e877795a921090d0d",
+  "priorFailurePreserved": "Sentinel timeout 30 seconds closed SSH output; default compilation and listing exited 0 at 68.923 seconds, before broken pipe. No XCTest ran.",
+  "startedAt": "2026-11-23T01:04:45.168981+00:00",
+  "status": "FAIL_REGISTRATION_GUARD",
+  "testExecution": false
+}

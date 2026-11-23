@@ -29,3 +29,7 @@ The transport controls use an explicit modeled transport. They do not claim nati
 NativePreparedInlineFileHTTPTests/testRealNativeInlineFilesRoundTripThroughThePublicSwiftClient is compiled but was not selected in the portable runs. It requires a fresh owned native loopback server handshake; an absent server fails instead of skipping. It will exercise zero and 4095-byte files through the real public Swift client, then supply exact nonce-bound observations for independent native Get/Open and durable-status checks. Both the original XCTest terminal and the native harness terminal are required.
 
 Apple, physical device, network file synchronization, large/chunked files and full Space migration are not proved by this evidence.
+
+## Explicit live-test registration follow-up
+
+The separate registration-guard receipt now proves the live HTTP method is absent in default discovery and present only under PINKHA_PREPARED_INLINE_HTTP_ACCEPTANCE. The entire original test body and twelve qualified portable controls are unchanged. Both audit-plumbing failures remain original evidence; successful compiler/discovery results were retained without rerunning any product tests.

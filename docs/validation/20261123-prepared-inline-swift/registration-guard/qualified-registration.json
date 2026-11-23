@@ -1,0 +1,54 @@
+{
+  "binaries": [
+    {
+      "path": "/mnt/development/build-cache/anytype-inline-swift-20261123/out/Products/Debug-linux-aarch64/PinkhaAnyHostTests-test-runner",
+      "sha256": "08abfb193bf27be0bc2cf9037e75c7439e6d6336c6fddca10db9ac7ed828a6e4",
+      "size": 541984
+    },
+    {
+      "path": "/mnt/development/build-cache/anytype-inline-swift-20261123/out/Products/Debug-linux-aarch64/PinkhaAnyHostTests.so",
+      "sha256": "3c6bd7ad012ffc83252348748d4492aad4228148cca9304263628d143454b49f",
+      "size": 29578832
+    }
+  ],
+  "binaryDiscovery": {
+    "command": [
+      "swift",
+      "build",
+      "--package-path",
+      "/mnt/development/projects/worktrees/anytype-wave15-inline-http-20261123/Modules/PinkhaAnyHost",
+      "--scratch-path",
+      "/mnt/development/build-cache/anytype-inline-swift-20261123",
+      "--disable-automatic-resolution",
+      "-Xswiftc",
+      "-DPINKHA_PREPARED_INLINE_HTTP_ACCEPTANCE",
+      "--show-bin-path"
+    ],
+    "exitCode": 0,
+    "format": "Swift 6.4 SwiftBuild test runner plus test shared library; original legacy .xctest lookup failed and was preserved",
+    "stderr": "",
+    "stdout": "/mnt/development/build-cache/anytype-inline-swift-20261123/out/Products/Debug-linux-aarch64\n"
+  },
+  "createdAt": "2026-11-23T01:09:23.111854+00:00",
+  "defaultListing": {
+    "exitCode": 0,
+    "logSHA256": "bfb26a1092549dd842f78e570bdadaec87cbbb430c779849f135260b66f69cd5",
+    "originalReceiptSHA256": "179e81db10dba9d02cfec9a267ed3e0d66555f8ff0de985a3a08ebafc66d0097",
+    "registeredLiveMethods": []
+  },
+  "liveHTTPMethodsExecuted": 0,
+  "optInListing": {
+    "exitCode": 0,
+    "logSHA256": "8f3a21701c8ba549833c81296fa858c4d0b5cc4a2083634e877795a921090d0d",
+    "originalReceiptSHA256": "699b6f3314c426f16c6424336ea07a1e92072e06b0690c22f0b4dadb57abfaee",
+    "registeredLiveMethods": [
+      "PinkhaAnyHostTests.NativePreparedInlineFileHTTPTests/testRealNativeInlineFilesRoundTripThroughThePublicSwiftClient"
+    ]
+  },
+  "priorFailuresPreserved": true,
+  "productMethodsExecuted": 0,
+  "sourceChangeReceiptSHA256": "5c6327a1d342c5c30582e88c881f092b33e01a559772f96ec8c286bd02a7cce6",
+  "sourceFiles": 1461,
+  "sourceUnchanged": true,
+  "status": "PASS_EXPLICIT_LIVE_TEST_REGISTRATION"
+}

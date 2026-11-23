@@ -1,0 +1,36 @@
+{
+  "error": "[Errno 32] Broken pipe",
+  "finishedAt": "2026-11-23T01:03:44.364167+00:00",
+  "gate": "PINKHA_PREPARED_INLINE_HTTP_ACCEPTANCE",
+  "runs": [
+    {
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "swift",
+        "test",
+        "--package-path",
+        "/mnt/development/projects/worktrees/anytype-wave15-inline-http-20261123/Modules/PinkhaAnyHost",
+        "--scratch-path",
+        "/mnt/development/build-cache/anytype-inline-swift-20261123",
+        "--cache-path",
+        "/mnt/development/build-cache/swift-package-cache",
+        "--disable-automatic-resolution",
+        "-j",
+        "1",
+        "list"
+      ],
+      "elapsedSeconds": 68.923,
+      "exitCode": 0,
+      "expectedLiveMethod": "PinkhaAnyHostTests.NativePreparedInlineFileHTTPTests/testRealNativeInlineFilesRoundTripThroughThePublicSwiftClient",
+      "expectedRegistered": false,
+      "liveMethodMatches": [],
+      "logSHA256": "bfb26a1092549dd842f78e570bdadaec87cbbb430c779849f135260b66f69cd5",
+      "mode": "default"
+    }
+  ],
+  "startedAt": "2026-11-23T01:02:35.440909+00:00",
+  "status": "FAIL_REGISTRATION_GUARD",
+  "testExecution": false
+}

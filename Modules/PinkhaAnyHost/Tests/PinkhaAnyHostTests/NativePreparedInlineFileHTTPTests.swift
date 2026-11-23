@@ -1,3 +1,4 @@
+#if PINKHA_PREPARED_INLINE_HTTP_ACCEPTANCE
 import Foundation
 import XCTest
 import PinkhaAnyEngine
@@ -108,3 +109,4 @@ final class NativePreparedInlineFileHTTPTests: XCTestCase, @unchecked Sendable {
         try data.write(to: url, options: .atomic)
     }
 }
+#endif
