@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bind 68 retained controls and one requalified method to this SDK consumer.
+"""Bind the original 69 controls and focused corrections to this SDK consumer.
 
 Verification executes no controller method or product test. Original failure conclusions
 remain unchanged; actual native/UI execution is a separate required gate.
@@ -14,7 +14,7 @@ from pathlib import Path
 import subprocess
 
 POLICY_PATH = "Tools/Hanlin/canonical-native-control-reuse.json"
-POLICY_SHA256 = "7e710d3ee7437d516a4bb138721ca3acec49574ce4546d4b7d0a020d7ea05ef8"
+POLICY_SHA256 = "2f62d50766bf9bce7f6009930143adce451ed9bca7f438422bcb57f489175d1b"
 BRANCH = "codex/chatgpt-wave15-canonical-hanlin-20261123"
 
 
@@ -191,6 +191,65 @@ def verify_observer_budget(root, policy, original, sources, reviewed_sources):
             "scope_limit": "New2 timing methods plus1 actually requalified changed method; other68 retain prior proof. No Apple acceptance."}
 
 
+def verify_source_scans(root, policy, original):
+    """Admit the exact parallel read with fresh affected-control evidence."""
+    item = policy["source_scan_extension"]
+    proof = original.decode_json(original.read_bound(root, item["path"], item["sha256"]))
+    require(proof["schema"] == "pinkha-canonical-source-scans-v1"
+            and proof["new_control_methods"] == 2 and proof["affected_original_methods"] == 7
+            and proof["native_tests_executed"] == 0, "Unknown source scan qualification")
+    path = proof["source_path"]
+    require(path == "Tools/PinkhaSimulatorGate/run_ui27.py", "Unexpected source scan target")
+    current = original.read_bound(root, path, proof["current_sha256"])
+    retained = current.decode("utf-8")
+    for replacement in proof["replacements"]:
+        require(retained.count(replacement["current"]) == 1, "Source scan inverse is not exact")
+        retained = retained.replace(replacement["current"], replacement["original"], 1)
+    retained = retained.encode("utf-8")
+    require(sha(retained) == proof["original_sha256"], "Changes exceed the source scan correction")
+    files = {entry["path"]: original.read_bound(root, entry["path"], entry["sha256"])
+             for entry in proof["proof_files"]}
+    require(len(files) == len(proof["proof_files"]), "Duplicate source scan proof input")
+    control = proof["control"]
+    control_raw = original.read_bound(root, control["path"], control["sha256"])
+    declarations = original.test_declarations(control_raw)
+    require(declarations == proof["new_declarations"] and len(declarations) == 2,
+            "Source scan controls changed")
+    fixture = proof["affected_module"]
+    fixture_raw = original.read_bound(root, fixture["path"], fixture["sha256"])
+    methods = original.test_declarations(fixture_raw)
+    affected = {name: value for name, value in methods.items()
+                if name.startswith("ExistingProcessMappingControls.")}
+    require(affected == proof["affected_declarations"] and len(affected) == 7,
+            "Affected mapping checks are not the exact seven original methods")
+    for log, expected, seconds in [
+            (proof["new_log"], declarations, proof["new_seconds"]),
+            (proof["affected_log"], affected, proof["affected_seconds"])]:
+        batches = original.unittest_batches(files[log])
+        require(len(batches) == 1 and batches[0]["count"] == len(expected)
+                and batches[0]["seconds"] == seconds
+                and {entry["name"] for entry in batches[0]["methods"]} == set(expected),
+                "Source scan qualification lacks its exact named execution")
+    require(b"BrokenBarrierError" in files[proof["before_log"]]
+            and b"FAILED (errors=1)" in files[proof["before_log"]],
+            "Original sequential scan failure was not retained")
+    trace = original.decode_json(files[proof["trace"]])
+    require(trace["scope"] == "CONTROLLER_FIXTURE_NOT_APPLE"
+            and trace["source_sha256"] == proof["current_sha256"]
+            and trace["control_sha256"] == control["sha256"]
+            and trace["active_maximum"] == 2 and trace["active_after_return"] == 0
+            and trace["exact_original_manifest_equality"]
+            and trace["installed_manifest"] == trace["built_manifest"]
+            and len(trace["installed_manifest"]["manifest"]["carriers"]) == 112,
+            "Fresh source scans did not retain complete identical inventories")
+    return path, retained, {"status": "PASS_SOURCE_SCAN_CONTROLS_ONLY",
+        "qualification_sha256": item["sha256"], "control_methods": 2,
+        "affected_original_methods": 7, "affected_module": fixture["path"],
+        "affected_declarations": affected, "methods_executed_now": 0,
+        "native_tests_executed_now": 0,
+        "scope_limit": "Concurrent fresh file reads only. Actual Apple observation remains required."}
+
+
 def verify(app):
     root = Path(app).resolve(strict=True)
     policy = json.loads(bootstrap_read(root, POLICY_PATH, POLICY_SHA256))
@@ -216,12 +275,14 @@ def verify(app):
             "Actual native-controller input closure differs")
     original_inputs = {item["path"]: item for item in admission["source_inputs"]}
     diagnostic_path, projected_observer, diagnostics = verify_observer_diagnostics(root, policy, original)
+    scan_path, projected_scans, scans = verify_source_scans(root, policy, original)
     sources, reviewed_sources, timing_sources = {}, {}, {}
     for path in policy["source_inputs"]:
         item = original_inputs[path]
         delta = policy["source_deltas"].get(path)
         current = original.read_bound(root, path, delta["current_sha256"] if delta else item["current_sha256"])
-        retained_current = projected_observer if path == diagnostic_path else current
+        retained_current = (projected_observer if path == diagnostic_path else
+                            projected_scans if path == scan_path else current)
         if path in imported["source_inputs"]:
             require(sha(retained_current) == imported["source_inputs"][path]["sha256"], "Imported source closure changed")
         reviewed = current
@@ -294,7 +355,10 @@ def verify(app):
                     and original.test_declarations(proofs[binding["tested_source_snapshot"]]).get(name) == prior[name],
                     "Prior native control lacks its exact original named PASS/source")
             changed = budget["requalified_original_control"]
-            if (module["path"], name) == (changed["module"], changed["method"]):
+            if module["path"] == scans["affected_module"] and name in scans["affected_declarations"]:
+                require(current[name] == scans["affected_declarations"][name], "Affected mapping control differs")
+                proof_batch = "canonical-source-scans-affected-seven"
+            elif (module["path"], name) == (changed["module"], changed["method"]):
                 require(current[name] == changed["declaration_sha256"], "Affected current control differs")
                 proof_batch = "canonical-observer-budget-affected-original"
             else:
@@ -308,12 +372,14 @@ def verify(app):
             and execution["run_attempt"] == "1"
             and execution["source_sha"] == admission["origins"]["hanlin"]["source_sha"], "Original failed native lane identity changed")
     return {"status": "PASS_SOURCE_BOUND_NATIVE_CONTROLLER_CONTROLS_ONLY", "policy_sha256": POLICY_SHA256,
-            "current_control_methods": 69, "retained_original_methods": 61, "qualified_observer_methods": 7,
-            "requalified_changed_original_methods": 1, "unchanged_methods_retained": 68,
+            "current_control_methods": 69, "retained_original_methods": 54, "qualified_observer_methods": 7,
+            "requalified_changed_original_methods": 8, "unchanged_methods_retained": 61,
             "controller_methods_executed_now": 0, "product_tests_executed_now": 0,
             "source_inputs": {path: sha(raw) for path, raw in sources.items()}, "catalog": catalog,
             "supplemental_observer_budget": budget,
             "supplemental_observer_diagnostics": diagnostics,
+            "supplemental_source_scans": scans,
+            "controller_methods_requalified_this_update": 7, "controller_methods_reused_this_update": 62,
             "original_failed_run": "45096079315", "original_failure_preserved": True,
             "scope_limit": "Original Python native-lane controls only. Current app build, live mapping, native1/UI1 and SDK23/32+ACK remain separate."}
 

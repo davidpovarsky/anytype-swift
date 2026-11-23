@@ -1,5 +1,6 @@
 """Build once and execute real native/three-method UI smoke on disposable OS27 devices."""
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
 import os
@@ -423,11 +424,16 @@ def installed_runtime_source(udid, evidence, built, source_identity, *, command_
     installed = Path(subprocess.check_output(['xcrun', 'simctl', 'get_app_container', udid,
                                              'io.anytype.app', 'app'], text=True,
                                              timeout=command_timeout()).strip())
-    source = dict(**source_identity, installed_app=str(installed),
-                  installed_app_executable_sha256=digest(installed / 'Anytype'),
-                  built_app_executable_sha256=digest(built / 'Anytype'),
-                  installed_code_carriers=code_carriers(installed), built_code_carriers=code_carriers(built),
-                  full_bundle_equivalence=False)
+    # Fresh independent inventories must fit the live observer's mapping window.
+    # Read both trees concurrently; retain every original byte and equality check.
+    with ThreadPoolExecutor(max_workers=2, thread_name_prefix='sdk06-source') as scans:
+        installed_scan = scans.submit(code_carriers, installed)
+        built_scan = scans.submit(code_carriers, built)
+        source = dict(**source_identity, installed_app=str(installed),
+                      installed_app_executable_sha256=digest(installed / 'Anytype'),
+                      built_app_executable_sha256=digest(built / 'Anytype'),
+                      installed_code_carriers=installed_scan.result(), built_code_carriers=built_scan.result(),
+                      full_bundle_equivalence=False)
     source['status'] = ('MATCHED_BYTES_PROCESS_NOT_YET_VERIFIED'
         if source['installed_app_executable_sha256'] == source['built_app_executable_sha256'] else 'FAIL')
     write(evidence / 'installed-app-source.json', source)

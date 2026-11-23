@@ -106,6 +106,21 @@
         }
       ],
       "scope": "Only the expected mapping bound in one affected original diagnostic control. That exact method was rerun once; other68 current original methods retain exact prior bodies. All fixture helpers used by the two new timing controls remain byte-identical."
+    },
+    "Tools/PinkhaSimulatorGate/run_ui27.py": {
+      "current_sha256": "419242400844c444a2af594ea3fb790522927d2bb18819e7e950b8e0e91a8731",
+      "reviewed_base_sha256": "9222c3ea0258ce5002f72e2b60b58c64f27857c15f653a49ff2a0edacc8cf5de",
+      "replacements": [
+        {
+          "current": "from concurrent.futures import ThreadPoolExecutor\n",
+          "original": ""
+        },
+        {
+          "current": "    # Fresh independent inventories must fit the live observer's mapping window.\n    # Read both trees concurrently; retain every original byte and equality check.\n    with ThreadPoolExecutor(max_workers=2, thread_name_prefix='sdk06-source') as scans:\n        installed_scan = scans.submit(code_carriers, installed)\n        built_scan = scans.submit(code_carriers, built)\n        source = dict(**source_identity, installed_app=str(installed),\n                      installed_app_executable_sha256=digest(installed / 'Anytype'),\n                      built_app_executable_sha256=digest(built / 'Anytype'),\n                      installed_code_carriers=installed_scan.result(), built_code_carriers=built_scan.result(),\n                      full_bundle_equivalence=False)\n",
+          "original": "    source = dict(**source_identity, installed_app=str(installed),\n                  installed_app_executable_sha256=digest(installed / 'Anytype'),\n                  built_app_executable_sha256=digest(built / 'Anytype'),\n                  installed_code_carriers=code_carriers(installed), built_code_carriers=code_carriers(built),\n                  full_bundle_equivalence=False)\n"
+        }
+      ],
+      "scope": "Only two independent fresh executable-inventory scans overlap. Their complete canonical manifests and all byte-equality checks are retained. Original seven process-mapping controls requalified; no timeout or source/PID condition changed."
     }
   },
   "modules": {
@@ -122,5 +137,9 @@
   "observer_diagnostics_extension": {
     "path": "docs/validation/20261123-canonical-observer-diagnostics/diagnostic-qualification.json",
     "sha256": "53fe781d78bf6325260372fa014bcbd7d649b5bbcad6844391fb215637f45a3b"
+  },
+  "source_scan_extension": {
+    "path": "docs/validation/20261123-canonical-source-scan-concurrency/qualification.json",
+    "sha256": "2b97d954b5ec4348ce812f5d046eb3a01451fb3f5e4f0b03facc9b408c9f3f10"
   }
 }

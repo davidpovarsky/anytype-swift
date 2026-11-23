@@ -1,0 +1,162 @@
+{
+  "status": "FAIL_ACTUAL_UI_RUNTIME_NOT_BOUND",
+  "error_type": "RuntimeError",
+  "extra_app_launches": 0,
+  "every_launch_verified": false,
+  "diagnostics": {
+    "diagnostic_only": true,
+    "stage_duration_scope": "ENTIRE_NAMED_OPERATION_NOT_INDIVIDUAL_SUBPROCESS",
+    "stages": [
+      {
+        "stage": "prepare_data_container",
+        "attempts": 1,
+        "status": "RETURNED",
+        "started_at": 1795442735.632535,
+        "stage_elapsed_seconds": 1.4286179589998937,
+        "finished_at": 1795442737.061127
+      },
+      {
+        "stage": "prepare_installed_source",
+        "attempts": 1,
+        "status": "RETURNED",
+        "started_at": 1795442737.062044,
+        "stage_elapsed_seconds": 20.32134916699988,
+        "finished_at": 1795442757.383528
+      },
+      {
+        "stage": "poll_data_container",
+        "attempts": 24,
+        "status": "RETURNED",
+        "started_at": 1795442800.45577,
+        "stage_elapsed_seconds": 8.660962292000022,
+        "finished_at": 1795442809.116873,
+        "last_failure": {
+          "stage": "poll_data_container",
+          "error_type": "TimeoutExpired",
+          "command": [
+            "xcrun",
+            "simctl",
+            "get_app_container",
+            "771FCA57-5D23-418B-BC15-A477E62C55A3",
+            "io.anytype.app",
+            "data"
+          ],
+          "command_timeout_seconds": 10,
+          "attempt": 9,
+          "stage_elapsed_seconds": 10.208522333000019
+        }
+      },
+      {
+        "stage": "read_native_phase_before",
+        "attempts": 23,
+        "status": "RETURNED",
+        "started_at": 1795442809.117137,
+        "stage_elapsed_seconds": 0.0005952920000709128,
+        "finished_at": 1795442809.117706
+      },
+      {
+        "stage": "validate_native_phase_before",
+        "attempts": 1,
+        "status": "RETURNED",
+        "started_at": 1795442809.119757,
+        "stage_elapsed_seconds": 0.0280464170000414,
+        "finished_at": 1795442809.147795
+      },
+      {
+        "stage": "save_partial_phase_before",
+        "attempts": 1,
+        "status": "RETURNED",
+        "started_at": 1795442809.147884,
+        "stage_elapsed_seconds": 0.0005959169998277503,
+        "finished_at": 1795442809.14848
+      },
+      {
+        "stage": "map_installed_source",
+        "attempts": 1,
+        "status": "RETURNED",
+        "started_at": 1795442809.148703,
+        "stage_elapsed_seconds": 63.220237624999754,
+        "finished_at": 1795442872.3691
+      },
+      {
+        "stage": "map_running_process",
+        "attempts": 1,
+        "status": "FAILED",
+        "started_at": 1795442872.37073,
+        "stage_elapsed_seconds": 0.008886999999958789,
+        "finished_at": 1795442872.37962,
+        "last_failure": {
+          "stage": "map_running_process",
+          "error_type": "RuntimeError",
+          "attempt": 1,
+          "stage_elapsed_seconds": 0.008886999999958789
+        }
+      },
+      {
+        "stage": "export_final_data_container",
+        "attempts": 1,
+        "status": "RETURNED",
+        "started_at": 1795442971.727511,
+        "stage_elapsed_seconds": 3.8576141250000546,
+        "finished_at": 1795442975.584865
+      },
+      {
+        "stage": "export_final_native_result",
+        "attempts": 1,
+        "status": "RETURNED",
+        "started_at": 1795442975.584923,
+        "stage_elapsed_seconds": 0.000872124999659718,
+        "finished_at": 1795442975.585793
+      }
+    ],
+    "first_failure": {
+      "stage": "poll_data_container",
+      "error_type": "TimeoutExpired",
+      "command": [
+        "xcrun",
+        "simctl",
+        "get_app_container",
+        "771FCA57-5D23-418B-BC15-A477E62C55A3",
+        "io.anytype.app",
+        "data"
+      ],
+      "command_timeout_seconds": 10,
+      "stage_elapsed_seconds": 10.208522333000019
+    },
+    "poll_timeout_retries": 1,
+    "partial_observations": {
+      "native_phase_before": {
+        "file": "partial-native-phase-before.json",
+        "sha256": "795c04c053627cc17be352371f391736630b51ad8a5815fdc64fe879db8c891d",
+        "identity": {
+          "fixtureID": "15479BA5-59EC-4C85-9D5F-6381A5A6CD6D",
+          "sourceSHA": "1f56bc4fbb2b51790d309d593aa8e70936410c50",
+          "runID": "45181802668",
+          "runAttempt": "1",
+          "processID": 74038,
+          "startedAt": 817135608.748848,
+          "sessionID": "FE55C33A-5A13-48EE-AE16-3112B749A3DC",
+          "navigationContext": {
+            "objectReference": "bafyreidjwerizop2d7ntznpy27mrw7yxh75xhxaqagvzwwpchelevieyse",
+            "app": "anytype",
+            "account": "A8WH7n1kxr36qSaicaX8TiPNmXKwEH75XjWysoNwtJyVvXF6",
+            "sourceRevision": "cf94e8220647f50147beb457cb7030a04e55ca13b58031c2aa14279b4f1214f3",
+            "selectionReferences": [],
+            "workspace": "bafyreihmewhj4vqptsylfaqmpil7gmzvobclhfckkq3hwbtxi5kzkpeute.3rpqwq3gkt77a",
+            "space": "bafyreihmewhj4vqptsylfaqmpil7gmzvobclhfckkq3hwbtxi5kzkpeute.3rpqwq3gkt77a",
+            "sceneID": "80355CA7-47A9-4E31-9ADD-ADB34C6BB00B",
+            "generation": "47FAF8CC-EF98-4A43-8197-99CA37653A65"
+          }
+        },
+        "status": "OBSERVED_IDENTITY_RUNTIME_NOT_YET_BOUND"
+      },
+      "installed_source_returned": {
+        "file": "installed-app-source.json",
+        "installed_app_executable_sha256": "5aad9e60bd7f8e135841e77e4aa88fd50b07f0701744d01423279fd2d1ad136a",
+        "built_app_executable_sha256": "5aad9e60bd7f8e135841e77e4aa88fd50b07f0701744d01423279fd2d1ad136a",
+        "installed_code_carriers_sha256": "27d13161b77fbf84257b037d7bd2ab6bec68602de73c74f700a9e7a5f34beb14",
+        "built_code_carriers_sha256": "27d13161b77fbf84257b037d7bd2ab6bec68602de73c74f700a9e7a5f34beb14"
+      }
+    }
+  }
+}

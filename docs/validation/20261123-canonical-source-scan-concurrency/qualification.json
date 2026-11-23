@@ -1,0 +1,77 @@
+{
+  "schema": "pinkha-canonical-source-scans-v1",
+  "base_source": "1f56bc4fbb2b51790d309d593aa8e70936410c50",
+  "source_path": "Tools/PinkhaSimulatorGate/run_ui27.py",
+  "current_sha256": "419242400844c444a2af594ea3fb790522927d2bb18819e7e950b8e0e91a8731",
+  "original_sha256": "9222c3ea0258ce5002f72e2b60b58c64f27857c15f653a49ff2a0edacc8cf5de",
+  "replacements": [
+    {
+      "current": "from concurrent.futures import ThreadPoolExecutor\n",
+      "original": ""
+    },
+    {
+      "current": "    # Fresh independent inventories must fit the live observer's mapping window.\n    # Read both trees concurrently; retain every original byte and equality check.\n    with ThreadPoolExecutor(max_workers=2, thread_name_prefix='sdk06-source') as scans:\n        installed_scan = scans.submit(code_carriers, installed)\n        built_scan = scans.submit(code_carriers, built)\n        source = dict(**source_identity, installed_app=str(installed),\n                      installed_app_executable_sha256=digest(installed / 'Anytype'),\n                      built_app_executable_sha256=digest(built / 'Anytype'),\n                      installed_code_carriers=installed_scan.result(), built_code_carriers=built_scan.result(),\n                      full_bundle_equivalence=False)\n",
+      "original": "    source = dict(**source_identity, installed_app=str(installed),\n                  installed_app_executable_sha256=digest(installed / 'Anytype'),\n                  built_app_executable_sha256=digest(built / 'Anytype'),\n                  installed_code_carriers=code_carriers(installed), built_code_carriers=code_carriers(built),\n                  full_bundle_equivalence=False)\n"
+    }
+  ],
+  "new_control_methods": 2,
+  "affected_original_methods": 7,
+  "native_tests_executed": 0,
+  "control": {
+    "path": "Tools/Hanlin/test_canonical_native_source_scans.py",
+    "sha256": "0635eeffb618e5f0eda1002ab3f540670a81782a400913bc214221922ceb567c"
+  },
+  "affected_module": {
+    "path": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+    "sha256": "5b626c0018f474b5cc34218dc3170a169aa67f3129654ea072c1a035d41b2d65"
+  },
+  "new_declarations": {
+    "ConcurrentSourceScans.test_both_fresh_full_inventories_overlap_with_identical_original_manifests": "59678eb7e929d055070487f0be71b83ed99ffde59031d5747b7a2cd5a4732994",
+    "ConcurrentSourceScans.test_mismatch_and_failed_scan_remain_closed_with_no_background_worker": "a8b360aef68d3034e825f5293a11783fe215f6f89fcaf951718f1a2c1ea628ad"
+  },
+  "affected_declarations": {
+    "ExistingProcessMappingControls.test_existing_process_mapping_has_no_launch_and_each_command_is_bounded": "cca456bbca547876550ab9782c7a59bc2836325986428fb14aa4091e9d1cf526",
+    "ExistingProcessMappingControls.test_legacy_probe_wrapper_retains_its_single_launch_and_mapping": "23d6b58d1d511807ee28f01d8b9d1426952bcf5882a1750692907cdc286186bf",
+    "ExistingProcessMappingControls.test_wrong_mapped_pid_or_missing_entrypoint_is_rejected": "173dc85eb5548216b83d8efe8d7d677ada03c238217bef7bf45baf6df9264a56",
+    "ExistingProcessMappingControls.test_process_executable_or_start_identity_change_is_rejected": "f8bc79cc5f04439b20298da869021ac27fb0a882484eb08c9f234defe458a923",
+    "ExistingProcessMappingControls.test_changed_main_or_missing_runtime_marker_is_rejected": "a2040693298485ab31fafb8365e318215921c694ee730041db9fc44338d5a719",
+    "ExistingProcessMappingControls.test_actual_ui_boundaries_must_match_mapped_pid_not_original_probe": "877cde36b8a5891bc42b55dbd6b745bcbe1a8b47986dc0e9d15a3d27a1552b9e",
+    "ExistingProcessMappingControls.test_missing_hierarchy_or_changed_post_ui_code_carrier_cannot_qualify": "3565e06b0ceec9be5d3dedb530b7b5b13325b8d06d1e2d4bba7e80e1aa6c398e"
+  },
+  "new_log": "docs/validation/20261123-canonical-source-scan-concurrency/after-controls.log",
+  "affected_log": "docs/validation/20261123-canonical-source-scan-concurrency/affected-seven.log",
+  "before_log": "docs/validation/20261123-canonical-source-scan-concurrency/before-controls.log",
+  "trace": "docs/validation/20261123-canonical-source-scan-concurrency/concurrent-manifests.json",
+  "new_seconds": "0.746",
+  "affected_seconds": "0.045",
+  "proof_files": [
+    {
+      "path": "docs/validation/20261123-canonical-source-scan-concurrency/affected-seven.log",
+      "sha256": "784998a3b522af5a6f5fbc8af95ea767c0bff908e0b4242acf031d9d6a3d32eb"
+    },
+    {
+      "path": "docs/validation/20261123-canonical-source-scan-concurrency/after-controls.log",
+      "sha256": "a90faab7ea6ac6bba34346753aca0d8c81c2da229f10e9b2e0bf4f8dc029defd"
+    },
+    {
+      "path": "docs/validation/20261123-canonical-source-scan-concurrency/before-controls.log",
+      "sha256": "f43fcc65a57b3b27162d386f3f1ce4adaf39400aef3b1ed033afe37a9147950a"
+    },
+    {
+      "path": "docs/validation/20261123-canonical-source-scan-concurrency/concurrent-manifests.json",
+      "sha256": "02fa4b8051e7eb7444b5c4b8c1a835d757adbb0350da71c9eb2424c273e51946"
+    },
+    {
+      "path": "docs/validation/20261123-canonical-source-scan-concurrency/original-observation.json",
+      "sha256": "8f4c97fb8635dc0531abc4208a4c9793ae78b7325daa6999a3b3e338b4ce114e"
+    },
+    {
+      "path": "docs/validation/20261123-canonical-source-scan-concurrency/original-run-summary.json",
+      "sha256": "4ff48cdf7f256c69c75834dd6019fba47bdbe5389e7a630d99fc106c03342320"
+    },
+    {
+      "path": "docs/validation/20261123-canonical-source-scan-concurrency/source-delta.json",
+      "sha256": "b1ed59b6e0898596ffefe9abf8c0b8802fa1db4823fafaa04bbab8f565fd4199"
+    }
+  ]
+}

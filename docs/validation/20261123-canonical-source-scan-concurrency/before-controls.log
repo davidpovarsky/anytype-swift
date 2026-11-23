@@ -1,0 +1,36 @@
+test_both_fresh_full_inventories_overlap_with_identical_original_manifests (__main__.ConcurrentSourceScans.test_both_fresh_full_inventories_overlap_with_identical_original_manifests) ... ERROR
+
+======================================================================
+ERROR: test_both_fresh_full_inventories_overlap_with_identical_original_manifests (__main__.ConcurrentSourceScans.test_both_fresh_full_inventories_overlap_with_identical_original_manifests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-sdk06-live-observer-20261123/Tools/Hanlin/test_canonical_native_source_scans.py", line 82, in test_both_fresh_full_inventories_overlap_with_identical_original_manifests
+    value = self.source()
+            ^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-sdk06-live-observer-20261123/Tools/Hanlin/test_canonical_native_source_scans.py", line 58, in source
+    return shared.installed_runtime_source(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-sdk06-live-observer-20261123/Tools/PinkhaSimulatorGate/run_ui27.py", line 429, in installed_runtime_source
+    installed_code_carriers=code_carriers(installed), built_code_carriers=code_carriers(built),
+                            ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/mock.py", line 1134, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/mock.py", line 1138, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/mock.py", line 1199, in _execute_mock_call
+    result = effect(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-sdk06-live-observer-20261123/Tools/Hanlin/test_canonical_native_source_scans.py", line 75, in scan
+    barrier.wait()
+  File "/usr/lib/python3.12/threading.py", line 723, in wait
+    self._wait(timeout)
+  File "/usr/lib/python3.12/threading.py", line 761, in _wait
+    raise BrokenBarrierError
+threading.BrokenBarrierError
+
+----------------------------------------------------------------------
+Ran 1 test in 2.169s
+
+FAILED (errors=1)

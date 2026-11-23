@@ -1,0 +1,7 @@
+{
+  "path": "Tools/PinkhaSimulatorGate/run_ui27.py",
+  "before_sha256": "9222c3ea0258ce5002f72e2b60b58c64f27857c15f653a49ff2a0edacc8cf5de",
+  "after_sha256": "419242400844c444a2af594ea3fb790522927d2bb18819e7e950b8e0e91a8731",
+  "old_block": "    source = dict(**source_identity, installed_app=str(installed),\n                  installed_app_executable_sha256=digest(installed / 'Anytype'),\n                  built_app_executable_sha256=digest(built / 'Anytype'),\n                  installed_code_carriers=code_carriers(installed), built_code_carriers=code_carriers(built),\n                  full_bundle_equivalence=False)\n",
+  "new_block": "    # Fresh independent inventories must fit the live observer's mapping window.\n    # Read both trees concurrently; retain every original byte and equality check.\n    with ThreadPoolExecutor(max_workers=2, thread_name_prefix='sdk06-source') as scans:\n        installed_scan = scans.submit(code_carriers, installed)\n        built_scan = scans.submit(code_carriers, built)\n        source = dict(**source_identity, installed_app=str(installed),\n                      installed_app_executable_sha256=digest(installed / 'Anytype'),\n                      built_app_executable_sha256=digest(built / 'Anytype'),\n                      installed_code_carriers=installed_scan.result(), built_code_carriers=built_scan.result(),\n                      full_bundle_equivalence=False)\n"
+}
