@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "status": "THREE_NEW_ACTUAL_FILESYSTEM_CONTROLS_PASS",
+  "cases": [
+    {
+      "case": "authentic_17_regular_files_accepted",
+      "result": "PASS",
+      "files": 17
+    },
+    {
+      "case": "expected_phase_directory_rejected",
+      "result": "PASS",
+      "previous_collector_accepted": true
+    },
+    {
+      "case": "expected_phase_symlink_rejected",
+      "result": "PASS",
+      "previous_collector_accepted": true
+    }
+  ],
+  "base": "9ae8a63521ddd988f01d9118b7128a26ad94acd9",
+  "driver_sha256": "afc154c797582a2d5e61ac549afd9b959ffcef0ff6869375915d4308e0506238",
+  "artifact_sha256": "428f7c124649d7d40067b31704b63742a9da17e35425a9f8a3b1ab89839c9df9",
+  "native_cases_reexecuted": 0,
+  "previous_four_controls_reexecuted": false,
+  "workflow_conclusion": "failure",
+  "global_after_all_tests_stability_gate_retroactively_completed": false,
+  "owned_temporary_directory_removed": true
+}

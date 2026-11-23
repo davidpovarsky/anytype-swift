@@ -347,6 +347,8 @@ def verify_fixture_inventory(fixtures):
     expected |= {"schema-registration-%02d.json" % phase for phase in range(phases)}
     require({path.name for path in fixtures.iterdir()} == expected,
             "Unexpected specimen evidence files")
+    for name in expected:
+        require(safe(fixtures, name).is_file(), "Specimen evidence must be a regular file")
 
 
 def execute_target(support, commands, go, heart, work, evidence, target, result):
