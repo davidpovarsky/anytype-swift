@@ -1,0 +1,220 @@
+{
+  "action_and_wait_counts_retained": {
+    "Task.sleep(": 6,
+    "document.close()": 5,
+    "focusedEmptyTextView(": 3,
+    "textView.caretRect(": 1,
+    "textView.delegate?.textView?(": 2,
+    "textView.insertText(": 1
+  },
+  "base": "d75178aadcccf2020572dc25b7dadd54baa8e2c4",
+  "branch": "codex/chatgpt-wave15-release-rtl-boundary-observation-20261123",
+  "bytes": 27599,
+  "changed_runtime_path": "AnyTypeTests/Pinkha/PinkhaStage1AcceptancePreparationTests.swift",
+  "ci_dispatches": 0,
+  "classification": "DOWNSTREAM_ACCEPTANCE_DIAGNOSTIC_ONLY",
+  "created_utc": "2026-11-23T18:32:57.713413+00:00",
+  "current_test_or_native_acceptance": "NOT_RUN",
+  "diff_sha256": "0feb26216729447aa9d8debce92627f12ded78e93bb3f5479b3dc1b4697b4acb",
+  "fixed_input_lines": 5,
+  "helper_reads_text_or_replacement_values": false,
+  "helper_sha256": "7f53f4c788d56dc967b0ef3351374bde103c2e1ee73ff8b533923022ce78ff4b",
+  "limitations": [
+    "Primitive observations do not establish the cause of the old failure.",
+    "The original direction assertion stays before the new trace; its failure remains a failure.",
+    "UIKit reads and print may affect timing; no claim of zero observational overhead.",
+    "Apple typecheck, project target inclusion and actual preparation remain unverified."
+  ],
+  "maximum_new_trace_records": 10,
+  "new_sha256": "ad708e3d7b3609e7e5a88b60457d0c890a6e9127388c61169c31a42c1be8a696",
+  "new_waits_or_delegate_calls": 0,
+  "old_sha256": "c8a39b1725199b7d33173be273e8bc2696ad6d8f59f3b1025081eb5ad6c4ca51",
+  "original_assertion_lines_retained": 42,
+  "original_evidence": [
+    {
+      "bytes": 8626,
+      "inode": 326864,
+      "mode": 384,
+      "mtime_ns": 1795454647863402670,
+      "path": "/mnt/development/projects/diagnostics/release-original-products-45190599065-attempt4-result-20261123/audit1/findings.json",
+      "sha256": "e23ab5a29d354415012e7663a31e0645fd3ad17305fdbdbdca8fe087fb2a22cb"
+    },
+    {
+      "bytes": 134507,
+      "inode": 326865,
+      "mode": 384,
+      "mtime_ns": 1795454647865779604,
+      "path": "/mnt/development/projects/diagnostics/release-original-products-45190599065-attempt4-result-20261123/audit1/source-analysis.json",
+      "sha256": "2a7e500720e89a5d54cd67e08384c00b9eef071ca7d6cdc34324cf91065be17d"
+    },
+    {
+      "bytes": 13960,
+      "inode": 326892,
+      "mode": 384,
+      "mtime_ns": 1795454647916428137,
+      "path": "/mnt/development/projects/diagnostics/release-original-products-45190599065-attempt4-result-20261123/audit1/source-inputs.json",
+      "sha256": "e4e2da58d9ac8dfbc418c6530545e29dcfddb985219ddc209ea7302df7cf206c"
+    },
+    {
+      "bytes": 15169,
+      "inode": 326893,
+      "mode": 384,
+      "mtime_ns": 1795454647932929912,
+      "path": "/mnt/development/projects/diagnostics/release-original-products-45190599065-attempt4-result-20261123/audit1/qualification.json",
+      "sha256": "1d5fdb20c2644f9d56c80fc641227ca35a69f740373b8a0bd3a0e6456ad78a22"
+    },
+    {
+      "bytes": 97893,
+      "inode": 326831,
+      "mode": 384,
+      "mtime_ns": 1795454571633941425,
+      "path": "/mnt/development/projects/diagnostics/release-original-products-45190599065-attempt4-result-20261123/audit1/originals/selected2/lanes__editor__preparation__command-00.log",
+      "sha256": "6d076bcf83907d158f571dc1f839b8adf1969221df609a1cfffaf4c3f3ee8eaa"
+    },
+    {
+      "bytes": 8866,
+      "inode": 327599,
+      "mode": 384,
+      "mtime_ns": 1795457977948247204,
+      "path": "/mnt/development/projects/diagnostics/release-return-focus-independent-peer-20261123/review.json",
+      "sha256": "f8b9e68e3fc89097db80c39d0fc2d1d30aef0eeceb3b095c3416fe5d188949b6"
+    },
+    {
+      "bytes": 1494,
+      "inode": 57844,
+      "mode": 436,
+      "mtime_ns": 1795458220545903776,
+      "path": "/mnt/development/projects/diagnostics/ui4-drag-handle-root-review-20261123/review.json",
+      "sha256": "a8edbed00485b5b2a0891d0dffa0900afc74d518aeee68a6205b20eea556d354"
+    }
+  ],
+  "original_line356_retained_at_same_line": true,
+  "product_builds": 0,
+  "schema": "release-rtl-boundary-source-review/v1",
+  "source_inputs_count": 16,
+  "source_only_resource_profile": {
+    "aggregate_transient_maximum_bytes": 12582912,
+    "execution_gates_changed": false,
+    "minimum_free_bytes": 1073741824,
+    "new_source_evidence_maximum_bytes": 231424,
+    "observations": [
+      {
+        "aggregate_retained": 6004736,
+        "free": 2022342656,
+        "projected_transient": 11636160,
+        "stage": "start"
+      },
+      {
+        "aggregate_retained": 8712192,
+        "free": 2019631104,
+        "projected_transient": 11560960,
+        "stage": "materialized"
+      },
+      {
+        "aggregate_retained": 8712192,
+        "free": 2019631104,
+        "projected_transient": 11560960,
+        "stage": "source-write"
+      },
+      {
+        "aggregate_retained": 8724480,
+        "free": 2019618816,
+        "projected_transient": 11573248,
+        "stage": "write:PROTOCOL.md"
+      },
+      {
+        "aggregate_retained": 8732672,
+        "free": 2019610624,
+        "projected_transient": 11581440,
+        "stage": "write:exact-source-inverses.json"
+      },
+      {
+        "aggregate_retained": 8740864,
+        "free": 2019602432,
+        "projected_transient": 11589632,
+        "stage": "write:source-inputs.json"
+      },
+      {
+        "aggregate_retained": 8753152,
+        "free": 2019590144,
+        "projected_transient": 11601920,
+        "stage": "write:source.diff.gz"
+      }
+    ],
+    "old_writers": [
+      {
+        "allocated": 3084288,
+        "head": "5de44874e34e6647fe6f58f5cee5d915e797fc9a",
+        "path": "/mnt/development/projects/worktrees/anytype-wave15-ui4-failed-scope-20261123",
+        "rows": {
+          "NativeApp/UITests/NativeLaunchTests.swift": {
+            "inode": 5951794,
+            "mode": 436,
+            "mtime_ns": 1795456858679037634,
+            "sha256": "27006fdd050c5cec8210237854af305459aa67e7912746aa75338ceb113f792a"
+          },
+          "Tools/AnyEngineValidation/HanlinProviderFixture/fixture.py": {
+            "inode": 5951798,
+            "mode": 436,
+            "mtime_ns": 1795456858670116223,
+            "sha256": "cb9906df0ac181fdb16b940cbdaa208afa2212fc285689a198d69a1cca7bf787"
+          }
+        }
+      },
+      {
+        "allocated": 2920448,
+        "head": "18d190d70f712ccea3093259bed719ae52a932ae",
+        "path": "/mnt/development/projects/worktrees/anytype-wave15-ui4-drag-handle-20261123",
+        "rows": {
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift": {
+            "inode": 5968298,
+            "mode": 436,
+            "mtime_ns": 1795457584826932940,
+            "sha256": "622eac1c014240ec8613ff2eb464ee368100a8df45031a224514994433665fcd"
+          },
+          "NativeApp/UITests/NativeLaunchTests.swift": {
+            "inode": 5968301,
+            "mode": 436,
+            "mtime_ns": 1795457584837322039,
+            "sha256": "789373b31c96e085c4e120eb52e970adb3437311c6b1d7162955ab7a4aa70f27"
+          }
+        }
+      }
+    ]
+  },
+  "source_review_artifacts": [
+    {
+      "bytes": 5919,
+      "mode": 436,
+      "path": "docs/validation/20261123-release-rtl-boundary-observation/PROTOCOL.md",
+      "sha256": "e8d8a4e4e8c49cc05ee41aba52d03b57204a66d5e4cbe4db10939efef405fa8e"
+    },
+    {
+      "bytes": 4098,
+      "mode": 436,
+      "path": "docs/validation/20261123-release-rtl-boundary-observation/exact-source-inverses.json",
+      "sha256": "302fd1c32e5469eee46af7bb471e1a4f6bc44b48b379e649b7f1c8edd6bc1cf2"
+    },
+    {
+      "bytes": 9078,
+      "mode": 436,
+      "path": "docs/validation/20261123-release-rtl-boundary-observation/source-inputs.json",
+      "sha256": "557ebf77db3d6fd650e6895450093d95456e8d58e37e4dbdc8c60337bb75d74d"
+    },
+    {
+      "bytes": 1421,
+      "mode": 436,
+      "path": "docs/validation/20261123-release-rtl-boundary-observation/source.diff.gz",
+      "sha256": "29e86219178711e0158f0b41310b8d1eca8f5d72b8a7b3007d4660ff52ca723a"
+    }
+  ],
+  "syntax_parse": "NOT_RUN",
+  "tests_executed": 0,
+  "three_additions": [
+    "pre-first-real-delegate",
+    "post-first-real-delegate",
+    "read-only-boundary-observer"
+  ],
+  "whole_file_inverse": true,
+  "worktree": "/mnt/development/projects/worktrees/anytype-wave15-release-rtl-boundary-observation-20261123"
+}

@@ -354,12 +354,25 @@ struct PinkhaStage1AcceptancePreparationTests {
             let emptyCaret = textView.caretRect(for: textView.beginningOfDocument)
             #expect(emptyCaret.midX > textView.bounds.midX)
             #expect((textView.typingAttributes[.paragraphStyle] as? NSParagraphStyle)?.baseWritingDirection == .rightToLeft)
+            let directionPairID = UUID().uuidString
+            recordNativeInputDirectionBoundary(
+                textView, in: controller, line: index + 1, pairID: directionPairID,
+                phase: "before-first-delegate", accepted: nil
+            )
+            var recordedFirstDelegate = false
             for character in line {
                 try requireNativeInputTarget(textView, in: controller)
                 let replacement = String(character)
                 let accepted = textView.delegate?.textView?(
                     textView, shouldChangeTextIn: textView.selectedRange, replacementText: replacement
                 ) ?? false
+                if !recordedFirstDelegate {
+                    recordedFirstDelegate = true
+                    recordNativeInputDirectionBoundary(
+                        textView, in: controller, line: index + 1, pairID: directionPairID,
+                        phase: "after-first-delegate", accepted: accepted
+                    )
+                }
                 try #require(accepted, "Ordinary probe input must follow the actual accepted native delegate path")
                 textView.insertText(replacement)
                 try await Task.sleep(for: .milliseconds(10))
@@ -388,6 +401,32 @@ struct PinkhaStage1AcceptancePreparationTests {
         }
         controller.view.endEditing(true)
         try await document.close()
+    }
+
+    /// Read-only observations around the first real delegate call on each fixed input line.
+    /// Keep the original pre-insertion expectations and accepted-input guard unchanged.
+    @MainActor
+    private func recordNativeInputDirectionBoundary(
+        _ textView: UITextView, in controller: EditorPageController,
+        line: Int, pairID: String, phase: String, accepted: Bool?
+    ) {
+        let selection = textView.selectedRange
+        let paragraphStyle = textView.typingAttributes[.paragraphStyle] as? NSParagraphStyle
+        let typingDirection = paragraphStyle.map { String($0.baseWritingDirection.rawValue) } ?? "missing"
+        let typingAlignment = paragraphStyle.map { String($0.alignment.rawValue) } ?? "missing"
+        let interfaceDirection = PinkhaTextDirectionUIKitAdapter.effectiveInterfaceDirection(for: textView)
+        let sameWindow = textView.window != nil && textView.window === controller.viewIfLoaded?.window
+        let acceptedValue = accepted.map { $0 ? "true" : "false" } ?? "not-called"
+        print("PINKHA_NATIVE_EDITOR_DIRECTION_BOUNDARY schema=1 line=\(line) pair=\(pairID) phase=\(phase) "
+              + "storageLength=\(textView.textStorage.length) "
+              + "selectionLocation=\(selection.location) selectionLength=\(selection.length) "
+              + "firstResponder=\(textView.isFirstResponder) "
+              + "controllerFirstResponder=\(controller.firstResponderView === textView) sameWindow=\(sameWindow) "
+              + "markedRange=\(textView.markedTextRange != nil) "
+              + "semanticAttribute=\(textView.semanticContentAttribute.rawValue) "
+              + "interfaceDirection=\(interfaceDirection == .rightToLeft ? "rtl" : "ltr") "
+              + "textAlignment=\(textView.textAlignment.rawValue) "
+              + "typingDirection=\(typingDirection) typingAlignment=\(typingAlignment) accepted=\(acceptedValue)")
     }
 
     @MainActor

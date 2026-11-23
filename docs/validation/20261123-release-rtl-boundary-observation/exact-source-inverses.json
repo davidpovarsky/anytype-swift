@@ -1,0 +1,26 @@
+{
+  "base": "d75178aadcccf2020572dc25b7dadd54baa8e2c4",
+  "deltas": [
+    {
+      "name": "pre-first-real-delegate",
+      "new": "            #expect((textView.typingAttributes[.paragraphStyle] as? NSParagraphStyle)?.baseWritingDirection == .rightToLeft)\n            let directionPairID = UUID().uuidString\n            recordNativeInputDirectionBoundary(\n                textView, in: controller, line: index + 1, pairID: directionPairID,\n                phase: \"before-first-delegate\", accepted: nil\n            )\n            var recordedFirstDelegate = false\n            for character in line {",
+      "old": "            #expect((textView.typingAttributes[.paragraphStyle] as? NSParagraphStyle)?.baseWritingDirection == .rightToLeft)\n            for character in line {"
+    },
+    {
+      "name": "post-first-real-delegate",
+      "new": "                ) ?? false\n                if !recordedFirstDelegate {\n                    recordedFirstDelegate = true\n                    recordNativeInputDirectionBoundary(\n                        textView, in: controller, line: index + 1, pairID: directionPairID,\n                        phase: \"after-first-delegate\", accepted: accepted\n                    )\n                }\n                try #require(accepted, \"Ordinary probe input must follow the actual accepted native delegate path\")",
+      "old": "                ) ?? false\n                try #require(accepted, \"Ordinary probe input must follow the actual accepted native delegate path\")"
+    },
+    {
+      "name": "read-only-boundary-observer",
+      "new": "    /// Read-only observations around the first real delegate call on each fixed input line.\n    /// Keep the original pre-insertion expectations and accepted-input guard unchanged.\n    @MainActor\n    private func recordNativeInputDirectionBoundary(\n        _ textView: UITextView, in controller: EditorPageController,\n        line: Int, pairID: String, phase: String, accepted: Bool?\n    ) {\n        let selection = textView.selectedRange\n        let paragraphStyle = textView.typingAttributes[.paragraphStyle] as? NSParagraphStyle\n        let typingDirection = paragraphStyle.map { String($0.baseWritingDirection.rawValue) } ?? \"missing\"\n        let typingAlignment = paragraphStyle.map { String($0.alignment.rawValue) } ?? \"missing\"\n        let interfaceDirection = PinkhaTextDirectionUIKitAdapter.effectiveInterfaceDirection(for: textView)\n        let sameWindow = textView.window != nil && textView.window === controller.viewIfLoaded?.window\n        let acceptedValue = accepted.map { $0 ? \"true\" : \"false\" } ?? \"not-called\"\n        print(\"PINKHA_NATIVE_EDITOR_DIRECTION_BOUNDARY schema=1 line=\\(line) pair=\\(pairID) phase=\\(phase) \"\n              + \"storageLength=\\(textView.textStorage.length) \"\n              + \"selectionLocation=\\(selection.location) selectionLength=\\(selection.length) \"\n              + \"firstResponder=\\(textView.isFirstResponder) \"\n              + \"controllerFirstResponder=\\(controller.firstResponderView === textView) sameWindow=\\(sameWindow) \"\n              + \"markedRange=\\(textView.markedTextRange != nil) \"\n              + \"semanticAttribute=\\(textView.semanticContentAttribute.rawValue) \"\n              + \"interfaceDirection=\\(interfaceDirection == .rightToLeft ? \"rtl\" : \"ltr\") \"\n              + \"textAlignment=\\(textView.textAlignment.rawValue) \"\n              + \"typingDirection=\\(typingDirection) typingAlignment=\\(typingAlignment) accepted=\\(acceptedValue)\")\n    }\n\n    @MainActor\n    private func inputTextViews(in root: UIView) -> [UITextView] {",
+      "old": "    @MainActor\n    private func inputTextViews(in root: UIView) -> [UITextView] {"
+    }
+  ],
+  "new_bytes": 27599,
+  "new_sha256": "ad708e3d7b3609e7e5a88b60457d0c890a6e9127388c61169c31a42c1be8a696",
+  "old_bytes": 25031,
+  "old_sha256": "c8a39b1725199b7d33173be273e8bc2696ad6d8f59f3b1025081eb5ad6c4ca51",
+  "path": "AnyTypeTests/Pinkha/PinkhaStage1AcceptancePreparationTests.swift",
+  "whole_file_inverse": true
+}
