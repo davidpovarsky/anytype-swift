@@ -1,0 +1,216 @@
+{
+  "base": "56b4caafae1c0898b483717abed495f2e3b9281b",
+  "bash_syntax_only": [
+    {
+      "index": 0,
+      "sha256": "f2f316d8ae6672a6aaae122580f65a7ec315948bb771ea2647a71f2108b88ee1",
+      "status": "SYNTAX_ONLY_PASS"
+    },
+    {
+      "index": 1,
+      "sha256": "990e95ee0e42f14919dcbf76b2576785a769ab3fa844b28fe5d589d1520a95ff",
+      "status": "SYNTAX_ONLY_PASS"
+    },
+    {
+      "index": 2,
+      "sha256": "9cb19bf95ddf286570d333d89165a98501e58b07b97e901a63cc1cd9ce611fa2",
+      "status": "SYNTAX_ONLY_PASS"
+    },
+    {
+      "index": 3,
+      "sha256": "40b2c66364042d89fa20474aca5406cad90f57497dbe3c1cd29ad4dfa0a1c844",
+      "status": "SYNTAX_ONLY_PASS"
+    }
+  ],
+  "branch": "codex/ram-owned-simulator-diagnostic-20261123",
+  "builds": 0,
+  "ci_actions": 0,
+  "classification": "ADDITIVE_DOWNSTREAM_DIAGNOSTIC",
+  "copied_functions": [
+    {
+      "bytes": 1665,
+      "change": "BYTE_EXACT_COPY",
+      "function": "_sdk06_kernel_group_observation",
+      "function_sha256": "d581843c94632933612d54d46036eb777ac15b154c13088cce90a0e7fced325a",
+      "source_commit": "56b4caafae1c0898b483717abed495f2e3b9281b",
+      "source_path": "Tools/PinkhaSimulatorGate/run_owned_single_lane.py",
+      "whole_file_sha256": "5d976901b73b5bc5e519ead3a89952220d8149e710561d92acc9f36e46247414"
+    },
+    {
+      "bytes": 88,
+      "change": "BYTE_EXACT_COPY",
+      "function": "_require",
+      "function_sha256": "2a6c889a65d24aa3bb08bfb0be9aa29de5208cd1cb27b52d51e10fa7e5826111",
+      "source_commit": "56b4caafae1c0898b483717abed495f2e3b9281b",
+      "source_path": "Tools/PinkhaSimulatorGate/simulator_selection.py",
+      "whole_file_sha256": "2309bb55b3752774bffc588a7c489392daa7ceb3b7279f6a9ec870899a1f1d5f"
+    },
+    {
+      "bytes": 476,
+      "change": "BYTE_EXACT_COPY",
+      "function": "_version",
+      "function_sha256": "ae7d7d3ae904a13a3ffd12965572976df6fbedf957631c73fb06cb66e7b8e07a",
+      "source_commit": "56b4caafae1c0898b483717abed495f2e3b9281b",
+      "source_path": "Tools/PinkhaSimulatorGate/simulator_selection.py",
+      "whole_file_sha256": "2309bb55b3752774bffc588a7c489392daa7ceb3b7279f6a9ec870899a1f1d5f"
+    },
+    {
+      "bytes": 470,
+      "change": "BYTE_EXACT_COPY",
+      "function": "_unique",
+      "function_sha256": "0accd29ac10ab9b9a7619a25c5f42dc876c579f638dac337dc100dfff88dee3a",
+      "source_commit": "56b4caafae1c0898b483717abed495f2e3b9281b",
+      "source_path": "Tools/PinkhaSimulatorGate/simulator_selection.py",
+      "whole_file_sha256": "2309bb55b3752774bffc588a7c489392daa7ceb3b7279f6a9ec870899a1f1d5f"
+    },
+    {
+      "bytes": 3184,
+      "change": "BYTE_EXACT_COPY",
+      "function": "choose_pair",
+      "function_sha256": "1007cdb896e59eeed14bb00f53898a5ddfeb1b9ef2d02bafb5bdf00730aa7f7f",
+      "source_commit": "56b4caafae1c0898b483717abed495f2e3b9281b",
+      "source_path": "Tools/PinkhaSimulatorGate/simulator_selection.py",
+      "whole_file_sha256": "2309bb55b3752774bffc588a7c489392daa7ceb3b7279f6a9ec870899a1f1d5f"
+    },
+    {
+      "bytes": 3795,
+      "change": "BYTE_EXACT_COPY",
+      "function": "cleanup_owned_simulator",
+      "function_sha256": "776043fdb9864a01b6f249e0b5660da27ec98db6fd228e4b7ab2bc659705df99",
+      "source_commit": "56b4caafae1c0898b483717abed495f2e3b9281b",
+      "source_path": "Tools/CurrentAppleValidation/cleanup_policy.py",
+      "whole_file_sha256": "d4b6b6df0df5c94b4aeeabef0c6716d097be27fd2a6739298f9d186092bea291"
+    },
+    {
+      "change": "ONLY_SIGNAL_RESULT_OBSERVATION_SIGNATURE_AND_TWO_CALLS",
+      "function": "terminate_owned",
+      "inverse": [
+        {
+          "count": 1,
+          "from": "def terminate_owned(process, signals):",
+          "to": "def terminate_owned(process):"
+        },
+        {
+          "count": 1,
+          "from": "record_signal(process.pid, signal.SIGTERM, signals)",
+          "to": "os.killpg(process.pid, signal.SIGTERM)"
+        },
+        {
+          "count": 1,
+          "from": "record_signal(process.pid, signal.SIGKILL, signals)",
+          "to": "os.killpg(process.pid, signal.SIGKILL)"
+        }
+      ],
+      "new_function_sha256": "5d507f893ec3c1202c922998f7eadd25a4fa79ee294b9a8e4e974ee89a3cd5fc",
+      "original_function_sha256": "0b0476c4250710b8aa2734f0d370429f3db769fc6b291246f9a907aaa6399762",
+      "source_commit": "56b4caafae1c0898b483717abed495f2e3b9281b",
+      "source_path": "Tools/PinkhaSimulatorGate/wave15_batch.py",
+      "whole_file_sha256": "75e923d8c9718553d80c6aa3fd5338f06e2622e275ba10bc5537d03c4ba03193"
+    }
+  ],
+  "diagnostic_executions": 0,
+  "documentation_inputs": [
+    {
+      "bytes": 4202,
+      "git_mode": "100644",
+      "path": "docs/validation/20261123-owned-simulator-inventory-diagnostic/INLINE-central-packet.json",
+      "sha256": "546cabcdf215bdc7d3105821d95e529011b92356d5fb20136fe6503787669125"
+    },
+    {
+      "bytes": 7794,
+      "git_mode": "100644",
+      "path": "docs/validation/20261123-owned-simulator-inventory-diagnostic/PROTOCOL.md",
+      "sha256": "c91a0e52284727c749e70bb2ad469cbc912f9212a225ccd1f865e8d3664e27b6"
+    },
+    {
+      "bytes": 910,
+      "git_mode": "100644",
+      "path": "docs/validation/20261123-owned-simulator-inventory-diagnostic/README.md",
+      "sha256": "958d98cd401674adcdf28132de8e177cb0cd85e13b7ce024dfb299a0abcfb3d8"
+    },
+    {
+      "bytes": 3747,
+      "git_mode": "100644",
+      "path": "docs/validation/20261123-owned-simulator-inventory-diagnostic/qualified-body-inverses.json",
+      "sha256": "bb96392168fc48ce03dd2e21b97dd3c838d3f49a03db5351efa9999ed1b563b3"
+    },
+    {
+      "bytes": 889,
+      "git_mode": "100644",
+      "path": "docs/validation/20261123-owned-simulator-inventory-diagnostic/prior-original-evidence.json",
+      "sha256": "ed500057c477b205a6031e66db32572149371997a870fdd6f1524dc052138cee"
+    }
+  ],
+  "existing_paths_modified": [],
+  "imports": [
+    "__future__",
+    "argparse",
+    "errno",
+    "fcntl",
+    "hashlib",
+    "json",
+    "os",
+    "pathlib",
+    "platform",
+    "re",
+    "signal",
+    "stat",
+    "subprocess",
+    "sys",
+    "time",
+    "types",
+    "uuid"
+  ],
+  "limitations": [
+    "Runtime remains NOT_RUN",
+    "Process observations add bounded time",
+    "Signal results and snapshots do not by themselves establish causation",
+    "No App/native/UI build or old control replay",
+    "An already installed Python3.12 arm64 is required; no install is attempted"
+  ],
+  "product_methods": 0,
+  "python_ast": "PASS_WITHOUT_IMPORT",
+  "repository_imports": 0,
+  "repository_loaded_at_authoring": [],
+  "runtime_inputs": [
+    {
+      "bytes": 51469,
+      "git_mode": "100644",
+      "path": "Tools/SimulatorBootInventoryDiagnostic/run.py",
+      "sha256": "68f39cb8671b0d7dfa7aaffe586e1c5ac088a5375c26ba07aab93fba8a90cef7"
+    },
+    {
+      "bytes": 1009,
+      "git_mode": "100644",
+      "path": "Tools/SimulatorBootInventoryDiagnostic/profile.json",
+      "sha256": "dc4f757611e7f620ba2fecccd3d870508036d2dcfcfabe93f0a1a294e98b03d4"
+    },
+    {
+      "bytes": 3939,
+      "git_mode": "100644",
+      "path": ".github/workflows/pinkha-owned-simulator-inventory-diagnostic.yml",
+      "sha256": "d30fe8e4011225763cab8dc72906f717dc38c85a97a4118f0eafb0754aace405"
+    },
+    {
+      "bytes": 724,
+      "git_mode": "100644",
+      "path": "Tools/SimulatorBootInventoryDiagnostic/source-inputs.json",
+      "sha256": "af7a643643a757b5f51c880910ed663909df74f79e741fc380c61ec722e9cc3d"
+    }
+  ],
+  "runtime_output_limit_kind": "SAMPLED_STOP_AND_FINAL_ADMISSION_NOT_HARD_QUOTA",
+  "schema": "owned-simulator-diagnostic-source-review-v1",
+  "scope": "One exact owned simulator; fixed30s original gate and at most one conditional120s diagnostic read",
+  "source_authoring_budget": {
+    "alternates_read_only": [
+      "/mnt/development/projects/git-mirrors/anytype-swift.git/objects"
+    ],
+    "filesystem": "private_parent_tmpfs",
+    "max_allocated_bytes": 8388608,
+    "minimum_memavailable_bytes": 2147483648,
+    "path": "/run/anytapy-wave15-source-overlay-20261123/simulator-diagnostic"
+  },
+  "status": "STATIC_SOURCE_ONLY_PASS",
+  "writer": "/run/anytapy-wave15-source-overlay-20261123/simulator-diagnostic",
+  "yaml_duplicate_keys_and_roundtrip": "PASS"
+}

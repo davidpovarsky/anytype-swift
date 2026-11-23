@@ -1,0 +1,71 @@
+{
+  "dispatches": 0,
+  "existing_file_mutations": 0,
+  "integration_policy": "Add one option and one inline job only; preserve every existing byte. Root owns actual integration and current SDK central-row rebind. Do not add a reusable-workflow reference.",
+  "job": {
+    "env": {
+      "DEVELOPER_DIR": "/Applications/Xcode_27.app/Contents/Developer",
+      "EVIDENCE": "build/owned-simulator-inventory-${{ github.run_id }}-${{ github.run_attempt }}",
+      "GIT_OPTIONAL_LOCKS": "0",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "if": "${{ inputs.route == 'owned-simulator-inventory-diagnostic' }}",
+    "runs-on": "xcode-27",
+    "steps": [
+      {
+        "name": "Checkout only the exact diagnostic source",
+        "uses": "actions/checkout@v4",
+        "with": {
+          "fetch-depth": 1,
+          "persist-credentials": false,
+          "ref": "${{ github.sha }}",
+          "sparse-checkout": "AGENTS.md\nTools/SimulatorBootInventoryDiagnostic\n.github/workflows/pinkha-owned-simulator-inventory-diagnostic.yml",
+          "sparse-checkout-cone-mode": false
+        }
+      },
+      {
+        "name": "Bind the dispatched branch without advancing its commit",
+        "run": "set -euo pipefail\ntest \"$(git rev-parse HEAD)\" = \"$GITHUB_SHA\"\ntest \"$GITHUB_REF\" = \"refs/heads/$GITHUB_REF_NAME\"\ntest \"$GITHUB_REF_NAME\" = \"codex/chatgpt-wave15-shared-20261121\"\ncurrent_branch=\"$(git branch --show-current)\"\nif [ -z \"$current_branch\" ]; then\n  git switch -c \"$GITHUB_REF_NAME\"\nelse\n  test \"$current_branch\" = \"$GITHUB_REF_NAME\"\nfi\ntest \"$(git rev-parse HEAD)\" = \"$GITHUB_SHA\"",
+        "shell": "bash"
+      },
+      {
+        "name": "Select an already installed ARM64 Python without downloading a runtime",
+        "run": "set -euo pipefail\nshopt -s nullglob\ncandidates=()\ndefault_python=\"$(command -v python3 || true)\"\nif [ -n \"$default_python\" ]; then candidates+=(\"$default_python\"); fi\nif [ -n \"${RUNNER_TOOL_CACHE:-}\" ]; then\n  for candidate in \"$RUNNER_TOOL_CACHE\"/Python/3.12.*/arm64/bin/python3; do\n    candidates+=(\"$candidate\")\n  done\nfi\ntest \"${#candidates[@]}\" -gt 0\ntest \"${#candidates[@]}\" -le 12\nselected=''\nfor candidate in \"${candidates[@]}\"; do\n  if \"$candidate\" -I -B -c 'import platform,sys; assert sys.version_info[:2] == (3,12) and platform.machine() == \"arm64\"' >/dev/null 2>&1; then\n    selected=\"$candidate\"\n    break\n  fi\ndone\ntest -n \"$selected\"\nprintf 'DIAGNOSTIC_PYTHON=%s\\n' \"$selected\" >> \"$GITHUB_ENV\"\n\"$selected\" -I -B -c 'import platform,sys; print(sys.executable); print(sys.version); print(platform.machine())'",
+        "shell": "bash",
+        "timeout-minutes": 2
+      },
+      {
+        "id": "diagnose",
+        "name": "Observe one exact owned simulator without building or testing products",
+        "run": "set -euo pipefail\n\"$DIAGNOSTIC_PYTHON\" -I -B Tools/SimulatorBootInventoryDiagnostic/run.py execute --expected-source \"$GITHUB_SHA\"",
+        "shell": "bash",
+        "timeout-minutes": 22
+      },
+      {
+        "if": "${{ always() && steps.diagnose.outcome != 'skipped' }}",
+        "name": "Finalize only the journaled simulator within its original global budget",
+        "run": "set -euo pipefail\n\"$DIAGNOSTIC_PYTHON\" -I -B Tools/SimulatorBootInventoryDiagnostic/run.py cleanup --expected-source \"$GITHUB_SHA\"",
+        "shell": "bash",
+        "timeout-minutes": 3
+      },
+      {
+        "if": "always()",
+        "name": "Preserve all diagnostic commands and original failure outcomes",
+        "uses": "actions/upload-artifact@v4",
+        "with": {
+          "if-no-files-found": "error",
+          "include-hidden-files": true,
+          "name": "Owned-Simulator-Inventory-${{ github.run_id }}-${{ github.run_attempt }}",
+          "path": "${{ env.EVIDENCE }}",
+          "retention-days": 30
+        }
+      }
+    ],
+    "timeout-minutes": 30
+  },
+  "job_key": "owned-simulator-inventory-diagnostic",
+  "option": "owned-simulator-inventory-diagnostic",
+  "reviewed_base": "56b4caafae1c0898b483717abed495f2e3b9281b",
+  "schema": "inline-central-option-packet-v1",
+  "target": ".github/workflows/torah-inspector-ipados27.yml"
+}
