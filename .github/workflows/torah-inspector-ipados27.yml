@@ -50,6 +50,7 @@ on:
           - semantic-anchor-native
           - prepared-migration-apple
           - prepared-inline-file-apple
+          - sdk06-enumeration-probe
           - t5-native-pagination
           - t5-native-account-retry
           - t5-native-attachment
@@ -290,6 +291,10 @@ jobs:
       native_artifact_run_id: ${{ inputs.source_run_id }}
       native_producer_commit: ${{ inputs.prepared_native_producer_commit }}
       native_artifact_run_attempt: ${{ inputs.prepared_native_artifact_run_attempt }}
+
+  sdk06-enumeration-probe:
+    if: ${{ inputs.route == 'sdk06-enumeration-probe' }}
+    uses: ./.github/workflows/pinkha-sdk06-enumeration-probe.yml
 
   prepared-inline-file-apple:
     if: ${{ inputs.route == 'prepared-inline-file-apple' }}
