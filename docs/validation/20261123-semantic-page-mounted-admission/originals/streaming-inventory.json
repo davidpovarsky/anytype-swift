@@ -1,0 +1,110 @@
+{
+  "admission_written": false,
+  "artifact_id": 14794983588,
+  "free_bytes": 2643841024,
+  "inspector_sha256": "03c6eaaa0b8ea553bffef63034987cd15f82b0f05bb5bb7bca23d7ebb0f6176b",
+  "native_retained_without_rescan": {
+    "entry_proof_sha256": "a311fe130927fe1234791af1d8d1a2fa0ed1df4de1058623b7688e8acd353fca",
+    "receipt_sha256": "c29ce976abee08133c34336ba77d6e5499f061fd97217e5146a28dabc610a5f7"
+  },
+  "outer_zip": {
+    "bytes": 703289417,
+    "inode": 1114801,
+    "mtime_ns": 1795416720054790888,
+    "path": "/mnt/development/projects/diagnostics/semantic-page-pinned-consumer-20261123/terminal-audit/artifact-14794983588.zip",
+    "sha256": "082d7cf6c589c6770186390091d997de29d7148fe917ea2f0785450688cada46",
+    "unchanged_during_ui_stream": true,
+    "verification_owner": "sdk_ci; prior VERIFIED_ORIGINAL_ZIP handoff and download-result.json"
+  },
+  "preserved_first_auditor_failure": {
+    "log_sha256": "a3d981a09e4873b8c3daa800f6010ebfc2e49a77a7462136913133c9a1ef0fb5",
+    "native_inventory_pass_unchanged": true,
+    "reason": "Auditor incorrectly required a source-input file in the UI archive; original manifest explicitly records absence",
+    "receipt_sha256": "774a4e5892bc8f780ab9c12a2903064be80d41a3b8e8575d60d31d3be2018571"
+  },
+  "product_tests_executed": 0,
+  "products_restored": 0,
+  "results": [
+    {
+      "archive_member": "semantic-page154-early-products/BuildProducts.tar.gz",
+      "archive_sha256": "a7350b79911d1f03701b55015de934041b80642d377c9196d6f795aa4ca4774b",
+      "case_collisions": 0,
+      "compressed_bytes": 716283891,
+      "elapsed_seconds": 14.245076417922974,
+      "entries": 5008,
+      "entry_proof_sha256": "a311fe130927fe1234791af1d8d1a2fa0ed1df4de1058623b7688e8acd353fca",
+      "every_entry_type_mode_size_and_digest_verified": true,
+      "file_bytes_hashed": 2377427618,
+      "full_products_restored": false,
+      "kinds": {
+        "directory": 1232,
+        "file": 3776
+      },
+      "links": 0,
+      "manifest_sha256": "bf90cd55caf69966918e9cbac24e2e48b68d4c23c9e6dfbe7576eb067574860e",
+      "original_descriptor_sha256": "b44dbf6c0619f1187ba6167245418c8f0870a3f6c4dac427bea99c870d0b89e7",
+      "outside_members": 0,
+      "root_descriptors": [
+        {
+          "archive_path": "Build/Products/Anytype_AnytypeTests_iphonesimulator27.0-arm64.xctestrun",
+          "bytes": 15617,
+          "matches_original_descriptor": true,
+          "saved_path": "/mnt/development/projects/diagnostics/semantic-page-pinned-consumer-20261123/terminal-audit/mounted-products-inventory/native-Anytype_AnytypeTests_iphonesimulator27.0-arm64.xctestrun",
+          "sha256": "b44dbf6c0619f1187ba6167245418c8f0870a3f6c4dac427bea99c870d0b89e7"
+        }
+      ],
+      "run_attempt": "1",
+      "run_id": "45116855451",
+      "scope": "native",
+      "source_inputs": {
+        "archive_path": "Build/PinkhaSourceInputs.json",
+        "bytes": 2763604,
+        "json_top_keys": [
+          "source_sha",
+          "inputs"
+        ],
+        "json_top_type": "dict",
+        "saved_path": "/mnt/development/projects/diagnostics/semantic-page-pinned-consumer-20261123/terminal-audit/mounted-products-inventory/native-source-inputs-original.json",
+        "sha256": "1f59c1c67a5fdc4ab972a8d68c459ce52bfa749019d960736a96c4b7fd330b09"
+      },
+      "source_sha": "68148339c275268795360d71d519a5baf003adf8",
+      "status": "PASS_STREAMED_ORIGINAL_PRODUCTS_BYTES"
+    },
+    {
+      "archive_member": "ui-runner/semantic-page154-early-products/BuildProducts.tar.gz",
+      "archive_sha256": "06fb6afb7b35fe42c1cfaafa1425908df23824f4dda25b1c163d53ea3a6b9783",
+      "case_collisions": 0,
+      "compressed_bytes": 1678428,
+      "elapsed_seconds": 0.03865480422973633,
+      "entries": 30,
+      "entry_proof_sha256": "3b5c34bc9e505ffe784c886f5edddb69b39498adb9e091e033bc715eedb3d4d5",
+      "every_entry_type_mode_size_and_digest_verified": true,
+      "file_bytes_hashed": 5552504,
+      "full_products_restored": false,
+      "kinds": {
+        "directory": 15,
+        "file": 15
+      },
+      "links": 0,
+      "manifest_sha256": "c8b3f2d54cc7246e6289960a344db85132c665a535c7a3d0a99257c6ebfc3913",
+      "original_descriptor_sha256": "55fe94261dc5360fd9c5e3b90532e393d273070b8ade7655c6695666eac9e165",
+      "outside_members": 0,
+      "root_descriptors": [
+        {
+          "archive_path": "Build/Products/PinkhaPrebuiltUI_iphonesimulator27.0-arm64.xctestrun",
+          "bytes": 5197,
+          "matches_original_descriptor": true,
+          "saved_path": "/mnt/development/projects/diagnostics/semantic-page-pinned-consumer-20261123/terminal-audit/mounted-products-inventory/ui-PinkhaPrebuiltUI_iphonesimulator27.0-arm64.xctestrun",
+          "sha256": "55fe94261dc5360fd9c5e3b90532e393d273070b8ade7655c6695666eac9e165"
+        }
+      ],
+      "run_attempt": "1",
+      "run_id": "45116855451",
+      "scope": "ui",
+      "source_inputs": null,
+      "source_sha": "68148339c275268795360d71d519a5baf003adf8",
+      "status": "PASS_STREAMED_ORIGINAL_PRODUCTS_BYTES"
+    }
+  ],
+  "status": "PASS_NATIVE_RETAINED_AND_UI_ORIGINAL_PRODUCTS_STREAMED"
+}
