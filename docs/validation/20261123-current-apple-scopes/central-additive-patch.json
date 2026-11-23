@@ -1,0 +1,33 @@
+{
+  "applied": false,
+  "base": "7c506bb52c9e211e84de5feeaca549d315b2855d",
+  "beforeSHA256": "d96361dcf11c3f81e671560e407ad43a30aeca4528b89de59290fab652c0631f",
+  "existingRoutesAndDefaultsChanged": false,
+  "path": ".github/workflows/torah-inspector-ipados27.yml",
+  "proposedAfterSHA256": "b1882e0820714941249f476a008ed5d7251b5d6914e3b0c71cdf6b7f29d82e75",
+  "sdkPreloadOrderRequired": "Keep b15cd58e sorted sdk06_compile_support at index33; no other input row change.",
+  "sdkRowRebind": "Tools/PinkhaSimulatorGate/sdk06-original-native-controller-source.json.inputs[.github/workflows/torah-inspector-ipados27.yml]",
+  "semanticHunks": [
+    {
+      "anchor": "          - coherent-original-products\n",
+      "append": "          - current-release-return-rtl\n",
+      "kind": "choice"
+    },
+    {
+      "anchor": "          - native-ui-runner-continuation\n",
+      "append": "          - current-native-ui-failed\n",
+      "kind": "choice"
+    },
+    {
+      "anchor": "  coherent-original-products:\n    if: ${{ inputs.route == 'coherent-original-products' }}\n    uses: ./.github/workflows/pinkha-coherent-original-products.yml\n\n",
+      "append": "  current-release-return-rtl:\n    if: ${{ inputs.route == 'current-release-return-rtl' }}\n    uses: ./.github/workflows/pinkha-current-release-return-rtl.yml\n\n",
+      "kind": "job"
+    },
+    {
+      "anchor": "  native-ui-runner-continuation:\n    if: ${{ inputs.route == 'native-ui-runner-continuation' }}\n    uses: ./.github/workflows/pinkha-any-native-ui-runner-continuation.yml\n\n",
+      "append": "  current-native-ui-failed:\n    if: ${{ inputs.route == 'current-native-ui-failed' }}\n    uses: ./.github/workflows/pinkha-current-native-ui-failed.yml\n\n",
+      "kind": "job"
+    }
+  ],
+  "wholeFileInverse": true
+}

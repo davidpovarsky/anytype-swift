@@ -1,0 +1,16 @@
+--- a/.github/workflows/torah-inspector-ipados27.yml
++++ b/.github/workflows/torah-inspector-ipados27.yml
+@@ -56,0 +57 @@
++          - current-release-return-rtl
+@@ -59,0 +61 @@
++          - current-native-ui-failed
+@@ -350,0 +353,4 @@
++  current-native-ui-failed:
++    if: ${{ inputs.route == 'current-native-ui-failed' }}
++    uses: ./.github/workflows/pinkha-current-native-ui-failed.yml
++
+@@ -359,0 +366,4 @@
++
++  current-release-return-rtl:
++    if: ${{ inputs.route == 'current-release-return-rtl' }}
++    uses: ./.github/workflows/pinkha-current-release-return-rtl.yml
