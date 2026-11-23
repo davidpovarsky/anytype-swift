@@ -149,7 +149,7 @@ final class SemanticAnchorPage154MountedUITests: XCTestCase {
         let home = app.descendants(matching: .any).matching(NSPredicate(
             format: "identifier == %@ OR label == %@ OR identifier == %@ OR label == %@",
             "SpaceHub", "SpaceHub", "NewSpaceButton", "NewSpaceButton")).firstMatch
-        XCTAssertTrue(home.waitForExistence(timeout: 60))
+        try admitNativeStartup(home: home, phase: phase)
         var route = URLComponents()
         route.scheme = "anytype"; route.host = "object"
         route.queryItems = [URLQueryItem(name: "objectId", value: fixture.objectID),
@@ -157,6 +157,77 @@ final class SemanticAnchorPage154MountedUITests: XCTestCase {
         XCUIDevice.shared.system.open(try XCTUnwrap(route.url))
         try requireHittable(sourceText, timeout: 45)
     }
+
+
+    // One original 60-second startup admission budget. Synchronous XCTest
+    // queries may return later; every successful admission is checked again.
+    private func admitNativeStartup(home: XCUIElement, phase: String) throws {
+        let started = ProcessInfo.processInfo.systemUptime
+        let deadline = started + 60
+        var trace: [String: Any] = [
+            "protocol": "pinkha-page154-native-startup-warning-v1",
+            "phase": phase, "runID": fixture.runID, "runAttempt": fixture.runAttempt,
+            "nonce": fixture.nonce, "budgetSeconds": 60, "continueTaps": 0,
+            "status": "STARTED"
+        ]
+        func remaining() throws -> TimeInterval {
+            let value = deadline - ProcessInfo.processInfo.systemUptime
+            guard value > 0 else { throw StartupFailure.admission("startup-deadline") }
+            return value
+        }
+        func require(_ condition: Bool, _ name: String) throws {
+            guard condition else { throw StartupFailure.admission(name) }
+            _ = try remaining()
+        }
+        func attachTrace() {
+            trace["elapsedSeconds"] = ProcessInfo.processInfo.systemUptime - started
+            if let data = try? JSONSerialization.data(withJSONObject: trace, options: [.sortedKeys]) {
+                let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
+                attachment.name = "semantic-anchor-native-startup-" + phase
+                attachment.lifetime = .keepAlways
+                add(attachment)
+            }
+        }
+        defer { attachTrace() }
+        do {
+            try require(phase == "capture" || phase == "reopen", "unexpected-startup-phase")
+            let alerts = app.alerts.matching(NSPredicate(format: "label == %@", "Warning"))
+            let warning = alerts.firstMatch
+            if phase == "capture" {
+                try require(warning.waitForExistence(timeout: remaining()), "native-warning-missing")
+                try require(alerts.count == 1 && app.alerts.count == 1, "native-warning-not-unique")
+                let text = "You launch app with a unstable middleware. Don't use your production vault. Your vault may be broken."
+                let messages = warning.staticTexts.matching(NSPredicate(format: "label == %@", text))
+                let proceed = warning.buttons.matching(NSPredicate(format: "label == %@", "Continue with current vault"))
+                let logout = warning.buttons.matching(NSPredicate(format: "label == %@", "Logout from current vault"))
+                try require(messages.count == 1 && messages.firstMatch.exists, "native-warning-message-differs")
+                try require(warning.buttons.count == 2 && proceed.count == 1 && logout.count == 1,
+                            "native-warning-actions-differ")
+                let button = proceed.firstMatch
+                try require(button.exists && button.isEnabled && button.isHittable, "native-continue-not-hittable")
+                trace["exactWarningObserved"] = true
+                let hierarchy = XCTAttachment(string: app.debugDescription)
+                hierarchy.name = "semantic-anchor-native-startup-warning-ax"
+                hierarchy.lifetime = .keepAlways
+                add(hierarchy)
+                attach("semantic-anchor-native-startup-warning")
+                _ = try remaining()
+                button.tap()
+                trace["continueTaps"] = 1
+                _ = try remaining()
+                try require(warning.waitForNonExistence(timeout: remaining()), "native-warning-not-dismissed")
+            }
+            try require(home.waitForExistence(timeout: remaining()), "home-not-ready")
+            try require(!warning.exists, "native-warning-remained-or-returned")
+            trace["status"] = "HOME_READY"
+        } catch {
+            trace["status"] = "FAIL"
+            trace["firstError"] = String(describing: error)
+            throw error
+        }
+    }
+
+    private enum StartupFailure: Error { case admission(String) }
 
     private func selectRealWordAndChooseAnchor() throws {
         try requireHittable(sourceText)
