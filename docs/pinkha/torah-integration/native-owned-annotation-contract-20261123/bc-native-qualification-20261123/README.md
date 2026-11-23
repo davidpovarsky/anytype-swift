@@ -188,3 +188,5 @@ was not evidence of fresh CI checkout history. PREACTIVATION_REPAIRS.json and
 CHECKOUT_HISTORY_REPAIR.patch retain that exact correction. The initial API
 packet/tree is held and must not be activated; the replacement will bind the
 corrected fixture, template, manifest and source parent.
+
+The corrected source-only admission passed at 9c791ed0a5216150ba4b818a29664d5f91ee5f86. SOURCE_ONLY_ADMISSION_REPAIRED.json retains its actual receipt; WORKFLOW_PREPARATION_REPAIRED.json binds the superseding workflow. Neither result claims that CI checkout, Go compilation or native execution has occurred.
