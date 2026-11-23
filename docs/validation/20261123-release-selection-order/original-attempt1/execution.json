@@ -1,0 +1,284 @@
+{
+  "actual_local_modules": 33,
+  "actual_native_or_product_methods": 0,
+  "actual_simulator_commands": 0,
+  "checked_head": "97563de533579b0705eed0ad0028bdaa944ff470",
+  "elapsed_seconds": 0.5602576732635498,
+  "failure": {
+    "message": "Unadmitted repository module: Tools/PinkhaSimulatorGate/run_t5_apple_pair.py",
+    "type": "RuntimeError"
+  },
+  "final_free": 3217440768,
+  "inputs_unchanged": false,
+  "loaded_unchanged": false,
+  "manifest_sha256": "6347947179d47ac30c8e2e9fcd4c1fd2b697da9da88f0d75381fc87f530241b4",
+  "metadata_inputs": 2,
+  "named_failures": [],
+  "named_passes": [
+    "test_coherent_selection_order.ReleaseSelectionOrderTests.test_final_editor_plan_precedes_owned_seal_and_native_admission"
+  ],
+  "old_tests_run": 0,
+  "original_outputs": {
+    "controls/release-selection-order-language_failure_before_seal/batch-intent.json": {
+      "bytes": 2417,
+      "sha256": "062c3e4dc3200bd33d0a7aae56bab73a400f37285e90d867c7cac9119bb0a755"
+    },
+    "controls/release-selection-order-language_failure_before_seal/batch-simulator-baseline.json": {
+      "bytes": 347,
+      "sha256": "9ec0752704fe31e40a5ccbf084724fac683688768e3cd64b164ffd5392958844"
+    },
+    "controls/release-selection-order-language_failure_before_seal/control-only.json": {
+      "bytes": 2861,
+      "sha256": "6b6a7ccbdec489211750271302f8f9a592d931f4855e4022f1c6df857900c6da"
+    },
+    "controls/release-selection-order-language_failure_before_seal/lanes/editor/construction/command-journal.json": {
+      "bytes": 855,
+      "sha256": "7a6ec8cc7c54c2ec063818ad2d21acd1895c1ade07647442d9f15c35990f6146"
+    },
+    "controls/release-selection-order-language_failure_before_seal/lanes/editor/construction/create.command.json": {
+      "bytes": 545,
+      "sha256": "d912a9fe7a4e8262e8cbbe97b07e065bb5a7fc61f8da93e5d1385f7b5d84ebb7"
+    },
+    "controls/release-selection-order-language_failure_before_seal/lanes/editor/construction/create.log": {
+      "bytes": 37,
+      "sha256": "cab35d30eee0daac4a2fa08368e9e6c6d2e6ea431a03ce3a9ccd562da18699b8"
+    },
+    "controls/release-selection-order-language_failure_before_seal/lanes/editor/construction/create.observation.json": {
+      "bytes": 743,
+      "sha256": "a63fe3fdfb0ff785eb1db97823da76666597188cb0b7e1dcac2bbfd79e152147"
+    },
+    "controls/release-selection-order-language_failure_before_seal/lanes/editor/construction/created-proof.json": {
+      "bytes": 1133,
+      "sha256": "5e8742239c3c99c8f89a97b5d0eb173ca6db3c121a04d6074cf73065542ca2bd"
+    },
+    "controls/release-selection-order-language_failure_before_seal/lanes/editor/construction/intent.json": {
+      "bytes": 1044,
+      "sha256": "7de074b25787e1946ecbbc2481393fc26c863a335956dae02059853efc553d0c"
+    },
+    "controls/release-selection-order-language_failure_before_seal/lanes/editor/execution.json": {
+      "bytes": 47,
+      "sha256": "0d79bce5b74b45efa800f7afaecc1a0018f9390cce4bc4c98cc2fa60e534b3d2"
+    },
+    "controls/release-selection-order-language_failure_before_seal/lanes/editor/new-ordering-control.json": {
+      "bytes": 572,
+      "sha256": "d6016947dc0f0eeccb1f68351c887efbe7449d29b2f9e0fe5cfb7408b44d7e44"
+    },
+    "controls/release-selection-order-language_failure_before_seal/lanes/editor/owned-readiness/before.json": {
+      "bytes": 398,
+      "sha256": "c6b7e2ddf13ad38186098b6bbe357c4aab5a8fe35563a76202d7505924be8234"
+    },
+    "controls/release-selection-order-language_failure_before_seal/lanes/editor/owned-readiness/boot-status.command.json": {
+      "bytes": 243,
+      "sha256": "330059780bdfb1c2dac4a818be66402bd21e27f480c0b20dd01f38955a66696b"
+    },
+    "controls/release-selection-order-language_failure_before_seal/lanes/editor/owned-readiness/boot-status.log": {
+      "bytes": 22,
+      "sha256": "b2eac2cf20646e8a154a1800ef808ff44df7a9091d17ac653abe18f0f918fd5d"
+    },
+    "controls/release-selection-order-language_failure_before_seal/lanes/editor/owned-readiness/boot.command.json": {
+      "bytes": 227,
+      "sha256": "33a877afc47785625d2ff9b1de43c28378ae84fcbd2470590787d8ed0cccb8ed"
+    },
+    "controls/release-selection-order-language_failure_before_seal/lanes/editor/owned-readiness/readiness.json": {
+      "bytes": 863,
+      "sha256": "64496d5337b9d9de3934ac01480f9a0885bbb6496240afb824315403bc1ddbe5"
+    },
+    "controls/release-selection-order-language_failure_before_seal/lanes/editor/owned-simulator.json": {
+      "bytes": 342,
+      "sha256": "50407be8564379a397c4c81a9a9349bfd6daf6e0ad967356db0c72d1ce010a1e"
+    },
+    "controls/release-selection-order-language_failure_before_seal/lanes/editor/selection-plan.json": {
+      "bytes": 753,
+      "sha256": "c09670cd6fb4c55a8130506dda2bdaaf607a4d7698c386de4a18d0e68b392cc1"
+    },
+    "controls/release-selection-order-post_seal_plan_drift/batch-intent.json": {
+      "bytes": 2417,
+      "sha256": "d776d1ca2ebc636298e45e4eadf688afca9e7457caed41e71c602fe54503f4a8"
+    },
+    "controls/release-selection-order-post_seal_plan_drift/batch-simulator-baseline.json": {
+      "bytes": 347,
+      "sha256": "9ec0752704fe31e40a5ccbf084724fac683688768e3cd64b164ffd5392958844"
+    },
+    "controls/release-selection-order-post_seal_plan_drift/control-only.json": {
+      "bytes": 3015,
+      "sha256": "f1847b834f9cd31dd3b24f6456f89db9d945787820150660acbc2c42f4f598cb"
+    },
+    "controls/release-selection-order-post_seal_plan_drift/lanes/editor/construction/command-journal.json": {
+      "bytes": 855,
+      "sha256": "2a97cd811b9208db5dd35ff93426d242a46a21256cc56fbd1d23a7238edb08c6"
+    },
+    "controls/release-selection-order-post_seal_plan_drift/lanes/editor/construction/create.command.json": {
+      "bytes": 545,
+      "sha256": "ffa92414fdeb091b27ffbe68d6a657317a016660016b6540bf7210ae28ffeead"
+    },
+    "controls/release-selection-order-post_seal_plan_drift/lanes/editor/construction/create.log": {
+      "bytes": 37,
+      "sha256": "cab35d30eee0daac4a2fa08368e9e6c6d2e6ea431a03ce3a9ccd562da18699b8"
+    },
+    "controls/release-selection-order-post_seal_plan_drift/lanes/editor/construction/create.observation.json": {
+      "bytes": 743,
+      "sha256": "66b169507d0ba69f483efb2a57a57a6c5365606316258e4600f59836843839aa"
+    },
+    "controls/release-selection-order-post_seal_plan_drift/lanes/editor/construction/created-proof.json": {
+      "bytes": 1133,
+      "sha256": "c168b8022d9257b70505ffb801792b25f19a2dec8d7114280c17233eaff000a6"
+    },
+    "controls/release-selection-order-post_seal_plan_drift/lanes/editor/construction/intent.json": {
+      "bytes": 1044,
+      "sha256": "8f3627dd0b46c601f1db67c1ee3132804d540cd886bfaea463601e2eb2d714a3"
+    },
+    "controls/release-selection-order-post_seal_plan_drift/lanes/editor/execution.json": {
+      "bytes": 23,
+      "sha256": "210ed86ef3846d1e301a975f99d44747181bf16e35e5bfa1a038158d7ce5f6c2"
+    },
+    "controls/release-selection-order-post_seal_plan_drift/lanes/editor/fresh-container.json": {
+      "bytes": 1093,
+      "sha256": "b9b3df79200fb33faf80c935ff6f466fc3348b0cb5d9d693d560125eac5eafc7"
+    },
+    "controls/release-selection-order-post_seal_plan_drift/lanes/editor/new-ordering-control.json": {
+      "bytes": 637,
+      "sha256": "56c83a6a15a096f9bbb8c6432e5b0789f1e629242c989818aed168760dc0bae8"
+    },
+    "controls/release-selection-order-post_seal_plan_drift/lanes/editor/owned-readiness/before.json": {
+      "bytes": 398,
+      "sha256": "c6b7e2ddf13ad38186098b6bbe357c4aab5a8fe35563a76202d7505924be8234"
+    },
+    "controls/release-selection-order-post_seal_plan_drift/lanes/editor/owned-readiness/boot-status.command.json": {
+      "bytes": 243,
+      "sha256": "330059780bdfb1c2dac4a818be66402bd21e27f480c0b20dd01f38955a66696b"
+    },
+    "controls/release-selection-order-post_seal_plan_drift/lanes/editor/owned-readiness/boot-status.log": {
+      "bytes": 22,
+      "sha256": "b2eac2cf20646e8a154a1800ef808ff44df7a9091d17ac653abe18f0f918fd5d"
+    },
+    "controls/release-selection-order-post_seal_plan_drift/lanes/editor/owned-readiness/boot.command.json": {
+      "bytes": 227,
+      "sha256": "33a877afc47785625d2ff9b1de43c28378ae84fcbd2470590787d8ed0cccb8ed"
+    },
+    "controls/release-selection-order-post_seal_plan_drift/lanes/editor/owned-readiness/readiness.json": {
+      "bytes": 863,
+      "sha256": "64496d5337b9d9de3934ac01480f9a0885bbb6496240afb824315403bc1ddbe5"
+    },
+    "controls/release-selection-order-post_seal_plan_drift/lanes/editor/owned-simulator.json": {
+      "bytes": 342,
+      "sha256": "50407be8564379a397c4c81a9a9349bfd6daf6e0ad967356db0c72d1ce010a1e"
+    },
+    "controls/release-selection-order-post_seal_plan_drift/lanes/editor/selection-plan.json": {
+      "bytes": 868,
+      "sha256": "757d27507f43f4475cb9b74ad10a0a9e5a7c82a5f0e763e6e4160be6040f8885"
+    },
+    "controls/release-selection-order-successful_language_then_guard/batch-intent.json": {
+      "bytes": 2417,
+      "sha256": "02e55c4d08ce56eeeb42b0190f32737ed9760a676ee8a003ef5e61700cc0c6e8"
+    },
+    "controls/release-selection-order-successful_language_then_guard/batch-simulator-baseline.json": {
+      "bytes": 347,
+      "sha256": "9ec0752704fe31e40a5ccbf084724fac683688768e3cd64b164ffd5392958844"
+    },
+    "controls/release-selection-order-successful_language_then_guard/control-only.json": {
+      "bytes": 3190,
+      "sha256": "afd7f38444a43140ff5fed1acb0d6af3b4f689b97f3294d11b62b2cd5b591c58"
+    },
+    "controls/release-selection-order-successful_language_then_guard/lanes/editor/construction/command-journal.json": {
+      "bytes": 855,
+      "sha256": "141853c0b08db1629755b0213921a440e1a1b9d66656fbb961f6d0a0fa0cbb88"
+    },
+    "controls/release-selection-order-successful_language_then_guard/lanes/editor/construction/create.command.json": {
+      "bytes": 545,
+      "sha256": "a9335c61b16e24353392f7f34e59f2a2d092ca9b4e59c6cde71d02812d02222e"
+    },
+    "controls/release-selection-order-successful_language_then_guard/lanes/editor/construction/create.log": {
+      "bytes": 37,
+      "sha256": "cab35d30eee0daac4a2fa08368e9e6c6d2e6ea431a03ce3a9ccd562da18699b8"
+    },
+    "controls/release-selection-order-successful_language_then_guard/lanes/editor/construction/create.observation.json": {
+      "bytes": 743,
+      "sha256": "a86fd29ec102cf51d4ef68bda8c11acb0010e75a0e8c69e28453ad15b0778b14"
+    },
+    "controls/release-selection-order-successful_language_then_guard/lanes/editor/construction/created-proof.json": {
+      "bytes": 1133,
+      "sha256": "7e0ce80971870da6800a8ef4bfc9d3091bd97e1c6a61f03a10bb48be1b639283"
+    },
+    "controls/release-selection-order-successful_language_then_guard/lanes/editor/construction/first-selection-attempt.json": {
+      "bytes": 1058,
+      "sha256": "6154d7c515a575d1d4d7fce076592ba5c063904d578ffb15d8acc6e297a942e6"
+    },
+    "controls/release-selection-order-successful_language_then_guard/lanes/editor/construction/intent.json": {
+      "bytes": 1044,
+      "sha256": "f9a05249c9362b6c7bc036842432fa977af9a568724e13c6a817de62f5a9f830"
+    },
+    "controls/release-selection-order-successful_language_then_guard/lanes/editor/execution.json": {
+      "bytes": 23,
+      "sha256": "210ed86ef3846d1e301a975f99d44747181bf16e35e5bfa1a038158d7ce5f6c2"
+    },
+    "controls/release-selection-order-successful_language_then_guard/lanes/editor/fresh-container.json": {
+      "bytes": 1093,
+      "sha256": "aa6b9e7d1d755b4ba7972918655e79e57b7ce31364072486220933d88741c15d"
+    },
+    "controls/release-selection-order-successful_language_then_guard/lanes/editor/new-ordering-control.json": {
+      "bytes": 706,
+      "sha256": "82ef31952aa4f03e1fee114829cc15c7d63bb528b51d3a55bb444dd1ce87835a"
+    },
+    "controls/release-selection-order-successful_language_then_guard/lanes/editor/owned-readiness/before.json": {
+      "bytes": 398,
+      "sha256": "c6b7e2ddf13ad38186098b6bbe357c4aab5a8fe35563a76202d7505924be8234"
+    },
+    "controls/release-selection-order-successful_language_then_guard/lanes/editor/owned-readiness/boot-status.command.json": {
+      "bytes": 243,
+      "sha256": "330059780bdfb1c2dac4a818be66402bd21e27f480c0b20dd01f38955a66696b"
+    },
+    "controls/release-selection-order-successful_language_then_guard/lanes/editor/owned-readiness/boot-status.log": {
+      "bytes": 22,
+      "sha256": "b2eac2cf20646e8a154a1800ef808ff44df7a9091d17ac653abe18f0f918fd5d"
+    },
+    "controls/release-selection-order-successful_language_then_guard/lanes/editor/owned-readiness/boot.command.json": {
+      "bytes": 227,
+      "sha256": "33a877afc47785625d2ff9b1de43c28378ae84fcbd2470590787d8ed0cccb8ed"
+    },
+    "controls/release-selection-order-successful_language_then_guard/lanes/editor/owned-readiness/readiness.json": {
+      "bytes": 863,
+      "sha256": "64496d5337b9d9de3934ac01480f9a0885bbb6496240afb824315403bc1ddbe5"
+    },
+    "controls/release-selection-order-successful_language_then_guard/lanes/editor/owned-simulator.json": {
+      "bytes": 342,
+      "sha256": "50407be8564379a397c4c81a9a9349bfd6daf6e0ad967356db0c72d1ce010a1e"
+    },
+    "controls/release-selection-order-successful_language_then_guard/lanes/editor/selection-plan.json": {
+      "bytes": 851,
+      "sha256": "0d202e0880ccd347684201a4947e151b74a7cbcc81d291f644eab2668cc8ce4f"
+    },
+    "events.jsonl": {
+      "bytes": 1723,
+      "sha256": "80aec0408765e90f2425910ad2c4956c4c8f4309e7d29db050a8a305662d0df3"
+    },
+    "loaded-before.json": {
+      "bytes": 5842,
+      "sha256": "f446bc3965abd4dac16934f42febaed6a9761c769b50e36000a720dbadc4df4d"
+    },
+    "original.stderr": {
+      "bytes": 1153,
+      "sha256": "9ef01015c9ef16a7e1547a9858ad593633ada925902afdafa342f9f90b1e4b4f"
+    },
+    "original.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source-before.json": {
+      "bytes": 15644,
+      "sha256": "a5f6e0f705b0336c0a35d264773c56f1952c295e399c599b163f748006986212"
+    }
+  },
+  "protocol": "release-selection-order-single-control-v1",
+  "python_executable": "/usr/bin/python3",
+  "python_version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "runner_sha256": "d53c27c208d363468f144ffadb267dad1fc2acb1aa7a6b551d1d6f9635e3e55c",
+  "selected_tests": [
+    "test_coherent_selection_order.ReleaseSelectionOrderTests.test_final_editor_plan_precedes_owned_seal_and_native_admission"
+  ],
+  "source_commit": "c853f6b68860f037d014c17cb2d268b8e9c1631a",
+  "source_inputs": 42,
+  "start_free": 3217780736,
+  "status": "FAIL",
+  "subcase_passes": 3,
+  "tests_run": 1
+}

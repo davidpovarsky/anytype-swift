@@ -1,0 +1,15 @@
+test_final_editor_plan_precedes_owned_seal_and_native_admission (test_coherent_selection_order.ReleaseSelectionOrderTests.test_final_editor_plan_precedes_owned_seal_and_native_admission) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.216s
+
+OK
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-wave15-release-selection-order-20261123/docs/validation/20261123-release-selection-order/run-controls.py", line 215, in main
+    loaded_after = loaded(manifest)
+                   ^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-release-selection-order-20261123/docs/validation/20261123-release-selection-order/run-controls.py", line 121, in loaded
+    need(relative in allowed and path.suffix == ".py", "Unadmitted repository module: " + relative)
+  File "/mnt/development/projects/worktrees/anytype-wave15-release-selection-order-20261123/docs/validation/20261123-release-selection-order/run-controls.py", line 33, in need
+    raise RuntimeError(message)
+RuntimeError: Unadmitted repository module: Tools/PinkhaSimulatorGate/run_t5_apple_pair.py

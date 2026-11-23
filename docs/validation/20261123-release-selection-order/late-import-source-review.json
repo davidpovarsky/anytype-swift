@@ -1,0 +1,692 @@
+{
+  "call_path": [
+    {
+      "end_line": 271,
+      "function": "confirm_empty_container",
+      "function_source_sha256": "4e65019c2853e36425f1de59f0c834bbf3e5a8d541e9bb539b990d24c8550268",
+      "line": 267,
+      "path": "Tools/PinkhaSimulatorGate/coherent_original_products.py",
+      "source": "def confirm_empty_container(self, udid, evidence):\n        import coherent_fresh_construction as construction\n        require(self.device is not None and self.device[\"udid\"] == udid,\n                \"Original-Products construction destination differs\")\n        return construction.confirm(self.origin, self.device, evidence)",
+      "source_sha256": "94bb6243460443c7f260e23bcfe1d15f4dfe862e8f2777b788b6b14e6e28023e"
+    },
+    {
+      "end_line": 213,
+      "function": "confirm",
+      "function_source_sha256": "f7c85cb238e86f6c0f8c69dd671ee8d9a1632c23065d31ce9730888f02f6079d",
+      "line": 190,
+      "path": "Tools/PinkhaSimulatorGate/coherent_fresh_construction.py",
+      "source": "def confirm(origin, device, directory):\n    intent = read(origin.evidence / \"batch-intent.json\", origin.evidence)\n    bound = verify_creation(origin, intent, device, directory)\n    state = origin._constructions.get(device[\"udid\"].lower())\n    commands = read(directory / \"construction/command-journal.json\", origin.evidence)\n    require(commands.get(\"commands\") == [\n                read(directory / \"construction/create.observation.json\", origin.evidence)],\n            \"Construction has an earlier owned operation\")\n    require(state and state[\"device\"] == device and state[\"directory\"] == directory\n            and not state[\"first_selection_consumed\"] and state[\"fresh_sha256\"] is None\n            and not (directory / \"construction/first-selection-attempt.json\").exists(),\n            \"Construction cannot be reset or admitted after a selection attempt\")\n    ready = batch.validate_coherent_readiness(directory, device)\n    require(ready[\"before\"][\"udid\"] == device[\"udid\"], \"Readiness belongs to another UUID\")\n    receipt = dict(**bound, status=\"OWNED_CONSTRUCTION_VERIFIED_BEFORE_FIRST_NATIVE_SELECTION\",\n        simulator_udid=device[\"udid\"], container_absence_proved=False,\n        lookup=\"NOT_PERFORMED_CONSTRUCTION_CONTRACT\",\n        created_proof_sha256=digest(directory / \"construction/created-proof.json\", origin.evidence),\n        readiness_receipt_sha256=digest(directory / \"owned-readiness/readiness.json\", origin.evidence),\n        selection_plan_sha256=digest(directory / \"selection-plan.json\", origin.evidence),\n        prior_owned_install_or_selection_attempts=0)\n    original(directory / \"fresh-container.json\", receipt)\n    state[\"fresh_sha256\"] = digest(directory / \"fresh-container.json\", origin.evidence)\n    return receipt",
+      "source_sha256": "d1365997188a81d1ad6fa25f50feefb1f87dd8e60034a5957ac1c8e706a9df61"
+    },
+    {
+      "end_line": 464,
+      "function": "validate_coherent_readiness",
+      "function_source_sha256": "c333627935037aa512a82e3d45471d0f6c01015e53aafe49477bdc8568ab6e3b",
+      "line": 431,
+      "path": "Tools/PinkhaSimulatorGate/wave15_batch.py",
+      "source": "def validate_coherent_readiness(evidence, device):\n    \"\"\"Re-read successful exact preboot identity/bootstatus; no redundant live inventory.\"\"\"\n    import owned_simulator_readiness as simulator\n    import run_t5_apple_pair as pair\n    directory = evidence / \"owned-readiness\"\n    original = directory / \"readiness.json\"\n    require(original.is_file() and not original.is_symlink() and original.stat().st_size <= 65536,\n            \"Original bounded coherent readiness receipt is missing\")\n    ready = json.loads(original.read_bytes())\n    require(ready.get(\"status\") == \"OWNED_SIMULATOR_READY\"\n            and ready.get(\"destination\") == device[\"udid\"]\n            and ready.get(\"tests_executed\") == 0 and ready.get(\"boot_required\") is True\n            and ready.get(\"before\", {}).get(\"state\") == \"Shutdown\"\n            and ready.get(\"bootstatus_return_code\") == 0\n            and ready.get(\"postboot_inventory_performed\") is False\n            and ready.get(\"readiness_basis\") == \"VERIFIED_PREBOOT_IDENTITY_AND_SUCCESSFUL_OWNED_BOOTSTATUS\",\n            \"Coherent simulator readiness is incomplete\")\n    for name, key in ((\"before.json\", \"preboot_identity_sha256\"), (\"boot-status.log\", \"bootstatus_log_sha256\")):\n        path = directory / name\n        require(path.is_file() and not path.is_symlink() and digest(path) == ready.get(key),\n                \"Coherent original readiness evidence changed\")\n    observed = simulator.owned_identity(json.loads((directory / \"before.json\").read_bytes()),\n                                        device, device[\"name\"], pair)\n    require(observed == ready[\"before\"], \"Coherent preboot identity differs from its original inventory\")\n    for name, argv, bound in (\n            (\"boot\", [\"xcrun\", \"simctl\", \"boot\", device[\"udid\"]], 120),\n            (\"boot-status\", [\"xcrun\", \"simctl\", \"bootstatus\", device[\"udid\"], \"-b\"], 180)):\n        command = json.loads((directory / (name + \".command.json\")).read_bytes())\n        require(command.get(\"argv\") == argv and command.get(\"timeout_seconds\") == bound\n                and command.get(\"return_code\") == 0 and command.get(\"timed_out\", False) is False\n                and command.get(\"status\") == \"SUCCESS\"\n                and command.get(\"owned_group_quiescence\", {}).get(\"status\") == \"PASS\",\n                \"Coherent owned boot command lacks successful bounded completion\")\n    return ready",
+      "source_sha256": "75e923d8c9718553d80c6aa3fd5338f06e2622e275ba10bc5537d03c4ba03193"
+    },
+    {
+      "end_line": 30,
+      "function": "owned_identity",
+      "function_source_sha256": "af20ff14173a486ffd44a0334d806384a43d5de106a710c5dc86109760cb20cc",
+      "line": 19,
+      "path": "Tools/PinkhaSimulatorGate/owned_simulator_readiness.py",
+      "source": "def owned_identity(value, selection, expected_name, pair):\n    udid = selection.get(\"udid\", \"\")\n    pair.require(re.fullmatch(r\"[0-9a-fA-F]{8}-(?:[0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}\", udid)\n                 and selection.get(\"name\") == expected_name and expected_name,\n                 \"Explicit owned simulator name and UUID required\")\n    matches = [(runtime, item) for runtime, devices in value.get(\"devices\", {}).items()\n               for item in devices if item.get(\"udid\", \"\").lower() == udid.lower()]\n    pair.require(len(matches) == 1, \"Owned simulator is missing or ambiguous\")\n    runtime, item = matches[0]\n    observed = {key: item.get(key) for key in (\"udid\", \"name\", \"deviceTypeIdentifier\", \"state\", \"isAvailable\")}\n    observed[\"runtime_identifier\"] = runtime\n    return validate_identity(observed, selection, expected_name, pair)",
+      "source_sha256": "42be87c8f6e9cb4911b6f5e8a009d0e17aa8d43bf1c259f91534fda7e70d1d09"
+    },
+    {
+      "end_line": 41,
+      "function": "validate_identity",
+      "function_source_sha256": "42b169433bcf004c76e9dc2ea71ede1b30ae4c929bac27eb800f12756dff34c9",
+      "line": 33,
+      "path": "Tools/PinkhaSimulatorGate/owned_simulator_readiness.py",
+      "source": "def validate_identity(item, selection, expected_name, pair):\n    pair.require(selection.get(\"name\") == expected_name and expected_name\n                 and item.get(\"udid\", \"\").lower() == selection[\"udid\"].lower()\n                 and item.get(\"runtime_identifier\") == selection[\"runtime\"][\"identifier\"]\n                 and item.get(\"deviceTypeIdentifier\") == selection[\"device\"][\"identifier\"]\n                 and item.get(\"name\") == expected_name and item.get(\"isAvailable\") is True\n                 and item.get(\"state\") in {\"Shutdown\", \"Booted\"},\n                 \"Actual simulator type, runtime, name, availability or stable state differs\")\n    return item",
+      "source_sha256": "42be87c8f6e9cb4911b6f5e8a009d0e17aa8d43bf1c259f91534fda7e70d1d09"
+    },
+    {
+      "end_line": 60,
+      "function": "require",
+      "function_source_sha256": "07aea090f1e0ffe029e693d88420d601dd716fbf051fb282a0b180d358f98992",
+      "line": 58,
+      "path": "Tools/PinkhaSimulatorGate/run_t5_apple_pair.py",
+      "source": "def require(condition, message):\n    if not condition:\n        raise RuntimeError(message)",
+      "source_sha256": "11e11ec19eca11d506f56b37ad8ff76bcdbc40a28a4c233b4e57cb86432b1340"
+    }
+  ],
+  "current_old44_metadata_exact": true,
+  "current_original_inputs": [
+    {
+      "bytes": 4236,
+      "git_blob": "4fd63c36dbaf47ede3267ee40b76e1a19828c241",
+      "git_mode": "100644",
+      "inode": 5697093,
+      "mode": 436,
+      "mtime_ns": 1795436810527614445,
+      "path": "Tools/Hanlin/host_command.py",
+      "sha256": "5f09813c5719f5ea3920c003e58ac6b2b5633f276686bf6c5ef8bc6f9f39a807",
+      "uid": 1001
+    },
+    {
+      "bytes": 1397,
+      "git_blob": "a46e642477a8fb0c16a7526d39e7f43b5ac7ea84",
+      "git_mode": "100644",
+      "inode": 5697095,
+      "mode": 436,
+      "mtime_ns": 1795436810527614445,
+      "path": "Tools/Hanlin/related_read_authority_profile.py",
+      "sha256": "c5480b895c917d8268841c64c7875f7d42414fe999489fa27587d017c6e0f0d9",
+      "uid": 1001
+    },
+    {
+      "bytes": 39409,
+      "git_blob": "85efec75356c8fadcd13a09a7cb0c5dd722d89b0",
+      "git_mode": "100644",
+      "inode": 5697096,
+      "mode": 436,
+      "mtime_ns": 1795436810527614445,
+      "path": "Tools/Hanlin/run_host_tests.py",
+      "sha256": "106d40df8594c067fdcc389d0ac93e3055a01247d431b13563f9d6e0d1c3403d",
+      "uid": 1001
+    },
+    {
+      "bytes": 1745,
+      "git_blob": "c486549fb852eb9360fd8e07e75444fcbbf613b4",
+      "git_mode": "100644",
+      "inode": 5697098,
+      "mode": 436,
+      "mtime_ns": 1795436810527614445,
+      "path": "Tools/Hanlin/shared_editor_profile.py",
+      "sha256": "77d27d083f8073ad027cd28e98f2e2986aaee1cb2e31d2931287e33a4f8497c8",
+      "uid": 1001
+    },
+    {
+      "bytes": 1914,
+      "git_blob": "606f097b8af28c2c561afef848b9829b729dde4f",
+      "git_mode": "100644",
+      "inode": 5697099,
+      "mode": 436,
+      "mtime_ns": 1795436810527614445,
+      "path": "Tools/Hanlin/shared_table_profile.py",
+      "sha256": "5c99f5e10adcd2930fd0fe8476d178f15bb8cd9c11174be8a5f849ae12470397",
+      "uid": 1001
+    },
+    {
+      "bytes": 7868,
+      "git_blob": "ebf9f9a1c8fbaaf0463e44e8f4e8a0d0b5835631",
+      "git_mode": "100644",
+      "inode": 5697107,
+      "mode": 436,
+      "mtime_ns": 1795436810528397210,
+      "path": "Tools/Hanlin/wave15_core_profile.py",
+      "sha256": "f544619607be0d25e74cff541ac66418b76df11abcd9c15c0ca774d6cbd5d96a",
+      "uid": 1001
+    },
+    {
+      "bytes": 11989,
+      "git_blob": "7e25529bccec4b7e5ec5d598a6781238ad73e20f",
+      "git_mode": "100644",
+      "inode": 5697117,
+      "mode": 436,
+      "mtime_ns": 1795436810529397215,
+      "path": "Tools/PinkhaNativeDerived/attachment_runtime.py",
+      "sha256": "0154ae5f6b0af197d62abc7eeb6233adbe3d469723a75e15e233e7ab5e37019a",
+      "uid": 1001
+    },
+    {
+      "bytes": 12945,
+      "git_blob": "e32c935fedce5fc732240bf9b2ada21764b5add1",
+      "git_mode": "100644",
+      "inode": 5697118,
+      "mode": 436,
+      "mtime_ns": 1795436810529397215,
+      "path": "Tools/PinkhaNativeDerived/build_custom_heart.py",
+      "sha256": "0ebbe2f6227418eac2c532b0058290158319ba9f786baaf445de444887e8c669",
+      "uid": 1001
+    },
+    {
+      "bytes": 20302,
+      "git_blob": "cb509ecc637ffb669569bfafd7471ba924a5c851",
+      "git_mode": "100644",
+      "inode": 5697119,
+      "mode": 436,
+      "mtime_ns": 1795436810529397215,
+      "path": "Tools/PinkhaNativeDerived/build_native_ipa.py",
+      "sha256": "c9e35a228779ae761d36cef204a32148ffdd3a338c9ede11dde6df4ebee21055",
+      "uid": 1001
+    },
+    {
+      "bytes": 18158,
+      "git_blob": "71e4efb0a5b953f5428e67252545cd274479b64e",
+      "git_mode": "100644",
+      "inode": 5697177,
+      "mode": 436,
+      "mtime_ns": 1795436810539397273,
+      "path": "Tools/PinkhaNativeDerived/heart_runtime_profile.py",
+      "sha256": "d354e5ccf20bfbdbeaf9f61a0043bfcbb137400b835f8b34e910453c35995001",
+      "uid": 1001
+    },
+    {
+      "bytes": 17012,
+      "git_blob": "6f32c64167465ed6a60220018aa96fb2ad6c359c",
+      "git_mode": "100644",
+      "inode": 5697202,
+      "mode": 436,
+      "mtime_ns": 1795436810541225284,
+      "path": "Tools/PinkhaNativeDerived/rerun_original_ui.py",
+      "sha256": "ec5688909921942e94f792cdde0a02baa7b5f9b2f9e0b3bde3df3a877f299279",
+      "uid": 1001
+    },
+    {
+      "bytes": 11158,
+      "git_blob": "b77dd4f92d0e6b32c94ee67528bc198747ec45ee",
+      "git_mode": "100644",
+      "inode": 5697233,
+      "mode": 436,
+      "mtime_ns": 1795436810543397296,
+      "path": "Tools/PinkhaNativeDerived/validate_wave1.py",
+      "sha256": "743ddea3e4e42640070035fe7d149d148dfff1cbdc852ef464c8c19da07253a0",
+      "uid": 1001
+    },
+    {
+      "bytes": 5844,
+      "git_blob": "8765928f0336ba89e34bf965dcddcdd9f20b688c",
+      "git_mode": "100644",
+      "inode": 5697241,
+      "mode": 436,
+      "mtime_ns": 1795436810543909579,
+      "path": "Tools/PinkhaSimulatorGate/coherent_cleanup_snapshot.py",
+      "sha256": "7112c94a50fae8858f0364ab56e2340b5a489fa9be1588a988841c0867691a7a",
+      "uid": 1001
+    },
+    {
+      "bytes": 3852,
+      "git_blob": "90d6f634582c5cb3e5700ff8a835824dd7a25f43",
+      "git_mode": "100644",
+      "inode": 5697243,
+      "mode": 436,
+      "mtime_ns": 1795436810543909579,
+      "path": "Tools/PinkhaSimulatorGate/coherent_controller_sources.py",
+      "sha256": "493fa855797fd52a27f10d68406342676a35f325bac67acedeb27ded3b945008",
+      "uid": 1001
+    },
+    {
+      "bytes": 20706,
+      "git_blob": "772856741bd87bb96b5ad998509398274b5d7b1c",
+      "git_mode": "100644",
+      "inode": 5697244,
+      "mode": 436,
+      "mtime_ns": 1795436810544397302,
+      "path": "Tools/PinkhaSimulatorGate/coherent_fresh_construction.py",
+      "sha256": "d1365997188a81d1ad6fa25f50feefb1f87dd8e60034a5957ac1c8e706a9df61",
+      "uid": 1001
+    },
+    {
+      "bytes": 23513,
+      "git_blob": "3ea4e647387ec38a5fc3c6f12bf4a7be33e8013d",
+      "git_mode": "100644",
+      "inode": 5697246,
+      "mode": 436,
+      "mtime_ns": 1795436810544397302,
+      "path": "Tools/PinkhaSimulatorGate/coherent_original_preflight.py",
+      "sha256": "a6e0fb5f0df3f44bc8cf247e76be45cded8736308ab3349318c66fb9f549ea11",
+      "uid": 1001
+    },
+    {
+      "bytes": 54720,
+      "git_blob": "7d582eb21ec5c86129d05928fd222bc4ee54d00a",
+      "git_mode": "100644",
+      "inode": 5697247,
+      "mode": 436,
+      "mtime_ns": 1795436810544397302,
+      "path": "Tools/PinkhaSimulatorGate/coherent_original_products.py",
+      "sha256": "94bb6243460443c7f260e23bcfe1d15f4dfe862e8f2777b788b6b14e6e28023e",
+      "uid": 1001
+    },
+    {
+      "bytes": 3127,
+      "git_blob": "b34308d352419e61f409b1ee4b756bd551d73e86",
+      "git_mode": "100644",
+      "inode": 5697249,
+      "mode": 436,
+      "mtime_ns": 1795436810544397302,
+      "path": "Tools/PinkhaSimulatorGate/compiled_products.py",
+      "sha256": "fecbf688eef39388aef7fac6990cfa6b391b72be35f34bee9aaa9f7c96eae7cf",
+      "uid": 1001
+    },
+    {
+      "bytes": 3964,
+      "git_blob": "1bd3ca81e6df5109a21edca96239b48ddba39e9d",
+      "git_mode": "100644",
+      "inode": 5697250,
+      "mode": 436,
+      "mtime_ns": 1795436810544397302,
+      "path": "Tools/PinkhaSimulatorGate/destination_artifacts.py",
+      "sha256": "55c076f86990e74c2b3908a1474f1bb224c7ca52f00d1f9fe162f40be8814280",
+      "uid": 1001
+    },
+    {
+      "bytes": 6248,
+      "git_blob": "7b93fac2ac72d070b12abe2ea03ec64d764e238a",
+      "git_mode": "100644",
+      "inode": 5697251,
+      "mode": 436,
+      "mtime_ns": 1795436810544397302,
+      "path": "Tools/PinkhaSimulatorGate/early_build_products.py",
+      "sha256": "9c982fb2c15614be6f42a4c244a7a98726e48fee33d276fffae02acde5be9e3b",
+      "uid": 1001
+    },
+    {
+      "bytes": 11660,
+      "git_blob": "1b9f19fcfc5a1eb79211d7fcfe2dea163c8f1ea4",
+      "git_mode": "100644",
+      "inode": 5697252,
+      "mode": 436,
+      "mtime_ns": 1795436810544397302,
+      "path": "Tools/PinkhaSimulatorGate/hanlin_acceptance_evidence.py",
+      "sha256": "8552b94f2034d4a1ddfcd363ca02526ff7c843030d65790ceb048efcde2056e4",
+      "uid": 1001
+    },
+    {
+      "bytes": 8754,
+      "git_blob": "1729ed4aa2f6960bca3febe8914d874dec1dc94a",
+      "git_mode": "100644",
+      "inode": 5697253,
+      "mode": 436,
+      "mtime_ns": 1795436810544397302,
+      "path": "Tools/PinkhaSimulatorGate/hanlin_selection_evidence.py",
+      "sha256": "25afba17f7083d0e41481f9464217ab665c4d8f11f20c94c4b99ce3f2a3c3336",
+      "uid": 1001
+    },
+    {
+      "bytes": 24094,
+      "git_blob": "362abef09656966d4011e5a4230ebc4091ea21a9",
+      "git_mode": "100644",
+      "inode": 5697254,
+      "mode": 436,
+      "mtime_ns": 1795436810544397302,
+      "path": "Tools/PinkhaSimulatorGate/hanlin_ui_runtime.py",
+      "sha256": "e7c844559fbc7680cd2dbbe7c1eebb0561ecfb2f10305bef0f9b85e95665922c",
+      "uid": 1001
+    },
+    {
+      "bytes": 6494,
+      "git_blob": "48e7f1e3d6f6a8710677d6097491c6ea4a746c36",
+      "git_mode": "100644",
+      "inode": 5697255,
+      "mode": 436,
+      "mtime_ns": 1795436810545397308,
+      "path": "Tools/PinkhaSimulatorGate/owned_simulator_readiness.py",
+      "sha256": "42be87c8f6e9cb4911b6f5e8a009d0e17aa8d43bf1c259f91534fda7e70d1d09",
+      "uid": 1001
+    },
+    {
+      "bytes": 4319,
+      "git_blob": "2628b345d5743bbe1ddc0d1afaeef9fb410f3daf",
+      "git_mode": "100644",
+      "inode": 5697256,
+      "mode": 436,
+      "mtime_ns": 1795436810545397308,
+      "path": "Tools/PinkhaSimulatorGate/preflight.py",
+      "sha256": "0e1c6491e8bb30d9e97cf65cf3b820a8860d0a32237676f2c3a7613668ddee66",
+      "uid": 1001
+    },
+    {
+      "bytes": 15609,
+      "git_blob": "a3b23f8ee01b8cf5cc14d2b404a00d150b328790",
+      "git_mode": "100644",
+      "inode": 5697261,
+      "mode": 436,
+      "mtime_ns": 1795436810545397308,
+      "path": "Tools/PinkhaSimulatorGate/run_owned_single_lane.py",
+      "sha256": "5d976901b73b5bc5e519ead3a89952220d8149e710561d92acc9f36e46247414",
+      "uid": 1001
+    },
+    {
+      "bytes": 43658,
+      "git_blob": "70cb99bbe99043be334b0e475139753b2fae550d",
+      "git_mode": "100644",
+      "inode": 5697266,
+      "mode": 436,
+      "mtime_ns": 1795436810546397313,
+      "path": "Tools/PinkhaSimulatorGate/run_ui27.py",
+      "sha256": "9222c3ea0258ce5002f72e2b60b58c64f27857c15f653a49ff2a0edacc8cf5de",
+      "uid": 1001
+    },
+    {
+      "bytes": 52410,
+      "git_blob": "530acd3d2a58f888d83f1a0bbf10b3552c3c0685",
+      "git_mode": "100644",
+      "inode": 5697267,
+      "mode": 436,
+      "mtime_ns": 1795436900560629305,
+      "path": "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py",
+      "sha256": "423bb279972950fc3118c99af948ad846f5507a93823219fd75fb38b1efee2d8",
+      "uid": 1001
+    },
+    {
+      "bytes": 33693,
+      "git_blob": "c974c926ae143dd055f6c13d3227ea48ab999814",
+      "git_mode": "100644",
+      "inode": 5697275,
+      "mode": 436,
+      "mtime_ns": 1795436810548397325,
+      "path": "Tools/PinkhaSimulatorGate/sdk06_enumeration_probe.py",
+      "sha256": "ce2987846cdd42ebab7702e7dff51068bfb15ee48a66011f621695dbd72ebbce",
+      "uid": 1001
+    },
+    {
+      "bytes": 22871,
+      "git_blob": "dcd268fca2a34a3ff121d6d107742ea687c602ef",
+      "git_mode": "100644",
+      "inode": 5697287,
+      "mode": 436,
+      "mtime_ns": 1795436810549397331,
+      "path": "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py",
+      "sha256": "b4573d61a6fadad7e266dfb88f7f6c25683d05552d99ab70acf86e7ef9715ae6",
+      "uid": 1001
+    },
+    {
+      "bytes": 5803,
+      "git_blob": "18c2fa41e094ccc1778b70c4e08dff135a3566d3",
+      "git_mode": "100644",
+      "inode": 5697288,
+      "mode": 436,
+      "mtime_ns": 1795436810549397331,
+      "path": "Tools/PinkhaSimulatorGate/simulator_identity.py",
+      "sha256": "930330e48559e4c3e016e005ea03bdb89d030e239b9fc3e14e5a76aa31aa561e",
+      "uid": 1001
+    },
+    {
+      "bytes": 4384,
+      "git_blob": "e5c2e67bee1ca2c445651c5da4711f6f8e5dba6f",
+      "git_mode": "100644",
+      "inode": 5697289,
+      "mode": 436,
+      "mtime_ns": 1795436810549397331,
+      "path": "Tools/PinkhaSimulatorGate/simulator_selection.py",
+      "sha256": "2309bb55b3752774bffc588a7c489392daa7ceb3b7279f6a9ec870899a1f1d5f",
+      "uid": 1001
+    },
+    {
+      "bytes": 32626,
+      "git_blob": "0ecbf9f4f9daf1d245756b7b0666d870abbb9028",
+      "git_mode": "100644",
+      "inode": 5697306,
+      "mode": 436,
+      "mtime_ns": 1795436810551397342,
+      "path": "Tools/PinkhaSimulatorGate/test_coherent_owned_continuation.py",
+      "sha256": "d1ed98113c28b60439d3b104882902ca73322bf3918ece85e34a38d652bf8c7b",
+      "uid": 1001
+    },
+    {
+      "bytes": 11190,
+      "git_blob": "583d844dc47458c28111bdd3e55c2614277c2bfb",
+      "git_mode": "100644",
+      "inode": 5697564,
+      "mode": 436,
+      "mtime_ns": 1795437105533600516,
+      "path": "Tools/PinkhaSimulatorGate/test_coherent_selection_order.py",
+      "sha256": "56c18eb47b567f2c4b4d111088261b5ca52d571dfb58c31f581830bcb135ccbb",
+      "uid": 1001
+    },
+    {
+      "bytes": 3483,
+      "git_blob": "41c27e694373afde6e716445df596e7bd5ebe245",
+      "git_mode": "100644",
+      "inode": 5697364,
+      "mode": 436,
+      "mtime_ns": 1795436810556397371,
+      "path": "Tools/PinkhaSimulatorGate/text_native_ack.py",
+      "sha256": "b6b1cc2c4332897c0d466b95d0b4e00126d32f16cc400b2176b8d3da4ad9ed2a",
+      "uid": 1001
+    },
+    {
+      "bytes": 47011,
+      "git_blob": "70cdf885f68d8fca0eb5183499282a850bc9eb29",
+      "git_mode": "100644",
+      "inode": 5697365,
+      "mode": 436,
+      "mtime_ns": 1795436810556397371,
+      "path": "Tools/PinkhaSimulatorGate/type_preservation.py",
+      "sha256": "602a91987a6995f0218840744af0d88c2ea5c65d34c4edba7f030808c5007b44",
+      "uid": 1001
+    },
+    {
+      "bytes": 16905,
+      "git_blob": "fd79332128c5cac750f9d236c697cf5ff842c6a5",
+      "git_mode": "100644",
+      "inode": 5697366,
+      "mode": 436,
+      "mtime_ns": 1795436810556397371,
+      "path": "Tools/PinkhaSimulatorGate/validate_release.py",
+      "sha256": "2b4162be85c3164a4d75869f67b3bfe9e58fac033a581d6f6f57d38e639961e0",
+      "uid": 1001
+    },
+    {
+      "bytes": 81219,
+      "git_blob": "6761d3f972c407cd98cd5035447d015286b4719e",
+      "git_mode": "100644",
+      "inode": 5697367,
+      "mode": 436,
+      "mtime_ns": 1795436810556397371,
+      "path": "Tools/PinkhaSimulatorGate/wave15_batch.py",
+      "sha256": "75e923d8c9718553d80c6aa3fd5338f06e2622e275ba10bc5537d03c4ba03193",
+      "uid": 1001
+    },
+    {
+      "bytes": 14781,
+      "git_blob": "29a70c1728ef0088c1516284f2fd828225da2193",
+      "git_mode": "100644",
+      "inode": 5697368,
+      "mode": 436,
+      "mtime_ns": 1795436810556397371,
+      "path": "Tools/PinkhaSimulatorGate/wave15_diagnostics.py",
+      "sha256": "c1ca1fe8857e6ce71b91ffb49ff54627815cbfe44beaa1bbb7328c9bb7a55397",
+      "uid": 1001
+    },
+    {
+      "bytes": 851,
+      "git_blob": "b9177d2c76ff46e5743d97f5eb27a3b1c7034d43",
+      "git_mode": "100644",
+      "inode": 5697543,
+      "mode": 436,
+      "mtime_ns": 1795436900570684323,
+      "path": "docs/validation/20261123-release-selection-order/actual-attempt2/private-originals/lanes/editor/selection-plan.json",
+      "sha256": "0d202e0880ccd347684201a4947e151b74a7cbcc81d291f644eab2668cc8ce4f",
+      "uid": 1001
+    },
+    {
+      "bytes": 52123,
+      "git_blob": "002245cc25d722df31757fea23a56cee89f5174c",
+      "git_mode": "100644",
+      "inode": 5697522,
+      "mode": 436,
+      "mtime_ns": 1795436900561028228,
+      "path": "docs/validation/20261123-release-selection-order/baseline-run_wave15_acceptance.py",
+      "sha256": "1d08140358381855e3c143fd48e8b392bc15aeb9fc07a08d51d5390c3afd21d0",
+      "uid": 1001
+    },
+    {
+      "bytes": 22871,
+      "git_blob": "073c3aa4b035db31002c4fd11e221be0580bbe39",
+      "git_mode": "100644",
+      "inode": 5697648,
+      "mode": 436,
+      "mtime_ns": 1795437336045404786,
+      "path": "docs/validation/20261123-release-selection-order/control-inputs.json",
+      "sha256": "6347947179d47ac30c8e2e9fcd4c1fd2b697da9da88f0d75381fc87f530241b4",
+      "uid": 1001
+    },
+    {
+      "bytes": 12886,
+      "git_blob": "ea25cdf4f2ac125a5b9a437060a2f7ad734d50a4",
+      "git_mode": "100644",
+      "inode": 5698182,
+      "mode": 436,
+      "mtime_ns": 1795437455539402661,
+      "path": "docs/validation/20261123-release-selection-order/run-controls.py",
+      "sha256": "d53c27c208d363468f144ffadb267dad1fc2acb1aa7a6b551d1d6f9635e3e55c",
+      "uid": 1001
+    },
+    {
+      "bytes": 14462,
+      "git_blob": "234ed07c1cd992bf39bf71d6f20ef67a5ce8af28",
+      "git_mode": "100644",
+      "inode": 5697563,
+      "mode": 436,
+      "mtime_ns": 1795436900575920914,
+      "path": "docs/validation/20261123-release-selection-order/source-inverse.json",
+      "sha256": "adab8960c348d0c2241622eae58e01322612de8bdaa675f0f31b16c53e8916fd",
+      "uid": 1001
+    }
+  ],
+  "historical_loaded_after_available": false,
+  "historical_source_after_available": false,
+  "late_input": {
+    "bytes": 62625,
+    "git_blob": "b4a9f69497ad113489f065dfd297db23ba6d41af",
+    "git_mode": "100644",
+    "inode": 5697262,
+    "mode": 436,
+    "mtime_ns": 1795436810545397308,
+    "path": "Tools/PinkhaSimulatorGate/run_t5_apple_pair.py",
+    "sha256": "11e11ec19eca11d506f56b37ad8ff76bcdbc40a28a4c233b4e57cb86432b1340",
+    "uid": 1001
+  },
+  "original_head": "97563de533579b0705eed0ad0028bdaa944ff470",
+  "pair_definition_time_defaults": [
+    {
+      "function": "digest",
+      "value": false
+    },
+    {
+      "function": "phases",
+      "value": false
+    },
+    {
+      "function": "validate_phase",
+      "value": null
+    },
+    {
+      "function": "validate_sequence",
+      "value": false
+    },
+    {
+      "function": "run_logged",
+      "value": true
+    },
+    {
+      "function": "run_logged",
+      "value": null
+    },
+    {
+      "function": "run_logged",
+      "value": null
+    },
+    {
+      "function": "build_runtime_version",
+      "value": null
+    },
+    {
+      "function": "build_app",
+      "value": null
+    },
+    {
+      "function": "app_container",
+      "value": true
+    },
+    {
+      "function": "preserve_native_evidence",
+      "value": false
+    },
+    {
+      "function": "preserve_native_evidence",
+      "value": null
+    },
+    {
+      "function": "main",
+      "value": null
+    }
+  ],
+  "pair_eager_calls": [],
+  "pair_eager_imports": [
+    {
+      "line": 7,
+      "source": "import argparse"
+    },
+    {
+      "line": 8,
+      "source": "from datetime import datetime, timezone"
+    },
+    {
+      "line": 9,
+      "source": "import hashlib"
+    },
+    {
+      "line": 10,
+      "source": "import json"
+    },
+    {
+      "line": 11,
+      "source": "import os"
+    },
+    {
+      "line": 12,
+      "source": "from pathlib import Path"
+    },
+    {
+      "line": 13,
+      "source": "import platform"
+    },
+    {
+      "line": 14,
+      "source": "import plistlib"
+    },
+    {
+      "line": 15,
+      "source": "import re"
+    },
+    {
+      "line": 16,
+      "source": "import shutil"
+    },
+    {
+      "line": 17,
+      "source": "import signal"
+    },
+    {
+      "line": 18,
+      "source": "import subprocess"
+    },
+    {
+      "line": 19,
+      "source": "import sys"
+    },
+    {
+      "line": 20,
+      "source": "import tarfile"
+    },
+    {
+      "line": 21,
+      "source": "import zipfile"
+    },
+    {
+      "line": 22,
+      "source": "from uuid import uuid4"
+    }
+  ],
+  "pair_eager_repository_data_reads": 0,
+  "pair_eager_repository_imports": 0,
+  "pair_inactive_main_guard": [
+    {
+      "line": 1029,
+      "source": "if __name__ == \"__main__\":\n    raise SystemExit(main())"
+    }
+  ],
+  "peer_review": "sdk_ci independently read exact pair source; zero eager repository imports/data reads; no imports/tests/edits performed.",
+  "protocol": "release-selection-order-late-import-source-review-v1",
+  "recorded_at": "2026-11-23T12:54:32.391822+00:00",
+  "scope": "READ_ONLY_CURRENT_SOURCE_AND_FROZEN_GIT_NOT_HISTORICAL_LOADED_AFTER"
+}
