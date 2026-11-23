@@ -49,6 +49,7 @@ on:
           - coherent-heart-peers
           - semantic-anchor-native
           - prepared-migration-apple
+          - prepared-inline-file-apple
           - t5-native-pagination
           - t5-native-account-retry
           - t5-native-attachment
@@ -285,6 +286,14 @@ jobs:
   prepared-migration-apple:
     if: ${{ inputs.route == 'prepared-migration-apple' }}
     uses: ./.github/workflows/pinkha-prepared-migration-apple.yml
+    with:
+      native_artifact_run_id: ${{ inputs.source_run_id }}
+      native_producer_commit: ${{ inputs.prepared_native_producer_commit }}
+      native_artifact_run_attempt: ${{ inputs.prepared_native_artifact_run_attempt }}
+
+  prepared-inline-file-apple:
+    if: ${{ inputs.route == 'prepared-inline-file-apple' }}
+    uses: ./.github/workflows/pinkha-prepared-inline-file-apple.yml
     with:
       native_artifact_run_id: ${{ inputs.source_run_id }}
       native_producer_commit: ${{ inputs.prepared_native_producer_commit }}

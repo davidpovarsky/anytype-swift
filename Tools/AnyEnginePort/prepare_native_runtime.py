@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MANIFEST = ROOT / "Tools/AnyEngineValidation/evidence/native-property-receipts-v9-source.json"
 VERSION = "v0.5.0-pinkha.1"
 PREPARED_MIGRATION_VERSION = "v0.5.0-pinkha.prepared.1"
+PREPARED_INLINE_FILE_VERSION = "v0.5.0-pinkha.prepared.inline.1"
 # The SDK v0.8.0 annotated tag object and its checkout commit are pinned
 # separately; compare actual HEAD to the peeled commit.
 PINNED_COMMITS = {"any": "88fae2e5ae7d0f46d6707567a3123081faa8de9a",
@@ -26,9 +27,16 @@ def git(root, *args):
 def native_version(manifest):
     """Keep the retained default exact; candidates select a distinct identity."""
     value = manifest.get("nativeVersion", VERSION)
-    require(isinstance(value, str) and value in (VERSION, PREPARED_MIGRATION_VERSION),
+    require(isinstance(value, str) and value in (VERSION, PREPARED_MIGRATION_VERSION, PREPARED_INLINE_FILE_VERSION),
             "Unknown native source-manifest version")
     return value
+
+def native_selection(manifest):
+    return {
+        VERSION: "verified-v1",
+        PREPARED_MIGRATION_VERSION: "verified-prepared-v1",
+        PREPARED_INLINE_FILE_VERSION: "verified-prepared-inline-v1",
+    }[native_version(manifest)]
 
 def read_manifest(path):
     data = json.loads(path.read_text(encoding="utf-8"))
@@ -199,7 +207,7 @@ def install(args):
     finally:
         if stage.exists():
             shutil.rmtree(stage)
-    selection = "verified-prepared-v1" if native_version(manifest) == PREPARED_MIGRATION_VERSION else "verified-v1"
+    selection = native_selection(manifest)
     print("Installed exact source-bound native artifact; select PINKHA_ANY_NATIVE_ARTIFACT=" + selection + ".")
 
 def show_version(args):

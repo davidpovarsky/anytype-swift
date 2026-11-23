@@ -20,7 +20,7 @@ The adjacent `observation.schema.json` is the success qualification shape; incom
 
 Schema SHA256: `19b0a8a98a0ecc6495e6be6048860d7f6307ae23f39786a4c90ed2ef8e7b6d9e`.
 
-The controller supplies four values through the generated xctestrun descriptor's TestEnvironmentVariables:
+The controller supplies four values through the generated xctestrun descriptor's EnvironmentVariables:
 
 - `PINKHA_PREPARED_INLINE_APPLE_SOURCE_SHA`: exact 40-character lowercase source SHA.
 - `PINKHA_PREPARED_INLINE_APPLE_RUN_ID`: positive canonical decimal run ID.
