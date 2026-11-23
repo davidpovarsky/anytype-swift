@@ -1,0 +1,62 @@
+test_real_owned_starter_failure_preserves_finite_original_and_private_bytes (test_hanlin_fixture_start_observation.StarterObservationTests.test_real_owned_starter_failure_preserves_finite_original_and_private_bytes) ... ok
+test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness (test_hanlin_fixture_start_observation.StarterObservationTests.test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness) ... 
+  test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness (test_hanlin_fixture_start_observation.StarterObservationTests.test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness) (name='timeout') ... FAIL
+  test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness (test_hanlin_fixture_start_observation.StarterObservationTests.test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness) (name='oserror') ... FAIL
+  test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness (test_hanlin_fixture_start_observation.StarterObservationTests.test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness) (name='unknown') ... FAIL
+  test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness (test_hanlin_fixture_start_observation.StarterObservationTests.test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness) (name='duplicate') ... FAIL
+  test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness (test_hanlin_fixture_start_observation.StarterObservationTests.test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness) (name='extra') ... FAIL
+  test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness (test_hanlin_fixture_start_observation.StarterObservationTests.test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness) (name='zero') ... FAIL
+
+======================================================================
+FAIL: test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness (test_hanlin_fixture_start_observation.StarterObservationTests.test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness) (name='timeout')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-wave15-provider-start-observation-20261123/Tools/AnyEnginePort/test_hanlin_fixture_start_observation.py", line 65, in test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness
+    self.assertNotIn(b"PRIVATE_", (safe / "starter-observation.json").read_bytes())
+AssertionError: b'PRIVATE_' unexpectedly found in b'{\n  "elapsedSeconds": 0.00021464098244905472,\n  "errorClass": "TimeoutExpired",\n  "finishedAt": "2026-11-23T05:52:58.502332+00:00",\n  "outcome": "TIMED_OUT",\n  "ownedChildAbsenceProved": false,\n  "privateRawOutputPublished": false,\n  "providerReadinessAccepted": false,\n  "returnCode": null,\n  "schemaVersion": 1,\n  "scope": "OWNED_FIXTURE_STARTER_OBSERVATION_ONLY",\n  "startedAt": "2026-11-23T05:52:58.502113+00:00",\n  "stderr": {\n    "bytes": 13,\n    "retention": "PRIVATE_OWNED_ROOT_UNTIL_EXISTING_CLEANUP",\n    "sha256": "489fa1254ec2933e27f9f7f96f00245a501fb43579fcb18e43edccfec9a8808f"\n  },\n  "stdout": {\n    "bytes": 15,\n    "retention": "PRIVATE_OWNED_ROOT_UNTIL_EXISTING_CLEANUP",\n    "sha256": "50efc253cf114c08abde9494ec776be6cefb5552fa9fd195dd78f403f1772ec2"\n  },\n  "timeoutSeconds": 90\n}\n'
+
+======================================================================
+FAIL: test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness (test_hanlin_fixture_start_observation.StarterObservationTests.test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness) (name='oserror')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-wave15-provider-start-observation-20261123/Tools/AnyEnginePort/test_hanlin_fixture_start_observation.py", line 65, in test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness
+    self.assertNotIn(b"PRIVATE_", (safe / "starter-observation.json").read_bytes())
+AssertionError: b'PRIVATE_' unexpectedly found in b'{\n  "elapsedSeconds": 0.00014196056872606277,\n  "errno": 2,\n  "errorClass": "OSError",\n  "finishedAt": "2026-11-23T05:52:58.503792+00:00",\n  "outcome": "OS_ERROR",\n  "ownedChildAbsenceProved": false,\n  "privateRawOutputPublished": false,\n  "providerReadinessAccepted": false,\n  "returnCode": null,\n  "schemaVersion": 1,\n  "scope": "OWNED_FIXTURE_STARTER_OBSERVATION_ONLY",\n  "startedAt": "2026-11-23T05:52:58.503646+00:00",\n  "stderr": {\n    "bytes": 0,\n    "retention": "PRIVATE_OWNED_ROOT_UNTIL_EXISTING_CLEANUP",\n    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"\n  },\n  "stdout": {\n    "bytes": 0,\n    "retention": "PRIVATE_OWNED_ROOT_UNTIL_EXISTING_CLEANUP",\n    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"\n  },\n  "timeoutSeconds": 90\n}\n'
+
+======================================================================
+FAIL: test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness (test_hanlin_fixture_start_observation.StarterObservationTests.test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness) (name='unknown')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-wave15-provider-start-observation-20261123/Tools/AnyEnginePort/test_hanlin_fixture_start_observation.py", line 65, in test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness
+    self.assertNotIn(b"PRIVATE_", (safe / "starter-observation.json").read_bytes())
+AssertionError: b'PRIVATE_' unexpectedly found in b'{\n  "elapsedSeconds": 0.0001838812604546547,\n  "errorClass": null,\n  "finishedAt": "2026-11-23T05:52:58.504962+00:00",\n  "outcome": "NONZERO_EXIT",\n  "ownedChildAbsenceProved": false,\n  "privateRawOutputPublished": false,\n  "providerReadinessAccepted": false,\n  "returnCode": 1,\n  "schemaVersion": 1,\n  "scope": "OWNED_FIXTURE_STARTER_OBSERVATION_ONLY",\n  "startedAt": "2026-11-23T05:52:58.504775+00:00",\n  "stderr": {\n    "bytes": 0,\n    "retention": "PRIVATE_OWNED_ROOT_UNTIL_EXISTING_CLEANUP",\n    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"\n  },\n  "stdout": {\n    "bytes": 61,\n    "retention": "PRIVATE_OWNED_ROOT_UNTIL_EXISTING_CLEANUP",\n    "sha256": "6d76a5f9e3c4d57259353e2d4feac6c36ca3d7d84ad17f78317401549f6eb7a9"\n  },\n  "timeoutSeconds": 90\n}\n'
+
+======================================================================
+FAIL: test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness (test_hanlin_fixture_start_observation.StarterObservationTests.test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness) (name='duplicate')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-wave15-provider-start-observation-20261123/Tools/AnyEnginePort/test_hanlin_fixture_start_observation.py", line 65, in test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness
+    self.assertNotIn(b"PRIVATE_", (safe / "starter-observation.json").read_bytes())
+AssertionError: b'PRIVATE_' unexpectedly found in b'{\n  "elapsedSeconds": 0.00017504114657640457,\n  "errorClass": null,\n  "finishedAt": "2026-11-23T05:52:58.506078+00:00",\n  "outcome": "NONZERO_EXIT",\n  "ownedChildAbsenceProved": false,\n  "privateRawOutputPublished": false,\n  "providerReadinessAccepted": false,\n  "returnCode": 1,\n  "schemaVersion": 1,\n  "scope": "OWNED_FIXTURE_STARTER_OBSERVATION_ONLY",\n  "startedAt": "2026-11-23T05:52:58.505900+00:00",\n  "stderr": {\n    "bytes": 0,\n    "retention": "PRIVATE_OWNED_ROOT_UNTIL_EXISTING_CLEANUP",\n    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"\n  },\n  "stdout": {\n    "bytes": 97,\n    "retention": "PRIVATE_OWNED_ROOT_UNTIL_EXISTING_CLEANUP",\n    "sha256": "c18fa2d1a707fb9932f5e5e2226971e295aab8dcb1a77513bc3dbc5874b5ebc9"\n  },\n  "timeoutSeconds": 90\n}\n'
+
+======================================================================
+FAIL: test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness (test_hanlin_fixture_start_observation.StarterObservationTests.test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness) (name='extra')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-wave15-provider-start-observation-20261123/Tools/AnyEnginePort/test_hanlin_fixture_start_observation.py", line 65, in test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness
+    self.assertNotIn(b"PRIVATE_", (safe / "starter-observation.json").read_bytes())
+AssertionError: b'PRIVATE_' unexpectedly found in b'{\n  "elapsedSeconds": 0.0001812409609556198,\n  "errorClass": null,\n  "finishedAt": "2026-11-23T05:52:58.507154+00:00",\n  "outcome": "NONZERO_EXIT",\n  "ownedChildAbsenceProved": false,\n  "privateRawOutputPublished": false,\n  "providerReadinessAccepted": false,\n  "returnCode": 1,\n  "schemaVersion": 1,\n  "scope": "OWNED_FIXTURE_STARTER_OBSERVATION_ONLY",\n  "startedAt": "2026-11-23T05:52:58.506969+00:00",\n  "stderr": {\n    "bytes": 0,\n    "retention": "PRIVATE_OWNED_ROOT_UNTIL_EXISTING_CLEANUP",\n    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"\n  },\n  "stdout": {\n    "bytes": 96,\n    "retention": "PRIVATE_OWNED_ROOT_UNTIL_EXISTING_CLEANUP",\n    "sha256": "1f1d6d52db8f8afc571e522d5ad85740927c3d2bad95bffb6c3715bfa9ff5b24"\n  },\n  "timeoutSeconds": 90\n}\n'
+
+======================================================================
+FAIL: test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness (test_hanlin_fixture_start_observation.StarterObservationTests.test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness) (name='zero')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-wave15-provider-start-observation-20261123/Tools/AnyEnginePort/test_hanlin_fixture_start_observation.py", line 65, in test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness
+    self.assertNotIn(b"PRIVATE_", (safe / "starter-observation.json").read_bytes())
+AssertionError: b'PRIVATE_' unexpectedly found in b'{\n  "elapsedSeconds": 0.00021812133491039276,\n  "errorClass": null,\n  "finishedAt": "2026-11-23T05:52:58.508368+00:00",\n  "outcome": "COMPLETED",\n  "ownedChildAbsenceProved": false,\n  "privateRawOutputPublished": false,\n  "providerReadinessAccepted": false,\n  "returnCode": 0,\n  "schemaVersion": 1,\n  "scope": "OWNED_FIXTURE_STARTER_OBSERVATION_ONLY",\n  "startedAt": "2026-11-23T05:52:58.508146+00:00",\n  "stderr": {\n    "bytes": 0,\n    "retention": "PRIVATE_OWNED_ROOT_UNTIL_EXISTING_CLEANUP",\n    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"\n  },\n  "stdout": {\n    "bytes": 21,\n    "retention": "PRIVATE_OWNED_ROOT_UNTIL_EXISTING_CLEANUP",\n    "sha256": "ab19bce6a6962f4e1aef905042b963683400779b98ef91099af0bf934509f2ce"\n  },\n  "timeoutSeconds": 90\n}\n'
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.032s
+
+FAILED (failures=6)
+ACTUAL_STARTER_DIAGNOSTIC exit=7 finite_original=preserved private_bytes=exact product_methods=0

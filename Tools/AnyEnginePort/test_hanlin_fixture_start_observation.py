@@ -62,7 +62,10 @@ class StarterObservationTests(unittest.TestCase):
                 self.assertEqual(result["outcome"], expected)
                 self.assertFalse(result["providerReadinessAccepted"])
                 self.assertFalse((safe / "starter-fixed-error.original.json").exists())
-                self.assertNotIn(b"PRIVATE_", (safe / "starter-observation.json").read_bytes())
+                safe_bytes = (safe / "starter-observation.json").read_bytes()
+                for private_marker in [b"PRIVATE_PARTIAL", b"PRIVATE_ERROR", b"PRIVATE_PATH",
+                                       b"PRIVATE_SECRET", b"PRIVATE_READY_PAYLOAD"]:
+                    self.assertNotIn(private_marker, safe_bytes)
         private, safe = self.dirs()
         nested = safe / "must-not-upload-private"
         nested.mkdir(mode=0o700)

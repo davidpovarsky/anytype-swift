@@ -1,0 +1,17 @@
+{
+  "original_source": "66589b2ff69d795576308a861ccb079f15ba7512",
+  "original_result": "FAIL_PRESERVED",
+  "original_top_level_methods": 2,
+  "original_passed_top_level": 1,
+  "original_failed_top_level": 1,
+  "original_failed_subcases": 6,
+  "cause": "Synthetic assertion prefix PRIVATE_ matched fixed retention label, not secret payload",
+  "production_source_changed": false,
+  "test_before_sha256": "e3cf0a32df3353a5e8d7ae9d0216f9cafcc69d973e94df7031e52948d69cfefa",
+  "test_after_sha256": "5566c58fc876a47e93512a4296ae6b46882b750917f284391cc7485f3e854954",
+  "exact_before": "                self.assertNotIn(b\"PRIVATE_\", (safe / \"starter-observation.json\").read_bytes())",
+  "exact_after": "                safe_bytes = (safe / \"starter-observation.json\").read_bytes()\n                for private_marker in [b\"PRIVATE_PARTIAL\", b\"PRIVATE_ERROR\", b\"PRIVATE_PATH\",\n                                       b\"PRIVATE_SECRET\", b\"PRIVATE_READY_PAYLOAD\"]:\n                    self.assertNotIn(private_marker, safe_bytes)",
+  "retained_passed_method": "test_real_owned_starter_failure_preserves_finite_original_and_private_bytes",
+  "retained_method_ast_sha256": "9e8b46f0cac0188b72c960038b4f616487640798c1acdbbb4da6977739726241",
+  "next_execution_only": "test_bounded_timeout_os_error_and_untrusted_output_never_create_readiness"
+}
