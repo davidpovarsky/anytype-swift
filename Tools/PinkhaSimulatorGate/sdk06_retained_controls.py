@@ -14,7 +14,7 @@ import re
 import stat
 
 ADMISSION_PATH = "Tools/PinkhaSimulatorGate/sdk06-retained-controls.json"
-ADMISSION_SHA256 = "cc05f8cb2f95a41d65d5a4cdd01ac140bb4e6572d25e6476912bcc7fa3820e58"
+ADMISSION_SHA256 = "e529e563a43dcaa4ca043abbc6bc0c0419c669434ed5e3a9c600a3eadfbfbbb5"
 SCHEMA = "pinkha-sdk06-retained-controller-controls-v1"
 
 
@@ -172,6 +172,163 @@ def observer_remainder(data, removed):
     return ast.dump(tree, include_attributes=False)
 
 
+def reverse_scoped_edits(data, edits, expected_sha256):
+    """Recover only an immutable reviewed view; never write modified source."""
+    source = data.decode("utf-8")
+    for edit in reversed(edits):
+        old, new = edit["old"], edit["new"]
+        require(isinstance(old, str) and isinstance(new, str) and bool(new)
+                and source.count(new) == 1, "Ambiguous or missing fixed composition hunk")
+        source = source.replace(new, old, 1)
+    recovered = source.encode("utf-8")
+    require(digest(recovered) == expected_sha256, "Fixed composition inverse differs from its reviewed source")
+    ast.parse(source)
+    return recovered
+
+
+def focused_outcomes(events_raw, log_raw, result_raw):
+    events, result = decode_json(events_raw), decode_json(result_raw)
+    require(isinstance(events, list), "Original focused events must be a list")
+    starts, outcomes, active = [], {}, None
+    for event in events:
+        name = event.get("name")
+        require(isinstance(name, str) and name.count(".") == 2, "Malformed original focused method")
+        if event.get("event") == "start":
+            require(active is None and name not in starts, "Repeated or overlapping original focused method")
+            starts.append(name)
+            active = name
+        else:
+            require(event.get("event") == "terminal" and name == active
+                    and event.get("status") in ("PASS", "FAIL", "ERROR"),
+                    "Missing or invalid original focused terminal")
+            outcomes[name] = event["status"]
+            active = None
+    require(active is None and len(starts) == len(outcomes) == result["tests_run"],
+            "Original focused event count differs")
+    raw_outcomes = {}
+    for line in log_raw.decode("utf-8").splitlines():
+        match = re.fullmatch(r"(test_\w+) \(([\w.]+)\) \.\.\. (ok|FAIL|ERROR)", line)
+        if match:
+            name = match.group(2)
+            require(name.rsplit(".", 1)[-1] == match.group(1) and name not in raw_outcomes,
+                    "Ambiguous original focused log identity")
+            raw_outcomes[name] = "PASS" if match.group(3) == "ok" else match.group(3)
+    require(raw_outcomes == outcomes, "Original focused event and raw named outcomes disagree")
+    summaries = re.findall(r"^Ran (\d+) tests? in ([0-9.]+)s$", log_raw.decode("utf-8"), re.MULTILINE)
+    require(len(summaries) == 1 and int(summaries[0][0]) == len(outcomes),
+            "Original focused raw summary differs")
+    failures = sum(value == "FAIL" for value in outcomes.values())
+    errors = sum(value == "ERROR" for value in outcomes.values())
+    require(result["failures"] == failures and result["errors"] == errors
+            and result["source_unchanged"] is True
+            and result["old_control_methods_executed"] == 0 and result["product_tests_executed"] == 0,
+            "Original focused scope or source integrity differs")
+    tail = log_raw.decode("utf-8").rstrip().splitlines()[-1]
+    if failures or errors:
+        labels = ([f"failures={failures}"] if failures else []) + ([f"errors={errors}"] if errors else [])
+        require(result["status"] == "FAIL" and tail == "FAILED (" + ", ".join(labels) + ")",
+                "Original failed focused attempt was relabelled")
+    else:
+        require(result["status"] == "PASS" and tail == "OK", "Original focused PASS terminal is missing")
+    require(digest(log_raw) == result["logs_sha256"], "Original focused result/log binding differs")
+    return outcomes
+
+
+def verify_frozen_composition(extension, files):
+    require(extension["protocol"] == "sdk06-fixed-retained-composition-v1",
+            "Unknown fixed SDK composition")
+    require(digest(files[extension["manifest"]]) == extension["manifest_sha256"],
+            "Original composition manifest binding differs")
+    current = {}
+    for path, expected in extension["current_inputs"].items():
+        require(path in files and digest(files[path]) == expected, "Unbound composition dependency: " + path)
+        current[path] = files[path]
+    original_manifest = decode_json(files[extension["manifest"]])
+    for path, expected in original_manifest["code_sha256"].items():
+        require(path in current and digest(current[path]) == expected,
+                "Frozen composition code/workflow binding differs")
+    bases, versions = {}, {}
+    for path, binding in extension["inverses"].items():
+        data = current[path]
+        for layer in binding["layers"]:
+            data = reverse_scoped_edits(data, layer["edits"], layer["result_sha256"])
+            versions[(path, layer["view"])] = data
+        baseline = files[binding["baseline_snapshot"]]
+        require(data == baseline and digest(data) == binding["baseline_sha256"],
+                "Composition no longer recovers the exact retained baseline")
+        bases[path] = data
+    supervisor = "Tools/PinkhaSimulatorGate/run_owned_single_lane.py"
+    kernel = extension["kernel_view"]
+    versions[(supervisor, "kernel-only")] = reverse_scoped_edits(
+        current[supervisor], kernel["inverse_qualified_edits"], kernel["sha256"])
+    require(versions[(supervisor, "kernel-only")] == files[kernel["snapshot"]],
+            "Separately tested kernel view differs")
+    for path, entry in extension["historical_source_views"].items():
+        versions[(path, entry["view"])] = files[entry["snapshot"]]
+
+    def view(path, label):
+        require(label == "current" or (path, label) in versions, "Unreviewed historical composition view")
+        return current[path] if label == "current" else versions[(path, label)]
+
+    fixture = extension["selector_fixture_review"]
+    previous = ast.parse(files[fixture["previous_snapshot"]].decode("utf-8"))
+    present = ast.parse(current[fixture["path"]].decode("utf-8"))
+    old_function = [node for node in previous.body
+                    if isinstance(node, ast.FunctionDef) and node.name == "source_selection"]
+    changed = [i for i, node in enumerate(present.body)
+               if isinstance(node, ast.FunctionDef) and node.name == "source_selection"]
+    require(len(old_function) == len(changed) == 1, "Changed selector fixture review boundary")
+    present.body[changed[0]] = old_function[0]
+    require(ast.dump(present, include_attributes=False) == ast.dump(previous, include_attributes=False),
+            "Retained selector declarations/helpers changed beyond the failed fixture")
+
+    outcomes, attempts = {}, {}
+    for attempt in extension["attempts"]:
+        ident = attempt["id"]
+        require(ident not in outcomes, "Repeated focused attempt identity")
+        result = decode_json(files[attempt["result"]])
+        require(result["source_sha"] == attempt["source_sha"], "Focused attempt source changed")
+        require(files[attempt["source_before"]] == files[attempt["source_after"]],
+                "Original focused source changed during execution")
+        before = decode_json(files[attempt["source_before"]])
+        for path, expected in before.items():
+            require(digest(view(path, attempt["source_views"].get(path, "current"))) == expected,
+                    "Focused production/dependency source is not retained: " + path)
+        actual = focused_outcomes(files[attempt["events"]], files[attempt["log"]], files[attempt["result"]])
+        require(actual == attempt["outcomes"], "Focused named execution scope changed")
+        outcomes[ident], attempts[ident] = actual, attempt
+
+    qualified = []
+    for name, binding in extension["qualified_methods"].items():
+        ident, path = binding["attempt"], binding["test_path"]
+        require(outcomes[ident].get(name) == "PASS", "A failed/unexecuted focused method cannot qualify")
+        short = ".".join(name.rsplit(".", 2)[-2:])
+        original = view(path, attempts[ident]["source_views"].get(path, "current"))
+        require(test_declarations(original).get(short) == test_declarations(current[path]).get(short)
+                == binding["declaration_sha256"], "Qualified focused declaration changed")
+        qualified.append(name)
+    require(len(qualified) == 27 and len(set(qualified)) == 27,
+            "Expected separate 18 composition and nine kernel methods")
+    first, repaired = outcomes["qualified-attempt1"], outcomes["qualified-attempt2"]
+    require(sum(value == "PASS" for value in first.values()) == 11
+            and {name for name, value in first.items() if value == "ERROR"} == set(repaired)
+            and all(value == "PASS" for value in repaired.values()) and len(repaired) == 7,
+            "The seven original errors or 11 retained passes were relabelled/repeated")
+    require(len(outcomes["kernel-attempt1"]) == 9
+            and all(value == "PASS" for value in outcomes["kernel-attempt1"].values()),
+            "Kernel focused scope differs")
+    return bases, {
+        "status": "PASS_FIXED_CONTROLLER_COMPOSITION_ONLY",
+        "original_composition_manifest_sha256": extension["manifest_sha256"],
+        "current_source_inputs": extension["current_inputs"],
+        "recovered_baseline_inputs": {path: digest(data) for path, data in bases.items()},
+        "composition_methods_qualified": 18, "kernel_methods_qualified": 9,
+        "original_failed_attempt_preserved": True, "retained_original_passes": 11,
+        "repaired_former_errors": 7, "qualified_methods": sorted(qualified),
+        "methods_executed_now": 0, "selector_admission_claimed": False, "product_acceptance_claimed": False,
+    }
+
+
 def verify_retained_controls(app: Path):
     root = Path(app).resolve(strict=True)
     require(root.is_dir(), "Retained controls need the actual source root")
@@ -184,11 +341,18 @@ def verify_retained_controls(app: Path):
     files = {item["path"]: read_bound(root, item["path"], item["sha256"])
              for item in admission["proof_files"]}
     require(len(files) == len(admission["proof_files"]), "Duplicate proof path")
+    composed_bases, composition_receipt = ({}, None)
+    if admission.get("composition_extension") is not None:
+        composed_bases, composition_receipt = verify_frozen_composition(admission["composition_extension"], files)
     sources = {}
     for item in admission["source_inputs"]:
         path = item["path"]
         require(path not in sources, "Duplicate admitted current source")
         current = read_bound(root, path, item["current_sha256"])
+        if path in composed_bases:
+            require(digest(composed_bases[path]) == item["composition_base_sha256"],
+                    "Retained dependency baseline is not the admitted composition view")
+            current = composed_bases[path]
         original = files[item["original_snapshot"]]
         require(digest(original) == item["original_sha256"], "Original source snapshot identity differs")
         mode = item["retention"]
@@ -278,5 +442,6 @@ def verify_retained_controls(app: Path):
             "original_lane_conclusions": {"45096079315": "FAIL", "45087685319": "failure"},
             "source_inputs": inventory, "original_proof_batches": admission["batches"],
             "origins": admission["origins"], "current_catalog": catalog,
+            "fixed_composition": composition_receipt,
             "source_inventory_sha256": digest(json.dumps(inventory, sort_keys=True, separators=(",", ":")).encode()),
             "scope_limit": "Controller evidence only; no original lane success, current XCTest, build or runtime acceptance."}
