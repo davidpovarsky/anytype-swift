@@ -103,7 +103,13 @@ def execute(args):
     args.evidence.mkdir(parents=True, exist_ok=True)
     if profile.name == profiles.COHERENT:
         from coherent_runtime_admission import execute as install_coherent
-        return install_coherent(args, profile, command)
+        installed = install_coherent(args, profile, command)
+        if os.environ.get("UI27_ACCEPTANCE_LANE") == "miniapps-native":
+            import sys
+            sys.path.insert(0, str(args.app_source / "Tools/MiniApps"))
+            from download_producer import download
+            download(args.app_source, args.work / "miniapps-producer", args.evidence.parent)
+        return installed
     if profile.name == "r14":
         # Preserve the existing original r14 route, filename and approval inputs.
         command(["gh", "run", "download", args.source_run_id, "--repo", args.repository,

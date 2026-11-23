@@ -97,9 +97,6 @@ enum PinkhaMiniAppsResultApplier {
                 if let target = anchor, blocks.contains(where: { $0.id == target }) {
                     inserted = try await model.blockActionService.add(info: info,
                         targetBlockId: target, position: .bottom, setFocus: false)
-                } else if let last = blocks.last(where: { $0.id != document.objectId && $0.id != "header" }) {
-                    inserted = try await model.blockActionService.add(info: info,
-                        targetBlockId: last.id, position: .bottom, setFocus: false)
                 } else {
                     inserted = try await Container.shared.blockService().addFirstBlock(
                         contextId: document.objectId, info: info)

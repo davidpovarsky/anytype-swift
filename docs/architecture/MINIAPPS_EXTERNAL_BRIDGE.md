@@ -40,3 +40,11 @@ python3 scripts/validation/run_miniapps_consumer_tests.py --bridge-package /path
 ```
 
 Logs: docs/validation/20261123-miniapps-consumer. These portable checks do not claim Apple SDK typechecking or an actual two-application native editor round trip; those remain a separate focused gate. Accepted SDK06/component/UI journeys were not replayed.
+
+## Focused Apple acceptance source
+
+The SDK is pinned to c93c16a9adf513e16b176a3a1b7f99126e33a8d3. A source-only miniapps-native lane extends the existing manual dispatcher through route=wave15-acceptance and acceptance_lane=miniapps-native; no workflow YAML is changed. It uses the unchanged coherent Heart admitted by run45091223011 and the compiled companion from run45270839882, verifying the actual GitHub artifact, producer manifest and executable hash.
+
+The new selection is prepareMiniAppsDocument (one disposable native account/Space/Page), testNativeEditorPickerTextStudioReturnAndColdReopen (actual producer and original editor UI), testDuplicateCallbackDoesNotInsertAgain, and verifyReturnedNativeDocument (independent saved Heart block count and original identity). The source app's actual App Group entitlements and completed journal are recorded. Actual execution is pending; declaration and syntax checks are not runtime acceptance.
+
+Two focused SDK materialization checks passed: a missing exact pin is fetched into an owned temporary bare repository without changing the supplied shallow checkout, and a mismatched existing snapshot is retained unchanged. Existing workflows can keep their older immutable checkout while the consumer resolves its exact committed SDK pin without changing that supplied repository.
