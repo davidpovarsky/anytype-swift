@@ -30,9 +30,12 @@ public struct AnytypeOriginalAnnotationImportSource: Sendable, Equatable {
         accountID: String,
         spaceID: String
     ) throws {
-        guard [namespace, accountID, spaceID].allSatisfy({
-            !$0.isEmpty && $0.utf8.count <= 16_384 && !$0.utf8.contains(0)
-        }), savedRevision >= 0,
+        // Only account/Space IDs enter the native RPC. Its original reviewed
+        // transport policy is annotationImportStringMaximum = 1 << 14.
+        guard !namespace.isEmpty, !namespace.utf8.contains(0),
+              [accountID, spaceID].allSatisfy({
+                  !$0.isEmpty && $0.utf8.count <= 16_384 && !$0.utf8.contains(0)
+              }), savedRevision >= 0,
               [sourceDigest, payloadDigest, bodyDigest].allSatisfy(Self.isDigest) else {
             throw AnytypeOriginalAnnotationImportError.invalidSource
         }
@@ -91,8 +94,13 @@ public final class AnytypeOriginalAnnotationImportSourceLifetime {
 
     public nonisolated var isCurrent: Bool { lifetime.token() != nil }
 
+    /// The original token becomes unavailable before this returns, including
+    /// when a captured Host flag calls it while holding its own retirement lock.
+    /// Observer delivery is queued separately; no observer or Host/client/native
+    /// callback executes on that caller's locked stack.
     public nonisolated func retire() {
-        lifetime.markUnavailable()
+        guard let deliver = lifetime.markUnavailableDeferringObservers() else { return }
+        Task { @MainActor in deliver() }
     }
 
     fileprivate func claim() throws {
@@ -101,7 +109,7 @@ public final class AnytypeOriginalAnnotationImportSourceLifetime {
         claimed = true
     }
 
-    deinit { lifetime.markUnavailable() }
+    deinit { retire() }
 }
 
 /// Complete copied historical messages from the actual one-use original calls.

@@ -117,6 +117,19 @@ final class EditorDocumentWriteLifetime: @unchecked Sendable {
         for callback in callbacks { callback() }
     }
 
+    /// Atomically retire this exact generation and detach its observers without
+    /// invoking them on the caller's stack. The Import Host bridge can therefore
+    /// close GCD admission while holding its own source lock, then enqueue this
+    /// one delivery after returning. Existing markUnavailable stays synchronous.
+    func markUnavailableDeferringObservers() -> (@Sendable () -> Void)? {
+        lock.lock()
+        available = false
+        let callbacks = invalidateLocked()
+        lock.unlock()
+        guard !callbacks.isEmpty else { return nil }
+        return { for callback in callbacks { callback() } }
+    }
+
     /// Called only after the original document has installed an opened view.
     /// A still-admitted close must finish before a later open can grant authority.
     func confirmOpened() {
