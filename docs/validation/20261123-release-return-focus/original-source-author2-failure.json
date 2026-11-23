@@ -1,0 +1,16 @@
+{
+  "app_builds": 0,
+  "base": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba",
+  "ci_dispatches": 0,
+  "controls": "NOT_RUN",
+  "error": "RuntimeError(\"git_failed:('diff', '--cached', '--check'):\")",
+  "finished_at": 1795457337.6750963,
+  "native_builds": 0,
+  "protocol": "release-return-focus-source-author2-v1",
+  "source_only_allocation_cap": 8388608,
+  "source_only_min_free": 1073741824,
+  "started_at": 1795457337.1283824,
+  "status": "FAIL",
+  "traceback": "Traceback (most recent call last):\n  File \"/mnt/development/projects/diagnostics/release-return-focus-source-20261123/author-root-v2.py\", line 126, in <module>\n    git(\"diff\",\"--cached\",\"--check\")\n  File \"/mnt/development/projects/diagnostics/release-return-focus-source-20261123/author-root-v2.py\", line 18, in git\n    if p.returncode:raise RuntimeError(\"git_failed:\"+repr(a)+\":\"+p.stderr.decode(errors=\"replace\")[:2000])\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: git_failed:('diff', '--cached', '--check'):\n",
+  "writer": "/mnt/development/projects/worktrees/anytype-wave15-release-return-focus-20261123"
+}

@@ -1,0 +1,218 @@
+{
+  "base": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba",
+  "claims": {
+    "apple_typecheck": "NOT_RUN",
+    "clone_cleanup": "SEPARATE_OPEN_FINDING",
+    "controls": "NOT_RUN",
+    "passing_controls_replayed": 0,
+    "production_ui_acceptance": "NOT_RUN",
+    "rtl_timing": "SEPARATE_OPEN_FINDING",
+    "syntax_parse": "PASS_SYNTAX_ONLY"
+  },
+  "factory": {
+    "pin": {
+      "bytes": 13133,
+      "git_blob": "ff9aaae8e612ad9270b05b44607c5bf7ae71f20c",
+      "sha256": "1341425400cf1e881d51eed94b8c3bd15951330b5b41eb6e22e480185ae390d1",
+      "url": "https://raw.githubusercontent.com/hmlongco/Factory/8ca11a7bd1ede031e8e6d7a912bb116e2e43961b/Sources/Factory/Factory/Containers.swift"
+    },
+    "push_pop": "Exact pinned ContainerManager saves/restores registrations, options, manager cache and autoRegistrationCheckNeeded under globalRecursiveLock; separate singleton cache is not included.",
+    "test_lifetime": "Require foreground scene before registration mutation; obtain actual insertion singleton before push; register only RPC stub; close window, restore previous key window, consume only own unique destination id and pop once in defer.",
+    "textServiceHandler": "Factory<any TextServiceProtocol> { self { TextServiceHandler() }.shared }"
+  },
+  "production": {
+    "after_sha256": "09bd3697007ab3331c63d2bddba7042e19f9d537a2cca7de6dbcf28c78078714",
+    "before_sha256": "98a82800707b1bfbd21fb6f5771fa98fad256a8bbbac8dd05af6354e84dbd052",
+    "bytes": 8946,
+    "diff_sha256": "a588b3f96dc0fec43524e4a68aee1615f15bd872bd5c1111247805019ffbe4c1",
+    "diff_storage": {
+      "bytes": 352,
+      "encoding": "gzip with mtime 0",
+      "exact_decompression_verified": true,
+      "expanded_bytes": 730,
+      "expanded_sha256": "a588b3f96dc0fec43524e4a68aee1615f15bd872bd5c1111247805019ffbe4c1",
+      "path": "docs/validation/20261123-release-return-focus/production.diff.gz",
+      "sha256": "7920deb5582a8fea5fe9c620039e4f52b0a1e0c6204f3914d2a683e97773fda8"
+    },
+    "literal_inverse": {
+      "inverse_equals_base": true,
+      "new": "        cursorManager.blockFocus = BlockFocus(id: blockId, position: .beginning)\n        cursorManager.applyCurrentFocus(shouldInvalidateFocus: false)\n",
+      "old": "        cursorManager.focus(at: blockId, position: .beginning)\n        cursorManager.blockFocus = BlockFocus(id: blockId, position: .beginning)\n"
+    },
+    "path": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionService/BlockActionService.swift"
+  },
+  "protocol": "release-return-focus-source-qualification-v1",
+  "release_failure_audit": {
+    "allocated_bytes": 6836224,
+    "bound_files": 66,
+    "findings_sha256": "e23ab5a29d354415012e7663a31e0645fd3ad17305fdbdbdca8fe087fb2a22cb",
+    "free_after": "4029120512",
+    "git_source_rows": 28,
+    "path": "/mnt/development/projects/diagnostics/release-original-products-45190599065-attempt4-result-20261123/audit1",
+    "qualification_sha256": "1d5fdb20c2644f9d56c80fc641227ca35a69f740373b8a0bd3a0e6456ad78a22",
+    "source_analysis_sha256": "2a7e500720e89a5d54cd67e08384c00b9eef071ca7d6cdc34324cf91065be17d",
+    "source_inputs_sha256": "e4e2da58d9ac8dfbc418c6530545e29dcfddb985219ddc209ea7302df7cf206c",
+    "status": "QUALIFIED_ORIGINAL_FAILURE"
+  },
+  "source_authoring_history": {
+    "continuation": "Lossless gzip representation of the diff only; production, tests and syntax evidence remain byte-exact. No parse/test/build replay.",
+    "diagnosis": "git diff --cached --check flags the literal single-space blank context line in the embedded unified diff; production and test sources had no whitespace finding.",
+    "first_root_author_status": "FAIL after successful source edits and syntax parse, before commit",
+    "original_receipt": "original-source-author2-failure.json",
+    "original_receipt_sha256": "e0441174e9002ad3625e3353782cbf831177f4a8bcc2c26d2d94cba29b1d2366"
+  },
+  "source_inputs": [
+    {
+      "bytes": 8939,
+      "commit": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba",
+      "git_blob": "3e6bb92c50b550a29a34f479098bdf7c182f5057",
+      "git_mode": "100644",
+      "path": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionService/BlockActionService.swift",
+      "sha256": "98a82800707b1bfbd21fb6f5771fa98fad256a8bbbac8dd05af6354e84dbd052"
+    },
+    {
+      "bytes": 5071,
+      "commit": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba",
+      "git_blob": "59e9a241e83b80988a1694f9eb8f68636bd757ff",
+      "git_mode": "100644",
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Utils/Editor\u0421ursorManager.swift",
+      "sha256": "084acf74b26689b16ad34977a74a3a0d03e056d788fef2aa525fb511ed19f955"
+    },
+    {
+      "bytes": 21480,
+      "commit": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba",
+      "git_blob": "c950387a3dc3f56fed27b250a0b61affc3205138",
+      "git_mode": "100644",
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView.swift",
+      "sha256": "e5a7217bfda0b07b4e4dd8632609992921d724eeba4669920e2aab28ad8b8e26"
+    },
+    {
+      "bytes": 6704,
+      "commit": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba",
+      "git_blob": "ab3461aca8bffa1bebbd95c20b63dc1054aac679",
+      "git_mode": "100644",
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentConfiguration.swift",
+      "sha256": "ebba5986acb0efccff7e2907d83525cf6fb99cfde24d289764679c598da1576e"
+    },
+    {
+      "bytes": 2693,
+      "commit": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba",
+      "git_blob": "3da236ac47747409114d91e96bacdec89e23ca0b",
+      "git_mode": "100644",
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView+TextViewDelegate.swift",
+      "sha256": "3928904e9a4bb128ea4b9531d176cb972d29b1b2e7abb46299f593a3d85fca5c"
+    },
+    {
+      "bytes": 1008,
+      "commit": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba",
+      "git_blob": "ea0184b840bf6843f49212d40cf64e03da24472e",
+      "git_mode": "100644",
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Models/FocusSubjectsHolder.swift",
+      "sha256": "73d8a81817f30e20049df424377a9be798c17c1ac4fa8b082c88b135921f0084"
+    },
+    {
+      "bytes": 4406,
+      "commit": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba",
+      "git_blob": "1a695081e5f642c6981f668bfefc9dbba543ffd3",
+      "git_mode": "100644",
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Utils/EditorMainItemModelsHolder.swift",
+      "sha256": "dc00437f9ef7fc253847d23a71bb058995059e8aef2065a2f31eb6e0126449f9"
+    },
+    {
+      "bytes": 2004,
+      "commit": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba",
+      "git_blob": "50648745e91360e1dd3700c4bc78eee684a6e200",
+      "git_mode": "100644",
+      "path": "Anytype/Sources/Models/Documents/Events/Model/EventBunchSubscribtion.swift",
+      "sha256": "f40d1e6c6fdec92edda6254c616e30dd6c27d10e4649b563d858fd03b5e153fd"
+    },
+    {
+      "bytes": 2119,
+      "commit": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba",
+      "git_blob": "81d940e88070ecbe72de621c43f8979fdb874a2e",
+      "git_mode": "100644",
+      "path": "Anytype/Sources/ServiceLayer/Block/SessionCreatedBlocks/KeyboardInsertedBlocksStorage.swift",
+      "sha256": "baa345f5fb0c31b771ed28c80d532678444eecce62a997611a6080b7dea82912"
+    },
+    {
+      "bytes": 19148,
+      "commit": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba",
+      "git_blob": "dfc2b87f5e688b6fb5b89e24d58799f65751ea67",
+      "git_mode": "100644",
+      "path": "Anytype/Sources/ServiceLayer/ServicesDI.swift",
+      "sha256": "62d07a9d2040365fc03a127e63c5f84f3a67b2128ce1a89848578e2308bff1a5"
+    },
+    {
+      "bytes": 954,
+      "commit": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba",
+      "git_blob": "4a246bd949c7971aa4b1614ad8d36007b2f2b58c",
+      "git_mode": "100644",
+      "path": "Modules/Services/Sources/Services/TextService/TextServiceProtocol.swift",
+      "sha256": "bee14e942ea4649c79cbe04c0ab113f9d2e90d3cf2e08777d2e096a6968aaa9b"
+    },
+    {
+      "bytes": 1270,
+      "commit": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba",
+      "git_blob": "55cbf0c45c83bf770300bad9fb2d7d8df69d6d46",
+      "git_mode": "100644",
+      "path": "Modules/Services/Sources/Models/Block/Block+CommonStructures.swift",
+      "sha256": "c85a5d9bf6355c21223e8195ef8b984963ebb75d7a2985dc78567eba502de422"
+    },
+    {
+      "bytes": 35851,
+      "commit": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba",
+      "git_blob": "64f93b699bc91e19432e23d4aac48c7a447fbc45",
+      "git_mode": "100644",
+      "path": "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift",
+      "sha256": "3b6487fd6c8f65e7282e9261fe1ce2054b40727bdc1978023ae44d24584055e4"
+    },
+    {
+      "bytes": 122451,
+      "commit": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba",
+      "git_blob": "8a2417e8ff32b1b5d094d28c09f7e04d2df28ced",
+      "git_mode": "100644",
+      "path": "Anytype.xcodeproj/project.pbxproj",
+      "sha256": "62dcbfe20f3d00c158525bd62f3249d116fd2a846196f584991d6841b3bb238f"
+    }
+  ],
+  "source_only_profile": {
+    "max_owned_allocation_bytes": 8388608,
+    "min_free_bytes": 1073741824,
+    "native_gates_unchanged": true
+  },
+  "status": "SOURCE_AUTHORED_RUNTIME_NOT_RUN",
+  "syntax_parse": {
+    "command": [
+      "/usr/local/bin/swiftc",
+      "-frontend",
+      "-parse",
+      "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionService/BlockActionService.swift",
+      "AnytypeTests/Pinkha/BlockActionServiceReturnFocusTests.swift"
+    ],
+    "exit_code": 0,
+    "scope": "Syntax parsing on Oracle Linux only; no module resolution, Apple typecheck, binary, or test execution.",
+    "stderr": {
+      "bytes": 0,
+      "path": "/mnt/development/projects/diagnostics/release-return-focus-source-20261123/root-author2/swift-parse.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout": {
+      "bytes": 0,
+      "path": "/mnt/development/projects/diagnostics/release-return-focus-source-20261123/root-author2/swift-parse.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "test": {
+    "bytes": 14151,
+    "methods": [
+      "renderedSubscriberKeepsSplitRequest",
+      "laterRenderedRowConsumesSplitRequest",
+      "laterRequestStillSupersedesSplitFocus"
+    ],
+    "path": "AnytypeTests/Pinkha/BlockActionServiceReturnFocusTests.swift",
+    "run_isolation": "Select exactly these three methods; no concurrent tests changing Factory registrations",
+    "sha256": "2325b39ca6ca624f19575e60af6caa02cbb9bfd4d0fc36938cedebb33578445f",
+    "source_origin": "Reviewed immutable handoff draft, no runtime execution",
+    "target": "AnytypeTests; PBXFileSystemSynchronizedRootGroup membership still requires Apple enumeration"
+  }
+}

@@ -87,8 +87,8 @@ final class BlockActionService: BlockActionServiceProtocol {
         // the editor then shows the row, moves the caret into it and scrolls it visible in one
         // render commit instead of three visible steps.
         keyboardInsertedBlocksStorage.register(blockId: blockId)
-        cursorManager.focus(at: blockId, position: .beginning)
         cursorManager.blockFocus = BlockFocus(id: blockId, position: .beginning)
+        cursorManager.applyCurrentFocus(shouldInvalidateFocus: false)
 
         await EventsBunch(
             contextId: documentId,
