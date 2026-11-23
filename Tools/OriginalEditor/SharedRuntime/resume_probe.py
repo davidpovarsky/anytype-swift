@@ -1,4 +1,4 @@
-"""Run the exact retained signed provider probe; never build or modify its app."""
+"""Reuse the exact retained provider with the real UIScene diagnostic consumer repair."""
 import argparse
 import hashlib
 import io
@@ -178,8 +178,11 @@ def execute(args, receipt):
     app = work / (NAME + '.app')
     require(inventory(app) == retained['app_inventory'], 'Restored signed app differs')
     command('signature', ['codesign', '--verify', '--deep', '--strict', app])
-    receipt.update(binary_identity=retained['binary_identity'], original_build_reused=True,
-                   builds_executed=0, phase='ACTUAL_RETAINED_RUNTIME')
+    original_app = app
+    from build_scene_consumer import build_scene_consumer
+    app, current_app_inventory = build_scene_consumer(
+        root, work, evidence, original_app, retained, receipt, command, inventory)
+    receipt.update(phase='ACTUAL_RETAINED_PROVIDER_SCENE_CONSUMER_RUNTIME')
     runtimes = json.loads(command('runtimes', ['xcrun', 'simctl', 'list', 'runtimes', '--json']))['runtimes']
     matches = [r for r in runtimes if all(r.get(k) == v for k, v in pin['runtime'].items())]
     require(len(matches) == 1 and matches[0].get('isAvailable')
@@ -220,7 +223,7 @@ def execute(args, receipt):
                 and set(actual['providers']) == set(CLASSES)
                 and all(len(paths) == 1 and paths[0].endswith('/Frameworks/' + RUNTIME + '.framework/' + RUNTIME)
                         for paths in actual['providers'].values()), 'Actual retained process lacks unique providers')
-        receipt.update(runtime=actual, status='PASS_RETAINED_SHARED_FIREBASE_RUNTIME', phase='COMPLETE')
+        receipt.update(runtime=actual, status='PASS_SHARED_PROVIDER_WITH_SCENE_CONSUMER', phase='COMPLETE')
     except BaseException:
         command('processes', ['ps', '-axo', 'pid,ppid,state,comm'], 15, required=False)
         command('app-info', ['xcrun', 'simctl', 'appinfo', udid, BUNDLE], 30, required=False)
@@ -244,7 +247,8 @@ def execute(args, receipt):
     finally:
         for action in ['shutdown', 'delete']:
             command(action, ['xcrun', 'simctl', action, udid], 60, required=False)
-        require(inventory(app) == retained['app_inventory'], 'Retained signed app changed during execution')
+        require(inventory(app) == current_app_inventory and inventory(original_app) == retained['app_inventory'],
+                'Native consumer or original retained inputs changed during execution')
         require(controller == {**{p.relative_to(root).as_posix(): digest(p) for p in source.rglob('*') if p.is_file()},
                                 WORKFLOW: digest(root / WORKFLOW)}, 'Controller source changed')
 
@@ -256,6 +260,7 @@ def main():
     args = parser.parse_args()
     args.evidence.mkdir(parents=True, exist_ok=True)
     receipt = {'schema': 1, 'status': 'FAIL', 'builds_executed': 0,
+               'provider_builds_executed': 0, 'consumer_builds_executed': 0,
                'original_editor_qualified': False, 'stageb_qualified': False}
     try:
         execute(args, receipt)
