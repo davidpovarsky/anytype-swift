@@ -14,7 +14,7 @@ import re
 import stat
 
 ADMISSION_PATH = "Tools/PinkhaSimulatorGate/sdk06-retained-controls.json"
-ADMISSION_SHA256 = "cb510c5380851626195f68b380ffa02bd5f58fddc9274529d156350079add6be"
+ADMISSION_SHA256 = "e40b33a9b3903347d7ca1cf7bed43f17cfd9b5900a1bd1a3c631974bec6c900c"
 SCHEMA = "pinkha-sdk06-retained-controller-controls-v1"
 
 
