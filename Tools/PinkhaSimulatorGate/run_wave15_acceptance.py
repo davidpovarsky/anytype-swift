@@ -24,6 +24,7 @@ import wave15_diagnostics as diagnostics
 import type_preservation as preservation
 import text_native_ack
 import shared_editor_existing_build
+import early_build_products
 
 BRANCH = "codex/chatgpt-wave15-integration-20261118"
 CONSUMER_BRANCH = "codex/chatgpt-wave15-hanlin-consumer-20261119"
@@ -480,6 +481,11 @@ def execute(args, receipt, *, build_context=None):
         build_context.verify(app, head, identity, flags, configuration_name)
         receipt["build_mode"] = "SAME_JOB_FROZEN_BUILD"
     receipt.update(native_build_succeeded=True, native_build_flags=flags)
+    if shared_editor:
+        receipt["early_products"] = early_build_products.capture(
+            derived, evidence, source_sha=head, run_id=receipt["run_id"],
+            run_attempt=receipt["run_attempt"], build_flags=flags)
+        shared.write(evidence / "execution.json", receipt)
     built = derived / "Build/Products" / (configuration_name + "-iphonesimulator/Anytype.app")
     shared.verify_signed_simulator(built, evidence)
     shared.verify_runtime_copies(built, binding['native_marker'].encode(), evidence)
