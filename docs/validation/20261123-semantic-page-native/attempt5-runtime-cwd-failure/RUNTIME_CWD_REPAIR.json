@@ -1,0 +1,18 @@
+{
+  "actual_methods_passed": 0,
+  "actual_methods_run": 0,
+  "app_capability": "OFF",
+  "cache_root": "/mnt/development/projects/evidence/semantic-page-20261123-arm64/attempt4/cache",
+  "candidate_sha256": "2f76212f9fcd749aeb9e806b941e0fd0b54eba17e5cc842adb81c7eb3bae0f38",
+  "cause": "Original native AccountStop writes account_stop.json relative to the process working directory. The first failed Page execution used the native checkout as cwd; its runtime file correctly tripped the exact154 source guard.",
+  "native_sources_changed": 0,
+  "preserved_runtime_file": {
+    "bytes": 79,
+    "filename": "account_stop.json",
+    "sha256": "fbd6844ac7e10df7baf7500a8ef131575fd79cc8aa813c61ac53600c800daf5c"
+  },
+  "repair": "Build processes retain the native checkout cwd. Each selected native test now has a separate private runtime phase directory, keeping runtime artifacts out of the source tree and preventing overwrite across phases.",
+  "runtime_original_path": "/mnt/development/projects/worktrees/anytype-heart-semantic-page-20261123/account_stop.json",
+  "runtime_preserved_path": "/mnt/development/projects/evidence/semantic-page-20261123-arm64/attempt4/private/account-sequence/runtime-capture/account_stop.json",
+  "status": "ORIGINAL_SOURCE_GUARD_FAIL_PRESERVED"
+}

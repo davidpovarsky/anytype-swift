@@ -155,10 +155,10 @@ def environment(args, selected):
         TMPDIR=str(cache / "tmp"), CGO_LDFLAGS="-L" + str(args.heart / "deps/libs" / selected["tantivy_arch"]),
         GIT_OPTIONAL_LOCKS="0", PYTHONDONTWRITEBYTECODE="1")
 
-def run_command(argv, args, env, log, timeout):
+def run_command(argv, args, env, log, timeout, cwd=None):
     require(not log.exists(), "Refusing to overwrite an earlier command log")
     with log.open("xb") as stream:
-        process = subprocess.Popen(argv, cwd=args.heart, env=env, stdout=stream,
+        process = subprocess.Popen(argv, cwd=args.heart if cwd is None else cwd, env=env, stdout=stream,
             stderr=subprocess.STDOUT, start_new_session=True)
         try:
             code = process.wait(timeout=timeout)
@@ -304,7 +304,9 @@ def execute(args, receipt):
         command = ["go", "tool", "test2json", "-t", "-p", PACKAGE, str(binary),
             "-test.v=test2json", "-test.run=^" + method + "$", "-test.timeout=240s", "-test.count=1"]
         log = sequence / (phase + ".jsonl")
-        result = run_command(command, args, env, log, 300)
+        runtime = sequence / ("runtime-" + phase)
+        runtime.mkdir(mode=0o700)
+        result = run_command(command, args, env, log, 300, cwd=runtime)
         observed = named_execution(log, method)
         receipt["attempts"].append(dict(observed, phase=phase, exit_code=result["exit_code"],
             test2json_pid=result["pid"]))
