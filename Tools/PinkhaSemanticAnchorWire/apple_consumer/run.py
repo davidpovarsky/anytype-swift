@@ -29,6 +29,7 @@ import run_ui27 as shared
 import shared_editor_existing_build as component
 import simulator_selection
 import wave15_batch as owned
+import ui_build
 
 spec = importlib.util.spec_from_file_location(
     "semantic_page_producer_contract", ROOT / "Tools/PinkhaSemanticAnchorWire/apple_runtime/contract.py")
@@ -60,9 +61,12 @@ class Commands:
             primary = error
             record = json.loads(path.with_suffix(".command.json").read_bytes())
         try:
-            record["owned_group_quiescence"] = supervisor.verify_owned_group_stopped(path.with_suffix(".command.json"))
+            record["owned_group_quiescence"] = supervisor.verify_owned_group_stopped(
+                path.with_suffix(".command.json"), cleanup_profile="semantic-page154")
         except BaseException as error:
-            record["quiescence_failure"] = dict(error_type=type(error).__name__, error=str(error))
+            record["quiescence_failure"] = dict(error_type=type(error).__name__, error=str(error),
+                timeout_observations=getattr(error, "timeout_observations", []),
+                quiescence_observation=getattr(error, "quiescence_observation", None))
             if primary is None: primary = error
         record.update(name=name, log_sha256=proof.digest(path) if path.is_file() else None)
         self.receipt.setdefault("commands", []).append(record)
@@ -74,6 +78,29 @@ class Commands:
     def json(self, argv, name, timeout=60):
         path, _ = self.run(argv, name, timeout)
         return json.loads(path.read_bytes())
+
+
+def xctest_command(configuration, udid, *, enumeration=None, result=None):
+    proof.require(owned.valid_udid(udid) and (enumeration is None) != (result is None),
+                  "Exactly one owned native enumeration or execution is required")
+    command = ["xcodebuild", "test-without-building", "-xctestrun", str(configuration),
+               "-destination", "platform=iOS Simulator,id=" + udid, "-parallel-testing-enabled", "NO",
+               "-only-testing", proof.SELECTOR]
+    if enumeration is not None:
+        command += ["-enumerate-tests", "-test-enumeration-style", "flat", "-test-enumeration-format", "json",
+                    "-test-enumeration-output-path", str(enumeration)]
+    else:
+        command += ["-resultBundlePath", str(result)]
+    return command
+
+
+def exact_native_enumeration(payload):
+    plan, enabled, disabled = component.enumerated_identifiers(payload)
+    proof.require(plan == "AnytypeTests" and len(enabled) == 1 and
+                  proof.canonical_case(next(iter(enabled))) == proof.SUITE + "/" + proof.METHOD
+                  and not enabled.intersection(disabled),
+                  "Actual compiled selection differs from exact one new method in the original AnytypeTests plan")
+    return dict(plan=plan, enabled=sorted(enabled))
 
 
 def checkout_inputs(root, head):
@@ -175,11 +202,14 @@ def execute(args, receipt):
     source_pins = json.loads((Path(__file__).parent / "candidate-sources.json").read_bytes())
     proof.require(source_pins and all(inputs.get(path) == expected for path, expected in source_pins.items()),
                   "Reviewed candidate factory/App/test/publication source closure differs")
+    mounted_build_plan = ui_build.read_plan(ROOT, inputs)
+    receipt["mounted_build_plan"] = dict(source_plan_sha256=mounted_build_plan["source_plan_sha256"],
+                                        mounted_source_origin_sha=mounted_build_plan["mounted_source_origin_sha"])
     manifest = producer.candidate(ROOT)
     receipt["retained_native"] = producer.retained_native(ROOT, manifest)
     expected_files = json.loads((Path(__file__).parent / "framework-files.json").read_bytes())
     runner = Commands(ROOT, args.evidence, receipt)
-    primary = None; udid = None; original = None; copied = None; descriptor = None
+    primary = None; udid = None; original = None; copied = None; descriptor = None; derived = None
     finalizing = False; cancelled = False
     previous = {}
     def cancel(signum, frame):
@@ -241,16 +271,9 @@ def execute(args, receipt):
         shutil.copyfile(copied, args.evidence / "bound.xctestrun")
         receipt["phase"] = "ENUMERATE_EXACT_ONE"
         enumeration = args.evidence / "enumeration.json"
-        runner.run(["xcodebuild", "test-without-building", "-xctestrun", str(copied),
-                    "-destination", "platform=iOS Simulator,id=" + udid, "-parallel-testing-enabled", "NO",
-                    "-enumerate-tests", "-test-enumeration-style", "flat", "-test-enumeration-format", "json",
-                    "-test-enumeration-output-path", str(enumeration)],
-                   "enumerate-exact-one", 600)
-        plan, enabled, disabled = component.enumerated_identifiers(json.loads(enumeration.read_bytes()))
-        proof.require(plan == "Anytype" and len(enabled) == 1 and
-                      proof.canonical_case(next(iter(enabled))) == proof.SUITE + "/" + proof.METHOD
-                      and not enabled.intersection(disabled), "Actual compiled selection differs from exact one new method")
-        receipt["enumeration"] = dict(plan=plan, enabled=sorted(enabled), sha256=proof.digest(enumeration))
+        runner.run(xctest_command(copied, udid, enumeration=enumeration), "enumerate-exact-one", 600)
+        receipt["enumeration"] = dict(exact_native_enumeration(json.loads(enumeration.read_bytes())),
+                                      sha256=proof.digest(enumeration))
         proof.require(proof.digest(original) == descriptor["original_sha256"]
                       and proof.digest(copied) == descriptor["copied_sha256"], "Descriptor changed before execution")
         receipt["phase"] = "ACTUAL_XCTEST"
@@ -258,9 +281,7 @@ def execute(args, receipt):
         test_error = None
         receipt["actual_xctest_commands_started"] = 1
         try:
-            runner.run(["xcodebuild", "test-without-building", "-xctestrun", str(copied),
-                        "-destination", "platform=iOS Simulator,id=" + udid, "-parallel-testing-enabled", "NO",
-                        "-resultBundlePath", str(result)], "actual-single-xctest", 900)
+            runner.run(xctest_command(copied, udid, result=result), "actual-single-xctest", 900)
         except BaseException as error:
             test_error = error
         if result.exists() and not cancelled:
@@ -275,7 +296,14 @@ def execute(args, receipt):
         attachment = proof.attachment(args.evidence / "actual-attachments", udid)
         receipt["observation"] = proof.observation(json.loads(attachment.read_bytes()), run_binding)
         receipt["observation_sha256"] = proof.digest(attachment)
-        receipt.update(status=proof.PASS, phase="COMPLETE", actual_product_methods_passed=1)
+        receipt.update(native_boundary_status=proof.PASS, actual_product_methods_passed=1)
+        receipt["native_products_integrity_before_ui_build"] = ui_build.verify_preserved_products(
+            derived, args.evidence, receipt["early_products"], run_binding, BUILD_FLAGS,
+            descriptor_additions={copied.relative_to(derived).as_posix(): descriptor["copied_sha256"]})
+        receipt["phase"] = "BUILD_MOUNTED_UI_RUNNER_ONLY"
+        ui_build.build_mounted_ui(runner, ROOT, args.work, args.evidence, run_binding, BUILD_FLAGS,
+                                  mounted_build_plan, shared, receipt, udid)
+        receipt.update(status=proof.PASS, phase="COMPLETE")
     except BaseException as error:
         primary = error
         receipt.update(status="FAIL", error_type=type(error).__name__, error=str(error))
@@ -303,6 +331,15 @@ def execute(args, receipt):
             if descriptor:
                 proof.require(proof.digest(original) == descriptor["original_sha256"]
                               and proof.digest(copied) == descriptor["copied_sha256"], "Final descriptor bytes differ")
+            if receipt.get("early_products") and derived is not None:
+                additions = {copied.relative_to(derived).as_posix(): descriptor["copied_sha256"]} if descriptor else {}
+                receipt["native_products_integrity_final"] = ui_build.verify_preserved_products(
+                    derived, args.evidence, receipt["early_products"], run_binding, BUILD_FLAGS,
+                    descriptor_additions=additions)
+            ui_preservation = receipt.get("ui_runner_build", {}).get("early_products")
+            if ui_preservation:
+                receipt["ui_products_integrity_final"] = ui_build.verify_preserved_products(
+                    args.work / "derived-ui", args.evidence, ui_preservation, run_binding, BUILD_FLAGS)
             receipt["source_and_framework_unchanged"] = True
         except BaseException as error:
             receipt["integrity_error"] = dict(error_type=type(error).__name__, error=str(error))
