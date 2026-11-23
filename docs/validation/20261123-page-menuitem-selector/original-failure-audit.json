@@ -1,0 +1,435 @@
+{
+  "actual_results": {
+    "downstream_cancel_create_apply_cold": "NOT_RUN",
+    "fresh_setup": {
+      "fail": 0,
+      "new_acceptance_credit": 0,
+      "pass": 1,
+      "skip": 0
+    },
+    "physical_ipad": "NOT_RUN",
+    "ui": {
+      "fail": 1,
+      "pass": 0,
+      "reason": "menu-action-ambiguous",
+      "skip": 0,
+      "tap_attempts": 0
+    }
+  },
+  "app_source": {
+    "before_after_byte_identical": true,
+    "count": 12033,
+    "sha256": "533bb8ad8eed3607521bef3517ff3a7cd53728956872180209cd9280d48e365d"
+  },
+  "artifact_id": 14842632494,
+  "attempt": 1,
+  "commands": [
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "41ce0e91854367372351e121fee4d99e118185c7ff8d5059632e6ac5a15f6e2e",
+      "name": "consumer-run-api",
+      "original_stream_members": [
+        "evidence/consumer-run-api.log"
+      ],
+      "pgid": 1899,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "1fecccc7b4298e6ce81d3309265a374e869bbeccf61e732fdaf8eb324deb44aa",
+      "name": "consumer-artifact-api",
+      "original_stream_members": [
+        "evidence/consumer-artifact-api.log"
+      ],
+      "pgid": 1901,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "082d7cf6c589c6770186390091d997de29d7148fe917ea2f0785450688cada46",
+      "name": "download-original-consumer",
+      "original_stream_members": [],
+      "pgid": 1904,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "694b44731d0b415c5b11d844151e466d7f5e200a95627efda377f232f1a6ab77",
+      "name": "actual-xcode-version",
+      "original_stream_members": [
+        "evidence/actual-xcode-version.log"
+      ],
+      "pgid": 2039,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "287d0f4b6bb620d16c3b25af4c517a7a00ffab08bcfc32c0009472dbf0cca4dd",
+      "name": "verify-restored-signatures-and-runtime",
+      "original_stream_members": [
+        "evidence/verify-restored-signatures-and-runtime.log"
+      ],
+      "pgid": 2173,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "c62bfaa50a334dbc42a90e5e6573beea8cbaf4118c2aff1ffed9d19bffd6655b",
+      "name": "available-runtimes",
+      "original_stream_members": [
+        "evidence/available-runtimes.log"
+      ],
+      "pgid": 2291,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "f663b275b7760a98ef28ff760c8efc49703530dd1b45c3d70fa755047bb799a0",
+      "name": "available-device-types",
+      "original_stream_members": [
+        "evidence/available-device-types.log"
+      ],
+      "pgid": 2439,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "eed938e0675e14e1b2406103052cbd209db3d9b062c78a61e14b2ac4a9c4b55d",
+      "name": "create-owned-simulator",
+      "original_stream_members": [
+        "evidence/create-owned-simulator.log"
+      ],
+      "pgid": 2510,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "boot-owned-simulator",
+      "original_stream_members": [
+        "controller.log",
+        "evidence/boot-owned-simulator.log",
+        "evidence/cleanup-owned-simulator-delete.log",
+        "evidence/cleanup-owned-simulator-shutdown.log",
+        "evidence/command-00.log"
+      ],
+      "pgid": 2540,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "12f85d48db57a99fe7d14aec90244b8d002287c45ced5c0ff7d5478a9cf22ca3",
+      "name": "wait-owned-simulator",
+      "original_stream_members": [
+        "evidence/wait-owned-simulator.log"
+      ],
+      "pgid": 2613,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "287523b5e2351ff774022d693eb2ae5115f59587b8ba1b2de12c5966d1ffec49",
+      "name": "build-warning-ui-runner",
+      "original_stream_members": [
+        "evidence/build-warning-ui-runner.log"
+      ],
+      "pgid": 3298,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "0246866c0909eed4ce9c81ee5a5634ba7a15549c7be5299856a540cc1e9358da",
+      "name": "enumerate-exact-owned-one",
+      "original_stream_members": [
+        "evidence/preparation/enumerate-exact-owned-one.log"
+      ],
+      "pgid": 7928,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "74a3ee850a923e478587d9e6dc9b90c8fa149e2e6273d148c9fcade37f0dd4b4",
+      "name": "actual-owned-one",
+      "original_stream_members": [
+        "evidence/preparation/actual-owned-one.log"
+      ],
+      "pgid": 9659,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "99ef9e4cc7e467589336fac58463d7d6ccadc78f816ac836069f6fb2621e7e7f",
+      "name": "export-test-summary",
+      "original_stream_members": [
+        "evidence/preparation/actual-summary.json"
+      ],
+      "pgid": 10413,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "b1d9d7d874ffe4856b6b72c4f7914bece50b12bf73206126ab0caae4a49087ea",
+      "name": "export-test-tests",
+      "original_stream_members": [
+        "evidence/preparation/actual-tests.json"
+      ],
+      "pgid": 10806,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "6cefcf2d4158eef7afbb3d61284adee633a63042c0cc36d174d6acad28be2262",
+      "name": "export-test-attachments",
+      "original_stream_members": [
+        "evidence/preparation/export-test-attachments.log"
+      ],
+      "pgid": 10825,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "e63709fad5ad272f592773f133c2d15ce6448f1c47e772447d270f4ee9468027",
+      "name": "container-pinkha-semantic-page154-mounted-fixture",
+      "original_stream_members": [
+        "evidence/container-pinkha-semantic-page154-mounted-fixture.log",
+        "evidence/failure-owned-app-container.log"
+      ],
+      "pgid": 10851,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "123b3a683c0c9fa7f2bfc32078c448bf073bf0b0d41d9efb222e06b35017cba9",
+      "name": "enumerate-exact-owned-one",
+      "original_stream_members": [
+        "evidence/ui/enumerate-exact-owned-one.log"
+      ],
+      "pgid": 11025,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "bedffb1ded7e39b01693cd815c027d129ac4c42e0879deba316c0d031ee407b3",
+      "name": "actual-owned-one",
+      "original_stream_members": [
+        "evidence/ui/actual-owned-one.log"
+      ],
+      "pgid": 11954,
+      "return_code": 65,
+      "status": "WORKER_FAILED"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "aaacb1fbcc1590105769ff8e803da0ee13488fc92f2b213d3a6ccf9a2d7b35bd",
+      "name": "export-test-summary",
+      "original_stream_members": [
+        "evidence/ui/actual-summary.json"
+      ],
+      "pgid": 16089,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "104a7831618d366ca6f7ff0c2e5e333f1fa4ad15a4b2d77976cc273db9115ccf",
+      "name": "export-test-tests",
+      "original_stream_members": [
+        "evidence/ui/actual-tests.json"
+      ],
+      "pgid": 16153,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "bf932e3ef0219bc1099866d4a3d36eb7c02485ba27b7ab5bb52f79ab90971fad",
+      "name": "export-test-attachments",
+      "original_stream_members": [
+        "evidence/ui/export-test-attachments.log"
+      ],
+      "pgid": 16185,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "e63709fad5ad272f592773f133c2d15ce6448f1c47e772447d270f4ee9468027",
+      "name": "failure-owned-app-container",
+      "original_stream_members": [
+        "evidence/container-pinkha-semantic-page154-mounted-fixture.log",
+        "evidence/failure-owned-app-container.log"
+      ],
+      "pgid": 16220,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "cleanup-owned-simulator-shutdown",
+      "original_stream_members": [
+        "controller.log",
+        "evidence/boot-owned-simulator.log",
+        "evidence/cleanup-owned-simulator-delete.log",
+        "evidence/cleanup-owned-simulator-shutdown.log",
+        "evidence/command-00.log"
+      ],
+      "pgid": 16387,
+      "return_code": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "kernel_absent_within_budget": true,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "cleanup-owned-simulator-delete",
+      "original_stream_members": [
+        "controller.log",
+        "evidence/boot-owned-simulator.log",
+        "evidence/cleanup-owned-simulator-delete.log",
+        "evidence/cleanup-owned-simulator-shutdown.log",
+        "evidence/command-00.log"
+      ],
+      "pgid": 16476,
+      "return_code": 0,
+      "status": "COMPLETE"
+    }
+  ],
+  "controller_source": {
+    "before_after_byte_identical": true,
+    "count": 15017,
+    "sha256": "a5d8991540d2a5bbe3718373f489d0e52b806f183ef5fe901b7c13f1c31eede3"
+  },
+  "elapsed_seconds": 0.9839999999967404,
+  "loaded_modules": {
+    "added": [
+      "sdk06_enumeration_probe",
+      "warning_profile",
+      "warning_runner"
+    ],
+    "after": 36,
+    "all_bound_to_original_controller_snapshot": true,
+    "before": 33
+  },
+  "new_builds": 0,
+  "new_test_executions": 0,
+  "new_ui_products": {
+    "all_file_digests_modes_paths_verified": true,
+    "archive_sha256": "c22076ea77fd90d350e8460334a82a211817bb6a487fea99a564932691a74a57",
+    "entries": 31,
+    "links": 0,
+    "manifest_sha256": "e1c45b1881cecd6889f6603ebf5076493504afd353e0354e8c2e514f9cd597d4",
+    "reusable_acceptance": "NOT_GRANTED"
+  },
+  "original_copies": {
+    "bytes": 19792,
+    "path": "C:\\Users\\DAVID\\AppData\\Local\\SentinelX\\anytapy-immutable-evidence\\page-menu-selector-original-45222136118-1\\audit-menuitem-v2\\originals-index.json",
+    "sha256": "77448d6581d3ddca9904cb179269ae3bfce215b3186288da0dc567e5aa0f0b57"
+  },
+  "original_zip": {
+    "bytes": 32650234,
+    "path": "C:\\Users\\DAVID\\AppData\\Local\\SentinelX\\anytapy-immutable-evidence\\page-menu-selector-original-45222136118-1\\original-14842632494.zip",
+    "sha256": "4d4b9c837846a4ceb900ddaee1ad9637be3746160f65e76768f47bc50d2e84a0"
+  },
+  "owned_simulator_cleanup": {
+    "scope": "Recorded exact owned commands and kernel PGID evidence; no added remote simulator query.",
+    "shutdown_and_delete_exit_zero": true,
+    "udid": "DFDF768D-B822-4891-B9D8-335D398E1FA4"
+  },
+  "prior_failed_audit": {
+    "completed_scopes_reused": [
+      "full ZIP member CRC/digests",
+      "identical before/after source maps",
+      "36 module bindings",
+      "nine build input bindings",
+      "31 Products path/mode/digests"
+    ],
+    "observed_guard": "The original allowed-field audit omitted the actual bound UITargetAppPath. This continuation binds that field to the exact restored original native App path.",
+    "path": "C:\\Users\\DAVID\\AppData\\Local\\SentinelX\\anytapy-immutable-evidence\\page-menu-selector-original-45222136118-1\\audit-menuitem-v1\\audit-result.json",
+    "sha256": "e0495df73cdfecadd06a090c07f2def6eb59df1f05fe73439bbb3f559b20928b",
+    "status": "FAIL_AUDIT"
+  },
+  "product_status": "FAIL",
+  "retained_original_products": {
+    "native": {
+      "archive_sha256": "a7350b79911d1f03701b55015de934041b80642d377c9196d6f795aa4ca4774b",
+      "entries": 5008,
+      "links_separately_verified": 0,
+      "manifest_sha256": "bf90cd55caf69966918e9cbac24e2e48b68d4c23c9e6dfbe7576eb067574860e",
+      "restored_bytes": 2377427618,
+      "source_sha": "68148339c275268795360d71d519a5baf003adf8",
+      "status": "PASS_EXACT_SELF_CONTAINED_PRODUCTS_RESTORE"
+    },
+    "previous_ui": {
+      "archive_sha256": "06fb6afb7b35fe42c1cfaafa1425908df23824f4dda25b1c163d53ea3a6b9783",
+      "entries": 30,
+      "links_separately_verified": 0,
+      "manifest_sha256": "c8b3f2d54cc7246e6289960a344db85132c665a535c7a3d0a99257c6ebfc3913",
+      "restored_bytes": 5552504,
+      "source_sha": "68148339c275268795360d71d519a5baf003adf8",
+      "status": "PASS_EXACT_SELF_CONTAINED_PRODUCTS_RESTORE"
+    },
+    "scope": "Existing exact restore/integrity receipts retained; original 2.37 GB native tree was not downloaded or re-executed for this failure audit."
+  },
+  "run": 45222136118,
+  "schema": "page154-original-menuitem-audit-v1",
+  "source": "9178f18736244851657279761ad492618fab53c1",
+  "status": "PASS_ORIGINAL_FAILURE_AUDIT",
+  "ui_build": {
+    "app": 0,
+    "build_inputs_sha256": "37e1115547e8e9d6731f1d1a162783d2c02cccd9de2bacaf85564f5f61e6ea06",
+    "native": 0,
+    "nine_input_bindings": true,
+    "started": 1,
+    "succeeded": 1
+  },
+  "ui_descriptor": {
+    "changed_paths": [
+      "/PinkhaStage1AcceptanceUITests/EnvironmentVariables/PINKHA_SEMANTIC_MOUNTED_FIXTURE_JSON",
+      "/PinkhaStage1AcceptanceUITests/EnvironmentVariables/PINKHA_SEMANTIC_MOUNTED_NONCE",
+      "/PinkhaStage1AcceptanceUITests/EnvironmentVariables/PINKHA_SEMANTIC_MOUNTED_RUN_ATTEMPT",
+      "/PinkhaStage1AcceptanceUITests/EnvironmentVariables/PINKHA_SEMANTIC_MOUNTED_RUN_ID",
+      "/PinkhaStage1AcceptanceUITests/EnvironmentVariables/PINKHA_SEMANTIC_MOUNTED_SOURCE_SHA",
+      "/PinkhaStage1AcceptanceUITests/EnvironmentVariables/PINKHA_SEMANTIC_MOUNTED_TESTING",
+      "/PinkhaStage1AcceptanceUITests/EnvironmentVariables/PINKHA_SIMULATOR_UI_DISPOSABLE",
+      "/PinkhaStage1AcceptanceUITests/OnlyTestIdentifiers",
+      "/PinkhaStage1AcceptanceUITests/TestingEnvironmentVariables/DYLD_INSERT_LIBRARIES",
+      "/PinkhaStage1AcceptanceUITests/UITargetAppPath"
+    ],
+    "details": {
+      "bytes": 3259,
+      "path": "C:\\Users\\DAVID\\AppData\\Local\\SentinelX\\anytapy-immutable-evidence\\page-menu-selector-original-45222136118-1\\audit-menuitem-v2\\ui-descriptor-delta.json",
+      "sha256": "a0be7c08dbd6508d001c2f616a1c02b5d7e354b1b2fb5df8b784acf9fa94b9cb"
+    },
+    "inverse": true
+  },
+  "unavailable_original_command_stream": {
+    "name": "download-original-consumer",
+    "recorded_sha256": "082d7cf6c589c6770186390091d997de29d7148fe917ea2f0785450688cada46",
+    "scope": "Kernel PGID and command result are preserved in execution.json; the raw download progress stream cannot be independently rechecked from this artifact.",
+    "status": "NOT_INCLUDED_IN_PUBLISHED_ARTIFACT"
+  },
+  "zip_crc_all_members_verified": true,
+  "zip_inventory": {
+    "bytes": 416931,
+    "path": "C:\\Users\\DAVID\\AppData\\Local\\SentinelX\\anytapy-immutable-evidence\\page-menu-selector-original-45222136118-1\\audit-menuitem-v1\\zip-inventory.json",
+    "sha256": "ccf9d5dcae68d4e149f7bf3e1509f31af6a6c1d9230e77eed8b8382b8d691a27"
+  }
+}
