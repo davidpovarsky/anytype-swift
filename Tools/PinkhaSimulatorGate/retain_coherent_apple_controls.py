@@ -11,6 +11,8 @@ from pathlib import Path, PurePosixPath
 import re
 import zipfile
 
+import retain_current_composition_controls as composition_controls
+
 EVIDENCE = "docs/validation/20261122-coherent-heart-apple-build/continuation-controls"
 REPORT_SHA = "7aa150c574dddb7eecb0ff9e29e79a28e9f3246e7d3f8e78a945183b49d5f169"
 EQUIVALENCE_SHA = "4cca32f0235b49966a46518ca64a28429718b4f7e22a4b20b3e81de5da749ed9"
@@ -32,6 +34,8 @@ BOOT_REPORT_SHA = "bc6d1ca46ef7715ecefba5f67bca3e88fa24c4b75d4ed3b342e66006cfc6c
 BOOT_SOURCE_PATHS = frozenset({"Tools/PinkhaNativeDerived/coherent_apple/run_host.py",
                              "Tools/PinkhaNativeDerived/coherent_runtime_admission.py"})
 BOOT_CONTROL = "Tools/PinkhaSimulatorGate/test_coherent_boot_orchestration.py"
+COMPOSITION_REVIEW_SHA = "939a9aa2105b9485b200dcdc7a4ea544bfad94424b439f1ab5ec50dbf7d378a6"
+COMPOSITION_REPORT_SHA = "45719d04e85d3490e19c3b9cc38f315552de9f2af6db6f4bd799ef0fba23ec19"
 
 
 def require(value, reason):
@@ -115,6 +119,7 @@ def qualify_boot_source(raw, expected, review):
 
 def qualify(control):
     root = control.resolve()
+    composition = composition_controls.qualify(root, COMPOSITION_REVIEW_SHA, COMPOSITION_REPORT_SHA)
     raw = read(root, EVIDENCE + "/python-controls.json")
     require(sha(raw) == REPORT_SHA, "Original Python control report changed")
     report = json.loads(raw)
@@ -147,7 +152,12 @@ def qualify(control):
         require(isinstance(entries, dict) and len(entries) == count, "Incomplete retained dependency/input map")
         for name, expected in entries.items():
             require(re.fullmatch(r"[0-9a-f]{64}", expected or ""), "Malformed original dependency digest")
-            current = read(root, name)
+            observed = read(root, name)
+            current = observed
+            if name in composition["source_before"]:
+                require(sha(observed) == composition["receipt"]["source_sha256"][name],
+                        "Current composition source changed during retention: " + name)
+                current = composition["source_before"][name]
             if sha(current) != expected:
                 require(group == "source_sha256" and name in reviewed.keys() | boot_reviewed.keys(),
                         "Retained controller dependency/input changed: " + name)
@@ -158,7 +168,7 @@ def qualify(control):
                     qualify_exact_terminal_lf(current, expected, reviewed[name])
                     applied_equivalence.append(name)
             if group == "source_sha256":
-                observed_sources[name] = sha(current)
+                observed_sources[name] = sha(observed)
     checks = report.get("checks", [])
     require(isinstance(checks, list) and len(checks) == 2 and {entry.get("log") for entry in checks} == LOGS.keys(),
             "Missing or duplicate original controller logs")
@@ -186,7 +196,12 @@ def qualify(control):
             and new.get("input_sha256") == {name: value for name, value in report["input_sha256"].items() if name != PROOF},
             "New boot-control scope or dependency inventory differs")
     for name, expected in new["source_sha256"].items():
-        current = read(root, name)
+        observed = read(root, name)
+        current = observed
+        if name in composition["source_before"]:
+            require(sha(observed) == composition["receipt"]["source_sha256"][name],
+                    "Current composition source changed during boot retention: " + name)
+            current = composition["source_before"][name]
         if sha(current) != expected:
             require(name in reviewed, "New boot-control dependency changed: " + name)
             qualify_exact_terminal_lf(current, expected, reviewed[name])
@@ -227,6 +242,7 @@ def qualify(control):
                     reported_controls_passed=5, raw_unittest_log_available=False,
                     observation_sha256=SELECTOR_OBSERVATION_SHA, source_sha256=SELECTOR_SOURCE,
                     actual_compatible_simulator_creation_and_xctest="STILL_REQUIRED"),
+                current_composition_controls=composition["receipt"],
                 verifier_sha256=sha(Path(__file__).read_bytes()))
 
 

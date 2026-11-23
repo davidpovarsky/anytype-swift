@@ -60,6 +60,50 @@ ALLOWED_CONTROL_CHANGES = {
 }
 require = profiles.require
 
+# This is one explicitly reviewed Swift composition, not a general module
+# exception. The native source/fixture/assertion closure remains immutable.
+COMPOSITION_STATUS = "VERIFIED_ORIGINAL_NATIVE_BUILD_CURRENT_SWIFT_COMPOSITION_REQUIRED"
+COMPOSITION_PROFILE = "semantic-anchor-shared-modules-20261123"
+COMPOSITION_REVIEW_SOURCE = "1bfede896cc4876a6d757ca2c32b4a2805575c6e"
+ORIGINAL_MODULE_MAP_SHA = "1e6825317bbef58779c170362ff7b76c785fd5389f6f2075e193dd4fb81b7cbd"
+CURRENT_MODULE_MAP_SHA = "1e3e5dda474607a5bdd735aabdbee1f89107ead782352c4ae6595014a3592291"
+COMPOSITION_CONTROL = "Tools/PinkhaNativeDerived/coherent_apple/test_current_composition.py"
+REVIEWED_MODULE_CHANGES = {
+    "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSemanticTextAnchor.swift": (
+        None, "bfefc94965cfe6dbdf910452eaec3a9530854a6d5b6a09a1a9b10339c6c30274",
+        "New Foundation semantic marker model; current Swift harness must compile this exact source."),
+    "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationIdentity.swift": (
+        "5f59d015f211169116c745718fc2ce6b752f5eefd359ec5382f707228994fb70",
+        "85738df63c9ae987c1180c20e661cd21cd4acc20afcd376592f87ca32dcdb626",
+        "Adds explicit semantic target identity while preserving legacy keys; no old Swift composition claim is reused."),
+    "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahSemanticAnchorAssociation.swift": (
+        None, "17c469ea127bf01211c7e819c00a2e15ea07facbe2c6d86505a5f0fce82cb3f4",
+        "New exact-scope semantic association metadata; malformed targets remain distinct from legacy identities."),
+    "Modules/PinkhaKit/Tests/PinkhaKitTests/Editor/PinkhaSemanticTextAnchorTests.swift": (
+        None, "b9793ad7149a42d2d0941c1c038831faad1d8b5467be4df1583b0351e295f524",
+        "Ten original portable component controls are retained separately, not rerun by the coherent harness."),
+    "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/TorahSemanticAnchorAssociationTests.swift": (
+        None, "382c6801606f5b6f0bd8e66443a08d7e79cce3e339398011ea76142b5f724426",
+        "Four original portable association controls are retained separately, not rerun by the coherent harness."),
+}
+REVIEWED_COMPOSITION_CONTROLS = {
+    "Tools/AnyEnginePort/verify_native_test_execution.py": (
+        "cc768d66aaee9081f8ff0c882b7dd15eca1625454e324e03f07a257c1ee56575",
+        "af126a59d47fec07b0d465c0077c812fb5f52cfcadf71a2da22cebb969e21b91",
+        "Adds two NativeApp profile inventories; the test_cases parser used by coherent execution is unchanged."),
+    "Tools/PinkhaNativeDerived/install_verified_heart.py": (
+        "0f3286d5c3f84c5b892234b557028eed3125935db8ba843a838cb28be641ab18",
+        "fe643439f65e1e20282607d95865c02937a5501d58125834a5cd4bef2532176a",
+        "Adds only the explicit acceptance-continuation consumer branch; original native builder and bytes are unchanged."),
+    "Tools/PinkhaNativeDerived/package_evidence.py": (
+        "0faf11a18f2c8a220fab570ef3a199e2016091340c0b261148dd7c581294c895",
+        "c67072225f7ccacb561cb8605f34dfa96d4c1c0bdf5f2291ba145990d9414963",
+        "Adds only three exact early Products archive paths to evidence packaging; no native build input changes."),
+    "Tools/PinkhaNativeDerived/test_acceptance_continuation_branch.py": (
+        None, "8e675bab3796f3fcea6c7256e5f3e4200fae3ae219dd988f9dba7d42f78f7ee7",
+        "Controller-only branch/source guards; these controls are not compiled into native or Swift products."),
+}
+
 
 def origin() -> dict:
     return profiles.validate_reuse_build_origin(dict(run_id=RUN, run_attempt=ATTEMPT, source_sha=SOURCE,
@@ -150,7 +194,89 @@ def verify_control_maps(before: dict, after: dict) -> tuple[dict, list]:
                   reason=ALLOWED_CONTROL_CHANGES[name]) for name in sorted(differences)])
 
 
+
+def module_sources(snapshot: dict) -> dict:
+    return {name: sha for name, sha in snapshot.items()
+            if name.startswith(tuple(module + "/" for module in admission.MODULES))}
+
+
+def reviewed_pairs(before: dict, after: dict, approved: dict, label: str) -> list:
+    rows = []
+    for name, (old, current, reason) in sorted(approved.items()):
+        require(before.get(name) == old and after.get(name) == current,
+                "Unreviewed " + label + " bytes: " + name)
+        rows.append(dict(path=name, before_sha256=old, after_sha256=current, reason=reason))
+    return rows
+
+
+def current_module_lineage(before: dict, after: dict) -> dict:
+    original, current = module_sources(before), module_sources(after)
+    admission._sha_map(original, "original shared module closure")
+    admission._sha_map(current, "current shared module closure")
+    require(len(original) == 112 and profiles.json_digest(original) == ORIGINAL_MODULE_MAP_SHA,
+            "Original shared module closure differs from the immutable reviewed origin")
+    require(len(current) == 116 and profiles.json_digest(current) == CURRENT_MODULE_MAP_SHA,
+            "Current shared module closure is not the exact reviewed composition")
+    differences = {name for name in original.keys() | current.keys() if original.get(name) != current.get(name)}
+    require(differences == REVIEWED_MODULE_CHANGES.keys(), "Unexpected shared module delta")
+    changes = reviewed_pairs(original, current, REVIEWED_MODULE_CHANGES, "shared module")
+    return dict(profile=COMPOSITION_PROFILE, reviewed_source_sha=COMPOSITION_REVIEW_SOURCE,
+                original_module_sha256=original, original_module_map_sha256=ORIGINAL_MODULE_MAP_SHA,
+                current_module_map_sha256=CURRENT_MODULE_MAP_SHA, reviewed_module_changes=changes,
+                current_harness_build_required=True, actual_composition_method=admission.METHOD,
+                previous_swift_acceptance_reused=False, full_app_acceptance="NOT_RUN")
+
+
+def verify_current_composition(before: dict, after: dict) -> tuple[dict, list, dict]:
+    admission._sha_map(before, "original complete controller source")
+    admission._sha_map(after, "current complete controller source")
+    composition = current_module_lineage(before, after)
+    reviewed_pairs(before, after, REVIEWED_COMPOSITION_CONTROLS, "composition controller")
+    require(COMPOSITION_CONTROL not in before and profiles.is_sha(after.get(COMPOSITION_CONTROL)),
+            "Exact new composition control source must be present in the current snapshot")
+    differences = {name for name in before.keys() | after.keys() if before.get(name) != after.get(name)}
+    permitted = (ALLOWED_CONTROL_CHANGES.keys() | REVIEWED_MODULE_CHANGES.keys()
+                 | REVIEWED_COMPOSITION_CONTROLS.keys() | {COMPOSITION_CONTROL})
+    require(differences <= permitted,
+            "Compiled native, assertion, harness or unreviewed dependency changed: " +
+            ", ".join(sorted(differences - permitted)))
+    reasons = {**ALLOWED_CONTROL_CHANGES,
+               **{name: row[2] for name, row in REVIEWED_COMPOSITION_CONTROLS.items()},
+               COMPOSITION_CONTROL: "New Python controls for this exact native/current-Swift lineage; never compiled into the retained frameworks."}
+    controls = [dict(path=name, before_sha256=before.get(name), after_sha256=after.get(name),
+                     reason=reasons[name]) for name in sorted(differences - REVIEWED_MODULE_CHANGES.keys())]
+    return ({name: sha for name, sha in after.items() if name not in differences}, controls, composition)
+
+
+def verify_source_lineage(before: dict, after: dict) -> tuple[dict, list, dict | None]:
+    if module_sources(before) == module_sources(after):
+        unchanged, reviewed = verify_control_maps(before, after)
+        return unchanged, reviewed, None
+    return verify_current_composition(before, after)
+
+
+def validate_current_composition_record(record: dict, build_raw: bytes,
+                                        source_sha: str, run_id: str, attempt: str) -> dict:
+    require(type(record.get("schemaVersion")) is int and record["schemaVersion"] == 2
+            and record.get("status") == COMPOSITION_STATUS, "Unknown current composition lineage schema")
+    lineage = record.get("shared_module_lineage", {})
+    require(isinstance(lineage, dict), "Missing explicit current Swift composition lineage")
+    current = record.get("current_control_source_sha256", {})
+    admission._sha_map(current, "current composition source")
+    modules = module_sources(current)
+    require(record.get("copied_module_sha256") == modules
+            and lineage == current_module_lineage(lineage.get("original_module_sha256", {}), modules),
+            "Current composition record does not bind the exact newly executed module closure")
+    # Validate the unchanged native metadata contract without editing either
+    # archived original receipt. Schema 2 separately requires new Swift proof.
+    native_metadata = dict(record, schemaVersion=1, status=STATUS)
+    native_metadata.pop("shared_module_lineage")
+    return validate_reuse_record(native_metadata, build_raw, source_sha, run_id, attempt)
+
+
 def validate_reuse_record(record: dict, build_raw: bytes, source_sha: str, run_id: str, attempt: str) -> dict:
+    if record.get("schemaVersion") == 2:
+        return validate_current_composition_record(record, build_raw, source_sha, run_id, attempt)
     require(record.get("schemaVersion") == 1 and type(record.get("schemaVersion")) is int
             and record.get("status") == STATUS and record.get("build_origin") == origin()
             and record.get("execution_origin") == dict(source_sha=source_sha, run_id=run_id, run_attempt=attempt)
@@ -262,7 +388,11 @@ def validate_admission_lineage(proof: Path, execution: dict, work: Path, evidenc
         if not name.startswith("host/"):
             require(digest(proof / name) == sha, "Continuation rewrote original build evidence")
     after = record.get("current_control_source_sha256", {})
-    unchanged, reviewed = verify_control_maps(before, after)
+    unchanged, reviewed, composition = verify_source_lineage(before, after)
+    modules = module_sources(after)
+    require(record.get("schemaVersion") == (2 if composition is not None else 1)
+            and record.get("shared_module_lineage") == composition,
+            "Actual module delta and recorded composition schema differ")
     require(record.get("unchanged_source_sha256") == unchanged
             and record.get("reviewed_control_changes") == reviewed
             and record.get("copied_module_sha256") == modules
@@ -300,7 +430,8 @@ def execute(args, command) -> dict:
     build, before, modules = verify_original_proof(unpacked["proof"])
     import run_host
     current = run_host.source_snapshot(args.control)
-    unchanged, reviewed = verify_control_maps(before, current)
+    unchanged, reviewed, composition = verify_source_lineage(before, current)
+    modules = module_sources(current)
     for kind in ("production", "fixture"):
         tar_name = ARTIFACTS[kind]["name"] + ".tar.gz"
         tar_path = unpacked[kind] / tar_name
@@ -317,7 +448,8 @@ def execute(args, command) -> dict:
     shutil.copytree(unpacked["proof"] / "controls", args.evidence / "original-build-controls")
     require(run_host.source_snapshot(args.control) == current and not git(args.control, "status", "--porcelain"),
             "Current control source changed while reusing original frameworks")
-    record = dict(schemaVersion=1, status=STATUS, build_origin=origin(),
+    record = dict(schemaVersion=2 if composition is not None else 1,
+        status=COMPOSITION_STATUS if composition is not None else STATUS, build_origin=origin(),
         execution_origin=dict(source_sha=args.expected_app_sha, run_id=run_id, run_attempt=attempt),
         original_build_receipt_sha256=BUILD_SHA, original_failed_host_receipt_sha256=FAILED_HOST_SHA,
         original_artifacts=ARTIFACTS, frameworks_built_this_run=0, native_tests_executed_this_run=0,
@@ -326,6 +458,11 @@ def execute(args, command) -> dict:
         current_control_source_sha256=current, current_control_source_snapshot_sha256=profiles.json_digest(current),
         runner_sha256=digest(Path(__file__)), finished_at=datetime.now(timezone.utc).isoformat(),
         claim_boundary="Original frameworks and packaged receipts retain their failed-run build origin. No native build or test is repeated; current Apple execution must qualify separately.")
+    if composition is not None:
+        record["shared_module_lineage"] = composition
+        record["claim_boundary"] = ("Original native framework bytes and 139-source evidence retain their build origin. "
+            "The exact current Swift module closure requires a new harness build and actual one-method composition proof. "
+            "No previous Swift composition or full application acceptance is reused.")
     validate_reuse_record(record, admission.read_bounded(proof / "build.json"), args.expected_app_sha, run_id, attempt)
     (proof / "build-reuse.json").write_text(json.dumps(record, sort_keys=True, indent=2) + "\n", encoding="utf-8")
     return record
@@ -350,7 +487,7 @@ def main() -> int:
     try:
         record = execute(args, command)
         print(json.dumps({key: value for key, value in record.items()
-                          if key not in ("unchanged_source_sha256", "current_control_source_sha256", "copied_module_sha256")}, indent=2))
+                          if key not in ("unchanged_source_sha256", "current_control_source_sha256", "copied_module_sha256", "shared_module_lineage")}, indent=2))
         return 0
     except Exception as error:
         value = dict(status="FAIL_BUILD_REUSE", error_type=type(error).__name__, error=str(error),
