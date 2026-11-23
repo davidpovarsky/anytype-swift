@@ -1,0 +1,106 @@
+{
+  "actual_menu_behavior": "NOT_RUN",
+  "apple_typecheck": "NOT_RUN",
+  "capacity_admission": "Root finite source-only1GiB floor/8MiB transient/4MiB retained; no test/build gate modified",
+  "command_count": 3,
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "/mnt/development/projects/worktrees/anytype-wave15-page-menu-selector-20261123/docs/validation/20261123-semantic-page-menu-selector/source-check.py",
+        "--expected-head",
+        "894bb60f5d0d47a8629a5ace0bd5f0316f4905f5"
+      ],
+      "cleanupActions": [],
+      "cleanupFailure": null,
+      "elapsedSeconds": 0.2665171241387725,
+      "firstFailure": null,
+      "label": "01-static-source",
+      "ownedGroupAbsent": true,
+      "pgid": 3048529,
+      "pid": 3048529,
+      "recordedAt": "2026-11-23T16:35:00.823244+00:00",
+      "returncode": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 7280,
+        "sha256": "e642f4b111298216c51bc89d8cc9e8205b264368563a3ab25eeb48d46408b85d"
+      },
+      "timeoutSeconds": 30
+    },
+    {
+      "argv": [
+        "/usr/local/bin/swiftc",
+        "--version"
+      ],
+      "cleanupActions": [],
+      "cleanupFailure": null,
+      "elapsedSeconds": 0.16656788252294064,
+      "firstFailure": null,
+      "label": "02-swift-version",
+      "ownedGroupAbsent": true,
+      "pgid": 3048625,
+      "pid": 3048625,
+      "recordedAt": "2026-11-23T16:35:00.993209+00:00",
+      "returncode": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 76,
+        "sha256": "59360730c588801a672c1118d5d1debc93581f6b74e6a82d5d8cbda1b4a729ce"
+      },
+      "timeoutSeconds": 15
+    },
+    {
+      "argv": [
+        "/usr/local/bin/swiftc",
+        "-frontend",
+        "-parse",
+        "/mnt/development/projects/worktrees/anytype-wave15-page-menu-selector-20261123/PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift"
+      ],
+      "cleanupActions": [],
+      "cleanupFailure": null,
+      "elapsedSeconds": 0.06654592137783766,
+      "firstFailure": null,
+      "label": "03-swift-syntax",
+      "ownedGroupAbsent": true,
+      "pgid": 3048627,
+      "pid": 3048627,
+      "recordedAt": "2026-11-23T16:35:01.062930+00:00",
+      "returncode": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 30
+    }
+  ],
+  "firstFailure": {
+    "message": "syntax_only_created_unexpected_cache_output",
+    "phase": "final-source-check",
+    "traceback": "Traceback (most recent call last):\n  File \"/mnt/development/projects/diagnostics/semantic-page-menu-selector-source-checks-20261123/driver-final.py\", line 78, in <module>\n    assert not list((OUT/\"tmp\").rglob(\"*\")),\"syntax_only_created_unexpected_cache_output\"\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: syntax_only_created_unexpected_cache_output\n",
+    "type": "AssertionError"
+  },
+  "free_bytes": 1851510784,
+  "old_controls_replayed": 0,
+  "product_builds": 0,
+  "schema": "pinkha-page154-menu-selector-source-checks-v1",
+  "source": "894bb60f5d0d47a8629a5ace0bd5f0316f4905f5",
+  "source_input_count": 19,
+  "source_unchanged": true,
+  "static_source_audit": "PASS",
+  "status": "FAIL",
+  "syntax_only_invocations": 1,
+  "syntax_only_result": "PASS",
+  "test_methods": 0
+}

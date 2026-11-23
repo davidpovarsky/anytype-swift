@@ -1,0 +1,21 @@
+{
+  "original_commit_stderr": "NOT_CAPTURED_BY_INITIAL_SEAL_WRAPPER",
+  "original_tool_result": {
+    "_notice": "You have 29 unread SentinelX notification(s) (job results and/or announcements). Call notifications_check to read them.",
+    "duration": 1.41,
+    "ok": true,
+    "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 61, in <module>\n  File \"<stdin>\", line 8, in g\n  File \"/usr/lib/python3.12/subprocess.py\", line 571, in run\n    raise CalledProcessError(retcode, process.args,\nsubprocess.CalledProcessError: Command '['git', '-C', '/mnt/development/projects/worktrees/anytype-wave15-page-menu-selector-20261123', '-c', 'gc.auto=0', 'commit', '-m', 'Seal Page menu source and syntax evidence with original wrapper failure']' returned non-zero exit status 128.",
+    "returncode": 1
+  },
+  "post_failure_identity_probe": {
+    "argv": [
+      "git",
+      "var",
+      "GIT_AUTHOR_IDENT"
+    ],
+    "returncode": 128,
+    "stderr": "Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'ubuntu@torah-social.(none)')\n",
+    "stdout": ""
+  },
+  "retry_scope": "Same docs-only staged inputs plus preservation metadata; explicit per-command author from frozen source commit, no configuration change."
+}

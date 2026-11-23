@@ -1,0 +1,24 @@
+{
+  "created_at": 1795451699.6281052,
+  "duration_s": 1.47,
+  "error": null,
+  "exit_code": 1,
+  "finished_at": "2026-11-23T16:35:01.172877+00:00",
+  "host": "host_7ec8382e82747448",
+  "id": "job_9ee768717293",
+  "notified": {
+    "resend": null,
+    "telegram": null
+  },
+  "notify_spec": {},
+  "output": "{\"firstFailure\": {\"message\": \"syntax_only_created_unexpected_cache_output\", \"phase\": \"final-source-check\", \"traceback\": \"Traceback (most recent call last):\\n  File \\\"/mnt/development/projects/diagnostics/semantic-page-menu-selector-source-checks-20261123/driver-final.py\\\", line 78, in <module>\\n    assert not list((OUT/\\\"tmp\\\").rglob(\\\"*\\\")),\\\"syntax_only_created_unexpected_cache_output\\\"\\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\nAssertionError: syntax_only_created_unexpected_cache_output\\n\", \"type\": \"AssertionError\"}, \"originals\": 14, \"receipt_sha256\": \"641269211cde44c0998d747c1840c17b3dbbc5cf422be2b2697aa7188bb5a1bc\", \"source\": \"894bb60f5d0d47a8629a5ace0bd5f0316f4905f5\", \"status\": \"FAIL\", \"syntax_only_invocations\": 1, \"test_methods\": 0}",
+  "output_truncated": false,
+  "read": false,
+  "severity": "warning",
+  "source": "exec@host_7ec8382e82747448",
+  "started_at": "2026-11-23T16:34:59.705212+00:00",
+  "status": "failed",
+  "timeout_s": 120,
+  "tool": "exec",
+  "type": "job_result"
+}

@@ -1,0 +1,203 @@
+{
+  "actual_commands": [
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "/mnt/development/projects/worktrees/anytype-wave15-page-menu-selector-20261123/docs/validation/20261123-semantic-page-menu-selector/source-check.py",
+        "--expected-head",
+        "894bb60f5d0d47a8629a5ace0bd5f0316f4905f5"
+      ],
+      "cleanupActions": [],
+      "cleanupFailure": null,
+      "elapsedSeconds": 0.2665171241387725,
+      "firstFailure": null,
+      "label": "01-static-source",
+      "ownedGroupAbsent": true,
+      "pgid": 3048529,
+      "pid": 3048529,
+      "recordedAt": "2026-11-23T16:35:00.823244+00:00",
+      "returncode": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 7280,
+        "sha256": "e642f4b111298216c51bc89d8cc9e8205b264368563a3ab25eeb48d46408b85d"
+      },
+      "timeoutSeconds": 30
+    },
+    {
+      "argv": [
+        "/usr/local/bin/swiftc",
+        "--version"
+      ],
+      "cleanupActions": [],
+      "cleanupFailure": null,
+      "elapsedSeconds": 0.16656788252294064,
+      "firstFailure": null,
+      "label": "02-swift-version",
+      "ownedGroupAbsent": true,
+      "pgid": 3048625,
+      "pid": 3048625,
+      "recordedAt": "2026-11-23T16:35:00.993209+00:00",
+      "returncode": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 76,
+        "sha256": "59360730c588801a672c1118d5d1debc93581f6b74e6a82d5d8cbda1b4a729ce"
+      },
+      "timeoutSeconds": 15
+    },
+    {
+      "argv": [
+        "/usr/local/bin/swiftc",
+        "-frontend",
+        "-parse",
+        "/mnt/development/projects/worktrees/anytype-wave15-page-menu-selector-20261123/PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift"
+      ],
+      "cleanupActions": [],
+      "cleanupFailure": null,
+      "elapsedSeconds": 0.06654592137783766,
+      "firstFailure": null,
+      "label": "03-swift-syntax",
+      "ownedGroupAbsent": true,
+      "pgid": 3048627,
+      "pid": 3048627,
+      "recordedAt": "2026-11-23T16:35:01.062930+00:00",
+      "returncode": 0,
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 30
+    }
+  ],
+  "actual_menu_behavior": "NOT_RUN",
+  "ancillary_classification": "Only a directory plus two zero-byte marker files are present in the owned Swift-command tmp namespace; no compiled payload there. The original overly strict empty-namespace assertion remains failed.",
+  "apple_typecheck": "NOT_RUN",
+  "audited_at": "2026-11-23T16:38:47.821395+00:00",
+  "files_deleted_or_normalized": 0,
+  "new_source_or_parser_invocations": 0,
+  "new_test_invocations": 0,
+  "original_app_plan_rows": 9,
+  "original_file_bindings": {
+    "01-static-source.command.json": {
+      "bytes": 810,
+      "sha256": "f87c6b9957acb908a0aa81dbb7a8dde2d5e4b447af888044b0ed968f1429378d"
+    },
+    "01-static-source.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "01-static-source.stdout": {
+      "bytes": 7280,
+      "sha256": "e642f4b111298216c51bc89d8cc9e8205b264368563a3ab25eeb48d46408b85d"
+    },
+    "02-swift-version.command.json": {
+      "bytes": 604,
+      "sha256": "89fb21a29376c2b5abf8d9a94c01ffeb21c7e879c2012e18a3fac359609167a3"
+    },
+    "02-swift-version.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "02-swift-version.stdout": {
+      "bytes": 76,
+      "sha256": "59360730c588801a672c1118d5d1debc93581f6b74e6a82d5d8cbda1b4a729ce"
+    },
+    "03-swift-syntax.command.json": {
+      "bytes": 773,
+      "sha256": "bbb8b4e7693b971bb0a65ad0a374316e52f6c9d4c80349f58fc386ddc8a7021d"
+    },
+    "03-swift-syntax.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "03-swift-syntax.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "receipt.json": {
+      "bytes": 3685,
+      "sha256": "641269211cde44c0998d747c1840c17b3dbbc5cf422be2b2697aa7188bb5a1bc"
+    },
+    "source-after.json": {
+      "bytes": 4078,
+      "sha256": "8649f731f835cd87051dea1d7f718bf54d67622b211b6e12ea0bb98c5f3b1498"
+    },
+    "source-before.json": {
+      "bytes": 4078,
+      "sha256": "8649f731f835cd87051dea1d7f718bf54d67622b211b6e12ea0bb98c5f3b1498"
+    },
+    "tmp/TemporaryDirectory.tFdr5l/.keep-directory": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tmp/modules.timestamp": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "original_input_index_sha256": "488605797cdab20bc51b2d7d8dd388fcf30c2999ebd2ed3d03e20d5edff2c3b1",
+  "original_wrapper_failure_preserved": {
+    "message": "syntax_only_created_unexpected_cache_output",
+    "phase": "final-source-check",
+    "traceback": "Traceback (most recent call last):\n  File \"/mnt/development/projects/diagnostics/semantic-page-menu-selector-source-checks-20261123/driver-final.py\", line 78, in <module>\n    assert not list((OUT/\"tmp\").rglob(\"*\")),\"syntax_only_created_unexpected_cache_output\"\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: syntax_only_created_unexpected_cache_output\n",
+    "type": "AssertionError"
+  },
+  "original_wrapper_receipt_sha256": "641269211cde44c0998d747c1840c17b3dbbc5cf422be2b2697aa7188bb5a1bc",
+  "original_wrapper_status": "FAIL",
+  "owned_tmp_exact_entries": {
+    "tmp/TemporaryDirectory.tFdr5l": {
+      "allocated": 4096,
+      "bytes": 4096,
+      "gid": 1002,
+      "inode": "326546",
+      "kind": "directory",
+      "mode": 1472,
+      "mtime_ns": "1795451700838267180",
+      "sha256": null,
+      "uid": 1001
+    },
+    "tmp/TemporaryDirectory.tFdr5l/.keep-directory": {
+      "allocated": 0,
+      "bytes": 0,
+      "gid": 1002,
+      "inode": "326547",
+      "kind": "file",
+      "mode": 436,
+      "mtime_ns": "1795451700838267180",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "uid": 1001
+    },
+    "tmp/modules.timestamp": {
+      "allocated": 0,
+      "bytes": 0,
+      "gid": 1002,
+      "inode": "326548",
+      "kind": "file",
+      "mode": 436,
+      "mtime_ns": "1795451700964267939",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "uid": 1001
+    }
+  },
+  "product_builds": 0,
+  "schema": "pinkha-page154-menu-selector-original-only-audit-v1",
+  "source": "894bb60f5d0d47a8629a5ace0bd5f0316f4905f5",
+  "source_before_after_identical": true,
+  "source_rows_verified": 19,
+  "static_metadata_rows_verified": 3,
+  "static_source_scope": "PASS",
+  "status": "PASS_AUDIT_OF_SEPARATE_SOURCE_SYNTAX_SCOPES",
+  "syntax_only_scope": "PASS"
+}
