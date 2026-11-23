@@ -60,6 +60,7 @@ on:
           - native-ui-runner-continuation
           - current-native-ui-failed
           - loaded-account-arm64-compiler
+          - current-page154-mounted
           - prepared-migration-apple
           - prepared-inline-file-apple
           - sdk06-enumeration-probe
@@ -737,3 +738,73 @@ jobs:
           compression-level: 0
           if-no-files-found: error
           retention-days: 14
+
+  current-page154-mounted:
+    if: ${{ inputs.route == 'current-page154-mounted' }}
+    runs-on: xcode-27
+    timeout-minutes: 150
+    permissions:
+      contents: read
+      actions: read
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_OPTIONAL_LOCKS: '0'
+      GH_TOKEN: ${{ github.token }}
+      EVIDENCE: build/current-page154-${{ github.run_id }}-${{ github.run_attempt }}/evidence
+    steps:
+      - name: Checkout the exact current Page154 App and controller source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Bind the dispatched local branch without advancing its commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$GITHUB_REF" = "refs/heads/$GITHUB_REF_NAME"
+          test "$GITHUB_REF_NAME" = "codex/chatgpt-wave15-shared-20261121"
+          current_branch="$(git branch --show-current)"
+          if [ -z "$current_branch" ]; then
+            git switch -c "$GITHUB_REF_NAME"
+          else
+            test "$current_branch" = "$GITHUB_REF_NAME"
+          fi
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - name: Select native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Checkout the exact public canonical Hanlin source
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/hanlin-ai
+          ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+          path: .ci/hanlin-source
+          persist-credentials: false
+      - name: Build current App and UI once, then execute necessary setup and the one failed journey
+        id: execute
+        timeout-minutes: 130
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B Tools/CurrentAppleValidation/page154_current.py execute --expected-source "$GITHUB_SHA"
+      - name: Finalize only journaled current-run resources even after failure
+        if: ${{ always() && steps.execute.outcome != 'skipped' }}
+        timeout-minutes: 8
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B Tools/CurrentAppleValidation/page154_current.py cleanup --expected-source "$GITHUB_SHA"
+      - name: Preserve current App and UI Products, original results, private diagnostics and cleanup
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Current-Page154-Mounted-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ env.EVIDENCE }}
+          retention-days: 30
+          if-no-files-found: error
