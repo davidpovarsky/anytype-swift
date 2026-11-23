@@ -39,3 +39,5 @@ For build/execution, `PINKHA_PAGE_IMAGE` must equal the profile's pinned image v
 The two methods use separate owned native processes. Wallet/account state, seeds and raw native stdout remain in the private run directory. The public receipt contains selected method names, source/binary hashes and the sanitized synthetic Page artifacts. Export rejects either known wallet secret; private files, account stores and raw test logs are never copied. A failed phase preserves its private log for a bounded source correction and cannot be mistaken for acceptance.
 
 The controller refuses to overwrite an existing build or execution receipt, and rechecks all 154 source paths and the binary after every successful phase. It never selects any previous component, codec or contract method. No protobuf or schema generation is performed.
+
+The Oracle continuation also sets GOPATH to the owned cache/go-path directory. Go stores its checksum-database state there even when GOMODCACHE is set. The original default-/go cache failure is preserved under docs/validation/20261123-semantic-page-native/attempt1-cache-failure; no native method executed in that attempt.

@@ -127,7 +127,8 @@ def profile(args):
 def environment(args, selected):
     work = args.run / "work"
     return dict(os.environ, GOMAXPROCS="2", GOMEMLIMIT="3072MiB", CGO_ENABLED="1", GOTOOLCHAIN="local",
-        GOFLAGS="-mod=readonly", GOWORK=str(work / "go.work"), GOMODCACHE=str(args.run / "cache/go-mod"),
+        GOFLAGS="-mod=readonly", GOWORK=str(work / "go.work"), GOPATH=str(args.run / "cache/go-path"),
+        GOMODCACHE=str(args.run / "cache/go-mod"),
         GOCACHE=str(args.run / "cache/go-build"), GOTMPDIR=str(args.run / "cache/tmp"),
         TMPDIR=str(args.run / "cache/tmp"), CGO_LDFLAGS="-L" + str(args.heart / "deps/libs" / selected["tantivy_arch"]),
         GIT_OPTIONAL_LOCKS="0", PYTHONDONTWRITEBYTECODE="1")
