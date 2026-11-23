@@ -1,0 +1,138 @@
+{
+  "status": "VERIFIED_FIVE_ACTUAL_NATIVE_ENDPOINT_PASSES",
+  "observed_utc": "2026-11-23T06:14:48.715479+00:00",
+  "run_id": 45108043207,
+  "run_attempt": 1,
+  "source": "53b52d380c3a87d25275bb391367b37eb5428d3d",
+  "artifact_id": 14793282290,
+  "archive_bytes": 2452160,
+  "archive_sha256": "ee97925cb570ffaee7f89f6eef09ab6c907a720228a91b664bcb5c4877e20035",
+  "crc_members_valid": 40,
+  "evidence_rows_valid": 39,
+  "actual_original_source_rows_valid": 20,
+  "actual_control_rows_valid": 2,
+  "authenticated_generated_native_rows": 3,
+  "generation_artifact_reused_unchanged": true,
+  "generation_reexecuted": false,
+  "actual_compiler_required_rows": 16,
+  "actual_declared_files_observed": 11398,
+  "commands_terminal_zero_and_drained": 11,
+  "genuine_native_cases": {
+    "pass": 5,
+    "fail": 0,
+    "skip": 0,
+    "leaves": [
+      {
+        "Time": "2026-11-23T05:48:21.770393Z",
+        "Action": "pass",
+        "Package": "github.com/anyproto/anytype-heart/clientlibrary/service",
+        "Test": "TestOtzariaOriginalSchemaEndpoint/GeneratedValidationDoesNotCreateNativeRoots",
+        "Elapsed": 0
+      },
+      {
+        "Time": "2026-11-23T05:48:22.16766Z",
+        "Action": "pass",
+        "Package": "github.com/anyproto/anytype-heart/clientlibrary/service",
+        "Test": "TestOtzariaOriginalSchemaEndpoint/GeneratedRegistrationCopiesActualNativeReadback",
+        "Elapsed": 0.4
+      },
+      {
+        "Time": "2026-11-23T05:48:22.245196Z",
+        "Action": "pass",
+        "Package": "github.com/anyproto/anytype-heart/clientlibrary/service",
+        "Test": "TestOtzariaOriginalSchemaEndpoint/CanceledNativeApplyPreservesErrorPhaseHistory",
+        "Elapsed": 0.08
+      },
+      {
+        "Time": "2026-11-23T05:48:24.025306Z",
+        "Action": "pass",
+        "Package": "github.com/anyproto/anytype-heart/clientlibrary/service",
+        "Test": "TestOtzariaOriginalSchemaEndpoint/SignedNativeReaderRoleMapsPermissionDenied",
+        "Elapsed": 1.78
+      },
+      {
+        "Time": "2026-11-23T05:48:24.111686Z",
+        "Action": "pass",
+        "Package": "github.com/anyproto/anytype-heart/clientlibrary/service",
+        "Test": "TestOtzariaOriginalSchemaEndpoint/StoppedNativeRuntimeRejectsHistoricalRequest",
+        "Elapsed": 0.09
+      }
+    ]
+  },
+  "actual_native_receipts": {
+    "validation.json": {
+      "account_identity": "A7rN3dvoL4Xbi2n9aaL9dSRpNzZQ5rpfQVJw1r5gaiyJf3mF",
+      "ack_authority": false,
+      "body_authority": false,
+      "generated_byte_entrypoint_calls": 2,
+      "native_roots_created": 0,
+      "swift_invocation_qualified": false
+    },
+    "registration.json": {
+      "account_identity": "A7rN3dvoL4Xbi2n9aaL9dSRpNzZQ5rpfQVJw1r5gaiyJf3mF",
+      "ack_authority": false,
+      "actual_type_apply_calls": 1,
+      "body_authority": false,
+      "native_definitions_compared": 18,
+      "raw_wire_preserved": true,
+      "readback": "independent original persisted schema observer, no cold account reopen",
+      "swift_invocation_qualified": false,
+      "unique_actual_creates": 18,
+      "wire_calls": 2
+    },
+    "canceled-apply-history.json": {
+      "account_identity": "A7rN3dvoL4Xbi2n9aaL9dSRpNzZQ5rpfQVJw1r5gaiyJf3mF",
+      "ack_authority": false,
+      "actual_after_apply_hooks": 1,
+      "actual_hidden_property_observed": true,
+      "actual_persisted_heads_changed": true,
+      "app_admitted": true,
+      "body_authority": false,
+      "entrypoint": "original installed generated proxy with actual Go context",
+      "error_code": "CANCELED",
+      "mobile_context_propagation_qualified": false,
+      "native_context_canceled": true,
+      "swift_cancellation_qualified": false,
+      "swift_invocation_qualified": false,
+      "type_apply_invoked": true,
+      "type_apply_returned": true
+    },
+    "signed-reader.json": {
+      "account_identity": "A7rN3dvoL4Xbi2n9aaL9dSRpNzZQ5rpfQVJw1r5gaiyJf3mF",
+      "ack_authority": false,
+      "actual_schema_roots": 0,
+      "actual_signed_acl_reader": true,
+      "body_authority": false,
+      "error_code": "PERMISSION_DENIED",
+      "other_actual_account_owner": true,
+      "swift_invocation_qualified": false
+    },
+    "stopped-runtime.json": {
+      "account_identity": "A7rN3dvoL4Xbi2n9aaL9dSRpNzZQ5rpfQVJw1r5gaiyJf3mF",
+      "ack_authority": false,
+      "actual_account_stop_returned": true,
+      "actual_application_absent": true,
+      "body_authority": false,
+      "error_code": "RUNTIME_UNAVAILABLE",
+      "historical_request_refused": true,
+      "swift_invocation_qualified": false
+    }
+  },
+  "raw_wire_members": [
+    "registration-00.pb",
+    "canceled-after-native-apply.pb",
+    "registration-01.pb",
+    "signed-native-reader.pb",
+    "stopped-native-runtime.pb",
+    "validation-00.pb",
+    "validation-01.pb"
+  ],
+  "native_binary": {
+    "bytes": 176199010,
+    "sha256": "6f53eac4391325e1a6746f27b889ef72d16c1435d3964414db46c6df574976e2"
+  },
+  "native_binary_retained": false,
+  "owned_native_temporary_removed": true,
+  "scope": "Five new native endpoint/wire/error-history cases using actual original generated handlers, Middleware, wallet/account, regular Space and signed ACL; no Swift Invocation, mobile cancellation propagation, cold account reopen, body or ACK qualification.",
+  "no_new_execution_during_intake": true
+}
