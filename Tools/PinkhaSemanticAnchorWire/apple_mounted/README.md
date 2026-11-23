@@ -117,3 +117,23 @@ The new Python controls test source/owner replay refusal, opaque block changes,
 wrong runtime/test identities, explicit full selector argv, archive link/digest
 admission, descriptor immutability and post-execution product integrity. Their
 result is controller evidence only; it is not actual Mac or product acceptance.
+
+## Owned simulator cleanup
+
+The mounted caller reuses the qualified inline cleanup function body unchanged,
+from original helper SHA-256
+14fa818cdf6c2cf8b7b1f78c075bad8e98240bf1f40d2d50acf6fb3c5fd74cc6.
+Its module-scoped dependency aliases avoid collisions with generic Python
+contract/execution/proof modules, and its command adapter returns the original
+Path from the existing Commands tuple.
+
+The original total budget is 60 seconds. Only an exact owned shutdown timeout
+followed by delete exit zero may use remaining budget (at most ten seconds) to
+query that exact UUID and prove absence. Original shutdown failures stay visible.
+Every cleanup command must also retain its exact owned process-group quiescence
+receipt. An earlier product failure remains primary even if cleanup completes;
+a cleanup failure prevents an overall PASS.
+
+If create returned a UUID before its command failed, recovery uses only its
+original bounded log, matching create argv and log hash. The recovered owner
+is recorded before cleanup; there is no new global device search.

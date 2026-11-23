@@ -19,6 +19,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 sys.path.insert(0, str(HERE))
 import mounted_contract as proof
+import mounted_cleanup
 
 consumer_path = HERE.parent / "apple_consumer/run.py"
 spec = importlib.util.spec_from_file_location("page154_original_consumer_helpers", consumer_path)
@@ -165,6 +166,7 @@ def execute(args, receipt):
     runner = consumer.Commands(ROOT, args.evidence, receipt)
     owned_udid = None; primary = None; finalizing = False; cancelled = False
     original_descriptors = []; copied_descriptors = []; restores = []
+    creation_command = None
     previous = {}
     def cancel(signum, frame):
         nonlocal cancelled
@@ -237,8 +239,9 @@ def execute(args, receipt):
         runtimes = runner.json(["xcrun", "simctl", "list", "runtimes", "-j"], "available-runtimes")
         types = runner.json(["xcrun", "simctl", "list", "devicetypes", "-j"], "available-device-types")
         pair = consumer.simulator_selection.choose_pair(runtimes, types, product_family="iPad", major=27, architecture="arm64")
-        path, _ = runner.run(["xcrun", "simctl", "create", "Page154Mounted-" + binding["nonce"],
-            pair["device"]["identifier"], pair["runtime"]["identifier"]], "create-owned-simulator")
+        creation_command = ["xcrun", "simctl", "create", "Page154Mounted-" + binding["nonce"],
+            pair["device"]["identifier"], pair["runtime"]["identifier"]]
+        path, _ = runner.run(creation_command, "create-owned-simulator")
         owned_udid = path.read_text().strip()
         proof.require(consumer.owned.valid_udid(owned_udid), "Invalid owned simulator ID")
         receipt["owned_simulator"] = {"udid": owned_udid, "selection": pair["selection"], "nonce": binding["nonce"]}
@@ -278,8 +281,13 @@ def execute(args, receipt):
     finally:
         finalizing = True
         created = args.evidence / "create-owned-simulator.log"
-        if owned_udid is None and created.is_file() and consumer.owned.valid_udid(created.read_text().strip()):
-            owned_udid = created.read_text().strip()
+        if owned_udid is None:
+            try:
+                owned_udid = mounted_cleanup.recover_original_created_simulator(
+                    created, receipt, creation_command, binding["nonce"])
+            except BaseException as error:
+                receipt["owned_simulator_recovery_error"] = dict(error_type=type(error).__name__, error=str(error))
+                if primary is None: primary = error
         if owned_udid and primary is not None:
             # Retain only our three safe synthetic files before disposable teardown.
             # Never enumerate or export the account store, keychain, or raw logs.
@@ -303,14 +311,7 @@ def execute(args, receipt):
             except BaseException as error:
                 receipt["failed_observation_export_error"] = type(error).__name__
         if owned_udid:
-            receipt["owned_simulator_cleanup"] = {}
-            for action in ("shutdown", "delete"):
-                try:
-                    _, record = runner.run(["xcrun", "simctl", action, owned_udid], "cleanup-owned-" + action, 30)
-                    receipt["owned_simulator_cleanup"][action] = {"status": "PASS", "return_code": record["return_code"]}
-                except BaseException as error:
-                    receipt["owned_simulator_cleanup"][action] = {"status": "FAIL", "error_type": type(error).__name__}
-                    if primary is None: primary = error
+            primary = mounted_cleanup.finalize_mounted_simulator(runner, receipt, owned_udid, primary)
         try:
             proof.require(consumer.checkout_inputs(ROOT, head) == inputs, "Exact controller/product source changed")
             for path, expected in original_descriptors + copied_descriptors:
