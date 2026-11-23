@@ -21,3 +21,13 @@ adds its standard build file, file reference, Tests group member and Sources
 member. The existing ui_only_project generator inherits all four entries. The
 main App/AnytypeTests synchronized roots are unchanged. This inventory fix is
 not an Apple compile or execution receipt.
+
+A later read-only audit decoded the original qualified native ObjectShow
+protobufs without rerunning native tests. The before target has one explicit-empty
+Restrictions field. The after and cold-reopen target blocks each have 458 bytes
+and are exactly identical, SHA-256
+1af9f6ac59ccc8efc8d9a57a09ed7fa749583e253870a06e117d31a062e71a7f.
+Both preserve explicit-empty Restrictions. The complete ObjectShow responses
+differ, but the exact target block does not. Therefore no normalization or
+weakening of the mounted cold block equality is justified. The full bounded
+artifact/target audit is retained alongside this note.

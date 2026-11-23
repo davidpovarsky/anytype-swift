@@ -61,3 +61,39 @@ product path. It does not extend the native fixture's explicit-empty Restriction
 guarantee, add reserved-link navigation, cover arbitrary views or physical
 hardware, or establish full migration acceptance. The qualified 19 host methods
 and 11 retained Wire methods are not rerun for this source-only App addition.
+
+## Run without rebuilding
+
+The controller requires a committed admission JSON, prepared from the completed
+original App consumer API/artifact metadata. Its exact keys are consumer_run,
+consumer_attempt, consumer_sha, artifact_id, artifact_bytes, artifact_sha256,
+native_manifest_sha256 and ui_manifest_sha256. The last two pin the original
+App Products and UI Products manifest files, respectively. These are concrete
+original hashes; no placeholder or guessed CI identity is accepted.
+
+Run run.py with --app pointing at the exact controller checkout, --admission at
+that reviewed tracked JSON, and fresh --work / --evidence directories outside
+the checkout. It requires an actual ARM64 Mac, the same Xcode27 version as the
+original build, and a successful original consumer with qualified native boundary
+evidence plus an explicitly BUILD_ONLY UI runner.
+
+Both enumeration and actual execution carry the exact full selector as separate
+-only-testing argv, as well as the copied plist binding. This follows the observed
+SDK enumeration portability result. Exactly one started/passed test is required
+for each stage; only this new preparation and new journey may execute.
+
+Every Products member is checked against its original kind, mode, byte count and
+SHA-256. Only self-contained relative links are admitted; an external/escaping
+link stops the controller for separate source/dependency review. The original
+descriptors and copied bindings remain unchanged, and all restored original
+Products are verified again after execution. The observer's raw on-disk capture
+and reopen JSON are checked independently against deterministic native protobuf,
+native digests, real process identities, exact counts and original UI attachments.
+On failure, only the three known bounded synthetic fixture/receipt files are
+preserved before deleting the owned simulator. Account storage and keychain
+material are never exported.
+
+The new Python controls test source/owner replay refusal, opaque block changes,
+wrong runtime/test identities, explicit full selector argv, archive link/digest
+admission, descriptor immutability and post-execution product integrity. Their
+result is controller evidence only; it is not actual Mac or product acceptance.
