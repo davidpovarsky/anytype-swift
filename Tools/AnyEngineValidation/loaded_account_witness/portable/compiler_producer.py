@@ -323,7 +323,9 @@ class Producer:
         require(host["Memory"] == 2 * GIB and host["MemorySwap"] == 2 * GIB
                 and host["NanoCpus"] == 2000000000 and host["PidsLimit"] == 128, "container_resource_contract")
         require(host["LogConfig"]["Type"] == "none" and not host["Privileged"], "container_privilege_or_logging")
-        require(host["Binds"] == owned["binds"], "container_bindings")
+        require(isinstance(host["Binds"], list)
+                and all(isinstance(value, str) for value in host["Binds"])
+                and sorted(host["Binds"]) == sorted(owned["binds"]), "container_bindings")
         require(host["Tmpfs"] == {"/var/lib/postgresql/data": "rw,noexec,nosuid,nodev,size=16777216,mode=0700"},
                 "postgres_volume_not_private_tmpfs")
         require(not host.get("Devices") and not host.get("CapAdd"), "container_extra_privileges")
