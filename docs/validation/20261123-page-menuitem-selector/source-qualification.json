@@ -64,6 +64,21 @@
     "product_acceptance": "NOT_RUN",
     "unique_hittable_enabled_exists": true
   },
+  "peer_review": {
+    "agent": "editor_migration",
+    "checks": [
+      "Whole Swift file inverse is one .any to .menuItem token.",
+      "All nine exact Git input hashes: eight App681 plus candidate UI.",
+      "Exact label, enabled/hittable uniqueness, 20-second deadline, one native tap, first failure preservation and downstream assertions unchanged.",
+      "Actual native MenuItem action and its child StaticText justify element type refinement."
+    ],
+    "new_builds": 0,
+    "new_tests": 0,
+    "original_metadata_error": "The first source row incorrectly named base283c for the candidate UI hash. Original version remains in f0d9; this evidence-only commit corrects the row.",
+    "reviewed_candidate_commit": "f0d9d76ef886e86eb4e367319ecd4cd878623f16",
+    "runtime_acceptance": "NOT_RUN",
+    "verdict": "PASS_SOURCE_SCOPE"
+  },
   "plan_inverse": "Only candidate UI SHA and that UI row SHA/bytes change; all other plan fields equal.",
   "profile_inverse": "Only UI_SHA256 and PLAN_SHA256 value replacements; inverse restores whole previous file.",
   "retained_sdk_source": {
@@ -121,13 +136,14 @@
       "source_commit": "68148339c275268795360d71d519a5baf003adf8"
     },
     "PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift": {
+      "base_source_commit": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba",
       "bytes": 22654,
       "origin": "controller",
       "sha256": "711cfe8660bdb315a2b40d85e67a41ba79d846303a93d2a7460c77d8e0cd99a1",
-      "source_commit": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba"
+      "source_commit": "f0d9d76ef886e86eb4e367319ecd4cd878623f16"
     }
   },
-  "status": "SOURCE_REPAIR_REVIEW_REQUIRED",
+  "status": "SOURCE_REPAIR_PEER_REVIEWED",
   "ui_inverse": "Exact one .any to .menuItem replacement restores entire previous UI source.",
   "utc": "2026-11-23T17:32:28.357724+00:00"
 }
