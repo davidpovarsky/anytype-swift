@@ -201,34 +201,49 @@ public struct AnyNativeLibraryView: View {
     }
 
     private func hierarchyRow(_ item: AnyHierarchyPresentationItem) -> some View {
-        Button {
-            path.append(item.kind == .folder ? .folder(item.objectID) : .document(item.objectID, nil))
-        } label: {
-            HStack {
-                Label(item.title.isEmpty ? AnyUIErrorText.text("ללא כותרת", "Untitled") : item.title,
-                      systemImage: item.kind == .folder ? "folder" : "doc.text")
-                    .foregroundStyle(.primary)
-                Spacer()
-                if item.isPending || model.pendingMoves.contains(item.objectID) { ProgressView() }
-                if item.kind == .folder { Image(systemName: "chevron.forward").foregroundStyle(.secondary) }
+        HStack(spacing: 8) {
+            Button {
+                path.append(item.kind == .folder ? .folder(item.objectID) : .document(item.objectID, nil))
+            } label: {
+                HStack {
+                    Label(item.title.isEmpty ? AnyUIErrorText.text("ללא כותרת", "Untitled") : item.title,
+                          systemImage: item.kind == .folder ? "folder" : "doc.text")
+                        .foregroundStyle(.primary)
+                    Spacer()
+                    if item.isPending || model.pendingMoves.contains(item.objectID) { ProgressView() }
+                    if item.kind == .folder { Image(systemName: "chevron.forward").foregroundStyle(.secondary) }
+                }
+                .contentShape(Rectangle())
             }
-            // Keep the drag source on the label, independently of the Button's
-            // context-menu interaction. Include the row's open spacer area.
-            .contentShape(Rectangle())
-            .draggable("pinkha-any-node|\(model.session.workspace.spaceID)|\(item.objectID)")
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("any-native-hierarchy-row-\(item.objectID)")
+            .contextMenu {
+                Button(AnyUIErrorText.text("שינוי שם", "Rename"), systemImage: "pencil") {
+                    nameRequest = .init(item: item.native, kind: item.kind, parentID: item.parentID, isNote: false)
+                }.disabled(!model.canWrite)
+                Button(AnyUIErrorText.text("העברה", "Move"), systemImage: "folder") { moveItem = item.native }
+                    .disabled(!model.canWrite)
+                    .accessibilityIdentifier("any-native-hierarchy-move")
+                Button(AnyUIErrorText.text("העברה לסל המחזור", "Move to Bin"), systemImage: "trash", role: .destructive) {
+                    removeItem = item.native
+                }.disabled(!model.canWrite)
+            }
+
+            if model.canWrite {
+                Image(systemName: "line.3.horizontal")
+                    .foregroundStyle(.secondary)
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(Text(AnyUIErrorText.text("גרירה של ", "Drag ") +
+                        (item.title.isEmpty ? AnyUIErrorText.text("ללא כותרת", "Untitled") : item.title)))
+                    .accessibilityHint(Text(AnyUIErrorText.text("גרירה לתיקייה כדי להעביר את הפריט.",
+                                                              "Drag into a folder to move this item.")))
+                    .accessibilityIdentifier("any-native-hierarchy-drag-\(item.objectID)")
+                    .draggable("pinkha-any-node|\(model.session.workspace.spaceID)|\(item.objectID)")
+            }
         }
-        .accessibilityIdentifier("any-native-hierarchy-row-\(item.objectID)")
-        .contextMenu {
-            Button(AnyUIErrorText.text("שינוי שם", "Rename"), systemImage: "pencil") {
-                nameRequest = .init(item: item.native, kind: item.kind, parentID: item.parentID, isNote: false)
-            }.disabled(!model.canWrite)
-            Button(AnyUIErrorText.text("העברה", "Move"), systemImage: "folder") { moveItem = item.native }
-                .disabled(!model.canWrite)
-                .accessibilityIdentifier("any-native-hierarchy-move")
-            Button(AnyUIErrorText.text("העברה לסל המחזור", "Move to Bin"), systemImage: "trash", role: .destructive) {
-                removeItem = item.native
-            }.disabled(!model.canWrite)
-        }
+        .accessibilityElement(children: .contain)
         .dropDestination(for: String.self) { payloads, _ in
             guard model.canWrite, payloads.count == 1 else { return false }
             let parts = payloads[0].split(separator: "|", omittingEmptySubsequences: false).map(String.init)

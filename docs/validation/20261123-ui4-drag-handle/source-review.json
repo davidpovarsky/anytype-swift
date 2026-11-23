@@ -1,0 +1,72 @@
+{
+  "Swift_compile_or_parse": "NOT_RUN",
+  "archive_scopeA_exact": true,
+  "artifacts": [
+    {
+      "bytes": 4841,
+      "path": "docs/validation/20261123-ui4-drag-handle/PROTOCOL.md",
+      "sha256": "02f73f27839c40095168b0eceb46eef0de557fe6a3995e2e9e26e91d68771907"
+    },
+    {
+      "bytes": 11741,
+      "path": "docs/validation/20261123-ui4-drag-handle/exact-source-inverses.json",
+      "sha256": "9daedfbecb4bfc363ad522bfb616201fb0332cc58e66fe0b69f5ec470b8de851"
+    },
+    {
+      "bytes": 2483,
+      "path": "docs/validation/20261123-ui4-drag-handle/source.diff.gz",
+      "sha256": "6e17052def51207ef1865d46dd061ddc1a4cc12421dd45112ed66638eaa6db9d"
+    }
+  ],
+  "base": "5de44874e34e6647fe6f58f5cee5d915e797fc9a",
+  "branch": "codex/chatgpt-wave15-ui4-drag-handle-20261123",
+  "builds": 0,
+  "callback_body_exact": true,
+  "candidate_drop_callback_sha256": "e4593308c581ac8a7f74617a7fdbf658040715a1ae653cf59a516cba1b4ca406",
+  "changed_test_sections": [
+    "testHierarchyDragIntoFolderPersistsAfterColdReopen"
+  ],
+  "ci_dispatches": 0,
+  "design_peer": "acceptance_map: explicit rectangular hit area, separate accessible children, plain style on Button only, no fake activating-button trait; source/runtime not qualified",
+  "hanlin_method_exact": true,
+  "hierarchyMove_exact": true,
+  "newAppBuildRequired": true,
+  "new_test_methods": 0,
+  "oldApp4bReuseAllowed": false,
+  "original_drop_callback_sha256": "e4593308c581ac8a7f74617a7fdbf658040715a1ae653cf59a516cba1b4ca406",
+  "retainedRunnerReuseAllowed": false,
+  "row_open_and_menu_actions": "preserved with one indentation level; only the button gains plain style and its old nested draggable modifier is removed",
+  "runtime_paths": [
+    {
+      "base_bytes": 19605,
+      "base_sha256": "9cf9130c473009f4f1c2d33b989423401bd8d996d6a55dcac987585ab370d54c",
+      "candidate_bytes": 20524,
+      "candidate_sha256": "622eac1c014240ec8613ff2eb464ee368100a8df45031a224514994433665fcd",
+      "full_file_inverse": true,
+      "mode": "0o664",
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "scope": "DOWNSTREAM_PRODUCT"
+    },
+    {
+      "base_bytes": 145275,
+      "base_sha256": "27006fdd050c5cec8210237854af305459aa67e7912746aa75338ceb113f792a",
+      "candidate_bytes": 146382,
+      "candidate_sha256": "789373b31c96e085c4e120eb52e970adb3437311c6b1d7162955ab7a4aa70f27",
+      "full_file_inverse": true,
+      "mode": "0o664",
+      "path": "NativeApp/UITests/NativeLaunchTests.swift",
+      "scope": "EXISTING_FAILED_UI_METHOD"
+    }
+  ],
+  "schema": "ui4-product-drag-handle-source-review/v1",
+  "sourceDrag_exact": true,
+  "source_only_profile": {
+    "aggregate_transient_maximum": 10485760,
+    "execution_gates_changed": false,
+    "minimum_free": 1073741824,
+    "scopeA_allocated": 3084288
+  },
+  "swift_function_sections": 52,
+  "tests_executed": 0,
+  "worktree": "/mnt/development/projects/worktrees/anytype-wave15-ui4-drag-handle-20261123"
+}

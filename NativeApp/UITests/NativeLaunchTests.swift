@@ -507,24 +507,43 @@ final class NativeLaunchTests: XCTestCase {
         let blockIdentifier = blocks.firstMatch.identifier
 
         reopenOwnedWorkspace(app, spaceName: spaceName)
-        let source = app.buttons[documentName].firstMatch
+        let sourceRow = app.buttons[documentName].firstMatch
         let destination = app.buttons[folderName].firstMatch
-        waitUntilEnabled(source, timeout: 60)
+        waitUntilEnabled(sourceRow, timeout: 60)
         waitUntilEnabled(destination)
-        waitFor(NSPredicate(format: "hittable == true"), object: source, timeout: 20)
-        waitFor(NSPredicate(format: "hittable == true"), object: destination, timeout: 20)
-        let rowIdentifier = source.identifier
+        let rowIdentifier = sourceRow.identifier
         let folderIdentifier = destination.identifier
         XCTAssertTrue(rowIdentifier.hasPrefix("any-native-hierarchy-row-"))
         XCTAssertTrue(folderIdentifier.hasPrefix("any-native-hierarchy-row-"))
         XCTAssertNotEqual(rowIdentifier, folderIdentifier)
-        // Exercise the production String drag payload and folder drop handler.
-        // Do not invoke the Move context-menu action or a fixture/native API.
-        // The original 52-point move ended after 104 ms with no destination
-        // dwell and left the context menu open. Give the real native drag/drop
-        // interaction time to enter the target before lifting the pointer.
-        recordNativeHierarchyTransition(app, phase: "before_original_drag",
+        waitFor(NSPredicate(format: "hittable == true"), object: destination, timeout: 20)
+        let handleDeadline = ProcessInfo.processInfo.systemUptime + 20
+        let sourceObjectID = String(rowIdentifier.dropFirst("any-native-hierarchy-row-".count))
+        let handles = app.descendants(matching: .any)
+            .matching(identifier: "any-native-hierarchy-drag-" + sourceObjectID)
+        let source = handles.firstMatch
+        let handleReady = NSPredicate { _, _ in
+            handles.count == 1 && source.exists && source.isEnabled && source.isHittable
+        }
+        guard waitForObservedHierarchy(app, predicate: handleReady, object: app,
+                timeout: max(0, handleDeadline - ProcessInfo.processInfo.systemUptime),
+                phase: "source_drag_handle", source: source, destination: destination) else { return }
+        let handleLabels = ["Drag " + documentName,
+                            "\u{05D2}\u{05E8}\u{05D9}\u{05E8}\u{05D4} \u{05E9}\u{05DC} " + documentName]
+        guard handleLabels.contains(source.label) else {
+            XCTFail("The separate handle must describe the real drag action.")
+            return
+        }
+        // Same native String payload, gesture, destination and readback contract.
+        // Only the source is the dedicated handle outside the open/menu Button.
+        recordNativeHierarchyTransition(app, phase: "before_drag_handle",
                                         source: source, destination: destination)
+        guard handles.count == 1, source.exists, source.isEnabled, source.isHittable,
+              handleLabels.contains(source.label),
+              ProcessInfo.processInfo.systemUptime < handleDeadline else {
+            XCTFail("The unique native drag handle changed before the original gesture.")
+            return
+        }
         source.press(forDuration: 1.1, thenDragTo: destination,
                      withVelocity: XCUIGestureVelocity(rawValue: 100),
                      thenHoldForDuration: 0.6)
