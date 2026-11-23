@@ -1,0 +1,70 @@
+name: Original native closed annotation import qualification
+
+on:
+  push:
+    branches: [codex/otzaria-native-import-qualification-20261123]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: otzaria-original-closed-import-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  original-native-closed-import:
+    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-native-import-qualification-20261123' && github.run_attempt == 1
+    runs-on: xcode-27
+    timeout-minutes: 120
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+    steps:
+      - name: Fix the absolute original native execution deadline
+        run: |
+          echo "OTZARIA_NATIVE_IMPORT_DEADLINE=$(( $(date +%s) + 6900 ))" >> "$GITHUB_ENV"
+      - name: Checkout the exact isolated source and qualification packet
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          sparse-checkout: |
+            docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-candidate-20261123
+            docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-native-qualification-20261123
+            .github/workflows
+      - name: Select actual ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Install the exact original Go toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache: false
+      - name: Checkout the immutable original Heart base
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: build/Heart-Owned-Annotation-Import
+          persist-credentials: false
+      - name: Qualify genuine original graph import mapping body refusal and drain
+        run: |
+          python3 -I docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-native-qualification-20261123/run_native_closed_import.py \
+            --control-root "$GITHUB_WORKSPACE" \
+            --control-head "$GITHUB_SHA" \
+            --execution-manifest-sha256 3d5e8de3750a14f447b1f0c03828785c13366241fad68a488cf3ae1c42b99c67 \
+            --job-deadline-unix "$OTZARIA_NATIVE_IMPORT_DEADLINE" \
+            --heart build/Heart-Owned-Annotation-Import \
+            --work build/Heart-Owned-Annotation-Import-Work \
+            --evidence build/Heart-Owned-Annotation-Import-Evidence
+      - name: Retain actual native inputs results and failures without private account data
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otzaria-Original-Owned-Annotation-Import-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/Heart-Owned-Annotation-Import-Evidence
+          if-no-files-found: warn
+          compression-level: 6
+          retention-days: 14
