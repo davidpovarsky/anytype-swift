@@ -124,7 +124,7 @@ no intermediate source is dispatched.
 ## Source-retention result
 
 The unchanged original verifier passed against staged tree
-\`c8c32b90b5bee67ae0129be7c9e738cb992c2dc5\`: 5,790 baseline files,
+`c8c32b90b5bee67ae0129be7c9e738cb992c2dc5`: 5,790 baseline files,
 5,692 unchanged, 98 reviewed changes, zero unmapped changes and zero inventory
-errors. Report SHA-256: \`4c13c50272014463b311737bbadca383143c21fe428cd06021fbe058044a64a7\`.
+errors. Report SHA-256: `4c13c50272014463b311737bbadca383143c21fe428cd06021fbe058044a64a7`.
 This protects source lineage; semantic parity still requires the actual native gate.
