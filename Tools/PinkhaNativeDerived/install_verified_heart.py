@@ -36,7 +36,8 @@ parser.add_argument('--expected-app-branch',
                              'codex/otzaria-original-editor-framework-v10-reviewed-20261121',
                              'codex/otzaria-original-editor-framework-v11-host-reviewed-20261122',
                              'codex/otzaria-original-editor-framework-v12-composed-20261122',
-                             'codex/otzaria-original-editor-framework-v13-body-reviewed-20261122'],
+                             'codex/otzaria-original-editor-framework-v13-body-reviewed-20261122',
+                             'codex/otzaria-original-editor-shared-framework-20261123'],
                     default='codex/torah-native-derived-properties-20261103')
 args = parser.parse_args()
 inventory = json.loads(args.inventory.read_text())

@@ -1,8 +1,8 @@
-"""Admit historical source evidence and run only eight changed driver boundaries.
+"""Admit historical source evidence and execute 33 changed source boundaries.
 
-The original 245 results remain edce/450413 results. This runner never discovers
-or executes that whole suite and never relabels those results as current-head
-execution. Native framework/public/Clang/runtime gates remain in the producer.
+The original 245 results remain edce/450413 results. Only the listed project,
+package-admission, driver, and new symbol-ownership controls execute. This never
+replays the historical whole suite or grants Apple build/runtime credit.
 """
 import argparse
 import hashlib
@@ -17,16 +17,51 @@ from framework_profile import blob, git, sha256, source_observation
 PACKET = 'docs/pinkha/torah-integration/evidence/original-editor-install-name-20261122'
 ORIGINAL_SHA = 'edce5b975b173059522f90adb71271fb95adf963'
 ORIGINAL_RUN = '45041382512'
-AFFECTED_IDS = tuple('test_framework_flow.OriginalDriverFlowControls.' + suffix for suffix in (
-    'test_boot_command_failure_keeps_build_evidence_but_never_runs_bootstatus_or_install',
-    'test_build_graph_consumer_and_signature_complete_before_original_boot_pair',
-    'test_consumer_compile_failure_cannot_boot_or_install',
-    'test_different_embedded_product_cannot_reach_boot_or_install',
-    'test_multiple_notices_preserve_exact_contents_and_consumer_destination',
-    'test_one_notice_preserves_selected_simulator_for_both_original_build_commands',
-    'test_original_public_surface_tool_failure_cannot_boot_or_install',
-    'test_same_180_second_boot_timeout_retains_partial_builds_without_runtime_credit',
-))
+ADDED_CURRENT_IDS = (
+    'SharedRuntime.test_shared_runtime_ownership.SharedDefinitionControls.test_cmark_implementation_cannot_move_to_an_unreviewed_image',
+    'SharedRuntime.test_shared_runtime_ownership.SharedDefinitionControls.test_complete_unique_synthetic_definitions_have_no_native_credit',
+    'SharedRuntime.test_shared_runtime_ownership.SharedDefinitionControls.test_duplicate_shared_hanlin_symbols_are_rejected',
+    'SharedRuntime.test_shared_runtime_ownership.SharedDefinitionControls.test_external_consumer_cannot_embed_a_second_promise_class',
+    'SharedRuntime.test_shared_runtime_ownership.SharedDefinitionControls.test_original_editor_cannot_embed_a_second_firebase_class',
+    'SharedRuntime.test_shared_runtime_ownership.SharedDefinitionControls.test_runtime_cannot_omit_an_original_messaging_implementation',
+    'SharedRuntime.test_shared_runtime_ownership.SharedDefinitionControls.test_swift_module_declarations_without_defined_functions_are_insufficient',
+    'test_framework_flow.OriginalDriverFlowControls.test_strict_resolver_failure_cannot_reach_original_build_or_consumer',
+)
+AFFECTED_IDS = (
+    'SharedRuntime.test_shared_runtime_ownership.SharedDefinitionControls.test_cmark_implementation_cannot_move_to_an_unreviewed_image',
+    'SharedRuntime.test_shared_runtime_ownership.SharedDefinitionControls.test_complete_unique_synthetic_definitions_have_no_native_credit',
+    'SharedRuntime.test_shared_runtime_ownership.SharedDefinitionControls.test_duplicate_shared_hanlin_symbols_are_rejected',
+    'SharedRuntime.test_shared_runtime_ownership.SharedDefinitionControls.test_external_consumer_cannot_embed_a_second_promise_class',
+    'SharedRuntime.test_shared_runtime_ownership.SharedDefinitionControls.test_original_editor_cannot_embed_a_second_firebase_class',
+    'SharedRuntime.test_shared_runtime_ownership.SharedDefinitionControls.test_runtime_cannot_omit_an_original_messaging_implementation',
+    'SharedRuntime.test_shared_runtime_ownership.SharedDefinitionControls.test_swift_module_declarations_without_defined_functions_are_insufficient',
+    'test_framework.OriginalProjectPreservation.test_any_additional_original_source_exclusion_is_rejected',
+    'test_framework.OriginalProjectPreservation.test_changed_original_app_target_is_rejected_beyond_candidate_hash',
+    'test_framework.OriginalProjectPreservation.test_changed_original_compilation_setting_is_rejected',
+    'test_framework.OriginalProjectPreservation.test_entrypoint_exception_cannot_target_the_original_app',
+    'test_framework.OriginalProjectPreservation.test_framework_cannot_be_an_application_product',
+    'test_framework.OriginalProjectPreservation.test_framework_cannot_depend_on_the_original_app_or_test_binary',
+    'test_framework.OriginalProjectPreservation.test_framework_has_no_original_app_boot_scripts_or_extensions',
+    'test_framework.OriginalProjectPreservation.test_genuine_additive_target_preserves_all_original_app_objects',
+    'test_framework.OriginalProjectPreservation.test_new_target_cannot_replace_real_source_groups',
+    'test_framework.OriginalProjectPreservation.test_new_target_cannot_substitute_the_original_package_product',
+    'test_framework.OriginalProjectPreservation.test_original_baseline_snapshot_is_bound_to_its_git_blob',
+    'test_framework.OriginalProjectPreservation.test_original_heart_installer_changes_only_one_new_branch_choice',
+    'test_framework.OriginalProjectPreservation.test_original_project_does_not_already_claim_the_new_framework',
+    'test_framework_flow.OriginalDriverFlowControls.test_boot_command_failure_keeps_build_evidence_but_never_runs_bootstatus_or_install',
+    'test_framework_flow.OriginalDriverFlowControls.test_build_graph_consumer_and_signature_complete_before_original_boot_pair',
+    'test_framework_flow.OriginalDriverFlowControls.test_consumer_compile_failure_cannot_boot_or_install',
+    'test_framework_flow.OriginalDriverFlowControls.test_different_embedded_product_cannot_reach_boot_or_install',
+    'test_framework_flow.OriginalDriverFlowControls.test_multiple_notices_preserve_exact_contents_and_consumer_destination',
+    'test_framework_flow.OriginalDriverFlowControls.test_one_notice_preserves_selected_simulator_for_both_original_build_commands',
+    'test_framework_flow.OriginalDriverFlowControls.test_original_public_surface_tool_failure_cannot_boot_or_install',
+    'test_framework_flow.OriginalDriverFlowControls.test_same_180_second_boot_timeout_retains_partial_builds_without_runtime_credit',
+    'test_framework_flow.OriginalDriverFlowControls.test_strict_resolver_failure_cannot_reach_original_build_or_consumer',
+    'test_host_framework_contract.HostFrameworkContractControls.test_different_shared_package_pin_rejected_even_with_updated_project_hash',
+    'test_host_framework_contract.HostFrameworkContractControls.test_symbol_graph_emission_cannot_spill_into_original_application',
+    'test_observed_package_simulator_signing.DependencyCheckoutSourceClosureControls.test_unchanged_source_accepts_separate_owned_generated_build_metadata',
+    'test_observed_package_simulator_signing.DependencyCheckoutSourceClosureControls.test_untracked_swift_resource_and_ignored_source_are_rejected_without_cleanup',
+)
 
 
 def require(condition, message):
@@ -70,7 +105,10 @@ def validate_retained(plan, historical, original, current, catalog):
                 ['errors', 'failures', 'skipped', 'expected_failures', 'unexpected_successes']),
             'Original source-controls result contains a failure/skip')
     require(plan.get('current_affected_ids') == list(AFFECTED_IDS)
-            and set(AFFECTED_IDS) <= set(expected), 'Current affected selection differs')
+            and plan.get('current_added_ids') == list(ADDED_CURRENT_IDS)
+            and not set(ADDED_CURRENT_IDS) & set(expected)
+            and set(AFFECTED_IDS) <= set(expected) | set(ADDED_CURRENT_IDS),
+            'Current affected selection differs')
     for key in ['original_trees', 'source_files', 'original_swift_sources',
                 'framework_facade_sources', 'public_host_contract_sha256']:
         require(current.get(key) == original.get(key), 'Original product/source membership changed: ' + key)
@@ -171,13 +209,13 @@ def main():
                        current_skipped=[{'id': test.id(), 'reason': why} for test, why in result.skipped],
                        current_expected_failures=[test.id() for test, _ in result.expectedFailures],
                        current_unexpected_successes=[test.id() for test in result.unexpectedSuccesses])
-        require(result.testsRun == 8 and sorted(result.started_ids) == list(AFFECTED_IDS)
+        require(result.testsRun == len(AFFECTED_IDS) and sorted(result.started_ids) == list(AFFECTED_IDS)
                 and sorted(result.passed_ids) == list(AFFECTED_IDS) and result.wasSuccessful()
                 and not result.failures and not result.errors and not result.skipped
                 and not result.expectedFailures and not result.unexpectedSuccesses,
-                'Eight current affected controls did not all pass without skips')
+                'The 33 current affected controls did not all pass without skips')
         require(source_observation(root) == current, 'Source changed during affected controls')
-        receipt.update(status='RETAINED_ORIGINAL_245_AND_CURRENT_AFFECTED_8_PASS', phase='COMPLETE')
+        receipt.update(status='RETAINED_ORIGINAL_245_AND_CURRENT_AFFECTED_33_PASS', phase='COMPLETE')
         code = 0
     except BaseException as error:
         receipt['error'] = {'type': type(error).__name__, 'message': str(error)}

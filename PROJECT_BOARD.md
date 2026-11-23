@@ -14,6 +14,8 @@ Potential improvements, features, optimizations, or architectural ideas.
 
 ## Discoveries & Tips
 
+- The original SDK and Maktabah both define Firebase/Promises/Google/nanopb implementations. A shared provider requires exact native ownership, complete Host package/resource/pin equality, and actual Pod source/symbol comparison. The prepared isolated seam and open activation gates are recorded in docs/pinkha/torah-integration/evidence/original-editor-shared-runtime-20261123/PREPARED.md.
+
 Useful technical discoveries, undocumented behavior, shortcuts, implementation tricks, platform behavior, or reusable knowledge discovered while working.
 
 ## Experiments / Investigations

@@ -63,6 +63,10 @@ def project(directory, source):
     dependency = add('Runtime', {'isa': 'XCSwiftPackageProductDependency',
                                 'package': pkg, 'productName': RUNTIME})
     linked = add('RuntimeLink', {'isa': 'PBXBuildFile', 'productRef': dependency})
+    runtime_file = add('RuntimeFile', {'isa': 'PBXFileReference', 'lastKnownFileType': 'wrapper.framework',
+                                      'path': 'PackageFrameworks/' + RUNTIME + '.framework',
+                                      'sourceTree': 'BUILT_PRODUCTS_DIR'})
+    embedded = add('RuntimeEmbed', {'isa': 'PBXBuildFile', 'fileRef': runtime_file})
     phases = [
         add('Sources', {'isa': 'PBXSourcesBuildPhase', 'buildActionMask': '2147483647',
                         'files': [source_build], 'runOnlyForDeploymentPostprocessing': '0'}),
@@ -71,6 +75,13 @@ def project(directory, source):
         add('Resources', {'isa': 'PBXResourcesBuildPhase', 'buildActionMask': '2147483647',
                           'files': [], 'runOnlyForDeploymentPostprocessing': '0'}),
     ]
+    # The first real build produced the signed framework at PackageFrameworks,
+    # but Xcode did not infer an embed phase for this generated project.
+    # Copy its complete bytes; no RemoveHeadersOnCopy or re-signing adapter.
+    phases.append(add('EmbedRuntime', {'isa': 'PBXCopyFilesBuildPhase', 'buildActionMask': '2147483647',
+                                      'dstPath': '', 'dstSubfolderSpec': '10', 'files': [embedded],
+                                      'name': 'Embed exact shared runtime',
+                                      'runOnlyForDeploymentPostprocessing': '0'}))
     settings = {
         'PRODUCT_NAME': NAME, 'PRODUCT_BUNDLE_IDENTIFIER': BUNDLE,
         'GENERATE_INFOPLIST_FILE': 'NO', 'INFOPLIST_FILE': 'Info.plist',
@@ -91,7 +102,7 @@ def project(directory, source):
                            'buildConfigurationList': configs, 'buildPhases': phases, 'buildRules': [],
                            'dependencies': [], 'packageProductDependencies': [dependency]})
     products = add('Products', {'isa': 'PBXGroup', 'children': [product], 'name': 'Products', 'sourceTree': '<group>'})
-    group = add('Main', {'isa': 'PBXGroup', 'children': [src, products], 'sourceTree': '<group>'})
+    group = add('Main', {'isa': 'PBXGroup', 'children': [src, products, runtime_file], 'sourceTree': '<group>'})
     pc = add('ProjectDebug', {'isa': 'XCBuildConfiguration', 'name': 'Debug', 'buildSettings': {}})
     pcs = add('ProjectConfigs', {'isa': 'XCConfigurationList', 'buildConfigurations': [pc],
                                  'defaultConfigurationName': 'Debug', 'defaultConfigurationIsVisible': '0'})
@@ -123,6 +134,22 @@ def project(directory, source):
                       'CFBundleShortVersionString': '1.0', 'LSRequiresIPhoneOS': True,
                       'UILaunchScreen': {}}, stream)
     return out
+
+
+def select_ipad_runtime(runtimes):
+    eligible = []
+    for runtime in runtimes:
+        version = runtime.get('version', '').split('.')
+        pads = [d for d in runtime.get('supportedDeviceTypes', []) if d.get('productFamily') == 'iPad']
+        if (runtime.get('isAvailable') and 'arm64' in runtime.get('supportedArchitectures', [])
+                and runtime.get('identifier', '').startswith('com.apple.CoreSimulator.SimRuntime.iOS-27-')
+                and version and version[0] == '27' and all(v.isdigit() for v in version) and pads):
+            eligible.append((tuple(int(v) for v in version), runtime, sorted(pads, key=lambda d: d['identifier'])))
+    require(eligible, 'No observed available arm64 iOS 27 runtime supports iPad')
+    newest = max(item[0] for item in eligible)
+    chosen = [item for item in eligible if item[0] == newest]
+    require(len(chosen) == 1, 'Ambiguous highest iPad-capable iOS 27 runtime')
+    return chosen[0][1], chosen[0][2][0]
 
 
 def execute(args, receipt):
@@ -201,7 +228,7 @@ def execute(args, receipt):
     write(evidence / 'dependency-checkouts.json', observed)
     receipt['phase'] = 'REAL_SHARED_RUNTIME_BUILD_AND_CONSUMER_LINK'
     command('build', [*common, '-disableAutomaticPackageResolution', '-onlyUsePackageVersionsFromResolvedFile',
-                      'DEAD_CODE_STRIPPING=NO', 'build'], 1200)
+                      'DEAD_CODE_STRIPPING=NO', 'ARCHS=arm64', 'ONLY_ACTIVE_ARCH=YES', 'build'], 1200)
     require(digest(resolved) == digest(evidence / 'Package.resolved'), 'Build changed resolved inputs')
     app = work / 'DerivedData/Build/Products/Debug-iphonesimulator' / (NAME + '.app')
     framework = app / 'Frameworks' / (RUNTIME + '.framework')
@@ -218,17 +245,30 @@ def execute(args, receipt):
             'Consumer is not linked to the actual shared dynamic provider')
     command('signature', ['codesign', '--verify', '--deep', '--strict', app])
     receipt['binary_identity'] = {RUNTIME: digest(binary), NAME: digest(app / NAME)}
+    # Preserve this signed build before runtime; any subsequent runtime-only
+    # continuation must reuse these exact bytes instead of rebuilding accepted code.
+    archive = evidence / 'shared-runtime-app.zip'
+    command('retain-signed-app', ['ditto', '-c', '-k', '--keepParent', str(app), str(archive)], 120)
+    app_inventory = {p.relative_to(app).as_posix(): {'bytes': p.stat().st_size, 'sha256': digest(p)}
+                     for p in sorted(app.rglob('*')) if p.is_file()}
+    write(evidence / 'retained-native-products.json', {
+        'schema': 1, 'status': 'BUILD_LINK_EMBED_SIGNATURE_AND_DEFINITIONS_PASS_RUNTIME_NOT_RUN',
+        'source_sha': head, 'run_id': os.environ['GITHUB_RUN_ID'],
+        'run_attempt': os.environ['GITHUB_RUN_ATTEMPT'], 'source_inputs': inputs,
+        'binary_identity': receipt['binary_identity'], 'app_inventory': app_inventory,
+        'archive_sha256': digest(archive), 'archive_bytes': archive.stat().st_size,
+        'stageb_qualified': False,
+    })
     receipt['phase'] = 'SINGLE_PROVIDER_RUNTIME_OBSERVATION'
     runtimes = json.loads(command('runtimes', ['xcrun', 'simctl', 'list', 'runtimes', '--json']))['runtimes']
-    selected = [r for r in runtimes if r.get('isAvailable') and r['identifier'].startswith('com.apple.CoreSimulator.SimRuntime.iOS-27')]
-    require(len(selected) == 1, 'Expected one actual available iOS 27 runtime')
-    runtime = selected[0]['identifier']
-    devices = json.loads(command('devices', ['xcrun', 'simctl', 'list', 'devices', 'available', '--json']))['devices'][runtime]
-    pads = [d for d in devices if 'iPad' in d['name'] and d.get('deviceTypeIdentifier')]
-    require(pads, 'No observed compatible iPad device type')
+    selected, device_type = select_ipad_runtime(runtimes)
+    runtime = selected['identifier']
+    receipt['selected_runtime'] = {k: selected[k] for k in ['identifier', 'version', 'buildversion', 'supportedArchitectures']}
+    receipt['selected_device_type'] = device_type
+    write(evidence / 'selected-simulator.json', {'runtime': receipt['selected_runtime'], 'device_type': device_type})
     udid = command('create', ['xcrun', 'simctl', 'create',
                              'OtzariaSharedFirebase-' + os.environ['GITHUB_RUN_ID'],
-                             pads[0]['deviceTypeIdentifier'], runtime]).strip()
+                             device_type['identifier'], runtime]).strip()
     receipt['owned_simulator'] = udid
     try:
         command('boot', ['xcrun', 'simctl', 'boot', udid])

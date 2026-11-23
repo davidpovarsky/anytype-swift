@@ -246,6 +246,14 @@ class OriginalDriverFlowControls(unittest.TestCase):
                               ('boot-owned-simulator', 60), ('boot-status', 180)]:
             self.assertEqual(self.event(name)['timeout_seconds'], timeout)
 
+    def test_strict_resolver_failure_cannot_reach_original_build_or_consumer(self):
+        self.failure = 'exact-package-resolution'
+        self.run_driver()
+        self.assertNotIn('framework-build', self.names())
+        self.assertNotIn('external-consumer-build', self.names())
+        self.assertNotIn('boot-owned-simulator', self.names())
+        self.assertNotIn('install-external-consumer', self.names())
+
     def test_original_framework_compile_failure_cannot_boot_or_install(self):
         self.failure = 'framework-build'
         self.run_driver()

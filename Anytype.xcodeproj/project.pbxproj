@@ -1206,6 +1206,7 @@
 				74B35D242D5B39C500AC9879 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
 				74819CB22E169F5D0042D5EC /* XCRemoteSwiftPackageReference "Amplitude-Swift" */,
 				FA1000002F000001006805CC /* XCRemoteSwiftPackageReference "TorahInspectorKit" */,
+				C4EDE9CCA3640AFF9A42B62C /* OriginalEditorSharedFirebase */,
 			);
 			preferredProjectObjectVersion = 52;
 			productRefGroup = 0303ECFC22D8EDAA005C552B /* Products */;
@@ -2808,6 +2809,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Dependencies/Hanlin/Packages/HanlinPresentationSDK;
 		};
+		C4EDE9CCA3640AFF9A42B62C = {
+			"isa" = "XCLocalSwiftPackageReference";
+			"relativePath" = "Tools/OriginalEditor/SharedRuntime";
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -2891,12 +2896,12 @@
 				version = 7.4.0;
 			};
 		};
-		2E63D9B52D56520C008A733A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
-			requirement = {
-				kind = exactVersion;
-				version = 11.8.1;
+		2E63D9B52D56520C008A733A = {
+			"isa" = "XCRemoteSwiftPackageReference";
+			"repositoryURL" = "https://github.com/firebase/firebase-ios-sdk";
+			"requirement" = {
+				"kind" = "exactVersion";
+				"version" = "12.8.0";
 			};
 		};
 		3D24B09A2C1A2B6300795BAA /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */ = {
@@ -3417,10 +3422,10 @@
 			"isa" = "XCSwiftPackageProductDependency";
 			"productName" = "AppTarget";
 		};
-		E2F113E2753F5684374CB4CE /* EditorPackage_FirebaseMessaging */ = {
+		E2F113E2753F5684374CB4CE = {
 			"isa" = "XCSwiftPackageProductDependency";
-			"package" = "2E63D9B52D56520C008A733A";
-			"productName" = "FirebaseMessaging";
+			"package" = "C4EDE9CCA3640AFF9A42B62C";
+			"productName" = "OriginalEditorSharedFirebase";
 		};
 		C5C59AB204FFD5149F3F0E7C /* EditorPackage_AsyncAlgorithms */ = {
 			"isa" = "XCSwiftPackageProductDependency";

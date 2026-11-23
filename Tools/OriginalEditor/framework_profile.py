@@ -8,7 +8,7 @@ import subprocess
 
 from pbx_source import loads, object_text, require
 
-BRANCH = 'codex/otzaria-original-editor-framework-v13-body-reviewed-20261122'
+BRANCH = 'codex/otzaria-original-editor-shared-framework-20261123'
 REPOSITORY = 'davidpovarsky/anytype-swift'
 TARGET = 'AnytypeOriginalEditor'
 APP_TARGET = '0303ECFA22D8EDAA005C552B'
@@ -32,15 +32,20 @@ def git(root, *args):
 def read_manifest():
     value = json.loads((HERE / 'framework_profile.json').read_text())
     require(value.get('schema') == 1 and value.get('branch') == BRANCH
-            and value.get('package_pin_count') == 51, 'Unreviewed framework profile')
+            and value.get('package_pin_count') == 52, 'Unreviewed framework profile')
     require(set(value.get('reviewed_shared_dependency_objects', {})) == {
-        '5333421A262E249100238121', '2A685D582B7B854200456E08', 'FA1000002F000001006805CC'},
+        '5333421A262E249100238121', '2A685D582B7B854200456E08', 'FA1000002F000001006805CC',
+        '2E63D9B52D56520C008A733A'},
         'Unreviewed shared runtime dependency object set')
     require(len(value.get('framework_facade_sources', [])) == 12
             and len(set(value['framework_facade_sources'])) == 12,
             'Incomplete reviewed Host facade source closure')
     require(sha256(HERE / 'public_host_contract.json') == value.get('public_host_contract_sha256'),
             'Reviewed public Host and qualification SPI contract differs')
+    route = value['shared_runtime_route']
+    require(sha256(HERE / 'SharedRuntime/Package.swift') == route['package_manifest_sha256']
+            and sha256(HERE / 'SharedRuntime/dependencies.json') == route['dependency_contract_sha256'],
+            'Shared runtime package or exact Host dependency contract differs')
     return value
 
 
@@ -75,8 +80,24 @@ def verify_project(raw, baseline, profile):
     require(exception == {'isa': 'PBXFileSystemSynchronizedBuildFileExceptionSet',
                          'membershipExceptions': ['ApplicationLayer/AppScene.swift'],
                          'target': targets[0]}, 'Only the original app entrypoint may be excluded')
-    require([new[key] for key in target['packageProductDependencies']]
-            == [old[key] for key in original_target['packageProductDependencies']],
+    route = profile['shared_runtime_route']
+    require(route['package_id'] in added
+            and new[route['package_id']] == route['package']
+            and route['package'] == {'isa': 'XCLocalSwiftPackageReference',
+                                     'relativePath': 'Tools/OriginalEditor/SharedRuntime'}
+            and new[route['target_product_id']] == route['runtime_product']
+            and route['runtime_product'] == {'isa': 'XCSwiftPackageProductDependency',
+                                             'package': route['package_id'],
+                                             'productName': 'OriginalEditorSharedFirebase'}
+            and route['original_product'] == {'isa': 'XCSwiftPackageProductDependency',
+                                              'package': '2E63D9B52D56520C008A733A',
+                                              'productName': 'FirebaseMessaging'},
+            'Shared Firebase product route differs')
+    products = [new[key] for key in target['packageProductDependencies']]
+    require(products.count(route['runtime_product']) == 1,
+            'Shared runtime is missing or repeated')
+    original_products = [route['original_product'] if p == route['runtime_product'] else p for p in products]
+    require(original_products == [old[key] for key in original_target['packageProductDependencies']],
             'Original package product closure differs')
     framework_configurations = new[target['buildConfigurationList']]['buildConfigurations']
     require(len(framework_configurations) == 4
@@ -92,7 +113,7 @@ def verify_project(raw, baseline, profile):
     emitters = [key for key, value in new.items() if value.get('isa') == 'XCBuildConfiguration'
                 and emission['setting'] in value.get('buildSettings', {})]
     require(emitters == [emission['configuration_id']], 'A dependency or original app emits the Host graph')
-    # Restore only the four additive structural objects and the three exact
+    # Restore only the four additive structural objects and the four exact
     # reviewed shared package requirements. All original products stay intact.
     inverse = raw.decode()
     for key in sorted(added):
@@ -102,6 +123,7 @@ def verify_project(raw, baseline, profile):
     require(inverse.encode() == baseline, 'Complete original project inverse differs')
     return {'original_app_target_unchanged': True, 'original_objects': len(old),
             'new_objects': len(added), 'original_package_products': len(target['packageProductDependencies']),
+            'shared_runtime_route': route,
             'framework_target_id': targets[0], 'only_excluded_source': 'ApplicationLayer/AppScene.swift',
             'reviewed_shared_dependency_objects': sorted(dependencies),
             'target_only_full_public_spi_graph': True, 'whole_project_inverse_exact': True,
@@ -133,14 +155,14 @@ def source_observation(root, environment=None):
         require(actual == expected, 'Original source/resource tree differs: ' + path)
         trees[path] = actual
     pinned = root / profile['package_resolved_path']
-    require(blob(pinned.read_bytes()) == profile['package_resolved_blob'], 'Reviewed exact 51-pin package closure differs')
-    require(len(json.loads(pinned.read_text())['pins']) == 51, 'Reviewed package pin inventory differs')
+    require(blob(pinned.read_bytes()) == profile['package_resolved_blob'], 'Reviewed exact 52-pin package closure differs')
+    require(len(json.loads(pinned.read_text())['pins']) == 52, 'Reviewed package pin inventory differs')
     before = (HERE / 'original_project.pbxproj').read_bytes()
     project = verify_project((root / 'Anytype.xcodeproj/project.pbxproj').read_bytes(), before, profile)
     installer_path = 'Tools/PinkhaNativeDerived/install_verified_heart.py'
     installer = (root / installer_path).read_text()
-    reviewed = "                             'codex/otzaria-original-editor-framework-v12-composed-20261122',\n                             '" + BRANCH + "'],"
-    original = "                             'codex/otzaria-original-editor-framework-v12-composed-20261122'],"
+    reviewed = "                             'codex/otzaria-original-editor-framework-v13-body-reviewed-20261122',\n                             '" + BRANCH + "'],"
+    original = "                             'codex/otzaria-original-editor-framework-v13-body-reviewed-20261122'],"
     require(installer.count(reviewed) == 1 and
             blob(installer.replace(reviewed, original, 1).encode()) == profile['original_heart_installer_blob'],
             'Original verified Heart installer has a change beyond the exact new consumer branch')
