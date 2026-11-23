@@ -1,0 +1,45 @@
+{
+  "after": "cb843b263cae5314e0240aeb23c1798f0a998204c1e8fbe51ef036cbda0adafd",
+  "before": "674fb9770496d435e6b8ae8797b2782570a5d04fd40e2052368ec1bea2da899c",
+  "hunks": [
+    {
+      "after": "BASE=Path(\"/mnt/development/projects/diagnostics/sdk06-external-host-projection-controls-20261123/attempt2-measured-controller\")",
+      "before": "BASE=Path(\"/mnt/development/projects/diagnostics/sdk06-external-host-projection-controls-20261123/attempt2-controller\")"
+    },
+    {
+      "after": "SOURCE=\"b50858335e25f2f42f0cdb96d4928005ab14662d\"",
+      "before": "SOURCE=\"310c35de7615dd614891e3474b5dc7abae73d17e\""
+    },
+    {
+      "after": "WRAPPER=\"docs/validation/20261123-sdk06-external-host-projection/run-measured-control.py\"",
+      "before": "WRAPPER=\"docs/validation/20261123-sdk06-external-host-projection/run-controls.py\""
+    },
+    {
+      "after": "WRAPPER_SHA=\"a7dfda071df54941fdb28ce9165ab8a533685a3293e362fe1c2ec3057dab8ca5\"\nOBSERVED_PEAK={\"logicalBytes\":0,\"allocatedBytes\":0}",
+      "before": "WRAPPER_SHA=\"4a1da2bc4bf5a278a9e7d1c3348da296f490fa45a0ea1ad3c5703b5ec64b0ab2\""
+    },
+    {
+      "after": "def output_usage():\n logical=allocated=entries=vanished=0\n if not BASE.exists():return {\"logicalBytes\":0,\"allocatedBytes\":0,\"entries\":0,\"concurrentlyRemoved\":0}\n for path in (BASE,*BASE.rglob(\"*\")):\n  try:info=path.lstat()\n  except FileNotFoundError:\n   vanished+=1;continue\n  assert stat.S_ISREG(info.st_mode) or stat.S_ISDIR(info.st_mode),\"unexpected_output_type\"\n  logical+=info.st_size;allocated+=info.st_blocks*512;entries+=1\n return {\"logicalBytes\":logical,\"allocatedBytes\":allocated,\"entries\":entries,\"concurrentlyRemoved\":vanished}\ndef capacity(start=False):\n free=shutil.disk_usage(ROOT).free\n assert free>=1073741824,(\"measured_capacity_guard\",free)\n usage=output_usage()\n assert usage[\"logicalBytes\"]<=2*1024**2-64*1024 and usage[\"allocatedBytes\"]<=2*1024**2-64*1024,\"measured_output_budget\"\n for key in OBSERVED_PEAK:OBSERVED_PEAK[key]=max(OBSERVED_PEAK[key],usage[key])\n return free\n",
+      "before": "def capacity(start=False):\n free=shutil.disk_usage(ROOT).free\n assert free>=(2520000000 if start else 2500000000),(\"capacity_guard\",free)\n return free\n"
+    },
+    {
+      "after": "resource.setrlimit(resource.RLIMIT_FSIZE,(64*1024,64*1024))",
+      "before": "resource.setrlimit(resource.RLIMIT_FSIZE,(8*1024**2,8*1024**2))"
+    },
+    {
+      "after": "env={**os.environ,\"PYTHONDONTWRITEBYTECODE\":\"1\",\"GIT_OPTIONAL_LOCKS\":\"0\"}",
+      "before": "env={**os.environ,\"PYTHONDONTWRITEBYTECODE\":\"1\"}"
+    },
+    {
+      "after": "",
+      "before": "   total=sum(p.stat().st_size for p in BASE.rglob(\"*\") if p.is_file())\n   assert total<=16*1024**2,\"bounded_control_output\"\n"
+    },
+    {
+      "after": "\"newMethodsRequested\":1,\"oldMethodsRequested\":0,\"buildsRequested\":0,\"productMethodsRequested\":0,\n   \"resourceProfile\":\"fixed-pure-external-host-1gib-2mib-v1\",\"observedOutputPeak\":dict(OBSERVED_PEAK),\"finalOutputUsageBeforeReceipt\":output_usage()}",
+      "before": "\"newMethodsRequested\":1,\"oldMethodsRequested\":0,\"buildsRequested\":0,\"productMethodsRequested\":0}"
+    }
+  ],
+  "source": "b50858335e25f2f42f0cdb96d4928005ab14662d",
+  "timeAndOwnershipBodiesUnchanged": true,
+  "wholeFileInverse": true
+}

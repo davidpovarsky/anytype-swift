@@ -1,0 +1,102 @@
+{
+  "actual": {
+    "builds": 0,
+    "innerSeconds": 0.24192281812429428,
+    "loadedAfter": 2,
+    "loadedBefore": 1,
+    "methodsPassed": [
+      "test_sdk06_external_host_projection.SDK06ExternalHostProjectionControl.test_actual_link_carriers_build_only_host_and_frozen_workspace"
+    ],
+    "methodsStarted": [
+      "test_sdk06_external_host_projection.SDK06ExternalHostProjectionControl.test_actual_link_carriers_build_only_host_and_frozen_workspace"
+    ],
+    "oldMethods": 0,
+    "outerSeconds": 0.40966520085930824,
+    "ownedGroupAbsent": true,
+    "productMethods": 0,
+    "returncode": 0,
+    "sourceInputs": 40,
+    "sourceUnchanged": true,
+    "subcasesFailed": 0,
+    "subcasesPassed": 4,
+    "unittestSeconds": 0.169
+  },
+  "branch": "codex/chatgpt-wave15-sdk-external-host-projection-20261123",
+  "evidence": {
+    "events": {
+      "path": "docs/validation/20261123-sdk06-external-host-projection/attempt2-originals/attempt2/events.jsonl",
+      "sha256": "cb804b7242d6fc7b32ee6e41d937e73dcbc12156d0d4ca526d5c21f71ff00805"
+    },
+    "originalFileCount": 23,
+    "originalsSeal": {
+      "path": "docs/validation/20261123-sdk06-external-host-projection/attempt2-originals/seal.json",
+      "sha256": "9bdac88670a61b0a27429202973cded5f2d02d0475effcd309074a8308c8cc93"
+    },
+    "outer": {
+      "path": "docs/validation/20261123-sdk06-external-host-projection/attempt2-originals/outer-launch.py",
+      "sha256": "cb843b263cae5314e0240aeb23c1798f0a998204c1e8fbe51ef036cbda0adafd"
+    },
+    "receipt": {
+      "path": "docs/validation/20261123-sdk06-external-host-projection/attempt2-originals/attempt2/receipt.json",
+      "sha256": "4c9b399135af323dddc5ff91087240374382c5c09b67d74dccb29b619595a6d3"
+    },
+    "sourceAudit": {
+      "path": "docs/validation/20261123-sdk06-external-host-projection/qualification-source-audit.json",
+      "sha256": "f9f9bf5c8869180645eb235fa9c3e04b69eea7e6742d7f66b1f9b008792e83b2"
+    }
+  },
+  "job": "job_c9d38ba4432d",
+  "originalAttempt1": {
+    "correction": "Only chmod(0700) on the newly created owned TemporaryDirectory root; production generator unchanged.",
+    "methods": 1,
+    "preservationSHA256": "399b4f292ab5ed520bc0001eb5f779ace0d707605070c6653aa7b2d67abef387",
+    "source": "145648c8388bdd01db9023e447f42fee3cfbcb20",
+    "status": "FAIL",
+    "subcasesFailed": 1,
+    "subcasesPassed": 3
+  },
+  "priorScopes": {
+    "actualCI45201516379Attempt1": "Original component-build FAIL70 and separate integrity failure retained;0 product starts",
+    "oldSevenProducts": "Retained original qualifications, not selected or rerun",
+    "originalPureProjectionMethod": "Retained PASS1method/24subcases, not rerun"
+  },
+  "production": {
+    "changes": [
+      "Build-only TEST_HOST empty; original shim BUNDLE_LOADER and original Anytype.debug.dylib explicit linker input.",
+      "Precreate only the three observed empty workspace directories with exact0777 mode."
+    ],
+    "controllerSourceSHA256": "8d3045bc1dbe2f943b73b26e5d92c57f5523a9d3771d0800b6689040df889987",
+    "generatorSHA256": "0ec892f3725732d1ea984d9b99e9c989c0c8eb980442aa7211d2d3141a816d0b",
+    "hostedRuntimeDescriptorChanged": false,
+    "wholeTreeIntegrityWeakened": false
+  },
+  "protocol": "sdk06-external-host-projection-qualification-v1",
+  "qualifiedAt": "2026-11-23T16:52:59.152898+00:00",
+  "remaining": {
+    "ack7NativeUILiveMap": "NOT_RUN",
+    "actual23Methods32Cases": "NOT_RUN",
+    "actualRegistration23Enabled0Disabled": "NOT_RUN",
+    "actualRepairedComponentCompilation": "NOT_RUN",
+    "actualRepairedLinking": "NOT_RUN",
+    "fullSDK06Acceptance": false
+  },
+  "resource": {
+    "cleanupSeconds": 10,
+    "exactContinuousPeakClaimed": false,
+    "executionSeconds": 60,
+    "finalFreeBytes": 1504116736,
+    "logicalAndAllocatedBudgetIncludingDirectories": 2097152,
+    "minimumFreeBytes": 1073741824,
+    "nativeMacGatesChanged": false,
+    "perFileCapBytes": 65536,
+    "profile": "fixed-pure-external-host-1gib-2mib-v1",
+    "sampledPeak": {
+      "allocatedBytes": 184320,
+      "logicalBytes": 148034
+    },
+    "startFreeBytes": 1504219136
+  },
+  "scope": "One corrected previously failed pure control; no additional unique acceptance credit from replayed subcases.",
+  "source": "b50858335e25f2f42f0cdb96d4928005ab14662d",
+  "status": "QUALIFIED_PURE_CONTROL_ONLY"
+}
