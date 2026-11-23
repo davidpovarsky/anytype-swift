@@ -1,0 +1,102 @@
+test_sdk_qualified_profile_addendum_preserves_history_and_rejects_scope_relabelling (test_sdk06_retained_controls.RetainedControllerAdmissionTests.test_sdk_qualified_profile_addendum_preserves_history_and_rejects_scope_relabelling) ... ERROR
+test_exact_composed_dependencies_preserve_original_scopes_and_reject_unreviewed_source_or_events (test_sdk06_dependency_composition.DependencyCompositionControls.test_exact_composed_dependencies_preserve_original_scopes_and_reject_unreviewed_source_or_events) ... ERROR
+
+======================================================================
+ERROR: test_sdk_qualified_profile_addendum_preserves_history_and_rejects_scope_relabelling (test_sdk06_retained_controls.RetainedControllerAdmissionTests.test_sdk_qualified_profile_addendum_preserves_history_and_rejects_scope_relabelling)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/test_sdk06_retained_controls.py", line 169, in test_sdk_qualified_profile_addendum_preserves_history_and_rejects_scope_relabelling
+    receipt = admission.verify_retained_controls(self.app)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 700, in verify_retained_controls
+    historical_admission, historical_files, dependency_receipt = post_profile_dependency_view(admission, files)
+                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 617, in post_profile_dependency_view
+    methods = fixed_dependency_control_outcomes(kind, record, events, files[proof["log"]], proof["methods"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 458, in fixed_dependency_control_outcomes
+    batches = unittest_batches(log_raw)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 106, in unittest_batches
+    require(line == "OK" and all(item["outcome"] == "ok" for item in pending),
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 27, in require
+    raise RetainedControlError(message)
+sdk06_retained_controls.RetainedControlError: Original controller batch did not pass every named method
+
+======================================================================
+ERROR: test_exact_composed_dependencies_preserve_original_scopes_and_reject_unreviewed_source_or_events (test_sdk06_dependency_composition.DependencyCompositionControls.test_exact_composed_dependencies_preserve_original_scopes_and_reject_unreviewed_source_or_events)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/test_sdk06_dependency_composition.py", line 25, in test_exact_composed_dependencies_preserve_original_scopes_and_reject_unreviewed_source_or_events
+    actual = retained.verify_retained_controls(app)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 700, in verify_retained_controls
+    historical_admission, historical_files, dependency_receipt = post_profile_dependency_view(admission, files)
+                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 617, in post_profile_dependency_view
+    methods = fixed_dependency_control_outcomes(kind, record, events, files[proof["log"]], proof["methods"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 458, in fixed_dependency_control_outcomes
+    batches = unittest_batches(log_raw)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 106, in unittest_batches
+    require(line == "OK" and all(item["outcome"] == "ok" for item in pending),
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/Tools/PinkhaSimulatorGate/sdk06_retained_controls.py", line 27, in require
+    raise RetainedControlError(message)
+sdk06_retained_controls.RetainedControlError: Original controller batch did not pass every named method
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.361s
+
+FAILED (errors=2)
+
+{
+  "actual_selector_status": "FAIL_26_ENABLED_23_REQUIRED",
+  "app_builds": 0,
+  "artifacts": {
+    "controller.py": {
+      "bytes": 6757,
+      "sha256": "b6fbdf03b8434b4e54be01e712a50c092cf5281ff9925afd48e29508dd03285d"
+    },
+    "controls.log": {
+      "bytes": 5598,
+      "sha256": "d06086ac3ac05c368a861aa08b87965e1ca4accafe7fb1ba0d9442b2a0d7c07c"
+    },
+    "events.json": {
+      "bytes": 809,
+      "sha256": "4368a6f1e0e43b6b3fdc9546d7c11451539421a36eb69ed344676a3db15b9124"
+    },
+    "intent.json": {
+      "bytes": 786,
+      "sha256": "f394595450824ef5fff8b480427445f409a4a8909c9c5949d82bd68f9dc58a24"
+    },
+    "source-after.json": {
+      "bytes": 70234,
+      "sha256": "beb55d8a008507adb9fc396168cd476ce19b90d68edd741012894e89ded3bbdb"
+    },
+    "source-before.json": {
+      "bytes": 70234,
+      "sha256": "beb55d8a008507adb9fc396168cd476ce19b90d68edd741012894e89ded3bbdb"
+    }
+  },
+  "elapsed_seconds": 0.3612818894907832,
+  "errors": 2,
+  "failures": 0,
+  "finished_at": "2026-11-23T06:38:40.532009+00:00",
+  "loaded_source_count": 3,
+  "method_ids": [
+    "test_sdk06_retained_controls.RetainedControllerAdmissionTests.test_sdk_qualified_profile_addendum_preserves_history_and_rejects_scope_relabelling",
+    "test_sdk06_dependency_composition.DependencyCompositionControls.test_exact_composed_dependencies_preserve_original_scopes_and_reject_unreviewed_source_or_events"
+  ],
+  "new_admission_methods_executed": 2,
+  "old_control_methods_executed": 0,
+  "original_manifest_proof_rows": 248,
+  "original_manifest_source_rows": 39,
+  "product_tests_executed": 0,
+  "selector_admission_created": false,
+  "source_input_count": 262,
+  "source_sha": "b7c74c8bac972dedf47f7382ffaeb6f66e424737",
+  "source_unchanged": true,
+  "status": "FAIL",
+  "tests_run": 2
+}
