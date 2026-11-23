@@ -1,0 +1,9 @@
+fatal: path 'Tools/PinkhaSimulatorGate/sdk06_basename_probe_plan.py' does not exist in '26b61bbee7dac17339a90111602c7ec83c7844e4'
+Traceback (most recent call last):
+  File "<stdin>", line 16, in <module>
+  File "/usr/lib/python3.12/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['git', '-C', '/mnt/development/projects/worktrees/anytype-wave15-sdk06-original-native-20261123', 'show', '26b61bbee7dac17339a90111602c7ec83c7844e4:Tools/PinkhaSimulatorGate/sdk06_basename_probe_plan.py']' returned non-zero exit status 128.

@@ -259,8 +259,11 @@ def validate_results(summary, tree, expected, udid):
     return actual
 
 
-def execute(app, configuration, udid, expected_app, evidence, shared, *, selector_plan=None, tagged_plan=None):
+def execute(app, configuration, udid, expected_app, evidence, shared, *, selector_plan=None, tagged_plan=None,
+            original_tagged_plan=None):
     host.require(selector_plan is None or tagged_plan is None, "Selector routes cannot be combined")
+    host.require(original_tagged_plan is None or (selector_plan is None and tagged_plan is None),
+                 "Original-native tag selection cannot be combined with another route")
     host.require(not evidence.exists() or not any(evidence.iterdir()),
                  "Refuse stale shared-editor component evidence")
     evidence.mkdir(parents=True, exist_ok=True)
@@ -274,6 +277,8 @@ def execute(app, configuration, udid, expected_app, evidence, shared, *, selecto
     selected_configuration = None
 
     def verify_binding():
+        if original_tagged_plan is not None:
+            original_tagged_plan.verify()
         if tagged_plan is not None:
             tagged_plan.verify()
         host.require(source_contract(app) == source, "Shared-editor/table/authority source changed during execution")
@@ -289,12 +294,21 @@ def execute(app, configuration, udid, expected_app, evidence, shared, *, selecto
     base = ["xcodebuild", "test-without-building", "-xctestrun", str(configuration),
             "-destination", "platform=iOS Simulator,id=" + udid,
             "-parallel-testing-enabled", "NO"]
+    build_mode = ("ORIGINAL_NATIVE_PRODUCTS_EXACT_RESTORATION" if original_tagged_plan is not None
+                  else "SAME_JOB_EXISTING_SDK06_BUILD")
     receipt = {"status": "FAIL", "phase": "ENUMERATION_PRECHECK", "profile": PROFILE,
-               "build_mode": "SAME_JOB_EXISTING_SDK06_BUILD", "additional_app_builds": 0,
+               "build_mode": build_mode, "additional_app_builds": 0,
                "source": source, "built_products": hashes}
+    if original_tagged_plan is not None:
+        receipt["original_native_origin"] = original_tagged_plan.origin.origin_reference()
     shared.write(evidence / "execution.json", receipt)
     try:
-        if tagged_plan is not None:
+        if original_tagged_plan is not None:
+            from sdk06_original_tagged_selector import OriginalNativeTaggedSelectionPlan
+            host.require(type(original_tagged_plan) is OriginalNativeTaggedSelectionPlan,
+                         "An exact sealed original-native tag plan is required")
+            enumeration = original_tagged_plan.enumerate_current(app, base, evidence, shared, source)
+        elif tagged_plan is not None:
             from sdk06_tagged_selector import TaggedSelectionPlan
             host.require(isinstance(tagged_plan, TaggedSelectionPlan), "A sealed current tag source plan is required")
             enumeration = tagged_plan.enumerate_current(app, base, evidence, shared, source)
@@ -309,7 +323,10 @@ def execute(app, configuration, udid, expected_app, evidence, shared, *, selecto
         verify_binding()
         selected_base = list(base)
         selected_base[selected_base.index("-xctestrun") + 1] = selected_configuration["path"]
-        if tagged_plan is not None:
+        if original_tagged_plan is not None:
+            command = [*selected_base, *original_tagged_plan.execution_arguments(enumeration, selected_base),
+                       "-resultBundlePath", str(bundle)]
+        elif tagged_plan is not None:
             command = [*selected_base, *tagged_plan.execution_arguments(enumeration, selected_base),
                        "-resultBundlePath", str(bundle)]
         elif selector_plan is None:
@@ -335,12 +352,14 @@ def execute(app, configuration, udid, expected_app, evidence, shared, *, selecto
             path = evidence / ("component-" + label + ".json")
             component_receipt = {
                 "status": "SOURCE_BOUND_COMPONENT_PASS", "component": label,
-                "build_mode": "SAME_JOB_EXISTING_SDK06_BUILD", "additional_app_builds": 0,
+                "build_mode": build_mode, "additional_app_builds": 0,
                 "methods": methods, "actual": component,
                 "source_hashes": source["source_hashes"], "built_products": hashes,
                 "raw_summary_sha256": raw_summary_hash, "raw_tests_sha256": raw_tests_hash,
                 "real_native_persistence_accepted": False,
             }
+            if original_tagged_plan is not None:
+                component_receipt["original_native_origin"] = original_tagged_plan.origin.origin_reference()
             shared.write(path, component_receipt)
             component_receipts[label] = {"path": str(path), "sha256": shared.digest(path)}
         receipt.update(status=PASS_STATUS, phase="COMPLETE", actual=actual,

@@ -1,0 +1,47 @@
+{
+  "at": "2026-11-23T12:07:42.653472+00:00",
+  "branchObservation": "SYNTHETIC only for exact branch --show-current argv; actual HEAD and all other Git calls retained; no allowlist or branch changes",
+  "builds": 0,
+  "changedPaths": [
+    "Tools/PinkhaSimulatorGate/sdk06-original-native-controller-source.json",
+    "Tools/PinkhaSimulatorGate/test_sdk06_original_native.py",
+    "docs/validation/20261123-sdk06-original-native-continuation/failed-control-inputs.json",
+    "docs/validation/20261123-sdk06-original-native-continuation/failed-method-review.json",
+    "docs/validation/20261123-sdk06-original-native-continuation/run-failed-lane-control.py"
+  ],
+  "elapsedSeconds": 1.4434,
+  "fixedInputs": 150,
+  "fixedMetadata": {
+    "failed-control-inputs.json": "a93c55f232b6c21b72645810e91c40e6e3cf3d0eb4a00382a20b2c4b9e8b2c74",
+    "failed-method-review.json": "cca2ac1240f27bec27878237c6ff0decb5c322100c55dc013cb1baa44e27c48e",
+    "run-failed-lane-control.py": "4cf990027474f23cf6d7899ebbb76bb445ecce9f3d84ae61d072ea6a46f326e5"
+  },
+  "freeBytes": 2991153152,
+  "manualReview": [
+    "all original failure and two passes preserved",
+    "third-method fixture intercept before original lane",
+    "actual identity and source guard path preserved",
+    "one-method outside-repository wrapper and source-before/after gates"
+  ],
+  "oldOrPassingMethodsReplayed": 0,
+  "onlyMethod": [
+    "test_sdk06_original_native/OriginalNativeContinuationControls/test_actual_lane_stops_on_original30_and_ui_builder_cannot_rebuild_native"
+  ],
+  "originalAttemptSource": "46c03ec8692bee4ffe6304b041a4a4425d08e2dc",
+  "originalEvidenceCommit": "cf70fdf165586baffd257fdb135cea06f64e745d",
+  "reviewedHead": "44aa9d3c64275917a79e6392ef619554d1af2990",
+  "runtimeContractDelta": [
+    [
+      "inputs",
+      "Tools/PinkhaSimulatorGate/test_sdk06_original_native.py",
+      "sha256"
+    ]
+  ],
+  "schema": "sdk06-failed-third-root-review/v1",
+  "status": "PASS",
+  "testInverseHunks": 2,
+  "testsExecuted": 0,
+  "unchangedOriginalInputs": 98,
+  "verifiedPhysicalGitInputs": 160,
+  "wrapperInverseHunks": 10
+}

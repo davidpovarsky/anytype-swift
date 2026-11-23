@@ -1,0 +1,52 @@
+{
+  "builds": 0,
+  "controls_executed": 0,
+  "enumeration_removes_only_result_bundle_and_preserves_all_selector_tokens": true,
+  "known_original_command_source": "Tools/AnyEnginePort/native_ui_original_products_contract.py:plan",
+  "original_source": "ae5182b3780c27006a280e21939e1b0d87fa079d",
+  "preserved_unexecuted_metadata": "6fac48c8151c0e0cf0e34c2f7961f7afa90642cd",
+  "product_tests": 0,
+  "rows": [
+    {
+      "after_sha256": "42d56e2193643fde5ae6f329b63a123fee89a2ef22d858e3bea8aeb94cd0d3d5",
+      "before_sha256": "6b99ec0b9b88a0d12843b2db284c40aa4a2f0bff8f839614ea93b9ecc2846ad9",
+      "changes": [
+        {
+          "after": "argv += [\"-only-testing:\" + TARGET + \"/\" + method]",
+          "before": "argv += [\"-only-testing\", TARGET + \"/\" + method]"
+        },
+        {
+          "after": "require([value for value in argv if value.startswith(\"-only-testing:\")]\n            == [\"-only-testing:\" + TARGET + \"/\" + method for method in plan[\"methods\"]],",
+          "before": "require([argv[i+1] for i, value in enumerate(argv) if value == \"-only-testing\"]\n            == [TARGET + \"/\" + method for method in plan[\"methods\"]],"
+        }
+      ],
+      "path": "Tools/AnyEnginePort/native_ui_transition_contract.py",
+      "whole_file_inverse_exact": true
+    },
+    {
+      "after_sha256": "9ee60b309f4a5f43741bd3b55d7e03222e21519c8157aca5a6c99141e3fba4d7",
+      "before_sha256": "9ae7d9f96becd50c18b852b00fd876593eba329f6e44c13748f3c8783069215a",
+      "changes": [
+        {
+          "after": "command += [\"-only-testing:\" + contract.TARGET + \"/\" + method]",
+          "before": "command += [\"-only-testing\", contract.TARGET + \"/\" + method]"
+        }
+      ],
+      "path": "Tools/AnyEnginePort/native_ui_transition.py",
+      "whole_file_inverse_exact": true
+    },
+    {
+      "after_sha256": "a0af5e264ac926ce855f413ab59ae610990068a06fb94a59fee53e18b7a5e62d",
+      "before_sha256": "d0355d50e5cb11aad05aa6b60a25b50108794d9b70e4f94dbac030cc235b7cce",
+      "changes": [
+        {
+          "after": "self.assertEqual([token for token in argv if token.startswith(\"-only-testing:\")],\n                                         [\"-only-testing:\" + contract.TARGET + \"/\" + name for name in contract.STAGES[stage][2]])",
+          "before": "self.assertEqual([argv[i+1] for i, token in enumerate(argv) if token == \"-only-testing\"],\n                                         [contract.TARGET + \"/\" + name for name in contract.STAGES[stage][2]])"
+        }
+      ],
+      "path": "Tools/AnyEnginePort/test_native_ui_transition_candidate.py",
+      "whole_file_inverse_exact": true
+    }
+  ],
+  "scope": "PRE_EXECUTION_KNOWN_NATIVE_COLON_SELECTOR_CORRECTION"
+}

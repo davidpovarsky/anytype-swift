@@ -1,0 +1,154 @@
+{
+  "baseline": "26b61bbee7dac17339a90111602c7ec83c7844e4",
+  "central": [
+    {
+      "after": "          - sdk06-tagged-continuation\n          - sdk06-original-native-continuation\n",
+      "before": "          - sdk06-tagged-continuation\n"
+    },
+    {
+      "after": "  sdk06-tagged-continuation:\n    if: ${{ inputs.route == 'sdk06-tagged-continuation' }}\n    uses: ./.github/workflows/pinkha-sdk06-tagged-continuation.yml\n\n  sdk06-original-native-continuation:\n    if: ${{ inputs.route == 'sdk06-original-native-continuation' }}\n    uses: ./.github/workflows/pinkha-sdk06-original-native-continuation.yml\n",
+      "before": "  sdk06-tagged-continuation:\n    if: ${{ inputs.route == 'sdk06-tagged-continuation' }}\n    uses: ./.github/workflows/pinkha-sdk06-tagged-continuation.yml\n"
+    }
+  ],
+  "files": {
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": [
+      {
+        "after": "def execute(args, receipt, *, build_context=None, sdk06_original_native=None):",
+        "before": "def execute(args, receipt, *, build_context=None):",
+        "label": "explicit_original_native_keyword"
+      },
+      {
+        "after": "    sdk_original_plan = getattr(args, \"sdk06_original_native_tagged_plan\", None)\n    if sdk06_original_native is not None:\n        from sdk06_original_native import SDK06OriginalNativeContext\n        from sdk06_original_tagged_selector import OriginalNativeTaggedSelectionPlan\n        require(type(sdk06_original_native) is SDK06OriginalNativeContext\n                and type(sdk_original_plan) is OriginalNativeTaggedSelectionPlan\n                and sdk_original_plan.origin is sdk06_original_native\n                and build_context is None and sdk_selector_plan is None and sdk_tagged_plan is None\n                and args.lane == \"hanlin-native\" and args.device == \"ipad\" and args.language == \"en\"\n                and shared_editor is not None and acknowledgement is not None,\n                \"Original-native SDK continuation requires its exact sealed scope\")\n        sdk_original_plan.verify()\n    else:\n        require(sdk_original_plan is None, \"Original-native selector requires its exact origin\")\n    hanlin_lane = HANLIN_LANES.get(args.lane)\n    source_methods(app, selection[\"methods\"])",
+        "before": "    hanlin_lane = HANLIN_LANES.get(args.lane)\n    source_methods(app, selection[\"methods\"])",
+        "label": "sealed_original_plan"
+      },
+      {
+        "after": "    if not original_products and sdk06_original_native is None:\n        require_source_identity(head, os.environ.get(\"GITHUB_SHA\"),",
+        "before": "    if not original_products:\n        require_source_identity(head, os.environ.get(\"GITHUB_SHA\"),",
+        "label": "separate_current_identity"
+      },
+      {
+        "after": "            and preflight.get(\"source_sha\") == (sdk06_original_native.execution_binding[\"source_sha\"]\n                if sdk06_original_native is not None else (build_context.origin.control_sha if original_products else head))",
+        "before": "            and preflight.get(\"source_sha\") == (build_context.origin.control_sha if original_products else head)",
+        "label": "current_preflight_original_app"
+      },
+      {
+        "after": "    if original_products:\n        build_context.validate_execution_identity(app, preflight)\n    if sdk06_original_native is not None:\n        sdk06_original_native.validate_execution_identity(app, preflight)\n    selected = preflight[\"selected\"][args.device]",
+        "before": "    if original_products:\n        build_context.validate_execution_identity(app, preflight)\n    selected = preflight[\"selected\"][args.device]",
+        "label": "original_native_identity"
+      },
+      {
+        "after": "    receipt.update(source_sha=(sdk06_original_native.execution_binding[\"source_sha\"]\n                   if sdk06_original_native is not None else head),\n                   run_id=os.environ[\"GITHUB_RUN_ID\"], run_attempt=os.environ[\"GITHUB_RUN_ATTEMPT\"],\n                   kit_sha=shared.KIT, **binding, selection=selection,",
+        "before": "    receipt.update(source_sha=head, run_id=os.environ[\"GITHUB_RUN_ID\"], run_attempt=os.environ[\"GITHUB_RUN_ATTEMPT\"],\n                   kit_sha=shared.KIT, **binding, selection=selection,",
+        "label": "separate_controller_receipt"
+      },
+      {
+        "after": "                   candidate_input_hashes=identity[\"hashes\"], runtime_installation=installation, phase=\"BUILD\")\n    if sdk06_original_native is not None:\n        receipt.update(app_source_sha=head, **sdk06_original_native.record_fields())\n    shared.write(evidence / \"selection-plan.json\", selection)",
+        "before": "                   candidate_input_hashes=identity[\"hashes\"], runtime_installation=installation, phase=\"BUILD\")\n    shared.write(evidence / \"selection-plan.json\", selection)",
+        "label": "explicit_app_origin"
+      },
+      {
+        "after": "    if build_context is None and sdk06_original_native is None:\n        shared.prepare_source_cache(app, derived)",
+        "before": "    if build_context is None:\n        shared.prepare_source_cache(app, derived)",
+        "label": "no_native_source_cache"
+      },
+      {
+        "after": "    if sdk06_original_native is not None:\n        require(derived == sdk06_original_native.derived, \"Original native restoration directory differs\")\n        sdk06_original_native.verify_native_build(app, head, identity, flags, configuration_name)\n    elif build_context is None:\n        shared.command([*base, \"-project\", \"Anytype.xcodeproj\", \"-scheme\", \"Anytype\",",
+        "before": "    if build_context is None:\n        shared.command([*base, \"-project\", \"Anytype.xcodeproj\", \"-scheme\", \"Anytype\",",
+        "label": "no_native_rebuild"
+      },
+      {
+        "after": "    if sdk06_original_native is not None:\n        receipt.update(native_build_flags=flags, **sdk06_original_native.record_fields())\n    elif original_products:\n        receipt.update(original_native_build_succeeded=True, native_builds_this_run=0, native_build_flags=flags,",
+        "before": "    if original_products:\n        receipt.update(original_native_build_succeeded=True, native_builds_this_run=0, native_build_flags=flags,",
+        "label": "original_build_observation"
+      },
+      {
+        "after": "    if shared_editor and sdk06_original_native is None:\n        receipt[\"early_products\"] = early_build_products.capture(",
+        "before": "    if shared_editor:\n        receipt[\"early_products\"] = early_build_products.capture(",
+        "label": "no_native_recapture"
+      },
+      {
+        "after": "    if sdk06_original_native is not None:\n        receipt[\"original_kit_binding\"] = sdk06_original_native.verify_kit()\n    elif original_products:\n        receipt[\"original_kit_binding\"] = build_context.verify_kit()",
+        "before": "    if original_products:\n        receipt[\"original_kit_binding\"] = build_context.verify_kit()",
+        "label": "original_kit_binding"
+      },
+      {
+        "after": "    native_configuration = (sdk06_original_native.native_configuration if sdk06_original_native is not None\n                            else (build_context.native_configuration if original_products\n                            else shared.test_configuration(derived / \"Build/Products\", \"AnytypeTests\")))",
+        "before": "    native_configuration = (build_context.native_configuration if original_products\n                            else shared.test_configuration(derived / \"Build/Products\", \"AnytypeTests\"))",
+        "label": "exact_host_descriptor"
+      },
+      {
+        "after": "    run_selection = (sdk06_original_native.run_selection if sdk06_original_native is not None\n                     else (shared.run_selection if build_context is None else build_context.run_selection))",
+        "before": "    run_selection = shared.run_selection if build_context is None else build_context.run_selection",
+        "label": "original_native_selection_adapter"
+      },
+      {
+        "after": "            if sdk_original_plan is not None:\n                receipt[\"shared_editor_components\"] = shared_editor_existing_build.execute(\n                    app, native_configuration, udid, built, component_evidence, shared,\n                    original_tagged_plan=sdk_original_plan)\n            elif sdk_tagged_plan is not None:\n                receipt[\"shared_editor_components\"] = shared_editor_existing_build.execute(",
+        "before": "            if sdk_tagged_plan is not None:\n                receipt[\"shared_editor_components\"] = shared_editor_existing_build.execute(",
+        "label": "tag_only_component_route"
+      },
+      {
+        "after": "    if sdk06_original_native is not None:\n        receipt[\"first_ui_only_build\"] = sdk06_original_native.build_first_ui(\n            base, flags, selection[\"methods\"], ui_derived, shared)\n    elif build_context is None:\n        project = shared.ui_only_project(app)\n        shared.command([*base, \"-project\", str(project), \"-scheme\", \"PinkhaPrebuiltUI\", \"-derivedDataPath\", str(ui_derived),",
+        "before": "    if build_context is None:\n        project = shared.ui_only_project(app)\n        shared.command([*base, \"-project\", str(project), \"-scheme\", \"PinkhaPrebuiltUI\", \"-derivedDataPath\", str(ui_derived),",
+        "label": "first_ui_only_build"
+      },
+      {
+        "after": "    if sdk_selector_plan is not None or sdk_tagged_plan is not None or sdk06_original_native is not None:\n        from sdk06_qualified_continuation import capture_later_ui",
+        "before": "    if sdk_selector_plan is not None or sdk_tagged_plan is not None:\n        from sdk06_qualified_continuation import capture_later_ui",
+        "label": "later_ui_archive_only"
+      },
+      {
+        "after": "            source_sha=head, run_id=receipt[\"run_id\"], run_attempt=receipt[\"run_attempt\"], build_flags=flags)\n        if sdk06_original_native is not None:\n            receipt[\"ui_early_products\"].update(\n                original_native_origin=sdk06_original_native.origin_reference(),\n                controller_source_sha=sdk06_original_native.execution_binding[\"source_sha\"],\n                ui_build_origin=\"FIRST_CURRENT_UI_ONLY_BUILD_FOR_ORIGINAL_APP_SOURCE\")\n        shared.write(evidence / \"execution.json\", receipt)\n    receipt[\"phase\"] = \"UI_RUNTIME_PREPARATION\"",
+        "before": "            source_sha=head, run_id=receipt[\"run_id\"], run_attempt=receipt[\"run_attempt\"], build_flags=flags)\n        shared.write(evidence / \"execution.json\", receipt)\n    receipt[\"phase\"] = \"UI_RUNTIME_PREPARATION\"",
+        "label": "distinct_ui_archive_source"
+      }
+    ],
+    "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py": [
+      {
+        "after": "def execute(app, configuration, udid, expected_app, evidence, shared, *, selector_plan=None, tagged_plan=None,\n            original_tagged_plan=None):",
+        "before": "def execute(app, configuration, udid, expected_app, evidence, shared, *, selector_plan=None, tagged_plan=None):",
+        "label": "exact_original_tagged_parameter"
+      },
+      {
+        "after": "    host.require(selector_plan is None or tagged_plan is None, \"Selector routes cannot be combined\")\n    host.require(original_tagged_plan is None or (selector_plan is None and tagged_plan is None),\n                 \"Original-native tag selection cannot be combined with another route\")",
+        "before": "    host.require(selector_plan is None or tagged_plan is None, \"Selector routes cannot be combined\")",
+        "label": "exclusive_route_guard"
+      },
+      {
+        "after": "    def verify_binding():\n        if original_tagged_plan is not None:\n            original_tagged_plan.verify()\n        if tagged_plan is not None:",
+        "before": "    def verify_binding():\n        if tagged_plan is not None:",
+        "label": "verify_original_source"
+      },
+      {
+        "after": "    build_mode = (\"ORIGINAL_NATIVE_PRODUCTS_EXACT_RESTORATION\" if original_tagged_plan is not None\n                  else \"SAME_JOB_EXISTING_SDK06_BUILD\")\n    receipt = {\"status\": \"FAIL\", \"phase\": \"ENUMERATION_PRECHECK\", \"profile\": PROFILE,\n               \"build_mode\": build_mode, \"additional_app_builds\": 0,",
+        "before": "    receipt = {\"status\": \"FAIL\", \"phase\": \"ENUMERATION_PRECHECK\", \"profile\": PROFILE,\n               \"build_mode\": \"SAME_JOB_EXISTING_SDK06_BUILD\", \"additional_app_builds\": 0,",
+        "label": "record_explicit_build_origin"
+      },
+      {
+        "after": "               \"source\": source, \"built_products\": hashes}\n    if original_tagged_plan is not None:\n        receipt[\"original_native_origin\"] = original_tagged_plan.origin.origin_reference()\n    shared.write(evidence / \"execution.json\", receipt)",
+        "before": "               \"source\": source, \"built_products\": hashes}\n    shared.write(evidence / \"execution.json\", receipt)",
+        "label": "record_original_reference"
+      },
+      {
+        "after": "        if original_tagged_plan is not None:\n            from sdk06_original_tagged_selector import OriginalNativeTaggedSelectionPlan\n            host.require(type(original_tagged_plan) is OriginalNativeTaggedSelectionPlan,\n                         \"An exact sealed original-native tag plan is required\")\n            enumeration = original_tagged_plan.enumerate_current(app, base, evidence, shared, source)\n        elif tagged_plan is not None:\n            from sdk06_tagged_selector import TaggedSelectionPlan",
+        "before": "        if tagged_plan is not None:\n            from sdk06_tagged_selector import TaggedSelectionPlan",
+        "label": "enumerate_original_tag"
+      },
+      {
+        "after": "        if original_tagged_plan is not None:\n            command = [*selected_base, *original_tagged_plan.execution_arguments(enumeration, selected_base),\n                       \"-resultBundlePath\", str(bundle)]\n        elif tagged_plan is not None:\n            command = [*selected_base, *tagged_plan.execution_arguments(enumeration, selected_base),",
+        "before": "        if tagged_plan is not None:\n            command = [*selected_base, *tagged_plan.execution_arguments(enumeration, selected_base),",
+        "label": "execute_same_tag_only_command"
+      },
+      {
+        "after": "                \"build_mode\": build_mode, \"additional_app_builds\": 0,",
+        "before": "                \"build_mode\": \"SAME_JOB_EXISTING_SDK06_BUILD\", \"additional_app_builds\": 0,",
+        "label": "component_origin_mode"
+      },
+      {
+        "after": "            if original_tagged_plan is not None:\n                component_receipt[\"original_native_origin\"] = original_tagged_plan.origin.origin_reference()\n            shared.write(path, component_receipt)\n            component_receipts[label] = {\"path\": str(path), \"sha256\": shared.digest(path)}",
+        "before": "            shared.write(path, component_receipt)\n            component_receipts[label] = {\"path\": str(path), \"sha256\": shared.digest(path)}",
+        "label": "component_original_reference"
+      }
+    ]
+  }
+}

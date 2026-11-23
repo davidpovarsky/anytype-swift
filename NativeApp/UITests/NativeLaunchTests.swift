@@ -256,10 +256,8 @@ final class NativeLaunchTests: XCTestCase {
         reopenOwnedWorkspace(app, spaceName: spaceName)
         tapWhenEnabled(app.buttons[folderA].firstMatch)
         let oldRow = app.buttons[updatedName].firstMatch
-        waitUntilEnabled(oldRow)
-        oldRow.press(forDuration: 1.1)
-        tapWhenEnabled(app.buttons["any-native-hierarchy-move"])
-        tapWhenEnabled(app.buttons[folderB].firstMatch)
+        guard moveHierarchyItemWithObservedTransition(app, source: oldRow,
+                                                       destinationName: folderB) else { return }
         waitFor(NSPredicate(format: "exists == false"), object: oldRow, timeout: 45)
         let library = app.descendants(matching: .any).matching(identifier: "any-native-library").firstMatch
         waitFor(NSPredicate(format: "exists == true AND value == %@", "ready"), object: library, timeout: 45)
@@ -525,11 +523,16 @@ final class NativeLaunchTests: XCTestCase {
         // The original 52-point move ended after 104 ms with no destination
         // dwell and left the context menu open. Give the real native drag/drop
         // interaction time to enter the target before lifting the pointer.
+        recordNativeHierarchyTransition(app, phase: "before_original_drag",
+                                        source: source, destination: destination)
         source.press(forDuration: 1.1, thenDragTo: destination,
                      withVelocity: XCUIGestureVelocity(rawValue: 100),
                      thenHoldForDuration: 0.6)
         let movedRow = app.buttons[rowIdentifier]
-        waitFor(NSPredicate(format: "exists == false"), object: movedRow, timeout: 45)
+        guard waitForObservedHierarchy(app,
+                predicate: NSPredicate(format: "exists == false"), object: movedRow,
+                timeout: 45, phase: "original_drag_row_disappearance",
+                source: movedRow, destination: destination) else { return }
         let library = app.descendants(matching: .any)
             .matching(identifier: "any-native-library").firstMatch
         waitFor(NSPredicate(format: "exists == true AND value == %@", "ready"),
@@ -556,7 +559,7 @@ final class NativeLaunchTests: XCTestCase {
         XCTAssertEqual(blocks.count, 1)
     }
 
-    func testSourceDragIntoNativeEditorPreservesTargetAndColdReopens() {
+    func testSourceDragIntoNativeEditorPreservesTargetAndColdReopens() throws {
         let scope = UUID()
         let suffix = String(scope.uuidString.prefix(8))
         let app = makeApplication(scope: scope)
@@ -567,7 +570,7 @@ final class NativeLaunchTests: XCTestCase {
         app.launch()
         defer { app.terminate() }
         createOwnedWorkspace(app, spaceName: spaceName)
-        createNamedItem(app, action: "any-native-new-document", title: documentName)
+        try createNamedItemWithObservedTransition(app, action: "any-native-new-document", title: documentName)
         tapWhenEnabled(app.buttons["any-native-add-paragraph"], timeout: 60)
 
         let blocks = app.textViews.matching(NSPredicate(
@@ -874,7 +877,7 @@ final class NativeLaunchTests: XCTestCase {
         app.launch()
         defer { app.terminate() }
         createOwnedWorkspace(app, spaceName: spaceName)
-        createNamedItem(app, action: "any-native-new-document", title: documentName)
+        try createNamedItemWithObservedTransition(app, action: "any-native-new-document", title: documentName)
 
         tapWhenEnabled(app.buttons["any-native-add-paragraph"], timeout: 60)
         let blocks = app.textViews.matching(NSPredicate(
@@ -1382,6 +1385,299 @@ final class NativeLaunchTests: XCTestCase {
         waitFor(NSPredicate(format: "value == %@", "1"), object: row, timeout: 10)
     }
 
+    // BEGIN_FAILED_CREATE_TRANSITION_CANDIDATE_451483
+    // Test-runner-only transition/hittability candidate. The original run does
+    // not establish a duplicate identifier or a native creation failure.
+    private enum NativeCreateTransitionError: Error {
+        case unsupportedAction, controlNotReady(String), ambiguousControl(String)
+        case controlChanged(String), nameSheetTransitionNotObserved
+    }
+
+    private func recordNativeCreateTransition(_ app: XCUIApplication, phase: String) {
+        do {
+            try requireArchiveObservationPastOnboarding(app)
+            let identifiers = [
+                "any-native-create-menu", "any-native-new-document",
+                "any-native-new-note", "any-native-new-folder",
+                "any-native-name-input", "any-native-name-confirm"
+            ]
+            var controls: [[String: Any]] = []
+            for identifier in identifiers {
+                let query = app.descendants(matching: .any).matching(identifier: identifier)
+                let count = query.count
+                var candidates: [[String: Any]] = []
+                for element in query.allElementsBoundByIndex.prefix(12) {
+                    let frame = element.frame
+                    let numbers = [Double(frame.origin.x), Double(frame.origin.y),
+                                   Double(frame.width), Double(frame.height)]
+                    candidates.append([
+                        "type": element.elementType.rawValue,
+                        "label": element.label, "exists": element.exists,
+                        "enabled": element.isEnabled, "hittable": element.isHittable,
+                        "frame": numbers.allSatisfy(\.isFinite) ? numbers : [],
+                        "frameFinite": numbers.allSatisfy(\.isFinite)
+                    ])
+                }
+                controls.append(["identifier": identifier, "count": count,
+                                 "candidates": candidates, "truncated": count > 12])
+            }
+            let data = try JSONSerialization.data(withJSONObject: [
+                "schema": "native-create-transition-observation/v1",
+                "phase": phase, "controls": controls,
+                "duplicateIdentifierRootCauseEstablished": false
+            ], options: [.sortedKeys])
+            let metadata = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
+            metadata.name = "NATIVE_CREATE_TRANSITION_" + phase + "_controls"
+            metadata.lifetime = .keepAlways
+            add(metadata)
+            try requireArchiveObservationPastOnboarding(app)
+            let tree = String(decoding: Data(app.debugDescription.utf8).prefix(131_072), as: UTF8.self)
+            try requireArchiveObservationPastOnboarding(app)
+            let ax = XCTAttachment(string: tree)
+            ax.name = "NATIVE_CREATE_TRANSITION_" + phase + "_private_AX"
+            ax.lifetime = .keepAlways
+            add(ax)
+            let screen = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+            screen.name = "NATIVE_CREATE_TRANSITION_" + phase + "_private_screen"
+            screen.lifetime = .keepAlways
+            add(screen)
+        } catch {
+            // Diagnostic unavailability cannot replace the first UI failure or
+            // expose onboarding/recovery content.
+            let unavailable = XCTAttachment(string: "Post-onboarding observation unavailable: " + phase)
+            unavailable.name = "NATIVE_CREATE_TRANSITION_" + phase + "_observation_unavailable"
+            unavailable.lifetime = .keepAlways
+            add(unavailable)
+        }
+    }
+
+    private func createNamedItemWithObservedTransition(_ app: XCUIApplication,
+                                                       action: String, title: String) throws {
+        guard action == "any-native-new-document" else {
+            throw NativeCreateTransitionError.unsupportedAction
+        }
+        try requireArchiveObservationPastOnboarding(app)
+        let fieldQuery = app.textFields.matching(identifier: "any-native-name-input")
+        guard fieldQuery.count == 0 else {
+            recordNativeCreateTransition(app, phase: "unexpected_existing_name_input")
+            throw NativeCreateTransitionError.controlChanged("initial_name_input")
+        }
+
+        func stableReady(_ query: XCUIElementQuery, phase: String,
+                         timeout: TimeInterval, labels: Set<String>? = nil) throws -> XCUIElement {
+            var previousFrame: CGRect?
+            var firstMatchingSample: TimeInterval?
+            let predicate = NSPredicate { _, _ in
+                guard query.count == 1 else {
+                    previousFrame = nil; firstMatchingSample = nil
+                    return false
+                }
+                let element = query.element(boundBy: 0)
+                let frame = element.frame
+                guard element.exists, element.isEnabled, element.isHittable,
+                      labels.map({ $0.contains(element.label) }) ?? true,
+                      !frame.isNull, !frame.isInfinite, frame.width > 0, frame.height > 0 else {
+                    previousFrame = nil; firstMatchingSample = nil
+                    return false
+                }
+                let now = ProcessInfo.processInfo.systemUptime
+                if previousFrame == frame, let firstMatchingSample,
+                   now - firstMatchingSample >= 0.15 { return true }
+                if previousFrame != frame || firstMatchingSample == nil {
+                    previousFrame = frame; firstMatchingSample = now
+                }
+                return false
+            }
+            let expectation = XCTNSPredicateExpectation(predicate: predicate, object: app)
+            guard XCTWaiter.wait(for: [expectation], timeout: timeout) == .completed else {
+                recordNativeCreateTransition(app, phase: phase + "_not_ready")
+                if query.count > 1 { throw NativeCreateTransitionError.ambiguousControl(phase) }
+                throw NativeCreateTransitionError.controlNotReady(phase)
+            }
+            guard query.count == 1 else {
+                recordNativeCreateTransition(app, phase: phase + "_changed")
+                throw NativeCreateTransitionError.controlChanged(phase)
+            }
+            return query.element(boundBy: 0)
+        }
+
+        let toolbar = try stableReady(app.buttons.matching(identifier: "any-native-create-menu"),
+                                      phase: "toolbar", timeout: 60)
+        toolbar.tap()
+        let actionQuery = app.buttons.matching(identifier: action)
+        let labels: Set<String> = [
+            "New document",
+            "\u{05DE}\u{05E1}\u{05DE}\u{05DA} \u{05D7}\u{05D3}\u{05E9}"
+        ]
+        let menuAction = try stableReady(actionQuery, phase: "menu_action", timeout: 30, labels: labels)
+        let selectedFrame = menuAction.frame
+        recordNativeCreateTransition(app, phase: "before_menu_action")
+        guard actionQuery.count == 1, menuAction.exists, menuAction.isEnabled,
+              menuAction.isHittable, menuAction.frame == selectedFrame,
+              labels.contains(menuAction.label) else {
+            recordNativeCreateTransition(app, phase: "menu_action_changed_before_tap")
+            throw NativeCreateTransitionError.controlChanged("menu_action_before_tap")
+        }
+        menuAction.tap() // One actual UI action; no retap or backend fallback.
+
+        let confirmQuery = app.buttons.matching(identifier: "any-native-name-confirm")
+        let transition = NSPredicate { _, _ in
+            let menu = actionQuery.firstMatch
+            guard !menu.exists || !menu.isHittable,
+                  fieldQuery.count == 1, confirmQuery.count == 1 else { return false }
+            let field = fieldQuery.element(boundBy: 0)
+            let confirm = confirmQuery.element(boundBy: 0)
+            return field.exists && field.isEnabled && field.isHittable
+                && confirm.exists && confirm.isEnabled && confirm.isHittable
+        }
+        let expectation = XCTNSPredicateExpectation(predicate: transition, object: app)
+        guard XCTWaiter.wait(for: [expectation], timeout: 30) == .completed else {
+            recordNativeCreateTransition(app, phase: "name_sheet_transition_not_observed")
+            throw NativeCreateTransitionError.nameSheetTransitionNotObserved
+        }
+        recordNativeCreateTransition(app, phase: "name_sheet_ready")
+        guard fieldQuery.count == 1, fieldQuery.firstMatch.isHittable else {
+            recordNativeCreateTransition(app, phase: "name_input_changed_before_typing")
+            throw NativeCreateTransitionError.controlChanged("name_input_before_typing")
+        }
+        let field = fieldQuery.element(boundBy: 0)
+        field.tap()
+        field.typeText(title)
+        let confirm = try stableReady(confirmQuery, phase: "name_confirm", timeout: 30)
+        confirm.tap()
+    }
+    // END_FAILED_CREATE_TRANSITION_CANDIDATE_451483
+
+
+    // BEGIN_FAILED_HIERARCHY_OBSERVATION_CANDIDATE_451483
+    private func recordNativeHierarchyTransition(_ app: XCUIApplication, phase: String,
+                                                  source: XCUIElement, destination: XCUIElement) {
+        do {
+            try requireArchiveObservationPastOnboarding(app)
+            func control(_ element: XCUIElement) -> [String: Any] {
+                let exists = element.exists
+                guard exists else { return ["exists": false, "propertiesResolved": false] }
+                let frame = element.frame
+                let numbers = [Double(frame.origin.x), Double(frame.origin.y),
+                               Double(frame.width), Double(frame.height)]
+                return [
+                    "identifier": element.identifier, "label": element.label,
+                    "type": element.elementType.rawValue, "exists": true, "propertiesResolved": true,
+                    "enabled": element.isEnabled, "hittable": element.isHittable,
+                    "frame": numbers.allSatisfy(\.isFinite) ? numbers : [],
+                    "frameFinite": numbers.allSatisfy(\.isFinite)
+                ]
+            }
+            let libraries = app.descendants(matching: .any).matching(identifier: "any-native-library")
+            var states: [[String: Any]] = []
+            for library in libraries.allElementsBoundByIndex.prefix(8) {
+                var row = control(library)
+                if row["exists"] as? Bool == true { row["value"] = library.value as? String ?? "" }
+                states.append(row)
+            }
+            let record: [String: Any] = [
+                "schema": "native-hierarchy-transition-observation/v1",
+                "phase": phase, "source": control(source), "destination": control(destination),
+                "libraryCount": libraries.count, "libraryStates": states,
+                "visibleProgressIndicatorCount": app.progressIndicators.allElementsBoundByIndex.filter(\.exists).count,
+                "alerts": app.alerts.allElementsBoundByIndex.prefix(8).map(control),
+                "moveActionCount": app.buttons.matching(identifier: "any-native-hierarchy-move").count,
+                "nativeOrGestureRootCauseEstablished": false
+            ]
+            let metadata = XCTAttachment(data: try JSONSerialization.data(withJSONObject: record, options: [.sortedKeys]),
+                                         uniformTypeIdentifier: "public.json")
+            metadata.name = "NATIVE_HIERARCHY_TRANSITION_" + phase + "_controls"
+            metadata.lifetime = .keepAlways
+            add(metadata)
+            try requireArchiveObservationPastOnboarding(app)
+            let ax = XCTAttachment(string: String(decoding: Data(app.debugDescription.utf8).prefix(131_072), as: UTF8.self))
+            ax.name = "NATIVE_HIERARCHY_TRANSITION_" + phase + "_private_AX"
+            ax.lifetime = .keepAlways
+            add(ax)
+            try requireArchiveObservationPastOnboarding(app)
+            let screen = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+            screen.name = "NATIVE_HIERARCHY_TRANSITION_" + phase + "_private_screen"
+            screen.lifetime = .keepAlways
+            add(screen)
+        } catch {
+            let unavailable = XCTAttachment(string: "Post-onboarding hierarchy observation unavailable: " + phase)
+            unavailable.name = "NATIVE_HIERARCHY_TRANSITION_" + phase + "_observation_unavailable"
+            unavailable.lifetime = .keepAlways
+            add(unavailable)
+        }
+    }
+
+    private func waitForObservedHierarchy(_ app: XCUIApplication, predicate: NSPredicate,
+                                          object: Any, timeout: TimeInterval, phase: String,
+                                          source: XCUIElement, destination: XCUIElement,
+                                          file: StaticString = #filePath, line: UInt = #line) -> Bool {
+        // Exactly one wait with the caller's original budget. Capture failure
+        // evidence before XCTest reports the same first unmet UI predicate.
+        let expectation = XCTNSPredicateExpectation(predicate: predicate, object: object)
+        let result = XCTWaiter.wait(for: [expectation], timeout: timeout)
+        guard result == .completed else {
+            recordNativeHierarchyTransition(app, phase: phase + "_not_ready",
+                                            source: source, destination: destination)
+            XCTAssertEqual(result, .completed, "Expected UI state was not reached: " + phase,
+                           file: file, line: line)
+            return false
+        }
+        return true
+    }
+
+    private func moveHierarchyItemWithObservedTransition(_ app: XCUIApplication, source: XCUIElement,
+                                                         destinationName: String) -> Bool {
+        let move = app.buttons.matching(identifier: "any-native-hierarchy-move")
+        let destinations = app.buttons.matching(NSPredicate(format: "label == %@", destinationName))
+        let destination = destinations.firstMatch
+        recordNativeHierarchyTransition(app, phase: "before_context_menu",
+                                        source: source, destination: destination)
+        guard waitForObservedHierarchy(app,
+                predicate: NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
+                object: source, timeout: 30, phase: "source_for_context_menu",
+                source: source, destination: destination) else { return false }
+        source.press(forDuration: 1.1) // Original actual context-menu gesture.
+        let menuReady = NSPredicate { _, _ in
+            move.count == 1 && move.firstMatch.exists && move.firstMatch.isEnabled
+                && move.firstMatch.isHittable
+        }
+        guard waitForObservedHierarchy(app, predicate: menuReady, object: app, timeout: 30,
+                phase: "move_context_action", source: source, destination: destination) else { return false }
+        recordNativeHierarchyTransition(app, phase: "before_move_action",
+                                        source: source, destination: destination)
+        guard move.count == 1, move.firstMatch.isHittable else {
+            recordNativeHierarchyTransition(app, phase: "move_action_changed",
+                                            source: source, destination: destination)
+            XCTFail("Move context action changed before its single tap")
+            return false
+        }
+        move.element(boundBy: 0).tap()
+        let titles = ["Move to folder",
+                      "\u{05D4}\u{05E2}\u{05D1}\u{05E8}\u{05D4} \u{05DC}\u{05EA}\u{05D9}\u{05E7}\u{05D9}\u{05D9}\u{05D4}"]
+        let sheet = app.navigationBars.matching(NSPredicate(format: "identifier IN %@ OR label IN %@", titles, titles))
+        let sheetReady = NSPredicate { _, _ in
+            sheet.count == 1 && sheet.firstMatch.exists
+                && destinations.count == 1 && destination.exists
+                && destination.isEnabled && destination.isHittable
+        }
+        // The original destination lookup had 30 seconds. Sheet and folder
+        // readiness share that same wait; no additional transition timeout.
+        guard waitForObservedHierarchy(app, predicate: sheetReady, object: app, timeout: 30,
+                phase: "move_sheet_destination", source: source, destination: destination) else { return false }
+        recordNativeHierarchyTransition(app, phase: "before_move_destination",
+                                        source: source, destination: destination)
+        guard sheet.count == 1, sheet.firstMatch.exists, destinations.count == 1,
+              destination.exists, destination.isEnabled, destination.isHittable else {
+            recordNativeHierarchyTransition(app, phase: "move_destination_changed",
+                                            source: source, destination: destination)
+            XCTFail("Move sheet destination changed before its single tap")
+            return false
+        }
+        destination.tap()
+        return true
+    }
+    // END_FAILED_HIERARCHY_OBSERVATION_CANDIDATE_451483
+
     private func createNamedItem(_ app: XCUIApplication, action: String, title: String) {
         tapWhenEnabled(app.buttons["any-native-create-menu"], timeout: 60)
         tapWhenEnabled(app.buttons[action])
@@ -1463,9 +1759,100 @@ final class NativeLaunchTests: XCTestCase {
             return query.firstMatch
         }
         func requireArchiveFilesDirectory(phase: String) throws {
+            // One total deadline includes every navigation query and action.
+            // A missing/unreachable Exports location remains a real failure.
+            let started = ProcessInfo.processInfo.systemUptime
+            let deadline = started + 15
+            var navigation: [String] = []
+            var observedExports = false
+            defer {
+                let record: [String: Any] = [
+                    "schema": "archive-files-directory-navigation/v1",
+                    "phase": phase, "budgetSeconds": 15,
+                    "elapsedSeconds": ProcessInfo.processInfo.systemUptime - started,
+                    "attemptedActions": navigation, "observedExports": observedExports,
+                    "fallbackOrRetry": false
+                ]
+                if let data = try? JSONSerialization.data(withJSONObject: record, options: [.sortedKeys]) {
+                    let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
+                    attachment.name = "ARCHIVE_ROUNDTRIP_" + phase + "_directory_navigation"
+                    attachment.lifetime = .keepAlways
+                    self.add(attachment)
+                }
+            }
+            func fail(_ stage: String, ambiguous: Bool = false) throws -> Never {
+                do { try captureFilesState(phase + "_" + stage) }
+                catch {
+                    let unavailable = XCTAttachment(string: "Post-onboarding Files observation unavailable.")
+                    unavailable.name = "ARCHIVE_ROUNDTRIP_" + phase + "_observation_unavailable"
+                    unavailable.lifetime = .keepAlways
+                    self.add(unavailable)
+                }
+                if ambiguous { throw FileJourneyError.ambiguousControl(phase + "_" + stage) }
+                throw FileJourneyError.controlNotReady(phase + "_" + stage)
+            }
+            func remaining(_ stage: String) throws -> TimeInterval {
+                let value = deadline - ProcessInfo.processInfo.systemUptime
+                guard value > 0 else { try fail(stage + "_directory_budget_exhausted") }
+                return value
+            }
+            func ready(_ query: XCUIElementQuery, stage: String,
+                       hittable: Bool = true) throws -> XCUIElement {
+                let budget = try remaining(stage)
+                let format = hittable
+                    ? "exists == true AND enabled == true AND hittable == true"
+                    : "exists == true"
+                let expectation = XCTNSPredicateExpectation(predicate: NSPredicate(format: format),
+                                                           object: query.firstMatch)
+                guard XCTWaiter.wait(for: [expectation], timeout: budget) == .completed else {
+                    try fail(stage + "_NOT_READY")
+                }
+                _ = try remaining(stage)
+                guard query.count == 1 else { try fail(stage + "_AMBIGUOUS", ambiguous: true) }
+                _ = try remaining(stage + "_resolved")
+                return query.element(boundBy: 0)
+            }
             let directory = app.buttons.matching(NSPredicate(
                 format: "label == %@ OR label BEGINSWITH %@", "Exports", "Exports,"))
-            _ = try uniqueReady(directory, phase: phase + "_directory", timeout: 15)
+            if directory.count == 1, directory.firstMatch.exists,
+               directory.firstMatch.isEnabled, directory.firstMatch.isHittable {
+                _ = try remaining("already_exports")
+                observedExports = true
+                return
+            }
+
+            // This exact Cell is present in the original failed Files AX tree.
+            let local = app.cells.matching(NSPredicate(format: "identifier IN %@", [
+                "DOC.sidebar.item.On My iPad",
+                "DOC.sidebar.item.\u{05D1}-iPad \u{05E9}\u{05DC}\u{05D9}"
+            ]))
+            let localControl = try ready(local, stage: "local_storage_sidebar")
+            _ = try remaining("before_local_storage_sidebar_tap")
+            navigation.append("local_storage_sidebar")
+            localControl.tap()
+            _ = try remaining("after_local_storage_sidebar")
+            let browser = app.otherElements.matching(NSPredicate(
+                format: "identifier BEGINSWITH %@",
+                "DOC.browsingRoot Source: com.apple.FileProvider.LocalStorage, Title: "))
+            let root = try ready(browser, stage: "local_storage_browser", hittable: false)
+            func folder(_ name: String) -> XCUIElementQuery {
+                root.cells.matching(NSPredicate(format: "label == %@ OR label BEGINSWITH %@", name, name + ","))
+            }
+            let pinkha = try ready(folder("Pinkha"), stage: "pinkha_folder")
+            _ = try remaining("before_pinkha_folder_tap")
+            navigation.append("pinkha_folder")
+            pinkha.tap()
+            _ = try remaining("after_pinkha_folder")
+            _ = try ready(app.buttons.matching(NSPredicate(
+                format: "label == %@ OR label BEGINSWITH %@", "Pinkha", "Pinkha,")),
+                stage: "pinkha_breadcrumb")
+            let exports = try ready(folder("Exports"), stage: "exports_folder")
+            _ = try remaining("before_exports_folder_tap")
+            navigation.append("exports_folder")
+            exports.tap()
+            _ = try remaining("after_exports_folder")
+            _ = try ready(directory, stage: "exports_breadcrumb")
+            observedExports = true
         }
         func exportUsingFiles(named filename: String) throws {
             XCTAssertTrue(filename.hasSuffix(".json"))

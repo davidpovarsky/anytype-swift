@@ -1,0 +1,17 @@
+fatal: path '.github/workflows/pinkha-wave15-acceptance.yml' does not exist in 'ec5c0083e6b78948a7adb26bf3d3844215c922d3'
+Traceback (most recent call last):
+  File "/mnt/development/projects/diagnostics/native-ui-transition-root-review-20261123/review-frozen-ec5c008.py", line 60, in <module>
+    req(blob(HEAD,'.github/workflows/pinkha-wave15-acceptance.yml')==blob(BASE,'.github/workflows/pinkha-wave15-acceptance.yml'),'central_untouched')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/diagnostics/native-ui-transition-root-review-20261123/review-frozen-ec5c008.py", line 14, in blob
+    def blob(ref,p): return git('show',ref+':'+p)
+                            ^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/diagnostics/native-ui-transition-root-review-20261123/review-frozen-ec5c008.py", line 13, in git
+    def git(*a): return subprocess.check_output(['git','--no-optional-locks','-C',str(ROOT),*a],timeout=30)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['git', '--no-optional-locks', '-C', '/mnt/development/projects/worktrees/anytype-wave15-native-ui-transition-candidate-20261123', 'show', 'ec5c0083e6b78948a7adb26bf3d3844215c922d3:.github/workflows/pinkha-wave15-acceptance.yml']' returned non-zero exit status 128.

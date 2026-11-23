@@ -1,0 +1,87 @@
+name: Failed native UI transitions with original application
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  native-ui-transition-candidate:
+    name: Five failed scopes with a new UI-only runner and original App
+    runs-on: xcode-27
+    timeout-minutes: 120
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
+      ANY_BUILD_VERSION: v0.5.0-pinkha.1
+      PYTHONDONTWRITEBYTECODE: "1"
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Record current UI controller and immutable application source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/any-patched-evidence
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git rev-parse HEAD > build/any-patched-evidence/control-source-sha.txt
+          printf '%s\n' '4b09cc5478c60c1c6728a54f2a27a115637a835b' > build/any-patched-evidence/application-source-sha.txt
+      - name: Create the exact fresh owned simulator
+        id: simulator
+        run: python3 -B Tools/AnyEnginePort/native_ui_original_products.py create-simulator
+      - name: Admit and restore the original App and Products
+        id: admission
+        if: ${{ !cancelled() && steps.simulator.outcome == 'success' }}
+        run: python3 -B Tools/AnyEnginePort/native_ui_original_products.py admit
+      - name: Finish qualified owned simulator readiness
+        id: readiness
+        if: ${{ !cancelled() && steps.admission.outcome == 'success' }}
+        run: python3 -B Tools/AnyEnginePort/native_ui_original_products_readiness.py
+      - name: Build and preserve only the new UI runner
+        id: runner
+        if: ${{ !cancelled() && steps.readiness.outcome == 'success' }}
+        run: python3 -B Tools/AnyEnginePort/native_ui_transition.py build
+      - name: Prepare the qualified owned Hanlin provider
+        id: provider
+        if: ${{ !cancelled() && steps.runner.outcome == 'success' }}
+        run: |
+          python3 -B Tools/AnyEnginePort/hanlin_fixture_ci.py prepare \
+            --simulator-receipt build/any-patched-evidence/simulator.json \
+            --safe-dir build/any-patched-evidence/hanlin-provider
+      - name: Enumerate and execute the four changed failed methods
+        id: four
+        if: ${{ !cancelled() && steps.provider.outcome == 'success' }}
+        run: python3 -B Tools/AnyEnginePort/native_ui_transition.py execute --stage native-ui-continuation
+      - name: Preserve the actual finite Hanlin transcript result
+        id: provider_verify
+        if: ${{ !cancelled() && steps.provider.outcome == 'success' && steps.four.outcome != 'skipped' }}
+        run: python3 -B Tools/AnyEnginePort/hanlin_fixture_ci.py verify --safe-dir build/any-patched-evidence/hanlin-provider
+      - name: Enumerate and execute the changed Files roundtrip method
+        id: files
+        if: ${{ !cancelled() && steps.provider.outcome == 'success' }}
+        run: python3 -B Tools/AnyEnginePort/native_ui_transition.py execute --stage archive-roundtrip
+      - name: Preserve the original owned provider cleanup result
+        id: provider_cleanup
+        if: always()
+        run: python3 -B Tools/AnyEnginePort/hanlin_fixture_ci.py cleanup --safe-dir build/any-patched-evidence/hanlin-provider
+      - name: Remove only the current owned simulator
+        id: simulator_cleanup
+        if: always()
+        run: python3 -B Tools/AnyEnginePort/native_ui_original_products.py cleanup-simulator
+      - name: Bind all actual outcomes and final original App and runner integrity
+        if: ${{ always() && steps.runner.outcome == 'success' }}
+        run: python3 -B Tools/AnyEnginePort/native_ui_transition.py final
+      - name: Preserve all original current evidence and the new UI Products
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Native-UI-Transition-Candidate-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/any-patched-evidence
+          if-no-files-found: warn
+          retention-days: 30

@@ -389,7 +389,7 @@ class SelectionFailure(ValueError):
     """The selected XCTest phase failed; the batch still verifies its raw result."""
 
 
-def execute(args, receipt, *, build_context=None):
+def execute(args, receipt, *, build_context=None, sdk06_original_native=None):
     require(platform.system() == "Darwin", "Actual Apple host required")
     app, evidence, derived = args.app.resolve(), args.evidence.resolve(), args.derived.resolve()
     selection = plan(args.lane, args.device, args.language)
@@ -421,21 +421,38 @@ def execute(args, receipt, *, build_context=None):
                 and build_context is None and shared_editor is not None and acknowledgement is not None,
                 "Tagged SDK selection requires its explicit current single Debug App build")
         sdk_tagged_plan.verify()
+    sdk_original_plan = getattr(args, "sdk06_original_native_tagged_plan", None)
+    if sdk06_original_native is not None:
+        from sdk06_original_native import SDK06OriginalNativeContext
+        from sdk06_original_tagged_selector import OriginalNativeTaggedSelectionPlan
+        require(type(sdk06_original_native) is SDK06OriginalNativeContext
+                and type(sdk_original_plan) is OriginalNativeTaggedSelectionPlan
+                and sdk_original_plan.origin is sdk06_original_native
+                and build_context is None and sdk_selector_plan is None and sdk_tagged_plan is None
+                and args.lane == "hanlin-native" and args.device == "ipad" and args.language == "en"
+                and shared_editor is not None and acknowledgement is not None,
+                "Original-native SDK continuation requires its exact sealed scope")
+        sdk_original_plan.verify()
+    else:
+        require(sdk_original_plan is None, "Original-native selector requires its exact origin")
     hanlin_lane = HANLIN_LANES.get(args.lane)
     source_methods(app, selection["methods"])
     head = shared.git(app, "rev-parse", "HEAD")
     from coherent_original_products import OriginalProductsContext
     original_products = isinstance(build_context, OriginalProductsContext)
-    if not original_products:
+    if not original_products and sdk06_original_native is None:
         require_source_identity(head, os.environ.get("GITHUB_SHA"),
                                 shared.git(app, "branch", "--show-current"), os.environ.get("GITHUB_REF"))
     require(os.environ.get("GITHUB_RUN_ID", "").isdigit(), "Missing actual CI run identity")
     preflight = json.loads((evidence / "preflight/preflight.json").read_text())
     require(preflight.get("status") == "PREFLIGHT_PASS_UI_NOT_RUN"
-            and preflight.get("source_sha") == (build_context.origin.control_sha if original_products else head)
+            and preflight.get("source_sha") == (sdk06_original_native.execution_binding["source_sha"]
+                if sdk06_original_native is not None else (build_context.origin.control_sha if original_products else head))
             and preflight.get("run_id") == os.environ["GITHUB_RUN_ID"], "OS27 preflight is not from this source/run")
     if original_products:
         build_context.validate_execution_identity(app, preflight)
+    if sdk06_original_native is not None:
+        sdk06_original_native.validate_execution_identity(app, preflight)
     selected = preflight["selected"][args.device]
     udid = selected["udid"]
     require(build_context is None or selected == build_context.device,
@@ -447,9 +464,13 @@ def execute(args, receipt, *, build_context=None):
     binding = shared.runtime_binding(app, evidence, head, args, installation)
     matrix = json.loads((app / "Tools/PinkhaSimulatorGate/required-coverage.json").read_text())
     identity = shared.candidate_identity(app, matrix)
-    receipt.update(source_sha=head, run_id=os.environ["GITHUB_RUN_ID"], run_attempt=os.environ["GITHUB_RUN_ATTEMPT"],
+    receipt.update(source_sha=(sdk06_original_native.execution_binding["source_sha"]
+                   if sdk06_original_native is not None else head),
+                   run_id=os.environ["GITHUB_RUN_ID"], run_attempt=os.environ["GITHUB_RUN_ATTEMPT"],
                    kit_sha=shared.KIT, **binding, selection=selection,
                    candidate_input_hashes=identity["hashes"], runtime_installation=installation, phase="BUILD")
+    if sdk06_original_native is not None:
+        receipt.update(app_source_sha=head, **sdk06_original_native.record_fields())
     shared.write(evidence / "selection-plan.json", selection)
     shared.write(evidence / "execution.json", receipt)
     if build_context is not None and build_context.profile == "coherent-heart-release":
@@ -478,7 +499,7 @@ def execute(args, receipt, *, build_context=None):
         shared.write(evidence / "device-language-observation.json",
                      dict(command_exit_code=device_language.returncode, observed=device_language.stdout,
                           error=device_language.stderr, acceptance=False))
-    if build_context is None:
+    if build_context is None and sdk06_original_native is None:
         shared.prepare_source_cache(app, derived)
     flags = ["OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED", "ENABLE_TESTABILITY=YES",
              "ONLY_ACTIVE_ARCH=YES", "SWIFT_OPTIMIZATION_LEVEL=-Onone", "CODE_SIGN_IDENTITY=-",
@@ -491,7 +512,10 @@ def execute(args, receipt, *, build_context=None):
     native_suite = LANES[args.lane]["preparation"].split("/")[0]
     base = ["xcodebuild", "build-for-testing", "-configuration", configuration_name,
             "-destination", "platform=iOS Simulator,id=" + udid, "-parallel-testing-enabled", "NO"]
-    if build_context is None:
+    if sdk06_original_native is not None:
+        require(derived == sdk06_original_native.derived, "Original native restoration directory differs")
+        sdk06_original_native.verify_native_build(app, head, identity, flags, configuration_name)
+    elif build_context is None:
         shared.command([*base, "-project", "Anytype.xcodeproj", "-scheme", "Anytype",
                         "-derivedDataPath", str(derived), "-only-testing:AnytypeTests/" + native_suite,
                         *(["-only-testing:AnytypeTests/" + preservation.SUITE] if args.lane == "properties-set" else []),
@@ -502,12 +526,14 @@ def execute(args, receipt, *, build_context=None):
         require(derived == build_context.derived, "Same-job native product directory differs")
         build_context.verify(app, head, identity, flags, configuration_name)
         receipt["build_mode"] = (build_context.record_build_mode() if original_products else "SAME_JOB_FROZEN_BUILD")
-    if original_products:
+    if sdk06_original_native is not None:
+        receipt.update(native_build_flags=flags, **sdk06_original_native.record_fields())
+    elif original_products:
         receipt.update(original_native_build_succeeded=True, native_builds_this_run=0, native_build_flags=flags,
                        **build_context.origin.record_fields(), **build_context.build_reference())
     else:
         receipt.update(native_build_succeeded=True, native_build_flags=flags)
-    if shared_editor:
+    if shared_editor and sdk06_original_native is None:
         receipt["early_products"] = early_build_products.capture(
             derived, evidence, source_sha=head, run_id=receipt["run_id"],
             run_attempt=receipt["run_attempt"], build_flags=flags)
@@ -515,7 +541,9 @@ def execute(args, receipt, *, build_context=None):
     built = derived / "Build/Products" / (configuration_name + "-iphonesimulator/Anytype.app")
     shared.verify_signed_simulator(built, evidence)
     shared.verify_runtime_copies(built, binding['native_marker'].encode(), evidence)
-    if original_products:
+    if sdk06_original_native is not None:
+        receipt["original_kit_binding"] = sdk06_original_native.verify_kit()
+    elif original_products:
         receipt["original_kit_binding"] = build_context.verify_kit()
     else:
         checkouts = derived / "SourcePackages/checkouts"
@@ -527,8 +555,9 @@ def execute(args, receipt, *, build_context=None):
     shared.write(evidence / "actual-package-pins.json", lock)
     before = shared.code_carriers(built)
     shared.write(evidence / "built-code-carriers.json", before)
-    native_configuration = (build_context.native_configuration if original_products
-                            else shared.test_configuration(derived / "Build/Products", "AnytypeTests"))
+    native_configuration = (sdk06_original_native.native_configuration if sdk06_original_native is not None
+                            else (build_context.native_configuration if original_products
+                            else shared.test_configuration(derived / "Build/Products", "AnytypeTests")))
     receipt["phase"] = "PREPARATION"
     native_environment = preparation_environment(args.lane, head, receipt["run_id"], receipt["run_attempt"])
     preservation_binding = None
@@ -539,13 +568,18 @@ def execute(args, receipt, *, build_context=None):
                        postflight={"status": "NOT_RUN", "reason": "REQUIRES_PREPARATION_AND_BOTH_UI_METHODS_PASS"})
         native_environment.update(preservation.binding_environment(preservation_binding))
         native_environment["PINKHA_PREPARE_TYPE_PRESERVATION"] = "1"
-    run_selection = shared.run_selection if build_context is None else build_context.run_selection
+    run_selection = (sdk06_original_native.run_selection if sdk06_original_native is not None
+                     else (shared.run_selection if build_context is None else build_context.run_selection))
     if shared_editor:
         receipt["phase"] = "SHARED_EDITOR_COMPONENTS"
         shared.write(evidence / "execution.json", receipt)
         component_evidence = evidence / "shared-editor-components"
         try:
-            if sdk_tagged_plan is not None:
+            if sdk_original_plan is not None:
+                receipt["shared_editor_components"] = shared_editor_existing_build.execute(
+                    app, native_configuration, udid, built, component_evidence, shared,
+                    original_tagged_plan=sdk_original_plan)
+            elif sdk_tagged_plan is not None:
                 receipt["shared_editor_components"] = shared_editor_existing_build.execute(
                     app, native_configuration, udid, built, component_evidence, shared,
                     tagged_plan=sdk_tagged_plan)
@@ -611,7 +645,10 @@ def execute(args, receipt, *, build_context=None):
     ui_derived = derived.with_name(derived.name + "-ui")
     receipt["phase"] = "UI_BUILD"
     shared.write(evidence / "execution.json", receipt)
-    if build_context is None:
+    if sdk06_original_native is not None:
+        receipt["first_ui_only_build"] = sdk06_original_native.build_first_ui(
+            base, flags, selection["methods"], ui_derived, shared)
+    elif build_context is None:
         project = shared.ui_only_project(app)
         shared.command([*base, "-project", str(project), "-scheme", "PinkhaPrebuiltUI", "-derivedDataPath", str(ui_derived),
                         *["-only-testing:PinkhaStage1AcceptanceUITests/" + method for method in selection["methods"]], *flags], app, evidence)
@@ -619,10 +656,15 @@ def execute(args, receipt, *, build_context=None):
         require(ui_derived == build_context.ui_derived, "Same-job UI runner directory differs")
         build_context.verify(app, head, identity, flags, configuration_name)
         receipt["ui_build_mode"] = (build_context.record_build_mode() if original_products else "SAME_JOB_FROZEN_BUILD")
-    if sdk_selector_plan is not None or sdk_tagged_plan is not None:
+    if sdk_selector_plan is not None or sdk_tagged_plan is not None or sdk06_original_native is not None:
         from sdk06_qualified_continuation import capture_later_ui
         receipt["ui_early_products"] = capture_later_ui(ui_derived, evidence,
             source_sha=head, run_id=receipt["run_id"], run_attempt=receipt["run_attempt"], build_flags=flags)
+        if sdk06_original_native is not None:
+            receipt["ui_early_products"].update(
+                original_native_origin=sdk06_original_native.origin_reference(),
+                controller_source_sha=sdk06_original_native.execution_binding["source_sha"],
+                ui_build_origin="FIRST_CURRENT_UI_ONLY_BUILD_FOR_ORIGINAL_APP_SOURCE")
         shared.write(evidence / "execution.json", receipt)
     receipt["phase"] = "UI_RUNTIME_PREPARATION"
     shared.write(evidence / "execution.json", receipt)

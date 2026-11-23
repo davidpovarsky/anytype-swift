@@ -1,0 +1,103 @@
+{
+  "actual_selector_qualified": false,
+  "builds": 0,
+  "failed_method": "test_sdk06_original_native/OriginalNativeContinuationControls/test_actual_lane_stops_on_original30_and_ui_builder_cannot_rebuild_native",
+  "new_control_methods": 1,
+  "new_failed_wrapper_sha256": "4cf990027474f23cf6d7899ebbb76bb445ecce9f3d84ae61d072ea6a46f326e5",
+  "new_test_sha256": "703f15af8a512632b6dae848011e167d81d5cf08afeedcac4497dc0560eb5a43",
+  "old_control_wrapper_sha256": "e5adab722bf96451db73454b657376ed2be6b8625b7d70ffb8a7903d2bb6d944",
+  "old_product_or_passing_method_replays": 0,
+  "old_test_sha256": "c138d675dd4c0db2a2a46bb57b51f353b4774182af8587de34c85688350c0b2b",
+  "original_evidence_commit": "cf70fdf165586baffd257fdb135cea06f64e745d",
+  "original_files_bound": 49,
+  "original_inputs_unchanged": 98,
+  "original_source": "46c03ec8692bee4ffe6304b041a4a4425d08e2dc",
+  "protocol": "sdk06-original-native-failed-third-source-review-v1",
+  "retained_passes": {
+    "count": 2,
+    "executed_source": "46c03ec8692bee4ffe6304b041a4a4425d08e2dc",
+    "methods": [
+      "test_sdk06_original_tagged_selector.OriginalTagSelectionControls.test_original_descriptor_has_one_tag_only_selection_and_requires_actual23",
+      "test_sdk06_original_native.OriginalNativeContinuationControls.test_fixed_original_origin_and_exact_restoration_refuse_source_or_entry_drift"
+    ],
+    "original_attempt_status": "FAIL",
+    "replayed": false
+  },
+  "runtime_contract_delta": {
+    "after_sha256": "cffb659acfc7758ec268d76edc0cf4f28e5c179fecdc3c58107cc590a4331917",
+    "before_sha256": "04a76cd0d331cb23e93e5c6d2fd54f8a76b2864af724021256fbfea63ea65ae1",
+    "only_changed_input_row": "Tools/PinkhaSimulatorGate/test_sdk06_original_native.py",
+    "path": "Tools/PinkhaSimulatorGate/sdk06-original-native-controller-source.json"
+  },
+  "source_identity": {
+    "APPROVED_BRANCHES_unchanged": true,
+    "actual_HEAD_and_all_Git_reads": "REAL_CURRENT_FROZEN_CHECKOUT",
+    "actual_local_branch_unchanged": true,
+    "actual_shared_writer_claim": false,
+    "branch_value": "codex/chatgpt-wave15-shared-20261121",
+    "only_injected_observation": "EXACT git -C ROOT branch --show-current argv"
+  },
+  "status": "ONLY_FAILED_THIRD_NOT_RUN",
+  "test_inverse": [
+    {
+      "after": "        branch_argv = [\"git\", \"-C\", str(ROOT), \"branch\", \"--show-current\"]\n        actual_local_branch = subprocess.check_output(branch_argv, text=True).strip()\n        branch = \"codex/chatgpt-wave15-shared-20261121\"\n        self.assertIn(branch, lane.APPROVED_BRANCHES)\n        branch_observations = []\n        original_check_output = subprocess.check_output\n        def synthetic_ci_branch(argv, *args, **kwargs):\n            if argv == branch_argv:\n                self.assertIs(kwargs.get(\"text\"), True)\n                branch_observations.append({\n                    \"argv\": argv, \"actual_local_branch\": actual_local_branch,\n                    \"synthetic_approved_ci_branch\": branch,\n                    \"actual_shared_writer_claim\": False,\n                })\n                return branch + \"\\n\"\n            return original_check_output(argv, *args, **kwargs)\n        actual_control_binding = {\"source_sha\": head, \"run_id\": \"900000002\", \"run_attempt\": \"1\"}\n        with mock.patch.dict(os.environ, {\"GITHUB_SHA\": head, \"GITHUB_REF\": \"refs/heads/\" + branch,\n                \"GITHUB_RUN_ID\": \"900000002\", \"GITHUB_RUN_ATTEMPT\": \"1\"}), \\\n                mock.patch.object(subprocess, \"check_output\", side_effect=synthetic_ci_branch):\n            admitted = continuation.verify_controller(ROOT, actual_control_binding)\n            self.assertEqual(admitted[\"binding\"], actual_control_binding)\n            foreign = types.ModuleType(\"sdk06_original_native\")\n            foreign.__file__ = str(output / \"foreign-origin.py\")\n            with self.subTest(scope=\"initial_foreign_module_is_refused\"):\n                with mock.patch.dict(sys.modules, {\"sdk06_original_native\": foreign}):\n                    with self.assertRaisesRegex(ValueError, \"foreign origin\"):\n                        continuation.verify_controller(ROOT, actual_control_binding)\n        self.assertEqual(len(branch_observations), 1)\n        self.assertEqual(subprocess.check_output(branch_argv, text=True).strip(), actual_local_branch)\n",
+      "before": "        branch = subprocess.check_output([\"git\", \"-C\", str(ROOT), \"branch\", \"--show-current\"], text=True).strip()\n        actual_control_binding = {\"source_sha\": head, \"run_id\": \"900000002\", \"run_attempt\": \"1\"}\n        with mock.patch.dict(os.environ, {\"GITHUB_SHA\": head, \"GITHUB_REF\": \"refs/heads/\" + branch,\n                \"GITHUB_RUN_ID\": \"900000002\", \"GITHUB_RUN_ATTEMPT\": \"1\"}):\n            admitted = continuation.verify_controller(ROOT, actual_control_binding)\n            self.assertEqual(admitted[\"binding\"], actual_control_binding)\n            foreign = types.ModuleType(\"sdk06_original_native\")\n            foreign.__file__ = str(output / \"foreign-origin.py\")\n            with self.subTest(scope=\"initial_foreign_module_is_refused\"):\n                with mock.patch.dict(sys.modules, {\"sdk06_original_native\": foreign}):\n                    with self.assertRaisesRegex(ValueError, \"foreign origin\"):\n                        continuation.verify_controller(ROOT, actual_control_binding)\n"
+    },
+    {
+      "after": "            \"actual_lane_reached_original30_refusal\": True,\n            \"identity_branch_observation\": branch_observations,\n            \"actual_frozen_head_and_Git_source_admission\": head,\n",
+      "before": "            \"actual_lane_reached_original30_refusal\": True,\n"
+    }
+  ],
+  "test_path": "Tools/PinkhaSimulatorGate/test_sdk06_original_native.py",
+  "unchanged_test_methods": [
+    "test_fixed_original_origin_and_exact_restoration_refuse_source_or_entry_drift"
+  ],
+  "whole_test_file_inverse": true,
+  "whole_wrapper_inverse": true,
+  "wrapper_input_hash_substitution": {
+    "after": "a93c55f232b6c21b72645810e91c40e6e3cf3d0eb4a00382a20b2c4b9e8b2c74",
+    "before": "693ddd9f5a7044e0536611da2977c9579acb644a39b3a3e86eb59ad7afed9c2a"
+  },
+  "wrapper_inverse": [
+    {
+      "after": "\"\"\"Execute only the failed SDK lane control; retain both original named passes.\"\"\"",
+      "before": "\"\"\"Execute exactly the three new SDK original-native offline controls once.\"\"\""
+    },
+    {
+      "after": "INPUTS = DIRECTORY + \"/failed-control-inputs.json\"",
+      "before": "INPUTS = DIRECTORY + \"/control-inputs.json\""
+    },
+    {
+      "after": "METHODS = (\n    (\"test_sdk06_original_native\", \"OriginalNativeContinuationControls\",\n     \"test_actual_lane_stops_on_original30_and_ui_builder_cannot_rebuild_native\"),\n)",
+      "before": "METHODS = (\n    (\"test_sdk06_original_tagged_selector\", \"OriginalTagSelectionControls\",\n     \"test_original_descriptor_has_one_tag_only_selection_and_requires_actual23\"),\n    (\"test_sdk06_original_native\", \"OriginalNativeContinuationControls\",\n     \"test_fixed_original_origin_and_exact_restoration_refuse_source_or_entry_drift\"),\n    (\"test_sdk06_original_native\", \"OriginalNativeContinuationControls\",\n     \"test_actual_lane_stops_on_original30_and_ui_builder_cannot_rebuild_native\"),\n)"
+    },
+    {
+      "after": "    DIRECTORY + \"/current-static-closure.json\",\n    DIRECTORY + \"/failed-control-inputs.json\",\n    DIRECTORY + \"/run-failed-lane-control.py\",\n    DIRECTORY + \"/failed-method-review.json\",\n",
+      "before": "    DIRECTORY + \"/current-static-closure.json\",\n"
+    },
+    {
+      "after": "manifest[\"protocol\"] == \"sdk06-original-native-failed-third-control-v1\"",
+      "before": "manifest[\"protocol\"] == \"sdk06-original-native-three-controls-v1\""
+    },
+    {
+      "after": "\"Only the originally failed third control is admitted\"",
+      "before": "\"Only the three named new controls are admitted\""
+    },
+    {
+      "after": "(root / DIRECTORY / \"run-failed-lane-control.py\").read_bytes()",
+      "before": "(root / DIRECTORY / \"run-controls.py\").read_bytes()"
+    },
+    {
+      "after": "\"protocol\": \"sdk06-original-native-failed-third-control-v1\"",
+      "before": "\"protocol\": \"sdk06-original-native-three-controls-v1\""
+    },
+    {
+      "after": "require(suite.countTestCases() == 1, \"Only the failed third method may execute\")",
+      "before": "require(suite.countTestCases() == 3, \"Only three new methods may execute\")"
+    },
+    {
+      "after": "require(result.testsRun == 1 and result.wasSuccessful()",
+      "before": "require(result.testsRun == 3 and result.wasSuccessful()"
+    }
+  ]
+}

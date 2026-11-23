@@ -58,6 +58,7 @@ on:
           - sdk06-enumeration-probe
           - sdk06-basename-probe
           - sdk06-tagged-continuation
+          - sdk06-original-native-continuation
           - t5-native-pagination
           - t5-native-account-retry
           - t5-native-attachment
@@ -310,6 +311,10 @@ jobs:
   sdk06-tagged-continuation:
     if: ${{ inputs.route == 'sdk06-tagged-continuation' }}
     uses: ./.github/workflows/pinkha-sdk06-tagged-continuation.yml
+
+  sdk06-original-native-continuation:
+    if: ${{ inputs.route == 'sdk06-original-native-continuation' }}
+    uses: ./.github/workflows/pinkha-sdk06-original-native-continuation.yml
 
   prepared-inline-file-apple:
     if: ${{ inputs.route == 'prepared-inline-file-apple' }}

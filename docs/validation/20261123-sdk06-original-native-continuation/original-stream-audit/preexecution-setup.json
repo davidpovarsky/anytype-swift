@@ -1,0 +1,166 @@
+{
+  "protocol": "sdk06-full-products-stream-audit-preexecution-setup-v1",
+  "initial_source_write_guard_failure": {
+    "ok": true,
+    "output": "Inherited private owner/rules differ\r\nAt line:1 char:713\r\n+ ... 031499938-1001'){throw 'Inherited private owner/rules differ'};$p=Joi ...\r\n+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (Inherited private owner/rules differ:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : Inherited private owner/rules differ",
+    "duration": 0.49,
+    "returncode": 1
+  },
+  "original_output_acl_observation": [
+    {
+      "path": "C:\\Users\\DAVID\\AppData\\Local\\SentinelX\\anytapy-immutable-evidence\\sdk06-tagged-45139431216-1",
+      "owner_sid": "S-1-5-21-2914620446-786530585-2031499938-1001",
+      "sddl": "O:S-1-5-21-2914620446-786530585-2031499938-1001G:S-1-5-21-2914620446-786530585-2031499938-1001D:PAI(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;FA;;;S-1-5-21-2914620446-786530585-2031499938-1001)",
+      "protected": true,
+      "access_sids": [
+        "S-1-5-18",
+        "S-1-5-21-2914620446-786530585-2031499938-1001",
+        "S-1-5-32-544"
+      ],
+      "attributes": 16,
+      "children": [
+        "acquisition-provenance",
+        "bounded-original-audit",
+        "compiled-source-metadata",
+        "descriptor-only-originals",
+        "full-products-stream-audit",
+        "restoration-inputs-originals",
+        "source-lineage-audit",
+        "acquisition-provenance-seal.json",
+        "acquisition-provenance-writer.py",
+        "artifact-14803859457.zip",
+        "bounded-original-audit-reader.py",
+        "bounded-original-audit-seal.json",
+        "compiled-source-metadata-reader.py",
+        "descriptor-only-audit-reader.py",
+        "descriptor-only-audit-seal.json",
+        "download-attempt1-prefix.json",
+        "download-attempt1-timeout.json",
+        "download-attempt2.json",
+        "oracle-compiled-source-originals-transfer.json",
+        "oracle-compiled-source-originals.zip",
+        "oracle-small-originals-transfer.json",
+        "oracle-small-originals.zip",
+        "original-artifact-api.json",
+        "original-github-identity.json",
+        "original-run-api.json",
+        "resume-header.json",
+        "resume-original-artifact-api.json",
+        "resume-original-identity-api.json",
+        "resume-original-run-api.json",
+        "resume-transfer-attempt1.json"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DAVID\\AppData\\Local\\SentinelX\\anytapy-immutable-evidence\\sdk06-tagged-45139431216-1\\artifact-14803859457.zip",
+      "owner_sid": "S-1-5-21-2914620446-786530585-2031499938-1001",
+      "sddl": "O:S-1-5-21-2914620446-786530585-2031499938-1001G:S-1-5-21-2914620446-786530585-2031499938-1001D:PAI(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;S-1-5-21-2914620446-786530585-2031499938-1001)",
+      "protected": true,
+      "access_sids": [
+        "S-1-5-18",
+        "S-1-5-21-2914620446-786530585-2031499938-1001",
+        "S-1-5-32-544"
+      ],
+      "attributes": 33,
+      "children": {}
+    },
+    {
+      "path": "C:\\Users\\DAVID\\AppData\\Local\\SentinelX\\anytapy-immutable-evidence\\sdk06-tagged-45139431216-1\\full-products-stream-audit",
+      "owner_sid": "S-1-5-32-544",
+      "sddl": "O:BAG:S-1-5-21-2914620446-786530585-2031499938-1001D:AI(A;OICIID;FA;;;SY)(A;OICIID;FA;;;BA)(A;OICIID;FA;;;S-1-5-21-2914620446-786530585-2031499938-1001)",
+      "protected": false,
+      "access_sids": [
+        "S-1-5-18",
+        "S-1-5-21-2914620446-786530585-2031499938-1001",
+        "S-1-5-32-544"
+      ],
+      "attributes": 16,
+      "children": {}
+    }
+  ],
+  "delegated_correction_scope": "Root explicitly authorized only the exact empty nonreparse audit child owner correction to the pinned user SID; inherited access rules/flags and parent/archive ACL/owner/attributes were required unchanged.",
+  "owner_correction_command": "$ErrorActionPreference='Stop'\n$root='C:\\Users\\DAVID\\AppData\\Local\\SentinelX\\anytapy-immutable-evidence\\sdk06-tagged-45139431216-1'\n$out=Join-Path $root 'full-products-stream-audit'\n$arc=Join-Path $root 'artifact-14803859457.zip'\n$sid='S-1-5-21-2914620446-786530585-2031499938-1001'\n$expected=@('S-1-5-18',$sid,'S-1-5-32-544')|Sort-Object\nfunction Snap([string]$path) {\n $i=Get-Item -LiteralPath $path -Force\n $a=Get-Acl -LiteralPath $path\n $rules=@($a.GetAccessRules($true,$true,[System.Security.Principal.SecurityIdentifier])|ForEach-Object {\n  [ordered]@{sid=$_.IdentityReference.Value;type=[string]$_.AccessControlType;rights=[string][int64]$_.FileSystemRights;inheritance=[string]$_.InheritanceFlags;propagation=[string]$_.PropagationFlags;inherited=$_.IsInherited}\n })\n [ordered]@{path=$i.FullName;owner_sid=$a.GetOwner([System.Security.Principal.SecurityIdentifier]).Value;group_sid=$a.GetGroup([System.Security.Principal.SecurityIdentifier]).Value;sddl=$a.Sddl;access_sddl=$a.GetSecurityDescriptorSddlForm([System.Security.AccessControl.AccessControlSections]::Access);protected=$a.AreAccessRulesProtected;rules=$rules;attributes=[string][int64]$i.Attributes;creation_ticks=[string]$i.CreationTimeUtc.Ticks;lastwrite_ticks=[string]$i.LastWriteTimeUtc.Ticks;length=$(if($i.PSIsContainer){$null}else{[string]$i.Length});is_container=$i.PSIsContainer}\n}\nif((Resolve-Path -LiteralPath $root).Path -cne $root -or (Resolve-Path -LiteralPath $out).Path -cne $out){throw 'Pinned resolved paths differ'}\nif([System.IO.Path]::GetDirectoryName($out) -cne $root){throw 'Not exact child'}\n$before=[ordered]@{parent=(Snap $root);archive=(Snap $arc);child=(Snap $out)}\nif(-not $before.child.is_container -or ([int64]$before.child.attributes -band 1024)){throw 'Child must be nonreparse directory'}\nif(@(Get-ChildItem -LiteralPath $out -Force).Count -ne 0){throw 'Child is not empty'}\nforeach($s in @($before.parent,$before.archive,$before.child)){\n if(([int64]$s.attributes -band 1024)){throw 'Reparse input'}\n $got=@($s.rules|ForEach-Object {$_.sid}|Sort-Object)\n if(($got -join '|') -cne ($expected -join '|') -or @($s.rules).Count -ne 3 -or @($s.rules|Where-Object {$_.type -ne 'Allow' -or $_.rights -ne '2032127'}).Count){throw 'Closed three-SID rules differ'}\n}\nif($before.parent.owner_sid -cne $sid -or $before.archive.owner_sid -cne $sid -or $before.child.owner_sid -cne 'S-1-5-32-544' -or $before.child.protected){throw 'Owner/inheritance initial mismatch'}\n$acl=Get-Acl -LiteralPath $out\n$acl.SetOwner([System.Security.Principal.SecurityIdentifier]::new($sid))\nSet-Acl -LiteralPath $out -AclObject $acl\n$after=[ordered]@{parent=(Snap $root);archive=(Snap $arc);child=(Snap $out)}\nif(($before.parent|ConvertTo-Json -Depth 10 -Compress) -cne ($after.parent|ConvertTo-Json -Depth 10 -Compress)){throw 'Parent metadata changed'}\nif(($before.archive|ConvertTo-Json -Depth 10 -Compress) -cne ($after.archive|ConvertTo-Json -Depth 10 -Compress)){throw 'Archive metadata changed'}\nforeach($k in @('path','group_sid','access_sddl','protected','attributes','creation_ticks','lastwrite_ticks','length','is_container')){\n if([string]$before.child[$k] -cne [string]$after.child[$k]){throw \"Child non-owner field changed: $k\"}\n}\nif(($before.child.rules|ConvertTo-Json -Depth 10 -Compress) -cne ($after.child.rules|ConvertTo-Json -Depth 10 -Compress)){throw 'Child access rules changed'}\nif($after.child.owner_sid -cne $sid -or @((Get-ChildItem -LiteralPath $out -Force)).Count -ne 0){throw 'Corrected child postflight failed'}\n[ordered]@{status='PASS_EXACT_EMPTY_CHILD_OWNER_ONLY';utc=[DateTime]::UtcNow.ToString('o');audit_started=$false;reader_sha256='0252c033b64a493cf7e35dc0eaf8261c4f67ab3b91d68860863e950dec58b255';before=$before;after=$after}|ConvertTo-Json -Depth 12 -Compress",
+  "owner_correction_original_tool_result": {
+    "ok": true,
+    "output": "{\"status\":\"PASS_EXACT_EMPTY_CHILD_OWNER_ONLY\",\"utc\":\"2026-11-23T11:08:43.5892777Z\",\"audit_started\":false,\"reader_sha256\":\"0252c033b64a493cf7e35dc0eaf8261c4f67ab3b91d68860863e950dec58b255\",\"before\":{\"parent\":{\"path\":\"C:\\\\Users\\\\DAVID\\\\AppData\\\\Local\\\\SentinelX\\\\anytapy-immutable-evidence\\\\sdk06-tagged-45139431216-1\",\"owner_sid\":\"S-1-5-21-2914620446-786530585-2031499938-1001\",\"group_sid\":\"S-1-5-21-2914620446-786530585-2031499938-1001\",\"sddl\":\"O:S-1-5-21-2914620446-786530585-2031499938-1001G:S-1-5-21-2914620446-786530585-2031499938-1001D:PAI(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;FA;;;S-1-5-21-2914620446-786530585-2031499938-1001)\",\"access_sddl\":\"D:PAI(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;FA;;;S-1-5-21-2914620446-786530585-2031499938-1001)\",\"protected\":true,\"rules\":[{\"sid\":\"S-1-5-18\",\"type\":\"Allow\",\"rights\":\"2032127\",\"inheritance\":\"ContainerInherit, ObjectInherit\",\"propagation\":\"None\",\"inherited\":false},{\"sid\":\"S-1-5-32-544\",\"type\":\"Allow\",\"rights\":\"2032127\",\"inheritance\":\"ContainerInherit, ObjectInherit\",\"propagation\":\"None\",\"inherited\":false},{\"sid\":\"S-1-5-21-2914620446-786530585-2031499938-1001\",\"type\":\"Allow\",\"rights\":\"2032127\",\"inheritance\":\"ContainerInherit, ObjectInherit\",\"propagation\":\"None\",\"inherited\":false}],\"attributes\":\"16\",\"creation_ticks\":\"639310245082171188\",\"lastwrite_ticks\":\"639310287565380877\",\"length\":null,\"is_container\":true},\"archive\":{\"path\":\"C:\\\\Users\\\\DAVID\\\\AppData\\\\Local\\\\SentinelX\\\\anytapy-immutable-evidence\\\\sdk06-tagged-45139431216-1\\\\artifact-14803859457.zip\",\"owner_sid\":\"S-1-5-21-2914620446-786530585-2031499938-1001\",\"group_sid\":\"S-1-5-21-2914620446-786530585-2031499938-1001\",\"sddl\":\"O:S-1-5-21-2914620446-786530585-2031499938-1001G:S-1-5-21-2914620446-786530585-2031499938-1001D:PAI(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;S-1-5-21-2914620446-786530585-2031499938-1001)\",\"access_sddl\":\"D:PAI(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;S-1-5-21-2914620446-786530585-2031499938-1001)\",\"protected\":true,\"rules\":[{\"sid\":\"S-1-5-18\",\"type\":\"Allow\",\"rights\":\"2032127\",\"inheritance\":\"None\",\"propagation\":\"None\",\"inherited\":false},{\"sid\":\"S-1-5-32-544\",\"type\":\"Allow\",\"rights\":\"2032127\",\"inheritance\":\"None\",\"propagation\":\"None\",\"inherited\":false},{\"sid\":\"S-1-5-21-2914620446-786530585-2031499938-1001\",\"type\":\"Allow\",\"rights\":\"2032127\",\"inheritance\":\"None\",\"propagation\":\"None\",\"inherited\":false}],\"attributes\":\"33\",\"creation_ticks\":\"639310245108713913\",\"lastwrite_ticks\":\"639310255440956349\",\"length\":\"699372357\",\"is_container\":false},\"child\":{\"path\":\"C:\\\\Users\\\\DAVID\\\\AppData\\\\Local\\\\SentinelX\\\\anytapy-immutable-evidence\\\\sdk06-tagged-45139431216-1\\\\full-products-stream-audit\",\"owner_sid\":\"S-1-5-32-544\",\"group_sid\":\"S-1-5-21-2914620446-786530585-2031499938-1001\",\"sddl\":\"O:BAG:S-1-5-21-2914620446-786530585-2031499938-1001D:AI(A;OICIID;FA;;;SY)(A;OICIID;FA;;;BA)(A;OICIID;FA;;;S-1-5-21-2914620446-786530585-2031499938-1001)\",\"access_sddl\":\"D:AI(A;OICIID;FA;;;SY)(A;OICIID;FA;;;BA)(A;OICIID;FA;;;S-1-5-21-2914620446-786530585-2031499938-1001)\",\"protected\":false,\"rules\":[{\"sid\":\"S-1-5-18\",\"type\":\"Allow\",\"rights\":\"2032127\",\"inheritance\":\"ContainerInherit, ObjectInherit\",\"propagation\":\"None\",\"inherited\":true},{\"sid\":\"S-1-5-32-544\",\"type\":\"Allow\",\"rights\":\"2032127\",\"inheritance\":\"ContainerInherit, ObjectInherit\",\"propagation\":\"None\",\"inherited\":true},{\"sid\":\"S-1-5-21-2914620446-786530585-2031499938-1001\",\"type\":\"Allow\",\"rights\":\"2032127\",\"inheritance\":\"ContainerInherit, ObjectInherit\",\"propagation\":\"None\",\"inherited\":true}],\"attributes\":\"16\",\"creation_ticks\":\"639310287565380877\",\"lastwrite_ticks\":\"639310287565380877\",\"length\":null,\"is_container\":true}},\"after\":{\"parent\":{\"path\":\"C:\\\\Users\\\\DAVID\\\\AppData\\\\Local\\\\SentinelX\\\\anytapy-immutable-evidence\\\\sdk06-tagged-45139431216-1\",\"owner_sid\":\"S-1-5-21-2914620446-786530585-2031499938-1001\",\"group_sid\":\"S-1-5-21-2914620446-786530585-2031499938-1001\",\"sddl\":\"O:S-1-5-21-2914620446-786530585-2031499938-1001G:S-1-5-21-2914620446-786530585-2031499938-1001D:PAI(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;FA;;;S-1-5-21-2914620446-786530585-2031499938-1001)\",\"access_sddl\":\"D:PAI(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;FA;;;S-1-5-21-2914620446-786530585-2031499938-1001)\",\"protected\":true,\"rules\":[{\"sid\":\"S-1-5-18\",\"type\":\"Allow\",\"rights\":\"2032127\",\"inheritance\":\"ContainerInherit, ObjectInherit\",\"propagation\":\"None\",\"inherited\":false},{\"sid\":\"S-1-5-32-544\",\"type\":\"Allow\",\"rights\":\"2032127\",\"inheritance\":\"ContainerInherit, ObjectInherit\",\"propagation\":\"None\",\"inherited\":false},{\"sid\":\"S-1-5-21-2914620446-786530585-2031499938-1001\",\"type\":\"Allow\",\"rights\":\"2032127\",\"inheritance\":\"ContainerInherit, ObjectInherit\",\"propagation\":\"None\",\"inherited\":false}],\"attributes\":\"16\",\"creation_ticks\":\"639310245082171188\",\"lastwrite_ticks\":\"639310287565380877\",\"length\":null,\"is_container\":true},\"archive\":{\"path\":\"C:\\\\Users\\\\DAVID\\\\AppData\\\\Local\\\\SentinelX\\\\anytapy-immutable-evidence\\\\sdk06-tagged-45139431216-1\\\\artifact-14803859457.zip\",\"owner_sid\":\"S-1-5-21-2914620446-786530585-2031499938-1001\",\"group_sid\":\"S-1-5-21-2914620446-786530585-2031499938-1001\",\"sddl\":\"O:S-1-5-21-2914620446-786530585-2031499938-1001G:S-1-5-21-2914620446-786530585-2031499938-1001D:PAI(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;S-1-5-21-2914620446-786530585-2031499938-1001)\",\"access_sddl\":\"D:PAI(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;S-1-5-21-2914620446-786530585-2031499938-1001)\",\"protected\":true,\"rules\":[{\"sid\":\"S-1-5-18\",\"type\":\"Allow\",\"rights\":\"2032127\",\"inheritance\":\"None\",\"propagation\":\"None\",\"inherited\":false},{\"sid\":\"S-1-5-32-544\",\"type\":\"Allow\",\"rights\":\"2032127\",\"inheritance\":\"None\",\"propagation\":\"None\",\"inherited\":false},{\"sid\":\"S-1-5-21-2914620446-786530585-2031499938-1001\",\"type\":\"Allow\",\"rights\":\"2032127\",\"inheritance\":\"None\",\"propagation\":\"None\",\"inherited\":false}],\"attributes\":\"33\",\"creation_ticks\":\"639310245108713913\",\"lastwrite_ticks\":\"639310255440956349\",\"length\":\"699372357\",\"is_container\":false},\"child\":{\"path\":\"C:\\\\Users\\\\DAVID\\\\AppData\\\\Local\\\\SentinelX\\\\anytapy-immutable-evidence\\\\sdk06-tagged-45139431216-1\\\\full-products-stream-audit\",\"owner_sid\":\"S-1-5-21-2914620446-786530585-2031499938-1001\",\"group_sid\":\"S-1-5-21-2914620446-786530585-2031499938-1001\",\"sddl\":\"O:S-1-5-21-2914620446-786530585-2031499938-1001G:S-1-5-21-2914620446-786530585-2031499938-1001D:AI(A;OICIID;FA;;;SY)(A;OICIID;FA;;;BA)(A;OICIID;FA;;;S-1-5-21-2914620446-786530585-2031499938-1001)\",\"access_sddl\":\"D:AI(A;OICIID;FA;;;SY)(A;OICIID;FA;;;BA)(A;OICIID;FA;;;S-1-5-21-2914620446-786530585-2031499938-1001)\",\"protected\":false,\"rules\":[{\"sid\":\"S-1-5-18\",\"type\":\"Allow\",\"rights\":\"2032127\",\"inheritance\":\"ContainerInherit, ObjectInherit\",\"propagation\":\"None\",\"inherited\":true},{\"sid\":\"S-1-5-32-544\",\"type\":\"Allow\",\"rights\":\"2032127\",\"inheritance\":\"ContainerInherit, ObjectInherit\",\"propagation\":\"None\",\"inherited\":true},{\"sid\":\"S-1-5-21-2914620446-786530585-2031499938-1001\",\"type\":\"Allow\",\"rights\":\"2032127\",\"inheritance\":\"ContainerInherit, ObjectInherit\",\"propagation\":\"None\",\"inherited\":true}],\"attributes\":\"16\",\"creation_ticks\":\"639310287565380877\",\"lastwrite_ticks\":\"639310287565380877\",\"length\":null,\"is_container\":true}}}",
+    "duration": 0.7,
+    "returncode": 0,
+    "_notice": "You have 19 unread SentinelX notification(s) (job results and/or announcements). Call notifications_check to read them."
+  },
+  "transfer_results": [
+    {
+      "index": 0,
+      "name": "stream-audit-reader.py",
+      "offset": 0,
+      "result": {
+        "ok": true,
+        "output": "{\"path\":\"C:\\\\Users\\\\DAVID\\\\AppData\\\\Local\\\\SentinelX\\\\anytapy-immutable-evidence\\\\sdk06-tagged-45139431216-1\\\\full-products-stream-audit\\\\stream-audit-reader.py\",\"transferred\":4500,\"complete\":false,\"audit_executed\":false}",
+        "duration": 0.44,
+        "returncode": 0,
+        "_notice": "You have 18 unread SentinelX notification(s) (job results and/or announcements). Call notifications_check to read them."
+      }
+    },
+    {
+      "index": 1,
+      "name": "stream-audit-reader.py",
+      "offset": 4500,
+      "result": {
+        "ok": true,
+        "output": "{\"path\":\"C:\\\\Users\\\\DAVID\\\\AppData\\\\Local\\\\SentinelX\\\\anytapy-immutable-evidence\\\\sdk06-tagged-45139431216-1\\\\full-products-stream-audit\\\\stream-audit-reader.py\",\"transferred\":9000,\"complete\":false,\"audit_executed\":false}",
+        "duration": 0.41,
+        "returncode": 0
+      }
+    },
+    {
+      "index": 2,
+      "name": "stream-audit-reader.py",
+      "offset": 9000,
+      "result": {
+        "ok": true,
+        "output": "{\"path\":\"C:\\\\Users\\\\DAVID\\\\AppData\\\\Local\\\\SentinelX\\\\anytapy-immutable-evidence\\\\sdk06-tagged-45139431216-1\\\\full-products-stream-audit\\\\stream-audit-reader.py\",\"transferred\":13500,\"complete\":false,\"audit_executed\":false}",
+        "duration": 0.4,
+        "returncode": 0
+      }
+    },
+    {
+      "index": 3,
+      "name": "stream-audit-reader.py",
+      "offset": 13500,
+      "result": {
+        "ok": true,
+        "output": "{\"path\":\"C:\\\\Users\\\\DAVID\\\\AppData\\\\Local\\\\SentinelX\\\\anytapy-immutable-evidence\\\\sdk06-tagged-45139431216-1\\\\full-products-stream-audit\\\\stream-audit-reader.py\",\"bytes\":17107,\"sha256\":\"0252c033b64a493cf7e35dc0eaf8261c4f67ab3b91d68860863e950dec58b255\",\"readonly\":true,\"audit_executed\":false}",
+        "duration": 0.47,
+        "returncode": 0
+      }
+    },
+    {
+      "index": 4,
+      "name": "run-audit.py",
+      "offset": 0,
+      "result": {
+        "ok": true,
+        "output": "{\"path\":\"C:\\\\Users\\\\DAVID\\\\AppData\\\\Local\\\\SentinelX\\\\anytapy-immutable-evidence\\\\sdk06-tagged-45139431216-1\\\\full-products-stream-audit\\\\run-audit.py\",\"bytes\":3725,\"sha256\":\"3c046db5e413c7e3b159a2e4b78d956092c55422195de730db44032c1dccb89a\",\"readonly\":true,\"audit_executed\":false}",
+        "duration": 0.46,
+        "returncode": 0
+      }
+    },
+    {
+      "index": 5,
+      "name": "source-freeze.json",
+      "offset": 0,
+      "result": {
+        "ok": true,
+        "output": "{\"path\":\"C:\\\\Users\\\\DAVID\\\\AppData\\\\Local\\\\SentinelX\\\\anytapy-immutable-evidence\\\\sdk06-tagged-45139431216-1\\\\full-products-stream-audit\\\\source-freeze.json\",\"bytes\":3158,\"sha256\":\"89ddd115e72edc6a2ac8775b3b87e38d4fd67ddf7b80d7ea1f7da58fcf0cbaad\",\"readonly\":true,\"audit_executed\":false}",
+        "duration": 0.45,
+        "returncode": 0
+      }
+    }
+  ],
+  "reader_sha256": "0252c033b64a493cf7e35dc0eaf8261c4f67ab3b91d68860863e950dec58b255",
+  "runner_sha256": "3c046db5e413c7e3b159a2e4b78d956092c55422195de730db44032c1dccb89a",
+  "audit_executions": 0,
+  "product_tests": 0,
+  "native_builds": 0,
+  "Products_extracted": false,
+  "representation": "Tool-returned strings are preserved exactly as received; this JSON serializes those original results and does not claim to reconstruct unreturned OS stream bytes."
+}

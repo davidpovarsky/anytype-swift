@@ -1,0 +1,21 @@
+--- a/.github/workflows/torah-inspector-ipados27.yml
++++ b/.github/workflows/torah-inspector-ipados27.yml
+@@ -53,6 +53,7 @@
+           - semantic-page-apple-mounted
+           - coherent-original-products
+           - native-ui-original-products
++          - native-ui-transition-candidate
+           - prepared-migration-apple
+           - prepared-inline-file-apple
+           - sdk06-enumeration-probe
+@@ -326,6 +327,10 @@
+   native-ui-original-products:
+     if: ${{ inputs.route == 'native-ui-original-products' }}
+     uses: ./.github/workflows/pinkha-any-native-ui-original-products.yml
++
++  native-ui-transition-candidate:
++    if: ${{ inputs.route == 'native-ui-transition-candidate' }}
++    uses: ./.github/workflows/pinkha-any-native-ui-transition-candidate.yml
+ 
+   coherent-original-products:
+     if: ${{ inputs.route == 'coherent-original-products' }}

@@ -1,0 +1,26 @@
+test_original_descriptor_has_one_tag_only_selection_and_requires_actual23 (test_sdk06_original_tagged_selector.OriginalTagSelectionControls.test_original_descriptor_has_one_tag_only_selection_and_requires_actual23) ... ok
+test_fixed_original_origin_and_exact_restoration_refuse_source_or_entry_drift (test_sdk06_original_native.OriginalNativeContinuationControls.test_fixed_original_origin_and_exact_restoration_refuse_source_or_entry_drift) ... ok
+test_actual_lane_stops_on_original30_and_ui_builder_cannot_rebuild_native (test_sdk06_original_native.OriginalNativeContinuationControls.test_actual_lane_stops_on_original30_and_ui_builder_cannot_rebuild_native) ... ERROR
+
+======================================================================
+ERROR: test_actual_lane_stops_on_original30_and_ui_builder_cannot_rebuild_native (test_sdk06_original_native.OriginalNativeContinuationControls.test_actual_lane_stops_on_original30_and_ui_builder_cannot_rebuild_native)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-original-native-20261123/Tools/PinkhaSimulatorGate/test_sdk06_original_native.py", line 182, in test_actual_lane_stops_on_original30_and_ui_builder_cannot_rebuild_native
+    admitted = continuation.verify_controller(ROOT, actual_control_binding)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-original-native-20261123/Tools/PinkhaSimulatorGate/sdk06_original_native_continuation.py", line 157, in verify_controller
+    actual = qualified.current_identity(control)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-original-native-20261123/Tools/PinkhaSimulatorGate/sdk06_qualified_continuation.py", line 55, in current_identity
+    lane.require_source_identity(head, binding["source_sha"], branch, os.environ.get("GITHUB_REF"))
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-original-native-20261123/Tools/PinkhaSimulatorGate/run_wave15_acceptance.py", line 125, in require_source_identity
+    require(branch in APPROVED_BRANCHES and ref == "refs/heads/" + branch,
+  File "/mnt/development/projects/worktrees/anytype-wave15-sdk06-original-native-20261123/Tools/PinkhaSimulatorGate/run_wave15_acceptance.py", line 121, in require
+    raise ValueError(reason)
+ValueError: Actual integration source branch differs
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.344s
+
+FAILED (errors=1)
