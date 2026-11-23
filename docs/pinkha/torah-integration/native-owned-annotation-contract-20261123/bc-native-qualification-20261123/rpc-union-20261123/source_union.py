@@ -10,6 +10,8 @@ BASE_SHA256 = "9386492e7687d44e9bcf31d5047957d341da77ff82c6ac7986b6ed976e764b2a"
 REPAIR_SHA256 = "27b2b717cc8f959e3a33457dd60bb5f65fffcfefaa19d52d079c461571e97dea"
 HEART = "d98420b1113536afd08cde6de9a5816f6d27ffff"
 RPC_SOURCE = "5b4a29c7d3f0991d006321a6035a7f2f6757d3d0"
+TARGET = "relation-target-closure-20261123"
+TARGET_SHA256 = "3b158810d40587712d4cd225cd28707beabc339da8b63ef030a4741c6015ecdf"
 
 
 def require(value, reason):
@@ -224,8 +226,107 @@ def admit(*, control, packet_name, manifest, composition, read_bound, safe, git,
         if original_repository is not None:
             require(raw == git(original_repository, "show", row["source_revision"] + ":" + row["source_path"]),
                     "Callable RPC control bytes differ from immutable reviewed source")
+    target = admit_relation_target(
+        control=control, packet_name=packet_name, manifest=manifest, bound=bound, safe=safe, git=git,
+        original_repository=original_repository, original_heart=original_heart)
+    overlays += [dict(row, layer="reviewed-relation-target-type-closure") for row in target["inputs"]]
     return {"baseline": base, "repair": repair, "qualified": qualified, "overlays": overlays,
+            "relation_target": target,
             "generated_index": generated, "generated_index_path": qualified["generated_index"]["path"]}
+
+
+def admit_relation_target(*, control, packet_name, manifest, bound, safe, git,
+                          original_repository=None, original_heart=None):
+    raw = bound(TARGET + "/TARGET_CLOSURE_INPUTS.json", manifest["relation_target_closure"])
+    require(identity(raw)["sha256"] == TARGET_SHA256, "Reviewed relation-target overlay differs")
+    repair = json.loads(raw)
+    require(repair["schema"] == 1 and repair["heart_base"] == HEART
+            and repair["previous_control"] == "c6b4ebd03d25433b8a47073d84e2efa874c777ec"
+            and repair["previous_native_run"] == 45270881714 and repair["previous_run_attempt"] == 1
+            and repair["previous_native_tree"] == "b89202220ac75600f69825d50ec313c1d66cf2fd"
+            and repair["previous_aggregate_result"] == "FAIL"
+            and repair["original_refusal_unchanged"] is True
+            and repair["schema_comparator_unchanged"] is True
+            and repair["body_mapping_drain_assertions_unchanged"] is True
+            and repair["fixed_type_names_or_cids"] is False
+            and repair["runtime_results_reused"] is False
+            and repair["production_import_activated"] is False
+            and repair["new_control_leaf_count"] == 8
+            and repair["fresh_control_counts"] == manifest["fresh_control_counts"] ==
+                {"native": 9, "schema_repair": 11, "relation_target": 8, "semantic": 6, "rpc": 9, "panic": 1},
+            "Relation-target repair changed original scope, refusal or fresh execution requirements")
+    for key in ("diff", "source_rows", "diagnosis", "root_source_review", "control_helper"):
+        bound(repair[key]["path"], repair[key])
+    proof = {}
+    for row in repair["previous_evidence"]:
+        name = Path(row["path"]).name
+        require(name not in proof, "Duplicate retained original failure evidence")
+        proof[name] = (row, json.loads(bound(row["path"], row)))
+    require(set(proof) == {"AUTHENTICATED_INTAKE.json", "RESULT.json",
+                          "text-schema-comparison-diagnostic.json"},
+            "Retained original failure evidence inventory differs")
+    intake = proof["AUTHENTICATED_INTAKE.json"][1]
+    previous = proof["RESULT.json"][1]
+    require(intake["run"] == repair["previous_native_run"] and intake["attempt"] == 1
+            and intake["source"] == repair["previous_control"] and intake["aggregate_conclusion"] == "failure"
+            and intake["archive"]["sha256"] == repair["previous_artifact"]["sha256"]
+            and intake["archive"]["bytes"] == repair["previous_artifact"]["bytes"]
+            and intake["artifact"]["id"] == repair["previous_artifact"]["id"]
+            and intake["crc_members_verified"] == 215 and intake["index_rows_verified"] == 214
+            and previous["control_head"] == repair["previous_control"] and previous["status"] == "FAIL"
+            and previous["fixture_evidence"] == "NOT_REACHED"
+            and {key: previous["native_cases"][key] for key in repair["previous_native_counts"]} ==
+                repair["previous_native_counts"] ==
+                {"leaf_pass": 0, "leaf_fail": 1, "leaf_skip": 0, "leaf_not_run": 8}
+            and previous["post_execution_source_module_link_stability"]["status"] == "PASS"
+            and previous["owned_command_groups_drained"] is True,
+            "Original failed union boundary was changed or relabelled")
+    indexed = {row["path"]: row for row in intake["verified_rows"]}
+    for name, archive_name in (
+        ("RESULT.json", "RESULT.json"),
+        ("text-schema-comparison-diagnostic.json",
+         "fixtures/target-text/text-schema-comparison-diagnostic.json"),
+    ):
+        row = proof[name][0]
+        require({key: indexed[archive_name][key] for key in ("bytes", "sha256")} ==
+                {key: row[key] for key in ("bytes", "sha256")},
+                "Retained original failure body differs from authenticated artifact index")
+    inputs = repair["inputs"]
+    require(len(inputs) == 2 and {row["native_path"] for row in inputs} == {
+        "core/block/export/collection.go",
+        "core/block/export/owned_annotation_relation_target_closure_test.go"},
+        "Relation-target overlay escaped its two reviewed paths")
+    for row in inputs:
+        after = bound(row["path"], row)
+        require(row["path"] == TARGET + "/native/" + row["native_path"],
+                "Relation-target retained path does not match its actual native source")
+        if row["base_sha256"] is not None:
+            before = bound(row["retained_preimage"]["path"], row["retained_preimage"])
+            require(identity(before)["sha256"] == row["base_sha256"]
+                    and before == safe(control, row["base_source_path"]).read_bytes()
+                    and before == git(control, "show", "HEAD:" + row["base_source_path"])
+                    and indexed["qualified-native-source/" + row["native_path"]]["sha256"] ==
+                        row["base_sha256"],
+                    "Relation-target repair does not bind the actual previous union preimage")
+            if original_repository is not None:
+                require(before == git(original_repository, "show",
+                                      repair["previous_control"] + ":" + row["base_source_path"]),
+                        "Relation-target preimage differs from immutable failed source")
+            expected = before.decode()
+            require(len(row["changes"]) == 1, "Relation-target inverse count differs")
+            for change in row["changes"]:
+                require(expected.count(change["before"]) == 1, "Relation-target inverse is not unique")
+                expected = expected.replace(change["before"], change["after"], 1)
+            require(after == expected.encode(), "Relation-target repair escaped its reviewed inverse")
+        else:
+            require(row["native_path"].endswith("_test.go") and row["changes"] == [],
+                    "Only the reviewed new test may have an absent preimage")
+            if original_heart is not None:
+                absent = subprocess.run(["git", "-C", str(original_heart), "cat-file", "-e",
+                                         HEART + ":" + row["native_path"]],
+                                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=30)
+                require(absent.returncode != 0, "Relation-target control collides with original Heart")
+    return repair
 
 
 def expected_union(union, prior_afterimages, prior_required):

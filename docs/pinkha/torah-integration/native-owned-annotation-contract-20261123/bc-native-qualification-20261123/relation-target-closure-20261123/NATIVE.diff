@@ -1,0 +1,55 @@
+--- a/core/block/export/collection.go
++++ b/core/block/export/collection.go
+@@ -281,15 +281,43 @@
+ 		return fmt.Errorf("get relations and types: %w", err)
+ 	}
+ 
+-	err = e.getTemplatesRelationsAndTypes(processedObjects)
+-	if err != nil {
+-		return fmt.Errorf("get templates relations and types: %w", err)
+-	}
+-	err = e.addRelationsAndTypes()
+-	if err != nil {
+-		return fmt.Errorf("add relations and types: %w", err)
+-	}
+-	return nil
++	for {
++		err = e.getTemplatesRelationsAndTypes(processedObjects)
++		if err != nil {
++			return fmt.Errorf("get templates relations and types: %w", err)
++		}
++		err = e.addRelationsAndTypes()
++		if err != nil {
++			return fmt.Errorf("add relations and types: %w", err)
++		}
++
++		// Relation definitions arrive through both the selected state keys and
++		// the recommended-relation path above. Their stored target-type IDs
++		// are schema dependencies too; close them through the same original
++		// type/template/relation walker before any snapshot is written.
++		notProcessedTypes := e.collectRelationTargetTypes(processedObjects)
++		if len(notProcessedTypes) == 0 {
++			return nil
++		}
++		err = e.getRelationsAndTypes(notProcessedTypes, processedObjects)
++		if err != nil {
++			return fmt.Errorf("get relation target types: %w", err)
++		}
++	}
++}
++
++func (e *exportContext) collectRelationTargetTypes(processedObjects map[string]struct{}) map[string]*Doc {
++	notProcessedTypes := make(map[string]*Doc)
++	for _, doc := range e.docs {
++		if doc == nil || isExcludedFromExport(doc.Details) {
++			continue
++		}
++		for _, objectID := range doc.Details.GetStringList(bundle.RelationKeyRelationFormatObjectTypes) {
++			e.objectTypes[objectID] = struct{}{}
++			e.fillNotProcessedTypes(processedObjects, objectID, notProcessedTypes)
++		}
++	}
++	return notProcessedTypes
+ }
+ 
+ func (e *exportContext) getRelationsAndTypes(notProcessedObjects map[string]*Doc, processedObjects map[string]struct{}) error {

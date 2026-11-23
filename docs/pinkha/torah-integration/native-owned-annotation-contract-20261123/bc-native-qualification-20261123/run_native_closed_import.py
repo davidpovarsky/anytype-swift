@@ -112,12 +112,38 @@ def execute_union_controls(control, manifest, composition, commands, go, heart, 
     module, union = read_source_union(control, manifest, composition)
     repair_module = load_union_module(control, manifest,
         "schema-closure-repair-20261123/schema_closure_controls.py", "schema_closure_controls")
-    focused, _ = repair_module.run_controls(commands=commands, go=go, heart=heart, work=work,
-                                            evidence=evidence, declaration=closure, repair=union["repair"])
+    # The old eleven selectors and their source bytes remain frozen. Their
+    # actual compiler input is the explicit final union exporter afterimage.
+    target = union["relation_target"]
+    replacements = {row["native_path"]: row for row in target["inputs"]}
+    overlap = set(replacements) & {row["native_path"] for row in union["repair"]["inputs"]}
+    require(overlap == {"core/block/export/collection.go"},
+            "Relation-target layer changes an unreviewed old control input")
+    current_repair = dict(union["repair"], inputs=[
+        replacements.get(row["native_path"], row) for row in union["repair"]["inputs"]])
+    focused, focused_binaries = repair_module.run_controls(
+        commands=commands, go=go, heart=heart, work=work, evidence=evidence,
+        declaration=closure, repair=current_repair)
+    focused["historical_schema_repair_manifest_sha256"] = module.REPAIR_SHA256
+    focused["current_union_source_overrides"] = [replacements[name] for name in sorted(overlap)]
+    support.write_json(evidence / "SCHEMA_CLOSURE_CONTROLS.json", focused)
     result["schema_closure_controls"] = focused
     support.write_json(evidence / "RESULT.json", result)
     require(focused["status"] == "PASS" and focused["leaf_pass"] == 11,
             "Original schema closure controls did not all pass")
+
+    target_module = load_union_module(control, manifest, target["control_helper"]["path"],
+                                      "relation_target_controls")
+    export_binaries = [row for _, row in focused_binaries
+                       if row["package"] == target_module.PACKAGE]
+    require(len(export_binaries) == 1, "Current union export binary is not unique")
+    result["relation_target_closure_controls"] = target_module.run_controls(
+        commands=commands, go=go, heart=heart, work=work, evidence=evidence,
+        declaration=closure, repair=target, binary_record=export_binaries[0])
+    support.write_json(evidence / "RESULT.json", result)
+    require(result["relation_target_closure_controls"]["status"] == "PASS"
+            and result["relation_target_closure_controls"]["leaf_pass"] == 8,
+            "Fresh relation-target closure controls did not all pass")
 
     semantic_binary = work / "bundled-persistence-control.test"
     commands.require("compile-original-bundled-persistence",
@@ -177,6 +203,10 @@ def union_control_stability(work, evidence, support, result):
         focused = json.loads(focused_path.read_text())
         result["schema_closure_controls"] = focused
         records += focused["binaries"]
+    target_path = evidence / "RELATION_TARGET_CLOSURE_CONTROLS.json"
+    if target_path.is_file():
+        result["relation_target_closure_controls"] = json.loads(target_path.read_text())
+        # This is the same current export binary already covered by focused.
     semantic_path = evidence / "BUNDLED_PERSISTENCE_BINARY.json"
     if semantic_path.is_file():
         records.append(json.loads(semantic_path.read_text()))
@@ -363,10 +393,25 @@ def source_admission(control, manifest, original_repository=None, original_heart
     final, required = union_module.expected_union(union, prior, required)
     require(final == manifest["final_union_afterimages"]
             and required == manifest["required_compiler_inputs"]
-            and len(required) == manifest["required_compiler_input_count"],
+            and len(required) == manifest["required_compiler_input_count"] == 105
+            and len(final) == 110,
             "Exact union afterimages or required compiler inventory differs")
     for row in manifest["controls"]:
         read_bound(control, PACKET + "/" + row["path"], row)
+    control_proof_row = manifest["relation_target_source_controls"]
+    control_proof = json.loads(read_bound(control, PACKET + "/" + control_proof_row["path"],
+                                         control_proof_row))
+    require(control_proof["status"] == "PASS" and control_proof["counts"] == {"PASS": 38, "FAIL": 0}
+            and control_proof["native_execution"] is False,
+            "Bounded relation-target source controls did not pass")
+    controls_by_name = {row["path"]: row for row in manifest["controls"]}
+    expected_controls = {
+        "relation_target_controls.py":
+            controls_by_name["relation-target-closure-20261123/relation_target_controls.py"]["sha256"],
+        "source_union.py": controls_by_name["rpc-union-20261123/source_union.py"]["sha256"],
+    }
+    require({Path(row["path"]).name: row["sha256"] for row in control_proof["sources"]} ==
+            expected_controls, "Relation-target source controls refer to different helper bytes")
     for row in manifest["source_inputs"]:
         raw = read_bound(control, PACKET + "/" + row["retained_path"], row)
         if original_repository is not None:
@@ -547,6 +592,8 @@ def compose_native(control, heart, inputs, manifest, composition, support, comma
                     "canonical_union_tree": native_tree, "approved_file_count": len(composed),
                     "source_prefix": source_prefix,
                     "generation_provenance": union["qualified"],
+                    "relation_target_repair_manifest_sha256": union_module.TARGET_SHA256,
+                    "previous_union_tree": union["relation_target"]["previous_native_tree"],
                     "original_module_hashes": manifest["original_module_hashes"]}
     support.write_json(evidence / "QUALIFIED_NATIVE_TREE.json", tree_receipt)
     support.write_json(evidence / "COMPOSED_NATIVE_SOURCES.json", {
@@ -891,6 +938,7 @@ def main():
                           "workflow_published": workflow_published,
                           "diagnostic_only": False, "selected_native_leaves": list(LEAVES),
                           "new_schema_control_leaves": 11, "fresh_semantic_leaves": 6,
+                          "fresh_relation_target_control_leaves": 8,
                           "fresh_rpc_cases": 9, "fresh_generated_panic_cases": 1,
                           "schema_diagnostic_manifest_sha256": SCHEMA_DIAGNOSTIC_SHA256,
                           "workflow_sha256": sha(expected_workflow),
@@ -935,6 +983,7 @@ def main():
                "schema_diagnostic_manifest_sha256": SCHEMA_DIAGNOSTIC_SHA256,
                "diagnostic_only": False, "selected_native_leaves": list(LEAVES),
                "schema_closure_controls": "NOT_RUN", "rpc_union_controls": "NOT_RUN",
+               "relation_target_closure_controls": "NOT_RUN",
               "post_execution_source_module_link_stability": "NOT_REACHED",
               "historical_selectors_replayed": False, "production_import_activated": False,
               "swift_invocation_qualified": False, "cold_reopen_qualified": False,

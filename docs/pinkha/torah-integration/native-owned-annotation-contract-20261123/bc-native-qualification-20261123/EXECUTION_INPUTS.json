@@ -160,10 +160,10 @@
   },
   "controls": [
     {
-      "bytes": 70621,
-      "git_blob": "271579aa23012dfb3c8985da8b6e96b72a10bfa9",
+      "bytes": 73974,
+      "git_blob": "d6cc8f5476f15bcb1107effb233eeadd107dd4c5",
       "path": "run_native_closed_import.py",
-      "sha256": "47b379d483e84da44856efbf6f31b66caf1a652d073aa570ee2ffdc2b8687681"
+      "sha256": "e853db4359141f7ac9254fe390fc2156dcb016b5564592af0238c4026e0fde2c"
     },
     {
       "bytes": 3011,
@@ -220,10 +220,10 @@
       "sha256": "b39380540acd8224c0db506e943b0782d2a44765cd11aadca6732362b36ce440"
     },
     {
-      "bytes": 16113,
-      "git_blob": "99568aeafca691069df32f6dfbdc8b66a47cf391",
+      "bytes": 23019,
+      "git_blob": "af8153efa8040a9fabff94ee35e4d8b5687c0e58",
       "path": "rpc-union-20261123/source_union.py",
-      "sha256": "ac992876a3373c48c3f72ef22bc04fd811598cbca4abacf2575270c33868753e"
+      "sha256": "481bc0951d1c8b06dcbb13563c8a94b254e36937b7fd34ad874d743d25509e80"
     },
     {
       "bytes": 18924,
@@ -248,6 +248,30 @@
       "git_blob": "d531bc932f51e6589ef0641554649d627d306ff6",
       "path": "schema-closure-repair-20261123/schema_closure_controls.py",
       "sha256": "ea99506fef564ffa19fc503503988e7fc447aad862b12b925bc96cc0439d3245"
+    },
+    {
+      "bytes": 8288,
+      "git_blob": "91690d57e510653624f1d1a44d1e789afacbc666",
+      "path": "relation-target-closure-20261123/relation_target_controls.py",
+      "sha256": "f9afbf5ca6206a6d3495a4802fd5ae87f129ef76e5b34f72065c98c33ac2ad46"
+    },
+    {
+      "bytes": 27609,
+      "git_blob": "12e2460fd885a8d463d904458d2db80b5582d05f",
+      "path": "relation-target-closure-20261123/CANONICAL_TARGET_UNION_PREPARATION.json",
+      "sha256": "5559e0355e6148a792f1d5e8ee340060680f431484ead30cb86a70a5de4273d7"
+    },
+    {
+      "bytes": 8346,
+      "git_blob": "0db7c49d5fb6fa51919749a856c9326c17e05558",
+      "path": "relation-target-closure-20261123/source-controls/run_controls.py",
+      "sha256": "0d8acf2de9f22b07c9d3ecbaf51d41fd95da072541610c8d18b72d2583229716"
+    },
+    {
+      "bytes": 8099,
+      "git_blob": "3402a7096b91c3a7b350148b4fbe46e6031ef7a8",
+      "path": "relation-target-closure-20261123/source-controls/RESULT.json",
+      "sha256": "0500f0e43b84fb543d41f31cbc34d4ec2913bb28662dcc0b709abfbe062dffb7"
     }
   ],
   "diagnostic_only": false,
@@ -273,7 +297,7 @@
       }
     ]
   },
-  "expected_union_native_tree": "b89202220ac75600f69825d50ec313c1d66cf2fd",
+  "expected_union_native_tree": "740c87cb027dbe01f88d3354ed9a91ad84db3e15",
   "final_union_afterimages": {
     "clientlibrary/service/annotation_import_cancel_error_test.go": "3813026ff1a0834524b77ba5b83b1528879bd84011ab5d512a687ba09656c11b",
     "clientlibrary/service/service.pb.go": "f8c44fe9326583de4876c40418913c3d9811a08386364dc0fa25b4e2dbd3e9eb",
@@ -302,7 +326,8 @@
     "core/block/editor/smartblock/pinkha_torah.go": "32ee6f74b5fe63c8e2c5bb612d32ce532f8caf1c3059338cf97373d20db43174",
     "core/block/editor/state/change.go": "51395574aa5d4f96f1dc5cc279b61925dc5de0b2efe0727a96836f57b5a6081f",
     "core/block/export/anyblock/anyblock.go": "340f5f9f21ecc0d9ee43077650cf07ce6cdbf378ca1077263bff426132577cbe",
-    "core/block/export/collection.go": "aab78dcc4f5bc5cfd06221a8e32541ffacd1b1a357451bbcd22600fc86d57197",
+    "core/block/export/collection.go": "ae84ce2e61f6f7971fc6b69b94d5fefe781663ca6b43a6559e76806f016eef73",
+    "core/block/export/owned_annotation_relation_target_closure_test.go": "09aa71bf5f6417f5726064577e4cb4d55595b667b7413f1551917b7a1916514b",
     "core/block/export/owned_annotation_schema_closure_test.go": "33e9e2a3a3921a267aced0bd6d770d10be1d4c56a23be25918ebfeceae984a0a",
     "core/block/import/common/objectcreator/objectcreator.go": "205836d011219e2865037c1f36ba65168aebc481d5f13c6186e6f2f1ea9c3522",
     "core/block/import/common/objectcreator/owned_annotation.go": "613c0b5fd95279e7d18aafa359a49a065c0b172d38e37ebc698d7a6f7803aee1",
@@ -389,6 +414,7 @@
   "fresh_control_counts": {
     "native": 9,
     "panic": 1,
+    "relation_target": 8,
     "rpc": 9,
     "schema_repair": 11,
     "semantic": 6
@@ -573,7 +599,19 @@
     "path": "rpc-union-20261123/QUALIFIED_GENERATION.json",
     "sha256": "a93e4d621a067a3c9ddc7fbaf344dff8ba90a1d6e48219163ed486b396e51ea4"
   },
-  "required_compiler_input_count": 104,
+  "relation_target_closure": {
+    "bytes": 7479,
+    "git_blob": "8fd4b3400d0d53cd4f8fe8f87d85440ca409c08e",
+    "path": "relation-target-closure-20261123/TARGET_CLOSURE_INPUTS.json",
+    "sha256": "3b158810d40587712d4cd225cd28707beabc339da8b63ef030a4741c6015ecdf"
+  },
+  "relation_target_source_controls": {
+    "bytes": 8099,
+    "git_blob": "3402a7096b91c3a7b350148b4fbe46e6031ef7a8",
+    "path": "relation-target-closure-20261123/source-controls/RESULT.json",
+    "sha256": "0500f0e43b84fb543d41f31cbc34d4ec2913bb28662dcc0b709abfbe062dffb7"
+  },
+  "required_compiler_input_count": 105,
   "required_compiler_inputs": {
     "clientlibrary/service/annotation_import_cancel_error_test.go": "3813026ff1a0834524b77ba5b83b1528879bd84011ab5d512a687ba09656c11b",
     "clientlibrary/service/service.pb.go": "f8c44fe9326583de4876c40418913c3d9811a08386364dc0fa25b4e2dbd3e9eb",
@@ -602,7 +640,8 @@
     "core/block/editor/smartblock/pinkha_torah.go": "32ee6f74b5fe63c8e2c5bb612d32ce532f8caf1c3059338cf97373d20db43174",
     "core/block/editor/state/change.go": "51395574aa5d4f96f1dc5cc279b61925dc5de0b2efe0727a96836f57b5a6081f",
     "core/block/export/anyblock/anyblock.go": "340f5f9f21ecc0d9ee43077650cf07ce6cdbf378ca1077263bff426132577cbe",
-    "core/block/export/collection.go": "aab78dcc4f5bc5cfd06221a8e32541ffacd1b1a357451bbcd22600fc86d57197",
+    "core/block/export/collection.go": "ae84ce2e61f6f7971fc6b69b94d5fefe781663ca6b43a6559e76806f016eef73",
+    "core/block/export/owned_annotation_relation_target_closure_test.go": "09aa71bf5f6417f5726064577e4cb4d55595b667b7413f1551917b7a1916514b",
     "core/block/export/owned_annotation_schema_closure_test.go": "33e9e2a3a3921a267aced0bd6d770d10be1d4c56a23be25918ebfeceae984a0a",
     "core/block/import/common/objectcreator/objectcreator.go": "205836d011219e2865037c1f36ba65168aebc481d5f13c6186e6f2f1ea9c3522",
     "core/block/import/common/objectcreator/owned_annotation.go": "613c0b5fd95279e7d18aafa359a49a065c0b172d38e37ebc698d7a6f7803aee1",
@@ -699,7 +738,7 @@
     "path": "schema-diagnostic-20261123/DIAGNOSTIC_INPUTS.json",
     "sha256": "85ddcce64e180359a9a13416e8bf09cf81a1a14a107b6d23002ece8bde857e44"
   },
-  "scope": "Original Native9 on one exact qualified Go source union. Includes exact RPC88 baseline, native diagnostic/observer fixtures, reviewed object-type dataview export closure and original Base.Diff restrictions treatment, authentic generated11 afterimages from af96/run45261979047, fresh semantic6, focused repair11, RPC9 and panic1. Original full proto.Equal/body/mapping/drain contracts remain. Actual generation succeeded; changed Swift check failed separately and is not claimed. No original unrelated suites, generation or Swift re-execution in this run; no mobile ABI, Host, cold reopen or body ACK acceptance.",
+  "scope": "Original Native9 on one exact qualified Go source union. Includes exact RPC88 baseline, native diagnostic/observer fixtures, reviewed object-type dataview export closure and original Base.Diff restrictions treatment, authentic generated11 afterimages from af96/run45261979047, fresh semantic6, focused repair11, RPC9 and panic1. Original full proto.Equal/body/mapping/drain contracts remain. Actual generation succeeded; changed Swift check failed separately and is not claimed. No original unrelated suites, generation or Swift re-execution in this run; no mobile ABI, Host, cold reopen or body ACK acceptance. Follow-up explicit relation-format target-type closure over actual failed c6b4 union, with eight fresh separate native controls and unchanged complete comparator; all shared runtime controls rerun only on this changed closure.",
   "selected_leaf_cases": [
     "text",
     "format",

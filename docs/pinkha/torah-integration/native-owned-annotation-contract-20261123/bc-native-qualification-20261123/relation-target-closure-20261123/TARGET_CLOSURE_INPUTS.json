@@ -1,0 +1,132 @@
+{
+  "body_mapping_drain_assertions_unchanged": true,
+  "control_helper": {
+    "bytes": 8288,
+    "git_blob": "91690d57e510653624f1d1a44d1e789afacbc666",
+    "path": "relation-target-closure-20261123/relation_target_controls.py",
+    "sha256": "f9afbf5ca6206a6d3495a4802fd5ae87f129ef76e5b34f72065c98c33ac2ad46"
+  },
+  "diagnosis": {
+    "bytes": 29360,
+    "git_blob": "f86bac2acc89b51eae890e11887008cef555a2a1",
+    "path": "relation-target-closure-20261123/AUTHENTIC_SCHEMA_DEPENDENCY_DIAGNOSIS.json",
+    "sha256": "c6744f2dbf2b08ae165d2586b80fe7945dc1a986f97fd063cb5853fe794ce63d"
+  },
+  "diff": {
+    "bytes": 1931,
+    "git_blob": "299e023020e3e67c38b9180c380322a0e2f86862",
+    "path": "relation-target-closure-20261123/NATIVE.diff",
+    "sha256": "e268fe00a59befb46f95edc1947a0ba94474a5fc069623959c552bdd1e5623d4"
+  },
+  "fixed_type_names_or_cids": false,
+  "fresh_control_counts": {
+    "native": 9,
+    "panic": 1,
+    "relation_target": 8,
+    "rpc": 9,
+    "schema_repair": 11,
+    "semantic": 6
+  },
+  "heart_base": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "inputs": [
+    {
+      "base_sha256": "aab78dcc4f5bc5cfd06221a8e32541ffacd1b1a357451bbcd22600fc86d57197",
+      "base_source_path": "docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-native-qualification-20261123/schema-closure-repair-20261123/native/core/block/export/collection.go",
+      "bytes": 29150,
+      "changes": [
+        {
+          "after": "func (e *exportContext) addDerivedObjects() error {\n\tprocessedObjects := make(map[string]struct{}, 0)\n\terr := e.getRelationsAndTypes(e.docs, processedObjects)\n\tif err != nil {\n\t\treturn fmt.Errorf(\"get relations and types: %w\", err)\n\t}\n\n\tfor {\n\t\terr = e.getTemplatesRelationsAndTypes(processedObjects)\n\t\tif err != nil {\n\t\t\treturn fmt.Errorf(\"get templates relations and types: %w\", err)\n\t\t}\n\t\terr = e.addRelationsAndTypes()\n\t\tif err != nil {\n\t\t\treturn fmt.Errorf(\"add relations and types: %w\", err)\n\t\t}\n\n\t\t// Relation definitions arrive through both the selected state keys and\n\t\t// the recommended-relation path above. Their stored target-type IDs\n\t\t// are schema dependencies too; close them through the same original\n\t\t// type/template/relation walker before any snapshot is written.\n\t\tnotProcessedTypes := e.collectRelationTargetTypes(processedObjects)\n\t\tif len(notProcessedTypes) == 0 {\n\t\t\treturn nil\n\t\t}\n\t\terr = e.getRelationsAndTypes(notProcessedTypes, processedObjects)\n\t\tif err != nil {\n\t\t\treturn fmt.Errorf(\"get relation target types: %w\", err)\n\t\t}\n\t}\n}\n\nfunc (e *exportContext) collectRelationTargetTypes(processedObjects map[string]struct{}) map[string]*Doc {\n\tnotProcessedTypes := make(map[string]*Doc)\n\tfor _, doc := range e.docs {\n\t\tif doc == nil || isExcludedFromExport(doc.Details) {\n\t\t\tcontinue\n\t\t}\n\t\tfor _, objectID := range doc.Details.GetStringList(bundle.RelationKeyRelationFormatObjectTypes) {\n\t\t\te.objectTypes[objectID] = struct{}{}\n\t\t\te.fillNotProcessedTypes(processedObjects, objectID, notProcessedTypes)\n\t\t}\n\t}\n\treturn notProcessedTypes\n}\n\n",
+          "before": "func (e *exportContext) addDerivedObjects() error {\n\tprocessedObjects := make(map[string]struct{}, 0)\n\terr := e.getRelationsAndTypes(e.docs, processedObjects)\n\tif err != nil {\n\t\treturn fmt.Errorf(\"get relations and types: %w\", err)\n\t}\n\n\terr = e.getTemplatesRelationsAndTypes(processedObjects)\n\tif err != nil {\n\t\treturn fmt.Errorf(\"get templates relations and types: %w\", err)\n\t}\n\terr = e.addRelationsAndTypes()\n\tif err != nil {\n\t\treturn fmt.Errorf(\"add relations and types: %w\", err)\n\t}\n\treturn nil\n}\n\n"
+        }
+      ],
+      "git_blob": "c93838fe0c83452952915fdcfebdd70695ffa314",
+      "native_path": "core/block/export/collection.go",
+      "path": "relation-target-closure-20261123/native/core/block/export/collection.go",
+      "retained_preimage": {
+        "bytes": 28086,
+        "git_blob": "c058e27a0fbe4d94b02e94cb74df219eaea6b45c",
+        "path": "relation-target-closure-20261123/original/core/block/export/collection.go",
+        "sha256": "aab78dcc4f5bc5cfd06221a8e32541ffacd1b1a357451bbcd22600fc86d57197"
+      },
+      "sha256": "ae84ce2e61f6f7971fc6b69b94d5fefe781663ca6b43a6559e76806f016eef73"
+    },
+    {
+      "base_sha256": null,
+      "base_source_path": null,
+      "bytes": 6382,
+      "changes": [],
+      "git_blob": "b30cc9569ef4e24ca0a27be15d121279e7a1bbbd",
+      "native_path": "core/block/export/owned_annotation_relation_target_closure_test.go",
+      "path": "relation-target-closure-20261123/native/core/block/export/owned_annotation_relation_target_closure_test.go",
+      "sha256": "09aa71bf5f6417f5726064577e4cb4d55595b667b7413f1551917b7a1916514b"
+    }
+  ],
+  "new_control_group": {
+    "leaves": [
+      "direct_arbitrary_type",
+      "ordered_multiple_types",
+      "transitive_type_constraint",
+      "recommended_only_relation",
+      "cycle_visits_each_type_once",
+      "unselected_definition_and_scalar_id_are_not_followed",
+      "empty_constraint_adds_no_type",
+      "target_read_error_is_propagated"
+    ],
+    "parent": "TestOtzariaRelationTargetTypeExportClosure"
+  },
+  "new_control_leaf_count": 8,
+  "original_refusal_unchanged": true,
+  "previous_aggregate_result": "FAIL",
+  "previous_artifact": {
+    "bytes": 4645960,
+    "id": 14865859752,
+    "sha256": "b18f2735a69be2b59dd221e510c92560003f18e5963da049d4a4c908c613d3f4"
+  },
+  "previous_control": "c6b4ebd03d25433b8a47073d84e2efa874c777ec",
+  "previous_evidence": [
+    {
+      "bytes": 57661,
+      "git_blob": "75be5c93e88cde1793602fc7dbc51de636a82d53",
+      "path": "relation-target-closure-20261123/previous-run/AUTHENTICATED_INTAKE.json",
+      "sha256": "1e42bb8514c58f2cceb5f4bb49579405d9dcfe685c7b5f2aab23b27efd65e326"
+    },
+    {
+      "bytes": 65293,
+      "git_blob": "745ec1f0187cd04c9aefe5d7f8104d694f690c9f",
+      "path": "relation-target-closure-20261123/previous-run/RESULT.json",
+      "sha256": "1c5c081f0223d3fa9bea4739b77c83e2cdc665f20d9453eaef1f3bf92524d1a1"
+    },
+    {
+      "bytes": 5954,
+      "git_blob": "937c4ed0138e1016f81be9a8aa07950938229da9",
+      "path": "relation-target-closure-20261123/previous-run/text-schema-comparison-diagnostic.json",
+      "sha256": "1f16c1a81e9104a002cc8a18ba68506e193818cafe9e934df3d52fd14e915af1"
+    }
+  ],
+  "previous_native_counts": {
+    "leaf_fail": 1,
+    "leaf_not_run": 8,
+    "leaf_pass": 0,
+    "leaf_skip": 0
+  },
+  "previous_native_run": 45270881714,
+  "previous_native_tree": "b89202220ac75600f69825d50ec313c1d66cf2fd",
+  "previous_run_attempt": 1,
+  "production_import_activated": false,
+  "root_source_review": {
+    "bytes": 722,
+    "git_blob": "59b6b9c99fadd7ac01e260e908cb185876eb5026",
+    "path": "relation-target-closure-20261123/ROOT_SOURCE_REVIEW.json",
+    "sha256": "461180bbb8f69f8839389b9e7bdaadea99fcde2f4759afc16ed73536b8736ecd"
+  },
+  "runtime_results_reused": false,
+  "schema": 1,
+  "schema_comparator_unchanged": true,
+  "scope": "Close selected relation target-type dependencies through the original processed-ID type/template/relation walk; no arbitrary CID mapping or semantic field omission.",
+  "source_rows": {
+    "bytes": 1695,
+    "git_blob": "598c46309585ec465b7d9b7423c04179bcc5736b",
+    "path": "relation-target-closure-20261123/SOURCE_ROWS.json",
+    "sha256": "22dd16c12cd351e6b53b034ec8ee29148d630e5e705e50f973dc90a81a29cf61"
+  }
+}
