@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "status": "FIXTURE_SOURCE_REPAIRED_RUNTIME_PENDING",
+  "actualXCTestMethodsExecutedForRepair": 0,
+  "originalRunID": "45087682296",
+  "originalArtifactID": "14782745448",
+  "originalArchiveSHA256": "6625e363c7cd9e4c256dfc116073687228db7a0564ae6f2aed8213eca089616b",
+  "originalSourceCommit": "7293e4fd0bcabdcdb643d5768b777b8e87ff1b73",
+  "repairBaseCommit": "d254a4a1ccd9288f585ff9374088cbaf965b36b4",
+  "originalTestFileSHA256": "69e841cf6ea3f4af46fa6a51e20e645702710e70d14a330f42601ec467bc0371",
+  "baseTestFileMatchesOriginal": true,
+  "currentTestFileSHA256": "3210efaafdf950706148261f2bbbbb8619ebb4aa7d3db9cbbce6639cc383d6eb",
+  "originalFullLogSHA256": "30ab117af5eca08517b1b7a137e591ea270336e5479ff90ec4d1882554fce0ec",
+  "originalMethodLogSHA256": "5ff68606ee7ff56bf38195d09164d84eb19f986f18a047e3a3dd88284b8bb758",
+  "originalMethodFailure": {
+    "children": [
+      {
+        "name": "XCTAssertEqual failed: (\"XCTWaiterResult(rawValue: 2)\") is not equal to (\"XCTWaiterResult(rawValue: 1)\") - Expected UI state was not reached",
+        "nodeType": "Failure Message",
+        "sourceLocation": {
+          "filePath": "/Users/runner/work/anytype-swift/anytype-swift/NativeApp/UITests/NativeLaunchTests.swift",
+          "lineNumber": 618
+        }
+      },
+      {
+        "name": "Update the Info.plist: Support for all orientations will soon be required.",
+        "nodeType": "Runtime Warning"
+      }
+    ],
+    "duration": "2m 26s",
+    "durationInSeconds": 146.67450594902039,
+    "name": "testSourceDragIntoNativeEditorPreservesTargetAndColdReopens()",
+    "nodeIdentifier": "NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens()",
+    "nodeIdentifierURL": "test://com.apple.xcode/AnyNative/PinkhaAnyNativeUITests/NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens",
+    "nodeType": "Test Case",
+    "result": "Failed"
+  },
+  "changedMethods": [
+    "NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens"
+  ],
+  "sharedHelpersChanged": false,
+  "productSourcesChanged": false,
+  "acceptanceAssertionsRemoved": false,
+  "waitsOrRetriesAdded": false,
+  "passedMethodsReexecuted": false,
+  "requiredActualValidation": [
+    "NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens"
+  ]
+}
