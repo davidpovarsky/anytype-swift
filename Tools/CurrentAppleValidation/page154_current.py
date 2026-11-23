@@ -140,6 +140,30 @@ class Commands(current.Commands):
         return super().run(argv, name, timeout, observe)
 
 
+def persist_final(path, value, primary=None):
+    """A missing required receipt fails without replacing an earlier failure."""
+    try:
+        current.write(path, value)
+    except BaseException as persistence:
+        original = primary if primary is not None else persistence
+        # Diagnostic recording is best effort only when the required write has
+        # already failed; the original error is always raised below.
+        try:
+            detail = {"path": str(path), **current.error(persistence)}
+            value["status"] = "FAIL"
+            value.setdefault("persistenceFailures", []).append(detail)
+            previous = getattr(original, "_page_final_receipt_failures", ())
+            original._page_final_receipt_failures = (*previous, detail)
+            print(json.dumps({"status": "FAIL", "receiptPersistenceFailure": detail,
+                              "primaryFailure": current.error(original)}, sort_keys=True),
+                  file=sys.stderr, flush=True)
+        except BaseException:
+            pass
+        if primary is not None:
+            raise primary from persistence
+        raise
+
+
 def native_runtime(commands, work, evidence):
     proof = commands.helpers["consumer_contract"]
     producer = commands.helpers["current_page_native_producer"]
@@ -430,7 +454,7 @@ def run_stage(commands, stage, device, built, application, binding, source, evid
         first = RuntimeError("page_original_result_or_postflight_incomplete")
     if first is not None:
         outcome["firstFailure"] = current.error(first)
-    current.write(directory / "result.json", outcome)
+    persist_final(directory / "result.json", outcome, first)
     return outcome
 
 
@@ -554,6 +578,8 @@ def execute(expected):
     except BaseException as failure:
         primary = failure
         receipt.setdefault("firstFailure", current.error(failure))
+        if getattr(failure, "_page_final_receipt_failures", ()):
+            receipt["persistenceFailures"] = list(failure._page_final_receipt_failures)
         receipt["status"] = "FAIL"
     finally:
         current._FINALIZING = True
@@ -592,7 +618,7 @@ def execute(expected):
             receipt["appBuildsStarted"] = int((commands.root / "page-build-app.started.json").is_file())
             receipt["uiBuildsStarted"] = int((commands.root / "page-build-ui.started.json").is_file())
         receipt["cancelled"] = current._CANCELLED
-        current.write(evidence / "execution.json", receipt)
+        persist_final(evidence / "execution.json", receipt, primary)
     return receipt
 
 
@@ -648,8 +674,11 @@ def cleanup(expected):
                 raise primary
             result["status"] = "PASS"
     except BaseException as failure:
-        result["firstFailure"] = current.error(failure)
-    current.write(final, result)
+        primary = primary if primary is not None else failure
+        result["firstFailure"] = current.error(primary)
+        if getattr(primary, "_page_final_receipt_failures", ()):
+            result["persistenceFailures"] = list(primary._page_final_receipt_failures)
+    persist_final(final, result, primary)
     return result
 
 

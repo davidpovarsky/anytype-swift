@@ -1,0 +1,78 @@
+{
+  "AppleBuilds": 0,
+  "afterSHA256": "a7384bc9ec75d44ce809ced7215e365973975dd924cdf51e318ef3091873effc",
+  "beforeSHA256": "53f440265e048f3bb17d89eac7cd37e96b02814f1fe0421da42fa5f45b5db968",
+  "behavior": "Required final write failure always raises; existing primary exception object remains the raised error, chained from persistence error. Safe stderr detail and primary annotation retain the secondary; enclosing execute/cleanup receipt copies annotation if writable.",
+  "changedDefinitions": [
+    "run_stage",
+    "execute",
+    "cleanup"
+  ],
+  "closureAfterSHA256": "450914607d759e1e4eaba4e841234f3188ea0de20da9ee6179ab2a98963aebe2",
+  "closureBeforeSHA256": "cb9a244e8e69f420ee8ab136d4d61242eda68514e4117abc3cc2f339151107e9",
+  "closureInverse": "Replace only modules.page154_current.sha256 with beforeSHA256; exact full bytes recover original",
+  "fixedInputRowAfter": {
+    "gitBlob": "6239a45dec16b16cc48c5eb52d99f78a3bbbc3fb",
+    "gitMode": "100644",
+    "sha256": "a7384bc9ec75d44ce809ced7215e365973975dd924cdf51e318ef3091873effc"
+  },
+  "fixedInputRowBefore": {
+    "gitBlob": "ef455b36f207326975271542ae82808c22b36dca",
+    "gitMode": "100644",
+    "sha256": "53f440265e048f3bb17d89eac7cd37e96b02814f1fe0421da42fa5f45b5db968"
+  },
+  "manifestAfterSHA256": "d54fcbf44030408a97bb99737a5ac4067df134e28f9060bca927beda4d7a85d8",
+  "manifestBeforeSHA256": "6743e29ab5162d669cfce2527f24746f4090efec8ffb0d10789309789ae8068f",
+  "manifestInverse": "Replace only inputs[Tools/CurrentAppleValidation/page154_current.py] with fixedInputRowBefore; exact full bytes recover original",
+  "newDefinitions": [
+    "persist_final"
+  ],
+  "newHostControls": 0,
+  "oldControlReplay": 0,
+  "oldSourceQualificationPreserved": "source-qualification.json at parent remains source-only PASS for39861, not a test of this follow-up",
+  "parent": "39861a890ebf775c5d8e40ab083b5d0a20dd5709",
+  "productExecutions": 0,
+  "resource": {
+    "MemAvailable": 9842593792,
+    "allocatedBefore": 4509696,
+    "mntWrites": 0,
+    "writerCap": 8388608
+  },
+  "sourcePath": "Tools/CurrentAppleValidation/page154_current.py",
+  "status": "SOURCE_REVIEW_ONLY",
+  "unchangedDefinitions": [
+    "Commands",
+    "admit",
+    "build_once",
+    "built_integrity",
+    "copy_application_receipts",
+    "helpers",
+    "main",
+    "native_runtime",
+    "preserve_products",
+    "recheck",
+    "root_path"
+  ],
+  "wholeFileInverse": [
+    {
+      "after": "def persist_final(path, value, primary=None):\n    \"\"\"A missing required receipt fails without replacing an earlier failure.\"\"\"\n    try:\n        current.write(path, value)\n    except BaseException as persistence:\n        original = primary if primary is not None else persistence\n        # Diagnostic recording is best effort only when the required write has\n        # already failed; the original error is always raised below.\n        try:\n            detail = {\"path\": str(path), **current.error(persistence)}\n            value[\"status\"] = \"FAIL\"\n            value.setdefault(\"persistenceFailures\", []).append(detail)\n            previous = getattr(original, \"_page_final_receipt_failures\", ())\n            original._page_final_receipt_failures = (*previous, detail)\n            print(json.dumps({\"status\": \"FAIL\", \"receiptPersistenceFailure\": detail,\n                              \"primaryFailure\": current.error(original)}, sort_keys=True),\n                  file=sys.stderr, flush=True)\n        except BaseException:\n            pass\n        if primary is not None:\n            raise primary from persistence\n        raise\n\n\ndef native_runtime(commands, work, evidence):",
+      "before": "def native_runtime(commands, work, evidence):"
+    },
+    {
+      "after": "    persist_final(directory / \"result.json\", outcome, first)\n    return outcome",
+      "before": "    current.write(directory / \"result.json\", outcome)\n    return outcome"
+    },
+    {
+      "after": "    except BaseException as failure:\n        primary = failure\n        receipt.setdefault(\"firstFailure\", current.error(failure))\n        if getattr(failure, \"_page_final_receipt_failures\", ()):\n            receipt[\"persistenceFailures\"] = list(failure._page_final_receipt_failures)\n        receipt[\"status\"] = \"FAIL\"",
+      "before": "    except BaseException as failure:\n        primary = failure\n        receipt.setdefault(\"firstFailure\", current.error(failure))\n        receipt[\"status\"] = \"FAIL\""
+    },
+    {
+      "after": "        persist_final(evidence / \"execution.json\", receipt, primary)\n    return receipt",
+      "before": "        current.write(evidence / \"execution.json\", receipt)\n    return receipt"
+    },
+    {
+      "after": "    except BaseException as failure:\n        primary = primary if primary is not None else failure\n        result[\"firstFailure\"] = current.error(primary)\n        if getattr(primary, \"_page_final_receipt_failures\", ()):\n            result[\"persistenceFailures\"] = list(primary._page_final_receipt_failures)\n    persist_final(final, result, primary)\n    return result",
+      "before": "    except BaseException as failure:\n        result[\"firstFailure\"] = current.error(failure)\n    current.write(final, result)\n    return result"
+    }
+  ]
+}
