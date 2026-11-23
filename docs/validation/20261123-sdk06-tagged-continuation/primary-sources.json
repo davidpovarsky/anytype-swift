@@ -1,0 +1,33 @@
+{
+  "reviewed_at": "2026-11-23T07:31:48.307283+00:00",
+  "sources": [
+    {
+      "url": "https://developer.apple.com/documentation/testing/addingtags",
+      "supports": "A tag is a static member declared with @Tag; .tags applies it across suites/files. Same named tags are equivalent across contexts. Metadata itself does not change test behavior.",
+      "limit": "Does not establish that this current App binary actually includes or selects the tag."
+    },
+    {
+      "url": "https://developer.apple.com/documentation/testing/tag%28%29",
+      "supports": "The @Tag macro declares a tag as a member of an extension to Tag."
+    },
+    {
+      "url": "https://developer.apple.com/documentation/testing/trait/tags%28_%3A%29",
+      "supports": "The tags trait accepts Tag values."
+    },
+    {
+      "url": "https://developer.apple.com/documentation/xcode-release-notes/xcode-16_3-release-notes",
+      "supports": "Issue132936523 adds -only-testing-tags and -skip-testing-tags. Issue127329947 accepts Swift Testing identifiers for -only-testing/-skip-testing.",
+      "limit": "The release note does not give a corrected spelling for the observed parameterized identifier-kind mismatch. No SwiftPM regex spelling is inferred for xcodebuild."
+    },
+    {
+      "url": "https://developer.apple.com/videos/play/wwdc2024/10179/",
+      "supports": "At12:44 Apple recommends tags for including/excluding Swift Testing tests in test plans."
+    }
+  ],
+  "argv": [
+    "-only-testing-tags",
+    "pinkhaSDK06Pending23"
+  ],
+  "identity_basis": "One flat named @Tag member; no nested/module prefix, regex, escaping, parameterized name or alternative CLI hypothesis.",
+  "actual_compiled_selection": "NOT_RUN; exact23 plus excluded7 is mandatory before product execution"
+}

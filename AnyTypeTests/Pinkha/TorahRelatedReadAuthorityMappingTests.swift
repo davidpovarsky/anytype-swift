@@ -7,7 +7,7 @@ import TorahInspectorCore
 @Suite("Heart related-read current authority mapping")
 @MainActor
 struct TorahRelatedReadAuthorityMappingTests {
-    @Test(arguments: [false, true])
+    @Test(.tags(.pinkhaSDK06Pending23), arguments: [false, true])
     func nativeDenialRequiresExactTypedCodeAndDescription(objectShow: Bool) {
         func nativeError(_ description: String, badInput: Bool = true) -> any Error {
             if objectShow {
@@ -35,7 +35,7 @@ struct TorahRelatedReadAuthorityMappingTests {
             nativeError("PINKHA_CURRENT_SPACE_READ_INVALIDATED_V1: timeout")) == nil)
     }
 
-    @Test
+    @Test(.tags(.pinkhaSDK06Pending23))
     func providerAndTransportDescriptionsCannotForgeNativeAuthority() {
         #expect(AnytypeTorahRelatedReadFailure.classify(
             NSError(domain: "PINKHA_CURRENT_SPACE_READ_DENIED_V1", code: 2)) == nil)

@@ -1,0 +1,58 @@
+{
+  "schema": "sdk06-original-identifier-diagnosis-v1",
+  "originals": [
+    {
+      "run_id": "45116213338",
+      "variant_scope": "exact-signature-skip",
+      "original_decoded_path": "/mnt/development/projects/diagnostics/sdk06-kernel-continuation-20261123/terminal-audit/identifier-metadata/original-xcode-diagnostic.log",
+      "sha256": "bce8c64311a8530df8be6068e50927ff4daa8565c30ee0cb4aec0e4d97670593",
+      "bytes": 35825,
+      "observed_identifier_representations": [
+        "<XCTTestIdentifier container, swift [\"TextBlockFocusLifecycleTests\", \"laterFocusSupersedesDetachedRequest(useNativeEditing:)\"]>",
+        "<XCTTestIdentifier container, swift [\"TextBlockFocusLifecycleTests\", \"editingDenialCancelsPendingFocus(locked:)\"]>",
+        "<XCTTestIdentifier container, swift [\"TextBlockFocusLifecycleTests\", \"nativeFocusObservationDistinguishesOutcomes(outcome:)\"]>"
+      ],
+      "enabled_methods": 26,
+      "disabled_methods": 913,
+      "enumerated_methods": 939,
+      "errors": [],
+      "actual_enumeration_exit": 0,
+      "product_builds": 0,
+      "product_methods_executed": 0
+    },
+    {
+      "run_id": "45121824215",
+      "variant_scope": "three-parameter-basenames-skip",
+      "original_decoded_path": "/mnt/development/projects/diagnostics/sdk06-basename-probe-20261123/terminal-audit/identifier-metadata/decoded/data.0~8XcR8qm20GaFNK3eogVyoxKJjKVnzcUo7SDboJuASrmIW6RpfbpaI_pviAnuql7_eelT9sxwSYOGwAWk5wBslw==",
+      "sha256": "a733f67968ed01c3c25812f9293dfdf23b690aafebf70c91c6e75e87545e0e37",
+      "bytes": 36843,
+      "observed_identifier_representations": [
+        "<XCTTestIdentifier leaf, method [\"TextBlockFocusLifecycleTests\", \"editingDenialCancelsPendingFocus\"]>",
+        "<XCTTestIdentifier leaf, method, swift [\"TextBlockFocusLifecycleTests\", \"editingDenialCancelsPendingFocus\"]>",
+        "<XCTTestIdentifier container [\"TextBlockFocusLifecycleTests\", \"editingDenialCancelsPendingFocus\"]>",
+        "<XCTTestIdentifier container [\"TextBlockFocusLifecycleTests\", \"nativeFocusObservationDistinguishesOutcomes\"]>",
+        "<XCTTestIdentifier leaf, method [\"TextBlockFocusLifecycleTests\", \"nativeFocusObservationDistinguishesOutcomes\"]>",
+        "<XCTTestIdentifier leaf, method, swift [\"TextBlockFocusLifecycleTests\", \"nativeFocusObservationDistinguishesOutcomes\"]>",
+        "<XCTTestIdentifier leaf, method [\"TextBlockFocusLifecycleTests\", \"laterFocusSupersedesDetachedRequest\"]>",
+        "<XCTTestIdentifier leaf, method, swift [\"TextBlockFocusLifecycleTests\", \"laterFocusSupersedesDetachedRequest\"]>",
+        "<XCTTestIdentifier container [\"TextBlockFocusLifecycleTests\", \"laterFocusSupersedesDetachedRequest\"]>"
+      ],
+      "enabled_methods": 26,
+      "disabled_methods": 913,
+      "enumerated_methods": 939,
+      "errors": [],
+      "actual_enumeration_exit": 0,
+      "product_builds": 0,
+      "product_methods_executed": 0
+    }
+  ],
+  "unchanged_three_extra_identifiers": [
+    "AnytypeTests/TextBlockFocusLifecycleTests/editingDenialCancelsPendingFocus(locked:)",
+    "AnytypeTests/TextBlockFocusLifecycleTests/laterFocusSupersedesDetachedRequest(useNativeEditing:)",
+    "AnytypeTests/TextBlockFocusLifecycleTests/nativeFocusObservationDistinguishesOutcomes(outcome:)"
+  ],
+  "observed": "Both outgoing requests reached the actual Xcode runner configuration; all three parameterized exclusions remained enabled.",
+  "inference": "The observed Swift container versus generic/method representations suggest an identifier-kind bridge mismatch. This does not prove an undocumented replacement grammar or rule out every plist/CLI intersection.",
+  "next_route": "Current-build metadata tag with actual exact23 enumeration; no further old-Products grammar probe.",
+  "tagged_selection_qualified": false
+}
