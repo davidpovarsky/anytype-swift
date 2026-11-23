@@ -1,0 +1,52 @@
+--- qualified-original/run.py
++++ hardening/run.py
+@@ -2 +2 @@
+-"""Owned Oracle controller. Raw runtime output and native witnesses remain private."""
++"""Concrete-capability hardening only. Original six-method controller is unchanged."""
+@@ -147,0 +148,2 @@
++        if parent not in methods:
++            continue
+@@ -213,14 +215,2 @@
+-    main = streams.get("TestLocalStoreWitnessNativeConcurrentTransaction", "")
+-    for line in main.splitlines():
+-        marker = "WITNESS_SAFE_RECEIPT "
+-        if marker in line:
+-            receipts.append(safe_receipt(json.loads(line.split(marker, 1)[1])))
+-    if len(receipts) != 2:
+-        raise RuntimeError("exact two native transaction receipts required")
+-    if receipts[0]["OwnerSHA256"] != receipts[1]["OwnerSHA256"] or receipts[0]["SpaceSHA256"] != receipts[1]["SpaceSHA256"]:
+-        raise RuntimeError("native interleaving changed owner or Space")
+-    if receipts[0]["WitnessSHA256"] == receipts[1]["WitnessSHA256"]:
+-        raise RuntimeError("later native transaction did not change")
+-    proof = "NATIVE_INTERLEAVING one_read_transaction=1 exact_context=1 writer_committed_after_inventory=1 later_transaction_sees_commit=1 iterator_detachment=1"
+-    if main.count(proof) != 1:
+-        raise RuntimeError("native interleaving observation missing")
++    # This scope never runs or relabels the original native interleaving proof.
++
+@@ -236,0 +227,6 @@
++    selected = [
++        "TestLocalStoreWitnessConcreteCapabilityRejectsExternalEmbeddingAndZero",
++        "TestLocalStoreWitnessOwnershipAndCancellation",
++    ]
++    if manifest["selected_top_level_methods"] != selected or manifest["expected_named_runs_and_passes"] != 8:
++        raise RuntimeError("hardening requires exactly the approved two-method scope")
+@@ -239 +235 @@
+-    source_repo = source.parents[2]
++    source_repo = source.parents[3]
+@@ -261 +257,5 @@
+-    result = {"stage": args.stage, "status": "FAILED", "started": now(), "old_methods_run": 0,
++    result = {"stage": args.stage, "status": "FAILED", "started": now(),
++              "scope": "concrete-capability-hardening-only-v1", "old_unchanged_methods_run": 0,
++              "new_external_methods_executed": 0, "directly_affected_existing_methods_executed": 0,
++              "retained_original_methods_not_rerun": manifest["retained_original_methods_not_rerun"],
++              "retained_original_native_source_sha": manifest["retained_original_native_source_sha"],
+@@ -328 +328,5 @@
+-            result["actual_interleaving_proofs"] = 1
++            result["actual_interleaving_proofs"] = 0
++            result["new_external_methods_executed"] = 1
++            result["directly_affected_existing_methods_executed"] = 1
++            result["directly_affected_existing_method"] = "TestLocalStoreWitnessOwnershipAndCancellation"
++            result["retained_original_interleaving_proof_sha"] = manifest["retained_original_execution_receipt_sha256"]
+@@ -330 +334 @@
+-            result["status"] = "PASS_NATIVE_LOCAL_STORAGE_SCOPE_ONLY"
++            result["status"] = "PASS_CONCRETE_CAPABILITY_SCOPE_ONLY"
