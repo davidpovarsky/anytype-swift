@@ -1,0 +1,52 @@
+name: Full App Page154 factory and ordinary native event consumer
+
+on:
+  workflow_dispatch: {}
+  workflow_call: {}
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  actual-page154-app-consumer:
+    runs-on: xcode-27
+    timeout-minutes: 180
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+      GH_TOKEN: ${{ github.token }}
+      ATTEMPT: build/page154-app-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - name: Checkout exact reviewed full App consumer source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: build/page154-app-${{ github.run_id }}-${{ github.run_attempt }}/app
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Select native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Checkout immutable canonical Hanlin dependency
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/hanlin-ai
+          ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+          path: build/page154-app-${{ github.run_id }}-${{ github.run_attempt }}/hanlin
+          persist-credentials: false
+      - name: Build actual opt-in App and execute one new native consumer XCTest
+        run: |
+          python3 -B "$ATTEMPT/app/Tools/PinkhaSemanticAnchorWire/apple_consumer/run.py" \
+            --app "$ATTEMPT/app" --hanlin-source "$ATTEMPT/hanlin" \
+            --work "$ATTEMPT/work" --evidence "$ATTEMPT/evidence"
+      - name: Preserve original Products, XCTest and every admission observation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Semantic-Page-App-Consumer-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/page154-app-${{ github.run_id }}-${{ github.run_attempt }}/evidence/
+          retention-days: 14
+          if-no-files-found: error

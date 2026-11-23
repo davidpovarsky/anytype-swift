@@ -45,7 +45,7 @@ def capture(derived, evidence, *, source_sha, run_id, run_attempt, build_flags, 
             and str(run_id).isascii() and str(run_id).isdigit() and int(run_id) > 0
             and str(run_attempt).isascii() and str(run_attempt).isdigit() and int(run_attempt) > 0,
             "Actual build source and run identity are required")
-    require(scope in {"sdk06", "coherent-native", "coherent-ui"}, "Unknown early product evidence scope")
+    require(scope in {"sdk06", "coherent-native", "coherent-ui", "semantic-page154"}, "Unknown early product evidence scope")
     target = evidence / (scope + "-early-products")
     require(not target.exists() and not target.is_symlink(), "Refuse stale early product evidence")
     target.mkdir(parents=True)
