@@ -1,0 +1,65 @@
+{
+  "additionalImportedHookComposition": {
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": {
+      "git_blob": "962cbca1b091d85464652e8d6795a42d0b8cff09",
+      "imports_unchanged": true,
+      "previous": "3b617ea3258f92f8573c1761376f7917901ed0bd035caf8cde7c155a189e0fba",
+      "sha256": "3e2d142f76591447167a717a3f8fa4e9a099810a438fcf05c0a94cc4c88ba965"
+    },
+    "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py": {
+      "git_blob": "e03a10f2887ecb0eff2e608983daa03f3399936b",
+      "imports_unchanged": true,
+      "previous": "ff25ef9fc14630a67decf242b327c53111cfb8b77e0c2f10511a46a926aef8f0",
+      "sha256": "17b3b349025ede11e4e4081fdd664cd0eb3cf6a1f9e7fe1ed41a0b888f42d189"
+    }
+  },
+  "baselineOnlyExcludeFromIntegration": [
+    "bb65e41150c3d5e1a40f6441ad3a252507e38a7e",
+    "163d66392ea135dc6488b61a092517eff9a8e459"
+  ],
+  "changedFiles": {
+    ".github/workflows/pinkha-any-native-ui-original-products.yml": {
+      "classification": "DOWNSTREAM_OWNED",
+      "sha256": "1237ab248bba792e361ca606aa6077f8d8dff427a0b6430dc50b9e892af67a56"
+    },
+    "Tools/AnyEnginePort/native-ui-readiness-helpers.json": {
+      "classification": "DOWNSTREAM_OWNED",
+      "sha256": "17858c0aedc52e4a8e6547fc64c1bb6dbbc08e377b3e255f8843d15cda30eb14"
+    },
+    "Tools/AnyEnginePort/native_ui_original_products_readiness.py": {
+      "classification": "DOWNSTREAM_OWNED",
+      "sha256": "bec3ed7c2c52b979b00b5b6e480921fed3bb640c17f43ac99106f0c0a4182d55"
+    },
+    "Tools/AnyEnginePort/test_native_ui_original_products_readiness.py": {
+      "classification": "DOWNSTREAM_OWNED",
+      "sha256": "91d1572131d61b7757f52f074c31909a996ad6aa0f6c7b0f0a2b33ee5700715e"
+    }
+  },
+  "claims": {
+    "allSevenUnexecutedMethodsAnd22RetainedUnchanged": true,
+    "causalDiagnosisInferred": false,
+    "controls_executed": 0,
+    "new_builds": 0,
+    "oldControllerProviderKernelSelectionUnchanged": true,
+    "old_test_methods_replayed": 0,
+    "originalAppSourceUnchanged": true,
+    "product_methods_executed": 0
+  },
+  "controlInputsSHA256": "3e3e8522095b48eb6a95b82211dc8890d4f0aea7107b8e4ca614fb480794fa47",
+  "originalFailures": {
+    "45127756584": "Admitted 216 original Products; provider cold boot readiness failed before fixture start; precise low-level cause unknown; zero product methods.",
+    "451319": "Boot requested before admission; initial git rev-parse HEAD timed out after 30s before first App command. Caller is ambiguous between control_context and provider.github_context; zero product methods."
+  },
+  "publishedCurrentControlOrigin": "75bd6d7af18dfd511e85582ce7f994d2801b7703",
+  "qualifiedSDKOrigin": "ab9943cfe3aa77a100685560c84dc2fa930a6328",
+  "rootOriginalAudit": {
+    "path": "/mnt/development/projects/diagnostics/native-ui-boot-order-actual-result-20261123/root-review.json",
+    "sha256": "7dfd72993ce6d289a975b4b10c4ed0de1af34855325ce2156d6b3f1e51f023a4"
+  },
+  "sourceBase": "a36c31542671f4bb94405855bd94c1ef8eb5464b",
+  "status": "SOURCE_FROZEN_REVIEW_PENDING_TWO_NEW_CONTROLS_NOT_RUN",
+  "twoControlScope": "Actual owned control children and actual current/4b imports/Git closures; simulator outputs and admission are explicitly fixture-only, not Apple acceptance",
+  "upstreamDevelopObserved": "d857b23ea540be33d6faab4f7a7a1a260ab578c1",
+  "workflowInverse": "Remove new readiness step, restore original boot step and two original success guards; all other workflow bytes exact.",
+  "workflowOriginalSHA256": "4d3e49e948275bb1c09cb3c67235b6ddaa4cff042ee2cbf94225340354f1202e"
+}

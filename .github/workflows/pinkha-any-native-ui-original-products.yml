@@ -35,20 +35,17 @@ jobs:
       - name: Create one fresh exact original-compatible simulator
         id: simulator
         run: python3 -B Tools/AnyEnginePort/native_ui_original_products.py create-simulator
-      - name: Request owned cold boot before original Products admission
-        id: boot
-        if: ${{ !cancelled() && steps.simulator.outcome == 'success' }}
-        run: |
-          python3 -B Tools/AnyEnginePort/hanlin_fixture_ci.py boot \
-            --simulator-receipt build/any-patched-evidence/simulator.json \
-            --safe-dir build/any-patched-evidence/hanlin-provider
       - name: Admit and restore original Products without any build
         id: admission
-        if: ${{ !cancelled() && steps.simulator.outcome == 'success' && steps.boot.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.simulator.outcome == 'success' }}
         run: python3 -B Tools/AnyEnginePort/native_ui_original_products.py admit
+      - name: Verify admitted origins and finish owned simulator readiness
+        id: readiness
+        if: ${{ !cancelled() && steps.admission.outcome == 'success' }}
+        run: python3 -B Tools/AnyEnginePort/native_ui_original_products_readiness.py
       - name: Prepare the qualified owned Hanlin HTTPS provider
         id: provider
-        if: ${{ !cancelled() && steps.admission.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.admission.outcome == 'success' && steps.readiness.outcome == 'success' }}
         run: |
           python3 -B Tools/AnyEnginePort/hanlin_fixture_ci.py prepare \
             --simulator-receipt build/any-patched-evidence/simulator.json \
