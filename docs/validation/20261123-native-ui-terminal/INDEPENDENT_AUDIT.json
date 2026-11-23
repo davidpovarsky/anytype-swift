@@ -1,0 +1,170 @@
+{
+  "schema": "pinkha-native-ui-continuation-terminal-audit-v1",
+  "audited_at": "2026-11-23T05:44:43.091439+00:00",
+  "run_id": 45108211949,
+  "run_attempt": 1,
+  "job_id": 137474299509,
+  "source": "4b09cc5478c60c1c6728a54f2a27a115637a835b",
+  "status": "ORIGINAL_PROVIDER_PREFLIGHT_FAILURE_NO_CURRENT_PRODUCT_METHODS",
+  "original_downloads": [
+    {
+      "path": "original-14792209655.zip",
+      "argv": [
+        "gh",
+        "api",
+        "repos/davidpovarsky/anytype-swift/actions/artifacts/14792209655/zip"
+      ],
+      "started_at": "2026-11-23T05:40:38.251189+00:00",
+      "finished_at": "2026-11-23T05:40:49.125365+00:00",
+      "return_code": 0,
+      "bytes": 37844727,
+      "sha256": "e3e8dd71771a165453165dc268197d18c719d8008f3d4a64296aad5fe10b57a1"
+    },
+    {
+      "path": "original-14792158584.zip",
+      "argv": [
+        "gh",
+        "api",
+        "repos/davidpovarsky/anytype-swift/actions/artifacts/14792158584/zip"
+      ],
+      "started_at": "2026-11-23T05:40:38.251235+00:00",
+      "finished_at": "2026-11-23T05:40:39.320855+00:00",
+      "return_code": 0,
+      "bytes": 1662,
+      "sha256": "374b01cd7c7a1b7e7ee248dc721be62a7044e2fafa1da219ebd5f528313bac17"
+    },
+    {
+      "path": "original-job-137474299509.log",
+      "argv": [
+        "gh",
+        "api",
+        "repos/davidpovarsky/anytype-swift/actions/jobs/137474299509/logs"
+      ],
+      "started_at": "2026-11-23T05:40:38.251667+00:00",
+      "finished_at": "2026-11-23T05:40:41.777324+00:00",
+      "return_code": 0,
+      "bytes": 3372499,
+      "sha256": "2abafa39330e417fff15d6a572103dce77bdeb64d103613924fcc741722bff99"
+    }
+  ],
+  "source_input_bindings": {
+    "NativeApp/Sources/AnyNativeApp.swift": "e85134abbd30c2f772a2017d68cf153181d58872d92dbdcc91ca12cc514b403c",
+    "NativeApp/Sources/NativeCustomTypeFixture.swift": "d7ead5cc94576fb2b116d6d498e03bfa6a853df4134fbb052838004512212c36",
+    "NativeApp/UITests/NativeLaunchTests.swift": "1404b6e70e03015aa208ce285c392a4353578b540ff5071548c3158c5e53a04a",
+    "NativeApp/AnyNative.xcodeproj/project.pbxproj": "7282befe3104df28a3e0f5feef05a018bc515c68cf443307de65dbe977e33532",
+    "NativeApp/AnyNative.xcodeproj/xcshareddata/xcschemes/PinkhaAnyNativeApp.xcscheme": "f208c605b78e849e18defc7c759f3588dc9ab9b3f3bdd7502257c605da9db308",
+    "Tools/AnyEnginePort/verify_custom_type.py": "6322e8f63d7c5864359c2a10f7b4f30773c96855c461840c5238f87211ddc864",
+    "Tools/AnyEnginePort/verify_native_test_execution.py": "bd8f295934757612e2d5d71bf943f5ef93b3d883936d9bba572c6cfad9370b73",
+    "Tools/AnyEnginePort/verify_archive_roundtrip.py": "5573eefcbf9eae9eea905210d15726ce7684f5529766531d4926eda39c7e2f29",
+    ".github/workflows/pinkha-any-engine-port.yml": "cca1a58357f3efe9ec4a6b36bd816a598a555b94d12828e68d87b5eb811d81f7"
+  },
+  "execution": {
+    "actual_native_ui_builds": 1,
+    "build_result": "TEST BUILD SUCCEEDED",
+    "build_log_sha256": "363f84f6858ab76b1cee4f051c31847cbd7eeef679ec4081c013fdcca6656127",
+    "build_started_at": "2026-11-23T05:26:59Z",
+    "build_completed_at": "2026-11-23T05:36:36Z",
+    "new_native_library_builds": 0,
+    "current_product_methods": 0,
+    "current_four_methods": [
+      "NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen",
+      "NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen",
+      "NativeLaunchTests/testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType",
+      "NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens"
+    ],
+    "files_methods": 0,
+    "custom_type_methods": 0,
+    "history_methods": 0,
+    "retained_methods": 22,
+    "retained_methods_reexecuted": 0,
+    "retained_receipt_sha256": "86308e62d31375be5b5f241be391cd65a8860a070a11f2026f3a4ccf1a634b9d",
+    "old_failed_batches_remain_failed": true,
+    "current_test_results_relabelled": false
+  },
+  "simulator": {
+    "ownedUDID": "5C942EDD-FB06-42CD-ACE0-860E669D1449",
+    "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-27-2",
+    "deviceType": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-A20-Pro"
+  },
+  "failure": {
+    "stage": "OWNED_HANLIN_HTTPS_PROVIDER_START_BEFORE_UI",
+    "reason": "owned_fixture_start_failed",
+    "provider_status": "FAIL",
+    "simulator_ready_state": "Booted",
+    "starter_timeout_seconds": 90,
+    "original_subprocess_exit_code": null,
+    "original_subprocess_error_class": null,
+    "original_subprocess_stdout_stderr_retained": false,
+    "server_start_receipt_present": false,
+    "root_cause": "UNKNOWN_BEYOND_EXACT_STARTER_BOUNDARY",
+    "no_network_certificate_or_runtime_cause_inferred": true,
+    "prepare_receipt_sha256": "adaa35ce722ba0ea2d4c51d7d09e3b3efd57e5c24d84b10984cbcc8237932a2f"
+  },
+  "aggregate": {
+    "status": "FAIL",
+    "error": "regular_bounded_evidence_file_required",
+    "classification": "DEPENDENT_CURRENT_EVIDENCE_ABSENT_AFTER_PREFLIGHT_FAILURE"
+  },
+  "products": {
+    "preservation": {
+      "schemaVersion": 1,
+      "status": "PRESERVED_BUILD_PRODUCTS_NOT_ADMITTED",
+      "commit": "4b09cc5478c60c1c6728a54f2a27a115637a835b",
+      "githubRunID": "45108211949",
+      "githubRunAttempt": "1",
+      "archive": "native-ui-products.tar.gz",
+      "archiveSHA256": "41f2c1a3f0bcd5910ad878bb087c2596dbd7278f58745c997dec72dd8b79b7ba",
+      "archiveBytes": 37221744,
+      "archiveRoots": [
+        "Debug-iphonesimulator/PinkhaAnyNative.app",
+        "Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app",
+        "PinkhaAnyNativeApp_iphonesimulator27.0-arm64.xctestrun"
+      ],
+      "xctestrun": [
+        {
+          "path": "PinkhaAnyNativeApp_iphonesimulator27.0-arm64.xctestrun",
+          "sha256": "67228dbc1e1636b9e877d487528ea1fa37023a9a3ff8e53c8d92a94d38c897e6",
+          "bytes": 5354
+        }
+      ],
+      "claimBoundary": "Original compiled products only; no admission or test execution claim."
+    },
+    "structural_audit_path": "PRODUCTS_STRUCTURAL_AUDIT.json",
+    "structural_audit_sha256": "488df6c94867eb6b6da9784667b1c9f1cd6761d27784e3591e48f7a76fc2d046",
+    "bytes_match_current_frozen_map": true,
+    "scope": "Two compiled App bundles plus original descriptor only, not complete DerivedData/source caches",
+    "new_run_product_reuse_admitted": false
+  },
+  "cleanup": {
+    "provider_record": {
+      "schemaVersion": 1,
+      "operation": "cleanup",
+      "startedAt": "2026-11-23T05:37:28.612841+00:00",
+      "status": "OWNED_FIXTURE_STOPPED_AND_PRIVATE_MATERIAL_REMOVED",
+      "scope": "owned_hanlin_provider_ci_setup_not_product_acceptance",
+      "sourceCommit": "4b09cc5478c60c1c6728a54f2a27a115637a835b",
+      "githubRunID": "45108211949",
+      "simulatorTrustRemoval": "OWNED_SIMULATOR_DELETION_FOLLOWS",
+      "hostTrustModified": false,
+      "finishedAt": "2026-11-23T05:37:28.882802+00:00"
+    },
+    "provider_controller_exit_success": true,
+    "private_values_not_published": true,
+    "owned_simulator_delete_step_success": true,
+    "simulator_delete_not_error_suppressed": true,
+    "owned_udid": "5C942EDD-FB06-42CD-ACE0-860E669D1449",
+    "no_after_delete_inventory_receipt": true
+  },
+  "final_integrity": {
+    "status": "UNCHANGED_BUILD_INPUTS",
+    "scope": "Exact declared source/product/native/continuation map from same current build",
+    "frozen_receipt_sha256": "3cc42c058b7ba28482eb2d3dfb96d3dabbd9ae846c40b6217a15ee95fe0c7c63",
+    "postflight_receipt_sha256": "3699d89937659addb1b741e3f52bd4e1c14756b4c647890df4bb847f755c1bd0",
+    "whole_repository_final_integrity_claimed": false
+  },
+  "provider_source_review_sha256": "94658dfcd940c244a152b2e9cc1ba04d944acb2d48733650816b207f3eced615",
+  "new_tests_by_auditor": 0,
+  "new_builds_by_auditor": 0,
+  "ci_redispatches_by_auditor": 0,
+  "full_acceptance": false
+}

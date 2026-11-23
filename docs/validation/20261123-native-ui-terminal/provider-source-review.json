@@ -1,0 +1,80 @@
+{
+  "source": "4b09cc5478c60c1c6728a54f2a27a115637a835b",
+  "source_inputs_exact": {
+    "NativeApp/Sources/AnyNativeApp.swift": "e85134abbd30c2f772a2017d68cf153181d58872d92dbdcc91ca12cc514b403c",
+    "NativeApp/Sources/NativeCustomTypeFixture.swift": "d7ead5cc94576fb2b116d6d498e03bfa6a853df4134fbb052838004512212c36",
+    "NativeApp/UITests/NativeLaunchTests.swift": "1404b6e70e03015aa208ce285c392a4353578b540ff5071548c3158c5e53a04a",
+    "NativeApp/AnyNative.xcodeproj/project.pbxproj": "7282befe3104df28a3e0f5feef05a018bc515c68cf443307de65dbe977e33532",
+    "NativeApp/AnyNative.xcodeproj/xcshareddata/xcschemes/PinkhaAnyNativeApp.xcscheme": "f208c605b78e849e18defc7c759f3588dc9ab9b3f3bdd7502257c605da9db308",
+    "Tools/AnyEnginePort/verify_custom_type.py": "6322e8f63d7c5864359c2a10f7b4f30773c96855c461840c5238f87211ddc864",
+    "Tools/AnyEnginePort/verify_native_test_execution.py": "bd8f295934757612e2d5d71bf943f5ef93b3d883936d9bba572c6cfad9370b73",
+    "Tools/AnyEnginePort/verify_archive_roundtrip.py": "5573eefcbf9eae9eea905210d15726ce7684f5529766531d4926eda39c7e2f29",
+    ".github/workflows/pinkha-any-engine-port.yml": "cca1a58357f3efe9ec4a6b36bd816a598a555b94d12828e68d87b5eb811d81f7"
+  },
+  "provider_sources": {
+    "Tools/AnyEnginePort/hanlin_fixture_ci.py": {
+      "sha256": "b18352c1517c8206a25ef5e9a13622f865df7a0bf6d74ff6414c12caad45a2d9",
+      "functions": [
+        {
+          "name": "run",
+          "start_line": 46,
+          "end_line": 65,
+          "ast_sha256": "0c8d9cbd8f99510159e98744629e61e1a00908dd6aaa7d0ac7f2bf6d984fb7c5"
+        },
+        {
+          "name": "prepare",
+          "start_line": 230,
+          "end_line": 271,
+          "ast_sha256": "20a6f5bf952a538b2b23a256f017884561823fb89663799921904bdf2678e153"
+        },
+        {
+          "name": "cleanup",
+          "start_line": 284,
+          "end_line": 304,
+          "ast_sha256": "4601d2dce31ee80234fb347c6ca27d35de425062559e2ea3342b9d5d7352827c"
+        }
+      ],
+      "source_origin": "RECOVERED_FROM_EXACT_DISPATCHED_GIT_COMMIT_NOT_ORIGINAL_ARCHIVED_SOURCE"
+    },
+    "Tools/AnyEngineValidation/HanlinProviderFixture/fixture.py": {
+      "sha256": "afe281d0dca77d47d672d182c156d9ce5ec5a7c9a7644819515c546473d3c714",
+      "functions": [
+        {
+          "name": "start",
+          "start_line": 565,
+          "end_line": 623,
+          "ast_sha256": "fa41356efffcbadb8961b31789e0458c29cec1ba376fbc22078e4f8fe510780e"
+        },
+        {
+          "name": "main",
+          "start_line": 688,
+          "end_line": 723,
+          "ast_sha256": "0ef522893439c03c63da90e1a576467944314da0b59638debe040e6dfe1d6c07"
+        }
+      ],
+      "source_origin": "RECOVERED_FROM_EXACT_DISPATCHED_GIT_COMMIT_NOT_ORIGINAL_ARCHIVED_SOURCE"
+    }
+  },
+  "actual_invocation": [
+    "python3",
+    "Tools/AnyEnginePort/hanlin_fixture_ci.py",
+    "prepare",
+    "--simulator-receipt",
+    "build/any-patched-evidence/simulator.json",
+    "--safe-dir",
+    "build/any-patched-evidence/hanlin-provider"
+  ],
+  "nested_start_template": [
+    "sys.executable",
+    "Tools/AnyEngineValidation/HanlinProviderFixture/fixture.py",
+    "start",
+    "--private-dir",
+    "<new run-owned private directory>/fixture",
+    "--safe-result",
+    "build/any-patched-evidence/hanlin-provider/server-start.json"
+  ],
+  "nested_timeout_seconds": 90,
+  "start_error_retention": "run captures child stdout/stderr but raises the fixed owned_fixture_start_failed reason without retaining returncode/error category/streams; start can emit finite safe error JSON, but this original output is absent",
+  "private_server_stderr": "Original _serve stdout/stderr are DEVNULL; no private server diagnostics were retained",
+  "root_cause": "NOT_DETERMINABLE_FROM_ORIGINAL_RETAINED_RECORDS"
+}
