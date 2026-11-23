@@ -615,7 +615,8 @@ final class NativeLaunchTests: XCTestCase {
         XCTAssertEqual(target.value as? String, targetText, "A source transfer must not replace the target text.")
         XCTAssertLessThan(quote.frame.minY, target.frame.minY, "A targeted drop inserts before its native target.")
         XCTAssertEqual(app.keyboards.count, 0, "Dragging a source must not acquire editor focus.")
-        tapWhenEnabled(app.buttons["torah-inspector-close"])
+        // The header collapse may dismiss the inspector completely. The cold
+        // reopen below terminates the app from either supported collapsed state.
 
         // Reopen only after the separate canonical association badge appears.
         // The new quote, its source metadata and the original target must all
