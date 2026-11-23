@@ -1,0 +1,71 @@
+{
+  "schema": "coherent-container-observation-qualification-v1",
+  "status": "ONE_NEW_CONTROL_PASS",
+  "source": "20e90f32cc4071e775f5547dd5b93df78e7f54a3",
+  "new_control_methods": 1,
+  "scenarios_passed": 5,
+  "old_control_methods": 0,
+  "product_methods": 0,
+  "actual_apple_lookup": "NOT_RUN",
+  "source_input_count": 4,
+  "loaded_source_count": 2,
+  "before_after_unchanged": true,
+  "receipt_sha256": "653d2b2efd354d1974f46a0a7778ab7017738b53b1e9482caa477a72669d2c63",
+  "originals": {
+    "controller.py": {
+      "bytes": 3888,
+      "sha256": "0f0c73ecef882f0c7a18743e2b0f742c78f9b73db98ce8e495df9590045f2ed7"
+    },
+    "controls.log": {
+      "bytes": 339,
+      "sha256": "e8e72ac6a8164cdbe0f2f3c03d027188eb309ff28a87f370ecf042c5545f1795"
+    },
+    "events.json": {
+      "bytes": 1506,
+      "sha256": "98f51fb5c4d7729fa860ad3a70929002b43aae704fb3c315b8f161cebd1e81dd"
+    },
+    "intent.json": {
+      "bytes": 480,
+      "sha256": "cd17709eba269c6f796eceff03307d78dd83dc46144bf429f12d1b4f36c1c326"
+    },
+    "process.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process.stdout": {
+      "bytes": 1260,
+      "sha256": "4a02347a1d75e8a3d0ec41a9f6f278bb1d6df11c9fa77b35b903b41d042fc6d8"
+    },
+    "receipt.json": {
+      "bytes": 1432,
+      "sha256": "653d2b2efd354d1974f46a0a7778ab7017738b53b1e9482caa477a72669d2c63"
+    },
+    "source-after.json": {
+      "bytes": 1430,
+      "sha256": "c9b8bb402f072ee72a9c2d96941a9db66b21f1da5cc2a66609aeeb0011964c99"
+    },
+    "source-before.json": {
+      "bytes": 1430,
+      "sha256": "c9b8bb402f072ee72a9c2d96941a9db66b21f1da5cc2a66609aeeb0011964c99"
+    }
+  },
+  "batch_exact_inverse": {
+    "path": "Tools/PinkhaSimulatorGate/wave15_batch.py",
+    "baseline": "582e841fb4914811f68cc1cca06adbfaec22caab",
+    "before_sha256": "795ecec97eeeacea37d6dea05dc038f487c90f526c251c59823221d5157231da",
+    "after_sha256": "0b743b54a62610d9cdb2b92a97e73b479ba347e241c1fa29eb8b8baa348aa5a0",
+    "before": "        query = subprocess.run([\"xcrun\", \"simctl\", \"get_app_container\", udid, BUNDLE, \"data\"],\n                               capture_output=True, timeout=30)",
+    "after": "        if self.profile == COHERENT_HEART_PROFILE:\n            from coherent_container_observation import run_lookup\n            query = run_lookup([\"xcrun\", \"simctl\", \"get_app_container\", udid, BUNDLE, \"data\"], evidence)\n        else:\n            query = subprocess.run([\"xcrun\", \"simctl\", \"get_app_container\", udid, BUNDLE, \"data\"],\n                                   capture_output=True, timeout=30)",
+    "exact": true
+  },
+  "independent_review": {
+    "reviewer": "editor_migration",
+    "scope": "READ_ONLY_EXACT_SOURCE_NO_IMPORT_OR_EXECUTION",
+    "original_command_and_30s_budget_unchanged": true,
+    "result_and_primary_exception_identity_unchanged": true,
+    "exclusive_original_output_files": true,
+    "default_branch_unchanged": true,
+    "both_absence_proofs_false": true,
+    "original_cleanup_inputs_not_consumed": true
+  }
+}

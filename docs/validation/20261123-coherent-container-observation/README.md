@@ -1,7 +1,5 @@
-# Preserve the original fresh-container lookup outcome
+# Coherent lookup outcome preservation
 
-Original Release45111287072 reached readiness but timed out in the30-second get_app_container query before first install. Its TimeoutExpired partial streams were not retained. This bounded observation records that exact one query's argv, outcome, elapsed time and original separate stdout/stderr. It never retries, changes the30-second timeout, calls a different simulator API or treats timeout as absence.
+One new control passed once at20e90f32cc4071e775f5547dd5b93df78e7f54a3, covering five outcomes. Four source inputs and both loaded repository modules were unchanged before and after. The exact original command, 30-second limit, result object, and primary exception remain unchanged. Only the coherent profile uses the new output recorder; the other branch is byte-equivalent to the prior query.
 
-The hook applies only to the explicit coherent profile. Other profiles retain their original subprocess call. Every successful result and every raised exception is returned or re-raised unchanged; failure to write diagnostic evidence cannot swallow the original failure. Existing NEGATIVE_UNCLASSIFIED/fresh-construction checks stay unchanged. A diagnostic receipt claims no container absence, process absence or product execution.
-
-Exactly one new controller method covers returned-negative, unexpected-positive, timeout partial bytes, OS error and cancellation. It is frozen before execution; no old successful method will be rerun. The original Release failure remains a failure.
+Original run45111287072 remains failed. This controller proof is not an actual Apple lookup or product acceptance. Both container and process-group absence proof flags remain false. The separate two new nested-cleanup controls retain their original proof without rerun.
