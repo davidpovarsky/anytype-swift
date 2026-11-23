@@ -18,6 +18,10 @@ def copy_inputs(destination):
     names = {gate.POLICY_PATH, policy["owner_helper_path"], policy["owner_manifest_path"],
              policy["import_receipt"]["path"], *policy["source_inputs"],
              *[item["path"] for item in original["proof_files"]]}
+    extension = policy["observer_budget_extension"]
+    budget = json.loads((ROOT / extension["path"]).read_text())
+    names.update({extension["path"], budget["control"]["path"],
+                  *[item["path"] for item in budget["proof_files"]]})
     for name in names:
         target = destination / name
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -26,16 +30,34 @@ def copy_inputs(destination):
 
 
 class CanonicalNativeControlReuseTests(unittest.TestCase):
-    def test_exact_current_69_bind_original_named_passes_without_execution(self):
+    def test_current_69_bind_retained68_and_requalified1_without_execution(self):
         result = gate.verify(ROOT)
         self.assertEqual(result["current_control_methods"], 69)
-        self.assertEqual(result["retained_original_methods"], 62)
+        self.assertEqual(result["retained_original_methods"], 61)
+        self.assertEqual(result["requalified_changed_original_methods"], 1)
+        self.assertEqual(result["unchanged_methods_retained"], 68)
         self.assertEqual(result["qualified_observer_methods"], 7)
         self.assertEqual(result["controller_methods_executed_now"], 0)
         self.assertEqual(result["product_tests_executed_now"], 0)
         self.assertEqual(len(result["source_inputs"]), 29)
         self.assertTrue(result["original_failure_preserved"])
+        self.assertEqual(result["supplemental_observer_budget"]["control_methods"], 2)
+        self.assertEqual(result["supplemental_observer_budget"]["control_cases"], 5)
+        self.assertEqual(result["supplemental_observer_budget"]["methods_executed_now"], 0)
         self.assertFalse({"test_hanlin_ui_runtime", "test_hanlin_acceptance_evidence"} & set(sys.modules))
+
+    def test_changed_supplemental_control_or_trace_cannot_admit_current_budget(self):
+        policy = json.loads((ROOT / gate.POLICY_PATH).read_text())
+        budget = json.loads((ROOT / policy["observer_budget_extension"]["path"]).read_text())
+        for name in (budget["control"]["path"], budget["after_log"],
+                     budget["case_traces"]["late-process-replacement"]):
+            with self.subTest(path=name), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                copy_inputs(root)
+                path = root / name
+                path.write_bytes(path.read_bytes() + b"\nUNREVIEWED_PROOF_CHANGE\n")
+                with self.assertRaises((ValueError, RuntimeError)):
+                    gate.verify(root)
 
     def test_changed_observer_and_candidate_guard_do_not_inherit_proof(self):
         for name in ("Tools/PinkhaSimulatorGate/hanlin_ui_runtime.py", "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py"):

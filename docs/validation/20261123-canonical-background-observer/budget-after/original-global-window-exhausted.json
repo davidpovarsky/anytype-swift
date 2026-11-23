@@ -1,0 +1,206 @@
+{
+  "scope": "DETERMINISTIC_OBSERVER_CONTROL_NOT_APPLE_ACCEPTANCE",
+  "case": "original-global-window-exhausted",
+  "observerSHA256": "65f4607ed9dd82fb7842398f4cc62ad2ec3b8ff8c5498b25f50f62ebefef6e02",
+  "controlSHA256": "b98a9da939413b479f5dc0ba6945da14245dc276abace09334500e8cbe68daea",
+  "capturedSourceSeconds": 28.080363166999632,
+  "capturedMappingSeconds": 16.649736624999605,
+  "capturedFinalContainerSeconds": 0.5598687080000673,
+  "elapsedBeforeReceipt": 375.2,
+  "actualDeadline": 1420.0,
+  "endingUptime": 1420.0,
+  "error": "TimeoutExpired",
+  "errorMessage": "Command '['xcrun', 'simctl', 'get_app_container', '11111111-1111-1111-1111-111111111111', 'io.anytype.app', 'data']' timed out after 0.06990020800071761 seconds",
+  "sourceVerifications": 2,
+  "mappedPIDs": [
+    51457
+  ],
+  "commands": [
+    {
+      "closing": false,
+      "timeout": 10,
+      "deadline": 1420.0,
+      "uptime": 1000.0,
+      "argv": [
+        "xcrun",
+        "simctl",
+        "get_app_container",
+        "11111111-1111-1111-1111-111111111111",
+        "io.anytype.app",
+        "data"
+      ]
+    },
+    {
+      "closing": false,
+      "timeout": 10,
+      "deadline": 1420.0,
+      "uptime": 1375.2,
+      "argv": [
+        "xcrun",
+        "simctl",
+        "get_app_container",
+        "11111111-1111-1111-1111-111111111111",
+        "io.anytype.app",
+        "data"
+      ]
+    },
+    {
+      "closing": true,
+      "timeout": 0.06990020800071761,
+      "deadline": 1420.0,
+      "uptime": 1419.9300997919993,
+      "argv": [
+        "xcrun",
+        "simctl",
+        "get_app_container",
+        "11111111-1111-1111-1111-111111111111",
+        "io.anytype.app",
+        "data"
+      ]
+    }
+  ],
+  "qualificationStatus": null,
+  "qualificationRejected": true,
+  "observation": {
+    "status": "FAIL_ACTUAL_UI_RUNTIME_NOT_BOUND",
+    "error_type": "TimeoutExpired",
+    "extra_app_launches": 0,
+    "every_launch_verified": false,
+    "diagnostics": {
+      "diagnostic_only": true,
+      "stage_duration_scope": "ENTIRE_NAMED_OPERATION_NOT_INDIVIDUAL_SUBPROCESS",
+      "stages": [
+        {
+          "stage": "prepare_data_container",
+          "attempts": 1,
+          "status": "RETURNED",
+          "started_at": 1795429885.627648,
+          "stage_elapsed_seconds": 0,
+          "finished_at": 1795429885.627956
+        },
+        {
+          "stage": "prepare_installed_source",
+          "attempts": 1,
+          "status": "RETURNED",
+          "started_at": 1795429885.628049,
+          "stage_elapsed_seconds": 0,
+          "finished_at": 1795429885.628095
+        },
+        {
+          "stage": "poll_data_container",
+          "attempts": 1,
+          "status": "RETURNED",
+          "started_at": 1795429885.628309,
+          "stage_elapsed_seconds": 0,
+          "finished_at": 1795429885.628803
+        },
+        {
+          "stage": "read_native_phase_before",
+          "attempts": 1,
+          "status": "RETURNED",
+          "started_at": 1795429885.628818,
+          "stage_elapsed_seconds": 0,
+          "finished_at": 1795429885.629018
+        },
+        {
+          "stage": "validate_native_phase_before",
+          "attempts": 1,
+          "status": "RETURNED",
+          "started_at": 1795429885.629065,
+          "stage_elapsed_seconds": 0,
+          "finished_at": 1795429885.629115
+        },
+        {
+          "stage": "save_partial_phase_before",
+          "attempts": 1,
+          "status": "RETURNED",
+          "started_at": 1795429885.62914,
+          "stage_elapsed_seconds": 0,
+          "finished_at": 1795429885.629233
+        },
+        {
+          "stage": "map_installed_source",
+          "attempts": 1,
+          "status": "RETURNED",
+          "started_at": 1795429885.629256,
+          "stage_elapsed_seconds": 28.080363166999632,
+          "finished_at": 1795429885.629306
+        },
+        {
+          "stage": "map_running_process",
+          "attempts": 1,
+          "status": "RETURNED",
+          "started_at": 1795429885.629331,
+          "stage_elapsed_seconds": 16.649736624999605,
+          "finished_at": 1795429885.629366
+        },
+        {
+          "stage": "after_mapping_data_container",
+          "attempts": 1,
+          "status": "FAILED",
+          "started_at": 1795429885.629377,
+          "stage_elapsed_seconds": 0.06990020800071761,
+          "finished_at": 1795429885.629426
+        }
+      ],
+      "first_failure": {
+        "stage": "after_mapping_data_container",
+        "error_type": "TimeoutExpired",
+        "command": [
+          "xcrun",
+          "simctl",
+          "get_app_container",
+          "11111111-1111-1111-1111-111111111111",
+          "io.anytype.app",
+          "data"
+        ],
+        "command_timeout_seconds": 0.06990020800071761,
+        "stage_elapsed_seconds": 0.06990020800071761
+      },
+      "poll_timeout_retries": 0,
+      "partial_observations": {
+        "native_phase_before": {
+          "file": "partial-native-phase-before.json",
+          "sha256": "dccdf99655442667bdf69f1344e31536cc47a1608257e87f06c046c119859d7b",
+          "identity": {
+            "fixtureID": "22222222-2222-2222-2222-222222222222",
+            "sourceSHA": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "runID": "123",
+            "runAttempt": "1",
+            "processID": 51457,
+            "startedAt": 817122685.6284311,
+            "sessionID": "33333333-3333-3333-3333-333333333333",
+            "navigationContext": {
+              "app": "anytype",
+              "account": "original-account",
+              "workspace": "original-space",
+              "space": "original-space",
+              "sceneID": "44444444-4444-4444-4444-444444444444",
+              "generation": "55555555-5555-5555-5555-555555555555",
+              "objectReference": "original-document",
+              "selectionReferences": [],
+              "sourceRevision": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+            }
+          },
+          "status": "OBSERVED_IDENTITY_RUNTIME_NOT_YET_BOUND"
+        },
+        "installed_source_returned": {
+          "file": "installed-app-source.json",
+          "installed_app_executable_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "built_app_executable_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "installed_code_carriers_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "built_code_carriers_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        },
+        "runtime_mapping_returned": {
+          "file": "live-runtime.json",
+          "pid": 51457,
+          "runtime_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "process_start_identity": "actual-start-identity",
+          "status": "MAPPING_RETURNED_FINAL_NATIVE_BINDING_NOT_YET_VERIFIED"
+        }
+      }
+    }
+  },
+  "oldControllerMethodsExecuted": 0,
+  "nativeTestsExecuted": 0
+}

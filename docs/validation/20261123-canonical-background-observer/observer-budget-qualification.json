@@ -1,0 +1,92 @@
+{
+  "schema": "pinkha-canonical-observer-budget-qualification-v1",
+  "status": "PASS_FOCUSED_OBSERVER_CONTROLS_ONLY",
+  "failed_original_run": "45135961459",
+  "failed_original_source": "fa078feb6bd496689b812ccf00945dce60c03599",
+  "observer_path": "Tools/PinkhaSimulatorGate/hanlin_ui_runtime.py",
+  "current_observer_sha256": "65f4607ed9dd82fb7842398f4cc62ad2ec3b8ff8c5498b25f50f62ebefef6e02",
+  "reviewed_observer_sha256": "e7c844559fbc7680cd2dbbe7c1eebb0561ecfb2f10305bef0f9b85e95665922c",
+  "control": {
+    "path": "Tools/Hanlin/test_canonical_native_observer_budget.py",
+    "sha256": "b98a9da939413b479f5dc0ba6945da14245dc276abace09334500e8cbe68daea"
+  },
+  "fixture": {
+    "path": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+    "sha256": "38b29c4835bd9aa290ec66a2e786065894507497628303cfcc3f420f358c3c59"
+  },
+  "current_declarations": {
+    "CanonicalObserverBudgetTests.test_captured_operations_reach_final_binding_with_fresh_source_checks": "c89f58696a000219aea96cc48fd39c7d6e11c29df1dd475bb128e3313f472b1c",
+    "CanonicalObserverBudgetTests.test_expiry_cancellation_and_late_process_change_still_reject_binding": "da21367a4f70b7955309ab34fb514f574dd2c75ab1e684bdd63f8fdc01077a7d"
+  },
+  "before_log": "docs/validation/20261123-canonical-background-observer/budget-before.log",
+  "after_log": "docs/validation/20261123-canonical-background-observer/budget-after.log",
+  "before_trace": "docs/validation/20261123-canonical-background-observer/budget-before/captured-durations.json",
+  "case_traces": {
+    "cancelled-during-mapping": "docs/validation/20261123-canonical-background-observer/budget-after/cancelled-during-mapping.json",
+    "captured-durations": "docs/validation/20261123-canonical-background-observer/budget-after/captured-durations.json",
+    "late-process-replacement": "docs/validation/20261123-canonical-background-observer/budget-after/late-process-replacement.json",
+    "mapping-window-exhausted": "docs/validation/20261123-canonical-background-observer/budget-after/mapping-window-exhausted.json",
+    "original-global-window-exhausted": "docs/validation/20261123-canonical-background-observer/budget-after/original-global-window-exhausted.json"
+  },
+  "proof_files": [
+    {
+      "path": "docs/validation/20261123-canonical-background-observer/budget-before.log",
+      "sha256": "b8a74990b5bfcd26f511fb2540eeca73ed1cb24c940c010966055f05139920cd"
+    },
+    {
+      "path": "docs/validation/20261123-canonical-background-observer/budget-after.log",
+      "sha256": "ceeefa0f2af64d800db8bc752d60ffc146284dd9e21c3628403ab80ff511114b"
+    },
+    {
+      "path": "docs/validation/20261123-canonical-background-observer/budget-before/captured-durations.json",
+      "sha256": "378662a6006f5dbeccdd84b5192d2945ad0d3b09b55ec37c29326aad328223d2"
+    },
+    {
+      "path": "docs/validation/20261123-canonical-background-observer/budget-after/cancelled-during-mapping.json",
+      "sha256": "026026616e485855f6a7a8251ffbd63f7ab37f366f0672779fa8ed85d48ae20b"
+    },
+    {
+      "path": "docs/validation/20261123-canonical-background-observer/budget-after/captured-durations.json",
+      "sha256": "8cfdd5bf416756f25518034a80649fda9a3526f49eb8b0db7573aebbe21e0d6c"
+    },
+    {
+      "path": "docs/validation/20261123-canonical-background-observer/budget-after/late-process-replacement.json",
+      "sha256": "c34cd724ea9c3c1f6caf8f7d423042ab80834772f6360abe0bdb944671eee34b"
+    },
+    {
+      "path": "docs/validation/20261123-canonical-background-observer/budget-after/mapping-window-exhausted.json",
+      "sha256": "52aeedf0a36a0cf6f1447922f5c18176dae51ab2a83c020c6b7766c76ae2ab0d"
+    },
+    {
+      "path": "docs/validation/20261123-canonical-background-observer/budget-after/original-global-window-exhausted.json",
+      "sha256": "00071862d22548497785186756433e5e458996c750fe7fab2faff5cfd8cb74e4"
+    },
+    {
+      "path": "docs/validation/20261123-canonical-background-observer/affected-original-control.log",
+      "sha256": "7203eccd90e84a0035ff0de3309ea5a260e0a52df895e225a57bc260aa094f13"
+    }
+  ],
+  "actual_control_methods": 2,
+  "actual_control_cases": 5,
+  "actual_seconds": "0.534",
+  "old_controller_methods_rerun": 0,
+  "native_tests_executed": 0,
+  "budgets": {
+    "mapping_seconds_before": 45,
+    "mapping_seconds_after": 60,
+    "global_seconds": 420,
+    "single_command_seconds": 10
+  },
+  "scope_limit": "Actual Python observer with retained mocked simulator fixture helpers and a controllable monotonic clock. Captured stage durations reproduce old failure; no original control test method or Apple acceptance executed.",
+  "requalified_original_control": {
+    "module": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+    "method": "ObserverControls.test_diagnostics_do_not_change_original_deadlines_or_add_a_launch",
+    "current_source_sha256": "5b626c0018f474b5cc34218dc3170a169aa67f3129654ea072c1a035d41b2d65",
+    "declaration_sha256": "0549ad4afe7d2894b7dd7e96bd5a68046abf59b4f1d1bce738f5acb79d5c3b3c",
+    "log": "docs/validation/20261123-canonical-background-observer/affected-original-control.log",
+    "actual_seconds": "0.258",
+    "methods_executed": 1,
+    "unchanged_original_methods_rerun": 0
+  },
+  "fixture_reuse_scope": "The two new timing controls ran with the original fixture at38b29c. Its current5b626c version differs only in the expected bound of the separately requalified test method; neither new timing method calls that test. Complete prior fixture bytes are reconstructed and all used helpers remain identical."
+}

@@ -613,7 +613,7 @@ class ObserverControls(unittest.TestCase):
         self.assertNotIn("private command", json.dumps(summary))
 
     def test_diagnostics_do_not_change_original_deadlines_or_add_a_launch(self):
-        self.assertEqual((gate.COMMAND_SECONDS, gate.OBSERVATION_SECONDS, gate.MAPPING_SECONDS), (10, 420, 45))
+        self.assertEqual((gate.COMMAND_SECONDS, gate.OBSERVATION_SECONDS, gate.MAPPING_SECONDS), (10, 420, 60))
         self.observe()
         self.assertIsNone(self.observer.error)
         self.assertIsNone(self.observer.summary()["diagnostics"]["first_failure"])

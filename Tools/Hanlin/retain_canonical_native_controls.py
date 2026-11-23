@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Reuse the original 69 native-lane controls for one reviewed SDK consumer.
+"""Bind 68 retained controls and one requalified method to this SDK consumer.
 
-No controller method or product test is executed. Original failure conclusions
+Verification executes no controller method or product test. Original failure conclusions
 remain unchanged; actual native/UI execution is a separate required gate.
 """
 from __future__ import annotations
@@ -14,7 +14,7 @@ from pathlib import Path
 import subprocess
 
 POLICY_PATH = "Tools/Hanlin/canonical-native-control-reuse.json"
-POLICY_SHA256 = "019b7bf0a735fe547a0f0d8ec9677157b4d2c347478edb216b21a157b6f95d5a"
+POLICY_SHA256 = "54c85e4d911c5a48d7221c54938a8a67bb322ae6b1035b5dbd119e700e40bfff"
 BRANCH = "codex/chatgpt-wave15-canonical-hanlin-20261123"
 
 
@@ -35,6 +35,80 @@ def bootstrap_read(root, name, expected):
     raw = path.read_bytes()
     require(sha(raw) == expected, "Changed native-control admission: " + name)
     return raw
+
+
+def verify_observer_budget(root, policy, original, sources, reviewed_sources):
+    """Bind the changed timing scope to new evidence, retaining prior bytes."""
+    item = policy["observer_budget_extension"]
+    extension = original.decode_json(original.read_bound(root, item["path"], item["sha256"]))
+    require(extension["schema"] == "pinkha-canonical-observer-budget-qualification-v1"
+            and extension["actual_control_methods"] == 2 and extension["actual_control_cases"] == 5
+            and extension["old_controller_methods_rerun"] == extension["native_tests_executed"] == 0,
+            "Unknown observer timing qualification")
+    path = extension["observer_path"]
+    require(sha(sources[path]) == extension["current_observer_sha256"]
+            and sha(reviewed_sources[path]) == extension["reviewed_observer_sha256"],
+            "Observer timing proof does not bind current and exact prior sources")
+    require(extension["budgets"] == {"mapping_seconds_before": 45, "mapping_seconds_after": 60,
+            "global_seconds": 420, "single_command_seconds": 10}, "Observer timing scope changed")
+    control = extension["control"]
+    control_source = original.read_bound(root, control["path"], control["sha256"])
+    fixture = extension["fixture"]
+    require(sha(reviewed_sources[fixture["path"]]) == fixture["sha256"],
+            "Observer timing fixture differs from retained original")
+    declarations = original.test_declarations(control_source)
+    require(declarations == extension["current_declarations"] and len(declarations) == 2,
+            "Observer timing control declarations changed")
+    proofs = {item["path"]: original.read_bound(root, item["path"], item["sha256"])
+              for item in extension["proof_files"]}
+    require(len(proofs) == len(extension["proof_files"]), "Duplicate observer timing proof")
+    batches = original.unittest_batches(proofs[extension["after_log"]])
+    require(len(batches) == 1 and batches[0]["count"] == 2
+            and batches[0]["seconds"] == extension["actual_seconds"]
+            and {item["name"] for item in batches[0]["methods"]} == set(declarations),
+            "Current observer timing lacks exact named PASS evidence")
+    before = original.decode_json(proofs[extension["before_trace"]])
+    require(before["observerSHA256"] == extension["reviewed_observer_sha256"]
+            and before["controlSHA256"] == control["sha256"]
+            and before["error"] == "TimeoutExpired" and before["qualificationRejected"]
+            and b"FAILED (failures=1)" in proofs[extension["before_log"]],
+            "Original observer timing failure is not preserved")
+    cases = extension["case_traces"]
+    require(set(cases) == {"captured-durations", "mapping-window-exhausted",
+            "original-global-window-exhausted", "cancelled-during-mapping", "late-process-replacement"},
+            "Observer timing qualification cases changed")
+    for name, trace in cases.items():
+        result = original.decode_json(proofs[trace])
+        require(result["case"] == name and result["observerSHA256"] == extension["current_observer_sha256"]
+                and result["controlSHA256"] == control["sha256"]
+                and result["scope"] == "DETERMINISTIC_OBSERVER_CONTROL_NOT_APPLE_ACCEPTANCE"
+                and result["oldControllerMethodsExecuted"] == result["nativeTestsExecuted"] == 0,
+                "Observer timing case lacks exact source-bound evidence")
+        if name == "captured-durations":
+            require(result["error"] is None and result["sourceVerifications"] == 2
+                    and result["qualificationStatus"] == "PASS_ACTUAL_UI_PROCESS_RUNTIME"
+                    and not result["qualificationRejected"], "Captured timing did not reach final binding")
+        else:
+            require(result["error"] is not None and result["qualificationRejected"]
+                    and result["qualificationStatus"] is None, "Unsafe timing case was admitted")
+    changed = extension["requalified_original_control"]
+    require(changed["module"] == fixture["path"] and changed["methods_executed"] == 1
+            and changed["unchanged_original_methods_rerun"] == 0
+            and sha(sources[changed["module"]]) == changed["current_source_sha256"],
+            "Affected original control lacks exact current source")
+    current_declarations = original.test_declarations(sources[changed["module"]])
+    require(current_declarations[changed["method"]] == changed["declaration_sha256"],
+            "Affected original control declaration changed")
+    qualified = original.unittest_batches(proofs[changed["log"]])
+    require(len(qualified) == 1 and qualified[0]["count"] == 1
+            and qualified[0]["seconds"] == changed["actual_seconds"]
+            and [item["name"] for item in qualified[0]["methods"]] == [changed["method"]],
+            "Affected original control lacks its actual new named PASS")
+    return {"status": "PASS_RETAINED_SUPPLEMENTAL_OBSERVER_CONTROLS_ONLY",
+            "qualification_sha256": item["sha256"], "control_methods": 2, "control_cases": 5,
+            "methods_executed_now": 0, "native_tests_executed_now": 0,
+            "requalified_original_control": changed,
+            "scope_limit": "New2 timing methods plus1 actually requalified changed method; other68 retain prior proof. No Apple acceptance."}
 
 
 def verify(app):
@@ -61,7 +135,7 @@ def verify(app):
             and set(policy["source_inputs"]) == set(imported["source_inputs"]) | {"Tools/Hanlin/wave15-core-tests.json"},
             "Actual native-controller input closure differs")
     original_inputs = {item["path"]: item for item in admission["source_inputs"]}
-    sources = {}
+    sources, reviewed_sources = {}, {}
     for path in policy["source_inputs"]:
         item = original_inputs[path]
         delta = policy["source_deltas"].get(path)
@@ -76,7 +150,7 @@ def verify(app):
                 text = text.replace(replacement["current"], replacement["original"])
             reviewed = text.encode("utf-8")
             require(sha(reviewed) == delta["reviewed_base_sha256"] == item["current_sha256"],
-                    "Candidate changed more than the reviewed admission/pin-reader scope")
+                    "Candidate changed more than the exact reviewed source delta")
         before = proofs[item["original_snapshot"]]
         require(sha(before) == item["original_sha256"], "Original dependency source differs")
         mode = item["retention"]
@@ -97,14 +171,18 @@ def verify(app):
         else:
             require(mode in {"qualified_observer_production", "qualified_observer_tests"}, "Unknown source retention")
         sources[path] = current
+        reviewed_sources[path] = reviewed
+    budget = verify_observer_budget(root, policy, original, sources, reviewed_sources)
     observer = admission["observer_extension"]
     review = original.decode_json(proofs[observer["review"]])
     require(review["actual_control_passes"] == 7 and review["old_controls_rerun"] == 0
             and review["source_base"] == admission["origins"]["hanlin"]["source_sha"], "Observer proof origin changed")
     for path, expected in review["source_sha256"].items():
-        require(sha(sources[path]) == expected, "Actual observer qualification source changed")
+        # Prior qualification binds the exactly reconstructed original source.
+        # The changed timing scope separately requires the current proof above.
+        require(sha(reviewed_sources[path]) == expected, "Original observer qualification source changed")
     tests = observer["test_path"]
-    require(original.observer_remainder(sources[tests], observer["current_only_declarations"])
+    require(original.observer_remainder(reviewed_sources[tests], observer["current_only_declarations"])
             == original.observer_remainder(proofs[original_inputs[tests]["original_snapshot"]], observer["retired_declarations"]),
             "Previously retained observer methods/helpers changed")
     modules = [item for item in admission["modules"] if item["path"] in policy["modules"]]
@@ -124,24 +202,34 @@ def verify(app):
     catalog = []
     for module in modules:
         current = original.test_declarations(sources[module["path"]])
-        require(current == module["current_declarations"] and set(current) == set(module["methods"])
+        prior = original.test_declarations(reviewed_sources[module["path"]])
+        require(prior == module["current_declarations"] and set(current) == set(module["methods"])
                 and len(current) == policy["modules"][module["path"]], "Current native control declarations changed")
         for name, binding in module["methods"].items():
-            require(current[name] == binding["declaration_sha256"]
+            require(prior[name] == binding["declaration_sha256"]
                     and name in {item["name"] for item in batches[binding["batch"]]["methods"]}
-                    and original.test_declarations(proofs[binding["tested_source_snapshot"]]).get(name) == current[name],
-                    "Current native control lacks its exact original named PASS/source")
-            catalog.append({"module": module["path"], "method": name, "proof_batch": binding["batch"]})
+                    and original.test_declarations(proofs[binding["tested_source_snapshot"]]).get(name) == prior[name],
+                    "Prior native control lacks its exact original named PASS/source")
+            changed = budget["requalified_original_control"]
+            if (module["path"], name) == (changed["module"], changed["method"]):
+                require(current[name] == changed["declaration_sha256"], "Affected current control differs")
+                proof_batch = "canonical-observer-budget-affected-original"
+            else:
+                require(current[name] == prior[name], "Previously qualified control changed without new execution")
+                proof_batch = binding["batch"]
+            catalog.append({"module": module["path"], "method": name, "proof_batch": proof_batch})
     require(len(catalog) == 69 and len({(item["module"], item["method"]) for item in catalog}) == 69,
-            "The retained native control selection is not exactly69")
+            "The source-bound native control selection is not exactly69")
     execution = original.decode_json(proofs[admission["origins"]["hanlin"]["execution"]])
     require(execution["status"] == "FAIL" and execution["run_id"] == "45096079315"
             and execution["run_attempt"] == "1"
             and execution["source_sha"] == admission["origins"]["hanlin"]["source_sha"], "Original failed native lane identity changed")
-    return {"status": "PASS_RETAINED_NATIVE_CONTROLLER_CONTROLS_ONLY", "policy_sha256": POLICY_SHA256,
-            "current_control_methods": 69, "retained_original_methods": 62, "qualified_observer_methods": 7,
+    return {"status": "PASS_SOURCE_BOUND_NATIVE_CONTROLLER_CONTROLS_ONLY", "policy_sha256": POLICY_SHA256,
+            "current_control_methods": 69, "retained_original_methods": 61, "qualified_observer_methods": 7,
+            "requalified_changed_original_methods": 1, "unchanged_methods_retained": 68,
             "controller_methods_executed_now": 0, "product_tests_executed_now": 0,
             "source_inputs": {path: sha(raw) for path, raw in sources.items()}, "catalog": catalog,
+            "supplemental_observer_budget": budget,
             "original_failed_run": "45096079315", "original_failure_preserved": True,
             "scope_limit": "Original Python native-lane controls only. Current app build, live mapping, native1/UI1 and SDK23/32+ACK remain separate."}
 

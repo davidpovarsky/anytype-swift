@@ -8,8 +8,8 @@
   "owner_manifest_path": "Tools/PinkhaSimulatorGate/sdk06-retained-controls.json",
   "owner_manifest_sha256": "cc05f8cb2f95a41d65d5a4cdd01ac140bb4e6572d25e6476912bcc7fa3820e58",
   "import_receipt": {
-    "path": "docs/validation/20261123-canonical-macro-authorization/native-control-import-closure.json",
-    "sha256": "71db6f501056ee8ad42935f19e9001a36afe439d462a81bb54e934049fc75a86"
+    "path": "docs/validation/20261123-canonical-background-observer/native-control-import-closure.json",
+    "sha256": "d137105686ca3fc0a082409e2cd82304f04d8857bd681793dcabf8ed38a06730"
   },
   "source_inputs": [
     "Tools/Hanlin/host_command.py",
@@ -76,6 +76,32 @@
         }
       ],
       "scope": "Exact candidate branch admission and lock-only compile flag for its plain native lane, after separately reviewed macro source/fingerprint authorization; original native observer, receipt and UI selection logic unchanged."
+    },
+    "Tools/PinkhaSimulatorGate/hanlin_ui_runtime.py": {
+      "current_sha256": "65f4607ed9dd82fb7842398f4cc62ad2ec3b8ff8c5498b25f50f62ebefef6e02",
+      "reviewed_base_sha256": "e7c844559fbc7680cd2dbbe7c1eebb0561ecfb2f10305bef0f9b85e95665922c",
+      "replacements": [
+        {
+          "current": "MAPPING_SECONDS = 60",
+          "original": "MAPPING_SECONDS = 45"
+        },
+        {
+          "current": "                # Fresh source checks, process mapping and final binding share\n                # one 60-second budget, capped by the original overall deadline.\n                # Each mapping command receives only the remaining shared budget.",
+          "original": "                # Mapping must fit the unchanged 45-second total deadline. The\n                # observed vmmap operation exhausted the generic 10-second IPC\n                # limit; give it only the budget left after source verification."
+        }
+      ],
+      "scope": "Only the mapping admission budget and its explanatory comment. Exact prior production bytes are reconstructed; newly affected timing is qualified separately by 2 actual observer methods/5 cases. Global deadline, source hashes, phase/session/PID binding and cancellation logic are unchanged."
+    },
+    "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py": {
+      "current_sha256": "5b626c0018f474b5cc34218dc3170a169aa67f3129654ea072c1a035d41b2d65",
+      "reviewed_base_sha256": "38b29c4835bd9aa290ec66a2e786065894507497628303cfcc3f420f358c3c59",
+      "replacements": [
+        {
+          "current": "self.assertEqual((gate.COMMAND_SECONDS, gate.OBSERVATION_SECONDS, gate.MAPPING_SECONDS), (10, 420, 60))",
+          "original": "self.assertEqual((gate.COMMAND_SECONDS, gate.OBSERVATION_SECONDS, gate.MAPPING_SECONDS), (10, 420, 45))"
+        }
+      ],
+      "scope": "Only the expected mapping bound in one affected original diagnostic control. That exact method was rerun once; other68 current original methods retain exact prior bodies. All fixture helpers used by the two new timing controls remain byte-identical."
     }
   },
   "modules": {
@@ -84,5 +110,9 @@
   },
   "native_controller_methods": 69,
   "controller_methods_executed_now": 0,
-  "product_tests_executed_now": 0
+  "product_tests_executed_now": 0,
+  "observer_budget_extension": {
+    "path": "docs/validation/20261123-canonical-background-observer/observer-budget-qualification.json",
+    "sha256": "3eb968a6ff6d215f4dbd24cd16769a4158e0318806f3a724dadff5166af6bdf7"
+  }
 }

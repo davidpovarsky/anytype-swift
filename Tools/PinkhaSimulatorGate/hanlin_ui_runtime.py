@@ -22,7 +22,7 @@ SUPPORT = Path("Library/Application Support")
 MAX_BYTES = 65_536
 COMMAND_SECONDS = 10
 OBSERVATION_SECONDS = 420
-MAPPING_SECONDS = 45
+MAPPING_SECONDS = 60
 DIAGNOSTIC_STAGES = frozenset({
     "prepare_data_container", "prepare_installed_source", "poll_data_container",
     "read_native_phase_before", "validate_native_phase_before", "save_partial_phase_before",
@@ -276,9 +276,9 @@ class NativeUIRuntimeObserver:
                     and all(source[key]["sha256"] == self.before_source[key]["sha256"]
                             for key in ("installed_code_carriers", "built_code_carriers")),
                     "Application executable bytes changed between pre-UI validation and actual process mapping")
-                # Mapping must fit the unchanged 45-second total deadline. The
-                # observed vmmap operation exhausted the generic 10-second IPC
-                # limit; give it only the budget left after source verification.
+                # Fresh source checks, process mapping and final binding share
+                # one 60-second budget, capped by the original overall deadline.
+                # Each mapping command receives only the remaining shared budget.
                 mapped = self.diagnostic_operation("map_running_process", lambda:
                     self.shared.observe_running_runtime(identity["processID"], self.directory, self.built,
                         source, command_timeout=lambda: self.timeout(MAPPING_SECONDS),

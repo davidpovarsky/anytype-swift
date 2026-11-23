@@ -493,12 +493,13 @@
       "from": "Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinNativeAcceptanceDriver.swift",
       "to": "Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinNativeAcceptanceDriver.swift",
       "baselineBlob": "9c76e9647d81be61e30d8f5e6b4fd7eacf56354e",
-      "replacementBlob": "4aa5f9a18777bb54836eced82e17f6ac0f149516",
-      "reason": "Retain the shared Hanlin import; expose the exact native authority stage and require restored account/Space/mounted-scene readiness before continuing the unchanged SDK06 acceptance operations.",
+      "replacementBlob": "8dd8a64756814b618f56d68fdf2f773e4e4a6495",
+      "reason": "Retain the shared Hanlin import; expose the exact native authority stage and require restored account/Space/mounted-scene readiness before continuing the unchanged SDK06 acceptance operations. Persist observations of actual UIKit scene notifications without changing phase, authority checks or invalidation; the original native acceptance still requires real background/foreground events and the same process.",
       "sharedSources": [],
       "validation": [
         "Reviewed the retained source and bounded integration changes, with exact current replacement blob pinned.",
-        "Focused controller/component evidence is retained separately; source preservation does not imply native runtime, mounted UI or physical-device acceptance."
+        "Focused controller/component evidence is retained separately; source preservation does not imply native runtime, mounted UI or physical-device acceptance.",
+        "20261123 canonical background/observer review: original native operation body and 22 required checks preserved; exact source/hash receipts and independent review in docs/validation/20261123-canonical-background-observer. Native/UI retry remains required."
       ]
     },
     {

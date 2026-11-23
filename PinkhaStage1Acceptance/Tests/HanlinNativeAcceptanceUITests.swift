@@ -207,8 +207,29 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         XCTAssertNotNil(beforeBackground.backgroundSessionID)
         attachScreenshot("hanlin-native-before-background")
 
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        try attachBackgroundState("hanlin-native-before-home", springboard: springboard, before: beforeBackground)
         XCUIDevice.shared.press(.home)
-        XCTAssertTrue(app.wait(for: .runningBackground, timeout: 10) || app.state == .runningBackgroundSuspended,
+        let backgroundDeadline = ProcessInfo.processInfo.systemUptime + 10
+        // The original failed run delivered Home, but XCTest still observed this
+        // app in the foreground. Any extra real OS action consumes the original
+        // single 10s admission budget; it does not start another wait window.
+        if app.state == .runningForeground && ProcessInfo.processInfo.systemUptime < backgroundDeadline {
+            try attachBackgroundState("hanlin-native-after-home-foreground", springboard: springboard,
+                                      before: beforeBackground, deadline: backgroundDeadline, includeScreenshot: false)
+            let state = springboard.state
+            XCTAssertTrue(state == .runningForeground || state == .runningBackground || state == .runningBackgroundSuspended,
+                          "SpringBoard must already be running; this transition must not launch a substitute process")
+            if ProcessInfo.processInfo.systemUptime < backgroundDeadline {
+                springboard.activate()
+            }
+        }
+        let remainingBackgroundTime = max(0, backgroundDeadline - ProcessInfo.processInfo.systemUptime)
+        let backgrounded = remainingBackgroundTime > 0
+            && (app.wait(for: .runningBackground, timeout: remainingBackgroundTime) || app.state == .runningBackgroundSuspended)
+        try attachBackgroundState("hanlin-native-background-admission", springboard: springboard,
+                                  before: beforeBackground, deadline: backgroundDeadline)
+        XCTAssertTrue(backgrounded,
                       "The actual app must leave the foreground without being terminated")
         app.activate()
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 20))
@@ -385,6 +406,38 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         attachment.name = name
         attachment.lifetime = .keepAlways
         add(attachment)
+    }
+
+    private func attachBackgroundState(_ name: String, springboard: XCUIApplication, before: Receipt,
+                                       deadline: TimeInterval? = nil, includeScreenshot: Bool = true) throws {
+        // State reads and a device screenshot do not query or activate Anytype's
+        // UI while it is backgrounded. Actual scene events persist in the native
+        // driver's receipt; these counts are explicitly the pre-Home snapshot.
+        let appState = app.state
+        let springboardState = springboard.state
+        var evidence: [String: Any] = [
+            "recordedAt": ISO8601DateFormatter().string(from: Date()),
+            "observedUptime": ProcessInfo.processInfo.systemUptime,
+            "applicationState": String(describing: appState),
+            "applicationStateRawValue": appState.rawValue,
+            "springboardState": String(describing: springboardState),
+            "springboardStateRawValue": springboardState.rawValue,
+            "nativeProcessIDBeforeHome": before.processID,
+            "nativePhaseBeforeHome": before.phase,
+            "nativeSceneCountsBeforeHome": before.sceneEventCounts
+        ]
+        if let deadline { evidence["backgroundDeadlineUptime"] = deadline }
+        let attachment = XCTAttachment(data: try JSONSerialization.data(withJSONObject: evidence, options: [.sortedKeys]),
+                                       uniformTypeIdentifier: "public.json")
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        add(attachment)
+        if includeScreenshot {
+            let screenshot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+            screenshot.name = name + "-device"
+            screenshot.lifetime = .keepAlways
+            add(screenshot)
+        }
     }
 
     private func attachScreenshot(_ name: String) {

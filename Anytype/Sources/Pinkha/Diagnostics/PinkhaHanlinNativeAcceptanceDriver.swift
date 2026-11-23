@@ -75,6 +75,13 @@ final class PinkhaHanlinNativeAcceptanceDriver {
         let presentationAcknowledged: Bool
     }
 
+    struct SceneObservation: Codable {
+        let event: String
+        let observedAt: Date
+        let sceneActivationState: Int?
+        let phase: String
+    }
+
     struct Receipt: Codable {
         let fixtureID: UUID
         let sourceSHA: String
@@ -95,6 +102,7 @@ final class PinkhaHanlinNativeAcceptanceDriver {
         var staleConsentSessionID: UUID?
         var freshSessionID: UUID?
         var sceneEventCounts: [String: Int] = [:]
+        var sceneObservations: [SceneObservation] = []
         var backgroundCycleSceneDelta: [String: Int] = [:]
         var documentExitSceneDelta: [String: Int] = [:]
         var documentExitAttribution: String?
@@ -184,7 +192,18 @@ final class PinkhaHanlinNativeAcceptanceDriver {
             receipt.sceneEventCounts[key] = 0
             NotificationCenter.default.publisher(for: notification, object: object)
                 .sink { [weak self] _ in
-                    self?.receipt.sceneEventCounts[key, default: 0] += 1
+                    guard let self else { return }
+                    receipt.sceneEventCounts[key, default: 0] += 1
+                    receipt.sceneObservations.append(SceneObservation(event: key, observedAt: Date(),
+                        sceneActivationState: self.scene?.activationState.rawValue, phase: receipt.phase))
+                    do {
+                        let data = try persistReceipt()
+                        statusLabel.accessibilityValue = String(decoding: data, as: UTF8.self)
+                    } catch {
+                        // A later successful emit retains this failure, which the
+                        // original final XCTAssertNil(receipt.failure) rejects.
+                        receipt.failure = receipt.failure ?? "native_scene_observation_persistence_failed"
+                    }
                 }.store(in: &sceneSubscriptions)
         }
     }
@@ -382,7 +401,8 @@ final class PinkhaHanlinNativeAcceptanceDriver {
         receipt.checks["background_presentation_had_live_read_access"] = true
         let beforeBackground = receipt.sceneEventCounts
         try emit("READY_FOR_BACKGROUND")
-        // Only XCUIDevice.press(.home) followed by app.activate() drives this.
+        // XCTest drives the actual Home/SpringBoard transition and app.activate().
+        // This driver only observes notifications; it never posts scene events.
         try await waitUntil {
             self.receipt.sceneEventCounts["sceneDidEnterBackground", default: 0] > beforeBackground["sceneDidEnterBackground", default: 0]
                 && self.receipt.sceneEventCounts["sceneDidActivate", default: 0] > beforeBackground["sceneDidActivate", default: 0]
@@ -643,10 +663,15 @@ final class PinkhaHanlinNativeAcceptanceDriver {
     private func emit(_ phase: String) throws {
         receipt.phase = phase
         receipt.providerConfigured = presentation.isConfigured || presentations.values.contains { $0.presentation.isConfigured }
-        let data = try JSONEncoder().encode(receipt)
-        try data.write(to: PinkhaHanlinNativeAcceptanceFixture.fileURL(PinkhaHanlinNativeAcceptanceFixture.resultFileName), options: .atomic)
+        let data = try persistReceipt()
         statusLabel.text = phase
         statusLabel.accessibilityValue = String(decoding: data, as: UTF8.self)
+    }
+
+    private func persistReceipt() throws -> Data {
+        let data = try JSONEncoder().encode(receipt)
+        try data.write(to: PinkhaHanlinNativeAcceptanceFixture.fileURL(PinkhaHanlinNativeAcceptanceFixture.resultFileName), options: .atomic)
+        return data
     }
 
     private func require(_ condition: Bool, _ reason: String) throws {
