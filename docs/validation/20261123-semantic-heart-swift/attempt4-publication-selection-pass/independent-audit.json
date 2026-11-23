@@ -1,0 +1,255 @@
+{
+  "actual_methods_passed": 19,
+  "actual_methods_started": 19,
+  "affected_prior_methods": 11,
+  "changed_copied_inputs": {
+    "Sources/ProtobufMessages/PinkhaHeartSemanticAnchorClient.swift": {
+      "after": "8fb4c3da5552bb08ca4273b5845b12607a377556d903f775a8c675f56b599f58",
+      "before": "1f555b83ca45a7219ffcf1e2f002b2e59fee358073db2d242d53742be2d5be75"
+    },
+    "Tests/ProtobufMessagesTests/PinkhaHeartSemanticAnchorClientTests.swift": {
+      "after": "73cf7b2f17656d66c44d0eebbeaed1a678b1bd3dd71dfeb504c22059c8bd5c4f",
+      "before": "f2c7672d6b894fd9864dd6040b15a087f8a6b2a069668ad352c4424ff1332ef3"
+    }
+  },
+  "distinct_current_control_catalog": 30,
+  "executed_source_sha": "5316f036a894fde5b0dc9b695337e22e202f91e5",
+  "limits": {
+    "actual_app_publication": "NOT_COMPILED_OR_EXECUTED",
+    "app_capability": "OFF",
+    "mounted_editor": "NOT_RUN",
+    "native154_and_original_wire_methods": "NOT_RERUN",
+    "native_sdk_body": "INACTIVE_NOT_TYPECHECKED_OR_LINKED"
+  },
+  "metadata_only_inputs_checked": 18,
+  "named_events": [
+    {
+      "action": "started",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testCancellationAfterDispatchCompletesPublicationAndReadback"
+    },
+    {
+      "action": "passed",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testCancellationAfterDispatchCompletesPublicationAndReadback"
+    },
+    {
+      "action": "started",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testCancellationBeforeDispatchLeavesIntentUnconsumed"
+    },
+    {
+      "action": "passed",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testCancellationBeforeDispatchLeavesIntentUnconsumed"
+    },
+    {
+      "action": "started",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testChangedCurrentNativeBlockPreventsMutation"
+    },
+    {
+      "action": "passed",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testChangedCurrentNativeBlockPreventsMutation"
+    },
+    {
+      "action": "started",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testDivergentReadbackOrRetiredOwnerNeverReturnsVerifiedReceipt"
+    },
+    {
+      "action": "passed",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testDivergentReadbackOrRetiredOwnerNeverReturnsVerifiedReceipt"
+    },
+    {
+      "action": "started",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testExplicitOwnerCarryAcrossMainQueueRejectsRetiredDelivery"
+    },
+    {
+      "action": "passed",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testExplicitOwnerCarryAcrossMainQueueRejectsRetiredDelivery"
+    },
+    {
+      "action": "started",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testForeignSpaceCannotAcquirePendingIntentFromOwnedLease"
+    },
+    {
+      "action": "passed",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testForeignSpaceCannotAcquirePendingIntentFromOwnedLease"
+    },
+    {
+      "action": "started",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testOwnerRetiredInsideNativeCallPreventsPublicationAndRetry"
+    },
+    {
+      "action": "passed",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testOwnerRetiredInsideNativeCallPreventsPublicationAndRetry"
+    },
+    {
+      "action": "started",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testPublicationCarriesOnlyExactEventSpaceObjectAndGeneration"
+    },
+    {
+      "action": "passed",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testPublicationCarriesOnlyExactEventSpaceObjectAndGeneration"
+    },
+    {
+      "action": "started",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testRefusedAndMalformedRepliesNeverPublishOrRetry"
+    },
+    {
+      "action": "passed",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testRefusedAndMalformedRepliesNeverPublishOrRetry"
+    },
+    {
+      "action": "started",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testRetiredFenceRefusesNativeStateAndMainConsumer"
+    },
+    {
+      "action": "passed",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testRetiredFenceRefusesNativeStateAndMainConsumer"
+    },
+    {
+      "action": "started",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testRetiredOwnerBeforeDispatchHasNoNativeCall"
+    },
+    {
+      "action": "passed",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testRetiredOwnerBeforeDispatchHasNoNativeCall"
+    },
+    {
+      "action": "started",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testRetirementDuringPublicationPreventsStateDeliveryAndVerifiedReceipt"
+    },
+    {
+      "action": "passed",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testRetirementDuringPublicationPreventsStateDeliveryAndVerifiedReceipt"
+    },
+    {
+      "action": "started",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testSuccessfulPendingIntentCannotBeSubmittedAgain"
+    },
+    {
+      "action": "passed",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testSuccessfulPendingIntentCannotBeSubmittedAgain"
+    },
+    {
+      "action": "started",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testUnsupportedRuntimeAndMissingPublicationPreventMutation"
+    },
+    {
+      "action": "passed",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testUnsupportedRuntimeAndMissingPublicationPreventMutation"
+    },
+    {
+      "action": "started",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testVerifiedFixturePublishesReturnedEventBeforeReadbackOnce"
+    },
+    {
+      "action": "passed",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testVerifiedFixturePublishesReturnedEventBeforeReadbackOnce"
+    },
+    {
+      "action": "started",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testVisiblePreparationPreservesUnicodeByteIdentity"
+    },
+    {
+      "action": "passed",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testVisiblePreparationPreservesUnicodeByteIdentity"
+    },
+    {
+      "action": "started",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testVisiblePreparationRefusesUnsupportedPublicationAndCancellation"
+    },
+    {
+      "action": "passed",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testVisiblePreparationRefusesUnsupportedPublicationAndCancellation"
+    },
+    {
+      "action": "started",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testVisiblePreparationRejectsChangedMissingForeignAndRetiredOwners"
+    },
+    {
+      "action": "passed",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testVisiblePreparationRejectsChangedMissingForeignAndRetiredOwners"
+    },
+    {
+      "action": "started",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testVisibleSelectionPreparationRequiresExplicitApply"
+    },
+    {
+      "action": "passed",
+      "method": "PinkhaHeartSemanticAnchorClientTests.testVisibleSelectionPreparationRequiresExplicitApply"
+    }
+  ],
+  "new_methods": 8,
+  "new_product_file": {
+    "Sources/ProtobufMessages/PinkhaHeartSemanticAnchorPublication.swift": "72900afd3ee4e39c12ce6f0342125367fe7ea9e1ee581be85927df07857c0239"
+  },
+  "original_baseline_products_still_exact": true,
+  "originals": {
+    "build.json": "9b4743af90415510d8bbf69f165c1c1fda064e467de4e661180ed0bd25b73ce2",
+    "build.log": "9936c29e5dfc818f8695b12e78cec1133b0d72ab96284be0b4e85f182d329fd6",
+    "launcher.json": "2e1f222734a0d8ebc5755c7e26552604808733b8a157e39b3af222199471060c",
+    "prior-source.json": "be863d9ae38642dee11e0088abc65ddb901d851f766ee788cad5cd8091bd6c5a",
+    "source-manifest.json": "120d91a0cc728323c284c828cf8313fc728863a19c248904254f566c092a78d7",
+    "test.json": "f9a2b4a3aa14a20b6b9d6e6b28cc970b5e23f2365060b5bd10a03cdfa4430cc0",
+    "tests.log": "f3ebffba8e231618ab9fb5d07db8f15830ffb21ecd30708178468ef903d24555"
+  },
+  "preserved_products": {
+    "PinkhaHeartSemanticAnchorControls_ProtobufMessagesTests.bundle/NativePage/SOURCE.json": {
+      "bytes": 1381,
+      "preserved_path": "/mnt/development/projects/evidence/semantic-anchor-swift-20261123/attempt4/qualified-products/PinkhaHeartSemanticAnchorControls_ProtobufMessagesTests.bundle/NativePage/SOURCE.json",
+      "sha256": "44513d5e5104790556593a04b32f06fa52aa5d72bc22c567c31782db1586ebd6"
+    },
+    "PinkhaHeartSemanticAnchorControls_ProtobufMessagesTests.bundle/NativePage/capture-after-object-show.pb": {
+      "bytes": 4538,
+      "preserved_path": "/mnt/development/projects/evidence/semantic-anchor-swift-20261123/attempt4/qualified-products/PinkhaHeartSemanticAnchorControls_ProtobufMessagesTests.bundle/NativePage/capture-after-object-show.pb",
+      "sha256": "49b1d247f2dd5e65f8ef35f2d8e1a18122cf42e214500d26b4f676b2617f0aa8"
+    },
+    "PinkhaHeartSemanticAnchorControls_ProtobufMessagesTests.bundle/NativePage/capture-applied-request.json": {
+      "bytes": 536,
+      "preserved_path": "/mnt/development/projects/evidence/semantic-anchor-swift-20261123/attempt4/qualified-products/PinkhaHeartSemanticAnchorControls_ProtobufMessagesTests.bundle/NativePage/capture-applied-request.json",
+      "sha256": "417b39c63f3ba96d72a1cf7461d52d7ec504755bf03a4cefc5168811de2338f4"
+    },
+    "PinkhaHeartSemanticAnchorControls_ProtobufMessagesTests.bundle/NativePage/capture-applied-response.json": {
+      "bytes": 1594,
+      "preserved_path": "/mnt/development/projects/evidence/semantic-anchor-swift-20261123/attempt4/qualified-products/PinkhaHeartSemanticAnchorControls_ProtobufMessagesTests.bundle/NativePage/capture-applied-response.json",
+      "sha256": "17b3984b1e8a0e61ccd4cb5c004f8a4d32778f467e303612534507b14e6c49ce"
+    },
+    "PinkhaHeartSemanticAnchorControls_ProtobufMessagesTests.bundle/NativePage/capture-before-object-show.pb": {
+      "bytes": 4288,
+      "preserved_path": "/mnt/development/projects/evidence/semantic-anchor-swift-20261123/attempt4/qualified-products/PinkhaHeartSemanticAnchorControls_ProtobufMessagesTests.bundle/NativePage/capture-before-object-show.pb",
+      "sha256": "a01a25653c700b36fd65271d730277a48201242a89485c05117353eba008992b"
+    },
+    "PinkhaHeartSemanticAnchorControls_ProtobufMessagesTests.bundle/NativePage/capture-response-event.pb": {
+      "bytes": 506,
+      "preserved_path": "/mnt/development/projects/evidence/semantic-anchor-swift-20261123/attempt4/qualified-products/PinkhaHeartSemanticAnchorControls_ProtobufMessagesTests.bundle/NativePage/capture-response-event.pb",
+      "sha256": "92c76eb2eb53435b8a051fca48fdfa287a14b6c4668f8b61709fb22269843728"
+    },
+    "PinkhaHeartSemanticAnchorControls_ProtobufMessagesTests.bundle/NativePage/cold-reopen-object-show.pb": {
+      "bytes": 4608,
+      "preserved_path": "/mnt/development/projects/evidence/semantic-anchor-swift-20261123/attempt4/qualified-products/PinkhaHeartSemanticAnchorControls_ProtobufMessagesTests.bundle/NativePage/cold-reopen-object-show.pb",
+      "sha256": "ec346d640e362355e1a08e6341524e2cbf8cb3358297be60a3454ff578215dd1"
+    },
+    "ProtobufMessagesTests-test-runner": {
+      "bytes": 220648,
+      "preserved_path": "/mnt/development/projects/evidence/semantic-anchor-swift-20261123/attempt4/qualified-products/ProtobufMessagesTests-test-runner",
+      "sha256": "da480036653ee465e5a6adfefa8052bd51ba85ce3c7159f8a570ed645acf4b09"
+    },
+    "ProtobufMessagesTests.so": {
+      "bytes": 168264688,
+      "preserved_path": "/mnt/development/projects/evidence/semantic-anchor-swift-20261123/attempt4/qualified-products/ProtobufMessagesTests.so",
+      "sha256": "b127e27a019350426ca9da71ccd48464e2a67ac8d67b34df14df363d750b0fdf"
+    }
+  },
+  "source_inputs_checked": 706,
+  "status": "PASS_INDEPENDENT_NAMED_EVENT_SOURCE_AND_PRODUCT_AUDIT",
+  "unaffected_wire_methods_retained": [
+    "PinkhaHeartSemanticAnchorWireTests.testActualNativePageRequestDigestsEventAndColdReadback",
+    "PinkhaHeartSemanticAnchorWireTests.testCanonicalSnapshotUsesGoStringEscapingAndEmptyMarkArray",
+    "PinkhaHeartSemanticAnchorWireTests.testFixedRefusalsCannotCarrySuccessReceiptsOrEvents",
+    "PinkhaHeartSemanticAnchorWireTests.testNativeEventRejectsWrongOwnerExtraMutationAndChangedMarks",
+    "PinkhaHeartSemanticAnchorWireTests.testNativeLinksOrderedMarksAndUnicodeByteIdentityRemainDistinct",
+    "PinkhaHeartSemanticAnchorWireTests.testNativeSnapshotRejectsMissingUnknownAndUnsupportedMarkFields",
+    "PinkhaHeartSemanticAnchorWireTests.testReadbackAllowsOnlyUpstreamEmptyRestrictionPresenceNormalization",
+    "PinkhaHeartSemanticAnchorWireTests.testReadbackRejectsIdentityMissingBlockAndEveryOpaqueFieldMutation",
+    "PinkhaHeartSemanticAnchorWireTests.testReplyRejectsUnknownFieldsWrongShapesAndNoncanonicalBase64",
+    "PinkhaHeartSemanticAnchorWireTests.testRequestEnforcesUTF8MarksAndGraphemeSelectionBounds",
+    "PinkhaHeartSemanticAnchorWireTests.testStrictJSONPreservesDuplicatesAndUTF16EscapeEvidence"
+  ]
+}
