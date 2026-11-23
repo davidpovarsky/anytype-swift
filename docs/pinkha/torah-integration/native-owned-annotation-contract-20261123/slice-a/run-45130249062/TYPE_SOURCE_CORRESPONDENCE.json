@@ -1,0 +1,61 @@
+{
+  "MarshalTypeKeys_uses_TypeKey_URL": true,
+  "TypeKey_String_is_internal_key": true,
+  "fixture_candidate_sha256": "7a97d78db68ddedbd9555e683e5f16a18f2015f3f5894cbd14c6d97765f8ea86",
+  "fixture_correction": "Only f.typeKey.String() -> f.typeKey.URL() in exported ObjectTypes membership",
+  "fixture_preimage_sha256": "a59c2f6eb6424d943d238d13d47f9701c5fc7eeda0a29ddd26b428553b48c1eb",
+  "native_body_assertions_reexecuted": false,
+  "native_fixture_changed_in_this_packet": false,
+  "patch_sha256": "1b4d333335d7e3a6fe0e8aa107a75673f2dabc3c13cbc9ed1ab30fae2f5006a3",
+  "pbc_ObjectTypes_uses_original_MarshalTypeKeys": true,
+  "r14_patch": {
+    "bytes": 91246,
+    "destination": "r14/native-heart-integration.patch",
+    "git_blob": "02b7412c24015e90a45ac17ca646dc6758841e95",
+    "revision": "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638",
+    "role": "r14_patch",
+    "sha256": "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+    "source_path": "docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v7-r1/original/anytype-swift/docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch"
+  },
+  "retained_r14_pbc_patch_sha256": "c237f4b9d0385918cd0482144296cefbc96eff9a78a3c1981e185a10dd741d0c",
+  "schema": 1,
+  "source_rows": [
+    {
+      "bytes": 2374,
+      "excerpt": "type TypeKey string\n\nfunc (tk TypeKey) String() string {\n\treturn string(tk)\n}\nfunc (tk TypeKey) URL() string {\n\treturn string(addr.ObjectTypeKeyToIdPrefix + tk)\n}\nfunc (tk TypeKey) BundledURL() string {\n\treturn string(addr.BundledObjectTypeURLPrefix + tk)\n}\n\nfunc MarshalTypeKeys(typeKeys []TypeKey) []string {\n\tres := make([]string, 0, len(typeKeys))\n\tfor _, tk := range typeKeys {\n\t\tres = append(res, tk.URL())\n\t}\n\treturn res\n}\n",
+      "excerpt_first_line": 17,
+      "excerpt_last_line": 35,
+      "git_blob": "89ae9243da14ddd6013ed53e884e7e36950f3f06",
+      "path": "core/domain/types.go",
+      "repository": "davidpovarsky/anytype-heart",
+      "retained_path": "original-type-source/core/domain/types.go",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "sha256": "483288dd36387889c5a91940892f36e0becd581968bf3eafb5416df775f1270e"
+    },
+    {
+      "bytes": 3721,
+      "excerpt": "func GetTypeKeyFromRawUniqueKey(raw string) (TypeKey, error) {\n\tuk, err := UnmarshalUniqueKey(raw)\n\tif err != nil {\n\t\treturn \"\", err\n\t}\n\tif uk.SmartblockType() != smartblock.SmartBlockTypeObjectType {\n\t\treturn \"\", fmt.Errorf(\"wrong type of unique key %s\", uk.SmartblockType().String())\n\t}\n\treturn TypeKey(uk.InternalKey()), nil\n}\n",
+      "excerpt_first_line": 108,
+      "excerpt_last_line": 117,
+      "git_blob": "938ec73b37f130cd5b230c86a765849ec24899e9",
+      "path": "core/domain/uniquekey.go",
+      "repository": "davidpovarsky/anytype-heart",
+      "retained_path": "original-type-source/core/domain/uniquekey.go",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "sha256": "9be092ee44d38a4bc19cd3440063d62d3530ca3a0357a3393aa3e59d5c74aca9"
+    },
+    {
+      "bytes": 1584,
+      "excerpt": "func (p *pbc) Convert(sbType model.SmartBlockType) []byte {\n\tst := p.s.NewState()\n\tsnapshot := &pb.ChangeSnapshot{\n\t\tData: &model.SmartBlockSnapshotBase{\n\t\t\tBlocks:      st.BlocksToSave(),\n\t\t\tDetails:     st.CombinedDetails().ToProto(),\n\t\t\tObjectTypes: domain.MarshalTypeKeys(st.ObjectTypeKeys()),\n\t\t\tCollections: st.Store(),\n\t\t\tKey:         p.s.UniqueKeyInternal(),\n\t\t\tFileInfo:    st.GetFileInfo().ToModel(),\n\t\t},\n\t}\n\tmo := &pb.SnapshotWithType{\n\t\tSbType:   sbType,\n\t\tSnapshot: snapshot,\n\t}\n",
+      "excerpt_first_line": 28,
+      "excerpt_last_line": 43,
+      "git_blob": "8ae34fde9e8f173657b3e9be61e5ecbc9369c4e3",
+      "path": "core/converter/pbc/pbc.go",
+      "repository": "davidpovarsky/anytype-heart",
+      "retained_path": "original-type-source/core/converter/pbc/pbc.go",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "sha256": "164b5e95d4a057495cc2421b0156d2c017ab102681ad663f24185fef0eb0a05d"
+    }
+  ],
+  "status": "IMMUTABLE_ORIGINAL_SOURCE_CORRESPONDENCE_NO_NATIVE_REEXECUTION"
+}

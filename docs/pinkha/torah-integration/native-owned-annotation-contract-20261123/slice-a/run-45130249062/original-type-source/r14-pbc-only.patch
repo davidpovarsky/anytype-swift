@@ -1,0 +1,20 @@
+diff --git a/core/converter/pbc/pbc.go b/core/converter/pbc/pbc.go
+--- a/core/converter/pbc/pbc.go
++++ b/core/converter/pbc/pbc.go
+@@ -6,6 +6,7 @@
+ 	"github.com/anyproto/anytype-heart/core/block/editor/state"
+ 	"github.com/anyproto/anytype-heart/core/converter"
+ 	"github.com/anyproto/anytype-heart/core/domain"
++ torahvalues "github.com/anyproto/anytype-heart/core/pinkha/torahvalues"
+ 	"github.com/anyproto/anytype-heart/pb"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/logging"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+@@ -30,7 +31,7 @@
+ 	snapshot := &pb.ChangeSnapshot{
+ 		Data: &model.SmartBlockSnapshotBase{
+ 			Blocks:      st.BlocksToSave(),
+-			Details:     st.CombinedDetails().ToProto(),
++			Details:     torahvalues.ExportDetails(st.CombinedDetails()).ToProto(),
+ 			ObjectTypes: domain.MarshalTypeKeys(st.ObjectTypeKeys()),
+ 			Collections: st.Store(),
+ 			Key:         p.s.UniqueKeyInternal(),

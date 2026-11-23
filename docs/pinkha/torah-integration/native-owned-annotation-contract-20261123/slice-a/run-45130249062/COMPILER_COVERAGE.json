@@ -1,0 +1,247 @@
+{
+  "actual_application_test_input_rows": 18,
+  "actual_successful_compiler_command": {
+    "absolute_command_deadline_unix": 1795425807,
+    "argv": [
+      "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+      "test",
+      "-c",
+      "-p",
+      "2",
+      "-o",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Native-Archive-Owned-Work/native_exports.test",
+      "./core/application"
+    ],
+    "child_started_unix": 1795419191.291462,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795419475.9305239
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Native-Archive",
+    "duration_seconds": 284.657,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 3600.0,
+    "label": "compile-native_exports",
+    "pid": 4359,
+    "process_group_id": 4359,
+    "requested_timeout_seconds": 3600,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795419191.283537,
+    "status": "TERMINAL",
+    "stderr": "09-compile-native_exports.stderr",
+    "stderr_sha256": "316a463b2b30d8fc37ef93b5e75663ddcdb739b0eb859c8613916323cc2e08d4",
+    "stdout": "09-compile-native_exports.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  "archive_test_binary_compiled": false,
+  "archive_test_execution": "NOT_RUN",
+  "combined_declared_required_rows": 19,
+  "go_list_sha256": "840b4b612cdec3533ad2902a733125e69238f452891aa554dd4ba20e370e9cc9",
+  "go_package_records": 1489,
+  "native_binary": {
+    "bytes": 171977922,
+    "path": "native_exports.test",
+    "retained_in_artifact": false,
+    "sha256": "3574025468ce5fd6e52b1304f46f3922280525696c3a9e25a5f831da34049461"
+  },
+  "not_compiled_in_this_run": [
+    "core/block/import/owned_annotation_archive_test.go"
+  ],
+  "post_execution_binary_digest_check_reached": false,
+  "post_execution_limit": "The command's nonzero return raises before execute_target's later digest check; no after-run binary equality is claimed.",
+  "rows": [
+    {
+      "actual_package_variants": [
+        "github.com/anyproto/anytype-heart/core/application [github.com/anyproto/anytype-heart/core/application.test]"
+      ],
+      "declared_in_combined_go_list": true,
+      "included_in_compiled_application_test_closure": true,
+      "path": "core/application/active_app_admission.go",
+      "runtime_file_coverage_not_inferred": true,
+      "sha256": "345ae6b7200367d31b420d65332fe63c650da16ed1e87b08e4ad55288f3082ac"
+    },
+    {
+      "actual_package_variants": [
+        "github.com/anyproto/anytype-heart/core/application_test [github.com/anyproto/anytype-heart/core/application.test]"
+      ],
+      "declared_in_combined_go_list": true,
+      "included_in_compiled_application_test_closure": true,
+      "path": "core/application/owned_annotation_export_native_test.go",
+      "runtime_file_coverage_not_inferred": true,
+      "sha256": "a59c2f6eb6424d943d238d13d47f9701c5fc7eeda0a29ddd26b428553b48c1eb"
+    },
+    {
+      "actual_package_variants": [
+        "github.com/anyproto/anytype-heart/core/block/import"
+      ],
+      "declared_in_combined_go_list": true,
+      "included_in_compiled_application_test_closure": true,
+      "path": "core/block/import/owned_annotation_archive.go",
+      "runtime_file_coverage_not_inferred": true,
+      "sha256": "565e0b8545c4c69a48b6983793df801ef4210933bf72a2694b5311c53aced735"
+    },
+    {
+      "actual_package_variants": [],
+      "declared_in_combined_go_list": true,
+      "included_in_compiled_application_test_closure": false,
+      "path": "core/block/import/owned_annotation_archive_test.go",
+      "runtime_file_coverage_not_inferred": true,
+      "sha256": "a234e88527c590fc24cc729053b323a2a134a16f3a83e5553f798f13b91a03e3"
+    },
+    {
+      "actual_package_variants": [
+        "github.com/anyproto/anytype-heart/core/block/object/objectcreator"
+      ],
+      "declared_in_combined_go_list": true,
+      "included_in_compiled_application_test_closure": true,
+      "path": "core/block/object/objectcreator/fixed_schema_acl.go",
+      "runtime_file_coverage_not_inferred": true,
+      "sha256": "170a100526f0be337c12bf9831099eb78381948b41f851791e00bbb54160a09e"
+    },
+    {
+      "actual_package_variants": [
+        "github.com/anyproto/anytype-heart/core/block/object/objectcreator"
+      ],
+      "declared_in_combined_go_list": true,
+      "included_in_compiled_application_test_closure": true,
+      "path": "core/block/object/objectcreator/fixed_schema_creation.go",
+      "runtime_file_coverage_not_inferred": true,
+      "sha256": "40a78d46222fc84f7b50a820642ffe15bf2a8a5ce2cf0271ef894e286124ec5d"
+    },
+    {
+      "actual_package_variants": [
+        "github.com/anyproto/anytype-heart/core/block/object/objectcreator"
+      ],
+      "declared_in_combined_go_list": true,
+      "included_in_compiled_application_test_closure": true,
+      "path": "core/block/object/objectcreator/fixed_schema_observer.go",
+      "runtime_file_coverage_not_inferred": true,
+      "sha256": "f591939d759e733a37e776d189de36d597ddd30cab284142f82aa8de9de51d89"
+    },
+    {
+      "actual_package_variants": [
+        "github.com/anyproto/anytype-heart/core/block/object/objectcreator"
+      ],
+      "declared_in_combined_go_list": true,
+      "included_in_compiled_application_test_closure": true,
+      "path": "core/block/object/objectcreator/fixed_schema_replay.go",
+      "runtime_file_coverage_not_inferred": true,
+      "sha256": "47de485bc746070ee5791cac1efc67e84da31c5477cdb4ad577d62c53310adc7"
+    },
+    {
+      "actual_package_variants": [
+        "github.com/anyproto/anytype-heart/core/block/object/objectcreator"
+      ],
+      "declared_in_combined_go_list": true,
+      "included_in_compiled_application_test_closure": true,
+      "path": "core/block/object/objectcreator/fixed_schema_snapshot.go",
+      "runtime_file_coverage_not_inferred": true,
+      "sha256": "3a404738380ca7b8a6e59c93a377b85927ed4383fed560385f5920f86631e5df"
+    },
+    {
+      "actual_package_variants": [
+        "github.com/anyproto/anytype-heart/core/block/source/sourceimpl"
+      ],
+      "declared_in_combined_go_list": true,
+      "included_in_compiled_application_test_closure": true,
+      "path": "core/block/source/sourceimpl/source.go",
+      "runtime_file_coverage_not_inferred": true,
+      "sha256": "30481a09de754219aa3e714cab42a5750880f9d835a720e1330de22690262e55"
+    },
+    {
+      "actual_package_variants": [
+        "github.com/anyproto/anytype-heart/core/pinkha/annotationschema [github.com/anyproto/anytype-heart/core/application.test]"
+      ],
+      "declared_in_combined_go_list": true,
+      "included_in_compiled_application_test_closure": true,
+      "path": "core/pinkha/annotationschema/definition.go",
+      "runtime_file_coverage_not_inferred": true,
+      "sha256": "cce970f838d91d9f3f06af5e4f2511afc6838c69704deaa4099ba9c392996eac"
+    },
+    {
+      "actual_package_variants": [
+        "github.com/anyproto/anytype-heart/core/pinkha/annotationschema [github.com/anyproto/anytype-heart/core/application.test]"
+      ],
+      "declared_in_combined_go_list": true,
+      "included_in_compiled_application_test_closure": true,
+      "path": "core/pinkha/annotationschema/observe.go",
+      "runtime_file_coverage_not_inferred": true,
+      "sha256": "06eac0c21b0974863a197f8f1a3ae80804c5d97d3e4a49e8f775e9cccc1cc193"
+    },
+    {
+      "actual_package_variants": [
+        "github.com/anyproto/anytype-heart/core/pinkha/annotationschema [github.com/anyproto/anytype-heart/core/application.test]"
+      ],
+      "declared_in_combined_go_list": true,
+      "included_in_compiled_application_test_closure": true,
+      "path": "core/pinkha/annotationschema/register.go",
+      "runtime_file_coverage_not_inferred": true,
+      "sha256": "a14d21693fa8e60fe7e4d581295816a7e9a73919e61eafd5fd1532b9928cd9fc"
+    },
+    {
+      "actual_package_variants": [
+        "github.com/anyproto/anytype-heart/core/pinkha/annotationschema [github.com/anyproto/anytype-heart/core/application.test]"
+      ],
+      "declared_in_combined_go_list": true,
+      "included_in_compiled_application_test_closure": true,
+      "path": "core/pinkha/annotationschema/register_type_layout.go",
+      "runtime_file_coverage_not_inferred": true,
+      "sha256": "1f50a65ff9bc3e3acccea2fcd53dce03f025f280940502b028a22d3e75b0d6ce"
+    },
+    {
+      "actual_package_variants": [
+        "github.com/anyproto/anytype-heart/core/pinkha/annotationschema [github.com/anyproto/anytype-heart/core/application.test]"
+      ],
+      "declared_in_combined_go_list": true,
+      "included_in_compiled_application_test_closure": true,
+      "path": "core/pinkha/annotationschema/type_layout.go",
+      "runtime_file_coverage_not_inferred": true,
+      "sha256": "574f1fc23e9387c59167fdeac72b6a4d727f4c6c782b03ed2a99593a0e7ad312"
+    },
+    {
+      "actual_package_variants": [
+        "github.com/anyproto/anytype-heart/pb"
+      ],
+      "declared_in_combined_go_list": true,
+      "included_in_compiled_application_test_closure": true,
+      "path": "pb/changes.pb.go",
+      "runtime_file_coverage_not_inferred": true,
+      "sha256": "8cd42aca2e459f4f56cfd9e62f3cc757b41efe418463a01ad1ede42bcde58f7d"
+    },
+    {
+      "actual_package_variants": [
+        "github.com/anyproto/anytype-heart/pb"
+      ],
+      "declared_in_combined_go_list": true,
+      "included_in_compiled_application_test_closure": true,
+      "path": "pb/commands.pb.go",
+      "runtime_file_coverage_not_inferred": true,
+      "sha256": "9a89d9a48131c4a171455e5983a7f947557337d68c367c480923502189e27b8c"
+    },
+    {
+      "actual_package_variants": [
+        "github.com/anyproto/anytype-heart/pb"
+      ],
+      "declared_in_combined_go_list": true,
+      "included_in_compiled_application_test_closure": true,
+      "path": "pb/snapshot.pb.go",
+      "runtime_file_coverage_not_inferred": true,
+      "sha256": "1f7db6d8380e6ed78cae661da45771d70604ef56ac330a73140ecff538c534d0"
+    },
+    {
+      "actual_package_variants": [
+        "github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+      ],
+      "declared_in_combined_go_list": true,
+      "included_in_compiled_application_test_closure": true,
+      "path": "pkg/lib/pb/model/models.pb.go",
+      "runtime_file_coverage_not_inferred": true,
+      "sha256": "1e7bea1584323e3d69fb7a9f1cbe0815ab274cc1b847508b3c3c6feb9a4ad99d"
+    }
+  ]
+}

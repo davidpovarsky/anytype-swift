@@ -1,0 +1,77 @@
+[
+  {
+    "test": "TestOtzariaOwnedAnnotationNativeExports/text",
+    "action": "fail",
+    "elapsed": 0.15,
+    "last_output": [
+      "2026-11-23T07:38:03.196Z\tDEBUG\tanytype-mw-state\tmiddle: state apply: 0 affected; 0 for remove; 1 copied; 0 changes; for a 115.792\u00b5s\n",
+      "2026-11-23T07:38:03.197Z\tDEBUG\tanytype-doc-indexer\tdetails have changed, but heads are equal\t{\"objectID\": \"bafyreib2og33b7orta3mtvq5e7exgyk7bh3zc66nyalzik4uzhnknhfog4\", \"hashesAreEqual\": true, \"lastHashIsEmpty\": false, \"skipFlagSet\": false}\n",
+      "2026-11-23T07:38:03.197Z\tINFO\tanytype-doc-indexer\tindexBatch: indexed 1 docs for a 861.791\u00b5s: err: <nil>\t{\"spaceId\": \"bafyreiby6i7wjbxqa2ouppsofwc4fmcclaq5cvzf5ght6z5ittgyg2i6gy.1sep3oi03n0aj\"}\n",
+      "    owned_annotation_export_native_test.go:95: actual export lacks its native annotation root/type/Space\n",
+      "--- FAIL: TestOtzariaOwnedAnnotationNativeExports/text (0.15s)\n",
+      "2026-11-23T07:38:03.199Z\tDEBUG\tanytype-mw-state\tmiddle: state apply: 0 affected; 0 for remove; 1 copied; 0 changes; for a 90.75\u00b5s\n",
+      "2026-11-23T07:38:03.200Z\tDEBUG\tanytype-doc-indexer\tdetails have changed, but heads are equal\t{\"objectID\": \"bafyreigzy67xsmxpydlxpzfira3zhlpgsonegvmckgj74i74qzijzv7ksi\", \"hashesAreEqual\": true, \"lastHashIsEmpty\": false, \"skipFlagSet\": false}\n",
+      "2026-11-23T07:38:03.201Z\tINFO\tanytype-doc-indexer\tindexBatch: indexed 1 docs for a 953.417\u00b5s: err: <nil>\t{\"spaceId\": \"bafyreiby6i7wjbxqa2ouppsofwc4fmcclaq5cvzf5ght6z5ittgyg2i6gy.1sep3oi03n0aj\"}\n"
+    ]
+  },
+  {
+    "test": "TestOtzariaOwnedAnnotationNativeExports/format",
+    "action": "fail",
+    "elapsed": 0.04,
+    "last_output": [
+      "2026-11-23T07:38:03.218Z\tINFO\tanytype-doc-indexer\tindexBatch: indexed 1 docs for a 1.044958ms: err: <nil>\t{\"spaceId\": \"bafyreiby6i7wjbxqa2ouppsofwc4fmcclaq5cvzf5ght6z5ittgyg2i6gy.1sep3oi03n0aj\"}\n",
+      "2026-11-23T07:38:03.223Z\tINFO\tobjectstore.spaceindex\tQueryByIds failed to find id: any-store: document not found\t{\"id\": \"_anytype_profile\"}\n",
+      "2026-11-23T07:38:03.241Z\tERROR\tnotification-process\tfailed wait: mb: MB closed\n",
+      "2026-11-23T07:38:03.241Z\tERROR\tnotification-process\tfailed wait: mb: MB closed\n",
+      "2026-11-23T07:38:03.241Z\tERROR\tnotification-process\tfailed wait: mb: MB closed\n",
+      "2026-11-23T07:38:03.241Z\tERROR\tnotification-process\tfailed wait: mb: MB closed\n",
+      "    owned_annotation_export_native_test.go:95: actual export lacks its native annotation root/type/Space\n",
+      "--- FAIL: TestOtzariaOwnedAnnotationNativeExports/format (0.04s)\n"
+    ]
+  },
+  {
+    "test": "TestOtzariaOwnedAnnotationNativeExports/nested",
+    "action": "fail",
+    "elapsed": 0.03,
+    "last_output": [
+      "2026-11-23T07:38:03.256Z\tINFO\tanytype-doc-indexer\tindexBatch: indexed 1 docs for a 478.25\u00b5s: err: <nil>\t{\"spaceId\": \"bafyreiby6i7wjbxqa2ouppsofwc4fmcclaq5cvzf5ght6z5ittgyg2i6gy.1sep3oi03n0aj\"}\n",
+      "2026-11-23T07:38:03.258Z\tINFO\tobjectstore.spaceindex\tQueryByIds failed to find id: any-store: document not found\t{\"id\": \"_anytype_profile\"}\n",
+      "2026-11-23T07:38:03.272Z\tERROR\tnotification-process\tfailed wait: mb: MB closed\n",
+      "2026-11-23T07:38:03.272Z\tERROR\tnotification-process\tfailed wait: mb: MB closed\n",
+      "2026-11-23T07:38:03.272Z\tERROR\tnotification-process\tfailed wait: mb: MB closed\n",
+      "2026-11-23T07:38:03.272Z\tERROR\tnotification-process\tfailed wait: mb: MB closed\n",
+      "    owned_annotation_export_native_test.go:95: actual export lacks its native annotation root/type/Space\n",
+      "--- FAIL: TestOtzariaOwnedAnnotationNativeExports/nested (0.03s)\n"
+    ]
+  },
+  {
+    "test": "TestOtzariaOwnedAnnotationNativeExports/attachment",
+    "action": "fail",
+    "elapsed": 0.06,
+    "last_output": [
+      "2026-11-23T07:38:03.331Z\tDEBUG\tanytype-doc-indexer\tdetails have changed, but heads are equal\t{\"objectID\": \"bafyreiczf3qozuricmg5abveaodmb67ykpba4nnvsdhygxq5tm7bxh2c2m\", \"hashesAreEqual\": true, \"lastHashIsEmpty\": false, \"skipFlagSet\": false}\n",
+      "2026-11-23T07:38:03.331Z\tINFO\tanytype-doc-indexer\tindexBatch: indexed 1 docs for a 405.708\u00b5s: err: <nil>\t{\"spaceId\": \"bafyreiby6i7wjbxqa2ouppsofwc4fmcclaq5cvzf5ght6z5ittgyg2i6gy.1sep3oi03n0aj\"}\n",
+      "2026-11-23T07:38:03.331Z\tERROR\tnotification-process\tfailed wait: mb: MB closed\n",
+      "2026-11-23T07:38:03.331Z\tERROR\tnotification-process\tfailed wait: mb: MB closed\n",
+      "2026-11-23T07:38:03.331Z\tERROR\tnotification-process\tfailed wait: mb: MB closed\n",
+      "2026-11-23T07:38:03.331Z\tERROR\tnotification-process\tfailed wait: mb: MB closed\n",
+      "    owned_annotation_export_native_test.go:95: actual export lacks its native annotation root/type/Space\n",
+      "--- FAIL: TestOtzariaOwnedAnnotationNativeExports/attachment (0.06s)\n"
+    ]
+  },
+  {
+    "test": "TestOtzariaOwnedAnnotationNativeExports",
+    "action": "fail",
+    "elapsed": 5.03,
+    "last_output": [
+      "2026-11-23T07:38:03.696Z\tDEBUG\tanytype-mw-state\tmiddle: state apply: 0 affected; 0 for remove; 0 copied; 0 changes; for a 1.208\u00b5s\n",
+      "2026-11-23T07:38:03.696Z\tINFO\tanytype-mw-smartblock\tchanges: stateAppend: 0 events\n",
+      "2026-11-23T07:38:03.696Z\tERROR\tanytype-mw-smartblock\tindex object _otrelation error: context canceled\n",
+      "2026-11-23T07:38:03.702Z\tDEBUG\tapp\tall components have been closed\t{\"heart.inboxsender\": 0, \"deviceService\": 0, \"core.recovery\": 0, \"emailcollector\": 0, \"unsplash\": 0, \"fileobject\": 0, \"importer\": 0, \"invitestore\": 0, \"core.files.filedownloader\": 0, \"block.object.resolver\": 0, \"common.net.streampool\": 0, \"client.space.clientserver\": 0, \"common.net.pool\": 0, \"core.syncstatus.p2p\": 0, \"indexer\": 0, \"net.transport.quic\": 0, \"api\": 0, \"core.invitecleanup\": 0, \"common.commonspace.pubsub\": 0, \"net.quicdemotion\": 0, \"common.commonspace.spacestorage\": 0, \"common.inboxclient\": 0, \"common.subscribeclient\": 0, \"client.syncstatus.syncsubscriptions\": 0, \"net.transportpenalty\": 0, \"common.space.virtualspaceservice\": 0, \"core.syncstatus.objectsyncstatus.updater\": 284, \"block-service\": 0, \"core.files.reconciler\": 0, \"chatrepository\": 0, \"file-uploader\": 0, \"debug\": 0, \"core.block.objectgc\": 0, \"client.space\": 5, \"core.block.chats\": 0, \"networkState\": 0, \"client.space.spacecore\": 0, \"net.transport.yamux\": 0, \"subscription\": 0",
+      ", \"core.pushnotification.service\": 0, \"notificationService\": 0, \"objectstore\": 0, \"heart.inboxclient\": 0, \"cache\": 0, \"importv2\": 0, \"common.acl.aclservice\": 0, \"space.deletioncontroller\": 0, \"payments\": 0, \"identity\": 0, \"gateway\": 0, \"common.commonfile.fileblockstore\": 4, \"relation-format-fetcher\": 0, \"fts\": 0, \"client.space.localdiscovery\": 0, \"common.metric\": 0, \"details.service\": 0, \"process\": 0, \"chatsubscription\": 0, \"core.subscription.crossspacesub\": 0, \"status\": 0, \"core.syncstatus.spacesyncstatus\": 0, \"configfetcher\": 0, \"common.debugstat\": 0, \"common.object.treemanager\": 0, \"common.core.publishservice\": 0, \"filesync\": 0, \"net.rpc.debugserver\": 0, \"common.util.syncqueues\": 0, \"common.nodeconf\": 0, \"common.core.inviteservice\": 0, \"client.pubsub\": 0, \"backlinks-update-watcher\": 10, \"anystore-provider\": 5, \"profiler\": 0, \"total\": 308}\n",
+      "2026-11-23T07:38:03.702Z\tINFO\tanytype-core-account\tclosing app: finished\t{\"mwVersion\": \"unknown\", \"tookMs\": 311}\n",
+      "2026-11-23T07:38:03.707Z\tINFO\taccount-directory-lock\taccount directory lease released\t{\"accountId\": \"A9i5jQoCsm5pUkYeWPFydAhcNbv5yNuwUsof1jYJAAcmT7Mr\", \"rootPath\": \"/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Native-Archive-Owned-Work/native-temporary/otzaria-owned-native-export-2534291490\", \"lockPath\": \"/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Native-Archive-Owned-Work/native-temporary/otzaria-owned-native-export-2534291490/.anytype-locks/A9i5jQoCsm5pUkYeWPFydAhcNbv5yNuwUsof1jYJAAcmT7Mr.lock\"}\n",
+      "--- FAIL: TestOtzariaOwnedAnnotationNativeExports (5.03s)\n"
+    ]
+  }
+]
