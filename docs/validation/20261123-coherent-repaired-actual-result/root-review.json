@@ -1,0 +1,116 @@
+{
+  "actualProductMethods": 0,
+  "applicationSource": "d254a4a1ccd9288f585ff9374088cbaf965b36b4",
+  "artifactBytes": 2188798,
+  "artifactID": 14795131241,
+  "artifactSHA256": "c2e4ead72deaae4af7bccab95c6465ad4de0c19f61a9444f5a46c49137618cb1",
+  "attempt": 1,
+  "bootstatusBudgetUnchangedSeconds": 180,
+  "bootstatusCommandExit": 0,
+  "containerLookupReached": false,
+  "containerObserverExecuted": false,
+  "controllerSource": "cb50b5a8698f3d32423dbc4b171449556fba5478",
+  "currentControlSourcesMatchedGit": 32,
+  "finalFullIntegrity": "NOT_REACHED",
+  "fullMatrixAccepted": false,
+  "innerOriginalFilesVerified": 84,
+  "nestedCleanup": {
+    "error": "Command '['git', '-C', '/Users/runner/work/anytype-swift/anytype-swift', 'show', 'cb50b5a8698f3d32423dbc4b171449556fba5478:Tools/PinkhaSimulatorGate/text_native_ack.py']' timed out after 30 seconds",
+    "error_type": "TimeoutExpired",
+    "evidence_scope": "CLEANUP_ONLY_ORIGINAL_COMMAND_AND_PRODUCT_STATUS_UNCHANGED",
+    "finished_at": "2026-11-23T06:23:08.845247+00:00",
+    "groups_checked": 0,
+    "original_owned_commands": [],
+    "status": "FAIL"
+  },
+  "newAppBuilds": 0,
+  "newUIBuilds": 0,
+  "originalReadinessCommands": [
+    {
+      "commandReturnCode": 0,
+      "name": "before",
+      "pid": 27689,
+      "quiescence": {
+        "budget_seconds": 10,
+        "live_members": 0,
+        "observations": 1,
+        "pgid": 27689,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "status": "SUCCESS",
+      "timeoutObservations": []
+    },
+    {
+      "commandReturnCode": 0,
+      "name": "boot",
+      "pid": 27702,
+      "quiescence": {
+        "budget_seconds": 10,
+        "live_members": 0,
+        "observations": 1,
+        "pgid": 27702,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "status": "SUCCESS",
+      "timeoutObservations": []
+    },
+    {
+      "commandReturnCode": 0,
+      "name": "boot-status",
+      "pid": 27790,
+      "quiescence": null,
+      "status": "FAILED_PROCESS_CLEANUP",
+      "timeoutObservations": [
+        {
+          "observation": 1,
+          "timeout_seconds": 9.999997916999973
+        }
+      ]
+    }
+  ],
+  "originalRootAndCwdErrorRecurred": false,
+  "outerCleanupOriginalStatus": "PASS",
+  "outerOwnedDevicesDeleted": [
+    {
+      "delete_exit_code": 0,
+      "name": "Pinkha-UI27-45122453940-ipad",
+      "status": "DELETED_OWNED_SIMULATOR",
+      "udid": "7A208ADE-7500-4EC9-9E80-06EE9E7C229B"
+    },
+    {
+      "delete_exit_code": 0,
+      "name": "Pinkha-UI27-45122453940-iphone",
+      "status": "DELETED_OWNED_SIMULATOR",
+      "udid": "6FF7E34C-DDCE-498E-83AC-096B9268911F"
+    },
+    {
+      "delete_exit_code": 0,
+      "name": "Pinkha-UI27-45122453940-batch-205e7c8c88054f108308226a3c0b20f6-editor",
+      "shutdown_exit_code": 0,
+      "status": "DELETED_OWNED_SIMULATOR",
+      "udid": "21B41CF5-A6B2-4EA1-AC51-63CB199A0951"
+    }
+  ],
+  "overallCleanupPassed": false,
+  "preflightCleanupOriginalStatus": "PASS_REUSED_EXACT_CURRENT_BATCH",
+  "primaryFailure": "POST_BOOTSTATUS_OWNED_GROUP_PS_10_SECOND_TIMEOUT",
+  "readinessPassed": false,
+  "releaseAccepted": false,
+  "restoredOriginalEntries": {
+    "native": 5211,
+    "ui": 30
+  },
+  "reviewedAtUTC": "2026-11-23T06:45:10.707185+00:00",
+  "run": 45122453940,
+  "schemaVersion": 1,
+  "sourceComparisonReportedByOriginalAdmission": {
+    "input_manifest_sha256": "4bd980bf67ad0132fe352050e913fa688535de1cad2e5a498672e658eec6a67e",
+    "middleware_inputs_not_rebuilt": true,
+    "source_sha": "d254a4a1ccd9288f585ff9374088cbaf965b36b4",
+    "tracked_regular_files_compared": 11468
+  },
+  "status": "FAIL_ORIGINAL_CURRENT_EVIDENCE_AUDITED",
+  "testsExecutedByReview": 0
+}

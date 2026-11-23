@@ -1,0 +1,5 @@
+# Original repaired Release continuation result
+
+Run 45122453940 at cb50b5a8698f3d32423dbc4b171449556fba5478 failed before any product method. All 84 original current archive members were verified; 32 actual controller source hashes match the dispatched Git source. The original d254 Products were admitted with zero builds. The bootstatus command returned zero, but its subsequent owned-group ps query exhausted the unchanged ten-second deadline. Container lookup and its new observer were not reached. Nested cleanup passed the earlier source/root seam but then failed on a thirty-second Git source lookup; it checked zero groups. Outer cleanup deleted all three created owned devices, and preflight cleanup reused those exact current receipts. Overall cleanup and final full integrity are not proved. No old successful product method was repeated, and no Release acceptance is claimed.
+
+The earlier origin/cwd control evidence and this actual failure are retained independently. Only the original current metadata is copied here; the exact full outer and inner archives and full job log remain preserved on Oracle.

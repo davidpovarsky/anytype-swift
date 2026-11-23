@@ -1,0 +1,1037 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/Users/runner/work/anytype-swift/anytype-swift",
+        "rev-parse",
+        "HEAD"
+      ],
+      "finished_at": "2026-11-23T06:16:27.773465+00:00",
+      "log_sha256": "dda058293c4af9d280aae25018215f486a643da461b9fa605d53320065af170b",
+      "name": "controller-head",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "budget_seconds": 10,
+        "live_members": 0,
+        "observations": 1,
+        "pgid": 23743,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T06:16:27.760688+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 30,
+      "worker_pid": 23743
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/Users/runner/work/anytype-swift/anytype-swift",
+        "status",
+        "--porcelain",
+        "--untracked-files=no"
+      ],
+      "finished_at": "2026-11-23T06:16:28.162327+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "controller-clean",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "budget_seconds": 10,
+        "live_members": 0,
+        "observations": 1,
+        "pgid": 23745,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T06:16:27.798267+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 30,
+      "worker_pid": 23745
+    },
+    {
+      "argv": [
+        "xcodebuild",
+        "-version"
+      ],
+      "finished_at": "2026-11-23T06:16:32.417488+00:00",
+      "log_sha256": "694b44731d0b415c5b11d844151e466d7f5e200a95627efda377f232f1a6ab77",
+      "name": "xcode-version",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "budget_seconds": 10,
+        "live_members": 0,
+        "observations": 1,
+        "pgid": 23748,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T06:16:28.188149+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 60,
+      "worker_pid": 23748
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "list",
+        "--json"
+      ],
+      "finished_at": "2026-11-23T06:16:39.313607+00:00",
+      "log_sha256": "86763c0e8c489b9b400c815f1920aa43ca340435f02edb309a07a02dfa9eff61",
+      "name": "simulator-inventory",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "budget_seconds": 10,
+        "live_members": 0,
+        "observations": 1,
+        "pgid": 23757,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T06:16:32.514690+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 60,
+      "worker_pid": 23757
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "create",
+        "Pinkha-UI27-45122453940-iphone",
+        "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro",
+        "com.apple.CoreSimulator.SimRuntime.iOS-27-0"
+      ],
+      "finished_at": "2026-11-23T06:16:40.317340+00:00",
+      "log_sha256": "a18efa6e4ddc748176af750ce6c04e8a08f2647a436fee3aeb5dfa1ffcddb7d1",
+      "name": "create-iphone",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "budget_seconds": 10,
+        "live_members": 0,
+        "observations": 1,
+        "pgid": 23955,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T06:16:39.452167+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 30,
+      "worker_pid": 23955
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "create",
+        "Pinkha-UI27-45122453940-ipad",
+        "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+        "com.apple.CoreSimulator.SimRuntime.iOS-27-0"
+      ],
+      "finished_at": "2026-11-23T06:16:40.853321+00:00",
+      "log_sha256": "e5e6747a63fb3875a150472e8b08deb218dc8e208c17a98ddd2ea51a1f8de7cb",
+      "name": "create-ipad",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "budget_seconds": 10,
+        "live_members": 0,
+        "observations": 1,
+        "pgid": 24097,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T06:16:40.383474+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 30,
+      "worker_pid": 24097
+    },
+    {
+      "argv": [
+        "swift",
+        "--version"
+      ],
+      "finished_at": "2026-11-23T06:16:45.306105+00:00",
+      "log_sha256": "30bb0d72a580e8e936ab32e24cab2876f82fa6b06d66fef876fe21a47e828acc",
+      "name": "swift-version",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "budget_seconds": 10,
+        "live_members": 0,
+        "observations": 1,
+        "pgid": 24204,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T06:16:40.888218+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 60,
+      "worker_pid": 24204
+    },
+    {
+      "argv": [
+        "xcodebuild",
+        "-showsdks"
+      ],
+      "finished_at": "2026-11-23T06:16:46.173247+00:00",
+      "log_sha256": "68b2cdfa4a24ff8ff2f6fbf2e01f0ad0ffe65ce46e5217fe39fb97e2b836902f",
+      "name": "xcode-sdks",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "budget_seconds": 10,
+        "live_members": 0,
+        "observations": 1,
+        "pgid": 24524,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T06:16:45.339928+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 60,
+      "worker_pid": 24524
+    }
+  ],
+  "developer_dir": "/Applications/Xcode_27.app/Contents/Developer",
+  "elapsed_seconds": 18.453316874999928,
+  "finished_at": "2026-11-23T06:16:46.213805+00:00",
+  "host_architecture": "arm64",
+  "intent_sha256": "6f915def1049b3fb3e8810c58d474cf15b428c13a0c6e9d86014bd4a5e087e7d",
+  "phase": "COMPLETE",
+  "preparation_budget_seconds": 360.0,
+  "protocol": "pinkha-coherent-original-preflight-v1",
+  "python": "3.12.10 (v3.12.10:0cc81280367, Apr  8 2025, 08:46:59) [Clang 13.0.0 (clang-1300.0.29.30)]",
+  "run_attempt": "1",
+  "run_id": "45122453940",
+  "sdks": "DriverKit SDKs:\n\tDriverKit 27.0                \t-sdk driverkit27.0\n\niOS SDKs:\n\tiOS 27.0                      \t-sdk iphoneos27.0\n\niOS Simulator SDKs:\n\tSimulator - iOS 27.0          \t-sdk iphonesimulator27.0\n\nmacOS SDKs:\n\tmacOS 27.0                    \t-sdk macosx27.0\n\tmacOS 27.0                    \t-sdk macosx27.0\n\ntvOS SDKs:\n\ttvOS 27.0                     \t-sdk appletvos27.0\n\ntvOS Simulator SDKs:\n\tSimulator - tvOS 27.0         \t-sdk appletvsimulator27.0\n\nvisionOS SDKs:\n\tvisionOS 27.0                 \t-sdk xros27.0\n\nvisionOS Simulator SDKs:\n\tSimulator - visionOS 27.0     \t-sdk xrsimulator27.0\n\nwatchOS SDKs:\n\twatchOS 27.0                  \t-sdk watchos27.0\n\nwatchOS Simulator SDKs:\n\tSimulator - watchOS 27.0      \t-sdk watchsimulator27.0",
+  "selected": {
+    "ipad": {
+      "device": {
+        "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M5) (16GB).simdevicetype",
+        "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+        "maxRuntimeVersion": 4294967295,
+        "maxRuntimeVersionString": "65535.255.255",
+        "minRuntimeVersion": 1703936,
+        "minRuntimeVersionString": "26.0.0",
+        "modelIdentifier": "iPad17,4",
+        "name": "iPad Pro 13-inch (M5) (16GB)",
+        "productFamily": "iPad"
+      },
+      "name": "Pinkha-UI27-45122453940-ipad",
+      "runtime": {
+        "buildversion": "24A434",
+        "bundlePath": "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.I1jqur/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime",
+        "identifier": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+        "isAvailable": true,
+        "isInternal": false,
+        "lastUsage": {
+          "arm64": "0001-01-01T00:00:00Z"
+        },
+        "name": "iOS 27.0",
+        "platform": "iOS",
+        "runtimeRoot": "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.I1jqur/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot",
+        "supportedArchitectures": [
+          "arm64"
+        ],
+        "supportedDeviceTypes": [
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 18 Pro.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro",
+            "name": "iPhone 18 Pro",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 18 Pro Max.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro-Max",
+            "name": "iPhone 18 Pro Max",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17 Pro.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro",
+            "name": "iPhone 17 Pro",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17 Pro Max.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max",
+            "name": "iPhone 17 Pro Max",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17e.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17e",
+            "name": "iPhone 17e",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone Air.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-Air",
+            "name": "iPhone Air",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17",
+            "name": "iPhone 17",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Pro.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro",
+            "name": "iPhone 16 Pro",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Pro Max.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro-Max",
+            "name": "iPhone 16 Pro Max",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16e.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16e",
+            "name": "iPhone 16e",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16",
+            "name": "iPhone 16",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Plus.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Plus",
+            "name": "iPhone 16 Plus",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Pro.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Pro",
+            "name": "iPhone 15 Pro",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Pro Max.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Pro-Max",
+            "name": "iPhone 15 Pro Max",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15",
+            "name": "iPhone 15",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Plus.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Plus",
+            "name": "iPhone 15 Plus",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Pro.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro",
+            "name": "iPhone 14 Pro",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Pro Max.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro-Max",
+            "name": "iPhone 14 Pro Max",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14",
+            "name": "iPhone 14",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Plus.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Plus",
+            "name": "iPhone 14 Plus",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone SE (3rd generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation",
+            "name": "iPhone SE (3rd generation)",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 Pro.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-Pro",
+            "name": "iPhone 13 Pro",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 Pro Max.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-Pro-Max",
+            "name": "iPhone 13 Pro Max",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13",
+            "name": "iPhone 13",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 mini.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-mini",
+            "name": "iPhone 13 mini",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 Pro.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro",
+            "name": "iPhone 12 Pro",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 Pro Max.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro-Max",
+            "name": "iPhone 12 Pro Max",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12",
+            "name": "iPhone 12",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 mini.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-mini",
+            "name": "iPhone 12 mini",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone SE (2nd generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-SE--2nd-generation-",
+            "name": "iPhone SE (2nd generation)",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11 Pro.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11-Pro",
+            "name": "iPhone 11 Pro",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11 Pro Max.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11-Pro-Max",
+            "name": "iPhone 11 Pro Max",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11",
+            "name": "iPhone 11",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M5) (16GB).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+            "name": "iPad Pro 13-inch (M5) (16GB)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M5).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB",
+            "name": "iPad Pro 13-inch (M5)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M5) (16GB).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M5-16GB",
+            "name": "iPad Pro 11-inch (M5) (16GB)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M5).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M5-12GB",
+            "name": "iPad Pro 11-inch (M5)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M4) (16GB).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M4-16GB",
+            "name": "iPad Pro 11-inch (M4) (16GB)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M4).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M4-8GB",
+            "name": "iPad Pro 11-inch (M4)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M4) (16GB).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M4-16GB",
+            "name": "iPad Pro 13-inch (M4) (16GB)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M4).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M4-8GB",
+            "name": "iPad Pro 13-inch (M4)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M4).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M4",
+            "name": "iPad Air 13-inch (M4)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M4).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M4",
+            "name": "iPad Air 11-inch (M4)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (A16).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-A16",
+            "name": "iPad (A16)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M3).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M3",
+            "name": "iPad Air 13-inch (M3)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M3).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M3",
+            "name": "iPad Air 11-inch (M3)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M2).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M2",
+            "name": "iPad Air 11-inch (M2)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M2).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M2",
+            "name": "iPad Air 13-inch (M2)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad mini (A17 Pro).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-A17-Pro",
+            "name": "iPad mini (A17 Pro)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (4th generation) (16GB).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-4th-generation-16GB",
+            "name": "iPad Pro (11-inch) (4th generation) (16GB)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (4th generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-4th-generation-8GB",
+            "name": "iPad Pro (11-inch) (4th generation)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (6th generation) (16GB).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-6th-generation-16GB",
+            "name": "iPad Pro (12.9-inch) (6th generation) (16GB)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (6th generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-6th-generation-8GB",
+            "name": "iPad Pro (12.9-inch) (6th generation)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (10th generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-10th-generation",
+            "name": "iPad (10th generation)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air (5th generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-5th-generation",
+            "name": "iPad Air (5th generation)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad mini (6th generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-6th-generation",
+            "name": "iPad mini (6th generation)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (3rd generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-3rd-generation",
+            "name": "iPad Pro (11-inch) (3rd generation)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (5th generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-5th-generation",
+            "name": "iPad Pro (12.9-inch) (5th generation)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (9th generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-9th-generation",
+            "name": "iPad (9th generation)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air (4th generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air--4th-generation-",
+            "name": "iPad Air (4th generation)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (2nd generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro--11-inch---2nd-generation-",
+            "name": "iPad Pro (11-inch) (2nd generation)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (4th generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro--12-9-inch---4th-generation-",
+            "name": "iPad Pro (12.9-inch) (4th generation)",
+            "productFamily": "iPad"
+          }
+        ],
+        "version": "27.0"
+      },
+      "udid": "7A208ADE-7500-4EC9-9E80-06EE9E7C229B"
+    },
+    "iphone": {
+      "device": {
+        "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 18 Pro.simdevicetype",
+        "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro",
+        "maxRuntimeVersion": 4294967295,
+        "maxRuntimeVersionString": "65535.255.255",
+        "minRuntimeVersion": 1769472,
+        "minRuntimeVersionString": "27.0.0",
+        "modelIdentifier": "iPhone19,2",
+        "name": "iPhone 18 Pro",
+        "productFamily": "iPhone"
+      },
+      "name": "Pinkha-UI27-45122453940-iphone",
+      "runtime": {
+        "buildversion": "24A434",
+        "bundlePath": "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.I1jqur/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime",
+        "identifier": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+        "isAvailable": true,
+        "isInternal": false,
+        "lastUsage": {
+          "arm64": "0001-01-01T00:00:00Z"
+        },
+        "name": "iOS 27.0",
+        "platform": "iOS",
+        "runtimeRoot": "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.I1jqur/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot",
+        "supportedArchitectures": [
+          "arm64"
+        ],
+        "supportedDeviceTypes": [
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 18 Pro.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro",
+            "name": "iPhone 18 Pro",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 18 Pro Max.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro-Max",
+            "name": "iPhone 18 Pro Max",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17 Pro.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro",
+            "name": "iPhone 17 Pro",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17 Pro Max.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max",
+            "name": "iPhone 17 Pro Max",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17e.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17e",
+            "name": "iPhone 17e",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone Air.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-Air",
+            "name": "iPhone Air",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17",
+            "name": "iPhone 17",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Pro.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro",
+            "name": "iPhone 16 Pro",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Pro Max.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro-Max",
+            "name": "iPhone 16 Pro Max",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16e.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16e",
+            "name": "iPhone 16e",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16",
+            "name": "iPhone 16",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Plus.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Plus",
+            "name": "iPhone 16 Plus",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Pro.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Pro",
+            "name": "iPhone 15 Pro",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Pro Max.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Pro-Max",
+            "name": "iPhone 15 Pro Max",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15",
+            "name": "iPhone 15",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Plus.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Plus",
+            "name": "iPhone 15 Plus",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Pro.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro",
+            "name": "iPhone 14 Pro",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Pro Max.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro-Max",
+            "name": "iPhone 14 Pro Max",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14",
+            "name": "iPhone 14",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Plus.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Plus",
+            "name": "iPhone 14 Plus",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone SE (3rd generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation",
+            "name": "iPhone SE (3rd generation)",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 Pro.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-Pro",
+            "name": "iPhone 13 Pro",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 Pro Max.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-Pro-Max",
+            "name": "iPhone 13 Pro Max",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13",
+            "name": "iPhone 13",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 mini.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-mini",
+            "name": "iPhone 13 mini",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 Pro.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro",
+            "name": "iPhone 12 Pro",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 Pro Max.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro-Max",
+            "name": "iPhone 12 Pro Max",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12",
+            "name": "iPhone 12",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 mini.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-mini",
+            "name": "iPhone 12 mini",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone SE (2nd generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-SE--2nd-generation-",
+            "name": "iPhone SE (2nd generation)",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11 Pro.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11-Pro",
+            "name": "iPhone 11 Pro",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11 Pro Max.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11-Pro-Max",
+            "name": "iPhone 11 Pro Max",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11.simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11",
+            "name": "iPhone 11",
+            "productFamily": "iPhone"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M5) (16GB).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+            "name": "iPad Pro 13-inch (M5) (16GB)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M5).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB",
+            "name": "iPad Pro 13-inch (M5)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M5) (16GB).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M5-16GB",
+            "name": "iPad Pro 11-inch (M5) (16GB)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M5).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M5-12GB",
+            "name": "iPad Pro 11-inch (M5)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M4) (16GB).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M4-16GB",
+            "name": "iPad Pro 11-inch (M4) (16GB)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M4).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M4-8GB",
+            "name": "iPad Pro 11-inch (M4)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M4) (16GB).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M4-16GB",
+            "name": "iPad Pro 13-inch (M4) (16GB)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M4).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M4-8GB",
+            "name": "iPad Pro 13-inch (M4)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M4).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M4",
+            "name": "iPad Air 13-inch (M4)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M4).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M4",
+            "name": "iPad Air 11-inch (M4)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (A16).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-A16",
+            "name": "iPad (A16)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M3).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M3",
+            "name": "iPad Air 13-inch (M3)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M3).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M3",
+            "name": "iPad Air 11-inch (M3)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M2).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M2",
+            "name": "iPad Air 11-inch (M2)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M2).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M2",
+            "name": "iPad Air 13-inch (M2)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad mini (A17 Pro).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-A17-Pro",
+            "name": "iPad mini (A17 Pro)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (4th generation) (16GB).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-4th-generation-16GB",
+            "name": "iPad Pro (11-inch) (4th generation) (16GB)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (4th generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-4th-generation-8GB",
+            "name": "iPad Pro (11-inch) (4th generation)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (6th generation) (16GB).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-6th-generation-16GB",
+            "name": "iPad Pro (12.9-inch) (6th generation) (16GB)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (6th generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-6th-generation-8GB",
+            "name": "iPad Pro (12.9-inch) (6th generation)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (10th generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-10th-generation",
+            "name": "iPad (10th generation)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air (5th generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-5th-generation",
+            "name": "iPad Air (5th generation)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad mini (6th generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-6th-generation",
+            "name": "iPad mini (6th generation)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (3rd generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-3rd-generation",
+            "name": "iPad Pro (11-inch) (3rd generation)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (5th generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-5th-generation",
+            "name": "iPad Pro (12.9-inch) (5th generation)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (9th generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-9th-generation",
+            "name": "iPad (9th generation)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air (4th generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air--4th-generation-",
+            "name": "iPad Air (4th generation)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (2nd generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro--11-inch---2nd-generation-",
+            "name": "iPad Pro (11-inch) (2nd generation)",
+            "productFamily": "iPad"
+          },
+          {
+            "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (4th generation).simdevicetype",
+            "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro--12-9-inch---4th-generation-",
+            "name": "iPad Pro (12.9-inch) (4th generation)",
+            "productFamily": "iPad"
+          }
+        ],
+        "version": "27.0"
+      },
+      "udid": "6FF7E34C-DDCE-498E-83AC-096B9268911F"
+    }
+  },
+  "source_sha": "cb50b5a8698f3d32423dbc4b171449556fba5478",
+  "started_at": "2026-11-23T06:16:27.758181+00:00",
+  "status": "PREFLIGHT_PASS_UI_NOT_RUN",
+  "swift": "swift-driver version: 1.168.6 Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "ui_tests_executed": 0,
+  "xcode": "Xcode 27.0\nBuild version 27A266a"
+}

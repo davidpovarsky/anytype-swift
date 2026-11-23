@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "xcrun",
+    "simctl",
+    "bootstatus",
+    "21B41CF5-A6B2-4EA1-AC51-63CB199A0951",
+    "-b"
+  ],
+  "cleanup_error": "Command '['ps', '-axo', 'pid=,pgid=,stat=']' timed out after 9.999997916999973 seconds",
+  "cleanup_error_type": "TimeoutExpired",
+  "cleanup_observation": null,
+  "cleanup_probe_timeouts": [
+    {
+      "observation": 1,
+      "timeout_seconds": 9.999997916999973
+    }
+  ],
+  "cleanup_profile": "coherent-heart-release",
+  "controller_process_id": 27790,
+  "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/coherent-original-products-45122453940-1/private/App",
+  "finished_at": "2026-11-23T06:19:30.529938+00:00",
+  "original_owned_command": "boot-status.owned.command.json",
+  "original_owned_command_sha256": "83bb94cf70e43ddf641b3c66f5c79ca51c8b7f3099f1a9e5d9e8fe3b0b801183",
+  "owned_group_termination": "TERM_THEN_KILL",
+  "return_code": 0,
+  "started_at": "2026-11-23T06:18:06.214818+00:00",
+  "status": "FAILED_PROCESS_CLEANUP",
+  "timeout_seconds": 180
+}
