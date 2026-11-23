@@ -1,0 +1,105 @@
+{
+  "assembled_package_references": [
+    {
+      "path": "docs/pinkha/torah-integration/native-annotation-schema-readback-20261122/native/core/pinkha/annotationschema/definition.go",
+      "references": [
+        {
+          "line": 17,
+          "source": "var relationNames = [...]struct{ key, name string }{"
+        },
+        {
+          "line": 41,
+          "source": "\tresult := make([]objectcreator.FixedSchemaDefinition, 0, len(relationNames)+1)"
+        },
+        {
+          "line": 51,
+          "source": "\tfor _, relation := range relationNames {"
+        }
+      ]
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-annotation-schema-readback-20261122/native/core/pinkha/annotationschema/observe.go",
+      "references": [
+        {
+          "line": 135,
+          "source": "\trelations := make(map[string]string, len(relationNames))"
+        },
+        {
+          "line": 214,
+          "source": "\tif typeDetails != nil && len(relations) == len(relationNames) {"
+        }
+      ]
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-annotation-schema-readback-20261122/native/core/pinkha/annotationschema/type_layout.go",
+      "references": [
+        {
+          "line": 60,
+          "source": "\tfor _, relation := range relationNames {"
+        },
+        {
+          "line": 112,
+          "source": "\tfor _, relation := range relationNames {"
+        },
+        {
+          "line": 137,
+          "source": "\t\tfor _, relation := range relationNames {"
+        }
+      ]
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-annotation-schema-registration-20261122/native/core/pinkha/annotationschema/register.go",
+      "references": [
+        {
+          "line": 210,
+          "source": "\trelations := make(map[string]string, len(relationNames))"
+        },
+        {
+          "line": 305,
+          "source": "\tif len(observation.Definitions) != len(relationNames)+1 {"
+        },
+        {
+          "line": 326,
+          "source": "\tif len(observation.Definitions) != len(relationNames)+1 || observation.Disposition == Conflict ||"
+        }
+      ]
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-annotation-schema-native-defaults-20261122/native/core/pinkha/annotationschema/register_type_layout.go",
+      "references": [
+        {
+          "line": 62,
+          "source": "\t\trelations := make(map[string]string, len(relationNames))"
+        },
+        {
+          "line": 74,
+          "source": "\t\tfor _, relation := range relationNames {"
+        },
+        {
+          "line": 89,
+          "source": "\t\tfor _, relation := range relationNames {"
+        }
+      ]
+    }
+  ],
+  "other_revision_go_references": [
+    "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638:docs/pinkha/torah-integration/native-annotation-schema-native-defaults-20261122/native/core/pinkha/annotationschema/register_type_layout.go:62:\t\trelations := make(map[string]string, len(relationNames))",
+    "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638:docs/pinkha/torah-integration/native-annotation-schema-native-defaults-20261122/native/core/pinkha/annotationschema/register_type_layout.go:74:\t\tfor _, relation := range relationNames {",
+    "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638:docs/pinkha/torah-integration/native-annotation-schema-native-defaults-20261122/native/core/pinkha/annotationschema/register_type_layout.go:89:\t\tfor _, relation := range relationNames {",
+    "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638:docs/pinkha/torah-integration/native-annotation-schema-readback-20261122/native/core/pinkha/annotationschema/definition.go:17:var relationNames = [...]struct{ key, name string }{",
+    "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638:docs/pinkha/torah-integration/native-annotation-schema-readback-20261122/native/core/pinkha/annotationschema/definition.go:41:\tresult := make([]objectcreator.FixedSchemaDefinition, 0, len(relationNames)+1)",
+    "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638:docs/pinkha/torah-integration/native-annotation-schema-readback-20261122/native/core/pinkha/annotationschema/definition.go:51:\tfor _, relation := range relationNames {",
+    "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638:docs/pinkha/torah-integration/native-annotation-schema-readback-20261122/native/core/pinkha/annotationschema/observe.go:135:\trelations := make(map[string]string, len(relationNames))",
+    "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638:docs/pinkha/torah-integration/native-annotation-schema-readback-20261122/native/core/pinkha/annotationschema/observe.go:214:\tif typeDetails != nil && len(relations) == len(relationNames) {",
+    "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638:docs/pinkha/torah-integration/native-annotation-schema-readback-20261122/native/core/pinkha/annotationschema/type_layout.go:60:\tfor _, relation := range relationNames {",
+    "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638:docs/pinkha/torah-integration/native-annotation-schema-readback-20261122/native/core/pinkha/annotationschema/type_layout.go:112:\tfor _, relation := range relationNames {",
+    "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638:docs/pinkha/torah-integration/native-annotation-schema-readback-20261122/native/core/pinkha/annotationschema/type_layout.go:137:\t\tfor _, relation := range relationNames {",
+    "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638:docs/pinkha/torah-integration/native-annotation-schema-registration-20261122/native/core/pinkha/annotationschema/register.go:210:\trelations := make(map[string]string, len(relationNames))",
+    "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638:docs/pinkha/torah-integration/native-annotation-schema-registration-20261122/native/core/pinkha/annotationschema/register.go:305:\tif len(observation.Definitions) != len(relationNames)+1 {",
+    "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638:docs/pinkha/torah-integration/native-annotation-schema-registration-20261122/native/core/pinkha/annotationschema/register.go:326:\tif len(observation.Definitions) != len(relationNames)+1 || observation.Disposition == Conflict ||",
+    "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638:docs/pinkha/torah-integration/native-annotation-schema-registration-20261122/native/core/pinkha/annotationschema/register_type_layout.go:62:\t\trelations := make(map[string]string, len(relationNames))",
+    "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638:docs/pinkha/torah-integration/native-annotation-schema-registration-20261122/native/core/pinkha/annotationschema/register_type_layout.go:74:\t\tfor _, relation := range relationNames {",
+    "7496e47fa4d37b0117abeae6b35ca5f4c8eaf638:docs/pinkha/torah-integration/native-annotation-schema-registration-20261122/native/core/pinkha/annotationschema/register_type_layout.go:89:\t\tfor _, relation := range relationNames {"
+  ],
+  "source_only": true
+}

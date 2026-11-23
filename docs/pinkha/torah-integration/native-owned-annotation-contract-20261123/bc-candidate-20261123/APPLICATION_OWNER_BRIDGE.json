@@ -1,0 +1,19 @@
+{
+  "Done_only_after_native_return_readback_cleanup": true,
+  "RPC_enabled": false,
+  "after_registration_cancellation": "Original registry requests the actual operation context cancellation and keeps admission pending until that same operation returns and closes Done.",
+  "candidate_path": "native/core/application/owned_annotation_import.go",
+  "candidate_sha256": "c3b4c650efab4c4f3e1c8b6e5daeda4d30d523bf8461c833c00be10126843ff8",
+  "during_native_binding_cancellation": "Original Execute calls real Space.Get with the owned context; caller cancellation is joined only after actual return, finalization and private staging cleanup. No external callback runs under Service or registry locks.",
+  "during_preparation_cancellation": "Original byte inspector/staging returns its actual cancellation/cleanup result; no native work was started and no registry handle is inserted on preparation failure.",
+  "existing_owned_import_registry_modified": false,
+  "new_state_engine_or_executor": false,
+  "original_AccountStop_modified": false,
+  "original_path": "docs/pinkha/torah-integration/native-owned-import-lifetime-20261122/native/core/application/owned_import_admission.go",
+  "original_registry_insertion_and_return_byte_exact": true,
+  "original_revision": "455e1c55d765b25f8dd63bd472964057e5cbffc7",
+  "original_sha256": "3ed41b1989e03d087c393d04b5b3c3a5d6a813830e4c42bebb6f2c4d727e67ee",
+  "original_tryRLock_app_wallet_lease_registry_pending_retirement_context_checks_byte_exact": true,
+  "preparation_native_binding": "deferred to bindNativeOwner inside the same original handleBuiltinConverterImport after registration and Start",
+  "status": "SOURCE_ONLY_NATIVE_REGISTRY_BRIDGE_NOT_EXECUTED"
+}

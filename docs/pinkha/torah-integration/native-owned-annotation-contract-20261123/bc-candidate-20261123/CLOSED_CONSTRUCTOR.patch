@@ -1,0 +1,44 @@
+--- a/core/block/import/owned_import_dependencies.go
++++ b/core/block/import/owned_import_dependencies.go
+@@ -17,6 +17,7 @@
+ 	pbc "github.com/anyproto/anytype-heart/core/block/import/pb"
+ 	"github.com/anyproto/anytype-heart/core/block/object/objectcreator"
+ 	"github.com/anyproto/anytype-heart/core/block/process"
++	"github.com/anyproto/anytype-heart/core/domain/objectorigin"
+ 	"github.com/anyproto/anytype-heart/core/event"
+ 	"github.com/anyproto/anytype-heart/core/files/fileobject"
+ 	"github.com/anyproto/anytype-heart/core/files/filesync"
+@@ -95,3 +96,33 @@
+ 	)
+ 	return deps
+ }
++
++// The closed annotation constructor fixes every request option and owns the
++// only archive path and extraction root. It enables no production RPC/caller.
++func newOwnedAnnotationImportProcessor(a *app.App, owned *ownedImportExecution, graph *ownedAnnotationGraph) (*importProcessor, error) {
++	if graph == nil || graph.stage == nil || graph.archive == nil || owned == nil || owned.ctx == nil {
++		return nil, ErrOwnedImportOperationUnavailable
++	}
++	if err := graph.requireCapturedAccount(owned.ctx); err != nil {
++		return nil, err
++	}
++	request := &ImportRequest{
++		RpcObjectImportRequest: &pb.RpcObjectImportRequest{
++			SpaceId: graph.spaceID, Type: model.Import_Pb, Mode: pb.RpcObjectImportRequest_ALL_OR_NOTHING, NoProgress: true,
++			Params: &pb.RpcObjectImportRequestParamsOfPbParams{PbParams: &pb.RpcObjectImportRequestPbParams{Path: []string{graph.stage.archivePath}, NoCollection: true}},
++		}, Origin: objectorigin.Import(model.Import_Pb), IsSync: true,
++	}
++	processor, err := newOwnedImportProcessor(a, owned, request)
++	if err != nil {
++		return nil, err
++	}
++	graph.ctx = owned.ctx
++	processor.annotation = graph
++	processor.deps.converters[model.Import_Pb.String()] = ownedAnnotationConverter{
++		native: pbc.New(app.MustComponent[*collection.Service](a), graph.account, graph.stage), graph: graph,
++	}
++	scoped := ownedAnnotationFileUploader{ownedImportBlockService: ownedImportBlockService{Service: app.MustComponent[*block.Service](a), owned: owned}, graph: graph}
++	processor.deps.idProvider = objectid.NewIDProviderWithFileUploader(graph.store, app.MustComponent[space.Service](a), scoped, app.MustComponent[fileobject.Service](a))
++	processor.deps.objectCreator = ownedAnnotationObjectCreator{original: processor.deps.objectCreator, graph: graph}
++	return processor, nil
++}

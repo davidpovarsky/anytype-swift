@@ -1,0 +1,69 @@
+{
+  "functions": [
+    {
+      "file_sha256": "abd988882242ecf6d9a3fbf67a10c8df63b1a5dfecdf4ce1f27aeaaa45cd55a1",
+      "function": "newDerivedObject",
+      "path": "core/block/import/common/objectid/derivedobject.go",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "source": "func newDerivedObject(existingObject *existingObject, spaceService space.Service, objectStore objectstore.ObjectStore) *derivedObject {\n\treturn &derivedObject{existingObject: existingObject, spaceService: spaceService, objectStore: objectStore}\n}"
+    },
+    {
+      "file_sha256": "50c4dd3d85374018ad1643a795a55daad046b637c00306511e13f5e99cfc5314",
+      "function": "newExistingObject",
+      "path": "core/block/import/common/objectid/existingobject.go",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "source": "func newExistingObject(objectStore objectstore.ObjectStore) *existingObject {\n\treturn &existingObject{objectStore: objectStore}\n}"
+    },
+    {
+      "file_sha256": "d5ad0d9b71718a6ba0903ac40d50ad8eee67457eebec1fefb33ca26339b165ab",
+      "function": "newParticipant",
+      "path": "core/block/import/common/objectid/participant.go",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "source": "func newParticipant() *participant {\n\treturn &participant{}\n}"
+    },
+    {
+      "file_sha256": "03586adae8d42ce1ce8d7c7ce846150746f00c0acd3af4c01cebbe53c1047517",
+      "function": "newTreeObject",
+      "path": "core/block/import/common/objectid/treeobject.go",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "source": "func newTreeObject(existingObject *existingObject, spaceService space.Service) *treeObject {\n\treturn &treeObject{existingObject: existingObject, spaceService: spaceService}\n}"
+    },
+    {
+      "file_sha256": "956bb6c68184d02fad9ba0270e9084dee48cdbe404fa0b6230caffea6471cf21",
+      "function": "newWidget",
+      "path": "core/block/import/common/objectid/widget.go",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "source": "func newWidget(spaceService space.Service) *widget {\n\treturn &widget{spaceService: spaceService}\n}"
+    },
+    {
+      "file_sha256": "f5980b9156ae2ab5c88cb4661198ca7afc6af880079d4b59845b413023f059aa",
+      "function": "newWorkspace",
+      "path": "core/block/import/common/objectid/workspace.go",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "source": "func newWorkspace(spaceService space.Service) *workspace {\n\treturn &workspace{spaceService: spaceService}\n}"
+    },
+    {
+      "file_sha256": "5f91575b1b4407bed61a29c2e53ed71f1492f2f5133cc6fe17e5a0f9eadd9c62",
+      "function": "NewFileSyncer",
+      "path": "core/block/import/common/syncer/file.go",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "source": "func NewFileSyncer(\n\tservice BlockService,\n\tfileObjectService fileobject.Service,\n) *FileSyncer {\n\treturn &FileSyncer{\n\t\tservice:           service,\n\t\tfileObjectService: fileObjectService,\n\t}\n}"
+    },
+    {
+      "file_sha256": "645ac088c75b4e904cbce05981864bf98c01b04e8fcf05b12dca4630bebdf086",
+      "function": "NewIconSyncer",
+      "path": "core/block/import/common/syncer/icon.go",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "source": "func NewIconSyncer(service BlockService, fileObjectService fileobject.Service) *IconSyncer {\n\treturn &IconSyncer{\n\t\tservice:           service,\n\t\tfileObjectService: fileObjectService,\n\t}\n}"
+    },
+    {
+      "file_sha256": "df7f9918eb52137bd7f2a4ec47678a583ec5d38ea59beac03743ceebe5959dfd",
+      "function": "NewFileRelationSyncer",
+      "path": "core/block/import/common/syncer/relationsyncer.go",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "source": "func NewFileRelationSyncer(service BlockService, fileObjectService fileobject.Service) *FileRelationSyncer {\n\treturn &FileRelationSyncer{\n\t\tservice:           service,\n\t\tfileObjectService: fileObjectService,\n\t}\n}"
+    }
+  ],
+  "native_tests_executed": 0,
+  "status": "SOURCE_ONLY_CONSTRUCTOR_TRACE"
+}

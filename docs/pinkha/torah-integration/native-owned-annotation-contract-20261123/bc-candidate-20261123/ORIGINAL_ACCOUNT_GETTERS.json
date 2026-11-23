@@ -1,0 +1,8 @@
+{
+  "path": "core/anytype/account/service.go",
+  "repository": "davidpovarsky/anytype-heart",
+  "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "scope": "Source only; account Keys/AccountID getters used by bounded preparation, not a new native account or permission source.",
+  "sha256": "2cde663c6246e84bed46fa4d39184ae7cebf838fc85a1e178f387f923f466551",
+  "source_excerpt": "\ts.personalSpaceId, err = s.spaceCore.DeriveID(context.Background(), spacedomain.SpaceTypeRegular)\n\treturn\n}\n\nfunc (s *service) Keys() *accountdata.AccountKeys {\n\treturn s.keyProvider.Account()\n}\n\nfunc (s *service) Delete(ctx context.Context) (toBeDeleted int64, err error) {\n\tconfirm, err := coordinatorproto.PrepareAccountDeleteConfirmation(s.wallet.GetAccountPrivkey(), s.wallet.GetDevicePrivkey().GetPublic().PeerId(), s.nodeConf.Configuration().NetworkId)\n\tif err != nil {\n\t\treturn\n\t}\n\treturn s.coordClient.AccountDelete(ctx, confirm)\n}\n\nfunc (s *service) RevertDeletion(ctx context.Context) error {\n\treturn s.coordClient.AccountRevertDeletion(ctx)\n}\n\nfunc (s *service) AccountID() string {\n\treturn s.wallet.Account().SignKey.GetPublic().Account()\n}\n\nfunc (s *service) SignData(data []byte) (signature []byte, err error) {\n\treturn s.wallet.Account().SignKey.Sign(data)\n}\n"
+}

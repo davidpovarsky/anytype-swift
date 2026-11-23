@@ -1,0 +1,74 @@
+--- a/core/block/import/processor.go
++++ b/core/block/import/processor.go
+@@ -56,6 +56,7 @@
+ 	relationKeysToFormat                                            map[domain.RelationKey]int32
+ 	captureMappingObservation                                       bool
+ 	owned                                                           *ownedImportExecution
++	annotation                                                      *ownedAnnotationGraph
+ 	nativeMapping                                                   *nativeMappingBuilder
+ 	nativeMappingTraceID, nativeMappingSpaceID                      string
+ 	nativeMappingAssignmentsFinished, nativeMappingCreationReturned bool
+@@ -160,6 +161,12 @@
+ }
+ 
+ func (p *importProcessor) handleBuiltinConverterImport(ctx context.Context) *ImportResponse {
++	if p.annotation != nil {
++		if err := p.annotation.bindNativeOwner(ctx); err != nil {
++			p.response.Err = err
++			return p.response
++		}
++	}
+ 	converter, exists := p.deps.converters[p.request.Type.String()]
+ 	if !exists {
+ 		p.response.Err = fmt.Errorf("unknown import type %s", p.request.Type)
+@@ -190,6 +197,13 @@
+ 		allErrors.Add(fmt.Errorf("failed to build import context: %w", err))
+ 		p.response.Err = allErrors.GetResultError(p.request.Type)
+ 		return p.response
++	}
++
++	if p.annotation != nil {
++		if err := p.annotation.admitConversion(ctx, p); err != nil {
++			p.response.Err = err
++			return p.response
++		}
+ 	}
+ 
+ 	// Create objects
+@@ -283,6 +297,12 @@
+ 		p.errors.Add(err)
+ 		return nil, ""
+ 	}
++	if p.annotation != nil {
++		if err := p.annotation.admitCreationGraph(ctx, p); err != nil {
++			p.errors.Add(err)
++			return nil, ""
++		}
++	}
+ 	if p.nativeMapping != nil {
+ 		p.nativeMappingAssignmentsFinished = true
+ 	}
+@@ -419,13 +439,22 @@
+ }
+ 
+ func (p *importProcessor) processSnapshot(ctx context.Context, snapshot *common.Snapshot) (err error) {
+-	if err = p.preloadFileKeys(snapshot); err != nil {
++	if p.annotation != nil {
++		if err = p.annotation.beforeAssignment(ctx, p, snapshot); err != nil {
++			return err
++		}
++	} else if err = p.preloadFileKeys(snapshot); err != nil {
+ 		return err
+ 	}
+ 
+ 	id, payload, err := p.deps.idProvider.GetIDAndPayload(ctx, p.request.SpaceId, snapshot, time.Now(), p.request.UpdateExistingObjects, p.request.Origin)
+ 	if err != nil {
+ 		return err
++	}
++	if p.annotation != nil {
++		if err = p.annotation.afterAssignment(ctx, snapshot, id, payload); err != nil {
++			return err
++		}
+ 	}
+ 	p.oldIDToNew[snapshot.Id] = id
+ 	if p.nativeMapping != nil {

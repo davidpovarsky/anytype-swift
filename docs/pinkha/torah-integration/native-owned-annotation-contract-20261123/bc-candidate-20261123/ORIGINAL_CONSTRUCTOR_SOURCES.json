@@ -1,0 +1,52 @@
+{
+  "original_constructor_sources": [
+    {
+      "constructor_source": [
+        "func New(service *collection.Service, accountService account.Service, tempDirProvider core.TempDirProvider) common.Converter {\n\treturn &Pb{\n\t\tservice:         service,\n\t\taccountService:  accountService,\n\t\ttempDirProvider: tempDirProvider,\n\t}\n}"
+      ],
+      "path": "docs/pinkha/torah-integration/native-import-request-compat-20261122/composition/r14/native/core/block/import/pb/converter.go",
+      "repository": "anytype-swift",
+      "revision": "72e8154c9ad21280894d0c93f5828e33a19ed7d6",
+      "sha256": "9542dc143969622b7264d6de7e83c86eea1ad4756dcd21268616884e787445ee"
+    },
+    {
+      "constructor_source": [
+        "func NewIDProvider(\n\tobjectStore objectstore.ObjectStore,\n\tspaceService space.Service,\n\tblockService *block.Service,\n\tfileObjectService fileobject.Service,\n) IdAndKeyProvider {\n\treturn newIDProvider(objectStore, spaceService, blockService, fileObjectService)\n}",
+        "func newIDProvider(\n\tobjectStore objectstore.ObjectStore,\n\tspaceService space.Service,\n\tblockService FileUploader,\n\tfileObjectService fileobject.Service,\n) IdAndKeyProvider {\n\tp := &Provider{\n\t\tidProviderBySmartBlockType: make(map[sb.SmartBlockType]IDProvider, 0),\n\t}\n\texistingObject := newExistingObject(objectStore)\n\ttreeObject := newTreeObject(existingObject, spaceService)\n\tderivedObject := newDerivedObject(existingObject, spaceService, objectStore)\n\tfileObject := &fileObject{\n\t\ttreeObject:   treeObject,\n\t\tblockService: blockService,\n\t}\n\toldFile := &oldFile{\n\t\tblockService:      blockService,\n\t\tobjectStore:       objectStore,\n\t\tfileObjectService: fileObjectService,\n\t}\n\tp.idProviderBySmartBlockType[sb.SmartBlockTypeWorkspace] = newWorkspace(spaceService)\n\tp.idProviderBySmartBlockType[sb.SmartBlockTypeWidget] = newWidget(spaceService)\n\tp.idProviderBySmartBlockType[sb.SmartBlockTypeRelation] = derivedObject\n\tp.idProviderBySmartBlockType[sb.SmartBlockTypeObjectType] = derivedObject\n\tp.idProviderBySmartBlockType[sb.SmartBlockTypeRelationOption] = derivedObject\n\tp.idProviderBySmartBlockType[sb.SmartBlockTypePage] = treeObject\n\tp.idProviderBySmartBlockType[sb.SmartBlockTypeFileObject] = fileObject\n\tp.idProviderBySmartBlockType[sb.SmartBlockTypeFile] = oldFile\n\tp.idProviderBySmartBlockType[sb.SmartBlockTypeProfilePage] = derivedObject\n\tp.idProviderBySmartBlockType[sb.SmartBlockTypeTemplate] = treeObject\n\tp.idProviderBySmartBlockType[sb.SmartBlockTypeParticipant] = newParticipant()\n\t// a chat is identified by its unique key like a type is, and is created\n\t// with the same DeriveTreeObject the derived path already models \u2014 so an\n\t// imported chat lands on the id its key derives, and a second import of\n\t// the same archive resolves to that object instead of a duplicate. Its\n\t// messages live in the any-store CRDT rather than in the snapshot, so what\n\t// imports is the chat itself: name, icon, description, and no history.\n\tp.idProviderBySmartBlockType[sb.SmartBlockTypeChatDerivedObject] = derivedObject\n\treturn p\n}"
+      ],
+      "path": "docs/pinkha/torah-integration/native-owned-import-20261122/composition/native/core/block/import/common/objectid/provider.go",
+      "repository": "anytype-swift",
+      "revision": "3d58f04f938f743b9c3b737cdfedcc10610cbffc",
+      "sha256": "250fa16b3d17a19a741029ffd5fe6c71d3c3dfd2b0e43550879e078db5e95109"
+    },
+    {
+      "constructor_source": [
+        "func NewIDProviderWithFileUploader(\n\tobjectStore objectstore.ObjectStore,\n\tspaceService space.Service,\n\tfileUploader FileUploader,\n\tfileObjectService fileobject.Service,\n) IdAndKeyProvider {\n\treturn newIDProvider(objectStore, spaceService, fileUploader, fileObjectService)\n}"
+      ],
+      "path": "docs/pinkha/torah-integration/native-owned-import-20261122/composition/native/core/block/import/common/objectid/file_upload_provider.go",
+      "repository": "anytype-swift",
+      "revision": "3d58f04f938f743b9c3b737cdfedcc10610cbffc",
+      "sha256": "afbc0ce4174ad0bcf337bbfef76ce5c56084c392f9cc5eb513a4692b4077b030"
+    },
+    {
+      "constructor_source": [
+        "func New(fs *FileSyncer, bs *BookmarkSyncer, is *IconSyncer) *Factory {\n\treturn &Factory{fs: fs, bs: bs, is: is}\n}",
+        "func NewWithBookmarkSyncer(fs *FileSyncer, bs Syncer, is *IconSyncer) *Factory {\n\treturn &Factory{fs: fs, bs: bs, is: is}\n}"
+      ],
+      "path": "docs/pinkha/torah-integration/native-owned-import-20261122/composition/native/core/block/import/common/syncer/syncer.go",
+      "repository": "anytype-swift",
+      "revision": "3d58f04f938f743b9c3b737cdfedcc10610cbffc",
+      "sha256": "607899ccf2e0b993093709b40630445525ae7e0234209beda8013f552463873a"
+    },
+    {
+      "constructor_source": [
+        "func New(detailsService detailservice.Service,\n\tsyncFactory *syncer.Factory,\n\tobjectStore objectstore.ObjectStore,\n\trelationSyncer *syncer.FileRelationSyncer,\n\tspaceService space.Service,\n\tobjectCreator objectcreator.Service,\n\tobjectGetterDeleter ObjectGetterDeleter,\n\tformatFetcher relationutils.RelationFormatFetcher,\n) Service {\n\treturn &ObjectCreator{\n\t\tdetailsService:      detailsService,\n\t\tsyncFactory:         syncFactory,\n\t\tobjectStore:         objectStore,\n\t\trelationSyncer:      relationSyncer,\n\t\tspaceService:        spaceService,\n\t\tobjectCreator:       objectCreator,\n\t\tobjectGetterDeleter: objectGetterDeleter,\n\t\tformatFetcher:       formatFetcher,\n\t}\n}\n\n// Create creates smart blocks from given snapshots"
+      ],
+      "path": "core/block/import/common/objectcreator/objectcreator.go",
+      "repository": "anytype-heart",
+      "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "sha256": "0e6cd629e88ceaa1195c31f55cdaf0337f03282a26df9904ec6b857f6675c62d"
+    }
+  ],
+  "status": "SOURCE_TRACE_NOT_NATIVE_EXECUTION"
+}

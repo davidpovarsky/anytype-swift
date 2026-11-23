@@ -1,0 +1,139 @@
+--- a/core/block/import/common/objectcreator/objectcreator.go
++++ b/core/block/import/common/objectcreator/objectcreator.go
+@@ -82,6 +82,10 @@
+ 
+ // Create creates smart blocks from given snapshots
+ func (oc *ObjectCreator) Create(dataObject *DataObject, sn *common.Snapshot) (*domain.Details, string, error) {
++	return oc.create(dataObject, sn, nil)
++}
++
++func (oc *ObjectCreator) create(dataObject *DataObject, sn *common.Snapshot, admitted *ownedAnnotationCreate) (*domain.Details, string, error) {
+ 	snapshot := sn.Snapshot.Data
+ 	oldIDtoNew := dataObject.oldIDtoNew
+ 	ctx := dataObject.ctx
+@@ -108,7 +112,9 @@
+ 	)
+ 	defer func() {
+ 		// delete file in ipfs if there is error after creation
+-		oc.onFinish(err, spaceID, st, filesToDelete)
++		if admitted == nil {
++			oc.onFinish(err, spaceID, st, filesToDelete)
++		}
+ 	}()
+ 
+ 	// File object details (createdInContext/createdInContextRef) are pre-mapped by the processor
+@@ -119,6 +125,9 @@
+ 	}
+ 
+ 	if err = common.UpdateLinksToObjects(st, oldIDtoNew); err != nil {
++		if admitted != nil {
++			return nil, "", err
++		}
+ 		log.With("objectID", newID).Errorf("failed to update objects ids: %s", err)
+ 	}
+ 
+@@ -132,40 +141,52 @@
+ 		return oc.updateWidgetObject(st)
+ 	}
+ 
+-	st.ModifyLinkedFilesInDetails(oc.formatFetcher, func(fileId string) string {
+-		// File objects skip the general remap because their context references were
+-		// already mapped before upload. Their own icon can still name the source ID.
+-		if mapped, ok := oldIDtoNew[fileId]; ok {
+-			fileId = mapped
+-		}
+-
+-		newFileId := oc.relationSyncer.Sync(spaceID, fileId, dataObject.newIdsSet, origin, newID)
+-		if newFileId != fileId {
+-			filesToDelete = append(filesToDelete, fileId)
+-		}
+-		return newFileId
+-	})
+-
+-	typeKeys := st.ObjectTypeKeys()
+-	if sn.Snapshot.SbType == coresb.SmartBlockTypeObjectType {
+-		// we widen typeKeys here to install bundled templates for imported object type
+-		typeKeys = append(typeKeys, domain.TypeKey(st.UniqueKeyInternal()))
+-	}
+-	err = oc.installBundledRelationsAndTypes(ctx, spaceID, st.AllRelationKeys(), typeKeys)
+-	if err != nil {
+-		log.With("objectID", newID).Errorf("failed to install bundled relations and types: %s", err)
++	if admitted != nil {
++		if err = admitted.validatePreparedState(st, oc.formatFetcher); err != nil {
++			return nil, "", err
++		}
++	} else {
++		st.ModifyLinkedFilesInDetails(oc.formatFetcher, func(fileId string) string {
++			// File objects skip the general remap because their context references were
++			// already mapped before upload. Their own icon can still name the source ID.
++			if mapped, ok := oldIDtoNew[fileId]; ok {
++				fileId = mapped
++			}
++
++			newFileId := oc.relationSyncer.Sync(spaceID, fileId, dataObject.newIdsSet, origin, newID)
++			if newFileId != fileId {
++				filesToDelete = append(filesToDelete, fileId)
++			}
++			return newFileId
++		})
++
++		typeKeys := st.ObjectTypeKeys()
++		if sn.Snapshot.SbType == coresb.SmartBlockTypeObjectType {
++			// we widen typeKeys here to install bundled templates for imported object type
++			typeKeys = append(typeKeys, domain.TypeKey(st.UniqueKeyInternal()))
++		}
++		err = oc.installBundledRelationsAndTypes(ctx, spaceID, st.AllRelationKeys(), typeKeys)
++		if err != nil {
++			log.With("objectID", newID).Errorf("failed to install bundled relations and types: %s", err)
++		}
+ 	}
+ 	var respDetails *domain.Details
+ 	if payload := dataObject.createPayloads[newID]; payload.RootRawChange != nil {
+-		respDetails, err = oc.createNewObject(ctx, spaceID, payload, st, newID, oldIDtoNew)
++		respDetails, err = oc.createNewObjectWithDisposition(ctx, spaceID, payload, st, newID, oldIDtoNew, admitted)
+ 		if err != nil {
+ 			log.With("objectID", newID).Errorf("failed to create %s: %s", newID, err)
+ 			return nil, "", err
+ 		}
+ 	} else {
++		if admitted != nil {
++			return nil, "", errOwnedAnnotationFreshPayload
++		}
+ 		if canUpdateObject(sn.Snapshot.SbType) {
+ 			respDetails = oc.updateExistingObject(st, oldIDtoNew, newID)
+ 		}
++	}
++	if admitted != nil {
++		return respDetails, newID, nil
+ 	}
+ 	oc.setFavorite(snapshot, newID)
+ 
+@@ -257,6 +278,18 @@
+ 	st *state.State,
+ 	newID string,
+ 	oldIDtoNew map[string]string) (*domain.Details, error) {
++	return oc.createNewObjectWithDisposition(ctx, spaceID, payload, st, newID, oldIDtoNew, nil)
++}
++
++func (oc *ObjectCreator) createNewObjectWithDisposition(
++	ctx context.Context,
++	spaceID string,
++	payload treestorage.TreeStorageCreatePayload,
++	st *state.State,
++	newID string,
++	oldIDtoNew map[string]string,
++	admitted *ownedAnnotationCreate,
++) (*domain.Details, error) {
+ 	var respDetails *domain.Details
+ 	spc, err := oc.spaceService.Get(ctx, spaceID)
+ 	if err != nil {
+@@ -280,6 +313,9 @@
+ 		respDetails = sb.Details()
+ 		sb.Unlock()
+ 	} else if errors.Is(err, treestorage.ErrTreeExists) {
++		if admitted != nil {
++			return nil, err
++		}
+ 		err = spc.Do(newID, func(sb smartblock.SmartBlock) error {
+ 			respDetails = sb.Details()
+ 			return nil

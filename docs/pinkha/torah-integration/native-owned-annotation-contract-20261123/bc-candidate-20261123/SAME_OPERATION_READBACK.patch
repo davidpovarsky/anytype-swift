@@ -1,0 +1,91 @@
+--- a/core/block/import/owned_import_operation.go
++++ b/core/block/import/owned_import_operation.go
+@@ -32,6 +32,7 @@
+ 	mapping               NativeProtobufImportMappingObservation
+ 	hasMapping            bool
+ 	mappingProblems       []string
++	annotationReadback    *OwnedAnnotationReadbackObservation
+ }
+ 
+ func (o OwnedImportOutcome) TargetSpaceID() string       { return o.targetSpaceID }
+@@ -49,10 +50,25 @@
+ func (o OwnedImportOutcome) NativeMappingProblems() []string {
+ 	return append([]string(nil), o.mappingProblems...)
+ }
++
++// OriginalAnnotationReadback returns historical bounded evidence after Done.
++// The bool means evidence is available, NOT that comparison or the operation
++// succeeded. Inspect Stage and the owning outcome Err; neither is a Host ACK.
++func (o OwnedImportOutcome) OriginalAnnotationReadback() (OwnedAnnotationReadbackObservation, bool) {
++	if o.annotationReadback == nil {
++		return OwnedAnnotationReadbackObservation{}, false
++	}
++	return o.annotationReadback.copy(), true
++}
++
+ func (o OwnedImportOutcome) copy() OwnedImportOutcome {
+ 	o.files = o.Files()
+ 	o.mapping = o.mapping.copy()
+ 	o.mappingProblems = o.NativeMappingProblems()
++	if o.annotationReadback != nil {
++		copied := o.annotationReadback.copy()
++		o.annotationReadback = &copied
++	}
+ 	return o
+ }
+ 
+@@ -142,9 +158,22 @@
+ 			FileObjectID: file.FileObjectID, Err: file.Err,
+ 		})
+ 	}
++	if graph := o.processor.annotation; graph != nil {
++		if result.err == nil {
++			observation, readbackErr := graph.finishReadback(o.owned.ctx, o.processor, response)
++			result.annotationReadback = observation
++			result.err = errors.Join(result.err, readbackErr)
++		}
++		// The native owner remains registered throughout actual Export return,
++		// its original queue finalization, byte comparison and owned cleanup.
++		// Cancellation never closes Done or substitutes for any of those steps.
++		result.err = errors.Join(result.err, graph.stage.Close(), o.owned.ctx.Err())
++		result.cancellationRequested = o.owned.ctx.Err() != nil
++	}
+ 	o.outcome = result
+ 	// Release the derived cancellation only after Execute's finalizer and
+-	// mapping copyout have returned. It never substitutes for their drain.
++	// mapping copyout have returned (plus owned annotation readback/cleanup when
++	// applicable). It never substitutes for their actual drain.
+ 	o.owned.cancel()
+ 	close(o.done)
+ }
+@@ -173,3 +202,30 @@
+ 		return OwnedImportOutcome{}, false
+ 	}
+ }
++
++// PrepareOwnedAnnotationImport takes bounded bytes, never a caller path, mutable
++// ImportRequest, alternative executor, completion flag or update-existing mode.
++// The caller must already hold the original native app/account admission and
++// must register this operation BEFORE Start, as for PrepareOwnedImport. No
++// production RPC or SDK adapter is activated by this additive constructor.
++func PrepareOwnedAnnotationImport(ctx context.Context, a *app.App, raw []byte, digest [32]byte, sourceRootID, sourceSpaceID, targetSpaceID string) (*OwnedImportOperation, error) {
++	if ctx == nil || a == nil {
++		return nil, ErrOwnedImportOperationUnavailable
++	}
++	if err := ctx.Err(); err != nil {
++		return nil, err
++	}
++	owned := newOwnedImportExecution(ctx)
++	graph, err := prepareOwnedAnnotationGraph(owned.ctx, a, raw, digest, sourceRootID, sourceSpaceID, targetSpaceID)
++	if err != nil {
++		owned.cancel()
++		return nil, err
++	}
++	processor, err := newOwnedAnnotationImportProcessor(a, owned, graph)
++	if err != nil {
++		cleanupErr := graph.stage.Close()
++		owned.cancel()
++		return nil, errors.Join(err, cleanupErr)
++	}
++	return &OwnedImportOperation{processor: processor, owned: owned, targetSpaceID: graph.spaceID, done: make(chan struct{})}, nil
++}

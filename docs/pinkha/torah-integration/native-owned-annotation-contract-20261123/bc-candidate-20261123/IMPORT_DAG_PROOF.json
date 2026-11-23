@@ -1,0 +1,941 @@
+{
+  "baseline_records": 1489,
+  "baseline_run": 45139622096,
+  "candidate_cycles": [],
+  "candidate_import_edges": [
+    {
+      "candidate_path": "native/core/application/owned_annotation_import.go",
+      "from": "github.com/anyproto/anytype-heart/core/application",
+      "to": "context"
+    },
+    {
+      "candidate_path": "native/core/application/owned_annotation_import.go",
+      "from": "github.com/anyproto/anytype-heart/core/application",
+      "to": "github.com/anyproto/any-sync/app"
+    },
+    {
+      "candidate_path": "native/core/application/owned_annotation_import.go",
+      "from": "github.com/anyproto/anytype-heart/core/application",
+      "to": "github.com/anyproto/anytype-heart/core/block/import"
+    },
+    {
+      "candidate_path": "native/core/application/owned_annotation_import.go",
+      "from": "github.com/anyproto/anytype-heart/core/application",
+      "to": "github.com/anyproto/anytype-heart/core/wallet"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "context"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "errors"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "fmt"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/any-sync/commonspace/object/tree/treestorage"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/samber/lo"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "go.uber.org/zap"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/block/cache"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/block/detailservice"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/block/editor/smartblock"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/block/editor/state"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/block/editor/template"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/block/editor/widget"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/block/history"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/block/import/common"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/block/import/common/syncer"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/block/import/markdown/anymark"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/block/object/objectcreator"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/block/simple"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/domain"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/domain/objectorigin"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/relationutils"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/bundle"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/localstore/addr"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/localstore/objectstore"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/logging"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/space"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/objectcreator.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/util/anyerror"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/owned_annotation.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "errors"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/owned_annotation.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/block/editor/state"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/owned_annotation.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/block/import/common"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/owned_annotation.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/block/simple"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/owned_annotation.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/domain"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/owned_annotation.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/relationutils"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/owned_annotation.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/bundle"
+    },
+    {
+      "candidate_path": "native/core/block/import/common/objectcreator/owned_annotation.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_comparison.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "context"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_comparison.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "path/filepath"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_comparison.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "sort"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_comparison.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/editor/state"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_comparison.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/editor/template"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_comparison.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/import/common"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_comparison.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/import/markdown/anymark"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_comparison.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/converter/pbc"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_comparison.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/domain"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_comparison.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/domain/objectorigin"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_comparison.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/pinkha/torahtransport"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_comparison.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pb"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_comparison.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/bundle"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_comparison.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_comparison.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_comparison.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/gogo/protobuf/proto"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "context"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "crypto/sha256"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "errors"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "fmt"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "io"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "os"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "path/filepath"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "slices"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "sort"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "strings"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "sync"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "time"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/any-sync/app"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/any-sync/commonspace/object/acl/list"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/any-sync/commonspace/object/tree/treestorage"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/any-sync/util/crypto"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/gogo/protobuf/proto"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/gogo/protobuf/types"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/anytype/account"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/export"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/import/common"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/object/objectcreator"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/process"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/domain"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/pinkha/annotationschema/definition"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pb"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/bundle"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/database"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/localstore/objectstore"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/space"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/space/clientspace"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_graph.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/space/spacedomain"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_readback.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "context"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_readback.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "crypto/sha256"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_readback.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "errors"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_readback.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "io"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_readback.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "os"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_readback.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "path/filepath"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_readback.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "strings"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_readback.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/editor/state"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_readback.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/import/common"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_readback.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/converter/pbc"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_readback.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/domain"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_readback.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pb"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_readback.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/bundle"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_readback.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_readback.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_annotation_readback.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/gogo/protobuf/proto"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "errors"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/any-sync/app"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/gogo/protobuf/proto"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/anytype/account"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/collection"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/detailservice"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/import/common"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/import/common/objectid"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/import/common/syncer"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/import/pb"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/object/objectcreator"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/process"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/domain/objectorigin"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/event"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/files/fileobject"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/files/filesync"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/notifications"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/relationutils"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pb"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/core"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/localstore/objectstore"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_dependencies.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/space"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_operation.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "context"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_operation.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "errors"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_operation.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "sync"
+    },
+    {
+      "candidate_path": "native/core/block/import/owned_import_operation.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/any-sync/app"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "context"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "errors"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "fmt"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "strings"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "time"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/any-sync/commonspace/object/tree/treestorage"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/google/uuid"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/samber/lo"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "go.uber.org/zap"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/import/common"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/import/common/workerpool"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/import/web"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/block/process"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/domain"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/domain/objectorigin"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/event"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/core/pinkha/torahtransport"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/metrics"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/metrics/anymetry"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pb"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/bundle"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/localstore/addr"
+    },
+    {
+      "candidate_path": "native/core/block/import/processor.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/import",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+    },
+    {
+      "candidate_path": "native/core/block/object/objectcreator/owned_annotation_observer.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/object/objectcreator",
+      "to": "context"
+    },
+    {
+      "candidate_path": "native/core/block/object/objectcreator/owned_annotation_observer.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/object/objectcreator",
+      "to": "errors"
+    },
+    {
+      "candidate_path": "native/core/block/object/objectcreator/owned_annotation_observer.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/object/objectcreator",
+      "to": "fmt"
+    },
+    {
+      "candidate_path": "native/core/block/object/objectcreator/owned_annotation_observer.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/object/objectcreator",
+      "to": "slices"
+    },
+    {
+      "candidate_path": "native/core/block/object/objectcreator/owned_annotation_observer.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/object/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/block/object/payloadcreator"
+    },
+    {
+      "candidate_path": "native/core/block/object/objectcreator/owned_annotation_observer.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/object/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/converter/pbc"
+    },
+    {
+      "candidate_path": "native/core/block/object/objectcreator/owned_annotation_observer.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/object/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/core/domain"
+    },
+    {
+      "candidate_path": "native/core/block/object/objectcreator/owned_annotation_observer.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/object/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/pb"
+    },
+    {
+      "candidate_path": "native/core/block/object/objectcreator/owned_annotation_observer.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/object/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/bundle"
+    },
+    {
+      "candidate_path": "native/core/block/object/objectcreator/owned_annotation_observer.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/object/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
+    },
+    {
+      "candidate_path": "native/core/block/object/objectcreator/owned_annotation_observer.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/object/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+    },
+    {
+      "candidate_path": "native/core/block/object/objectcreator/owned_annotation_observer.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/object/objectcreator",
+      "to": "github.com/anyproto/anytype-heart/space/clientspace"
+    },
+    {
+      "candidate_path": "native/core/block/object/objectcreator/owned_annotation_observer.go",
+      "from": "github.com/anyproto/anytype-heart/core/block/object/objectcreator",
+      "to": "github.com/gogo/protobuf/proto"
+    },
+    {
+      "candidate_path": "native/core/pinkha/annotationschema/definition/definition.go",
+      "from": "github.com/anyproto/anytype-heart/core/pinkha/annotationschema/definition",
+      "to": "github.com/anyproto/anytype-heart/core/block/object/objectcreator"
+    },
+    {
+      "candidate_path": "native/core/pinkha/annotationschema/definition/definition.go",
+      "from": "github.com/anyproto/anytype-heart/core/pinkha/annotationschema/definition",
+      "to": "github.com/anyproto/anytype-heart/core/domain"
+    },
+    {
+      "candidate_path": "native/core/pinkha/annotationschema/definition/definition.go",
+      "from": "github.com/anyproto/anytype-heart/core/pinkha/annotationschema/definition",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/bundle"
+    },
+    {
+      "candidate_path": "native/core/pinkha/annotationschema/definition/definition.go",
+      "from": "github.com/anyproto/anytype-heart/core/pinkha/annotationschema/definition",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
+    },
+    {
+      "candidate_path": "native/core/pinkha/annotationschema/definition/definition.go",
+      "from": "github.com/anyproto/anytype-heart/core/pinkha/annotationschema/definition",
+      "to": "github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+    },
+    {
+      "candidate_path": "native/core/pinkha/annotationschema/definition.go",
+      "from": "github.com/anyproto/anytype-heart/core/pinkha/annotationschema",
+      "to": "github.com/anyproto/anytype-heart/core/block/object/objectcreator"
+    },
+    {
+      "candidate_path": "native/core/pinkha/annotationschema/definition.go",
+      "from": "github.com/anyproto/anytype-heart/core/pinkha/annotationschema",
+      "to": "github.com/anyproto/anytype-heart/core/pinkha/annotationschema/definition"
+    }
+  ],
+  "exact_retained_native_source_imports_included": true,
+  "limitations": "This checks package source dependency paths over actual retained Apple baseline package imports and exact composed native sources; no candidate typecheck, link or runtime acceptance is inferred.",
+  "objectcreator_to_leaf_back_edge": null,
+  "old_bad_import_would_form_cycle": [
+    "github.com/anyproto/anytype-heart/core/block/import",
+    "github.com/anyproto/anytype-heart/core/pinkha/annotationschema",
+    "github.com/anyproto/anytype-heart/core/application",
+    "github.com/anyproto/anytype-heart/core/anytype",
+    "github.com/anyproto/anytype-heart/core/block/bookmark/bookmarkimporter",
+    "github.com/anyproto/anytype-heart/core/block/import"
+  ],
+  "raw_actual_go_list_sha256": "840b4b612cdec3533ad2902a733125e69238f452891aa554dd4ba20e370e9cc9",
+  "status": "STATIC_SOURCE_DAG_NO_NEW_CYCLE_NOT_A_COMPILE",
+  "test_variants_not_used_as_production_edges": true
+}

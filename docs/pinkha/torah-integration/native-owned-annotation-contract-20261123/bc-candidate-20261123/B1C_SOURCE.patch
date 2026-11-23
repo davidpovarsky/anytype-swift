@@ -1,0 +1,2502 @@
+--- /dev/null
++++ b/core/application/owned_annotation_import.go
+@@ -0,0 +1,68 @@
++package application
++
++import (
++	"context"
++
++	"github.com/anyproto/any-sync/app"
++
++	importer "github.com/anyproto/anytype-heart/core/block/import"
++	walletComp "github.com/anyproto/anytype-heart/core/wallet"
++)
++
++// This private typed entry reuses the original account/lease admission and its
++// existing registry. The target/source IDs and digest are comparisons, not a
++// Host, selected-Space, body or acknowledgement capability. No RPC is enabled.
++func (s *Service) startOwnedAnnotationImport(ctx context.Context, expected *app.App, accountID string, raw []byte, digest [32]byte, sourceRootID, sourceSpaceID, targetSpaceID string) (*ownedAccountImport, error) {
++	owned, err := s.prepareOwnedAccountAnnotationImport(ctx, expected, accountID, raw, digest, sourceRootID, sourceSpaceID, targetSpaceID)
++	if err != nil {
++		return nil, err
++	}
++	// The original registry is already visible, and its mutex/Service RLock
++	// have been released, before Execute can enter Space.Get or native work.
++	owned.operation.Start()
++	return owned, nil
++}
++
++func (s *Service) prepareOwnedAccountAnnotationImport(ctx context.Context, expected *app.App, accountID string, raw []byte, digest [32]byte, sourceRootID, sourceSpaceID, targetSpaceID string) (*ownedAccountImport, error) {
++	if s == nil || ctx == nil || expected == nil || accountID == "" || targetSpaceID == "" {
++		return nil, ErrOwnedImportAdmissionUnavailable
++	}
++	if err := ctx.Err(); err != nil {
++		return nil, err
++	}
++	if !s.lock.TryRLock() {
++		return nil, ErrOwnedImportAdmissionUnavailable
++	}
++	defer s.lock.RUnlock()
++	if s.app == nil || s.app != expected {
++		return nil, ErrOwnedImportAdmissionUnavailable
++	}
++	wallet, ok := s.app.Component(walletComp.CName).(walletComp.Wallet)
++	if !ok || wallet == nil || wallet.GetAccountPrivkey().GetPublic().Account() != accountID ||
++		s.accountLease == nil || !s.accountLease.Matches(wallet.RootPath(), accountID) || !s.accountLease.Usable() {
++		return nil, ErrOwnedImportAdmissionUnavailable
++	}
++	r := &s.ownedImports
++	r.mu.Lock()
++	defer r.mu.Unlock()
++	r.pruneDrainedLocked()
++	if r.pending || r.retirements != 0 {
++		return nil, ErrOwnedImportAdmissionUnavailable
++	}
++	if err := ctx.Err(); err != nil {
++		return nil, err
++	}
++	// Only bounded immutable byte inspection, exclusive private filesystem
++	// staging and the original component constructors run here. Native Space
++	// binding, derivation, callbacks and import remain inside the later Execute.
++	operation, err := importer.PrepareOwnedAnnotationImport(ctx, expected, raw, digest, sourceRootID, sourceSpaceID, targetSpaceID)
++	if err != nil {
++		return nil, err
++	}
++	owned := &ownedAccountImport{app: expected, accountID: accountID, spaceID: operation.TargetSpaceID(), operation: operation}
++	if r.operations == nil {
++		r.operations = make(map[*ownedAccountImport]struct{})
++	}
++	r.operations[owned] = struct{}{}
++	return owned, nil
++}
+--- a/core/block/import/common/objectcreator/objectcreator.go
++++ b/core/block/import/common/objectcreator/objectcreator.go
+@@ -82,6 +82,10 @@
+ 
+ // Create creates smart blocks from given snapshots
+ func (oc *ObjectCreator) Create(dataObject *DataObject, sn *common.Snapshot) (*domain.Details, string, error) {
++	return oc.create(dataObject, sn, nil)
++}
++
++func (oc *ObjectCreator) create(dataObject *DataObject, sn *common.Snapshot, admitted *ownedAnnotationCreate) (*domain.Details, string, error) {
+ 	snapshot := sn.Snapshot.Data
+ 	oldIDtoNew := dataObject.oldIDtoNew
+ 	ctx := dataObject.ctx
+@@ -108,7 +112,9 @@
+ 	)
+ 	defer func() {
+ 		// delete file in ipfs if there is error after creation
+-		oc.onFinish(err, spaceID, st, filesToDelete)
++		if admitted == nil {
++			oc.onFinish(err, spaceID, st, filesToDelete)
++		}
+ 	}()
+ 
+ 	// File object details (createdInContext/createdInContextRef) are pre-mapped by the processor
+@@ -119,6 +125,9 @@
+ 	}
+ 
+ 	if err = common.UpdateLinksToObjects(st, oldIDtoNew); err != nil {
++		if admitted != nil {
++			return nil, "", err
++		}
+ 		log.With("objectID", newID).Errorf("failed to update objects ids: %s", err)
+ 	}
+ 
+@@ -132,40 +141,52 @@
+ 		return oc.updateWidgetObject(st)
+ 	}
+ 
+-	st.ModifyLinkedFilesInDetails(oc.formatFetcher, func(fileId string) string {
+-		// File objects skip the general remap because their context references were
+-		// already mapped before upload. Their own icon can still name the source ID.
+-		if mapped, ok := oldIDtoNew[fileId]; ok {
+-			fileId = mapped
+-		}
+-
+-		newFileId := oc.relationSyncer.Sync(spaceID, fileId, dataObject.newIdsSet, origin, newID)
+-		if newFileId != fileId {
+-			filesToDelete = append(filesToDelete, fileId)
+-		}
+-		return newFileId
+-	})
+-
+-	typeKeys := st.ObjectTypeKeys()
+-	if sn.Snapshot.SbType == coresb.SmartBlockTypeObjectType {
+-		// we widen typeKeys here to install bundled templates for imported object type
+-		typeKeys = append(typeKeys, domain.TypeKey(st.UniqueKeyInternal()))
+-	}
+-	err = oc.installBundledRelationsAndTypes(ctx, spaceID, st.AllRelationKeys(), typeKeys)
+-	if err != nil {
+-		log.With("objectID", newID).Errorf("failed to install bundled relations and types: %s", err)
++	if admitted != nil {
++		if err = admitted.validatePreparedState(st, oc.formatFetcher); err != nil {
++			return nil, "", err
++		}
++	} else {
++		st.ModifyLinkedFilesInDetails(oc.formatFetcher, func(fileId string) string {
++			// File objects skip the general remap because their context references were
++			// already mapped before upload. Their own icon can still name the source ID.
++			if mapped, ok := oldIDtoNew[fileId]; ok {
++				fileId = mapped
++			}
++
++			newFileId := oc.relationSyncer.Sync(spaceID, fileId, dataObject.newIdsSet, origin, newID)
++			if newFileId != fileId {
++				filesToDelete = append(filesToDelete, fileId)
++			}
++			return newFileId
++		})
++
++		typeKeys := st.ObjectTypeKeys()
++		if sn.Snapshot.SbType == coresb.SmartBlockTypeObjectType {
++			// we widen typeKeys here to install bundled templates for imported object type
++			typeKeys = append(typeKeys, domain.TypeKey(st.UniqueKeyInternal()))
++		}
++		err = oc.installBundledRelationsAndTypes(ctx, spaceID, st.AllRelationKeys(), typeKeys)
++		if err != nil {
++			log.With("objectID", newID).Errorf("failed to install bundled relations and types: %s", err)
++		}
+ 	}
+ 	var respDetails *domain.Details
+ 	if payload := dataObject.createPayloads[newID]; payload.RootRawChange != nil {
+-		respDetails, err = oc.createNewObject(ctx, spaceID, payload, st, newID, oldIDtoNew)
++		respDetails, err = oc.createNewObjectWithDisposition(ctx, spaceID, payload, st, newID, oldIDtoNew, admitted)
+ 		if err != nil {
+ 			log.With("objectID", newID).Errorf("failed to create %s: %s", newID, err)
+ 			return nil, "", err
+ 		}
+ 	} else {
++		if admitted != nil {
++			return nil, "", errOwnedAnnotationFreshPayload
++		}
+ 		if canUpdateObject(sn.Snapshot.SbType) {
+ 			respDetails = oc.updateExistingObject(st, oldIDtoNew, newID)
+ 		}
++	}
++	if admitted != nil {
++		return respDetails, newID, nil
+ 	}
+ 	oc.setFavorite(snapshot, newID)
+ 
+@@ -257,6 +278,18 @@
+ 	st *state.State,
+ 	newID string,
+ 	oldIDtoNew map[string]string) (*domain.Details, error) {
++	return oc.createNewObjectWithDisposition(ctx, spaceID, payload, st, newID, oldIDtoNew, nil)
++}
++
++func (oc *ObjectCreator) createNewObjectWithDisposition(
++	ctx context.Context,
++	spaceID string,
++	payload treestorage.TreeStorageCreatePayload,
++	st *state.State,
++	newID string,
++	oldIDtoNew map[string]string,
++	admitted *ownedAnnotationCreate,
++) (*domain.Details, error) {
+ 	var respDetails *domain.Details
+ 	spc, err := oc.spaceService.Get(ctx, spaceID)
+ 	if err != nil {
+@@ -280,6 +313,9 @@
+ 		respDetails = sb.Details()
+ 		sb.Unlock()
+ 	} else if errors.Is(err, treestorage.ErrTreeExists) {
++		if admitted != nil {
++			return nil, err
++		}
+ 		err = spc.Do(newID, func(sb smartblock.SmartBlock) error {
+ 			respDetails = sb.Details()
+ 			return nil
+--- /dev/null
++++ b/core/block/import/common/objectcreator/owned_annotation.go
+@@ -0,0 +1,88 @@
++// Narrow additive entry on the original creator. It accepts no success flag,
++// caller callback, alternate executor or reuse/update policy.
++package objectcreator
++
++import (
++	"errors"
++
++	"github.com/anyproto/anytype-heart/core/block/editor/state"
++	"github.com/anyproto/anytype-heart/core/block/import/common"
++	"github.com/anyproto/anytype-heart/core/block/simple"
++	"github.com/anyproto/anytype-heart/core/domain"
++	"github.com/anyproto/anytype-heart/core/relationutils"
++	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
++	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
++)
++
++var errOwnedAnnotationFreshPayload = errors.New("owned annotation requires a fresh original page payload")
++var errOwnedAnnotationUnresolvedFile = errors.New("owned annotation contains an unresolved file or fetch")
++
++// This private value is minted only from the original DataObject populated by
++// the original ID provider. It is not a caller-supplied import policy.
++type ownedAnnotationCreate struct {
++	data     *DataObject
++	targetID string
++}
++
++// CreateOwnedAnnotationFresh shares the ordinary creator's state transforms and
++// real Space.CreateTreeObjectWithPayload call. It never resets or opens an
++// existing page as create success. The importer retains the actual account and
++// repeats current native writer/graph admission before reaching this method.
++func (oc *ObjectCreator) CreateOwnedAnnotationFresh(data *DataObject, sn *common.Snapshot) (*domain.Details, string, error) {
++	if oc == nil || data == nil || data.ctx == nil || data.spaceID == "" || sn == nil ||
++		sn.Id == "" || sn.Snapshot == nil || sn.Snapshot.Data == nil || sn.Snapshot.Data.Details == nil ||
++		sn.Snapshot.SbType != coresb.SmartBlockTypePage || len(sn.Snapshot.FileKeys) != 0 ||
++		sn.Snapshot.Data.Key != "" || sn.Snapshot.Data.FileInfo != nil {
++		return nil, "", errOwnedAnnotationFreshPayload
++	}
++	if err := data.ctx.Err(); err != nil {
++		return nil, "", err
++	}
++	target := data.oldIDtoNew[sn.Id]
++	payload := data.createPayloads[target]
++	details := sn.Snapshot.Data.Details
++	if target == "" || target == sn.Id || payload.RootRawChange == nil || payload.RootRawChange.Id != target ||
++		details.GetString(bundle.RelationKeyUniqueKey) != "" ||
++		details.GetBool(bundle.RelationKeyIsFavorite) || details.GetBool(bundle.RelationKeyIsArchived) {
++		return nil, "", errOwnedAnnotationFreshPayload
++	}
++	admitted := &ownedAnnotationCreate{data: data, targetID: target}
++	return oc.create(data, sn, admitted)
++}
++
++// All binary objects have already passed the original synchronous uploader and
++// exact owned-body admission. An unresolved file/icon/bookmark must not start an
++// additional fetch, shared-key preload, legacy migration or metadata sync here.
++// This validation observes the state AFTER the original typed remappers.
++func (a *ownedAnnotationCreate) validatePreparedState(st *state.State, formats relationutils.RelationFormatFetcher) error {
++	if a == nil || a.data == nil || st == nil || st.RootId() != a.targetID {
++		return errOwnedAnnotationFreshPayload
++	}
++	if err := a.data.ctx.Err(); err != nil {
++		return err
++	}
++	resolved := func(id string) bool { _, ok := a.data.newIdsSet[id]; return id != "" && ok }
++	var failure error
++	st.ModifyLinkedFilesInDetails(formats, func(id string) string {
++		if !resolved(id) {
++			failure = errOwnedAnnotationUnresolvedFile
++		}
++		return id
++	})
++	if err := st.Iterate(func(b simple.Block) bool {
++		m := b.Model()
++		if f := m.GetFile(); f != nil && !resolved(f.TargetObjectId) {
++			failure = errOwnedAnnotationUnresolvedFile
++		}
++		if t := m.GetText(); t != nil && t.IconImage != "" && !resolved(t.IconImage) {
++			failure = errOwnedAnnotationUnresolvedFile
++		}
++		if v := m.GetBookmark(); v != nil && v.Url != "" && !resolved(v.TargetObjectId) {
++			failure = errOwnedAnnotationUnresolvedFile
++		}
++		return failure == nil
++	}); err != nil {
++		return err
++	}
++	return failure
++}
+--- /dev/null
++++ b/core/block/import/owned_annotation_comparison.go
+@@ -0,0 +1,364 @@
++package importer
++
++import (
++	"context"
++	"path/filepath"
++	"sort"
++
++	"github.com/anyproto/anytype-heart/core/block/editor/state"
++	"github.com/anyproto/anytype-heart/core/block/editor/template"
++	"github.com/anyproto/anytype-heart/core/block/import/common"
++	"github.com/anyproto/anytype-heart/core/block/import/markdown/anymark"
++	"github.com/anyproto/anytype-heart/core/converter/pbc"
++	"github.com/anyproto/anytype-heart/core/domain"
++	"github.com/anyproto/anytype-heart/core/domain/objectorigin"
++	torahtransport "github.com/anyproto/anytype-heart/core/pinkha/torahtransport"
++	"github.com/anyproto/anytype-heart/pb"
++	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
++	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
++	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++	"github.com/gogo/protobuf/proto"
++)
++
++// expectedConvertedSnapshot applies the original typed normalization helpers to
++// an owned copy of the exact generated archive model. It checks the real
++// converter's output; it is never installed as a replacement converter result.
++func (g *ownedAnnotationGraph) expectedConvertedSnapshot(ctx context.Context, plan *ownedAnnotationMemberPlan, actual *common.Snapshot, ids map[string]string, formats map[domain.RelationKey]int32) (*pb.ChangeSnapshot, error) {
++	if err := ctx.Err(); err != nil {
++		return nil, err
++	}
++	raw := proto.Clone(plan.snapshot).(*pb.SnapshotWithType)
++	expected, err := common.NewSnapshotModelFromProto(raw)
++	if err != nil {
++		return nil, err
++	}
++	// Unknown/unrepresented semantic fields cannot silently disappear in the
++	// original common-model conversion and then receive a body-equality claim.
++	if !proto.Equal(expected.ToProto(), plan.snapshot.Snapshot) {
++		return nil, ownedAnnotationRefused("unrepresented_snapshot_fields")
++	}
++	if expected.SbType == coresb.SmartBlockTypePage {
++		var empty *model.Block
++		hasRoot := false
++		for _, b := range expected.Data.Blocks {
++			if b == nil {
++				return nil, ownedAnnotationRefused("nil_source_block")
++			}
++			if b.Content == nil {
++				empty = b
++			} else if b.GetSmartblock() != nil {
++				hasRoot = true
++				break
++			}
++		}
++		if !hasRoot && empty != nil {
++			empty.Content = &model.BlockContentOfSmartblock{Smartblock: &model.BlockContentSmartblock{}}
++		}
++	}
++	if plan.role == ownedAnnotationFileObject {
++		expected.Data.Details.SetString(bundle.RelationKeySource, filepath.Join(g.stage.TempDir(), filepath.FromSlash(plan.fileSource)))
++	}
++	details := expected.Data.Details
++	details.SetString(bundle.RelationKeyOldAnytypeID, plan.sourceID)
++	details.SetString(bundle.RelationKeySourceFilePath, filepath.Join(g.archive.spaceID, plan.sourceID))
++	if details.GetInt64(bundle.RelationKeyCreatedDate) == 0 {
++		actualCreated := actual.Snapshot.Data.Details.GetInt64(bundle.RelationKeyCreatedDate)
++		if actualCreated <= 0 || actualCreated < g.conversionStarted || actualCreated > g.conversionFinished {
++			return nil, ownedAnnotationRefused("original_conversion_timestamp")
++		}
++		details.SetInt64(bundle.RelationKeyCreatedDate, actualCreated)
++	}
++	st, err := state.NewDocFromSnapshot("", expected.ToProto())
++	if err != nil {
++		return nil, err
++	}
++	if err := common.UpdateLinksToObjects(st, ids); err != nil {
++		return nil, err
++	}
++	common.UpdateObjectIDsInRelations(st, ids, formats)
++	collectionIDs := st.GetStoreSlice(template.CollectionStoreKey)
++	for i, id := range collectionIDs {
++		if mapped, ok := ids[id]; ok {
++			collectionIDs[i] = mapped
++		}
++	}
++	if len(collectionIDs) != 0 {
++		st.UpdateStoreSlice(template.CollectionStoreKey, collectionIDs)
++	}
++	expected.Data.Details = expected.Data.Details.Merge(st.CombinedDetails())
++	expected.Data.Blocks = st.Blocks()
++	expected.Data.ObjectTypes = domain.MarshalTypeKeys(st.ObjectTypeKeys())
++	expected.Data.Collections = st.Store()
++	var removed []domain.RelationKey
++	for _, key := range bundle.LocalAndDerivedRelationKeys {
++		if key != bundle.RelationKeyIsFavorite && key != bundle.RelationKeyIsArchived &&
++			key != bundle.RelationKeyCreatedDate && key != bundle.RelationKeyLastModifiedDate &&
++			key != bundle.RelationKeyId && key != bundle.RelationKeyResolvedLayout {
++			removed = append(removed, key)
++		}
++	}
++	expected.Data.Details = expected.Data.Details.CopyWithoutKeys(removed...)
++	return expected.ToProto(), ctx.Err()
++}
++
++func (g *ownedAnnotationGraph) requireExactConverterOutput(ctx context.Context, p *importProcessor) error {
++	b := p.nativeMapping
++	if b == nil || len(b.problems) != 0 || len(b.generatedIDs) != 0 || len(b.keptIDs) != 0 ||
++		len(b.sources) != len(g.members) || len(p.converterResponse.Snapshots) != len(g.members) ||
++		p.converterResponse.RootObjectID != "" || len(p.converterResponse.TypesCreated) != 0 {
++		return ownedAnnotationRefused("original_converter_coverage")
++	}
++	ids := make(map[string]string, len(g.members))
++	byConverter := make(map[string]*ownedAnnotationMemberPlan, len(g.members))
++	formats := make(map[domain.RelationKey]int32)
++	for _, row := range b.sources {
++		plan := g.members[row.sourceObjectID]
++		if plan == nil || !row.selected || row.encoding != ".pb" || row.archivePath != g.stage.archivePath ||
++			row.memberPath != plan.memberPath || row.sourceSpaceID != g.archive.spaceID || row.converterID == "" ||
++			ids[row.sourceObjectID] != "" || byConverter[row.converterID] != nil {
++			return ownedAnnotationRefused("original_source_correspondence")
++		}
++		ids[row.sourceObjectID], byConverter[row.converterID] = row.converterID, plan
++		if plan.nativeKey != nil && plan.nativeKey.SmartblockType() == coresb.SmartBlockTypeRelation {
++			value := domain.NewDetailsFromProto(plan.snapshot.Snapshot.Data.Details).GetInt64(bundle.RelationKeyRelationFormat)
++			formats[domain.RelationKey(plan.nativeKey.InternalKey())] = int32(value)
++		}
++	}
++	if len(ids) != len(g.members) {
++		return ownedAnnotationRefused("incomplete_source_correspondence")
++	}
++	seen := make(map[string]bool, len(byConverter))
++	for _, actual := range p.converterResponse.Snapshots {
++		if actual == nil || actual.Snapshot == nil || actual.Snapshot.Data == nil || actual.Snapshot.Data.Details == nil || seen[actual.Id] {
++			return ownedAnnotationRefused("invalid_converter_snapshot")
++		}
++		plan := byConverter[actual.Id]
++		if plan == nil || actual.Snapshot.SbType.ToProto() != plan.snapshot.SbType {
++			return ownedAnnotationRefused("converter_native_kind")
++		}
++		expected, err := g.expectedConvertedSnapshot(ctx, plan, actual, ids, formats)
++		if err != nil {
++			return err
++		}
++		if !proto.Equal(expected, actual.Snapshot.ToProto()) {
++			return ownedAnnotationRefused("original_converter_semantic_delta")
++		}
++		seen[actual.Id] = true
++	}
++	g.byConverter, g.sourceToConverter = byConverter, ids
++	return g.requireCurrentWriter(ctx)
++}
++
++// Original local/derived details and original import bookkeeping are not user
++// annotation content. Every other persisted value, nested protobuf field, mark,
++// child order, relation/collection value and block body remains compared.
++func ownedAnnotationComparisonDetails(details *domain.Details) *domain.Details {
++	removed := append([]domain.RelationKey(nil), bundle.LocalAndDerivedRelationKeys...)
++	removed = append(removed, bundle.RelationKeyId, bundle.RelationKeySpaceId,
++		bundle.RelationKeyCreatedDate, bundle.RelationKeyLastModifiedDate,
++		bundle.RelationKeyCreator, bundle.RelationKeyLastModifiedBy,
++		bundle.RelationKeyOrigin, bundle.RelationKeyImportType,
++		bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath)
++	return details.CopyWithoutKeys(removed...)
++}
++
++func canonicalOwnedAnnotationSnapshot(snapshot *pb.SnapshotWithType) (*pb.SnapshotWithType, error) {
++	if snapshot == nil || snapshot.Snapshot == nil || snapshot.Snapshot.Data == nil {
++		return nil, ownedAnnotationRefused("missing_comparison_snapshot")
++	}
++	result := proto.Clone(snapshot).(*pb.SnapshotWithType)
++	data := result.Snapshot.Data
++	data.Details = ownedAnnotationComparisonDetails(domain.NewDetailsFromProto(data.Details)).ToProto()
++	ids := make(map[string]bool, len(data.Blocks))
++	for _, b := range data.Blocks {
++		if b == nil || b.Id == "" || ids[b.Id] {
++			return nil, ownedAnnotationRefused("non_unique_body_block")
++		}
++		ids[b.Id] = true
++	}
++	// The inventory order of independent protobuf blocks is not child order.
++	// ChildrenIds, text/marks and every nested repeated field remain untouched.
++	sort.Slice(data.Blocks, func(i, j int) bool { return data.Blocks[i].Id < data.Blocks[j].Id })
++	if info := data.FileInfo; info != nil {
++		paths := make(map[string]bool, len(info.EncryptionKeys))
++		for _, key := range info.EncryptionKeys {
++			if key == nil || key.Path == "" || paths[key.Path] {
++				return nil, ownedAnnotationRefused("non_unique_body_file_key")
++			}
++			paths[key.Path] = true
++		}
++		sort.Slice(info.EncryptionKeys, func(i, j int) bool { return info.EncryptionKeys[i].Path < info.EncryptionKeys[j].Path })
++	}
++	return result, nil
++}
++
++func (g *ownedAnnotationGraph) requireSchemaSnapshotCompatibility(ctx context.Context, plan *ownedAnnotationMemberPlan, actual *pb.SnapshotWithType) error {
++	if plan == nil || plan.snapshot == nil || actual == nil || actual.Snapshot == nil || actual.Snapshot.Data == nil ||
++		plan.snapshot.SbType != actual.SbType || plan.snapshot.Snapshot.Data.Key != actual.Snapshot.Data.Key {
++		return ownedAnnotationRefused("schema_snapshot_shape")
++	}
++	raw := proto.Clone(plan.snapshot).(*pb.SnapshotWithType)
++	ids := make(map[string]string)
++	formats := make(map[domain.RelationKey]int32)
++	for sourceID, member := range g.members {
++		if member.expectedTarget != "" {
++			ids[sourceID] = member.expectedTarget
++		}
++		if member.nativeKey != nil && member.nativeKey.SmartblockType() == coresb.SmartBlockTypeRelation {
++			formats[domain.RelationKey(member.nativeKey.InternalKey())] = int32(domain.NewDetailsFromProto(member.snapshot.Snapshot.Data.Details).GetInt64(bundle.RelationKeyRelationFormat))
++		}
++	}
++	// Root identity is the actual derived native target. All original child
++	// blocks and their ordering are preserved; only this root ID is remapped.
++	for _, b := range raw.Snapshot.Data.Blocks {
++		if b == nil {
++			return ownedAnnotationRefused("nil_schema_block")
++		}
++		if b.Id == plan.sourceID {
++			b.Id = plan.expectedTarget
++		}
++		for i, id := range b.ChildrenIds {
++			if id == plan.sourceID {
++				b.ChildrenIds[i] = plan.expectedTarget
++			}
++		}
++	}
++	st, err := state.NewDocFromSnapshot(plan.expectedTarget, raw.Snapshot)
++	if err != nil {
++		return err
++	}
++	if err := common.UpdateLinksToObjects(st, ids); err != nil {
++		return err
++	}
++	common.UpdateObjectIDsInRelations(st, ids, formats)
++	var expected pb.SnapshotWithType
++	bytes := pbc.NewConverter(st, false).Convert(raw.SbType)
++	if len(bytes) == 0 {
++		return ownedAnnotationRefused("schema_expected_conversion")
++	}
++	if err := proto.Unmarshal(bytes, &expected); err != nil {
++		return err
++	}
++	left, err := canonicalOwnedAnnotationSnapshot(&expected)
++	if err != nil {
++		return err
++	}
++	right, err := canonicalOwnedAnnotationSnapshot(actual)
++	if err != nil {
++		return err
++	}
++	if !proto.Equal(left, right) {
++		return ownedAnnotationRefused("source_target_schema_semantics_differ")
++	}
++	return ctx.Err()
++}
++
++// Verify the real torahtransport pass and freeze its exact before-create state.
++// Reconstructed copies are comparison controls only, never production inputs.
++func (g *ownedAnnotationGraph) admitCreationGraph(ctx context.Context, p *importProcessor) error {
++	if err := g.requireCurrentWriter(ctx); err != nil {
++		return err
++	}
++	if len(g.nativeIDs) != len(g.members) || len(g.targets) != len(g.members) || p.nativeMapping == nil || len(p.nativeMapping.problems) != 0 {
++		return ownedAnnotationRefused("creation_graph_assignment_coverage")
++	}
++	expected := make(map[string]*common.Snapshot, len(g.members))
++	objects := make([]torahtransport.Object, 0, len(g.members))
++	for _, actual := range p.converterResponse.Snapshots {
++		plan := g.byConverter[actual.Id]
++		baseline := g.converted[actual.Id]
++		if plan == nil || baseline == nil {
++			return ownedAnnotationRefused("creation_graph_source")
++		}
++		snapshot, err := common.NewSnapshotModelFromProto(&pb.SnapshotWithType{SbType: plan.snapshot.SbType, Snapshot: proto.Clone(baseline).(*pb.ChangeSnapshot)})
++		if err != nil {
++			return err
++		}
++		if plan.role == ownedAnnotationFileObject {
++			common.UpdateObjectIDsInDetails(snapshot.Data.Details, p.oldIDToNew, p.relationKeysToFormat)
++		}
++		expected[actual.Id] = &common.Snapshot{Id: actual.Id, Snapshot: snapshot}
++		objects = append(objects, torahtransport.Object{ID: actual.Id, OriginalID: snapshot.Data.Details.GetString(bundle.RelationKeyOldAnytypeID), PropertyKey: snapshot.Data.Key, Details: snapshot.Data.Details})
++	}
++	if err := torahtransport.RemapObjects(g.spaceID, objects, p.oldIDToNew); err != nil {
++		return err
++	}
++	g.beforeCreate = make(map[string]*pb.ChangeSnapshot, len(expected))
++	for _, actual := range p.converterResponse.Snapshots {
++		if !proto.Equal(expected[actual.Id].Snapshot.ToProto(), actual.Snapshot.ToProto()) {
++			return ownedAnnotationRefused("original_creation_graph_changed")
++		}
++		g.beforeCreate[actual.Id] = proto.Clone(actual.Snapshot.ToProto()).(*pb.ChangeSnapshot)
++	}
++	for _, alias := range p.nativeMapping.aliases {
++		plan := g.byConverter[alias.ConverterID]
++		if plan == nil || plan.nativeKey == nil || alias.SourceKey != plan.nativeKey.InternalKey() || alias.NativeKey != alias.SourceKey {
++			return ownedAnnotationRefused("original_native_schema_key_changed")
++		}
++	}
++	return g.requireCurrentWriter(ctx)
++}
++
++func (g *ownedAnnotationGraph) expectedCreatedPage(p *importProcessor, converterID, nativeID string) (*pb.SnapshotWithType, error) {
++	baseline := g.beforeCreate[converterID]
++	plan := g.byConverter[converterID]
++	if baseline == nil || plan == nil || plan.role != ownedAnnotationFreshPage {
++		return nil, ownedAnnotationRefused("expected_page_source")
++	}
++	modelCopy, err := common.NewSnapshotModelFromProto(&pb.SnapshotWithType{SbType: plan.snapshot.SbType, Snapshot: proto.Clone(baseline).(*pb.ChangeSnapshot)})
++	if err != nil {
++		return nil, err
++	}
++	data := modelCopy.Data
++	found := false
++	for _, b := range data.Blocks {
++		if b.Id == nativeID {
++			found = true
++			break
++		}
++	}
++	if !found {
++		data.Blocks = anymark.AddRootBlock(data.Blocks, nativeID)
++	}
++	created := data.Details.GetInt64(bundle.RelationKeyCreatedDate)
++	if data.Details.GetInt64(bundle.RelationKeyLastModifiedDate) == 0 && created != 0 {
++		data.Details.SetInt64(bundle.RelationKeyLastModifiedDate, created)
++	}
++	if created > 0 {
++		data.OriginalCreatedTimestamp = created
++	}
++	origin := objectorigin.Import(model.Import_Pb)
++	data.Details.SetInt64(bundle.RelationKeyOrigin, int64(origin.Origin))
++	data.Details.SetInt64(bundle.RelationKeyImportType, int64(origin.ImportType))
++	st, err := state.NewDocFromSnapshot(nativeID, modelCopy.ToProto())
++	if err != nil {
++		return nil, err
++	}
++	st.SetLocalDetail(bundle.RelationKeyLastModifiedDate, data.Details.Get(bundle.RelationKeyLastModifiedDate))
++	common.UpdateObjectIDsInRelations(st, p.oldIDToNew, p.relationKeysToFormat)
++	if err := common.UpdateLinksToObjects(st, p.oldIDToNew); err != nil {
++		return nil, err
++	}
++	// Exact original updateKeys semantics; no alternative ID assignment.
++	for key, value := range st.Details().Iterate() {
++		if mapped, ok := p.oldIDToNew[string(key)]; ok && mapped != string(key) {
++			st.SetDetail(domain.RelationKey(mapped), value)
++			if format, ok := p.relationKeysToFormat[key]; ok {
++				st.AddRelationLinks(&model.RelationLink{Key: mapped, Format: model.RelationFormat(format)})
++			}
++			st.RemoveRelation(key)
++		}
++	}
++	if mapped, ok := p.oldIDToNew[st.ObjectTypeKey().String()]; ok {
++		st.SetObjectTypeKey(domain.TypeKey(mapped))
++	}
++	raw := pbc.NewConverter(st, false).Convert(plan.snapshot.SbType)
++	expected := &pb.SnapshotWithType{}
++	if len(raw) == 0 {
++		return nil, ownedAnnotationRefused("expected_native_page_conversion")
++	}
++	if err := proto.Unmarshal(raw, expected); err != nil {
++		return nil, err
++	}
++	return expected, nil
++}
+--- /dev/null
++++ b/core/block/import/owned_annotation_graph.go
+@@ -0,0 +1,847 @@
++// Closed annotation preparation over the original immutable archive owner.
++// This file starts no import and mints no completion/body/ACK capability.
++package importer
++
++import (
++	"context"
++	"crypto/sha256"
++	"errors"
++	"fmt"
++	"io"
++	"os"
++	"path/filepath"
++	"slices"
++	"sort"
++	"strings"
++	"sync"
++	"time"
++
++	"github.com/anyproto/any-sync/app"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/anyproto/any-sync/commonspace/object/tree/treestorage"
++	"github.com/anyproto/any-sync/util/crypto"
++	"github.com/gogo/protobuf/proto"
++	"github.com/gogo/protobuf/types"
++
++	"github.com/anyproto/anytype-heart/core/anytype/account"
++	"github.com/anyproto/anytype-heart/core/block"
++	"github.com/anyproto/anytype-heart/core/block/export"
++	"github.com/anyproto/anytype-heart/core/block/import/common"
++	creator "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator"
++	"github.com/anyproto/anytype-heart/core/block/object/objectcreator"
++	"github.com/anyproto/anytype-heart/core/block/process"
++	"github.com/anyproto/anytype-heart/core/domain"
++	annotationschema "github.com/anyproto/anytype-heart/core/pinkha/annotationschema/definition"
++	"github.com/anyproto/anytype-heart/pb"
++	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
++	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
++	"github.com/anyproto/anytype-heart/pkg/lib/database"
++	"github.com/anyproto/anytype-heart/pkg/lib/localstore/objectstore"
++	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++	"github.com/anyproto/anytype-heart/space"
++	"github.com/anyproto/anytype-heart/space/clientspace"
++	"github.com/anyproto/anytype-heart/space/spacedomain"
++)
++
++type ownedAnnotationMemberRole uint8
++
++const (
++	ownedAnnotationFreshPage ownedAnnotationMemberRole = iota + 1
++	ownedAnnotationFixedSchema
++	ownedAnnotationBundledSchema
++	ownedAnnotationParticipant
++	ownedAnnotationFileObject
++)
++
++// All fields remain private and are filled from the genuine generated models
++// plus actual original account/Space APIs. Expected target IDs are observations,
++// not a substitute for the later original provider's real assignment.
++type ownedAnnotationMemberPlan struct {
++	sourceID       string
++	memberPath     string
++	role           ownedAnnotationMemberRole
++	snapshot       *pb.SnapshotWithType
++	expectedTarget string
++	nativeKey      domain.UniqueKey
++	fileSource     string
++	fileID         string
++	fileDigest     [32]byte
++	fileBytes      uint64
++}
++
++type ownedAnnotationGraph struct {
++	archive                               *ownedAnnotationArchive
++	stage                                 *ownedAnnotationArchiveStaging
++	account                               account.Service
++	accountID                             string
++	identity                              crypto.PubKey
++	space                                 clientspace.Space
++	spaces                                space.Service
++	spaceID                               string
++	members                               map[string]*ownedAnnotationMemberPlan
++	order                                 []string
++	ctx                                   context.Context
++	store                                 objectstore.ObjectStore
++	observer                              objectcreator.OwnedAnnotationSchemaObserver
++	exporter                              export.Export
++	additionalContext                     map[string]*ownedAnnotationMemberPlan
++	readOnlyHeads                         map[string][]string
++	readOnlySnapshots                     map[string]*pb.SnapshotWithType
++	fixed                                 map[string]objectcreator.FixedSchemaDefinition
++	byConverter                           map[string]*ownedAnnotationMemberPlan
++	sourceToConverter                     map[string]string
++	converted                             map[string]*pb.ChangeSnapshot
++	beforeCreate                          map[string]*pb.ChangeSnapshot
++	nativeIDs                             map[string]string
++	targets                               map[string]*ownedAnnotationMemberPlan
++	conversionStarted, conversionFinished int64
++	mu                                    sync.Mutex
++	fileUploads                           map[string]ownedAnnotationUploadedFile
++	fileInputs                            map[string]*types.Struct
++}
++
++func ownedAnnotationRefused(code string) error {
++	return fmt.Errorf("owned annotation import refused: %s", code)
++}
++
++// This package-private front door takes bytes, never a caller path, request
++// policy, converter, executor, callback or success/drain flag. The native
++// application owner must retain/register the eventual operation before Start;
++// a returned preparation here is not that lifetime registration.
++func prepareOwnedAnnotationGraph(ctx context.Context, a *app.App, raw []byte, digest [32]byte,
++	sourceRootID, sourceSpaceID, targetSpaceID string,
++) (*ownedAnnotationGraph, error) {
++	if ctx == nil || a == nil || targetSpaceID == "" {
++		return nil, ownedAnnotationRefused("missing_native_owner")
++	}
++	archive, err := inspectOwnedAnnotationArchive(ctx, raw, digest, sourceRootID, sourceSpaceID)
++	if err != nil {
++		return nil, err
++	}
++	accounts := app.MustComponent[account.Service](a)
++	spaces := app.MustComponent[space.Service](a)
++	if accounts == nil || accounts.Keys() == nil || accounts.Keys().SignKey == nil || spaces == nil {
++		return nil, ownedAnnotationRefused("native_account_components")
++	}
++	g := &ownedAnnotationGraph{archive: archive, account: accounts, accountID: accounts.AccountID(),
++		identity: accounts.Keys().SignKey.GetPublic(), spaces: spaces, spaceID: targetSpaceID,
++		members: make(map[string]*ownedAnnotationMemberPlan)}
++	if err := g.requireCapturedAccount(ctx); err != nil {
++		return nil, err
++	}
++	g.ctx, g.store = ctx, app.MustComponent[objectstore.ObjectStore](a)
++	originalCreator := app.MustComponent[objectcreator.Service](a)
++	observer, available := originalCreator.(objectcreator.OwnedAnnotationSchemaObserver)
++	if !available || g.store == nil {
++		return nil, ownedAnnotationRefused("original_schema_observer_unavailable")
++	}
++	g.observer = observer
++	g.exporter = app.MustComponent[export.Export](a)
++	g.additionalContext = make(map[string]*ownedAnnotationMemberPlan)
++	g.readOnlyHeads = make(map[string][]string)
++	g.readOnlySnapshots = make(map[string]*pb.SnapshotWithType)
++	g.fixed = make(map[string]objectcreator.FixedSchemaDefinition)
++	definitions, err := annotationschema.Definitions()
++	if err != nil {
++		return nil, err
++	}
++	for _, definition := range definitions {
++		g.fixed[definition.Key.Marshal()] = definition
++	}
++	g.nativeIDs, g.targets = make(map[string]string), make(map[string]*ownedAnnotationMemberPlan)
++	g.fileUploads = make(map[string]ownedAnnotationUploadedFile)
++	g.fileInputs = make(map[string]*types.Struct)
++	stage, err := archive.stage(ctx)
++	if err != nil {
++		return nil, err
++	}
++	g.stage = stage
++	if err := g.requireCapturedAccount(ctx); err != nil {
++		return nil, errors.Join(err, stage.Close())
++	}
++	return g, nil
++}
++
++// Application registration precedes Start. Only the SAME original Execute may
++// now enter Space.Get/derivation; preparation above performs bounded byte work,
++// private filesystem staging and component capture without native callbacks.
++// A reentrant original Stop therefore sees this operation in its existing registry.
++func (g *ownedAnnotationGraph) bindNativeOwner(ctx context.Context) error {
++	if err := g.requireCapturedAccount(ctx); err != nil {
++		return err
++	}
++	if g.spaces == nil || g.space != nil || len(g.members) != 0 {
++		return ownedAnnotationRefused("native_space_binding_state")
++	}
++	spc, err := g.spaces.Get(ctx, g.spaceID)
++	if err != nil {
++		return err
++	}
++	if spc == nil || spc.Id() != g.spaceID || spc.SpaceType() != spacedomain.SpaceTypeRegular || spc.IsPersonal() {
++		return ownedAnnotationRefused("native_account_or_regular_space")
++	}
++	g.space = spc
++	if err := g.requireCurrentWriter(ctx); err != nil {
++		return err
++	}
++	return g.classifyCompleteGraph(ctx)
++}
++
++func (g *ownedAnnotationGraph) requireCapturedAccount(ctx context.Context) error {
++	if ctx == nil {
++		return ownedAnnotationRefused("missing_context")
++	}
++	if err := ctx.Err(); err != nil {
++		return err
++	}
++	if g == nil || g.account == nil || g.identity == nil || g.accountID == "" ||
++		g.account.AccountID() != g.accountID || g.identity.Account() != g.accountID {
++		return ownedAnnotationRefused("native_identity_changed")
++	}
++	keys := g.account.Keys()
++	if keys == nil || keys.SignKey == nil || !keys.SignKey.GetPublic().Equals(g.identity) {
++		return ownedAnnotationRefused("native_identity_changed")
++	}
++	return ctx.Err()
++}
++
++// This is an actual current native writer admission, not an atomic storage
++// transaction. A later revocation/cancel can coexist with earlier historical
++// effects. The same admission must be repeated at assignment/create/readback.
++func (g *ownedAnnotationGraph) requireCurrentWriter(ctx context.Context) error {
++	if err := g.requireCapturedAccount(ctx); err != nil {
++		return err
++	}
++	if g.space == nil || g.space.Id() != g.spaceID || g.space.CommonSpace() == nil || g.space.GetAclIdentity() == nil ||
++		!g.space.GetAclIdentity().Equals(g.identity) {
++		return ownedAnnotationRefused("native_identity_changed")
++	}
++	acl := g.space.CommonSpace().Acl()
++	if acl == nil {
++		return ownedAnnotationRefused("native_acl_missing")
++	}
++	acl.RLock()
++	defer acl.RUnlock()
++	state := acl.AclState()
++	if state == nil || state.Identity() == nil || !state.Identity().Equals(g.identity) ||
++		!state.Permissions(g.identity).CanWrite() {
++		return list.ErrInsufficientPermissions
++	}
++	return ctx.Err()
++}
++
++func (g *ownedAnnotationGraph) classifyCompleteGraph(ctx context.Context) error {
++	definitions, err := annotationschema.Definitions()
++	if err != nil {
++		return err
++	}
++	fixed := make(map[string]*domain.Details, len(definitions))
++	for _, definition := range definitions {
++		fixed[definition.Key.Marshal()] = definition.Required
++	}
++	binaries := make(map[string]ownedAnnotationArchiveMember)
++	for _, member := range g.archive.members {
++		if member.Kind == "file" {
++			binaries[member.Name] = member
++		}
++	}
++	claimedFiles := make(map[string]bool)
++	expectedTargets := make(map[string]string)
++	participantCount := 0
++	for _, member := range g.archive.members {
++		if err := ctx.Err(); err != nil {
++			return err
++		}
++		if member.Kind == "file" {
++			continue
++		}
++		raw := g.archive.snapshots[member.ObjectID]
++		if raw == nil || raw.Snapshot == nil || raw.Snapshot.Data == nil || len(raw.Snapshot.FileKeys) != 0 {
++			return ownedAnnotationRefused("unowned_shared_file_keys")
++		}
++		known := proto.Clone(raw).(*pb.SnapshotWithType)
++		proto.DiscardUnknown(known)
++		if !proto.Equal(known, raw) {
++			return ownedAnnotationRefused("unknown_native_snapshot_semantics")
++		}
++		producerShape := &pb.SnapshotWithType{SbType: raw.SbType, Snapshot: &pb.ChangeSnapshot{Data: &model.SmartBlockSnapshotBase{
++			Blocks: raw.Snapshot.Data.Blocks, Details: raw.Snapshot.Data.Details, ObjectTypes: raw.Snapshot.Data.ObjectTypes,
++			Collections: raw.Snapshot.Data.Collections, Key: raw.Snapshot.Data.Key, FileInfo: raw.Snapshot.Data.FileInfo,
++		}}}
++		if !proto.Equal(raw, producerShape) {
++			return ownedAnnotationRefused("not_original_export_snapshot_shape")
++		}
++		snapshot := proto.Clone(raw).(*pb.SnapshotWithType)
++		data := snapshot.Snapshot.Data
++		details := domain.NewDetailsFromProto(data.Details)
++		plan := &ownedAnnotationMemberPlan{sourceID: member.ObjectID, memberPath: member.Name, snapshot: snapshot}
++		switch coresb.SmartBlockType(snapshot.SbType) {
++		case coresb.SmartBlockTypePage:
++			if len(data.ObjectTypes) != 1 || data.ObjectTypes[0] != annotationschema.TypeUniqueKey || data.Key != "" {
++				return ownedAnnotationRefused("non_annotation_page")
++			}
++			plan.role = ownedAnnotationFreshPage
++		case coresb.SmartBlockTypeObjectType, coresb.SmartBlockTypeRelation:
++			key, err := domain.NewUniqueKey(coresb.SmartBlockType(snapshot.SbType), data.Key)
++			if err != nil || data.Key == "" || details.GetString(bundle.RelationKeyUniqueKey) != key.Marshal() {
++				return ownedAnnotationRefused("schema_native_key")
++			}
++			plan.nativeKey = key
++			if required, exists := fixed[key.Marshal()]; exists {
++				for field, value := range required.Iterate() {
++					if !details.Has(field) || !details.Get(field).Equal(value) {
++						return ownedAnnotationRefused("fixed_schema_source_definition")
++					}
++				}
++				plan.role = ownedAnnotationFixedSchema
++			} else {
++				var bundledSource string
++				if key.SmartblockType() == coresb.SmartBlockTypeObjectType && bundle.HasObjectTypeByKey(domain.TypeKey(data.Key)) {
++					bundledSource = domain.TypeKey(data.Key).BundledURL()
++				} else if key.SmartblockType() == coresb.SmartBlockTypeRelation && bundle.HasRelation(domain.RelationKey(data.Key)) {
++					bundledSource = domain.RelationKey(data.Key).BundledURL()
++				}
++				if bundledSource == "" || details.GetString(bundle.RelationKeySourceObject) != bundledSource {
++					return ownedAnnotationRefused("non_original_schema")
++				}
++				plan.role = ownedAnnotationBundledSchema
++			}
++			// These original methods only derive the native ID. They do not
++			// install the schema or prove its target persisted state.
++			if key.SmartblockType() == coresb.SmartBlockTypeObjectType {
++				plan.expectedTarget, err = g.space.GetTypeIdByKey(ctx, domain.TypeKey(data.Key))
++			} else {
++				plan.expectedTarget, err = g.space.GetRelationIdByKey(ctx, domain.RelationKey(data.Key))
++			}
++			if err != nil || plan.expectedTarget == "" {
++				return errors.Join(ownedAnnotationRefused("native_schema_derivation"), err)
++			}
++		case coresb.SmartBlockTypeParticipant:
++			// The initial closed route is same-account. The ordinary native
++			// participant provider must later return this exact target ID.
++			if details.GetString(bundle.RelationKeyIdentity) != g.accountID ||
++				member.ObjectID != g.account.MyParticipantId(g.archive.spaceID) {
++				return ownedAnnotationRefused("foreign_participant_context")
++			}
++			participantCount++
++			plan.role = ownedAnnotationParticipant
++			plan.expectedTarget = g.account.MyParticipantId(g.spaceID)
++		case coresb.SmartBlockTypeFileObject:
++			if data.Key != "" || details.GetString(bundle.RelationKeyUniqueKey) != "" ||
++				details.GetBool(bundle.RelationKeyIsFavorite) || details.GetBool(bundle.RelationKeyIsArchived) {
++				return ownedAnnotationRefused("file_object_reuse_or_external_side_effect")
++			}
++			binary, exists := binaries[member.FileSource]
++			if !exists || member.FileID == "" || data.FileInfo == nil {
++				return ownedAnnotationRefused("unowned_file_body")
++			}
++			paths := make(map[string]bool, len(data.FileInfo.EncryptionKeys))
++			for _, key := range data.FileInfo.EncryptionKeys {
++				if key == nil || key.Path == "" || key.Key == "" || paths[key.Path] {
++					return ownedAnnotationRefused("file_encryption_inventory")
++				}
++				paths[key.Path] = true
++			}
++			plan.role, plan.fileSource, plan.fileID = ownedAnnotationFileObject, member.FileSource, member.FileID
++			plan.fileDigest, plan.fileBytes = binary.SHA256, binary.Bytes
++			claimedFiles[member.FileSource] = true
++		default:
++			return ownedAnnotationRefused("unsupported_graph_member")
++		}
++		if plan.expectedTarget != "" {
++			if _, exists := expectedTargets[plan.expectedTarget]; exists {
++				return ownedAnnotationRefused("non_unique_native_context")
++			}
++			expectedTargets[plan.expectedTarget] = member.ObjectID
++		}
++		g.members[member.ObjectID] = plan
++		g.order = append(g.order, member.ObjectID)
++	}
++	if participantCount != 1 || len(g.members) != len(g.archive.snapshots) || len(claimedFiles) != len(binaries) {
++		return ownedAnnotationRefused("whole_graph_coverage")
++	}
++	root := g.members[g.archive.rootID]
++	if root == nil || root.role != ownedAnnotationFreshPage {
++		return ownedAnnotationRefused("annotation_root")
++	}
++	sort.Strings(g.order)
++	return g.requireCurrentWriter(ctx)
++}
++
++// The wrapper calls the actual original converter and records only its real
++// execution interval, needed for the original zero-createdDate normalization.
++type ownedAnnotationConverter struct {
++	native common.Converter
++	graph  *ownedAnnotationGraph
++}
++
++func (c ownedAnnotationConverter) Name() string { return c.native.Name() }
++func (c ownedAnnotationConverter) GetSnapshots(ctx context.Context, request *pb.RpcObjectImportRequest, progress process.Progress) (*common.Response, *common.ConvertError) {
++	c.graph.conversionStarted = time.Now().Unix()
++	response, err := c.native.GetSnapshots(ctx, request, progress)
++	c.graph.conversionFinished = time.Now().Unix()
++	return response, err
++}
++
++func (g *ownedAnnotationGraph) admitConversion(ctx context.Context, p *importProcessor) error {
++	if err := g.requireExactConverterOutput(ctx, p); err != nil {
++		return err
++	}
++	g.converted = make(map[string]*pb.ChangeSnapshot, len(p.converterResponse.Snapshots))
++	for _, sn := range p.converterResponse.Snapshots {
++		g.converted[sn.Id] = proto.Clone(sn.Snapshot.ToProto()).(*pb.ChangeSnapshot)
++	}
++	if err := g.admitOriginalImportMetadata(ctx); err != nil {
++		return err
++	}
++	// Resolve the entire graph before the first original provider can upload a
++	// file or a worker can create a page. Negative index observations are only
++	// preflight; actual provider disposition and actual create collisions remain
++	// checked at their original execution points.
++	for _, sourceID := range g.order {
++		plan := g.members[sourceID]
++		if plan.role == ownedAnnotationFreshPage || plan.role == ownedAnnotationFileObject {
++			if err := g.requireNoExistingImportIdentity(ctx, plan); err != nil {
++				return err
++			}
++		} else {
++			if _, err := g.readOnlyContext(ctx, plan); err != nil {
++				return err
++			}
++		}
++	}
++	return g.requireCurrentWriter(ctx)
++}
++
++func (g *ownedAnnotationGraph) requireNoExistingImportIdentity(ctx context.Context, plan *ownedAnnotationMemberPlan) error {
++	if err := g.requireCurrentWriter(ctx); err != nil {
++		return err
++	}
++	rows, err := g.store.SpaceIndex(g.spaceID).QueryRaw(&database.Filters{FilterObj: database.FiltersOr{
++		database.FilterEq{Key: bundle.RelationKeyOldAnytypeID, Value: domain.String(plan.sourceID)},
++		database.FilterEq{Key: bundle.RelationKeyUniqueKey, Value: domain.String(plan.sourceID)},
++		database.FilterEq{Key: bundle.RelationKeyId, Value: domain.String(plan.sourceID)},
++	}}, 2, 0)
++	if err != nil {
++		return err
++	}
++	if len(rows) != 0 {
++		return ownedAnnotationRefused("existing_or_unknown_import_identity")
++	}
++	return g.requireCurrentWriter(ctx)
++}
++
++func (g *ownedAnnotationGraph) uniquePositiveIndex(ctx context.Context, key domain.RelationKey, value, id string) (*domain.Details, error) {
++	if err := g.requireCurrentWriter(ctx); err != nil {
++		return nil, err
++	}
++	rows, err := g.store.SpaceIndex(g.spaceID).QueryRaw(&database.Filters{FilterObj: database.FilterEq{Key: key, Value: domain.String(value)}}, 2, 0)
++	if err != nil {
++		return nil, err
++	}
++	if len(rows) != 1 || rows[0].Details == nil {
++		return nil, ownedAnnotationRefused("non_unique_native_index")
++	}
++	details := rows[0].Details
++	if details.GetString(bundle.RelationKeyId) != id || details.GetString(bundle.RelationKeySpaceId) != g.spaceID ||
++		details.GetBool(bundle.RelationKeyIsArchived) || details.GetBool(bundle.RelationKeyIsDeleted) || details.GetBool(bundle.RelationKeyIsUninstalled) {
++		return nil, ownedAnnotationRefused("native_index_identity_or_disposition")
++	}
++	if err := g.requireCurrentWriter(ctx); err != nil {
++		return nil, err
++	}
++	return details.Copy(), nil
++}
++
++func (g *ownedAnnotationGraph) readOnlyContext(ctx context.Context, plan *ownedAnnotationMemberPlan) (*domain.Details, error) {
++	if err := g.requireCurrentWriter(ctx); err != nil {
++		return nil, err
++	}
++	if plan.role == ownedAnnotationParticipant {
++		// Participant objects are original ACL/account context, not imported
++		// user pages or a schema tree to initialize. No SmartBlock is opened.
++		actual, err := g.uniquePositiveIndex(ctx, bundle.RelationKeyId, plan.expectedTarget, plan.expectedTarget)
++		if err != nil {
++			return nil, err
++		}
++		if actual.GetString(bundle.RelationKeyIdentity) != g.accountID ||
++			plan.expectedTarget != g.account.MyParticipantId(g.spaceID) {
++			return nil, ownedAnnotationRefused("native_participant_identity")
++		}
++		return actual, nil
++	}
++	var observed objectcreator.OwnedAnnotationSchemaObservation
++	var err error
++	switch plan.role {
++	case ownedAnnotationFixedSchema:
++		definition, ok := g.fixed[plan.nativeKey.Marshal()]
++		if !ok {
++			return nil, ownedAnnotationRefused("fixed_schema_definition")
++		}
++		observed, err = g.observer.ObserveOwnedAnnotationFixedSchema(ctx, g.space, definition)
++	case ownedAnnotationBundledSchema:
++		observed, err = g.observer.ObserveOwnedAnnotationBundledSchema(ctx, g.space, plan.nativeKey)
++	default:
++		return nil, ownedAnnotationRefused("not_read_only_context")
++	}
++	if err != nil {
++		return nil, err
++	}
++	snapshot := observed.CopySnapshot()
++	if observed.Disposition != objectcreator.FixedSchemaPersistedMatch || observed.SpaceID != g.spaceID ||
++		observed.AccountIdentity != g.accountID || observed.ObjectID != plan.expectedTarget ||
++		len(observed.PersistedHeads) == 0 || snapshot == nil {
++		return nil, ownedAnnotationRefused("native_schema_not_persisted_match")
++	}
++	if plan.snapshot != nil {
++		if err := g.requireSchemaSnapshotCompatibility(ctx, plan, snapshot); err != nil {
++			return nil, err
++		}
++	} else if !g.isOriginalImportMetadata(plan) {
++		return nil, ownedAnnotationRefused("unowned_additional_schema")
++	}
++	g.mu.Lock()
++	before := g.readOnlyHeads[plan.expectedTarget]
++	heads := append([]string(nil), observed.PersistedHeads...)
++	slices.Sort(heads)
++	if len(before) == 0 {
++		g.readOnlyHeads[plan.expectedTarget] = heads
++		g.readOnlySnapshots[plan.expectedTarget] = proto.Clone(snapshot).(*pb.SnapshotWithType)
++	} else if !slices.Equal(before, heads) || !proto.Equal(g.readOnlySnapshots[plan.expectedTarget], snapshot) {
++		g.mu.Unlock()
++		return nil, ownedAnnotationRefused("read_only_schema_changed")
++	}
++	g.mu.Unlock()
++	key, value := bundle.RelationKeyUniqueKey, plan.nativeKey.Marshal()
++	if plan.nativeKey.SmartblockType() == coresb.SmartBlockTypeRelation {
++		key, value = bundle.RelationKeyRelationKey, plan.nativeKey.InternalKey()
++	}
++	actual, err := g.uniquePositiveIndex(ctx, key, value, plan.expectedTarget)
++	if err != nil {
++		return nil, err
++	}
++	persisted := domain.NewDetailsFromProto(snapshot.Snapshot.Data.Details)
++	for _, field := range []domain.RelationKey{bundle.RelationKeyUniqueKey, bundle.RelationKeyName, bundle.RelationKeyLayout, bundle.RelationKeyRelationFormat, bundle.RelationKeyRecommendedLayout, bundle.RelationKeySourceObject, bundle.RelationKeyRevision} {
++		if persisted.Has(field) && (!actual.Has(field) || !persisted.Get(field).Equal(actual.Get(field))) {
++			return nil, ownedAnnotationRefused("native_schema_index_disagrees")
++		}
++	}
++	return actual, g.requireCurrentWriter(ctx)
++}
++
++func (g *ownedAnnotationGraph) beforeAssignment(ctx context.Context, p *importProcessor, sn *common.Snapshot) error {
++	if err := g.requireCurrentWriter(ctx); err != nil {
++		return err
++	}
++	plan := g.byConverter[sn.Id]
++	baseline := g.converted[sn.Id]
++	if plan == nil || baseline == nil || g.nativeIDs[sn.Id] != "" {
++		return ownedAnnotationRefused("assignment_source_changed")
++	}
++	expected := proto.Clone(baseline).(*pb.ChangeSnapshot)
++	if plan.role == ownedAnnotationFileObject {
++		details := domain.NewDetailsFromProto(expected.Data.Details)
++		common.UpdateObjectIDsInDetails(details, p.oldIDToNew, p.relationKeysToFormat)
++		expected.Data.Details = details.ToProto()
++	}
++	if !proto.Equal(expected, sn.Snapshot.ToProto()) {
++		return ownedAnnotationRefused("assignment_snapshot_changed")
++	}
++	if plan.role == ownedAnnotationFileObject {
++		// Byte-for-byte request details expected from the original private
++		// copyDetailsExcludingFileRelations helper in objectid/oldfile.go.
++		details := domain.NewDetails()
++		for key, value := range sn.Snapshot.Data.Details.Iterate() {
++			if !strings.HasPrefix(string(key), "file") && key != bundle.RelationKeyIconImage {
++				details.Set(key, value)
++			}
++		}
++		g.fileInputs[plan.sourceID] = proto.Clone(details.ToProto()).(*types.Struct)
++	}
++	if plan.role == ownedAnnotationFreshPage || plan.role == ownedAnnotationFileObject {
++		return g.requireNoExistingImportIdentity(ctx, plan)
++	}
++	_, err := g.readOnlyContext(ctx, plan)
++	return err
++}
++
++func (g *ownedAnnotationGraph) afterAssignment(ctx context.Context, sn *common.Snapshot, id string, payload treestorage.TreeStorageCreatePayload) error {
++	plan := g.byConverter[sn.Id]
++	if plan == nil || id == "" || g.targets[id] != nil {
++		return ownedAnnotationRefused("non_injective_actual_assignment")
++	}
++	if err := g.requireCurrentWriter(ctx); err != nil {
++		return err
++	}
++	switch plan.role {
++	case ownedAnnotationFreshPage:
++		if id == plan.sourceID || id == sn.Id || payload.RootRawChange == nil || payload.RootRawChange.Id != id {
++			return ownedAnnotationRefused("original_fresh_payload_required")
++		}
++		exists, err := g.space.Storage().HasTree(ctx, id)
++		if err != nil {
++			return err
++		}
++		if exists {
++			return ownedAnnotationRefused("actual_payload_already_exists")
++		}
++	case ownedAnnotationFixedSchema, ownedAnnotationBundledSchema, ownedAnnotationParticipant:
++		if id != plan.expectedTarget {
++			return ownedAnnotationRefused("original_provider_reuse_disagrees")
++		}
++		if payload.RootRawChange != nil && payload.RootRawChange.Id != id {
++			return ownedAnnotationRefused("original_schema_payload_identity")
++		}
++		if _, err := g.readOnlyContext(ctx, plan); err != nil {
++			return err
++		}
++	case ownedAnnotationFileObject:
++		g.mu.Lock()
++		uploaded, ok := g.fileUploads[plan.sourceID]
++		g.mu.Unlock()
++		if !ok || uploaded.err != nil || uploaded.id != id || payload.RootRawChange != nil {
++			return errors.Join(ownedAnnotationRefused("original_file_upload_did_not_complete"), uploaded.err)
++		}
++	default:
++		return ownedAnnotationRefused("assignment_role")
++	}
++	g.nativeIDs[sn.Id], g.targets[id] = id, plan
++	return g.requireCurrentWriter(ctx)
++}
++
++// No readonly context is routed through generic import Create: its workspace,
++// reset, installation, favorite/archive and sync branches must remain unreachable.
++type ownedAnnotationObjectCreator struct {
++	original creator.Service
++	graph    *ownedAnnotationGraph
++}
++
++func (c ownedAnnotationObjectCreator) Create(data *creator.DataObject, sn *common.Snapshot) (*domain.Details, string, error) {
++	g := c.graph
++	if err := g.requireCurrentWriter(g.ctx); err != nil {
++		return nil, "", err
++	}
++	if sn == nil {
++		return nil, "", ownedAnnotationRefused("missing_create_source")
++	}
++	plan, id := g.byConverter[sn.Id], g.nativeIDs[sn.Id]
++	if plan == nil || id == "" {
++		return nil, "", ownedAnnotationRefused("unassigned_create_source")
++	}
++	switch plan.role {
++	case ownedAnnotationFreshPage:
++		native, ok := c.original.(interface {
++			CreateOwnedAnnotationFresh(*creator.DataObject, *common.Snapshot) (*domain.Details, string, error)
++		})
++		if !ok {
++			return nil, "", ownedAnnotationRefused("original_fresh_creator_unavailable")
++		}
++		details, actualID, err := native.CreateOwnedAnnotationFresh(data, sn)
++		if err != nil {
++			return details, actualID, err
++		}
++		if actualID != id {
++			return details, actualID, ownedAnnotationRefused("actual_create_identity_changed")
++		}
++		return details, actualID, g.requireCurrentWriter(g.ctx)
++	case ownedAnnotationFixedSchema, ownedAnnotationBundledSchema, ownedAnnotationParticipant:
++		details, err := g.readOnlyContext(g.ctx, plan)
++		return details, id, err
++	case ownedAnnotationFileObject:
++		// The original synchronous uploader already performed the actual fresh
++		// file create. No second generic import/reset pass is allowed.
++		details, err := g.uniquePositiveIndex(g.ctx, bundle.RelationKeyId, id, id)
++		if err != nil {
++			return nil, id, err
++		}
++		g.mu.Lock()
++		uploaded, ok := g.fileUploads[plan.sourceID]
++		g.mu.Unlock()
++		if !ok || uploaded.err != nil || uploaded.id != id || details.GetString(bundle.RelationKeyFileId) != uploaded.fileID {
++			return nil, id, ownedAnnotationRefused("native_uploaded_file_readback")
++		}
++		return details, id, g.requireCurrentWriter(g.ctx)
++	}
++	return nil, "", ownedAnnotationRefused("create_role")
++}
++
++// Verify the exact owned extraction produced by the original converter. This
++// admits no arbitrary caller pathname, symlink, unbounded read or remote URL.
++func (g *ownedAnnotationGraph) verifyExtractedFile(ctx context.Context, plan *ownedAnnotationMemberPlan, path string) error {
++	if err := ctx.Err(); err != nil {
++		return err
++	}
++	expected := filepath.Join(g.stage.TempDir(), filepath.FromSlash(plan.fileSource))
++	if path != expected || !ownedArchiveFileSource(plan.fileSource) {
++		return ownedAnnotationRefused("file_path_not_owned")
++	}
++	for _, directory := range []string{g.stage.root, g.stage.TempDir(), filepath.Dir(expected)} {
++		st, err := os.Lstat(directory)
++		if err != nil {
++			return err
++		}
++		if !st.IsDir() || st.Mode()&os.ModeSymlink != 0 {
++			return ownedAnnotationRefused("file_parent_not_owned")
++		}
++	}
++	before, err := os.Lstat(expected)
++	if err != nil {
++		return err
++	}
++	if !before.Mode().IsRegular() || before.Size() < 0 || uint64(before.Size()) != plan.fileBytes {
++		return ownedAnnotationRefused("file_inventory_changed")
++	}
++	file, err := os.Open(expected)
++	if err != nil {
++		return err
++	}
++	opened, statErr := file.Stat()
++	if statErr != nil {
++		return errors.Join(statErr, file.Close())
++	}
++	if !os.SameFile(before, opened) {
++		return errors.Join(ownedAnnotationRefused("file_identity_changed"), file.Close())
++	}
++	hash := sha256.New()
++	n, readErr := io.Copy(hash, io.LimitReader(file, int64(plan.fileBytes)+1))
++	closeErr := file.Close()
++	if err := errors.Join(readErr, closeErr); err != nil {
++		return err
++	}
++	var digest [32]byte
++	copy(digest[:], hash.Sum(nil))
++	after, err := os.Lstat(expected)
++	if err != nil {
++		return err
++	}
++	if n != int64(plan.fileBytes) || digest != plan.fileDigest || !os.SameFile(before, after) || after.Size() != before.Size() {
++		return ownedAnnotationRefused("owned_file_bytes_changed")
++	}
++	return ctx.Err()
++}
++
++type ownedAnnotationUploadedFile struct {
++	id, fileID string
++	err        error
++}
++
++// Only the actual original ID provider uses this synchronous uploader wrapper.
++// The underlying ownedImportBlockService still registers its real file slot
++// before native work and retains the actual native result/error for drain.
++type ownedAnnotationFileUploader struct {
++	ownedImportBlockService
++	graph *ownedAnnotationGraph
++}
++
++func (s ownedAnnotationFileUploader) UploadFile(_ context.Context, spaceID string, req block.FileUploadRequest) (id string, kind model.BlockContentFileType, details *domain.Details, err error) {
++	g := s.graph
++	if err = g.requireCurrentWriter(s.owned.ctx); err != nil {
++		return
++	}
++	input := domain.NewDetailsFromProto(req.Details)
++	sourceID := input.GetString(bundle.RelationKeyOldAnytypeID)
++	plan := g.members[sourceID]
++	expectedDetails := g.fileInputs[sourceID]
++	if plan == nil || plan.role != ownedAnnotationFileObject || expectedDetails == nil || spaceID != g.spaceID || req.PreloadOnly ||
++		!req.ObjectOrigin.IsImported() || req.ObjectOrigin.ImportType != model.Import_Pb {
++		err = ownedAnnotationRefused("file_upload_not_owned")
++		return
++	}
++	expectedRequest := &pb.RpcFileUploadRequest{SpaceId: g.spaceID, Details: expectedDetails, LocalPath: filepath.Join(g.stage.TempDir(), filepath.FromSlash(plan.fileSource))}
++	if !proto.Equal(&req.RpcFileUploadRequest, expectedRequest) {
++		err = ownedAnnotationRefused("file_request_changed")
++		return
++	}
++	info := plan.snapshot.Snapshot.Data.FileInfo
++	if info == nil || info.FileId != plan.fileID {
++		err = ownedAnnotationRefused("file_info_changed")
++		return
++	}
++	keys := make(map[string]string, len(info.EncryptionKeys))
++	for _, key := range info.EncryptionKeys {
++		if key == nil || key.Path == "" || key.Key == "" {
++			err = ownedAnnotationRefused("file_key_shape")
++			return
++		}
++		if _, exists := keys[key.Path]; exists {
++			err = ownedAnnotationRefused("duplicate_file_key_path")
++			return
++		}
++		keys[key.Path] = key.Key
++	}
++	if len(keys) != len(req.CustomEncryptionKeys) {
++		err = ownedAnnotationRefused("file_key_inventory_changed")
++		return
++	}
++	for path, value := range keys {
++		if req.CustomEncryptionKeys[path] != value {
++			err = ownedAnnotationRefused("file_key_inventory_changed")
++			return
++		}
++	}
++	if err = g.verifyExtractedFile(s.owned.ctx, plan, req.LocalPath); err != nil {
++		return
++	}
++	g.mu.Lock()
++	if _, exists := g.fileUploads[sourceID]; exists {
++		g.mu.Unlock()
++		err = ownedAnnotationRefused("duplicate_owned_file_upload")
++		return
++	}
++	g.fileUploads[sourceID] = ownedAnnotationUploadedFile{err: ownedAnnotationRefused("native_file_call_not_returned")}
++	g.mu.Unlock()
++	id, kind, details, err = s.ownedImportBlockService.UploadFile(s.owned.ctx, spaceID, req)
++	// A created file remains historical even if final currentness fails. No
++	// cancellation request is relabelled as drain and no pre-existing user
++	// object is deleted to simulate rollback.
++	err = errors.Join(err, g.verifyExtractedFile(s.owned.ctx, plan, req.LocalPath), g.requireCurrentWriter(s.owned.ctx))
++	fileID := ""
++	if details != nil {
++		fileID = details.GetString(bundle.RelationKeyFileId)
++	}
++	if err == nil && (id == "" || fileID == "" || id == sourceID) {
++		err = ownedAnnotationRefused("original_file_result_identity")
++	}
++	g.mu.Lock()
++	g.fileUploads[sourceID] = ownedAnnotationUploadedFile{id: id, fileID: fileID, err: err}
++	g.mu.Unlock()
++	return
++}
++
++// These are the three additional keys injected by the unchanged original
++// converter/creator. They are not fabricated archive members or source mappings.
++func (g *ownedAnnotationGraph) isOriginalImportMetadata(plan *ownedAnnotationMemberPlan) bool {
++	if plan == nil || plan.sourceID != "" || plan.snapshot != nil || plan.role != ownedAnnotationBundledSchema || plan.nativeKey == nil || plan.nativeKey.SmartblockType() != coresb.SmartBlockTypeRelation {
++		return false
++	}
++	key := domain.RelationKey(plan.nativeKey.InternalKey())
++	return key == bundle.RelationKeyImportType || key == bundle.RelationKeyOldAnytypeID || key == bundle.RelationKeySourceFilePath
++}
++func (g *ownedAnnotationGraph) admitOriginalImportMetadata(ctx context.Context) error {
++	for _, key := range []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath} {
++		unique, err := domain.NewUniqueKey(coresb.SmartBlockTypeRelation, key.String())
++		if err != nil {
++			return err
++		}
++		found := false
++		for _, plan := range g.members {
++			if plan.nativeKey != nil && plan.nativeKey.Marshal() == unique.Marshal() {
++				found = true
++				break
++			}
++		}
++		if found {
++			continue
++		}
++		id, err := g.space.GetRelationIdByKey(ctx, key)
++		if err != nil {
++			return err
++		}
++		plan := &ownedAnnotationMemberPlan{role: ownedAnnotationBundledSchema, nativeKey: unique, expectedTarget: id}
++		if _, err := g.readOnlyContext(ctx, plan); err != nil {
++			return err
++		}
++		g.additionalContext[id] = plan
++	}
++	return g.requireCurrentWriter(ctx)
++}
+--- /dev/null
++++ b/core/block/import/owned_annotation_readback.go
+@@ -0,0 +1,426 @@
++package importer
++
++import (
++	"context"
++	"crypto/sha256"
++	"errors"
++	"io"
++	"os"
++	"path/filepath"
++	"strings"
++
++	"github.com/anyproto/anytype-heart/core/block/editor/state"
++	"github.com/anyproto/anytype-heart/core/block/import/common"
++	"github.com/anyproto/anytype-heart/core/converter/pbc"
++	"github.com/anyproto/anytype-heart/core/domain"
++	"github.com/anyproto/anytype-heart/pb"
++	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
++	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
++	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++	"github.com/gogo/protobuf/proto"
++)
++
++// OwnedAnnotationReadbackObservation is a historical local original-export and
++// mapping-aware annotation-body comparison. It is not a cold reopen, remote
++// backup drain, current Host/Swift permission, persisted mapping or delivery ACK.
++// Only finishReadback can create a populated value after real native execution.
++type OwnedAnnotationReadbackStage uint8
++
++const (
++	OwnedAnnotationReadbackUnobserved OwnedAnnotationReadbackStage = iota
++	OwnedAnnotationExportReturned
++	OwnedAnnotationArchiveValidated
++	OwnedAnnotationBodyMatched
++)
++
++type OwnedAnnotationReadbackObservation struct {
++	stage                                                                               OwnedAnnotationReadbackStage
++	accountID, spaceID, rootID                                                          string
++	sourceDigest, archiveDigest                                                         [32]byte
++	archive                                                                             []byte
++	report                                                                              *model.ExportReport
++	sourceSnapshots, annotationPages, fileObjects, readOnlyContexts, additionalContexts int
++}
++
++func (o OwnedAnnotationReadbackObservation) Stage() OwnedAnnotationReadbackStage { return o.stage }
++func (o OwnedAnnotationReadbackObservation) AccountID() string                   { return o.accountID }
++func (o OwnedAnnotationReadbackObservation) SpaceID() string                     { return o.spaceID }
++func (o OwnedAnnotationReadbackObservation) RootID() string                      { return o.rootID }
++func (o OwnedAnnotationReadbackObservation) SourceArchiveSHA256() [32]byte       { return o.sourceDigest }
++func (o OwnedAnnotationReadbackObservation) NativeArchiveSHA256() [32]byte       { return o.archiveDigest }
++func (o OwnedAnnotationReadbackObservation) CopyNativeArchive() []byte {
++	return append([]byte(nil), o.archive...)
++}
++func (o OwnedAnnotationReadbackObservation) SourceSnapshots() int  { return o.sourceSnapshots }
++func (o OwnedAnnotationReadbackObservation) AnnotationPages() int  { return o.annotationPages }
++func (o OwnedAnnotationReadbackObservation) FileObjects() int      { return o.fileObjects }
++func (o OwnedAnnotationReadbackObservation) ReadOnlyContexts() int { return o.readOnlyContexts }
++func (o OwnedAnnotationReadbackObservation) AdditionalImportContexts() int {
++	return o.additionalContexts
++}
++func (o OwnedAnnotationReadbackObservation) CopyExportReport() *model.ExportReport {
++	if o.report == nil {
++		return nil
++	}
++	return proto.Clone(o.report).(*model.ExportReport)
++}
++func (o OwnedAnnotationReadbackObservation) copy() OwnedAnnotationReadbackObservation {
++	o.archive = o.CopyNativeArchive()
++	o.report = o.CopyExportReport()
++	return o
++}
++
++func (g *ownedAnnotationGraph) actualMapping(p *importProcessor, response *ImportResponse) (map[string]string, error) {
++	mapping, ok := response.NativeMappingObservation()
++	if !ok || !mapping.CompleteForSelectedSnapshots() || mapping.TraceID() == "" || mapping.TargetSpaceID() != g.spaceID ||
++		len(response.NativeMappingProblems()) != 0 || len(mapping.FilteredSources()) != 0 || len(mapping.GeneratedAssignments()) != 0 ||
++		len(mapping.KeptReferenceIDs()) != 0 || mapping.NonInjectiveDestinations() {
++		return nil, ownedAnnotationRefused("incomplete_original_native_mapping")
++	}
++	rows := mapping.SourceAssignments()
++	if len(rows) != len(g.members) {
++		return nil, ownedAnnotationRefused("native_mapping_graph_count")
++	}
++	result := make(map[string]string, len(rows))
++	destinations := make(map[string]bool, len(rows))
++	for _, row := range rows {
++		plan := g.members[row.SourceObjectID]
++		if plan == nil || row.ArchivePath != g.stage.archivePath || row.MemberPath != plan.memberPath || row.SourceSpaceID != g.archive.spaceID ||
++			row.ConverterID != g.sourceToConverter[row.SourceObjectID] || row.NativeID == "" || row.NativeID != g.nativeIDs[row.ConverterID] ||
++			result[row.SourceObjectID] != "" || destinations[row.NativeID] {
++			return nil, ownedAnnotationRefused("native_mapping_source_binding")
++		}
++		result[row.SourceObjectID] = row.NativeID
++		destinations[row.NativeID] = true
++	}
++	if result[g.archive.rootID] == "" || p.request.SpaceId != g.spaceID {
++		return nil, ownedAnnotationRefused("native_mapping_root")
++	}
++	return result, nil
++}
++
++// This runs on the SAME original owned operation goroutine after Execute and
++// its workers/file slots have actually drained, before owned.cancel and Done.
++func (g *ownedAnnotationGraph) finishReadback(ctx context.Context, p *importProcessor, response *ImportResponse) (*OwnedAnnotationReadbackObservation, error) {
++	if response == nil || response.Err != nil {
++		return nil, ownedAnnotationRefused("native_execution_not_successful")
++	}
++	if err := g.requireCurrentWriter(ctx); err != nil {
++		return nil, err
++	}
++	ids, err := g.actualMapping(p, response)
++	if err != nil {
++		return nil, err
++	}
++	rootID := ids[g.archive.rootID]
++	for _, sourceID := range g.order {
++		plan := g.members[sourceID]
++		if plan.role == ownedAnnotationFreshPage || plan.role == ownedAnnotationFileObject {
++			if _, err := g.uniquePositiveIndex(ctx, bundle.RelationKeyId, ids[sourceID], ids[sourceID]); err != nil {
++				return nil, err
++			}
++		} else if _, err := g.readOnlyContext(ctx, plan); err != nil {
++			return nil, err
++		}
++	}
++	for _, plan := range g.additionalContext {
++		if _, err := g.readOnlyContext(ctx, plan); err != nil {
++			return nil, err
++		}
++	}
++	exportDir := filepath.Join(g.stage.root, "readback")
++	if err := os.Mkdir(exportDir, 0700); err != nil {
++		return nil, err
++	}
++	path, report, exportErr := g.exporter.Export(ctx, pb.RpcObjectListExportRequest{
++		SpaceId: g.spaceID, ObjectIds: []string{rootID}, Path: exportDir, Format: model.Export_Protobuf,
++		Zip: true, IsJson: false, IncludeFiles: true, IncludeNested: true, IncludeArchived: true,
++		IncludeBacklinks: false, IncludeSpace: false, NoProgress: true,
++	})
++	result := &OwnedAnnotationReadbackObservation{stage: OwnedAnnotationExportReturned, accountID: g.accountID, spaceID: g.spaceID, rootID: rootID, sourceDigest: g.archive.digest, sourceSnapshots: len(g.members)}
++	if report != nil {
++		result.report = proto.Clone(report).(*model.ExportReport)
++	}
++	// The original Export normalizes context.Canceled to nil; its real report
++	// and the still-owned context remain mandatory independent conditions.
++	if err := errors.Join(exportErr, ctx.Err()); err != nil {
++		return result, err
++	}
++	if report == nil || report.Status != model.ExportReport_SUCCESS || report.Succeed <= 0 || report.ObjectErrors != 0 || report.FileErrors != 0 || len(report.Issues) != 0 {
++		return result, ownedAnnotationRefused("original_export_incomplete")
++	}
++	raw, err := readOwnedAnnotationExport(ctx, exportDir, path)
++	if err != nil {
++		return result, err
++	}
++	digest := sha256.Sum256(raw)
++	result.archive, result.archiveDigest = append([]byte(nil), raw...), digest
++	actual, err := inspectOwnedAnnotationArchive(ctx, raw, digest, rootID, g.spaceID)
++	if err != nil {
++		return result, err
++	}
++	if int(report.Succeed) != len(actual.snapshots) {
++		return result, ownedAnnotationRefused("original_export_report_inventory")
++	}
++	result.stage = OwnedAnnotationArchiveValidated
++	if err := g.compareNativeExport(ctx, p, ids, actual, result); err != nil {
++		return result, err
++	}
++	// Reobserve every readonly native schema after original export. A native
++	// initializer/reviser or concurrent modification cannot silently become a
++	// body receipt: the actual persisted heads must still match admission.
++	for _, sourceID := range g.order {
++		plan := g.members[sourceID]
++		if plan.expectedTarget != "" {
++			if _, err := g.readOnlyContext(ctx, plan); err != nil {
++				return result, err
++			}
++		}
++	}
++	for _, plan := range g.additionalContext {
++		if _, err := g.readOnlyContext(ctx, plan); err != nil {
++			return result, err
++		}
++	}
++	if err := g.requireCurrentWriter(ctx); err != nil {
++		return result, err
++	}
++	result.stage = OwnedAnnotationBodyMatched
++	return result, nil
++}
++
++func readOwnedAnnotationExport(ctx context.Context, directory, path string) ([]byte, error) {
++	if err := ctx.Err(); err != nil {
++		return nil, err
++	}
++	relative, err := filepath.Rel(directory, path)
++	if err != nil {
++		return nil, err
++	}
++	// Original protobuf ZIP is a direct regular child of this private directory.
++	if relative == "." || relative == ".." || filepath.IsAbs(relative) || strings.ContainsAny(relative, "/\\") || filepath.Ext(relative) != ".zip" {
++		return nil, ownedAnnotationRefused("native_export_path_not_owned")
++	}
++	before, err := os.Lstat(path)
++	if err != nil {
++		return nil, err
++	}
++	if !before.Mode().IsRegular() || before.Size() <= 0 || before.Size() > ownedArchiveMaxBytes {
++		return nil, ownedAnnotationRefused("native_export_compressed_budget")
++	}
++	file, err := os.Open(path)
++	if err != nil {
++		return nil, err
++	}
++	opened, err := file.Stat()
++	if err != nil {
++		return nil, errors.Join(err, file.Close())
++	}
++	if !os.SameFile(before, opened) {
++		return nil, errors.Join(ownedAnnotationRefused("native_export_identity_changed"), file.Close())
++	}
++	raw, readErr := io.ReadAll(io.LimitReader(file, ownedArchiveMaxBytes+1))
++	closeErr := file.Close()
++	if err := errors.Join(readErr, closeErr, ctx.Err()); err != nil {
++		return nil, err
++	}
++	after, err := os.Lstat(path)
++	if err != nil {
++		return nil, err
++	}
++	if int64(len(raw)) != before.Size() || !os.SameFile(before, after) || before.Size() != after.Size() {
++		return nil, ownedAnnotationRefused("native_export_bytes_changed")
++	}
++	return raw, nil
++}
++
++func (g *ownedAnnotationGraph) compareNativeExport(ctx context.Context, p *importProcessor, ids map[string]string, actual *ownedAnnotationArchive, result *OwnedAnnotationReadbackObservation) error {
++	if len(actual.snapshots) < len(g.members) || len(actual.snapshots) > len(g.members)+len(g.additionalContext) {
++		return ownedAnnotationRefused("native_export_graph_inventory")
++	}
++	seen := make(map[string]bool, len(actual.snapshots))
++	fileMembers := make(map[string]ownedAnnotationArchiveMember)
++	for _, member := range actual.members {
++		if member.Kind == "file" {
++			fileMembers[member.Name] = member
++		}
++	}
++	usedFiles := make(map[string]bool, len(fileMembers))
++	formats := make(map[domain.RelationKey]int32)
++	for _, plan := range g.members {
++		if plan.nativeKey != nil && plan.nativeKey.SmartblockType() == coresb.SmartBlockTypeRelation {
++			formats[domain.RelationKey(plan.nativeKey.InternalKey())] = int32(domain.NewDetailsFromProto(plan.snapshot.Snapshot.Data.Details).GetInt64(bundle.RelationKeyRelationFormat))
++		}
++	}
++	for _, sourceID := range g.order {
++		if err := ctx.Err(); err != nil {
++			return err
++		}
++		plan := g.members[sourceID]
++		targetID := ids[sourceID]
++		observed := actual.snapshots[targetID]
++		if observed == nil || observed.Snapshot == nil || observed.Snapshot.Data == nil || observed.SbType != plan.snapshot.SbType || seen[targetID] {
++			return ownedAnnotationRefused("native_export_source_member")
++		}
++		seen[targetID] = true
++		details := domain.NewDetailsFromProto(observed.Snapshot.Data.Details)
++		if details.GetString(bundle.RelationKeyId) != targetID || details.GetString(bundle.RelationKeySpaceId) != g.spaceID {
++			return ownedAnnotationRefused("native_export_member_identity")
++		}
++		switch plan.role {
++		case ownedAnnotationFreshPage:
++			expected, err := g.expectedCreatedPage(p, g.sourceToConverter[sourceID], targetID)
++			if err != nil {
++				return err
++			}
++			left, err := canonicalOwnedAnnotationSnapshot(expected)
++			if err != nil {
++				return err
++			}
++			right, err := canonicalOwnedAnnotationSnapshot(observed)
++			if err != nil {
++				return err
++			}
++			if !proto.Equal(left, right) {
++				return ownedAnnotationRefused("native_annotation_body_differs")
++			}
++			result.annotationPages++
++		case ownedAnnotationFixedSchema, ownedAnnotationBundledSchema:
++			if err := g.requireSchemaSnapshotCompatibility(ctx, plan, observed); err != nil {
++				return err
++			}
++			if err := g.compareObservedSchemaExport(ctx, plan, observed); err != nil {
++				return err
++			}
++			result.readOnlyContexts++
++		case ownedAnnotationParticipant:
++			// Participant display/profile state belongs to the actual account,
++			// not to the imported annotation. Preserve that native context;
++			// compare identity and original participant type without resetting it.
++			if details.GetString(bundle.RelationKeyIdentity) != g.accountID || targetID != g.account.MyParticipantId(g.spaceID) ||
++				len(observed.Snapshot.Data.ObjectTypes) != 1 || observed.Snapshot.Data.ObjectTypes[0] != bundle.TypeKeyParticipant.URL() {
++				return ownedAnnotationRefused("native_export_participant_context")
++			}
++			result.readOnlyContexts++
++		case ownedAnnotationFileObject:
++			source := details.GetString(bundle.RelationKeySource)
++			binary, ok := fileMembers[source]
++			if !ok || binary.Bytes != plan.fileBytes || binary.SHA256 != plan.fileDigest {
++				return ownedAnnotationRefused("native_file_body_differs")
++			}
++			usedFiles[source] = true
++			expected := proto.Clone(plan.snapshot).(*pb.SnapshotWithType)
++			for _, b := range expected.Snapshot.Data.Blocks {
++				if b.Id == sourceID {
++					b.Id = targetID
++				}
++				for i, id := range b.ChildrenIds {
++					if id == sourceID {
++						b.ChildrenIds[i] = targetID
++					}
++				}
++			}
++			st, err := state.NewDocFromSnapshot(targetID, expected.Snapshot)
++			if err != nil {
++				return err
++			}
++			common.UpdateObjectIDsInRelations(st, ids, formats)
++			if err := common.UpdateLinksToObjects(st, ids); err != nil {
++				return err
++			}
++			st.SetDetail(bundle.RelationKeySource, domain.String(source))
++			bytes := pbc.NewConverter(st, false).Convert(expected.SbType)
++			if len(bytes) == 0 {
++				return ownedAnnotationRefused("expected_file_model")
++			}
++			if err := proto.Unmarshal(bytes, expected); err != nil {
++				return err
++			}
++			g.mu.Lock()
++			uploaded, ok := g.fileUploads[sourceID]
++			g.mu.Unlock()
++			if !ok || uploaded.err != nil || uploaded.id != targetID || observed.Snapshot.Data.FileInfo == nil || observed.Snapshot.Data.FileInfo.FileId != uploaded.fileID || expected.Snapshot.Data.FileInfo == nil {
++				return ownedAnnotationRefused("native_file_completion_binding")
++			}
++			expected.Snapshot.Data.FileInfo.FileId = uploaded.fileID
++			ed := domain.NewDetailsFromProto(expected.Snapshot.Data.Details)
++			ed.SetString(bundle.RelationKeyFileId, uploaded.fileID)
++			expected.Snapshot.Data.Details = ed.ToProto()
++			left, err := canonicalOwnedAnnotationSnapshot(expected)
++			if err != nil {
++				return err
++			}
++			right, err := canonicalOwnedAnnotationSnapshot(observed)
++			if err != nil {
++				return err
++			}
++			if !proto.Equal(left, right) {
++				return ownedAnnotationRefused("native_file_snapshot_differs")
++			}
++			result.fileObjects++
++		default:
++			return ownedAnnotationRefused("native_export_unknown_source_role")
++		}
++	}
++	for id, snapshot := range actual.snapshots {
++		if seen[id] {
++			continue
++		}
++		plan := g.additionalContext[id]
++		if plan == nil || !g.isOriginalImportMetadata(plan) || snapshot == nil || snapshot.Snapshot == nil || snapshot.Snapshot.Data == nil ||
++			snapshot.Snapshot.Data.Key != plan.nativeKey.InternalKey() {
++			return ownedAnnotationRefused("unaccounted_native_export_dependency")
++		}
++		if _, err := g.readOnlyContext(ctx, plan); err != nil {
++			return err
++		}
++		if err := g.compareObservedSchemaExport(ctx, plan, snapshot); err != nil {
++			return err
++		}
++		seen[id] = true
++		result.additionalContexts++
++	}
++	if len(seen) != len(actual.snapshots) || len(usedFiles) != len(fileMembers) || result.annotationPages == 0 {
++		return ownedAnnotationRefused("native_export_complete_body_coverage")
++	}
++	return g.requireCurrentWriter(ctx)
++}
++
++// The additional original metadata schemas are not archive source members. Their
++// export must still equal the actual bounded raw native snapshot admitted before
++// import, not merely share its key. Source schema members also use this separate
++// native observation comparison in addition to source-to-target correspondence.
++func (g *ownedAnnotationGraph) compareObservedSchemaExport(ctx context.Context, plan *ownedAnnotationMemberPlan, actual *pb.SnapshotWithType) error {
++	if err := ctx.Err(); err != nil {
++		return err
++	}
++	if plan == nil || actual == nil || actual.Snapshot == nil || actual.Snapshot.Data == nil {
++		return ownedAnnotationRefused("missing_observed_schema_export")
++	}
++	g.mu.Lock()
++	retained := g.readOnlySnapshots[plan.expectedTarget]
++	var expected *pb.SnapshotWithType
++	if retained != nil {
++		expected = proto.Clone(retained).(*pb.SnapshotWithType)
++	}
++	g.mu.Unlock()
++	if expected == nil || actual.SbType != expected.SbType || actual.Snapshot.Data.Key != plan.nativeKey.InternalKey() {
++		return ownedAnnotationRefused("observed_schema_export_identity")
++	}
++	details := domain.NewDetailsFromProto(actual.Snapshot.Data.Details)
++	if details.GetString(bundle.RelationKeyId) != plan.expectedTarget || details.GetString(bundle.RelationKeySpaceId) != g.spaceID {
++		return ownedAnnotationRefused("observed_schema_export_identity")
++	}
++	left, err := canonicalOwnedAnnotationSnapshot(expected)
++	if err != nil {
++		return err
++	}
++	right, err := canonicalOwnedAnnotationSnapshot(actual)
++	if err != nil {
++		return err
++	}
++	if !proto.Equal(left, right) {
++		return ownedAnnotationRefused("native_schema_export_differs_from_observed_state")
++	}
++	return ctx.Err()
++}
+--- a/core/block/import/owned_import_dependencies.go
++++ b/core/block/import/owned_import_dependencies.go
+@@ -17,6 +17,7 @@
+ 	pbc "github.com/anyproto/anytype-heart/core/block/import/pb"
+ 	"github.com/anyproto/anytype-heart/core/block/object/objectcreator"
+ 	"github.com/anyproto/anytype-heart/core/block/process"
++	"github.com/anyproto/anytype-heart/core/domain/objectorigin"
+ 	"github.com/anyproto/anytype-heart/core/event"
+ 	"github.com/anyproto/anytype-heart/core/files/fileobject"
+ 	"github.com/anyproto/anytype-heart/core/files/filesync"
+@@ -95,3 +96,33 @@
+ 	)
+ 	return deps
+ }
++
++// The closed annotation constructor fixes every request option and owns the
++// only archive path and extraction root. It enables no production RPC/caller.
++func newOwnedAnnotationImportProcessor(a *app.App, owned *ownedImportExecution, graph *ownedAnnotationGraph) (*importProcessor, error) {
++	if graph == nil || graph.stage == nil || graph.archive == nil || owned == nil || owned.ctx == nil {
++		return nil, ErrOwnedImportOperationUnavailable
++	}
++	if err := graph.requireCapturedAccount(owned.ctx); err != nil {
++		return nil, err
++	}
++	request := &ImportRequest{
++		RpcObjectImportRequest: &pb.RpcObjectImportRequest{
++			SpaceId: graph.spaceID, Type: model.Import_Pb, Mode: pb.RpcObjectImportRequest_ALL_OR_NOTHING, NoProgress: true,
++			Params: &pb.RpcObjectImportRequestParamsOfPbParams{PbParams: &pb.RpcObjectImportRequestPbParams{Path: []string{graph.stage.archivePath}, NoCollection: true}},
++		}, Origin: objectorigin.Import(model.Import_Pb), IsSync: true,
++	}
++	processor, err := newOwnedImportProcessor(a, owned, request)
++	if err != nil {
++		return nil, err
++	}
++	graph.ctx = owned.ctx
++	processor.annotation = graph
++	processor.deps.converters[model.Import_Pb.String()] = ownedAnnotationConverter{
++		native: pbc.New(app.MustComponent[*collection.Service](a), graph.account, graph.stage), graph: graph,
++	}
++	scoped := ownedAnnotationFileUploader{ownedImportBlockService: ownedImportBlockService{Service: app.MustComponent[*block.Service](a), owned: owned}, graph: graph}
++	processor.deps.idProvider = objectid.NewIDProviderWithFileUploader(graph.store, app.MustComponent[space.Service](a), scoped, app.MustComponent[fileobject.Service](a))
++	processor.deps.objectCreator = ownedAnnotationObjectCreator{original: processor.deps.objectCreator, graph: graph}
++	return processor, nil
++}
+--- a/core/block/import/owned_import_operation.go
++++ b/core/block/import/owned_import_operation.go
+@@ -32,6 +32,7 @@
+ 	mapping               NativeProtobufImportMappingObservation
+ 	hasMapping            bool
+ 	mappingProblems       []string
++	annotationReadback    *OwnedAnnotationReadbackObservation
+ }
+ 
+ func (o OwnedImportOutcome) TargetSpaceID() string       { return o.targetSpaceID }
+@@ -49,10 +50,25 @@
+ func (o OwnedImportOutcome) NativeMappingProblems() []string {
+ 	return append([]string(nil), o.mappingProblems...)
+ }
++
++// OriginalAnnotationReadback returns historical bounded evidence after Done.
++// The bool means evidence is available, NOT that comparison or the operation
++// succeeded. Inspect Stage and the owning outcome Err; neither is a Host ACK.
++func (o OwnedImportOutcome) OriginalAnnotationReadback() (OwnedAnnotationReadbackObservation, bool) {
++	if o.annotationReadback == nil {
++		return OwnedAnnotationReadbackObservation{}, false
++	}
++	return o.annotationReadback.copy(), true
++}
++
+ func (o OwnedImportOutcome) copy() OwnedImportOutcome {
+ 	o.files = o.Files()
+ 	o.mapping = o.mapping.copy()
+ 	o.mappingProblems = o.NativeMappingProblems()
++	if o.annotationReadback != nil {
++		copied := o.annotationReadback.copy()
++		o.annotationReadback = &copied
++	}
+ 	return o
+ }
+ 
+@@ -142,9 +158,22 @@
+ 			FileObjectID: file.FileObjectID, Err: file.Err,
+ 		})
+ 	}
++	if graph := o.processor.annotation; graph != nil {
++		if result.err == nil {
++			observation, readbackErr := graph.finishReadback(o.owned.ctx, o.processor, response)
++			result.annotationReadback = observation
++			result.err = errors.Join(result.err, readbackErr)
++		}
++		// The native owner remains registered throughout actual Export return,
++		// its original queue finalization, byte comparison and owned cleanup.
++		// Cancellation never closes Done or substitutes for any of those steps.
++		result.err = errors.Join(result.err, graph.stage.Close(), o.owned.ctx.Err())
++		result.cancellationRequested = o.owned.ctx.Err() != nil
++	}
+ 	o.outcome = result
+ 	// Release the derived cancellation only after Execute's finalizer and
+-	// mapping copyout have returned. It never substitutes for their drain.
++	// mapping copyout have returned (plus owned annotation readback/cleanup when
++	// applicable). It never substitutes for their actual drain.
+ 	o.owned.cancel()
+ 	close(o.done)
+ }
+@@ -173,3 +202,30 @@
+ 		return OwnedImportOutcome{}, false
+ 	}
+ }
++
++// PrepareOwnedAnnotationImport takes bounded bytes, never a caller path, mutable
++// ImportRequest, alternative executor, completion flag or update-existing mode.
++// The caller must already hold the original native app/account admission and
++// must register this operation BEFORE Start, as for PrepareOwnedImport. No
++// production RPC or SDK adapter is activated by this additive constructor.
++func PrepareOwnedAnnotationImport(ctx context.Context, a *app.App, raw []byte, digest [32]byte, sourceRootID, sourceSpaceID, targetSpaceID string) (*OwnedImportOperation, error) {
++	if ctx == nil || a == nil {
++		return nil, ErrOwnedImportOperationUnavailable
++	}
++	if err := ctx.Err(); err != nil {
++		return nil, err
++	}
++	owned := newOwnedImportExecution(ctx)
++	graph, err := prepareOwnedAnnotationGraph(owned.ctx, a, raw, digest, sourceRootID, sourceSpaceID, targetSpaceID)
++	if err != nil {
++		owned.cancel()
++		return nil, err
++	}
++	processor, err := newOwnedAnnotationImportProcessor(a, owned, graph)
++	if err != nil {
++		cleanupErr := graph.stage.Close()
++		owned.cancel()
++		return nil, errors.Join(err, cleanupErr)
++	}
++	return &OwnedImportOperation{processor: processor, owned: owned, targetSpaceID: graph.spaceID, done: make(chan struct{})}, nil
++}
+--- a/core/block/import/processor.go
++++ b/core/block/import/processor.go
+@@ -56,6 +56,7 @@
+ 	relationKeysToFormat                                            map[domain.RelationKey]int32
+ 	captureMappingObservation                                       bool
+ 	owned                                                           *ownedImportExecution
++	annotation                                                      *ownedAnnotationGraph
+ 	nativeMapping                                                   *nativeMappingBuilder
+ 	nativeMappingTraceID, nativeMappingSpaceID                      string
+ 	nativeMappingAssignmentsFinished, nativeMappingCreationReturned bool
+@@ -160,6 +161,12 @@
+ }
+ 
+ func (p *importProcessor) handleBuiltinConverterImport(ctx context.Context) *ImportResponse {
++	if p.annotation != nil {
++		if err := p.annotation.bindNativeOwner(ctx); err != nil {
++			p.response.Err = err
++			return p.response
++		}
++	}
+ 	converter, exists := p.deps.converters[p.request.Type.String()]
+ 	if !exists {
+ 		p.response.Err = fmt.Errorf("unknown import type %s", p.request.Type)
+@@ -190,6 +197,13 @@
+ 		allErrors.Add(fmt.Errorf("failed to build import context: %w", err))
+ 		p.response.Err = allErrors.GetResultError(p.request.Type)
+ 		return p.response
++	}
++
++	if p.annotation != nil {
++		if err := p.annotation.admitConversion(ctx, p); err != nil {
++			p.response.Err = err
++			return p.response
++		}
+ 	}
+ 
+ 	// Create objects
+@@ -283,6 +297,12 @@
+ 		p.errors.Add(err)
+ 		return nil, ""
+ 	}
++	if p.annotation != nil {
++		if err := p.annotation.admitCreationGraph(ctx, p); err != nil {
++			p.errors.Add(err)
++			return nil, ""
++		}
++	}
+ 	if p.nativeMapping != nil {
+ 		p.nativeMappingAssignmentsFinished = true
+ 	}
+@@ -419,13 +439,22 @@
+ }
+ 
+ func (p *importProcessor) processSnapshot(ctx context.Context, snapshot *common.Snapshot) (err error) {
+-	if err = p.preloadFileKeys(snapshot); err != nil {
++	if p.annotation != nil {
++		if err = p.annotation.beforeAssignment(ctx, p, snapshot); err != nil {
++			return err
++		}
++	} else if err = p.preloadFileKeys(snapshot); err != nil {
+ 		return err
+ 	}
+ 
+ 	id, payload, err := p.deps.idProvider.GetIDAndPayload(ctx, p.request.SpaceId, snapshot, time.Now(), p.request.UpdateExistingObjects, p.request.Origin)
+ 	if err != nil {
+ 		return err
++	}
++	if p.annotation != nil {
++		if err = p.annotation.afterAssignment(ctx, snapshot, id, payload); err != nil {
++			return err
++		}
+ 	}
+ 	p.oldIDToNew[snapshot.Id] = id
+ 	if p.nativeMapping != nil {
+--- /dev/null
++++ b/core/block/object/objectcreator/owned_annotation_observer.go
+@@ -0,0 +1,188 @@
++package objectcreator
++
++import (
++	"context"
++	"errors"
++	"fmt"
++	"slices"
++
++	"github.com/anyproto/anytype-heart/core/block/object/payloadcreator"
++	"github.com/anyproto/anytype-heart/core/converter/pbc"
++	"github.com/anyproto/anytype-heart/core/domain"
++	"github.com/anyproto/anytype-heart/pb"
++	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
++	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
++	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++	"github.com/anyproto/anytype-heart/space/clientspace"
++	"github.com/gogo/protobuf/proto"
++)
++
++// OwnedAnnotationSchemaObservation is historical original persisted data. It
++// never yields a mutable SmartBlock, initialization, installation, permission,
++// body acknowledgement or capability to reuse a later changed object.
++type OwnedAnnotationSchemaObservation struct {
++	Disposition                                        FixedSchemaDisposition
++	SpaceID, ObjectID, AccountIdentity, ACLID, ACLHead string
++	PersistedHeads, ArchiveHeads                       []string
++	snapshot                                           *pb.SnapshotWithType
++}
++
++func (o OwnedAnnotationSchemaObservation) CopySnapshot() *pb.SnapshotWithType {
++	if o.Disposition != FixedSchemaPersistedMatch || o.snapshot == nil {
++		return nil
++	}
++	return proto.Clone(o.snapshot).(*pb.SnapshotWithType)
++}
++
++// This additive owner surface deliberately leaves the fixed longtext/basic
++// observer untouched. Only keys present in the actual original bundled model
++// definitions enter this separate read-only observation.
++type OwnedAnnotationSchemaObserver interface {
++	ObserveOwnedAnnotationFixedSchema(context.Context, clientspace.Space, FixedSchemaDefinition) (OwnedAnnotationSchemaObservation, error)
++	ObserveOwnedAnnotationBundledSchema(context.Context, clientspace.Space, domain.UniqueKey) (OwnedAnnotationSchemaObservation, error)
++}
++
++var _ OwnedAnnotationSchemaObserver = (*service)(nil)
++
++func (s *service) ObserveOwnedAnnotationBundledSchema(ctx context.Context, spc clientspace.Space, key domain.UniqueKey) (OwnedAnnotationSchemaObservation, error) {
++	definition, err := originalOwnedAnnotationBundledDefinition(key)
++	if err != nil {
++		return OwnedAnnotationSchemaObservation{}, err
++	}
++	return s.observeOwnedAnnotationSchema(ctx, spc, definition)
++}
++
++// The existing fixed longtext/basic admission is called unchanged. This adds
++// only a full owned snapshot copy after the same raw persisted observation.
++func (s *service) ObserveOwnedAnnotationFixedSchema(ctx context.Context, spc clientspace.Space, requested FixedSchemaDefinition) (OwnedAnnotationSchemaObservation, error) {
++	definition, err := freezeFixedSchemaDefinition(requested)
++	if err != nil {
++		return OwnedAnnotationSchemaObservation{}, err
++	}
++	return s.observeOwnedAnnotationSchema(ctx, spc, definition)
++}
++
++func (s *service) observeOwnedAnnotationSchema(ctx context.Context, spc clientspace.Space, definition FixedSchemaDefinition) (result OwnedAnnotationSchemaObservation, err error) {
++	result.Disposition = FixedSchemaUnavailable
++	defer func() {
++		if errors.Is(err, ErrFixedSchemaChanged) {
++			result.Disposition = FixedSchemaChangedWhileReading
++		}
++	}()
++	if ctx == nil {
++		return result, ErrFixedSchemaInvalidDefinition
++	}
++	scope, err := captureFixedSchemaScope(spc)
++	if err != nil {
++		return result, err
++	}
++	result.SpaceID, result.AccountIdentity = scope.spaceID, scope.identity.Account()
++	result.ACLID, result.ACLHead = scope.aclID, scope.aclHead
++	if err := ctx.Err(); err != nil {
++		return result, err
++	}
++	expected, err := spc.DeriveTreePayload(ctx, payloadcreator.PayloadDerivationParams{Key: definition.Key})
++	if err != nil {
++		return result, err
++	}
++	archiveKey, err := domain.NewUniqueKey(coresb.SmartBlockTypeArchive, "")
++	if err != nil {
++		return result, err
++	}
++	archive, err := spc.DeriveTreePayload(ctx, payloadcreator.PayloadDerivationParams{Key: archiveKey})
++	if err != nil {
++		return result, err
++	}
++	if expected.RootRawChange == nil || expected.RootRawChange.Id == "" || archive.RootRawChange == nil ||
++		archive.RootRawChange.Id == "" || archive.RootRawChange.Id != spc.DerivedIDs().Archive {
++		return result, ErrFixedSchemaStorage
++	}
++	result.ObjectID = expected.RootRawChange.Id
++	// This original helper performs the actual immutable DB read, checks signed
++	// Space/ACL rows and archive membership, and strictly replays the complete
++	// native derived tree. It does not invoke the fixed public definition gate.
++	first, disposition, err := observeFixedSchemaSnapshot(ctx, scope, definition, expected.RootRawChange, archive.RootRawChange)
++	result.PersistedHeads, result.ArchiveHeads = slices.Clone(first.schema.head.Heads), slices.Clone(first.archive.head.Heads)
++	if err != nil {
++		return result, err
++	}
++	var snapshot *pb.SnapshotWithType
++	if disposition == FixedSchemaPersistedMatch {
++		// Reuse the same owned copied rows, not a cache/SmartBlock/open fallback.
++		st, count, replayErr := replayFixedSchemaTree(ctx, scope, first.schema, expected.RootRawChange, definition.Key.SmartblockType(), definition.Key.InternalKey())
++		if replayErr != nil || count < 2 {
++			return result, errors.Join(ErrFixedSchemaStorage, replayErr)
++		}
++		raw := pbc.NewConverter(st, false).Convert(definition.Key.SmartblockType().ToProto())
++		snapshot = &pb.SnapshotWithType{}
++		if len(raw) == 0 {
++			return result, ErrFixedSchemaStorage
++		}
++		if err := proto.Unmarshal(raw, snapshot); err != nil {
++			return result, err
++		}
++		if snapshot.Snapshot == nil || snapshot.Snapshot.Data == nil ||
++			snapshot.SbType != definition.Key.SmartblockType().ToProto() || snapshot.Snapshot.Data.Key != definition.Key.InternalKey() {
++			return result, ErrFixedSchemaStorage
++		}
++	}
++	last, err := rereadFixedSchemaSnapshot(ctx, scope, result.ObjectID, archive.RootRawChange.Id)
++	if err != nil {
++		return result, err
++	}
++	current, err := captureFixedSchemaScope(spc)
++	if err != nil {
++		return result, err
++	}
++	if !scope.same(current) || !first.same(last) {
++		return result, ErrFixedSchemaChanged
++	}
++	if err := ctx.Err(); err != nil {
++		return result, err
++	}
++	result.Disposition = disposition
++	if disposition == FixedSchemaPersistedMatch {
++		result.snapshot = snapshot
++	}
++	return result, nil
++}
++
++// Structural expectations are derived from the actual compiled original bundle,
++// never a caller-supplied layout/format/readiness boolean. Full source-versus-
++// target snapshot compatibility is a separate comparison by the archive owner.
++func originalOwnedAnnotationBundledDefinition(request domain.UniqueKey) (FixedSchemaDefinition, error) {
++	if request == nil {
++		return FixedSchemaDefinition{}, ErrFixedSchemaInvalidDefinition
++	}
++	key, err := domain.UnmarshalUniqueKey(request.Marshal())
++	if err != nil || key == nil || key.SmartblockType() != request.SmartblockType() || key.InternalKey() != request.InternalKey() {
++		return FixedSchemaDefinition{}, ErrFixedSchemaInvalidDefinition
++	}
++	required := domain.NewDetails()
++	required.SetString(bundle.RelationKeyUniqueKey, key.Marshal())
++	switch key.SmartblockType() {
++	case coresb.SmartBlockTypeRelation:
++		original, err := bundle.GetRelation(domain.RelationKey(key.InternalKey()))
++		if err != nil || original == nil || original.Key != key.InternalKey() || original.Name == "" {
++			return FixedSchemaDefinition{}, errors.Join(ErrFixedSchemaInvalidDefinition, err)
++		}
++		required.SetString(bundle.RelationKeyName, original.Name)
++		required.SetString(bundle.RelationKeySourceObject, domain.RelationKey(original.Key).BundledURL())
++		required.SetInt64(bundle.RelationKeyLayout, int64(model.ObjectType_relation))
++		required.SetInt64(bundle.RelationKeyRelationFormat, int64(original.Format))
++		required.SetInt64(bundle.RelationKeyRevision, original.Revision)
++	case coresb.SmartBlockTypeObjectType:
++		original, err := bundle.GetType(domain.TypeKey(key.InternalKey()))
++		if err != nil || original == nil || original.Key != key.InternalKey() || original.Name == "" {
++			return FixedSchemaDefinition{}, errors.Join(ErrFixedSchemaInvalidDefinition, err)
++		}
++		required.SetString(bundle.RelationKeyName, original.Name)
++		required.SetString(bundle.RelationKeySourceObject, domain.TypeKey(original.Key).BundledURL())
++		required.SetInt64(bundle.RelationKeyLayout, int64(model.ObjectType_objectType))
++		required.SetInt64(bundle.RelationKeyRecommendedLayout, int64(original.Layout))
++		required.SetInt64(bundle.RelationKeyRevision, original.Revision)
++	default:
++		return FixedSchemaDefinition{}, fmt.Errorf("%w: not an original bundled schema", ErrFixedSchemaInvalidDefinition)
++	}
++	return FixedSchemaDefinition{Key: key, Required: required}, nil
++}
+--- /dev/null
++++ b/core/pinkha/annotationschema/definition/definition.go
+@@ -0,0 +1,74 @@
++// Package definition owns the immutable original annotation schema values.
++// Every call returns owned data. No application, registrar, permission, mutable
++// native object or completion capability is imported or returned here.
++package definition
++
++import (
++	"github.com/anyproto/anytype-heart/core/block/object/objectcreator"
++	"github.com/anyproto/anytype-heart/core/domain"
++	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
++	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
++	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++)
++
++const Protocol = "pinkha.torah.annotation/1"
++const TypeUniqueKey = "ot-pinkhatorahannotationv1"
++
++var relationNames = [...]struct{ key, name string }{
++	{"pinkhaTorahAnnotationProtocol", "Torah annotation protocol"},
++	{"pinkhaTorahAnnotationClassification", "Torah annotation classification"},
++	{"pinkhaTorahAnnotationNamespace", "Torah annotation namespace"},
++	{"pinkhaTorahAnnotationUUID", "Torah annotation UUID"},
++	{"pinkhaTorahAnnotationCreationDestination", "Torah annotation creation destination"},
++	{"pinkhaTorahAnnotationCreationAccount", "Torah annotation creation account"},
++	{"pinkhaTorahAnnotationCreationSpace", "Torah annotation creation Space"},
++	{"pinkhaTorahAnnotationCreationMessageID", "Torah annotation creation message ID"},
++	{"pinkhaTorahAnnotationCreationMutationID", "Torah annotation creation mutation ID"},
++	{"pinkhaTorahAnnotationCreationRevision", "Torah annotation creation revision"},
++	{"pinkhaTorahAnnotationCreationSourceDigest", "Torah annotation creation source digest"},
++	{"pinkhaTorahAnnotationCreationPayloadDigest", "Torah annotation creation payload digest"},
++	{"pinkhaTorahAnnotationAppliedMessageID", "Torah annotation applied message ID"},
++	{"pinkhaTorahAnnotationAppliedMutationID", "Torah annotation applied mutation ID"},
++	{"pinkhaTorahAnnotationAppliedRevision", "Torah annotation applied revision"},
++	{"pinkhaTorahAnnotationAppliedSourceDigest", "Torah annotation applied source digest"},
++	{"pinkhaTorahAnnotationAppliedPayloadDigest", "Torah annotation applied payload digest"},
++}
++
++// Definitions supplies new owned values on every call. Fixed native keys, not
++// display names, determine identity. A renamed definition is conservatively a
++// structural mismatch; this read-only component never renames or repairs it.
++func Definitions() ([]objectcreator.FixedSchemaDefinition, error) {
++	result := make([]objectcreator.FixedSchemaDefinition, 0, len(relationNames)+1)
++	key, err := domain.UnmarshalUniqueKey(TypeUniqueKey)
++	if err != nil {
++		return nil, err
++	}
++	details := domain.NewDetails()
++	details.SetString(bundle.RelationKeyName, "Torah annotation")
++	details.SetInt64(bundle.RelationKeyLayout, int64(model.ObjectType_objectType))
++	details.SetInt64(bundle.RelationKeyRecommendedLayout, int64(model.ObjectType_basic))
++	result = append(result, objectcreator.FixedSchemaDefinition{Key: key, Required: details})
++	for _, relation := range relationNames {
++		key, err := domain.NewUniqueKey(coresb.SmartBlockTypeRelation, relation.key)
++		if err != nil {
++			return nil, err
++		}
++		details := domain.NewDetails()
++		details.SetString(bundle.RelationKeyName, relation.name)
++		details.SetInt64(bundle.RelationKeyLayout, int64(model.ObjectType_relation))
++		// Longtext is numeric zero. Its explicit presence is mandatory.
++		details.SetInt64(bundle.RelationKeyRelationFormat, int64(model.RelationFormat_longtext))
++		result = append(result, objectcreator.FixedSchemaDefinition{Key: key, Required: details})
++	}
++	return result, nil
++}
++
++// RelationNames returns an array value, never the private original storage.
++// The parent package uses its owned copy to preserve the existing private shape.
++func RelationNames() [len(relationNames)]struct{ Key, Name string } {
++	var result [len(relationNames)]struct{ Key, Name string }
++	for i, relation := range relationNames {
++		result[i].Key, result[i].Name = relation.key, relation.name
++	}
++	return result
++}
+--- a/core/pinkha/annotationschema/definition.go
++++ b/core/pinkha/annotationschema/definition.go
+@@ -5,60 +5,22 @@
+ 
+ import (
+ 	"github.com/anyproto/anytype-heart/core/block/object/objectcreator"
+-	"github.com/anyproto/anytype-heart/core/domain"
+-	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
+-	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
+-	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++	"github.com/anyproto/anytype-heart/core/pinkha/annotationschema/definition"
+ )
+ 
+-const Protocol = "pinkha.torah.annotation/1"
+-const TypeUniqueKey = "ot-pinkhatorahannotationv1"
++const Protocol = definition.Protocol
++const TypeUniqueKey = definition.TypeUniqueKey
+ 
+-var relationNames = [...]struct{ key, name string }{
+-	{"pinkhaTorahAnnotationProtocol", "Torah annotation protocol"},
+-	{"pinkhaTorahAnnotationClassification", "Torah annotation classification"},
+-	{"pinkhaTorahAnnotationNamespace", "Torah annotation namespace"},
+-	{"pinkhaTorahAnnotationUUID", "Torah annotation UUID"},
+-	{"pinkhaTorahAnnotationCreationDestination", "Torah annotation creation destination"},
+-	{"pinkhaTorahAnnotationCreationAccount", "Torah annotation creation account"},
+-	{"pinkhaTorahAnnotationCreationSpace", "Torah annotation creation Space"},
+-	{"pinkhaTorahAnnotationCreationMessageID", "Torah annotation creation message ID"},
+-	{"pinkhaTorahAnnotationCreationMutationID", "Torah annotation creation mutation ID"},
+-	{"pinkhaTorahAnnotationCreationRevision", "Torah annotation creation revision"},
+-	{"pinkhaTorahAnnotationCreationSourceDigest", "Torah annotation creation source digest"},
+-	{"pinkhaTorahAnnotationCreationPayloadDigest", "Torah annotation creation payload digest"},
+-	{"pinkhaTorahAnnotationAppliedMessageID", "Torah annotation applied message ID"},
+-	{"pinkhaTorahAnnotationAppliedMutationID", "Torah annotation applied mutation ID"},
+-	{"pinkhaTorahAnnotationAppliedRevision", "Torah annotation applied revision"},
+-	{"pinkhaTorahAnnotationAppliedSourceDigest", "Torah annotation applied source digest"},
+-	{"pinkhaTorahAnnotationAppliedPayloadDigest", "Torah annotation applied payload digest"},
++// Retain the original private array and field shape for every unchanged sibling.
++// The leaf accessor returns a new array value; no mutable storage is shared.
++var relationNames = func() [17]struct{ key, name string } {
++	var result [17]struct{ key, name string }
++	for i, relation := range definition.RelationNames() {
++		result[i].key, result[i].name = relation.Key, relation.Name
++	}
++	return result
++}()
++
++func Definitions() ([]objectcreator.FixedSchemaDefinition, error) {
++	return definition.Definitions()
+ }
+-
+-// Definitions supplies new owned values on every call. Fixed native keys, not
+-// display names, determine identity. A renamed definition is conservatively a
+-// structural mismatch; this read-only component never renames or repairs it.
+-func Definitions() ([]objectcreator.FixedSchemaDefinition, error) {
+-	result := make([]objectcreator.FixedSchemaDefinition, 0, len(relationNames)+1)
+-	key, err := domain.UnmarshalUniqueKey(TypeUniqueKey)
+-	if err != nil {
+-		return nil, err
+-	}
+-	details := domain.NewDetails()
+-	details.SetString(bundle.RelationKeyName, "Torah annotation")
+-	details.SetInt64(bundle.RelationKeyLayout, int64(model.ObjectType_objectType))
+-	details.SetInt64(bundle.RelationKeyRecommendedLayout, int64(model.ObjectType_basic))
+-	result = append(result, objectcreator.FixedSchemaDefinition{Key: key, Required: details})
+-	for _, relation := range relationNames {
+-		key, err := domain.NewUniqueKey(coresb.SmartBlockTypeRelation, relation.key)
+-		if err != nil {
+-			return nil, err
+-		}
+-		details := domain.NewDetails()
+-		details.SetString(bundle.RelationKeyName, relation.name)
+-		details.SetInt64(bundle.RelationKeyLayout, int64(model.ObjectType_relation))
+-		// Longtext is numeric zero. Its explicit presence is mandatory.
+-		details.SetInt64(bundle.RelationKeyRelationFormat, int64(model.RelationFormat_longtext))
+-		result = append(result, objectcreator.FixedSchemaDefinition{Key: key, Required: details})
+-	}
+-	return result, nil
+-}
