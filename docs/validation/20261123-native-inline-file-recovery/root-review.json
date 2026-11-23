@@ -1,0 +1,96 @@
+{
+  "observedUTC": "2026-11-23T05:24:59.379053+00:00",
+  "status": "PASS_INDEPENDENT_ORIGINAL_NATIVE_RECOVERY_EVIDENCE_ONLY",
+  "testedControllerCommit": "787d4213fdd82b960e57b9f12ffb2fed709a5bda",
+  "nativeSource": {
+    "any": {
+      "head": "b2cebd7ddf7f62379e59427b2f0f64d980b8fd9e",
+      "tree": "6d392a7857a4082cc918267302ff92977049ffe4",
+      "currentFilesVerified": 852,
+      "retainedFiles": 850,
+      "addedOnly": [
+        "internal/server/handlers_pinkha_migration_inline_file_recovery_child_test.go",
+        "internal/server/handlers_pinkha_migration_inline_file_recovery_test.go"
+      ]
+    },
+    "sdk": {
+      "head": "7dbab79b5c607077c0f4eebce942dcecd710551a",
+      "tree": "8b9df2cdcefb5aee3973df11a326652f5a2378f4",
+      "currentFilesVerified": 683,
+      "retainedFiles": 683,
+      "addedOnly": []
+    }
+  },
+  "copiedOriginalFilesVerified": 76,
+  "trackedGitInputsVerified": 1535,
+  "frozenFixtureCopiesMatchActualNativeInputs": true,
+  "oldNativeProductFilesChanged": 0,
+  "oldTestMethodsRerun": 0,
+  "firstCompilerFailurePreserved": true,
+  "repairScope": "Only new fixture method input renamed prepareInput; full native byte comparison verified",
+  "newParentMethodsActuallyPassed": 2,
+  "namedOriginalStartPassPairs": 2,
+  "actualOwnedChildProcesses": 5,
+  "childHelperInvocations": 5,
+  "childHelperNormalPassesExcludedFromProductCount": 2,
+  "actualSIGKILLs": 3,
+  "actualLostClientAcknowledgements": 1,
+  "explicitNativeReadbacks": 10,
+  "additionalLossBoundaryNativeReadback": 1,
+  "normalCleanupProcessesExcludedFromCrashProof": 2,
+  "privateOriginalLogHashesVerified": 5,
+  "privateRawLogsOrWalletKeysCopied": false,
+  "cases": [
+    {
+      "method": "TestPreparedInlineFileActualLostHTTPAcknowledgementRecovery",
+      "ownedPIDs": [
+        2173610,
+        2173617
+      ],
+      "actualSIGKILLs": 1,
+      "ordinaryCleanupProcesses": 1,
+      "explicitNativeReadbacks": 4,
+      "additionalLossBoundaryNativeReadback": 1,
+      "originalSpecSHA256": "ef85511b2d8ae776b4d76086226829b2b1386a6dcf49ef28043054f565d41907",
+      "contentBytes": 4095,
+      "contentSHA256": "02eb925ab7d50a3333adc330ce64d365f863e21a4c9605b5455211c65f600cb1",
+      "finalNativeRows": 1
+    },
+    {
+      "method": "TestPreparedInlineFileActualProcessCrashRecovery",
+      "ownedPIDs": [
+        2173568,
+        2173598,
+        2173604
+      ],
+      "actualSIGKILLs": 2,
+      "ordinaryCleanupProcesses": 1,
+      "explicitNativeReadbacks": 6,
+      "additionalLossBoundaryNativeReadback": 0,
+      "originalSpecSHA256": "5e76a057678f1edcb35ef46c67710b3e6d9951675c51214725fa75a5a69c0860",
+      "contentBytes": 4095,
+      "contentSHA256": "02eb925ab7d50a3333adc330ce64d365f863e21a4c9605b5455211c65f600cb1",
+      "finalNativeRows": 1
+    }
+  ],
+  "binary": {
+    "path": "/mnt/development/projects/evidence/inline-recovery-20261123/attempt2/qualified-products/inline-recovery.test",
+    "bytes": 94666781,
+    "sha256": "cca90784568f7f2e551d4266bf3cc1c90082fea76eceafcc2dce6b6a15e73084",
+    "actualBuildInfoDependencyCount": 145,
+    "buildInfoSHA256": "ec7557186b2bcf6380af16b0e9791a37516a20e541d1136b5710877c4689887f"
+  },
+  "originalGoExecutionLogSHA256": "dc1d4f0b0177b53ec0638351f32aac729deccac2007551388a7782d8ef4b4ff3",
+  "authorAuditSHA256": "4eaa3513d0a5b2be04d64a6084e28e8ceb710aea7ec6cea2117a483199888664",
+  "qualificationSHA256": "986b9a61c81311c128eed5be653548300097c2cd6d384f4d5f8f175b41cd436e",
+  "limits": {
+    "Apple": false,
+    "SwiftClient": false,
+    "powerLoss": false,
+    "networkRecovery": false,
+    "notificationOutbox": false,
+    "wholeSpaceSnapshot": false,
+    "generalFileCapability": 0,
+    "fullMigration": false
+  }
+}

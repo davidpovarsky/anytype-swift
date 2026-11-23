@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
-  "observedUTC": "2026-11-23T05:20:44.973800+00:00",
-  "previousPublishedSharedHead": "4eb4d17f03b36e7d3db1123ec74714d9062b3e46",
-  "integratedSourceHead": "f145ae43ff5f025e8728ba4a20971f5584b714d6",
+  "observedUTC": "2026-11-23T05:28:36.991813+00:00",
+  "previousPublishedSharedHead": "d53b8e93f27818b06e25e18496107f1ec30a90cc",
+  "integratedSourceHead": "9ba0578457eceffa1286c7386efc03155e836fbb",
   "owners": {
     "root": "Shared integration, publication, Asana and sole consolidated observer for four CI runs; SDK terminal audit",
     "acceptance_map": "UI/Release terminal artifact audits; independent reviews and isolated SDK retained-control component",
@@ -242,6 +242,34 @@
       "rootReview": "docs/validation/20261123-page154-known-simulator/root-review.json",
       "rootReviewSHA256": "224c88c03f03a88d430701b4f88df5f0e321233e0c433fd1f063f9cc6355420f",
       "actualPageAcceptance": false
+    },
+    "nativeInlineRecovery": {
+      "actualNewParentMethods": 2,
+      "distinctOwnedChildProcesses": 5,
+      "actualSIGKILLs": 3,
+      "actualLostHTTPAcknowledgements": 1,
+      "explicitNativeReadbacks": 10,
+      "additionalLossBoundaryReadback": 1,
+      "fixtureBytes": 4095,
+      "sourceInputs": 1535,
+      "copiedOriginalFiles": 76,
+      "sourceAnyCommit": "b2cebd7ddf7f62379e59427b2f0f64d980b8fd9e",
+      "sourceSDKCommit": "7dbab79b5c607077c0f4eebce942dcecd710551a",
+      "rootReview": "docs/validation/20261123-native-inline-file-recovery/root-review.json",
+      "rootReviewSHA256": "4579453836b6b6092d67ccb0b51eec23c51d21ed058d05a059960f6775ea27f8",
+      "oldMethodsRerun": 0,
+      "generalFileCapability": 0,
+      "fullMigrationAcceptance": false
+    },
+    "sdkCurrentAppSourceAnalysis": {
+      "status": "READ_ONLY_SOURCE_COMPATIBILITY_ONLY",
+      "review": "docs/validation/20261123-sdk06-current-app-source-analysis/review.json",
+      "reviewSHA256": "dfcfc23ac6d57d8334d3df4a85e524246604623600f5f6808685a2b5cbb1bfe4",
+      "producerModuleFiles": 116,
+      "originalEngineIntegrationKitFilesUnchanged": 207,
+      "currentEngineIntegrationKitFiles": 209,
+      "compatibleCacheInputs": 4,
+      "actualBuilds": 0
     }
   },
   "boundaries": [
