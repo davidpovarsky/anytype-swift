@@ -455,6 +455,16 @@ def qualified_kernel_profile_view(admission, files):
 
 def fixed_dependency_control_outcomes(kind, record, events, log_raw, methods):
     """Read only three fixed original batches; never turn snapshots into tests."""
+    if kind == "coherent-nested":
+        # The original child diagnostic shares the second method line. Retain
+        # its pinned raw bytes and the actual following unittest outcome.
+        require(hashlib.sha256(log_raw).hexdigest() ==
+                "27efe77166d4ec098b9008a4b3727c5dd49c55dd5922f513d67beca577aa8700",
+                "Original coherent nested diagnostic log differs")
+        diagnostic = b'COHERENT_ORIGINAL_CWD_CONTROL {"coherentOwnedPID": 2215159, "coherentReturnCode": 0, "defaultOriginalCwdFieldAbsent": true, "defaultOwnedPID": 2215162, "nestedCleanup": "PASS", "nestedGroupsChecked": 1, "originalBytesUnchangedAfterNestedCleanup": true, "originalCwdMatchesActualProcess": true, "originalSHA256": "52068f76fcc1faeaa601a3f6c485a9ad8686a0053bddd48240ef61a4efcd8a62", "productTestsExecuted": 0}\n'
+        require(log_raw.count(diagnostic + b"ok\n") == 1,
+                "Original coherent nested diagnostic and following ok differ")
+        log_raw = log_raw.replace(diagnostic, b"", 1)
     batches = unittest_batches(log_raw)
     require(len(batches) == 1 and batches[0]["count"] == len(methods)
             and [entry["name"] for entry in batches[0]["methods"]] ==

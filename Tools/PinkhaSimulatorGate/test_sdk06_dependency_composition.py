@@ -76,6 +76,19 @@ class DependencyCompositionControls(unittest.TestCase):
             changed_files[proof["receipt"]] = json.dumps(record).encode()
             with self.assertRaisesRegex(retained.RetainedControlError, "actual19"):
                 retained.post_profile_dependency_view(contract, changed_files)
+            proof = extension["batches"]["coherent-nested"]
+            record, events = (json.loads(files[proof[key]]) for key in ("receipt", "events"))
+            raw = files[proof["log"]]
+            for label, changed in (
+                ("diagnostic", raw.replace(b'"nestedCleanup": "PASS"', b'"nestedCleanup": "FAIL"', 1)),
+                ("missing_actual_ok", raw.replace(b"\nok\n", b"\n", 1)),
+                ("failed_terminal", raw.replace(b"\nOK\n", b"\nFAILED (errors=1)\n", 1)),
+            ):
+                self.assertNotEqual(changed, raw)
+                with self.subTest(original_log=label), self.assertRaisesRegex(
+                        retained.RetainedControlError, "Original coherent nested diagnostic log differs"):
+                    retained.fixed_dependency_control_outcomes("coherent-nested", record, events,
+                        changed, proof["methods"])
             proof = extension["batches"]["coherent-lookup"]
             record, events = (json.loads(files[proof[key]]) for key in ("receipt", "events"))
             events[-1]["event"] = "FAIL"
