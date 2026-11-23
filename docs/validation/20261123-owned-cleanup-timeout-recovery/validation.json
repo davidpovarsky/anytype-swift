@@ -1,0 +1,23 @@
+{
+  "acceptance": "NOT_RUN",
+  "apple_tests_executed": 0,
+  "base": "c8839d7ef090c95197443227e4c51fac471a07e6",
+  "cleanup_budget_seconds": 10,
+  "log_sha256": "48651d44836c2b237ae06980521a1501fa38cdb1cb5532501b03455a545e254a",
+  "max_probe_seconds": 2,
+  "return_code": 0,
+  "source_classification": "DOWNSTREAM_CONTROLLER",
+  "source_sha256": {
+    "Tools/PinkhaSimulatorGate/run_owned_single_lane.py": "9d75400569a81d64df435fcbe1e3deaeac2fecfef6423690257a127ed07ae5f2",
+    "Tools/PinkhaSimulatorGate/test_owned_cleanup_timeout_recovery.py": "1c31d9675d5072186d49ee197d13691d5cbc84fbc4e25431d421f37924f7a77b"
+  },
+  "test_command": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_owned_cleanup_timeout_recovery"
+  ],
+  "utc": "2026-11-23T00:12:20.958851+00:00"
+}
