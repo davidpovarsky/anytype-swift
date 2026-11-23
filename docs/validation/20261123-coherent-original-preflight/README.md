@@ -58,3 +58,11 @@ a late zero-member observation. A focused eighth control checks those fields
 while preserving the original create timeout and original command JSON.
 The first seven controls retain their actual source-bound attempt1 evidence;
 they are not rerun for this metadata-only addition.
+
+An optional prior batch cleanup report may be incomplete after the earlier
+worker failed. Unreadable/malformed prior proof is retained as
+UNUSABLE_PRIOR_REPORT and cannot grant reuse; the independent current ownership
+journal still permits the unchanged scoped fallback cleanup. The original bad
+report is not overwritten. Cancellation is not swallowed by this admission
+boundary. One additional focused control covers that fallback, with the eight
+earlier control methods retained without rerun.

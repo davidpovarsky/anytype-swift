@@ -270,5 +270,41 @@ class CoherentOriginalPreflightControls(unittest.TestCase):
             self.assertNotIn("quiescence_failure", original_record)
 
 
+    def test_unreadable_optional_batch_proof_records_observation_and_uses_owned_fallback(self):
+        for mode in ("truncated", "wrong-shape"):
+            with self.subTest(mode=mode), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp); machine = Machine(root)
+                prepare_case(root, machine)
+                _, known, _ = owned.admitted_journal(root / "preflight", BINDING)
+                intent = dict(protocol=original.PROTOCOL, profile=owned.batch.COHERENT_HEART_PROFILE,
+                    source_sha=original.SOURCE, control_source_sha=BINDING["source_sha"],
+                    run_id=BINDING["run_id"], run_attempt=BINDING["run_attempt"],
+                    continuation=original.NAME, build_origin=original.origin_fields(), preflight_devices=known)
+                owned.save(root / "batch-intent.json", intent)
+                owned.save(root / "execution.json", dict(intent, cleanup={"status": "PASS"}))
+                raw = b'{"status":' if mode == "truncated" else b'[]'
+                (root / "batch-cleanup.json").write_bytes(raw)
+                calls = []
+                def fallback(current_intent, directory):
+                    calls.append(current_intent)
+                    self.assertEqual(current_intent["source_sha"], BINDING["source_sha"])
+                    self.assertEqual(current_intent["baseline_udids"], [BASE])
+                    self.assertEqual([row["lane"] for row in current_intent["lane_devices"]],
+                                     ["preflight-iphone", "preflight-ipad"])
+                    report = {"status": "PASS", "devices": [], "synthetic_adapter_control": True}
+                    owned.save(directory / "batch-cleanup.json", report)
+                    return report
+                with mock.patch.object(owned.subprocess, "check_output", return_value=BINDING["source_sha"] + "\n"):
+                    cleaned = owned.cleanup(root, root, BINDING, host=lambda: None, policy=fallback)
+                self.assertEqual(cleaned["status"], "PASS")
+                self.assertEqual(cleaned["prior_batch_cleanup_admission"]["status"], "UNUSABLE_PRIOR_REPORT")
+                self.assertEqual(len(calls), 1)
+                self.assertEqual((root / "batch-cleanup.json").read_bytes(), raw)
+        with mock.patch.object(owned, "_admit_prior_batch_cleanup", side_effect=KeyboardInterrupt("cancel")):
+            with self.assertRaises(KeyboardInterrupt):
+                owned.prior_batch_cleanup(Path("."), BINDING, [], 0)
+
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -268,7 +268,7 @@ def admitted_journal(directory, binding):
     return dict(intent, lane_devices=admitted), known, attempted
 
 
-def prior_batch_cleanup(evidence, binding, known, attempted):
+def _admit_prior_batch_cleanup(evidence, binding, known, attempted):
     """Admit only this current continuation's exact already-cleaned owned IDs."""
     paths = [evidence / name for name in ("batch-intent.json", "execution.json", "batch-cleanup.json")]
     if not all(path.is_file() and not path.is_symlink() for path in paths) or len(known) != attempted:
@@ -303,6 +303,18 @@ def prior_batch_cleanup(evidence, binding, known, attempted):
                 owned_udids=[row["udid"] for row in known], new_cleanup_commands=0)
 
 
+def prior_batch_cleanup(evidence, binding, known, attempted, *, observation=None):
+    """Unusable optional prior proof cannot block independently owned cleanup."""
+    observation = {} if observation is None else observation
+    try:
+        result = _admit_prior_batch_cleanup(evidence, binding, known, attempted)
+        observation["status"] = "ADMITTED" if result is not None else "NOT_ADMITTED"
+        return result
+    except (OSError, ValueError, RuntimeError, TypeError, AttributeError, KeyError) as error:
+        observation.update(status="UNUSABLE_PRIOR_REPORT", error_type=type(error).__name__, error=str(error))
+        return None
+
+
 def cleanup(control, evidence, binding, *, policy=batch.cleanup_owned, host=actual_host):
     directory = evidence / "preflight"
     directory.mkdir(parents=True, exist_ok=True)
@@ -327,7 +339,9 @@ def cleanup(control, evidence, binding, *, policy=batch.cleanup_owned, host=actu
                 head = subprocess.check_output(["git", "-C", str(control), "rev-parse", "HEAD"],
                     text=True, timeout=30).strip()
                 require(head == binding["source_sha"], "Cleanup controller checkout differs")
-                prior = prior_batch_cleanup(evidence, binding, known, attempted)
+                admission = {}
+                receipt["prior_batch_cleanup_admission"] = admission
+                prior = prior_batch_cleanup(evidence, binding, known, attempted, observation=admission)
                 if prior is not None:
                     receipt.update(status="PASS", prior_batch_cleanup=prior, cleanup_commands=0)
                     receipt["finished_at"] = batch.now()
