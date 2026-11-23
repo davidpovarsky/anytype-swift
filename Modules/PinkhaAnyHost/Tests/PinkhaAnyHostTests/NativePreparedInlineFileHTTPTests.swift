@@ -35,6 +35,7 @@ final class NativePreparedInlineFileHTTPTests: XCTestCase, @unchecked Sendable {
                 planID: AnyContentDigest.sha256(Data(("swift-inline-http-plan|" + handshake.nonce).utf8)),
                 planSHA256: AnyContentDigest.sha256(Data("inline-file-cases:empty+4095/v1".utf8)))
             var observations: [AnyJSON] = []
+            var firstCompleted: AnyPreparedInlineFileReceipt?
             for (label, content, name, mime) in [
                 ("empty", Data(), "", ""),
                 ("maximum", Data((0..<4095).map { UInt8($0 % 256) }), "קובץ 🧪.bin", "application/octet-stream")
@@ -43,8 +44,16 @@ final class NativePreparedInlineFileHTTPTests: XCTestCase, @unchecked Sendable {
                     sourceKey: "swift-inline-" + label + "-" + handshake.nonce,
                     ownerObjectID: handshake.ownerObjectID, name: name, mime: mime, content: content)
                 let prepared = try await migration.prepare(intent, authorize: {})
-                try require(prepared.stage == .filePrepared && prepared.outcome == .prepared,
-                            "Fresh prepared file was already visible or used another stage.")
+                try require(prepared.outcome == .prepared, "Fresh inline intent was already committed.")
+                if let first = firstCompleted {
+                    try require(prepared.stage == .fileRootCommitted && prepared.objectID == first.objectID,
+                                "Second file must reuse the already committed owner payload root.")
+                    try require(prepared.fileID != first.fileID && prepared.changeID != first.changeID &&
+                                prepared.fingerprint != first.fingerprint,
+                                "Different source files must keep distinct reserved row identities.")
+                } else {
+                    try require(prepared.stage == .filePrepared, "First owner payload root must be prepared.")
+                }
                 let complete = try await migration.commit(prepared, authorize: {})
                 try require(complete.isCompleteAndCurrent, "Native file did not complete.")
                 try require(complete.fileID == prepared.fileID && complete.objectID == prepared.objectID &&
@@ -53,6 +62,7 @@ final class NativePreparedInlineFileHTTPTests: XCTestCase, @unchecked Sendable {
                 let status = try await migration.status(intent, authorize: {})
                 let retry = try await migration.commit(prepared, authorize: {})
                 try require(status == complete && retry == complete, "Completed retry changed the native file.")
+                if firstCompleted == nil { firstCompleted = complete }
                 observations.append(.object([
                     "label": .string(label), "intentId": .string(intent.intentID),
                     "storeId": .string(binding.storeID), "planId": .string(binding.planID),

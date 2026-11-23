@@ -1,0 +1,51 @@
+{
+  "actualTerminals": [
+    [
+      "NativePreparedInlineFileHTTPTests.testRealNativeInlineFilesRoundTripThroughThePublicSwiftClient",
+      "failed"
+    ]
+  ],
+  "binariesBefore": [
+    {
+      "path": "/mnt/development/build-cache/anytype-inline-swift-20261123/out/Products/Debug-linux-aarch64/PinkhaAnyHostTests-test-runner",
+      "sha256": "08abfb193bf27be0bc2cf9037e75c7439e6d6336c6fddca10db9ac7ed828a6e4",
+      "size": 541984
+    },
+    {
+      "path": "/mnt/development/build-cache/anytype-inline-swift-20261123/out/Products/Debug-linux-aarch64/PinkhaAnyHostTests.so",
+      "sha256": "3c6bd7ad012ffc83252348748d4492aad4228148cca9304263628d143454b49f",
+      "size": 29578832
+    }
+  ],
+  "command": [
+    "swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-wave15-inline-http-20261123/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/mnt/development/build-cache/anytype-inline-swift-20261123",
+    "--cache-path",
+    "/mnt/development/build-cache/swift-package-cache",
+    "--disable-automatic-resolution",
+    "-j",
+    "1",
+    "-Xswiftc",
+    "-DPINKHA_PREPARED_INLINE_HTTP_ACCEPTANCE",
+    "--skip-build",
+    "--filter",
+    "NativePreparedInlineFileHTTPTests"
+  ],
+  "elapsedSeconds": 10.995,
+  "error": "Swift live HTTP XCTest failed",
+  "errorType": "AssertionError",
+  "exitCode": 1,
+  "finishedAt": "2026-11-23T01:15:37.983316+00:00",
+  "handshakeSHA256": "3c2d0ec1eeed7cc8509fa8d82f2d90164507344ef3e1e55cebfb202d09c2fdd4",
+  "logSHA256": "1e768891976f0f3f9e8944c20cc355ebb22c54f08ef3c336861259b3fefb6684",
+  "nonce": "9aef2c0e09eef42d1b966a5af5ba7d87",
+  "registrationReceiptSHA256": "34c7cf4a5ce98a3eeb849c529497b3a52f752fd056c6f31f40d872e4e5332bb6",
+  "sourceAndBinaryUnchanged": true,
+  "sourceCommit": "875968c2a6c0b76a18ab69ed365aef55bcf293d5",
+  "startedAt": "2026-11-23T01:15:24.534083+00:00",
+  "status": "FAIL"
+}
