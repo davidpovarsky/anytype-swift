@@ -1,0 +1,44 @@
+{
+  "exclusion": "Only the exact source.diff evidence is excluded from whitespace lint: unified-diff empty context lines intentionally contain their leading space. All runtime/test/other metadata still checked; original diff bytes not normalized.",
+  "firstResult": {
+    "content": [
+      {
+        "text": "{\"ok\":false,\"interpreter\":\"powershell\",\"sudo\":false,\"cwd\":null,\"cleanup\":true,\"command\":[\"C:\\\\WINDOWS\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.EXE\",\"-NoProfile\",\"-NonInteractive\",\"-ExecutionPolicy\",\"Bypass\",\"-File\",\"C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_d06bd5e13988407b9ea93d18c77d4022\\\\sentinelx_bootstrap.ps1\",\"C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_d06bd5e13988407b9ea93d18c77d4022\\\\script.ps1\"],\"output\":\"Traceback (most recent call last):\\n  File \\\"<stdin>\\\", line 133, in <module>\\n  File \\\"<stdin>\\\", line 15, in git\\nAssertionError: (('diff', '--cached', '--check'), '')\\nPage diagnostic source freeze v2 failed\\r\\nAt C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_d06bd5e13988407b9ea93d18c77d4022\\\\script.ps1:151 \\r\\nchar:25\\r\\n+ ... $LASTEXITCODE -ne 0){throw 'Page diagnostic source freeze v2 failed'}\\r\\n+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\r\\n    + CategoryInfo          : OperationStopped: (Page diagnostic source freeze v2 failed:String) [], RuntimeException\\r\\n    + FullyQualifiedErrorId : Page diagnostic source freeze v2 failed\",\"duration\":1.55,\"returncode\":1,\"hub_request_id\":\"hreq_d30957c7039748e2\"}",
+        "type": "text"
+      }
+    ],
+    "isError": false,
+    "structuredContent": {
+      "cleanup": true,
+      "command": [
+        "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_d06bd5e13988407b9ea93d18c77d4022\\sentinelx_bootstrap.ps1",
+        "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_d06bd5e13988407b9ea93d18c77d4022\\script.ps1"
+      ],
+      "cwd": null,
+      "duration": 1.55,
+      "hub_request_id": "hreq_d30957c7039748e2",
+      "interpreter": "powershell",
+      "ok": false,
+      "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 133, in <module>\n  File \"<stdin>\", line 15, in git\nAssertionError: (('diff', '--cached', '--check'), '')\nPage diagnostic source freeze v2 failed\r\nAt C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_d06bd5e13988407b9ea93d18c77d4022\\script.ps1:151 \r\nchar:25\r\n+ ... $LASTEXITCODE -ne 0){throw 'Page diagnostic source freeze v2 failed'}\r\n+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (Page diagnostic source freeze v2 failed:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : Page diagnostic source freeze v2 failed",
+      "returncode": 1,
+      "sudo": false
+    }
+  },
+  "lint": {
+    "check": {
+      "returncode": 2,
+      "stderr": "",
+      "stdout": "docs/validation/20261123-page-apply-observation/source.diff:10: trailing whitespace.\n+ \ndocs/validation/20261123-page-apply-observation/source.diff:57: trailing whitespace.\n+ \ndocs/validation/20261123-page-apply-observation/source.diff:189: trailing whitespace.\n+ \ndocs/validation/20261123-page-apply-observation/source.diff:192: trailing whitespace.\n+ \ndocs/validation/20261123-page-apply-observation/source.diff:196: trailing whitespace.\n+ \n"
+    },
+    "free": 1105973248,
+    "head": "b15cd58e376461b066df7fd1639946bb8dca5848",
+    "status": "M  Anytype/Sources/Pinkha/Diagnostics/PinkhaSemanticAnchorMountedObserver.swift\nM  Anytype/Sources/Pinkha/Editor/PinkhaSemanticAnchorSelectionCoordinator.swift\nA  Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorApplyObservation.swift\nM  Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorClient.swift\nA  Modules/ProtobufMessages/Tests/ProtobufMessagesTests/PinkhaHeartSemanticAnchorObservationTests.swift\nA  docs/validation/20261123-page-apply-observation/PROTOCOL.md\nA  docs/validation/20261123-page-apply-observation/author-first-preflight-failure.json\nA  docs/validation/20261123-page-apply-observation/exact-source-inverses.json\nA  docs/validation/20261123-page-apply-observation/original-failure-reference.json\nA  docs/validation/20261123-page-apply-observation/source-inputs.json\nA  docs/validation/20261123-page-apply-observation/source-review.json\nA  docs/validation/20261123-page-apply-observation/source.diff\n"
+  },
+  "retained_raw_diff_sha256": "3929e5e4050323e7955a22f25b86e4bd69eb3684d431d8e65ee021f71615aa53"
+}

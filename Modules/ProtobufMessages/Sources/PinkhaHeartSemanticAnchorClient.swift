@@ -19,8 +19,10 @@ public final class PinkhaHeartSemanticAnchorPending {
     fileprivate let accountID: String
     fileprivate let generation: UUID
     private var consumed = false
+    fileprivate var applyTrace = PinkhaHeartSemanticAnchorApplyObservation()
 
     public var marker: String { plan.request.marker }
+    public var applyObservation: PinkhaHeartSemanticAnchorApplyObservation { applyTrace }
 
     fileprivate init(plan: PinkhaHeartSemanticAnchorPlan, lease: PinkhaNativeReadLease) {
         self.plan = plan; self.lease = lease
@@ -109,21 +111,27 @@ public final class PinkhaHeartSemanticAnchorClient {
 
     public func apply(_ pending: PinkhaHeartSemanticAnchorPending) async throws
         -> PinkhaHeartSemanticAnchorVerifiedCapture {
+        pending.applyTrace.record(.checkingPreflight)
         try Task.checkCancellation()
         try pending.validateUnconsumed()
         try pending.validateOwner()
         guard io.canPublish() else { throw PinkhaHeartSemanticAnchorError.unavailablePublication }
+        pending.applyTrace.record(.readingRuntime)
         let version = try await io.runtimeVersion()
+        pending.applyTrace.record(.checkingRuntime)
         try pending.validateOwner()
         guard heartBytesEqual(version, PinkhaHeartSemanticAnchorProfile.runtimeVersion) else {
             throw PinkhaHeartSemanticAnchorError.unsupportedRuntime
         }
+        pending.applyTrace.record(.readingCurrent)
         let current = try await io.read(pending.plan.request.spaceID, pending.plan.request.objectID)
+        pending.applyTrace.record(.checkingCurrent)
         try pending.validateOwner()
         try pending.plan.verifyCurrent(current)
         try Task.checkCancellation()
         guard io.canPublish() else { throw PinkhaHeartSemanticAnchorError.unavailablePublication }
         try pending.consume()
+        pending.applyTrace.record(.consumed)
         // This is deliberately an owned, unstructured task. Cancelling the
         // caller after dispatch must not cancel normal ObjectShow readback.
         return try await Task { @MainActor in
@@ -134,29 +142,47 @@ public final class PinkhaHeartSemanticAnchorClient {
     private func finishQueuedCapture(_ pending: PinkhaHeartSemanticAnchorPending) async throws
         -> PinkhaHeartSemanticAnchorVerifiedCapture {
         do {
+            pending.applyTrace.record(.checkingQueuedOwner)
             try pending.validateOwner()
+            pending.applyTrace.record(.invokingNative)
             let raw = try await io.capture(pending.plan.request.encodedRequest())
+            pending.applyTrace.recordNativeReply(bytes: raw.count)
+            pending.applyTrace.record(.checkingCapturedOwner)
             try pending.validateOwner()
+            pending.applyTrace.record(.decodingReply)
             let reply = try PinkhaHeartSemanticAnchorAppliedReply.decode(raw, request: pending.plan.request)
+            pending.applyTrace.recordDecodedReply(eventBytes: reply.responseEvent.count)
+            pending.applyTrace.record(.validatingEvent)
             let event = try pending.plan.validatedEvent(reply)
+            pending.applyTrace.record(.checkingEventOwner)
             try pending.validateOwner()
             // Publish the unchanged returned native event through the original
             // Invocation handler. No synthetic reducer event is manufactured.
+            pending.applyTrace.record(.creatingPublicationFence)
             let fence = try PinkhaHeartSemanticAnchorPublicationFence(
                 lease: pending.lease, objectID: pending.plan.request.objectID, event: event)
+            pending.applyTrace.record(.publishing)
             let published = await PinkhaHeartSemanticAnchorPublication.$current.withValue(fence) {
                 await io.publish(event)
             }
+            pending.applyTrace.recordPublication(published)
             guard published else { throw PinkhaHeartSemanticAnchorError.uncertain }
+            pending.applyTrace.record(.checkingPublishedOwner)
             try pending.validateOwner()
+            pending.applyTrace.record(.readingReadback)
             let readback = try await io.read(pending.plan.request.spaceID, pending.plan.request.objectID)
+            pending.applyTrace.record(.checkingReadbackOwner)
             try pending.validateOwner()
+            pending.applyTrace.record(.validatingReadback)
             try pending.plan.verifyReadback(readback, receipt: reply.receipt)
+            pending.applyTrace.record(.verified)
             return .init(receipt: reply.receipt, generation: pending.generation)
         } catch let error as PinkhaHeartSemanticAnchorError {
+            pending.applyTrace.recordFailure(error)
             if case .nativeRefusal = error { throw error }
             throw PinkhaHeartSemanticAnchorError.uncertain
         } catch {
+            pending.applyTrace.recordFailure(error)
             throw PinkhaHeartSemanticAnchorError.uncertain
         }
     }

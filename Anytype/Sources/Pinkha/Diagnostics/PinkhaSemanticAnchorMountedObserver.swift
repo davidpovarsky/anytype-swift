@@ -24,6 +24,7 @@ final class PinkhaSemanticAnchorMountedObserver {
     private var documentPublications = 0
     private var marker: String?
     private var cancelledMarker: String?
+    private weak var pendingApply: PinkhaHeartSemanticAnchorPending?
     private var receipt: [String: Any]
     private var task: Task<Void, Never>?
 
@@ -95,7 +96,46 @@ final class PinkhaSemanticAnchorMountedObserver {
             try Fixture.require(active.phase == "CREATE_CONFIRMATION_VISIBLE" && active.cancellations == 1
                 && active.applyAttempts == 0 && active.marker == pending.marker, "unexpected-explicit-apply")
             active.applyAttempts += 1
+            active.pendingApply = pending
             try active.emit("APPLY_QUEUED")
+        }
+    }
+
+    /// A completed apply failure is distinct from an unreturned native await.
+    /// This records only the exact queued Pending; it never revalidates or
+    /// mutates the document, retries the operation, or replaces its error.
+    static func applyFailed(editor: EditorPageController,
+                            pending: PinkhaHeartSemanticAnchorPending, error: Error) {
+        guard let active, active.editor === editor, active.pendingApply === pending,
+              active.applyAttempts == 1,
+              ["APPLY_QUEUED", "MOUNTED_FAIL"].contains(active.phase) else { return }
+        let observation = pending.applyObservation
+        var values: [String: Any] = [
+            "protocolVersion": 1,
+            "phases": observation.phases.map(\.rawValue),
+            "phasesTruncated": observation.phasesTruncated,
+            "nativeReceiptDecoded": observation.nativeReceiptDecoded,
+            "returnedError": PinkhaHeartSemanticAnchorApplyObservation.classify(error).rawValue,
+            "observedAtApplyReturn": true,
+            "realTimeProgress": false
+        ]
+        if let value = observation.latestPhase { values["latestPhase"] = value.rawValue }
+        if let value = observation.nativeReplyBytes { values["nativeReplyBytes"] = value }
+        if let value = observation.decodedNativeOutcome { values["decodedNativeOutcome"] = value.rawValue }
+        if let value = observation.eventBytes { values["eventBytes"] = value }
+        if let value = observation.publicationReturned { values["publicationReturned"] = value }
+        if let value = observation.firstFailurePhase { values["firstFailurePhase"] = value.rawValue }
+        if let value = observation.firstFailure { values["firstFailure"] = value.rawValue }
+        if let semantic = error as? PinkhaHeartSemanticAnchorError,
+           case .nativeRefusal(let outcome) = semantic {
+            values["returnedNativeOutcome"] = outcome.rawValue
+        }
+        active.receipt["applyObservation"] = values
+        if active.phase == "MOUNTED_FAIL" {
+            // Preserve an earlier observer failure; append only this evidence.
+            try? active.emit("MOUNTED_FAIL")
+        } else {
+            active.fail(SemanticAnchorMountedError.invariant("apply-returned-error"))
         }
     }
 

@@ -1,0 +1,498 @@
+--- a/Anytype/Sources/Pinkha/Diagnostics/PinkhaSemanticAnchorMountedObserver.swift
++++ b/Anytype/Sources/Pinkha/Diagnostics/PinkhaSemanticAnchorMountedObserver.swift
+@@ -24,6 +24,7 @@
+     private var documentPublications = 0
+     private var marker: String?
+     private var cancelledMarker: String?
++    private weak var pendingApply: PinkhaHeartSemanticAnchorPending?
+     private var receipt: [String: Any]
+     private var task: Task<Void, Never>?
+ 
+@@ -95,7 +96,46 @@
+             try Fixture.require(active.phase == "CREATE_CONFIRMATION_VISIBLE" && active.cancellations == 1
+                 && active.applyAttempts == 0 && active.marker == pending.marker, "unexpected-explicit-apply")
+             active.applyAttempts += 1
++            active.pendingApply = pending
+             try active.emit("APPLY_QUEUED")
++        }
++    }
++
++    /// A completed apply failure is distinct from an unreturned native await.
++    /// This records only the exact queued Pending; it never revalidates or
++    /// mutates the document, retries the operation, or replaces its error.
++    static func applyFailed(editor: EditorPageController,
++                            pending: PinkhaHeartSemanticAnchorPending, error: Error) {
++        guard let active, active.editor === editor, active.pendingApply === pending,
++              active.applyAttempts == 1,
++              ["APPLY_QUEUED", "MOUNTED_FAIL"].contains(active.phase) else { return }
++        let observation = pending.applyObservation
++        var values: [String: Any] = [
++            "protocolVersion": 1,
++            "phases": observation.phases.map(\.rawValue),
++            "phasesTruncated": observation.phasesTruncated,
++            "nativeReceiptDecoded": observation.nativeReceiptDecoded,
++            "returnedError": PinkhaHeartSemanticAnchorApplyObservation.classify(error).rawValue,
++            "observedAtApplyReturn": true,
++            "realTimeProgress": false
++        ]
++        if let value = observation.latestPhase { values["latestPhase"] = value.rawValue }
++        if let value = observation.nativeReplyBytes { values["nativeReplyBytes"] = value }
++        if let value = observation.decodedNativeOutcome { values["decodedNativeOutcome"] = value.rawValue }
++        if let value = observation.eventBytes { values["eventBytes"] = value }
++        if let value = observation.publicationReturned { values["publicationReturned"] = value }
++        if let value = observation.firstFailurePhase { values["firstFailurePhase"] = value.rawValue }
++        if let value = observation.firstFailure { values["firstFailure"] = value.rawValue }
++        if let semantic = error as? PinkhaHeartSemanticAnchorError,
++           case .nativeRefusal(let outcome) = semantic {
++            values["returnedNativeOutcome"] = outcome.rawValue
++        }
++        active.receipt["applyObservation"] = values
++        if active.phase == "MOUNTED_FAIL" {
++            // Preserve an earlier observer failure; append only this evidence.
++            try? active.emit("MOUNTED_FAIL")
++        } else {
++            active.fail(SemanticAnchorMountedError.invariant("apply-returned-error"))
+         }
+     }
+ 
+--- a/Anytype/Sources/Pinkha/Editor/PinkhaSemanticAnchorSelectionCoordinator.swift
++++ b/Anytype/Sources/Pinkha/Editor/PinkhaSemanticAnchorSelectionCoordinator.swift
+@@ -157,6 +157,9 @@
+                 finish(id)
+                 presentMessage(PinkhaSemanticAnchorStrings.created)
+             } catch {
++#if DEBUG && targetEnvironment(simulator)
++                if let editor { PinkhaSemanticAnchorMountedObserver.applyFailed(editor: editor, pending: pending, error: error) }
++#endif
+                 guard activeID == id, owns(selection, focused: false) else { finish(id); return }
+                 finish(id)
+                 presentMessage(PinkhaSemanticAnchorStrings.message(for: error))
+--- a/Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorApplyObservation.swift
++++ b/Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorApplyObservation.swift
+@@ -0,0 +1,109 @@
++#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1
++import Foundation
++
++/// Diagnostic values only. This carries no request, native reply, receipt,
++/// account identity, content, authority, callback, or retry capability.
++public struct PinkhaHeartSemanticAnchorApplyObservation: Sendable {
++    public enum Phase: String, Equatable, Sendable {
++        case checkingPreflight
++        case readingRuntime
++        case checkingRuntime
++        case readingCurrent
++        case checkingCurrent
++        case consumed
++        case checkingQueuedOwner
++        case invokingNative
++        case checkingCapturedOwner
++        case decodingReply
++        case validatingEvent
++        case checkingEventOwner
++        case creatingPublicationFence
++        case publishing
++        case checkingPublishedOwner
++        case readingReadback
++        case checkingReadbackOwner
++        case validatingReadback
++        case verified
++    }
++
++    public enum Failure: String, Equatable, Sendable {
++        case invalidRequest
++        case limitExceeded
++        case selectionAlreadyLinked
++        case changedDocument
++        case retiredOwner
++        case unsupportedRuntime
++        case unavailablePublication
++        case invalidReply
++        case uncertain
++        case nativeRefusal
++        case cancellation
++        case other
++    }
++
++    public static let maximumPhaseCount = 32
++    public private(set) var phases: [Phase] = []
++    public private(set) var phasesTruncated = false
++    public private(set) var latestPhase: Phase?
++    public private(set) var nativeReplyBytes: Int?
++    public private(set) var decodedNativeOutcome: PinkhaHeartSemanticAnchorOutcome?
++    public private(set) var nativeReceiptDecoded = false
++    public private(set) var eventBytes: Int?
++    public private(set) var publicationReturned: Bool?
++    public private(set) var firstFailurePhase: Phase?
++    public private(set) var firstFailure: Failure?
++
++    public static func classify(_ error: Error) -> Failure {
++        guard let semantic = error as? PinkhaHeartSemanticAnchorError else {
++            return error is CancellationError ? .cancellation : .other
++        }
++        switch semantic {
++        case .invalidRequest: return .invalidRequest
++        case .limitExceeded: return .limitExceeded
++        case .selectionAlreadyLinked: return .selectionAlreadyLinked
++        case .changedDocument: return .changedDocument
++        case .retiredOwner: return .retiredOwner
++        case .unsupportedRuntime: return .unsupportedRuntime
++        case .unavailablePublication: return .unavailablePublication
++        case .invalidReply: return .invalidReply
++        case .uncertain: return .uncertain
++        case .nativeRefusal: return .nativeRefusal
++        }
++    }
++
++    mutating func record(_ phase: Phase) {
++        latestPhase = phase
++        guard phases.count < Self.maximumPhaseCount else {
++            phasesTruncated = true
++            return
++        }
++        phases.append(phase)
++    }
++
++    mutating func recordNativeReply(bytes: Int) {
++        nativeReplyBytes = bytes
++    }
++
++    mutating func recordDecodedReply(eventBytes: Int) {
++        decodedNativeOutcome = .applied
++        nativeReceiptDecoded = true
++        self.eventBytes = eventBytes
++    }
++
++    mutating func recordPublication(_ returned: Bool) {
++        publicationReturned = returned
++    }
++
++    /// Observe the original error before the existing uncertain conversion.
++    /// The original throw/rethrow path remains owned by the client.
++    mutating func recordFailure(_ error: Error) {
++        guard firstFailure == nil else { return }
++        firstFailurePhase = latestPhase
++        firstFailure = Self.classify(error)
++        if let semantic = error as? PinkhaHeartSemanticAnchorError,
++           case .nativeRefusal(let outcome) = semantic {
++            decodedNativeOutcome = outcome
++        }
++    }
++}
++#endif
+--- a/Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorClient.swift
++++ b/Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorClient.swift
+@@ -19,8 +19,10 @@
+     fileprivate let accountID: String
+     fileprivate let generation: UUID
+     private var consumed = false
++    fileprivate var applyTrace = PinkhaHeartSemanticAnchorApplyObservation()
+ 
+     public var marker: String { plan.request.marker }
++    public var applyObservation: PinkhaHeartSemanticAnchorApplyObservation { applyTrace }
+ 
+     fileprivate init(plan: PinkhaHeartSemanticAnchorPlan, lease: PinkhaNativeReadLease) {
+         self.plan = plan; self.lease = lease
+@@ -109,21 +111,27 @@
+ 
+     public func apply(_ pending: PinkhaHeartSemanticAnchorPending) async throws
+         -> PinkhaHeartSemanticAnchorVerifiedCapture {
++        pending.applyTrace.record(.checkingPreflight)
+         try Task.checkCancellation()
+         try pending.validateUnconsumed()
+         try pending.validateOwner()
+         guard io.canPublish() else { throw PinkhaHeartSemanticAnchorError.unavailablePublication }
++        pending.applyTrace.record(.readingRuntime)
+         let version = try await io.runtimeVersion()
++        pending.applyTrace.record(.checkingRuntime)
+         try pending.validateOwner()
+         guard heartBytesEqual(version, PinkhaHeartSemanticAnchorProfile.runtimeVersion) else {
+             throw PinkhaHeartSemanticAnchorError.unsupportedRuntime
+         }
++        pending.applyTrace.record(.readingCurrent)
+         let current = try await io.read(pending.plan.request.spaceID, pending.plan.request.objectID)
++        pending.applyTrace.record(.checkingCurrent)
+         try pending.validateOwner()
+         try pending.plan.verifyCurrent(current)
+         try Task.checkCancellation()
+         guard io.canPublish() else { throw PinkhaHeartSemanticAnchorError.unavailablePublication }
+         try pending.consume()
++        pending.applyTrace.record(.consumed)
+         // This is deliberately an owned, unstructured task. Cancelling the
+         // caller after dispatch must not cancel normal ObjectShow readback.
+         return try await Task { @MainActor in
+@@ -134,29 +142,47 @@
+     private func finishQueuedCapture(_ pending: PinkhaHeartSemanticAnchorPending) async throws
+         -> PinkhaHeartSemanticAnchorVerifiedCapture {
+         do {
++            pending.applyTrace.record(.checkingQueuedOwner)
+             try pending.validateOwner()
++            pending.applyTrace.record(.invokingNative)
+             let raw = try await io.capture(pending.plan.request.encodedRequest())
++            pending.applyTrace.recordNativeReply(bytes: raw.count)
++            pending.applyTrace.record(.checkingCapturedOwner)
+             try pending.validateOwner()
++            pending.applyTrace.record(.decodingReply)
+             let reply = try PinkhaHeartSemanticAnchorAppliedReply.decode(raw, request: pending.plan.request)
++            pending.applyTrace.recordDecodedReply(eventBytes: reply.responseEvent.count)
++            pending.applyTrace.record(.validatingEvent)
+             let event = try pending.plan.validatedEvent(reply)
++            pending.applyTrace.record(.checkingEventOwner)
+             try pending.validateOwner()
+             // Publish the unchanged returned native event through the original
+             // Invocation handler. No synthetic reducer event is manufactured.
++            pending.applyTrace.record(.creatingPublicationFence)
+             let fence = try PinkhaHeartSemanticAnchorPublicationFence(
+                 lease: pending.lease, objectID: pending.plan.request.objectID, event: event)
++            pending.applyTrace.record(.publishing)
+             let published = await PinkhaHeartSemanticAnchorPublication.$current.withValue(fence) {
+                 await io.publish(event)
+             }
++            pending.applyTrace.recordPublication(published)
+             guard published else { throw PinkhaHeartSemanticAnchorError.uncertain }
++            pending.applyTrace.record(.checkingPublishedOwner)
+             try pending.validateOwner()
++            pending.applyTrace.record(.readingReadback)
+             let readback = try await io.read(pending.plan.request.spaceID, pending.plan.request.objectID)
++            pending.applyTrace.record(.checkingReadbackOwner)
+             try pending.validateOwner()
++            pending.applyTrace.record(.validatingReadback)
+             try pending.plan.verifyReadback(readback, receipt: reply.receipt)
++            pending.applyTrace.record(.verified)
+             return .init(receipt: reply.receipt, generation: pending.generation)
+         } catch let error as PinkhaHeartSemanticAnchorError {
++            pending.applyTrace.recordFailure(error)
+             if case .nativeRefusal = error { throw error }
+             throw PinkhaHeartSemanticAnchorError.uncertain
+         } catch {
++            pending.applyTrace.recordFailure(error)
+             throw PinkhaHeartSemanticAnchorError.uncertain
+         }
+     }
+--- a/Modules/ProtobufMessages/Tests/ProtobufMessagesTests/PinkhaHeartSemanticAnchorObservationTests.swift
++++ b/Modules/ProtobufMessages/Tests/ProtobufMessagesTests/PinkhaHeartSemanticAnchorObservationTests.swift
+@@ -0,0 +1,225 @@
++#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1
++import Foundation
++import SwiftProtobuf
++import XCTest
++@testable import ProtobufMessages
++
++/// New diagnostic coverage only. I/O below is an explicit fixture; this does
++/// not invoke Lib, UIKit, the mounted editor, native storage, or a simulator.
++@MainActor
++final class PinkhaHeartSemanticAnchorObservationTests: XCTestCase {
++    func testPhaseDiagnosticsPreserveRealClientErrorsAndCallCounts() async throws {
++        typealias Observation = PinkhaHeartSemanticAnchorApplyObservation
++        let successPhases: [Observation.Phase] = [
++            .checkingPreflight, .readingRuntime, .checkingRuntime,
++            .readingCurrent, .checkingCurrent, .consumed, .checkingQueuedOwner,
++            .invokingNative, .checkingCapturedOwner, .decodingReply,
++            .validatingEvent, .checkingEventOwner, .creatingPublicationFence,
++            .publishing, .checkingPublishedOwner, .readingReadback,
++            .checkingReadbackOwner, .validatingReadback, .verified
++        ]
++        for scenario in ObservationFixture.Scenario.allCases {
++            let probe = try ObservationFixture(scenario: scenario)
++            let client = probe.client()
++            let pending = try client.prepare(probe.plan, lease: probe.lease)
++            if scenario == .preflightRetired { probe.retire() }
++            var returnedError: PinkhaHeartSemanticAnchorError?
++            do {
++                _ = try await client.apply(pending)
++                XCTAssertEqual(scenario, .verified)
++            } catch {
++                returnedError = try XCTUnwrap(error as? PinkhaHeartSemanticAnchorError)
++                XCTAssertNotEqual(scenario, .verified)
++            }
++            let value = pending.applyObservation
++            XCTAssertFalse(value.phasesTruncated)
++            let expectedPhase: Observation.Phase
++            let expectedOriginalFailure: Observation.Failure?
++            let expectedOutcome: PinkhaHeartSemanticAnchorOutcome?
++            switch scenario {
++            case .preflightRetired:
++                expectedPhase = .checkingPreflight
++                expectedOriginalFailure = nil // The unchanged preflight throw is not collapsed.
++                expectedOutcome = nil
++                XCTAssertEqual(returnedError, .retiredOwner)
++            case .nativeUncertain:
++                expectedPhase = .decodingReply
++                expectedOriginalFailure = .nativeRefusal
++                expectedOutcome = .uncertain
++                XCTAssertEqual(returnedError, .nativeRefusal(.uncertain))
++            case .malformedReply:
++                expectedPhase = .decodingReply
++                expectedOriginalFailure = .invalidReply
++                expectedOutcome = nil
++                XCTAssertEqual(returnedError, .uncertain)
++            case .invalidEvent:
++                expectedPhase = .validatingEvent
++                expectedOriginalFailure = .invalidReply
++                expectedOutcome = .applied
++                XCTAssertEqual(returnedError, .uncertain)
++            case .publicationDeclined:
++                expectedPhase = .publishing
++                expectedOriginalFailure = .uncertain
++                expectedOutcome = .applied
++                XCTAssertEqual(value.publicationReturned, false)
++                XCTAssertEqual(returnedError, .uncertain)
++            case .readbackError:
++                expectedPhase = .readingReadback
++                expectedOriginalFailure = .other
++                expectedOutcome = .applied
++                XCTAssertEqual(returnedError, .uncertain)
++            case .readbackMismatch:
++                expectedPhase = .validatingReadback
++                expectedOriginalFailure = .uncertain
++                expectedOutcome = .applied
++                XCTAssertEqual(returnedError, .uncertain)
++            case .verified:
++                expectedPhase = .verified
++                expectedOriginalFailure = nil
++                expectedOutcome = .applied
++                XCTAssertNil(returnedError)
++            }
++            let lastIndex = try XCTUnwrap(successPhases.firstIndex(of: expectedPhase))
++            XCTAssertEqual(value.phases, Array(successPhases[...lastIndex]))
++            XCTAssertEqual(value.latestPhase, expectedPhase)
++            XCTAssertEqual(value.firstFailure, expectedOriginalFailure)
++            XCTAssertEqual(value.firstFailurePhase, expectedOriginalFailure == nil ? nil : expectedPhase)
++            XCTAssertEqual(value.decodedNativeOutcome, expectedOutcome)
++            let decodedApplied = [ObservationFixture.Scenario.invalidEvent, .publicationDeclined, .readbackError,
++                                  .readbackMismatch, .verified].contains(scenario)
++            XCTAssertEqual(value.nativeReceiptDecoded, decodedApplied)
++            XCTAssertEqual(probe.captureCalls, scenario == .preflightRetired ? 0 : 1)
++            XCTAssertEqual(value.nativeReplyBytes, scenario == .preflightRetired ? nil : probe.reply.count)
++            let publishReached = [ObservationFixture.Scenario.publicationDeclined, .readbackError, .readbackMismatch, .verified].contains(scenario)
++            XCTAssertEqual(probe.publishCalls, publishReached ? 1 : 0)
++            let readbackReached = [ObservationFixture.Scenario.readbackError, .readbackMismatch, .verified].contains(scenario)
++            XCTAssertEqual(probe.readCalls, scenario == .preflightRetired ? 0 : (readbackReached ? 2 : 1))
++            XCTAssertEqual(value.publicationReturned, publishReached ? (scenario != .publicationDeclined) : nil)
++            if expectedOriginalFailure != nil {
++                var copy = value
++                copy.recordFailure(CancellationError())
++                XCTAssertEqual(copy.firstFailure, value.firstFailure)
++                XCTAssertEqual(copy.firstFailurePhase, value.firstFailurePhase)
++                XCTAssertEqual(copy.decodedNativeOutcome, value.decodedNativeOutcome)
++            }
++        }
++
++        // The metadata store is finite even if a future caller misuses Pending.
++        // No additional apply call or retry is made by this bound check.
++        var bounded = Observation()
++        for _ in 0...Observation.maximumPhaseCount { bounded.record(.checkingPreflight) }
++        XCTAssertEqual(bounded.phases.count, 32)
++        XCTAssertTrue(bounded.phasesTruncated)
++        XCTAssertNil(bounded.firstFailure)
++        bounded.record(.readingRuntime)
++        bounded.recordFailure(CancellationError())
++        XCTAssertEqual(bounded.phases.count, 32)
++        XCTAssertEqual(bounded.latestPhase, .readingRuntime)
++        XCTAssertEqual(bounded.firstFailurePhase, .readingRuntime)
++        XCTAssertEqual(bounded.firstFailure, .cancellation)
++    }
++}
++
++@MainActor
++private final class ObservationFixture {
++    enum Scenario: CaseIterable, Equatable {
++        case preflightRetired
++        case nativeUncertain
++        case malformedReply
++        case invalidEvent
++        case publicationDeclined
++        case readbackError
++        case readbackMismatch
++        case verified
++    }
++    private enum FixtureFailure: Error { case readback }
++    private struct Request: Decodable {
++        let spaceID: String
++        let objectID: String
++        let blockID: String
++        let anchorID: String
++        let from: Int32
++        let to: Int32
++    }
++
++    private let scenario: Scenario
++    private let lifetime = PinkhaNativeReadLifetime()
++    let plan: PinkhaHeartSemanticAnchorPlan
++    let lease: PinkhaNativeReadLease
++    let before: Anytype_Rpc.Object.Show.Response
++    let after: Anytype_Rpc.Object.Show.Response
++    let reply: Data
++    private(set) var captureCalls = 0
++    private(set) var publishCalls = 0
++    private(set) var readCalls = 0
++
++    init(scenario: Scenario) throws {
++        self.scenario = scenario
++        let request = try JSONDecoder().decode(Request.self, from: Self.data("capture-applied-request.json"))
++        before = try .init(serializedBytes: Self.data("capture-before-object-show.pb"))
++        after = try .init(serializedBytes: Self.data("capture-after-object-show.pb"))
++        let block = try XCTUnwrap(before.objectView.blocks.first {
++            $0.id.utf8.elementsEqual(request.blockID.utf8)
++        })
++        plan = try .init(spaceID: request.spaceID, objectID: request.objectID,
++            anchorID: request.anchorID,
++            range: NSRange(location: Int(request.from), length: Int(request.to - request.from)),
++            nativeBlock: block)
++        let originalReply = try Self.data("capture-applied-response.json")
++        switch scenario {
++        case .nativeUncertain:
++            reply = Data(#"{"protocolVersion":1,"outcome":"uncertain"}"#.utf8)
++        case .malformedReply:
++            reply = Data([0xff])
++        case .invalidEvent:
++            var object = try XCTUnwrap(JSONSerialization.jsonObject(with: originalReply) as? [String: Any])
++            object["responseEvent"] = Data([0]).base64EncodedString()
++            reply = try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys])
++        default:
++            reply = originalReply
++        }
++        let account = lifetime.beforeInvocation(name: "AccountSelect", request: Anytype_Rpc.Account.Select.Request())
++        lifetime.completedInvocation(account, response: Anytype_Rpc.Account.Select.Response.with {
++            $0.account = .with { $0.id = "observation-fixture-account"; $0.status.statusType = .active }
++        })
++        let space = lifetime.beforeInvocation(name: "WorkspaceOpen",
++            request: Anytype_Rpc.Workspace.Open.Request.with { $0.spaceID = request.spaceID })
++        lifetime.completedInvocation(space, response: Anytype_Rpc.Workspace.Open.Response.with {
++            $0.info = .with { $0.workspaceObjectID = "observation-fixture-workspace" }
++        })
++        lease = try lifetime.lease(forOpenedSpaceID: request.spaceID)
++    }
++
++    private static func data(_ name: String) throws -> Data {
++        let root = try XCTUnwrap(Bundle.module.url(forResource: "NativePage", withExtension: nil))
++        return try Data(contentsOf: root.appendingPathComponent(name))
++    }
++
++    func retire() {
++        _ = lifetime.beforeInvocation(name: "AccountStop", request: Anytype_Rpc.Account.Stop.Request())
++    }
++
++    func client() -> PinkhaHeartSemanticAnchorClient {
++        .init(io: .init(
++            runtimeVersion: { PinkhaHeartSemanticAnchorProfile.runtimeVersion },
++            read: { spaceID, objectID in
++                XCTAssertTrue(spaceID.utf8.elementsEqual(self.plan.request.spaceID.utf8))
++                XCTAssertTrue(objectID.utf8.elementsEqual(self.plan.request.objectID.utf8))
++                self.readCalls += 1
++                if self.readCalls == 1 { return self.before }
++                if self.scenario == .readbackError { throw FixtureFailure.readback }
++                return self.scenario == .readbackMismatch ? self.before : self.after
++            },
++            capture: { _ in
++                self.captureCalls += 1
++                return self.reply
++            },
++            canPublish: { true },
++            publish: { _ in
++                self.publishCalls += 1
++                return self.scenario != .publicationDeclined
++            }
++        ))
++    }
++}
++#endif
