@@ -1,0 +1,40 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-c",
+        "import json,os; print(json.dumps({'pid':os.getpid(),'pgid':os.getpgrp(),'kind':'page-kernel-control'}),flush=True)"
+      ],
+      "finished_at": "2026-11-23T10:35:31.183869+00:00",
+      "log_sha256": "bd0a4c2a6a9ad5b88eec4b9f2d24e67d0dd74d6b447bd7db4366390f5e73edaf",
+      "name": "actual-child",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "absence_source": "KERNEL_ESRCH",
+        "budget_seconds": 10,
+        "kernel_group_observation": {
+          "after_monotonic": 6957203.014788062,
+          "before_monotonic": 6957203.014773342,
+          "deadline_monotonic": 6957213.014771302,
+          "errno": 3,
+          "error_type": "ProcessLookupError",
+          "operation": "os.killpg",
+          "outcome": "ABSENT_ESRCH",
+          "pgid": 2666229,
+          "signal": 0
+        },
+        "live_members": 0,
+        "observations": 0,
+        "pgid": 2666229,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T10:35:31.149075+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 5,
+      "worker_pid": 2666229
+    }
+  ]
+}

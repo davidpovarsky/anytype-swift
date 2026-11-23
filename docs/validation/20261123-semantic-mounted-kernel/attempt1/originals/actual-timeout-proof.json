@@ -1,0 +1,51 @@
+{
+  "actual_apple_commands": 0,
+  "actual_pid": 2666231,
+  "independent_actual_group_absence": {
+    "after_monotonic": 6957203.222257305,
+    "before_monotonic": 6957203.222247545,
+    "deadline_monotonic": 6957213.222246905,
+    "errno": 3,
+    "error_type": "ProcessLookupError",
+    "operation": "os.killpg",
+    "outcome": "ABSENT_ESRCH",
+    "pgid": 2666231,
+    "signal": 0
+  },
+  "injection": [
+    {
+      "kind": "SYNTHETIC_KERNEL_EPERM_AFTER_ACTUAL_CLEANUP",
+      "original_command_sha256": "a6b46b37e8285224bd3bd2144ddc5a163c45847f0fb6d43478e24f63b13e74b9",
+      "pgid": 2666231
+    }
+  ],
+  "kind": "ACTUAL_COMMAND_TIMEOUT_WITH_SEPARATELY_INJECTED_QUERY_ERROR",
+  "original_command_sha256": "a6b46b37e8285224bd3bd2144ddc5a163c45847f0fb6d43478e24f63b13e74b9",
+  "original_log_sha256": "3e7a6b15174a02ef3caeadc2ffcd63bff4e3f2f0632040fa36b0aa549c81f992",
+  "original_projection_stays_failed": true,
+  "primary_object_preserved": true,
+  "primary_type": "TimeoutExpired",
+  "profile": "semantic-page154",
+  "quiescence_failure": {
+    "error": "[Errno 1] synthetic page query refusal",
+    "error_type": "PermissionError",
+    "quiescence_observation": {
+      "kernel_group_observation": {
+        "after_monotonic": 6957203.221811743,
+        "before_monotonic": 6957203.221786983,
+        "deadline_monotonic": 6957213.221257819,
+        "errno": 1,
+        "error_type": "PermissionError",
+        "operation": "os.killpg",
+        "outcome": "KERNEL_QUERY_ERROR",
+        "pgid": 2666231,
+        "signal": 0
+      },
+      "live_members": null,
+      "observations": 0,
+      "pgid": 2666231,
+      "status": "FAIL_KERNEL_QUERY"
+    },
+    "timeout_observations": []
+  }
+}

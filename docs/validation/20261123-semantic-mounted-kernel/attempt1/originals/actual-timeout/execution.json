@@ -1,0 +1,43 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "-c",
+        "import json,os,time; print(json.dumps({'pid':os.getpid(),'pgid':os.getpgrp(),'kind':'page-timeout-control'}),flush=True); time.sleep(30)"
+      ],
+      "error_type": "TimeoutExpired",
+      "finished_at": "2026-11-23T10:35:31.390313+00:00",
+      "log_sha256": "3e7a6b15174a02ef3caeadc2ffcd63bff4e3f2f0632040fa36b0aa549c81f992",
+      "name": "actual-timeout",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "quiescence_failure": {
+        "error": "[Errno 1] synthetic page query refusal",
+        "error_type": "PermissionError",
+        "quiescence_observation": {
+          "kernel_group_observation": {
+            "after_monotonic": 6957203.221811743,
+            "before_monotonic": 6957203.221786983,
+            "deadline_monotonic": 6957213.221257819,
+            "errno": 1,
+            "error_type": "PermissionError",
+            "operation": "os.killpg",
+            "outcome": "KERNEL_QUERY_ERROR",
+            "pgid": 2666231,
+            "signal": 0
+          },
+          "live_members": null,
+          "observations": 0,
+          "pgid": 2666231,
+          "status": "FAIL_KERNEL_QUERY"
+        },
+        "timeout_observations": []
+      },
+      "return_code": -15,
+      "started_at": "2026-11-23T10:35:31.185521+00:00",
+      "status": "TIMED_OUT",
+      "timeout_seconds": 0.2,
+      "worker_pid": 2666231
+    }
+  ]
+}

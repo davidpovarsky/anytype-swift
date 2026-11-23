@@ -1,0 +1,165 @@
+{
+  "protocol": "pinkha-page154-mounted-kernel-composition-review-v1",
+  "previous_unexecuted_source": "410ead0fa664e8204f0f4f70f1ed784ca870efa0",
+  "previous_control_methods_executed": 0,
+  "previous_source_review_sha256": "5c9bbffa8916c7c28d7d8bb3c781d999f504f5bac7b73f900b2ba048a5532a19",
+  "previous_manifest_sha256": "4dd10fcc9862cd84c8bcd118ffa1fc2a97d2a3ab9c0465ce6524ea4219eaaf2e",
+  "previous_wrapper_sha256": "05e37c45ab1dbead0f9b7c06c1bdbd4c50fccb1224fc3b383651bebd69e3f855",
+  "current_wrapper_sha256": "1b3b4396f27f3df67eabdfa255cac314db870721b4de6583d317ee01b0697fa7",
+  "current_manifest_sha256": "3525d3bb985dbbbe4de16d34023f7df354f33ac67d659e247567f7415cd335cb",
+  "unchanged_test_sha256": "f8150ef073a21f67a7b8b08f4ffb0611855269a5d275fbaae077f7a743cdc642",
+  "unchanged_supervisor_sha256": "5d976901b73b5bc5e519ead3a89952220d8149e710561d92acc9f36e46247414",
+  "fixed_composed_inputs": {
+    "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py": [
+      "main9cafd",
+      "9cafd32811e50f4e883efb034888d7ce1e349c02",
+      "17b3b349025ede11e4e4081fdd664cd0eb3cf6a1f9e7fe1ed41a0b888f42d189"
+    ],
+    "Tools/PinkhaSimulatorGate/wave15_batch.py": [
+      "release6acab",
+      "6acab36f450ce411a8614f23e55cb14a5602ed58",
+      "75e923d8c9718553d80c6aa3fd5338f06e2622e275ba10bc5537d03c4ba03193"
+    ],
+    "Tools/PinkhaNativeDerived/package_evidence.py": [
+      "main9cafd",
+      "9cafd32811e50f4e883efb034888d7ce1e349c02",
+      "8400bd4ac7bbc61871b51f1021c3dbbb1de5800094e07129417a784d24337309"
+    ]
+  },
+  "wrapper_admission_hunks": [
+    {
+      "before": "events = []",
+      "after": "COMPOSED_INPUTS = {\n    \"Tools/PinkhaSimulatorGate/shared_editor_existing_build.py\": [\n        \"main9cafd\",\n        \"9cafd32811e50f4e883efb034888d7ce1e349c02\",\n        \"17b3b349025ede11e4e4081fdd664cd0eb3cf6a1f9e7fe1ed41a0b888f42d189\"\n    ],\n    \"Tools/PinkhaSimulatorGate/wave15_batch.py\": [\n        \"release6acab\",\n        \"6acab36f450ce411a8614f23e55cb14a5602ed58\",\n        \"75e923d8c9718553d80c6aa3fd5338f06e2622e275ba10bc5537d03c4ba03193\"\n    ],\n    \"Tools/PinkhaNativeDerived/package_evidence.py\": [\n        \"main9cafd\",\n        \"9cafd32811e50f4e883efb034888d7ce1e349c02\",\n        \"8400bd4ac7bbc61871b51f1021c3dbbb1de5800094e07129417a784d24337309\"\n    ]\n}\nNON_IMPORTED_POLICY = \"Tools/PinkhaNativeDerived/package_evidence.py\"\nevents = []"
+    },
+    {
+      "before": "            and declaration[\"selected_methods\"] == [METHOD], \"wrong_fixed_control_scope\")",
+      "after": "            and declaration[\"selected_methods\"] == [METHOD]\n            and declaration[\"protocol\"] == \"pinkha-page154-mounted-kernel-control-inputs-v2\"\n            and declaration[\"composed_inputs\"] == COMPOSED_INPUTS\n            and declaration[\"non_imported_policy_paths\"] == [NON_IMPORTED_POLICY]\n            and len(declaration[\"files\"]) == 35, \"wrong_fixed_control_scope\")"
+    },
+    {
+      "before": "    require(changed and all(path in (SUPERVISOR, TEST_RELATIVE)\n                           or path.startswith(\"docs/validation/20261123-semantic-mounted-kernel/\")\n                           for path in changed), \"unexpected_app_or_controller_change\")",
+      "after": "    allowed_changes = {SUPERVISOR, TEST_RELATIVE, *COMPOSED_INPUTS}\n    require(changed and all(path in allowed_changes\n                           or path.startswith(\"docs/validation/20261123-semantic-mounted-kernel/\")\n                           for path in changed), \"unexpected_app_or_controller_change\")"
+    },
+    {
+      "before": "        if expected[\"origin\"] == \"bb046\":\n            require(git(\"show\", BB + \":\" + name) == path.read_bytes(), \"original_caller_or_dependency_changed:\" + name)\n        else:",
+      "after": "        if name in COMPOSED_INPUTS:\n            origin, revision, pinned_hash = COMPOSED_INPUTS[name]\n            require(expected[\"origin\"] == origin and row[\"sha256\"] == pinned_hash\n                    and git(\"show\", revision + \":\" + name) == path.read_bytes(),\n                    \"fixed_integrated_dependency_changed:\" + name)\n        elif expected[\"origin\"] == \"bb046\":\n            require(git(\"show\", BB + \":\" + name) == path.read_bytes(), \"original_caller_or_dependency_changed:\" + name)\n        else:"
+    },
+    {
+      "before": "            \"original_controller\": BB, \"qualified_supervisor_origin\": QUALIFIED,\n            \"whole_supervisor_inverse_to_75bd\": True,",
+      "after": "            \"original_controller\": BB, \"qualified_supervisor_origin\": QUALIFIED,\n            \"composed_inputs\": COMPOSED_INPUTS, \"non_imported_policy_paths\": [NON_IMPORTED_POLICY],\n            \"whole_supervisor_inverse_to_75bd\": True,"
+    },
+    {
+      "before": "    for row in rows.values():\n        row[\"aliases\"].sort()\n    return rows",
+      "after": "    require(NON_IMPORTED_POLICY not in rows, \"packaging_policy_must_not_execute_in_control\")\n    for row in rows.values():\n        row[\"aliases\"].sort()\n    return rows"
+    }
+  ],
+  "original_eager_modules_byte_identical": 29,
+  "current_composed_eager_modules": 3,
+  "new_test_and_wrapper_modules": 2,
+  "non_imported_package_policy_paths": [
+    "Tools/PinkhaNativeDerived/package_evidence.py"
+  ],
+  "total_declared_inputs": 35,
+  "unchanged_Page_callers_and_simulator_policy": true,
+  "unchanged_App_and_Module_sources": true,
+  "unchanged_test_selection": true,
+  "unchanged_budgets": true,
+  "actual_child_command_count_planned": 2,
+  "actual_Apple_product_methods": 0,
+  "old_methods_reexecuted": 0,
+  "release_authored_paths": [
+    "Tools/PinkhaSimulatorGate/coherent_cleanup_snapshot.py",
+    "Tools/PinkhaSimulatorGate/coherent_fresh_construction.py",
+    "Tools/PinkhaSimulatorGate/coherent_original_products.py",
+    "Tools/PinkhaSimulatorGate/coherent_heart_release.py",
+    "Tools/PinkhaSimulatorGate/wave15_batch.py",
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py",
+    "Tools/PinkhaSimulatorGate/test_coherent_owned_continuation.py"
+  ],
+  "release_authored_paths_intersecting_eager_closure": [
+    "Tools/PinkhaSimulatorGate/wave15_batch.py"
+  ],
+  "forbidden_release_whole_tree_copies": [
+    "Tools/PinkhaSemanticAnchorWire/apple_mounted/run.py",
+    "Tools/PinkhaNativeDerived/package_evidence.py"
+  ],
+  "actual_executing_dependency_analysis": {
+    "worker_executed_dependencies": {
+      "require": {
+        "identical_all": true,
+        "sha256": {
+          "page": "01ead212f2d2d8e5ff5888ace6d7b135a95e36bc19bff5231a515f0d30faa9d6",
+          "main": "01ead212f2d2d8e5ff5888ace6d7b135a95e36bc19bff5231a515f0d30faa9d6",
+          "release": "01ead212f2d2d8e5ff5888ace6d7b135a95e36bc19bff5231a515f0d30faa9d6"
+        }
+      },
+      "write": {
+        "identical_all": true,
+        "sha256": {
+          "page": "3f92aaaa3e3c008d0f389932a5f90c6a6f6113437e86452d35efd1d8abef14ea",
+          "main": "3f92aaaa3e3c008d0f389932a5f90c6a6f6113437e86452d35efd1d8abef14ea",
+          "release": "3f92aaaa3e3c008d0f389932a5f90c6a6f6113437e86452d35efd1d8abef14ea"
+        }
+      },
+      "now": {
+        "identical_all": true,
+        "sha256": {
+          "page": "f34344d0eeb6b443b60f2d70aacc4d33844254b0d6829e57abf992dca6415ca2",
+          "main": "f34344d0eeb6b443b60f2d70aacc4d33844254b0d6829e57abf992dca6415ca2",
+          "release": "f34344d0eeb6b443b60f2d70aacc4d33844254b0d6829e57abf992dca6415ca2"
+        }
+      },
+      "terminate_owned": {
+        "identical_all": true,
+        "sha256": {
+          "page": "0b0476c4250710b8aa2734f0d370429f3db769fc6b291246f9a907aaa6399762",
+          "main": "0b0476c4250710b8aa2734f0d370429f3db769fc6b291246f9a907aaa6399762",
+          "release": "0b0476c4250710b8aa2734f0d370429f3db769fc6b291246f9a907aaa6399762"
+        }
+      }
+    },
+    "worker_record_cwd_default_projection": {
+      "main": {
+        "full_function_sha256": "00c73c997b113093e0ec0597099d7c4d79185fc29b1d41b2b548216cbbc418cd",
+        "default_path_source_inverse_exact": true,
+        "actual_Page_Commands_passes_record_cwd": false
+      },
+      "release": {
+        "full_function_sha256": "00c73c997b113093e0ec0597099d7c4d79185fc29b1d41b2b548216cbbc418cd",
+        "default_path_source_inverse_exact": true,
+        "actual_Page_Commands_passes_record_cwd": false
+      }
+    },
+    "actual_callers": {
+      "Tools/PinkhaSemanticAnchorWire/apple_consumer/run.py::Commands": {
+        "identical_all": true,
+        "sha256": {
+          "page": "5edeba1c7f4b1464c68a4be358f748f13977e9cb13f9638933369d26f9360f54",
+          "main": "5edeba1c7f4b1464c68a4be358f748f13977e9cb13f9638933369d26f9360f54",
+          "release": "5edeba1c7f4b1464c68a4be358f748f13977e9cb13f9638933369d26f9360f54"
+        }
+      },
+      "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py::enumerated_identifiers": {
+        "identical_all": true,
+        "sha256": {
+          "page": "057928e7290fde1abc017da26440bae59fe0594c5df6daa2d8bb16457edf98f1",
+          "main": "057928e7290fde1abc017da26440bae59fe0594c5df6daa2d8bb16457edf98f1",
+          "release": "057928e7290fde1abc017da26440bae59fe0594c5df6daa2d8bb16457edf98f1"
+        }
+      }
+    },
+    "new_calls_executed": 0,
+    "new_files_written": 0
+  },
+  "integration": "Baseline-only copies of the three fixed composed inputs must not overwrite the corresponding current-main/reviewed-Release files during integration. Apply the existing Page profile token and new control/manifest/wrapper/docs only after the fixed union is present. This qualification concerns the exact composed controller closure; it does not qualify current-main App products.",
+  "execution_status": "NOT_RUN",
+  "expected_eager_repository_modules": 32,
+  "expected_maximum_loaded_repository_files": 34,
+  "eager_composition_paths": [
+    "Tools/PinkhaSimulatorGate/run_owned_single_lane.py",
+    "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py",
+    "Tools/PinkhaSimulatorGate/wave15_batch.py"
+  ],
+  "baseline_only_composition_copy_commit": "114e277eda54f3cad7eae43a93cb45c7bd1a6d99",
+  "baseline_copies_excluded_from_main_integration": true,
+  "preflight_reader_sha256": "5d1072a010419f28805ebc92d0baa22cc6c3686b3b88e170f7895df6c556046b"
+}

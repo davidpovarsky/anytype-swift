@@ -1,0 +1,10 @@
+{
+  "phase": "source_transfer_before_python_execution",
+  "exit_code": 1,
+  "source_path": "docs/validation/20261123-semantic-mounted-kernel/run_control.py",
+  "original_error_excerpt": "bash: -c: line 1: syntax error near unexpected token `zlib.decompress'",
+  "cause": "PowerShell/SSH removed nested Python -c quote boundaries. The shell rejected the command before executing the source writer.",
+  "tests_run": 0,
+  "remote_source_write_executed": false,
+  "recovery": "Use gzip -d pipeline with no nested quoted Python -c argument."
+}

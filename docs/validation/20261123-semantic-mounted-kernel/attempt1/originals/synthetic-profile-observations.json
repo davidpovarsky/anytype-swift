@@ -1,0 +1,66 @@
+[
+  {
+    "actual_os_observation": false,
+    "error_type": "RuntimeError",
+    "kind": "SYNTHETIC_LATE_ESRCH_CALLER_REFUSAL",
+    "observation": {
+      "kernel_group_observation": {
+        "after_monotonic": 110.01,
+        "before_monotonic": 100.1,
+        "deadline_monotonic": 110.0,
+        "errno": 3,
+        "error_type": "ProcessLookupError",
+        "operation": "os.killpg",
+        "outcome": "ABSENT_ESRCH",
+        "pgid": 2666229,
+        "signal": 0
+      },
+      "live_members": 0,
+      "observations": 0,
+      "pgid": 2666229,
+      "status": "FAIL_DEADLINE"
+    },
+    "original_command_sha256": "1dd75aab210791ca4c1f38aaa873ce2c03f669697dab1d5e985fb5eec794fe75",
+    "profile": "semantic-page154"
+  },
+  {
+    "actual_os_observation": false,
+    "error_type": "TimeoutExpired",
+    "kind": "SYNTHETIC_GROUP_EXISTS_AND_PS_TIMEOUT_CALLER_REFUSAL",
+    "observation": {
+      "kernel_group_observation": {
+        "after_monotonic": 100.2,
+        "before_monotonic": 100.1,
+        "deadline_monotonic": 110.0,
+        "errno": null,
+        "operation": "os.killpg",
+        "outcome": "GROUP_EXISTS",
+        "pgid": 2666229,
+        "signal": 0
+      },
+      "live_members": null,
+      "observations": 1,
+      "pgid": 2666229,
+      "status": "FAIL_PS_AFTER_KERNEL_GROUP_EXISTS"
+    },
+    "original_command_sha256": "1dd75aab210791ca4c1f38aaa873ce2c03f669697dab1d5e985fb5eec794fe75",
+    "probes": [
+      {
+        "argv": [
+          "ps",
+          "-axo",
+          "pid=,pgid=,stat="
+        ],
+        "synthetic": true,
+        "timeout": 9.700000000000003
+      }
+    ],
+    "profile": "semantic-page154",
+    "timeout_observations": [
+      {
+        "observation": 1,
+        "timeout_seconds": 9.700000000000003
+      }
+    ]
+  }
+]

@@ -1,0 +1,31 @@
+{
+  "status": "PRESERVED_SOURCE_PREFLIGHT_READER_FAILURE",
+  "tests_run": 0,
+  "imports_executed": 0,
+  "original_reader_sha256": "42ebe8199f4e65f2094275ebbabf1bcd22f7f6ccd6c249a9d4c04638959134ba",
+  "corrected_reader_sha256": "01584f4902074d79c15b8140792a8466db5a28d71b895aa4edf7a9664e5d2e4b",
+  "original_terminal": {
+    "ok": true,
+    "returncode": 1,
+    "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 26, in <module>\nAssertionError",
+    "duration": 0.9
+  },
+  "independent_observation": {
+    "same_function_bytes": true,
+    "variants": {
+      "segment": {
+        "bytes": 1664,
+        "sha256": "64b42d7ffdd3a24bb53335b2032f9f235eb541e3014b814a0579599e355ca4b0",
+        "ends_newline": false
+      },
+      "whole_lines": {
+        "bytes": 1665,
+        "sha256": "d581843c94632933612d54d46036eb777ac15b154c13088cce90a0e7fced325a",
+        "ends_newline": true
+      }
+    },
+    "expected": "d581843c94632933612d54d46036eb777ac15b154c13088cce90a0e7fced325a",
+    "preflight_file_exists": false
+  },
+  "scope": "Only the preflight reader extraction changes from an AST segment without LF to the exact full-source-line bytes including LF; authored production/test/wrapper/manifest/review remain unchanged."
+}

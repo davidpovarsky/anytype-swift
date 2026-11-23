@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-c",
+    "import json,os,time; print(json.dumps({'pid':os.getpid(),'pgid':os.getpgrp(),'kind':'page-timeout-control'}),flush=True); time.sleep(30)"
+  ],
+  "error_type": "TimeoutExpired",
+  "finished_at": "2026-11-23T10:35:31.390313+00:00",
+  "owned_group_cleanup": "TERM_THEN_KILL",
+  "return_code": -15,
+  "started_at": "2026-11-23T10:35:31.185521+00:00",
+  "status": "TIMED_OUT",
+  "timeout_seconds": 0.2,
+  "worker_pid": 2666231
+}
