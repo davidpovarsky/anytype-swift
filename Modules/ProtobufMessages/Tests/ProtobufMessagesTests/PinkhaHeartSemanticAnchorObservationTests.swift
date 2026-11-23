@@ -156,9 +156,13 @@ private final class ObservationFixture {
     init(scenario: Scenario) throws {
         self.scenario = scenario
         let request = try JSONDecoder().decode(Request.self, from: Self.data("capture-applied-request.json"))
-        before = try .init(serializedBytes: Self.data("capture-before-object-show.pb"))
-        after = try .init(serializedBytes: Self.data("capture-after-object-show.pb"))
-        let block = try XCTUnwrap(before.objectView.blocks.first {
+        let parsedBefore = try Anytype_Rpc.Object.Show.Response(
+            serializedBytes: Self.data("capture-before-object-show.pb"))
+        let parsedAfter = try Anytype_Rpc.Object.Show.Response(
+            serializedBytes: Self.data("capture-after-object-show.pb"))
+        before = parsedBefore
+        after = parsedAfter
+        let block = try XCTUnwrap(parsedBefore.objectView.blocks.first {
             $0.id.utf8.elementsEqual(request.blockID.utf8)
         })
         plan = try .init(spaceID: request.spaceID, objectID: request.objectID,
