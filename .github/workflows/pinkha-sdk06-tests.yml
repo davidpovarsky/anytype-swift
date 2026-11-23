@@ -54,7 +54,7 @@ jobs:
           set -euo pipefail
           case "$HOST_PROFILE" in sdk06|editor|shared-editor|wave15-core|wave15-components) ;; *) echo 'Unsupported host test profile' >&2; exit 1 ;; esac
           case "$EXPECTED_APP_BRANCH" in
-            codex/chatgpt-wave15-integration-20261118|codex/chatgpt-wave15-hanlin-consumer-20261119|codex/chatgpt-wave15-ui-resume-20261119|codex/any-engine-port-20261119|codex/chatgpt-wave15-shared-20261121) ;;
+            codex/chatgpt-wave15-integration-20261118|codex/chatgpt-wave15-hanlin-consumer-20261119|codex/chatgpt-wave15-ui-resume-20261119|codex/any-engine-port-20261119|codex/chatgpt-wave15-shared-20261121|codex/chatgpt-wave15-canonical-hanlin-20261123) ;;
             *) echo 'Unreviewed host consumer branch' >&2; exit 1 ;;
           esac
           test "$GITHUB_REF" = "refs/heads/$EXPECTED_APP_BRANCH"
