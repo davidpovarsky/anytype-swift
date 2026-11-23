@@ -40,6 +40,13 @@ def require(value, label):
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
+def install(source, target):
+    # Keep unchanged input paths and mtimes for the existing build cache.
+    if target.is_file() and digest(source) == digest(target):
+        return
+    target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(source, target)
+
 def read(path):
     return json.loads(path.read_text())
 
@@ -56,8 +63,27 @@ def source_guard(args):
 
 def prepare(args):
     source_guard(args)
-    require(not (args.run / "package").exists(), "Fresh control package required")
-    package = args.run / "package"
+    require(not (args.run / "evidence/source-manifest.json").exists(), "Fresh evidence attempt required")
+    prior = None
+    if args.reuse_manifest is None:
+        require(not args.package.exists(), "Fresh package or explicit prior manifest required")
+    else:
+        prior = read(args.reuse_manifest)
+        require(args.package.is_dir(), "Missing stable package to reuse")
+        archive = args.run / "evidence/prior-package-sources"
+        require(not archive.exists(), "Prior source snapshot already exists")
+        for target, row in prior["files"].items():
+            require(digest(args.package / target) == row["sha256"], "Prior package differs from original manifest")
+            saved = archive / target
+            saved.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(args.package / target, saved)
+            require(digest(saved) == row["sha256"], "Original source snapshot changed")
+        save(args.run / "evidence/prior-source.json", {
+            "original_app_sha": prior["app_sha"], "manifest": str(args.reuse_manifest),
+            "manifest_sha256": digest(args.reuse_manifest), "source_archive": str(archive),
+            "files_preserved": len(prior["files"]), "status": "EXACT_ORIGINAL_INPUTS_RETAINED"
+        })
+    package = args.package
     sources = sorted((MODULE / "Sources/Protocol").rglob("*.swift"))
     require(len(sources) == 685, "Unexpected generated protocol inventory")
     sources += [MODULE / "Sources" / path for path in SUPPORT + NEW]
@@ -66,14 +92,14 @@ def prepare(args):
     for source in sources:
         target = package / "Sources/ProtobufMessages" / source.relative_to(MODULE / "Sources")
         target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(source, target)
+        install(source, target)
         files[str(target.relative_to(package))] = {"repo_path": str(source.relative_to(REPO)), "sha256": digest(source)}
     selected = []
     for name in TESTS:
         source = MODULE / "Tests/ProtobufMessagesTests" / name
         target = package / "Tests/ProtobufMessagesTests" / name
         target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(source, target)
+        install(source, target)
         files[str(target.relative_to(package))] = {"repo_path": str(source.relative_to(REPO)), "sha256": digest(source)}
         cls = name[:-6]
         selected.extend(cls + "." + method for method in re.findall(r"func (test[A-Za-z0-9_]+)\(", source.read_text()))
@@ -84,19 +110,23 @@ def prepare(args):
             continue
         target = package / "Tests/ProtobufMessagesTests/Fixtures/NativePage" / source.name
         target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(source, target)
+        install(source, target)
         files[str(target.relative_to(package))] = {"repo_path": str(source.relative_to(REPO)), "sha256": digest(source)}
     require(read(fixture / "SOURCE.json")["native_source_manifest_sha256"] == NATIVE_MANIFEST, "Wrong native fixtures")
     for name, row in read(fixture / "SOURCE.json")["files"].items():
         require(digest(fixture / name) == row["sha256"], "Native artifact bytes changed")
-    shutil.copyfile(HERE / "Package.template.swift", package / "Package.swift")
+    install(HERE / "Package.template.swift", package / "Package.swift")
     files["Package.swift"] = {"repo_path": str((HERE / "Package.template.swift").relative_to(REPO)),
         "sha256": digest(HERE / "Package.template.swift")}
+    actual = {str(p.relative_to(package)) for folder in ("Sources", "Tests")
+        for p in (package / folder).rglob("*") if p.is_file()}
+    require(actual == set(files) - {"Package.swift"}, "Unexpected source or resource in stable package")
     metadata = ["Modules/ProtobufMessages/Package.swift",
         "Anytype/Sources/Pinkha/Editor/AnytypeHeartSemanticAnchorService.swift",
         "Tools/PinkhaSemanticAnchorSwiftControls/run_controls.py"]
     save(args.run / "evidence/source-manifest.json", {
         "status": "PREPARED_CONTROLS_NOT_RUN", "app_sha": args.expected_app_sha, "files": files,
+        "package_root": str(package), "reuse_prior_manifest": str(args.reuse_manifest) if args.reuse_manifest else None,
         "product_source_count": len(sources), "selected_methods": sorted(selected), "dependency_revisions": PINS,
         "metadata_only_sources": {name: digest(REPO / name) for name in metadata},
         "native_manifest_sha256": NATIVE_MANIFEST,
@@ -111,9 +141,10 @@ def verify(args):
     source_guard(args)
     manifest = read(args.run / "evidence/source-manifest.json")
     require(manifest["app_sha"] == args.expected_app_sha, "Wrong control source identity")
+    require(manifest.get("package_root", str(args.run / "package")) == str(args.package), "Wrong stable package root")
     for target, row in manifest["files"].items():
         require(digest(REPO / row["repo_path"]) == row["sha256"]
-            and digest(args.run / "package" / target) == row["sha256"], "Copied control source changed")
+            and digest(args.package / target) == row["sha256"], "Copied control source changed")
     for name, expected in manifest["metadata_only_sources"].items():
         require(digest(REPO / name) == expected, "Metadata source changed")
     return manifest
@@ -126,10 +157,17 @@ def toolchain():
     return {"version": value, "executable": str(executable), "executable_sha256": digest(executable)}
 
 def dependencies(args):
-    package = read(args.run / "package/Package.resolved")
+    package = read(args.package / "Package.resolved")
     pins = {row["identity"]: row["state"]["revision"] for row in package["pins"]}
     require(pins == PINS, "Unreviewed Swift dependency resolution")
-    return {"pins": pins, "resolved_sha256": digest(args.run / "package/Package.resolved")}
+    checkouts = {}
+    for name, revision in PINS.items():
+        path = args.build_root / "scratch/checkouts" / name
+        head = subprocess.check_output(["git", "-C", str(path), "rev-parse", "HEAD"], text=True).strip()
+        status = subprocess.check_output(["git", "-C", str(path), "status", "--porcelain"], text=True).strip()
+        require(head == revision and not status, "Dependency checkout differs from exact clean pin")
+        checkouts[name] = {"head": head, "clean": True}
+    return {"pins": pins, "resolved_sha256": digest(args.package / "Package.resolved"), "checkouts": checkouts}
 
 def command(args, argv, log, timeout):
     require(not log.exists(), "Refusing to overwrite original command log")
@@ -140,7 +178,7 @@ def command(args, argv, log, timeout):
         directory.mkdir(parents=True, exist_ok=True)
     with log.open("xb") as output:
         process = subprocess.Popen(argv, stdout=output, stderr=subprocess.STDOUT, env=env,
-            cwd=args.run / "package", start_new_session=True)
+            cwd=args.package, start_new_session=True)
         try:
             code = process.wait(timeout=timeout)
         except BaseException:
@@ -158,7 +196,7 @@ def command(args, argv, log, timeout):
     return {"argv": argv, "pid": process.pid, "exit_code": code, "log_sha256": digest(log)}
 
 def common(args):
-    return ["--package-path", str(args.run / "package"), "--scratch-path", str(args.build_root / "scratch"),
+    return ["--package-path", str(args.package), "--scratch-path", str(args.build_root / "scratch"),
         "--cache-path", str(args.shared_cache), "--config-path", str(args.build_root / "config"),
         "--security-path", str(args.build_root / "security")]
 
@@ -237,10 +275,17 @@ def main():
     parser.add_argument("--build-root", type=Path, required=True)
     parser.add_argument("--shared-cache", type=Path, required=True)
     parser.add_argument("--expected-app-sha", required=True)
+    parser.add_argument("--package-root", type=Path)
+    parser.add_argument("--reuse-manifest", type=Path)
     args = parser.parse_args()
     os.umask(0o077)
     for name in ("run", "build_root", "shared_cache"):
         setattr(args, name, getattr(args, name).resolve())
+    args.package = (args.package_root or args.run / "package").resolve()
+    if args.reuse_manifest is not None:
+        args.reuse_manifest = args.reuse_manifest.resolve()
+    require(args.package != REPO and args.package != args.build_root and args.package != args.shared_cache,
+        "Package root must be an isolated control input directory")
     require(len({REPO, args.run, args.build_root, args.shared_cache}) == 4, "Separate source/run/build/cache paths required")
     require(re.fullmatch("[0-9a-f]{40}", args.expected_app_sha) is not None, "Exact source SHA required")
     if args.mode == "prepare":

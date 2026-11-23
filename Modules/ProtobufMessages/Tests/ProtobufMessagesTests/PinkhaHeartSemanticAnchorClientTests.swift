@@ -115,10 +115,10 @@ final class PinkhaHeartSemanticAnchorClientTests: XCTestCase {
         XCTAssertEqual(probe.requests.count, 1)
         XCTAssertEqual(probe.published.count, 1)
         let event = try Anytype_ResponseEvent(serializedBytes: HeartCaptureFixture.data("capture-response-event.pb"))
-        XCTAssertEqual(try probe.published[0].serializedData(), event.serializedData())
+        XCTAssertEqual(try probe.published[0].serializedData(), try event.serializedData())
         let received = await handler.events.all()
         XCTAssertEqual(received.count, 1)
-        XCTAssertEqual(try received[0].serializedData(), event.serializedData())
+        XCTAssertEqual(try received[0].serializedData(), try event.serializedData())
     }
 
     func testRetiredOwnerBeforeDispatchHasNoNativeCall() async throws {
