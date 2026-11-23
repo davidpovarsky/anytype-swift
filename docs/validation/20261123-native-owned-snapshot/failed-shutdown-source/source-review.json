@@ -1,0 +1,59 @@
+{
+  "all_other_native_functions_and_production_bytes_unchanged": true,
+  "changed_native_files": [
+    "core/pinkha/localstorewitness/native_capture_test.go"
+  ],
+  "continuation_scope": "One necessary new offline compile after test-only change; only failed fourth method executes. Earlier actual3PASS stay bound to original source/binary. Original fixed four-method route and validators are unchanged.",
+  "fixture_after_sha256": "56a554a252153867e2007da80613dc01a2661a63d7cac0484f7e3ebbcb9fd7c4",
+  "fixture_before_sha256": "b1d044f2efc079f126b2e3c98995f8fbb467d0c94715572b97880b63d99c0ec0",
+  "kind": "native-owned-failed-shutdown-source-v1",
+  "literal_inverse": {
+    "after": "\t// SQLite can retain a closed connection's OS descriptor while another\n\t// connection on this inode still holds a POSIX lock. Close the original\n\t// fixture handle before asserting that all native descriptors are gone.\n\tafterRejectedFDs := nativeOwnedDBDescriptors(t, dbPath)\n\toriginalCloseErr := inflight.storage.Close(ctx)\n\tafterOriginalCloseFDs := nativeOwnedDBDescriptors(t, dbPath)\n\tfmt.Printf(\"NATIVE_OWNED_SHUTDOWN_FD_COUNTS {\\\"baseline\\\":%d,\\\"inflight\\\":%d,\\\"after_rejected_open\\\":%d,\\\"after_original_close\\\":%d}\\n\", baselineFDs, observedFDs, afterRejectedFDs, afterOriginalCloseFDs)\n\tmust(t, originalCloseErr)\n\tif afterOriginalCloseFDs != 0 {\n\t\tt.Fatalf(\"native database descriptors remain after both closes: baseline=%d inflight=%d after-rejection=%d final=%d\", baselineFDs, observedFDs, afterRejectedFDs, afterOriginalCloseFDs)\n\t}\n",
+    "before": "\tif nativeOwnedDBDescriptors(t, dbPath) != baselineFDs {\n\t\tt.Fatal(\"unpublished native database handle leaked after shutdown\")\n\t}\n",
+    "exact_whole_file_restored": true
+  },
+  "native_after": "ba965ac243c6501a1a7083ce0e07d3557650db00",
+  "native_before": "179509522c78e263c86c847e1cc78ad05ff43aeb",
+  "new_native_builds": 0,
+  "new_native_methods": 0,
+  "old_methods_to_replay": 0,
+  "only_graph_row_changed": {
+    "after": {
+      "bytes": 20774,
+      "mode": 436,
+      "sha256": "56a554a252153867e2007da80613dc01a2661a63d7cac0484f7e3ebbcb9fd7c4"
+    },
+    "before": {
+      "bytes": 20061,
+      "mode": 436,
+      "sha256": "b1d044f2efc079f126b2e3c98995f8fbb467d0c94715572b97880b63d99c0ec0"
+    },
+    "path": "/mnt/development/projects/worktrees/anytype-heart-native-owned-snapshot-20261123/core/pinkha/localstorewitness/native_capture_test.go"
+  },
+  "original_execution": {
+    "actual_passed_methods": [
+      "TestNativeOwnedSnapshotBindsActualServiceHandle",
+      "TestNativeOwnedSnapshotCloseRevokesAndDrains",
+      "TestNativeOwnedSnapshotDeletePreservesLeaseBoundary"
+    ],
+    "aggregate_status": "FAILED",
+    "path": "docs/validation/20261123-native-owned-snapshot/attempt1/execute.json",
+    "sha256": "b0d8a59ab46b66125e4a903ee498743db319497000b98fbf9724f448a1945d0d"
+  },
+  "original_preservation": {
+    "path": "docs/validation/20261123-native-owned-snapshot/attempt1/preservation.json",
+    "sha256": "9e36ff497aecdfe8ec12d499593e4ca03cacc5c5c60cd609991bde7a46d8697c"
+  },
+  "pinned_backend_rule": {
+    "functions": [
+      "_unixClose",
+      "_setPendingFd",
+      "_closePendingFds"
+    ],
+    "meaning": "unixClose may queue a descriptor while another connection on its inode holds a lock. This invalidates immediate process FD baseline equality in general, but does not identify the particular descriptor in original attempt1.",
+    "path": "/mnt/development/projects/evidence/semantic-page-20261123-arm64/cache/go-mod/modernc.org/sqlite@v1.37.1/lib/sqlite_linux_arm64.go",
+    "sha256": "b6d1f29fe3823cd42bec6c08ea043b23c1aa925d2d5e28060f96ba99f48399f0"
+  },
+  "unchanged_original_auditor_sha256": "cb1371ebc82d1f493feb4ebe631176a4c9646c2123fa9229903d1a5b6e1e5695",
+  "unchanged_original_controller_sha256": "9fbd3a53f10caf7869f0a81ce69517c1d546747bea170c9ca9031a6c8e0b70c6"
+}

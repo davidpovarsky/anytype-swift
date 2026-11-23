@@ -1,0 +1,23 @@
+diff --git a/core/pinkha/localstorewitness/native_capture_test.go b/core/pinkha/localstorewitness/native_capture_test.go
+index 74d243cb0..971ba978a 100644
+--- a/core/pinkha/localstorewitness/native_capture_test.go
++++ b/core/pinkha/localstorewitness/native_capture_test.go
+@@ -486,8 +486,16 @@ func TestNativeOwnedSnapshotShutdownAndCanceledAcquire(t *testing.T) {
+ 	case <-ctx.Done():
+ 		t.Fatal("in-flight native constructor did not finish cleanup")
+ 	}
+-	if nativeOwnedDBDescriptors(t, dbPath) != baselineFDs {
+-		t.Fatal("unpublished native database handle leaked after shutdown")
++	// SQLite can retain a closed connection's OS descriptor while another
++	// connection on this inode still holds a POSIX lock. Close the original
++	// fixture handle before asserting that all native descriptors are gone.
++	afterRejectedFDs := nativeOwnedDBDescriptors(t, dbPath)
++	originalCloseErr := inflight.storage.Close(ctx)
++	afterOriginalCloseFDs := nativeOwnedDBDescriptors(t, dbPath)
++	fmt.Printf("NATIVE_OWNED_SHUTDOWN_FD_COUNTS {\"baseline\":%d,\"inflight\":%d,\"after_rejected_open\":%d,\"after_original_close\":%d}\n", baselineFDs, observedFDs, afterRejectedFDs, afterOriginalCloseFDs)
++	must(t, originalCloseErr)
++	if afterOriginalCloseFDs != 0 {
++		t.Fatalf("native database descriptors remain after both closes: baseline=%d inflight=%d after-rejection=%d final=%d", baselineFDs, observedFDs, afterRejectedFDs, afterOriginalCloseFDs)
+ 	}
+ 	nativeOwnedObservation(t, map[string]bool{
+ 		"canceled_acquisition_preserves_real_holder": true, "service_shutdown_revokes_and_drains": true,

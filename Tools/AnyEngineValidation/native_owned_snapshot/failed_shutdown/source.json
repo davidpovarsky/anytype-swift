@@ -1,0 +1,733 @@
+{
+  "accountSessionACLAuthorized": false,
+  "authored_native": [
+    "core/pinkha/localstorewitness/capture.go",
+    "core/pinkha/localstorewitness/native_capture.go",
+    "core/pinkha/localstorewitness/native_capture_test.go",
+    "space/spacecore/storage/anystorage/clientstorage.go",
+    "space/spacecore/storage/anystorage/owned_snapshot.go",
+    "space/spacecore/storage/anystorage/storageservice.go"
+  ],
+  "capacity": {
+    "build_timeout_seconds": 900,
+    "execution_command_timeout_seconds": 120,
+    "expected_incremental_bytes_range": [
+      50000000,
+      200000000
+    ],
+    "final_minimum_free_bytes": 2500000000,
+    "native_test_timeout_seconds": 90,
+    "no_cache_deletion": true,
+    "no_dependency_download": true,
+    "offline_p1_GOMAXPROCS1": true,
+    "peak_measured": false,
+    "sampled_guard_not_peak_guarantee": true,
+    "start_free_bytes": 2950000000,
+    "stop_free_bytes": 2600000000
+  },
+  "controller_base_sha": "e4edea19ce716280f4087f8b9571ad2b4f6f94c5",
+  "controller_inputs": {
+    "Tools/AnyEngineValidation/native_owned_snapshot/PROTOCOL.md": {
+      "bytes": 10615,
+      "mode": 436,
+      "sha256": "bf972c87737b5909d9e37e2056a4067ed9b29c4272163217ea50b731fcb7f078"
+    },
+    "Tools/AnyEngineValidation/native_owned_snapshot/audit.py": {
+      "bytes": 9927,
+      "mode": 436,
+      "sha256": "cb1371ebc82d1f493feb4ebe631176a4c9646c2123fa9229903d1a5b6e1e5695"
+    },
+    "Tools/AnyEngineValidation/native_owned_snapshot/dependency-inputs.json": {
+      "bytes": 962365,
+      "mode": 420,
+      "sha256": "fe0bf656849faa90e0d5bb60c6dad095df8612b917c0837063ec31ca2c228782"
+    },
+    "Tools/AnyEngineValidation/native_owned_snapshot/failed_shutdown/dependency-inputs.json": {
+      "bytes": 962365,
+      "mode": 420,
+      "sha256": "fca343434c8fa3e3eafa6c7272ae68bee8cddf3ca48b635b9c8ffb2296b27f83"
+    },
+    "Tools/AnyEngineValidation/native_owned_snapshot/failed_shutdown/native-test.patch": {
+      "bytes": 1584,
+      "mode": 420,
+      "sha256": "941832b0f7512fb576c2059012b56b8c45fa0f58fa76385dcad560a34f202522"
+    },
+    "Tools/AnyEngineValidation/native_owned_snapshot/failed_shutdown/native_capture_test.go": {
+      "bytes": 20774,
+      "mode": 420,
+      "sha256": "56a554a252153867e2007da80613dc01a2661a63d7cac0484f7e3ebbcb9fd7c4"
+    },
+    "Tools/AnyEngineValidation/native_owned_snapshot/failed_shutdown/run.py": {
+      "bytes": 12259,
+      "mode": 420,
+      "sha256": "e55c26d1684e242179a3579bae78b9c58261dd5a62b73efcba3a83490104fbdb"
+    },
+    "Tools/AnyEngineValidation/native_owned_snapshot/native.patch": {
+      "bytes": 38716,
+      "mode": 420,
+      "sha256": "0ef8726b4be20b815f85746cbf0b2febcac137c4a7448bf8c575b36591196e08"
+    },
+    "Tools/AnyEngineValidation/native_owned_snapshot/native/core/pinkha/localstorewitness/capture.go": {
+      "bytes": 14062,
+      "mode": 420,
+      "sha256": "934351f99f3468839e3c3a21495203288ece1295481f81e35e5176345c5b103c"
+    },
+    "Tools/AnyEngineValidation/native_owned_snapshot/native/core/pinkha/localstorewitness/native_capture.go": {
+      "bytes": 1800,
+      "mode": 420,
+      "sha256": "d8442d3b76ae93be580be27ea060925b9a7bca17bdfe7f9a89c91f99b2fe912f"
+    },
+    "Tools/AnyEngineValidation/native_owned_snapshot/native/core/pinkha/localstorewitness/native_capture_test.go": {
+      "bytes": 20061,
+      "mode": 420,
+      "sha256": "b1d044f2efc079f126b2e3c98995f8fbb467d0c94715572b97880b63d99c0ec0"
+    },
+    "Tools/AnyEngineValidation/native_owned_snapshot/native/space/spacecore/storage/anystorage/clientstorage.go": {
+      "bytes": 4274,
+      "mode": 420,
+      "sha256": "f1c1194596b4ffb890adb5518db580394609c298d9eed9d14a34c55b81bf4168"
+    },
+    "Tools/AnyEngineValidation/native_owned_snapshot/native/space/spacecore/storage/anystorage/owned_snapshot.go": {
+      "bytes": 9629,
+      "mode": 420,
+      "sha256": "cd450ebe0bb3523eea6516aaf2694680afcc6def087663c14b06c96bccf592f7"
+    },
+    "Tools/AnyEngineValidation/native_owned_snapshot/native/space/spacecore/storage/anystorage/storageservice.go": {
+      "bytes": 22286,
+      "mode": 420,
+      "sha256": "5a2ff1c0b91f68bcac0ed648ea2c763087c67566a7fdf415087405b4c6c1b0e9"
+    },
+    "Tools/AnyEngineValidation/native_owned_snapshot/resolved-modules.json": {
+      "bytes": 34234,
+      "mode": 420,
+      "sha256": "0497d27ce8fb8369990a1b463825d926271e2d9ceb15bb8454cf1a32a796922d"
+    },
+    "Tools/AnyEngineValidation/native_owned_snapshot/retained/concrete-capability-hardening.json": {
+      "bytes": 3632,
+      "mode": 420,
+      "sha256": "aab209b73afc810a56cb42a55c88c90ede245dff198358eb7170fb10d74814f5"
+    },
+    "Tools/AnyEngineValidation/native_owned_snapshot/retained/fixture-witness.json": {
+      "bytes": 2268,
+      "mode": 420,
+      "sha256": "9ddc00e846638b488fd3edd498d79b3ce6421606c25b0daba2e11103d36b2819"
+    },
+    "Tools/AnyEngineValidation/native_owned_snapshot/retained/local-tree-census.json": {
+      "bytes": 15318,
+      "mode": 420,
+      "sha256": "5cd4d9f392859f79cb04dbd000138beefad13ddb33ad6725a2d3b84a90bdeacc"
+    },
+    "Tools/AnyEngineValidation/native_owned_snapshot/run.py": {
+      "bytes": 19614,
+      "mode": 436,
+      "sha256": "9fbd3a53f10caf7869f0a81ce69517c1d546747bea170c9ca9031a6c8e0b70c6"
+    },
+    "Tools/AnyEngineValidation/native_owned_snapshot/source.json": {
+      "bytes": 24220,
+      "mode": 420,
+      "sha256": "65b61f19ecab4182c4f84f1788d05aef06363e50ae0c670bd2356ba741907a5e"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/binary-buildinfo-original.txt": {
+      "bytes": 5691,
+      "mode": 384,
+      "sha256": "42cf19b7b72a28c634bcb50edd2a8e16564501459c99c73217322debe4c66fe3"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/build-dependencies-after.json.gz": {
+      "bytes": 215729,
+      "mode": 384,
+      "sha256": "75fdba565d97708713e0de5ffd864d4ca6680f5f44773e293853723729c693b4"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/build-dependencies-before.json.gz": {
+      "bytes": 215729,
+      "mode": 384,
+      "sha256": "75fdba565d97708713e0de5ffd864d4ca6680f5f44773e293853723729c693b4"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/build-loaded-after.json.gz": {
+      "bytes": 4355,
+      "mode": 384,
+      "sha256": "d08a254247b879183a59c30b052559cb0f751b4bb53a699b04fbb187e94bc4eb"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/build-loaded-before.json.gz": {
+      "bytes": 4355,
+      "mode": 384,
+      "sha256": "d08a254247b879183a59c30b052559cb0f751b4bb53a699b04fbb187e94bc4eb"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/build-source-after.json.gz": {
+      "bytes": 4166,
+      "mode": 384,
+      "sha256": "2e6865e3fe8ab3a30545c46a25533625f83f6af43537736365d82f92e1448538"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/build-source-before.json.gz": {
+      "bytes": 4166,
+      "mode": 384,
+      "sha256": "2e6865e3fe8ab3a30545c46a25533625f83f6af43537736365d82f92e1448538"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/build-tools-after.json.gz": {
+      "bytes": 967,
+      "mode": 384,
+      "sha256": "7802405425560f94e6ddcbbf01606d5e0baf4417b1f6e314edb21d1b5dc2ef5e"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/build-tools-before.json.gz": {
+      "bytes": 967,
+      "mode": 384,
+      "sha256": "7802405425560f94e6ddcbbf01606d5e0baf4417b1f6e314edb21d1b5dc2ef5e"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/build.json": {
+      "bytes": 3387,
+      "mode": 384,
+      "sha256": "e125ee571c391d3327b50bad80169c74b73efd0dca03ed2c390018d177ec5fc5"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/execute-dependencies-after.json.gz": {
+      "bytes": 215729,
+      "mode": 384,
+      "sha256": "75fdba565d97708713e0de5ffd864d4ca6680f5f44773e293853723729c693b4"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/execute-dependencies-before.json.gz": {
+      "bytes": 215729,
+      "mode": 384,
+      "sha256": "75fdba565d97708713e0de5ffd864d4ca6680f5f44773e293853723729c693b4"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/execute-loaded-after.json.gz": {
+      "bytes": 4355,
+      "mode": 384,
+      "sha256": "d08a254247b879183a59c30b052559cb0f751b4bb53a699b04fbb187e94bc4eb"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/execute-loaded-before.json.gz": {
+      "bytes": 4355,
+      "mode": 384,
+      "sha256": "d08a254247b879183a59c30b052559cb0f751b4bb53a699b04fbb187e94bc4eb"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/execute-source-after.json.gz": {
+      "bytes": 4166,
+      "mode": 384,
+      "sha256": "2e6865e3fe8ab3a30545c46a25533625f83f6af43537736365d82f92e1448538"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/execute-source-before.json.gz": {
+      "bytes": 4166,
+      "mode": 384,
+      "sha256": "2e6865e3fe8ab3a30545c46a25533625f83f6af43537736365d82f92e1448538"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/execute-tools-after.json.gz": {
+      "bytes": 967,
+      "mode": 384,
+      "sha256": "7802405425560f94e6ddcbbf01606d5e0baf4417b1f6e314edb21d1b5dc2ef5e"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/execute-tools-before.json.gz": {
+      "bytes": 967,
+      "mode": 384,
+      "sha256": "7802405425560f94e6ddcbbf01606d5e0baf4417b1f6e314edb21d1b5dc2ef5e"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/execute.json": {
+      "bytes": 3315,
+      "mode": 384,
+      "sha256": "b0d8a59ab46b66125e4a903ee498743db319497000b98fbf9724f448a1945d0d"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/preservation.json": {
+      "bytes": 14899,
+      "mode": 384,
+      "sha256": "9e36ff497aecdfe8ec12d499593e4ca03cacc5c5c60cd609991bde7a46d8697c"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/preserve-original-reader.py": {
+      "bytes": 4748,
+      "mode": 436,
+      "sha256": "e329ccbc199391e39af6e91d3e762d361cffd1202ebe2f89e0fdaa19ff7fe63a"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/retained-three-private-frame-audit.json": {
+      "bytes": 1026,
+      "mode": 384,
+      "sha256": "06f7f8e51f868e33a8a045137b3b8f6fa3f70d529d661f503775b1622b0bb885"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/safe-events.json": {
+      "bytes": 6158,
+      "mode": 384,
+      "sha256": "9135397f76bcd5e90d0ac373745fe968085f485ddcf6dde9f044ff9e3a056132"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/safe-native-observations.json": {
+      "bytes": 1514,
+      "mode": 384,
+      "sha256": "5155df625d24aebf2ee59df81bdf0e09f0dddd8706e65bf1b78f9f7f7dea674a"
+    },
+    "docs/validation/20261123-native-owned-snapshot/attempt1/safe-native-receipts.json": {
+      "bytes": 4735,
+      "mode": 384,
+      "sha256": "8fb8cded225773450cf8254c339bc758548e6c442fc27bfd035d5c2096fcb605"
+    },
+    "docs/validation/20261123-native-owned-snapshot/failed-shutdown-source/source-review.json": {
+      "bytes": 3911,
+      "mode": 420,
+      "sha256": "553ad11a5f9042d3d89d89ef77053e55867b88c110e02d31f3b767b92439e56c"
+    },
+    "docs/validation/20261123-native-owned-snapshot/source-authoring/controller-run-before-cleanup.py": {
+      "bytes": 18190,
+      "mode": 420,
+      "sha256": "a7cbaad462851f7c9262af15f923975e834657c5deb455f0574bd9aa92e12b22"
+    },
+    "docs/validation/20261123-native-owned-snapshot/source-authoring/controller-run-before-final-capacity.py": {
+      "bytes": 19273,
+      "mode": 420,
+      "sha256": "d06a5dd42d4749ac83562fe0810aa7d442ff956f9ab86ddcba17ed5c8dac177d"
+    },
+    "docs/validation/20261123-native-owned-snapshot/source-authoring/dependency-reader-inverse.json": {
+      "bytes": 5908,
+      "mode": 420,
+      "sha256": "5e8494fb398cb1687e6091fdbe6c7826f97936a98558eb13f97281f875254618"
+    },
+    "docs/validation/20261123-native-owned-snapshot/source-authoring/dependency-reader-v2.py": {
+      "bytes": 10572,
+      "mode": 420,
+      "sha256": "5a4b38b92edffff607b1a33b3b9f5bc95e2ca4c41ae43c62c18f478439aaec55"
+    },
+    "docs/validation/20261123-native-owned-snapshot/source-authoring/dependency-reader.py": {
+      "bytes": 8327,
+      "mode": 420,
+      "sha256": "4474883cda36167043d0cda7575ce104ebe6334503613c8f3844342e60d0eef6"
+    },
+    "docs/validation/20261123-native-owned-snapshot/source-authoring/identity-readonly-diagnostic.json": {
+      "bytes": 3186,
+      "mode": 420,
+      "sha256": "69a131a95d064b00e3a1b74250bcaab422b3fd4083720b264fc4f303288de9ff"
+    },
+    "docs/validation/20261123-native-owned-snapshot/source-authoring/initial-git-128-original.json": {
+      "bytes": 1790,
+      "mode": 420,
+      "sha256": "7c43a5cc36f0920de73bfa92a0fd0450f957edbc107d8c5cdd822bd1f1bdd539"
+    },
+    "docs/validation/20261123-native-owned-snapshot/source-authoring/native-source-commit-result.json": {
+      "bytes": 920,
+      "mode": 420,
+      "sha256": "db6c295212d94ed6c297e21ba825c0d0c0cfa38478ada5b903a27d6ef2f5713f"
+    },
+    "docs/validation/20261123-native-owned-snapshot/source-enumeration/go-list.stderr": {
+      "bytes": 0,
+      "mode": 420,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/validation/20261123-native-owned-snapshot/source-enumeration/go-list.stdout": {
+      "bytes": 1559570,
+      "mode": 420,
+      "sha256": "6cc508bcad99f15a4be59aac14744d8d5cce689c263f6c94aa4d78d0a1b4e2d1"
+    },
+    "docs/validation/20261123-native-owned-snapshot/source-enumeration/native-after.json": {
+      "bytes": 26082,
+      "mode": 420,
+      "sha256": "9837cdcc5f3b8738a5ac9266435b0b6195759745b1e996c0ecfc3b6f091c2abf"
+    },
+    "docs/validation/20261123-native-owned-snapshot/source-enumeration/native-before.json": {
+      "bytes": 26082,
+      "mode": 420,
+      "sha256": "9837cdcc5f3b8738a5ac9266435b0b6195759745b1e996c0ecfc3b6f091c2abf"
+    },
+    "docs/validation/20261123-native-owned-snapshot/source-enumeration/package-inputs.json": {
+      "bytes": 452263,
+      "mode": 420,
+      "sha256": "23099895748f9270adcf4f934a393928f33e71ea2e362d720234dd72dffdd269"
+    },
+    "docs/validation/20261123-native-owned-snapshot/source-enumeration/resolved-modules.json": {
+      "bytes": 34234,
+      "mode": 420,
+      "sha256": "0497d27ce8fb8369990a1b463825d926271e2d9ceb15bb8454cf1a32a796922d"
+    },
+    "docs/validation/20261123-native-owned-snapshot/source-enumeration/result.json": {
+      "bytes": 3680,
+      "mode": 420,
+      "sha256": "2fa6ae694122e8e7d0379ce992739c598165227ba3e09a83f8277273f37bed4e"
+    },
+    "docs/validation/20261123-native-owned-snapshot/source-review.json": {
+      "bytes": 15900,
+      "mode": 420,
+      "sha256": "0d5bfa0d9bdbadd6889cbc992d768f7e8b99237b0cc509f040d2f5b408cf65b0"
+    },
+    "docs/validation/20261123-native-owned-snapshot/tool-resolution.json": {
+      "bytes": 2006,
+      "mode": 420,
+      "sha256": "c8cdeba04b5c83197155f1644f2b9ff1d1e20e293a3a820ec687e3ae4c10c99f"
+    }
+  },
+  "critical_vendor_sources": {
+    "/mnt/development/projects/evidence/semantic-page-20261123-arm64/cache/go-mod/github.com/anyproto/any-store@v1.0.3/db.go": {
+      "bytes": 18098,
+      "mode": 256,
+      "sha256": "164474b3684a0c6a5895f9a831dbd1585ef51cdff62edaa7cfd3bf1ae49d7e2d"
+    },
+    "/mnt/development/projects/evidence/semantic-page-20261123-arm64/cache/go-mod/github.com/anyproto/any-store@v1.0.3/internal/driver/conn.go": {
+      "bytes": 5659,
+      "mode": 256,
+      "sha256": "79f3b4511fcbeb2ab10ed2cabf151cad75ea5499c30f295a882a7e65cf4008ed"
+    },
+    "/mnt/development/projects/evidence/semantic-page-20261123-arm64/cache/go-mod/github.com/anyproto/any-store@v1.0.3/internal/driver/manager.go": {
+      "bytes": 7710,
+      "mode": 256,
+      "sha256": "51a34f7803ec32e8512639d554613389be80686c445f066b02d115e6feac50e1"
+    },
+    "/mnt/development/projects/evidence/semantic-page-20261123-arm64/cache/go-mod/github.com/anyproto/any-store@v1.0.3/tx.go": {
+      "bytes": 5624,
+      "mode": 256,
+      "sha256": "27dd41fc966399534b64c7324fdd73855e01541dd3fb04de82ccc51841cf787e"
+    },
+    "/mnt/development/projects/evidence/semantic-page-20261123-arm64/cache/go-mod/github.com/anyproto/any-sync@v0.13.8/commonspace/spacestorage/spacestorage.go": {
+      "bytes": 7098,
+      "mode": 256,
+      "sha256": "497140b1291e08d06c7a60c0962a1d07c81a1bbc1dabf52908f49185391928e1"
+    }
+  },
+  "dependency_inputs_sha256": "fca343434c8fa3e3eafa6c7272ae68bee8cddf3ca48b635b9c8ffb2296b27f83",
+  "expected_private_frames": 0,
+  "filePayloadCoverageComplete": false,
+  "hasNativeSourceAdmission": false,
+  "inventory_note": "Conservative Go-list declared source inventory including TestGoFiles/XTestGoFiles reported on dependency packages. Extra inventory rows are protection, not a claim those dependency tests compile or execute.",
+  "kind": "native-owned-shutdown-failed-method-continuation-v1",
+  "native_parent_sha": "35c169e7a39e3dafc0a1281f56a1fe37fce57533",
+  "native_source_inputs": {
+    "core/debug/debugreporter/reporter.go": {
+      "bytes": 2706,
+      "mode": 436,
+      "sha256": "1d45f23cec1575f006082bb1dfa1746538afa66a2917b05e20730662530acef9"
+    },
+    "core/pinkha/localstorewitness/capture.go": {
+      "bytes": 14062,
+      "mode": 436,
+      "sha256": "934351f99f3468839e3c3a21495203288ece1295481f81e35e5176345c5b103c"
+    },
+    "core/pinkha/localstorewitness/capture_test.go": {
+      "bytes": 11250,
+      "mode": 436,
+      "sha256": "a3ecc9410c84c50e1816f68b580fa82e9207c7a13f35ca1c4130aa6bba72ef6e"
+    },
+    "core/pinkha/localstorewitness/census.go": {
+      "bytes": 17175,
+      "mode": 436,
+      "sha256": "6436d65fb9eaeb457c59222741d9d9429639b2c3c67fdb5af30f25b8b5676a5b"
+    },
+    "core/pinkha/localstorewitness/census_encoding.go": {
+      "bytes": 3355,
+      "mode": 436,
+      "sha256": "328329943792c7b620189ec87fdd969550274be0f7c8466a202981819ea75e54"
+    },
+    "core/pinkha/localstorewitness/census_fixture_test.go": {
+      "bytes": 7056,
+      "mode": 436,
+      "sha256": "8f721f7ccc8131703aab70709766548624e8bc5026f9b75fee6e79b81411e978"
+    },
+    "core/pinkha/localstorewitness/census_test.go": {
+      "bytes": 13930,
+      "mode": 436,
+      "sha256": "b7d0638b458033be28202d98c43719cfb38ed17b399c21fe6271990ace30f6b0"
+    },
+    "core/pinkha/localstorewitness/encoding.go": {
+      "bytes": 4720,
+      "mode": 436,
+      "sha256": "0e413617ca4d1f709ed5f9c37b3809c7710377f8cf79f9247ffbdb6eb3174f4f"
+    },
+    "core/pinkha/localstorewitness/export_test.go": {
+      "bytes": 419,
+      "mode": 436,
+      "sha256": "cdd0a7e13fabd23dd5dec52766df0216151d50baf47a4f675f14a1bd7a8ef82c"
+    },
+    "core/pinkha/localstorewitness/external_capability_test.go": {
+      "bytes": 2170,
+      "mode": 436,
+      "sha256": "c8c66e9193cb60bb19d0fbe57cf2d3eb295bdf8fefede73217ce9b16f3c4452b"
+    },
+    "core/pinkha/localstorewitness/fixture_test.go": {
+      "bytes": 8306,
+      "mode": 436,
+      "sha256": "f771e05791bf680055869b028f6f4f060f268efcb885dd411f2d8114a13a0e03"
+    },
+    "core/pinkha/localstorewitness/native_capture.go": {
+      "bytes": 1800,
+      "mode": 420,
+      "sha256": "d8442d3b76ae93be580be27ea060925b9a7bca17bdfe7f9a89c91f99b2fe912f"
+    },
+    "core/pinkha/localstorewitness/native_capture_test.go": {
+      "bytes": 20774,
+      "mode": 436,
+      "sha256": "56a554a252153867e2007da80613dc01a2661a63d7cac0484f7e3ebbcb9fd7c4"
+    },
+    "go.mod": {
+      "bytes": 16202,
+      "mode": 436,
+      "sha256": "0c506b9ab921a9bfea985871c9c912d362147a6bb76e697ee62c51a2eb678de7"
+    },
+    "go.sum": {
+      "bytes": 132924,
+      "mode": 436,
+      "sha256": "7c873be1e5b4c65e5e46d18167ae6bc29f0f5b51c459a8398d75ab22f0b2432d"
+    },
+    "pb/changes.pb.go": {
+      "bytes": 251298,
+      "mode": 436,
+      "sha256": "8cd42aca2e459f4f56cfd9e62f3cc757b41efe418463a01ad1ede42bcde58f7d"
+    },
+    "pb/commands.pb.go": {
+      "bytes": 8432709,
+      "mode": 436,
+      "sha256": "9a89d9a48131c4a171455e5983a7f947557337d68c367c480923502189e27b8c"
+    },
+    "pb/events.pb.go": {
+      "bytes": 1745048,
+      "mode": 436,
+      "sha256": "193176bcb802bf4ddee2184d32db05d51d9adcc6fc3965c84da0da8419b20e2e"
+    },
+    "pb/snapshot.pb.go": {
+      "bytes": 28683,
+      "mode": 436,
+      "sha256": "1f7db6d8380e6ed78cae661da45771d70604ef56ac330a73140ecff538c534d0"
+    },
+    "pkg/lib/initialparams/initialparams.go": {
+      "bytes": 3783,
+      "mode": 436,
+      "sha256": "88455ca315f35e63865cab1db9211f870eea0fcd5ac02bcb8d740bd285d7b087"
+    },
+    "pkg/lib/initialparams/initialparams_test.go": {
+      "bytes": 2495,
+      "mode": 436,
+      "sha256": "6c10a788bd1a5ca78aff29d9299db6577f52fba2cf8b2231b97bd95dbf462fe5"
+    },
+    "pkg/lib/localstore/objectstore/anystorehelper/helper.go": {
+      "bytes": 3333,
+      "mode": 436,
+      "sha256": "18e1a0f3a239030e8d68f6f19723cada59ae4a01269290e3c99b3656a7c2f0b3"
+    },
+    "pkg/lib/logging/bundle.go": {
+      "bytes": 4596,
+      "mode": 436,
+      "sha256": "8503b6894ff5214ff4bd6f8aa3bf97039eb363fe5cbccff0514edc8ea1e7a617"
+    },
+    "pkg/lib/logging/bundle_test.go": {
+      "bytes": 3091,
+      "mode": 436,
+      "sha256": "82522f9646f9348abd1eb401602817feb28b06422a48e344844e5ad45615be22"
+    },
+    "pkg/lib/logging/logging.go": {
+      "bytes": 7254,
+      "mode": 436,
+      "sha256": "222d7285f09a253ae31e4d856196c327e96d1d81ba702d6e4a8f3bb2075ba742"
+    },
+    "pkg/lib/logging/logging_test.go": {
+      "bytes": 3368,
+      "mode": 436,
+      "sha256": "ca38e0177b3f5a32c9a787907c5d45776921481dc1ef6180099dcef8ae25d496"
+    },
+    "pkg/lib/logging/sugared_wrapper.go": {
+      "bytes": 1555,
+      "mode": 436,
+      "sha256": "4b9073f147dd26bb2f1bc3b3d5b702991e63cd04d66faa6329add13b50a572aa"
+    },
+    "pkg/lib/logging/suggared_wrapper_test.go": {
+      "bytes": 1947,
+      "mode": 436,
+      "sha256": "c44940cd041c4749a7ff28ad81b6bfdcfac8167a0cc2a0eb08a82136b29a0d0e"
+    },
+    "pkg/lib/pb/model/derived.gen.go": {
+      "bytes": 7056,
+      "mode": 436,
+      "sha256": "61fa8ae26f3d0efd6fb191044eff1342d07e3ead201f3f302705583048e8bfc1"
+    },
+    "pkg/lib/pb/model/equal.go": {
+      "bytes": 779,
+      "mode": 436,
+      "sha256": "1baa72825f422773b902697a25ba5cccc66fb2c0281487f3d05c0e396ddd10d4"
+    },
+    "pkg/lib/pb/model/export_report.pb.go": {
+      "bytes": 23622,
+      "mode": 436,
+      "sha256": "7807e37e52dd585646df2a4923c8bc816360d2d4b05a124f735080d6a6a632f5"
+    },
+    "pkg/lib/pb/model/localstore.pb.go": {
+      "bytes": 78064,
+      "mode": 436,
+      "sha256": "9134446c1b21ca7cde249576fcb8113be83baeb8f612b55a806564a2723e9e9d"
+    },
+    "pkg/lib/pb/model/models.pb.go": {
+      "bytes": 1180139,
+      "mode": 436,
+      "sha256": "1e7bea1584323e3d69fb7a9f1cbe0815ab274cc1b847508b3c3c6feb9a4ad99d"
+    },
+    "space/spacecore/storage/anystorage/clientstorage.go": {
+      "bytes": 4274,
+      "mode": 436,
+      "sha256": "f1c1194596b4ffb890adb5518db580394609c298d9eed9d14a34c55b81bf4168"
+    },
+    "space/spacecore/storage/anystorage/owned_snapshot.go": {
+      "bytes": 9629,
+      "mode": 420,
+      "sha256": "cd450ebe0bb3523eea6516aaf2694680afcc6def087663c14b06c96bccf592f7"
+    },
+    "space/spacecore/storage/anystorage/storageservice.go": {
+      "bytes": 22286,
+      "mode": 436,
+      "sha256": "5a2ff1c0b91f68bcac0ed648ea2c763087c67566a7fdf415087405b4c6c1b0e9"
+    },
+    "space/spacecore/storage/anystorage/storageservice_lock_test.go": {
+      "bytes": 6846,
+      "mode": 436,
+      "sha256": "edcf45a617c730427078c405bdcb897b4bbea6e45c6386c0baa5345a55c2769e"
+    },
+    "space/spacecore/storage/anystorage/storageservice_race_test.go": {
+      "bytes": 16857,
+      "mode": 436,
+      "sha256": "e316fe0b1f0f0ec97922f2788a15899399795bf03e8183b9596e26a44f771c9e"
+    },
+    "space/spacecore/storage/anystorage/storageservice_test.go": {
+      "bytes": 2785,
+      "mode": 436,
+      "sha256": "eab745f44b2c7bb38fd2ccb08d3274e17d8335e1425735e294b0c21c6912453a"
+    },
+    "space/spacedomain/err.go": {
+      "bytes": 103,
+      "mode": 436,
+      "sha256": "fe8869194a45001c25fccd0e2d77676cbf1e1f3e93d1006449e313da318a0ec3"
+    },
+    "space/spacedomain/type.go": {
+      "bytes": 1727,
+      "mode": 436,
+      "sha256": "e0bf7d078c8df19f53b137045aad6c6eebf7860b2a4ae8e2408efa0499dd1da9"
+    },
+    "util/anyerror/anyerror.go": {
+      "bytes": 1838,
+      "mode": 436,
+      "sha256": "61e0e77b5e2b463306291d8c29c0a4f947b7861761acfa23950694ca40f22481"
+    },
+    "util/anyerror/anyerror_test.go": {
+      "bytes": 3176,
+      "mode": 436,
+      "sha256": "9095d17ad7d0e0ec65696d9d6105abb317c4bf1d432b02ed66dd338861616b75"
+    }
+  },
+  "native_source_sha": "ba965ac243c6501a1a7083ce0e07d3557650db00",
+  "native_storage_lifetime_issuer": true,
+  "new_manifest_self_binding": "Current HEAD Git blob checked by failed-only launcher and pre/post source snapshot wrapper.",
+  "new_methods_selected": 1,
+  "old_methods_selected": 0,
+  "package": "./core/pinkha/localstorewitness",
+  "permitsDestinationWrites": false,
+  "production_callsite_exclusivity": "Reviewed single CaptureNativeOwned callsite, not API-enforced Witness-only consumption",
+  "retained_named_methods": [
+    "TestNativeOwnedSnapshotBindsActualServiceHandle",
+    "TestNativeOwnedSnapshotCloseRevokesAndDrains",
+    "TestNativeOwnedSnapshotDeletePreservesLeaseBoundary"
+  ],
+  "retained_native_original_sha256": {
+    "core/pinkha/localstorewitness/capture_test.go": "a3ecc9410c84c50e1816f68b580fa82e9207c7a13f35ca1c4130aa6bba72ef6e",
+    "core/pinkha/localstorewitness/census.go": "6436d65fb9eaeb457c59222741d9d9429639b2c3c67fdb5af30f25b8b5676a5b",
+    "core/pinkha/localstorewitness/census_encoding.go": "328329943792c7b620189ec87fdd969550274be0f7c8466a202981819ea75e54",
+    "core/pinkha/localstorewitness/census_fixture_test.go": "8f721f7ccc8131703aab70709766548624e8bc5026f9b75fee6e79b81411e978",
+    "core/pinkha/localstorewitness/census_test.go": "b7d0638b458033be28202d98c43719cfb38ed17b399c21fe6271990ace30f6b0",
+    "core/pinkha/localstorewitness/encoding.go": "0e413617ca4d1f709ed5f9c37b3809c7710377f8cf79f9247ffbdb6eb3174f4f",
+    "core/pinkha/localstorewitness/export_test.go": "cdd0a7e13fabd23dd5dec52766df0216151d50baf47a4f675f14a1bd7a8ef82c",
+    "core/pinkha/localstorewitness/external_capability_test.go": "c8c66e9193cb60bb19d0fbe57cf2d3eb295bdf8fefede73217ce9b16f3c4452b",
+    "core/pinkha/localstorewitness/fixture_test.go": "f771e05791bf680055869b028f6f4f060f268efcb885dd411f2d8114a13a0e03"
+  },
+  "retained_qualification_refs": {
+    "Tools/AnyEngineValidation/native_owned_snapshot/retained/concrete-capability-hardening.json": {
+      "bytes": 3632,
+      "mode": 420,
+      "new_execution": false,
+      "original_git_sha": "75d59780b9604b0392a0a8d4f4b7ce85c43188dd",
+      "original_path": "docs/validation/20261123-native-localstore-witness-hardening/qualification.json",
+      "sha256": "aab209b73afc810a56cb42a55c88c90ede245dff198358eb7170fb10d74814f5"
+    },
+    "Tools/AnyEngineValidation/native_owned_snapshot/retained/fixture-witness.json": {
+      "bytes": 2268,
+      "mode": 420,
+      "new_execution": false,
+      "original_git_sha": "75d59780b9604b0392a0a8d4f4b7ce85c43188dd",
+      "original_path": "docs/validation/20261123-native-localstore-witness/qualification.json",
+      "sha256": "9ddc00e846638b488fd3edd498d79b3ce6421606c25b0daba2e11103d36b2819"
+    },
+    "Tools/AnyEngineValidation/native_owned_snapshot/retained/local-tree-census.json": {
+      "bytes": 15318,
+      "mode": 420,
+      "new_execution": false,
+      "original_git_sha": "c86a27e7f10dfa0ef733b93ff7c88e3505b6f0a7",
+      "original_path": "docs/validation/20261123-native-local-tree-census/qualification.json",
+      "sha256": "5cd4d9f392859f79cb04dbd000138beefad13ddb33ad6725a2d3b84a90bdeacc"
+    }
+  },
+  "same_process_raw_storage_aliases_outside_managed_guarantee": true,
+  "selected_top_level_methods": [
+    "TestNativeOwnedSnapshotShutdownAndCanceledAcquire"
+  ],
+  "semanticIdentityCensusComplete": false,
+  "source_query_receipt": {
+    "new_builds": 0,
+    "new_native_methods": 0,
+    "owned_group_absent": true,
+    "path": "/mnt/development/projects/diagnostics/native-owned-snapshot-dependency-plan-20261123/result.json",
+    "sha256": "2fa6ae694122e8e7d0379ce992739c598165227ba3e09a83f8277273f37bed4e"
+  },
+  "status": "FROZEN_FAILED_METHOD_NOT_RUN",
+  "tool_inputs": {
+    "/mnt/development/projects/diagnostics/inline-http-20261123/cache/go-build-glibc/3a/3a2962b73e7daf955e0831e767e713cb2b7f62fe3c6776b479f848942d5418a6-d/test2json": {
+      "bytes": 2883744,
+      "mode": 509,
+      "sha256": "3a2962b73e7daf955e0831e767e713cb2b7f62fe3c6776b479f848942d5418a6"
+    },
+    "/mnt/development/toolchains/go1.27.4/go/bin/go": {
+      "bytes": 15863091,
+      "mode": 493,
+      "sha256": "59c65090beeda377c09007eb8fae1c6aadf0a7b551e65ee13d461092d29e8005"
+    },
+    "/mnt/development/toolchains/go1.27.4/go/pkg/tool/linux_arm64/asm": {
+      "bytes": 5302759,
+      "mode": 493,
+      "sha256": "6f1c5c6fcbe5681f23b9b971030fa7667721b39723a44c7cc62462ff1678f629"
+    },
+    "/mnt/development/toolchains/go1.27.4/go/pkg/tool/linux_arm64/cgo": {
+      "bytes": 4219127,
+      "mode": 493,
+      "sha256": "b12ff9e3b43eef60f5357ad4c15bb7acbb9adb0b1b523cc42cef647af1bce057"
+    },
+    "/mnt/development/toolchains/go1.27.4/go/pkg/tool/linux_arm64/compile": {
+      "bytes": 26606430,
+      "mode": 493,
+      "sha256": "4070e0e743ba23672219a3687a1f9bfb489fa5c95bfb6584b4f33932339f92ef"
+    },
+    "/mnt/development/toolchains/go1.27.4/go/pkg/tool/linux_arm64/link": {
+      "bytes": 6852809,
+      "mode": 493,
+      "sha256": "c119b682a4c1ba107279fe3ec0f0317518e5d21900f1f75941528b65b8d47590"
+    },
+    "/usr/bin/aarch64-linux-gnu-as": {
+      "bytes": 464304,
+      "mode": 493,
+      "sha256": "1ffda50efb6d91b6b05ef933aced099595c36577594c0296c91161f2d13db374"
+    },
+    "/usr/bin/aarch64-linux-gnu-gcc-13": {
+      "bytes": 990040,
+      "mode": 493,
+      "sha256": "a20520ee21543f243d40636a9181a142c45ecd989de31ab86b99a8ea5ada870d"
+    },
+    "/usr/bin/aarch64-linux-gnu-ld.bfd": {
+      "bytes": 1710520,
+      "mode": 493,
+      "sha256": "1e4d3369b76845fa8e099b83513bf28f6f722e046f9b2cde1378c9e27f96d19c"
+    },
+    "/usr/bin/python3.12": {
+      "bytes": 7845048,
+      "mode": 493,
+      "sha256": "c86f21d0da9290ece2d7d49a3f7ed52aed59cb029abdf0ea25c79634f6cbe960"
+    },
+    "/usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1": {
+      "bytes": 203968,
+      "mode": 493,
+      "sha256": "124e3f166bdc0be365eaa6dc59e415b876b0841a40463edd1b0e084b518bb7cd"
+    },
+    "/usr/lib/aarch64-linux-gnu/libc.so.6": {
+      "bytes": 1722920,
+      "mode": 493,
+      "sha256": "2544e7902ec1bd3a68b526b6af427c34d2a98e56b9dbf8395b4b498dd2112cd6"
+    },
+    "/usr/libexec/gcc/aarch64-linux-gnu/13/cc1": {
+      "bytes": 26761448,
+      "mode": 493,
+      "sha256": "64edfe466dd55c4216c006e9fa237af012e4974281dd4d11640aacfc3b3693af"
+    },
+    "/usr/libexec/gcc/aarch64-linux-gnu/13/collect2": {
+      "bytes": 331800,
+      "mode": 493,
+      "sha256": "f116dad8aa42ff4feff154ccfb2db9ecc79edcccb5c2e34244aff80ad123ab19"
+    }
+  },
+  "vendor_cleanup_deadline_guarantee": false
+}
