@@ -1082,17 +1082,32 @@ final class NativeLaunchTests: XCTestCase {
     }
 
     private func hanlinComposerInput(_ app: XCUIApplication) -> XCUIElement {
-        // The original configured chat visibly contains this canonical input.
-        // A SwiftUI vertical TextField need not expose its placeholder as its
-        // AX label. Use the retained composer's semantic scope and input role.
-        let inputs = app.descendants(matching: .any).matching(NSPredicate(
-            format: "identifier == %@ AND (elementType == %d OR elementType == %d)",
-            "pinkha.hanlin.composer",
-            XCUIElement.ElementType.textField.rawValue,
-            XCUIElement.ElementType.textView.rawValue))
-        let input = inputs.firstMatch
-        waitUntilEnabled(input)
-        XCTAssertEqual(inputs.count, 1, "The real Hanlin composer must expose one input.")
+        // The wrapper identifies the canonical composer as a whole. SwiftUI may
+        // retain that scope or propagate its identifier to descendants.
+        let deadline = ProcessInfo.processInfo.systemUptime + 30
+        let scopes = app.descendants(matching: .any)
+            .matching(identifier: "pinkha.hanlin.composer")
+        waitFor(NSPredicate(format: "exists == true"), object: scopes.firstMatch, timeout: 30)
+        let inputRoles = NSPredicate(format: "elementType == %d OR elementType == %d",
+            XCUIElement.ElementType.textField.rawValue, XCUIElement.ElementType.textView.rawValue)
+        var inputs: [XCUIElement] = []
+        func include(_ element: XCUIElement) {
+            // Resolve by accessibility element, then use exact element equality.
+            // Never collapse two different controls by frame, label or value.
+            if !inputs.contains(where: { $0.isEqual(element) }) { inputs.append(element) }
+        }
+        for scope in scopes.allElementsBoundByAccessibilityElement {
+            if scope.elementType == .textField || scope.elementType == .textView { include(scope) }
+            for input in scope.descendants(matching: .any).matching(inputRoles)
+                .allElementsBoundByAccessibilityElement {
+                include(input)
+            }
+        }
+        XCTAssertEqual(inputs.count, 1, "The identified Hanlin composer must expose one real input.")
+        // continueAfterFailure=false stops an ambiguous/missing result above.
+        // The empty-result expression remains scoped and cannot select another field.
+        let input = inputs.first ?? scopes.matching(inputRoles).firstMatch
+        waitUntilEnabled(input, timeout: max(0, deadline - ProcessInfo.processInfo.systemUptime))
         XCTAssertTrue(input.isHittable, "The mounted Hanlin input must accept a real tap.")
         return input
     }
