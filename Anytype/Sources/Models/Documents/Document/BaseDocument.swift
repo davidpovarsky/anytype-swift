@@ -1,3 +1,4 @@
+import ProtobufMessages
 import Services
 import Combine
 import AnytypeCore
@@ -192,8 +193,22 @@ final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
     
     private func setup() {
         eventsListener.setOnUpdateReceice({ [weak self] updates in
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+            let fence = PinkhaHeartSemanticAnchorPublication.current
+#endif
             DispatchQueue.main.async { [weak self] in
-                self?.triggerSync(updates: updates)
+                guard let self else { return }
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+                if let fence {
+                    fence.withCurrentMainDelivery(spaceID: self.spaceId, objectID: self.objectId) {
+                        PinkhaHeartSemanticAnchorPublication.$current.withValue(fence) {
+                            self.triggerSync(updates: updates)
+                        }
+                    }
+                    return
+                }
+#endif
+                self.triggerSync(updates: updates)
             }
         })
         if mode.isHandling {

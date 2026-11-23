@@ -108,6 +108,7 @@ final class DocumentsProvider: DocumentsProviderProtocol {
         )
         let eventsListener = EventsListener(
             objectId: objectId,
+            spaceId: spaceId,
             infoContainer: infoContainer,
             restrictionsContainer: restrictionsContainer,
             detailsStorage: detailsStorage

@@ -21,6 +21,18 @@ final class AnytypeHeartSemanticAnchorService {
         return try client.prepare(plan, lease: lease)
     }
 
+    func prepareVisibleSelection(anchor: PinkhaSemanticTextAnchor, blockID: String,
+                                 visibleText: String, selection: NSRange,
+                                 lease: PinkhaNativeReadLease) async throws -> PinkhaHeartSemanticAnchorPending {
+        let pending = try await client.prepareVisibleSelection(spaceID: anchor.spaceID,
+            objectID: anchor.objectID, blockID: blockID, anchorID: anchor.id.uuidString.lowercased(),
+            visibleText: visibleText, range: selection, lease: lease)
+        guard pending.marker.utf8.elementsEqual(anchor.markerString.utf8) else {
+            throw PinkhaHeartSemanticAnchorError.invalidRequest
+        }
+        return pending
+    }
+
     func apply(_ pending: PinkhaHeartSemanticAnchorPending) async throws
         -> PinkhaHeartSemanticAnchorVerifiedCapture {
         try await client.apply(pending)

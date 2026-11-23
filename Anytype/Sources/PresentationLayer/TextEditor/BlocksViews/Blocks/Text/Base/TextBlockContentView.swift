@@ -37,6 +37,15 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
     private var resetSubscription: AnyCancellable?
     private var configuredBlockId: String?
     private var configuredInputOwnerIdentity: ObjectIdentifier?
+
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+    private var pinkhaSemanticPendingChanges: (@MainActor () -> Bool)?
+    var pinkhaSemanticAnchorContext: (blockID: String, owner: ObjectIdentifier)? {
+        guard let configuredBlockId, let configuredInputOwnerIdentity,
+              pinkhaSemanticPendingChanges?() != true else { return nil }
+        return (configuredBlockId, configuredInputOwnerIdentity)
+    }
+#endif
     private var focusContext: EditorCursorManager?
     private var pendingFocus: (id: UUID, position: BlockFocusPosition, requestId: UUID?)?
     private var focusLifetimeId = UUID()
@@ -284,6 +293,9 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         }
         configuredBlockId = configuration.blockId
         configuredInputOwnerIdentity = configuration.inputOwnerIdentity
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        pinkhaSemanticPendingChanges = configuration.hasPendingLocalTextChanges
+#endif
         focusContext = configuration.focusContext
         applyTextStorage(configuration.attributedString,
             hasPendingLocalChanges: configuration.hasPendingLocalTextChanges?() ?? false,

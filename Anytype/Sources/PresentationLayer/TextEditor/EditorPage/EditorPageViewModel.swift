@@ -217,7 +217,16 @@ final class EditorPageViewModel: EditorPageViewModelProtocol, EditorBottomNaviga
             self?.updateHeaderIfNeeded(headerModel: headerModel)
         }.store(in: &subscriptions)
         
-        document.resetBlocksPublisher.receiveOnMain().sink { [weak self] blockIds in
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        let blockUpdates = document.resetBlocksPublisher.pinkhaReceiveSemanticUpdates(
+            spaceID: document.spaceId, objectID: document.objectId, ownerIsCurrent: { [weak self] in
+                guard let self, let editor = self.viewInput as? EditorPageController else { return false }
+                return editor.viewIfLoaded?.window != nil && editor.viewModel === self && self.document.isOpened
+            })
+#else
+        let blockUpdates = document.resetBlocksPublisher.receiveOnMain().eraseToAnyPublisher()
+#endif
+        blockUpdates.sink { [weak self] blockIds in
             guard let self else { return }
             let filtered = Set(blockIds).intersection(modelsHolder.blocksMapping.keys)
             

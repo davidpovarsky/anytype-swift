@@ -13,6 +13,7 @@ actor EventsListener: EventsListenerProtocol {
     // MARK: - Private variables
     
     private let objectId: String
+    private let spaceId: String
      
     private let infoContainer: any InfoContainerProtocol
     
@@ -26,11 +27,13 @@ actor EventsListener: EventsListenerProtocol {
     
     init(
         objectId: String,
+        spaceId: String,
         infoContainer: some InfoContainerProtocol,
         restrictionsContainer: ObjectRestrictionsContainer,
         detailsStorage: ObjectDetailsStorage
     ) {
         self.objectId = objectId
+        self.spaceId = spaceId
         self.infoContainer = infoContainer
         
         let informationCreator = BlockInformationCreator(
@@ -99,6 +102,23 @@ actor EventsListener: EventsListenerProtocol {
     }
     
     private func handle(events: EventsBunch) {
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        if let fence = events.pinkhaSemanticPublication {
+            guard let updates = fence.withCurrentDocumentState(spaceID: spaceId, objectID: objectId, {
+                makeUpdates(events: events)
+            }) else { return }
+            // Subscriber callbacks may enqueue work. They run outside the state
+            // lock and explicitly carry this owner into their later delivery.
+            PinkhaHeartSemanticAnchorPublication.$current.withValue(fence) {
+                receiveUpdates(updates)
+            }
+            return
+        }
+#endif
+        receiveUpdates(makeUpdates(events: events))
+    }
+
+    private func makeUpdates(events: EventsBunch) -> [DocumentUpdate] {
         let middlewareUpdates = events.middlewareEvents.compactMap(\.value).compactMap { middlewareConverter.convert($0) }
         let localUpdates = events.localEvents.flatMap { localConverter.convert($0) }
 
@@ -122,12 +142,11 @@ actor EventsListener: EventsListenerProtocol {
             ? IndentationBuilder.build(container: infoContainer, id: objectId).map { .block(blockId: $0) }
             : []
 
-        let updates = middlewareUpdates + markupUpdates + localUpdates + builderUpdates
-        guard updates.isNotEmpty else { return }
-        receiveUpdates(updates)
+        return middlewareUpdates + markupUpdates + localUpdates + builderUpdates
     }
     
     private func receiveUpdates(_ updates: [DocumentUpdate]) {
+        guard updates.isNotEmpty else { return }
         onUpdatesReceive?(updates)
     }
 }

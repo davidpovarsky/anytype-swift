@@ -30,7 +30,7 @@ SUPPORT = [
     "InvocationSettings.swift",
     "Generated/CommandsInvocation/invocation-adoption.generated.swift",
 ]
-NEW = ["PinkhaHeartSemanticAnchor" + name + ".swift" for name in ("Wire", "JSON", "Protobuf", "Client", "Native")]
+NEW = ["PinkhaHeartSemanticAnchor" + name + ".swift" for name in ("Wire", "JSON", "Protobuf", "Client", "Native", "Publication")]
 TESTS = ["PinkhaHeartSemanticAnchor" + name + "Tests.swift" for name in ("Wire", "Client")]
 
 def require(value, label):
@@ -87,7 +87,7 @@ def prepare(args):
     sources = sorted((MODULE / "Sources/Protocol").rglob("*.swift"))
     require(len(sources) == 685, "Unexpected generated protocol inventory")
     sources += [MODULE / "Sources" / path for path in SUPPORT + NEW]
-    require(len(sources) == 695, "Wrong copied product source count")
+    require(len(sources) == 696, "Wrong copied product source count")
     files = {}
     for source in sources:
         target = package / "Sources/ProtobufMessages" / source.relative_to(MODULE / "Sources")
@@ -103,7 +103,11 @@ def prepare(args):
         files[str(target.relative_to(package))] = {"repo_path": str(source.relative_to(REPO)), "sha256": digest(source)}
         cls = name[:-6]
         selected.extend(cls + "." + method for method in re.findall(r"func (test[A-Za-z0-9_]+)\(", source.read_text()))
-    require(len(selected) == len(set(selected)) == 22, "Expected only twenty-two new methods")
+    require(len(selected) == len(set(selected)) == 30, "Expected the baseline22 and eight new methods only")
+    catalog = sorted(selected)
+    classes = args.select_class or ["PinkhaHeartSemanticAnchorWireTests", "PinkhaHeartSemanticAnchorClientTests"]
+    selected = [name for name in selected if name.split(".", 1)[0] in classes]
+    require(selected and len(classes) == len(set(classes)), "Empty or duplicate selected suites")
     fixture = MODULE / "Tests/ProtobufMessagesTests/Fixtures/NativePage"
     for source in sorted(fixture.iterdir()):
         if not source.is_file() or source.name.startswith("."):
@@ -121,13 +125,21 @@ def prepare(args):
     actual = {str(p.relative_to(package)) for folder in ("Sources", "Tests")
         for p in (package / folder).rglob("*") if p.is_file()}
     require(actual == set(files) - {"Package.swift"}, "Unexpected source or resource in stable package")
+    app_closure = read(HERE / "AppCandidateSources.json")
+    require(app_closure["status"] == "CANDIDATE_SOURCE_ONLY_APP_NOT_COMPILED_OR_EXECUTED",
+        "App metadata cannot imply host compilation")
+    for name, row in app_closure["files"].items():
+        require(name.startswith("Anytype/") and digest(REPO / name) == row["sha256"],
+            "Reviewed App source closure changed")
     metadata = ["Modules/ProtobufMessages/Package.swift",
-        "Anytype/Sources/Pinkha/Editor/AnytypeHeartSemanticAnchorService.swift",
-        "Tools/PinkhaSemanticAnchorSwiftControls/run_controls.py"]
+        "Tools/PinkhaSemanticAnchorSwiftControls/run_controls.py",
+        "Tools/PinkhaSemanticAnchorSwiftControls/AppCandidateSources.json",
+        *sorted(app_closure["files"])]
     save(args.run / "evidence/source-manifest.json", {
         "status": "PREPARED_CONTROLS_NOT_RUN", "app_sha": args.expected_app_sha, "files": files,
         "package_root": str(package), "reuse_prior_manifest": str(args.reuse_manifest) if args.reuse_manifest else None,
-        "product_source_count": len(sources), "selected_methods": sorted(selected), "dependency_revisions": PINS,
+        "product_source_count": len(sources), "selected_methods": sorted(selected),
+        "catalog_methods": catalog, "selected_classes": sorted(classes), "dependency_revisions": PINS,
         "metadata_only_sources": {name: digest(REPO / name) for name in metadata},
         "native_manifest_sha256": NATIVE_MANIFEST,
         "native_sdk_body": "INACTIVE_NOT_TYPECHECKED_OR_LINKED",
@@ -135,7 +147,7 @@ def prepare(args):
         "mounted_editor": "NOT_RUN", "app_capability": "OFF",
     })
     print(json.dumps({"status": "PREPARED_EXACT_SWIFT_CONTROL_COMPOSITION", "product_source_count": len(sources),
-        "selected_new_methods": len(selected), "actual_methods_executed": 0}))
+        "selected_methods": len(selected), "actual_methods_executed": 0}))
 
 def verify(args):
     source_guard(args)
@@ -266,7 +278,7 @@ def execute(args):
             receipt.update(compiled_products=products, test_binary=built["test_binary"],
                 test_binary_sha256=built["test_binary_sha256"])
             argv = [SWIFT, "test", *common(args), "--skip-build", "-j", "1",
-                "--filter", "PinkhaHeartSemanticAnchor(Wire|Client)Tests"]
+                "--filter", "(" + "|".join(manifest["selected_classes"]) + ")"]
             result = command(args, argv, evidence / "tests.log", 180)
             receipt["command"] = result
             rows = []
@@ -282,9 +294,9 @@ def execute(args):
             receipt.update(actual_methods_executed=len(starts), actual_methods_passed=len(passes), named_events=rows)
             require(result["exit_code"] == 0, "A selected Swift control failed")
             require(sorted(starts) == manifest["selected_methods"] and sorted(passes) == manifest["selected_methods"]
-                and len(rows) == 44, "Incomplete, skipped, duplicate or unselected Swift controls")
+                and len(rows) == 2 * len(manifest["selected_methods"]), "Incomplete, skipped, duplicate or unselected Swift controls")
             verify_products(products)
-            receipt["status"] = "PASS_TWENTY_TWO_NEW_SWIFT_CONTROLS"
+            receipt["status"] = "PASS_" + str(len(starts)) + "_SELECTED_SWIFT_CONTROLS"
         verify(args)
         result_code = 0
     except BaseException as error:
@@ -304,6 +316,8 @@ def main():
     parser.add_argument("--expected-app-sha", required=True)
     parser.add_argument("--package-root", type=Path)
     parser.add_argument("--reuse-manifest", type=Path)
+    parser.add_argument("--select-class", action="append", choices=(
+        "PinkhaHeartSemanticAnchorClientTests", "PinkhaHeartSemanticAnchorWireTests"))
     args = parser.parse_args()
     os.umask(0o077)
     for name in ("run", "build_root", "shared_cache"):

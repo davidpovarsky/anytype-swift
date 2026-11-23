@@ -16,6 +16,9 @@ final class EditorPageController: UIViewController {
     private weak var pinkhaHanlinRouteOwner: SpaceHubCoordinatorViewModel?
     // A later Chat or a detached/rebound editor cannot complete an earlier native return.
     var pinkhaHanlinPresentationID: UUID?
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+    private var pinkhaSemanticSelection: PinkhaSemanticAnchorSelectionCoordinator?
+#endif
     private let layout = EditorCollectionFlowLayout()
     @Injected(\.keyboardHeightListener)
     private var keyboardListener: KeyboardHeightListener
@@ -111,6 +114,9 @@ final class EditorPageController: UIViewController {
     var viewModel: (any EditorPageViewModelProtocol)! {
         didSet {
             pinkhaHanlinPresentationID = nil
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+            pinkhaSemanticSelection?.invalidate()
+#endif
             // Layout metadata must subscribe before model snapshot updates to avoid first-frame indentation fallback.
             layout.blockLayoutDetailsPublisher = viewModel.document.blockLayoutDetailsPublisher.receiveOnMain().eraseToAnyPublisher()
             viewModel.setupSubscriptions()
@@ -179,10 +185,16 @@ final class EditorPageController: UIViewController {
     override func didMove(toParent parent: UIViewController?) {
         super.didMove(toParent: parent)
         if parent == nil { pinkhaHanlinPresentationID = nil }
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        if parent == nil { pinkhaSemanticSelection?.invalidate() }
+#endif
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        pinkhaSemanticSelection?.editorWillDisappear()
+#endif
 
         UIApplication.shared.hideKeyboard()
         firstResponderView?.resignFirstResponder()
@@ -460,6 +472,12 @@ extension EditorPageController: EditorPageViewInput {
             setSelectionDisplay(true, for: textView)
         }
         if let textView = firstResponderView as? TextViewWithPlaceholder {
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+            if pinkhaSemanticSelection == nil {
+                pinkhaSemanticSelection = PinkhaSemanticAnchorSelectionCoordinator(editor: self)
+            }
+            pinkhaSemanticSelection?.bind(textView)
+#endif
             textView.onSelectionHandlePan = { [weak self] recognizer in
                 self?.handleSelectionEscalationPan(recognizer)
             }

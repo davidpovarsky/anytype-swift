@@ -20,6 +20,8 @@ public final class PinkhaHeartSemanticAnchorPending {
     fileprivate let generation: UUID
     private var consumed = false
 
+    public var marker: String { plan.request.marker }
+
     fileprivate init(plan: PinkhaHeartSemanticAnchorPlan, lease: PinkhaNativeReadLease) {
         self.plan = plan; self.lease = lease
         accountID = lease.accountID; generation = lease.generation
@@ -70,6 +72,41 @@ public final class PinkhaHeartSemanticAnchorClient {
         return pending
     }
 
+    /// Prepare a visible selection against a complete current native block.
+    /// This performs reads only. A later explicit apply rechecks the same CAS.
+    public func prepareVisibleSelection(
+        spaceID: String, objectID: String, blockID: String, anchorID: String,
+        visibleText: String, range: NSRange, lease: PinkhaNativeReadLease
+    ) async throws -> PinkhaHeartSemanticAnchorPending {
+        try Task.checkCancellation()
+        do { try lease.validate() }
+        catch { throw PinkhaHeartSemanticAnchorError.retiredOwner }
+        guard heartBytesEqual(spaceID, lease.spaceID) else {
+            throw PinkhaHeartSemanticAnchorError.retiredOwner
+        }
+        guard io.canPublish() else { throw PinkhaHeartSemanticAnchorError.unavailablePublication }
+        let version = try await io.runtimeVersion()
+        do { try lease.validate() }
+        catch { throw PinkhaHeartSemanticAnchorError.retiredOwner }
+        guard heartBytesEqual(version, PinkhaHeartSemanticAnchorProfile.runtimeVersion) else {
+            throw PinkhaHeartSemanticAnchorError.unsupportedRuntime
+        }
+        let current = try await io.read(spaceID, objectID)
+        do { try lease.validate() }
+        catch { throw PinkhaHeartSemanticAnchorError.retiredOwner }
+        try Task.checkCancellation()
+        guard let block = current.objectView.blocks.first(where: { heartBytesEqual($0.id, blockID) }) else {
+            throw PinkhaHeartSemanticAnchorError.changedDocument
+        }
+        let plan = try PinkhaHeartSemanticAnchorPlan(
+            spaceID: spaceID, objectID: objectID, anchorID: anchorID, range: range, nativeBlock: block)
+        guard heartBytesEqual(plan.request.expected.text, visibleText) else {
+            throw PinkhaHeartSemanticAnchorError.changedDocument
+        }
+        try plan.verifyCurrent(current)
+        return try prepare(plan, lease: lease)
+    }
+
     public func apply(_ pending: PinkhaHeartSemanticAnchorPending) async throws
         -> PinkhaHeartSemanticAnchorVerifiedCapture {
         try Task.checkCancellation()
@@ -105,7 +142,12 @@ public final class PinkhaHeartSemanticAnchorClient {
             try pending.validateOwner()
             // Publish the unchanged returned native event through the original
             // Invocation handler. No synthetic reducer event is manufactured.
-            guard await io.publish(event) else { throw PinkhaHeartSemanticAnchorError.uncertain }
+            let fence = try PinkhaHeartSemanticAnchorPublicationFence(
+                lease: pending.lease, objectID: pending.plan.request.objectID, event: event)
+            let published = await PinkhaHeartSemanticAnchorPublication.$current.withValue(fence) {
+                await io.publish(event)
+            }
+            guard published else { throw PinkhaHeartSemanticAnchorError.uncertain }
             try pending.validateOwner()
             let readback = try await io.read(pending.plan.request.spaceID, pending.plan.request.objectID)
             try pending.validateOwner()

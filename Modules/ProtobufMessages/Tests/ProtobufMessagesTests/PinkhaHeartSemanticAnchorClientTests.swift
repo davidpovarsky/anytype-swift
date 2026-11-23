@@ -17,6 +17,13 @@ private final class HeartCaptureProbe {
     var useInvocationHandler = false
     var retireInCapture = false
     var retireInReadback = false
+    var retireInBeforeRead = false
+    var retireInPublication = false
+    private(set) var publicationFence: PinkhaHeartSemanticAnchorPublicationFence?
+    private(set) var stateDeliveries = 0
+    private(set) var mainDeliveries = 0
+
+    func recordMainDelivery() { mainDeliveries += 1 }
     var holdCapture = false
     private(set) var captureStarted = false
     private var captureWaiters: [CheckedContinuation<Void, Never>] = []
@@ -68,8 +75,9 @@ private final class HeartCaptureProbe {
                 XCTAssertTrue(objectID.utf8.elementsEqual(self.plan.request.objectID.utf8))
                 self.readCount += 1
                 self.readCancellationStates.append(Task.isCancelled)
-                if self.readCount == 1 {
+                if self.requests.isEmpty {
                     self.calls.append("read-before")
+                    if self.retireInBeforeRead { self.retire() }
                     return self.before
                 }
                 self.calls.append("read-after")
@@ -89,6 +97,10 @@ private final class HeartCaptureProbe {
             canPublish: { self.publicationAvailable },
             publish: { event in
                 self.calls.append("publish"); self.published.append(event)
+                self.publicationFence = PinkhaHeartSemanticAnchorPublication.current
+                if self.retireInPublication { self.retire() }
+                _ = self.publicationFence?.withCurrentDocumentState(spaceID: self.lease.spaceID,
+                    objectID: self.plan.request.objectID) { self.stateDeliveries += 1 }
                 if self.useInvocationHandler {
                     return await PinkhaHeartSemanticAnchorNativePublication.send(event)
                 }
@@ -263,6 +275,179 @@ final class PinkhaHeartSemanticAnchorClientTests: XCTestCase {
             XCTAssertEqual($0 as? PinkhaHeartSemanticAnchorError, .retiredOwner)
         }
         XCTAssertTrue(probe.calls.isEmpty)
+    }
+
+    func testVisibleSelectionPreparationRequiresExplicitApply() async throws {
+        let probe = try HeartCaptureProbe()
+        let client = probe.client()
+        let request = probe.plan.request
+        let pending = try await client.prepareVisibleSelection(spaceID: request.spaceID,
+            objectID: request.objectID, blockID: request.blockID, anchorID: request.anchorID,
+            visibleText: request.expected.text,
+            range: NSRange(location: Int(request.from), length: Int(request.to - request.from)), lease: probe.lease)
+        XCTAssertEqual(pending.marker, request.marker)
+        XCTAssertEqual(probe.calls, ["version", "read-before"])
+        XCTAssertTrue(probe.requests.isEmpty)
+        XCTAssertTrue(probe.published.isEmpty)
+        _ = try await client.apply(pending)
+        XCTAssertEqual(probe.requests.count, 1)
+        XCTAssertEqual(probe.calls, ["version", "read-before", "version", "read-before",
+            "capture", "publish", "read-after"])
+    }
+
+    func testVisiblePreparationRejectsChangedMissingForeignAndRetiredOwners() async throws {
+        for variant in ["changed-text", "missing-block", "foreign-space", "retired-during-read"] {
+            let probe = try HeartCaptureProbe()
+            let request = probe.plan.request
+            if variant == "retired-during-read" { probe.retireInBeforeRead = true }
+            do {
+                _ = try await probe.client().prepareVisibleSelection(
+                    spaceID: variant == "foreign-space" ? request.spaceID + "-other" : request.spaceID,
+                    objectID: request.objectID,
+                    blockID: variant == "missing-block" ? "missing-native-block" : request.blockID,
+                    anchorID: request.anchorID,
+                    visibleText: request.expected.text + (variant == "changed-text" ? "changed" : ""),
+                    range: NSRange(location: Int(request.from), length: Int(request.to - request.from)),
+                    lease: probe.lease)
+                XCTFail("Invalid visible preparation was accepted: " + variant)
+            } catch {
+                let expected: PinkhaHeartSemanticAnchorError =
+                    ["foreign-space", "retired-during-read"].contains(variant) ? .retiredOwner : .changedDocument
+                XCTAssertEqual(error as? PinkhaHeartSemanticAnchorError, expected)
+            }
+            XCTAssertTrue(probe.requests.isEmpty)
+            XCTAssertTrue(probe.published.isEmpty)
+        }
+    }
+
+    func testVisiblePreparationRefusesUnsupportedPublicationAndCancellation() async throws {
+        for variant in ["runtime", "publisher", "cancelled"] {
+            let probe = try HeartCaptureProbe()
+            let request = probe.plan.request
+            if variant == "runtime" { probe.version = "production139" }
+            if variant == "publisher" { probe.publicationAvailable = false }
+            let task = Task { @MainActor in
+                try await probe.client().prepareVisibleSelection(spaceID: request.spaceID,
+                    objectID: request.objectID, blockID: request.blockID, anchorID: request.anchorID,
+                    visibleText: request.expected.text,
+                    range: NSRange(location: Int(request.from), length: Int(request.to - request.from)),
+                    lease: probe.lease)
+            }
+            if variant == "cancelled" { task.cancel() }
+            do { _ = try await task.value; XCTFail("Unavailable preparation was accepted") }
+            catch {
+                if variant == "cancelled" { XCTAssertTrue(error is CancellationError) }
+                else {
+                    XCTAssertEqual(error as? PinkhaHeartSemanticAnchorError,
+                        variant == "runtime" ? .unsupportedRuntime : .unavailablePublication)
+                }
+            }
+            XCTAssertTrue(probe.requests.isEmpty)
+            XCTAssertTrue(probe.published.isEmpty)
+        }
+    }
+
+    func testPublicationCarriesOnlyExactEventSpaceObjectAndGeneration() async throws {
+        let probe = try HeartCaptureProbe()
+        let client = probe.client()
+        let result = try await client.apply(client.prepare(probe.plan, lease: probe.lease))
+        let fence = try XCTUnwrap(probe.publicationFence)
+        let event = try XCTUnwrap(probe.published.first)
+        XCTAssertTrue(fence.matches(event: event))
+        XCTAssertTrue(fence.matches(spaceID: probe.lease.spaceID, objectID: probe.plan.request.objectID))
+        XCTAssertEqual(fence.accountID, probe.lease.accountID)
+        XCTAssertEqual(fence.generation, result.generation)
+        XCTAssertEqual(probe.stateDeliveries, 1)
+        var foreign = event
+        foreign.messages[0].spaceID += "-other"
+        XCTAssertFalse(fence.matches(event: foreign))
+        foreign = event
+        foreign.messages[0].blockSetText.marks.value.marks[0].param += "-other"
+        XCTAssertFalse(fence.matches(event: foreign))
+        XCTAssertFalse(fence.matches(spaceID: probe.lease.spaceID + "-other", objectID: event.contextID))
+        XCTAssertFalse(fence.matches(spaceID: probe.lease.spaceID, objectID: event.contextID + "-other"))
+        XCTAssertNil(PinkhaHeartSemanticAnchorPublication.current)
+    }
+
+    func testRetirementDuringPublicationPreventsStateDeliveryAndVerifiedReceipt() async throws {
+        let probe = try HeartCaptureProbe()
+        probe.retireInPublication = true
+        let client = probe.client()
+        let pending = try client.prepare(probe.plan, lease: probe.lease)
+        do { _ = try await client.apply(pending); XCTFail("Retired publication returned a verified receipt") }
+        catch { XCTAssertEqual(error as? PinkhaHeartSemanticAnchorError, .uncertain) }
+        XCTAssertEqual(probe.requests.count, 1)
+        XCTAssertEqual(probe.published.count, 1)
+        XCTAssertEqual(probe.stateDeliveries, 0)
+        XCTAssertEqual(probe.calls.last, "publish")
+        XCTAssertNil(PinkhaHeartSemanticAnchorPublication.current)
+        do { _ = try await client.apply(pending); XCTFail("Uncertain capture was retried") }
+        catch { XCTAssertEqual(error as? PinkhaHeartSemanticAnchorError, .invalidRequest) }
+        XCTAssertEqual(probe.requests.count, 1)
+    }
+
+    func testRetiredFenceRefusesNativeStateAndMainConsumer() throws {
+        let probe = try HeartCaptureProbe()
+        let event = try Anytype_ResponseEvent(serializedBytes: HeartCaptureFixture.data("capture-response-event.pb"))
+        let fence = try PinkhaHeartSemanticAnchorPublicationFence(
+            lease: probe.lease, objectID: probe.plan.request.objectID, event: event)
+        XCTAssertEqual(fence.withCurrentDocumentState(spaceID: probe.lease.spaceID,
+            objectID: event.contextID) { 7 }, 7)
+        XCTAssertNil(fence.withCurrentDocumentState(spaceID: probe.lease.spaceID,
+            objectID: "foreign-object") { XCTFail("Foreign state consumer ran"); return 1 })
+        probe.retire()
+        XCTAssertNil(fence.withCurrentDocumentState(spaceID: probe.lease.spaceID,
+            objectID: event.contextID) { XCTFail("Retired state consumer ran"); return 1 })
+        XCTAssertFalse(fence.withCurrentMainDelivery(spaceID: probe.lease.spaceID,
+            objectID: event.contextID) { XCTFail("Retired main consumer ran") })
+    }
+
+    func testExplicitOwnerCarryAcrossMainQueueRejectsRetiredDelivery() async throws {
+        for retired in [false, true] {
+            let probe = try HeartCaptureProbe()
+            let event = try Anytype_ResponseEvent(serializedBytes: HeartCaptureFixture.data("capture-response-event.pb"))
+            let fence = try PinkhaHeartSemanticAnchorPublicationFence(
+                lease: probe.lease, objectID: event.contextID, event: event)
+            let task = PinkhaHeartSemanticAnchorPublication.$current.withValue(fence) {
+                Task { @MainActor in
+                    let carried = PinkhaHeartSemanticAnchorPublication.current
+                    return await withCheckedContinuation { continuation in
+                        DispatchQueue.main.async {
+                            let accepted = carried?.withCurrentMainDelivery(spaceID: probe.lease.spaceID,
+                                objectID: event.contextID) { probe.recordMainDelivery() } ?? false
+                            continuation.resume(returning: accepted)
+                        }
+                    }
+                }
+            }
+            if retired { probe.retire() }
+            let accepted = await task.value
+            XCTAssertEqual(accepted, !retired)
+            XCTAssertEqual(probe.mainDeliveries, retired ? 0 : 1)
+            XCTAssertNil(PinkhaHeartSemanticAnchorPublication.current)
+        }
+    }
+
+    func testVisiblePreparationPreservesUnicodeByteIdentity() async throws {
+        for matching in [false, true] {
+            let probe = try HeartCaptureProbe()
+            probe.before = try HeartCaptureFixture.alterTarget(probe.before) {
+                $0.text.text = "\u{00e9}"
+                $0.text.marks = .init()
+            }
+            let request = probe.plan.request
+            do {
+                _ = try await probe.client().prepareVisibleSelection(spaceID: request.spaceID,
+                    objectID: request.objectID, blockID: request.blockID, anchorID: request.anchorID,
+                    visibleText: matching ? "\u{00e9}" : "e\u{0301}",
+                    range: NSRange(location: 0, length: 1), lease: probe.lease)
+                XCTAssertTrue(matching, "Canonically equivalent but byte-different text was accepted")
+            } catch {
+                XCTAssertFalse(matching)
+                XCTAssertEqual(error as? PinkhaHeartSemanticAnchorError, .changedDocument)
+            }
+            XCTAssertTrue(probe.requests.isEmpty)
+        }
     }
 }
 private actor HeartCapturePublishedEvents {

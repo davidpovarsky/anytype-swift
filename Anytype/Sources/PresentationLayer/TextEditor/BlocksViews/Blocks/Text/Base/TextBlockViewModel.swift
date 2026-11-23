@@ -20,8 +20,18 @@ final class BlockModelInfomationProvider: @unchecked Sendable {
     }
     
     private func setupPublisher() {
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        let blockID = info.id
+        subscription = document.subscribeForBlockInfo(blockId: blockID)
+            .pinkhaSinkSemanticUpdates(spaceID: document.spaceId, objectID: document.objectId,
+                ownerIsCurrent: { [weak self] in
+                    guard let self else { return false }
+                    return self.document.isOpened && self.info.id.utf8.elementsEqual(blockID.utf8)
+                }, receiveValue: { [weak self] in self?.info = $0 })
+#else
         subscription = document.subscribeForBlockInfo(blockId: info.id)
             .sinkOnMain { [weak self] in self?.info = $0 }
+#endif
     }
 
     /// Points this provider at the block that replaced `info.id` in place (empty-block

@@ -56,3 +56,27 @@ Use a clean exact source SHA and separate run/build/cache paths under /mnt/devel
 - PinkhaHeartSemanticAnchorWireTests.testStrictJSONPreservesDuplicatesAndUTF16EscapeEvidence
 
 Current host status: **22 actual methods PASS at fbbfe7100425482e3d9f8b6623bb2d1920f56528**. Original test-only compiler failures and the Swift6.4 runner/module lookup correction are preserved in docs/validation/20261123-semantic-heart-swift. The successful compiled runner/module and resources were retained before future cache reuse. Actual App/native SDK call and mounted acceptance remain separate; retirement during the async App publication chain is an identified next scope.
+
+
+## Current publication/visible-selection scope
+
+The new candidate adds one publication-owner source to the frozen695 product
+inputs, for696 copied Swift files. The test catalog is30 distinct methods:
+the baseline22 plus eight new read-only preparation/publication controls.
+The next run selects only PinkhaHeartSemanticAnchorClientTests (19 methods):
+eight new controls plus the11 affected by the changed client. The11 wire
+methods retain their already-qualified baseline result and are not rerun.
+
+Use prepare --select-class PinkhaHeartSemanticAnchorClientTests with a fresh
+evidence run. The selected suite list is frozen in that run's source manifest;
+test executes only those classes and verifies every actual named event.
+For cache reuse, --package-root names the existing isolated input directory and
+--reuse-manifest names its exact prior source manifest. All prior inputs are
+archived and verified before updating only changed files. These options do not
+permit overwriting prior logs or receipts.
+
+The App code explicitly carries the sealed exact-event owner through
+EventsBunch, bounded EventsListener state conversion, BaseDocument's GCD hop
+and the actual text-editor Combine consumers. Atomic state conversion never
+holds its owner lock over subscriber callbacks. Full App compilation and the
+actual SDK path remain separate from these Linux controls.
