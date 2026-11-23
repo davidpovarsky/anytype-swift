@@ -238,7 +238,7 @@ def execute(args, receipt):
         original_descriptors = [(path, proof.digest(path)) for path in (native_original, ui_original)]
         runtimes = runner.json(["xcrun", "simctl", "list", "runtimes", "-j"], "available-runtimes")
         types = runner.json(["xcrun", "simctl", "list", "devicetypes", "-j"], "available-device-types")
-        pair = consumer.simulator_selection.choose_pair(runtimes, types, product_family="iPad", major=27, architecture="arm64")
+        pair = consumer.consumer_simulator.choose_pair(runtimes, types)
         creation_command = ["xcrun", "simctl", "create", "Page154Mounted-" + binding["nonce"],
             pair["device"]["identifier"], pair["runtime"]["identifier"]]
         path, _ = runner.run(creation_command, "create-owned-simulator")

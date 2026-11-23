@@ -1,0 +1,13 @@
+# Mounted Page154 known-pair caller integration
+
+This source checkpoint restores the exact qualified consumer component from 68148339c275268795360d71d519a5baf003adf8 and connects the mounted controller to it. The original helper, original consumer import/call, original four-method source, and original evidence are byte-for-byte copies. Their four recorded passes are retained without rerun.
+
+The mounted controller changes exactly one call from the generic selector with latest-runtime eligibility to consumer.consumer_simulator.choose_pair(runtimes, types). Reversing that call reproduces the entire prior run.py byte-for-byte. Restoring the previously qualified two-line consumer import/call also has an exact inverse to the prior consumer. There is no new simulator policy or import system.
+
+The mounted controller loads its sibling consumer through the existing explicit repository-relative import spec. That exact qualified consumer exposes the approved helper, whose shared selector dependency is unchanged. The existing checkout_inputs guard verifies every loaded repository module against its committed input bytes. The new control imports the real mounted module and exercises that guard, including refusal of an incorrect helper hash.
+
+Exactly one new composed control is prepared. It executes the actual mounted inventory/create/boot region with a controlled external runner and the preserved original inventories. It verifies the approved 27.0/24A434/M5 pair, a newly returned owned UUID, unchanged command budgets, and refusal before any creation when the approved runtime is absent despite another installed 27.2 runtime. External process creation is forbidden in the control. This is an adapter check; no simulator or product method executes.
+
+All original admission files, artifact pins, source-plan bytes and product inputs remain unchanged. The exact current source/fixture ledger and inverse map are in source-review.json. The prior four-method input comparison is in retained-component.json: eight original inputs are identical; the only ninth difference is the original README's final status paragraph and added evidence-result appendix. Its original pre-control bytes and exact difference are retained separately. The first freeze audit incorrectly assumed this was purely an append and stopped before creating a source ledger or running any control; that diagnostic outcome is preserved in the separate evidence follow-up.
+
+At this source freeze the new method is NOT_RUN. An evidence-only follow-up will preserve its first actual outcome. Mounted preparation, editor selection/Cancel/Create, Apple cold reopen, physical device and shipping acceptance remain open. Root owns review, shared integration, workflow dispatch and Asana.
