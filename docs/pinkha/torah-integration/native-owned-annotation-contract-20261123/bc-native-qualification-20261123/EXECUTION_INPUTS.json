@@ -118,15 +118,15 @@
   "controls": [
     {
       "bytes": 43076,
-      "git_blob": "88fcfdbf62df7346d7d0404f1402779b0372ab70",
+      "git_blob": "e722ea0539e579044e5cdddf82b0551856e23472",
       "path": "run_native_closed_import.py",
-      "sha256": "8e2a9bc91b2087858072a9221f33135433ee6cb3c273a94cdf03bbcbc98f7c1f"
+      "sha256": "86a57c632b063054c3ba33326af0f85c3074eb8b2b242804a2ec9d3b685a55ec"
     },
     {
-      "bytes": 2998,
-      "git_blob": "65e94db171ad8a7a747cbbc9809061cd5f07db0c",
+      "bytes": 3023,
+      "git_blob": "e5e0941ab335ce9910e133f354c5c05a3b376dda",
       "path": "workflow.template.yml",
-      "sha256": "cca272b1b462368468afef823c8120b9c505c86556415fd3dafb4d459ea9484d"
+      "sha256": "93e71c1cda733069a0ce575dc09e0bdf2dfa1667fcb53a79a427cbf9391be8fd"
     },
     {
       "bytes": 3763,
@@ -145,6 +145,30 @@
       "git_blob": "d437b6a37a21a7dfc761e1b23d0c5c0e04331dd6",
       "path": "PREPARATION_SOURCE.json",
       "sha256": "ea970171825515099231112c53bf6179fbdb376b14379929c3e8057e76041068"
+    },
+    {
+      "bytes": 2015,
+      "git_blob": "8d09cddcb9917ec890e1d07e7136c1c3f0f4adcc",
+      "path": "STOP_OWNERSHIP_REPAIR.patch",
+      "sha256": "bdfc5060fb5d77e30a3cfd5934c377c7391286e0c6e73426a944616055926c4d"
+    },
+    {
+      "bytes": 1290,
+      "git_blob": "45744eea511094c76363aff94f37d53231cc5339",
+      "path": "STOP_OWNERSHIP_REPAIR.json",
+      "sha256": "eb3d88ec8be9b3c34caf732028644fff15c574bcd890b9e1e037602cb7235ba9"
+    },
+    {
+      "bytes": 359,
+      "git_blob": "96b38b54bf7c7e22955c44edbbc1e1bbd947fe31",
+      "path": "CHECKOUT_HISTORY_REPAIR.patch",
+      "sha256": "5722f6fd07e7c10ad6256dd858df8235b4eb277582064bc2144275fa64373492"
+    },
+    {
+      "bytes": 1640,
+      "git_blob": "ea15741404b5119f6d9f085e53ab03b313ff43df",
+      "path": "PREACTIVATION_REPAIRS.json",
+      "sha256": "801177ef0312ba6dd8c6046036b67452e15bfb9f48e2b1e80879d695ad9940e4"
     }
   ],
   "expected_leaf_cases": [
@@ -169,7 +193,7 @@
       }
     ]
   },
-  "fixture_revision": "92b421e22e2ba556fe41fb6e0156acdbfae488b6",
+  "fixture_revision": "1159fbaf4b223515676a95b30b3600d210b71417",
   "heart_base": "d98420b1113536afd08cde6de9a5816f6d27ffff",
   "historical_selectors_replayed": false,
   "native_selector": "^TestOtzariaOwnedAnnotationClosedNativeImport$",
@@ -259,7 +283,7 @@
     "core/application/application.go": "30d0110b028f009d5b447faff657def67e2605e44bcbb85fa6ffc437b0f686f2",
     "core/application/owned_annotation_import.go": "c3b4c650efab4c4f3e1c8b6e5daeda4d30d523bf8461c833c00be10126843ff8",
     "core/application/owned_annotation_import_export_test.go": "b61a7c550c3b2fe8291f818772c34ea4572843094e8aea6ceff706bb5b25a5be",
-    "core/application/owned_annotation_import_native_test.go": "c1f047f2d400f2b53786de733bc5329cd44bf5d910332acb864693ad678b75ea",
+    "core/application/owned_annotation_import_native_test.go": "0a2974ab89ca2dd701e36b823a33a5aa6d4b54659faa647c323cea0b1f7fe924",
     "core/application/owned_import_admission.go": "3ed41b1989e03d087c393d04b5b3c3a5d6a813830e4c42bebb6f2c4d727e67ee",
     "core/block/detailservice/pinkha_torah.go": "d39dd006cb20dcbdd91a851a96faf82a42e277b80d0f190a4a7e532831a4768e",
     "core/block/editor/basic/details.go": "0ac058091f7ab161aec3d462d3cfa3e844af980cb0d5cecf2400b64360f7f033",
@@ -960,11 +984,11 @@
       "sha256": "b61a7c550c3b2fe8291f818772c34ea4572843094e8aea6ceff706bb5b25a5be"
     },
     {
-      "bytes": 73728,
-      "git_blob": "d42b00177ddac6d0d8e928520f68d4104ae1ff1d",
+      "bytes": 74665,
+      "git_blob": "9ab503892601fa090806c3407779613d5adb389f",
       "native_path": "core/application/owned_annotation_import_native_test.go",
       "path": "native/core/application/owned_annotation_import_native_test.go",
-      "sha256": "c1f047f2d400f2b53786de733bc5329cd44bf5d910332acb864693ad678b75ea"
+      "sha256": "0a2974ab89ca2dd701e36b823a33a5aa6d4b54659faa647c323cea0b1f7fe924"
     }
   ]
 }

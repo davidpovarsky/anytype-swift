@@ -4,7 +4,7 @@
 
 This packet prepares one native qualification over the reviewed B1/C source revision
 62e5f1c9d62c99cc00debfe7e1975557eeec32fa and genuine fixture revision
-92b421e22e2ba556fe41fb6e0156acdbfae488b6. Native compilation and execution are
+1159fbaf4b223515676a95b30b3600d210b71417. Native compilation and execution are
 NOT_RUN until the dedicated exact-source workflow is published and its actual
 run is observed. No production RPC, Swift Invocation, Host selected-Space
 capability, saved-revision acknowledgement, cold reopen or backup drain is
@@ -168,3 +168,23 @@ source, fixture and gate. There is no manual redispatch, default-branch change,
 or historical selector replay in this packet.
 
 Source-only admission passed at 815369ef8bbd08b45b955f29154f1a7ee4c60f9a against both actual original Git mirrors. The receipt is SOURCE_ONLY_ADMISSION.json. This is a source/provenance result; native compilation and all nine native leaves remain NOT_RUN.
+
+## Preactivation peer corrections
+
+The source-only admission at815369 is preserved as the earlier prepared-stage
+result. Before native activation, root identified that a timed-out final
+AccountStop could lose its completion handle. Fixture revision1159fbaf4b223515676a95b30b3600d210b71417
+now retains one actual final-stop operation per real Service, joins that same
+record during cleanup before consulting app absence, and preserves its actual
+returned error. The separate synchronous drain-pending probe and all nine
+case assertions are unchanged. STOP_OWNERSHIP_REPAIR.json proves the complete
+inverse to92b421. This is a source correction, not a newly claimed native pass.
+
+The independent gate reviewer also found that the default shallow control
+checkout would omit the candidate ancestor required by the gate's git diff.
+The control checkout now explicitly uses fetch-depth0; the original Heart pin
+and all native runtime steps remain unchanged. A full local mirror check alone
+was not evidence of fresh CI checkout history. PREACTIVATION_REPAIRS.json and
+CHECKOUT_HISTORY_REPAIR.patch retain that exact correction. The initial API
+packet/tree is held and must not be activated; the replacement will bind the
+corrected fixture, template, manifest and source parent.

@@ -26,6 +26,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.sha }}
+          fetch-depth: 0
           persist-credentials: false
           sparse-checkout: |
             docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-candidate-20261123
