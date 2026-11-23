@@ -1,0 +1,34 @@
+--- before/Anytype/Sources/PresentationLayer/Auth/AuthCoordinatorView.swift
++++ after/Anytype/Sources/PresentationLayer/Auth/AuthCoordinatorView.swift
+@@ -31,8 +31,12 @@
+             .sheet(isPresented: $model.showSettings) {
+                 ServerConfigurationCoordinatorView(originalEditorCaller: originalEditorCaller)
+             }
+-            .sheet(isPresented: $model.showDebugMenu) {
+-                DebugMenuView()
++            .sheet(isPresented: originalEditorCaller == nil ? $model.showDebugMenu : .constant(false)) {
++                // Whole-app debug administration is outside embedded account bootstrap.
++                // Keep the complete original standalone destination.
++                if originalEditorCaller == nil {
++                    DebugMenuView()
++                }
+             }
+             .navigationDestination(isPresented: $model.showLogin) {
+                 LoginCoordinatorView(originalEditorCaller: originalEditorCaller)
+--- before/Anytype/Sources/PresentationLayer/Auth/Login/LoginCoordinatorView.swift
++++ after/Anytype/Sources/PresentationLayer/Auth/Login/LoginCoordinatorView.swift
+@@ -13,8 +13,12 @@
+     var body: some View {
+         LoginView(output: model, originalEditorCaller: originalEditorCaller)
+             .cameraPermissionAlert(isPresented: $model.showOpenSettingsURL)
+-            .sheet(isPresented: $model.showPublicDebugMenu) {
+-                PublicDebugMenuView()
++            .sheet(isPresented: originalEditorCaller == nil ? $model.showPublicDebugMenu : .constant(false)) {
++                // Whole-app debug administration is outside embedded account bootstrap.
++                // Keep the complete original standalone destination.
++                if originalEditorCaller == nil {
++                    PublicDebugMenuView()
++                }
+             }
+             .anytypeSheet(item: $model.secureAlertData) {
+                 SecureAlertView(data: $0)

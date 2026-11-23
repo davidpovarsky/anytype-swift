@@ -1,0 +1,195 @@
+--- before/Anytype/Sources/PresentationLayer/Auth/AuthCoordinatorView.swift
++++ after/Anytype/Sources/PresentationLayer/Auth/AuthCoordinatorView.swift
+@@ -29,7 +29,7 @@
+                 }
+             }
+             .sheet(isPresented: $model.showSettings) {
+-                ServerConfigurationCoordinatorView()
++                ServerConfigurationCoordinatorView(originalEditorCaller: originalEditorCaller)
+             }
+             .sheet(isPresented: $model.showDebugMenu) {
+                 DebugMenuView()
+--- before/Anytype/Sources/PresentationLayer/Flows/ServerConfiguration/ServerConfigurationCoordinatorView.swift
++++ after/Anytype/Sources/PresentationLayer/Flows/ServerConfiguration/ServerConfigurationCoordinatorView.swift
+@@ -3,12 +3,18 @@
+ 
+ struct ServerConfigurationCoordinatorView: View {
+ 
+-    @State private var model = ServerConfigurationCoordinatorViewModel()
++    @State private var model: ServerConfigurationCoordinatorViewModel
++    private let originalEditorCaller: OriginalEditorAuthCaller?
++
++    init(originalEditorCaller: OriginalEditorAuthCaller? = nil) {
++        self.originalEditorCaller = originalEditorCaller
++        _model = State(initialValue: ServerConfigurationCoordinatorViewModel(originalEditorCaller: originalEditorCaller))
++    }
+     
+     var body: some View {
+-        ServerConfigurationView(output: model)
++        ServerConfigurationView(output: model, originalEditorCaller: originalEditorCaller)
+             .sheet(isPresented: $model.showDocumentPicker) {
+-                ServerDocumentPickerView()
++                ServerDocumentPickerView(originalEditorCaller: originalEditorCaller)
+             }
+     }
+ }
+--- before/Anytype/Sources/PresentationLayer/Flows/ServerConfiguration/ServerConfigurationCoordinatorViewModel.swift
++++ after/Anytype/Sources/PresentationLayer/Flows/ServerConfiguration/ServerConfigurationCoordinatorViewModel.swift
+@@ -6,10 +6,19 @@
+ final class ServerConfigurationCoordinatorViewModel: ServerConfigurationModuleOutput {
+ 
+     var showDocumentPicker: Bool = false
++    @ObservationIgnored
++    private let originalEditorCaller: OriginalEditorAuthCaller?
++
++    init(originalEditorCaller: OriginalEditorAuthCaller? = nil) {
++        self.originalEditorCaller = originalEditorCaller
++    }
+     
+     // MARK: - ServerConfigurationModuleOutput
+     
+     func onAddServerSelected() {
+-        showDocumentPicker.toggle()
++        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++            showDocumentPicker.toggle()
++        
++        }
+     }
+ }
+--- before/Anytype/Sources/PresentationLayer/Modules/ServerConfiguration/ServerConfigurationView.swift
++++ after/Anytype/Sources/PresentationLayer/Modules/ServerConfiguration/ServerConfigurationView.swift
+@@ -6,8 +6,8 @@
+ 
+     @StateObject private var model: ServerConfigurationViewModel
+     
+-    init(output: (any ServerConfigurationModuleOutput)?) {
+-        _model = StateObject(wrappedValue: ServerConfigurationViewModel(output: output))
++    init(output: (any ServerConfigurationModuleOutput)?, originalEditorCaller: OriginalEditorAuthCaller? = nil) {
++        _model = StateObject(wrappedValue: ServerConfigurationViewModel(output: output, originalEditorCaller: originalEditorCaller))
+     }
+     
+     var body: some View {
+--- before/Anytype/Sources/PresentationLayer/Modules/ServerConfiguration/ServerConfigurationViewModel.swift
++++ after/Anytype/Sources/PresentationLayer/Modules/ServerConfiguration/ServerConfigurationViewModel.swift
+@@ -10,6 +10,7 @@
+     @Injected(\.serverConfigurationStorage)
+     private var storage: any ServerConfigurationStorageProtocol
+     private weak var output: (any ServerConfigurationModuleOutput)?
++    private let originalEditorCaller: OriginalEditorAuthCaller?
+     
+     // MARK: - State
+     
+@@ -19,23 +20,36 @@
+     
+     private var subscriptions = [AnyCancellable]()
+     
+-    init(output: (any ServerConfigurationModuleOutput)?) {
++    init(output: (any ServerConfigurationModuleOutput)?, originalEditorCaller: OriginalEditorAuthCaller? = nil) {
+         self.output = output
+-        storage.installedConfigurationsPublisher.receiveOnMain().sink { [weak self] _ in
+-            withAnimation {
+-                self?.updateRows()
++        self.originalEditorCaller = originalEditorCaller
++        storage.installedConfigurationsPublisher.receiveOnMain().sink { [weak self, originalEditorCaller] _ in
++            if let originalEditorCaller {
++                try? originalEditorCaller.withUIAction {
++                    withAnimation { self?.updateRows() }
++                }
++            } else {
++                withAnimation {
++                    self?.updateRows()
++                }
+             }
+         }.store(in: &subscriptions)
+     }
+     
+     func onTapAddServer() {
+-        output?.onAddServerSelected()
++        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++            output?.onAddServerSelected()
++        
++        }
+     }
+     
+     func setup(config: NetworkServerConfig) {
+-        storage.setupCurrentConfiguration(config: config)
+-        updateRows()
+-        AnytypeAnalytics.instance().logSelectNetwork(type: config.analyticsType, route: .onboarding)
++        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++            storage.setupCurrentConfiguration(config: config)
++            updateRows()
++            AnytypeAnalytics.instance().logSelectNetwork(type: config.analyticsType, route: .onboarding)
++        
++        }
+     }
+     
+     // MARK: - Private
+@@ -58,11 +72,14 @@
+     }
+     
+     private func handleOnTap(config: NetworkServerConfig) {
+-        guard config != storage.currentConfiguration() else { return }
+-        if config.isLocalOnly {
+-            showLocalConfigurationAlert.toggle()
+-        } else {
+-            setup(config: config)
++        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++            guard config != storage.currentConfiguration() else { return }
++            if config.isLocalOnly {
++                showLocalConfigurationAlert.toggle()
++            } else {
++                setup(config: config)
++            }
++        
+         }
+     }
+ }
+--- before/Anytype/Sources/PresentationLayer/Modules/ServerDocumentPicker/ServerDocumentPickerView.swift
++++ after/Anytype/Sources/PresentationLayer/Modules/ServerDocumentPicker/ServerDocumentPickerView.swift
+@@ -3,7 +3,11 @@
+ 
+ struct ServerDocumentPickerView: View {
+ 
+-    @State private var model = ServerDocumentPickerViewModel()
++    @State private var model: ServerDocumentPickerViewModel
++
++    init(originalEditorCaller: OriginalEditorAuthCaller? = nil) {
++        _model = State(initialValue: ServerDocumentPickerViewModel(originalEditorCaller: originalEditorCaller))
++    }
+     
+     var body: some View {
+         DocumentPicker(contentTypes: [.yaml]) { url in
+--- before/Anytype/Sources/PresentationLayer/Modules/ServerDocumentPicker/ServerDocumentPickerViewModel.swift
++++ after/Anytype/Sources/PresentationLayer/Modules/ServerDocumentPicker/ServerDocumentPickerViewModel.swift
+@@ -10,16 +10,28 @@
+     @Injected(\.serverConfigurationStorage)
+     private var storage: any ServerConfigurationStorageProtocol
+ 
++    @ObservationIgnored
++    private let originalEditorCaller: OriginalEditorAuthCaller?
++
++    init(originalEditorCaller: OriginalEditorAuthCaller? = nil) {
++        self.originalEditorCaller = originalEditorCaller
++    }
++
+     // MARK: - State
+ 
+     var toast: ToastBarData?
+     
+     func onSelectFile(url: URL) {
+         do {
+-            try storage.addConfiguration(filePath: url, setupAsCurrent: true)
+-            AnytypeAnalytics.instance().logUploadNetworkConfiguration()
+-            AnytypeAnalytics.instance().logSelectNetwork(type: .selfHost, route: .onboarding)
++            // The original storage operation is synchronous. Keep its real
++            // scoped file-copy/configuration/publisher effects within this lease.
++            try OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++                try storage.addConfiguration(filePath: url, setupAsCurrent: true)
++                AnytypeAnalytics.instance().logUploadNetworkConfiguration()
++                AnytypeAnalytics.instance().logSelectNetwork(type: .selfHost, route: .onboarding)
++            }
+         } catch {
++            guard originalEditorCaller?.isCurrent ?? true else { return }
+             toast = ToastBarData(Loc.error, type: .failure)
+         }
+     }

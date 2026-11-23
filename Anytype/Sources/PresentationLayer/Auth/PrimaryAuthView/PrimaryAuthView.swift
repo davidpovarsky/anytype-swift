@@ -7,8 +7,8 @@ struct PrimaryAuthView: View {
     @State private var model: PrimaryAuthViewModel
     @Environment(\.authCircleCenterVerticalOffset) private var circleOffset
 
-    init(output: (any PrimaryAuthOutput)?) {
-        _model = State(initialValue: PrimaryAuthViewModel(output: output))
+    init(output: (any PrimaryAuthOutput)?, originalEditorCaller: OriginalEditorAuthCaller? = nil) {
+        _model = State(initialValue: PrimaryAuthViewModel(output: output, originalEditorCaller: originalEditorCaller))
     }
 
     var body: some View {

@@ -1,0 +1,90 @@
+import SwiftUI
+
+struct JoinView: View {
+
+    @State private var model: JoinViewModel
+    @Environment(\.dismiss) private var dismiss
+
+    init(state: JoinFlowState) {
+        _model = State(initialValue: JoinViewModel(state: state))
+    }
+    
+    var body: some View {
+        GeometryReader { geo in
+            content(height: geo.size.height)
+                .toolbar(.hidden)
+                .fixTappableArea()
+                .customBackSwipe {
+                    guard !model.backButtonDisabled else { return }
+                    model.onBack()
+                }
+        }
+        .ifLet(model.errorText) { view, errorText in
+            view.alertView(isShowing: $model.showError, errorText: errorText, onButtonTap: {})
+        }
+        .fitIPadToReadableContentGuide()
+        .onChange(of: model.dismiss) { dismiss() }
+    }
+    
+    private func content(height: CGFloat) -> some View {
+        VStack(spacing: 0) {
+            header
+            
+            Group {
+                Spacer.fixedHeight(
+                    UIDevice.isPad ? height / Constants.ipadOffsetFactor : Constants.topOffset
+                )
+                
+                innerContent
+                    .transition(model.forward ? .moveAndFadeForward: .moveAndFadeBack)
+                
+                Spacer.fixedHeight(12)
+            }
+            .padding(.horizontal, 16)
+        }
+    }
+    
+    private var header: some View {
+        NavigationHeader {
+            backButton
+        } titleContent: {
+            Image(asset: .logo)
+                .foregroundStyle(Color.Control.primary)
+        } rightContent: {
+            EmptyView()
+        }
+    }
+    
+    private var backButton : some View {
+        Button(action: {
+            model.onBackButtonTap()
+        }) {
+            Image(asset: .X24.back)
+                .foregroundStyle(Color.Control.secondary)
+        }
+        .disabled(model.backButtonDisabled)
+        .frame(width: NavigationHeaderConstants.buttonSize, height: NavigationHeaderConstants.buttonSize)
+        .glassEffectInteractiveIOS26(in: Circle())
+    }
+    
+    @ViewBuilder
+    private var innerContent: some View {
+        switch model.step {
+        case .key:
+            KeyPhraseView(state: model.state, output: model)
+        case .email:
+            EmailCollectionView(state: model.state, output: model)
+        case .personaInfo:
+            JoinSelectionView(type: .persona, state: model.state, output: model)
+        case .useCaseInfo:
+            JoinSelectionView(type: .useCase, state: model.state, output: model)
+        }
+    }
+}
+
+extension JoinView {
+    enum Constants {
+        static let ipadOffsetFactor = 3.5
+        static let topOffset: CGFloat = 20
+    }
+}

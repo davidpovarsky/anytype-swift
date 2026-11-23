@@ -1,0 +1,50 @@
+--- v1/Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginViewModel.swift
++++ v2/Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginViewModel.swift
+@@ -17,6 +17,8 @@
+     var showError: Bool = false
+     var dismiss = false
+     var accountId: String?
++    // UI scheduling only; never passed as account or dispatch authority.
++    var originalAccountSelectionTaskId: String?
+     var walletRecoveryTaskId: String?
+     var logoutTaskId: String?
+     var canRestoreFromKeychain: Bool = false
+@@ -318,6 +320,7 @@
+                     // is scheduled. This consumer never waits for recovery.
+                     accountShowRecovery = recovery
+                     self.accountId = accountId
++                    originalAccountSelectionTaskId = recovery.selectionIdentity + ":" + accountId
+                 }
+             }
+         } onCancel: {
+@@ -334,6 +337,9 @@
+                 // MainActor construction/assignment is synchronous; the task
+                 // cannot issue the original RPC before this owner is installed.
+                 originalAccountRecovery = recovery
++                accountShowRecovery = nil
++                accountId = nil
++                originalAccountSelectionTaskId = nil
+                 let task = recovery.task
+                 try await withTaskCancellationHandler {
+                     try await task.value
+@@ -478,6 +484,9 @@
+ private final class OriginalLoginAccountRecovery {
+     let caller: OriginalEditorAuthCaller
+     let task: Task<Void, Error>
++    // Stable for this real recovery, distinct for an explicit later recovery
++    // of the same account ID. This is only the existing SwiftUI task's item.
++    let selectionIdentity = UUID().uuidString
+ 
+     init(caller: OriginalEditorAuthCaller, operation: @escaping @MainActor () async throws -> Void) {
+         self.caller = caller
+--- current/Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginView.swift
++++ v2/Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginView.swift
+@@ -29,7 +29,7 @@
+             .task(item: model.walletRecoveryTaskId) { _ in
+                 await model.walletRecovery()
+             }
+-            .task(item: model.accountId) { _ in
++            .task(item: originalEditorCaller == nil ? model.accountId : model.originalAccountSelectionTaskId) { _ in
+                 await model.selectAccount()
+             }
+             .task(item: model.entropy) { _ in

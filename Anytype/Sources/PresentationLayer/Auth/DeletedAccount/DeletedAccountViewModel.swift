@@ -8,14 +8,23 @@ final class DeletedAccountViewModel {
     private var service: any AuthServiceProtocol
     @ObservationIgnored
     private let deadline: Date
+    @ObservationIgnored
+    private let originalEditorCaller: OriginalEditorAuthCaller?
+
+    private var originalAuthService: any AuthServiceProtocol {
+        if let originalEditorCaller { return originalEditorCaller }
+        return service
+    }
+    private var acceptsOriginalUI: Bool { originalEditorCaller?.isCurrent ?? true }
 
     @ObservationIgnored @Injected(\.applicationStateService)
     private var applicationStateService: any ApplicationStateServiceProtocol
     
     // MARK: - Initializer
     
-    init(deadline: Date) {
+    init(deadline: Date, originalEditorCaller: OriginalEditorAuthCaller? = nil) {
         self.deadline = deadline
+        self.originalEditorCaller = originalEditorCaller
     }
     
     // MARK: - Internal var
@@ -34,30 +43,38 @@ final class DeletedAccountViewModel {
     // MARK: - Internal funcs
     
     func logOut() {
+        guard acceptsOriginalUI else { return }
         AnytypeAnalytics.instance().logLogout(route: .screenDeletion)
         Task {
             do {
-                try await service.logout(removeData: true)
-                applicationStateService.state = .auth
+                try await OriginalEditorAuthCaller.withUIOperation(originalEditorCaller) {
+                    try await originalAuthService.logout(removeData: true)
+                    try originalEditorCaller?.validateCurrent()
+                    applicationStateService.state = .auth
+                }
             } catch {
-                UINotificationFeedbackGenerator().notificationOccurred(.error)
+                if acceptsOriginalUI { UINotificationFeedbackGenerator().notificationOccurred(.error) }
             }
         }
     }
     
     func cancel() {
+        guard acceptsOriginalUI else { return }
         AnytypeAnalytics.instance().logCancelDeletion()
         Task { @MainActor in
-            guard let status = try? await service.restoreAccount() else {
-                UINotificationFeedbackGenerator().notificationOccurred(.error)
-                return
-            }
-            
-            if case .active = status {
-                applicationStateService.state = .home
-            } else {
-                UINotificationFeedbackGenerator().notificationOccurred(.error)
-                return
+            do {
+                try await OriginalEditorAuthCaller.withUIOperation(originalEditorCaller) {
+                    let status = try await originalAuthService.restoreAccount()
+                    try originalEditorCaller?.validateCurrent()
+                    if case .active = status {
+                        applicationStateService.state = .home
+                    } else {
+                        UINotificationFeedbackGenerator().notificationOccurred(.error)
+                        return
+                    }
+                }
+            } catch {
+                if acceptsOriginalUI { UINotificationFeedbackGenerator().notificationOccurred(.error) }
             }
         }
     }

@@ -7,7 +7,7 @@ final class KeyPhraseViewModel {
     var key: String
     var keyShown: Bool {
         didSet {
-            state.keyShown = keyShown
+            if state.originalEditorCaller?.isCurrent ?? true { state.keyShown = keyShown }
         }
     }
     var showMoreInfo = false
@@ -30,40 +30,51 @@ final class KeyPhraseViewModel {
     }
     
     func onAppear() {
-        AnytypeAnalytics.instance().logScreenOnboarding(step: .phrase)
+        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
+            AnytypeAnalytics.instance().logScreenOnboarding(step: .phrase)
+        }
     }
     
     func onPrimaryButtonTap() {
-        if keyShown {
-            output?.onNext()
-        } else {
-            AnytypeAnalytics.instance().logClickOnboarding(step: .phrase, button: .showAndCopy)
-            keyShown = true
+        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
+            if keyShown {
+                output?.onNext()
+            } else {
+                AnytypeAnalytics.instance().logClickOnboarding(step: .phrase, button: .showAndCopy)
+                keyShown = true
+            }
         }
     }
 
     func onSecondaryButtonTap() {
-        AnytypeAnalytics.instance().logClickOnboarding(step: .phrase, button: .checkLater)
-        output?.onNext()
+        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
+            AnytypeAnalytics.instance().logClickOnboarding(step: .phrase, button: .checkLater)
+            output?.onNext()
+        }
     }
 
     func onPhraseTap() {
-        if keyShown {
-            copy()
-        } else {
-            keyShown = true
+        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
+            if keyShown {
+                copy()
+            } else {
+                keyShown = true
+            }
         }
     }
     
     func keyPhraseMoreInfo() -> AnyView? {
+        guard state.originalEditorCaller?.isCurrent ?? true else { return nil }
         AnytypeAnalytics.instance().logClickOnboarding(step: .phrase, button: .moreInfo)
         return output?.keyPhraseMoreInfo()
     }
     
     private func copy() {
-        AnytypeAnalytics.instance().logClickOnboarding(step: .phrase, button: .showAndCopy)
-        UISelectionFeedbackGenerator().selectionChanged()
-        UIPasteboard.general.string = state.mnemonic
-        snackBar = ToastBarData(Loc.copied)
+        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
+            AnytypeAnalytics.instance().logClickOnboarding(step: .phrase, button: .showAndCopy)
+            UISelectionFeedbackGenerator().selectionChanged()
+            UIPasteboard.general.string = state.mnemonic
+            snackBar = ToastBarData(Loc.copied)
+        }
     }
 }

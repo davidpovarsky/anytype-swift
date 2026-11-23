@@ -7,7 +7,7 @@ final class EmailCollectionViewModel {
 
     var inputText: String {
         didSet {
-            state.email = inputText
+            if state.originalEditorCaller?.isCurrent ?? true { state.email = inputText }
         }
     }
     var inProgress = false
@@ -31,33 +31,56 @@ final class EmailCollectionViewModel {
     }
     
     func onAppear() {
-        AnytypeAnalytics.instance().logScreenOnboarding(step: .email)
+        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
+            AnytypeAnalytics.instance().logScreenOnboarding(step: .email)
+        }
     }
     
     func onNextAction() {
-        if state.email.isValidEmail() {
-            showIncorrectEmailError = false
-            saveEmailTaskId = UUID().uuidString
-        } else {
-            showIncorrectEmailError = true
+        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
+            if state.email.isValidEmail() {
+                showIncorrectEmailError = false
+                saveEmailTaskId = UUID().uuidString
+            } else {
+                showIncorrectEmailError = true
+            }
         }
     }
     
     func onSkipAction() {
-        AnytypeAnalytics.instance().logScreenOnboardingSkipEmail()
-        onSuccess()
+        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
+            AnytypeAnalytics.instance().logScreenOnboardingSkipEmail()
+            onSuccess()
+        }
     }
     
     func saveEmail() async {
-        startLoading()
-        try? await membershipService.getVerificationEmailOnOnboarding(email: state.email)
-        AnytypeAnalytics.instance().logScreenOnboardingEnterEmail()
-        onSuccess()
+        guard let caller = state.originalEditorCaller else {
+            startLoading()
+            try? await membershipService.getVerificationEmailOnOnboarding(email: state.email)
+            AnytypeAnalytics.instance().logScreenOnboardingEnterEmail()
+            onSuccess()
+            return
+        }
+        do {
+            try await caller.withUIOperation {
+                startLoading()
+                try? await caller.withNamedNativeRPC("MembershipV2SubscribeToUpdates") {
+                    try await membershipService.getVerificationEmailOnOnboarding(email: state.email)
+                }
+                try caller.validateCurrent()
+                AnytypeAnalytics.instance().logScreenOnboardingEnterEmail()
+                onSuccess()
+            }
+        } catch {
+            if caller.isCurrent { saveEmailError(error) }
+        }
     }
     
     private func onSuccess() {
         stopLoading()
-        UIApplication.shared.hideKeyboard()
+        if state.originalEditorCaller != nil { state.originalKeyboardDismiss?() }
+        else { UIApplication.shared.hideKeyboard() }
         output?.onNext()
     }
     

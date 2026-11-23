@@ -4,8 +4,8 @@ struct DeletedAccountView: View {
 
     @State private var viewModel: DeletedAccountViewModel
 
-    init(deadline: Date) {
-        _viewModel = State(initialValue: DeletedAccountViewModel(deadline: deadline))
+    init(deadline: Date, originalEditorCaller: OriginalEditorAuthCaller? = nil) {
+        _viewModel = State(initialValue: DeletedAccountViewModel(deadline: deadline, originalEditorCaller: originalEditorCaller))
     }
     
     var body: some View {

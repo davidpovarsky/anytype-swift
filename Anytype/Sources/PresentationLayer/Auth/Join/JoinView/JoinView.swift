@@ -4,6 +4,7 @@ struct JoinView: View {
 
     @State private var model: JoinViewModel
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.keyboardDismiss) private var keyboardDismiss
 
     init(state: JoinFlowState) {
         _model = State(initialValue: JoinViewModel(state: state))
@@ -23,6 +24,7 @@ struct JoinView: View {
             view.alertView(isShowing: $model.showError, errorText: errorText, onButtonTap: {})
         }
         .fitIPadToReadableContentGuide()
+        .onAppear { model.setOwnedKeyboardDismiss(keyboardDismiss) }
         .onChange(of: model.dismiss) { dismiss() }
     }
     

@@ -6,8 +6,8 @@ struct ServerConfigurationView: View {
 
     @StateObject private var model: ServerConfigurationViewModel
     
-    init(output: (any ServerConfigurationModuleOutput)?) {
-        _model = StateObject(wrappedValue: ServerConfigurationViewModel(output: output))
+    init(output: (any ServerConfigurationModuleOutput)?, originalEditorCaller: OriginalEditorAuthCaller? = nil) {
+        _model = StateObject(wrappedValue: ServerConfigurationViewModel(output: output, originalEditorCaller: originalEditorCaller))
     }
     
     var body: some View {

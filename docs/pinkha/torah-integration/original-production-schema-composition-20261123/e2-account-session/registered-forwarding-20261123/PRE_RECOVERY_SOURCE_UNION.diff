@@ -1,0 +1,2127 @@
+--- a/Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorView.swift
++++ b/Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorView.swift
+@@ -64,7 +64,7 @@
+         case .initial:
+             if let embeddedInitial { embeddedInitial } else { InitialCoordinatorView() }
+         case .auth:
+-            AuthCoordinatorView()
++            AuthCoordinatorView(originalEditorCaller: model.originalEditorCaller)
+         case .launch:
+             LaunchView()
+         case .home:
+--- a/Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorViewModel.swift
++++ b/Anytype/Sources/ApplicationLayer/AppCoordinator/ApplicationCoordinatorViewModel.swift
+@@ -7,6 +7,20 @@
+ @MainActor
+ @Observable
+ final class ApplicationCoordinatorViewModel {
++
++    @ObservationIgnored
++    let originalEditorCaller: OriginalEditorAuthCaller?
++
++    init(originalEditorCaller: OriginalEditorAuthCaller? = nil) {
++        self.originalEditorCaller = originalEditorCaller
++    }
++
++    private var originalAuthService: any AuthServiceProtocol {
++        if let originalEditorCaller { return originalEditorCaller }
++        return authService
++    }
++
++    private var acceptsOriginalUI: Bool { originalEditorCaller?.isCurrent ?? true }
+ 
+     @Injected(\.authService) @ObservationIgnored
+     private var authService: any AuthServiceProtocol
+@@ -40,17 +54,23 @@
+     var selectAccountTaskId: String?
+ 
+     func deleteAccount() -> AnyView? {
+-        if case let .pendingDeletion(deadline) = accountManager.account.status {
+-            return DeletedAccountView(deadline: deadline).eraseToAnyView()
+-        } else {
+-            applicationStateService.state = .initial
+-            return nil
+-        }
+-
++        var result: AnyView?
++        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++            if case let .pendingDeletion(deadline) = accountManager.account.status {
++                result = DeletedAccountView(
++                    deadline: deadline, originalEditorCaller: originalEditorCaller
++                ).eraseToAnyView()
++            } else {
++                applicationStateService.state = .initial
++            }
++        }
++        return result
+     }
+     
+     func setDismissAllPresented(dismissAllPresented: DismissAllPresented) {
+-        self.dismissAllPresented = dismissAllPresented
++        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++            self.dismissAllPresented = dismissAllPresented
++        }
+     }
+     
+     func startAppStateHandler() async {
+@@ -117,42 +137,61 @@
+     // MARK: - Subscription handler
+ 
+     private func handleAccountStatus(_ status: AccountStatus) async {
+-        switch status {
+-        case .active:
+-            break
+-        case .pendingDeletion:
+-            applicationStateService.state = .delete
+-        case .deleted:
+-            if basicUserInfoStorage.usersId.isNotEmpty {
+-                try? await authService.logout(removeData: true)
+-                applicationStateService.state = .auth
+-            }
++        do {
++            try await OriginalEditorAuthCaller.withUIOperation(originalEditorCaller) {
++                switch status {
++                case .active:
++                    break
++                case .pendingDeletion:
++                    applicationStateService.state = .delete
++                case .deleted:
++                    if basicUserInfoStorage.usersId.isNotEmpty {
++                        if let originalEditorCaller {
++                            try await originalEditorCaller.logout(removeData: true)
++                            try originalEditorCaller.validateCurrent()
++                        } else {
++                            try? await authService.logout(removeData: true)
++                        }
++                        applicationStateService.state = .auth
++                    }
++                }
++            }
++        } catch {
++            // A retired caller or failed original Stop cannot advance this UI.
+         }
+     }
+     
+     private func handleApplicationState(_ applicationState: ApplicationState) async {
+-        await dismissAllPresented?(animated: false)
+-        withAnimation(self.applicationState == .launch ? .default : .none) {
+-            self.applicationState = applicationState
+-        }
+-        
+-        switch applicationState {
+-        case .initial:
+-            break
+-        case .launch:
+-            await loginProcess()
+-        case .home:
+-            break
+-        case .auth:
+-            break
+-        case .delete:
+-            break
++        do {
++            try await OriginalEditorAuthCaller.withUIOperation(originalEditorCaller) {
++                await dismissAllPresented?(animated: false)
++                try originalEditorCaller?.validateCurrent()
++                withAnimation(self.applicationState == .launch ? .default : .none) {
++                    self.applicationState = applicationState
++                }
++
++                switch applicationState {
++                case .initial:
++                    break
++                case .launch:
++                    await loginProcess()
++                case .home:
++                    break
++                case .auth:
++                    break
++                case .delete:
++                    break
++                }
++            }
++        } catch {
++            // The original process owner retains closure and error reporting.
+         }
+     }
+     
+     // MARK: - Process
+ 
+     private func loginProcess() async {
++        guard acceptsOriginalUI else { return }
+         observeUI27Startup("login-entry")
+         let userId = basicUserInfoStorage.usersId
+         guard userId.isNotEmpty else {
+@@ -166,12 +205,14 @@
+             let seed = try seedService.obtainSeed()
+             observeUI27Startup("seed-read-completed")
+             observeUI27Startup("wallet-recovery-begin")
+-            try await authService.walletRecovery(mnemonic: seed)
++            try await originalAuthService.walletRecovery(mnemonic: seed)
++            try originalEditorCaller?.validateCurrent()
+             observeUI27Startup("wallet-recovery-completed")
+             observeUI27Startup("select-call-begin")
+             await selectAccount(id: userId)
+             observeUI27Startup("select-call-returned")
+         } catch {
++            guard acceptsOriginalUI else { return }
+             observeUI27Startup("login-error", error: error)
+             applicationStateService.state = .auth
+             observeUI27Startup("login-auth-assigned")
+@@ -180,8 +221,19 @@
+     
+     func selectAccount(id: String) async {
+         do {
++            try await OriginalEditorAuthCaller.withUIOperation(originalEditorCaller) {
++                await selectAccountInOriginalFlow(id: id)
++            }
++        } catch {
++            // Retired presentation tasks cannot begin a later original startup.
++        }
++    }
++
++    private func selectAccountInOriginalFlow(id: String) async {
++        do {
+             observeUI27Startup("select-auth-begin")
+-            let account = try await authService.selectAccount(id: id, preferredSpaceId: preferredSpaceId())
++            let account = try await originalAuthService.selectAccount(id: id, preferredSpaceId: preferredSpaceId())
++            try originalEditorCaller?.validateCurrent()
+             observeUI27Startup("select-auth-returned")
+             
+             switch account.status {
+@@ -196,19 +248,25 @@
+             
+             observeUI27Startup("notification-registration-begin")
+             await pushNotificationsPermissionService.registerForRemoteNotificationsIfNeeded()
++            try originalEditorCaller?.validateCurrent()
+             observeUI27Startup("notification-registration-returned")
+         } catch is CancellationError {
+             observeUI27Startup("select-cancellation")
+             // Ignore cancellations
+         } catch SelectAccountError.accountStoreNotMigrated {
++            guard acceptsOriginalUI else { return }
+             observeUI27Startup("select-store-not-migrated")
+             migrationData = MigrationModuleData(
+                 id: id,
+-                onFinish: { [weak self] in
+-                    self?.selectAccountTaskId = id
+-                }
++                onFinish: { [weak self, caller = originalEditorCaller] in
++                    try? OriginalEditorAuthCaller.withUIAction(caller) {
++                        self?.selectAccountTaskId = id
++                    }
++                },
++                originalEditorCaller: originalEditorCaller
+             )
+         } catch {
++            guard acceptsOriginalUI else { return }
+             observeUI27Startup("select-error", error: error)
+             applicationStateService.state = .auth
+             observeUI27Startup("select-auth-assigned")
+@@ -232,7 +290,9 @@
+     }
+ 
+     private func handleFileLimitReachedError() {
+-        toastBarData = ToastBarData(Loc.FileStorage.limitError, type: .neutral)
++        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++            toastBarData = ToastBarData(Loc.FileStorage.limitError, type: .neutral)
++        }
+     }
+ }
+ 
+@@ -334,7 +394,7 @@
+ 
+ /// An observation-only forwarder around the actual publisher. It adds no
+ /// buffering, scheduling, values, replay or demand.
+-private struct OriginalDemandObservingPublisher<Upstream: Publisher>: Publisher {
++struct OriginalDemandObservingPublisher<Upstream: Publisher>: Publisher {
+     typealias Output = Upstream.Output
+     typealias Failure = Upstream.Failure
+ 
+--- a/Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift
++++ b/Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift
+@@ -2,6 +2,297 @@
+ import Factory
+ import Services
+ import HanlinHostContracts
++
++import AnytypeCore
++import ProtobufMessages
++
++/// Private forwarding ownership. The actual registered service remains the
++/// implementation and no account/Space/source identity is accepted as authority.
++private enum OriginalEditorAuthCallContext {
++    @TaskLocal static var caller: OriginalEditorAuthCaller?
++    @TaskLocal static var closing: OriginalEditorAuthCaller?
++}
++
++enum OriginalEditorAuthCloseReceipt: Sendable {
++    case neverStartedDrained
++    case nativeStopCompleted
++}
++
++private final class OriginalEditorAuthCallerState: @unchecked Sendable {
++    private let lock = NSLock()
++    let lifetime: EditorDocumentWriteLifetime
++    let capture: EditorDocumentWriteCapture
++    private var retired = false
++    private var startupAdmitted = false
++    private var stopRequired = false
++    private var stopCompleted = false
++
++    init() throws {
++        let lifetime = EditorDocumentWriteLifetime()
++        self.lifetime = lifetime
++        capture = try EditorDocumentWriteCapture(lifetime)
++    }
++
++    func validate() throws {
++        try Task.checkCancellation()
++        lock.lock()
++        let retired = retired
++        lock.unlock()
++        guard !retired else { throw HanlinHostError.staleContext }
++        try capture.validate()
++    }
++
++    func retire() {
++        lock.lock()
++        retired = true
++        lock.unlock()
++        lifetime.markUnavailable()
++    }
++
++    /// Retirement and original wrapper admission are one synchronous boundary.
++    /// This says nothing about the later Go beginStart registration.
++    func makeAttempt(kind: OriginalAuthAttempt.Kind) throws -> OriginalAuthAttempt {
++        lock.lock()
++        defer { lock.unlock() }
++        guard !retired else { throw HanlinHostError.staleContext }
++        let attempt = try OriginalAuthAttempt(kind: kind, restricting: [capture])
++        if kind == .startup {
++            startupAdmitted = true
++            stopRequired = true
++            stopCompleted = false
++        }
++        return attempt
++    }
++
++    func admitForwarding() throws -> [EditorDocumentWriteLifetime.Observation] {
++        lock.lock()
++        defer { lock.unlock() }
++        guard !retired else { throw HanlinHostError.staleContext }
++        try Task.checkCancellation()
++        return try EditorDocumentWriteCapture.acquireAll([capture])
++    }
++
++    var requiresNativeStop: Bool {
++        lock.lock()
++        defer { lock.unlock() }
++        return stopRequired
++    }
++
++    func recordCompletedNativeStop() {
++        lock.lock()
++        stopRequired = false
++        stopCompleted = true
++        lock.unlock()
++    }
++
++    func drainedReceipt() throws -> OriginalEditorAuthCloseReceipt {
++        lock.lock()
++        defer { lock.unlock() }
++        guard retired, !stopRequired else { throw HanlinHostError.staleContext }
++        if startupAdmitted {
++            guard stopCompleted else { throw HanlinHostError.staleContext }
++            return .nativeStopCompleted
++        }
++        return stopCompleted ? .nativeStopCompleted : .neverStartedDrained
++    }
++}
++
++/// Immutable per-presentation caller; its initializer and registered actor are
++/// file-private. Escaped original callbacks retain this object explicitly.
++final class OriginalEditorAuthCaller: AuthServiceProtocol, Sendable {
++    fileprivate let service: PinkhaHanlinAuthService
++    fileprivate let state: OriginalEditorAuthCallerState
++
++    fileprivate init(service: PinkhaHanlinAuthService) throws {
++        self.service = service
++        state = try OriginalEditorAuthCallerState()
++    }
++
++    func validateCurrent() throws { try state.validate() }
++    func retire() { state.retire() }
++
++    /// Read-only retirement observation for an actual original UI consumer.
++    /// It exposes neither the capture nor a new authority constructor.
++    func observeRetirement(
++        _ invalidated: @escaping @Sendable () -> Void
++    ) -> EditorDocumentWriteLifetime.Observation {
++        state.lifetime.observe(state.capture.token, invalidated: invalidated)
++    }
++
++    var isCurrent: Bool {
++        do { try validateCurrent(); return true }
++        catch { return false }
++    }
++
++    func closeAuthentication() async throws -> OriginalEditorAuthCloseReceipt {
++        try await service.closeOriginalEditorCaller(self, retry: false)
++    }
++
++    func retryCloseAuthentication() async throws -> OriginalEditorAuthCloseReceipt {
++        try await service.closeOriginalEditorCaller(self, retry: true)
++    }
++
++    func releaseAfterRuntimeDrain() async throws {
++        try await service.releaseOriginalEditorCaller(self)
++    }
++
++    private func forward<Value: Sendable>(
++        _ operation: @Sendable (PinkhaHanlinAuthService) async throws -> Value
++    ) async throws -> Value {
++        try validateCurrent()
++        if let existing = OriginalEditorAuthCallContext.caller, existing !== self {
++            throw HanlinHostError.staleContext
++        }
++        let admissions = try state.admitForwarding()
++        defer { for admission in admissions { admission.cancel() } }
++        return try await OriginalEditorAuthCallContext.$caller.withValue(self) {
++            try await operation(service)
++        }
++    }
++
++    func createWallet() async throws -> String {
++        try await forward { try await $0.createWallet() }
++    }
++
++    func createAccount(name: String, iconOption: Int, imagePath: String) async throws -> AccountData {
++        try await forward { try await $0.createAccount(name: name, iconOption: iconOption, imagePath: imagePath) }
++    }
++
++    func walletRecovery(mnemonic: String) async throws {
++        try await forward { try await $0.walletRecovery(mnemonic: mnemonic) }
++    }
++
++    func accountRecover() async throws {
++        try await forward { try await $0.accountRecover() }
++    }
++
++    func selectAccount(id: String, preferredSpaceId: String) async throws -> AccountData {
++        try await forward { try await $0.selectAccount(id: id, preferredSpaceId: preferredSpaceId) }
++    }
++
++    func mnemonicByEntropy(_ entropy: String) async throws -> String {
++        try await forward { try await $0.mnemonicByEntropy(entropy) }
++    }
++
++    func logout(removeData: Bool) async throws {
++        try await forward { try await $0.logout(removeData: removeData) }
++    }
++
++    func deleteAccount() async throws -> AccountStatus {
++        try await forward { try await $0.deleteAccount() }
++    }
++
++    func restoreAccount() async throws -> AccountStatus {
++        try await forward { try await $0.restoreAccount() }
++    }
++
++    /// Hold the original lifetime across the complete UI operation, including
++    /// its Seed/default-space/state continuation after an Auth service returns.
++    /// Preserve the preexisting Auth parent; the temporary view task must not
++    /// become a new ancestor of a successful original LoginState startup source.
++    @MainActor
++    func withUIOperation(_ operation: @MainActor () async throws -> Void) async throws {
++        let attempt = try state.makeAttempt(kind: .ordinary)
++        let admissions = try attempt.admitStage()
++        try await withTaskCancellationHandler {
++            do {
++                try await OriginalEditorAuthCallContext.$caller.withValue(self) {
++                    try await operation()
++                }
++                try attempt.validate()
++                for admission in admissions { admission.cancel() }
++                attempt.finishOuter()
++            } catch {
++                attempt.retire()
++                for admission in admissions { admission.cancel() }
++                attempt.finishOuter()
++                await attempt.waitForDrain()
++                throw error
++            }
++        } onCancel: { attempt.retire() }
++    }
++
++    @MainActor
++    func withUIAction(_ operation: @MainActor () throws -> Void) throws {
++        let attempt = try state.makeAttempt(kind: .ordinary)
++        let admissions = try attempt.admitStage()
++        defer {
++            for admission in admissions { admission.cancel() }
++            attempt.finishOuter()
++        }
++        try operation()
++        try attempt.validate()
++    }
++
++    @MainActor
++    static func withUIOperation(
++        _ caller: OriginalEditorAuthCaller?,
++        _ operation: @MainActor () async throws -> Void
++    ) async throws {
++        if let caller { try await caller.withUIOperation(operation) }
++        else { try await operation() }
++    }
++
++    @MainActor
++    static func withUIAction(
++        _ caller: OriginalEditorAuthCaller?,
++        _ operation: @MainActor () throws -> Void
++    ) throws {
++        if let caller { try caller.withUIAction(operation) }
++        else { try operation() }
++    }
++
++    /// The four auxiliary original services invoke outside AuthService. Their
++    /// actual named native return owns the lease, even after early await cancel.
++    /// A preexisting unrelated binding is rejected, never silently replaced.
++    @MainActor
++    func withNamedNativeRPC<Value: Sendable>(
++        _ rpcName: String,
++        _ operation: @MainActor () async throws -> Value
++    ) async throws -> Value {
++        guard InvocationDispatchContext.binding == nil else { throw HanlinHostError.staleContext }
++        let attempt = try state.makeAttempt(kind: .ordinary)
++        let admissions = try attempt.admitStage()
++        return try await withTaskCancellationHandler {
++            do {
++                let value = try await InvocationDispatchContext.$binding.withValue(
++                    Self.namedBinding(attempt, names: [rpcName])
++                ) { try await operation() }
++                try attempt.validate()
++                for admission in admissions { admission.cancel() }
++                attempt.finishOuter()
++                // Invocation resumes its Swift await before its native completion
++                // releases these exact leases. Join the real release as well.
++                await attempt.waitForDrain()
++                try attempt.validate()
++                return value
++            } catch {
++                attempt.retire()
++                for admission in admissions { admission.cancel() }
++                attempt.finishOuter()
++                await attempt.waitForDrain()
++                throw error
++            }
++        } onCancel: { attempt.retire() }
++    }
++
++    fileprivate static func namedBinding(
++        _ attempt: OriginalAuthAttempt, names: Set<String>
++    ) -> InvocationDispatchBinding {
++        InvocationDispatchBinding(committedEvents: { nil }) { name in
++            guard names.contains(name) else { throw HanlinHostError.staleContext }
++            try attempt.validate()
++            return InvocationDispatchPermit {
++                try attempt.validate()
++                let admissions = try EditorDocumentWriteCapture.acquireAll(attempt.captures)
++                return InvocationDispatchCompletion {
++                    for admission in admissions { admission.cancel() }
++                }
++            }
++        }
++    }
++}
++
+ 
+ /// Native Auth remains the account owner. These exact attempts only restrict
+ /// the existing Hanlin shutdown/resume calls and admit original Back cancellation.
+@@ -12,8 +303,118 @@
+     private var current: OriginalAuthAttempt?
+     private var stopping: OriginalAuthAttempt?
+     private var successfulStopRequired = false
++    private var originalEditorCaller: OriginalEditorAuthCaller?
++    private var originalEditorCloseTask: Task<OriginalEditorAuthCloseReceipt, Error>?
++    private var originalEditorCloseResult: OriginalEditorAuthCloseReceipt?
++    private var originalEditorCloseFailed = false
++    private var originalEditorStopTask: Task<Void, Error>?
+ 
+     init(base: any AuthServiceProtocol) { self.base = base }
++
++    /// All throwing work precedes owner installation; no await or validation
++    /// after assignment can strand a caller not returned to the presentation.
++    func makeOriginalEditorCaller() throws -> OriginalEditorAuthCaller {
++        guard OriginalRuntimeEnvironment.deploymentMode == .embeddedEditor,
++              originalEditorCaller == nil, current == nil, stopping == nil,
++              !successfulStopRequired, InvocationDispatchContext.binding == nil else {
++            throw HanlinHostError.staleContext
++        }
++        let caller = try OriginalEditorAuthCaller(service: self)
++        originalEditorCaller = caller
++        return caller
++    }
++
++    private func originalEditorAdmissionCaller(allowHistoricalClose: Bool = false) throws -> OriginalEditorAuthCaller? {
++        guard OriginalRuntimeEnvironment.deploymentMode == .embeddedEditor else { return nil }
++        guard let caller = originalEditorCaller,
++              OriginalEditorAuthCallContext.caller === caller else {
++            throw HanlinHostError.staleContext
++        }
++        if allowHistoricalClose, OriginalEditorAuthCallContext.closing === caller,
++           originalEditorCloseTask != nil {
++            return caller
++        }
++        try caller.validateCurrent()
++        return caller
++    }
++
++    fileprivate func closeOriginalEditorCaller(
++        _ caller: OriginalEditorAuthCaller, retry: Bool
++    ) async throws -> OriginalEditorAuthCloseReceipt {
++        guard originalEditorCaller === caller else { throw HanlinHostError.staleContext }
++        if retry {
++            guard originalEditorCloseFailed, let previousClose = originalEditorCloseTask else {
++                throw HanlinHostError.staleContext
++            }
++            originalEditorCloseFailed = false
++            _ = await previousClose.result
++            guard originalEditorCaller === caller, originalEditorCloseResult == nil else {
++                throw HanlinHostError.staleContext
++            }
++            originalEditorCloseTask = nil
++        }
++        if let existing = originalEditorCloseTask { return try await existing.value }
++        caller.retire()
++        let previous = current
++        let cleanup = Task { [self] in
++            do {
++                if let alreadyStopping = originalEditorStopTask {
++                    // The same historical Stop already owns the native call.
++                    // Its result includes actual Stop drain, not UI await cancel.
++                    try await alreadyStopping.value
++                } else if caller.state.requiresNativeStop || successfulStopRequired {
++                    guard InvocationDispatchContext.binding == nil else { throw HanlinHostError.staleContext }
++                    // Historical cancellation does not need renewed current-write
++                    // authority from the retired UI parent.
++                    try await OriginalAuthRequestContext.$parent.withValue(nil) {
++                        try await OriginalEditorAuthCallContext.$caller.withValue(caller) {
++                            try await OriginalEditorAuthCallContext.$closing.withValue(caller) {
++                                try await logout(removeData: false)
++                            }
++                        }
++                    }
++                }
++                // A failed Stop exits above: do not join a possibly blocked
++                // native startup or declare stopped after ACCOUNT_IS_NOT_RUNNING.
++                await previous?.waitForDrain()
++                await caller.state.lifetime.waitForOperationsToDrain()
++                guard originalEditorCaller === caller, current == nil,
++                      stopping == nil, !successfulStopRequired else {
++                    throw HanlinHostError.staleContext
++                }
++                let receipt = try caller.state.drainedReceipt()
++                originalEditorCloseResult = receipt
++                return receipt
++            } catch {
++                originalEditorCloseFailed = true
++                throw error
++            }
++        }
++        originalEditorCloseTask = cleanup
++        return try await cleanup.value
++    }
++
++    /// Called only by the original process owner after its additional FIFO,
++    /// selected-operation and consumer-task joins. This method grants none of
++    /// those facts and cannot release a failed or pending authentication close.
++    fileprivate func releaseOriginalEditorCaller(_ caller: OriginalEditorAuthCaller) async throws {
++        guard originalEditorCaller === caller, originalEditorCloseResult != nil,
++              !originalEditorCloseFailed, !successfulStopRequired else {
++            throw HanlinHostError.staleContext
++        }
++        await caller.state.lifetime.waitForOperationsToDrain()
++        guard originalEditorCaller === caller, originalEditorCloseResult != nil,
++              current == nil, stopping == nil, !successfulStopRequired else {
++            throw HanlinHostError.staleContext
++        }
++        originalEditorCaller = nil
++        originalEditorCloseTask = nil
++        originalEditorCloseResult = nil
++        originalEditorCloseFailed = false
++        originalEditorStopTask = nil
++    }
++
++
+ 
+     func createWallet() async throws -> String {
+         let base = base
+@@ -37,7 +438,18 @@
+     }
+ 
+     func mnemonicByEntropy(_ entropy: String) async throws -> String {
+-        try await base.mnemonicByEntropy(entropy)
++        guard OriginalRuntimeEnvironment.deploymentMode == .embeddedEditor else {
++            return try await base.mnemonicByEntropy(entropy)
++        }
++        let base = base
++        return try await perform(kind: .ordinary) { attempt in
++            guard InvocationDispatchContext.binding == nil else { throw HanlinHostError.staleContext }
++            return try await OriginalAuthRequestContext.$parent.withValue(attempt) {
++                try await InvocationDispatchContext.$binding.withValue(
++                    OriginalEditorAuthCaller.namedBinding(attempt, names: ["WalletConvert"])
++                ) { try await base.mnemonicByEntropy(entropy) }
++            }
++        }
+     }
+ 
+     func createAccount(name: String, iconOption: Int, imagePath: String) async throws -> AccountData {
+@@ -92,6 +504,7 @@
+ 
+     func logout(removeData: Bool) async throws {
+         guard stopping == nil else { throw HanlinHostError.staleContext }
++        let originalCaller = try originalEditorAdmissionCaller(allowHistoricalClose: true)
+         let previous = current
+         if let previous {
+             // Keep the existing busy rejection for destructive overlap. Only
+@@ -126,6 +539,11 @@
+                 }
+                 successfulStopRequired = false
+                 stop.finishOuter()
++                if let originalCaller {
++                    await stop.waitForDrain()
++                    originalCaller.state.recordCompletedNativeStop()
++                    originalEditorStopTask = nil
++                }
+                 if stopping === stop { stopping = nil }
+             } catch {
+                 stop.retire()
+@@ -133,10 +551,15 @@
+                 // must remain admissible to release that retired operation.
+                 successfulStopRequired = true
+                 stop.finishOuter()
++                if originalCaller != nil {
++                    await stop.waitForDrain()
++                    originalEditorStopTask = nil
++                }
+                 if stopping === stop { stopping = nil }
+                 throw error
+             }
+         }
++        if originalCaller != nil { originalEditorStopTask = cleanup }
+         try await cleanup.value
+         try Task.checkCancellation()
+     }
+@@ -184,7 +607,12 @@
+         operation: @escaping @Sendable (OriginalAuthAttempt) async throws -> Value
+     ) async throws -> Value {
+         guard current == nil, stopping == nil, !successfulStopRequired else { throw HanlinHostError.staleContext }
+-        let attempt = try OriginalAuthAttempt(kind: kind)
++        let attempt: OriginalAuthAttempt
++        if let caller = try originalEditorAdmissionCaller() {
++            attempt = try caller.state.makeAttempt(kind: kind)
++        } else {
++            attempt = try OriginalAuthAttempt(kind: kind)
++        }
+         current = attempt
+         return try await withTaskCancellationHandler {
+             do {
+--- a/Anytype/Sources/PresentationLayer/Auth/AuthCoordinatorView.swift
++++ b/Anytype/Sources/PresentationLayer/Auth/AuthCoordinatorView.swift
+@@ -8,6 +8,11 @@
+     
+     @State private var model = AuthCoordinatorViewModel()
+     @State private var showCircle: Bool = false
++    private let originalEditorCaller: OriginalEditorAuthCaller?
++
++    init(originalEditorCaller: OriginalEditorAuthCaller? = nil) {
++        self.originalEditorCaller = originalEditorCaller
++    }
+     
+     var body: some View {
+         NavigationStack {
+@@ -17,20 +22,24 @@
+     }
+     
+     private var content: some View {
+-        PrimaryAuthView(output: model)
++        PrimaryAuthView(output: model, originalEditorCaller: originalEditorCaller)
+             .onAppear {
+                 withAnimation(.linear(duration: Constants.animationDuration)) {
+                     showCircle = true
+                 }
+             }
+             .sheet(isPresented: $model.showSettings) {
+-                ServerConfigurationCoordinatorView()
++                ServerConfigurationCoordinatorView(originalEditorCaller: originalEditorCaller)
+             }
+-            .sheet(isPresented: $model.showDebugMenu) {
+-                DebugMenuView()
++            .sheet(isPresented: originalEditorCaller == nil ? $model.showDebugMenu : .constant(false)) {
++                // Whole-app debug administration is outside embedded account bootstrap.
++                // Keep the complete original standalone destination.
++                if originalEditorCaller == nil {
++                    DebugMenuView()
++                }
+             }
+             .navigationDestination(isPresented: $model.showLogin) {
+-                LoginCoordinatorView()
++                LoginCoordinatorView(originalEditorCaller: originalEditorCaller)
+                     .onAppear {
+                         withAnimation(.linear(duration: Constants.animationDuration)) {
+                             showCircle = false
+--- a/Anytype/Sources/PresentationLayer/Auth/DeletedAccount/DeletedAccountView.swift
++++ b/Anytype/Sources/PresentationLayer/Auth/DeletedAccount/DeletedAccountView.swift
+@@ -4,8 +4,8 @@
+ 
+     @State private var viewModel: DeletedAccountViewModel
+ 
+-    init(deadline: Date) {
+-        _viewModel = State(initialValue: DeletedAccountViewModel(deadline: deadline))
++    init(deadline: Date, originalEditorCaller: OriginalEditorAuthCaller? = nil) {
++        _viewModel = State(initialValue: DeletedAccountViewModel(deadline: deadline, originalEditorCaller: originalEditorCaller))
+     }
+     
+     var body: some View {
+--- a/Anytype/Sources/PresentationLayer/Auth/DeletedAccount/DeletedAccountViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/Auth/DeletedAccount/DeletedAccountViewModel.swift
+@@ -8,14 +8,23 @@
+     private var service: any AuthServiceProtocol
+     @ObservationIgnored
+     private let deadline: Date
++    @ObservationIgnored
++    private let originalEditorCaller: OriginalEditorAuthCaller?
++
++    private var originalAuthService: any AuthServiceProtocol {
++        if let originalEditorCaller { return originalEditorCaller }
++        return service
++    }
++    private var acceptsOriginalUI: Bool { originalEditorCaller?.isCurrent ?? true }
+ 
+     @ObservationIgnored @Injected(\.applicationStateService)
+     private var applicationStateService: any ApplicationStateServiceProtocol
+     
+     // MARK: - Initializer
+     
+-    init(deadline: Date) {
++    init(deadline: Date, originalEditorCaller: OriginalEditorAuthCaller? = nil) {
+         self.deadline = deadline
++        self.originalEditorCaller = originalEditorCaller
+     }
+     
+     // MARK: - Internal var
+@@ -34,30 +43,38 @@
+     // MARK: - Internal funcs
+     
+     func logOut() {
++        guard acceptsOriginalUI else { return }
+         AnytypeAnalytics.instance().logLogout(route: .screenDeletion)
+         Task {
+             do {
+-                try await service.logout(removeData: true)
+-                applicationStateService.state = .auth
++                try await OriginalEditorAuthCaller.withUIOperation(originalEditorCaller) {
++                    try await originalAuthService.logout(removeData: true)
++                    try originalEditorCaller?.validateCurrent()
++                    applicationStateService.state = .auth
++                }
+             } catch {
+-                UINotificationFeedbackGenerator().notificationOccurred(.error)
++                if acceptsOriginalUI { UINotificationFeedbackGenerator().notificationOccurred(.error) }
+             }
+         }
+     }
+     
+     func cancel() {
++        guard acceptsOriginalUI else { return }
+         AnytypeAnalytics.instance().logCancelDeletion()
+         Task { @MainActor in
+-            guard let status = try? await service.restoreAccount() else {
+-                UINotificationFeedbackGenerator().notificationOccurred(.error)
+-                return
+-            }
+-            
+-            if case .active = status {
+-                applicationStateService.state = .home
+-            } else {
+-                UINotificationFeedbackGenerator().notificationOccurred(.error)
+-                return
++            do {
++                try await OriginalEditorAuthCaller.withUIOperation(originalEditorCaller) {
++                    let status = try await originalAuthService.restoreAccount()
++                    try originalEditorCaller?.validateCurrent()
++                    if case .active = status {
++                        applicationStateService.state = .home
++                    } else {
++                        UINotificationFeedbackGenerator().notificationOccurred(.error)
++                        return
++                    }
++                }
++            } catch {
++                if acceptsOriginalUI { UINotificationFeedbackGenerator().notificationOccurred(.error) }
+             }
+         }
+     }
+--- a/Anytype/Sources/PresentationLayer/Auth/Join/JoinView/EmailCollectionView/EmailCollectionViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/Auth/Join/JoinView/EmailCollectionView/EmailCollectionViewModel.swift
+@@ -7,7 +7,7 @@
+ 
+     var inputText: String {
+         didSet {
+-            state.email = inputText
++            if state.originalEditorCaller?.isCurrent ?? true { state.email = inputText }
+         }
+     }
+     var inProgress = false
+@@ -31,33 +31,56 @@
+     }
+     
+     func onAppear() {
+-        AnytypeAnalytics.instance().logScreenOnboarding(step: .email)
++        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
++            AnytypeAnalytics.instance().logScreenOnboarding(step: .email)
++        }
+     }
+     
+     func onNextAction() {
+-        if state.email.isValidEmail() {
+-            showIncorrectEmailError = false
+-            saveEmailTaskId = UUID().uuidString
+-        } else {
+-            showIncorrectEmailError = true
++        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
++            if state.email.isValidEmail() {
++                showIncorrectEmailError = false
++                saveEmailTaskId = UUID().uuidString
++            } else {
++                showIncorrectEmailError = true
++            }
+         }
+     }
+     
+     func onSkipAction() {
+-        AnytypeAnalytics.instance().logScreenOnboardingSkipEmail()
+-        onSuccess()
++        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
++            AnytypeAnalytics.instance().logScreenOnboardingSkipEmail()
++            onSuccess()
++        }
+     }
+     
+     func saveEmail() async {
+-        startLoading()
+-        try? await membershipService.getVerificationEmailOnOnboarding(email: state.email)
+-        AnytypeAnalytics.instance().logScreenOnboardingEnterEmail()
+-        onSuccess()
++        guard let caller = state.originalEditorCaller else {
++            startLoading()
++            try? await membershipService.getVerificationEmailOnOnboarding(email: state.email)
++            AnytypeAnalytics.instance().logScreenOnboardingEnterEmail()
++            onSuccess()
++            return
++        }
++        do {
++            try await caller.withUIOperation {
++                startLoading()
++                try? await caller.withNamedNativeRPC("MembershipV2SubscribeToUpdates") {
++                    try await membershipService.getVerificationEmailOnOnboarding(email: state.email)
++                }
++                try caller.validateCurrent()
++                AnytypeAnalytics.instance().logScreenOnboardingEnterEmail()
++                onSuccess()
++            }
++        } catch {
++            if caller.isCurrent { saveEmailError(error) }
++        }
+     }
+     
+     private func onSuccess() {
+         stopLoading()
+-        UIApplication.shared.hideKeyboard()
++        if state.originalEditorCaller != nil { state.originalKeyboardDismiss?() }
++        else { UIApplication.shared.hideKeyboard() }
+         output?.onNext()
+     }
+     
+--- a/Anytype/Sources/PresentationLayer/Auth/Join/JoinView/JoinView.swift
++++ b/Anytype/Sources/PresentationLayer/Auth/Join/JoinView/JoinView.swift
+@@ -4,6 +4,7 @@
+ 
+     @State private var model: JoinViewModel
+     @Environment(\.dismiss) private var dismiss
++    @Environment(\.keyboardDismiss) private var keyboardDismiss
+ 
+     init(state: JoinFlowState) {
+         _model = State(initialValue: JoinViewModel(state: state))
+@@ -23,6 +24,7 @@
+             view.alertView(isShowing: $model.showError, errorText: errorText, onButtonTap: {})
+         }
+         .fitIPadToReadableContentGuide()
++        .onAppear { model.setOwnedKeyboardDismiss(keyboardDismiss) }
+         .onChange(of: model.dismiss) { dismiss() }
+     }
+     
+--- a/Anytype/Sources/PresentationLayer/Auth/Join/JoinView/JoinViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/Auth/Join/JoinView/JoinViewModel.swift
+@@ -34,25 +34,40 @@
+     }
+     
+     func onBackButtonTap() {
+-        onBack()
++        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
++            onBack()
++        }
+     }
+     
++    func setOwnedKeyboardDismiss(_ dismiss: KeyboardDismiss) {
++        guard let caller = state.originalEditorCaller else { return }
++        try? caller.withUIAction { state.originalKeyboardDismiss = dismiss }
++    }
++
+     // MARK: - JoinBaseOutput
+     
+     func onNext() {
+-        onNext(with: step)
++        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
++            onNext(with: step)
++        }
+     }
+     
+     func onBack() {
+-        onBack(with: step)
++        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
++            onBack(with: step)
++        }
+     }
+     
+     func onError(_ error: some Error) {
+-        errorText = error.localizedDescription
++        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
++            errorText = error.localizedDescription
++        }
+     }
+     
+     func disableBackAction(_ disable: Bool) {
+-        backButtonDisabled = disable
++        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
++            backButtonDisabled = disable
++        }
+     }
+     
+     func keyPhraseMoreInfo() -> AnyView? {
+@@ -88,7 +103,8 @@
+             return
+         }
+         
+-        UIApplication.shared.hideKeyboard()
++        if state.originalEditorCaller != nil { state.originalKeyboardDismiss?() }
++        else { UIApplication.shared.hideKeyboard() }
+         forward = false
+         
+         withAnimation {
+@@ -97,6 +113,7 @@
+     }
+     
+     private func finishFlow() {
++        guard state.originalEditorCaller?.isCurrent ?? true else { return }
+         applicationStateService.state = .home
+         sendSelectedOptions()
+         AnytypeAnalytics.instance().logAccountOpen(
+--- a/Anytype/Sources/PresentationLayer/Auth/Join/Shared/KeyPhraseView/KeyPhraseViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/Auth/Join/Shared/KeyPhraseView/KeyPhraseViewModel.swift
+@@ -7,7 +7,7 @@
+     var key: String
+     var keyShown: Bool {
+         didSet {
+-            state.keyShown = keyShown
++            if state.originalEditorCaller?.isCurrent ?? true { state.keyShown = keyShown }
+         }
+     }
+     var showMoreInfo = false
+@@ -30,40 +30,51 @@
+     }
+     
+     func onAppear() {
+-        AnytypeAnalytics.instance().logScreenOnboarding(step: .phrase)
++        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
++            AnytypeAnalytics.instance().logScreenOnboarding(step: .phrase)
++        }
+     }
+     
+     func onPrimaryButtonTap() {
+-        if keyShown {
+-            output?.onNext()
+-        } else {
+-            AnytypeAnalytics.instance().logClickOnboarding(step: .phrase, button: .showAndCopy)
+-            keyShown = true
++        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
++            if keyShown {
++                output?.onNext()
++            } else {
++                AnytypeAnalytics.instance().logClickOnboarding(step: .phrase, button: .showAndCopy)
++                keyShown = true
++            }
+         }
+     }
+ 
+     func onSecondaryButtonTap() {
+-        AnytypeAnalytics.instance().logClickOnboarding(step: .phrase, button: .checkLater)
+-        output?.onNext()
++        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
++            AnytypeAnalytics.instance().logClickOnboarding(step: .phrase, button: .checkLater)
++            output?.onNext()
++        }
+     }
+ 
+     func onPhraseTap() {
+-        if keyShown {
+-            copy()
+-        } else {
+-            keyShown = true
++        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
++            if keyShown {
++                copy()
++            } else {
++                keyShown = true
++            }
+         }
+     }
+     
+     func keyPhraseMoreInfo() -> AnyView? {
++        guard state.originalEditorCaller?.isCurrent ?? true else { return nil }
+         AnytypeAnalytics.instance().logClickOnboarding(step: .phrase, button: .moreInfo)
+         return output?.keyPhraseMoreInfo()
+     }
+     
+     private func copy() {
+-        AnytypeAnalytics.instance().logClickOnboarding(step: .phrase, button: .showAndCopy)
+-        UISelectionFeedbackGenerator().selectionChanged()
+-        UIPasteboard.general.string = state.mnemonic
+-        snackBar = ToastBarData(Loc.copied)
++        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
++            AnytypeAnalytics.instance().logClickOnboarding(step: .phrase, button: .showAndCopy)
++            UISelectionFeedbackGenerator().selectionChanged()
++            UIPasteboard.general.string = state.mnemonic
++            snackBar = ToastBarData(Loc.copied)
++        }
+     }
+ }
+--- a/Anytype/Sources/PresentationLayer/Auth/Join/Shared/Models/JoinFlowState.swift
++++ b/Anytype/Sources/PresentationLayer/Auth/Join/Shared/Models/JoinFlowState.swift
+@@ -1,6 +1,13 @@
+ import SwiftUI
+ 
+ final class JoinFlowState {
++    let originalEditorCaller: OriginalEditorAuthCaller?
++    var originalKeyboardDismiss: KeyboardDismiss?
++
++    init(originalEditorCaller: OriginalEditorAuthCaller? = nil) {
++        self.originalEditorCaller = originalEditorCaller
++    }
++
+     var soul = ""
+     var mnemonic = "" {
+         didSet {
+--- a/Anytype/Sources/PresentationLayer/Auth/Login/LoginCoordinatorView.swift
++++ b/Anytype/Sources/PresentationLayer/Auth/Login/LoginCoordinatorView.swift
+@@ -4,12 +4,21 @@
+ 
+     @State private var model = LoginCoordinatorViewModel()
+     @Environment(\.pageNavigation) private var pageNavigation
++    private let originalEditorCaller: OriginalEditorAuthCaller?
++
++    init(originalEditorCaller: OriginalEditorAuthCaller? = nil) {
++        self.originalEditorCaller = originalEditorCaller
++    }
+     
+     var body: some View {
+-        LoginView(output: model)
++        LoginView(output: model, originalEditorCaller: originalEditorCaller)
+             .cameraPermissionAlert(isPresented: $model.showOpenSettingsURL)
+-            .sheet(isPresented: $model.showPublicDebugMenu) {
+-                PublicDebugMenuView()
++            .sheet(isPresented: originalEditorCaller == nil ? $model.showPublicDebugMenu : .constant(false)) {
++                // Whole-app debug administration is outside embedded account bootstrap.
++                // Keep the complete original standalone destination.
++                if originalEditorCaller == nil {
++                    PublicDebugMenuView()
++                }
+             }
+             .anytypeSheet(item: $model.secureAlertData) {
+                 SecureAlertView(data: $0)
+--- a/Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginView.swift
++++ b/Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginView.swift
+@@ -6,9 +6,11 @@
+ 
+     @State private var model: LoginViewModel
+     @Environment(\.dismiss) private var dismiss
++    private let originalEditorCaller: OriginalEditorAuthCaller?
+ 
+-    init(output: (any LoginOutput)?) {
+-        _model = State(initialValue: LoginViewModel(output: output))
++    init(output: (any LoginOutput)?, originalEditorCaller: OriginalEditorAuthCaller? = nil) {
++        self.originalEditorCaller = originalEditorCaller
++        _model = State(initialValue: LoginViewModel(output: output, originalEditorCaller: originalEditorCaller))
+     }
+     
+     var body: some View {
+@@ -17,7 +19,8 @@
+             .fixTappableArea()
+             .customBackSwipe {
+                 guard !model.backButtonDisabled else { return }
+-                dismiss()
++                if originalEditorCaller != nil { model.onbackButtonAction() }
++                else { dismiss() }
+             }
+         
+             .onAppear {
+--- a/Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginViewModel.swift
+@@ -1,4 +1,5 @@
+ import SwiftUI
++@preconcurrency import Combine
+ import Services
+ 
+ @MainActor
+@@ -42,28 +43,98 @@
+     @ObservationIgnored
+     private weak var output: (any LoginOutput)?
+     
+-    init(output: (any LoginOutput)?) {
++    @ObservationIgnored
++    private let originalEditorCaller: OriginalEditorAuthCaller?
++    @ObservationIgnored
++    private let accountShowLifetime: EditorDocumentWriteLifetime?
++    @ObservationIgnored
++    private let accountShowCapture: EditorDocumentWriteCapture?
++    @ObservationIgnored
++    private let accountShowReadiness: OriginalApplicationConsumerDemand?
++    @ObservationIgnored
++    private var accountShowRetirement: EditorDocumentWriteLifetime.Observation?
++
++    private var originalAuthService: any AuthServiceProtocol {
++        if let originalEditorCaller { return originalEditorCaller }
++        return authService
++    }
++
++    private var acceptsOriginalUI: Bool { originalEditorCaller?.isCurrent ?? true }
++
++    init(output: (any LoginOutput)?, originalEditorCaller: OriginalEditorAuthCaller? = nil) {
+         self.output = output
++        self.originalEditorCaller = originalEditorCaller
++        if let originalEditorCaller {
++            let lifetime = EditorDocumentWriteLifetime()
++            let readiness = OriginalApplicationConsumerDemand { lifetime.markUnavailable() }
++            let capture = try? EditorDocumentWriteCapture(lifetime)
++            accountShowLifetime = lifetime
++            accountShowCapture = capture
++            accountShowReadiness = readiness
++            if capture == nil { readiness.end() }
++            accountShowRetirement = originalEditorCaller.observeRetirement { readiness.end() }
++        } else {
++            accountShowLifetime = nil
++            accountShowCapture = nil
++            accountShowReadiness = nil
++        }
++    }
++
++    deinit {
++        accountShowRetirement?.cancel()
++        accountShowReadiness?.end()
+     }
+     
+     func onAppear() {
+-        AnytypeAnalytics.instance().logLoginScreenShow()
+-        canRestoreFromKeychain = (try? seedService.obtainSeed()).isNotNil
++        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++            AnytypeAnalytics.instance().logLoginScreenShow()
++            canRestoreFromKeychain = (try? seedService.obtainSeed()).isNotNil
++        
++        }
+     }
+     
+     func onEnterButtonAction() {
+-        AnytypeAnalytics.instance().logClickLogin(button: .phrase)
+-        walletRecoveryTaskId = UUID().uuidString
++        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++            AnytypeAnalytics.instance().logClickLogin(button: .phrase)
++            walletRecoveryTaskId = UUID().uuidString
++        
++        }
+     }
+     
+     func onScanQRButtonAction() async {
++        do {
++            try await OriginalEditorAuthCaller.withUIOperation(originalEditorCaller) {
++                try await scanQRInOriginalFlow()
++            }
++        } catch {
++            guard acceptsOriginalUI else { return }
++            errorText = error.localizedDescription
++        }
++    }
++
++    private func scanQRInOriginalFlow() async throws {
+         AnytypeAnalytics.instance().logClickLogin(button: .qr)
+         let isGranted = await cameraPermissionVerifier.cameraIsGranted()
++        try originalEditorCaller?.validateCurrent()
+         if isGranted {
+             output?.onOpenQRCodeSelected(
+                 data: QrCodeScannerData(
+-                    entropy: Binding(get: { self.entropy }, set: { self.entropy = $0 }),
+-                    error: Binding(get: { self.errorText }, set: { self.errorText = $0 })
++                    entropy: Binding(
++                        get: { self.acceptsOriginalUI ? self.entropy : "" },
++                        set: { value in
++                            try? OriginalEditorAuthCaller.withUIAction(self.originalEditorCaller) {
++                                self.entropy = value
++                            }
++                        }
++                    ),
++                    error: Binding(
++                        get: { self.acceptsOriginalUI ? self.errorText : nil },
++                        set: { value in
++                            try? OriginalEditorAuthCaller.withUIAction(self.originalEditorCaller) {
++                                self.errorText = value
++                            }
++                        }
++                    )
+                 )
+             )
+         } else {
+@@ -72,72 +143,140 @@
+     }
+     
+     func onKeychainButtonAction() async throws {
++        try await OriginalEditorAuthCaller.withUIOperation(originalEditorCaller) {
++            try await keychainInOriginalFlow()
++        }
++    }
++
++    private func keychainInOriginalFlow() async throws {
+         AnytypeAnalytics.instance().logClickLogin(button: .keychain)
+         try await localAuthWithContinuation { [weak self] in
+             guard let self else { return }
++            try originalEditorCaller?.validateCurrent()
+             phrase = try seedService.obtainSeed()
+             await walletRecovery()
+         }
+     }
+     
+     func openPublicDebugMenuTap() {
+-        output?.onOpenPublicDebugMenuSelected()
++        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++            output?.onOpenPublicDebugMenuSelected()
++        
++        }
+     }
+     
+     private func localAuthWithContinuation(_ continuation: @escaping () async throws -> Void) async throws {
+         do {
+             try await localAuthService.auth(reason: Loc.accessToKeyFromKeychain)
++            try originalEditorCaller?.validateCurrent()
+             try await continuation()
+         } catch LocalAuthServiceError.passcodeNotSet {
++            try originalEditorCaller?.validateCurrent()
+             output?.onOpenSecureAlertSelected(
+-                data: SecureAlertData(completion: { proceed in
++                data: SecureAlertData(completion: { [caller = originalEditorCaller] proceed in
+                     guard proceed else { return }
+-                    try await continuation()
++                    try await OriginalEditorAuthCaller.withUIOperation(caller) {
++                        try await continuation()
++                    }
+                 })
+             )
+         }
+     }
+     
+     func onbackButtonAction() {
+-        guard accountSelectInProgress else {
+-            dismiss.toggle()
++        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++            guard accountSelectInProgress else {
++                dismiss.toggle()
++                return
++            }
++            accountId = nil
++            logoutAction()
++        
++        }
++    }
++    
++    func logoutAction() {
++        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++            logoutTaskId = UUID().uuidString
++        
++        }
++    }
++    
++    func logout() async {
++        guard let caller = originalEditorCaller else {
++            defer {
++                logoutTaskId = nil
++                dismiss.toggle()
++            }
++            try? await authService.logout(removeData: false)
+             return
+         }
+-        accountId = nil
+-        logoutAction()
+-    }
+-    
+-    func logoutAction() {
+-        logoutTaskId = UUID().uuidString
+-    }
+-    
+-    func logout() async {
+-        defer {
++        do {
++            try await caller.withUIOperation {
++                try await caller.logout(removeData: false)
++                try caller.validateCurrent()
++                logoutTaskId = nil
++                dismiss.toggle()
++            }
++        } catch {
++            guard caller.isCurrent else { return }
++            // A failed original Stop keeps the same UI owner available to retry.
+             logoutTaskId = nil
+-            dismiss.toggle()
+-        }
+-        try? await authService.logout(removeData: false)
++            errorText = error.localizedDescription
++        }
+     }
+     
+     func onEntropySet() async {
++        do {
++            try await OriginalEditorAuthCaller.withUIOperation(originalEditorCaller) {
++                await entropyInOriginalFlow()
++            }
++        } catch {
++            guard acceptsOriginalUI else { return }
++            errorText = error.localizedDescription
++        }
++    }
++
++    private func entropyInOriginalFlow() async {
+         guard entropy.isNotEmpty else { return }
+         do {
+-            phrase = try await authService.mnemonicByEntropy(entropy)
++            let recoveredPhrase = try await originalAuthService.mnemonicByEntropy(entropy)
++            try originalEditorCaller?.validateCurrent()
++            phrase = recoveredPhrase
+             await walletRecovery()
+         } catch {
++            guard acceptsOriginalUI else { return }
+             errorText = error.localizedDescription
+         }
+     }
+ 
+     func walletRecovery() async {
++        do {
++            try await OriginalEditorAuthCaller.withUIOperation(originalEditorCaller) {
++                await walletRecoveryInOriginalFlow()
++            }
++        } catch {
++            guard acceptsOriginalUI else { return }
++            recoverWalletError(error)
++        }
++    }
++
++    private func walletRecoveryInOriginalFlow() async {
+         do {
+             loadingInProgress = true
+             
+-            try await authService.walletRecovery(mnemonic: phrase.trimmingCharacters(in: .whitespacesAndNewlines))
++            if let readiness = accountShowReadiness {
++                try await readiness.waitUntilRequested()
++                try originalEditorCaller?.validateCurrent()
++            }
++            try await originalAuthService.walletRecovery(mnemonic: phrase.trimmingCharacters(in: .whitespacesAndNewlines))
++            try originalEditorCaller?.validateCurrent()
++            try accountShowReadiness?.validateRequested()
+             try seedService.saveSeed(phrase)
+             
+             await recoverWalletSuccess()
+         } catch {
++            guard acceptsOriginalUI else { return }
+             recoverWalletError(error)
+         }
+     }
+@@ -147,35 +286,105 @@
+     }
+     
+     private func recoverWalletError(_ error: some Error) {
++        guard acceptsOriginalUI else { return }
+         stopButtonsLoading()
+         errorText = error.localizedDescription
+         walletRecoveryTaskId = nil
+     }
+     
+     func handleAccountShowEvent() async {
+-        for await accountId in await accountEventHandler.accountShowPublisher.values {
+-            self.accountId = accountId
++        guard let caller = originalEditorCaller else {
++            for await accountId in await accountEventHandler.accountShowPublisher.values {
++                self.accountId = accountId
++            }
++            return
++        }
++        guard let readiness = accountShowReadiness else { return }
++        defer { readiness.end() }
++        await withTaskCancellationHandler {
++            guard caller.isCurrent else { return }
++            let publisher = await accountEventHandler.accountShowPublisher
++            guard caller.isCurrent, !Task.isCancelled else { return }
++            for await accountId in OriginalDemandObservingPublisher(
++                upstream: publisher, readiness: readiness
++            ).values {
++                try? caller.withUIAction { self.accountId = accountId }
++            }
++        } onCancel: {
++            readiness.end()
+         }
+     }
+     
+     private func accountRecover() async {
+         do {
+-            try await authService.accountRecover()
+-        } catch {
++            if let caller = originalEditorCaller {
++                try await recoverWithOriginalConsumer(caller)
++            } else {
++                try await authService.accountRecover()
++            }
++        } catch {
++            guard acceptsOriginalUI else { return }
+             stopButtonsLoading()
+             errorText = error.localizedDescription
+         }
+     }
++
++    /// The original native AccountRecover can synchronously broadcast AccountShow.
++    /// Admit it only with the real original consumer installed and requesting
++    /// demand, retaining both that consumer and every preexisting Auth ancestor.
++    private func recoverWithOriginalConsumer(_ caller: OriginalEditorAuthCaller) async throws {
++        guard let readiness = accountShowReadiness, let capture = accountShowCapture else {
++            throw OriginalApplicationConsumerDemand.ReadinessError.consumerEnded
++        }
++        try caller.validateCurrent()
++        try readiness.validateRequested()
++        let attempt = try OriginalAuthAttempt(kind: .ordinary, restricting: [capture])
++        let admissions = try attempt.admitStage()
++        try await withTaskCancellationHandler {
++            do {
++                try await OriginalAuthRequestContext.$parent.withValue(attempt) {
++                    try await caller.accountRecover()
++                }
++                try attempt.validate()
++                try readiness.validateRequested()
++                for admission in admissions { admission.cancel() }
++                attempt.finishOuter()
++                await attempt.waitForDrain()
++                try caller.validateCurrent()
++            } catch {
++                attempt.retire()
++                for admission in admissions { admission.cancel() }
++                attempt.finishOuter()
++                await attempt.waitForDrain()
++                throw error
++            }
++        } onCancel: {
++            attempt.retire()
++        }
++    }
+     
+     func selectAccount() async {
++        do {
++            try await OriginalEditorAuthCaller.withUIOperation(originalEditorCaller) {
++                await selectAccountInOriginalFlow()
++            }
++        } catch {
++            // A late AccountShow or SwiftUI task cannot select for a new owner.
++        }
++    }
++
++    private func selectAccountInOriginalFlow() async {
+         guard let accountId else { return }
+         defer {
+-            stopButtonsLoading()
+-            accountSelectInProgress = false
++            if acceptsOriginalUI {
++                stopButtonsLoading()
++                accountSelectInProgress = false
++            }
+         }
+         do {
+             accountSelectInProgress = true
+-            let account = try await authService.selectAccount(id: accountId, preferredSpaceId: "")
++            let account = try await originalAuthService.selectAccount(id: accountId, preferredSpaceId: "")
++            try originalEditorCaller?.validateCurrent()
+             
+             switch account.status {
+             case .active:
+@@ -187,24 +396,31 @@
+             }
+             
+             await pushNotificationsPermissionService.registerForRemoteNotificationsIfNeeded()
++            try originalEditorCaller?.validateCurrent()
+         } catch is CancellationError {
+             // Ignore cancellations
+         } catch SelectAccountError.accountLoadIsCanceled {
+             // Ignore load cancellation
+         } catch SelectAccountError.accountIsDeleted {
++            guard acceptsOriginalUI else { return }
+             errorText = Loc.vaultDeleted
+         } catch SelectAccountError.failedToFetchRemoteNodeHasIncompatibleProtoVersion {
++            guard acceptsOriginalUI else { return }
+             errorText = Loc.Vault.Select.Incompatible.Version.Error.text
+         } catch SelectAccountError.accountStoreNotMigrated {
++            guard acceptsOriginalUI else { return }
+             output?.onOpenMigrationSelected(
+                 data: MigrationModuleData(
+                     id: accountId,
+-                    onFinish: { [weak self] in
++                    onFinish: { [weak self, caller = originalEditorCaller] in
++                        guard caller?.isCurrent ?? true else { return }
+                         await self?.selectAccount()
+-                    }
++                    },
++                    originalEditorCaller: originalEditorCaller
+                 )
+             )
+         } catch {
++            guard acceptsOriginalUI else { return }
+             errorText = Loc.selectVaultError
+         }
+     }
+--- a/Anytype/Sources/PresentationLayer/Auth/PrimaryAuthView/PrimaryAuthView.swift
++++ b/Anytype/Sources/PresentationLayer/Auth/PrimaryAuthView/PrimaryAuthView.swift
+@@ -7,8 +7,8 @@
+     @State private var model: PrimaryAuthViewModel
+     @Environment(\.authCircleCenterVerticalOffset) private var circleOffset
+ 
+-    init(output: (any PrimaryAuthOutput)?) {
+-        _model = State(initialValue: PrimaryAuthViewModel(output: output))
++    init(output: (any PrimaryAuthOutput)?, originalEditorCaller: OriginalEditorAuthCaller? = nil) {
++        _model = State(initialValue: PrimaryAuthViewModel(output: output, originalEditorCaller: originalEditorCaller))
+     }
+ 
+     var body: some View {
+--- a/Anytype/Sources/PresentationLayer/Auth/PrimaryAuthView/PrimaryAuthViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/Auth/PrimaryAuthView/PrimaryAuthViewModel.swift
+@@ -15,7 +15,15 @@
+ 
+     // MARK: - State
+     @ObservationIgnored
+-    private let state = JoinFlowState()
++    private let state: JoinFlowState
++    @ObservationIgnored
++    private let originalEditorCaller: OriginalEditorAuthCaller?
++
++    private var originalAuthService: any AuthServiceProtocol {
++        if let originalEditorCaller { return originalEditorCaller }
++        return authService
++    }
++    private var acceptsOriginalUI: Bool { originalEditorCaller?.isCurrent ?? true }
+ 
+     // MARK: - Private
+     @ObservationIgnored
+@@ -36,78 +44,124 @@
+     @ObservationIgnored @Injected(\.pushNotificationsPermissionService)
+     private var pushNotificationsPermissionService: any PushNotificationsPermissionServiceProtocol
+ 
+-    init(output: (any PrimaryAuthOutput)?) {
++    init(output: (any PrimaryAuthOutput)?, originalEditorCaller: OriginalEditorAuthCaller? = nil) {
+         self.output = output
++        self.originalEditorCaller = originalEditorCaller
++        state = JoinFlowState(originalEditorCaller: originalEditorCaller)
+     }
+ 
+     // MARK: - Public
+ 
+     func onAppear() {
+-        AnytypeAnalytics.instance().logMainAuthScreenShow()
++        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++            AnytypeAnalytics.instance().logMainAuthScreenShow()
++        }
+     }
+ 
+     func startAppActionSubscription() async {
+         for await action in appActionStorage.$action.values {
++            guard acceptsOriginalUI else { return }
+             guard let action else { continue }
+ 
+-            if (try? handleAppAction(action: action)).isNotNil {
+-                appActionStorage.action = nil
++            do {
++                try OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++                    try handleAppAction(action: action)
++                    appActionStorage.action = nil
++                }
++            } catch { /* The original unsupported/retired action remains unconsumed. */ }
++        }
++    }
++    
++    func onJoinButtonTap() {
++        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++            if state.mnemonic.isEmpty {
++                createAccountTaskId = UUID().uuidString
++            } else {
++                onSuccess()
+             }
+         }
+     }
+     
+-    func onJoinButtonTap() {
+-        if state.mnemonic.isEmpty {
+-            createAccountTaskId = UUID().uuidString
+-        } else {
+-            onSuccess()
++    func onLoginButtonTap() {
++        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++            output?.onLoginSelected()
+         }
+     }
+     
+-    func onLoginButtonTap() {
+-        output?.onLoginSelected()
+-    }
+-    
+     func onSettingsButtonTap() {
+-        output?.onSettingsSelected()
++        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++            output?.onSettingsSelected()
++        }
+     }
+     
+     func onDebugMenuTap() {
+-        output?.onDebugMenuSelected()
++        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++            output?.onDebugMenuSelected()
++        }
+     }
+ 
+     // MARK: - Create account step
+     
+     func createAccount() async {
+-        defer { createAccountTaskId = nil }
++        do {
++            try await OriginalEditorAuthCaller.withUIOperation(originalEditorCaller) {
++                await createAccountInOriginalFlow()
++            }
++        } catch {
++            if acceptsOriginalUI { createAccountError(error) }
++        }
++    }
++
++    private func createAccountInOriginalFlow() async {
++        defer { if acceptsOriginalUI { createAccountTaskId = nil } }
+         AnytypeAnalytics.instance().logStartCreateAccount()
+         inProgress = true
+         
+         do {
+-            state.mnemonic = try await authService.createWallet()
++            let mnemonic = try await originalAuthService.createWallet()
++            try originalEditorCaller?.validateCurrent()
++            state.mnemonic = mnemonic
+             let iconOption = IconColorStorage.randomOption()
+-            let account = try await authService.createAccount(
++            let account = try await originalAuthService.createAccount(
+                 name: "",
+                 iconOption: iconOption,
+                 imagePath: ""
+             )
++            try originalEditorCaller?.validateCurrent()
+             await pushNotificationsPermissionService.registerForRemoteNotificationsIfNeeded()
++            try originalEditorCaller?.validateCurrent()
+             try await setDefaultSpaceInfo(account.info.accountSpaceId, iconOption: iconOption)
++            try originalEditorCaller?.validateCurrent()
+             try? seedService.saveSeed(state.mnemonic)
++            try originalEditorCaller?.validateCurrent()
+             
+             onSuccess()
+         } catch {
+-            createAccountError(error)
++            if acceptsOriginalUI { createAccountError(error) }
+         }
+     }
+     
+     private func setDefaultSpaceInfo(_ spaceId: String, iconOption: Int) async throws {
+         guard spaceId.isNotEmpty else { return }
+-        _ = try? await usecaseService.setObjectImportDefaultUseCase(spaceId: spaceId)
+-        try? await workspaceService.workspaceSetDetails(
+-            spaceId: spaceId,
+-            details: [.name(Loc.myFirstSpace), .iconOption(iconOption)]
+-        )
++        if let caller = originalEditorCaller {
++            _ = try? await caller.withNamedNativeRPC("ObjectImportUseCase") {
++                try await usecaseService.setObjectImportDefaultUseCase(spaceId: spaceId)
++            }
++            try caller.validateCurrent()
++            try? await caller.withNamedNativeRPC("WorkspaceSetInfo") {
++                try await workspaceService.workspaceSetDetails(
++                    spaceId: spaceId,
++                    details: [.name(Loc.myFirstSpace), .iconOption(iconOption)]
++                )
++            }
++            try caller.validateCurrent()
++        } else {
++            _ = try? await usecaseService.setObjectImportDefaultUseCase(spaceId: spaceId)
++            try? await workspaceService.workspaceSetDetails(
++                spaceId: spaceId,
++                details: [.name(Loc.myFirstSpace), .iconOption(iconOption)]
++            )
++        }
+     }
+     
+     private func onSuccess() {
+--- a/Anytype/Sources/PresentationLayer/Flows/ServerConfiguration/ServerConfigurationCoordinatorView.swift
++++ b/Anytype/Sources/PresentationLayer/Flows/ServerConfiguration/ServerConfigurationCoordinatorView.swift
+@@ -3,12 +3,18 @@
+ 
+ struct ServerConfigurationCoordinatorView: View {
+ 
+-    @State private var model = ServerConfigurationCoordinatorViewModel()
++    @State private var model: ServerConfigurationCoordinatorViewModel
++    private let originalEditorCaller: OriginalEditorAuthCaller?
++
++    init(originalEditorCaller: OriginalEditorAuthCaller? = nil) {
++        self.originalEditorCaller = originalEditorCaller
++        _model = State(initialValue: ServerConfigurationCoordinatorViewModel(originalEditorCaller: originalEditorCaller))
++    }
+     
+     var body: some View {
+-        ServerConfigurationView(output: model)
++        ServerConfigurationView(output: model, originalEditorCaller: originalEditorCaller)
+             .sheet(isPresented: $model.showDocumentPicker) {
+-                ServerDocumentPickerView()
++                ServerDocumentPickerView(originalEditorCaller: originalEditorCaller)
+             }
+     }
+ }
+--- a/Anytype/Sources/PresentationLayer/Flows/ServerConfiguration/ServerConfigurationCoordinatorViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/Flows/ServerConfiguration/ServerConfigurationCoordinatorViewModel.swift
+@@ -6,10 +6,19 @@
+ final class ServerConfigurationCoordinatorViewModel: ServerConfigurationModuleOutput {
+ 
+     var showDocumentPicker: Bool = false
++    @ObservationIgnored
++    private let originalEditorCaller: OriginalEditorAuthCaller?
++
++    init(originalEditorCaller: OriginalEditorAuthCaller? = nil) {
++        self.originalEditorCaller = originalEditorCaller
++    }
+     
+     // MARK: - ServerConfigurationModuleOutput
+     
+     func onAddServerSelected() {
+-        showDocumentPicker.toggle()
++        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++            showDocumentPicker.toggle()
++        
++        }
+     }
+ }
+--- a/Anytype/Sources/PresentationLayer/Migration/MigrationViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/Migration/MigrationViewModel.swift
+@@ -5,6 +5,16 @@
+ struct MigrationModuleData: Identifiable {
+     let id: String
+     let onFinish: () async -> Void
++    let originalEditorCaller: OriginalEditorAuthCaller?
++
++    init(
++        id: String, onFinish: @escaping () async -> Void,
++        originalEditorCaller: OriginalEditorAuthCaller? = nil
++    ) {
++        self.id = id
++        self.onFinish = onFinish
++        self.originalEditorCaller = originalEditorCaller
++    }
+ }
+ 
+ enum MigrationState: Equatable {
+@@ -47,23 +57,45 @@
+     }
+     
+     func startFlow() async {
+-        async let processSubscription: () = subscribeOnProcess()
+-        async let migration: () = startMigration()
+-        (_, _) = await (processSubscription, migration)
++        guard let caller = data.originalEditorCaller else {
++            async let processSubscription: () = subscribeOnProcess()
++            async let migration: () = startMigration()
++            (_, _) = await (processSubscription, migration)
++            return
++        }
++        do {
++            try await caller.withUIOperation {
++                try await subscribeOnOwnedProcess(caller)
++                try caller.validateCurrent()
++                await startMigration()
++            }
++        } catch {
++            guard caller.isCurrent else { return }
++            state = .error(title: Loc.error, message: Loc.unknownError)
++        }
+     }
+     
+     func startUpdate() {
+-        clearProcessData()
+-        state = .progress
+-        startFlowId = UUID().uuidString
++        try? OriginalEditorAuthCaller.withUIAction(data.originalEditorCaller) {
++            clearProcessData()
++            state = .progress
++            startFlowId = UUID().uuidString
++        
++        }
+     }
+     
+     func readMore() {
+-        output?.onReadMoreTap()
++        try? OriginalEditorAuthCaller.withUIAction(data.originalEditorCaller) {
++            output?.onReadMoreTap()
++        
++        }
+     }
+     
+     func onDebugTap() {
+-        output?.onDebugTap()
++        try? OriginalEditorAuthCaller.withUIAction(data.originalEditorCaller) {
++            output?.onDebugTap()
++        
++        }
+     }
+     
+     private func subscribeOnProcess() async {
+@@ -73,20 +105,48 @@
+         }
+     }
+     
++    /// Register the original process consumer before the real migration.
++    /// Its callback retains this presentation's caller; progress is not a drain.
++    private func subscribeOnOwnedProcess(_ caller: OriginalEditorAuthCaller) async throws {
++        try caller.validateCurrent()
++        processSubscription?.cancel()
++        let subscription = await processSubscriptionService.addHandler { [weak self, caller] events in
++            guard caller.isCurrent else { return }
++            await self?.handleProcesses(events: events)
++        }
++        do {
++            try caller.validateCurrent()
++            processSubscription = subscription
++        } catch {
++            subscription.cancel()
++            throw error
++        }
++    }
++
+     private func startMigration() async {
+         do {
+-            try await accountMigrationService.accountMigrate(id: data.id, rootPath: localRepoService.middlewareRepoPath)
++            if let caller = data.originalEditorCaller {
++                try await caller.withNamedNativeRPC("AccountMigrate") {
++                    try await accountMigrationService.accountMigrate(id: data.id, rootPath: localRepoService.middlewareRepoPath)
++                }
++                try caller.validateCurrent()
++            } else {
++                try await accountMigrationService.accountMigrate(id: data.id, rootPath: localRepoService.middlewareRepoPath)
++            }
+             dismiss.toggle()
+             await data.onFinish()
++            try data.originalEditorCaller?.validateCurrent()
+         } catch is CancellationError {
+             // Ignore cancellations
+         } catch let AccountMigrationError.notEnoughFreeSpace(requaredSpace) {
++            guard data.originalEditorCaller?.isCurrent ?? true else { return }
+             let size = ByteCountFormatter.fileFormatter.string(fromByteCount: requaredSpace)
+             state = .error(
+                 title: Loc.Migration.Error.NotEnoughtSpace.title,
+                 message: Loc.Migration.Error.NotEnoughtSpace.message(size)
+             )
+         } catch {
++            guard data.originalEditorCaller?.isCurrent ?? true else { return }
+             state = .error(
+                 title: Loc.error,
+                 message: Loc.unknownError
+@@ -104,21 +164,24 @@
+     }
+     
+     private func handleProcesses(events: [ProcessEvent]) {
+-        for event in events {
+-            switch event {
+-            case .new(let process):
+-                guard activeProcess.isNil else { return }
+-                activeProcess = process
+-                updateProgress(with: process)
+-            case .update(let process):
+-                guard process.id == activeProcess?.id else { return }
+-                activeProcess = process
+-                updateProgress(with: process)
+-            case .done(let process):
+-                guard process.id == activeProcess?.id else { return }
+-                activeProcess = nil
+-                updateProgress(with: process)
++        try? OriginalEditorAuthCaller.withUIAction(data.originalEditorCaller) {
++            for event in events {
++                switch event {
++                case .new(let process):
++                    guard activeProcess.isNil else { return }
++                    activeProcess = process
++                    updateProgress(with: process)
++                case .update(let process):
++                    guard process.id == activeProcess?.id else { return }
++                    activeProcess = process
++                    updateProgress(with: process)
++                case .done(let process):
++                    guard process.id == activeProcess?.id else { return }
++                    activeProcess = nil
++                    updateProgress(with: process)
++                }
+             }
++        
+         }
+     }
+     
+--- a/Anytype/Sources/PresentationLayer/Modules/ServerConfiguration/ServerConfigurationView.swift
++++ b/Anytype/Sources/PresentationLayer/Modules/ServerConfiguration/ServerConfigurationView.swift
+@@ -6,8 +6,8 @@
+ 
+     @StateObject private var model: ServerConfigurationViewModel
+     
+-    init(output: (any ServerConfigurationModuleOutput)?) {
+-        _model = StateObject(wrappedValue: ServerConfigurationViewModel(output: output))
++    init(output: (any ServerConfigurationModuleOutput)?, originalEditorCaller: OriginalEditorAuthCaller? = nil) {
++        _model = StateObject(wrappedValue: ServerConfigurationViewModel(output: output, originalEditorCaller: originalEditorCaller))
+     }
+     
+     var body: some View {
+--- a/Anytype/Sources/PresentationLayer/Modules/ServerConfiguration/ServerConfigurationViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/Modules/ServerConfiguration/ServerConfigurationViewModel.swift
+@@ -10,6 +10,7 @@
+     @Injected(\.serverConfigurationStorage)
+     private var storage: any ServerConfigurationStorageProtocol
+     private weak var output: (any ServerConfigurationModuleOutput)?
++    private let originalEditorCaller: OriginalEditorAuthCaller?
+     
+     // MARK: - State
+     
+@@ -19,23 +20,36 @@
+     
+     private var subscriptions = [AnyCancellable]()
+     
+-    init(output: (any ServerConfigurationModuleOutput)?) {
++    init(output: (any ServerConfigurationModuleOutput)?, originalEditorCaller: OriginalEditorAuthCaller? = nil) {
+         self.output = output
+-        storage.installedConfigurationsPublisher.receiveOnMain().sink { [weak self] _ in
+-            withAnimation {
+-                self?.updateRows()
++        self.originalEditorCaller = originalEditorCaller
++        storage.installedConfigurationsPublisher.receiveOnMain().sink { [weak self, originalEditorCaller] _ in
++            if let originalEditorCaller {
++                try? originalEditorCaller.withUIAction {
++                    withAnimation { self?.updateRows() }
++                }
++            } else {
++                withAnimation {
++                    self?.updateRows()
++                }
+             }
+         }.store(in: &subscriptions)
+     }
+     
+     func onTapAddServer() {
+-        output?.onAddServerSelected()
++        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++            output?.onAddServerSelected()
++        
++        }
+     }
+     
+     func setup(config: NetworkServerConfig) {
+-        storage.setupCurrentConfiguration(config: config)
+-        updateRows()
+-        AnytypeAnalytics.instance().logSelectNetwork(type: config.analyticsType, route: .onboarding)
++        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++            storage.setupCurrentConfiguration(config: config)
++            updateRows()
++            AnytypeAnalytics.instance().logSelectNetwork(type: config.analyticsType, route: .onboarding)
++        
++        }
+     }
+     
+     // MARK: - Private
+@@ -58,11 +72,14 @@
+     }
+     
+     private func handleOnTap(config: NetworkServerConfig) {
+-        guard config != storage.currentConfiguration() else { return }
+-        if config.isLocalOnly {
+-            showLocalConfigurationAlert.toggle()
+-        } else {
+-            setup(config: config)
++        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++            guard config != storage.currentConfiguration() else { return }
++            if config.isLocalOnly {
++                showLocalConfigurationAlert.toggle()
++            } else {
++                setup(config: config)
++            }
++        
+         }
+     }
+ }
+--- a/Anytype/Sources/PresentationLayer/Modules/ServerDocumentPicker/ServerDocumentPickerView.swift
++++ b/Anytype/Sources/PresentationLayer/Modules/ServerDocumentPicker/ServerDocumentPickerView.swift
+@@ -3,7 +3,11 @@
+ 
+ struct ServerDocumentPickerView: View {
+ 
+-    @State private var model = ServerDocumentPickerViewModel()
++    @State private var model: ServerDocumentPickerViewModel
++
++    init(originalEditorCaller: OriginalEditorAuthCaller? = nil) {
++        _model = State(initialValue: ServerDocumentPickerViewModel(originalEditorCaller: originalEditorCaller))
++    }
+     
+     var body: some View {
+         DocumentPicker(contentTypes: [.yaml]) { url in
+--- a/Anytype/Sources/PresentationLayer/Modules/ServerDocumentPicker/ServerDocumentPickerViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/Modules/ServerDocumentPicker/ServerDocumentPickerViewModel.swift
+@@ -10,16 +10,28 @@
+     @Injected(\.serverConfigurationStorage)
+     private var storage: any ServerConfigurationStorageProtocol
+ 
++    @ObservationIgnored
++    private let originalEditorCaller: OriginalEditorAuthCaller?
++
++    init(originalEditorCaller: OriginalEditorAuthCaller? = nil) {
++        self.originalEditorCaller = originalEditorCaller
++    }
++
+     // MARK: - State
+ 
+     var toast: ToastBarData?
+     
+     func onSelectFile(url: URL) {
+         do {
+-            try storage.addConfiguration(filePath: url, setupAsCurrent: true)
+-            AnytypeAnalytics.instance().logUploadNetworkConfiguration()
+-            AnytypeAnalytics.instance().logSelectNetwork(type: .selfHost, route: .onboarding)
++            // The original storage operation is synchronous. Keep its real
++            // scoped file-copy/configuration/publisher effects within this lease.
++            try OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
++                try storage.addConfiguration(filePath: url, setupAsCurrent: true)
++                AnytypeAnalytics.instance().logUploadNetworkConfiguration()
++                AnytypeAnalytics.instance().logSelectNetwork(type: .selfHost, route: .onboarding)
++            }
+         } catch {
++            guard originalEditorCaller?.isCurrent ?? true else { return }
+             toast = ToastBarData(Loc.error, type: .failure)
+         }
+     }

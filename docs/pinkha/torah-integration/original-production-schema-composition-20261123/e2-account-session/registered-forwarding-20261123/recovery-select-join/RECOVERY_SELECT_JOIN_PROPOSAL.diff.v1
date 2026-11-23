@@ -1,0 +1,97 @@
+--- before/Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginViewModel.swift
++++ after/Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginViewModel.swift
+@@ -53,6 +53,10 @@
+     private let accountShowReadiness: OriginalApplicationConsumerDemand?
+     @ObservationIgnored
+     private var accountShowRetirement: EditorDocumentWriteLifetime.Observation?
++    @ObservationIgnored
++    private var originalAccountRecovery: OriginalLoginAccountRecovery?
++    @ObservationIgnored
++    private var accountShowRecovery: OriginalLoginAccountRecovery?
+ 
+     private var originalAuthService: any AuthServiceProtocol {
+         if let originalEditorCaller { return originalEditorCaller }
+@@ -308,7 +312,13 @@
+             for await accountId in OriginalDemandObservingPublisher(
+                 upstream: publisher, readiness: readiness
+             ).values {
+-                try? caller.withUIAction { self.accountId = accountId }
++                try? caller.withUIAction {
++                    guard let recovery = originalAccountRecovery, recovery.caller === caller else { return }
++                    // Record the exact operation before the existing SwiftUI task
++                    // is scheduled. This consumer never waits for recovery.
++                    accountShowRecovery = recovery
++                    self.accountId = accountId
++                }
+             }
+         } onCancel: {
+             readiness.end()
+@@ -318,7 +328,22 @@
+     private func accountRecover() async {
+         do {
+             if let caller = originalEditorCaller {
+-                try await recoverWithOriginalConsumer(caller)
++                let recovery = OriginalLoginAccountRecovery(caller: caller) { [self] in
++                    try await recoverWithOriginalConsumer(caller)
++                }
++                // MainActor construction/assignment is synchronous; the task
++                // cannot issue the original RPC before this owner is installed.
++                originalAccountRecovery = recovery
++                let task = recovery.task
++                try await withTaskCancellationHandler {
++                    try await task.value
++                    try caller.validateCurrent()
++                    guard originalAccountRecovery === recovery else {
++                        throw EditorDocumentWriteError.rejected(.retired)
++                    }
++                } onCancel: {
++                    task.cancel()
++                }
+             } else {
+                 try await authService.accountRecover()
+             }
+@@ -366,6 +391,22 @@
+     func selectAccount() async {
+         do {
+             try await OriginalEditorAuthCaller.withUIOperation(originalEditorCaller) {
++                if let caller = originalEditorCaller {
++                    guard let recovery = accountShowRecovery,
++                          recovery === originalAccountRecovery,
++                          recovery.caller === caller, let observedID = accountId else {
++                        throw EditorDocumentWriteError.rejected(.retired)
++                    }
++                    // This is the separately scheduled original SwiftUI select
++                    // task, not the native callback or AccountShow consumer.
++                    try await recovery.task.value
++                    try caller.validateCurrent()
++                    guard recovery === originalAccountRecovery,
++                          recovery === accountShowRecovery,
++                          accountId?.utf8.elementsEqual(observedID.utf8) == true else {
++                        throw EditorDocumentWriteError.rejected(.retired)
++                    }
++                }
+                 await selectAccountInOriginalFlow()
+             }
+         } catch {
+@@ -429,3 +470,21 @@
+         loadingInProgress = false
+     }
+ }
++
++
++/// Identity of one already-owned original recovery call. This retains its actual
++/// completion; it is not an account token, new auth queue or event buffer.
++@MainActor
++private final class OriginalLoginAccountRecovery {
++    let caller: OriginalEditorAuthCaller
++    let task: Task<Void, Error>
++
++    init(caller: OriginalEditorAuthCaller, operation: @escaping @MainActor () async throws -> Void) {
++        self.caller = caller
++        task = Task { @MainActor in
++            try caller.validateCurrent()
++            try await operation()
++            try caller.validateCurrent()
++        }
++    }
++}

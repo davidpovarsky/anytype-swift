@@ -1,0 +1,122 @@
+--- before/Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginViewModel.swift
++++ after/Anytype/Sources/PresentationLayer/Auth/Login/LoginView/LoginViewModel.swift
+@@ -95,7 +95,7 @@
+         try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
+             AnytypeAnalytics.instance().logLoginScreenShow()
+             canRestoreFromKeychain = (try? seedService.obtainSeed()).isNotNil
+-        
++
+         }
+     }
+     
+@@ -103,7 +103,7 @@
+         try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
+             AnytypeAnalytics.instance().logClickLogin(button: .phrase)
+             walletRecoveryTaskId = UUID().uuidString
+-        
++
+         }
+     }
+     
+@@ -167,7 +167,7 @@
+     func openPublicDebugMenuTap() {
+         try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
+             output?.onOpenPublicDebugMenuSelected()
+-        
++
+         }
+     }
+     
+@@ -197,14 +197,14 @@
+             }
+             accountId = nil
+             logoutAction()
+-        
++
+         }
+     }
+     
+     func logoutAction() {
+         try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
+             logoutTaskId = UUID().uuidString
+-        
++
+         }
+     }
+     
+--- before/Anytype/Sources/PresentationLayer/Flows/ServerConfiguration/ServerConfigurationCoordinatorViewModel.swift
++++ after/Anytype/Sources/PresentationLayer/Flows/ServerConfiguration/ServerConfigurationCoordinatorViewModel.swift
+@@ -18,7 +18,7 @@
+     func onAddServerSelected() {
+         try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
+             showDocumentPicker.toggle()
+-        
++
+         }
+     }
+ }
+--- before/Anytype/Sources/PresentationLayer/Migration/MigrationViewModel.swift
++++ after/Anytype/Sources/PresentationLayer/Migration/MigrationViewModel.swift
+@@ -80,21 +80,21 @@
+             clearProcessData()
+             state = .progress
+             startFlowId = UUID().uuidString
+-        
++
+         }
+     }
+     
+     func readMore() {
+         try? OriginalEditorAuthCaller.withUIAction(data.originalEditorCaller) {
+             output?.onReadMoreTap()
+-        
++
+         }
+     }
+     
+     func onDebugTap() {
+         try? OriginalEditorAuthCaller.withUIAction(data.originalEditorCaller) {
+             output?.onDebugTap()
+-        
++
+         }
+     }
+     
+@@ -181,7 +181,7 @@
+                     updateProgress(with: process)
+                 }
+             }
+-        
++
+         }
+     }
+     
+--- before/Anytype/Sources/PresentationLayer/Modules/ServerConfiguration/ServerConfigurationViewModel.swift
++++ after/Anytype/Sources/PresentationLayer/Modules/ServerConfiguration/ServerConfigurationViewModel.swift
+@@ -39,7 +39,7 @@
+     func onTapAddServer() {
+         try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
+             output?.onAddServerSelected()
+-        
++
+         }
+     }
+     
+@@ -48,7 +48,7 @@
+             storage.setupCurrentConfiguration(config: config)
+             updateRows()
+             AnytypeAnalytics.instance().logSelectNetwork(type: config.analyticsType, route: .onboarding)
+-        
++
+         }
+     }
+     
+@@ -79,7 +79,7 @@
+             } else {
+                 setup(config: config)
+             }
+-        
++
+         }
+     }
+ }

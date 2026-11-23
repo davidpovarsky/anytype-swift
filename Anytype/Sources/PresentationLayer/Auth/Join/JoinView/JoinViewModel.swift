@@ -34,25 +34,40 @@ final class JoinViewModel: JoinBaseOutput, JoinFlowStepOutput {
     }
     
     func onBackButtonTap() {
-        onBack()
+        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
+            onBack()
+        }
     }
     
+    func setOwnedKeyboardDismiss(_ dismiss: KeyboardDismiss) {
+        guard let caller = state.originalEditorCaller else { return }
+        try? caller.withUIAction { state.originalKeyboardDismiss = dismiss }
+    }
+
     // MARK: - JoinBaseOutput
     
     func onNext() {
-        onNext(with: step)
+        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
+            onNext(with: step)
+        }
     }
     
     func onBack() {
-        onBack(with: step)
+        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
+            onBack(with: step)
+        }
     }
     
     func onError(_ error: some Error) {
-        errorText = error.localizedDescription
+        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
+            errorText = error.localizedDescription
+        }
     }
     
     func disableBackAction(_ disable: Bool) {
-        backButtonDisabled = disable
+        try? OriginalEditorAuthCaller.withUIAction(state.originalEditorCaller) {
+            backButtonDisabled = disable
+        }
     }
     
     func keyPhraseMoreInfo() -> AnyView? {
@@ -88,7 +103,8 @@ final class JoinViewModel: JoinBaseOutput, JoinFlowStepOutput {
             return
         }
         
-        UIApplication.shared.hideKeyboard()
+        if state.originalEditorCaller != nil { state.originalKeyboardDismiss?() }
+        else { UIApplication.shared.hideKeyboard() }
         forward = false
         
         withAnimation {
@@ -97,6 +113,7 @@ final class JoinViewModel: JoinBaseOutput, JoinFlowStepOutput {
     }
     
     private func finishFlow() {
+        guard state.originalEditorCaller?.isCurrent ?? true else { return }
         applicationStateService.state = .home
         sendSelectedOptions()
         AnytypeAnalytics.instance().logAccountOpen(

@@ -1,0 +1,117 @@
+import Foundation
+import UIKit
+import AnytypeCore
+import Services
+import ZIPFoundation
+
+
+@MainActor
+final class PublicDebugMenuViewModel: ObservableObject {
+    
+    @Published var shareUrlFile: URL?
+    @Published var showZipPicker = false
+    @Published var secureAlertData: SecureAlertData?
+    
+    @Published var debugRunProfilerData = DebugRunProfilerState.empty
+    
+    @Injected(\.debugService)
+    private var debugService: any DebugServiceProtocol
+    @Injected(\.localAuthService)
+    private var localAuthService: any LocalAuthServiceProtocol
+    @Injected(\.localRepoService)
+    private var localRepoService: any LocalRepoServiceProtocol
+    @Injected(\.authService)
+    private var authService: any AuthServiceProtocol
+    @Injected(\.applicationStateService)
+    private var applicationStateService: any ApplicationStateServiceProtocol
+    
+    var shouldRunDebugProfilerOnNextStartup: Bool {
+        get {
+            debugService.shouldRunDebugProfilerOnNextStartup
+        } set {
+            debugService.shouldRunDebugProfilerOnNextStartup = newValue
+        }
+    }
+    
+    init() {
+        debugService.debugRunProfilerData.receiveOnMain().assign(to: &$debugRunProfilerData)
+    }
+    
+    func getLocalStoreData() async throws {
+        try await localAuthWithContinuation(reason: "Share local store") { [weak self] in
+            guard let self else { return }
+            let path = try await debugService.exportLocalStore()
+            let zipFile = FileManager.default.createTempDirectory().appendingPathComponent("localstore.zip")
+            try FileManager.default.zipItem(at: URL(fileURLWithPath: path), to: zipFile)
+            shareUrlFile = zipFile
+        }        
+    }
+    
+    func getGoroutinesData() async throws {
+        shareUrlFile = try await debugService.exportStackGoroutinesZip()
+    }
+    
+    func zipWorkingDirectory() {
+        Task {
+            try await localAuthWithContinuation(reason: "Share working directory") { [weak self] in
+                guard let self else { return }
+                let zipFile = FileManager.default.createTempDirectory().appendingPathComponent("workingDirectory.zip")
+                try FileManager.default.zipItem(at: localRepoService.middlewareRepoURL, to: zipFile)
+                shareUrlFile = zipFile
+            }
+        }
+    }
+    
+    func unzipWorkingDirectory() {
+        showZipPicker.toggle()
+    }
+    
+    func onSelectUnzipFile(url: URL) {
+        Task {
+            let middlewareTempPath = FileManager.default.createTempDirectory()
+            try FileManager.default.unzipItem(at: url, to: middlewareTempPath)
+            try await authService.logout(removeData: false)
+            applicationStateService.state = .initial
+            let middlewareRepoURL = localRepoService.middlewareRepoURL
+            try? FileManager.default.removeItem(at: middlewareRepoURL)
+            try FileManager.default.moveItem(
+                at: middlewareTempPath.appendingPathComponent(middlewareRepoURL.lastPathComponent),
+                to: middlewareRepoURL
+            )
+        }
+    }
+    
+    func onDebugRunProfiler() {
+        debugService.startDebugRunProfiler()
+    }
+    
+    func shareUrlContent(url: URL) {
+        shareUrlFile = url
+    }
+    
+    func debugStat() async throws {
+        shareUrlFile = try await debugService.debugStat()
+    }
+
+    func generateReport(full: Bool) async throws {
+        try await localAuthWithContinuation(reason: "Generate debug report") { [weak self] in
+            guard let self else { return }
+            let dir = FileManager.default.createTempDirectory().path
+            let result = try await debugService.exportReport(dir: dir, full: full)
+            shareUrlFile = URL(fileURLWithPath: result.path)
+        }
+    }
+    
+    private func localAuthWithContinuation(reason: String, continuation: @escaping () async throws -> Void) async throws {
+        do {
+            try await localAuthService.auth(reason: reason)
+            try await continuation()
+        } catch LocalAuthServiceError.passcodeNotSet {
+            secureAlertData = SecureAlertData(completion: { [weak self] proceed in
+                guard proceed else { return }
+                try await continuation()
+                self?.secureAlertData = nil
+            })
+        }
+    }
+}

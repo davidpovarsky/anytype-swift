@@ -64,7 +64,7 @@ struct ApplicationCoordinatorView: View {
         case .initial:
             if let embeddedInitial { embeddedInitial } else { InitialCoordinatorView() }
         case .auth:
-            AuthCoordinatorView()
+            AuthCoordinatorView(originalEditorCaller: model.originalEditorCaller)
         case .launch:
             LaunchView()
         case .home:

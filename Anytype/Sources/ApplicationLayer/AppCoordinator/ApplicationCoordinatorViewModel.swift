@@ -8,6 +8,20 @@ import DeepLinks
 @Observable
 final class ApplicationCoordinatorViewModel {
 
+    @ObservationIgnored
+    let originalEditorCaller: OriginalEditorAuthCaller?
+
+    init(originalEditorCaller: OriginalEditorAuthCaller? = nil) {
+        self.originalEditorCaller = originalEditorCaller
+    }
+
+    private var originalAuthService: any AuthServiceProtocol {
+        if let originalEditorCaller { return originalEditorCaller }
+        return authService
+    }
+
+    private var acceptsOriginalUI: Bool { originalEditorCaller?.isCurrent ?? true }
+
     @Injected(\.authService) @ObservationIgnored
     private var authService: any AuthServiceProtocol
     @Injected(\.accountEventHandler) @ObservationIgnored
@@ -40,17 +54,23 @@ final class ApplicationCoordinatorViewModel {
     var selectAccountTaskId: String?
 
     func deleteAccount() -> AnyView? {
-        if case let .pendingDeletion(deadline) = accountManager.account.status {
-            return DeletedAccountView(deadline: deadline).eraseToAnyView()
-        } else {
-            applicationStateService.state = .initial
-            return nil
+        var result: AnyView?
+        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
+            if case let .pendingDeletion(deadline) = accountManager.account.status {
+                result = DeletedAccountView(
+                    deadline: deadline, originalEditorCaller: originalEditorCaller
+                ).eraseToAnyView()
+            } else {
+                applicationStateService.state = .initial
+            }
         }
-
+        return result
     }
     
     func setDismissAllPresented(dismissAllPresented: DismissAllPresented) {
-        self.dismissAllPresented = dismissAllPresented
+        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
+            self.dismissAllPresented = dismissAllPresented
+        }
     }
     
     func startAppStateHandler() async {
@@ -117,42 +137,61 @@ final class ApplicationCoordinatorViewModel {
     // MARK: - Subscription handler
 
     private func handleAccountStatus(_ status: AccountStatus) async {
-        switch status {
-        case .active:
-            break
-        case .pendingDeletion:
-            applicationStateService.state = .delete
-        case .deleted:
-            if basicUserInfoStorage.usersId.isNotEmpty {
-                try? await authService.logout(removeData: true)
-                applicationStateService.state = .auth
+        do {
+            try await OriginalEditorAuthCaller.withUIOperation(originalEditorCaller) {
+                switch status {
+                case .active:
+                    break
+                case .pendingDeletion:
+                    applicationStateService.state = .delete
+                case .deleted:
+                    if basicUserInfoStorage.usersId.isNotEmpty {
+                        if let originalEditorCaller {
+                            try await originalEditorCaller.logout(removeData: true)
+                            try originalEditorCaller.validateCurrent()
+                        } else {
+                            try? await authService.logout(removeData: true)
+                        }
+                        applicationStateService.state = .auth
+                    }
+                }
             }
+        } catch {
+            // A retired caller or failed original Stop cannot advance this UI.
         }
     }
     
     private func handleApplicationState(_ applicationState: ApplicationState) async {
-        await dismissAllPresented?(animated: false)
-        withAnimation(self.applicationState == .launch ? .default : .none) {
-            self.applicationState = applicationState
-        }
-        
-        switch applicationState {
-        case .initial:
-            break
-        case .launch:
-            await loginProcess()
-        case .home:
-            break
-        case .auth:
-            break
-        case .delete:
-            break
+        do {
+            try await OriginalEditorAuthCaller.withUIOperation(originalEditorCaller) {
+                await dismissAllPresented?(animated: false)
+                try originalEditorCaller?.validateCurrent()
+                withAnimation(self.applicationState == .launch ? .default : .none) {
+                    self.applicationState = applicationState
+                }
+
+                switch applicationState {
+                case .initial:
+                    break
+                case .launch:
+                    await loginProcess()
+                case .home:
+                    break
+                case .auth:
+                    break
+                case .delete:
+                    break
+                }
+            }
+        } catch {
+            // The original process owner retains closure and error reporting.
         }
     }
     
     // MARK: - Process
 
     private func loginProcess() async {
+        guard acceptsOriginalUI else { return }
         observeUI27Startup("login-entry")
         let userId = basicUserInfoStorage.usersId
         guard userId.isNotEmpty else {
@@ -166,12 +205,14 @@ final class ApplicationCoordinatorViewModel {
             let seed = try seedService.obtainSeed()
             observeUI27Startup("seed-read-completed")
             observeUI27Startup("wallet-recovery-begin")
-            try await authService.walletRecovery(mnemonic: seed)
+            try await originalAuthService.walletRecovery(mnemonic: seed)
+            try originalEditorCaller?.validateCurrent()
             observeUI27Startup("wallet-recovery-completed")
             observeUI27Startup("select-call-begin")
             await selectAccount(id: userId)
             observeUI27Startup("select-call-returned")
         } catch {
+            guard acceptsOriginalUI else { return }
             observeUI27Startup("login-error", error: error)
             applicationStateService.state = .auth
             observeUI27Startup("login-auth-assigned")
@@ -180,8 +221,19 @@ final class ApplicationCoordinatorViewModel {
     
     func selectAccount(id: String) async {
         do {
+            try await OriginalEditorAuthCaller.withUIOperation(originalEditorCaller) {
+                await selectAccountInOriginalFlow(id: id)
+            }
+        } catch {
+            // Retired presentation tasks cannot begin a later original startup.
+        }
+    }
+
+    private func selectAccountInOriginalFlow(id: String) async {
+        do {
             observeUI27Startup("select-auth-begin")
-            let account = try await authService.selectAccount(id: id, preferredSpaceId: preferredSpaceId())
+            let account = try await originalAuthService.selectAccount(id: id, preferredSpaceId: preferredSpaceId())
+            try originalEditorCaller?.validateCurrent()
             observeUI27Startup("select-auth-returned")
             
             switch account.status {
@@ -196,19 +248,25 @@ final class ApplicationCoordinatorViewModel {
             
             observeUI27Startup("notification-registration-begin")
             await pushNotificationsPermissionService.registerForRemoteNotificationsIfNeeded()
+            try originalEditorCaller?.validateCurrent()
             observeUI27Startup("notification-registration-returned")
         } catch is CancellationError {
             observeUI27Startup("select-cancellation")
             // Ignore cancellations
         } catch SelectAccountError.accountStoreNotMigrated {
+            guard acceptsOriginalUI else { return }
             observeUI27Startup("select-store-not-migrated")
             migrationData = MigrationModuleData(
                 id: id,
-                onFinish: { [weak self] in
-                    self?.selectAccountTaskId = id
-                }
+                onFinish: { [weak self, caller = originalEditorCaller] in
+                    try? OriginalEditorAuthCaller.withUIAction(caller) {
+                        self?.selectAccountTaskId = id
+                    }
+                },
+                originalEditorCaller: originalEditorCaller
             )
         } catch {
+            guard acceptsOriginalUI else { return }
             observeUI27Startup("select-error", error: error)
             applicationStateService.state = .auth
             observeUI27Startup("select-auth-assigned")
@@ -232,7 +290,9 @@ final class ApplicationCoordinatorViewModel {
     }
 
     private func handleFileLimitReachedError() {
-        toastBarData = ToastBarData(Loc.FileStorage.limitError, type: .neutral)
+        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
+            toastBarData = ToastBarData(Loc.FileStorage.limitError, type: .neutral)
+        }
     }
 }
 
@@ -334,7 +394,7 @@ final class OriginalApplicationConsumerDemand: @unchecked Sendable {
 
 /// An observation-only forwarder around the actual publisher. It adds no
 /// buffering, scheduling, values, replay or demand.
-private struct OriginalDemandObservingPublisher<Upstream: Publisher>: Publisher {
+struct OriginalDemandObservingPublisher<Upstream: Publisher>: Publisher {
     typealias Output = Upstream.Output
     typealias Failure = Upstream.Failure
 

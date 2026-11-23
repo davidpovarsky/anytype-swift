@@ -10,6 +10,7 @@ final class ServerConfigurationViewModel: ObservableObject {
     @Injected(\.serverConfigurationStorage)
     private var storage: any ServerConfigurationStorageProtocol
     private weak var output: (any ServerConfigurationModuleOutput)?
+    private let originalEditorCaller: OriginalEditorAuthCaller?
     
     // MARK: - State
     
@@ -19,23 +20,36 @@ final class ServerConfigurationViewModel: ObservableObject {
     
     private var subscriptions = [AnyCancellable]()
     
-    init(output: (any ServerConfigurationModuleOutput)?) {
+    init(output: (any ServerConfigurationModuleOutput)?, originalEditorCaller: OriginalEditorAuthCaller? = nil) {
         self.output = output
-        storage.installedConfigurationsPublisher.receiveOnMain().sink { [weak self] _ in
-            withAnimation {
-                self?.updateRows()
+        self.originalEditorCaller = originalEditorCaller
+        storage.installedConfigurationsPublisher.receiveOnMain().sink { [weak self, originalEditorCaller] _ in
+            if let originalEditorCaller {
+                try? originalEditorCaller.withUIAction {
+                    withAnimation { self?.updateRows() }
+                }
+            } else {
+                withAnimation {
+                    self?.updateRows()
+                }
             }
         }.store(in: &subscriptions)
     }
     
     func onTapAddServer() {
-        output?.onAddServerSelected()
+        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
+            output?.onAddServerSelected()
+
+        }
     }
     
     func setup(config: NetworkServerConfig) {
-        storage.setupCurrentConfiguration(config: config)
-        updateRows()
-        AnytypeAnalytics.instance().logSelectNetwork(type: config.analyticsType, route: .onboarding)
+        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
+            storage.setupCurrentConfiguration(config: config)
+            updateRows()
+            AnytypeAnalytics.instance().logSelectNetwork(type: config.analyticsType, route: .onboarding)
+
+        }
     }
     
     // MARK: - Private
@@ -58,11 +72,14 @@ final class ServerConfigurationViewModel: ObservableObject {
     }
     
     private func handleOnTap(config: NetworkServerConfig) {
-        guard config != storage.currentConfiguration() else { return }
-        if config.isLocalOnly {
-            showLocalConfigurationAlert.toggle()
-        } else {
-            setup(config: config)
+        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
+            guard config != storage.currentConfiguration() else { return }
+            if config.isLocalOnly {
+                showLocalConfigurationAlert.toggle()
+            } else {
+                setup(config: config)
+            }
+
         }
     }
 }

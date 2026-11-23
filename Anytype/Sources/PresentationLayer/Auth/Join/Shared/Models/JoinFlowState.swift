@@ -1,6 +1,13 @@
 import SwiftUI
 
 final class JoinFlowState {
+    let originalEditorCaller: OriginalEditorAuthCaller?
+    var originalKeyboardDismiss: KeyboardDismiss?
+
+    init(originalEditorCaller: OriginalEditorAuthCaller? = nil) {
+        self.originalEditorCaller = originalEditorCaller
+    }
+
     var soul = ""
     var mnemonic = "" {
         didSet {

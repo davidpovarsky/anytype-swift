@@ -6,9 +6,11 @@ struct LoginView: View {
 
     @State private var model: LoginViewModel
     @Environment(\.dismiss) private var dismiss
+    private let originalEditorCaller: OriginalEditorAuthCaller?
 
-    init(output: (any LoginOutput)?) {
-        _model = State(initialValue: LoginViewModel(output: output))
+    init(output: (any LoginOutput)?, originalEditorCaller: OriginalEditorAuthCaller? = nil) {
+        self.originalEditorCaller = originalEditorCaller
+        _model = State(initialValue: LoginViewModel(output: output, originalEditorCaller: originalEditorCaller))
     }
     
     var body: some View {
@@ -17,7 +19,8 @@ struct LoginView: View {
             .fixTappableArea()
             .customBackSwipe {
                 guard !model.backButtonDisabled else { return }
-                dismiss()
+                if originalEditorCaller != nil { model.onbackButtonAction() }
+                else { dismiss() }
             }
         
             .onAppear {
@@ -26,7 +29,7 @@ struct LoginView: View {
             .task(item: model.walletRecoveryTaskId) { _ in
                 await model.walletRecovery()
             }
-            .task(item: model.accountId) { _ in
+            .task(item: originalEditorCaller == nil ? model.accountId : model.originalAccountSelectionTaskId) { _ in
                 await model.selectAccount()
             }
             .task(item: model.entropy) { _ in

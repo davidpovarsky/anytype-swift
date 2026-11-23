@@ -1,0 +1,43 @@
+{
+  "base": "257c49a5871c62611d88fab00a8124c7ff072166",
+  "scope": "Actual original service call-site correspondence; not execution or Lib symbol qualification.",
+  "native_rpc_allowlist": [
+    {
+      "rpc": "WalletConvert",
+      "original_source": "Modules/Services/Sources/Services/Auth/AuthMiddleService.swift",
+      "original_source_sha256": "7dde49656a11ca47935fac73eb20dba634bcfa57b5351dddb153f5b90a6406d4",
+      "actual_generated_call": "ClientCommands.walletConvert",
+      "source_unchanged": true
+    },
+    {
+      "rpc": "ObjectImportUseCase",
+      "original_source": "Anytype/Sources/ServiceLayer/Object/Usecase/UsecaseService.swift",
+      "original_source_sha256": "eb67d1afed0c82435320770f0641cf99844cb01a075a541f400a5032a6973f88",
+      "actual_generated_call": "ClientCommands.objectImportUseCase",
+      "source_unchanged": true
+    },
+    {
+      "rpc": "WorkspaceSetInfo",
+      "original_source": "Modules/Services/Sources/Services/Workspace/WorkspaceService.swift",
+      "original_source_sha256": "2096e1d7e84a4d123f3cd752f2dded4f40adcfbc00ba1003ffefbd95436751c1",
+      "actual_generated_call": "ClientCommands.workspaceSetInfo",
+      "source_unchanged": true
+    },
+    {
+      "rpc": "MembershipV2SubscribeToUpdates",
+      "original_source": "Modules/Services/Sources/Services/Membership/MembershipService.swift",
+      "original_source_sha256": "0a2b852eb337c96bf6be3070f8c5a36b1b0dd7a802465f16eb449f7ded527e19",
+      "actual_generated_call": "ClientCommands.membershipV2SubscribeToUpdates",
+      "source_unchanged": true
+    },
+    {
+      "rpc": "AccountMigrate",
+      "original_source": "Modules/Services/Sources/Services/Migration/AccountMigrationService.swift",
+      "original_source_sha256": "a217711aa7395c95df96656d4646fc2bd4a09ce027d28dbbfa5ad02dcd7c5bc8",
+      "actual_generated_call": "ClientCommands.accountMigrate",
+      "source_unchanged": true
+    }
+  ],
+  "account_migrate_completion": "Native owner separately traced exact d98420 application/account_store_migrate.go: AccountMigrate returns migration.wait(), which joins actual migrate return/lease release. No cancellation RPC drain inference is used by this source.",
+  "invocation_preserved": "Existing unrelated InvocationDispatchContext.binding is refused before named binding; completion leases are joined after local admissions and outer admission release."
+}

@@ -6,10 +6,19 @@ import SwiftUI
 final class ServerConfigurationCoordinatorViewModel: ServerConfigurationModuleOutput {
 
     var showDocumentPicker: Bool = false
+    @ObservationIgnored
+    private let originalEditorCaller: OriginalEditorAuthCaller?
+
+    init(originalEditorCaller: OriginalEditorAuthCaller? = nil) {
+        self.originalEditorCaller = originalEditorCaller
+    }
     
     // MARK: - ServerConfigurationModuleOutput
     
     func onAddServerSelected() {
-        showDocumentPicker.toggle()
+        try? OriginalEditorAuthCaller.withUIAction(originalEditorCaller) {
+            showDocumentPicker.toggle()
+
+        }
     }
 }

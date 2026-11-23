@@ -8,6 +8,11 @@ struct AuthCoordinatorView: View {
     
     @State private var model = AuthCoordinatorViewModel()
     @State private var showCircle: Bool = false
+    private let originalEditorCaller: OriginalEditorAuthCaller?
+
+    init(originalEditorCaller: OriginalEditorAuthCaller? = nil) {
+        self.originalEditorCaller = originalEditorCaller
+    }
     
     var body: some View {
         NavigationStack {
@@ -17,20 +22,24 @@ struct AuthCoordinatorView: View {
     }
     
     private var content: some View {
-        PrimaryAuthView(output: model)
+        PrimaryAuthView(output: model, originalEditorCaller: originalEditorCaller)
             .onAppear {
                 withAnimation(.linear(duration: Constants.animationDuration)) {
                     showCircle = true
                 }
             }
             .sheet(isPresented: $model.showSettings) {
-                ServerConfigurationCoordinatorView()
+                ServerConfigurationCoordinatorView(originalEditorCaller: originalEditorCaller)
             }
-            .sheet(isPresented: $model.showDebugMenu) {
-                DebugMenuView()
+            .sheet(isPresented: originalEditorCaller == nil ? $model.showDebugMenu : .constant(false)) {
+                // Whole-app debug administration is outside embedded account bootstrap.
+                // Keep the complete original standalone destination.
+                if originalEditorCaller == nil {
+                    DebugMenuView()
+                }
             }
             .navigationDestination(isPresented: $model.showLogin) {
-                LoginCoordinatorView()
+                LoginCoordinatorView(originalEditorCaller: originalEditorCaller)
                     .onAppear {
                         withAnimation(.linear(duration: Constants.animationDuration)) {
                             showCircle = false

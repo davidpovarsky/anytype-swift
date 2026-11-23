@@ -1,0 +1,122 @@
+import SwiftUI
+import AnytypeCore
+import AudioToolbox
+
+struct PrimaryAuthView: View {
+
+    @State private var model: PrimaryAuthViewModel
+    @Environment(\.authCircleCenterVerticalOffset) private var circleOffset
+
+    init(output: (any PrimaryAuthOutput)?) {
+        _model = State(initialValue: PrimaryAuthViewModel(output: output))
+    }
+
+    var body: some View {
+        content
+            .onAppear {
+                model.onAppear()
+            }
+            .task {
+                await model.startAppActionSubscription()
+            }
+            .task(item: model.createAccountTaskId) { _ in
+                await model.createAccount()
+            }
+            .ifLet(model.errorText) { view, errorText in
+                view.alertView(isShowing: $model.showError, errorText: errorText, onButtonTap: {})
+            }
+    }
+    
+    private var content: some View {
+        VStack(alignment: .center, spacing: 0) {
+            header
+            Group {
+                Spacer()
+                greetings
+                Spacer()
+                buttons
+                Spacer.fixedHeight(24)
+                privacyPolicy
+                Spacer.fixedHeight(12)
+            }
+            .padding(.horizontal, 20)
+        }
+        .fitIPadToReadableContentGuide()
+    }
+
+    private var greetings: some View {
+        Group {
+            (
+                Text(Loc.Auth.Primary.Greeting.pt1)
+                    .foregroundStyle(Color.Text.primary)
+                    .anytypeFontStyle(.interTitle)
+                +
+                Text("\n")
+                    .anytypeFontStyle(.riccioneTitle)
+                +
+                Text(Loc.Auth.Primary.Greeting.pt2)
+                    .foregroundStyle(Color.Text.secondary)
+                    .anytypeFontStyle(.riccioneTitle)
+             )
+            .multilineTextAlignment(.center)
+        }
+        .onTapGesture(count: 10) {
+            AudioServicesPlaySystemSound(1109)
+            model.onDebugMenuTap()
+        }
+        .readFrame { frame in
+            circleOffset.wrappedValue = frame.minY + frame.height * 0.5
+        }
+    }
+    
+    private var header: some View {
+        NavigationHeader(navigationButtonType: .none) {
+            Image(asset: .logo)
+                .foregroundStyle(Color.Control.primary)
+        } rightContent: {
+            Button {
+                model.onSettingsButtonTap()
+            } label: {
+                Image(asset: .X24.spaceSettings)
+                    .foregroundStyle(Color.Control.secondary)
+            }
+            .frame(width: NavigationHeaderConstants.buttonSize, height: NavigationHeaderConstants.buttonSize)
+            .buttonStyleCircleGlassIOS26()
+            .disabled(model.inProgress)
+        }
+    }
+
+    private var buttons: some View {
+        VStack(spacing: 8) {
+            StandardButton(
+                Loc.Auth.Button.join,
+                inProgress: model.inProgress,
+                style: .primaryLarge,
+                action: {
+                    model.onJoinButtonTap()
+                }
+            )
+            
+            StandardButton(
+                Loc.Auth.logIn,
+                style: .secondaryLarge,
+                action: {
+                    model.onLoginButtonTap()
+                }
+            )
+            .disabled(model.inProgress)
+        }
+    }
+    
+    private var privacyPolicy: some View {
+        AnytypeText(
+            Loc.agreementDisclamer(AboutApp.termsLink, AboutApp.privacyPolicyLink),
+            style: .relation3Regular,
+            enableMarkdown: true
+        )
+        .foregroundStyle(Color.Text.secondary)
+        .multilineTextAlignment(.center)
+        .accentColor(.Text.secondary)
+        .disabled(model.inProgress)
+    }
+}

@@ -1,0 +1,28 @@
+--- accepted/Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift
++++ candidate/Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift
+@@ -110,6 +110,14 @@
+ 
+     func validateCurrent() throws { try state.validate() }
+     func retire() { state.retire() }
++
++    /// Read-only retirement observation for an actual original UI consumer.
++    /// It exposes neither the capture nor a new authority constructor.
++    func observeRetirement(
++        _ invalidated: @escaping @Sendable () -> Void
++    ) -> EditorDocumentWriteLifetime.Observation {
++        state.lifetime.observe(state.capture.token, invalidated: invalidated)
++    }
+ 
+     var isCurrent: Bool {
+         do { try validateCurrent(); return true }
+@@ -253,6 +261,10 @@
+                 try attempt.validate()
+                 for admission in admissions { admission.cancel() }
+                 attempt.finishOuter()
++                // Invocation resumes its Swift await before its native completion
++                // releases these exact leases. Join the real release as well.
++                await attempt.waitForDrain()
++                try attempt.validate()
+                 return value
+             } catch {
+                 attempt.retire()
