@@ -131,15 +131,28 @@ def profile(args):
         require(digest(archive) == value["go_archive_sha256"] and digest(go) == value["go_binary_sha256"],
                 "Unverified project Go archive or executable")
     return dict(value, profile=args.profile, alpine=Path("/etc/alpine-release").read_text().strip(),
-        compiler_target=compiler, go_executable_sha256=digest(go))
+        compiler_target=compiler, go_executable_sha256=digest(go),
+        cache_root=str(cache_root(args)), cache_realpath=str(cache_root(args).resolve()))
+
+def cache_root(args):
+    # Keep the chosen absolute spelling stable across retries. Resolving a
+    # symlink here would change Go module source filenames and invalidate the
+    # already qualified dependency cache despite identical physical files.
+    path = args.cache_root if args.cache_root is not None else args.run / "cache"
+    require(path.is_absolute() and path.is_dir(), "Existing absolute task cache required")
+    resolved = path.resolve()
+    require(not resolved.is_relative_to(CONTROL) and not resolved.is_relative_to(args.heart),
+            "Cache must be separate from source trees")
+    return path
 
 def environment(args, selected):
     work = args.run / "work"
+    cache = cache_root(args)
     return dict(os.environ, GOMAXPROCS="2", GOMEMLIMIT="3072MiB", CGO_ENABLED="1", GOTOOLCHAIN="local",
-        GOFLAGS="-mod=readonly", GOWORK=str(work / "go.work"), GOPATH=str(args.run / "cache/go-path"),
-        GOMODCACHE=str(args.run / "cache/go-mod"),
-        GOCACHE=str(args.run / "cache/go-build"), GOTMPDIR=str(args.run / "cache/tmp"),
-        TMPDIR=str(args.run / "cache/tmp"), CGO_LDFLAGS="-L" + str(args.heart / "deps/libs" / selected["tantivy_arch"]),
+        GOFLAGS="-mod=readonly", GOWORK=str(work / "go.work"), GOPATH=str(cache / "go-path"),
+        GOMODCACHE=str(cache / "go-mod"),
+        GOCACHE=str(cache / "go-build"), GOTMPDIR=str(cache / "tmp"),
+        TMPDIR=str(cache / "tmp"), CGO_LDFLAGS="-L" + str(args.heart / "deps/libs" / selected["tantivy_arch"]),
         GIT_OPTIONAL_LOCKS="0", PYTHONDONTWRITEBYTECODE="1")
 
 def run_command(argv, args, env, log, timeout):
@@ -221,6 +234,16 @@ def build(args, receipt):
     receipt.update(status="PASS_NATIVE_PAGE_CANDIDATE_COMPILE_ONLY", binary_sha256=digest(binary),
         runtime_version=version, actual_methods_executed=0)
 
+def named_execution(path, method):
+    rows = [json.loads(s) for s in path.read_text(encoding="utf-8").splitlines() if s]
+    require(all(row.get("Package") == PACKAGE for row in rows), "Unexpected test package")
+    named = [r for r in rows if r.get("Test") and r["Action"] in ("run", "pass", "fail", "skip")]
+    require(all(r["Test"] == method for r in named), "An unselected test executed")
+    actions = [r["Action"] for r in named]
+    require(actions.count("run") <= 1 and actions.count("pass") <= 1, "Repeated selected method")
+    return {"method": method, "named_actions": actions, "actual_methods_executed": actions.count("run"),
+        "actual_methods_passed": actions.count("pass"), "private_raw_log_sha256": digest(path)}
+
 def named_result(path, method):
     rows = [json.loads(s) for s in path.read_text(encoding="utf-8").splitlines() if s]
     require(all(row.get("Package") == PACKAGE for row in rows), "Unexpected test package")
@@ -273,7 +296,7 @@ def execute(args, receipt):
     env.update(PINKHA_SEMANTIC_PAGE_ROOT=str(root), PINKHA_SEMANTIC_PAGE_WORK=str(sequence),
         PINKHA_SEMANTIC_PAGE_OWNER_TOKEN=token, PINKHA_SEMANTIC_PAGE_SOURCE_SHA=built["candidate_sha256"], GOPROXY="off")
     receipt.update(status="RUNNING_NATIVE_PAGE_PHASES", binary_sha256=built["binary_sha256"],
-        candidate_sha256=built["candidate_sha256"], profile=selected, phases=[])
+        candidate_sha256=built["candidate_sha256"], profile=selected, phases=[], attempts=[], actual_methods_passed=0)
     reports = []
     for phase, method in PHASES:
         env["PINKHA_SEMANTIC_PAGE_PHASE"] = phase
@@ -282,6 +305,12 @@ def execute(args, receipt):
             "-test.v=test2json", "-test.run=^" + method + "$", "-test.timeout=240s", "-test.count=1"]
         log = sequence / (phase + ".jsonl")
         result = run_command(command, args, env, log, 300)
+        observed = named_execution(log, method)
+        receipt["attempts"].append(dict(observed, phase=phase, exit_code=result["exit_code"],
+            test2json_pid=result["pid"]))
+        receipt["actual_methods_executed"] += observed["actual_methods_executed"]
+        receipt["actual_methods_passed"] += observed["actual_methods_passed"]
+        save(args.run / "evidence/page-acceptance.json", receipt)
         require(result["exit_code"] == 0, "Selected native Page phase failed: " + phase)
         named = named_result(log, method)
         report = read(sequence / (phase + ".json"))
@@ -292,7 +321,6 @@ def execute(args, receipt):
             "Incomplete native phase report")
         require(source(args) == hashes and digest(binary) == built["binary_sha256"], "Source/binary changed during phase")
         receipt["phases"].append(dict(named, phase=phase, pid=report["pid"], phase_report_sha256=digest(sequence / (phase + ".json"))))
-        receipt["actual_methods_executed"] = len(receipt["phases"])
         reports.append(report)
         save(args.run / "evidence/page-acceptance.json", receipt)
     first, second = reports
@@ -303,7 +331,7 @@ def execute(args, receipt):
         require(first[field] == second[field], "Reopen identity or native stored payload differs")
     require(first["rpc_calls"]["PinkhaSemanticAnchorCapture"] == 4
         and second["rpc_calls"]["PinkhaSemanticAnchorCapture"] == 1, "Wrong selected native capture count")
-    receipt.update(status="PASS_NATIVE_PAGE_CAPTURE_AND_COLD_REOPEN", actual_methods_executed=2,
+    receipt.update(status="PASS_NATIVE_PAGE_CAPTURE_AND_COLD_REOPEN", actual_methods_executed=2, actual_methods_passed=2,
         distinct_native_pids=[first["pid"], second["pid"]], artifacts=export_safe(sequence, args.run / "evidence"),
         current_source_sha256=hashes, native_service_acceptance="PASS", native_page_apply="PASS",
         process_reopen="PASS", public_http="NOT_RUN", apple="NOT_RUN", mounted_editor="NOT_RUN")
@@ -315,6 +343,7 @@ def main():
     parser.add_argument("--run", type=Path, required=True)
     parser.add_argument("--expected-app-sha", required=True)
     parser.add_argument("--profile", choices=PROFILES, required=True)
+    parser.add_argument("--cache-root", type=Path, help="Stable absolute task cache; defaults to RUN/cache")
     args = parser.parse_args()
     os.umask(0o077)
     args.heart, args.run = args.heart.resolve(), args.run.resolve()

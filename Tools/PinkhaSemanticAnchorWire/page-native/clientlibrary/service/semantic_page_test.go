@@ -314,7 +314,8 @@ func semanticPagePhase(t *testing.T, phase string) {
 		createdBlock := &pb.RpcBlockCreateResponse{}
 		rpc.invoke(BlockCreate, &pb.RpcBlockCreateRequest{ContextId: value.Account.DocumentID,
 			TargetId: value.Account.DocumentID, Position: model.Block_Inner, Block: &model.Block{
-				Align: model.Block_AlignRight, BackgroundColor: "yellow",
+				Restrictions: &model.BlockRestrictions{},
+				Align:        model.Block_AlignRight, BackgroundColor: "yellow",
 				Fields: domain.NewDetails().SetString("semanticAnchorControlOpaque", "preserve-native-field").ToProto(),
 				Content: &model.BlockContentOfText{Text: &model.BlockContentText{Text: semanticPageText,
 					Style: model.BlockContentText_Paragraph, Marks: &model.BlockContentTextMarks{Marks: []*model.BlockContentTextMark{

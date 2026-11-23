@@ -1,0 +1,103 @@
+{
+  "Args": [
+    "-c",
+    "exec tail -f /dev/null"
+  ],
+  "HostConfig": {
+    "Memory": 6442450944,
+    "NanoCpus": 2000000000,
+    "NetworkMode": "bridge",
+    "PidsLimit": 512,
+    "PortBindings": {},
+    "Privileged": false
+  },
+  "Id": "6b94993f86c5b8826319739db72334ce20f54bb7d5fa2f12b78a23849abda4fd",
+  "Image": "sha256:f2f98726820d0342055351c6e9d36e705f5bfffb3dd53ff556325114b08afb6d",
+  "Mounts": [
+    {
+      "Destination": "/mnt/development/toolchains/go1.27.4/go",
+      "Mode": "",
+      "Propagation": "rprivate",
+      "RW": false,
+      "Source": "/mnt/development/toolchains/go1.27.4/go",
+      "Type": "bind"
+    },
+    {
+      "Destination": "/mnt/development/projects/git-mirrors/anytype-swift.git",
+      "Mode": "",
+      "Propagation": "rprivate",
+      "RW": false,
+      "Source": "/mnt/development/projects/git-mirrors/anytype-swift.git",
+      "Type": "bind"
+    },
+    {
+      "Destination": "/mnt/development/projects/git-mirrors/anytype-heart.git",
+      "Mode": "",
+      "Propagation": "rprivate",
+      "RW": false,
+      "Source": "/mnt/development/projects/git-mirrors/anytype-heart.git",
+      "Type": "bind"
+    },
+    {
+      "Destination": "/var/lib/postgresql/data",
+      "Driver": "local",
+      "Mode": "",
+      "Name": "d2152245a28070156746249955101a40ab9443be88f23cae99324ecd38f16232",
+      "Propagation": "",
+      "RW": true,
+      "Source": "/var/lib/docker/volumes/d2152245a28070156746249955101a40ab9443be88f23cae99324ecd38f16232/_data",
+      "Type": "volume"
+    },
+    {
+      "Destination": "/mnt/development/projects/worktrees/anytype-wave15-anchor-20261123",
+      "Mode": "",
+      "Propagation": "rprivate",
+      "RW": false,
+      "Source": "/mnt/development/projects/worktrees/anytype-wave15-anchor-20261123",
+      "Type": "bind"
+    },
+    {
+      "Destination": "/mnt/development/projects/worktrees/anytype-heart-semantic-page-20261123",
+      "Mode": "",
+      "Propagation": "rprivate",
+      "RW": true,
+      "Source": "/mnt/development/projects/worktrees/anytype-heart-semantic-page-20261123",
+      "Type": "bind"
+    },
+    {
+      "Destination": "/mnt/development/projects/evidence/semantic-page-20261123-arm64",
+      "Mode": "",
+      "Propagation": "rprivate",
+      "RW": true,
+      "Source": "/mnt/development/projects/evidence/semantic-page-20261123-arm64",
+      "Type": "bind"
+    }
+  ],
+  "Networks": {
+    "bridge": {
+      "Aliases": null,
+      "DNSNames": null,
+      "DriverOpts": null,
+      "EndpointID": "33bd4195145941bf82c566fdb4654c71712e2e227b0c64688d8689548fa0f39d",
+      "Gateway": "172.17.0.1",
+      "GlobalIPv6Address": "",
+      "GlobalIPv6PrefixLen": 0,
+      "GwPriority": 0,
+      "IPAMConfig": null,
+      "IPAddress": "172.17.0.4",
+      "IPPrefixLen": 16,
+      "IPv6Gateway": "",
+      "Links": null,
+      "MacAddress": "d6:80:b5:ef:b7:7c",
+      "NetworkID": "214e8dbaa562a21a6f0fa6849b9b08eb39d44886d4864525415b3209c11148c3"
+    }
+  },
+  "Path": "/bin/sh",
+  "State": {
+    "Pid": 1799830,
+    "Running": true,
+    "StartedAt": "2026-11-23T00:28:03.323530719Z",
+    "Status": "running"
+  },
+  "observed_at": "2026-11-23T01:30:54.068267+00:00"
+}

@@ -45,3 +45,9 @@ The Oracle continuation also sets GOPATH to the owned cache/go-path directory. G
 ## Project compiler continuation
 
 The Go 1.27.4 ARM64 attempt reached compilation and failed on the original Tantivy archive LTO section. Profile oracle-arm64-go1265 retains the same image, native source154, archive and module pins, while selecting the project-declared Go 1.26.5. Its official ARM64 archive is 63759990 bytes with SHA-256 fe4789e92b1f33358680864bbe8704289e7bb5fc207d80623c308935bd696d49; set PINKHA_PAGE_GO_ARCHIVE to that verified archive and put its extracted bin directory first in PATH. The controller verifies both archive and executable hashes. No global toolchain is replaced. All failed-attempt receipts remain preserved.
+
+## First Page execution and bounded continuation
+
+Attempt4 compiled and actually ran the capture method. It failed the strict complete-block assertion because unchanged native Base.Diff materializes absent Restrictions as a present empty message. Cold reopen did not run. The original failure, metadata and synthetic before/after protobuf are retained under docs/validation/20261123-semantic-page-native/attempt4-restrictions-presence-failure. The new fixture initializes explicit empty Restrictions exactly as the upstream native text fixtures do; all full-block, opaque-field, marks and durable-readback assertions remain unchanged. This fixture does not prove preservation of raw absent/present-empty message identity for arbitrary preexisting blocks.
+
+For a retry with the same immutable dependency graph, --cache-root accepts a stable absolute task-cache path. Its exact spelling and resolved path are recorded in the profile; use the same value for build and execute. This avoids recompiling unchanged dependencies merely because the attempt directory changes. No validation or dependency checksum is disabled. Native receipt accounting now records actual named run and pass events separately, including a failed phase.

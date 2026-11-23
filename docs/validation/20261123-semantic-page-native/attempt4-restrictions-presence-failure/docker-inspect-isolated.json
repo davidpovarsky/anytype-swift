@@ -1,0 +1,85 @@
+{
+  "Args": [
+    "-c",
+    "exec tail -f /dev/null"
+  ],
+  "HostConfig": {
+    "Memory": 6442450944,
+    "NanoCpus": 2000000000,
+    "NetworkMode": "bridge",
+    "PidsLimit": 512,
+    "PortBindings": {},
+    "Privileged": false
+  },
+  "Id": "6b94993f86c5b8826319739db72334ce20f54bb7d5fa2f12b78a23849abda4fd",
+  "Image": "sha256:f2f98726820d0342055351c6e9d36e705f5bfffb3dd53ff556325114b08afb6d",
+  "Mounts": [
+    {
+      "Destination": "/mnt/development/projects/evidence/semantic-page-20261123-arm64",
+      "Mode": "",
+      "Propagation": "rprivate",
+      "RW": true,
+      "Source": "/mnt/development/projects/evidence/semantic-page-20261123-arm64",
+      "Type": "bind"
+    },
+    {
+      "Destination": "/mnt/development/toolchains/go1.27.4/go",
+      "Mode": "",
+      "Propagation": "rprivate",
+      "RW": false,
+      "Source": "/mnt/development/toolchains/go1.27.4/go",
+      "Type": "bind"
+    },
+    {
+      "Destination": "/mnt/development/projects/git-mirrors/anytype-swift.git",
+      "Mode": "",
+      "Propagation": "rprivate",
+      "RW": false,
+      "Source": "/mnt/development/projects/git-mirrors/anytype-swift.git",
+      "Type": "bind"
+    },
+    {
+      "Destination": "/mnt/development/projects/git-mirrors/anytype-heart.git",
+      "Mode": "",
+      "Propagation": "rprivate",
+      "RW": false,
+      "Source": "/mnt/development/projects/git-mirrors/anytype-heart.git",
+      "Type": "bind"
+    },
+    {
+      "Destination": "/var/lib/postgresql/data",
+      "Driver": "local",
+      "Mode": "",
+      "Name": "d2152245a28070156746249955101a40ab9443be88f23cae99324ecd38f16232",
+      "Propagation": "",
+      "RW": true,
+      "Source": "/var/lib/docker/volumes/d2152245a28070156746249955101a40ab9443be88f23cae99324ecd38f16232/_data",
+      "Type": "volume"
+    },
+    {
+      "Destination": "/mnt/development/projects/worktrees/anytype-wave15-anchor-20261123",
+      "Mode": "",
+      "Propagation": "rprivate",
+      "RW": false,
+      "Source": "/mnt/development/projects/worktrees/anytype-wave15-anchor-20261123",
+      "Type": "bind"
+    },
+    {
+      "Destination": "/mnt/development/projects/worktrees/anytype-heart-semantic-page-20261123",
+      "Mode": "",
+      "Propagation": "rprivate",
+      "RW": true,
+      "Source": "/mnt/development/projects/worktrees/anytype-heart-semantic-page-20261123",
+      "Type": "bind"
+    }
+  ],
+  "Networks": {},
+  "Path": "/bin/sh",
+  "State": {
+    "Pid": 1799830,
+    "Running": true,
+    "StartedAt": "2026-11-23T00:28:03.323530719Z",
+    "Status": "running"
+  },
+  "observed_at": "2026-11-23T01:30:54.292518+00:00"
+}

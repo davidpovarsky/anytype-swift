@@ -1,0 +1,64 @@
+{
+  "actual_methods_passed": 0,
+  "actual_methods_run": 1,
+  "assertion": "normal Page Apply must preserve every non-mark native block field",
+  "assertion_source_line": 378,
+  "candidate_manifest_sha256": "2f76212f9fcd749aeb9e806b941e0fd0b54eba17e5cc842adb81c7eb3bae0f38",
+  "capture": "FAIL",
+  "cold_reopen": "NOT_RUN",
+  "observed_non_mark_difference": {
+    "after": "present empty message, zero bytes",
+    "before": "absent",
+    "block_field": 3,
+    "field_name": "Restrictions",
+    "other_block_fields_equal": true,
+    "text_content_except_marks_equal": true
+  },
+  "original_app_sha": "e122d5081cffe62735ca6d4c54eadfa0792434d5",
+  "original_candidate_sha256": "960069f3bf7e123581df7ae78c4bfde12ccf5fe15ad5ad7ded4e26595a7a2582",
+  "original_controller_count_note": "The preserved receipt incorrectly counted completed successful phases as actual_methods_executed=0. Original named Go events prove one run/fail, no reopen. No original receipt was rewritten.",
+  "original_private_log_sha256": "6ead16fba674188c6577037bc4d2714d4038e1b5ad7b7fea42a128f10139842d",
+  "product_tests_in_this_repair_step": 0,
+  "repair": {
+    "after_sha256": "29c215d53de4627a04510faa2574db3e6ff4bcffe5008b36e629181287f31f2f",
+    "before_sha256": "cee4a6eaf9c847914fb8af130aa89f0471032623d7e339f6ef95744594c265fa",
+    "change": "Only synthetic BlockCreate initializes an explicit empty Restrictions. The complete-block comparison remains unchanged.",
+    "path": "clientlibrary/service/semantic_page_test.go",
+    "unchanged_other_native_paths": 153
+  },
+  "safe_artifacts": {
+    "capture-after-object-show.pb": {
+      "bytes": 4538,
+      "sha256": "7d334f049681180568733e72cdd142998c81cd694130edd091ef13298b25df5e"
+    },
+    "capture-applied-request.json": {
+      "bytes": 536,
+      "sha256": "6c23f04f2a73cf52593e6739fb22ab3e11bfdbe43ea4012edfa6fb203b9f461c"
+    },
+    "capture-applied-response.json": {
+      "bytes": 1594,
+      "sha256": "43b28630941bcdf153c57d9c8ceabed08fe569c684c47dad0407c398e7c06495"
+    },
+    "capture-before-object-show.pb": {
+      "bytes": 4286,
+      "sha256": "4c618a765905f499713f7e260365b9193206d2a55db1e96ead583664df8d56a3"
+    }
+  },
+  "scope_limit": "A later PASS with explicit-empty Restrictions will not prove raw nil-presence preservation for arbitrary preexisting blocks. Meaningful restriction fields and every other non-mark field remain guarded.",
+  "status": "ORIGINAL_CAPTURE_FAIL_PRESERVED",
+  "upstream_behavior": {
+    "behavior": "Base.Diff materializes nil Restrictions as an empty message on both native models. No restriction field value changes.",
+    "lines": [
+      53,
+      58
+    ],
+    "path": "core/block/simple/base/base.go",
+    "sha256": "a840e66a5cb704bb3cfa591d6d70db984bd315ea13507ce875c5265710fa5d54"
+  },
+  "upstream_fixture": {
+    "behavior": "Upstream text fixtures initialize Restrictions with an explicit empty BlockRestrictions.",
+    "line": 20,
+    "path": "core/block/simple/text/text_test.go",
+    "sha256": "2b260418d02a57c9fae9d1ec2f257a73dbcea056a847be06ba0f9a401ae4a4a9"
+  }
+}
