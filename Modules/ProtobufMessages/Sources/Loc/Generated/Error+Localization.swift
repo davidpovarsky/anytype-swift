@@ -829,6 +829,64 @@ extension Anytype_Rpc.Account.Stop.Response.Error: LocalizedError {
     }
 }
 
+extension Anytype_Rpc.Annotation.Import.Cancel.Response.Error: LocalizedError {
+    public var errorDescription: String? {
+        let localizeError = localizeError()
+        if !localizeError.isEmpty {
+            return localizeError
+        }
+        return "Error: \(description_p) (\(code))"
+    }
+
+    private func localizeError() -> String {
+        switch code {
+            case .null:
+                return ""
+            case .badInput:
+                return LocHelper.tr(table: "LocalizableError", key: "Annotation.Import.Cancel.badInput")
+            case .runtimeUnavailable:
+                return LocHelper.tr(table: "LocalizableError", key: "Annotation.Import.Cancel.runtimeUnavailable")
+            case .unknownError:
+                return ""
+            case .UNRECOGNIZED:
+                return ""
+        }
+    }
+}
+
+extension Anytype_Rpc.Annotation.Import.Response.Error: LocalizedError {
+    public var errorDescription: String? {
+        let localizeError = localizeError()
+        if !localizeError.isEmpty {
+            return localizeError
+        }
+        return "Error: \(description_p) (\(code))"
+    }
+
+    private func localizeError() -> String {
+        switch code {
+            case .null:
+                return ""
+            case .unknownError:
+                return ""
+            case .badInput:
+                return LocHelper.tr(table: "LocalizableError", key: "Annotation.Import.badInput")
+            case .runtimeUnavailable:
+                return LocHelper.tr(table: "LocalizableError", key: "Annotation.Import.runtimeUnavailable")
+            case .canceled:
+                return LocHelper.tr(table: "LocalizableError", key: "Annotation.Import.canceled")
+            case .permissionDenied:
+                return LocHelper.tr(table: "LocalizableError", key: "Annotation.Import.permissionDenied")
+            case .attemptConflict:
+                return LocHelper.tr(table: "LocalizableError", key: "Annotation.Import.attemptConflict")
+            case .copyRefused:
+                return LocHelper.tr(table: "LocalizableError", key: "Annotation.Import.copyRefused")
+            case .UNRECOGNIZED:
+                return ""
+        }
+    }
+}
+
 extension Anytype_Rpc.Annotation.Schema.Register.Response.Error: LocalizedError {
     public var errorDescription: String? {
         let localizeError = localizeError()

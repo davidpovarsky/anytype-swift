@@ -141,6 +141,16 @@ extension Anytype_Rpc.Account.Stop.Response.Error: ResponseError {
     public var isNull: Bool { code == .null && description_p.isEmpty }
 }
 
+extension Anytype_Rpc.Annotation.Import.Cancel.Response: ResultWithError {}
+extension Anytype_Rpc.Annotation.Import.Cancel.Response.Error: ResponseError {
+    public var isNull: Bool { code == .null && description_p.isEmpty }
+}
+
+extension Anytype_Rpc.Annotation.Import.Response: ResultWithError {}
+extension Anytype_Rpc.Annotation.Import.Response.Error: ResponseError {
+    public var isNull: Bool { code == .null && description_p.isEmpty }
+}
+
 extension Anytype_Rpc.Annotation.Schema.Register.Response: ResultWithError {}
 extension Anytype_Rpc.Annotation.Schema.Register.Response.Error: ResponseError {
     public var isNull: Bool { code == .null && description_p.isEmpty }

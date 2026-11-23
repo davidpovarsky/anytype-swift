@@ -3474,4 +3474,24 @@ public struct ClientCommands {
         }
     }
 
+    public static func annotationImport(
+        _ request: Anytype_Rpc.Annotation.Import.Request = .init()
+    ) -> Invocation<Anytype_Rpc.Annotation.Import.Request, Anytype_Rpc.Annotation.Import.Response> {
+        return Invocation(messageName: "AnnotationImport", request: request) { request in
+            let requestData = try request.serializedData()
+            let responseData = Lib.ServiceAnnotationImport(requestData) ?? Data()
+            return try Anytype_Rpc.Annotation.Import.Response(serializedBytes: responseData)
+        }
+    }
+
+    public static func annotationImportCancel(
+        _ request: Anytype_Rpc.Annotation.Import.Cancel.Request = .init()
+    ) -> Invocation<Anytype_Rpc.Annotation.Import.Cancel.Request, Anytype_Rpc.Annotation.Import.Cancel.Response> {
+        return Invocation(messageName: "AnnotationImportCancel", request: request) { request in
+            let requestData = try request.serializedData()
+            let responseData = Lib.ServiceAnnotationImportCancel(requestData) ?? Data()
+            return try Anytype_Rpc.Annotation.Import.Cancel.Response(serializedBytes: responseData)
+        }
+    }
+
 }
