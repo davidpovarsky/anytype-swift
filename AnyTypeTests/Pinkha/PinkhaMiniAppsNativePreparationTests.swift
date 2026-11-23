@@ -16,7 +16,9 @@ struct PinkhaMiniAppsNativePreparationTests {
         let environment = ProcessInfo.processInfo.environment
         try #require(environment["PINKHA_SIMULATOR_UI_DISPOSABLE"] == "1")
         try #require(Container.shared.accountManager().account.id.isEmpty)
-        try #require(TargetsConstants.appGroup == "group.io.anytype.app.dev")
+        let expectedGroup = try #require(environment["PINKHA_MINIAPPS_NATIVE_GROUP"])
+        try #require(TargetsConstants.appGroup == expectedGroup)
+        try #require(Bundle.main.bundleIdentifier == environment["PINKHA_MINIAPPS_SOURCE_BUNDLE"])
         let originalGroup = try #require(FileManager.default.containerURL(
             forSecurityApplicationGroupIdentifier: TargetsConstants.appGroup))
         try #require(try originalGroup.resourceValues(forKeys: [.isDirectoryKey]).isDirectory == true)

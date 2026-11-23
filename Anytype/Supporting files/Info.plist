@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>PinkhaNativeAppGroup</key>
+	<string>$(PINKHA_NATIVE_APP_GROUP)</string>
 	<key>AmplitudeApiKey</key>
 	<string></string>
 	<key>CFBundleDevelopmentRegion</key>
@@ -28,6 +30,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>$(BUILD_APP_URL_SCHEME)</string>
+				<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 			</array>
 		</dict>
 		<dict>

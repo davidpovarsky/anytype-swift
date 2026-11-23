@@ -93,7 +93,7 @@ final class PinkhaMiniAppsCoordinator {
     /// Uses the existing queued object route for cold starts and an exact mounted
     /// editor for warm returns. The bridge file remains pending until that editor saves.
     func routeCallback(_ url: URL) -> (handled: Bool, link: DeepLink?) {
-        guard url.scheme == PinkhaMiniAppsContext.callbacks.success?.scheme,
+        guard url.scheme?.lowercased() == PinkhaMiniAppsContext.callbacks.success?.scheme?.lowercased(),
               url.host == "miniapps", url.path == "/return" else { return (false, nil) }
         guard let id = MiniAppBridgeStore.requestID(from: url),
               let store = try? MiniAppBridgeStore(appGroupIdentifier: "group.com.itorah.shared"),

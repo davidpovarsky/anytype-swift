@@ -19,6 +19,7 @@ from build_native_ipa import prepare_source_cache, test_configuration
 import heart_runtime_profile
 from prepare_sdk import verify as verify_sdk
 from validate_wave1 import verify_runtime_copies
+from owner_signing import verify as verify_owner_signing
 
 PREPARE = "PinkhaMiniAppsNativePreparationTests/prepareMiniAppsDocument"
 VERIFY = "PinkhaMiniAppsNativePreparationTests/verifyReturnedNativeDocument"
@@ -68,6 +69,8 @@ def execute(args, receipt):
     app, evidence = args.app.resolve(), args.evidence.resolve()
     require(platform.system() == "Darwin" and platform.machine() == "arm64", "Actual Apple silicon/Xcode required")
     pin = json.loads((app / "Tools/MiniApps/producer.json").read_text())
+    owner = verify_owner_signing(app)
+    require(owner["configuration"] == "Debug-MiniAppsOwner", "Unexpected owner configuration")
     head = git(app, "rev-parse", "HEAD")
     require(head == os.environ["GITHUB_SHA"] and git(app, "branch", "--show-current") == pin["consumer_branch"],
             "Unreviewed MiniApps consumer source")
@@ -91,7 +94,8 @@ def execute(args, receipt):
     require(not derived.exists(), "This focused build requires fresh products")
     receipt.update(source_sha=head, run_id=os.environ["GITHUB_RUN_ID"], run_attempt=os.environ["GITHUB_RUN_ATTEMPT"],
                    companion=producer, heart=installation, native_binding=binding, device=udid,
-                   selected_methods=[PREPARE, UI_RETURN, UI_REPLAY, VERIFY], configuration="Debug-Anytype",
+                   selected_methods=[PREPARE, UI_RETURN, UI_REPLAY, VERIFY], configuration=owner["configuration"],
+                   owner_signing=owner,
                    release_accepted=False, physical_sharing="NOT_PROVEN_BY_SIMULATOR")
 
     def save(phase):
@@ -111,7 +115,7 @@ def execute(args, receipt):
     flags = ["OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED -D DEBUG", "ENABLE_TESTABILITY=YES",
              "ONLY_ACTIVE_ARCH=YES", "SWIFT_OPTIMIZATION_LEVEL=-Onone", "CODE_SIGN_IDENTITY=-",
              "CODE_SIGNING_ALLOWED=YES", "CODE_SIGNING_REQUIRED=YES", "PROVISIONING_PROFILE_SPECIFIER="]
-    common = ["-configuration", "Debug-Anytype", "-destination", "platform=iOS Simulator,id=" + udid,
+    common = ["-configuration", owner["configuration"], "-destination", "platform=iOS Simulator,id=" + udid,
               "-derivedDataPath", str(derived), "-parallel-testing-enabled", "NO"]
     command(["xcodebuild", "build-for-testing", "-project", "Anytype.xcodeproj", "-scheme", "Anytype",
              *common, "-only-testing:AnytypeTests/PinkhaMiniAppsNativePreparationTests", *flags], "build-native")
@@ -119,13 +123,16 @@ def execute(args, receipt):
     built, app_executable, bundle, test_executable = host.xctest_products(native_configuration)
     info = plistlib.loads((built / "Info.plist").read_bytes())
     source_bundle = info["CFBundleIdentifier"]
+    require(source_bundle == owner["bundle_ids"]["Anytype"], "Built app is not the verified owner family")
+    require(info.get("PinkhaNativeAppGroup") == owner["native_app_group"], "Built native storage group differs")
     schemes = [scheme for entry in info.get("CFBundleURLTypes", []) for scheme in entry.get("CFBundleURLSchemes", [])]
-    source_scheme = next(value for value in schemes if value != "anytype")
+    source_scheme = (source_bundle if source_bundle in schemes else
+                     next(value for value in schemes if value != "anytype")).lower()
     require("$(" not in source_scheme, "Callback scheme was not resolved")
     entitlement_bytes = subprocess.check_output(["codesign", "-d", "--entitlements", ":-", str(built)], stderr=subprocess.PIPE)
     entitlements = plistlib.loads(entitlement_bytes)
     require(set(entitlements["com.apple.security.application-groups"]) ==
-            {"group.io.anytype.app.dev", "group.com.itorah.shared"}, "Native app has different real group entitlements")
+            {owner["native_app_group"], owner["shared_app_group"]}, "Native app has different real group entitlements")
     write(evidence / "built-entitlements.json", entitlements)
     verify_runtime_copies(built, binding["native_marker"].encode(), evidence)
     receipt["source_bundle"] = source_bundle
@@ -142,7 +149,9 @@ def execute(args, receipt):
     command(["xcrun", "simctl", "install", udid, str(companion)], "install-companion", timeout=120)
     environment = dict(PINKHA_SIMULATOR_UI_DISPOSABLE="1", PINKHA_MINIAPPS_NATIVE_TESTING="1",
                        GITHUB_SHA=head, GITHUB_RUN_ID=os.environ["GITHUB_RUN_ID"],
-                       GITHUB_RUN_ATTEMPT=os.environ["GITHUB_RUN_ATTEMPT"])
+                       GITHUB_RUN_ATTEMPT=os.environ["GITHUB_RUN_ATTEMPT"],
+                       PINKHA_MINIAPPS_NATIVE_GROUP=owner["native_app_group"],
+                       PINKHA_MINIAPPS_SOURCE_BUNDLE=source_bundle)
 
     def test(configuration, target, method, name, additions=None):
         env = {**environment, **(additions or {})}

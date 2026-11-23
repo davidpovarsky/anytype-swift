@@ -130,7 +130,8 @@ struct PinkhaMiniAppsContext {
     static var callbacks: MiniAppCallbacks {
         let entries = Bundle.main.object(forInfoDictionaryKey: "CFBundleURLTypes") as? [[String: Any]]
         let schemes = entries?.flatMap { $0["CFBundleURLSchemes"] as? [String] ?? [] } ?? []
-        let scheme = schemes.first(where: { $0 != "anytype" }) ?? "anytype"
+        let bundleScheme = Bundle.main.bundleIdentifier.flatMap { schemes.contains($0) ? $0 : nil }
+        let scheme = (bundleScheme ?? schemes.first(where: { $0 != "anytype" }) ?? "anytype").lowercased()
         let url = URL(string: "\(scheme)://miniapps/return")
         return .init(success: url, error: url, cancel: url)
     }
