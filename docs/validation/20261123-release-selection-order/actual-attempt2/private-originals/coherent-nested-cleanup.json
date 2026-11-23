@@ -1,0 +1,202 @@
+{
+  "evidence_scope": "CLEANUP_ONLY_ORIGINAL_COMMAND_AND_PRODUCT_STATUS_UNCHANGED",
+  "finished_at": "2026-11-23T12:06:23.834472+00:00",
+  "groups_checked": 4,
+  "original_owned_commands": [
+    {
+      "absence_source": "KERNEL_ESRCH",
+      "budget_seconds": 10,
+      "evidence_scope": "CLEANUP_ONLY_ORIGINAL_COMMAND_AND_PRODUCT_STATUS_UNCHANGED",
+      "kernel_group_observation": {
+        "after_monotonic": 876.529765166,
+        "before_monotonic": 876.529694416,
+        "deadline_monotonic": 886.529685,
+        "errno": 3,
+        "error_type": "ProcessLookupError",
+        "operation": "os.killpg",
+        "outcome": "ABSENT_ESRCH",
+        "pgid": 5375,
+        "signal": 0
+      },
+      "live_members": 0,
+      "observations": 0,
+      "original_command_status": "COMPLETE",
+      "original_return_code": 0,
+      "path": "build/coherent-original-products-45163515182-2/evidence/lanes/editor/construction/create.command.json",
+      "pgid": 5375,
+      "projections": [],
+      "sha256": "e85dae6e690bf2c66675696c93d390373c60fd73c7864979c50fe27b413a2a3f",
+      "status": "PASS",
+      "timeout_observations": []
+    },
+    {
+      "absence_source": "KERNEL_ESRCH",
+      "budget_seconds": 10,
+      "evidence_scope": "CLEANUP_ONLY_ORIGINAL_COMMAND_AND_PRODUCT_STATUS_UNCHANGED",
+      "kernel_group_observation": {
+        "after_monotonic": 876.529855208,
+        "before_monotonic": 876.529852666,
+        "deadline_monotonic": 886.529852208,
+        "errno": 3,
+        "error_type": "ProcessLookupError",
+        "operation": "os.killpg",
+        "outcome": "ABSENT_ESRCH",
+        "pgid": 5677,
+        "signal": 0
+      },
+      "live_members": 0,
+      "observations": 0,
+      "original_command_status": "COMPLETE",
+      "original_return_code": 0,
+      "path": "build/coherent-original-products-45163515182-2/evidence/lanes/editor/owned-readiness/before.owned.command.json",
+      "pgid": 5677,
+      "projections": [
+        {
+          "cleanup_error": null,
+          "cleanup_error_type": null,
+          "cleanup_probe_timeouts": [],
+          "original_owned_command_sha256": "f5cc3f258a811511f76bfcd74b1da08a4099905c4918172cf0d4d46df31366f1",
+          "path": "build/coherent-original-products-45163515182-2/evidence/lanes/editor/owned-readiness/before.command.json",
+          "prior_quiescence": {
+            "absence_source": "KERNEL_ESRCH",
+            "budget_seconds": 10,
+            "kernel_group_observation": {
+              "after_monotonic": 305.252651791,
+              "before_monotonic": 305.25261925,
+              "deadline_monotonic": 315.252615458,
+              "errno": 3,
+              "error_type": "ProcessLookupError",
+              "operation": "os.killpg",
+              "outcome": "ABSENT_ESRCH",
+              "pgid": 5677,
+              "signal": 0
+            },
+            "live_members": 0,
+            "observations": 0,
+            "pgid": 5677,
+            "status": "PASS",
+            "timeout_observations": []
+          },
+          "sha256": "dab2fd4cd48d4c9c500e478a1770e4d4a10f70365a30ef21da39b95840e692bf",
+          "status": "SUCCESS"
+        }
+      ],
+      "sha256": "f5cc3f258a811511f76bfcd74b1da08a4099905c4918172cf0d4d46df31366f1",
+      "status": "PASS",
+      "timeout_observations": []
+    },
+    {
+      "absence_source": "KERNEL_ESRCH",
+      "budget_seconds": 10,
+      "evidence_scope": "CLEANUP_ONLY_ORIGINAL_COMMAND_AND_PRODUCT_STATUS_UNCHANGED",
+      "kernel_group_observation": {
+        "after_monotonic": 876.529932458,
+        "before_monotonic": 876.529925791,
+        "deadline_monotonic": 886.529925541,
+        "errno": 3,
+        "error_type": "ProcessLookupError",
+        "operation": "os.killpg",
+        "outcome": "ABSENT_ESRCH",
+        "pgid": 5758,
+        "signal": 0
+      },
+      "live_members": 0,
+      "observations": 0,
+      "original_command_status": "COMPLETE",
+      "original_return_code": 0,
+      "path": "build/coherent-original-products-45163515182-2/evidence/lanes/editor/owned-readiness/boot-status.owned.command.json",
+      "pgid": 5758,
+      "projections": [
+        {
+          "cleanup_error": null,
+          "cleanup_error_type": null,
+          "cleanup_probe_timeouts": [],
+          "original_owned_command_sha256": "8bf08c94eb078ef05f42d8f4adcf760b5ab5c5ac77b1624d2f6801dc6edbe1e3",
+          "path": "build/coherent-original-products-45163515182-2/evidence/lanes/editor/owned-readiness/boot-status.command.json",
+          "prior_quiescence": {
+            "absence_source": "KERNEL_ESRCH",
+            "budget_seconds": 10,
+            "kernel_group_observation": {
+              "after_monotonic": 463.470583041,
+              "before_monotonic": 463.388495125,
+              "deadline_monotonic": 473.388468041,
+              "errno": 3,
+              "error_type": "ProcessLookupError",
+              "operation": "os.killpg",
+              "outcome": "ABSENT_ESRCH",
+              "pgid": 5758,
+              "signal": 0
+            },
+            "live_members": 0,
+            "observations": 0,
+            "pgid": 5758,
+            "status": "PASS",
+            "timeout_observations": []
+          },
+          "sha256": "ad66c7a5c119dd6dbddbed14374c51923912db43a67bf6c213fe8b479410b30d",
+          "status": "SUCCESS"
+        }
+      ],
+      "sha256": "8bf08c94eb078ef05f42d8f4adcf760b5ab5c5ac77b1624d2f6801dc6edbe1e3",
+      "status": "PASS",
+      "timeout_observations": []
+    },
+    {
+      "absence_source": "KERNEL_ESRCH",
+      "budget_seconds": 10,
+      "evidence_scope": "CLEANUP_ONLY_ORIGINAL_COMMAND_AND_PRODUCT_STATUS_UNCHANGED",
+      "kernel_group_observation": {
+        "after_monotonic": 876.530009375,
+        "before_monotonic": 876.530007333,
+        "deadline_monotonic": 886.530007083,
+        "errno": 3,
+        "error_type": "ProcessLookupError",
+        "operation": "os.killpg",
+        "outcome": "ABSENT_ESRCH",
+        "pgid": 5686,
+        "signal": 0
+      },
+      "live_members": 0,
+      "observations": 0,
+      "original_command_status": "COMPLETE",
+      "original_return_code": 0,
+      "path": "build/coherent-original-products-45163515182-2/evidence/lanes/editor/owned-readiness/boot.owned.command.json",
+      "pgid": 5686,
+      "projections": [
+        {
+          "cleanup_error": null,
+          "cleanup_error_type": null,
+          "cleanup_probe_timeouts": [],
+          "original_owned_command_sha256": "8a1cc0d023e51d14bddc3c7966242f0c648fc9df6283c76784c5a471a95b0f65",
+          "path": "build/coherent-original-products-45163515182-2/evidence/lanes/editor/owned-readiness/boot.command.json",
+          "prior_quiescence": {
+            "absence_source": "KERNEL_ESRCH",
+            "budget_seconds": 10,
+            "kernel_group_observation": {
+              "after_monotonic": 309.519108458,
+              "before_monotonic": 309.518991916,
+              "deadline_monotonic": 319.518970083,
+              "errno": 3,
+              "error_type": "ProcessLookupError",
+              "operation": "os.killpg",
+              "outcome": "ABSENT_ESRCH",
+              "pgid": 5686,
+              "signal": 0
+            },
+            "live_members": 0,
+            "observations": 0,
+            "pgid": 5686,
+            "status": "PASS",
+            "timeout_observations": []
+          },
+          "sha256": "d44c168b77b5758ce727ae7dc084cbb056fa06470c666aa92085cf72b7857f8b",
+          "status": "SUCCESS"
+        }
+      ],
+      "sha256": "8a1cc0d023e51d14bddc3c7966242f0c648fc9df6283c76784c5a471a95b0f65",
+      "status": "PASS",
+      "timeout_observations": []
+    }
+  ],
+  "status": "PASS"
+}

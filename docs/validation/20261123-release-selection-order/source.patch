@@ -1,0 +1,22 @@
+--- 82447/Tools/PinkhaSimulatorGate/run_wave15_acceptance.py
++++ candidate/Tools/PinkhaSimulatorGate/run_wave15_acceptance.py
+@@ -480,7 +480,7 @@
+     else:
+         shared.command(["xcrun", "simctl", "boot", udid], app, evidence)
+         shared.command(["xcrun", "simctl", "bootstatus", udid, "-b"], app, evidence)
+-    if build_context is not None:
++    if build_context is not None and not original_products:
+         build_context.confirm_empty_container(udid, evidence)
+     observed_device_language = None
+     if args.lane == "editor":
+@@ -499,6 +499,10 @@
+         shared.write(evidence / "device-language-observation.json",
+                      dict(command_exit_code=device_language.returncode, observed=device_language.stdout,
+                           error=device_language.stderr, acceptance=False))
++    if original_products:
++        # Seal the complete plan after the existing language observation updates it.
++        # The original-only native selection still requires this exact whole-file hash.
++        build_context.confirm_empty_container(udid, evidence)
+     if build_context is None and sdk06_original_native is None:
+         shared.prepare_source_cache(app, derived)
+     flags = ["OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED", "ENABLE_TESTABILITY=YES",

@@ -1,0 +1,75 @@
+{
+  "observations": [
+    {
+      "correction": "Products is a dictionary; subsequent bounded read used items. No original or source mutation.",
+      "result": {
+        "duration": 0.81,
+        "ok": true,
+        "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 4, in <module>\nKeyError: slice(None, 3, None)",
+        "returncode": 1
+      },
+      "scope": "Read-only original manifest shape inspection"
+    },
+    {
+      "correction": "No-checkout worktree had empty index and only .git. Exact pinned sparse HEAD then initialized using read-tree -mu HEAD after proving the empty state. No existing worktree/file was reset.",
+      "result": {
+        "_notice": "You have 22 unread SentinelX notification(s) (job results and/or announcements). Call notifications_check to read them.",
+        "duration": 1.31,
+        "ok": true,
+        "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 13, in <module>\nAssertionError",
+        "returncode": 1
+      },
+      "scope": "New isolated sparse worktree first clean assertion"
+    },
+    {
+      "correction": "Use json.loads for the structured JSON payload before metadata writing; test dependency preload was already written once. No commit or test execution occurred.",
+      "result": {
+        "duration": 0.89,
+        "ok": true,
+        "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 7, in <module>\nNameError: name 'true' is not defined. Did you mean: 'True'?",
+        "returncode": 1
+      },
+      "scope": "Source-only authoring metadata serialization"
+    },
+    {
+      "correction": "No author/committer configured in the new sparse worktree. Use the already established project commit identity for this command only; no permanent/global config modification.",
+      "read_only_identity_diagnostic": {
+        "author": {
+          "exit": 128,
+          "stderr": "Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'ubuntu@torah-social.(none)')\n",
+          "stdout": ""
+        },
+        "committer": {
+          "exit": 128,
+          "stderr": "Committer identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'ubuntu@torah-social.(none)')\n",
+          "stdout": ""
+        },
+        "head": {
+          "exit": 0,
+          "stderr": "",
+          "stdout": "82447fe8d2bd0817a18a8dc5330e7a01d0c9bc08\n"
+        },
+        "identity_config": {
+          "exit": 1,
+          "stderr": "",
+          "stdout": ""
+        },
+        "parent_author": {
+          "exit": 0,
+          "stderr": "",
+          "stdout": "davidpovarsky\nyour-email@example.com\ndavidpovarsky\nyour-email@example.com\n"
+        }
+      },
+      "result": {
+        "duration": 0.98,
+        "ok": true,
+        "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 15, in <module>\n  File \"/usr/lib/python3.12/subprocess.py\", line 571, in run\n    raise CalledProcessError(retcode, process.args,\nsubprocess.CalledProcessError: Command '['git', '-C', '/mnt/development/projects/worktrees/anytype-wave15-release-selection-order-20261123', 'commit', '-m', 'fix(release): seal original selection after language observation']' returned non-zero exit status 128.",
+        "returncode": 1
+      },
+      "scope": "First isolated source commit",
+      "tests_or_builds": 0
+    }
+  ],
+  "protocol": "retained-source-authoring-observations-v1",
+  "tests_or_builds": 0
+}

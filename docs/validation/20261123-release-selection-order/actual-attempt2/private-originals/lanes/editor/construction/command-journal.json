@@ -1,0 +1,43 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "create",
+        "Pinkha-UI27-45163515182-batch-a27e1d1485924904a8308c485adb9b01-editor",
+        "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+        "com.apple.CoreSimulator.SimRuntime.iOS-27-0"
+      ],
+      "finished_at": "2026-11-23T11:56:48.135739+00:00",
+      "log_sha256": "24c284ae8875045e24b6dea5d6b7d92c7f53daf15deffa8555376f2634866d25",
+      "name": "create",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "absence_source": "KERNEL_ESRCH",
+        "budget_seconds": 10,
+        "kernel_group_observation": {
+          "after_monotonic": 300.840466458,
+          "before_monotonic": 300.840212666,
+          "deadline_monotonic": 310.840207833,
+          "errno": 3,
+          "error_type": "ProcessLookupError",
+          "operation": "os.killpg",
+          "outcome": "ABSENT_ESRCH",
+          "pgid": 5375,
+          "signal": 0
+        },
+        "live_members": 0,
+        "observations": 0,
+        "pgid": 5375,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T11:56:47.502851+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 30,
+      "worker_pid": 5375
+    }
+  ]
+}

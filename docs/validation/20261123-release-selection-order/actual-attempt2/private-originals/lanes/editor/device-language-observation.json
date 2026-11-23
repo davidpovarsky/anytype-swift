@@ -1,0 +1,29 @@
+{
+  "status": "DEVICE_LANGUAGE_PREFERENCES_VERIFIED",
+  "simulator_udid": "493AC129-6C64-4254-BDA2-3D6A1CE22BF7",
+  "requested_device_language": "he",
+  "requested_locale": "he_IL",
+  "app_language": "en",
+  "command": [
+    "xcrun",
+    "simctl",
+    "spawn",
+    "493AC129-6C64-4254-BDA2-3D6A1CE22BF7",
+    "defaults",
+    "export",
+    "NSGlobalDomain",
+    "-"
+  ],
+  "readback_timeout_seconds": 120,
+  "readback_elapsed_seconds": 8.749,
+  "command_exit_code": 0,
+  "error": "",
+  "preferences_sha256": "f18f46cd42b2f87790e14fef3253f0f272e3849e9074fcdd02ab581f835d4062",
+  "device_language": "he",
+  "observed_languages": [
+    "he"
+  ],
+  "observed_locale": "he_IL",
+  "verification_scope": "SIMULATOR_GLOBAL_PREFERENCES_AFTER_REBOOT",
+  "app_override_verified_by_this_observation": false
+}
