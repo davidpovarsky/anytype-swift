@@ -122,6 +122,7 @@ class SDK06ExternalHostProjectionControl(unittest.TestCase):
 
         with tempfile.TemporaryDirectory(prefix="sdk06-external-host-control-") as temporary:
             root = Path(temporary).resolve()
+            root.chmod(0o700)
             source_root = root / "original-swift"
             for name, raw in source.items():
                 path = source_root / name
