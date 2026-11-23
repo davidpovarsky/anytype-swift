@@ -1,0 +1,38 @@
+{
+  "source_sha": "988f451959af1a40d1bc49bd6ed3798a730f5e37",
+  "sdk_sha": "32da9e314e22bbf22391fcf8902302acfbb281e2",
+  "branch": "codex/chatgpt-wave15-canonical-hanlin-20261123",
+  "inputs": {
+    "route": "wave15-acceptance",
+    "runtime_profile": "r15-attachment-authorized-current-read-v1",
+    "source_run_id": "45091223011",
+    "acceptance_lane": "hanlin-native",
+    "acceptance_device": "ipad",
+    "acceptance_language": "en"
+  },
+  "command": [
+    "gh",
+    "workflow",
+    "run",
+    ".github/workflows/torah-inspector-ipados27.yml",
+    "-R",
+    "davidpovarsky/anytype-swift",
+    "--ref",
+    "codex/chatgpt-wave15-canonical-hanlin-20261123",
+    "-f",
+    "route=wave15-acceptance",
+    "-f",
+    "runtime_profile=r15-attachment-authorized-current-read-v1",
+    "-f",
+    "source_run_id=45091223011",
+    "-f",
+    "acceptance_lane=hanlin-native",
+    "-f",
+    "acceptance_device=ipad",
+    "-f",
+    "acceptance_language=en"
+  ],
+  "timestamp": "2026-11-23T16:43:02.284346+00:00",
+  "dispatch_count": 1,
+  "owner": "root/anytype_runtime"
+}

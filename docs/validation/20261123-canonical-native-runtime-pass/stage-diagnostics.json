@@ -1,0 +1,125 @@
+{
+  "first_failure": {
+    "command": [
+      "xcrun",
+      "simctl",
+      "get_app_container",
+      "1A82019A-CBE9-4BC7-B5CD-7981BC3DFCB1",
+      "io.anytype.app",
+      "data"
+    ],
+    "command_timeout_seconds": 10,
+    "error_type": "TimeoutExpired",
+    "stage": "poll_data_container",
+    "stage_elapsed_seconds": 10.07693008299998
+  },
+  "poll_timeout_retries": 2,
+  "source_path": "actual-ui-runtime/observation.json",
+  "source_sha256": "c52b52b315b19ebb70ac1d16b5bc6267c2af2115ec42a74da02e79265664d5ee",
+  "stages": [
+    {
+      "attempts": 1,
+      "finished_at": 1795454326.22026,
+      "stage": "prepare_data_container",
+      "stage_elapsed_seconds": 0.4872386669999287,
+      "started_at": 1795454325.732999,
+      "status": "RETURNED"
+    },
+    {
+      "attempts": 1,
+      "finished_at": 1795454334.149738,
+      "stage": "prepare_installed_source",
+      "stage_elapsed_seconds": 7.928301250000004,
+      "started_at": 1795454326.221344,
+      "status": "RETURNED"
+    },
+    {
+      "attempts": 20,
+      "finished_at": 1795454386.033585,
+      "stage": "poll_data_container",
+      "stage_elapsed_seconds": 5.130037500000071,
+      "started_at": 1795454380.903503,
+      "status": "RETURNED"
+    },
+    {
+      "attempts": 18,
+      "finished_at": 1795454386.035928,
+      "stage": "read_native_phase_before",
+      "stage_elapsed_seconds": 0.0020101249999697757,
+      "started_at": 1795454386.033926,
+      "status": "RETURNED"
+    },
+    {
+      "attempts": 1,
+      "finished_at": 1795454386.037152,
+      "stage": "validate_native_phase_before",
+      "stage_elapsed_seconds": 0.0005211249999774736,
+      "started_at": 1795454386.03664,
+      "status": "RETURNED"
+    },
+    {
+      "attempts": 1,
+      "finished_at": 1795454386.048348,
+      "stage": "save_partial_phase_before",
+      "stage_elapsed_seconds": 0.011102291999804947,
+      "started_at": 1795454386.037237,
+      "status": "RETURNED"
+    },
+    {
+      "attempts": 1,
+      "finished_at": 1795454403.681837,
+      "stage": "map_installed_source",
+      "stage_elapsed_seconds": 17.63309804200003,
+      "started_at": 1795454386.048592,
+      "status": "RETURNED"
+    },
+    {
+      "attempts": 1,
+      "finished_at": 1795454419.045271,
+      "stage": "map_running_process",
+      "stage_elapsed_seconds": 15.362763332999975,
+      "started_at": 1795454403.682491,
+      "status": "RETURNED"
+    },
+    {
+      "attempts": 1,
+      "finished_at": 1795454426.437453,
+      "stage": "after_mapping_data_container",
+      "stage_elapsed_seconds": 7.321951166999952,
+      "started_at": 1795454419.045423,
+      "status": "RETURNED"
+    },
+    {
+      "attempts": 1,
+      "finished_at": 1795454426.440349,
+      "stage": "read_native_phase_after",
+      "stage_elapsed_seconds": 0.0019757920001666207,
+      "started_at": 1795454426.438404,
+      "status": "RETURNED"
+    },
+    {
+      "attempts": 1,
+      "finished_at": 1795454478.581758,
+      "stage": "export_final_data_container",
+      "stage_elapsed_seconds": 0.7991329579999729,
+      "started_at": 1795454477.782826,
+      "status": "RETURNED"
+    },
+    {
+      "attempts": 1,
+      "finished_at": 1795454478.582583,
+      "stage": "export_final_native_result",
+      "stage_elapsed_seconds": 0.0007463330000518908,
+      "started_at": 1795454478.581841,
+      "status": "RETURNED"
+    },
+    {
+      "attempts": 1,
+      "finished_at": 1795454485.59525,
+      "stage": "verify_ui_process_boundaries",
+      "stage_elapsed_seconds": 7.0017436660000385,
+      "started_at": 1795454478.593414,
+      "status": "RETURNED"
+    }
+  ]
+}
