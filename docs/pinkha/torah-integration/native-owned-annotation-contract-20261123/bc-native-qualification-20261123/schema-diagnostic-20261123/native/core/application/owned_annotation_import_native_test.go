@@ -1128,7 +1128,7 @@ func (f *ownedClosedFixture) wait(t *testing.T, name string, operation *importer
 		schemaDiagnostic["bytes"] = len(raw)
 		if len(raw) == 0 || len(raw) > 3<<20 || !json.Valid(raw) {
 			schemaDiagnostic["status"] = "OMITTED_INVALID_OR_OVERSIZED"
-		} else if err := ownedClosedWrite(f.evidence, kind+"-schema-comparison-diagnostic.json", raw); err != nil {
+		} else if err := ownedClosedWrite(f.evidence, name+"-schema-comparison-diagnostic.json", raw); err != nil {
 			schemaDiagnostic["status"] = "WRITE_FAILED"
 			t.Log("historical schema diagnostic could not be retained; original refusal is unchanged")
 		} else {

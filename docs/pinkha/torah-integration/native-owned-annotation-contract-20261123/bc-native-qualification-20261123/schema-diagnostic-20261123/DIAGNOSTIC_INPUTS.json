@@ -28,14 +28,14 @@
       "bytes": 75956,
       "changes": [
         {
-          "after": "\tschemaDiagnostic := map[string]any{\"available\": false, \"written\": false, \"truncated\": false}\n\tvar mismatch interface{ OwnedAnnotationSchemaDiagnostic() []byte }\n\tif errors.As(result.Err(), &mismatch) {\n\t\traw := mismatch.OwnedAnnotationSchemaDiagnostic()\n\t\tschemaDiagnostic[\"available\"] = true\n\t\tschemaDiagnostic[\"bytes\"] = len(raw)\n\t\tif len(raw) == 0 || len(raw) > 3<<20 || !json.Valid(raw) {\n\t\t\tschemaDiagnostic[\"status\"] = \"OMITTED_INVALID_OR_OVERSIZED\"\n\t\t} else if err := ownedClosedWrite(f.evidence, kind+\"-schema-comparison-diagnostic.json\", raw); err != nil {\n\t\t\tschemaDiagnostic[\"status\"] = \"WRITE_FAILED\"\n\t\t\tt.Log(\"historical schema diagnostic could not be retained; original refusal is unchanged\")\n\t\t} else {\n\t\t\tschemaDiagnostic[\"status\"] = \"COMPLETE\"\n\t\t\tschemaDiagnostic[\"written\"] = true\n\t\t}\n\t}\n\tvalues := map[string]any{\n\t\t\"schema_comparison_diagnostic\": schemaDiagnostic,\n\t\t\"actual_done_observed\":         complete, \"target_space\": result.TargetSpaceID(),",
+          "after": "\tschemaDiagnostic := map[string]any{\"available\": false, \"written\": false, \"truncated\": false}\n\tvar mismatch interface{ OwnedAnnotationSchemaDiagnostic() []byte }\n\tif errors.As(result.Err(), &mismatch) {\n\t\traw := mismatch.OwnedAnnotationSchemaDiagnostic()\n\t\tschemaDiagnostic[\"available\"] = true\n\t\tschemaDiagnostic[\"bytes\"] = len(raw)\n\t\tif len(raw) == 0 || len(raw) > 3<<20 || !json.Valid(raw) {\n\t\t\tschemaDiagnostic[\"status\"] = \"OMITTED_INVALID_OR_OVERSIZED\"\n\t\t} else if err := ownedClosedWrite(f.evidence, name+\"-schema-comparison-diagnostic.json\", raw); err != nil {\n\t\t\tschemaDiagnostic[\"status\"] = \"WRITE_FAILED\"\n\t\t\tt.Log(\"historical schema diagnostic could not be retained; original refusal is unchanged\")\n\t\t} else {\n\t\t\tschemaDiagnostic[\"status\"] = \"COMPLETE\"\n\t\t\tschemaDiagnostic[\"written\"] = true\n\t\t}\n\t}\n\tvalues := map[string]any{\n\t\t\"schema_comparison_diagnostic\": schemaDiagnostic,\n\t\t\"actual_done_observed\":         complete, \"target_space\": result.TargetSpaceID(),",
           "before": "\tvalues := map[string]any{\n\t\t\"actual_done_observed\": complete, \"target_space\": result.TargetSpaceID(),"
         }
       ],
-      "git_blob": "d519abc14d8558763502dce9f11d6cfd98698505",
+      "git_blob": "0652a4a525e75dcbf060c2f17d192f672b9aca6c",
       "native_path": "core/application/owned_annotation_import_native_test.go",
       "path": "schema-diagnostic-20261123/native/core/application/owned_annotation_import_native_test.go",
-      "sha256": "6bb6d93c536a70fac3d84b7993492142775145304abc5176c3052e8b90ea3979"
+      "sha256": "7f99009cf4d477c3a8bc7e3f7d63918fca2cea78ce90df861175b51384914dd0"
     }
   ],
   "native_selector": "^TestOtzariaOwnedAnnotationClosedNativeImport$/^text$",
