@@ -428,7 +428,7 @@ func (p *inlineRecoveryProcess) observe(original space.MigrationInlineFileReceip
 	require.Equal(t, *o.Info, o.Files[0])
 }
 
-func (p *inlineRecoveryProcess) input(source string) (string, []byte, []byte, space.MigrationInlineFileReceipt) {
+func (p *inlineRecoveryProcess) prepareInput(source string) (string, []byte, []byte, space.MigrationInlineFileReceipt) {
 	t := p.session.t
 	t.Helper()
 	capability := p.ready.Capability
@@ -476,7 +476,7 @@ func inlineRecoveryCommit(t *testing.T, r space.MigrationInlineFileReceipt) []by
 func TestPreparedInlineFileActualProcessCrashRecovery(t *testing.T) {
 	s := inlineRecoveryNew(t)
 	first := s.start()
-	base, prepare, content, original := first.input("source/file/actual-process-crash")
+	base, prepare, content, original := first.prepareInput("source/file/actual-process-crash")
 	commit := inlineRecoveryCommit(t, original)
 	first.observe(original, "file-prepared", content)
 	first.kill("native-reservation-returned-file-prepared", true)
@@ -517,7 +517,7 @@ func TestPreparedInlineFileActualProcessCrashRecovery(t *testing.T) {
 func TestPreparedInlineFileActualLostHTTPAcknowledgementRecovery(t *testing.T) {
 	s := inlineRecoveryNew(t)
 	first := s.start()
-	base, prepare, content, original := first.input("source/file/actual-lost-http-ack")
+	base, prepare, content, original := first.prepareInput("source/file/actual-lost-http-ack")
 	commit := inlineRecoveryCommit(t, original)
 	root := first.receipt(http.MethodPost, base+"/commit", commit)
 	inlineRecoverySame(t, original, root, "file-root-committed", "prepared")

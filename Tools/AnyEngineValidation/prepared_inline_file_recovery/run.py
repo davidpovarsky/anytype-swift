@@ -182,12 +182,21 @@ def main():
         original(evidence / "build-metadata.json", metadata)
         argv = [go, "test", "-c", "-p=1", "-mod=readonly", "-tags=pinkha_inline_recovery",
                 "-o", str(binary), "./internal/server"]
-        run_owned(argv, root, env, evidence / "build-original.log", 1200, evidence / "build-command.json")
+        build_failure = None
+        try:
+            run_owned(argv, root, env, evidence / "build-original.log", 1200, evidence / "build-command.json")
+        except BaseException as error:
+            build_failure = type(error).__name__ + ": " + str(error)
         after = {"any": inventory(root, plan["any"]["fixtureCommit"], plan["any"]["fixtureTree"]),
                  "sdk": inventory(sdk, plan["sdk"]["candidateCommit"], plan["sdk"]["candidateTree"])}
         original(evidence / "source-after-build.json", after)
         if source != after:
             raise RuntimeError("source changed during compilation")
+        if build_failure:
+            original(evidence / "failure.json", {"status": "FAILED_BUILD_NO_TESTS",
+                "sourceUnchanged": True, "actualProductMethodsExecuted": 0,
+                "childProcessesStarted": 0, "originalFailure": build_failure})
+            raise RuntimeError(build_failure)
         listing = subprocess.check_output([str(binary), "-test.list=^TestPreparedInlineFile(ActualProcessCrashRecovery|ActualLostHTTPAcknowledgementRecovery|RecoveryChild)$"],
                                           cwd=root / "internal/server", env=env)
         (evidence / "registered-new-methods-original.txt").write_bytes(listing)
