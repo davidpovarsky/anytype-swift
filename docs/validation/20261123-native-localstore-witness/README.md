@@ -60,3 +60,7 @@ hasNativeSourceAdmission=false and permitsDestinationWrites=false.
 No full semantic object/block/type/property/file census, production authorization,
 remote-replica completeness, whole migration, Swift/App or mounted Apple acceptance
 is claimed.
+
+## Follow-up authority finding
+
+The original interface's private marker is not, by itself, an unforgeability guarantee: an external Go type can embed that exported interface. The six original actual fixture tests remain valid at74b5 and are not relabelled. A separate concrete capability with a private acquisition closure is being qualified at native102f. No production issuer or destination writes are enabled by either candidate. The root evidence review independently rehashed all4,040 unique source/dependency paths, the binary,19 private native files and21 safe original copies; no original product method was rerun.
