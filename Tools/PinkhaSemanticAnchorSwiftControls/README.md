@@ -28,7 +28,7 @@ run_controls.py copies exactly695 current source files: unchanged685 generated p
 
 The host profile is Swift6.4.3 on aarch64 Linux, SwiftProtobuf c6fe6442e6a64250495669325044052e113e990c, SwiftCrypto3.12.3 at e8d6eba1fef23ae5b359c46b03f7d94be2f41fed, and host-only SwiftASN1 1.7.4 at917b472dbe53ba699cbb0495f9a95a084bc6364d. The latter matches the already used Oracle Crypto cache; this fixture profile does not change the App's frozen Package.resolved. Apple uses CryptoKit for this source.
 
-Use a clean exact source SHA and separate run/build/cache paths under /mnt/development. Modes are prepare, verify, resolve, build and test; each receives --run RUN --build-root BUILD --shared-cache CACHE --expected-app-sha SHA. Build is -j1 and compile-only; test uses --skip-build with the22-method selector. All copied sources, dependency revisions and the built test executable are checked, and original command logs and named XCTest events are retained. No source-only completion or Apple/mounted result is implied.
+Use a clean exact source SHA and separate run/build/cache paths under /mnt/development. Modes are prepare, verify, resolve, build and test; each receives --run RUN --build-root BUILD --shared-cache CACHE --expected-app-sha SHA. Build is -j1 and compile-only; test uses --skip-build with the22-method selector. All copied sources, dependency revisions and both actual Swift6.4 test runner/module plus bundled resources are checked, and original command logs and named XCTest events are retained. No source-only completion or Apple/mounted result is implied.
 
 ## Selected new controls
 
@@ -55,4 +55,4 @@ Use a clean exact source SHA and separate run/build/cache paths under /mnt/devel
 - PinkhaHeartSemanticAnchorWireTests.testRequestEnforcesUTF8MarksAndGraphemeSelectionBounds
 - PinkhaHeartSemanticAnchorWireTests.testStrictJSONPreservesDuplicatesAndUTF16EscapeEvidence
 
-Current status: authored; compilation and execution not yet run.
+Current host status: **22 actual methods PASS at fbbfe7100425482e3d9f8b6623bb2d1920f56528**. Original test-only compiler failures and the Swift6.4 runner/module lookup correction are preserved in docs/validation/20261123-semantic-heart-swift. The successful compiled runner/module and resources were retained before future cache reuse. Actual App/native SDK call and mounted acceptance remain separate; retirement during the async App publication chain is an identified next scope.

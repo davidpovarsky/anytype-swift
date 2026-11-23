@@ -1,0 +1,63 @@
+{
+  "actual_methods_executed": 0,
+  "actual_methods_passed": 0,
+  "app_capability": "OFF",
+  "app_sha": "fbbfe7100425482e3d9f8b6623bb2d1920f56528",
+  "command": {
+    "argv": [
+      "/usr/local/bin/swift",
+      "build",
+      "--package-path",
+      "/mnt/development/projects/evidence/semantic-anchor-swift-20261123/attempt1/package",
+      "--scratch-path",
+      "/mnt/development/build-cache/semantic-anchor-swift-20261123/scratch",
+      "--cache-path",
+      "/mnt/development/build-cache/anytype-inline-swift-20261123",
+      "--config-path",
+      "/mnt/development/build-cache/semantic-anchor-swift-20261123/config",
+      "--security-path",
+      "/mnt/development/build-cache/semantic-anchor-swift-20261123/security",
+      "--build-tests",
+      "-j",
+      "1"
+    ],
+    "exit_code": 0,
+    "log_sha256": "f2dccfc5af161aea1941a9155973b2b9200e62bc65d74ae72499060e2f3f4a5d",
+    "pid": 1966987
+  },
+  "dependencies": {
+    "checkouts": {
+      "swift-asn1": {
+        "clean": true,
+        "head": "917b472dbe53ba699cbb0495f9a95a084bc6364d"
+      },
+      "swift-crypto": {
+        "clean": true,
+        "head": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed"
+      },
+      "swift-protobuf": {
+        "clean": true,
+        "head": "c6fe6442e6a64250495669325044052e113e990c"
+      }
+    },
+    "pins": {
+      "swift-asn1": "917b472dbe53ba699cbb0495f9a95a084bc6364d",
+      "swift-crypto": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+      "swift-protobuf": "c6fe6442e6a64250495669325044052e113e990c"
+    },
+    "resolved_sha256": "3173ca0dd7f4182585a0a7267ad55f1a2141be48a5a05ccea969bbc0536ed2b7"
+  },
+  "error": "Expected one Linux XCTest executable",
+  "error_type": "ValueError",
+  "finished_at": "2026-11-23T02:28:47.730419+00:00",
+  "mode": "build",
+  "mounted_editor": "NOT_RUN",
+  "native_sdk_call": "NOT_RUN",
+  "started_at": "2026-11-23T02:28:29.069516+00:00",
+  "status": "FAIL_BUILD",
+  "toolchain": {
+    "executable": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-driver",
+    "executable_sha256": "39d41b0dc9eba623b0e37cea42c3145720168214ba4349d6fa3bd9db9b1e651a",
+    "version": "Swift version 6.4.3 (swift-6.4.3-RELEASE)\nTarget: aarch64-unknown-linux-gnu"
+  }
+}

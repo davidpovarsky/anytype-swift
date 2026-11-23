@@ -200,6 +200,33 @@ def common(args):
         "--cache-path", str(args.shared_cache), "--config-path", str(args.build_root / "config"),
         "--security-path", str(args.build_root / "security")]
 
+def compiled_products(args, manifest):
+    # Swift 6.4's pinned Linux build system emits a runner plus test module.
+    directory = (args.build_root / "scratch/out/Products/Debug-linux-aarch64").resolve()
+    require(directory.is_relative_to(args.build_root), "Products escaped owned build root")
+    products = {}
+    for name in ("ProtobufMessagesTests-test-runner", "ProtobufMessagesTests.so"):
+        path = directory / name
+        require(path.is_file(), "Missing actual Swift 6.4 test runner/module")
+        with path.open("rb") as source:
+            require(source.read(4) == b"\x7fELF", "Expected ELF test product")
+        products[name] = {"path": str(path), "sha256": digest(path), "bytes": path.stat().st_size}
+    dynamic = subprocess.check_output(["readelf", "-d", products["ProtobufMessagesTests-test-runner"]["path"]], text=True)
+    require("Shared library: [ProtobufMessagesTests.so]" in dynamic, "Wrong test module loaded by runner")
+    for target, row in manifest["files"].items():
+        if "/Fixtures/NativePage/" not in target:
+            continue
+        relative = "PinkhaHeartSemanticAnchorControls_ProtobufMessagesTests.bundle/NativePage/" + Path(target).name
+        path = directory / relative
+        require(path.is_file() and digest(path) == row["sha256"], "Compiled fixture resource differs from source")
+        products[relative] = {"path": str(path), "sha256": row["sha256"], "bytes": path.stat().st_size}
+    return products
+
+def verify_products(products):
+    for row in products.values():
+        path = Path(row["path"])
+        require(path.is_file() and digest(path) == row["sha256"], "Qualified compiled product changed")
+
 def execute(args):
     manifest = verify(args)
     evidence = args.run / "evidence"
@@ -224,20 +251,20 @@ def execute(args):
             result = command(args, argv, evidence / "build.log", 2400)
             receipt["command"] = result
             require(result["exit_code"] == 0, "Swift control composition did not compile")
-            binary_directory = subprocess.check_output(
-                [SWIFT, "build", *common(args), "--show-bin-path"], text=True).strip()
-            binary = Path(binary_directory) / "PinkhaHeartSemanticAnchorControlsPackageTests.xctest"
-            require(binary.is_file(), "Expected one Linux XCTest executable")
-            receipt.update(status="PASS_SWIFT_CONTROLS_COMPILE_ONLY", test_binary=str(binary),
-                test_binary_sha256=digest(binary), test_binary_bytes=binary.stat().st_size)
+            products = compiled_products(args, manifest)
+            runner = products["ProtobufMessagesTests-test-runner"]
+            receipt.update(status="PASS_SWIFT_CONTROLS_COMPILE_ONLY", compiled_products=products,
+                test_binary=runner["path"], test_binary_sha256=runner["sha256"],
+                test_binary_bytes=runner["bytes"])
         else:
             built = read(evidence / "build.json")
             require(built["status"] == "PASS_SWIFT_CONTROLS_COMPILE_ONLY"
                 and built["app_sha"] == args.expected_app_sha, "Unqualified Swift build")
             receipt["dependencies"] = dependencies(args)
-            binary = Path(built["test_binary"])
-            require(binary.is_file() and digest(binary) == built["test_binary_sha256"], "Swift XCTest binary changed")
-            receipt.update(test_binary=str(binary), test_binary_sha256=built["test_binary_sha256"])
+            products = built["compiled_products"]
+            verify_products(products)
+            receipt.update(compiled_products=products, test_binary=built["test_binary"],
+                test_binary_sha256=built["test_binary_sha256"])
             argv = [SWIFT, "test", *common(args), "--skip-build", "-j", "1",
                 "--filter", "PinkhaHeartSemanticAnchor(Wire|Client)Tests"]
             result = command(args, argv, evidence / "tests.log", 180)
@@ -256,7 +283,7 @@ def execute(args):
             require(result["exit_code"] == 0, "A selected Swift control failed")
             require(sorted(starts) == manifest["selected_methods"] and sorted(passes) == manifest["selected_methods"]
                 and len(rows) == 44, "Incomplete, skipped, duplicate or unselected Swift controls")
-            require(digest(binary) == built["test_binary_sha256"], "Swift XCTest binary changed during execution")
+            verify_products(products)
             receipt["status"] = "PASS_TWENTY_TWO_NEW_SWIFT_CONTROLS"
         verify(args)
         result_code = 0
