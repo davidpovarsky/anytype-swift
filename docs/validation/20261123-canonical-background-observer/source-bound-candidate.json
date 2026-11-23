@@ -1,0 +1,48 @@
+{
+  "status": "SOURCE_COMPLETE_NATIVE_RETRY_NOT_RUN",
+  "application_source_sha": "f2066214048c0432c1e5c51a73a9f6e4369041e5",
+  "application_source_tree": "0536e26f40fcaad7e5a3a6e96cf287a1470ae085",
+  "original_failed_run": "45135961459",
+  "original_failed_source": "fa078feb6bd496689b812ccf00945dce60c03599",
+  "source_patch_sha256": "0ec2121ce85339df42e638d2b0dcb5f43eea9650c4d874b404f7c8b9bc4039c2",
+  "source_patch_bytes": 41222,
+  "source_hashes": {
+    "Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinNativeAcceptanceDriver.swift": "aeef4ce707b78240387f89fedce00ba16331d2ed47387b4444f8f4e087bffa25",
+    "PinkhaStage1Acceptance/Tests/HanlinNativeAcceptanceUITests.swift": "6f1340d549a563dd2b246d7c7fa106219593815009e4c59c7a3aea896dcdc90c",
+    "Tools/PinkhaSimulatorGate/hanlin_ui_runtime.py": "65f4607ed9dd82fb7842398f4cc62ad2ec3b8ff8c5498b25f50f62ebefef6e02",
+    "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py": "5b626c0018f474b5cc34218dc3170a169aa67f3129654ea072c1a035d41b2d65",
+    "Tools/Hanlin/retain_canonical_native_controls.py": "a157b5f96ef862b00138ed0e24d999be0a50d0aba29ea590cef106b70b275f76",
+    "Tools/Hanlin/test_canonical_native_control_reuse.py": "9c52c80ab3fe8c68bc26b040a4493a8ba3ac9b08a24b772d8666a938252b459b",
+    "Tools/Hanlin/test_canonical_native_observer_budget.py": "b98a9da939413b479f5dc0ba6945da14245dc276abace09334500e8cbe68daea",
+    "Tools/Hanlin/canonical-native-control-reuse.json": "54c85e4d911c5a48d7221c54938a8a67bb322ae6b1035b5dbd119e700e40bfff",
+    "docs/any-engine-port/SOURCE_REFACTOR_MAP.json": "2ad7088ded9365d36a2bb1b3ab674f000b244631e5cf42a899b8392afbda9b53"
+  },
+  "native_control_qualification": {
+    "current_methods": 69,
+    "unchanged_methods_retained": 68,
+    "affected_original_method_executed": 1,
+    "affected_original_seconds": 0.258,
+    "new_timing_methods_executed": 2,
+    "new_timing_cases": 5,
+    "new_timing_seconds": 0.534,
+    "affected_admission_guard_methods": 5,
+    "affected_admission_guard_seconds": 2.17,
+    "native_tests_executed": 0
+  },
+  "source_retention": {
+    "status": "PASS",
+    "checked_tree": "0536e26f40fcaad7e5a3a6e96cf287a1470ae085",
+    "baseline_files": 5790,
+    "unchanged_baseline_files": 5692,
+    "receipt_sha256": "693ce98c4fc3c8f33f104ce1cc7bcaad86809d785ac145d39780ef9cd8883574",
+    "claim_limit": "Original reviewed source map only; no semantic or native acceptance"
+  },
+  "retention_receipt_sha256": "1d899ced18c880f0702895bdf94bb6a166c9c7b5a2df1a4d6af46d4ac4a73bbd",
+  "review": {
+    "ui_and_real_scene_receipt": "Independent presentation reviewer and root approved exact UI6f1340d5/driveraeef4ce7",
+    "observer": "Root approved60within420 and one actually affected original method rerun"
+  },
+  "runtime_producer": "45091223011",
+  "sdk_revision": "d49a4fd4115b8335105d2991bf74ab4d7f6aad2d",
+  "scope_limit": "No current Apple native/UI pass. One original native preparation plus UI acceptance retry awaits coherent source review. Other SDK06 owner selectors/23/32+ACK remain separate."
+}
