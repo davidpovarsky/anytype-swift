@@ -1,0 +1,88 @@
+{
+  "all_broad_product_acceptance_tasks_remain_open": true,
+  "all_nine_rounds": {
+    "allocated_bytes_released": 5971787776,
+    "duplicate_docs": 158040,
+    "earlier_seven_rounds": "Prior sealed source and original receipts remain authoritative; not replayed."
+  },
+  "at": "2026-11-23T11:02:43.363850+00:00",
+  "cold_originals": {
+    "all_original_bytes_preserved": true,
+    "allocated_bytes_recovered": 1527406592,
+    "code_git_worktrees_extracted_Products_mutations": 0,
+    "count": 2,
+    "durable_intent_and_location_before_local_unlink": true,
+    "independent_full_destination_readbacks": 2,
+    "logical_archive_bytes_preserved": 1527393774,
+    "private_owner_acl_readonly_ntfs_identity_verified": true,
+    "restoration": "Each original receipt/location record gives an absent-only restore from the verified immutable original; original permissions/owner/mtime are retained, restored inode/ctime explicitly new.",
+    "root_privileged_fresh_reader_scans_clean": true
+  },
+  "failures_preserved": [
+    "Round8 initial protected-origin cleanliness assertion failed before mutation; exact original dirty status then admitted without changing its110 backups.",
+    "Round9 two read-only qualification refusals preserved before the reviewed detached-target plan.",
+    "First cold SDK copy progress-file Replace error preserved; same-file prefix verified and remaining bytes appended once.",
+    "First cold SDK relocation payload lost nanosecond precision during JS serialization; refusal before unlink preserved, corrected raw exact integers used.",
+    "The completed cold Release copy and relocation succeeded on their first actual attempts."
+  ],
+  "free_bytes_caution": "Gross recovered allocation differs from current free space while the shared volume changes. Every next writer retains its fresh guard.",
+  "native_build_start_reserve_bytes": 2950000000,
+  "native_build_stop_reserve_bytes": 2600000000,
+  "no_passing_tests_or_builds_replayed": true,
+  "normal_write_reserve_bytes": 2500000000,
+  "observed_free_bytes_now": 2911100928,
+  "original_records": {
+    "cold-release-peer-qualification.json": {
+      "bytes": 8660,
+      "copy_byte_exact": true,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-release-cold-archive-relocation-20261123/peer/qualification.json",
+      "sha256": "04685005151c1d8c0c0d7cc5f062769ce736347b079bcbf86546f629a8983159"
+    },
+    "cold-release-relocation-receipt.json": {
+      "bytes": 2320,
+      "copy_byte_exact": true,
+      "original_path": "/mnt/development/projects/diagnostics/coherent-release-cold-archive-relocation-20261123/relocation-receipt.json",
+      "sha256": "c16b2fbd7c6d7aa66ed583b4d57785e4be102cf300620c3e1596791a325bce25"
+    },
+    "cold-sdk-relocation-receipt.json": {
+      "bytes": 2162,
+      "copy_byte_exact": true,
+      "original_path": "/mnt/development/projects/diagnostics/sdk06-old-original-archive-relocation-20261123/relocation-receipt.json",
+      "sha256": "2592809d3b808c4950d9e8515e2cef8be674fb3d7a779fec29f0240009caa8cb"
+    },
+    "round8-receipt.json": {
+      "bytes": 18487,
+      "copy_byte_exact": true,
+      "original_path": "/mnt/development/projects/diagnostics/completed-worktree-docs-capacity-round8-20261123/root-exact-unmaterialization-attempt2/receipt.json",
+      "sha256": "3f74ed19a5c66c8d84a80156db73d37328a016ba57d11f02c13026e550ab1282"
+    },
+    "round9-receipt.json": {
+      "bytes": 2641,
+      "copy_byte_exact": true,
+      "original_path": "/mnt/development/projects/diagnostics/completed-worktree-docs-capacity-round9-20261123/root-exact-unmaterialization/receipt.json",
+      "sha256": "47dd6b8991b546219d4923bb9802dc3dbe5340d6f861d3918ecde0446dbff00a"
+    }
+  },
+  "protected_origins": {
+    "all_protected_original_bytes_and_metadata_unchanged_per_qualified_round_receipts": true,
+    "e7_status_sha256": "95b3bcb0d1b7b5675f8b22ae6470d1a90e4c603e0c19022a2c6f97817380fb24",
+    "e7_untracked_backups_retained": 110,
+    "worktrees": 3
+  },
+  "protocol": "pinkha-oracle-capacity-recovery-checkpoint-round9-cold-originals-v1",
+  "reserves_not_lowered": true,
+  "round8": {
+    "allocated_bytes_released": 81932288,
+    "duplicate_docs": 4766,
+    "receipt": "round8-receipt.json",
+    "target_count": 24
+  },
+  "round9": {
+    "allocated_bytes_released": 170999808,
+    "duplicate_docs": 6201,
+    "receipt": "round9-receipt.json",
+    "target_count": 2,
+    "unique_nonmatching_docs_retained": 227
+  },
+  "source_parent": "052b7035a3851d2c80a27242751729316cec7919"
+}

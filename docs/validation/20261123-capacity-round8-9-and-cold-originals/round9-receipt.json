@@ -1,0 +1,50 @@
+{
+  "allocated_bytes_released": 170999808,
+  "common_git_config_unchanged": true,
+  "excluded_files": 6201,
+  "finished_utc": "2026-11-23T10:16:17.026825+00:00",
+  "free_bytes_after": 2375741440,
+  "free_bytes_before": 2198675456,
+  "git_refs_or_objects_removed": 0,
+  "observed_free_delta": 177065984,
+  "physical_originals_preserved": 3178,
+  "plan_sha256": "9aa4e62b96d4f23ed5c6e41a2a673855e85fec901dc69797f0e8026aa8cc815f",
+  "restoration": "For each exact pinned unchanged detached worktree, verify HEAD/index object entries and absence of subsequent user changes. With capacity for this round, retain temporary per-worktree sparseCheckout=true and apply an include-all /* pattern, then run git read-tree -mu HEAD to rematerialize the6201 admitted paths across both targets. Verify zero skip flags, exact candidate Git/SHA/modes and unchanged noncandidate metadata. Only then restore saved config.worktree bytes/presence and remove the newly created sparse file (originally absent); verify the exact original non-sparse configuration and unchanged index object entries. Never overwrite the old index backup or reset staged objects.",
+  "source_product_original_files_deleted": 0,
+  "status": "PASS_EXACT_REVERSIBLE_DUPLICATE_DOCS_UNMATERIALIZATION",
+  "worktrees": [
+    {
+      "all_other_materialized_files_unchanged": true,
+      "branch": null,
+      "clean_after": true,
+      "common_config_unchanged": true,
+      "exact_skip_set": true,
+      "exact_skip_union": true,
+      "excluded_count": 3178,
+      "head": "26f7966a10cdea1e65ae9467671e1ed6fd56d66e",
+      "head_branch_tree_and_index_entries_unchanged": true,
+      "patterns_sha256": "3bd40a866fd838b86522d5473b9e58caa6b0266f4f81ba91bbad494d5b8a05f3",
+      "preserved_file_count": 6507,
+      "prior_exclusions_preserved": 0,
+      "total_exact_exclusions": 3178,
+      "worktree": "/mnt/development/projects/worktrees/anytype-followups-waxqv0pw-20261122"
+    },
+    {
+      "all_other_materialized_files_unchanged": true,
+      "branch": null,
+      "clean_after": true,
+      "common_config_unchanged": true,
+      "exact_skip_set": true,
+      "exact_skip_union": true,
+      "excluded_count": 3023,
+      "head": "15742f45f53d15ced295e7d699a75e06b72691f7",
+      "head_branch_tree_and_index_entries_unchanged": true,
+      "patterns_sha256": "1deb621e4bdb4de0bc46354fcea8a079f66e271aa1599af13603578a1f3eb46e",
+      "preserved_file_count": 6649,
+      "prior_exclusions_preserved": 0,
+      "total_exact_exclusions": 3023,
+      "worktree": "/mnt/development/projects/worktrees/anytype-lock-resolution-draft-waxqv0pw-20261122"
+    }
+  ],
+  "worktrees_removed": 0
+}
