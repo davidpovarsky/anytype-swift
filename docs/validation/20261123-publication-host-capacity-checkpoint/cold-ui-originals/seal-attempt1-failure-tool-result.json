@@ -1,0 +1,21 @@
+{
+  "cleanup": true,
+  "command": [
+    "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+    "-NoProfile",
+    "-NonInteractive",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_41b816fbfc184fd8a7d518dae51ed9bb\\sentinelx_bootstrap.ps1",
+    "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_41b816fbfc184fd8a7d518dae51ed9bb\\script.ps1"
+  ],
+  "cwd": null,
+  "duration": 0.73,
+  "hub_request_id": "hreq_ba92040e22db4c7e",
+  "interpreter": "powershell",
+  "ok": false,
+  "output": "Small original owner mismatch\r\nAt C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_41b816fbfc184fd8a7d518dae51ed9bb\\script.ps1:26 \r\nchar:33\r\n+ ... if($owner -ne $who.User.Value){throw 'Small original owner mismatch'}\r\n+                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (Small original owner mismatch:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : Small original owner mismatch",
+  "returncode": 1,
+  "sudo": false
+}

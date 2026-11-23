@@ -1,0 +1,94 @@
+{
+  "copy": [
+    {
+      "after": "$sourceRecord=ConvertFrom-Json -InputObject @'\n{\"app_source\":\"9cafd32811e50f4e883efb034888d7ce1e349c02\",\"artifact_id\":14807326846,\"at\":\"2026-11-23T12:15:50.218328+00:00\",\"free_bytes\":2911289344,\"metadata\":{\"allocated\":\"140206080\",\"bytes\":\"140198044\",\"ctime_ns\":\"1795429705526433843\",\"device\":\"2064\",\"gid\":\"1002\",\"inode\":\"1469064\",\"mode\":\"256\",\"mtime_ns\":\"1795429704588428412\",\"nlink\":\"1\",\"uid\":\"1001\"},\"origin_api\":{\"bytes\":758,\"path\":\"/mnt/development/projects/diagnostics/native-ui-451483-original-result-20261123/original-artifact-metadata.json\",\"sha256\":\"4f845f0c3c5a612ae911a269ebcee361863cdb884b427f37a060add27f50fedf\"},\"origin_attempt\":1,\"origin_run\":45148353071,\"original_acquisition\":{\"bytes\":769,\"path\":\"/mnt/development/projects/diagnostics/native-ui-451483-original-result-20261123/acquisition.json\",\"sha256\":\"0c2f916df72e768cba00d27865ffa800eace699167796b72c4b54fc03ee1109d\"},\"path\":\"/mnt/development/projects/diagnostics/native-ui-451483-original-result-20261123/artifact-14807326846.zip\",\"qualification\":\"Copy-only full source hash and four stable exact metadata observations; final peer and reader gate required before redundant Oracle unlink.\",\"sha256\":\"d30b144798580d7533e309aca2d3acf60191a94a7a9f025e04b89192c7d79ba8\",\"source_mutations\":0,\"status\":\"SOURCE_ARCHIVE_BYTES_VERIFIED_READ_ONLY\"}\n'@\n$remotePython=",
+      "before": "$sourceRecord=ConvertFrom-Json -InputObject @'\n{\"status\":\"SOURCE_ARCHIVE_BYTES_VERIFIED_READ_ONLY\",\"at\":\"2026-11-23T11:11:35.491784+00:00\",\"path\":\"/mnt/development/projects/diagnostics/semantic-page-pinned-consumer-20261123/terminal-audit/artifact-14794983588.zip\",\"metadata\":{\"allocated\":\"703295488\",\"bytes\":\"703289417\",\"ctime_ns\":\"1795416720571794129\",\"device\":\"2064\",\"gid\":\"1002\",\"inode\":\"1114801\",\"mode\":\"436\",\"mtime_ns\":\"1795416720054790888\",\"nlink\":\"1\",\"uid\":\"1001\"},\"sha256\":\"082d7cf6c589c6770186390091d997de29d7148fe917ea2f0785450688cada46\",\"source_mutations\":0,\"app_source\":\"68148339c275268795360d71d519a5baf003adf8\",\"origin_run\":45116855451,\"origin_attempt\":1,\"artifact_id\":14794983588,\"pinned_admission\":\"Tools/PinkhaSemanticAnchorWire/apple_mounted/admissions/45116855451-1.json\",\"pinned_admission_source\":\"c0c1f851f80322c9f532e86505047498dfaf1adf\",\"qualification\":\"Copy-only full source hash and four stable exact metadata observations; final peer and reader gate required before redundant Oracle unlink.\"}\n'@\n$remotePython=",
+      "count": 1,
+      "label": "exact source record"
+    },
+    {
+      "after": "$evidenceDirectory=Join-Path $evidenceParent 'native-ui-original-45148353071-1'",
+      "before": "$evidenceDirectory=Join-Path $evidenceParent 'semantic-page-original-45116855451-1'",
+      "count": 1,
+      "label": "fresh evidence child"
+    },
+    {
+      "after": "$expectedBytes=[long]140198044",
+      "before": "$expectedBytes=[long]703289417",
+      "count": 1,
+      "label": "expected bytes"
+    },
+    {
+      "after": "$expectedSha='d30b144798580d7533e309aca2d3acf60191a94a7a9f025e04b89192c7d79ba8'",
+      "before": "$expectedSha='082d7cf6c589c6770186390091d997de29d7148fe917ea2f0785450688cada46'",
+      "count": 1,
+      "label": "expected digest"
+    },
+    {
+      "after": "p=pathlib.Path('/mnt/development/projects/diagnostics/native-ui-451483-original-result-20261123/artifact-14807326846.zip')",
+      "before": "p=pathlib.Path('/mnt/development/projects/diagnostics/semantic-page-pinned-consumer-20261123/terminal-audit/artifact-14794983588.zip')",
+      "count": 1,
+      "label": "remote exact path"
+    },
+    {
+      "after": "expected={k:int(v) for k,v in json.loads('{\"allocated\":\"140206080\",\"bytes\":\"140198044\",\"ctime_ns\":\"1795429705526433843\",\"device\":\"2064\",\"gid\":\"1002\",\"inode\":\"1469064\",\"mode\":\"256\",\"mtime_ns\":\"1795429704588428412\",\"nlink\":\"1\",\"uid\":\"1001\"}').items()}",
+      "before": "expected={k:int(v) for k,v in json.loads('{\"allocated\":\"703295488\",\"bytes\":\"703289417\",\"ctime_ns\":\"1795416720571794129\",\"device\":\"2064\",\"gid\":\"1002\",\"inode\":\"1114801\",\"mode\":\"436\",\"mtime_ns\":\"1795416720054790888\",\"nlink\":\"1\",\"uid\":\"1001\"}').items()}",
+      "count": 1,
+      "label": "remote metadata strings"
+    },
+    {
+      "after": "count+=len(b);assert count<=140198044",
+      "before": "count+=len(b);assert count<=703289417",
+      "count": 1,
+      "label": "remote byte bound"
+    },
+    {
+      "after": "assert count==140198044 and digest.hexdigest()=='d30b144798580d7533e309aca2d3acf60191a94a7a9f025e04b89192c7d79ba8'",
+      "before": "assert count==703289417 and digest.hexdigest()=='082d7cf6c589c6770186390091d997de29d7148fe917ea2f0785450688cada46'",
+      "count": 1,
+      "label": "remote final bytes digest"
+    },
+    {
+      "after": "$partial=Join-Path $evidenceDirectory 'original-14807326846.zip.partial'",
+      "before": "$partial=Join-Path $evidenceDirectory 'original-14794983588.zip.partial'",
+      "count": 1,
+      "label": "partial name"
+    },
+    {
+      "after": "$final=Join-Path $evidenceDirectory 'original-14807326846.zip'",
+      "before": "$final=Join-Path $evidenceDirectory 'original-14794983588.zip'",
+      "count": 1,
+      "label": "final name"
+    }
+  ],
+  "preexecution_composer_failure": {
+    "reason": "First in-memory inverse used a generic repeated path token; refused before any Oracle/Windows writes or copy. Replaced with unique complete statement anchors.",
+    "source_or_destination_mutations": 0
+  },
+  "readback": [
+    {
+      "after": "$evidenceDirectory=Join-Path $evidenceParent 'native-ui-original-45148353071-1'",
+      "before": "$evidenceDirectory=Join-Path $evidenceParent 'semantic-page-original-45116855451-1'",
+      "count": 1,
+      "label": "fresh evidence child"
+    },
+    {
+      "after": "$expectedBytes=[long]140198044",
+      "before": "$expectedBytes=[long]703289417",
+      "count": 1,
+      "label": "expected bytes"
+    },
+    {
+      "after": "$expectedSha='d30b144798580d7533e309aca2d3acf60191a94a7a9f025e04b89192c7d79ba8'",
+      "before": "$expectedSha='082d7cf6c589c6770186390091d997de29d7148fe917ea2f0785450688cada46'",
+      "count": 1,
+      "label": "expected digest"
+    },
+    {
+      "after": "$path=Join-Path $evidenceDirectory 'original-14807326846.zip'",
+      "before": "$path=Join-Path $evidenceDirectory 'original-14794983588.zip'",
+      "count": 1,
+      "label": "final name"
+    }
+  ]
+}

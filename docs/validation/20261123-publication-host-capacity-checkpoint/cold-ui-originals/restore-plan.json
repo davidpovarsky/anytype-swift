@@ -1,0 +1,37 @@
+{
+  "bytes": 140198044,
+  "destination_oracle": "/mnt/development/projects/diagnostics/native-ui-451483-original-result-20261123/artifact-14807326846.zip",
+  "network_redownload_required": false,
+  "original_oracle_metadata_strings": {
+    "allocated": "140206080",
+    "bytes": "140198044",
+    "ctime_ns": "1795429705526433843",
+    "device": "2064",
+    "gid": "1002",
+    "inode": "1469064",
+    "mode": "256",
+    "mtime_ns": "1795429704588428412",
+    "nlink": "1",
+    "uid": "1001"
+  },
+  "project_code_or_products_move": false,
+  "sha256": "d30b144798580d7533e309aca2d3acf60191a94a7a9f025e04b89192c7d79ba8",
+  "source_windows": "C:\\Users\\DAVID\\AppData\\Local\\SentinelX\\anytapy-immutable-evidence\\native-ui-original-45148353071-1\\original-14807326846.zip",
+  "status": "RESTORE_RECIPE_ONLY_NOT_EXECUTED",
+  "steps": [
+    "Refresh both source Windows immutable identity/security and Oracle capacity/process checks.",
+    "Refuse if the exact original destination or any reparse/symlink component exists; never overwrite it.",
+    "Create a fresh task-owned .partial beside the target with O_CREAT|O_EXCL|O_NOFOLLOW and mode 0600.",
+    "Stream exactly 140198044 bytes from the retained private archive via the existing authenticated connection; verify full SHA-256 and size on both ends without exposing credentials.",
+    "fsync the completed file; set the original uid 1001, gid 1002, mode 0400 and mtime_ns 1795429704588428412 only on that fresh file.",
+    "Publish without replacement, fsync its parent directory and preserve an original restore receipt; verify exact bytes/hash/mode/uid/gid/mtime.",
+    "Record the new inode, ctime and destination identity honestly; they cannot be recreated as the historical inode/ctime."
+  ],
+  "windows_identity": {
+    "non_reparse": true,
+    "ntfs_file_id": "File ID is 0x000000000000000000150000001a09dc",
+    "owner_sid": "S-1-5-21-2914620446-786530585-2031499938-1001",
+    "readonly": true,
+    "sddl": "O:S-1-5-21-2914620446-786530585-2031499938-1001G:S-1-5-21-2914620446-786530585-2031499938-1001D:PAI(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;S-1-5-21-2914620446-786530585-2031499938-1001)"
+  }
+}

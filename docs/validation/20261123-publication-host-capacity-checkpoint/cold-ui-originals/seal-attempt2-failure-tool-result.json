@@ -1,0 +1,30 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"ok\":false,\"interpreter\":\"powershell\",\"sudo\":false,\"cwd\":null,\"cleanup\":true,\"command\":[\"C:\\\\WINDOWS\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.EXE\",\"-NoProfile\",\"-NonInteractive\",\"-ExecutionPolicy\",\"Bypass\",\"-File\",\"C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_d193e7b746b7432db96b6e6edce2c2b6\\\\sentinelx_bootstrap.ps1\",\"C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_d193e7b746b7432db96b6e6edce2c2b6\\\\script.ps1\"],\"output\":\"Exception calling \\\"SetAccessControl\\\" with \\\"1\\\" argument(s): \\\"Attempted to perform an unauthorized operation.\\\"\\r\\nAt C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_d193e7b746b7432db96b6e6edce2c2b6\\\\script.ps1:48 char:2\\r\\n+  $stream.SetAccessControl($sealSecurity)\\r\\n+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\r\\n    + CategoryInfo          : NotSpecified: (:) [], ParentContainsErrorRecordException\\r\\n    + FullyQualifiedErrorId : UnauthorizedAccessException\",\"duration\":0.89,\"returncode\":1,\"hub_request_id\":\"hreq_a2bb618ddcdb4343\"}"
+    }
+  ],
+  "structuredContent": {
+    "ok": false,
+    "interpreter": "powershell",
+    "sudo": false,
+    "cwd": null,
+    "cleanup": true,
+    "command": [
+      "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_d193e7b746b7432db96b6e6edce2c2b6\\sentinelx_bootstrap.ps1",
+      "C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_d193e7b746b7432db96b6e6edce2c2b6\\script.ps1"
+    ],
+    "output": "Exception calling \"SetAccessControl\" with \"1\" argument(s): \"Attempted to perform an unauthorized operation.\"\r\nAt C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_d193e7b746b7432db96b6e6edce2c2b6\\script.ps1:48 char:2\r\n+  $stream.SetAccessControl($sealSecurity)\r\n+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : NotSpecified: (:) [], ParentContainsErrorRecordException\r\n    + FullyQualifiedErrorId : UnauthorizedAccessException",
+    "duration": 0.89,
+    "returncode": 1,
+    "hub_request_id": "hreq_a2bb618ddcdb4343"
+  },
+  "isError": false
+}
