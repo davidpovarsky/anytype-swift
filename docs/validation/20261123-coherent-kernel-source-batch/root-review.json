@@ -1,0 +1,214 @@
+{
+  "actualNewMethods": 2,
+  "actualOwnedCommand": {
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "-c",
+      "print('COHERENT_NEW_SCOPE')"
+    ],
+    "cleanup_profile": "coherent-heart-release",
+    "controller_process_id": 2271599,
+    "cwd": "/tmp/coherent-kernel-control-mq_351wr",
+    "finished_at": "2026-11-23T06:58:41.054414+00:00",
+    "original_owned_command": "new-coherent-command.owned.command.json",
+    "original_owned_command_sha256": "2950ecbd4b8ba53513ad26b4816b008df5f661441d893a2d735e80946c60ec44",
+    "owned_group_quiescence": {
+      "absence_source": "KERNEL_ESRCH",
+      "budget_seconds": 10,
+      "kernel_group_observation": {
+        "after_monotonic": 6944192.884619899,
+        "before_monotonic": 6944192.884605419,
+        "deadline_monotonic": 6944202.884603419,
+        "errno": 3,
+        "error_type": "ProcessLookupError",
+        "operation": "os.killpg",
+        "outcome": "ABSENT_ESRCH",
+        "pgid": 2271599,
+        "signal": 0
+      },
+      "live_members": 0,
+      "observations": 0,
+      "pgid": 2271599,
+      "status": "PASS",
+      "timeout_observations": []
+    },
+    "owned_group_termination": "TERM_THEN_KILL",
+    "return_code": 0,
+    "started_at": "2026-11-23T06:58:41.018139+00:00",
+    "status": "SUCCESS",
+    "timeout_seconds": 15
+  },
+  "allSourcePhysicalAndFrozenGitMatch": true,
+  "events": [
+    {
+      "at": "2026-11-23T06:58:41.017245+00:00",
+      "event": "START",
+      "method": "test_coherent_kernel_sources.CoherentKernelAndSourceControls.test_coherent_owned_readiness_and_nested_cleanup_use_exact_kernel_absence"
+    },
+    {
+      "at": "2026-11-23T06:58:41.058684+00:00",
+      "event": "PASS",
+      "method": "test_coherent_kernel_sources.CoherentKernelAndSourceControls.test_coherent_owned_readiness_and_nested_cleanup_use_exact_kernel_absence"
+    },
+    {
+      "at": "2026-11-23T06:58:41.059229+00:00",
+      "event": "START",
+      "method": "test_coherent_kernel_sources.CoherentKernelAndSourceControls.test_single_git_batch_preserves_exact_loaded_closure_and_rejects_corruption"
+    },
+    {
+      "at": "2026-11-23T06:58:41.119179+00:00",
+      "event": "PASS",
+      "method": "test_coherent_kernel_sources.CoherentKernelAndSourceControls.test_single_git_batch_preserves_exact_loaded_closure_and_rejects_corruption"
+    }
+  ],
+  "exactInverseSourceChanges": {
+    "Tools/PinkhaSimulatorGate/coherent_original_products.py": {
+      "afterSHA256": "0a4f5baf10d3fc19c902d7c9286375063e0f442ae7513637e513045629649a89",
+      "beforeSHA256": "d4e63a0dd1ab81c291a28460ffcee6c8f38285c55588698e24592b1e0dd72e15",
+      "new": "        from coherent_controller_sources import control_sources\n        return control_sources(self.control, self.control_sha)\n",
+      "old": "        return products.control_sources(self.control, self.control_sha)\n",
+      "wholeOriginalRecovered": true
+    },
+    "Tools/PinkhaSimulatorGate/run_owned_single_lane.py": {
+      "afterSHA256": "489f5460b9321ae190a0a970b8a18d7d94c2bf6f89c2c54e21bfd37432cc4a0f",
+      "beforeSHA256": "098ad2c7b480ba74644cb35259bf9abc817af47a9611df6d580c18b466dac359",
+      "new": "    if cleanup_profile in (\"sdk06-enumeration\", owned.COHERENT_HEART_PROFILE):\n",
+      "old": "    if cleanup_profile == \"sdk06-enumeration\":\n",
+      "wholeOriginalRecovered": true
+    }
+  },
+  "loadedRepositoryModules": {
+    "Tools/PinkhaSimulatorGate/coherent_controller_sources.py": {
+      "gitSHA256": "493fa855797fd52a27f10d68406342676a35f325bac67acedeb27ded3b945008",
+      "matchesFrozenGit": true,
+      "modulePath": "/mnt/development/projects/worktrees/anytype-wave15-coherent-kernel-20261123/Tools/PinkhaSimulatorGate/coherent_controller_sources.py",
+      "sha256": "493fa855797fd52a27f10d68406342676a35f325bac67acedeb27ded3b945008"
+    },
+    "Tools/PinkhaSimulatorGate/coherent_release_cleanup.py": {
+      "gitSHA256": "d6af82a33bf8b120cf9f1d641da1ce3efd843777a417abcfb3e15ab7893019f0",
+      "matchesFrozenGit": true,
+      "modulePath": "/mnt/development/projects/worktrees/anytype-wave15-coherent-kernel-20261123/Tools/PinkhaSimulatorGate/coherent_release_cleanup.py",
+      "sha256": "d6af82a33bf8b120cf9f1d641da1ce3efd843777a417abcfb3e15ab7893019f0"
+    },
+    "Tools/PinkhaSimulatorGate/destination_artifacts.py": {
+      "gitSHA256": "55c076f86990e74c2b3908a1474f1bb224c7ca52f00d1f9fe162f40be8814280",
+      "matchesFrozenGit": true,
+      "modulePath": "/mnt/development/projects/worktrees/anytype-wave15-coherent-kernel-20261123/Tools/PinkhaSimulatorGate/destination_artifacts.py",
+      "sha256": "55c076f86990e74c2b3908a1474f1bb224c7ca52f00d1f9fe162f40be8814280"
+    },
+    "Tools/PinkhaSimulatorGate/run_owned_single_lane.py": {
+      "gitSHA256": "489f5460b9321ae190a0a970b8a18d7d94c2bf6f89c2c54e21bfd37432cc4a0f",
+      "matchesFrozenGit": true,
+      "modulePath": "/mnt/development/projects/worktrees/anytype-wave15-coherent-kernel-20261123/Tools/PinkhaSimulatorGate/run_owned_single_lane.py",
+      "sha256": "489f5460b9321ae190a0a970b8a18d7d94c2bf6f89c2c54e21bfd37432cc4a0f"
+    },
+    "Tools/PinkhaSimulatorGate/run_t5_apple_pair.py": {
+      "gitSHA256": "11e11ec19eca11d506f56b37ad8ff76bcdbc40a28a4c233b4e57cb86432b1340",
+      "matchesFrozenGit": true,
+      "modulePath": "/mnt/development/projects/worktrees/anytype-wave15-coherent-kernel-20261123/Tools/PinkhaSimulatorGate/run_t5_apple_pair.py",
+      "sha256": "11e11ec19eca11d506f56b37ad8ff76bcdbc40a28a4c233b4e57cb86432b1340"
+    },
+    "Tools/PinkhaSimulatorGate/test_coherent_kernel_sources.py": {
+      "gitSHA256": "613aa368644b5a202c3f659d94c74f28dadd3972ea32a7ff31857f0e023907b0",
+      "matchesFrozenGit": true,
+      "modulePath": "/mnt/development/projects/worktrees/anytype-wave15-coherent-kernel-20261123/Tools/PinkhaSimulatorGate/test_coherent_kernel_sources.py",
+      "sha256": "613aa368644b5a202c3f659d94c74f28dadd3972ea32a7ff31857f0e023907b0"
+    },
+    "Tools/PinkhaSimulatorGate/type_preservation.py": {
+      "gitSHA256": "602a91987a6995f0218840744af0d88c2ea5c65d34c4edba7f030808c5007b44",
+      "matchesFrozenGit": true,
+      "modulePath": "/mnt/development/projects/worktrees/anytype-wave15-coherent-kernel-20261123/Tools/PinkhaSimulatorGate/type_preservation.py",
+      "sha256": "602a91987a6995f0218840744af0d88c2ea5c65d34c4edba7f030808c5007b44"
+    },
+    "Tools/PinkhaSimulatorGate/wave15_batch.py": {
+      "gitSHA256": "0b743b54a62610d9cdb2b92a97e73b479ba347e241c1fa29eb8b8baa348aa5a0",
+      "matchesFrozenGit": true,
+      "modulePath": "/mnt/development/projects/worktrees/anytype-wave15-coherent-kernel-20261123/Tools/PinkhaSimulatorGate/wave15_batch.py",
+      "sha256": "0b743b54a62610d9cdb2b92a97e73b479ba347e241c1fa29eb8b8baa348aa5a0"
+    },
+    "Tools/PinkhaSimulatorGate/wave15_diagnostics.py": {
+      "gitSHA256": "c1ca1fe8857e6ce71b91ffb49ff54627815cbfe44beaa1bbb7328c9bb7a55397",
+      "matchesFrozenGit": true,
+      "modulePath": "/mnt/development/projects/worktrees/anytype-wave15-coherent-kernel-20261123/Tools/PinkhaSimulatorGate/wave15_diagnostics.py",
+      "sha256": "c1ca1fe8857e6ce71b91ffb49ff54627815cbfe44beaa1bbb7328c9bb7a55397"
+    }
+  },
+  "newBuilds": 0,
+  "oldControlsRerun": 0,
+  "originalCopies": {
+    "audit.json": {
+      "bytes": 2873,
+      "sha256": "b2b1f943f6f29fb6f88fe0a34854638f944e71a18ef546879e2ff69d4fe7a788"
+    },
+    "controls.log": {
+      "bytes": 744,
+      "sha256": "167d74ba44c4c553729f71ac002620778eb3ad3bcc8021f6b4cbf814c755cc26"
+    },
+    "events.json": {
+      "bytes": 917,
+      "sha256": "407297e2379aabe2165cef4eae6eede15755166f345658fde28888bb42c4f0d5"
+    },
+    "intent.json": {
+      "bytes": 913,
+      "sha256": "4cae3a171a449d0546020509ee77d09bd2041d3adf89ab6793a77fc0de8835ee"
+    },
+    "loaded-source-map.json": {
+      "bytes": 3658,
+      "sha256": "f9d7ceb923b24c1d220dcb9bd0c2e1c60ca9c7b12585b7ae9c8ab06269e760e8"
+    },
+    "original-controller.py": {
+      "bytes": 9384,
+      "sha256": "dc6bf3615eada618d361a72e85370b4b4be8fb58c9a69cef74ffd96d9bc63ded"
+    },
+    "owned-command-originals/new-coherent-command.command.json": {
+      "bytes": 1187,
+      "sha256": "189dc70d2ad2ab13b506677294461fb41fd2d2d75ad24daf14ab861c36997013"
+    },
+    "owned-command-originals/new-coherent-command.log": {
+      "bytes": 19,
+      "sha256": "0ce4b088059be1efc120a2d04cc9b273920d858a0bbfc8842ade48ee4b30efb1"
+    },
+    "owned-command-originals/new-coherent-command.owned.command.json": {
+      "bytes": 390,
+      "sha256": "2950ecbd4b8ba53513ad26b4816b008df5f661441d893a2d735e80946c60ec44"
+    },
+    "result.json": {
+      "bytes": 5502,
+      "sha256": "8875b03e613d4ff97511dc99088adda4185afc7ee60364fa700ee1439567da2d"
+    },
+    "source-after.json": {
+      "bytes": 76124,
+      "sha256": "1d861efe98ae410b4a0d552d7825b4fef32c74871c2edec78ea884bb4fd75565"
+    },
+    "source-before.json": {
+      "bytes": 76124,
+      "sha256": "1d861efe98ae410b4a0d552d7825b4fef32c74871c2edec78ea884bb4fd75565"
+    }
+  },
+  "productMethodsRerun": 0,
+  "qualificationSHA256": "5b24bb7e68e5246c11a707498b58078f8f66f3afa79dcf899695546d7043c6a4",
+  "reviewedAt": "2026-11-23T07:06:48.623520+00:00",
+  "reviewedHead": "0976cc8575313ccd0360f7fddbedc27cbddacae9",
+  "schemaVersion": 1,
+  "scope": "Two newly executed coherent controller controls; exact original kernel helper and unaffected source recovered. Apple/Release acceptance remains NOT_RUN.",
+  "sourceBeforeAfterSHA256": "1d861efe98ae410b4a0d552d7825b4fef32c74871c2edec78ea884bb4fd75565",
+  "sourceCommit": "1c4b690b7776e8330a4b3bfb34dcc37b0f76d65d",
+  "sourceInputs": 300,
+  "sourceReviewSHA256": "f8fa746c88f366256b02822843d291cb208cf52d0c86d94f8272e4cb116bf345",
+  "status": "INDEPENDENT_ROOT_REVIEW_PASS",
+  "transportOriginals": {
+    "wrapper-exit.json": {
+      "bytes": 103,
+      "sha256": "cf323a1c99befd400e6184fdf4795d163687879eade1d67a2f5178496fc01f8f"
+    },
+    "wrapper.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "wrapper.stdout": {
+      "bytes": 364,
+      "sha256": "0f6d777630cab28d250af237df38ccddf4d65f83e7641a9069520c054fe5e35b"
+    }
+  }
+}
