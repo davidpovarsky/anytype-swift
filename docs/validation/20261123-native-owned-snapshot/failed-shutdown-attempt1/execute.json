@@ -1,0 +1,94 @@
+{
+  "accountSessionACLAuthorized": false,
+  "actual_named_passes": [
+    "TestNativeOwnedSnapshotShutdownAndCanceledAcquire"
+  ],
+  "actual_named_starts": [
+    "TestNativeOwnedSnapshotShutdownAndCanceledAcquire"
+  ],
+  "base_controller_sha256": "9fbd3a53f10caf7869f0a81ce69517c1d546747bea170c9ca9031a6c8e0b70c6",
+  "binary": {
+    "bytes": 48807703,
+    "mode": 509,
+    "sha256": "8fb5ab8a7f8e62a61cdca4bc87f91f4f02e0af970bcd9d072916b57224db3942"
+  },
+  "command": {
+    "argv": [
+      "/mnt/development/toolchains/go1.27.4/go/bin/go",
+      "tool",
+      "test2json",
+      "-t",
+      "-p",
+      "github.com/anyproto/anytype-heart/core/pinkha/localstorewitness",
+      "/mnt/development/projects/evidence/native-owned-snapshot-20261123/failed-shutdown-attempt1/products/native-owned-snapshot.test",
+      "-test.v=test2json",
+      "-test.run=^TestNativeOwnedSnapshotShutdownAndCanceledAcquire$",
+      "-test.timeout=90s",
+      "-test.count=1"
+    ],
+    "cleanup_error": null,
+    "cleanup_group_initially_absent": true,
+    "cwd": "/mnt/development/projects/worktrees/anytype-heart-native-owned-snapshot-20261123",
+    "elapsed_seconds": 1.2544544283300638,
+    "finished": "2026-11-23T14:36:26.489429+00:00",
+    "free_after": 2913910784,
+    "free_before": 2920386560,
+    "interruption": null,
+    "owned_group_absent": true,
+    "pgid": 2834526,
+    "pid": 2834526,
+    "post_exit_admitted": true,
+    "post_exit_observation": {
+      "above_stop_reserve": true,
+      "elapsed_seconds": 1.2516942927613854,
+      "free_bytes": 2913910784,
+      "within_deadline": true
+    },
+    "primary_error": null,
+    "returncode": 0,
+    "started": "2026-11-23T14:36:25.234944+00:00",
+    "status": "PASS",
+    "stderr": {
+      "bytes": 0,
+      "mode": 384,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout": {
+      "bytes": 2433,
+      "mode": 384,
+      "sha256": "be225c5da1e877704ad2d83a5321e9f17638d7952d84556badd27282e209fcc0"
+    },
+    "timeout_seconds": 120
+  },
+  "controller_sha256": "e55c26d1684e242179a3579bae78b9c58261dd5a62b73efcba3a83490104fbdb",
+  "controller_source_sha": "44e09f96353186e56ecdbefe0d0cd7e059097d9d",
+  "fd_counts": {
+    "after_original_close": 0,
+    "after_rejected_open": 4,
+    "baseline": 2,
+    "inflight": 3
+  },
+  "filePayloadCoverageComplete": false,
+  "final_capacity_admitted": true,
+  "final_errors": [],
+  "finished": "2026-11-23T14:36:27.663076+00:00",
+  "free_bytes_final": 2912890880,
+  "hasNativeSourceAdmission": false,
+  "loaded_after_count": 75,
+  "loaded_before_count": 75,
+  "manifest_sha256": "013d01e1b1e0d2eaa2e4b7cf91410ce7b40fb07a0dd7f2b4c85c82ce658695b9",
+  "native_source_sha": "ba965ac243c6501a1a7083ce0e07d3557650db00",
+  "original_failed_execute_sha256": "b0d8a59ab46b66125e4a903ee498743db319497000b98fbf9724f448a1945d0d",
+  "permitsDestinationWrites": false,
+  "primary_error": null,
+  "retained_methods_reexecuted": 0,
+  "retained_named_passes": [
+    "TestNativeOwnedSnapshotBindsActualServiceHandle",
+    "TestNativeOwnedSnapshotCloseRevokesAndDrains",
+    "TestNativeOwnedSnapshotDeletePreservesLeaseBoundary"
+  ],
+  "semanticIdentityCensusComplete": false,
+  "stage": "execute",
+  "started": "2026-11-23T14:36:24.035407+00:00",
+  "status": "PASS_FAILED_SHUTDOWN_METHOD_ONLY"
+}

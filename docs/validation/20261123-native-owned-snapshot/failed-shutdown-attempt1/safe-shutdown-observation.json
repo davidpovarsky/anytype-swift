@@ -1,0 +1,84 @@
+{
+  "actual_named_passes": [
+    "TestNativeOwnedSnapshotShutdownAndCanceledAcquire"
+  ],
+  "actual_named_starts": [
+    "TestNativeOwnedSnapshotShutdownAndCanceledAcquire"
+  ],
+  "events": [
+    {
+      "Action": "start",
+      "Package": "github.com/anyproto/anytype-heart/core/pinkha/localstorewitness",
+      "Time": "2026-11-23T14:36:25.315475328Z"
+    },
+    {
+      "Action": "run",
+      "Package": "github.com/anyproto/anytype-heart/core/pinkha/localstorewitness",
+      "Test": "TestNativeOwnedSnapshotShutdownAndCanceledAcquire",
+      "Time": "2026-11-23T14:36:26.216475121Z"
+    },
+    {
+      "Action": "output",
+      "Package": "github.com/anyproto/anytype-heart/core/pinkha/localstorewitness",
+      "Test": "TestNativeOwnedSnapshotShutdownAndCanceledAcquire",
+      "Time": "2026-11-23T14:36:26.216546441Z"
+    },
+    {
+      "Action": "output",
+      "Package": "github.com/anyproto/anytype-heart/core/pinkha/localstorewitness",
+      "Test": "TestNativeOwnedSnapshotShutdownAndCanceledAcquire",
+      "Time": "2026-11-23T14:36:26.292832681Z"
+    },
+    {
+      "Action": "output",
+      "Package": "github.com/anyproto/anytype-heart/core/pinkha/localstorewitness",
+      "Test": "TestNativeOwnedSnapshotShutdownAndCanceledAcquire",
+      "Time": "2026-11-23T14:36:26.293197843Z"
+    },
+    {
+      "Action": "output",
+      "Package": "github.com/anyproto/anytype-heart/core/pinkha/localstorewitness",
+      "Test": "TestNativeOwnedSnapshotShutdownAndCanceledAcquire",
+      "Time": "2026-11-23T14:36:26.299327839Z"
+    },
+    {
+      "Action": "pass",
+      "Elapsed": 0.08,
+      "Package": "github.com/anyproto/anytype-heart/core/pinkha/localstorewitness",
+      "Test": "TestNativeOwnedSnapshotShutdownAndCanceledAcquire",
+      "Time": "2026-11-23T14:36:26.299356999Z"
+    },
+    {
+      "Action": "output",
+      "Package": "github.com/anyproto/anytype-heart/core/pinkha/localstorewitness",
+      "Time": "2026-11-23T14:36:26.299381359Z"
+    },
+    {
+      "Action": "pass",
+      "Elapsed": 0.992,
+      "Package": "github.com/anyproto/anytype-heart/core/pinkha/localstorewitness",
+      "Time": "2026-11-23T14:36:26.307215684Z"
+    }
+  ],
+  "fd_counts": {
+    "after_original_close": 0,
+    "after_rejected_open": 4,
+    "baseline": 2,
+    "inflight": 3
+  },
+  "observation": {
+    "Counts": {
+      "baseline_native_db_fds": 2,
+      "observed_inflight_native_db_fds": 3
+    },
+    "Facts": {
+      "actual_inflight_sqlite_open_observed": true,
+      "canceled_acquisition_preserves_real_holder": true,
+      "closed_service_refuses_new_open": true,
+      "post_open_registration_rechecks_shutdown": true,
+      "service_shutdown_revokes_and_drains": true,
+      "unpublished_native_handle_closed": true
+    }
+  },
+  "original_four_method_aggregate_qualified": false
+}
