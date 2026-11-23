@@ -1,0 +1,43 @@
+{
+  "at": "2026-11-23T10:55:30.912284+00:00",
+  "exact_inverse_passed": true,
+  "failed_original_gate_path": "docs/validation/20261123-coherent-owned-continuation/root-source-retention-before-dispatch-attempt1-failed.json",
+  "failed_original_gate_sha256": "3bebfdc80c54febf53b799df6192776a8576cabcfb736122e75dc78c473ff295",
+  "map_after_sha256": "49490a0e4c9cb2fb101372b5131dd159ae06aedf22984503c734bccfb354bf0f",
+  "map_before_sha256": "74e362705d1e0263e7ca223519f475cda2113994422c67594a27c3b47c967e66",
+  "new_validation_count": 11,
+  "old_validation_count": 10,
+  "original_gate_streams": {
+    "main-source-gate-process.json": {
+      "bytes": 363,
+      "sha256": "18aec5275aeb2a26273be167b424c6e9a9d35bb71dc913276e63fa5d2e672945"
+    },
+    "main-source-gate.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "main-source-gate.stdout": {
+      "bytes": 34293,
+      "sha256": "3bebfdc80c54febf53b799df6192776a8576cabcfb736122e75dc78c473ff295"
+    }
+  },
+  "product_tests_or_builds": 0,
+  "qualified_controller_head": "6acab36f450ce411a8614f23e55cb14a5602ed58",
+  "runtime_pair_git_blob_unchanged": "fa8a0acbb5f2ee56cb42e6528a4abdee52a91912",
+  "source_gate_implementation_git_blob_unchanged": "5b579e9bbb5a82981b5aef7d649f2caf88e998b6",
+  "source_head": "26b61bbee7dac17339a90111602c7ec83c7844e4",
+  "status": "TWO_REVIEWED_INVENTORY_REFERENCES_REFRESHED_WITH_EXACT_WHOLE_FILE_INVERSE",
+  "updates": [
+    {
+      "new_git_blob": "8cbc5fdc2e404ec3b3a3b62e5739d52faa4dc4dd",
+      "old_git_blob": "ceae50f8850f80ef38664110025147baa23bdec5",
+      "path": "Tools/PinkhaSimulatorGate/coherent_heart_release.py"
+    },
+    {
+      "new_git_blob": "7d582eb21ec5c86129d05928fd222bc4ee54d00a",
+      "old_git_blob": "be7e63a71e7ebc116fb25993b405518e3e5a48c5",
+      "path": "Tools/PinkhaSimulatorGate/coherent_original_products.py"
+    }
+  ],
+  "validation_appended": "2026-11-23 owned continuation qualification6acab: seven reviewed controller/control files preserve the original product assertions and immutable450958/d254 Products route. Four distinct controller methods and27 distinct subcases are qualified from original attempt1 first-three passes plus failed-fourth-only repaired attempt2; no passing method was replayed. Root review SHA2568c8315360d01b34cc40d6bed5a6918fc5a884245ff08d3620cdf5a1c2d6d3804 verified81 original copies,70/79 unchanged source manifests, preloaded47 production Git bindings, original wrapper retention and exact assertion-only inverse. The original failed fourth execution and the first stale-inventory source-gate result remain preserved. Only these two reviewed shared controller blob references are refreshed; runtime-pair source, package policy and gate implementation are unchanged. Actual Apple Release continuation remains NOT_RUN."
+}
