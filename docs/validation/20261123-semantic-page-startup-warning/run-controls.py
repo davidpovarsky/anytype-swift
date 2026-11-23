@@ -89,6 +89,9 @@ def loaded(manifest, source_rows):
         if not value:
             continue
         path = Path(value).resolve()
+        if name == "__main__":
+            require(path == Path(__file__).resolve(), "unexpected_control_main_origin")
+            continue  # The wrapper is already bound as current Git metadata, not an imported helper.
         if path.is_relative_to(ROOT):
             relative = path.relative_to(ROOT).as_posix()
             raw = path.read_bytes()
