@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "created_utc": "2026-11-23T11:53:18.356183+00:00",
+  "run_id": 45165374342,
+  "attempt": 1,
+  "source": "ce1e78576de6a3d586e849d5990d008944ff2777",
+  "tree": "5ad7c12f9244e168b618189682cf6413672cd312",
+  "run_url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45165374342",
+  "actual_workflow_conclusion": "failure",
+  "job_id": 137660830145,
+  "runner_id": 1000024627,
+  "job_completed_at": "2026-11-23T11:35:09Z",
+  "artifact": {
+    "schema": 1,
+    "observed_utc": "2026-11-23T11:47:21.184388+00:00",
+    "artifact_id": 14815245407,
+    "run_id": 45165374342,
+    "attempt": 1,
+    "source": "ce1e78576de6a3d586e849d5990d008944ff2777",
+    "download_exit_code": 0,
+    "download_seconds": 3.107184410095215,
+    "bytes": 1781934,
+    "sha256": "79d683c0f22ef9a0624e4329bc6a7362520be9c99c93067697d38cf2bb1a7415",
+    "matches_github_digest": true,
+    "zip_members": 22,
+    "expanded_bytes": 15871179,
+    "all_unique_safe_crc_valid": true,
+    "archive_path": "/mnt/development/projects/diagnostics/otzaria-native-import-qualification-20261123/45165374342/original-native-closed-import.zip"
+  },
+  "index_rows_verified": 21,
+  "actual_commands": {
+    "count": 8,
+    "terminal_exit_zero": 8,
+    "owned_groups_drained": 8,
+    "timeouts": 0
+  },
+  "toolchain": {
+    "go": "go version go1.26.5 darwin/arm64",
+    "go_path": "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+    "go_sha256": "3925fc3221ac440ebf7c35361ff663bed0c7bdb2e0a157b75fe993607ffe0a19",
+    "xcode": "Xcode 27.0\nBuild version 27A266a\n"
+  },
+  "failure": {
+    "phase": "DECLARED_DEPENDENCY_COVERAGE",
+    "message": "declared closure omits/differs from reviewed product/test input: core/details.go",
+    "actual_go_list_exit": 0,
+    "actual_package_variants": 1481,
+    "required_paths": 87,
+    "declared_required_paths_present": 86,
+    "missing_required_paths": [
+      "core/details.go"
+    ],
+    "cause": "The gate requested only ./core/application although its frozen required-source inventory includes the original root core package. The gate refused before compilation.",
+    "native_compile_diagnostic": false
+  },
+  "native": {
+    "compilation": "NOT_RUN",
+    "producer": "NOT_RUN",
+    "fixture_evidence": "NOT_REACHED",
+    "PASS": 0,
+    "FAIL": 0,
+    "SKIP": 0,
+    "NOT_RUN": 9,
+    "historical_selectors_replayed": false
+  },
+  "finally": {
+    "actual_link_inputs_checked": true,
+    "actual_native_binary_checked": false,
+    "composed_native_files_checked": 85,
+    "control_source_rechecked": true,
+    "declared_dependency_closure_available": false,
+    "declared_dependency_files_checked": 0,
+    "original_module_checksums_checked": [
+      "go.mod",
+      "go.sum",
+      "tantivity_sha256.txt"
+    ],
+    "status": "PASS",
+    "unchanged_original_model_proto_rpc_files_checked": 11
+  },
+  "cleanup": {
+    "owned_command_groups_drained": true,
+    "owned_native_temporary_removed": true,
+    "native_account_fixture_started": false,
+    "observer_exit_code": 0,
+    "observer_process_absent": true,
+    "observer_lock_released_and_acquirable": true
+  },
+  "honest_boundaries": {
+    "declared_package_inventory_is_compiler_execution": false,
+    "binary_identity_available": false,
+    "sdk_swift_rpc_host_body_ack_or_cold_reopen_qualified": false,
+    "old_allocation_failure_preserved": true
+  },
+  "repair_status": "Root accepted source preparation for explicit root-core declaration and separate compile-only output; no required path or native assertion removed. No repair or retry activated in this packet."
+}

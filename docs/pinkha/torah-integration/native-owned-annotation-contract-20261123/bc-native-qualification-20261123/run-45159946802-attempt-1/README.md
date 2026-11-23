@@ -8,7 +8,7 @@ No checkout, producer, Go compilation, original import execution, fixture leaf o
 
 ## Authentic evidence and ownership
 
-`raw/RUN.json`, `JOBS.json`, `CHECK_RUN.json`, `CHECK_ANNOTATIONS.json` and `ARTIFACTS.json` are the original successful API response bytes retained by the sole owner. Acquisition receipts bind their queries and hashes. The observer ended normally at 11:07:19 UTC after seeing the actual failure; its process was absent and its exclusive file lock was independently acquirable. The active source worktree remains clean at the immutable failed source.
+`raw/RUN.json` is the sole observer's normalized complete API object. `JOBS.json`, `CHECK_RUN.json`, `CHECK_ANNOTATIONS.json` and `ARTIFACTS.json` preserve the original successful API response bytes. Acquisition receipts bind the direct queries and hashes. The observer ended normally at 11:07:19 UTC after seeing the actual failure; its process was absent and its exclusive file lock was independently acquirable. The active source worktree remains clean at the immutable failed source.
 
 The copied `source-review/` records concern source admission and preactivation reviews only. They are not native test or runtime results. No previously passed 36-leaf archive selector, endpoint or lifetime component was replayed. An initial docs-only worktree population assertion and its narrow index initialization are retained in `raw/RESULT_PREPARATION.json`; no native source or raw evidence was changed by that preparation.
 
