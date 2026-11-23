@@ -1,0 +1,69 @@
+{
+  "observedUTC": "2026-11-23T05:10:19.238373+00:00",
+  "status": "PASS_NEW_KERNEL_CONTROL_SCOPE_ONLY",
+  "sourceCommit": "6283ea15a3c921da1c8bd7565c5bbc50dfae4739",
+  "newNamedControls": 9,
+  "oldControlsRerun": 0,
+  "productMethods": 0,
+  "appleCommands": 0,
+  "sourceInputsMatchedGit": {
+    "Tools/PinkhaSimulatorGate/destination_artifacts.py": "55c076f86990e74c2b3908a1474f1bb224c7ca52f00d1f9fe162f40be8814280",
+    "Tools/PinkhaSimulatorGate/run_owned_single_lane.py": "098ad2c7b480ba74644cb35259bf9abc817af47a9611df6d580c18b466dac359",
+    "Tools/PinkhaSimulatorGate/test_sdk06_kernel_quiescence.py": "1e7565fa47cb91d6f8316e7790837a4c91ab63a4940c0968dd0eff50ded1a52d",
+    "Tools/PinkhaSimulatorGate/type_preservation.py": "602a91987a6995f0218840744af0d88c2ea5c65d34c4edba7f030808c5007b44",
+    "Tools/PinkhaSimulatorGate/wave15_batch.py": "845f6ee3b8a3325827dc976da41592924c619b943dc5942c0a1ac6f37fc13bd6",
+    "Tools/PinkhaSimulatorGate/wave15_diagnostics.py": "c1ca1fe8857e6ce71b91ffb49ff54627815cbfe44beaa1bbb7328c9bb7a55397"
+  },
+  "allNineNamedStartAndPassEventsVerified": true,
+  "originalLogSHA256": "79574c5d0a3b3767b241bc8773f753ed272f59fea8944bb827397cbaa4624219",
+  "exactInverseByteAndASTMatch": true,
+  "inverseBase": "67809875752085047a395be4a751ace5dcbc7ad8",
+  "sameDeadlineSeconds": 10,
+  "optInProfile": "sdk06-enumeration",
+  "otherProfilesUnchanged": true,
+  "actualOracleOwnedProcess": {
+    "absence_source": "KERNEL_ESRCH",
+    "budget_seconds": 10,
+    "kernel_group_observation": {
+      "after_monotonic": 6937501.328431345,
+      "before_monotonic": 6937501.328418544,
+      "deadline_monotonic": 6937511.328417064,
+      "errno": 3,
+      "error_type": "ProcessLookupError",
+      "operation": "os.killpg",
+      "outcome": "ABSENT_ESRCH",
+      "pgid": 2164320,
+      "signal": 0
+    },
+    "live_members": 0,
+    "observations": 0,
+    "pgid": 2164320,
+    "status": "PASS",
+    "timeout_observations": []
+  },
+  "originalOwnedCommandSHA256": "0560a166233456c4aef17de4ce6d8125ed35696cbd66db2c8e82d97cd4a54266",
+  "files": {
+    "attempt1/controls.log": "79574c5d0a3b3767b241bc8773f753ed272f59fea8944bb827397cbaa4624219",
+    "attempt1/events.json": "fcb106c55eea6ec05f51f462caeb8cdceb7d9ed3dfc07a010076e581223ead61",
+    "attempt1/intent.json": "f2e3ec471c52e697d65cb0baf9ff762593b5dfb71aa961a9a0c7c644f31bcf09",
+    "attempt1/real-owned-process/actual-kernel-quiescence.json": "c50d519552b5f8d0e24459d7fa278204e36ff5bf296a70b2936da84f98f9d370",
+    "attempt1/real-owned-process/owned-process.command.json": "0560a166233456c4aef17de4ce6d8125ed35696cbd66db2c8e82d97cd4a54266",
+    "attempt1/real-owned-process/owned-process.log": "87580960190d97bdfd7b1d1e5bc1ffeb8f7f91445aa709187a9c28b88aef2a83",
+    "attempt1/result.json": "b141919e88de5ac8050427ba54beef2db5e2a519761bb70657d8f2fa77017db5",
+    "attempt1/source-after.json": "a073d882d7fe2a9ab0b652e46374d2c6a68eece4a54ca7209481c420b442b7ca",
+    "attempt1/source-before.json": "a073d882d7fe2a9ab0b652e46374d2c6a68eece4a54ca7209481c420b442b7ca",
+    "default-source-comparison.json": "5419f791a641dbf40ee49456fae9b64ddc2fa9e118d5420e73d2ddcfe9622851",
+    "exact-source-edits.json": "a535087852dad017d22d7d18dfa687c0bc2d30103c657f22a595b2038f84c852"
+  },
+  "primarySemanticSources": [
+    "https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/kill.2.html",
+    "https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/killpg.2.html",
+    "https://docs.python.org/3.12/library/os.html#os.killpg"
+  ],
+  "limits": [
+    "Only timely ESRCH is an absence proof. EPERM, other errors and late observations fail closed.",
+    "An existing group follows unchanged ps validation within remaining original budget.",
+    "Linux owned-process execution and deterministic controls do not constitute Apple/selector/product acceptance.",
+    "The original failed runs remain failed; two enumeration hypotheses remain NOT_RUN until the next real CI execution."
+  ]
+}
