@@ -1,0 +1,104 @@
+{
+  "actual_product_tests_executed": 0,
+  "app_builds": 0,
+  "artifacts": {
+    "attempt1/controller.py": {
+      "bytes": 5335,
+      "sha256": "0a4e18671ad3e40196448f6504374499c746df5cf366c700af61f103903187dd"
+    },
+    "attempt1/intent.json": {
+      "bytes": 778,
+      "sha256": "070f32bc83585b5566a5627aadd8005f0936ca064a8ac501928fefc5d04b1322"
+    },
+    "attempt1/preflight-failure.json": {
+      "bytes": 749,
+      "sha256": "b4a144d4379ebbbe2d95f73fdc7c24a147053fc3bdaf7dada0b51ef978830bf5"
+    },
+    "attempt1/process-output.log": {
+      "bytes": 1299,
+      "sha256": "985ea54868aa2d74475138bd63dbdd04378d88174dd9f51a68bff1c239ba61bd"
+    },
+    "attempt2/controller.py": {
+      "bytes": 5335,
+      "sha256": "0a4e18671ad3e40196448f6504374499c746df5cf366c700af61f103903187dd"
+    },
+    "attempt2/intent.json": {
+      "bytes": 778,
+      "sha256": "dd20343db68b42354086f7a70951599890c26dc293cb7efe9f58d532f04ece8c"
+    },
+    "attempt2/preflight-failure.json": {
+      "bytes": 690,
+      "sha256": "e5dd3fe345bf2ed7fb7282a3a091182c3c69b4cab87025447df44114ac0e843f"
+    },
+    "attempt2/process-output.log": {
+      "bytes": 1264,
+      "sha256": "10cf07115afba7d0d661680986801ce57baaf778c3ff2507ba2b57943d003931"
+    },
+    "attempt3/controller.py": {
+      "bytes": 5335,
+      "sha256": "0a4e18671ad3e40196448f6504374499c746df5cf366c700af61f103903187dd"
+    },
+    "attempt3/controls.log": {
+      "bytes": 618,
+      "sha256": "9cc7b09a28dd8e6cfb7246961921f88dbd836a30cd99d65df1e740700e5e7d8b"
+    },
+    "attempt3/events.json": {
+      "bytes": 823,
+      "sha256": "e817ceb889b2b20dbc19732593c1afe07342edd7f79d9b36630573936fae37d4"
+    },
+    "attempt3/intent.json": {
+      "bytes": 778,
+      "sha256": "7ea5f902f04c54dc684c9a6d425649bdf55407b7e4898f496cf16e61f1f9020b"
+    },
+    "attempt3/preflight-paths.json": {
+      "bytes": 4024,
+      "sha256": "c42bd8e96f5d9685d25743c102d60e8f80b3550d41ae02e02dbfa6f646c29da4"
+    },
+    "attempt3/process-output.log": {
+      "bytes": 2278,
+      "sha256": "d7279267c31061f91d8a97969b93db219631e697acc3962f78a163919b1c3d5f"
+    },
+    "attempt3/result.json": {
+      "bytes": 1659,
+      "sha256": "fcf5e9bf2b398fe8fe85bb468cc9e3b5527fb9c1f2c1752473683d5cbc426d99"
+    },
+    "attempt3/source-after.json": {
+      "bytes": 9948,
+      "sha256": "d80b7652dfa491bdea9d02432a894c10e4cbfba26996d4358d69222108273fa4"
+    },
+    "attempt3/source-before.json": {
+      "bytes": 9948,
+      "sha256": "d80b7652dfa491bdea9d02432a894c10e4cbfba26996d4358d69222108273fa4"
+    }
+  },
+  "before_after_unchanged": true,
+  "controller_source_changed_between_attempts": false,
+  "current_selector_admission": null,
+  "elapsed_seconds": 0.2756746718659997,
+  "executed_source_sha": "51dd4936221bcbf802b0bf1bcd54853337e0df3b",
+  "loaded_source_count": 17,
+  "methods": [
+    "test_sdk06_qualified_basename_selector.BasenameSelectorControls.test_basename_provider_and_exact_nine_source_inputs_are_bound_without_extending_legacy_paths",
+    "test_sdk06_qualified_basename_selector.BasenameSelectorControls.test_basename_record_current_enumeration_and_execution_keep_exact23_and_identical_seven_skips"
+  ],
+  "new_control_methods_executed": 2,
+  "old_control_methods_executed": 0,
+  "original26_still_rejected": true,
+  "pretest_failures_preserved": [
+    {
+      "attempt": "attempt1",
+      "methods_executed": 0,
+      "reason": "Committed original proof directory was excluded by sparse checkout"
+    },
+    {
+      "attempt": "attempt2",
+      "methods_executed": 0,
+      "reason": "Sparse refresh excluded the new committed source-review directory"
+    }
+  ],
+  "qualified_attempt": "attempt3",
+  "schema": "sdk06-qualified-basename-selector-qualification-v1",
+  "source_input_count": 29,
+  "source_review_sha256": "021f0837c33b953e9d6945207f197b964599d69f4c2d6e9ff2eca030b4fc60c6",
+  "status": "TWO_NEW_OFFLINE_CONTROLS_PASS"
+}

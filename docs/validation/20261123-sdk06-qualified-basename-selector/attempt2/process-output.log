@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/mnt/development/projects/diagnostics/sdk06-qualified-basename-selector-20261123/attempt2/controller.py", line 59, in <module>
+    before = snapshot()
+             ^^^^^^^^^^
+  File "/mnt/development/projects/diagnostics/sdk06-qualified-basename-selector-20261123/attempt2/controller.py", line 56, in snapshot
+    files[relative] = dict(sha256=digest(path), bytes=path.stat().st_size,
+                                  ^^^^^^^^^^^^
+  File "/mnt/development/projects/diagnostics/sdk06-qualified-basename-selector-20261123/attempt2/controller.py", line 26, in digest
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+                          ^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1021, in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/mnt/development/projects/worktrees/anytype-wave15-sdk06-qualified-continuation-20261123/docs/validation/20261123-sdk06-qualified-basename-selector/source-review.json'
