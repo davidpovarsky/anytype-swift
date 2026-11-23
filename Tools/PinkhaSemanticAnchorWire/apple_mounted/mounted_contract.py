@@ -198,7 +198,7 @@ def exact_original_descriptor(products, original_bytes):
     return found[0]
 
 
-RUNTIME_HELPER_SHA256 = "9169a1cdbd1e5c49b5f7a4b49e125e902a20e00627f2a8b0ae0dc866ec685468"
+RUNTIME_HELPER_SHA256 = "ce2987846cdd42ebab7702e7dff51068bfb15ee48a66011f621695dbd72ebbce"
 
 
 def relocated_injection(target, runtime, approved):
