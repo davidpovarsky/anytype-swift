@@ -1,0 +1,268 @@
+{
+  "actual_children": [
+    {
+      "actual_loaded_current_modules": 33,
+      "mode": "success",
+      "owned_group_absent": true,
+      "owned_pgid": 2759036,
+      "owned_pid": 2759036,
+      "refusals": [],
+      "return_code": 0,
+      "source_inputs": 39,
+      "source_maps_before_after_unchanged": true,
+      "synthetic_current_git_inputs": 35,
+      "synthetic_original_app_git_inputs": 3
+    },
+    {
+      "actual_loaded_current_modules": 33,
+      "mode": "refusals",
+      "owned_group_absent": true,
+      "owned_pgid": 2759059,
+      "owned_pid": 2759059,
+      "refusals": [
+        {
+          "case": "same-root",
+          "message": "Controller and App roots must be disjoint",
+          "type": "ValueError"
+        },
+        {
+          "case": "nested-root",
+          "message": "Controller and App roots must be disjoint",
+          "type": "ValueError"
+        },
+        {
+          "case": "wrong-controller-head",
+          "message": "Exact clean published source checkout required",
+          "type": "ValueError"
+        },
+        {
+          "case": "wrong-app-head",
+          "message": "Exact clean published source checkout required",
+          "type": "ValueError"
+        },
+        {
+          "case": "foreign-consumer-helper",
+          "message": "Actual consumer helper must come from the current controller",
+          "type": "ValueError"
+        },
+        {
+          "case": "loaded-app-module",
+          "message": "Compiled App source checkout must not supply controller modules: page_origin_foreign_app_probe",
+          "type": "ValueError"
+        },
+        {
+          "case": "app-source-postflight-drift",
+          "message": "Exact clean published source checkout required",
+          "type": "ValueError"
+        },
+        {
+          "case": "controller-source-postflight-drift",
+          "message": "Exact clean published source checkout required",
+          "type": "ValueError"
+        }
+      ],
+      "return_code": 0,
+      "source_inputs": 39,
+      "source_maps_before_after_unchanged": true,
+      "synthetic_current_git_inputs": 35,
+      "synthetic_original_app_git_inputs": 3
+    }
+  ],
+  "actual_methods": [
+    "page_source_origin_controls.PageSourceOriginControls.test_real_current_controller_and_original_app_have_separate_complete_source_admission",
+    "page_source_origin_controls.PageSourceOriginControls.test_actual_origin_adapter_refuses_wrong_roots_heads_foreign_imports_and_postflight_drift"
+  ],
+  "actual_named_events": [
+    {
+      "event": "START",
+      "method": "page_source_origin_controls.PageSourceOriginControls.test_real_current_controller_and_original_app_have_separate_complete_source_admission",
+      "monotonic": 6963038.594817476
+    },
+    {
+      "event": "PASS",
+      "method": "page_source_origin_controls.PageSourceOriginControls.test_real_current_controller_and_original_app_have_separate_complete_source_admission",
+      "monotonic": 6963039.060701442
+    },
+    {
+      "event": "START",
+      "method": "page_source_origin_controls.PageSourceOriginControls.test_actual_origin_adapter_refuses_wrong_roots_heads_foreign_imports_and_postflight_drift",
+      "monotonic": 6963039.060752122
+    },
+    {
+      "event": "PASS",
+      "method": "page_source_origin_controls.PageSourceOriginControls.test_actual_origin_adapter_refuses_wrong_roots_heads_foreign_imports_and_postflight_drift",
+      "monotonic": 6963039.676741394
+    }
+  ],
+  "actual_original_App681_or_Product_restoration_acceptance": false,
+  "baseline_controller": "c0c1f851f80322c9f532e86505047498dfaf1adf",
+  "distinct_new_passes": 2,
+  "immutable_compiled_app": "68148339c275268795360d71d519a5baf003adf8",
+  "loaded_outer_before_after": {
+    "__main__": {
+      "path": "Tools/PinkhaSemanticAnchorWire/apple_mounted/run_source_origin_controls.py",
+      "sha256": "34adfa0f6afb7b30dc13a8846301e73136fde1942c3a7d9d283622c2dbfd064f"
+    },
+    "page_source_origin_controls": {
+      "path": "Tools/PinkhaSemanticAnchorWire/apple_mounted/test_mounted_source_origins.py",
+      "sha256": "bb4901b070a32c98ae20196f1da10f60f04e941a485637968e71da48a5bba3b5"
+    }
+  },
+  "manifest_sha256": "8667972b46994b1cc4d49241bbc53cc0755e2d4adbdeb8a681c3e8c7bad6ab41",
+  "new_builds": 0,
+  "old_controller_replays": 0,
+  "old_kernel_replays": 0,
+  "original_failure_audit_sha256": "f5bde718fab421229cb4d8326d52d096760dbd5179827aba1b3f977e39e9927a",
+  "original_files": [
+    {
+      "bytes": 574,
+      "committed_copy": "docs/validation/20261123-page-source-origins/controls-attempt1/attempt1/controls.log",
+      "original": "/mnt/development/projects/evidence/page-source-origins-20261123/attempt1/controls.log",
+      "path": "attempt1/controls.log",
+      "sha256": "c70e76973013366a4deea6a281f18d3141795d41c8001ac5b3897870279aa027"
+    },
+    {
+      "bytes": 897,
+      "committed_copy": "docs/validation/20261123-page-source-origins/controls-attempt1/attempt1/events.json",
+      "original": "/mnt/development/projects/evidence/page-source-origins-20261123/attempt1/events.json",
+      "path": "attempt1/events.json",
+      "sha256": "07053a46b7a2ca635125c1bcf871f297202ac9f2e40c83fb1943ce3e950494e1"
+    },
+    {
+      "bytes": 407,
+      "committed_copy": "docs/validation/20261123-page-source-origins/controls-attempt1/attempt1/loaded-outer-after.json",
+      "original": "/mnt/development/projects/evidence/page-source-origins-20261123/attempt1/loaded-outer-after.json",
+      "path": "attempt1/loaded-outer-after.json",
+      "sha256": "f2b68f4b7a8baca27f1ca49a1423dd7dfc3ebbbd0059e86e168d0d44b665fb90"
+    },
+    {
+      "bytes": 407,
+      "committed_copy": "docs/validation/20261123-page-source-origins/controls-attempt1/attempt1/loaded-outer-before.json",
+      "original": "/mnt/development/projects/evidence/page-source-origins-20261123/attempt1/loaded-outer-before.json",
+      "path": "attempt1/loaded-outer-before.json",
+      "sha256": "f2b68f4b7a8baca27f1ca49a1423dd7dfc3ebbbd0059e86e168d0d44b665fb90"
+    },
+    {
+      "bytes": 313,
+      "committed_copy": "docs/validation/20261123-page-source-origins/controls-attempt1/attempt1/manifest-binding.json",
+      "original": "/mnt/development/projects/evidence/page-source-origins-20261123/attempt1/manifest-binding.json",
+      "path": "attempt1/manifest-binding.json",
+      "sha256": "f975785b77d78a60f34835205bfaf7718450ba5e5cdc1b3bbdb79dfb1aeecbe7"
+    },
+    {
+      "bytes": 783,
+      "committed_copy": "docs/validation/20261123-page-source-origins/controls-attempt1/attempt1/owned-child-originals/real-origin-refusals.command.json",
+      "original": "/mnt/development/projects/evidence/page-source-origins-20261123/attempt1/owned-child-originals/real-origin-refusals.command.json",
+      "path": "attempt1/owned-child-originals/real-origin-refusals.command.json",
+      "sha256": "0d3003fbba1d34b0bae4c56b828adf759cf9fcf23866f1e80c299c7f1b35f8c5"
+    },
+    {
+      "bytes": 0,
+      "committed_copy": "docs/validation/20261123-page-source-origins/controls-attempt1/attempt1/owned-child-originals/real-origin-refusals.stderr",
+      "original": "/mnt/development/projects/evidence/page-source-origins-20261123/attempt1/owned-child-originals/real-origin-refusals.stderr",
+      "path": "attempt1/owned-child-originals/real-origin-refusals.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 28182,
+      "committed_copy": "docs/validation/20261123-page-source-origins/controls-attempt1/attempt1/owned-child-originals/real-origin-refusals.stdout.json",
+      "original": "/mnt/development/projects/evidence/page-source-origins-20261123/attempt1/owned-child-originals/real-origin-refusals.stdout.json",
+      "path": "attempt1/owned-child-originals/real-origin-refusals.stdout.json",
+      "sha256": "7711ef86312e441730a7bb2688a8ef768f50bdaee61a4c8dc4b14ca3cfdaaa0d"
+    },
+    {
+      "bytes": 782,
+      "committed_copy": "docs/validation/20261123-page-source-origins/controls-attempt1/attempt1/owned-child-originals/real-origin-success.command.json",
+      "original": "/mnt/development/projects/evidence/page-source-origins-20261123/attempt1/owned-child-originals/real-origin-success.command.json",
+      "path": "attempt1/owned-child-originals/real-origin-success.command.json",
+      "sha256": "5a76dcade3c8828bf5e4cd53ca2aae7e43055c6637b31b82dddf597573a8dbab"
+    },
+    {
+      "bytes": 0,
+      "committed_copy": "docs/validation/20261123-page-source-origins/controls-attempt1/attempt1/owned-child-originals/real-origin-success.stderr",
+      "original": "/mnt/development/projects/evidence/page-source-origins-20261123/attempt1/owned-child-originals/real-origin-success.stderr",
+      "path": "attempt1/owned-child-originals/real-origin-success.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 27183,
+      "committed_copy": "docs/validation/20261123-page-source-origins/controls-attempt1/attempt1/owned-child-originals/real-origin-success.stdout.json",
+      "original": "/mnt/development/projects/evidence/page-source-origins-20261123/attempt1/owned-child-originals/real-origin-success.stdout.json",
+      "path": "attempt1/owned-child-originals/real-origin-success.stdout.json",
+      "sha256": "c51afceb1af061c7aa89fdc87d4f0e43c6a2c1e7d1f207a34b50c0911d42cecb"
+    },
+    {
+      "bytes": 2360,
+      "committed_copy": "docs/validation/20261123-page-source-origins/controls-attempt1/attempt1/receipt.json",
+      "original": "/mnt/development/projects/evidence/page-source-origins-20261123/attempt1/receipt.json",
+      "path": "attempt1/receipt.json",
+      "sha256": "77988c8ceb40604051788c0ead492059e5f0a152f558d5def4b99f8eb8e3231c"
+    },
+    {
+      "bytes": 12401,
+      "committed_copy": "docs/validation/20261123-page-source-origins/controls-attempt1/attempt1/source-after.json",
+      "original": "/mnt/development/projects/evidence/page-source-origins-20261123/attempt1/source-after.json",
+      "path": "attempt1/source-after.json",
+      "sha256": "ff6d1069bece26a0983964e5438b3510f7f6912cb1043201dbf241816e996e46"
+    },
+    {
+      "bytes": 12401,
+      "committed_copy": "docs/validation/20261123-page-source-origins/controls-attempt1/attempt1/source-before.json",
+      "original": "/mnt/development/projects/evidence/page-source-origins-20261123/attempt1/source-before.json",
+      "path": "attempt1/source-before.json",
+      "sha256": "ff6d1069bece26a0983964e5438b3510f7f6912cb1043201dbf241816e996e46"
+    },
+    {
+      "bytes": 1390,
+      "committed_copy": "docs/validation/20261123-page-source-origins/controls-attempt1/launch-intent.json",
+      "original": "/mnt/development/projects/evidence/page-source-origins-20261123/launch-intent.json",
+      "path": "launch-intent.json",
+      "sha256": "cf4e1e3728d22b48fd26ef4a9b1b32b8ea179c264cecbf0ffac9ad313a1c0628"
+    },
+    {
+      "bytes": 1564,
+      "committed_copy": "docs/validation/20261123-page-source-origins/controls-attempt1/launch-result.json",
+      "original": "/mnt/development/projects/evidence/page-source-origins-20261123/launch-result.json",
+      "path": "launch-result.json",
+      "sha256": "dbabee89a55f6faafd499d00d9f711bd8937f31b57f20d9532db0c2791e38348"
+    },
+    {
+      "bytes": 0,
+      "committed_copy": "docs/validation/20261123-page-source-origins/controls-attempt1/launch.stderr",
+      "original": "/mnt/development/projects/evidence/page-source-origins-20261123/launch.stderr",
+      "path": "launch.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 287,
+      "committed_copy": "docs/validation/20261123-page-source-origins/controls-attempt1/launch.stdout",
+      "original": "/mnt/development/projects/evidence/page-source-origins-20261123/launch.stdout",
+      "path": "launch.stdout",
+      "sha256": "d9350dd5f6b68d8d6b84e00e7ccdab00ddb4b10baa740d58f8f4df501d6517c7"
+    },
+    {
+      "bytes": 5921,
+      "committed_copy": "docs/validation/20261123-page-source-origins/controls-attempt1/review-frozen-a513821.py",
+      "original": "/mnt/development/projects/evidence/page-source-origins-20261123/review-frozen-a513821.py",
+      "path": "review-frozen-a513821.py",
+      "sha256": "62d90b89a6a8973df2ae9e2ca91e1662f06a133e6f45b2a6d38c432c60fefebe"
+    },
+    {
+      "bytes": 2903,
+      "committed_copy": "docs/validation/20261123-page-source-origins/controls-attempt1/source-review-a513821.json",
+      "original": "/mnt/development/projects/evidence/page-source-origins-20261123/source-review-a513821.json",
+      "path": "source-review-a513821.json",
+      "sha256": "966d36fc804735b730caed3f6122a63cd25af2ae11f1f12a28a5484bb3b15bcb"
+    }
+  ],
+  "original_receipt_sha256": "77988c8ceb40604051788c0ead492059e5f0a152f558d5def4b99f8eb8e3231c",
+  "physical_frozen_source_inputs": 39,
+  "product_or_Apple_methods": 0,
+  "protocol": "page-source-origin-qualified-two-controls-v1",
+  "root_review_sha256": "966d36fc804735b730caed3f6122a63cd25af2ae11f1f12a28a5484bb3b15bcb",
+  "scope": "Only the new source-origin adapter/current-import composition is qualified using real synthetic Git fixtures. Actual unchanged Apple scopes remain unexecuted.",
+  "seal_reader_sha256": "7dde0dc175ed58248238fe271fce8ce60cb13077252198e4d46f3fb864f1cbb9",
+  "source_and_loaded_before_after_unchanged": true,
+  "status": "PASS",
+  "tested_source": "a513821699ff0ed5fc032b71ff91f56027bdef8b"
+}
