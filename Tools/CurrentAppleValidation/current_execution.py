@@ -464,7 +464,7 @@ def raw_terminal(raw, profile, stage, cases, modules):
         return {"parser": "unchanged_original_xctest_log", "cases": normalized}
     text = raw.decode("utf-8")
     titles = {TITLES[name] for name in c.PROFILES[profile]["stages"][stage][0]}
-    found = re.findall(r'[???]\s+Test "([^"]+)" (started|passed|failed)', text)
+    found = re.findall(r'[\u25c7\u2714\u2718]\s+Test "([^"]+)" (started|passed|failed)', text)
     starts = [title for title, status in found if status == "started"]
     terminals = [(title, status) for title, status in found if status != "started"]
     c.require(len(starts) == len(titles) and set(starts) == titles and len(terminals) == len(titles)

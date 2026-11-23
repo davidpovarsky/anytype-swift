@@ -1,0 +1,13 @@
+{
+  "stage": "source freeze before any control",
+  "kind": "git_add_sparse_path_refusal",
+  "command": [
+    "git",
+    "add",
+    "Tools/CurrentAppleValidation/current_execution.py",
+    "docs/validation/20261123-current-apple-peer-repairs/marker"
+  ],
+  "returnCode": 1,
+  "message": "New marker repair docs are outside the initial sparse-checkout definition. Runtime edit and original source files are retained; no commit or control executed.",
+  "resolution": "Extend only this owned sparse writer's exact new repair docs namespace; no old checkout files or /mnt writes."
+}
