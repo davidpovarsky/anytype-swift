@@ -1,0 +1,74 @@
+{
+  "actual_builds": 1,
+  "actual_failures": 0,
+  "actual_named_starts_and_passes": 8,
+  "actual_product_methods": 2,
+  "actual_skips": 0,
+  "binary": {
+    "bytes": 25486041,
+    "disposition": "preserved_externally_not_rerun",
+    "path": "/mnt/development/projects/evidence/localstore-witness-20261123/hardening-attempt1/products/localstore-witness.test",
+    "sha256": "bb37272a3bd489d3da976d6bb8b170dfb271085c14df5d4954ec552e10b24523"
+  },
+  "binary_dependency_modules": 53,
+  "build_job": "job_0819ab557704",
+  "build_receipt_sha256": "452ef8397f3cd83d852b73f46c79b11f6be69be138a3b7a906a82ea4d1be6135",
+  "controller_manifest_sha256": "10cb34b5953c46c92f528d721e2916fb9f035cb7eec7951d2f85a4e41e48b902",
+  "controller_source_sha": "1e9832bf41e1083cb757a8de0528dd98606a7b6f",
+  "directly_affected_existing_methods": 1,
+  "execution_job": "job_4e6648d06feb",
+  "execution_receipt_sha256": "c098f61683de775cc51c623f2895bb1ed15e29732674160bc84872cbc03f434d",
+  "independent_audit_sha256": "f2fe97fb9b267d1114c8c934c43c829637a63e09210dee71bcdffd3bb20009b8",
+  "initial_auditor_failure": {
+    "cause": "Generated testmain cache-path replacement was not included in the initial exact input-delta expectation.",
+    "correction": "Exact two generated source hashes and reversible one-import/one-registration delta, with only read-only audit repeated.",
+    "observation_sha256": "68e44fe18728f4dad6198f3694018d79bf679f989e08e54367f01d8a874184fc",
+    "preserved_source": "/mnt/development/projects/evidence/localstore-witness-20261123/audit_hardening_original.py",
+    "product_repetitions": 0
+  },
+  "kind": "concrete-localstore-capability-qualified-followup-v1",
+  "limits": {
+    "apple_mounted": false,
+    "full_migration": false,
+    "full_semantic_space_census": false,
+    "hasNativeSourceAdmission": false,
+    "nativeIdentityCensusRequired": true,
+    "nativeSnapshotProofRequired": true,
+    "permitsDestinationWrites": false,
+    "production_account_authorization": false,
+    "production_capability_issuer": false
+  },
+  "native_git_inputs": 8,
+  "native_private_files": 7,
+  "native_source_sha": "102f6243edb17068048869b85bc151f177897a68",
+  "new_external_methods": 1,
+  "new_interleaving_proofs": 0,
+  "original_artifacts_sha256": "786541ab7d4981bfe45115f2caac97b90bc462fee2705d372de8abb632620efb",
+  "retained_baseline": {
+    "actual_concurrency_proofs_at_original_source": 1,
+    "controller_source_sha": "e49f9b137a24dfb3507b3d932ed09382ec58e0b2",
+    "current_source_rerun": false,
+    "evidence_source_sha": "dfc14f3dd6c769f1ddf74880165d86a47a5277d8",
+    "execution_receipt_sha256": "3ca194d76d66dd1035dae6d077231e81e13c16fac524b05f11a226facb8f313b",
+    "marker_interface_unforgeability_claim": false,
+    "native_source_sha": "74b5f2c844ac3879125888c538d5990af3db3cb8",
+    "original_six_methods": 6,
+    "source_location_preserved": "/mnt/development/projects/worktrees/anytype-heart-localstore-witness-20261123",
+    "unchanged_five_methods_not_rerun": [
+      "TestLocalStoreWitnessNativeConcurrentTransaction",
+      "TestLocalStoreWitnessLimitsAndNativeBinding",
+      "TestLocalStoreWitnessIteratorAndTransactionFailures",
+      "TestLocalStoreWitnessDecodedEncodingRoundTrip",
+      "TestLocalStoreWitnessUnqualifiedAndPrivateOutput"
+    ]
+  },
+  "scoped_ownership_subcases": 6,
+  "selected_methods": [
+    "TestLocalStoreWitnessConcreteCapabilityRejectsExternalEmbeddingAndZero",
+    "TestLocalStoreWitnessOwnershipAndCancellation"
+  ],
+  "source_dependency_bindings": 4041,
+  "status": "PASS_CONCRETE_CAPABILITY_SCOPE_ONLY",
+  "unchanged_old_methods_rerun": 0,
+  "unique_absolute_input_paths": 4042
+}

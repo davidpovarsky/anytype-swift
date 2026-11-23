@@ -1,0 +1,44 @@
+{
+  "hunks": [
+    {
+      "new": "import hashlib, json, os, pathlib, resource, shutil, signal, stat, subprocess, time\n",
+      "old": "import hashlib, json, os, pathlib, shutil, signal, stat, subprocess, time\n"
+    },
+    {
+      "new": "    raw=json.dumps(obj,sort_keys=True,indent=2)+\"\\n\"\n    limit=16*1024*1024-(0 if p.name==\"result.json\" else 256*1024)\n    require(sum(x.stat().st_size for x in OUT.rglob(\"*\") if x.is_file())+len(raw.encode())<=limit,\"bounded_plan_metadata\")\n    with p.open(\"x\") as f:f.write(raw)\n",
+      "old": "    with p.open(\"x\") as f:json.dump(obj,f,sort_keys=True,indent=2);f.write(\"\\n\")\n"
+    },
+    {
+      "new": "def group_absent(pgid):\n    try:os.killpg(pgid,0);return False\n    except ProcessLookupError:return True\ndef stop_owned(child,record):\n    require(record.get(\"pid\")==child.pid and record.get(\"pgid\")==child.pid,\"owned_cleanup_pid_pgid_binding\")\n    child.poll()\n    absent=group_absent(child.pid);record[\"cleanup_group_initially_absent\"]=absent\n    if absent:return\n    for name,sig in ((\"term\",signal.SIGTERM),(\"kill\",signal.SIGKILL)):\n        try:os.killpg(child.pid,sig);record[name+\"_sent\"]=True\n        except ProcessLookupError:record[name+\"_sent\"]=False\n        deadline=time.monotonic()+5\n        while True:\n            child.poll()\n            absent=group_absent(child.pid)\n            if absent or time.monotonic()>=deadline:break\n            time.sleep(0.05)\n        record[\"group_absent_after_\"+name]=absent\n        if absent:return\n    require(absent,\"owned_process_group_survived_kill\")\ndef finish_cleanup(child,result):\n    if result.get(\"cleanup_attempted\"):return\n    result[\"cleanup_attempted\"]=True\n    try:\n        stop_owned(child,result);result[\"owned_group_absent\"]=group_absent(child.pid)\n    except BaseException as e:\n        result[\"cleanup_error\"]={\"type\":type(e).__name__,\"message\":str(e)}\n        result[\"owned_group_absent\"]=False\ndef bound_child_files():\n    # The source-only query may write cache metadata but is not allowed a large\n    # output/cache artifact; retain the actual SIGXFSZ result if this is reached.\n    resource.setrlimit(resource.RLIMIT_FSIZE,(6*1024*1024,6*1024*1024))\n",
+      "old": "def kill_owned(child):\n    try:os.killpg(child.pid,signal.SIGTERM)\n    except ProcessLookupError:pass\n    try:child.wait(timeout=5)\n    except subprocess.TimeoutExpired:\n        try:os.killpg(child.pid,signal.SIGKILL)\n        except ProcessLookupError:pass\n        child.wait(timeout=5)\n"
+    },
+    {
+      "new": "    require(shutil.disk_usage(ROOT).free>=2650000000,\"dependency_plan_start_capacity\")\n",
+      "old": "    require(shutil.disk_usage(ROOT).free>=2950000000,\"dependency_plan_start_capacity\")\n"
+    },
+    {
+      "new": "            \"free_before\":shutil.disk_usage(ROOT).free,\"source_enumeration_start_free_bytes\":2650000000,\"native_build_start_free_bytes\":2950000000,\"max_metadata_bytes\":16*1024*1024,\"cache_metadata_writes_possible\":True}\n",
+      "old": "            \"free_before\":shutil.disk_usage(ROOT).free}\n"
+    },
+    {
+      "new": "            child=subprocess.Popen(argv,cwd=ROOT,env=env,stdout=stdout,stderr=stderr,start_new_session=True,preexec_fn=bound_child_files)\n",
+      "old": "            child=subprocess.Popen(argv,cwd=ROOT,env=env,stdout=stdout,stderr=stderr,start_new_session=True)\n"
+    },
+    {
+      "new": "                if shutil.disk_usage(ROOT).free<2600000000 or time.monotonic()-start>=120 or stdout.tell()+stderr.tell()>16*1024*1024:\n                    result[\"interruption\"]=\"capacity\" if shutil.disk_usage(ROOT).free<2600000000 else (\"timeout\" if time.monotonic()-start>=120 else \"metadata-bound\")\n                    finish_cleanup(child,result);break\n",
+      "old": "                if shutil.disk_usage(ROOT).free<2600000000 or time.monotonic()-start>=120:\n                    result[\"interruption\"]=\"capacity\" if shutil.disk_usage(ROOT).free<2600000000 else \"timeout\"\n                    kill_owned(child);break\n"
+    },
+    {
+      "new": "            result[\"returncode\"]=child.wait(timeout=5);stdout.flush();stderr.flush()\n            elapsed=time.monotonic()-start;available=shutil.disk_usage(ROOT).free\n            result[\"post_exit_observation\"]={\"elapsed_seconds\":elapsed,\"free_bytes\":available,\"within_deadline\":elapsed<120,\"above_stop_reserve\":available>=2600000000}\n            result[\"post_exit_admitted\"]=elapsed<120 and available>=2600000000\n        finish_cleanup(child,result)\n        absent=result[\"owned_group_absent\"]\n        result[\"child_file_size_limit_bytes\"]=6*1024*1024;result[\"elapsed_seconds\"]=time.monotonic()-start\n        require(absent and result[\"returncode\"]==0 and result[\"interruption\"] is None and result[\"post_exit_admitted\"],\"source_enumeration_failed\")\n        require((OUT/\"go-list.stdout\").stat().st_size+(OUT/\"go-list.stderr\").stat().st_size<=16*1024*1024,\"bounded_original_graph_output\")\n",
+      "old": "            result[\"returncode\"]=child.wait();stdout.flush();stderr.flush()\n        try:os.killpg(child.pid,0);absent=False\n        except ProcessLookupError:absent=True\n        result[\"owned_group_absent\"]=absent;result[\"elapsed_seconds\"]=time.monotonic()-start\n        require(absent and result[\"returncode\"]==0 and result[\"interruption\"] is None,\"source_enumeration_failed\")\n"
+    },
+    {
+      "new": "        if child is not None:finish_cleanup(child,result)\n",
+      "old": "        if child is not None and child.poll() is None:kill_owned(child)\n"
+    }
+  ],
+  "inverse_exact": true,
+  "new_sha256": "5a4b38b92edffff607b1a33b3b9f5bc95e2ca4c41ae43c62c18f478439aaec55",
+  "old_sha256": "4474883cda36167043d0cda7575ce104ebe6334503613c8f3844342e60d0eef6",
+  "original_capacity_failure_before_go_child": true
+}

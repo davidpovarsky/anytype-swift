@@ -1,0 +1,15 @@
+{
+  "content": [
+    {
+      "text": "{\"ok\":true,\"output\":\"Traceback (most recent call last):\\n  File \\\"<stdin>\\\", line 8, in <module>\\n  File \\\"<stdin>\\\", line 4, in git\\n  File \\\"/usr/lib/python3.12/subprocess.py\\\", line 466, in check_output\\n    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,\\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \\\"/usr/lib/python3.12/subprocess.py\\\", line 571, in run\\n    raise CalledProcessError(retcode, process.args,\\nsubprocess.CalledProcessError: Command '['git', '-c', 'gc.auto=0', '-c', 'maintenance.auto=false', '-C', '/mnt/development/projects/worktrees/anytype-heart-native-owned-snapshot-20261123', 'commit', '-m', 'Add native-owned local-store snapshot leases and scoped controls']' returned non-zero exit status 128.\",\"duration\":1.16,\"returncode\":1}",
+      "type": "text"
+    }
+  ],
+  "isError": false,
+  "structuredContent": {
+    "duration": 1.16,
+    "ok": true,
+    "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 8, in <module>\n  File \"<stdin>\", line 4, in git\n  File \"/usr/lib/python3.12/subprocess.py\", line 466, in check_output\n    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/subprocess.py\", line 571, in run\n    raise CalledProcessError(retcode, process.args,\nsubprocess.CalledProcessError: Command '['git', '-c', 'gc.auto=0', '-c', 'maintenance.auto=false', '-C', '/mnt/development/projects/worktrees/anytype-heart-native-owned-snapshot-20261123', 'commit', '-m', 'Add native-owned local-store snapshot leases and scoped controls']' returned non-zero exit status 128.",
+    "returncode": 1
+  }
+}
