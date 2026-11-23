@@ -67,8 +67,18 @@ ENUMERATION_TIMEOUT_SECONDS = 600
 ENUMERATION_TOTAL_SECONDS = 2400
 
 
-def normalize_runtime_injection(target, runtime):
-    """Relocate only the exact original runtime token in the copied target."""
+def normalize_runtime_injection(target, runtime, *, expected_original_token=ORIGINAL_MAIN_THREAD_CHECKER):
+    """Relocate one exact token, already admitted by the caller's original descriptor SHA.
+
+    The original SDK profile retains its fixed default token. Other original
+    artifacts must explicitly pin their own token before calling this function.
+    """
+    require(isinstance(expected_original_token, str) and 0 < len(expected_original_token) <= 4096
+            and expected_original_token.startswith("/") and expected_original_token.isprintable()
+            and ":" not in expected_original_token and chr(0) not in expected_original_token
+            and all(part not in {".", ".."} for part in expected_original_token.split("/"))
+            and expected_original_token.endswith("/libMainThreadChecker.dylib"),
+            "An exact admitted absolute MainThreadChecker token is required")
     require(isinstance(runtime, dict) and runtime.get("isAvailable") is True
             and isinstance(runtime.get("identifier"), str)
             and runtime["identifier"].startswith("com.apple.CoreSimulator.SimRuntime.iOS-27-")
@@ -92,14 +102,14 @@ def normalize_runtime_injection(target, runtime):
     injected = environment.get("DYLD_INSERT_LIBRARIES")
     require(isinstance(injected, str), "Missing original injected library chain")
     tokens = injected.split(":")
-    require(tokens.count(ORIGINAL_MAIN_THREAD_CHECKER) == 1
+    require(tokens.count(expected_original_token) == 1
             and sum(token.endswith("/libMainThreadChecker.dylib") for token in tokens) == 1,
             "Only the exact original single MainThreadChecker token may be relocated")
     replacement = str(library)
     require(":" not in replacement, "Invalid current injection library path")
-    relocated = [replacement if token == ORIGINAL_MAIN_THREAD_CHECKER else token for token in tokens]
+    relocated = [replacement if token == expected_original_token else token for token in tokens]
     environment["DYLD_INSERT_LIBRARIES"] = ":".join(relocated)
-    return dict(original_token=ORIGINAL_MAIN_THREAD_CHECKER, replacement_token=replacement,
+    return dict(original_token=expected_original_token, replacement_token=replacement,
                 library_sha256=sha(library), library_bytes=library.stat().st_size,
                 runtime_identifier=runtime["identifier"], runtime_version=runtime.get("version"),
                 runtime_build=runtime.get("buildversion"),
