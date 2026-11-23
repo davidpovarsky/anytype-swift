@@ -1,0 +1,67 @@
+name: Original native annotation archive admission
+
+on:
+  push:
+    branches: [codex/otzaria-owned-import-contract-20261123]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: otzaria-original-native-archive-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  original-native-archive:
+    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-owned-import-contract-20261123' && github.run_attempt == 1
+    runs-on: xcode-27
+    timeout-minutes: 120
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+    steps:
+      - name: Fix the absolute native execution deadline
+        run: |
+          echo "OTZARIA_NATIVE_ARCHIVE_DEADLINE=$(( $(date +%s) + 6900 ))" >> "$GITHUB_ENV"
+      - name: Checkout the exact isolated archive source packet
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout: |
+            docs/pinkha/torah-integration/native-owned-annotation-contract-20261123
+      - name: Select actual ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Install the exact original Go toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache: false
+      - name: Checkout the immutable original Heart base
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: build/Heart-Native-Archive
+          persist-credentials: false
+      - name: Produce four actual original exports then qualify their archive admission
+        run: |
+          python3 -I docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/slice-a/run_native_archive.py \
+            --control-root "$GITHUB_WORKSPACE" \
+            --control-head "$GITHUB_SHA" \
+            --execution-manifest-sha256 3e18a72e7c24c44ee37163ef4766a23d5fb15a21aeeb8fb249f6d54cd3293564 \
+            --job-deadline-unix "$OTZARIA_NATIVE_ARCHIVE_DEADLINE" \
+            --heart build/Heart-Native-Archive \
+            --work build/Heart-Native-Archive-Owned-Work \
+            --evidence build/Heart-Native-Archive-Evidence
+      - name: Retain actual original native specimens compiler and archive evidence including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otzaria-Original-Native-Archive-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/Heart-Native-Archive-Evidence
+          if-no-files-found: warn
+          compression-level: 6
+          retention-days: 14
