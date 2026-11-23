@@ -1,0 +1,101 @@
+[
+  {
+    "absolute_command_deadline_unix": 1795405956,
+    "argv": [
+      "gh",
+      "api",
+      "repos/davidpovarsky/anytype-swift/actions/runs/45060396175/attempts/1"
+    ],
+    "child_started_unix": 1795403887.592448,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795403888.2573178
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 0.676,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 90.0,
+    "label": "original-run",
+    "pid": 4692,
+    "process_group_id": 4692,
+    "requested_timeout_seconds": 90,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795403887.5826821,
+    "status": "TERMINAL",
+    "stderr": "01-original-run.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "01-original-run.stdout",
+    "stdout_sha256": "dc9621ff77065d9f4f2e0ed2b815dc22742d61315c4bb1139768758c49b41196",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795405956,
+    "argv": [
+      "gh",
+      "api",
+      "repos/davidpovarsky/anytype-swift/actions/jobs/137324774911"
+    ],
+    "child_started_unix": 1795403888.273765,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795403888.728815
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 0.475,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 90.0,
+    "label": "original-job",
+    "pid": 4694,
+    "process_group_id": 4694,
+    "requested_timeout_seconds": 90,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795403888.260426,
+    "status": "TERMINAL",
+    "stderr": "02-original-job.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "02-original-job.stdout",
+    "stdout_sha256": "ffb0f104d7506e65ea4e9a4e8a37f694d3e48540b660161f9de8b14a64864866",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795405956,
+    "argv": [
+      "gh",
+      "api",
+      "repos/davidpovarsky/anytype-swift/actions/jobs/137324774911/logs"
+    ],
+    "child_started_unix": 1795403888.750962,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795403890.1255171
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 1.388,
+    "effective_returncode": 1,
+    "effective_timeout_seconds": 90.0,
+    "label": "original-job-upload-log",
+    "pid": 4696,
+    "process_group_id": 4696,
+    "requested_timeout_seconds": 90,
+    "returncode": 1,
+    "start_new_session": true,
+    "started_unix": 1795403888.7396421,
+    "status": "TERMINAL",
+    "stderr": "03-original-job-upload-log.stderr",
+    "stderr_sha256": "8b6407b2fdbca54bf3d53fb93e79a3560dbe59567fa5044cfee4bed1b5b6e467",
+    "stdout": "03-original-job-upload-log.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  }
+]

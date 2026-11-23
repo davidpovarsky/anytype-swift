@@ -150,6 +150,13 @@ def restore_distribution(archive, work, selected, inputs):
     return destination
 
 
+def original_upload_log_argv(job_id):
+    """Raw API bytes are captured by Commands into owned files, never a TTY."""
+    require(type(job_id) is int and job_id > 0, 'Invalid original upload job ID')
+    return ['gh', 'api', '--allow-escape-sequences',
+            'repos/' + REPOSITORY + '/actions/jobs/' + str(job_id) + '/logs']
+
+
 def main():
     parser = argparse.ArgumentParser(__doc__)
     parser.add_argument('--work', type=Path, required=True)
@@ -229,6 +236,15 @@ def main():
             require(digest(root / relative) == expected, 'Upload proof control source differs: ' + relative)
         for relative, expected in controls['log_sha256'].items():
             require(digest(control_packet / relative) == expected, 'Upload proof control log differs: ' + relative)
+        capture_controls = json.loads((control_packet / 'RAW_CAPTURE_CONTROLS.json').read_bytes())
+        require(capture_controls['status'] == 'PASS'
+                and capture_controls['tests_run'] == len(set(capture_controls['passed_ids'])) == 2
+                and capture_controls['failed'] == capture_controls['errors'] == capture_controls['skipped'] == 0,
+                'Raw original log capture controls did not pass')
+        for relative, expected in capture_controls['source_sha256'].items():
+            require(digest(root / relative) == expected, 'Raw capture source differs: ' + relative)
+        for relative, expected in capture_controls['log_sha256'].items():
+            require(digest(control_packet / relative) == expected, 'Raw capture log differs: ' + relative)
         actual = {'xcode': command('xcode', ['xcodebuild', '-version']),
                   'swift': command('swift', ['xcrun', 'swiftc', '--version']),
                   'sdk_version': command('sdk', ['xcrun', '--sdk', 'iphonesimulator', '--show-sdk-version'])}
@@ -236,7 +252,7 @@ def main():
         run = api('actions/runs/' + str(producer['run_id']) + '/attempts/1', 'original-run')
         job = api('actions/jobs/' + str(producer['job_id']), 'original-job')
         upload_log = github.require('original-job-upload-log',
-            ['gh', 'api', 'repos/' + REPOSITORY + '/actions/jobs/' + str(producer['job_id']) + '/logs'], root, 90)
+            original_upload_log_argv(producer['job_id']), root, 90)
         require(upload_log.stat().st_size <= 4 * 1024 * 1024, 'Oversized original upload proof')
         original_upload_log = upload_log.read_bytes()
         for label, item in inputs['artifacts'].items():

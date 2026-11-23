@@ -96,5 +96,42 @@ class ExactUploadMetadataProof(unittest.TestCase):
             with self.subTest(length=len(changed)), self.assertRaises(RuntimeError):
                 verify(producer, run, job, artifact, expected, upload_log=changed)
 
+
+class RawUploadLogCapture(unittest.TestCase):
+    def test_documented_raw_flag_is_limited_to_the_exact_original_job_log(self):
+        from run_signed_consumer_continuation import original_upload_log_argv
+        observed = (PACKET / 'actual-gh-api-log-guard.stderr').read_text()
+        self.assertIn('--allow-escape-sequences', observed)
+        self.assertEqual(original_upload_log_argv(137324774911),
+                         ['gh', 'api', '--allow-escape-sequences',
+                          'repos/davidpovarsky/anytype-swift/actions/jobs/137324774911/logs'])
+        for job in [True, 0, -1, '137324774911']:
+            with self.subTest(job=job), self.assertRaises(RuntimeError):
+                original_upload_log_argv(job)
+
+    def test_actual_owned_capture_preserves_raw_bytes_and_nonzero_failure(self):
+        import hashlib
+        import os
+        import sys
+        import tempfile
+        import time
+        from runtime_continuation_process import Commands
+        with tempfile.TemporaryDirectory(prefix='original-upload-capture-control-') as temporary:
+            root = Path(temporary)
+            commands = Commands(root, dict(os.environ), time.time() + 30)
+            raw = b'original upload fixture: \x1b[31mretained\x1b[0m\n'
+            program = 'import sys;sys.stdout.buffer.write(' + repr(raw) + ')'
+            output = commands.require('owned-raw-fixture', [sys.executable, '-c', program], root, 10)
+            self.assertEqual(output.parent, root)
+            self.assertEqual(output.read_bytes(), raw)
+            self.assertEqual(commands.items[-1]['stdout_sha256'], hashlib.sha256(raw).hexdigest())
+            with self.assertRaisesRegex(RuntimeError, 'owned command failed'):
+                commands.require('owned-raw-nonzero',
+                                 [sys.executable, '-c', program + ';raise SystemExit(7)'], root, 10)
+            self.assertEqual(commands.items[-1]['returncode'], 7)
+            self.assertEqual(commands.items[-1]['effective_returncode'], 7)
+            self.assertFalse(commands.items[-1]['timed_out'])
+            self.assertTrue(commands.owned_groups_drained)
+
 if __name__ == '__main__':
     unittest.main()
