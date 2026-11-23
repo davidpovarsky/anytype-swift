@@ -1,0 +1,74 @@
+{
+  "schema": "sdk06-preload-order-independent-peer-v1",
+  "status": "PASS_SOURCE_REVIEW_ONLY",
+  "reviewer": "acceptance_map",
+  "reviewed_head": "c099e7ebb968cd4c646a372b1632db4e9a0a6668",
+  "reviewed_status": "",
+  "base": "1a09867d88f475fd2b3192fabc4dd803986e5281",
+  "source_files": {
+    "run-control.py": {
+      "bytes": 24518,
+      "sha256": "19f8ca5cc968568f3b2b557efd7044eb678076aad9f36b3a4d65a76d57b0594c"
+    },
+    "launch-control.py": {
+      "bytes": 5912,
+      "sha256": "64ca43aff625c9c286e0924c954e01f52f7cc5d8cdded376e43176dabc56d74f"
+    },
+    "control-inputs.json": {
+      "bytes": 29810,
+      "sha256": "1345827557ecda9988c9e1383c77a19913aa41aa66b511ab21acd5ebf1960eff"
+    },
+    "source-review.json": {
+      "bytes": 25241,
+      "sha256": "fda501d854706aeb4bbc61d0956066e2c3bea3a590f28b0ed3a45f2acbcf6ccb"
+    },
+    "exact-source-inverses.json": {
+      "bytes": 1077,
+      "sha256": "d52b51dcb9777b2941804c4dff9fe2d18fe193cef9ddc680a0190c5be4a71a4d"
+    }
+  },
+  "checks": {
+    "physical_git_size_hash_mode_rows": 90,
+    "original_manifest_exact_base": true,
+    "original_input_rows_unchanged": 85,
+    "original_module_mappings_unchanged": 70,
+    "old_preload_index": 66,
+    "new_preload_index": 33,
+    "preload_count": 67,
+    "expected_actual_production_origins_including_entry": 68,
+    "actual_unchanged_loader_source_read": true,
+    "original_refusal_precedes_import_loop": true,
+    "wrapper_outside_repository": true,
+    "fixed_method_count": 1,
+    "old_test_modules_refused": true,
+    "actual_loader_processes_allowed": [
+      "git rev-parse HEAD",
+      "git ls-tree exact86 paths",
+      "git cat-file --batch"
+    ],
+    "before_after_source_and_loaded_admission": true,
+    "owned_pgids_deadline_and_cleanup_reviewed": true,
+    "seconds": 60,
+    "stop_seconds": 10,
+    "output_bytes": 8388608,
+    "single_file_bytes": 262144,
+    "min_disk_bytes": 1073741824
+  },
+  "review_execution": {
+    "repository_imports": 0,
+    "controls": 0,
+    "builds": 0,
+    "product_methods": 0,
+    "archives": 0,
+    "donor_mutations": 0
+  },
+  "limitations": [
+    "This is static source review, not an actual preloader control outcome.",
+    "The new single actual-preloader control requires its own original runtime evidence.",
+    "No current CI or product acceptance is inferred."
+  ],
+  "raw_results": [
+    "physical-git-original.json",
+    "source-admission-original.json"
+  ]
+}
