@@ -1,0 +1,66 @@
+--- a/native/core/application/owned_annotation_import_native_test.go
++++ b/native/core/application/owned_annotation_import_native_test.go
+@@ -16,6 +16,7 @@
+ 	"slices"
+ 	"sort"
+ 	"strings"
++	"sync"
+ 	"testing"
+ 	"time"
+ 
+@@ -244,6 +245,15 @@
+ 	started    int
+ 	others     []*application.Service
+ 	temp       string
++	stopMu     sync.Mutex
++	stops      map[*application.Service]*ownedClosedStop
++}
++
++// One actual final Stop belongs to this shared fixture owner. A timeout only
++// ends that caller's bounded wait; it cannot retire or replace the operation.
++type ownedClosedStop struct {
++	done chan struct{}
++	err  error
+ }
+ 
+ func (f *ownedClosedFixture) produce(t *testing.T, kind string) *ownedClosedSpecimen {
+@@ -1144,14 +1154,34 @@
+ }
+ 
+ func (f *ownedClosedFixture) stopActual(service *application.Service) error {
+-	if service.GetApp() == nil {
++	f.owner.stopMu.Lock()
++	stop := f.owner.stops[service]
++	start := false
++	// Resolve an owned Stop before consulting app absence: the original
++	// operation can still be returning after the app pointer becomes nil.
++	if stop == nil && service.GetApp() != nil {
++		if f.owner.stops == nil {
++			f.owner.stops = make(map[*application.Service]*ownedClosedStop)
++		}
++		stop = &ownedClosedStop{done: make(chan struct{})}
++		f.owner.stops[service] = stop
++		start = true
++	}
++	f.owner.stopMu.Unlock()
++	if stop == nil {
+ 		return nil
+ 	}
+-	done := make(chan error, 1)
+-	go func() { done <- service.AccountStop(&pb.RpcAccountStopRequest{RemoveData: true}) }()
++	if start {
++		go func() {
++			stop.err = service.AccountStop(&pb.RpcAccountStopRequest{RemoveData: true})
++			close(stop.done)
++		}()
++	}
+ 	select {
+-	case err := <-done:
+-		return err
++	case <-stop.done:
++		// Closing done publishes this exact original return, including a
++		// failure. Later cleanup joins it without an implicit native retry.
++		return stop.err
+ 	case <-time.After(30 * time.Second):
+ 		return errors.New("actual original AccountStop has not returned within the cleanup bound")
+ 	}
