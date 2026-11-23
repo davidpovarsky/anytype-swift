@@ -1,0 +1,63 @@
+{
+  "baseline_source_sha": "5316f036a894fde5b0dc9b695337e22e202f91e5",
+  "capture_file": "pinkha-semantic-page154-mounted-capture.json",
+  "consumer_artifact": {
+    "admission": "FUTURE_EXACT_ORIGINAL_SOURCE_AND_PRODUCT_REVIEW_REQUIRED",
+    "name": "Pinkha-Semantic-Page-App-Consumer-<run>-<attempt>",
+    "native_manifest": "semantic-page154-early-products/manifest.json",
+    "native_products": "semantic-page154-early-products/BuildProducts.tar.gz",
+    "ui_manifest": "ui-runner/semantic-page154-early-products/manifest.json",
+    "ui_products": "ui-runner/semantic-page154-early-products/BuildProducts.tar.gz"
+  },
+  "files": {
+    "AnyTypeTests/Pinkha/SemanticAnchorPage154MountedPreparationTests.swift": {
+      "sha256": "2344f028661930632be1114b609e86c89b039593e4b7687ca4204c6b4eecf3c8"
+    },
+    "Anytype/Sources/Models/Documents/Document/BaseDocument.swift": {
+      "sha256": "104434695ee96b9b3f956930684dd59493ae958d09b77f48bd601106e6a266b3"
+    },
+    "Anytype/Sources/Pinkha/Diagnostics/PinkhaSemanticAnchorMountedFixture.swift": {
+      "sha256": "bcad0f7f9276b0d437e136f59796069d2168a0c5e99f336a523fa6806eb2886c"
+    },
+    "Anytype/Sources/Pinkha/Diagnostics/PinkhaSemanticAnchorMountedObserver.swift": {
+      "sha256": "2e648acc0db9d564fa07b787a915750d74f0d0cc9962e0f6e727bd919645fd7e"
+    },
+    "Anytype/Sources/Pinkha/Editor/PinkhaSemanticAnchorSelectionCoordinator.swift": {
+      "sha256": "159eb6d0bf94a9e2e970625d1d37d4854f521c5d5d75468459fd4cf5eb3bb5fd"
+    },
+    "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController.swift": {
+      "sha256": "04dc905a72afc6189855eca272c30dbf0a91b5a0f69619da7e5874566ddaefa5"
+    },
+    "PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift": {
+      "sha256": "468139db53be7dac0570ea16c7fec918332f44107927d6043a9bcc4469773c8b"
+    },
+    "Tools/PinkhaSemanticAnchorSwiftControls/AppCandidateSources.json": {
+      "sha256": "e7734461b9407eeb11baca83ecb3cd8c55d4c2b027e997dd4601493ca6258257"
+    }
+  },
+  "fixture_file": "pinkha-semantic-page154-mounted-fixture.json",
+  "native_manifest_sha256": "2f76212f9fcd749aeb9e806b941e0fd0b54eba17e5cc842adb81c7eb3bae0f38",
+  "producer_run_id": "45098093058",
+  "reopen_file": "pinkha-semantic-page154-mounted-reopen.json",
+  "required_environment": [
+    "PINKHA_SIMULATOR_UI_DISPOSABLE",
+    "PINKHA_SEMANTIC_MOUNTED_SOURCE_SHA",
+    "PINKHA_SEMANTIC_MOUNTED_RUN_ID",
+    "PINKHA_SEMANTIC_MOUNTED_RUN_ATTEMPT",
+    "PINKHA_SEMANTIC_MOUNTED_NONCE"
+  ],
+  "retained_host_evidence_sha": "9fc2bbc049873feb4027509f38595f93ebe41f46",
+  "schema": "pinkha-semantic-page154-mounted-acceptance-source-v1",
+  "scope": {
+    "boundary_XCTest": "Separate owned native fixture and method; never included in mounted selection",
+    "cold_Apple_reopen": "NOT_RUN",
+    "host_methods": "19 current Client + 11 retained Wire; not rerun by mounted work",
+    "mounted_journey": "NOT_RUN",
+    "shipping": "OFF"
+  },
+  "selectors": {
+    "journey": "PinkhaStage1AcceptanceUITests/SemanticAnchorPage154MountedUITests/testActualTextSelectionCancelThenCreateAndColdReopen",
+    "preparation": "AnytypeTests/SemanticAnchorPage154MountedPreparationTests/testPrepareOwnedPage154MountedFixture"
+  },
+  "status": "PREPARED_NOT_TYPECHECKED_OR_EXECUTED"
+}

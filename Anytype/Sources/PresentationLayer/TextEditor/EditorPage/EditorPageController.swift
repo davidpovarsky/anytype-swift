@@ -180,6 +180,9 @@ final class EditorPageController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         viewModel.viewDidAppear()
+#if DEBUG && targetEnvironment(simulator) && PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        PinkhaSemanticAnchorMountedObserver.startIfRequested(editor: self)
+#endif
     }
 
     override func didMove(toParent parent: UIViewController?) {

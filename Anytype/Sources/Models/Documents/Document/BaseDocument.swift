@@ -202,6 +202,9 @@ final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
                 if let fence {
                     fence.withCurrentMainDelivery(spaceID: self.spaceId, objectID: self.objectId) {
                         PinkhaHeartSemanticAnchorPublication.$current.withValue(fence) {
+#if DEBUG && targetEnvironment(simulator)
+                            PinkhaSemanticAnchorMountedObserver.documentPublished(document: self, fence: fence)
+#endif
                             self.triggerSync(updates: updates)
                         }
                     }

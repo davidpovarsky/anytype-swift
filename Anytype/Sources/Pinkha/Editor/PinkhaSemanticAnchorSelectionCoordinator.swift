@@ -105,6 +105,12 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
     private func presentConfirmation(_ selection: Selection,
                                      pending: PinkhaHeartSemanticAnchorPending, id: UUID) {
         guard let editor, editor.presentedViewController == nil else { finish(id); return }
+#if DEBUG && targetEnvironment(simulator)
+        if let textView = selection.textView {
+            PinkhaSemanticAnchorMountedObserver.prepared(editor: editor, textView: textView,
+                blockID: selection.blockID, range: selection.range, pending: pending, lease: selection.lease)
+        }
+#endif
         // The client already validated the complete native text and grapheme range.
         let selected = (selection.text as NSString).substring(with: selection.range)
         let preview = String(selected.prefix(240))
@@ -114,6 +120,9 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
         alert.addAction(UIAlertAction(title: PinkhaSemanticAnchorStrings.cancel, style: .cancel) { [weak self] _ in
             self?.confirmation = nil
             self?.finish(id)
+#if DEBUG && targetEnvironment(simulator)
+            if let editor = self?.editor { PinkhaSemanticAnchorMountedObserver.cancelled(editor: editor) }
+#endif
         })
         alert.addAction(UIAlertAction(title: PinkhaSemanticAnchorStrings.create, style: .default) {
             [weak self, weak alert] _ in
@@ -132,6 +141,9 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
 
     private func apply(_ selection: Selection, pending: PinkhaHeartSemanticAnchorPending, id: UUID) {
         guard activeID == id, owns(selection, focused: false) else { finish(id); return }
+#if DEBUG && targetEnvironment(simulator)
+        if let editor { PinkhaSemanticAnchorMountedObserver.applyQueued(editor: editor, pending: pending) }
+#endif
         Task { @MainActor [weak self] in
             guard let self else { return }
             do {
@@ -139,6 +151,9 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
                 guard activeID == id, owns(selection, focused: false),
                       capture.generation == selection.lease.generation else { finish(id); return }
                 lastVerifiedCapture = capture
+#if DEBUG && targetEnvironment(simulator)
+                if let editor { PinkhaSemanticAnchorMountedObserver.verified(editor: editor, capture: capture) }
+#endif
                 finish(id)
                 presentMessage(PinkhaSemanticAnchorStrings.created)
             } catch {
