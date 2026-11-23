@@ -128,9 +128,6 @@ def execute(args, receipt):
             {"group.io.anytype.app.dev", "group.com.itorah.shared"}, "Native app has different real group entitlements")
     write(evidence / "built-entitlements.json", entitlements)
     verify_runtime_copies(built, binding["native_marker"].encode(), evidence)
-    receipt["app_files"] = {str(path.relative_to(built)): digest(path)
-                            for path in built.rglob("*") if path.is_file() and not path.is_symlink()}
-    receipt["test_executable_sha256"] = digest(test_executable)
     receipt["source_bundle"] = source_bundle
     receipt["native_build_succeeded"] = True
     verify_sdk(app / "Dependencies/Hanlin")
@@ -138,6 +135,10 @@ def execute(args, receipt):
              "-scheme", "PinkhaStage1Acceptance", *common,
              "-only-testing:PinkhaStage1AcceptanceUITests/MiniAppsNativeAcceptanceUITests", *flags], "build-ui")
     ui_configuration = test_configuration(derived / "Build/Products", "PinkhaStage1AcceptanceUITests")
+    # Both builds are complete; bind the exact products that will execute.
+    receipt["app_files"] = {str(path.relative_to(built)): digest(path)
+                            for path in built.rglob("*") if path.is_file() and not path.is_symlink()}
+    receipt["test_executable_sha256"] = digest(test_executable)
     command(["xcrun", "simctl", "install", udid, str(companion)], "install-companion", timeout=120)
     environment = dict(PINKHA_SIMULATOR_UI_DISPOSABLE="1", PINKHA_MINIAPPS_NATIVE_TESTING="1",
                        GITHUB_SHA=head, GITHUB_RUN_ID=os.environ["GITHUB_RUN_ID"],
