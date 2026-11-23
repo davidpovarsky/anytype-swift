@@ -1,0 +1,100 @@
+{
+  "status": "ACCEPTED_FOR_SOURCE_PREPARATION",
+  "reviewer": "ChatGPT /root/original_sdk",
+  "reviewed_at": "2026-11-23T12:34:39.315824+00:00",
+  "core_source": "b46ad51dbf70e3835b338d25e12c3a01fc305ac5",
+  "current_source": "0a232149712dbdb925cec96e565dae925b2e09c3",
+  "index": {
+    "path": "/mnt/development/projects/worktrees/anytype-otzaria-native-import-rpc-source-20261123/docs/pinkha/torah-integration/native-owned-annotation-rpc-boundary-20261123/candidate-20261123/PACKET_INDEX.json",
+    "sha256": "8522594d51d131204845137a311e01ac6ea5b900021a742cd6552017d5269fae",
+    "verified_rows": 29
+  },
+  "five_frozen_product_inputs": [
+    {
+      "path": "docs/pinkha/torah-integration/native-owned-annotation-rpc-boundary-20261123/candidate-20261123/native/core/annotation_import.go",
+      "size": 22148,
+      "sha256": "4027e3acf9a92e8ecffbf7dd8726eda5e274c16d8571f4904be23f1f9c129cda",
+      "whole_bytes_unchanged_from_b46": true
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-owned-annotation-rpc-boundary-20261123/candidate-20261123/native/core/application/owned_annotation_import.go",
+      "size": 8655,
+      "sha256": "82a06b39662ed64d1b884129b9add9be26f0162c0bbe43517159fb8a65e29e79",
+      "whole_bytes_unchanged_from_b46": true
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-owned-annotation-rpc-boundary-20261123/candidate-20261123/native/core/application/owned_import_admission.go",
+      "size": 5180,
+      "sha256": "5b75a2e0edd0660ec13c27fa8134d5a453267351147afdf6918ae1c353ee7043",
+      "whole_bytes_unchanged_from_b46": true
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-owned-annotation-rpc-boundary-20261123/candidate-20261123/native/pb/protos/commands.proto",
+      "size": 319319,
+      "sha256": "af3fc3b92541048116ec73ec1a9b5c516a352e097f2c0aa9172e9ff6db5ffda2",
+      "whole_bytes_unchanged_from_b46": true
+    },
+    {
+      "path": "docs/pinkha/torah-integration/native-owned-annotation-rpc-boundary-20261123/candidate-20261123/native/pb/protos/service/service.proto",
+      "size": 47895,
+      "sha256": "0701992c7e4cdcd151cf172b93ed00d7df65bdd8d32b0685179a63ac39a5f39e",
+      "whole_bytes_unchanged_from_b46": true
+    }
+  ],
+  "original_copy_getters": [
+    {
+      "source": "62e5f1c9d62c99cc00debfe7e1975557eeec32fa",
+      "path": "docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-candidate-20261123/native/core/block/import/owned_import_operation.go",
+      "size": 8631,
+      "sha256": "187ace4421179dc8a4e651a478b552301155661b64ac6f2640fb1219f8904215"
+    },
+    {
+      "source": "62e5f1c9d62c99cc00debfe7e1975557eeec32fa",
+      "path": "docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-candidate-20261123/native/core/block/import/owned_annotation_readback.go",
+      "size": 17827,
+      "sha256": "ee7f1513bdef055ce0484cca7ac8af8f3bc0497995483472f618e60475c9a909"
+    },
+    {
+      "source": "cfc71a30498bba772aaf33f1ac08fdf65d1e0e3a",
+      "path": "docs/pinkha/torah-integration/native-heart-lifetime-repair-20261123/native/core/block/import/mapping_observation.go",
+      "size": 9569,
+      "sha256": "7634efc97506c1b1f4f67ecfdbd7fab919b5843986261a445e258ef39b8a3fa6"
+    }
+  ],
+  "actual_service_declarations": [
+    "rpc AnnotationImport (anytype.Rpc.Annotation.Import.Request) returns (anytype.Rpc.Annotation.Import.Response);",
+    "rpc AnnotationImportCancel (anytype.Rpc.Annotation.Import.Cancel.Request) returns (anytype.Rpc.Annotation.Import.Cancel.Response);"
+  ],
+  "findings": [
+    "Actual original app identity, wallet/account-directory lease and registry retirement are checked under existing locks. Registration precedes actual Start; native work, cancellation and final waits occur outside those locks.",
+    "Import remains blocked through real original Done and Result. Context cancellation requests cancellation and still joins Done. Registry deletion follows real Result. The historical copies then need no live native component access.",
+    "Cancel compares the complete private secret/digest/account/source/target tuple, releases locks and requests cancellation of that already-owned operation. It does not reacquire current write authority. NOT_OBSERVED and REQUESTED are not drain; DONE_OBSERVED does not replace primary Import response and onDrained.",
+    "Secret uniqueness is in-flight only. Done records may be pruned and no durable result cache exists. The Host possible-dispatch row must still prevent unsafe replacement across sessions and identities; this source does not provide durable exactly-once behavior.",
+    "Existing immutable getters copy complete files/mapping/aliases/references/problems/readback and proto.Clone the full ExportReport. The private archive path is represented by the bound input digest. The original readback verifies actual archive/member/converter/native correspondence before its body-match stage.",
+    "New-row size accounting matches the declared proto tags, message presence, repeated empty strings and signed int64 varint representation. Container/string limits and total size are checked before new protobuf row construction. Existing immutable getters still perform their own copies, so this is not zero allocation.",
+    "Whole-copy refusal removes outcome/mapping/readback together while preserving finite actual registered/Done/native-error/cancellation facts. No truncated graph is accepted. Actual generated proto.Size equality is still a required unexecuted gate.",
+    "Errors use finite fixed descriptions and categories. Genuine empty NoProgress IDs remain empty. Wire histories grant no Host ACK, current permission, cold reopen or durable saved-source mapping."
+  ],
+  "prepared_control_review": {
+    "files": [
+      "native/core/annotation_import_test.go",
+      "native/core/application/owned_annotation_import_test.go"
+    ],
+    "scope": "Read-only review of data-only exact-generated-encoder/boundary/tuple controls; NOT_RUN here"
+  },
+  "logging_review": "Root and RPC owner independently accepted the exact two-method payload/trace exclusions; no duplicate control execution here",
+  "execution": {
+    "source_edits": false,
+    "generation": false,
+    "compiler": false,
+    "tests": false,
+    "native_runtime": false,
+    "activation": false
+  },
+  "remaining_gates": [
+    "Original generated Go/mobile/Swift and actual compilation",
+    "Native Import/Cancel race and full readback leaves",
+    "Actual Swift Invocation/admission/onDrained linkage",
+    "Closed SDK result and same captured Host saved-row commitment"
+  ]
+}

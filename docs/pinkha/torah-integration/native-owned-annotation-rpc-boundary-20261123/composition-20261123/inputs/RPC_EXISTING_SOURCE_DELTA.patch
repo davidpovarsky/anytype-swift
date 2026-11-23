@@ -1,0 +1,443 @@
+--- a/core/application/owned_import_admission.go
++++ b/core/application/owned_import_admission.go
+@@ -18,10 +18,11 @@
+ // app and wallet. The target Space is the original request's declared target;
+ // this is not an ACL, archive, semantic body or ACK capability.
+ type ownedAccountImport struct {
+-	app       *app.App
+-	accountID string
+-	spaceID   string
+-	operation *importer.OwnedImportOperation
++	app        *app.App
++	accountID  string
++	spaceID    string
++	operation  *importer.OwnedImportOperation
++	annotation *ownedAnnotationCancellationBinding
+ }
+ 
+ // The registry's mutex is never held while waiting for an import, invoking a
+--- a/core/application/owned_annotation_import.go
++++ b/core/application/owned_annotation_import.go
+@@ -2,6 +2,8 @@
+ 
+ import (
+ 	"context"
++	"crypto/subtle"
++	"errors"
+ 
+ 	"github.com/anyproto/any-sync/app"
+ 
+@@ -24,6 +26,10 @@
+ }
+ 
+ func (s *Service) prepareOwnedAccountAnnotationImport(ctx context.Context, expected *app.App, accountID string, raw []byte, digest [32]byte, sourceRootID, sourceSpaceID, targetSpaceID string) (*ownedAccountImport, error) {
++	return s.prepareBoundOwnedAccountAnnotationImport(ctx, expected, accountID, raw, digest, sourceRootID, sourceSpaceID, targetSpaceID, nil)
++}
++
++func (s *Service) prepareBoundOwnedAccountAnnotationImport(ctx context.Context, expected *app.App, accountID string, raw []byte, digest [32]byte, sourceRootID, sourceSpaceID, targetSpaceID string, annotation *ownedAnnotationCancellationBinding) (*ownedAccountImport, error) {
+ 	if s == nil || ctx == nil || expected == nil || accountID == "" || targetSpaceID == "" {
+ 		return nil, ErrOwnedImportAdmissionUnavailable
+ 	}
+@@ -52,6 +58,13 @@
+ 	if err := ctx.Err(); err != nil {
+ 		return nil, err
+ 	}
++	if annotation != nil {
++		for active := range r.operations {
++			if active.annotation != nil && subtle.ConstantTimeCompare(active.annotation.secret[:], annotation.secret[:]) == 1 {
++				return nil, ErrOwnedAnnotationAttemptConflict
++			}
++		}
++	}
+ 	// Only bounded immutable byte inspection, exclusive private filesystem
+ 	// staging and the original component constructors run here. Native Space
+ 	// binding, derivation, callbacks and import remain inside the later Execute.
+@@ -60,9 +73,142 @@
+ 		return nil, err
+ 	}
+ 	owned := &ownedAccountImport{app: expected, accountID: accountID, spaceID: operation.TargetSpaceID(), operation: operation}
++	if annotation != nil {
++		bound := *annotation
++		owned.annotation = &bound
++	}
+ 	if r.operations == nil {
+ 		r.operations = make(map[*ownedAccountImport]struct{})
+ 	}
+ 	r.operations[owned] = struct{}{}
+ 	return owned, nil
+ }
++
++var ErrOwnedAnnotationAttemptInvalid = errors.New("owned annotation import attempt is invalid")
++var ErrOwnedAnnotationAttemptConflict = errors.New("owned annotation import attempt is already registered")
++
++// This immutable private binding only locates an already admitted operation.
++// It is not account, selected-Space, import, currentness or acknowledgement authority.
++type ownedAnnotationCancellationBinding struct {
++	secret        [32]byte
++	sourceDigest  [32]byte
++	sourceRootID  string
++	sourceSpaceID string
++}
++
++// OwnedAnnotationImportCompletion contains historical facts copied only from
++// this Service's registered original operation after its real Done closes.
++type OwnedAnnotationImportCompletion struct {
++	registered bool
++	done       bool
++	outcome    importer.OwnedImportOutcome
++}
++
++func (c OwnedAnnotationImportCompletion) Registered() bool { return c.registered }
++func (c OwnedAnnotationImportCompletion) Done() bool       { return c.done }
++func (c OwnedAnnotationImportCompletion) Outcome() (importer.OwnedImportOutcome, bool) {
++	return c.outcome, c.done
++}
++
++// OwnedAnnotationCancelDisposition is a cancellation lookup observation.
++// Neither a miss nor a cancellation request is a drain or replacement permit.
++type OwnedAnnotationCancelDisposition uint8
++
++const (
++	OwnedAnnotationCancelNotObserved OwnedAnnotationCancelDisposition = iota
++	OwnedAnnotationCancelRequested
++	OwnedAnnotationCancelDoneObserved
++)
++
++// ImportOwnedAnnotation is the one blocking original native route. Expected IDs
++// and the secret are data comparisons only. The original wallet, account lease,
++// actual application, regular Space and writer admission remain authoritative.
++func (s *Service) ImportOwnedAnnotation(ctx context.Context, accountID string, raw []byte, digest [32]byte,
++	sourceRootID, sourceSpaceID, targetSpaceID string, secret [32]byte,
++) (OwnedAnnotationImportCompletion, error) {
++	var completion OwnedAnnotationImportCompletion
++	if s == nil || ctx == nil || secret == ([32]byte{}) {
++		return completion, ErrOwnedAnnotationAttemptInvalid
++	}
++	if err := ctx.Err(); err != nil {
++		return completion, err
++	}
++	// Capture the actual app without waiting behind startup. The existing
++	// preparation below rechecks that SAME app under the original read lock.
++	if !s.lock.TryRLock() {
++		return completion, ErrOwnedImportAdmissionUnavailable
++	}
++	expected := s.app
++	s.lock.RUnlock()
++	binding := &ownedAnnotationCancellationBinding{
++		secret: secret, sourceDigest: digest,
++		sourceRootID: sourceRootID, sourceSpaceID: sourceSpaceID,
++	}
++	owned, err := s.prepareBoundOwnedAccountAnnotationImport(ctx, expected, accountID, raw, digest,
++		sourceRootID, sourceSpaceID, targetSpaceID, binding)
++	if err != nil {
++		return completion, err
++	}
++	completion.registered = true
++	// The real registry entry exists before Start; no Service/registry lock
++	// remains held while Execute, cancellation or completion can run.
++	owned.operation.Start()
++	select {
++	case <-owned.operation.Done():
++	case <-ctx.Done():
++		owned.operation.RequestCancel()
++		// Context cancellation never substitutes for actual Execute, native
++		// workers, readback or private staging cleanup returning.
++		<-owned.operation.Done()
++	}
++	outcome, observed := owned.operation.Result()
++	if !observed {
++		return completion, importer.ErrOwnedImportOperationUnavailable
++	}
++	completion.done, completion.outcome = true, outcome
++	// Retain no terminal-result registry. This local call owns its copied
++	// history; deletion is permitted only after the original Done/Result.
++	r := &s.ownedImports
++	r.mu.Lock()
++	delete(r.operations, owned)
++	r.mu.Unlock()
++	return completion, outcome.Err()
++}
++
++// CancelOwnedAnnotationImport can only request cancellation of a matching
++// already-registered original operation. It deliberately does not reacquire
++// current app/Space write authority: the historical owner survives retirement.
++// A pre-registration miss cannot certify that the import never starts.
++func (s *Service) CancelOwnedAnnotationImport(accountID, sourceRootID, sourceSpaceID, targetSpaceID string,
++	digest, secret [32]byte,
++) OwnedAnnotationCancelDisposition {
++	if s == nil || secret == ([32]byte{}) {
++		return OwnedAnnotationCancelNotObserved
++	}
++	r := &s.ownedImports
++	r.mu.Lock()
++	var operation *importer.OwnedImportOperation
++	for owned := range r.operations {
++		binding := owned.annotation
++		if binding != nil && owned.app != nil &&
++			owned.accountID == accountID && owned.spaceID == targetSpaceID &&
++			binding.sourceRootID == sourceRootID && binding.sourceSpaceID == sourceSpaceID &&
++			subtle.ConstantTimeCompare(binding.sourceDigest[:], digest[:]) == 1 &&
++			subtle.ConstantTimeCompare(binding.secret[:], secret[:]) == 1 {
++			operation = owned.operation
++			break
++		}
++	}
++	r.mu.Unlock()
++	if operation == nil {
++		return OwnedAnnotationCancelNotObserved
++	}
++	select {
++	case <-operation.Done():
++		return OwnedAnnotationCancelDoneObserved
++	default:
++	}
++	// Cancellation runs outside both locks and never deletes/releases its owner.
++	operation.RequestCancel()
++	return OwnedAnnotationCancelRequested
++}
+--- a/pb/protos/commands.proto
++++ b/pb/protos/commands.proto
+@@ -10104,6 +10104,181 @@
+     // Historical native schema registration facts. These messages carry no
+     // reusable account/Space authority, annotation identity, body proof or ACK.
+     message Annotation {
++
++        // One actual original import invocation remains blocking until its
++        // native Done/Result. The separate control can only request cancellation.
++        message Import {
++            enum NativeErrorCategory {
++                NONE = 0;
++                CANCELED = 1;
++                PERMISSION_DENIED = 2;
++                RUNTIME_UNAVAILABLE = 3;
++                NATIVE_FAILURE = 4;
++            }
++
++            message FileObservation {
++                string kind = 1;
++                string objectId = 2;
++                string blockId = 3;
++                string fileObjectId = 4;
++                bool nativeErrorPresent = 5;
++                NativeErrorCategory nativeErrorCategory = 6;
++            }
++
++            message Outcome {
++                string targetSpaceId = 1;
++                // The genuine NoProgress process ID may be empty.
++                string processId = 2;
++                string rootCollectionId = 3;
++                int64 objectsCount = 4;
++                repeated FileObservation files = 5;
++            }
++
++            message SourceAssignment {
++                // Exact owned input digest replaces the private absolute stage path.
++                bytes sourceArchiveSHA256 = 1;
++                string memberPath = 2;
++                string sourceSpaceId = 3;
++                string sourceObjectId = 4;
++                string converterId = 5;
++                string nativeId = 6;
++            }
++
++            message FilteredSource {
++                bytes sourceArchiveSHA256 = 1;
++                string memberPath = 2;
++                string sourceSpaceId = 3;
++                string sourceObjectId = 4;
++                string converterId = 5;
++            }
++
++            message GeneratedAssignment {
++                string converterId = 1;
++                string nativeId = 2;
++            }
++
++            message InternalKeyAlias {
++                string converterId = 1;
++                string sourceKey = 2;
++                string nativeKey = 3;
++            }
++
++            message Mapping {
++                bool observed = 1;
++                bool completeForSelectedSnapshots = 2;
++                string traceId = 3;
++                string processId = 4;
++                string targetSpaceId = 5;
++                repeated SourceAssignment sourceAssignments = 6;
++                repeated FilteredSource filteredSources = 7;
++                repeated GeneratedAssignment generatedAssignments = 8;
++                repeated InternalKeyAlias internalKeyAliases = 9;
++                repeated string keptReferenceIds = 10;
++                bool nonInjectiveDestinations = 11;
++                repeated string problems = 12;
++            }
++
++            message Readback {
++                // Historical same-operation native evidence, never a Host ACK,
++                // cold reopen, durable mapping or current permission receipt.
++                bool observed = 1;
++                uint32 stage = 2;
++                string accountId = 3;
++                string spaceId = 4;
++                string rootId = 5;
++                bytes sourceArchiveSHA256 = 6;
++                bytes nativeArchiveSHA256 = 7;
++                bytes nativeArchive = 8;
++                anytype.model.ExportReport exportReport = 9;
++                uint32 sourceSnapshots = 10;
++                uint32 annotationPages = 11;
++                uint32 fileObjects = 12;
++                uint32 readOnlyContexts = 13;
++                uint32 additionalContexts = 14;
++            }
++
++            message Request {
++                string importProtocol = 1;
++                string expectedAccountId = 2;
++                string sourceSpaceId = 3;
++                string sourceRootId = 4;
++                string targetSpaceId = 5;
++                bytes archive = 6;
++                bytes archiveSHA256 = 7;
++                // Private unpredictable nonzero 32 bytes from the captured SDK
++                // attempt; correlation only, never native admission authority.
++                bytes attemptSecret = 8;
++            }
++
++            message Response {
++                Error error = 1;
++                string importProtocol = 2;
++                bool registered = 3;
++                bool operationDone = 4;
++                CopyDisposition copyDisposition = 5;
++                // These finite actual facts remain available on COPY_REFUSED.
++                NativeErrorCategory nativeErrorCategory = 6;
++                bool nativeErrorPresent = 7;
++                bool cancellationRequested = 8;
++                Outcome outcome = 9;
++                Mapping mapping = 10;
++                Readback readback = 11;
++
++                enum CopyDisposition {
++                    UNOBSERVED = 0;
++                    COMPLETE = 1;
++                    COPY_REFUSED = 2;
++                }
++
++                message Error {
++                    Code code = 1;
++                    string description = 2;
++                    enum Code {
++                        NULL = 0;
++                        UNKNOWN_ERROR = 1;
++                        BAD_INPUT = 2;
++                        RUNTIME_UNAVAILABLE = 3;
++                        CANCELED = 4;
++                        PERMISSION_DENIED = 5;
++                        ATTEMPT_CONFLICT = 6;
++                        COPY_REFUSED = 7;
++                    }
++                }
++            }
++
++            message Cancel {
++                message Request {
++                    string importProtocol = 1;
++                    string expectedAccountId = 2;
++                    string sourceSpaceId = 3;
++                    string sourceRootId = 4;
++                    string targetSpaceId = 5;
++                    bytes archiveSHA256 = 6;
++                    bytes attemptSecret = 7;
++                }
++
++                message Response {
++                    Error error = 1;
++                    string importProtocol = 2;
++                    Disposition disposition = 3;
++                    enum Disposition {
++                        // In particular, this is not evidence of no native work.
++                        NOT_OBSERVED = 0;
++                        REQUESTED = 1;
++                        DONE_OBSERVED = 2;
++                    }
++                    message Error {
++                        Code code = 1;
++                        string description = 2;
++                        enum Code {
++                            NULL = 0;
++                            BAD_INPUT = 1;
++                            RUNTIME_UNAVAILABLE = 2;
++                        }
++                    }
++                }
++            }
++        }
+         message Schema {
+             message NativeObservation {
+                 // Exact FixedSchemaDisposition numeric value from the native
+--- a/pb/protos/service/service.proto
++++ b/pb/protos/service/service.proto
+@@ -482,4 +482,8 @@
+ 
+     // Original annotation schema registration, with historical phase copyout.
+     rpc AnnotationSchemaRegister (anytype.Rpc.Annotation.Schema.Register.Request) returns (anytype.Rpc.Annotation.Schema.Register.Response);
++
++    // One retained original import invocation plus cancellation-only lookup.
++    rpc AnnotationImport (anytype.Rpc.Annotation.Import.Request) returns (anytype.Rpc.Annotation.Import.Response);
++    rpc AnnotationImportCancel (anytype.Rpc.Annotation.Import.Cancel.Request) returns (anytype.Rpc.Annotation.Import.Cancel.Response);
+ }
+--- a/cmd/grpcserver/grpc.go
++++ b/cmd/grpcserver/grpc.go
+@@ -146,8 +146,8 @@
+ 
+ 	grpcDebug, _ := strconv.Atoi(os.Getenv("ANYTYPE_GRPC_LOG"))
+ 	if grpcDebug > 0 {
+-		decider := func(_ context.Context, _ string, _ interface{}) bool {
+-			return true
++		decider := func(_ context.Context, fullMethod string, _ interface{}) bool {
++			return annotationImportPayloadsAllowed(fullMethod)
+ 		}
+ 
+ 		grpcLogger := logging.LoggerNotSugared("grpc")
+@@ -194,7 +194,10 @@
+ 			streamOptions = append(streamOptions, otgrpc.LogPayloads())
+ 		}
+ 
+-		unaryInterceptors = append(unaryInterceptors, otgrpc.OpenTracingServerInterceptor(tracer, unaryOptions...))
++		unaryInterceptors = append(unaryInterceptors, annotationImportTraceBoundary(
++			otgrpc.OpenTracingServerInterceptor(tracer, unaryOptions...),
++			otgrpc.OpenTracingServerInterceptor(tracer),
++		))
+ 		streamInterceptors = append(streamInterceptors, otgrpc.OpenTracingStreamServerInterceptor(tracer, streamOptions...))
+ 	}
+ 
+@@ -352,3 +355,25 @@
+ 	}
+ 	return resp
+ }
++
++// annotationImportPayloadsAllowed preserves the original payload policy for
++// every other full method identity. No prefix or caller-controlled mask is used.
++func annotationImportPayloadsAllowed(fullMethod string) bool {
++	switch fullMethod {
++	case "/anytype.ClientCommands/AnnotationImport", "/anytype.ClientCommands/AnnotationImportCancel":
++		return false
++	default:
++		return true
++	}
++}
++
++// annotationImportTraceBoundary retains the original tracer/span/error handling
++// for both routes. Only the exact two commands omit the LogPayloads option.
++func annotationImportTraceBoundary(withConfiguredPayloads, withoutPayloads grpc.UnaryServerInterceptor) grpc.UnaryServerInterceptor {
++	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
++		if !annotationImportPayloadsAllowed(info.FullMethod) {
++			return withoutPayloads(ctx, req, info, handler)
++		}
++		return withConfiguredPayloads(ctx, req, info, handler)
++	}
++}
