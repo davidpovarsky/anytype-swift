@@ -1,7 +1,8 @@
 name: Original Heart native owned import lifetime
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [codex/otzaria-heart-native-20261123]
 
 permissions:
   contents: read
@@ -12,7 +13,7 @@ concurrency:
 
 jobs:
   original-native-lifetime:
-    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/codex/otzaria-heart-native-20261123' && github.run_attempt == 1
+    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-heart-native-20261123' && github.run_attempt == 1
     runs-on: xcode-27
     timeout-minutes: 120
     env:

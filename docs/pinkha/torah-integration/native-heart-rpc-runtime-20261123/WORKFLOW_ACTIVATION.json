@@ -1,0 +1,22 @@
+{
+  "schema": "otzaria.native-lifetime-workflow-activation/1",
+  "parent": "ddf8c86a7d2be3e11da23d9d25e566a97faa8645",
+  "original_manual_dispatch_exit": 1,
+  "original_failure": "HTTP 404: dedicated workflow not registered on the default branch",
+  "original_failure_receipt_sha256": "2ddbda53cf4a2857445e2acef066bc3ee3841014df90691b70cac42350388c6d",
+  "native_runtime_runs_from_rejected_request": 0,
+  "activation": "One lease-checked publication push on the exact isolated branch; no manual redispatch",
+  "branch": "codex/otzaria-heart-native-20261123",
+  "event": "push",
+  "run_attempt": 1,
+  "workflow_path": ".github/workflows/otzaria-heart-rpc-native.yml",
+  "workflow_sha256": "564125f0425dd7d4611930ae2888254a354f5431d2cf06d0f0ef26f949aee0a1",
+  "manifest_sha256": "4fc15e8112172752f85e9e67e6eace8cf6a0c0f473f71a4817ac01b2853f243b",
+  "changes": [
+    "Replace manual trigger with exact isolated-branch push trigger",
+    "Require push event instead of workflow_dispatch"
+  ],
+  "runtime_steps_toolchain_deadlines_assertions_unchanged": true,
+  "existing_registered_workflows_unchanged": true,
+  "default_branch_changed": false
+}
