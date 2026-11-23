@@ -20,23 +20,28 @@ A separate `task.go` change is unnecessary if the fresh per-operation creator ho
 
 The whole-graph gate needs two correspondences: raw exported identity to the converter's real source observation, and converter UUID to the original provider's actual assigned native ID. The original mapping builder already retains actual source and assignment history. The new policy must not overwrite that history to manufacture a bijection.
 
-## Per-member decisions awaiting authentic specimens
+## Complete genuine graph classes now available
 
-| Candidate role | Required native evidence | Permitted effect |
+Actual run45130249062 produced complete text/format/nested/attachment ZIPs with67/67/68/87 members. The fixture failed its type representation assertion before body checks, so these are authenticated producer bytes, not completed body qualification. The complete graph inventory is retained in `GENUINE_GRAPH_CLASSES.json`; no member is removed to manufacture a simple graph.
+
+| Actual class | Concrete preparation needed | Required effect boundary |
 | --- | --- | --- |
-| Fresh annotation root or nested page | Exact source member, complete typed references, no unsupported fields, zero ambiguous target oldAnytypeID/uniqueKey matches, actual nonempty root payload, later strict native create outcome | Original fresh creation only; no reset/reimport |
-| Already registered fixed annotation type/property | Exact original manifest identity, complete compatible source definition, genuine persisted/native readback and unique positive index row in the same target account/Space; original provider must select that exact ID | Read-only reuse; no creator mutation path |
-| Additional bundled schema member from genuine export | No assumption yet. Require its actual original exported definition and native target identity, plus a complete explicit field policy | Refused until the real specimen and source rule are reviewed |
-| File object/binary, legacy file, unresolved network bookmark | Slice A only binds bytes and inventory; existing owned upload drain alone does not prove reused-versus-created identity or full body/file readback | Refused in B1 import |
-| Workspace/widget/profile/participant/chat, tombstone/kept ID, arbitrary relation option/type, unknown or partial member | No general-import interpretation or name-based reuse is available | Entire graph refused before assignment |
+| Annotation root and nested annotation | Frozen source identity and generated model; complete typed reference mapping; actual original provider payload | Fresh original creation; actual collision remains failure, no reset/reimport |
+| Fixed annotation type and17 properties | Exact original registrar manifest plus source model and target native readback/unique index rows | Read-only reuse before every creator mutation |
+| Additional original bundled types/relations | Bind each genuine source key to the original bundle definition and actual same-Space target identity; preserve exact permitted definition fields and typed references | Read-only reuse with no implicit install/reset/favorite/archive/sync effect |
+| Original participant context | Bind source attribution to authentic source account identity and actual target Space participant owner; explicitly compare identity-bearing fields and source→target mapping | Native-owned read-only context reuse; no participant/profile creation or arbitrary ID substitution |
+| Attachment file object and binary | Keep complete raw inventory; bind actual owned upload/file identity, original provider disposition and real file drain; use actual exported bytes in C readback | No caller path/network source; no false byte preservation from only upload metadata |
+| Unrecognized or inconsistent member | Preserve the bytes and report the exact unsupported structural boundary | Refuse the complete preparation before assignment; do not strip the member |
 
-Preflight is not a transaction. Concurrent native changes can still make a later actual assignment, schema recheck, create, or readback fail. Every actual effect remains historical evidence; ALL_OR_NOTHING does not promise rollback. Existing or uncertain outcomes must be recovered by their actual mapped objects, never by blind repeated import.
+The three simple/formatted/nested shapes contain3 types and62 relations plus the original participant. The attachment adds real file-related schema and binary data, for5 types/78 relations. These classes must receive concrete code handling; the earlier hypothetical one-page-plus18-schema model is superseded. Source preparation proceeds now, while native qualification and the independent end-to-end body policy remain mandatory before activation.
 
-## B2: actual write permission boundary
+Preflight is not a transaction. Concurrent native changes can make later actual assignment, schema recheck, create, or readback fail. Every actual effect remains historical evidence; ALL_OR_NOTHING does not promise rollback. Existing or uncertain outcomes must be recovered by their actual mapped objects, never by blind repeated import.
 
-The source trace in `CURRENT_PERMISSION_TRACE.md` is an independent blocker. The current original root path stores a root before historical ACL validation; a later current-permission check on body Apply cannot establish that no root was stored after revocation. Holding an outer ACL read lock across the full existing PutTree/GetObject path is not an accepted fix because it reenters ACL locking and original callbacks.
+## B2: accepted current-writer admission and historical effects
 
-Do not activate B1 as production until a concrete original-owner hook has its own exact hunk review and genuine revoke-at-boundary test. Candidate placement is inside the original native root-storage owner, where current writer identity, the exact prepared payload and one storage insertion can share a well-defined admission boundary. No any-sync edit is included in the current allowlist. The dependency trace also shows that content admission and storage are separate phases; the eventual contract must name its exact linearization point instead of claiming an atomic commit from a preliminary check.
+Use the real current account/Space permission at preparation and each closed native assignment/create admission; preserve native content Apply errors and failed currentness at final readback. Do not request IgnoreNoPermissions. The precise original root/content ordering is retained in CURRENT_PERMISSION_TRACE.md.
+
+No zero-storage-after-concurrent-revocation guarantee, any-sync edit, new lock fence or alternative transaction engine is required by this contract. Native signed-ACL qualification must record actual ordering and historical effects, and must withhold positive verification after failed currentness or readback. Production activation remains gated by that genuine evidence; concrete source preparation is authorized now.
 
 ## C: retain the original operation through actual readback
 

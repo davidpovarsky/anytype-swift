@@ -16,17 +16,15 @@ This is a source finding, not an executed permission-race result. All rows are b
 | 8 | Heart d98420, `smartblock/smartblock.go` PushChange path | Original Apply propagates a real PushChange permission error unless the caller explicitly opted into IgnoreNoPermissions. The closed route must not request that opt-out. |
 | 9 | any-sync 5d71ccad, `objecttree/objecttree.go:AddContentWithValidator` / `prepareBuilderContent` | Content preparation checks current Permissions(content.Key.GetPublic()).CanWrite under ACL RLock. That lock is released before Build, historical validation and storage.AddAll. These are distinct phases. |
 
-## Consequence for the proposed import
+## Accepted native permission contract
 
-A provider payload, native root existence, or successful historical root validation does not by itself prove current write permission at the point root storage was inserted. Likewise a later body Apply denial does not prove the root left no earlier side effect. The first production gate must retain both root/storage and body/head observations around a real signed ACL change.
+The agreed production contract is authentic current-writer admission using the actual retained application, account key and regular Space, followed by accurately reported historical completion. A failed currentness or readback check grants no positive ACK. This is not an atomic promise that no storage insertion can occur after a concurrently arriving revocation.
 
-The intended proof must name a real linearization point: either a precisely scoped current-writer admission that owns the storage insertion, or an explicitly narrower native permission contract accepted by the owners. It must bind the actual account key/Space and immutable payload; wire account strings, caller booleans and token freshness inferred from UI are insufficient.
+The real root and content paths have different current/historical admission stages, as shown above. B/C must check the actual current writer before starting and at each closed assignment/create boundary, preserve native Apply permission failures, and recheck currentness before positive readback publication. If revocation arrives after a successful native admission, earlier/later native effects remain historical evidence; cancellation or refusal does not imply rollback. A signed-revocation test must name which admission happened first and inspect actual root/body heads, rather than assume a global transaction.
 
-Do not wrap the full existing tree creation with an external ACL RLock. The original rebuild/validate path reacquires that lock, and original object initialization may reenter other owners. A pending ACL writer can make nested read locking unsafe. A prospective hook must live within the original native owner and define the lock order, cancellation boundary, collision semantics and behavior after a partial native failure. This checkpoint does not add that hook or change any-sync.
+No new any-sync fence, nested external ACL RLock or rewritten storage engine is proposed. The original implementation remains the owner of its native permission and storage ordering. The source trace is a qualification boundary, not an already reproduced violation. Unknown or partial outcomes recover by their actual mapped identity, never by blind reimport.
 
-The content path also separates current permission observation from storage commit. That is recorded as a concrete source boundary requiring an exact accepted policy and focused native qualification; it is not asserted to be an already reproduced runtime violation.
-
-## Provenance limit
+## Provenance and actual compiler input identity
 
 Heart's original go.mod declares any-sync v0.13.8 without an any-sync replace. Its go.sum records:
 
@@ -35,4 +33,4 @@ github.com/anyproto/any-sync v0.13.8 h1:VVcAX/8VHwIB3D3mEaO0v3ojyixrYvaGI1nwgLja
 github.com/anyproto/any-sync v0.13.8/go.mod h1:d56Pxkt2zaK8K9SAEf8KkhBwJx/a6mEGeRY6h717x0w=
 ```
 
-Primary GitHub API reads resolve the annotated tag `3e5991d928a2a5ead0fcac5bad1806cad4786070` to commit `5d71ccad5db77997df2d2426011ebae4e7600d98`. The tree is complete (795 rows), and each retained source's size/Git blob/SHA256 is independently checked. No module ZIP checksum or earlier runner module-cache source equality is claimed by these reads. The next native gate must bind the actual dependency files it compiles before using this trace as an execution-source admission.
+Primary GitHub API reads resolve the annotated tag `3e5991d928a2a5ead0fcac5bad1806cad4786070` to commit `5d71ccad5db77997df2d2426011ebae4e7600d98`. The tree is complete (795 rows), and each retained source's size/Git blob/SHA256 is independently checked. Current run 45130249062 now supplies that actual source identity: all seven retained primary source SHA256 values match the actual Apple declared compiler inputs, and the module Sum matches the original go.sum. Evidence commit9357b53ff8230128d1f3340118ec152770feb12a retains ANY_SYNC_ACTUAL_INPUT_MATCH.json (SHA256c5120dc9a5eb05ec68e43dcc2bb01c0e928b39c5d9d05880d5b5b916079b50fe). This binds source identity; it does not claim a new permission-race runtime result or a module ZIP reproduction.

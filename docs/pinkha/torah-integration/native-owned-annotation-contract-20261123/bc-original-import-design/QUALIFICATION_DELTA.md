@@ -1,13 +1,13 @@
 # New B/C qualification only
 
-Previously accepted lifetime and generated-schema endpoint leaves remain evidence and are not selected again. Slice A run 45130249062 is the sole active archive/export gate. The following gates are proposed, not dispatched or executed.
+Previously accepted lifetime and generated-schema endpoint leaves remain evidence and are not selected again. Slice A run45130249062 is terminalFAIL:4actualexports,4fixtureFAIL,0archive controls. Its source-bound evidence is preserved at9357b53. No observer or rerun remains active in this lane. The following gates are proposed, not dispatched or executed.
 
 ## Source prerequisites before any B/C activation
 
 - Authenticate the actual four Slice A export archives, reports and body assertions. Account for every generated Snapshot/member/reference and every binary. Keep the attachment specimen distinct from import eligibility.
 - Produce the exact supported member/field table from those bytes. A rejected shape remains rejected; do not strip a member, relax the original fixture or synthesize an export to make the shape fit.
 - Bind original Heart, r14, owned processor/lifetime/mapping layers, the selected unchanged Slice A bytes and actual any-sync module files. Generated model identity must be exact.
-- Review the concrete minimal B1 hunks and the independent original-owner current-permission hook. A preliminary graph check cannot substitute for that write-boundary decision.
+- Review concrete minimal B1/C hunks under the agreed actual current-writer admission/historical-effects contract. No any-sync fence or invented zero-storage atomicity guarantee is required.
 - The test must run in an original disposable LocalOnly account and regular Space, using actual registrar, actual editor/export, original ID provider, original creator, and actual signed ACLs.
 
 ## Discriminating B1 cases
@@ -25,8 +25,8 @@ Previously accepted lifetime and generated-schema endpoint leaves remain evidenc
 
 | New case | Actual evidence required |
 | --- | --- |
-| Signed writer→reader before root storage | Native root/storage inventory and body/head observations proving the reviewed current-writer boundary; zero fabricated caller permission flags. |
-| Signed change between content admission and storage | Explicit accepted semantics of the original owner hook and actual event ordering; do not claim atomicity from a preflight read. |
+| Signed writer→reader before root storage | Real account/Space current-writer refusal when revocation precedes that admission; exact root/body history and no positive verification when later currentness fails; no fabricated permission flags. |
+| Signed change between content admission and storage | Record which native admission and signed revocation occurred first, preserve actual historical effects, and withhold positive result on failed final currentness/readback; no atomic rollback claim. |
 | Cancel/retire during actual original export | Actual export begins; reentrant original AccountStop requests cancellation and returns pending; the same operation remains registered until real export workers/writer and owned cleanup drain. |
 | Export returns nil error with canceled context/report | Positive verification remains absent; retain actual report and cancellation history. |
 | Mapping-aware readback | Actual exported graph with exact typed identity substitution, text bytes, block/mark styles, ordering, nested graph and all admitted relations. Mutating any one supported semantic field fails comparison. |

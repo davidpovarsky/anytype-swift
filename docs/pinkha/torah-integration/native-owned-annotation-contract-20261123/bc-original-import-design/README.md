@@ -28,3 +28,9 @@ This is exact primary-source inspection. It does not claim that this checkpoint 
 ## Work ownership
 
 Only this new documentation directory is edited. No importer, proto, generated source, dependency module, application, SDK, or CI workflow is changed by the checkpoint. The active native observer remains the single bounded observer of run 45130249062; no dispatch or replay is performed here.
+
+## 2026-11-23 actual export and policy checkpoint
+
+The source-bound failed native run45130249062 produced4complete real archives. Evidence9357b53ff8230128d1f3340118ec152770feb12a records18schema creates/1Apply and4fixture failures before body checks; archive controls remain0executed. The original TypeKey URL representation defect is diagnosed and its exact one-line correction approved without a type-only rerun.
+
+The agreed permission contract and actual7dependency-input equality supersede earlier speculative stronger atomicity requirements in this packet. All authentic graph classes are retained for concrete B1/C source preparation. ANNOTATION_PAYLOAD_POLICY.json is the approved cross-language size contract; implementation/native/SDK/Host qualification is still separate. MEASURED_PAYLOAD_BUDGETS.json contains actual ZIP sizes and explicitly hypothetical maximum-header framing/base64 bounds, never fabricated authoritative snapshots.
