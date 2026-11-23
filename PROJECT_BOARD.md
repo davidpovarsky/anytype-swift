@@ -48,3 +48,8 @@ Example:
 ## Archive
 
 Older completed/superseded items that still have historical value.
+
+
+## 2026-11-23 — Canonical Hanlin SDK producer repin
+
+The isolated canonical SDK candidate now selects published Hanlin d49a4fd4115b8335105d2991bf74ab4d7f6aad2d, including the shared aggregate JSONSchema resource correction. Actual sparse installation and immutable source proof passed for the original eight products (579 original files,14 directories,zero native targets). Host implementation, package configuration and active-owner controllers are unchanged. Prior four source-guard controls are retained without repetition. Evidence: docs/validation/20261123-canonical-hanlin-sdk-repin. Native acceptance remains NOT_RUN and requires coordination with the existing SDK06 owner; no CI dispatch by this lane.
