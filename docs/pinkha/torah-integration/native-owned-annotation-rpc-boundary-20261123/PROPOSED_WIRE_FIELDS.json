@@ -1,0 +1,161 @@
+{
+  "cancel_request": [
+    "exact protocol",
+    "same attemptSecret",
+    "expected actual account",
+    "source archive digest",
+    "source root/Space",
+    "target Space"
+  ],
+  "cancel_response": {
+    "disposition": [
+      "NOT_OBSERVED",
+      "REQUESTED",
+      "DONE_OBSERVED"
+    ],
+    "not_observed_is_not_drained": true,
+    "original_import_invocation_must_still_drain": true,
+    "request_cancel_is_not_release": true
+  },
+  "command_names_are_review_placeholders": true,
+  "import_request": [
+    {
+      "name": "protocol",
+      "rule": "exact agreed protocol literal",
+      "tag": 1,
+      "type": "string"
+    },
+    {
+      "name": "expectedAccountId",
+      "rule": "comparison against actual native wallet/usable lease",
+      "tag": 2,
+      "type": "string"
+    },
+    {
+      "name": "sourceSpaceId",
+      "rule": "comparison against bounded original archive",
+      "tag": 3,
+      "type": "string"
+    },
+    {
+      "name": "sourceRootId",
+      "rule": "comparison against bounded original archive",
+      "tag": 4,
+      "type": "string"
+    },
+    {
+      "name": "targetSpaceId",
+      "rule": "actual regular Space/current-writer checks inside original Execute",
+      "tag": 5,
+      "type": "string"
+    },
+    {
+      "name": "archive",
+      "rule": "untouched 1..1048576 bytes, native-owned copy/stage",
+      "tag": 6,
+      "type": "bytes"
+    },
+    {
+      "name": "archiveSHA256",
+      "rule": "exact32 digest, must match actual archive",
+      "tag": 7,
+      "type": "bytes"
+    },
+    {
+      "name": "attemptSecret",
+      "rule": "unpredictable nonzero32 bytes from the closed actual SDK owner; correlation only, no account/Space authority",
+      "tag": 8,
+      "type": "bytes"
+    }
+  ],
+  "no_product_or_proto_edits": true,
+  "original_owners": {
+    "application": "Service",
+    "execution": "OwnedImportOperation",
+    "registry": "ownedImports.operations",
+    "terminal": "Done then Result"
+  },
+  "preferred_commands": [
+    "AnnotationImport",
+    "AnnotationImportCancel"
+  ],
+  "proposed_copy_policy": {
+    "accepted_archive_policy_unchanged": true,
+    "encoded_result_max_bytes": 2097152,
+    "metadata_resource_limits": "PENDING_ACTUAL_NINE_LEAF_INVENTORY_AND_ROOT_REVIEW",
+    "no_truncation": true
+  },
+  "response": {
+    "copyDisposition": [
+      "UNOBSERVED",
+      "COMPLETE",
+      "COPY_REFUSED"
+    ],
+    "error": "native finite error category and bounded constant description, never success inferred from missing history",
+    "files": [
+      "kind",
+      "objectID",
+      "blockID",
+      "fileObjectID",
+      "actual error presence and finite category"
+    ],
+    "mapping": [
+      "observed",
+      "complete",
+      "traceID",
+      "processID",
+      "targetSpaceID",
+      "sourceAssignments",
+      "filteredSources",
+      "generatedAssignments",
+      "internalKeyAliases",
+      "keptReferenceIDs",
+      "nonInjectiveDestinations",
+      "problems"
+    ],
+    "no_ack_field": true,
+    "no_cold_reopen_claim": true,
+    "no_current_permission_receipt": true,
+    "omitted_private_internal_field": {
+      "basis": "B1/C already checks owned stage path; external projection retains exact source digest/member binding and never grants path authority",
+      "name": "absolute ArchivePath"
+    },
+    "operationDone": "true only after actual original Done",
+    "outcome": {
+      "cancellationRequested": "actual original history",
+      "nativeErrorCategory": "CANCELED|PERMISSION_DENIED|RUNTIME_UNAVAILABLE|NATIVE_FAILURE|NONE",
+      "nativeErrorPresent": "actual Outcome.Err != nil",
+      "objectsCount": "actual original return",
+      "processId": "actual empty NoProgress identity is allowed",
+      "rootCollectionId": "actual original return",
+      "targetSpaceId": "actual Outcome.TargetSpaceID"
+    },
+    "readback": [
+      "observed",
+      "actual stage",
+      "accountID",
+      "spaceID",
+      "rootID",
+      "sourceArchiveSHA256",
+      "nativeArchiveSHA256",
+      "complete native archive bytes",
+      "exact model.ExportReport",
+      "sourceSnapshots",
+      "annotationPages",
+      "fileObjects",
+      "readOnlyContexts",
+      "additionalContexts"
+    ],
+    "registration": "observed only from actual original registration; no caller boolean",
+    "sourceAssignment": [
+      "sourceArchiveSHA256",
+      "memberPath",
+      "sourceSpaceID",
+      "sourceObjectID",
+      "converterID",
+      "nativeID"
+    ]
+  },
+  "schema": 1,
+  "status": "PROPOSED_NOT_IMPLEMENTED_NOT_GENERATED"
+}
