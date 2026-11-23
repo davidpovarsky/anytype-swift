@@ -1,0 +1,438 @@
+﻿2026-11-23T04:54:06.8735820Z Current runner version: '2.338.2'
+2026-11-23T04:54:06.8785160Z ##[group]Runner Image Provisioner
+2026-11-23T04:54:06.8787560Z Hosted Compute Agent
+2026-11-23T04:54:06.8789280Z Version: 20261103.629
+2026-11-23T04:54:06.8791230Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+2026-11-23T04:54:06.8792520Z Build Date: 2026-11-03T17:26:59Z
+2026-11-23T04:54:06.8793730Z Worker ID: {dd08ee6a-eb62-48a1-85b7-62ee2214b718}
+2026-11-23T04:54:06.8794990Z Region: westus
+2026-11-23T04:54:06.8795910Z Cloud: MacCloud
+2026-11-23T04:54:06.8796840Z ##[endgroup]
+2026-11-23T04:54:06.8803050Z ##[group]Operating System
+2026-11-23T04:54:06.8804470Z macOS
+2026-11-23T04:54:06.8805730Z 27.0.1
+2026-11-23T04:54:06.8806830Z 26A434
+2026-11-23T04:54:06.8808290Z ##[endgroup]
+2026-11-23T04:54:06.8809620Z ##[group]Runner Image
+2026-11-23T04:54:06.8811090Z Image: xcode-27-arm64
+2026-11-23T04:54:06.8812750Z Version: 20261104.0337.1
+2026-11-23T04:54:06.8817330Z Included Software: https://github.com/actions/runner-images/blob/xcode-27-arm64/20261104.0337/images/macos/xcode-27-arm64-Readme.md
+2026-11-23T04:54:06.8820040Z Image Release: https://github.com/actions/runner-images/releases/tag/xcode-27-arm64%2F20261104.0337
+2026-11-23T04:54:06.8820830Z ##[endgroup]
+2026-11-23T04:54:06.8821920Z ##[group]GITHUB_TOKEN Permissions
+2026-11-23T04:54:06.8825500Z Actions: read
+2026-11-23T04:54:06.8826650Z Contents: read
+2026-11-23T04:54:06.8828230Z Metadata: read
+2026-11-23T04:54:06.8829680Z ##[endgroup]
+2026-11-23T04:54:06.8836430Z Secret source: Actions
+2026-11-23T04:54:06.8839320Z Cache mode: write
+2026-11-23T04:54:06.8840080Z Prepare workflow directory
+2026-11-23T04:54:06.9720390Z Prepare all required actions
+2026-11-23T04:54:06.9809110Z Getting action download info
+2026-11-23T04:54:07.4598460Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-11-23T04:54:08.3870590Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+2026-11-23T04:54:08.7153460Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-11-23T04:54:09.0165680Z Uses: davidpovarsky/anytype-swift/.github/workflows/pinkha-semantic-page-apple-consumer.yml@refs/heads/codex/chatgpt-wave15-shared-20261121 (1e9ee4de8ac2051020d9fd0cb181b8f68498e184)
+2026-11-23T04:54:09.0169820Z ##[group] Inputs
+2026-11-23T04:54:09.0170260Z   route: semantic-page-apple-consumer
+2026-11-23T04:54:09.0170740Z   t5_component: native-index
+2026-11-23T04:54:09.0171160Z   ui_scope: FULL_SMOKE
+2026-11-23T04:54:09.0171570Z   acceptance_lane: inspector
+2026-11-23T04:54:09.0172000Z   acceptance_device: ipad
+2026-11-23T04:54:09.0172490Z   acceptance_language: en
+2026-11-23T04:54:09.0172930Z   runtime_profile: r14
+2026-11-23T04:54:09.0173330Z   native_test_scope: all
+2026-11-23T04:54:09.0174080Z   require_full_acceptance: true
+2026-11-23T04:54:09.0174530Z ##[endgroup]
+2026-11-23T04:54:09.0175160Z Complete job name: semantic-page-apple-consumer / actual-page154-app-consumer
+2026-11-23T04:54:09.1121650Z ##[group]Run actions/checkout@v4
+2026-11-23T04:54:09.1122390Z with:
+2026-11-23T04:54:09.1122790Z   ref: 1e9ee4de8ac2051020d9fd0cb181b8f68498e184
+2026-11-23T04:54:09.1123340Z   path: build/page154-app-45106989988-1/app
+2026-11-23T04:54:09.1123840Z   fetch-depth: 1
+2026-11-23T04:54:09.1124220Z   persist-credentials: false
+2026-11-23T04:54:09.1124670Z   repository: davidpovarsky/anytype-swift
+2026-11-23T04:54:09.1128070Z   token: ***
+2026-11-23T04:54:09.1128470Z   ssh-strict: true
+2026-11-23T04:54:09.1128900Z   ssh-user: git
+2026-11-23T04:54:09.1129320Z   clean: true
+2026-11-23T04:54:09.1129700Z   sparse-checkout-cone-mode: true
+2026-11-23T04:54:09.1130220Z   fetch-tags: false
+2026-11-23T04:54:09.1130600Z   show-progress: true
+2026-11-23T04:54:09.1130980Z   lfs: false
+2026-11-23T04:54:09.1131340Z   submodules: false
+2026-11-23T04:54:09.1131710Z   set-safe-directory: true
+2026-11-23T04:54:09.1132130Z   allow-unsafe-pr-checkout: false
+2026-11-23T04:54:09.1132810Z env:
+2026-11-23T04:54:09.1133350Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-23T04:54:09.1135420Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-23T04:54:09.1138640Z   GH_TOKEN: ***
+2026-11-23T04:54:09.1139030Z   ATTEMPT: build/page154-app-45106989988-1
+2026-11-23T04:54:09.1139480Z ##[endgroup]
+2026-11-23T04:54:09.9339450Z Syncing repository: davidpovarsky/anytype-swift
+2026-11-23T04:54:09.9343110Z ##[group]Getting Git version info
+2026-11-23T04:54:09.9345620Z Working directory is '/Users/runner/work/anytype-swift/anytype-swift/build/page154-app-45106989988-1/app'
+2026-11-23T04:54:09.9350490Z [command]/opt/homebrew/bin/git version
+2026-11-23T04:54:10.0144130Z git version 2.56.0
+2026-11-23T04:54:10.0248300Z ##[endgroup]
+2026-11-23T04:54:10.0735600Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/41cac36e-c6c2-434b-aa05-0b9267a1110e/.gitconfig'
+2026-11-23T04:54:10.0772600Z Temporarily overriding HOME='/Users/runner/work/_temp/41cac36e-c6c2-434b-aa05-0b9267a1110e' before making global git config changes
+2026-11-23T04:54:10.0939380Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-23T04:54:10.0943880Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/anytype-swift/anytype-swift/build/page154-app-45106989988-1/app
+2026-11-23T04:54:10.0958480Z ##[group]Initializing the repository
+2026-11-23T04:54:10.0963630Z [command]/opt/homebrew/bin/git init /Users/runner/work/anytype-swift/anytype-swift/build/page154-app-45106989988-1/app
+2026-11-23T04:54:10.2383450Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-23T04:54:10.2387780Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-23T04:54:10.2392540Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-23T04:54:10.2395750Z hint: call:
+2026-11-23T04:54:10.2397440Z hint:
+2026-11-23T04:54:10.2399520Z hint: 	git config --global init.defaultBranch <name>
+2026-11-23T04:54:10.2402180Z hint:
+2026-11-23T04:54:10.2404870Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-23T04:54:10.2409460Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-23T04:54:10.2411060Z hint:
+2026-11-23T04:54:10.2411830Z hint: 	git branch -m <name>
+2026-11-23T04:54:10.2412680Z hint:
+2026-11-23T04:54:10.2413810Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-23T04:54:10.2416390Z Initialized empty Git repository in /Users/runner/work/anytype-swift/anytype-swift/build/page154-app-45106989988-1/app/.git/
+2026-11-23T04:54:10.2420430Z [command]/opt/homebrew/bin/git remote add origin https://github.com/davidpovarsky/anytype-swift
+2026-11-23T04:54:10.2508930Z ##[endgroup]
+2026-11-23T04:54:10.2510530Z ##[group]Disabling automatic garbage collection
+2026-11-23T04:54:10.2519900Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+2026-11-23T04:54:10.2660150Z ##[endgroup]
+2026-11-23T04:54:10.2665220Z ##[group]Setting up auth
+2026-11-23T04:54:10.2668740Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-23T04:54:10.2787650Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-23T04:54:10.4479150Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-23T04:54:10.4593310Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-23T04:54:10.6575860Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-23T04:54:10.6689120Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-23T04:54:10.8494260Z [command]/opt/homebrew/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-23T04:54:10.8613490Z ##[endgroup]
+2026-11-23T04:54:10.8620680Z ##[group]Fetching the repository
+2026-11-23T04:54:10.8626250Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 1e9ee4de8ac2051020d9fd0cb181b8f68498e184
+2026-11-23T04:54:18.5806700Z From https://github.com/davidpovarsky/anytype-swift
+2026-11-23T04:54:18.5817700Z  * branch            1e9ee4de8ac2051020d9fd0cb181b8f68498e184 -> FETCH_HEAD
+2026-11-23T04:54:18.5826670Z ##[endgroup]
+2026-11-23T04:54:18.5827540Z ##[group]Determining the checkout info
+2026-11-23T04:54:18.5828570Z ##[endgroup]
+2026-11-23T04:54:18.5842420Z [command]/opt/homebrew/bin/git sparse-checkout disable
+2026-11-23T04:54:18.5998180Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-23T04:54:18.6086900Z ##[group]Checking out the ref
+2026-11-23T04:54:18.6090840Z [command]/opt/homebrew/bin/git checkout --progress --force 1e9ee4de8ac2051020d9fd0cb181b8f68498e184
+2026-11-23T04:54:19.7345190Z Updating files:  40% (4781/11881)
+2026-11-23T04:54:19.7702590Z Updating files:  41% (4872/11881)
+2026-11-23T04:54:19.7866390Z Updating files:  42% (4991/11881)
+2026-11-23T04:54:19.8190760Z Updating files:  43% (5109/11881)
+2026-11-23T04:54:19.8498710Z Updating files:  44% (5228/11881)
+2026-11-23T04:54:19.8815180Z Updating files:  45% (5347/11881)
+2026-11-23T04:54:19.9150090Z Updating files:  46% (5466/11881)
+2026-11-23T04:54:19.9354310Z Updating files:  47% (5585/11881)
+2026-11-23T04:54:19.9658500Z Updating files:  48% (5703/11881)
+2026-11-23T04:54:19.9915070Z Updating files:  49% (5822/11881)
+2026-11-23T04:54:20.0144760Z Updating files:  50% (5941/11881)
+2026-11-23T04:54:20.0440890Z Updating files:  51% (6060/11881)
+2026-11-23T04:54:20.0578980Z Updating files:  52% (6179/11881)
+2026-11-23T04:54:20.0879890Z Updating files:  53% (6297/11881)
+2026-11-23T04:54:20.1174640Z Updating files:  54% (6416/11881)
+2026-11-23T04:54:20.1500800Z Updating files:  55% (6535/11881)
+2026-11-23T04:54:20.1765700Z Updating files:  56% (6654/11881)
+2026-11-23T04:54:20.2141610Z Updating files:  57% (6773/11881)
+2026-11-23T04:54:20.2499700Z Updating files:  58% (6891/11881)
+2026-11-23T04:54:20.2892900Z Updating files:  59% (7010/11881)
+2026-11-23T04:54:20.3138550Z Updating files:  60% (7129/11881)
+2026-11-23T04:54:20.3458580Z Updating files:  61% (7248/11881)
+2026-11-23T04:54:20.3712710Z Updating files:  62% (7367/11881)
+2026-11-23T04:54:20.4261230Z Updating files:  63% (7486/11881)
+2026-11-23T04:54:20.4631770Z Updating files:  64% (7604/11881)
+2026-11-23T04:54:20.5036190Z Updating files:  65% (7723/11881)
+2026-11-23T04:54:20.6582230Z Updating files:  66% (7842/11881)
+2026-11-23T04:54:20.7876700Z Updating files:  67% (7961/11881)
+2026-11-23T04:54:20.9603820Z Updating files:  68% (8080/11881)
+2026-11-23T04:54:21.2421910Z Updating files:  69% (8198/11881)
+2026-11-23T04:54:21.4151370Z Updating files:  70% (8317/11881)
+2026-11-23T04:54:21.4629840Z Updating files:  71% (8436/11881)
+2026-11-23T04:54:21.6537500Z Updating files:  72% (8555/11881)
+2026-11-23T04:54:21.6756520Z Updating files:  72% (8663/11881)
+2026-11-23T04:54:21.7104950Z Updating files:  73% (8674/11881)
+2026-11-23T04:54:21.7578840Z Updating files:  74% (8792/11881)
+2026-11-23T04:54:21.9298940Z Updating files:  75% (8911/11881)
+2026-11-23T04:54:21.9728240Z Updating files:  76% (9030/11881)
+2026-11-23T04:54:22.0745750Z Updating files:  77% (9149/11881)
+2026-11-23T04:54:22.1687010Z Updating files:  78% (9268/11881)
+2026-11-23T04:54:22.2541110Z Updating files:  79% (9386/11881)
+2026-11-23T04:54:22.3101890Z Updating files:  80% (9505/11881)
+2026-11-23T04:54:22.3369650Z Updating files:  81% (9624/11881)
+2026-11-23T04:54:22.3690100Z Updating files:  82% (9743/11881)
+2026-11-23T04:54:22.4075880Z Updating files:  83% (9862/11881)
+2026-11-23T04:54:22.4437790Z Updating files:  84% (9981/11881)
+2026-11-23T04:54:22.5128780Z Updating files:  85% (10099/11881)
+2026-11-23T04:54:22.5669480Z Updating files:  86% (10218/11881)
+2026-11-23T04:54:22.5982120Z Updating files:  87% (10337/11881)
+2026-11-23T04:54:22.6520640Z Updating files:  88% (10456/11881)
+2026-11-23T04:54:22.6591290Z Updating files:  88% (10570/11881)
+2026-11-23T04:54:22.6993920Z Updating files:  89% (10575/11881)
+2026-11-23T04:54:22.7419470Z Updating files:  90% (10693/11881)
+2026-11-23T04:54:22.8263750Z Updating files:  91% (10812/11881)
+2026-11-23T04:54:22.8714640Z Updating files:  92% (10931/11881)
+2026-11-23T04:54:22.9264490Z Updating files:  93% (11050/11881)
+2026-11-23T04:54:23.0203350Z Updating files:  94% (11169/11881)
+2026-11-23T04:54:23.0523330Z Updating files:  95% (11287/11881)
+2026-11-23T04:54:23.0776580Z Updating files:  96% (11406/11881)
+2026-11-23T04:54:23.1088000Z Updating files:  97% (11525/11881)
+2026-11-23T04:54:23.1347690Z Updating files:  98% (11644/11881)
+2026-11-23T04:54:23.1543260Z Updating files:  99% (11763/11881)
+2026-11-23T04:54:23.1544910Z Updating files: 100% (11881/11881)
+2026-11-23T04:54:23.1546530Z Updating files: 100% (11881/11881), done.
+2026-11-23T04:54:23.1930240Z HEAD is now at 1e9ee4d Admit Page154 consumer with exact reviewed helper source bindings
+2026-11-23T04:54:23.2390210Z ##[endgroup]
+2026-11-23T04:54:23.2707790Z [command]/opt/homebrew/bin/git log -1 --format=%H
+2026-11-23T04:54:23.2893230Z 1e9ee4de8ac2051020d9fd0cb181b8f68498e184
+2026-11-23T04:54:23.2918000Z ##[group]Removing auth
+2026-11-23T04:54:23.2923210Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-23T04:54:23.3019740Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-23T04:54:23.4824050Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-23T04:54:23.4952540Z http.https://github.com/.extraheader
+2026-11-23T04:54:23.5289720Z [command]/opt/homebrew/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-23T04:54:23.5488940Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-23T04:54:23.7651660Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-23T04:54:23.7961640Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-23T04:54:24.0435400Z ##[endgroup]
+2026-11-23T04:54:24.1599520Z ##[group]Run actions/setup-python@v5
+2026-11-23T04:54:24.1600600Z with:
+2026-11-23T04:54:24.1601630Z   python-version: 3.12
+2026-11-23T04:54:24.1607540Z   architecture: arm64
+2026-11-23T04:54:24.1608600Z   check-latest: false
+2026-11-23T04:54:24.1613990Z   token: ***
+2026-11-23T04:54:24.1614680Z   update-environment: true
+2026-11-23T04:54:24.1615360Z   allow-prereleases: false
+2026-11-23T04:54:24.1616010Z   freethreaded: false
+2026-11-23T04:54:24.1616540Z env:
+2026-11-23T04:54:24.1617500Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-23T04:54:24.1618570Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-23T04:54:24.1627050Z   GH_TOKEN: ***
+2026-11-23T04:54:24.1627850Z   ATTEMPT: build/page154-app-45106989988-1
+2026-11-23T04:54:24.1628650Z ##[endgroup]
+2026-11-23T04:54:24.6588570Z ##[group]Installed versions
+2026-11-23T04:54:24.6775090Z (node:1433) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-23T04:54:24.6813390Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-23T04:54:24.6859280Z Successfully set up CPython (3.12.10)
+2026-11-23T04:54:24.6860050Z ##[endgroup]
+2026-11-23T04:54:24.7014010Z ##[group]Run actions/checkout@v4
+2026-11-23T04:54:24.7014290Z with:
+2026-11-23T04:54:24.7017240Z   repository: davidpovarsky/hanlin-ai
+2026-11-23T04:54:24.7019320Z   ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+2026-11-23T04:54:24.7020110Z   path: build/page154-app-45106989988-1/hanlin
+2026-11-23T04:54:24.7020770Z   persist-credentials: false
+2026-11-23T04:54:24.7028100Z   token: ***
+2026-11-23T04:54:24.7028340Z   ssh-strict: true
+2026-11-23T04:54:24.7028510Z   ssh-user: git
+2026-11-23T04:54:24.7028670Z   clean: true
+2026-11-23T04:54:24.7028840Z   sparse-checkout-cone-mode: true
+2026-11-23T04:54:24.7029040Z   fetch-depth: 1
+2026-11-23T04:54:24.7029180Z   fetch-tags: false
+2026-11-23T04:54:24.7029390Z   show-progress: true
+2026-11-23T04:54:24.7029670Z   lfs: false
+2026-11-23T04:54:24.7029870Z   submodules: false
+2026-11-23T04:54:24.7030060Z   set-safe-directory: true
+2026-11-23T04:54:24.7030290Z   allow-unsafe-pr-checkout: false
+2026-11-23T04:54:24.7030540Z env:
+2026-11-23T04:54:24.7030900Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-23T04:54:24.7031230Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-23T04:54:24.7033380Z   GH_TOKEN: ***
+2026-11-23T04:54:24.7033620Z   ATTEMPT: build/page154-app-45106989988-1
+2026-11-23T04:54:24.7033960Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-23T04:54:24.7034440Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-23T04:54:24.7034850Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-23T04:54:24.7035210Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-23T04:54:24.7035590Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-23T04:54:24.7036160Z ##[endgroup]
+2026-11-23T04:54:24.9242690Z Syncing repository: davidpovarsky/hanlin-ai
+2026-11-23T04:54:24.9243300Z ##[group]Getting Git version info
+2026-11-23T04:54:24.9243790Z Working directory is '/Users/runner/work/anytype-swift/anytype-swift/build/page154-app-45106989988-1/hanlin'
+2026-11-23T04:54:24.9245900Z [command]/opt/homebrew/bin/git version
+2026-11-23T04:54:24.9246670Z git version 2.56.0
+2026-11-23T04:54:24.9248400Z ##[endgroup]
+2026-11-23T04:54:24.9252240Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/4e71b636-194d-4167-bfa6-e169c9388976/.gitconfig'
+2026-11-23T04:54:24.9253500Z Temporarily overriding HOME='/Users/runner/work/_temp/4e71b636-194d-4167-bfa6-e169c9388976' before making global git config changes
+2026-11-23T04:54:24.9254130Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-23T04:54:24.9254910Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/anytype-swift/anytype-swift/build/page154-app-45106989988-1/hanlin
+2026-11-23T04:54:24.9529880Z ##[group]Initializing the repository
+2026-11-23T04:54:24.9543250Z [command]/opt/homebrew/bin/git init /Users/runner/work/anytype-swift/anytype-swift/build/page154-app-45106989988-1/hanlin
+2026-11-23T04:54:25.0843280Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-23T04:54:25.0853000Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-23T04:54:25.0872790Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-23T04:54:25.0873680Z hint: call:
+2026-11-23T04:54:25.0878360Z hint:
+2026-11-23T04:54:25.0891970Z hint: 	git config --global init.defaultBranch <name>
+2026-11-23T04:54:25.0914280Z hint:
+2026-11-23T04:54:25.0915630Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-23T04:54:25.0918290Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-23T04:54:25.0965280Z hint:
+2026-11-23T04:54:25.0996950Z hint: 	git branch -m <name>
+2026-11-23T04:54:25.1006600Z hint:
+2026-11-23T04:54:25.1049430Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-23T04:54:25.1127370Z Initialized empty Git repository in /Users/runner/work/anytype-swift/anytype-swift/build/page154-app-45106989988-1/hanlin/.git/
+2026-11-23T04:54:25.1505900Z [command]/opt/homebrew/bin/git remote add origin https://github.com/davidpovarsky/hanlin-ai
+2026-11-23T04:54:25.1664390Z ##[endgroup]
+2026-11-23T04:54:25.1687440Z ##[group]Disabling automatic garbage collection
+2026-11-23T04:54:25.1702830Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+2026-11-23T04:54:25.1862440Z ##[endgroup]
+2026-11-23T04:54:25.1916740Z ##[group]Setting up auth
+2026-11-23T04:54:25.1957740Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-23T04:54:25.2001540Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-23T04:54:25.4096710Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-23T04:54:25.4413290Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-23T04:54:25.6341050Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-23T04:54:25.6520590Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-23T04:54:25.8697610Z [command]/opt/homebrew/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-23T04:54:25.8851140Z ##[endgroup]
+2026-11-23T04:54:25.8852880Z ##[group]Fetching the repository
+2026-11-23T04:54:25.8853770Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 116cc6be0654a5d11bc56ba00e0310031107ee36
+2026-11-23T04:54:28.3853370Z From https://github.com/davidpovarsky/hanlin-ai
+2026-11-23T04:54:28.3930960Z  * branch            116cc6be0654a5d11bc56ba00e0310031107ee36 -> FETCH_HEAD
+2026-11-23T04:54:28.4087220Z ##[endgroup]
+2026-11-23T04:54:28.4124550Z ##[group]Determining the checkout info
+2026-11-23T04:54:28.4125820Z ##[endgroup]
+2026-11-23T04:54:28.4126810Z [command]/opt/homebrew/bin/git sparse-checkout disable
+2026-11-23T04:54:28.4128100Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-23T04:54:28.4189070Z ##[group]Checking out the ref
+2026-11-23T04:54:28.4197680Z [command]/opt/homebrew/bin/git checkout --progress --force 116cc6be0654a5d11bc56ba00e0310031107ee36
+2026-11-23T04:54:29.5331450Z Updating files:  58% (2973/5101)
+2026-11-23T04:54:29.5688690Z Updating files:  59% (3010/5101)
+2026-11-23T04:54:29.5783120Z Updating files:  60% (3061/5101)
+2026-11-23T04:54:29.5866540Z Updating files:  61% (3112/5101)
+2026-11-23T04:54:29.5968360Z Updating files:  62% (3163/5101)
+2026-11-23T04:54:29.6042610Z Updating files:  63% (3214/5101)
+2026-11-23T04:54:29.6111720Z Updating files:  64% (3265/5101)
+2026-11-23T04:54:29.6234690Z Updating files:  65% (3316/5101)
+2026-11-23T04:54:29.6341470Z Updating files:  66% (3367/5101)
+2026-11-23T04:54:29.6513130Z Updating files:  67% (3418/5101)
+2026-11-23T04:54:29.6651830Z Updating files:  68% (3469/5101)
+2026-11-23T04:54:29.6729090Z Updating files:  69% (3520/5101)
+2026-11-23T04:54:29.6801020Z Updating files:  70% (3571/5101)
+2026-11-23T04:54:29.6956670Z Updating files:  71% (3622/5101)
+2026-11-23T04:54:29.7031830Z Updating files:  72% (3673/5101)
+2026-11-23T04:54:29.7199580Z Updating files:  73% (3724/5101)
+2026-11-23T04:54:29.7378760Z Updating files:  74% (3775/5101)
+2026-11-23T04:54:29.7515030Z Updating files:  75% (3826/5101)
+2026-11-23T04:54:29.7592140Z Updating files:  76% (3877/5101)
+2026-11-23T04:54:29.7710270Z Updating files:  77% (3928/5101)
+2026-11-23T04:54:29.7789450Z Updating files:  78% (3979/5101)
+2026-11-23T04:54:29.7952450Z Updating files:  79% (4030/5101)
+2026-11-23T04:54:29.8058520Z Updating files:  80% (4081/5101)
+2026-11-23T04:54:29.8157870Z Updating files:  81% (4132/5101)
+2026-11-23T04:54:29.8245970Z Updating files:  82% (4183/5101)
+2026-11-23T04:54:29.8419000Z Updating files:  83% (4234/5101)
+2026-11-23T04:54:29.8606130Z Updating files:  84% (4285/5101)
+2026-11-23T04:54:29.8725110Z Updating files:  85% (4336/5101)
+2026-11-23T04:54:29.8809080Z Updating files:  86% (4387/5101)
+2026-11-23T04:54:29.8876200Z Updating files:  87% (4438/5101)
+2026-11-23T04:54:29.8977450Z Updating files:  88% (4489/5101)
+2026-11-23T04:54:29.9088580Z Updating files:  89% (4540/5101)
+2026-11-23T04:54:29.9235700Z Updating files:  90% (4591/5101)
+2026-11-23T04:54:29.9377070Z Updating files:  91% (4642/5101)
+2026-11-23T04:54:29.9517910Z Updating files:  92% (4693/5101)
+2026-11-23T04:54:29.9581690Z Updating files:  93% (4744/5101)
+2026-11-23T04:54:29.9686710Z Updating files:  94% (4795/5101)
+2026-11-23T04:54:29.9951560Z Updating files:  95% (4846/5101)
+2026-11-23T04:54:30.0285000Z Updating files:  96% (4897/5101)
+2026-11-23T04:54:30.0340510Z Updating files:  97% (4948/5101)
+2026-11-23T04:54:30.0411810Z Updating files:  98% (4999/5101)
+2026-11-23T04:54:30.0508610Z Updating files:  99% (5050/5101)
+2026-11-23T04:54:30.0511620Z Updating files: 100% (5101/5101)
+2026-11-23T04:54:30.0512330Z Updating files: 100% (5101/5101), done.
+2026-11-23T04:54:30.0689720Z HEAD is now at 116cc6b Expose bundled OpenUI resource location to public renderer configuration
+2026-11-23T04:54:30.0844900Z ##[endgroup]
+2026-11-23T04:54:30.0995470Z [command]/opt/homebrew/bin/git log -1 --format=%H
+2026-11-23T04:54:30.1098350Z 116cc6be0654a5d11bc56ba00e0310031107ee36
+2026-11-23T04:54:30.1112280Z ##[group]Removing auth
+2026-11-23T04:54:30.1116400Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-23T04:54:30.1243390Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-23T04:54:30.2651180Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-23T04:54:30.2728360Z http.https://github.com/.extraheader
+2026-11-23T04:54:30.2734430Z [command]/opt/homebrew/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-23T04:54:30.2860590Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-23T04:54:30.4245270Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-23T04:54:30.4549900Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-23T04:54:30.5884470Z ##[endgroup]
+2026-11-23T04:54:30.6093560Z ##[group]Run python3 -B "$ATTEMPT/app/Tools/PinkhaSemanticAnchorWire/apple_consumer/run.py" \
+2026-11-23T04:54:30.6094320Z [36;1mpython3 -B "$ATTEMPT/app/Tools/PinkhaSemanticAnchorWire/apple_consumer/run.py" \[0m
+2026-11-23T04:54:30.6094910Z [36;1m  --app "$ATTEMPT/app" --hanlin-source "$ATTEMPT/hanlin" \[0m
+2026-11-23T04:54:30.6095440Z [36;1m  --work "$ATTEMPT/work" --evidence "$ATTEMPT/evidence"[0m
+2026-11-23T04:54:30.6174020Z shell: /bin/bash -e {0}
+2026-11-23T04:54:30.6174340Z env:
+2026-11-23T04:54:30.6174620Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-23T04:54:30.6175030Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-23T04:54:30.6177980Z   GH_TOKEN: ***
+2026-11-23T04:54:30.6178330Z   ATTEMPT: build/page154-app-45106989988-1
+2026-11-23T04:54:30.6178820Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-23T04:54:30.6179290Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-23T04:54:30.6179920Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-23T04:54:30.6180410Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-23T04:54:30.6180930Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-23T04:54:30.6181740Z ##[endgroup]
+2026-11-23T05:00:11.5921600Z {"status": "FAIL", "phase": "ORIGINAL_PRODUCER", "native_builds": 0, "native_methods_rerun": 0, "existing_product_methods_rerun": 0}
+2026-11-23T05:00:11.7070290Z ##[error]Process completed with exit code 1.
+2026-11-23T05:00:11.8164480Z ##[group]Run actions/upload-artifact@v4
+2026-11-23T05:00:11.8166070Z with:
+2026-11-23T05:00:11.8166490Z   name: Pinkha-Semantic-Page-App-Consumer-45106989988-1
+2026-11-23T05:00:11.8167120Z   path: build/page154-app-45106989988-1/evidence/
+2026-11-23T05:00:11.8167530Z   retention-days: 14
+2026-11-23T05:00:11.8168370Z   if-no-files-found: error
+2026-11-23T05:00:11.8168780Z   compression-level: 6
+2026-11-23T05:00:11.8169300Z   overwrite: false
+2026-11-23T05:00:11.8169700Z   include-hidden-files: false
+2026-11-23T05:00:11.8170140Z env:
+2026-11-23T05:00:11.8170760Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-23T05:00:11.8171150Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-23T05:00:11.8174990Z   GH_TOKEN: ***
+2026-11-23T05:00:11.8175810Z   ATTEMPT: build/page154-app-45106989988-1
+2026-11-23T05:00:11.8176180Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-23T05:00:11.8177190Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-23T05:00:11.8177880Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-23T05:00:11.8178470Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-23T05:00:11.8179030Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-23T05:00:11.8179540Z ##[endgroup]
+2026-11-23T05:00:13.3981500Z (node:3563) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-23T05:00:13.4085070Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-23T05:00:13.8020450Z With the provided path, there will be 36 files uploaded
+2026-11-23T05:00:13.8224730Z Artifact name is valid!
+2026-11-23T05:00:13.8327670Z Root directory input is valid!
+2026-11-23T05:00:14.0539120Z Beginning upload of artifact content to blob storage
+2026-11-23T05:00:14.5340710Z (node:3563) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-11-23T05:00:15.3690710Z Uploaded bytes 1862862
+2026-11-23T05:00:15.4601100Z Finished uploading artifact content to blob storage!
+2026-11-23T05:00:15.4702550Z SHA256 digest of uploaded artifact zip is ee61c8f63113d40fb844a83cb5dab41954d2e89a4e1cc608c49aabde25012013
+2026-11-23T05:00:15.4804260Z Finalizing artifact upload
+2026-11-23T05:00:15.8699200Z Artifact Pinkha-Semantic-Page-App-Consumer-45106989988-1.zip successfully finalized. Artifact ID 14791505995
+2026-11-23T05:00:15.8805120Z Artifact Pinkha-Semantic-Page-App-Consumer-45106989988-1 has been successfully uploaded! Final size is 1862862 bytes. Artifact ID is 14791505995
+2026-11-23T05:00:15.8978260Z Artifact download URL: https://github.com/davidpovarsky/anytype-swift/actions/runs/45106989988/artifacts/14791505995
+2026-11-23T05:00:15.9561110Z Post job cleanup.
+2026-11-23T05:00:16.4003060Z [command]/opt/homebrew/bin/git version
+2026-11-23T05:00:16.4768090Z git version 2.56.0
+2026-11-23T05:00:16.4821410Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/8563e9e4-6494-4d6e-b633-7a4ce969efe6/.gitconfig'
+2026-11-23T05:00:16.4837450Z Temporarily overriding HOME='/Users/runner/work/_temp/8563e9e4-6494-4d6e-b633-7a4ce969efe6' before making global git config changes
+2026-11-23T05:00:16.4838450Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-23T05:00:16.4846730Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/anytype-swift/anytype-swift/build/page154-app-45106989988-1/hanlin
+2026-11-23T05:00:16.5140470Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-23T05:00:16.5295120Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-23T05:00:16.9282940Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-23T05:00:16.9456490Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-23T05:00:17.2138440Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-23T05:00:17.2330910Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-23T05:00:17.6492940Z Post job cleanup.
+2026-11-23T05:00:17.8965380Z [command]/opt/homebrew/bin/git version
+2026-11-23T05:00:17.9060290Z git version 2.56.0
+2026-11-23T05:00:17.9085420Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/4ef1d29f-be11-42df-becd-f2d8baf0dc4a/.gitconfig'
+2026-11-23T05:00:17.9097520Z Temporarily overriding HOME='/Users/runner/work/_temp/4ef1d29f-be11-42df-becd-f2d8baf0dc4a' before making global git config changes
+2026-11-23T05:00:17.9099790Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-23T05:00:17.9106670Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/anytype-swift/anytype-swift/build/page154-app-45106989988-1/app
+2026-11-23T05:00:17.9252390Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-23T05:00:17.9560980Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-23T05:00:18.2237510Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-23T05:00:18.2411370Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-23T05:00:18.4711840Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-23T05:00:18.4998980Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-23T05:00:18.7735960Z Cleaning up orphan processes
+2026-11-23T05:00:33.6412050Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

@@ -1,0 +1,7 @@
+# Page154 App consumer: original simulator boot timeout
+
+[Run 45106989988](https://github.com/davidpovarsky/anytype-swift/actions/runs/45106989988), attempt 1 at 1e9ee4de8ac2051020d9fd0cb181b8f68498e184, remains **FAIL**. The owned iPad mini A20 Pro / iOS27.2 simulator creation and boot command returned zero. Its bootstatus command exceeded the existing 180-second budget with empty output; subsequent shutdown and delete each exceeded 30 seconds. All fifteen command worker groups independently reported zero, so this is distinct from the SDK ps observer failure.
+
+No actual App build, XCTest execution, enumeration, descriptor, or restorable Products was produced. The retained native producer proof was not rerun. Mounted admission remains BLOCKED_NO_ORIGINAL_PRODUCTS. The final exact source snapshots match and original framework integrity was reported unchanged; neither fact establishes App acceptance or simulator absence.
+
+Root independently verified the original API identity/digest, all 36 ZIP members, thirteen raw command/log pairs, zero-worker-group receipts, exact timeouts and byte-identical source snapshots. The hosted runner image is identified, but a clean freshly provisioned simulator service was not independently established. Original failures and command logs are preserved byte-exact. A separately reviewed continuation is required; no fallback was executed or outcome inferred.
