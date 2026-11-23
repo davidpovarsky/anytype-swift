@@ -134,6 +134,8 @@ def main():
     spec = importlib.util.spec_from_file_location("reviewed_native_command_support", support)
     helper = importlib.util.module_from_spec(spec); spec.loader.exec_module(helper)
     git, digest, write_json = helper.git, helper.digest, helper.write_json
+    continuation_spec = importlib.util.spec_from_file_location("rpc_continuation", packet / "continuation_support.py")
+    continuation = importlib.util.module_from_spec(continuation_spec); continuation_spec.loader.exec_module(continuation)
     evidence = (control / args.evidence).resolve()
     work = (control / args.work).resolve()
     if not evidence.is_relative_to(control) or not work.is_relative_to(control) or evidence == work or work in evidence.parents or evidence in work.parents:
@@ -204,6 +206,9 @@ def main():
         if initial["baseline"] != initial["candidate"]:
             raise RuntimeError("baseline/candidate original source copies differ")
         write_json(evidence / "ORIGINAL_GENERATOR_INPUTS.json", initial["baseline"])
+        outputs, previous_tools = continuation.restore_verified_baseline(
+            packet / continuation.BASELINE_ARCHIVE, initial["baseline"], lanes["baseline"], evidence)
+        result["baseline_generation_and_go"] = "REUSED_FROM_45055852172"
         base_swift, base_heart = lanes["baseline"]["swift"], lanes["baseline"]["heart"]
         codegen = file_row(base_swift / toolpins["original_codegen"]["path"], toolpins["original_codegen"]["path"])
         if codegen["git_blob"] != toolpins["original_codegen"]["git_blob"] or codegen["bytes"] != toolpins["original_codegen"]["bytes"]:
@@ -225,7 +230,10 @@ def main():
         commands.require("clone-swift-protobuf", ["git", "clone", "--no-hardlinks", "--no-checkout", str(inputs["plugin"]), str(plugin)], control, 120)
         commands.require("checkout-swift-protobuf", ["git", "checkout", "--detach", PLUGIN], plugin, 60)
         commands.require("build-original-swift-protobuf", ["swift", "build", "-c", "release"], plugin, 1500)
-        tools["protoc-gen-swift"] = plugin / ".build/release/protoc-gen-swift"
+        actual_bin_path = commands.require("swift-protobuf-bin-path", ["swift", "build", "-c", "release", "--show-bin-path"], plugin, 60).read_text()
+        tools["protoc-gen-swift"], protobuf_module = continuation.resolve_swiftprotobuf_products(plugin, actual_bin_path)
+        protobuf_module_rows = continuation.retain_module(protobuf_module, evidence / "swiftprotobuf-module")
+        write_json(evidence / "ACTUAL_SWIFTPROTOBUF_MODULE.json", {"bin_path_output": actual_bin_path, "module": str(protobuf_module), "import_search_path": str(protobuf_module.parent), "files": protobuf_module_rows})
         make = ["make", "SHELL=/bin/bash", ".SHELLFLAGS=-e -o pipefail -c"]
         commands.require("build-original-filesplit", make + ["setup-file-splitter"], base_swift, 1800)
         tools["filesplit"] = base_swift / "build/anytype-swift-filesplit-v1"
@@ -246,6 +254,7 @@ def main():
         for name in ("swift", "swiftc"):
             tools[name] = Path(commands.require("locate-" + name, ["xcrun", "--find", name], control, 30).read_text().strip()).resolve()
         tool_rows = [file_row(path, name) for name, path in sorted(tools.items())]
+        write_json(evidence / "BASELINE_TOOL_COMPARISON.json", {"previous": previous_tools["tools"], "current": tool_rows, "changes": compare_rows(previous_tools["tools"], tool_rows), "scope": "Tool binaries were not retained. Rebuilt binary differences are explicit; identical pins do not claim identical binaries."})
         write_json(evidence / "ACTUAL_TOOL_EXECUTABLES.json", {"go_version": go_version, "protoc_version": actual_protoc, "tools": tool_rows, "archive_pins": toolpins["archives"], "scope": "Actual binaries measured before baseline/candidate generation. Downloaded tools were hash-checked before their version probes; built generators derive from pinned original source. Tool versions/build metadata are retained; complete OS/SDK binary closure is not claimed."})
         commands.require("swift-protobuf-version", [str(tools["protoc-gen-swift"]), "--version"], control, 30)
         for lane, roots in lanes.items():
@@ -266,27 +275,26 @@ def main():
             for name in ("sourcery", "swiftgen"):
                 shutil.copyfile(tools[name], swift / "build" / name); (swift / "build" / name).chmod(0o755)
             expected_native = native_outputs(heart)
-            if lane == "baseline":
-                outputs["tracked"] = {"native": retain_outputs(heart, expected_native, evidence / "generated/tracked/native", git), "swift": retain_outputs(swift, SWIFT_OUTPUT_SCOPES, evidence / "generated/tracked/swift", git)}
-            remove_owned_outputs(heart, expected_native)
-            (heart / "dist/ios/protobuf").mkdir(parents=True, exist_ok=True)
-            commands.require(lane + "-original-native-generation", make + ["protos-go", "protos-server", "swift-protos"], heart, 600)
-            for path in expected_native:
-                if not (heart / path).is_file() or not (heart / path).stat().st_size:
-                    raise RuntimeError("fresh required native generated output missing: " + path)
-            source_protos = list((heart / "pb/protos").glob("*.proto")) + list((heart / "pkg/lib/pb/model/protos").glob("*.proto"))
-            for source in source_protos:
-                output = heart / "protobuf" / (source.stem + ".pb.swift")
-                if not output.is_file() or not output.stat().st_size:
-                    raise RuntimeError("fresh original raw Swift output missing: " + str(output))
-            middleware = swift / "Dependencies/Middleware"; middleware.mkdir(parents=True, exist_ok=True)
-            shutil.copytree(heart / "protobuf", middleware / "protobuf", dirs_exist_ok=False)
-            shutil.copytree(heart / "json", middleware / "json", dirs_exist_ok=False)
-            remove_owned_outputs(swift, SWIFT_OUTPUT_SCOPES)
-            commands.require(lane + "-original-swift-generation", make + ["generate-middle"], swift, 900)
-            for path in SWIFT_OUTPUT_SCOPES:
-                if not (swift / path).exists():
-                    raise RuntimeError("fresh required original Swift output missing: " + path)
+            if lane == "candidate":
+                remove_owned_outputs(heart, expected_native)
+                (heart / "dist/ios/protobuf").mkdir(parents=True, exist_ok=True)
+                commands.require(lane + "-original-native-generation", make + ["protos-go", "protos-server", "swift-protos"], heart, 600)
+                for path in expected_native:
+                    if not (heart / path).is_file() or not (heart / path).stat().st_size:
+                        raise RuntimeError("fresh required native generated output missing: " + path)
+                source_protos = list((heart / "pb/protos").glob("*.proto")) + list((heart / "pkg/lib/pb/model/protos").glob("*.proto"))
+                for source in source_protos:
+                    output = heart / "protobuf" / (source.stem + ".pb.swift")
+                    if not output.is_file() or not output.stat().st_size:
+                        raise RuntimeError("fresh original raw Swift output missing: " + str(output))
+                middleware = swift / "Dependencies/Middleware"; middleware.mkdir(parents=True, exist_ok=True)
+                shutil.copytree(heart / "protobuf", middleware / "protobuf", dirs_exist_ok=False)
+                shutil.copytree(heart / "json", middleware / "json", dirs_exist_ok=False)
+                remove_owned_outputs(swift, SWIFT_OUTPUT_SCOPES)
+                commands.require(lane + "-original-swift-generation", make + ["generate-middle"], swift, 900)
+                for path in SWIFT_OUTPUT_SCOPES:
+                    if not (swift / path).exists():
+                        raise RuntimeError("fresh required original Swift output missing: " + path)
             protocol_files = sorted((swift / "Modules/ProtobufMessages/Sources/Protocol").rglob("*.swift"))
             if not protocol_files:
                 raise RuntimeError("empty generated Swift protocol family")
@@ -294,8 +302,9 @@ def main():
             response_file.write_text("\n".join('"' + str(p).replace('\\', '\\\\').replace('"', '\\"') + '"' for p in protocol_files) + "\n")
             outputs[lane] = {"native": retain_outputs(heart, expected_native, evidence / "generated" / lane / "native", git), "swift": retain_outputs(swift, SWIFT_OUTPUT_SCOPES, evidence / "generated" / lane / "swift", git), "middleware": retain_outputs(swift, ["Dependencies/Middleware/protobuf", "Dependencies/Middleware/json", "Dependencies/Middleware/genmodels"], evidence / "generated" / lane / "swift", git)}
             write_json(evidence / "GENERATED_OUTPUT_INDEX.json", outputs)
-            commands.require(lane + "-compile-generated-go", ["go", "build", "./pb", "./pb/service"], heart, 600)
-            commands.require(lane + "-typecheck-generated-swift", ["xcrun", "swiftc", "-typecheck", "-module-name", "OtzariaGeneratedProtocolMessages", "-I", str(plugin / ".build/release/Modules"), "@" + str(response_file)], swift, 900)
+            if lane == "candidate":
+                commands.require(lane + "-compile-generated-go", ["go", "build", "./pb", "./pb/service"], heart, 600)
+            commands.require(lane + "-typecheck-generated-swift", ["xcrun", "swiftc", "-typecheck", "-module-name", "OtzariaGeneratedProtocolMessages", "-I", str(protobuf_module.parent), "@" + str(response_file)], swift, 900)
             after_native = checked_tree(heart, NATIVE_INPUT_SCOPES, git)
             after_swift = checked_tree(swift, SWIFT_INPUT_SCOPES, git)
             expected_changes = {e["path"]: (e["sha256"], e["bytes"]) for e in manifest["proto_afterimages"]} if lane == "candidate" else {}
@@ -306,7 +315,7 @@ def main():
         generated_delta = {kind: compare_rows(outputs["baseline"][kind], outputs["candidate"][kind]) for kind in ("native", "swift", "middleware")}
         baseline_drift = {kind: compare_rows(outputs["tracked"][kind], outputs["baseline"][kind]) for kind in ("native", "swift")}
         write_json(evidence / "GENERATED_OUTPUT_INDEX.json", outputs)
-        write_json(evidence / "GENERATED_DELTA.json", {"candidate_vs_same_toolchain_baseline": generated_delta, "baseline_vs_original_tracked": baseline_drift, "scope": "Baseline tool/source drift is distinct from the two reviewed proto additions; no historical toolchain version is inferred."})
+        write_json(evidence / "GENERATED_DELTA.json", {"candidate_vs_retained_baseline": generated_delta, "baseline_vs_original_tracked": baseline_drift, "scope": "Retained baseline generation/Go remain bound to run45055852172. Candidate uses rebuilt pinned tools with separately measured hashes; binary identity is not assumed."})
         allowed_native = {"pb/commands.pb.go", "pb/service/service.pb.go", "clientlibrary/service/service.pb.go", "docs/proto.md"}
         allowed_swift = ("Modules/ProtobufMessages/Sources/Protocol/Commands/", "Modules/ProtobufMessages/Sources/Generated/CommandsInvocation/", "Modules/ProtobufMessages/Sources/Generated/service+invocation.swift", "Modules/ProtobufMessages/Sources/Loc/Generated/Error+Localization.swift")
         if any(r["path"] not in allowed_native for r in generated_delta["native"]) or any(not r["path"].startswith(allowed_swift) for r in generated_delta["swift"]):
@@ -315,6 +324,8 @@ def main():
             raise RuntimeError("missing actual candidate generated RPC delta")
         if [file_row(path, name) for name, path in sorted(tools.items())] != tool_rows:
             raise RuntimeError("generator executable changed during use")
+        if continuation.retain_module(protobuf_module, evidence / "swiftprotobuf-module-after") != protobuf_module_rows:
+            raise RuntimeError("SwiftProtobuf module changed during use")
         for row in manifest["control_inputs"]:
             helper.check_file(packet, row)
         for kind, expected in (("heart", HEART), ("swift", SDK), ("plugin", PLUGIN)):

@@ -4,7 +4,7 @@ name: Original schema RPC source generation
 on:
   push:
     branches:
-      - codex/otzaria-schema-rpc-copy-20261122
+      - codex/otzaria-rpc-runtime-20261123
 
 permissions:
   contents: read
@@ -70,13 +70,13 @@ jobs:
           ref: c6fe6442e6a64250495669325044052e113e990c
           path: build/Schema-RPC-Inputs/swift-protobuf
           persist-credentials: false
-      - name: Generate baseline and candidate through original routes
+      - name: Reuse original baseline and generate missing candidate
         run: |
           python3 docs/pinkha/torah-integration/native-annotation-schema-rpc-generation-20261122/generate_original_schema_rpc.py \
             --control-root "$GITHUB_WORKSPACE" \
             --control-head "$GITHUB_SHA" \
             --packet docs/pinkha/torah-integration/native-annotation-schema-rpc-generation-20261122 \
-            --manifest-sha256 48c43f21ac8f31b3c6bd7022e838273046c3baa001813bb598be6f4aaf35c7a6 \
+            --manifest-sha256 e778ef94bf3db0a7336a9e8e78cd2f844a0dfe35f1c8146d1e6679dd07d39225 \
             --support docs/pinkha/torah-integration/native-annotation-schema-native-defaults-20261122/run_native_defaults_repair.py \
             --heart-input build/Schema-RPC-Inputs/heart \
             --swift-input build/Schema-RPC-Inputs/swift \

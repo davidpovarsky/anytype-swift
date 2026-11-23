@@ -18,8 +18,8 @@
   "control_inputs": [
     {
       "path": "generate_original_schema_rpc.py",
-      "bytes": 26597,
-      "sha256": "3b19ae66152c5657974749b7817b95390a0108e2ebe21215aa1cfad2a7f7516d"
+      "bytes": 28036,
+      "sha256": "2edac97dbc4a9a076acb548532bdb491f889b2fc7c453973059a3005f39edf4f"
     },
     {
       "path": "TOOL_PINS.json",
@@ -75,6 +75,16 @@
       "path": "copy_materialized_checkout.py",
       "bytes": 6048,
       "sha256": "d93373d7580841c72036b6ec93cbefe34bc4b22814e0df9f3856c98d7cf92c46"
+    },
+    {
+      "path": "continuation_support.py",
+      "bytes": 9246,
+      "sha256": "c86ee99a6e5a94b5b9229b9badc53023447b20c648657e58aee5d699dc5334dd"
+    },
+    {
+      "path": "continuation-20261123/test_continuation.py",
+      "bytes": 6453,
+      "sha256": "61942000ba2d8fef749511134e2add588b384e95fb3e937a02c7eef8936cc113"
     }
   ],
   "original_inputs": [
@@ -456,7 +466,7 @@
   ],
   "original_script_edits": 0,
   "handwritten_generated_outputs": 0,
-  "scope": "Prepare actual generated source with two original same-toolchain lanes; no application/native runtime acceptance or production integration.",
+  "scope": "Continue from authenticated original baseline output; rebuild unretained pinned tool products, run missing Swift baseline and first candidate generation/compilation. No app/runtime acceptance.",
   "source_copy_correction": {
     "actual_failed_run": 45052270280,
     "failure_evidence_commit": "2e4a004778d5cc29afebaa4c278a2f1a8bf5c74d",
@@ -471,5 +481,13 @@
       "/Tools/anytype-swift-filesplit/"
     ],
     "actual_generation_and_compile": "NOT_RUN_FOR_THIS_CANDIDATE"
+  },
+  "baseline_reuse": {
+    "source": "ca6eb576d0ac105ef260bc2703b7d0dc186a8656",
+    "run": 45055852172,
+    "archive_sha256": "8d76ee6f186f32985c276dba1f79e2ee82e0db7c1ad9c259ce4c2350b43fc769",
+    "rows": 741,
+    "generation_and_go": "REUSED",
+    "swift_typecheck_and_candidate": "NEW_REQUIRED"
   }
 }
