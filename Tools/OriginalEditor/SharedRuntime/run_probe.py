@@ -63,6 +63,10 @@ def project(directory, source):
     dependency = add('Runtime', {'isa': 'XCSwiftPackageProductDependency',
                                 'package': pkg, 'productName': RUNTIME})
     linked = add('RuntimeLink', {'isa': 'PBXBuildFile', 'productRef': dependency})
+    runtime_file = add('RuntimeFile', {'isa': 'PBXFileReference', 'lastKnownFileType': 'wrapper.framework',
+                                      'path': 'PackageFrameworks/' + RUNTIME + '.framework',
+                                      'sourceTree': 'BUILT_PRODUCTS_DIR'})
+    embedded = add('RuntimeEmbed', {'isa': 'PBXBuildFile', 'fileRef': runtime_file})
     phases = [
         add('Sources', {'isa': 'PBXSourcesBuildPhase', 'buildActionMask': '2147483647',
                         'files': [source_build], 'runOnlyForDeploymentPostprocessing': '0'}),
@@ -71,6 +75,13 @@ def project(directory, source):
         add('Resources', {'isa': 'PBXResourcesBuildPhase', 'buildActionMask': '2147483647',
                           'files': [], 'runOnlyForDeploymentPostprocessing': '0'}),
     ]
+    # The first real build produced the signed framework at PackageFrameworks,
+    # but Xcode did not infer an embed phase for this generated project.
+    # Copy its complete bytes; no RemoveHeadersOnCopy or re-signing adapter.
+    phases.append(add('EmbedRuntime', {'isa': 'PBXCopyFilesBuildPhase', 'buildActionMask': '2147483647',
+                                      'dstPath': '', 'dstSubfolderSpec': '10', 'files': [embedded],
+                                      'name': 'Embed exact shared runtime',
+                                      'runOnlyForDeploymentPostprocessing': '0'}))
     settings = {
         'PRODUCT_NAME': NAME, 'PRODUCT_BUNDLE_IDENTIFIER': BUNDLE,
         'GENERATE_INFOPLIST_FILE': 'NO', 'INFOPLIST_FILE': 'Info.plist',
@@ -91,7 +102,7 @@ def project(directory, source):
                            'buildConfigurationList': configs, 'buildPhases': phases, 'buildRules': [],
                            'dependencies': [], 'packageProductDependencies': [dependency]})
     products = add('Products', {'isa': 'PBXGroup', 'children': [product], 'name': 'Products', 'sourceTree': '<group>'})
-    group = add('Main', {'isa': 'PBXGroup', 'children': [src, products], 'sourceTree': '<group>'})
+    group = add('Main', {'isa': 'PBXGroup', 'children': [src, products, runtime_file], 'sourceTree': '<group>'})
     pc = add('ProjectDebug', {'isa': 'XCBuildConfiguration', 'name': 'Debug', 'buildSettings': {}})
     pcs = add('ProjectConfigs', {'isa': 'XCConfigurationList', 'buildConfigurations': [pc],
                                  'defaultConfigurationName': 'Debug', 'defaultConfigurationIsVisible': '0'})
@@ -201,7 +212,7 @@ def execute(args, receipt):
     write(evidence / 'dependency-checkouts.json', observed)
     receipt['phase'] = 'REAL_SHARED_RUNTIME_BUILD_AND_CONSUMER_LINK'
     command('build', [*common, '-disableAutomaticPackageResolution', '-onlyUsePackageVersionsFromResolvedFile',
-                      'DEAD_CODE_STRIPPING=NO', 'build'], 1200)
+                      'DEAD_CODE_STRIPPING=NO', 'ARCHS=arm64', 'ONLY_ACTIVE_ARCH=YES', 'build'], 1200)
     require(digest(resolved) == digest(evidence / 'Package.resolved'), 'Build changed resolved inputs')
     app = work / 'DerivedData/Build/Products/Debug-iphonesimulator' / (NAME + '.app')
     framework = app / 'Frameworks' / (RUNTIME + '.framework')
