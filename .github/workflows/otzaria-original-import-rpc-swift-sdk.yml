@@ -1,0 +1,61 @@
+name: Original Import RPC changed Swift SDK qualification
+
+on:
+  push:
+    branches:
+      - codex/otzaria-import-rpc-swift-sdk-20261123
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: otzaria-original-import-rpc-swift-sdk-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  qualify-original-import-rpc:
+    if: ${{ github.run_attempt == 1 }}
+    runs-on: xcode-27
+    timeout-minutes: 60
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Fix absolute owned qualification deadline
+        run: |
+          echo "OTZARIA_IMPORT_RPC_JOB_DEADLINE=$(( $(date +%s) + 3300 ))" >> "$GITHUB_ENV"
+      - name: Checkout exact native qualification source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /.github/workflows/otzaria-original-import-rpc-swift-sdk.yml
+            /Tools/OriginalEditor/ImportRPC/
+            /docs/pinkha/torah-integration/native-annotation-import-rpc-generation-20261123/
+      - name: Select actual ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Typecheck actual changed Swift with original SDK root
+        run: |
+          python3 -I Tools/OriginalEditor/ImportRPC/typecheck_repaired_swift.py \
+            --control-root "$GITHUB_WORKSPACE" \
+            --control-head "$GITHUB_SHA" \
+            --pin Tools/OriginalEditor/ImportRPC/changed-swift-sdk-pin.json \
+            --pin-sha256 69d95e6dfa9cc09d3162c7f110fe75df1362e7da9775c96179fed4a526388423 \
+            --work build/Import-RPC-Swift-SDK-Owned-Work \
+            --evidence build/Import-RPC-Swift-SDK-Evidence \
+            --job-deadline-unix "$OTZARIA_IMPORT_RPC_JOB_DEADLINE"
+      - name: Retain actual changed Swift typecheck and SDK evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otzaria-Import-RPC-Swift-SDK-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/Import-RPC-Swift-SDK-Evidence
+          include-hidden-files: true
+          if-no-files-found: warn
+          compression-level: 6
+          retention-days: 14
