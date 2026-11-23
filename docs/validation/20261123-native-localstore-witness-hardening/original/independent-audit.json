@@ -1,0 +1,49 @@
+{
+  "actual_named_passes": 8,
+  "actual_named_starts": 8,
+  "actual_top_methods": 2,
+  "auditor_sha256": "ced8e5418b6588d39caaa21155f9e169096aae9d77296852052bdd8d5aeee076",
+  "binary": {
+    "bytes": 25486041,
+    "path": "/mnt/development/projects/evidence/localstore-witness-20261123/hardening-attempt1/products/localstore-witness.test",
+    "sha256": "bb37272a3bd489d3da976d6bb8b170dfb271085c14df5d4954ec552e10b24523"
+  },
+  "build_receipt_sha256": "452ef8397f3cd83d852b73f46c79b11f6be69be138a3b7a906a82ea4d1be6135",
+  "controller_source_sha": "1e9832bf41e1083cb757a8de0528dd98606a7b6f",
+  "directly_affected_existing_methods": 1,
+  "execute_receipt_sha256": "c098f61683de775cc51c623f2895bb1ed15e29732674160bc84872cbc03f434d",
+  "hasNativeSourceAdmission": false,
+  "kind": "independent-original-hardening-evidence-audit-v1",
+  "nativeIdentityCensusRequired": true,
+  "nativeSnapshotProofRequired": true,
+  "native_git_inputs": 8,
+  "native_source_sha": "102f6243edb17068048869b85bc151f177897a68",
+  "new_external_methods": 1,
+  "new_interleaving_proofs": 0,
+  "normalized_dependency_delta": {
+    "added": [
+      "/mnt/development/projects/diagnostics/inline-http-20261123/cache/go-build-glibc/5e/5ee630fb45a53facfb7caf8c828b55a0ea0885437bcfd408f743db5e6008f359-d",
+      "NATIVE/core/pinkha/localstorewitness/export_test.go",
+      "NATIVE/core/pinkha/localstorewitness/external_capability_test.go"
+    ],
+    "changed": [
+      "NATIVE/core/pinkha/localstorewitness/capture.go",
+      "NATIVE/core/pinkha/localstorewitness/capture_test.go",
+      "NATIVE/core/pinkha/localstorewitness/fixture_test.go"
+    ],
+    "removed": [
+      "/mnt/development/projects/diagnostics/inline-http-20261123/cache/go-build-glibc/e2/e20a542619fdc1107722187c27cc252650131d89be4b1976fec6a3dd8cbef52f-d"
+    ]
+  },
+  "old_unchanged_methods_run": 0,
+  "original_baseline_files_unchanged": 34,
+  "permitsDestinationWrites": false,
+  "private_artifacts_verified": 7,
+  "raw_event_log_sha256": "beefcdaab6c62330a35b85a09bca73033291abd56b0bf6b49709b26f8c2e94ed",
+  "resolved_source_dependency_inputs": 4041,
+  "retained_original_interleaving_proof_at": "74b5f2c844ac3879125888c538d5990af3db3cb8",
+  "safe_event_log_sha256": "b3f4baa2865c35f237d35dfef5b5a05861074663ccc6a29d5a0f3b5aacd227b9",
+  "source_manifest_sha256": "10cb34b5953c46c92f528d721e2916fb9f035cb7eec7951d2f85a4e41e48b902",
+  "status": "PASS_ORIGINAL_EVIDENCE_AUDIT",
+  "tests_executed_by_this_auditor": 0
+}
