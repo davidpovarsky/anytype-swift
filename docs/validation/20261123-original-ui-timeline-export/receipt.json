@@ -1,0 +1,49 @@
+{
+  "checks": [
+    {
+      "label": "new-five-controls",
+      "argv": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "Tools/AnyEnginePort/tests",
+        "-p",
+        "test_original_ui_timeline_export.py",
+        "-v"
+      ],
+      "exitCode": 0,
+      "seconds": 0.077,
+      "logSHA256": "641840549242667f813075eec1be8511cc693f40f913253dedfaa5dabcbd063f"
+    },
+    {
+      "label": "swift-syntax-only",
+      "argv": [
+        "/usr/local/bin/swiftc",
+        "-frontend",
+        "-parse",
+        "Tools/AnyEnginePort/extract_original_ui_stills.swift"
+      ],
+      "exitCode": 0,
+      "seconds": 2.131,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "diff-whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.267,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "actualOriginalTimelinesParsed": 2,
+  "originalExporterUnchanged": true,
+  "newProductTestsExecuted": 0,
+  "macRenderNotYetExecuted": true
+}
