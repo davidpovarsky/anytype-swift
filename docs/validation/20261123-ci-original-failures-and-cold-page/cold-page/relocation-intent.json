@@ -1,0 +1,62 @@
+{
+  "all_archive_bytes_preserved_at_verified_destination": true,
+  "all_project_code_git_worktrees_and_extracted_products_untouched": true,
+  "at": "2026-11-23T11:24:45.424883+00:00",
+  "current_frozen_input_dependency": "NONE_CONFIRMED_BY_PAGE35_CURRENT_GIT_FIXED_RECORDS_AND_ALL_CURRENT_OWNERS",
+  "destination": {
+    "bytes": 703289417,
+    "directory_sddl": "O:S-1-5-21-2914620446-786530585-2031499938-1001G:S-1-5-21-2914620446-786530585-2031499938-1001D:PAI(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;FA;;;S-1-5-21-2914620446-786530585-2031499938-1001)",
+    "file_sddl": "O:S-1-5-21-2914620446-786530585-2031499938-1001G:S-1-5-21-2914620446-786530585-2031499938-1001D:PAI(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;S-1-5-21-2914620446-786530585-2031499938-1001)",
+    "non_reparse": true,
+    "ntfs_file_id": "File ID is 0x0000000000000000001300000019eefb",
+    "oracle_source_mutations": 0,
+    "owned_transport_absent": true,
+    "owner_sid": "S-1-5-21-2914620446-786530585-2031499938-1001",
+    "parent_sddl": "O:S-1-5-21-2914620446-786530585-2031499938-1001G:S-1-5-21-2914620446-786530585-2031499938-1001D:PAI(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;FA;;;S-1-5-21-2914620446-786530585-2031499938-1001)",
+    "path": "C:\\Users\\DAVID\\AppData\\Local\\SentinelX\\anytapy-immutable-evidence\\semantic-page-original-45116855451-1\\original-14794983588.zip",
+    "readonly": true,
+    "receipt_path": "C:\\Users\\DAVID\\AppData\\Local\\SentinelX\\anytapy-immutable-evidence\\semantic-page-original-45116855451-1\\copy-receipt.json",
+    "receipt_sha256": "4e99881282fd24de9497e7d9f71ad2623dfaefb619fea841b127899fe1bb2ad0",
+    "sha256": "082d7cf6c589c6770186390091d997de29d7148fe917ea2f0785450688cada46",
+    "status": "PASS_INDEPENDENT_FULL_DESTINATION_READBACK",
+    "transport_pid": 11028,
+    "verified_at": "2026-11-23T11:17:36.7816037Z"
+  },
+  "destination_copy_receipt_sha256": "4e99881282fd24de9497e7d9f71ad2623dfaefb619fea841b127899fe1bb2ad0",
+  "operation": "REMOVE_ONLY_VERIFIED_REDUNDANT_LOCAL_ARCHIVE_COPY",
+  "peer_qualification_sha256": "7ead8e422e93af4629ed34836ba89c75d44dc837a5ead13c9302748e8b83bb72",
+  "protocol": "immutable-original-archive-relocation-v1",
+  "reader_check": {
+    "denied": [],
+    "hits": [],
+    "processes": 227,
+    "uid": 0
+  },
+  "restoration": "Retain the sealed private Windows original at its recorded host/path/NTFS identity. To restore Oracle materialization, verify the current destination full SHA256/size/ACL/fileID, stream it into a new temporary file beside the original Oracle path, verify full SHA256 and703289417 bytes, set mode0664 and original uid1001/gid1002 and mtime1795416720054790888ns, fsync and atomically create the original path only if absent. Never overwrite a later file. A restored inode/ctime will be new; historical original identity remains recorded here. No GitHub redownload or product rebuild is required.",
+  "source": {
+    "app_source": "68148339c275268795360d71d519a5baf003adf8",
+    "artifact_id": 14794983588,
+    "at": "2026-11-23T11:11:35.491784+00:00",
+    "metadata": {
+      "allocated": "703295488",
+      "bytes": "703289417",
+      "ctime_ns": "1795416720571794129",
+      "device": "2064",
+      "gid": "1002",
+      "inode": "1114801",
+      "mode": "436",
+      "mtime_ns": "1795416720054790888",
+      "nlink": "1",
+      "uid": "1001"
+    },
+    "origin_attempt": 1,
+    "origin_run": 45116855451,
+    "path": "/mnt/development/projects/diagnostics/semantic-page-pinned-consumer-20261123/terminal-audit/artifact-14794983588.zip",
+    "pinned_admission": "Tools/PinkhaSemanticAnchorWire/apple_mounted/admissions/45116855451-1.json",
+    "pinned_admission_source": "c0c1f851f80322c9f532e86505047498dfaf1adf",
+    "qualification": "Copy-only full source hash and four stable exact metadata observations; final peer and reader gate required before redundant Oracle unlink.",
+    "sha256": "082d7cf6c589c6770186390091d997de29d7148fe917ea2f0785450688cada46",
+    "source_mutations": 0,
+    "status": "SOURCE_ARCHIVE_BYTES_VERIFIED_READ_ONLY"
+  }
+}
