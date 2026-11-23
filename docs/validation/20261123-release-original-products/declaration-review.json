@@ -1,0 +1,117 @@
+{
+  "wave15_batch.py": {
+    "changed_declarations": [
+      "worker",
+      "validate_worker_conclusion",
+      "publish_batch_observations",
+      "retain_first_worker_failure",
+      "run"
+    ],
+    "unchanged_declarations": [
+      "BatchProfile",
+      "profile_spec",
+      "profile_flags",
+      "require",
+      "now",
+      "write",
+      "digest",
+      "plan",
+      "minimum_lane_budget",
+      "canonical_hash",
+      "bundle_manifest",
+      "TrackedSourceChanged",
+      "tracked_source_change",
+      "source_snapshot",
+      "explicit_selection",
+      "validate_observed_result",
+      "FrozenBuild",
+      "validate_coherent_readiness",
+      "valid_udid",
+      "scoped_device_inventory",
+      "validate_owned_device",
+      "validate_fresh_device_receipt",
+      "build_once",
+      "qualify_functional_failure",
+      "validate_lane_pass",
+      "terminate_owned",
+      "run_worker_command",
+      "run_nested_worker_command",
+      "resolve_cleanup_device",
+      "cleanup_owned"
+    ]
+  },
+  "coherent_heart_release.py": {
+    "changed_declarations": [
+      "validate_build",
+      "make_build",
+      "execute",
+      "validate_results"
+    ],
+    "unchanged_declarations": [
+      "validate_counts",
+      "private_work",
+      "require_runtime",
+      "build_selection",
+      "extra_devices",
+      "OwnedExtraDevice",
+      "owned_device",
+      "publication",
+      "nested_cleanup",
+      "check_cache_ready"
+    ]
+  },
+  "run_wave15_acceptance.py": {
+    "changed_declarations": [
+      "execute"
+    ],
+    "unchanged_declarations": [
+      "require",
+      "require_source_identity",
+      "plan",
+      "preparation_environment",
+      "nonempty",
+      "fixture_environment",
+      "validate_source_header_cases",
+      "validate_type_switch_fixture",
+      "property_environment",
+      "validate_device_language",
+      "configure_editor_device_language",
+      "source_methods",
+      "SelectionFailure",
+      "main"
+    ]
+  },
+  "t5_remaining_freshness.py": {
+    "changed_declarations": [
+      "run_after_coherent_build",
+      "validate_saved"
+    ],
+    "unchanged_declarations": [
+      "source_contract",
+      "validate_counts",
+      "validate_receipt",
+      "native_paths"
+    ]
+  },
+  "run_t5_native_ui.py": {
+    "changed_declarations": [
+      "_run_on_fresh_simulator"
+    ],
+    "unchanged_declarations": [
+      "native_ui_identity",
+      "current_ui_container",
+      "require_ready",
+      "simulator_record",
+      "validate_owned_simulator",
+      "original_pair_ledger",
+      "selected_configuration",
+      "select_tests",
+      "run_r08",
+      "run_after_pair",
+      "validate_corrected_build",
+      "run_after_corrected_build",
+      "run_after_coherent_build",
+      "continue_with_native_ui"
+    ]
+  }
+}

@@ -25,6 +25,38 @@ COUNTS = dict(app_builds=1, ui_runner_builds=1, host_action_methods=11, host_act
               baseline_pagination_body_invocations=0, failed=0, skipped=0)
 
 
+def original_products_context(context):
+    from coherent_original_products import OriginalProductsContext
+    return isinstance(context, OriginalProductsContext)
+
+
+def build_reference(build):
+    from coherent_original_products import reference
+    return reference(build)
+
+
+def reference_matches(record, build):
+    from coherent_original_products import reference_matches as matches
+    return matches(record, build)
+
+
+def reuse_fields(build):
+    from coherent_original_products import reuse_fields as fields
+    return fields(build)
+
+
+def reuse_matches(record, build):
+    from coherent_original_products import reuse_matches as matches
+    return matches(record, build)
+
+
+def actual_counts(context):
+    if original_products_context(context):
+        from coherent_original_products import counts
+        return counts()
+    return dict(COUNTS)
+
+
 def validate_counts(actual):
     batch.require(isinstance(actual, dict) and set(actual) == set(COUNTS)
                   and all(type(actual[key]) is int and actual[key] == value for key, value in COUNTS.items()),
@@ -111,6 +143,8 @@ def owned_device(intent, evidence, key):
 
 
 def validate_build(build, source, pair, ui, context):
+    if original_products_context(context):
+        return context.origin.validate_build(build, source, pair, ui, context)
     batch.require(context is not None and context.profile == PROFILE and context.source["source_sha"] == source,
                   "T5 requires this job's in-memory coherent frozen build")
     context.verify_current()
@@ -137,6 +171,8 @@ def validate_build(build, source, pair, ui, context):
 
 
 def make_build(args, context, receipt, ui, pair):
+    if original_products_context(context):
+        return context.origin.make_build(context, receipt, ui, pair)
     source = context.source["source_sha"]
     installation = json.loads(context.runtime_receipt_path.read_bytes())
     binding = ui.heart_profiles.installed_binding(context.app, installation, source, RUNTIME_PROFILE,
@@ -177,12 +213,13 @@ def execute(args, context, preflight, receipt, intent):
     work.mkdir(parents=True, mode=0o700)
     proof.mkdir(parents=True)
     build = make_build(args, context, receipt, ui, pair)
-    batch.write(proof / "same-job-build.json", build)
+    original_products = original_products_context(context)
+    batch.write(proof / ("original-products-build.json" if original_products else "same-job-build.json"), build)
     source, run_id = context.source["source_sha"], intent["run_id"]
     selection = preflight["selected"]["ipad"]
     result = dict(profile=PROFILE, runtime_profile=RUNTIME_PROFILE, status="RUNNING", phase="HOST_ACTIONS",
         source_sha=source, run_id=run_id, run_attempt=intent["run_attempt"],
-        same_job_build_receipt_sha256=receipt["build_receipt_sha256"],
+        **build_reference(build),
         host_actions_status="NOT_RUN", pending_retry_status="NOT_RUN", remaining_freshness_status="NOT_RUN", native_ui_status="NOT_RUN",
         mixed_version_accepted=False, host_freshness_accepted=False,
         shipping_default_build=False, full_matrix_accepted=False, release_accepted=False,
@@ -216,13 +253,14 @@ def execute(args, context, preflight, receipt, intent):
             build_context=context, owned_device=owned_device(intent, evidence, "t5-native-ui"))
         result["native_ui_status"] = outcome["status"]
         batch.require(outcome["status"] == native_ui.PASS and outcome.get("ui_runner_builds") == 0
-                      and outcome.get("ui_runner_reused_from_same_job") is True
+                      and reuse_matches(outcome, build)
                       and outcome.get("app_builds_added") == 0,
                       "Actual T5 UI must pass on the original single App and UI runner")
         context.verify_current()
-        result.update(status=PASS, phase="COMPLETE", actual_counts=dict(COUNTS))
+        result.update(status=PASS, phase="COMPLETE", actual_counts=actual_counts(context))
         batch.write(proof / "result.json", result)
-        validate_results(evidence, intent, receipt, ui, require_release_fixtures=False)
+        validate_results(evidence, intent, receipt, ui, require_release_fixtures=False,
+                         origin=context.origin if original_products else None)
     except BaseException as error:
         result.update(status="CANCELLED" if isinstance(error, KeyboardInterrupt) else "FAIL",
                       error_type=type(error).__name__, error=str(error))
@@ -247,7 +285,7 @@ def publication(root, policy):
                       "Published original coherent evidence changed")
 
 
-def validate_results(evidence, intent, worker, ui, *, require_release_fixtures=True):
+def validate_results(evidence, intent, worker, ui, *, require_release_fixtures=True, origin=None):
     """Re-read original current-run results; no historical pass is relabelled."""
     import run_t5_apple_pair as pair
     import run_t5_native_ui as native_ui
@@ -258,21 +296,31 @@ def validate_results(evidence, intent, worker, ui, *, require_release_fixtures=T
     proof = evidence / "coherent-t5"
     read = lambda path: json.loads(path.read_bytes())
     result = read(proof / "result.json")
-    validate_counts(result.get("actual_counts"))
+    if origin is None:
+        validate_counts(result.get("actual_counts"))
+    else:
+        from coherent_original_products import validate_counts as validate_original_counts
+        validate_original_counts(result.get("actual_counts"))
+    reference_key = "same_job_build_receipt_sha256" if origin is None else origin.reference_key
     batch.require(result.get("status") == PASS and result.get("profile") == PROFILE
                   and result.get("runtime_profile") == RUNTIME_PROFILE
                   and all(result.get(key) == intent[key] for key in ("source_sha", "run_id", "run_attempt"))
-                  and result.get("same_job_build_receipt_sha256") == worker["build_receipt_sha256"],
+                  and result.get(reference_key) == worker["build_receipt_sha256"],
                   "Original coherent T5 result identity, build or exact counts differ")
     batch.require(all(result.get(key) is False for key in ("mixed_version_accepted", "host_freshness_accepted",
                   "shipping_default_build", "full_matrix_accepted", "release_accepted", "physical_device_accepted")),
                   "Coherent T5 result widened its acceptance scope")
-    build = read(proof / "same-job-build.json")
-    batch.require(build.get("flags") == batch.profile_flags(PROFILE)
-                  and build.get("same_job_build_receipt_sha256") == worker["build_receipt_sha256"]
-                  and build.get("runtime_binding", {}).get("runtime_profile") == RUNTIME_PROFILE
-                  and build.get("runtime_version") == ui.heart_profiles.verify_binding(build["runtime_binding"]),
-                  "Coherent T5 original build/runtime proof differs")
+    if origin is None:
+        build = read(proof / "same-job-build.json")
+        batch.require(build.get("flags") == batch.profile_flags(PROFILE)
+                      and build.get("same_job_build_receipt_sha256") == worker["build_receipt_sha256"]
+                      and build.get("runtime_binding", {}).get("runtime_profile") == RUNTIME_PROFILE
+                      and build.get("runtime_version") == ui.heart_profiles.verify_binding(build["runtime_binding"]),
+                      "Coherent T5 original build/runtime proof differs")
+    else:
+        build = read(proof / "original-products-build.json")
+        origin.validate_saved_build(build, intent["source_sha"], worker)
+    batch.require(reference_matches(result, build), "Original result provenance reference differs")
     host_dir = proof / "host-actions"
     host = read(host_dir / "execution.json")
     host_udid = next(x["udid"] for x in intent["preflight_devices"] if x["name"].endswith("-ipad"))
@@ -317,8 +365,7 @@ def validate_results(evidence, intent, worker, ui, *, require_release_fixtures=T
                   and actual_ui.get("prerequisite_scope") == "SINGLE_CORRECTED_RUNTIME"
                   and actual_ui.get("ui_simulator_shutdown") is True
                   and actual_ui.get("ui_runner_builds") == 0 and actual_ui.get("app_builds_added") == 0
-                  and actual_ui.get("ui_runner_reused_from_same_job") is True
-                  and actual_ui.get("same_job_build_receipt_sha256") == worker["build_receipt_sha256"],
+                  and reuse_matches(actual_ui, build),
                   "Original T5 UI did not reuse and shut down the exact coherent build")
     publication(ui_dir / "actual", read(ui_dir / "evidence-policy.json"))
     actual = ui_dir / "actual"
@@ -361,7 +408,10 @@ def validate_results(evidence, intent, worker, ui, *, require_release_fixtures=T
     device_paths = [evidence / "lanes" / name / "owned-simulator.json" for name in batch.profile_spec(PROFILE).lanes]
     lane_udids = [read(path)["udid"].lower() for path in device_paths if path.is_file()]
     batch.require(len(set(lane_udids + extra_udids)) == len(lane_udids) + len(EXTRA_DEVICES), "Coherent fixtures reused a simulator")
-    return dict(status="ORIGINAL_COHERENT_RESULTS_REVALIDATED", t5_counts=dict(COUNTS),
+    if origin is not None:
+        from coherent_original_products import counts
+    return dict(status="ORIGINAL_COHERENT_RESULTS_REVALIDATED",
+                t5_counts=dict(COUNTS) if origin is None else counts(),
                 independent_native_fixture_spaces=len(spaces), additional_app_builds=0, additional_ui_runner_builds=0)
 
 

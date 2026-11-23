@@ -685,12 +685,16 @@ def validate_lane_pass(receipt, directory, selection, context):
     return observations
 
 
-def worker(args, lane, intent):
+def worker(args, lane, intent, *, origin=None):
     require(os.getppid() == intent["parent_pid"], "Batch worker has another parent")
+    if origin is not None:
+        origin.validate_intent(intent)
     require(0 < args.deadline - time.monotonic() <= WORKER_SECONDS, "Invalid bounded worker deadline")
     spec = profile_spec(intent.get("profile", PROFILE))
     selections = plan(lane, spec.name)
-    receipt = {"protocol": PROTOCOL, "status": "FAIL", "phase": "SETUP", "started_at": now(),
+    receipt = {"protocol": PROTOCOL if origin is None else origin.protocol,
+               **({} if origin is None else origin.record_fields()),
+               "status": "FAIL", "phase": "SETUP", "started_at": now(),
                "profile": spec.name, "planned_ui_methods": spec.ui_count,
                "planned_native_preparations": spec.preparation_count,
                "planned_native_postflights": spec.postflight_count,
@@ -699,7 +703,8 @@ def worker(args, lane, intent):
     evidence = args.evidence.resolve()
     write(evidence / "batch-worker.json", receipt)
     try:
-        frozen, preflight = build_once(args, lane, selections, receipt)
+        frozen, preflight = (build_once(args, lane, selections, receipt) if origin is None
+                             else origin.restore(args, lane, receipt))
         for selection, ownership in zip(selections, intent["lane_devices"], strict=True):
             name = selection["lane"]
             receipt.update(phase="SHARED_INPUTS_BEFORE_LANE", current_lane=name)
@@ -741,7 +746,8 @@ def worker(args, lane, intent):
                                runtime_profile=getattr(args, "runtime_profile", "r14"),
                                heart_source_run_id=getattr(args, "heart_source_run_id", ""))
             lane_receipt = {"status": "FAIL", "phase": "PREFLIGHT", "started_at": now(),
-                            "same_job_build_receipt_sha256": receipt["build_receipt_sha256"],
+                            **({"same_job_build_receipt_sha256": receipt["build_receipt_sha256"]}
+                               if origin is None else frozen.build_reference()),
                             "full_matrix_accepted": False, "release_accepted": False}
             try:
                 context = replace(frozen, device=device)
@@ -775,6 +781,9 @@ def worker(args, lane, intent):
                 receipt.update(phase="COHERENT_T5", current_lane=None)
                 write(evidence / "batch-worker.json", receipt)
                 receipt["coherent_t5"] = coherent.execute(args, frozen, preflight, receipt, intent)
+            if origin is not None:
+                origin.verify_originals(all_products=True)
+                origin.verify_control()
             receipt.update(status="BATCH_PASS_ACCEPTANCE_REVIEW_PENDING" if all(
                 status == "LANE_PASS_ACCEPTANCE_REVIEW_PENDING" for status in receipt["lane_statuses"].values())
                 else "BATCH_FAILED_OBSERVED_TESTS", phase="COMPLETE")
@@ -1016,9 +1025,12 @@ def cleanup_owned(intent, evidence):
     return report
 
 
-def validate_worker_conclusion(receipt, intent, evidence, lane):
+def validate_worker_conclusion(receipt, intent, evidence, lane, *, origin=None):
     spec = profile_spec(intent.get("profile", PROFILE))
-    require(receipt.get("protocol") == PROTOCOL and receipt.get("profile") == spec.name
+    if origin is not None:
+        origin.validate_intent(intent)
+    require(receipt.get("protocol") == (PROTOCOL if origin is None else origin.protocol)
+            and receipt.get("profile") == spec.name
             and receipt.get("planned_ui_methods") == spec.ui_count
             and receipt.get("planned_native_preparations") == spec.preparation_count
             and receipt.get("planned_native_postflights") == spec.postflight_count
@@ -1030,13 +1042,17 @@ def validate_worker_conclusion(receipt, intent, evidence, lane):
     require(all(value == "LANE_PASS_ACCEPTANCE_REVIEW_PENDING" for value in receipt["lane_statuses"].values())
             and set(receipt.get("lane_receipts", {})) == set(spec.lanes), "Passing batch lacks every reviewed lane receipt")
     require(receipt.get("source", {}).get("source_sha") == intent["source_sha"], "Passing worker source differs")
-    build_path = evidence / "batch-build/same-job-build.json"
-    require(digest(build_path) == receipt["build_receipt_sha256"], "Same-job successful build receipt changed")
-    build = json.loads(build_path.read_text())
-    require(build.get("status") == "SAME_JOB_SUCCESSFUL_BUILD_WITH_FROZEN_PRODUCTS"
-            and build.get("source") == receipt["source"] and build.get("build_flags") == profile_flags(spec.name)
-            and build.get("configuration") == CONFIGURATION and build.get("previous_artifact_reuse") is False,
-            "Passing worker has no exact successful same-job build")
+    if origin is None:
+        build_path = evidence / "batch-build/same-job-build.json"
+        require(digest(build_path) == receipt["build_receipt_sha256"], "Same-job successful build receipt changed")
+        build = json.loads(build_path.read_text())
+        require(build.get("status") == "SAME_JOB_SUCCESSFUL_BUILD_WITH_FROZEN_PRODUCTS"
+                and build.get("source") == receipt["source"] and build.get("build_flags") == profile_flags(spec.name)
+                and build.get("configuration") == CONFIGURATION and build.get("previous_artifact_reuse") is False,
+                "Passing worker has no exact successful same-job build")
+    else:
+        build = origin.validate_worker_build(receipt, intent, evidence)
+    reference_key = "same_job_build_receipt_sha256" if origin is None else origin.reference_key
     observed_udids, observed_spaces, observed_containers = set(), set(), set()
     totals = {"native_preparations": 0, "ui_methods": 0, "native_postflights": 0}
     for selection in plan(lane, spec.name):
@@ -1049,7 +1065,7 @@ def validate_worker_conclusion(receipt, intent, evidence, lane):
         require(original.get("status") == "LANE_PASS_ACCEPTANCE_REVIEW_PENDING"
                 and original.get("source_sha") == intent["source_sha"]
                 and original.get("run_id") == intent["run_id"] and original.get("run_attempt") == intent["run_attempt"]
-                and original.get("same_job_build_receipt_sha256") == receipt["build_receipt_sha256"],
+                and original.get(reference_key) == receipt["build_receipt_sha256"],
                 "Passing lane identity/build binding differs")
         device = json.loads((path.parent / "owned-simulator.json").read_text())
         planned = next(item for item in intent["lane_devices"] if item["lane"] == name)
@@ -1089,13 +1105,14 @@ def validate_worker_conclusion(receipt, intent, evidence, lane):
         require(reference.get("path") == "coherent-t5/result.json"
                 and reference.get("sha256") == digest(evidence / "coherent-t5/result.json")
                 and receipt.get("coherent_nested_cleanup", {}).get("status") == "PASS"
-                and build.get("profile") == spec.name and build.get("app_builds") == 1
-                and build.get("ui_runner_builds") == 1 and build.get("shipping_default_build") is False,
+                and ((build.get("profile") == spec.name and build.get("app_builds") == 1
+                      and build.get("ui_runner_builds") == 1 and build.get("shipping_default_build") is False)
+                     if origin is None else build.get("protocol") == origin.protocol),
                 "Passing coherent batch lacks its original one-build T5/cleanup evidence")
-        coherent.validate_results(evidence, intent, receipt, lane.shared)
+        coherent.validate_results(evidence, intent, receipt, lane.shared, origin=origin)
 
 
-def publish_batch_observations(evidence, result):
+def publish_batch_observations(evidence, result, *, origin=None):
     """Project only this fresh execution's fixed receipt paths to annotations.
 
     Worker stdout is retained in its private log. The parent publishes the
@@ -1125,7 +1142,7 @@ def publish_batch_observations(evidence, result):
     try:
         retained = result.get("retained_worker_receipt", {})
         worker = read_receipt(worker_path, retained.get("sha256"))
-        if worker.get("protocol") != PROTOCOL or worker.get("profile") != spec.name:
+        if worker.get("protocol") != (PROTOCOL if origin is None else origin.protocol) or worker.get("profile") != spec.name:
             raise ValueError("Diagnostic worker profile differs")
         diagnostics.emit_execution(worker, spec.name)
         references = worker.get("lane_receipts", {})
@@ -1152,7 +1169,7 @@ def publish_batch_observations(evidence, result):
 
 
 
-def retain_first_worker_failure(result, intent, evidence, lane, supervisor_error):
+def retain_first_worker_failure(result, intent, evidence, lane, supervisor_error, *, origin=None):
     """A later cleanup fault cannot relabel an original terminal worker failure."""
     path = evidence / "batch-worker.json"
     if not path.is_file() or path.is_symlink() or path.stat().st_size > 2 * 1024 * 1024:
@@ -1163,7 +1180,7 @@ def retain_first_worker_failure(result, intent, evidence, lane, supervisor_error
     if (worker.get("status") not in failed or not worker.get("finished_at")
             or worker.get("source", {}).get("source_sha") != intent["source_sha"]):
         return False
-    validate_worker_conclusion(worker, intent, evidence, lane)
+    validate_worker_conclusion(worker, intent, evidence, lane, origin=origin)
     result.update(status=worker["status"], phase=worker.get("phase"),
         original_worker_failure_sha256=digest(path),
         supervisor_error_type=type(supervisor_error).__name__, supervisor_error=str(supervisor_error))
@@ -1175,7 +1192,7 @@ def retain_first_worker_failure(result, intent, evidence, lane, supervisor_error
     return True
 
 
-def run(args, lane):
+def run(args, lane, *, origin=None):
     require(sys.platform == "darwin", "Actual Apple host required")
     require(args.device == "ipad" and args.language == "en", "Batch is only the existing iPad English Release lanes")
     require(WORKER_SECONDS + CLEANUP_SECONDS < STEP_SECONDS, "Batch exceeds the existing execution cap")
@@ -1206,6 +1223,8 @@ def run(args, lane):
               "preflight_devices": list(preflight["selected"].values()),
               "lane_devices": [{"lane": name, "name": "Pinkha-UI27-" + os.environ["GITHUB_RUN_ID"] + "-batch-" + token + "-" + name,
                                 "device": template["device"], "runtime": template["runtime"]} for name in spec.lanes]}
+    if origin is not None:
+        origin.bind_intent(intent)
     if spec.name == COHERENT_HEART_PROFILE:
         import coherent_heart_release as coherent
         require(getattr(args, "runtime_profile", None) == coherent.RUNTIME_PROFILE,
@@ -1215,7 +1234,9 @@ def run(args, lane):
                     for items in baseline["devices"].values() for item in items), "Planned simulator name already exists")
     (evidence / "batch-simulator-baseline.json").write_bytes(baseline_raw)
     write(evidence / "batch-intent.json", intent)
-    result = {"protocol": PROTOCOL, "profile": spec.name, "status": "FAIL", "started_at": now(),
+    result = {"protocol": PROTOCOL if origin is None else origin.protocol,
+              **({} if origin is None else origin.record_fields()),
+              "profile": spec.name, "status": "FAIL", "started_at": now(),
               "source_sha": intent["source_sha"], "run_id": intent["run_id"], "run_attempt": intent["run_attempt"],
               "planned_ui_methods": spec.ui_count, "planned_native_preparations": spec.preparation_count,
               "planned_native_postflights": spec.postflight_count,
@@ -1246,13 +1267,15 @@ def run(args, lane):
                    "--deadline", str(time.monotonic() + WORKER_SECONDS),
                    "--runtime-profile", getattr(args, "runtime_profile", "r14"),
                    "--heart-source-run-id", getattr(args, "heart_source_run_id", "")]
+        if origin is not None:
+            command = origin.worker_command(command)
         if spec.name == COHERENT_HEART_PROFILE:
             outcome = run_nested_worker_command(command, args.app.resolve(), evidence / "batch-worker.log",
                                                 WORKER_SECONDS, profile=spec.name)
         else:
             outcome = run_worker_command(command, args.app.resolve(), evidence / "batch-worker.log", WORKER_SECONDS)
         worker_receipt = json.loads((evidence / "batch-worker.json").read_text())
-        validate_worker_conclusion(worker_receipt, intent, evidence, lane)
+        validate_worker_conclusion(worker_receipt, intent, evidence, lane, origin=origin)
         result.update(worker=worker_receipt, worker_receipt_sha256=digest(evidence / "batch-worker.json"),
                       worker_command=outcome, status=worker_receipt["status"])
         require(outcome["return_code"] == 0 or result["status"] != "BATCH_PASS_ACCEPTANCE_REVIEW_PENDING",
@@ -1265,7 +1288,7 @@ def run(args, lane):
                       error_type=type(error).__name__, error=str(error))
         if not isinstance(error, KeyboardInterrupt) and spec.name == COHERENT_HEART_PROFILE:
             try:
-                retain_first_worker_failure(result, intent, evidence, lane, error)
+                retain_first_worker_failure(result, intent, evidence, lane, error, origin=origin)
             except Exception as original_error:
                 result["original_worker_failure_read_error_type"] = type(original_error).__name__
         if isinstance(error, KeyboardInterrupt):
@@ -1306,7 +1329,7 @@ def run(args, lane):
             for number, previous in previous_handlers.items():
                 signal.signal(number, previous)
     try:
-        publish_batch_observations(evidence, result)
+        publish_batch_observations(evidence, result, origin=origin)
     except KeyboardInterrupt as error:
         result["status"], cancellation = "CANCELLED", cancellation or error
         write(evidence / "execution.json", result)

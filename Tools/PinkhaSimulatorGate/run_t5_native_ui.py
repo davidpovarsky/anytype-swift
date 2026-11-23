@@ -420,8 +420,7 @@ def _run_on_fresh_simulator(*, app, work, proof, build, selection, pair, ui, met
         else:
             build_context.verify_current()
             ui_derived = build_context.ui_derived
-            record.update(ui_runner_builds=0, ui_runner_reused_from_same_job=True,
-                          same_job_build_receipt_sha256=build["same_job_build_receipt_sha256"])
+            record.update(ui_runner_builds=0, **coherent.reuse_fields(build))
         evidence.require(evidence.digest(original_project) == original_project_hash, "Original UI project changed during runner preparation")
         evidence.require(ui.code_carriers(Path(build["app"]))["sha256"] == build["code_sha256"], "UI runner build changed the retained App")
         products = ui_derived / "Build/Products"
@@ -429,7 +428,9 @@ def _run_on_fresh_simulator(*, app, work, proof, build, selection, pair, ui, met
         info = plistlib.loads((runner / "Info.plist").read_bytes())
         evidence.require(info.get("CFBundleIdentifier") == "com.gloiiire.PinkhaStage1AcceptanceUITests.xctrunner", "Actual UI runner bundle identity differs")
         command(["xcrun", "simctl", "install", ui_udid, str(runner)], "install-ui-runner")
-        configuration = ui.test_configuration(products, "PinkhaStage1AcceptanceUITests")
+        configuration = (build_context.ui_configuration if build_context is not None
+                         and coherent.original_products_context(build_context)
+                         else ui.test_configuration(products, "PinkhaStage1AcceptanceUITests"))
         if build_context is not None:
             evidence.require(configuration == build_context.ui_configuration,
                              "Coherent UI must select this job's original frozen UI configuration")

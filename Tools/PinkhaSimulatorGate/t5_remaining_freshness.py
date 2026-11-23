@@ -191,7 +191,7 @@ def run_after_coherent_build(*, app, work, proof, build, selection, pair, ui, me
     token = uuid4().hex
     result = dict(status="RUNNING", app_source_sha=source, run_id=run_id, run_attempt=run_attempt,
                   token=token, method=METHOD, runtime_profile=profile.name, runtime_binding=build["runtime_binding"],
-                  same_job_build_receipt_sha256=build["same_job_build_receipt_sha256"],
+                  **coherent.build_reference(build),
                   additional_app_builds=0, additional_ui_runner_builds=0, historical_pair_execution="NOT_RUN",
                   historical_pagination_execution="NOT_RUN", mixed_version_accepted=False,
                   whole_index_completeness="NOT_PROVEN", physical_device_accepted=False,
@@ -235,7 +235,7 @@ def run_after_coherent_build(*, app, work, proof, build, selection, pair, ui, me
         controller = dict(app_source_sha=source, run_id=run_id, run_attempt=run_attempt, token=token,
             device_udid=udid, root_sha256=root_sha, installed_code_sha256=installed,
             source_contract=source_contract(app), original_receipt_sha256=pair.digest(directory / "receipt.json"),
-            same_job_build_receipt_sha256=build["same_job_build_receipt_sha256"])
+            **coherent.build_reference(build))
         pair.write(private / "controller.json", controller)
         result.update(account_id=original["accountID"], space_id=original["spaceID"],
                       process_id=original["processID"], installed_code_sha256=installed)
@@ -306,7 +306,7 @@ def validate_saved(public, *, source, run_id, run_attempt, build, ui, method_res
                  and result.get("run_id") == run_id and result.get("run_attempt") == run_attempt
                  and result.get("method") == METHOD and result.get("runtime_profile") == RUNTIME_PROFILE
                  and result.get("runtime_binding") == build["runtime_binding"]
-                 and result.get("same_job_build_receipt_sha256") == build["same_job_build_receipt_sha256"]
+                 and coherent.reference_matches(result, build)
                  and result.get("installed_code_sha256") == build["code_sha256"]
                  and result.get("mixed_version_accepted") is False and result.get("physical_device_accepted") is False
                  and result.get("whole_index_completeness") == "NOT_PROVEN"
@@ -329,7 +329,8 @@ def validate_saved(public, *, source, run_id, run_attempt, build, ui, method_res
                  and source_proof.get("original_pair_execution") == source_proof.get("historical_pagination_execution") == "NOT_RUN",
                  "Original runtime-pair retention proof differs")
     pair.require(all(controller.get(key) == result.get(key) for key in
-                     ("app_source_sha", "run_id", "run_attempt", "token", "device_udid", "installed_code_sha256", "same_job_build_receipt_sha256"))
+                     ("app_source_sha", "run_id", "run_attempt", "token", "device_udid", "installed_code_sha256"))
+                 and coherent.reference_matches(controller, build)
                  and controller.get("original_receipt_sha256") == pair.digest(actual / "native-receipt.json")
                  and result.get("account_id") == native.get("accountID") and result.get("space_id") == native.get("spaceID")
                  and result.get("process_id") == native.get("processID"),

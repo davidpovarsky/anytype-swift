@@ -412,13 +412,18 @@ def execute(args, receipt, *, build_context=None):
     hanlin_lane = HANLIN_LANES.get(args.lane)
     source_methods(app, selection["methods"])
     head = shared.git(app, "rev-parse", "HEAD")
-    require_source_identity(head, os.environ.get("GITHUB_SHA"),
-                            shared.git(app, "branch", "--show-current"), os.environ.get("GITHUB_REF"))
+    from coherent_original_products import OriginalProductsContext
+    original_products = isinstance(build_context, OriginalProductsContext)
+    if not original_products:
+        require_source_identity(head, os.environ.get("GITHUB_SHA"),
+                                shared.git(app, "branch", "--show-current"), os.environ.get("GITHUB_REF"))
     require(os.environ.get("GITHUB_RUN_ID", "").isdigit(), "Missing actual CI run identity")
     preflight = json.loads((evidence / "preflight/preflight.json").read_text())
     require(preflight.get("status") == "PREFLIGHT_PASS_UI_NOT_RUN"
-            and preflight.get("source_sha") == head
+            and preflight.get("source_sha") == (build_context.origin.control_sha if original_products else head)
             and preflight.get("run_id") == os.environ["GITHUB_RUN_ID"], "OS27 preflight is not from this source/run")
+    if original_products:
+        build_context.validate_execution_identity(app, preflight)
     selected = preflight["selected"][args.device]
     udid = selected["udid"]
     require(build_context is None or selected == build_context.device,
@@ -484,8 +489,12 @@ def execute(args, receipt, *, build_context=None):
     else:
         require(derived == build_context.derived, "Same-job native product directory differs")
         build_context.verify(app, head, identity, flags, configuration_name)
-        receipt["build_mode"] = "SAME_JOB_FROZEN_BUILD"
-    receipt.update(native_build_succeeded=True, native_build_flags=flags)
+        receipt["build_mode"] = (build_context.record_build_mode() if original_products else "SAME_JOB_FROZEN_BUILD")
+    if original_products:
+        receipt.update(original_native_build_succeeded=True, native_builds_this_run=0, native_build_flags=flags,
+                       **build_context.origin.record_fields(), **build_context.build_reference())
+    else:
+        receipt.update(native_build_succeeded=True, native_build_flags=flags)
     if shared_editor:
         receipt["early_products"] = early_build_products.capture(
             derived, evidence, source_sha=head, run_id=receipt["run_id"],
@@ -494,16 +503,20 @@ def execute(args, receipt, *, build_context=None):
     built = derived / "Build/Products" / (configuration_name + "-iphonesimulator/Anytype.app")
     shared.verify_signed_simulator(built, evidence)
     shared.verify_runtime_copies(built, binding['native_marker'].encode(), evidence)
-    checkouts = derived / "SourcePackages/checkouts"
-    kit = next(p for p in checkouts.iterdir() if p.name.casefold() == "torahinspectorkit")
-    require(shared.git(kit, "rev-parse", "HEAD") == shared.KIT, "Actual Kit checkout differs")
+    if original_products:
+        receipt["original_kit_binding"] = build_context.verify_kit()
+    else:
+        checkouts = derived / "SourcePackages/checkouts"
+        kit = next(p for p in checkouts.iterdir() if p.name.casefold() == "torahinspectorkit")
+        require(shared.git(kit, "rev-parse", "HEAD") == shared.KIT, "Actual Kit checkout differs")
     lock = json.loads((app / "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved").read_text())
     require(next(p["state"]["revision"] for p in lock["pins"] if p["identity"] == "torahinspectorkit") == shared.KIT,
             "Actual Kit lock differs")
     shared.write(evidence / "actual-package-pins.json", lock)
     before = shared.code_carriers(built)
     shared.write(evidence / "built-code-carriers.json", before)
-    native_configuration = shared.test_configuration(derived / "Build/Products", "AnytypeTests")
+    native_configuration = (build_context.native_configuration if original_products
+                            else shared.test_configuration(derived / "Build/Products", "AnytypeTests"))
     receipt["phase"] = "PREPARATION"
     native_environment = preparation_environment(args.lane, head, receipt["run_id"], receipt["run_attempt"])
     preservation_binding = None
@@ -581,7 +594,7 @@ def execute(args, receipt, *, build_context=None):
     else:
         require(ui_derived == build_context.ui_derived, "Same-job UI runner directory differs")
         build_context.verify(app, head, identity, flags, configuration_name)
-        receipt["ui_build_mode"] = "SAME_JOB_FROZEN_BUILD"
+        receipt["ui_build_mode"] = (build_context.record_build_mode() if original_products else "SAME_JOB_FROZEN_BUILD")
     receipt["phase"] = "UI_RUNTIME_PREPARATION"
     shared.write(evidence / "execution.json", receipt)
     runtime_identity = {
@@ -600,7 +613,8 @@ def execute(args, receipt, *, build_context=None):
         live = shared.live_runtime(udid, evidence, built, args.language, source_identity=runtime_identity)
         receipt["live_runtime_before_ui"] = live
     shared.install_ui_runner(udid, ui_derived / "Build/Products", app, evidence, configuration=configuration_name)
-    configuration = shared.test_configuration(ui_derived / "Build/Products", "PinkhaStage1AcceptanceUITests")
+    configuration = (build_context.ui_configuration if original_products
+                     else shared.test_configuration(ui_derived / "Build/Products", "PinkhaStage1AcceptanceUITests"))
     environment.update(PINKHA_UI27_APP_LANGUAGE=args.language, PINKHA_UI27_SELECTION_SCOPE="WAVE15_ACCEPTANCE")
     if args.lane == "inspector":
         environment["PINKHA_UI27_EXPECTED_APP_PID"] = str(live["pid"])
