@@ -1,0 +1,126 @@
+{
+  "build_origin": {
+    "artifact_id": 14786515753,
+    "artifact_sha256": "a35f701fdf32977c0c9f605be9ee70fe424c754dcdd47c5321c85e00e3733ea4",
+    "original_build_receipt_sha256": "87834f312a69f814623c2fa8d14d07f017e0902dbf512d49717397c862fffca2",
+    "repository": "davidpovarsky/anytype-swift",
+    "run_attempt": "1",
+    "run_id": "45095838065",
+    "source_sha": "d254a4a1ccd9288f585ff9374088cbaf965b36b4"
+  },
+  "commands": [
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/davidpovarsky/anytype-swift/actions/artifacts/14786515753"
+      ],
+      "finished_at": "2026-11-23T07:33:16.334287+00:00",
+      "name": "original-artifact-api",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/coherent-original-products-45129057825-1/evidence/original-products/commands/original-artifact-api.log",
+      "output_sha256": "499ba597c7aeddee74535534bf67182beb57a71aabd4a27c68cd52f1f9aa2e7d",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "absence_source": "KERNEL_ESRCH",
+        "budget_seconds": 10,
+        "kernel_group_observation": {
+          "after_monotonic": 477.091847291,
+          "before_monotonic": 477.091781,
+          "deadline_monotonic": 487.091772666,
+          "errno": 3,
+          "error_type": "ProcessLookupError",
+          "operation": "os.killpg",
+          "outcome": "ABSENT_ESRCH",
+          "pgid": 9275,
+          "signal": 0
+        },
+        "live_members": 0,
+        "observations": 0,
+        "pgid": 9275,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T07:33:15.589981+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 60,
+      "worker_pid": 9275
+    },
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/davidpovarsky/anytype-swift/actions/runs/45095838065/attempts/1"
+      ],
+      "finished_at": "2026-11-23T07:33:16.755428+00:00",
+      "name": "original-run-api",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/coherent-original-products-45129057825-1/evidence/original-products/commands/original-run-api.log",
+      "output_sha256": "995fbb6bb697e5e656190ae9918897d24a1f201071f528a46437969f66afcff3",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "absence_source": "KERNEL_ESRCH",
+        "budget_seconds": 10,
+        "kernel_group_observation": {
+          "after_monotonic": 477.51473825,
+          "before_monotonic": 477.514670666,
+          "deadline_monotonic": 487.514667708,
+          "errno": 3,
+          "error_type": "ProcessLookupError",
+          "operation": "os.killpg",
+          "outcome": "ABSENT_ESRCH",
+          "pgid": 9277,
+          "signal": 0
+        },
+        "live_members": 0,
+        "observations": 0,
+        "pgid": 9277,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T07:33:16.338580+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 60,
+      "worker_pid": 9277
+    },
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/davidpovarsky/anytype-swift/actions/artifacts/14786515753/zip"
+      ],
+      "finished_at": "2026-11-23T07:34:16.416440+00:00",
+      "name": "download-original-products",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/coherent-original-products-45129057825-1/private/App/build/original-products-private/original-github-artifact.zip",
+      "output_sha256": "a35f701fdf32977c0c9f605be9ee70fe424c754dcdd47c5321c85e00e3733ea4",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "absence_source": "KERNEL_ESRCH",
+        "budget_seconds": 10,
+        "kernel_group_observation": {
+          "after_monotonic": 537.189674166,
+          "before_monotonic": 537.189544916,
+          "deadline_monotonic": 547.189533416,
+          "errno": 3,
+          "error_type": "ProcessLookupError",
+          "operation": "os.killpg",
+          "outcome": "ABSENT_ESRCH",
+          "pgid": 9278,
+          "signal": 0
+        },
+        "live_members": 0,
+        "observations": 0,
+        "pgid": 9278,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T07:33:16.762540+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 300,
+      "worker_pid": 9278
+    }
+  ],
+  "protocol": "pinkha-coherent-original-products-continuation-v1",
+  "status": "EXACT_ORIGINAL_ARTIFACT_DOWNLOADED"
+}

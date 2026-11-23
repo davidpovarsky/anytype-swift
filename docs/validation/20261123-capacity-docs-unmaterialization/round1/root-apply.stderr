@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/mnt/development/projects/diagnostics/completed-worktree-docs-capacity-review-20261123/root_apply_exact.py", line 129, in <module>
+    scan=json.loads(sr.stdout);assert scan['uid']==0 and not scan['hits'] and not scan['denied'],scan
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'uid': 0, 'processes': 239, 'hits': [{'pid': 2309862, 'kind': 'cmdline', 'path': '/mnt/development/projects/worktrees/anytype-wave15-anchor-20261123'}], 'denied': []}

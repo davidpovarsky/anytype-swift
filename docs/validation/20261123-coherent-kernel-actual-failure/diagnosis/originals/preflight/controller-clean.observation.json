@@ -1,0 +1,39 @@
+{
+  "argv": [
+    "git",
+    "-C",
+    "/Users/runner/work/anytype-swift/anytype-swift",
+    "status",
+    "--porcelain",
+    "--untracked-files=no"
+  ],
+  "finished_at": "2026-11-23T07:32:48.160001+00:00",
+  "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "name": "controller-clean",
+  "owned_group_cleanup": "TERM_THEN_KILL",
+  "owned_group_quiescence": {
+    "absence_source": "KERNEL_ESRCH",
+    "budget_seconds": 10,
+    "kernel_group_observation": {
+      "after_monotonic": 448.917215416,
+      "before_monotonic": 448.917181916,
+      "deadline_monotonic": 458.917177083,
+      "errno": 3,
+      "error_type": "ProcessLookupError",
+      "operation": "os.killpg",
+      "outcome": "ABSENT_ESRCH",
+      "pgid": 8462,
+      "signal": 0
+    },
+    "live_members": 0,
+    "observations": 0,
+    "pgid": 8462,
+    "status": "PASS",
+    "timeout_observations": []
+  },
+  "return_code": 0,
+  "started_at": "2026-11-23T07:32:48.086562+00:00",
+  "status": "COMPLETE",
+  "timeout_seconds": 30,
+  "worker_pid": 8462
+}

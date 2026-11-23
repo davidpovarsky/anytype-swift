@@ -1,0 +1,41 @@
+{
+  "argv": [
+    "xcrun",
+    "simctl",
+    "list",
+    "devices",
+    "20BAEE0C-6091-49F5-9D94-880A738FF852",
+    "--json"
+  ],
+  "cleanup_profile": "coherent-heart-release",
+  "controller_process_id": 13363,
+  "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/coherent-original-products-45129057825-1/private/App",
+  "finished_at": "2026-11-23T07:35:15.982663+00:00",
+  "original_owned_command": "before.owned.command.json",
+  "original_owned_command_sha256": "e117de16d01229d10341f59cf8a7b9a222b1cec753c9f1ce8076a82be48d5c0a",
+  "owned_group_quiescence": {
+    "absence_source": "KERNEL_ESRCH",
+    "budget_seconds": 10,
+    "kernel_group_observation": {
+      "after_monotonic": 596.737738958,
+      "before_monotonic": 596.737667083,
+      "deadline_monotonic": 606.737659291,
+      "errno": 3,
+      "error_type": "ProcessLookupError",
+      "operation": "os.killpg",
+      "outcome": "ABSENT_ESRCH",
+      "pgid": 13363,
+      "signal": 0
+    },
+    "live_members": 0,
+    "observations": 0,
+    "pgid": 13363,
+    "status": "PASS",
+    "timeout_observations": []
+  },
+  "owned_group_termination": "TERM_THEN_KILL",
+  "return_code": 0,
+  "started_at": "2026-11-23T07:35:15.456381+00:00",
+  "status": "SUCCESS",
+  "timeout_seconds": 60
+}

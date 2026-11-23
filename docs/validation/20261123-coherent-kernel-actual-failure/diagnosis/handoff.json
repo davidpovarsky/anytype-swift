@@ -1,0 +1,72 @@
+{
+  "actual_kernel_observations_retained": 11,
+  "artifact_limitations": [
+    "Lookup raw .stdout/.stderr were omitted by original package policy; only their zero-byte hashes/counts in the original observation are available.",
+    "Cancellation cause is UNKNOWN.",
+    "Nested and outer process cleanup failures remain failures."
+  ],
+  "controller_source": "a69d0967c1dad4b9476b04af2b681474983e0b96",
+  "created_at": "2026-11-23T08:11:16.304589+00:00",
+  "files": [
+    {
+      "bytes": 27015,
+      "path": "diagnosis.json",
+      "sha256": "31e3105a974fcdd8a41b308ae3f3983b2475e69b0344d3bae2f58d751b1bab70"
+    },
+    {
+      "bytes": 9916,
+      "path": "continuation-design.md",
+      "sha256": "be9b2617b379b718b59fd6064a947f97ad9be98d4a7ce40ec9d97bc4da0cee70"
+    },
+    {
+      "bytes": 21168,
+      "path": "audit.py",
+      "sha256": "76356c886582131be43a28e46926e26dfead48f52c788e0be28864f4573efcf2"
+    },
+    {
+      "bytes": 20984,
+      "path": "audit-attempt1.py",
+      "sha256": "2859ceab750232066a055cf0bd6aa59e5ee23905e2861fbbd96145603c18fda8"
+    },
+    {
+      "bytes": 1015,
+      "path": "audit-capture.json",
+      "sha256": "bea28d0fdc98a30d1cb488c89cc09503abed9bc5d9c5ee6d4be4f68496ea8ca1"
+    },
+    {
+      "bytes": 21069,
+      "path": "inventory.json",
+      "sha256": "22ca03c069d469e7fac5745ad2e3d226383ff8c1d8dcf6af42b3526d5c19e2f6"
+    },
+    {
+      "bytes": 3059,
+      "path": "extract_originals.py",
+      "sha256": "2551f8903ccd136a7d373fd5a28be3da344c7dc5372372d7c55574a185626ed1"
+    },
+    {
+      "bytes": 221,
+      "path": "extraction.stdout",
+      "sha256": "a6f7ec337b412756665506c3f2437b54b93fe3bbff11308dbb58499d69af92e8"
+    },
+    {
+      "bytes": 0,
+      "path": "extraction.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 430,
+      "path": "extraction-command.json",
+      "sha256": "29fad8959f428e10d9f6c139510507a9f8591d4d4390880aecf85517d95d7b04"
+    }
+  ],
+  "implementation_status": "NOT_AUTHORIZED_OR_STARTED",
+  "new_controls_executed": 0,
+  "new_product_methods": 0,
+  "original_extracted_members": 85,
+  "proposed_new_control_methods": 4,
+  "run_attempt": "1",
+  "run_id": "45129057825",
+  "space_free_bytes": 3720728576,
+  "status": "DIAGNOSIS_AND_READ_ONLY_DESIGN_HANDED_OFF",
+  "transport_note": "The first oversized report-save command received Sentinel WinError 206 and did not execute. The same original successful report output was then persisted in two hash-checked ASCII chunks; no audit or product rerun was used to reconstruct it."
+}

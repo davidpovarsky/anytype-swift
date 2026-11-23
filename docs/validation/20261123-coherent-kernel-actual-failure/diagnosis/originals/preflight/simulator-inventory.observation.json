@@ -1,0 +1,37 @@
+{
+  "argv": [
+    "xcrun",
+    "simctl",
+    "list",
+    "--json"
+  ],
+  "finished_at": "2026-11-23T07:32:59.584615+00:00",
+  "log_sha256": "25a72f096990c362c948555777218064b7a9cb078991a0c58b7b0fd81a534d84",
+  "name": "simulator-inventory",
+  "owned_group_cleanup": "TERM_THEN_KILL",
+  "owned_group_quiescence": {
+    "absence_source": "KERNEL_ESRCH",
+    "budget_seconds": 10,
+    "kernel_group_observation": {
+      "after_monotonic": 460.345404875,
+      "before_monotonic": 460.345326,
+      "deadline_monotonic": 470.345313958,
+      "errno": 3,
+      "error_type": "ProcessLookupError",
+      "operation": "os.killpg",
+      "outcome": "ABSENT_ESRCH",
+      "pgid": 8474,
+      "signal": 0
+    },
+    "live_members": 0,
+    "observations": 0,
+    "pgid": 8474,
+    "status": "PASS",
+    "timeout_observations": []
+  },
+  "return_code": 0,
+  "started_at": "2026-11-23T07:32:52.971952+00:00",
+  "status": "COMPLETE",
+  "timeout_seconds": 60,
+  "worker_pid": 8474
+}

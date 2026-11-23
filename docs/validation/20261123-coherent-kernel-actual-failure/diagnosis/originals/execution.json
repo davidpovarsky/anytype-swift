@@ -1,0 +1,120 @@
+{
+  "app_builds_this_run": 0,
+  "build_origin": {
+    "artifact_id": 14786515753,
+    "artifact_sha256": "a35f701fdf32977c0c9f605be9ee70fe424c754dcdd47c5321c85e00e3733ea4",
+    "original_build_receipt_sha256": "87834f312a69f814623c2fa8d14d07f017e0902dbf512d49717397c862fffca2",
+    "repository": "davidpovarsky/anytype-swift",
+    "run_attempt": "1",
+    "run_id": "45095838065",
+    "source_sha": "d254a4a1ccd9288f585ff9374088cbaf965b36b4"
+  },
+  "cleanup": {
+    "devices": [
+      {
+        "delete_exit_code": 0,
+        "name": "Pinkha-UI27-45129057825-ipad",
+        "status": "DELETED_OWNED_SIMULATOR",
+        "udid": "CE79FBE1-DFB4-4487-BE5E-B0B461105B45"
+      },
+      {
+        "delete_exit_code": 0,
+        "name": "Pinkha-UI27-45129057825-iphone",
+        "status": "DELETED_OWNED_SIMULATOR",
+        "udid": "EB210A8A-CBF1-4839-84E9-253D3CF25DAB"
+      },
+      {
+        "delete_exit_code": 0,
+        "name": "Pinkha-UI27-45129057825-batch-32788e8a52eb48eaac0a9a56c65d2836-editor",
+        "shutdown_exit_code": 0,
+        "status": "DELETED_OWNED_SIMULATOR",
+        "udid": "20BAEE0C-6091-49F5-9D94-880A738FF852"
+      },
+      {
+        "name": "Pinkha-UI27-45129057825-batch-32788e8a52eb48eaac0a9a56c65d2836-quote-drop",
+        "status": "NOT_STARTED"
+      },
+      {
+        "name": "Pinkha-UI27-45129057825-batch-32788e8a52eb48eaac0a9a56c65d2836-properties-set",
+        "status": "NOT_STARTED"
+      },
+      {
+        "name": "Pinkha-UI27-45129057825-batch-32788e8a52eb48eaac0a9a56c65d2836-t5-pending-nine",
+        "status": "NOT_STARTED"
+      },
+      {
+        "name": "Pinkha-UI27-45129057825-batch-32788e8a52eb48eaac0a9a56c65d2836-t5-remaining-freshness",
+        "status": "NOT_STARTED"
+      },
+      {
+        "name": "Pinkha-UI27-45129057825-batch-32788e8a52eb48eaac0a9a56c65d2836-t5-native-ui",
+        "status": "NOT_STARTED"
+      }
+    ],
+    "finished_at": "2026-11-23T07:44:03.689126+00:00",
+    "inventory_queries": [
+      {
+        "elapsed_seconds": 6.533562,
+        "selector": "CE79FBE1-DFB4-4487-BE5E-B0B461105B45",
+        "selector_kind": "OWNED_UDID",
+        "status": "RETURNED_VALID_SCOPED_INVENTORY",
+        "timeout_seconds": 120
+      },
+      {
+        "elapsed_seconds": 0.633978,
+        "selector": "EB210A8A-CBF1-4839-84E9-253D3CF25DAB",
+        "selector_kind": "OWNED_UDID",
+        "status": "RETURNED_VALID_SCOPED_INVENTORY",
+        "timeout_seconds": 120
+      },
+      {
+        "elapsed_seconds": 0.998013,
+        "selector": "20BAEE0C-6091-49F5-9D94-880A738FF852",
+        "selector_kind": "OWNED_UDID",
+        "status": "RETURNED_VALID_SCOPED_INVENTORY",
+        "timeout_seconds": 120
+      }
+    ],
+    "started_at": "2026-11-23T07:43:49.369664+00:00",
+    "status": "PASS"
+  },
+  "continuation": "coherent-original-products-release",
+  "control_source_sha": "a69d0967c1dad4b9476b04af2b681474983e0b96",
+  "current_lane": "editor",
+  "current_shared_app_accepted": false,
+  "error": "Command '['xcrun', 'simctl', 'get_app_container', '20BAEE0C-6091-49F5-9D94-880A738FF852', 'io.anytype.app', 'data']' timed out after 30 seconds",
+  "error_type": "TimeoutExpired",
+  "finished_at": "2026-11-23T07:44:03.827565+00:00",
+  "full_matrix_accepted": false,
+  "lane_statuses": {
+    "editor": "LANE_ABORTED_SETUP_OR_IDENTITY",
+    "properties-set": "NOT_RUN_SETUP",
+    "quote-drop": "NOT_RUN_SETUP"
+  },
+  "original_worker_failure_sha256": "c0dafeb7471d35eee025531826f9e86fa68674e6935e84a5aae6af27c8809125",
+  "phase": "LANE",
+  "planned_native_postflights": 1,
+  "planned_native_preparations": 3,
+  "planned_ui_methods": 6,
+  "previous_test_acceptance_reused": false,
+  "profile": "coherent-heart-release",
+  "protocol": "pinkha-coherent-original-products-continuation-v1",
+  "release_accepted": false,
+  "retained_worker_command": {
+    "path": "batch-worker.command.json",
+    "sha256": "4631a0b313a05fb416f9b46aacdfec59852c11c604b4df896aef6cad1a847401"
+  },
+  "retained_worker_receipt": {
+    "path": "batch-worker.json",
+    "sha256": "c0dafeb7471d35eee025531826f9e86fa68674e6935e84a5aae6af27c8809125"
+  },
+  "run_attempt": "1",
+  "run_id": "45129057825",
+  "source_sha": "d254a4a1ccd9288f585ff9374088cbaf965b36b4",
+  "started_at": "2026-11-23T07:33:14.831744+00:00",
+  "status": "BATCH_ABORTED_SETUP_OR_IDENTITY",
+  "supervisor_error": "Command '['ps', '-axo', 'pid=,pgid=,stat=']' timed out after 2 seconds",
+  "supervisor_error_type": "TimeoutExpired",
+  "ui_runner_builds_this_run": 0,
+  "visual_review": "PENDING"
+}

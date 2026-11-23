@@ -1,0 +1,28 @@
+{
+  "schema": "read-only-original-audit-capture-v1",
+  "attempt1": {
+    "source_file": "audit-attempt1.py",
+    "sentinel_text": [
+      "{\"ok\":true,\"output\":\"Traceback (most recent call last):\\n  File \\\"<stdin>\\\", line 153, in <module>\\nAssertionError\",\"duration\":0.9,\"returncode\":1}"
+    ],
+    "scope": "READ_ONLY_AUDIT_SCHEMA_ASSERTION",
+    "finding": "Expected 26 command/observation records; enumeration also included four creation-journal argv records. No product/source mutation occurred."
+  },
+  "attempt2": {
+    "source_file": "audit.py",
+    "returncode": 0,
+    "ok": true,
+    "duration": 0.79,
+    "output_file": "diagnosis.json",
+    "output_encoding": "UTF-8",
+    "stderr_separation": "NOT_CAPTURED_SEPARATELY; Sentinel aggregate output contained the successful report only"
+  },
+  "counts": {
+    "command_or_observation": 26,
+    "additional_creation_journal_argv": 4,
+    "all_current_top_level_argv": 30
+  },
+  "test_execution": false,
+  "api_calls": 0,
+  "redownloads": 0
+}

@@ -1,0 +1,35 @@
+{
+  "argv": [
+    "swift",
+    "--version"
+  ],
+  "finished_at": "2026-11-23T07:33:06.158323+00:00",
+  "log_sha256": "30bb0d72a580e8e936ab32e24cab2876f82fa6b06d66fef876fe21a47e828acc",
+  "name": "swift-version",
+  "owned_group_cleanup": "TERM_THEN_KILL",
+  "owned_group_quiescence": {
+    "absence_source": "KERNEL_ESRCH",
+    "budget_seconds": 10,
+    "kernel_group_observation": {
+      "after_monotonic": 466.920241166,
+      "before_monotonic": 466.920167083,
+      "deadline_monotonic": 476.920154041,
+      "errno": 3,
+      "error_type": "ProcessLookupError",
+      "operation": "os.killpg",
+      "outcome": "ABSENT_ESRCH",
+      "pgid": 8877,
+      "signal": 0
+    },
+    "live_members": 0,
+    "observations": 0,
+    "pgid": 8877,
+    "status": "PASS",
+    "timeout_observations": []
+  },
+  "return_code": 0,
+  "started_at": "2026-11-23T07:33:00.968446+00:00",
+  "status": "COMPLETE",
+  "timeout_seconds": 60,
+  "worker_pid": 8877
+}

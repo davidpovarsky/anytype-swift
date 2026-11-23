@@ -1,0 +1,39 @@
+{
+  "argv": [
+    "xcrun",
+    "simctl",
+    "create",
+    "Pinkha-UI27-45129057825-iphone",
+    "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro",
+    "com.apple.CoreSimulator.SimRuntime.iOS-27-0"
+  ],
+  "finished_at": "2026-11-23T07:33:00.336607+00:00",
+  "log_sha256": "cdef91d949370fd31027f01fb54138011ed156a4109f830c345676e0314f191d",
+  "name": "create-iphone",
+  "owned_group_cleanup": "TERM_THEN_KILL",
+  "owned_group_quiescence": {
+    "absence_source": "KERNEL_ESRCH",
+    "budget_seconds": 10,
+    "kernel_group_observation": {
+      "after_monotonic": 461.101197583,
+      "before_monotonic": 461.101168166,
+      "deadline_monotonic": 471.101163416,
+      "errno": 3,
+      "error_type": "ProcessLookupError",
+      "operation": "os.killpg",
+      "outcome": "ABSENT_ESRCH",
+      "pgid": 8855,
+      "signal": 0
+    },
+    "live_members": 0,
+    "observations": 0,
+    "pgid": 8855,
+    "status": "PASS",
+    "timeout_observations": []
+  },
+  "return_code": 0,
+  "started_at": "2026-11-23T07:32:59.599685+00:00",
+  "status": "COMPLETE",
+  "timeout_seconds": 30,
+  "worker_pid": 8855
+}
