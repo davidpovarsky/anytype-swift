@@ -12,9 +12,13 @@
       "git_mode": "100644",
       "sha256": "362e4daa85299c86cc19408e06d6c6afca69ee79973c9e1c6ea22c0f0e61419e"
     },
+    ".github/workflows/pinkha-sdk06-projected-components.yml": {
+      "git_mode": "100644",
+      "sha256": "b0096a3e8560dd76b7dac895c90a610899ba83481fafa6a04c482829e6791a94"
+    },
     ".github/workflows/torah-inspector-ipados27.yml": {
       "git_mode": "100644",
-      "sha256": "9134e362da5dc7b056dbfa7a3ce75115f11bbfb49cb297682937c46d6c8a9b4b"
+      "sha256": "89965b1995d85b5951d374fb529b99f1c2bfc7a5136937821e808aa8422f586e"
     },
     "Tools/Hanlin/host_command.py": {
       "git_mode": "100644",
@@ -174,11 +178,15 @@
     },
     "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": {
       "git_mode": "100644",
-      "sha256": "423bb279972950fc3118c99af948ad846f5507a93823219fd75fb38b1efee2d8"
+      "sha256": "e2a66621e6ef2385e10a5eb8b09c9e1e0a48b2fdc0e244b4fe38bf1ba13be47e"
     },
     "Tools/PinkhaSimulatorGate/sdk06-basename-probe-plan.json": {
       "git_mode": "100644",
       "sha256": "9f812368d7b091e88e1346c16a81f8e993eb3f15c9b852379dd62aacc7532f22"
+    },
+    "Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json": {
+      "git_mode": "100644",
+      "sha256": "a15e303257382028ca0e1836d0c369d635a52bfded9fcede5b008445471b1c7a"
     },
     "Tools/PinkhaSimulatorGate/sdk06-original-native-45139431216-1.json": {
       "git_mode": "100644",
@@ -200,17 +208,21 @@
       "git_mode": "100644",
       "sha256": "bf48d27955b94abc8bb3a93559ba608f94c818c7beeab1138b2e85b8911706cc"
     },
+    "Tools/PinkhaSimulatorGate/sdk06_component_projection.py": {
+      "git_mode": "100644",
+      "sha256": "0e1cbbdfca69200e3d673b66fde53fac1a08be0cf74e5e7f0ee13066fccc427f"
+    },
     "Tools/PinkhaSimulatorGate/sdk06_enumeration_probe.py": {
       "git_mode": "100644",
       "sha256": "ce2987846cdd42ebab7702e7dff51068bfb15ee48a66011f621695dbd72ebbce"
     },
     "Tools/PinkhaSimulatorGate/sdk06_original_native.py": {
       "git_mode": "100644",
-      "sha256": "4c5b62a8de03787b23167ef67a3739f715fa2846a86b943ceeee22ee03453b8a"
+      "sha256": "8f92b1f1069c2b422a6921f36aa810bda395f0b8077b25c5c8d48a9b3b603066"
     },
     "Tools/PinkhaSimulatorGate/sdk06_original_native_continuation.py": {
       "git_mode": "100644",
-      "sha256": "4134799d507d3cf26416ec04a04299ea77141b0827f11059615851c53b84b018"
+      "sha256": "ba1dab0f02c508acbc222234d7930ee159bfc5d30f6ce3c47269d9a5b93025a6"
     },
     "Tools/PinkhaSimulatorGate/sdk06_original_native_descriptors.py": {
       "git_mode": "100644",
@@ -223,6 +235,10 @@
     "Tools/PinkhaSimulatorGate/sdk06_original_tagged_selector.py": {
       "git_mode": "100644",
       "sha256": "eed74d9b90ac45125f385b8d1f4460ea41ebf47a87e56d615339ca1729309591"
+    },
+    "Tools/PinkhaSimulatorGate/sdk06_projected_components.py": {
+      "git_mode": "100644",
+      "sha256": "9b1f2f91127963029b19a3287c2a06ef288c4893cb9fcc4f5654c95db7e2f1f6"
     },
     "Tools/PinkhaSimulatorGate/sdk06_qualified_continuation.py": {
       "git_mode": "100644",
@@ -355,12 +371,14 @@
     "run_ui27": "Tools/PinkhaSimulatorGate/run_ui27.py",
     "run_wave15_acceptance": "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py",
     "sdk06_basename_enumeration_probe": "Tools/PinkhaSimulatorGate/sdk06_basename_enumeration_probe.py",
+    "sdk06_component_projection": "Tools/PinkhaSimulatorGate/sdk06_component_projection.py",
     "sdk06_enumeration_probe": "Tools/PinkhaSimulatorGate/sdk06_enumeration_probe.py",
     "sdk06_original_native": "Tools/PinkhaSimulatorGate/sdk06_original_native.py",
     "sdk06_original_native_continuation": "Tools/PinkhaSimulatorGate/sdk06_original_native_continuation.py",
     "sdk06_original_native_descriptors": "Tools/PinkhaSimulatorGate/sdk06_original_native_descriptors.py",
     "sdk06_original_native_selection": "Tools/PinkhaSimulatorGate/sdk06_original_native_selection.py",
     "sdk06_original_tagged_selector": "Tools/PinkhaSimulatorGate/sdk06_original_tagged_selector.py",
+    "sdk06_projected_components": "Tools/PinkhaSimulatorGate/sdk06_projected_components.py",
     "sdk06_qualified_continuation": "Tools/PinkhaSimulatorGate/sdk06_qualified_continuation.py",
     "sdk06_qualified_selector": "Tools/PinkhaSimulatorGate/sdk06_qualified_selector.py",
     "sdk06_retained_controls": "Tools/PinkhaSimulatorGate/sdk06_retained_controls.py",
@@ -426,11 +444,13 @@
     "run_ui27",
     "run_wave15_acceptance",
     "sdk06_basename_enumeration_probe",
+    "sdk06_component_projection",
     "sdk06_enumeration_probe",
     "sdk06_original_native",
     "sdk06_original_native_descriptors",
     "sdk06_original_native_selection",
     "sdk06_original_tagged_selector",
+    "sdk06_projected_components",
     "sdk06_qualified_continuation",
     "sdk06_qualified_selector",
     "sdk06_retained_controls",

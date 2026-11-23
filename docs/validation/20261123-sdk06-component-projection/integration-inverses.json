@@ -1,0 +1,87 @@
+{
+  "controls_executed": 0,
+  "files": {
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": {
+      "after_sha256": "e2a66621e6ef2385e10a5eb8b09c9e1e0a48b2fdc0e244b4fe38bf1ba13be47e",
+      "before_sha256": "423bb279972950fc3118c99af948ad846f5507a93823219fd75fb38b1efee2d8"
+    },
+    "Tools/PinkhaSimulatorGate/sdk06_original_native.py": {
+      "after_sha256": "8f92b1f1069c2b422a6921f36aa810bda395f0b8077b25c5c8d48a9b3b603066",
+      "before_sha256": "4c5b62a8de03787b23167ef67a3739f715fa2846a86b943ceeee22ee03453b8a"
+    },
+    "Tools/PinkhaSimulatorGate/sdk06_original_native_continuation.py": {
+      "after_sha256": "ba1dab0f02c508acbc222234d7930ee159bfc5d30f6ce3c47269d9a5b93025a6",
+      "before_sha256": "4134799d507d3cf26416ec04a04299ea77141b0827f11059615851c53b84b018"
+    }
+  },
+  "literal_edits": {
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": [
+      {
+        "after": "    sdk_original_plan = getattr(args, \"sdk06_original_native_tagged_plan\", None)\n    sdk_projected_plan = getattr(args, \"sdk06_projected_component_plan\", None)\n",
+        "before": "    sdk_original_plan = getattr(args, \"sdk06_original_native_tagged_plan\", None)\n"
+      },
+      {
+        "after": "        from sdk06_original_tagged_selector import OriginalNativeTaggedSelectionPlan\n        from sdk06_projected_components import ProjectedComponentPlan\n        original_scope = (type(sdk_original_plan) is OriginalNativeTaggedSelectionPlan\n                          and sdk_original_plan.origin is sdk06_original_native\n                          and sdk_projected_plan is None)\n        projected_scope = (type(sdk_projected_plan) is ProjectedComponentPlan\n                           and sdk_projected_plan.origin is sdk06_original_native\n                           and sdk_original_plan is None)\n        require(type(sdk06_original_native) is SDK06OriginalNativeContext\n                and (original_scope or projected_scope)\n",
+        "before": "        from sdk06_original_tagged_selector import OriginalNativeTaggedSelectionPlan\n        require(type(sdk06_original_native) is SDK06OriginalNativeContext\n                and type(sdk_original_plan) is OriginalNativeTaggedSelectionPlan\n                and sdk_original_plan.origin is sdk06_original_native\n"
+      },
+      {
+        "after": "        (sdk_projected_plan if projected_scope else sdk_original_plan).verify()\n    else:\n        require(sdk_original_plan is None and sdk_projected_plan is None,\n                \"Original-native selector requires its exact origin\")\n",
+        "before": "        sdk_original_plan.verify()\n    else:\n        require(sdk_original_plan is None, \"Original-native selector requires its exact origin\")\n"
+      },
+      {
+        "after": "            if sdk_projected_plan is not None:\n                receipt[\"shared_editor_components\"] = sdk_projected_plan.execute(\n                    app, native_configuration, udid, built, component_evidence, shared)\n            elif sdk_original_plan is not None:\n                receipt[\"shared_editor_components\"] = shared_editor_existing_build.execute(",
+        "before": "            if sdk_original_plan is not None:\n                receipt[\"shared_editor_components\"] = shared_editor_existing_build.execute("
+      },
+      {
+        "after": "        receipt[\"first_ui_only_build\"] = sdk06_original_native.build_first_ui(\n            base, flags, selection[\"methods\"], ui_derived, shared,\n            **({\"projected_plan\": sdk_projected_plan} if sdk_projected_plan is not None else {}))\n",
+        "before": "        receipt[\"first_ui_only_build\"] = sdk06_original_native.build_first_ui(\n            base, flags, selection[\"methods\"], ui_derived, shared)\n"
+      }
+    ],
+    "Tools/PinkhaSimulatorGate/sdk06_original_native.py": [
+      {
+        "after": "    def build_first_ui(self, base, flags, methods, ui_derived, shared, *, projected_plan=None):\n",
+        "before": "    def build_first_ui(self, base, flags, methods, ui_derived, shared):\n"
+      },
+      {
+        "after": "        if projected_plan is None:\n            require(components.get(\"status\") == component.PASS_STATUS\n                    and components.get(\"build_mode\") == \"ORIGINAL_NATIVE_PRODUCTS_EXACT_RESTORATION\"\n                    and components.get(\"original_native_origin\") == self.origin_reference()\n                    and components.get(\"actual\", {}).get(\"actual_method_count\") == 23\n                    and components.get(\"actual\", {}).get(\"declared_case_count\") == 32,\n                    \"All pending component methods and argument cases must pass before UI build\")\n        else:\n            from sdk06_projected_components import ProjectedComponentPlan\n            require(type(projected_plan) is ProjectedComponentPlan and projected_plan.origin is self,\n                    \"New component bundle requires its explicit sealed original App plan\")\n            projected_plan.verify_component_receipt(components)\n",
+        "before": "        require(components.get(\"status\") == component.PASS_STATUS\n                and components.get(\"build_mode\") == \"ORIGINAL_NATIVE_PRODUCTS_EXACT_RESTORATION\"\n                and components.get(\"original_native_origin\") == self.origin_reference()\n                and components.get(\"actual\", {}).get(\"actual_method_count\") == 23\n                and components.get(\"actual\", {}).get(\"declared_case_count\") == 32,\n                \"All pending component methods and argument cases must pass before UI build\")\n"
+      }
+    ],
+    "Tools/PinkhaSimulatorGate/sdk06_original_native_continuation.py": [
+      {
+        "after": "def worker(control, app, work, evidence, derived, *, component_projection=False):\n",
+        "before": "def worker(control, app, work, evidence, derived):\n"
+      },
+      {
+        "after": "        if component_projection:\n            import sdk06_projected_components\n            plan = sdk06_projected_components.load_plan(context)\n        else:\n            plan = selection.load_plan(context)\n",
+        "before": "        plan = selection.load_plan(context)\n"
+      },
+      {
+        "after": "            sdk06_original_native_tagged_plan=None if component_projection else plan,\n            sdk06_projected_component_plan=plan if component_projection else None)\n",
+        "before": "            sdk06_original_native_tagged_plan=plan)\n"
+      },
+      {
+        "after": "def execute(control, app, work, evidence, derived, *, component_projection=False):\n",
+        "before": "def execute(control, app, work, evidence, derived):\n"
+      },
+      {
+        "after": "        \"--evidence\", str(evidence), \"--derived\", str(derived)]\n    if component_projection:\n        command.append(\"--component-projection\")\n    def cleanup():\n",
+        "before": "        \"--evidence\", str(evidence), \"--derived\", str(derived)]\n    def cleanup():\n"
+      },
+      {
+        "after": "    parser.add_argument(\"--component-projection\", action=\"store_true\",\n                        help=\"Build only the new pending23 test bundle against the original App\")\n    args = parser.parse_args()\n    require(not args.component_projection or args.action in {\"execute\", \"worker\"},\n            \"Component projection is an explicit execution-only route\")\n",
+        "before": "    args = parser.parse_args()\n"
+      },
+      {
+        "after": "            return execute(control, app, work, evidence, derived, component_projection=args.component_projection)\n",
+        "before": "            return execute(control, app, work, evidence, derived)\n"
+      },
+      {
+        "after": "            return worker(control, app, work, evidence, derived, component_projection=args.component_projection)\n",
+        "before": "            return worker(control, app, work, evidence, derived)\n"
+      }
+    ]
+  },
+  "new_builds": 0,
+  "old_default_routes_preserved": true
+}

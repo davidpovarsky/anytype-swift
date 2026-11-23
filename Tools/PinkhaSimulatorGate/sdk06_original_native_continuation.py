@@ -239,7 +239,7 @@ def prepare(control, app, work, evidence, derived):
     return lifecycle.prepare(control, evidence, binding, profile=origin.PROFILE)
 
 
-def worker(control, app, work, evidence, derived):
+def worker(control, app, work, evidence, derived, *, component_projection=False):
     binding = existing_admission(control, app, evidence)
     receipt = {"protocol": origin.PROTOCOL, "status": "FAIL", "phase": "PREFLIGHT", **binding,
                "app_source_sha": origin.SOURCE, "controller_source_sha": binding["source_sha"],
@@ -252,12 +252,17 @@ def worker(control, app, work, evidence, derived):
     try:
         before = verify_controller(control, binding)
         context = origin.load_context(control, app, work, evidence, derived, binding)
-        plan = selection.load_plan(context)
+        if component_projection:
+            import sdk06_projected_components
+            plan = sdk06_projected_components.load_plan(context)
+        else:
+            plan = selection.load_plan(context)
         args = argparse.Namespace(app=app, evidence=evidence, derived=derived,
             lane="hanlin-native", device="ipad", language="en",
             runtime_profile=origin.RUNTIME_PROFILE, heart_source_run_id=origin.PRODUCER_RUN,
             include_text_native_ack=True, include_shared_editor=True,
-            sdk06_original_native_tagged_plan=plan)
+            sdk06_original_native_tagged_plan=None if component_projection else plan,
+            sdk06_projected_component_plan=plan if component_projection else None)
         lane.execute(args, receipt, sdk06_original_native=context)
     except BaseException as error:
         receipt.update(status="FAIL", error_type=type(error).__name__, error=str(error))
@@ -278,12 +283,14 @@ def worker(control, app, work, evidence, derived):
     return 0 if receipt["status"] == "LANE_PASS_ACCEPTANCE_REVIEW_PENDING" else 1
 
 
-def execute(control, app, work, evidence, derived):
+def execute(control, app, work, evidence, derived, *, component_projection=False):
     binding = existing_admission(control, app, evidence)
     supervisor.preflight_intent(evidence, binding)
     command = [sys.executable, "-B", str(Path(__file__).resolve()), "worker",
         "--control", str(control), "--original-app", str(app), "--work", str(work),
         "--evidence", str(evidence), "--derived", str(derived)]
+    if component_projection:
+        command.append("--component-projection")
     def cleanup():
         result = qualified.cleanup(control, evidence)
         require(result.get("status") == "PASS", "Current SDK owned simulator cleanup did not pass")
@@ -297,7 +304,11 @@ def main():
     parser.add_argument("action", choices=("admit", "prepare", "execute", "worker", "cleanup"))
     for name in ("control", "original-app", "work", "evidence", "derived"):
         parser.add_argument("--" + name, type=Path, required=True)
+    parser.add_argument("--component-projection", action="store_true",
+                        help="Build only the new pending23 test bundle against the original App")
     args = parser.parse_args()
+    require(not args.component_projection or args.action in {"execute", "worker"},
+            "Component projection is an explicit execution-only route")
     control, app, work, evidence, derived = paths(args)
     lifecycle.actual_host()
     evidence.mkdir(parents=True, exist_ok=True)
@@ -310,9 +321,9 @@ def main():
                 previous[number] = signal.getsignal(number)
                 signal.signal(number, cancel)
         if args.action == "execute":
-            return execute(control, app, work, evidence, derived)
+            return execute(control, app, work, evidence, derived, component_projection=args.component_projection)
         if args.action == "worker":
-            return worker(control, app, work, evidence, derived)
+            return worker(control, app, work, evidence, derived, component_projection=args.component_projection)
         result = (admit(control, app, work, evidence, derived) if args.action == "admit" else
                   prepare(control, app, work, evidence, derived) if args.action == "prepare" else
                   qualified.cleanup(control, evidence))

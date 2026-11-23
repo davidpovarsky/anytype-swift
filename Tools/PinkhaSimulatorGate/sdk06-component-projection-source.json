@@ -1,0 +1,186 @@
+{
+  "attribute_patches": [
+    {
+      "after": "                                                                                               \n                                                           \n",
+      "before": "    @Test(\"Focus observations distinguish a denied guard, native refusal and accepted editing\",\n          arguments: [\"ineligible\", \"refused\", \"accepted\"])\n",
+      "method": "AnytypeTests/TextBlockFocusLifecycleTests/nativeFocusObservationDistinguishesOutcomes(outcome:)",
+      "offset": 7044
+    },
+    {
+      "after": "                                                                \n",
+      "before": "    @Test(\"An attached request waits for its actual key window\")\n",
+      "method": "AnytypeTests/TextBlockFocusLifecycleTests/pendingFocusWaitsForKeyWindow()",
+      "offset": 16839
+    },
+    {
+      "after": "                                                                                   \n",
+      "before": "    @Test(\"A native refusal waits for a real readiness event without a busy retry\")\n",
+      "method": "AnytypeTests/TextBlockFocusLifecycleTests/refusedFocusWaitsForWindowReadiness()",
+      "offset": 17807
+    },
+    {
+      "after": "                                                                                                        \n",
+      "before": "    @Test(\"A later focus in the same editor cancels a detached row's request\", arguments: [false, true])\n",
+      "method": "AnytypeTests/TextBlockFocusLifecycleTests/laterFocusSupersedesDetachedRequest(useNativeEditing:)",
+      "offset": 22765
+    },
+    {
+      "after": "                                                                                                           \n",
+      "before": "    @Test(\"A locked or nonediting state cancels rather than postpones a request\", arguments: [false, true])\n",
+      "method": "AnytypeTests/TextBlockFocusLifecycleTests/editingDenialCancelsPendingFocus(locked:)",
+      "offset": 24206
+    },
+    {
+      "after": "                                                                            \n",
+      "before": "    @Test(\"setFocus on the current responder never schedules a later steal\")\n",
+      "method": "AnytypeTests/TextBlockFocusLifecycleTests/focusedTextViewDoesNotReplayResponderAcquisition()",
+      "offset": 25199
+    },
+    {
+      "after": "                                                                                     \n",
+      "before": "    @Test(\"Old cancellation and caret callbacks do not revoke a newer Enter request\")\n",
+      "method": "AnytypeTests/TextBlockFocusLifecycleTests/consumedAndNewerFocusSurviveOldCallbacks()",
+      "offset": 26094
+    }
+  ],
+  "new_app_or_native_builds": 0,
+  "original_source_modified": false,
+  "original_swift_features": {
+    "SWIFT_UPCOMING_FEATURE_CONCISE_MAGIC_FILE": "YES",
+    "SWIFT_UPCOMING_FEATURE_DEPRECATE_APPLICATION_MAIN": "YES",
+    "SWIFT_UPCOMING_FEATURE_DISABLE_OUTWARD_ACTOR_ISOLATION": "YES",
+    "SWIFT_UPCOMING_FEATURE_DYNAMIC_ACTOR_ISOLATION": "NO",
+    "SWIFT_UPCOMING_FEATURE_EXISTENTIAL_ANY": "YES",
+    "SWIFT_UPCOMING_FEATURE_FORWARD_TRAILING_CLOSURES": "YES",
+    "SWIFT_UPCOMING_FEATURE_GLOBAL_ACTOR_ISOLATED_TYPES_USABILITY": "YES",
+    "SWIFT_UPCOMING_FEATURE_GLOBAL_CONCURRENCY": "YES",
+    "SWIFT_UPCOMING_FEATURE_IMPLICIT_OPEN_EXISTENTIALS": "YES",
+    "SWIFT_UPCOMING_FEATURE_IMPORT_OBJC_FORWARD_DECLS": "YES",
+    "SWIFT_UPCOMING_FEATURE_INFER_SENDABLE_FROM_CAPTURES": "YES",
+    "SWIFT_UPCOMING_FEATURE_ISOLATED_DEFAULT_VALUES": "YES",
+    "SWIFT_UPCOMING_FEATURE_NONFROZEN_ENUM_EXHAUSTIVITY": "YES",
+    "SWIFT_UPCOMING_FEATURE_REGION_BASED_ISOLATION": "YES"
+  },
+  "projected_editor_sha256": "12da168c20f9f820fc84485e204967d4c5595bd7688bd1aeb3086ccf9bbf5136",
+  "projection_kind": "REMOVE_ONLY_SEVEN_PREVIOUSLY_PASSED_TEST_ATTRIBUTES_FROM_GENERATED_COPY",
+  "protocol": "sdk06-component-projection-source-v1",
+  "required_argument_cases": 32,
+  "selection": {
+    "declarations": [
+      "AnytypeTests/SimpleTableTextPersistenceTests/acceptedSnapshotSurvivesViewReuse()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/defocusCommitsTheDeferredSearchBuffer()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/laterDraftKeepsTheLatestAcceptedSnapshot()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/markdownAddBlockDoesNotContinueAfterOwnerRebind(returnToOriginalID:)",
+      "AnytypeTests/SimpleTableTextPersistenceTests/markdownCommandsKeepCapturedTextBeforeLaterTyping(addBlock:)",
+      "AnytypeTests/SimpleTableTextPersistenceTests/markdownStyleWaitsForEarlierNativeWrite()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/nativeRejectionKeepsTheTableDirty()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/queuedMarkdownCommandIsRetiredWhenRowChanges()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/replacementClaimsPendingOwnershipBeforePublication(asyncEntry:)",
+      "AnytypeTests/SimpleTableTextPersistenceTests/rowRebindCannotWriteIntoTheNewOwner()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/structuralKeyWaitsForAcceptedText()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/completedLocalTextAcceptsRemoteReplacement()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/consumedAndNewerFocusSurviveOldCallbacks()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/editingDenialCancelsPendingFocus(locked:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/explicitHandoffDoesNotReplayInitialCaret()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/focusedTextViewDoesNotReplayResponderAcquisition()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/initialFocusWaitsForAttachment()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/insertedCellUsesCurrentEditingBeforeFocus(editing:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/laterFocusSupersedesDetachedRequest(useNativeEditing:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/nativeFocusObservationDistinguishesOutcomes(outcome:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/pendingFocusWaitsForKeyWindow()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/pendingLocalTextSurvivesNativeReconfiguration()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/refusedFocusWaitsForWindowReadiness()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/requestIdentityParticipatesInCellConfigurationEquality()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/reusedCellDoesNotPreserveDifferentPendingOwner(composing:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/reusedCellUsesCurrentLockBeforeFocus(newLocked:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/sameInputOwnerSurvivesForkAndExplicitReplacementEndsComposition()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/staleFocusDoesNotSurviveRowLifetime(change:)",
+      "AnytypeTests/TorahRelatedReadAuthorityMappingTests/nativeDenialRequiresExactTypedCodeAndDescription(objectShow:)",
+      "AnytypeTests/TorahRelatedReadAuthorityMappingTests/providerAndTransportDescriptionsCannotForgeNativeAuthority()"
+    ],
+    "excluded": [
+      "AnytypeTests/TextBlockFocusLifecycleTests/consumedAndNewerFocusSurviveOldCallbacks()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/editingDenialCancelsPendingFocus(locked:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/focusedTextViewDoesNotReplayResponderAcquisition()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/laterFocusSupersedesDetachedRequest(useNativeEditing:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/nativeFocusObservationDistinguishesOutcomes(outcome:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/pendingFocusWaitsForKeyWindow()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/refusedFocusWaitsForWindowReadiness()"
+    ],
+    "selected": [
+      "AnytypeTests/SimpleTableTextPersistenceTests/acceptedSnapshotSurvivesViewReuse()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/defocusCommitsTheDeferredSearchBuffer()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/laterDraftKeepsTheLatestAcceptedSnapshot()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/markdownAddBlockDoesNotContinueAfterOwnerRebind(returnToOriginalID:)",
+      "AnytypeTests/SimpleTableTextPersistenceTests/markdownCommandsKeepCapturedTextBeforeLaterTyping(addBlock:)",
+      "AnytypeTests/SimpleTableTextPersistenceTests/markdownStyleWaitsForEarlierNativeWrite()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/nativeRejectionKeepsTheTableDirty()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/queuedMarkdownCommandIsRetiredWhenRowChanges()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/replacementClaimsPendingOwnershipBeforePublication(asyncEntry:)",
+      "AnytypeTests/SimpleTableTextPersistenceTests/rowRebindCannotWriteIntoTheNewOwner()",
+      "AnytypeTests/SimpleTableTextPersistenceTests/structuralKeyWaitsForAcceptedText()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/completedLocalTextAcceptsRemoteReplacement()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/explicitHandoffDoesNotReplayInitialCaret()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/initialFocusWaitsForAttachment()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/insertedCellUsesCurrentEditingBeforeFocus(editing:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/pendingLocalTextSurvivesNativeReconfiguration()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/requestIdentityParticipatesInCellConfigurationEquality()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/reusedCellDoesNotPreserveDifferentPendingOwner(composing:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/reusedCellUsesCurrentLockBeforeFocus(newLocked:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/sameInputOwnerSurvivesForkAndExplicitReplacementEndsComposition()",
+      "AnytypeTests/TextBlockFocusLifecycleTests/staleFocusDoesNotSurviveRowLifetime(change:)",
+      "AnytypeTests/TorahRelatedReadAuthorityMappingTests/nativeDenialRequiresExactTypedCodeAndDescription(objectShow:)",
+      "AnytypeTests/TorahRelatedReadAuthorityMappingTests/providerAndTransportDescriptionsCannotForgeNativeAuthority()"
+    ],
+    "test_plan": "AnytypeTests"
+  },
+  "source_files": {
+    "AnyTypeTests/Pinkha/SDK06PendingSelectionTag.swift": {
+      "basename": "SDK06PendingSelectionTag.swift",
+      "bytes": 150,
+      "git_blob": "2efb09b1755fab5515700fc2f3d35bdaab20e455",
+      "sha256": "5b502161edd891510322238fc0005cbbbf6d4b7ac5611fb97e16b1cdf8193fc4"
+    },
+    "AnyTypeTests/Pinkha/SimpleTableTextPersistenceTests.swift": {
+      "basename": "SimpleTableTextPersistenceTests.swift",
+      "bytes": 22822,
+      "git_blob": "1194548d59415dc9446e0760dd00d546bbf23490",
+      "sha256": "21bc18b894e25d6bb2ccff0ad0ec62f161fe1bf2abbdcf8f7f9473f124feb0dc"
+    },
+    "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift": {
+      "basename": "TextBlockFocusLifecycleTests.swift",
+      "bytes": 35851,
+      "git_blob": "64f93b699bc91e19432e23d4aac48c7a447fbc45",
+      "sha256": "3b6487fd6c8f65e7282e9261fe1ce2054b40727bdc1978023ae44d24584055e4"
+    },
+    "AnyTypeTests/Pinkha/TorahRelatedReadAuthorityMappingTests.swift": {
+      "basename": "TorahRelatedReadAuthorityMappingTests.swift",
+      "bytes": 2165,
+      "git_blob": "e2f5173850e733b53d4dea00fb646fe60e528b0c",
+      "sha256": "364902afbdbe451bbe80cb8959be8fc74edb6db274f0ccf071db70de4d8f8d68"
+    },
+    "AnytypeTests/Markdown/Mocks/BlockActionServiceMock.swift": {
+      "basename": "BlockActionServiceMock.swift",
+      "bytes": 5655,
+      "git_blob": "3cc73bcd160c360fd52333230b7442cbb9c3ed86",
+      "sha256": "3fa0ed72e6adc3bf950bc7913c7fd9caaba96201356508874eed5d626123645f"
+    },
+    "AnytypeTests/Markdown/Mocks/InfoContainerMock.swift": {
+      "basename": "InfoContainerMock.swift",
+      "bytes": 1714,
+      "git_blob": "60c6908a242ee36a097a176c1853602aa5eed321",
+      "sha256": "54d68bcce20ea748af0a7524caed6204125f555827d3e9f7188d9a1c134c68c3"
+    },
+    "AnytypeTests/Markdown/Mocks/MockBaseDocument.swift": {
+      "basename": "MockBaseDocument.swift",
+      "bytes": 3314,
+      "git_blob": "54b20af353ebedc6dc3b6a0e8f271c1b686a8af5",
+      "sha256": "75fd381db7b276bbfaec20f00a359ddd21f2525f2cf3c69faa08647fbb6a743a"
+    }
+  },
+  "source_sha": "75bd6d7af18dfd511e85582ce7f994d2801b7703",
+  "tag_contract": {
+    "path": "Tools/PinkhaSimulatorGate/sdk06-tagged-source.json",
+    "sha256": "aa485ea3c302f2112430f7fd2da91866a24452d9b2d263601d551ec065fc2650"
+  }
+}

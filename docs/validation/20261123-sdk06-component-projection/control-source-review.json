@@ -1,0 +1,58 @@
+{
+  "actualFixtureScope": {
+    "chain": "7cc1484cf07e7474323e5801ef6dab84899abf68427e9d912140ad32494f3ed8",
+    "normalizedDescriptor": "27e2036992196ba8a7f7b27a838feaab1dd8698c08203509633e7a5e3f2d7ac6",
+    "rawDescriptor": "4a2868235a870acf7567dfed7e00bd95079189cc9cc757c07cc28498265bedc2",
+    "swiftFiles": 7
+  },
+  "dataReads": [
+    "Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json",
+    "docs/validation/20261123-sdk06-component-projection/control-data/fixture-origins.json",
+    "exact11 fixture files"
+  ],
+  "evidenceScope": {
+    "actualAppAcceptance": false,
+    "actualCompiledEnumeration": false,
+    "actualModuleLinkage": false,
+    "builds": 0,
+    "newPureMethods": 1,
+    "oldMethods": 0,
+    "productTests": 0
+  },
+  "fixedSourceContractSHA256": "a15e303257382028ca0e1836d0c369d635a52bfded9fcede5b008445471b1c7a",
+  "functionLocalRepositoryImports": [],
+  "generatorImports": [
+    "from __future__ import annotations",
+    "import copy",
+    "import hashlib",
+    "import json",
+    "from pathlib import Path",
+    "import plistlib",
+    "import re",
+    "import xml.etree.ElementTree as ET"
+  ],
+  "generatorSHA256": "0e1cbbdfca69200e3d673b66fde53fac1a08be0cf74e5e7f0ee13066fccc427f",
+  "methods": [
+    "test_actual_source_projection_unit_only_graph_descriptor_and_registration"
+  ],
+  "noExecutionBeforeFreeze": true,
+  "protocol": "sdk06-component-projection-pure-control-source-review-v1",
+  "runtimeRepositoryImports": [
+    "Tools/PinkhaSimulatorGate/sdk06_component_projection.py",
+    "Tools/PinkhaSimulatorGate/test_sdk06_component_projection.py"
+  ],
+  "syntheticBoundaries": [
+    "Temporary staged-App and Products paths are logical control directories, not executable production carriers.",
+    "Enabled/disabled registration sets exercise the pure guard only; they are not actual XCTest enumeration."
+  ],
+  "testSHA256": "2233135a6b83c874744005998f38d4adf48ff77344f567fae26df620e15dd4da",
+  "workspaceExpectationCorrection": {
+    "after": "                self.assertEqual(len(actual_generated), 10)\n                workspace = ET.fromstring(\n                    (project / \"project.xcworkspace/contents.xcworkspacedata\").read_bytes())\n                self.assertEqual(workspace.tag, \"Workspace\")\n                self.assertEqual(workspace.attrib, {\"version\": \"1.0\"})\n                self.assertEqual(len(list(workspace)), 1)\n                self.assertEqual(workspace.find(\"FileRef\").attrib, {\"location\": \"self:\"})\n",
+    "afterTestSHA256": "2233135a6b83c874744005998f38d4adf48ff77344f567fae26df620e15dd4da",
+    "before": "                self.assertEqual(len(actual_generated), 9)\n",
+    "beforeTestSHA256": "cae6f6611af12347edcc3c4dcea356a9eb435775eafee4725b901563f5372b73",
+    "reason": "Root froze the ordinary self workspace before xcodebuild; generated source set is now10.",
+    "wholeFileInverse": true
+  },
+  "wrapperSHA256": "cbae1b66026d71512ded14193e72a7c56e8372d82c93dda621142e91ea92dadb"
+}

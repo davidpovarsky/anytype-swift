@@ -422,19 +422,27 @@ def execute(args, receipt, *, build_context=None, sdk06_original_native=None):
                 "Tagged SDK selection requires its explicit current single Debug App build")
         sdk_tagged_plan.verify()
     sdk_original_plan = getattr(args, "sdk06_original_native_tagged_plan", None)
+    sdk_projected_plan = getattr(args, "sdk06_projected_component_plan", None)
     if sdk06_original_native is not None:
         from sdk06_original_native import SDK06OriginalNativeContext
         from sdk06_original_tagged_selector import OriginalNativeTaggedSelectionPlan
+        from sdk06_projected_components import ProjectedComponentPlan
+        original_scope = (type(sdk_original_plan) is OriginalNativeTaggedSelectionPlan
+                          and sdk_original_plan.origin is sdk06_original_native
+                          and sdk_projected_plan is None)
+        projected_scope = (type(sdk_projected_plan) is ProjectedComponentPlan
+                           and sdk_projected_plan.origin is sdk06_original_native
+                           and sdk_original_plan is None)
         require(type(sdk06_original_native) is SDK06OriginalNativeContext
-                and type(sdk_original_plan) is OriginalNativeTaggedSelectionPlan
-                and sdk_original_plan.origin is sdk06_original_native
+                and (original_scope or projected_scope)
                 and build_context is None and sdk_selector_plan is None and sdk_tagged_plan is None
                 and args.lane == "hanlin-native" and args.device == "ipad" and args.language == "en"
                 and shared_editor is not None and acknowledgement is not None,
                 "Original-native SDK continuation requires its exact sealed scope")
-        sdk_original_plan.verify()
+        (sdk_projected_plan if projected_scope else sdk_original_plan).verify()
     else:
-        require(sdk_original_plan is None, "Original-native selector requires its exact origin")
+        require(sdk_original_plan is None and sdk_projected_plan is None,
+                "Original-native selector requires its exact origin")
     hanlin_lane = HANLIN_LANES.get(args.lane)
     source_methods(app, selection["methods"])
     head = shared.git(app, "rev-parse", "HEAD")
@@ -579,7 +587,10 @@ def execute(args, receipt, *, build_context=None, sdk06_original_native=None):
         shared.write(evidence / "execution.json", receipt)
         component_evidence = evidence / "shared-editor-components"
         try:
-            if sdk_original_plan is not None:
+            if sdk_projected_plan is not None:
+                receipt["shared_editor_components"] = sdk_projected_plan.execute(
+                    app, native_configuration, udid, built, component_evidence, shared)
+            elif sdk_original_plan is not None:
                 receipt["shared_editor_components"] = shared_editor_existing_build.execute(
                     app, native_configuration, udid, built, component_evidence, shared,
                     original_tagged_plan=sdk_original_plan)
@@ -651,7 +662,8 @@ def execute(args, receipt, *, build_context=None, sdk06_original_native=None):
     shared.write(evidence / "execution.json", receipt)
     if sdk06_original_native is not None:
         receipt["first_ui_only_build"] = sdk06_original_native.build_first_ui(
-            base, flags, selection["methods"], ui_derived, shared)
+            base, flags, selection["methods"], ui_derived, shared,
+            **({"projected_plan": sdk_projected_plan} if sdk_projected_plan is not None else {}))
     elif build_context is None:
         project = shared.ui_only_project(app)
         shared.command([*base, "-project", str(project), "-scheme", "PinkhaPrebuiltUI", "-derivedDataPath", str(ui_derived),

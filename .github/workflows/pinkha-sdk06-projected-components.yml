@@ -1,0 +1,76 @@
+name: SDK06 pending23 component bundle over the original native App
+
+on:
+  workflow_call: {}
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  projected-component-sdk06:
+    runs-on: xcode-27
+    timeout-minutes: 150
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+      GH_TOKEN: ${{ github.token }}
+      SDK_WORK: build/sdk06-original-native-work-${{ github.run_id }}-${{ github.run_attempt }}
+      SDK_EVIDENCE: build/sdk06-original-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+      SDK_DERIVED: build/sdk06-original-native-derived-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - name: Checkout current reviewed controller and preserve exact branch identity
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Checkout the immutable original App source separately
+        uses: actions/checkout@v4
+        with:
+          ref: 75bd6d7af18dfd511e85582ce7f994d2801b7703
+          path: build/sdk06-original-app
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Select native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Restore only the exact failed-run native archive and its original source
+        run: |
+          python3 -B Tools/PinkhaSimulatorGate/sdk06_original_native_continuation.py admit \
+            --control "$GITHUB_WORKSPACE" --original-app build/sdk06-original-app \
+            --work "$SDK_WORK" --evidence "$SDK_EVIDENCE" --derived "$SDK_DERIVED"
+      - name: Create and durably journal only the current attempt's owned simulator pair
+        run: |
+          python3 -B Tools/PinkhaSimulatorGate/sdk06_original_native_continuation.py prepare \
+            --control "$GITHUB_WORKSPACE" --original-app build/sdk06-original-app \
+            --work "$SDK_WORK" --evidence "$SDK_EVIDENCE" --derived "$SDK_DERIVED"
+      - name: Build one isolated component bundle and require exact23 registration before execution
+        timeout-minutes: 110
+        run: |
+          python3 -B Tools/PinkhaSimulatorGate/sdk06_original_native_continuation.py execute \
+            --control "$GITHUB_WORKSPACE" --original-app build/sdk06-original-app \
+            --work "$SDK_WORK" --evidence "$SDK_EVIDENCE" --derived "$SDK_DERIVED" --component-projection
+      - name: Finish only this exact attempt's owned simulator cleanup
+        if: always()
+        run: |
+          python3 -B Tools/PinkhaSimulatorGate/sdk06_original_native_continuation.py cleanup \
+            --control "$GITHUB_WORKSPACE" --original-app build/sdk06-original-app \
+            --work "$SDK_WORK" --evidence "$SDK_EVIDENCE" --derived "$SDK_DERIVED"
+      - name: Preserve original references, exact new UI Products and actual diagnostics
+        if: always()
+        run: |
+          mkdir -p "$SDK_EVIDENCE"
+          python3 -B Tools/PinkhaNativeDerived/package_evidence.py "$SDK_EVIDENCE"
+      - name: Retain exact SDK06 original-native continuation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-SDK06-Projected-Components-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            build/sdk06-original-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}/Pinkha-Native-Derived-Evidence.zip
+            build/sdk06-original-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}/shared-editor-components/SDK06PendingProducts.tar.gz
+          retention-days: 14
+          if-no-files-found: error

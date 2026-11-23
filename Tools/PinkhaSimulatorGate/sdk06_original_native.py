@@ -570,7 +570,7 @@ class SDK06OriginalNativeContext:
                 "kit_sha": contract["kit_sha"], "sourcepackages_checkout_recreated": False,
                 "original_execution_sha256": contract["metadata_members"]["execution.json"]["sha256"]}
 
-    def build_first_ui(self, base, flags, methods, ui_derived, shared):
+    def build_first_ui(self, base, flags, methods, ui_derived, shared, *, projected_plan=None):
         contract = self.verify_current(full=True)
         require(ui_derived == self.derived.with_name(self.derived.name + "-ui")
                 and not ui_derived.exists() and not ui_derived.is_symlink(),
@@ -582,12 +582,18 @@ class SDK06OriginalNativeContext:
                 "Unexpected first UI-only build command scope")
         import shared_editor_existing_build as component
         components = read(self.evidence / "shared-editor-components/execution.json")
-        require(components.get("status") == component.PASS_STATUS
-                and components.get("build_mode") == "ORIGINAL_NATIVE_PRODUCTS_EXACT_RESTORATION"
-                and components.get("original_native_origin") == self.origin_reference()
-                and components.get("actual", {}).get("actual_method_count") == 23
-                and components.get("actual", {}).get("declared_case_count") == 32,
-                "All pending component methods and argument cases must pass before UI build")
+        if projected_plan is None:
+            require(components.get("status") == component.PASS_STATUS
+                    and components.get("build_mode") == "ORIGINAL_NATIVE_PRODUCTS_EXACT_RESTORATION"
+                    and components.get("original_native_origin") == self.origin_reference()
+                    and components.get("actual", {}).get("actual_method_count") == 23
+                    and components.get("actual", {}).get("declared_case_count") == 32,
+                    "All pending component methods and argument cases must pass before UI build")
+        else:
+            from sdk06_projected_components import ProjectedComponentPlan
+            require(type(projected_plan) is ProjectedComponentPlan and projected_plan.origin is self,
+                    "New component bundle requires its explicit sealed original App plan")
+            projected_plan.verify_component_receipt(components)
         ack = read(self.evidence / "text-native-ack/result.json")
         preparation = read(self.evidence / "preparation/result.json")
         require(all(value.get("status") == "PASS" and value.get("passed") == count

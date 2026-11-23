@@ -1,0 +1,23 @@
+{
+  "afterTestSHA256": "cae6f6611af12347edcc3c4dcea356a9eb435775eafee4725b901563f5372b73",
+  "beforeTestSHA256": "e7351c2e5a4025093308c7994a56d84aa7bcd7c2ab1d5a6b0bb3b289c076da59",
+  "descriptorReadScope": "Actual original plus actual normalized host copy from same immutable chain; no generated toy native descriptor",
+  "fixtureOriginSHA256": "29b0512e654e28a5cbe2159f5f262fa30e345cd18d7359958043fe36c6da1bb2",
+  "imports": 0,
+  "literalInverse": [
+    {
+      "after": "import base64\nimport copy\n",
+      "before": "import copy\n"
+    },
+    {
+      "after": "        original_archive_raw = fixture(\"original-native.xctestrun\")\n        original_descriptor_raw = fixture(\"normalized-native.xctestrun\")\n        chain = json.loads(fixture(\"descriptor-chain.json\"))\n        provenance = json.loads(fixture(\"descriptor-origin.json\"))\n        with self.subTest(scope=\"actual_original_to_host_normalized_descriptor_chain\"):\n            self.assertEqual(base64.b64decode(chain[\"original_bytes_base64\"], validate=True), original_archive_raw)\n            self.assertEqual(base64.b64decode(chain[\"host_bytes_base64\"], validate=True), original_descriptor_raw)\n            self.assertEqual(hashlib.sha256(original_archive_raw).hexdigest(), chain[\"original_sha256\"])\n            self.assertEqual(hashlib.sha256(original_descriptor_raw).hexdigest(), chain[\"host_sha256\"])\n            self.assertEqual(provenance[\"chain_sha256\"], hashlib.sha256(fixture(\"descriptor-chain.json\")).hexdigest())\n            self.assertEqual((provenance[\"actual_original_run\"], provenance[\"actual_original_attempt\"],\n                              provenance[\"actual_original_artifact\"]), (\"45174279596\", 3, \"14822034161\"))\n            normalized_expected = plistlib.loads(original_archive_raw)\n            targets = normalized_expected[\"TestConfigurations\"][0][\"TestTargets\"]\n            self.assertEqual({x[\"BlueprintName\"] for x in targets}, set(chain[\"normalization\"]))\n            for target in targets:\n                change = chain[\"normalization\"][target[\"BlueprintName\"]]\n                injected = target[\"TestingEnvironmentVariables\"][\"DYLD_INSERT_LIBRARIES\"].split(\":\")\n                self.assertEqual(injected.count(change[\"original_token\"]), 1)\n                target[\"TestingEnvironmentVariables\"][\"DYLD_INSERT_LIBRARIES\"] = \":\".join(\n                    change[\"replacement_token\"] if x == change[\"original_token\"] else x for x in injected)\n            self.assertEqual(normalized_expected, plistlib.loads(original_descriptor_raw))\n        original_descriptor = plistlib.loads(original_descriptor_raw)\n        original_copy = copy.deepcopy(original_descriptor)\n",
+      "before": "        original_descriptor_raw = fixture(\"original-native.xctestrun\")\n        original_descriptor = plistlib.loads(original_descriptor_raw)\n        original_copy = copy.deepcopy(original_descriptor)\n"
+    },
+    {
+      "after": "                self.assertEqual(fixture(\"normalized-native.xctestrun\"), original_descriptor_raw)\n                self.assertEqual(fixture(\"original-native.xctestrun\"), original_archive_raw)\n",
+      "before": "                self.assertEqual(fixture(\"original-native.xctestrun\"), original_descriptor_raw)\n"
+    }
+  ],
+  "methods": 0,
+  "wholeFileInverse": true
+}

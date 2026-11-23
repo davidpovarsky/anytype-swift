@@ -52,6 +52,7 @@ on:
           - semantic-page-apple-consumer
           - semantic-page-apple-mounted
           - semantic-page-startup-warning
+          - sdk06-projected-components
           - coherent-original-products
           - native-ui-original-products
           - native-ui-transition-candidate
@@ -346,6 +347,10 @@ jobs:
   native-ui-runner-continuation:
     if: ${{ inputs.route == 'native-ui-runner-continuation' }}
     uses: ./.github/workflows/pinkha-any-native-ui-runner-continuation.yml
+
+  sdk06-projected-components:
+    if: ${{ inputs.route == 'sdk06-projected-components' }}
+    uses: ./.github/workflows/pinkha-sdk06-projected-components.yml
 
   coherent-original-products:
     if: ${{ inputs.route == 'coherent-original-products' }}

@@ -1,0 +1,66 @@
+{
+  "artifact_upload_literal_edit": [
+    "          path: build/sdk06-original-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}/Pinkha-Native-Derived-Evidence.zip\n",
+    "          path: |\n            build/sdk06-original-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}/Pinkha-Native-Derived-Evidence.zip\n            build/sdk06-original-native-evidence-${{ github.run_id }}-${{ github.run_attempt }}/shared-editor-components/SDK06PendingProducts.tar.gz\n"
+  ],
+  "central_existing_published_base": "5fc0a95dc1f8573ff55dfcae1f4ae04c1a7cee33",
+  "central_literal_edits": [
+    [
+      "          - coherent-original-products\n",
+      "          - sdk06-projected-components\n          - coherent-original-products\n"
+    ],
+    [
+      "  coherent-original-products:\n",
+      "  sdk06-projected-components:\n    if: ${{ inputs.route == 'sdk06-projected-components' }}\n    uses: ./.github/workflows/pinkha-sdk06-projected-components.yml\n\n  coherent-original-products:\n"
+    ]
+  ],
+  "changed_old_input_rows": [
+    {
+      "after": "89965b1995d85b5951d374fb529b99f1c2bfc7a5136937821e808aa8422f586e",
+      "before": "9134e362da5dc7b056dbfa7a3ce75115f11bbfb49cb297682937c46d6c8a9b4b",
+      "path": ".github/workflows/torah-inspector-ipados27.yml"
+    },
+    {
+      "after": "e2a66621e6ef2385e10a5eb8b09c9e1e0a48b2fdc0e244b4fe38bf1ba13be47e",
+      "before": "423bb279972950fc3118c99af948ad846f5507a93823219fd75fb38b1efee2d8",
+      "path": "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py"
+    },
+    {
+      "after": "8f92b1f1069c2b422a6921f36aa810bda395f0b8077b25c5c8d48a9b3b603066",
+      "before": "4c5b62a8de03787b23167ef67a3739f715fa2846a86b943ceeee22ee03453b8a",
+      "path": "Tools/PinkhaSimulatorGate/sdk06_original_native.py"
+    },
+    {
+      "after": "ba1dab0f02c508acbc222234d7930ee159bfc5d30f6ce3c47269d9a5b93025a6",
+      "before": "4134799d507d3cf26416ec04a04299ea77141b0827f11059615851c53b84b018",
+      "path": "Tools/PinkhaSimulatorGate/sdk06_original_native_continuation.py"
+    }
+  ],
+  "contract_sha256": "eb514dd240fcf7c77694cebf2428a83d37f719866fca7dcdeb278d2462e89aec",
+  "final_receipt_failure_retains_primary": true,
+  "imports_tests_builds": 0,
+  "input_count": 82,
+  "modules_count": 69,
+  "new_input_rows": {
+    ".github/workflows/pinkha-sdk06-projected-components.yml": {
+      "git_mode": "100644",
+      "sha256": "b0096a3e8560dd76b7dac895c90a610899ba83481fafa6a04c482829e6791a94"
+    },
+    "Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json": {
+      "git_mode": "100644",
+      "sha256": "a15e303257382028ca0e1836d0c369d635a52bfded9fcede5b008445471b1c7a"
+    },
+    "Tools/PinkhaSimulatorGate/sdk06_component_projection.py": {
+      "git_mode": "100644",
+      "sha256": "0e1cbbdfca69200e3d673b66fde53fac1a08be0cf74e5e7f0ee13066fccc427f"
+    },
+    "Tools/PinkhaSimulatorGate/sdk06_projected_components.py": {
+      "git_mode": "100644",
+      "sha256": "9b1f2f91127963029b19a3287c2a06ef288c4893cb9fcc4f5654c95db7e2f1f6"
+    }
+  },
+  "old_contract_sha256": "ae953b0651953d69ed25747cca53b84856f9f92b63540e9f3f1ea8f0f39410a1",
+  "old_test_modules_executed": 0,
+  "preload_count": 66,
+  "protocol": "sdk06-component-projection-final-source-closure-v1"
+}
