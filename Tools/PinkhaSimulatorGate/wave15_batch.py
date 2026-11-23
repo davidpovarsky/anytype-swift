@@ -373,8 +373,12 @@ class FrozenBuild:
             finally:
                 write(evidence / "fresh-device-query.json", observation)
             observed = validate_owned_device(inventory, self.device, expected_state="Booted")
-        query = subprocess.run(["xcrun", "simctl", "get_app_container", udid, BUNDLE, "data"],
-                               capture_output=True, timeout=30)
+        if self.profile == COHERENT_HEART_PROFILE:
+            from coherent_container_observation import run_lookup
+            query = run_lookup(["xcrun", "simctl", "get_app_container", udid, BUNDLE, "data"], evidence)
+        else:
+            query = subprocess.run(["xcrun", "simctl", "get_app_container", udid, BUNDLE, "data"],
+                                   capture_output=True, timeout=30)
         negative_unclassified = query.returncode != 0 and not query.stdout
         stderr_path = evidence / "container-lookup.stderr"
         with stderr_path.open("xb") as stream:
