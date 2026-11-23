@@ -1,0 +1,303 @@
+{
+  "protocol": "pinkha-sdk06-451162-original-independent-audit-v1",
+  "audited_at": "2026-11-23T05:42:59.655528+00:00",
+  "run_id": 45116213338,
+  "attempt": 1,
+  "source_sha": "4eb4d17f03b36e7d3db1123ec74714d9062b3e46",
+  "conclusion": "FAILURE_NO_EXACT_SELECTOR_QUALIFIED",
+  "artifact_id": 14791889414,
+  "artifact_sha256": "9e1a444b4a046e7fb4934f53c6432e8730878556a7264c3e77c643563e932095",
+  "artifact_bytes": 598165,
+  "job_id": 137499560062,
+  "original_job_log_sha256": "82ced427d256a056fc5ebd4c4676913db961d982885028056aa4ebb45fd427fc",
+  "receipt_sha256": "4b3fb7d87d9bccb323ae666610e222aab995ace60c29b181b8ba94937dc85697",
+  "original_members": 70,
+  "independently_verified_control_sources": [
+    {
+      "path": "Tools/Hanlin/host_command.py",
+      "sha256": "5f09813c5719f5ea3920c003e58ac6b2b5633f276686bf6c5ef8bc6f9f39a807",
+      "bytes": 4236
+    },
+    {
+      "path": "Tools/Hanlin/related_read_authority_profile.py",
+      "sha256": "c5480b895c917d8268841c64c7875f7d42414fe999489fa27587d017c6e0f0d9",
+      "bytes": 1397
+    },
+    {
+      "path": "Tools/Hanlin/run_host_tests.py",
+      "sha256": "106d40df8594c067fdcc389d0ac93e3055a01247d431b13563f9d6e0d1c3403d",
+      "bytes": 39409
+    },
+    {
+      "path": "Tools/Hanlin/shared_editor_profile.py",
+      "sha256": "77d27d083f8073ad027cd28e98f2e2986aaee1cb2e31d2931287e33a4f8497c8",
+      "bytes": 1745
+    },
+    {
+      "path": "Tools/Hanlin/shared_table_profile.py",
+      "sha256": "5c99f5e10adcd2930fd0fe8476d178f15bb8cd9c11174be8a5f849ae12470397",
+      "bytes": 1914
+    },
+    {
+      "path": "Tools/Hanlin/wave15_core_profile.py",
+      "sha256": "f544619607be0d25e74cff541ac66418b76df11abcd9c15c0ca774d6cbd5d96a",
+      "bytes": 7868
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/destination_artifacts.py",
+      "sha256": "55c076f86990e74c2b3908a1474f1bb224c7ca52f00d1f9fe162f40be8814280",
+      "bytes": 3964
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/run_owned_single_lane.py",
+      "sha256": "098ad2c7b480ba74644cb35259bf9abc817af47a9611df6d580c18b466dac359",
+      "bytes": 14859
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/sdk06_enumeration_probe.py",
+      "sha256": "ce2987846cdd42ebab7702e7dff51068bfb15ee48a66011f621695dbd72ebbce",
+      "bytes": 33693
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py",
+      "sha256": "ff25ef9fc14630a67decf242b327c53111cfb8b77e0c2f10511a46a926aef8f0",
+      "bytes": 20271
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/simulator_selection.py",
+      "sha256": "2309bb55b3752774bffc588a7c489392daa7ceb3b7279f6a9ec870899a1f1d5f",
+      "bytes": 4384
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/type_preservation.py",
+      "sha256": "602a91987a6995f0218840744af0d88c2ea5c65d34c4edba7f030808c5007b44",
+      "bytes": 47011
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/wave15_batch.py",
+      "sha256": "845f6ee3b8a3325827dc976da41592924c619b943dc5942c0a1ac6f37fc13bd6",
+      "bytes": 80308
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/wave15_diagnostics.py",
+      "sha256": "c1ca1fe8857e6ce71b91ffb49ff54627815cbfe44beaa1bbb7328c9bb7a55397",
+      "bytes": 14781
+    }
+  ],
+  "command_observations": [
+    {
+      "name": "xcode-version",
+      "return_code": 0,
+      "owned_pgid": 3602,
+      "kernel_absence_before_deadline": true,
+      "timeout_seconds": 60,
+      "included_originals": {
+        "original_command_sha256": "e4e2d9a11767928de8eec7350f58031c280a81a255d834093818ab021107626e",
+        "original_output_sha256": "694b44731d0b415c5b11d844151e466d7f5e200a95627efda377f232f1a6ab77"
+      }
+    },
+    {
+      "name": "original-artifact-api",
+      "return_code": 0,
+      "owned_pgid": 3853,
+      "kernel_absence_before_deadline": true,
+      "timeout_seconds": 60,
+      "included_originals": {
+        "original_command_sha256": "3b2d906337ab433ed91d86037aa9e5fccd1fe81fed694a6a8983d3f5d5b881b2",
+        "original_output_sha256": "b77984e05db3dfd9fdc5b13fa223c1eba252fc9d26af6edc4a21b2db3ab1d8e1"
+      }
+    },
+    {
+      "name": "original-run-api",
+      "return_code": 0,
+      "owned_pgid": 3855,
+      "kernel_absence_before_deadline": true,
+      "timeout_seconds": 60,
+      "included_originals": {
+        "original_command_sha256": "f65b4c71ee197a7898e74e439c64ba047d6ebe6d4971cfe8d019e0e2f8bd21ff",
+        "original_output_sha256": "f7cd0bc107eeb32a8a2d9f7ba6b4dc77eb1bdaa86cb4a171f7eed25b6dd9e38e"
+      }
+    },
+    {
+      "name": "download-original-products",
+      "return_code": 0,
+      "owned_pgid": 3856,
+      "kernel_absence_before_deadline": true,
+      "timeout_seconds": 300,
+      "included_originals": null
+    },
+    {
+      "name": "simulator-runtimes",
+      "return_code": 0,
+      "owned_pgid": 5210,
+      "kernel_absence_before_deadline": true,
+      "timeout_seconds": 30,
+      "included_originals": {
+        "original_command_sha256": "a1f44fcd818bad48f4fe723bc438d9782e44688e4479dd8a0c71b67f443bfcb7",
+        "original_output_sha256": "806c84173d2f5c004ee7d3ef80a0ef3e65da0ba55d5885e5aaa3f31626c388c4"
+      }
+    },
+    {
+      "name": "simulator-types",
+      "return_code": 0,
+      "owned_pgid": 5268,
+      "kernel_absence_before_deadline": true,
+      "timeout_seconds": 30,
+      "included_originals": {
+        "original_command_sha256": "e29bb78a7c6f9c744628164a735154ce46d974fe6155a4d2b29721215769d65e",
+        "original_output_sha256": "f663b275b7760a98ef28ff760c8efc49703530dd1b45c3d70fa755047bb799a0"
+      }
+    },
+    {
+      "name": "create-owned-simulator",
+      "return_code": 0,
+      "owned_pgid": 5277,
+      "kernel_absence_before_deadline": true,
+      "timeout_seconds": 60,
+      "included_originals": {
+        "original_command_sha256": "e5a659adcfecf84d1bd77fe95cff558083a950215bef3a0aab9e83556752c094",
+        "original_output_sha256": "e0abb25b6c7d8e15c7139c7bd998700a444a8ab3bbbb065d755408a417a9527d"
+      }
+    },
+    {
+      "name": "boot-owned-simulator",
+      "return_code": 0,
+      "owned_pgid": 5287,
+      "kernel_absence_before_deadline": true,
+      "timeout_seconds": 90,
+      "included_originals": {
+        "original_command_sha256": "4270d1c000672162a4188064994148e91bcc71e5dfcb4b79f524119615473d96",
+        "original_output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "wait-owned-simulator",
+      "return_code": 0,
+      "owned_pgid": 5357,
+      "kernel_absence_before_deadline": true,
+      "timeout_seconds": 180,
+      "included_originals": {
+        "original_command_sha256": "62f9fbaa56a284ffd0d4c213622c3c7c7ef56f27c77fefbbb7a4aee1e5f485f2",
+        "original_output_sha256": "b0f482dbc6a037ef0b065d0f3d2142bdc0c7a5a83e789bf1a0329197c73e6619"
+      }
+    },
+    {
+      "name": "enumerate-suites-minus-seven-cli",
+      "return_code": 0,
+      "owned_pgid": 5799,
+      "kernel_absence_before_deadline": true,
+      "timeout_seconds": 600,
+      "included_originals": {
+        "original_command_sha256": "6524952d73c632823b11155fb2ca7af312e76f2c9fe20b805b006b0824be8e2a",
+        "original_output_sha256": "597af72b9f3bb870152933eaa351087c3b61e00862106145a0a0f105da37efcf"
+      }
+    },
+    {
+      "name": "enumerate-parameter-signature-terminal-parens-cli",
+      "return_code": 0,
+      "owned_pgid": 6986,
+      "kernel_absence_before_deadline": true,
+      "timeout_seconds": 600,
+      "included_originals": {
+        "original_command_sha256": "4bcb37cfca084a18e7f728f99064997790d0aa0b8de9d13a1bf3c53e39001331",
+        "original_output_sha256": "f1e2b6d593c1d16b3e1866d9f72198276919981421d9c8ef4d78d3f74d2bc7b6"
+      }
+    },
+    {
+      "name": "cleanup-owned-shutdown",
+      "return_code": 0,
+      "owned_pgid": 7585,
+      "kernel_absence_before_deadline": true,
+      "timeout_seconds": 30,
+      "included_originals": {
+        "original_command_sha256": "3c42614f3ffcade9a74b3c75a452dbe9a7a8fe8c025e80eb6aa03ad0c45dffb4",
+        "original_output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "cleanup-owned-delete",
+      "return_code": 0,
+      "owned_pgid": 7609,
+      "kernel_absence_before_deadline": true,
+      "timeout_seconds": 30,
+      "included_originals": {
+        "original_command_sha256": "be621293f4444311bdeae51c1d2a4990386ecc92c1bbe8b1d9bdf8996a366ce0",
+        "original_output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "enumeration": [
+    {
+      "name": "suites-minus-seven-cli",
+      "command_return_code": 0,
+      "errors": [],
+      "enabled": 26,
+      "disabled": 913,
+      "total": 939,
+      "missing": [],
+      "extra": [
+        "AnytypeTests/TextBlockFocusLifecycleTests/editingDenialCancelsPendingFocus(locked:)",
+        "AnytypeTests/TextBlockFocusLifecycleTests/laterFocusSupersedesDetachedRequest(useNativeEditing:)",
+        "AnytypeTests/TextBlockFocusLifecycleTests/nativeFocusObservationDistinguishesOutcomes(outcome:)"
+      ],
+      "excluded_enabled": [
+        "AnytypeTests/TextBlockFocusLifecycleTests/editingDenialCancelsPendingFocus(locked:)",
+        "AnytypeTests/TextBlockFocusLifecycleTests/laterFocusSupersedesDetachedRequest(useNativeEditing:)",
+        "AnytypeTests/TextBlockFocusLifecycleTests/nativeFocusObservationDistinguishesOutcomes(outcome:)"
+      ],
+      "enumeration_sha256": "764e03eb77e5c02032bc55c815f12a3fb21890e83a9da592022cdbe9c2bf59aa",
+      "status": "NOT_QUALIFIED"
+    },
+    {
+      "name": "parameter-signature-terminal-parens-cli",
+      "command_return_code": 0,
+      "errors": [],
+      "enabled": 15,
+      "disabled": 924,
+      "total": 939,
+      "missing": [
+        "AnytypeTests/SimpleTableTextPersistenceTests/markdownAddBlockDoesNotContinueAfterOwnerRebind(returnToOriginalID:)",
+        "AnytypeTests/SimpleTableTextPersistenceTests/markdownCommandsKeepCapturedTextBeforeLaterTyping(addBlock:)",
+        "AnytypeTests/SimpleTableTextPersistenceTests/replacementClaimsPendingOwnershipBeforePublication(asyncEntry:)",
+        "AnytypeTests/TextBlockFocusLifecycleTests/insertedCellUsesCurrentEditingBeforeFocus(editing:)",
+        "AnytypeTests/TextBlockFocusLifecycleTests/reusedCellDoesNotPreserveDifferentPendingOwner(composing:)",
+        "AnytypeTests/TextBlockFocusLifecycleTests/reusedCellUsesCurrentLockBeforeFocus(newLocked:)",
+        "AnytypeTests/TextBlockFocusLifecycleTests/staleFocusDoesNotSurviveRowLifetime(change:)",
+        "AnytypeTests/TorahRelatedReadAuthorityMappingTests/nativeDenialRequiresExactTypedCodeAndDescription(objectShow:)"
+      ],
+      "extra": [],
+      "excluded_enabled": [],
+      "enumeration_sha256": "7a115b97dc8de4f20616ea6bbd56669b10d3ad09ecebb1025a773cc78d02b4dd",
+      "status": "NOT_QUALIFIED"
+    }
+  ],
+  "original_products": {
+    "run_id": "45087685319",
+    "source_sha": "7293e4fd0bcabdcdb643d5768b777b8e87ff1b73",
+    "manifest_entries": 5007,
+    "runner_restoration_and_postflight_unchanged": true,
+    "original_artifact_not_redownloaded_or_rescanned_by_root": true
+  },
+  "owned_simulator_cleanup": {
+    "delete": {
+      "return_code": 0,
+      "status": "PASS"
+    },
+    "shutdown": {
+      "return_code": 0,
+      "status": "PASS"
+    }
+  },
+  "kernel_observer_actual_apple_groups_proved": 13,
+  "ps_observations": 0,
+  "app_builds": 0,
+  "product_methods": 0,
+  "selector_admission": false,
+  "sdk06_acceptance": false,
+  "limitations": [
+    "Enumeration starts a test host but executes no product test method.",
+    "Successful command exits and13kernel absence proofs do not qualify either selector.",
+    "Copied descriptor tokens remain copied-only; original Products stay fixed.",
+    "The original5007 Product entries were checked by the archived runner controller; root verified its original receipts and manifest without rescanning an older archive."
+  ]
+}
