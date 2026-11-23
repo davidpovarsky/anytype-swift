@@ -1,0 +1,52 @@
+{
+  "status": "REVIEWED_FOR_APP_BUILD_NOT_APP_ACCEPTANCE",
+  "reviewedAt": "2026-11-23T03:16:41.811608+00:00",
+  "integrationPrior": "3fb3defb40c02de9af4ca880e27520595c0ce5ba",
+  "integratedHead": "1e43e939223d6915216ea60828456986a89658a9",
+  "sourceCommits": [
+    "5316f036a894fde5b0dc9b695337e22e202f91e5",
+    "9fc2bbc049873feb4027509f38595f93ebe41f46",
+    "27deb7d8c80f3d8f75e2ae1997978a743d5f8c52",
+    "9d7dbdd68da2e3d48ec84664c50954b9c9ec6762"
+  ],
+  "independentOriginalAudit": {
+    "copiedInputs": 706,
+    "metadataInputs": 18,
+    "originalEvidenceFiles": 7,
+    "preservedProducts": 9,
+    "actualClientStarted": 19,
+    "actualClientPassed": 19,
+    "failed": 0,
+    "skipped": 0,
+    "unaffectedWireRetained": 11,
+    "currentDistinctControls": 30,
+    "testLogSHA256": "f3ebffba8e231618ab9fb5d07db8f15830ffb21ecd30708178468ef903d24555"
+  },
+  "reviewedExistingAppPaths": {
+    "Anytype/Sources/Models/Documents/Document/BaseDocument.swift": "Carry the exact Page154 event owner across the existing main-queue hop, revalidate before ordinary triggerSync, and expose a DEBUG simulator observation of that actual delivery.",
+    "Anytype/Sources/Models/Documents/Events/EventsListener.swift": "Bind the document Space explicitly; make the existing synchronous state conversion atomic with owner retirement, then invoke subscribers outside the lifetime lock.",
+    "Anytype/Sources/Models/Documents/Events/Model/EventsBunch.swift": "Carry a Page154 lifetime fence only when the actual returned response event matches its exact serialized bytes, Space and object; unrelated and local events retain their original route.",
+    "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/CustomTextView+UITextViewDelegate.swift": "Preserve the current standard edit menu and add the Page154 anchor action only under both candidate definitions for an eligible real selection.",
+    "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/Views/TextViewWithPlaceholder.swift": "Add only the candidate selection-action closure used by the existing UITextView edit menu.",
+    "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView.swift": "Expose the current block and input-owner identity only while no local text changes are pending, preventing a stale selection from addressing a recycled input.",
+    "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockViewModel.swift": "Preserve existing block subscription scheduling while carrying and rechecking the Page154 owner at the actual main consumer.",
+    "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController.swift": "Bind the candidate coordinator to the real focused UITextView, invalidate on editor ownership changes, and mount only the DEBUG simulator read-only observer.",
+    "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModel.swift": "Carry the Page154 owner through the existing Combine main delivery and require the same open mounted editor before consuming fenced updates.",
+    "Anytype/Sources/ServiceLayer/DocumentsProvider/DocumentsProvider.swift": "Pass the existing document Space to EventsListener for exact Page154 ownership checks."
+  },
+  "candidateOnly": true,
+  "selection": "Actual text/range/input owner rechecked; prepare only reads; Create explicitly applies once; Cancel never applies.",
+  "delivery": "Exact native event fence follows EventsBunch, locked synchronous state conversion, ordinary main delivery and actual Combine consumers; subscribers never run under lifetime lock.",
+  "mountedObservation": "DEBUG simulator observer only; real UIKit touch selection/Cancel/Create; actual rendered link captured before independent ObjectShow; separate cold process and owner generation.",
+  "uiTarget": "Four explicit PBX source references reviewed; no original UI methods modified.",
+  "limits": {
+    "default139Shipping": "OFF",
+    "native154Producer": "RETAINED_BUILD_SYMBOL_IMPORT_PROOF",
+    "fullAppTypecheck": "NOT_RUN",
+    "newNativeAppConsumer": "NOT_RUN",
+    "mountedUI": "NOT_RUN",
+    "physicalDevice": "NOT_RUN"
+  },
+  "originalFailuresPreserved": true,
+  "productTestsRerunByRoot": 0
+}
