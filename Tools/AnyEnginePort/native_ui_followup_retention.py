@@ -30,7 +30,8 @@ PASSED = {"NativeLaunchTests/" + name for name in PASSED_NAMES}
 FAILED_NAMES = tuple(name for name in sources.FAILED_NAMES if name not in PASSED_NAMES)
 FAILED = {"NativeLaunchTests/" + name for name in FAILED_NAMES}
 ARCHIVE_VIEW = "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeArchiveTransfer.swift"
-ALLOWED_INACTIVE = {ARCHIVE_VIEW}
+LIBRARY_VIEW = sources.LIBRARY_VIEW
+ALLOWED_INACTIVE = {ARCHIVE_VIEW, LIBRARY_VIEW}
 sha, require = sources.sha, sources.require
 
 
@@ -161,7 +162,7 @@ def verify_originals(directory, base, root=sources.ROOT):
 
 
 def declaration_proof(before, after):
-    masks = (*FAILED_NAMES, sources.FILES_NAME, sources.HANLIN_HELPER)
+    masks = (*FAILED_NAMES, sources.FILES_NAME, sources.HANLIN_HELPER, sources.HANLIN_INPUT_HELPER)
     for name in PASSED_NAMES:
         a, b = sources.declaration(before, name)
         c, d = sources.declaration(after, name)
@@ -191,7 +192,7 @@ def verify_sources(consumer, root=sources.ROOT):
     entries = review["inactiveSourceChanges"]
     names = [entry.get("path") for entry in entries if isinstance(entry, dict)]
     require(len(names) == len(entries) == len(set(names)) and set(names) <= ALLOWED_INACTIVE,
-            "followup_source_review_outside_inactive_archive_ui")
+            "followup_source_review_outside_exact_inactive_presentations")
     changed = {name for name in before.keys() | after.keys() if before.get(name) != after.get(name)}
     require(changed == {sources.TEST} | set(names), "followup_production_or_dependency_closure_changed")
     for entry in entries:
@@ -205,11 +206,14 @@ def verify_sources(consumer, root=sources.ROOT):
                 and entry["beforeGitBlob"] == before[name] == sources.blob(old)
                 and entry["afterGitBlob"] == after[name] == sources.blob(new),
                 "followup_inactive_source_bytes_changed")
+    drag = sources.verify_hierarchy_drag_scope(sources.source(SOURCE, LIBRARY_VIEW, root),
+        sources.source(consumer, LIBRARY_VIEW, root))
     test_proof = declaration_proof(sources.source(SOURCE, sources.TEST, root),
                                    sources.source(consumer, sources.TEST, root))
     return dict(producerClosureSHA256=sources.canonical(before), consumerClosureSHA256=sources.canonical(after),
                 unchangedProtectedFileCount=len(before) - len(changed), changedProtectedPaths=sorted(changed),
-                testDeclarationProof=test_proof, inactiveArchiveSourceReview=entries,
+                testDeclarationProof=test_proof, inactiveSourceReview=entries,
+                inactiveHierarchyDragProof=drag,
                 reviewSHA256=sha(read(root / REVIEW)))
 
 

@@ -96,12 +96,12 @@ def raw_fixture(root):
 
 
 class NativeAcceptanceContinuationTests(unittest.TestCase):
-    def test_exact_review_accepts_actual_twelve_frozen_sources_and_preserves_passed_declarations(self):
+    def test_exact_review_accepts_actual_thirteen_frozen_sources_and_preserves_passed_declarations(self):
         before, after, review, old, new = candidate_review()
         proof = source.verify_maps(before, after, review, old.__getitem__, new.__getitem__)
         self.assertTrue(proof["testDeclarationProof"]["retainedEntryQuoteAndCommonHelpersByteIdentical"])
         self.assertTrue(proof["historyTargetRegistration"]["productionTargetsAndSettingsByteIdentical"])
-        self.assertEqual(12, len(review["reviewedChanges"]))
+        self.assertEqual(13, len(review["reviewedChanges"]))
 
     def test_changed_passed_entry_or_common_helper_cannot_be_excused_by_new_review_hashes(self):
         for name in ("testCreateEditHanlinConsentBackgroundAndColdReopen", "tapWhenEnabled"):

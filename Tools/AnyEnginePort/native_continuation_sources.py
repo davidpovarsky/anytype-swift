@@ -27,6 +27,9 @@ FAILED_NAMES = (
 FILES_NAME = "testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies"
 HISTORY_NAME = "testSavedHebrewVersionsRemainReadOnlyAcrossCloseBackgroundAndColdReopen"
 HANLIN_HELPER = "configureHanlinThroughNormalFields"
+HANLIN_INPUT_HELPER = "hanlinComposerInput"
+HANLIN_SEND_HELPER = "sendHanlinPrompt"
+LIBRARY_VIEW = "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift"
 HISTORY_PATHS = frozenset({
     "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeHistoryReader.swift",
     "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeHistoryReaderTests.swift",
@@ -37,6 +40,7 @@ HISTORY_PATHS = frozenset({
 })
 SCOPES = {
     TEST: "failed_journey_controllers_only",
+    LIBRARY_VIEW: "inactive_hierarchy_drag_label_owner",
     PROJECT: "new_history_ui_test_target_registration",
     "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift": "alignment_picker_and_inactive_history_presentation",
     "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift": "related_result_accessibility_only",
@@ -96,16 +100,22 @@ def declaration(raw, name):
 
 
 def verify_test_declarations(before, after):
-    masks = (*FAILED_NAMES, FILES_NAME, HANLIN_HELPER)
+    masks = (*FAILED_NAMES, FILES_NAME, HANLIN_HELPER, HANLIN_INPUT_HELPER)
     facts = []
+    ownership = {
+        HANLIN_HELPER: (FAILED_NAMES[-1],),
+        HANLIN_INPUT_HELPER: (HANLIN_HELPER, HANLIN_SEND_HELPER),
+        HANLIN_SEND_HELPER: (FAILED_NAMES[-1],),
+    }
     for raw in (before, after):
-        caller_start, caller_end = declaration(raw, FAILED_NAMES[-1])
-        helper_start, helper_end = declaration(raw, HANLIN_HELPER)
-        occurrences = [m.start() for m in re.finditer(HANLIN_HELPER.encode() + rb"\s*\(", raw)]
-        require(len(occurrences) == 2 and
-                sum(caller_start <= value < caller_end for value in occurrences) == 1 and
-                sum(helper_start <= value < helper_end for value in occurrences) == 1,
-                "hanlin_helper_is_not_exclusive_to_failed_method")
+        for helper, callers in ownership.items():
+            own = declaration(raw, helper)
+            spans = [declaration(raw, name) for name in callers]
+            occurrences = [m.start() for m in re.finditer(helper.encode() + rb"\s*\(", raw)]
+            require(sum(own[0] <= point < own[1] for point in occurrences) == 1
+                    and all(any(a <= point < b for a, b in [own, *spans]) for point in occurrences)
+                    and all(any(a <= point < b for point in occurrences) for a, b in spans),
+                    "hanlin_helper_is_not_exclusive_to_failed_method_" + helper)
     def masked(raw):
         for name in masks:
             start, end = declaration(raw, name)
@@ -120,6 +130,20 @@ def verify_test_declarations(before, after):
     return {"unchangedRemainderSHA256": sha(masked(before)), "reviewedDeclarations": facts,
             "retainedEntryQuoteAndCommonHelpersByteIdentical": True,
             "changedPrivateHelperUniqueCaller": FAILED_NAMES[-1]}
+
+
+def verify_hierarchy_drag_scope(before, after):
+    """Reverse only the exact label/owner relocation; preserve the complete row."""
+    label = b'            // Keep the drag source on the label, independently of the Button\'s\n            // context-menu interaction. Include the row\'s open spacer area.\n            .contentShape(Rectangle())\n            .draggable("pinkha-any-node|\\(model.session.workspace.spaceID)|\\(item.objectID)")\n'
+    drop = b'        .dropDestination(for: String.self) { payloads, _ in\n'
+    draggable = b'        .draggable("pinkha-any-node|\\(model.session.workspace.spaceID)|\\(item.objectID)")\n'
+    require(after.count(label) == 1 and after.count(drop) == 1,
+            "hierarchy_drag_label_scope_not_exact")
+    restored = after.replace(label, b"").replace(drop, draggable + drop)
+    require(restored == before, "hierarchy_drag_changed_context_drop_or_other_source")
+    return {"scope": "hierarchyRow drag owner only", "exactReversalMatchesOriginalFile": True,
+            "contextMenuDropAdmissionNavigationAndNativeWritesByteIdentical": True,
+            "retainedJourneysDoNotPerformThisDrag": True}
 
 
 def verify_history_registration(before, after):
@@ -167,10 +191,11 @@ def verify_maps(before, after, review, read_before, read_after):
                 "reviewed_source_bytes_changed_" + path)
     tests = verify_test_declarations(read_before(TEST), read_after(TEST))
     registration = verify_history_registration(read_before(PROJECT), read_after(PROJECT))
+    drag = verify_hierarchy_drag_scope(read_before(LIBRARY_VIEW), read_after(LIBRARY_VIEW))
     return {"producerClosureSHA256": canonical(before), "consumerClosureSHA256": canonical(after),
             "unchangedProtectedFileCount": len(set(before) & set(after)) - len(changed - HISTORY_PATHS),
             "reviewedSourceChanges": entries, "testDeclarationProof": tests,
-            "historyTargetRegistration": registration,
+            "historyTargetRegistration": registration, "inactiveHierarchyDragProof": drag,
             "claim": "Original execution remains at its original sources; exact reviewed presentation additions are not described as executed or byte-identical."}
 
 

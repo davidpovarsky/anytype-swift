@@ -132,9 +132,9 @@
     {
       "path": "NativeApp/UITests/NativeLaunchTests.swift",
       "beforeSHA256": "f4cc433fe98ab1e6ffe9af3c6d3db0a46e71ec7f0f61ddd1e6d4c29cc1b33f53",
-      "afterSHA256": "9d5ae7f3072452c6f356ced5df6c5a24d74233a7aebc8d0c3a48d4a3eefad5ec",
+      "afterSHA256": "1404b6e70e03015aa208ce285c392a4353578b540ff5071548c3158c5e53a04a",
       "beforeGitBlob": "cbd759da5bed37ac9c35582b4b3b0924c8ba19a6",
-      "afterGitBlob": "6aba18c5f28dc08c8ee0e032568846e6b8a72d7b",
+      "afterGitBlob": "c72092f0af20a1057dcd6b8ceb42587dbb5cf74a",
       "scope": "failed_journey_controllers_only",
       "declarations": [
         "testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType",
@@ -144,9 +144,10 @@
         "testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen",
         "testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen",
         "testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies",
-        "configureHanlinThroughNormalFields"
+        "configureHanlinThroughNormalFields",
+        "hanlinComposerInput"
       ],
-      "reason": "Exact controller changes only in six previously failed journeys, Files, and the private Hanlin field helper whose only caller is the failed Hanlin journey. Whole remaining file including passed entry, quote/Note, custom Type and common helpers is byte-identical to original07. Only the failed SourceDrag final redundant close and the failed Files nested save helper changed; all retained methods and common helpers remain byte-identical. The Files helper now additionally requires the folder returned by the actual native success callback."
+      "reason": "Only the six originally failed methods, Files and the exact private Hanlin configure/input closure differ from original07. The input helper is reachable solely through configureHanlinThroughNormalFields and the unchanged sendHanlinPrompt, each owned exclusively by the failed Hanlin journey. The backup observation expands setup locally in its failed method and retains the identical single-tap/wait/assertion sequence. All retained entry/quote and every other common helper remain byte-identical; the followup independently protects the two newly passed declarations."
     },
     {
       "path": "NativeApp/AnyNative.xcodeproj/project.pbxproj",
@@ -162,6 +163,18 @@
         "UI-only PBXSourcesBuildPhase A40000000000000000000004"
       ],
       "reason": "Register only the new unexecuted NativeHistoryTests.swift in the existing UI test target: one build file, one file reference, one root group child, one UI-only sources entry. Reversing exactly these four edits reproduces the entire canonical original project, including every production target and build setting."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "beforeSHA256": "d8989cb92e4541e4a756606b61a12cc98e5a519c8d8c3fd5d4c01c0c0778dc8d",
+      "afterSHA256": "9cf9130c473009f4f1c2d33b989423401bd8d996d6a55dcac987585ab370d54c",
+      "beforeGitBlob": "7f0f4c6645f440247cefabc6ab639eb8beff48f4",
+      "afterGitBlob": "1b8ff1bf33fe2a783387e4ec4e3c3c3acec5035c",
+      "declarations": [
+        "AnyNativeLibraryView.hierarchyRow"
+      ],
+      "reason": "The original recordings show the context menu owning the intended drag. Only hierarchyRow relocates the existing String drag source from the outer Button to its full-width label with a rectangular interaction shape. Exact reversal reproduces the entire original file. Context menu, drop admission, native write authorization, payload, IDs, navigation and move callbacks remain byte-identical. Retained journeys perform ordinary taps and do not execute this drag; their original PASS stays at its original run/source. The unchanged failed real drag journey must execute on this candidate.",
+      "scope": "inactive_hierarchy_drag_label_owner"
     }
   ]
 }

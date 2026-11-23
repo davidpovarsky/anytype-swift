@@ -76,7 +76,7 @@ class FollowupRetentionControls(unittest.TestCase):
     def test_inactive_review_cannot_admit_another_production_dependency(self):
         head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
         proof = followup.verify_sources(head, ROOT)
-        self.assertEqual(set(proof["changedProtectedPaths"]), {sources.TEST, followup.ARCHIVE_VIEW})
+        self.assertEqual(set(proof["changedProtectedPaths"]), {sources.TEST, followup.ARCHIVE_VIEW, followup.LIBRARY_VIEW})
         review = followup.data(ROOT / followup.REVIEW)
         bad = copy.deepcopy(review)
         bad["inactiveSourceChanges"][0]["path"] = "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeWorkspace.swift"
