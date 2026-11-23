@@ -1,0 +1,47 @@
+{
+  "base": "e72cbbdad01f2ef745d3fd24a0a6389b6ed0e75d",
+  "edits": [
+    {
+      "after": "def control_module_binding(module, relative):\n    expected = (ROOT / relative).resolve()\n    observed = Path(getattr(module, \"__file__\", \"\")).resolve()\n    require(observed == expected and expected.is_file() and not (ROOT / relative).is_symlink(),\n            \"actual_current_control_module_required:\" + relative)\n    return {\"path\": relative, \"sha256\": sha(regular(expected, 2 * 1024**2)),\n            \"origin\": \"CURRENT_CONTROL_CHECKOUT\", \"claim\": \"Actual imported module; not a claim every function ran\"}\n\n\ndef runtime_pair(runtimes, devices, fixed):\n",
+      "before": "def runtime_pair(runtimes, devices, fixed):\n",
+      "path": "Tools/AnyEnginePort/native_ui_original_products_contract.py"
+    },
+    {
+      "after": "    selector = importlib.import_module(\"simulator_selection\")\n    binding = control_module_binding(selector, \"Tools/PinkhaSimulatorGate/simulator_selection.py\")\n",
+      "before": "    selector = importlib.import_module(\"simulator_selection\")\n",
+      "path": "Tools/AnyEnginePort/native_ui_original_products_contract.py"
+    },
+    {
+      "after": "    return {**pair, \"selection\": {**pair[\"selection\"], \"currentControlModule\": binding}}\n\ndef copied_descriptor",
+      "before": "    return pair\n\ndef copied_descriptor",
+      "path": "Tools/AnyEnginePort/native_ui_original_products_contract.py"
+    },
+    {
+      "after": "    normalizer = importlib.import_module(\"sdk06_enumeration_probe\")\n    bindings = [\n        control_module_binding(normalizer, \"Tools/PinkhaSimulatorGate/sdk06_enumeration_probe.py\"),\n        control_module_binding(normalizer.component, \"Tools/PinkhaSimulatorGate/shared_editor_existing_build.py\"),\n        control_module_binding(normalizer.component.host, \"Tools/Hanlin/run_host_tests.py\"),\n    ]\n",
+      "before": "    normalizer = importlib.import_module(\"sdk06_enumeration_probe\")\n",
+      "path": "Tools/AnyEnginePort/native_ui_original_products_contract.py"
+    },
+    {
+      "after": "            \"originalDescriptorUnchanged\": True, \"sameDirectoryPreservesTESTROOT\": True,\n            \"currentControlModuleBindings\": bindings}\n",
+      "before": "            \"originalDescriptorUnchanged\": True, \"sameDirectoryPreservesTESTROOT\": True}\n",
+      "path": "Tools/AnyEnginePort/native_ui_original_products_contract.py"
+    },
+    {
+      "after": "            copied.unlink()\n            from unittest.mock import patch\n            import sys\n            selector = sys.modules[\"simulator_selection\"]\n            normalizer = sys.modules[\"sdk06_enumeration_probe\"]\n            self.assertEqual(proof[\"currentControlModuleBindings\"][-1][\"path\"], \"Tools/Hanlin/run_host_tests.py\")\n            for module, relative in ((selector, \"Tools/PinkhaSimulatorGate/simulator_selection.py\"),\n                                     (normalizer, \"Tools/PinkhaSimulatorGate/sdk06_enumeration_probe.py\"),\n                                     (normalizer.component, \"Tools/PinkhaSimulatorGate/shared_editor_existing_build.py\"),\n                                     (normalizer.component.host, \"Tools/Hanlin/run_host_tests.py\")):\n                with self.subTest(foreign_import=relative):\n                    with patch.object(module, \"__file__\", str(root / \"old-app\" / relative)):\n                        with self.assertRaises(ValueError):\n                            if module is selector:\n                                c.runtime_pair({\"runtimes\": [runtime]}, {\"devicetypes\": [device]}, fixed)\n                            else:\n                                c.copied_descriptor(original, copied, runtime, fixed)\n                    self.assertFalse(copied.exists())\n            for kind in (\"foreign-copy-parent\", \"wrong-original-hash\", \"wrong-token\", \"non-macho-current-library\"):\n",
+      "before": "            copied.unlink()\n            for kind in (\"foreign-copy-parent\", \"wrong-original-hash\", \"wrong-token\", \"non-macho-current-library\"):\n",
+      "path": "Tools/AnyEnginePort/test_native_ui_original_products.py"
+    }
+  ],
+  "inverse": {
+    "Tools/AnyEnginePort/native_ui_original_products_contract.py": {
+      "afterSHA256": "4e31edb56b0446cea77e95dc2e61f8c706ebe3a2d7c85f2957651f73e645812f",
+      "beforeSHA256": "18d68738a6311039a163144fc4431a1b012854014861211c257e18591a5e374b",
+      "wholeBytesRecovered": true
+    },
+    "Tools/AnyEnginePort/test_native_ui_original_products.py": {
+      "afterSHA256": "fa606beecbeb412fc7e886dbc7a586226fa4cb536445d06c0090af605546c6f0",
+      "beforeSHA256": "57b4b0d2b73f4c6e53c15b889e629d734d238223d86ec5b1abfb56227e7537fb",
+      "wholeBytesRecovered": true
+    }
+  }
+}

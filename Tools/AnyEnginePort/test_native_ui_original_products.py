@@ -199,6 +199,23 @@ class OriginalNativeUIProductsControls(unittest.TestCase):
                 old["PinkhaAnyNativeUITests"]["TestingEnvironmentVariables"]["DYLD_INSERT_LIBRARIES"])
             self.assertEqual(current, old)
             copied.unlink()
+            from unittest.mock import patch
+            import sys
+            selector = sys.modules["simulator_selection"]
+            normalizer = sys.modules["sdk06_enumeration_probe"]
+            self.assertEqual(proof["currentControlModuleBindings"][-1]["path"], "Tools/Hanlin/run_host_tests.py")
+            for module, relative in ((selector, "Tools/PinkhaSimulatorGate/simulator_selection.py"),
+                                     (normalizer, "Tools/PinkhaSimulatorGate/sdk06_enumeration_probe.py"),
+                                     (normalizer.component, "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py"),
+                                     (normalizer.component.host, "Tools/Hanlin/run_host_tests.py")):
+                with self.subTest(foreign_import=relative):
+                    with patch.object(module, "__file__", str(root / "old-app" / relative)):
+                        with self.assertRaises(ValueError):
+                            if module is selector:
+                                c.runtime_pair({"runtimes": [runtime]}, {"devicetypes": [device]}, fixed)
+                            else:
+                                c.copied_descriptor(original, copied, runtime, fixed)
+                    self.assertFalse(copied.exists())
             for kind in ("foreign-copy-parent", "wrong-original-hash", "wrong-token", "non-macho-current-library"):
                 with self.subTest(descriptor=kind):
                     f = copy.deepcopy(fixed); target = copied

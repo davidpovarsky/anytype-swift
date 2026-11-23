@@ -357,6 +357,15 @@ def verify_entries(products, entries, copy_sha=None):
             "originalDirectories": sum(x["kind"] == "directory" for x in entries),
             "originalEntriesSHA256": canonical(entries), "allOriginalBytesAndModesUnchanged": True}
 
+def control_module_binding(module, relative):
+    expected = (ROOT / relative).resolve()
+    observed = Path(getattr(module, "__file__", "")).resolve()
+    require(observed == expected and expected.is_file() and not (ROOT / relative).is_symlink(),
+            "actual_current_control_module_required:" + relative)
+    return {"path": relative, "sha256": sha(regular(expected, 2 * 1024**2)),
+            "origin": "CURRENT_CONTROL_CHECKOUT", "claim": "Actual imported module; not a claim every function ran"}
+
+
 def runtime_pair(runtimes, devices, fixed):
     policy = fixed["runtime"]
     rs = [x for x in runtimes.get("runtimes", []) if x.get("identifier") == policy["identifier"]]
@@ -370,11 +379,12 @@ def runtime_pair(runtimes, devices, fixed):
     if gate not in sys.path:
         sys.path.append(gate)
     selector = importlib.import_module("simulator_selection")
+    binding = control_module_binding(selector, "Tools/PinkhaSimulatorGate/simulator_selection.py")
     pair = selector.choose_pair({"runtimes": rs}, {"devicetypes": ds}, product_family="iPad", major=27,
                                 architecture=policy["architecture"])
     require(pair["selection"]["runtimeIdentifier"] == policy["identifier"]
             and pair["selection"]["deviceTypeIdentifier"] == policy["deviceType"], "runtime_pair_selection_changed")
-    return pair
+    return {**pair, "selection": {**pair["selection"], "currentControlModule": binding}}
 
 def copied_descriptor(original, copied, runtime, fixed):
     require(copied.name == COPY_NAME and copied.parent.resolve() == original.parent.resolve()
@@ -391,6 +401,11 @@ def copied_descriptor(original, copied, runtime, fixed):
     if gate not in sys.path:
         sys.path.append(gate)
     normalizer = importlib.import_module("sdk06_enumeration_probe")
+    bindings = [
+        control_module_binding(normalizer, "Tools/PinkhaSimulatorGate/sdk06_enumeration_probe.py"),
+        control_module_binding(normalizer.component, "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py"),
+        control_module_binding(normalizer.component.host, "Tools/Hanlin/run_host_tests.py"),
+    ]
     change = normalizer.normalize_runtime_injection(configuration["PinkhaAnyNativeUITests"], runtime,
                  expected_original_token=fixed["runtime"]["originalMainThreadChecker"])
     inverse = copy.deepcopy(configuration)
@@ -401,7 +416,8 @@ def copied_descriptor(original, copied, runtime, fixed):
         plistlib.dump(configuration, stream, sort_keys=False)
     return {"path": str(copied), "sha256": file_sha(copied),
             "originalSHA256": item[0]["sha256"], "normalization": change,
-            "originalDescriptorUnchanged": True, "sameDirectoryPreservesTESTROOT": True}
+            "originalDescriptorUnchanged": True, "sameDirectoryPreservesTESTROOT": True,
+            "currentControlModuleBindings": bindings}
 
 def legacy_modules(app):
     target = app / "Tools/AnyEnginePort"
