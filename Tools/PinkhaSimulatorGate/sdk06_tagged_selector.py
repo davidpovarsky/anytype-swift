@@ -14,6 +14,7 @@ import subprocess
 import uuid
 
 import sdk06_enumeration_probe as probe
+import sdk06_tagged_composition as composition
 import sdk06_qualified_selector as original
 import shared_editor_existing_build as component
 
@@ -24,6 +25,7 @@ MANIFEST_SHA256 = "aa485ea3c302f2112430f7fd2da91866a24452d9b2d263601d551ec065fc2
 CONTROL_PATHS = (
     "Tools/PinkhaSimulatorGate/sdk06_tagged_selector.py",
     "Tools/PinkhaSimulatorGate/sdk06_tagged_continuation.py",
+    "Tools/PinkhaSimulatorGate/sdk06_tagged_composition.py",
     ".github/workflows/pinkha-sdk06-tagged-continuation.yml",
 )
 _SEAL = object()
@@ -41,7 +43,7 @@ def read_regular(root, relative, maximum=4 * 1024**2):
         path = path / part
         require(not path.is_symlink(), "Fixed input cannot pass through a symbolic link")
     details = path.stat()
-    require(stat.S_ISREG(details.st_mode) and 0 < details.st_size <= maximum,
+    require(stat.S_ISREG(details.st_mode) and 0 <= details.st_size <= maximum,
             "Missing, irregular or unbounded fixed input: " + relative)
     return path.read_bytes(), "100755" if details.st_mode & 0o111 else "100644"
 
@@ -104,12 +106,17 @@ def source_admission(app):
     app = Path(app).resolve(strict=True)
     contract = manifest(app)
     historical = contract["historical_view"]
-    current, restored = {}, {}
+    composed_contract = composition.contract(app, read_regular)
+    composed = composition.admit(app, read_regular)
+    require(composed_contract["tag_source_manifest_sha256"] == MANIFEST_SHA256,
+            "Composition must retain the exact original tagged source contract")
+    current, restored = dict(composed["actual_current_inputs"]), {}
     for relative, row in historical["files"].items():
         data, mode = read_regular(app, relative)
         require(mode == row["git_mode"], "Fixed source executable mode changed")
-        restored[relative] = (recover_source(relative, data, contract)
-                              if relative in contract["source_inverses"] else data)
+        historical_data = composition.historical_bytes(relative, data, composed_contract)
+        restored[relative] = (recover_source(relative, historical_data, contract)
+                              if relative in contract["source_inverses"] else historical_data)
         require(digest(restored[relative]) == row["sha256"], "Unadmitted source/proof dependency: " + relative)
         current[relative] = dict(sha256=digest(data), git_mode=mode)
     require(set(contract["source_inverses"]) <= set(restored), "Inverse source is outside the original fixed view")
@@ -124,6 +131,7 @@ def source_admission(app):
     current[project["path"]] = dict(sha256=digest(project_bytes), git_mode=project_mode)
     for relative in (MANIFEST, *CONTROL_PATHS):
         data, mode = read_regular(app, relative)
+        require(data, "Current tagged controller/workflow input cannot be empty")
         current[relative] = dict(sha256=digest(data), git_mode=mode)
     specs, tagged = {}, set()
     for relative, row in contract["source_inverses"].items():
@@ -148,6 +156,7 @@ def source_admission(app):
             "Pending tag coverage or exact original method/argument inventory changed")
     return dict(protocol=PROTOCOL, status="SOURCE_METADATA_ADMITTED_SELECTOR_NOT_RUN",
         manifest_sha256=MANIFEST_SHA256, source_root=str(app),
+        retained_current_shared_composition=composed,
         actual_current_inputs=dict(sorted(current.items())),
         inverse_current_hashes={name: row["after_sha256"] for name, row in contract["source_inverses"].items()},
         recovered_original_hashes={name: row["before_sha256"] for name, row in contract["source_inverses"].items()},
@@ -187,10 +196,12 @@ def historical_retained_view(app, view):
     admitted = source_admission(app)
     contract = manifest(app)
     expected = contract["historical_view"]["files"]
+    composed_contract = composition.contract(app, read_regular)
     if not view.exists():
         view.mkdir(parents=True)
         for relative, row in expected.items():
             data, _ = read_regular(app, relative)
+            data = composition.historical_bytes(relative, data, composed_contract)
             if relative in contract["source_inverses"]:
                 data = recover_source(relative, data, contract)
             require(digest(data) == row["sha256"], "Historical view input changed during creation")
@@ -222,6 +233,7 @@ def historical_retained_view(app, view):
     return dict(status="PASS_HISTORICAL_CONTROLS_ONLY_CURRENT_SELECTOR_NOT_RUN",
         source_scope="HISTORICAL_RETAINED_VIEW", historical_view_root=str(view.resolve()),
         historical_original_receipt=result, actual_current_inputs=admitted["actual_current_inputs"],
+        retained_current_shared_composition=admitted["retained_current_shared_composition"],
         inverse_current_hashes=admitted["inverse_current_hashes"],
         recovered_original_hashes=admitted["recovered_original_hashes"],
         historical_view_is_app_build_source=False, current_selector_qualified=False,

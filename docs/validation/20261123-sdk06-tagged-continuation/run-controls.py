@@ -60,7 +60,7 @@ def frozen_files():
     for path in [INPUTS, *sorted(expected)]:
         header = stream.readline().decode().strip().split()
         assert len(header) == 3 and header[1] == "blob" and header[2].isdigit(), path
-        size = int(header[2]); assert 0 < size <= 4 * 1024**2
+        size = int(header[2]); assert 0 <= size <= 4 * 1024**2
         blob = stream.read(size); assert len(blob) == size and stream.read(1) == b"\n"
         physical = ROOT / path
         assert not physical.is_symlink() and stat.S_ISREG(physical.stat().st_mode), path
@@ -111,6 +111,10 @@ def main():
         save(destination / "source-before.json", before)
         sys.path.insert(0, str(ROOT / "Tools/PinkhaSimulatorGate"))
         module = importlib.import_module(TEST)
+        # The second new control calls this unchanged production verifier.
+        # Preload its definitions before measuring the frozen loaded closure;
+        # this does not call the verifier or import/execute any old test.
+        importlib.import_module("sdk06_retained_controls")
         loaded_before = loaded_sources(before)
         save(destination / "loaded-before.json", loaded_before)
         assert {name for name in vars(module.TaggedSDK06Controls) if name.startswith("test_")} == set(METHODS)

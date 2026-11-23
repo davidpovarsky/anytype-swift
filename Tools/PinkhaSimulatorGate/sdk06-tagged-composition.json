@@ -1,0 +1,352 @@
+{
+  "schema": "sdk06-tagged-current-shared-composition-v1",
+  "tag_source_manifest_sha256": "aa485ea3c302f2112430f7fd2da91866a24452d9b2d263601d551ec065fc2650",
+  "sdk_base_source": "7de5fe65902af25b5421f4cb215ca31c4b3580bf",
+  "shared_origin": "a36c31542671f4bb94405855bd94c1ef8eb5464b",
+  "historical_inverses": {
+    "Tools/PinkhaSimulatorGate/run_owned_single_lane.py": {
+      "kind": "PRODUCTION_COHERENT_ALIAS_ONLY",
+      "before_sha256": "ac9884d8cef901397ab64dfd827b580767a1a57407ce6e0bcf3b1bf93dc92a65",
+      "after_sha256": "627c5b3dde88e11aaf89d157cf4a05152e42a7fc6ba9545fac13607cf7923d51",
+      "hunks": [
+        {
+          "before": "    deadline = time.monotonic() + seconds\n    kernel_observation = None\n    if cleanup_profile in (\"sdk06-enumeration\", \"sdk06-qualified\"):\n        kernel_observation = _sdk06_kernel_group_observation(pgid, deadline)\n        if kernel_observation[\"outcome\"] == \"ABSENT_ESRCH\":\n",
+          "after": "    deadline = time.monotonic() + seconds\n    kernel_observation = None\n    if cleanup_profile in (\"sdk06-enumeration\", \"sdk06-qualified\", owned.COHERENT_HEART_PROFILE):\n        kernel_observation = _sdk06_kernel_group_observation(pgid, deadline)\n        if kernel_observation[\"outcome\"] == \"ABSENT_ESRCH\":\n"
+        }
+      ]
+    },
+    "Tools/PinkhaSimulatorGate/coherent_original_products.py": {
+      "kind": "PRODUCTION_COHERENT_READER_DELEGATION_ONLY",
+      "before_sha256": "d4e63a0dd1ab81c291a28460ffcee6c8f38285c55588698e24592b1e0dd72e15",
+      "after_sha256": "0a4f5baf10d3fc19c902d7c9286375063e0f442ae7513637e513045629649a89",
+      "hunks": [
+        {
+          "before": "        require(branch.startswith(\"codex/chatgpt-wave15-\") and os.environ.get(\"GITHUB_REF\") == \"refs/heads/\" + branch,\n                \"Actual published controller branch differs\")\n        return products.control_sources(self.control, self.control_sha)\n\n    def bind_intent(self, intent):\n",
+          "after": "        require(branch.startswith(\"codex/chatgpt-wave15-\") and os.environ.get(\"GITHUB_REF\") == \"refs/heads/\" + branch,\n                \"Actual published controller branch differs\")\n        from coherent_controller_sources import control_sources\n        return control_sources(self.control, self.control_sha)\n\n    def bind_intent(self, intent):\n"
+        }
+      ]
+    },
+    ".github/workflows/torah-inspector-ipados27.yml": {
+      "kind": "HISTORICAL_OPAQUE_WORKFLOW_DATA_ONLY",
+      "before_sha256": "c4dbb1df4461bc2515dc28f183b5ab1896b805a629679ea55ad24f46325c9be9",
+      "after_sha256": "dde906b94b3bf8f74908070217043a199d3b578eb953d58fb906beb11cf2979a",
+      "hunks": [
+        {
+          "before": "          - semantic-page-apple-mounted\n          - coherent-original-products\n          - prepared-migration-apple\n          - prepared-inline-file-apple\n          - sdk06-enumeration-probe\n          - sdk06-basename-probe\n          - t5-native-pagination\n          - t5-native-account-retry\n",
+          "after": "          - semantic-page-apple-mounted\n          - coherent-original-products\n          - native-ui-original-products\n          - prepared-migration-apple\n          - prepared-inline-file-apple\n          - sdk06-enumeration-probe\n          - sdk06-basename-probe\n          - sdk06-tagged-continuation\n          - t5-native-pagination\n          - t5-native-account-retry\n"
+        },
+        {
+          "before": "    uses: ./.github/workflows/pinkha-sdk06-basename-probe.yml\n\n  prepared-inline-file-apple:\n    if: ${{ inputs.route == 'prepared-inline-file-apple' }}\n",
+          "after": "    uses: ./.github/workflows/pinkha-sdk06-basename-probe.yml\n\n  sdk06-tagged-continuation:\n    if: ${{ inputs.route == 'sdk06-tagged-continuation' }}\n    uses: ./.github/workflows/pinkha-sdk06-tagged-continuation.yml\n\n  prepared-inline-file-apple:\n    if: ${{ inputs.route == 'prepared-inline-file-apple' }}\n"
+        },
+        {
+          "before": "    if: ${{ inputs.route == 'semantic-page-apple-mounted' }}\n    uses: ./.github/workflows/pinkha-semantic-page-apple-mounted.yml\n\n  coherent-original-products:\n",
+          "after": "    if: ${{ inputs.route == 'semantic-page-apple-mounted' }}\n    uses: ./.github/workflows/pinkha-semantic-page-apple-mounted.yml\n\n  native-ui-original-products:\n    if: ${{ inputs.route == 'native-ui-original-products' }}\n    uses: ./.github/workflows/pinkha-any-native-ui-original-products.yml\n\n  coherent-original-products:\n"
+        }
+      ]
+    }
+  },
+  "current_bound_inputs": {
+    "Tools/PinkhaSimulatorGate/coherent_controller_sources.py": {
+      "sha256": "493fa855797fd52a27f10d68406342676a35f325bac67acedeb27ded3b945008",
+      "bytes": 3852,
+      "git_mode": "100644"
+    },
+    "Tools/PinkhaSimulatorGate/test_coherent_kernel_sources.py": {
+      "sha256": "613aa368644b5a202c3f659d94c74f28dadd3972ea32a7ff31857f0e023907b0",
+      "bytes": 6828,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/.gitattributes": {
+      "sha256": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da",
+      "bytes": 8,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/DESIGN.md": {
+      "sha256": "7c0f17dff2d5318dcc7cbe46c4b7400c24bbf8bdf3295db54015d5440a61b476",
+      "bytes": 1311,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/QUALIFICATION.md": {
+      "sha256": "edc4fd61d40391a88d8d939fc57ee791afc25647dbce30f2a084da884c4493f1",
+      "bytes": 1883,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/attempt1/audit.json": {
+      "sha256": "b2b1f943f6f29fb6f88fe0a34854638f944e71a18ef546879e2ff69d4fe7a788",
+      "bytes": 2873,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/attempt1/controls.log": {
+      "sha256": "167d74ba44c4c553729f71ac002620778eb3ad3bcc8021f6b4cbf814c755cc26",
+      "bytes": 744,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/attempt1/events.json": {
+      "sha256": "407297e2379aabe2165cef4eae6eede15755166f345658fde28888bb42c4f0d5",
+      "bytes": 917,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/attempt1/intent.json": {
+      "sha256": "4cae3a171a449d0546020509ee77d09bd2041d3adf89ab6793a77fc0de8835ee",
+      "bytes": 913,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/attempt1/loaded-source-map.json": {
+      "sha256": "f9d7ceb923b24c1d220dcb9bd0c2e1c60ca9c7b12585b7ae9c8ab06269e760e8",
+      "bytes": 3658,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/attempt1/original-controller.py": {
+      "sha256": "dc6bf3615eada618d361a72e85370b4b4be8fb58c9a69cef74ffd96d9bc63ded",
+      "bytes": 9384,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/attempt1/owned-command-originals/new-coherent-command.command.json": {
+      "sha256": "189dc70d2ad2ab13b506677294461fb41fd2d2d75ad24daf14ab861c36997013",
+      "bytes": 1187,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/attempt1/owned-command-originals/new-coherent-command.log": {
+      "sha256": "0ce4b088059be1efc120a2d04cc9b273920d858a0bbfc8842ade48ee4b30efb1",
+      "bytes": 19,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/attempt1/owned-command-originals/new-coherent-command.owned.command.json": {
+      "sha256": "2950ecbd4b8ba53513ad26b4816b008df5f661441d893a2d735e80946c60ec44",
+      "bytes": 390,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/attempt1/result.json": {
+      "sha256": "8875b03e613d4ff97511dc99088adda4185afc7ee60364fa700ee1439567da2d",
+      "bytes": 5502,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/attempt1/source-after.json": {
+      "sha256": "1d861efe98ae410b4a0d552d7825b4fef32c74871c2edec78ea884bb4fd75565",
+      "bytes": 76124,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/attempt1/source-before.json": {
+      "sha256": "1d861efe98ae410b4a0d552d7825b4fef32c74871c2edec78ea884bb4fd75565",
+      "bytes": 76124,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/qualification.json": {
+      "sha256": "5b24bb7e68e5246c11a707498b58078f8f66f3afa79dcf899695546d7043c6a4",
+      "bytes": 8785,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/reviewed-source-map-update.json": {
+      "sha256": "49df4d05ea04afb59cc27e70346138a3615008ad5cac1f395e31832011cf0f6d",
+      "bytes": 718,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/root-audit.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/root-audit.stdout": {
+      "sha256": "bc303d4ae21f8916de0393de549a965d05cc7cff5a3559814097c226a4847439",
+      "bytes": 259,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/root-audit_originals.py": {
+      "sha256": "ddaad8876b27c118b6bc9e3c5e6eaa4a28a4848695be59614cf16c9b7405294d",
+      "bytes": 5719,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/root-preparation-first-materialization-error.json": {
+      "sha256": "c6c5b16cdd017cd0a1150349369e02e9a0d7b3c87e204514f87f9c22054340fa",
+      "bytes": 386,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/root-review.json": {
+      "sha256": "1d5f7dc18d5dbcfefea3027d852c4836b6e63c3d4bd848600a3a57028e7d1658",
+      "bytes": 10136,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/shared-integration.json": {
+      "sha256": "4a218ccf0e67905ab954071b4ff94dd7ef3085aaee2defd503745ea61156d683",
+      "bytes": 764,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/source-retention-before-publication.json": {
+      "sha256": "fdad2255e14c63c284b5313697c0115f89fe7ad3cb99d3d43a59f1c20fc23485",
+      "bytes": 34090,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/source-review.json": {
+      "sha256": "f8fa746c88f366256b02822843d291cb208cf52d0c86d94f8272e4cb116bf345",
+      "bytes": 1913,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/transport/wrapper-exit.json": {
+      "sha256": "cf323a1c99befd400e6184fdf4795d163687879eade1d67a2f5178496fc01f8f",
+      "bytes": 103,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/transport/wrapper.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "git_mode": "100644"
+    },
+    "docs/validation/20261123-coherent-kernel-source-batch/transport/wrapper.stdout": {
+      "sha256": "0f6d777630cab28d250af237df38ccddf4d65f83e7641a9069520c054fe5e35b",
+      "bytes": 364,
+      "git_mode": "100644"
+    },
+    ".github/workflows/pinkha-any-native-ui-original-products.yml": {
+      "sha256": "4d3e49e948275bb1c09cb3c67235b6ddaa4cff042ee2cbf94225340354f1202e",
+      "bytes": 20148,
+      "git_mode": "100644"
+    }
+  },
+  "executing_workflows": {
+    ".github/workflows/torah-inspector-ipados27.yml": "dde906b94b3bf8f74908070217043a199d3b578eb953d58fb906beb11cf2979a",
+    ".github/workflows/pinkha-sdk06-tagged-continuation.yml": "fb926dea3dbda349b01aa3df4397c3abfb419d9ff3449690c8bcd2fb6b3a9365"
+  },
+  "workflow_review": {
+    "main_jobs": 52,
+    "prior_sdk_jobs": 52,
+    "composed_jobs": 54,
+    "all_main_jobs_unchanged": true,
+    "all_prior_sdk_jobs_unchanged": true,
+    "added_to_main": [
+      "sdk06-basename-probe",
+      "sdk06-tagged-continuation"
+    ],
+    "added_to_prior_sdk": [
+      "native-ui-original-products",
+      "sdk06-tagged-continuation"
+    ],
+    "current_central_sha256": "dde906b94b3bf8f74908070217043a199d3b578eb953d58fb906beb11cf2979a",
+    "historical_opaque_central_sha256": "c4dbb1df4461bc2515dc28f183b5ab1896b805a629679ea55ad24f46325c9be9",
+    "view_used_to_execute_workflow": false
+  },
+  "root_qualification": {
+    "prefix": "docs/validation/20261123-coherent-kernel-source-batch/",
+    "source_commit": "1c4b690b7776e8330a4b3bfb34dcc37b0f76d65d",
+    "actual_loaded_sources": {
+      "Tools/PinkhaSimulatorGate/coherent_controller_sources.py": {
+        "current_sha256": "493fa855797fd52a27f10d68406342676a35f325bac67acedeb27ded3b945008",
+        "tested_sha256": "493fa855797fd52a27f10d68406342676a35f325bac67acedeb27ded3b945008",
+        "classification": "BYTE_IDENTICAL_ACTUAL_LOADED_SOURCE",
+        "inverses": []
+      },
+      "Tools/PinkhaSimulatorGate/coherent_release_cleanup.py": {
+        "current_sha256": "d6af82a33bf8b120cf9f1d641da1ce3efd843777a417abcfb3e15ab7893019f0",
+        "tested_sha256": "d6af82a33bf8b120cf9f1d641da1ce3efd843777a417abcfb3e15ab7893019f0",
+        "classification": "BYTE_IDENTICAL_ACTUAL_LOADED_SOURCE",
+        "inverses": []
+      },
+      "Tools/PinkhaSimulatorGate/destination_artifacts.py": {
+        "current_sha256": "55c076f86990e74c2b3908a1474f1bb224c7ca52f00d1f9fe162f40be8814280",
+        "tested_sha256": "55c076f86990e74c2b3908a1474f1bb224c7ca52f00d1f9fe162f40be8814280",
+        "classification": "BYTE_IDENTICAL_ACTUAL_LOADED_SOURCE",
+        "inverses": []
+      },
+      "Tools/PinkhaSimulatorGate/run_owned_single_lane.py": {
+        "current_sha256": "627c5b3dde88e11aaf89d157cf4a05152e42a7fc6ba9545fac13607cf7923d51",
+        "tested_sha256": "489f5460b9321ae190a0a970b8a18d7d94c2bf6f89c2c54e21bfd37432cc4a0f",
+        "classification": "EXACT_SDK_ONLY_INVERSE_TO_ROOT_TESTED_SOURCE",
+        "inverses": [
+          {
+            "before": "\ndef verify_owned_group_stopped(command_path, *, seconds=10, cleanup_profile=None):\n    owned.require(cleanup_profile in (None, owned.COHERENT_HEART_PROFILE, \"semantic-page154\", \"sdk06-enumeration\")\n                  and (cleanup_profile is None or seconds == 10),\n                  \"Only an explicit Apple consumer profile may use its unchanged 10-second cleanup budget\")\n",
+            "after": "\ndef verify_owned_group_stopped(command_path, *, seconds=10, cleanup_profile=None):\n    owned.require(cleanup_profile in (None, owned.COHERENT_HEART_PROFILE, \"semantic-page154\", \"sdk06-enumeration\", \"sdk06-qualified\")\n                  and (cleanup_profile is None or seconds == 10),\n                  \"Only an explicit Apple consumer profile may use its unchanged 10-second cleanup budget\")\n"
+          },
+          {
+            "before": "    deadline = time.monotonic() + seconds\n    kernel_observation = None\n    if cleanup_profile in (\"sdk06-enumeration\", owned.COHERENT_HEART_PROFILE):\n        kernel_observation = _sdk06_kernel_group_observation(pgid, deadline)\n        if kernel_observation[\"outcome\"] == \"ABSENT_ESRCH\":\n",
+            "after": "    deadline = time.monotonic() + seconds\n    kernel_observation = None\n    if cleanup_profile in (\"sdk06-enumeration\", \"sdk06-qualified\", owned.COHERENT_HEART_PROFILE):\n        kernel_observation = _sdk06_kernel_group_observation(pgid, deadline)\n        if kernel_observation[\"outcome\"] == \"ABSENT_ESRCH\":\n"
+          },
+          {
+            "before": "\n\ndef supervise(command, cwd, evidence, *, context, cleanup, timeout=owned.WORKER_SECONDS):\n    evidence.mkdir(parents=True, exist_ok=True)\n    destination = evidence / \"single-lane-supervisor.json\"\n",
+            "after": "\n\ndef supervise(command, cwd, evidence, *, context, cleanup, timeout=owned.WORKER_SECONDS, cleanup_profile=None):\n    owned.require(cleanup_profile in (None, \"sdk06-qualified\"), \"Only the explicit qualified SDK supervisor may opt in\")\n    evidence.mkdir(parents=True, exist_ok=True)\n    destination = evidence / \"single-lane-supervisor.json\"\n"
+          },
+          {
+            "before": "        finalizing = True\n        try:\n            result[\"owned_group_quiescence\"] = verify_owned_group_stopped(evidence / \"single-lane-worker.command.json\")\n        except BaseException as error:\n            result[\"owned_group_quiescence\"] = {\"status\": \"FAIL\", \"error_type\": type(error).__name__, \"error\": str(error)}\n            if isinstance(error, KeyboardInterrupt):\n                cancelled = True\n",
+            "after": "        finalizing = True\n        try:\n            if cleanup_profile is None:\n                result[\"owned_group_quiescence\"] = verify_owned_group_stopped(evidence / \"single-lane-worker.command.json\")\n            else:\n                result[\"owned_group_quiescence\"] = verify_owned_group_stopped(\n                    evidence / \"single-lane-worker.command.json\", cleanup_profile=cleanup_profile)\n        except BaseException as error:\n            result[\"owned_group_quiescence\"] = {\"status\": \"FAIL\", \"error_type\": type(error).__name__, \"error\": str(error)}\n            if cleanup_profile is not None:\n                result[\"owned_group_quiescence\"].update(\n                    timeout_observations=getattr(error, \"timeout_observations\", []),\n                    quiescence_observation=getattr(error, \"quiescence_observation\", None))\n            if isinstance(error, KeyboardInterrupt):\n                cancelled = True\n"
+          }
+        ]
+      },
+      "Tools/PinkhaSimulatorGate/run_t5_apple_pair.py": {
+        "current_sha256": "11e11ec19eca11d506f56b37ad8ff76bcdbc40a28a4c233b4e57cb86432b1340",
+        "tested_sha256": "11e11ec19eca11d506f56b37ad8ff76bcdbc40a28a4c233b4e57cb86432b1340",
+        "classification": "BYTE_IDENTICAL_ACTUAL_LOADED_SOURCE",
+        "inverses": []
+      },
+      "Tools/PinkhaSimulatorGate/test_coherent_kernel_sources.py": {
+        "current_sha256": "613aa368644b5a202c3f659d94c74f28dadd3972ea32a7ff31857f0e023907b0",
+        "tested_sha256": "613aa368644b5a202c3f659d94c74f28dadd3972ea32a7ff31857f0e023907b0",
+        "classification": "BYTE_IDENTICAL_ACTUAL_LOADED_SOURCE",
+        "inverses": []
+      },
+      "Tools/PinkhaSimulatorGate/type_preservation.py": {
+        "current_sha256": "602a91987a6995f0218840744af0d88c2ea5c65d34c4edba7f030808c5007b44",
+        "tested_sha256": "602a91987a6995f0218840744af0d88c2ea5c65d34c4edba7f030808c5007b44",
+        "classification": "BYTE_IDENTICAL_ACTUAL_LOADED_SOURCE",
+        "inverses": []
+      },
+      "Tools/PinkhaSimulatorGate/wave15_batch.py": {
+        "current_sha256": "7aaaa8b3f53fa343083ded1a044ed09047baa3363ee84a9202bf715eafc3fd5a",
+        "tested_sha256": "0b743b54a62610d9cdb2b92a97e73b479ba347e241c1fa29eb8b8baa348aa5a0",
+        "classification": "EXACT_SDK_ONLY_INVERSE_TO_ROOT_TESTED_SOURCE",
+        "inverses": [
+          {
+            "before": "                                            timeout=min(20, remaining))\n                except subprocess.TimeoutExpired as error:\n                    if action != \"delete\" or intent.get(\"profile\") != COHERENT_HEART_PROFILE:\n                        raise\n                    from coherent_release_cleanup import reconcile_delete_timeout\n",
+            "after": "                                            timeout=min(20, remaining))\n                except subprocess.TimeoutExpired as error:\n                    if action != \"delete\" or intent.get(\"profile\") not in (COHERENT_HEART_PROFILE, \"sdk06-qualified\"):\n                        raise\n                    from coherent_release_cleanup import reconcile_delete_timeout\n"
+          },
+          {
+            "before": "                require(result.returncode == 0, \"Owned simulator cleanup failed\")\n            entry[\"status\"] = \"DELETED_OWNED_SIMULATOR\"\n        if intent.get(\"profile\") == COHERENT_HEART_PROFILE:\n            require(time.monotonic() <= deadline, \"Owned cleanup completed after its original 180-second deadline\")\n    except BaseException as error:\n",
+            "after": "                require(result.returncode == 0, \"Owned simulator cleanup failed\")\n            entry[\"status\"] = \"DELETED_OWNED_SIMULATOR\"\n        if intent.get(\"profile\") in (COHERENT_HEART_PROFILE, \"sdk06-qualified\"):\n            require(time.monotonic() <= deadline, \"Owned cleanup completed after its original 180-second deadline\")\n    except BaseException as error:\n"
+          }
+        ]
+      },
+      "Tools/PinkhaSimulatorGate/wave15_diagnostics.py": {
+        "current_sha256": "c1ca1fe8857e6ce71b91ffb49ff54627815cbfe44beaa1bbb7328c9bb7a55397",
+        "tested_sha256": "c1ca1fe8857e6ce71b91ffb49ff54627815cbfe44beaa1bbb7328c9bb7a55397",
+        "classification": "BYTE_IDENTICAL_ACTUAL_LOADED_SOURCE",
+        "inverses": []
+      }
+    },
+    "snapshot_source_count": 300,
+    "actual_loaded_count": 9,
+    "actual_method_names": [
+      "test_coherent_kernel_sources.CoherentKernelAndSourceControls.test_coherent_owned_readiness_and_nested_cleanup_use_exact_kernel_absence",
+      "test_coherent_kernel_sources.CoherentKernelAndSourceControls.test_single_git_batch_preserves_exact_loaded_closure_and_rejects_corruption"
+    ],
+    "original_events": [
+      {
+        "at": "2026-11-23T06:58:41.017245+00:00",
+        "event": "START",
+        "method": "test_coherent_kernel_sources.CoherentKernelAndSourceControls.test_coherent_owned_readiness_and_nested_cleanup_use_exact_kernel_absence"
+      },
+      {
+        "at": "2026-11-23T06:58:41.058684+00:00",
+        "event": "PASS",
+        "method": "test_coherent_kernel_sources.CoherentKernelAndSourceControls.test_coherent_owned_readiness_and_nested_cleanup_use_exact_kernel_absence"
+      },
+      {
+        "at": "2026-11-23T06:58:41.059229+00:00",
+        "event": "START",
+        "method": "test_coherent_kernel_sources.CoherentKernelAndSourceControls.test_single_git_batch_preserves_exact_loaded_closure_and_rejects_corruption"
+      },
+      {
+        "at": "2026-11-23T06:58:41.119179+00:00",
+        "event": "PASS",
+        "method": "test_coherent_kernel_sources.CoherentKernelAndSourceControls.test_single_git_batch_preserves_exact_loaded_closure_and_rejects_corruption"
+      }
+    ],
+    "original_log": "test_coherent_owned_readiness_and_nested_cleanup_use_exact_kernel_absence (test_coherent_kernel_sources.CoherentKernelAndSourceControls.test_coherent_owned_readiness_and_nested_cleanup_use_exact_kernel_absence) ... COHERENT_KERNEL_ORIGINAL {\"nestedGroups\": 1, \"oldProductTests\": 0, \"originalSHA256\": \"2950ecbd4b8ba53513ad26b4816b008df5f661441d893a2d735e80946c60ec44\", \"ownedPID\": 2271599, \"readinessKernelAbsence\": true}\nok\ntest_single_git_batch_preserves_exact_loaded_closure_and_rejects_corruption (test_coherent_kernel_sources.CoherentKernelAndSourceControls.test_single_git_batch_preserves_exact_loaded_closure_and_rejects_corruption) ... ok\n\n----------------------------------------------------------------------\nRan 2 tests in 0.102s\n\nOK\n",
+    "methods_executed_now": 0,
+    "product_acceptance_claimed": false
+  },
+  "scope": {
+    "new_kernel_algorithm": false,
+    "budgets_changed": false,
+    "historical_source_view_only": true,
+    "old_controls_rerun": 0,
+    "tagged_product_selection_qualified": false
+  }
+}

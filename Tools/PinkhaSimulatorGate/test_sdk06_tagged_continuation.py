@@ -179,6 +179,48 @@ class TaggedSDK06Controls(unittest.TestCase):
             with mock.patch.object(tagged, "read_regular", side_effect=changed):
                 with self.assertRaises(ValueError): tagged.historical_retained_view(APP, view)
             with self.assertRaises(ValueError): tagged.historical_retained_view(APP, APP)
+            composed = tagged.composition.contract(APP, tagged.read_regular)
+            retained = result["retained_current_shared_composition"]
+            self.assertEqual(retained["original_actual_loaded_count"], 9)
+            self.assertEqual(retained["original_source_inventory_count"], 300)
+            self.assertFalse(retained["original_inventory_is_exercised_coverage"])
+            self.assertFalse(retained["workflow_view_executed"])
+            self.assertFalse(retained["current_selector_qualified"])
+            self.assertEqual(retained["old_controller_methods_executed_now"], 0)
+            self.assertEqual(retained["coherent_reader_caller_scope"],
+                             "STATIC_CALLER_BINDING_NOT_AN_ACTUAL_LOADED_METHOD_CLAIM")
+            self.assertEqual(len(retained["original_coherent_methods"]), 2)
+            central = ".github/workflows/torah-inspector-ipados27.yml"
+            for name, row in composed["historical_inverses"].items():
+                self.assertEqual(result["actual_current_inputs"][name]["sha256"], row["after_sha256"])
+                self.assertEqual(hashlib.sha256((view / name).read_bytes()).hexdigest(), row["before_sha256"])
+            self.assertEqual(retained["executing_workflows"][central],
+                             composed["historical_inverses"][central]["after_sha256"])
+            self.assertNotEqual(retained["executing_workflows"][central],
+                                hashlib.sha256((view / central).read_bytes()).hexdigest())
+            for name, row in retained["original_actual_loaded_source_views"].items():
+                self.assertEqual(row["actual_current_sha256"], hashlib.sha256((APP / name).read_bytes()).hexdigest())
+                original = subprocess.check_output(["git", "-C", str(APP), "show",
+                    composed["root_qualification"]["source_commit"] + ":" + name], timeout=30)
+                self.assertEqual(row["original_loaded_sha256"], hashlib.sha256(original).hexdigest())
+            prefix = tagged.composition.PREFIX
+            empty = prefix + "root-audit.stderr"
+            self.assertEqual(tagged.read_regular(APP, empty)[0], b"")
+            negative_paths = [
+                central, ".github/workflows/pinkha-sdk06-tagged-continuation.yml",
+                "Tools/PinkhaSimulatorGate/coherent_controller_sources.py",
+                "Tools/PinkhaSimulatorGate/run_owned_single_lane.py",
+                "Tools/PinkhaSimulatorGate/wave15_batch.py",
+                prefix + "attempt1/events.json", prefix + "attempt1/controls.log",
+                prefix + "attempt1/source-before.json", empty, tagged.composition.MANIFEST,
+            ]
+            for target in negative_paths:
+                def drift(root, relative, *args):
+                    data, mode = read(root, relative, *args)
+                    return (data + b"\n", mode) if Path(root) == APP and relative == target else (data, mode)
+                with self.subTest(composed_dependency=target):
+                    with mock.patch.object(tagged, "read_regular", side_effect=drift):
+                        with self.assertRaises(ValueError): tagged.historical_retained_view(APP, view)
 
     def test_actual_current_tag_enumeration_binds_exact23_and_one_use_execution_argv(self):
         source, selection = source_selection()

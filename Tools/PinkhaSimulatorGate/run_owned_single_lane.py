@@ -70,7 +70,7 @@ def verify_owned_group_stopped(command_path, *, seconds=10, cleanup_profile=None
                   "Owned worker cleanup was not completed")
     deadline = time.monotonic() + seconds
     kernel_observation = None
-    if cleanup_profile in ("sdk06-enumeration", "sdk06-qualified"):
+    if cleanup_profile in ("sdk06-enumeration", "sdk06-qualified", owned.COHERENT_HEART_PROFILE):
         kernel_observation = _sdk06_kernel_group_observation(pgid, deadline)
         if kernel_observation["outcome"] == "ABSENT_ESRCH":
             return dict(status="PASS", pgid=pgid, live_members=0, observations=0,

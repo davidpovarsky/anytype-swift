@@ -52,10 +52,12 @@ on:
           - semantic-page-apple-consumer
           - semantic-page-apple-mounted
           - coherent-original-products
+          - native-ui-original-products
           - prepared-migration-apple
           - prepared-inline-file-apple
           - sdk06-enumeration-probe
           - sdk06-basename-probe
+          - sdk06-tagged-continuation
           - t5-native-pagination
           - t5-native-account-retry
           - t5-native-attachment
@@ -305,6 +307,10 @@ jobs:
     if: ${{ inputs.route == 'sdk06-basename-probe' }}
     uses: ./.github/workflows/pinkha-sdk06-basename-probe.yml
 
+  sdk06-tagged-continuation:
+    if: ${{ inputs.route == 'sdk06-tagged-continuation' }}
+    uses: ./.github/workflows/pinkha-sdk06-tagged-continuation.yml
+
   prepared-inline-file-apple:
     if: ${{ inputs.route == 'prepared-inline-file-apple' }}
     uses: ./.github/workflows/pinkha-prepared-inline-file-apple.yml
@@ -316,6 +322,10 @@ jobs:
   semantic-page-apple-mounted:
     if: ${{ inputs.route == 'semantic-page-apple-mounted' }}
     uses: ./.github/workflows/pinkha-semantic-page-apple-mounted.yml
+
+  native-ui-original-products:
+    if: ${{ inputs.route == 'native-ui-original-products' }}
+    uses: ./.github/workflows/pinkha-any-native-ui-original-products.yml
 
   coherent-original-products:
     if: ${{ inputs.route == 'coherent-original-products' }}

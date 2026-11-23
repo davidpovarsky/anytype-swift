@@ -140,3 +140,31 @@ Actual compiled tag enumeration: NOT_RUN.
 Current SDK06 product23/32 +ack7 +native1/UI1/live mapping: NOT_RUN.
 No selector admission, SDK06 acceptance, Release acceptance, physical-device
 acceptance or full matrix completion is claimed by this source checkpoint.
+
+
+## Current shared composition before the first four controls
+
+The next freeze composes the exact a36 coherent kernel-profile predicate and
+batched source reader with the existing 23-commit SDK continuation chain.
+The original fixed tag source manifest and retained-control manifest/verifier
+remain byte-identical to 714701f. A separate fixed composition manifest permits
+only three exact historical views: the coherent profile predicate, reader caller,
+and the original central workflow as opaque historical proof data.
+
+The currently executable central and tagged workflows have independent exact
+hashes. All 52 existing shared jobs and all 52 SDK-branch jobs are preserved;
+the union has 54 jobs. The historical workflow view is never executed.
+
+The original coherent two-method log, events, result, source snapshots and root
+review are read as data, with all nine actually loaded source views checked.
+The 300-file original inventory does not imply 300 exercised files. The reader
+caller is statically bound; it was not itself an actual imported-method claim.
+No old control or product method is rerun.
+
+An independent static review found legitimate zero-byte original stderr files.
+Both pre-execution readers now permit exact pinned empty originals, while new
+executable controller/workflow inputs must be nonempty. No control ran before
+this correction. The four new controls remain pending source review; only their
+second method gained composition and original-proof tamper cases. The wrapper also
+preloads only the unchanged production retained verifier before recording its
+initial loaded closure; no verifier method or old test runs in that preload.
