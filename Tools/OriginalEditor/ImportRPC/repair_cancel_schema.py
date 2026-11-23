@@ -34,6 +34,27 @@ def bytes_row(raw, path):
             "sha256": hashlib.sha256(raw).hexdigest(),
             "git_blob": hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()}
 
+def validate_filesplit_lock(raw, expected):
+    """Check the immutable original lockfile and its pinned revision labels."""
+    row = bytes_row(raw, "Tools/anytype-swift-filesplit/Package.resolved")
+    if row["git_blob"] != expected["package_resolved_git_blob"]:
+        raise RuntimeError("Original filesplit lockfile Git blob differs")
+    resolved = json.loads(raw)
+    pins = resolved.get("pins", resolved.get("object", {}).get("pins", []))
+    observed = []
+    for pin in pins:
+        state = pin["state"]
+        label = state.get("version", state.get("branch"))
+        observed.append({"identity": pin["identity"], "version": label,
+                         "revision": state["revision"]})
+    if len({p["identity"] for p in observed}) != len(observed):
+        raise RuntimeError("Original filesplit dependency identities repeat")
+    if sorted(observed, key=lambda p: p["identity"]) != sorted(
+            expected["pins"], key=lambda p: p["identity"]):
+        raise RuntimeError("Original filesplit resolved dependencies differ")
+    return {"lockfile": row, "pins": observed,
+            "scope": "Original locked identities, revision labels and full commit revisions."}
+
 def validate_output_delta(before, after, expected):
     if set(before) != set(after) or set(before) != set(expected):
         raise RuntimeError("Generated family set differs")
@@ -170,11 +191,10 @@ def repair(control, packet, heart, swift_input, plugin_input, work, evidence,
     make = ["make","SHELL=/bin/bash",".SHELLFLAGS=-e -o pipefail -c"]
     commands.require("build-original-filesplit",make + ["setup-file-splitter"],swift,1800)
     tools["filesplit"] = swift / "build/anytype-swift-filesplit-v1"
-    resolved = json.loads((swift / "Tools/anytype-swift-filesplit/Package.resolved").read_bytes())
-    pins = resolved.get("pins",resolved.get("object",{}).get("pins",[]))
-    observed = [{"identity":p["identity"],"version":p["state"].get("version"),"revision":p["state"]["revision"]} for p in pins]
-    intake.require(sorted(observed,key=lambda p:p["identity"]) == sorted(toolpins["filesplit"]["pins"],key=lambda p:p["identity"]),
-                   "Original filesplit resolved dependencies differ")
+    filesplit_lock = (swift / "Tools/anytype-swift-filesplit/Package.resolved").read_bytes()
+    (evidence / "ACTUAL_REPAIR_FILESPLIT.Package.resolved").write_bytes(filesplit_lock)
+    filesplit_receipt = validate_filesplit_lock(filesplit_lock, toolpins["filesplit"])
+    intake.write(evidence / "ACTUAL_REPAIR_FILESPLIT_DEPENDENCIES.json", filesplit_receipt)
     commands.require("build-original-gogo-plugins",make + ["setup-protoc-go"],heart,1200)
     gogo = json.loads(commands.require("actual-original-gogo-module",
         ["go","list","-m","-json","github.com/gogo/protobuf"],heart,60).read_bytes())
