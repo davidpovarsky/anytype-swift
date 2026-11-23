@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
-  "observedUTC": "2026-11-23T06:17:29.743806+00:00",
-  "previousPublishedSharedHead": "cb50b5a8698f3d32423dbc4b171449556fba5478",
-  "integratedSourceHead": "20e90f32cc4071e775f5547dd5b93df78e7f54a3",
+  "observedUTC": "2026-11-23T06:41:16.580837+00:00",
+  "previousPublishedSharedHead": "051401f411a5f59090678cffb0cc3c0f8e581de3",
+  "integratedSourceHead": "4cb74256684a886fa3c24d49305878856b31fe40",
   "owners": {
     "root": "Shared integration, publication, Asana and sole consolidated CI observer; SDK basename terminal audit",
     "acceptance_map": "New UI original Products controller/workflow with separate App and control origins",
@@ -16,9 +16,9 @@
       "branch": "codex/chatgpt-wave15-semantic-known-simulator-20261123",
       "url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45116855451",
       "createdAtUTC": "2026-11-23T05:17:39Z",
-      "lastKnownStatus": "in_progress",
-      "conclusion": null,
-      "observedStatusUTC": "2026-11-23T06:17:07.287200+00:00",
+      "lastKnownStatus": "completed",
+      "conclusion": "success",
+      "observedStatusUTC": "2026-11-23T06:39:30.916291+00:00",
       "terminalAuditOwner": "sdk_ci",
       "watcherJob": "job_e3a5ebecd1db"
     },
@@ -30,7 +30,7 @@
       "createdAtUTC": "2026-11-23T06:05:31Z",
       "lastKnownStatus": "completed",
       "conclusion": "failure",
-      "observedStatusUTC": "2026-11-23T06:17:07.287823+00:00",
+      "observedStatusUTC": "2026-11-23T06:39:30.917800+00:00",
       "terminalAuditOwner": "root",
       "watcherJob": "job_e3a5ebecd1db"
     },
@@ -40,9 +40,9 @@
       "branch": "codex/chatgpt-wave15-shared-20261121",
       "url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45122453940",
       "createdAtUTC": "2026-11-23T06:11:26Z",
-      "lastKnownStatus": "in_progress",
-      "conclusion": null,
-      "observedStatusUTC": "2026-11-23T06:17:07.288974+00:00",
+      "lastKnownStatus": "completed",
+      "conclusion": "failure",
+      "observedStatusUTC": "2026-11-23T06:39:30.918382+00:00",
       "terminalAuditOwner": "root",
       "watcherJob": "job_e3a5ebecd1db"
     }
@@ -347,6 +347,35 @@
           "integrated": "d6bbcc28922153cecd525e5d9dca5f56b44e487f"
         }
       ]
+    },
+    "nativeLocalstoreConcreteCapability": {
+      "source": "1e9832bf41e1083cb757a8de0528dd98606a7b6f",
+      "nativeSource": "102f6243edb17068048869b85bc151f177897a68",
+      "newExternalMethods": 1,
+      "directlyAffectedMethods": 1,
+      "actualNamedStartsAndPasses": 8,
+      "failures": 0,
+      "skips": 0,
+      "unchangedMethodsRerun": 0,
+      "newInterleavingProofs": 0,
+      "liveResolvedDependencies": 4041,
+      "rootReviewSHA256": "39a2e737c91d75b82fa5e08ecc40e2d722e8249f25c9c7282ff6c378771ae0df",
+      "qualificationSHA256": "aab209b73afc810a56cb42a55c88c90ede245dff198358eb7170fb10d74814f5",
+      "fullMigration": false,
+      "nativeSourceAdmission": false
+    },
+    "sdk45121824215": {
+      "runConclusion": "FAIL",
+      "artifactID": 14793904483,
+      "artifactSHA256": "7c8172d4d5206af87b46b15981c458f4608a9e62ee3957c84f1344bffa8e1967",
+      "rootReviewSHA256": "afba5c08cf5040df0fe156f3b4427fcc16479556a321dab0d4d88746e9dfa72d",
+      "actualEnabled": 26,
+      "requiredEnabled": 23,
+      "extraParameterized": 3,
+      "selectorAdmission": false,
+      "newBuilds": 0,
+      "currentProductMethods": 0,
+      "actualKernelAbsenceGroups": 12
     }
   },
   "boundaries": [
