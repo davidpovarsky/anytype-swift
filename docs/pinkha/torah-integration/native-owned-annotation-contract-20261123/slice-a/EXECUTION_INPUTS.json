@@ -1,5 +1,13 @@
 {
-  "authored_native_source_commit": "328549ab2d57aa90cf8e05039a4b494dc2d9f417",
+  "annotation_payload_policy": {
+    "cross_language_scope": "Native/SDK/Host policy; runtime driver remains exact reviewed9a2b97 and binds actual native source bytes",
+    "git_blob": "8c10d71f7ac212932df8abbc4eb969b0c76d918d",
+    "native_archive_max_bytes": 1048576,
+    "path": "docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/slice-a/budget-20261123/ANNOTATION_PAYLOAD_POLICY.json",
+    "sha256": "818bd440374cd49072f018065d300209bd2dafc506ec16d8c2c686736bde7077",
+    "source_revision": "37c9c3fe7d43c8aa3fd1f332c04e6dec89af8b95"
+  },
+  "authored_native_source_commit": "37c9c3fe7d43c8aa3fd1f332c04e6dec89af8b95",
   "compiled_original_model_paths": [
     "pb/snapshot.pb.go",
     "pb/changes.pb.go",
@@ -14,25 +22,25 @@
       "sha256": "9a2b97c19bcebdbc7a3c0b4563dcade1368cab22f334f510e0364e96236ed001"
     },
     {
-      "bytes": 23276,
-      "git_blob": "40196f9039f7709dfee5d952b4319c82254dee60",
+      "bytes": 23278,
+      "git_blob": "c3a134d2e6dd66ef170f358e86ef9dce5883325c",
       "path": "native/core/block/import/owned_annotation_archive.go",
-      "sha256": "565e0b8545c4c69a48b6983793df801ef4210933bf72a2694b5311c53aced735"
+      "sha256": "3fb56e13a200956bb2c6db58c1f8ca2c9a0671b0bb64b1d2ad4ac318445b9066"
     },
     {
-      "bytes": 20282,
-      "git_blob": "aa7fb2f338f5529d3f4bde3b19a21ba35a49815d",
+      "bytes": 21694,
+      "git_blob": "6a361085e15e18af741da7abf2626e3cf48e9a18",
       "path": "native/core/block/import/owned_annotation_archive_test.go",
-      "sha256": "a234e88527c590fc24cc729053b323a2a134a16f3a83e5553f798f13b91a03e3"
+      "sha256": "4adace712198e85f389b926c218573bf73d355fb0625b6983e1a6d32ecf644a4"
     },
     {
-      "bytes": 28935,
-      "git_blob": "67f075cc14043059b50dbb2ee6b673c9bb2ea2cb",
+      "bytes": 28932,
+      "git_blob": "060b462ee4f46eb6638e8ca601ffd050ecf1bbdb",
       "path": "native/core/application/owned_annotation_export_native_test.go",
-      "sha256": "a59c2f6eb6424d943d238d13d47f9701c5fc7eeda0a29ddd26b428553b48c1eb"
+      "sha256": "7a97d78db68ddedbd9555e683e5f16a18f2015f3f5894cbd14c6d97765f8ea86"
     }
   ],
-  "control_preparation_base": "bdcf6a310d8b29c523584f7bcddbe6d76fe5d1e1",
+  "control_preparation_base": "9357b53ff8230128d1f3340118ec152770feb12a",
   "expected_rejections": {
     "AbsolutePath": "zip_framing",
     "BackslashPath": "zip_framing",
@@ -72,37 +80,38 @@
       }
     ]
   },
+  "fixture_exported_type_repair_source_commit": "37c9c3fe7d43c8aa3fd1f332c04e6dec89af8b95",
   "fixture_readiness_repair_source_commit": "bdcf6a310d8b29c523584f7bcddbe6d76fe5d1e1",
   "generated_rpc_changes": false,
   "heart_base": "d98420b1113536afd08cde6de9a5816f6d27ffff",
   "historical_controls_replayed": false,
   "new_native_inputs": [
     {
-      "bytes": 23276,
-      "git_blob": "40196f9039f7709dfee5d952b4319c82254dee60",
+      "bytes": 23278,
+      "git_blob": "c3a134d2e6dd66ef170f358e86ef9dce5883325c",
       "heart_path": "core/block/import/owned_annotation_archive.go",
       "heart_preimage_sha256": null,
       "path": "native/core/block/import/owned_annotation_archive.go",
-      "sha256": "565e0b8545c4c69a48b6983793df801ef4210933bf72a2694b5311c53aced735",
-      "source_revision": "328549ab2d57aa90cf8e05039a4b494dc2d9f417"
+      "sha256": "3fb56e13a200956bb2c6db58c1f8ca2c9a0671b0bb64b1d2ad4ac318445b9066",
+      "source_revision": "37c9c3fe7d43c8aa3fd1f332c04e6dec89af8b95"
     },
     {
-      "bytes": 20282,
-      "git_blob": "aa7fb2f338f5529d3f4bde3b19a21ba35a49815d",
+      "bytes": 21694,
+      "git_blob": "6a361085e15e18af741da7abf2626e3cf48e9a18",
       "heart_path": "core/block/import/owned_annotation_archive_test.go",
       "heart_preimage_sha256": null,
       "path": "native/core/block/import/owned_annotation_archive_test.go",
-      "sha256": "a234e88527c590fc24cc729053b323a2a134a16f3a83e5553f798f13b91a03e3",
-      "source_revision": "328549ab2d57aa90cf8e05039a4b494dc2d9f417"
+      "sha256": "4adace712198e85f389b926c218573bf73d355fb0625b6983e1a6d32ecf644a4",
+      "source_revision": "37c9c3fe7d43c8aa3fd1f332c04e6dec89af8b95"
     },
     {
-      "bytes": 28935,
-      "git_blob": "67f075cc14043059b50dbb2ee6b673c9bb2ea2cb",
+      "bytes": 28932,
+      "git_blob": "060b462ee4f46eb6638e8ca601ffd050ecf1bbdb",
       "heart_path": "core/application/owned_annotation_export_native_test.go",
       "heart_preimage_sha256": null,
       "path": "native/core/application/owned_annotation_export_native_test.go",
-      "sha256": "a59c2f6eb6424d943d238d13d47f9701c5fc7eeda0a29ddd26b428553b48c1eb",
-      "source_revision": "bdcf6a310d8b29c523584f7bcddbe6d76fe5d1e1"
+      "sha256": "7a97d78db68ddedbd9555e683e5f16a18f2015f3f5894cbd14c6d97765f8ea86",
+      "source_revision": "37c9c3fe7d43c8aa3fd1f332c04e6dec89af8b95"
     }
   ],
   "original_model_and_rpc_inputs": [
@@ -178,6 +187,7 @@
     "go.sum": "7c873be1e5b4c65e5e46d18167ae6bc29f0f5b51c459a8398d75ab22f0b2432d",
     "tantivity_sha256.txt": "14a78977c8b08e3e976cfbe130a6092aaec707e7515aa1811326e1c028cd2948"
   },
+  "prior_authored_native_source_commit": "328549ab2d57aa90cf8e05039a4b494dc2d9f417",
   "production_import_activated": false,
   "schema": 1,
   "scope": {
