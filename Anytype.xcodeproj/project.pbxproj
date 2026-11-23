@@ -104,6 +104,9 @@
 		FA8301012F111900006805CC /* PinkhaTorahPresentation in Frameworks */ = {isa = PBXBuildFile; productRef = FA8201012F111900006805CC /* PinkhaTorahPresentation */; };
 		FA7500012F111900006805CC /* PinkhaHanlinUI in Frameworks */ = {isa = PBXBuildFile; productRef = FA7400012F111900006805CC /* PinkhaHanlinUI */; };
 		FA7501012F111900006805CC /* PinkhaHanlinUI in Frameworks */ = {isa = PBXBuildFile; productRef = FA7401012F111900006805CC /* PinkhaHanlinUI */; };
+		FAB300012F112300006805CC /* HanlinMiniAppsBridge in Frameworks */ = {isa = PBXBuildFile; productRef = FAB200012F112300006805CC /* HanlinMiniAppsBridge */; };
+		FAB300022F112300006805CC /* HanlinMiniAppsPicker in Frameworks */ = {isa = PBXBuildFile; productRef = FAB200022F112300006805CC /* HanlinMiniAppsPicker */; };
+		FAB301012F112300006805CC /* HanlinMiniAppsBridge in Frameworks */ = {isa = PBXBuildFile; productRef = FAB201012F112300006805CC /* HanlinMiniAppsBridge */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -291,6 +294,8 @@
 				FA8300012F111900006805CC /* PinkhaTorahPresentation in Frameworks */,
 				FA7500012F111900006805CC /* PinkhaHanlinUI in Frameworks */,
 				FA7300012F111900006805CC /* PinkhaHanlinCore in Frameworks */,
+				FAB300012F112300006805CC /* HanlinMiniAppsBridge in Frameworks */,
+				FAB300022F112300006805CC /* HanlinMiniAppsPicker in Frameworks */,
 				FA6300012F111800006805CC /* HanlinHostContracts in Frameworks */,
 				FA6300022F111800006805CC /* HanlinPlatformContracts in Frameworks */,
 				FA6300032F111800006805CC /* HanlinAgentCore in Frameworks */,
@@ -351,6 +356,7 @@
 				FA8301012F111900006805CC /* PinkhaTorahPresentation in Frameworks */,
 				FA7501012F111900006805CC /* PinkhaHanlinUI in Frameworks */,
 				FA7301012F111900006805CC /* PinkhaHanlinCore in Frameworks */,
+				FAB301012F112300006805CC /* HanlinMiniAppsBridge in Frameworks */,
 				FA6301012F111800006805CC /* HanlinHostContracts in Frameworks */,
 				FA6301022F111800006805CC /* HanlinPlatformContracts in Frameworks */,
 				FA6301032F111800006805CC /* HanlinAgentCore in Frameworks */,
@@ -525,6 +531,8 @@
 				FA8200012F111900006805CC /* PinkhaTorahPresentation */,
 				FA7400012F111900006805CC /* PinkhaHanlinUI */,
 				FA7200012F111900006805CC /* PinkhaHanlinCore */,
+				FAB200012F112300006805CC /* HanlinMiniAppsBridge */,
+				FAB200022F112300006805CC /* HanlinMiniAppsPicker */,
 				FA6200012F111800006805CC /* HanlinHostContracts */,
 				FA6200022F111800006805CC /* HanlinPlatformContracts */,
 				FA6200032F111800006805CC /* HanlinAgentCore */,
@@ -599,6 +607,7 @@
 				FA8201012F111900006805CC /* PinkhaTorahPresentation */,
 				FA7401012F111900006805CC /* PinkhaHanlinUI */,
 				FA7201012F111900006805CC /* PinkhaHanlinCore */,
+				FAB201012F112300006805CC /* HanlinMiniAppsBridge */,
 				FA6201012F111800006805CC /* HanlinHostContracts */,
 				FA6201022F111800006805CC /* HanlinPlatformContracts */,
 				FA6201032F111800006805CC /* HanlinAgentCore */,
@@ -739,6 +748,7 @@
 				FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinAgentSDK" */,
 				FA6100022F111800006805CC /* XCLocalSwiftPackageReference "HanlinPlatform" */,
 				FA6100032F111800006805CC /* XCLocalSwiftPackageReference "HanlinPresentationSDK" */,
+				FAB100012F112300006805CC /* XCLocalSwiftPackageReference "HanlinMiniAppsBridge" */,
 				5333421A262E249100238121 /* XCRemoteSwiftPackageReference "FloatingPanel" */,
 				1259300326F3A5C500B115CD /* XCRemoteSwiftPackageReference "Highlightr" */,
 				1259300C26F3A6AE00B115CD /* XCRemoteSwiftPackageReference "Kingfisher" */,
@@ -2130,6 +2140,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Modules/PinkhaTorahPresentation;
 		};
+		FAB100012F112300006805CC /* XCLocalSwiftPackageReference "HanlinMiniAppsBridge" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Dependencies/Hanlin/Packages/HanlinMiniAppsBridge;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -2625,6 +2639,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FA7100012F111900006805CC /* XCLocalSwiftPackageReference "PinkhaAnyHanlin" */;
 			productName = PinkhaHanlinUI;
+		};
+		FAB200012F112300006805CC /* HanlinMiniAppsBridge */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB100012F112300006805CC /* XCLocalSwiftPackageReference "HanlinMiniAppsBridge" */;
+			productName = HanlinMiniAppsBridge;
+		};
+		FAB200022F112300006805CC /* HanlinMiniAppsPicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB100012F112300006805CC /* XCLocalSwiftPackageReference "HanlinMiniAppsBridge" */;
+			productName = HanlinMiniAppsPicker;
+		};
+		FAB201012F112300006805CC /* HanlinMiniAppsBridge */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB100012F112300006805CC /* XCLocalSwiftPackageReference "HanlinMiniAppsBridge" */;
+			productName = HanlinMiniAppsBridge;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
