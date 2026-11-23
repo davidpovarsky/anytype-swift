@@ -1,0 +1,339 @@
+name: Original native UI Products continuation
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  native-ui-original-products:
+    name: Seven unexecuted journeys in original native UI Products
+    runs-on: xcode-27
+    timeout-minutes: 120
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
+      ANY_BUILD_VERSION: v0.5.0-pinkha.1
+      PYTHONDONTWRITEBYTECODE: "1"
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Record separate current control and immutable App source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/any-patched-evidence
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git rev-parse HEAD > build/any-patched-evidence/control-source-sha.txt
+          printf '%s\n' '4b09cc5478c60c1c6728a54f2a27a115637a835b' > build/any-patched-evidence/application-source-sha.txt
+      - name: Create one fresh exact original-compatible simulator
+        id: simulator
+        run: python3 -B Tools/AnyEnginePort/native_ui_original_products.py create-simulator
+      - name: Admit and restore original Products without any build
+        id: admission
+        if: ${{ !cancelled() && steps.simulator.outcome == 'success' }}
+        run: python3 -B Tools/AnyEnginePort/native_ui_original_products.py admit
+      - name: Prepare the qualified owned Hanlin HTTPS provider
+        id: provider
+        if: ${{ !cancelled() && steps.admission.outcome == 'success' }}
+        run: |
+          python3 -B Tools/AnyEnginePort/hanlin_fixture_ci.py prepare \
+            --simulator-receipt build/any-patched-evidence/simulator.json \
+            --safe-dir build/any-patched-evidence/hanlin-provider
+
+      - name: Execute and verify original Products native-ui-continuation
+        id: four
+        if: ${{ !cancelled() && steps.provider.outcome == 'success' }}
+        env:
+          CURRENT_UI_STAGE: native-ui-continuation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B Tools/AnyEnginePort/native_ui_original_products.py check --stage native-ui-continuation
+          python3 -B - <<'PY'
+          import datetime, json, os, subprocess, sys
+          from pathlib import Path
+          sys.path.insert(0, str(Path.cwd() / "Tools/AnyEnginePort"))
+          import native_ui_original_products_contract as c
+          stage = os.environ["CURRENT_UI_STAGE"]
+          admission = c.data(c.ADMISSION)
+          c.require(os.environ["ANY_NATIVE_XCTESTRUN"] == admission["copiedDescriptor"]["path"]
+                    and os.environ["ANY_NATIVE_SIMULATOR_UDID"] == admission["ownedSimulatorUDID"],
+                    "actual_execution_environment_changed")
+          plan = c.plan(stage, Path(admission["copiedDescriptor"]["path"]), admission["ownedSimulatorUDID"],
+                        c.EVIDENCE / (stage + ".xcresult"))
+          c.require(c.data(c.EVIDENCE / (stage + "-original-products-plan.json")) == plan,
+                    "fixed_original_products_execution_plan_changed")
+          observation = {"stage": stage, "status": "START_PENDING",
+                         "startedAt": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                         "command": plan["command"], "cwd": str(c.ROOT)}
+          code = None
+          try:
+              with (c.EVIDENCE / (stage + ".log")).open("xb") as log:
+                  with subprocess.Popen(plan["command"], cwd=c.ROOT, stdout=subprocess.PIPE,
+                                        stderr=subprocess.STDOUT) as process:
+                      observation["pid"] = process.pid
+                      for line in iter(process.stdout.readline, b""):
+                          log.write(line); log.flush()
+                          sys.stdout.buffer.write(line); sys.stdout.buffer.flush()
+                      code = process.wait()
+                      observation.update(status="EXIT_OBSERVED", returncode=code)
+          except Exception as error:
+              observation.update(status="START_OR_STREAM_FAILED", failureKind=type(error).__name__,
+                                 failureReason=str(error)[:1000])
+          finally:
+              observation["finishedAt"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+              c.dump(c.EVIDENCE / (stage + "-process-observation.json"), observation)
+              c.dump(c.EVIDENCE / (stage + "-command-exit.json"),
+                     {"stage": stage, "testExit": code, "command": plan["command"]})
+          result = c.EVIDENCE / (stage + ".xcresult")
+          if result.is_dir():
+              for kind, suffix in (("summary", "-test-counts.json"), ("tests", "-test-methods.json")):
+                  try:
+                      raw = c.public_command(["xcrun", "xcresulttool", "get", "test-results", kind,
+                                              "--path", str(result), "--format", "json"],
+                                             c.EVIDENCE / "native-ui-original-commands" / stage, "xcresult-" + kind,
+                                             timeout=120)
+                      with (c.EVIDENCE / (stage + suffix)).open("xb") as stream:
+                          stream.write(raw)
+                  except Exception:
+                      # Exact failed extraction command/stdout/stderr remains in its own receipt.
+                      pass
+          PY
+          python3 -B Tools/AnyEnginePort/native_ui_original_products.py named --stage native-ui-continuation
+
+      - name: Verify the actual finite Hanlin provider transcript
+        id: provider_verify
+        if: ${{ !cancelled() && steps.provider.outcome == 'success' && steps.four.outcome != 'skipped' }}
+        run: |
+          python3 -B Tools/AnyEnginePort/hanlin_fixture_ci.py verify \
+            --safe-dir build/any-patched-evidence/hanlin-provider
+
+      - name: Execute and verify original Products archive-roundtrip
+        id: files
+        if: ${{ !cancelled() && steps.provider.outcome == 'success' }}
+        env:
+          CURRENT_UI_STAGE: archive-roundtrip
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B Tools/AnyEnginePort/native_ui_original_products.py check --stage archive-roundtrip
+          python3 -B - <<'PY'
+          import datetime, json, os, subprocess, sys
+          from pathlib import Path
+          sys.path.insert(0, str(Path.cwd() / "Tools/AnyEnginePort"))
+          import native_ui_original_products_contract as c
+          stage = os.environ["CURRENT_UI_STAGE"]
+          admission = c.data(c.ADMISSION)
+          c.require(os.environ["ANY_NATIVE_XCTESTRUN"] == admission["copiedDescriptor"]["path"]
+                    and os.environ["ANY_NATIVE_SIMULATOR_UDID"] == admission["ownedSimulatorUDID"],
+                    "actual_execution_environment_changed")
+          plan = c.plan(stage, Path(admission["copiedDescriptor"]["path"]), admission["ownedSimulatorUDID"],
+                        c.EVIDENCE / (stage + ".xcresult"))
+          c.require(c.data(c.EVIDENCE / (stage + "-original-products-plan.json")) == plan,
+                    "fixed_original_products_execution_plan_changed")
+          observation = {"stage": stage, "status": "START_PENDING",
+                         "startedAt": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                         "command": plan["command"], "cwd": str(c.ROOT)}
+          code = None
+          try:
+              with (c.EVIDENCE / (stage + ".log")).open("xb") as log:
+                  with subprocess.Popen(plan["command"], cwd=c.ROOT, stdout=subprocess.PIPE,
+                                        stderr=subprocess.STDOUT) as process:
+                      observation["pid"] = process.pid
+                      for line in iter(process.stdout.readline, b""):
+                          log.write(line); log.flush()
+                          sys.stdout.buffer.write(line); sys.stdout.buffer.flush()
+                      code = process.wait()
+                      observation.update(status="EXIT_OBSERVED", returncode=code)
+          except Exception as error:
+              observation.update(status="START_OR_STREAM_FAILED", failureKind=type(error).__name__,
+                                 failureReason=str(error)[:1000])
+          finally:
+              observation["finishedAt"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+              c.dump(c.EVIDENCE / (stage + "-process-observation.json"), observation)
+              c.dump(c.EVIDENCE / (stage + "-command-exit.json"),
+                     {"stage": stage, "testExit": code, "command": plan["command"]})
+          result = c.EVIDENCE / (stage + ".xcresult")
+          if result.is_dir():
+              for kind, suffix in (("summary", "-test-counts.json"), ("tests", "-test-methods.json")):
+                  try:
+                      raw = c.public_command(["xcrun", "xcresulttool", "get", "test-results", kind,
+                                              "--path", str(result), "--format", "json"],
+                                             c.EVIDENCE / "native-ui-original-commands" / stage, "xcresult-" + kind,
+                                             timeout=120)
+                      with (c.EVIDENCE / (stage + suffix)).open("xb") as stream:
+                          stream.write(raw)
+                  except Exception:
+                      # Exact failed extraction command/stdout/stderr remains in its own receipt.
+                      pass
+          PY
+          python3 -B Tools/AnyEnginePort/native_ui_original_products.py named --stage archive-roundtrip
+          attachment_root="$RUNNER_TEMP/native-ui-original-attachments-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          if [ ! -d "$attachment_root" ]; then mkdir -m 700 "$attachment_root"; fi
+          test ! -e "$attachment_root/archive-roundtrip"
+          xcrun xcresulttool export attachments --path build/any-patched-evidence/archive-roundtrip.xcresult \
+            --output-path "$attachment_root/archive-roundtrip"
+          python3 -B Tools/AnyEnginePort/native_ui_original_products.py files \
+            --attachments "$attachment_root/archive-roundtrip"
+
+      - name: Execute and verify original Products custom-type
+        id: custom_type
+        if: ${{ !cancelled() && steps.four.outcome == 'success' && steps.files.outcome == 'success' && steps.provider_verify.outcome == 'success' }}
+        env:
+          CURRENT_UI_STAGE: custom-type
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B Tools/AnyEnginePort/native_ui_original_products.py check --stage custom-type
+          python3 -B - <<'PY'
+          import datetime, json, os, subprocess, sys
+          from pathlib import Path
+          sys.path.insert(0, str(Path.cwd() / "Tools/AnyEnginePort"))
+          import native_ui_original_products_contract as c
+          stage = os.environ["CURRENT_UI_STAGE"]
+          admission = c.data(c.ADMISSION)
+          c.require(os.environ["ANY_NATIVE_XCTESTRUN"] == admission["copiedDescriptor"]["path"]
+                    and os.environ["ANY_NATIVE_SIMULATOR_UDID"] == admission["ownedSimulatorUDID"],
+                    "actual_execution_environment_changed")
+          plan = c.plan(stage, Path(admission["copiedDescriptor"]["path"]), admission["ownedSimulatorUDID"],
+                        c.EVIDENCE / (stage + ".xcresult"))
+          c.require(c.data(c.EVIDENCE / (stage + "-original-products-plan.json")) == plan,
+                    "fixed_original_products_execution_plan_changed")
+          observation = {"stage": stage, "status": "START_PENDING",
+                         "startedAt": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                         "command": plan["command"], "cwd": str(c.ROOT)}
+          code = None
+          try:
+              with (c.EVIDENCE / (stage + ".log")).open("xb") as log:
+                  with subprocess.Popen(plan["command"], cwd=c.ROOT, stdout=subprocess.PIPE,
+                                        stderr=subprocess.STDOUT) as process:
+                      observation["pid"] = process.pid
+                      for line in iter(process.stdout.readline, b""):
+                          log.write(line); log.flush()
+                          sys.stdout.buffer.write(line); sys.stdout.buffer.flush()
+                      code = process.wait()
+                      observation.update(status="EXIT_OBSERVED", returncode=code)
+          except Exception as error:
+              observation.update(status="START_OR_STREAM_FAILED", failureKind=type(error).__name__,
+                                 failureReason=str(error)[:1000])
+          finally:
+              observation["finishedAt"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+              c.dump(c.EVIDENCE / (stage + "-process-observation.json"), observation)
+              c.dump(c.EVIDENCE / (stage + "-command-exit.json"),
+                     {"stage": stage, "testExit": code, "command": plan["command"]})
+          result = c.EVIDENCE / (stage + ".xcresult")
+          if result.is_dir():
+              for kind, suffix in (("summary", "-test-counts.json"), ("tests", "-test-methods.json")):
+                  try:
+                      raw = c.public_command(["xcrun", "xcresulttool", "get", "test-results", kind,
+                                              "--path", str(result), "--format", "json"],
+                                             c.EVIDENCE / "native-ui-original-commands" / stage, "xcresult-" + kind,
+                                             timeout=120)
+                      with (c.EVIDENCE / (stage + suffix)).open("xb") as stream:
+                          stream.write(raw)
+                  except Exception:
+                      # Exact failed extraction command/stdout/stderr remains in its own receipt.
+                      pass
+          PY
+          python3 -B Tools/AnyEnginePort/native_ui_original_products.py named --stage custom-type
+          attachment_root="$RUNNER_TEMP/native-ui-original-attachments-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          if [ ! -d "$attachment_root" ]; then mkdir -m 700 "$attachment_root"; fi
+          test ! -e "$attachment_root/custom-type"
+          xcrun xcresulttool export attachments --path build/any-patched-evidence/custom-type.xcresult \
+            --output-path "$attachment_root/custom-type"
+          python3 -B Tools/AnyEnginePort/native_ui_original_products.py type \
+            --attachments "$attachment_root/custom-type"
+
+      - name: Execute and verify original Products native-history
+        id: history
+        if: ${{ !cancelled() && steps.custom_type.outcome == 'success' }}
+        env:
+          CURRENT_UI_STAGE: native-history
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B Tools/AnyEnginePort/native_ui_original_products.py check --stage native-history
+          python3 -B - <<'PY'
+          import datetime, json, os, subprocess, sys
+          from pathlib import Path
+          sys.path.insert(0, str(Path.cwd() / "Tools/AnyEnginePort"))
+          import native_ui_original_products_contract as c
+          stage = os.environ["CURRENT_UI_STAGE"]
+          admission = c.data(c.ADMISSION)
+          c.require(os.environ["ANY_NATIVE_XCTESTRUN"] == admission["copiedDescriptor"]["path"]
+                    and os.environ["ANY_NATIVE_SIMULATOR_UDID"] == admission["ownedSimulatorUDID"],
+                    "actual_execution_environment_changed")
+          plan = c.plan(stage, Path(admission["copiedDescriptor"]["path"]), admission["ownedSimulatorUDID"],
+                        c.EVIDENCE / (stage + ".xcresult"))
+          c.require(c.data(c.EVIDENCE / (stage + "-original-products-plan.json")) == plan,
+                    "fixed_original_products_execution_plan_changed")
+          observation = {"stage": stage, "status": "START_PENDING",
+                         "startedAt": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                         "command": plan["command"], "cwd": str(c.ROOT)}
+          code = None
+          try:
+              with (c.EVIDENCE / (stage + ".log")).open("xb") as log:
+                  with subprocess.Popen(plan["command"], cwd=c.ROOT, stdout=subprocess.PIPE,
+                                        stderr=subprocess.STDOUT) as process:
+                      observation["pid"] = process.pid
+                      for line in iter(process.stdout.readline, b""):
+                          log.write(line); log.flush()
+                          sys.stdout.buffer.write(line); sys.stdout.buffer.flush()
+                      code = process.wait()
+                      observation.update(status="EXIT_OBSERVED", returncode=code)
+          except Exception as error:
+              observation.update(status="START_OR_STREAM_FAILED", failureKind=type(error).__name__,
+                                 failureReason=str(error)[:1000])
+          finally:
+              observation["finishedAt"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+              c.dump(c.EVIDENCE / (stage + "-process-observation.json"), observation)
+              c.dump(c.EVIDENCE / (stage + "-command-exit.json"),
+                     {"stage": stage, "testExit": code, "command": plan["command"]})
+          result = c.EVIDENCE / (stage + ".xcresult")
+          if result.is_dir():
+              for kind, suffix in (("summary", "-test-counts.json"), ("tests", "-test-methods.json")):
+                  try:
+                      raw = c.public_command(["xcrun", "xcresulttool", "get", "test-results", kind,
+                                              "--path", str(result), "--format", "json"],
+                                             c.EVIDENCE / "native-ui-original-commands" / stage, "xcresult-" + kind,
+                                             timeout=120)
+                      with (c.EVIDENCE / (stage + suffix)).open("xb") as stream:
+                          stream.write(raw)
+                  except Exception:
+                      # Exact failed extraction command/stdout/stderr remains in its own receipt.
+                      pass
+          PY
+          python3 -B Tools/AnyEnginePort/native_ui_original_products.py named --stage native-history
+
+      - name: Preserve original provider cleanup outcome
+        id: provider_cleanup
+        if: always()
+        run: |
+          python3 -B Tools/AnyEnginePort/hanlin_fixture_ci.py cleanup \
+            --safe-dir build/any-patched-evidence/hanlin-provider
+      - name: Delete only this route's observed owned simulator
+        id: simulator_cleanup
+        if: always()
+        run: python3 -B Tools/AnyEnginePort/native_ui_original_products.py cleanup-simulator
+      - name: Preserve final original Products and source integrity
+        id: final_integrity
+        if: ${{ always() && steps.admission.outcome == 'success' }}
+        run: python3 -B Tools/AnyEnginePort/native_ui_original_products.py check --stage final
+      - name: Qualify seven current methods separately from twenty-two originals
+        if: ${{ always() && steps.admission.outcome == 'success' }}
+        run: python3 -B Tools/AnyEnginePort/native_ui_original_products.py aggregate
+      - name: Preserve all original current outcomes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Native-UI-Original-Products-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/any-patched-evidence
+          if-no-files-found: warn
+          retention-days: 30

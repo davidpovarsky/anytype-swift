@@ -52,6 +52,7 @@ on:
           - semantic-page-apple-consumer
           - semantic-page-apple-mounted
           - coherent-original-products
+          - native-ui-original-products
           - prepared-migration-apple
           - prepared-inline-file-apple
           - sdk06-enumeration-probe
@@ -311,6 +312,10 @@ jobs:
   semantic-page-apple-mounted:
     if: ${{ inputs.route == 'semantic-page-apple-mounted' }}
     uses: ./.github/workflows/pinkha-semantic-page-apple-mounted.yml
+
+  native-ui-original-products:
+    if: ${{ inputs.route == 'native-ui-original-products' }}
+    uses: ./.github/workflows/pinkha-any-native-ui-original-products.yml
 
   coherent-original-products:
     if: ${{ inputs.route == 'coherent-original-products' }}
