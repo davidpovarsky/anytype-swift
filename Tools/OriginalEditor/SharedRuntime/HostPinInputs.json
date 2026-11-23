@@ -75,11 +75,89 @@
     "sha256": "84717bec8dfbb7e306483954ba889d9221082543e21826dc4ef6cb1b429d4bdb"
   },
   "host_lock_adoption": {
+    "native_stageb_qualified": false,
+    "original_editor_stageb": {
+      "bytes": 2052,
+      "receipt": {
+        "application_trees": {
+          "Maktabah-iOSUITests": "ca36ba13f1fd900adf528a3e404fed6a66290b6b",
+          "Maktabah.xcodeproj": "f61421e8677027ffa18364226b4ee68a0937dfc5",
+          "Source": "fada5ad1164ed81e248dec54e1ceedfd2741fa57",
+          "Vendor": "ee5b415a5ccb9db9fda2b0e8d6ce3748cdeaea6e"
+        },
+        "clean_worktree": true,
+        "full_sdk_qualified": false,
+        "hanlin": {
+          "after": "ca3c91f2233bf5c77990643b29a874aac8704639",
+          "before": "e00498e33f106cc43be0476ffa2e09329c8ca300"
+        },
+        "host_lock": {
+          "after_sha256": "a41b340f77574fd74013ba5df160cffabab473f1941a50031d0f9025007c8c9c",
+          "before_sha256": "722609bb6b71362aee5e7f401246edcd037a2d1815c2fc4704bf93830d9f5530",
+          "path": "Maktabah.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+          "single_literal_change_and_whole_file_inverse_exact": true
+        },
+        "native_stageb_qualified": false,
+        "original_application_source": "1969b2065469b55e38e42cbb838a469ffa6a80f7",
+        "original_product_delta": [
+          "Maktabah.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+          "Vendor/HanlinSDK"
+        ],
+        "original_stageb_source": "00b30baa97fe14c0ba5be550e7a72cf64e768951",
+        "parent_sha": "ca4d544f1c36b6bf45c4ddeacf338251cf3cb44d",
+        "recorded_at": "2026-11-23T20:22:59.926541+00:00",
+        "root_focused_host_source": "07845de8c335a975027fd375f287a85754da51ab",
+        "root_receipt": {
+          "bytes": 1261,
+          "path": "/mnt/development/projects/diagnostics/otzaria-hanlin-sdk-continuation-live-20261123/qualified-core-adoption/HOST_LOCK_ADOPTION.json",
+          "sha256": "4fad1c4cfaf0ca5919c3ded60195555e392658d250d680a8384c18241e4e8da5"
+        },
+        "source_sha": "6ba33d848bda808181e6b3174c05bac5b3fd2d94",
+        "source_tree": "db9a5ac5199db8da2610ff4e7d066956e7d7fcec",
+        "status": "SOURCE_DEPENDENCY_ADOPTION_ONLY",
+        "swift_ai_sdk": {
+          "after": "07431abccbfb151ca2dab67bca6cf86fcb2bd3b8",
+          "before": "e7bf34111e603ca977becd007dd4e5bb109af857",
+          "original_methods_passed": 4185,
+          "qualified_core_run": 45246940299
+        },
+        "ui_and_original_editor_tests_unchanged": true
+      },
+      "sha256": "1dfb12e3c28ce2ac03e2a4e7a07d06b6bb47b3a37774063fdc75eaf86b31b2af"
+    },
     "required_core_revision": "07431abccbfb151ca2dab67bca6cf86fcb2bd3b8",
     "required_hanlin_revision": "ca3c91f2233bf5c77990643b29a874aac8704639",
-    "status": "PENDING_ROOT_FINAL_HOST_BINDING"
+    "root_focused_host": {
+      "bytes": 1261,
+      "receipt": {
+        "after_sha256": "a41b340f77574fd74013ba5df160cffabab473f1941a50031d0f9025007c8c9c",
+        "application_source_sha": "07845de8c335a975027fd375f287a85754da51ab",
+        "application_trees": {
+          "Maktabah-iOSUITests": "442ea1cf71c846eaa131a15f2b85fa4e30e205bd",
+          "Maktabah.xcodeproj": "f61421e8677027ffa18364226b4ee68a0937dfc5",
+          "Source": "4b2abd687328725fb7a7f0ca635b2cab9e0f0c0b",
+          "Vendor": "ee5b415a5ccb9db9fda2b0e8d6ce3748cdeaea6e"
+        },
+        "baseline": "96c5b1b60c15a9a0cf1c4356f9822c64d9864c86",
+        "before_sha256": "722609bb6b71362aee5e7f401246edcd037a2d1815c2fc4704bf93830d9f5530",
+        "hanlin_source": "ca3c91f2233bf5c77990643b29a874aac8704639",
+        "host_manifests_build_definitions_and_ui_unchanged": true,
+        "immediate_parent_before_sha256": "2854803c8c1aeb39f49a964e7adac51cf77eee822c88694e6f5c704c0b0cd450",
+        "native_result": "NOT_RUN",
+        "only_revision_literal_changed": true,
+        "parent": "41f4242e83a17773e39a4b17ba2450f1e9b2ddfb",
+        "path": "Maktabah.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+        "published_exact": true,
+        "sdk_application_ancestor": "fb5abff01b1ae7958ab6c6733ff715ff615ae7b8",
+        "swift_ai_sdk_source": "07431abccbfb151ca2dab67bca6cf86fcb2bd3b8",
+        "tree": "2c11e299cc0df79a1d804d4217c28f4d1e4cfeab"
+      },
+      "sha256": "4fad1c4cfaf0ca5919c3ded60195555e392658d250d680a8384c18241e4e8da5"
+    },
+    "source_trees_may_differ_between_independent_app_lanes": true,
+    "status": "ROOT_FOCUSED_AND_ORIGINAL_STAGEB_SOURCE_RECEIPTS_BOUND"
   },
   "root_integration_owner": true,
-  "schema": 2,
-  "status": "CORE_QUALIFIED_HANLIN_EXACT_HOST_FINAL_RECEIPT_PENDING"
+  "schema": 3,
+  "status": "CORE_QUALIFIED_HANLIN_EXACT_STAGEB_HOST_SOURCE_BOUND_NATIVE_PENDING"
 }
