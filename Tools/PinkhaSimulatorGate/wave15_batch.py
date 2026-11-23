@@ -348,15 +348,30 @@ class FrozenBuild:
         self.verify(self.app, self.shared.git(self.app, "rev-parse", "HEAD"),
                     self.shared.candidate_identity(self.app, matrix), profile_flags(self.profile), CONFIGURATION)
 
+    def prepare_fresh_device(self, udid, evidence):
+        import owned_simulator_readiness as simulator
+        import run_t5_apple_pair as pair
+        require(self.profile == COHERENT_HEART_PROFILE and self.device is not None
+                and self.device["udid"] == udid, "Coherent readiness requires its new owned simulator")
+        require(json.loads((evidence / "owned-simulator.json").read_bytes()) == self.device,
+                "Coherent readiness differs from the original created-device receipt")
+        return simulator.ensure_ready(app=self.app, evidence=evidence / "owned-readiness",
+            selection=self.device, expected_name=self.device["name"], pair=pair,
+            require_initial_shutdown=True)
+
     def confirm_empty_container(self, udid, evidence):
         require(self.device is not None and self.device["udid"] == udid, "Unowned fixture destination")
-        observation = {}
-        try:
-            inventory = scoped_device_inventory(self.device, timeout=SCOPED_DEVICE_QUERY_SECONDS,
-                                                observation=observation)
-        finally:
-            write(evidence / "fresh-device-query.json", observation)
-        observed = validate_owned_device(inventory, self.device, expected_state="Booted")
+        if self.profile == COHERENT_HEART_PROFILE:
+            readiness = validate_coherent_readiness(evidence, self.device)
+            observed = readiness["before"]
+        else:
+            observation = {}
+            try:
+                inventory = scoped_device_inventory(self.device, timeout=SCOPED_DEVICE_QUERY_SECONDS,
+                                                    observation=observation)
+            finally:
+                write(evidence / "fresh-device-query.json", observation)
+            observed = validate_owned_device(inventory, self.device, expected_state="Booted")
         query = subprocess.run(["xcrun", "simctl", "get_app_container", udid, BUNDLE, "data"],
                                capture_output=True, timeout=30)
         negative_unclassified = query.returncode != 0 and not query.stdout
@@ -372,6 +387,8 @@ class FrozenBuild:
                    "container_lookup_stderr_sha256": hashlib.sha256(query.stderr).hexdigest(),
                    "container_lookup_stderr_bytes": len(query.stderr),
                    "status": "FRESH_CREATED_DEVICE_BEFORE_NATIVE_PREPARATION" if negative_unclassified else "FAIL"}
+        if self.profile == COHERENT_HEART_PROFILE:
+            receipt["readiness_receipt_sha256"] = digest(evidence / "owned-readiness/readiness.json")
         write(evidence / "fresh-container.json", receipt)
         require(receipt["status"] != "FAIL", "Unexpected successful or nonempty container lookup before preparation")
 
@@ -403,6 +420,43 @@ class FrozenBuild:
                   "status": "SEPARATE_NATIVE_FIXTURE_OBSERVED_BEFORE_UI"}
         self.fixtures[name] = record
         write(evidence / "fixture-isolation.json", record)
+
+
+
+def validate_coherent_readiness(evidence, device):
+    """Re-read successful exact preboot identity/bootstatus; no redundant live inventory."""
+    import owned_simulator_readiness as simulator
+    import run_t5_apple_pair as pair
+    directory = evidence / "owned-readiness"
+    original = directory / "readiness.json"
+    require(original.is_file() and not original.is_symlink() and original.stat().st_size <= 65536,
+            "Original bounded coherent readiness receipt is missing")
+    ready = json.loads(original.read_bytes())
+    require(ready.get("status") == "OWNED_SIMULATOR_READY"
+            and ready.get("destination") == device["udid"]
+            and ready.get("tests_executed") == 0 and ready.get("boot_required") is True
+            and ready.get("before", {}).get("state") == "Shutdown"
+            and ready.get("bootstatus_return_code") == 0
+            and ready.get("postboot_inventory_performed") is False
+            and ready.get("readiness_basis") == "VERIFIED_PREBOOT_IDENTITY_AND_SUCCESSFUL_OWNED_BOOTSTATUS",
+            "Coherent simulator readiness is incomplete")
+    for name, key in (("before.json", "preboot_identity_sha256"), ("boot-status.log", "bootstatus_log_sha256")):
+        path = directory / name
+        require(path.is_file() and not path.is_symlink() and digest(path) == ready.get(key),
+                "Coherent original readiness evidence changed")
+    observed = simulator.owned_identity(json.loads((directory / "before.json").read_bytes()),
+                                        device, device["name"], pair)
+    require(observed == ready["before"], "Coherent preboot identity differs from its original inventory")
+    for name, argv, bound in (
+            ("boot", ["xcrun", "simctl", "boot", device["udid"]], 120),
+            ("boot-status", ["xcrun", "simctl", "bootstatus", device["udid"], "-b"], 180)):
+        command = json.loads((directory / (name + ".command.json")).read_bytes())
+        require(command.get("argv") == argv and command.get("timeout_seconds") == bound
+                and command.get("return_code") == 0 and command.get("timed_out", False) is False
+                and command.get("status") == "SUCCESS"
+                and command.get("owned_group_quiescence", {}).get("status") == "PASS",
+                "Coherent owned boot command lacks successful bounded completion")
+    return ready
 
 
 def valid_udid(value):
@@ -533,6 +587,12 @@ def build_once(args, lane, selections, receipt):
     require(postflight_suites == [preservation.SUITE], "Exactly one isolated postflight suite required")
     shared.command([*base, "-project", "Anytype.xcodeproj", "-scheme", "Anytype", "-derivedDataPath", str(derived),
                     *["-only-testing:AnytypeTests/" + name for name in native_suites + postflight_suites], *flags], app, common)
+    if profile == COHERENT_HEART_PROFILE:
+        import early_build_products
+        receipt["native_products_preservation"] = early_build_products.capture(derived, evidence,
+            source_sha=head, run_id=os.environ["GITHUB_RUN_ID"], run_attempt=os.environ["GITHUB_RUN_ATTEMPT"],
+            build_flags=flags, scope="coherent-native")
+        write(evidence / "batch-worker.json", receipt)
     require(source_snapshot(app, shared, stage="AFTER_APP_AND_NATIVE_TEST_BUILD") == source,
             "Source or package inputs changed during App/native test build")
     built = derived / "Build/Products" / (CONFIGURATION + "-iphonesimulator/Anytype.app")
@@ -545,6 +605,11 @@ def build_once(args, lane, selections, receipt):
     ui_derived = derived.with_name(derived.name + "-ui")
     shared.command([*base, "-project", str(project), "-scheme", "PinkhaPrebuiltUI", "-derivedDataPath", str(ui_derived),
                     *["-only-testing:PinkhaStage1AcceptanceUITests/" + method for method in methods], *flags], app, common)
+    if profile == COHERENT_HEART_PROFILE:
+        receipt["ui_products_preservation"] = early_build_products.capture(ui_derived, evidence,
+            source_sha=head, run_id=os.environ["GITHUB_RUN_ID"], run_attempt=os.environ["GITHUB_RUN_ATTEMPT"],
+            build_flags=flags, scope="coherent-ui")
+        write(evidence / "batch-worker.json", receipt)
     ui_configuration = shared.test_configuration(ui_derived / "Build/Products", "PinkhaStage1AcceptanceUITests")
     shared.command(["xcrun", "simctl", "shutdown", udid], app, common)
     native_bundles = tuple(sorted((derived / "Build/Products").rglob("AnytypeTests.xctest")))
@@ -609,6 +674,10 @@ def validate_lane_pass(receipt, directory, selection, context):
                                "summary_sha256": digest(summary_path), "tests_sha256": digest(tests_path)}
     fresh = json.loads((directory / "fresh-container.json").read_text())
     validate_fresh_device_receipt(fresh, directory, context.device["udid"])
+    if context.profile == COHERENT_HEART_PROFILE:
+        validate_coherent_readiness(directory, context.device)
+        require(fresh.get("readiness_receipt_sha256") == digest(directory / "owned-readiness/readiness.json"),
+                "Fresh-device proof differs from original coherent readiness")
     fixture = json.loads((directory / "fixture-isolation.json").read_text())
     require(fixture == context.fixtures.get(selection["lane"]), "Passing lane fixture identity differs")
     write(directory / "batch-original-results-validation.json", observations)
@@ -830,7 +899,9 @@ def run_nested_worker_command(command, cwd, log, timeout, *, profile):
                         record["owned_group_cleanup"] = "TERM_THEN_KILL"
                     except BaseException as error:
                         cleanup_failure = error
-                        record.update(status="FAILED_PROCESS_CLEANUP", cleanup_error_type=type(error).__name__)
+                        record.update(status="FAILED_PROCESS_CLEANUP", cleanup_error_type=type(error).__name__,
+                              cleanup_error=str(error),
+                              cleanup_probe_timeouts=getattr(error, "timeout_observations", []))
                 stream.flush()
                 os.fsync(stream.fileno())
     except BaseException as error:
@@ -848,7 +919,9 @@ def run_nested_worker_command(command, cwd, log, timeout, *, profile):
                 record["owned_group_quiescence"] = verify_owned_group_stopped(path)
             except BaseException as error:
                 cleanup_failure = error
-                record.update(status="FAILED_PROCESS_CLEANUP", cleanup_error_type=type(error).__name__)
+                record.update(status="FAILED_PROCESS_CLEANUP", cleanup_error_type=type(error).__name__,
+                              cleanup_error=str(error),
+                              cleanup_probe_timeouts=getattr(error, "timeout_observations", []))
             write(path, record)
     if failure is not None:
         raise failure
@@ -976,6 +1049,10 @@ def validate_worker_conclusion(receipt, intent, evidence, lane):
         fresh = json.loads((path.parent / "fresh-container.json").read_text())
         fixture = json.loads((path.parent / "fixture-isolation.json").read_text())
         validate_fresh_device_receipt(fresh, path.parent, device["udid"])
+        if spec.name == COHERENT_HEART_PROFILE:
+            validate_coherent_readiness(path.parent, device)
+            require(fresh.get("readiness_receipt_sha256") == digest(path.parent / "owned-readiness/readiness.json"),
+                    "Original fresh-device and coherent readiness binding differs")
         require(fixture.get("simulator_udid") == device["udid"]
                 and fixture.get("space_id") and fixture["space_id"] not in observed_spaces
                 and fixture.get("container") and fixture["container"] not in observed_containers,
@@ -1063,6 +1140,30 @@ def publish_batch_observations(evidence, result):
             diagnostics.emit_execution({"status": "DIAGNOSTIC_READ_FAILED"}, name)
 
 
+
+def retain_first_worker_failure(result, intent, evidence, lane, supervisor_error):
+    """A later cleanup fault cannot relabel an original terminal worker failure."""
+    path = evidence / "batch-worker.json"
+    if not path.is_file() or path.is_symlink() or path.stat().st_size > 2 * 1024 * 1024:
+        return False
+    worker = json.loads(path.read_bytes())
+    failed = {"BATCH_FAILED_OBSERVED_TESTS", "BATCH_BUDGET_EXHAUSTED",
+              "BATCH_ABORTED_SETUP_OR_IDENTITY", "CANCELLED"}
+    if (worker.get("status") not in failed or not worker.get("finished_at")
+            or worker.get("source", {}).get("source_sha") != intent["source_sha"]):
+        return False
+    validate_worker_conclusion(worker, intent, evidence, lane)
+    result.update(status=worker["status"], phase=worker.get("phase"),
+        original_worker_failure_sha256=digest(path),
+        supervisor_error_type=type(supervisor_error).__name__, supervisor_error=str(supervisor_error))
+    for key in ("error_type", "error", "current_lane", "lane_statuses"):
+        if key in worker:
+            result[key] = worker[key]
+        else:
+            result.pop(key, None)
+    return True
+
+
 def run(args, lane):
     require(sys.platform == "darwin", "Actual Apple host required")
     require(args.device == "ipad" and args.language == "en", "Batch is only the existing iPad English Release lanes")
@@ -1146,9 +1247,16 @@ def run(args, lane):
         require(outcome["return_code"] == 0 or result["status"] != "BATCH_PASS_ACCEPTANCE_REVIEW_PENDING",
                 "Failed worker cannot qualify a passing batch")
     except BaseException as error:
+        worker_timeout = (isinstance(error, subprocess.TimeoutExpired)
+                          and error.cmd == command and error.timeout == WORKER_SECONDS)
         result.update(status="CANCELLED" if isinstance(error, KeyboardInterrupt) else
-                      "BATCH_BUDGET_EXHAUSTED" if isinstance(error, subprocess.TimeoutExpired) else "BATCH_ABORTED_SETUP_OR_IDENTITY",
+                      "BATCH_BUDGET_EXHAUSTED" if worker_timeout else "BATCH_ABORTED_SETUP_OR_IDENTITY",
                       error_type=type(error).__name__, error=str(error))
+        if not isinstance(error, KeyboardInterrupt) and spec.name == COHERENT_HEART_PROFILE:
+            try:
+                retain_first_worker_failure(result, intent, evidence, lane, error)
+            except Exception as original_error:
+                result["original_worker_failure_read_error_type"] = type(original_error).__name__
         if isinstance(error, KeyboardInterrupt):
             cancellation, cancellation_latched = cancellation or error, True
     finally:
