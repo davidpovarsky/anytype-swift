@@ -1,0 +1,108 @@
+{
+  "injectedBoundaries": [
+    "provider",
+    "source/Git/context",
+    "commands/groups",
+    "device recovery/deletion"
+  ],
+  "limits": [
+    "Real cleanup_only control flow executed; no real simulator/provider/process helper was invoked.",
+    "First provider failure remains failure even when later device/source cleanup also fails.",
+    "Initial source rejection still grants no device-cleanup authority.",
+    "Zero old controls or product/build executions."
+  ],
+  "loaded": {
+    "contracts": {
+      "path": "/run/anytapy-wave15-source-overlay-20261123/editor/Tools/CurrentAppleValidation/contracts.py",
+      "sha256": "46ec90e911ad622646bdf8fe3fdf67351ac7b576a66af7abb07e5a0e06051ab3"
+    },
+    "current_execution": {
+      "path": "/run/anytapy-wave15-source-overlay-20261123/editor/Tools/CurrentAppleValidation/current_execution.py",
+      "sha256": "9fcc420df5d51be004b659f47cb601dff833109e18dfd56ae685f2a119c0e2ad"
+    }
+  },
+  "newMethods": 1,
+  "originals": {
+    "attempt1/events.json": {
+      "bytes": 1153,
+      "sha256": "f76682d8af1fa63a4a20871b730768552a9b3033354b49b0dfc84993c07d3228"
+    },
+    "attempt1/initial_source_rejection_never_grants_cleanup/evidence/cleanup-final.json": {
+      "bytes": 143,
+      "sha256": "93d2470c3cb71c0a67eaf795109677aa008d2ee64bd0d5baca624db6b9ed8add"
+    },
+    "attempt1/initial_source_rejection_never_grants_cleanup/evidence/execution-intent.json": {
+      "bytes": 306,
+      "sha256": "7b4b5cebab2eb755bde58b5f48170ed197a8154f3916185c3924b46548071ae9"
+    },
+    "attempt1/initial_source_rejection_never_grants_cleanup/evidence/source-before.json": {
+      "bytes": 78,
+      "sha256": "974903a2b88a5d52b14c51c572aa1698b2532244e3512e2d28cc78b8a764f6c9"
+    },
+    "attempt1/provider_error_still_attempts_devices_and_loaded_check/evidence/cleanup-final.json": {
+      "bytes": 408,
+      "sha256": "abc79fd2ef0188cbfd9caae1c56bee0a8f123995623b2abeb724a52b2d52f1ee"
+    },
+    "attempt1/provider_error_still_attempts_devices_and_loaded_check/evidence/execution-intent.json": {
+      "bytes": 306,
+      "sha256": "7b4b5cebab2eb755bde58b5f48170ed197a8154f3916185c3924b46548071ae9"
+    },
+    "attempt1/provider_error_still_attempts_devices_and_loaded_check/evidence/source-before.json": {
+      "bytes": 78,
+      "sha256": "974903a2b88a5d52b14c51c572aa1698b2532244e3512e2d28cc78b8a764f6c9"
+    },
+    "attempt1/result.json": {
+      "bytes": 892,
+      "sha256": "4d586156c77d618a7617db38904722b8adc927622bbe52d813fdbad2239577f6"
+    },
+    "attempt1/source-after.json": {
+      "bytes": 573,
+      "sha256": "53c13425fe1e00c0badbf729c1226fca34570df6d1a42eb9c5ee023f3118fd9c"
+    },
+    "attempt1/source-before.json": {
+      "bytes": 573,
+      "sha256": "53c13425fe1e00c0badbf729c1226fca34570df6d1a42eb9c5ee023f3118fd9c"
+    },
+    "attempt1/successful_independent_cleanup_remains_complete/evidence/cleanup-final.json": {
+      "bytes": 253,
+      "sha256": "3967b1e08918ec96137145aef0b575ded4922f3b3eb140d3b9d557d3faa760d5"
+    },
+    "attempt1/successful_independent_cleanup_remains_complete/evidence/execution-intent.json": {
+      "bytes": 306,
+      "sha256": "7b4b5cebab2eb755bde58b5f48170ed197a8154f3916185c3924b46548071ae9"
+    },
+    "attempt1/successful_independent_cleanup_remains_complete/evidence/source-before.json": {
+      "bytes": 78,
+      "sha256": "974903a2b88a5d52b14c51c572aa1698b2532244e3512e2d28cc78b8a764f6c9"
+    },
+    "attempt1/three_failures_keep_first_provider_error/evidence/cleanup-final.json": {
+      "bytes": 454,
+      "sha256": "ecffadecff3d01bde604d2784542b7544882e73cc9f26333e6a346b269720717"
+    },
+    "attempt1/three_failures_keep_first_provider_error/evidence/execution-intent.json": {
+      "bytes": 306,
+      "sha256": "7b4b5cebab2eb755bde58b5f48170ed197a8154f3916185c3924b46548071ae9"
+    },
+    "attempt1/three_failures_keep_first_provider_error/evidence/source-before.json": {
+      "bytes": 78,
+      "sha256": "974903a2b88a5d52b14c51c572aa1698b2532244e3512e2d28cc78b8a764f6c9"
+    },
+    "control-execution.json": {
+      "bytes": 960,
+      "sha256": "c50494b532d91d7b78a8a0ff8515d25724aeddabd1175c61d2ec2bb4ba2b9056"
+    },
+    "control.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "control.stdout": {
+      "bytes": 808,
+      "sha256": "b2d01861b1f99815b865381a127b9c4be8448151015a28150ef5a40c6570c2d9"
+    }
+  },
+  "schema": "current-apple-independent-cleanup-qualification/v1",
+  "sourceBeforeAfterExact": true,
+  "sourceCommit": "d87d694bec66bcf748635bde2dfa28f5603c67b6",
+  "status": "PASS",
+  "subcases": 4
+}

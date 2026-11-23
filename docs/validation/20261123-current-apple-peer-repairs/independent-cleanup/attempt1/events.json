@@ -1,0 +1,61 @@
+[
+  {
+    "case": "provider_error_still_attempts_devices_and_loaded_check",
+    "event": "start"
+  },
+  {
+    "case": "provider_error_still_attempts_devices_and_loaded_check",
+    "event": "pass",
+    "trace": [
+      "source-1",
+      "groups",
+      "provider",
+      "recover",
+      "devices",
+      "source-2"
+    ]
+  },
+  {
+    "case": "three_failures_keep_first_provider_error",
+    "event": "start"
+  },
+  {
+    "case": "three_failures_keep_first_provider_error",
+    "event": "pass",
+    "trace": [
+      "source-1",
+      "groups",
+      "provider",
+      "recover",
+      "devices",
+      "source-2"
+    ]
+  },
+  {
+    "case": "successful_independent_cleanup_remains_complete",
+    "event": "start"
+  },
+  {
+    "case": "successful_independent_cleanup_remains_complete",
+    "event": "pass",
+    "trace": [
+      "source-1",
+      "groups",
+      "provider",
+      "recover",
+      "devices",
+      "source-2"
+    ]
+  },
+  {
+    "case": "initial_source_rejection_never_grants_cleanup",
+    "event": "start"
+  },
+  {
+    "case": "initial_source_rejection_never_grants_cleanup",
+    "event": "pass",
+    "trace": [
+      "source-1"
+    ]
+  }
+]
