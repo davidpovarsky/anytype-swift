@@ -1,0 +1,90 @@
+{
+  "baseline": "c0c1f851f80322c9f532e86505047498dfaf1adf",
+  "compiled_app_origin": "68148339c275268795360d71d519a5baf003adf8",
+  "new_controls_status": "NOT_RUN",
+  "original_failure_audit": "f5bde718fab421229cb4d8326d52d096760dbd5179827aba1b3f977e39e9927a",
+  "patch": {
+    "newfiles": [
+      {
+        "before": null,
+        "content": "\"\"\"Bind the current mounted controller separately from its immutable compiled App.\"\"\"\nfrom __future__ import annotations\n\nimport hashlib\nimport json\nfrom pathlib import Path\nimport re\nimport sys\n\nPROTOCOL = \"pinkha-page154-separate-source-origins-v1\"\nCONSUMER_PATH = \"Tools/PinkhaSemanticAnchorWire/apple_consumer/run.py\"\n\n\ndef require(value, message):\n    if not value:\n        raise ValueError(message)\n\n\ndef _root(path):\n    require(isinstance(path, Path) and path.is_absolute()\n            and path == path.resolve() and path.is_dir() and not path.is_symlink(),\n            \"An existing canonical physical source root is required\")\n    return path\n\n\ndef _map_digest(value):\n    return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(\",\", \":\")).encode()).hexdigest()\n\n\ndef _loaded(controller, app, inputs):\n    result = {}\n    for name, module in tuple(sys.modules.items()):\n        filename = getattr(module, \"__file__\", None)\n        if not filename:\n            continue\n        path = Path(filename).resolve()\n        require(not path.is_relative_to(app),\n                \"Compiled App source checkout must not supply controller modules: \" + name)\n        if path.suffix == \".py\" and path.is_relative_to(controller):\n            relative = path.relative_to(controller).as_posix()\n            actual = hashlib.sha256(path.read_bytes()).hexdigest()\n            require(inputs.get(relative) == actual,\n                    \"Loaded controller module is not an exact current Git input: \" + relative)\n            result[name] = {\"path\": relative, \"sha256\": actual}\n    return result\n\n\ndef capture(controller, app, controller_sha, app_sha, consumer):\n    \"\"\"Use the unchanged actual consumer reader for both complete Git checkouts.\"\"\"\n    controller = _root(controller)\n    app = _root(app)\n    require(controller != app and not controller.is_relative_to(app)\n            and not app.is_relative_to(controller), \"Controller and App roots must be disjoint\")\n    require(all(isinstance(value, str) and re.fullmatch(r\"[0-9a-f]{40}\", value)\n                for value in (controller_sha, app_sha)), \"Both exact source identities are required\")\n    require(Path(__file__).resolve() ==\n            controller / \"Tools/PinkhaSemanticAnchorWire/apple_mounted/mounted_source_origins.py\",\n            \"Source-origin adapter must come from the current controller\")\n    require(Path(consumer.__file__).resolve() == controller / CONSUMER_PATH,\n            \"Actual consumer helper must come from the current controller\")\n    # This reader checks HEAD, clean tracked state, every Git blob/physical byte,\n    # and each loaded local Python source. Neither origin is inferred from a ref.\n    current_inputs = consumer.checkout_inputs(controller, controller_sha)\n    app_inputs = consumer.checkout_inputs(app, app_sha)\n    loaded = _loaded(controller, app, current_inputs)\n    require(loaded, \"Actual current controller modules must be present\")\n    return {\n        \"protocol\": PROTOCOL,\n        \"controller_root\": str(controller),\n        \"controller_sha\": controller_sha,\n        \"app_root\": str(app),\n        \"app_sha\": app_sha,\n        \"controller_inputs\": current_inputs,\n        \"app_inputs\": app_inputs,\n        \"loaded_controller_modules\": loaded,\n    }\n\n\ndef verify_current(before, consumer):\n    after = capture(Path(before[\"controller_root\"]), Path(before[\"app_root\"]),\n                    before[\"controller_sha\"], before[\"app_sha\"], consumer)\n    require(after[\"controller_inputs\"] == before[\"controller_inputs\"],\n            \"Current controller source changed after admission\")\n    require(after[\"app_inputs\"] == before[\"app_inputs\"],\n            \"Immutable compiled App source changed after admission\")\n    require(all(after[\"loaded_controller_modules\"].get(name) == value\n                for name, value in before[\"loaded_controller_modules\"].items()),\n            \"An admitted current controller module changed origin\")\n    return after\n\n\ndef receipt(value):\n    \"\"\"A compact source receipt; no Products, runtime or acceptance claim.\"\"\"\n    return {\n        \"protocol\": value[\"protocol\"],\n        \"controller_root\": value[\"controller_root\"],\n        \"controller_sha\": value[\"controller_sha\"],\n        \"compiled_app_root\": value[\"app_root\"],\n        \"compiled_app_sha\": value[\"app_sha\"],\n        \"controller_input_count\": len(value[\"controller_inputs\"]),\n        \"compiled_app_input_count\": len(value[\"app_inputs\"]),\n        \"controller_input_map_sha256\": _map_digest(value[\"controller_inputs\"]),\n        \"compiled_app_input_map_sha256\": _map_digest(value[\"app_inputs\"]),\n        \"loaded_controller_modules\": value[\"loaded_controller_modules\"],\n        \"current_controller_is_compiled_app_source\": value[\"controller_sha\"] == value[\"app_sha\"],\n        \"new_builds\": 0,\n        \"source_binding_only\": True,\n        \"product_acceptance\": False,\n    }\n",
+        "path": "Tools/PinkhaSemanticAnchorWire/apple_mounted/mounted_source_origins.py"
+      }
+    ],
+    "patches": [
+      {
+        "after": "2d121e47aef3c3a24672110278893bbb3cc0aded833d9fbb74f4005b439382a6",
+        "before": "57750eb5050d33eec1d4de4a02dbaefa083667d717877b6dd167db2df63500b3",
+        "hunks": [
+          {
+            "after": "import mounted_cleanup\nimport mounted_source_origins\n",
+            "before": "import mounted_cleanup\n",
+            "count": 1
+          },
+          {
+            "after": "proof.require(ROOT == args.controller and not args.work.exists() and not args.evidence.exists(),\n                  \"Fresh separate controller/App/work/evidence roots required\")",
+            "before": "proof.require(ROOT == args.app and not args.work.exists() and not args.evidence.exists(),\n                  \"Fresh separate App/work/evidence roots required\")",
+            "count": 1
+          },
+          {
+            "after": "    origins = mounted_source_origins.capture(ROOT, args.app, head, approved[\"consumer_sha\"], consumer)\n    inputs = origins[\"controller_inputs\"]\n    app_inputs = origins[\"app_inputs\"]\n",
+            "before": "    inputs = consumer.checkout_inputs(ROOT, head)\n",
+            "count": 1
+          },
+          {
+            "after": "    proof.require(all(inputs.get(path) == app_inputs.get(path) == row[\"sha256\"]\n                      for path, row in plan[\"files\"].items()),\n                  \"Frozen mounted App/UI source plan differs\")",
+            "before": "    proof.require(all(inputs.get(path) == row[\"sha256\"] for path, row in plan[\"files\"].items()),\n                  \"Frozen mounted App/UI source plan differs\")",
+            "count": 1
+          },
+          {
+            "after": "    proof.save(args.evidence / \"controller-source-before.json\", inputs)\n    proof.save(args.evidence / \"app-source-before.json\", app_inputs)\n    receipt[\"source_origins_before\"] = mounted_source_origins.receipt(origins)\n",
+            "before": "    proof.save(args.evidence / \"controller-source-before.json\", inputs)\n",
+            "count": 1
+          },
+          {
+            "after": "            and product_inputs(before) == product_inputs(app_inputs), \"Reused App/Module/UI/project source differs\")",
+            "before": "            and product_inputs(before) == product_inputs(inputs), \"Reused App/Module/UI/project source differs\")",
+            "count": 1
+          },
+          {
+            "after": "            final_origins = mounted_source_origins.verify_current(origins, consumer)",
+            "before": "            proof.require(consumer.checkout_inputs(ROOT, head) == inputs, \"Exact controller/product source changed\")",
+            "count": 1
+          },
+          {
+            "after": "            proof.save(args.evidence / \"controller-source-after.json\", final_origins[\"controller_inputs\"])\n            proof.save(args.evidence / \"app-source-after.json\", final_origins[\"app_inputs\"])\n            receipt[\"source_origins_after\"] = mounted_source_origins.receipt(final_origins)\n",
+            "before": "            proof.save(args.evidence / \"controller-source-after.json\", inputs)\n",
+            "count": 1
+          },
+          {
+            "after": "    for name in (\"controller\", \"app\", \"admission\", \"work\", \"evidence\"):\n",
+            "before": "    for name in (\"app\", \"admission\", \"work\", \"evidence\"):\n",
+            "count": 2
+          }
+        ],
+        "path": "Tools/PinkhaSemanticAnchorWire/apple_mounted/run.py"
+      },
+      {
+        "after": "f57059d980542845ca44e4019064550147186e48a78196b61390c9e10b1f6b42",
+        "before": "382be6da89379369d5d5935f87e2bf18f7639707afa7f6293af5426eae7a0f4d",
+        "hunks": [
+          {
+            "after": "          path: build/page154-mounted-${{ github.run_id }}-${{ github.run_attempt }}/controller\n          fetch-depth: 1\n          persist-credentials: false\n      - name: Checkout immutable source of the original compiled App\n        uses: actions/checkout@v4\n        with:\n          ref: 68148339c275268795360d71d519a5baf003adf8\n          path: build/page154-mounted-${{ github.run_id }}-${{ github.run_attempt }}/app\n          fetch-depth: 1\n          persist-credentials: false\n",
+            "before": "          path: build/page154-mounted-${{ github.run_id }}-${{ github.run_attempt }}/app\n          fetch-depth: 1\n          persist-credentials: false\n",
+            "count": 1
+          },
+          {
+            "after": "          python3 -B \"$ATTEMPT/controller/Tools/PinkhaSemanticAnchorWire/apple_mounted/run.py\" \\\n            --controller \"$ATTEMPT/controller\" --app \"$ATTEMPT/app\" \\\n            --admission \"$ATTEMPT/controller/Tools/PinkhaSemanticAnchorWire/apple_mounted/admissions/45116855451-1.json\" \\\n",
+            "before": "          python3 -B \"$ATTEMPT/app/Tools/PinkhaSemanticAnchorWire/apple_mounted/run.py\" \\\n            --app \"$ATTEMPT/app\" \\\n            --admission \"$ATTEMPT/app/Tools/PinkhaSemanticAnchorWire/apple_mounted/admissions/45116855451-1.json\" \\\n",
+            "count": 1
+          }
+        ],
+        "path": ".github/workflows/pinkha-semantic-page-apple-mounted.yml"
+      }
+    ]
+  },
+  "previous_kernel_control_replays": 0,
+  "product_builds": 0,
+  "product_tests": 0,
+  "protocol": "page-current-controller-original-app-source-composition-v1"
+}

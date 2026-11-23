@@ -20,6 +20,7 @@ ROOT = HERE.parents[2]
 sys.path.insert(0, str(HERE))
 import mounted_contract as proof
 import mounted_cleanup
+import mounted_source_origins
 
 consumer_path = HERE.parent / "apple_consumer/run.py"
 spec = importlib.util.spec_from_file_location("page154_original_consumer_helpers", consumer_path)
@@ -146,16 +147,19 @@ def ui_attachments(directory, udid, capture, reopen):
 
 def execute(args, receipt):
     proof.require(platform.system() == "Darwin" and platform.machine() == "arm64", "Actual ARM64 Mac required")
-    proof.require(ROOT == args.app and not args.work.exists() and not args.evidence.exists(),
-                  "Fresh separate App/work/evidence roots required")
+    proof.require(ROOT == args.controller and not args.work.exists() and not args.evidence.exists(),
+                  "Fresh separate controller/App/work/evidence roots required")
     approved = proof.admission(proof.read(args.admission))
     proof.require(args.admission.is_relative_to(ROOT), "Reviewed admission must be tracked with the controller")
     head = consumer.producer.git(ROOT, "rev-parse", "HEAD")
     proof.require(head == os.environ.get("GITHUB_SHA"), "Controller checkout must match dispatched source")
-    inputs = consumer.checkout_inputs(ROOT, head)
+    origins = mounted_source_origins.capture(ROOT, args.app, head, approved["consumer_sha"], consumer)
+    inputs = origins["controller_inputs"]
+    app_inputs = origins["app_inputs"]
     proof.require(args.admission.relative_to(ROOT).as_posix() in inputs, "Admission file must be committed")
     plan = proof.read(HERE / "source-plan.json")
-    proof.require(all(inputs.get(path) == row["sha256"] for path, row in plan["files"].items()),
+    proof.require(all(inputs.get(path) == app_inputs.get(path) == row["sha256"]
+                      for path, row in plan["files"].items()),
                   "Frozen mounted App/UI source plan differs")
     binding = proof.native.binding(dict(sourceSHA=approved["consumer_sha"],
         runID=os.environ.get("GITHUB_RUN_ID"), runAttempt=os.environ.get("GITHUB_RUN_ATTEMPT"), nonce=uuid4().hex))
@@ -163,6 +167,8 @@ def execute(args, receipt):
     receipt.update(controller_source_sha=head, compiled_app_source_sha=approved["consumer_sha"],
                    binding=binding, admission=approved)
     proof.save(args.evidence / "controller-source-before.json", inputs)
+    proof.save(args.evidence / "app-source-before.json", app_inputs)
+    receipt["source_origins_before"] = mounted_source_origins.receipt(origins)
     runner = consumer.Commands(ROOT, args.evidence, receipt)
     owned_udid = None; primary = None; finalizing = False; cancelled = False
     original_descriptors = []; copied_descriptors = []; restores = []
@@ -211,7 +217,7 @@ def execute(args, receipt):
                 "Original successful build archive provenance differs")
         before = proof.read(originals / "source-before.json")
         proof.require(before == proof.read(originals / "source-after.json")
-            and product_inputs(before) == product_inputs(inputs), "Reused App/Module/UI/project source differs")
+            and product_inputs(before) == product_inputs(app_inputs), "Reused App/Module/UI/project source differs")
         current_version, _ = runner.run(["xcodebuild", "-version"], "actual-xcode-version")
         proof.require(current_version.read_bytes() == (originals / "xcode-version.log").read_bytes()
             and current_version.read_text().startswith("Xcode 27."), "Original Xcode27 toolchain must match exactly")
@@ -313,14 +319,16 @@ def execute(args, receipt):
         if owned_udid:
             primary = mounted_cleanup.finalize_mounted_simulator(runner, receipt, owned_udid, primary)
         try:
-            proof.require(consumer.checkout_inputs(ROOT, head) == inputs, "Exact controller/product source changed")
+            final_origins = mounted_source_origins.verify_current(origins, consumer)
             for path, expected in original_descriptors + copied_descriptors:
                 proof.require(proof.digest(path) == expected, "Original or copied descriptor changed")
             receipt["restored_products_unchanged"] = []
             for root, manifest in restores:
                 extras = [path for path, _ in copied_descriptors if path.is_relative_to(root)]
                 receipt["restored_products_unchanged"].append(proof.verify_restored_products(root, manifest, extras))
-            proof.save(args.evidence / "controller-source-after.json", inputs)
+            proof.save(args.evidence / "controller-source-after.json", final_origins["controller_inputs"])
+            proof.save(args.evidence / "app-source-after.json", final_origins["app_inputs"])
+            receipt["source_origins_after"] = mounted_source_origins.receipt(final_origins)
             receipt["source_and_descriptors_unchanged"] = True
         except BaseException as error:
             receipt["integrity_failure"] = {"error_type": type(error).__name__, "error": str(error)}
@@ -334,10 +342,10 @@ def execute(args, receipt):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    for name in ("app", "admission", "work", "evidence"):
+    for name in ("controller", "app", "admission", "work", "evidence"):
         parser.add_argument("--" + name, type=Path, required=True)
     args = parser.parse_args()
-    for name in ("app", "admission", "work", "evidence"):
+    for name in ("controller", "app", "admission", "work", "evidence"):
         setattr(args, name, getattr(args, name).resolve())
     receipt = {"protocol": proof.PROTOCOL, "status": "NOT_RUN", "phase": "ADMISSION",
         "started_at": datetime.now(timezone.utc).isoformat(), "native_builds": 0, "app_builds": 0, "ui_builds": 0,

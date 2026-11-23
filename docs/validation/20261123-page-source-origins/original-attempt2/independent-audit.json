@@ -1,0 +1,231 @@
+{
+  "actual_app_native_ui_builds": 0,
+  "actual_preparation_or_ui_methods": 0,
+  "actual_status": "FAIL",
+  "actual_xctest_or_enumeration_commands": 0,
+  "attempt": 2,
+  "commands": [
+    {
+      "absence": "ORIGINAL_RECORDED_TIMELY_KERNEL_ESRCH",
+      "budget_seconds": 10,
+      "name": "consumer-run-api",
+      "query_elapsed_seconds": 4.0584000004173504e-05,
+      "return_code": 0,
+      "worker_pid": 1434
+    },
+    {
+      "absence": "ORIGINAL_RECORDED_TIMELY_KERNEL_ESRCH",
+      "budget_seconds": 10,
+      "name": "consumer-artifact-api",
+      "query_elapsed_seconds": 2.7667000011888376e-05,
+      "return_code": 0,
+      "worker_pid": 1437
+    },
+    {
+      "absence": "ORIGINAL_RECORDED_TIMELY_KERNEL_ESRCH",
+      "budget_seconds": 10,
+      "name": "download-original-consumer",
+      "query_elapsed_seconds": 9.933299998010625e-05,
+      "return_code": 0,
+      "worker_pid": 1441
+    }
+  ],
+  "compiled_app_origin": "68148339c275268795360d71d519a5baf003adf8",
+  "controller_source_sha": "c0c1f851f80322c9f532e86505047498dfaf1adf",
+  "descriptor_integrity": "NO_DESCRIPTOR_COPIES_REGISTERED; final true field covers current source and empty descriptor lists",
+  "elapsed_seconds": 1.7898920439183712,
+  "failure": {
+    "demonstrated_cause": "Current controller checkout product source is compared against immutable original681 Products source; exactly seven protected paths differ.",
+    "failed_predicate": "product_inputs(original681) == product_inputs(currentc0)",
+    "message": "Reused App/Module/UI/project source differs",
+    "original_source_maps_equal": true,
+    "phase": "EXACT_ORIGINAL_PRODUCTS",
+    "type": "ValueError"
+  },
+  "new_api_queries": 0,
+  "new_downloads": 0,
+  "original_download_command_raw_receipt": "INLINE_EXECUTION_ONLY; downloaded carrier and its separate raw command file are not present in this small artifact",
+  "original_execution": {
+    "bytes": 6884,
+    "path": "/mnt/development/projects/diagnostics/semantic-page-mounted-451627-attempt2-original-result-20261123/originals/evidence/execution.json",
+    "sha256": "e55b6e16c0c219b203f6ca9f54c90e2ec3a9e26e89ee0f850940caf3b3eb81dd"
+  },
+  "original_methods_replayed": 0,
+  "owned_subprocess_cleanup": "THREE_ORIGINAL_RECORDED_TIMELY_ESRCH_PASSES",
+  "protocol": "page451627-attempt2-independent-original-audit-v1",
+  "raw_command_receipts": [
+    {
+      "bytes": 356,
+      "path": "/mnt/development/projects/diagnostics/semantic-page-mounted-451627-attempt2-original-result-20261123/originals/evidence/consumer-run-api.command.json",
+      "sha256": "4ae78b5ab2e6591849b882813425a6499bdad76eb4c07ca607d9f78154f45cc4"
+    },
+    {
+      "bytes": 350,
+      "path": "/mnt/development/projects/diagnostics/semantic-page-mounted-451627-attempt2-original-result-20261123/originals/evidence/consumer-artifact-api.command.json",
+      "sha256": "bd07b4652f094bb166e1854132b48d2a9268aa39a3482897df3da7772490975c"
+    }
+  ],
+  "reader_source_sha256": "cc437786875b2f727989be36a2f2129571baba41133b1fff3614597eac98f541",
+  "restored_products": "NOT_REACHED; empty final restored-products list is not a restoration PASS",
+  "run_id": 45162736256,
+  "simulator_cleanup": "NOT_APPLICABLE_NO_CREATE_OR_SIMULATOR_COMMAND_REACHED",
+  "source": {
+    "all_original_and_current_source_hashes_equal_exact_git_bytes": true,
+    "current_before_after_equal": true,
+    "current_entries": 14053,
+    "current_protected_entries": 6325,
+    "inputs": [
+      {
+        "bytes": 2335493,
+        "path": "/mnt/development/projects/diagnostics/semantic-page-mounted-451627-attempt2-original-result-20261123/originals/evidence/controller-source-before.json",
+        "sha256": "2f5e83659315c2fe7a720fa0c9cb681c0f0ce2398b98b725f041a1b397f10f69"
+      },
+      {
+        "bytes": 2335493,
+        "path": "/mnt/development/projects/diagnostics/semantic-page-mounted-451627-attempt2-original-result-20261123/originals/evidence/controller-source-after.json",
+        "sha256": "2f5e83659315c2fe7a720fa0c9cb681c0f0ce2398b98b725f041a1b397f10f69"
+      },
+      {
+        "bytes": 1979361,
+        "path": "/mnt/development/projects/diagnostics/semantic-page-pinned-consumer-20261123/terminal-audit/native-selected/source-before.json",
+        "sha256": "533bb8ad8eed3607521bef3517ff3a7cd53728956872180209cd9280d48e365d"
+      },
+      {
+        "bytes": 1979361,
+        "path": "/mnt/development/projects/diagnostics/semantic-page-pinned-consumer-20261123/terminal-audit/native-selected/source-after.json",
+        "sha256": "533bb8ad8eed3607521bef3517ff3a7cd53728956872180209cd9280d48e365d"
+      },
+      {
+        "bytes": 60444,
+        "path": "/mnt/development/projects/diagnostics/semantic-page-pinned-consumer-20261123/terminal-audit/native-selected/execution.json",
+        "sha256": "93fb0440f786fb68a3fd93b370edd02aad522040d694e2d5e20564c3e236502b"
+      }
+    ],
+    "original_before_after_equal": true,
+    "original_entries": 12033,
+    "original_protected_entries": 6321,
+    "protected_differences": [
+      {
+        "current_git": {
+          "mode": "100644",
+          "oid": "40c9c4e228c33c5211fdbbdd756840036a469178"
+        },
+        "current_sha256": "60bcd0a66be8e588df052b3cbe31baa2be6c9d8a64ed09b946666c894e95cc58",
+        "original_git": null,
+        "original_sha256": null,
+        "path": ".gitattributes"
+      },
+      {
+        "current_git": {
+          "mode": "100644",
+          "oid": "2efb09b1755fab5515700fc2f3d35bdaab20e455"
+        },
+        "current_sha256": "5b502161edd891510322238fc0005cbbbf6d4b7ac5611fb97e16b1cdf8193fc4",
+        "original_git": null,
+        "original_sha256": null,
+        "path": "AnyTypeTests/Pinkha/SDK06PendingSelectionTag.swift"
+      },
+      {
+        "current_git": {
+          "mode": "100644",
+          "oid": "1194548d59415dc9446e0760dd00d546bbf23490"
+        },
+        "current_sha256": "21bc18b894e25d6bb2ccff0ad0ec62f161fe1bf2abbdcf8f7f9473f124feb0dc",
+        "original_git": {
+          "mode": "100644",
+          "oid": "55537105442d3ddd785133fd223e19a51c09b2a9"
+        },
+        "original_sha256": "dbe44987c62f85dc1a26571d0effc8a2138e9aaf6657eec1d469a8517e294166",
+        "path": "AnyTypeTests/Pinkha/SimpleTableTextPersistenceTests.swift"
+      },
+      {
+        "current_git": {
+          "mode": "100644",
+          "oid": "64f93b699bc91e19432e23d4aac48c7a447fbc45"
+        },
+        "current_sha256": "3b6487fd6c8f65e7282e9261fe1ce2054b40727bdc1978023ae44d24584055e4",
+        "original_git": {
+          "mode": "100644",
+          "oid": "8f91d07910a8a5864733fdec3245f9454271656f"
+        },
+        "original_sha256": "0b533aa0500b9a62043d1f5e49827e6be1ac2ce0f839fa6496b6da81ab26dcbf",
+        "path": "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift"
+      },
+      {
+        "current_git": {
+          "mode": "100644",
+          "oid": "e2f5173850e733b53d4dea00fb646fe60e528b0c"
+        },
+        "current_sha256": "364902afbdbe451bbe80cb8959be8fc74edb6db274f0ccf071db70de4d8f8d68",
+        "original_git": {
+          "mode": "100644",
+          "oid": "d895f985f7ee8ef3f0b47990d8a81db938de0996"
+        },
+        "original_sha256": "07675b9e09777ebb5fc503bafcd814dcc10fefb0a950d5ff6231da7b3f51e8b1",
+        "path": "AnyTypeTests/Pinkha/TorahRelatedReadAuthorityMappingTests.swift"
+      },
+      {
+        "current_git": {
+          "mode": "100644",
+          "oid": "2d5bbaf0cba3a8d747a583b1278032a20abba0fc"
+        },
+        "current_sha256": "c96bc27e447087cfe845b311cd21e5d99d68b4815b5d337848a4f54ee03b274c",
+        "original_git": null,
+        "original_sha256": null,
+        "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartSpaceMigrationDryRun.swift"
+      },
+      {
+        "current_git": {
+          "mode": "100644",
+          "oid": "5d719f5f0446486b0e8ddb0e4b9a3e727f06a7d5"
+        },
+        "current_sha256": "5d67bcc07aa11350e289035b43699faed2c58cf7e3457a4ed897fb0957ea9abb",
+        "original_git": null,
+        "original_sha256": null,
+        "path": "Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/HeartSpaceMigrationDryRunTests.swift"
+      }
+    ],
+    "relevant_current_controller_pins": {
+      ".github/workflows/pinkha-semantic-page-apple-mounted.yml": {
+        "git": {
+          "mode": "100644",
+          "oid": "d726582f531ae585ba68c0cf64872465ec8c36ca"
+        },
+        "sha256": "382be6da89379369d5d5935f87e2bf18f7639707afa7f6293af5426eae7a0f4d"
+      },
+      "Tools/PinkhaSemanticAnchorWire/apple_consumer/run.py": {
+        "git": {
+          "mode": "100644",
+          "oid": "a7c652fd00d600b499c682e3d733533cbc30dc3b"
+        },
+        "sha256": "17205ab71cdfd8111fc21e6d070a42f621be727e47df9457685557bd22ee12fe"
+      },
+      "Tools/PinkhaSemanticAnchorWire/apple_mounted/mounted_contract.py": {
+        "git": {
+          "mode": "100644",
+          "oid": "3a45f63d8c863e7397a400a1cb172623e48a0400"
+        },
+        "sha256": "0fa1af7e7b3f45d0eec8f1aa4c2d4a4ef97d5ca1c4e94f8838ba69e3eeab28ff"
+      },
+      "Tools/PinkhaSemanticAnchorWire/apple_mounted/run.py": {
+        "git": {
+          "mode": "100644",
+          "oid": "a0e08f32549014eb77a2b93edcbdca28e455397b"
+        },
+        "sha256": "57750eb5050d33eec1d4de4a02dbaefa083667d717877b6dd167db2df63500b3"
+      },
+      "Tools/PinkhaSimulatorGate/run_owned_single_lane.py": {
+        "git": {
+          "mode": "100644",
+          "oid": "a3b23f8ee01b8cf5cc14d2b404a00d150b328790"
+        },
+        "sha256": "5d976901b73b5bc5e519ead3a89952220d8149e710561d92acc9f36e46247414"
+      }
+    },
+    "unchanged_protected_entries": 6318,
+    "unique_git_blob_bytes": 324416467,
+    "unique_git_blobs_read": 12168
+  },
+  "status": "PASS_AUDIT_OF_ORIGINAL_FAILURE",
+  "tests_or_builds_run_by_audit": 0
+}

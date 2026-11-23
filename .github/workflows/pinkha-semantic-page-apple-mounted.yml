@@ -22,6 +22,13 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.sha }}
+          path: build/page154-mounted-${{ github.run_id }}-${{ github.run_attempt }}/controller
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Checkout immutable source of the original compiled App
+        uses: actions/checkout@v4
+        with:
+          ref: 68148339c275268795360d71d519a5baf003adf8
           path: build/page154-mounted-${{ github.run_id }}-${{ github.run_attempt }}/app
           fetch-depth: 1
           persist-credentials: false
@@ -35,9 +42,9 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$ATTEMPT/artifact"
-          python3 -B "$ATTEMPT/app/Tools/PinkhaSemanticAnchorWire/apple_mounted/run.py" \
-            --app "$ATTEMPT/app" \
-            --admission "$ATTEMPT/app/Tools/PinkhaSemanticAnchorWire/apple_mounted/admissions/45116855451-1.json" \
+          python3 -B "$ATTEMPT/controller/Tools/PinkhaSemanticAnchorWire/apple_mounted/run.py" \
+            --controller "$ATTEMPT/controller" --app "$ATTEMPT/app" \
+            --admission "$ATTEMPT/controller/Tools/PinkhaSemanticAnchorWire/apple_mounted/admissions/45116855451-1.json" \
             --work "$ATTEMPT/work" --evidence "$ATTEMPT/artifact/evidence" \
             2>&1 | tee "$ATTEMPT/artifact/controller.log"
       - name: Preserve original admission and every current execution observation

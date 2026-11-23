@@ -1,0 +1,535 @@
+name: Pinkha Stage 1 Manual Dispatcher
+run-name: Pinkha ${{ inputs.route }} · ${{ github.sha }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      route:
+        description: Stage 1 route to run
+        type: choice
+        required: true
+        options:
+          - full-acceptance
+          - ipa-only
+          - native-derived
+          - native-ipa-fast
+          - native-ipa-repair
+          - native-diagnostics
+          - t5-coverage-proof
+          - t5-r05-alias
+          - related-read-authority-packages
+          - t2-native-operations
+          - t2-authorized-read-packages
+          - t2-native-rpc
+          - t2-authorized-operation-read
+          - t2-authorized-read-account
+          - t2-authorized-read-apple-runtime
+          - t2-authorized-read-ios
+          - t2-account-rpc
+          - t2-native-clients
+          - t2-native-clients-offline
+          - t2-native-clients-crash
+          - t2-native-clients-observed-remove
+          - t2-native-clients-concurrent-replace
+          - t2-account-lifecycle
+          - t2-rpc-lifecycle-races
+          - t2-rpc-space-close
+          - simulator-ui27
+          - heart-runtime
+          - heart-dependency-resolution
+          - t5-r15-runtime
+          - t5-r15-attachment-runtime
+          - t5-apple-pairs
+          - t5-apple-ui
+          - t5-corrected-ui
+          - t5-signed-revocation
+          - t5-current-read-proof
+          - coherent-heart-native
+          - coherent-heart-apple
+          - coherent-heart-peers
+          - semantic-anchor-native
+          - semantic-page-apple-runtime
+          - semantic-page-apple-consumer
+          - semantic-page-apple-mounted
+          - coherent-original-products
+          - native-ui-original-products
+          - prepared-migration-apple
+          - prepared-inline-file-apple
+          - sdk06-enumeration-probe
+          - sdk06-basename-probe
+          - sdk06-tagged-continuation
+          - sdk06-original-native-continuation
+          - t5-native-pagination
+          - t5-native-account-retry
+          - t5-native-attachment
+          - sdk06-tests
+          - hanlin-journal-probe
+          - editor-host-tests
+          - wave15-core-tests
+          - wave15-component-tests
+          - wave15-acceptance
+      t5_component:
+        description: Bounded T5 component; index-freshness also selects the fifth Apple phase
+        type: choice
+        options:
+          - native-index
+          - projection-cache
+          - native-rpc
+          - compatibility-pairs
+          - account-pairs
+          - index-freshness
+        default: native-index
+      ui_scope:
+        description: UI27 focused diagnostic selection; no release or full matrix acceptance
+        type: choice
+        options:
+          - FULL_SMOKE
+          - STARTUP_IPAD_DIAGNOSTIC
+          - NATIVE_CANCELLATION_DIAGNOSTIC
+        default: FULL_SMOKE
+      acceptance_lane:
+        description: Existing lane, six Release lanes, or the three remaining retained-Heart lanes
+        type: choice
+        options:
+          - inspector
+          - inspector-search
+          - quote-drop
+          - properties
+          - properties-set
+          - editor
+          - canonical-properties
+          - hanlin-native
+          - hanlin-native-text-ack
+          - hanlin-native-shared-editor
+          - hanlin-selection
+          - remaining-release
+          - retained-heart-release
+          - coherent-heart-release
+        default: inspector
+      acceptance_device:
+        description: Disposable OS27 device family
+        type: choice
+        options:
+          - ipad
+          - iphone
+        default: ipad
+      acceptance_language:
+        description: Actual app language; current non-editor methods require en
+        type: choice
+        options:
+          - en
+          - he
+        default: en
+      runtime_profile:
+        description: Exact retained Heart runtime; corrected runtime must use its own producer run
+        type: choice
+        options:
+          - r14
+          - r15-attachment-v1
+          - r15-attachment-authorized-current-read-v1
+        default: r14
+      source_run_id:
+        description: Verified Heart runtime run, or native evidence source for diagnostics
+        type: string
+        default: ''
+      prepared_native_producer_commit:
+        description: Exact original prepared migration producer commit when reusing source_run_id
+        type: string
+        default: ''
+      prepared_native_artifact_run_attempt:
+        description: Exact original prepared migration producer attempt when reusing source_run_id
+        type: string
+        default: ''
+      t5_r15_run_id:
+        description: Original successful r15 runtime build for same-source Apple pairing
+        type: string
+        default: ''
+      native_test_scope:
+        description: Native acceptance scope (failed-ui reuses the accepted app)
+        type: choice
+        options:
+          - all
+          - failed-ui
+          - readonly-startup
+          - t5-wave1
+        default: all
+      require_full_acceptance:
+        description: Require Full Acceptance success before IPA packaging
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  simulator-ui27:
+    if: ${{ inputs.route == 'simulator-ui27' }}
+    uses: ./.github/workflows/pinkha-simulator-ui27.yml
+    with:
+      ui_scope: ${{ inputs.ui_scope }}
+      runtime_profile: ${{ inputs.runtime_profile }}
+      heart_source_run_id: ${{ inputs.source_run_id }}
+
+  wave15-acceptance:
+    if: ${{ inputs.route == 'wave15-acceptance' }}
+    uses: ./.github/workflows/pinkha-simulator-ui27.yml
+    with:
+      runtime_profile: ${{ inputs.runtime_profile }}
+      heart_source_run_id: ${{ inputs.source_run_id }}
+      acceptance_lane: ${{ inputs.acceptance_lane }}
+      acceptance_device: ${{ inputs.acceptance_device }}
+      acceptance_language: ${{ inputs.acceptance_language }}
+
+  editor-host-tests:
+    if: ${{ inputs.route == 'editor-host-tests' }}
+    uses: ./.github/workflows/pinkha-sdk06-tests.yml
+    with:
+      runtime_profile: ${{ inputs.runtime_profile }}
+      heart_source_run_id: ${{ inputs.source_run_id }}
+      expected_app_branch: ${{ github.ref_name }}
+      profile: editor
+
+  wave15-core-tests:
+    if: ${{ inputs.route == 'wave15-core-tests' }}
+    uses: ./.github/workflows/pinkha-sdk06-tests.yml
+    with:
+      runtime_profile: ${{ inputs.runtime_profile }}
+      heart_source_run_id: ${{ inputs.source_run_id }}
+      expected_app_branch: ${{ github.ref_name }}
+      profile: wave15-core
+
+  wave15-component-tests:
+    if: ${{ inputs.route == 'wave15-component-tests' }}
+    uses: ./.github/workflows/pinkha-sdk06-tests.yml
+    with:
+      runtime_profile: ${{ inputs.runtime_profile }}
+      heart_source_run_id: ${{ inputs.source_run_id }}
+      expected_app_branch: ${{ github.ref_name }}
+      profile: wave15-components
+
+  hanlin-journal-probe:
+    if: ${{ inputs.route == 'hanlin-journal-probe' }}
+    uses: ./.github/workflows/pinkha-hanlin-journal-probe.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t2-native-clients:
+    if: ${{ inputs.route == 't2-native-clients' || inputs.route == 't2-native-clients-offline' || inputs.route == 't2-native-clients-crash' || inputs.route == 't2-native-clients-observed-remove' || inputs.route == 't2-native-clients-concurrent-replace' }}
+    uses: ./.github/workflows/pinkha-t2-native-clients.yml
+    with:
+      source_sha: ${{ github.sha }}
+      scenario: ${{ (inputs.route == 't2-native-clients-offline' || inputs.route == 't2-native-clients-crash' || inputs.route == 't2-native-clients-observed-remove' || inputs.route == 't2-native-clients-concurrent-replace') && 'offline' || 'bootstrap' }}
+      crash_after_commit: ${{ inputs.route == 't2-native-clients-crash' }}
+      observed_remove_after_reopen: ${{ inputs.route == 't2-native-clients-observed-remove' }}
+      concurrent_replace_after_reopen: ${{ inputs.route == 't2-native-clients-concurrent-replace' }}
+
+  t2-account-rpc:
+    if: ${{ inputs.route == 't2-account-rpc' }}
+    uses: ./.github/workflows/pinkha-t2-account-rpc.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  sdk06-tests:
+    if: ${{ inputs.route == 'sdk06-tests' }}
+    uses: ./.github/workflows/pinkha-sdk06-tests.yml
+    with:
+      runtime_profile: ${{ inputs.runtime_profile }}
+      heart_source_run_id: ${{ inputs.source_run_id }}
+      expected_app_branch: ${{ github.ref_name }}
+
+  heart-dependency-resolution:
+    if: ${{ inputs.route == 'heart-dependency-resolution' }}
+    uses: ./.github/workflows/pinkha-heart-dependencies.yml
+    with:
+      heart_source_run_id: ${{ inputs.source_run_id }}
+
+  heart-runtime:
+    if: ${{ inputs.route == 'heart-runtime' }}
+    uses: ./.github/workflows/pinkha-heart-runtime.yml
+
+  t5-corrected-ui:
+    if: ${{ inputs.route == 't5-corrected-ui' }}
+    uses: ./.github/workflows/pinkha-t5-corrected-ui.yml
+    with:
+      heart_source_run_id: ${{ inputs.source_run_id }}
+
+  related-read-authority-packages:
+    if: ${{ inputs.route == 'related-read-authority-packages' }}
+    uses: ./.github/workflows/pinkha-related-read-authority.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t5-r05-alias:
+    if: ${{ inputs.route == 't5-r05-alias' }}
+    uses: ./.github/workflows/pinkha-t5-r05-alias.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t5-signed-revocation:
+    if: ${{ inputs.route == 't5-signed-revocation' }}
+    uses: ./.github/workflows/pinkha-t5-signed-revocation.yml
+
+  t5-current-read-proof:
+    if: ${{ inputs.route == 't5-current-read-proof' }}
+    uses: ./.github/workflows/pinkha-t5-signed-revocation.yml
+    with:
+      runtime_profile: r15-attachment-current-read-v1
+
+  coherent-heart-native:
+    if: ${{ inputs.route == 'coherent-heart-native' }}
+    uses: ./.github/workflows/pinkha-coherent-heart-native.yml
+
+  coherent-heart-apple:
+    if: ${{ inputs.route == 'coherent-heart-apple' }}
+    uses: ./.github/workflows/pinkha-coherent-heart-apple.yml
+    with:
+      source_run_id: ${{ inputs.source_run_id }}
+
+  coherent-heart-peers:
+    if: ${{ inputs.route == 'coherent-heart-peers' }}
+    uses: ./.github/workflows/pinkha-coherent-heart-peers.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  prepared-migration-apple:
+    if: ${{ inputs.route == 'prepared-migration-apple' }}
+    uses: ./.github/workflows/pinkha-prepared-migration-apple.yml
+    with:
+      native_artifact_run_id: ${{ inputs.source_run_id }}
+      native_producer_commit: ${{ inputs.prepared_native_producer_commit }}
+      native_artifact_run_attempt: ${{ inputs.prepared_native_artifact_run_attempt }}
+
+  sdk06-enumeration-probe:
+    if: ${{ inputs.route == 'sdk06-enumeration-probe' }}
+    uses: ./.github/workflows/pinkha-sdk06-enumeration-probe.yml
+
+  sdk06-basename-probe:
+    if: ${{ inputs.route == 'sdk06-basename-probe' }}
+    uses: ./.github/workflows/pinkha-sdk06-basename-probe.yml
+
+  sdk06-tagged-continuation:
+    if: ${{ inputs.route == 'sdk06-tagged-continuation' }}
+    uses: ./.github/workflows/pinkha-sdk06-tagged-continuation.yml
+
+  sdk06-original-native-continuation:
+    if: ${{ inputs.route == 'sdk06-original-native-continuation' }}
+    uses: ./.github/workflows/pinkha-sdk06-original-native-continuation.yml
+
+  prepared-inline-file-apple:
+    if: ${{ inputs.route == 'prepared-inline-file-apple' }}
+    uses: ./.github/workflows/pinkha-prepared-inline-file-apple.yml
+    with:
+      native_artifact_run_id: ${{ inputs.source_run_id }}
+      native_producer_commit: ${{ inputs.prepared_native_producer_commit }}
+      native_artifact_run_attempt: ${{ inputs.prepared_native_artifact_run_attempt }}
+
+  semantic-page-apple-mounted:
+    if: ${{ inputs.route == 'semantic-page-apple-mounted' }}
+    uses: ./.github/workflows/pinkha-semantic-page-apple-mounted.yml
+
+  native-ui-original-products:
+    if: ${{ inputs.route == 'native-ui-original-products' }}
+    uses: ./.github/workflows/pinkha-any-native-ui-original-products.yml
+
+  coherent-original-products:
+    if: ${{ inputs.route == 'coherent-original-products' }}
+    uses: ./.github/workflows/pinkha-coherent-original-products.yml
+
+  semantic-page-apple-consumer:
+    if: ${{ inputs.route == 'semantic-page-apple-consumer' }}
+    uses: ./.github/workflows/pinkha-semantic-page-apple-consumer.yml
+
+  semantic-page-apple-runtime:
+    if: ${{ inputs.route == 'semantic-page-apple-runtime' }}
+    uses: ./.github/workflows/pinkha-semantic-page-apple-runtime.yml
+
+  semantic-anchor-native:
+    if: ${{ inputs.route == 'semantic-anchor-native' }}
+    uses: ./.github/workflows/pinkha-semantic-anchor-native.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t5-apple-pairs:
+    if: ${{ inputs.route == 't5-apple-pairs' || inputs.route == 't5-apple-ui' }}
+    uses: ./.github/workflows/pinkha-t5-apple-pair.yml
+    with:
+      heart_r14_run_id: ${{ inputs.source_run_id }}
+      heart_r15_run_id: ${{ inputs.t5_r15_run_id }}
+      include_freshness: ${{ inputs.route == 't5-apple-ui' || inputs.t5_component == 'index-freshness' }}
+      include_native_ui: ${{ inputs.route == 't5-apple-ui' }}
+
+  t5-r15-attachment-runtime:
+    if: ${{ inputs.route == 't5-r15-attachment-runtime' }}
+    uses: ./.github/workflows/pinkha-t5-attachment-runtime.yml
+    with:
+      variant: r15-attachment-v1
+  t5-r15-runtime:
+    if: ${{ inputs.route == 't5-r15-runtime' }}
+    uses: ./.github/workflows/pinkha-t5-r15-runtime.yml
+
+  t5-native-pagination:
+    if: ${{ inputs.route == 't5-native-pagination' || inputs.route == 't5-native-account-retry' }}
+    uses: ./.github/workflows/pinkha-t5-native-pagination.yml
+    with:
+      heart_r15_run_id: ${{ inputs.t5_r15_run_id }}
+      include_account_retry: ${{ inputs.route == 't5-native-account-retry' }}
+
+  t5-native-attachment:
+    if: ${{ inputs.route == 't5-native-attachment' }}
+    uses: ./.github/workflows/pinkha-t5-native-attachment.yml
+
+  t2-account-lifecycle:
+    if: ${{ inputs.route == 't2-account-lifecycle' }}
+    uses: ./.github/workflows/pinkha-t2-account-lifecycle.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t2-native-rpc:
+    if: ${{ inputs.route == 't2-native-rpc' }}
+    uses: ./.github/workflows/pinkha-t2-native-rpc.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t2-authorized-read-packages:
+    if: ${{ inputs.route == 't2-authorized-read-packages' }}
+    uses: ./.github/workflows/pinkha-authorized-operation-read-packages.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t2-authorized-operation-read:
+    if: ${{ inputs.route == 't2-authorized-operation-read' }}
+    uses: ./.github/workflows/pinkha-t2-native-rpc.yml
+    with:
+      source_sha: ${{ github.sha }}
+      rpc_profile: authorized-operation-read-v1
+
+  t2-authorized-read-account:
+    if: ${{ inputs.route == 't2-authorized-read-account' }}
+    uses: ./.github/workflows/pinkha-t2-native-rpc.yml
+    with:
+      source_sha: ${{ github.sha }}
+      rpc_profile: authorized-operation-read-v1
+      native_stage: account
+
+  t2-native-operations:
+    if: ${{ inputs.route == 't2-native-operations' }}
+    uses: ./.github/workflows/pinkha-t2-native-operations.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t5-coverage-proof:
+    if: ${{ inputs.route == 't5-coverage-proof' && inputs.t5_component != 'compatibility-pairs' && inputs.t5_component != 'account-pairs' && inputs.t5_component != 'index-freshness' }}
+    uses: ./.github/workflows/pinkha-t5-coverage-proof.yml
+    with:
+      component: ${{ inputs.t5_component }}
+
+  t5-compatibility-pairs:
+    if: ${{ inputs.route == 't5-coverage-proof' && inputs.t5_component == 'compatibility-pairs' }}
+    uses: ./.github/workflows/pinkha-t5-compatibility-pairs.yml
+
+  t5-account-pairs:
+    if: ${{ inputs.route == 't5-coverage-proof' && (inputs.t5_component == 'account-pairs' || inputs.t5_component == 'index-freshness') }}
+    uses: ./.github/workflows/pinkha-t5-account-pairs.yml
+    with:
+      include_freshness: ${{ inputs.t5_component == 'index-freshness' }}
+
+  native-diagnostics:
+    if: ${{ inputs.route == 'native-diagnostics' }}
+    uses: ./.github/workflows/pinkha-native-diagnostics.yml
+    with:
+      source_run_id: ${{ inputs.source_run_id }}
+
+  native-derived:
+    if: ${{ inputs.route == 'native-derived' }}
+    uses: ./.github/workflows/pinkha-native-derived.yml
+    with:
+      heart_source_run_id: ${{ inputs.source_run_id }}
+      validation_scope: ${{ inputs.native_test_scope }}
+    secrets: inherit
+
+  full-acceptance:
+    if: ${{ inputs.route == 'full-acceptance' }}
+    uses: ./.github/workflows/pinkha-full-acceptance.yml
+    secrets: inherit
+
+  ipa-only:
+    if: ${{ inputs.route == 'ipa-only' }}
+    uses: ./.github/workflows/pinkha-ipa-only.yml
+    with:
+      require_full_acceptance: ${{ inputs.require_full_acceptance }}
+    secrets: inherit
+
+  native-ipa-fast:
+    if: ${{ inputs.route == 'native-ipa-fast' }}
+    uses: ./.github/workflows/pinkha-native-ipa-fast.yml
+    with:
+      heart_source_run_id: ${{ inputs.source_run_id }}
+    secrets: inherit
+
+  native-ipa-repair:
+    if: ${{ inputs.route == 'native-ipa-repair' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Checkout Pinkha repair script
+        uses: actions/checkout@v4
+      - name: Download already built custom Heart IPA - NO recompilation
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p build/ipa-repair/input
+          gh run download 41878176487 --repo "$GITHUB_REPOSITORY" --name Pinkha-Custom-Heart-Fast-Unsigned-IPA --dir build/ipa-repair/input
+          test -s build/ipa-repair/input/Pinkha-Native-Derived-iPad-Unsigned.ipa
+      - name: Fix and validate nested extension bundle identifiers
+        run: |
+          python3 Tools/PinkhaNativeDerived/repair_ipa_bundle_ids.py \
+            --input build/ipa-repair/input/Pinkha-Native-Derived-iPad-Unsigned.ipa \
+            --output build/ipa-repair/Pinkha-Torah-iPad-Extensions-Fixed-Unsigned.ipa \
+            --receipt build/ipa-repair/repair-receipt.json
+          sha256sum build/ipa-repair/Pinkha-Torah-iPad-Extensions-Fixed-Unsigned.ipa > build/ipa-repair/sha256.txt
+      - name: Upload corrected unsigned IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Torah-iPad-Extensions-Fixed-Unsigned-IPA
+          path: build/ipa-repair/Pinkha-Torah-iPad-Extensions-Fixed-Unsigned.ipa
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload integrity receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Torah-Extension-Repair-Evidence
+          path: |
+            build/ipa-repair/repair-receipt.json
+            build/ipa-repair/sha256.txt
+          if-no-files-found: warn
+          retention-days: 14
+
+  t2-rpc-lifecycle-races:
+    if: ${{ inputs.route == 't2-rpc-lifecycle-races' }}
+    uses: ./.github/workflows/pinkha-t2-rpc-lifecycle-races.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t2-rpc-space-close:
+    if: ${{ inputs.route == 't2-rpc-space-close' }}
+    uses: ./.github/workflows/pinkha-t2-rpc-space-close.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t2-authorized-read-apple-runtime:
+    if: ${{ inputs.route == 't2-authorized-read-apple-runtime' }}
+    uses: ./.github/workflows/pinkha-heart-authorized-read-runtime.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t2-authorized-read-ios:
+    if: ${{ inputs.route == 't2-authorized-read-ios' }}
+    uses: ./.github/workflows/pinkha-heart-authorized-read-ios.yml
+    with:
+      source_sha: ${{ github.sha }}
+      runtime_run: ${{ inputs.source_run_id }}

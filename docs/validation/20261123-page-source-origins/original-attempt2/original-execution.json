@@ -1,0 +1,170 @@
+{
+  "admission": {
+    "artifact_bytes": 703289417,
+    "artifact_id": 14794983588,
+    "artifact_sha256": "082d7cf6c589c6770186390091d997de29d7148fe917ea2f0785450688cada46",
+    "consumer_attempt": "1",
+    "consumer_run": "45116855451",
+    "consumer_sha": "68148339c275268795360d71d519a5baf003adf8",
+    "native_descriptor": {
+      "main_thread_checker_token": "/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.p5Mt7T/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/usr/lib/libMainThreadChecker.dylib",
+      "sha256": "b44dbf6c0619f1187ba6167245418c8f0870a3f6c4dac427bea99c870d0b89e7"
+    },
+    "native_manifest_sha256": "bf90cd55caf69966918e9cbac24e2e48b68d4c23c9e6dfbe7576eb067574860e",
+    "ui_descriptor": {
+      "main_thread_checker_token": "/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.p5Mt7T/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/usr/lib/libMainThreadChecker.dylib",
+      "sha256": "55fe94261dc5360fd9c5e3b90532e393d273070b8ade7655c6695666eac9e165"
+    },
+    "ui_manifest_sha256": "c8b3f2d54cc7246e6289960a344db85132c665a535c7a3d0a99257c6ebfc3913"
+  },
+  "app_builds": 0,
+  "binding": {
+    "nonce": "1541f6fffd2447dfa4a5e49bf09ce893",
+    "runAttempt": "2",
+    "runID": "45162736256",
+    "sourceSHA": "68148339c275268795360d71d519a5baf003adf8"
+  },
+  "commands": [
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/davidpovarsky/anytype-swift/actions/runs/45116855451/attempts/1"
+      ],
+      "finished_at": "2026-11-23T11:41:41.464017+00:00",
+      "log_sha256": "41ce0e91854367372351e121fee4d99e118185c7ff8d5059632e6ac5a15f6e2e",
+      "name": "consumer-run-api",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "absence_source": "KERNEL_ESRCH",
+        "budget_seconds": 10,
+        "kernel_group_observation": {
+          "after_monotonic": 122.178810375,
+          "before_monotonic": 122.178769791,
+          "deadline_monotonic": 132.178764083,
+          "errno": 3,
+          "error_type": "ProcessLookupError",
+          "operation": "os.killpg",
+          "outcome": "ABSENT_ESRCH",
+          "pgid": 1434,
+          "signal": 0
+        },
+        "live_members": 0,
+        "observations": 0,
+        "pgid": 1434,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T11:41:40.492413+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 60,
+      "worker_pid": 1434
+    },
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/davidpovarsky/anytype-swift/actions/artifacts/14794983588"
+      ],
+      "finished_at": "2026-11-23T11:41:41.932720+00:00",
+      "log_sha256": "1fecccc7b4298e6ce81d3309265a374e869bbeccf61e732fdaf8eb324deb44aa",
+      "name": "consumer-artifact-api",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "absence_source": "KERNEL_ESRCH",
+        "budget_seconds": 10,
+        "kernel_group_observation": {
+          "after_monotonic": 122.646910125,
+          "before_monotonic": 122.646882458,
+          "deadline_monotonic": 132.6468785,
+          "errno": 3,
+          "error_type": "ProcessLookupError",
+          "operation": "os.killpg",
+          "outcome": "ABSENT_ESRCH",
+          "pgid": 1437,
+          "signal": 0
+        },
+        "live_members": 0,
+        "observations": 0,
+        "pgid": 1437,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T11:41:41.467656+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 60,
+      "worker_pid": 1437
+    },
+    {
+      "argv": [
+        "gh",
+        "api",
+        "repos/davidpovarsky/anytype-swift/actions/artifacts/14794983588/zip"
+      ],
+      "finished_at": "2026-11-23T11:42:12.385135+00:00",
+      "log_sha256": "082d7cf6c589c6770186390091d997de29d7148fe917ea2f0785450688cada46",
+      "name": "download-original-consumer",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "absence_source": "KERNEL_ESRCH",
+        "budget_seconds": 10,
+        "kernel_group_observation": {
+          "after_monotonic": 153.086664583,
+          "before_monotonic": 153.08656525,
+          "deadline_monotonic": 163.086545125,
+          "errno": 3,
+          "error_type": "ProcessLookupError",
+          "operation": "os.killpg",
+          "outcome": "ABSENT_ESRCH",
+          "pgid": 1441,
+          "signal": 0
+        },
+        "live_members": 0,
+        "observations": 0,
+        "pgid": 1441,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 0,
+      "started_at": "2026-11-23T11:41:41.935355+00:00",
+      "status": "COMPLETE",
+      "timeout_seconds": 600,
+      "worker_pid": 1441
+    }
+  ],
+  "compiled_app_source_sha": "68148339c275268795360d71d519a5baf003adf8",
+  "controller_source_sha": "c0c1f851f80322c9f532e86505047498dfaf1adf",
+  "error": "Reused App/Module/UI/project source differs",
+  "error_type": "ValueError",
+  "finished_at": "2026-11-23T11:42:26.106058+00:00",
+  "limits": {
+    "fullProductAcceptance": false,
+    "physicalDevice": "NOT_RUN",
+    "shipping": "OFF"
+  },
+  "native_builds": 0,
+  "new_preparation_methods_passed": 0,
+  "new_ui_methods_passed": 0,
+  "original_artifacts": {
+    "execution.json": "93fb0440f786fb68a3fd93b370edd02aad522040d694e2d5e20564c3e236502b",
+    "original.xctestrun": "b44dbf6c0619f1187ba6167245418c8f0870a3f6c4dac427bea99c870d0b89e7",
+    "semantic-page154-early-products/BuildProducts.tar.gz": "a7350b79911d1f03701b55015de934041b80642d377c9196d6f795aa4ca4774b",
+    "semantic-page154-early-products/manifest.json": "bf90cd55caf69966918e9cbac24e2e48b68d4c23c9e6dfbe7576eb067574860e",
+    "source-after.json": "533bb8ad8eed3607521bef3517ff3a7cd53728956872180209cd9280d48e365d",
+    "source-before.json": "533bb8ad8eed3607521bef3517ff3a7cd53728956872180209cd9280d48e365d",
+    "ui-runner/original.xctestrun": "55fe94261dc5360fd9c5e3b90532e393d273070b8ade7655c6695666eac9e165",
+    "ui-runner/semantic-page154-early-products/BuildProducts.tar.gz": "06fb6afb7b35fe42c1cfaafa1425908df23824f4dda25b1c163d53ea3a6b9783",
+    "ui-runner/semantic-page154-early-products/manifest.json": "c8b3f2d54cc7246e6289960a344db85132c665a535c7a3d0a99257c6ebfc3913",
+    "xcode-version.log": "694b44731d0b415c5b11d844151e466d7f5e200a95627efda377f232f1a6ab77"
+  },
+  "phase": "EXACT_ORIGINAL_PRODUCTS",
+  "previous_native_or_boundary_methods_rerun": 0,
+  "protocol": "pinkha-semantic-page154-mounted-v1",
+  "restored_products_unchanged": [],
+  "source_and_descriptors_unchanged": true,
+  "started_at": "2026-11-23T11:41:37.301528+00:00",
+  "status": "FAIL",
+  "ui_builds": 0
+}
