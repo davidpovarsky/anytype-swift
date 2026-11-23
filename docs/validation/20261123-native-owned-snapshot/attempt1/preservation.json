@@ -1,0 +1,300 @@
+{
+  "accountSessionACLAuthorized": false,
+  "actual_failed_method": "TestNativeOwnedSnapshotShutdownAndCanceledAcquire",
+  "binary": {
+    "bytes": 48804759,
+    "mode": 509,
+    "sha256": "ee7cbf6927e01c60dd8f06cb46f3ca5702bde001b95e644ba606fc643eda5675"
+  },
+  "build_status": "BUILD_PASS_EXECUTION_NOT_RUN",
+  "dependency_integrity_pass": true,
+  "exact_failure": "native_capture_test.go:490: unpublished native database handle leaked after shutdown",
+  "failure_classification": "Observed global FD-count assertion failure while the original native database remains open; no exact retained descriptor identity was logged, so the particular cause is not established.",
+  "filePayloadCoverageComplete": false,
+  "final_capacity_pass": true,
+  "hasNativeSourceAdmission": false,
+  "kind": "native-owned-snapshot-original-attempt1-preservation-v1",
+  "loaded_integrity_pass": true,
+  "new_test_execution": false,
+  "original_execution_status": "FAILED",
+  "original_files": {
+    "binary-buildinfo-original.txt": {
+      "bytes": 5691,
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/binary-buildinfo-original.txt",
+      "sha256": "42cf19b7b72a28c634bcb50edd2a8e16564501459c99c73217322debe4c66fe3"
+    },
+    "build-dependencies-after.json": {
+      "bytes": 962365,
+      "compressed_copy": "docs/validation/20261123-native-owned-snapshot/attempt1/build-dependencies-after.json.gz",
+      "copy": {
+        "bytes": 215729,
+        "sha256": "75fdba565d97708713e0de5ffd864d4ca6680f5f44773e293853723729c693b4"
+      },
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/build-dependencies-after.json",
+      "sha256": "fe0bf656849faa90e0d5bb60c6dad095df8612b917c0837063ec31ca2c228782"
+    },
+    "build-dependencies-before.json": {
+      "bytes": 962365,
+      "compressed_copy": "docs/validation/20261123-native-owned-snapshot/attempt1/build-dependencies-before.json.gz",
+      "copy": {
+        "bytes": 215729,
+        "sha256": "75fdba565d97708713e0de5ffd864d4ca6680f5f44773e293853723729c693b4"
+      },
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/build-dependencies-before.json",
+      "sha256": "fe0bf656849faa90e0d5bb60c6dad095df8612b917c0837063ec31ca2c228782"
+    },
+    "build-loaded-after.json": {
+      "bytes": 14453,
+      "compressed_copy": "docs/validation/20261123-native-owned-snapshot/attempt1/build-loaded-after.json.gz",
+      "copy": {
+        "bytes": 4355,
+        "sha256": "d08a254247b879183a59c30b052559cb0f751b4bb53a699b04fbb187e94bc4eb"
+      },
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/build-loaded-after.json",
+      "sha256": "c37c273b1b9cdf757a58bc4a499cf885285fbc6f8ffdef7a4754b7eb3bee4ee2"
+    },
+    "build-loaded-before.json": {
+      "bytes": 14453,
+      "compressed_copy": "docs/validation/20261123-native-owned-snapshot/attempt1/build-loaded-before.json.gz",
+      "copy": {
+        "bytes": 4355,
+        "sha256": "d08a254247b879183a59c30b052559cb0f751b4bb53a699b04fbb187e94bc4eb"
+      },
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/build-loaded-before.json",
+      "sha256": "c37c273b1b9cdf757a58bc4a499cf885285fbc6f8ffdef7a4754b7eb3bee4ee2"
+    },
+    "build-source-after.json": {
+      "bytes": 15188,
+      "compressed_copy": "docs/validation/20261123-native-owned-snapshot/attempt1/build-source-after.json.gz",
+      "copy": {
+        "bytes": 4166,
+        "sha256": "2e6865e3fe8ab3a30545c46a25533625f83f6af43537736365d82f92e1448538"
+      },
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/build-source-after.json",
+      "sha256": "f3cc444548d695461febd9ed9a188885d327e5f1623bf345e493e48d88a18293"
+    },
+    "build-source-before.json": {
+      "bytes": 15188,
+      "compressed_copy": "docs/validation/20261123-native-owned-snapshot/attempt1/build-source-before.json.gz",
+      "copy": {
+        "bytes": 4166,
+        "sha256": "2e6865e3fe8ab3a30545c46a25533625f83f6af43537736365d82f92e1448538"
+      },
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/build-source-before.json",
+      "sha256": "f3cc444548d695461febd9ed9a188885d327e5f1623bf345e493e48d88a18293"
+    },
+    "build-tools-after.json": {
+      "bytes": 2615,
+      "compressed_copy": "docs/validation/20261123-native-owned-snapshot/attempt1/build-tools-after.json.gz",
+      "copy": {
+        "bytes": 967,
+        "sha256": "7802405425560f94e6ddcbbf01606d5e0baf4417b1f6e314edb21d1b5dc2ef5e"
+      },
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/build-tools-after.json",
+      "sha256": "1daf9408fd1373cd5f0df71ef4874727905dd0a08c149a7eee5f02d5f11cab7a"
+    },
+    "build-tools-before.json": {
+      "bytes": 2615,
+      "compressed_copy": "docs/validation/20261123-native-owned-snapshot/attempt1/build-tools-before.json.gz",
+      "copy": {
+        "bytes": 967,
+        "sha256": "7802405425560f94e6ddcbbf01606d5e0baf4417b1f6e314edb21d1b5dc2ef5e"
+      },
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/build-tools-before.json",
+      "sha256": "1daf9408fd1373cd5f0df71ef4874727905dd0a08c149a7eee5f02d5f11cab7a"
+    },
+    "build.json": {
+      "bytes": 3387,
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/build.json",
+      "sha256": "e125ee571c391d3327b50bad80169c74b73efd0dca03ed2c390018d177ec5fc5"
+    },
+    "execute-dependencies-after.json": {
+      "bytes": 962365,
+      "compressed_copy": "docs/validation/20261123-native-owned-snapshot/attempt1/execute-dependencies-after.json.gz",
+      "copy": {
+        "bytes": 215729,
+        "sha256": "75fdba565d97708713e0de5ffd864d4ca6680f5f44773e293853723729c693b4"
+      },
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/execute-dependencies-after.json",
+      "sha256": "fe0bf656849faa90e0d5bb60c6dad095df8612b917c0837063ec31ca2c228782"
+    },
+    "execute-dependencies-before.json": {
+      "bytes": 962365,
+      "compressed_copy": "docs/validation/20261123-native-owned-snapshot/attempt1/execute-dependencies-before.json.gz",
+      "copy": {
+        "bytes": 215729,
+        "sha256": "75fdba565d97708713e0de5ffd864d4ca6680f5f44773e293853723729c693b4"
+      },
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/execute-dependencies-before.json",
+      "sha256": "fe0bf656849faa90e0d5bb60c6dad095df8612b917c0837063ec31ca2c228782"
+    },
+    "execute-loaded-after.json": {
+      "bytes": 14453,
+      "compressed_copy": "docs/validation/20261123-native-owned-snapshot/attempt1/execute-loaded-after.json.gz",
+      "copy": {
+        "bytes": 4355,
+        "sha256": "d08a254247b879183a59c30b052559cb0f751b4bb53a699b04fbb187e94bc4eb"
+      },
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/execute-loaded-after.json",
+      "sha256": "c37c273b1b9cdf757a58bc4a499cf885285fbc6f8ffdef7a4754b7eb3bee4ee2"
+    },
+    "execute-loaded-before.json": {
+      "bytes": 14453,
+      "compressed_copy": "docs/validation/20261123-native-owned-snapshot/attempt1/execute-loaded-before.json.gz",
+      "copy": {
+        "bytes": 4355,
+        "sha256": "d08a254247b879183a59c30b052559cb0f751b4bb53a699b04fbb187e94bc4eb"
+      },
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/execute-loaded-before.json",
+      "sha256": "c37c273b1b9cdf757a58bc4a499cf885285fbc6f8ffdef7a4754b7eb3bee4ee2"
+    },
+    "execute-source-after.json": {
+      "bytes": 15188,
+      "compressed_copy": "docs/validation/20261123-native-owned-snapshot/attempt1/execute-source-after.json.gz",
+      "copy": {
+        "bytes": 4166,
+        "sha256": "2e6865e3fe8ab3a30545c46a25533625f83f6af43537736365d82f92e1448538"
+      },
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/execute-source-after.json",
+      "sha256": "f3cc444548d695461febd9ed9a188885d327e5f1623bf345e493e48d88a18293"
+    },
+    "execute-source-before.json": {
+      "bytes": 15188,
+      "compressed_copy": "docs/validation/20261123-native-owned-snapshot/attempt1/execute-source-before.json.gz",
+      "copy": {
+        "bytes": 4166,
+        "sha256": "2e6865e3fe8ab3a30545c46a25533625f83f6af43537736365d82f92e1448538"
+      },
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/execute-source-before.json",
+      "sha256": "f3cc444548d695461febd9ed9a188885d327e5f1623bf345e493e48d88a18293"
+    },
+    "execute-tools-after.json": {
+      "bytes": 2615,
+      "compressed_copy": "docs/validation/20261123-native-owned-snapshot/attempt1/execute-tools-after.json.gz",
+      "copy": {
+        "bytes": 967,
+        "sha256": "7802405425560f94e6ddcbbf01606d5e0baf4417b1f6e314edb21d1b5dc2ef5e"
+      },
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/execute-tools-after.json",
+      "sha256": "1daf9408fd1373cd5f0df71ef4874727905dd0a08c149a7eee5f02d5f11cab7a"
+    },
+    "execute-tools-before.json": {
+      "bytes": 2615,
+      "compressed_copy": "docs/validation/20261123-native-owned-snapshot/attempt1/execute-tools-before.json.gz",
+      "copy": {
+        "bytes": 967,
+        "sha256": "7802405425560f94e6ddcbbf01606d5e0baf4417b1f6e314edb21d1b5dc2ef5e"
+      },
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/execute-tools-before.json",
+      "sha256": "1daf9408fd1373cd5f0df71ef4874727905dd0a08c149a7eee5f02d5f11cab7a"
+    },
+    "execute.json": {
+      "bytes": 3315,
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/execute.json",
+      "sha256": "b0d8a59ab46b66125e4a903ee498743db319497000b98fbf9724f448a1945d0d"
+    },
+    "private/build-original.command.json": {
+      "bytes": 1333,
+      "original_private_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/private/build-original.command.json",
+      "published_raw": false,
+      "sha256": "ecff08e75ddaeb28c8539bdd418ad50d76bed89ae80531851db01d883d91f33f"
+    },
+    "private/build-original.stderr": {
+      "bytes": 0,
+      "original_private_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/private/build-original.stderr",
+      "published_raw": false,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "private/build-original.stdout": {
+      "bytes": 0,
+      "original_private_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/private/build-original.stdout",
+      "published_raw": false,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "private/execution-original.command.json": {
+      "bytes": 1699,
+      "original_private_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/private/execution-original.command.json",
+      "published_raw": false,
+      "sha256": "dd920ce88cf2c344096059f80ec293b907eaa81f2e5b1914c9d6832c792b20e4"
+    },
+    "private/execution-original.stderr": {
+      "bytes": 0,
+      "original_private_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/private/execution-original.stderr",
+      "published_raw": false,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "private/execution-original.stdout": {
+      "bytes": 11994,
+      "original_private_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/private/execution-original.stdout",
+      "published_raw": false,
+      "sha256": "98151cc51121bc7d28640b66b8696bd83fc4d029c44075aebfeab7af0ac4f8e4"
+    },
+    "retained-three-private-frame-audit.json": {
+      "bytes": 1026,
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/retained-three-private-frame-audit.json",
+      "sha256": "06f7f8e51f868e33a8a045137b3b8f6fa3f70d529d661f503775b1622b0bb885"
+    },
+    "safe-events.json": {
+      "bytes": 6158,
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/safe-events.json",
+      "sha256": "9135397f76bcd5e90d0ac373745fe968085f485ddcf6dde9f044ff9e3a056132"
+    },
+    "safe-native-observations.json": {
+      "bytes": 1514,
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/safe-native-observations.json",
+      "sha256": "5155df625d24aebf2ee59df81bdf0e09f0dddd8706e65bf1b78f9f7f7dea674a"
+    },
+    "safe-native-receipts.json": {
+      "bytes": 4735,
+      "original_path": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/safe-native-receipts.json",
+      "sha256": "8fb8cded225773450cf8254c339bc758548e6c442fc27bfd035d5c2096fcb605"
+    }
+  },
+  "owned_groups_absent": true,
+  "permitsDestinationWrites": false,
+  "retained_actual_passes": [
+    "TestNativeOwnedSnapshotBindsActualServiceHandle",
+    "TestNativeOwnedSnapshotCloseRevokesAndDrains",
+    "TestNativeOwnedSnapshotDeletePreservesLeaseBoundary"
+  ],
+  "semanticIdentityCensusComplete": false,
+  "source": {
+    "controller": "d6e52e3a9d6e4a8d3fc266ae0fe586cd20e3eeb2",
+    "manifest_sha256": "65b61f19ecab4182c4f84f1788d05aef06363e50ae0c670bd2356ba741907a5e",
+    "native": "179509522c78e263c86c847e1cc78ad05ff43aeb"
+  },
+  "source_integrity_pass": true,
+  "tool_integrity_pass": true,
+  "two_private_frames_audit": {
+    "audit_source_sha256": "cb1371ebc82d1f493feb4ebe631176a4c9646c2123fa9229903d1a5b6e1e5695",
+    "frames": {
+      "native-ambient-foreign": {
+        "bytes": 2907,
+        "collections": 7,
+        "encoded_value_bytes": 1946,
+        "hasNativeSourceAdmission": false,
+        "mode": 384,
+        "permitsDestinationWrites": false,
+        "raw_values_published": false,
+        "rows": 6,
+        "semantic_reconstruction": false,
+        "sha256": "02f8dda22c5d31d08d2d2afbde046684dab7dafb9c220c4d87d971ebe2ddeb6a"
+      },
+      "native-initial": {
+        "bytes": 2907,
+        "collections": 7,
+        "encoded_value_bytes": 1946,
+        "hasNativeSourceAdmission": false,
+        "mode": 384,
+        "permitsDestinationWrites": false,
+        "raw_values_published": false,
+        "rows": 6,
+        "semantic_reconstruction": false,
+        "sha256": "02f8dda22c5d31d08d2d2afbde046684dab7dafb9c220c4d87d971ebe2ddeb6a"
+      }
+    },
+    "native_methods_reexecuted": 0,
+    "original_aggregate_status": "FAILED",
+    "status": "PASS_AUDIT_ONLY_TWO_ORIGINAL_FRAMES"
+  }
+}

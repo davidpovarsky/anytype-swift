@@ -1,0 +1,93 @@
+{
+  "accountSessionACLAuthorized": false,
+  "actual_named_passes": [],
+  "actual_named_starts": [],
+  "binary": {
+    "bytes": 48804759,
+    "mode": 509,
+    "sha256": "ee7cbf6927e01c60dd8f06cb46f3ca5702bde001b95e644ba606fc643eda5675"
+  },
+  "buildinfo_sha256": "42cf19b7b72a28c634bcb50edd2a8e16564501459c99c73217322debe4c66fe3",
+  "command": {
+    "argv": [
+      "/mnt/development/toolchains/go1.27.4/go/bin/go",
+      "test",
+      "-mod=readonly",
+      "-c",
+      "-p=1",
+      "-tags=pinkha_localstore_witness",
+      "-o",
+      "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/products/native-owned-snapshot.test",
+      "./core/pinkha/localstorewitness"
+    ],
+    "cleanup_error": null,
+    "cleanup_group_initially_absent": true,
+    "cwd": "/mnt/development/projects/worktrees/anytype-heart-native-owned-snapshot-20261123",
+    "elapsed_seconds": 67.04308519978076,
+    "finished": "2026-11-23T14:21:49.657319+00:00",
+    "free_after": 3133267968,
+    "free_before": 3330813952,
+    "interruption": null,
+    "owned_group_absent": true,
+    "pgid": 2821285,
+    "pid": 2821285,
+    "post_exit_admitted": true,
+    "post_exit_observation": {
+      "above_stop_reserve": true,
+      "elapsed_seconds": 67.04292871896178,
+      "free_bytes": 3133267968,
+      "within_deadline": true
+    },
+    "primary_error": null,
+    "returncode": 0,
+    "started": "2026-11-23T14:20:42.614217+00:00",
+    "status": "PASS",
+    "stderr": {
+      "bytes": 0,
+      "mode": 384,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout": {
+      "bytes": 0,
+      "mode": 384,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "timeout_seconds": 900
+  },
+  "controller_sha256": "9fbd3a53f10caf7869f0a81ce69517c1d546747bea170c9ca9031a6c8e0b70c6",
+  "controller_source_sha": "d6e52e3a9d6e4a8d3fc266ae0fe586cd20e3eeb2",
+  "environment": {
+    "CGO_ENABLED": "1",
+    "GOCACHE": "/mnt/development/projects/diagnostics/inline-http-20261123/cache/go-build-glibc",
+    "GOEXPERIMENT": "",
+    "GOFLAGS": "",
+    "GOMAXPROCS": "1",
+    "GOMODCACHE": "/mnt/development/projects/evidence/semantic-page-20261123-arm64/cache/go-mod",
+    "GOPATH": "/mnt/development/projects/diagnostics/inline-http-20261123/cache/go-path",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOTMPDIR": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/tmp",
+    "GOTOOLCHAIN": "local",
+    "GOWORK": "off",
+    "TMPDIR": "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/tmp"
+  },
+  "filePayloadCoverageComplete": false,
+  "final_capacity_admitted": true,
+  "final_errors": [],
+  "finished": "2026-11-23T14:21:53.734002+00:00",
+  "free_bytes_final": 3132256256,
+  "hasNativeSourceAdmission": false,
+  "loaded_after_count": 74,
+  "loaded_before_count": 74,
+  "manifest_sha256": "65b61f19ecab4182c4f84f1788d05aef06363e50ae0c670bd2356ba741907a5e",
+  "native_source_sha": "179509522c78e263c86c847e1cc78ad05ff43aeb",
+  "native_storage_lifetime_issuer": true,
+  "old_methods_executed": 0,
+  "permitsDestinationWrites": false,
+  "primary_error": null,
+  "scope": "native-owned-local-store-readonly-v1",
+  "semanticIdentityCensusComplete": false,
+  "stage": "build",
+  "started": "2026-11-23T14:20:39.499281+00:00",
+  "status": "BUILD_PASS_EXECUTION_NOT_RUN"
+}

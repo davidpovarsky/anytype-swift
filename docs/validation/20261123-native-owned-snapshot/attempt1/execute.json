@@ -1,0 +1,90 @@
+{
+  "accountSessionACLAuthorized": false,
+  "actual_named_passes": [
+    "TestNativeOwnedSnapshotBindsActualServiceHandle",
+    "TestNativeOwnedSnapshotCloseRevokesAndDrains",
+    "TestNativeOwnedSnapshotDeletePreservesLeaseBoundary"
+  ],
+  "actual_named_starts": [
+    "TestNativeOwnedSnapshotBindsActualServiceHandle",
+    "TestNativeOwnedSnapshotCloseRevokesAndDrains",
+    "TestNativeOwnedSnapshotDeletePreservesLeaseBoundary",
+    "TestNativeOwnedSnapshotShutdownAndCanceledAcquire"
+  ],
+  "command": {
+    "argv": [
+      "/mnt/development/toolchains/go1.27.4/go/bin/go",
+      "tool",
+      "test2json",
+      "-t",
+      "-p",
+      "github.com/anyproto/anytype-heart/core/pinkha/localstorewitness",
+      "/mnt/development/projects/evidence/native-owned-snapshot-20261123/attempt1/products/native-owned-snapshot.test",
+      "-test.v=test2json",
+      "-test.run=^(TestNativeOwnedSnapshotBindsActualServiceHandle|TestNativeOwnedSnapshotCloseRevokesAndDrains|TestNativeOwnedSnapshotDeletePreservesLeaseBoundary|TestNativeOwnedSnapshotShutdownAndCanceledAcquire)$",
+      "-test.timeout=90s",
+      "-test.count=1"
+    ],
+    "cleanup_error": null,
+    "cleanup_group_initially_absent": true,
+    "cwd": "/mnt/development/projects/worktrees/anytype-heart-native-owned-snapshot-20261123",
+    "elapsed_seconds": 1.7550063421949744,
+    "finished": "2026-11-23T14:23:14.207322+00:00",
+    "free_after": 3107086336,
+    "free_before": 3114352640,
+    "interruption": null,
+    "owned_group_absent": true,
+    "pgid": 2822806,
+    "pid": 2822806,
+    "post_exit_admitted": true,
+    "post_exit_observation": {
+      "above_stop_reserve": true,
+      "elapsed_seconds": 1.7519119242206216,
+      "free_bytes": 3107086336,
+      "within_deadline": true
+    },
+    "primary_error": {
+      "message": "owned_command_nonzero",
+      "returncode": 1,
+      "type": "ChildProcessError"
+    },
+    "returncode": 1,
+    "started": "2026-11-23T14:23:12.452288+00:00",
+    "status": "FAILED",
+    "stderr": {
+      "bytes": 0,
+      "mode": 384,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout": {
+      "bytes": 11994,
+      "mode": 384,
+      "sha256": "98151cc51121bc7d28640b66b8696bd83fc4d029c44075aebfeab7af0ac4f8e4"
+    },
+    "timeout_seconds": 120
+  },
+  "controller_sha256": "9fbd3a53f10caf7869f0a81ce69517c1d546747bea170c9ca9031a6c8e0b70c6",
+  "controller_source_sha": "d6e52e3a9d6e4a8d3fc266ae0fe586cd20e3eeb2",
+  "filePayloadCoverageComplete": false,
+  "final_capacity_admitted": true,
+  "final_errors": [],
+  "finished": "2026-11-23T14:23:15.268522+00:00",
+  "free_bytes_final": 3106062336,
+  "hasNativeSourceAdmission": false,
+  "loaded_after_count": 74,
+  "loaded_before_count": 74,
+  "manifest_sha256": "65b61f19ecab4182c4f84f1788d05aef06363e50ae0c670bd2356ba741907a5e",
+  "native_source_sha": "179509522c78e263c86c847e1cc78ad05ff43aeb",
+  "native_storage_lifetime_issuer": true,
+  "old_methods_executed": 0,
+  "permitsDestinationWrites": false,
+  "primary_error": {
+    "message": "four_native_controls_failed_original_preserved",
+    "type": "RuntimeError"
+  },
+  "scope": "native-owned-local-store-readonly-v1",
+  "semanticIdentityCensusComplete": false,
+  "stage": "execute",
+  "started": "2026-11-23T14:23:11.374217+00:00",
+  "status": "FAILED"
+}

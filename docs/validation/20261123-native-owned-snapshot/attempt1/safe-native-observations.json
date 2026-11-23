@@ -1,0 +1,47 @@
+{
+  "TestNativeOwnedSnapshotBindsActualServiceHandle": {
+    "Counts": {
+      "native_stores": 2,
+      "native_witnesses": 2
+    },
+    "Facts": {
+      "actual_service_constructor": true,
+      "census_authority_unchanged": true,
+      "foreign_transaction_not_reused_or_committed": true,
+      "fresh_same_db_read_transaction": true,
+      "generic_and_zero_issuance_refused": true,
+      "native_unknown_and_empty_retained": true
+    }
+  },
+  "TestNativeOwnedSnapshotCloseRevokesAndDrains": {
+    "Counts": {
+      "copied_leases": 1,
+      "real_handle_closes": 1,
+      "reopened_handles": 1
+    },
+    "Facts": {
+      "actual_read_tx_precedes_close": true,
+      "backend_close_waited_for_real_release": true,
+      "copied_and_zero_lease_refused_without_effect": true,
+      "copied_lease_cannot_release_gate": true,
+      "native_reopen_uses_new_handle_generation": true,
+      "revocation_cancels_scan": true,
+      "revoked_release_drained_once": true
+    }
+  },
+  "TestNativeOwnedSnapshotDeletePreservesLeaseBoundary": {
+    "Counts": {
+      "actual_backup_renames": 1,
+      "actual_deletions": 1,
+      "same_space_prior_handles": 2
+    },
+    "Facts": {
+      "actual_delete_revokes_all_same_space_handles": true,
+      "actual_successful_backup_revokes_detached_handle": true,
+      "canceled_delete_preserves_store_and_lease": true,
+      "original_recovery_decision_unchanged": true,
+      "recreate_refuses_all_old_capabilities": true,
+      "same_space_distinct_db_epochs": true
+    }
+  }
+}
