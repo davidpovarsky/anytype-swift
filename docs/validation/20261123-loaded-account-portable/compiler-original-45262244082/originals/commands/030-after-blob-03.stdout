@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "scope": "compiler_only_no_heart_source_no_go_no_native_tests",
+  "base_image": "postgres@sha256:f2f98726820d0342055351c6e9d36e705f5bfffb3dd53ff556325114b08afb6d",
+  "base_proof_sha256": "ca681802575e0fd0d135be251184b89949dde0f46a957755ff2c019fa5013a76",
+  "repository_association_original": {
+    "path": "/mnt/development/projects/diagnostics/c-arm64-image-tools-20261123/image-identity.json",
+    "bytes": 1180,
+    "sha256": "3fc8c63f8bd3c0b7bc38e762c0388029ef37ceb4f573ec8d87700e5d7d61a2cc"
+  },
+  "registry_index": {
+    "digest": "sha256:f2f98726820d0342055351c6e9d36e705f5bfffb3dd53ff556325114b08afb6d",
+    "bytes": 10301,
+    "media_type": "application/vnd.oci.image.index.v1+json"
+  },
+  "selected_manifest": {
+    "digest": "sha256:ddc1c45d23db7f0702f5a2727e28f24cbb75746f625c8c5083a190e50cf01740",
+    "bytes": 2868,
+    "platform": {
+      "os": "linux",
+      "architecture": "arm64",
+      "variant": "v8"
+    }
+  },
+  "image_config": {
+    "digest": "sha256:31b7df755869f3d5b0a8a87e0f29ea85cac62a522f008681d304e311160d181f",
+    "bytes": 8884
+  },
+  "docker_engine_id_policy": "Record actual fresh-host engine ID independently; require requested RepoDigest and all ten exact diff_ids.",
+  "observed_base": {
+    "alpine": "3.24.4",
+    "apk_tools": "3.0.9-r0",
+    "repositories": [
+      "https://dl-cdn.alpinelinux.org/alpine/v3.24/main",
+      "https://dl-cdn.alpinelinux.org/alpine/v3.24/community"
+    ],
+    "repositories_sha256": "7b8b3e6fe030eeb4ee7619b42c9419aa846bff1c632442d3f00ed9fb97c6fa36",
+    "installed_sha256": "da766c29d2a171e8b2688c8eb215f47a514023a788775a9b6a42a27875d14e3c"
+  },
+  "requested_packages": [
+    "gcc",
+    "g++",
+    "musl-dev",
+    "binutils"
+  ],
+  "package_version_policy": "Actual signed repository resolution is preserved; no version assumed before producer. Later native admission pins original artifact bytes.",
+  "tools": [
+    "gcc",
+    "g++",
+    "cc",
+    "c++",
+    "ld",
+    "as",
+    "ar",
+    "ranlib"
+  ],
+  "available_compiler_helpers": [
+    "cc1",
+    "cc1plus",
+    "collect2",
+    "lto1",
+    "lto-wrapper"
+  ],
+  "allowed_target": "aarch64-alpine-linux-musl",
+  "fresh_runner": "ubuntu-24.04-arm",
+  "resources": {
+    "host_disk_start": 8589934592,
+    "host_disk_active_and_final": 2950000000,
+    "host_memory_start": 9663676416,
+    "host_memory_active": 1073741824,
+    "container_memory": 2147483648,
+    "container_memory_swap_total": 2147483648,
+    "container_cpus": 2,
+    "container_pids": 128,
+    "controller_address_space": 536870912,
+    "total_seconds": 1200,
+    "workflow_minutes": 30,
+    "output_logical_cap": 3221225472,
+    "individual_image_tar_cap": 2147483648,
+    "acquired_payload_cap": 536870912,
+    "installation_receipts_cap": 33554432,
+    "individual_raw_log_cap": 8388608,
+    "host_cli_address_space": 4294967296
+  },
+  "output_cap_is_poll_observed_not_filesystem_quota": true,
+  "cleanup": "Stop only exact current labelled containers and owned Popen groups; keep stopped containers and images through artifact upload. No daemon prune/restart or prior-host mutation.",
+  "failed_filesystem_custody": "Only a recorded full image tar is archived. A failed installation container remains stopped; its unarchived writable filesystem is not claimed retained after runner teardown.",
+  "native_builds": 0,
+  "native_tests": 0,
+  "go_queries": 0,
+  "consumer_admission": false,
+  "migration_authorization": false
+}
