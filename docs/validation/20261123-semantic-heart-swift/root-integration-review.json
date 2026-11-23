@@ -1,0 +1,28 @@
+{
+  "status": "PASS_ORIGINAL_SWIFT_HOST_SCOPE_INDEPENDENTLY_RETAINED",
+  "executed_source": "fbbfe7100425482e3d9f8b6623bb2d1920f56528",
+  "evidence_commit": "65512667b0f3d22d87036c7b78190bdfb6334437",
+  "original_artifacts_verified": 16,
+  "copied_input_files_verified": 705,
+  "original_metadata_only_sources_verified": 3,
+  "unchanged_product_sources_from_initial": 695,
+  "actual_started_methods": 22,
+  "actual_passed_methods": 22,
+  "failed": 0,
+  "skipped": 0,
+  "new_builds": 0,
+  "new_test_runs": 0,
+  "preserved_product_hashes": {
+    "ProtobufMessagesTests-test-runner": "36e282156b988a0893875cb660c7cedeb97cf14332176451b83fda0552da803c",
+    "ProtobufMessagesTests.so": "7013d16f40c059b76dc1b8c8d10f275c7ca9b24ae2c728609ecfc451eea391f6"
+  },
+  "original_log_sha256": "c672703c13b879591c5e03bc31379d56b87af788607640224801ba8ca182f561",
+  "integration_controller_difference": {
+    "Tools/PinkhaSemanticAnchorSwiftControls/run_controls.py": {
+      "original": "07ce666900330baee1fa79dbc36c89830e583d6415610742a310ff8eb973d08b",
+      "current": "1f366e7cc818ec8f8e0a9527d5fb4de72be3104fd3d2863bb4c57df15def1de1"
+    }
+  },
+  "integration_controller_review": "Original executed source metadata verified at fbbfe710. Current control-only65512667 recognizes Swift6.4 runner/module and bundled resources; all705 compiled inputs are unchanged. Original FAIL_BUILD and qualified skip-build evidence remain intact. Initial comparison detected distinct metadata and was narrowed after exact diff review.",
+  "scope": "Typed host controls using original native Page fixtures. Actual Lib body and App wrapper not compiled here. Async App publication fencing, mounted editor and actual Apple remain separately required."
+}
