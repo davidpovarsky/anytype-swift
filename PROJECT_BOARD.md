@@ -14,6 +14,8 @@ Potential improvements, features, optimizations, or architectural ideas.
 
 ## Discoveries & Tips
 
+- The original SDK and Maktabah both define Firebase/Promises/Google/nanopb implementations. A shared provider requires exact native ownership, complete Host package/resource/pin equality, and actual Pod source/symbol comparison. The prepared isolated seam and open activation gates are recorded in docs/pinkha/torah-integration/evidence/original-editor-shared-runtime-20261123/PREPARED.md.
+
 Useful technical discoveries, undocumented behavior, shortcuts, implementation tricks, platform behavior, or reusable knowledge discovered while working.
 
 ## Experiments / Investigations
@@ -46,3 +48,8 @@ Example:
 ## Archive
 
 Older completed/superseded items that still have historical value.
+
+
+## 2026-11-23 complete original SDK / shared dependency composition
+
+Local isolated preparation preserves exact full 4fd99 product trees and adds only missing Import facade build registration plus full-source/public-API gates. Qualified core 07431 and Hanlin ca3c91 pins adopted. 54 affected portable controls selected; seven prior pure symbol controls retained without replay. Full native producer remains blocked on genuine Native9/RPC9/new Lib ABI. See COMPLETE_SOURCE_PREPARED.md in the shared-runtime evidence packet.

@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "classification": "FIX_REPRODUCED",
+  "original_sdk_source": "de63125b97cd5b91a1fa4f4b71d03738076e735f",
+  "original_stageb_source": "00b30baa97fe14c0ba5be550e7a72cf64e768951",
+  "original_stageb_run": 45174533607,
+  "host_lock_artifact": 14822940238,
+  "host_lock_artifact_sha256": "7f238c167bc76b72e7dbe78f1e53f57c3f404661ad7365728deab07b88fad678",
+  "dependencies": {
+    "firebase-ios-sdk": {
+      "version": "12.8.0",
+      "revision": "674d9a7ee9858207181a3dd0b42c77298c6fb71b",
+      "host_pods": [
+        "FirebaseCore",
+        "FirebaseCoreInternal",
+        "FirebaseInstallations"
+      ]
+    },
+    "googleutilities": {
+      "version": "8.1.5",
+      "revision": "5459ee5603def3db0fe14ca522185f42c48d978e",
+      "host_pods": [
+        "GoogleUtilities"
+      ]
+    },
+    "googledatatransport": {
+      "version": "10.1.1",
+      "revision": "ba3358d3c3dbae8ef230b58a46b97ad65e84e974",
+      "host_pods": [
+        "GoogleDataTransport"
+      ]
+    },
+    "promises": {
+      "version": "2.4.1",
+      "revision": "f4a19a3c313dc2616c70bb49d29a799fb16be837",
+      "host_pods": [
+        "PromisesObjC",
+        "PromisesSwift"
+      ]
+    },
+    "nanopb": {
+      "version": "2.30910.0",
+      "revision": "b7e1104502eca3a213b46303391ca4d3bc8ddec1",
+      "host_pods": [
+        "nanopb"
+      ],
+      "host_pod_version": "3.30910.0",
+      "same_upstream_commit": true
+    }
+  },
+  "acceptance": "Exact dependency sources, real Xcode build/link, no duplicate Firebase/Promises definitions in the consumer, and one loaded provider. This prerequisite does not qualify the original editor or Stage B."
+}

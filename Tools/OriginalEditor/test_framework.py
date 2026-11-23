@@ -10,7 +10,7 @@ import sys
 import tempfile
 import unittest
 
-from framework_profile import HERE, TARGET, APP_TARGET, SOURCE_GROUP, read_manifest, verify_project
+from framework_profile import HERE, TARGET, APP_TARGET, SOURCE_GROUP, BRANCH, read_manifest, verify_project
 from framework_products import copy_product, export_products, consumer_project, inventory, verify_observation, verify_public_surface
 from pbx_source import loads, object_text, render
 from run_framework_acceptance import command
@@ -94,11 +94,26 @@ class OriginalProjectPreservation(unittest.TestCase):
 
     def test_original_heart_installer_changes_only_one_new_branch_choice(self):
         raw = (ROOT / 'Tools/PinkhaNativeDerived/install_verified_heart.py').read_bytes()
-        suffix = b",\n                             'codex/otzaria-original-editor-framework-v13-body-reviewed-20261122'"
+        suffix = (",\n                             '" + BRANCH + "'").encode()
         self.assertEqual(raw.count(suffix), 1)
         old = raw.replace(suffix, b'', 1)
         actual = hashlib.sha1(b'blob ' + str(len(old)).encode() + b'\0' + old).hexdigest()
         self.assertEqual(actual, PROFILE['original_heart_installer_blob'])
+
+
+    def test_new_import_facade_must_reach_actual_compiler_phase(self):
+        data = loads(CANDIDATE.decode())['objects']
+        target = data[PROFILE['framework_target_id']]
+        phase = next(key for key in target['buildPhases'] if data[key]['isa'] == 'PBXSourcesBuildPhase')
+        self.denied(phase, lambda value: value['files'].remove('589DD7DCCC58633417BCFC20'))
+
+    def test_duplicate_facade_compiler_input_cannot_replace_missing_import(self):
+        data = loads(CANDIDATE.decode())['objects']
+        target = data[PROFILE['framework_target_id']]
+        phase = next(key for key in target['buildPhases'] if data[key]['isa'] == 'PBXSourcesBuildPhase')
+        def duplicate(value):
+            value['files'][value['files'].index('589DD7DCCC58633417BCFC20')] = value['files'][0]
+        self.denied(phase, duplicate)
 
 
 class RealFilesystemExportControls(unittest.TestCase):

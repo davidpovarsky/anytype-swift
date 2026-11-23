@@ -13,14 +13,22 @@
     "Tools/Hanlin/original_editor_profile.py": "3e84bee3d28f180e122da480d0a779820508097d",
     "Tools/Hanlin/prepare_original_editor_heart.py": "14ee9e553a883872a08526e1196f61d3dd3049f0",
     "Tools/Hanlin/prepare_sdk.py": "99e1286268f7aacb5f5638cfe14633d37c04bccc",
-    "Tools/Hanlin/source.json": "5b4501d4986a6c4155cc22d74bf4149c361172f2",
+    "Tools/Hanlin/source.json": "5a1259a4badab68621a76d090ea09bfbee2ea1b6",
     "Tools/PinkhaNativeDerived/build_custom_heart.py": "e32c935fedce5fc732240bf9b2ada21764b5add1",
     "Tools/PinkhaNativeDerived/package_evidence.py": "e55d2a959296630686a60aa5d927a3b4c34401f9",
     "Tools/PinkhaSimulatorGate/preflight.py": "2628b345d5743bbe1ddc0d1afaeef9fb410f3daf"
   },
-  "branch": "codex/otzaria-original-editor-framework-v13-body-reviewed-20261122",
-  "candidate_project_sha256": "f56b68c8389bd742fe2f61f51601297d0d463558240687d977f581ddd89ae5ad",
+  "branch": "codex/otzaria-original-editor-complete-framework-20261123",
+  "candidate_project_sha256": "befad8b2d20f19b0f329093038394c3253bfdbdc8927f2bdfa767de2472a9f2a",
+  "complete_source_continuation": {
+    "native_qualified": false,
+    "path": "Tools/OriginalEditor/complete_source_continuation.json",
+    "reviewed_source_sha": "4fd99f19b0ec361ba84ac4b2822cae10c6818f99",
+    "sha256": "c7d3bdd5585f770335489a6a818942e0ac4339b39621cf1ab5f6655f5ca5459e"
+  },
   "framework_facade_sources": [
+    "OriginalEditorFramework/AnytypeOriginalAnnotationImport.swift",
+    "OriginalEditorFramework/AnytypeOriginalEditorAccountSession.swift",
     "OriginalEditorFramework/AnytypeOriginalEditorHost.swift",
     "OriginalEditorFramework/AnytypeOriginalEditorModule.swift",
     "OriginalEditorFramework/AnytypeOriginalEditorNativeBodyReadback.swift",
@@ -32,36 +40,140 @@
     "OriginalEditorFramework/OriginalAnnotationNativeArchiveComparison.swift",
     "OriginalEditorFramework/OriginalAnnotationNativeArchiveLayout.swift",
     "OriginalEditorFramework/OriginalAnnotationNativeMapKeyGuard.swift",
-    "OriginalEditorFramework/OriginalAnnotationNativeSnapshotWire.swift"
+    "OriginalEditorFramework/OriginalAnnotationNativeSnapshotWire.swift",
+    "OriginalEditorFramework/OriginalEditorAccountSessionView.swift"
   ],
   "framework_target_id": "83B785D0C457FE3CCBAB196E",
-  "new_project_objects": 130,
-  "original_heart_installer_blob": "6cb6624fa650e3a42e3389a71b9c3a76ddbf37ff",
-  "original_swift_sources": 2254,
+  "new_project_objects": 137,
+  "original_heart_installer_blob": "c719ae8b55349d2c8fc4e9ae560a2c436f307955",
+  "original_swift_sources": 2256,
   "original_trees": {
     "Anytype/Resources": "0827010674c089cfe9846e592e1d801e9d3f7a9b",
-    "Anytype/Sources": "7f60c27ac32ea66f889abd70edbb1cab1778f0a6",
-    "Modules": "a8a4b7688ea6295ae6c6b2f3baf90e18ab268e1b"
+    "Anytype/Sources": "6a11487a50642388f49c3017359ed45210da9630",
+    "Modules": "4467772e9ac8bea7fc37080b4502978fb0a93322"
   },
   "package_closure_review": {
-    "additional_count": 7,
-    "lock_bytes_unchanged": true,
-    "native_framework_acceptance": "PENDING",
-    "observed_resolver_exit": 0,
-    "observed_resolver_run_id": 44973540287,
-    "original_pin_count": 44,
-    "original_pins_unchanged": true,
-    "review_git_blob": "6935e884937e1d5585d74602ded52b9e017230a7",
-    "review_path": "docs/pinkha/torah-integration/evidence/original-editor-package-closure-20261122/SOURCE_CLOSURE_REVIEW.json",
-    "strict_only_resolver_run_id": 44975218662,
-    "strict_resolver_artifact_id": 14734539670,
-    "strict_resolver_artifact_sha256": "14d7d3435128408d151d99017afc3a9f85770de00ef56df41c169fdca7fe9001",
-    "strict_resolver_status": "PASS_OBSERVED_51_PIN_CLOSURE_44_ORIGINAL_UNCHANGED_STRICT_RESOLVER_ACCEPTED"
+    "additional_pin_source": {
+      "archive_sha256": "eb4e9f8fd84f3700574c4d964aac52e87b1a878f7a4e35ba54676b996eeb6e48",
+      "artifact_id": 14847148125,
+      "run_id": "45228420762",
+      "scope": "Actual successful native resolver; full original producer still unqualified",
+      "source_sha": "c898ba06d1f8dc682b31d96b0c1438a4347fcc3b"
+    },
+    "additional_pins": [
+      {
+        "identity": "google-ads-on-device-conversion-ios-sdk",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/googleads/google-ads-on-device-conversion-ios-sdk",
+        "state": {
+          "revision": "35b601a60fbbea2de3ea461f604deaaa4d8bbd0c",
+          "version": "3.2.0"
+        }
+      }
+    ],
+    "base_lock_blob": "b011914658931c21b97dcf14355d961ab6248b8f",
+    "base_source": "de63125b97cd5b91a1fa4f4b71d03738076e735f",
+    "changed_pin_count": 9,
+    "final_host_hanlin_alignment": "CORE_4185_PASS_HANLIN_SOURCE_EXACT_NATIVE_PENDING",
+    "framework_runtime_status": "FULL_SDK_NOT_RUN",
+    "pin_count": 52,
+    "reason": "Eight exact Firebase-family upward pin changes required by upstream manifests, plus root's separately source-reviewed shared Hanlin core continuation pin",
+    "reviewed_exact_changes": {
+      "abseil-cpp-binary": {
+        "after": {
+          "revision": "bbe8b69694d7873315fd3a4ad41efe043e1c07c5",
+          "version": "1.2024072200.0"
+        },
+        "before": {
+          "revision": "194a6706acbd25e4ef639bcaddea16e8758a3e27",
+          "version": "1.2024011602.0"
+        }
+      },
+      "firebase-ios-sdk": {
+        "after": {
+          "revision": "674d9a7ee9858207181a3dd0b42c77298c6fb71b",
+          "version": "12.8.0"
+        },
+        "before": {
+          "revision": "6318278e8e64d21f0fdcc69004395e4d34048aaf",
+          "version": "11.8.1"
+        }
+      },
+      "googleappmeasurement": {
+        "after": {
+          "revision": "2ffd220823f3716904733162e9ae685545c276d1",
+          "version": "12.8.0"
+        },
+        "before": {
+          "revision": "be0881ff728eca210ccb628092af400c086abda3",
+          "version": "11.7.0"
+        }
+      },
+      "googledatatransport": {
+        "after": {
+          "revision": "ba3358d3c3dbae8ef230b58a46b97ad65e84e974",
+          "version": "10.1.1"
+        },
+        "before": {
+          "revision": "617af071af9aa1d6a091d59a202910ac482128f9",
+          "version": "10.1.0"
+        }
+      },
+      "googleutilities": {
+        "after": {
+          "revision": "5459ee5603def3db0fe14ca522185f42c48d978e",
+          "version": "8.1.5"
+        },
+        "before": {
+          "revision": "53156c7ec267db846e6b64c9f4c4e31ba4cf75eb",
+          "version": "8.0.2"
+        }
+      },
+      "grpc-binary": {
+        "after": {
+          "revision": "cc0001a0cf963aa40501d9c2b181e7fc9fd8ec71",
+          "version": "1.69.0"
+        },
+        "before": {
+          "revision": "f56d8fc3162de9a498377c7b6cea43431f4f5083",
+          "version": "1.65.1"
+        }
+      },
+      "interop-ios-for-google-sdks": {
+        "after": {
+          "revision": "040d087ac2267d2ddd4cca36c757d1c6a05fdbfe",
+          "version": "101.0.0"
+        },
+        "before": {
+          "revision": "2d12673670417654f08f5f90fdd62926dc3a2648",
+          "version": "100.0.0"
+        }
+      },
+      "promises": {
+        "after": {
+          "revision": "f4a19a3c313dc2616c70bb49d29a799fb16be837",
+          "version": "2.4.1"
+        },
+        "before": {
+          "revision": "540318ecedd63d883069ae7f1ed811a2df00b6ac",
+          "version": "2.4.0"
+        }
+      },
+      "swift-ai-sdk": {
+        "after": {
+          "revision": "07431abccbfb151ca2dab67bca6cf86fcb2bd3b8"
+        },
+        "before": {
+          "revision": "e7bf34111e603ca977becd007dd4e5bb109af857"
+        }
+      }
+    },
+    "strict_resolver_status": "PENDING_NATIVE_RESOLVER"
   },
-  "package_pin_count": 51,
-  "package_resolved_blob": "b011914658931c21b97dcf14355d961ab6248b8f",
+  "package_pin_count": 52,
+  "package_resolved_blob": "1508d93eec0c9b43293b83afc7866b3eda93eceb",
   "package_resolved_path": "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
-  "public_host_contract_sha256": "bab0f878588b5666c466cbbb2fa02f91f3027bd4f4ac01b5b226bb9b8508bb70",
+  "public_host_contract_sha256": "fbd14d549ea7bdfda6fd3f4a7df6aa55f505b8c794aba0241e4d7b11f515836d",
   "resource_oracles": {
     "color_blob": "6c02bf01dd48acd99bba5a1396ba4e8e01701ab7",
     "color_path": "Modules/Assets/Sources/Assets/Resources/SystemColors.xcassets/DesignSystem/Text/primary.colorset/Contents.json",
@@ -71,6 +183,21 @@
     "localization_key": "Cancel",
     "localization_path": "Modules/Loc/Sources/Loc/Resources/UI.xcstrings"
   },
+  "reviewed_hanlin_candidate": {
+    "candidate_revision": "ca3c91f2233bf5c77990643b29a874aac8704639",
+    "candidate_swift_ai_sdk_revision": "07431abccbfb151ca2dab67bca6cf86fcb2bd3b8",
+    "core_controller_run_attempt": "1",
+    "core_controller_run_id": "45246940299",
+    "full_host_integration_owner": "root",
+    "host_source_status": "PENDING_ROOT_FINAL_QUALIFIED_DEPENDENCY_BINDING",
+    "previous_revision": "e00498e33f106cc43be0476ffa2e09329c8ca300",
+    "previous_swift_ai_sdk_revision": "e7bf34111e603ca977becd007dd4e5bb109af857",
+    "source_change_scope": "Two exact source pin literals; snapshot materialization/verification logic unchanged",
+    "source_input_after_blob": "5a1259a4badab68621a76d090ea09bfbee2ea1b6",
+    "source_input_before_blob": "5b4501d4986a6c4155cc22d74bf4149c361172f2",
+    "stageb_source": "00b30baa97fe14c0ba5be550e7a72cf64e768951",
+    "status": "CORE_4185_PASS_HANLIN_SOURCE_EXACT_FULL_SDK_PENDING"
+  },
   "reviewed_shared_dependency_objects": {
     "2A685D582B7B854200456E08": {
       "isa": "XCRemoteSwiftPackageReference",
@@ -78,6 +205,14 @@
       "requirement": {
         "kind": "exactVersion",
         "version": "0.9.20"
+      }
+    },
+    "2E63D9B52D56520C008A733A": {
+      "isa": "XCRemoteSwiftPackageReference",
+      "repositoryURL": "https://github.com/firebase/firebase-ios-sdk",
+      "requirement": {
+        "kind": "exactVersion",
+        "version": "12.8.0"
       }
     },
     "5333421A262E249100238121": {
@@ -99,7 +234,33 @@
   },
   "schema": 1,
   "scope": "Same-toolchain original Host API framework and Debug Simulator SPI import/link/resource prerequisite; native editable UI/save/reopen remains unqualified",
-  "source_checkpoint": "3332fda43bbcfee222ba3521f2e96c753173c40d",
+  "shared_runtime_route": {
+    "dependency_contract_sha256": "d2730085567baec7fe7060f7e2872e1ae3f7e3cf942d2292598e175fb0ed2840",
+    "full_original_editor_qualified": false,
+    "native_probe_artifact_id": 14855825064,
+    "native_probe_artifact_sha256": "257ffa7eca78710568e5d90bdfc91498806ab146197bec3f6162a7d958d72cd3",
+    "native_probe_run_id": "45246154996",
+    "native_probe_source": "7574b9a4a9a5372fc7a9e7323e579ec3dd610e0b",
+    "native_probe_status_at_source_preparation": "PASS_SHARED_PROVIDER_WITH_SCENE_CONSUMER",
+    "original_product": {
+      "isa": "XCSwiftPackageProductDependency",
+      "package": "2E63D9B52D56520C008A733A",
+      "productName": "FirebaseMessaging"
+    },
+    "package": {
+      "isa": "XCLocalSwiftPackageReference",
+      "relativePath": "Tools/OriginalEditor/SharedRuntime"
+    },
+    "package_id": "C4EDE9CCA3640AFF9A42B62C",
+    "package_manifest_sha256": "059a72e46a344002d61154e12243a65ebdb69824c1aa44cf159c2ee71cf96138",
+    "runtime_product": {
+      "isa": "XCSwiftPackageProductDependency",
+      "package": "C4EDE9CCA3640AFF9A42B62C",
+      "productName": "OriginalEditorSharedFirebase"
+    },
+    "target_product_id": "E2F113E2753F5684374CB4CE"
+  },
+  "source_checkpoint": "c898ba06d1f8dc682b31d96b0c1438a4347fcc3b",
   "symbol_graph_emission": {
     "configuration_id": "7B34B94A980226257449D4B8",
     "configuration_name": "Debug-Anytype",

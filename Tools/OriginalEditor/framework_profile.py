@@ -8,7 +8,7 @@ import subprocess
 
 from pbx_source import loads, object_text, require
 
-BRANCH = 'codex/otzaria-original-editor-framework-v13-body-reviewed-20261122'
+BRANCH = 'codex/otzaria-original-editor-complete-framework-20261123'
 REPOSITORY = 'davidpovarsky/anytype-swift'
 TARGET = 'AnytypeOriginalEditor'
 APP_TARGET = '0303ECFA22D8EDAA005C552B'
@@ -32,16 +32,54 @@ def git(root, *args):
 def read_manifest():
     value = json.loads((HERE / 'framework_profile.json').read_text())
     require(value.get('schema') == 1 and value.get('branch') == BRANCH
-            and value.get('package_pin_count') == 51, 'Unreviewed framework profile')
+            and value.get('package_pin_count') == 52, 'Unreviewed framework profile')
     require(set(value.get('reviewed_shared_dependency_objects', {})) == {
-        '5333421A262E249100238121', '2A685D582B7B854200456E08', 'FA1000002F000001006805CC'},
+        '5333421A262E249100238121', '2A685D582B7B854200456E08', 'FA1000002F000001006805CC',
+        '2E63D9B52D56520C008A733A'},
         'Unreviewed shared runtime dependency object set')
-    require(len(value.get('framework_facade_sources', [])) == 12
-            and len(set(value['framework_facade_sources'])) == 12,
+    require(len(value.get('framework_facade_sources', [])) == 15
+            and len(set(value['framework_facade_sources'])) == 15,
             'Incomplete reviewed Host facade source closure')
     require(sha256(HERE / 'public_host_contract.json') == value.get('public_host_contract_sha256'),
             'Reviewed public Host and qualification SPI contract differs')
+    route = value['shared_runtime_route']
+    require(sha256(HERE / 'SharedRuntime/Package.swift') == route['package_manifest_sha256']
+            and sha256(HERE / 'SharedRuntime/dependencies.json') == route['dependency_contract_sha256'],
+            'Shared runtime package or exact Host dependency contract differs')
+    continuation = value['complete_source_continuation']
+    require(continuation.get('path') == 'Tools/OriginalEditor/complete_source_continuation.json'
+            and sha256(HERE / 'complete_source_continuation.json') == continuation.get('sha256'),
+            'Complete source continuation inventory differs')
+    verify_complete_source(value, json.loads((HERE / 'complete_source_continuation.json').read_text()))
     return value
+
+
+def verify_complete_source(profile, continuation):
+    require(continuation.get('schema') == 1
+            and continuation.get('reviewed_source_sha') == '4fd99f19b0ec361ba84ac4b2822cae10c6818f99'
+            and continuation.get('prior_producer_source') == 'de63125b97cd5b91a1fa4f4b71d03738076e735f'
+            and profile['complete_source_continuation']['reviewed_source_sha'] == continuation['reviewed_source_sha'],
+            'Unreviewed complete original account/Import source continuation')
+    original, reviewed = continuation['original_product_trees'], continuation['reviewed_product_trees']
+    require(set(original) == set(reviewed) == {'Anytype/Sources', 'Anytype/Resources', 'Modules', 'OriginalEditorFramework'}
+            and original['Anytype/Resources'] == reviewed['Anytype/Resources'] == '0827010674c089cfe9846e592e1d801e9d3f7a9b'
+            and profile['original_trees'] == {key: reviewed[key] for key in ['Anytype/Sources', 'Anytype/Resources', 'Modules']},
+            'Reviewed source/resource continuation tree differs')
+    sources, facades = continuation['source_files'], continuation['framework_facade_sources']
+    require(isinstance(sources, list) and sources == sorted(set(sources))
+            and len(sources) == profile['original_swift_sources'] == 2256
+            and all(p.startswith('Anytype/Sources/') and p.endswith('.swift') for p in sources),
+            'Complete original Swift source inventory differs')
+    require(facades == profile['framework_facade_sources'] and facades == sorted(set(facades))
+            and len(facades) == 15
+            and {'OriginalEditorFramework/AnytypeOriginalAnnotationImport.swift',
+                 'OriginalEditorFramework/AnytypeOriginalEditorAccountSession.swift',
+                 'OriginalEditorFramework/OriginalEditorAccountSessionView.swift'} <= set(facades),
+            'Complete account-session/Import facade inventory differs')
+    return {'reviewed_source_sha': continuation['reviewed_source_sha'],
+            'prior_producer_source': continuation['prior_producer_source'],
+            'reviewed_product_trees': reviewed, 'source_files': sources,
+            'framework_facade_sources': facades, 'native_qualified': False}
 
 
 def verify_project(raw, baseline, profile):
@@ -75,8 +113,40 @@ def verify_project(raw, baseline, profile):
     require(exception == {'isa': 'PBXFileSystemSynchronizedBuildFileExceptionSet',
                          'membershipExceptions': ['ApplicationLayer/AppScene.swift'],
                          'target': targets[0]}, 'Only the original app entrypoint may be excluded')
-    require([new[key] for key in target['packageProductDependencies']]
-            == [old[key] for key in original_target['packageProductDependencies']],
+    route = profile['shared_runtime_route']
+    require(route['package_id'] in added
+            and new[route['package_id']] == route['package']
+            and route['package'] == {'isa': 'XCLocalSwiftPackageReference',
+                                     'relativePath': 'Tools/OriginalEditor/SharedRuntime'}
+            and new[route['target_product_id']] == route['runtime_product']
+            and route['runtime_product'] == {'isa': 'XCSwiftPackageProductDependency',
+                                             'package': route['package_id'],
+                                             'productName': 'OriginalEditorSharedFirebase'}
+            and route['original_product'] == {'isa': 'XCSwiftPackageProductDependency',
+                                              'package': '2E63D9B52D56520C008A733A',
+                                              'productName': 'FirebaseMessaging'},
+            'Shared Firebase product route differs')
+    source_phases = [new[key] for key in target['buildPhases'] if new[key]['isa'] == 'PBXSourcesBuildPhase']
+    groups = [value for value in new.values()
+              if value.get('isa') == 'PBXGroup' and value.get('path') == 'OriginalEditorFramework']
+    require(len(source_phases) == len(groups) == 1, 'Ambiguous complete facade source group or phase')
+    source_ids, child_ids = source_phases[0]['files'], groups[0]['children']
+    require(len(source_ids) == len(set(source_ids)) == len(child_ids) == len(set(child_ids)) == 15,
+            'Incomplete or repeated facade compiler membership')
+    references = [new[key] for key in source_ids]
+    require(all(item.get('isa') == 'PBXBuildFile' and set(item) == {'isa', 'fileRef'} for item in references)
+            and {item['fileRef'] for item in references} == set(child_ids),
+            'Facade compiler inputs differ from the complete source group')
+    require(all(new[key].get('isa') == 'PBXFileReference' and new[key].get('sourceTree') == '<group>'
+                and new[key].get('lastKnownFileType') == 'sourcecode.swift' for key in child_ids)
+            and sorted('OriginalEditorFramework/' + new[key]['path'] for key in child_ids)
+                == profile['framework_facade_sources'],
+            'A complete reviewed facade is absent from the actual framework compiler phase')
+    products = [new[key] for key in target['packageProductDependencies']]
+    require(products.count(route['runtime_product']) == 1,
+            'Shared runtime is missing or repeated')
+    original_products = [route['original_product'] if p == route['runtime_product'] else p for p in products]
+    require(original_products == [old[key] for key in original_target['packageProductDependencies']],
             'Original package product closure differs')
     framework_configurations = new[target['buildConfigurationList']]['buildConfigurations']
     require(len(framework_configurations) == 4
@@ -92,7 +162,7 @@ def verify_project(raw, baseline, profile):
     emitters = [key for key, value in new.items() if value.get('isa') == 'XCBuildConfiguration'
                 and emission['setting'] in value.get('buildSettings', {})]
     require(emitters == [emission['configuration_id']], 'A dependency or original app emits the Host graph')
-    # Restore only the four additive structural objects and the three exact
+    # Restore only the four additive structural objects and the four exact
     # reviewed shared package requirements. All original products stay intact.
     inverse = raw.decode()
     for key in sorted(added):
@@ -101,7 +171,9 @@ def verify_project(raw, baseline, profile):
         inverse = inverse.replace(object_text(inverse, key), object_text(baseline.decode(), key), 1)
     require(inverse.encode() == baseline, 'Complete original project inverse differs')
     return {'original_app_target_unchanged': True, 'original_objects': len(old),
-            'new_objects': len(added), 'original_package_products': len(target['packageProductDependencies']),
+            'new_objects': len(added), 'complete_facade_compiler_inputs': len(source_ids),
+            'original_package_products': len(target['packageProductDependencies']),
+            'shared_runtime_route': route,
             'framework_target_id': targets[0], 'only_excluded_source': 'ApplicationLayer/AppScene.swift',
             'reviewed_shared_dependency_objects': sorted(dependencies),
             'target_only_full_public_spi_graph': True, 'whole_project_inverse_exact': True,
@@ -133,14 +205,14 @@ def source_observation(root, environment=None):
         require(actual == expected, 'Original source/resource tree differs: ' + path)
         trees[path] = actual
     pinned = root / profile['package_resolved_path']
-    require(blob(pinned.read_bytes()) == profile['package_resolved_blob'], 'Reviewed exact 51-pin package closure differs')
-    require(len(json.loads(pinned.read_text())['pins']) == 51, 'Reviewed package pin inventory differs')
+    require(blob(pinned.read_bytes()) == profile['package_resolved_blob'], 'Reviewed exact 52-pin package closure differs')
+    require(len(json.loads(pinned.read_text())['pins']) == 52, 'Reviewed package pin inventory differs')
     before = (HERE / 'original_project.pbxproj').read_bytes()
     project = verify_project((root / 'Anytype.xcodeproj/project.pbxproj').read_bytes(), before, profile)
     installer_path = 'Tools/PinkhaNativeDerived/install_verified_heart.py'
     installer = (root / installer_path).read_text()
-    reviewed = "                             'codex/otzaria-original-editor-framework-v12-composed-20261122',\n                             '" + BRANCH + "'],"
-    original = "                             'codex/otzaria-original-editor-framework-v12-composed-20261122'],"
+    reviewed = "                             'codex/otzaria-original-editor-framework-v13-body-reviewed-20261122',\n                             '" + BRANCH + "'],"
+    original = "                             'codex/otzaria-original-editor-framework-v13-body-reviewed-20261122'],"
     require(installer.count(reviewed) == 1 and
             blob(installer.replace(reviewed, original, 1).encode()) == profile['original_heart_installer_blob'],
             'Original verified Heart installer has a change beyond the exact new consumer branch')
@@ -161,7 +233,12 @@ def source_observation(root, environment=None):
     for path, expected in profile['bound_original_helpers'].items():
         require(records[path]['git_blob'] == expected, 'Original helper differs: ' + path)
     source_files = [p for p in tracked if p.startswith('Anytype/Sources/') and p.endswith('.swift')]
-    require(len(source_files) == profile['original_swift_sources'], 'Original whole-source count differs')
+    complete = json.loads((HERE / 'complete_source_continuation.json').read_text())
+    continuation = verify_complete_source(profile, complete)
+    require(source_files == continuation['source_files'], 'Complete reviewed original source membership differs')
+    require(git(root, 'rev-parse', 'HEAD:OriginalEditorFramework')
+            == continuation['reviewed_product_trees']['OriginalEditorFramework'],
+            'Complete reviewed facade source bytes differ')
     main_files = [p for p in source_files if re.search(r'(?m)^\s*@main\b', (root / p).read_text())]
     require(main_files == ['Anytype/Sources/ApplicationLayer/AppScene.swift'], 'Unexpected application entrypoints')
     facades = sorted(p for p in tracked if p.startswith('OriginalEditorFramework/') and p.endswith('.swift'))
@@ -173,6 +250,7 @@ def source_observation(root, environment=None):
                 package_main_uses.append({'path': path, 'line': number, 'source': line.strip()})
     return {'schema': 1, 'status': 'SOURCE_BOUND_FRAMEWORK_RUNTIME_NOT_RUN',
             'head_sha': head, 'run_id': environment['GITHUB_RUN_ID'], 'run_attempt': environment['GITHUB_RUN_ATTEMPT'],
+            'reviewed_complete_source_sha': continuation['reviewed_source_sha'],
             'original_trees': trees, 'project': project, 'source_inputs': records,
             'original_swift_sources': len(source_files), 'source_files': source_files,
             'framework_facade_sources': facades,

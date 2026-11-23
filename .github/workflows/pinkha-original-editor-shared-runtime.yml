@@ -1,0 +1,40 @@
+name: Original editor shared Firebase runtime boundary
+on:
+  push:
+    branches:
+      - codex/otzaria-original-editor-shared-runtime-20261123
+permissions:
+  contents: read
+concurrency:
+  group: original-editor-shared-runtime
+  cancel-in-progress: false
+jobs:
+  shared-runtime:
+    if: github.repository == 'davidpovarsky/anytype-swift' && github.ref == 'refs/heads/codex/otzaria-original-editor-shared-runtime-20261123'
+    runs-on: xcode-27
+    timeout-minutes: 50
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Build and observe the exact shared dependency implementation
+        run: |
+          python3 Tools/OriginalEditor/SharedRuntime/run_probe.py --root "$GITHUB_WORKSPACE" \
+            --work "build/shared-runtime-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" \
+            --evidence "build/shared-runtime-evidence"
+      - name: Preserve exact build and runtime evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: OriginalEditor-SharedFirebase-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/shared-runtime-evidence
+          if-no-files-found: error
+          retention-days: 14

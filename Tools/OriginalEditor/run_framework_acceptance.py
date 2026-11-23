@@ -202,7 +202,8 @@ def dependency_proof(root, derived, profile, evidence):
         state = dependency['state']
         if state.get('name') in {'local', 'fileSystem'}:
             location = Path(reference.get('location', '')).resolve()
-            require(location.is_relative_to(root / 'Modules') or location.is_relative_to(root / 'Dependencies/Hanlin'),
+            require(location.is_relative_to(root / 'Modules') or location.is_relative_to(root / 'Dependencies/Hanlin')
+                    or location == root / 'Tools/OriginalEditor/SharedRuntime',
                     'Unreviewed local package source')
             continue
         require(identity in expected and identity not in actual, 'Unpinned or repeated dependency checkout')
@@ -276,6 +277,14 @@ def execute(args, receipt):
              '-configuration', 'Debug-Anytype', '-destination', destination, '-derivedDataPath', str(derived),
              '-resultBundlePath', str(evidence / 'framework-build.xcresult'),
              '-onlyUsePackageVersionsFromResolvedFile', *flags]
+    receipt['phase'] = 'STRICT_SHARED_PACKAGE_RESOLUTION'
+    write(evidence / 'execution.json', receipt)
+    command(['xcodebuild', '-resolvePackageDependencies', '-project', str(root / 'Anytype.xcodeproj'),
+             '-scheme', TARGET, '-configuration', 'Debug-Anytype', '-destination', destination,
+             '-derivedDataPath', str(derived), '-onlyUsePackageVersionsFromResolvedFile'],
+            root, evidence, 'exact-package-resolution', 900)
+    require(source_observation(root) == before, 'Strict resolver changed a committed source or lock')
+    receipt['strict_dependency_resolution'] = 'PASS_EXACT_COMMITTED_LOCK_UNCHANGED'
     receipt['phase'] = 'ORIGINAL_FRAMEWORK_BUILD'
     write(evidence / 'execution.json', receipt)
     command(build, root, evidence, 'framework-build', 6000)

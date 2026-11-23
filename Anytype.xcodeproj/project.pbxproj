@@ -345,6 +345,7 @@
 		};
 		D4D971157E8AF7DED91FFD12 /* AnytypeOriginalEditorAccountSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15FD8EECDFE1057E0E9974CF /* AnytypeOriginalEditorAccountSession.swift */; };
 		DEFD0632E47277D7C1A27876 /* OriginalEditorAccountSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889AE0C4E27BEF75130E93EE /* OriginalEditorAccountSessionView.swift */; };
+		589DD7DCCC58633417BCFC20 /* AnytypeOriginalAnnotationImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011F953AA9A4645682662439 /* AnytypeOriginalAnnotationImport.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -552,6 +553,7 @@
 		};
 		15FD8EECDFE1057E0E9974CF /* AnytypeOriginalEditorAccountSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnytypeOriginalEditorAccountSession.swift; sourceTree = "<group>"; };
 		889AE0C4E27BEF75130E93EE /* OriginalEditorAccountSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OriginalEditorAccountSessionView.swift; sourceTree = "<group>"; };
+		011F953AA9A4645682662439 /* AnytypeOriginalAnnotationImport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnytypeOriginalAnnotationImport.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -886,6 +888,7 @@
 				"0D0D0C2909EFC1106FBA5077",
 				"15FD8EECDFE1057E0E9974CF",
 				"889AE0C4E27BEF75130E93EE",
+				"011F953AA9A4645682662439",
 			);
 			"path" = "OriginalEditorFramework";
 			"sourceTree" = "<group>";
@@ -1212,6 +1215,7 @@
 				74B35D242D5B39C500AC9879 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
 				74819CB22E169F5D0042D5EC /* XCRemoteSwiftPackageReference "Amplitude-Swift" */,
 				FA1000002F000001006805CC /* XCRemoteSwiftPackageReference "TorahInspectorKit" */,
+				C4EDE9CCA3640AFF9A42B62C /* OriginalEditorSharedFirebase */,
 			);
 			preferredProjectObjectVersion = 52;
 			productRefGroup = 0303ECFC22D8EDAA005C552B /* Products */;
@@ -1377,6 +1381,7 @@
 				"5E535C825DA396C0F13B5644",
 				"D4D971157E8AF7DED91FFD12",
 				"DEFD0632E47277D7C1A27876",
+				"589DD7DCCC58633417BCFC20",
 			);
 			"runOnlyForDeploymentPostprocessing" = "0";
 		};
@@ -2816,6 +2821,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Dependencies/Hanlin/Packages/HanlinPresentationSDK;
 		};
+		C4EDE9CCA3640AFF9A42B62C = {
+			"isa" = "XCLocalSwiftPackageReference";
+			"relativePath" = "Tools/OriginalEditor/SharedRuntime";
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -2899,12 +2908,12 @@
 				version = 7.4.0;
 			};
 		};
-		2E63D9B52D56520C008A733A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
-			requirement = {
-				kind = exactVersion;
-				version = 11.8.1;
+		2E63D9B52D56520C008A733A = {
+			"isa" = "XCRemoteSwiftPackageReference";
+			"repositoryURL" = "https://github.com/firebase/firebase-ios-sdk";
+			"requirement" = {
+				"kind" = "exactVersion";
+				"version" = "12.8.0";
 			};
 		};
 		3D24B09A2C1A2B6300795BAA /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */ = {
@@ -3425,10 +3434,10 @@
 			"isa" = "XCSwiftPackageProductDependency";
 			"productName" = "AppTarget";
 		};
-		E2F113E2753F5684374CB4CE /* EditorPackage_FirebaseMessaging */ = {
+		E2F113E2753F5684374CB4CE = {
 			"isa" = "XCSwiftPackageProductDependency";
-			"package" = "2E63D9B52D56520C008A733A";
-			"productName" = "FirebaseMessaging";
+			"package" = "C4EDE9CCA3640AFF9A42B62C";
+			"productName" = "OriginalEditorSharedFirebase";
 		};
 		C5C59AB204FFD5149F3F0E7C /* EditorPackage_AsyncAlgorithms */ = {
 			"isa" = "XCSwiftPackageProductDependency";
