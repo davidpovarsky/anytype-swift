@@ -1,4 +1,4 @@
-"""Reuse the exact retained provider with the real UIScene diagnostic consumer repair."""
+"""Run the exact retained signed UIScene consumer and provider without any build."""
 import argparse
 import hashlib
 import io
@@ -179,9 +179,9 @@ def execute(args, receipt):
     require(inventory(app) == retained['app_inventory'], 'Restored signed app differs')
     command('signature', ['codesign', '--verify', '--deep', '--strict', app])
     original_app = app
-    from build_scene_consumer import build_scene_consumer
-    app, current_app_inventory = build_scene_consumer(
-        root, work, evidence, original_app, retained, receipt, command, inventory)
+    from restore_scene_consumer import restore_scene_consumer
+    app, current_app_inventory = restore_scene_consumer(
+        root, work, evidence, original_app, retained, receipt, command, inventory, members, api, write)
     receipt.update(phase='ACTUAL_RETAINED_PROVIDER_SCENE_CONSUMER_RUNTIME')
     runtimes = json.loads(command('runtimes', ['xcrun', 'simctl', 'list', 'runtimes', '--json']))['runtimes']
     matches = [r for r in runtimes if all(r.get(k) == v for k, v in pin['runtime'].items())]
