@@ -43,7 +43,7 @@ The initial qualification metadata used a numeric duration while the original na
 
 ## Remaining native contract and necessary next journey
 
-[SDK06 story 1220719505176298](https://app.asana.com/0/0/1220769818981326/f) requires mapping during the actual UI journey. The observer requires the same fixture, session, PID and process-start identity, with mapping completion inside that native journey's start/finish window, followed by original entry/final hierarchy and source continuity.
+[SDK06 task](https://app.asana.com/0/0/1220542414733348/f), story1220719505176298, requires mapping during the actual UI journey. The observer requires the same fixture, session, PID and process-start identity, with mapping completion inside that native journey's start/finish window, followed by original entry/final hierarchy and source continuity.
 
 There is no existing observer-only dispatch that can repair the old UI instance. The lower-level mapping helper can inspect an already-owned PID, but other routed runtime probes launch a new process. The independent SDK06 original-products continuation remains frozen to App source `75bd6d7af18dfd511e85582ce7f994d2801b7703`; its current controller does not rebuild that App. It cannot qualify the canonical SDK32da App.
 
