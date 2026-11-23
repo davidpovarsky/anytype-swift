@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "status": "FAIL",
+  "kind": "UNCHANGED_SOURCE_ADMISSION_ONLY",
+  "source_sha": "a365c1afa5b777ee68d6f8ae95c4b641f01f32a3",
+  "started_utc": "2026-11-23T06:09:39.499643+00:00",
+  "workflow_source_blocks_executed": 0,
+  "driver_source_segments_executed": 0,
+  "retained_tests_reexecuted": 0,
+  "new_role_tests_reexecuted": 0,
+  "native_tools_invoked": 0,
+  "ci_identity_simulated": false,
+  "commands": [
+    {
+      "name": "exact-head",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/mnt/development/projects/worktrees/anytype-otzaria-sdk-runtime-20261123",
+      "started_utc": "2026-11-23T06:09:39.499665+00:00",
+      "returncode": 0,
+      "stdout": "01-exact-head.stdout",
+      "stderr": "01-exact-head.stderr",
+      "stdout_sha256": "e8f4694cd442b3aec971610b656521d287d2dfd3710d72c801bb4bae3c00f01f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 41,
+      "stderr_bytes": 0
+    },
+    {
+      "name": "exact-tree",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD^{tree}"
+      ],
+      "cwd": "/mnt/development/projects/worktrees/anytype-otzaria-sdk-runtime-20261123",
+      "started_utc": "2026-11-23T06:09:39.501919+00:00",
+      "returncode": 0,
+      "stdout": "02-exact-tree.stdout",
+      "stderr": "02-exact-tree.stderr",
+      "stdout_sha256": "e32a31ee3f6ce9c14b0943cb155751116ff8c3a01d5069f79ba86b51352a0952",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 41,
+      "stderr_bytes": 0
+    },
+    {
+      "name": "complete-source-status",
+      "argv": [
+        "git",
+        "status",
+        "--porcelain",
+        "--untracked-files=all"
+      ],
+      "cwd": "/mnt/development/projects/worktrees/anytype-otzaria-sdk-runtime-20261123",
+      "started_utc": "2026-11-23T06:09:39.504054+00:00",
+      "returncode": 0,
+      "stdout": "03-complete-source-status.stdout",
+      "stderr": "03-complete-source-status.stderr",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 0,
+      "stderr_bytes": 0
+    },
+    {
+      "name": "unchanged-workflow-source-admission",
+      "argv": [
+        "/usr/bin/python3",
+        "/mnt/development/projects/worktrees/anytype-otzaria-sdk-runtime-20261123/docs/pinkha/torah-integration/evidence/original-editor-signed-consumer-20261123/outer-source-admission-45119225997/unchanged-workflow-source-admission.py"
+      ],
+      "cwd": "/mnt/development/projects/worktrees/anytype-otzaria-sdk-runtime-20261123",
+      "started_utc": "2026-11-23T06:09:39.515090+00:00",
+      "returncode": 1,
+      "stdout": "04-unchanged-workflow-source-admission.stdout",
+      "stderr": "04-unchanged-workflow-source-admission.stderr",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "1db563dc051239b5381184f3caa2c8560de266d77774cb1542b01a7b3034d077",
+      "stdout_bytes": 0,
+      "stderr_bytes": 498
+    }
+  ],
+  "tree_sha": "a8b9bd29680e5f831b81d900a85f5d250cbec73a",
+  "error_type": "AssertionError",
+  "error": "('unchanged-workflow-source-admission', 1, 'Traceback (most recent call last):\\n  File \"/mnt/development/projects/worktrees/anytype-otzaria-sdk-runtime-20261123/docs/pinkha/torah-integration/evidence/original-editor-signed-consumer-20261123/outer-source-admission-45119225997/unchanged-workflow-source-admission.py\", line 12, in <module>\\n    assert hashlib.sha256((packet / path).read_bytes()).hexdigest() == expected, path\\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\nAssertionError: METADATA_CONTROLS.json\\n')",
+  "finished_utc": "2026-11-23T06:09:39.642880+00:00"
+}

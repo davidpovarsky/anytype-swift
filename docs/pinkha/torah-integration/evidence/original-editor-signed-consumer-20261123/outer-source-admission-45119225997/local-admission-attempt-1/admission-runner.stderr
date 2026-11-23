@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-otzaria-sdk-runtime-20261123/docs/pinkha/torah-integration/evidence/original-editor-signed-consumer-20261123/outer-source-admission-45119225997/admit_final_source.py", line 174, in <module>
+    main()
+  File "/mnt/development/projects/worktrees/anytype-otzaria-sdk-runtime-20261123/docs/pinkha/torah-integration/evidence/original-editor-signed-consumer-20261123/outer-source-admission-45119225997/admit_final_source.py", line 70, in main
+    command('unchanged-workflow-source-admission', [
+  File "/mnt/development/projects/worktrees/anytype-otzaria-sdk-runtime-20261123/docs/pinkha/torah-integration/evidence/original-editor-signed-consumer-20261123/outer-source-admission-45119225997/admit_final_source.py", line 51, in command
+    assert proc.returncode == 0, (name, proc.returncode, proc.stderr.decode(errors='replace'))
+           ^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('unchanged-workflow-source-admission', 1, 'Traceback (most recent call last):\n  File "/mnt/development/projects/worktrees/anytype-otzaria-sdk-runtime-20261123/docs/pinkha/torah-integration/evidence/original-editor-signed-consumer-20261123/outer-source-admission-45119225997/unchanged-workflow-source-admission.py", line 12, in <module>\n    assert hashlib.sha256((packet / path).read_bytes()).hexdigest() == expected, path\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: METADATA_CONTROLS.json\n')

@@ -13,8 +13,7 @@
     "expected_ids",
     "errors",
     "failures",
-    "skipped",
-    "log_sha256"
+    "skipped"
   ],
   "retained_tests_executed_again": 0,
   "original_direct_tested_inputs_byte_exact": [
@@ -324,7 +323,7 @@
   ],
   "separately_reviewed_delta_source": "8d175b386010148706354398d8ccde39a7ec50f4",
   "current_receipt_hashes": {
-    "METADATA_CONTROLS.json": "0cc28bc29442fd9dd785e1a8eb51efc9eac903c3090716820acade95fa3b7b03",
+    "METADATA_CONTROLS.json": "00420d7907e24d5dd9ba10d85ba59be550745a72dc746a03a34439930e6e2a74",
     "RAW_CAPTURE_CONTROLS.json": "9884ad12e822ac7e3c82fe021f9ad7214b302221d8d95463a6e28b6083d2423c",
     "framework-role-admission/FRAMEWORK_ROLE_CONTROLS.json": "6887b15dc43ba092ea267a7c9cb94ae7025323078d2c0aaf892be68783b7a12e",
     "framework-role-admission/SOURCE_CORRESPONDENCE.json": "39957c0c91a7d6178b40d7e38a779575d6db3f9903925922d605c6e37e76ce82",
@@ -337,5 +336,31 @@
   "historical_nested_correspondence_preserved": true,
   "previous_current_metadata_pointer": "99c8b2e936e4dabddce59a457acee6f5f58dbaf594341b3dfa3869169061b015",
   "historical_raw_capture_pointer": "03fcae7f321ac651a4be21e657c647578a0e575f49ecd8e30a2f1a29dfe4f19e",
-  "basis": "The retained twelve selected cases execute unchanged original producer flow or combine_launch_help. The source driver change is separately bound by the six authentic role controls and prior exact metadata/raw function correspondence. Historical counts and logs remain their original executions, not a new 12/26-case execution."
+  "basis": "The retained twelve selected cases execute unchanged original producer flow or combine_launch_help. The source driver change is separately bound by the six authentic role controls and prior exact metadata/raw function correspondence. Historical counts and logs remain their original executions, not a new 12/26-case execution.",
+  "unchanged_log_index_paths": [
+    "FOCUSED_CONTROLS.original.json",
+    "focused-controls.log",
+    "metadata-controls.log",
+    "raw-capture-controls.log"
+  ],
+  "updated_composed_receipt_indexes": [
+    {
+      "path": "METADATA_CONTROLS.json",
+      "prior_recorded_sha256": "99c8b2e936e4dabddce59a457acee6f5f58dbaf594341b3dfa3869169061b015",
+      "current_sha256": "00420d7907e24d5dd9ba10d85ba59be550745a72dc746a03a34439930e6e2a74"
+    },
+    {
+      "path": "RAW_CAPTURE_CONTROLS.json",
+      "prior_recorded_sha256": "03fcae7f321ac651a4be21e657c647578a0e575f49ecd8e30a2f1a29dfe4f19e",
+      "current_sha256": "9884ad12e822ac7e3c82fe021f9ad7214b302221d8d95463a6e28b6083d2423c"
+    }
+  ],
+  "first_local_source_admission": {
+    "source_sha": "a365c1afa5b777ee68d6f8ae95c4b641f01f32a3",
+    "result": "FAIL_COMPOSED_RECEIPT_INDEX_STALE",
+    "receipt": "local-admission-attempt-1/RESULT.json",
+    "receipt_sha256": "bfeb05a8fff0e06c6090f21142db1782be1e4f29e615a328565cce55ac5d6977",
+    "native_tests_executed": 0,
+    "changed_assertions_in_original_workflow_or_driver": 0
+  }
 }

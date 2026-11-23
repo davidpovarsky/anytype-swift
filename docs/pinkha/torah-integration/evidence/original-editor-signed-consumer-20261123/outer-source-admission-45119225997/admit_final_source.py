@@ -98,8 +98,11 @@ def main():
         assert sha(packet / link['correspondence_path']) == link['correspondence_sha256']
         prior = json.loads((packet / link['prior_receipt_path']).read_bytes())
         for key in ['tests_run', 'status', 'started_ids', 'passed_ids', 'expected_ids',
-                    'errors', 'failures', 'skipped', 'log_sha256']:
+                    'errors', 'failures', 'skipped']:
             assert focused[key] == prior[key], key
+        for key in prior['log_sha256']:
+            if key not in ('METADATA_CONTROLS.json', 'RAW_CAPTURE_CONTROLS.json'):
+                assert focused['log_sha256'][key] == prior['log_sha256'][key], key
         assert focused['retained_12_reexecuted'] is False and link['retained_12_reexecuted'] is False
         pointers = {
             'current_metadata_controls_sha256': 'METADATA_CONTROLS.json',
@@ -130,6 +133,15 @@ def main():
                 assert sha(packet / correspondence['prior_receipt_path']) == correspondence['prior_receipt_sha256']
                 assert sha(packet / correspondence['source_correspondence_path']) == correspondence['source_correspondence_sha256']
                 assert correspondence['current_new_role_controls_sha256'] == sha(packet / 'framework-role-admission/FRAMEWORK_ROLE_CONTROLS.json')
+                if name == 'METADATA_CONTROLS.json':
+                    index_link = receipt['receipt_index_correspondence']
+                    assert sha(packet / index_link['prior_receipt_path']) == index_link['prior_receipt_sha256']
+                    assert index_link['current_reference_sha256'] == sha(packet / index_link['changed_composed_receipt_reference'])
+                    old_metadata = json.loads((packet / index_link['prior_receipt_path']).read_bytes())
+                    for key in ['tests_run', 'started_ids', 'passed_ids', 'failed', 'errors', 'skipped']:
+                        assert receipt[key] == old_metadata[key], key
+                    for key in ['metadata-controls.log', 'raw-capture-controls.log']:
+                        assert receipt['log_sha256'][key] == old_metadata['log_sha256'][key], key
         result['active_receipts'] = active
         result['packet_indexes'] = []
         for directory in [packet / 'framework-role-admission', owned]:
