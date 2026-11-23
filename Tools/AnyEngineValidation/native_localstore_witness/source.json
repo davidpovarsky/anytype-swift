@@ -1,0 +1,233 @@
+{
+  "authority": "owned-fixture-only-v1",
+  "codec_representation": "anyenc-v1.0.3-decoded-value-roundtrip-v1",
+  "compilation": "NOT_RUN",
+  "composition_note": "Heart base plus four additive files; does not import or rebuild other Heart packages or Heart154 overlay",
+  "controller_sha256": "1ce12a2b4560d00a4b27e67ecf6ee35b52dace524f19fa72f5fd4ec91d0f4c7a",
+  "execution": "NOT_RUN",
+  "expected_named_runs_and_passes": 21,
+  "files": [
+    {
+      "before_sha256": null,
+      "bytes": 13415,
+      "copy_path": "Tools/AnyEngineValidation/native_localstore_witness/native/capture.go",
+      "native_path": "core/pinkha/localstorewitness/capture.go",
+      "sha256": "dd371e9de135dcddfd5647b4df8a799dbc05daf1cceb23ba17b3071662e8954c"
+    },
+    {
+      "before_sha256": null,
+      "bytes": 11212,
+      "copy_path": "Tools/AnyEngineValidation/native_localstore_witness/native/capture_test.go",
+      "native_path": "core/pinkha/localstorewitness/capture_test.go",
+      "sha256": "38c640edfb5b786bbae5937e91a0a42f6794e0ac6b6663d8a284da1bc682ef49"
+    },
+    {
+      "before_sha256": null,
+      "bytes": 4720,
+      "copy_path": "Tools/AnyEngineValidation/native_localstore_witness/native/encoding.go",
+      "native_path": "core/pinkha/localstorewitness/encoding.go",
+      "sha256": "0e413617ca4d1f709ed5f9c37b3809c7710377f8cf79f9247ffbdb6eb3174f4f"
+    },
+    {
+      "before_sha256": null,
+      "bytes": 8185,
+      "copy_path": "Tools/AnyEngineValidation/native_localstore_witness/native/fixture_test.go",
+      "native_path": "core/pinkha/localstorewitness/fixture_test.go",
+      "sha256": "bee3db715a7459a3db1b3c146f008717bbe37059b4e29a4fd82ac2bf6ddb0fd6"
+    }
+  ],
+  "go_binary_sha256": "59c65090beeda377c09007eb8fae1c6aadf0a7b551e65ee13d461092d29e8005",
+  "heart154_reference_manifest_sha256": "2f76212f9fcd749aeb9e806b941e0fd0b54eba17e5cc842adb81c7eb3bae0f38",
+  "heart_base": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "kind": "native-localstore-witness-source-candidate-v1",
+  "limitations": {
+    "apple_mounted": false,
+    "file_payload_census": false,
+    "full_semantic_migration": false,
+    "hasNativeSourceAdmission": false,
+    "nativeIdentityCensusRequired": true,
+    "nativeSnapshotProofRequired": true,
+    "permitsDestinationWrites": false,
+    "production_authorization": false
+  },
+  "minimum_free_bytes": 2500000000,
+  "module_files_equal_existing_heart154": true,
+  "module_sha256": {
+    "go.mod": "0c506b9ab921a9bfea985871c9c912d362147a6bb76e697ee62c51a2eb678de7",
+    "go.sum": "7c873be1e5b4c65e5e46d18167ae6bc29f0f5b51c459a8398d75ab22f0b2432d"
+  },
+  "native_source_sha": "74b5f2c844ac3879125888c538d5990af3db3cb8",
+  "old_methods_selected": 0,
+  "original_sqlite_bytes": false,
+  "original_uncompiled_source_sha": "862e98d16b6ae55207a41b53a036d8b7660a189a",
+  "package": "./core/pinkha/localstorewitness",
+  "private_fixture_root_required": true,
+  "production_capability_issuer": false,
+  "profile": {
+    "CGO_ENABLED": "1",
+    "GOMAXPROCS": "1",
+    "GOPROXY": "off",
+    "arch": "arm64",
+    "build_tag": "pinkha_localstore_witness",
+    "go_parallelism": 1,
+    "libc": "glibc",
+    "os": "linux",
+    "toolchain": "go1.27.4"
+  },
+  "protocol_sha256": "f8242edd72744c19301d0fa9d2c7e9b4dca4443c4809facd6da2605555a2bfc5",
+  "public_capability_issuer": false,
+  "read_dependency_sources": [
+    {
+      "bytes": 318,
+      "exact_cached_zip_member": true,
+      "module": "github.com/anyproto/any-store@v1.0.3",
+      "path": "document.go",
+      "sha256": "7350a96cafb0c3ee0bf96a0b5231952bc54346dbdd08bfc79100839b36e43ebd"
+    },
+    {
+      "bytes": 564,
+      "exact_cached_zip_member": true,
+      "module": "github.com/anyproto/any-store@v1.0.3",
+      "path": "item.go",
+      "sha256": "660debc77f2b55da2480fb6e695ac886c5e815037f60a5b59af31d727db13561"
+    },
+    {
+      "bytes": 18098,
+      "exact_cached_zip_member": true,
+      "module": "github.com/anyproto/any-store@v1.0.3",
+      "path": "db.go",
+      "sha256": "164474b3684a0c6a5895f9a831dbd1585ef51cdff62edaa7cfd3bf1ae49d7e2d"
+    },
+    {
+      "bytes": 5624,
+      "exact_cached_zip_member": true,
+      "module": "github.com/anyproto/any-store@v1.0.3",
+      "path": "tx.go",
+      "sha256": "27dd41fc966399534b64c7324fdd73855e01541dd3fb04de82ccc51841cf787e"
+    },
+    {
+      "bytes": 14987,
+      "exact_cached_zip_member": true,
+      "module": "github.com/anyproto/any-store@v1.0.3",
+      "path": "query.go",
+      "sha256": "8f8caf61ad76189546df8dd8a50e276502d492269f0eea2b4d8cd4867f1099e3"
+    },
+    {
+      "bytes": 2328,
+      "exact_cached_zip_member": true,
+      "module": "github.com/anyproto/any-store@v1.0.3",
+      "path": "iterator.go",
+      "sha256": "8f34f95703cc74031b5485aae50a6305325c04b55a7c8afb564342a3d32576fb"
+    },
+    {
+      "bytes": 20854,
+      "exact_cached_zip_member": true,
+      "module": "github.com/anyproto/any-store@v1.0.3",
+      "path": "collection.go",
+      "sha256": "31b49656d9ad9257df190874d01b6861de478b16e3db3b1c74771178275141c0"
+    },
+    {
+      "bytes": 3955,
+      "exact_cached_zip_member": true,
+      "module": "github.com/anyproto/any-store@v1.0.3",
+      "path": "config.go",
+      "sha256": "68e58d403aaed55bca9ab4247875000bb31c25b45b48dc432b60799a89436416"
+    },
+    {
+      "bytes": 5659,
+      "exact_cached_zip_member": true,
+      "module": "github.com/anyproto/any-store@v1.0.3",
+      "path": "internal/driver/conn.go",
+      "sha256": "79f3b4511fcbeb2ab10ed2cabf151cad75ea5499c30f295a882a7e65cf4008ed"
+    },
+    {
+      "bytes": 9051,
+      "exact_cached_zip_member": true,
+      "module": "github.com/anyproto/any-store@v1.0.3",
+      "path": "anyenc/value.go",
+      "sha256": "1926a9fdadf924c114a37c17bb3cf03f085d4eba3b2f049e683f1c9239389bb1"
+    },
+    {
+      "bytes": 4953,
+      "exact_cached_zip_member": true,
+      "module": "github.com/anyproto/any-store@v1.0.3",
+      "path": "anyenc/parser.go",
+      "sha256": "5cc5f509d20dec3798f74de446258ab9cdb68473c2899af4a35e490a0432e9f7"
+    },
+    {
+      "bytes": 1049,
+      "exact_cached_zip_member": true,
+      "module": "github.com/anyproto/any-store@v1.0.3",
+      "path": "anyenc/object.go",
+      "sha256": "e854fc3c742adefea59bb526e1933442287cad4f99d6c8034bfa647cf1d1cecc"
+    },
+    {
+      "bytes": 1151,
+      "exact_cached_zip_member": true,
+      "module": "github.com/anyproto/any-store@v1.0.3",
+      "path": "anyenc/number.go",
+      "sha256": "264da35dd8e5eedbd66c792bbb9e9b38e9e5a446cdacadcfb39b2c7404fa0a0b"
+    },
+    {
+      "bytes": 3753,
+      "exact_cached_zip_member": true,
+      "module": "github.com/anyproto/any-store@v1.0.3",
+      "path": "anyenc/arena.go",
+      "sha256": "67e93e638d3362274ec576953d3a6ceca7b14e2867703d120cfb2e2a6223c0ed"
+    },
+    {
+      "bytes": 860,
+      "exact_cached_zip_member": true,
+      "module": "github.com/anyproto/any-store@v1.0.3",
+      "path": "anyenc/type.go",
+      "sha256": "2c7d7d3f0cc569c4d9d80d9bfef52dacca03acf20e20a34c48a462164278fd8e"
+    },
+    {
+      "bytes": 7098,
+      "exact_cached_zip_member": true,
+      "module": "github.com/anyproto/any-sync@v0.13.8",
+      "path": "commonspace/spacestorage/spacestorage.go",
+      "sha256": "497140b1291e08d06c7a60c0962a1d07c81a1bbc1dabf52908f49185391928e1"
+    },
+    {
+      "bytes": 7304,
+      "exact_cached_zip_member": true,
+      "module": "github.com/anyproto/any-sync@v0.13.8",
+      "path": "commonspace/headsync/headstorage/headstorage.go",
+      "sha256": "c3ffa64b2f81a284f40c37a541ad7cdfbe8e2e71a106a6ea126c3af9ee70d694"
+    },
+    {
+      "bytes": 4427,
+      "exact_cached_zip_member": true,
+      "module": "github.com/anyproto/any-sync@v0.13.8",
+      "path": "commonspace/headsync/statestorage/statestorage.go",
+      "sha256": "2b387d0497694c64479c9513d734c912a07b779a2fe5d59b49f11a7477611588"
+    },
+    {
+      "bytes": 13067,
+      "exact_cached_zip_member": true,
+      "module": "github.com/anyproto/any-sync@v0.13.8",
+      "path": "commonspace/object/tree/objecttree/storage.go",
+      "sha256": "2f53235a74ab3f23dcc5166124205080c9c98f86bcc54382a6c870cd201300f9"
+    },
+    {
+      "bytes": 7333,
+      "exact_cached_zip_member": true,
+      "module": "github.com/anyproto/any-sync@v0.13.8",
+      "path": "commonspace/object/acl/list/storage.go",
+      "sha256": "99a45d282bed2fb5c6f817f350f4e31f20f2b7246c7846835c20b2b8282a32ef"
+    }
+  ],
+  "scoped_subcases": 15,
+  "selected_top_level_methods": [
+    "TestLocalStoreWitnessNativeConcurrentTransaction",
+    "TestLocalStoreWitnessOwnershipAndCancellation",
+    "TestLocalStoreWitnessLimitsAndNativeBinding",
+    "TestLocalStoreWitnessIteratorAndTransactionFailures",
+    "TestLocalStoreWitnessDecodedEncodingRoundTrip",
+    "TestLocalStoreWitnessUnqualifiedAndPrivateOutput"
+  ],
+  "status": "SOURCE_FROZEN_NOT_COMPILED_NOT_RUN",
+  "swift_origin": "383b508017f40da066c5d84addfe2135aa1f358b",
+  "uses_native_ReadTx_in_source": true
+}
