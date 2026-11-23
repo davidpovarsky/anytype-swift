@@ -48,6 +48,7 @@ on:
           - coherent-heart-apple
           - coherent-heart-peers
           - semantic-anchor-native
+          - semantic-page-apple-runtime
           - prepared-migration-apple
           - prepared-inline-file-apple
           - sdk06-enumeration-probe
@@ -303,6 +304,10 @@ jobs:
       native_artifact_run_id: ${{ inputs.source_run_id }}
       native_producer_commit: ${{ inputs.prepared_native_producer_commit }}
       native_artifact_run_attempt: ${{ inputs.prepared_native_artifact_run_attempt }}
+
+  semantic-page-apple-runtime:
+    if: ${{ inputs.route == 'semantic-page-apple-runtime' }}
+    uses: ./.github/workflows/pinkha-semantic-page-apple-runtime.yml
 
   semantic-anchor-native:
     if: ${{ inputs.route == 'semantic-anchor-native' }}
