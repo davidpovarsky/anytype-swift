@@ -1,0 +1,45 @@
+--- prior/Modules/AnytypeCore/AnytypeCore/Utils/OriginalRuntimeEnvironment.swift
++++ final/Modules/AnytypeCore/AnytypeCore/Utils/OriginalRuntimeEnvironment.swift
+@@ -4,6 +4,17 @@
+ /// Deployment configuration for the original editor in an external host.
+ /// This does not establish an account, selected Space, or permission to write.
+ public enum OriginalRuntimeEnvironment {
++    public enum DeploymentMode: Sendable, Equatable {
++        case standalone
++        case embeddedEditor
++    }
++
++    /// A deployment fact only. Reading this seals the same context captured by
++    /// app-group/defaults consumers; it never establishes account authority.
++    public static var deploymentMode: DeploymentMode {
++        capture().mode
++    }
++
+     public enum ConfigurationError: Error, Sendable, Equatable {
+         case alreadyInUse
+         case conflictingConfiguration
+@@ -24,6 +35,7 @@
+ 
+     struct Context: Sendable {
+         let appGroup: String
++        let mode: DeploymentMode
+         fileprivate let targetType: AppTargetType
+         fileprivate let keyPrefix: String
+ 
+@@ -97,6 +109,7 @@
+ 
+         state = .configured(Context(
+             appGroup: appGroup,
++            mode: .embeddedEditor,
+             targetType: expectedTarget,
+             keyPrefix: "AnytypeOriginalEditor.v1."
+         ))
+@@ -124,7 +137,7 @@
+             case .releaseAnytype:
+                 appGroup = "group.io.anytype.app"
+             }
+-            let context = Context(appGroup: appGroup, targetType: targetType, keyPrefix: "")
++            let context = Context(appGroup: appGroup, mode: .standalone, targetType: targetType, keyPrefix: "")
+             state = .captured(context)
+             return context
+         }

@@ -1,0 +1,119 @@
+{
+  "base_sha": "642a8b9cd9cd243e820db154ea2471b6882e2a94",
+  "product_paths": [
+    "Modules/AnytypeCore/AnytypeCore/Utils/OriginalRuntimeEnvironment.swift",
+    "Modules/AnytypeCore/AnytypeCore/Utils/TargetsConstants.swift",
+    "Modules/AnytypeCore/AnytypeCore/Utils/UserDefaultWrapper/UserDefaultByAppGroupStorage.swift",
+    "Modules/AnytypeCore/AnytypeCore/Utils/UserDefaultWrapper/UserDefaultStorage.swift"
+  ],
+  "sources": [
+    {
+      "path": "Modules/AppTarget/Sources/AppTarget/AppTargetType.swift",
+      "role": "unchanged-original",
+      "sha256": "eaa1b84516c2736966970ac0cf214eb966102c4654a708ec4ce7713917b56d0e",
+      "projected_sha256": "eaa1b84516c2736966970ac0cf214eb966102c4654a708ec4ce7713917b56d0e",
+      "transforms": []
+    },
+    {
+      "path": "Modules/AnytypeCore/AnytypeCore/Utils/CoreEnvironment.swift",
+      "role": "unchanged-original",
+      "sha256": "5c20956e40b3187f4bfbbef1e7bef79222782da2f0dcd5eabc0e4d78cbb1d88d",
+      "projected_sha256": "14f28b6928b8969ff77ea4b5bffca305531e72aaad8f55a0f048e440fef20a3c",
+      "transforms": [
+        {
+          "from": "import AppTarget\n",
+          "to": "",
+          "count": 1
+        },
+        {
+          "from": "import os.lock\n",
+          "to": "",
+          "count": 1
+        },
+        {
+          "from": "Bundle.main",
+          "to": "E1Platform.bundle",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "path": "Modules/AnytypeCore/AnytypeCore/Utils/OriginalRuntimeEnvironment.swift",
+      "role": "affected-product",
+      "sha256": "1885a2d54b7585a4fd0be81b631c6ea87336bb4b83cdb8e5bb2744dfb8c72264",
+      "projected_sha256": "17ec977cc2741dcf3a10cf19196f758c83b62a018209d9c181fde94a3d9480fc",
+      "transforms": [
+        {
+          "from": "import AppTarget\n",
+          "to": "",
+          "count": 1
+        },
+        {
+          "from": "Bundle.main",
+          "to": "E1Platform.bundle",
+          "count": 1
+        },
+        {
+          "from": "FileManager.default.containerURL",
+          "to": "E1Platform.containerURL",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "path": "Modules/AnytypeCore/AnytypeCore/Utils/TargetsConstants.swift",
+      "role": "affected-product",
+      "sha256": "8adfeb891fd436f66f24ee4cea78bd368d4e3ac6e9beb20c380dd0e72ff51e39",
+      "projected_sha256": "8adfeb891fd436f66f24ee4cea78bd368d4e3ac6e9beb20c380dd0e72ff51e39",
+      "transforms": []
+    },
+    {
+      "path": "Modules/AnytypeCore/AnytypeCore/Utils/UserDefaultWrapper/UserDefaultByAppGroupStorage.swift",
+      "role": "affected-product",
+      "sha256": "18002b77a1109bbc8f0b1a35755b2c99e9e24bfa7a92850003265b9f86e98433",
+      "projected_sha256": "e063be183b84b8a257b502e1baebc91c138345761f8898cc868920440a611696",
+      "transforms": [
+        {
+          "from": "UserDefaults(suiteName: environment.appGroup)",
+          "to": "E1Platform.groupStore(suiteName: environment.appGroup)",
+          "count": 1
+        },
+        {
+          "from": "UserDefaults.standard",
+          "to": "E1Platform.standard",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "path": "Modules/AnytypeCore/AnytypeCore/Utils/UserDefaultWrapper/UserDefaultStorage.swift",
+      "role": "affected-product",
+      "sha256": "13024561319e148bf1f3776f51793eb63c8a3f708f15445eacb71fa12031c1ed",
+      "projected_sha256": "26680eca2e96965b18ee2bc0fe9a6fa46e58cb2b33d939a5033caa84b5cf3f00",
+      "transforms": [
+        {
+          "from": "import os\n",
+          "to": "",
+          "count": 1
+        },
+        {
+          "from": "UserDefaults.standard",
+          "to": "E1Platform.standard",
+          "count": 3
+        }
+      ]
+    }
+  ],
+  "harness_sha256": "8451879d8a23837e82a45cafa24bf0a2a5eafa0b768785e216cb836ef3febc13",
+  "combined_sha256": "3b10049c357886462a9ce8c786acb19124562d5d0a24292fd060a796fa647971",
+  "scope": "Portable original state/storage behavior; Apple metadata/container/lock calls substituted explicitly.",
+  "not_qualified": [
+    "Apple signed AppGroup container access",
+    "Apple OSAllocatedUnfairLock implementation",
+    "real main-bundle metadata",
+    "UIKit",
+    "native library",
+    "account bootstrap",
+    "SDK/runtime/device"
+  ]
+}

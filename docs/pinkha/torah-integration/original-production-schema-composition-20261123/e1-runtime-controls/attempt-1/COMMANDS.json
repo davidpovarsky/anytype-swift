@@ -1,0 +1,45 @@
+[
+  {
+    "name": "swift-version",
+    "argv": [
+      "swift",
+      "--version"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.11409163475036621,
+    "stdout_sha256": "59360730c588801a672c1118d5d1debc93581f6b74e6a82d5d8cbda1b4a729ce",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "unprojected-product-parse",
+    "argv": [
+      "swiftc",
+      "-frontend",
+      "-parse",
+      "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/Modules/AnytypeCore/AnytypeCore/Utils/OriginalRuntimeEnvironment.swift",
+      "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/Modules/AnytypeCore/AnytypeCore/Utils/TargetsConstants.swift",
+      "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/Modules/AnytypeCore/AnytypeCore/Utils/UserDefaultWrapper/UserDefaultByAppGroupStorage.swift",
+      "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/Modules/AnytypeCore/AnytypeCore/Utils/UserDefaultWrapper/UserDefaultStorage.swift"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.06410050392150879,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "portable-compile",
+    "argv": [
+      "swiftc",
+      "-swift-version",
+      "6",
+      "-parse-as-library",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-1/CombinedControls.swift",
+      "-o",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-1/runtime-environment-controls"
+    ],
+    "exit_code": 1,
+    "elapsed_seconds": 0.41510009765625,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "22207102b6cd08e072ed4dc5aa9040b7d3213aa875501613dad669a3e304f3b1"
+  }
+]

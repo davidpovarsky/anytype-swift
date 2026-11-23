@@ -1,0 +1,72 @@
+{
+  "base_sha": "642a8b9cd9cd243e820db154ea2471b6882e2a94",
+  "status": "PASS",
+  "unprojected_syntax_exit": 0,
+  "reused_syntax": null,
+  "portable_compile_exit": 0,
+  "available_controls": 20,
+  "required_controls": 4,
+  "actual_controls": 4,
+  "passed_controls": 4,
+  "binary_sha256": "0f1ad1a72add5f544b0729e18405cd970c944d28d12e7331f822a2e6d7315e0e",
+  "results": [
+    {
+      "case": "standalone-mode-first-use",
+      "exit_code": 0,
+      "observed": {
+        "assertions": 5,
+        "case": "standalone-mode-first-use",
+        "owned_fixture_cleanup": "PASS",
+        "scope": "portable state/storage control; Apple platform boundaries substituted",
+        "status": "PASS"
+      },
+      "fixture_absent_after_return": true
+    },
+    {
+      "case": "embedded-mode-first-use",
+      "exit_code": 0,
+      "observed": {
+        "assertions": 6,
+        "case": "embedded-mode-first-use",
+        "owned_fixture_cleanup": "PASS",
+        "scope": "portable state/storage control; Apple platform boundaries substituted",
+        "status": "PASS"
+      },
+      "fixture_absent_after_return": true
+    },
+    {
+      "case": "existing-standalone-consumer-mode",
+      "exit_code": 0,
+      "observed": {
+        "assertions": 3,
+        "case": "existing-standalone-consumer-mode",
+        "owned_fixture_cleanup": "PASS",
+        "scope": "portable state/storage control; Apple platform boundaries substituted",
+        "status": "PASS"
+      },
+      "fixture_absent_after_return": true
+    },
+    {
+      "case": "existing-embedded-consumer-mode",
+      "exit_code": 0,
+      "observed": {
+        "assertions": 3,
+        "case": "existing-embedded-consumer-mode",
+        "owned_fixture_cleanup": "PASS",
+        "scope": "portable state/storage control; Apple platform boundaries substituted",
+        "status": "PASS"
+      },
+      "fixture_absent_after_return": true
+    }
+  ],
+  "scope": "Portable original state/storage behavior; Apple metadata/container/lock calls substituted explicitly.",
+  "not_qualified": [
+    "Apple signed AppGroup container access",
+    "Apple OSAllocatedUnfairLock implementation",
+    "real main-bundle metadata",
+    "UIKit",
+    "native library",
+    "account bootstrap",
+    "SDK/runtime/device"
+  ]
+}

@@ -1,0 +1,235 @@
+{
+  "base_sha": "642a8b9cd9cd243e820db154ea2471b6882e2a94",
+  "status": "PASS",
+  "unprojected_syntax_exit": 0,
+  "reused_syntax": {
+    "kind": "REUSED_UNCHANGED_ACTUAL_PARSE",
+    "directory": "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-1",
+    "command": {
+      "name": "unprojected-product-parse",
+      "argv": [
+        "swiftc",
+        "-frontend",
+        "-parse",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/Modules/AnytypeCore/AnytypeCore/Utils/OriginalRuntimeEnvironment.swift",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/Modules/AnytypeCore/AnytypeCore/Utils/TargetsConstants.swift",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/Modules/AnytypeCore/AnytypeCore/Utils/UserDefaultWrapper/UserDefaultByAppGroupStorage.swift",
+        "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/Modules/AnytypeCore/AnytypeCore/Utils/UserDefaultWrapper/UserDefaultStorage.swift"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.06410050392150879,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source_admission_sha256": "31fc8f56f43375e395481483410bd29f63165f8b7945065de00af7c447c8ed23"
+  },
+  "portable_compile_exit": 0,
+  "required_controls": 16,
+  "actual_controls": 16,
+  "passed_controls": 16,
+  "binary_sha256": "a6cfee7f3d4c2c00af5c88f5a56b65fd923a2b796bd7b0be7e434fe6ea48f763",
+  "results": [
+    {
+      "case": "standalone-debug-migration-roundtrip",
+      "exit_code": 0,
+      "observed": {
+        "assertions": 7,
+        "case": "standalone-debug-migration-roundtrip",
+        "owned_fixture_cleanup": "PASS",
+        "scope": "portable state/storage control; Apple platform boundaries substituted",
+        "status": "PASS"
+      },
+      "fixture_absent_after_return": true
+    },
+    {
+      "case": "standalone-release-defaults",
+      "exit_code": 0,
+      "observed": {
+        "assertions": 3,
+        "case": "standalone-release-defaults",
+        "owned_fixture_cleanup": "PASS",
+        "scope": "portable state/storage control; Apple platform boundaries substituted",
+        "status": "PASS"
+      },
+      "fixture_absent_after_return": true
+    },
+    {
+      "case": "embedded-namespace-isolation",
+      "exit_code": 0,
+      "observed": {
+        "assertions": 12,
+        "case": "embedded-namespace-isolation",
+        "owned_fixture_cleanup": "PASS",
+        "scope": "portable state/storage control; Apple platform boundaries substituted",
+        "status": "PASS"
+      },
+      "fixture_absent_after_return": true
+    },
+    {
+      "case": "first-standard-consumer-seals",
+      "exit_code": 0,
+      "observed": {
+        "assertions": 2,
+        "case": "first-standard-consumer-seals",
+        "owned_fixture_cleanup": "PASS",
+        "scope": "portable state/storage control; Apple platform boundaries substituted",
+        "status": "PASS"
+      },
+      "fixture_absent_after_return": true
+    },
+    {
+      "case": "first-group-consumer-seals",
+      "exit_code": 0,
+      "observed": {
+        "assertions": 2,
+        "case": "first-group-consumer-seals",
+        "owned_fixture_cleanup": "PASS",
+        "scope": "portable state/storage control; Apple platform boundaries substituted",
+        "status": "PASS"
+      },
+      "fixture_absent_after_return": true
+    },
+    {
+      "case": "first-target-consumer-seals",
+      "exit_code": 0,
+      "observed": {
+        "assertions": 2,
+        "case": "first-target-consumer-seals",
+        "owned_fixture_cleanup": "PASS",
+        "scope": "portable state/storage control; Apple platform boundaries substituted",
+        "status": "PASS"
+      },
+      "fixture_absent_after_return": true
+    },
+    {
+      "case": "same-install-before-use",
+      "exit_code": 0,
+      "observed": {
+        "assertions": 4,
+        "case": "same-install-before-use",
+        "owned_fixture_cleanup": "PASS",
+        "scope": "portable state/storage control; Apple platform boundaries substituted",
+        "status": "PASS"
+      },
+      "fixture_absent_after_return": true
+    },
+    {
+      "case": "conflicting-install-before-use",
+      "exit_code": 0,
+      "observed": {
+        "assertions": 4,
+        "case": "conflicting-install-before-use",
+        "owned_fixture_cleanup": "PASS",
+        "scope": "portable state/storage control; Apple platform boundaries substituted",
+        "status": "PASS"
+      },
+      "fixture_absent_after_return": true
+    },
+    {
+      "case": "invalid-group-recovery",
+      "exit_code": 0,
+      "observed": {
+        "assertions": 10,
+        "case": "invalid-group-recovery",
+        "owned_fixture_cleanup": "PASS",
+        "scope": "portable state/storage control; Apple platform boundaries substituted",
+        "status": "PASS"
+      },
+      "fixture_absent_after_return": true
+    },
+    {
+      "case": "invalid-bundle-condition-recovery",
+      "exit_code": 0,
+      "observed": {
+        "assertions": 6,
+        "case": "invalid-bundle-condition-recovery",
+        "owned_fixture_cleanup": "PASS",
+        "scope": "portable state/storage control; Apple platform boundaries substituted",
+        "status": "PASS"
+      },
+      "fixture_absent_after_return": true
+    },
+    {
+      "case": "declared-target-mismatch",
+      "exit_code": 0,
+      "observed": {
+        "assertions": 3,
+        "case": "declared-target-mismatch",
+        "owned_fixture_cleanup": "PASS",
+        "scope": "portable state/storage control; Apple platform boundaries substituted",
+        "status": "PASS"
+      },
+      "fixture_absent_after_return": true
+    },
+    {
+      "case": "cached-target-mismatch",
+      "exit_code": 0,
+      "observed": {
+        "assertions": 5,
+        "case": "cached-target-mismatch",
+        "owned_fixture_cleanup": "PASS",
+        "scope": "portable state/storage control; Apple platform boundaries substituted",
+        "status": "PASS"
+      },
+      "fixture_absent_after_return": true
+    },
+    {
+      "case": "matching-direct-read-limitation",
+      "exit_code": 0,
+      "observed": {
+        "assertions": 2,
+        "case": "matching-direct-read-limitation",
+        "owned_fixture_cleanup": "PASS",
+        "scope": "portable state/storage control; Apple platform boundaries substituted",
+        "status": "PASS"
+      },
+      "fixture_absent_after_return": true
+    },
+    {
+      "case": "container-denial-recovery",
+      "exit_code": 0,
+      "observed": {
+        "assertions": 8,
+        "case": "container-denial-recovery",
+        "owned_fixture_cleanup": "PASS",
+        "scope": "portable state/storage control; Apple platform boundaries substituted",
+        "status": "PASS"
+      },
+      "fixture_absent_after_return": true
+    },
+    {
+      "case": "original-cache-and-decode",
+      "exit_code": 0,
+      "observed": {
+        "assertions": 5,
+        "case": "original-cache-and-decode",
+        "owned_fixture_cleanup": "PASS",
+        "scope": "portable state/storage control; Apple platform boundaries substituted",
+        "status": "PASS"
+      },
+      "fixture_absent_after_return": true
+    },
+    {
+      "case": "concurrent-first-use",
+      "exit_code": 0,
+      "observed": {
+        "assertions": 4,
+        "case": "concurrent-first-use",
+        "owned_fixture_cleanup": "PASS",
+        "scope": "portable state/storage control; Apple platform boundaries substituted",
+        "status": "PASS"
+      },
+      "fixture_absent_after_return": true
+    }
+  ],
+  "scope": "Portable original state/storage behavior; Apple metadata/container/lock calls substituted explicitly.",
+  "not_qualified": [
+    "Apple signed AppGroup container access",
+    "Apple OSAllocatedUnfairLock implementation",
+    "real main-bundle metadata",
+    "UIKit",
+    "native library",
+    "account bootstrap",
+    "SDK/runtime/device"
+  ]
+}

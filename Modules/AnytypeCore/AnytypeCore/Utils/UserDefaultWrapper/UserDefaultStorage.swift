@@ -21,11 +21,12 @@ public final class UserDefaultStorage<T: Codable & Sendable>: @unchecked Sendabl
     private let lock = OSAllocatedUnfairLock()
     
     public init(key: String, defaultValue: T) {
-        self.key = key
+        let environment = OriginalRuntimeEnvironment.capture()
+        self.key = environment.storageKey(key)
         self.defaultValue = defaultValue
         
         // Read value from UserDefaults
-        if let data = UserDefaults.standard.object(forKey: key) as? Data,
+        if let data = UserDefaults.standard.object(forKey: self.key) as? Data,
            let value = try? JSONDecoder().decode(T.self, from: data) {
             self.data = value
         } else {

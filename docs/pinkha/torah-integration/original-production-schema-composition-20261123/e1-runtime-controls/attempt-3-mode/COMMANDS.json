@@ -1,0 +1,93 @@
+[
+  {
+    "name": "swift-version",
+    "argv": [
+      "swift",
+      "--version"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.11415863037109375,
+    "stdout_sha256": "59360730c588801a672c1118d5d1debc93581f6b74e6a82d5d8cbda1b4a729ce",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "unprojected-product-parse",
+    "argv": [
+      "swiftc",
+      "-frontend",
+      "-parse",
+      "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/Modules/AnytypeCore/AnytypeCore/Utils/OriginalRuntimeEnvironment.swift",
+      "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/Modules/AnytypeCore/AnytypeCore/Utils/TargetsConstants.swift",
+      "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/Modules/AnytypeCore/AnytypeCore/Utils/UserDefaultWrapper/UserDefaultByAppGroupStorage.swift",
+      "/mnt/development/projects/worktrees/anytype-otzaria-original-production-20261123/Modules/AnytypeCore/AnytypeCore/Utils/UserDefaultWrapper/UserDefaultStorage.swift"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.06423735618591309,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "portable-compile",
+    "argv": [
+      "swiftc",
+      "-swift-version",
+      "6",
+      "-parse-as-library",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-3-mode/CombinedControls.swift",
+      "-o",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-3-mode/runtime-environment-controls"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.0163593292236328,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "standalone-mode-first-use",
+    "argv": [
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-3-mode/runtime-environment-controls",
+      "standalone-mode-first-use",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-3-mode/fixture-0"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.015894174575805664,
+    "stdout_sha256": "701f41396e941b979c2485d411ffe96c1b0398a38359f47184ae40da31aab8ba",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "embedded-mode-first-use",
+    "argv": [
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-3-mode/runtime-environment-controls",
+      "embedded-mode-first-use",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-3-mode/fixture-1"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.015977859497070312,
+    "stdout_sha256": "96ee971cdd4611ce865d63b147a31a7fa894a2b99773d2b821ce7e4fd854019f",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "existing-standalone-consumer-mode",
+    "argv": [
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-3-mode/runtime-environment-controls",
+      "existing-standalone-consumer-mode",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-3-mode/fixture-2"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.015941619873046875,
+    "stdout_sha256": "120dbb62e36252dd3ce3d51290ef700255aba2961b33de1bd6255163d7fda7ec",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "existing-embedded-consumer-mode",
+    "argv": [
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-3-mode/runtime-environment-controls",
+      "existing-embedded-consumer-mode",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-3-mode/fixture-3"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.032111406326293945,
+    "stdout_sha256": "a6e8798a93736de4c9f39512fb249e80b37e2e13c3bb7874d709ef0e654c4ed4",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

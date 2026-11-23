@@ -1,0 +1,70 @@
+{
+  "base_sha": "642a8b9cd9cd243e820db154ea2471b6882e2a94",
+  "original_sdk_source_sha": "de63125b97cd5b91a1fa4f4b71d03738076e735f",
+  "product": [
+    {
+      "path": "Modules/AnytypeCore/AnytypeCore/Utils/OriginalRuntimeEnvironment.swift",
+      "classification": "SHARED_INTEGRATION_NEW",
+      "before_sha256": null,
+      "after_sha256": "adbd976a8f3a83b792775e04db3bbcf524fd176a2ff4761c639599551453141f",
+      "original_sdk_preimage_match": null
+    },
+    {
+      "path": "Modules/AnytypeCore/AnytypeCore/Utils/TargetsConstants.swift",
+      "classification": "UPSTREAM_OWNED_NARROW_HOOK",
+      "before_sha256": "8b4892b30f0b0ec2f180f35e456991c7e2af8fb3989cea0ef5f5a586675c3517",
+      "after_sha256": "8adfeb891fd436f66f24ee4cea78bd368d4e3ac6e9beb20c380dd0e72ff51e39",
+      "original_sdk_preimage_match": true
+    },
+    {
+      "path": "Modules/AnytypeCore/AnytypeCore/Utils/UserDefaultWrapper/UserDefaultByAppGroupStorage.swift",
+      "classification": "UPSTREAM_OWNED_NARROW_HOOK",
+      "before_sha256": "5d4e60df2bf78747e7bf62ef6dd9bdabf2e113016d49ed4ead7b350af53ad266",
+      "after_sha256": "18002b77a1109bbc8f0b1a35755b2c99e9e24bfa7a92850003265b9f86e98433",
+      "original_sdk_preimage_match": true
+    },
+    {
+      "path": "Modules/AnytypeCore/AnytypeCore/Utils/UserDefaultWrapper/UserDefaultStorage.swift",
+      "classification": "UPSTREAM_OWNED_NARROW_HOOK",
+      "before_sha256": "9dad09d0c2d072ef6862dd42cd1440b80af7e58bd7567083bcda15f5ff3fb0ee",
+      "after_sha256": "13024561319e148bf1f3776f51793eb63c8a3f708f15445eacb71fa12031c1ed",
+      "original_sdk_preimage_match": true
+    }
+  ],
+  "mode_inverse_matches_prior_source": true,
+  "prior_runtime_sha256": "1885a2d54b7585a4fd0be81b631c6ea87336bb4b83cdb8e5bb2744dfb8c72264",
+  "final_runtime_sha256": "adbd976a8f3a83b792775e04db3bbcf524fd176a2ff4761c639599551453141f",
+  "existing_group_algorithm_inverse_exact": true,
+  "existing_standard_algorithm_inverse_exact": true,
+  "three_existing_afterimages_unchanged_for_mode_addition": true,
+  "original_core_environment_unchanged": true,
+  "core_environment_sha256": "5c20956e40b3187f4bfbbef1e7bef79222782da2f0dcd5eabc0e4d78cbb1d88d",
+  "verification": {
+    "attempt-1": {
+      "status": "FAIL",
+      "actual_controls": 0,
+      "passed_controls": 0,
+      "assertions": 0,
+      "binary_sha256": null,
+      "result_sha256": "9c741abcf7b0036382919e308ac8d1b9fd01029162adbee337588bcb22518e57"
+    },
+    "attempt-2": {
+      "status": "PASS",
+      "actual_controls": 16,
+      "passed_controls": 16,
+      "assertions": 79,
+      "binary_sha256": "a6cfee7f3d4c2c00af5c88f5a56b65fd923a2b796bd7b0be7e434fe6ea48f763",
+      "result_sha256": "5ce98e7d393edb14773da0bf697d8f47b51c8a3f65de69937230dead560f6342"
+    },
+    "attempt-3-mode": {
+      "status": "PASS",
+      "actual_controls": 4,
+      "passed_controls": 4,
+      "assertions": 17,
+      "binary_sha256": "0f1ad1a72add5f544b0729e18405cd970c944d28d12e7331f822a2e6d7315e0e",
+      "result_sha256": "ae5046cab32aabc4ce876d25685fda3932e310a563900bcdbe767831bb72a49f"
+    }
+  },
+  "scope": "16 actual initial-E1 controls retained with exact mode-only source correspondence;4 new actual final-mode controls. No Apple runtime/account qualification.",
+  "first_compile_failure_preserved": true
+}

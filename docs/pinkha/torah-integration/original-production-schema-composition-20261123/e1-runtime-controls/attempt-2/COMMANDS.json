@@ -1,0 +1,210 @@
+[
+  {
+    "name": "portable-compile",
+    "argv": [
+      "swiftc",
+      "-swift-version",
+      "6",
+      "-parse-as-library",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/CombinedControls.swift",
+      "-o",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/runtime-environment-controls"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.9684264659881592,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "standalone-debug-migration-roundtrip",
+    "argv": [
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/runtime-environment-controls",
+      "standalone-debug-migration-roundtrip",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/fixture-0"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.03201627731323242,
+    "stdout_sha256": "bf1c09973dc8b2bb5e8925031bd81501e1e9ff21743741d4857a27df8fbd964a",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "standalone-release-defaults",
+    "argv": [
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/runtime-environment-controls",
+      "standalone-release-defaults",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/fixture-1"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.01589488983154297,
+    "stdout_sha256": "815f601c70b02caa1bb98abd473c7de061e585a74d6a75cdd82424cd07a9f29a",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "embedded-namespace-isolation",
+    "argv": [
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/runtime-environment-controls",
+      "embedded-namespace-isolation",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/fixture-2"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.03191947937011719,
+    "stdout_sha256": "1d13a076b2152f2b7a043e4e063ce64a1e6071c8c94b8f806b1b888c1ca65fdd",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "first-standard-consumer-seals",
+    "argv": [
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/runtime-environment-controls",
+      "first-standard-consumer-seals",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/fixture-3"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.01603555679321289,
+    "stdout_sha256": "48a53bd6272f12d7d121b9d97b32367231a67515ba7e29a16026a1f44fe96c03",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "first-group-consumer-seals",
+    "argv": [
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/runtime-environment-controls",
+      "first-group-consumer-seals",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/fixture-4"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.015960216522216797,
+    "stdout_sha256": "bf641b8d1aa2675c25267b408c76904d9f7a14477ac9e820cc77788bcaf787bc",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "first-target-consumer-seals",
+    "argv": [
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/runtime-environment-controls",
+      "first-target-consumer-seals",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/fixture-5"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.015917062759399414,
+    "stdout_sha256": "1abada7c055e84bd1eeef136d14b4d41eb411234a2c583fde03609a6a6d1ab13",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "same-install-before-use",
+    "argv": [
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/runtime-environment-controls",
+      "same-install-before-use",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/fixture-6"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.015864849090576172,
+    "stdout_sha256": "9e86bf7c45930675aa55c855dcc33c72a46d1c7d0435994fd48db0ff2178e01c",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "conflicting-install-before-use",
+    "argv": [
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/runtime-environment-controls",
+      "conflicting-install-before-use",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/fixture-7"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.0160372257232666,
+    "stdout_sha256": "641b8001c0d5accca327c1566576216cf64f5c34bdf09e5706b7ea7398ead4b3",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "invalid-group-recovery",
+    "argv": [
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/runtime-environment-controls",
+      "invalid-group-recovery",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/fixture-8"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.015961647033691406,
+    "stdout_sha256": "c5a1f7ffaccb4c4ae3d66588be928b41943d7471956adf7cdc22104233b11482",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "invalid-bundle-condition-recovery",
+    "argv": [
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/runtime-environment-controls",
+      "invalid-bundle-condition-recovery",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/fixture-9"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.016190767288208008,
+    "stdout_sha256": "da96dcafc34c581df08da6e2cf04343d5f751ff5252cb0c089b09771097b1f62",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "declared-target-mismatch",
+    "argv": [
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/runtime-environment-controls",
+      "declared-target-mismatch",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/fixture-10"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.015872478485107422,
+    "stdout_sha256": "8ce50fe18214bb18172a45d4941722c3c9d275e46172e70f2dc912f2cf38baf0",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "cached-target-mismatch",
+    "argv": [
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/runtime-environment-controls",
+      "cached-target-mismatch",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/fixture-11"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.015887975692749023,
+    "stdout_sha256": "efaeed4f1cd12a2d8fbc6bdfac5f688036bbcc8587a63aa58dc62948d5cd638f",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "matching-direct-read-limitation",
+    "argv": [
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/runtime-environment-controls",
+      "matching-direct-read-limitation",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/fixture-12"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.015868425369262695,
+    "stdout_sha256": "8dc682ad70e8424f8a4e8bd8ad86b44a9efa679f4d1889db111593f899f6dfb2",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "container-denial-recovery",
+    "argv": [
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/runtime-environment-controls",
+      "container-denial-recovery",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/fixture-13"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.03191399574279785,
+    "stdout_sha256": "589061b27dbf1668d966f1857b67222241f7512c921c44e44cb4510c373c423d",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "original-cache-and-decode",
+    "argv": [
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/runtime-environment-controls",
+      "original-cache-and-decode",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/fixture-14"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.03202486038208008,
+    "stdout_sha256": "9a7cc73a9bcb9c1628ba6adbc1f44a3047475a953125b6844297849f2581ab01",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "concurrent-first-use",
+    "argv": [
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/runtime-environment-controls",
+      "concurrent-first-use",
+      "/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-2/fixture-15"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.016562223434448242,
+    "stdout_sha256": "2fa8ce8371b61dad5ed6154ff8c0041747556abb647e16f40e1a44cb026c3f61",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

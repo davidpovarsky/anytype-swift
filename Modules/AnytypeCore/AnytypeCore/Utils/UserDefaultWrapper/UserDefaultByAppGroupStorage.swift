@@ -6,8 +6,11 @@ public final class UserDefaultByAppGroupStorage<T: Codable & Sendable>: @uncheck
     private let defaultValue: T
     
     public init(key: String, defaultValue: T) {
-        self.key = key
+        let environment = OriginalRuntimeEnvironment.capture()
+        self.key = environment.storageKey(key)
         self.defaultValue = defaultValue
+        self.groupUserDefaults = UserDefaults(suiteName: environment.appGroup)
+        self.standardUserDefaults = UserDefaults.standard
     }
     
     public var value: T {
@@ -37,8 +40,8 @@ public final class UserDefaultByAppGroupStorage<T: Codable & Sendable>: @uncheck
     
     // MARK: - UserDefaults.standard migration to UserDefaults with group
         
-    private let groupUserDefaults = UserDefaults(suiteName: TargetsConstants.appGroup)
-    private let standardUserDefaults = UserDefaults.standard
+    private let groupUserDefaults: UserDefaults?
+    private let standardUserDefaults: UserDefaults
     
     private func userDefaultsObject(forKey defaultName: String) -> Any? {
         if let object = groupUserDefaults?.object(forKey: defaultName) {

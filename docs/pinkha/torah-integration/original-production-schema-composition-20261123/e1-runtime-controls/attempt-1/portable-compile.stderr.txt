@@ -1,0 +1,12 @@
+/mnt/development/projects/diagnostics/otzaria-original-production-e1-20261123/attempt-1/CombinedControls.swift:311:1: error: type 'Optional<Wrapped>' does not conform to protocol 'AnyOptional'
+306 | // that we can compare against nil:
+307 | public protocol AnyOptional {
+308 |     var isNil: Bool { get }
+    |         `- note: protocol requires property 'isNil' with type 'Bool'
+309 | }
+310 | 
+311 | extension Optional: AnyOptional { }
+    | |- error: type 'Optional<Wrapped>' does not conform to protocol 'AnyOptional'
+    | `- note: add stubs for conformance
+312 | 
+313 | // WARNING: - This storage is not synchronized between processes (because of cache), not suitable for use in extensions
