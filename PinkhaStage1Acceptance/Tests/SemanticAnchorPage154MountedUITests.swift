@@ -236,9 +236,87 @@ final class SemanticAnchorPage154MountedUITests: XCTestCase {
         // actual selected UTF-16 range to cover exactly this single word.
         sourceText.tap()
         sourceText.doubleTap()
-        let create = app.buttons["Create text anchor"].firstMatch
-        try requireHittable(create)
-        create.tap()
+        let started = ProcessInfo.processInfo.systemUptime
+        let deadline = started + 20
+        let matches = app.descendants(matching: .any).matching(
+            NSPredicate(format: "label == %@", "Create text anchor"))
+        enum MenuFailure: Error { case admission(String) }
+        var trace: [String: Any] = [
+            "protocol": "pinkha-page154-menu-selection-v1",
+            "sourceSHA": fixture.sourceSHA, "runID": fixture.runID,
+            "runAttempt": fixture.runAttempt, "nonce": fixture.nonce,
+            "budgetSeconds": 20, "tapAttempts": 0, "status": "STARTED"
+        ]
+        var traceAttached = false
+        func remaining() throws -> TimeInterval {
+            let value = deadline - ProcessInfo.processInfo.systemUptime
+            guard value > 0 else { throw MenuFailure.admission("menu-deadline") }
+            return value
+        }
+        func actionable() -> [XCUIElement] {
+            let all = matches.allElementsBoundByIndex
+            let ready = all.filter { $0.exists && $0.isEnabled && $0.isHittable }
+            trace["matchingElements"] = all.count
+            trace["actionableElements"] = ready.count
+            return ready
+        }
+        func attachTrace() {
+            guard !traceAttached else { return }
+            trace["elapsedSeconds"] = ProcessInfo.processInfo.systemUptime - started
+            if let data = try? JSONSerialization.data(withJSONObject: trace, options: [.sortedKeys]) {
+                let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
+                attachment.name = "semantic-anchor-menu-selection"
+                attachment.lifetime = .keepAlways
+                add(attachment)
+                traceAttached = true
+            }
+        }
+        func attachMenu(_ phase: String) {
+            let hierarchy = XCTAttachment(string: app.debugDescription)
+            hierarchy.name = "semantic-anchor-menu-" + phase + "-ax"
+            hierarchy.lifetime = .keepAlways
+            add(hierarchy)
+            attach("semantic-anchor-menu-" + phase)
+        }
+        defer { attachTrace() }
+        do {
+            var ambiguous = false
+            let expected = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+                let ready = actionable()
+                if ready.count > 1 { ambiguous = true }
+                return !ready.isEmpty
+            }, object: app)
+            let result = XCTWaiter.wait(for: [expected], timeout: try remaining())
+            trace["waitResult"] = String(describing: result)
+            guard result == .completed else { throw MenuFailure.admission("menu-not-ready") }
+            guard !ambiguous else { throw MenuFailure.admission("menu-action-ambiguous") }
+            _ = try remaining()
+            attachMenu("before-tap")
+            // Diagnostic queries share the original admission deadline. Re-read
+            // the live exact-label candidates before the single native tap.
+            let ready = actionable()
+            guard ready.count == 1 else { throw MenuFailure.admission("menu-action-not-unique") }
+            let create = ready[0]
+            guard create.exists && create.isEnabled && create.isHittable else {
+                throw MenuFailure.admission("menu-action-no-longer-hittable")
+            }
+            trace["elementType"] = String(describing: create.elementType)
+            trace["frame"] = String(describing: create.frame)
+            trace["identifier"] = create.identifier
+            trace["label"] = create.label
+            trace["admittedElapsedSeconds"] = 20 - (try remaining())
+            trace["tapAttempts"] = 1
+            create.tap()
+            trace["tapReturned"] = true
+            trace["status"] = "TAPPED"
+        } catch {
+            trace["status"] = "FAIL"
+            trace["firstError"] = String(describing: error)
+            // Preserve the admission failure before optional private diagnostics.
+            attachTrace()
+            attachMenu("failure")
+            throw error
+        }
     }
 
     private func tap(_ element: XCUIElement) throws {

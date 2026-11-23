@@ -1,0 +1,43 @@
+{
+  "all_other_source_changes": 0,
+  "base": "5180bc5fd4b1d45475ad068153257fce4ae0e169",
+  "old_control_executions": 0,
+  "plan": {
+    "after_sha256": "ab399ceba07a88db6e572bccfdf00b0455a24887dcf6b6ae7a6443c4b8356bba",
+    "before_sha256": "69302465d2480e7dfc483f3d9f0789fb38b9628c91f1d33bedde2fcddb11aa1d",
+    "before_ui_bytes": 18727,
+    "before_ui_sha256": "a79807cb99f6998201f7c20ec5f9f9032cbcebc6ec8e517820408b4402bae017",
+    "changed_paths": [
+      "candidate_ui_sha256",
+      "files.PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift.sha256",
+      "files.PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift.bytes"
+    ],
+    "path": "Tools/PinkhaSemanticAnchorWire/apple_mounted/warning-ui-inputs.json"
+  },
+  "product_executions": 0,
+  "profile": {
+    "after_sha256": "837a246cec6e5bf0aa4f6e5a1005acade0c052e3c2c675a6b8696a5a5a09e19f",
+    "before_sha256": "ccdefa6eb181d466bd2c3877f4020d65baab73a8b75e0779316f3efb54f936c3",
+    "constant_replacements": [
+      {
+        "after": "ad527c3082a29932af15ddc5a0bcaca7da5585845960cdebbdab65b4f50a78e2",
+        "before": "a79807cb99f6998201f7c20ec5f9f9032cbcebc6ec8e517820408b4402bae017",
+        "name": "UI_SHA256"
+      },
+      {
+        "after": "ab399ceba07a88db6e572bccfdf00b0455a24887dcf6b6ae7a6443c4b8356bba",
+        "before": "69302465d2480e7dfc483f3d9f0789fb38b9628c91f1d33bedde2fcddb11aa1d",
+        "name": "PLAN_SHA256"
+      }
+    ],
+    "path": "Tools/PinkhaSemanticAnchorWire/apple_mounted/warning_profile.py"
+  },
+  "schema": "pinkha-page154-menu-selector-source-inverse-v1",
+  "ui": {
+    "after": "    private func selectRealWordAndChooseAnchor() throws {\n        try requireHittable(sourceText)\n        // Native touch actions only. The observer independently requires the\n        // actual selected UTF-16 range to cover exactly this single word.\n        sourceText.tap()\n        sourceText.doubleTap()\n        let started = ProcessInfo.processInfo.systemUptime\n        let deadline = started + 20\n        let matches = app.descendants(matching: .any).matching(\n            NSPredicate(format: \"label == %@\", \"Create text anchor\"))\n        enum MenuFailure: Error { case admission(String) }\n        var trace: [String: Any] = [\n            \"protocol\": \"pinkha-page154-menu-selection-v1\",\n            \"sourceSHA\": fixture.sourceSHA, \"runID\": fixture.runID,\n            \"runAttempt\": fixture.runAttempt, \"nonce\": fixture.nonce,\n            \"budgetSeconds\": 20, \"tapAttempts\": 0, \"status\": \"STARTED\"\n        ]\n        var traceAttached = false\n        func remaining() throws -> TimeInterval {\n            let value = deadline - ProcessInfo.processInfo.systemUptime\n            guard value > 0 else { throw MenuFailure.admission(\"menu-deadline\") }\n            return value\n        }\n        func actionable() -> [XCUIElement] {\n            let all = matches.allElementsBoundByIndex\n            let ready = all.filter { $0.exists && $0.isEnabled && $0.isHittable }\n            trace[\"matchingElements\"] = all.count\n            trace[\"actionableElements\"] = ready.count\n            return ready\n        }\n        func attachTrace() {\n            guard !traceAttached else { return }\n            trace[\"elapsedSeconds\"] = ProcessInfo.processInfo.systemUptime - started\n            if let data = try? JSONSerialization.data(withJSONObject: trace, options: [.sortedKeys]) {\n                let attachment = XCTAttachment(data: data, uniformTypeIdentifier: \"public.json\")\n                attachment.name = \"semantic-anchor-menu-selection\"\n                attachment.lifetime = .keepAlways\n                add(attachment)\n                traceAttached = true\n            }\n        }\n        func attachMenu(_ phase: String) {\n            let hierarchy = XCTAttachment(string: app.debugDescription)\n            hierarchy.name = \"semantic-anchor-menu-\" + phase + \"-ax\"\n            hierarchy.lifetime = .keepAlways\n            add(hierarchy)\n            attach(\"semantic-anchor-menu-\" + phase)\n        }\n        defer { attachTrace() }\n        do {\n            var ambiguous = false\n            let expected = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in\n                let ready = actionable()\n                if ready.count > 1 { ambiguous = true }\n                return !ready.isEmpty\n            }, object: app)\n            let result = XCTWaiter.wait(for: [expected], timeout: try remaining())\n            trace[\"waitResult\"] = String(describing: result)\n            guard result == .completed else { throw MenuFailure.admission(\"menu-not-ready\") }\n            guard !ambiguous else { throw MenuFailure.admission(\"menu-action-ambiguous\") }\n            _ = try remaining()\n            attachMenu(\"before-tap\")\n            // Diagnostic queries share the original admission deadline. Re-read\n            // the live exact-label candidates before the single native tap.\n            let ready = actionable()\n            guard ready.count == 1 else { throw MenuFailure.admission(\"menu-action-not-unique\") }\n            let create = ready[0]\n            guard create.exists && create.isEnabled && create.isHittable else {\n                throw MenuFailure.admission(\"menu-action-no-longer-hittable\")\n            }\n            trace[\"elementType\"] = String(describing: create.elementType)\n            trace[\"frame\"] = String(describing: create.frame)\n            trace[\"identifier\"] = create.identifier\n            trace[\"label\"] = create.label\n            trace[\"admittedElapsedSeconds\"] = 20 - (try remaining())\n            trace[\"tapAttempts\"] = 1\n            create.tap()\n            trace[\"tapReturned\"] = true\n            trace[\"status\"] = \"TAPPED\"\n        } catch {\n            trace[\"status\"] = \"FAIL\"\n            trace[\"firstError\"] = String(describing: error)\n            // Preserve the admission failure before optional private diagnostics.\n            attachTrace()\n            attachMenu(\"failure\")\n            throw error\n        }\n    }\n",
+    "after_sha256": "ad527c3082a29932af15ddc5a0bcaca7da5585845960cdebbdab65b4f50a78e2",
+    "before": "    private func selectRealWordAndChooseAnchor() throws {\n        try requireHittable(sourceText)\n        // Native touch actions only. The observer independently requires the\n        // actual selected UTF-16 range to cover exactly this single word.\n        sourceText.tap()\n        sourceText.doubleTap()\n        let create = app.buttons[\"Create text anchor\"].firstMatch\n        try requireHittable(create)\n        create.tap()\n    }\n",
+    "before_sha256": "a79807cb99f6998201f7c20ec5f9f9032cbcebc6ec8e517820408b4402bae017",
+    "path": "PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift"
+  }
+}
