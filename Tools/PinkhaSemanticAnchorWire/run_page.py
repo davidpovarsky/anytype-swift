@@ -32,6 +32,11 @@ PROFILES = {
     "oracle-arm64": {"machine": "aarch64", "go": "go version go1.27.4 linux/arm64", "workspace_go": "1.27.4",
         "image": "sha256:f2f98726820d0342055351c6e9d36e705f5bfffb3dd53ff556325114b08afb6d",
         "tantivy_arch": "linux-arm64-musl", "tantivy_sha256": "0a4a9143388977df41a174075ce05cd6aee2821da6425b5b9f9d591fe35d3756"},
+    "oracle-arm64-go1265": {"machine": "aarch64", "go": "go version go1.26.5 linux/arm64", "workspace_go": "1.26.5",
+        "image": "sha256:f2f98726820d0342055351c6e9d36e705f5bfffb3dd53ff556325114b08afb6d",
+        "go_archive_sha256": "fe4789e92b1f33358680864bbe8704289e7bb5fc207d80623c308935bd696d49",
+        "go_binary_sha256": "22201b57b855105df064a291863c3fc04f22a7431187a9205122aff42a0c825b",
+        "tantivy_arch": "linux-arm64-musl", "tantivy_sha256": "0a4a9143388977df41a174075ce05cd6aee2821da6425b5b9f9d591fe35d3756"},
     "ci-amd64": {"machine": "x86_64", "go": "go version go1.26.5 linux/amd64", "workspace_go": "1.26.5",
         "image": "golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8",
         "tantivy_arch": "linux-amd64-musl", "tantivy_sha256": "88b34e006707bfec2d29e8b26405f67cbb975d06fd4ea164da856d0084aaabbc"},
@@ -121,6 +126,10 @@ def profile(args):
     compiler = subprocess.check_output(["gcc", "-dumpmachine"], text=True).strip()
     require("musl" in compiler, "Musl C compiler required")
     go = Path(shutil.which("go")).resolve()
+    if "go_archive_sha256" in value:
+        archive = Path(os.environ.get("PINKHA_PAGE_GO_ARCHIVE", ""))
+        require(digest(archive) == value["go_archive_sha256"] and digest(go) == value["go_binary_sha256"],
+                "Unverified project Go archive or executable")
     return dict(value, profile=args.profile, alpine=Path("/etc/alpine-release").read_text().strip(),
         compiler_target=compiler, go_executable_sha256=digest(go))
 

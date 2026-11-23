@@ -41,3 +41,7 @@ The two methods use separate owned native processes. Wallet/account state, seeds
 The controller refuses to overwrite an existing build or execution receipt, and rechecks all 154 source paths and the binary after every successful phase. It never selects any previous component, codec or contract method. No protobuf or schema generation is performed.
 
 The Oracle continuation also sets GOPATH to the owned cache/go-path directory. Go stores its checksum-database state there even when GOMODCACHE is set. The original default-/go cache failure is preserved under docs/validation/20261123-semantic-page-native/attempt1-cache-failure; no native method executed in that attempt.
+
+## Project compiler continuation
+
+The Go 1.27.4 ARM64 attempt reached compilation and failed on the original Tantivy archive LTO section. Profile oracle-arm64-go1265 retains the same image, native source154, archive and module pins, while selecting the project-declared Go 1.26.5. Its official ARM64 archive is 63759990 bytes with SHA-256 fe4789e92b1f33358680864bbe8704289e7bb5fc207d80623c308935bd696d49; set PINKHA_PAGE_GO_ARCHIVE to that verified archive and put its extracted bin directory first in PATH. The controller verifies both archive and executable hashes. No global toolchain is replaced. All failed-attempt receipts remain preserved.
