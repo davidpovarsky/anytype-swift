@@ -230,8 +230,11 @@ def admit(*, control, packet_name, manifest, composition, read_bound, safe, git,
         control=control, packet_name=packet_name, manifest=manifest, bound=bound, safe=safe, git=git,
         original_repository=original_repository, original_heart=original_heart)
     overlays += [dict(row, layer="reviewed-relation-target-type-closure") for row in target["inputs"]]
+    creation = admit_imported_creation(control=control, packet_name=packet_name, manifest=manifest,
+                                        bound=bound, safe=safe, git=git)
+    overlays += [dict(row, layer="original-imported-creation-date") for row in creation["inputs"]]
     return {"baseline": base, "repair": repair, "qualified": qualified, "overlays": overlays,
-            "relation_target": target,
+            "relation_target": target, "imported_creation": creation,
             "generated_index": generated, "generated_index_path": qualified["generated_index"]["path"]}
 
 
@@ -326,6 +329,43 @@ def admit_relation_target(*, control, packet_name, manifest, bound, safe, git,
                                          HEART + ":" + row["native_path"]],
                                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=30)
                 require(absent.returncode != 0, "Relation-target control collides with original Heart")
+    return repair
+
+
+def admit_imported_creation(*, control, packet_name, manifest, bound, safe, git):
+    raw = bound("imported-creation-date-20261124/CREATION_INPUTS.json", manifest["imported_creation"])
+    repair = json.loads(raw)
+    require(repair["schema"] == 1 and repair["original_heart"] == HEART
+            and repair["source_parent"] == "7d77c429f6b6390d7234f12a7a447a3474402ecb"
+            and repair["previous_native_tree"] == "309c744b91e6abc196b12ae33fe1773fe9f92692"
+            and repair["readback_used_as_expectation"] is False
+            and repair["body_predicate_unchanged"] is True
+            and repair["canonical_detail_filter_unchanged"] is True
+            and repair["new_control_leaf_count"] == 6,
+            "Original imported creation-date contract changed")
+    bound(repair["control_helper"]["path"], repair["control_helper"])
+    require(len(repair["inputs"]) == 2 and {row["native_path"] for row in repair["inputs"]} == {
+        "core/block/import/owned_annotation_comparison.go",
+        "core/block/import/owned_annotation_creation_date_test.go"},
+        "Imported creation-date layer escaped reviewed paths")
+    for row in repair["inputs"]:
+        after = bound(row["path"], row)
+        require(row["path"] == "imported-creation-date-20261124/native/" + row["native_path"],
+                "Creation-date retained native path differs")
+        if row["base_sha256"] is not None:
+            before = bound(row["retained_preimage"]["path"], row["retained_preimage"])
+            require(identity(before)["sha256"] == row["base_sha256"]
+                    and before == git(control, "show", "HEAD:" + packet_name + "/" + row["retained_preimage"]["path"]),
+                    "Creation-date predecessor differs")
+            expected = before.decode()
+            require(len(row["changes"]) == 3, "Creation-date exact delta inventory differs")
+            for change in row["changes"]:
+                require(expected.count(change["before"]) == 1, "Creation-date inverse is not unique")
+                expected = expected.replace(change["before"], change["after"], 1)
+            require(after == expected.encode(), "Creation-date layer escaped exact reviewed changes")
+        else:
+            require(row["native_path"].endswith("_test.go") and row["changes"] == [],
+                    "Only the additive creation-date test may have no preimage")
     return repair
 
 

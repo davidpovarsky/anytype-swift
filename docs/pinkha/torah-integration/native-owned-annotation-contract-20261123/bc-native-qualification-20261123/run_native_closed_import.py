@@ -115,9 +115,10 @@ def execute_union_controls(control, manifest, composition, commands, go, heart, 
     # The old eleven selectors and their source bytes remain frozen. Their
     # actual compiler input is the explicit final union exporter afterimage.
     target = union["relation_target"]
-    replacements = {row["native_path"]: row for row in target["inputs"]}
+    creation = union["imported_creation"]
+    replacements = {row["native_path"]: row for row in target["inputs"] + creation["inputs"]}
     overlap = set(replacements) & {row["native_path"] for row in union["repair"]["inputs"]}
-    require(overlap == {"core/block/export/collection.go"},
+    require(overlap == {"core/block/export/collection.go", "core/block/import/owned_annotation_comparison.go"},
             "Relation-target layer changes an unreviewed old control input")
     current_repair = dict(union["repair"], inputs=[
         replacements.get(row["native_path"], row) for row in union["repair"]["inputs"]])
@@ -144,6 +145,19 @@ def execute_union_controls(control, manifest, composition, commands, go, heart, 
     require(result["relation_target_closure_controls"]["status"] == "PASS"
             and result["relation_target_closure_controls"]["leaf_pass"] == 12,
             "Fresh relation-target closure controls did not all pass")
+
+    creation_module = load_union_module(control, manifest, creation["control_helper"]["path"],
+                                        "imported_creation_date_controls")
+    import_binaries = [row for _, row in focused_binaries
+                       if row["package"] == creation_module.PACKAGE]
+    require(len(import_binaries) == 1, "Current union import binary is not unique")
+    result["imported_creation_date_controls"] = creation_module.run_controls(
+        commands=commands, go=go, heart=heart, work=work, evidence=evidence,
+        declaration=closure, repair=creation, binary_record=import_binaries[0])
+    support.write_json(evidence / "RESULT.json", result)
+    require(result["imported_creation_date_controls"]["status"] == "PASS"
+            and result["imported_creation_date_controls"]["leaf_pass"] == 6,
+            "Original imported creation-date controls did not all pass")
 
     semantic_binary = work / "bundled-persistence-control.test"
     commands.require("compile-original-bundled-persistence",
@@ -393,8 +407,8 @@ def source_admission(control, manifest, original_repository=None, original_heart
     final, required = union_module.expected_union(union, prior, required)
     require(final == manifest["final_union_afterimages"]
             and required == manifest["required_compiler_inputs"]
-            and len(required) == manifest["required_compiler_input_count"] == 105
-            and len(final) == 110,
+            and len(required) == manifest["required_compiler_input_count"] == 106
+            and len(final) == 111,
             "Exact union afterimages or required compiler inventory differs")
     for row in manifest["controls"]:
         read_bound(control, PACKET + "/" + row["path"], row)
@@ -412,6 +426,17 @@ def source_admission(control, manifest, original_repository=None, original_heart
     }
     require({Path(row["path"]).name: row["sha256"] for row in control_proof["sources"]} ==
             expected_controls, "Relation-target source controls refer to different helper bytes")
+    creation_proof_row = manifest["imported_creation_source_controls"]
+    creation_proof = json.loads(read_bound(control, PACKET + "/" + creation_proof_row["path"],
+                                          creation_proof_row))
+    require(creation_proof["status"] == "PASS"
+            and creation_proof["counts"] == {"PASS": 38, "FAIL": 0}
+            and creation_proof["native_execution"] is False,
+            "Bounded creation-date source controls did not pass")
+    require({Path(row["path"]).name: row["sha256"] for row in creation_proof["sources"]} == {
+        "creation_date_controls.py": controls_by_name["imported-creation-date-20261124/creation_date_controls.py"]["sha256"],
+        "source_union.py": controls_by_name["rpc-union-20261123/source_union.py"]["sha256"],
+    }, "Creation-date source controls refer to different helper bytes")
     for row in manifest["source_inputs"]:
         raw = read_bound(control, PACKET + "/" + row["retained_path"], row)
         if original_repository is not None:
@@ -939,6 +964,7 @@ def main():
                           "diagnostic_only": False, "selected_native_leaves": list(LEAVES),
                           "new_schema_control_leaves": 11, "fresh_semantic_leaves": 6,
                           "fresh_relation_target_control_leaves": 12,
+                          "fresh_imported_creation_date_leaves": 6,
                           "fresh_rpc_cases": 9, "fresh_generated_panic_cases": 1,
                           "schema_diagnostic_manifest_sha256": SCHEMA_DIAGNOSTIC_SHA256,
                           "workflow_sha256": sha(expected_workflow),
@@ -984,6 +1010,7 @@ def main():
                "diagnostic_only": False, "selected_native_leaves": list(LEAVES),
                "schema_closure_controls": "NOT_RUN", "rpc_union_controls": "NOT_RUN",
                "relation_target_closure_controls": "NOT_RUN",
+               "imported_creation_date_controls": "NOT_RUN",
               "post_execution_source_module_link_stability": "NOT_REACHED",
               "historical_selectors_replayed": False, "production_import_activated": False,
               "swift_invocation_qualified": False, "cold_reopen_qualified": False,

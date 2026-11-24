@@ -1,0 +1,64 @@
+--- 7d77/core/block/import/owned_annotation_comparison.go
++++ current/core/block/import/owned_annotation_comparison.go
+@@ -6,6 +6,7 @@
+ 	"path/filepath"
+ 	"sort"
+ 
++	"github.com/anyproto/any-sync/commonspace/object/tree/treechangeproto"
+ 	"github.com/anyproto/anytype-heart/core/block/editor/state"
+ 	"github.com/anyproto/anytype-heart/core/block/editor/template"
+ 	"github.com/anyproto/anytype-heart/core/block/import/common"
+@@ -20,6 +21,7 @@
+ 	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+ 	"github.com/gogo/protobuf/proto"
++	"github.com/ipfs/go-cid"
+ )
+ 
+ // expectedConvertedSnapshot applies the original typed normalization helpers to
+@@ -310,6 +312,35 @@
+ 	return g.requireCurrentWriter(ctx)
+ }
+ 
++// expectedOriginalImportedAddedDate models smartBlock.injectCreationInfo on an
++// owned expected snapshot. The original source takes this timestamp, in seconds,
++// from its assigned tree header. Never derive an expectation from readback.
++func expectedOriginalImportedAddedDate(details *domain.Details, payload *treechangeproto.RawTreeChangeWithId, nativeID, spaceID string) error {
++	if details == nil || payload == nil || payload.Id != nativeID || len(payload.RawChange) == 0 {
++		return ownedAnnotationRefused("expected_original_creation_header")
++	}
++	id, err := cid.Decode(nativeID)
++	if err != nil {
++		return ownedAnnotationRefused("expected_original_creation_header")
++	}
++	actualID, err := id.Prefix().Sum(payload.RawChange)
++	if err != nil || !actualID.Equals(id) {
++		return ownedAnnotationRefused("expected_original_creation_header")
++	}
++	var raw treechangeproto.RawTreeChange
++	var root treechangeproto.RootChange
++	if raw.UnmarshalVT(payload.RawChange) != nil || root.UnmarshalVT(raw.Payload) != nil ||
++		root.SpaceId != spaceID || root.Timestamp <= 0 || root.IsDerived {
++		return ownedAnnotationRefused("expected_original_creation_header")
++	}
++	// The original creator only supplies AddedDate when the imported source
++	// has none. Existing source metadata and the complete body stay compared.
++	if details.GetInt64(bundle.RelationKeyAddedDate) == 0 {
++		details.SetInt64(bundle.RelationKeyAddedDate, root.Timestamp)
++	}
++	return nil
++}
++
+ func (g *ownedAnnotationGraph) expectedCreatedPage(p *importProcessor, converterID, nativeID string) (*pb.SnapshotWithType, error) {
+ 	baseline := g.beforeCreate[converterID]
+ 	plan := g.byConverter[converterID]
+@@ -337,6 +368,9 @@
+ 	}
+ 	if created > 0 {
+ 		data.OriginalCreatedTimestamp = created
++		if err := expectedOriginalImportedAddedDate(data.Details, p.createPayloads[nativeID].RootRawChange, nativeID, g.spaceID); err != nil {
++			return nil, err
++		}
+ 	}
+ 	origin := objectorigin.Import(model.Import_Pb)
+ 	data.Details.SetInt64(bundle.RelationKeyOrigin, int64(origin.Origin))

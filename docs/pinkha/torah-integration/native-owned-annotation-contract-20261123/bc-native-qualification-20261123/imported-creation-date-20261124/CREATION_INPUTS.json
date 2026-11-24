@@ -1,0 +1,67 @@
+{
+  "body_predicate_unchanged": true,
+  "canonical_detail_filter_unchanged": true,
+  "control_helper": {
+    "bytes": 8199,
+    "git_blob": "5bc94c03201301f07ae0bc7a015fb20cf560158f",
+    "path": "imported-creation-date-20261124/creation_date_controls.py",
+    "sha256": "2ef421d970ef7145f418114991c863f414d7d654f3947706f0589191b982d8b0"
+  },
+  "inputs": [
+    {
+      "base_sha256": "a23fdaab58600296008268b0bc48caa5de0379ee39b67e5c47e9dad76b911df8",
+      "bytes": 20781,
+      "changes": [
+        {
+          "after": "import (\n\t\"context\"\n\t\"encoding/json\"\n\t\"path/filepath\"\n\t\"sort\"\n\n\t\"github.com/anyproto/any-sync/commonspace/object/tree/treechangeproto\"\n\t\"github.com/anyproto/anytype-heart/core/block/editor/state\"\n\t\"github.com/anyproto/anytype-heart/core/block/editor/template\"\n\t\"github.com/anyproto/anytype-heart/core/block/import/common\"\n\t\"github.com/anyproto/anytype-heart/core/block/import/markdown/anymark\"\n\t\"github.com/anyproto/anytype-heart/core/block/simple/base\"\n\t\"github.com/anyproto/anytype-heart/core/converter/pbc\"\n\t\"github.com/anyproto/anytype-heart/core/domain\"\n\t\"github.com/anyproto/anytype-heart/core/domain/objectorigin\"\n\ttorahtransport \"github.com/anyproto/anytype-heart/core/pinkha/torahtransport\"\n\t\"github.com/anyproto/anytype-heart/pb\"\n\t\"github.com/anyproto/anytype-heart/pkg/lib/bundle\"\n\tcoresb \"github.com/anyproto/anytype-heart/pkg/lib/core/smartblock\"\n\t\"github.com/anyproto/anytype-heart/pkg/lib/pb/model\"\n\t\"github.com/gogo/protobuf/proto\"\n\t\"github.com/ipfs/go-cid\"\n)",
+          "before": "import (\n\t\"context\"\n\t\"encoding/json\"\n\t\"path/filepath\"\n\t\"sort\"\n\n\t\"github.com/anyproto/anytype-heart/core/block/editor/state\"\n\t\"github.com/anyproto/anytype-heart/core/block/editor/template\"\n\t\"github.com/anyproto/anytype-heart/core/block/import/common\"\n\t\"github.com/anyproto/anytype-heart/core/block/import/markdown/anymark\"\n\t\"github.com/anyproto/anytype-heart/core/block/simple/base\"\n\t\"github.com/anyproto/anytype-heart/core/converter/pbc\"\n\t\"github.com/anyproto/anytype-heart/core/domain\"\n\t\"github.com/anyproto/anytype-heart/core/domain/objectorigin\"\n\ttorahtransport \"github.com/anyproto/anytype-heart/core/pinkha/torahtransport\"\n\t\"github.com/anyproto/anytype-heart/pb\"\n\t\"github.com/anyproto/anytype-heart/pkg/lib/bundle\"\n\tcoresb \"github.com/anyproto/anytype-heart/pkg/lib/core/smartblock\"\n\t\"github.com/anyproto/anytype-heart/pkg/lib/pb/model\"\n\t\"github.com/gogo/protobuf/proto\"\n)"
+        },
+        {
+          "after": "// expectedOriginalImportedAddedDate models smartBlock.injectCreationInfo on an\n// owned expected snapshot. The original source takes this timestamp, in seconds,\n// from its assigned tree header. Never derive an expectation from readback.\nfunc expectedOriginalImportedAddedDate(details *domain.Details, payload *treechangeproto.RawTreeChangeWithId, nativeID, spaceID string) error {\n\tif details == nil || payload == nil || payload.Id != nativeID || len(payload.RawChange) == 0 {\n\t\treturn ownedAnnotationRefused(\"expected_original_creation_header\")\n\t}\n\tid, err := cid.Decode(nativeID)\n\tif err != nil {\n\t\treturn ownedAnnotationRefused(\"expected_original_creation_header\")\n\t}\n\tactualID, err := id.Prefix().Sum(payload.RawChange)\n\tif err != nil || !actualID.Equals(id) {\n\t\treturn ownedAnnotationRefused(\"expected_original_creation_header\")\n\t}\n\tvar raw treechangeproto.RawTreeChange\n\tvar root treechangeproto.RootChange\n\tif raw.UnmarshalVT(payload.RawChange) != nil || root.UnmarshalVT(raw.Payload) != nil ||\n\t\troot.SpaceId != spaceID || root.Timestamp <= 0 || root.IsDerived {\n\t\treturn ownedAnnotationRefused(\"expected_original_creation_header\")\n\t}\n\t// The original creator only supplies AddedDate when the imported source\n\t// has none. Existing source metadata and the complete body stay compared.\n\tif details.GetInt64(bundle.RelationKeyAddedDate) == 0 {\n\t\tdetails.SetInt64(bundle.RelationKeyAddedDate, root.Timestamp)\n\t}\n\treturn nil\n}\n\nfunc (g *ownedAnnotationGraph) expectedCreatedPage(",
+          "before": "func (g *ownedAnnotationGraph) expectedCreatedPage("
+        },
+        {
+          "after": "\tif created > 0 {\n\t\tdata.OriginalCreatedTimestamp = created\n\t\tif err := expectedOriginalImportedAddedDate(data.Details, p.createPayloads[nativeID].RootRawChange, nativeID, g.spaceID); err != nil {\n\t\t\treturn nil, err\n\t\t}\n\t}\n",
+          "before": "\tif created > 0 {\n\t\tdata.OriginalCreatedTimestamp = created\n\t}\n"
+        }
+      ],
+      "git_blob": "1d2a9c442a64e577273fd894fccca7318509ae57",
+      "native_path": "core/block/import/owned_annotation_comparison.go",
+      "path": "imported-creation-date-20261124/native/core/block/import/owned_annotation_comparison.go",
+      "retained_preimage": {
+        "bytes": 19089,
+        "git_blob": "ad1e0d79f9d0bbcaa4d02b6018e6474ff32a6352",
+        "path": "schema-closure-repair-20261123/native/core/block/import/owned_annotation_comparison.go",
+        "sha256": "a23fdaab58600296008268b0bc48caa5de0379ee39b67e5c47e9dad76b911df8"
+      },
+      "sha256": "1003a6263fc5d65fa6e407f51f288de3718fc1366a928eee01e5b34468e8937b"
+    },
+    {
+      "base_sha256": null,
+      "bytes": 5405,
+      "changes": [],
+      "git_blob": "38f2129c77e52acf5d0b09a1ccf87fddcc84b4e5",
+      "native_path": "core/block/import/owned_annotation_creation_date_test.go",
+      "path": "imported-creation-date-20261124/native/core/block/import/owned_annotation_creation_date_test.go",
+      "sha256": "f16d49aa66f5eb9e293f618a76a2f9477c4d5265f2795e32a44db6f60b693a82"
+    }
+  ],
+  "new_control_group": {
+    "leaves": [
+      "assigned_header_timestamp_seconds",
+      "source_supplied_added_date_preserved",
+      "changed_added_date_still_refused_by_full_comparison",
+      "wrong_assigned_payload_identity_refused",
+      "missing_or_malformed_header_refused",
+      "wrong_space_or_nonpositive_timestamp_refused"
+    ],
+    "parent": "TestOtzariaOriginalImportedCreationDate"
+  },
+  "new_control_leaf_count": 6,
+  "original_heart": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "previous_native_tree": "309c744b91e6abc196b12ae33fe1773fe9f92692",
+  "readback_used_as_expectation": false,
+  "schema": 1,
+  "scope": "Model original injectCreationInfo AddedDate from actual assigned RootRawChange, preserve existing source value, retain full proto.Equal including AddedDate.",
+  "source_parent": "7d77c429f6b6390d7234f12a7a447a3474402ecb"
+}

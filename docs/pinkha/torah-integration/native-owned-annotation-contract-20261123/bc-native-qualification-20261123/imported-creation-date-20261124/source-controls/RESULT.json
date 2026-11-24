@@ -1,0 +1,256 @@
+{
+  "counts": {
+    "FAIL": 0,
+    "PASS": 38
+  },
+  "native_execution": false,
+  "results": [
+    {
+      "expectation": "ACCEPT",
+      "name": "exact_six_unique_leaves_pass",
+      "status": "PASS"
+    },
+    {
+      "expectation": "ACCEPT",
+      "name": "empty_events_refused",
+      "status": "PASS"
+    },
+    {
+      "expectation": "ACCEPT",
+      "name": "leaf_fail_refused",
+      "status": "PASS"
+    },
+    {
+      "expectation": "ACCEPT",
+      "name": "leaf_skip_refused",
+      "status": "PASS"
+    },
+    {
+      "expectation": "ACCEPT",
+      "name": "missing_leaf_run_refused",
+      "status": "PASS"
+    },
+    {
+      "expectation": "ACCEPT",
+      "name": "missing_leaf_terminal_refused",
+      "status": "PASS"
+    },
+    {
+      "expectation": "ACCEPT",
+      "name": "missing_parent_run_refused",
+      "status": "PASS"
+    },
+    {
+      "expectation": "ACCEPT",
+      "name": "missing_parent_terminal_refused",
+      "status": "PASS"
+    },
+    {
+      "expectation": "ACCEPT",
+      "name": "missing_package_terminal_refused",
+      "status": "PASS"
+    },
+    {
+      "expectation": "ACCEPT",
+      "name": "duplicate_leaf_run_refused",
+      "status": "PASS"
+    },
+    {
+      "expectation": "ACCEPT",
+      "name": "duplicate_leaf_pass_refused",
+      "status": "PASS"
+    },
+    {
+      "expectation": "ACCEPT",
+      "name": "duplicate_package_pass_refused",
+      "status": "PASS"
+    },
+    {
+      "expectation": "ACCEPT",
+      "name": "foreign_package_refused",
+      "status": "PASS"
+    },
+    {
+      "expectation": "ACCEPT",
+      "name": "extra_test_refused",
+      "status": "PASS"
+    },
+    {
+      "actual_error": "Expecting value: line 1 column 1 (char 0)",
+      "actual_error_type": "JSONDecodeError",
+      "expectation": "REFUSAL",
+      "name": "malformed_event_refused",
+      "status": "PASS"
+    },
+    {
+      "actual_error": "Creation-date JSON event is not an object",
+      "actual_error_type": "RuntimeError",
+      "expectation": "REFUSAL",
+      "name": "nonobject_event_refused",
+      "status": "PASS"
+    },
+    {
+      "actual_error": "Creation-date control JSON log absent, unsafe or beyond bound",
+      "actual_error_type": "RuntimeError",
+      "expectation": "REFUSAL",
+      "name": "event_symlink_refused",
+      "status": "PASS"
+    },
+    {
+      "expectation": "ACCEPT",
+      "name": "exact_current_compile_receipt_accepted",
+      "status": "PASS"
+    },
+    {
+      "actual_error": "Existing current-union import binary identity differs",
+      "actual_error_type": "RuntimeError",
+      "expectation": "REFUSAL",
+      "name": "binary_sha256_mismatch_refused",
+      "status": "PASS"
+    },
+    {
+      "actual_error": "Existing current-union import binary identity differs",
+      "actual_error_type": "RuntimeError",
+      "expectation": "REFUSAL",
+      "name": "binary_bytes_mismatch_refused",
+      "status": "PASS"
+    },
+    {
+      "actual_error": "Existing current-union import binary identity differs",
+      "actual_error_type": "RuntimeError",
+      "expectation": "REFUSAL",
+      "name": "binary_package_mismatch_refused",
+      "status": "PASS"
+    },
+    {
+      "actual_error": "Existing current-union import binary identity differs",
+      "actual_error_type": "RuntimeError",
+      "expectation": "REFUSAL",
+      "name": "binary_path_mismatch_refused",
+      "status": "PASS"
+    },
+    {
+      "actual_error": "Import binary has no exact successful current-owner compile receipt",
+      "actual_error_type": "RuntimeError",
+      "expectation": "REFUSAL",
+      "name": "missing_owner_compile_receipt_refused",
+      "status": "PASS"
+    },
+    {
+      "actual_error": "Import binary has no exact successful current-owner compile receipt",
+      "actual_error_type": "RuntimeError",
+      "expectation": "REFUSAL",
+      "name": "duplicate_owner_compile_receipt_refused",
+      "status": "PASS"
+    },
+    {
+      "actual_error": "Import binary has no exact successful current-owner compile receipt",
+      "actual_error_type": "RuntimeError",
+      "expectation": "REFUSAL",
+      "name": "compile_argv_refused",
+      "status": "PASS"
+    },
+    {
+      "actual_error": "Import binary has no exact successful current-owner compile receipt",
+      "actual_error_type": "RuntimeError",
+      "expectation": "REFUSAL",
+      "name": "compile_cwd_refused",
+      "status": "PASS"
+    },
+    {
+      "actual_error": "Import binary has no exact successful current-owner compile receipt",
+      "actual_error_type": "RuntimeError",
+      "expectation": "REFUSAL",
+      "name": "compile_returncode_refused",
+      "status": "PASS"
+    },
+    {
+      "actual_error": "Import binary has no exact successful current-owner compile receipt",
+      "actual_error_type": "RuntimeError",
+      "expectation": "REFUSAL",
+      "name": "compile_effective_returncode_refused",
+      "status": "PASS"
+    },
+    {
+      "actual_error": "Import binary has no exact successful current-owner compile receipt",
+      "actual_error_type": "RuntimeError",
+      "expectation": "REFUSAL",
+      "name": "compile_timed_out_refused",
+      "status": "PASS"
+    },
+    {
+      "actual_error": "Import binary has no exact successful current-owner compile receipt",
+      "actual_error_type": "RuntimeError",
+      "expectation": "REFUSAL",
+      "name": "compile_start_new_session_refused",
+      "status": "PASS"
+    },
+    {
+      "actual_error": "Import binary has no exact successful current-owner compile receipt",
+      "actual_error_type": "RuntimeError",
+      "expectation": "REFUSAL",
+      "name": "compile_cleanup_refused",
+      "status": "PASS"
+    },
+    {
+      "expectation": "ACCEPT",
+      "name": "actual_reviewed_target_overlay_admitted",
+      "status": "PASS"
+    },
+    {
+      "actual_error": "bound bytes differ",
+      "actual_error_type": "AssertionError",
+      "expectation": "REFUSAL",
+      "name": "wrong_creation_manifest_hash_refused",
+      "status": "PASS"
+    },
+    {
+      "actual_error": "bound bytes differ",
+      "actual_error_type": "AssertionError",
+      "expectation": "REFUSAL",
+      "name": "altered_afterimage_refused",
+      "status": "PASS"
+    },
+    {
+      "actual_error": "bound bytes differ",
+      "actual_error_type": "AssertionError",
+      "expectation": "REFUSAL",
+      "name": "altered_preceding_comparator_refused",
+      "status": "PASS"
+    },
+    {
+      "expectation": "ACCEPT",
+      "name": "reviewed_creation_union_applied_exactly",
+      "status": "PASS"
+    },
+    {
+      "actual_error": "Union layer has a wrong preceding afterimage: core/block/import/owned_annotation_comparison.go",
+      "actual_error_type": "RuntimeError",
+      "expectation": "REFUSAL",
+      "name": "wrong_preceding_comparator_refused",
+      "status": "PASS"
+    },
+    {
+      "actual_error": "Union layer has a wrong preceding afterimage: core/block/import/owned_annotation_creation_date_test.go",
+      "actual_error_type": "RuntimeError",
+      "expectation": "REFUSAL",
+      "name": "new_test_path_collision_refused",
+      "status": "PASS"
+    }
+  ],
+  "schema": 1,
+  "scope": "Synthetic source, event collector, current binary reuse and overlay admission controls only; no native compiler/execution and no generator/Swift replay",
+  "sources": [
+    {
+      "bytes": 8199,
+      "path": "/mnt/development/projects/worktrees/anytype-otzaria-added-date-contract-20261124/docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-native-qualification-20261123/imported-creation-date-20261124/creation_date_controls.py",
+      "sha256": "2ef421d970ef7145f418114991c863f414d7d654f3947706f0589191b982d8b0"
+    },
+    {
+      "bytes": 25725,
+      "path": "/mnt/development/projects/worktrees/anytype-otzaria-added-date-contract-20261124/docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-native-qualification-20261123/rpc-union-20261123/source_union.py",
+      "sha256": "237f5ff33f0f85f8b9f68318c5dc599e0cb0216737c6a3d9c5212de626bb1f3c"
+    }
+  ],
+  "status": "PASS"
+}
