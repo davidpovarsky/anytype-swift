@@ -47,6 +47,7 @@ on:
           - coherent-heart-native
           - coherent-heart-apple
           - coherent-heart-peers
+          - independent-member-acl
           - semantic-anchor-native
           - semantic-page-apple-runtime
           - semantic-page-apple-consumer
@@ -301,6 +302,116 @@ jobs:
     uses: ./.github/workflows/pinkha-coherent-heart-peers.yml
     with:
       source_sha: ${{ github.sha }}
+
+  independent-member-acl:
+    if: ${{ inputs.route == 'independent-member-acl' }}
+    permissions:
+      contents: read
+      actions: read
+    concurrency:
+      group: pinkha-independent-member-acl-${{ github.ref }}
+      cancel-in-progress: false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    env:
+      EXPECTED_APP_SHA: ${{ github.sha }}
+      T2_GO_IMAGE: golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout exact independent member controller
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: control
+          persist-credentials: false
+      - name: Checkout clean pinned Heart base
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: heart
+          persist-credentials: false
+      - name: Read original qualified native source run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p evidence/toolchain
+          gh api repos/davidpovarsky/anytype-swift/actions/runs/45026227924 > evidence/original-native-run.json
+      - name: Restore compiled musl dependencies only
+        uses: actions/cache@v4
+        with:
+          path: .t2-cache
+          key: t2-member-acl-alpine-111d7915-go1.26.5-${{ hashFiles('heart/go.sum', 'heart/tantivity_sha256.txt') }}
+          restore-keys: |
+            t2-coherent-peers-alpine-111d7915-go1.26.5-
+            t2-native-clients-alpine-111d7915-go1.26.5-
+            t2-account-rpc-alpine-111d7915-go1.26.5-
+            t2-account-alpine-111d7915-go1.26.5-
+      - name: Compile new member transport fixture over original coherent139 bytes
+        run: |
+          mkdir -p .t2-cache native-work
+          docker pull --platform linux/amd64 "$T2_GO_IMAGE"
+          docker image inspect "$T2_GO_IMAGE" > evidence/toolchain/image.json
+          docker run --rm --platform linux/amd64 --cpus=2 --memory=6g --pids-limit=512 \
+            --workdir /workspace \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/control,dst=/workspace/control,readonly" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/heart,dst=/workspace/heart" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/native-work,dst=/workspace/work" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/evidence,dst=/workspace/evidence" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/.t2-cache,dst=/cache" \
+            -e EXPECTED_APP_SHA -e GITHUB_RUN_ID -e GITHUB_RUN_ATTEMPT -e T2_GO_IMAGE \
+            -e CC=gcc -e CXX=g++ -e GOTOOLCHAIN=local \
+            -e GOMODCACHE=/cache/go-mod -e GOCACHE=/cache/go-build \
+            -e GIT_OPTIONAL_LOCKS=0 -e PYTHONDONTWRITEBYTECODE=1 \
+            "$T2_GO_IMAGE" sh -eu -c '
+              apk add --no-cache python3 git build-base > /workspace/evidence/toolchain/apk-install.log 2>&1
+              git config --global --add safe.directory /workspace/control
+              git config --global --add safe.directory /workspace/heart
+              go version > /workspace/evidence/toolchain/go-version.txt
+              gcc --version > /workspace/evidence/toolchain/compiler.txt
+              gcc -dumpmachine > /workspace/evidence/toolchain/compiler-target.txt
+              exec python3 -B /workspace/control/Tools/PinkhaNativeDerived/member_acl_transport/build.py \
+                --control /workspace/control --heart /workspace/heart --work /workspace/work/build \
+                --evidence /workspace/evidence --original-run /workspace/evidence/original-native-run.json \
+                --expected-app-sha "$EXPECTED_APP_SHA"
+            '
+      - name: Run independent members through grant role revoke and reconnect fence
+        run: |
+          python3 -B control/Tools/PinkhaNativeDerived/member_acl_transport/run.py \
+            --control "$GITHUB_WORKSPACE/control" --native-work "$GITHUB_WORKSPACE/native-work/build" \
+            --private "$GITHUB_WORKSPACE/member-acl-private" --evidence "$GITHUB_WORKSPACE/evidence" \
+            --expected-app-sha "$EXPECTED_APP_SHA"
+      - name: Preserve honest member transport status
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+          directory = Path('evidence')
+          directory.mkdir(parents=True, exist_ok=True)
+          path = directory / 'receipt.json'
+          if not path.exists():
+              path.write_text(json.dumps({
+                  'protocol': 'pinkha-independent-member-acl-transport-v1',
+                  'status': 'NOT_RUN_NATIVE_MEMBER_BUILD_FAILED',
+                  'run_id': os.environ.get('GITHUB_RUN_ID'), 'run_attempt': os.environ.get('GITHUB_RUN_ATTEMPT'),
+                  'app_sha': os.environ.get('EXPECTED_APP_SHA'),
+                  'finished_at': datetime.now(timezone.utc).isoformat(),
+                  'actual_native_processes': 0, 'network_acl_transport': 'NOT_RUN',
+                  'coordinator_invite_acceptance': 'NOT_RUN', 'discovery_bootstrap': 'STATIC_OWNED_PEER_ROUTE',
+                  'mixed_versions': 'NOT_RUN', 'offline_unknown_revocation': 'LAST_KNOWN_AUTHORITY_NOT_GLOBAL_FRESHNESS',
+                  'full_t2_acceptance': 'NOT_RUN', 'ios_acceptance': 'NOT_RUN', 'app_capability': 'OFF'
+              }, indent=2) + '\n')
+          PY
+      - name: Upload original source-bound evidence screened against both wallet secrets
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Member-ACL-Transport-${{ github.run_id }}-${{ github.run_attempt }}
+          path: evidence/
+          retention-days: 30
+          if-no-files-found: error
 
   prepared-migration-apple:
     if: ${{ inputs.route == 'prepared-migration-apple' }}
