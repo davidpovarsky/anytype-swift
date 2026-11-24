@@ -151,6 +151,7 @@ public struct AnyPreparedDefinitionCapabilities: Equatable, Sendable {
 }
 
 public struct AnyPreparedDefinitionReceipt: Equatable, Sendable {
+    public static let maximumRecordIDs = 2048
     public enum Stage: String, Sendable {
         case rootPrepared = "definition-root-prepared"
         case rootCommitted = "definition-root-committed"
@@ -205,7 +206,7 @@ public struct AnyPreparedDefinitionReceipt: Equatable, Sendable {
         }
         var ids: [String] = []
         if let records = value["recordIds"] {
-            guard let values = records.array, values.count <= 1024 else { throw AnyPreparedMigrationError.mismatchedReceipt }
+            guard let values = records.array, values.count <= Self.maximumRecordIDs else { throw AnyPreparedMigrationError.mismatchedReceipt }
             ids = try values.map {
                 guard let id = $0.string, AnyEditorBlock.validID(id) else { throw AnyPreparedMigrationError.mismatchedReceipt }
                 return id
@@ -250,7 +251,7 @@ public actor AnyNativePreparedDefinitionMigration {
         guard client.expectedAccountID == workspace.accountID else { throw AnyHostError.wrongWorkspace }
         let request: Request = { method, path, body, authorize in
             try await client.requestJSON(method: method, path: path, body: body,
-                                         maximumResponseBytes: 262_144, authorize: authorize)
+                                         maximumResponseBytes: 1_048_576, authorize: authorize)
         }
         let value = try await request("GET", prefix(workspace) + ["definition", "capabilities"], nil, authorize)
         try Task.checkCancellation(); try await authorize()

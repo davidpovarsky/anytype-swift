@@ -168,6 +168,22 @@ final class NativePreparedDefinitionMigrationTests: XCTestCase, @unchecked Senda
         XCTAssertEqual(calls.filter { $0.method == "PUT" }.count, 1)
         XCTAssertEqual(calls.filter { $0.method == "POST" }.count, 0)
     }
+
+    func testNativePartRecordLimitPreservesAll2048OrderedIdentities() throws {
+        let intent = try AnyPreparedDefinitionIntent.part(binding: binding(), sourceKey: "large-part",
+            ownerID: "mapped-type", draft: .object(["key": .string("records")]))
+        let ids = (0..<2048).map { "signed-native-record-" + String($0) }
+        var wire = DefinitionWire.receipt(intent, phase: 0).object!
+        wire["recordIds"] = .array(ids.map(AnyJSON.string))
+        let receipt = try AnyPreparedDefinitionReceipt(.object(wire), intent: intent)
+        XCTAssertEqual(receipt.recordIDs, ids)
+        wire["recordIds"] = .array((ids + ["extra-signed-record"]).map(AnyJSON.string))
+        XCTAssertThrowsError(try AnyPreparedDefinitionReceipt(.object(wire), intent: intent))
+        wire["recordIds"] = .array((Array(ids.dropLast()) + [ids[0]]).map(AnyJSON.string))
+        XCTAssertThrowsError(try AnyPreparedDefinitionReceipt(.object(wire), intent: intent))
+        wire["recordIds"] = .array([])
+        XCTAssertThrowsError(try AnyPreparedDefinitionReceipt(.object(wire), intent: intent))
+    }
 }
 
 private actor DefinitionAuthority {

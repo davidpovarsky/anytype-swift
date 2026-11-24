@@ -19,3 +19,13 @@ Atomic part/dataset capability was being qualified separately at this point.
 The following focused delta aligns its record count with the native2048 bound.
 
 The shared Apple branch and its retained compiled source trees are unchanged.
+
+## Native part bound follow-up
+
+The native part contract was qualified at SDK ef63bcaed93064c8de24ed656842f3e56ed34008
+and Any1b17da42fccc2f092cbedd48e0991a203584bc85. It admits1..2048unique signed
+recordIDs in exact atomic batch order. The client bound now matches it, with a
+1MiB response ceiling. One new boundary control passed2048exact ordered IDs and
+refused2049, duplicates and an empty part batch; the prior8methods were not
+replayed. Both source states and original logs remain separately preserved.
+No actual Swift/native HTTP or Apple proof is claimed by these component tests.
