@@ -165,7 +165,7 @@ def dependency_source_inventory(checkouts, contract, original_checkouts=None):
     return observed
 
 
-def execute(args, receipt):
+def execute(args, receipt, *, inspect_only=False):
     root, evidence, work = args.root.resolve(), args.evidence.resolve(), args.work.resolve()
     require(evidence.is_relative_to(root / 'build') and work.is_relative_to(root / 'build'),
             'Unowned producer paths')
@@ -260,7 +260,13 @@ def execute(args, receipt):
     require(source_observation(root) == source, 'Source changed during shared ownership verification')
     write(evidence / 'shared-runtime-ownership.json', receipt)
     qualification['shared_runtime_ownership'] = receipt
-    write(qualification_path, qualification)
+    if inspect_only:
+        require(qualification_path.read_bytes() == original_bytes,
+                'Original qualification changed during read-only ownership inspection')
+        receipt['inspection_only'] = True
+        receipt['qualification_write_performed'] = False
+    else:
+        write(qualification_path, qualification)
 
 
 def main():
@@ -268,10 +274,12 @@ def main():
     parser.add_argument('--root', type=Path, required=True)
     parser.add_argument('--evidence', type=Path, required=True)
     parser.add_argument('--work', type=Path, required=True)
+    parser.add_argument('--inspect-only', action='store_true',
+                        help='Write separate ownership evidence without updating the original qualification')
     args = parser.parse_args()
     receipt = {'schema': 1, 'status': 'FAIL', 'stageb_qualified': False}
     try:
-        execute(args, receipt)
+        execute(args, receipt, inspect_only=args.inspect_only)
         return 0
     except BaseException as error:
         receipt['error'] = {'type': type(error).__name__, 'message': str(error)}
