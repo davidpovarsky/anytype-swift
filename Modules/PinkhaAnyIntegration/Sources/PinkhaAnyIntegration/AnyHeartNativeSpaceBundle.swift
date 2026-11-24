@@ -142,9 +142,16 @@ public struct AnyHeartNativeSpaceBundle: Sendable {
         let trees = try rawTrees.map { value -> Tree in
             guard let id = value["ObjectID"]?.string, Self.validID(id),
                   treeIDs.insert(Data(id.utf8)).inserted, treeStrings.insert(id).inserted,
-                  let kind = value["NativeType"]?.integer, kind >= 0, kind <= Int64(Int32.max),
+                  let kind = value["NativeType"]?.integer, kind >= -1, kind <= Int64(Int32.max),
                   let status = value["Status"]?.string, !status.isEmpty else {
                 throw AnyHeartNativeSpaceBundleError.identityCollision
+            }
+            // The native inventory deliberately leaves -1 on trees retained
+            // without a decoded current object: settings, tombstones and
+            // unsupported headers. It is never a captured snapshot type.
+            if kind == -1 && !["space-settings-retained", "native-tombstone-retained",
+                               "unsupported-native-object-retained"].contains(status) {
+                throw AnyHeartNativeSpaceBundleError.inconsistentInventory
             }
             if !["captured-current-snapshot", "native-tombstone-retained", "space-settings-retained"].contains(status) {
                 issues.append(.init(code: "native-tree-semantic-gap", sourceID: id, field: status))

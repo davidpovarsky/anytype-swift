@@ -93,8 +93,8 @@ final class NativeSpaceBundleTests: XCTestCase {
         }
         let manifest: [String: AnyJSON] = ["Contract": .string("pinkha-native-whole-source-bundle-v1"),
             "Receipt": receipt, "SourceRows": source,
-            "Trees": .array([tree("doc", 16, "captured-current-snapshot"), tree("settings", 0, "space-settings-retained"),
-                             tree("deleted", 0, "native-tombstone-retained")]), "Objects": .array([object]),
+            "Trees": .array([tree("doc", 16, "captured-current-snapshot"), tree("settings", -1, "space-settings-retained"),
+                             tree("deleted", -1, "native-tombstone-retained")]), "Objects": .array([object]),
             "Files": .array([.object(["FileID": .string("file-id"), "Variants": .array([variant])])]),
             "FileReferences": .null, "Gaps": .null, "ResolverUnmapped": .null, "BundledDefinitionsUsed": .array([.string("ot-page")]),
             "RetainedOtherCollections": .array([.object(["Name": .string("native-key-value"), "Rows": .integer(1), "Bytes": .integer(42)])])]
@@ -123,6 +123,39 @@ final class NativeSpaceBundleTests: XCTestCase {
             changed = original; changed.members[path] = nil
             XCTAssertThrowsError(try changed.read(), path)
         }
+    }
+
+    func testNativeUnknownTypeSentinelIsLimitedToExplicitRetainedTreeStates() throws {
+        let original = try fixture(), bundle = try original.read()
+        XCTAssertEqual(bundle.trees.map(\.nativeType), [16, -1, -1])
+        for (index, type, status) in [(0, -1, "captured-current-snapshot"),
+                                      (1, -2, "space-settings-retained"),
+                                      (2, -2, "native-tombstone-retained"),
+                                      (1, -1, "future-retained-state")] {
+            var changed = original, rows = changed.manifest["Trees"]!.array!
+            var row = rows[index].object!
+            row["NativeType"] = .integer(Int64(type)); row["Status"] = .string(status)
+            rows[index] = .object(row); changed.manifest["Trees"] = .array(rows)
+            XCTAssertThrowsError(try changed.read(), "An undecoded native type must not become a current object")
+        }
+        var unsupported = original, rows = unsupported.manifest["Trees"]!.array!
+        var retained = rows[1].object!
+        retained["Status"] = .string("unsupported-native-object-retained")
+        rows[1] = .object(retained); unsupported.manifest["Trees"] = .array(rows)
+        unsupported.manifest["Gaps"] = .array([.object(["ObjectID": .string("settings"),
+            "Field": .string("nativeRoot"), "Reason": .string("unsupported-native-object-header-or-store-owned-details")])])
+        var receipt = unsupported.manifest["Receipt"]!.object!
+        receipt["SettingsTrees"] = .integer(0); receipt["UnsupportedTrees"] = .integer(1)
+        receipt["UnresolvedEntries"] = .integer(1)
+        receipt["AllCurrentObjectsCaptured"] = .bool(false)
+        receipt["CurrentFilePayloadCompleteness"] = .bool(false)
+        unsupported.manifest["Receipt"] = .object(receipt)
+        let accepted = try unsupported.read()
+        XCTAssertEqual(accepted.trees[1].nativeType, -1)
+        XCTAssertTrue(accepted.issues.contains { $0.code == "native-tree-semantic-gap" })
+        XCTAssertTrue(accepted.issues.contains { $0.code == "native-source-gap" })
+        XCTAssertEqual(accepted.receipt["HasNativeSourceAdmission"]?.bool, false)
+        XCTAssertEqual(accepted.receipt["PermitsDestinationWrites"]?.bool, false)
     }
 
     func testInventoriesCannotOmitDuplicateOrReclassifyCapturedObjects() throws {
