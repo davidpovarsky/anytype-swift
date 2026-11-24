@@ -47,10 +47,17 @@ Only the original per-target `go mod tidy` boundary is adapted. Before that
 command, original Heart module roots and wildcard replacements are copied,
 the module name becomes `gobind`, and one local Heart require/replace is added.
 The exact structured root/directive delta is checked. Actual tidy outputs and
-raw streams are retained. Its temporary added checksums are not admitted: the
-original Heart go.sum bytes are restored, and real readonly module/package
+raw streams are retained. Its temporary graph pruning and added checksums are
+not admitted: the exact prepared original-root go.mod and original Heart go.sum
+bytes are restored, and real readonly module/package
 declarations must succeed and match the original module selections. All three
 targets must pass this declaration barrier before any archive compiler starts.
+
+An actual disposable iOS Simulator wrapper diagnostic confirmed that retaining
+the tidied roots downgrades four unused module selections, despite unchanged
+compiled-package selections. Restoring both original inputs produced all 1,441
+readonly package declarations and the complete selected module graph without
+any version drift. That diagnostic ran no archive compiler or SDK build.
 
 The real Go archive command adds only the explicitly recorded
 `-mod=readonly`; all original targets, tags, compiler flags, minimum OS and

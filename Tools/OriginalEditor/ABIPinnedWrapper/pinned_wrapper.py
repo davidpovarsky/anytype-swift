@@ -336,13 +336,15 @@ def prepare_target(config, source, retained, name, environment):
     actual = json.loads(run(config, folder, 'retained-root-read', ['mod', 'edit', '-json'], source, environment).read_bytes())
     check_retained_roots(actual, original, heart)
     retained_roots = {n: row(source / n) for n in ('go.mod', 'go.sum')}
+    retained_module_bytes = (source / 'go.mod').read_bytes()
     run(config, folder, 'actual-tidy', ['mod', 'tidy'], source, environment, forward=True)
     tidy = {n: row(source / n) for n in ('go.mod', 'go.sum')}
     for n in ('go.mod', 'go.sum'):
         shutil.copyfile(source / n, folder / ('after-tidy.' + n))
-    # Tidy may inspect dependency tests that are not actual compiler inputs.
-    # None of its added checksums is admitted: the compiler receives the exact
-    # original sum bytes and must load all declarations in readonly mode.
+    # Tidy also prunes unused roots and thereby changes selected versions of
+    # unused modules. Neither its graph changes nor added checksums are admitted.
+    # Actual readonly declarations prove that the original roots and sum suffice.
+    (source / 'go.mod').write_bytes(retained_module_bytes)
     shutil.copyfile(heart / 'go.sum', source / 'go.sum')
     selected = objects(run(config, folder, 'selected-modules', ['list', '-mod=readonly', '-m', '-json', 'all'],
                            source, environment).read_text())
@@ -354,7 +356,8 @@ def prepare_target(config, source, retained, name, environment):
         (heart, retained, config['module_cache'], config['goroot']), heart, source,
         {m['Path']: m for m in config['original_modules']}, row)
     current = {n: row(source / n) for n in ('go.mod', 'go.sum')}
-    require(sha(source / 'go.sum') == sha(heart / 'go.sum'), 'Read-only preflight changed original checksums')
+    require(current == retained_roots and sha(source / 'go.sum') == sha(heart / 'go.sum'),
+            'Read-only preflight changed original module roots or checksums')
     value = {'schema': RESULT_SCHEMA, 'status': 'PINNED_GRAPH_PRECOMPILATION_PASS',
              'target': name, 'source': str(source), 'retained_work': str(retained),
              'original_generated_module': before, 'retained_original_roots': retained_roots,
@@ -484,6 +487,7 @@ def validate_observation(descriptor, require_live):
                 and built['archive'] == row(built['archive']['path']), 'Target did not retain its actual pinned archive')
         require(prepared['original_heart_module_inputs'] == original_module_rows
                 and prepared['no_added_checksum_admitted'] is True and built['original_go_sum_preserved'] is True
+                and prepared['compiler_module_inputs'] == prepared['retained_original_roots']
                 and {n: row(source / n) for n in ('go.mod', 'go.sum')} == prepared['compiler_module_inputs']
                 and sha(source / 'go.sum') == original_module_rows['go.sum']['sha256'],
                 'Original Heart module/checksum proof differs')
