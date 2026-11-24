@@ -92,6 +92,7 @@ func TestLoadedAccountWholeSourceBindsLocalPayloadAndMetadata(t *testing.T) {
 	pageID := loadedObjectFixturePage(t, f, text, false)
 	payload := bytes.Repeat([]byte("native-source-plain-0123456789\x00\xff"), 600)
 	fileObjectID, fileID := loadedSpaceFixtureFile(t, f, payload)
+	loadedSpaceFixtureKeyValue(t, f)
 	loadedSpaceFixtureWarm(t, f)
 	captured, err := f.service.CaptureLoadedAccountSpaceWitness(f.ctx, f.token, loadedSpaceRequest(f))
 	if err != nil {
@@ -228,6 +229,7 @@ func TestLoadedAccountWholeSourceBindsLocalPayloadAndMetadata(t *testing.T) {
 		}
 		f.privateNote(t, "whole-source-missing-leaf", map[string]any{"receipt": missingReceipt, "explicitFileGap": gap})
 	})
+	loadedSpaceFixtureRefuseKeyValueHeads(t, f)
 	t.Logf("WHOLE_SOURCE_NATIVE_OBSERVATION payload_sha256=%s payload_bytes=%d members_verified=%d", loadedFixtureHash(payload), len(payload), len(members))
 }
 

@@ -1,0 +1,47 @@
+{
+  "cause": "Actual default native KeyValue head was wrongly required to have an object-tree root in changes.",
+  "derived_heart_sha": "117bb74ece968cac02abb81c5cc49a418a98a60a",
+  "exact_native_head_contract": "ldiff.New(32,256).Set({Id: row.id, Head: big-endian int64(row.t)}...).Hash",
+  "exact_native_id_contract": "StorageHeader{SpaceId: actual SpaceId, StorageName: default}.MarshalVT then cidutil.NewCidFromBytes",
+  "observed_default_keyvalue_collections": 4,
+  "observed_keyvalue_rows_per_original_store": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "observed_original_stores": 4,
+  "original_assertions_preserved": true,
+  "original_controller_sha": "ee28c1f947f1524f0269e9f71c72f2b493528786",
+  "original_failed_run": "45454337435",
+  "original_heart_sha": "67381c31503518b4c0995b29aecd57c89799c6e8",
+  "private_originals_retained_on_windows": true,
+  "production_correction": [
+    "closed derived identity only",
+    "exact head and collection pairing",
+    "full captured native ldiff hash",
+    "all opaque original rows retained",
+    "unknown or malformed rows refuse",
+    "inventory interpretation v2"
+  ],
+  "retained_resolver_receipt_sha256": "56ebaabfb0d535c2f7c2f3440a2999982bf9f928fea617049c23b5679e4fb14f",
+  "runtime_status": "NOT_RUN",
+  "schema": "native-whole-source-keyvalue-repair-v1",
+  "selected_methods": [
+    "TestLoadedAccountWholeSourceBindsLocalPayloadAndMetadata",
+    "TestLoadedAccountWholeSourceRefusesChangedCheckpointAndAuthority"
+  ],
+  "selected_subtests": {
+    "TestLoadedAccountWholeSourceBindsLocalPayloadAndMetadata": [
+      "missing-local-leaf-refused",
+      "native-key-value-head-mismatch-refused",
+      "native-key-value-duplicate-head-refused",
+      "native-key-value-missing-head-refused"
+    ],
+    "TestLoadedAccountWholeSourceRefusesChangedCheckpointAndAuthority": [
+      "invalid-session",
+      "object-bound",
+      "unsafe-output-directory"
+    ]
+  }
+}

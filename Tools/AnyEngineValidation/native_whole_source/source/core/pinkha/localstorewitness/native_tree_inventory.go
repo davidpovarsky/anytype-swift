@@ -51,6 +51,8 @@ type NativeTreeInventory struct {
 	unresolvedHistory   int
 	otherCollections    int
 	otherCollectionRows int
+	keyValueStores      int
+	keyValueRows        int
 	complete            bool
 }
 
@@ -62,6 +64,7 @@ type NativeTreeInventoryReceipt struct {
 	ChangeRecords, OrphanChanges                   int
 	UnresolvedHistoryReferences                    int
 	OtherCollections, OtherCollectionRows          int
+	KeyValueStores, KeyValueRows                   int
 	AllHeadRowsAccounted                           bool
 	AccountSessionAuthorized                       bool
 	HistorySemanticsValidated                      bool
@@ -108,6 +111,10 @@ func (w *Witness) NativeTreeIdentities(ctx context.Context) (*NativeTreeInventor
 		return nil, ErrNativeTreeInventory
 	}
 	result := &NativeTreeInventory{witness: w, acl: acl, settingsID: settings, trees: map[string]NativeTreeIdentity{}}
+	keyValueID, err := nativeInventoryDefaultKeyValueID(w.binding.SpaceID)
+	if err != nil {
+		return nil, err
+	}
 	records := map[string]nativeInventoryChange{}
 	for _, row := range changes.rows {
 		if err := ctx.Err(); err != nil {
@@ -162,6 +169,18 @@ func (w *Witness) NativeTreeIdentities(ctx context.Context) (*NativeTreeInventor
 		seen[id] = true
 		if id == acl.ACLID() {
 			continue // NativeACLHead has separately checked this exact ACL row.
+		}
+		if id == keyValueID {
+			if _, objectRootExists := records[id]; objectRootExists {
+				return nil, ErrNativeTreeInventory
+			}
+			rows, err := w.nativeInventoryKeyValue(ctx, id, row)
+			if err != nil {
+				return nil, err
+			}
+			result.keyValueStores++
+			result.keyValueRows += rows
+			continue
 		}
 		deleted, err := nativeInventoryDeletion(fields["d"])
 		if err != nil {
@@ -222,6 +241,11 @@ func (w *Witness) NativeTreeIdentities(ctx context.Context) (*NativeTreeInventor
 	if !seen[acl.ACLID()] || !seen[settings] || len(seen) != len(heads.rows) {
 		return nil, ErrNativeTreeInventory
 	}
+	// A retained native key-value collection without its declared head is
+	// incomplete, even though its original bytes remain in the Witness.
+	if w.collection(keyValueID) != nil && !seen[keyValueID] {
+		return nil, ErrNativeTreeInventory
+	}
 	sort.Strings(result.ids)
 	for _, record := range records {
 		entry, exists := result.trees[record.tree]
@@ -251,7 +275,7 @@ func (w *Witness) NativeTreeIdentities(ctx context.Context) (*NativeTreeInventor
 	}
 	// The version binds this deterministic interpretation; the source digest
 	// binds every original collection and row, including retained opaque data.
-	result.digest = sum([]byte("pinkha-native-tree-identities-v1\x00" + w.digest))
+	result.digest = sum([]byte("pinkha-native-tree-identities-v2\x00" + w.digest))
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
@@ -398,11 +422,12 @@ func (c *NativeTreeInventory) Receipt() (NativeTreeInventoryReceipt, error) {
 		return NativeTreeInventoryReceipt{}, ErrNativeTreeInventory
 	}
 	r := NativeTreeInventoryReceipt{
-		Version: "native-tree-identity-inventory-v1", SourceWitnessSHA256: c.witness.digest, InventorySHA256: c.digest,
+		Version: "native-tree-identity-inventory-v2", SourceWitnessSHA256: c.witness.digest, InventorySHA256: c.digest,
 		SpaceSHA256: sum([]byte(c.SpaceID())), ACLHeadSHA256: sum([]byte(c.acl.HeadID())), Generation: c.witness.binding.Generation,
 		Trees: len(c.ids), ChangeRecords: c.changeRecords, OrphanChanges: c.orphanChanges,
 		UnresolvedHistoryReferences: c.unresolvedHistory, OtherCollections: c.otherCollections,
 		OtherCollectionRows: c.otherCollectionRows, AllHeadRowsAccounted: true,
+		KeyValueStores: c.keyValueStores, KeyValueRows: c.keyValueRows,
 	}
 	for _, entry := range c.trees {
 		if entry.deleted == 0 {

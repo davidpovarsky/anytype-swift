@@ -16,10 +16,12 @@ import zipfile
 HERE = Path(__file__).resolve().parent
 PORTABLE = HERE.parent / "loaded_account_witness" / "portable"
 HELPER_SHA = "cf3b927951ddfdfcfe9e51d724cce1753b03d92c147224dba23c5cda8b868fdc"
-DELTA_SHA = 'ec9ed72b68bc9f2396fa7bee6a0545f3ecc8f2d6d446738d183fe07c8daa8d74'
-HEART_SHA = '67381c31503518b4c0995b29aecd57c89799c6e8'
-METHODS = ['TestLoadedAccountWholeSourceBindsLocalPayloadAndMetadata', 'TestLoadedAccountWholeSourceRefusesChangedCheckpointAndAuthority', 'TestLoadedAccountCapturedResolverAccountsForMissingSchemas']
-SUBTESTS = {'TestLoadedAccountWholeSourceBindsLocalPayloadAndMetadata': ['missing-local-leaf-refused'], 'TestLoadedAccountWholeSourceRefusesChangedCheckpointAndAuthority': ['invalid-session', 'object-bound', 'unsafe-output-directory'], 'TestLoadedAccountCapturedResolverAccountsForMissingSchemas': ['detached-row-and-no-live-fallback', 'missing-target-type-is-explicit', 'colliding-keys-refuse-ambiguous-format', 'mismatched-native-row-refused']}
+DELTA_SHA = '9e149488a540de4396e11802d68d8eb27a63af4be27fd76407adf0ecabc02845'
+HEART_SHA = '117bb74ece968cac02abb81c5cc49a418a98a60a'
+METHODS = ['TestLoadedAccountWholeSourceBindsLocalPayloadAndMetadata', 'TestLoadedAccountWholeSourceRefusesChangedCheckpointAndAuthority']
+REGISTERED_METHODS = METHODS + ['TestLoadedAccountCapturedResolverAccountsForMissingSchemas']
+RETAINED_RESOLVER_SHA = '56ebaabfb0d535c2f7c2f3440a2999982bf9f928fea617049c23b5679e4fb14f'
+SUBTESTS = {'TestLoadedAccountWholeSourceBindsLocalPayloadAndMetadata': ['missing-local-leaf-refused', 'native-key-value-head-mismatch-refused', 'native-key-value-duplicate-head-refused', 'native-key-value-missing-head-refused'], 'TestLoadedAccountWholeSourceRefusesChangedCheckpointAndAuthority': ['invalid-session', 'object-bound', 'unsafe-output-directory']}
 helper_path = PORTABLE / "run_native.py"
 if hashlib.sha256(helper_path.read_bytes()).hexdigest() != HELPER_SHA:
     raise RuntimeError("qualified_native_helper_changed")
@@ -35,9 +37,9 @@ def apply_whole_source_delta(root, snapshots, metadata):
     require(delta["schema"] == "native-whole-source-delta-v1" and
             delta["base_heart_commit"] == native.DERIVED_HEART_SHA and
             delta["derived_heart_commit"] == HEART_SHA and
-            delta["existing_changes"] == 1 and delta["additions"] == 15,
+            delta["existing_changes"] == 1 and delta["additions"] == 17,
             "whole_source_delta_lineage")
-    expected = ['core/application/loaded_object_witness.go', 'core/application/loaded_object_witness_test.go', 'core/application/loaded_space_bundle.go', 'core/application/loaded_space_witness.go', 'core/application/loaded_space_witness_test.go', 'core/block/export/native_file_references.go', 'core/block/export/native_object_witness.go', 'core/block/export/native_raw_object.go', 'core/files/filestorage/native_snapshot.go', 'core/files/native_capture.go', 'core/pinkha/localstorewitness/native_inventory_collections.go', 'core/pinkha/localstorewitness/native_tree_inventory.go', 'core/pinkha/localstorewitness/native_tree_inventory_test.go', 'pkg/lib/anyblockjson/storeresolver/captured.go', 'pkg/lib/anyblockjson/storeresolver/read_index.go', 'pkg/lib/anyblockjson/storeresolver/storeresolver.go']
+    expected = ['core/application/loaded_object_witness.go', 'core/application/loaded_object_witness_test.go', 'core/application/loaded_space_bundle.go', 'core/application/loaded_space_keyvalue_test.go', 'core/application/loaded_space_witness.go', 'core/application/loaded_space_witness_test.go', 'core/block/export/native_file_references.go', 'core/block/export/native_object_witness.go', 'core/block/export/native_raw_object.go', 'core/files/filestorage/native_snapshot.go', 'core/files/native_capture.go', 'core/pinkha/localstorewitness/native_inventory_collections.go', 'core/pinkha/localstorewitness/native_keyvalue_inventory.go', 'core/pinkha/localstorewitness/native_tree_inventory.go', 'core/pinkha/localstorewitness/native_tree_inventory_test.go', 'pkg/lib/anyblockjson/storeresolver/captured.go', 'pkg/lib/anyblockjson/storeresolver/read_index.go', 'pkg/lib/anyblockjson/storeresolver/storeresolver.go']
     require([v["path"] for v in delta["files"]] == expected, "whole_source_exact_file_scope")
     for row in delta["files"]:
         relative = native.relative_member(row["path"])
@@ -75,6 +77,25 @@ def apply_whole_source_delta(root, snapshots, metadata):
         target.chmod(row["mode"])
         native.checked_file(target, (row["bytes"], row["sha256"]))
         snapshots[logical] = tuple(getattr(target.stat(), k) for k in native.FIELDS)
+    retained_path=HERE/"retained-resolver-45454337435-1.json"
+    require(sha(retained_path)==RETAINED_RESOLVER_SHA, "retained_resolver_original_receipt")
+    retained=json.loads(retained_path.read_bytes())
+    require(retained["schema"]=="native-captured-resolver-retained-proof-v1" and
+            retained["run_id"]=="45454337435" and retained["run_attempt"]=="1" and
+            retained["method"]["method"]==REGISTERED_METHODS[2] and
+            retained["method"]["status"]=="PASS" and
+            retained["method"]["audit"]["subtests_pass"]==4 and
+            retained["not_reexecuted"] is True and retained["not_a_new_runtime_pass"] is True,
+            "retained_resolver_original_scope")
+    raw=(HERE/"source"/retained["test_source_path"]).read_bytes()
+    marker=b"\nfunc "+REGISTERED_METHODS[2].encode()+b"("
+    require(raw.count(marker)==1 and
+            hashlib.sha256(marker+raw.split(marker,1)[1]).hexdigest()==retained["method_body_sha256"],
+            "retained_resolver_exact_method_body")
+    for path, expected_sha in retained["resolver_source_sha256"].items():
+        require(sha(HERE/"source"/native.relative_member(path))==expected_sha,
+                "retained_resolver_exact_production_sources")
+    save(metadata/"retained-resolver-45454337435-1.json",retained)
     save(metadata / "native-whole-source-delta-v1.json", delta)
     return delta
 
@@ -90,7 +111,7 @@ def actual_generated_main(work_root, stderr):
             not candidates[0].is_symlink(), "actual_generated_main_unique")
     main = candidates[0]
     names = re.findall(r'"(TestLoadedAccount(?:WholeSource|CapturedResolver)[^"]+)"' , main.read_text())
-    require(sorted(names) == sorted(METHODS), "actual_whole_source_test_registration")
+    require(sorted(names) == sorted(REGISTERED_METHODS), "actual_whole_source_test_registration")
     return main
 
 
@@ -146,6 +167,26 @@ def audit_method(stdout, method, fixtures):
                 missing["receipt"]["CapturedFiles"]==0 and
                 missing["receipt"]["CurrentFilePayloadCompleteness"] is False,
                 "whole_source_real_missing_leaf_refusal")
+        keyvalue_path=fixtures/method/"whole-source-native-keyvalue.json"
+        keyvalue=json.loads(keyvalue_path.read_bytes())
+        kv_receipt=keyvalue["receipt"]
+        require(kv_receipt["Version"]=="native-tree-identity-inventory-v2" and
+                kv_receipt["KeyValueStores"]==1 and kv_receipt["KeyValueRows"]>=1 and
+                kv_receipt["AllHeadRowsAccounted"] is True and
+                all(keyvalue[k] is True for k in
+                    ("actualSignedNativeSet","nativeDiffHeadMatched","documentTreeExcluded")) and
+                all(kv_receipt[k] is False for k in
+                    ("SemanticCompleteness","HistorySemanticsValidated",
+                     "HasNativeSourceAdmission","PermitsDestinationWrites")),
+                "native_keyvalue_original_source_receipt")
+        kv_refusals=json.loads((fixtures/method/"whole-source-native-keyvalue-refusals.json").read_bytes())
+        require(set(kv_refusals)=={"wrongHeadRefused","duplicateHeadRefused",
+                                  "missingHeadRefused","originalRowsRetainedAfterRestore"} and
+                all(v is True for v in kv_refusals.values()),
+                "native_keyvalue_inconsistent_heads_refused")
+        result.update(native_keyvalue_receipt=kv_receipt,
+                      native_keyvalue_receipt_sha256=sha(keyvalue_path),
+                      native_keyvalue_refusals=kv_refusals)
         result.update(native_receipt=receipt,private_manifest_sha256=sha(manifest_path),
                       private_members_verified=len(members),payload_sha256=note["payloadSHA256"],
                       missing_leaf_refused=True,receipt_sha256=sha(note_path))
@@ -224,6 +265,11 @@ class WholeSourceRunner(native.Runner):
             self.rootfs, self.snapshots, PORTABLE, self.private / "source-metadata")
         self.result["source"]["whole_source_derivation"] = apply_whole_source_delta(
             self.rootfs, self.snapshots, self.private / "source-metadata")
+        self.result["retained_resolver_control"] = {
+            "run_id":"45454337435", "run_attempt":"1",
+            "receipt_sha256":RETAINED_RESOLVER_SHA,
+            "method":REGISTERED_METHODS[2],"named_method_pass":True,"subtests_pass":4,
+            "not_reexecuted":True,"not_a_new_runtime_pass":True}
         self.command("load-image", ["sudo", "-n", "docker", "load", "--input", str(image)], 180)
         _, out, _ = self.command("image-inspect",
                                  ["sudo", "-n", "docker", "image", "inspect", native.IMAGE], 30)
@@ -250,7 +296,7 @@ class WholeSourceRunner(native.Runner):
         shutil.copyfile(main, self.private / "generated-test-main.go")
         self.result["generated_main"] = {
             "path": str(main), "sha256": sha(main), "bytes": main.stat().st_size,
-            "origin": "actual -work build directory", "new_registration": METHODS,
+            "origin": "actual -work build directory", "new_registration": REGISTERED_METHODS,
         }
         self.result["binary"] = {"bytes": binary.stat().st_size, "sha256": sha(binary)}
         rc, out, _ = self.container("binary-buildinfo", native.GOROOT / "bin/go",
@@ -281,10 +327,10 @@ class WholeSourceRunner(native.Runner):
             require(tuple(getattr(path.stat(), key) for key in native.FIELDS) == before,
                     "readonly_source_changed")
         self.result["compiled_source_unchanged"] = True
-        require(len(self.result["methods"]) == 3 and
+        require(len(self.result["methods"]) == 2 and
                 all(v["status"] == "PASS" for v in self.result["methods"]),
-                "native_whole_source_three_method_acceptance")
-        self.result["status"] = "THREE_NATIVE_WHOLE_SOURCE_METHODS_PASS"
+                "native_whole_source_two_method_acceptance")
+        self.result["status"] = "TWO_NATIVE_WHOLE_SOURCE_METHODS_PASS"
 
 
 def main():
@@ -305,7 +351,7 @@ def main():
             save(runner.public / "result.json", runner.result)
     print(json.dumps({key: runner.result.get(key) for key in
                       ("status", "error", "controller_sha", "run_id", "builds")}))
-    return 0 if runner.result["status"] == "THREE_NATIVE_WHOLE_SOURCE_METHODS_PASS" else 1
+    return 0 if runner.result["status"] == "TWO_NATIVE_WHOLE_SOURCE_METHODS_PASS" else 1
 
 
 if __name__ == "__main__":
