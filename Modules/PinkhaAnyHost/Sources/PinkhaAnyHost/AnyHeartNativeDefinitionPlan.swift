@@ -160,6 +160,10 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
                 "jsonViewSHA256": .string(relation.snapshot.viewSHA256),
                 "definitionJSON": .string(try Self.jsonString(.object(relation.snapshot.details))),
             ]
+            if let original = relation.sourceProvenance.originalAddedDate {
+                source["sourceAddedDateSeconds"] = original
+                source["sourceAddedDateContract"] = .string("pinkha-heart-source-added-date-seconds-v1")
+            }
             if let value = relation.defaultValue {
                 source["defaultValueJSON"] = .string(try Self.jsonString(value))
                 if value != .null {
@@ -269,18 +273,22 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
                 issues.append(.init(sourceObjectID: definition.objectID, field: "recommendedLayout/recommendations",
                     reason: "native-layout-not-qualified:\(definition.recommendedLayout.map(String.init) ?? "absent")"))
             }
-            let metadata: AnyJSON = .object([
+            var metadata: [String: AnyJSON] = [
                 "heartSourceObjectID": .string(definition.objectID),
                 "heartUniqueKey": .string(definition.snapshot.uniqueKey),
                 "heartTypeKey": .string(definition.typeKey),
                 "heartSnapshotSHA256": .string(definition.snapshot.snapshotSHA256),
                 "heartJSONViewSHA256": .string(definition.snapshot.viewSHA256),
                 "heartDefinitionJSON": .string(try Self.jsonString(.object(definition.snapshot.details))),
-            ])
+            ]
+            if let original = definition.sourceProvenance.originalAddedDate {
+                metadata["heartSourceAddedDateSeconds"] = original
+                metadata["heartSourceAddedDateContract"] = .string("pinkha-heart-source-added-date-seconds-v1")
+            }
             items.append(.init(sourceKey: type.sourceKey, sourceObjectID: definition.objectID,
                 operation: .typeDefinition(.init(xKey: type.xKey, name: definition.name,
                     description: definition.description, layout: layout,
-                    hidden: definition.snapshot.details["isHidden"]?.bool ?? false, meta: .literal(metadata)))))
+                    hidden: definition.snapshot.details["isHidden"]?.bool ?? false, meta: .literal(.object(metadata))))))
             // The ordinary native editor module supplies its schema. This
             // minimal part has the part and one dataset head in one batch.
             items.append(.init(sourceKey: key("editor-part", definition.objectID), sourceObjectID: definition.objectID,

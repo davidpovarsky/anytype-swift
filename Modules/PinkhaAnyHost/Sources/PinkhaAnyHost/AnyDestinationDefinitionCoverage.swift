@@ -134,7 +134,7 @@ enum AnyDestinationDefinitionChecks {
     static let optionDetailFields: Set<String> = [
         "name", "description", "isHidden", "layout", "origin", "revision", "sourceObject", "apiObjectKey",
         "internalFlags", "iconEmoji", "iconImage", "createdDate", "creator", "lastModifiedDate", "lastModifiedBy",
-        "isArchived", "isReadonly", "uniqueKey", "type", "id", "spaceId", "relationKey", "relationOptionColor", "orderId",
+        "isArchived", "isReadonly", "uniqueKey", "type", "id", "spaceId", "relationKey", "relationOptionColor", "orderId", "addedDate",
     ]
     /// This is the declaration-to-evidence digest join. Full bundle byte
     /// verification and current account/checkpoint authorization remain the
@@ -200,6 +200,7 @@ enum AnyDestinationDefinitionChecks {
     static func optionDescriptor(_ evidence: AnyDestinationDefinitionEvidence,
                                  relationObjectID: String) throws -> AnyJSON {
         let row = evidence.snapshot, d = row.details
+        let provenance = try AnyHeartNativeDefinitionCatalog.SourceProvenance(snapshot: row)
         let unique = row.uniqueKey.split(separator: "-", omittingEmptySubsequences: false)
         guard row.nativeType == 529, row.issues.isEmpty,
               Set(d.keys).isSubset(of: optionDetailFields),
@@ -217,14 +218,19 @@ enum AnyDestinationDefinitionChecks {
               Data(relationObjectID.utf8) != Data(row.sourceObjectID.utf8) else {
             throw AnyDestinationMigrationError.invalidPlan("native option evidence")
         }
-        return .object([
-            "name": .string(name), "color": .string(color), "pos": .string(order),
-            "meta": .object([
+        var metadata: [String: AnyJSON] = [
                 "heartSourceObjectID": .string(row.sourceObjectID), "heartUniqueKey": .string(row.uniqueKey),
                 "heartSnapshotSHA256": .string(row.snapshotSHA256), "heartJSONViewSHA256": .string(row.viewSHA256),
                 "heartRelationKey": .string(key), "heartRelationObjectID": .string(relationObjectID),
                 "heartDefinitionJSON": .string(String(decoding: try bytes(.object(d)), as: UTF8.self)),
-            ]),
+        ]
+        if let original = provenance.originalAddedDate {
+            metadata["heartSourceAddedDateSeconds"] = original
+            metadata["heartSourceAddedDateContract"] = .string("pinkha-heart-source-added-date-seconds-v1")
+        }
+        return .object([
+            "name": .string(name), "color": .string(color), "pos": .string(order),
+            "meta": .object(metadata),
         ])
     }
     static func embeddedOption(_ evidence: AnyDestinationDefinitionEvidence, descriptorSHA256: String,

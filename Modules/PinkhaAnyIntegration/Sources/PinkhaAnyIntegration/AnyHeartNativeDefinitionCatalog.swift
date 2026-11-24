@@ -17,8 +17,29 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
         case tag = 11, object = 100, relations = 101, map = 102
     }
 
+    /// Source creation/import provenance on a captured definition. Heart writes
+    /// addedDate as signed Unix seconds; it is not the destination createdAt.
+    /// The original JSON value and original snapshot bytes remain authoritative.
+    public struct SourceProvenance: Sendable {
+        public let addedDateSeconds: Int64?
+        public let originalAddedDate: AnyJSON?
+        public init(snapshot: AnyHeartNativeSnapshotView) throws {
+            guard [521, 528, 529].contains(snapshot.nativeType) else {
+                throw AnyHeartNativeDefinitionCatalogError.invalidDefinition(snapshot.sourceObjectID, "nativeType")
+            }
+            originalAddedDate = snapshot.details["addedDate"]
+            if let value = originalAddedDate {
+                guard let seconds = value.integer else {
+                    throw AnyHeartNativeDefinitionCatalogError.invalidDefinition(snapshot.sourceObjectID, "addedDate")
+                }
+                addedDateSeconds = seconds
+            } else { addedDateSeconds = nil }
+        }
+    }
+
     public struct TypeDefinition: Sendable {
         public let snapshot: AnyHeartNativeSnapshotView
+        public let sourceProvenance: SourceProvenance
         public let typeKey: String
         public let name: String
         public let description: String
@@ -34,6 +55,7 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
 
     public struct Relation: Sendable {
         public let snapshot: AnyHeartNativeSnapshotView
+        public let sourceProvenance: SourceProvenance
         public let relationKey: String
         public let name: String
         public let description: String
@@ -51,6 +73,7 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
 
     public struct Option: Sendable {
         public let snapshot: AnyHeartNativeSnapshotView
+        public let sourceProvenance: SourceProvenance
         public let relationKey: String
         public let name: String
         public let color: String
@@ -122,6 +145,7 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
                 throw AnyHeartNativeDefinitionCatalogError.limit
             }
             let d = row.details
+            let provenance = try SourceProvenance(snapshot: row)
             func string(_ field: String, required: Bool = false) throws -> String {
                 guard let value = d[field] else {
                     if required { throw AnyHeartNativeDefinitionCatalogError.invalidDefinition(row.sourceObjectID, field) }
@@ -167,7 +191,7 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
             switch row.nativeType {
             case 528:
                 let typeKey = try Self.key(row.uniqueKey, prefix: "ot", id: row.sourceObjectID)
-                types.append(.init(snapshot: row, typeKey: typeKey, name: name, description: description,
+                types.append(.init(snapshot: row, sourceProvenance: provenance, typeKey: typeKey, name: name, description: description,
                     pluralName: d["pluralName"] == nil ? nil : try string("pluralName"),
                     recommendedLayout: try optionalInteger("recommendedLayout"),
                     recommendedRelations: try identifiers("recommendedRelations"),
@@ -184,7 +208,7 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
                 if Data(nativeKey.utf8) != Data(key.utf8) {
                     issues.append(.init(kind: .relationKeyMismatch, sourceObjectID: row.sourceObjectID, field: "relationKey"))
                 }
-                relations.append(.init(snapshot: row, relationKey: key, name: name, description: description,
+                relations.append(.init(snapshot: row, sourceProvenance: provenance, relationKey: key, name: name, description: description,
                     rawFormat: format, includeTime: try optionalBool("relationFormatIncludeTime"),
                     maximumCount: try optionalInteger("relationMaxCount"), readonlyValue: try optionalBool("relationReadonlyValue"),
                     defaultValue: d["relationDefaultValue"], targetTypeIDs: try identifiers("relationFormatObjectTypes")))
@@ -195,7 +219,7 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
                 guard Self.identifier(key) else {
                     throw AnyHeartNativeDefinitionCatalogError.invalidDefinition(row.sourceObjectID, "relationKey")
                 }
-                options.append(.init(snapshot: row, relationKey: key, name: name,
+                options.append(.init(snapshot: row, sourceProvenance: provenance, relationKey: key, name: name,
                     color: try string("relationOptionColor"), orderID: try string("orderId")))
                 fields = Self.optionFields
             }
@@ -297,7 +321,7 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
     private static let commonFields: Set<String> = [
         "name", "description", "isHidden", "layout", "origin", "revision", "sourceObject", "apiObjectKey",
         "internalFlags", "iconEmoji", "iconImage", "createdDate", "creator", "lastModifiedDate", "lastModifiedBy",
-        "isArchived", "isReadonly", "uniqueKey", "type", "id", "spaceId",
+        "isArchived", "isReadonly", "uniqueKey", "type", "id", "spaceId", "addedDate",
     ]
     private static let typeFields = commonFields.union([
         "pluralName", "iconName", "iconOption", "recommendedLayout", "recommendedRelations",
