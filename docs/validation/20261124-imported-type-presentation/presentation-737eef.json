@@ -1,0 +1,156 @@
+{
+  "sourceCommit": "737eef856c5e484b4762af49930101634057dad0",
+  "sourceFiles": {
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedTypePresentation.swift": "8b24b000c89446f40238ac1d7a673e5473025df82aff5e94de1df1a86927dc4f",
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift": "1a9daf2192fade2b89941098b68a2842cefc07257462b18316db27326e082088",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeImportedTypePresentationTests.swift": "d60b3aad1346a5ac4f06e8ee2d9cc0b2116b8ea45acbe065d97a8f996ce70f5a"
+  },
+  "host": "host_299cf75f6b338ecd",
+  "startedAt": "2026-11-24T21:41:52.449030+00:00",
+  "command": [
+    "runuser",
+    "-u",
+    "ubuntu",
+    "--",
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-imported-type-presentation-20261124/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/mnt/development/projects/worktrees/anytype-semantic-migration-20261124/Modules/PinkhaAnyHost/.build",
+    "--jobs",
+    "1",
+    "--skip-update",
+    "--filter",
+    "NativeImportedTypePresentationTests/testImportedTypeOrderAndDefaultsPreserveCanonicalTitleAndPresentEmptyValues|NativeImportedTypePresentationTests/testFirstVisibilityWriteMaterializesDefaultsAndAnExplicitShowSurvivesReopen|NativeImportedTypePresentationTests/testExplicitEmptyPreferencesAndFutureKeysOverrideDefaultsWithoutChangingPolicy|NativeImportedTypePresentationTests/testUnsupportedLayoutsAmbiguousPairsAndForeignOwnersCannotChangePresentation|NativeImportedTypePresentationTests/testDefinitionHiddenPreservesCanonicalTitleAndExplicitPreferencesAcrossReopen|NativeImportedTypePresentationTests/testPresentationDefaultsGrantNoWriteAuthorityAndPreserveTheNativeFence|NativePropertyStoreTests/testRawUnknownNamespacesAndNativeDerivedMetadataSurviveProjection|NativePropertyStoreTests/testVisibilityPreservesFutureKeysAndChangesOnlyPreferenceNamespace|NativePropertyStoreTests/testReaderSnapshotCannotPrepareAnyMutation"
+  ],
+  "expectedTestMethods": 9,
+  "scope": "six imported-presentation controls and three affected existing property-store controls",
+  "approvedOverlap": "separate-cache Page protobuf compilation job_adbbcd5fd21c; one job per process; no performance comparison",
+  "minimumMemoryGuardBytes": 1073741824,
+  "memoryGuardSustainedSeconds": 15,
+  "timeoutSeconds": 570,
+  "finishedAt": "2026-11-24T21:43:57.508247+00:00",
+  "durationSeconds": 125.06,
+  "returnCode": 0,
+  "stopReason": null,
+  "status": "PASS",
+  "passedMethods": [
+    "NativeImportedTypePresentationTests.testDefinitionHiddenPreservesCanonicalTitleAndExplicitPreferencesAcrossReopen",
+    "NativeImportedTypePresentationTests.testExplicitEmptyPreferencesAndFutureKeysOverrideDefaultsWithoutChangingPolicy",
+    "NativeImportedTypePresentationTests.testFirstVisibilityWriteMaterializesDefaultsAndAnExplicitShowSurvivesReopen",
+    "NativeImportedTypePresentationTests.testImportedTypeOrderAndDefaultsPreserveCanonicalTitleAndPresentEmptyValues",
+    "NativeImportedTypePresentationTests.testPresentationDefaultsGrantNoWriteAuthorityAndPreserveTheNativeFence",
+    "NativeImportedTypePresentationTests.testUnsupportedLayoutsAmbiguousPairsAndForeignOwnersCannotChangePresentation",
+    "NativePropertyStoreTests.testRawUnknownNamespacesAndNativeDerivedMetadataSurviveProjection",
+    "NativePropertyStoreTests.testReaderSnapshotCannotPrepareAnyMutation",
+    "NativePropertyStoreTests.testVisibilityPreservesFutureKeysAndChangesOnlyPreferenceNamespace"
+  ],
+  "failedMethods": [],
+  "sourcesUnchanged": true,
+  "logSHA256": "392c59f873221d1e68a403196e9450d11c30a9acfe968c53ce1f1ef55c122f9c",
+  "logBytes": 5335,
+  "minimumMemAvailableBytes": 4264054784,
+  "samples": [
+    {
+      "elapsedSeconds": 0.0,
+      "memAvailableBytes": 4988739584
+    },
+    {
+      "elapsedSeconds": 5.0,
+      "memAvailableBytes": 4838629376
+    },
+    {
+      "elapsedSeconds": 10.0,
+      "memAvailableBytes": 4782407680
+    },
+    {
+      "elapsedSeconds": 15.0,
+      "memAvailableBytes": 4813099008
+    },
+    {
+      "elapsedSeconds": 20.0,
+      "memAvailableBytes": 4856229888
+    },
+    {
+      "elapsedSeconds": 25.0,
+      "memAvailableBytes": 4807143424
+    },
+    {
+      "elapsedSeconds": 30.0,
+      "memAvailableBytes": 4805681152
+    },
+    {
+      "elapsedSeconds": 35.01,
+      "memAvailableBytes": 4895612928
+    },
+    {
+      "elapsedSeconds": 40.01,
+      "memAvailableBytes": 4878110720
+    },
+    {
+      "elapsedSeconds": 45.01,
+      "memAvailableBytes": 5017497600
+    },
+    {
+      "elapsedSeconds": 50.01,
+      "memAvailableBytes": 4780490752
+    },
+    {
+      "elapsedSeconds": 55.01,
+      "memAvailableBytes": 4705665024
+    },
+    {
+      "elapsedSeconds": 60.01,
+      "memAvailableBytes": 4701622272
+    },
+    {
+      "elapsedSeconds": 65.01,
+      "memAvailableBytes": 4748546048
+    },
+    {
+      "elapsedSeconds": 70.01,
+      "memAvailableBytes": 4776427520
+    },
+    {
+      "elapsedSeconds": 75.01,
+      "memAvailableBytes": 4718161920
+    },
+    {
+      "elapsedSeconds": 80.01,
+      "memAvailableBytes": 4605878272
+    },
+    {
+      "elapsedSeconds": 85.01,
+      "memAvailableBytes": 4610842624
+    },
+    {
+      "elapsedSeconds": 90.02,
+      "memAvailableBytes": 4523089920
+    },
+    {
+      "elapsedSeconds": 95.02,
+      "memAvailableBytes": 4389261312
+    },
+    {
+      "elapsedSeconds": 100.02,
+      "memAvailableBytes": 4611055616
+    },
+    {
+      "elapsedSeconds": 105.02,
+      "memAvailableBytes": 4331220992
+    },
+    {
+      "elapsedSeconds": 110.02,
+      "memAvailableBytes": 4607983616
+    },
+    {
+      "elapsedSeconds": 115.02,
+      "memAvailableBytes": 4353224704
+    },
+    {
+      "elapsedSeconds": 120.02,
+      "memAvailableBytes": 4264054784
+    }
+  ]
+}
