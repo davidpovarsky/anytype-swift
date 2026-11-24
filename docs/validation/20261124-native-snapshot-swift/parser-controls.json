@@ -1,0 +1,31 @@
+{
+  "source": "025ca15eb104e1d331a83ab191a5762d7c19d6ba",
+  "scope": "SYNTHETIC_WIRE_PARSER_AND_SEMANTIC_CONTROLS_NOT_NATIVE_SOURCE_ADMISSION",
+  "start": "2026-11-24T18:04:57.214694+00:00",
+  "command": [
+    "runuser",
+    "-u",
+    "ubuntu",
+    "--",
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-native-snapshot-view-20261124/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/mnt/development/projects/worktrees/anytype-semantic-migration-20261124/Modules/PinkhaAnyHost/.build",
+    "--jobs",
+    "1",
+    "--filter",
+    "NativeSnapshotViewTests"
+  ],
+  "sourceFiles": {
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeSnapshotView.swift": "8128c8e00ff10f4904ea1bf1638741a0de1d68565b8a2e30f9a8b5c97ebfc0d0",
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartInlineProjection.swift": "ecd9e751715263ab6c592be9d2cf22129d5e295c5b7510595ff5886d630529fe",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeSnapshotViewTests.swift": "e8d5e14532e65ccc403ad126bb387ff9b15ae8d8442aee83b4ef927f8f0385c0"
+  },
+  "expectedMethods": 6,
+  "exit": 0,
+  "finish": "2026-11-24T18:06:29.674829+00:00",
+  "sourceUnchanged": true,
+  "logSHA256": "e6cf7f30ef3197ed0bb6a6e43c5dc5ea5c611678e59081d3249f6cc89d9f96a5"
+}
