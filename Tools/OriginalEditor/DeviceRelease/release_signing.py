@@ -16,6 +16,7 @@ def thin_layout(raw, executable, platform_name):
             and 0 < count <= 128 and 32 + size <= len(raw),
             'Expected a generated thin arm64 Release dynamic framework')
     cursor, signature, linkedit, platforms, names, commands = 32, None, None, [], [], []
+    file_backed_sections = []
     for _ in range(count):
         require(cursor + 8 <= 32 + size, 'Truncated Release load command')
         code, length = struct.unpack_from('<II', raw, cursor)
@@ -23,6 +24,25 @@ def thin_layout(raw, executable, platform_name):
                 'Invalid Release load command bounds')
         if code == 0x19:
             require(length >= 72, 'Truncated Release segment')
+            section_count = struct.unpack_from('<I', raw, cursor + 64)[0]
+            require(length == 72 + 80 * section_count, 'Invalid Release section command bounds')
+            segment_fileoff, segment_filesize = struct.unpack_from('<2Q', raw, cursor + 40)
+            require(segment_fileoff + segment_filesize <= len(raw), 'Release segment escapes its file')
+            for section_index in range(section_count):
+                section = cursor + 72 + section_index * 80
+                section_size = struct.unpack_from('<Q', raw, section + 40)[0]
+                section_offset = struct.unpack_from('<I', raw, section + 48)[0]
+                section_type = struct.unpack_from('<I', raw, section + 64)[0] & 0xff
+                # S_ZEROFILL, S_GB_ZEROFILL, S_THREAD_LOCAL_ZEROFILL occupy
+                # virtual memory only. Every nonempty file-backed section
+                # bounds header padding even when all its bytes happen to be 0.
+                if section_type not in {0x1, 0xc, 0x12} and section_size:
+                    require(32 + size <= section_offset
+                            and segment_fileoff <= section_offset
+                            and section_offset + section_size <= segment_fileoff + segment_filesize,
+                            'Release file-backed section overlaps commands or escapes its segment')
+                    file_backed_sections.append({'command': section, 'offset': section_offset,
+                                                 'bytes': section_size, 'type': section_type})
             if raw[cursor + 8:cursor + 24].split(b'\0', 1)[0] == b'__LINKEDIT':
                 require(linkedit is None and struct.unpack_from('<I', raw, cursor + 64)[0] == 0,
                         'Ambiguous or sectional Release LINKEDIT')
@@ -51,7 +71,10 @@ def thin_layout(raw, executable, platform_name):
         require(signature['allocated'] > 0 and signature['offset'] > linkedit['fileoff']
                 and signature['offset'] + signature['allocated'] == len(raw),
                 'Release signature is not a terminal allocation')
-    return {'header': header, 'commands': commands, 'linkedit': linkedit, 'signature': signature}
+    require(file_backed_sections, 'Release image has no original file-backed code/data section')
+    return {'header': header, 'commands': commands, 'linkedit': linkedit, 'signature': signature,
+            'file_backed_sections': file_backed_sections,
+            'first_file_backed_section': min(v['offset'] for v in file_backed_sections)}
 
 
 def preserve_thin(before, after, executable, platform_name):
@@ -83,6 +106,8 @@ def preserve_thin(before, after, executable, platform_name):
                 and new['header'][4] == old['header'][4] + 1
                 and new['header'][5] == old['header'][5] + 16
                 and before[command_offset:command_offset + 16] == bytes(16)
+                and command_offset + 16 <= old['first_file_backed_section']
+                and old['file_backed_sections'] == new['file_backed_sections']
                 and new_signature['offset'] == (len(before) + 15) // 16 * 16,
                 'New Release signature changed nonempty header/code storage')
         end = new_signature['offset']

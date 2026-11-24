@@ -174,6 +174,9 @@ class ReleaseGraphControls(unittest.TestCase):
 
 def synthetic_image(platform_number, signature=True, signature_bytes=64):
     # A deliberately small structural fixture, never an actual executable.
+    text = struct.pack('<II16s4Q4I', 0x19, 152, b'__TEXT', 0, 512, 0, 512, 5, 5, 1, 0)
+    text += struct.pack('<16s16sQQ8I', b'__text', b'__TEXT', 384, 128,
+                        384, 2, 0, 0, 0x80000400, 0, 0, 0)
     linkedit = bytearray(72)
     struct.pack_into('<II16s4Q4I', linkedit, 0, 0x19, 72, b'__LINKEDIT', 0x4000, 16384,
                      512, 64 + (signature_bytes if signature else 0), 1, 1, 0, 0)
@@ -182,7 +185,7 @@ def synthetic_image(platform_number, signature=True, signature_bytes=64):
     length = (24 + len(name) + 7) // 8 * 8
     install = struct.pack('<6I', 0xd, length, 24, 0, 0, 0) + name + bytes(length - 24 - len(name))
     uuid_command = struct.pack('<II16s', 0x1b, 24, bytes(range(16)))
-    commands = [bytes(linkedit), build, install, uuid_command]
+    commands = [text, bytes(linkedit), build, install, uuid_command]
     if signature:
         commands.append(struct.pack('<4I', 0x1d, 16, 576, signature_bytes))
     raw_commands = b''.join(commands)
@@ -205,7 +208,7 @@ class ReleaseSigningControls(unittest.TestCase):
 
     def test_changed_code_uuid_platform_or_install_name_is_refused(self):
         before = synthetic_image(2)
-        for offset in [400, 32 + 72 + 24 + 56 + 12, 32 + 72 + 8, 32 + 72 + 24 + 25]:
+        for offset in [400, 32 + 152 + 72 + 24 + 56 + 12, 32 + 152 + 72 + 8, 32 + 152 + 72 + 24 + 25]:
             after = bytearray(synthetic_image(2, signature_bytes=80))
             after[offset] ^= 1
             with self.assertRaises(RuntimeError):
@@ -217,6 +220,18 @@ class ReleaseSigningControls(unittest.TestCase):
         before[offset] = 1
         with self.assertRaises(RuntimeError):
             preserve_thin(bytes(before), synthetic_image(2), 'Fixture', 'iphoneos')
+
+    def test_zero_valued_real_section_cannot_be_reclassified_as_header_padding(self):
+        before = bytearray(synthetic_image(2, False))
+        after = bytearray(synthetic_image(2))
+        # Actual __text begins inside the would-be added command. Its bytes
+        # are zero in the unsigned fixture; a zeros-only test is insufficient.
+        for raw in [before, after]:
+            struct.pack_into('<Q', raw, 32 + 72 + 32, 368)
+            struct.pack_into('<Q', raw, 32 + 72 + 40, 144)
+            struct.pack_into('<I', raw, 32 + 72 + 48, 368)
+        with self.assertRaisesRegex(RuntimeError, 'section overlaps commands'):
+            preserve_thin(bytes(before), bytes(after), 'Fixture', 'iphoneos')
 
 
 if __name__ == '__main__':

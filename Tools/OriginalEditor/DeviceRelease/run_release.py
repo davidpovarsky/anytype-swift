@@ -34,9 +34,11 @@ def preflight(root, evidence, execution, platform_name):
     sdk = command(['xcrun', '--sdk', platform_name, '--show-sdk-version'], root, evidence, 'actual-sdk', 30).strip()
     require(sdk.split('.')[0] == '27', 'Unreviewed actual Release SDK')
     sdk_path = command(['xcrun', '--sdk', platform_name, '--show-sdk-path'], root, evidence, 'actual-sdk-path', 30).strip()
+    swift = command(['xcrun', 'swiftc', '--version'], root, evidence, 'actual-swift', 30).strip()
+    require(swift, 'Actual Release Swift toolchain observation is absent')
     result = {'status': 'PREFLIGHT_PASS_UI_NOT_RUN', 'source_sha': execution['source_sha'],
               'run_id': execution['execution_id'], 'run_attempt': '1', 'platform': platform_name,
-              'xcode': xcode, 'sdk': sdk, 'sdk_path': sdk_path, 'selected': {}}
+              'xcode': xcode, 'swift': swift, 'sdk': sdk, 'sdk_path': sdk_path, 'selected': {}}
     write(evidence / 'preflight.json', result)
     if platform_name == 'iphonesimulator':
         sys.path.insert(0, str(root / 'Tools/PinkhaSimulatorGate'))
@@ -182,7 +184,7 @@ def execute(args, receipt, execution, descriptor, control):
     write(evidence / 'original-hanlin-snapshot.json', hanlin)
     profile = read_manifest()
     checked = preflight(root, evidence, execution, args.platform)
-    receipt['preflight'] = checked
+    receipt.update(preflight=checked, xcode=checked['xcode'], swift=checked['swift'], sdk=checked['sdk'])
     work.mkdir()
     derived = work / 'producer-derived'
     destination = ('platform=iOS Simulator,id=' + checked['selected']['ipad']['udid']
@@ -310,6 +312,51 @@ def cleanup_owned_simulator(root, evidence, execution):
     return {'status': 'PASS', 'udid': udid, 'name': name, 'owned_simulator_removed': True}
 
 
+def production_configuration_facts(root, exported, receipt):
+    """Derive observed facts and the separate original Host version contract."""
+    from clang_product_closure import read_clang_imports
+    from product_inventory import inventory
+    require(receipt['status'] in {SIMULATOR_PASS, DEVICE_PASS} and receipt['phase'] == 'COMPLETE'
+            and receipt.get('owned_command_groups_drained') is True,
+            'Only terminal actual Release acceptance can produce Host configuration facts')
+    owner = receipt['shared_runtime_ownership']
+    require(owner['status'] == 'PASS_OBSERVED_SINGLE_SHARED_IMPLEMENTATIONS'
+            and owner['producer'] == {k: receipt[k] for k in ['source_sha', 'run_id', 'run_attempt']},
+            'Actual Release shared implementation owner differs')
+    contract_path = root / 'Tools/OriginalEditor/SharedRuntime/dependencies.json'
+    require(digest(contract_path) == owner['dependency_contract_sha256'], 'Original shared dependency contract changed')
+    dependencies = json.loads(contract_path.read_text())['dependencies']
+    observed = owner['root_dependency_revisions']
+    require(observed == {key: {'version': value['version'], 'revision': value['revision']}
+                         for key, value in dependencies.items()},
+            'Actual observed shared package versions differ from the original contract')
+    host_pods = {}
+    for value in dependencies.values():
+        for pod in value['host_pods']:
+            require(pod not in host_pods, 'Ambiguous original Host Pod mapping')
+            # Host Pod versions are a reviewed contract, not an observation of
+            # installed Host Pods. The source-equivalent nanopb mapping retains
+            # its explicit original 2.x-SDK / 3.x-Host distinction.
+            host_pods[pod] = value.get('host_pod_version', value['version'])
+    clang_path = exported / 'SourceProvenance/ClangImportContext.json'
+    clang_identity = {k: receipt[k] for k in ['source_sha', 'run_id', 'run_attempt']}
+    clang_identity.update(original_package_lock_sha256=digest(exported / 'SourceProvenance/Original-Package.resolved'),
+                          manifest_sha256=digest(clang_path))
+    roots = read_clang_imports(exported, clang_identity)
+    require(all(receipt.get(key) == receipt['preflight'].get(key)
+                and isinstance(receipt.get(key), str) and receipt[key]
+                for key in ['xcode', 'swift', 'sdk']), 'Actual Release toolchain observations differ')
+    return {'toolchain': {'xcode': receipt['xcode'], 'swift': receipt['swift'], 'sdk_version': receipt['sdk']},
+        'distribution_files': inventory(exported),
+        'shared_runtime': {'kind': 'original-shared-implementations/1',
+            'host_products': owner['shared_host_products'], 'host_pod_versions': host_pods,
+            'hanlin_revision': owner['hanlin_source_revision'], 'swift_ai_revision': owner['shared_swift_ai_sdk_revision'],
+            'clang_manifest_sha256': digest(clang_path), 'clang_roots': roots},
+        'host_pod_versions_scope': 'REVIEWED_HOST_CONTRACT_NOT_INSTALLED_HOST_OBSERVATION',
+        'status': 'QUALIFIED_LOCAL_RELEASE_SDK_INPUT_REQUIRES_COMMITTED_ADMISSION',
+        'native_stageb_qualified': False, 'physical_device_qualified': False}
+
+
 def package(args, receipt, descriptor):
     from product_inventory import inventory
     root, evidence, exported = args.root, args.evidence, Path(receipt['distribution'])
@@ -346,6 +393,7 @@ def package(args, receipt, descriptor):
         'hanlin_source_sha256': digest(evidence / 'original-hanlin-snapshot.json'),
         'local_receipts': {k: {'path': p.relative_to(root).as_posix(), 'bytes': p.stat().st_size,
                                'sha256': digest(p)} for k, p in roles.items()}}
+    config.update(production_configuration_facts(root, exported, receipt))
     if args.platform == 'iphoneos':
         require(re.fullmatch(r'[A-Z0-9]{10}', args.signing_team_id or ''), 'Missing reviewed public Host signing team')
         config['signing_team_id'] = args.signing_team_id
