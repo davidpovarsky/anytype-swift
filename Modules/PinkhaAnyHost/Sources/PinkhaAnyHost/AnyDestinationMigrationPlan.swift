@@ -310,8 +310,10 @@ public struct AnyDestinationMigrationPlan: Codable, Sendable {
                 }
             }
             switch item.operation {
-            case .propertyDefinition(let owner, _, _, _, _, _, _, _), .partDefinition(let owner, _):
+            case .propertyDefinition(let owner, _, _, _, _, _, _, _):
                 try mappedOwner(owner, kinds: ["typeDefinition", "collectionDefinition"])
+            case .partDefinition(let owner, _):
+                try mappedOwner(owner, kinds: ["typeDefinition"])
             case .editorBlock(let owner, _, _, _, _, _, _), .file(let owner, _, _, _, _):
                 try mappedOwner(owner, kinds: ["object"])
             case .propertyUpdate(let object, let owner, let patch):
