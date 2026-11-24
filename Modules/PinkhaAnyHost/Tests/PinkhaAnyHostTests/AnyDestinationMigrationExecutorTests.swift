@@ -349,6 +349,10 @@ private actor DestinationFixtureDriver: AnyDestinationNativeDriving {
             "specSHA256": .string(intent.identity.sha), "fingerprint": .string(AnyContentDigest.sha256(intent.identity.spec)),
             "stage": .string(stage), "outcome": .string("prepared"), "objectId": .string(object),
             "changeId": .string("signed-" + intent.identity.id), "recordIds": .array(records.map(AnyJSON.string))]
+        if ["typeDefinition", "collectionDefinition", "object"].contains(kind) {
+            // The signed root CID is also the native object's identity.
+            value["changeId"] = .string(object)
+        }
         value.merge(extra) { _, b in b }; return value
     }
 }
