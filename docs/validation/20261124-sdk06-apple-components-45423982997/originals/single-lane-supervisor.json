@@ -1,0 +1,122 @@
+{
+  "cleanup": {
+    "action": "cleanup",
+    "attempted_creations": 2,
+    "cleanup_admitted_intent_sha256": "d0a8e328d910b3773420e5c2a0ef7377a9c27d95b08a1eea4de7886e5c8a52e1",
+    "fallback_cleanup": {
+      "devices": [
+        {
+          "delete_exit_code": 0,
+          "name": "Pinkha-UI27-45423982997-iphone",
+          "status": "DELETED_OWNED_SIMULATOR",
+          "udid": "23D72F83-9C42-4B27-9CF2-3DF171AD3FA7"
+        },
+        {
+          "delete_exit_code": 0,
+          "name": "Pinkha-UI27-45423982997-ipad",
+          "shutdown_exit_code": 0,
+          "status": "DELETED_OWNED_SIMULATOR",
+          "udid": "18F05D2E-3B4F-4CE5-A126-F295C837C493"
+        }
+      ],
+      "finished_at": "2026-11-24T15:24:47.518884+00:00",
+      "inventory_queries": [
+        {
+          "elapsed_seconds": 0.123235,
+          "selector": "23D72F83-9C42-4B27-9CF2-3DF171AD3FA7",
+          "selector_kind": "OWNED_UDID",
+          "status": "RETURNED_VALID_SCOPED_INVENTORY",
+          "timeout_seconds": 120
+        },
+        {
+          "elapsed_seconds": 0.125016,
+          "selector": "18F05D2E-3B4F-4CE5-A126-F295C837C493",
+          "selector_kind": "OWNED_UDID",
+          "status": "RETURNED_VALID_SCOPED_INVENTORY",
+          "timeout_seconds": 120
+        }
+      ],
+      "started_at": "2026-11-24T15:24:43.740879+00:00",
+      "status": "PASS"
+    },
+    "fallback_cleanup_sha256": "b2ecf1819b70312467c5c1d9ef62ce899cc825f6a7b4054075862afa34e34cd4",
+    "finished_at": "2026-11-24T15:24:47.519504+00:00",
+    "intent_sha256": "d0a8e328d910b3773420e5c2a0ef7377a9c27d95b08a1eea4de7886e5c8a52e1",
+    "known_owned_udids": [
+      "23D72F83-9C42-4B27-9CF2-3DF171AD3FA7",
+      "18F05D2E-3B4F-4CE5-A126-F295C837C493"
+    ],
+    "prior_batch_cleanup_admission": {
+      "status": "SDK_PROFILE_REQUIRES_ITS_OWN_JOURNAL_CLEANUP"
+    },
+    "protocol": "pinkha-sdk06-qualified-preflight-v1",
+    "run_attempt": "1",
+    "run_id": "45423982997",
+    "source_sha": "95cd30c9e0d70fec368a1605a21b155a652a7afd",
+    "started_at": "2026-11-24T15:24:43.726467+00:00",
+    "status": "PASS"
+  },
+  "error": "Original lane has not passed",
+  "error_type": "RuntimeError",
+  "finished_at": "2026-11-24T15:24:47.520636+00:00",
+  "full_matrix_accepted": false,
+  "lane": "hanlin-native-shared-editor",
+  "original_evidence": {
+    "execution.json": "80102e5193fa9a524c925d4d41ce5ade71093d98a7e94c0c70a4f07e98f8cca8",
+    "single-lane-worker.command.json": "0c09d42db45e8120e13cfd8ead0511c5d6230a43fca3b51b2ff4317678cbdda8"
+  },
+  "original_worker_status": "FAIL",
+  "owned_group_quiescence": {
+    "absence_source": "KERNEL_ESRCH",
+    "budget_seconds": 10,
+    "kernel_group_observation": {
+      "after_monotonic": 17697.875263166,
+      "before_monotonic": 17697.875238375,
+      "deadline_monotonic": 17707.875229125,
+      "errno": 3,
+      "error_type": "ProcessLookupError",
+      "operation": "os.killpg",
+      "outcome": "ABSENT_ESRCH",
+      "pgid": 50121,
+      "signal": 0
+    },
+    "live_members": 0,
+    "observations": 0,
+    "pgid": 50121,
+    "status": "PASS",
+    "timeout_observations": []
+  },
+  "protocol": "pinkha-owned-single-lane-v1",
+  "release_accepted": false,
+  "run_attempt": "1",
+  "run_id": "45423982997",
+  "source_sha": "95cd30c9e0d70fec368a1605a21b155a652a7afd",
+  "started_at": "2026-11-24T15:19:55.622999+00:00",
+  "status": "FAIL",
+  "worker_command": {
+    "argv": [
+      "/opt/homebrew/opt/python@3.12/bin/python3.12",
+      "-B",
+      "/Users/m1/builds/actions-anytype/anytype-swift/anytype-swift/Tools/PinkhaSimulatorGate/sdk06_original_native_continuation.py",
+      "worker",
+      "--control",
+      "/Users/m1/builds/actions-anytype/anytype-swift/anytype-swift",
+      "--original-app",
+      "/Users/m1/builds/actions-anytype/anytype-swift/anytype-swift/build/sdk06-original-app",
+      "--work",
+      "/Users/m1/builds/actions-anytype/anytype-swift/anytype-swift/build/sdk06-original-native-work-45423982997-1",
+      "--evidence",
+      "/Users/m1/builds/actions-anytype/anytype-swift/anytype-swift/build/sdk06-original-native-evidence-45423982997-1",
+      "--derived",
+      "/Users/m1/builds/actions-anytype/anytype-swift/anytype-swift/build/sdk06-original-native-derived-45423982997-1",
+      "--component-projection"
+    ],
+    "finished_at": "2026-11-24T15:24:43.702364+00:00",
+    "owned_group_cleanup": "TERM_THEN_KILL",
+    "return_code": 1,
+    "started_at": "2026-11-24T15:19:55.623221+00:00",
+    "status": "WORKER_FAILED",
+    "timeout_seconds": 6300,
+    "worker_pid": 50121
+  }
+}
