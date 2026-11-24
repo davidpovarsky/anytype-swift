@@ -1,0 +1,147 @@
+{
+  "mode": "LOCAL_MACOS_ENGINE_REGRESSION",
+  "phase": "fixed",
+  "sourceCommit": "6bd6036dbca16c969689a5722550a54bebc1e851",
+  "baselineCommit": "f48bfc6596eebe491c982bbecbd01939bbce1ed1",
+  "originalProductionCommit": "116cc6be0654a5d11bc56ba00e0310031107ee36",
+  "sourceManifestSHA256": "dea308bed9cedcedbccee8ed6085d873626c88e1d490de200b9b096840fbd82a",
+  "candidateManifestSHA256": "4868cb52df82b755aa1c68754a1a29bde9f508ffde1ee47ad4cbe27ea06e0e3b",
+  "harnessManifestSHA256": "6168908358d68ee82b0630f9bf84ff3b6e25b9ab9e2a4ddd30d0afacb1bf03a9",
+  "baselineResultSHA256": "42847b6171c9dcda90cba847dc95f23c8c37dda99d0111426f7ad78e34bf54d0",
+  "baselineEvidenceFiles": {
+    "resolve.stderr": "4b74a963fee76c483c0307c23ae6790004ef80356b28223d5434503d4e1116b3",
+    "baseline.xml": "9e4c2c6737871f62faa30da17fad072a480a1fbfe5dce4f42f6b70f7e6b0b799",
+    "baseline-launch.json": "24ac28a781e15c7334e5222b66967a685d052045815c7d98c7311ad42e6e0e50",
+    "resolve.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "baseline.log": "de65774ddcdad4e538b4ea8bebad5b9d9e7795923118f3c4884940ed8097525f",
+    "baseline-result.json": "42847b6171c9dcda90cba847dc95f23c8c37dda99d0111426f7ad78e34bf54d0",
+    "baseline-active.json": "a26b034d8b025e6a900a4bf9a5dee3dd613038aafdd44c1e4b820dcd0ac73ff5"
+  },
+  "expectedCases": [
+    [
+      "HanlinChatCoreTests.HanlinCatalogReloadCancellationTests",
+      "cancellationDuringFinalCatalogLookupStopsBeforeAnotherProviderStep()"
+    ],
+    [
+      "HanlinChatCoreTests.HanlinTransientToolCatalogTests",
+      "restoredCatalogContinuesTheOriginalEmptyToolResult()"
+    ]
+  ],
+  "sourceBeforeCandidateApplication": {
+    "sourceFiles": 222,
+    "originalRegressionSHA256": "1f5f18df56420a7b9b41acfb67f9995d8c4596cc42609c75337f542fcf1de65a",
+    "originalPackageSHA256": "3f8cbcbad6b07b509a7976fe0577315481f25358ce34a01e505f2d1b04821066"
+  },
+  "frozenAuxiliaryInputs": {
+    "Packages/HanlinPlatform/.build/.buildSystem_debug": "cd1ba1c9604b794d71cd3cb482cc02e4c16bdea56c361333fabe801a74db2b90",
+    "Packages/HanlinPlatform/.build/.lock": "39525c7dc9ec716b58cffac93b2bc246e651e055c3f820a12e161755ea0b6988",
+    "Packages/HanlinPlatform/.build/CACHEDIR.TAG": "61833598201b8d9bb6a18003b6be9fd00ae014cfbd583253c1f23b746bf035d1",
+    "Packages/HanlinPlatform/.swiftpm/configuration/mirrors.json": "9086d4db30679663869b11e82b8a9996cdba06a9026eeaa33e059fc9b379689c"
+  },
+  "dependencyPins": {
+    "swift-ai-sdk": "e7bf34111e603ca977becd007dd4e5bb109af857",
+    "swift-argument-parser": "6a52f3251125d74daf04fcbd5e6f08a75d074382",
+    "swiftyjson": "b3dcd7dbd0d488e1a7077cb33b00f2083e382f07",
+    "zipfoundation": "02b6abe5f6eef7e3cbd5f247c5cc24e246efcfe0"
+  },
+  "appBuilds": 0,
+  "simulatorCreations": 0,
+  "nativeWrites": 0,
+  "providerIsMockFetch": true,
+  "startedAt": "2026-11-24T22:03:14.266752+00:00",
+  "capacity": {
+    "availableAndReclaimableBytes": 6803095552,
+    "pageBytes": 16384,
+    "compressedBytes": 799064064
+  },
+  "externalAppleActivity": [
+    {
+      "pid": 99217,
+      "pgid": 99217,
+      "cpu": 0.0,
+      "rssKB": 175488,
+      "exe": "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild"
+    }
+  ],
+  "overlapDeclared": true,
+  "throughputComparison": false,
+  "toolchain": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "xcode": "Xcode 27.0\nBuild version 27A266a",
+  "controllerSHA256": "f8a4badd3ad124a4f423e7bd2032c074900e9ff9569701e09be838c0e9e17ae9",
+  "capacityObservations": [],
+  "sourceBeforeExecution": {
+    "sourceFiles": 223,
+    "originalRegressionSHA256": "1f5f18df56420a7b9b41acfb67f9995d8c4596cc42609c75337f542fcf1de65a",
+    "originalPackageSHA256": "3f8cbcbad6b07b509a7976fe0577315481f25358ce34a01e505f2d1b04821066"
+  },
+  "command": [
+    "xcrun",
+    "swift",
+    "test",
+    "--package-path",
+    "/Users/m1/builds/hanlin-f48bfc6596ee-anytype-catalog/host-harness",
+    "--scratch-path",
+    "/Users/m1/builds/hanlin-f48bfc6596ee-anytype-catalog/host-build",
+    "--cache-path",
+    "/Users/m1/builds/hanlin-f48bfc6596ee-anytype-catalog/host-cache",
+    "--force-resolved-versions",
+    "--skip-update",
+    "--verbose",
+    "-j",
+    "1",
+    "--disable-xctest",
+    "--enable-swift-testing",
+    "--no-parallel",
+    "--filter",
+    "(HanlinTransientToolCatalogTests|HanlinCatalogReloadCancellationTests)",
+    "--xunit-output",
+    "/Users/m1/builds/hanlin-f48bfc6596ee-anytype-catalog/host-fixed-evidence/fixed.xml"
+  ],
+  "pid": 797,
+  "pgid": 797,
+  "commandExit": 0,
+  "cases": [
+    {
+      "attributes": {
+        "classname": "HanlinChatCoreTests.HanlinCatalogReloadCancellationTests",
+        "name": "cancellationDuringFinalCatalogLookupStopsBeforeAnotherProviderStep()",
+        "time": "0.00930625"
+      },
+      "failures": []
+    },
+    {
+      "attributes": {
+        "classname": "HanlinChatCoreTests.HanlinTransientToolCatalogTests",
+        "name": "restoredCatalogContinuesTheOriginalEmptyToolResult()",
+        "time": "0.001698833"
+      },
+      "failures": []
+    }
+  ],
+  "counts": {
+    "totalTestCount": 2,
+    "failedTests": 0,
+    "skippedTests": 0
+  },
+  "testability": {
+    "unchangedTestableImport": true,
+    "compilerFlagObserved": true,
+    "actualTwoMethodsExecuted": true
+  },
+  "status": "ACTUAL_FIXED_TWO_METHODS_PASS",
+  "ownedCommandExited": true,
+  "sourceAfter": {
+    "sourceFiles": 223,
+    "originalRegressionSHA256": "1f5f18df56420a7b9b41acfb67f9995d8c4596cc42609c75337f542fcf1de65a",
+    "originalPackageSHA256": "3f8cbcbad6b07b509a7976fe0577315481f25358ce34a01e505f2d1b04821066"
+  },
+  "sourceUnchangedDuringExecution": true,
+  "dependencyPinsAfter": {
+    "swift-ai-sdk": "e7bf34111e603ca977becd007dd4e5bb109af857",
+    "swift-argument-parser": "6a52f3251125d74daf04fcbd5e6f08a75d074382",
+    "swiftyjson": "b3dcd7dbd0d488e1a7077cb33b00f2083e382f07",
+    "zipfoundation": "02b6abe5f6eef7e3cbd5f247c5cc24e246efcfe0"
+  },
+  "originalBaselineEvidenceUnchanged": true,
+  "finishedAt": "2026-11-24T22:03:24.496497+00:00"
+}
