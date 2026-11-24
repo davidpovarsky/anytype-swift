@@ -1,6 +1,6 @@
 {
   "base": "c0c2ddb31e5488435b0bd1c7ede5666b03dae5ea",
-  "commonManifestSHA256": "b26a0355f040b8a582df7d48c9f22bb7c47cbe33d23760d4e520a569b63d6191",
+  "commonManifestSHA256": "ed67ea9a785dbfcea82eba5146d98970cda2a84567d899a5fd0af20cdf3a61c5",
   "excludedFactory": "AnytypeTests/SemanticAnchorPage154NativeAcceptanceTests/testActualPage154FactoryPublishesNativeAnchorIntoOpenedDocument",
   "freshSetupAcceptanceCredit": 0,
   "helperTrees": {
@@ -12,9 +12,9 @@
   },
   "inputs": {
     ".github/workflows/pinkha-current-page154-mounted.yml": {
-      "gitBlob": "3688c7311789d791f35017ad1a5328f8c4985548",
+      "gitBlob": "5c1139e95ea43b310c7f0409f6f097b7e7a5bf85",
       "gitMode": "100644",
-      "sha256": "419f942971e900de94a17b86b97abbc675885003174180b1440bd200f60f65ce"
+      "sha256": "6ddef3ba967bd86214bedd1549734cd74c077fccaa50209fbbf9f3e986ee7721"
     },
     "Tools/AnyEnginePort/continue_native_acceptance.py": {
       "gitBlob": "c1ba64b0a2a72e059a9b0abf5eac9ffd3d0968d8",
@@ -107,14 +107,19 @@
       "sha256": "46ec90e911ad622646bdf8fe3fdf67351ac7b576a66af7abb07e5a0e06051ab3"
     },
     "Tools/CurrentAppleValidation/current_execution.py": {
-      "gitBlob": "aa81d797bcd646d03eaea3333da127cfb0518005",
+      "gitBlob": "bf81c3ca7bb6647dc92a41286d9b0ee92ea926e6",
       "gitMode": "100644",
-      "sha256": "eafc05a212751bb644a96a0ad73bff139f8eff26cdcc59e1057bbf569f374593"
+      "sha256": "f60b005dd750143b0bf2fce84826a74b51e40de10a2e5292b4e36b0a03b5b6fa"
     },
     "Tools/CurrentAppleValidation/native_ui_failed.py": {
       "gitBlob": "7ddb774a228e5b54261f51322676c6db838b90cd",
       "gitMode": "100644",
       "sha256": "1c3a00a7cbf7af8553e942decf1cb7f7ead137dd3f38b2e859fc09ae281cf327"
+    },
+    "Tools/CurrentAppleValidation/owned_inventory_recovery.py": {
+      "gitBlob": "8946b82f02e93ab7fae3257ea90bfd77465e7fa9",
+      "gitMode": "100644",
+      "sha256": "ece048eee69c4866dd5bd6037e635077e804cfaaf0135764b54777dd3541a2ee"
     },
     "Tools/CurrentAppleValidation/page154_contract.py": {
       "gitBlob": "33ee328735bd30ebdccebd7f899187476d1a72c2",
@@ -122,9 +127,9 @@
       "sha256": "0b6d2cf343ae802c27426c1f2ca4bf14cac995090d8abe08646f72fdf2650eaa"
     },
     "Tools/CurrentAppleValidation/page154_current.py": {
-      "gitBlob": "6239a45dec16b16cc48c5eb52d99f78a3bbbc3fb",
+      "gitBlob": "77da49aecf68d6dac8a0ec2436e96ffb25934a9a",
       "gitMode": "100644",
-      "sha256": "a7384bc9ec75d44ce809ced7215e365973975dd924cdf51e318ef3091873effc"
+      "sha256": "b3ec82786ed6235381dd2aad5f70b659c8717f7b28ec46c9d13453a7c6ffdd8a"
     },
     "Tools/CurrentAppleValidation/release_return_rtl.py": {
       "gitBlob": "08eadf71f2070ee504bfbd029f62d0da5e8e4b30",
@@ -132,9 +137,9 @@
       "sha256": "85cc937924b99bd6cab2c9afa0e0186cd02af0d4879126e123bc8f73e6ebd8b0"
     },
     "Tools/CurrentAppleValidation/source-inputs.json": {
-      "gitBlob": "6856016b1556eb6d501795b8e9ab6d8f75218ebc",
+      "gitBlob": "c9b9d19072de927b932b7378b587f9b8c40765e9",
       "gitMode": "100644",
-      "sha256": "b26a0355f040b8a582df7d48c9f22bb7c47cbe33d23760d4e520a569b63d6191"
+      "sha256": "ed67ea9a785dbfcea82eba5146d98970cda2a84567d899a5fd0af20cdf3a61c5"
     },
     "Tools/PinkhaSemanticAnchor/native/core/block/editor/pinkha_semantic_anchor.go": {
       "gitBlob": "906178f33777c2a401ec8d8e4ed46fd857042035",
@@ -266,6 +271,24 @@
       "gitMode": "100644",
       "sha256": "2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00"
     }
+  },
+  "inventoryRecovery": {
+    "policy": "owned-inventory-timeout-v1",
+    "productTrees": {
+      "AnyTypeTests": "67d86e2e3199fe63f258f060089c62acb4b689a5",
+      "Anytype": "078147cfbfc8c8b839c7058bdf90d7744c61e3d8",
+      "Anytype.xcodeproj": "64541afaba0ae0596d00b3b6be8df3a6152c5dda",
+      "AnytypeNotificationServiceExtension": "56fa06e3f5fcfa06cc819dbc08c9b7c4307ccc8d",
+      "AnytypeShareExtension": "0a6e9c4a43fa602a1bb695b7c87efbcf2b149eb0",
+      "AnytypeTests": "a87703f6f46f4e2b3dba7532986ddf977e3bd697",
+      "AnytypeWidget": "1108084a01a1bb3127a40c9f8a148ccfaf97f48c",
+      "Distribution": "f5c1c8cf91690251977a9e027c5f61d268549d97",
+      "Modules": "0867b93e1a96a9da8a285463094f7b61b5363774",
+      "PinkhaStage1Acceptance": "4b14aa3bb6043355c035cfae98671d1d9cc6e21c",
+      "Scripts": "37fde5ac7e90e5bb82b247bf835911b85477830b",
+      "scripts": "7c1c4d6e9e6025ef745e0390cebcbb9ddd534be5"
+    },
+    "sourceCommit": "8dc5ee02db71517a5eb08535a6b266da62adfe30"
   },
   "limits": {
     "centralWorkflow": "Root-owned inline-job composition, outside this fixed source manifest",
