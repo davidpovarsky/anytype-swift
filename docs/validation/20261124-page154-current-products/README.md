@@ -1,6 +1,6 @@
 # Fresh Page154 products after the diagnosed startup/RTL repairs
 
-The fresh Page controller accepts a separately reviewed `currentProductRevision` with schemaVersion1, an exact ancestor sourceCommit, and the complete existing13 compiled-tree names. Every declared tree must match both that immutable source commit and the actual checked-out source. This does not replace the historical inventoryRecovery source or the older projection origins. Retained App admission still requires its original compiled inputs and must reject this product delta.
+The fresh Page controller accepts a separately reviewed `currentProductRevision` with schemaVersion1, an exact ancestor sourceCommit, and the complete existing12 compiled-tree names. Every declared tree must match both that immutable source commit and the actual checked-out source. This does not replace the historical inventoryRecovery source or the older projection origins. Retained App admission still requires its original compiled inputs and must reject this product delta.
 
 Root integration will bind merged product source `55b3fc52c98194acb9411d45f5f03c99e1919e2f` (four changed Swift files in Anytype only) and refresh actual helper hashes. Prior Page and SDK result/manifest versions retain their original source identities and failed/passed outcomes.
 
