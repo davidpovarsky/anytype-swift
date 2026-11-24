@@ -28,6 +28,9 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
         public let record: AnyDestinationReference
         public let canonicalBinding: AnyDestinationCanonicalPropertyBinding?
         public var isCanonicalName: Bool { canonicalBinding != nil }
+        /// nil preserves absence; a captured true value is represented in the
+        /// type's separate definitionHidden list, never in the title content.
+        public var sourceHidden: Bool? { relation.snapshot.details["isHidden"]?.bool }
         public var address: AnyDestinationValue {
             .object([.init(key: .native("ownerId"), value: .reference(owner)),
                      .init(key: .native("propertyId"), value: .reference(record))])
@@ -133,6 +136,18 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
                 continue
             }
             guard let ownerKey else { throw AnyHeartNativeDefinitionPlanError.missingDefinition(relation.objectID) }
+            if let hidden = relation.snapshot.details["isHidden"], hidden.bool == nil {
+                issues.append(.init(sourceObjectID: relation.objectID, field: "isHidden",
+                    reason: "invalid-definition-visibility-state")); continue
+            }
+            var inactive = false
+            for field in ["isArchived", "isReadonly"] {
+                if let state = relation.snapshot.details[field], state != .bool(false) {
+                    issues.append(.init(sourceObjectID: relation.objectID, field: field,
+                        reason: "definition-state-not-represented-by-mutable-native-property")); inactive = true
+                }
+            }
+            if inactive { continue }
             guard let shape = Self.shape(relation) else {
                 issues.append(.init(sourceObjectID: relation.objectID, field: "relationFormat",
                                     reason: "unsupported-native-format:\(relation.rawFormat)"))
@@ -223,6 +238,10 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
                 value: .literal(.string("pinkha-heart-native-type-presentation-v2"))))
             recommendations.append(.init(key: .native("sourceRecommendedLayout"),
                 value: .literal(definition.recommendedLayout.map(AnyJSON.integer) ?? .null)))
+            // Source relation visibility is independent of a type's ordered
+            // recommendedHiddenRelations. Preserve both concepts explicitly.
+            recommendations.append(.init(key: .native("definitionHidden"),
+                value: .array(properties.filter { $0.sourceHidden == true }.map(\.address))))
             for (field, ids) in [("recommended", definition.recommendedRelations),
                 ("featured", definition.featuredRelations), ("hidden", definition.hiddenRelations),
                 ("files", definition.fileRelations)] {

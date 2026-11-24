@@ -64,6 +64,9 @@ public struct AnyDestinationCanonicalPropertyBinding: Codable, Equatable, Sendab
     public let propertyID: String
     public let nativeContract: String
     public let nativeDescriptorSHA256: String
+    /// Visibility is retained independently of the native title value. The
+    /// imported type's definitionHidden addresses carry this display default.
+    public var sourceHidden: Bool? { evidence.snapshot.details["isHidden"]?.bool }
 
     // SDK e195f6/internal/types/any/any.go, admitted again through native HTTP
     // before the first executor mutation. No label-only inference is used.
@@ -89,7 +92,7 @@ public struct AnyDestinationCanonicalPropertyBinding: Codable, Equatable, Sendab
               d["relationFormatObjectTypes"] == .array([]),
               d["name"] == .string("Name"), d["description"] == .string("Name of the object"),
               d["isArchived"] == nil || d["isArchived"] == .bool(false),
-              d["isHidden"] == nil || d["isHidden"] == .bool(false),
+              d["isHidden"] == nil || d["isHidden"]?.bool != nil,
               d["isReadonly"] == nil || d["isReadonly"] == .bool(false), row.issues.isEmpty else {
             throw AnyDestinationMigrationError.invalidPlan("canonical native name contract")
         }
