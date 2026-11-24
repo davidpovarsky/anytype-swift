@@ -20,10 +20,10 @@ permissions:
 
 jobs:
   original-native-sdk06:
-    runs-on: xcode-27
+    runs-on: [self-hosted, macOS, ARM64, pinkha-scaleway-mac]
     timeout-minutes: 150
     env:
-      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
       PYTHONDONTWRITEBYTECODE: '1'
       GH_TOKEN: ${{ github.token }}
       SDK_WORK: build/sdk06-original-native-work-${{ github.run_id }}-${{ github.run_attempt }}
