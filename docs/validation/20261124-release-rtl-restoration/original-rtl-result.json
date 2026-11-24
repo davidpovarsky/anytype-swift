@@ -1,0 +1,46 @@
+{
+  "completeStageAcceptance": false,
+  "context": {
+    "profile": "release-return-rtl",
+    "repository": "davidpovarsky/anytype-swift",
+    "runAttempt": "1",
+    "runID": "45456314424",
+    "sourceCommit": "ee28c1f947f1524f0269e9f71c72f2b493528786"
+  },
+  "enumeration": {
+    "disabledCount": 901,
+    "enabled": [
+      "AnytypeTests/PinkhaStage1AcceptancePreparationTests/prepareRealApplicationState()"
+    ],
+    "observedTestPlan": "AnytypeTests"
+  },
+  "errors": [],
+  "firstFailure": {
+    "message": "Command '['xcodebuild', 'test-without-building', '-xctestrun', '/Users/m1/builds/actions-anytype/anytype-swift/anytype-swift/build/current-apple-release-return-rtl-45456314424-1/work/derived/Build/Products/Current-preparation.xctestrun', '-destination', 'platform=iOS Simulator,id=ECAD9766-7DD8-423C-80D5-D48EE90479EC', '-parallel-testing-enabled', 'NO', '-test-timeouts-enabled', 'YES', '-default-test-execution-time-allowance', '300', '-maximum-test-execution-time-allowance', '300', '-only-testing:AnytypeTests/PinkhaStage1AcceptancePreparationTests/prepareRealApplicationState()', '-resultBundlePath', '/Users/m1/builds/actions-anytype/anytype-swift/anytype-swift/build/current-apple-release-return-rtl-45456314424-1/evidence/preparation/original.xcresult', 'ARCHS=arm64', 'ONLY_ACTIVE_ARCH=YES', 'CODE_SIGNING_ALLOWED=YES', 'CODE_SIGNING_REQUIRED=YES', 'CODE_SIGN_IDENTITY=-', 'PROVISIONING_PROFILE_SPECIFIER=']' returned non-zero exit status 75.",
+    "type": "CalledProcessError"
+  },
+  "integrity": {
+    "complete": true,
+    "newDescriptors": {
+      "Current-preparation.xctestrun": {
+        "bytes": 6062,
+        "kind": "file",
+        "mode": 384,
+        "sha256": "b517c479a29c634c29af19bab3720899d997f6c09028521f2fb7de08e11f92c9"
+      },
+      "Current-return-controls.xctestrun": {
+        "bytes": 6261,
+        "kind": "file",
+        "mode": 384,
+        "sha256": "da7340c8deab7c6a21632469242b3005339faed84fdb1bd55a3306d58d0c7b7e"
+      }
+    },
+    "originalEntries": 5168
+  },
+  "partialNamed": {
+    "PinkhaStage1AcceptancePreparationTests/prepareRealApplicationState()": "Failed"
+  },
+  "stage": "preparation",
+  "status": "FAIL",
+  "testCommandInvoked": true
+}

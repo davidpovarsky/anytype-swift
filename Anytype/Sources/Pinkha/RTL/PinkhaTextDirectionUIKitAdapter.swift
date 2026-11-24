@@ -185,6 +185,44 @@ enum PinkhaTextDirectionUIKitAdapter {
         }
     }
 
+    /// UIKit can restore keyboard attributes after focus and selection callbacks.
+    /// Normalize only an empty automatic paragraph at the actual attribute write,
+    /// preserving all other typing and paragraph attributes without editing storage.
+    static func restoringEmptyTypingDirection(
+        _ attributes: [NSAttributedString.Key: Any],
+        in textView: UITextView
+    ) -> [NSAttributedString.Key: Any] {
+        guard textView.textStorage.length == 0, textView.markedTextRange == nil,
+              let context = writingContexts.object(forKey: textView)?.context,
+              !context.alignmentWasExplicit else { return attributes }
+        // A just-chosen explicit alignment can precede the document's next render.
+        if let blockId = context.blockId,
+           PinkhaTextDirectionPersistence.sessionExplicitAlignment(blockId: blockId) != nil {
+            return attributes
+        }
+        let decision = PinkhaWritingDirectionPolicy.resolve(PinkhaWritingDirectionInput(
+            isEmpty: true,
+            interfaceDirection: effectiveInterfaceDirection(for: textView),
+            detectedTextDirection: nil,
+            persistedAlignment: context.persistedAlignment,
+            alignmentWasExplicit: false
+        ))
+        let alignment = decision.alignment.nsTextAlignment
+        guard alignment != .center && alignment != .justified else { return attributes }
+        let direction: NSWritingDirection = decision.baseWritingDirection == .rightToLeft
+            ? .rightToLeft : .leftToRight
+        let original = attributes[.paragraphStyle] as? NSParagraphStyle
+        guard original?.alignment != alignment || original?.baseWritingDirection != direction else {
+            return attributes
+        }
+        let paragraph = original?.mutableCopy() as? NSMutableParagraphStyle ?? NSMutableParagraphStyle()
+        paragraph.alignment = alignment
+        paragraph.baseWritingDirection = direction
+        var restored = attributes
+        restored[.paragraphStyle] = paragraph
+        return restored
+    }
+
     static func prepareForEditing(in textView: UITextView) {
         guard let context = writingContexts.object(forKey: textView)?.context else { return }
         if textView.textStorage.length == 0 {
