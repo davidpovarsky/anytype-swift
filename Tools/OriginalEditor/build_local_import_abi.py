@@ -150,7 +150,7 @@ def execute(args, result):
     native = proofs['final_native_rpc_union']
     counts = {'native9': 9, 'rpc9': 9, 'cancel_panic': 1, 'bundled_semantic': 6,
               'schema_closure': 11, 'relation_target_closure': 12,
-              'imported_creation_date': 6}
+              'imported_creation_date': 6, 'bounded_native_metadata': 6}
     require(native.get('status') == 'PASS' and native['counts'] == {
         key: {'passes': count, 'failures': 0, 'skipped': 0, 'not_run': 0} for key, count in counts.items()}
             and native['source_module_link_stability'] == 'PASS' and native['owned_command_groups_drained'],
