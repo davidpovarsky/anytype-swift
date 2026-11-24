@@ -66,6 +66,12 @@ def instant(value):
 
 
 def validate_producer(producer):
+    if os.environ.get('OTZARIA_LOCAL_EXECUTION'):
+        from local_execution import current_identity
+        identity = current_identity()
+        require(producer == {key: identity[key] for key in ['source_sha', 'run_id', 'run_attempt']},
+                'Capture differs from the actual local producer')
+        return
     require(isinstance(producer, dict) and re.fullmatch(r'[0-9a-f]{40}', producer.get('source_sha', ''))
             and re.fullmatch(r'[1-9][0-9]*', producer.get('run_id', ''))
             and producer.get('run_attempt') == '1'

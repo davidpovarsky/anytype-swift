@@ -14,6 +14,7 @@ import time
 from framework_profile import BRANCH, REPOSITORY, sha256
 from product_inventory import inventory
 from runtime_continuation_observation import retain_signed_consumer
+from local_execution import current_identity
 
 
 def require(condition, message):
@@ -22,6 +23,20 @@ def require(condition, message):
 
 
 def current_producers(source, environment):
+    identity = current_identity(environment)
+    if identity['producer_kind'] == 'local-mac':
+        require(source.get('head_sha') == identity['source_sha']
+                and source.get('run_id') == identity['run_id']
+                and source.get('run_attempt') == identity['run_attempt']
+                and source.get('execution_identity') == identity,
+                'Signed consumer differs from the actual local producer')
+        consumer = {'repository': REPOSITORY, 'producer_kind': 'local-mac',
+                    'control_sha': source['head_sha'], 'execution_id': identity['run_id'],
+                    'local_execution_sha256': identity['local_execution_sha256'],
+                    'host': identity['local_execution']['host']}
+        framework = dict(consumer)
+        framework['source_sha'] = framework.pop('control_sha')
+        return consumer, framework
     require(source.get('head_sha') == environment.get('GITHUB_SHA')
             and re.fullmatch(r'[0-9a-f]{40}', source.get('head_sha', ''))
             and source.get('run_id') == environment.get('GITHUB_RUN_ID')

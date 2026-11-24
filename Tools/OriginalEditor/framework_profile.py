@@ -8,6 +8,7 @@ import subprocess
 
 from pbx_source import loads, object_text, require
 from generated_import_source import verify_generated_source
+from local_execution import current_identity
 
 BRANCH = 'codex/otzaria-original-editor-complete-framework-20261123'
 REPOSITORY = 'davidpovarsky/anytype-swift'
@@ -195,7 +196,13 @@ def source_observation(root, environment=None):
     profile = read_manifest()
     root = Path(root).resolve()
     head = git(root, 'rev-parse', 'HEAD')
-    require(environment.get('GITHUB_REPOSITORY') == REPOSITORY
+    identity = current_identity(environment)
+    if identity['producer_kind'] == 'local-mac':
+        require(identity['source_sha'] == head
+                and identity['local_execution']['root'] == str(root),
+                'Local framework producer does not own this exact checkout')
+    else:
+        require(environment.get('GITHUB_REPOSITORY') == REPOSITORY
             and environment.get('GITHUB_EVENT_NAME') == 'push'
             and environment.get('GITHUB_REF') == 'refs/heads/' + BRANCH
             and environment.get('GITHUB_WORKFLOW_REF') == REPOSITORY + '/.github/workflows/pinkha-original-editor-framework.yml@refs/heads/' + BRANCH
@@ -203,8 +210,8 @@ def source_observation(root, environment=None):
             and re.fullmatch(r'[0-9a-f]{40}', head)
             and re.fullmatch(r'[1-9][0-9]*', environment.get('GITHUB_RUN_ID', ''))
             and re.fullmatch(r'[1-9][0-9]*', environment.get('GITHUB_RUN_ATTEMPT', '')),
-            'Framework qualification requires the exact reviewed owned push/ref/run/head')
-    require(git(root, 'branch', '--show-current') == BRANCH, 'Wrong actual framework checkout branch')
+                'Framework qualification requires the exact reviewed owned push/ref/run/head')
+        require(git(root, 'branch', '--show-current') == BRANCH, 'Wrong actual framework checkout branch')
     require(not git(root, 'diff', '--name-only', 'HEAD'), 'Tracked framework source changed')
     require(not git(root, 'status', '--porcelain', '--untracked-files=all', '--',
                     'Anytype/Sources', 'Anytype/Resources', 'Modules', 'OriginalEditorFramework',
@@ -261,7 +268,8 @@ def source_observation(root, environment=None):
             if 'Bundle.main' in line or 'Bundle(for:' in line or 'Anytype.' in line:
                 package_main_uses.append({'path': path, 'line': number, 'source': line.strip()})
     return {'schema': 1, 'status': 'SOURCE_BOUND_FRAMEWORK_RUNTIME_NOT_RUN',
-            'head_sha': head, 'run_id': environment['GITHUB_RUN_ID'], 'run_attempt': environment['GITHUB_RUN_ATTEMPT'],
+            'head_sha': head, 'run_id': identity['run_id'], 'run_attempt': identity['run_attempt'],
+            'execution_identity': identity,
             'reviewed_complete_source_sha': continuation['reviewed_source_sha'],
             'original_trees': trees, 'generated_import_source': generated_source,
             'project': project, 'source_inputs': records,

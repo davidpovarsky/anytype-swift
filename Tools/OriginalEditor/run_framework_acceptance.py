@@ -34,6 +34,7 @@ from pbx_source import require
 from framework_install_names import verify_framework_install_name, verify_consumer_install_name
 from consumer_failure_capture import prepare_launch_capture, combine_launch_help, read_regular
 from framework_consumer_retention import retain_built_consumer
+from local_execution import current_identity
 
 
 def write(path, value):
@@ -249,15 +250,24 @@ def execute(args, receipt):
     require(preflight.get('status') == 'PREFLIGHT_PASS_UI_NOT_RUN'
             and preflight.get('source_sha') == before['head_sha'] and preflight.get('run_id') == before['run_id']
             and preflight.get('run_attempt') == before['run_attempt'], 'Original actual Xcode/OS27 preflight differs')
-    installation = json.loads((evidence / 'heart/heart-installation.json').read_text())
-    require(installation.get('status') == 'PASS' and installation.get('app_source_sha') == before['head_sha']
-            and installation.get('source_run_id') == '44203168617', 'Original Heart producer/install identity differs')
-    heart = json.loads((root / 'Dependencies/Middleware/PinkhaNativeHeartBuild.json').read_text())
-    require(heart.get('status') == 'PASS' and heart.get('marker') == installation['marker'], 'Installed Heart marker differs')
-    for item in heart['artifacts']:
-        member = root / 'Dependencies/Middleware/Lib.xcframework' / item['path']
-        require(member.resolve().is_relative_to((root / 'Dependencies/Middleware/Lib.xcframework').resolve())
-                and sha256(member) == item['sha256'], 'Verified Heart source changed')
+    if args.import_abi_receipt:
+        from import_abi_input import verify as verify_import_abi
+        require(before['execution_identity']['producer_kind'] == 'local-mac',
+                'The local Import ABI route requires genuine local producer identity')
+        installation = verify_import_abi(root, args.import_abi_receipt, args.import_abi_sha256, before)
+        write(evidence / 'import-abi-before.json', installation)
+    else:
+        require(before['execution_identity']['producer_kind'] == 'github-actions',
+                'A local SDK build must use the qualified new Import ABI')
+        installation = json.loads((evidence / 'heart/heart-installation.json').read_text())
+        require(installation.get('status') == 'PASS' and installation.get('app_source_sha') == before['head_sha']
+                and installation.get('source_run_id') == '44203168617', 'Original Heart producer/install identity differs')
+        heart = json.loads((root / 'Dependencies/Middleware/PinkhaNativeHeartBuild.json').read_text())
+        require(heart.get('status') == 'PASS' and heart.get('marker') == installation['marker'], 'Installed Heart marker differs')
+        for item in heart['artifacts']:
+            member = root / 'Dependencies/Middleware/Lib.xcframework' / item['path']
+            require(member.resolve().is_relative_to((root / 'Dependencies/Middleware/Lib.xcframework').resolve())
+                    and sha256(member) == item['sha256'], 'Verified Heart source changed')
     sys.path.insert(0, str(root / 'Tools/Hanlin'))
     from prepare_sdk import verify as verify_hanlin
     hanlin_before = verify_hanlin(root / 'Dependencies/Hanlin')
@@ -548,6 +558,10 @@ def execute(args, receipt):
     require(source_observation(root) == before, 'Tracked source closure changed during actual framework execution')
     require(verify_hanlin(root / 'Dependencies/Hanlin') == hanlin_before, 'Canonical Hanlin source changed')
     require(inventory(exported) == exported_proof['files'], 'Framework distribution changed during consumer qualification')
+    if args.import_abi_receipt:
+        after_abi = verify_import_abi(root, args.import_abi_receipt, args.import_abi_sha256, before)
+        require(after_abi == installation, 'Original Import ABI changed during SDK build/runtime')
+        write(evidence / 'import-abi-after.json', after_abi)
     write(evidence / 'source-after.json', source_observation(root))
     receipt.update(status='ACTUAL_ORIGINAL_FRAMEWORK_EXTERNAL_IMPORT_LINK_RESOURCES_PASS', phase='COMPLETE',
                    distribution=str(exported), same_toolchain_only=True, device_framework_build='NOT_RUN',
@@ -562,6 +576,8 @@ def main():
     parser.add_argument('--evidence', required=True, type=Path)
     parser.add_argument('--work', required=True, type=Path)
     parser.add_argument('--source-only', action='store_true')
+    parser.add_argument('--import-abi-receipt', type=Path)
+    parser.add_argument('--import-abi-sha256')
     args = parser.parse_args()
     args.evidence.mkdir(parents=True, exist_ok=True)
     receipt = {'schema': 1, 'status': 'FAIL', 'phase': 'SOURCE_ADMISSION', 'started_at': timestamp(),
@@ -594,14 +610,15 @@ def main():
             preflight_path = args.evidence / 'preflight/preflight.json'
             if preflight_path.is_file():
                 preflight = json.loads(preflight_path.read_text())
-                if (preflight.get('source_sha') == os.environ.get('GITHUB_SHA')
-                        and preflight.get('run_id') == os.environ.get('GITHUB_RUN_ID')
-                        and preflight.get('run_attempt') == os.environ.get('GITHUB_RUN_ATTEMPT')):
+                identity = current_identity()
+                if (preflight.get('source_sha') == identity['source_sha']
+                        and preflight.get('run_id') == identity['run_id']
+                        and preflight.get('run_attempt') == identity['run_attempt']):
                     cleanup = []
                     for kind, selected in preflight.get('selected', {}).items():
                         udid = selected.get('udid', '')
                         if (kind in {'ipad', 'iphone'} and re.fullmatch(r'[0-9A-Fa-f-]{36}', udid)
-                                and selected.get('name') == 'Pinkha-UI27-' + os.environ.get('GITHUB_RUN_ID', '') + '-' + kind):
+                                and selected.get('name') == 'Pinkha-UI27-' + identity['run_id'] + '-' + kind):
                             for operation in ['shutdown', 'delete']:
                                 try:
                                     result = subprocess.run(['xcrun', 'simctl', operation, udid], capture_output=True, timeout=60)

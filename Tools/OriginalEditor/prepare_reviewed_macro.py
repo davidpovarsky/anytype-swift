@@ -13,6 +13,7 @@ import platform
 import subprocess
 import tarfile
 import tempfile
+from local_execution import current_identity
 
 REVISION = "597c2bb34af0c51331eb3b5e705f942d8ee20daa"
 PACKAGE_URL = "https://github.com/ordo-one/equatable"
@@ -166,7 +167,13 @@ def prepare(root, evidence, home):
     require(platform.system() == "Darwin" and platform.machine() == "arm64",
             "Actual macro approval requires the owned Apple runner")
     from framework_profile import BRANCH, REPOSITORY, git
-    require(os.environ.get("GITHUB_REPOSITORY") == REPOSITORY
+    identity = current_identity()
+    if identity['producer_kind'] == 'local-mac':
+        require(identity['source_sha'] == git(root, 'rev-parse', 'HEAD')
+                and identity['local_execution']['root'] == str(root),
+                'Foreign local macro approval execution context')
+    else:
+        require(os.environ.get("GITHUB_REPOSITORY") == REPOSITORY
             and os.environ.get("GITHUB_REF") == "refs/heads/" + BRANCH
             and os.environ.get("GITHUB_SHA") == git(root, "rev-parse", "HEAD"),
             "Foreign macro approval execution context")
@@ -177,7 +184,11 @@ def prepare(root, evidence, home):
     evidence.mkdir(parents=True, exist_ok=False)
     archive_path = evidence / "reviewed-upstream-source.tar.gz"
     with archive_path.open("wb") as output, (evidence / "source-download.stderr.log").open("wb") as error:
-        result = subprocess.run(["gh", "api", "/repos/ordo-one/equatable/tarball/" + REVISION],
+        download = (["curl", "--fail", "--location", "--proto", "=https", "--max-time", "90",
+                     "https://api.github.com/repos/ordo-one/equatable/tarball/" + REVISION]
+                    if identity['producer_kind'] == 'local-mac' else
+                    ["gh", "api", "/repos/ordo-one/equatable/tarball/" + REVISION])
+        result = subprocess.run(download,
                                 stdout=output, stderr=error, timeout=90)
     require(result.returncode == 0, "Cannot retrieve the immutable reviewed macro source")
     archive = archive_path.read_bytes()
@@ -189,7 +200,7 @@ def prepare(root, evidence, home):
         (evidence / "macros.before.json").write_bytes(before)
     (evidence / "macros.after.json").write_bytes(after)
     state = {
-        "schema": 1, "run_id": os.environ["GITHUB_RUN_ID"], "head_sha": os.environ["GITHUB_SHA"],
+        "schema": 1, "run_id": identity['run_id'], "head_sha": identity['source_sha'],
         "target": str(target), "before_existed": before is not None, "added_by_this_run": added,
         "before_sha256": None if before is None else digest(before), "after_sha256": digest(after),
         "approval": APPROVAL,
@@ -214,8 +225,9 @@ def restore(evidence, home):
         return {"status": "NO_OWNED_MACRO_APPROVAL_TO_RESTORE"}
     state = json.loads(state_path.read_bytes())
     target = checked_target(home)
-    require(state["schema"] == 1 and state["run_id"] == os.environ["GITHUB_RUN_ID"]
-            and state["head_sha"] == os.environ["GITHUB_SHA"] and state["target"] == str(target)
+    identity = current_identity()
+    require(state["schema"] == 1 and state["run_id"] == identity['run_id']
+            and state["head_sha"] == identity['source_sha'] and state["target"] == str(target)
             and state["approval"] == APPROVAL, "Foreign macro trust ownership record")
     if not state["added_by_this_run"]:
         result = {"status": "PREEXISTING_APPROVAL_NOT_CHANGED_BY_THIS_JOB", "wrote_trust_store": False}
