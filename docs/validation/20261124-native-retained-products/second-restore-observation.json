@@ -1,0 +1,15 @@
+{
+  "status": "FAIL_BEFORE_UI",
+  "scope": "pure_archive_and_package_copy_control",
+  "archiveRestoredEntries": 828,
+  "archiveModeRepairPassed": true,
+  "appSignatureVerified": true,
+  "productHashAndUnexpectedDescriptorRejectionPassed": true,
+  "originalProductsModified": false,
+  "applicationBuilds": 0,
+  "uiRunnerBuilds": 0,
+  "UIExecutions": 0,
+  "reason": "Copied and retained SwiftPM checkout Git alternates still referenced the former workspace build directory after atomic retention move; first copied git status failed bad object HEAD.",
+  "repair": "Relocate only copied checkouts/*/.git/objects/info/alternates to the corresponding copied SourcePackages/repositories object store; verify all other copied bytes/modes unchanged and then require original nine commit IDs, clean tracked worktrees, and workspace-state hash.",
+  "preservedMacDirectory": "/Users/m1/builds/_preflight/anytapy-20261124-native-retained-v2"
+}

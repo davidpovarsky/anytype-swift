@@ -792,7 +792,7 @@ def final_integrity(evidence, source, built, copies, native):
     write(evidence / "loaded-after.json", result["loadedAfter"])
     return result
 
-def execute(profile, expected, prepare_library, provider, inventory_policy=None):
+def execute(profile, expected, prepare_library, provider, inventory_policy=None, restore_products=None):
     global _FINALIZING
     root = evidence_root(profile)
     c.require(not root.exists() and root.parent.resolve() == root.parent, "fresh_owned_execution_root_required")
@@ -829,8 +829,12 @@ def execute(profile, expected, prepare_library, provider, inventory_policy=None)
         name = ("AnyNativePort-" + context["runID"] if profile == "native-ui-failed" else
                 "CurrentReturn-" + context["runID"] + "-" + context["runAttempt"])
         device = create_device(commands, pair, name, evidence, owned)
-        built = build(commands, profile, device, work, evidence, source)
-        outcome["applicationBuilds"], outcome["uiRunnerBuilds"] = 1, c.PROFILES[profile]["uiRunnerBuilds"]
+        if restore_products is None:
+            built = build(commands, profile, device, work, evidence, source)
+            outcome["applicationBuilds"], outcome["uiRunnerBuilds"] = 1, c.PROFILES[profile]["uiRunnerBuilds"]
+        else:
+            built = restore_products(commands, profile, device, work, evidence, source)
+            outcome["retainedProducts"] = read(evidence / "retained-products.json")
         if profile == "release-return-rtl":
             outcome["stages"]["return-controls"] = execute_stage(commands, profile, "return-controls", device,
                                                                   built, source, evidence, copies)
@@ -981,7 +985,7 @@ def cleanup_only(profile, expected, provider, inventory_policy=None):
     write(path, outcome)
     return outcome
 
-def main(profile, prepare_library, provider):
+def main(profile, prepare_library, provider, restore_products=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("operation", choices=("execute", "cleanup"))
     parser.add_argument("--expected-source", required=True)
@@ -992,7 +996,7 @@ def main(profile, prepare_library, provider):
     for number in previous:
         signal.signal(number, cancel)
     try:
-        result = (execute(profile, args.expected_source, prepare_library, provider, args.inventory_policy)
+        result = (execute(profile, args.expected_source, prepare_library, provider, args.inventory_policy, restore_products)
                   if args.operation == "execute" else
                   cleanup_only(profile, args.expected_source, provider, args.inventory_policy))
     finally:

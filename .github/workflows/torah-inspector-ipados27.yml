@@ -60,6 +60,7 @@ on:
           - native-ui-transition-candidate
           - native-ui-runner-continuation
           - current-native-ui-failed
+          - current-native-ui-retained
           - loaded-account-arm64-compiler
           - loaded-account-arm64-native
           - current-page154-mounted
@@ -473,7 +474,7 @@ jobs:
     uses: ./.github/workflows/pinkha-any-native-ui-runner-continuation.yml
 
   current-native-ui-failed:
-    if: ${{ inputs.route == 'current-native-ui-failed' }}
+    if: ${{ inputs.route == 'current-native-ui-failed' || inputs.route == 'current-native-ui-retained' }}
     permissions:
       contents: read
       actions: read
@@ -485,6 +486,7 @@ jobs:
       GIT_OPTIONAL_LOCKS: '0'
       GH_TOKEN: ${{ github.token }}
       EVIDENCE: build/current-apple-native-ui-failed-${{ github.run_id }}-${{ github.run_attempt }}/evidence
+      CURRENT_NATIVE_CONTROLLER: ${{ inputs.route == 'current-native-ui-retained' && 'native_ui_retained.py' || 'native_ui_failed.py' }}
     steps:
       - name: Checkout the exact current App and controller source
         uses: actions/checkout@v4
@@ -525,14 +527,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python3 -B Tools/CurrentAppleValidation/native_ui_failed.py execute --expected-source "$GITHUB_SHA" --inventory-recovery owned-inventory-timeout-v1
+          python3 -B "Tools/CurrentAppleValidation/$CURRENT_NATIVE_CONTROLLER" execute --expected-source "$GITHUB_SHA" --inventory-recovery owned-inventory-timeout-v1
       - name: Finalize only journaled current-run resources even after an early failure
         if: ${{ always() && steps.execute.outcome != 'skipped' }}
         timeout-minutes: 8
         shell: bash
         run: |
           set -euo pipefail
-          python3 -B Tools/CurrentAppleValidation/native_ui_failed.py cleanup --expected-source "$GITHUB_SHA" --inventory-recovery owned-inventory-timeout-v1
+          python3 -B "Tools/CurrentAppleValidation/$CURRENT_NATIVE_CONTROLLER" cleanup --expected-source "$GITHUB_SHA" --inventory-recovery owned-inventory-timeout-v1
       - name: Preserve original Products, commands, results and cleanup without filtering raw streams
         if: always()
         uses: actions/upload-artifact@v4
