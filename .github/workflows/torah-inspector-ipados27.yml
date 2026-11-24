@@ -60,6 +60,7 @@ on:
           - native-ui-runner-continuation
           - current-native-ui-failed
           - loaded-account-arm64-compiler
+          - loaded-account-arm64-native
           - current-page154-mounted
           - owned-simulator-inventory-diagnostic
           - prepared-migration-apple
@@ -894,3 +895,12 @@ jobs:
         path: ${{ env.EVIDENCE }}
         retention-days: 30
     timeout-minutes: 30
+
+  loaded-account-native:
+    if: ${{ inputs.route == 'loaded-account-arm64-native' }}
+    permissions:
+      contents: read
+    uses: ./.github/workflows/pinkha-loaded-account-arm64-native.yml
+    with:
+      source_sha: ${{ inputs.source_sha || github.sha }}
+    secrets: inherit
