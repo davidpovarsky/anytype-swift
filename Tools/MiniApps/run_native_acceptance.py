@@ -23,6 +23,8 @@ from owner_signing import verify as verify_owner_signing
 
 from acceptance_profile import PREPARE, VERIFY, ADAPTER, UI_RETURN, UI_REPLAY, resolve_profile
 from resolved_dependencies import ACTIVATION_ARGUMENTS, record_resolution, verify_recorded_resolution
+from export_products import export_built_products, product_closure
+from simulator_admission import verify_built_entitlements
 
 def require(condition, message):
     if not condition:
@@ -98,7 +100,8 @@ def source_context(args, receipt, *, use_recorded_resolution=False):
     receipt.update(source_sha=head, run_id=os.environ["GITHUB_RUN_ID"], run_attempt=os.environ["GITHUB_RUN_ATTEMPT"],
                    producer_pin=pin, heart=installation, native_binding=binding, device=udid,
                    configuration=owner["configuration"], owner_signing=owner, apple_profile_grants=owner["status"],
-                   release_accepted=False, physical_sharing="NOT_PROVEN_BY_SIMULATOR")
+                   release_accepted=False, physical_sharing="NOT_PROVEN_BY_SIMULATOR",
+                   original_preflight=preflight, original_preflight_sha256=digest(evidence / "preflight/preflight.json"))
     return SimpleNamespace(app=app, evidence=evidence, pin=pin, owner=owner, head=head,
                            udid=udid, binding=binding, derived=derived)
 
@@ -129,16 +132,12 @@ def product_inventory(native_configuration, ui_configuration):
         for path in (host_path, bundle_path):
             require(path.is_dir() and path.is_relative_to(products), "Actual test product is missing/outside owned build")
             roots.add(path)
-    files = {}
-    for root in sorted(roots):
-        for path in sorted(root.rglob("*")):
-            relative = str(path.relative_to(products))
-            if path.is_symlink():
-                files[relative] = dict(kind="symlink", target=os.readlink(path))
-            elif path.is_file():
-                files[relative] = dict(kind="file", sha256=digest(path))
+    _, files, references, platform_references = product_closure(
+        products, [native_configuration, ui_configuration])
     require(files, "No actual compiled products were found")
-    return dict(files=files, native_configuration_sha256=digest(native_configuration),
+    return dict(files=files, original_test_product_references=references,
+                xcode_platform_provided_references=platform_references,
+                native_configuration_sha256=digest(native_configuration),
                 ui_configuration_sha256=digest(ui_configuration))
 
 
@@ -154,6 +153,9 @@ def build_consumer(args, receipt):
         save(name)
         with (evidence / (name + ".log")).open("w") as output:
             result = subprocess.run(argv, cwd=app, stdout=output, stderr=subprocess.STDOUT, timeout=timeout)
+        receipt.setdefault("completed_build_commands", {})[name] = {
+            "arguments": argv, "return_code": result.returncode, "log_sha256": digest(evidence / (name + ".log"))}
+        save(name + "-finished")
         require(result.returncode == 0, f"{name} returned {result.returncode}; see the original log")
     # First boot of a disposable runtime can take longer than the readiness check.
     # Let it initialize while compiling; build-for-testing does not execute the app.
@@ -173,7 +175,13 @@ def build_consumer(args, receipt):
     command(["xcodebuild", "build-for-testing", "-project", "Anytype.xcodeproj", "-scheme", "Anytype",
              *common, "-disableAutomaticPackageResolution", *ACTIVATION_ARGUMENTS,
              "-only-testing:AnytypeTests/PinkhaMiniAppsNativePreparationTests", *flags], "build-native")
+    receipt.update(native_build_succeeded=True, ui_build_succeeded=False, actual_test_methods=0,
+                   status="NATIVE_BUILD_PASS_UI_NOT_BUILT")
+    save("NATIVE_BUILD_COMPLETE_POSTBUILD_VALIDATION_PENDING")
     native_configuration = test_configuration(derived / "Build/Products", "AnytypeTests")
+    receipt["native_early_products"] = export_built_products(derived / "Build/Products",
+        [native_configuration], evidence / "miniapps-native-early-products", receipt)
+    save("NATIVE_PRODUCTS_EXPORTED")
     built, app_executable, bundle, test_executable = host.xctest_products(native_configuration)
     info = plistlib.loads((built / "Info.plist").read_bytes())
     source_bundle = info["CFBundleIdentifier"]
@@ -183,11 +191,8 @@ def build_consumer(args, receipt):
     source_scheme = (source_bundle if source_bundle in schemes else
                      next(value for value in schemes if value != "anytype")).lower()
     require("$(" not in source_scheme, "Callback scheme was not resolved")
-    entitlement_bytes = subprocess.check_output(["codesign", "-d", "--entitlements", ":-", str(built)], stderr=subprocess.PIPE)
-    entitlements = plistlib.loads(entitlement_bytes)
-    require(set(entitlements["com.apple.security.application-groups"]) ==
-            {owner["native_app_group"], owner["shared_app_group"]}, "Native app has different real group entitlements")
-    write(evidence / "built-entitlements.json", entitlements)
+    receipt["native_entitlement_admission"] = verify_built_entitlements(
+        app, built, app_executable, owner, evidence, "built-native")
     verify_runtime_copies(built, context.binding["native_marker"].encode(), evidence)
     receipt.update(source_bundle=source_bundle, source_scheme=source_scheme, native_build_succeeded=True)
     verify_sdk(app / "Dependencies/Hanlin")
@@ -200,8 +205,15 @@ def build_consumer(args, receipt):
     command(["xcodebuild", "build-for-testing", "-workspace", "PinkhaStage1Acceptance/PinkhaStage1Acceptance.xcworkspace",
              "-scheme", "PinkhaStage1Acceptance", *common, "-disableAutomaticPackageResolution", *ACTIVATION_ARGUMENTS,
              "-only-testing:PinkhaStage1AcceptanceUITests/MiniAppsNativeAcceptanceUITests", *flags], "build-ui")
-    verify_recorded_resolution(app, evidence, derived, context.head, receipt["run_id"], receipt["run_attempt"])
+    receipt.update(ui_build_succeeded=True, status="NATIVE_AND_UI_BUILD_PASS_VALIDATION_PENDING")
+    save("UI_BUILD_COMPLETE_POSTBUILD_VALIDATION_PENDING")
     ui_configuration = test_configuration(derived / "Build/Products", "PinkhaStage1AcceptanceUITests")
+    receipt["complete_early_products"] = export_built_products(derived / "Build/Products",
+        [native_configuration, ui_configuration], evidence / "miniapps-complete-early-products", receipt)
+    save("COMPLETE_PRODUCTS_EXPORTED")
+    verify_recorded_resolution(app, evidence, derived, context.head, receipt["run_id"], receipt["run_attempt"])
+    receipt["final_entitlement_admission"] = verify_built_entitlements(
+        app, built, app_executable, owner, evidence, "built-final")
     receipt.update(status="BUILD_PASS_TESTS_NOT_RUN", native_configuration=str(native_configuration),
                    ui_configuration=str(ui_configuration), built_app=str(built),
                    product_inventory=product_inventory(native_configuration, ui_configuration),
@@ -227,7 +239,10 @@ def prepare_authenticated_dependencies(app, evidence, producer_work, requested_l
         download(args.app, producer_work, args.evidence)
     except BaseException as error:
         if receipt.get("status") != "BUILD_PASS_TESTS_NOT_RUN":
-            receipt.update(status="BUILD_FAILED_TESTS_NOT_RUN", error_type=type(error).__name__, error=str(error),
+            status = ("BUILD_PASS_POSTBUILD_VALIDATION_FAILED_TESTS_NOT_RUN" if receipt.get("ui_build_succeeded")
+                      else "NATIVE_BUILD_PASS_LATER_STAGE_FAILED_TESTS_NOT_RUN" if receipt.get("native_build_succeeded")
+                      else "BUILD_FAILED_TESTS_NOT_RUN")
+            receipt.update(status=status, error_type=type(error).__name__, error=str(error),
                            finished_at=datetime.now(timezone.utc).isoformat())
             write(args.evidence / "miniapps-build.json", receipt)
         failure = dict(status="FAIL", phase=stage, build_receipt="miniapps-build.json",
@@ -250,7 +265,7 @@ def execute(args, receipt):
     require(build["status"] == "BUILD_PASS_TESTS_NOT_RUN", "The consumer must have actually compiled before producer waiting")
     for key in ("source_sha", "run_id", "run_attempt", "requested_lane", "effective_lane", "source_profile_sha256",
                 "selected_methods", "configuration", "owner_signing", "producer_pin", "device", "heart", "native_binding",
-                "dependency_resolution"):
+                "dependency_resolution", "original_preflight", "original_preflight_sha256"):
         require(build[key] == receipt[key], "Prepared consumer build identity differs: " + key)
     native_configuration = test_configuration(context.derived / "Build/Products", "AnytypeTests")
     ui_configuration = test_configuration(context.derived / "Build/Products", "PinkhaStage1AcceptanceUITests")
@@ -259,6 +274,10 @@ def execute(args, receipt):
     require(product_inventory(native_configuration, ui_configuration) == build["product_inventory"],
             "Actual consumer/test products changed during producer dependency waiting")
     source_bundle, source_scheme = build["source_bundle"], build["source_scheme"]
+    _, current_executable, _, _ = host.xctest_products(native_configuration)
+    require(digest(current_executable) == build["final_entitlement_admission"]["embedded"]["executable_sha256"],
+            "The actual entitlement-admitted executable changed before execution")
+    receipt["simulator_entitlement_admission"] = build["final_entitlement_admission"]
     receipt.update(native_build_succeeded=True, build_receipt="miniapps-build.json", reused_same_run_build=True,
                    source_bundle=source_bundle, app_files=build["app_files"],
                    test_executable_sha256=build["test_executable_sha256"])
@@ -370,7 +389,8 @@ def execute(args, receipt):
             "Native selected-text/file adapter receipt differs")
     for key in ("replacementPreservedBlockID", "replacementPreservedTree", "nativeMarksPreserved",
                 "replayPreservedNewerText", "conflictPreservedNewerText",
-                "nativeAttachmentUploaded", "nativeAttachmentByteReadback"):
+                "nativeAttachmentUploaded", "nativeAttachmentByteReadback", "nestedTableSelectionCaptured",
+                "nestedTableReplacementPersisted", "expiredSelectionDidNotFallback"):
         require(adapter[key] is True, "Native adapter did not prove " + key)
     write(evidence / "native-adapter-readback.json", adapter)
     require(git(app, "rev-parse", "HEAD") == head, "Source changed during native acceptance")

@@ -7,13 +7,39 @@ import UIKit
 import UniformTypeIdentifiers
 import AnytypeCore
 
+/// Retains the exact menu origin without retaining its editor or reusable text view.
+/// A detached/reconfigured origin is unavailable; it must never select another responder.
+@MainActor
+final class PinkhaMiniAppsTextSelection {
+    private weak var textView: UITextView?
+    private weak var editor: EditorPageController?
+    let blockID: String
+    let range: NSRange
+
+    init?(textView: UITextView, range: NSRange, editor: EditorPageController) {
+        guard let blockID = PinkhaMiniAppsContext.blockID(containing: textView, editor: editor) else { return nil }
+        self.textView = textView
+        self.editor = editor
+        self.blockID = blockID
+        self.range = range
+    }
+
+    func resolve(editor: EditorPageController) throws -> UITextView {
+        guard self.editor === editor, let textView,
+              PinkhaMiniAppsContext.blockID(containing: textView, editor: editor) == blockID else {
+            throw PinkhaMiniAppsError.documentUnavailable
+        }
+        return textView
+    }
+}
+
 struct PinkhaMiniAppsContext {
     let source: MiniAppSourceContext
     let inputs: [MiniAppContent]
 
     @MainActor
     static func capture(editor: EditorPageController, store: MiniAppBridgeStore,
-                        range: NSRange? = nil) async throws -> Self {
+                        selection: PinkhaMiniAppsTextSelection? = nil) async throws -> Self {
         guard let model = editor.viewModel as? EditorPageViewModel,
               model.document.isOpened else { throw PinkhaMiniAppsError.documentUnavailable }
         let document = model.document
@@ -29,29 +55,36 @@ struct PinkhaMiniAppsContext {
         }
         try validateSource()
         let selectedIDs: [String]
-        switch model.blocksStateManager.editingState {
-        case .selecting(let blocks, _), .simpleTablesSelection(_, let blocks, _): selectedIDs = blocks
-        default: selectedIDs = []
+        if selection != nil {
+            selectedIDs = []
+        } else {
+            switch model.blocksStateManager.editingState {
+            case .selecting(let blocks, _), .simpleTablesSelection(_, let blocks, _): selectedIDs = blocks
+            default: selectedIDs = []
+            }
         }
         var textSelection: MiniAppTextSelection?
         var focusID: String?
-        if let textView = editor.firstResponderView as? UITextView,
-           (textView.isFirstResponder || range != nil),
-           let blockID = blockID(containing: textView, editor: editor) {
+        // Simple-table text handlers do not update EditorPageController's cached responder.
+        // Selection menus supply their actual view; the toolbar searches UIKit's live responder.
+        let origin = try selection.map { try $0.resolve(editor: editor) }
+            ?? focusedTextView(in: editor.viewIfLoaded)
+        if let textView = origin, let blockID = blockID(containing: textView, editor: editor) {
             focusID = blockID
             let attributed = textView.attributedText ?? NSAttributedString(string: textView.text ?? "")
-            let selectedRange = range ?? textView.selectedRange
-            if selectedRange.location != NSNotFound,
-               selectedRange.location >= 0, selectedRange.length >= 0,
-               selectedRange.location <= attributed.length,
-               selectedRange.length <= attributed.length - selectedRange.location {
-                let before = AttributedTextConverter.asMiddleware(
-                    attributedText: attributed.attributedSubstring(from: NSRange(location: 0, length: selectedRange.location)))
-                let selected = AttributedTextConverter.asMiddleware(
-                    attributedText: attributed.attributedSubstring(from: selectedRange))
-                textSelection = MiniAppTextSelection(location: before.text.utf16.count,
-                    length: selected.text.utf16.count, text: selected.text, blockIDs: [blockID])
+            let selectedRange = selection?.range ?? textView.selectedRange
+            guard selectedRange.location != NSNotFound,
+                  selectedRange.location >= 0, selectedRange.length >= 0,
+                  selectedRange.location <= attributed.length,
+                  selectedRange.length <= attributed.length - selectedRange.location else {
+                throw PinkhaMiniAppsError.documentUnavailable
             }
+            let before = AttributedTextConverter.asMiddleware(
+                attributedText: attributed.attributedSubstring(from: NSRange(location: 0, length: selectedRange.location)))
+            let selected = AttributedTextConverter.asMiddleware(
+                attributedText: attributed.attributedSubstring(from: selectedRange))
+            textSelection = MiniAppTextSelection(location: before.text.utf16.count,
+                length: selected.text.utf16.count, text: selected.text, blockIDs: [blockID])
             // Flush the visible original edit through the same native text service before leaving.
             if !document.isLocked, document.permissions.canEditBlocks, document.details?.isReadonly == false {
                 try validateSource()
@@ -156,12 +189,19 @@ struct PinkhaMiniAppsContext {
     }
 
     @MainActor
+    private static func focusedTextView(in view: UIView?) -> UITextView? {
+        guard let view else { return nil }
+        if let textView = view as? UITextView, textView.isFirstResponder { return textView }
+        return view.subviews.lazy.compactMap { focusedTextView(in: $0) }.first
+    }
+
+    @MainActor
     static func blockID(containing textView: UITextView, editor: EditorPageController) -> String? {
+        guard let editorView = editor.viewIfLoaded, textView.isDescendant(of: editorView) else { return nil }
         var current: UIView? = textView
-        while let view = current {
-            if let cell = view as? UICollectionViewCell,
-               let indexPath = editor.collectionView.indexPath(for: cell) {
-                return editor.viewModel?.modelsHolder.blockViewModel(at: indexPath.row)?.blockId
+        while let view = current, view !== editorView {
+            if let content = view as? TextBlockContentView, content.textView.textView === textView {
+                return content.pinkhaMiniAppsBlockID
             }
             current = view.superview
         }

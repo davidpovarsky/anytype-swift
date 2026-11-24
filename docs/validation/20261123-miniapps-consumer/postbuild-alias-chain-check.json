@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "scope": "ONE_IMPACTED_ALIAS_CHAIN_FILESYSTEM_CONTROL_NO_APPLE_EXECUTION",
+  "checks": 1,
+  "reason": "Immediate lexical target must retain every A-to-B-to-C product alias hop",
+  "method": "ProductExportTests.test_direct_xctestrun_symlink_chain_preserves_every_alias_and_target",
+  "actual_native_methods": 0,
+  "retained_other_controls": 4,
+  "previous_proof": "postbuild-closure-checks.json",
+  "previous_proof_sha256": "5c7826836fe23507ad0d09b6054f6b63be4d657afc9ceab8375b3331c454dc43",
+  "files": {
+    "scripts/validation/test_miniapps_postbuild.py": "cdebfa5e540e3ea3bcc209579a7a6540d22eaf7230fc10dd174d1ac9b9b938df",
+    "Tools/MiniApps/export_products.py": "22da14a886eb5673a2c7ba46e07c7b68348fc3fec1abcb200800fdc97dc05aa0"
+  },
+  "log_sha256": "ed94b008999f9a26fbbc00154b6e974b13a3cdecd93ac679b372d8faa5b6ad98",
+  "recorded_at": "2026-11-24T03:24:30.472666+00:00"
+}

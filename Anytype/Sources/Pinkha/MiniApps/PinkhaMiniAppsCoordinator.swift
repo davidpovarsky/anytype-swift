@@ -47,7 +47,7 @@ final class PinkhaMiniAppsCoordinator {
         registrations.removeValue(forKey: ObjectIdentifier(editor))
     }
 
-    func present(editor: EditorPageController, range: NSRange? = nil) {
+    func present(editor: EditorPageController, selection: PinkhaMiniAppsTextSelection? = nil) {
         let id = ObjectIdentifier(editor)
         guard isVisible(editor), editor.presentedViewController == nil,
               preparing.insert(id).inserted else { return }
@@ -56,7 +56,7 @@ final class PinkhaMiniAppsCoordinator {
             defer { preparing.remove(id) }
             do {
                 let store = try MiniAppBridgeStore(appGroupIdentifier: "group.com.itorah.shared")
-                let context = try await PinkhaMiniAppsContext.capture(editor: editor, store: store, range: range)
+                let context = try await PinkhaMiniAppsContext.capture(editor: editor, store: store, selection: selection)
                 guard isVisible(editor),
                       context.source.documentID == editor.viewModel.document.objectId,
                       context.source.metadata["anytype.accountID"] == Container.shared.accountManager().account.id

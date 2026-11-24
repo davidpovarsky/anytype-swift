@@ -7,6 +7,7 @@ import ProtobufMessages
 import Services
 import SwiftProtobuf
 import Testing
+import UIKit
 @testable import Anytype
 
 @Suite("MiniApps original native disposable document", .serialized,
@@ -277,7 +278,9 @@ struct PinkhaMiniAppsNativePreparationTests {
             let http = try #require(response as? HTTPURLResponse)
             try #require((200..<300).contains(http.statusCode) && actualBytes == fileBytes)
             try #require(try store.pendingResults(sourceAppID: PinkhaMiniAppsContext.sourceAppID).isEmpty)
-            let proof: [String: Any] = ["status": "NATIVE_MINIAPPS_ADAPTER_PASS",
+            let selectionProof = try await verifyNestedTableSelection(editor: state.viewController,
+                store: store, previousBlockID: siblingID, previousText: "Unchanged sibling")
+            var proof: [String: Any] = ["status": "NATIVE_MINIAPPS_ADAPTER_PASS",
                 "sourceSHA": try #require(environment["GITHUB_SHA"]),
                 "runID": try #require(environment["GITHUB_RUN_ID"]), "objectID": object.id,
                 "blockID": blockID, "childID": childID, "siblingID": siblingID,
@@ -292,6 +295,7 @@ struct PinkhaMiniAppsNativePreparationTests {
                 "nativeAttachmentObjectID": content.metadata.targetObjectId,
                 "nativeAttachmentBytes": actualBytes.count,
                 "nativeAttachmentSHA256": SHA256.hash(data: actualBytes).map { String(format: "%02x", $0) }.joined()]
+            proof.merge(selectionProof) { _, new in new }
             let destination = try fixtureURL().deletingLastPathComponent()
                 .appendingPathComponent("miniapps-native-adapter-readback.json")
             try JSONSerialization.data(withJSONObject: proof, options: [.sortedKeys]).write(to: destination, options: .atomic)
@@ -301,6 +305,129 @@ struct PinkhaMiniAppsNativePreparationTests {
             try? await document.close()
             throw error
         }
+    }
+
+    /// Exercise the real native table cell plus its UIKit text component. This is
+    /// adapter coverage, not a claim that an additional external UI journey ran.
+    private func verifyNestedTableSelection(editor: EditorPageController, store: MiniAppBridgeStore,
+                                           previousBlockID: String, previousText: String) async throws -> [String: Any] {
+        let model = try #require(editor.viewModel as? EditorPageViewModel)
+        let document = model.document
+        let tableService = Container.shared.blockTableService()
+        let tableID = try await tableService.createTable(contextId: document.objectId,
+            targetId: previousBlockID, position: .bottom, rowsCount: 1, columnsCount: 1)
+        let initial = try await PinkhaMiniAppsContext.nativeBlocks(document: document)
+        let table = try #require(initial.first { $0.id == tableID })
+        let rows = try #require(initial.first {
+            table.childrenIds.contains($0.id) && $0.content == .layout(.init(style: .tableRows))
+        })
+        let rowID = try #require(rows.childrenIds.first)
+        try #require(rows.childrenIds.count == 1)
+        try await tableService.rowListFill(contextId: document.objectId, targetIds: [rowID])
+        let filled = try await PinkhaMiniAppsContext.nativeBlocks(document: document)
+        let row = try #require(filled.first { $0.id == rowID })
+        let cell = try #require(filled.first {
+            guard row.childrenIds.contains($0.id), case .text = $0.content else { return false }
+            return true
+        })
+        let cellID = cell.id
+        try #require(cellID != tableID && cellID != previousBlockID)
+        let prefix = "Table prefix ", selected = "עברית 👨‍👩‍👧", suffix = " table suffix"
+        let original = prefix + selected + suffix
+        let returned = "נבחר 🙂"
+        let expected = prefix + returned + suffix
+        try await model.blockActionService.setText(contextId: document.objectId, blockId: cellID,
+            middlewareString: .init(text: original, marks: .init()))
+
+        editor.loadViewIfNeeded()
+        let previous = TextBlockContentView(frame: .zero)
+        var previousConfiguration = TextBlockContentConfiguration.empty
+        previousConfiguration.blockId = previousBlockID
+        previousConfiguration.content = .plain(previousText, contentType: .text)
+        previousConfiguration.attributedString = NSAttributedString(string: previousText)
+        previous.update(with: previousConfiguration)
+        editor.view.addSubview(previous)
+        editor.textBlockDidBeginEditing(firstResponderView: previous.textView.textView)
+        // Native table cells have a second collection-cell boundary. Its text
+        // component owns cellID; the outer table block must never be selected.
+        let outerCell = UICollectionViewCell(frame: .zero)
+        let nestedCell = UICollectionViewCell(frame: .zero)
+        let selectedContent = TextBlockContentView(frame: .zero)
+        var selectedConfiguration = TextBlockContentConfiguration.empty
+        selectedConfiguration.blockId = cellID
+        selectedConfiguration.content = .plain(original, contentType: .text)
+        selectedConfiguration.attributedString = NSAttributedString(string: original)
+        selectedContent.update(with: selectedConfiguration)
+        editor.view.addSubview(outerCell)
+        outerCell.contentView.addSubview(nestedCell)
+        nestedCell.contentView.addSubview(selectedContent)
+        defer {
+            outerCell.removeFromSuperview()
+            previous.removeFromSuperview()
+            editor.blockDidFinishEditing()
+        }
+        let selectedView = selectedContent.textView.textView
+        let range = (original as NSString).range(of: selected)
+        selectedView.selectedRange = range
+        try #require(editor.firstResponderView === previous.textView.textView)
+        try #require(PinkhaMiniAppsEntry.selectionAction(textView: selectedView, range: range) != nil)
+        let origin = try #require(PinkhaMiniAppsTextSelection(textView: selectedView, range: range, editor: editor))
+        let context = try await PinkhaMiniAppsContext.capture(editor: editor, store: store, selection: origin)
+        let captured = try #require(context.source.selection)
+        try #require(captured.blockIDs == [cellID] && captured.text == selected)
+        try #require(captured.location == range.location && captured.length == range.length)
+        try #require(context.inputs.first?.text == selected)
+        try #require(context.source.metadata["anytype.insertionAnchor"] == cellID)
+        let before = try await PinkhaMiniAppsContext.nativeBlocks(document: document)
+        let tree = Dictionary(uniqueKeysWithValues: before.map { ($0.id, $0.childrenIds) })
+        let request = MiniAppInvocation(appID: "nativeapp.textstudio", source: context.source,
+            inputs: context.inputs, operation: .replaceSelection)
+        let result = MiniAppResult(requestID: request.id, operation: .replaceSelection,
+            items: [.init(kind: .text, text: returned)])
+        _ = try store.enqueue(request)
+        try store.complete(result)
+        let preserved = try await PinkhaMiniAppsResultApplier.apply(
+            request: request, result: result, editor: editor, store: store)
+        let replayed = try await PinkhaMiniAppsResultApplier.apply(
+            request: request, result: result, editor: editor, store: store)
+        try #require(!preserved && !replayed)
+
+        // A reused cell and a detached cell must each reject their original menu
+        // token even though the old cached responder still belongs to this editor.
+        selectedContent.update(with: previousConfiguration)
+        try await requireUnavailableSelection(origin, editor: editor, store: store)
+        selectedConfiguration.content = .plain(expected, contentType: .text)
+        selectedConfiguration.attributedString = NSAttributedString(string: expected)
+        selectedContent.update(with: selectedConfiguration)
+        outerCell.removeFromSuperview()
+        try await requireUnavailableSelection(origin, editor: editor, store: store)
+        try await document.close()
+        try await document.open()
+        let persisted = try await PinkhaMiniAppsContext.nativeBlocks(document: document)
+        try #require(Dictionary(uniqueKeysWithValues: persisted.map { ($0.id, $0.childrenIds) }) == tree)
+        let persistedCell = try #require(persisted.first { $0.id == cellID })
+        let previousCell = try #require(persisted.first { $0.id == previousBlockID })
+        guard case .text(let actual) = persistedCell.content,
+              case .text(let previousActual) = previousCell.content else {
+            throw NSError(domain: "MiniAppsNativeAdapter", code: 2,
+                userInfo: [NSLocalizedDescriptionKey: "Native table/previous text blocks disappeared"])
+        }
+        try #require(actual.text == expected && previousActual.text == previousText)
+        try #require(try store.pendingResults(sourceAppID: PinkhaMiniAppsContext.sourceAppID).isEmpty)
+        return ["nestedTableSelectionCaptured": true, "nestedTableReplacementPersisted": true,
+                "expiredSelectionDidNotFallback": true, "nestedTableBlockID": tableID,
+                "nestedTextBlockID": cellID, "nestedSelectionRequestID": request.id.uuidString.lowercased()]
+    }
+
+    private func requireUnavailableSelection(_ origin: PinkhaMiniAppsTextSelection,
+                                            editor: EditorPageController, store: MiniAppBridgeStore) async throws {
+        do {
+            _ = try await PinkhaMiniAppsContext.capture(editor: editor, store: store, selection: origin)
+        } catch PinkhaMiniAppsError.documentUnavailable {
+            return
+        }
+        throw NSError(domain: "MiniAppsNativeAdapter", code: 3,
+            userInfo: [NSLocalizedDescriptionKey: "An expired selection silently used another text view"])
     }
 
     private func selectionRequest(editor: EditorPageController, store: MiniAppBridgeStore,

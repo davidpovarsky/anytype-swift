@@ -22,11 +22,13 @@ enum PinkhaMiniAppsEntry {
         var responder: UIResponder? = textView
         while let current = responder {
             if let editor = current as? EditorPageController {
+                guard let selection = PinkhaMiniAppsTextSelection(
+                    textView: textView, range: range, editor: editor) else { return nil }
                 return UIAction(title: PinkhaMiniAppsStrings.title,
                     image: UIImage(systemName: "square.grid.2x2"),
                     identifier: .init("pinkha.miniapps.selection")) { [weak editor] _ in
                     guard let editor else { return }
-                    PinkhaMiniAppsCoordinator.shared.present(editor: editor, range: range)
+                    PinkhaMiniAppsCoordinator.shared.present(editor: editor, selection: selection)
                 }
             }
             responder = current.next
