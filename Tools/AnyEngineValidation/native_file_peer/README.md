@@ -26,3 +26,7 @@ One immutable ARM64 Go1.26.5 build on `ubuntu-24.04-arm`, one CPU /4 GiB and com
 Two online processes use independent wallets and network namespaces on an owned internal bridge. The owner supplies a random 2 MiB payload. The controller transfers identities, expected hashes/counts and signed ACL head only. Actual Reader grant, native encrypted object-tree delivery, disconnected receiver-only local DAG offload, authorized bounded native RPC prefetch, per-CID local reread, complete plaintext/metadata equality and own-store offline reopen must all pass.
 
 Raw logs, account stores, snapshots, source keys and payloads remain recipient-encrypted. Public results expose hashes/counts and scoped receipts. Cleanup is limited to this run's unique containers/network. Whole-Space semantic migration, arbitrary legacy/multiple-root formats, history reconstruction and destination conversion remain separate open work; no source/file receipt authorizes destination writes.
+
+## Member census and corrected custom-schema continuation
+
+The current v4 controller runs only the two failed native scopes. See [census-continuation.md](census-continuation.md) for the exact four-file source delta, retained scheduling pass, original failures, and actual transport requirements. Earlier sections describe their original immutable attempts.
