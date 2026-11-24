@@ -380,6 +380,40 @@ final class NativeDefinitionPlanTests: XCTestCase {
         }
     }
 
+    func testCapturedDefinitionHiddenDefaultsKeepTitleAndTypeHiddenSeparate() throws {
+        let name = try nativeName(overrides: ["isHidden": .bool(true)])
+        let hidden = try relation("hiddenField", key: "hiddenField", format: 0, extra: ["isHidden": .bool(true)])
+        let shown = try relation("shownField", key: "shownField", format: 6, extra: ["isHidden": .bool(false)])
+        let sourceType = try type(extra: ["recommendedHiddenRelations": .array([.string(shown.sourceObjectID)])])
+        let rows = [name, hidden, shown, sourceType]
+        let mapper = try AnyHeartNativeDefinitionPlan(catalog: catalog(rows))
+        let title = try XCTUnwrap(mapper.property(sourceKey: "name"))
+        XCTAssertEqual(title.sourceHidden, true); XCTAssertEqual(title.canonicalBinding?.sourceHidden, true)
+        XCTAssertEqual(title.owner, .native("any")); XCTAssertEqual(title.record, .native("name"))
+        XCTAssertNoThrow(try boundPlan(rows: rows, mapper: mapper))
+        let item = try XCTUnwrap(mapper.schemaItems.first { $0.sourceKey == mapper.types[0].sourceKey })
+        guard case .typeDefinition(let seed) = item.operation else { return XCTFail("type") }
+        let config = try XCTUnwrap(seed.layout).resolved(AnyDestinationPlanChecks.placeholder)["config"]?["pinkhaHeart"]
+        let ordinaryHidden = try XCTUnwrap(mapper.property(sourceKey: "hiddenField"))
+        let explicitTypeHidden = try XCTUnwrap(mapper.property(sourceKey: "shownField"))
+        XCTAssertEqual(config?["hidden"], .array([try explicitTypeHidden.address.resolved(AnyDestinationPlanChecks.placeholder)]))
+        XCTAssertEqual(config?["definitionHidden"]?.array, try [ordinaryHidden, title].map { try $0.address.resolved(AnyDestinationPlanChecks.placeholder) })
+        let document = try snapshot("doc", type: 16, key: "", details: ["name": .string("Visible title"),
+            "hiddenField": .string("present hidden value"), "shownField": .bool(false)])
+        let values = try mapper.values(snapshot: document, relationKeys: ["name", "hiddenField", "shownField"], objects: [])
+        let properties = try values.initialProperties.resolved(AnyDestinationPlanChecks.placeholder)
+        XCTAssertEqual(properties["any"]?["name"], .string("Visible title"))
+        XCTAssertEqual(properties[try AnyDestinationPlanChecks.placeholder(ordinaryHidden.owner)]?[try AnyDestinationPlanChecks.placeholder(ordinaryHidden.record)], .string("present hidden value"))
+        for state in [AnyJSON.null, .string("true")] {
+            XCTAssertThrowsError(try AnyDestinationCanonicalPropertyBinding(evidence: .init(snapshot: nativeName(overrides: ["isHidden": state]))))
+        }
+        for field in ["isArchived", "isReadonly"] {
+            let inactive = try relation("inactive", key: "inactive", format: 0, extra: [field: .bool(true)])
+            let preview = try AnyHeartNativeDefinitionPlan(catalog: catalog([inactive]))
+            XCTAssertNil(preview.property(sourceKey: "inactive")); XCTAssertThrowsError(try preview.admittedSchemaItems())
+        }
+    }
+
     func testOriginalNativeCaptureProvidesAllCurrentDefinitionRowsWithoutBundledSubstitution() throws {
         guard let path = ProcessInfo.processInfo.environment["PINKHA_NATIVE_CAPTURE_FIXTURE"] else {
             throw XCTSkip("Original independently retained native fixture required")
@@ -427,6 +461,7 @@ final class NativeDefinitionPlanTests: XCTestCase {
         XCTAssertEqual(plan.types.count, 19)
         let name = try XCTUnwrap(plan.property(sourceKey: "name"))
         XCTAssertTrue(name.isCanonicalName)
+        XCTAssertEqual(name.sourceHidden, true)
         XCTAssertEqual(name.owner, .native("any")); XCTAssertEqual(name.record, .native("name"))
         XCTAssertFalse(plan.schemaItems.contains { $0.sourceObjectID == name.relation.objectID })
         XCTAssertEqual(name.canonicalBinding?.evidence.jsonViewBytes, name.relation.snapshot.jsonViewBytes)
