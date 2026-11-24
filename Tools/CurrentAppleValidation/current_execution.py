@@ -72,6 +72,29 @@ def metadata(path):
         return {"kind": "symlink", "mode": stat.S_IMODE(st.st_mode), "target": os.readlink(path)}
     raise ValueError("unsupported_source_type")
 
+def native_product_revision(fixed, profile, expected):
+    if profile != "native-ui-failed":
+        return None
+    revision = fixed.get("currentNativeProductRevision")
+    if revision is None:
+        return None
+    c.require(isinstance(revision, dict)
+              and set(revision) == {"schemaVersion", "profile", "sourceCommit", "productTrees"}
+              and type(revision["schemaVersion"]) is int and revision["schemaVersion"] == 1
+              and revision["profile"] == profile
+              and isinstance(revision["sourceCommit"], str)
+              and re.fullmatch("[0-9a-f]{40}", revision["sourceCommit"])
+              and isinstance(revision["productTrees"], dict)
+              and set(revision["productTrees"]) == {"Modules", "NativeApp"}
+              and set(revision["productTrees"]) == set(fixed["productTrees"][profile]),
+              "current_native_product_revision_invalid")
+    git("merge-base", "--is-ancestor", revision["sourceCommit"], expected)
+    for name, oid in revision["productTrees"].items():
+        c.require(git("rev-parse", revision["sourceCommit"] + ":" + name).decode().strip() == oid,
+                  "current_native_product_revision_origin_changed:" + name)
+    return revision
+
+
 def admit(profile, expected, inventory_policy=None):
     c.require(platform.system() == "Darwin" and platform.machine() == "arm64"
               and os.environ.get("GITHUB_ACTIONS") == "true"
@@ -92,6 +115,9 @@ def admit(profile, expected, inventory_policy=None):
     if recovery is not None:
         git("merge-base", "--is-ancestor", origin, expected)
     trees = (recovery["productTrees"] if recovery is not None else fixed["productTrees"])[profile]
+    revision = native_product_revision(fixed, profile, expected)
+    if revision is not None:
+        trees, origin = revision["productTrees"], revision["sourceCommit"]
     all_trees = {**trees, **fixed["helperTrees"]}
     for name, oid in all_trees.items():
         c.require(git("rev-parse", "HEAD:" + name).decode().strip() == oid, "compiled_source_tree_changed:" + name)
@@ -126,8 +152,11 @@ def admit(profile, expected, inventory_policy=None):
                "runAttempt": os.environ["GITHUB_RUN_ATTEMPT"], "repository": c.REPOSITORY}
     source = {"manifestSHA256": digest(MANIFEST), "files": files, "gitInputs": origins,
               "compiledTrees": trees, "compiledOrigin": origin}
+    if revision is not None:
+        source["currentNativeProductRevision"] = revision
     if recovery is not None:
         source["inventoryRecoveryPolicy"] = inventory_policy
+        source["inventoryRecoverySourceOrigin"] = recovery["sourceCommit"]
     return context, source
 
 def recheck(source):
