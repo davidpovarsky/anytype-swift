@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exact type-namespace and failed file-peer continuation; original JSON proof retained."""
+"""New native schemas and failed file-peer continuation; JSON/namespace proofs retained."""
 import hashlib
 import importlib.util
 import json
@@ -20,13 +20,29 @@ WHOLE = HERE.parent / "native_whole_source"
 WHOLE_HELPER_SHA = '6cd5829e0fae7398ecbb712b5a1a322f15a0b6d1be73d5fc8fd4998f3405f7c5'
 BASE_HEART_SHA = '117bb74ece968cac02abb81c5cc49a418a98a60a'
 INITIAL_HEART_SHA = 'd2696b36d169f57f1bcb03c055384e5ec944d930'
-HEART_SHA = 'efd0d2d44e871966bf3c8edcc18db73a00ec699c'
+NAMESPACE_HEART_SHA = 'efd0d2d44e871966bf3c8edcc18db73a00ec699c'
+HEART_SHA = '65caee9bfc386c2f9182564d6ad1eb2f02cfadd1'
+SCHEMA_DELTA_SHA = '315b63e0496cf260691c6fae367a555f143209cf3e35f45da9302836ce5ba8cb'
 CONTINUATION_DELTA_SHA = 'aa971ebd0d2ae37f9344524d0f2750520aed27083c9e992e3014f347294bd391'
 DELTA_SHA = 'cfddb35c2f7a28f55028f1e2985522c1de1b562a3a51d0c74dcf266b3d99c6d7'
 JSON_METHOD = "TestLoadedAccountNativeSnapshotJSONView"
 PEER_METHOD = "TestLoadedAccountRemoteFilePeer"
 NAMESPACE_METHOD = "TestLoadedAccountCapturedTypeNamespaces"
-METHODS = [NAMESPACE_METHOD, PEER_METHOD]
+
+CUSTOM_METHOD = "TestLoadedAccountCustomSchemaSource"
+RETRY_METHOD = "TestLoadedAccountCaptureRetryBoundary"
+METHODS = [RETRY_METHOD, CUSTOM_METHOD, PEER_METHOD]
+RETRY_CASES = [
+    "typed-change-starts-fresh-attempt",
+    "authority-census-path-payload-errors-stop",
+    "matching-error-text-does-not-retry",
+    "wrapped-or-composite-marker-does-not-retry",
+    "rejected-partial-value-does-not-retry",
+    "attempt-cap-remains-terminal",
+    "expired-original-deadline-starts-no-attempt",
+    "cancellation-prevents-next-attempt",
+]
+
 NAMESPACE_CASES = [
     "actual-native-snapshot-closure",
     "native-and-legacy-urls-join-captured-key",
@@ -109,7 +125,7 @@ def apply_continuation_delta(root, snapshots, metadata):
     delta = json.loads(descriptor.read_bytes())
     require(delta["schema"] == "native-type-namespace-peer-continuation-v1" and
             delta["base_heart_commit"] == INITIAL_HEART_SHA and
-            delta["derived_heart_commit"] == HEART_SHA and
+            delta["derived_heart_commit"] == NAMESPACE_HEART_SHA and
             delta["additions"] == 1 and delta["existing_changes"] == 2,
             "continuation_delta_lineage")
     expected = {
@@ -196,6 +212,129 @@ def retained_json_view():
     }
 
 
+def apply_schema_checkpoint_delta(root, snapshots, metadata):
+    descriptor = HERE / "custom-schema-checkpoint-v1.json"
+    require(sha(descriptor) == SCHEMA_DELTA_SHA, "schema_checkpoint_delta_identity")
+    delta = json.loads(descriptor.read_bytes())
+    require(delta["schema"] == "native-custom-schema-checkpoint-delta-v1" and
+            delta["base_heart_commit"] == NAMESPACE_HEART_SHA and
+            delta["derived_heart_commit"] == HEART_SHA and
+            delta["additions"] == 2 and delta["existing_changes"] == 2,
+            "schema_checkpoint_delta_lineage")
+    expected = {
+        "core/application/loaded_capture_retry_test.go": "A",
+        "core/application/loaded_custom_schema_source_test.go": "A",
+        "core/application/loaded_file_peer_test.go": "M",
+        "core/application/loaded_space_witness.go": "M",
+    }
+    require([row["path"] for row in delta["files"]] == sorted(expected),
+            "schema_checkpoint_exact_scope")
+    for row in delta["files"]:
+        relative = native.relative_member(row["path"])
+        require(row["operation"] == expected[relative.as_posix()] and row["mode"] == 0o644,
+                "schema_checkpoint_operation")
+        source = HERE / "schema-source" / relative
+        native.checked_file(source, (row["bytes"], row["sha256"]))
+        raw = source.read_bytes()
+        require(hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest() ==
+                row["git_blob_sha1"], "schema_checkpoint_source_git_blob")
+        logical = str(native.HEART / relative)
+        target = root / logical.lstrip("/")
+        if row["operation"] == "A":
+            require(logical not in snapshots and not target.exists() and not target.is_symlink(),
+                    "schema_checkpoint_addition_overwrites_source")
+            target.parent.mkdir(parents=True, exist_ok=True)
+            with target.open("xb") as stream:
+                stream.write(raw)
+        else:
+            require(logical in snapshots and target.is_file() and not target.is_symlink(),
+                    "schema_checkpoint_existing_source_required")
+            require(tuple(getattr(target.stat(), key) for key in native.FIELDS) == snapshots[logical],
+                    "schema_checkpoint_before_physical_identity")
+            native.checked_file(target, (row["before_bytes"], row["before_sha256"]))
+            before = target.read_bytes()
+            require(hashlib.sha1(b"blob " + str(len(before)).encode() + b"\0" + before).hexdigest() ==
+                    row["before_git_blob_sha1"], "schema_checkpoint_before_git_blob")
+            target.write_bytes(raw)
+        target.chmod(0o644)
+        native.checked_file(target, (row["bytes"], row["sha256"]))
+        snapshots[logical] = tuple(getattr(target.stat(), key) for key in native.FIELDS)
+    save(metadata / "native-custom-schema-checkpoint-delta-v1.json", delta)
+    return delta
+
+
+def retained_namespace():
+    producer_path = HERE / "retained-namespace-45480331496" / "producer-result.json"
+    recipient_path = HERE / "retained-namespace-45480331496" / "recipient-readback.json"
+    native.checked_file(producer_path, (135252, "1c23d4596849ea7d66da10557d686273dd5eeb29c59aaa8f52bbf9142f280742"))
+    native.checked_file(recipient_path, (2085, "0b36936e7a56bb33fe65a0e7a1db3ad6cc75987fb2fb16e48a92f117e375aa62"))
+    original = json.loads(producer_path.read_bytes())
+    recipient = json.loads(recipient_path.read_bytes())
+    require(original["status"] == "FAIL" and original["error"] ==
+            "native_peer_exited_before_owner_identity" and
+            original["controller_sha"] == "5f28ece7bc62615f0954c64861f756baf6f4115e" and
+            original["run_id"] == "45480331496" and original["run_attempt"] == "1" and
+            original["heart_sha"] == NAMESPACE_HEART_SHA and len(original["executions"]) == 1,
+            "retained_namespace_original_identity")
+    execution = original["executions"][0]
+    namespace = original["capturedTypeNamespace"]
+    require(execution["method"] == NAMESPACE_METHOD and execution["exit_code"] == 0 and
+            execution["status"] == "PASS" and execution["named_method_pass"] is True and
+            execution["subtests"] == 8 and namespace["status"] == "PASS" and
+            namespace["closed_resolver_unmapped"] == 0 and namespace["raw_snapshots_unchanged"] is True and
+            namespace["native_type_urls"] == 142 and namespace["native_type_definitions"] == 19 and
+            execution["stdout_sha256"] == "145c0063a455e95276731ab10f273ed1fee9eea5e349187a4a4ec11d62f3b037",
+            "retained_actual_namespace_method_pass")
+    require(recipient["format"] == "pinkha-native-file-peer-recipient-readback-v1" and
+            recipient["status"] == "PASS" and recipient["runId"] == original["run_id"] and
+            recipient["controllerSHA"] == original["controller_sha"] and
+            recipient["nativeSourceSHA"] == NAMESPACE_HEART_SHA and
+            recipient["producerStatus"] == "FAIL" and
+            recipient["publicResultSHA256"] == sha(producer_path) and
+            recipient["privateRegularOriginals"] == 486 and
+            recipient["originalCommandStreams"] == 46 and
+            recipient["nativeNamespace"]["manifestDeclaredMembers"] == 287 and
+            recipient["nativeNamespace"]["snapshotObjects"] == 143 and
+            recipient["nativeNamespace"]["nativeTrees"] == 144 and
+            recipient["nativeNamespace"]["closedResolverUnmapped"] == 0,
+            "retained_independent_namespace_custody")
+    return {
+        "status": "RETAINED_ORIGINAL_SCOPE_PASS", "run_id": original["run_id"],
+        "run_attempt": original["run_attempt"], "controller_sha": original["controller_sha"],
+        "heart_sha": NAMESPACE_HEART_SHA, "method": NAMESPACE_METHOD, "subtests": 8,
+        "rerun": False, "producer_overall_status": "FAIL", "closed_resolver_unmapped": 0,
+        "producer_result_sha256": sha(producer_path),
+        "recipient_readback_sha256": sha(recipient_path),
+        "captured_objects": 143, "original_declared_source_members": 287,
+        "stdout_sha256": execution["stdout_sha256"],
+        "native_namespace_receipt_sha256": namespace["receipt_sha256"],
+    }
+
+
+def audit_capture_attempts(directory, prefix, stage):
+    paths = sorted(directory.glob(prefix + "*.json"))
+    require(1 <= len(paths) <= 3, "bounded_original_capture_attempt_count")
+    observations = []
+    for number, path in enumerate(paths, 1):
+        require(path.name == prefix + str(number) + ".json" and path.is_file() and
+                not path.is_symlink(), "immutable_capture_attempt_member")
+        row = json.loads(path.read_bytes())
+        note = row["attempt"]
+        require(row["contract"] == "pinkha-native-source-capture-attempt-v1" and
+                row["attemptLimit"] == 3 and row["stage"] == stage and
+                row["newCaptureRequiredAfterRefusal"] is True and note["Attempt"] == number,
+                "original_capture_attempt_contract")
+        if number < len(paths):
+            require(note["Outcome"] == "checkpoint-changed" and
+                    "native source checkpoint changed during capture" in note["Error"],
+                    "only_typed_checkpoint_change_precedes_success")
+        else:
+            require(note["Outcome"] == "capture-returned" and note["Error"] == "",
+                    "last_attempt_returns_fresh_capture")
+        observations.append({"attempt": number, "outcome": note["Outcome"], "sha256": sha(path)})
+    return observations
+
+
 def audit_one(stdout, method):
     text = stdout.read_text()
     require(re.findall(r"(?m)^=== RUN\s+(\S+)\s*$", text) == [method] and
@@ -223,13 +362,14 @@ class RemoteFileRunner(native.Runner):
         self.roles, self.inspect_counter = {}, 0
         self.nonce = secrets.token_hex(16)
         self.result = {
-            "schema": "native-file-peer-portable-v2", "status": "RUNNING",
+            "schema": "native-file-peer-portable-v3", "status": "RUNNING",
             "controller_sha": os.environ.get("GITHUB_SHA"),
             "run_id": os.environ.get("GITHUB_RUN_ID"),
             "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT"),
             "heart_sha": HEART_SHA, "base_heart_sha": native.HEART_SHA,
             "context_heart_sha": native.DERIVED_HEART_SHA, "whole_source_heart_sha": BASE_HEART_SHA,
             "initial_file_peer_heart_sha": INITIAL_HEART_SHA,
+            "retained_namespace_heart_sha": NAMESPACE_HEART_SHA,
             "any_sync_sha": native.SYNC_SHA,
             "qualified_helper_sha256": whole.HELPER_SHA,
             "qualified_whole_helper_sha256": WHOLE_HELPER_SHA,
@@ -248,6 +388,7 @@ class RemoteFileRunner(native.Runner):
         require(controller == os.environ["GITHUB_SHA"] == os.environ["EXPECTED_SOURCE_SHA"],
                 "controller_identity")
         self.result["retainedNativeJSONView"] = retained_json_view()
+        self.result["retainedCapturedTypeNamespace"] = retained_namespace()
         self.result["resources_before"] = self.guard(start=True)
         self.result["profile"] = {
             "compiler_network": "none", "peer_network": "owned internal Docker bridge",
@@ -281,6 +422,9 @@ class RemoteFileRunner(native.Runner):
         self.result["source"]["file_peer_derivation"] = apply_peer_delta(
             self.rootfs, self.snapshots, self.private / "source-metadata")
         self.result["source"]["namespace_peer_continuation"] = apply_continuation_delta(
+            self.rootfs, self.snapshots, self.private / "source-metadata")
+
+        self.result["source"]["custom_schema_checkpoint_continuation"] = apply_schema_checkpoint_delta(
             self.rootfs, self.snapshots, self.private / "source-metadata")
         self.command("load-image", ["sudo", "-n", "docker", "load", "--input", str(image)], 180)
         _, out, _ = self.command("image-inspect", ["sudo", "-n", "docker", "image", "inspect", native.IMAGE], 30)
@@ -323,8 +467,111 @@ class RemoteFileRunner(native.Runner):
         rc, out, _ = self.container("binary-selected-list", self.binary,
             ["-test.list=^(" + "|".join(METHODS) + ")$"], seconds=30)
         require(rc == 0 and sorted(out.read_text().splitlines()) == sorted(METHODS),
-                "actual_two_new_named_methods")
+                "actual_three_selected_named_methods")
         self.result["actual_named_methods_sha256"] = sha(out)
+
+
+    def retry_boundaries(self):
+        rc, stdout, _ = self.container("native-capture-retry-boundaries", self.binary,
+            ["-test.v", "-test.run=^" + RETRY_METHOD + "$", "-test.count=1", "-test.timeout=15s"],
+            seconds=30)
+        row = {"method": RETRY_METHOD, "role": "fixture scheduling controls only", "exit_code": rc,
+               "native_source_capture_proof": False}
+        self.result["executions"].append(row)
+        require(rc == 0, "capture_retry_scheduling_method_exit")
+        text = stdout.read_text()
+        expected = [RETRY_METHOD] + [RETRY_METHOD + "/" + name for name in RETRY_CASES]
+        runs = re.findall(r"(?m)^=== RUN\s+(\S+)\s*$", text)
+        passes = re.findall(r"(?m)^\s*--- PASS:\s+(\S+)\s+\(", text)
+        require(runs == expected and sorted(passes) == sorted(expected) and
+                len(passes) == len(expected) and re.search(r"(?m)^PASS\s*$", text) and
+                not re.search(r"(?m)^\s*--- (?:FAIL|SKIP):", text),
+                "exact_eight_capture_scheduling_cases")
+        row.update(status="PASS", named_method_pass=True, subtests=8, stdout_sha256=sha(stdout))
+        self.result["captureScheduling"] = {
+            "status": "PASS", "method": RETRY_METHOD, "subtests": 8, "attempt_limit": 3,
+            "original_deadline_preserved": True, "native_source_capture_proof": False,
+            "stdout_sha256": sha(stdout),
+        }
+
+    def custom_schema(self):
+        rc, stdout, _ = self.container("native-custom-schema", self.binary,
+            ["-test.v", "-test.run=^" + CUSTOM_METHOD + "$", "-test.count=1", "-test.timeout=210s"],
+            seconds=240)
+        row = {"method": CUSTOM_METHOD, "role": "new actual native definitions and current values", "exit_code": rc}
+        self.result["executions"].append(row)
+        require(rc == 0, "native_custom_schema_method_exit")
+        row.update(audit_one(stdout, CUSTOM_METHOD))
+        root = self.private / "fixtures" / CUSTOM_METHOD
+        note_path = root / "native-custom-schema-source.json"
+        note = json.loads(note_path.read_bytes())
+        count = note["capturedObjects"]
+        receipt = note["sourceReceipt"]
+        require(note["contract"] == "pinkha-native-custom-schema-source-v1" and
+                note["customIdentityCount"] == 14 and len(note["properties"]) == 7 and
+                len(note["options"]) == 4 and count >= 14 and
+                receipt["CapturedObjects"] == count and receipt["ClosedResolverUnmapped"] == 0 and
+                note["originalPBAndJSONMembersVerified"] == count and
+                all(note[key] is True for key in (
+                    "nativeDefinitionsAndCurrentValuesVerified", "emptyAndDefaultValuesVerified",
+                    "orderedNativeIdentitiesVerified")) and
+                note["wholeSpaceSemanticMigrationComplete"] is False and
+                all(receipt[key] is True for key in (
+                    "AllNativeHeadRowsAccounted", "AllCurrentObjectsCaptured",
+                    "CapturedSnapshotsBoundToUnchangedCheckpoint", "AccountSessionAuthorizedAtFinalCapture",
+                    "IndexResolverSnapshotBound")) and
+                all(receipt[key] is False for key in (
+                    "HasNativeSourceAdmission", "SemanticCompleteness", "HistorySemanticsValidated",
+                    "PermitsDestinationWrites")),
+                "actual_custom_schema_and_current_values")
+        identities = [note["typeObjectID"], note["firstDocumentID"], note["secondDocumentID"]]
+        identities += [item["objectID"] for item in note["properties"] + note["options"]]
+        require(len(set(identities)) == 14 and all(identities), "fourteen_distinct_actual_native_identities")
+        require(hashlib.sha256(note["sourceAccountID"].encode()).hexdigest() ==
+                receipt["Source"]["accountSHA256"] and
+                hashlib.sha256(note["sourceSpaceID"].encode()).hexdigest() ==
+                receipt["Inventory"]["SpaceSHA256"], "custom_schema_actual_account_space_binding")
+        manifests = list(root.glob("native-source-*/manifest.json"))
+        require(len(manifests) == 1, "one_successful_custom_source_bundle")
+        manifest_path = manifests[0]
+        require(sha(manifest_path) == note["originalSourceManifestSHA256"],
+                "custom_source_manifest_identity")
+        manifest = json.loads(manifest_path.read_bytes())
+        require(manifest["Contract"] == "pinkha-native-whole-source-bundle-v1" and
+                manifest["Receipt"] == receipt and len(manifest["Objects"]) == count and
+                manifest["SourceRows"]["SHA256"] == note["originalSourceRowsSHA256"] and
+                set(identities).issubset({item["ObjectID"] for item in manifest["Objects"]}) and
+                not manifest["Files"] and not manifest["FileReferences"],
+                "custom_source_complete_bundle_membership")
+        members = [manifest["SourceRows"]]
+        for item in manifest["Objects"]:
+            members.extend([item["Snapshot"], item["NativeJSONView"]])
+        require(len({item["Path"] for item in members}) == len(members),
+                "custom_source_unique_member_paths")
+        for member in members:
+            relative = native.relative_member(member["Path"])
+            native.checked_file(manifest_path.parent / relative, (member["Bytes"], member["SHA256"]))
+        attempts = audit_capture_attempts(root, "native-custom-schema-capture-attempt-", "custom-schema")
+        row["status"] = "PASS"
+        self.result["nativeCustomSchema"] = {
+            "status": "PASS", "method": CUSTOM_METHOD, "captured_objects": count,
+            "custom_types": 1, "properties": 7, "options": 4, "typed_documents": 2,
+            "distinct_custom_identities": 14, "closed_resolver_unmapped": 0,
+            "empty_default_current_values_verified": True, "ordered_identities_verified": True,
+            "original_declared_source_members": len(members), "receipt_sha256": sha(note_path),
+            "manifest_sha256": sha(manifest_path), "source_rows_sha256": manifest["SourceRows"]["SHA256"],
+            "capture_attempts": attempts, "source_semantic_migration_complete": False,
+        }
+
+    def audit_peer_capture_attempts(self):
+        scopes = [
+            ("owner", "owner-initial"), ("member", "member-cold"),
+            ("member", "member-prefetched"), ("member", "member-offline-reopen"),
+        ]
+        self.result["peerCaptureAttempts"] = {
+            stage: audit_capture_attempts(self.private / "peers" / role, "capture-" + stage + "-attempt-", stage)
+            for role, stage in scopes
+        }
 
 
     def namespace(self):
@@ -644,17 +891,33 @@ class RemoteFileRunner(native.Runner):
 
     def execute(self):
         self.prepare()
-        self.namespace()
-        self.peers()
+        self.retry_boundaries()
+        failures = []
+        # These owned fixtures use independent accounts/stores. Retain an actual
+        # source-schema failure while still exercising the separately failed
+        # peer scope from the same one compiled immutable binary.
+        for label, operation in (("custom-schema", self.custom_schema), ("remote-file-peers", self.peers)):
+            first = len(self.result["executions"])
+            try:
+                operation()
+            except Exception as exc:
+                failures.append({"scope": label, "error_type": type(exc).__name__, "error": str(exc)})
+                for row in self.result["executions"][first:]:
+                    if row.get("status") != "PASS":
+                        row["status"] = "FAIL"
         for name, before in self.snapshots.items():
             path = self.rootfs / name.lstrip("/")
             require(tuple(getattr(path.stat(), key) for key in native.FIELDS) == before,
                     "readonly_compiled_source_changed")
         self.result["compiled_source_unchanged"] = True
-        require(len(self.result["executions"]) == 4 and
+        if failures:
+            self.result["scopeFailures"] = failures
+            raise RuntimeError(failures[0]["error"] if len(failures) == 1 else "owned_native_scopes_failed")
+        self.audit_peer_capture_attempts()
+        require(len(self.result["executions"]) == 5 and
                 all(row["status"] == "PASS" for row in self.result["executions"]),
-                "exact_namespace_and_three_peer_executions")
-        self.result["status"] = "NATIVE_TYPE_NAMESPACE_AND_REMOTE_FILE_PEERS_PASS"
+                "exact_custom_schema_scheduling_and_three_peer_executions")
+        self.result["status"] = "NATIVE_CUSTOM_SCHEMA_AND_REMOTE_FILE_PEERS_PASS"
 
     def finalize(self):
         cleanup = []
@@ -700,7 +963,7 @@ def main():
             save(runner.public / "result.json", runner.result)
     print(json.dumps({key: runner.result.get(key) for key in
                       ("status", "error", "controller_sha", "run_id", "builds")}))
-    return 0 if runner.result["status"] == "NATIVE_TYPE_NAMESPACE_AND_REMOTE_FILE_PEERS_PASS" else 1
+    return 0 if runner.result["status"] == "NATIVE_CUSTOM_SCHEMA_AND_REMOTE_FILE_PEERS_PASS" else 1
 
 
 if __name__ == "__main__":
