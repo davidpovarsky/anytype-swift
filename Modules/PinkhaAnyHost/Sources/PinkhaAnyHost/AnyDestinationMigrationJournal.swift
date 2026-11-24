@@ -79,6 +79,7 @@ final class AnyDestinationMigrationJournal: @unchecked Sendable {
         let lockFD = openat(directoryFD, "owner.lock", O_RDWR | O_CREAT | O_NOFOLLOW | O_CLOEXEC, mode_t(0o600))
         guard lockFD >= 0 else { close(directoryFD); throw AnyDestinationMigrationError.journalUnavailable }
         do {
+            try Self.requireDirectoryIdentity(directoryFD, path: directory)
             try Self.requireFile(lockFD, maximum: 0)
             guard flock(lockFD, LOCK_EX | LOCK_NB) == 0 else { throw AnyDestinationMigrationError.alreadyExecuting }
             for path in [directory, root, parent] {
@@ -150,6 +151,7 @@ final class AnyDestinationMigrationJournal: @unchecked Sendable {
     }
 
     private func validateNames() throws {
+        try Self.requireDirectoryIdentity(directoryFD, path: directory)
         let names = try FileManager.default.contentsOfDirectory(atPath: directory.path)
         guard names.count <= plan.items.count + 128 else { throw AnyDestinationMigrationError.journalCorrupt }
         let expected = Set(plan.items.indices.map { name(index: $0) })
@@ -162,9 +164,11 @@ final class AnyDestinationMigrationJournal: @unchecked Sendable {
             }
             _ = try read(name: name, maximum: max(Self.maximumEntryBytes, AnyDestinationMigrationPlan.maximumPlanBytes))
         }
+        try Self.requireDirectoryIdentity(directoryFD, path: directory)
     }
 
     private func read(name: String, maximum: Int) throws -> Data? {
+        try Self.requireDirectoryIdentity(directoryFD, path: directory)
         let fd = openat(directoryFD, name, O_RDONLY | O_NOFOLLOW | O_CLOEXEC)
         if fd < 0 {
             if errno == ENOENT { return nil }
@@ -187,6 +191,7 @@ final class AnyDestinationMigrationJournal: @unchecked Sendable {
     }
 
     private func write(name: String, bytes: Data, maximum: Int) throws {
+        try Self.requireDirectoryIdentity(directoryFD, path: directory)
         guard !bytes.isEmpty, bytes.count <= maximum, !name.contains("/"), !name.contains("\\") else {
             throw AnyDestinationMigrationError.journalUnavailable
         }
@@ -218,7 +223,19 @@ final class AnyDestinationMigrationJournal: @unchecked Sendable {
     private static func requireDirectory(_ url: URL, privateMode: Bool) throws {
         var info = stat()
         guard lstat(url.path, &info) == 0, (info.st_mode & mode_t(S_IFMT)) == mode_t(S_IFDIR),
-              info.st_uid == geteuid(), !privateMode || info.st_mode & mode_t(0o777) == mode_t(0o700) else {
+              info.st_uid == geteuid(), info.st_mode & mode_t(0o022) == 0,
+              !privateMode || info.st_mode & mode_t(0o777) == mode_t(0o700) else {
+            throw AnyDestinationMigrationError.journalUnavailable
+        }
+    }
+
+    private static func requireDirectoryIdentity(_ fd: Int32, path: URL) throws {
+        try requireDirectory(path, privateMode: true)
+        var descriptor = stat(), current = stat()
+        guard fstat(fd, &descriptor) == 0, lstat(path.path, &current) == 0,
+              descriptor.st_dev == current.st_dev, descriptor.st_ino == current.st_ino,
+              descriptor.st_uid == geteuid(), descriptor.st_mode & mode_t(0o777) == mode_t(0o700),
+              descriptor.st_mode & mode_t(S_IFMT) == mode_t(S_IFDIR) else {
             throw AnyDestinationMigrationError.journalUnavailable
         }
     }
