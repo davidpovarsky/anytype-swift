@@ -30,10 +30,10 @@ permissions:
 
 jobs:
   actual-native-and-ui:
-    runs-on: xcode-27
+    runs-on: ${{ fromJSON(inputs.acceptance_lane == 'coherent-heart-release' && '["self-hosted", "macOS", "ARM64", "pinkha-scaleway-mac"]' || '["xcode-27"]') }}
     timeout-minutes: 150
     env:
-      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      DEVELOPER_DIR: ${{ inputs.acceptance_lane == 'coherent-heart-release' && '/Applications/Xcode.app/Contents/Developer' || '/Applications/Xcode_27.app/Contents/Developer' }}
       UI27_SCOPE: ${{ inputs.ui_scope }}
       UI27_ACCEPTANCE_LANE: ${{ inputs.acceptance_lane }}
       UI27_DEVICE_FAMILY: ${{ inputs.acceptance_device }}
