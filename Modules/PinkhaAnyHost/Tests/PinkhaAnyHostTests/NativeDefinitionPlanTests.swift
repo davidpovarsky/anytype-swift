@@ -8,8 +8,9 @@ import PinkhaAnyEngine
 /// native capture. Synthetic envelopes do not assert native source authority.
 final class NativeDefinitionPlanTests: XCTestCase {
     private func snapshot(_ id: String, type: Int64, key: String,
-                          details: [String: AnyJSON], objectTypes: [String] = []) throws -> AnyHeartNativeSnapshotView {
-        let pb = Data("synthetic-definition-wire-control:\(id)".utf8)
+                          details: [String: AnyJSON], objectTypes: [String] = [],
+                          protobufMarker: String = "") throws -> AnyHeartNativeSnapshotView {
+        let pb = Data("synthetic-definition-wire-control:\(id)\(protobufMarker)".utf8)
         let value: AnyJSON = .object([
             "Contract": .string("pinkha-native-snapshot-json-v1"), "SpaceID": .string("source-space"),
             "ObjectID": .string(id), "NativeType": .integer(type), "UniqueKey": .string(key),
@@ -46,8 +47,31 @@ final class NativeDefinitionPlanTests: XCTestCase {
     }
     private func catalog(_ rows: [AnyHeartNativeSnapshotView]) throws -> AnyHeartNativeDefinitionCatalog {
         try .init(sourceAccountID: "source-account", sourceSpaceID: "source-space",
-            captureManifestSHA256: String(repeating: "a", count: 64),
+            captureManifestSHA256: AnyContentDigest.sha256(try wireManifest(rows)),
             sourceWitnessSHA256: String(repeating: "b", count: 64), snapshots: rows)
+    }
+    /// Deliberately synthetic declaration-only envelopes for closed coverage
+    /// controls. They are not full native bundle or current authority proofs.
+    private func wireManifest(_ rows: [AnyHeartNativeSnapshotView]) throws -> Data {
+        let accountHash = AnyContentDigest.sha256(Data("source-account".utf8))
+        let spaceHash = AnyContentDigest.sha256(Data("source-space".utf8))
+        let witness = String(repeating: "b", count: 64)
+        let objects = rows.sorted { Data($0.sourceObjectID.utf8).lexicographicallyPrecedes(Data($1.sourceObjectID.utf8)) }.map { row -> AnyJSON in
+            let path = "snapshot-" + AnyContentDigest.sha256(Data(row.sourceObjectID.utf8))
+            return .object(["ObjectID": .string(row.sourceObjectID), "NativeType": .integer(row.nativeType), "UniqueKey": .string(row.uniqueKey),
+                "Snapshot": .object(["Path": .string(path + ".pb"), "SHA256": .string(row.snapshotSHA256), "Bytes": .integer(Int64(row.protobufBytes.count))]),
+                "NativeJSONView": .object(["Path": .string(path + ".json"), "SHA256": .string(row.viewSHA256), "Bytes": .integer(Int64(row.jsonViewBytes.count))])])
+        }
+        return try AnyDestinationDefinitionChecks.bytes(.object([
+            "Contract": .string("pinkha-native-whole-source-bundle-v1"), "Objects": .array(objects),
+            "Receipt": .object(["Version": .string("loaded-account-native-space-source-v1"),
+                "AccountSessionAuthorizedAtFinalCapture": .bool(true), "AllNativeHeadRowsAccounted": .bool(true),
+                "CapturedSnapshotsBoundToUnchangedCheckpoint": .bool(true),
+                "Inventory": .object(["SpaceSHA256": .string(spaceHash), "SourceWitnessSHA256": .string(witness)]),
+                "Source": .object(["accountSHA256": .string(accountHash), "source": .object([
+                    "accountSHA256": .string(accountHash), "spaceSHA256": .string(spaceHash),
+                    "native": .object(["WitnessSHA256": .string(witness)])])])]),
+        ]))
     }
 
     func testCapturedOverridesIdentityNamespacesAndOrderedRecommendationsAreExact() throws {
@@ -179,6 +203,7 @@ final class NativeDefinitionPlanTests: XCTestCase {
                            items: [AnyDestinationMigrationItem]? = nil,
                            extraCoverage: [AnyDestinationCoverage]? = nil) throws -> AnyDestinationMigrationPlan {
         let items = items ?? mapper.schemaItems
+        let manifest = try wireManifest(rows)
         let special = extraCoverage ?? mapper.definitionCoverage
         let specialIDs = Set(special.map { Data($0.sourceObjectID.utf8) })
         let ordinary = rows.filter { !specialIDs.contains(Data($0.sourceObjectID.utf8)) }.map { row in
@@ -186,8 +211,9 @@ final class NativeDefinitionPlanTests: XCTestCase {
                 items.filter { Data($0.sourceObjectID.utf8) == Data(row.sourceObjectID.utf8) }.map(\.sourceKey)))
         }
         return try .init(source: .init(accountID: "source-account", spaceID: "source-space",
-            witnessSHA256: String(repeating: "b", count: 64), captureManifestSHA256: String(repeating: "a", count: 64),
-            semanticPlanSHA256: mapper.catalog.contentSHA256, sourceObjectIDs: rows.map(\.sourceObjectID)),
+            witnessSHA256: String(repeating: "b", count: 64), captureManifestSHA256: AnyContentDigest.sha256(manifest),
+            semanticPlanSHA256: mapper.catalog.contentSHA256, sourceObjectIDs: rows.map(\.sourceObjectID),
+            definitionManifestBytes: manifest),
             workspace: .init(accountID: "destination-account", spaceID: "destination-space"), storeID: "destination-store",
             planID: String(repeating: "c", count: 64), coverage: ordinary + special, items: items)
     }
@@ -319,6 +345,41 @@ final class NativeDefinitionPlanTests: XCTestCase {
                 evidence: try .init(snapshot: changedOption), descriptorSHA256: digest))]))
     }
 
+    func testDetachedReplacementEvidenceAndUnrepresentedOptionStateAreRefused() throws {
+        let property = try relation("tagSource", key: "tag", format: 11)
+        let original = try option("optionSource", relation: "tag", order: "m")
+        let rows = [property, original]
+        let mapper = try AnyHeartNativeDefinitionPlan(catalog: catalog(rows))
+        let valid = try boundPlan(rows: rows, mapper: mapper)
+        let forged = try snapshot(original.sourceObjectID, type: 529, key: original.uniqueKey,
+            details: ["relationKey": .string("tag"), "name": .string("forged self-consistent value"),
+                "relationOptionColor": .string("red"), "orderId": .string("z")], protobufMarker: ":different-pb")
+        XCTAssertNotEqual(forged.snapshotSHA256, original.snapshotSHA256)
+        XCTAssertNotEqual(forged.viewSHA256, original.viewSHA256)
+        let forgedMapper = try AnyHeartNativeDefinitionPlan(catalog: catalog([property, forged]))
+        // The forged descriptor, PB and JSON agree with one another. Only the
+        // original outer declaration distinguishes them from admitted source.
+        XCTAssertThrowsError(try boundPlan(rows: rows, mapper: forgedMapper))
+        let noManifest = try AnyDestinationSourceBinding(accountID: valid.source.accountID,
+            spaceID: valid.source.spaceID, witnessSHA256: valid.source.witnessSHA256,
+            captureManifestSHA256: valid.source.captureManifestSHA256, semanticPlanSHA256: valid.source.semanticPlanSHA256,
+            sourceObjectIDs: valid.source.sourceObjectIDs)
+        XCTAssertThrowsError(try AnyDestinationMigrationPlan(source: noManifest, workspace: valid.binding.workspace,
+            storeID: valid.binding.storeID, planID: valid.binding.planID, coverage: valid.coverage, items: valid.items))
+        XCTAssertThrowsError(try AnyDestinationSourceBinding(accountID: valid.source.accountID,
+            spaceID: valid.source.spaceID, witnessSHA256: valid.source.witnessSHA256,
+            captureManifestSHA256: valid.source.captureManifestSHA256, semanticPlanSHA256: valid.source.semanticPlanSHA256,
+            sourceObjectIDs: valid.source.sourceObjectIDs, definitionManifestBytes: try wireManifest([property, forged])))
+        for key in ["isArchived", "isHidden", "isReadonly", "futureOptionSemantics"] {
+            var details = original.details; details[key] = .bool(true)
+            let row = try snapshot(original.sourceObjectID, type: 529, key: original.uniqueKey, details: details)
+            XCTAssertThrowsError(try AnyDestinationDefinitionChecks.optionDescriptor(.init(snapshot: row), relationObjectID: property.sourceObjectID), key)
+            let preview = try AnyHeartNativeDefinitionPlan(catalog: catalog([property, row]))
+            XCTAssertTrue(preview.definitionCoverage.isEmpty)
+            XCTAssertThrowsError(try preview.admittedSchemaItems())
+        }
+    }
+
     func testOriginalNativeCaptureProvidesAllCurrentDefinitionRowsWithoutBundledSubstitution() throws {
         guard let path = ProcessInfo.processInfo.environment["PINKHA_NATIVE_CAPTURE_FIXTURE"] else {
             throw XCTSkip("Original independently retained native fixture required")
@@ -369,6 +430,9 @@ final class NativeDefinitionPlanTests: XCTestCase {
         XCTAssertEqual(name.owner, .native("any")); XCTAssertEqual(name.record, .native("name"))
         XCTAssertFalse(plan.schemaItems.contains { $0.sourceObjectID == name.relation.objectID })
         XCTAssertEqual(name.canonicalBinding?.evidence.jsonViewBytes, name.relation.snapshot.jsonViewBytes)
+        let sourceBinding = try AnyDestinationSourceBinding(bundle: bundle, semanticPlanSHA256: c.contentSHA256,
+            sourceObjectIDs: bundle.objects.map(\.sourceObjectID))
+        XCTAssertNoThrow(try name.canonicalBinding?.evidence.requireSource(sourceBinding, objectID: name.relation.objectID))
         XCTAssertGreaterThan(plan.properties.count, 0)
         XCTAssertFalse(plan.issues.isEmpty)
         XCTAssertThrowsError(try plan.admittedSchemaItems())

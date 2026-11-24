@@ -43,7 +43,12 @@ public struct AnyDestinationDefinitionEvidence: Codable, Equatable, Sendable {
     }
     func requireSource(_ source: AnyDestinationSourceBinding, objectID: String) throws {
         guard Data(source.spaceID.utf8) == Data(sourceSpaceID.utf8),
-              Data(objectID.utf8) == Data(sourceObjectID.utf8) else {
+              Data(objectID.utf8) == Data(sourceObjectID.utf8),
+              let member = source.definitionMembers[Data(objectID.utf8)],
+              member.nativeType == snapshot.nativeType,
+              Data(member.uniqueKey.utf8) == Data(snapshot.uniqueKey.utf8),
+              member.snapshotSHA256 == snapshotSHA256, member.snapshotBytes == protobufBytes.count,
+              member.viewSHA256 == viewSHA256, member.viewBytes == jsonViewBytes.count else {
             throw AnyDestinationMigrationError.invalidPlan("foreign definition evidence")
         }
     }
@@ -106,6 +111,15 @@ public struct AnyDestinationCanonicalPropertyBinding: Codable, Equatable, Sendab
     }
 }
 
+struct AnyDestinationDefinitionMember: Equatable, Sendable {
+    let nativeType: Int64
+    let uniqueKey: String
+    let snapshotSHA256: String
+    let snapshotBytes: Int
+    let viewSHA256: String
+    let viewBytes: Int
+}
+
 enum AnyDestinationDefinitionChecks {
     static let nameDetailFields: Set<String> = [
         "name", "description", "isHidden", "layout", "origin", "revision", "sourceObject", "apiObjectKey",
@@ -114,6 +128,67 @@ enum AnyDestinationDefinitionChecks {
         "relationFormatIncludeTime", "relationFormatObjectTypes", "relationMaxCount", "relationReadonlyValue",
         "relationDefaultValue",
     ]
+    static let optionDetailFields: Set<String> = [
+        "name", "description", "isHidden", "layout", "origin", "revision", "sourceObject", "apiObjectKey",
+        "internalFlags", "iconEmoji", "iconImage", "createdDate", "creator", "lastModifiedDate", "lastModifiedBy",
+        "isArchived", "isReadonly", "uniqueKey", "type", "id", "spaceId", "relationKey", "relationOptionColor", "orderId",
+    ]
+    /// This is the declaration-to-evidence digest join. Full bundle byte
+    /// verification and current account/checkpoint authorization remain the
+    /// source reader/authorizer's responsibility. A replaced self-consistent
+    /// pair cannot pass this join under the original manifest SHA.
+    static func members(manifest: Data, accountID: String, spaceID: String,
+                        witnessSHA256: String, manifestSHA256: String) throws -> [Data: AnyDestinationDefinitionMember] {
+        guard !manifest.isEmpty, manifest.count <= 16 * 1024 * 1024,
+              AnyContentDigest.sha256(manifest) == manifestSHA256 else {
+            throw AnyDestinationMigrationError.invalidPlan("definition manifest digest/bounds")
+        }
+        let root = try JSONDecoder().decode(AnyJSON.self, from: manifest)
+        try AnyTorahSourceJSONGuard.validateRoundTrip(original: manifest, encoded: bytes(root))
+        let receipt = root["Receipt"], inventory = receipt?["Inventory"], account = receipt?["Source"]
+        let accountHash = AnyContentDigest.sha256(Data(accountID.utf8))
+        let spaceHash = AnyContentDigest.sha256(Data(spaceID.utf8))
+        guard root["Contract"] == .string("pinkha-native-whole-source-bundle-v1"),
+              receipt?["Version"] == .string("loaded-account-native-space-source-v1"),
+              receipt?["AccountSessionAuthorizedAtFinalCapture"] == .bool(true),
+              receipt?["AllNativeHeadRowsAccounted"] == .bool(true),
+              receipt?["CapturedSnapshotsBoundToUnchangedCheckpoint"] == .bool(true),
+              inventory?["SourceWitnessSHA256"] == .string(witnessSHA256),
+              inventory?["SpaceSHA256"] == .string(spaceHash),
+              account?["accountSHA256"] == .string(accountHash),
+              account?["source"]?["accountSHA256"] == .string(accountHash),
+              account?["source"]?["spaceSHA256"] == .string(spaceHash),
+              account?["source"]?["native"]?["WitnessSHA256"] == .string(witnessSHA256),
+              let rows = root["Objects"]?.array, rows.count <= AnyDestinationMigrationPlan.maximumItems else {
+            throw AnyDestinationMigrationError.invalidPlan("definition manifest source binding")
+        }
+        var result: [Data: AnyDestinationDefinitionMember] = [:], strings = Set<String>()
+        for row in rows {
+            guard let fields = row.object,
+                  Set(fields.keys) == ["ObjectID", "UniqueKey", "NativeType", "Snapshot", "NativeJSONView"],
+                  let id = row["ObjectID"]?.string, AnyDestinationPlanChecks.identity(id),
+                  result[Data(id.utf8)] == nil, strings.insert(id).inserted,
+                  let kind = row["NativeType"]?.integer, kind >= 0, kind <= Int64(Int32.max),
+                  let key = row["UniqueKey"]?.string, key.utf8.count <= 4096, !key.utf8.contains(0) else {
+                throw AnyDestinationMigrationError.invalidPlan("definition manifest object identity")
+            }
+            let hash = AnyContentDigest.sha256(Data(id.utf8))
+            func member(_ field: String, suffix: String, maximum: Int64) throws -> (String, Int) {
+                guard let value = row[field], let fields = value.object, Set(fields.keys) == ["Path", "SHA256", "Bytes"],
+                      value["Path"] == .string("snapshot-" + hash + suffix),
+                      let sha = value["SHA256"]?.string, AnyDestinationPlanChecks.digest(sha),
+                      let count = value["Bytes"]?.integer, count > 0, count <= maximum else {
+                    throw AnyDestinationMigrationError.invalidPlan("definition manifest member")
+                }
+                return (sha, Int(count))
+            }
+            let pb = try member("Snapshot", suffix: ".pb", maximum: 8 * 1024 * 1024)
+            let json = try member("NativeJSONView", suffix: ".json", maximum: 32 * 1024 * 1024)
+            result[Data(id.utf8)] = .init(nativeType: kind, uniqueKey: key, snapshotSHA256: pb.0,
+                                         snapshotBytes: pb.1, viewSHA256: json.0, viewBytes: json.1)
+        }
+        return result
+    }
     static func bytes(_ value: AnyJSON) throws -> Data {
         let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
         return try encoder.encode(value)
@@ -124,6 +199,12 @@ enum AnyDestinationDefinitionChecks {
         let row = evidence.snapshot, d = row.details
         let unique = row.uniqueKey.split(separator: "-", omittingEmptySubsequences: false)
         guard row.nativeType == 529, row.issues.isEmpty,
+              Set(d.keys).isSubset(of: optionDetailFields),
+              d["isArchived"] == nil || d["isArchived"] == .bool(false),
+              d["isHidden"] == nil || d["isHidden"] == .bool(false),
+              d["isReadonly"] == nil || d["isReadonly"] == .bool(false),
+              d["iconEmoji"] == nil || d["iconEmoji"] == .string(""),
+              d["iconImage"] == nil || d["iconImage"] == .string(""),
               unique.count == 2, unique[0] == "opt", !unique[1].isEmpty,
               !row.sourceObjectID.isEmpty, row.sourceObjectID.utf8.count <= 256,
               !row.sourceObjectID.contains("."), !row.sourceObjectID.hasPrefix("$"),
