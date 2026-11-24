@@ -7,8 +7,8 @@ Command: python3 Tools/AnyEngineValidation/native_file_peer/run_native.py
 Public upload: RUNNER_TEMP/pinkha-native-file-peer/public
 Success: NATIVE_JSON_AND_REMOTE_FILE_PEERS_PASS
 
-Source: 973a4970f793230e6325e9f47ea9545f1b6282ad
-Base: 67381c31503518b4c0995b29aecd57c89799c6e8 (the exact whole-source enum repair, with its original controller inputs).
+Source: d2696b36d169f57f1bcb03c055384e5ec944d930
+Base: 117bb74ece968cac02abb81c5cc49a418a98a60a (the exact whole-source enum repair, with its original controller inputs).
 This lane reuses the unchanged qualified original compiler/source carrier, original C4 context delta, and exact frozen whole-source source delta. It then admits six additions and one reviewed bundle sidecar extension by byte size, SHA256, native Git blob and before/after identity. Old C4/inventory/whole-source methods are not rerun.
 
 One compile on ubuntu-24.04-arm, native Go1.26.5, one CPU /4GiB, compile network none and immutable source. The actual generated testmain and actual binary list must include exactly the two newly selected names.
@@ -20,3 +20,7 @@ Selected executions 2–4: TestLoadedAccountRemoteFilePeer once for owner, once 
 Raw logs, native account stores, snapshots, source keys and original payloads remain in the existing private recipient-encrypted evidence. Public results contain hashes/counts and bounded observations only. Cleanup names are unique to the exact run; no shared containers, networks, files or accounts are removed.
 
 This scope leaves whole-Space semantic migration, arbitrary legacy/multiple-root file formats, history reconstruction and destination conversion as explicit separate work. A successful local or remote file receipt never authorizes destination writes.
+
+## Default KeyValue source inventory correction
+
+This pending lane now derives from Heart 117bb74ece968cac02abb81c5cc49a418a98a60a and final Heart d2696b36d169f57f1bcb03c055384e5ec944d930. It includes the strict default native KeyValue inventory correction and uses the newly bound whole-source admission helper. The seven peer/JSON delta file contents are unchanged. No peer or JSON method has run. Hold this route until the two corrected local whole-source methods have been assessed; the earlier resolver proof remains retained without replay.
