@@ -1,0 +1,147 @@
+{
+  "blocker": {
+    "path": "launch-control.py",
+    "reason": "The result dictionary repeats output_usage() and absent(owned) outside the caught primary/cleanup path. A captured output type/file/entry guard or failed absence probe can throw again before launch-result.json, preventing structured preservation of the first failure and cleanup observations.",
+    "requestedScope": "Only the new outer finalization: capture unknown/unavailable final observations as secondary errors, retain original primary, keep FAIL/no false absence, and avoid new probes outside guarded code.",
+    "sha256": "944ce01194ff43367847b678702ed84784a2280b55fb2f8f63fe7d8fc29fce73"
+  },
+  "closure": {
+    "additionalGitBoundSelf": 1,
+    "allDeclaredDataReadsCovered": true,
+    "declaredInputs": 26,
+    "fixtureFiles": 12,
+    "lateModules": 1,
+    "limitation": "The seven returned files were independently physically/Git bound; remaining manifest rows were reviewed for closure and hash agreement, not reread during this peer. The wrapper enforces all 26+self before and after execution.",
+    "physicalGitVerified": {
+      "Tools/PinkhaSimulatorGate/test_sdk06_component_projection.py": {
+        "bytes": 25589,
+        "git": {
+          "git_blob": "f5ba40061c71085583866fd8cbd85386c2303af2",
+          "git_mode": "100644",
+          "kind": "blob"
+        },
+        "mode": 420,
+        "sha256": "b73d72cb1808aa173f677408a05835540ae40803b9756d80d2a3c7f08eff293c"
+      },
+      "docs/validation/20261123-sdk06-typed-error-construction/current-control/control-data/fixture-origins.json": {
+        "bytes": 6723,
+        "git": {
+          "git_blob": "1ed6b762e0e539feeca1908a2dff750b01d48309",
+          "git_mode": "100644",
+          "kind": "blob"
+        },
+        "mode": 420,
+        "sha256": "410bec1d297391bdcaceebbff77a1fc0ba06ff2e580b228f9882450e6ae30209"
+      },
+      "docs/validation/20261123-sdk06-typed-error-construction/current-control/control-inputs.json": {
+        "bytes": 8653,
+        "git": {
+          "git_blob": "12599280568d8d81ab1983c8aa34b265936ca970",
+          "git_mode": "100644",
+          "kind": "blob"
+        },
+        "mode": 420,
+        "sha256": "13b498a63efbfc7c1db3ef8601f242b86c813ab8b06a161b4af018baed9d6896"
+      },
+      "docs/validation/20261123-sdk06-typed-error-construction/current-control/control-profile.json": {
+        "bytes": 1482,
+        "git": {
+          "git_blob": "859ecfc38589e71296d9deaa2139043fec88560f",
+          "git_mode": "100644",
+          "kind": "blob"
+        },
+        "mode": 420,
+        "sha256": "7b5d638599b1aeb07377169477afa20c463176539aaed46418ab0993be342a46"
+      },
+      "docs/validation/20261123-sdk06-typed-error-construction/current-control/launch-control.py": {
+        "bytes": 7191,
+        "git": {
+          "git_blob": "e254e2b4177f1d9103a9ee104d5c687c61e03900",
+          "git_mode": "100644",
+          "kind": "blob"
+        },
+        "mode": 420,
+        "sha256": "944ce01194ff43367847b678702ed84784a2280b55fb2f8f63fe7d8fc29fce73"
+      },
+      "docs/validation/20261123-sdk06-typed-error-construction/current-control/run-control.py": {
+        "bytes": 19820,
+        "git": {
+          "git_blob": "9ed0635caadc5685732a85d2671f555d71134d71",
+          "git_mode": "100644",
+          "kind": "blob"
+        },
+        "mode": 420,
+        "sha256": "33a6939038ad3001598d824a081b0c219c36560f140077c6462c379c0ef83f93"
+      },
+      "docs/validation/20261123-sdk06-typed-error-construction/current-control/source-review.json": {
+        "bytes": 16037,
+        "git": {
+          "git_blob": "03eb0b016715d6434a6c77271eed90bb283f6d9b",
+          "git_mode": "100644",
+          "kind": "blob"
+        },
+        "mode": 420,
+        "sha256": "8014bf007071448caba592dd520b3f48f9ace6cbb5251ad919bf4df79daf2cb0"
+      }
+    },
+    "preloadedModules": 2
+  },
+  "compiler": 0,
+  "controls": 0,
+  "currentTest": {
+    "forwardRestoresExactCurrent": true,
+    "inverseBytes": 20959,
+    "inverseSHA256": "1c8cf4ac69fab15bcf175af8a9a19cf2812826dc02c05397bcfd70f2f6d0a695",
+    "literalHunks": 13,
+    "methods": [
+      "test_actual_source_projection_unit_only_graph_descriptor_and_registration"
+    ],
+    "sha256": "b73d72cb1808aa173f677408a05835540ae40803b9756d80d2a3c7f08eff293c"
+  },
+  "preservation": "No historical fixtures, source, controls or runtime results modified. No host calls from this local peer.",
+  "resourceScope": {
+    "appNativeUIBuilds": 0,
+    "baselineModules": 2,
+    "compilerInvocations": 0,
+    "correctedExistingMethods": 1,
+    "dedicatedTmpfs": "/run/anytapy-wave15-source-overlay-20261123",
+    "executionSeconds": 60,
+    "externalCallsDuringPureMethod": "refused by Python audit hook",
+    "finalModules": 3,
+    "finalRecordReserveBytes": 65536,
+    "generatedDirectories": 8,
+    "generatedFiles": 11,
+    "gitOptionalLocks": 0,
+    "gitPackedLimitBytes": 67108864,
+    "gitPackedWindowBytes": 16777216,
+    "maxObservedOutputEntries": 256,
+    "maxOutputFileBytes": 262144,
+    "maxOwnOutputLogicalAndAllocatedBytes": 2097152,
+    "minimumMemAvailableBytes": 2147483648,
+    "nativeOrMacResourceGatesModified": false,
+    "newUniqueAcceptanceCredit": 0,
+    "ongoingAndFinalTmpfsFreeBytes": 4194304,
+    "originalDescriptorFixtures": 4,
+    "originalSwiftFixtures": 8,
+    "output": "/run/anytapy-wave15-source-overlay-20261123/sdk-typed-error-current-control-attempt1",
+    "outputPeaksAreSampled": true,
+    "ownedCleanupSeconds": 10,
+    "permittedLinks": 0,
+    "productMethods": 0,
+    "protocol": "sdk06-current-projection-ram-control-profile-v1",
+    "repositoryModules": [
+      "sdk06_compile_support",
+      "sdk06_component_projection",
+      "test_sdk06_component_projection"
+    ],
+    "scope": "One corrected existing pure projection method; no new unique acceptance credit",
+    "sourceWriter": "/run/anytapy-wave15-source-overlay-20261123/sdk-typed-error-construction",
+    "startTmpfsFreeBytes": 8388608,
+    "unaffectedOldMethods": 0
+  },
+  "runtimeImports": 0,
+  "schema": "sdk06-current-projection-independent-peer-v1",
+  "source": "40a51a0f8b4d8dd0aa2f1de9b34830d09ee8c798",
+  "status": "CONFINED_OUTER_FINALIZATION_BLOCKER",
+  "testAssessment": "No further demonstrated eight/eleven, external-host, authority/import-inverse or original descriptor fixture mismatch."
+}
