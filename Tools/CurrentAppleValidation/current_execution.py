@@ -165,7 +165,7 @@ def helpers(source):
     names = {"wave15_batch": "Tools/PinkhaSimulatorGate", "run_owned_single_lane": "Tools/PinkhaSimulatorGate",
              "simulator_selection": "Tools/PinkhaSimulatorGate", "native_ui_transition_contract": "Tools/AnyEnginePort",
              "verify_native_test_execution": "Tools/AnyEnginePort", "verify_archive_roundtrip": "Tools/AnyEnginePort",
-             "continue_native_acceptance": "Tools/AnyEnginePort"}
+             "continue_native_acceptance": "Tools/AnyEnginePort", "verify_custom_type": "Tools/AnyEnginePort"}
     for name, directory in names.items():
         result[name] = importlib.import_module(name)
         c.require(Path(result[name].__file__).resolve() == ROOT / directory / (name + ".py"),
@@ -215,7 +215,9 @@ class Commands:
         self.root = evidence / "commands"
         self.root.mkdir(parents=True, exist_ok=True)
         self.context, self.helpers = context, modules
-        self.deadline = time.monotonic() + 7200
+        # Two new single-method stages add their unchanged 360/1800s budgets plus
+        # the existing 300s per-stage command overhead; other profiles stay exact.
+        self.deadline = time.monotonic() + (9960 if context["profile"] == "native-ui-failed" else 7200)
         self.cleanup_mode = False
 
     def run(self, argv, name, timeout, observe=None):
@@ -657,6 +659,13 @@ def execute_stage(commands, profile, stage, device, built, source, evidence, cop
                 c.PROFILES[profile]["bundle"], stage)
             if stage == "archive-roundtrip":
                 outcome["archive"] = archive_semantics(commands, device, directory)
+            elif stage == "custom-type":
+                validator = commands.helpers["verify_custom_type"]
+                receipt, receipt_raw = validator.original_receipt(directory / "private-attachments")
+                outcome["customType"] = {"proof": validator.validate_receipt(receipt),
+                    "originalReceiptSHA256": c.sha(receipt_raw),
+                    "validatorSHA256": digest(Path(validator.__file__)),
+                    "sameCurrentProducts": True, "newApplicationBuilds": 0}
             outcome.update(status="PASS", completeStageAcceptance=True)
     except BaseException as failure:
         outcome["errors"].append({"phase": "qualification", **error(failure)})
@@ -844,6 +853,20 @@ def execute(profile, expected, prepare_library, provider, inventory_policy=None)
             check_products(built[0] / "Build/Products", built[1], copies)
             outcome["stages"]["archive-roundtrip"] = execute_stage(commands, profile, "archive-roundtrip", device,
                                                                     built, source, evidence, copies)
+            # The first four results keep their original stage receipts. The two
+            # never-run journeys reuse this one build only after those and the
+            # finite provider/archive postflight pass.
+            initial = ("native-ui-three", "archive-roundtrip")
+            outcome["initialFourPassed"] = first is None and all(
+                outcome["stages"][name]["status"] == "PASS" for name in initial)
+            if outcome["initialFourPassed"]:
+                follow_on = create_device(commands, pair,
+                    "CurrentNativeTypeHistory-" + context["runID"] + "-" + context["runAttempt"], evidence, owned)
+                for stage in ("custom-type", "native-history"):
+                    outcome["stages"][stage] = execute_stage(commands, profile, stage, follow_on,
+                                                              built, source, evidence, copies)
+            else:
+                outcome["followOnAdmission"] = "NOT_RUN_INITIAL_FOUR_OR_PROVIDER_NOT_PASSED"
     except BaseException as failure:
         first = first or failure
         outcome["errors"].append({"phase": "execute", **error(failure)})

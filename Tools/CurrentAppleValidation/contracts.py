@@ -23,6 +23,8 @@ UI_THREE = (
     "NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen",
 )
 ARCHIVE = ("NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies",)
+CUSTOM_TYPE = ("NativeLaunchTests/testCustomCanonicalTypeTransitionPreservesNativeDocumentAcrossColdReopen",)
+HISTORY = ("NativeHistoryTests/testSavedHebrewVersionsRemainReadOnlyAcrossCloseBackgroundAndColdReopen",)
 PROFILES = {
     "release-return-rtl": {
         "project": "Anytype.xcodeproj", "scheme": "Anytype", "configuration": "Release-Anytype",
@@ -41,7 +43,8 @@ PROFILES = {
         "format": 1, "testPlan": None,
         "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-27-2", "version": "27.2", "build": "24B8117",
         "device": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-A17-Pro",
-        "stages": {"native-ui-three": (UI_THREE, 360), "archive-roundtrip": (ARCHIVE, 1800)},
+        "stages": {"native-ui-three": (UI_THREE, 360), "archive-roundtrip": (ARCHIVE, 1800),
+                   "custom-type": (CUSTOM_TYPE, 360), "native-history": (HISTORY, 1800)},
         "flags": [], "nativeBuilds": 0, "applicationBuilds": 1, "uiRunnerBuilds": 1,
     },
 }
@@ -96,7 +99,8 @@ def read(path, limit=8 * 1024**2):
 
 def methods(profile):
     value = tuple(method for names, _ in PROFILES[profile]["stages"].values() for method in names)
-    require(len(value) == len(set(value)) == 4 and SOURCE_DRAG not in value, "fixed_four_selection_changed")
+    count = {"release-return-rtl": 4, "native-ui-failed": 6}[profile]
+    require(len(value) == len(set(value)) == count and SOURCE_DRAG not in value, "fixed_named_selection_changed")
     return value
 
 def selectors(profile, stage=None):

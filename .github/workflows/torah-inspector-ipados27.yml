@@ -359,7 +359,7 @@ jobs:
       contents: read
       actions: read
     runs-on: [self-hosted, macOS, ARM64, pinkha-scaleway-mac]
-    timeout-minutes: 150
+    timeout-minutes: 196
     env:
       DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
       PYTHONDONTWRITEBYTECODE: '1'
@@ -401,7 +401,7 @@ jobs:
           persist-credentials: false
       - name: Build the current App once and execute only this fixed unresolved scope
         id: execute
-        timeout-minutes: 130
+        timeout-minutes: 176
         shell: bash
         run: |
           set -euo pipefail

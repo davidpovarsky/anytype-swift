@@ -1,6 +1,6 @@
 """One necessary Page154 fixture setup and one unresolved mounted UI journey.
 
-This additive policy never changes the common two four-method profiles.
+This additive policy never selects tests from the separate current-App profiles.
 """
 from __future__ import annotations
 import copy

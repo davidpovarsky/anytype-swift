@@ -7,6 +7,16 @@
     "parentModules": "Exact canonical eager closure plus the provider and new scoped modules; actual loaded closure separately emitted",
     "product": "Complete immutable Git trees plus physical file/type/mode/blob admission"
   },
+  "currentNativeSelection": {
+    "followOnFreshOwnedSimulator": true,
+    "followOnMethods": 2,
+    "followOnRequiresInitialFourAndProviderPass": true,
+    "initialMethods": 4,
+    "maximumApplicationBuilds": 1,
+    "maximumNativeBuilds": 0,
+    "maximumUIRunnerBuilds": 1,
+    "policy": "native-ui-six-current-products-v1"
+  },
   "helperInputs": {
     "Tools/AnyEnginePort/continue_native_acceptance.py": {
       "gitBlob": "c1ba64b0a2a72e059a9b0abf5eac9ffd3d0968d8",
@@ -57,6 +67,11 @@
       "gitBlob": "70197b0c26f20becad13d1427595b70f3be707b0",
       "gitMode": "100644",
       "sha256": "5573eefcbf9eae9eea905210d15726ce7684f5529766531d4926eda39c7e2f29"
+    },
+    "Tools/AnyEnginePort/verify_custom_type.py": {
+      "gitBlob": "7676373fcd864a47b57a4ac9ff9b44991c1ade9f",
+      "gitMode": "100644",
+      "sha256": "6322e8f63d7c5864359c2a10f7b4f30773c96855c461840c5238f87211ddc864"
     },
     "Tools/AnyEnginePort/verify_focus_handoff_execution.py": {
       "gitBlob": "d0d9cab5ed03c74cc04b25d61a13c2fb319cd510",
@@ -174,6 +189,7 @@
     "simulator_selection": "Tools/PinkhaSimulatorGate/simulator_selection.py",
     "type_preservation": "Tools/PinkhaSimulatorGate/type_preservation.py",
     "verify_archive_roundtrip": "Tools/AnyEnginePort/verify_archive_roundtrip.py",
+    "verify_custom_type": "Tools/AnyEnginePort/verify_custom_type.py",
     "verify_focus_handoff_execution": "Tools/AnyEnginePort/verify_focus_handoff_execution.py",
     "verify_native_test_execution": "Tools/AnyEnginePort/verify_native_test_execution.py",
     "wave15_batch": "Tools/PinkhaSimulatorGate/wave15_batch.py",
@@ -202,7 +218,7 @@
   },
   "oldAssertions": {
     "cLoadedAccountWitnessIncluded": false,
-    "customTypeAndHistorySelected": false,
+    "customTypeAndHistorySelected": true,
     "nativeLibraryBuilds": 0,
     "retained22Selected": false,
     "sourceDragSelected": false
