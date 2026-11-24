@@ -42,7 +42,7 @@ final class PushNotificationsPermissionService: PushNotificationsPermissionServi
         do {
             let granted = try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
             if granted {
-                registerForRemoteNotifications()
+                await registerForRemoteNotifications()
             }
             return granted
         } catch {
@@ -54,7 +54,7 @@ final class PushNotificationsPermissionService: PushNotificationsPermissionServi
     func registerForRemoteNotificationsIfNeeded() async {        
         let status = await authorizationStatus()
         if status == .authorized {
-            registerForRemoteNotifications()
+            await registerForRemoteNotifications()
         }
     }
     
@@ -64,10 +64,12 @@ final class PushNotificationsPermissionService: PushNotificationsPermissionServi
         }
     }
     
+    @MainActor
     private func registerForRemoteNotifications() {
-        DispatchQueue.main.async {
-            UIApplication.shared.registerForRemoteNotifications()
-        }
+        // An account transition can cancel registration while the system query
+        // is suspended. Check on the same actor that performs the registration.
+        guard !Task.isCancelled else { return }
+        UIApplication.shared.registerForRemoteNotifications()
     }
 }
 
