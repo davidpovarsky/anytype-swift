@@ -1,8 +1,8 @@
 import copy,hashlib,importlib.util,json,os,subprocess,tempfile
 from pathlib import Path
-W=Path("/mnt/development/projects/worktrees/anytype-otzaria-native-metadata-20261124")
+W=Path("/mnt/development/projects/worktrees/anytype-otzaria-file-native-metadata-20261124")
 P=W/"docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-native-qualification-20261123"
-D=Path("/mnt/development/projects/diagnostics/otzaria-native-metadata-20261124/metadata-source-controls")
+D=Path("/mnt/development/projects/diagnostics/otzaria-file-native-metadata-20261124/metadata-source-controls")
 D.mkdir(exist_ok=True)
 assert not (D/"RESULT.json").exists()
 def sha(raw):return hashlib.sha256(raw).hexdigest()
@@ -12,8 +12,8 @@ def load(name,path):
 helper=P/"bounded-native-metadata-20261124/native_metadata_controls.py"
 unionpath=P/"rpc-union-20261123/source_union.py"
 m=load("relation_target_controls",helper);u=load("native_source_union",unionpath)
-assert sha(helper.read_bytes())=="4f2cd3d634149ce4f18dbad808b6e9d6e2b204596ccfe8808a9cd438f4b5a551"
-assert sha(unionpath.read_bytes())=="44cdc17895c74af05f70a91e0fd0b0828c1c8d4b56f2c2d22ba7085afb183d90"
+assert sha(helper.read_bytes())=="86651f77e42fda37c4aae4ede6bc0deb5c79dc322a3a5a325a17bb4fe94fdc40"
+assert sha(unionpath.read_bytes())=="e5c860e64bb83f6d501bfafc0e8c6ba192b437afa91c98cd62cdacd971452a86"
 results=[]
 def control(name,fn,expect_refusal=False):
  try:
@@ -32,8 +32,8 @@ with tempfile.TemporaryDirectory(prefix="relation-target-source-controls-",dir=D
  events.append({"Action":"pass","Package":m.PACKAGE})
  def parsed(es,good=False):
   log.write_text("".join(json.dumps(e)+"\n" for e in es));r=m.case_intake(log)
-  return r["status"]=="PASS" and r["leaf_pass"]==6 if good else r["status"]!="PASS"
- control("exact_six_unique_leaves_pass",lambda:parsed(events,True))
+  return r["status"]=="PASS" and r["leaf_pass"]==12 if good else r["status"]!="PASS"
+ control("exact_twelve_unique_leaves_pass",lambda:parsed(events,True))
  control("empty_events_refused",lambda:parsed([]))
  for action in ["fail","skip"]:
   changed=copy.deepcopy(events);changed[3]["Action"]=action
@@ -86,7 +86,7 @@ with tempfile.TemporaryDirectory(prefix="relation-target-source-controls-",dir=D
  def target_admit(data=None,alter=None,corrupt_preimage=False):
   return u.admit_bounded_native_metadata(control=W,packet_name=str(P.relative_to(W)),manifest=data or manifest,
    bound=lambda relative,row:bound(relative,row,alter),safe=lambda root,relative:root/relative,git=lambda path,*args:git(path,*args)+(b"\n" if corrupt_preimage else b""))
- control("actual_reviewed_target_overlay_admitted",lambda:len(target_admit()["inputs"])==3)
+ control("actual_reviewed_target_overlay_admitted",lambda:len(target_admit()["inputs"])==4)
  bad=copy.deepcopy(manifest);bad["bounded_native_metadata"]["sha256"]="0"*64
  control("wrong_metadata_manifest_hash_refused",lambda:target_admit(bad),True)
  control("altered_afterimage_refused",lambda:target_admit(alter=lambda name,raw:raw+b"\n" if name.endswith("bounded-native-metadata-20261124/native/core/block/import/owned_annotation_graph.go") else raw),True)

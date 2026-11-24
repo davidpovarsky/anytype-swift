@@ -817,15 +817,31 @@ func originalOwnedAnnotationMetadataKeys() []domain.RelationKey {
 	return []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath, bundle.RelationKeySyncStatus, bundle.RelationKeySyncDate, bundle.RelationKeySyncError}
 }
 
+// Source is an export transport relation introduced for actual archive file
+// members only. Classification has already validated their snapshot and binary.
+func (g *ownedAnnotationGraph) originalImportMetadataKeys() []domain.RelationKey {
+	keys := originalOwnedAnnotationMetadataKeys()
+	for _, plan := range g.members {
+		if plan != nil && plan.role == ownedAnnotationFileObject && plan.sourceID != "" &&
+			plan.snapshot != nil && plan.snapshot.SbType == coresb.SmartBlockTypeFileObject.ToProto() &&
+			plan.snapshot.Snapshot != nil && plan.snapshot.Snapshot.Data != nil &&
+			plan.snapshot.Snapshot.Data.FileInfo != nil && plan.snapshot.Snapshot.Data.FileInfo.FileId != "" &&
+			plan.fileSource != "" && domain.NewDetailsFromProto(plan.snapshot.Snapshot.Data.Details).GetString(bundle.RelationKeySource) == plan.fileSource {
+			return append(keys, bundle.RelationKeySource)
+		}
+	}
+	return keys
+}
+
 func (g *ownedAnnotationGraph) isOriginalImportMetadata(plan *ownedAnnotationMemberPlan) bool {
 	if plan == nil || plan.sourceID != "" || plan.snapshot != nil || plan.role != ownedAnnotationBundledSchema || plan.nativeKey == nil || plan.nativeKey.SmartblockType() != coresb.SmartBlockTypeRelation {
 		return false
 	}
 	key := domain.RelationKey(plan.nativeKey.InternalKey())
-	return slices.Contains(originalOwnedAnnotationMetadataKeys(), key)
+	return slices.Contains(g.originalImportMetadataKeys(), key)
 }
 func (g *ownedAnnotationGraph) admitOriginalImportMetadata(ctx context.Context) error {
-	for _, key := range originalOwnedAnnotationMetadataKeys() {
+	for _, key := range g.originalImportMetadataKeys() {
 		unique, err := domain.NewUniqueKey(coresb.SmartBlockTypeRelation, key.String())
 		if err != nil {
 			return err

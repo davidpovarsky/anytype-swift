@@ -5,74 +5,105 @@
     "sourceFilePath",
     "syncStatus",
     "syncDate",
-    "syncError"
+    "syncError",
+    "source"
   ],
   "body_predicate_unchanged": true,
   "control_helper": {
-    "bytes": 8306,
-    "git_blob": "013c70a26f2dc9af2aab9d70d04441726cc5214f",
+    "bytes": 8696,
+    "git_blob": "25cb11010d24286efd97cc56595632f652479eb1",
     "path": "bounded-native-metadata-20261124/native_metadata_controls.py",
-    "sha256": "4f2cd3d634149ce4f18dbad808b6e9d6e2b204596ccfe8808a9cd438f4b5a551"
+    "sha256": "86651f77e42fda37c4aae4ede6bc0deb5c79dc322a3a5a325a17bb4fe94fdc40"
   },
+  "file_origin_projection_never_reads_target": true,
+  "file_origin_projection_uses_original_templates": true,
+  "file_source_requires_owned_file_member": true,
   "inputs": [
     {
       "base_sha256": "5876f9cf88b25ba1efe90c3c402beff95f7d5ed6220859e7fc8884aa962d3d95",
-      "bytes": 35127,
+      "bytes": 36014,
       "changes": [
         {
-          "after": "// The unchanged original converter/creator adds import bookkeeping, and the\n// native sync updater adds exactly three local sync relations during lifecycle\n// transitions. Their schema dependencies may be absent from a source archive.\n// Admit only this bounded set, with complete pre-import read-only observation;\n// no key is a fabricated archive member or a substitute for a source mapping.\nfunc originalOwnedAnnotationMetadataKeys() []domain.RelationKey {\n\treturn []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath, bundle.RelationKeySyncStatus, bundle.RelationKeySyncDate, bundle.RelationKeySyncError}\n}\n\n",
+          "after": "// The unchanged original converter/creator adds import bookkeeping, and the\n// native sync updater adds exactly three local sync relations during lifecycle\n// transitions. Their schema dependencies may be absent from a source archive.\n// Admit only this bounded set, with complete pre-import read-only observation;\n// no key is a fabricated archive member or a substitute for a source mapping.\nfunc originalOwnedAnnotationMetadataKeys() []domain.RelationKey {\n\treturn []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath, bundle.RelationKeySyncStatus, bundle.RelationKeySyncDate, bundle.RelationKeySyncError}\n}\n\n// Source is an export transport relation introduced for actual archive file\n// members only. Classification has already validated their snapshot and binary.\nfunc (g *ownedAnnotationGraph) originalImportMetadataKeys() []domain.RelationKey {\n\tkeys := originalOwnedAnnotationMetadataKeys()\n\tfor _, plan := range g.members {\n\t\tif plan != nil && plan.role == ownedAnnotationFileObject && plan.sourceID != \"\" &&\n\t\t\tplan.snapshot != nil && plan.snapshot.SbType == coresb.SmartBlockTypeFileObject.ToProto() &&\n\t\t\tplan.snapshot.Snapshot != nil && plan.snapshot.Snapshot.Data != nil &&\n\t\t\tplan.snapshot.Snapshot.Data.FileInfo != nil && plan.snapshot.Snapshot.Data.FileInfo.FileId != \"\" &&\n\t\t\tplan.fileSource != \"\" && domain.NewDetailsFromProto(plan.snapshot.Snapshot.Data.Details).GetString(bundle.RelationKeySource) == plan.fileSource {\n\t\t\treturn append(keys, bundle.RelationKeySource)\n\t\t}\n\t}\n\treturn keys\n}\n\n",
           "before": "// These are the three additional keys injected by the unchanged original\n// converter/creator. They are not fabricated archive members or source mappings.\n"
         },
         {
-          "after": "return slices.Contains(originalOwnedAnnotationMetadataKeys(), key)",
+          "after": "return slices.Contains(g.originalImportMetadataKeys(), key)",
           "before": "return key == bundle.RelationKeyImportType || key == bundle.RelationKeyOldAnytypeID || key == bundle.RelationKeySourceFilePath"
         },
         {
-          "after": "for _, key := range originalOwnedAnnotationMetadataKeys() {",
+          "after": "for _, key := range g.originalImportMetadataKeys() {",
           "before": "for _, key := range []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath} {"
         }
       ],
-      "git_blob": "e18ed29bbf31b52d48dd27ed4bec4337d354528c",
+      "git_blob": "70450e67af4214720d3d395b0ceba258ad681e38",
       "native_path": "core/block/import/owned_annotation_graph.go",
       "path": "bounded-native-metadata-20261124/native/core/block/import/owned_annotation_graph.go",
       "preimage_control_path": "docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-candidate-20261123/native/core/block/import/owned_annotation_graph.go",
-      "sha256": "5bf2fba77c947128674d001c7fc39b5d23f9997f721ce7c6d93b46ef4bf599aa"
+      "sha256": "e4707b214ca2ece3ba3f7d8106f3e66b1d0c228f1405a2e075c5265dc0128a1f"
     },
     {
       "base_sha256": "7f99009cf4d477c3a8bc7e3f7d63918fca2cea78ce90df861175b51384914dd0",
-      "bytes": 76275,
+      "bytes": 76688,
       "changes": [
         {
-          "after": "for _, relation := range []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath, bundle.RelationKeySyncStatus, bundle.RelationKeySyncDate, bundle.RelationKeySyncError} {",
+          "after": "for _, relation := range f.additionalMetadataKeys(source) {",
           "before": "for _, relation := range []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath} {"
         },
         {
-          "after": "\"additional_metadata_keys\": []string{bundle.RelationKeyImportType.String(), bundle.RelationKeyOldAnytypeID.String(), bundle.RelationKeySourceFilePath.String(), bundle.RelationKeySyncStatus.String(), bundle.RelationKeySyncDate.String(), bundle.RelationKeySyncError.String()},",
+          "after": "\"additional_metadata_keys\": f.additionalMetadataKeys(source),",
           "before": "\"additional_metadata_keys\": []string{bundle.RelationKeyImportType.String(), bundle.RelationKeyOldAnytypeID.String(), bundle.RelationKeySourceFilePath.String()},"
         },
         {
-          "after": "(key != bundle.RelationKeyImportType && key != bundle.RelationKeyOldAnytypeID && key != bundle.RelationKeySourceFilePath &&\n\t\t\t\tkey != bundle.RelationKeySyncStatus && key != bundle.RelationKeySyncDate && key != bundle.RelationKeySyncError) {",
+          "after": "!slices.Contains(f.additionalMetadataKeys(source), key) {",
           "before": "(key != bundle.RelationKeyImportType && key != bundle.RelationKeyOldAnytypeID && key != bundle.RelationKeySourceFilePath) {"
         },
         {
-          "after": "readback.AdditionalImportContexts() > 6 {",
+          "after": "readback.AdditionalImportContexts() > len(f.additionalMetadataKeys(source)) {",
           "before": "readback.AdditionalImportContexts() > 3 {"
+        },
+        {
+          "after": "// Independently enumerate the original prerequisites from source snapshots,\n// never from the target readback that these assertions will judge.\nfunc (f *ownedClosedFixture) additionalMetadataKeys(source *ownedClosedSpecimen) []domain.RelationKey {\n\tkeys := []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath,\n\t\tbundle.RelationKeySyncStatus, bundle.RelationKeySyncDate, bundle.RelationKeySyncError}\n\tfor _, snapshot := range source.Snapshots {\n\t\tif snapshot != nil && coresb.SmartBlockType(snapshot.SbType) == coresb.SmartBlockTypeFileObject &&\n\t\t\tsnapshot.Snapshot != nil && snapshot.Snapshot.Data != nil && snapshot.Snapshot.Data.FileInfo != nil &&\n\t\t\tsnapshot.Snapshot.Data.FileInfo.FileId != \"\" &&\n\t\t\tdomain.NewDetailsFromProto(snapshot.Snapshot.Data.Details).GetString(bundle.RelationKeySource) != \"\" {\n\t\t\treturn append(keys, bundle.RelationKeySource)\n\t\t}\n\t}\n\treturn keys\n}\n\nfunc (f *ownedClosedFixture) schemaKeys(",
+          "before": "func (f *ownedClosedFixture) schemaKeys("
         }
       ],
-      "git_blob": "bd5df16cc9a12b276349a7741e3ee2dae95027d7",
+      "git_blob": "1c0a2834a4857cc8db061b44c1da11c9bea258fb",
       "native_path": "core/application/owned_annotation_import_native_test.go",
       "path": "bounded-native-metadata-20261124/native/core/application/owned_annotation_import_native_test.go",
       "preimage_control_path": "docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-native-qualification-20261123/schema-diagnostic-20261123/native/core/application/owned_annotation_import_native_test.go",
-      "sha256": "174542616ad8cbfe49125242d0ceedfe9e5b923372d4edefae0b4e4875d5240a"
+      "sha256": "350ff3464af0605e49b0a6824f3525918aa2a6ffe9c4d3297f5f9fbe7905e12b"
     },
     {
       "base_sha256": null,
-      "bytes": 6087,
+      "bytes": 14195,
       "changes": [],
-      "git_blob": "89b4048bb7af20e20d05a82f78e224ca7aafe6a0",
+      "git_blob": "ec68ce51f0221ed834927d0d0ae71d66740ad3d7",
       "native_path": "core/block/import/owned_annotation_native_metadata_test.go",
       "path": "bounded-native-metadata-20261124/native/core/block/import/owned_annotation_native_metadata_test.go",
-      "sha256": "0617bb4c9103191fe1471f626fa9d11566865500b99f7314febfb6252157ec07"
+      "sha256": "94252893614035f4093ecf11a3c4aed6abdffe2c84cd5914daf820ca3b149149"
+    },
+    {
+      "base_sha256": "ee7f1513bdef055ce0484cca7ac8af8f3bc0497995483472f618e60475c9a909",
+      "bytes": 21752,
+      "changes": [
+        {
+          "after": "\t\"github.com/anyproto/anytype-heart/core/domain\"\n\t\"github.com/anyproto/anytype-heart/core/domain/objectorigin\"\n\t\"github.com/anyproto/anytype-heart/core/files/fileobject/fileblocks\"\n",
+          "before": "\t\"github.com/anyproto/anytype-heart/core/domain\"\n"
+        },
+        {
+          "after": "// expectedOriginalFileMetadataBlocks derives the original uploader's bounded\n// origin/importType block additions from source metadata and Import(Pb). It does\n// not inspect readback and never replaces, removes, or rewrites a source block.\nfunc expectedOriginalFileMetadataBlocks(data *model.SmartBlockSnapshotBase, nativeID string) error {\n\tif data == nil || data.Details == nil || nativeID == \"\" {\n\t\treturn ownedAnnotationRefused(\"expected_original_file_metadata\")\n\t}\n\tproject := func(details *domain.Details) (map[string]*model.Block, error) {\n\t\tst := state.NewDoc(nativeID, nil).NewState()\n\t\tfileblocks.InitEmptyFileState(st)\n\t\tif err := fileblocks.AddFileBlocks(st, details, nativeID); err != nil {\n\t\t\treturn nil, err\n\t\t}\n\t\tblocks := make(map[string]*model.Block)\n\t\tfor _, block := range st.Blocks() {\n\t\t\tblocks[block.Id] = block\n\t\t}\n\t\treturn blocks, nil\n\t}\n\tbeforeDetails := domain.NewDetailsFromProto(data.Details).CopyWithoutKeys()\n\tafterDetails := beforeDetails.CopyWithoutKeys()\n\tobjectorigin.Import(model.Import_Pb).AddToDetails(afterDetails)\n\tbefore, err := project(beforeDetails)\n\tif err != nil {\n\t\treturn err\n\t}\n\tafter, err := project(afterDetails)\n\tif err != nil {\n\t\treturn err\n\t}\n\tcurrent := make(map[string]*model.Block)\n\tfor _, block := range data.Blocks {\n\t\tif block == nil || block.Id == \"\" || current[block.Id] != nil {\n\t\t\treturn ownedAnnotationRefused(\"expected_original_file_metadata_preimage\")\n\t\t}\n\t\tcurrent[block.Id] = block\n\t}\n\troot, oldRoot, newRoot := current[nativeID], before[nativeID], after[nativeID]\n\tif root == nil || oldRoot == nil || newRoot == nil {\n\t\treturn ownedAnnotationRefused(\"expected_original_file_metadata_preimage\")\n\t}\n\tpositions := make(map[string]int)\n\tfor i, id := range root.ChildrenIds {\n\t\tif _, duplicate := positions[id]; duplicate {\n\t\t\treturn ownedAnnotationRefused(\"expected_original_file_metadata_preimage\")\n\t\t}\n\t\tpositions[id] = i\n\t}\n\tlast := -1\n\tfor _, id := range oldRoot.ChildrenIds {\n\t\tpos, exists := positions[id]\n\t\tif !exists || pos <= last {\n\t\t\treturn ownedAnnotationRefused(\"expected_original_file_metadata_preimage\")\n\t\t}\n\t\tlast = pos\n\t}\n\tadditions := make(map[string]*model.Block)\n\tfor id, block := range after {\n\t\tif id == nativeID {\n\t\t\tcontinue\n\t\t}\n\t\told := before[id]\n\t\tif old != nil {\n\t\t\tif !proto.Equal(old, block) {\n\t\t\t\treturn ownedAnnotationRefused(\"unexpected_original_file_template_delta\")\n\t\t\t}\n\t\t\tcontinue\n\t\t}\n\t\tif (id != bundle.RelationKeyOrigin.String() && id != bundle.RelationKeyImportType.String()) ||\n\t\t\tblock.GetRelation() == nil || block.GetRelation().Key != id || current[id] != nil {\n\t\t\treturn ownedAnnotationRefused(\"expected_original_file_metadata_collision\")\n\t\t}\n\t\tadditions[id] = proto.Clone(block).(*model.Block)\n\t}\n\tfor id := range before {\n\t\tif after[id] == nil {\n\t\t\treturn ownedAnnotationRefused(\"unexpected_original_file_template_delta\")\n\t\t}\n\t}\n\tchildren := append([]string(nil), root.ChildrenIds...)\n\tvar added []*model.Block\n\tfor i, id := range newRoot.ChildrenIds {\n\t\tblock := additions[id]\n\t\tif block == nil {\n\t\t\tcontinue\n\t\t}\n\t\tat := len(children)\n\t\tfor _, following := range newRoot.ChildrenIds[i+1:] {\n\t\t\tif before[following] == nil {\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\tfor j, existing := range children {\n\t\t\t\tif existing == following {\n\t\t\t\t\tat = j\n\t\t\t\t\tbreak\n\t\t\t\t}\n\t\t\t}\n\t\t\tbreak\n\t\t}\n\t\tchildren = append(children, \"\")\n\t\tcopy(children[at+1:], children[at:])\n\t\tchildren[at] = id\n\t\tadded = append(added, block)\n\t}\n\tif len(added) != len(additions) {\n\t\treturn ownedAnnotationRefused(\"unexpected_original_file_template_delta\")\n\t}\n\t// No source child changes its position relative to another source child.\n\troot.ChildrenIds = children\n\tdata.Blocks = append(data.Blocks, added...)\n\treturn nil\n}\n\nfunc (g *ownedAnnotationGraph) compareNativeExport(",
+          "before": "func (g *ownedAnnotationGraph) compareNativeExport("
+        },
+        {
+          "after": "\t\t\tif err := expectedOriginalFileMetadataBlocks(expected.Snapshot.Data, targetID); err != nil {\n\t\t\t\treturn err\n\t\t\t}\n\t\t\tst, err := state.NewDocFromSnapshot(targetID, expected.Snapshot)\n",
+          "before": "\t\t\tst, err := state.NewDocFromSnapshot(targetID, expected.Snapshot)\n"
+        }
+      ],
+      "git_blob": "3ebec79be6e4738b39a10635d27588d89d602d37",
+      "native_path": "core/block/import/owned_annotation_readback.go",
+      "path": "bounded-native-metadata-20261124/native/core/block/import/owned_annotation_readback.go",
+      "preimage_control_path": "docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-candidate-20261123/native/core/block/import/owned_annotation_readback.go",
+      "sha256": "4adc66056ec30e965f246b5477ba479109125abd2f3013adf58a641bec9ddc9f"
     }
   ],
   "new_control_group": {
@@ -82,17 +113,24 @@
       "source_backed_wrong_role_or_native_kind_refused",
       "observed_schema_identity_and_space_bound",
       "altered_nonlocal_schema_body_refused",
-      "missing_preimport_observation_refused"
+      "missing_preimport_observation_refused",
+      "file_source_schema_requires_authenticated_file_member",
+      "file_source_schema_refused_without_valid_file_member",
+      "file_origin_delta_matches_original_template_order",
+      "file_origin_delta_preserves_user_body_and_order",
+      "file_origin_delta_refuses_reserved_block_collision",
+      "file_origin_delta_refuses_changed_anchor_order"
     ],
     "parent": "TestOtzariaBoundedOriginalNativeMetadata"
   },
-  "new_control_leaf_count": 6,
+  "new_control_leaf_count": 12,
   "original_heart": "d98420b1113536afd08cde6de9a5816f6d27ffff",
   "previous_native_tree": "a082c726aee6ba3a438d2968fa23b43bb9c71bbe",
   "readback_used_as_expectation": false,
   "schema": 1,
   "schema_observation_comparison_unchanged": true,
-  "scope": "Admit exactly original import bookkeeping and native local sync metadata relation schemas before import; retain exact source mappings, bounded inventory, stable native read-only observations, and full schema/body comparison.",
+  "scope": "Bound original base metadata to six keys, admit file Source only for authenticated file members, and model only original uploader origin/importType block additions from source metadata; preserve full source body, ordering, schema observation, digest and proto.Equal.",
+  "source_blocks_never_replaced_or_removed": true,
   "source_members_remain_mandatory": true,
   "source_parent": "2b9aad18cba3e2bf363adea44144a0e787724fb6"
 }

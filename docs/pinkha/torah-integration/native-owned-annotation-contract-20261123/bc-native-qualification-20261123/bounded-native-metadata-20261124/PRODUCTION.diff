@@ -1,6 +1,6 @@
 --- a/core/block/import/owned_annotation_graph.go
 +++ b/core/block/import/owned_annotation_graph.go
-@@ -808,17 +808,24 @@
+@@ -808,17 +808,40 @@
  	return
  }
  
@@ -15,56 +15,235 @@
 +	return []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath, bundle.RelationKeySyncStatus, bundle.RelationKeySyncDate, bundle.RelationKeySyncError}
 +}
 +
++// Source is an export transport relation introduced for actual archive file
++// members only. Classification has already validated their snapshot and binary.
++func (g *ownedAnnotationGraph) originalImportMetadataKeys() []domain.RelationKey {
++	keys := originalOwnedAnnotationMetadataKeys()
++	for _, plan := range g.members {
++		if plan != nil && plan.role == ownedAnnotationFileObject && plan.sourceID != "" &&
++			plan.snapshot != nil && plan.snapshot.SbType == coresb.SmartBlockTypeFileObject.ToProto() &&
++			plan.snapshot.Snapshot != nil && plan.snapshot.Snapshot.Data != nil &&
++			plan.snapshot.Snapshot.Data.FileInfo != nil && plan.snapshot.Snapshot.Data.FileInfo.FileId != "" &&
++			plan.fileSource != "" && domain.NewDetailsFromProto(plan.snapshot.Snapshot.Data.Details).GetString(bundle.RelationKeySource) == plan.fileSource {
++			return append(keys, bundle.RelationKeySource)
++		}
++	}
++	return keys
++}
++
  func (g *ownedAnnotationGraph) isOriginalImportMetadata(plan *ownedAnnotationMemberPlan) bool {
  	if plan == nil || plan.sourceID != "" || plan.snapshot != nil || plan.role != ownedAnnotationBundledSchema || plan.nativeKey == nil || plan.nativeKey.SmartblockType() != coresb.SmartBlockTypeRelation {
  		return false
  	}
  	key := domain.RelationKey(plan.nativeKey.InternalKey())
 -	return key == bundle.RelationKeyImportType || key == bundle.RelationKeyOldAnytypeID || key == bundle.RelationKeySourceFilePath
-+	return slices.Contains(originalOwnedAnnotationMetadataKeys(), key)
++	return slices.Contains(g.originalImportMetadataKeys(), key)
  }
  func (g *ownedAnnotationGraph) admitOriginalImportMetadata(ctx context.Context) error {
 -	for _, key := range []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath} {
-+	for _, key := range originalOwnedAnnotationMetadataKeys() {
++	for _, key := range g.originalImportMetadataKeys() {
  		unique, err := domain.NewUniqueKey(coresb.SmartBlockTypeRelation, key.String())
  		if err != nil {
  			return err
 --- a/core/application/owned_annotation_import_native_test.go
 +++ b/core/application/owned_annotation_import_native_test.go
-@@ -1239,7 +1239,7 @@
+@@ -1224,6 +1224,22 @@
+ 	t.Logf("actual closed original import receipt=%s sha256=%x", name, sum)
+ }
+ 
++// Independently enumerate the original prerequisites from source snapshots,
++// never from the target readback that these assertions will judge.
++func (f *ownedClosedFixture) additionalMetadataKeys(source *ownedClosedSpecimen) []domain.RelationKey {
++	keys := []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath,
++		bundle.RelationKeySyncStatus, bundle.RelationKeySyncDate, bundle.RelationKeySyncError}
++	for _, snapshot := range source.Snapshots {
++		if snapshot != nil && coresb.SmartBlockType(snapshot.SbType) == coresb.SmartBlockTypeFileObject &&
++			snapshot.Snapshot != nil && snapshot.Snapshot.Data != nil && snapshot.Snapshot.Data.FileInfo != nil &&
++			snapshot.Snapshot.Data.FileInfo.FileId != "" &&
++			domain.NewDetailsFromProto(snapshot.Snapshot.Data.Details).GetString(bundle.RelationKeySource) != "" {
++			return append(keys, bundle.RelationKeySource)
++		}
++	}
++	return keys
++}
++
+ func (f *ownedClosedFixture) schemaKeys(t *testing.T, source *ownedClosedSpecimen) []domain.UniqueKey {
+ 	t.Helper()
+ 	byKey := make(map[string]domain.UniqueKey)
+@@ -1239,7 +1255,7 @@
  		}
  		byKey[key.Marshal()] = key
  	}
 -	for _, relation := range []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath} {
-+	for _, relation := range []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath, bundle.RelationKeySyncStatus, bundle.RelationKeySyncDate, bundle.RelationKeySyncError} {
++	for _, relation := range f.additionalMetadataKeys(source) {
  		key, err := domain.NewUniqueKey(coresb.SmartBlockTypeRelation, relation.String())
  		ownedClosedNoError(t, err)
  		byKey[key.Marshal()] = key
-@@ -1303,7 +1303,7 @@
+@@ -1303,7 +1319,7 @@
  			f.receipt(t, "readonly-prerequisites.json", map[string]any{
  				"exact_schema_keys": len(current), "stable_original_heads": current,
  				"actual_complete_raw_native_observations": true, "actual_unique_positive_index_rows": true,
 -				"additional_metadata_keys": []string{bundle.RelationKeyImportType.String(), bundle.RelationKeyOldAnytypeID.String(), bundle.RelationKeySourceFilePath.String()},
-+				"additional_metadata_keys": []string{bundle.RelationKeyImportType.String(), bundle.RelationKeyOldAnytypeID.String(), bundle.RelationKeySourceFilePath.String(), bundle.RelationKeySyncStatus.String(), bundle.RelationKeySyncDate.String(), bundle.RelationKeySyncError.String()},
++				"additional_metadata_keys": f.additionalMetadataKeys(source),
  			})
  			return
  		}
-@@ -1562,7 +1562,8 @@
+@@ -1562,7 +1578,7 @@
  		}
  		key := domain.RelationKey(value.Snapshot.Data.Key)
  		if coresb.SmartBlockType(value.SbType) != coresb.SmartBlockTypeRelation ||
 -			(key != bundle.RelationKeyImportType && key != bundle.RelationKeyOldAnytypeID && key != bundle.RelationKeySourceFilePath) {
-+			(key != bundle.RelationKeyImportType && key != bundle.RelationKeyOldAnytypeID && key != bundle.RelationKeySourceFilePath &&
-+				key != bundle.RelationKeySyncStatus && key != bundle.RelationKeySyncDate && key != bundle.RelationKeySyncError) {
++			!slices.Contains(f.additionalMetadataKeys(source), key) {
  			t.Fatal("native readback contains an unowned additional graph member")
  		}
  		expected, err := f.spc.GetRelationIdByKey(f.ctx, key)
-@@ -1572,7 +1573,7 @@
+@@ -1572,7 +1588,7 @@
  		}
  	}
  	if len(snapshots)-len(assignments) != readback.AdditionalImportContexts() ||
 -		readback.AdditionalImportContexts() > 3 {
-+		readback.AdditionalImportContexts() > 6 {
++		readback.AdditionalImportContexts() > len(f.additionalMetadataKeys(source)) {
  		t.Fatal("native readback additional metadata inventory differs")
  	}
  	actualBlocks := make(map[string]*model.Block)
+--- a/core/block/import/owned_annotation_readback.go
++++ b/core/block/import/owned_annotation_readback.go
+@@ -13,6 +13,8 @@
+ 	"github.com/anyproto/anytype-heart/core/block/import/common"
+ 	"github.com/anyproto/anytype-heart/core/converter/pbc"
+ 	"github.com/anyproto/anytype-heart/core/domain"
++	"github.com/anyproto/anytype-heart/core/domain/objectorigin"
++	"github.com/anyproto/anytype-heart/core/files/fileobject/fileblocks"
+ 	"github.com/anyproto/anytype-heart/pb"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
+ 	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
+@@ -232,6 +234,119 @@
+ 		return nil, ownedAnnotationRefused("native_export_bytes_changed")
+ 	}
+ 	return raw, nil
++}
++
++// expectedOriginalFileMetadataBlocks derives the original uploader's bounded
++// origin/importType block additions from source metadata and Import(Pb). It does
++// not inspect readback and never replaces, removes, or rewrites a source block.
++func expectedOriginalFileMetadataBlocks(data *model.SmartBlockSnapshotBase, nativeID string) error {
++	if data == nil || data.Details == nil || nativeID == "" {
++		return ownedAnnotationRefused("expected_original_file_metadata")
++	}
++	project := func(details *domain.Details) (map[string]*model.Block, error) {
++		st := state.NewDoc(nativeID, nil).NewState()
++		fileblocks.InitEmptyFileState(st)
++		if err := fileblocks.AddFileBlocks(st, details, nativeID); err != nil {
++			return nil, err
++		}
++		blocks := make(map[string]*model.Block)
++		for _, block := range st.Blocks() {
++			blocks[block.Id] = block
++		}
++		return blocks, nil
++	}
++	beforeDetails := domain.NewDetailsFromProto(data.Details).CopyWithoutKeys()
++	afterDetails := beforeDetails.CopyWithoutKeys()
++	objectorigin.Import(model.Import_Pb).AddToDetails(afterDetails)
++	before, err := project(beforeDetails)
++	if err != nil {
++		return err
++	}
++	after, err := project(afterDetails)
++	if err != nil {
++		return err
++	}
++	current := make(map[string]*model.Block)
++	for _, block := range data.Blocks {
++		if block == nil || block.Id == "" || current[block.Id] != nil {
++			return ownedAnnotationRefused("expected_original_file_metadata_preimage")
++		}
++		current[block.Id] = block
++	}
++	root, oldRoot, newRoot := current[nativeID], before[nativeID], after[nativeID]
++	if root == nil || oldRoot == nil || newRoot == nil {
++		return ownedAnnotationRefused("expected_original_file_metadata_preimage")
++	}
++	positions := make(map[string]int)
++	for i, id := range root.ChildrenIds {
++		if _, duplicate := positions[id]; duplicate {
++			return ownedAnnotationRefused("expected_original_file_metadata_preimage")
++		}
++		positions[id] = i
++	}
++	last := -1
++	for _, id := range oldRoot.ChildrenIds {
++		pos, exists := positions[id]
++		if !exists || pos <= last {
++			return ownedAnnotationRefused("expected_original_file_metadata_preimage")
++		}
++		last = pos
++	}
++	additions := make(map[string]*model.Block)
++	for id, block := range after {
++		if id == nativeID {
++			continue
++		}
++		old := before[id]
++		if old != nil {
++			if !proto.Equal(old, block) {
++				return ownedAnnotationRefused("unexpected_original_file_template_delta")
++			}
++			continue
++		}
++		if (id != bundle.RelationKeyOrigin.String() && id != bundle.RelationKeyImportType.String()) ||
++			block.GetRelation() == nil || block.GetRelation().Key != id || current[id] != nil {
++			return ownedAnnotationRefused("expected_original_file_metadata_collision")
++		}
++		additions[id] = proto.Clone(block).(*model.Block)
++	}
++	for id := range before {
++		if after[id] == nil {
++			return ownedAnnotationRefused("unexpected_original_file_template_delta")
++		}
++	}
++	children := append([]string(nil), root.ChildrenIds...)
++	var added []*model.Block
++	for i, id := range newRoot.ChildrenIds {
++		block := additions[id]
++		if block == nil {
++			continue
++		}
++		at := len(children)
++		for _, following := range newRoot.ChildrenIds[i+1:] {
++			if before[following] == nil {
++				continue
++			}
++			for j, existing := range children {
++				if existing == following {
++					at = j
++					break
++				}
++			}
++			break
++		}
++		children = append(children, "")
++		copy(children[at+1:], children[at:])
++		children[at] = id
++		added = append(added, block)
++	}
++	if len(added) != len(additions) {
++		return ownedAnnotationRefused("unexpected_original_file_template_delta")
++	}
++	// No source child changes its position relative to another source child.
++	root.ChildrenIds = children
++	data.Blocks = append(data.Blocks, added...)
++	return nil
+ }
+ 
+ func (g *ownedAnnotationGraph) compareNativeExport(ctx context.Context, p *importProcessor, ids map[string]string, actual *ownedAnnotationArchive, result *OwnedAnnotationReadbackObservation) error {
+@@ -320,6 +435,9 @@
+ 					}
+ 				}
+ 			}
++			if err := expectedOriginalFileMetadataBlocks(expected.Snapshot.Data, targetID); err != nil {
++				return err
++			}
+ 			st, err := state.NewDocFromSnapshot(targetID, expected.Snapshot)
+ 			if err != nil {
+ 				return err

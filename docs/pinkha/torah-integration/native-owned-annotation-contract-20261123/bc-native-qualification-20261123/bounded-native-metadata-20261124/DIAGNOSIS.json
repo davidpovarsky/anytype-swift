@@ -1,4 +1,34 @@
 {
+  "attachment_followup": {
+    "additional_original_file_blocks": [
+      "origin",
+      "importType"
+    ],
+    "archive_sha256": "4ca8a1c86d909a70e5fdd1ef725584914925a71eae2136713630dc55189852cc",
+    "body_diff_is_offline_diagnosis_not_original_comparator_execution": true,
+    "independent_peer_review": "sdk_stageb reviewed original Source and before/after template delta; do not call AddFileBlocks on source clone, because it appends rather than preserving original new-upload order.",
+    "native_actual_failure": "attachment: native_export_graph_inventory",
+    "native_actual_pass": [
+      "text",
+      "format",
+      "nested"
+    ],
+    "new_schema_key": "source",
+    "observed_source": "fbaa5327336933be3bc7bd2a3ead84a2d69b652e",
+    "original_paths": [
+      "core/block/export/export.go:651,693",
+      "core/block/import/pb/converter.go:432-445",
+      "core/block/import/common/objectid/fileobject.go:27-41",
+      "core/files/fileobject/fileblocks/fileblocks.go:24-47,106-115",
+      "core/files/fileobject/fileindex.go:258-285"
+    ],
+    "readback_snapshots": 100,
+    "source_file_blocks": 10,
+    "source_snapshots": 96,
+    "supporting_controls_passed": 51,
+    "target_file_blocks": 12,
+    "target_readback_not_an_expected_model_input": true
+  },
   "decision": "Bound actual permitted original context keys before effects; require unchanged complete raw observations and strict export comparison. Do not delay or alter source export, hide runtime keys, wildcard local relations, or weaken body comparison.",
   "existing_additional_contexts": 3,
   "independent_review": "ChatGPT sdk_stageb read-only review reached same scope; Native owner retains implementation.",

@@ -1224,6 +1224,22 @@ func (f *ownedClosedFixture) receipt(t *testing.T, name string, values map[strin
 	t.Logf("actual closed original import receipt=%s sha256=%x", name, sum)
 }
 
+// Independently enumerate the original prerequisites from source snapshots,
+// never from the target readback that these assertions will judge.
+func (f *ownedClosedFixture) additionalMetadataKeys(source *ownedClosedSpecimen) []domain.RelationKey {
+	keys := []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath,
+		bundle.RelationKeySyncStatus, bundle.RelationKeySyncDate, bundle.RelationKeySyncError}
+	for _, snapshot := range source.Snapshots {
+		if snapshot != nil && coresb.SmartBlockType(snapshot.SbType) == coresb.SmartBlockTypeFileObject &&
+			snapshot.Snapshot != nil && snapshot.Snapshot.Data != nil && snapshot.Snapshot.Data.FileInfo != nil &&
+			snapshot.Snapshot.Data.FileInfo.FileId != "" &&
+			domain.NewDetailsFromProto(snapshot.Snapshot.Data.Details).GetString(bundle.RelationKeySource) != "" {
+			return append(keys, bundle.RelationKeySource)
+		}
+	}
+	return keys
+}
+
 func (f *ownedClosedFixture) schemaKeys(t *testing.T, source *ownedClosedSpecimen) []domain.UniqueKey {
 	t.Helper()
 	byKey := make(map[string]domain.UniqueKey)
@@ -1239,7 +1255,7 @@ func (f *ownedClosedFixture) schemaKeys(t *testing.T, source *ownedClosedSpecime
 		}
 		byKey[key.Marshal()] = key
 	}
-	for _, relation := range []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath, bundle.RelationKeySyncStatus, bundle.RelationKeySyncDate, bundle.RelationKeySyncError} {
+	for _, relation := range f.additionalMetadataKeys(source) {
 		key, err := domain.NewUniqueKey(coresb.SmartBlockTypeRelation, relation.String())
 		ownedClosedNoError(t, err)
 		byKey[key.Marshal()] = key
@@ -1303,7 +1319,7 @@ func (f *ownedClosedFixture) prepareBundled(t *testing.T, source *ownedClosedSpe
 			f.receipt(t, "readonly-prerequisites.json", map[string]any{
 				"exact_schema_keys": len(current), "stable_original_heads": current,
 				"actual_complete_raw_native_observations": true, "actual_unique_positive_index_rows": true,
-				"additional_metadata_keys": []string{bundle.RelationKeyImportType.String(), bundle.RelationKeyOldAnytypeID.String(), bundle.RelationKeySourceFilePath.String(), bundle.RelationKeySyncStatus.String(), bundle.RelationKeySyncDate.String(), bundle.RelationKeySyncError.String()},
+				"additional_metadata_keys": f.additionalMetadataKeys(source),
 			})
 			return
 		}
@@ -1562,8 +1578,7 @@ func (f *ownedClosedFixture) assertRoundTrip(t *testing.T, source *ownedClosedSp
 		}
 		key := domain.RelationKey(value.Snapshot.Data.Key)
 		if coresb.SmartBlockType(value.SbType) != coresb.SmartBlockTypeRelation ||
-			(key != bundle.RelationKeyImportType && key != bundle.RelationKeyOldAnytypeID && key != bundle.RelationKeySourceFilePath &&
-				key != bundle.RelationKeySyncStatus && key != bundle.RelationKeySyncDate && key != bundle.RelationKeySyncError) {
+			!slices.Contains(f.additionalMetadataKeys(source), key) {
 			t.Fatal("native readback contains an unowned additional graph member")
 		}
 		expected, err := f.spc.GetRelationIdByKey(f.ctx, key)
@@ -1573,7 +1588,7 @@ func (f *ownedClosedFixture) assertRoundTrip(t *testing.T, source *ownedClosedSp
 		}
 	}
 	if len(snapshots)-len(assignments) != readback.AdditionalImportContexts() ||
-		readback.AdditionalImportContexts() > 6 {
+		readback.AdditionalImportContexts() > len(f.additionalMetadataKeys(source)) {
 		t.Fatal("native readback additional metadata inventory differs")
 	}
 	actualBlocks := make(map[string]*model.Block)

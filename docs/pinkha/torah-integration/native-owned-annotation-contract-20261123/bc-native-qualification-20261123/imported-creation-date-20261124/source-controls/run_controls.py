@@ -1,8 +1,8 @@
 import copy,hashlib,importlib.util,json,os,subprocess,tempfile
 from pathlib import Path
-W=Path("/mnt/development/projects/worktrees/anytype-otzaria-native-metadata-20261124")
+W=Path("/mnt/development/projects/worktrees/anytype-otzaria-file-native-metadata-20261124")
 P=W/"docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-native-qualification-20261123"
-D=Path("/mnt/development/projects/diagnostics/otzaria-native-metadata-20261124/creation-source-controls")
+D=Path("/mnt/development/projects/diagnostics/otzaria-file-native-metadata-20261124/creation-source-controls")
 D.mkdir(exist_ok=True)
 assert not (D/"RESULT.json").exists()
 def sha(raw):return hashlib.sha256(raw).hexdigest()
@@ -13,7 +13,7 @@ helper=P/"imported-creation-date-20261124/creation_date_controls.py"
 unionpath=P/"rpc-union-20261123/source_union.py"
 m=load("relation_target_controls",helper);u=load("native_source_union",unionpath)
 assert sha(helper.read_bytes())=="2ef421d970ef7145f418114991c863f414d7d654f3947706f0589191b982d8b0"
-assert sha(unionpath.read_bytes())=="44cdc17895c74af05f70a91e0fd0b0828c1c8d4b56f2c2d22ba7085afb183d90"
+assert sha(unionpath.read_bytes())=="e5c860e64bb83f6d501bfafc0e8c6ba192b437afa91c98cd62cdacd971452a86"
 results=[]
 def control(name,fn,expect_refusal=False):
  try:

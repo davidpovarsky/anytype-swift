@@ -379,20 +379,25 @@ def admit_bounded_native_metadata(*, control, packet_name, manifest, bound, safe
             and repair["source_parent"] == "2b9aad18cba3e2bf363adea44144a0e787724fb6"
             and repair["previous_native_tree"] == "a082c726aee6ba3a438d2968fa23b43bb9c71bbe"
             and repair["allowed_additional_metadata_keys"] == [
-                "importType", "oldAnytypeID", "sourceFilePath", "syncStatus", "syncDate", "syncError"]
+                "importType", "oldAnytypeID", "sourceFilePath", "syncStatus", "syncDate", "syncError", "source"]
             and repair["readback_used_as_expectation"] is False
             and repair["body_predicate_unchanged"] is True
             and repair["schema_observation_comparison_unchanged"] is True
             and repair["source_members_remain_mandatory"] is True
-            and repair["new_control_leaf_count"] == 6,
+            and repair["file_source_requires_owned_file_member"] is True
+            and repair["file_origin_projection_uses_original_templates"] is True
+            and repair["file_origin_projection_never_reads_target"] is True
+            and repair["source_blocks_never_replaced_or_removed"] is True
+            and repair["new_control_leaf_count"] == 12,
             "Bounded original native metadata contract changed")
     bound(repair["control_helper"]["path"], repair["control_helper"])
     paths = {
         "core/block/import/owned_annotation_graph.go": 3,
-        "core/application/owned_annotation_import_native_test.go": 4,
+        "core/application/owned_annotation_import_native_test.go": 5,
+        "core/block/import/owned_annotation_readback.go": 3,
         "core/block/import/owned_annotation_native_metadata_test.go": 0,
     }
-    require(len(repair["inputs"]) == 3 and {row["native_path"] for row in repair["inputs"]} == set(paths),
+    require(len(repair["inputs"]) == 4 and {row["native_path"] for row in repair["inputs"]} == set(paths),
             "Bounded native metadata layer escaped reviewed paths")
     for row in repair["inputs"]:
         after = bound(row["path"], row)

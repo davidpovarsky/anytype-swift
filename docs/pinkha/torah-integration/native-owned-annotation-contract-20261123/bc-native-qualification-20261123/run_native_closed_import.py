@@ -167,7 +167,7 @@ def execute_union_controls(control, manifest, composition, commands, go, heart, 
         declaration=closure, repair=metadata, binary_record=import_binaries[0])
     support.write_json(evidence / "RESULT.json", result)
     require(result["bounded_native_metadata_controls"]["status"] == "PASS"
-            and result["bounded_native_metadata_controls"]["leaf_pass"] == 6,
+            and result["bounded_native_metadata_controls"]["leaf_pass"] == 12,
             "Bounded original native metadata controls did not all pass")
 
     semantic_binary = work / "bundled-persistence-control.test"
@@ -987,7 +987,7 @@ def main():
                           "new_schema_control_leaves": 11, "fresh_semantic_leaves": 6,
                           "fresh_relation_target_control_leaves": 12,
                           "fresh_imported_creation_date_leaves": 6,
-                          "fresh_bounded_native_metadata_leaves": 6,
+                          "fresh_bounded_native_metadata_leaves": 12,
                           "fresh_rpc_cases": 9, "fresh_generated_panic_cases": 1,
                           "schema_diagnostic_manifest_sha256": SCHEMA_DIAGNOSTIC_SHA256,
                           "workflow_sha256": sha(expected_workflow),

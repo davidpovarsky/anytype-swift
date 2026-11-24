@@ -1,10 +1,10 @@
-"""Six bounded original native metadata controls on the shared import binary."""
+"""Twelve bounded original native metadata controls on the shared import binary."""
 import hashlib
 import json
 from pathlib import Path
 
 PACKAGE = "github.com/anyproto/anytype-heart/core/block/import"
-GROUP = {'parent': 'TestOtzariaBoundedOriginalNativeMetadata', 'leaves': ['exact_six_original_native_keys_admitted', 'arbitrary_or_other_original_relation_refused', 'source_backed_wrong_role_or_native_kind_refused', 'observed_schema_identity_and_space_bound', 'altered_nonlocal_schema_body_refused', 'missing_preimport_observation_refused']}
+GROUP = {'leaves': ['exact_six_original_native_keys_admitted', 'arbitrary_or_other_original_relation_refused', 'source_backed_wrong_role_or_native_kind_refused', 'observed_schema_identity_and_space_bound', 'altered_nonlocal_schema_body_refused', 'missing_preimport_observation_refused', 'file_source_schema_requires_authenticated_file_member', 'file_source_schema_refused_without_valid_file_member', 'file_origin_delta_matches_original_template_order', 'file_origin_delta_preserves_user_body_and_order', 'file_origin_delta_refuses_reserved_block_collision', 'file_origin_delta_refuses_changed_anchor_order'], 'parent': 'TestOtzariaBoundedOriginalNativeMetadata'}
 
 
 def require(value, reason):
@@ -51,7 +51,7 @@ def case_intake(path):
     return {
         "status": "PASS" if passed else "FAIL_OR_INCOMPLETE",
         "package": PACKAGE, "parent": rows[GROUP["parent"]], "cases": rows,
-        "leaf_count": 6,
+        "leaf_count": 12,
         "leaf_pass": sum(row["status"] == "PASS" for row in leaves),
         "leaf_fail": sum(row["status"] == "FAIL" for row in leaves),
         "leaf_skip": sum(row["status"] == "SKIP" for row in leaves),
@@ -82,12 +82,12 @@ def existing_import_binary(*, commands, go, heart, work, record):
 
 def run_controls(*, commands, go, heart, work, evidence, declaration, repair, binary_record):
     heart, work, evidence = map(Path, (heart, work, evidence))
-    require(repair["new_control_group"] == GROUP and repair["new_control_leaf_count"] == 6,
+    require(repair["new_control_group"] == GROUP and repair["new_control_leaf_count"] == 12,
             "Reviewed native-metadata control selectors differ")
     receipt = evidence / "BOUNDED_NATIVE_METADATA_CONTROLS.json"
     require(not receipt.exists(), "Preserve an existing native-metadata control execution")
     report = {
-        "status": "STARTED_NOT_ACCEPTED", "leaf_count": 6, "cases": "NOT_RUN",
+        "status": "STARTED_NOT_ACCEPTED", "leaf_count": 12, "cases": "NOT_RUN",
         "actual_compiler_inputs": [], "binary": binary_record,
         "existing_current_union_binary_reused": True, "additional_compile_invocations": 0,
         "runtime_results_reused": False, "production_import_activated": False,
@@ -97,6 +97,7 @@ def run_controls(*, commands, go, heart, work, evidence, declaration, repair, bi
     try:
         require({row["native_path"] for row in repair["inputs"]} == {
             "core/block/import/owned_annotation_graph.go",
+            "core/block/import/owned_annotation_readback.go",
             "core/application/owned_annotation_import_native_test.go",
             "core/block/import/owned_annotation_native_metadata_test.go"},
             "Reviewed native-metadata source inventory differs")
@@ -122,7 +123,7 @@ def run_controls(*, commands, go, heart, work, evidence, declaration, repair, bi
         report["effective_command_returncode"] = code
         intake = case_intake(output)
         report.update(intake)
-        require(code == 0 and intake["status"] == "PASS" and intake["leaf_pass"] == 6,
+        require(code == 0 and intake["status"] == "PASS" and intake["leaf_pass"] == 12,
                 "Original native-metadata closure controls did not all pass")
     except BaseException as error:
         report.update(status="FAIL_OR_INCOMPLETE", error_type=type(error).__name__, error=str(error))
