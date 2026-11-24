@@ -62,6 +62,22 @@
     },
     {
       "kind": "refactor",
+      "from": "AnyTypeTests/Pinkha/PinkhaStage1AcceptancePreparationTests.swift",
+      "to": "AnyTypeTests/Pinkha/PinkhaStage1AcceptancePreparationTests.swift",
+      "baselineBlob": "a347118c37f3afab24840f349120c9a505127577",
+      "replacementBlob": "84717e6220135a30aa7bbce65e10b3e2ec94b9d5",
+      "inheritedSourceCommit": "0456331dcc4064e8cbc6986692fe75223546a86d",
+      "inheritedSourceBlob": "84717e6220135a30aa7bbce65e10b3e2ec94b9d5",
+      "reason": "Retain the exact downstream RTL diagnostic from 0456331dcc4064e8cbc6986692fe75223546a86d: paired read-only primitive observations around the first real delegate on each fixed input line. Original pre-insertion assertion, accepted-input guard, native calls and waits remain unchanged. This records the previously omitted reviewed source; it does not repair direction or grant acceptance.",
+      "sharedSources": [],
+      "validation": [
+        "Exact source bytes match the originating reviewed commit; recorded literal inverse restores the complete pinned baseline file.",
+        "Source evidence: docs/validation/20261123-release-rtl-boundary-observation/exact-source-inverses.json; reconciliation docs/validation/20261124-apple-source-retention/review.json.",
+        "No product source edited and no prior test replayed in this mapping update. Apple/runtime acceptance remains NOT_RUN and original failures remain unchanged."
+      ]
+    },
+    {
+      "kind": "refactor",
       "from": "AnyTypeTests/Pinkha/PinkhaTextDirectionUIKitAdapterTests.swift",
       "to": "AnyTypeTests/Pinkha/PinkhaTextDirectionUIKitAdapterTests.swift",
       "baselineBlob": "964c291053ac7aabb67ea759171967198ae45b50",
@@ -142,6 +158,21 @@
     },
     {
       "kind": "refactor",
+      "to": "AnyTypeTests/Pinkha/TorahT5UIAcceptancePreparationTests.swift",
+      "baselineBlob": "62fe7bcd241211919a679807137f41cb0322995f",
+      "replacementBlob": "ec1ed3d7302e2505990384d715bb86113f23121c",
+      "reason": "Preserve the original native five-target UI fixture and add explicit corrected-r15 identity selection plus negative capability checks; real assertions and account isolation remain unchanged. Extend only the still-unexecuted corrected-r15 preparation with a transient sixth owned document to prove actual native Page-to-Note type change and whole-object deletion; preserve exact canonical/body bytes and the final original five UI targets. Admit only the exact coherent runtime in the unexecuted native fixture, retain the original five targets and required type/delete mutations, and check disabled-build/foreign-identity rejection.",
+      "sharedSources": [],
+      "validation": [
+        "Exact original and replacement Git blobs reviewed; original source/acceptance evidence remains scoped to its original run.",
+        "Corrected-runtime controller3 and affected existing fixture/cancellation3 controls passed. The standalone UI route remains NOT_RUN before actual dispatch; no product/full acceptance inferred.",
+        "Nine new mutation/identity controller controls and two affected existing identity controls passed in their focused runs. Real native and UI acceptance remains pending; old paired-r15 behavior and prior successful pagination/mutation scopes are retained without rerun.",
+        "Coherent source run45026227924 has independently audited10methods/19terminals; exact composite Apple/runtime/UI acceptance remains a separate pending gate. No unaffected prior test rerun."
+      ],
+      "from": "AnyTypeTests/Pinkha/TorahT5UIAcceptancePreparationTests.swift"
+    },
+    {
+      "kind": "refactor",
       "from": "Anytype/Sources/FrameworkExtensions/UIKit/UITextView+Convenience.swift",
       "to": "Anytype/Sources/FrameworkExtensions/UIKit/UITextView+Convenience.swift",
       "baselineBlob": "6009396c62e1f6223156806e6c9243abff2002cf",
@@ -154,6 +185,42 @@
         "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
         "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
         "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Models/Documents/Document/BaseDocument.swift",
+      "to": "Anytype/Sources/Models/Documents/Document/BaseDocument.swift",
+      "baselineBlob": "2a4fc80da565759559ab0e050c1510e7a1d3413d",
+      "replacementBlob": "7ba871812e4e02277a980401789d5467f749ac4f",
+      "reason": "Carry the exact Page154 event owner across the existing main-queue hop, revalidate before ordinary triggerSync, and expose a DEBUG simulator observation of that actual delivery.",
+      "sharedSources": [],
+      "validation": [
+        "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Models/Documents/Events/EventsListener.swift",
+      "to": "Anytype/Sources/Models/Documents/Events/EventsListener.swift",
+      "baselineBlob": "dfda71cd00f47d2d349a48304a36cc43616789ec",
+      "replacementBlob": "2233bb7b77e5869e490665a717429ba3c348ba6d",
+      "reason": "Bind the document Space explicitly; make the existing synchronous state conversion atomic with owner retirement, then invoke subscribers outside the lifetime lock.",
+      "sharedSources": [],
+      "validation": [
+        "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Models/Documents/Events/Model/EventsBunch.swift",
+      "to": "Anytype/Sources/Models/Documents/Events/Model/EventsBunch.swift",
+      "baselineBlob": "b82ecc767eaa43c32a7df9aaacef8102b50dddde",
+      "replacementBlob": "d28e55bd1e31bbb3380b52661f1b2603e6f421f3",
+      "reason": "Carry a Page154 lifetime fence only when the actual returned response event matches its exact serialized bytes, Space and object; unrelated and local events retain their original route.",
+      "sharedSources": [],
+      "validation": [
+        "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json."
       ]
     },
     {
@@ -593,6 +660,19 @@
     },
     {
       "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift",
+      "to": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift",
+      "baselineBlob": "4fdb3aec1b4bfecabdf612695bc6a264a0311aae",
+      "replacementBlob": "c17304bc6249f14866ef51c6d07a60820d7d7966",
+      "reason": "Preserve the retained Heart related-query body in private loadRelatedDocuments and add a public error boundary that maps only exact typed native BAD_INPUT plus current-authority sentinel through AnytypeTorahRelatedReadFailure; all other errors are rethrown unchanged.",
+      "sharedSources": [],
+      "validation": [
+        "Reviewed the exact f42/403 diff and old/new Git blobs; no query, pagination, identity, projection, persistence or runtime behavior is replaced by this wrapper.",
+        "Heart typed mapping2 methods3 cases will run within the already-required SDK Debug build. The native signed-ACL acceptance is separate and pending. No prior native, UIKit or provider result is relabelled by this mapping."
+      ]
+    },
+    {
+      "kind": "refactor",
       "from": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift",
       "to": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift",
       "baselineBlob": "7f758686f68268e36e97f6455105f136204b8068",
@@ -644,6 +724,18 @@
         "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
         "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
         "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred.",
+        "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/Views/TextViewWithPlaceholder.swift",
+      "to": "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/Views/TextViewWithPlaceholder.swift",
+      "baselineBlob": "5d62468f0c9df9080d11e4b22ff20ba90c2c8c14",
+      "replacementBlob": "1a062a51bda497e6b90cac4ef7806a1fd58468f8",
+      "reason": "Add only the candidate selection-action closure used by the existing UITextView edit menu.",
+      "sharedSources": [],
+      "validation": [
         "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json."
       ]
     },
@@ -834,6 +926,18 @@
     },
     {
       "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModel.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModel.swift",
+      "baselineBlob": "8baf1dbe2cb71db66589b0f2ac6f74908124cab3",
+      "replacementBlob": "e52ca495557489c0e71efa20d0165290cb43b212",
+      "reason": "Carry the Page154 owner through the existing Combine main delivery and require the same open mounted editor before consuming fenced updates.",
+      "sharedSources": [],
+      "validation": [
+        "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json."
+      ]
+    },
+    {
+      "kind": "refactor",
       "from": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionHandler.swift",
       "to": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionHandler.swift",
       "baselineBlob": "7303378c65854f78919f833b464ad02ed263d86f",
@@ -854,6 +958,34 @@
     },
     {
       "kind": "refactor",
+      "from": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionService/BlockActionService.swift",
+      "to": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionService/BlockActionService.swift",
+      "baselineBlob": "3e6bb92c50b550a29a34f479098bdf7c182f5057",
+      "replacementBlob": "0fdb9ad038b8430f00c9798c19002e21a287b68d",
+      "inheritedSourceCommit": "c8a2ad57ea8e84e9df75a515733a0d29b5148310",
+      "inheritedSourceBlob": "0fdb9ad038b8430f00c9798c19002e21a287b68d",
+      "reason": "Retain the reviewed Return split focus fix from c8a2ad57ea8e84e9df75a515733a0d29b5148310: assign one pending focus request before publishing it via applyCurrentFocus(shouldInvalidateFocus: false), so rendered and subsequently rendered rows observe the same request while later requests still supersede it. The original native fork RPC and event delivery are unchanged. Actual three UIKit checks and RTL preparation remain required.",
+      "sharedSources": [],
+      "validation": [
+        "Exact source bytes match the originating reviewed commit; recorded literal inverse restores the complete pinned baseline file.",
+        "Source evidence: docs/validation/20261123-release-return-focus/source-qualification.json; reconciliation docs/validation/20261124-apple-source-retention/review.json.",
+        "No product source edited and no prior test replayed in this mapping update. Apple/runtime acceptance remains NOT_RUN and original failures remain unchanged."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/ServiceLayer/DocumentsProvider/DocumentsProvider.swift",
+      "to": "Anytype/Sources/ServiceLayer/DocumentsProvider/DocumentsProvider.swift",
+      "baselineBlob": "4a65ab9d733aec50a54142a0d2bf67fa0754b706",
+      "replacementBlob": "c2084935888ac6d0a46f508be1ea6ddfd42663dd",
+      "reason": "Pass the existing document Space to EventsListener for exact Page154 ownership checks.",
+      "sharedSources": [],
+      "validation": [
+        "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json."
+      ]
+    },
+    {
+      "kind": "refactor",
       "from": "Modules/PinkhaKit/Package.swift",
       "to": "Modules/PinkhaKit/Package.swift",
       "baselineBlob": "eb19331cb8b675b0271f2252a5453463e3f50b88",
@@ -866,6 +998,106 @@
         "The reviewed f42c1997743350993db8f3179c6b597d800d46e5 package bytes were retained from a05088b98844bba30f90b794effb8cf579e2ef08 before this one-revision convergence.",
         "An exact before/after source comparison permits only the immutable Kit revision replacement. Historical source-bound receipts and negative drift fixtures are unchanged.",
         "Final-pin focused Kit/Any/session/R05 component acceptance is pending; manifest agreement and resolve-only success do not establish semantic acceptance."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "to": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NativeRelatedLookupCapability.swift",
+      "baselineBlob": "940b1dc6c1ac9b6ff8ced049e8bfdf479086214e",
+      "replacementBlob": "16becdac6e33a646f9f013ab7970a7bb63688ddf",
+      "reason": "Recognize the exact reviewed full corrected-r15 runtime only under the existing build flag. Preserve original identity and reject partial/foreign identities. Add the exact source-qualified coherent authorized/current-read identity under the existing explicit build flag; unflagged production and foreign identities remain unavailable.",
+      "sharedSources": [],
+      "validation": [
+        "Exact original and replacement Git blobs reviewed; original source/acceptance evidence remains scoped to its original run.",
+        "Corrected-runtime controller3 and affected existing fixture/cancellation3 controls passed. The standalone UI route remains NOT_RUN before actual dispatch; no product/full acceptance inferred.",
+        "Coherent source run45026227924 has independently audited10methods/19terminals; exact composite Apple/runtime/UI acceptance remains a separate pending gate. No unaffected prior test rerun."
+      ],
+      "from": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NativeRelatedLookupCapability.swift"
+    },
+    {
+      "kind": "refactor",
+      "from": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationIdentity.swift",
+      "to": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationIdentity.swift",
+      "baselineBlob": "94c331df5db784c05e8e06e2b983d11ec909ae2c",
+      "replacementBlob": "0b8eed85ecb18b2c3745c9eb3153042939cf526e",
+      "reason": "Add an optional semantic text target to the existing shared association identity. A valid reserved marker distinguishes two phrases citing the same source; invalid reserved metadata remains distinct from legacy whole-object links. Items without reserved semantic metadata retain the complete previous storage-key component sequence and source-quote instance identity. Both engines share this identity; native durable-anchor capability remains disabled.",
+      "sharedSources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSemanticTextAnchor.swift",
+          "gitBlob": "494f878ad9901d8ea07874ec6727732521e7c27e"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahSemanticAnchorAssociation.swift",
+          "gitBlob": "f85e966ca65a4142a0433201cc6bcf54f8c1fb32"
+        }
+      ],
+      "validation": [
+        "Root reviewed exact baseline586c98 and current replacement source; no legacy storage-key component removed or reordered.",
+        "Four original semantic association Swift Testing component methods passed on Swift6.3.3 Windows; exact bytes/logs retained with the ten-file source closure in docs/validation/20261122-semantic-anchor-portable.",
+        "Original core10 and Any codec6 controls retained; no product test rerun for publication.",
+        "Full-module Apple, native write/reopen, mounted editing and whole-block clipboard acceptance remain separate and unproven by this source-retention mapping."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Modules/ProtobufMessages/Package.swift",
+      "to": "Modules/ProtobufMessages/Package.swift",
+      "baselineBlob": "57972496dd061849f48c79d6d147c518dfa39826",
+      "replacementBlob": "1561c57d165fb767e0bff7fbba1bf4f83df993ce",
+      "reason": "Candidate-only environment definition permits the actual Heart authorized-read bridge. Default Swift 6 settings, package dependencies and linker settings are preserved. The separate iOS test host adds a setup-only generated append byte wrapper only when both candidate and fixture flags are enabled; ordinary candidate and default App builds omit that wrapper. The separate Page154 semantic factory is defined only when the existing authorized-read flag and the exact154 manifest environment agree. All default139 definitions and production resources/dependencies/linker settings remain unchanged. The test target copies only original Page fixtures; actual native/Apple/App execution is not inferred from host tests.",
+      "sharedSources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAuthorizedOperationRead.swift",
+          "gitBlob": "c63665796d822b3eb0196e2572a500973fb3def8"
+        },
+        {
+          "path": "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorClient.swift",
+          "gitBlob": "c85a6b510f5e0f317abdb310df0bac258c332016"
+        },
+        {
+          "path": "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorJSON.swift",
+          "gitBlob": "31048eeec68b70ecb0c6ec22713273e3bb0a26a4"
+        },
+        {
+          "path": "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorNative.swift",
+          "gitBlob": "0c23ef5c0f8f7665584be029cba84fa020d430ca"
+        },
+        {
+          "path": "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorProtobuf.swift",
+          "gitBlob": "98d052e92465bce1ec86674b07e472e62cb98708"
+        },
+        {
+          "path": "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorWire.swift",
+          "gitBlob": "cd30d97268c7e92aa85288a59e0febe7c57033d0"
+        },
+        {
+          "path": "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorPublication.swift",
+          "gitBlob": "872f2bd952438c3d72a7581cb0f846ecc7859866"
+        }
+      ],
+      "validation": [
+        "Reviewed exact candidate-only source, immutable request/typed response ownership, all generated native lifecycle callers, overlapping transition refusal and bounded byte bridge. Nine focused owner/byte controls and the actual iOS Lib journey are authored but NOT_RUN; no previous pass is relabelled and default capability remains OFF.",
+        "Reviewed the exact fixed25 minimal iOS host, original generated append fixture, source/runtime/dependency identity checks, native receipt and typed lifecycle route. Fourteen new controller controls and three Swift syntax parses passed in their original local run. Actual Apple compilation and 25 iOS methods remain pending; none of the retained native71 or sharedApple14 methods are rerun.",
+        "Exact fbbfe710 Swift host scope independently audited:22 actual started/passed methods,0fail/0skip,705 copied inputs plus3 original metadata-only source hashes,16 original artifact identities and both preserved compiler products. All695 compiled product files equal initial55b781. Real SDK body and App wrapper are excluded from this host scope; default capability remains OFF. The current metadata-only controller separately admits the actual Swift6.4 runner/module layout; original FAIL_BUILD and qualified skip-build execution are preserved. See docs/validation/20261123-semantic-heart-swift/attempt3-controls-pass and root-integration-review.json.",
+        "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json.",
+        "2026-11-24 provenance reconciliation: retain the exact bounded Page154 diagnostic client from 8bd1c361b6d32d340d69549dfdc506c6ee5845af. Three literal inverse hunks recover the previously mapped client blob 017eb00e0a1423d7b1256e0ee0acd69336f312e3; no native wire, retry, assertion or timeout changes. See docs/validation/20261124-apple-source-retention/review.json and docs/validation/20261123-page-apply-observation/source-review.json. The original mounted failure remains FAIL; diagnostic/Apple acceptance remains NOT_RUN."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Modules/ProtobufMessages/Sources/Invocation.swift",
+      "to": "Modules/ProtobufMessages/Sources/Invocation.swift",
+      "baselineBlob": "75147606621653a013e2995570b22fd93cd29e2d",
+      "replacementBlob": "d71dca5c6ab8e7518c3c24128b2bc63860b59084",
+      "reason": "Candidate-only lifecycle observation retires verified account/Space read leases before native transitions and fences late or overlapping completions. Existing scheduling, cancellation and native invocation bodies remain unchanged.",
+      "sharedSources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAuthorizedOperationRead.swift",
+          "gitBlob": "c63665796d822b3eb0196e2572a500973fb3def8"
+        }
+      ],
+      "validation": [
+        "Reviewed exact candidate-only source, immutable request/typed response ownership, all generated native lifecycle callers, overlapping transition refusal and bounded byte bridge. Nine focused owner/byte controls and the actual iOS Lib journey are authored but NOT_RUN; no previous pass is relabelled and default capability remains OFF."
       ]
     },
     {
@@ -927,6 +1159,27 @@
         "Two new boot/orchestration and strict split-build admission controls passed once; the original ten controls remain qualified by exact source/AST dependency reviews without rerun. See docs/validation/20261122-coherent-heart-apple-boot. Original failed run45043203916 has zero actual Apple methods; subsequent real execution remains required.",
         "Two new branch-admission controls passed at the exact repaired sources, including producer identity refusal cases and an AST preservation check of every original producer/source guard. See docs/validation/20261122-sdk06-selector-repair/branch-controls.log and new-controls.json. No product tests were executed by this controller validation; original Apple producer45046643716 retains its own exact source and result scope.",
         "Seven new scoped composition and negative admission controls passed once; root reviewed the exact five shared-module changes, four controller deltas and full pinned AST retention. Current consumer module equality and native/framework integrity checks are unchanged. See docs/validation/20261123-current-swift-composition. No old native/Swift tests or framework builds were repeated; new current Apple composition execution remains required."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/PinkhaNativeDerived/package_evidence.py",
+      "to": "Tools/PinkhaNativeDerived/package_evidence.py",
+      "baselineBlob": "e55d2a959296630686a60aa5d927a3b4c34401f9",
+      "replacementBlob": "417f08e4f6efeedd128b5cb2020b79e9c5e315df",
+      "reason": "Preserve successful original SDK06/coherent native/coherent UI BuildProducts tar archives in the existing evidence ZIP before later admission can fail. Admit exactly the original three scope paths plus sdk06-ui/sdk06-early-products/BuildProducts.tar.gz for the later SDK UI build. All original suffix, xcresult, attachment preservation and archive exclusions stay unchanged.",
+      "sharedSources": [
+        {
+          "path": "Tools/PinkhaSimulatorGate/early_build_products.py",
+          "gitBlob": "7b93fac2ac72d070b12abe2ea03ec64d764e238a"
+        }
+      ],
+      "validation": [
+        "Root reviewed the exact seven-line package filter diff in worker02a3873c and retained original evidence behavior; no application, SDK, native transport, or acceptance assertions changed.",
+        "Four new focused controls passed with original log SHA256 d0a6d67db43adf1296378aec67d9e5ece260732b7994ea68d78d120dfbbb89e4, including actual ZIP transport and preservation before controlled first admission failure. No existing tests rerun.",
+        "Archives are observed build bytes only, with build_reuse_enabled=false; exact dependency, code-signature, runtime, current-source and actual-execution qualification remain mandatory.",
+        "Reviewed e1 literal semantic-page154 addition to the existing capture scope allowlist only. Original archive/member/mode/byte preservation behavior and other scopes remain unchanged; this capture itself never admits product reuse or acceptance.",
+        "The sole additional package allowlist member is ('sdk06-ui', 'sdk06-early-products', 'BuildProducts.tar.gz'); removing that exact line recovers original blob 23237cc9b8250906f527417b7e963672f2c2a5c9. Existing named transport method test_sdk06_qualified_lifecycle.QualifiedLifecycleControls.test_later_ui_archive_survives_exact_transport_and_other_archives_stay_excluded passed in the original attempt1 log SHA256 d78c980ac92726a90811df9956fcc42fa95e121d1aacd5d384680828bae6e8e8; source-before/after SHA256 54e5fce7dba955dd5554398140e47be2f3fc425abdb0656fdf7a4b4593ab8e17 binds actual package SHA256 8400bd4ac7bbc61871b51f1021c3dbbb1de5800094e07129417a784d24337309. That method executed the packager, verified exact archive and manifest ZIP bytes, and rejected an unrelated archive. The original aggregate attempt remains FAILED (errors=7); only this named retained PASS supports this mapping. No old control or product method was rerun."
       ]
     },
     {
@@ -1331,6 +1584,35 @@
     },
     {
       "kind": "refactor",
+      "to": "Tools/TorahNativeOperations/run_native_rpc.py",
+      "baselineBlob": "3945481c470d4ec4f1a8458275f5ccc9c9e0a5a8",
+      "replacementBlob": "4686f1ae47333d6aa3cebb3450b3d801aeb76d4c",
+      "reason": "Add a separate exact authorized-operation-read candidate profile with pinned source/generation and 23 new methods/71 records. Preserve retained/default native RPC profile and its acceptance. Add an explicit candidate-only account stage: preserve the source-bound 67 actual prior passes, execute only the four pending cases, then exercise the generated byte RPC in two fresh processes on the same owned native store. Add an explicit macOS universal protobuf compiler companion for the separate one-slice Apple authorized-read candidate. Default Linux compiler selection is unchanged.",
+      "sharedSources": [],
+      "validation": [
+        "Exact original and replacement Git blobs reviewed; original source/acceptance evidence remains scoped to its original run.",
+        "Dedicated candidate controller controls passed; actual Linux23/71 proof is run44952909883 and not accepted until original results pass.",
+        "Reviewed account-stage controller and real native fixture; eight new controller controls passed in the original focused run. Actual native account completion is pending and the prior run remains FAIL; no default runtime/capability or iOS/full-T2 acceptance change.",
+        "Eight new candidate admission controls PASS. Native source, all generated outputs, module and protobuf closure must exactly match qualified44954793488/69b6b3fc. Actual Apple framework/iOS execution remains pending; retained native71 and two account processes are not rerun."
+      ],
+      "from": "Tools/TorahNativeOperations/run_native_rpc.py"
+    },
+    {
+      "kind": "refactor",
+      "to": "Tools/TorahNativeOperations/run_native_rpc_container.sh",
+      "baselineBlob": "cf76434bf22bf63788d7834357c88fb628f70add",
+      "replacementBlob": "90db65297cc5637c503104cd4d36ff6c92f19b5a",
+      "reason": "Pass the explicit native read candidate profile to the existing pinned Linux container; keep the default retained profile unchanged. Add an explicit candidate-only account stage: preserve the source-bound 67 actual prior passes, execute only the four pending cases, then exercise the generated byte RPC in two fresh processes on the same owned native store.",
+      "sharedSources": [],
+      "validation": [
+        "Exact original and replacement Git blobs reviewed; original source/acceptance evidence remains scoped to its original run.",
+        "Dedicated candidate controller controls passed; actual Linux23/71 proof is run44952909883 and not accepted until original results pass.",
+        "Reviewed account-stage controller and real native fixture; eight new controller controls passed in the original focused run. Actual native account completion is pending and the prior run remains FAIL; no default runtime/capability or iOS/full-T2 acceptance change."
+      ],
+      "from": "Tools/TorahNativeOperations/run_native_rpc_container.sh"
+    },
+    {
+      "kind": "refactor",
       "from": "Tools/TorahNativeOperations/test_native_client_concurrent_replace.py",
       "to": "Tools/TorahNativeOperations/test_native_client_concurrent_replace.py",
       "baselineBlob": "0e00ed4c75bc244d19e2a01967e34f7445504a13",
@@ -1407,255 +1689,6 @@
         "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
         "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
         "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
-      ]
-    },
-    {
-      "kind": "refactor",
-      "to": "AnyTypeTests/Pinkha/TorahT5UIAcceptancePreparationTests.swift",
-      "baselineBlob": "62fe7bcd241211919a679807137f41cb0322995f",
-      "replacementBlob": "ec1ed3d7302e2505990384d715bb86113f23121c",
-      "reason": "Preserve the original native five-target UI fixture and add explicit corrected-r15 identity selection plus negative capability checks; real assertions and account isolation remain unchanged. Extend only the still-unexecuted corrected-r15 preparation with a transient sixth owned document to prove actual native Page-to-Note type change and whole-object deletion; preserve exact canonical/body bytes and the final original five UI targets. Admit only the exact coherent runtime in the unexecuted native fixture, retain the original five targets and required type/delete mutations, and check disabled-build/foreign-identity rejection.",
-      "sharedSources": [],
-      "validation": [
-        "Exact original and replacement Git blobs reviewed; original source/acceptance evidence remains scoped to its original run.",
-        "Corrected-runtime controller3 and affected existing fixture/cancellation3 controls passed. The standalone UI route remains NOT_RUN before actual dispatch; no product/full acceptance inferred.",
-        "Nine new mutation/identity controller controls and two affected existing identity controls passed in their focused runs. Real native and UI acceptance remains pending; old paired-r15 behavior and prior successful pagination/mutation scopes are retained without rerun.",
-        "Coherent source run45026227924 has independently audited10methods/19terminals; exact composite Apple/runtime/UI acceptance remains a separate pending gate. No unaffected prior test rerun."
-      ],
-      "from": "AnyTypeTests/Pinkha/TorahT5UIAcceptancePreparationTests.swift"
-    },
-    {
-      "kind": "refactor",
-      "to": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NativeRelatedLookupCapability.swift",
-      "baselineBlob": "940b1dc6c1ac9b6ff8ced049e8bfdf479086214e",
-      "replacementBlob": "16becdac6e33a646f9f013ab7970a7bb63688ddf",
-      "reason": "Recognize the exact reviewed full corrected-r15 runtime only under the existing build flag. Preserve original identity and reject partial/foreign identities. Add the exact source-qualified coherent authorized/current-read identity under the existing explicit build flag; unflagged production and foreign identities remain unavailable.",
-      "sharedSources": [],
-      "validation": [
-        "Exact original and replacement Git blobs reviewed; original source/acceptance evidence remains scoped to its original run.",
-        "Corrected-runtime controller3 and affected existing fixture/cancellation3 controls passed. The standalone UI route remains NOT_RUN before actual dispatch; no product/full acceptance inferred.",
-        "Coherent source run45026227924 has independently audited10methods/19terminals; exact composite Apple/runtime/UI acceptance remains a separate pending gate. No unaffected prior test rerun."
-      ],
-      "from": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NativeRelatedLookupCapability.swift"
-    },
-    {
-      "kind": "refactor",
-      "to": "Tools/TorahNativeOperations/run_native_rpc.py",
-      "baselineBlob": "3945481c470d4ec4f1a8458275f5ccc9c9e0a5a8",
-      "replacementBlob": "4686f1ae47333d6aa3cebb3450b3d801aeb76d4c",
-      "reason": "Add a separate exact authorized-operation-read candidate profile with pinned source/generation and 23 new methods/71 records. Preserve retained/default native RPC profile and its acceptance. Add an explicit candidate-only account stage: preserve the source-bound 67 actual prior passes, execute only the four pending cases, then exercise the generated byte RPC in two fresh processes on the same owned native store. Add an explicit macOS universal protobuf compiler companion for the separate one-slice Apple authorized-read candidate. Default Linux compiler selection is unchanged.",
-      "sharedSources": [],
-      "validation": [
-        "Exact original and replacement Git blobs reviewed; original source/acceptance evidence remains scoped to its original run.",
-        "Dedicated candidate controller controls passed; actual Linux23/71 proof is run44952909883 and not accepted until original results pass.",
-        "Reviewed account-stage controller and real native fixture; eight new controller controls passed in the original focused run. Actual native account completion is pending and the prior run remains FAIL; no default runtime/capability or iOS/full-T2 acceptance change.",
-        "Eight new candidate admission controls PASS. Native source, all generated outputs, module and protobuf closure must exactly match qualified44954793488/69b6b3fc. Actual Apple framework/iOS execution remains pending; retained native71 and two account processes are not rerun."
-      ],
-      "from": "Tools/TorahNativeOperations/run_native_rpc.py"
-    },
-    {
-      "kind": "refactor",
-      "to": "Tools/TorahNativeOperations/run_native_rpc_container.sh",
-      "baselineBlob": "cf76434bf22bf63788d7834357c88fb628f70add",
-      "replacementBlob": "90db65297cc5637c503104cd4d36ff6c92f19b5a",
-      "reason": "Pass the explicit native read candidate profile to the existing pinned Linux container; keep the default retained profile unchanged. Add an explicit candidate-only account stage: preserve the source-bound 67 actual prior passes, execute only the four pending cases, then exercise the generated byte RPC in two fresh processes on the same owned native store.",
-      "sharedSources": [],
-      "validation": [
-        "Exact original and replacement Git blobs reviewed; original source/acceptance evidence remains scoped to its original run.",
-        "Dedicated candidate controller controls passed; actual Linux23/71 proof is run44952909883 and not accepted until original results pass.",
-        "Reviewed account-stage controller and real native fixture; eight new controller controls passed in the original focused run. Actual native account completion is pending and the prior run remains FAIL; no default runtime/capability or iOS/full-T2 acceptance change."
-      ],
-      "from": "Tools/TorahNativeOperations/run_native_rpc_container.sh"
-    },
-    {
-      "kind": "refactor",
-      "from": "Modules/ProtobufMessages/Package.swift",
-      "to": "Modules/ProtobufMessages/Package.swift",
-      "baselineBlob": "57972496dd061849f48c79d6d147c518dfa39826",
-      "replacementBlob": "1561c57d165fb767e0bff7fbba1bf4f83df993ce",
-      "reason": "Candidate-only environment definition permits the actual Heart authorized-read bridge. Default Swift 6 settings, package dependencies and linker settings are preserved. The separate iOS test host adds a setup-only generated append byte wrapper only when both candidate and fixture flags are enabled; ordinary candidate and default App builds omit that wrapper. The separate Page154 semantic factory is defined only when the existing authorized-read flag and the exact154 manifest environment agree. All default139 definitions and production resources/dependencies/linker settings remain unchanged. The test target copies only original Page fixtures; actual native/Apple/App execution is not inferred from host tests.",
-      "sharedSources": [
-        {
-          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAuthorizedOperationRead.swift",
-          "gitBlob": "c63665796d822b3eb0196e2572a500973fb3def8"
-        },
-        {
-          "path": "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorClient.swift",
-          "gitBlob": "017eb00e0a1423d7b1256e0ee0acd69336f312e3"
-        },
-        {
-          "path": "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorJSON.swift",
-          "gitBlob": "31048eeec68b70ecb0c6ec22713273e3bb0a26a4"
-        },
-        {
-          "path": "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorNative.swift",
-          "gitBlob": "0c23ef5c0f8f7665584be029cba84fa020d430ca"
-        },
-        {
-          "path": "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorProtobuf.swift",
-          "gitBlob": "98d052e92465bce1ec86674b07e472e62cb98708"
-        },
-        {
-          "path": "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorWire.swift",
-          "gitBlob": "cd30d97268c7e92aa85288a59e0febe7c57033d0"
-        },
-        {
-          "path": "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorPublication.swift",
-          "gitBlob": "872f2bd952438c3d72a7581cb0f846ecc7859866"
-        }
-      ],
-      "validation": [
-        "Reviewed exact candidate-only source, immutable request/typed response ownership, all generated native lifecycle callers, overlapping transition refusal and bounded byte bridge. Nine focused owner/byte controls and the actual iOS Lib journey are authored but NOT_RUN; no previous pass is relabelled and default capability remains OFF.",
-        "Reviewed the exact fixed25 minimal iOS host, original generated append fixture, source/runtime/dependency identity checks, native receipt and typed lifecycle route. Fourteen new controller controls and three Swift syntax parses passed in their original local run. Actual Apple compilation and 25 iOS methods remain pending; none of the retained native71 or sharedApple14 methods are rerun.",
-        "Exact fbbfe710 Swift host scope independently audited:22 actual started/passed methods,0fail/0skip,705 copied inputs plus3 original metadata-only source hashes,16 original artifact identities and both preserved compiler products. All695 compiled product files equal initial55b781. Real SDK body and App wrapper are excluded from this host scope; default capability remains OFF. The current metadata-only controller separately admits the actual Swift6.4 runner/module layout; original FAIL_BUILD and qualified skip-build execution are preserved. See docs/validation/20261123-semantic-heart-swift/attempt3-controls-pass and root-integration-review.json.",
-        "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json."
-      ]
-    },
-    {
-      "kind": "refactor",
-      "from": "Modules/ProtobufMessages/Sources/Invocation.swift",
-      "to": "Modules/ProtobufMessages/Sources/Invocation.swift",
-      "baselineBlob": "75147606621653a013e2995570b22fd93cd29e2d",
-      "replacementBlob": "d71dca5c6ab8e7518c3c24128b2bc63860b59084",
-      "reason": "Candidate-only lifecycle observation retires verified account/Space read leases before native transitions and fences late or overlapping completions. Existing scheduling, cancellation and native invocation bodies remain unchanged.",
-      "sharedSources": [
-        {
-          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAuthorizedOperationRead.swift",
-          "gitBlob": "c63665796d822b3eb0196e2572a500973fb3def8"
-        }
-      ],
-      "validation": [
-        "Reviewed exact candidate-only source, immutable request/typed response ownership, all generated native lifecycle callers, overlapping transition refusal and bounded byte bridge. Nine focused owner/byte controls and the actual iOS Lib journey are authored but NOT_RUN; no previous pass is relabelled and default capability remains OFF."
-      ]
-    },
-    {
-      "kind": "refactor",
-      "from": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift",
-      "to": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift",
-      "baselineBlob": "4fdb3aec1b4bfecabdf612695bc6a264a0311aae",
-      "replacementBlob": "c17304bc6249f14866ef51c6d07a60820d7d7966",
-      "reason": "Preserve the retained Heart related-query body in private loadRelatedDocuments and add a public error boundary that maps only exact typed native BAD_INPUT plus current-authority sentinel through AnytypeTorahRelatedReadFailure; all other errors are rethrown unchanged.",
-      "sharedSources": [],
-      "validation": [
-        "Reviewed the exact f42/403 diff and old/new Git blobs; no query, pagination, identity, projection, persistence or runtime behavior is replaced by this wrapper.",
-        "Heart typed mapping2 methods3 cases will run within the already-required SDK Debug build. The native signed-ACL acceptance is separate and pending. No prior native, UIKit or provider result is relabelled by this mapping."
-      ]
-    },
-    {
-      "kind": "refactor",
-      "from": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationIdentity.swift",
-      "to": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationIdentity.swift",
-      "baselineBlob": "94c331df5db784c05e8e06e2b983d11ec909ae2c",
-      "replacementBlob": "0b8eed85ecb18b2c3745c9eb3153042939cf526e",
-      "reason": "Add an optional semantic text target to the existing shared association identity. A valid reserved marker distinguishes two phrases citing the same source; invalid reserved metadata remains distinct from legacy whole-object links. Items without reserved semantic metadata retain the complete previous storage-key component sequence and source-quote instance identity. Both engines share this identity; native durable-anchor capability remains disabled.",
-      "sharedSources": [
-        {
-          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSemanticTextAnchor.swift",
-          "gitBlob": "494f878ad9901d8ea07874ec6727732521e7c27e"
-        },
-        {
-          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahSemanticAnchorAssociation.swift",
-          "gitBlob": "f85e966ca65a4142a0433201cc6bcf54f8c1fb32"
-        }
-      ],
-      "validation": [
-        "Root reviewed exact baseline586c98 and current replacement source; no legacy storage-key component removed or reordered.",
-        "Four original semantic association Swift Testing component methods passed on Swift6.3.3 Windows; exact bytes/logs retained with the ten-file source closure in docs/validation/20261122-semantic-anchor-portable.",
-        "Original core10 and Any codec6 controls retained; no product test rerun for publication.",
-        "Full-module Apple, native write/reopen, mounted editing and whole-block clipboard acceptance remain separate and unproven by this source-retention mapping."
-      ]
-    },
-    {
-      "kind": "refactor",
-      "from": "Tools/PinkhaNativeDerived/package_evidence.py",
-      "to": "Tools/PinkhaNativeDerived/package_evidence.py",
-      "baselineBlob": "e55d2a959296630686a60aa5d927a3b4c34401f9",
-      "replacementBlob": "417f08e4f6efeedd128b5cb2020b79e9c5e315df",
-      "reason": "Preserve successful original SDK06/coherent native/coherent UI BuildProducts tar archives in the existing evidence ZIP before later admission can fail. Admit exactly the original three scope paths plus sdk06-ui/sdk06-early-products/BuildProducts.tar.gz for the later SDK UI build. All original suffix, xcresult, attachment preservation and archive exclusions stay unchanged.",
-      "sharedSources": [
-        {
-          "path": "Tools/PinkhaSimulatorGate/early_build_products.py",
-          "gitBlob": "7b93fac2ac72d070b12abe2ea03ec64d764e238a"
-        }
-      ],
-      "validation": [
-        "Root reviewed the exact seven-line package filter diff in worker02a3873c and retained original evidence behavior; no application, SDK, native transport, or acceptance assertions changed.",
-        "Four new focused controls passed with original log SHA256 d0a6d67db43adf1296378aec67d9e5ece260732b7994ea68d78d120dfbbb89e4, including actual ZIP transport and preservation before controlled first admission failure. No existing tests rerun.",
-        "Archives are observed build bytes only, with build_reuse_enabled=false; exact dependency, code-signature, runtime, current-source and actual-execution qualification remain mandatory.",
-        "Reviewed e1 literal semantic-page154 addition to the existing capture scope allowlist only. Original archive/member/mode/byte preservation behavior and other scopes remain unchanged; this capture itself never admits product reuse or acceptance.",
-        "The sole additional package allowlist member is ('sdk06-ui', 'sdk06-early-products', 'BuildProducts.tar.gz'); removing that exact line recovers original blob 23237cc9b8250906f527417b7e963672f2c2a5c9. Existing named transport method test_sdk06_qualified_lifecycle.QualifiedLifecycleControls.test_later_ui_archive_survives_exact_transport_and_other_archives_stay_excluded passed in the original attempt1 log SHA256 d78c980ac92726a90811df9956fcc42fa95e121d1aacd5d384680828bae6e8e8; source-before/after SHA256 54e5fce7dba955dd5554398140e47be2f3fc425abdb0656fdf7a4b4593ab8e17 binds actual package SHA256 8400bd4ac7bbc61871b51f1021c3dbbb1de5800094e07129417a784d24337309. That method executed the packager, verified exact archive and manifest ZIP bytes, and rejected an unrelated archive. The original aggregate attempt remains FAILED (errors=7); only this named retained PASS supports this mapping. No old control or product method was rerun."
-      ]
-    },
-    {
-      "kind": "refactor",
-      "from": "Anytype/Sources/Models/Documents/Document/BaseDocument.swift",
-      "to": "Anytype/Sources/Models/Documents/Document/BaseDocument.swift",
-      "baselineBlob": "2a4fc80da565759559ab0e050c1510e7a1d3413d",
-      "replacementBlob": "7ba871812e4e02277a980401789d5467f749ac4f",
-      "reason": "Carry the exact Page154 event owner across the existing main-queue hop, revalidate before ordinary triggerSync, and expose a DEBUG simulator observation of that actual delivery.",
-      "sharedSources": [],
-      "validation": [
-        "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json."
-      ]
-    },
-    {
-      "kind": "refactor",
-      "from": "Anytype/Sources/Models/Documents/Events/EventsListener.swift",
-      "to": "Anytype/Sources/Models/Documents/Events/EventsListener.swift",
-      "baselineBlob": "dfda71cd00f47d2d349a48304a36cc43616789ec",
-      "replacementBlob": "2233bb7b77e5869e490665a717429ba3c348ba6d",
-      "reason": "Bind the document Space explicitly; make the existing synchronous state conversion atomic with owner retirement, then invoke subscribers outside the lifetime lock.",
-      "sharedSources": [],
-      "validation": [
-        "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json."
-      ]
-    },
-    {
-      "kind": "refactor",
-      "from": "Anytype/Sources/Models/Documents/Events/Model/EventsBunch.swift",
-      "to": "Anytype/Sources/Models/Documents/Events/Model/EventsBunch.swift",
-      "baselineBlob": "b82ecc767eaa43c32a7df9aaacef8102b50dddde",
-      "replacementBlob": "d28e55bd1e31bbb3380b52661f1b2603e6f421f3",
-      "reason": "Carry a Page154 lifetime fence only when the actual returned response event matches its exact serialized bytes, Space and object; unrelated and local events retain their original route.",
-      "sharedSources": [],
-      "validation": [
-        "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json."
-      ]
-    },
-    {
-      "kind": "refactor",
-      "from": "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/Views/TextViewWithPlaceholder.swift",
-      "to": "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/Views/TextViewWithPlaceholder.swift",
-      "baselineBlob": "5d62468f0c9df9080d11e4b22ff20ba90c2c8c14",
-      "replacementBlob": "1a062a51bda497e6b90cac4ef7806a1fd58468f8",
-      "reason": "Add only the candidate selection-action closure used by the existing UITextView edit menu.",
-      "sharedSources": [],
-      "validation": [
-        "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json."
-      ]
-    },
-    {
-      "kind": "refactor",
-      "from": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModel.swift",
-      "to": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModel.swift",
-      "baselineBlob": "8baf1dbe2cb71db66589b0f2ac6f74908124cab3",
-      "replacementBlob": "e52ca495557489c0e71efa20d0165290cb43b212",
-      "reason": "Carry the Page154 owner through the existing Combine main delivery and require the same open mounted editor before consuming fenced updates.",
-      "sharedSources": [],
-      "validation": [
-        "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json."
-      ]
-    },
-    {
-      "kind": "refactor",
-      "from": "Anytype/Sources/ServiceLayer/DocumentsProvider/DocumentsProvider.swift",
-      "to": "Anytype/Sources/ServiceLayer/DocumentsProvider/DocumentsProvider.swift",
-      "baselineBlob": "4a65ab9d733aec50a54142a0d2bf67fa0754b706",
-      "replacementBlob": "c2084935888ac6d0a46f508be1ea6ddfd42663dd",
-      "reason": "Pass the existing document Space to EventsListener for exact Page154 ownership checks.",
-      "sharedSources": [],
-      "validation": [
-        "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json."
       ]
     }
   ],
