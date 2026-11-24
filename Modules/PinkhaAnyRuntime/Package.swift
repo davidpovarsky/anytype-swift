@@ -4,17 +4,18 @@ import Foundation
 
 let nativeMode = ProcessInfo.processInfo.environment["PINKHA_ANY_NATIVE_ARTIFACT"]
 precondition(nativeMode == nil || nativeMode == "verified-v1" || nativeMode == "verified-prepared-v1" ||
-             nativeMode == "verified-prepared-inline-v1", "Unknown native artifact selection")
+             nativeMode == "verified-prepared-inline-v1" || nativeMode == "verified-prepared-file-v1", "Unknown native artifact selection")
 let isPreparedCandidate = nativeMode == "verified-prepared-v1"
 let isPreparedInlineCandidate = nativeMode == "verified-prepared-inline-v1"
-let isNative = nativeMode == "verified-v1" || isPreparedCandidate || isPreparedInlineCandidate
+let isPreparedFileCandidate = nativeMode == "verified-prepared-file-v1"
+let isNative = nativeMode == "verified-v1" || isPreparedCandidate || isPreparedInlineCandidate || isPreparedFileCandidate
 // This acceptance-only host is never added to the retained runtime test lane.
 let readAcceptance = ProcessInfo.processInfo.environment["PINKHA_ANY_AUTHORIZED_READ_ACCEPTANCE"]
 precondition(readAcceptance == nil || readAcceptance == "candidate-v10", "Unknown authorized read acceptance selection")
 let isReadCandidate = readAcceptance == "candidate-v10"
 precondition(!isReadCandidate || isNative, "Authorized read acceptance requires an explicitly installed candidate binary")
-precondition(!isReadCandidate || !(isPreparedCandidate || isPreparedInlineCandidate), "Acceptance candidates require separate explicit selections")
-let isHostAcceptance = isReadCandidate || isPreparedCandidate || isPreparedInlineCandidate
+precondition(!isReadCandidate || !(isPreparedCandidate || isPreparedInlineCandidate || isPreparedFileCandidate), "Acceptance candidates require separate explicit selections")
+let isHostAcceptance = isReadCandidate || isPreparedCandidate || isPreparedInlineCandidate || isPreparedFileCandidate
 let binary: Target = isNative
     ? .binaryTarget(name: "AnyLib", path: "Vendor/any.xcframework")
     : .binaryTarget(
@@ -39,7 +40,8 @@ let package = Package(
             dependencies: ["AnyLib", "PinkhaAnyEngine"],
             swiftSettings: (isNative ? [.define("PINKHA_NATIVE_RUNTIME")] : []) +
                 (isPreparedCandidate ? [.define("PINKHA_PREPARED_MIGRATION_RUNTIME")] : []) +
-                (isPreparedInlineCandidate ? [.define("PINKHA_PREPARED_INLINE_MIGRATION_RUNTIME")] : []),
+                (isPreparedInlineCandidate ? [.define("PINKHA_PREPARED_INLINE_MIGRATION_RUNTIME")] : []) +
+                (isPreparedFileCandidate ? [.define("PINKHA_PREPARED_FILE_MIGRATION_RUNTIME")] : []),
             linkerSettings: [.linkedFramework("Security"), .linkedFramework("SystemConfiguration"), .linkedLibrary("resolv")]
         ),
         .testTarget(
@@ -48,7 +50,8 @@ let package = Package(
                 ? ["PinkhaAnyEngine", "PinkhaAnyIntegration", "PinkhaAnyHost", "PinkhaKit"] : []),
             swiftSettings: (isReadCandidate ? [.define("PINKHA_AUTHORIZED_READ_CANDIDATE")] : []) +
                 (isPreparedCandidate ? [.define("PINKHA_PREPARED_MIGRATION_ACCEPTANCE")] : []) +
-                (isPreparedInlineCandidate ? [.define("PINKHA_PREPARED_INLINE_MIGRATION_ACCEPTANCE")] : [])
+                (isPreparedInlineCandidate ? [.define("PINKHA_PREPARED_INLINE_MIGRATION_ACCEPTANCE")] : []) +
+                (isPreparedFileCandidate ? [.define("PINKHA_PREPARED_FILE_MIGRATION_ACCEPTANCE")] : [])
         )
     ]
 )
