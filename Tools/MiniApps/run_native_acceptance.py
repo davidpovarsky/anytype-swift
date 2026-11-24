@@ -150,8 +150,11 @@ def build_consumer(args, receipt):
         with (evidence / (name + ".log")).open("w") as output:
             result = subprocess.run(argv, cwd=app, stdout=output, stderr=subprocess.STDOUT, timeout=timeout)
         require(result.returncode == 0, f"{name} returned {result.returncode}; see the original log")
-    subprocess.run(["xcrun", "simctl", "boot", context.udid], check=True, capture_output=True)
-    command(["xcrun", "simctl", "bootstatus", context.udid, "-b"], "boot", timeout=120)
+    # First boot of a disposable runtime can take longer than the readiness check.
+    # Let it initialize while compiling; build-for-testing does not execute the app.
+    command(["xcrun", "simctl", "boot", context.udid], "boot-start", timeout=120)
+    receipt["simulator_boot_requested"] = True
+    receipt["simulator_readiness"] = "NOT_CHECKED_UNTIL_EXECUTION"
     prepare_source_cache(app, derived)
     flags = ["OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED -D DEBUG", "ENABLE_TESTABILITY=YES",
              "ONLY_ACTIVE_ARCH=YES", "SWIFT_OPTIMIZATION_LEVEL=-Onone", "CODE_SIGN_IDENTITY=-",
@@ -256,6 +259,26 @@ def execute(args, receipt):
         with (evidence / (name + ".log")).open("w") as output:
             result = subprocess.run(argv, cwd=app, stdout=output, stderr=subprocess.STDOUT, timeout=timeout)
         require(result.returncode == 0, f"{name} returned {result.returncode}; see the original log")
+    # Preserve the genuine build receipt even if the runtime is unavailable.
+    # Readiness is still mandatory, with the original bound, before any install/test.
+    try:
+        command(["xcrun", "simctl", "bootstatus", udid, "-b"], "simulator-readiness", timeout=120)
+        receipt["simulator_readiness"] = "SIMCTL_BOOTSTATUS_PASS"
+    finally:
+        try:
+            state = subprocess.run(["xcrun", "simctl", "list", "devices", "--json"],
+                                   capture_output=True, text=True, timeout=30)
+            if state.returncode == 0:
+                devices = json.loads(state.stdout).get("devices", {})
+                owned = [device for entries in devices.values() for device in entries
+                         if device.get("udid") == udid]
+                write(evidence / "simulator-readiness-state.json", dict(device=udid, observed=owned))
+            else:
+                write(evidence / "simulator-readiness-state.json",
+                      dict(device=udid, diagnostic_returncode=state.returncode, stderr=state.stderr))
+        except Exception as diagnostic_error:
+            write(evidence / "simulator-readiness-state.json",
+                  dict(device=udid, diagnostic_error=str(diagnostic_error)))
     command(["xcrun", "simctl", "install", udid, str(companion)], "install-companion", timeout=120)
     environment = dict(PINKHA_SIMULATOR_UI_DISPOSABLE="1", PINKHA_MINIAPPS_NATIVE_TESTING="1",
                        GITHUB_SHA=head, GITHUB_RUN_ID=os.environ["GITHUB_RUN_ID"],
