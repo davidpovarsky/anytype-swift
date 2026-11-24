@@ -600,6 +600,7 @@ def execute_stage(commands, profile, stage, device, built, source, evidence, cop
         binding.update(copiedPath=str(descriptor), copiedSHA256=c.sha(raw), context=commands.context)
         write(directory / "descriptor-binding.json", binding)
         plan = c.test_command(profile, stage, descriptor, device["udid"], directory / "original.xcresult")
+        plan += ["-collect-test-diagnostics", "never"]
         enum = c.enumeration_command(plan, directory / "enumeration.json")
         write(directory / "plan.json", {"context": commands.context, "command": plan, "enumerationCommand": enum,
                                         "sourceDragSelected": False, "retainedTestsSelected": 0})

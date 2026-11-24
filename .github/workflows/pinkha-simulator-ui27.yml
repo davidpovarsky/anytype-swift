@@ -87,6 +87,7 @@ jobs:
       - name: Check coherent same-build selection identity and cleanup controls
         if: ${{ inputs.acceptance_lane == 'coherent-heart-release' }}
         run: |
+          python3 -B Tools/PinkhaSimulatorGate/test_coherent_release_focus.py -v
           python3 -B Tools/PinkhaSimulatorGate/test_coherent_heart_release.py -v
           python3 -B Tools/PinkhaSimulatorGate/test_t5_remaining_freshness.py -v
       - name: Verify actual Xcode27 and create disposable OS27 iPhone and iPad

@@ -1,0 +1,21 @@
+# Original Return3 and RTL1 in the fresh coherent Release union
+
+## Purpose and exact scope
+
+The actual retained run45456314424 passed the three original Return focus methods and failed the original RTL preparation with three pre-input direction issues. The focused product fix changes the typing-attribute restoration boundary, so Return3 and RTL1 need requalification. This controller includes that suite in the existing coherent Release union and executes those four original methods from the same one App build and one generated UI-runner build used by the remaining Release/T5 lanes. Page154 keeps its separate Debug/native154 graph.
+
+The fixed native union is nine suites: the original three lane preparation suites, the original type-preservation postflight, four original T5 suites, and BlockActionServiceReturnFocusTests. The new adapter admits precisely that original union, validates the original App/PlugIns paths through unchanged CurrentAppleValidation contracts, and changes only OnlyTestIdentifiers to the original suffixed Return3 or RTL1 identifiers. It proves an exact inverse back to the original descriptor and enumerates each actual selection before running. Empty, incomplete, duplicated, expanded or skipped unions are rejected.
+
+Two new run-owned iPad Pro13M5 16GB simulators use the original F runtime27.0/build24A434. Existing owned-readiness and empty-container observations are reused. Every stage checks the frozen App, native bundle, UI runner, original descriptors, source, package locks and native-runtime receipt before/after; original F xcresult counts/names/runtime, raw Swift Testing titles and installed-code equality remain the acceptance authorities. Setup or identity failures abort; an actual observed test failure stays failed while independent original lanes may continue. An overall passing coherent batch additionally requires the saved F4 result and exact worker hash reference to pass independent re-reading.
+
+Existing T5 counts remain separate from the new F4 result; no prior SDK23/ACK7 or old accepted pagination body is selected. No extra App, UI-runner or native-library build is introduced. All older retained-origin routes keep their admission model.
+
+## Failure finalization
+
+The installed Xcode27 option `-collect-test-diagnostics never` is applied to current D/F commands and fresh coherent Release/T5 test commands. Page has the same narrowly scoped policy in its separate helper donor445cd. The actual zero-build Page observation (controller8db28, localRun1795544704330173000) finalized both original xcresults normally, retained a real UI failure, required no forced interruption and left no detached diagnose processes. The evidence/man references are in diagnostic donor7ca06. Assertions, test allowances, result export and explicit keepAlways attachments remain unchanged. The coherent adapter records the actual derived command through the existing owned executor. Builds and test enumeration are not changed by that adapter.
+
+## Controller verification
+
+Nine new descriptor/ownership/diagnostic-policy controls passed; all ten affected existing coherent controls passed, including the exact one-App/one-runner build union. The broader44-method batch regression run found two pre-existing test harness defects: the cancellation stub did not accept the actual `origin` keyword, and the tracked-lock case referenced an undefined runtime_profile. The unchanged ee28 production controller reproduced the cancellation failure. The stubs were corrected without changing their assertions: kwargs are forwarded and the standalone default-profile case explicitly selects r14. The resulting regression run passed43 cases with only that unbound-variable case remaining; a final focused run of the corrected tracked-lock case passed. The original failed logs and baseline reproduction are retained here. These are controller controls, not Apple acceptance.
+
+No App build or test has run for this helper donor. The current Page run45468184991 atd8dd continues independently. Root integration owns source-manifest/helper hash rebinding; the historical compiled-source origins for SDK, retained F/Page and inventory recovery must remain unchanged. The dedicated coherent workflow adds only the nine new admission controls before its existing checks; the central workflow and reusable count are unchanged.

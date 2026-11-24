@@ -112,7 +112,7 @@ class CoherentControls(unittest.TestCase):
             self.assertEqual(len(commands), 2)
             native_selection = [item for item in commands[0] if item.startswith("-only-testing:")]
             expected_native = {item["preparation"].split("/")[0] for item in batch.plan(lane, coherent.PROFILE)}
-            expected_native |= {native_ui.evidence.PREPARATION.split("/")[0], host_actions.SUITE,
+            expected_native |= {"BlockActionServiceReturnFocusTests", native_ui.evidence.PREPARATION.split("/")[0], host_actions.SUITE,
                                 pending.METHOD.split("/")[0], batch.preservation.SUITE, freshness.SUITE}
             self.assertEqual(set(native_selection), {"-only-testing:AnytypeTests/" + name for name in expected_native})
             selected_ui = {item for item in commands[1] if item.startswith("-only-testing:")}
