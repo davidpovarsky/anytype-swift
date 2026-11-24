@@ -155,7 +155,9 @@ def check_generated_boundary(actual, modules):
         else:
             expected_requires.append(old)
     sort = lambda values: sorted(values or [], key=lambda item: json.dumps(item, sort_keys=True))
-    require(actual.get('Module') == {'Path': 'gobind'} and actual.get('Go') == '1.26.5'
+    # Pinned gomobile main.go:ensureGoVersion deliberately formats only the
+    # major/minor version. Heart's copied module and actual compiler stay 1.26.5.
+    require(actual.get('Module') == {'Path': 'gobind'} and actual.get('Go') == '1.26'
             and sort(actual.get('Require')) == sort(expected_requires)
             and sort(actual.get('Replace')) == sort(expected_replaces)
             and not any(value for key, value in actual.items() if key not in ('Module', 'Go', 'Require', 'Replace')),

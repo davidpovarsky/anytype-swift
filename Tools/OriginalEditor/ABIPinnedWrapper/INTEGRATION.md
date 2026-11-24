@@ -10,6 +10,11 @@ modules and promoted previously pruned edges; its actual wrapper selected
 googleapis 1.4.1, sdk/metric 1.46.0 and x/arch 0.10.0 instead of Heart's pinned
 1.3.1, 1.44.0 and 0.8.0. The original observer correctly rejected this result.
 
+The original pre-tidy wrapper says `go 1.26`: pinned gomobile's
+`main.go:ensureGoVersion` deliberately emits major/minor only. This boundary is
+distinct from the copied Heart module and the actual compiler, both pinned to
+1.26.5. All 682 generated requirements and 13 replacements are also compared.
+
 ## Producer integration
 
 Load `pinned_wrapper.py` from the committed control checkout. After the original
