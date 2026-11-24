@@ -795,10 +795,16 @@ def execute(args, receipt, *, build_context=None, sdk06_original_native=None):
 
 
 def main():
-    if "--lane" in sys.argv and sys.argv[sys.argv.index("--lane") + 1] == "miniapps-native":
-        sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "MiniApps"))
-        from run_native_acceptance import main as miniapps_main
-        return miniapps_main()
+    if "--lane" in sys.argv and "--app" in sys.argv:
+        requested_lane = sys.argv[sys.argv.index("--lane") + 1]
+        if requested_lane in {"hanlin-selection", "miniapps-native"}:
+            app = Path(sys.argv[sys.argv.index("--app") + 1]).resolve()
+            sys.path.insert(0, str(app / "Tools/MiniApps"))
+            from acceptance_profile import resolve_profile
+            branch = shared.git(app, "branch", "--show-current")
+            if resolve_profile(app, requested_lane, branch) is not None:
+                from run_native_acceptance import main as miniapps_main
+                return miniapps_main()
     import wave15_batch
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--app", type=Path, required=True)

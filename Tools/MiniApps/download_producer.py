@@ -1,5 +1,6 @@
 """Fetch the exact compiled companion during the workflow's existing artifact-read step."""
 from __future__ import annotations
+from datetime import datetime, timezone
 import hashlib
 import json
 import os
@@ -18,7 +19,49 @@ def require(condition, message):
         raise RuntimeError(message)
 
 def gh_json(endpoint):
-    return json.loads(subprocess.check_output(["gh", "api", endpoint], text=True))
+    return json.loads(subprocess.check_output(["gh", "api", endpoint], text=True, timeout=120))
+
+def wait_for_artifact(pin, evidence):
+    """A separate dependency wait after a real successful consumer build."""
+    started = time.monotonic()
+    deadline = started + 1800
+    path = evidence / "miniapps-producer-wait.json"
+    record = dict(status="WAITING", phase="AFTER_CONSUMER_BUILD", producer_sha=pin["revision"],
+                  producer_run_id=pin["run_id"], artifact_name=pin["artifact_name"],
+                  maximum_poll_window_seconds=1800, each_api_timeout_seconds=120,
+                  started_at=datetime.now(timezone.utc).isoformat())
+    def save():
+        record["elapsed_seconds"] = round(time.monotonic() - started, 3)
+        path.write_text(json.dumps(record, indent=2) + "\n")
+    save()
+    print(json.dumps({"phase": "WAITING_EXACT_PRODUCER_AFTER_CONSUMER_BUILD",
+                      "producer_run_id": pin["run_id"]}), flush=True)
+    try:
+        while time.monotonic() < deadline:
+            run = gh_json(f"repos/{pin['repository']}/actions/runs/{pin['run_id']}")
+            require(run["head_sha"] == pin["revision"], "Companion run uses another source")
+            record["last_observed_status"] = run["status"]
+            record["last_observed_conclusion"] = run.get("conclusion")
+            listing = gh_json(f"repos/{pin['repository']}/actions/runs/{pin['run_id']}/artifacts?per_page=100")
+            require(listing.get("total_count", len(listing["artifacts"])) <= 100,
+                    "Companion artifact inventory requires pagination")
+            matches = [entry for entry in listing["artifacts"]
+                       if entry["name"] == pin["artifact_name"] and not entry["expired"]]
+            require(len(matches) <= 1, "Repeated companion artifact")
+            if matches:
+                record.update(status="ARTIFACT_FOUND_NOT_YET_VERIFIED", artifact_id=matches[0]["id"])
+                return run, matches[0]
+            if run["status"] == "completed":
+                raise RuntimeError("Completed companion run did not publish the required simulator app")
+            save()
+            time.sleep(min(10, max(0, deadline - time.monotonic())))
+        raise RuntimeError("Companion simulator artifact is not ready within the bounded post-build wait")
+    except BaseException as error:
+        record.update(status="FAILED", error_type=type(error).__name__, error=str(error))
+        raise
+    finally:
+        record["finished_at"] = datetime.now(timezone.utc).isoformat()
+        save()
 
 def download(app_source, work, evidence):
     app_source, work, evidence = map(Path, (app_source, work, evidence))
@@ -28,21 +71,7 @@ def download(app_source, work, evidence):
     work.mkdir(parents=True, exist_ok=False)
     evidence.mkdir(parents=True, exist_ok=True)
     repository, run_id = pin["repository"], pin["run_id"]
-    deadline = time.monotonic() + 1800
-    item = None
-    while time.monotonic() < deadline:
-        run = gh_json(f"repos/{repository}/actions/runs/{run_id}")
-        require(run["head_sha"] == pin["revision"], "Companion run uses another source")
-        listing = gh_json(f"repos/{repository}/actions/runs/{run_id}/artifacts?per_page=100")
-        matches = [entry for entry in listing["artifacts"] if entry["name"] == pin["artifact_name"] and not entry["expired"]]
-        require(len(matches) <= 1, "Repeated companion artifact")
-        if matches:
-            item = matches[0]
-            break
-        if run["status"] == "completed":
-            raise RuntimeError("Completed companion run did not publish the required simulator app")
-        time.sleep(10)
-    require(item is not None, "Companion simulator artifact is not ready")
+    run, item = wait_for_artifact(pin, evidence)
     require(str(item["workflow_run"]["id"]) == run_id and
             item["workflow_run"]["head_sha"] == pin["revision"], "Artifact producer differs")
     archive = work / "original-artifact.zip"
