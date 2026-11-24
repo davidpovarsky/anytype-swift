@@ -1,0 +1,50 @@
+{
+  "schema": "apple-historical-source-provenance-reconciliation-v1",
+  "utc": "2026-11-24T14:47:16.745891+00:00",
+  "reviewedHead": "a7deeda14c38b190529726366c30f73d18a31abc",
+  "baseline": "586c98bcc17dee425664224e508fc0e8df277678",
+  "sourceRetentionBlocker": "Two omitted historical mappings and one stale shared-source blob; product diff8dc through integration remains empty.",
+  "changedProductFiles": 0,
+  "gateImplementationChanged": false,
+  "mappingsAdded": 2,
+  "existingSharedRowsUpdated": 1,
+  "historicalEvidenceReused": true,
+  "newTestsExecuted": 0,
+  "proofs": [
+    {
+      "path": "AnyTypeTests/Pinkha/PinkhaStage1AcceptancePreparationTests.swift",
+      "originCommit": "0456331dcc4064e8cbc6986692fe75223546a86d",
+      "inverseBase": "d75178aadcccf2020572dc25b7dadd54baa8e2c4",
+      "inverseRestoresBaseline": true,
+      "inverseHunks": 3,
+      "sourceSHA256": "ad708e3d7b3609e7e5a88b60457d0c890a6e9127388c61169c31a42c1be8a696",
+      "evidencePath": "docs/validation/20261123-release-rtl-boundary-observation/exact-source-inverses.json",
+      "evidenceSHA256": "302fd1c32e5469eee46af7bb471e1a4f6bc44b48b379e649b7f1c8edd6bc1cf2",
+      "runtimeStatus": "NOT_RUN"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionService/BlockActionService.swift",
+      "originCommit": "c8a2ad57ea8e84e9df75a515733a0d29b5148310",
+      "inverseBase": "283c1eb7e7dd42b47f4f91f9a0e1f7ec4dfbfdba",
+      "inverseRestoresBaseline": true,
+      "inverseHunks": 1,
+      "sourceSHA256": "09bd3697007ab3331c63d2bddba7042e19f9d537a2cca7de6dbcf28c78078714",
+      "evidencePath": "docs/validation/20261123-release-return-focus/source-qualification.json",
+      "evidenceSHA256": "fde2cdc6eeabe585beab534884b3642bdbad0c9f54f68171094d6d3ac1a06263",
+      "runtimeStatus": "RETURN3_AND_PREPARATION_NOT_RUN"
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorClient.swift",
+      "originCommit": "8bd1c361b6d32d340d69549dfdc506c6ee5845af",
+      "inverseBase": "b15cd58e376461b066df7fd1639946bb8dca5848",
+      "inverseRestoresPreviouslyMappedBlob": "017eb00e0a1423d7b1256e0ee0acd69336f312e3",
+      "currentBlob": "c85a6b510f5e0f317abdb310df0bac258c332016",
+      "inverseHunks": 3,
+      "sourceSHA256": "d0df6073ac0aecaebc421f90ee791c464f0e8cdceded6d7bc27bb8ed279c209d",
+      "evidencePath": "docs/validation/20261123-page-apply-observation/exact-source-inverses.json",
+      "evidenceSHA256": "5dc18d4c885d8c9f0ad48a54df0a821dd3fdc64094b7b7a5f100a85722d6c075",
+      "runtimeStatus": "MOUNTED_DIAGNOSTIC_NOT_RUN"
+    }
+  ],
+  "runtimeAcceptance": "NOT_RUN; source provenance only"
+}
