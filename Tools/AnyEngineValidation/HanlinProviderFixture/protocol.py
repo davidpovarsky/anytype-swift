@@ -18,8 +18,12 @@ MAX_BODY = 262_144
 MAX_TOOL_RESULT = 32_768
 READ_TOOL = "anytype_read_context_text"
 CREATE_TOOL = "anytype_create_page"
-READ_SCHEMA = {"type": "object", "properties": {}, "additionalProperties": False}
+# HanlinJSONSchemaDocument adds its explicit canonical dialect; providerSchema
+# checks projection fidelity and returns these original schema bytes unchanged.
+SCHEMA_DIALECT = "https://json-schema.org/draft/2020-12/schema"
+READ_SCHEMA = {"$schema": SCHEMA_DIALECT, "type": "object", "properties": {}, "additionalProperties": False}
 CREATE_SCHEMA = {
+    "$schema": SCHEMA_DIALECT,
     "type": "object",
     "properties": {"title": {"type": "string", "minLength": 1, "maxLength": 512}},
     "required": ["title"], "additionalProperties": False,
