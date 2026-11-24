@@ -1,0 +1,97 @@
+{
+  "scope": "LOCAL_LLDB_DIAGNOSTIC_NOT_PRODUCT_ACCEPTANCE",
+  "start": "2026-11-24T17:57:59.380998+00:00",
+  "localDiagnosticID": "1795543079381131000",
+  "originalRun": "45438097556",
+  "originalProducerRun": "45425747246",
+  "originalSource": "95cd30c9e0d70fec368a1605a21b155a652a7afd",
+  "originalRuntime": {
+    "version": "27.2",
+    "build": "24B8117"
+  },
+  "appBuilds": 0,
+  "nativeBuilds": 0,
+  "uiRunnerBuilds": 0,
+  "selectedMethod": "PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen",
+  "productAcceptance": false,
+  "controllerSHA256": "527b869027fc602c6f770f79c242c69b77a7ff1c630b9bf9c0244bbbd5d9e17e",
+  "work": "/Users/m1/builds/_diagnostics/native-hierarchy-action-rg1d6t5e",
+  "pinnedInputs": {
+    "/Users/m1/builds/_retained-anytype/45438097556-1/build/current-apple-native-ui-failed-45438097556-1/work/derived/Build/Products/PinkhaAnyNativeApp_iphonesimulator27.0-arm64.xctestrun": "6a954a8c523142352b259c635fd3a925f9936549986fb1743663d1b5e389ffd1",
+    "/Users/m1/builds/_retained-anytype/45438097556-1/build/current-apple-native-ui-failed-45438097556-1/work/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNative.app/PinkhaAnyNative": "fb1b6fb75715a8096d57e93bd4b620ea80be0efa3ffdafa14bbc12d5b43a63f5",
+    "/Users/m1/builds/_retained-anytype/45438097556-1/build/current-apple-native-ui-failed-45438097556-1/work/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNative.app/PinkhaAnyNative.debug.dylib": "2afcff089404f07c77763ac0bcdd73e8e236b243f2cfa78a1062efef71e08112"
+  },
+  "originalProductEntries": 830,
+  "originalInventorySHA256": "fc009c60ba2138bb93863891d55441e125a763dd2094beed32ba767e4ccdb323",
+  "originalSignaturesVerified": true,
+  "copiedDescriptorSHA256": "128467ac4ea057c4ec84d81a5ad8af06f4cfee6cc1df0d7a085fecd3b49c9163",
+  "ownedSimulator": {
+    "name": "Anytype hierarchy action diagnostic f199dd85-32aa-4994-95f3-68f7187ba738",
+    "udid": "F94682CB-6741-4E9C-8256-DF986F7B7B76",
+    "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-27-2"
+  },
+  "ownedAppPID": 56406,
+  "failure": {
+    "type": "TimeoutExpired",
+    "message": "Command '['xcodebuild', 'test-without-building', '-xctestrun', '/Users/m1/builds/_diagnostics/native-hierarchy-action-rg1d6t5e/hierarchy.xctestrun', '-destination', 'platform=iOS Simulator,id=F94682CB-6741-4E9C-8256-DF986F7B7B76', '-parallel-testing-enabled', 'NO', '-maximum-concurrent-test-simulator-destinations', '1', '-only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen', '-resultBundlePath', '/Users/m1/builds/_diagnostics/native-hierarchy-action-rg1d6t5e/hierarchy.xcresult']' timed out after 260 seconds"
+  },
+  "shutdownExit": 0,
+  "deleteExit": 0,
+  "originalProductsUnchanged": true,
+  "controllerUnchanged": true,
+  "symbolHitCounts": {
+    "nameRequest.setter": 2,
+    "NameSheet.init": 2
+  },
+  "symbolEvidenceSHA256": "18d6f11888224a2c7dba73bce04799694112322341c3d28a7ec68cef18a1dd34",
+  "status": "DIAGNOSTIC_FAILED",
+  "finish": "2026-11-24T18:03:14.425847+00:00",
+  "sourceCommit": "1c257528ccbd3d1c852e5497e11d0b808750b5c7",
+  "jobID": "job_46312bef2a1c",
+  "utcStarted": "2026-11-24T17:57:58.446622+00:00",
+  "utcFinished": "2026-11-24T18:03:14.481199+00:00",
+  "rawUISuite": {
+    "outcome": "FAILED",
+    "durationSeconds": 145.318,
+    "location": "NativeApp/UITests/NativeLaunchTests.swift:551",
+    "state": "original_drag_row_disappearance"
+  },
+  "events": [
+    {
+      "timeNS": 1795543165708209000,
+      "label": "nameRequest.setter",
+      "caller": "closure #3 @Swift.MainActor () -> () in closure #1 () -> SwiftUI.TupleContent<Pack{SwiftUI.ModifiedContent<SwiftUI.Button<SwiftUI.Label<SwiftUI.Text, SwiftUI.Image>>, SwiftUI.AccessibilityAttachmentModifier>, SwiftUI.ModifiedContent<SwiftUI.Button<SwiftUI.Label<SwiftUI.Text, SwiftUI.Image>>, SwiftUI.AccessibilityAttachmentModifier>, SwiftUI.ModifiedContent<SwiftUI.Button<SwiftUI.Label<SwiftUI.Text, SwiftUI.Image>>, SwiftUI.AccessibilityAttachmentModifier>}> in closure #2 () -> Swift.Optional<SwiftUI.TupleContent<Pack{<<opaque return type of SwiftUI.View.disabled(Swift.Bool) -> some>>.0, SwiftUI.ModifiedContent<<<opaque return type of SwiftUI.View.disabled(Swift.Bool) -> some>>.0, SwiftUI.AccessibilityAttachmentModifier>}>> in closure #3 () -> SwiftUI.TupleContent<Pack{Swift.Optional<SwiftUI.ToolbarItem<(), SwiftUI.ModifiedContent<SwiftUI.Button<SwiftUI.Text>, SwiftUI.AccessibilityAttachmentModifier>>>, SwiftUI.ToolbarItemGroup<Swift.Optional<SwiftUI.TupleContent<Pack{<<opaque return type of SwiftUI.View.disabled(Swift.Bool) -> some>>.0, SwiftUI.ModifiedContent<<<opaque return type of SwiftUI.View.disabled(Swift.Bool) -> some>>.0, SwiftUI.AccessibilityAttachmentModifier>}>>>}> in PinkhaAnyUI.AnyNativeLibraryView.library(parentID: Swift.Optional<Swift.String>) -> some"
+    },
+    {
+      "timeNS": 1795543165740414000,
+      "label": "NameSheet.init",
+      "caller": "closure #4 (PinkhaAnyUI.AnyNativeNameRequest) -> PinkhaAnyUI.AnyNativeNameSheet in PinkhaAnyUI.AnyNativeLibraryView.body.getter : some"
+    },
+    {
+      "timeNS": 1795543178335060000,
+      "label": "nameRequest.setter",
+      "caller": "closure #1 @Swift.MainActor () -> () in closure #1 () -> SwiftUI.TupleContent<Pack{SwiftUI.ModifiedContent<SwiftUI.Button<SwiftUI.Label<SwiftUI.Text, SwiftUI.Image>>, SwiftUI.AccessibilityAttachmentModifier>, SwiftUI.ModifiedContent<SwiftUI.Button<SwiftUI.Label<SwiftUI.Text, SwiftUI.Image>>, SwiftUI.AccessibilityAttachmentModifier>, SwiftUI.ModifiedContent<SwiftUI.Button<SwiftUI.Label<SwiftUI.Text, SwiftUI.Image>>, SwiftUI.AccessibilityAttachmentModifier>}> in closure #2 () -> Swift.Optional<SwiftUI.TupleContent<Pack{<<opaque return type of SwiftUI.View.disabled(Swift.Bool) -> some>>.0, SwiftUI.ModifiedContent<<<opaque return type of SwiftUI.View.disabled(Swift.Bool) -> some>>.0, SwiftUI.AccessibilityAttachmentModifier>}>> in closure #3 () -> SwiftUI.TupleContent<Pack{Swift.Optional<SwiftUI.ToolbarItem<(), SwiftUI.ModifiedContent<SwiftUI.Button<SwiftUI.Text>, SwiftUI.AccessibilityAttachmentModifier>>>, SwiftUI.ToolbarItemGroup<Swift.Optional<SwiftUI.TupleContent<Pack{<<opaque return type of SwiftUI.View.disabled(Swift.Bool) -> some>>.0, SwiftUI.ModifiedContent<<<opaque return type of SwiftUI.View.disabled(Swift.Bool) -> some>>.0, SwiftUI.AccessibilityAttachmentModifier>}>>>}> in PinkhaAnyUI.AnyNativeLibraryView.library(parentID: Swift.Optional<Swift.String>) -> some"
+    },
+    {
+      "timeNS": 1795543178373354000,
+      "label": "NameSheet.init",
+      "caller": "closure #4 (PinkhaAnyUI.AnyNativeNameRequest) -> PinkhaAnyUI.AnyNativeNameSheet in PinkhaAnyUI.AnyNativeLibraryView.body.getter : some"
+    }
+  ],
+  "resultBundleFinalized": false,
+  "postFailureCleanup": {
+    "scope": "POSTFAILURE_OWNED_DETACHED_DIAGNOSTIC_CLEANUP",
+    "time": "2026-11-24T18:07:38.210918+00:00",
+    "owned": [
+      56736
+    ],
+    "signals": [
+      {
+        "group": 56736,
+        "signal": "SIGTERM"
+      }
+    ],
+    "remainingOwnedProcesses": [],
+    "ownedDeviceAbsent": true
+  }
+}
