@@ -38,11 +38,12 @@ jobs:
             test "$current_branch" = "$GITHUB_REF_NAME"
           fi
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-      - name: Select native ARM64 Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          architecture: arm64
+      - name: Select installed native ARM64 Python 3.12
+        shell: bash
+        run: |
+          pinkha_python_bin=/opt/homebrew/opt/python@3.12/libexec/bin
+          "$pinkha_python_bin/python3" -I -c 'import platform, sys; assert sys.version_info[:2] == (3, 12), sys.version; assert platform.machine() == "arm64", platform.machine(); assert platform.system() == "Darwin", platform.system(); print(sys.version.split()[0], platform.machine(), sys.executable)'
+          printf '%s\n' "$pinkha_python_bin" >> "$GITHUB_PATH"
       - name: Checkout the exact public canonical Hanlin source
         uses: actions/checkout@v4
         with:

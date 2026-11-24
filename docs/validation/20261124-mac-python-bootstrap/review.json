@@ -1,0 +1,41 @@
+{
+  "base": "4cd410d8b6fd084d86bee7118249e1cba36bbd5c",
+  "change": "Select installed Homebrew native arm64 Python 3.12 via standard GITHUB_PATH; preserve setup-python for other coherent workflow lanes",
+  "changed_workflows": {
+    ".github/workflows/pinkha-current-native-ui-failed.yml": "b232a029650a26cb41113b5f2c73336334d97b6e66c2cd4af6b659ce6245c11c",
+    ".github/workflows/pinkha-current-page154-mounted.yml": "7e5aabd29d3079eeb0546b825f264cbffcd95cf8b9460a9848ff8a606578cdd5",
+    ".github/workflows/pinkha-current-release-return-rtl.yml": "540897bb2c47ab3db4775b808087afb18c0c2b998fbabeda6077fcca951baff8",
+    ".github/workflows/pinkha-sdk06-original-native-continuation.yml": "c402856366ae1ca1fcbe74717a53d4e4fd5b95d6b99f760ba5cef23640d0821a",
+    ".github/workflows/pinkha-sdk06-projected-components.yml": "54a2cf8b9f34df088e06b11b0946672f5d0519f3c5a6132adf291f1c8c601ba0",
+    ".github/workflows/pinkha-simulator-ui27.yml": "894dd10b09de53a0cf8cc37a6603118025981dbe01559f7012aa8ad0b330c58d",
+    ".github/workflows/torah-inspector-ipados27.yml": "b9d6f73e24560219cccb9065c7263b06d4909ef4d73d2d298f5b792051badfa4"
+  },
+  "failed_original": {
+    "attempt": 1,
+    "job_id": 138538113176,
+    "log_sha256": "0ec16dc52d9a8505bc6f2a22e118b64d244163b44e30706b54942af24568669f",
+    "phase": "setup-python before restore, build and tests",
+    "primary_error": "mkdir: /Users/runner: Permission denied",
+    "product_tests_run": 0,
+    "run_id": 45420400433,
+    "secondary_cleanup": "Apple Python 3.9 cannot import dict | None type annotation",
+    "source": "63041f6fb8aed1b0a8b6c8ddb0ba947d3726627d"
+  },
+  "pending": "One real Actions SDK run at integrated published source; no acceptance credited",
+  "updated_live_manifest_rows": {
+    "Tools/CurrentAppleValidation/page154-inputs.json": [
+      ".github/workflows/pinkha-current-page154-mounted.yml"
+    ],
+    "Tools/PinkhaSimulatorGate/sdk06-original-native-controller-source.json": [
+      ".github/workflows/pinkha-sdk06-original-native-continuation.yml",
+      ".github/workflows/pinkha-sdk06-projected-components.yml",
+      ".github/workflows/torah-inspector-ipados27.yml"
+    ]
+  },
+  "validation": {
+    "github_context_simulated": false,
+    "mac_probe": "python312-bootstrap.json",
+    "product_tests_run": 0,
+    "workflow_yaml_parse": "PASS"
+  }
+}
