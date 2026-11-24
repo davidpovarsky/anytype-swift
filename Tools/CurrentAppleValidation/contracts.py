@@ -40,7 +40,7 @@ PROFILES = {
         "target": "PinkhaAnyNativeUITests", "app": "PinkhaAnyNative.app", "bundle": "io.pinkha.anynative.dev",
         "format": 1, "testPlan": None,
         "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-27-2", "version": "27.2", "build": "24B8117",
-        "device": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-A20-Pro",
+        "device": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-A17-Pro",
         "stages": {"native-ui-three": (UI_THREE, 360), "archive-roundtrip": (ARCHIVE, 1800)},
         "flags": [], "nativeBuilds": 0, "applicationBuilds": 1, "uiRunnerBuilds": 1,
     },
