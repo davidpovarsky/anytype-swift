@@ -10,7 +10,7 @@ public enum AnyHeartInlineProjectionError: Error, Equatable, Sendable {
 public struct AnyHeartInlineProjection: Equatable, Sendable {
     public struct Mark: Decodable, Equatable, Sendable {
         public enum Kind: String, Decodable, Sendable {
-            case bold, italic, strike, code, link, object, mention
+            case bold, italic, strike, code, link, object, mention, emoji
             case underline, textColor, backgroundColor
         }
         public let kind: Kind
