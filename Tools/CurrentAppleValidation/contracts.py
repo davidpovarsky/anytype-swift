@@ -67,7 +67,7 @@ ANY = {
     "manifest": "15906eb27afea68cc7ec99242bffd6a8ea69517edb608a4421cce90c9a99a070",
     "version": "v0.5.0-pinkha.1",
 }
-HANLIN = "116cc6be0654a5d11bc56ba00e0310031107ee36"
+HANLIN = "6bd6036dbca16c969689a5722550a54bebc1e851"
 
 def require(value, reason):
     if not value:

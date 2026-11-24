@@ -20,7 +20,7 @@ from fixture import atomic_json
 from protocol import (ALLOW_CALL, CANCEL_CALL, CREATE_TOOL, MARKERS, MODEL,
                       READ_CALL, READ_TOOL, canonical, digest, require, text_chunks, tool_chunks)
 
-PIN = "116cc6be0654a5d11bc56ba00e0310031107ee36"
+PIN = "6bd6036dbca16c969689a5722550a54bebc1e851"
 SOURCE = "Packages/HanlinPlatform/Tests/HanlinChatCoreTests/ProviderConformance/ProviderResponseFixtures.swift"
 SOURCE_SHA = "de14c4620dfe2f8b49eb104eb22ca1467efa85ab31ff2968547d0cfb00e9f17a"
 

@@ -1,0 +1,62 @@
+{
+  "status": "ACTUAL_BASELINE_FAILURE_AND_FIXED_TWO_METHODS_PASS",
+  "host": "Scaleway Mac arm64",
+  "mode": "LOCAL_MACOS_ENGINE_REGRESSION",
+  "baselineCommit": "f48bfc6596eebe491c982bbecbd01939bbce1ed1",
+  "candidateCommit": "6bd6036dbca16c969689a5722550a54bebc1e851",
+  "baseline": {
+    "testCount": 1,
+    "failed": 1,
+    "skipped": 0,
+    "expectedMissingSecondRequest": true,
+    "resultSHA256": "42847b6171c9dcda90cba847dc95f23c8c37dda99d0111426f7ad78e34bf54d0"
+  },
+  "fixed": {
+    "testCount": 2,
+    "failed": 0,
+    "skipped": 0,
+    "exactOriginalMethodPreserved": true,
+    "cancellationMethodRequired": true,
+    "resultSHA256": "5f813e76f3eb8865572c695fb95940989cedbf73239abd848f633b739b8344c8"
+  },
+  "sourceAndDependenciesUnchangedDuringEachExecution": true,
+  "allOriginalBaselineEvidenceUnchanged": true,
+  "originalHanlinPlatformPackageUnchanged": true,
+  "allSevenDeclaredAISDKProductsPreserved": true,
+  "actualSwiftToolchain": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "xcode": "Xcode 27.0\nBuild version 27A266a",
+  "dependencyPins": {
+    "swift-ai-sdk": "e7bf34111e603ca977becd007dd4e5bb109af857",
+    "swift-argument-parser": "6a52f3251125d74daf04fcbd5e6f08a75d074382",
+    "swiftyjson": "b3dcd7dbd0d488e1a7077cb33b00f2083e382f07",
+    "zipfoundation": "02b6abe5f6eef7e3cbd5f247c5cc24e246efcfe0"
+  },
+  "ownedProcessesAfter": [],
+  "appTests": 0,
+  "simulatorTests": 0,
+  "nativeWrites": 0,
+  "productionProviderRequests": 0,
+  "provider": "injected mockFetch in original tests",
+  "AppHanlinSixthRequestAcceptance": "NOT_RUN_AFTER_FIX",
+  "earlierSetupFailuresRemainFailed": true,
+  "logExcerpts": {
+    "baseline": {
+      "originalLog": "/mnt/development/projects/evidence/hanlin-catalog-continuation-20261124/mac-comparison-ec45/host-baseline-evidence/baseline.log",
+      "originalLogSHA256": "de65774ddcdad4e538b4ea8bebad5b9d9e7795923118f3c4884940ed8097525f",
+      "originalBytes": 567502,
+      "excerptStartsAtUTF8Byte": 563620,
+      "excerptSHA256": "d18a9f7d50e124d35090444abbe1444c9202b9767fc15f44a2b408c1e2c0f9de",
+      "compilerFlagObserved": true
+    },
+    "fixed": {
+      "originalLog": "/mnt/development/projects/evidence/hanlin-catalog-continuation-20261124/mac-comparison-ec45/host-fixed-evidence/fixed.log",
+      "originalLogSHA256": "2bb52d1250f40e2e256315943abf0255ac55c1a9904c19dd26b22cf64a543623",
+      "originalBytes": 148662,
+      "excerptStartsAtUTF8Byte": 147220,
+      "excerptSHA256": "15d30ba3c5f9f323a7fe60976153e00a6b2c75fdc4fbe703e1ad067822f96404",
+      "compilerFlagObserved": true
+    }
+  },
+  "fullOriginalEvidence": "/mnt/development/projects/evidence/hanlin-catalog-continuation-20261124/mac-comparison-ec45",
+  "originalArchiveSHA256": "926a13cef70530276d3fd4a829236977ff113bbabc60d4071e750766372999d4"
+}
