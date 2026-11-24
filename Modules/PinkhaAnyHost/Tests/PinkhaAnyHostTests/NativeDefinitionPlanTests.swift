@@ -414,6 +414,146 @@ final class NativeDefinitionPlanTests: XCTestCase {
         }
     }
 
+    func testDefinitionAddedDateIsExactSourceProvenanceAndMalformedValuesRefuse() throws {
+        let property = try relation("tagSource", key: "tag", format: 11,
+            extra: ["addedDate": .integer(1_795_533_300)])
+        var details = try option("optionSource", relation: "tag", order: "captured-order").details
+        details["addedDate"] = .integer(0)
+        let choice = try snapshot("optionSource", type: 529, key: "opt-optionSource", details: details)
+        let sourceType = try type(extra: ["addedDate": .integer(-1)])
+        let c = try catalog([property, choice, sourceType])
+        XCTAssertTrue(c.issues.isEmpty)
+        XCTAssertEqual(c.relations[0].sourceProvenance.addedDateSeconds, 1_795_533_300)
+        XCTAssertEqual(c.options[0].sourceProvenance.addedDateSeconds, 0)
+        XCTAssertEqual(c.types[0].sourceProvenance.addedDateSeconds, -1)
+        let descriptor = try AnyDestinationDefinitionChecks.optionDescriptor(.init(snapshot: choice), relationObjectID: property.sourceObjectID)
+        XCTAssertEqual(descriptor["meta"]?["heartSourceAddedDateSeconds"], .integer(0))
+        XCTAssertEqual(descriptor["meta"]?["heartSourceAddedDateContract"], .string("pinkha-heart-source-added-date-seconds-v1"))
+        XCTAssertEqual(descriptor["pos"], .string("captured-order"))
+        XCTAssertNil(descriptor["createdAt"])
+        let mapper = try AnyHeartNativeDefinitionPlan(catalog: c)
+        let item = try XCTUnwrap(mapper.schemaItems.first { $0.sourceObjectID == property.sourceObjectID })
+        guard case .propertyDefinition(_, _, _, _, _, _, .literal(let format)?, _) = item.operation else {
+            return XCTFail("native property operation")
+        }
+        XCTAssertEqual(format["pinkhaHeart"]?["sourceAddedDateSeconds"], property.details["addedDate"])
+        XCTAssertNil(format["createdAt"])
+        for malformed in [AnyJSON.null, .bool(true), .string("1795533300"), .number(0.25), .array([]), .object([:])] {
+            for original in [property, choice, sourceType] {
+                var changed = original.details; changed["addedDate"] = malformed
+                let row = try snapshot(original.sourceObjectID, type: original.nativeType, key: original.uniqueKey, details: changed)
+                XCTAssertThrowsError(try catalog([row]))
+                if row.nativeType == 529 {
+                    XCTAssertThrowsError(try AnyDestinationDefinitionChecks.optionDescriptor(.init(snapshot: row), relationObjectID: property.sourceObjectID))
+                }
+            }
+        }
+        var future = choice.details; future["futureAddedDateSemantics"] = .bool(true)
+        let unknown = try snapshot(choice.sourceObjectID, type: 529, key: choice.uniqueKey, details: future)
+        XCTAssertTrue(try catalog([property, unknown]).issues.contains { $0.kind == .unknownDetailField })
+        XCTAssertThrowsError(try AnyDestinationDefinitionChecks.optionDescriptor(.init(snapshot: unknown), relationObjectID: property.sourceObjectID))
+        let absent = try option("absentOption", relation: "tag", order: "a")
+        XCTAssertNil(try AnyDestinationDefinitionChecks.optionDescriptor(.init(snapshot: absent), relationObjectID: property.sourceObjectID)["meta"]?["heartSourceAddedDateSeconds"])
+    }
+
+    /// Original immutable bytes from a native method whose final fixture
+    /// assertion failed. This diagnostic does not promote that method to PASS.
+    func testOriginalCustomCaptureMapsCurrentChoicesAndValuesWithoutPromotingSourceAcceptance() throws {
+        guard let path = ProcessInfo.processInfo.environment["PINKHA_NATIVE_CUSTOM_CAPTURE_FIXTURE"] else {
+            throw XCTSkip("Original independently retained custom fixture required")
+        }
+        let root = URL(fileURLWithPath: path, isDirectory: true).resolvingSymlinksInPath().standardizedFileURL
+        func bytes(_ relative: String, under directory: URL) throws -> Data {
+            let parts = relative.split(separator: "/", omittingEmptySubsequences: false)
+            guard !relative.hasPrefix("/"), !relative.contains("\\"), !relative.contains("\0"),
+                  parts.allSatisfy({ !$0.isEmpty && $0 != "." && $0 != ".." }) else {
+                throw AnyHeartNativeDefinitionCatalogError.invalidBinding
+            }
+            let file = directory.appendingPathComponent(relative).resolvingSymlinksInPath().standardizedFileURL
+            guard file.path.hasPrefix(directory.path + "/"),
+                  try file.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile == true else {
+                throw AnyHeartNativeDefinitionCatalogError.invalidBinding
+            }
+            return try Data(contentsOf: file, options: [.mappedIfSafe])
+        }
+        let contextBytes = try bytes("fixture-context.json", under: root)
+        XCTAssertEqual(AnyContentDigest.sha256(contextBytes), "bb03b5a06a77d8b3e85cd46bc9cedc8a497c2bb06bbcd3e47b834e13d83b934a")
+        let context = try JSONDecoder().decode(AnyJSON.self, from: contextBytes)
+        XCTAssertEqual(context["customSchemaAcceptanceStatus"], .string("FAIL"))
+        XCTAssertEqual(context["readOnlyDiagnosticFixture"], .bool(true))
+        XCTAssertEqual(context["sourceAdmissionPromoted"], .bool(false))
+        let directory = root.appendingPathComponent("bundle", isDirectory: true)
+        let manifest = try bytes("manifest.json", under: directory)
+        XCTAssertEqual(AnyContentDigest.sha256(manifest), "cbfb3aa1fd89707138adeccbce7389c40dc0a993f2285f6e517120e4e4239ed4")
+        let bundle = try AnyHeartNativeSpaceBundle(manifest: manifest,
+            sourceAccountID: XCTUnwrap(context["sourceAccountID"]?.string),
+            sourceSpaceID: XCTUnwrap(context["sourceSpaceID"]?.string)) { try bytes($0.path, under: directory) }
+        let c = try AnyHeartNativeDefinitionCatalog(bundle: bundle)
+        XCTAssertEqual(bundle.objects.count, 156)
+        XCTAssertEqual(c.types.count, 20); XCTAssertEqual(c.relations.count, 126); XCTAssertEqual(c.options.count, 4)
+        XCTAssertFalse(c.issues.contains { $0.kind == .unknownDetailField && $0.field == "addedDate" })
+        let definitions = c.relations.filter { $0.name.hasPrefix("Owned source ") }
+        XCTAssertEqual(definitions.count, 7)
+        let labels = Dictionary(uniqueKeysWithValues: definitions.map { (String($0.name.dropFirst("Owned source ".count)), $0) })
+        let custom = try XCTUnwrap(c.types.first { $0.name == "Owned native schema — סוג" })
+        XCTAssertEqual(custom.featuredRelations, try ["text", "status"].map { try XCTUnwrap(labels[$0]).objectID })
+        XCTAssertEqual(custom.recommendedRelations, try ["number", "date", "object", "tag"].map { try XCTUnwrap(labels[$0]).objectID })
+        XCTAssertEqual(custom.hiddenRelations, [try XCTUnwrap(labels["checkbox"]).objectID])
+        XCTAssertEqual(try XCTUnwrap(labels["object"]).targetTypeIDs, [custom.objectID])
+        let mapper = try AnyHeartNativeDefinitionPlan(catalog: c)
+        let binding = try AnyDestinationSourceBinding(bundle: bundle, semanticPlanSHA256: c.contentSHA256,
+            sourceObjectIDs: bundle.objects.map(\.sourceObjectID))
+        XCTAssertEqual(mapper.definitionCoverage.filter { if case .embeddedOption = $0.disposition { return true }; return false }.count, 4)
+        for option in c.options {
+            XCTAssertNotNil(option.sourceProvenance.addedDateSeconds)
+            XCTAssertEqual(option.sourceProvenance.originalAddedDate, option.snapshot.details["addedDate"])
+            let property = try XCTUnwrap(mapper.property(sourceKey: option.relationKey))
+            let evidence = try AnyDestinationDefinitionEvidence(snapshot: option.snapshot)
+            try evidence.requireSource(binding, objectID: option.objectID)
+            let descriptor = try AnyDestinationDefinitionChecks.optionDescriptor(evidence, relationObjectID: property.relation.objectID)
+            XCTAssertEqual(descriptor["pos"], option.snapshot.details["orderId"])
+            XCTAssertEqual(descriptor["name"], option.snapshot.details["name"])
+            XCTAssertEqual(descriptor["meta"]?["heartSourceAddedDateSeconds"], option.snapshot.details["addedDate"])
+            let item = try XCTUnwrap(mapper.schemaItems.first { $0.sourceKey == property.sourceKey })
+            guard case .propertyDefinition(_, _, _, _, _, _, .literal(let format)?, _) = item.operation else {
+                return XCTFail("native choice operation")
+            }
+            XCTAssertEqual(format["options"]?[option.objectID], descriptor)
+            XCTAssertEqual(format["pinkhaHeart"]?["sourceAddedDateSeconds"], property.relation.snapshot.details["addedDate"])
+        }
+        XCTAssertNotEqual(try XCTUnwrap(c.options.first { $0.name == "הושלם" }).orderID, "b1")
+        XCTAssertNotEqual(try XCTUnwrap(c.options.first { $0.name == "תג שני" }).orderID, "b2")
+        let docs = bundle.objects.filter { $0.nativeType == 16 }
+        XCTAssertEqual(docs.count, 2)
+        let first = try XCTUnwrap(docs.first { $0.details["name"] == .string("Owned typed document A") })
+        let second = try XCTUnwrap(docs.first { $0.details["name"] == .string("Owned typed document B") })
+        XCTAssertEqual(first.uniqueKey, "page"); XCTAssertEqual(second.uniqueKey, "page")
+        for doc in docs {
+            let keys = try ["text", "number", "checkbox", "date", "status", "tag", "object"].map { try XCTUnwrap(labels[$0]).relationKey }
+            let values = try mapper.values(snapshot: doc, relationKeys: ["name"] + keys,
+                objects: [.init(sourceObjectID: first.sourceObjectID, destinationSourceKey: "fixture-document-A"),
+                          .init(sourceObjectID: second.sourceObjectID, destinationSourceKey: "fixture-document-B")])
+            XCTAssertEqual(values.initialGroups.count, 2)
+            let canonical = try XCTUnwrap(values.initialGroups.first { $0.owner == .native("any") })
+            XCTAssertEqual(try canonical.fields.resolved(AnyDestinationPlanChecks.placeholder)["name"], doc.details["name"])
+            let scalar = try XCTUnwrap(values.initialGroups.first { $0.owner != .native("any") }).fields.resolved(AnyDestinationPlanChecks.placeholder)
+            for label in ["text", "number", "checkbox", "status", "tag"] {
+                let key = try XCTUnwrap(labels[label]).relationKey
+                let address = try AnyDestinationPlanChecks.placeholder(XCTUnwrap(mapper.property(sourceKey: key)).record)
+                XCTAssertEqual(scalar[address], doc.details[key])
+            }
+            let dateKey = try XCTUnwrap(labels["date"]).relationKey
+            let dateAddress = try AnyDestinationPlanChecks.placeholder(XCTUnwrap(mapper.property(sourceKey: dateKey)).record)
+            XCTAssertEqual(scalar[dateAddress], .object(["$date": .integer(try XCTUnwrap(doc.details[dateKey]?.integer) * 1_000)]))
+            XCTAssertEqual(values.deferredRelationKeys, [try XCTUnwrap(labels["object"]).relationKey])
+        }
+        XCTAssertTrue(mapper.issues.contains { $0.sourceObjectID == labels["text"]?.objectID && $0.field == "relationDefaultValue" })
+        XCTAssertThrowsError(try mapper.admittedSchemaItems())
+        XCTAssertFalse(mapper.permitsDestinationWrites)
+        XCTAssertEqual(AnyContentDigest.sha256(try bytes("manifest.json", under: directory)), bundle.manifestSHA256)
+        print("NATIVE_CUSTOM_CAPTURE_DIAGNOSTIC snapshots=156 types=20 relations=126 options=4 source_method=FAIL destination_writes=false originals_unchanged=true")
+    }
+
     func testOriginalNativeCaptureProvidesAllCurrentDefinitionRowsWithoutBundledSubstitution() throws {
         guard let path = ProcessInfo.processInfo.environment["PINKHA_NATIVE_CAPTURE_FIXTURE"] else {
             throw XCTSkip("Original independently retained native fixture required")
