@@ -82,6 +82,23 @@ class ImportABIInputControls(unittest.TestCase):
         self.assertFalse(result['full_sdk_accepted'])
         self.assertFalse(result['editor_ui_accepted'])
 
+    def test_new_schema_cannot_omit_actual_adapter_proof(self):
+        self.value['schema'] = 'otzaria.original-import-local-sdk-input/2'
+        with self.assertRaisesRegex(ValueError, 'complete actual adapter observation'):
+            self.check()
+
+    def test_old_schema_cannot_silently_admit_adapter_outputs(self):
+        self.value['pinned_wrapper'] = {'path': 'unadmitted.json'}
+        with self.assertRaisesRegex(ValueError, 'historical ABI schema'):
+            self.check()
+
+    def test_new_schema_authenticates_actual_adapter_bytes_before_loading(self):
+        self.value['schema'] = 'otzaria.original-import-local-sdk-input/2'
+        self.value['pinned_wrapper'] = self.file(self.evidence, 'pinned-wrapper/RESULT.json', '{}')
+        (self.evidence / 'pinned-wrapper/RESULT.json').write_text('{"tampered":true}')
+        with self.assertRaisesRegex(ValueError, 'ABI source/evidence member differs'):
+            self.check()
+
     def test_partial_native_counts_and_changed_source_are_rejected(self):
         for name, count in [('native9', 9), ('imported_creation_date', 6), ('bounded_native_metadata', 12)]:
             self.value['native_qualification']['counts'][name]['passes'] = count - 1

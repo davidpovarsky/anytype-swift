@@ -167,6 +167,7 @@ def execute(args, result):
                 'The original reused ABI helper differs')
     original = load(root / 'Tools/OriginalEditor/ImportRPC/build_original_import_abi.py', 'original_abi_helpers')
     mobile = load(root / 'Tools/OriginalEditor/ImportRPC/abi_mobile_inputs.py', 'original_mobile_observer')
+    pinned = load(root / 'Tools/OriginalEditor/ABIPinnedWrapper/pinned_wrapper.py', 'audited_pinned_wrapper')
     installer = load(root / 'Tools/OriginalEditor/ImportRPC/install_import_rpc_abi.py', 'original_generated_verifier')
     heart_helper_path = root / 'Tools/PinkhaNativeDerived/build_custom_heart.py'
     require(sha(heart_helper_path) == original.HELPER_SHA, 'Original Heart binary inspector differs')
@@ -252,10 +253,18 @@ def execute(args, result):
     marker = 'otzaria-original-import-rpc-' + native_tree
     ldflags = ('-X github.com/anyproto/anytype-heart/util/vcs.GitSummary=' + marker
                + ' -X github.com/anyproto/anytype-heart/util/vcs.GitCommit=d98420b1113536afd08cde6de9a5816f6d27ffff')
-    commands.require('gomobile_bind', [str(work / 'gomobile'), 'bind', '-x', '-work', '-tags', mobile.TAGS,
-        '-ldflags', ldflags, '-target=ios', '-o', str(framework),
-        'github.com/anyproto/anytype-heart/clientlibrary/service', 'github.com/anyproto/anytype-heart/core'], heart, 6000)
-    bind = commands.items[-1]
+    launch = pinned.prepare(root, heart, work, evidence, env, modules,
+                            Path(args.go_root).resolve(), sdk_context, ldflags, commands.deadline)
+    ordinary_path = env['PATH']
+    try:
+        env['PATH'] = launch['path_prefix'] + os.pathsep + ordinary_path
+        commands.require('gomobile_bind', [str(work / 'gomobile'), 'bind', '-x', '-work', '-tags', mobile.TAGS,
+            '-ldflags', ldflags, '-target=ios', '-o', str(framework),
+            'github.com/anyproto/anytype-heart/clientlibrary/service', 'github.com/anyproto/anytype-heart/core'], heart, 6000)
+        bind = commands.items[-1]
+    finally:
+        env['PATH'] = ordinary_path
+    pinned_row, pinned_observation = pinned.collect(launch)
     compiler_inputs = mobile.capture(commands, bind, heart, work, evidence, env, sdk_context,
                                     modules, Path(args.go_root).resolve(), ldflags, row, write)
     commands.require('modules-after', ['go', 'mod', 'verify'], heart, 900)
@@ -348,13 +357,14 @@ def execute(args, result):
                          for name in ('gomobile_bind', 'generated_invocation_link')}
     selected_commands.update({item['platform'] + '_' + item['architecture'] + '_exports': item['command']
                               for item in exports})
-    admission = {'schema': 'otzaria.original-import-local-sdk-input/1', 'status': 'PASS',
+    admission = {'schema': 'otzaria.original-import-local-sdk-input/2', 'status': 'PASS',
         'producer_kind': 'local-mac', 'sdk_source_sha': identity['source_sha'],
         'local_execution_sha256': identity['local_execution_sha256'],
         'generated_files_verified': 733, 'generated_files_written': 0, 'generators_replayed': 0,
         'full_sdk_accepted': False, 'editor_ui_accepted': False, 'native_qualification': native,
         'qualification_receipts': {name: reference(evidence / (name + '.json'), evidence) for name in proofs},
         'historical_receipts': historical_receipts,
+        'pinned_wrapper': reference(Path(pinned_row['path']), evidence),
         'commands': selected_commands,
         'defined_exports': sorted(EXPORTS), 'verified_architectures': {'ios': ['arm64'], 'ios-simulator': ['arm64', 'x86_64']},
         'source_unchanged_after_bind': True, 'owned_command_groups_drained': commands.owned_groups_drained,

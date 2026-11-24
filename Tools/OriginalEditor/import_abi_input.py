@@ -5,6 +5,7 @@ mobile bind and actual generated invocation link succeed. This adapter never
 creates qualification, reruns a generator or credits compilation as editor UI.
 """
 import hashlib
+import importlib.util
 import json
 from pathlib import Path, PurePosixPath
 import re
@@ -36,7 +37,8 @@ def verify(root, path, digest, source):
             and re.fullmatch(r'[0-9a-f]{64}', digest or '') and sha(path) == digest,
             'Exact owned Import ABI receipt is required')
     value = json.loads(path.read_bytes())
-    require(value.get('schema') == 'otzaria.original-import-local-sdk-input/1'
+    require(value.get('schema') in ('otzaria.original-import-local-sdk-input/1',
+                                   'otzaria.original-import-local-sdk-input/2')
             and value.get('status') == 'PASS' and value.get('producer_kind') == 'local-mac'
             and value.get('sdk_source_sha') == source['head_sha']
             and value.get('local_execution_sha256') == source['execution_identity']['local_execution_sha256']
@@ -45,6 +47,19 @@ def verify(root, path, digest, source):
             and value.get('generators_replayed') == 0
             and value.get('full_sdk_accepted') is False and value.get('editor_ui_accepted') is False,
             'Local original ABI admission scope/source differs')
+    pinned_wrapper = None
+    if value['schema'].endswith('/2'):
+        require(isinstance(value.get('pinned_wrapper'), dict),
+                'Pinned-wrapper ABI requires its complete actual adapter observation')
+        adapter = exact_file(path.parent, value['pinned_wrapper'])
+        spec = importlib.util.spec_from_file_location('admitted_pinned_wrapper',
+            root / 'Tools/OriginalEditor/ABIPinnedWrapper/pinned_wrapper.py')
+        helper = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(helper)
+        pinned_wrapper = helper.verify(adapter, value['pinned_wrapper']['sha256'], root, source['head_sha'])
+    else:
+        require('pinned_wrapper' not in value,
+                'The historical ABI schema cannot implicitly admit a wrapper adapter')
     native = value['native_qualification']
     require(re.fullmatch(r'[0-9a-f]{40}', native.get('source_sha', ''))
             and re.fullmatch(r'[0-9a-f]{40}', native.get('native_source_tree', ''))
@@ -114,4 +129,5 @@ def verify(root, path, digest, source):
             'app_source_sha': source['head_sha'], 'producer_kind': 'local-mac',
             'native_qualification': native, 'lib_files': rows,
             'generated_files_verified': 733, 'generated_files_written': 0,
-            'full_sdk_accepted': False, 'editor_ui_accepted': False}
+            'full_sdk_accepted': False, 'editor_ui_accepted': False,
+            **({'pinned_wrapper': pinned_wrapper} if pinned_wrapper is not None else {})}
