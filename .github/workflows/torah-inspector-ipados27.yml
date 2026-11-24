@@ -65,6 +65,7 @@ on:
           - loaded-account-arm64-native
           - native-tree-inventory-arm64
           - current-page154-mounted
+          - current-page154-retained
           - owned-simulator-inventory-diagnostic
           - prepared-migration-apple
           - prepared-inline-file-apple
@@ -865,7 +866,7 @@ jobs:
           retention-days: 14
 
   current-page154-mounted:
-    if: ${{ inputs.route == 'current-page154-mounted' }}
+    if: ${{ inputs.route == 'current-page154-mounted' || inputs.route == 'current-page154-retained' }}
     runs-on: [self-hosted, macOS, ARM64, pinkha-scaleway-mac]
     timeout-minutes: 150
     permissions:
@@ -874,6 +875,7 @@ jobs:
     env:
       DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
       PYTHONDONTWRITEBYTECODE: '1'
+      CURRENT_PAGE_CONTROLLER: ${{ inputs.route == 'current-page154-retained' && 'Tools/CurrentAppleValidation/page154_retained.py' || 'Tools/CurrentAppleValidation/page154_current.py' }}
       GIT_OPTIONAL_LOCKS: '0'
       GH_TOKEN: ${{ github.token }}
       EVIDENCE: build/current-page154-${{ github.run_id }}-${{ github.run_attempt }}/evidence
@@ -911,20 +913,20 @@ jobs:
           ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
           path: .ci/hanlin-source
           persist-credentials: false
-      - name: Build current App and UI once, then execute necessary setup and the one failed journey
+      - name: Build or admit the fixed retained App and UI, then execute necessary setup and the one failed journey
         id: execute
         timeout-minutes: 130
         shell: bash
         run: |
           set -euo pipefail
-          python3 -B Tools/CurrentAppleValidation/page154_current.py execute --expected-source "$GITHUB_SHA" --inventory-recovery owned-inventory-timeout-v1
+          python3 -B "$CURRENT_PAGE_CONTROLLER" execute --expected-source "$GITHUB_SHA" --inventory-recovery owned-inventory-timeout-v1
       - name: Finalize only journaled current-run resources even after failure
         if: ${{ always() && steps.execute.outcome != 'skipped' }}
         timeout-minutes: 8
         shell: bash
         run: |
           set -euo pipefail
-          python3 -B Tools/CurrentAppleValidation/page154_current.py cleanup --expected-source "$GITHUB_SHA" --inventory-recovery owned-inventory-timeout-v1
+          python3 -B "$CURRENT_PAGE_CONTROLLER" cleanup --expected-source "$GITHUB_SHA" --inventory-recovery owned-inventory-timeout-v1
       - name: Preserve current App and UI Products, original results, private diagnostics and cleanup
         if: always()
         uses: actions/upload-artifact@v4

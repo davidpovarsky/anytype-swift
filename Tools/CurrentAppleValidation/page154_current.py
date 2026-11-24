@@ -259,6 +259,27 @@ def preserve_products(commands, derived, directory, source, argv, *, generated=N
     return receipt
 
 
+# Xcode 27 creates these exact empty workspace directories for this package-free
+# generated project. Declare them before the source inventory is frozen.
+GENERATED_WORKSPACE_DIRECTORIES = (
+    "project.xcworkspace",
+    "project.xcworkspace/xcshareddata",
+    "project.xcworkspace/xcshareddata/swiftpm",
+    "project.xcworkspace/xcshareddata/swiftpm/configuration",
+)
+
+
+def predeclare_generated_workspace(project):
+    c.require(project.name == "PinkhaPrebuiltUI.xcodeproj" and project.resolve() == project,
+              "fixed_generated_ui_project_required")
+    for relative in GENERATED_WORKSPACE_DIRECTORIES:
+        path = project / relative
+        c.require(not path.exists() and path.parent.resolve() == path.parent,
+                  "fresh_generated_workspace_directory_required")
+        path.mkdir(mode=0o777)
+        path.chmod(0o777)
+
+
 def build_once(commands, kind, device, work, evidence, source):
     c.require(kind in ("app", "ui"), "exact_page_build_kind")
     directory = evidence / (kind + "-build")
@@ -286,6 +307,7 @@ def build_once(commands, kind, device, work, evidence, source):
                   == ROOT / "Tools/PinkhaNativeDerived/rerun_original_ui.py", "page_ui_generator_origin")
         project = generator(ui_source)
         checked = commands.helpers["warning_profile"].generated_project(ui_source, project, plan)
+        predeclare_generated_workspace(project)
         generated = {"root": str(ui_source), "files": current.inventory(ui_source), "validatedInputs": checked}
         scheme, selector = policy.UI_SCHEME, policy.JOURNEY
         source_archive = directory / "generated-ui-inputs.tar.gz"
@@ -521,7 +543,7 @@ def root_path():
     return ROOT / "build" / ("current-page154-" + run + "-" + attempt)
 
 
-def execute(expected, inventory_policy=None):
+def execute(expected, inventory_policy=None, restore_build=None):
     root = root_path()
     c.require(not root.exists() and root.parent.resolve() == root.parent, "fresh_page_work_root_required")
     evidence, work = root / "evidence", root / "work"
@@ -562,8 +584,11 @@ def execute(expected, inventory_policy=None):
         current.write(evidence / "simulator-pair.json", pair)
         device = current.create_device(commands, pair, "CurrentPage154-" + binding["nonce"], evidence, owned)
         receipt["ownedSimulator"] = device
-        app_built = build_once(commands, "app", device, work, evidence, source)
-        ui_built = build_once(commands, "ui", device, work, evidence, source)
+        builder = build_once if restore_build is None else restore_build
+        app_built = builder(commands, "app", device, work, evidence, source)
+        ui_built = builder(commands, "ui", device, work, evidence, source)
+        if restore_build is not None:
+            receipt["retainedBuildAdmission"] = current.read(evidence / "retained-build-admission.json")
         modules["consumer_contract"].framework_unchanged(Path(native["path"]), native["frameworkFiles"])
         receipt["stages"]["preparation"] = run_stage(
             commands, "preparation", device, app_built, app_built["app"], binding, source, evidence)
@@ -715,7 +740,7 @@ def cleanup(expected, inventory_policy=None):
     return result
 
 
-def main():
+def main(restore_build=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("action", choices=("execute", "cleanup"))
     parser.add_argument("--expected-source", required=True)
@@ -724,7 +749,7 @@ def main():
     os.umask(0o077)
     for sig in (signal.SIGINT, signal.SIGTERM):
         signal.signal(sig, current.cancel)
-    result = (execute(args.expected_source, args.inventory_policy) if args.action == "execute"
+    result = (execute(args.expected_source, args.inventory_policy, restore_build) if args.action == "execute"
               else cleanup(args.expected_source, args.inventory_policy))
     print(json.dumps({"status": result["status"], "profile": policy.PROFILE,
                       "evidence": str(root_path() / "evidence")}, sort_keys=True))
