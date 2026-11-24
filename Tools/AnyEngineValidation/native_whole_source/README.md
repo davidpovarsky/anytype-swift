@@ -2,7 +2,7 @@
 
 Status: source implemented; the three new methods have not yet run.
 
-Immutable Heart candidate: 4b62d683e4a3bc2d19bf942f9b20ccbd675b3488
+Immutable Heart candidate: b8ecd2a04376889077d51b8df459956a27ceafbe
 Base: 256d3fd6cb4c2b0df67f67e01edfd8f9b76726f4, after the separately admitted original C4 context delta.
 The source delta retains the accepted inventory and selected-object additions, adds the closed whole-source capture, and changes exactly one existing private resolver field. New(spaceindex.Store) is unchanged. Original C4 and inventory tests/receipts remain unchanged; this controller never reruns those methods.
 

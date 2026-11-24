@@ -16,8 +16,8 @@ import zipfile
 HERE = Path(__file__).resolve().parent
 PORTABLE = HERE.parent / "loaded_account_witness" / "portable"
 HELPER_SHA = "cf3b927951ddfdfcfe9e51d724cce1753b03d92c147224dba23c5cda8b868fdc"
-DELTA_SHA = '52321d2880aac17f5cba613c023aaa2c87b49edd78cfab0bb554ba1e97d30d5e'
-HEART_SHA = '4b62d683e4a3bc2d19bf942f9b20ccbd675b3488'
+DELTA_SHA = '6d7687773f9b982ad247415a44d8f5d79898bd8a184a7bb0a4c8592624cf00e4'
+HEART_SHA = 'b8ecd2a04376889077d51b8df459956a27ceafbe'
 METHODS = ['TestLoadedAccountWholeSourceBindsLocalPayloadAndMetadata', 'TestLoadedAccountWholeSourceRefusesChangedCheckpointAndAuthority', 'TestLoadedAccountCapturedResolverAccountsForMissingSchemas']
 SUBTESTS = {'TestLoadedAccountWholeSourceBindsLocalPayloadAndMetadata': ['missing-local-leaf-refused'], 'TestLoadedAccountWholeSourceRefusesChangedCheckpointAndAuthority': ['invalid-session', 'object-bound', 'unsafe-output-directory'], 'TestLoadedAccountCapturedResolverAccountsForMissingSchemas': ['detached-row-and-no-live-fallback', 'missing-target-type-is-explicit', 'colliding-keys-refuse-ambiguous-format', 'mismatched-native-row-refused']}
 helper_path = PORTABLE / "run_native.py"

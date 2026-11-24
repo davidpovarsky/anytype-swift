@@ -333,7 +333,7 @@ func TestLoadedAccountCapturedResolverAccountsForMissingSchemas(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		domain.NewDetailsFromProto(row.Snapshot.Details).Set(bundle.RelationKeyName, domain.String("mutated input"))
+		row.Snapshot.Details.Fields[string(bundle.RelationKeyName)] = domain.String("mutated input").ToProto()
 		opts, err := resolver.OptionsForObject(row.ID)
 		if err != nil {
 			t.Fatal(err)
