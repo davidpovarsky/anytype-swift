@@ -1,0 +1,97 @@
+{
+  "status": "PASS_SIX_DISTINCT_COMPONENT_METHODS",
+  "sourceCommit": "108b3b1a9b9317444beb6ecaef09f02dc0dc3f06",
+  "firstSourceCommit": "d34f0dbd859b264ae930cdceacb4940f7e8b9ea4",
+  "productionCompositionCommit": "07eb43e4401f8225282fd651bf5b43ba8054713c",
+  "sourceFiles": {
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativePageComposition.swift": "cb650be1b0163d41a03f785dee5046aaded05e8b737989bb8a477fba287e74ff",
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeDefinitionPlan.swift": "566974f83ee0838ec3253ea9c59e8210fd82979b1a3023ad049edf7f05e30027",
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationPlan.swift": "db0a6b6a5788db6acc9c9d435a17c5f2033f181deaf9a118ead731b4c0e0f735",
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationDefinitionCoverage.swift": "0d98f12e4bce3d1699a5aec754fc005f683ce530fd18d7f4b4218289c403cd10",
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionCatalog.swift": "e67b6c5552bf9abcb9a1126532877abf886b57f7c0a2332b65631738701903ff",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativePageCompositionTests.swift": "ce45a0802d0ee7d9b4c3c27a9704a1e887c5351c8c8704de26545a20235c4f97",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeDefinitionPlanTests.swift": "e2e5924086b5f7018fb28030c6b852af8ca41a58701d19701ff72d5492436036",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationMigrationExecutorTests.swift": "214f3441124ca1154bd3dc1bff5deccc2523842822df5482a2aadc5d23447066"
+  },
+  "sourceTrees": {
+    "Modules/PinkhaAnyHost": "ae51763c39a61cda83ed19eb5c2cef1edde64338",
+    "Modules/PinkhaAnyIntegration": "3dfd9c0b395f1435a98ccd4eb6858c148a464047",
+    "Modules/PinkhaAnyEngine": "c093b71f098da91aadcfae1010bb47af0a0d1add"
+  },
+  "qualifiedMethods": [
+    "AnyDestinationMigrationExecutorTests.testPartsRequireTypeOwnersWhilePropertiesAllowCollections",
+    "NativeDefinitionPlanTests.testDefinitionDraftsBindOwnersOptionsTypeHandlesAndExplicitSemanticGaps",
+    "NativePageCompositionTests.testOriginalCapturedPageComposesCurrentStateAndRetainsSourceBlockers",
+    "NativePageCompositionTests.testOriginalCustomCapturePreservesBothPagesAllValuesAndDistinctIdentities",
+    "NativePageCompositionTests.testPageCompositionKeepsOneTitleAndDefersExactReferenceCycles",
+    "NativePageCompositionTests.testUnaccountedDetailsSourceMetadataAndAmbiguousIdentitiesAreRefused"
+  ],
+  "firstAttempt": {
+    "actualPassedMethods": 5,
+    "actualFailedMethods": 1,
+    "result": "FAIL",
+    "evidenceRetained": true
+  },
+  "continuation": {
+    "actualPassedMethods": 2,
+    "actualFailedMethods": 0,
+    "productionChanges": 0,
+    "fixtureChanges": "Synthetic canonical name label/description now exactly Name / Name of the object; affected negative controls require otherwise admitted schema"
+  },
+  "originalCaptures": {
+    "original": {
+      "objects": 144,
+      "pages": 1,
+      "currentItems": 2,
+      "sourceBlockersRetained": true
+    },
+    "custom": {
+      "objects": 156,
+      "pages": 2,
+      "presentDetails": 16,
+      "bodyBlocks": 2,
+      "distinctObjectIDsDespiteRepeatedPageUniqueKey": true,
+      "originalNativeCustomFailureRetained": true
+    }
+  },
+  "fixtures": {
+    "/mnt/development/projects/evidence/native-json-source-fixture-45472745870/fixture-context.json": "5357d52f5e76b604a40d7a5f2b1bc002e19bc864c419a45f90128bfa965d5850",
+    "/mnt/development/projects/evidence/native-json-source-fixture-45472745870/source-bundle/manifest.json": "2a1a02987204321aaa1c8cf9f0c7f413f4b50dbce87280d82499c4f9bc7be238",
+    "/mnt/development/projects/evidence/native-custom-source-fixture-45492064232/fixture-context.json": "bb03b5a06a77d8b3e85cd46bc9cedc8a497c2bb06bbcd3e47b834e13d83b934a",
+    "/mnt/development/projects/evidence/native-custom-source-fixture-45492064232/bundle/manifest.json": "cbfb3aa1fd89707138adeccbce7389c40dc0a993f2285f6e517120e4e4239ed4"
+  },
+  "newMethods": 4,
+  "affectedExistingMethods": 2,
+  "destinationWrites": false,
+  "currentSourceAuthorizationClaimed": false,
+  "wholeSpaceAcceptance": false,
+  "historyAcceptance": false,
+  "remaining": "Global definition/source blockers, non-Basic layouts, defaults, readonly semantics, history, settings and file objects remain explicit; this receipt does not grant source authority or execute a migration.",
+  "originalEvidence": {
+    "attempt1/launch.json": {
+      "bytes": 3767,
+      "sha256": "b5061137eda45ef6263575599cd6601473028afb93b68169ce2adf7c7c74eabd"
+    },
+    "attempt1/result.json": {
+      "bytes": 6940,
+      "sha256": "7ab1306f1ad9ceca39673c41b1d71221238e0c697fdffabc8a8daeda27667706"
+    },
+    "attempt1/swift-test.log": {
+      "bytes": 5850,
+      "sha256": "196ab368dc8910dd8687bd7c3382211493415371d8bbbac7e541630d2c9c7a08"
+    },
+    "attempt2/launch.json": {
+      "bytes": 3454,
+      "sha256": "fcd397cd1170278df428dbe7816a97a556863daf1fb670b7a68a08bb4fc7cf53"
+    },
+    "attempt2/result.json": {
+      "bytes": 696,
+      "sha256": "98c5902e54c9c5d425d8506ea29de370676fbd508ffefb6a6528fb61ba0676a5"
+    },
+    "attempt2/swift-test.log": {
+      "bytes": 1521,
+      "sha256": "f320319764d1f11e522a460b03a8004446f0677356e91ce65f0870acb998d22b"
+    }
+  },
+  "finishedAt": "2026-11-24T22:40:50.769754+00:00"
+}
