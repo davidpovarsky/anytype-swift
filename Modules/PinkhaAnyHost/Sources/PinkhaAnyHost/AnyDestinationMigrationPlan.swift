@@ -169,6 +169,13 @@ public struct AnyDestinationCoverage: Codable, Equatable, Sendable {
     public enum SystemKind: String, Codable, Sendable { case nativeACL, emptyNativeKeyValue }
     public enum Disposition: Codable, Equatable, Sendable {
         case mapped(itemSourceKeys: [String])
+        /// The fixed path is the source option's exact UTF-8 ID under the
+        /// named property's xFormat.options, never an arbitrary JSON path.
+        case embeddedOption(propertySourceKey: String, evidence: AnyDestinationDefinitionEvidence,
+                            descriptorSHA256: String)
+        /// A captured definition binds an existing closed native contract;
+        /// there is deliberately no schema mutation or replacement object.
+        case canonicalProperty(AnyDestinationCanonicalPropertyBinding)
         case retainedSystem(kind: SystemKind, capturedRowCount: Int, witnessSHA256: String)
         case blocked(reasons: [String])
     }
@@ -346,7 +353,8 @@ public struct AnyDestinationMigrationPlan: Codable, Sendable {
             }
             keys[Data(item.sourceKey.utf8)] = index; lastPhase = item.operation.phase
         }
-        var covered = Set<Data>(), represented = Set<Data>()
+        var covered = Set<Data>(), represented = Set<Data>(), canonicalAddresses = Set<Data>()
+        let itemSourceIDs = Set(items.map { Data($0.sourceObjectID.utf8) })
         for entry in coverage {
             let id = Data(entry.sourceObjectID.utf8)
             guard sourceIDs.contains(id), covered.insert(id).inserted else {
@@ -361,6 +369,20 @@ public struct AnyDestinationMigrationPlan: Codable, Sendable {
                           Data(items[index].sourceObjectID.utf8) == id else {
                         throw AnyDestinationMigrationError.invalidPlan("coverage mapping")
                     }
+                }
+            case .embeddedOption(let propertyKey, let evidence, let descriptorSHA256):
+                try evidence.requireSource(source, objectID: entry.sourceObjectID)
+                guard !itemSourceIDs.contains(id), let propertyIndex = keys[Data(propertyKey.utf8)] else {
+                    throw AnyDestinationMigrationError.invalidPlan("shadowed or absent embedded option")
+                }
+                try AnyDestinationDefinitionChecks.embeddedOption(evidence, descriptorSHA256: descriptorSHA256,
+                                                                   property: items[propertyIndex])
+            case .canonicalProperty(let binding):
+                try binding.evidence.requireSource(source, objectID: entry.sourceObjectID)
+                try binding.validate()
+                let address = AnyPreparedMigrationPlanBinding.material([binding.ownerID, binding.propertyID])
+                guard !itemSourceIDs.contains(id), canonicalAddresses.insert(address).inserted else {
+                    throw AnyDestinationMigrationError.invalidPlan("shadowed or duplicate canonical property")
                 }
             case .retainedSystem(let kind, let count, let witness):
                 guard witness == source.witnessSHA256, count >= 0,

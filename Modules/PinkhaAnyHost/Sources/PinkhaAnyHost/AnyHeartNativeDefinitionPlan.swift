@@ -24,8 +24,13 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
         public let kind: String
         public let format: String
         public let xKey: String
-        public var record: AnyDestinationReference {
-            .mapped(sourceKey: sourceKey, slot: .record(index: 0), encoding: .rawID)
+        public let owner: AnyDestinationReference
+        public let record: AnyDestinationReference
+        public let canonicalBinding: AnyDestinationCanonicalPropertyBinding?
+        public var isCanonicalName: Bool { canonicalBinding != nil }
+        public var address: AnyDestinationValue {
+            .object([.init(key: .native("ownerId"), value: .reference(owner)),
+                     .init(key: .native("propertyId"), value: .reference(record))])
         }
     }
     public struct TypeBinding: Sendable {
@@ -43,14 +48,22 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
             self.sourceObjectID = sourceObjectID; self.destinationSourceKey = destinationSourceKey
         }
     }
+    public struct ValueGroup: Sendable {
+        public let owner: AnyDestinationReference
+        public let fields: AnyDestinationValue
+        public let sourceRelationKeys: [String]
+    }
     public struct Values: Sendable {
         /// Scalar/choice values can be part of immutable object creation.
-        public let initial: AnyDestinationValue
+        public let initialGroups: [ValueGroup]
         /// Object identities are translated only after all objects exist.
-        public let deferred: AnyDestinationValue
+        public let deferredGroups: [ValueGroup]
         public let initialRelationKeys: [String]
         public let deferredRelationKeys: [String]
         public let originalDetailsSHA256: String
+        public var initialProperties: AnyDestinationValue {
+            .object(initialGroups.map { .init(key: $0.owner, value: $0.fields) })
+        }
     }
 
     public let catalog: AnyHeartNativeDefinitionCatalog
@@ -58,6 +71,9 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
     public let properties: [PropertyBinding]
     public let types: [TypeBinding]
     public let schemaItems: [AnyDestinationMigrationItem]
+    /// Closed coverage for canonical properties and embedded option identities.
+    /// Every ordinary schema item still requires its normal mapped coverage.
+    public let definitionCoverage: [AnyDestinationCoverage]
     public let issues: [Issue]
     public var permitsDestinationWrites: Bool { false }
     public var propertyOwner: AnyDestinationReference? {
@@ -78,8 +94,14 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
         }
         let typesByID = Dictionary(uniqueKeysWithValues: types.map { (Data($0.definition.objectID.utf8), $0) })
         var items: [AnyDestinationMigrationItem] = [], properties: [PropertyBinding] = []
-        let ownerKey = catalog.relations.first.map { key("property-catalog", $0.objectID) }
-        if let ownerKey, let first = catalog.relations.first {
+        var definitionCoverage: [AnyDestinationCoverage] = []
+        func nativeNameIdentity(_ relation: AnyHeartNativeDefinitionCatalog.Relation) -> Bool {
+            relation.snapshot.nativeType == 521 && Data(relation.snapshot.uniqueKey.utf8) == Data("rel-name".utf8) &&
+            Data(relation.relationKey.utf8) == Data("name".utf8)
+        }
+        let namespaceAnchor = catalog.relations.first { !nativeNameIdentity($0) }
+        let ownerKey = namespaceAnchor.map { key("property-catalog", $0.objectID) }
+        if let ownerKey, let first = namespaceAnchor {
             // This is the destination property namespace. It does not claim
             // that a Heart Collection document has become an Any Collection.
             items.append(.init(sourceKey: ownerKey, sourceObjectID: first.objectID,
@@ -92,6 +114,24 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
                     ]))))))
         }
         for relation in catalog.relations {
+            if nativeNameIdentity(relation) {
+                do {
+                    let canonical = try AnyDestinationCanonicalPropertyBinding(evidence: .init(snapshot: relation.snapshot))
+                    guard catalog.relation(key: "name")?.objectID == relation.objectID else {
+                        throw AnyHeartNativeDefinitionPlanError.missingDefinition(relation.objectID)
+                    }
+                    properties.append(.init(relation: relation, sourceKey: key("canonical-property", relation.objectID),
+                        kind: "string", format: "text", xKey: "name", owner: .native("any"), record: .native("name"),
+                        canonicalBinding: canonical))
+                    definitionCoverage.append(.init(sourceObjectID: relation.objectID, disposition: .canonicalProperty(canonical)))
+                } catch {
+                    // An overridden name definition is not copied to a second
+                    // mutable title field or silently treated as the builtin.
+                    issues.append(.init(sourceObjectID: relation.objectID, field: "canonical-name",
+                        reason: "captured-name-definition-does-not-match-qualified-native-contract"))
+                }
+                continue
+            }
             guard let ownerKey else { throw AnyHeartNativeDefinitionPlanError.missingDefinition(relation.objectID) }
             guard let shape = Self.shape(relation) else {
                 issues.append(.init(sourceObjectID: relation.objectID, field: "relationFormat",
@@ -131,17 +171,17 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
                         issues.append(.init(sourceObjectID: option.objectID, field: "objectID",
                                             reason: "option-identity-cannot-be-a-native-option-key")); continue
                     }
-                    options[option.objectID] = .object([
-                        "name": .string(option.name), "color": .string(option.color), "pos": .string(option.orderID),
-                        "meta": .object(["heartUniqueKey": .string(option.snapshot.uniqueKey),
-                            "heartSnapshotSHA256": .string(option.snapshot.snapshotSHA256),
-                            "heartDefinitionJSON": .string(try Self.jsonString(.object(option.snapshot.details)))])
-                    ])
-                    // Options become native descriptor entries, not object
-                    // records. The current executor's one-item/one-source
-                    // coverage has no embedded-definition disposition yet.
-                    issues.append(.init(sourceObjectID: option.objectID, field: "option",
-                        reason: "descriptor-option-mapped; embedded-source-coverage-not-yet-supported"))
+                    do {
+                        let evidence = try AnyDestinationDefinitionEvidence(snapshot: option.snapshot)
+                        let descriptor = try AnyDestinationDefinitionChecks.optionDescriptor(evidence, relationObjectID: relation.objectID)
+                        options[option.objectID] = descriptor
+                        definitionCoverage.append(.init(sourceObjectID: option.objectID,
+                            disposition: .embeddedOption(propertySourceKey: key("property", relation.objectID),
+                                evidence: evidence, descriptorSHA256: try AnyDestinationDefinitionChecks.digest(descriptor))))
+                    } catch {
+                        issues.append(.init(sourceObjectID: option.objectID, field: "option",
+                            reason: "native-option-evidence-or-descriptor-not-representable"))
+                    }
                 }
                 format["options"] = .object(options)
             }
@@ -161,10 +201,13 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
             format["pinkhaHeart"] = .object(source)
             let binding = PropertyBinding(relation: relation, sourceKey: key("property", relation.objectID),
                 kind: shape.kind, format: shape.format,
-                xKey: "heart_property_" + Self.identity(catalog.sourceSpaceID, relation.objectID, "property-handle"))
+                xKey: "heart_property_" + Self.identity(catalog.sourceSpaceID, relation.objectID, "property-handle"),
+                owner: .mapped(sourceKey: ownerKey, slot: .objectID, encoding: .rawID),
+                record: .mapped(sourceKey: key("property", relation.objectID), slot: .record(index: 0), encoding: .rawID),
+                canonicalBinding: nil)
             properties.append(binding)
             items.append(.init(sourceKey: binding.sourceKey, sourceObjectID: relation.objectID,
-                operation: .propertyDefinition(owner: .mapped(sourceKey: ownerKey, slot: .objectID, encoding: .rawID),
+                operation: .propertyDefinition(owner: binding.owner,
                     kind: binding.kind, name: relation.name, xKey: binding.xKey, description: relation.description,
                     scope: "synced", xFormat: .literal(.object(format)), index: nil)))
         }
@@ -177,12 +220,14 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
                     value: .reference(.mapped(sourceKey: ownerKey, slot: .objectID, encoding: .rawID))))
             }
             recommendations.append(.init(key: .native("contract"),
-                value: .literal(.string("pinkha-heart-native-type-presentation-v1"))))
+                value: .literal(.string("pinkha-heart-native-type-presentation-v2"))))
+            recommendations.append(.init(key: .native("sourceRecommendedLayout"),
+                value: .literal(definition.recommendedLayout.map(AnyJSON.integer) ?? .null)))
             for (field, ids) in [("recommended", definition.recommendedRelations),
                 ("featured", definition.featuredRelations), ("hidden", definition.hiddenRelations),
                 ("files", definition.fileRelations)] {
                 let references: [AnyDestinationValue] = ids.compactMap {
-                    propertiesByID[Data($0.utf8)].map { .reference($0.record) }
+                    propertiesByID[Data($0.utf8)].map(\.address)
                 }
                 if references.count != ids.count {
                     issues.append(.init(sourceObjectID: definition.objectID, field: field,
@@ -200,12 +245,15 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
             // A page layout alone does not implement every Heart layout or
             // recommendation's application behavior.
             issues.append(.init(sourceObjectID: definition.objectID, field: "recommendedLayout/recommendations",
-                reason: "ordered-property-bindings-retained; destination-presentation-adapter-not-qualified"))
+                reason: definition.recommendedLayout == 0
+                    ? "ordered-property-bindings-retained; destination-presentation-adapter-not-qualified"
+                    : "native-layout-not-qualified:\(definition.recommendedLayout.map(String.init) ?? "absent")"))
             let metadata: AnyJSON = .object([
                 "heartSourceObjectID": .string(definition.objectID),
                 "heartUniqueKey": .string(definition.snapshot.uniqueKey),
                 "heartTypeKey": .string(definition.typeKey),
                 "heartSnapshotSHA256": .string(definition.snapshot.snapshotSHA256),
+                "heartJSONViewSHA256": .string(definition.snapshot.viewSHA256),
                 "heartDefinitionJSON": .string(try Self.jsonString(.object(definition.snapshot.details))),
             ])
             items.append(.init(sourceKey: type.sourceKey, sourceObjectID: definition.objectID,
@@ -222,7 +270,7 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
                 ])))))
         }
         self.catalogSourceKey = ownerKey; self.types = types; self.properties = properties
-        self.schemaItems = items; self.issues = issues
+        self.schemaItems = items; self.definitionCoverage = definitionCoverage; self.issues = issues
     }
 
     /// Full execution must consume this guard, together with the enclosing
@@ -259,8 +307,17 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
             }
             targets[key] = object.destinationSourceKey
         }
-        var initial: [AnyDestinationField] = [], deferred: [AnyDestinationField] = []
+        var initial: [(AnyDestinationReference, [AnyDestinationField], [String])] = []
+        var deferred: [(AnyDestinationReference, [AnyDestinationField], [String])] = []
         var initialKeys: [String] = [], deferredKeys: [String] = []
+        func append(_ field: AnyDestinationField, owner: AnyDestinationReference, key: String,
+                    to groups: inout [(AnyDestinationReference, [AnyDestinationField], [String])]) throws {
+            let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
+            let identity = try encoder.encode(owner)
+            if let index = try groups.firstIndex(where: { try encoder.encode($0.0) == identity }) {
+                groups[index].1.append(field); groups[index].2.append(key)
+            } else { groups.append((owner, [field], [key])) }
+        }
         for key in relationKeys {
             guard let binding = property(sourceKey: key), let value = snapshot.details[key] else {
                 throw AnyHeartNativeDefinitionPlanError.missingDefinition(key)
@@ -268,11 +325,12 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
             let mapped = try map(value, property: binding, targets: targets)
             let field = AnyDestinationField(key: binding.record, value: mapped)
             if binding.relation.format == .object {
-                deferred.append(field); deferredKeys.append(key)
-            } else { initial.append(field); initialKeys.append(key) }
+                try append(field, owner: binding.owner, key: key, to: &deferred); deferredKeys.append(key)
+            } else { try append(field, owner: binding.owner, key: key, to: &initial); initialKeys.append(key) }
         }
         let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
-        return .init(initial: .object(initial), deferred: .object(deferred), initialRelationKeys: initialKeys,
+        return .init(initialGroups: initial.map { .init(owner: $0.0, fields: .object($0.1), sourceRelationKeys: $0.2) },
+            deferredGroups: deferred.map { .init(owner: $0.0, fields: .object($0.1), sourceRelationKeys: $0.2) }, initialRelationKeys: initialKeys,
             deferredRelationKeys: deferredKeys,
             originalDetailsSHA256: AnyContentDigest.sha256(try encoder.encode(AnyJSON.object(snapshot.details))))
     }

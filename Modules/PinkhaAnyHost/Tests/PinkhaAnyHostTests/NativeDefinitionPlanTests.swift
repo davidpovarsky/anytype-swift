@@ -112,7 +112,8 @@ final class NativeDefinitionPlanTests: XCTestCase {
         let source = try snapshot("doc", type: 16, key: "", details: details, objectTypes: ["ot-owned"])
         let values = try plan.values(snapshot: source, relationKeys: ["text", "number", "check", "date", "status", "tags", "object"],
             objects: [.init(sourceObjectID: "other-doc", destinationSourceKey: "prepared-other-doc")])
-        let initial = try values.initial.resolved(AnyDestinationPlanChecks.placeholder)
+        XCTAssertEqual(values.initialGroups.count, 1)
+        let initial = try XCTUnwrap(values.initialGroups.first).fields.resolved(AnyDestinationPlanChecks.placeholder)
         func field(_ key: String) throws -> AnyJSON? {
             initial[try AnyDestinationPlanChecks.placeholder(XCTUnwrap(plan.property(sourceKey: key)).record)]
         }
@@ -123,7 +124,9 @@ final class NativeDefinitionPlanTests: XCTestCase {
         XCTAssertEqual(try field("status"), .array([]))
         XCTAssertEqual(try field("tags"), .array([.string("tagA"), .string("tagB")]))
         XCTAssertEqual(values.deferredRelationKeys, ["object"])
-        guard case .object(let deferred) = values.deferred, deferred.count == 1 else { return XCTFail("Expected one deferred group") }
+        XCTAssertEqual(values.deferredGroups.count, 1)
+        guard case .object(let deferred) = try XCTUnwrap(values.deferredGroups.first).fields,
+              deferred.count == 1 else { return XCTFail("Expected one deferred group") }
         XCTAssertEqual(deferred[0].value, .array([.reference(.mapped(sourceKey: "prepared-other-doc", slot: .objectID, encoding: .anyURI))]))
         XCTAssertFalse(values.initialRelationKeys.contains("object"))
         XCTAssertEqual(plan.type(sourceURL: "ot-owned")?.definition.objectID, "native-type")
@@ -161,7 +164,8 @@ final class NativeDefinitionPlanTests: XCTestCase {
         XCTAssertEqual(referenceFormat["relation"]?["targetTypes"], .array([.string(plan.types[0].xKey)]))
         XCTAssertNotEqual(plan.types[0].xKey, sourceType.sourceObjectID)
         XCTAssertTrue(plan.issues.contains { $0.field == "relationDefaultValue" })
-        XCTAssertTrue(plan.issues.contains { $0.field == "option" })
+        XCTAssertFalse(plan.issues.contains { $0.field == "option" })
+        XCTAssertEqual(plan.definitionCoverage.count, 2)
         XCTAssertTrue(plan.issues.contains { $0.field == "recommendedLayout/recommendations" })
         XCTAssertThrowsError(try plan.admittedSchemaItems())
         let binding = try AnyPreparedMigrationPlanBinding(workspace: .init(accountID: "destination", spaceID: "destination-space"),
@@ -169,6 +173,150 @@ final class NativeDefinitionPlanTests: XCTestCase {
         for item in plan.schemaItems { try item.operation.validateShape(binding: binding, sourceKey: item.sourceKey) }
         XCTAssertEqual(plan.schemaItems.filter { if case .partDefinition = $0.operation { true } else { false } }.map(\.expectedRecordCount), [2])
         XCTAssertFalse(plan.permitsDestinationWrites)
+    }
+
+    private func boundPlan(rows: [AnyHeartNativeSnapshotView], mapper: AnyHeartNativeDefinitionPlan,
+                           items: [AnyDestinationMigrationItem]? = nil,
+                           extraCoverage: [AnyDestinationCoverage]? = nil) throws -> AnyDestinationMigrationPlan {
+        let items = items ?? mapper.schemaItems
+        let special = extraCoverage ?? mapper.definitionCoverage
+        let specialIDs = Set(special.map { Data($0.sourceObjectID.utf8) })
+        let ordinary = rows.filter { !specialIDs.contains(Data($0.sourceObjectID.utf8)) }.map { row in
+            AnyDestinationCoverage(sourceObjectID: row.sourceObjectID, disposition: .mapped(itemSourceKeys:
+                items.filter { Data($0.sourceObjectID.utf8) == Data(row.sourceObjectID.utf8) }.map(\.sourceKey)))
+        }
+        return try .init(source: .init(accountID: "source-account", spaceID: "source-space",
+            witnessSHA256: String(repeating: "b", count: 64), captureManifestSHA256: String(repeating: "a", count: 64),
+            semanticPlanSHA256: mapper.catalog.contentSHA256, sourceObjectIDs: rows.map(\.sourceObjectID)),
+            workspace: .init(accountID: "destination-account", spaceID: "destination-space"), storeID: "destination-store",
+            planID: String(repeating: "c", count: 64), coverage: ordinary + special, items: items)
+    }
+    private func nativeName(_ id: String = "native-name", overrides: [String: AnyJSON] = [:]) throws -> AnyHeartNativeSnapshotView {
+        var fields: [String: AnyJSON] = ["name": .string("Name"), "description": .string("Name of the object"),
+            "relationMaxCount": .integer(1), "relationFormatIncludeTime": .bool(false)]
+        fields.merge(overrides) { _, value in value }
+        return try relation(id, key: "name", format: 1, extra: fields)
+    }
+
+    func testCanonicalNameHasOneNativeAddressAndMixedOwnerValuesPreserveAbsence() throws {
+        let name = try nativeName(), done = try relation("native-done", key: "done", format: 6)
+        let sourceType = try type(extra: ["recommendedRelations": .array([.string(name.sourceObjectID), .string(done.sourceObjectID)]),
+            "recommendedFeaturedRelations": .array([.string(done.sourceObjectID), .string(name.sourceObjectID)])])
+        let rows = [name, done, sourceType]
+        let mapper = try AnyHeartNativeDefinitionPlan(catalog: catalog(rows))
+        let binding = try XCTUnwrap(mapper.property(sourceKey: "name"))
+        XCTAssertTrue(binding.isCanonicalName)
+        XCTAssertEqual(binding.owner, .native("any")); XCTAssertEqual(binding.record, .native("name"))
+        XCTAssertFalse(mapper.schemaItems.contains { $0.sourceObjectID == name.sourceObjectID })
+        let plan = try boundPlan(rows: rows, mapper: mapper)
+        let decoded = try AnyDestinationMigrationPlan.decode(JSONEncoder().encode(plan))
+        XCTAssertEqual(decoded.binding.planSHA256, plan.binding.planSHA256)
+        guard case .canonicalProperty(let original) = mapper.definitionCoverage[0].disposition else { return XCTFail("canonical evidence") }
+        XCTAssertEqual(original.evidence.protobufBytes, name.protobufBytes)
+        XCTAssertEqual(original.evidence.jsonViewBytes, name.jsonViewBytes)
+        let document = try snapshot("doc", type: 16, key: "", details: ["name": .string("כותרת — a\u{301}"), "done": .bool(false)])
+        let values = try mapper.values(snapshot: document, relationKeys: ["name", "done"], objects: [])
+        XCTAssertEqual(values.initialGroups.count, 2)
+        let props = try values.initialProperties.resolved(AnyDestinationPlanChecks.placeholder)
+        XCTAssertEqual(props["any"]?["name"], .string("כותרת — a\u{301}"))
+        let doneBinding = try XCTUnwrap(mapper.property(sourceKey: "done"))
+        XCTAssertEqual(props[try AnyDestinationPlanChecks.placeholder(doneBinding.owner)]?[try AnyDestinationPlanChecks.placeholder(doneBinding.record)], .bool(false))
+        XCTAssertTrue(values.deferredGroups.isEmpty)
+        let absent = try snapshot("doc", type: 16, key: "", details: ["name": .string("")])
+        let onlyName = try mapper.values(snapshot: absent, relationKeys: ["name"], objects: [])
+        XCTAssertEqual(try onlyName.initialProperties.resolved(AnyDestinationPlanChecks.placeholder), .object(["any": .object(["name": .string("")])]))
+        XCTAssertThrowsError(try mapper.values(snapshot: absent, relationKeys: ["name", "done"], objects: []))
+        let item = try XCTUnwrap(mapper.schemaItems.first { $0.sourceKey == mapper.types[0].sourceKey })
+        guard case .typeDefinition(let seed) = item.operation else { return XCTFail("type") }
+        let layout = try XCTUnwrap(seed.layout).resolved(AnyDestinationPlanChecks.placeholder)
+        let presentation = try XCTUnwrap(layout["config"]?["pinkhaHeart"])
+        XCTAssertEqual(presentation["contract"], .string("pinkha-heart-native-type-presentation-v2"))
+        XCTAssertEqual(presentation["sourceRecommendedLayout"], .integer(0))
+        XCTAssertEqual(presentation["recommended"]?.array?.first, .object(["ownerId": .string("any"), "propertyId": .string("name")]))
+        XCTAssertEqual(presentation["featured"]?.array?.last, .object(["ownerId": .string("any"), "propertyId": .string("name")]))
+    }
+
+    func testCanonicalNameOverridesShadowingAndChangedNativeContractsRefuse() throws {
+        let name = try nativeName(), text = try relation("text", key: "text", format: 0)
+        let mapper = try AnyHeartNativeDefinitionPlan(catalog: catalog([name, text]))
+        let overrides: [[String: AnyJSON]] = [["relationDefaultValue": .string("override")],
+            ["relationReadonlyValue": .bool(true)], ["relationMaxCount": .integer(2)],
+            ["relationFormat": .integer(0)], ["relationFormatIncludeTime": .bool(true)],
+            ["name": .string("Custom caption")], ["futureSemantics": .bool(true)]]
+        for override in overrides {
+            let changed = try nativeName(overrides: override)
+            let preview = try AnyHeartNativeDefinitionPlan(catalog: catalog([changed, text]))
+            XCTAssertNil(preview.property(sourceKey: "name"))
+            XCTAssertFalse(preview.schemaItems.contains { $0.sourceObjectID == changed.sourceObjectID })
+            XCTAssertThrowsError(try preview.admittedSchemaItems())
+        }
+        let shadow = AnyDestinationMigrationItem(sourceKey: "shadow", sourceObjectID: name.sourceObjectID,
+            operation: .collectionDefinition(.init(xKey: "shadow", name: "Unrelated")))
+        XCTAssertThrowsError(try boundPlan(rows: [name, text], mapper: mapper, items: [shadow] + mapper.schemaItems))
+        let duplicate = try nativeName("second-name")
+        let duplicateCoverage = try AnyDestinationCoverage(sourceObjectID: duplicate.sourceObjectID,
+            disposition: .canonicalProperty(.init(evidence: .init(snapshot: duplicate))))
+        XCTAssertThrowsError(try boundPlan(rows: [name, text, duplicate], mapper: mapper,
+            extraCoverage: mapper.definitionCoverage + [duplicateCoverage]))
+        let good = AnyDestinationCanonicalPropertyBinding.nativeDescriptor
+        XCTAssertNoThrow(try AnyDestinationDefinitionChecks.verifyNativeNameProperties(.object(["properties": .array([good])])))
+        for key in ["id", "name", "description", "kind", "scope", "xFormat"] {
+            var altered = try XCTUnwrap(good.object); altered[key] = .string("changed")
+            XCTAssertThrowsError(try AnyDestinationDefinitionChecks.verifyNativeNameProperties(.object(["properties": .array([.object(altered)])])))
+        }
+        XCTAssertThrowsError(try AnyDestinationDefinitionChecks.verifyNativeNameProperties(.object(["properties": .array([good, good])])))
+        XCTAssertThrowsError(try AnyDestinationDefinitionChecks.verifyNativeNameProperties(.object(["properties": .array([])])))
+        XCTAssertThrowsError(try AnyDestinationDefinitionEvidence(sourceSpaceID: name.sourceSpaceID,
+            sourceObjectID: name.sourceObjectID, protobufBytes: name.protobufBytes + Data([0]), jsonViewBytes: name.jsonViewBytes))
+    }
+
+    func testEmbeddedOptionCoverageBindsExactOwnerPathValueAndSourceBytes() throws {
+        let relation = try relation("tag-source", key: "tag", format: 11)
+        let other = try self.relation("other-source", key: "other", format: 11)
+        let option = try option("optionSource", relation: "tag", order: "b-actual")
+        let rows = [relation, other, option]
+        let mapper = try AnyHeartNativeDefinitionPlan(catalog: catalog(rows))
+        let valid = try boundPlan(rows: rows, mapper: mapper)
+        XCTAssertEqual(try AnyDestinationMigrationPlan.decode(JSONEncoder().encode(valid)).binding.planSHA256, valid.binding.planSHA256)
+        guard case .embeddedOption(let owner, let evidence, let digest) = mapper.definitionCoverage[0].disposition else { return XCTFail("option coverage") }
+        XCTAssertEqual(evidence.snapshotSHA256, option.snapshotSHA256)
+        XCTAssertEqual(evidence.viewSHA256, option.viewSHA256)
+        XCTAssertEqual(evidence.protobufBytes, option.protobufBytes)
+        let wrongOwner = try XCTUnwrap(mapper.property(sourceKey: "other")).sourceKey
+        XCTAssertThrowsError(try boundPlan(rows: rows, mapper: mapper,
+            extraCoverage: [.init(sourceObjectID: option.sourceObjectID,
+                disposition: .embeddedOption(propertySourceKey: wrongOwner, evidence: evidence, descriptorSHA256: digest))]))
+        for variant in ["renamed", "wrong-path", "wrong-provenance", "wrong-kind"] {
+            let changed = mapper.schemaItems.map { item -> AnyDestinationMigrationItem in
+                guard item.sourceKey == owner,
+                      case .propertyDefinition(let o, let kind, let name, let key, let desc, let scope, .literal(let xf)?, let index) = item.operation,
+                      var format = xf.object, var options = format["options"]?.object,
+                      var value = options[option.sourceObjectID]?.object else { return item }
+                switch variant {
+                case "renamed": value["name"] = .string("same id, different value")
+                case "wrong-provenance": value["meta"] = .object([:])
+                case "wrong-path": options.removeValue(forKey: option.sourceObjectID)
+                default: break
+                }
+                if variant == "wrong-path" { options["another-id"] = .object(value) }
+                else { options[option.sourceObjectID] = .object(value) }
+                format["options"] = .object(options)
+                return .init(sourceKey: item.sourceKey, sourceObjectID: item.sourceObjectID,
+                    operation: .propertyDefinition(owner: o, kind: variant == "wrong-kind" ? "string" : kind,
+                        name: name, xKey: key, description: desc, scope: scope, xFormat: .literal(.object(format)), index: index))
+            }
+            XCTAssertThrowsError(try boundPlan(rows: rows, mapper: mapper, items: changed), variant)
+        }
+        XCTAssertThrowsError(try boundPlan(rows: rows, mapper: mapper,
+            extraCoverage: mapper.definitionCoverage + mapper.definitionCoverage))
+        let shadow = AnyDestinationMigrationItem(sourceKey: "option-shadow", sourceObjectID: option.sourceObjectID,
+            operation: .collectionDefinition(.init(xKey: "shadow-option", name: "Unrelated")))
+        XCTAssertThrowsError(try boundPlan(rows: rows, mapper: mapper, items: mapper.schemaItems + [shadow]))
+        let changedOption = try snapshot(option.sourceObjectID, type: 529, key: "opt-optionSource",
+            details: ["relationKey": .string("tag"), "name": .string("different capture"), "relationOptionColor": .string("blue"), "orderId": .string("b-actual")])
+        XCTAssertThrowsError(try boundPlan(rows: rows, mapper: mapper,
+            extraCoverage: [.init(sourceObjectID: option.sourceObjectID, disposition: .embeddedOption(propertySourceKey: owner,
+                evidence: try .init(snapshot: changedOption), descriptorSHA256: digest))]))
     }
 
     func testOriginalNativeCaptureProvidesAllCurrentDefinitionRowsWithoutBundledSubstitution() throws {
@@ -216,6 +364,11 @@ final class NativeDefinitionPlanTests: XCTestCase {
         }
         let plan = try AnyHeartNativeDefinitionPlan(catalog: c)
         XCTAssertEqual(plan.types.count, 19)
+        let name = try XCTUnwrap(plan.property(sourceKey: "name"))
+        XCTAssertTrue(name.isCanonicalName)
+        XCTAssertEqual(name.owner, .native("any")); XCTAssertEqual(name.record, .native("name"))
+        XCTAssertFalse(plan.schemaItems.contains { $0.sourceObjectID == name.relation.objectID })
+        XCTAssertEqual(name.canonicalBinding?.evidence.jsonViewBytes, name.relation.snapshot.jsonViewBytes)
         XCTAssertGreaterThan(plan.properties.count, 0)
         XCTAssertFalse(plan.issues.isEmpty)
         XCTAssertThrowsError(try plan.admittedSchemaItems())

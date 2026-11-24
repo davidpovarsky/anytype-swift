@@ -143,6 +143,8 @@ struct AnyDestinationNativeClients: AnyDestinationNativeDriving {
             let value = try await AnyNativePreparedPropertyUpdate.open(client: client, workspace: workspace, authorize: authorize)
             try store(value.capabilities.storeID); properties = value
         }
+        try await AnyDestinationDefinitionChecks.admitCanonicalProperties(plan.coverage, client: client,
+            workspace: workspace, authorize: authorize)
         return .init(client: client, workspace: workspace, definitions: definitions, objects: objects,
                      inlineFiles: inlineFiles, files: files, properties: properties)
     }
