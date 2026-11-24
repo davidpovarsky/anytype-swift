@@ -45,12 +45,18 @@ class ModuleControls(unittest.TestCase):
         p.check_retained_roots(self.rewritten(), self.mod, self.heart)
 
     def test_original_generator_boundary_is_checked_before_replacement(self):
-        generated = {'Module': {'Path': 'gobind'}, 'Go': '1.26.5',
+        generated = {'Module': {'Path': 'gobind'}, 'Go': '1.26',
                      'Require': [copy.deepcopy(self.original[1]), copy.deepcopy(self.original[3])],
                      'Replace': [{'Old': {'Path': p.HEART}, 'New': {'Path': str(self.heart)}},
                                  {'Old': {'Path': 'example.org/replaced', 'Version': 'v1.2.0'},
                                   'New': {'Path': 'example.org/fork', 'Version': 'v1.1.7'}}]}
         p.check_generated_boundary(generated, self.original)
+        wrong_directive = copy.deepcopy(generated)
+        wrong_directive['Go'] = '1.26.5'
+        with self.assertRaisesRegex(RuntimeError, 'promotion boundary'):
+            p.check_generated_boundary(wrong_directive, self.original)
+        self.assertEqual(self.mod['Go'], '1.26.5')
+        p.check_retained_roots(self.rewritten(), self.mod, self.heart)
         generated['Require'].append({'Path': 'example.org/foreign', 'Version': 'v9.0.0'})
         with self.assertRaisesRegex(RuntimeError, 'promotion boundary'):
             p.check_generated_boundary(generated, self.original)
