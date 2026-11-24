@@ -35,3 +35,13 @@ records their byte hashes and sizes.
 This proves the bounded SDK component + ACK7 + original native UI continuation
 scope through complementary immutable receipts. It does not claim completion of
 the physical-device, full Release, migration, D, E, or F acceptance gates.
+
+## Independent root review
+
+Root read the two original xcresult test trees directly and reran only the
+unchanged receipt validator against the original fresh fixture and result.
+The exact one named preparation and one named UI method passed; all22checks
+passed. OriginalApp75bd and UI45423982997 match the qualified23methods/32cases
+and ACK7 producer. composition-review.json accepts this bounded remaining
+simulator scope. No runtime method was replayed for this review.
+Physical-device and fullRelease acceptance remain separate and open.
