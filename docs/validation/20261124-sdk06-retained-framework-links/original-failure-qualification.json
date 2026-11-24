@@ -1,0 +1,293 @@
+{
+  "actual_counts": {
+    "actual_argument_cases": 0,
+    "actual_compiled_enumerations": 0,
+    "application_builds": 0,
+    "component_bundle_build_attempts": 1,
+    "native_library_builds": 0,
+    "old_passed_methods_replayed": 0,
+    "product_methods_executed": 0,
+    "ui_runner_builds": 0
+  },
+  "archive": {
+    "acquisition_receipt_sha256": "f1de839d4f6f45f2c1bca2ac61ccd2c95135defc3aff5772f044370bdd2b16c2",
+    "bytes": 5035808,
+    "downloads": 1,
+    "reacquisitions_by_this_audit": 0,
+    "sha256": "60b5f0366c31a4f9a1bd5eefbd505120c5ce503668f311dff48fe1ede62ca2b5",
+    "signed_download_tool_response_excluded_from_publishable_evidence": true
+  },
+  "archive_payload_reads_by_this_qualification": 0,
+  "artifact_id": 14880075448,
+  "attempt": 1,
+  "cleanup": {
+    "build_group": "ABSENT_ESRCH",
+    "build_pgid": 17315,
+    "devices": [
+      {
+        "delete_exit_code": 0,
+        "name": "Pinkha-UI27-45300717799-iphone",
+        "status": "DELETED_OWNED_SIMULATOR",
+        "udid": "E461A0A6-EDC1-4A77-8503-4D7DDB64473F"
+      },
+      {
+        "delete_exit_code": 0,
+        "name": "Pinkha-UI27-45300717799-ipad",
+        "shutdown_exit_code": 0,
+        "status": "DELETED_OWNED_SIMULATOR",
+        "udid": "531F4B22-C2FC-4A2C-8F8B-F7EF71B0A942"
+      }
+    ],
+    "fresh_post_delete_inventory_claimed": false,
+    "runtime_status": "PASS",
+    "worker_group": "ABSENT_ESRCH",
+    "worker_pgid": 13428
+  },
+  "controller_source": "8dc5ee02db71517a5eb08535a6b266da62adfe30",
+  "immutable_app_source": "75bd6d7af18dfd511e85582ce7f994d2801b7703",
+  "integrity": {
+    "current_controller_and_original_products_unchanged_reported": true,
+    "generated_files_verified": 129,
+    "independent_source_projection": {
+      "bytes": 7693,
+      "path": "audit2/source-projection-independent-audit.json",
+      "sha256": "3545bf857dc12b80eebb43e17a1c7ac5e2929cf6a02088b15cb4fdb42388d4b5"
+    },
+    "original_native5011_restore_reported": true,
+    "original_native_binary_bytes_rehashed_by_this_audit": false,
+    "original_native_file_metadata_rows_compared": 3779,
+    "partial_products_entries": 9,
+    "runtime_final": {
+      "completed_new_products_bound": false,
+      "descriptor_bound": false,
+      "enumeration_bound": false,
+      "errors": [],
+      "generated_source_bound": true,
+      "original_failure_preserved": true,
+      "source_products_archive_bound": true,
+      "staged_original_app_bound": true,
+      "status": "PASS"
+    },
+    "staged_app_original_metadata_rows_compared": 2666,
+    "strict_recorded_tar_set_equal": true
+  },
+  "job_id": 138132271514,
+  "linker_evidence": {
+    "bytes": 38391,
+    "path": "audit2/original-framework-link-comparison.json",
+    "sha256": "468a1b0b21f9a67293511fabef71c7d50c942139ebd646b29dbc1037fae3f5ef"
+  },
+  "new_api_queries": 0,
+  "new_ci_or_product_actions": 0,
+  "oracle_source_read": {
+    "job": "job_26b034fa1d47",
+    "receipt_sha256": "e7ef89a9747a74558ca6a44a129e539ef5cd405314d38988adbe6c6f2f0fe5af",
+    "repository_imports": 0,
+    "writes": 0
+  },
+  "original_member_audit": {
+    "expanded_bytes": 33735907,
+    "inner_entries": 75,
+    "member_audit_reused_without_replay": true,
+    "outer_entries": 2,
+    "receipt_sha256": "2f26ddfdca2f480322fa1bebe72af9866dd82d50859b98289651166e9df923a1",
+    "tar_entries": 214
+  },
+  "partial_products": {
+    "archive": {
+      "bytes": 215496,
+      "compressed_bytes": 215359,
+      "crc32": "da3a2f36",
+      "layer": "outer",
+      "mode": 33188,
+      "name": "shared-editor-components/SDK06PendingProducts.tar.gz",
+      "sha256": "1581a2c385831b1c01c437af00719e3b87966555a26ed3f948102ec55cce19e4"
+    },
+    "complete_bundle_admitted": false,
+    "files": [
+      "Debug-Anytype-iphonesimulator/AnytypeTests.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo",
+      "Debug-Anytype-iphonesimulator/AnytypeTests.swiftmodule/arm64-apple-ios-simulator.abi.json",
+      "Debug-Anytype-iphonesimulator/AnytypeTests.swiftmodule/arm64-apple-ios-simulator.swiftdoc",
+      "Debug-Anytype-iphonesimulator/AnytypeTests.swiftmodule/arm64-apple-ios-simulator.swiftmodule",
+      "Debug-Anytype-iphonesimulator/SDK06PendingTests.xctest/Info.plist"
+    ],
+    "reusable_for_product_execution": false
+  },
+  "pending": {
+    "declared_cases": 32,
+    "methods": 23,
+    "methods_started": false,
+    "old_exclusions": 7,
+    "registration_admitted": false,
+    "text_acknowledgement": "NOT_RUN",
+    "ui": "NOT_RUN"
+  },
+  "preserved_reader_failures": [
+    "local-reader-failure-001.json",
+    "qualifier-failure-v1.json",
+    "qualifier-failure-v2.json",
+    "qualifier-failure-v3.json"
+  ],
+  "primary_and_aggregate_distinction": {
+    "cleanup": "PASS",
+    "final_integrity": "PASS",
+    "primary": "Linker undefined symbols -> xcodebuild exit65",
+    "supervisor": "Original lane has not passed",
+    "worker": "Owned command failed: projected-component-build"
+  },
+  "primary_failure": {
+    "command": {
+      "argv": [
+        "xcodebuild",
+        "build-for-testing",
+        "-project",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-original-native-work-45300717799-1/current-component-projection/project/SDK06PendingComponents.xcodeproj",
+        "-scheme",
+        "SDK06PendingComponents",
+        "-configuration",
+        "Debug-Anytype",
+        "-destination",
+        "platform=iOS Simulator,id=531F4B22-C2FC-4A2C-8F8B-F7EF71B0A942",
+        "-parallel-testing-enabled",
+        "NO",
+        "-derivedDataPath",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-original-native-work-45300717799-1/current-component-projection/derived",
+        "-disableAutomaticPackageResolution"
+      ],
+      "finished_at": "2026-11-24T01:08:41.799338+00:00",
+      "name": "projected-component-build",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-original-native-evidence-45300717799-1/shared-editor-components/projected-component-build.log",
+      "output_sha256": "cf237e3a151298f17f6a3e306a7b0ba4e0d680cece58622a129b360969a61089",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "absence_source": "KERNEL_ESRCH",
+        "budget_seconds": 10,
+        "kernel_group_observation": {
+          "after_monotonic": 1241.813968125,
+          "before_monotonic": 1241.718126708,
+          "deadline_monotonic": 1251.717756708,
+          "errno": 3,
+          "error_type": "ProcessLookupError",
+          "operation": "os.killpg",
+          "outcome": "ABSENT_ESRCH",
+          "pgid": 17315,
+          "signal": 0
+        },
+        "live_members": 0,
+        "observations": 0,
+        "pgid": 17315,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 65,
+      "started_at": "2026-11-24T01:06:14.746012+00:00",
+      "status": "WORKER_FAILED",
+      "timeout_seconds": 900,
+      "worker_pid": 17315
+    },
+    "error": "36 undefined symbol heads for arm64 across four retained modules",
+    "exclusive_primary_module_counts": {
+      "AnytypeCore": 6,
+      "ProtobufMessages": 8,
+      "Services": 20,
+      "SwiftProtobuf": 2
+    },
+    "log_lines": [
+      535,
+      664
+    ],
+    "log_sha256": "cf237e3a151298f17f6a3e306a7b0ba4e0d680cece58622a129b360969a61089",
+    "return_code": 65,
+    "scope": "PROJECTED_COMPONENT_TEST_BUNDLE_LINK"
+  },
+  "progressed_stages": {
+    "complete_bundle_admitted": false,
+    "current_AnytypeTests_Swift_module_emitted": true,
+    "projected_Swift_source_count": 8,
+    "test_bundle_link_success": false,
+    "typed_Show_Search_init_compile_errors_absent": true
+  },
+  "protocol": "sdk453007-actual-linker-failure-qualification-v1",
+  "references": {
+    "execution.json": {
+      "bytes": 1177851,
+      "sha256": "6b22105f0940e54cd0f9bafa8d72f82b1470d95830640cab985dd64786511fc3"
+    },
+    "original-native-admission.json": {
+      "bytes": 6923199,
+      "sha256": "dff983d68d6944e7e85f407f291c34b22c15e2e1fb396daaeb5e5afef4bf554f"
+    },
+    "original-native-restoration.json": {
+      "bytes": 6486437,
+      "sha256": "d93703fd37b310f6c746c8c35273879fe95da2e990a3edf0c7c64c6c1dea025a"
+    },
+    "original-native/command-02.log": {
+      "bytes": 4669871,
+      "sha256": "becf90b918076ddae2beb7c609461a568fcbae56f4b54c367fe3e2c0423a11e4"
+    },
+    "original-native/execution.json": {
+      "bytes": 1296228,
+      "sha256": "7aed7fffb6ea6d8b8539f65eab615462bc2a89bc72376ea818fdf227f5117454"
+    },
+    "original-native/sdk06-early-products/manifest.json": {
+      "bytes": 1298672,
+      "sha256": "331ad15a50b7c0d815fde3b2597b63d24f4de48b206f005aecbf0316f5fe5707"
+    },
+    "preflight/lifecycle-cleanup.json": {
+      "bytes": 1966,
+      "sha256": "7407c96861cdeb9402a94137c06105722658200916d2b9dbfa966f4dd6eae16e"
+    },
+    "shared-editor-components/current-component-products.json": {
+      "bytes": 134946,
+      "sha256": "5e1fc8d5fc841f9d8929aa5698ea27242562c8f87661ec1eabf7bac59b4d1916"
+    },
+    "shared-editor-components/execution.json": {
+      "bytes": 153629,
+      "sha256": "57222843228e1dcadaaccc25cae85926225c2201b97a28c425ac97a3004ca247"
+    },
+    "shared-editor-components/projected-component-build.log": {
+      "bytes": 146717,
+      "sha256": "cf237e3a151298f17f6a3e306a7b0ba4e0d680cece58622a129b360969a61089"
+    },
+    "shared-editor-components/receipt.json": {
+      "bytes": 12697,
+      "sha256": "ed65c67c02f32b14a9fb6bac7278a6fde5e34333887c62b4a3d7188df2fc1dcb"
+    },
+    "shared-editor-components/source-projection.json": {
+      "bytes": 81345,
+      "sha256": "2336afb70691ca6353572c1c25055d17f79a4056cc534343fa6bf94442bb6f5c"
+    },
+    "shared-editor-components/staged-app-before-build.json": {
+      "bytes": 544179,
+      "sha256": "2f5f5adf916e3b66ea74e7be86a96118c97ca3f189cc860655a63a1fb1e83a54"
+    },
+    "single-lane-supervisor.json": {
+      "bytes": 4469,
+      "sha256": "2fc6c0412dea27a392ff70c9a22035bc684d14840daf2eb950cb33409d2e069a"
+    }
+  },
+  "repair_proposal": {
+    "bytes": 1838,
+    "path": "audit2/retained-framework-repair-proposal.json",
+    "sha256": "ab1b1c8c91686ea76bfa1b04198001f73fa96657e58b8786c40c71c31b7a919a"
+  },
+  "run_id": 45300717799,
+  "runner_id": 1000025391,
+  "runner_name": "GitHub Actions 1000025391",
+  "sealed_at": "2026-11-24T01:37:23.485629+00:00",
+  "status": "QUALIFIED_ACTUAL_COMPONENT_LINK_FAILURE",
+  "terminal_metadata_references": {
+    "sdk45300717799-attempt1-artifacts-terminal.json": {
+      "bytes": 970,
+      "sha256": "4887665d93a9332eadaf524f009e54b5beb736bf252d7d2fca52706d56b09224"
+    },
+    "sdk45300717799-attempt1-jobs-terminal.json": {
+      "bytes": 79490,
+      "sha256": "b0d38c7544e0f39cb645cecda69618ec7ed37590b5893b7f4d939c6b0be9626f"
+    },
+    "sdk45300717799-attempt1-run-observation3.json": {
+      "bytes": 27984,
+      "sha256": "085ffd23b2b17e19815a44fe42d89d59f219e12751d06335afe0e807759c2bd9"
+    }
+  }
+}

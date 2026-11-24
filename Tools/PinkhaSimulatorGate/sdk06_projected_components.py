@@ -196,7 +196,7 @@ class ProjectedComponentPlan:
             generated = work / "project"
             products = self.origin.derived / "Build/Products/Debug-Anytype-iphonesimulator"
             project, projected = projection.write_project(self.origin.control, app, generated, staged, products,
-                                                          with_compile_support=True)
+                                                          with_compile_support=True, with_retained_frameworks=True)
             self._state.update(generated_root=str(generated), generated_files=projected["generated_files"],
                                generated_inventory=inventory(generated))
             save(evidence / "source-projection.json", projected, fresh=True)
