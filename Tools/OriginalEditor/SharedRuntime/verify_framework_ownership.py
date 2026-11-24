@@ -67,7 +67,49 @@ DEPENDENCY_SOURCE_ROOTS = {
 }
 
 
-def dependency_source_inventory(checkouts, contract):
+def retained_git_objects(directory, checkouts, original_checkouts):
+    """Resolve only the exact quarantined SwiftPM object root, without writing Git metadata."""
+    directory, checkouts, original_checkouts = map(Path, (directory, checkouts, original_checkouts))
+    require(checkouts.is_absolute() and checkouts.resolve(strict=True) == checkouts
+            and directory.parent == checkouts and directory.resolve(strict=True) == directory,
+            'Aliased retained shared dependency checkout')
+    require(checkouts.parts[-3:] == ('producer-derived-preserved', 'SourcePackages', 'checkouts')
+            and original_checkouts == checkouts.parents[2] / 'producer-derived/SourcePackages/checkouts',
+            'Unreviewed producer quarantine mapping')
+    original_derived = original_checkouts.parents[1]
+    require(not os.path.lexists(original_derived), 'Producer resource fallback was recreated')
+    git_dir = directory / '.git'
+    require(git_dir.is_dir() and git_dir.resolve(strict=True) == git_dir,
+            'Retained dependency Git directory is absent or aliased')
+    alternate = git_dir / 'objects/info/alternates'
+    require(alternate.is_file() and alternate.resolve(strict=True) == alternate,
+            'Retained dependency alternate metadata is absent or aliased')
+    raw = alternate.read_bytes()
+    lines = raw.decode('utf-8').splitlines()
+    require(len(lines) == 1 and lines[0] and os.pathsep not in lines[0]
+            and '\x00' not in lines[0], 'Unexpected retained dependency alternate inventory')
+    original_objects = Path(lines[0])
+    original_repositories = original_checkouts.parent / 'repositories'
+    require(original_objects.is_absolute() and str(original_objects) == lines[0]
+            and original_objects.is_relative_to(original_repositories),
+            'Retained alternate does not belong to the original producer')
+    relative = original_objects.relative_to(original_repositories)
+    require(len(relative.parts) == 2 and relative.name == 'objects'
+            and relative.parts[0] not in {'.', '..'}, 'Unexpected retained repository object path')
+    objects = checkouts.parent / 'repositories' / relative
+    require(objects.is_dir() and objects.resolve(strict=True) == objects
+            and not os.path.lexists(objects / 'info/alternates'),
+            'Missing, aliased, or transitively redirected retained object root')
+    environment = dict(os.environ)
+    require(not environment.get('GIT_OBJECT_DIRECTORY'), 'External primary Git object override')
+    environment['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = str(objects)
+    environment['GIT_OPTIONAL_LOCKS'] = '0'
+    return environment, {'original_objects': str(original_objects), 'retained_objects': str(objects),
+                         'alternate_path': str(alternate), 'alternate_sha256': hashlib.sha256(raw).hexdigest(),
+                         'original_producer_path_absent': True, 'git_metadata_modified': False}
+
+
+def dependency_source_inventory(checkouts, contract, original_checkouts=None):
     observed = {}
     for directory in sorted(checkouts.iterdir()):
         if not directory.is_dir() or not (directory / '.git').exists():
@@ -80,8 +122,11 @@ def dependency_source_inventory(checkouts, contract):
         require(len(identities) == 1 and identities[0] not in observed,
                 'Ambiguous exact shared dependency checkout')
         identity = identities[0]
+        environment, resolution = (None, None) if original_checkouts is None else retained_git_objects(
+            directory, checkouts, original_checkouts)
         rows = subprocess.check_output(['git', '-C', str(directory), 'ls-tree', '-rz',
-                                        '--full-tree', revision, '--', *DEPENDENCY_SOURCE_ROOTS[identity]])
+                                        '--full-tree', revision, '--', *DEPENDENCY_SOURCE_ROOTS[identity]],
+                                       env=environment)
         files = {}
         for row in rows.split(b'\0'):
             if not row:
@@ -98,7 +143,7 @@ def dependency_source_inventory(checkouts, contract):
                         'Original shared source alias differs')
                 resolved = path.resolve(strict=True).relative_to(directory).as_posix()
                 target_blob = subprocess.check_output(['git', '-C', str(directory), 'rev-parse',
-                                                       revision + ':' + resolved], text=True).strip()
+                                                       revision + ':' + resolved], text=True, env=environment).strip()
                 raw = path.read_bytes()
                 require(blob(raw) == target_blob, 'Original shared alias target bytes differ')
                 alias = {'literal_alias': os.readlink(path), 'target': resolved, 'target_blob': target_blob}
@@ -111,6 +156,11 @@ def dependency_source_inventory(checkouts, contract):
                            'sha256': hashlib.sha256(raw).hexdigest(), **alias}
         require(files and len(files) < 10000, 'Missing or excessive shared source closure')
         observed[identity] = {'revision': revision, 'roots': DEPENDENCY_SOURCE_ROOTS[identity], 'files': files}
+        if resolution is not None:
+            require(sha256(Path(resolution['alternate_path'])) == resolution['alternate_sha256']
+                    and not os.path.lexists(Path(original_checkouts).parents[1]),
+                    'Retained Git metadata or producer quarantine changed during source verification')
+            observed[identity]['git_object_resolution'] = resolution
     require(set(observed) == set(contract['dependencies']), 'Incomplete shared dependency source closure')
     return observed
 
@@ -202,7 +252,8 @@ def execute(args, receipt):
         hanlin_package_files=hanlin['files'],
         resolved_package_states=pins,
         shared_dependency_sources=dependency_source_inventory(
-            work / 'producer-derived-preserved/SourcePackages/checkouts', contract),
+            work / 'producer-derived-preserved/SourcePackages/checkouts', contract,
+            original_checkouts=work / 'producer-derived/SourcePackages/checkouts'),
         shared_swift_ai_sdk_revision=pins['swift-ai-sdk']['revision'],
         host_semantic_equality_required=True, stageb_qualified=False,
     )
