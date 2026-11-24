@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Qualified native JSON view and genuine independent-account file transport."""
+"""Exact type-namespace and failed file-peer continuation; original JSON proof retained."""
 import hashlib
 import importlib.util
 import json
@@ -19,11 +19,24 @@ HERE = Path(__file__).resolve().parent
 WHOLE = HERE.parent / "native_whole_source"
 WHOLE_HELPER_SHA = '6cd5829e0fae7398ecbb712b5a1a322f15a0b6d1be73d5fc8fd4998f3405f7c5'
 BASE_HEART_SHA = '117bb74ece968cac02abb81c5cc49a418a98a60a'
-HEART_SHA = 'd2696b36d169f57f1bcb03c055384e5ec944d930'
+INITIAL_HEART_SHA = 'd2696b36d169f57f1bcb03c055384e5ec944d930'
+HEART_SHA = 'efd0d2d44e871966bf3c8edcc18db73a00ec699c'
+CONTINUATION_DELTA_SHA = 'aa971ebd0d2ae37f9344524d0f2750520aed27083c9e992e3014f347294bd391'
 DELTA_SHA = 'cfddb35c2f7a28f55028f1e2985522c1de1b562a3a51d0c74dcf266b3d99c6d7'
 JSON_METHOD = "TestLoadedAccountNativeSnapshotJSONView"
 PEER_METHOD = "TestLoadedAccountRemoteFilePeer"
-METHODS = [JSON_METHOD, PEER_METHOD]
+NAMESPACE_METHOD = "TestLoadedAccountCapturedTypeNamespaces"
+METHODS = [NAMESPACE_METHOD, PEER_METHOD]
+NAMESPACE_CASES = [
+    "actual-native-snapshot-closure",
+    "native-and-legacy-urls-join-captured-key",
+    "native-id-is-not-snapshot-type-key",
+    "missing-type-url-remains-explicit",
+    "duplicate-type-aliases-remain-explicit",
+    "colliding-key-blocks-bundled-fallback",
+    "type-url-object-id-alias-refused",
+    "empty-and-foreign-prefixes-refused",
+]
 PROTOCOL = "pinkha-native-source-file-peers-v1"
 
 if hashlib.sha256((WHOLE / "run_native.py").read_bytes()).hexdigest() != WHOLE_HELPER_SHA:
@@ -41,7 +54,7 @@ def apply_peer_delta(root, snapshots, metadata):
     delta = json.loads((HERE / "source-delta-v1.json").read_bytes())
     require(delta["schema"] == "native-file-peer-source-delta-v1" and
             delta["base_heart_commit"] == BASE_HEART_SHA == whole.HEART_SHA and
-            delta["derived_heart_commit"] == HEART_SHA and
+            delta["derived_heart_commit"] == INITIAL_HEART_SHA and
             delta["additions"] == 6 and delta["existing_changes"] == 1,
             "peer_delta_lineage")
     expected = [
@@ -89,6 +102,100 @@ def apply_peer_delta(root, snapshots, metadata):
     return delta
 
 
+
+def apply_continuation_delta(root, snapshots, metadata):
+    descriptor = HERE / "namespace-peer-continuation-v1.json"
+    require(sha(descriptor) == CONTINUATION_DELTA_SHA, "continuation_delta_identity")
+    delta = json.loads(descriptor.read_bytes())
+    require(delta["schema"] == "native-type-namespace-peer-continuation-v1" and
+            delta["base_heart_commit"] == INITIAL_HEART_SHA and
+            delta["derived_heart_commit"] == HEART_SHA and
+            delta["additions"] == 1 and delta["existing_changes"] == 2,
+            "continuation_delta_lineage")
+    expected = {
+        "core/application/loaded_file_peer_test.go": "M",
+        "core/application/loaded_type_namespace_test.go": "A",
+        "pkg/lib/anyblockjson/storeresolver/captured.go": "M",
+    }
+    require([row["path"] for row in delta["files"]] == sorted(expected),
+            "continuation_exact_scope")
+    for row in delta["files"]:
+        relative = native.relative_member(row["path"])
+        require(row["operation"] == expected[relative.as_posix()] and row["mode"] == 0o644,
+                "continuation_operation")
+        source = HERE / "continuation-source" / relative
+        native.checked_file(source, (row["bytes"], row["sha256"]))
+        raw = source.read_bytes()
+        require(hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest() ==
+                row["git_blob_sha1"], "continuation_source_git_blob")
+        logical = str(native.HEART / relative)
+        target = root / logical.lstrip("/")
+        if row["operation"] == "A":
+            require(logical not in snapshots and not target.exists() and not target.is_symlink(),
+                    "continuation_addition_overwrites_source")
+            target.parent.mkdir(parents=True, exist_ok=True)
+            with target.open("xb") as stream:
+                stream.write(raw)
+        else:
+            require(logical in snapshots and target.is_file() and not target.is_symlink(),
+                    "continuation_existing_source_required")
+            require(tuple(getattr(target.stat(), key) for key in native.FIELDS) == snapshots[logical],
+                    "continuation_before_physical_identity")
+            native.checked_file(target, (row["before_bytes"], row["before_sha256"]))
+            before = target.read_bytes()
+            require(hashlib.sha1(b"blob " + str(len(before)).encode() + b"\0" + before).hexdigest() ==
+                    row["before_git_blob_sha1"], "continuation_before_git_blob")
+            target.write_bytes(raw)
+        target.chmod(0o644)
+        native.checked_file(target, (row["bytes"], row["sha256"]))
+        snapshots[logical] = tuple(getattr(target.stat(), key) for key in native.FIELDS)
+    save(metadata / "native-type-namespace-peer-continuation-v1.json", delta)
+    return delta
+
+
+def retained_json_view():
+    producer_path = HERE / "retained-json-45472745870" / "producer-result.json"
+    recipient_path = HERE / "retained-json-45472745870" / "recipient-readback.json"
+    native.checked_file(producer_path, (15097, "6db5baf8714b7e16fae0239849b7ff375fb838c4cf60b20573eedf01d257fc14"))
+    native.checked_file(recipient_path, (1783, "ee7f5d50455e34069045d8bcf641143e42afcc76925b2535804bc5bf780bb64f"))
+    original = json.loads(producer_path.read_bytes())
+    recipient = json.loads(recipient_path.read_bytes())
+    require(original["status"] == "FAIL" and original["error"] ==
+            "native_peer_exited_before_member_joined" and
+            original["controller_sha"] == "fb5b40a5e91c68520d0f2921600a9f04b1e25439" and
+            original["run_id"] == "45472745870" and original["run_attempt"] == "1" and
+            original["heart_sha"] == INITIAL_HEART_SHA,
+            "retained_original_partial_failure_identity")
+    require(len(original["executions"]) == 1, "retained_exact_original_execution")
+    execution = original["executions"][0]
+    require(execution["method"] == JSON_METHOD and execution["exit_code"] == 0 and
+            execution["named_method_pass"] is True and execution["status"] == "PASS" and
+            execution["stdout_sha256"] == "a51e4c1fb9057844dfa2e4a229636509938cacc1c8ee4e5f99e01197f2c0b9d3",
+            "retained_json_method_pass")
+    require(recipient["format"] == "native-file-peer-json-recipient-readback-v1" and
+            recipient["runId"] == original["run_id"] and
+            recipient["controllerSHA"] == original["controller_sha"] and
+            recipient["nativeSourceSHA"] == INITIAL_HEART_SHA and
+            recipient["producerStatus"] == "FAIL" and recipient["producerResultUnmodified"] is True and
+            recipient["recipientSourceJSONStatus"] == recipient["actualNativeJSONMethod"] == "PASS" and
+            recipient["regularOriginalsHashed"] == 796 and
+            recipient["originalCommandStreamsVerified"] == 46 and
+            recipient["allDeclaredSourceMembersVerified"] == 291 and
+            recipient["nativeJSONKnownFieldRoundTrips"] == 144,
+            "retained_independent_json_custody")
+    return {
+        "status": "RETAINED_ORIGINAL_SCOPE_PASS", "run_id": original["run_id"],
+        "run_attempt": original["run_attempt"], "controller_sha": original["controller_sha"],
+        "heart_sha": INITIAL_HEART_SHA, "method": JSON_METHOD,
+        "rerun": False, "producer_overall_status": "FAIL",
+        "producer_result_sha256": sha(producer_path),
+        "recipient_readback_sha256": sha(recipient_path),
+        "captured_objects": 144, "original_declared_source_members": 291,
+        "stdout_sha256": execution["stdout_sha256"],
+        "native_json_receipt_sha256": original["nativeJSONView"]["receipt_sha256"],
+    }
+
+
 def audit_one(stdout, method):
     text = stdout.read_text()
     require(re.findall(r"(?m)^=== RUN\s+(\S+)\s*$", text) == [method] and
@@ -116,12 +223,13 @@ class RemoteFileRunner(native.Runner):
         self.roles, self.inspect_counter = {}, 0
         self.nonce = secrets.token_hex(16)
         self.result = {
-            "schema": "native-file-peer-portable-v1", "status": "RUNNING",
+            "schema": "native-file-peer-portable-v2", "status": "RUNNING",
             "controller_sha": os.environ.get("GITHUB_SHA"),
             "run_id": os.environ.get("GITHUB_RUN_ID"),
             "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT"),
             "heart_sha": HEART_SHA, "base_heart_sha": native.HEART_SHA,
             "context_heart_sha": native.DERIVED_HEART_SHA, "whole_source_heart_sha": BASE_HEART_SHA,
+            "initial_file_peer_heart_sha": INITIAL_HEART_SHA,
             "any_sync_sha": native.SYNC_SHA,
             "qualified_helper_sha256": whole.HELPER_SHA,
             "qualified_whole_helper_sha256": WHOLE_HELPER_SHA,
@@ -139,6 +247,7 @@ class RemoteFileRunner(native.Runner):
         controller = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
         require(controller == os.environ["GITHUB_SHA"] == os.environ["EXPECTED_SOURCE_SHA"],
                 "controller_identity")
+        self.result["retainedNativeJSONView"] = retained_json_view()
         self.result["resources_before"] = self.guard(start=True)
         self.result["profile"] = {
             "compiler_network": "none", "peer_network": "owned internal Docker bridge",
@@ -170,6 +279,8 @@ class RemoteFileRunner(native.Runner):
         self.result["source"]["whole_source_derivation"] = whole.apply_whole_source_delta(
             self.rootfs, self.snapshots, self.private / "source-metadata")
         self.result["source"]["file_peer_derivation"] = apply_peer_delta(
+            self.rootfs, self.snapshots, self.private / "source-metadata")
+        self.result["source"]["namespace_peer_continuation"] = apply_continuation_delta(
             self.rootfs, self.snapshots, self.private / "source-metadata")
         self.command("load-image", ["sudo", "-n", "docker", "load", "--input", str(image)], 180)
         _, out, _ = self.command("image-inspect", ["sudo", "-n", "docker", "image", "inspect", native.IMAGE], 30)
@@ -214,6 +325,44 @@ class RemoteFileRunner(native.Runner):
         require(rc == 0 and sorted(out.read_text().splitlines()) == sorted(METHODS),
                 "actual_two_new_named_methods")
         self.result["actual_named_methods_sha256"] = sha(out)
+
+
+    def namespace(self):
+        rc, stdout, _ = self.container("native-type-namespace", self.binary,
+            ["-test.v", "-test.run=^" + NAMESPACE_METHOD + "$", "-test.count=1", "-test.timeout=210s"],
+            seconds=240)
+        row = {"method": NAMESPACE_METHOD, "role": "new captured type namespace control", "exit_code": rc}
+        self.result["executions"].append(row)
+        require(rc == 0, "native_type_namespace_method_exit")
+        text = stdout.read_text()
+        expected = [NAMESPACE_METHOD] + [NAMESPACE_METHOD + "/" + name for name in NAMESPACE_CASES]
+        runs = re.findall(r"(?m)^=== RUN\s+(\S+)\s*$", text)
+        passes = re.findall(r"(?m)^\s*--- PASS:\s+(\S+)\s+\(", text)
+        require(runs == expected and sorted(passes) == sorted(expected) and
+                len(passes) == len(expected) and re.search(r"(?m)^PASS\s*$", text) and
+                not re.search(r"(?m)^\s*--- (?:FAIL|SKIP):", text),
+                "exact_new_namespace_method_and_eight_cases")
+        note_path = self.private / "fixtures" / NAMESPACE_METHOD / "captured-type-namespaces.json"
+        note = json.loads(note_path.read_bytes())
+        receipt = note["receipt"]
+        require(note["boundarySubtests"] == 8 and note["actualNativeTypeURLs"] > 0 and
+                note["actualNativeTypeRows"] > 0 and all(note[key] is True for key in (
+                    "rawSnapshotsUnchanged", "nativeIDRefusedInTypeKeySlot", "missingTypeRetained",
+                    "duplicateAliasesRetained", "capturedCollisionBlocksBundledFallback")) and
+                receipt["ClosedResolverUnmapped"] == 0 and all(receipt[key] is True for key in (
+                    "AllNativeHeadRowsAccounted", "AllCurrentObjectsCaptured",
+                    "CapturedSnapshotsBoundToUnchangedCheckpoint", "AccountSessionAuthorizedAtFinalCapture",
+                    "IndexResolverSnapshotBound")) and all(receipt[key] is False for key in (
+                    "HasNativeSourceAdmission", "SemanticCompleteness", "HistorySemanticsValidated",
+                    "PermitsDestinationWrites")), "actual_native_captured_namespace_closure")
+        row.update(status="PASS", named_method_pass=True, subtests=8, stdout_sha256=sha(stdout))
+        self.result["capturedTypeNamespace"] = {
+            "status": "PASS", "method": NAMESPACE_METHOD, "subtests": 8,
+            "native_type_urls": note["actualNativeTypeURLs"],
+            "native_type_definitions": note["actualNativeTypeRows"],
+            "closed_resolver_unmapped": 0, "raw_snapshots_unchanged": True,
+            "receipt_sha256": sha(note_path), "source_receipt": receipt,
+        }
 
     def json_view(self):
         rc, stdout, _ = self.container("native-json-view", self.binary,
@@ -495,7 +644,7 @@ class RemoteFileRunner(native.Runner):
 
     def execute(self):
         self.prepare()
-        self.json_view()
+        self.namespace()
         self.peers()
         for name, before in self.snapshots.items():
             path = self.rootfs / name.lstrip("/")
@@ -504,8 +653,8 @@ class RemoteFileRunner(native.Runner):
         self.result["compiled_source_unchanged"] = True
         require(len(self.result["executions"]) == 4 and
                 all(row["status"] == "PASS" for row in self.result["executions"]),
-                "exact_new_json_and_three_peer_executions")
-        self.result["status"] = "NATIVE_JSON_AND_REMOTE_FILE_PEERS_PASS"
+                "exact_namespace_and_three_peer_executions")
+        self.result["status"] = "NATIVE_TYPE_NAMESPACE_AND_REMOTE_FILE_PEERS_PASS"
 
     def finalize(self):
         cleanup = []
@@ -551,7 +700,7 @@ def main():
             save(runner.public / "result.json", runner.result)
     print(json.dumps({key: runner.result.get(key) for key in
                       ("status", "error", "controller_sha", "run_id", "builds")}))
-    return 0 if runner.result["status"] == "NATIVE_JSON_AND_REMOTE_FILE_PEERS_PASS" else 1
+    return 0 if runner.result["status"] == "NATIVE_TYPE_NAMESPACE_AND_REMOTE_FILE_PEERS_PASS" else 1
 
 
 if __name__ == "__main__":
