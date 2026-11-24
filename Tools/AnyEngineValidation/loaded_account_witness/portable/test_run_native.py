@@ -1,5 +1,6 @@
 """Controls for the two portable boundaries changed by this continuation."""
 import importlib.util
+import hashlib
 from pathlib import Path
 import tempfile
 import unittest
@@ -11,6 +12,34 @@ spec.loader.exec_module(native)
 
 
 class PortableBoundaries(unittest.TestCase):
+    def test_source_delta_refuses_tampering_ambiguous_callsite_and_symlink(self):
+        before = b"if err = nativeLease.CheckCurrent(); err != nil {\n"
+        after = before.replace(b"CheckCurrent()", b"CheckCurrent(f.ctx)")
+        delta = {"before_bytes": len(before), "before_sha256": hashlib.sha256(before).hexdigest(),
+                 "after_bytes": len(after), "after_sha256": hashlib.sha256(after).hexdigest(),
+                 "replace_before": "nativeLease.CheckCurrent()", "replace_after": "nativeLease.CheckCurrent(f.ctx)"}
+        with tempfile.TemporaryDirectory() as td:
+            path = Path(td) / "test.go"
+            path.write_bytes(before)
+            native.replace_exact_source(path, delta)
+            self.assertEqual(path.read_bytes(), after)
+            with self.assertRaisesRegex(RuntimeError, "identity"):
+                native.replace_exact_source(path, delta)
+            path.write_bytes(before)
+            bad = dict(delta, after_sha256="0" * 64)
+            with self.assertRaisesRegex(RuntimeError, "result_identity"):
+                native.replace_exact_source(path, bad)
+            self.assertEqual(path.read_bytes(), before)
+            ambiguous = before * 2
+            path.write_bytes(ambiguous)
+            bad = dict(delta, before_bytes=len(ambiguous), before_sha256=hashlib.sha256(ambiguous).hexdigest())
+            with self.assertRaisesRegex(RuntimeError, "single_callsite"):
+                native.replace_exact_source(path, bad)
+            alias = Path(td) / "alias.go"
+            alias.symlink_to(path)
+            with self.assertRaisesRegex(RuntimeError, "regular"):
+                native.replace_exact_source(alias, delta)
+
     def test_archive_paths_reject_escape_and_ambiguous_spellings(self):
         for value in ("/etc/passwd", "rootfs/../secret", "rootfs//a", "rootfs/./a", "rootfs\\a", ""):
             with self.subTest(value=value), self.assertRaises(RuntimeError):

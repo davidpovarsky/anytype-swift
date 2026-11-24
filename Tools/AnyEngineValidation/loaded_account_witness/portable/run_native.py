@@ -2,7 +2,8 @@
 """Consume the original qualified inputs and run the four pending native controls.
 
 Only safe receipts and an encrypted private evidence archive leave the runner.
-Source snapshots, compiler inputs and existing native assertions are immutable.
+Original snapshots and compiler inputs are immutable. A versioned exact-byte
+test API correction is applied only after the complete original source census.
 """
 import hashlib
 import importlib.util
@@ -32,6 +33,8 @@ MANIFEST_SHA = "2a0a8807ffaae25b3596a387e47f42e5893d9a83ee64d161d029712d0acaced9
 AUDITOR_SHA = "49ce372e9a4bf22c8b513409c570aae1d8c9f0053a6ce218c461483c4c4d42ea"
 GENERATED_SHA = "749604e1b5eba79ed351a8f0a09bdd64aca9412d833b887adc5140cb42515715"
 HEART_SHA = "24dc6393b30e6d1d80ec28ff624060af9bb4327a"
+DERIVED_HEART_SHA = "256d3fd6cb4c2b0df67f67e01edfd8f9b76726f4"
+SOURCE_DELTA_SHA = "657cb62bffd64f28219bfc9ebf89f4b83342d2424b01722649b04130849d7198"
 SYNC_SHA = "c005bd6cde8d8f8a6007c35f06894f3d89f9f07c"
 HEART = Path("/mnt/development/projects/worktrees/anytype-heart-loaded-account-witness-20261123")
 SYNC = Path("/mnt/development/projects/worktrees/any-sync-loaded-account-witness-20261123")
@@ -169,6 +172,42 @@ def generated_main(work_root, stderr):
     return exact[0]
 
 
+def replace_exact_source(path, delta):
+    """Admit both complete byte strings before changing one source file."""
+    checked_file(path, (delta["before_bytes"], delta["before_sha256"]))
+    before = path.read_bytes()
+    old, new = delta["replace_before"].encode(), delta["replace_after"].encode()
+    require(before.count(old) == 1 and new not in before, "source_delta_single_callsite")
+    after = before.replace(old, new)
+    require((len(after), hashlib.sha256(after).hexdigest()) ==
+            (delta["after_bytes"], delta["after_sha256"]), "source_delta_result_identity")
+    path.write_bytes(after)
+    checked_file(path, (delta["after_bytes"], delta["after_sha256"]))
+
+
+def apply_source_delta(root, snapshots, here, metadata):
+    require(sha(here / "source-delta-v2.json") == SOURCE_DELTA_SHA, "source_delta_manifest_identity")
+    delta = json.loads((here / "source-delta-v2.json").read_bytes())
+    require(delta["schema"] == "loaded-account-source-delta-v2" and
+            delta["base_heart_commit"] == HEART_SHA and
+            delta["derived_heart_commit"] == DERIVED_HEART_SHA and
+            delta["path"] == "core/application/loaded_witness_test.go" and
+            delta["replace_before"] == "nativeLease.CheckCurrent()" and
+            delta["replace_after"] == "nativeLease.CheckCurrent(f.ctx)" and
+            delta["original_failure_run"] == 45423965043 and
+            delta["original_failure_artifact"] == 14936811171, "source_delta_scope")
+    patch = here / "loaded-witness-context.patch"
+    require(sha(patch) == delta["patch_sha256"], "source_delta_patch_identity")
+    logical = str(HEART / delta["path"])
+    path = root / logical.lstrip("/")
+    require(tuple(getattr(path.stat(), k) for k in FIELDS) == snapshots[logical],
+            "source_delta_original_changed")
+    replace_exact_source(path, delta)
+    snapshots[logical] = tuple(getattr(path.stat(), k) for k in FIELDS)
+    save(metadata / "derived-source-v2.json", delta)
+    return delta
+
+
 class Runner:
     def __init__(self):
         os.umask(0o077)
@@ -184,11 +223,11 @@ class Runner:
             (self.private / n).mkdir(mode=0o700)
         self.commands = []
         self.names = []
-        self.result = {"schema": "loaded-account-portable-native-v1", "status": "RUNNING",
+        self.result = {"schema": "loaded-account-portable-native-v2", "status": "RUNNING",
                        "controller_sha": os.environ.get("GITHUB_SHA"),
                        "run_id": os.environ.get("GITHUB_RUN_ID"),
                        "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT"),
-                       "heart_sha": HEART_SHA, "any_sync_sha": SYNC_SHA,
+                       "heart_sha": DERIVED_HEART_SHA, "base_heart_sha": HEART_SHA, "any_sync_sha": SYNC_SHA,
                        "selected_methods": METHODS, "methods": [], "builds": 0,
                        "semanticCompleteness": False, "filePayloadCompleteness": False,
                        "hasNativeSourceAdmission": False, "permitsDestinationWrites": False}
@@ -317,6 +356,8 @@ class Runner:
                 shutil.copyfileobj(src, dst, MIB)
         checked_file(image, IMAGE_TAR)
         self.snapshots, self.result["source"] = extract_source(source, self.rootfs, self.private / "source-metadata")
+        self.result["source"]["derivation"] = apply_source_delta(
+            self.rootfs, self.snapshots, here, self.private / "source-metadata")
         self.command("load-image", ["sudo", "-n", "docker", "load", "--input", str(image)], 180)
         _, out, _ = self.command("image-inspect", ["sudo", "-n", "docker", "image", "inspect", IMAGE], 30)
         imageinfo = json.loads(out.read_bytes())[0]
@@ -359,7 +400,7 @@ class Runner:
         for name, before in self.snapshots.items():
             path = self.rootfs / name.lstrip("/")
             require(tuple(getattr(path.stat(), k) for k in FIELDS) == before, "readonly_source_changed")
-        self.result["source_unchanged"] = True
+        self.result["compiled_source_unchanged"] = True
         require(len(self.result["methods"]) == 4 and all(v["status"] == "PASS" for v in self.result["methods"]), "native_four_method_acceptance")
         self.result["status"] = "FOUR_NATIVE_METHODS_PASS"
 
