@@ -14,12 +14,22 @@ private struct AnyNativeNameRequest: Identifiable {
     let isNote: Bool
 }
 
+private struct AnyNativeNameSubmission {
+    let item: AnyHierarchyItem?
+    let kind: PinkhaHierarchyNodeKind
+    let parentID: String?
+    let isNote: Bool
+    let title: String
+}
+
 /// One coherent native Space. Its account/session/creators are supplied by the
 /// native application owner; this entry point has no Heart object-ID fallback.
 public struct AnyNativeLibraryView: View {
     @State private var model: AnyLibraryPresentation
     @State private var path: [AnyNativeLibraryDestination] = []
     @State private var nameRequest: AnyNativeNameRequest?
+    @State private var pendingNameSubmission: AnyNativeNameSubmission?
+    @State private var editMode: EditMode = .inactive
     @State private var moveItem: AnyHierarchyItem?
     @State private var removeItem: AnyHierarchyItem?
     private let onRequestClose: @MainActor () async -> Void
@@ -49,6 +59,7 @@ public struct AnyNativeLibraryView: View {
                     }
                 }
         }
+        .environment(\.editMode, $editMode)
         .onChange(of: path) { _, current in
             guard lifetime.isActive else { return }
             do { try model.recovery.replaceNavigation(current, workspace: model.session.workspace) }
@@ -58,14 +69,17 @@ public struct AnyNativeLibraryView: View {
             model.onOpenDocument = { id, blockID in path.append(.document(id, blockID)) }
             await model.open()
         }
-        .sheet(item: $nameRequest) { request in
-            AnyNativeNameSheet(title: request.item == nil ?
-                AnyUIErrorText.text("יצירה", "Create") : AnyUIErrorText.text("שינוי שם", "Rename"),
-                initialValue: request.item?.title ?? "") { title in
-                    if let item = request.item { Task { await model.rename(item, title: title) } }
-                    else { Task { await model.create(title: title, kind: request.kind,
-                                                    parentID: request.parentID, isNote: request.isNote) } }
-                }
+        .sheet(item: $nameRequest, onDismiss: submitAfterNameDismissal) { request in
+            if let item = request.item {
+                AnyNativeNameSheet(title: AnyUIErrorText.text("שינוי שם", "Rename"),
+                    initialValue: item.title, commit: { title in
+                        finishNaming(request, title: title, kind: request.kind, isNote: request.isNote)
+                    }, cancel: { cancelNaming(request) })
+            } else {
+                AnyNativeCreationSheet(commit: { kind, isNote, title in
+                    finishNaming(request, title: title, kind: kind, isNote: isNote)
+                }, cancel: { cancelNaming(request) })
+            }
         }
         .sheet(isPresented: Binding(get: { moveItem != nil }, set: { if !$0 { moveItem = nil } })) {
             if let item = moveItem { movePicker(item) }
@@ -86,6 +100,48 @@ public struct AnyNativeLibraryView: View {
                isPresented: Binding(get: { model.message != nil }, set: { if !$0 { model.message = nil } })) {
             Button(AnyUIErrorText.text("אישור", "OK"), role: .cancel) { model.message = nil }
         } message: { Text(model.message ?? "") }
+    }
+
+    private func beginNaming(_ request: AnyNativeNameRequest) {
+        guard lifetime.isActive, model.canWrite,
+              nameRequest == nil, pendingNameSubmission == nil else { return }
+        nameRequest = request
+    }
+
+    private func finishNaming(_ request: AnyNativeNameRequest, title: String,
+                              kind: PinkhaHierarchyNodeKind, isNote: Bool) {
+        guard nameRequest?.id == request.id else { return }
+        guard lifetime.isActive, model.canWrite else {
+            pendingNameSubmission = nil
+            nameRequest = nil
+            return
+        }
+        pendingNameSubmission = .init(item: request.item, kind: kind,
+            parentID: request.parentID, isNote: isNote, title: title)
+        nameRequest = nil
+    }
+
+    private func cancelNaming(_ request: AnyNativeNameRequest) {
+        guard nameRequest?.id == request.id else { return }
+        pendingNameSubmission = nil
+        nameRequest = nil
+    }
+
+    private func submitAfterNameDismissal() {
+        // Consume once only after SwiftUI reports that the owned sheet closed.
+        // Merely requesting dismissal does not finish the presentation transition.
+        guard let submission = pendingNameSubmission else { return }
+        pendingNameSubmission = nil
+        guard lifetime.isActive, model.canWrite else { return }
+        Task { @MainActor in
+            guard lifetime.isActive, model.canWrite else { return }
+            if let item = submission.item {
+                await model.rename(item, title: submission.title)
+            } else {
+                await model.create(title: submission.title, kind: submission.kind,
+                                   parentID: submission.parentID, isNote: submission.isNote)
+            }
+        }
     }
 
     @ViewBuilder private func library(parentID: String?) -> some View {
@@ -128,9 +184,13 @@ public struct AnyNativeLibraryView: View {
                         }
                         Section {
                             let items = model.hierarchyPresentation.children(of: parentID)
-                            ForEach(items, id: \.objectID) { item in hierarchyRow(item) }
+                            ForEach(items, id: \.objectID) { item in
+                                hierarchyRow(item)
+                                    .moveDisabled(!editMode.isEditing || !model.canWrite)
+                            }
                                 .onMove { offsets, destination in
-                                    guard offsets.count == 1, let offset = offsets.first,
+                                    guard lifetime.isActive, model.canWrite, editMode.isEditing,
+                                          offsets.count == 1, let offset = offsets.first,
                                           items.indices.contains(offset) else { return }
                                     let item = items[offset]
                                     var reordered = items.map(\.objectID)
@@ -182,18 +242,12 @@ public struct AnyNativeLibraryView: View {
             ToolbarItemGroup(placement: .topBarTrailing) {
                 if model.hierarchy != nil {
                     EditButton().disabled(!model.canWrite)
-                    Menu {
-                        Button(AnyUIErrorText.text("מסמך חדש", "New document"), systemImage: "doc.badge.plus") {
-                            nameRequest = .init(item: nil, kind: .writingDocument, parentID: parentID, isNote: false)
-                        }.accessibilityIdentifier("any-native-new-document")
-                        Button(AnyUIErrorText.text("הערה חדשה", "New Note"), systemImage: "note.text.badge.plus") {
-                            nameRequest = .init(item: nil, kind: .writingDocument, parentID: parentID, isNote: true)
-                        }.accessibilityIdentifier("any-native-new-note")
-                        Button(AnyUIErrorText.text("תיקייה חדשה", "New folder"), systemImage: "folder.badge.plus") {
-                            nameRequest = .init(item: nil, kind: .folder, parentID: parentID, isNote: false)
-                        }.accessibilityIdentifier("any-native-new-folder")
+                    Button {
+                        beginNaming(.init(item: nil, kind: .writingDocument,
+                                          parentID: parentID, isNote: false))
                     } label: { Image(systemName: "plus") }
-                        .disabled(!model.canWrite)
+                        .disabled(!model.canWrite || nameRequest != nil || pendingNameSubmission != nil)
+                        .accessibilityLabel(Text(AnyUIErrorText.text("יצירה", "Create")))
                         .accessibilityIdentifier("any-native-create-menu")
                 }
             }
@@ -219,7 +273,7 @@ public struct AnyNativeLibraryView: View {
             .accessibilityIdentifier("any-native-hierarchy-row-\(item.objectID)")
             .contextMenu {
                 Button(AnyUIErrorText.text("שינוי שם", "Rename"), systemImage: "pencil") {
-                    nameRequest = .init(item: item.native, kind: item.kind, parentID: item.parentID, isNote: false)
+                    beginNaming(.init(item: item.native, kind: item.kind, parentID: item.parentID, isNote: false))
                 }.disabled(!model.canWrite)
                 Button(AnyUIErrorText.text("העברה", "Move"), systemImage: "folder") { moveItem = item.native }
                     .disabled(!model.canWrite)
@@ -229,7 +283,7 @@ public struct AnyNativeLibraryView: View {
                 }.disabled(!model.canWrite)
             }
 
-            if model.canWrite {
+            if model.canWrite && !editMode.isEditing {
                 Image(systemName: "line.3.horizontal")
                     .foregroundStyle(.secondary)
                     .frame(width: 44, height: 44)
@@ -245,7 +299,8 @@ public struct AnyNativeLibraryView: View {
         }
         .accessibilityElement(children: .contain)
         .dropDestination(for: String.self) { payloads, _ in
-            guard model.canWrite, payloads.count == 1 else { return false }
+            guard lifetime.isActive, model.canWrite, !editMode.isEditing,
+                  payloads.count == 1 else { return false }
             let parts = payloads[0].split(separator: "|", omittingEmptySubsequences: false).map(String.init)
             guard parts.count == 3, parts[0] == "pinkha-any-node",
                   parts[1] == model.session.workspace.spaceID,
@@ -332,37 +387,97 @@ private struct AnyNativeDocumentEntry: View {
     }
 }
 
-private struct AnyNativeNameSheet: View {
-    let title: String
-    let commit: (String) -> Void
-    @State private var value: String
-    @Environment(\.dismiss) private var dismiss
-    @FocusState private var focused: Bool
-    init(title: String, initialValue: String, commit: @escaping (String) -> Void) {
-        self.title = title; self.commit = commit; _value = State(initialValue: initialValue)
-    }
+private enum AnyNativeCreationKind: Hashable {
+    case document, note, folder
+}
+
+private struct AnyNativeCreationSheet: View {
+    let commit: (PinkhaHierarchyNodeKind, Bool, String) -> Void
+    let cancel: () -> Void
+    @State private var path: [AnyNativeCreationKind] = []
+
     var body: some View {
-        NavigationStack {
-            Form {
-                TextField(AnyUIErrorText.text("כותרת", "Title"), text: $value, axis: .vertical)
-                    .focused($focused)
-                    .accessibilityIdentifier("any-native-name-input")
+        NavigationStack(path: $path) {
+            List {
+                Button(AnyUIErrorText.text("מסמך חדש", "New document"), systemImage: "doc.badge.plus") {
+                    path.append(.document)
+                }.accessibilityIdentifier("any-native-new-document")
+                Button(AnyUIErrorText.text("הערה חדשה", "New Note"), systemImage: "note.text.badge.plus") {
+                    path.append(.note)
+                }.accessibilityIdentifier("any-native-new-note")
+                Button(AnyUIErrorText.text("תיקייה חדשה", "New folder"), systemImage: "folder.badge.plus") {
+                    path.append(.folder)
+                }.accessibilityIdentifier("any-native-new-folder")
             }
-            .navigationTitle(title)
+            .navigationTitle(AnyUIErrorText.text("יצירה", "Create"))
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(AnyUIErrorText.text("ביטול", "Cancel")) { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(AnyUIErrorText.text("שמירה", "Save")) {
-                        commit(value); dismiss()
-                    }.disabled(value.utf8.count > 4096 || value.contains("\0"))
-                        .accessibilityIdentifier("any-native-name-confirm")
+                if path.isEmpty {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(AnyUIErrorText.text("ביטול", "Cancel"), action: cancel)
+                    }
                 }
             }
-            .task { focused = true }
+            .navigationDestination(for: AnyNativeCreationKind.self) { choice in
+                AnyNativeNameForm(title: AnyUIErrorText.text("יצירה", "Create"), initialValue: "",
+                    commit: { title in
+                        commit(choice == .folder ? .folder : .writingDocument, choice == .note, title)
+                    }, cancel: cancel)
+            }
         }
         .presentationDetents([.medium])
+    }
+}
+
+private struct AnyNativeNameSheet: View {
+    let title: String
+    let initialValue: String
+    let commit: (String) -> Void
+    let cancel: () -> Void
+
+    var body: some View {
+        NavigationStack {
+            AnyNativeNameForm(title: title, initialValue: initialValue, commit: commit, cancel: cancel)
+        }
+        .presentationDetents([.medium])
+    }
+}
+
+private struct AnyNativeNameForm: View {
+    let title: String
+    let commit: (String) -> Void
+    let cancel: () -> Void
+    @State private var value: String
+    @FocusState private var focused: Bool
+
+    init(title: String, initialValue: String, commit: @escaping (String) -> Void,
+         cancel: @escaping () -> Void) {
+        self.title = title; self.commit = commit; self.cancel = cancel
+        _value = State(initialValue: initialValue)
+    }
+
+    var body: some View {
+        Form {
+            TextField(AnyUIErrorText.text("כותרת", "Title"), text: $value, axis: .vertical)
+                .focused($focused)
+                .accessibilityIdentifier("any-native-name-input")
+        }
+        .navigationTitle(title)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(AnyUIErrorText.text("ביטול", "Cancel")) {
+                    focused = false
+                    cancel()
+                }
+            }
+            ToolbarItem(placement: .confirmationAction) {
+                Button(AnyUIErrorText.text("שמירה", "Save")) {
+                    focused = false
+                    commit(value)
+                }.disabled(value.utf8.count > 4096 || value.contains("\0"))
+                    .accessibilityIdentifier("any-native-name-confirm")
+            }
+        }
+        .task { focused = true }
     }
 }
 #endif
