@@ -83,7 +83,7 @@ def generate_identity(directory: Path, openssl: str) -> tuple[Path, str]:
 distinguished_name=dn
 prompt=no
 [dn]
-CN=Pinkha owned loopback fixture
+CN=Pinkha owned loopback fixture server
 [ca_ext]
 basicConstraints=critical,CA:TRUE,pathlen:0
 keyUsage=critical,keyCertSign,cRLSign
@@ -93,11 +93,14 @@ basicConstraints=critical,CA:FALSE
 keyUsage=critical,digitalSignature,keyEncipherment
 extendedKeyUsage=serverAuth
 subjectAltName=IP:127.0.0.1
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid:always
 """, encoding="ascii")
     os.chmod(config, 0o600)
     commands = [
         [openssl, "req", "-new", "-x509", "-newkey", "rsa:2048", "-nodes", "-sha256",
          "-days", "1", "-config", str(config), "-extensions", "ca_ext",
+         "-subj", "/CN=Pinkha owned loopback fixture CA",
          "-keyout", str(directory / "root-ca-key.pem"), "-out", str(directory / "root-ca.pem")],
         [openssl, "req", "-new", "-newkey", "rsa:2048", "-nodes", "-sha256",
          "-config", str(config), "-keyout", str(directory / "server-key.pem"),
@@ -760,3 +763,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
