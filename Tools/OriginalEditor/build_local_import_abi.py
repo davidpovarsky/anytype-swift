@@ -22,6 +22,7 @@ import time
 
 from local_execution import current_identity, git, require, sha
 from import_abi_input import EXPORTS, LIB, exact_file
+from reused_abi_history import history_proofs
 
 
 def write(path, value):
@@ -143,9 +144,12 @@ def execute(args, result):
             'Missing separate qualified generation, Swift and Native inputs')
     proofs = {name: json.loads(exact_file(proof_index.parent, item).read_bytes())
               for name, item in frozen['proofs'].items()}
+    historical = history_proofs(proof_index.parent, frozen['historical_receipts'], exact_file)
+    require(all(proofs[name] == value for name, value in historical.items()),
+            'Historical evidence normalization differs from authenticated source bytes')
     native = proofs['final_native_rpc_union']
     counts = {'native9': 9, 'rpc9': 9, 'cancel_panic': 1, 'bundled_semantic': 6,
-              'schema_closure': 11, 'relation_target_closure': 8}
+              'schema_closure': 11, 'relation_target_closure': 12}
     require(native.get('status') == 'PASS' and native['counts'] == {
         key: {'passes': count, 'failures': 0, 'skipped': 0, 'not_run': 0} for key, count in counts.items()}
             and native['source_module_link_stability'] == 'PASS' and native['owned_command_groups_drained'],
@@ -174,6 +178,12 @@ def execute(args, result):
     result['_owned_evidence'] = True
     for name, item in frozen['proofs'].items():
         shutil.copyfile(proof_index.parent / item['path'], evidence / (name + '.json'))
+    historical_receipts = {}
+    for name, item in frozen['historical_receipts'].items():
+        target = evidence / 'historical' / (name + '.json')
+        target.parent.mkdir(exist_ok=True)
+        shutil.copyfile(exact_file(proof_index.parent, item), target)
+        historical_receipts[name] = reference(target, evidence)
     result.update(phase='ORIGINAL_MOBILE_BUILD', sdk_source_sha=identity['source_sha'], native_source_tree=native_tree)
     write(evidence / 'RESULT.json', result)
     env = os.environ.copy()
@@ -343,6 +353,7 @@ def execute(args, result):
         'generated_files_verified': 733, 'generated_files_written': 0, 'generators_replayed': 0,
         'full_sdk_accepted': False, 'editor_ui_accepted': False, 'native_qualification': native,
         'qualification_receipts': {name: reference(evidence / (name + '.json'), evidence) for name in proofs},
+        'historical_receipts': historical_receipts,
         'commands': selected_commands,
         'defined_exports': sorted(EXPORTS), 'verified_architectures': {'ios': ['arm64'], 'ios-simulator': ['arm64', 'x86_64']},
         'source_unchanged_after_bind': True, 'owned_command_groups_drained': commands.owned_groups_drained,

@@ -20,7 +20,9 @@ the Mac build slot with the other task owners before starting compilation.
    do not replay their passed work. The frozen qualification index has schema
    `otzaria.local-abi-input-qualifications/1`, the exact `sdk_source_sha`, and
    hashed `proofs` for `generation_qualification`,
-   `changed_swift_qualification` and `final_native_rpc_union`.
+   `changed_swift_qualification` and `final_native_rpc_union`. Its
+   `historical_receipts` retain the four original files bound by
+   `reused_abi_history.py`; normalized summaries must exactly match those bytes.
 3. Run `build_local_import_abi.py` with the pinned proof index, its SHA-256, the
    qualified native Heart checkout, separate fresh `build/ABI-Work` and
    `build/ABI-Evidence` roots, and the exact Go 1.26.5 toolchain/cache paths.

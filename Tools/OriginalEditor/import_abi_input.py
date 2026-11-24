@@ -10,6 +10,7 @@ from pathlib import Path, PurePosixPath
 import re
 
 from local_execution import require, sha
+from reused_abi_history import history_proofs
 
 LIB = 'Dependencies/Middleware/Lib.xcframework'
 EXPORTS = {'ServiceAnnotationSchemaRegister', 'ServiceAnnotationImport', 'ServiceAnnotationImportCancel'}
@@ -50,7 +51,7 @@ def verify(root, path, digest, source):
             and re.fullmatch(r'[0-9a-f]{64}', native.get('execution_manifest_sha256', ''))
             and native.get('status') == 'PASS', 'Qualified native union identity is missing')
     counts = {'native9': 9, 'rpc9': 9, 'cancel_panic': 1, 'bundled_semantic': 6,
-              'schema_closure': 11, 'relation_target_closure': 8}
+              'schema_closure': 11, 'relation_target_closure': 12}
     require(all(type(number) is int for group in native.get('counts', {}).values()
                 for number in group.values()), 'Native counts must be actual integer counts')
     require(native.get('counts') == {key: {'passes': count, 'failures': 0, 'skipped': 0, 'not_run': 0}
@@ -64,6 +65,9 @@ def verify(root, path, digest, source):
             'Separate original generation, changed Swift and final native receipts required')
     proofs = {name: json.loads(exact_file(path.parent, row).read_bytes())
               for name, row in value['qualification_receipts'].items()}
+    historical = history_proofs(path.parent, value['historical_receipts'], exact_file)
+    require(all(proofs[name] == item for name, item in historical.items()),
+            'Historical qualification differs from authenticated original bytes')
     require(proofs['final_native_rpc_union'] == native, 'Native qualification body differs')
     generation, swift = proofs['generation_qualification'], proofs['changed_swift_qualification']
     require(generation.get('status') == 'PASS'

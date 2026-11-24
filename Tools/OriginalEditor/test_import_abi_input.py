@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from import_abi_input import EXPORTS, LIB, verify
 from local_execution import sha
@@ -30,7 +31,7 @@ class ImportABIInputControls(unittest.TestCase):
                   'counts': {name: {'passes': count, 'failures': 0, 'skipped': 0, 'not_run': 0}
                              for name, count in [('native9', 9), ('rpc9', 9), ('cancel_panic', 1),
                                                  ('bundled_semantic', 6), ('schema_closure', 11),
-                                                 ('relation_target_closure', 8)]}}
+                                                 ('relation_target_closure', 12)]}}
         self.value['native_qualification'] = native
         proofs = {'generation_qualification': {'status': 'PASS', 'output_counts': {
                     'native': 11, 'swift': 696, 'middleware': 37}, 'aggregate_producer_outcome': 'FAIL',
@@ -39,6 +40,12 @@ class ImportABIInputControls(unittest.TestCase):
                     'input_files': 689, 'typecheck_invocations': 1, 'generated_index_sha256': '6' * 64,
                     'generation_replayed': False, 'full_sdk_typechecked': False},
                   'final_native_rpc_union': native}
+        # These controls isolate admission after history authentication. Actual
+        # historical hashes are separately checked against retained real bytes.
+        self.value['historical_receipts'] = {}
+        self.history = patch('import_abi_input.history_proofs', return_value={
+            name: proof for name, proof in proofs.items() if name != 'final_native_rpc_union'})
+        self.history.start()
         self.value['qualification_receipts'] = {
             name: self.file(self.evidence, name + '.json', json.dumps(proof))
             for name, proof in proofs.items()}
@@ -55,6 +62,7 @@ class ImportABIInputControls(unittest.TestCase):
         self.receipt = self.evidence / 'ABI.json'
 
     def tearDown(self):
+        self.history.stop()
         self.temporary.cleanup()
 
     @staticmethod
