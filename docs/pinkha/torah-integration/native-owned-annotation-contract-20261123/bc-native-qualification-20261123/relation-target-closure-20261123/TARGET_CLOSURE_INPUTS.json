@@ -1,10 +1,10 @@
 {
   "body_mapping_drain_assertions_unchanged": true,
   "control_helper": {
-    "bytes": 8288,
-    "git_blob": "91690d57e510653624f1d1a44d1e789afacbc666",
+    "bytes": 8527,
+    "git_blob": "e60f438a6e4ebb3239872ea3606d7d760b631efa",
     "path": "relation-target-closure-20261123/relation_target_controls.py",
-    "sha256": "f9afbf5ca6206a6d3495a4802fd5ae87f129ef76e5b34f72065c98c33ac2ad46"
+    "sha256": "4fa32bc721cbb84dda7616d4599e70ba2f4ec34652512095546eff94f1068e33"
   },
   "diagnosis": {
     "bytes": 29360,
@@ -13,16 +13,16 @@
     "sha256": "c6744f2dbf2b08ae165d2586b80fe7945dc1a986f97fd063cb5853fe794ce63d"
   },
   "diff": {
-    "bytes": 1931,
-    "git_blob": "299e023020e3e67c38b9180c380322a0e2f86862",
+    "bytes": 2928,
+    "git_blob": "4c352d82441f278de8201113dec791ea117860e5",
     "path": "relation-target-closure-20261123/NATIVE.diff",
-    "sha256": "e268fe00a59befb46f95edc1947a0ba94474a5fc069623959c552bdd1e5623d4"
+    "sha256": "5451ae6354bc639a6a223c04223b719055c5350853f1bc58159f5876c38a9ee3"
   },
   "fixed_type_names_or_cids": false,
   "fresh_control_counts": {
     "native": 9,
     "panic": 1,
-    "relation_target": 8,
+    "relation_target": 12,
     "rpc": 9,
     "schema_repair": 11,
     "semantic": 6
@@ -32,14 +32,22 @@
     {
       "base_sha256": "aab78dcc4f5bc5cfd06221a8e32541ffacd1b1a357451bbcd22600fc86d57197",
       "base_source_path": "docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-native-qualification-20261123/schema-closure-repair-20261123/native/core/block/export/collection.go",
-      "bytes": 29150,
+      "bytes": 29512,
       "changes": [
         {
           "after": "func (e *exportContext) addDerivedObjects() error {\n\tprocessedObjects := make(map[string]struct{}, 0)\n\terr := e.getRelationsAndTypes(e.docs, processedObjects)\n\tif err != nil {\n\t\treturn fmt.Errorf(\"get relations and types: %w\", err)\n\t}\n\n\tfor {\n\t\terr = e.getTemplatesRelationsAndTypes(processedObjects)\n\t\tif err != nil {\n\t\t\treturn fmt.Errorf(\"get templates relations and types: %w\", err)\n\t\t}\n\t\terr = e.addRelationsAndTypes()\n\t\tif err != nil {\n\t\t\treturn fmt.Errorf(\"add relations and types: %w\", err)\n\t\t}\n\n\t\t// Relation definitions arrive through both the selected state keys and\n\t\t// the recommended-relation path above. Their stored target-type IDs\n\t\t// are schema dependencies too; close them through the same original\n\t\t// type/template/relation walker before any snapshot is written.\n\t\tnotProcessedTypes := e.collectRelationTargetTypes(processedObjects)\n\t\tif len(notProcessedTypes) == 0 {\n\t\t\treturn nil\n\t\t}\n\t\terr = e.getRelationsAndTypes(notProcessedTypes, processedObjects)\n\t\tif err != nil {\n\t\t\treturn fmt.Errorf(\"get relation target types: %w\", err)\n\t\t}\n\t}\n}\n\nfunc (e *exportContext) collectRelationTargetTypes(processedObjects map[string]struct{}) map[string]*Doc {\n\tnotProcessedTypes := make(map[string]*Doc)\n\tfor _, doc := range e.docs {\n\t\tif doc == nil || isExcludedFromExport(doc.Details) {\n\t\t\tcontinue\n\t\t}\n\t\tfor _, objectID := range doc.Details.GetStringList(bundle.RelationKeyRelationFormatObjectTypes) {\n\t\t\te.objectTypes[objectID] = struct{}{}\n\t\t\te.fillNotProcessedTypes(processedObjects, objectID, notProcessedTypes)\n\t\t}\n\t}\n\treturn notProcessedTypes\n}\n\n",
           "before": "func (e *exportContext) addDerivedObjects() error {\n\tprocessedObjects := make(map[string]struct{}, 0)\n\terr := e.getRelationsAndTypes(e.docs, processedObjects)\n\tif err != nil {\n\t\treturn fmt.Errorf(\"get relations and types: %w\", err)\n\t}\n\n\terr = e.getTemplatesRelationsAndTypes(processedObjects)\n\tif err != nil {\n\t\treturn fmt.Errorf(\"get templates relations and types: %w\", err)\n\t}\n\terr = e.addRelationsAndTypes()\n\tif err != nil {\n\t\treturn fmt.Errorf(\"add relations and types: %w\", err)\n\t}\n\treturn nil\n}\n\n"
+        },
+        {
+          "after": "\t\t\t// Derived snapshots carry the complete schema graph, including\n\t\t\t// recommendations of internal types explicitly reached by the graph.\n\t\t\tif bundle.IsInternalType(key) && e.closure != collect.ClosureDerived {\n",
+          "before": "\t\t\tif bundle.IsInternalType(key) {\n"
+        },
+        {
+          "after": "\t\t// An explicitly recommended system relation is still a schema edge\n\t\t// in a derived snapshot; content-only collection keeps its old filter.\n\t\tif bundle.IsSystemRelation(domain.RelationKey(uniqueKey.InternalKey())) && e.closure != collect.ClosureDerived {\n",
+          "before": "\t\tif bundle.IsSystemRelation(domain.RelationKey(uniqueKey.InternalKey())) {\n"
         }
       ],
-      "git_blob": "c93838fe0c83452952915fdcfebdd70695ffa314",
+      "git_blob": "f3e47c9d03d84399a897bd6d53eba6ed662266c2",
       "native_path": "core/block/export/collection.go",
       "path": "relation-target-closure-20261123/native/core/block/export/collection.go",
       "retained_preimage": {
@@ -48,17 +56,17 @@
         "path": "relation-target-closure-20261123/original/core/block/export/collection.go",
         "sha256": "aab78dcc4f5bc5cfd06221a8e32541ffacd1b1a357451bbcd22600fc86d57197"
       },
-      "sha256": "ae84ce2e61f6f7971fc6b69b94d5fefe781663ca6b43a6559e76806f016eef73"
+      "sha256": "ea93ee3d8f901744e884ca0fd8dd1b1d59868c19de6d70909e7abd9d0e065085"
     },
     {
       "base_sha256": null,
       "base_source_path": null,
-      "bytes": 6888,
+      "bytes": 8833,
       "changes": [],
-      "git_blob": "2c5e1a5c971dcd8d67ebaba5432409c116baac7b",
+      "git_blob": "1389d75543a07a5e6d496e36aa93b08d2a44768c",
       "native_path": "core/block/export/owned_annotation_relation_target_closure_test.go",
       "path": "relation-target-closure-20261123/native/core/block/export/owned_annotation_relation_target_closure_test.go",
-      "sha256": "03fcf05060656005ace89d86fa6b63e54cee29ad37cd9398ff16b2923fba1509"
+      "sha256": "dcfb81a2c797e5b4084cee5af5ec571f65f54f1d461b9b673d157a6bcb6d4240"
     }
   ],
   "new_control_group": {
@@ -70,11 +78,15 @@
       "cycle_visits_each_type_once",
       "unselected_definition_and_scalar_id_are_not_followed",
       "empty_constraint_adds_no_type",
-      "target_read_error_is_propagated"
+      "target_read_error_is_propagated",
+      "internal_type_file_recommendation_in_derived_graph",
+      "custom_type_system_recommendation_in_derived_graph",
+      "content_closure_keeps_internal_type_filter",
+      "content_closure_keeps_system_relation_filter"
     ],
     "parent": "TestOtzariaRelationTargetTypeExportClosure"
   },
-  "new_control_leaf_count": 8,
+  "new_control_leaf_count": 12,
   "original_refusal_unchanged": true,
   "previous_aggregate_result": "FAIL",
   "previous_artifact": {
@@ -124,9 +136,9 @@
   "schema_comparator_unchanged": true,
   "scope": "Close selected relation target-type dependencies through the original processed-ID type/template/relation walk; no arbitrary CID mapping or semantic field omission.",
   "source_rows": {
-    "bytes": 1695,
-    "git_blob": "95bf7b0b11d83810fc905a5702a63c97a1a5a03d",
+    "bytes": 1782,
+    "git_blob": "2b9ecaffd7a981b6dae91d7869469b7284f50428",
     "path": "relation-target-closure-20261123/SOURCE_ROWS.json",
-    "sha256": "07fbdb746487479ed4588c2af63d5e31b334c88f2bb63425957d05e9cd715c3a"
+    "sha256": "1ed091caac5e58fdec069b353247ab9a53b8919d80d362decc671e0dbfd39916"
   }
 }

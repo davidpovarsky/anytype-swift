@@ -1,0 +1,31 @@
+{
+  "actual_failed_native_tree": "c7bf9d82e15e4194c1e9763125b1915df1450e8e",
+  "changes": [
+    {
+      "after": "\t\t\t// Derived snapshots carry the complete schema graph, including\n\t\t\t// recommendations of internal types explicitly reached by the graph.\n\t\t\tif bundle.IsInternalType(key) && e.closure != collect.ClosureDerived {\n",
+      "before": "\t\t\tif bundle.IsInternalType(key) {\n"
+    },
+    {
+      "after": "\t\t// An explicitly recommended system relation is still a schema edge\n\t\t// in a derived snapshot; content-only collection keeps its old filter.\n\t\tif bundle.IsSystemRelation(domain.RelationKey(uniqueKey.InternalKey())) && e.closure != collect.ClosureDerived {\n",
+      "before": "\t\tif bundle.IsSystemRelation(domain.RelationKey(uniqueKey.InternalKey())) {\n"
+    }
+  ],
+  "comparator_changed": false,
+  "diagnosis": "All10 differing fields are image.recommendedFileRelations IDs missing source mappings. Internal type and system relation recommendation filters contradict original ClosureDerived standalone schema contract.",
+  "generators_changed": false,
+  "native_body_mapping_assertions_changed": false,
+  "new_actual_controls": [
+    "internal_type_file_recommendation_in_derived_graph",
+    "custom_type_system_recommendation_in_derived_graph",
+    "content_closure_keeps_internal_type_filter",
+    "content_closure_keeps_system_relation_filter"
+  ],
+  "new_native_tree": "309c744b91e6abc196b12ae33fe1773fe9f92692",
+  "owner": "/root/native_import",
+  "previous_root_review_scope": "Historical c6b4 relation-target closure only; this continuation review does not relabel prior root review as current.",
+  "prior_35_passes_preserved": "diagnostics/otzaria-import-fixture-key-20261124/mac-run-e599/RESULT_SUMMARY.json",
+  "runtime": "NOT_RUN",
+  "schema": 1,
+  "scope": "Allow explicitly referenced recommendations from internal types and system relation definitions only for collect.ClosureDerived; preserve content closure filters.",
+  "source_parent": "e599495ff3238842adadb6062079d1158915e75c"
+}

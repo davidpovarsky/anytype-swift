@@ -11,7 +11,7 @@ REPAIR_SHA256 = "27b2b717cc8f959e3a33457dd60bb5f65fffcfefaa19d52d079c461571e97de
 HEART = "d98420b1113536afd08cde6de9a5816f6d27ffff"
 RPC_SOURCE = "5b4a29c7d3f0991d006321a6035a7f2f6757d3d0"
 TARGET = "relation-target-closure-20261123"
-TARGET_SHA256 = "919f7bddd49ede226e0d1fa355a23030179a567b46c74ae7bda19320ee61cdab"
+TARGET_SHA256 = "b5174c36a8507df9c5fe2308565b529bdda5d06579c8ac0cd8bd1ec51630e81c"
 
 
 def require(value, reason):
@@ -251,9 +251,9 @@ def admit_relation_target(*, control, packet_name, manifest, bound, safe, git,
             and repair["fixed_type_names_or_cids"] is False
             and repair["runtime_results_reused"] is False
             and repair["production_import_activated"] is False
-            and repair["new_control_leaf_count"] == 8
+            and repair["new_control_leaf_count"] == 12
             and repair["fresh_control_counts"] == manifest["fresh_control_counts"] ==
-                {"native": 9, "schema_repair": 11, "relation_target": 8, "semantic": 6, "rpc": 9, "panic": 1},
+                {"native": 9, "schema_repair": 11, "relation_target": 12, "semantic": 6, "rpc": 9, "panic": 1},
             "Relation-target repair changed original scope, refusal or fresh execution requirements")
     for key in ("diff", "source_rows", "diagnosis", "root_source_review", "control_helper"):
         bound(repair[key]["path"], repair[key])
@@ -313,7 +313,7 @@ def admit_relation_target(*, control, packet_name, manifest, bound, safe, git,
                                       repair["previous_control"] + ":" + row["base_source_path"]),
                         "Relation-target preimage differs from immutable failed source")
             expected = before.decode()
-            require(len(row["changes"]) == 1, "Relation-target inverse count differs")
+            require(len(row["changes"]) == 3, "Relation-target inverse count differs")
             for change in row["changes"]:
                 require(expected.count(change["before"]) == 1, "Relation-target inverse is not unique")
                 expected = expected.replace(change["before"], change["after"], 1)

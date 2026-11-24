@@ -142,7 +142,7 @@ def execute_union_controls(control, manifest, composition, commands, go, heart, 
         declaration=closure, repair=target, binary_record=export_binaries[0])
     support.write_json(evidence / "RESULT.json", result)
     require(result["relation_target_closure_controls"]["status"] == "PASS"
-            and result["relation_target_closure_controls"]["leaf_pass"] == 8,
+            and result["relation_target_closure_controls"]["leaf_pass"] == 12,
             "Fresh relation-target closure controls did not all pass")
 
     semantic_binary = work / "bundled-persistence-control.test"
@@ -938,7 +938,7 @@ def main():
                           "workflow_published": workflow_published,
                           "diagnostic_only": False, "selected_native_leaves": list(LEAVES),
                           "new_schema_control_leaves": 11, "fresh_semantic_leaves": 6,
-                          "fresh_relation_target_control_leaves": 8,
+                          "fresh_relation_target_control_leaves": 12,
                           "fresh_rpc_cases": 9, "fresh_generated_panic_cases": 1,
                           "schema_diagnostic_manifest_sha256": SCHEMA_DIAGNOSTIC_SHA256,
                           "workflow_sha256": sha(expected_workflow),

@@ -587,7 +587,9 @@ func (e *exportContext) addObjectsAndCollectRecommendedRelations(objectTypes []d
 			if err != nil {
 				return nil, fmt.Errorf("get type key from unique key: %w", err)
 			}
-			if bundle.IsInternalType(key) {
+			// Derived snapshots carry the complete schema graph, including
+			// recommendations of internal types explicitly reached by the graph.
+			if bundle.IsInternalType(key) && e.closure != collect.ClosureDerived {
 				continue
 			}
 			recommendedRelations = lo.Uniq(slices.Concat(recommendedRelations,
@@ -617,7 +619,9 @@ func (e *exportContext) addRecommendedRelations(recommendedRelations []string) e
 		if err != nil {
 			return fmt.Errorf("unmarshal relation unique key: %w", err)
 		}
-		if bundle.IsSystemRelation(domain.RelationKey(uniqueKey.InternalKey())) {
+		// An explicitly recommended system relation is still a schema edge
+		// in a derived snapshot; content-only collection keeps its old filter.
+		if bundle.IsSystemRelation(domain.RelationKey(uniqueKey.InternalKey())) && e.closure != collect.ClosureDerived {
 			continue
 		}
 		e.docs[id] = &Doc{Details: relation.Details, IsLink: e.isLinkProcess}

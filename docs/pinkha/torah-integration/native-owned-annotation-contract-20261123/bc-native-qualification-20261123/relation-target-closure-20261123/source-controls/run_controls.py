@@ -1,8 +1,8 @@
 import copy,hashlib,importlib.util,json,os,subprocess,tempfile
 from pathlib import Path
-W=Path("/mnt/development/projects/worktrees/anytype-otzaria-import-fixture-key-20261124")
+W=Path("/mnt/development/projects/worktrees/anytype-otzaria-derived-schema-closure-20261124")
 P=W/"docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-native-qualification-20261123"
-D=Path("/mnt/development/projects/diagnostics/otzaria-import-fixture-key-20261124/source-controls")
+D=Path("/mnt/development/projects/diagnostics/otzaria-derived-schema-closure-20261124/source-controls")
 D.mkdir(exist_ok=True)
 assert not (D/"RESULT.json").exists()
 def sha(raw):return hashlib.sha256(raw).hexdigest()
@@ -12,8 +12,8 @@ def load(name,path):
 helper=P/"relation-target-closure-20261123/relation_target_controls.py"
 unionpath=P/"rpc-union-20261123/source_union.py"
 m=load("relation_target_controls",helper);u=load("native_source_union",unionpath)
-assert sha(helper.read_bytes())=="f9afbf5ca6206a6d3495a4802fd5ae87f129ef76e5b34f72065c98c33ac2ad46"
-assert sha(unionpath.read_bytes())=="e51e9fef28ec0c2c8a071d6bf0a6dd640bb7eae1cc068e282d849aa1bad136a2"
+assert sha(helper.read_bytes())=="4fa32bc721cbb84dda7616d4599e70ba2f4ec34652512095546eff94f1068e33"
+assert sha(unionpath.read_bytes())=="aa83da14aa48e8d5fbaaf8ff2c453d96e6bee4d30e11d7247ddc086b080e08dc"
 results=[]
 def control(name,fn,expect_refusal=False):
  try:
@@ -32,8 +32,8 @@ with tempfile.TemporaryDirectory(prefix="relation-target-source-controls-",dir=D
  events.append({"Action":"pass","Package":m.PACKAGE})
  def parsed(es,good=False):
   log.write_text("".join(json.dumps(e)+"\n" for e in es));r=m.case_intake(log)
-  return r["status"]=="PASS" and r["leaf_pass"]==8 if good else r["status"]!="PASS"
- control("exact_eight_unique_leaves_pass",lambda:parsed(events,True))
+  return r["status"]=="PASS" and r["leaf_pass"]==12 if good else r["status"]!="PASS"
+ control("exact_twelve_unique_leaves_pass",lambda:parsed(events,True))
  control("empty_events_refused",lambda:parsed([]))
  for action in ["fail","skip"]:
   changed=copy.deepcopy(events);changed[3]["Action"]=action

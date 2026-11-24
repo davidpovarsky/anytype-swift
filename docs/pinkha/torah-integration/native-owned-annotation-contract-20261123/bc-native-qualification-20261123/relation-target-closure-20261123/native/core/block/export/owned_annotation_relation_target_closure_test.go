@@ -147,4 +147,41 @@ func TestOtzariaRelationTargetTypeExportClosure(t *testing.T) {
 			}
 		})
 	}
+
+	// The same derived collector must retain recommendation edges even when
+	// the source type or relation is internally managed by the original bundle.
+	for _, tc := range []struct {
+		name    string
+		typeKey domain.TypeKey
+		format  model.ExportFormat
+		want    bool
+	}{
+		{name: "internal_type_file_recommendation_in_derived_graph", typeKey: bundle.TypeKeyImage, format: model.Export_Protobuf, want: true},
+		{name: "custom_type_system_recommendation_in_derived_graph", typeKey: domain.TypeKey("arbitraryFileSchema"), format: model.Export_Protobuf, want: true},
+		{name: "content_closure_keeps_internal_type_filter", typeKey: bundle.TypeKeyImage, format: model.Export_Markdown},
+		{name: "content_closure_keeps_system_relation_filter", typeKey: domain.TypeKey("arbitraryFileSchema"), format: model.Export_Markdown},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			fx := newFixture(t)
+			relationKey := bundle.RelationKeyFileMimeType
+			require.True(t, bundle.IsSystemRelation(relationKey))
+			typeID := tc.typeKey.String()
+			typeRow := prepareTestObjectTypeForStore(t, typeID, nil)
+			typeRow[bundle.RelationKeyRecommendedFileRelations] = domain.StringList([]string{relationKey.String()})
+			relation := prepareTestRelationForStore(t, relationKey, int64(model.RelationFormat_shorttext))
+			fx.store.AddObjects(t, spaceId, []spaceindex.TestObject{typeRow, relation})
+			exp := newExportContext(fx.export, pb.RpcObjectListExportRequest{
+				SpaceId: spaceId, ObjectIds: []string{typeID}, Format: tc.format,
+			})
+			require.NoError(t, exp.processObjectTypesAndSetOfList([]string{typeID}, nil))
+			require.Contains(t, exp.docs, typeID)
+			if tc.want {
+				require.Contains(t, exp.docs, relationKey.String())
+				require.Equal(t, relation[bundle.RelationKeyUniqueKey].String(),
+					exp.docs[relationKey.String()].Details.GetString(bundle.RelationKeyUniqueKey))
+			} else {
+				require.NotContains(t, exp.docs, relationKey.String())
+			}
+		})
+	}
 }

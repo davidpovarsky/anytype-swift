@@ -1,4 +1,4 @@
-"""Eight original relation target-type closure controls on the shared export binary."""
+"""Twelve original relation target-type closure controls on the shared export binary."""
 import hashlib
 import json
 from pathlib import Path
@@ -11,6 +11,10 @@ GROUP = {
         "recommended_only_relation", "cycle_visits_each_type_once",
         "unselected_definition_and_scalar_id_are_not_followed",
         "empty_constraint_adds_no_type", "target_read_error_is_propagated",
+        "internal_type_file_recommendation_in_derived_graph",
+        "custom_type_system_recommendation_in_derived_graph",
+        "content_closure_keeps_internal_type_filter",
+        "content_closure_keeps_system_relation_filter",
     ],
 }
 
@@ -59,7 +63,7 @@ def case_intake(path):
     return {
         "status": "PASS" if passed else "FAIL_OR_INCOMPLETE",
         "package": PACKAGE, "parent": rows[GROUP["parent"]], "cases": rows,
-        "leaf_count": 8,
+        "leaf_count": 12,
         "leaf_pass": sum(row["status"] == "PASS" for row in leaves),
         "leaf_fail": sum(row["status"] == "FAIL" for row in leaves),
         "leaf_skip": sum(row["status"] == "SKIP" for row in leaves),
@@ -90,12 +94,12 @@ def existing_export_binary(*, commands, go, heart, work, record):
 
 def run_controls(*, commands, go, heart, work, evidence, declaration, repair, binary_record):
     heart, work, evidence = map(Path, (heart, work, evidence))
-    require(repair["new_control_group"] == GROUP and repair["new_control_leaf_count"] == 8,
+    require(repair["new_control_group"] == GROUP and repair["new_control_leaf_count"] == 12,
             "Reviewed relation-target control selectors differ")
     receipt = evidence / "RELATION_TARGET_CLOSURE_CONTROLS.json"
     require(not receipt.exists(), "Preserve an existing relation-target control execution")
     report = {
-        "status": "STARTED_NOT_ACCEPTED", "leaf_count": 8, "cases": "NOT_RUN",
+        "status": "STARTED_NOT_ACCEPTED", "leaf_count": 12, "cases": "NOT_RUN",
         "actual_compiler_inputs": [], "binary": binary_record,
         "existing_current_union_binary_reused": True, "additional_compile_invocations": 0,
         "runtime_results_reused": False, "production_import_activated": False,
@@ -129,7 +133,7 @@ def run_controls(*, commands, go, heart, work, evidence, declaration, repair, bi
         report["effective_command_returncode"] = code
         intake = case_intake(output)
         report.update(intake)
-        require(code == 0 and intake["status"] == "PASS" and intake["leaf_pass"] == 8,
+        require(code == 0 and intake["status"] == "PASS" and intake["leaf_pass"] == 12,
                 "Original relation-target closure controls did not all pass")
     except BaseException as error:
         report.update(status="FAIL_OR_INCOMPLETE", error_type=type(error).__name__, error=str(error))
