@@ -22,6 +22,7 @@ from validate_wave1 import verify_runtime_copies
 from owner_signing import verify as verify_owner_signing
 
 from acceptance_profile import PREPARE, VERIFY, ADAPTER, UI_RETURN, UI_REPLAY, resolve_profile
+from resolved_dependencies import ACTIVATION_ARGUMENTS, record_resolution, verify_recorded_resolution
 
 def require(condition, message):
     if not condition:
@@ -62,7 +63,7 @@ def configure_tests(original, destination, environment):
     destination.write_bytes(plistlib.dumps(data))
     return destination
 
-def source_context(args, receipt):
+def source_context(args, receipt, *, use_recorded_resolution=False):
     from types import SimpleNamespace
     app, evidence = args.app.resolve(), args.evidence.resolve()
     require(platform.system() == "Darwin" and platform.machine() == "arm64", "Actual Apple silicon/Xcode required")
@@ -73,7 +74,12 @@ def source_context(args, receipt):
     branch = git(app, "branch", "--show-current")
     require(head == os.environ["GITHUB_SHA"] and branch == pin["consumer_branch"],
             "Unreviewed MiniApps consumer source")
-    require(not git(app, "diff", "--name-only", "HEAD"), "Tracked source differs before native build")
+    derived = app / "build" / ("miniapps-derived-" + os.environ["GITHUB_RUN_ID"] + "-" + os.environ["GITHUB_RUN_ATTEMPT"])
+    if use_recorded_resolution:
+        receipt["dependency_resolution"] = verify_recorded_resolution(
+            app, evidence, derived, head, os.environ["GITHUB_RUN_ID"], os.environ["GITHUB_RUN_ATTEMPT"])
+    else:
+        require(not git(app, "diff", "--name-only", "HEAD"), "Tracked source differs before native build")
     profile = resolve_profile(app, args.lane, branch)
     require(profile is not None, "The explicit MiniApps source profile was not selected")
     receipt.update(profile)
@@ -89,7 +95,6 @@ def source_context(args, receipt):
     udid = preflight["selected"]["ipad"]["udid"]
     installation = json.loads((evidence / "heart/heart-installation.json").read_text())
     binding = heart_runtime_profile.installed_binding(app, installation, head, args.runtime_profile, args.heart_source_run_id)
-    derived = app / "build" / ("miniapps-derived-" + os.environ["GITHUB_RUN_ID"] + "-" + os.environ["GITHUB_RUN_ATTEMPT"])
     receipt.update(source_sha=head, run_id=os.environ["GITHUB_RUN_ID"], run_attempt=os.environ["GITHUB_RUN_ATTEMPT"],
                    producer_pin=pin, heart=installation, native_binding=binding, device=udid,
                    configuration=owner["configuration"], owner_signing=owner, apple_profile_grants=owner["status"],
@@ -161,8 +166,13 @@ def build_consumer(args, receipt):
              "CODE_SIGNING_ALLOWED=YES", "CODE_SIGNING_REQUIRED=YES", "PROVISIONING_PROFILE_SPECIFIER="]
     common = ["-configuration", owner["configuration"], "-destination", "platform=iOS Simulator,id=" + context.udid,
               "-derivedDataPath", str(derived), "-parallel-testing-enabled", "NO"]
+    command(["xcodebuild", "-resolvePackageDependencies", "-project", "Anytype.xcodeproj",
+             "-scheme", "Anytype", *common], "resolve-native-packages", timeout=1800)
+    receipt["dependency_resolution"] = record_resolution(
+        app, evidence, derived, context.head, receipt["run_id"], receipt["run_attempt"], "native")
     command(["xcodebuild", "build-for-testing", "-project", "Anytype.xcodeproj", "-scheme", "Anytype",
-             *common, "-only-testing:AnytypeTests/PinkhaMiniAppsNativePreparationTests", *flags], "build-native")
+             *common, "-disableAutomaticPackageResolution", *ACTIVATION_ARGUMENTS,
+             "-only-testing:AnytypeTests/PinkhaMiniAppsNativePreparationTests", *flags], "build-native")
     native_configuration = test_configuration(derived / "Build/Products", "AnytypeTests")
     built, app_executable, bundle, test_executable = host.xctest_products(native_configuration)
     info = plistlib.loads((built / "Info.plist").read_bytes())
@@ -181,9 +191,16 @@ def build_consumer(args, receipt):
     verify_runtime_copies(built, context.binding["native_marker"].encode(), evidence)
     receipt.update(source_bundle=source_bundle, source_scheme=source_scheme, native_build_succeeded=True)
     verify_sdk(app / "Dependencies/Hanlin")
+    verify_recorded_resolution(app, evidence, derived, context.head, receipt["run_id"], receipt["run_attempt"])
+    command(["xcodebuild", "-resolvePackageDependencies", "-workspace",
+             "PinkhaStage1Acceptance/PinkhaStage1Acceptance.xcworkspace",
+             "-scheme", "PinkhaStage1Acceptance", *common], "resolve-ui-packages", timeout=1800)
+    receipt["dependency_resolution"] = record_resolution(
+        app, evidence, derived, context.head, receipt["run_id"], receipt["run_attempt"], "ui")
     command(["xcodebuild", "build-for-testing", "-workspace", "PinkhaStage1Acceptance/PinkhaStage1Acceptance.xcworkspace",
-             "-scheme", "PinkhaStage1Acceptance", *common,
+             "-scheme", "PinkhaStage1Acceptance", *common, "-disableAutomaticPackageResolution", *ACTIVATION_ARGUMENTS,
              "-only-testing:PinkhaStage1AcceptanceUITests/MiniAppsNativeAcceptanceUITests", *flags], "build-ui")
+    verify_recorded_resolution(app, evidence, derived, context.head, receipt["run_id"], receipt["run_attempt"])
     ui_configuration = test_configuration(derived / "Build/Products", "PinkhaStage1AcceptanceUITests")
     receipt.update(status="BUILD_PASS_TESTS_NOT_RUN", native_configuration=str(native_configuration),
                    ui_configuration=str(ui_configuration), built_app=str(built),
@@ -227,12 +244,13 @@ def prepare_authenticated_dependencies(app, evidence, producer_work, requested_l
 
 
 def execute(args, receipt):
-    context = source_context(args, receipt)
+    context = source_context(args, receipt, use_recorded_resolution=True)
     app, evidence, head, udid, owner = context.app, context.evidence, context.head, context.udid, context.owner
     build = json.loads((evidence / "miniapps-build.json").read_text())
     require(build["status"] == "BUILD_PASS_TESTS_NOT_RUN", "The consumer must have actually compiled before producer waiting")
     for key in ("source_sha", "run_id", "run_attempt", "requested_lane", "effective_lane", "source_profile_sha256",
-                "selected_methods", "configuration", "owner_signing", "producer_pin", "device", "heart", "native_binding"):
+                "selected_methods", "configuration", "owner_signing", "producer_pin", "device", "heart", "native_binding",
+                "dependency_resolution"):
         require(build[key] == receipt[key], "Prepared consumer build identity differs: " + key)
     native_configuration = test_configuration(context.derived / "Build/Products", "AnytypeTests")
     ui_configuration = test_configuration(context.derived / "Build/Products", "PinkhaStage1AcceptanceUITests")
@@ -356,6 +374,7 @@ def execute(args, receipt):
         require(adapter[key] is True, "Native adapter did not prove " + key)
     write(evidence / "native-adapter-readback.json", adapter)
     require(git(app, "rev-parse", "HEAD") == head, "Source changed during native acceptance")
+    verify_recorded_resolution(app, evidence, context.derived, head, receipt["run_id"], receipt["run_attempt"])
     verify_sdk(app / "Dependencies/Hanlin")
     receipt.update(status="MINIAPPS_TWO_APP_NATIVE_PASS", phase="COMPLETE",
                    actual_native_preparation=1, actual_ui_methods=2, actual_native_readback=1, actual_native_adapter=1,
