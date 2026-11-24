@@ -1,8 +1,12 @@
 """Explicit synthetic symbol decisions; these tests do not execute Apple tools."""
+import os
+from pathlib import Path
+import subprocess
+import tempfile
 import unittest
 
 from SharedRuntime.verify_framework_ownership import (
-    EDITOR, RUNTIME, FIREBASE_CLASSES, HOST_PRODUCTS, verify_definitions,
+    EDITOR, RUNTIME, FIREBASE_CLASSES, HOST_PRODUCTS, verify_definitions, dependency_source_inventory,
 )
 
 
@@ -58,3 +62,88 @@ class SharedDefinitionControls(unittest.TestCase):
         symbols['external-consumer-0'].add(symbol)
         with self.assertRaises(ValueError):
             verify_definitions(symbols)
+
+
+class RetainedDependencyControls(unittest.TestCase):
+    """Real temporary Git objects reproduce the quarantine failure; no Apple credit."""
+
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.root = Path(self.temporary.name).resolve()
+        self.old = self.root / 'producer-derived'
+        self.kept = self.root / 'producer-derived-preserved'
+        self.original_checkouts = self.old / 'SourcePackages/checkouts'
+        self.checkouts = self.kept / 'SourcePackages/checkouts'
+        self.seed = self.root / 'seed'
+        self.seed.mkdir()
+        self.git('init', str(self.seed))
+        (self.seed / 'GoogleDataTransport').mkdir()
+        (self.seed / 'GoogleDataTransport/source.c').write_text('int observed_original = 1;\n')
+        self.git('-C', str(self.seed), 'add', '.')
+        self.git('-C', str(self.seed), '-c', 'user.name=Explicit control', '-c',
+                 'user.email=control@example.invalid', 'commit', '-m', 'Original fixture')
+        revision = self.git('-C', str(self.seed), 'rev-parse', 'HEAD').strip()
+        repository = self.old / 'SourcePackages/repositories/GoogleDataTransport-control'
+        repository.parent.mkdir(parents=True)
+        self.git('clone', '--bare', str(self.seed), str(repository))
+        self.original_checkouts.mkdir()
+        self.git('clone', '--shared', str(repository), str(self.original_checkouts / 'GoogleDataTransport'))
+        self.contract = {'dependencies': {'googledatatransport': {'revision': revision}}}
+        self.original = dependency_source_inventory(self.original_checkouts, self.contract)
+        self.old.rename(self.kept)
+        self.directory = self.checkouts / 'GoogleDataTransport'
+        self.alternate = self.directory / '.git/objects/info/alternates'
+        self.alternate_bytes = self.alternate.read_bytes()
+        self.objects = self.kept / 'SourcePackages/repositories/GoogleDataTransport-control/objects'
+
+    def git(self, *arguments):
+        environment = {k: v for k, v in os.environ.items() if not k.startswith('GIT_')}
+        return subprocess.check_output(['git', *arguments], text=True, stderr=subprocess.DEVNULL,
+                                       env=environment)
+
+    def observe(self):
+        return dependency_source_inventory(self.checkouts, self.contract,
+                                           original_checkouts=self.original_checkouts)
+
+    def test_real_quarantine_resolves_exact_objects_without_restoring_resources_or_metadata(self):
+        with self.assertRaises(subprocess.CalledProcessError):
+            dependency_source_inventory(self.checkouts, self.contract)
+        observed = self.observe()['googledatatransport']
+        proof = observed.pop('git_object_resolution')
+        self.assertEqual(observed, self.original['googledatatransport'])
+        self.assertFalse(self.old.exists())
+        self.assertEqual(self.alternate.read_bytes(), self.alternate_bytes)
+        self.assertEqual(proof['retained_objects'], str(self.objects))
+        self.assertFalse(proof['git_metadata_modified'])
+
+    def test_original_blob_comparison_still_refuses_modified_source(self):
+        (self.directory / 'GoogleDataTransport/source.c').write_text('int modified = 2;\n')
+        with self.assertRaisesRegex(ValueError, 'Original shared source bytes differ'):
+            self.observe()
+
+    def test_original_dependency_revision_still_must_match(self):
+        self.contract['dependencies']['googledatatransport']['revision'] = '0' * 40
+        with self.assertRaisesRegex(ValueError, 'Incomplete shared dependency source closure'):
+            self.observe()
+
+    def test_recreated_original_resource_path_is_refused(self):
+        self.old.mkdir()
+        with self.assertRaisesRegex(ValueError, 'Producer resource fallback was recreated'):
+            self.observe()
+
+    def test_unrelated_alternate_root_is_refused(self):
+        self.alternate.write_text(str(self.seed / '.git/objects') + '\n')
+        with self.assertRaisesRegex(ValueError, 'does not belong to the original producer'):
+            self.observe()
+
+    def test_aliased_or_transitively_redirected_object_root_is_refused(self):
+        (self.objects / 'info/alternates').write_text(str(self.seed / '.git/objects') + '\n')
+        with self.assertRaisesRegex(ValueError, 'transitively redirected'):
+            self.observe()
+        (self.objects / 'info/alternates').unlink()
+        saved = self.objects.with_name('saved-objects')
+        self.objects.rename(saved)
+        self.objects.symlink_to(saved, target_is_directory=True)
+        with self.assertRaisesRegex(ValueError, 'aliased'):
+            self.observe()
