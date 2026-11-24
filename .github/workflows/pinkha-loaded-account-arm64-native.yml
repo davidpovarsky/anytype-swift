@@ -34,6 +34,8 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /Tools/AnyEngineValidation/loaded_account_witness/portable/run_native.py
+            /Tools/AnyEngineValidation/loaded_account_witness/portable/source-delta-v2.json
+            /Tools/AnyEngineValidation/loaded_account_witness/portable/loaded-witness-context.patch
             /Tools/AnyEngineValidation/loaded_account_witness/portable/custody-recipient.pem
             /Tools/AnyEngineValidation/loaded_account_witness/native_audit.py
       - name: Execute one build and the four pending native methods
