@@ -235,7 +235,7 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
                     value: .reference(.mapped(sourceKey: ownerKey, slot: .objectID, encoding: .rawID))))
             }
             recommendations.append(.init(key: .native("contract"),
-                value: .literal(.string("pinkha-heart-native-type-presentation-v2"))))
+                value: .literal(.string(AnyNativeImportedTypePresentation.contract))))
             recommendations.append(.init(key: .native("sourceRecommendedLayout"),
                 value: .literal(definition.recommendedLayout.map(AnyJSON.integer) ?? .null)))
             // Source relation visibility is independent of a type's ordered
@@ -263,10 +263,12 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
             // Preserve the exact ordered identities in an explicit descriptor.
             // A page layout alone does not implement every Heart layout or
             // recommendation's application behavior.
-            issues.append(.init(sourceObjectID: definition.objectID, field: "recommendedLayout/recommendations",
-                reason: definition.recommendedLayout == 0
-                    ? "ordered-property-bindings-retained; destination-presentation-adapter-not-qualified"
-                    : "native-layout-not-qualified:\(definition.recommendedLayout.map(String.init) ?? "absent")"))
+            // Basic0 is implemented by the same module's closed v2 imported
+            // presentation adapter. All other native layouts stay explicit gaps.
+            if definition.recommendedLayout != 0 {
+                issues.append(.init(sourceObjectID: definition.objectID, field: "recommendedLayout/recommendations",
+                    reason: "native-layout-not-qualified:\(definition.recommendedLayout.map(String.init) ?? "absent")"))
+            }
             let metadata: AnyJSON = .object([
                 "heartSourceObjectID": .string(definition.objectID),
                 "heartUniqueKey": .string(definition.snapshot.uniqueKey),
