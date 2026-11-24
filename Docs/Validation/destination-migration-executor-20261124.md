@@ -22,7 +22,7 @@ Qualified control areas: coverage/decode/exact UTF-8 identity and owned targets;
 
 ## Subsequent closed-owner correction
 
-The accompanying source change separates part owners from property owners: parts require a type created by this plan; properties can target a created type or collection. A new focused positive-type/negative-collection control was added. Its execution is pending at this source commit; the earlier six-control evidence applies to the exact sources above.
+The accompanying source change separates part owners from property owners: parts require a type created by this plan; properties can target a created type or collection. The focused positive-type/negative-collection control also confirms collection-owned properties remain admitted. It passed as the sole selected method at source dbf69774ab5055e45b03df0395c9cf3050b9eff1, job_4c663e190036, completed 19:53:28 UTC. Build 95.95 seconds / test 0.022 seconds, zero failures/skips, source stable. Original log SHA256 f69d6ec8b32889d208d6fe49f992fd1e885da136851cbe2dcd0c707083564e22; receipt /mnt/development/projects/evidence/destination-executor-20261124/attempt3-part-owner.json. Seven distinct focused methods now have qualified passes across the retained exact source stages; prior failures remain explicit.
 
 ## Actual Apple result, retained separately
 
