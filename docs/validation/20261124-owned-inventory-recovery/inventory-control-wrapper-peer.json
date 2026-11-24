@@ -1,0 +1,112 @@
+{
+  "builds_admitted": 0,
+  "controls_run_in_this_review": 0,
+  "earlier_local_review_assertion": {
+    "cause": "Reviewer used incorrect sdk namespace literal when reconstructing outer; corrected to exact observed namespace. Candidate source unchanged.",
+    "controls": 0,
+    "repository_imports": 0,
+    "status": "FAILED_BEFORE_RECEIPT"
+  },
+  "execution_authorization": "Only after actual Oracle source freeze identity and physical/Git binding; one bounded control via reviewed file-backed outer",
+  "findings": [],
+  "host_calls_in_this_review": 0,
+  "inner_checks": [
+    "14 predeclared inputs and independent Git-bound manifest",
+    "all physical SHA/Gitblob/mode beforeimport and aftercontrol",
+    "fixed one named method21 subcases",
+    "4repository sourcefiles loadedbefore/5after cleanup helper import",
+    "outside-source outputs; no old tests, simctl, Apple/native or Go execution",
+    "named method/subcaseevents and explicit first/final failure receipts"
+  ],
+  "inputs": [
+    {
+      "bytes": 4534,
+      "path": "Tools/CurrentAppleValidation/cleanup_policy.py",
+      "sha256": "d4b6b6df0df5c94b4aeeabef0c6716d097be27fd2a6739298f9d186092bea291"
+    },
+    {
+      "bytes": 13612,
+      "path": "Tools/CurrentAppleValidation/contracts.py",
+      "sha256": "46ec90e911ad622646bdf8fe3fdf67351ac7b576a66af7abb07e5a0e06051ab3"
+    },
+    {
+      "bytes": 55983,
+      "path": "Tools/CurrentAppleValidation/current_execution.py",
+      "sha256": "f60b005dd750143b0bf2fce84826a74b51e40de10a2e5292b4e36b0a03b5b6fa"
+    },
+    {
+      "bytes": 11820,
+      "path": "Tools/CurrentAppleValidation/owned_inventory_recovery.py",
+      "sha256": "ece048eee69c4866dd5bd6037e635077e804cfaaf0135764b54777dd3541a2ee"
+    },
+    {
+      "bytes": 15770,
+      "path": "Tools/CurrentAppleValidation/source-inputs.json",
+      "sha256": "ed67ea9a785dbfcea82eba5146d98970cda2a84567d899a5fd0af20cdf3a61c5"
+    },
+    {
+      "bytes": 1284,
+      "path": "docs/validation/20261124-owned-inventory-recovery/control-data/commands/booted-0.command.json",
+      "sha256": "958375db6aaedd45c64f428ca9e72ec9beac6ccdb7ecf2ae933bef8d98a882ef"
+    },
+    {
+      "bytes": 0,
+      "path": "docs/validation/20261124-owned-inventory-recovery/control-data/commands/booted-0.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 555,
+      "path": "docs/validation/20261124-owned-inventory-recovery/control-data/commands/booted-0.started.json",
+      "sha256": "80f39f5459483288bd2db1d57d1def793eb87a47826ad192fc75f050b643002b"
+    },
+    {
+      "bytes": 19849,
+      "path": "docs/validation/20261124-owned-inventory-recovery/control-data/device-0/created.json",
+      "sha256": "7fbc51b5ad4f09261fe9ea8ece8cac2bb2794a4848a35a1d5a3b20b002bfc24e"
+    },
+    {
+      "bytes": 21323,
+      "path": "docs/validation/20261124-owned-inventory-recovery/control-data/device-0/intent.json",
+      "sha256": "c821c12c5d55c48b961873ff0c1ac2d9001aba7ead64fdd0c204703a4ee56753"
+    },
+    {
+      "bytes": 2107,
+      "path": "docs/validation/20261124-owned-inventory-recovery/control-data/origins.json",
+      "sha256": "44ceea450430a4477bedef93ba6b2543b5a972f848b6fe6cef9307cd417b1ba7"
+    },
+    {
+      "bytes": 1750,
+      "path": "docs/validation/20261124-owned-inventory-recovery/control-profile.json",
+      "sha256": "723705bb962687c780426b7434323c39a1ff2f4634932cc4dfaa648eeddff960"
+    },
+    {
+      "bytes": 10652,
+      "path": "docs/validation/20261124-owned-inventory-recovery/run-control.py",
+      "sha256": "3bce683f7f57a96d84ce1039972891c15c837f2e7e7352f08be1cd760b0e463f"
+    },
+    {
+      "bytes": 16051,
+      "path": "docs/validation/20261124-owned-inventory-recovery/test_inventory_policy.py",
+      "sha256": "5a3f78a0cbbf36687624ae041c4ea2f9c8516e5a58fc136e62622956cc983016"
+    },
+    {
+      "bytes": 4760,
+      "path": "docs/validation/20261124-owned-inventory-recovery/control-inputs.json",
+      "sha256": "ef50f70a48a2c8ab66aa5722bcfe0211532da6a8bfe81a8759d2e2d065ed3dc9"
+    },
+    {
+      "bytes": 7982,
+      "path": "docs/validation/20261124-owned-inventory-recovery/launch-control.py",
+      "sha256": "b38c1f4ee4b3f9b090295d97ee20cd1315d3308328838dd263ef98a5e2b28d04"
+    }
+  ],
+  "native_tests_admitted": 0,
+  "original_outer_sha256": "0110db52825c8e20f33ac9637c49c992fb91dc62b596a8fdb7945d8d972b8afa",
+  "outer_changes": "Fixed source/output paths, exact inner hash, requested-method metadata, explicit4MiB/512-entry profile only. Process lifecycle,60s/10s,firsterror and unavailable-final-observation handling exact.",
+  "product_tests_admitted": 0,
+  "repository_imports_in_this_review": 0,
+  "schema": "root-inventory-control-wrapper-peer-v1",
+  "status": "PASS_SOURCE_AND_CONFINED_ONE_METHOD_ADMISSION",
+  "utc": "2026-11-24T01:47:53.466201+00:00",
+  "whole_outer_reconstructed": true
+}

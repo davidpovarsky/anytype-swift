@@ -22,6 +22,8 @@ import contracts as c
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
 MANIFEST = HERE / "source-inputs.json"
+INVENTORY_POLICY = "owned-inventory-timeout-v1"
+INVENTORY_SOURCE = "8dc5ee02db71517a5eb08535a6b266da62adfe30"
 _FINALIZING = False
 _CANCELLED = False
 
@@ -70,7 +72,7 @@ def metadata(path):
         return {"kind": "symlink", "mode": stat.S_IMODE(st.st_mode), "target": os.readlink(path)}
     raise ValueError("unsupported_source_type")
 
-def admit(profile, expected):
+def admit(profile, expected, inventory_policy=None):
     c.require(platform.system() == "Darwin" and platform.machine() == "arm64"
               and os.environ.get("GITHUB_ACTIONS") == "true"
               and os.environ.get("GITHUB_REPOSITORY") == c.REPOSITORY, "owned_apple_ci_required")
@@ -85,7 +87,11 @@ def admit(profile, expected):
     c.require(len(fixed["retainedMethods"]) == 22
               and not set(c.methods(profile)).intersection(fixed["retainedMethods"])
               and c.SOURCE_DRAG not in c.methods(profile), "historical_pass_selected")
-    trees = fixed["productTrees"][profile]
+    recovery = inventory_spec(fixed, inventory_policy)
+    origin = recovery["sourceCommit"] if recovery is not None else c.BASE
+    if recovery is not None:
+        git("merge-base", "--is-ancestor", origin, expected)
+    trees = (recovery["productTrees"] if recovery is not None else fixed["productTrees"])[profile]
     all_trees = {**trees, **fixed["helperTrees"]}
     for name, oid in all_trees.items():
         c.require(git("rev-parse", "HEAD:" + name).decode().strip() == oid, "compiled_source_tree_changed:" + name)
@@ -118,8 +124,11 @@ def admit(profile, expected):
     c.require(set(fixed["helperInputs"]).issubset(files), "missing_helper_input")
     context = {"profile": profile, "sourceCommit": expected, "runID": os.environ["GITHUB_RUN_ID"],
                "runAttempt": os.environ["GITHUB_RUN_ATTEMPT"], "repository": c.REPOSITORY}
-    return context, {"manifestSHA256": digest(MANIFEST), "files": files, "gitInputs": origins,
-                     "compiledTrees": trees, "compiledOrigin": c.BASE}
+    source = {"manifestSHA256": digest(MANIFEST), "files": files, "gitInputs": origins,
+              "compiledTrees": trees, "compiledOrigin": origin}
+    if recovery is not None:
+        source["inventoryRecoveryPolicy"] = inventory_policy
+    return context, source
 
 def recheck(source):
     c.require(digest(MANIFEST) == source["manifestSHA256"]
@@ -127,7 +136,7 @@ def recheck(source):
               "admitted_source_changed")
     observed = {}
     fixed = read(MANIFEST)
-    for name, path in fixed["moduleOrigins"].items():
+    for name, path in module_origins(fixed, source).items():
         if name in sys.modules:
             c.require(Path(sys.modules[name].__file__).resolve() == ROOT / path, "foreign_module_origin:" + name)
     for module in tuple(sys.modules.values()):
@@ -147,7 +156,7 @@ def helpers(source):
     for path in reversed(("Tools/PinkhaSimulatorGate", "Tools/AnyEnginePort", "Tools/Hanlin",
                           "Tools/PinkhaNativeDerived")):
         sys.path.insert(0, str(ROOT / path))
-    for name, relative in read(MANIFEST)["moduleOrigins"].items():
+    for name, relative in module_origins(read(MANIFEST), source).items():
         specification = importlib.util.find_spec(name)
         c.require(specification is not None and specification.origin is not None
                   and Path(specification.origin).resolve() == ROOT / relative,
@@ -163,6 +172,43 @@ def helpers(source):
                   "foreign_required_helper:" + name)
     recheck(source)
     return result
+
+def inventory_spec(fixed, policy):
+    if policy is None:
+        return None
+    c.require(policy == INVENTORY_POLICY, "unreviewed_inventory_policy")
+    spec = fixed["inventoryRecovery"]
+    c.require(spec["policy"] == INVENTORY_POLICY and spec["sourceCommit"] == INVENTORY_SOURCE
+              and spec["budgets"] == {"postboot": 120, "pre-cleanup": 90}
+              and set(spec["productTrees"]) == set(c.PROFILES), "inventory_policy_profile_changed")
+    return spec
+
+def module_origins(fixed, source):
+    origins = dict(fixed["moduleOrigins"])
+    if inventory_spec(fixed, source.get("inventoryRecoveryPolicy")) is not None:
+        c.require("owned_inventory_recovery" not in origins, "inventory_module_origin_collision")
+        origins["owned_inventory_recovery"] = "Tools/CurrentAppleValidation/owned_inventory_recovery.py"
+    return origins
+
+def configure_inventory_recovery(commands, source):
+    if source.get("inventoryRecoveryPolicy") is not None:
+        inventory_spec(read(MANIFEST), source["inventoryRecoveryPolicy"])
+        module = importlib.import_module("owned_inventory_recovery")
+        recheck(source)
+        c.require(module.POLICY == INVENTORY_POLICY and module.BUDGETS == {"postboot": 120, "pre-cleanup": 90},
+                  "inventory_policy_implementation_changed")
+        commands.inventory_recovery = module.Policy(commands, cwd=str(ROOT),
+            recheck_source=lambda: recheck(source), write_json=write)
+
+def verify_owned_inventory(commands, item, name, states=None, *, phase):
+    policy = getattr(commands, "inventory_recovery", None)
+    if policy is None:
+        return verify_device(commands, item, name, states)
+    return policy.verify(verify_device, item, name, states, phase)
+
+def inventory_recovery_result(commands):
+    policy = getattr(commands, "inventory_recovery", None)
+    return None if policy is None else policy.summary()
 
 class Commands:
     def __init__(self, evidence, context, modules):
@@ -204,6 +250,9 @@ class Commands:
                         record["observationFailure"] = error(failure)
                         primary = primary or failure
             except BaseException as failure:
+                if primary is not None and failure is not primary:
+                    record.setdefault("secondaryFailures", []).append(
+                        {"stage": "command_body", **error(failure)})
                 primary = primary or failure
             finally:
                 if process:
@@ -318,7 +367,7 @@ def create_device(commands, pair, name, evidence, owned):
     verify_device(commands, item, "created-" + str(index), {"Shutdown"})
     commands.run(["xcrun", "simctl", "boot", item["udid"]], "boot-" + str(index), 120)
     commands.run(["xcrun", "simctl", "bootstatus", item["udid"], "-b"], "bootstatus-" + str(index), 180)
-    verify_device(commands, item, "booted-" + str(index), {"Booted"})
+    verify_owned_inventory(commands, item, "booted-" + str(index), {"Booted"}, phase="postboot")
     return item
 
 def inventory(root):
@@ -635,13 +684,16 @@ def cleanup_devices(commands, evidence, owned):
         receipt = {"context": commands.context, "owned_simulator": {"udid": item["udid"]},
                    "createReceiptSHA256": digest(directory / "created.json")}
         try:
-            verify_device(commands, item, "pre-cleanup-" + str(index))
+            verify_owned_inventory(commands, item, "pre-cleanup-" + str(index), phase="pre-cleanup")
             def run(argv, name, timeout):
                 return commands.run(argv, "device-" + str(index) + "-" + name, timeout)
             cleanup_policy.cleanup_owned_simulator(run, receipt, item["udid"])
         except BaseException as failure:
             receipt["firstFailure"] = error(failure)
             receipt["owned_simulator_cleanup_status"] = "INCOMPLETE"
+        recovery = inventory_recovery_result(commands)
+        if recovery is not None:
+            receipt["inventoryRecovery"] = recovery
         write(path, receipt)
         results.append(receipt)
     return results
@@ -731,7 +783,7 @@ def final_integrity(evidence, source, built, copies, native):
     write(evidence / "loaded-after.json", result["loadedAfter"])
     return result
 
-def execute(profile, expected, prepare_library, provider):
+def execute(profile, expected, prepare_library, provider, inventory_policy=None):
     global _FINALIZING
     root = evidence_root(profile)
     c.require(not root.exists() and root.parent.resolve() == root.parent, "fresh_owned_execution_root_required")
@@ -746,13 +798,15 @@ def execute(profile, expected, prepare_library, provider):
     owned, copies = [], {}
     first = None
     try:
-        context, source = admit(profile, expected)
+        context, source = admit(profile, expected, inventory_policy)
         outcome["context"] = context
         write(evidence / "source-before.json", source)
         write(evidence / "execution-intent.json", {"context": context, "selected": c.methods(profile),
-              "sourceDragExcluded": c.SOURCE_DRAG, "sourceAdmissionSHA256": digest(evidence / "source-before.json")})
+              "sourceDragExcluded": c.SOURCE_DRAG, "sourceAdmissionSHA256": digest(evidence / "source-before.json"),
+              **({"inventoryRecoveryPolicy": inventory_policy} if inventory_policy is not None else {})})
         modules = helpers(source)
         commands = Commands(evidence, context, modules)
+        configure_inventory_recovery(commands, source)
         write(evidence / "loaded-before.json", recheck(source))
         version = commands.run(["xcodebuild", "-version"], "xcode-version", 30)
         c.require(c.read(version, 1024).decode().startswith("Xcode 27"), "xcode_27_required")
@@ -831,10 +885,13 @@ def execute(profile, expected, prepare_library, provider):
         if commands is not None and (commands.root / "build-for-testing.started.json").exists():
             outcome["applicationBuilds"] = 1
             outcome["uiRunnerBuilds"] = c.PROFILES[profile]["uiRunnerBuilds"]
+        recovery = inventory_recovery_result(commands)
+        if recovery is not None:
+            outcome["inventoryRecovery"] = recovery
         write(evidence / "execution.json", outcome)
     return outcome
 
-def cleanup_only(profile, expected, provider):
+def cleanup_only(profile, expected, provider, inventory_policy=None):
     global _FINALIZING
     _FINALIZING = True
     root = evidence_root(profile)
@@ -864,8 +921,11 @@ def cleanup_only(profile, expected, provider):
         c.require(intent["context"] == context and intent["sourceAdmissionSHA256"] ==
                   digest(evidence / "source-before.json"), "cleanup_source_admission_not_current")
         source = read(evidence / "source-before.json")
+        c.require(intent.get("inventoryRecoveryPolicy") == inventory_policy
+                  and source.get("inventoryRecoveryPolicy") == inventory_policy, "cleanup_inventory_policy_changed")
         recheck(source)
         commands = Commands(evidence, context, helpers(source))
+        configure_inventory_recovery(commands, source)
         commands.cleanup_mode = True
         outcome["groups"] = unfinished_groups(commands)
         primary = None
@@ -887,6 +947,9 @@ def cleanup_only(profile, expected, provider):
         except BaseException as failure:
             outcome["loadedFailure"] = error(failure)
             primary = primary or failure
+        recovery = inventory_recovery_result(commands)
+        if recovery is not None:
+            outcome["inventoryRecovery"] = recovery
         if primary:
             raise primary
         outcome["status"] = "PASS"
@@ -899,14 +962,16 @@ def main(profile, prepare_library, provider):
     parser = argparse.ArgumentParser()
     parser.add_argument("operation", choices=("execute", "cleanup"))
     parser.add_argument("--expected-source", required=True)
+    parser.add_argument("--inventory-recovery", dest="inventory_policy", choices=(INVENTORY_POLICY,))
     args = parser.parse_args()
     os.umask(0o077)
     previous = {number: signal.getsignal(number) for number in (signal.SIGINT, signal.SIGTERM)}
     for number in previous:
         signal.signal(number, cancel)
     try:
-        result = (execute(profile, args.expected_source, prepare_library, provider) if args.operation == "execute"
-                  else cleanup_only(profile, args.expected_source, provider))
+        result = (execute(profile, args.expected_source, prepare_library, provider, args.inventory_policy)
+                  if args.operation == "execute" else
+                  cleanup_only(profile, args.expected_source, provider, args.inventory_policy))
     finally:
         for number, handler in previous.items():
             signal.signal(number, handler)

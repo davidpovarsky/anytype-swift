@@ -1,0 +1,100 @@
+{
+  "cleanup_policy_exact": true,
+  "controls": 0,
+  "findings": [],
+  "host_calls": 0,
+  "index_sha256": "2904ae860a2f7c50276a59e793d16fef7614b71e765c8ab03e11bcee59c77f3e",
+  "inputs": [
+    {
+      "bytes": 55983,
+      "path": "Tools/CurrentAppleValidation/current_execution.py",
+      "sha256": "f60b005dd750143b0bf2fce84826a74b51e40de10a2e5292b4e36b0a03b5b6fa"
+    },
+    {
+      "bytes": 11820,
+      "path": "Tools/CurrentAppleValidation/owned_inventory_recovery.py",
+      "sha256": "ece048eee69c4866dd5bd6037e635077e804cfaaf0135764b54777dd3541a2ee"
+    },
+    {
+      "bytes": 15770,
+      "path": "Tools/CurrentAppleValidation/source-inputs.json",
+      "sha256": "ed67ea9a785dbfcea82eba5146d98970cda2a84567d899a5fd0af20cdf3a61c5"
+    },
+    {
+      "bytes": 16051,
+      "path": "docs/validation/20261124-owned-inventory-recovery/test_inventory_policy.py",
+      "sha256": "5a3f78a0cbbf36687624ae041c4ea2f9c8516e5a58fc136e62622956cc983016"
+    },
+    {
+      "bytes": 10736,
+      "path": "docs/validation/20261124-owned-inventory-recovery/core-inverses.json",
+      "sha256": "94cb2d8f7b2e3df3060bd4d410a8723f75e7c7d3c249e6369afe3082065c79df"
+    },
+    {
+      "bytes": 12060,
+      "path": "docs/validation/20261124-owned-inventory-recovery/core-source.diff",
+      "sha256": "2a3ea70247275f733aa134efdadb5d746094a6cb571169cd5dc8676569368fa1"
+    },
+    {
+      "baseline_equal": true,
+      "bytes": 13612,
+      "path": "Tools/CurrentAppleValidation/contracts.py",
+      "sha256": "46ec90e911ad622646bdf8fe3fdf67351ac7b576a66af7abb07e5a0e06051ab3"
+    },
+    {
+      "baseline_equal": true,
+      "bytes": 4534,
+      "path": "Tools/CurrentAppleValidation/cleanup_policy.py",
+      "sha256": "d4b6b6df0df5c94b4aeeabef0c6716d097be27fd2a6739298f9d186092bea291"
+    }
+  ],
+  "literal_replacements": 21,
+  "manifest_default_fields_exact": true,
+  "not_yet_admitted": [
+    "bounded pure-control launcher and its execution",
+    "Page,NativeUI,Release workflow/ledger activation closure",
+    "actual simulator readiness or product acceptance"
+  ],
+  "product_tests": 0,
+  "repository_imports": 0,
+  "reviewed_invariants": [
+    "Only explicit opted postboot/precleanup30-second TimeoutExpired can admit one same-UUID/same-argv followup120/90.",
+    "Complete started/final/log bindings plus timely ESRCH and exact final-key set exclude nonzero/parse/source/secondary/preservation/cleanup errors.",
+    "Original failure stays first in separate recovery receipt, and followup/identity/preservation error rethrows it with secondary recorded.",
+    "Precreate original30 and identity-validation body remain exact; unchanged TOTAL60 cleanup starts only after exact identity.",
+    "Receipt existence and in-memory phase/name use guard prevent replay; cleanup finalizer retains prior COMPLETE or INCOMPLETE original.",
+    "Source opt-in explicitly rebinds compiled8dc product trees, retains default admission and all runtime/selector values.",
+    "New pure control method exercises real retained original timeout data and simulated command/kernel boundaries; this peer does not execute it."
+  ],
+  "schema": "root-inventory-recovery-core-peer-v1",
+  "unchanged_top_level_definitions": [
+    "archive_semantics",
+    "build",
+    "cancel",
+    "check_products",
+    "code_carriers",
+    "dependencies",
+    "device_map",
+    "digest",
+    "error",
+    "evidence_root",
+    "execute_stage",
+    "final_integrity",
+    "fixed_pair",
+    "git",
+    "installed_app",
+    "inventory",
+    "metadata",
+    "owned_container",
+    "raw_terminal",
+    "read",
+    "recover_owned",
+    "unfinished_groups",
+    "verify_device",
+    "write"
+  ],
+  "utc": "2026-11-24T01:36:23.466395+00:00",
+  "verdict": "PASS_SOURCE_SCOPE_NO_DEMONSTRATED_BLOCKER",
+  "verify_device_exact": true,
+  "whole_common_inverse": true
+}

@@ -9,13 +9,13 @@ permissions:
 
 jobs:
   current-page154-mounted:
-    runs-on: xcode-27
+    runs-on: [self-hosted, macOS, ARM64, pinkha-scaleway-mac]
     timeout-minutes: 150
     permissions:
       contents: read
       actions: read
     env:
-      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
       PYTHONDONTWRITEBYTECODE: '1'
       GIT_OPTIONAL_LOCKS: '0'
       GH_TOKEN: ${{ github.token }}
@@ -59,14 +59,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python3 -B Tools/CurrentAppleValidation/page154_current.py execute --expected-source "$GITHUB_SHA"
+          python3 -B Tools/CurrentAppleValidation/page154_current.py execute --expected-source "$GITHUB_SHA" --inventory-recovery owned-inventory-timeout-v1
       - name: Finalize only journaled current-run resources even after failure
         if: ${{ always() && steps.execute.outcome != 'skipped' }}
         timeout-minutes: 8
         shell: bash
         run: |
           set -euo pipefail
-          python3 -B Tools/CurrentAppleValidation/page154_current.py cleanup --expected-source "$GITHUB_SHA"
+          python3 -B Tools/CurrentAppleValidation/page154_current.py cleanup --expected-source "$GITHUB_SHA" --inventory-recovery owned-inventory-timeout-v1
       - name: Preserve current App and UI Products, original results, private diagnostics and cleanup
         if: always()
         uses: actions/upload-artifact@v4
