@@ -18,7 +18,7 @@ public struct AnyNativeImportedTypePresentation: Sendable {
               descriptor["sourceRecommendedLayout"] == .integer(0),
               let fields = descriptor.object,
               Set(fields.keys).isSubset(of: ["contract", "sourceRecommendedLayout", "propertyOwnerId",
-                                             "recommended", "featured", "hidden", "files"]),
+                                             "recommended", "featured", "hidden", "files", "definitionHidden"]),
               definitions.count <= 4096,
               Set(definitions.map(\.key)).count == definitions.count else {
             throw AnyNativePropertyError.invalidCatalog
@@ -33,7 +33,8 @@ public struct AnyNativeImportedTypePresentation: Sendable {
             propertyOwner = id
         } else { propertyOwner = nil }
         let byKey = Dictionary(uniqueKeysWithValues: definitions.map { ($0.key, $0) })
-        func addresses(_ field: String) throws -> [AnyNativePropertyKey] {
+        func addresses(_ field: String, optional: Bool = false) throws -> [AnyNativePropertyKey] {
+            if optional && descriptor[field] == nil { return [] }
             guard let values = descriptor[field]?.array, values.count <= 512 else {
                 throw AnyNativePropertyError.invalidCatalog
             }
@@ -60,10 +61,13 @@ public struct AnyNativeImportedTypePresentation: Sendable {
         }
         let featured = try addresses("featured"), recommended = try addresses("recommended")
         let hidden = try addresses("hidden"), files = try addresses("files")
+        let definitionHidden = try addresses("definitionHidden", optional: true)
         var seen = Set<AnyNativePropertyKey>(), ordered: [AnyNativePropertyKey] = []
         for key in featured + recommended + files + hidden where seen.insert(key).inserted { ordered.append(key) }
         let shownByType = Set(featured + recommended + files)
-        var hiddenKeys = Set(hidden.map(\.visibilityKey))
+        // Definition visibility is independent of the Type's ordered hidden
+        // recommendations. Both are display defaults, never value identity.
+        var hiddenKeys = Set((hidden + definitionHidden).map(\.visibilityKey))
         if let propertyOwner {
             for definition in definitions where definition.key.ownerID == propertyOwner {
                 let key = definition.key

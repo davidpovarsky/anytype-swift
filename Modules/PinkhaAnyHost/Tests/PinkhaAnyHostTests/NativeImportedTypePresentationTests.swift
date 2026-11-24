@@ -76,6 +76,45 @@ final class NativeImportedTypePresentationTests: XCTestCase {
         XCTAssertTrue(ordinary.rows.filter { $0.id.ownerID == "imported" }.allSatisfy(\.isVisible))
     }
 
+    func testDefinitionHiddenPreservesCanonicalTitleAndExplicitPreferencesAcrossReopen() throws {
+        let change: (inout [String: AnyJSON]) -> Void = {
+            $0["definitionHidden"] = .array([Self.address("any", "name"), Self.address("imported", "flag")])
+        }
+        let value = try snapshot(attached: true, change: change)
+        let name = try key("any", "name"), flag = try key("imported", "flag")
+        XCTAssertEqual(value.raw["any"]?["name"], .string("כותרת המקור"))
+        XCTAssertNil(value.raw["imported"]?["name"])
+        XCTAssertEqual(value.rows.filter { $0.id == name }.count, 1)
+        XCTAssertFalse(try XCTUnwrap(value.rows.first { $0.id == name }).isVisible)
+        XCTAssertFalse(try XCTUnwrap(value.rows.first { $0.id == flag }).isVisible)
+        XCTAssertEqual(try XCTUnwrap(value.rows.first { $0.id == flag }).value, .bool(false))
+        let titleEdit = try store().prepareSetValue(value, key: name, value: .string("כותרת חדשה"))
+        XCTAssertEqual(titleEdit.ownerID, "any")
+        XCTAssertEqual(titleEdit.patch, ["name": .string("כותרת חדשה")])
+        let visibility = try store().prepareVisibility(value, key: .init(property: name), visible: true)
+        let persisted = try XCTUnwrap(visibility.patch[AnyNativePropertyStore.hiddenPropertiesID]?.array?.compactMap(\.string))
+        XCTAssertFalse(persisted.contains(name.visibilityKey))
+        XCTAssertTrue(persisted.contains(flag.visibilityKey))
+        XCTAssertTrue(persisted.contains(try key("imported", "secret").visibilityKey))
+        let reopened = try snapshot(attached: true, storedHidden: persisted, change: change)
+        XCTAssertTrue(try XCTUnwrap(reopened.rows.first { $0.id == name }).isVisible)
+        XCTAssertFalse(try XCTUnwrap(reopened.rows.first { $0.id == flag }).isVisible)
+        XCTAssertEqual(reopened.raw["any"]?["name"], value.raw["any"]?["name"])
+        let explicitShowAll = try snapshot(attached: true, storedHidden: [], change: change)
+        XCTAssertTrue(try XCTUnwrap(explicitShowAll.rows.first { $0.id == name }).isVisible)
+        XCTAssertTrue(try XCTUnwrap(explicitShowAll.rows.first { $0.id == flag }).isVisible)
+        for malformed in [
+            AnyJSON.null,
+            .array([Self.address("any", "type")]),
+            .array([Self.address("unrelated", "source")]),
+            .array([Self.address("any", "name"), Self.address("any", "name")])
+        ] {
+            XCTAssertThrowsError(try snapshot(includeForeignDefinition: true, change: {
+                $0["definitionHidden"] = malformed
+            }))
+        }
+    }
+
     func testPresentationDefaultsGrantNoWriteAuthorityAndPreserveTheNativeFence() throws {
         let reader = try snapshot(attached: true, canWrite: false)
         XCTAssertTrue(reader.rows.allSatisfy(\.isReadOnly))
