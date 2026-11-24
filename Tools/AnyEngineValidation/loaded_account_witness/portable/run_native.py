@@ -330,7 +330,9 @@ class Runner:
         require(rc == 0, "native_compile_failed")
         require(binary.is_file() and 0 < binary.stat().st_size <= 256 * MIB, "native_binary_shape")
         with binary.open("rb") as f:
-            require(f.read(20)[:6] == b"\x7fELF\x02\x01", "native_binary_elf")
+            header = f.read(20)
+            require(header[:6] == b"\x7fELF\x02\x01" and int.from_bytes(header[18:20], "little") == 183,
+                    "native_binary_arm64_elf")
         main = generated_main(self.private / "work", stderr)
         shutil.copyfile(main, self.private / "generated-test-main.go")
         self.result["generated_main"] = {"path": str(main), "sha256": GENERATED_SHA, "bytes": 3282,
@@ -370,6 +372,8 @@ class Runner:
             except Exception as exc:
                 cleanup.append({"name": name, "error": type(exc).__name__})
         self.result["container_cleanup"] = cleanup
+        if any(v.get("returncode") != 0 for v in cleanup):
+            self.result.update(status="FAIL", cleanup_error="owned_container_cleanup_incomplete")
         self.result["command_count"] = len(self.commands)
         save(self.private / "result.json", self.result)
         # Preserve raw logs, original fixtures, binary and actual generated main. Source/compiler bytes
