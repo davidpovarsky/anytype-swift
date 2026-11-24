@@ -374,7 +374,7 @@ func TestLoadedAccountCapturedResolverAccountsForMissingSchemas(t *testing.T) {
 			bundle.RelationKeyRelationKey: domain.String("same-key"), bundle.RelationKeyRelationFormat: domain.Int64(int64(model.RelationFormat_file)),
 		})
 		b := loadedCapturedRow("property-b", model.SmartBlockType_STRelation, map[domain.RelationKey]domain.Value{
-			bundle.RelationKeyRelationKey: domain.String("same-key"), bundle.RelationKeyRelationFormat: domain.Int64(int64(model.RelationFormat_text)),
+			bundle.RelationKeyRelationKey: domain.String("same-key"), bundle.RelationKeyRelationFormat: domain.Int64(int64(model.RelationFormat_shorttext)),
 		})
 		resolver, err := storeresolver.NewCaptured("captured-space", []storeresolver.CapturedRow{a, b})
 		if err != nil {
