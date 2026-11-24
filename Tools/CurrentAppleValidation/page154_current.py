@@ -58,6 +58,18 @@ def admit(expected, inventory_policy=None):
                   "page_inventory_recovery_source_changed")
         current.git("merge-base", "--is-ancestor", page_recovery["sourceCommit"], expected)
         product_trees = page_recovery["productTrees"]
+    revision = fixed.get("currentProductRevision")
+    if revision is not None:
+        c.require(set(revision) == {"schemaVersion", "sourceCommit", "productTrees"}
+                  and revision["schemaVersion"] == 1
+                  and re.fullmatch("[0-9a-f]{40}", revision["sourceCommit"])
+                  and set(revision["productTrees"]) == set(fixed["productTrees"]),
+                  "current_page_product_revision_invalid")
+        current.git("merge-base", "--is-ancestor", revision["sourceCommit"], expected)
+        for name, oid in revision["productTrees"].items():
+            c.require(current.git("rev-parse", revision["sourceCommit"] + ":" + name).decode().strip() == oid,
+                      "current_page_product_revision_origin_changed:" + name)
+        product_trees = revision["productTrees"]
     trees = {**product_trees, **fixed["helperTrees"]}
     for name, oid in trees.items():
         c.require(current.git("rev-parse", "HEAD:" + name).decode().strip() == oid,
@@ -91,10 +103,14 @@ def admit(expected, inventory_policy=None):
                "runAttempt": os.environ["GITHUB_RUN_ATTEMPT"], "repository": c.REPOSITORY}
     source = {"manifestSHA256": current.digest(current.MANIFEST), "pageManifestSHA256": current.digest(INPUTS),
               "files": files, "gitInputs": origins, "compiledTrees": product_trees,
-              "compiledOrigin": expected, "projectionOrigins": fixed["projectionOrigins"]}
+              "compiledOrigin": revision["sourceCommit"] if revision is not None else expected,
+              "projectionOrigins": fixed["projectionOrigins"]}
+    if revision is not None:
+        source["currentProductRevision"] = revision
     if recovery is not None:
         source["inventoryRecoveryPolicy"] = inventory_policy
-        source["compiledSourceTreeOrigin"] = recovery["sourceCommit"]
+        source["inventoryRecoverySourceOrigin"] = recovery["sourceCommit"]
+        source["compiledSourceTreeOrigin"] = revision["sourceCommit"] if revision is not None else recovery["sourceCommit"]
     return context, source
 
 
@@ -423,6 +439,9 @@ def run_stage(commands, stage, device, built, application, binding, source, evid
         listing = directory / "enumeration.json"
         enumeration = mounted.xctest_command(descriptor, device["udid"], selector, enumeration=listing)
         command = mounted.xctest_command(descriptor, device["udid"], selector, result=directory / "original.xcresult")
+        # Installed Xcode27 policy, verified by the retained zero-build failure:
+        # preserve XCTest/keepAlways evidence without post-failure sysdiagnose.
+        command += ["-collect-test-diagnostics", "never"]
         c.require(policy.EXCLUDED_FACTORY not in enumeration + command
                   and enumeration.count(selector) == command.count(selector) == 1, "page_exact_one_selection_required")
         current.write(directory / "plan.json", {"context": commands.context, "binding": binding,
