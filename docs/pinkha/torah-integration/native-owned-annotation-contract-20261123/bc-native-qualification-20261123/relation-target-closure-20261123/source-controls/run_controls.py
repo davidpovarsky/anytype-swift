@@ -1,8 +1,8 @@
 import copy,hashlib,importlib.util,json,os,subprocess,tempfile
 from pathlib import Path
-W=Path("/mnt/development/projects/worktrees/anytype-otzaria-relation-target-closure-20261123")
+W=Path("/mnt/development/projects/worktrees/anytype-otzaria-import-fixture-key-20261124")
 P=W/"docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-native-qualification-20261123"
-D=Path("/mnt/development/projects/diagnostics/otzaria-native-relation-target-closure-20261123/source-controls")
+D=Path("/mnt/development/projects/diagnostics/otzaria-import-fixture-key-20261124/source-controls")
 D.mkdir(exist_ok=True)
 assert not (D/"RESULT.json").exists()
 def sha(raw):return hashlib.sha256(raw).hexdigest()
@@ -13,7 +13,7 @@ helper=P/"relation-target-closure-20261123/relation_target_controls.py"
 unionpath=P/"rpc-union-20261123/source_union.py"
 m=load("relation_target_controls",helper);u=load("native_source_union",unionpath)
 assert sha(helper.read_bytes())=="f9afbf5ca6206a6d3495a4802fd5ae87f129ef76e5b34f72065c98c33ac2ad46"
-assert sha(unionpath.read_bytes())=="481bc0951d1c8b06dcbb13563c8a94b254e36937b7fd34ad874d743d25509e80"
+assert sha(unionpath.read_bytes())=="e51e9fef28ec0c2c8a071d6bf0a6dd640bb7eae1cc068e282d849aa1bad136a2"
 results=[]
 def control(name,fn,expect_refusal=False):
  try:
@@ -91,7 +91,7 @@ with tempfile.TemporaryDirectory(prefix="relation-target-source-controls-",dir=D
  control("wrong_fresh_count_refused",lambda:target_admit(bad),True)
  control("altered_afterimage_refused",lambda:target_admit(alter=lambda name,raw:raw+b"\n" if name.endswith("/native/core/block/export/collection.go") else raw),True)
  control("altered_previous_result_refused",lambda:target_admit(alter=lambda name,raw:raw.replace(b'"FAIL"',b'"PASS"') if name.endswith("/previous-run/RESULT.json") else raw),True)
- old=json.loads(git(W,"show","HEAD:"+str((P/"EXECUTION_INPUTS.json").relative_to(W))))
+ old=json.loads(git(W,"show","c6b4ebd03d25433b8a47073d84e2efa874c777ec:"+str((P/"EXECUTION_INPUTS.json").relative_to(W))))
  target=target_admit();overlay={"overlays":target["inputs"]}
  control("reviewed_two_path_union_applied_exactly",lambda:u.expected_union(overlay,old["final_union_afterimages"],old["required_compiler_inputs"])==(manifest["final_union_afterimages"],manifest["required_compiler_inputs"]))
  wrong=copy.deepcopy(old["final_union_afterimages"]);wrong["core/block/export/collection.go"]="0"*64

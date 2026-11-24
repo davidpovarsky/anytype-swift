@@ -1,0 +1,28 @@
+--- core/block/export/owned_annotation_relation_target_closure_test.go (b4db771d)
++++ core/block/export/owned_annotation_relation_target_closure_test.go (fixture repair)
+@@ -21,11 +21,21 @@
+ func TestOtzariaRelationTargetTypeExportClosure(t *testing.T) {
+ 	const (
+ 		rootID   = "selected-original-root"
+-		rootType = "selected-original-type"
+-		targetA  = "arbitrary-constraint-type-a"
+-		targetB  = "arbitrary-constraint-type-b"
+-		unused   = "unselected-definition-type"
++		rootType = "selectedOriginalType"
++		targetA  = "arbitraryConstraintTypeA"
++		targetB  = "arbitraryConstraintTypeB"
++		unused   = "unselectedDefinitionType"
+ 	)
++	// The original indexed fixture helper uses the type ID as the internal
++	// unique-key component. Admit the fixture through the original parser
++	// before asking the exporter to traverse these arbitrary type IDs.
++	for _, id := range []string{rootType, targetA, targetB, unused} {
++		key, err := domain.NewUniqueKey(smartblock.SmartBlockTypeObjectType, id)
++		require.NoError(t, err)
++		decoded, err := domain.UnmarshalUniqueKey(key.Marshal())
++		require.NoError(t, err)
++		require.Equal(t, id, decoded.InternalKey())
++	}
+ 	targetReadFailure := errors.New("original target type could not be read")
+ 	for _, tc := range []struct {
+ 		name        string

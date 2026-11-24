@@ -1,0 +1,29 @@
+{
+  "after": {
+    "bytes": 6888,
+    "git_blob": "2c5e1a5c971dcd8d67ebaba5432409c116baac7b",
+    "sha256": "03fcf05060656005ace89d86fa6b63e54cee29ad37cd9398ff16b2923fba1509"
+  },
+  "assertion_inverse_exact": true,
+  "before": {
+    "bytes": 6382,
+    "git_blob": "b30cc9569ef4e24ca0a27be15d121279e7a1bbbd",
+    "sha256": "09aa71bf5f6417f5726064577e4cb4d55595b667b7413f1551917b7a1916514b"
+  },
+  "cause": "Original export fixture helper passes its typeId to NewUniqueKey, whose marshalled ot-<ID> fails original UnmarshalUniqueKey when internal ID has hyphens. All eight cases failed before closure assertions.",
+  "expected_native_tree": "c7bf9d82e15e4194c1e9763125b1915df1450e8e",
+  "fix": "Use distinct arbitrary type IDs valid for the original unique key parser and require original round-trip before the fixture exercises export.",
+  "native_execution": "NOT_RUN",
+  "original_fixture": "core/block/export/export_test.go:prepareTestObjectTypeForStore",
+  "original_heart": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "original_parser": "core/domain/uniquekey.go",
+  "parent_control": "b4db771d23ae39e8ea8b32b1701ac46029d8f3e3",
+  "preserved_previous_native_tree": "740c87cb027dbe01f88d3354ed9a91ad84db3e15",
+  "previous_actual_failure": 45284997604,
+  "previous_relation_cases": {
+    "fail": 8,
+    "pass": 0
+  },
+  "production_source_changed": false,
+  "schema": 1
+}
