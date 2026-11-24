@@ -31,7 +31,8 @@ class ImportABIInputControls(unittest.TestCase):
                   'counts': {name: {'passes': count, 'failures': 0, 'skipped': 0, 'not_run': 0}
                              for name, count in [('native9', 9), ('rpc9', 9), ('cancel_panic', 1),
                                                  ('bundled_semantic', 6), ('schema_closure', 11),
-                                                 ('relation_target_closure', 12)]}}
+                                                 ('relation_target_closure', 12),
+                                                 ('imported_creation_date', 6)]}}
         self.value['native_qualification'] = native
         proofs = {'generation_qualification': {'status': 'PASS', 'output_counts': {
                     'native': 11, 'swift': 696, 'middleware': 37}, 'aggregate_producer_outcome': 'FAIL',
@@ -82,10 +83,11 @@ class ImportABIInputControls(unittest.TestCase):
         self.assertFalse(result['editor_ui_accepted'])
 
     def test_partial_native_counts_and_changed_source_are_rejected(self):
-        self.value['native_qualification']['counts']['native9']['passes'] = 8
-        with self.assertRaisesRegex(ValueError, 'acceptance is incomplete'):
-            self.check()
-        self.value['native_qualification']['counts']['native9']['passes'] = 9
+        for name, count in [('native9', 9), ('imported_creation_date', 6)]:
+            self.value['native_qualification']['counts'][name]['passes'] = count - 1
+            with self.assertRaisesRegex(ValueError, 'acceptance is incomplete'):
+                self.check()
+            self.value['native_qualification']['counts'][name]['passes'] = count
         self.value['sdk_source_sha'] = '7' * 40
         with self.assertRaisesRegex(ValueError, 'scope/source differs'):
             self.check()

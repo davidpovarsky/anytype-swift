@@ -51,7 +51,8 @@ def verify(root, path, digest, source):
             and re.fullmatch(r'[0-9a-f]{64}', native.get('execution_manifest_sha256', ''))
             and native.get('status') == 'PASS', 'Qualified native union identity is missing')
     counts = {'native9': 9, 'rpc9': 9, 'cancel_panic': 1, 'bundled_semantic': 6,
-              'schema_closure': 11, 'relation_target_closure': 12}
+              'schema_closure': 11, 'relation_target_closure': 12,
+              'imported_creation_date': 6}
     require(all(type(number) is int for group in native.get('counts', {}).values()
                 for number in group.values()), 'Native counts must be actual integer counts')
     require(native.get('counts') == {key: {'passes': count, 'failures': 0, 'skipped': 0, 'not_run': 0}
