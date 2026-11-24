@@ -138,6 +138,7 @@ def main():
         'start': datetime.datetime.now(datetime.timezone.utc).isoformat(),
         'localDiagnosticID': str(time.time_ns()), 'originalRun': '45438097556',
         'originalProducerRun': '45425747246', 'originalSource': '95cd30c9e0d70fec368a1605a21b155a652a7afd',
+        'originalRuntime': {'version': '27.2', 'build': '24B8117'},
         'appBuilds': 0, 'nativeBuilds': 0, 'uiRunnerBuilds': 0,
         'selectedMethod': TARGET + '/' + SELECTOR, 'productAcceptance': False,
         'controllerSHA256': digest(__file__), 'work': str(work)}
@@ -164,8 +165,8 @@ def main():
         device_inventory = json.loads(run(['xcrun', 'simctl', 'list', '--json']).stdout)
         devices = [item for item in device_inventory['devicetypes']
                    if item['identifier'] == 'com.apple.CoreSimulator.SimDeviceType.iPad-mini-A17-Pro']
-        runtimes = [item for item in device_inventory['runtimes'] if item.get('version') == '27.0'
-                    and item.get('buildversion') == '24A434' and item.get('isAvailable') is True]
+        runtimes = [item for item in device_inventory['runtimes'] if item.get('version') == '27.2'
+                    and item.get('buildversion') == '24B8117' and item.get('isAvailable') is True]
         assert len(devices) == len(runtimes) == 1
         name = 'Anytype hierarchy action diagnostic ' + str(uuid.uuid4())
         udid = run(['xcrun', 'simctl', 'create', name, devices[0]['identifier'], runtimes[0]['identifier']]).stdout.strip()
