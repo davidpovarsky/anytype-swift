@@ -127,3 +127,46 @@ private func compileOriginalHostAPI(
     opened.retire()
     lifetime.retire()
 }
+
+/// Additional production public facade compilation only. It is never called
+/// by the EN/HE resource probe and grants no local editor runtime acceptance.
+@MainActor
+private func compileOriginalLocalAnnotationAPI(
+    source: AnytypeOriginalEditorLocalAnnotationSource,
+    snapshot: AnytypeOriginalEditorSnapshot
+) async throws {
+    let observed = try AnytypeOriginalEditorLocalAnnotationSource(
+        hostProfileID: source.hostProfileID, annotationUUID: source.annotationUUID,
+        expectedRevision: source.expectedRevision, sourceWitnessSHA256: source.sourceWitnessSHA256,
+        payloadSHA256: source.payloadSHA256)
+    let lifetime = AnytypeOriginalEditorLocalAnnotationSourceLifetime(source: observed)
+    _ = lifetime.isCurrent
+    _ = readOriginalLocalSource(lifetime)
+    let plain: AnytypeOriginalEditorLocalAnnotationBody = .plainText("")
+    let rich: AnytypeOriginalEditorLocalAnnotationBody = .nativeSnapshot(snapshot)
+    _ = plain
+    let session = try await AnytypeOriginalEditorModule.openLocalAnnotation(
+        appGroup: "group.com.davidpovarsky.chavrusatext", sourceLifetime: lifetime,
+        body: rich, sourceIsCurrent: { $0 == observed })
+    _ = session.binding
+    _ = try session.makeViewController()
+    let captured: AnytypeOriginalEditorLocalAnnotationCapture =
+        try await session.captureNativeSnapshot(maximumBodyBytes: 65_536)
+    _ = captured.nativeCapture.snapshot.bodyBytes
+    _ = captured.textPreview
+    session.retire()
+    lifetime.retire()
+}
+
+private nonisolated func readOriginalLocalSource(
+    _ lifetime: AnytypeOriginalEditorLocalAnnotationSourceLifetime
+) -> AnytypeOriginalEditorLocalAnnotationSource {
+    // Host DB retirement calls this immutable boundary while outside MainActor.
+    let source = lifetime.source
+    _ = source.annotationUUID
+    _ = source.expectedRevision
+    _ = source.sourceWitnessSHA256
+    _ = source.payloadSHA256
+    lifetime.retire()
+    return source
+}

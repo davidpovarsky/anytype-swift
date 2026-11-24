@@ -14,7 +14,7 @@ import uuid
 
 SCHEMA = 'otzaria.original-editor.local-execution/1'
 REPOSITORY = 'davidpovarsky/anytype-swift'
-LOCAL_BRANCH = 'codex/otzaria-sdk-mac-20261124'
+LOCAL_BRANCH = 'codex/otzaria-local-annotation-sdk-20261124'
 
 
 def require(value, message):

@@ -6,7 +6,7 @@ a local execution. The existing GitHub Actions route remains available.
 
 ## Execution order
 
-Use an isolated full checkout of `codex/otzaria-sdk-mac-20261124` at the exact
+Use an isolated full checkout of `codex/otzaria-local-annotation-sdk-20261124` at the exact
 published commit, with Python 3.12 or newer and Xcode 27.0 build 27A266a. Reserve
 the Mac build slot with the other task owners before starting compilation.
 
@@ -59,3 +59,33 @@ only its individually qualified stable outputs are reused.
 The shared AI pins adopt Hanlin `f8cf6ca543c5ceed05a60141644664c93e4565b4` and
 Swift AI SDK `3f38f1302764635c9991d0d00fd7b12471a5373c`. These source pins are
 bound by the profile and still require compilation within the complete SDK.
+
+
+## Production local annotation source continuation
+
+The reviewed product leaf is `cbe25cb467f989a1d40ed564d833616346a7d9b6`.
+It adds exactly five framework Swift files and one original Services auth extension
+to `bc36e8ecd803c0c4f9c856ed9a5384e074432952`. The original generated 733-file
+inventory and its historical generator/adoption receipts remain unchanged.
+The current source preflight independently verifies the six additions, current
+product trees, all 20 framework compiler inputs and the unchanged original UI,
+resources and native middleware. The Services auth extension is individually
+bound by committed blob, SHA-256 and byte count in the source observation.
+
+The new compiler contract requires 111 Debug declarations: all previous 86 plus
+25 production local lifecycle declarations. The production subset is 89 and the
+existing Debug qualification SPI remains 22. These are required counts, not
+observations until the actual compiler graph passes. The local capture/session
+cannot be constructed by an external caller.
+
+`admit_retained_source_controls.py` is the historical 4fd/15-facade admission
+route. The new local execution does not invoke it or use its old source proof to
+admit the current product. Its historical constraints remain unchanged. Use the
+current `source_observation` through the genuine local producer instead.
+
+The local lifecycle supports canonical bodies in their original Host profile
+with increasing local SQLite revisions. A transported/rebased rich body needs
+a separate genuine canonical transport admission; it is rejected here without
+rewriting historical provenance. The production normal-entry UI test, including
+Save, Discard and cold relaunch in its own owned Simulator container, is separate
+from both resource/ABI acceptance and the existing Debug qualification journey.

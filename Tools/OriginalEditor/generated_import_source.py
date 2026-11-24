@@ -8,6 +8,16 @@ COMPLETE = "4fd99f19b0ec361ba84ac4b2822cae10c6818f99"
 PREIMAGE = "7ea121d46a48e00cbcb02e91621c75947c57f6a4"
 ORIGINAL = "997e285617d57b31c4205976f01019819fa29a03"
 POSTIMAGE = "81115fe82b4ffbedd49ca69a573d85acafa67650"
+LOCAL_ANNOTATION_BASE = "bc36e8ecd803c0c4f9c856ed9a5384e074432952"
+LOCAL_ANNOTATION_SOURCE = "cbe25cb467f989a1d40ed564d833616346a7d9b6"
+LOCAL_ANNOTATION_FILES = (
+    "Modules/Services/Sources/Services/Auth/AuthMiddleService+OriginalLocalAnnotation.swift",
+    "OriginalEditorFramework/AnytypeOriginalEditorLocalAnnotation.swift",
+    "OriginalEditorFramework/OriginalEditorLocalAnnotationJournal.swift",
+    "OriginalEditorFramework/OriginalEditorLocalAnnotationMaterialization.swift",
+    "OriginalEditorFramework/OriginalEditorLocalAnnotationNativeBody.swift",
+    "OriginalEditorFramework/OriginalEditorLocalAnnotationRuntime.swift",
+)
 SCOPES = (
     "Modules/ProtobufMessages/Sources/Protocol",
     "Modules/ProtobufMessages/Sources/Generated/CommandsInvocation",
@@ -164,21 +174,37 @@ def verify_generated_source(root, profile):
                    check=True, timeout=60)
     delta = git(root, "diff", "--name-only", PREIMAGE, POSTIMAGE, "--", *SCOPES).decode().splitlines()
     require(delta == [item["path"] for item in changes], "Committed generated delta is incomplete")
+    # Keep the authentic generator adoption and its historical product trees
+    # unchanged. The separately reviewed production lifecycle adds exactly six
+    # original Swift files; no generated source or native ABI input is rewritten.
+    generated_trees = {path: git(root, "rev-parse", POSTIMAGE + ":" + path).decode().strip()
+                       for path in PRODUCTS}
+    require(generated_trees == binding["composed_product_trees"]
+            and generated_trees == {path: git(root, "rev-parse", LOCAL_ANNOTATION_BASE + ":" + path).decode().strip()
+                                    for path in PRODUCTS}, "Original generated SDK product tree differs")
+    reviewed_delta = git(root, "diff", "--name-status", LOCAL_ANNOTATION_BASE,
+                         LOCAL_ANNOTATION_SOURCE, "--", *PRODUCTS).decode().splitlines()
+    require(reviewed_delta == ["A\t" + path for path in LOCAL_ANNOTATION_FILES],
+            "Reviewed local lifecycle is not the exact six additive Swift files")
+    subprocess.run(["git", "-C", str(root), "merge-base", "--is-ancestor", LOCAL_ANNOTATION_SOURCE, "HEAD"],
+                   check=True, timeout=60)
     trees = {path: git(root, "rev-parse", "HEAD:" + path).decode().strip() for path in PRODUCTS}
-    require(trees == binding["composed_product_trees"]
-            and trees == {path: git(root, "rev-parse", POSTIMAGE + ":" + path).decode().strip()
-                          for path in PRODUCTS}, "Composed SDK product tree differs")
+    require(trees == {path: git(root, "rev-parse", LOCAL_ANNOTATION_SOURCE + ":" + path).decode().strip()
+                      for path in PRODUCTS}, "Reviewed local annotation product tree differs")
     original = {path: git(root, "rev-parse", COMPLETE + ":" + path).decode().strip()
                 for path in profile["original_trees"]}
-    require(profile["original_trees"] == original
+    require(profile["original_trees"] == {path: trees[path] for path in profile["original_trees"]}
             and all(trees[path] == git(root, "rev-parse", COMPLETE + ":" + path).decode().strip()
-                    for path in ("Anytype/Sources", "Anytype/Resources", "OriginalEditorFramework")),
-            "Generated adoption changed original UI, resources or facades")
+                    for path in ("Anytype/Sources", "Anytype/Resources"))
+            and trees["Dependencies/Middleware"] == generated_trees["Dependencies/Middleware"],
+            "Local lifecycle changed original UI, resources or native middleware")
     subprocess.run(["git", "-C", str(root), "diff", "--quiet", "HEAD", "--", *PRODUCTS],
                    check=True, timeout=60)
     return {"schema": "otzaria.committed-generated-sdk-source-observation/1",
             "postimage_source": POSTIMAGE, "preimage_source": PREIMAGE,
             "reviewed_complete_source": COMPLETE,
+            "reviewed_local_annotation_source": LOCAL_ANNOTATION_SOURCE,
+            "local_annotation_source_delta": reviewed_delta,
             "generated_index_sha256": binding["documents"]["generated_index"]["sha256"],
             "source_adoption_sha256": binding["documents"]["source_adoption"]["sha256"],
             "composed_product_trees": trees, "original_complete_trees": original,

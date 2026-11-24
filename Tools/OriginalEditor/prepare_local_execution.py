@@ -45,7 +45,7 @@ def prepare(root, evidence, work):
     evidence.mkdir(parents=True)
     record = {'schema': SCHEMA, 'repository': REPOSITORY, 'execution_id': execution_id,
               'source_sha': head, 'source_tree': tree, 'head_branch': LOCAL_BRANCH,
-              'root': str(root), 'host': host, 'owner': 'ChatGPT/sdk_stageb',
+              'root': str(root), 'host': host, 'owner': 'ChatGPT/native_import',
               'started_at': datetime.now(timezone.utc).isoformat(),
               'evidence_root': str(evidence), 'work_root': str(work),
               'runner_sha256': sha(root / 'Tools/OriginalEditor/run_framework_acceptance.py'),

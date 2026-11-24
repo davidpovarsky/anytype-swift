@@ -254,6 +254,114 @@
         "AnytypeOriginalEditorModule"
       ]
     },
+    "OriginalEditorFramework/AnytypeOriginalEditorLocalAnnotation.swift": {
+      "required": [
+        [
+          "AnytypeOriginalEditorLocalAnnotationSource"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationSource",
+          "hostProfileID"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationSource",
+          "annotationUUID"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationSource",
+          "expectedRevision"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationSource",
+          "sourceWitnessSHA256"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationSource",
+          "payloadSHA256"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationSource",
+          "init(hostProfileID:annotationUUID:expectedRevision:sourceWitnessSHA256:payloadSHA256:)"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationBody"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationBody",
+          "plainText(_:)"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationBody",
+          "nativeSnapshot(_:)"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationError"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationSourceLifetime"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationSourceLifetime",
+          "source"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationSourceLifetime",
+          "init(source:)"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationSourceLifetime",
+          "isCurrent"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationSourceLifetime",
+          "retire()"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationCapture"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationCapture",
+          "nativeCapture"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationCapture",
+          "textPreview"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationSession"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationSession",
+          "binding"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationSession",
+          "makeViewController()"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationSession",
+          "captureNativeSnapshot(maximumBodyBytes:)"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationSession",
+          "retire()"
+        ],
+        [
+          "AnytypeOriginalEditorModule",
+          "openLocalAnnotation(appGroup:sourceLifetime:body:sourceIsCurrent:)"
+        ]
+      ],
+      "roots": [
+        "AnytypeOriginalEditorLocalAnnotationSource",
+        "AnytypeOriginalEditorLocalAnnotationBody",
+        "AnytypeOriginalEditorLocalAnnotationError",
+        "AnytypeOriginalEditorLocalAnnotationSourceLifetime",
+        "AnytypeOriginalEditorLocalAnnotationCapture",
+        "AnytypeOriginalEditorLocalAnnotationSession",
+        "AnytypeOriginalEditorModule"
+      ],
+      "scope": "PUBLIC"
+    },
     "OriginalEditorFramework/AnytypeOriginalEditorModule.swift": {
       "required": [
         [
@@ -403,7 +511,9 @@
     "AnytypeOriginalEditorProcessResumeReceipt",
     "AnytypeOriginalEditorAccountSession",
     "AnytypeOriginalAnnotationImportHistory",
-    "AnytypeOriginalAnnotationImportAttempt"
+    "AnytypeOriginalAnnotationImportAttempt",
+    "AnytypeOriginalEditorLocalAnnotationCapture",
+    "AnytypeOriginalEditorLocalAnnotationSession"
   ],
   "schema": 2,
   "status": "COMPILE_SURFACE_CONTRACT_NATIVE_EDITOR_NOT_QUALIFIED"

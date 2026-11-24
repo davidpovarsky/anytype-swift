@@ -346,6 +346,26 @@
 		D4D971157E8AF7DED91FFD12 /* AnytypeOriginalEditorAccountSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15FD8EECDFE1057E0E9974CF /* AnytypeOriginalEditorAccountSession.swift */; };
 		DEFD0632E47277D7C1A27876 /* OriginalEditorAccountSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889AE0C4E27BEF75130E93EE /* OriginalEditorAccountSessionView.swift */; };
 		589DD7DCCC58633417BCFC20 /* AnytypeOriginalAnnotationImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011F953AA9A4645682662439 /* AnytypeOriginalAnnotationImport.swift */; };
+		1007E748744FB5E7B6CABB3B = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "BB99E76E93E02CF699FE5D50";
+		};
+		17AE6001A4C44A401962CF73 = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "F5FBBE2595D1123C0D6B8447";
+		};
+		6AAC483ACC7E811FBB5C2A57 = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "C4850C4206B4CDC0DB22CEDF";
+		};
+		731855541C1DD026330AAC15 = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "0B676179E2C591C7B198544C";
+		};
+		CD7641E65D34EE027E60CA92 = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "56DF25A0E0687BDEF152DE22";
+		};
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -554,6 +574,36 @@
 		15FD8EECDFE1057E0E9974CF /* AnytypeOriginalEditorAccountSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnytypeOriginalEditorAccountSession.swift; sourceTree = "<group>"; };
 		889AE0C4E27BEF75130E93EE /* OriginalEditorAccountSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OriginalEditorAccountSessionView.swift; sourceTree = "<group>"; };
 		011F953AA9A4645682662439 /* AnytypeOriginalAnnotationImport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnytypeOriginalAnnotationImport.swift; sourceTree = "<group>"; };
+		0B676179E2C591C7B198544C = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "OriginalEditorLocalAnnotationNativeBody.swift";
+			"sourceTree" = "<group>";
+		};
+		56DF25A0E0687BDEF152DE22 = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "OriginalEditorLocalAnnotationJournal.swift";
+			"sourceTree" = "<group>";
+		};
+		BB99E76E93E02CF699FE5D50 = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "OriginalEditorLocalAnnotationRuntime.swift";
+			"sourceTree" = "<group>";
+		};
+		C4850C4206B4CDC0DB22CEDF = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "OriginalEditorLocalAnnotationMaterialization.swift";
+			"sourceTree" = "<group>";
+		};
+		F5FBBE2595D1123C0D6B8447 = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "AnytypeOriginalEditorLocalAnnotation.swift";
+			"sourceTree" = "<group>";
+		};
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -871,7 +921,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		30B870A3C4BC0E52B0E62C95 /* OriginalEditorFramework */ = {
+		30B870A3C4BC0E52B0E62C95 = {
 			"isa" = "PBXGroup";
 			"children" = (
 				"A6AA0EAEDFA19F633935B3BB",
@@ -889,6 +939,11 @@
 				"15FD8EECDFE1057E0E9974CF",
 				"889AE0C4E27BEF75130E93EE",
 				"011F953AA9A4645682662439",
+				"F5FBBE2595D1123C0D6B8447",
+				"56DF25A0E0687BDEF152DE22",
+				"C4850C4206B4CDC0DB22CEDF",
+				"0B676179E2C591C7B198544C",
+				"BB99E76E93E02CF699FE5D50",
 			);
 			"path" = "OriginalEditorFramework";
 			"sourceTree" = "<group>";
@@ -1362,7 +1417,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		75EFEC8A26D9BA5B1394EE7B /* EditorSources */ = {
+		75EFEC8A26D9BA5B1394EE7B = {
 			"isa" = "PBXSourcesBuildPhase";
 			"buildActionMask" = "2147483647";
 			"files" = (
@@ -1382,6 +1437,11 @@
 				"D4D971157E8AF7DED91FFD12",
 				"DEFD0632E47277D7C1A27876",
 				"589DD7DCCC58633417BCFC20",
+				"17AE6001A4C44A401962CF73",
+				"CD7641E65D34EE027E60CA92",
+				"6AAC483ACC7E811FBB5C2A57",
+				"731855541C1DD026330AAC15",
+				"1007E748744FB5E7B6CABB3B",
 			);
 			"runOnlyForDeploymentPostprocessing" = "0";
 		};

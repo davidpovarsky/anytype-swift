@@ -19,17 +19,18 @@
     "Tools/PinkhaSimulatorGate/preflight.py": "2628b345d5743bbe1ddc0d1afaeef9fb410f3daf"
   },
   "branch": "codex/otzaria-original-editor-complete-framework-20261123",
-  "candidate_project_sha256": "befad8b2d20f19b0f329093038394c3253bfdbdc8927f2bdfa767de2472a9f2a",
+  "candidate_project_sha256": "d06ecf8609754b66934b1d4156536ef37e4ae01cd74b75eaf816c2992a361a9a",
   "complete_source_continuation": {
     "native_qualified": false,
     "path": "Tools/OriginalEditor/complete_source_continuation.json",
-    "reviewed_source_sha": "4fd99f19b0ec361ba84ac4b2822cae10c6818f99",
-    "sha256": "c7d3bdd5585f770335489a6a818942e0ac4339b39621cf1ab5f6655f5ca5459e"
+    "reviewed_source_sha": "cbe25cb467f989a1d40ed564d833616346a7d9b6",
+    "sha256": "2cab1264401b0e339fb23c346382e2e2a6b36e9e9d4b7d1567ffa45ec12f1ca2"
   },
   "framework_facade_sources": [
     "OriginalEditorFramework/AnytypeOriginalAnnotationImport.swift",
     "OriginalEditorFramework/AnytypeOriginalEditorAccountSession.swift",
     "OriginalEditorFramework/AnytypeOriginalEditorHost.swift",
+    "OriginalEditorFramework/AnytypeOriginalEditorLocalAnnotation.swift",
     "OriginalEditorFramework/AnytypeOriginalEditorModule.swift",
     "OriginalEditorFramework/AnytypeOriginalEditorNativeBodyReadback.swift",
     "OriginalEditorFramework/AnytypeOriginalEditorNativeFixture.swift",
@@ -41,7 +42,11 @@
     "OriginalEditorFramework/OriginalAnnotationNativeArchiveLayout.swift",
     "OriginalEditorFramework/OriginalAnnotationNativeMapKeyGuard.swift",
     "OriginalEditorFramework/OriginalAnnotationNativeSnapshotWire.swift",
-    "OriginalEditorFramework/OriginalEditorAccountSessionView.swift"
+    "OriginalEditorFramework/OriginalEditorAccountSessionView.swift",
+    "OriginalEditorFramework/OriginalEditorLocalAnnotationJournal.swift",
+    "OriginalEditorFramework/OriginalEditorLocalAnnotationMaterialization.swift",
+    "OriginalEditorFramework/OriginalEditorLocalAnnotationNativeBody.swift",
+    "OriginalEditorFramework/OriginalEditorLocalAnnotationRuntime.swift"
   ],
   "framework_target_id": "83B785D0C457FE3CCBAB196E",
   "generated_import_source": {
@@ -85,13 +90,13 @@
     "source_json_after_blob": "0e6d2f320509073e897b4989d9de278a30021a27",
     "source_json_before_blob": "5a1259a4badab68621a76d090ea09bfbee2ea1b6"
   },
-  "new_project_objects": 137,
+  "new_project_objects": 147,
   "original_heart_installer_blob": "c719ae8b55349d2c8fc4e9ae560a2c436f307955",
   "original_swift_sources": 2256,
   "original_trees": {
     "Anytype/Resources": "0827010674c089cfe9846e592e1d801e9d3f7a9b",
     "Anytype/Sources": "6a11487a50642388f49c3017359ed45210da9630",
-    "Modules": "4467772e9ac8bea7fc37080b4502978fb0a93322"
+    "Modules": "0c30398ecae9bf4164ee65b03d7e0c51c07d39cb"
   },
   "package_closure_review": {
     "additional_pin_source": {
@@ -214,7 +219,7 @@
   "package_pin_count": 52,
   "package_resolved_blob": "0102eb25471920e3f562dc60971da600740e7d8e",
   "package_resolved_path": "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
-  "public_host_contract_sha256": "fbd14d549ea7bdfda6fd3f4a7df6aa55f505b8c794aba0241e4d7b11f515836d",
+  "public_host_contract_sha256": "33594f50c825c490edf5502add640fd478d3249909352e02b0e53ee23b9ee634",
   "resource_oracles": {
     "color_blob": "6c02bf01dd48acd99bba5a1396ba4e8e01701ab7",
     "color_path": "Modules/Assets/Sources/Assets/Resources/SystemColors.xcassets/DesignSystem/Text/primary.colorset/Contents.json",
@@ -280,7 +285,7 @@
     }
   },
   "schema": 1,
-  "scope": "Same-toolchain original Host API framework and Debug Simulator SPI import/link/resource prerequisite; native editable UI/save/reopen remains unqualified",
+  "scope": "Same-toolchain original Host API and local annotation facade framework; actual native local UI/save/reopen requires separate acceptance.",
   "shared_runtime_route": {
     "dependency_contract_sha256": "d2730085567baec7fe7060f7e2872e1ae3f7e3cf942d2292598e175fb0ed2840",
     "full_original_editor_qualified": false,

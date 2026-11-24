@@ -13,7 +13,7 @@ class CompleteSourceContinuationControls(unittest.TestCase):
     def test_complete_original_source_and_facades_are_bound_without_native_credit(self):
         value = verify_complete_source(self.profile, self.continuation)
         self.assertEqual(len(value["source_files"]), 2256)
-        self.assertEqual(len(value["framework_facade_sources"]), 15)
+        self.assertEqual(len(value["framework_facade_sources"]), 20)
         self.assertIs(value["native_qualified"], False)
 
     def test_different_product_source_cannot_reuse_complete_continuation(self):

@@ -39,8 +39,8 @@ def read_manifest():
         '5333421A262E249100238121', '2A685D582B7B854200456E08', 'FA1000002F000001006805CC',
         '2E63D9B52D56520C008A733A'},
         'Unreviewed shared runtime dependency object set')
-    require(len(value.get('framework_facade_sources', [])) == 15
-            and len(set(value['framework_facade_sources'])) == 15,
+    require(len(value.get('framework_facade_sources', [])) == 20
+            and len(set(value['framework_facade_sources'])) == 20,
             'Incomplete reviewed Host facade source closure')
     require(sha256(HERE / 'public_host_contract.json') == value.get('public_host_contract_sha256'),
             'Reviewed public Host and qualification SPI contract differs')
@@ -58,10 +58,10 @@ def read_manifest():
 
 def verify_complete_source(profile, continuation):
     require(continuation.get('schema') == 1
-            and continuation.get('reviewed_source_sha') == '4fd99f19b0ec361ba84ac4b2822cae10c6818f99'
+            and continuation.get('reviewed_source_sha') == 'cbe25cb467f989a1d40ed564d833616346a7d9b6'
             and continuation.get('prior_producer_source') == 'de63125b97cd5b91a1fa4f4b71d03738076e735f'
             and profile['complete_source_continuation']['reviewed_source_sha'] == continuation['reviewed_source_sha'],
-            'Unreviewed complete original account/Import source continuation')
+            'Unreviewed complete original account/Import/local-annotation source continuation')
     original, reviewed = continuation['original_product_trees'], continuation['reviewed_product_trees']
     require(set(original) == set(reviewed) == {'Anytype/Sources', 'Anytype/Resources', 'Modules', 'OriginalEditorFramework'}
             and original['Anytype/Resources'] == reviewed['Anytype/Resources'] == '0827010674c089cfe9846e592e1d801e9d3f7a9b'
@@ -73,10 +73,15 @@ def verify_complete_source(profile, continuation):
             and all(p.startswith('Anytype/Sources/') and p.endswith('.swift') for p in sources),
             'Complete original Swift source inventory differs')
     require(facades == profile['framework_facade_sources'] and facades == sorted(set(facades))
-            and len(facades) == 15
+            and len(facades) == 20
             and {'OriginalEditorFramework/AnytypeOriginalAnnotationImport.swift',
                  'OriginalEditorFramework/AnytypeOriginalEditorAccountSession.swift',
-                 'OriginalEditorFramework/OriginalEditorAccountSessionView.swift'} <= set(facades),
+                 'OriginalEditorFramework/OriginalEditorAccountSessionView.swift',
+                 'OriginalEditorFramework/AnytypeOriginalEditorLocalAnnotation.swift',
+                 'OriginalEditorFramework/OriginalEditorLocalAnnotationJournal.swift',
+                 'OriginalEditorFramework/OriginalEditorLocalAnnotationMaterialization.swift',
+                 'OriginalEditorFramework/OriginalEditorLocalAnnotationNativeBody.swift',
+                 'OriginalEditorFramework/OriginalEditorLocalAnnotationRuntime.swift'} <= set(facades),
             'Complete account-session/Import facade inventory differs')
     return {'reviewed_source_sha': continuation['reviewed_source_sha'],
             'prior_producer_source': continuation['prior_producer_source'],
@@ -137,7 +142,7 @@ def verify_project(raw, baseline, profile):
                               if old[key]['isa'] == 'PBXSourcesBuildPhase']
     require(len(original_source_phases) == 1, 'Ambiguous original explicit compiler source phase')
     original_source_refs = [old[key]['fileRef'] for key in original_source_phases[0]['files']]
-    require(len(child_ids) == len(set(child_ids)) == 15
+    require(len(child_ids) == len(set(child_ids)) == 20
             and len(original_source_refs) == len(set(original_source_refs))
             and not set(original_source_refs) & set(child_ids)
             and len(source_ids) == len(set(source_ids)) == len(child_ids) + len(original_source_refs),
@@ -238,6 +243,7 @@ def source_observation(root, environment=None):
     tracked = subprocess.check_output(['git', '-C', str(root), 'ls-files', '-z']).decode().split('\0')
     selected = [p for p in tracked if p and (p.startswith('Tools/OriginalEditor/')
                 or p.startswith('OriginalEditorFramework/') or p in profile['bound_original_helpers'] or p == installer_path
+                or p == 'Modules/Services/Sources/Services/Auth/AuthMiddleService+OriginalLocalAnnotation.swift'
                 or p in ['Anytype.xcodeproj/project.pbxproj',
                          'Anytype.xcodeproj/xcshareddata/xcschemes/AnytypeOriginalEditor.xcscheme',
                          '.github/workflows/pinkha-original-editor-framework.yml'])]

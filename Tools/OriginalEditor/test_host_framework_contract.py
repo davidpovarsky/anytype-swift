@@ -29,9 +29,9 @@ class HostFrameworkContractControls(unittest.TestCase):
 
     def test_all_reviewed_public_and_spi_paths_are_required_without_ui_credit(self):
         result = self.verify(self.graph())
-        self.assertEqual(result['reviewed_host_and_spi_requirements_observed'], 86)
+        self.assertEqual(result['reviewed_host_and_spi_requirements_observed'], 111)
         self.assertEqual(result['editable_mount_api'], 'EXPOSED_COMPILED_NATIVE_EDITOR_NOT_RUN')
-        self.assertEqual(len(result['own_public_symbols']), 86)
+        self.assertEqual(len(result['own_public_symbols']), 111)
         self.assertTrue(result['qualification_spi_scope_verified'])
         self.assertTrue(result['public_host_scope_verified'])
         self.assertEqual(sum(symbol['spi'] for symbol in result['own_public_symbols']), 22)
@@ -88,6 +88,18 @@ class HostFrameworkContractControls(unittest.TestCase):
             'location': {'uri': (ROOT / 'OriginalEditorFramework/AnytypeOriginalEditorHost.swift').as_uri()}})
         with self.assertRaises(ValueError): self.verify(graph)
 
+    def test_local_session_and_capture_cannot_be_publicly_fabricated(self):
+        path = ROOT / 'OriginalEditorFramework/AnytypeOriginalEditorLocalAnnotation.swift'
+        for name in ['AnytypeOriginalEditorLocalAnnotationSession',
+                     'AnytypeOriginalEditorLocalAnnotationCapture']:
+            with self.subTest(name=name):
+                graph = self.graph()
+                graph['symbols'].append({'accessLevel': 'public',
+                    'pathComponents': [name, 'init()'],
+                    'identifier': {'precise': 's:21AnytypeOriginalEditorUnownedLocalConstructor'},
+                    'location': {'uri': path.as_uri()}})
+                with self.assertRaises(ValueError): self.verify(graph)
+
     def test_public_raw_runtime_helper_is_not_the_qualified_spi(self):
         graph = self.graph()
         graph['symbols'].append({'accessLevel': 'public',
@@ -119,7 +131,8 @@ class HostFrameworkContractControls(unittest.TestCase):
 
     def test_every_account_and_import_public_boundary_is_required(self):
         added = {'OriginalEditorFramework/AnytypeOriginalEditorAccountSession.swift',
-                 'OriginalEditorFramework/AnytypeOriginalAnnotationImport.swift'}
+                 'OriginalEditorFramework/AnytypeOriginalAnnotationImport.swift',
+                 'OriginalEditorFramework/AnytypeOriginalEditorLocalAnnotation.swift'}
         original = self.graph()
         for index, symbol in enumerate(original['symbols']):
             if not any(symbol['location']['uri'] == (ROOT / path).as_uri() for path in added):

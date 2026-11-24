@@ -33,7 +33,7 @@ class GeneratedSourceControls(unittest.TestCase):
 
     def test_complete_original_baseline_is_kept_separate_from_generated_modules(self):
         profile = read_manifest()
-        self.assertEqual(profile["original_trees"]["Modules"], "4467772e9ac8bea7fc37080b4502978fb0a93322")
+        self.assertEqual(profile["original_trees"]["Modules"], "0c30398ecae9bf4164ee65b03d7e0c51c07d39cb")
         self.assertEqual(profile["generated_import_source"]["composed_product_trees"]["Modules"],
                          "94f2871225cf6da9e724e600262c21a05b3b6550")
         before, after, changes = self.documents()
@@ -90,7 +90,7 @@ class GeneratedSourceControls(unittest.TestCase):
     def test_wrong_composed_tree_cannot_reuse_source_rows(self):
         profile = read_manifest()
         profile["generated_import_source"]["composed_product_trees"]["Modules"] = "0" * 40
-        with self.assertRaisesRegex(ValueError, "Composed SDK product tree differs"):
+        with self.assertRaisesRegex(ValueError, "Original generated SDK product tree differs"):
             boundary.verify_generated_source(ROOT, profile)
 
 

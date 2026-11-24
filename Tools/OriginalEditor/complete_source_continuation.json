@@ -3,6 +3,7 @@
     "OriginalEditorFramework/AnytypeOriginalAnnotationImport.swift",
     "OriginalEditorFramework/AnytypeOriginalEditorAccountSession.swift",
     "OriginalEditorFramework/AnytypeOriginalEditorHost.swift",
+    "OriginalEditorFramework/AnytypeOriginalEditorLocalAnnotation.swift",
     "OriginalEditorFramework/AnytypeOriginalEditorModule.swift",
     "OriginalEditorFramework/AnytypeOriginalEditorNativeBodyReadback.swift",
     "OriginalEditorFramework/AnytypeOriginalEditorNativeFixture.swift",
@@ -14,9 +15,14 @@
     "OriginalEditorFramework/OriginalAnnotationNativeArchiveLayout.swift",
     "OriginalEditorFramework/OriginalAnnotationNativeMapKeyGuard.swift",
     "OriginalEditorFramework/OriginalAnnotationNativeSnapshotWire.swift",
-    "OriginalEditorFramework/OriginalEditorAccountSessionView.swift"
+    "OriginalEditorFramework/OriginalEditorAccountSessionView.swift",
+    "OriginalEditorFramework/OriginalEditorLocalAnnotationJournal.swift",
+    "OriginalEditorFramework/OriginalEditorLocalAnnotationMaterialization.swift",
+    "OriginalEditorFramework/OriginalEditorLocalAnnotationNativeBody.swift",
+    "OriginalEditorFramework/OriginalEditorLocalAnnotationRuntime.swift"
   ],
   "generated_import_abi_status": "PENDING_GENUINE_NATIVE9_RPC9_AND_LIB_ARTIFACT",
+  "local_annotation_base": "bc36e8ecd803c0c4f9c856ed9a5384e074432952",
   "native_qualified": false,
   "original_product_trees": {
     "Anytype/Resources": "0827010674c089cfe9846e592e1d801e9d3f7a9b",
@@ -242,12 +248,12 @@
       "path": "Modules/AnytypeCore/AnytypeCore/Utils/UserDefaultWrapper/UserDefaultStorage.swift"
     },
     {
-      "after_git_blob": "fa9d36d5e05d3704dc93d0c56460b51fbd674047",
+      "after_git_blob": "d33123e5f8016c11bdc2d2cbbb2e58c69684ff38",
       "before_git_blob": "0896bbcc737681560f0914fdede02a0e71a8b1d5",
       "path": "Modules/ProtobufMessages/Sources/Generated/CommandsInvocation/invocation-adoption.generated.swift"
     },
     {
-      "after_git_blob": "a941ef8bfcad020e5a08362155110543e8064b6c",
+      "after_git_blob": "95b7bbb7be975b12f6b5edab823e9329e61428d6",
       "before_git_blob": "10bfb6d4b099c110362e4d48d0ef1eff345acb71",
       "path": "Modules/ProtobufMessages/Sources/Generated/service+invocation.swift"
     },
@@ -257,9 +263,14 @@
       "path": "Modules/ProtobufMessages/Sources/Invocation.swift"
     },
     {
-      "after_git_blob": "aec04180191e6597e3016538d5295dabc5df4be6",
+      "after_git_blob": "6cd274341aa64af1a11d155a3a19284eed1d2ca3",
       "before_git_blob": "0587a58f017550096dfeabded3075d8328ed7d44",
       "path": "Modules/ProtobufMessages/Sources/Loc/Generated/Error+Localization.swift"
+    },
+    {
+      "after_git_blob": "69d4353824470d32d69d7448c53b3f8a6d5439d1",
+      "before_git_blob": null,
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Annotation.Import.swift"
     },
     {
       "after_git_blob": "9d0021ec912ac849e27946a5d50629453676cf0c",
@@ -277,6 +288,11 @@
       "path": "Modules/ProtobufMessages/Sources/ServiceMessageHandlerAdapter.swift"
     },
     {
+      "after_git_blob": "ab15c230b4ff64d2165b5200d5200a0cb2913148",
+      "before_git_blob": null,
+      "path": "Modules/Services/Sources/Services/Auth/AuthMiddleService+OriginalLocalAnnotation.swift"
+    },
+    {
       "after_git_blob": "80ac4a6a945ccea0504d2d8f3ff8c7204d803e35",
       "before_git_blob": null,
       "path": "OriginalEditorFramework/AnytypeOriginalAnnotationImport.swift"
@@ -290,6 +306,11 @@
       "after_git_blob": "459116e9c88350fd4558602162a26fb2094e1232",
       "before_git_blob": "4f88f355aafddd02d3dcd54a7a5c5da789eccd35",
       "path": "OriginalEditorFramework/AnytypeOriginalEditorHost.swift"
+    },
+    {
+      "after_git_blob": "ccccbf7a5709ba016273fad5a7008eaed47bac6e",
+      "before_git_blob": null,
+      "path": "OriginalEditorFramework/AnytypeOriginalEditorLocalAnnotation.swift"
     },
     {
       "after_git_blob": "5256929a9d88e42fe964a9a4a12bc84531ca763f",
@@ -315,17 +336,37 @@
       "after_git_blob": "9cc87f6e188f4f1c9bb4f3115123e34484f06977",
       "before_git_blob": null,
       "path": "OriginalEditorFramework/OriginalEditorAccountSessionView.swift"
+    },
+    {
+      "after_git_blob": "0ae245dd2000f5bfa88c5a0520da6704d46956c4",
+      "before_git_blob": null,
+      "path": "OriginalEditorFramework/OriginalEditorLocalAnnotationJournal.swift"
+    },
+    {
+      "after_git_blob": "c67591bbb1b152a3195d6513de81118b501532a0",
+      "before_git_blob": null,
+      "path": "OriginalEditorFramework/OriginalEditorLocalAnnotationMaterialization.swift"
+    },
+    {
+      "after_git_blob": "ad40606cb42468a9cc44f1b07f8994b605bbb703",
+      "before_git_blob": null,
+      "path": "OriginalEditorFramework/OriginalEditorLocalAnnotationNativeBody.swift"
+    },
+    {
+      "after_git_blob": "2c01b81383625df062db90f9e0ecc968894acdd6",
+      "before_git_blob": null,
+      "path": "OriginalEditorFramework/OriginalEditorLocalAnnotationRuntime.swift"
     }
   ],
   "reviewed_product_trees": {
     "Anytype/Resources": "0827010674c089cfe9846e592e1d801e9d3f7a9b",
     "Anytype/Sources": "6a11487a50642388f49c3017359ed45210da9630",
-    "Modules": "4467772e9ac8bea7fc37080b4502978fb0a93322",
-    "OriginalEditorFramework": "5ed1989a18008c6b9fe21e684726d113e22efe66"
+    "Modules": "0c30398ecae9bf4164ee65b03d7e0c51c07d39cb",
+    "OriginalEditorFramework": "4f156830860cb5a875a713f81d278f4b62169a3a"
   },
-  "reviewed_source_sha": "4fd99f19b0ec361ba84ac4b2822cae10c6818f99",
+  "reviewed_source_sha": "cbe25cb467f989a1d40ed564d833616346a7d9b6",
   "schema": 1,
-  "scope": "Complete root-reviewed account-session, original annotation Import/Cancel and deferred observer continuation; no source rewrite or deletion by dependency integration.",
+  "scope": "Complete original account/session/Import plus the separately reviewed six-file local annotation lifecycle; same-profile local editing only, no transport or runtime acceptance.",
   "source_files": [
     "Anytype/Sources/Analytics/AnalyticsConstants.swift",
     "Anytype/Sources/Analytics/AnytypeAnalytics/AnytypeAnalytics+Events.swift",
@@ -1901,8 +1942,8 @@
     "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Bookmark/View/FullData/BlockBookmarkView.swift",
     "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Bookmark/View/OnlyUrl/BlockBookmarkOnlyUrlConfiguration.swift",
     "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Bookmark/View/OnlyUrl/BlockBookmarkOnlyUrlView.swift",
-    "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Bookmark/View/Сomponents/BlockBookmarkImageView.swift",
-    "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Bookmark/View/Сomponents/BlockBookmarkInfoView.swift",
+    "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Bookmark/View/\u0421omponents/BlockBookmarkImageView.swift",
+    "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Bookmark/View/\u0421omponents/BlockBookmarkInfoView.swift",
     "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/DataView/DataViewBlockConfiguration.swift",
     "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/DataView/DataViewBlockView.swift",
     "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/DataView/DataViewBlockViewModel.swift",
@@ -2049,7 +2090,7 @@
     "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Utils/EditorNavigationBarHelper/EditorNavigationBarHelperProtocol.swift",
     "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Utils/EditorNavigationBarHelper/EditorNavigationBarView.swift",
     "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Utils/EditorPageTemplatesHandler.swift",
-    "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Utils/EditorСursorManager.swift",
+    "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Utils/Editor\u0421ursorManager.swift",
     "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Utils/Markdown/Internal/BeginingOfTextMarkdownListener.swift",
     "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Utils/Markdown/Internal/InlineMarkdownListener.swift",
     "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Utils/Markdown/MarkdownListener.swift",
