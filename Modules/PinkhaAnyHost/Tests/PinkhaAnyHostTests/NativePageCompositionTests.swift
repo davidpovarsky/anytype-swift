@@ -52,6 +52,7 @@ final class NativePageCompositionTests: XCTestCase {
 
     func testUnaccountedDetailsSourceMetadataAndAmbiguousIdentitiesAreRefused() throws {
         let definitions = try syntheticDefinitions()
+        XCTAssertTrue(definitions.issues.isEmpty, "Negative controls require an otherwise admitted schema")
         let other = try page("second", other: "first")
         let mutations: [(inout [String: AnyJSON], inout [String: AnyJSON]) -> Void] = [
             { details, _ in details["unknown"] = .array([]) },
@@ -156,7 +157,8 @@ final class NativePageCompositionTests: XCTestCase {
         for (key, format) in relations {
             rows.append(try snapshot(id: "relation-" + key, type: 521, key: "rel-" + key,
                 raw: .object(["blocks": .array([]), "objectTypes": .array([]), "relationLinks": .array([]),
-                    "details": .object(["name": .string(key), "description": .string("captured"),
+                    "details": .object(["name": .string(key == "name" ? "Name" : key),
+                        "description": .string(key == "name" ? "Name of the object" : "captured"),
                         "relationKey": .string(key), "relationFormat": .integer(format),
                         "relationDefaultValue": .null, "relationReadonlyValue": .bool(false),
                         "relationMaxCount": .integer(key == "name" ? 1 : 0),
