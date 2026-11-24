@@ -26,10 +26,15 @@ public struct AnyDestinationSourceBinding: Codable, Equatable, Sendable {
     public let captureManifestSHA256: String
     public let semanticPlanSHA256: String
     public let sourceObjectIDs: [String]
+    /// Exact original whole-source manifest, required when a source definition
+    /// is represented by canonical or embedded coverage. Omitted on legacy
+    /// plans, preserving their canonical bytes and original journal identity.
+    public let definitionManifestBytes: Data?
+    let definitionMembers: [Data: AnyDestinationDefinitionMember]
 
     public init(accountID: String, spaceID: String, witnessSHA256: String,
                 captureManifestSHA256: String, semanticPlanSHA256: String,
-                sourceObjectIDs: [String]) throws {
+                sourceObjectIDs: [String], definitionManifestBytes: Data? = nil) throws {
         guard AnyDestinationPlanChecks.identity(accountID), AnyDestinationPlanChecks.identity(spaceID),
               [witnessSHA256, captureManifestSHA256, semanticPlanSHA256].allSatisfy(AnyDestinationPlanChecks.digest),
               !sourceObjectIDs.isEmpty, sourceObjectIDs.count <= AnyDestinationMigrationPlan.maximumItems,
@@ -40,10 +45,23 @@ public struct AnyDestinationSourceBinding: Codable, Equatable, Sendable {
         self.accountID = accountID; self.spaceID = spaceID; self.witnessSHA256 = witnessSHA256
         self.captureManifestSHA256 = captureManifestSHA256; self.semanticPlanSHA256 = semanticPlanSHA256
         self.sourceObjectIDs = sourceObjectIDs
+        self.definitionManifestBytes = definitionManifestBytes
+        if let definitionManifestBytes {
+            definitionMembers = try AnyDestinationDefinitionChecks.members(manifest: definitionManifestBytes,
+                accountID: accountID, spaceID: spaceID, witnessSHA256: witnessSHA256,
+                manifestSHA256: captureManifestSHA256)
+        } else { definitionMembers = [:] }
+    }
+
+    public init(bundle: AnyHeartNativeSpaceBundle, semanticPlanSHA256: String, sourceObjectIDs: [String]) throws {
+        try self.init(accountID: bundle.sourceAccountID, spaceID: bundle.sourceSpaceID,
+            witnessSHA256: bundle.sourceWitnessSHA256, captureManifestSHA256: bundle.manifestSHA256,
+            semanticPlanSHA256: semanticPlanSHA256, sourceObjectIDs: sourceObjectIDs,
+            definitionManifestBytes: bundle.manifestBytes)
     }
 
     private enum CodingKeys: String, CodingKey {
-        case accountID, spaceID, witnessSHA256, captureManifestSHA256, semanticPlanSHA256, sourceObjectIDs
+        case accountID, spaceID, witnessSHA256, captureManifestSHA256, semanticPlanSHA256, sourceObjectIDs, definitionManifestBytes
     }
     public init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -52,7 +70,8 @@ public struct AnyDestinationSourceBinding: Codable, Equatable, Sendable {
                       witnessSHA256: c.decode(String.self, forKey: .witnessSHA256),
                       captureManifestSHA256: c.decode(String.self, forKey: .captureManifestSHA256),
                       semanticPlanSHA256: c.decode(String.self, forKey: .semanticPlanSHA256),
-                      sourceObjectIDs: c.decode([String].self, forKey: .sourceObjectIDs))
+                      sourceObjectIDs: c.decode([String].self, forKey: .sourceObjectIDs),
+                      definitionManifestBytes: c.decodeIfPresent(Data.self, forKey: .definitionManifestBytes))
     }
 }
 
