@@ -123,17 +123,28 @@ def main():
                     '-only-testing:' + method, '-resultBundlePath', str(result)]
         with (work / 'prepare.log').open('wb') as log:
             prep_process = subprocess.Popen(test_command(prepare,
-                'AnytypeTests/HanlinNativeAcceptancePreparationTests/prepareRealHostFixture', work / 'prepare.xcresult'),
+                'AnytypeTests/HanlinNativeAcceptancePreparationTests', work / 'prepare.xcresult'),
                 stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
             try:
                 prep_exit = prep_process.wait(timeout=240)
             finally:
                 owned_process_stop(prep_process)
         receipt['prepareExit'] = prep_exit
-        assert prep_exit == 0
+        assert prep_exit == 0, 'Native fixture command failed'
+        summary = json.loads(run(['xcrun', 'xcresulttool', 'get', 'test-results', 'summary',
+                                  '--path', str(work / 'prepare.xcresult')]).stdout)
+        (work / 'prepare-summary.json').write_text(json.dumps(summary, indent=2))
+        receipt['prepareCounts'] = {key: summary.get(key) for key in
+                                    ('passedTests', 'failedTests', 'skippedTests', 'totalTestCount')}
+        assert receipt['prepareCounts'] == {'passedTests': 1, 'failedTests': 0,
+                                           'skippedTests': 0, 'totalTestCount': 1}, 'Actual singleton native preparation required'
+        tests = run(['xcrun', 'xcresulttool', 'get', 'test-results', 'tests',
+                     '--path', str(work / 'prepare.xcresult')]).stdout
+        (work / 'prepare-tests.json').write_text(tests)
+        assert 'HanlinNativeAcceptancePreparationTests' in tests and 'prepareRealHostFixture' in tests, 'Actual preparation method identity required'
         container = Path(run(['xcrun', 'simctl', 'get_app_container', udid, 'io.anytype.app', 'data']).stdout.strip())
         fixture_paths = list(container.glob('Library/Application Support/**/pinkha-hanlin-native-fixture.json'))
-        assert len(fixture_paths) == 1
+        assert len(fixture_paths) == 1, 'One fresh native fixture file required'
         fixture_raw = fixture_paths[0].read_bytes()
         assert 0 < len(fixture_raw) <= 16384
         fixture = json.loads(fixture_raw)
