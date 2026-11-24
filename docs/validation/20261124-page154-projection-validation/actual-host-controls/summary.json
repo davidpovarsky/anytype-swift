@@ -1,0 +1,48 @@
+{
+  "status": "PASS_4_SELECTED_SWIFT_CONTROLS",
+  "sourceCommit": "420e53ba3c0a1df588b6b76a13c31a07404a9992",
+  "host": "Oracle Linux ARM64",
+  "toolchain": {
+    "executable": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-driver",
+    "executable_sha256": "39d41b0dc9eba623b0e37cea42c3145720168214ba4349d6fa3bd9db9b1e651a",
+    "version": "Swift version 6.4.3 (swift-6.4.3-RELEASE)\nTarget: aarch64-unknown-linux-gnu"
+  },
+  "selectedMethods": [
+    "PinkhaHeartSemanticAnchorClientTests.testProjectionAndMarksPublishTheOriginalNativeEventWithNoAdditionalRead",
+    "PinkhaHeartSemanticAnchorWireTests.testActualNativePageRequestDigestsEventAndColdReadback",
+    "PinkhaHeartSemanticAnchorWireTests.testCapturedProjectionAndMarksRequireTheExactSameObjectPreflight",
+    "PinkhaHeartSemanticAnchorWireTests.testProjectionRejectsForeignAmbiguousStaleAndMalformedNativeEvents"
+  ],
+  "actualMethodsExecuted": 4,
+  "actualMethodsPassed": 4,
+  "skippedOrUnselectedMethods": 0,
+  "finishedAt": "2026-11-24T21:46:52.495791+00:00",
+  "records": {
+    "source-manifest.json": {
+      "sha256": "f04996aa350a7302038eb82767139f30781173a4fd1580c32a6c6739f317de50",
+      "bytes": 209522
+    },
+    "resolve.json": {
+      "sha256": "e4c1b2dd701bf2bd3cc9b038a2c70019dca474bdb753eb6ec62d34fc8a2a677f",
+      "bytes": 2161
+    },
+    "build.json": {
+      "sha256": "5195c614f0985d05b8ff7dd9131f7c61e019c8ef2523ee7ddd0456c59a2f3890",
+      "bytes": 6190
+    },
+    "test.json": {
+      "sha256": "467d44786514234e61f3da9f634aa6c5099471acb3c719f0aac89fefc9e8582b",
+      "bytes": 7883
+    },
+    "tests.log": {
+      "sha256": "03629b1b4a12fe08f49b47fb903ad357ca81d3fa104805d1b16023fd84039acb",
+      "bytes": 1886
+    }
+  },
+  "actualAppBuilds": 0,
+  "mountedUI": "NOT_RUN_AFTER_FIX",
+  "physicalDevice": "NOT_RUN",
+  "oldFailurePreserved": true,
+  "ownershipBootstrap": "Attempt1 failed before package preparation; Ubuntu UID was corrected to1001 in attempt2; no compiler/test invocation in attempt1",
+  "overlap": "Separate j1 Host component job used the separately owned shared semantic Host cache; no timing comparison"
+}

@@ -17,3 +17,9 @@ Three new methods cover captured-shaped empty/populated metadata; foreign, ambig
 The new run_projection_controls.py reuses the qualified Linux harness and original 685 generated protocol sources, exact support files, native154 fixture provenance and three dependency pins. It adds the current ApplyObservation adapter and selects only the four named methods from a 33-method source catalog. Historical run_controls.py, old source manifests and old App proofs remain unchanged. Native linking, mounted UI, Release and physical-device behavior are NOT established by these host controls.
 
 Status at source freeze: Swift syntax parse PASS; actual focused host controls NOT_RUN; fresh App build/UI NOT_RUN. Parent integration must qualify the new current product revision while preserving historical compiled-source origins.
+
+## Actual focused execution
+
+On 2026-11-24 at 21:46:52 UTC, source 420e53ba3c completed an actual Oracle Swift6.4.3 ARM64 build and exactly four XCTest methods passed with no skips, duplicates or unselected cases. Source, exact dependency checkouts and compiled test Products were reverified unchanged. The old build cache was absent, so this was a fresh isolated j1 build (807.55 seconds); the original attempt4 package and all historical receipts remained intact. A first staging attempt stopped on directory ownership before any compile/test, and is preserved separately.
+
+The actual-host-controls folder contains original source/dependency/build/test receipts and the original named test log. This qualifies the downstream adapter repair for integration. Fresh Apple native154 App/UI acceptance remains pending and the task stays open.
