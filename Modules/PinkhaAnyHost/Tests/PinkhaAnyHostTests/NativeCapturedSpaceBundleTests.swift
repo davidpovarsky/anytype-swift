@@ -1,6 +1,7 @@
 import Foundation
 import XCTest
 import PinkhaAnyEngine
+import PinkhaAnyIntegration
 @testable import PinkhaAnyHost
 
 /// One actual native fixture from the independently retained Go producer. The
