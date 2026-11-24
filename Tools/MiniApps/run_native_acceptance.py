@@ -70,7 +70,7 @@ def execute(args, receipt):
     app, evidence = args.app.resolve(), args.evidence.resolve()
     require(platform.system() == "Darwin" and platform.machine() == "arm64", "Actual Apple silicon/Xcode required")
     pin = json.loads((app / "Tools/MiniApps/producer.json").read_text())
-    owner = verify_owner_signing(app)
+    owner = verify_owner_signing(app, require_profile_grants=False)
     require(owner["configuration"] == "Debug-MiniAppsOwner", "Unexpected owner configuration")
     head = git(app, "rev-parse", "HEAD")
     require(head == os.environ["GITHUB_SHA"] and git(app, "branch", "--show-current") == pin["consumer_branch"],
@@ -96,7 +96,7 @@ def execute(args, receipt):
     receipt.update(source_sha=head, run_id=os.environ["GITHUB_RUN_ID"], run_attempt=os.environ["GITHUB_RUN_ATTEMPT"],
                    companion=producer, heart=installation, native_binding=binding, device=udid,
                    selected_methods=[PREPARE, UI_RETURN, UI_REPLAY, VERIFY, ADAPTER], configuration=owner["configuration"],
-                   owner_signing=owner,
+                   owner_signing=owner, apple_profile_grants=owner["status"],
                    release_accepted=False, physical_sharing="NOT_PROVEN_BY_SIMULATOR")
 
     def save(phase):
@@ -216,9 +216,11 @@ def execute(args, receipt):
     adapter = json.loads((data_container() / "Library/Application Support/miniapps-native-adapter-readback.json").read_text())
     require(adapter["status"] == "NATIVE_MINIAPPS_ADAPTER_PASS" and adapter["sourceSHA"] == head
             and adapter["runID"] == os.environ["GITHUB_RUN_ID"] and adapter["producerRoundTrips"] == 0
-            and adapter["preservedOutputCount"] == 1, "Native selected-text adapter receipt differs")
+            and adapter["preservedOutputCount"] == 1 and adapter["nativeAttachmentCount"] == 1,
+            "Native selected-text/file adapter receipt differs")
     for key in ("replacementPreservedBlockID", "replacementPreservedTree", "nativeMarksPreserved",
-                "replayPreservedNewerText", "conflictPreservedNewerText"):
+                "replayPreservedNewerText", "conflictPreservedNewerText",
+                "nativeAttachmentUploaded", "nativeAttachmentByteReadback"):
         require(adapter[key] is True, "Native adapter did not prove " + key)
     write(evidence / "native-adapter-readback.json", adapter)
     require(git(app, "rev-parse", "HEAD") == head, "Source changed during native acceptance")

@@ -22,15 +22,17 @@ def verify_original_configurations(app):
         require(hashlib.sha256(raw).hexdigest() == original["sha256"], "An original build configuration changed")
     return proof
 
-def verify(app):
+def verify(app, *, require_profile_grants=True):
     app = Path(app)
     owner = json.loads((app / "Tools/MiniApps/owner-signing.json").read_text())
-    require(owner["schema_version"] == 1 and owner["status"] == "VERIFIED_OWNER_GROUPS",
-            "Owner native/shared group profile readback is still pending")
+    require(owner["schema_version"] == 1 and owner["status"] in {"PENDING_APPLE_GRANT", "VERIFIED_OWNER_GROUPS"},
+            "The owner group declaration is incomplete")
+    if require_profile_grants:
+        require(owner["status"] == "VERIFIED_OWNER_GROUPS" and str(owner["profile_evidence_run_id"]).isdigit(),
+                "Signed/device qualification requires the authoritative Apple profile grant receipt")
     native = owner["native_app_group"]
     require(isinstance(native, str) and native.startswith("group.") and native != owner["shared_app_group"],
-            "The owner native storage group is not the verified private group")
-    require(str(owner["profile_evidence_run_id"]).isdigit(), "Exact owner profile evidence run is missing")
+            "The owner native storage group declaration is invalid")
     settings = dict(re.findall(r"^([A-Z_]+)\s*=\s*([^\n]*)$",
         (app / "Config/Signing/MiniAppsOwner.xcconfig").read_text(), re.M))
     expected = {"PINKHA_OWNER_TEAM_ID": owner["team_id"], "PINKHA_NATIVE_APP_GROUP": native}
@@ -38,13 +40,13 @@ def verify(app):
                "NOTIFICATION": "AnytypeNotificationServiceExtension", "WIDGET": "AnytypeWidgetExtension"}
     expected.update({"PINKHA_OWNER_" + key + "_BUNDLE_ID": owner["bundle_ids"][target]
                      for key, target in targets.items()})
-    require(all(settings.get(key) == value for key, value in expected.items()), "Owner build settings differ from the profile receipt")
+    require(all(settings.get(key) == value for key, value in expected.items()), "Owner build settings differ from the declared owner configuration")
     for filename in ("AnytypeOwner.entitlements", "AnytypeShareOwner.entitlements", "AnytypeNotificationOwner.entitlements"):
         values = plistlib.loads((app / "Config/Signing" / filename).read_bytes())
         groups = [value.replace("$(PINKHA_NATIVE_APP_GROUP)", native)
                   for value in values["com.apple.security.application-groups"]]
         required = [native, owner["shared_app_group"]] if filename == "AnytypeOwner.entitlements" else [native]
-        require(groups == required, "Owner entitlement groups differ from the selected profile")
+        require(groups == required, "Owner entitlement groups differ from the declared owner configuration")
     for filename in ("Anytype/Supporting files/Info.plist", "AnytypeShareExtension/Info.plist",
                      "AnytypeNotificationServiceExtension/Info.plist"):
         values = plistlib.loads((app / filename).read_bytes())

@@ -1,5 +1,6 @@
 #if DEBUG && targetEnvironment(simulator)
 import Foundation
+import CryptoKit
 import AnytypeCore
 import HanlinMiniAppsBridge
 import ProtobufMessages
@@ -116,7 +117,7 @@ struct PinkhaMiniAppsNativePreparationTests {
         print("MINIAPPS_NATIVE_HEART_READBACK_PASS")
     }
 
-    @Test("Apply selected text through the real editor adapter, retain native identity, and preserve newer content")
+    @Test("Apply selected text, preserve newer native content, and upload/read back a real file")
     func applySelectedTextAndPreserveNewerNativeContent() async throws {
         let environment = ProcessInfo.processInfo.environment
         try #require(environment["PINKHA_SIMULATOR_UI_DISPOSABLE"] == "1")
@@ -236,15 +237,61 @@ struct PinkhaMiniAppsNativePreparationTests {
                 let actual = try #require(persisted.blocks.first { $0.id == id })
                 try #require(actual.childrenIds.filter { $0 != outputID } == children)
             }
+            // Exercise the original native file upload, not a manufactured upload result.
+            let fileBytes = Data(("MiniApps native attachment עברית 🙂 " + UUID().uuidString + "\n").utf8)
+            let attachment = try store.writeAttachment(fileBytes, name: "miniapps-native-fixture.txt",
+                typeIdentifier: "public.plain-text")
+            let fileContext = try await PinkhaMiniAppsContext.capture(editor: state.viewController, store: store)
+            let fileRequest = MiniAppInvocation(appID: "hanlin.fixture.native-attachment",
+                source: fileContext.source, operation: .insert)
+            let fileResult = MiniAppResult(requestID: fileRequest.id, operation: .insert, items: [attachment])
+            _ = try store.enqueue(fileRequest)
+            try store.complete(fileResult)
+            let filePreserved = try await PinkhaMiniAppsResultApplier.apply(
+                request: fileRequest, result: fileResult, editor: state.viewController, store: store)
+            try #require(!filePreserved)
+            let fileReplayed = try await PinkhaMiniAppsResultApplier.apply(
+                request: fileRequest, result: fileResult, editor: state.viewController, store: store)
+            try #require(!fileReplayed)
+            try await document.close()
+            try await document.open()
+            let fileView = try await Container.shared.objectLifecycleService().openForPreview(
+                contextId: object.id, spaceId: spaceID)
+            let fileMarker = fileRequest.id.uuidString.lowercased() + ":0"
+            let nativeFiles = fileView.blocks.filter {
+                $0.fields.fields[PinkhaMiniAppsResultApplier.receiptField]?.stringValue == fileMarker
+            }
+            try #require(nativeFiles.count == 1 && fileView.blocks.count == before.blocks.count + 2)
+            let nativeFile = try #require(BlockInformationConverter.convert(block: nativeFiles[0]))
+            guard case .file(let content) = nativeFile.content else {
+                throw NSError(domain: "MiniAppsNativeAdapter", code: 1,
+                    userInfo: [NSLocalizedDescriptionKey: "The actual native upload is not a file block"])
+            }
+            try #require(content.state == .done && !content.metadata.targetObjectId.isEmpty)
+            try #require(Set(fileView.blocks.map(\.id)).subtracting([nativeFile.id]) == Set(persisted.blocks.map(\.id)))
+            let untouchedText = try #require(fileView.blocks.first { $0.id == blockID })
+            try #require(untouchedText.text.text == newerText && untouchedText.text.marks == expectedMarks)
+            try #require(untouchedText.childrenIds == [childID])
+            let fileURL = try #require(ContentUrlBuilder.fileUrl(fileId: content.metadata.targetObjectId))
+            let (actualBytes, response) = try await URLSession.shared.data(from: fileURL)
+            let http = try #require(response as? HTTPURLResponse)
+            try #require((200..<300).contains(http.statusCode) && actualBytes == fileBytes)
+            try #require(try store.pendingResults(sourceAppID: PinkhaMiniAppsContext.sourceAppID).isEmpty)
             let proof: [String: Any] = ["status": "NATIVE_MINIAPPS_ADAPTER_PASS",
                 "sourceSHA": try #require(environment["GITHUB_SHA"]),
                 "runID": try #require(environment["GITHUB_RUN_ID"]), "objectID": object.id,
                 "blockID": blockID, "childID": childID, "siblingID": siblingID,
-                "requestIDs": [request.id.uuidString.lowercased(), conflictRequest.id.uuidString.lowercased()],
+                "requestIDs": [request.id.uuidString.lowercased(), conflictRequest.id.uuidString.lowercased(),
+                               fileRequest.id.uuidString.lowercased()],
                 "preservedOutputBlockID": outputID, "preservedOutputCount": preservedOutputs.count,
                 "replacementPreservedBlockID": true, "replacementPreservedTree": true,
                 "nativeMarksPreserved": true, "replayPreservedNewerText": true,
-                "conflictPreservedNewerText": true, "producerRoundTrips": 0]
+                "conflictPreservedNewerText": true, "producerRoundTrips": 0,
+                "nativeAttachmentUploaded": true, "nativeAttachmentByteReadback": true,
+                "nativeAttachmentCount": nativeFiles.count, "nativeAttachmentBlockID": nativeFile.id,
+                "nativeAttachmentObjectID": content.metadata.targetObjectId,
+                "nativeAttachmentBytes": actualBytes.count,
+                "nativeAttachmentSHA256": SHA256.hash(data: actualBytes).map { String(format: "%02x", $0) }.joined()]
             let destination = try fixtureURL().deletingLastPathComponent()
                 .appendingPathComponent("miniapps-native-adapter-readback.json")
             try JSONSerialization.data(withJSONObject: proof, options: [.sortedKeys]).write(to: destination, options: .atomic)
