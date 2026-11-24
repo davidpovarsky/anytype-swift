@@ -69,7 +69,8 @@ final class NativeTextBlockPlanTests: XCTestCase {
             semanticPlanSHA256: textPlan.contentSHA256, sourceObjectIDs: ["doc"])
         let plan = try AnyDestinationMigrationPlan(source: sourceBinding,
             workspace: .init(accountID: "destination-account", spaceID: "destination-space"), storeID: "native-store",
-            planID: "fixture-plan", coverage: [.init(sourceObjectID: "doc", disposition: .mapped(itemSourceKeys: items.map(\.sourceKey)))], items: items)
+            planID: AnyContentDigest.sha256(Data("fixture-plan".utf8)),
+            coverage: [.init(sourceObjectID: "doc", disposition: .mapped(itemSourceKeys: items.map(\.sourceKey)))], items: items)
         let copy = try AnyDestinationMigrationPlan.decode(JSONEncoder().encode(plan))
         XCTAssertEqual(copy.binding.planSHA256, plan.binding.planSHA256)
         guard case .editorBlock(_, _, _, _, _, let parent, _) = copy.items[2].operation else {
