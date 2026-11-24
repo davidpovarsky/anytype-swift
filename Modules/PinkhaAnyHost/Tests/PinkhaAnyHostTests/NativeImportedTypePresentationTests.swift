@@ -55,6 +55,8 @@ final class NativeImportedTypePresentationTests: XCTestCase {
 
     func testUnsupportedLayoutsAmbiguousPairsAndForeignOwnersCannotChangePresentation() throws {
         let changes: [(inout [String: AnyJSON]) -> Void] = [
+            { $0["contract"] = .string("unrelated-contract") },
+            { _ = $0.removeValue(forKey: "contract") },
             { $0["sourceRecommendedLayout"] = .integer(1) },
             { $0["sourceRecommendedLayout"] = .null },
             { $0["propertyOwnerId"] = .string("missing") },
@@ -70,7 +72,7 @@ final class NativeImportedTypePresentationTests: XCTestCase {
         XCTAssertThrowsError(try snapshot(includeForeignDefinition: true, change: {
             $0["featured"] = .array([Self.address("unrelated", "source")])
         }), "An existing attached foreign property is still outside the imported binding")
-        let ordinary = try snapshot(change: { $0["contract"] = .string("unrelated-contract") })
+        let ordinary = try snapshot(includeImportedMarker: false)
         XCTAssertTrue(ordinary.rows.filter { $0.id.ownerID == "imported" }.allSatisfy(\.isVisible))
     }
 
@@ -102,6 +104,7 @@ final class NativeImportedTypePresentationTests: XCTestCase {
     }
     private func snapshot(attached: Bool = false, storedHidden: [String]? = nil, canWrite: Bool = true,
                           includeForeignDefinition: Bool = false,
+                          includeImportedMarker: Bool = true,
                           change: (inout [String: AnyJSON]) -> Void = { _ in }) throws -> AnyNativePropertySnapshot {
         var descriptor: [String: AnyJSON] = [
             "contract": .string(AnyNativeImportedTypePresentation.contract),
@@ -112,7 +115,9 @@ final class NativeImportedTypePresentationTests: XCTestCase {
         ]
         change(&descriptor)
         let type = try AnyNativePropertyOwner(raw: .object(["id": .string("imported-type"), "name": .string("Captured page type"),
-            "layout": .object(["type": .string("page"), "config": .object(["pinkhaHeart": .object(descriptor)])])]), documentEligible: true)
+            "layout": .object(["type": .string("page"),
+                "config": .object(includeImportedMarker ? ["pinkhaHeart": .object(descriptor)] : [:])])]),
+            documentEligible: true)
         func owner(_ id: String) throws -> AnyNativePropertyOwner { try .init(raw: .object(["id": .string(id)])) }
         let catalog = try AnyNativePropertyCatalog(workspace: .init(accountID: "account", spaceID: "space"),
             generation: UUID(uuidString: "11111111-1111-1111-1111-111111111111")!, engineStartedAt: "run",

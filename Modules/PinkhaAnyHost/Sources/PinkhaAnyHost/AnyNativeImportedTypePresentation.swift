@@ -12,9 +12,8 @@ public struct AnyNativeImportedTypePresentation: Sendable {
     public init?(type: AnyNativePropertyOwner?, catalog: AnyNativePropertyCatalog,
                  collectionIDs: [String], definitions: [AnyNativePropertyDefinition],
                  raw: AnyJSON) throws {
-        guard let type, let descriptor = type.raw["layout"]?["config"]?["pinkhaHeart"],
-              descriptor["contract"]?.string == Self.contract else { return nil }
-        guard type.documentEligible, !type.builtIn,
+        guard let type, let descriptor = type.raw["layout"]?["config"]?["pinkhaHeart"] else { return nil }
+        guard descriptor["contract"]?.string == Self.contract, type.documentEligible, !type.builtIn,
               type.raw["layout"]?["type"] == .string("page"),
               descriptor["sourceRecommendedLayout"] == .integer(0),
               let fields = descriptor.object,
