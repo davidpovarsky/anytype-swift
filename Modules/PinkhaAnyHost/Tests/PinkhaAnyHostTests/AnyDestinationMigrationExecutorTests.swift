@@ -8,6 +8,30 @@ import PinkhaAnyIntegration
 /// deliberately identified as a fixture; these are not native migration or
 /// whole-Space acceptance evidence.
 final class AnyDestinationMigrationExecutorTests: XCTestCase, @unchecked Sendable {
+    func testPartsRequireTypeOwnersWhilePropertiesAllowCollections() throws {
+        let source = try AnyDestinationSourceBinding(accountID: "source-account", spaceID: "source-space",
+            witnessSHA256: digest("witness"), captureManifestSHA256: digest("capture"), semanticPlanSHA256: digest("semantic"),
+            sourceObjectIDs: ["source-owner"])
+        let seed = AnyDestinationRootDefinition(xKey: "owned-schema", name: "Owned schema")
+        let part = AnyDestinationMigrationItem(sourceKey: "part", sourceObjectID: "source-owner", expectedRecordCount: 2,
+            operation: .partDefinition(owner: ref("owner"), draft: .literal(.object([
+                "key": .string("content"), "datasets": .array([.object([
+                    "module": .string("editor"), "key": .string("editor_blocks")])])]))))
+        func make(_ owner: AnyDestinationMigrationOperation, child: AnyDestinationMigrationItem) throws -> AnyDestinationMigrationPlan {
+            try .init(source: source, workspace: .init(accountID: "destination-account", spaceID: "destination-space"),
+                storeID: "destination-store", planID: digest("schema-owner-plan"),
+                coverage: [.init(sourceObjectID: "source-owner", disposition: .mapped(itemSourceKeys: ["owner", child.sourceKey]))],
+                items: [.init(sourceKey: "owner", sourceObjectID: "source-owner", operation: owner), child])
+        }
+        let accepted = try make(.typeDefinition(seed), child: part)
+        XCTAssertNoThrow(try AnyDestinationMigrationPlan.decode(AnyDestinationMigrationJournal.encoded(accepted)))
+        XCTAssertThrowsError(try make(.collectionDefinition(seed), child: part))
+        let property = AnyDestinationMigrationItem(sourceKey: "property", sourceObjectID: "source-owner",
+            operation: .propertyDefinition(owner: ref("owner"), kind: "string", name: "Collection field", xKey: "field",
+                description: "", scope: "synced", xFormat: nil, index: nil))
+        XCTAssertNoThrow(try make(.collectionDefinition(seed), child: property))
+    }
+
     func testCoverageValidatedDecodeExactUTF8AndOwnedMutationTargets() async throws {
         let plan = try fixturePlan()
         let encoded = try AnyDestinationMigrationJournal.encoded(plan)
