@@ -63,6 +63,7 @@ on:
           - current-native-ui-retained
           - loaded-account-arm64-compiler
           - loaded-account-arm64-native
+          - native-tree-inventory-arm64
           - current-page154-mounted
           - owned-simulator-inventory-diagnostic
           - prepared-migration-apple
@@ -1058,3 +1059,38 @@ jobs:
           compression-level: 0
           if-no-files-found: error
           retention-days: 30
+
+  native-tree-inventory:
+    if: ${{ inputs.route == 'native-tree-inventory-arm64' }}
+    permissions:
+      contents: read
+      actions: read
+    concurrency:
+      group: pinkha-native-tree-inventory-${{ github.ref }}
+      cancel-in-progress: false
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 45
+    env:
+      EXPECTED_SOURCE_SHA: ${{ github.sha }}
+      PINKHA_NATIVE_COMPILER_URL: ${{ secrets.PINKHA_NATIVE_COMPILER_URL }}
+      PINKHA_NATIVE_SOURCE_URL: ${{ secrets.PINKHA_NATIVE_SOURCE_URL }}
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout exact native inventory controller and qualified source carrier helper
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout: |
+            Tools/AnyEngineValidation/native_tree_inventory
+            Tools/AnyEngineValidation/loaded_account_witness/portable
+      - name: Compile and execute only the three new native tree inventory methods
+        run: python3 Tools/AnyEngineValidation/native_tree_inventory/run_native.py
+      - name: Preserve original native inventory result and encrypted evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-tree-inventory-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/pinkha-native-tree-inventory/public
+          if-no-files-found: error
+          retention-days: 90
