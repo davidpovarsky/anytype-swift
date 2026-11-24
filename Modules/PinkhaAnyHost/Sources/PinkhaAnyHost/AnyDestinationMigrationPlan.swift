@@ -300,6 +300,38 @@ public struct AnyDestinationMigrationPlan: Codable, Sendable {
                     }
                 }
             }
+            // Mutations may target only identities created by this plan. A
+            // literal object ID in imported JSON cannot update an unrelated
+            // existing destination object or mutate a preexisting schema.
+            func mappedOwner(_ reference: AnyDestinationReference, kinds: Set<String>) throws {
+                guard case .mapped(let key, .objectID, .rawID) = reference,
+                      let owner = keys[Data(key.utf8)], kinds.contains(items[owner].operation.kind) else {
+                    throw AnyDestinationMigrationError.invalidPlan("mutation owner must be created by this plan")
+                }
+            }
+            switch item.operation {
+            case .propertyDefinition(let owner, _, _, _, _, _, _, _), .partDefinition(let owner, _):
+                try mappedOwner(owner, kinds: ["typeDefinition", "collectionDefinition"])
+            case .editorBlock(let owner, _, _, _, _, _, _), .file(let owner, _, _, _, _):
+                try mappedOwner(owner, kinds: ["object"])
+            case .propertyUpdate(let object, let owner, let patch):
+                try mappedOwner(object, kinds: ["object"])
+                if case .native(let literal) = owner {
+                    guard Data(literal.utf8) == Data("any".utf8) else {
+                        throw AnyDestinationMigrationError.invalidPlan("property owner")
+                    }
+                } else { try mappedOwner(owner, kinds: ["typeDefinition", "collectionDefinition"]) }
+                if case .mapped(let objectKey, _, _) = object,
+                   let sourceIndex = keys[Data(objectKey.utf8)],
+                   case .object(_, _, let initial) = items[sourceIndex].operation,
+                   let created = try initial.resolved(AnyDestinationPlanChecks.placeholder).object,
+                   let original = created[try AnyDestinationPlanChecks.placeholder(owner)]?.object,
+                   let later = try patch.resolved(AnyDestinationPlanChecks.placeholder).object,
+                   !Set(original.keys).isDisjoint(with: Set(later.keys)) {
+                    throw AnyDestinationMigrationError.invalidPlan("property update replaces an immutable creation field")
+                }
+            default: break
+            }
             // Run the existing production constructors against distinct inert
             // validation IDs. No source ID is submitted as a destination ID.
             try item.operation.validateShape(binding: provisional, sourceKey: item.sourceKey)
