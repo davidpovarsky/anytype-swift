@@ -362,6 +362,9 @@ class RemoteFileRunner(native.Runner):
             require(time.monotonic() < deadline, "native_peer_shutdown_deadline")
             time.sleep(0.2)
         require(exit_path.read_text().strip() == "0", "native_peer_binary_exit")
+        rc, stopped, _ = self.command("wait-" + owned["role"] + "-" + owned["phase"],
+            ["sudo", "-n", "docker", "wait", owned["name"]], 60)
+        require(rc == 0 and stopped.read_text().strip() == "0", "native_peer_actual_stopped_exit")
         self.inspect(owned["name"], "finished-" + owned["role"] + "-" + owned["phase"],
                      owned["network"], owned["root"], finished=True)
         audit = audit_one(owned["root"] / ("native-" + owned["phase"] + ".stdout"), PEER_METHOD)
