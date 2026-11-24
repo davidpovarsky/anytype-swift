@@ -181,7 +181,20 @@ def execute(args, receipt, run):
                          "Separate acceptance candidate required")
         environment["PINKHA_ANY_NATIVE_ARTIFACT"] = "verified-prepared-components-v1"
         package = args.control / "Modules/PinkhaAnyRuntime"
-        cache = ["-clonedSourcePackagesDirPath", str(args.work / "SourcePackages")]
+        locked = args.control / contract.HERE / "pinned-package-resolution.json"
+        lock_value = json.loads(locked.read_bytes())
+        lock_pins = {row["identity"]: row["state"]["revision"] for row in lock_value["pins"]}
+        contract.require(lock_value["version"] == 3 and len(lock_value["pins"]) == len(contract.PINS)
+                         and lock_pins == contract.PINS, "Frozen dependency seed differs from source pins")
+        destination_lock = package / "Package.resolved"
+        contract.require(not destination_lock.exists(), "Preserve an existing package-resolution attempt")
+        with destination_lock.open("xb") as output:
+            output.write(locked.read_bytes())
+        receipt["seeded_dependency_resolution"] = dict(source=contract.HERE + "/pinned-package-resolution.json",
+                                                       sha256=contract.digest(locked))
+        shutil.copyfile(locked, args.evidence / "seeded-Package.resolved")
+        cache = ["-clonedSourcePackagesDirPath", str(args.work / "SourcePackages"),
+                 "-onlyUsePackageVersionsFromResolvedFile"]
         run(["xcodebuild", "-version"], "xcode-version", timeout=30)
         schemes = execution.command_json(run(["xcodebuild", "-list", "-json", *cache], "schemes",
                                               cwd=package, env=environment, timeout=300))
