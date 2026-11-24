@@ -75,6 +75,21 @@ matching native ACL records, exact zero-payload denials and successful cleanup.
 Every exported runtime file is scanned against both independent wallets'
 actual recovery material. Private account data is excluded from exports.
 
+The live member reconnects through Docker IPAM on the same owned internal
+bridge. Its address may change; the controller records the initial and actual
+reconnected addresses and matches the latter to native interface receipts.
+Container, process, namespace, sandbox and peer identities must remain
+unchanged. Successful compilation caches are saved before native execution so
+a later acceptance failure does not discard the dependency cache.
+
+The original run [45426427384/1](https://github.com/davidpovarsky/anytype-swift/actions/runs/45426427384)
+compiled successfully and reached the offline unknown-revocation observation,
+then failed in the Docker reconnect command. Its original artifact
+[14936539384](https://github.com/davidpovarsky/anytype-swift/actions/runs/45426427384/artifacts/14936539384)
+remains a failed run; the reconnect, publication fence and final shutdown
+cannot be credited from that attempt. The follow-up changes only the controller
+and cache handling. The native fixture and product assertions are unchanged.
+
 At implementation time, source parsing and route review are separate from
 native execution. The route must actually pass before its network result is
 reported as PASS.

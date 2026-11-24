@@ -338,7 +338,8 @@ jobs:
           mkdir -p evidence/toolchain
           gh api repos/davidpovarsky/anytype-swift/actions/runs/45026227924 > evidence/original-native-run.json
       - name: Restore compiled musl dependencies only
-        uses: actions/cache@v4
+        id: member_native_cache
+        uses: actions/cache/restore@v4
         with:
           path: .t2-cache
           key: t2-member-acl-alpine-111d7915-go1.26.5-${{ hashFiles('heart/go.sum', 'heart/tantivity_sha256.txt') }}
@@ -375,6 +376,12 @@ jobs:
                 --evidence /workspace/evidence --original-run /workspace/evidence/original-native-run.json \
                 --expected-app-sha "$EXPECTED_APP_SHA"
             '
+      - name: Save successful compilation cache before native acceptance
+        if: steps.member_native_cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .t2-cache
+          key: ${{ steps.member_native_cache.outputs.cache-primary-key }}
       - name: Run independent members through grant role revoke and reconnect fence
         run: |
           python3 -B control/Tools/PinkhaNativeDerived/member_acl_transport/run.py \

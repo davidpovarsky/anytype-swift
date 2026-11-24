@@ -1,26 +1,40 @@
 {
   "app_capability": "OFF",
-  "base_commit": "95cd30c9e0d70fec368a1605a21b155a652a7afd",
+  "base_commit": "4e4b6c8d77138e5459e8ea112d600050870f2e7b",
+  "compile_cache_saved_before_native_execution": true,
   "direct_unique_reusable_references": 50,
   "existing_central_jobs_unchanged": 65,
   "files": {
-    "README.md": "0a035f96bb19f83689dea5838dc908c22c29a2d4a9cf3aabfd6c7519e212e661",
+    "README.md": "3b9b7588e59fbe4100e1a31d2036755e3d13f4caf60f88568b0c8eb936956973",
     "build.py": "8ea19d7906f203d20ada802896f8a2583af724995234ff48a9b82501c699b8bc",
     "contract.py": "9458a2365f0f1d5584bcd1c00b4eec271e9af45073321e422728ebb66500d180",
     "core_fixture.go": "d7183d066ffe1c8942afb893aa29ad200296b30b15e72be8e1191499b0b02031",
     "native_member_test.go": "e9d3b6cc042212cc711ce0a958ad04eabe6efe2bcbf8a86e5b029db2ecfcc402",
-    "run.py": "c1fb3c7a806fc4da9e54f001fedbe983c2c0a30573b390a52cbf79097f1c0245"
+    "run.py": "645dd38b3b4f7184bdee8d443721b8d6e07420db2b6795ac9227db50d22f4a42"
   },
   "full_t2_acceptance": "NOT_RUN",
   "go_parser_and_gofmt": "PASS",
-  "native_execution": "NOT_RUN",
+  "native_execution": "FIRST_RUN_FAILED_DOCKER_RECONNECT_AFTER_OFFLINE_REVOKE",
+  "native_fixture_and_assertions_changed": false,
   "new_inline_job": "independent-member-acl",
   "new_native_method": "TestIndependentMemberACLTransport",
   "old_native_methods_selected": 0,
+  "original_execution": {
+    "app_sha": "4e4b6c8d77138e5459e8ea112d600050870f2e7b",
+    "artifact_id": "14936539384",
+    "artifact_zip_sha256": "e103cbca7b10d1d6cbe44c3a559a988c0c92813be1a9d9b60cb2ecf6f5d7259b",
+    "build": "PASS",
+    "final_shutdown": "NOT_RUN",
+    "first_failed_command": "reconnect-independent-member",
+    "publication_fence": "NOT_RUN",
+    "run_attempt": "1",
+    "run_id": "45426427384"
+  },
   "original_native_source_count": 139,
   "original_source_and_existing_product_files_changed": false,
   "python_ast_and_controller_imports": "PASS",
+  "reconnect_address_assignment": "DOCKER_IPAM_OBSERVED_AND_MATCHED_TO_NATIVE",
   "reusable_reference_set_unchanged": true,
   "source_owner": "ChatGPT built-in ui_release agent",
-  "status": "SOURCE_READY_NATIVE_NOT_RUN"
+  "status": "RECONNECT_CONTROLLER_READY_NATIVE_FOLLOWUP_NOT_RUN"
 }

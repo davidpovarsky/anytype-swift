@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import ipaddress
 import json
 import os
 from pathlib import Path
@@ -209,24 +210,34 @@ def execute(args, receipt, docker):
     contract.require(unknown.get("policy")=="last-known-local-authority-before-native-revocation-observation" and
                      unknown.get("unseen_owner_head")==revoked_owner["acl_head"] and
                      unknown["variant_sha256"]==grant_owner["variant_sha256"], "Unseen revocation policy was overstated")
-    docker.command(["network","connect","--ip",member["ip"],network_resource["id"],resources["member"]["id"]],"reconnect-independent-member",30)
+    # The owned bridge uses Docker IPAM. Rejoining the same live process must
+    # not request a static address from an automatically allocated subnet.
+    docker.command(["network","connect",network_resource["id"],resources["member"]["id"]],"reconnect-independent-member",30)
     connected=docker.find(resources["member"])
     contract.require(set(connected["NetworkSettings"].get("Networks",{}))=={network["Name"]} and
-                     connected["NetworkSettings"]["Networks"][network["Name"]]["NetworkID"]==network["Id"] and
-                     connected["NetworkSettings"]["Networks"][network["Name"]]["IPAddress"]==member["ip"],
+                     connected["NetworkSettings"]["Networks"][network["Name"]]["NetworkID"]==network["Id"],
                      "Reader did not reconnect to its original isolated network")
+    reconnect_ip=connected["NetworkSettings"]["Networks"][network["Name"]]["IPAddress"]
+    contract.require(str(ipaddress.IPv4Address(reconnect_ip))==reconnect_ip and reconnect_ip!=owner["ip"],
+                     "Daemon did not assign a distinct valid member address")
+    contract.require(set(docker.find(network_resource).get("Containers",{}))=={v["id"] for v in resources.values()},
+                     "Reconnect changed the owned network participants")
     contract.require(live_identity(connected,reader_member)==native_identities["member"], "Reconnect replaced member process")
+    receipt["network_reconnect"]=dict(status="DAEMON_CONNECTED_NATIVE_REVOCATION_PENDING",
+                                     original_ipv4=member["ip"], assigned_ipv4=reconnect_ip,
+                                     address_assignment="DOCKER_IPAM", exact_revocation_head=revoked_owner["acl_head"])
     send(directories["member"],"reconnect",docker.owner,peer=owner,head=revoked_owner["acl_head"])
     fence=read("member","publication-fence",0,revoked_owner["acl_head"],150)
     revoked_member=read("member","revoked",0,revoked_owner["acl_head"])
     contract.same_acl(revoked_owner,fence)
     contract.same_acl(revoked_owner,revoked_member)
+    contract.require(fence["actual_ipv4"]==revoked_member["actual_ipv4"]==[reconnect_ip],
+                     "Reconnected native address differs from the actual Docker assignment")
     contract.require(fence.get("prepared_before_revocation") is True and fence.get("finalized_after_observed_revocation") is True,
                      "Missing interleaved native publication fence")
     receipt["network_detach"]=dict(status="PASS_DAEMON_DETACH_AND_NATIVE_NO_INTERFACE",
                                   offline_receipt_sha256=contract.digest(directories["member"]/"offline.json"))
-    receipt["network_reconnect"]=dict(status="PASS_SAME_NATIVE_PROCESS_RECONNECTED",
-                                     exact_revocation_head=revoked_owner["acl_head"])
+    receipt["network_reconnect"]["status"]="PASS_SAME_NATIVE_PROCESS_RECONNECTED"
     for role in directories:
         send(directories[role],"stop",docker.owner)
     results={}
