@@ -1,0 +1,98 @@
+{
+  "allowed_additional_metadata_keys": [
+    "importType",
+    "oldAnytypeID",
+    "sourceFilePath",
+    "syncStatus",
+    "syncDate",
+    "syncError"
+  ],
+  "body_predicate_unchanged": true,
+  "control_helper": {
+    "bytes": 8306,
+    "git_blob": "013c70a26f2dc9af2aab9d70d04441726cc5214f",
+    "path": "bounded-native-metadata-20261124/native_metadata_controls.py",
+    "sha256": "4f2cd3d634149ce4f18dbad808b6e9d6e2b204596ccfe8808a9cd438f4b5a551"
+  },
+  "inputs": [
+    {
+      "base_sha256": "5876f9cf88b25ba1efe90c3c402beff95f7d5ed6220859e7fc8884aa962d3d95",
+      "bytes": 35127,
+      "changes": [
+        {
+          "after": "// The unchanged original converter/creator adds import bookkeeping, and the\n// native sync updater adds exactly three local sync relations during lifecycle\n// transitions. Their schema dependencies may be absent from a source archive.\n// Admit only this bounded set, with complete pre-import read-only observation;\n// no key is a fabricated archive member or a substitute for a source mapping.\nfunc originalOwnedAnnotationMetadataKeys() []domain.RelationKey {\n\treturn []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath, bundle.RelationKeySyncStatus, bundle.RelationKeySyncDate, bundle.RelationKeySyncError}\n}\n\n",
+          "before": "// These are the three additional keys injected by the unchanged original\n// converter/creator. They are not fabricated archive members or source mappings.\n"
+        },
+        {
+          "after": "return slices.Contains(originalOwnedAnnotationMetadataKeys(), key)",
+          "before": "return key == bundle.RelationKeyImportType || key == bundle.RelationKeyOldAnytypeID || key == bundle.RelationKeySourceFilePath"
+        },
+        {
+          "after": "for _, key := range originalOwnedAnnotationMetadataKeys() {",
+          "before": "for _, key := range []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath} {"
+        }
+      ],
+      "git_blob": "e18ed29bbf31b52d48dd27ed4bec4337d354528c",
+      "native_path": "core/block/import/owned_annotation_graph.go",
+      "path": "bounded-native-metadata-20261124/native/core/block/import/owned_annotation_graph.go",
+      "preimage_control_path": "docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-candidate-20261123/native/core/block/import/owned_annotation_graph.go",
+      "sha256": "5bf2fba77c947128674d001c7fc39b5d23f9997f721ce7c6d93b46ef4bf599aa"
+    },
+    {
+      "base_sha256": "7f99009cf4d477c3a8bc7e3f7d63918fca2cea78ce90df861175b51384914dd0",
+      "bytes": 76275,
+      "changes": [
+        {
+          "after": "for _, relation := range []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath, bundle.RelationKeySyncStatus, bundle.RelationKeySyncDate, bundle.RelationKeySyncError} {",
+          "before": "for _, relation := range []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath} {"
+        },
+        {
+          "after": "\"additional_metadata_keys\": []string{bundle.RelationKeyImportType.String(), bundle.RelationKeyOldAnytypeID.String(), bundle.RelationKeySourceFilePath.String(), bundle.RelationKeySyncStatus.String(), bundle.RelationKeySyncDate.String(), bundle.RelationKeySyncError.String()},",
+          "before": "\"additional_metadata_keys\": []string{bundle.RelationKeyImportType.String(), bundle.RelationKeyOldAnytypeID.String(), bundle.RelationKeySourceFilePath.String()},"
+        },
+        {
+          "after": "(key != bundle.RelationKeyImportType && key != bundle.RelationKeyOldAnytypeID && key != bundle.RelationKeySourceFilePath &&\n\t\t\t\tkey != bundle.RelationKeySyncStatus && key != bundle.RelationKeySyncDate && key != bundle.RelationKeySyncError) {",
+          "before": "(key != bundle.RelationKeyImportType && key != bundle.RelationKeyOldAnytypeID && key != bundle.RelationKeySourceFilePath) {"
+        },
+        {
+          "after": "readback.AdditionalImportContexts() > 6 {",
+          "before": "readback.AdditionalImportContexts() > 3 {"
+        }
+      ],
+      "git_blob": "bd5df16cc9a12b276349a7741e3ee2dae95027d7",
+      "native_path": "core/application/owned_annotation_import_native_test.go",
+      "path": "bounded-native-metadata-20261124/native/core/application/owned_annotation_import_native_test.go",
+      "preimage_control_path": "docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-native-qualification-20261123/schema-diagnostic-20261123/native/core/application/owned_annotation_import_native_test.go",
+      "sha256": "174542616ad8cbfe49125242d0ceedfe9e5b923372d4edefae0b4e4875d5240a"
+    },
+    {
+      "base_sha256": null,
+      "bytes": 6087,
+      "changes": [],
+      "git_blob": "89b4048bb7af20e20d05a82f78e224ca7aafe6a0",
+      "native_path": "core/block/import/owned_annotation_native_metadata_test.go",
+      "path": "bounded-native-metadata-20261124/native/core/block/import/owned_annotation_native_metadata_test.go",
+      "sha256": "0617bb4c9103191fe1471f626fa9d11566865500b99f7314febfb6252157ec07"
+    }
+  ],
+  "new_control_group": {
+    "leaves": [
+      "exact_six_original_native_keys_admitted",
+      "arbitrary_or_other_original_relation_refused",
+      "source_backed_wrong_role_or_native_kind_refused",
+      "observed_schema_identity_and_space_bound",
+      "altered_nonlocal_schema_body_refused",
+      "missing_preimport_observation_refused"
+    ],
+    "parent": "TestOtzariaBoundedOriginalNativeMetadata"
+  },
+  "new_control_leaf_count": 6,
+  "original_heart": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "previous_native_tree": "a082c726aee6ba3a438d2968fa23b43bb9c71bbe",
+  "readback_used_as_expectation": false,
+  "schema": 1,
+  "schema_observation_comparison_unchanged": true,
+  "scope": "Admit exactly original import bookkeeping and native local sync metadata relation schemas before import; retain exact source mappings, bounded inventory, stable native read-only observations, and full schema/body comparison.",
+  "source_members_remain_mandatory": true,
+  "source_parent": "2b9aad18cba3e2bf363adea44144a0e787724fb6"
+}

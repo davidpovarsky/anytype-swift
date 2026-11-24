@@ -1,8 +1,8 @@
 import copy,hashlib,importlib.util,json,os,subprocess,tempfile
 from pathlib import Path
-W=Path("/mnt/development/projects/worktrees/anytype-otzaria-added-date-contract-20261124")
+W=Path("/mnt/development/projects/worktrees/anytype-otzaria-native-metadata-20261124")
 P=W/"docs/pinkha/torah-integration/native-owned-annotation-contract-20261123/bc-native-qualification-20261123"
-D=Path("/mnt/development/projects/diagnostics/otzaria-added-date-contract-20261124/relation-source-controls")
+D=Path("/mnt/development/projects/diagnostics/otzaria-native-metadata-20261124/relation-source-controls")
 D.mkdir(exist_ok=True)
 assert not (D/"RESULT.json").exists()
 def sha(raw):return hashlib.sha256(raw).hexdigest()
@@ -13,7 +13,7 @@ helper=P/"relation-target-closure-20261123/relation_target_controls.py"
 unionpath=P/"rpc-union-20261123/source_union.py"
 m=load("relation_target_controls",helper);u=load("native_source_union",unionpath)
 assert sha(helper.read_bytes())=="4fa32bc721cbb84dda7616d4599e70ba2f4ec34652512095546eff94f1068e33"
-assert sha(unionpath.read_bytes())=="237f5ff33f0f85f8b9f68318c5dc599e0cb0216737c6a3d9c5212de626bb1f3c"
+assert sha(unionpath.read_bytes())=="44cdc17895c74af05f70a91e0fd0b0828c1c8d4b56f2c2d22ba7085afb183d90"
 results=[]
 def control(name,fn,expect_refusal=False):
  try:
@@ -92,7 +92,7 @@ with tempfile.TemporaryDirectory(prefix="relation-target-source-controls-",dir=D
  control("altered_afterimage_refused",lambda:target_admit(alter=lambda name,raw:raw+b"\n" if name.endswith("/native/core/block/export/collection.go") else raw),True)
  control("altered_previous_result_refused",lambda:target_admit(alter=lambda name,raw:raw.replace(b'"FAIL"',b'"PASS"') if name.endswith("/previous-run/RESULT.json") else raw),True)
  old=json.loads(git(W,"show","c6b4ebd03d25433b8a47073d84e2efa874c777ec:"+str((P/"EXECUTION_INPUTS.json").relative_to(W))))
- target=target_admit();creation=u.admit_imported_creation(control=W,packet_name=str(P.relative_to(W)),manifest=manifest,bound=bound,safe=lambda root,relative:root/relative,git=git);overlay={"overlays":target["inputs"]+creation["inputs"]}
+ target=target_admit();creation=u.admit_imported_creation(control=W,packet_name=str(P.relative_to(W)),manifest=manifest,bound=bound,safe=lambda root,relative:root/relative,git=git);metadata=u.admit_bounded_native_metadata(control=W,packet_name=str(P.relative_to(W)),manifest=manifest,bound=bound,safe=lambda root,relative:root/relative,git=git);overlay={"overlays":target["inputs"]+creation["inputs"]+metadata["inputs"]}
  control("reviewed_target_and_creation_union_applied_exactly",lambda:u.expected_union(overlay,old["final_union_afterimages"],old["required_compiler_inputs"])==(manifest["final_union_afterimages"],manifest["required_compiler_inputs"]))
  wrong=copy.deepcopy(old["final_union_afterimages"]);wrong["core/block/export/collection.go"]="0"*64
  control("wrong_preceding_exporter_refused",lambda:u.expected_union(overlay,wrong,old["required_compiler_inputs"]),True)

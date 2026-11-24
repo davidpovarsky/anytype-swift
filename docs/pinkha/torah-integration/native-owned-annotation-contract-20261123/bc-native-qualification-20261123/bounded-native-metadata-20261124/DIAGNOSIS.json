@@ -1,0 +1,22 @@
+{
+  "decision": "Bound actual permitted original context keys before effects; require unchanged complete raw observations and strict export comparison. Do not delay or alter source export, hide runtime keys, wildcard local relations, or weaken body comparison.",
+  "existing_additional_contexts": 3,
+  "independent_review": "ChatGPT sdk_stageb read-only review reached same scope; Native owner retains implementation.",
+  "original_code_paths": [
+    "core/syncstatus/detailsupdater/updater.go:setSyncDetails",
+    "core/block/export/collection.go:collectDerivedObjects",
+    "core/converter/pbc",
+    "pkg/lib/bundle/internalRelations.gen.go:RequiredInternalRelations"
+  ],
+  "previous_control": "2b9aad18cba3e2bf363adea44144a0e787724fb6",
+  "previous_execution_manifest_sha256": "89b8c3ebb30f4deb8de4329a70ce2cbef6d8cb880055e79953d0c684b48fb100",
+  "previous_native_source_tree": "a082c726aee6ba3a438d2968fa23b43bb9c71bbe",
+  "previous_result_archive_sha256": "f3bf329fdc1c3cb6b30c34a1eb019b583a15ccecf19e3957bc7fa765e8bb700c",
+  "source_snapshots": 84,
+  "target_snapshots": 90,
+  "unaccounted_original_local_schema_keys": [
+    "syncStatus",
+    "syncDate",
+    "syncError"
+  ]
+}

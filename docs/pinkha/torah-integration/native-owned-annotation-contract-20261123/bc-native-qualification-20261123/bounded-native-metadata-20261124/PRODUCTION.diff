@@ -1,0 +1,70 @@
+--- a/core/block/import/owned_annotation_graph.go
++++ b/core/block/import/owned_annotation_graph.go
+@@ -808,17 +808,24 @@
+ 	return
+ }
+ 
+-// These are the three additional keys injected by the unchanged original
+-// converter/creator. They are not fabricated archive members or source mappings.
++// The unchanged original converter/creator adds import bookkeeping, and the
++// native sync updater adds exactly three local sync relations during lifecycle
++// transitions. Their schema dependencies may be absent from a source archive.
++// Admit only this bounded set, with complete pre-import read-only observation;
++// no key is a fabricated archive member or a substitute for a source mapping.
++func originalOwnedAnnotationMetadataKeys() []domain.RelationKey {
++	return []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath, bundle.RelationKeySyncStatus, bundle.RelationKeySyncDate, bundle.RelationKeySyncError}
++}
++
+ func (g *ownedAnnotationGraph) isOriginalImportMetadata(plan *ownedAnnotationMemberPlan) bool {
+ 	if plan == nil || plan.sourceID != "" || plan.snapshot != nil || plan.role != ownedAnnotationBundledSchema || plan.nativeKey == nil || plan.nativeKey.SmartblockType() != coresb.SmartBlockTypeRelation {
+ 		return false
+ 	}
+ 	key := domain.RelationKey(plan.nativeKey.InternalKey())
+-	return key == bundle.RelationKeyImportType || key == bundle.RelationKeyOldAnytypeID || key == bundle.RelationKeySourceFilePath
++	return slices.Contains(originalOwnedAnnotationMetadataKeys(), key)
+ }
+ func (g *ownedAnnotationGraph) admitOriginalImportMetadata(ctx context.Context) error {
+-	for _, key := range []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath} {
++	for _, key := range originalOwnedAnnotationMetadataKeys() {
+ 		unique, err := domain.NewUniqueKey(coresb.SmartBlockTypeRelation, key.String())
+ 		if err != nil {
+ 			return err
+--- a/core/application/owned_annotation_import_native_test.go
++++ b/core/application/owned_annotation_import_native_test.go
+@@ -1239,7 +1239,7 @@
+ 		}
+ 		byKey[key.Marshal()] = key
+ 	}
+-	for _, relation := range []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath} {
++	for _, relation := range []domain.RelationKey{bundle.RelationKeyImportType, bundle.RelationKeyOldAnytypeID, bundle.RelationKeySourceFilePath, bundle.RelationKeySyncStatus, bundle.RelationKeySyncDate, bundle.RelationKeySyncError} {
+ 		key, err := domain.NewUniqueKey(coresb.SmartBlockTypeRelation, relation.String())
+ 		ownedClosedNoError(t, err)
+ 		byKey[key.Marshal()] = key
+@@ -1303,7 +1303,7 @@
+ 			f.receipt(t, "readonly-prerequisites.json", map[string]any{
+ 				"exact_schema_keys": len(current), "stable_original_heads": current,
+ 				"actual_complete_raw_native_observations": true, "actual_unique_positive_index_rows": true,
+-				"additional_metadata_keys": []string{bundle.RelationKeyImportType.String(), bundle.RelationKeyOldAnytypeID.String(), bundle.RelationKeySourceFilePath.String()},
++				"additional_metadata_keys": []string{bundle.RelationKeyImportType.String(), bundle.RelationKeyOldAnytypeID.String(), bundle.RelationKeySourceFilePath.String(), bundle.RelationKeySyncStatus.String(), bundle.RelationKeySyncDate.String(), bundle.RelationKeySyncError.String()},
+ 			})
+ 			return
+ 		}
+@@ -1562,7 +1562,8 @@
+ 		}
+ 		key := domain.RelationKey(value.Snapshot.Data.Key)
+ 		if coresb.SmartBlockType(value.SbType) != coresb.SmartBlockTypeRelation ||
+-			(key != bundle.RelationKeyImportType && key != bundle.RelationKeyOldAnytypeID && key != bundle.RelationKeySourceFilePath) {
++			(key != bundle.RelationKeyImportType && key != bundle.RelationKeyOldAnytypeID && key != bundle.RelationKeySourceFilePath &&
++				key != bundle.RelationKeySyncStatus && key != bundle.RelationKeySyncDate && key != bundle.RelationKeySyncError) {
+ 			t.Fatal("native readback contains an unowned additional graph member")
+ 		}
+ 		expected, err := f.spc.GetRelationIdByKey(f.ctx, key)
+@@ -1572,7 +1573,7 @@
+ 		}
+ 	}
+ 	if len(snapshots)-len(assignments) != readback.AdditionalImportContexts() ||
+-		readback.AdditionalImportContexts() > 3 {
++		readback.AdditionalImportContexts() > 6 {
+ 		t.Fatal("native readback additional metadata inventory differs")
+ 	}
+ 	actualBlocks := make(map[string]*model.Block)

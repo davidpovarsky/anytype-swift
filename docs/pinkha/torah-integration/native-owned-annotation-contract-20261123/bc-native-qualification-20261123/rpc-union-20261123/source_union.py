@@ -233,8 +233,11 @@ def admit(*, control, packet_name, manifest, composition, read_bound, safe, git,
     creation = admit_imported_creation(control=control, packet_name=packet_name, manifest=manifest,
                                         bound=bound, safe=safe, git=git)
     overlays += [dict(row, layer="original-imported-creation-date") for row in creation["inputs"]]
+    metadata = admit_bounded_native_metadata(control=control, packet_name=packet_name, manifest=manifest,
+                                             bound=bound, safe=safe, git=git)
+    overlays += [dict(row, layer="bounded-original-native-metadata") for row in metadata["inputs"]]
     return {"baseline": base, "repair": repair, "qualified": qualified, "overlays": overlays,
-            "relation_target": target, "imported_creation": creation,
+            "relation_target": target, "imported_creation": creation, "bounded_native_metadata": metadata,
             "generated_index": generated, "generated_index_path": qualified["generated_index"]["path"]}
 
 
@@ -366,6 +369,48 @@ def admit_imported_creation(*, control, packet_name, manifest, bound, safe, git)
         else:
             require(row["native_path"].endswith("_test.go") and row["changes"] == [],
                     "Only the additive creation-date test may have no preimage")
+    return repair
+
+
+def admit_bounded_native_metadata(*, control, packet_name, manifest, bound, safe, git):
+    raw = bound("bounded-native-metadata-20261124/METADATA_INPUTS.json", manifest["bounded_native_metadata"])
+    repair = json.loads(raw)
+    require(repair["schema"] == 1 and repair["original_heart"] == HEART
+            and repair["source_parent"] == "2b9aad18cba3e2bf363adea44144a0e787724fb6"
+            and repair["previous_native_tree"] == "a082c726aee6ba3a438d2968fa23b43bb9c71bbe"
+            and repair["allowed_additional_metadata_keys"] == [
+                "importType", "oldAnytypeID", "sourceFilePath", "syncStatus", "syncDate", "syncError"]
+            and repair["readback_used_as_expectation"] is False
+            and repair["body_predicate_unchanged"] is True
+            and repair["schema_observation_comparison_unchanged"] is True
+            and repair["source_members_remain_mandatory"] is True
+            and repair["new_control_leaf_count"] == 6,
+            "Bounded original native metadata contract changed")
+    bound(repair["control_helper"]["path"], repair["control_helper"])
+    paths = {
+        "core/block/import/owned_annotation_graph.go": 3,
+        "core/application/owned_annotation_import_native_test.go": 4,
+        "core/block/import/owned_annotation_native_metadata_test.go": 0,
+    }
+    require(len(repair["inputs"]) == 3 and {row["native_path"] for row in repair["inputs"]} == set(paths),
+            "Bounded native metadata layer escaped reviewed paths")
+    for row in repair["inputs"]:
+        after = bound(row["path"], row)
+        require(row["path"] == "bounded-native-metadata-20261124/native/" + row["native_path"],
+                "Native metadata retained native path differs")
+        require(len(row["changes"]) == paths[row["native_path"]], "Native metadata exact delta inventory differs")
+        if row["base_sha256"] is not None:
+            before = git(control, "show", repair["source_parent"] + ":" + row["preimage_control_path"])
+            require(identity(before)["sha256"] == row["base_sha256"],
+                    "Native metadata predecessor differs")
+            expected = before.decode()
+            for change in row["changes"]:
+                require(expected.count(change["before"]) == 1, "Native metadata inverse is not unique")
+                expected = expected.replace(change["before"], change["after"], 1)
+            require(after == expected.encode(), "Native metadata layer escaped exact reviewed changes")
+        else:
+            require(row["native_path"] == "core/block/import/owned_annotation_native_metadata_test.go"
+                    and row["changes"] == [], "Only additive native metadata tests may have no preimage")
     return repair
 
 
