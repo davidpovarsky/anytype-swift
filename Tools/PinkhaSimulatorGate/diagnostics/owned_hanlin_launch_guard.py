@@ -171,17 +171,8 @@ def main():
                 time.sleep(0.1)
             assert pid is not None, 'Owned App process was not observed'
             receipt['ownedAppPID'] = pid
-            commands = [
-                'target create ' + str(APP / 'Anytype'),
-                'breakpoint set --name ' + OPEN_SYMBOL,
-                'process attach --pid ' + str(pid),
-                'continue',
-                'frame info',
-                'frame variable --show-types self',
-                'expression --language Swift -- (self.anchor == nil, self.anchor?.viewIfLoaded == nil, self.anchor?.viewIfLoaded?.window == nil, self.anchor?.viewIfLoaded?.window?.windowScene?.activationState.rawValue ?? -999, self.anchor?.viewIfLoaded?.window?.rootViewController == nil, self.anchor?.viewIfLoaded?.window?.rootViewController?.presentedViewController == nil)',
-                'expression --language Swift -- self.anchor?.viewIfLoaded?.window?.rootViewController?.description',
-                'expression --language Swift -- self.anchor?.viewIfLoaded?.window?.rootViewController?.presentedViewController?.description',
-                'process detach', 'quit']
+            commands = ["target create {APP}","process attach --pid {PID}","script import lldb, json; t=lldb.debugger.GetSelectedTarget(); symbols=t.FindSymbols('{SYMBOL}', lldb.eSymbolTypeCode); assert symbols.GetSize()==1, symbols.GetSize(); address=symbols.GetContextAtIndex(0).GetSymbol().GetStartAddress(); assert address.GetFileAddress()==0x1e5f70; launch_start=address.GetLoadAddress(t); assert launch_start!=lldb.LLDB_INVALID_ADDRESS","script guard_paths={264:'anchor_nil',396:'anchor_view_not_loaded',488:'anchor_window_nil',2120:'window_scene_nil',2100:'scene_not_foreground_active',868:'window_root_nil',2064:'root_already_presenting',1144:'all_entry_guards_passed'}; guard_breakpoints=[t.BreakpointCreateByAddress(launch_start+offset) for offset in guard_paths]; assert all(b.GetNumLocations()==1 for b in guard_breakpoints)","continue","script p=t.GetProcess(); thread=p.GetSelectedThread(); frame=thread.GetFrameAtIndex(0); offset=frame.GetPC()-launch_start; print('PINKHA_LAUNCH_GUARD '+json.dumps({'branch':guard_paths.get(offset),'offset':offset,'breakpointStop':thread.GetStopReason()==lldb.eStopReasonBreakpoint,'threadID':thread.GetThreadID(),'processID':p.GetProcessID()}))","register read pc x0 x8 x9 x19 x20 x29","bt 5","process detach","quit"]
+            commands = [v.replace('{APP}', str(APP / 'Anytype')).replace('{PID}', str(pid)).replace('{SYMBOL}', OPEN_SYMBOL) for v in commands]
             script = work / 'observe.lldb'; script.write_text('\n'.join(commands) + '\n')
             with (work / 'lldb.log').open('wb') as output:
                 debugger = subprocess.Popen(['xcrun', 'lldb', '--batch', '--source', str(script)],
@@ -190,7 +181,21 @@ def main():
                     receipt['debuggerExit'] = debugger.wait(timeout=120)
                 finally:
                     owned_process_stop(debugger)
-            receipt['diagnosticObserved'] = 'stop reason = breakpoint' in (work / 'lldb.log').read_text(errors='replace')
+            guard_rows = re.findall(r'PINKHA_LAUNCH_GUARD (\{[^\r\n]+\})',
+                                    (work / 'lldb.log').read_text(errors='replace'))
+            parsed_guards = []
+            for row in guard_rows:
+                try:
+                    parsed_guards.append(json.loads(row))
+                except json.JSONDecodeError:
+                    pass
+            receipt['guardObservations'] = parsed_guards
+            receipt['diagnosticObserved'] = (len(parsed_guards) == 1 and
+                parsed_guards[0].get('branch') in {'anchor_nil', 'anchor_view_not_loaded',
+                    'anchor_window_nil', 'window_scene_nil', 'scene_not_foreground_active',
+                    'window_root_nil', 'root_already_presenting', 'all_entry_guards_passed'}
+                and parsed_guards[0].get('breakpointStop') is True
+                and parsed_guards[0].get('processID') == pid)
             owned_process_stop(ui_process)
             receipt['uiExit'] = ui_process.returncode
     except BaseException as error:
