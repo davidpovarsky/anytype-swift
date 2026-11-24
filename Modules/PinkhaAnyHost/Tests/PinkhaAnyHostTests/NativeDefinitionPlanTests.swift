@@ -432,7 +432,8 @@ final class NativeDefinitionPlanTests: XCTestCase {
         XCTAssertEqual(descriptor["pos"], .string("captured-order"))
         XCTAssertNil(descriptor["createdAt"])
         let mapper = try AnyHeartNativeDefinitionPlan(catalog: c)
-        let item = try XCTUnwrap(mapper.schemaItems.first { $0.sourceObjectID == property.sourceObjectID })
+        let propertyKey = try XCTUnwrap(mapper.property(sourceKey: "tag")).sourceKey
+        let item = try XCTUnwrap(mapper.schemaItems.first { $0.sourceKey == propertyKey })
         guard case .propertyDefinition(_, _, _, _, _, _, .literal(let format)?, _) = item.operation else {
             return XCTFail("native property operation")
         }
