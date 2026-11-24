@@ -1,0 +1,251 @@
+[
+  {
+    "name": "plain-hebrew",
+    "source": "שלום 42",
+    "expectedText": "שלום 42",
+    "convertible": true,
+    "projection": {
+      "contract": "pinkha-heart-inline-projection-v1",
+      "codec": "any-block/9906a7c36b68",
+      "sourceSHA256": "2b04203b900f3d34506d73c9431ffcab45b5cab51298d16b740f3e78c61e9c8e",
+      "sourceUTF16": 7,
+      "literal": false,
+      "text": "שלום 42",
+      "marks": []
+    }
+  },
+  {
+    "name": "bold",
+    "source": "**abc**",
+    "expectedText": "abc",
+    "convertible": true,
+    "projection": {
+      "contract": "pinkha-heart-inline-projection-v1",
+      "codec": "any-block/9906a7c36b68",
+      "sourceSHA256": "eedd8ef9da3bf94812b49afc562b48f35046d62ed8f609403290ad69d9e60b8e",
+      "sourceUTF16": 7,
+      "literal": false,
+      "text": "abc",
+      "marks": [
+        {
+          "kind": "bold",
+          "start": 0,
+          "end": 3,
+          "parameter": ""
+        }
+      ]
+    }
+  },
+  {
+    "name": "hebrew-emoji-bold",
+    "source": "א😀 **ב**",
+    "expectedText": "א😀 ב",
+    "convertible": true,
+    "projection": {
+      "contract": "pinkha-heart-inline-projection-v1",
+      "codec": "any-block/9906a7c36b68",
+      "sourceSHA256": "83fed7f09d6401c37d54be9bcc698b3947867041bd01478d57c540573f8dbe7f",
+      "sourceUTF16": 9,
+      "literal": false,
+      "text": "א😀 ב",
+      "marks": [
+        {
+          "kind": "bold",
+          "start": 4,
+          "end": 5,
+          "parameter": ""
+        }
+      ]
+    }
+  },
+  {
+    "name": "entity-literal",
+    "source": "&lt;u&gt; &amp; literal",
+    "expectedText": "<u> & literal",
+    "convertible": true,
+    "projection": {
+      "contract": "pinkha-heart-inline-projection-v1",
+      "codec": "any-block/9906a7c36b68",
+      "sourceSHA256": "560379f29c1b8d317421fe8aab152d00747a6eda3147c4b4bc96dd88b36bd506",
+      "sourceUTF16": 23,
+      "literal": false,
+      "text": "<u> & literal",
+      "marks": []
+    }
+  },
+  {
+    "name": "native-image-is-link",
+    "source": "![alt](https://example.com)",
+    "expectedText": "!alt",
+    "convertible": true,
+    "projection": {
+      "contract": "pinkha-heart-inline-projection-v1",
+      "codec": "any-block/9906a7c36b68",
+      "sourceSHA256": "a7cd3f722c939dc01cdcb5c63d956b7de6dd395c5adf2abe4cd2c021ac358527",
+      "sourceUTF16": 27,
+      "literal": false,
+      "text": "!alt",
+      "marks": [
+        {
+          "kind": "link",
+          "start": 1,
+          "end": 4,
+          "parameter": "https://example.com"
+        }
+      ]
+    }
+  },
+  {
+    "name": "literal-code",
+    "source": "<u>not closed **literal**",
+    "expectedText": "<u>not closed **literal**",
+    "convertible": true,
+    "projection": {
+      "contract": "pinkha-heart-inline-projection-v1",
+      "codec": "any-block/9906a7c36b68",
+      "sourceSHA256": "ea5cc0151f108f1ee292839030be561e4c8afcd3489a266729de076147e814a1",
+      "sourceUTF16": 25,
+      "literal": true,
+      "text": "<u>not closed **literal**",
+      "marks": []
+    }
+  },
+  {
+    "name": "inline-code",
+    "source": "before `let x = 1` after",
+    "expectedText": "before let x = 1 after",
+    "convertible": true,
+    "projection": {
+      "contract": "pinkha-heart-inline-projection-v1",
+      "codec": "any-block/9906a7c36b68",
+      "sourceSHA256": "4e75b4b9376474c94b79e74aee387ad6ac6b5ca4496ff2402ad8e84b067a1652",
+      "sourceUTF16": 24,
+      "literal": false,
+      "text": "before let x = 1 after",
+      "marks": [
+        {
+          "kind": "code",
+          "start": 7,
+          "end": 16,
+          "parameter": ""
+        }
+      ]
+    }
+  },
+  {
+    "name": "italic-strike",
+    "source": "*a* ~~b~~",
+    "expectedText": "a b",
+    "convertible": true,
+    "projection": {
+      "contract": "pinkha-heart-inline-projection-v1",
+      "codec": "any-block/9906a7c36b68",
+      "sourceSHA256": "abf5b417258ca8675641925a6219be1535b1d7a2c9d2dda7d60e2757cca98f3c",
+      "sourceUTF16": 9,
+      "literal": false,
+      "text": "a b",
+      "marks": [
+        {
+          "kind": "italic",
+          "start": 0,
+          "end": 1,
+          "parameter": ""
+        },
+        {
+          "kind": "strike",
+          "start": 2,
+          "end": 3,
+          "parameter": ""
+        }
+      ]
+    }
+  },
+  {
+    "name": "underline",
+    "source": "<u>קו</u>",
+    "expectedText": "קו",
+    "convertible": false,
+    "projection": {
+      "contract": "pinkha-heart-inline-projection-v1",
+      "codec": "any-block/9906a7c36b68",
+      "sourceSHA256": "74696b61f3728aa87e5c885c3c6cd76f98cc2aad7899ebe908678ca5c60ba973",
+      "sourceUTF16": 9,
+      "literal": false,
+      "text": "קו",
+      "marks": [
+        {
+          "kind": "underline",
+          "start": 0,
+          "end": 2,
+          "parameter": ""
+        }
+      ]
+    }
+  },
+  {
+    "name": "color",
+    "source": "<font color=\"red\">red</font>",
+    "expectedText": "red",
+    "convertible": false,
+    "projection": {
+      "contract": "pinkha-heart-inline-projection-v1",
+      "codec": "any-block/9906a7c36b68",
+      "sourceSHA256": "59b8bb10c9655992e74a50a4eb734f4e6832433efa86b3047792b85a9983314d",
+      "sourceUTF16": 28,
+      "literal": false,
+      "text": "red",
+      "marks": [
+        {
+          "kind": "textColor",
+          "start": 0,
+          "end": 3,
+          "parameter": "red"
+        }
+      ]
+    }
+  },
+  {
+    "name": "object-link",
+    "source": "[o](anytype://object?objectId=source)",
+    "expectedText": "o",
+    "convertible": false,
+    "projection": {
+      "contract": "pinkha-heart-inline-projection-v1",
+      "codec": "any-block/9906a7c36b68",
+      "sourceSHA256": "c789a62a6dcf2d047f29cc1670d02d50af9eb348e289fafb8b05f2d2f34c374e",
+      "sourceUTF16": 37,
+      "literal": false,
+      "text": "o",
+      "marks": [
+        {
+          "kind": "object",
+          "start": 0,
+          "end": 1,
+          "parameter": "source"
+        }
+      ]
+    }
+  },
+  {
+    "name": "mention",
+    "source": "<mention object_id=\"source\">name</mention>",
+    "expectedText": "name",
+    "convertible": false,
+    "projection": {
+      "contract": "pinkha-heart-inline-projection-v1",
+      "codec": "any-block/9906a7c36b68",
+      "sourceSHA256": "1d3a791a64ff671264835cd09dc466ee8e373470295fe66eab74bdfd4d9937dd",
+      "sourceUTF16": 42,
+      "literal": false,
+      "text": "name",
+      "marks": [
+        {
+          "kind": "mention",
+          "start": 0,
+          "end": 4,
+          "parameter": "source"
+        }
+      ]
+    }
+  }
+]
