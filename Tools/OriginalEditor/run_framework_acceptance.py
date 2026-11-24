@@ -239,7 +239,8 @@ def execute(args, receipt):
         require(json.loads(initial_path.read_text()) == before, 'Source changed since initial CI admission')
     else:
         write(initial_path, before)
-    receipt.update(source_sha=before['head_sha'], run_id=before['run_id'], run_attempt=before['run_attempt'])
+    receipt.update(source_sha=before['head_sha'], run_id=before['run_id'], run_attempt=before['run_attempt'],
+                   execution_identity=before['execution_identity'])
     if args.source_only:
         receipt.update(status='SOURCE_BOUND_FRAMEWORK_RUNTIME_NOT_RUN')
         return
