@@ -64,6 +64,26 @@ def app_container(c, commands, label):
               and re.fullmatch(r"[0-9A-F-]{36}", path.name), "Original delegated app container required")
     return path
 
+def sealed_app_container(c):
+    # CoreSimulator refuses get_app_container while Shutdown. Admit the exact
+    # successful E resolution and independently compare the full private
+    # shutdown inventory before boot; resolve through simctl again after boot.
+    directory = PRIOR / "commands/final-private-sandbox-container"
+    command = c.decode(c.raw(directory / "result.json"))
+    log = directory / "original.log"
+    c.require(c.digest(log) == "cdf11e533f2d24827b6bd2b1360e6834a1027f707a9889fff13c35b09a183f03"
+              == command["logSHA256"]
+              and command["argv"] == ["xcrun", "simctl", "get_app_container", DEVICE, c.BUNDLE, "data"]
+              and command["exitCode"] == 0 and command["status"] == "PASS_COMMAND",
+              "Original successful delegated app-container resolution required")
+    path = Path(c.raw(log, 4096).decode().strip())
+    owner = Path.home() / "Library/Developer/CoreSimulator/Devices" / DEVICE
+    c.require(path.resolve() == path and path.is_dir()
+              and path.parent == owner / "data/Containers/Data/Application"
+              and re.fullmatch(r"[0-9A-F-]{36}", path.name), "Sealed delegated container changed")
+    return path
+
+
 def original_handoff(c, commands, evidence):
     execution_path = PRIOR / "evidence/execution.json"
     backup_path = PRIOR / "private/owned-account-originals/retention.json"
@@ -98,7 +118,7 @@ def original_handoff(c, commands, evidence):
     c.require(fixture["createdAt"] + 978307200 + 7200 == DEADLINE and time.time() < DEADLINE,
               "The exact original fixture deadline must remain unchanged")
     owned_device(c, commands, "handoff-device")
-    app = app_container(c, commands, "handoff-container")
+    app = sealed_app_container(c)
     old_container = PRIOR / "commands/final-private-sandbox-container/original.log"
     c.require(Path(c.raw(old_container, 4096).decode().strip()) == app, "Original app container changed")
     device_root = Path.home() / "Library/Developer/CoreSimulator/Devices" / DEVICE
@@ -361,6 +381,8 @@ def main():
         commands.run(["xcrun", "simctl", "boot", DEVICE], "boot-delegated-simulator", 60)
         commands.run(["xcrun", "simctl", "bootstatus", DEVICE, "-b"], "await-delegated-boot", 180)
         owned_device(c, commands, "ready-for-source-ui", expected="Booted")
+        c.require(app_container(c, commands, "booted-original-container") == app_data,
+                  "Booted app resolution differs from sealed original account")
         additions = {"PINKHA_SIMULATOR_UI_DISPOSABLE": "1", "PINKHA_SEMANTIC_MOUNTED_TESTING": "1",
             "PINKHA_SEMANTIC_MOUNTED_FIXTURE_JSON": fixture_bytes.decode(),
             "PINKHA_HEART_SOURCE_CAPTURE_TESTING": "1", "PINKHA_HEART_SOURCE_CAPTURE_FIXTURE_SHA256": FIXTURE_SHA,
