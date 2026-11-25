@@ -1,0 +1,91 @@
+{
+  "status": "FAIL",
+  "startedAt": "2026-11-25T08:54:56.238696+00:00",
+  "scope": "Original complete HanlinChatCore and PlatformContracts sources; same original affected48 methods plus exact producer tests, on final merged SDK30e. Not application/UI acceptance.",
+  "sourceCommit": "30e5f09f8494d913fa36e75f877b541020c92ee0",
+  "resourceGate": {
+    "free": 10752675840,
+    "originalCacheAllocatedBytes": 674226176,
+    "required": 3358580736
+  },
+  "packageManifestSHA256": "558d4a894abbd3b07b6fa040d8332f54f0ab7f7cc051a415dbdd782da0ae4e3b",
+  "packageResolvedSHA256": "94502e6fb2a6c9a406befa7a7c5d3cc9309cfddeaf6bd324857a5bd7e4081d6f",
+  "canonicalSourceFiles": 959,
+  "producerTestSHA256": {
+    "MockTracer.swift": "a6a51dde8ad9779723a7482d5789e25dd498ee41df449bd8cdd7e33c2fffe864",
+    "OpenAIPromptCacheControlTests.swift": "623b47a3a43dbf4a57948b5eef7d7df436c4e7f65c222ca3fcf7774f9b08cd7c"
+  },
+  "priorInputDifferences": [
+    {
+      "path": "Packages/HanlinPlatform/Sources/HanlinPlatformContracts/HanlinIdentifiers.swift",
+      "prior": "2287b3e02197a940f01ee4470fe7bd50206865480f9eadb0f4e975098c47163a",
+      "current": "02d34beb9cd36bc236e0326427e800d369c50cab0d052b773c2e8c19bb0c6f8c"
+    },
+    {
+      "path": "Packages/HanlinPlatform/Package.swift",
+      "prior": "ac0e2b793a9df8329f12fbb27cd02ee91cb8cb29257f185e0969ebffa2510ebc",
+      "current": "78d7081d0e197c3e99746e5b3e476b41280fc5b32110035fab31a3e949cb4dab"
+    }
+  ],
+  "swift": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "command": [
+    "swift",
+    "test",
+    "--package-path",
+    "/Users/m1/builds/pinkha-hanlin-sdk30e-20261125/core-source",
+    "--scratch-path",
+    "/Users/m1/builds/pinkha-hanlin-sdk30e-20261125/core-build",
+    "--jobs",
+    "2",
+    "--filter",
+    "HanlinPromptCacheTests|HanlinPromptCachePresetTests|HanlinPromptCachePolicyMutationTests|HanlinGoogleCachedContentTests|HanlinOpenTelemetryTracerTests|HanlinAISDKJSONOutputTests|OpenAIPromptCacheControlTests|HanlinCompactResponsesTests|testAnthropicRequestBuilder|testOpenAIResponseRouting"
+  ],
+  "pid": 29332,
+  "testStartedAt": "2026-11-25T08:54:58.842763+00:00",
+  "exitCode": 0,
+  "logSHA256": "8887620fc21a8eec2f6189b926944b9f16a7f0f87002ade9487de0d055c425a3",
+  "swiftTestingProcessCounts": [],
+  "swiftTestingPassed": 0,
+  "sourceUnchanged": true,
+  "resolvedUnchanged": true,
+  "resolvedPins": [
+    {
+      "identity": "opentelemetry-swift-core",
+      "kind": "remoteSourceControl",
+      "location": "https://github.com/open-telemetry/opentelemetry-swift-core.git",
+      "state": {
+        "revision": "c6fcee77cfc21ba400366f12475217c7b6e1d605",
+        "version": "2.6.0"
+      }
+    },
+    {
+      "identity": "swift-ai-sdk",
+      "kind": "remoteSourceControl",
+      "location": "https://github.com/davidpovarsky/swift-ai-sdk.git",
+      "state": {
+        "revision": "abf0921c6e89e6521cc2b510ff11016b45a0ef08"
+      }
+    },
+    {
+      "identity": "swift-argument-parser",
+      "kind": "remoteSourceControl",
+      "location": "https://github.com/apple/swift-argument-parser",
+      "state": {
+        "revision": "6a52f3251125d74daf04fcbd5e6f08a75d074382",
+        "version": "1.8.2"
+      }
+    },
+    {
+      "identity": "swift-atomics",
+      "kind": "remoteSourceControl",
+      "location": "https://github.com/apple/swift-atomics.git",
+      "state": {
+        "revision": "0442cb5a3f98ab802acb777929fdb446bda11a34",
+        "version": "1.3.1"
+      }
+    }
+  ],
+  "error": "[]",
+  "finishedAt": "2026-11-25T08:56:24.181544+00:00",
+  "freeAfter": 10065858560
+}
