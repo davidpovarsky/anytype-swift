@@ -159,6 +159,60 @@ def admit(profile, expected, inventory_policy=None):
         source["inventoryRecoverySourceOrigin"] = recovery["sourceCommit"]
     return context, source
 
+def retained_hierarchy_move(expected):
+    """Retain one original PASS without turning it into a current execution."""
+    fixed = read(MANIFEST)["retainedHierarchyMove"]
+    c.require(fixed["sourceCommit"] == "fb5b40a5e91c68520d0f2921600a9f04b1e25439"
+              and fixed["runID"] == "45472843335"
+              and fixed["method"] == c.HIERARCHY_MOVE, "retained_move_origin_changed")
+    git("merge-base", "--is-ancestor", fixed["sourceCommit"], expected)
+    directory = HERE / "retained-hierarchy-move"
+    documents = {}
+    for name, checksum in fixed["files"].items():
+        c.require(name in {"tests.json", "summary.json", "execution.json"}
+                  and digest(directory / name) == checksum, "retained_move_evidence_changed")
+        documents[name] = read(directory / name)
+    c.require(set(documents) == {"tests.json", "summary.json", "execution.json"},
+              "retained_move_originals_missing")
+    original = documents["execution.json"]
+    c.require(original["context"]["sourceCommit"] == fixed["sourceCommit"]
+              and original["context"]["runID"] == fixed["runID"]
+              and original["status"] == "FAIL", "original_failed_run_must_remain_failed")
+    nodes = []
+    def visit(item):
+        if isinstance(item, dict):
+            if item.get("nodeType") == "Test Case":
+                nodes.append(item)
+            for value in item.values():
+                visit(value)
+        elif isinstance(item, list):
+            for value in item:
+                visit(value)
+    visit(documents["tests.json"])
+    matching = [item for item in nodes if item.get("nodeIdentifier") == c.HIERARCHY_MOVE + "()"]
+    c.require(len(nodes) == 3 and len(matching) == 1
+              and matching[0].get("result") == "Passed"
+              and sum(item.get("result") == "Failed" for item in nodes) == 2,
+              "retained_move_original_named_result_changed")
+    summary = documents["summary.json"]
+    c.require(summary["totalTestCount"] == 3 and summary["passedTests"] == 1
+              and summary["failedTests"] == 2 and summary["skippedTests"] == 0,
+              "retained_move_original_counts_changed")
+    # All NativeApp code/tests and all engine/host/integration services are
+    # byte-identical. The sole Any UI delta enables folder drop handling outside
+    # edit mode; the context-menu move route and its native operation are intact.
+    c.require(git("rev-parse", fixed["sourceCommit"] + ":NativeApp") ==
+              git("rev-parse", expected + ":NativeApp"), "retained_move_app_or_tests_changed")
+    changed = set(git("diff", "--name-only", fixed["sourceCommit"], expected, "--", "Modules").decode().splitlines())
+    c.require(changed == set(fixed["reviewedChangedModuleFiles"]), "retained_move_dependency_delta_changed")
+    delta = git("diff", fixed["sourceCommit"], expected, "--",
+                "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift")
+    c.require(c.sha(delta) == fixed["reviewedLibraryDeltaSHA256"], "retained_move_route_delta_changed")
+    return {"status": "HISTORICAL_PASS_RETAINED", "currentTestExecutions": 0,
+            "currentResultRelabeled": False, **fixed,
+            "originalRunStillFailed": True, "originalOtherFailures": 2,
+            "scope": "Context-menu hierarchy move/body/type/property visibility and cold reopen"}
+
 def recheck(source):
     c.require(digest(MANIFEST) == source["manifestSHA256"]
               and {name: metadata(ROOT / name) for name in source["files"]} == source["files"],
@@ -839,6 +893,8 @@ def execute(profile, expected, prepare_library, provider, inventory_policy=None,
     try:
         context, source = admit(profile, expected, inventory_policy)
         outcome["context"] = context
+        if profile == "native-ui-failed":
+            outcome["retainedHierarchyMove"] = retained_hierarchy_move(expected)
         write(evidence / "source-before.json", source)
         write(evidence / "execution-intent.json", {"context": context, "selected": c.methods(profile),
               "sourceDragExcluded": c.SOURCE_DRAG, "sourceAdmissionSHA256": digest(evidence / "source-before.json"),
@@ -875,32 +931,53 @@ def execute(profile, expected, prepare_library, provider, inventory_policy=None,
             outcome["stages"]["preparation"] = execute_stage(commands, profile, "preparation", preparation,
                                                               built, source, evidence, copies)
         else:
-            outcome["providerSetup"] = provider(commands, "prepare", device, evidence)
-            outcome["stages"]["native-ui-three"] = execute_stage(commands, profile, "native-ui-three", device,
-                                                                   built, source, evidence, copies)
-            try:
-                outcome["providerContract"] = provider(commands, "verify", device, evidence)
-            except BaseException as failure:
-                outcome["errors"].append({"phase": "provider-contract", **error(failure)})
-                first = first or failure
+            # These journeys own fresh application/account namespaces. A product
+            # failure is recorded locally and does not suppress another journey.
+            # Global source/product integrity and cancellation remain hard gates.
+            outcome["stages"]["hierarchy-drag"] = execute_stage(
+                commands, profile, "hierarchy-drag", device, built, source, evidence, copies)
             recheck(source)
             check_products(built[0] / "Build/Products", built[1], copies)
-            outcome["stages"]["archive-roundtrip"] = execute_stage(commands, profile, "archive-roundtrip", device,
-                                                                    built, source, evidence, copies)
-            # The first four results keep their original stage receipts. The two
-            # never-run journeys reuse this one build only after those and the
-            # finite provider/archive postflight pass.
-            initial = ("native-ui-three", "archive-roundtrip")
-            outcome["initialFourPassed"] = first is None and all(
-                outcome["stages"][name]["status"] == "PASS" for name in initial)
-            if outcome["initialFourPassed"]:
-                follow_on = create_device(commands, pair,
-                    "CurrentNativeTypeHistory-" + context["runID"] + "-" + context["runAttempt"], evidence, owned)
-                for stage in ("custom-type", "native-history"):
-                    outcome["stages"][stage] = execute_stage(commands, profile, stage, follow_on,
-                                                              built, source, evidence, copies)
-            else:
-                outcome["followOnAdmission"] = "NOT_RUN_INITIAL_FOUR_OR_PROVIDER_NOT_PASSED"
+            c.require(not _CANCELLED, "native_journeys_cancelled")
+            provider_ready = False
+            try:
+                outcome["providerSetup"] = provider(commands, "prepare", device, evidence)
+                provider_ready = True
+            except BaseException as failure:
+                outcome["errors"].append({"phase": "provider-setup", **error(failure)})
+                first = first or failure
+                outcome["stages"]["hanlin-selection-consent"] = {
+                    "status": "NOT_RUN", "testCommandInvoked": False,
+                    "completeStageAcceptance": False, "reason": "provider_setup_failed",
+                    "firstFailure": error(failure)}
+            if provider_ready:
+                outcome["stages"]["hanlin-selection-consent"] = execute_stage(
+                    commands, profile, "hanlin-selection-consent", device, built, source, evidence, copies)
+                try:
+                    outcome["providerContract"] = provider(commands, "verify", device, evidence)
+                except BaseException as failure:
+                    outcome["errors"].append({"phase": "provider-contract", **error(failure)})
+                    first = first or failure
+            recheck(source)
+            check_products(built[0] / "Build/Products", built[1], copies)
+            c.require(not _CANCELLED, "native_journeys_cancelled")
+            # Files gets a fresh owned simulator to distinguish provider/process
+            # carryover from the original strict picker/mapping journey.
+            archive_device = create_device(commands, pair,
+                "CurrentNativeArchive-" + context["runID"] + "-" + context["runAttempt"], evidence, owned)
+            outcome["stages"]["archive-roundtrip"] = execute_stage(
+                commands, profile, "archive-roundtrip", archive_device, built, source, evidence, copies)
+            recheck(source)
+            check_products(built[0] / "Build/Products", built[1], copies)
+            c.require(not _CANCELLED, "native_journeys_cancelled")
+            follow_on = create_device(commands, pair,
+                "CurrentNativeTypeHistory-" + context["runID"] + "-" + context["runAttempt"], evidence, owned)
+            for stage in ("custom-type", "native-history"):
+                outcome["stages"][stage] = execute_stage(
+                    commands, profile, stage, follow_on, built, source, evidence, copies)
+                recheck(source)
+                check_products(built[0] / "Build/Products", built[1], copies)
+                c.require(not _CANCELLED, "native_journeys_cancelled")
     except BaseException as failure:
         first = first or failure
         outcome["errors"].append({"phase": "execute", **error(failure)})

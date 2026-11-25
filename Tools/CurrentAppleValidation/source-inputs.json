@@ -9,22 +9,23 @@
   },
   "currentNativeProductRevision": {
     "productTrees": {
-      "Modules": "14dcdaa23e19126b8ffdd5c96048b3833fa66ce3",
+      "Modules": "c0b337d833799bb51bb9dfde4531171c45a59000",
       "NativeApp": "dbc7320e406031445ed97059dfd01311d44ee5d8"
     },
     "profile": "native-ui-failed",
     "schemaVersion": 1,
-    "sourceCommit": "06d16e1974c8b9693ad2bd49e57b0e12f5add230"
+    "sourceCommit": "e0c88c3224c88484b6cacf0f8f834057a81ff26c"
   },
   "currentNativeSelection": {
-    "followOnFreshOwnedSimulator": true,
-    "followOnMethods": 2,
-    "followOnRequiresInitialFourAndProviderPass": true,
-    "initialMethods": 4,
+    "archiveFreshOwnedSimulator": true,
+    "independentResults": true,
     "maximumApplicationBuilds": 1,
     "maximumNativeBuilds": 0,
     "maximumUIRunnerBuilds": 1,
-    "policy": "native-ui-six-current-products-v1"
+    "methods": 5,
+    "policy": "native-ui-five-independent-v2",
+    "retainedHierarchyMoveExecutions": 0,
+    "typeHistoryFreshOwnedSimulator": true
   },
   "helperInputs": {
     "Tools/AnyEnginePort/continue_native_acceptance.py": {
@@ -251,6 +252,24 @@
       "Scripts": "37fde5ac7e90e5bb82b247bf835911b85477830b",
       "scripts": "7c1c4d6e9e6025ef745e0390cebcbb9ddd534be5"
     }
+  },
+  "retainedHierarchyMove": {
+    "files": {
+      "execution.json": "d2d91e2cdaba5a9283cb53e080eab639593d1e07352f065aa7aec346cf1247c6",
+      "summary.json": "3dcb21e9c47ead714d5e4b425e285e35456265e9e5f5a47437d9054ab6b8bba0",
+      "tests.json": "7f9c374aabe24dcdc7a70024110aee7d3dca8b3a69fc1cbd62e1b956dd370dff"
+    },
+    "method": "NativeLaunchTests/testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType",
+    "reviewedChangedModuleFiles": [
+      "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorClient.swift",
+      "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorProtobuf.swift",
+      "Modules/ProtobufMessages/Tests/ProtobufMessagesTests/PinkhaHeartSemanticAnchorClientTests.swift",
+      "Modules/ProtobufMessages/Tests/ProtobufMessagesTests/PinkhaHeartSemanticAnchorWireTests.swift"
+    ],
+    "reviewedLibraryDeltaSHA256": "cc8a2028e183a6827264d37e6106e19f99dfa27fb8b48e8f58e1eedf18bd691e",
+    "runID": "45472843335",
+    "sourceCommit": "fb5b40a5e91c68520d0f2921600a9f04b1e25439"
   },
   "retainedMethods": {
     "AnyNativeFocusHandoffTests/testDeferredNativeRefusalWaitsForActualReadinessWithoutLayoutRetries": {
