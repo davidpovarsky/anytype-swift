@@ -39,9 +39,9 @@ def main():
               "startedAt": time.time(), "freeBytesBefore": shutil.disk_usage(DESTINATION).free}
     try:
         original = BASE / "build12"
-        for name, pin in (("receipt.json", RECEIPT), ("source-before.json", SOURCE_MANIFEST),
+        for name, expected_pin in (("receipt.json", RECEIPT), ("source-before.json", SOURCE_MANIFEST),
                           ("source-after.json", SOURCE_MANIFEST), ("products-all.json", PRODUCTS)):
-            c.require(c.digest(original / name) == pin, "Original producer pin differs: " + name)
+            c.require(c.digest(original / name) == expected_pin, "Original producer pin differs: " + name)
         receipt = c.decode(c.raw(original / "receipt.json"))
         producer = c.decode(c.raw(original / "source-before.json"))
         c.require(receipt["sourceCommit"] == SOURCE and receipt["sourceUnchanged"] is True
