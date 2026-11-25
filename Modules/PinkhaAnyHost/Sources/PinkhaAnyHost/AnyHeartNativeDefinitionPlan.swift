@@ -27,7 +27,7 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
         public let owner: AnyDestinationReference
         public let record: AnyDestinationReference
         public let canonicalBinding: AnyDestinationCanonicalPropertyBinding?
-        public var isCanonicalName: Bool { canonicalBinding != nil }
+        public var isCanonicalName: Bool { canonicalBinding?.propertyID == "name" }
         /// nil preserves absence; a captured true value is represented in the
         /// type's separate definitionHidden list, never in the title content.
         public var sourceHidden: Bool? { relation.snapshot.details["isHidden"]?.bool }
@@ -98,11 +98,11 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
         let typesByID = Dictionary(uniqueKeysWithValues: types.map { (Data($0.definition.objectID.utf8), $0) })
         var items: [AnyDestinationMigrationItem] = [], properties: [PropertyBinding] = []
         var definitionCoverage: [AnyDestinationCoverage] = []
-        func nativeNameIdentity(_ relation: AnyHeartNativeDefinitionCatalog.Relation) -> Bool {
-            relation.snapshot.nativeType == 521 && Data(relation.snapshot.uniqueKey.utf8) == Data("rel-name".utf8) &&
-            Data(relation.relationKey.utf8) == Data("name".utf8)
+        func nativeCanonicalIdentity(_ relation: AnyHeartNativeDefinitionCatalog.Relation) -> Bool {
+            relation.snapshot.nativeType == 521 && ["name", "description"].contains(relation.relationKey) &&
+            Data(relation.snapshot.uniqueKey.utf8) == Data(("rel-" + relation.relationKey).utf8)
         }
-        let namespaceAnchor = catalog.relations.first { !nativeNameIdentity($0) }
+        let namespaceAnchor = catalog.relations.first { !nativeCanonicalIdentity($0) }
         let ownerKey = namespaceAnchor.map { key("property-catalog", $0.objectID) }
         if let ownerKey, let first = namespaceAnchor {
             // This is the destination property namespace. It does not claim
@@ -117,21 +117,22 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
                     ]))))))
         }
         for relation in catalog.relations {
-            if nativeNameIdentity(relation) {
+            if nativeCanonicalIdentity(relation) {
                 do {
                     let canonical = try AnyDestinationCanonicalPropertyBinding(evidence: .init(snapshot: relation.snapshot))
-                    guard catalog.relation(key: "name")?.objectID == relation.objectID else {
+                    guard catalog.relation(key: canonical.propertyID)?.objectID == relation.objectID else {
                         throw AnyHeartNativeDefinitionPlanError.missingDefinition(relation.objectID)
                     }
                     properties.append(.init(relation: relation, sourceKey: key("canonical-property", relation.objectID),
-                        kind: "string", format: "text", xKey: "name", owner: .native("any"), record: .native("name"),
+                        kind: "string", format: canonical.propertyID == "name" ? "text" : "longtext",
+                        xKey: canonical.propertyID, owner: .native("any"), record: .native(canonical.propertyID),
                         canonicalBinding: canonical))
                     definitionCoverage.append(.init(sourceObjectID: relation.objectID, disposition: .canonicalProperty(canonical)))
                 } catch {
-                    // An overridden name definition is not copied to a second
-                    // mutable title field or silently treated as the builtin.
-                    issues.append(.init(sourceObjectID: relation.objectID, field: "canonical-name",
-                        reason: "captured-name-definition-does-not-match-qualified-native-contract"))
+                    // An overridden canonical definition is not copied to a
+                    // second mutable field or silently treated as the builtin.
+                    issues.append(.init(sourceObjectID: relation.objectID, field: "canonical-" + relation.relationKey,
+                        reason: "captured-definition-does-not-match-qualified-native-contract"))
                 }
                 continue
             }
@@ -167,8 +168,12 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
             if let value = relation.defaultValue {
                 source["defaultValueJSON"] = .string(try Self.jsonString(value))
                 if value != .null {
-                    issues.append(.init(sourceObjectID: relation.objectID, field: "relationDefaultValue",
-                        reason: "default-retained; destination-new-object-default-behavior-not-qualified"))
+                    if AnyNativeImportedDefaultMetadata.qualifies(relation) {
+                        source["defaultBehaviorContract"] = .string(AnyNativeImportedDefaultMetadata.contract)
+                    } else {
+                        issues.append(.init(sourceObjectID: relation.objectID, field: "relationDefaultValue",
+                            reason: "default-retained; destination-new-object-default-behavior-not-qualified"))
+                    }
                 }
             }
             if relation.readonlyValue == true {
