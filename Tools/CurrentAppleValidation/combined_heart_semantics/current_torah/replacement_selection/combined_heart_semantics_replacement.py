@@ -37,8 +37,9 @@ NATIVE_BINARY = "c3374a58dffb64658fe6840ee9bd2711a4b1bf8c449c32da5bd51ede4901cec
 LOCK = "4453726b6b4bbd52dc3c5caa5a315a51e718139c4f96182b7a6851a0b8c82d04"
 SDK_RECEIPT = "0ae5a1476c899b1790f01a2a3b4118034e848d8ad8dcf2d97f12104f7387f798"
 OBSERVATION_HELPER = "421e4bcff91d74d126c36485e78b24596e3932f6ac44167ecea8a0d17020a724"
-REPLACEMENT_OVERRIDE_HELPER = "c2c4ab765e1b94f3386e250149ed454c6fce0602cf56608c45f60875f7018dbf"
+REPLACEMENT_OVERRIDE_HELPER = "5cc5246a5ce749a8d5aa470bfe5c08664809a6ce2202afe5df7e054985ca066b"
 REPLACEMENT_SELECTION_OBSERVATION_HELPER = "460937313a94977b121a4fb85d81be0d0e9617f96796b8afe15d248a84ea3f12"
+SEMANTIC_LINK_ROUTE_HELPER = "ed57e0df1b461fe559b8e82af1ad4c1a95e1100802c96fdd87cada9bbd1598a6"
 BUNDLE = "io.anytype.app"
 RUNTIME = "com.apple.CoreSimulator.SimRuntime.iOS-27-0"
 DEVICE = "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB"
@@ -638,6 +639,8 @@ def main():
     require(sha(raw(Path(__file__))) == admission["controllerSHA256"]
             and digest(Path(__file__).with_name("combined_heart_observations_gateway.py")) == OBSERVATION_HELPER,
             "exact reviewed controller files required")
+    route_helper = Path(__file__).with_name("semantic_link_route_observation.py")
+    require(digest(route_helper) == SEMANTIC_LINK_ROUTE_HELPER, "Exact real-link route observer required")
     selection_helper = Path(__file__).with_name("replacement_selection_observation.py")
     require(digest(selection_helper) == REPLACEMENT_SELECTION_OBSERVATION_HELPER,
             "Exact reviewed passive selection identity and range authority required")
@@ -740,6 +743,11 @@ def main():
             ui_raw, ui_origin = policy.attachment(evidence / (phase + "-ui") / "private-attachments", "heart-semantic-source-ui-" + phase,
                                                 STAGES[phase + "-ui"], device, maximum=65536)
             result[phase + "UIProof"] = continuation_ui(decode(ui_raw), phase, fixture, capture, capture_raw, reopen_raw)
+            import semantic_link_route_observation as route_observation
+            require(Path(route_observation.__file__).resolve() == route_helper.resolve(), "Foreign real-link route observer")
+            result[phase + "RealLinkRouteProof"] = route_observation.qualify_routes(
+                sys.modules[__name__], policy, evidence / (phase + "-ui") / "private-attachments",
+                STAGES[phase + "-ui"], device, phase, binding)
             if phase == "linked":
                 import replacement_selection_observation as selection_observation
                 require(Path(selection_observation.__file__).resolve() == selection_helper.resolve(),
