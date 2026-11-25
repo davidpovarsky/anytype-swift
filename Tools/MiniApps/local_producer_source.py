@@ -5,6 +5,7 @@ delta. All temporary Git objects/index data stay in an owned temporary directory
 the producer source, object store and worktree are read-only inputs.
 """
 from pathlib import Path, PurePosixPath
+import ast
 import hashlib
 import json
 import os
@@ -139,6 +140,60 @@ def prepared_source_tree(identity, sdk_root, source_sha, source_tree, review_spe
         require(change["before"]["mode"] == change["after"]["mode"],
                 "Producer preparation may not change file permissions")
     return prepared
+PRODUCER_INVENTORY_SOURCE = "Scripts/ProductSplit/run_native_acceptance.py"
+PRODUCER_INVENTORY_DECLARATION = """\
+tracked = subprocess.check_output(['git', 'ls-files', '-z'], cwd=ROOT).decode().split('\\0')
+sources = sorted(ROOT/p for p in tracked if p and Path(p).suffix in {
+    '.swift', '.mm', '.m', '.h', '.hpp', '.cpp', '.json', '.plist', '.entitlements', '.xcconfig', '.xcscheme',
+    '.mjs', '.js', '.cjs', '.sh', '.py', '.yml', '.yaml', '.tsx', '.ts'
+} and (ROOT/p).is_file())
+inputs = {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in sources}
+for name in ['AI_HLY.xcodeproj/project.pbxproj', 'RuntimeDependencies.lock.json',
+             'AI_HLY.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved']:
+    p = ROOT / name
+    inputs[name] = hashlib.sha256(p.read_bytes()).hexdigest()
+"""
+
+
+def declared_source_inventory(sdk_root, prepared_tree, object_env):
+    """Require the original complete declaration without executing producer code."""
+    raw = git_object(sdk_root, "cat-file", "blob",
+                     prepared_tree + ":" + PRODUCER_INVENTORY_SOURCE, env=object_env)
+    expected = ast.parse(PRODUCER_INVENTORY_DECLARATION).body
+    contract = [ast.dump(node, include_attributes=False) for node in expected]
+    module = ast.parse(raw.decode("utf-8"))
+    matches = 0
+    for node in ast.walk(module):
+        for _, children in ast.iter_fields(node):
+            if not isinstance(children, list) or not all(isinstance(item, ast.stmt) for item in children):
+                continue
+            statements = [ast.dump(item, include_attributes=False) for item in children]
+            matches += sum(statements[i:i + len(contract)] == contract
+                           for i in range(len(statements) - len(contract) + 1))
+    require(matches == 1, "Original producer source-inventory declaration changed or is ambiguous")
+    # The statement AST above is exact. These are its literal suffix set and
+    # explicit original build inputs, not a substitute all-files inventory.
+    suffixes = ast.literal_eval(expected[1].value.args[0].generators[0].ifs[0].values[1].comparators[0])
+    explicit = set(ast.literal_eval(expected[3].iter))
+    result = set()
+    for row in git_object(sdk_root, "ls-tree", "-r", "-z", prepared_tree, env=object_env).split(b"\0"):
+        if not row:
+            continue
+        metadata, path = row.split(b"\t", 1)
+        mode, kind, _ = metadata.decode().split()
+        name = path.decode("utf-8")
+        if PurePosixPath(name).suffix not in suffixes and name not in explicit:
+            continue
+        require(kind == "blob" and mode in ("100644", "100755"),
+                "Selected producer source is not a reviewed regular file: " + name)
+        require(name not in result, "Duplicate selected producer source path")
+        result.add(name)
+    require(explicit.issubset(result) and PRODUCER_INVENTORY_SOURCE in result,
+            "Original producer source inventory omits a required build input")
+    return result
+
+
+
 def validate_source_identity(identity, sdk_root, source_sha, *, review_spec=None,
                              export_directory=None, consumer_root=None):
     require(isinstance(identity, dict) and identity.get("commit") == source_sha
@@ -168,6 +223,9 @@ def validate_source_identity(identity, sdk_root, source_sha, *, review_spec=None
                     and not PurePosixPath(path).is_absolute() and ".." not in PurePosixPath(path).parts
                     and valid_digest(expected) for path, expected in files.items()),
                 "Invalid producer source-file inventory")
+        declared = declared_source_inventory(sdk_root, admitted, environment)
+        require(set(files) == declared,
+                "Producer source inventory membership differs from its original declaration")
         names = sorted(files)
         requested = "".join(admitted + ":" + name + "\n" for name in names).encode()
         result = subprocess.run(["git", "-c", "gc.auto=0", "-C", str(sdk_root), "cat-file", "--batch"],
@@ -190,6 +248,9 @@ def validate_source_identity(identity, sdk_root, source_sha, *, review_spec=None
         require(cursor == len(result.stdout), "Unexpected extra producer source objects")
     return {"status": "PASS_EXACT_PREPARED_PRODUCER_SOURCE", "source_sha": source_sha,
             "source_tree": tree, "prepared_tree": admitted, "verified_source_files": len(names),
-            "producer_object_store_modified": False}
+            "producer_object_store_modified": False,
+            "source_inventory_membership": "EXACT_ORIGINAL_DECLARATION",
+            "source_inventory_names_sha256": hashlib.sha256(
+                ("\n".join(names) + "\n").encode()).hexdigest()}
 
 

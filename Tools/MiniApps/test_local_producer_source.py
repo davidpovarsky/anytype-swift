@@ -7,7 +7,8 @@ import subprocess
 import tempfile
 import unittest
 
-from local_producer_source import validate_source_identity
+from local_producer_source import (validate_source_identity, PRODUCER_INVENTORY_SOURCE,
+                                  PRODUCER_INVENTORY_DECLARATION)
 
 
 class PreparedSourceIntegrity(unittest.TestCase):
@@ -19,7 +20,18 @@ class PreparedSourceIntegrity(unittest.TestCase):
         self.run_git("init", "-q")
         (self.sdk / "engine.js").write_text("export const originalSource = true;\n")
         (self.sdk / "other.js").write_text("export const other = true;\n")
-        self.run_git("add", "engine.js", "other.js")
+        (self.sdk / "README.md").write_text("Tracked but outside the original producer declaration.\n")
+        declaration = self.sdk / PRODUCER_INVENTORY_SOURCE
+        declaration.parent.mkdir(parents=True)
+        declaration.write_text(PRODUCER_INVENTORY_DECLARATION)
+        self.source_names = ["engine.js", "other.js", PRODUCER_INVENTORY_SOURCE,
+            "AI_HLY.xcodeproj/project.pbxproj", "RuntimeDependencies.lock.json",
+            "AI_HLY.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"]
+        for name in self.source_names[3:]:
+            path = self.sdk / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("{}\n")
+        self.run_git("add", ".")
         self.run_git("-c", "user.name=Integrity Control", "-c", "user.email=control@example.invalid",
                      "commit", "-q", "-m", "Original control source")
         self.sha = self.run_git("rev-parse", "HEAD")
@@ -28,7 +40,7 @@ class PreparedSourceIntegrity(unittest.TestCase):
         self.manifest = {"source_identity": {
             "commit": self.sha, "tree": self.run_git("rev-parse", "HEAD^{tree}"),
             "tracked_file_sha256": {name: self.digest(self.sdk / name)
-                                   for name in ["engine.js", "other.js"]}}}
+                                   for name in self.source_names}}}
         self.config = {}
 
     def tearDown(self):
@@ -50,7 +62,7 @@ class PreparedSourceIntegrity(unittest.TestCase):
             consumer_root=getattr(self, "consumer", None))
 
     def test_clean_original_source_is_verified(self):
-        self.assertEqual(self.validate()["verified_source_files"], 2)
+        self.assertEqual(self.validate()["verified_source_files"], 6)
 
     def test_incorrect_source_blob_is_rejected(self):
         self.manifest["source_identity"]["tracked_file_sha256"]["engine.js"] = "0" * 64
@@ -223,6 +235,40 @@ class PreparedSourceIntegrity(unittest.TestCase):
         self.assertEqual(before, after)
         self.assertNotEqual(subprocess.run(["git", "-C", str(self.sdk), "cat-file", "-e",
             self.review["prepared_tree"]], capture_output=True).returncode, 0)
+
+
+    def commit_control(self):
+        self.run_git("add", ".")
+        self.run_git("-c", "user.name=Integrity Control", "-c", "user.email=control@example.invalid",
+                     "commit", "-q", "-m", "Changed synthetic inventory control")
+        self.sha = self.run_git("rev-parse", "HEAD")
+        self.manifest["source_identity"].update(commit=self.sha, tree=self.run_git("rev-parse", "HEAD^{tree}"))
+
+    def test_omitted_declared_source_is_rejected(self):
+        del self.manifest["source_identity"]["tracked_file_sha256"]["other.js"]
+        with self.assertRaisesRegex(ValueError, "inventory membership"):
+            self.validate()
+
+    def test_extra_real_tracked_blob_is_rejected(self):
+        self.manifest["source_identity"]["tracked_file_sha256"]["README.md"] = self.digest(self.sdk / "README.md")
+        with self.assertRaisesRegex(ValueError, "inventory membership"):
+            self.validate()
+
+    def test_changed_original_inventory_declaration_is_rejected(self):
+        path = self.sdk / PRODUCER_INVENTORY_SOURCE
+        path.write_text(path.read_text().replace("'.tsx'", "'.newextension'"))
+        self.commit_control()
+        self.manifest["source_identity"]["tracked_file_sha256"][PRODUCER_INVENTORY_SOURCE] = self.digest(path)
+        with self.assertRaisesRegex(ValueError, "declaration changed"):
+            self.validate()
+
+    def test_selected_symlink_requires_explicit_original_file_semantics_review(self):
+        path = self.sdk / "alias.js"
+        path.symlink_to("engine.js")
+        self.commit_control()
+        self.manifest["source_identity"]["tracked_file_sha256"]["alias.js"] = self.digest(path)
+        with self.assertRaisesRegex(ValueError, "not a reviewed regular file"):
+            self.validate()
 
 
 if __name__ == "__main__":
