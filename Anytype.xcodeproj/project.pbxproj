@@ -22,6 +22,7 @@
 		FA9102012F112100006805CC /* PinkhaKit in Frameworks */ = {isa = PBXBuildFile; productRef = FA9101012F112100006805CC /* PinkhaKit */; };
 		FA9102022F112100006805CC /* Loc in Frameworks */ = {isa = PBXBuildFile; productRef = FA9101022F112100006805CC /* Loc */; };
 		FA9102032F112100006805CC /* TorahInspectorUI in Frameworks */ = {isa = PBXBuildFile; productRef = FA9101032F112100006805CC /* TorahInspectorUI */; };
+		FA9102042F112100006805CC /* TorahInspectorCore in Frameworks */ = {isa = PBXBuildFile; productRef = FA9101042F112100006805CC /* TorahInspectorCore */; };
 		0303ED0522D8EDAD005C552B /* SystemAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0303ED0422D8EDAD005C552B /* SystemAssets.xcassets */; };
 		0318D576230186CA000527B1 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0318D575230186CA000527B1 /* LocalAuthentication.framework */; };
 		03A46A40231417D6009AC10C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03A46A42231417D6009AC10C /* InfoPlist.strings */; };
@@ -85,6 +86,7 @@
 		74D79ED52D784FBF00658D0A /* AsyncTools in Frameworks */ = {isa = PBXBuildFile; productRef = 74D79ED42D784FBF00658D0A /* AsyncTools */; };
 		FA0000022E797AAD006805CC /* PinkhaKit in Frameworks */ = {isa = PBXBuildFile; productRef = FA0000012E797AAD006805CC /* PinkhaKit */; };
 		FA1000022F000001006805CC /* TorahInspectorUI in Frameworks */ = {isa = PBXBuildFile; productRef = FA1000012F000001006805CC /* TorahInspectorUI */; };
+		FA1000042F000001006805CC /* TorahInspectorCore in Frameworks */ = {isa = PBXBuildFile; productRef = FA1000032F000001006805CC /* TorahInspectorCore */; };
 		74D9D0F42E5F31F500CA09E7 /* AssetConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D9D0F32E5F31ED00CA09E7 /* AssetConstants.swift */; };
 		74EB806C2D79D3EA003F8D84 /* Assets in Frameworks */ = {isa = PBXBuildFile; productRef = 74EB806B2D79D3EA003F8D84 /* Assets */; };
 		74FC7F722D9EE65100FDD16F /* Loc in Frameworks */ = {isa = PBXBuildFile; productRef = 74FC7F712D9EE65100FDD16F /* Loc */; };
@@ -343,6 +345,7 @@
 				74D79ED52D784FBF00658D0A /* AsyncTools in Frameworks */,
 				FA0000022E797AAD006805CC /* PinkhaKit in Frameworks */,
 				FA1000022F000001006805CC /* TorahInspectorUI in Frameworks */,
+				FA1000042F000001006805CC /* TorahInspectorCore in Frameworks */,
 				5333421C262E249100238121 /* FloatingPanel in Frameworks */,
 				2A6ED16C285B44DB00AAA21C /* ProtobufMessages in Frameworks */,
 				2E63D9B72D56520C008A733A /* FirebaseMessaging in Frameworks */,
@@ -375,6 +378,7 @@
 				FA9102012F112100006805CC /* PinkhaKit in Frameworks */,
 				FA9102022F112100006805CC /* Loc in Frameworks */,
 				FA9102032F112100006805CC /* TorahInspectorUI in Frameworks */,
+				FA9102042F112100006805CC /* TorahInspectorCore in Frameworks */,
 				FA8301012F111900006805CC /* PinkhaTorahPresentation in Frameworks */,
 				FA9502022F112500006805CC /* PinkhaSharing in Frameworks */,
 				FA9602022F112500006805CC /* PinkhaEngineHost in Frameworks */,
@@ -610,6 +614,7 @@
 				74D79ED42D784FBF00658D0A /* AsyncTools */,
 				FA0000012E797AAD006805CC /* PinkhaKit */,
 				FA1000012F000001006805CC /* TorahInspectorUI */,
+				FA1000032F000001006805CC /* TorahInspectorCore */,
 				74EB806B2D79D3EA003F8D84 /* Assets */,
 				7411879A2D9ADD200006EA41 /* Loc */,
 				746F06002DB8E712005795F7 /* DesignKit */,
@@ -648,6 +653,7 @@
 				FA9101012F112100006805CC /* PinkhaKit */,
 				FA9101022F112100006805CC /* Loc */,
 				FA9101032F112100006805CC /* TorahInspectorUI */,
+				FA9101042F112100006805CC /* TorahInspectorCore */,
 				FA8201012F111900006805CC /* PinkhaTorahPresentation */,
 				FA9501022F112500006805CC /* PinkhaSharing */,
 				FA9601022F112500006805CC /* PinkhaEngineHost */,
@@ -2975,6 +2981,11 @@
 			package = FA1000002F000001006805CC /* XCRemoteSwiftPackageReference "TorahInspectorKit" */;
 			productName = TorahInspectorUI;
 		};
+		FA9101042F112100006805CC /* TorahInspectorCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA1000002F000001006805CC /* XCRemoteSwiftPackageReference "TorahInspectorKit" */;
+			productName = TorahInspectorCore;
+		};
 		1259300426F3A5C500B115CD /* Highlightr */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 1259300326F3A5C500B115CD /* XCRemoteSwiftPackageReference "Highlightr" */;
@@ -3187,6 +3198,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FA1000002F000001006805CC /* XCRemoteSwiftPackageReference "TorahInspectorKit" */;
 			productName = TorahInspectorUI;
+		};
+		FA1000032F000001006805CC /* TorahInspectorCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA1000002F000001006805CC /* XCRemoteSwiftPackageReference "TorahInspectorKit" */;
+			productName = TorahInspectorCore;
 		};
 		74EB806B2D79D3EA003F8D84 /* Assets */ = {
 			isa = XCSwiftPackageProductDependency;
