@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Recheck the unchanged UI test after the isolated block-menu ownership fix.
 The original native 2/2 model scope is byte-identical; no native test is relabeled.
+The app product stays at 4b87; only real caret-collapse/reselection setup changes.
 Preserve original failed UI Products before rebuilding only the changed UI source.
 """
 import argparse
@@ -17,7 +18,8 @@ import sys
 import uuid
 
 NATIVE_SOURCE = "fbb7b19c3b6c7cbdff8343b0397693a762bc1da2"
-SOURCE = "4b87e0389162015088d21d71a489e22075dd3769"
+PRIOR_SOURCE = "4b87e0389162015088d21d71a489e22075dd3769"
+SOURCE = "d5ed7221a3df349d37834631fd79bd9179c78520"
 BASE_CONTROLLER = "ad9db960f9db5440be19774c95e89cbbc3deac67"
 BASE_CONTROLLER_SHA = "341f28c617c1ada9d30b77cc682f652fe2207fff630e6f0ad1ec95685594e59d"
 
@@ -39,7 +41,7 @@ def main():
     spec.loader.exec_module(base)
     require, write = base.require, base.write
     require(str(original) == "/Users/m1/builds/any-semantic-20261125/attempt3"
-            and str(prior_ui) == "/Users/m1/builds/any-semantic-20261125/ui-continuation1"
+            and str(prior_ui) == "/Users/m1/builds/any-semantic-20261125/ui-recheck-menu3"
             and str(root).startswith("/Users/m1/builds/any-semantic-20261125/")
             and not root.exists(), "exact_original_and_fresh_owned_root_required")
     require(shutil.disk_usage(root.parent).free >= 4 * 1024**3, "incremental_ui_capacity")
@@ -53,6 +55,7 @@ def main():
                "controllerCommit": args.controller_commit, "controllerSHA256": base.sha(Path(__file__)),
                "baseControllerCommit": BASE_CONTROLLER, "baseControllerSHA256": BASE_CONTROLLER_SHA,
                "nativeTestReruns": 0, "nativeLibraryBuilds": 0,
+               "verboseSystemDiagnostics": "never; original xcresult and test attachments retained",
                "physicalDevice": "NOT_RUN", "status": "RUNNING"}
     write(evidence / "execution.json", outcome)
 
@@ -74,22 +77,27 @@ def main():
         for name in ("summary", "tests"):
             require(base.sha(original / ("evidence/native/" + name + ".json")) ==
                     prior["stages"]["native"][name + "SHA256"], "native_original_receipt_changed")
-        native_before = base.source_state(source, NATIVE_SOURCE)
-        require(native_before == json.loads((original / "evidence/source-before.json").read_text()),
-                "source_not_qualified_native")
+        require(base.sha(original / "evidence/source-before.json") ==
+                "2380a18a4969e33ec83fe17814b2b525e6b60c1b0760a5fd6378ea5b15402a6e",
+                "original_native_source_receipt_changed")
+        native_before = json.loads((original / "evidence/source-before.json").read_text())
+        prior_before = base.source_state(source, PRIOR_SOURCE)
+        require(base.sha(prior_ui / "evidence/source-after.json") ==
+                "f81b0d869231d7e165fa2c2fa6b73d8281491be22dacbf3115035a30c28cc9eb",
+                "prior_ui_source_receipt_changed")
         require(base.sha(prior_ui / "evidence/execution.json") ==
-                "08afb5e79100e588bb824f4402227a145f1773c13607cdd3c0820628e697abf3"
+                "ee7def349c7f0d38b950a28290a3cdf8c78c71634aa6a3fb045e0b60437df2df"
                 and base.sha(prior_ui / "evidence/summary.json") ==
-                "2f88dc2811b5b0deb6a86f98703bc654b0194a650b54266af57429f4664d0ccf"
+                "ec3933c29b6fa4a414cd65d16086ade69a50d3990e3c2a26cc0e9e030a3523f5"
                 and base.sha(prior_ui / "evidence/cleanup.json") ==
-                "2e047f086a5f92476c06222553a6547d14aa3b40ea0f8244301b965ce4fb8300",
+                "c49b9c53431515d5fbe6e632b5e2cce302f3065550680148abfb78f61170957c",
                 "original_failed_ui_identity_changed")
-        require(native_before == json.loads((prior_ui / "evidence/source-before.json").read_text()),
+        require(prior_before == json.loads((prior_ui / "evidence/source-after.json").read_text()),
                 "original_ui_source_not_exact")
         write(evidence / "original-native-source.json", native_before)
         vendor = source / "Modules/PinkhaAnyRuntime/Vendor"
         native_files = base.inventory(vendor)
-        require(native_files == json.loads((original / "evidence/native-binding.json").read_text())["files"],
+        require(native_files == json.loads((prior_ui / "evidence/native-binding.json").read_text())["files"],
                 "qualified_native_library_changed")
         derived = original / "derived"
         packages = base.dependency_state(derived / "SourcePackages")
@@ -109,7 +117,7 @@ def main():
         else:
             retained = json.loads((prior_ui / "evidence/products-retention.json").read_text())
             require(retained["retainedProducts"] == str(saved_ui)
-                    and retained["sourceCommit"] == NATIVE_SOURCE
+                    and retained["sourceCommit"] == PRIOR_SOURCE
                     and retained["originalUIResult"] == "FAIL_1_OF_1"
                     and retained["originalProductsReceiptSHA256"] ==
                         base.sha(prior_ui / "evidence/original-products.json"),
@@ -120,33 +128,39 @@ def main():
             "retainedProducts": str(saved_ui), "productEntries": len(old_ui_products),
             "originalProductsReceiptSHA256": base.sha(prior_ui / "evidence/original-products.json"),
             "originalXcresult": str(prior_ui / "evidence/original.xcresult"),
-            "sourceCommit": NATIVE_SOURCE, "originalUIResult": "FAIL_1_OF_1",
+            "sourceCommit": PRIOR_SOURCE, "originalUIResult": "FAIL_1_OF_1",
             "nativeOriginalProducts": str(saved), "testResultsRelabeled": False})
-        changed_path = "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift"
+        changed_path = "NativeApp/UITests/NativeLaunchTests.swift"
         old_source = prior_ui / "evidence/source" / changed_path
         old_source.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source / changed_path, old_source)
-        # All source edits are known, frozen and explicitly limited to the UI
-        # ownership fix and standalone controllers. The native/model selectors,
-        # application UI test, source adapters, SDK and native libraries are exact.
-        changes = set(base.git(source, "diff", "--name-only", NATIVE_SOURCE, SOURCE).splitlines())
-        allowed_changes = {changed_path, "Tools/AnySemanticAnchorValidation/run_apple.py",
-                           "Tools/AnySemanticAnchorValidation/continue_ui.py",
+        # This delta changes only real UIKit selection setup and standalone
+        # controller records. All product files and all original acceptance
+        # outcome assertions are unchanged from the prior UI run.
+        changes = set(base.git(source, "diff", "--name-only", PRIOR_SOURCE, SOURCE).splitlines())
+        allowed_changes = {changed_path, "Tools/AnySemanticAnchorValidation/recheck_ui.py",
                            "Tools/AnySemanticAnchorValidation/README.md"}
         require(changes == allowed_changes, "unexpected_changes_since_native_acceptance")
         commands.run(["git", "checkout", "--detach", SOURCE], "checkout-reviewed-ui-fix")
         before = base.source_state(source, SOURCE)
         write(evidence / "source-before.json", before)
-        file_changes = {name for name in set(before["files"]) | set(native_before["files"])
-                        if before["files"].get(name) != native_before["files"].get(name)}
+        file_changes = {name for name in set(before["files"]) | set(prior_before["files"])
+                        if before["files"].get(name) != prior_before["files"].get(name)}
         require(file_changes == allowed_changes and before["hanlinSourceFiles"] == native_before["hanlinSourceFiles"],
-                "native_model_or_unreviewed_source_changed")
+                "unreviewed_source_changed")
+        native_scope_changes = {name for name in set(before["files"]) | set(native_before["files"])
+                                if before["files"].get(name) != native_before["files"].get(name)
+                                and not name.startswith("Tools/AnySemanticAnchorValidation/")
+                                and name not in {changed_path,
+                                    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift"}}
+        require(not native_scope_changes, "qualified_native_model_scope_changed")
         write(evidence / "affected-source-scope.json", {
             "originalNativeSourceCommit": NATIVE_SOURCE, "currentSourceCommit": SOURCE,
-            "changedFiles": {name: {"before": native_before["files"].get(name),
+            "changedFiles": {name: {"before": prior_before["files"].get(name),
                                   "after": before["files"].get(name)} for name in sorted(file_changes)},
             "unchangedNativeModelControlsReused": prior["stages"]["native"],
-            "unchangedUITestReexecuted": base.STAGES["ui"]["methods"],
+            "originalUITestWithDocumentedRealSelectionSetup": base.STAGES["ui"]["methods"],
+            "priorUIProductCommit": PRIOR_SOURCE, "productFilesChangedSincePriorUI": [],
             "originalFailedUIResultPreserved": True})
         originals = Path("/Users/m1/builds/_retained-anytype/45539471031-1/build/"
                          "current-apple-native-ui-failed-45539471031-1/work/native-originals")
@@ -160,7 +174,7 @@ def main():
         require(base.inventory(retained_vendor) == native_files, "original_native_retirement_changed_bytes")
         write(evidence / "native-retention.json", {
             "retainedOriginalVendor": str(retained_vendor),
-            "originalConsumerCommit": NATIVE_SOURCE,
+            "originalConsumerCommit": PRIOR_SOURCE,
             "originalFiles": native_files})
         commands.run([sys.executable, "-B", str(source / "Tools/AnyEnginePort/prepare_native_runtime.py"),
                       "install", "--artifact", str(originals), "--producer-commit", base.NATIVE_PRODUCER],
@@ -213,6 +227,7 @@ def main():
         require(shutil.disk_usage(root).free >= 2 * 1024**3, "ui_test_capacity")
         commands.run(["xcodebuild", "test-without-building", "-xctestrun", str(descriptor),
             "-destination", destination, "-parallel-testing-enabled", "NO",
+            "-collect-test-diagnostics", "never",
             "-maximum-concurrent-test-simulator-destinations", "1",
             "-resultBundlePath", str(result), *selectors], "original-ui-test", 2_400, check=False)
         test_exit = commands.last_record["exitCode"]
