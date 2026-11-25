@@ -46,7 +46,8 @@ def prepare(root, evidence, work):
     evidence.mkdir(parents=True)
     record = {'schema': SCHEMA, 'repository': REPOSITORY, 'execution_id': execution_id,
               'source_sha': head, 'source_tree': tree, 'head_branch': branch,
-              'root': str(root), 'host': host, 'owner': ('ChatGPT/anytype_resume' if branch == 'codex/anytype-original-miniapps-facade-20261125'
+              'root': str(root), 'host': host, 'owner': ('ChatGPT/anytype_resume' if branch in {'codex/anytype-original-miniapps-facade-20261125',
+                                                                                     'codex/anytype-original-sdk-collections13-20261125'}
                                                   else 'ChatGPT/native_import'),
               'started_at': datetime.now(timezone.utc).isoformat(),
               'evidence_root': str(evidence), 'work_root': str(work),
