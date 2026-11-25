@@ -85,7 +85,12 @@ public enum AnyDestinationReference: Codable, Equatable, Sendable {
         case record(index: Int)
         case fileID
     }
-    public enum Encoding: String, Codable, Sendable { case rawID, anyURI }
+    public enum Encoding: String, Codable, Sendable {
+        case rawID, anyURI
+        /// Resolved with the validated destination Space, after native file
+        /// commitment. Never interpreted as an ordinary object reference.
+        case fileURI
+    }
     case native(String)
     case mapped(sourceKey: String, slot: Slot, encoding: Encoding)
 }
@@ -443,10 +448,14 @@ enum AnyDestinationPlanChecks {
         switch value {
         case .native(let id):
             guard identity(id), id.utf8.count <= 4096 else { throw AnyDestinationMigrationError.invalidPlan("literal key") }
-        case .mapped(let sourceKey, let slot, _):
+        case .mapped(let sourceKey, let slot, let encoding):
             guard identity(sourceKey) else { throw AnyDestinationMigrationError.invalidPlan("reference key") }
             if case .record(let index) = slot, !(0..<2048).contains(index) {
                 throw AnyDestinationMigrationError.invalidPlan("reference slot")
+            }
+            switch (slot, encoding) {
+            case (_, .rawID), (.objectID, .anyURI), (.fileID, .fileURI): break
+            default: throw AnyDestinationMigrationError.invalidPlan("reference URI namespace")
             }
         }
     }
@@ -457,7 +466,12 @@ enum AnyDestinationPlanChecks {
         case .mapped(let key, let slot, let encoding):
             let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
             let token = AnyContentDigest.sha256(try encoder.encode(slot) + Data(key.utf8))
-            return (encoding == .anyURI ? "any://" : "") + "validation-" + token
+            switch encoding {
+            case .rawID: return "validation-" + token
+            case .anyURI: return "any://validation-" + token
+            case .fileURI:
+                return try AnyNativeFileReference(spaceID: "validation-space", fileID: "validation-" + token).uri
+            }
         }
     }
 }

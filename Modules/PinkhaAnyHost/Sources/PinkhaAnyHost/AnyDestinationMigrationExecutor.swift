@@ -86,7 +86,7 @@ public actor AnyDestinationMigrationExecutor {
         for (index, item) in plan.items.enumerated() {
             try await admit()
             let resolved = try item.operation.resolved(destinationSpaceID: plan.binding.workspace.spaceID) {
-                try Self.resolve($0, mappings: mappings)
+                try Self.resolve($0, mappings: mappings, destinationSpaceID: plan.binding.workspace.spaceID)
             }
             let resolvedBytes = try AnyDestinationMigrationJournal.encoded(resolved)
             if case .propertyUpdate(let object, let owner, let patch) = resolved {
@@ -184,7 +184,7 @@ public actor AnyDestinationMigrationExecutor {
     }
 
     private static func resolve(_ reference: AnyDestinationReference,
-                                mappings: [Data: AnyDestinationMigrationMapping]) throws -> String {
+                                mappings: [Data: AnyDestinationMigrationMapping], destinationSpaceID: String) throws -> String {
         switch reference {
         case .native(let value): return value
         case .mapped(let key, let slot, let encoding):
@@ -198,7 +198,11 @@ public actor AnyDestinationMigrationExecutor {
             case .fileID:
                 guard let id = mapping.fileID else { throw AnyDestinationMigrationError.unknownReference(key) }; value = id
             }
-            return encoding == .anyURI ? "any://" + value : value
+            switch encoding {
+            case .rawID: return value
+            case .anyURI: return "any://" + value
+            case .fileURI: return try AnyNativeFileReference(spaceID: destinationSpaceID, fileID: value).uri
+            }
         }
     }
 
