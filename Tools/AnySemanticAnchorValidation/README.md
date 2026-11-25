@@ -61,8 +61,28 @@ confirmation and Cancel completed with the original native version, zero marks,
 and an actual UIKit selection of 0/6. Its original recording confirms that
 Cancel preserved the whole selection. The later Select All lookup failed because
 that action is redundant for an already selected one-word paragraph. The setup
-now uses a real tap to collapse that selection, requires an observed caret, then
+now uses a real physical right-arrow key to collapse that selection, requires an observed caret, then
 reselects with real UIKit gestures. The complete selection witness and every
 Cancel/Create/native/readback/edit/cold-reopen assertion remain unchanged. A
 missing menu cannot pass unless the actual complete range is independently
 observed. No product selection semantics or observer actions are changed.
+
+
+`ui-reselect2` at source `1a772ed78ce2adbebabd867168307eedaa882740`
+proved the actual caret, new full selection, explicit Create and matching native /
+UIKit marker. The unchanged later edit assertion failed: real per-character input
+left the marker over only the first `C` of `Changed`. Its original binary AX
+snapshot independently contains the native and rendered range 0/1, text length 7,
+and the same marker identity. That failed result is retained.
+
+The additive shared `PinkhaSemanticTypingContinuation` now preserves one live
+replacement action across consecutive native key inputs. It expands only the
+immediately preceding, verified inserted text and calls the original ordinary
+replacement transform. Exact semantic text, source bytes, current caret, mounted
+owner and block must still match. Touch selection, blur, composition, Undo, reuse
+or changed native source retires it. Independently placed boundary carets retain
+the existing outside-marker semantics. No anchor resolution, CAS, observer or
+acceptance assertion is relaxed. Five source-bound regression methods passed,
+including Hebrew marks, emoji, stale identity/text, deletion, literal boundary
+insertion, existing markdown styles and unrelated source bytes. Apple UI remains
+pending for this changed product.

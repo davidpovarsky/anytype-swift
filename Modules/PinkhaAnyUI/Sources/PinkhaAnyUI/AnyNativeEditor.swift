@@ -251,6 +251,11 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
         guard !cell.textView.isComposingMarkedText else { return }
         let source = presentation.source(for: block)
         let renderedSource = presentation.unmappedDisplay(for: block.id) ?? source
+        if let typing = cell.textView.semanticTyping,
+           typing.owner != presentation.mountedOwnerID || typing.blockID != block.id ||
+           !typing.source.utf8.elementsEqual(renderedSource.utf8) {
+            cell.textView.semanticTyping = nil
+        }
         let projection = presentation.projection(for: block)
         let supported = ["paragraph", "heading", "list_item", "check_list_item", "code", "quote"].contains(block.type)
         cell.textView.blockID = block.id
@@ -309,6 +314,7 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
 
     private func configureComposition(_ textView: AnyNativeTextView) {
         textView.onMarkedBegin = { [weak self] input in
+            input.semanticTyping = nil
             guard let self, let id = input.blockID, let block = self.blockByID[id] else { return false }
             do {
                 let source = self.presentation.source(for: block)
@@ -595,6 +601,10 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
 
     public func textViewDidChangeSelection(_ textView: UITextView) {
         guard !rendering else { return }
+        if let input = textView as? AnyNativeTextView,
+           let typing = input.semanticTyping, textView.selectedRange != typing.continuation.caret {
+            input.semanticTyping = nil
+        }
         focus.userInteraction()
         updateSelection(textView)
     }
@@ -630,10 +640,26 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
         do {
             let before = presentation.source(for: block)
             let projection = presentation.projection(for: block)
-            let after = try projection.replacing(displayRange: range, withLiteral: text)
+            let semanticBefore = try projection.semanticText()
+            var replacement = PinkhaSemanticTypingContinuation.Replacement(range: range, text: text)
+            if let typing = textView.semanticTyping,
+               typing.owner == presentation.mountedOwnerID, typing.blockID == id,
+               typing.source.utf8.elementsEqual(before.utf8),
+               let continued = try typing.continuation.continuing(in: semanticBefore, range: range, with: text) {
+                replacement = continued
+            }
+            let after = try projection.replacing(displayRange: replacement.range, withLiteral: replacement.text)
+            let semanticAfter = try (block.type == "code" ? AnyInlineMarkdown(literal: after) :
+                AnyInlineMarkdown(after)).semanticText()
+            let continuation = try PinkhaSemanticTypingContinuation(before: semanticBefore,
+                replacing: replacement.range, with: replacement.text, after: semanticAfter)
             let nextSelection = NSRange(location: range.location + text.utf16.count, length: 0)
             let previousSelection = textView.selectedRange
             try applyText(after, block: block, selection: nextSelection, textView: textView)
+            textView.semanticTyping = continuation.map {
+                AnyNativeSemanticTyping(owner: presentation.mountedOwnerID, blockID: id,
+                                        source: after, continuation: $0)
+            }
             textView.editHistory.registerUndo(withTarget: self) { owner in
                 owner.restoreText(before, blockID: id, selection: previousSelection, inverse: after,
                                   inverseSelection: nextSelection)
@@ -661,6 +687,7 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
                              inverse: String, inverseSelection: NSRange) {
         guard let block = blockByID[blockID], let path = dataSource.indexPath(for: blockID),
               let cell = table.cellForRow(at: path) as? AnyNativeBlockCell else { return }
+        cell.textView.semanticTyping = nil
         do {
             try applyText(source, block: block, selection: selection, textView: cell.textView)
             cell.textView.editHistory.registerUndo(withTarget: self) { owner in
@@ -819,12 +846,25 @@ extension AnyDocumentPresentation: AnyHanlinSourcePresentationOwner {
     }
 }
 
+fileprivate struct AnyNativeSemanticTyping {
+    let owner: UUID
+    let blockID: String
+    let source: String
+    let continuation: PinkhaSemanticTypingContinuation
+}
+
 /// UIKit owns the marked range. The callbacks reserve/retain the original
 /// source and preflight bounded visible buffers; they never replace attributed
 /// text inside a composition. Internal visibility permits actual UIKit tests.
 @MainActor
 final class AnyNativeTextView: UITextView {
     var blockID: String?
+    fileprivate var semanticTyping: AnyNativeSemanticTyping?
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        semanticTyping = nil
+        super.touchesBegan(touches, with: event)
+    }
     let editHistory = UndoManager()
     private(set) var isComposingMarkedText = false
     private var markedMutationDepth = 0
@@ -891,6 +931,7 @@ final class AnyNativeTextView: UITextView {
     }
 
     override func resignFirstResponder() -> Bool {
+        semanticTyping = nil
         if isComposingMarkedText { unmarkText() }
         return super.resignFirstResponder()
     }
@@ -986,6 +1027,7 @@ private final class AnyNativeBlockCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         textView.editHistory.removeAllActions()
+        textView.semanticTyping = nil
         textView.onAttachmentReadiness = nil
         blockMenuButton.menu = nil
         blockMenuButton.accessibilityIdentifier = nil
