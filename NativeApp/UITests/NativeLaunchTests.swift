@@ -2654,10 +2654,11 @@ extension NativeLaunchTests {
             $0.blocks.count == 1 && $0.blocks[0].isFirstResponder
         }
         if focused.blocks[0].selectionLength > 0 {
-            // Cancel correctly preserves UIKit's selection. The first tap can
-            // reactivate that selection; a separate real tap places a caret.
+            // Cancel correctly preserves UIKit's selection. A tap in the empty
+            // paragraph area can keep that selection; a real physical arrow
+            // key collapses it through UIKit's native text-input system.
             // No selection is set through the observer or an app test hook.
-            editor.tap()
+            editor.typeKey(.rightArrow, modifierFlags: [])
             _ = try semanticObservation(app, phase: "actual-uikit-caret-before-reselection") {
                 $0.blocks.count == 1 && $0.blocks[0].isFirstResponder &&
                 $0.blocks[0].selectionLength == 0
