@@ -488,7 +488,7 @@ extension SemanticAnchorPage154MountedUITests {
         try requireHittable(semanticText("Changed"))
         XCTAssertEqual(semanticText("Changed").value as? String, "Changed")
         try tap(app.textViews.matching(NSPredicate(format: "value == %@", fixture.excludedText)).firstMatch)
-        try openSelectedSemanticSources(text: "Changed")
+        try openSelectedSemanticSources(text: "Changed", viaExistingLink: true)
         try requireHittable(semanticSourceAssociation(reference), timeout: 60)
         XCTAssertEqual(semanticSourceAssociations(reference).count, 1)
         attach("heart-semantic-source-after-actual-keyboard-edit")
@@ -496,7 +496,7 @@ extension SemanticAnchorPage154MountedUITests {
         XCTAssertTrue(app.wait(for: .notRunning, timeout: 20))
 
         try launchSemanticSourceContinuation(expectedText: "Changed")
-        try openSelectedSemanticSources(text: "Changed")
+        try openSelectedSemanticSources(text: "Changed", viaExistingLink: true)
         try requireHittable(semanticSourceAssociation(reference), timeout: 60)
         XCTAssertEqual(semanticSourceAssociations(reference).count, 1)
         attach("heart-semantic-source-cold-reopen")
@@ -509,7 +509,7 @@ extension SemanticAnchorPage154MountedUITests {
         let previous = try XCTUnwrap(env["PINKHA_SEMANTIC_SOURCE_LINKED_READBACK_SHA256"])
         XCTAssertNotNil(previous.range(of: "^[0-9a-f]{64}$", options: .regularExpression))
         try launchSemanticSourceContinuation(expectedText: "Changed")
-        try openSelectedSemanticSources(text: "Changed")
+        try openSelectedSemanticSources(text: "Changed", viaExistingLink: true)
         let reference = "Genesis 1:1"
         try requireHittable(semanticSourceAssociation(reference), timeout: 60)
         XCTAssertEqual(semanticSourceAssociations(reference).count, 1)
@@ -523,7 +523,7 @@ extension SemanticAnchorPage154MountedUITests {
         app.terminate()
         XCTAssertTrue(app.wait(for: .notRunning, timeout: 20))
         try launchSemanticSourceContinuation(expectedText: "Changed")
-        try openSelectedSemanticSources(text: "Changed")
+        try openSelectedSemanticSources(text: "Changed", viaExistingLink: true)
         XCTAssertFalse(semanticSourceAssociation(reference).exists)
         XCTAssertTrue(semanticSourceSearch.exists)
         attach("heart-semantic-source-unlink-cold-reopen")
@@ -594,9 +594,13 @@ extension SemanticAnchorPage154MountedUITests {
     private func semanticSourceAssociation(_ reference: String) -> XCUIElement {
         semanticSourceAssociations(reference).firstMatch
     }
-    private func openSelectedSemanticSources(text: String) throws {
+    private func openSelectedSemanticSources(text: String, viaExistingLink: Bool = false) throws {
         let input = semanticText(text)
         try tap(input)
+        if viaExistingLink {
+            try admitExistingSemanticLinkOpening()
+            return
+        }
         input.typeKey(.rightArrow, modifierFlags: [])
         input.doubleTap()
         let started = ProcessInfo.processInfo.systemUptime
@@ -681,6 +685,60 @@ extension SemanticAnchorPage154MountedUITests {
         try requireHittable(semanticSourceSearch, timeout: 45)
         XCTAssertTrue(app.staticTexts["Sources for anchored text"].exists)
     }
+    /// A real tap on the persisted semantic link opens its Sources sheet.
+    /// Do not send selection keys to the editor behind that already-open sheet.
+    /// The first linking action still uses the original native edit-menu route.
+    private func admitExistingSemanticLinkOpening() throws {
+        let started = ProcessInfo.processInfo.systemUptime
+        let deadline = started + 20
+        enum LinkOpeningFailure: Error { case admission(String) }
+        var trace: [String: Any] = [
+            "protocol": "pinkha-semantic-existing-link-opening-v1",
+            "sourceSHA": fixture.sourceSHA, "runID": fixture.runID,
+            "runAttempt": fixture.runAttempt, "nonce": fixture.nonce,
+            "budgetSeconds": 20, "realSemanticLinkTaps": 1,
+            "nativeMenuActionTaps": 0, "selectionKeysSent": 0, "status": "STARTED"
+        ]
+        defer {
+            trace["elapsedSeconds"] = ProcessInfo.processInfo.systemUptime - started
+            if let data = try? JSONSerialization.data(withJSONObject: trace, options: [.sortedKeys]) {
+                let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
+                attachment.name = "semantic-source-existing-link-opening"
+                attachment.lifetime = .keepAlways; add(attachment)
+            }
+        }
+        do {
+            let sheets = app.descendants(matching: .any).matching(identifier: "torah-sources-search-sheet")
+            let titles = app.staticTexts.matching(NSPredicate(format: "label == %@", "Sources for anchored text"))
+            let fields = app.textFields.matching(identifier: "torah-sources-search-field")
+            let ready = NSPredicate { _, _ in
+                guard sheets.count == 1, titles.count == 1, fields.count == 1 else { return false }
+                let sheet = sheets.firstMatch, field = fields.firstMatch
+                return sheet.exists && sheet.frame.width.isFinite && sheet.frame.height.isFinite
+                    && sheet.frame.width > 0 && sheet.frame.height > 0
+                    && titles.firstMatch.exists && field.exists && field.isEnabled && field.isHittable
+            }
+            let result = XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: ready, object: app)], timeout: 20)
+            guard result == .completed, ProcessInfo.processInfo.systemUptime <= deadline else {
+                throw LinkOpeningFailure.admission("exact-existing-semantic-source-sheet-not-ready")
+            }
+            XCTAssertTrue(app.staticTexts["Sources for anchored text"].exists)
+            trace["status"] = "OPENED_EXISTING_SEMANTIC_LINK"
+            let hierarchy = XCTAttachment(string: app.debugDescription)
+            hierarchy.name = "semantic-source-existing-link-opening-ax"
+            hierarchy.lifetime = .keepAlways; add(hierarchy)
+            attach("semantic-source-existing-link-opening")
+        } catch {
+            trace["status"] = "FAIL"
+            trace["firstError"] = String(describing: error)
+            let hierarchy = XCTAttachment(string: app.debugDescription)
+            hierarchy.name = "semantic-source-existing-link-opening-failure-ax"
+            hierarchy.lifetime = .keepAlways; add(hierarchy)
+            attach("semantic-source-existing-link-opening-failure")
+            throw error
+        }
+    }
+
     private func dismissSemanticSourceSheet() throws {
         let sheet = app.descendants(matching: .any).matching(identifier: "torah-sources-search-sheet").firstMatch
         XCTAssertTrue(sheet.exists && sheet.frame.height > 0)
