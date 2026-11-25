@@ -96,6 +96,29 @@ class CompilerSymbolGraphCollectionControls(unittest.TestCase):
         self.assertEqual(receipt['framework_build_stdout']['sha256'], collector.sha256(self.log))
         self.assertEqual(json.loads((self.evidence / 'compiler-symbolgraph-collection.json').read_text()), receipt)
 
+    def test_separate_collection_keeps_original_build_records_byte_identical(self):
+        original = {p.name: p.read_bytes() for p in self.evidence.iterdir() if p.is_file()}
+        continuation = self.root / "build/continuation"
+        continuation.mkdir()
+        receipt = collector.collect(self.root, self.derived, continuation, self.sdk,
+                                    continuation / "actual-public-symbol-graphs",
+                                    build_evidence=self.evidence)
+        self.assertEqual(receipt["original_build_evidence_directory"], str(self.evidence))
+        self.assertEqual({p.name: p.read_bytes() for p in self.evidence.iterdir() if p.is_file()},
+                         original)
+        self.assertEqual(receipt["framework_build_command"]["sha256"],
+                         collector.sha256(self.receipt_path))
+
+    def test_continuation_cannot_relabel_original_result_bundle_path(self):
+        continuation = self.root / "build/continuation"
+        continuation.mkdir()
+        self.receipt["command"][-1] = str(continuation / "framework-build.xcresult")
+        self.receipt_path.write_text(json.dumps(self.receipt))
+        with self.assertRaisesRegex(ValueError, "build identity"):
+            collector.collect(self.root, self.derived, continuation, self.sdk,
+                              continuation / "actual-public-symbol-graphs",
+                              build_evidence=self.evidence)
+
     def test_source_change_rejects_collection(self):
         self.source_path.write_text(json.dumps({**self.source, 'head_sha': '3' * 40}))
         with self.assertRaisesRegex(ValueError, 'Source differs'):

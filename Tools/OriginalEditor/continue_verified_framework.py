@@ -21,8 +21,10 @@ from types import SimpleNamespace
 
 SOURCE = "e79192e5ad2b879ca4a45e46a3f6b504a1094155"
 CONTROL_PATH = "Tools/OriginalEditor/continue_verified_framework.py"
+COLLECTOR_PATH = "Tools/OriginalEditor/collect_compiler_symbolgraphs.py"
 ALLOWED_CONTROL_DELTA = {
-    CONTROL_PATH,
+    CONTROL_PATH, COLLECTOR_PATH,
+    "Tools/OriginalEditor/test_compiler_symbolgraphs.py",
     "docs/validation/20261125-miniapps-original-editor/VERIFIED_FRAMEWORK_CONTINUATION.md",
 }
 
@@ -59,6 +61,9 @@ def main():
             "Continuation control changes a compiled input or unrelated gate")
     require(git(root, "show", args.control_commit + ":" + CONTROL_PATH) == Path(__file__).read_bytes(),
             "Continuation executable differs from its committed control")
+    collector_control = Path(__file__).parent / "collect_compiler_symbolgraphs.py"
+    require(git(root, "show", args.control_commit + ":" + COLLECTOR_PATH)
+            == collector_control.read_bytes(), "Collector binding differs from committed control")
     require(all(p.is_relative_to(root / "build") for p in (prior, prior_work, evidence, work))
             and len({prior, prior_work, evidence, work}) == 4
             and not evidence.exists() and not work.exists(),
@@ -198,7 +203,37 @@ def main():
         suffix_hash = hashlib.sha256(ast.dump(suffix, include_attributes=False).encode()).hexdigest()
         receipt["continuation"]["original_postbuild_ast_sha256"] = suffix_hash
         write(evidence / "execution.json", receipt)
+        original_command = driver.command
+        def continued_command(arguments, cwd, output, name, timeout):
+            if name != "actual-target-public-symbol-graph":
+                return original_command(arguments, cwd, output, name, timeout)
+            require(arguments[:2] == [sys.executable, str(root / COLLECTOR_PATH)]
+                    and arguments[arguments.index("--evidence") + 1] == str(evidence)
+                    and arguments[arguments.index("--derived") + 1] == str(derived),
+                    "Unexpected original symbol graph command")
+            bound = [arguments[0], str(collector_control), *arguments[2:],
+                     "--build-evidence", str(prior)]
+            binding = {
+                "collector_control_commit": args.control_commit,
+                "collector_control_sha256": sha(collector_control),
+                "original_collector_sha256": sha(root / COLLECTOR_PATH),
+                "original_build_evidence": str(prior),
+                "original_build_command_sha256": sha(prior / "framework-build.command.json"),
+                "original_arguments": arguments, "bound_arguments": bound,
+                "original_build_records_rewritten": False,
+            }
+            write(evidence / "symbolgraph-original-build-binding.json", binding)
+            previous = os.environ.get("PYTHONPATH")
+            os.environ["PYTHONPATH"] = str(driver_path.parent)
+            try:
+                return original_command(bound, cwd, output, name, timeout)
+            finally:
+                if previous is None:
+                    os.environ.pop("PYTHONPATH", None)
+                else:
+                    os.environ["PYTHONPATH"] = previous
         context = dict(vars(driver))
+        context["command"] = continued_command
         context.update(args=SimpleNamespace(import_abi_receipt=abi, import_abi_sha256=abi_sha),
                        root=root, evidence=evidence, work=work, receipt=receipt, before=before,
                        profile=profile, derived=derived, installation=installation,

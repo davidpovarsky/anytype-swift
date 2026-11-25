@@ -65,7 +65,7 @@ def timestamp(value):
     return parsed.timestamp()
 
 
-def collect(root, derived, evidence, sdk, output_dir):
+def collect(root, derived, evidence, sdk, output_dir, *, build_evidence=None):
     root = Path(root).resolve(strict=True)
     derived, evidence, output_dir = map(Path, (derived, evidence, output_dir))
     require(derived.name == 'producer-derived'
@@ -74,15 +74,19 @@ def collect(root, derived, evidence, sdk, output_dir):
     owned_path(root / 'build', root, directory=True)
     owned_path(derived, root / 'build', directory=True)
     owned_path(evidence, root / 'build', directory=True)
+    build_evidence = evidence if build_evidence is None else Path(build_evidence)
+    owned_path(build_evidence, root / 'build', directory=True)
+    require(not build_evidence.is_relative_to(derived) and not derived.is_relative_to(build_evidence),
+            'Original build evidence overlaps compiler products')
     require(output_dir == evidence / 'actual-public-symbol-graphs'
             and not os.path.lexists(output_dir), 'Refusing stale or foreign collected symbol graphs')
     collection_path = evidence / 'compiler-symbolgraph-collection.json'
     require(not os.path.lexists(collection_path), 'Refusing stale symbol graph collection receipt')
 
-    input_paths = [evidence / name for name in
+    input_paths = [build_evidence / name for name in
                    ['source-before.json', 'framework-build.command.json', 'framework-build.stdout.log']]
     for path in input_paths:
-        owned_path(path, evidence, directory=False)
+        owned_path(path, build_evidence, directory=False)
     before_raw, _ = regular_bytes(input_paths[0])
     before = json.loads(before_raw)
     require(before == source_observation(root), 'Source differs from original build admission')
@@ -100,7 +104,7 @@ def collect(root, derived, evidence, sdk, output_dir):
             and option_values(build_arguments, '-scheme') == [TARGET]
             and option_values(build_arguments, '-configuration') == ['Debug-Anytype']
             and option_values(build_arguments, '-derivedDataPath') == [str(derived)]
-            and option_values(build_arguments, '-resultBundlePath') == [str(evidence / 'framework-build.xcresult')],
+            and option_values(build_arguments, '-resultBundlePath') == [str(build_evidence / 'framework-build.xcresult')],
             'Original framework build identity or owned derived directory differs')
     started, finished = timestamp(build['started_at']), timestamp(build['finished_at'])
     require(started < finished, 'Invalid original framework build interval')
@@ -189,6 +193,7 @@ def collect(root, derived, evidence, sdk, output_dir):
     receipt = {'schema': 1, 'status': 'ACTUAL_COMPILER_FULL_GRAPHS_COLLECTED_SURFACE_NOT_YET_VERIFIED',
                'source_sha': before['head_sha'], 'run_id': before['run_id'], 'run_attempt': before['run_attempt'],
                'source_admission': record(before_raw), 'framework_build_command': record(command_raw),
+               'original_build_evidence_directory': str(build_evidence),
                'framework_build_stdout': record(log_raw), 'compiler_line_sha256': record(line.encode())['sha256'],
                'compiler_arguments': arguments, 'module': TARGET, 'sdk': str(sdk),
                'target': 'arm64-apple-ios27.0-simulator', 'swift_version': '5',
@@ -207,9 +212,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for option in ['root', 'derived', 'evidence', 'sdk', 'output-dir']:
         parser.add_argument('--' + option, type=Path, required=True)
+    parser.add_argument('--build-evidence', type=Path,
+                        help='Exact original successful build records; output stays in --evidence')
     arguments = parser.parse_args()
     receipt = collect(arguments.root, arguments.derived, arguments.evidence,
-                      arguments.sdk, arguments.output_dir)
+                      arguments.sdk, arguments.output_dir, build_evidence=arguments.build_evidence)
     print(json.dumps({'status': receipt['status'], 'graphs': len(receipt['graphs']),
                       'source_sha': receipt['source_sha'], 'native_editor_ui_tests': 0}, sort_keys=True))
 
