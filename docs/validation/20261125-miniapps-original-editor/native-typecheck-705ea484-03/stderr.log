@@ -1,0 +1,91 @@
+/Users/m1/builds/anytype-f875d09160ef-miniapps-sdk/Anytype/Sources/PresentationLayer/Common/UIKit/TextView/CustomTextView+UITextViewDelegate.swift:46:22: warning: 'UITextItemInteraction' was deprecated in iOS 17.0: UITextItemInteraction has been replaced by text item methods on UITextViewDelegate [#DeprecatedDeclaration]
+44 |         shouldInteractWith URL: URL,
+45 |         in characterRange: NSRange,
+46 |         interaction: UITextItemInteraction
+   |                      `- warning: 'UITextItemInteraction' was deprecated in iOS 17.0: UITextItemInteraction has been replaced by text item methods on UITextViewDelegate [#DeprecatedDeclaration]
+47 |     ) -> Bool {
+48 |         if !textView.isFirstResponder && interaction == .invokeDefaultAction {
+
+/Users/m1/builds/anytype-f875d09160ef-miniapps-sdk/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift:479:64: warning: use of protocol 'Error' as a type must be written 'any Error'; this will be an error in a future Swift language mode [#ExistentialAny]
+ 477 |     private var releaseCaptureWhenDrained: UUID?
+ 478 |     private var failedWrite = false
+ 479 |     private var drainWaiters: [UUID: CheckedContinuation<Void, Error>] = [:]
+     |                                                                `- warning: use of protocol 'Error' as a type must be written 'any Error'; this will be an error in a future Swift language mode [#ExistentialAny]
+ 480 |     private let dispatchLifetime = EditorDocumentWriteLifetime()
+ 481 |     private var onDrained: (@MainActor () -> Void)?
+
+/Users/m1/builds/anytype-f875d09160ef-miniapps-sdk/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift:399:62: warning: 'withValue(_:operation:isolation:file:line:)' is deprecated: Prefer the 'nonisolated(nonsending)' overload with stricter execution on caller context semantics: withValue(_:operation:file:line:) [#DeprecatedDeclaration]
+ 397 |         do {
+ 398 |             let value = try await EditorDocumentOperationContext.$lineage.withValue(lineage) {
+ 399 |                 try await InvocationDispatchContext.$binding.withValue(binding, operation: operation)
+     |                                                              `- warning: 'withValue(_:operation:isolation:file:line:)' is deprecated: Prefer the 'nonisolated(nonsending)' overload with stricter execution on caller context semantics: withValue(_:operation:file:line:) [#DeprecatedDeclaration]
+ 400 |             }
+ 401 |             try validate()
+
+/Users/m1/builds/anytype-f875d09160ef-miniapps-sdk/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift:1009:62: warning: 'withValue(_:operation:isolation:file:line:)' is deprecated: Prefer the 'nonisolated(nonsending)' overload with stricter execution on caller context semantics: withValue(_:operation:file:line:) [#DeprecatedDeclaration]
+1007 |             }
+1008 |             let value = try await EditorDocumentOperationContext.$lineage.withValue(lineage) {
+1009 |                 try await InvocationDispatchContext.$binding.withValue(binding, operation: operation)
+     |                                                              `- warning: 'withValue(_:operation:isolation:file:line:)' is deprecated: Prefer the 'nonisolated(nonsending)' overload with stricter execution on caller context semantics: withValue(_:operation:file:line:) [#DeprecatedDeclaration]
+1010 |             }
+1011 |             if let reason = rejection(contextId: entry.contextId, requiresEditing: entry.requiresEditing,
+
+/Users/m1/builds/anytype-f875d09160ef-miniapps-sdk/OriginalEditorFramework/AnytypeOriginalEditorLocalAnnotation.swift:438:85: warning: use of protocol 'Error' as a type must be written 'any Error'; this will be an error in a future Swift language mode [#ExistentialAny]
+436 |     /// The Host uses its shared Picker; the framework embeds no runtime or picker.
+437 |     public func setMiniAppsAction(title: String,
+438 |         handler: @escaping @MainActor (Result<AnytypeOriginalEditorMiniAppsContext, Error>) -> Void) throws {
+    |                                                                                     `- warning: use of protocol 'Error' as a type must be written 'any Error'; this will be an error in a future Swift language mode [#ExistentialAny]
+439 |         try owner.validateCurrent()
+440 |         guard !title.isEmpty, title.utf8.count <= 256 else {
+
+/Users/m1/builds/anytype-f875d09160ef-miniapps-sdk/OriginalEditorFramework/OriginalEditorLocalAnnotationRuntime.swift:25:38: warning: use of protocol 'Error' as a type must be written 'any Error'; this will be an error in a future Swift language mode [#ExistentialAny]
+ 23 |     private let process: OriginalEditorEmbeddedAccountProcess
+ 24 |     private let processLease: OriginalEditorLocalAccountLease
+ 25 |     private var stopTask: Task<Void, Error>?
+    |                                      `- warning: use of protocol 'Error' as a type must be written 'any Error'; this will be an error in a future Swift language mode [#ExistentialAny]
+ 26 |     private var accountCapture: EditorDocumentWriteCapture?
+ 27 |     private var accountReservation: EditorDocumentWriteLifetime.Observation?
+
+/Users/m1/builds/anytype-f875d09160ef-miniapps-sdk/OriginalEditorFramework/OriginalEditorLocalAnnotationRuntime.swift:322:9: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+320 |             preparationBinding = capture.accountDispatchBinding()
+321 |         }
+322 |         try await InvocationDispatchContext.$binding.withValue(preparationBinding) {
+    |         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+323 |             await Container.shared.objectTypeProvider().prepareData(spaceId: opened.accountSpaceId)
+324 |             await Container.shared.propertyDetailsStorage().prepareData(spaceId: opened.accountSpaceId)
+
+/Users/m1/builds/anytype-f875d09160ef-miniapps-sdk/OriginalEditorFramework/AnytypeOriginalAnnotationRevision.swift:450:5: warning: initializer 'init(response:request:requestBytes:accountID:spaceID:desired:)' took 142ms to type-check (limit: 120ms)
+448 |     let nativeArchive: OriginalAnnotationNativeArchiveComparison?
+449 | 
+450 |     init(response: Anytype_Rpc.Annotation.Import.Response,
+    |     `- warning: initializer 'init(response:request:requestBytes:accountID:spaceID:desired:)' took 142ms to type-check (limit: 120ms)
+451 |          request: OriginalAnnotationRevisionRequest, requestBytes: Data,
+452 |          accountID: String, spaceID: String, desired: AnytypeOriginalEditorSnapshot?) throws {
+
+/Users/m1/builds/anytype-f875d09160ef-miniapps-sdk/OriginalEditorFramework/AnytypeOriginalAnnotationLifecycle.swift:635:30: warning: use of protocol 'Decoder' as a type must be written 'any Decoder'; this will be an error in a future Swift language mode [#ExistentialAny]
+ 633 |         case annotationTypeHeads = "annotation_type_heads"
+ 634 |     }
+ 635 |     init(from decoder: Swift.Decoder) throws {
+     |                              `- warning: use of protocol 'Decoder' as a type must be written 'any Decoder'; this will be an error in a future Swift language mode [#ExistentialAny]
+ 636 |         core = try OriginalAnnotationRevisionResult(from: decoder)
+ 637 |         let c = try decoder.container(keyedBy: CodingKeys.self)
+
+/Users/m1/builds/anytype-f875d09160ef-miniapps-sdk/OriginalEditorFramework/AnytypeOriginalAnnotationLifecycle.swift:668:5: warning: initializer 'init(response:request:requestBytes:accountID:spaceID:desired:)' took 167ms to type-check (limit: 120ms)
+ 666 |     let originHostProfileID: String?
+ 667 | 
+ 668 |     init(response: Anytype_Rpc.Annotation.Import.Response,
+     |     `- warning: initializer 'init(response:request:requestBytes:accountID:spaceID:desired:)' took 167ms to type-check (limit: 120ms)
+ 669 |          request: OriginalAnnotationLifecycleRequest, requestBytes: Data,
+ 670 |          accountID: String, spaceID: String, desired: AnytypeOriginalEditorSnapshot? = nil) throws {
+
+/Users/m1/builds/anytype-f875d09160ef-miniapps-sdk/OriginalEditorFramework/AnytypeOriginalAnnotationLifecycle.swift:839:25: warning: static method 'requireOperation(_:request:)' took 142ms to type-check (limit: 120ms)
+ 837 |     }
+ 838 | 
+ 839 |     private static func requireOperation(_ value: OriginalAnnotationLifecycleResult,
+     |                         `- warning: static method 'requireOperation(_:request:)' took 142ms to type-check (limit: 120ms)
+ 840 |                                          request: OriginalAnnotationLifecycleRequest) throws {
+ 841 |         let core = value.core
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+[#ExistentialAny]: <https://docs.swift.org/compiler/documentation/diagnostics/existential-any>
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>

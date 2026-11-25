@@ -26,7 +26,7 @@
     "Tools/Hanlin/original_editor_profile.py": "3e84bee3d28f180e122da480d0a779820508097d",
     "Tools/Hanlin/prepare_original_editor_heart.py": "14ee9e553a883872a08526e1196f61d3dd3049f0",
     "Tools/Hanlin/prepare_sdk.py": "99e1286268f7aacb5f5638cfe14633d37c04bccc",
-    "Tools/Hanlin/source.json": "d97ff91eb39f5ba20aa004785208bc8ab79385d3",
+    "Tools/Hanlin/source.json": "a7206955388abf7fde65889dd6d662fc83627730",
     "Tools/PinkhaNativeDerived/build_custom_heart.py": "e32c935fedce5fc732240bf9b2ada21764b5add1",
     "Tools/PinkhaNativeDerived/package_evidence.py": "e55d2a959296630686a60aa5d927a3b4c34401f9",
     "Tools/PinkhaSimulatorGate/preflight.py": "2628b345d5743bbe1ddc0d1afaeef9fb410f3daf"
@@ -157,6 +157,40 @@
           "revision": "35b601a60fbbea2de3ea461f604deaaa4d8bbd0c",
           "version": "3.2.0"
         }
+      },
+      {
+        "identity": "a2ui",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/a2ui-project/a2ui",
+        "state": {
+          "revision": "3ed9601862ecc78027e20ac80ad8b1b98a5d9079"
+        }
+      },
+      {
+        "identity": "swift-json-schema",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/ajevans99/swift-json-schema",
+        "state": {
+          "revision": "c0a9375ea9cd3fd47d875c98ed7f027ea61c03cb",
+          "version": "0.13.2"
+        }
+      },
+      {
+        "identity": "swiftsoup",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/scinfu/SwiftSoup",
+        "state": {
+          "revision": "bba848db50462894e7fc0891d018dfecad4ef11e"
+        }
+      },
+      {
+        "identity": "yams",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/jpsim/Yams.git",
+        "state": {
+          "revision": "a27b21e0c81c5bf42049b897a62aaf387e80f279",
+          "version": "6.2.2"
+        }
       }
     ],
     "base_lock_blob": "b011914658931c21b97dcf14355d961ab6248b8f",
@@ -164,7 +198,7 @@
     "changed_pin_count": 10,
     "final_host_hanlin_alignment": "CORE_4185_PASS_HANLIN_SOURCE_EXACT_NATIVE_PENDING",
     "framework_runtime_status": "FULL_SDK_NOT_RUN",
-    "pin_count": 52,
+    "pin_count": 56,
     "reason": "Eight exact Firebase-family upward pins, the reviewed Hanlin core continuation, and the exact StreamingMarkdown revision required by the shared Hanlin presentation manifest.",
     "reviewed_exact_changes": {
       "abseil-cpp-binary": {
@@ -266,9 +300,64 @@
     },
     "strict_resolver_status": "PENDING_NATIVE_RESOLVER"
   },
-  "package_pin_count": 52,
-  "package_resolved_blob": "3526d848e2e4e0074ade1192667063e6b5725ea2",
+  "package_pin_count": 56,
+  "package_resolved_blob": "80165cce61ca11e52f03db40f128e56c33cd705c",
   "package_resolved_path": "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+  "presentation_dependency_adoption": {
+    "added_pins": [
+      {
+        "identity": "a2ui",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/a2ui-project/a2ui",
+        "state": {
+          "revision": "3ed9601862ecc78027e20ac80ad8b1b98a5d9079"
+        }
+      },
+      {
+        "identity": "swift-json-schema",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/ajevans99/swift-json-schema",
+        "state": {
+          "revision": "c0a9375ea9cd3fd47d875c98ed7f027ea61c03cb",
+          "version": "0.13.2"
+        }
+      },
+      {
+        "identity": "swiftsoup",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/scinfu/SwiftSoup",
+        "state": {
+          "revision": "bba848db50462894e7fc0891d018dfecad4ef11e"
+        }
+      },
+      {
+        "identity": "yams",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/jpsim/Yams.git",
+        "state": {
+          "revision": "a27b21e0c81c5bf42049b897a62aaf387e80f279",
+          "version": "6.2.2"
+        }
+      }
+    ],
+    "base_source": "c8fe46c7da61dcab4533bc255ca146289c95beee",
+    "lock_after_blob": "80165cce61ca11e52f03db40f128e56c33cd705c",
+    "lock_before_blob": "3526d848e2e4e0074ade1192667063e6b5725ea2",
+    "manifest_blobs": {
+      "a2ui": "0aee0fc535d6741406f004fd76474f502cd5a0ae",
+      "swift-json-schema": "afc8266b1ed4de9fd26b0d2f14886171ae4ebafe",
+      "swiftsoup": "8f4bb421b2b8dac9a8d56c717203332bf27ac41b",
+      "yams": "3daf286fb116f40c80fb6c85046ff44b616aee72"
+    },
+    "miniapps_runtime_packages_added": [],
+    "package_lock_blob": "16d1cb345e17f600c765f95b8badddb2ca104809",
+    "package_lock_path": "AI_HLY.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+    "package_lock_sha256": "a8eaac8c61e6dcf43d3441d0801942958d8eb10b7f70877d9aaa1477cda0a6f9",
+    "package_lock_source": "9ef80a6ddfc997724360a9a34bb1d05cbf7cad40",
+    "preserved_existing_pins": 52,
+    "requirement_hanlin": "5aaa4471924aec0fbf086e68feb08fa10d9f01c8",
+    "status": "SOURCE_REVIEWED_STRICT_NATIVE_RESOLVER_PENDING"
+  },
   "public_host_contract_sha256": "b8a02497aeabab316d85daf2dab5045b1d94dac98a14b7ccc89a3b7c9a6509c0",
   "resource_oracles": {
     "color_blob": "6c02bf01dd48acd99bba5a1396ba4e8e01701ab7",
@@ -385,5 +474,23 @@
     "configuration_name": "Debug-Anytype",
     "setting": "ORIGINAL_EDITOR_SYMBOL_GRAPH_FLAGS",
     "value": "-emit-symbol-graph -emit-symbol-graph-dir $(DERIVED_FILE_DIR)/OriginalEditorSymbolGraphs -symbol-graph-minimum-access-level public -include-spi-symbols"
+  },
+  "zipfoundation_compatibility_adoption": {
+    "after_source_blob": "a7206955388abf7fde65889dd6d662fc83627730",
+    "before_source_blob": "d97ff91eb39f5ba20aa004785208bc8ab79385d3",
+    "changed_shared_package_files": [
+      "Packages/HanlinPlatform/Package.swift"
+    ],
+    "core": "3f38f1302764635c9991d0d00fd7b12471a5373c",
+    "hanlin": "6f525c67f5f62587e46085da56e6a8c2a406cee4",
+    "hanlin_platform_manifest_blob": "f3dba98eee353c776fb764b920fa9da78ee297ed",
+    "original_consumer_requirement": "ZIPFoundation exact 0.9.20",
+    "original_project_unchanged": true,
+    "original_zip_pin_unchanged": true,
+    "previous_hanlin": "5aaa4471924aec0fbf086e68feb08fa10d9f01c8",
+    "shared_requirement": "ZIPFoundation >= 0.9.19, < 0.10.0",
+    "source_json_sha256": "fbc9e7df238ffba38e7a60952dba5beaa2aef3f771efcbb47a850c101a69ce23",
+    "status": "SOURCE_REVIEWED_STRICT_NATIVE_RESOLVER_PENDING",
+    "upstream_comparison": "https://github.com/weichsel/ZIPFoundation/compare/0.9.19...0.9.20"
   }
 }
