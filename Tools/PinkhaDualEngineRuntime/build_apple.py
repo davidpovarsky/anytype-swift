@@ -188,6 +188,116 @@ def stage_authenticated_checksum_metadata(root, tools):
             "newModuleGraphReused": False, "newAuthenticationClaimed": False}
 
 
+
+def hydrate_private_workspace_checksums(root, workspace, evidence):
+    """Carry authenticated go.mod checksums into this owned derived workspace.
+
+    Go omits lazily unused GoModSum fields when a new workspace has not recorded
+    them. Preserve strict graph equality by recording the already authenticated
+    eight checksums; do not ignore fields or alter any original source sum file.
+    """
+    review_path = root / "tools/module-metadata-hydration.json"
+    require(digest(review_path) ==
+            "69b2f056688a2c009becbcac53f4c546648ab415e2e32ec5545cd295cb5dc863",
+            "reviewed_workspace_checksums_required")
+    review = json.loads(review_path.read_text())
+    proof_root = root / "module-checksum-verification-2"
+    proof_path = proof_root / "receipt.json"
+    require(digest(proof_path) == review["proofReceiptSHA256"],
+            "authenticated_workspace_checksum_proof_changed")
+    proof = json.loads(proof_path.read_text())
+    expected = {row["path"]: row for row in review["modules"]}
+    require(proof["status"] == "PASS" and len(expected) == 8
+            and {row["path"] for row in proof["modules"]} == set(expected),
+            "eight_original_authenticated_modules_required")
+    cache = Path("/Users/m1/caches/anytapy-go-mod/cache/download")
+    for index, row in enumerate(proof["modules"], start=1):
+        require(row["exitCode"] == 0 and all(row[key] == value
+                for key, value in expected[row["path"]].items()),
+                "workspace_checksum_identity_changed")
+        prefix = f"{index:02d}"
+        originals = {
+            prefix + ".stdout.json": row["stdoutSHA256"],
+            prefix + ".stderr.log": row["stderrSHA256"],
+            prefix + ".go.mod": row["goModSHA256"],
+            "module-cache/cache/download/sumdb/sum.golang.org/lookup/"
+                + row["path"] + "@" + row["version"]: row["authenticatedLookupSHA256"],
+        }
+        for name, sha in originals.items():
+            path = proof_root / name
+            require(path.resolve() == path and path.is_file() and digest(path) == sha,
+                    "workspace_checksum_original_changed:" + name)
+        mod = cache / row["path"] / "@v" / (row["version"] + ".mod")
+        require(mod.resolve() == mod and mod.is_file()
+                and digest(mod) == row["goModSHA256"],
+                "actual_cached_module_metadata_changed")
+    target = workspace / "go.work.sum"
+    require(target.resolve() == target and target.is_file()
+            and workspace == root / "workspace", "owned_workspace_sum_required")
+    before = target.read_bytes()
+    lines = before.decode("utf-8").splitlines()
+    require(all(len(line.split()) == 3 for line in lines),
+            "malformed_original_workspace_sum")
+    additions = []
+    for row in expected.values():
+        prefix = row["path"] + " " + row["version"] + "/go.mod "
+        matching = [line for line in lines if line.startswith(prefix)]
+        wanted = prefix + row["goModSum"]
+        require(not matching or matching == [wanted], "conflicting_original_workspace_checksum")
+        if not matching:
+            additions.append(wanted)
+    with (evidence / "workspace-before-hydration.sum").open("xb") as stream:
+        stream.write(before)
+    if additions:
+        updated = before + (b"\n" if before and not before.endswith(b"\n") else b"")
+        updated += ("\n".join(sorted(additions)) + "\n").encode()
+        with (workspace / "go.work.sum.hydrated").open("xb") as stream:
+            stream.write(updated)
+        (workspace / "go.work.sum.hydrated").replace(target)
+    require(target.read_bytes().startswith(before), "original_workspace_records_changed")
+    with (evidence / "workspace-after-hydration.sum").open("xb") as stream:
+        stream.write(target.read_bytes())
+    return {"status": "AUTHENTICATED_CHECKSUMS_COPIED_TO_PRIVATE_WORKSPACE",
+            "reviewSHA256": digest(review_path), "proofReceiptSHA256": digest(proof_path),
+            "originalWorkspaceSumSHA256": digest(evidence / "workspace-before-hydration.sum"),
+            "hydratedWorkspaceSumSHA256": digest(target), "addedGoModChecksums": additions,
+            "sourceSumFilesModified": False}
+
+
+def verify_gateway_graph_hydration(root, current_graph):
+    def read(path):
+        raw, decoder, rows = path.read_text(), json.JSONDecoder(), {}
+        while raw.strip():
+            row, end = decoder.raw_decode(raw.lstrip())
+            require(row["Path"] not in rows, "duplicate_gateway_graph_module")
+            rows[row["Path"]] = row
+            raw = raw.lstrip()[end:]
+        return rows
+    before = read(root / "evidence/module-graph.log")
+    after = read(current_graph)
+    review_path = root / "tools/module-metadata-hydration.json"
+    review = json.loads(review_path.read_text())
+    expected = {row["path"]: row for row in review["modules"]}
+    require(before.keys() == after.keys() and len(before) == 760,
+            "gateway_hydration_module_inventory_changed")
+    changed = []
+    for name in before:
+        if before[name] == after[name]:
+            continue
+        require(name in expected and "GoModSum" not in before[name],
+                "unexpected_gateway_hydration_field")
+        hydrated = dict(after[name])
+        require(hydrated.pop("GoModSum", None) == expected[name]["goModSum"]
+                and hydrated == before[name]
+                and hydrated["Version"] == expected[name]["version"],
+                "gateway_hydration_identity_changed")
+        changed.append(name)
+    require(set(changed) == set(expected), "exact_original_eight_field_delta_required")
+    return {"unchangedModuleIdentities": len(before), "authenticatedChecksumFieldsAdded": changed,
+            "originalGraphSHA256": digest(root / "evidence/module-graph.log"),
+            "hydratedGraphSHA256": digest(current_graph)}
+
+
 def verify_reviewed_metadata(root, graph, original_sha):
     """Accept only the eight originally absent, independently authenticated sums.
 
@@ -276,10 +386,16 @@ def main():
     parser.add_argument("--slice", choices=("simulator", "device"), required=True)
     parser.add_argument("--gateway-proof-root", type=Path)
     parser.add_argument("--resume-disk-stop", action="store_true")
+    parser.add_argument("--resume-gateway-metadata", action="store_true")
     parser.add_argument("--resume-reviewed-metadata", action="store_true")
     parser.add_argument("--resume-generated-metadata", action="store_true")
     args = parser.parse_args()
     root = args.root
+    require(not args.resume_gateway_metadata or
+            (args.slice == "simulator" and not args.resume_disk_stop
+             and not args.resume_reviewed_metadata and not args.resume_generated_metadata
+             and args.gateway_proof_root is not None),
+            "gateway_metadata_resume_is_separate_from_disk_stop")
     require(not args.resume_generated_metadata or args.resume_reviewed_metadata,
             "generated_metadata_resume_requires_reviewed_metadata")
     require(not args.resume_reviewed_metadata or (args.resume_disk_stop and args.slice == "device"),
@@ -295,21 +411,31 @@ def main():
     require(digest(manifest_path) == MANIFEST_SHA, "controller_manifest_mismatch")
     manifest = json.loads(manifest_path.read_text())
     prior = None
-    if args.resume_disk_stop:
+    if args.resume_disk_stop or args.resume_gateway_metadata:
         original = root / "evidence/receipt.json"
         prior = json.loads(original.read_text())
         require(prior.get("sourceManifestSHA256") == MANIFEST_SHA
                 and prior.get("slicePhase") == args.slice and prior.get("status") == "FAIL",
                 "exact_failed_slice_required")
         commands = prior.get("commands", [])
-        require(commands and commands[-1]["name"] == "combined-gomobile-bind"
-                and commands[-1].get("exitCode") == -signal.SIGTERM
-                and commands[-1].get("stopReason") == "time_or_disk_limit"
-                and commands[-1]["minimumFreeBytes"] < EMERGENCY_FREE_BYTES
-                and commands[-1]["elapsedSeconds"] < commands[-1]["timeoutSeconds"],
-                "only_original_disk_guard_may_resume")
-        require(all(item.get("exitCode") == 0 for item in commands[:-1]),
-                "failed_preparation_cannot_be_reused")
+        if args.resume_gateway_metadata:
+            require(prior["failure"]["message"] == "gateway_and_apple_native_module_graphs_differ"
+                    and [item["name"] for item in commands] == [
+                        "go-version", "xcode-version", "iphoneos-version", "iphonesimulator-version",
+                        "tantivy-ios-arm64-original-symbols", "tantivy-ios-arm64-native-symbols",
+                        "tantivy-ios-arm64-sim-original-symbols", "tantivy-ios-arm64-sim-native-symbols",
+                        "module-graph", "install-bind-tools", "gomobile-init"]
+                    and all(item.get("exitCode") == 0 for item in commands),
+                    "only_original_gateway_metadata_preparation_stop_may_resume")
+        else:
+            require(commands and commands[-1]["name"] == "combined-gomobile-bind"
+                    and commands[-1].get("exitCode") == -signal.SIGTERM
+                    and commands[-1].get("stopReason") == "time_or_disk_limit"
+                    and commands[-1]["minimumFreeBytes"] < EMERGENCY_FREE_BYTES
+                    and commands[-1]["elapsedSeconds"] < commands[-1]["timeoutSeconds"],
+                    "only_original_disk_guard_may_resume")
+            require(all(item.get("exitCode") == 0 for item in commands[:-1]),
+                    "failed_preparation_cannot_be_reused")
         for item in commands:
             require(digest(root / "evidence" / (item["name"] + ".log")) == item["logSHA256"],
                     "original_command_log_changed")
@@ -342,7 +468,8 @@ def main():
                 pass
             else:
                 require(False, "previous_generated_metadata_group_still_exists")
-    evidence = root / ("evidence-resume-3" if args.resume_generated_metadata else
+    evidence = root / ("evidence-gateway-resume-1" if args.resume_gateway_metadata else
+                       "evidence-resume-3" if args.resume_generated_metadata else
                        "evidence-resume-2" if args.resume_reviewed_metadata else
                        "evidence-resume-1" if prior else "evidence")
     evidence.mkdir(mode=0o700)
@@ -393,8 +520,10 @@ def main():
         source = root / "source"
         if prior:
             require(digest(root / "native-source.tar.gz") == ARCHIVE_SHA, "original_source_archive_changed")
-            receipt["originalDiskStopReceiptSHA256"] = digest(root / "evidence/receipt.json")
-            receipt["reusedPreparationCommands"] = prior["commands"][:-1]
+            receipt["originalPreparationStopReceiptSHA256" if args.resume_gateway_metadata
+                    else "originalDiskStopReceiptSHA256"] = digest(root / "evidence/receipt.json")
+            receipt["reusedPreparationCommands"] = (prior["commands"] if args.resume_gateway_metadata
+                                                     else prior["commands"][:-1])
         else:
             extract(root / "native-source.tar.gz", source, manifest)
         receipt["sourceFilesVerified"] = len(manifest["files"])
@@ -445,6 +574,8 @@ def main():
             (workspace / "go.work").write_text(expected_workspace)
             shutil.copyfile(source / "go.work.sum", workspace / "go.work.sum")
         receipt["effectiveWorkspaceSHA256"] = digest(workspace / "go.work")
+        if not prior or args.resume_gateway_metadata:
+            receipt["workspaceChecksumHydration"] = hydrate_private_workspace_checksums(root, workspace, evidence)
         environment = {**os.environ, "GOROOT": str(GO_ROOT), "GOTOOLCHAIN": "local",
                        "CGO_ENABLED": "1", "GOWORK": str(workspace / "go.work"), "GOBIN": str(tools),
                        "TMPDIR": str(root / "tmp"), "GOTMPDIR": str(root / "tmp"),
@@ -471,7 +602,9 @@ def main():
         graph = run([GO_ROOT / "bin/go", "list", "-m", "-json", "all"], "module-graph", source, environment, 180)
         receipt["actualModuleGraphSHA256"] = digest(graph)
         if prior:
-            if args.resume_reviewed_metadata:
+            if args.resume_gateway_metadata:
+                receipt["verifiedGatewayMetadataHydration"] = verify_gateway_graph_hydration(root, graph)
+            elif args.resume_reviewed_metadata:
                 receipt["verifiedMetadataHydration"] = verify_reviewed_metadata(
                     root, graph, prior["actualModuleGraphSHA256"])
             else:

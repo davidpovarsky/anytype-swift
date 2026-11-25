@@ -1,0 +1,172 @@
+{
+  "actualModuleGraphSHA256": "a662c4533856ace9b77b9b26b689fd1c395ca9e5a84bb37f8e2b2c53e9dac594",
+  "appleBuilds": 0,
+  "appleTestsExecuted": 0,
+  "applicationAcceptanceClaimed": false,
+  "commands": [
+    {
+      "argv": [
+        "/Users/m1/toolchains/anytapy-go1.27.4/go/bin/go",
+        "version"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-gateway",
+      "elapsedSeconds": 1.0174081325531006,
+      "exitCode": 0,
+      "logSHA256": "c6f1c8d54aedc3afa72560d934397ad6c33b28f1b4d3546ec53176439b2397d5",
+      "minimumFreeBytes": 9020817408,
+      "name": "go-version",
+      "pgid": 68439,
+      "pid": 68439,
+      "started": 1795602838.2583349,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 30
+    },
+    {
+      "argv": [
+        "/Users/m1/toolchains/anytapy-go1.27.4/go/bin/go",
+        "list",
+        "-m",
+        "-json",
+        "all"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-gateway/source",
+      "elapsedSeconds": 1.0096771717071533,
+      "exitCode": 0,
+      "logSHA256": "a662c4533856ace9b77b9b26b689fd1c395ca9e5a84bb37f8e2b2c53e9dac594",
+      "minimumFreeBytes": 9020694528,
+      "name": "module-graph",
+      "pgid": 68441,
+      "pid": 68441,
+      "started": 1795602839.278375,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 180
+    },
+    {
+      "argv": [
+        "/Users/m1/toolchains/anytapy-go1.27.4/go/bin/go",
+        "test",
+        "-mod=readonly",
+        "-p=2",
+        "-tags",
+        "mobile nogrpcserver gomobile nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg pinkha_loaded_account_witness",
+        "-c",
+        "-o",
+        "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-gateway/mobile-gateway.test",
+        "./internal/server"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-gateway/source/any",
+      "elapsedSeconds": 19.095625162124634,
+      "exitCode": 0,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "minimumFreeBytes": 8467410944,
+      "name": "mobile-gateway-build",
+      "pgid": 68443,
+      "pid": 68443,
+      "started": 1795602840.293094,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 900
+    },
+    {
+      "argv": [
+        "/Users/m1/toolchains/anytapy-go1.27.4/go/bin/go",
+        "tool",
+        "test2json",
+        "-p",
+        "github.com/anyproto/any/internal/server",
+        "-t",
+        "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-gateway/mobile-gateway.test",
+        "-test.v=test2json",
+        "-test.run=^(TestAcquirePIDLock_MobileNoOp|TestPinkhaMobileGatewayPreservesStandalone|TestPinkhaMobileManagedGateway)$",
+        "-test.count=1"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-gateway/mobile-gateway-fixture/internal/server",
+      "elapsedSeconds": 3.028003215789795,
+      "exitCode": 0,
+      "logSHA256": "d52264ac1f71a33fe1c1939cf58678bd61388d28ce6f9480631c3bf25c1e29a4",
+      "minimumFreeBytes": 8727863296,
+      "name": "mobile-gateway-original-json",
+      "pgid": 69305,
+      "pid": 69305,
+      "started": 1795602859.391042,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 300
+    }
+  ],
+  "controllerCommit": "00a25d25f1a64e6b6665d97d178645d0337dd3e0",
+  "controllerSHA256": "cc10225c7c2b79dff5c01cc33f6e4c86df1af25b612bc5105baf0d0717fa559d",
+  "effectiveWorkspaceSHA256": "7de3b0a292319dd17932cfbf420a2a444d787552cbb964ab8ae09ab93721eea2",
+  "executionKind": "local-mac",
+  "executionUUID": "fb916e34-87ba-47e2-b52b-d3bd6f107873",
+  "freeBytesAfter": 8731889664,
+  "freeBytesBefore": 9020829696,
+  "goVersion": "go version go1.27.4 darwin/arm64",
+  "mobileGatewayQualification": {
+    "applicationAcceptanceClaimed": false,
+    "cases": {
+      "TestAcquirePIDLock_MobileNoOp": "pass",
+      "TestPinkhaMobileGatewayPreservesStandalone": "pass",
+      "TestPinkhaMobileManagedGateway": "pass"
+    },
+    "localNativeFixture": "any/internal/pinkha/migrationnative/testdata/local.yml",
+    "localNativeFixtureSHA256": "a3fe3c21144c2c82afa03b58014752c6bca6e5a9f3e69a1bc1b2b38415434756",
+    "originalLogPath": "evidence-resume-1/mobile-gateway-original-json.log",
+    "originalLogSHA256": "d52264ac1f71a33fe1c1939cf58678bd61388d28ce6f9480631c3bf25c1e29a4",
+    "skippedTests": 0,
+    "sourceFilesModified": false,
+    "sourceManifestSHA256": "70f0b2a66286ae87afdc5a8d5becb267fd1aa5c5110e54381a3b0384afd69a72",
+    "status": "PASS_ORIGINAL_MOBILE_GATEWAY_COMPONENTS_NOT_APP_ACCEPTANCE",
+    "tags": [
+      "mobile",
+      "nogrpcserver",
+      "gomobile",
+      "nowatchdog",
+      "nosigar",
+      "nomutexdeadlockdetector",
+      "timetzdata",
+      "rasterizesvg",
+      "pinkha_loaded_account_witness"
+    ],
+    "testBinarySHA256": "db53bdb3dd9ece9f16f8b40ae11ef4ba75781f283034deb44d766950c428e3b0",
+    "testsExecuted": 3
+  },
+  "originalDiskStopReceiptSHA256": "39c96c97501c38656a3447b63d98faf69a98b961692a30794ca44cfad7b3eca0",
+  "originalGatewayReceiptSHA256": "5e0fc42e0249a8a86752baca01f2a4514f88bb11e207ea1ac42a4f995030a66f",
+  "phaseSpaceEstimate": {
+    "components": {
+      "previousObservedGlobalPeakDropAllowanceBytes": 1116598272,
+      "remainingHostLinkOutputAllowanceBytes": 80914834,
+      "reusedSourceBytes": 0
+    },
+    "emergencyFreeBytes": 2147483648,
+    "estimatedAdditionalBytes": 1197513106,
+    "phase": "original-mobile-gateway-host-components",
+    "referenceBytes": 80914834,
+    "referencePath": "/Users/m1/builds/pinkha-c-native-file-peer-20261125/any548",
+    "referenceSHA256": "bc73441d05a502e3e77df479f54279540489869b00ca1aecf4e1e9f681fa0f49"
+  },
+  "resourceEstimateLimitation": "The prior global peak drop includes concurrent host activity; it is not attributed entirely to this job.",
+  "skippedTests": 0,
+  "sourceArchiveSHA256": "9197ea5c9f8a832430fce44b36aeeeb27099fff6e745ec6197e9a3493ffd51db",
+  "sourceFilesVerified": 4855,
+  "sourceManifestSHA256": "70f0b2a66286ae87afdc5a8d5becb267fd1aa5c5110e54381a3b0384afd69a72",
+  "sourcePins": {
+    "any": "cf87c43ff0100c2dc43c3c105c82b1b070b3a7a3",
+    "heart": "ea796999d648e27dcb7ad23a0bbd849d35fadc5a",
+    "sdk": "e195f6c07a053c6588e39ffe72ee4fc44cf3d953",
+    "sync": "c005bd6cde8d8f8a6007c35f06894f3d89f9f07c"
+  },
+  "sourceUnchanged": true,
+  "status": "PASS_STANDALONE_ORIGINAL_GATEWAY_COMPONENTS_ONLY",
+  "tags": [
+    "mobile",
+    "nogrpcserver",
+    "gomobile",
+    "nowatchdog",
+    "nosigar",
+    "nomutexdeadlockdetector",
+    "timetzdata",
+    "rasterizesvg",
+    "pinkha_loaded_account_witness"
+  ],
+  "testsExecuted": 3
+}
