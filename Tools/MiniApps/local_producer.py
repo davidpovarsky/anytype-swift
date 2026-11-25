@@ -119,9 +119,13 @@ def admit(app_source, work, evidence, pin):
             and identity["tracked_file_sha256"]
             and all(re.fullmatch(r"[0-9a-f]{64}", sha) for sha in identity["tracked_file_sha256"].values()),
             "Actual prepared producer source identity differs")
-    preparation_name = identity.get("preparation_diff_name")
-    if preparation_name is not None:
-        artifact(root, preparation_name, identity.get("preparation_diff_sha256"))
+    from local_producer_source import validate_source_identity
+    source_repository = pin.get("local_source_repository")
+    require(isinstance(source_repository, str) and source_repository,
+            "Local producer requires its reviewed actual source repository")
+    source_admission = validate_source_identity(identity, Path(source_repository), pin["revision"],
+        review_spec=pin.get("local_producer_preparation"), export_directory=root,
+        consumer_root=app_source)
     commands_path = root / "commands.jsonl"
     require(commands_path.is_file() and not commands_path.is_symlink(),
             "Original producer build commands are missing")
@@ -171,7 +175,7 @@ def admit(app_source, work, evidence, pin):
               "original_manifest_sha256": digest(manifest_path),
               "artifact_sha256": digest(archive),
               "actual_signature_log_sha256": digest(signature_path),
-              "embedded_entitlements": embedded,
+              "embedded_entitlements": embedded, "source_admission": source_admission,
               "physical_sharing": "NOT_PROVEN_BY_SIMULATOR"}
     (evidence / "miniapps-producer.json").write_text(json.dumps(result, indent=2) + chr(10))
     return result
