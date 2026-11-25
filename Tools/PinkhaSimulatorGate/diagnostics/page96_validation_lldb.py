@@ -170,22 +170,26 @@ def main(debugger, configuration_path):
         target = debugger.CreateTarget(str(Path(config["appPath"]) / "Anytype"))
         require(target.IsValid(), "original_app_target_required")
         error = lldb.SBError()
+        context["attachStartedAt"] = time.time()
         process = target.AttachToProcessWithID(lldb.SBListener("page-native-reply"), config["pid"], error)
         require(error.Success() and process.IsValid(), "owned_attach_failed:" + str(error))
-        matches = target.FindFunctions(SYMBOL, lldb.eFunctionNameTypeFull)
-        require(matches.GetSize() == 1, "one_exact_decode_symbol_required")
-        symbol = matches.GetContextAtIndex(0).GetSymbol()
-        address = symbol.GetStartAddress().GetLoadAddress(target)
+        mapping = json.loads((Path(__file__).parent / "boundaries.json").read_bytes())
+        modules = [target.GetModuleAtIndex(i) for i in range(target.GetNumModules())]
+        modules = [m for m in modules if m.GetFileSpec().GetFilename() == "ProtobufMessages"]
+        require(len(modules) == 1, "one_original_protobuf_image_required")
+        module = modules[0]
+        decode = mapping.pop("decode")
+        require(decode["symbol"] == SYMBOL and decode["prefix72SHA256"] == PREFIX_SHA,
+                "qualified_decode_boundary_changed")
+        address = module.ResolveFileAddress(decode["linkedAddress"]).GetLoadAddress(target)
         require(address != lldb.LLDB_INVALID_ADDRESS, "loaded_decode_address_required")
         raw = process.ReadMemory(address, PREFIX_BYTES, error)
         require(error.Success() and hashlib.sha256(raw).hexdigest() == PREFIX_SHA,
                 "exact_original_decode_prologue_required")
-        mapping = json.loads((Path(__file__).parent / "boundaries.json").read_bytes())
         symbols = {}
         for key, row in mapping.items():
-            found = target.FindFunctions(row["symbol"], lldb.eFunctionNameTypeFull)
-            require(found.GetSize() == 1, "one_exact_validation_symbol:" + key)
-            start = found.GetContextAtIndex(0).GetSymbol().GetStartAddress().GetLoadAddress(target)
+            start = module.ResolveFileAddress(row["linkedAddress"]).GetLoadAddress(target)
+            require(start != lldb.LLDB_INVALID_ADDRESS, "qualified_validation_image_address:" + key)
             actual = process.ReadMemory(start, row["size"], error)
             require(error.Success() and hashlib.sha256(actual).hexdigest() == row["sha256"],
                     "original_validation_code_changed:" + key)
@@ -209,6 +213,7 @@ def main(debugger, configuration_path):
         require(bp.IsValid() and bp.GetNumLocations() == 1, "one_exact_boundary_required")
         bp.SetOneShot(True)
         bp.SetScriptCallbackFunction(__name__ + ".capture")
+        context["breakpointsReadyAt"] = time.time()
         context["status"] = "WAITING_FOR_ORIGINAL_CAPTURE"
         write(Path(config["work"]) / "reply-observation.json", context)
         error = process.Continue()
