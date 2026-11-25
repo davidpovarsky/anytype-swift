@@ -40,3 +40,22 @@ E7 directory and records both original and bound argument lists. The compiled
 checkout remains e791; the original driver suffix and production framework are
 unchanged. Reconstructed controls cover successful separate output collection
 and rejection of a relabelled result bundle. They are not native acceptance.
+
+## Fresh native compiler graph interval
+
+Continuation 2 correctly rejected two copied extension graphs with 24-November
+timestamps: @Cache (1,453 bytes) and @SwiftUI (2,865 bytes). The new main graph
+and nine other outputs were emitted during E7. No old graph is excluded from the
+gate, and no graph is produced with a synthetic standalone extractor.
+
+The explicit refresh mode preserves the entire original graph directory and its
+hash/mtime inventory, then invokes the original xcodebuild command in the same
+owned cache with only the new owned simulator and result-bundle paths. One
+verified original source file has its timestamp invalidated to force the native
+compiler to emit a complete fresh module graph into an empty directory. Its
+bytes remain equal to the original Git object; its timestamp is restored after
+the command. The original E7 interval remains intact. The actual incremental
+command receives its own stdout, stderr, xcresult, exit code and interval, and
+the collector binds to this new real build. The same complete source,
+dependency, public/SPI, distribution, binary-only consumer and runtime gates
+follow. No full-build or runtime result is presumed from this preparation.

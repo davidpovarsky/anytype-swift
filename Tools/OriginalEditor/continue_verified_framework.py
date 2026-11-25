@@ -17,6 +17,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+import time
 from types import SimpleNamespace
 
 SOURCE = "e79192e5ad2b879ca4a45e46a3f6b504a1094155"
@@ -47,6 +48,7 @@ def main():
     for name in ("root", "prior-evidence", "prior-work", "evidence", "work"):
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--control-commit", required=True)
+    parser.add_argument("--refresh-compiler-graphs", action="store_true")
     parser.add_argument("--incremental-budget-bytes", type=int, required=True)
     parser.add_argument("--concurrent-budget-bytes", type=int, required=True)
     args = parser.parse_args()
@@ -127,7 +129,12 @@ def main():
     write(evidence / "phase-capacity-estimate.json", capacity)
     for name in ("framework-build.command.json", "framework-build.stdout.log", "framework-build.stderr.log",
                  "source-before.json", "source-after.json", "original-hanlin-snapshot.json", "import-abi-before.json"):
-        shutil.copy2(prior / name, evidence / name)
+        destination = evidence / name
+        if args.refresh_compiler_graphs and name.startswith("framework-build."):
+            original_commands = evidence / "original-compiler"
+            original_commands.mkdir(exist_ok=True)
+            destination = original_commands / name
+        shutil.copy2(prior / name, destination)
     shutil.copy2(prior / "execution.json", evidence / "original-failed-execution.json")
     shutil.copy2(repair_path, evidence / "verified-git-metadata-repair.json")
     product_files = driver.inventory(derived / "Build/Products/Debug-Anytype-iphonesimulator")
@@ -186,6 +193,58 @@ def main():
         hanlin_before = verify_hanlin(root / "Dependencies/Hanlin")
         require(hanlin_before == json.loads((prior / "original-hanlin-snapshot.json").read_bytes()),
                 "Original shared package input changed")
+        build_evidence = prior
+        if args.refresh_compiler_graphs:
+            graph_root = derived / (
+                "Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/"
+                "AnytypeOriginalEditor.build/DerivedSources/OriginalEditorSymbolGraphs")
+            require(graph_root.is_dir() and not graph_root.is_symlink(),
+                    "Original compiler graph directory missing or aliased")
+            graph_before = []
+            for path in sorted(graph_root.iterdir()):
+                require(path.is_file() and not path.is_symlink()
+                        and path.name.endswith(".symbols.json"), "Unexpected original graph member")
+                graph_before.append({"name": path.name, "sha256": sha(path),
+                                     "bytes": path.stat().st_size, "mtime_ns": path.stat().st_mtime_ns})
+            preserved_graphs = work / "retained-pre-refresh-symbol-graphs"
+            require(not preserved_graphs.exists(), "Fresh graph preservation path required")
+            graph_root.rename(preserved_graphs)
+            source_path = root / "OriginalEditorFramework/AnytypeOriginalEditorModule.swift"
+            source_bytes = source_path.read_bytes()
+            require(source_bytes == git(root, "show", SOURCE + ":" + str(source_path.relative_to(root))),
+                    "Incremental compiler input differs from frozen source")
+            metadata = source_path.stat()
+            refresh_arguments = list(record["command"])
+            refresh_arguments[refresh_arguments.index("-destination") + 1] = (
+                "platform=iOS Simulator,id=" + udid)
+            refresh_arguments[refresh_arguments.index("-resultBundlePath") + 1] = (
+                str(evidence / "framework-build.xcresult"))
+            refresh = {
+                "status": "RUNNING", "reason": "Two inherited stale extension graphs in original output",
+                "original_graph_directory": str(graph_root), "preserved_graph_directory": str(preserved_graphs),
+                "preserved_graphs": graph_before, "source_path": str(source_path),
+                "source_sha256": hashlib.sha256(source_bytes).hexdigest(),
+                "source_original_mtime_ns": metadata.st_mtime_ns,
+                "original_command": record["command"], "incremental_command": refresh_arguments,
+                "source_bytes_changed": False, "full_graph_filtering": False,
+            }
+            write(evidence / "incremental-compiler-graph-refresh.json", refresh)
+            receipt["continuation"]["framework_build_reexecuted"] = True
+            receipt["continuation"]["incremental_graph_refresh"] = refresh
+            write(evidence / "execution.json", receipt)
+            try:
+                os.utime(source_path, ns=(metadata.st_atime_ns, time.time_ns()))
+                driver.command(refresh_arguments, root, evidence, "framework-build", 6000)
+                require(graph_root.is_dir(), "Incremental compiler did not emit its full graph directory")
+                refresh["status"] = "ACTUAL_INCREMENTAL_FRAMEWORK_BUILD_PASS"
+                refresh["command_sha256"] = sha(evidence / "framework-build.command.json")
+                build_evidence = evidence
+            finally:
+                require(source_path.read_bytes() == source_bytes, "Incremental compiler source bytes changed")
+                os.utime(source_path, ns=(metadata.st_atime_ns, metadata.st_mtime_ns))
+                refresh["source_original_mtime_restored"] = True
+                write(evidence / "incremental-compiler-graph-refresh.json", refresh)
+                write(evidence / "execution.json", receipt)
         tree = ast.parse(driver_path.read_text(), filename=str(driver_path))
         functions = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "execute"]
         require(len(functions) == 1, "Original gate function is ambiguous")
@@ -212,13 +271,13 @@ def main():
                     and arguments[arguments.index("--derived") + 1] == str(derived),
                     "Unexpected original symbol graph command")
             bound = [arguments[0], str(collector_control), *arguments[2:],
-                     "--build-evidence", str(prior)]
+                     "--build-evidence", str(build_evidence)]
             binding = {
                 "collector_control_commit": args.control_commit,
                 "collector_control_sha256": sha(collector_control),
                 "original_collector_sha256": sha(root / COLLECTOR_PATH),
-                "original_build_evidence": str(prior),
-                "original_build_command_sha256": sha(prior / "framework-build.command.json"),
+                "original_build_evidence": str(build_evidence),
+                "original_build_command_sha256": sha(build_evidence / "framework-build.command.json"),
                 "original_arguments": arguments, "bound_arguments": bound,
                 "original_build_records_rewritten": False,
             }
