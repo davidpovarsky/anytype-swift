@@ -1,0 +1,51 @@
+Building for debugging...
+[Computing dependencies]
+[Provisioning 1 / 19]
+[Pre-planning 1 / 392]
+[Planning 241 / 392]
+[Planning deferred tasks]
+[Constructing 302 / 1199]
+[Starting]
+[1 / 7]
+[1 / 24] CCryptoBoringSSL
+[3 / 38] CryptoBoringWrapper
+[7 / 24] PinkhaAnyHost
+[9 / 26] PinkhaAnyHost
+[9 / 27] PinkhaAnyHost
+[15 / 27] PinkhaAnyHost
+[17 / 27] PinkhaAnyHostTests-product
+[19 / 30] PinkhaAnyHostTests-product
+[21 / 30] PinkhaAnyHostTests-product
+[23 / 29] PinkhaAnyHostTests-product
+[26 / 30] PinkhaAnyHostTests-product
+[27 / 30] PinkhaAnyHostTests-product
+[29 / 31] PinkhaAnyHostTests-test-runner
+[31 / 33] PinkhaAnyHostTests-test-runner
+[35 / 35] PinkhaAnyHostTests-test-runner
+[38 / 41] PinkhaAnyHostTests-test-runner
+[41 / 45] pinkha-any-host-probe-product
+[43 / 46] pinkha-any-host-probe-product
+[46 / 46] pinkha-any-host-probe-product
+Build complete! (40.05 secs)
+Test Suite 'Selected tests' started at 2026-11-25 05:21:15.384
+Test Suite 'NativeSourceAccountControllerTests' started at 2026-11-25 05:21:15.396
+Test Case 'NativeSourceAccountControllerTests.testAccountSwitchDrainsLateMintAndClosesWithoutDispatchingCapture' started at 2026-11-25 05:21:15.396
+Test Case 'NativeSourceAccountControllerTests.testAccountSwitchDrainsLateMintAndClosesWithoutDispatchingCapture' passed (0.271 seconds)
+Test Case 'NativeSourceAccountControllerTests.testCallerCancellationCannotLoseLateMintOrLeaveOwnedSession' started at 2026-11-25 05:21:15.666
+Test Case 'NativeSourceAccountControllerTests.testCallerCancellationCannotLoseLateMintOrLeaveOwnedSession' passed (0.091 seconds)
+Test Case 'NativeSourceAccountControllerTests.testCancellationDrainsLateCaptureBeforeClosingItsToken' started at 2026-11-25 05:21:15.758
+Test Case 'NativeSourceAccountControllerTests.testCancellationDrainsLateCaptureBeforeClosingItsToken' passed (0.081 seconds)
+Test Case 'NativeSourceAccountControllerTests.testCloseFailureKeepsOwnedTokenBlocksNextCaptureAndAllowsExplicitRetry' started at 2026-11-25 05:21:15.839
+Test Case 'NativeSourceAccountControllerTests.testCloseFailureKeepsOwnedTokenBlocksNextCaptureAndAllowsExplicitRetry' passed (1.385 seconds)
+Test Case 'NativeSourceAccountControllerTests.testEngineSwitchWaitsForNativeValidationThenReleasesAndCloses' started at 2026-11-25 05:21:17.223
+Test Case 'NativeSourceAccountControllerTests.testEngineSwitchWaitsForNativeValidationThenReleasesAndCloses' passed (1.538 seconds)
+Test Case 'NativeSourceAccountControllerTests.testFullOwnedSessionReviewsOriginalCensusAndRevalidatesBeforeOneClose' started at 2026-11-25 05:21:18.761
+Test Case 'NativeSourceAccountControllerTests.testFullOwnedSessionReviewsOriginalCensusAndRevalidatesBeforeOneClose' passed (1.542 seconds)
+Test Case 'NativeSourceAccountControllerTests.testInvalidNativeReplyClosesOwnedSessionAndPreservesOriginalSource' started at 2026-11-25 05:21:20.303
+Test Case 'NativeSourceAccountControllerTests.testInvalidNativeReplyClosesOwnedSessionAndPreservesOriginalSource' passed (0.08 seconds)
+Test Case 'NativeSourceAccountControllerTests.testRejectedAccountScopeAssociationAndEmptyTokenCannotCapture' started at 2026-11-25 05:21:20.383
+Test Case 'NativeSourceAccountControllerTests.testRejectedAccountScopeAssociationAndEmptyTokenCannotCapture' passed (0.08 seconds)
+Test Suite 'NativeSourceAccountControllerTests' passed at 2026-11-25 05:21:20.463
+	 Executed 8 tests, with 0 failures (0 unexpected) in 5.067 (5.067) seconds
+Test Suite 'Selected tests' passed at 2026-11-25 05:21:20.463
+	 Executed 8 tests, with 0 failures (0 unexpected) in 5.067 (5.067) seconds

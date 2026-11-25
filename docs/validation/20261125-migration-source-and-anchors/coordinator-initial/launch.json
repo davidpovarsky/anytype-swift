@@ -1,0 +1,25 @@
+{
+  "source": "13cb009ba19f9deafc2f5a25fb40881cd5323c0d",
+  "command": [
+    "runuser",
+    "-u",
+    "ubuntu",
+    "--",
+    "env",
+    "PINKHA_NATIVE_SOURCE_FIXTURE=/mnt/development/projects/evidence/native-json-source-fixture-45472745870",
+    "PINKHA_NATIVE_CUSTOM_SOURCE_FIXTURE=/mnt/development/projects/evidence/native-custom-source-fixture-45492064232",
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/mnt/development/projects/worktrees/anytype-semantic-migration-20261124/Modules/PinkhaAnyHost/.build",
+    "--jobs",
+    "2",
+    "--filter",
+    "NativeCaptureDescriptorTests|NativeSourceCaptureCoordinatorTests"
+  ],
+  "startedAt": "2026-11-25T04:11:10.829992+00:00",
+  "liveNativeBridgeExecuted": false,
+  "originalCapturesUsed": true
+}

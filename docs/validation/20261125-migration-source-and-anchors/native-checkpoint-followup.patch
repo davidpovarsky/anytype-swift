@@ -1,0 +1,756 @@
+diff --git a/clientlibrary/service/pinkha_native_source_capture.go b/clientlibrary/service/pinkha_native_source_capture.go
+index ac53d3283..e96708ff9 100644
+--- a/clientlibrary/service/pinkha_native_source_capture.go
++++ b/clientlibrary/service/pinkha_native_source_capture.go
+@@ -4,6 +4,7 @@ package service
+ 
+ import (
+ 	"context"
++	"time"
+ 
+ 	"github.com/anyproto/anytype-heart/pkg/lib/pinkha/capturecontrol"
+ )
+@@ -18,7 +19,10 @@ var nativeSourceCaptures = capturecontrol.New(4)
+ // must remain in private application storage. Its descriptor grants no writes.
+ // The context timeout is cooperative; it does not promise hard native IO expiry.
+ func PinkhaCaptureLoadedAccountSource(sessionToken, accountID, spaceID, privateDirectory, requestID string) ([]byte, error) {
+-	ctx, finish, err := nativeSourceCaptures.Begin(context.Background(), sessionToken, requestID, capturecontrol.MaximumDuration)
++	if !capturecontrol.ValidRequestID(requestID) {
++		return nil, capturecontrol.ErrInvalidRequest
++	}
++	ctx, finish, err := nativeSourceCaptures.Begin(context.Background(), sessionToken, capturecontrol.CaptureRequestID(requestID), capturecontrol.MaximumDuration)
+ 	if err != nil {
+ 		return nil, err
+ 	}
+@@ -26,8 +30,36 @@ func PinkhaCaptureLoadedAccountSource(sessionToken, accountID, spaceID, privateD
+ 	return mw.PinkhaCaptureLoadedAccountSource(ctx, sessionToken, accountID, spaceID, privateDirectory, requestID)
+ }
+ 
+-// PinkhaCancelLoadedAccountSourceCapture cancels only an active call created
+-// with this same native session token. Its slot remains owned until completion.
++// PinkhaValidateLoadedAccountSourceCapture performs a new real native authority
++// and source-checkpoint read for the original in-process capture. Its successful
++// return is not semantic migration admission or a destination write permit.
++func PinkhaValidateLoadedAccountSourceCapture(sessionToken, requestID, manifestSHA256 string) error {
++	if !capturecontrol.ValidRequestID(requestID) {
++		return capturecontrol.ErrInvalidRequest
++	}
++	ctx, finish, err := nativeSourceCaptures.Begin(context.Background(), sessionToken,
++		capturecontrol.VerificationRequestID(requestID), time.Minute)
++	if err != nil {
++		return err
++	}
++	defer finish()
++	return mw.PinkhaValidateLoadedAccountSourceCapture(ctx, sessionToken, requestID, manifestSHA256)
++}
++
++// PinkhaCancelLoadedAccountSourceCapture cancels only active capture/checkpoint
++// calls created with this same token. Their slots stay owned until completion.
+ func PinkhaCancelLoadedAccountSourceCapture(sessionToken, requestID string) bool {
+-	return nativeSourceCaptures.Cancel(sessionToken, requestID)
++	if !capturecontrol.ValidRequestID(requestID) {
++		return false
++	}
++	capture := nativeSourceCaptures.Cancel(sessionToken, capturecontrol.CaptureRequestID(requestID))
++	verification := nativeSourceCaptures.Cancel(sessionToken, capturecontrol.VerificationRequestID(requestID))
++	return capture || verification
++}
++
++// PinkhaReleaseLoadedAccountSourceCapture forgets only the original metadata
++// binding and requests cancellation. Private recovery source files are retained.
++func PinkhaReleaseLoadedAccountSourceCapture(sessionToken, requestID string) bool {
++	PinkhaCancelLoadedAccountSourceCapture(sessionToken, requestID)
++	return mw.PinkhaReleaseLoadedAccountSourceCapture(sessionToken, requestID)
+ }
+diff --git a/core/application/loaded_relation_default_source_test.go b/core/application/loaded_relation_default_source_test.go
+new file mode 100644
+index 000000000..9921540f3
+--- /dev/null
++++ b/core/application/loaded_relation_default_source_test.go
+@@ -0,0 +1,202 @@
++//go:build pinkha_loaded_account_witness && pinkha_loaded_account_witness_acceptance
++
++package application
++
++import (
++	"encoding/json"
++	"fmt"
++	"os"
++	"path/filepath"
++	"testing"
++
++	"github.com/anyproto/any-sync/app"
++	"github.com/gogo/protobuf/proto"
++	"github.com/stretchr/testify/require"
++
++	"github.com/anyproto/anytype-heart/core/block"
++	"github.com/anyproto/anytype-heart/core/block/cache"
++	sb "github.com/anyproto/anytype-heart/core/block/editor/smartblock"
++	"github.com/anyproto/anytype-heart/core/block/editor/state"
++	nativeexport "github.com/anyproto/anytype-heart/core/block/export"
++	"github.com/anyproto/anytype-heart/core/block/object/objectcreator"
++	"github.com/anyproto/anytype-heart/core/block/simple"
++	"github.com/anyproto/anytype-heart/core/domain"
++	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
++	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++)
++
++// This is a current-state source observation, not a promise about future
++// clients or template-selected creation. Both creation paths use the real
++// object service and retain the exact native property definition.
++func TestLoadedAccountRelationDefaultCurrentState(t *testing.T) {
++	f := newLoadedAccountFixture(t)
++	creator := app.MustComponent[objectcreator.Service](f.service.GetApp())
++	picker := app.MustComponent[*block.Service](f.service.GetApp())
++	const nativeDefault = "native default a\u0301 — ברירת מחדל"
++	const explicitValue = "explicit value a\u0301 — ערך מפורש"
++	definition := domain.NewDetails()
++	definition.SetString(bundle.RelationKeyName, "Owned default metadata")
++	definition.SetInt64(bundle.RelationKeyRelationFormat, int64(model.RelationFormat_longtext))
++	definition.SetInt64(bundle.RelationKeyRelationMaxCount, 1)
++	definition.SetString(bundle.RelationKeyRelationDefaultValue, nativeDefault)
++	propertyID, propertyDetails, err := creator.CreateObject(f.ctx, f.space.Id(),
++		objectcreator.CreateObjectRequest{ObjectTypeKey: bundle.TypeKeyRelation, Details: definition})
++	require.NoError(t, err)
++	require.NotEmpty(t, propertyID)
++	require.True(t, propertyDetails.Has(bundle.RelationKeyRelationDefaultValue))
++	require.Equal(t, nativeDefault, propertyDetails.GetString(bundle.RelationKeyRelationDefaultValue))
++	propertyKey := domain.RelationKey(propertyDetails.GetString(bundle.RelationKeyRelationKey))
++	require.NotEmpty(t, propertyKey)
++	require.NotEqual(t, propertyID, propertyKey.String())
++
++	typeDetails := domain.NewDetails()
++	typeDetails.SetString(bundle.RelationKeyName, "Owned default observation type")
++	typeDetails.SetInt64(bundle.RelationKeyRecommendedLayout, int64(model.ObjectType_basic))
++	typeDetails.SetStringList(bundle.RelationKeyRecommendedRelations, []string{propertyID})
++	typeID, actualType, err := creator.CreateObject(f.ctx, f.space.Id(),
++		objectcreator.CreateObjectRequest{ObjectTypeKey: bundle.TypeKeyObjectType, Details: typeDetails})
++	require.NoError(t, err)
++	typeKey, err := domain.GetTypeKeyFromRawUniqueKey(actualType.GetString(bundle.RelationKeyUniqueKey))
++	require.NoError(t, err)
++
++	type observation struct {
++		Path, Case, ID, Value string
++		Present               bool
++	}
++	var observations []observation
++	assertDetails := func(t *testing.T, details *domain.Details, present bool, value string) {
++		t.Helper()
++		require.NotNil(t, details)
++		require.Equal(t, present, details.Has(propertyKey), "absence must not be replaced by definition metadata")
++		if present {
++			actual, ok := details.TryString(propertyKey)
++			require.True(t, ok)
++			require.Equal(t, value, actual)
++		}
++	}
++	for _, path := range []string{"ordinary-no-template", "from-state"} {
++		for _, valueCase := range []struct {
++			name, value string
++			present     bool
++		}{{"absent", "", false}, {"empty", "", true}, {"explicit", explicitValue, true}} {
++			t.Run(path+"/"+valueCase.name, func(t *testing.T) {
++				details := domain.NewDetails()
++				details.SetString(bundle.RelationKeyName, "Owned default "+path+" "+valueCase.name)
++				if valueCase.present {
++					details.SetString(propertyKey, valueCase.value)
++				}
++				var id string
++				var actual *domain.Details
++				var createErr error
++				if path == "ordinary-no-template" {
++					id, actual, createErr = creator.CreateObject(f.ctx, f.space.Id(),
++						objectcreator.CreateObjectRequest{ObjectTypeKey: typeKey, TemplateId: "", Details: details})
++				} else {
++					root := "owned-default-" + valueCase.name
++					st := state.NewDoc(root, map[string]simple.Block{
++						root: simple.New(&model.Block{Id: root,
++							Content: &model.BlockContentOfSmartblock{Smartblock: &model.BlockContentSmartblock{}}}),
++					}).(*state.State)
++					st.SetDetails(details)
++					id, actual, createErr = creator.CreateSmartBlockFromState(f.ctx, f.space.Id(), []domain.TypeKey{typeKey}, st)
++				}
++				require.NoError(t, createErr)
++				require.NotEmpty(t, id)
++				assertDetails(t, actual, valueCase.present, valueCase.value)
++				require.NoError(t, cache.DoContextFullID(picker, f.ctx,
++					domain.FullID{SpaceID: f.space.Id(), ObjectID: id}, func(object sb.SmartBlock) error {
++						assertDetails(t, object.NewState().CombinedDetails(), valueCase.present, valueCase.value)
++						return nil
++					}))
++				observations = append(observations, observation{Path: path, Case: valueCase.name,
++					ID: id, Present: valueCase.present, Value: valueCase.value})
++			})
++		}
++	}
++	require.Len(t, observations, 6, "all creation observations must complete before frozen capture")
++	loadedSpaceFixtureWarm(t, f)
++	captured, err := loadedCaptureFreshAttempts(f.ctx, func() (*LoadedAccountSpaceWitness, error) {
++		return f.service.CaptureLoadedAccountSpaceWitness(f.ctx, f.token, loadedSpaceRequest(f))
++	}, func(note loadedNativeCaptureAttempt) {
++		f.privateNote(t, fmt.Sprintf("native-default-capture-attempt-%d", note.Attempt), map[string]any{
++			"contract": "pinkha-native-source-capture-attempt-v1", "attemptLimit": loadedNativeCaptureAttemptLimit,
++			"stage": "relation-default-current-state", "attempt": note, "newCaptureRequiredAfterRefusal": true,
++		})
++	})
++	require.NoError(t, err)
++	receipt, err := captured.Receipt()
++	require.NoError(t, err)
++	require.True(t, receipt.AllNativeHeadRowsAccounted)
++	require.True(t, receipt.AllCurrentObjectsCaptured)
++	require.True(t, receipt.AccountSessionAuthorizedAtFinalCapture)
++	require.True(t, receipt.CapturedSnapshotsBoundToUnchangedCheckpoint)
++	require.True(t, receipt.IndexResolverSnapshotBound)
++	require.Zero(t, receipt.ClosedResolverUnmapped)
++	require.False(t, receipt.HasNativeSourceAdmission)
++	require.False(t, receipt.SemanticCompleteness)
++	require.False(t, receipt.HistorySemanticsValidated)
++	require.False(t, receipt.PermitsDestinationWrites)
++
++	originals := map[string]*nativeexport.NativeRawObject{}
++	for _, object := range captured.Objects() {
++		require.NotContains(t, originals, object.ObjectID())
++		originals[object.ObjectID()] = object
++	}
++	readFrozen := func(id string) (*model.SmartBlockSnapshotBase, map[string]json.RawMessage) {
++		t.Helper()
++		object := originals[id]
++		require.NotNil(t, object)
++		base := new(model.SmartBlockSnapshotBase)
++		require.NoError(t, proto.Unmarshal(object.SnapshotBase(), base))
++		raw, readErr := object.JSONView()
++		require.NoError(t, readErr)
++		var view struct {
++			Snapshot struct {
++				Details map[string]json.RawMessage `json:"details"`
++			}
++		}
++		require.NoError(t, json.Unmarshal(raw, &view))
++		require.NotNil(t, base.Details)
++		require.NotNil(t, view.Snapshot.Details)
++		return base, view.Snapshot.Details
++	}
++	propertyBase, propertyView := readFrozen(propertyID)
++	require.Equal(t, model.SmartBlockType_STRelation, originals[propertyID].Type())
++	require.True(t, proto.Equal(domain.String(nativeDefault).ToProto(),
++		propertyBase.Details.Fields[bundle.RelationKeyRelationDefaultValue.String()]))
++	var recoveredDefault string
++	require.NoError(t, json.Unmarshal(propertyView[bundle.RelationKeyRelationDefaultValue.String()], &recoveredDefault))
++	require.Equal(t, nativeDefault, recoveredDefault)
++	identities := map[string]bool{propertyID: true, typeID: true}
++	for _, item := range observations {
++		require.False(t, identities[item.ID])
++		identities[item.ID] = true
++		base, view := readFrozen(item.ID)
++		require.Equal(t, model.SmartBlockType_Page, originals[item.ID].Type())
++		require.Equal(t, []string{typeKey.URL()}, base.ObjectTypes)
++		actual, present := base.Details.Fields[propertyKey.String()]
++		require.Equal(t, item.Present, present, item.Path+"/"+item.Case)
++		jsonValue, jsonPresent := view[propertyKey.String()]
++		require.Equal(t, item.Present, jsonPresent, item.Path+"/"+item.Case)
++		if item.Present {
++			require.True(t, proto.Equal(domain.String(item.Value).ToProto(), actual))
++			var value string
++			require.NoError(t, json.Unmarshal(jsonValue, &value))
++			require.Equal(t, item.Value, value)
++		}
++	}
++	require.Len(t, identities, 8)
++	count := loadedSnapshotJSONViews(t, captured)
++	manifestRaw, err := os.ReadFile(filepath.Join(captured.PrivateBundleDirectory(), "manifest.json"))
++	require.NoError(t, err)
++	f.privateNote(t, "native-default-current-state", map[string]any{
++		"contract":        "pinkha-native-default-current-state-observation-v1",
++		"sourceAccountID": f.account.Id, "sourceSpaceID": f.space.Id(), "sourceReceipt": receipt,
++		"propertyObjectID": propertyID, "propertyKey": propertyKey.String(), "typeObjectID": typeID,
++		"observations": observations, "originalSourceManifestSHA256": loadedFixtureHash(manifestRaw),
++		"capturedObjects": count, "absenceAndExplicitEmptyRemainDistinct": true,
++		"nonNullDefinitionDefaultRetained": true, "templateSelectionValidated": false,
++		"futureClientCreationSemanticsValidated": false, "wholeSpaceSemanticMigrationComplete": false,
++	})
++	t.Logf("NATIVE_DEFAULT_CURRENT_STATE ordinary_without_template=3 from_state=3 absent_empty_value_distinct=true exact_definition_default_retained=true original_snapshots=%d future_client_and_template_behavior=false", count)
++}
+diff --git a/core/application/loaded_source_checkpoint.go b/core/application/loaded_source_checkpoint.go
+new file mode 100644
+index 000000000..3c16df624
+--- /dev/null
++++ b/core/application/loaded_source_checkpoint.go
+@@ -0,0 +1,79 @@
++//go:build pinkha_loaded_account_witness
++
++package application
++
++import (
++	"context"
++	"reflect"
++
++	"github.com/anyproto/anytype-heart/core/pinkha/localstorewitness"
++)
++
++// LoadedAccountSourceCheckpoint contains only immutable native receipt
++// metadata. Only a completed real capture can construct a usable checkpoint;
++// it is not deserialized from a caller's JSON or a retained source directory.
++type LoadedAccountSourceCheckpoint struct {
++	accountID string
++	spaceID   string
++	source    LoadedAccountWitnessReceipt
++	inventory localstorewitness.NativeTreeInventoryReceipt
++	complete  bool
++}
++
++// SourceCheckpoint drops all source rows, snapshots and file buffers. Keeping
++// this small value alive does not keep the captured Space in native memory.
++func (w *LoadedAccountSpaceWitness) SourceCheckpoint() (*LoadedAccountSourceCheckpoint, error) {
++	if w == nil || !w.complete || w.source == nil || w.inventory == nil {
++		return nil, ErrLoadedAccountSpaceWitness
++	}
++	receipt, err := w.Receipt()
++	if err != nil {
++		return nil, err
++	}
++	if !receipt.AccountSessionAuthorizedAtFinalCapture ||
++		!receipt.CapturedSnapshotsBoundToUnchangedCheckpoint ||
++		!receipt.AllNativeHeadRowsAccounted {
++		return nil, ErrLoadedAccountSpaceWitness
++	}
++	return &LoadedAccountSourceCheckpoint{
++		accountID: w.source.accountID, spaceID: w.inventory.SpaceID(),
++		source: receipt.Source, inventory: receipt.Inventory, complete: true,
++	}, nil
++}
++
++// RevalidateLoadedAccountSource performs a new real account/session/ACL/native
++// read. It compares the original receipt's exact owner, directory, generation,
++// opaque row witness and tree inventory. A detached checkpoint never supplies
++// authorization, and success here supplies no semantic or destination permit.
++// This is a point-in-time native read, not a lock held across another engine.
++func (s *Service) RevalidateLoadedAccountSource(ctx context.Context, token string, expected *LoadedAccountSourceCheckpoint) error {
++	if s == nil || ctx == nil || expected == nil || !expected.complete ||
++		expected.accountID == "" || expected.spaceID == "" {
++		return ErrLoadedAccountSpaceWitness
++	}
++	current, err := s.CaptureLoadedAccountWitness(ctx, token, LoadedAccountWitnessRequest{
++		AccountID: expected.accountID, SpaceID: expected.spaceID, Limits: localstorewitness.DefaultLimits(),
++	})
++	if err != nil {
++		return err
++	}
++	source, err := current.Receipt()
++	if err != nil {
++		return err
++	}
++	inventory, err := current.PrivateWitness().NativeTreeIdentities(ctx)
++	if err != nil {
++		return err
++	}
++	receipt, err := inventory.Receipt()
++	if err != nil {
++		return err
++	}
++	if err := ctx.Err(); err != nil {
++		return err
++	}
++	if !reflect.DeepEqual(expected.source, source) || !reflect.DeepEqual(expected.inventory, receipt) {
++		return loadedAccountSpaceWitnessCheckpointChangedError{}
++	}
++	return nil
++}
+diff --git a/core/application/loaded_source_checkpoint_test.go b/core/application/loaded_source_checkpoint_test.go
+new file mode 100644
+index 000000000..a59b8eb8e
+--- /dev/null
++++ b/core/application/loaded_source_checkpoint_test.go
+@@ -0,0 +1,59 @@
++//go:build pinkha_loaded_account_witness && pinkha_loaded_account_witness_acceptance
++
++package application
++
++import (
++	"context"
++	"fmt"
++	"testing"
++
++	"github.com/stretchr/testify/require"
++
++	"github.com/anyproto/anytype-heart/pb"
++)
++
++func TestLoadedAccountSourceCheckpointRequiresCurrentNativeSessionAndUnchangedRows(t *testing.T) {
++	f := newLoadedAccountFixture(t)
++	loadedObjectFixturePage(t, f, "Source checkpoint original — מקור", false)
++	loadedSpaceFixtureWarm(t, f)
++	captured, err := loadedCaptureFreshAttempts(f.ctx, func() (*LoadedAccountSpaceWitness, error) {
++		return f.service.CaptureLoadedAccountSpaceWitness(f.ctx, f.token, loadedSpaceRequest(f))
++	}, func(note loadedNativeCaptureAttempt) {
++		f.privateNote(t, fmt.Sprintf("checkpoint-capture-attempt-%d", note.Attempt), map[string]any{"attempt": note})
++	})
++	require.NoError(t, err)
++	checkpoint, err := captured.SourceCheckpoint()
++	require.NoError(t, err)
++	require.NoError(t, f.service.RevalidateLoadedAccountSource(f.ctx, f.token, checkpoint))
++
++	require.Error(t, f.service.RevalidateLoadedAccountSource(f.ctx, f.token, nil))
++	require.Error(t, f.service.RevalidateLoadedAccountSource(f.ctx, f.token, new(LoadedAccountSourceCheckpoint)))
++	require.ErrorIs(t, f.service.RevalidateLoadedAccountSource(f.ctx, "unregistered-native-session", checkpoint), ErrLoadedAccountWitnessSession)
++	cancelled, cancel := context.WithCancel(f.ctx)
++	cancel()
++	require.ErrorIs(t, f.service.RevalidateLoadedAccountSource(cancelled, f.token, checkpoint), context.Canceled)
++
++	originalToken := f.token
++	require.NoError(t, f.service.CloseSession(&pb.RpcWalletCloseSessionRequest{Token: originalToken}))
++	require.ErrorIs(t, f.service.RevalidateLoadedAccountSource(f.ctx, originalToken, checkpoint), ErrLoadedAccountWitnessSession)
++	f.token = f.newFullSession(t)
++	require.NoError(t, f.service.RevalidateLoadedAccountSource(f.ctx, f.token, checkpoint),
++		"Actual new native authorization must be checked; the detached checkpoint grants none")
++
++	loadedObjectFixturePage(t, f, "Source changed after capture — שינוי", false)
++	require.ErrorIs(t, f.service.RevalidateLoadedAccountSource(f.ctx, f.token, checkpoint),
++		ErrLoadedAccountSpaceWitnessCheckpointChanged)
++	receipt, err := captured.Receipt()
++	require.NoError(t, err)
++	require.False(t, receipt.HasNativeSourceAdmission)
++	require.False(t, receipt.PermitsDestinationWrites)
++	f.privateNote(t, "current-source-checkpoint-result", map[string]any{
++		"contract":                    "pinkha-current-source-checkpoint-native-observation-v1",
++		"realUnchangedSourceAccepted": true, "nilAndZeroRefused": true,
++		"unregisteredAndNormallyRevokedSessionsRefused": true,
++		"cancelledReadRefused":                          true, "freshFullSessionActuallyRevalidated": true,
++		"nativeSourceChangeRefused": true, "permitsDestinationWrites": false,
++		"freshProcessRestoreValidated": false, "wholeSpaceMigrationComplete": false,
++	})
++	t.Log("NATIVE_SOURCE_REVALIDATION actual_unchanged_source=true native_session_revoke=true fresh_authorized_session=true changed_native_source_refused=true destination_admission=false")
++}
+diff --git a/core/pinkha_native_source_capture.go b/core/pinkha_native_source_capture.go
+index 6930c8744..e990cf47d 100644
+--- a/core/pinkha_native_source_capture.go
++++ b/core/pinkha_native_source_capture.go
+@@ -81,7 +81,7 @@ func (mw *Middleware) PinkhaCaptureLoadedAccountSource(ctx context.Context, toke
+ 	if err := ctx.Err(); err != nil {
+ 		return nil, err
+ 	}
+-	return json.Marshal(pinkhaNativeSourceCaptureDescriptor{
++	rawDescriptor, err := json.Marshal(pinkhaNativeSourceCaptureDescriptor{
+ 		Contract: "pinkha-native-source-capture-v1", RequestID: requestID,
+ 		SourceAccountID: accountID, SourceSpaceID: spaceID,
+ 		PrivateBundleDirectory: directory, ManifestSHA256: digest,
+@@ -94,4 +94,19 @@ func (mw *Middleware) PinkhaCaptureLoadedAccountSource(ctx context.Context, toke
+ 		OriginalNativeHistoryRowsRetained:  receipt.OriginalNativeHistoryRowsRetained,
+ 		PermitsDestinationWrites:           false,
+ 	})
++	if err != nil {
++		return nil, err
++	}
++	checkpoint, err := captured.SourceCheckpoint()
++	if err != nil {
++		return nil, err
++	}
++	if err := pinkhaCapturedSources.Put(token, requestID, digest, checkpoint); err != nil {
++		return nil, err
++	}
++	if err := ctx.Err(); err != nil {
++		pinkhaCapturedSources.Forget(token, requestID)
++		return nil, err
++	}
++	return rawDescriptor, nil
+ }
+diff --git a/core/pinkha_native_source_checkpoint.go b/core/pinkha_native_source_checkpoint.go
+new file mode 100644
+index 000000000..e430eb7e3
+--- /dev/null
++++ b/core/pinkha_native_source_checkpoint.go
+@@ -0,0 +1,47 @@
++//go:build pinkha_loaded_account_witness
++
++package core
++
++import (
++	"context"
++	"time"
++
++	"github.com/anyproto/anytype-heart/core/application"
++	"github.com/anyproto/anytype-heart/pkg/lib/pinkha/capturecontrol"
++)
++
++var pinkhaCapturedSources = capturecontrol.NewBindings[*application.LoadedAccountSourceCheckpoint](32, 2*time.Hour)
++
++// PinkhaValidateLoadedAccountSourceCapture reauthorizes the original native
++// capture using a fresh real session/ACL/checkpoint read. JSON cannot mint its
++// in-memory native binding; another boot requires a new actual capture.
++func (mw *Middleware) PinkhaValidateLoadedAccountSourceCapture(ctx context.Context, token, requestID, manifestSHA256 string) error {
++	if mw == nil || mw.applicationService == nil || ctx == nil {
++		return capturecontrol.ErrCaptureBinding
++	}
++	original, err := pinkhaCapturedSources.Get(token, requestID, manifestSHA256)
++	if err != nil {
++		return err
++	}
++	if err := mw.applicationService.RevalidateLoadedAccountSource(ctx, token, original); err != nil {
++		return err
++	}
++	if err := ctx.Err(); err != nil {
++		return err
++	}
++	current, err := pinkhaCapturedSources.Get(token, requestID, manifestSHA256)
++	if err != nil {
++		return err
++	}
++	if current != original {
++		return capturecontrol.ErrCaptureBinding
++	}
++	return nil
++}
++
++func (mw *Middleware) PinkhaReleaseLoadedAccountSourceCapture(token, requestID string) bool {
++	if mw == nil || mw.applicationService == nil {
++		return false
++	}
++	return pinkhaCapturedSources.Forget(token, requestID)
++}
+diff --git a/pkg/lib/pinkha/capturecontrol/bindings.go b/pkg/lib/pinkha/capturecontrol/bindings.go
+new file mode 100644
+index 000000000..6fbbee6ad
+--- /dev/null
++++ b/pkg/lib/pinkha/capturecontrol/bindings.go
+@@ -0,0 +1,126 @@
++package capturecontrol
++
++import (
++	"crypto/sha256"
++	"crypto/subtle"
++	"errors"
++	"sync"
++	"time"
++)
++
++var ErrCaptureBinding = errors.New("original native source capture binding required")
++
++// Bindings retains only the caller's small immutable native metadata. It never
++// accepts a source authorization claim from transported JSON. T is supplied by
++// the native owner; this registry merely binds its lifetime to token/id/digest.
++type Bindings[T any] struct {
++	mu       sync.Mutex
++	values   map[string]binding[T]
++	limit    int
++	lifetime time.Duration
++	now      func() time.Time
++}
++type binding[T any] struct {
++	token   [32]byte
++	digest  string
++	value   T
++	expires time.Time
++}
++
++func NewBindings[T any](limit int, lifetime time.Duration) *Bindings[T] {
++	if limit < 1 || limit > 64 || lifetime <= 0 || lifetime > 2*time.Hour {
++		panic("invalid source capture binding bounds")
++	}
++	return &Bindings[T]{values: make(map[string]binding[T]), limit: limit, lifetime: lifetime, now: time.Now}
++}
++
++func validBinding(token, requestID, digest string) bool {
++	if len(token) == 0 || len(token) > 16<<10 || !ValidRequestID(requestID) || len(digest) != 64 {
++		return false
++	}
++	for _, c := range []byte(digest) {
++		if !(c >= '0' && c <= '9' || c >= 'a' && c <= 'f') {
++			return false
++		}
++	}
++	return true
++}
++
++func (b *Bindings[T]) prune(now time.Time) {
++	for id, value := range b.values {
++		if !now.Before(value.expires) {
++			delete(b.values, id)
++		}
++	}
++}
++
++// Put never replaces a live original, even with the same token and bytes.
++func (b *Bindings[T]) Put(token, requestID, digest string, value T) error {
++	if !validBinding(token, requestID, digest) {
++		return ErrCaptureBinding
++	}
++	b.mu.Lock()
++	defer b.mu.Unlock()
++	now := b.now()
++	b.prune(now)
++	if _, exists := b.values[requestID]; exists || len(b.values) >= b.limit {
++		return ErrCaptureBinding
++	}
++	b.values[requestID] = binding[T]{token: sha256.Sum256([]byte(token)), digest: digest,
++		value: value, expires: now.Add(b.lifetime)}
++	return nil
++}
++
++func (b *Bindings[T]) Get(token, requestID, digest string) (T, error) {
++	var zero T
++	if !validBinding(token, requestID, digest) {
++		return zero, ErrCaptureBinding
++	}
++	b.mu.Lock()
++	defer b.mu.Unlock()
++	b.prune(b.now())
++	value, found := b.values[requestID]
++	hash := sha256.Sum256([]byte(token))
++	if !found || subtle.ConstantTimeCompare(hash[:], value.token[:]) != 1 ||
++		subtle.ConstantTimeCompare([]byte(digest), []byte(value.digest)) != 1 {
++		return zero, ErrCaptureBinding
++	}
++	return value.value, nil
++}
++
++// Forget releases only metadata. Original private source files remain available
++// for the application's explicitly owned recovery/retention lifecycle.
++func (b *Bindings[T]) Forget(token, requestID string) bool {
++	if len(token) == 0 || len(token) > 16<<10 || !ValidRequestID(requestID) {
++		return false
++	}
++	b.mu.Lock()
++	defer b.mu.Unlock()
++	b.prune(b.now())
++	value, found := b.values[requestID]
++	hash := sha256.Sum256([]byte(token))
++	if !found || subtle.ConstantTimeCompare(hash[:], value.token[:]) != 1 {
++		return false
++	}
++	delete(b.values, requestID)
++	return true
++}
++
++// Active operations use disjoint fixed namespaces. A caller-chosen capture
++// request ID cannot alias another capture's in-flight verification.
++func CaptureRequestID(requestID string) string {
++	return operationRequestID("capture-", requestID)
++}
++func VerificationRequestID(requestID string) string {
++	return operationRequestID("verify-", requestID)
++}
++func operationRequestID(prefix, requestID string) string {
++	hash := sha256.Sum256([]byte(requestID))
++	const alphabet = "0123456789abcdef"
++	out := make([]byte, len(prefix)+64)
++	copy(out, prefix)
++	for i, value := range hash {
++		out[len(prefix)+i*2], out[len(prefix)+i*2+1] = alphabet[value>>4], alphabet[value&15]
++	}
++	return string(out)
++}
+diff --git a/pkg/lib/pinkha/capturecontrol/bindings_test.go b/pkg/lib/pinkha/capturecontrol/bindings_test.go
+new file mode 100644
+index 000000000..07dd1a70a
+--- /dev/null
++++ b/pkg/lib/pinkha/capturecontrol/bindings_test.go
+@@ -0,0 +1,110 @@
++package capturecontrol
++
++import (
++	"errors"
++	"strings"
++	"sync"
++	"testing"
++	"time"
++)
++
++func TestCaptureBindingRequiresOriginalTokenIdentityAndDigest(t *testing.T) {
++	b := NewBindings[*int](2, time.Minute)
++	value := 17
++	digest := strings.Repeat("a", 64)
++	if err := b.Put("original-token", "capture-one", digest, &value); err != nil {
++		t.Fatal(err)
++	}
++	for _, input := range [][3]string{
++		{"wrong-token", "capture-one", digest}, {"original-token", "other-capture", digest},
++		{"original-token", "capture-one", strings.Repeat("b", 64)},
++		{"original-token", "capture-one", strings.Repeat("A", 64)},
++	} {
++		if _, err := b.Get(input[0], input[1], input[2]); !errors.Is(err, ErrCaptureBinding) {
++			t.Fatal("unbound proof accepted")
++		}
++	}
++	if b.Forget("wrong-token", "capture-one") {
++		t.Fatal("foreign token removed original")
++	}
++	got, err := b.Get("original-token", "capture-one", digest)
++	if err != nil || got != &value {
++		t.Fatal("original binding lost")
++	}
++	if err := b.Put("original-token", "capture-one", digest, new(int)); !errors.Is(err, ErrCaptureBinding) {
++		t.Fatal("original capture replaced")
++	}
++	if !b.Forget("original-token", "capture-one") {
++		t.Fatal("original was not released")
++	}
++	if _, err := b.Get("original-token", "capture-one", digest); !errors.Is(err, ErrCaptureBinding) {
++		t.Fatal("released proof remained usable")
++	}
++}
++
++func TestCaptureBindingExpiresBoundsAndNeverPersistsAcrossRegistryRestart(t *testing.T) {
++	now := time.Unix(100, 0)
++	b := NewBindings[int](1, time.Minute)
++	b.now = func() time.Time { return now }
++	digest := strings.Repeat("f", 64)
++	if err := b.Put("token", "old", digest, 1); err != nil {
++		t.Fatal(err)
++	}
++	if err := b.Put("token", "new", digest, 2); !errors.Is(err, ErrCaptureBinding) {
++		t.Fatal("capacity not bounded")
++	}
++	now = now.Add(time.Minute)
++	if _, err := b.Get("token", "old", digest); !errors.Is(err, ErrCaptureBinding) {
++		t.Fatal("expired proof accepted")
++	}
++	if err := b.Put("token", "new", digest, 2); err != nil {
++		t.Fatal("expired capacity not released")
++	}
++	restarted := NewBindings[int](1, time.Minute)
++	if _, err := restarted.Get("token", "new", digest); !errors.Is(err, ErrCaptureBinding) {
++		t.Fatal("synthetic restart retained proof")
++	}
++	for _, input := range [][3]string{{"", "id", digest}, {"token", "../id", digest}, {"token", "id", ""}} {
++		if err := b.Put(input[0], input[1], input[2], 0); !errors.Is(err, ErrCaptureBinding) {
++			t.Fatal("invalid binding accepted")
++		}
++	}
++}
++
++func TestCaptureBindingConcurrentAccessAndVerificationIdentity(t *testing.T) {
++	b := NewBindings[int](1, time.Minute)
++	digest := strings.Repeat("a", 64)
++	if err := b.Put("token", "capture", digest, 7); err != nil {
++		t.Fatal(err)
++	}
++	var group sync.WaitGroup
++	for n := 0; n < 32; n++ {
++		group.Add(1)
++		go func() {
++			defer group.Done()
++			for step := 0; step < 16; step++ {
++				value, err := b.Get("token", "capture", digest)
++				if err != nil || value != 7 {
++					t.Error("stable original binding changed")
++				}
++				if b.Forget("foreign", "capture") {
++					t.Error("foreign release")
++				}
++			}
++		}()
++	}
++	group.Wait()
++	for _, id := range []string{"capture", strings.Repeat("z", 128)} {
++		actual := VerificationRequestID(id)
++		capture := CaptureRequestID(id)
++		if !ValidRequestID(capture) || capture == actual || CaptureRequestID(actual) == actual {
++			t.Fatal("capture/verification namespaces alias")
++		}
++		if !ValidRequestID(actual) || actual == id || actual != VerificationRequestID(id) {
++			t.Fatal("invalid verification identity")
++		}
++	}
++	if VerificationRequestID("first") == VerificationRequestID("second") {
++		t.Fatal("aliased verification identity")
++	}
++}
