@@ -70,6 +70,14 @@ extension CustomTextView: UITextViewDelegate {
         delegate?.didEndEditing()
     }
 
+    func textView(_ textView: UITextView, willPresentEditMenuWith animator: any UIEditMenuInteractionAnimating) {
+        (textView as? TextViewWithPlaceholder)?.editMenuWillPresent()
+    }
+
+    func textView(_ textView: UITextView, willDismissEditMenuWith animator: any UIEditMenuInteractionAnimating) {
+        (textView as? TextViewWithPlaceholder)?.editMenuWillDismiss(with: animator)
+    }
+
     func textView(_ textView: UITextView, editMenuForTextIn range: NSRange, suggestedActions: [UIMenuElement]) -> UIMenu? {
         // Keep only standard edit menu to avoid iOS 26 floating issue with "more" button
         let standardEdit = suggestedActions.first { ($0 as? UIMenu)?.identifier == .standardEdit }
