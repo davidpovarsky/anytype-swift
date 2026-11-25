@@ -132,6 +132,64 @@
         [
           "AnytypeOriginalEditorAccountSession",
           "prepareAnnotationImport(snapshot:sourceLifetime:sourceIsCurrent:onDrained:)"
+        ],
+        [
+          "AnytypeOriginalAnnotationImportHistory",
+          "verifiedNativeReceipt"
+        ],
+        [
+          "AnytypeOriginalAnnotationImportReceipt"
+        ],
+        [
+          "AnytypeOriginalAnnotationImportReceipt",
+          "ObjectMapping"
+        ],
+        [
+          "AnytypeOriginalAnnotationImportReceipt",
+          "ObjectMapping",
+          "sourceSpaceID"
+        ],
+        [
+          "AnytypeOriginalAnnotationImportReceipt",
+          "ObjectMapping",
+          "sourceObjectID"
+        ],
+        [
+          "AnytypeOriginalAnnotationImportReceipt",
+          "ObjectMapping",
+          "objectID"
+        ],
+        [
+          "AnytypeOriginalAnnotationImportReceipt",
+          "source"
+        ],
+        [
+          "AnytypeOriginalAnnotationImportReceipt",
+          "objectID"
+        ],
+        [
+          "AnytypeOriginalAnnotationImportReceipt",
+          "traceID"
+        ],
+        [
+          "AnytypeOriginalAnnotationImportReceipt",
+          "sourceArchiveSHA256"
+        ],
+        [
+          "AnytypeOriginalAnnotationImportReceipt",
+          "nativeArchiveSHA256"
+        ],
+        [
+          "AnytypeOriginalAnnotationImportReceipt",
+          "nativeResponseSHA256"
+        ],
+        [
+          "AnytypeOriginalAnnotationImportReceipt",
+          "objectMappings"
+        ],
+        [
+          "AnytypeOriginalAnnotationImportReceipt",
+          "nativeResponseBytes"
         ]
       ],
       "roots": [
@@ -140,7 +198,8 @@
         "AnytypeOriginalAnnotationImportSourceLifetime",
         "AnytypeOriginalAnnotationImportHistory",
         "AnytypeOriginalAnnotationImportAttempt",
-        "AnytypeOriginalEditorAccountSession"
+        "AnytypeOriginalEditorAccountSession",
+        "AnytypeOriginalAnnotationImportReceipt"
       ]
     },
     "OriginalEditorFramework/AnytypeOriginalEditorAccountSession.swift": {
@@ -349,6 +408,14 @@
         [
           "AnytypeOriginalEditorModule",
           "openLocalAnnotation(appGroup:sourceLifetime:body:sourceIsCurrent:)"
+        ],
+        [
+          "AnytypeOriginalEditorModule",
+          "suspendLocalAnnotationRuntime(appGroup:)"
+        ],
+        [
+          "AnytypeOriginalEditorModule",
+          "retrySuspendLocalAnnotationRuntime(appGroup:)"
         ]
       ],
       "roots": [
@@ -513,7 +580,8 @@
     "AnytypeOriginalAnnotationImportHistory",
     "AnytypeOriginalAnnotationImportAttempt",
     "AnytypeOriginalEditorLocalAnnotationCapture",
-    "AnytypeOriginalEditorLocalAnnotationSession"
+    "AnytypeOriginalEditorLocalAnnotationSession",
+    "AnytypeOriginalAnnotationImportReceipt"
   ],
   "schema": 2,
   "status": "COMPILE_SURFACE_CONTRACT_NATIVE_EDITOR_NOT_QUALIFIED"

@@ -112,8 +112,75 @@ public final class AnytypeOriginalAnnotationImportSourceLifetime {
     deinit { retire() }
 }
 
+/// A receipt for the actual native import and its same-operation readback.
+/// This is a LOCAL ENGINE COMMIT, not proof of delivery to another device or
+/// any-sync server. No public initializer or decoder can create one. Persisted
+/// receipt bytes remain historical data and never reconstruct account authority.
+public struct AnytypeOriginalAnnotationImportReceipt: Sendable {
+    public struct ObjectMapping: Sendable {
+        public let sourceSpaceID: String
+        public let sourceObjectID: String
+        public let objectID: String
+    }
+
+    public let source: AnytypeOriginalAnnotationImportSource
+    public let objectID: String
+    public let traceID: String
+    public let sourceArchiveSHA256: String
+    public let nativeArchiveSHA256: String
+    public let nativeResponseSHA256: String
+    public let objectMappings: [ObjectMapping]
+    /// Exact copied response from this genuine drained call, including mapping,
+    /// readback archive, original export report and unknown protobuf fields.
+    public let nativeResponseBytes: Data
+
+    @MainActor
+    fileprivate init(
+        actual: OriginalAnnotationImportCallHistory,
+        snapshot: AnytypeOriginalEditorSnapshot,
+        source: AnytypeOriginalAnnotationImportSource,
+        responseBytes: Data
+    ) throws {
+        guard actual.responseCopyError == nil, let response = actual.response,
+              source.namespace == "otzaria.local.annotation",
+              snapshot.provenance.annotationUUID == source.annotationUUID,
+              snapshot.provenance.capturedAgainstRevision < Int64.max,
+              snapshot.provenance.capturedAgainstRevision + 1 == source.savedRevision,
+              Self.sha256(snapshot.bodyBytes) == source.bodyDigest else {
+            throw AnytypeOriginalAnnotationImportError.savedBodyMismatch
+        }
+        let savedSource = try AnytypeOriginalEditorLocalAnnotationSource(
+            hostProfileID: snapshot.provenance.hostProfileID,
+            annotationUUID: source.annotationUUID,
+            expectedRevision: source.savedRevision,
+            sourceWitnessSHA256: source.sourceDigest,
+            payloadSHA256: source.payloadDigest
+        )
+        let nativeID = try OriginalEditorLocalAnnotationMaterialization.observedImport(
+            response, snapshot: snapshot, accountID: source.accountID,
+            targetSpaceID: source.spaceID, source: savedSource
+        )
+        self.source = source
+        objectID = nativeID
+        traceID = response.mapping.traceID
+        sourceArchiveSHA256 = snapshot.nativeArchiveSHA256
+        nativeArchiveSHA256 = Self.sha256(response.readback.nativeArchive)
+        nativeResponseSHA256 = Self.sha256(responseBytes)
+        nativeResponseBytes = responseBytes
+        objectMappings = response.mapping.sourceAssignments.map {
+            ObjectMapping(sourceSpaceID: $0.sourceSpaceID,
+                          sourceObjectID: $0.sourceObjectID, objectID: $0.nativeID)
+        }
+    }
+
+    private static func sha256(_ bytes: Data) -> String {
+        SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined()
+    }
+}
+
 /// Complete copied historical messages from the actual one-use original calls.
-/// There is no public initializer, decoder, destination mapping or ACK receipt.
+/// There is no public initializer, decoder or remote-delivery ACK. The optional
+/// local native receipt is created only from the actual verified readback.
 /// Serialized protobuf retains unknown fields; native wire ordering is not
 /// promised. A nil message is unobserved and never proves absence of effects.
 public struct AnytypeOriginalAnnotationImportHistory: Sendable {
@@ -131,8 +198,14 @@ public struct AnytypeOriginalAnnotationImportHistory: Sendable {
     public let cancellationResponseCopyError: CopyError?
     public let cancellationWasScheduled: Bool
     public let cancellationAwaitFailed: Bool
+    /// Present only after the actual complete native response passes the
+    /// original import/readback validator. It is not a remote-device ACK.
+    public let verifiedNativeReceipt: AnytypeOriginalAnnotationImportReceipt?
 
-    fileprivate init(_ actual: OriginalAnnotationImportCallHistory) {
+    @MainActor
+    fileprivate init(_ actual: OriginalAnnotationImportCallHistory,
+                     snapshot: AnytypeOriginalEditorSnapshot,
+                     source: AnytypeOriginalAnnotationImportSource) {
         let response = Self.copy(actual.response, failure: actual.responseCopyError)
         nativeResponseBytes = response.0
         nativeResponseCopyError = response.1
@@ -141,6 +214,12 @@ public struct AnytypeOriginalAnnotationImportHistory: Sendable {
         cancellationResponseCopyError = cancellation.1
         cancellationWasScheduled = actual.cancellationWasScheduled
         cancellationAwaitFailed = actual.cancellationAwaitFailed
+        if let bytes = response.0, response.1 == nil {
+            verifiedNativeReceipt = try? AnytypeOriginalAnnotationImportReceipt(
+                actual: actual, snapshot: snapshot, source: source, responseBytes: bytes)
+        } else {
+            verifiedNativeReceipt = nil
+        }
     }
 
     private static func copy<MessageType: Message & Sendable>(
@@ -172,16 +251,22 @@ public struct AnytypeOriginalAnnotationImportHistory: Sendable {
 @MainActor
 fileprivate final class OriginalAnnotationImportPublicDelivery {
     private(set) var history: AnytypeOriginalAnnotationImportHistory?
+    private let snapshot: AnytypeOriginalEditorSnapshot
+    private let source: AnytypeOriginalAnnotationImportSource
     private var deliver: (@MainActor @Sendable (AnytypeOriginalAnnotationImportHistory) -> Void)?
 
-    init(deliver: @escaping @MainActor @Sendable (AnytypeOriginalAnnotationImportHistory) -> Void) {
+    init(snapshot: AnytypeOriginalEditorSnapshot,
+         source: AnytypeOriginalAnnotationImportSource,
+         deliver: @escaping @MainActor @Sendable (AnytypeOriginalAnnotationImportHistory) -> Void) {
+        self.snapshot = snapshot
+        self.source = source
         self.deliver = deliver
     }
 
     func receive(_ actual: OriginalAnnotationImportCallHistory) {
         // The concrete original owner already closes its drain exactly once.
         guard history == nil else { return }
-        let observed = AnytypeOriginalAnnotationImportHistory(actual)
+        let observed = AnytypeOriginalAnnotationImportHistory(actual, snapshot: snapshot, source: source)
         history = observed
         let callback = deliver
         deliver = nil
@@ -276,20 +361,26 @@ extension AnytypeOriginalEditorAccountSession {
             let bodyDigest = SHA256.hash(data: snapshot.bodyBytes)
                 .map { String(format: "%02x", $0) }.joined()
             guard bodyDigest.utf8.elementsEqual(source.bodyDigest.utf8),
+                  source.namespace == "otzaria.local.annotation",
                   snapshot.provenance.annotationUUID == source.annotationUUID,
-                  snapshot.provenance.sourceWitnessSHA256.utf8.elementsEqual(source.sourceDigest.utf8) else {
+                  snapshot.provenance.capturedAgainstRevision < Int64.max,
+                  snapshot.provenance.capturedAgainstRevision + 1 == source.savedRevision else {
                 throw AnytypeOriginalAnnotationImportError.savedBodyMismatch
             }
-            // The framed capture's account/root/revision remain historical
-            // input. The actual selected target and saved-row revision above
-            // are separate; no historical revision is promoted into a live CAS.
+            // The snapshot records the PRE-SAVE witness. Host Save changes
+            // the row preview/modified time and commits the next revision, so
+            // comparing that historical digest with the post-save witness
+            // rejects legitimate saved notes. The frozen exact saved body and
+            // adjacent revision bind the archive; the captured Host lifetime
+            // below independently owns the current post-save row/source.
             let binding = try originalAnnotationImportSourceBinding(
                 lifetime: sourceLifetime.lifetime,
                 sourceIsCurrent: {
                     sourceLifetime.isCurrent && sourceIsCurrent(source)
                 }
             )
-            let delivery = OriginalAnnotationImportPublicDelivery(deliver: onDrained)
+            let delivery = OriginalAnnotationImportPublicDelivery(
+                snapshot: snapshot, source: source, deliver: onDrained)
             let original = try binding.prepareOriginalAnnotationImport(
                 selection: selection,
                 sourceSpaceID: snapshot.provenance.spaceID,

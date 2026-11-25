@@ -170,7 +170,7 @@ internal enum OriginalEditorLocalAnnotationMaterialization {
         }
     }
 
-    private static func observedImport(_ response: Anytype_Rpc.Annotation.Import.Response,
+    internal static func observedImport(_ response: Anytype_Rpc.Annotation.Import.Response,
                                        snapshot: AnytypeOriginalEditorSnapshot,
                                        accountID: String, targetSpaceID: String,
                                        source: AnytypeOriginalEditorLocalAnnotationSource) throws -> String {

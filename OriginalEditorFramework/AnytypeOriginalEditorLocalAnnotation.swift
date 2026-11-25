@@ -53,7 +53,7 @@ public enum AnytypeOriginalEditorLocalAnnotationError: Error, Sendable, Equatabl
     case missingCredential, uncertainNativeOperation, unavailableAccount
     case unavailableSpace, unobservedSchema, wrongNativeIdentity
     case invalidNativeImport, overlappingSession, alreadyMounted, captureAlreadyAttempted
-    case invalidPreview, storageFailure(Int32)
+    case invalidPreview, storageFailure(Int32), closeRequiresExplicitRetry
 }
 
 /// Bind this one-use token to the original Host DB/session/presentation lifetimes
@@ -123,6 +123,20 @@ public final class AnytypeOriginalEditorLocalAnnotationSession {
 }
 
 extension AnytypeOriginalEditorModule {
+    /// Close every mounted local editor first. This joins the genuine native
+    /// AccountStop and event/subscription drain before releasing the process to
+    /// an explicit original account presentation. Private drafts remain localOnly.
+    @MainActor
+    public static func suspendLocalAnnotationRuntime(appGroup: String) async throws {
+        try await OriginalEditorLocalAnnotationRuntime.suspend(appGroup: appGroup, retrying: false)
+    }
+
+    /// Retry only the retained failed Stop; never recreate or replace its owner.
+    @MainActor
+    public static func retrySuspendLocalAnnotationRuntime(appGroup: String) async throws {
+        try await OriginalEditorLocalAnnotationRuntime.suspend(appGroup: appGroup, retrying: true)
+    }
+
     /// Opens only an app-owned localOnly draft, reconstructed from the captured
     /// canonical row. No caller-selected account, Space, object or path is accepted.
     /// This is local editing only: it creates neither a remote destination nor
