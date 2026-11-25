@@ -70,7 +70,7 @@ def retain(run_root, root, expected_execution_sha256, controller, expected_contr
             "Fresh separate private backup directory required")
     require(run_root == base / "native-ui-archive-5c-close1"
             and expected_execution_sha256 == "733b210f79f5b31cb07772e104f6dfd43285d0e11dd818346fa28eb537131d94"
-            and controller == base / "native-ui-controller-59f3/Tools/PinkhaDualEngineRuntime/run_prebuilt_native_ui.py"
+            and controller == base / "run-native-ui-59f3.py"
             and expected_controller_sha256 == "4d90f8e4ee2ec17c886befbe211c01a47af52f1e568ad2dd4ecd4123cecbfb1f",
             "Only the separately reviewed actual Archive5c execution is admitted")
     execution_path = run_root / "receipt.json"
