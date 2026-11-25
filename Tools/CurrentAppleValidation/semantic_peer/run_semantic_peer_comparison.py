@@ -65,6 +65,7 @@ def main():
     assert sha(swift_root / "probe-build1/source-before.json") == swift_receipt["sourceManifestSHA256"]
     assert regular_bytes(swift_root / "probe-build1/source-before.json") == regular_bytes(swift_root / "probe-build1/source-after.json")
     def verify_sources():
+        assert sha(args.nodeconf) == args.nodeconf_sha256, "original public network configuration changed"
         for name, expected in native_manifest["sourceBefore"].items():
             assert not Path(name).is_absolute() and ".." not in Path(name).parts
             assert sha(native_root / "source" / name) == expected, "original native source changed"
@@ -104,6 +105,8 @@ def main():
     }
     started = time.monotonic()
     processes = []
+    auxiliary_processes = []
+    absent_groups = set()
     streams = []
     phase = "preflight"
     minimum_free = shutil.disk_usage(args.output).free
@@ -163,7 +166,22 @@ def main():
             listener.bind(("127.0.0.1", 0))
             return listener.getsockname()[1]
 
+    def observe_owned_group(group):
+        # No global ps listing, and no re-probe of a historical ID already
+        # observed absent. killpg(..., 0) is an observation, never a signal.
+        if group in absent_groups:
+            return True
+        try:
+            os.killpg(group, 0)
+        except ProcessLookupError:
+            absent_groups.add(group)
+            return True
+        except PermissionError:
+            raise RuntimeError("owned group observation denied")
+        return False
+
     def start_peer(name, data_dir, initialize=False, sandbox_profile=None):
+        assert sha(args.nodeconf) == args.nodeconf_sha256, "public nodeconf changed before native start"
         data_dir.mkdir(mode=0o700, exist_ok=True)
         cfg = data_dir / "config.yaml"
         if initialize:
@@ -175,9 +193,11 @@ def main():
         if initialize:
             init_path = logdir / (name + "-init.log")
             with init_path.open("wb") as log:
-                initialized = subprocess.run([str(args.binary), "init", "--config", str(cfg), "--data-dir", str(data_dir)],
-                    env=env, stdout=log, stderr=subprocess.STDOUT, timeout=60)
-            assert initialized.returncode == 0, name + " native account init failed (private log retained)"
+                initialized = subprocess.Popen([str(args.binary), "init", "--config", str(cfg), "--data-dir", str(data_dir)],
+                    env=env, stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
+                auxiliary_processes.append(initialized)
+                initialized.wait(timeout=60)
+            assert initialized.returncode == 0 and observe_owned_group(initialized.pid), name + " native account init did not exit cleanly"
         port = free_port()
         addr = "127.0.0.1:" + str(port)
         command = [str(args.binary), "run", "--config", str(cfg), "--data-dir", str(data_dir), "--addr", addr]
@@ -213,8 +233,9 @@ def main():
                 os.killpg(proc.pid, signal.SIGKILL)
                 proc.wait(timeout=5)
         peer["info"].update({"exit_code": proc.returncode, "forced_kill": forced})
+        peer["info"]["ownedGroupAbsentAtExit"] = observe_owned_group(proc.pid)
         save()
-        return not forced and proc.returncode == 0
+        return not forced and proc.returncode == 0 and peer["info"]["ownedGroupAbsentAtExit"]
 
     def public_peer_status(peer, space_id):
         value = json_request(peer, "GET", "/v1/debug/p2p")
@@ -257,10 +278,12 @@ def main():
                     raise RuntimeError("bounded shared native probe timeout; private evidence retained")
                 time.sleep(0.2)
             row["exitCode"] = proc.returncode
+            row["ownedGroupAbsentAtExit"] = observe_owned_group(proc.pid)
         original = regular_bytes(logdir / (name + ".log"), 1024**2)
         row["originalLogSHA256"] = hashlib.sha256(original).hexdigest()
         row["originalLogBytes"] = len(original)
         save()
+        assert row["ownedGroupAbsentAtExit"], "shared probe left an owned descendant"
         if proc.returncode != 0:
             if allow_pending:
                 return False
@@ -414,34 +437,67 @@ def main():
         result["all_scoped_checks_passed"] = False
     finally:
         cleanup_errors = []
-        for proc in probe_processes:
-            if proc.poll() is None:
-                os.killpg(proc.pid, signal.SIGTERM)
-                try: proc.wait(timeout=10)
-                except subprocess.TimeoutExpired:
-                    os.killpg(proc.pid, signal.SIGKILL)
-                    proc.wait(timeout=5)
-                    cleanup_errors.append("shared probe required forced kill")
+        for proc in auxiliary_processes + probe_processes:
+            try:
+                if proc.poll() is None:
+                    os.killpg(proc.pid, signal.SIGTERM)
+                    try: proc.wait(timeout=10)
+                    except subprocess.TimeoutExpired:
+                        os.killpg(proc.pid, signal.SIGKILL)
+                        proc.wait(timeout=5)
+                        cleanup_errors.append("shared probe or native init required forced kill")
+            except Exception as error:
+                cleanup_errors.append("owned auxiliary cleanup: " + type(error).__name__)
         for peer in processes:
-            if peer["process"].poll() is None and not stop_peer(peer):
-                cleanup_errors.append("native peer did not close cleanly")
-        live = subprocess.run(["ps", "-axo", "pid,pgid,command"], capture_output=True, text=True).stdout
-        owned = {p.pid for p in probe_processes} | {p["process"].pid for p in processes}
-        lingering = [line for line in live.splitlines() if len(line.split()) > 1 and line.split()[1].isdigit()
-                     and int(line.split()[1]) in owned]
-        if lingering: cleanup_errors.append("owned process group remains; no historical group signalled")
+            try:
+                if peer["process"].poll() is None and not stop_peer(peer):
+                    cleanup_errors.append("native peer did not close cleanly")
+            except Exception as error:
+                cleanup_errors.append("owned native peer cleanup: " + type(error).__name__)
+        owned = {p.pid for p in auxiliary_processes + probe_processes} | {p["process"].pid for p in processes}
+        observations = []
+        for group in sorted(owned):
+            try:
+                known_absent = group in absent_groups
+                absent = observe_owned_group(group)
+                observations.append({"pgid": group, "absent": absent, "historicalGroupReprobed": not known_absent})
+                if not absent:
+                    cleanup_errors.append("owned group remains; historical ID not signalled")
+            except Exception as error:
+                observations.append({"pgid": group, "absent": False, "error": type(error).__name__})
+                cleanup_errors.append("owned group observation: " + type(error).__name__)
+        for stream in streams:
+            try: stream.close()
+            except Exception as error:
+                cleanup_errors.append("private log close: " + type(error).__name__)
+        result["private_log_receipts"] = []
+        try:
+            log_paths = sorted(logdir.iterdir())
+        except Exception as error:
+            log_paths = []
+            cleanup_errors.append("private log inventory: " + type(error).__name__)
+        for p in log_paths:
+            try:
+                result["private_log_receipts"].append({"name": p.name, "bytes": p.stat().st_size, "sha256": sha(p)})
+            except Exception as error:
+                cleanup_errors.append("private log receipt: " + type(error).__name__)
+        try:
+            assert sha(args.nodeconf) == args.nodeconf_sha256, "nodeconf changed before final retention"
+        except Exception as error:
+            cleanup_errors.append("final network config verification: " + type(error).__name__)
         result["cleanup"] = {"status": "PASS" if not cleanup_errors else "FAIL", "errors": cleanup_errors,
-            "allOwnedProcessGroupsAbsent": not lingering, "accountsDeleted": False}
+            "allOwnedProcessGroupsAbsent": all(row["absent"] for row in observations),
+            "groupObservations": observations, "accountsDeleted": False}
         if cleanup_errors:
             result["result"] = "FAIL"
             result["all_scoped_checks_passed"] = False
-        for stream in streams:
-            stream.close()
-        result["private_log_receipts"] = [
-            {"name": p.name, "bytes": p.stat().st_size, "sha256": sha(p)}
-            for p in sorted(logdir.iterdir()) if p.is_file()
-        ]
-        save()
+        try:
+            save()
+        except Exception as error:
+            result["result"] = "FAIL"
+            result["all_scoped_checks_passed"] = False
+            result["terminalReceiptWriteError"] = type(error).__name__
+            print(json.dumps({"result": "FAIL", "terminalReceiptWriteError": type(error).__name__}), flush=True)
     print(json.dumps({k: result[k] for k in ("result", "all_scoped_checks_passed", "scope", "seconds", "minimum_free_bytes",
                                            "cloud_custody_accepted", "whole_space_migration_accepted")}, ensure_ascii=False))
     if result.get("failed_phase"):
