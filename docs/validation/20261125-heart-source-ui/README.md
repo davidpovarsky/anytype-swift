@@ -67,3 +67,11 @@ Original private/full evidence roots:
 These are local owned Sentinel executions, not GitHub Actions runs. Original build stdout is preserved byte-for-byte, including compiler formatting; it is excluded only from whitespace lint.
 
 The existing native bridge, independent peer files/cold offline reopen, prepared destination, default semantics, semantic-anchor/Torah migration, and captured Pinkha source schema qualifications remain separately valid at their exact source scopes. None establishes complete migration of the original156-object space. Actual source UI capture, full supported mappings, native full-space comparison and subsequent reopen remain required.
+
+## Separate unified Hanlin account custody
+
+The original D Hanlin UI run on source6f1194f9 completed independently with its own receipt0828bfe9986709194a6bdd36969f41d7a2fd154a2c5079e588fbde7524b8a2c0. At D's explicit handoff, C saved that actual Shutdown account through the separately qualified D admission in Tools/CurrentAppleValidation/retention/retain_unified_ui_account.py (source927cc6ce).
+
+The helper binds the original create UUID/name/runtime/type, successful native-sandbox path and shutdown commands, source/main/UI receipts, and exact original execution/controller digests. Its six pure/lifecycle functions have identical ASTs to the previously qualified E retainer; its complete copy/post-copy body is byte-identical except for the explicit new protocol name. It does not reinterpret E's source fixture or modify D's originals.
+
+The actual four-scope backup passed in4.842 seconds with no boot, app launch, native call or new test. Retention SHA256 e6346465fb0784e4f9819ea062b26fa6e03360b990c42a0dd7c2b6002cc3dee2, admission SHA256 6b789266fc61c720f66d16cc3b14b89022eb478641c9ff1ce4cb1d78571e182e, and retained device.plist SHA256 437927fd7ae7bd5d2dd784828cc9fdc9d017dc0a38f01635b2b000a138d88dd2 are recorded under unified-hanlin-account-backup. Six actual lifecycle checks confirmed the same owned Shutdown device/root/plist identities across all copies. This is backup evidence, not another Hanlin method or C migration acceptance.
