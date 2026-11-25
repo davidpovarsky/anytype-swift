@@ -191,7 +191,10 @@ def verify_generated_source(root, profile):
     trees = {path: git(root, "rev-parse", "HEAD:" + path).decode().strip() for path in PRODUCTS}
     historical_trees = {path: git(root, "rev-parse", LOCAL_ANNOTATION_SOURCE + ":" + path).decode().strip()
                         for path in PRODUCTS}
-    from additive_facade_source import observe as observe_additive_facade
+    if profile.get("annotation_lifecycle_source_adoption") is not None:
+        from lifecycle_facade_source import observe as observe_additive_facade
+    else:
+        from additive_facade_source import observe as observe_additive_facade
     additive_facade = observe_additive_facade(root, profile, historical_trees)
     admitted_trees = additive_facade["reviewed_product_trees"] if additive_facade else historical_trees
     require(trees == admitted_trees, "Reviewed local annotation product tree differs")
