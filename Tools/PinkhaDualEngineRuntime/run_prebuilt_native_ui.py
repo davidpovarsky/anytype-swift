@@ -204,6 +204,7 @@ def main():
     parser.add_argument("--ui-build", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--stage", choices=tuple(STAGES), required=True)
+    parser.add_argument("--frozen-inputs", type=Path)
     args = parser.parse_args()
     for path in (args.main_root, args.main_evidence, args.ui_build, args.output):
         require(path.is_absolute() and path.resolve() == path, "canonical_absolute_path_required")
@@ -213,7 +214,12 @@ def main():
     args.output.mkdir(mode=0o700)
     os.umask(0o077)
     out = args.output
-    source = args.main_root / "source"
+    if args.frozen_inputs is not None:
+        require(args.frozen_inputs.is_absolute()
+                and args.frozen_inputs.resolve() == args.frozen_inputs
+                and args.main_root in args.frozen_inputs.parents,
+                "owned_canonical_frozen_inputs_required")
+    source = (args.frozen_inputs or args.main_root) / "source"
     receipt = {"status": "FAIL", "stage": args.stage, "applicationBuilds": 0,
                "nativeLibraryBuilds": 0, "uiRunnerBuilds": 0, "testsExecuted": 0}
     udid = None
@@ -236,6 +242,14 @@ def main():
                 and ui_record["testsExecuted"] == 0
                 and ui_record.get("mainReceiptSHA256") == digest(args.main_evidence / "receipt.json"),
                 "same_source_exact_main_receipt_ui_runner_build_required")
+        if args.frozen_inputs is not None:
+            frozen = json.loads((args.frozen_inputs / "receipt.json").read_bytes())
+            require(frozen.get("status") == "PASS_EXACT_FROZEN_NATIVE_UI_INPUTS"
+                    and frozen.get("sourceCommit") == main_record["sourceCommit"]
+                    and frozen.get("mainReceiptSHA256") == digest(args.main_evidence / "receipt.json")
+                    and frozen.get("uiReceiptSHA256") == digest(args.ui_build / "receipt.json"),
+                    "exact_frozen_source_and_product_provenance_required")
+            receipt["frozenInputReceiptSHA256"] = digest(args.frozen_inputs / "receipt.json")
         before = json.loads((args.main_evidence / "source-before.json").read_bytes())
         require(before == json.loads((args.main_evidence / "source-after.json").read_bytes()),
                 "unchanged_built_source_required")
@@ -248,7 +262,8 @@ def main():
         require(digest(all_products) == main_record["completeProductsInventory"]["sha256"],
                 "original_product_inventory_changed")
         original_products = json.loads(all_products.read_bytes())["app-derived"]
-        app_original = Path(original_products["base"]) / "Debug-Anytype-iphonesimulator/Anytype.app"
+        app_original = (args.frozen_inputs / "Anytype.app" if args.frozen_inputs is not None else
+                        Path(original_products["base"]) / "Debug-Anytype-iphonesimulator/Anytype.app")
         prefix = "Debug-Anytype-iphonesimulator/Anytype.app/"
         original_app_inventory = []
         for row in original_products["entries"]:
