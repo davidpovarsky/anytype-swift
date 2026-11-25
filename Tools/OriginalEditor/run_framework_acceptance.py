@@ -332,6 +332,9 @@ def execute(args, receipt):
             'reason': 'ACTUAL_NONRELOCATABLE_CLANG_CACHE_PATH_FAILURE',
             'source_donor_unchanged': True, 'owned_clone_only': str(derived),
             'grants_product_acceptance': False, 'caches': cache_rows})
+        from relocate_seed_artifacts import relocate
+        receipt['compiler_cache']['artifact_relocation'] = relocate(
+            root, seed, derived, evidence, work)
     destination = 'platform=iOS Simulator,id=' + udid
     flags = ['OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED $(ORIGINAL_EDITOR_SYMBOL_GRAPH_FLAGS)', 'ONLY_ACTIVE_ARCH=YES',
              'ARCHS=arm64', 'SWIFT_OPTIMIZATION_LEVEL=-Onone', 'CODE_SIGN_IDENTITY=-',
@@ -347,6 +350,9 @@ def execute(args, receipt):
              '-derivedDataPath', str(derived), '-onlyUsePackageVersionsFromResolvedFile'],
             root, evidence, 'exact-package-resolution', 900)
     require(source_observation(root) == before, 'Strict resolver changed a committed source or lock')
+    if args.derived_cache_seed:
+        from relocate_seed_artifacts import verify_resolved_paths
+        receipt['compiler_cache']['resolved_path_admission'] = verify_resolved_paths(root, derived, evidence)
     receipt['strict_dependency_resolution'] = 'PASS_EXACT_COMMITTED_LOCK_UNCHANGED'
     receipt['phase'] = 'ORIGINAL_FRAMEWORK_BUILD'
     write(evidence / 'execution.json', receipt)
