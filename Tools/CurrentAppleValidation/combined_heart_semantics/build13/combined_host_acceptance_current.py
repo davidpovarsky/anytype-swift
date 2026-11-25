@@ -41,6 +41,8 @@ PLANS = {
                             "t5-host-actions", "t5-pending-nine", "t5-remaining-freshness", "t5-native-ui"),
     "t5-only": ("t5-host-actions", "t5-pending-nine", "t5-remaining-freshness", "t5-native-ui"),
     "t5-host-actions-only": ("t5-host-actions",),
+    "t5-data-and-ui-only": ("t5-pending-nine", "t5-remaining-freshness", "t5-native-ui"),
+    "t5-native-ui-only": ("t5-native-ui",),
     "remaining-editor-journeys": ("quote-drop", "properties-set"),
     "return-controls-only": ("return-controls",),
 }
