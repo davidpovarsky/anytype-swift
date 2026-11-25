@@ -66,6 +66,7 @@ public struct AnyHeartNativeSourceReviewView: View {
             }
 
             sourceLimits
+            pinkhaMappings
             definitions
             currentPages
             unmappedObjects
@@ -118,6 +119,36 @@ public struct AnyHeartNativeSourceReviewView: View {
                 "היסטוריה, הגדרות, הרשאות וכל סוג תוכן דורשים התאמה למנוע היעד ואימות פתיחה מחדש.",
                 "History, settings, permissions and every content type require a destination mapping and reopen verification."
             )).font(.footnote).foregroundStyle(.secondary)
+        }
+    }
+
+    @ViewBuilder
+    private var pinkhaMappings: some View {
+        if let source = review.pinkhaSource {
+            Section(t("מבנה ומקורות של Pinkha", "Pinkha structure and sources")) {
+                count(t("פריטי היררכיה", "Hierarchy items"), source.hierarchy.count, id: "pinkha-hierarchy")
+                count(t("מסמכים עם שדה מקורות", "Documents with a source field"),
+                      source.canonicalDocuments.count, id: "pinkha-source-documents")
+                count(t("קישורים למקורות", "Source associations"),
+                      source.canonicalDocuments.reduce(0) { $0 + $1.records.count }, id: "pinkha-associations")
+                count(t("פרטי מבנה שדורשים התאמה", "Structure mapping requirements"),
+                      source.issues.count, id: "pinkha-issues")
+                Text(t(
+                    "המבנה זוהה לפי מזהי ההגדרות שנשמרו במקור. ההעברה ממתינה להשלמת ההתאמות והאימות.",
+                    "The structure was identified from the original stored definition IDs. Transfer still requires complete mapping and verification."
+                )).font(.footnote).foregroundStyle(.secondary)
+            }
+        } else if let issue = review.pinkhaSourceIssue {
+            Section(t("מבנה Pinkha דורש בדיקה", "Pinkha structure requires review")) {
+                Text(t(
+                    "הגדרות המבנה המקוריות אינן שלמות או אינן חד־משמעיות. הנתונים נשמרו לבדיקה.",
+                    "The original structure definitions are incomplete or ambiguous. The source data is retained for review."
+                )).font(.callout)
+                DisclosureGroup(t("פרטי הבדיקה", "Review details")) {
+                    Text(issue).font(.footnote).textSelection(.enabled)
+                }
+            }
+            .accessibilityIdentifier("heart-source-review-pinkha-schema-issue")
         }
     }
 

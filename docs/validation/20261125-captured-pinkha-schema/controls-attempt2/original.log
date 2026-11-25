@@ -1,0 +1,65 @@
+warning: '--skip-update' option is deprecated and will be removed in a future release
+Building for debugging...
+[Computing dependencies]
+[Using on-disk description]
+[1 / 11] PinkhaAnyIntegrationTests-product
+[4 / 14] PinkhaAnyIntegrationTests-product
+macro expansion #expect:2:34: [1;33mwarning: [1;39m'setDocumentAssociations(objectId:items:spaceId:)' is deprecated: Use addAssociation/upsertAssociation/updateAssociation per item[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+`- /mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AssociationBridgeTests.swift:120:10: [1;39mnote: [1;39mexpanded code originates here[0;0m
+[0;36m116 |[0;0m     @Test func staleWholeSnapshotReplacementStillRefused() async throws {
+[0;36m117 |[0;0m         let (_, _, _, repository) = try fixture()
+[0;36m118 |[0;0m         await [4;39m#expect(throws: TorahAssociationRepositoryError.unsafeSnapshotReplacement) {[0;0m
+    [0;36m|[0;0m               `- [1;39mnote: [1;39min expansion of macro 'expect' here[0;0m
+[0;36m119 |[0;0m             try await repository.setDocumentAssociations(objectId: "new-document", items: [item()], spaceId: "new-space")
+[0;36m120 |[0;0m         }
+[0;36m    +--- [0;0mmacro expansion #expect [0;36m---------------------------------------[0;0m
+[0;36m    |[0;0m[0;36m1 |[0;0m Testing.__checkClosureCall(throws: TorahAssociationRepositoryError.unsafeSnapshotReplacement,performing: {
+[0;36m    |[0;0m[0;36m2 |[0;0m             try await repository.setDocumentAssociations(objectId: "new-document", items: [item()], spaceId: "new-space")
+[0;36m    |[0;0m  [0;36m|[0;0m                                  `- [1;33mwarning: [1;39m'setDocumentAssociations(objectId:items:spaceId:)' is deprecated: Use addAssociation/upsertAssociation/updateAssociation per item[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m    |[0;0m[0;36m3 |[0;0m         },expression: .__fromSyntaxNode("TorahAssociationRepositoryError.unsafeSnapshotReplacement"),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+[0;36m    +----------------------------[0;0m[0;36m---------------------------------------[0;0m
+[0;36m121 |[0;0m     }
+[0;36m122 |[0;0m 
+
+/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AssociationBridgeTests.swift:119:34: [1;33mwarning: [1;39m'setDocumentAssociations(objectId:items:spaceId:)' is deprecated: Use addAssociation/upsertAssociation/updateAssociation per item[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m117 |[0;0m         let (_, _, _, repository) = try fixture()
+[0;36m118 |[0;0m         await #expect(throws: TorahAssociationRepositoryError.unsafeSnapshotReplacement) {
+[0;36m119 |[0;0m             try await repository.setDocumentAssociations(objectId: "new-document", items: [item()], spaceId: "new-space")
+    [0;36m|[0;0m                                  `- [1;33mwarning: [1;39m'setDocumentAssociations(objectId:items:spaceId:)' is deprecated: Use addAssociation/upsertAssociation/updateAssociation per item[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m120 |[0;0m         }
+[0;36m121 |[0;0m     }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+[8 / 14] PinkhaAnyIntegrationTests-product
+[12 / 15] PinkhaAnyIntegrationTests-product
+[16 / 18] PinkhaAnyIntegrationTests-test-runner
+[16 / 19] PinkhaAnyIntegrationTests-test-runner
+[19 / 19] PinkhaAnyIntegrationTests-test-runner
+[24 / 28] PinkhaAnyIntegration-product
+[26 / 28] pinkha-any-integration-probe-product
+[26 / 28] PinkhaAnyIntegrationTests-test-runner
+[27 / 30] pinkha-any-integration-probe-product
+[30 / 30] pinkha-any-integration-probe-product
+Build complete! (20.60 secs)
+◇ Test run started.
+↳ Testing Library Version: 6.4.3 (ba0861fb203553c)
+↳ Target Platform: aarch64-unknown-linux-gnu
+◇ Suite "Captured Pinkha schema and canonical property composition" started.
+◇ Test unknownManifestFieldsAndHierarchyCyclesAreRetainedAsBlockers() started.
+◇ Test absentAndExplicitEmptyCanonicalPropertiesStayDistinct() started.
+◇ Test manifestAmbiguityAndIncompleteForeignFutureBindingsCannotChooseConvenientCopy() started.
+◇ Test malformedCanonicalOwnerAndMultipleParentsRemainRefused() started.
+◇ Test duplicateReservedManifestKeysAndEmptyTemplateIdentityAreRejected() started.
+◇ Test nameOnlyAndWrongPropertyDefinitionNeverIdentifySchemaRoles() started.
+◇ Test manifestBindsExactNativeIDsAndRetainsLegacyParentRepresentation() started.
+◇ Test capturedCanonicalBytesComposeStrictSemanticOwnerRemap() started.
+✔ Test unknownManifestFieldsAndHierarchyCyclesAreRetainedAsBlockers() passed after 0.457 seconds.
+✔ Test absentAndExplicitEmptyCanonicalPropertiesStayDistinct() passed after 0.457 seconds.
+✔ Test malformedCanonicalOwnerAndMultipleParentsRemainRefused() passed after 0.457 seconds.
+✔ Test manifestAmbiguityAndIncompleteForeignFutureBindingsCannotChooseConvenientCopy() passed after 0.457 seconds.
+✔ Test duplicateReservedManifestKeysAndEmptyTemplateIdentityAreRejected() passed after 0.457 seconds.
+✔ Test manifestBindsExactNativeIDsAndRetainsLegacyParentRepresentation() passed after 0.457 seconds.
+✔ Test nameOnlyAndWrongPropertyDefinitionNeverIdentifySchemaRoles() passed after 0.457 seconds.
+✔ Test capturedCanonicalBytesComposeStrictSemanticOwnerRemap() passed after 0.501 seconds.
+✔ Suite "Captured Pinkha schema and canonical property composition" passed after 0.501 seconds.
+✔ Test run with 8 tests in 1 suite passed after 0.502 seconds.
