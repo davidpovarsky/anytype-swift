@@ -46,13 +46,14 @@ def metadata(project):
     if not ids:
         return []
     rows = json.loads(subprocess.check_output(['sudo', '-n', 'docker', 'inspect', *ids], timeout=15))
-    return [{
+    return sorted([{
         'id': d['Id'], 'name': d['Name'], 'image': d['Image'], 'startedAt': d['State']['StartedAt'],
         'service': d['Config']['Labels']['com.docker.compose.service'],
         'state': d['State']['Status'], 'health': d['State'].get('Health', {}).get('Status'),
         'ports': d['HostConfig']['PortBindings'],
-        'mounts': [{k: m.get(k) for k in ['Type', 'Source', 'Destination']} for m in d['Mounts']]
-    } for d in rows]
+        'mounts': sorted([{k: m.get(k) for k in ['Type', 'Source', 'Destination']} for m in d['Mounts']],
+                         key=lambda m: (m['Destination'], m['Source'], m['Type']))
+    } for d in rows], key=lambda row: row['id'])
 
 def main():
     os.umask(0o077)
