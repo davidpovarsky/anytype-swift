@@ -1,6 +1,7 @@
 #if canImport(UIKit) && canImport(SwiftUI)
 import Foundation
 import SwiftUI
+import UniformTypeIdentifiers
 import PinkhaKit
 import PinkhaAnyEngine
 import PinkhaAnyIntegration
@@ -299,16 +300,26 @@ public struct AnyNativeLibraryView: View {
             }
         }
         .accessibilityElement(children: .contain)
-        .dropDestination(for: String.self) { payloads, _ in
+        // Start loading in the List drop callback while the provider is available.
+        // Revalidate the mounted workspace when asynchronous loading completes.
+        .onDrop(of: [.utf8PlainText], isTargeted: nil) { providers in
             guard lifetime.isActive, model.canWrite, !editMode.isEditing,
-                  payloads.count == 1 else { return false }
-            let parts = payloads[0].split(separator: "|", omittingEmptySubsequences: false).map(String.init)
-            guard parts.count == 3, parts[0] == "pinkha-any-node",
-                  parts[1] == model.session.workspace.spaceID,
-                  model.hierarchy?.itemsByID[parts[2]] != nil else { return false }
-            Task {
-                await model.move(objectID: parts[2], parentID: item.kind == .folder ? item.objectID : item.parentID,
-                                 beforeSiblingID: item.kind == .folder ? nil : item.objectID)
+                  providers.count == 1, let provider = providers.first,
+                  provider.canLoadObject(ofClass: NSString.self) else { return false }
+            _ = provider.loadObject(ofClass: NSString.self) { value, error in
+                guard error == nil, let payload = value as? String else { return }
+                Task { @MainActor in
+                    guard lifetime.isActive, model.canWrite, !editMode.isEditing,
+                          payload.utf8.count <= 1024 else { return }
+                    let parts = payload.split(separator: "|", omittingEmptySubsequences: false).map(String.init)
+                    guard parts.count == 3, parts[0] == "pinkha-any-node",
+                          parts[1] == model.session.workspace.spaceID,
+                          model.hierarchy?.itemsByID[parts[2]] != nil,
+                          let destination = model.hierarchy?.itemsByID[item.objectID] else { return }
+                    await model.move(objectID: parts[2],
+                                     parentID: destination.kind == .folder ? destination.objectID : destination.parentID,
+                                     beforeSiblingID: destination.kind == .folder ? nil : destination.objectID)
+                }
             }
             return true
         }

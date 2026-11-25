@@ -1891,8 +1891,12 @@ final class NativeLaunchTests: XCTestCase {
                 try fail("pinkha_icon_changed_before_tap")
             }
             _ = try remaining("before_pinkha_folder_icon_tap")
-            navigation.append("pinkha_folder_icon")
-            icon.tap() // One observed UI target; no coordinate fallback or retap.
+            navigation.append("pinkha_folder_icon_center")
+            // Tap the center of the freshly observed icon bounds. The remote
+            // Files Image's synthesized accessibility hit point did not enter
+            // this folder in either original failed run; keep one real tap and
+            // require the same breadcrumb/Exports navigation before proceeding.
+            icon.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
             _ = try remaining("after_pinkha_folder")
             _ = try ready(app.buttons.matching(NSPredicate(
                 format: "label == %@ OR label BEGINSWITH %@", "Pinkha", "Pinkha,")),
