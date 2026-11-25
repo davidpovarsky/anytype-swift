@@ -1,0 +1,76 @@
+{
+  "schema": "loaded-account-four-native-acceptance-v2",
+  "run_id": "45427196939",
+  "run_attempt": "1",
+  "controller_sha": "58d01a190932031f2e9c5f939d93abb6c0286dde",
+  "heart_sha": "256d3fd6cb4c2b0df67f67e01edfd8f9b76726f4",
+  "base_heart_sha": "24dc6393b30e6d1d80ec28ff624060af9bb4327a",
+  "any_sync_sha": "c005bd6cde8d8f8a6007c35f06894f3d89f9f07c",
+  "status": "FOUR_NATIVE_METHODS_PASS",
+  "builds": 1,
+  "selected_methods": [
+    "TestLoadedAccountWitnessBindsActualAccountSessionAndHead",
+    "TestLoadedAccountWitnessRefusesUnboundSessionsAndLoadFallback",
+    "TestLoadedAccountWitnessACLAndSessionCancellationReleaseActualLocks",
+    "TestLoadedAccountWitnessRejectsForeignOwnerStoredHeadAndStoppedApp"
+  ],
+  "binary": {
+    "bytes": 165681544,
+    "sha256": "fe38b4d1c6c4788d05c88be52c2af83dcc51b223856c35a239a20eedf81dafe1"
+  },
+  "source_delta_sha256": "657cb62bffd64f28219bfc9ebf89f4b83342d2424b01722649b04130849d7198",
+  "prior_failed_run": "45423965043",
+  "recipient_readback": {
+    "schema": "loaded-account-recipient-readback-v1",
+    "status": "PASS",
+    "run_id": "45427196939",
+    "run_attempt": 1,
+    "source_sha": "58d01a190932031f2e9c5f939d93abb6c0286dde",
+    "artifact_id": 14938816670,
+    "artifact_bytes": 86911047,
+    "artifact_sha256": "107173c24e5400c989fe444263704fb7cd568d188e38f12cd3ec9049a7dc4bad",
+    "ciphertext_sha256": "c206652d07923273236ecbdbda04f36548a2c54f457453be8f0b3446f7922d4f",
+    "plaintext_sha256": "6c7e8a18e6439e9a82e77fdea573de67f45ef4355cd03791b59832cf2d456481",
+    "original_members_verified": 14,
+    "recipient_key_exported": false
+  },
+  "recipient_receipt_sha256": "21ac75f0791a96ca7a94a91a47e4d6f54594158cb019fb1c45ab5f425357fd4b",
+  "methods": [
+    {
+      "method": "TestLoadedAccountWitnessBindsActualAccountSessionAndHead",
+      "status": "PASS",
+      "exit_code": 0,
+      "independent_auditor": "PASS",
+      "rows": 434,
+      "collections": 6
+    },
+    {
+      "method": "TestLoadedAccountWitnessRefusesUnboundSessionsAndLoadFallback",
+      "status": "PASS",
+      "exit_code": 0,
+      "independent_auditor": "PASS",
+      "rows": 434,
+      "collections": 6
+    },
+    {
+      "method": "TestLoadedAccountWitnessACLAndSessionCancellationReleaseActualLocks",
+      "status": "PASS",
+      "exit_code": 0,
+      "independent_auditor": "PASS",
+      "rows": 434,
+      "collections": 6
+    },
+    {
+      "method": "TestLoadedAccountWitnessRejectsForeignOwnerStoredHeadAndStoppedApp",
+      "status": "PASS",
+      "exit_code": 0,
+      "independent_auditor": "PASS",
+      "rows": 434,
+      "collections": 6
+    }
+  ],
+  "semanticCompleteness": false,
+  "filePayloadCompleteness": false,
+  "hasNativeSourceAdmission": false,
+  "permitsDestinationWrites": false
+}

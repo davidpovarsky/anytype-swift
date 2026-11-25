@@ -1,0 +1,687 @@
+From 4e91d6327c298a0b0218b0a5125d9fc91cabd29a Mon Sep 17 00:00:00 2001
+From: ChatGPT <chatgpt@openai.com>
+Date: Tue, 24 Nov 2026 16:00:57 +0000
+Subject: [PATCH] Expose streamed prepared file migration and exercise native
+ crash recovery
+
+---
+ internal/api/pinkha_migration_file.go         |  27 ++
+ internal/pinkha/migrationnative/file_test.go  | 296 ++++++++++++++++++
+ internal/server/handlers_pinkha_migration.go  |   1 +
+ .../server/handlers_pinkha_migration_file.go  | 158 ++++++++++
+ .../handlers_pinkha_migration_file_test.go    | 126 ++++++++
+ internal/server/routes.go                     |   4 +-
+ 6 files changed, 610 insertions(+), 2 deletions(-)
+ create mode 100644 internal/api/pinkha_migration_file.go
+ create mode 100644 internal/pinkha/migrationnative/file_test.go
+ create mode 100644 internal/server/handlers_pinkha_migration_file.go
+ create mode 100644 internal/server/handlers_pinkha_migration_file_test.go
+
+diff --git a/internal/api/pinkha_migration_file.go b/internal/api/pinkha_migration_file.go
+new file mode 100644
+index 0000000..0d1647f
+--- /dev/null
++++ b/internal/api/pinkha_migration_file.go
+@@ -0,0 +1,27 @@
++package api
++
++// Full-tier prepared files use a bounded binary body and separate immutable metadata.
++type MigrationFileCapabilities struct {
++	Contract        string `json:"contract"`
++	StoreID         string `json:"storeId"`
++	AccountID       string `json:"accountId"`
++	SpaceID         string `json:"spaceId"`
++	PreparedFile    int    `json:"preparedFile"`
++	MaximumBytes    int    `json:"maximumBytes"`
++	File            int    `json:"file"`
++	NetworkVerified bool   `json:"networkVerified"`
++}
++
++const MigrationFileMaximumBytes = 512 << 20
++
++// Pointer fields distinguish an explicit empty file/name/mime from omitted or null input.
++type MigrationFileSpec struct {
++	OwnerObjectID *string `json:"ownerObjectId"`
++	Name          *string `json:"name"`
++	Mime          *string `json:"mime"`
++	Size          *int64  `json:"size"`
++	ContentSHA256 *string `json:"contentSHA256"`
++}
++
++const MigrationFileMetadataHeader = "X-Pinkha-Migration"
++const MigrationFileMetadataMaximumBytes = 16 << 10
+diff --git a/internal/pinkha/migrationnative/file_test.go b/internal/pinkha/migrationnative/file_test.go
+new file mode 100644
+index 0000000..5f1005b
+--- /dev/null
++++ b/internal/pinkha/migrationnative/file_test.go
+@@ -0,0 +1,296 @@
++package migrationnative
++
++import (
++	"bytes"
++	"context"
++	"crypto/sha256"
++	"encoding/hex"
++	"encoding/json"
++	"io"
++	"os"
++	"os/exec"
++	"path/filepath"
++	"sync"
++	"testing"
++	"time"
++
++	anysyncsdk "github.com/anyproto/any-sync-sdk"
++	"github.com/anyproto/any-sync-sdk/space"
++	"github.com/stretchr/testify/require"
++)
++
++func fullFileSpec(owner string, content []byte) space.MigrationFileSpec {
++	h := sha256.Sum256(content)
++	return space.MigrationFileSpec{OwnerObjectID: owner, Name: "large-שלום.bin", Mime: "application/octet-stream", Size: int64(len(content)), ContentSHA256: hex.EncodeToString(h[:])}
++}
++
++func fullFileContent() []byte { return bytes.Repeat([]byte{0x00, 0x19, 0xfe, 0xa4}, 512<<10) }
++
++func readFullFile(t *testing.T, ctx context.Context, sp space.Space, receipt space.MigrationFileReceipt, spec space.MigrationFileSpec) {
++	t.Helper()
++	info, err := sp.Files().Get(ctx, receipt.FileID)
++	require.NoError(t, err)
++	require.False(t, info.Inline)
++	require.True(t, info.Cached)
++	require.Equal(t, spec.Name, info.Name)
++	require.Equal(t, spec.Mime, info.Mime)
++	require.Equal(t, spec.OwnerObjectID, info.ObjectId)
++	require.Equal(t, receipt.RootCID, info.RootCid)
++	require.Equal(t, spec.Size, info.Size)
++	f, err := sp.Files().Open(ctx, receipt.FileID, space.VariantOriginal)
++	require.NoError(t, err)
++	h := sha256.New()
++	n, err := io.Copy(h, f)
++	require.NoError(t, err)
++	require.NoError(t, f.Close())
++	require.Equal(t, spec.Size, n)
++	require.Equal(t, spec.ContentSHA256, hex.EncodeToString(h.Sum(nil)))
++}
++
++func TestPreparedFullFileNativeStageRestartConcurrentCommitAndReadback(t *testing.T) {
++	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
++	defer cancel()
++	cfg, seeds := nativeConfig(t.TempDir(), localNetwork(t)), newSeeds(t)
++	var sdk *anysyncsdk.SDK
++	var sp space.Space
++	var native space.PreparedFileService
++	var spaceID string
++	open := func() {
++		var err error
++		sdk, err = anysyncsdk.Open(ctx, cfg, seeds)
++		require.NoError(t, err)
++		if spaceID == "" {
++			sp, err = sdk.Spaces().Create(ctx, space.CreateRequest{Name: "full file migration"})
++			if err == nil {
++				spaceID = sp.Id()
++			}
++		} else {
++			sp, err = sdk.Spaces().Get(ctx, spaceID)
++		}
++		require.NoError(t, err)
++		native = sp.Files().(space.PreparedFileService)
++	}
++	closeSDK := func() { require.NoError(t, sdk.Close()); sdk = nil }
++	t.Cleanup(func() {
++		if sdk != nil {
++			_ = sdk.Close()
++		}
++	})
++	open()
++	capabilities, err := sp.Objects().(space.PreparedMigrationService).MigrationCapabilities(ctx)
++	require.NoError(t, err)
++	owner, err := space.CreateCurrentWriter(ctx, sp, space.CreateObjectOpts{Type: "page"})
++	require.NoError(t, err)
++	content := fullFileContent()
++	spec := fullFileSpec(owner.ObjectID, content)
++	input := nativeInput(t, capabilities, "full-file/one", spec)
++	prepared, err := native.PrepareMigrationFile(ctx, input, spec, bytes.NewReader(content))
++	require.NoError(t, err)
++	require.Equal(t, "file-prepared", prepared.Stage)
++	require.False(t, prepared.LocalFileComplete)
++	_, err = sp.Files().Get(ctx, prepared.FileID)
++	require.Error(t, err)
++	closeSDK()
++	open()
++	recovered, err := native.PrepareMigrationFile(ctx, input, spec, nil)
++	require.NoError(t, err)
++	require.Equal(t, prepared, recovered, "known prepare must not re-read or reseal content")
++	commit := commitOf(input, prepared.MigrationReceipt)
++	root, err := native.CommitMigrationFile(ctx, commit)
++	require.NoError(t, err)
++	require.Equal(t, "file-root-committed", root.Stage)
++	closeSDK()
++	open()
++	var wg sync.WaitGroup
++	results := make(chan space.MigrationFileReceipt, 4)
++	errs := make(chan error, 4)
++	for range 4 {
++		wg.Add(1)
++		go func() { defer wg.Done(); r, e := native.CommitMigrationFile(ctx, commit); results <- r; errs <- e }()
++	}
++	wg.Wait()
++	close(results)
++	close(errs)
++	for e := range errs {
++		require.NoError(t, e)
++	}
++	var complete space.MigrationFileReceipt
++	for r := range results {
++		require.Equal(t, "complete", r.Stage)
++		require.Equal(t, "committed", r.Outcome)
++		require.Equal(t, prepared.ChangeID, r.ChangeID)
++		require.Equal(t, prepared.RootCID, r.RootCID)
++		require.Equal(t, prepared.FileID, r.FileID)
++		require.True(t, r.LocalFileComplete)
++		require.False(t, r.NetworkVerified)
++		complete = r
++	}
++	readFullFile(t, ctx, sp, complete, spec)
++	closeSDK()
++	open()
++	retry, err := native.CommitMigrationFile(ctx, commit)
++	require.NoError(t, err)
++	require.Equal(t, complete, retry)
++	readFullFile(t, ctx, sp, retry, spec)
++	stats, err := sp.Files().Stats(ctx)
++	require.NoError(t, err)
++	require.Equal(t, 1, stats.Total)
++	require.NoError(t, sp.Files().Delete(ctx, prepared.FileID))
++	deleted, err := native.CommitMigrationFile(ctx, commit)
++	require.NoError(t, err)
++	require.Equal(t, "committed_deleted", deleted.Outcome)
++	_, err = sp.Files().Get(ctx, prepared.FileID)
++	require.Error(t, err)
++	t.Log("full_file_native bytes=2097152 actual_sdk_reopens=3 concurrent_callers=4 exact_signed_row_and_car=true plaintext_sha256=true deleted_retry_resurrects=false network_verified=false")
++}
++
++type fullFileCountingReader struct {
++	n      int
++	reader io.Reader
++}
++
++func (r *fullFileCountingReader) Read(p []byte) (int, error) { r.n++; return r.reader.Read(p) }
++
++func TestPreparedFullFileNativeBadBodyCollisionAndOwnerFence(t *testing.T) {
++	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
++	defer cancel()
++	sdk, err := anysyncsdk.Open(ctx, nativeConfig(t.TempDir(), localNetwork(t)), newSeeds(t))
++	require.NoError(t, err)
++	defer sdk.Close()
++	sp, err := sdk.Spaces().Create(ctx, space.CreateRequest{Name: "full file refusal"})
++	require.NoError(t, err)
++	native := sp.Files().(space.PreparedFileService)
++	capabilities, err := sp.Objects().(space.PreparedMigrationService).MigrationCapabilities(ctx)
++	require.NoError(t, err)
++	owner, err := space.CreateCurrentWriter(ctx, sp, space.CreateObjectOpts{Type: "page"})
++	require.NoError(t, err)
++	content := fullFileContent()
++	spec := fullFileSpec(owner.ObjectID, content)
++	input := nativeInput(t, capabilities, "full-file/refusal", spec)
++	_, err = native.PrepareMigrationFile(ctx, input, spec, bytes.NewReader(content[:4096]))
++	require.Error(t, err)
++	_, err = native.MigrationFileStatus(ctx, input.IntentID)
++	require.ErrorIs(t, err, space.ErrMigrationNotFound)
++	changed := spec
++	changed.Name = "changed"
++	changedInput := nativeInput(t, capabilities, "full-file/refusal", changed)
++	counter := &fullFileCountingReader{reader: bytes.NewReader(content)}
++	_, err = native.PrepareMigrationFile(ctx, changedInput, changed, counter)
++	require.ErrorIs(t, err, space.ErrMigrationCollision)
++	require.Zero(t, counter.n)
++	prepared, err := native.PrepareMigrationFile(ctx, input, spec, bytes.NewReader(content))
++	require.NoError(t, err)
++	_, err = sp.Properties().Set(ctx, owner.ObjectID, "any", map[string]any{"name": "changed owner"})
++	require.NoError(t, err)
++	refused, err := native.CommitMigrationFile(ctx, commitOf(input, prepared.MigrationReceipt))
++	require.NoError(t, err)
++	require.Equal(t, "obsolete", refused.Outcome)
++	_, err = sp.Files().Get(ctx, prepared.FileID)
++	require.Error(t, err)
++	canceled, stop := context.WithCancel(ctx)
++	stop()
++	counter = &fullFileCountingReader{reader: bytes.NewReader(content)}
++	_, err = native.PrepareMigrationFile(canceled, input, spec, counter)
++	require.Error(t, err)
++	require.Zero(t, counter.n)
++}
++
++type fullFileCrashSetup struct {
++	Directory                string
++	Network, Account, Device []byte
++}
++type fullFileCrashReceipt struct {
++	SpaceID string
++	Input   space.MigrationInput
++	Spec    space.MigrationFileSpec
++	Receipt space.MigrationFileReceipt
++}
++
++func TestPreparedFullFileCrashChild(t *testing.T) {
++	dir := os.Getenv("PINKHA_PREPARED_FULLFILE_CHILD")
++	if dir == "" {
++		t.Skip("private child process only")
++	}
++	raw, err := os.ReadFile(filepath.Join(dir, "setup.json"))
++	require.NoError(t, err)
++	var setup fullFileCrashSetup
++	require.NoError(t, json.Unmarshal(raw, &setup))
++	ctx := context.Background()
++	sdk, err := anysyncsdk.Open(ctx, nativeConfig(setup.Directory, setup.Network), &seedProvider{setup.Account, setup.Device})
++	require.NoError(t, err)
++	sp, err := sdk.Spaces().Create(ctx, space.CreateRequest{Name: "full file crash"})
++	require.NoError(t, err)
++	capabilities, err := sp.Objects().(space.PreparedMigrationService).MigrationCapabilities(ctx)
++	require.NoError(t, err)
++	owner, err := space.CreateCurrentWriter(ctx, sp, space.CreateObjectOpts{Type: "page"})
++	require.NoError(t, err)
++	content := fullFileContent()
++	spec := fullFileSpec(owner.ObjectID, content)
++	input := nativeInput(t, capabilities, "full-file/crash", spec)
++	prepared, err := sp.Files().(space.PreparedFileService).PrepareMigrationFile(ctx, input, spec, bytes.NewReader(content))
++	require.NoError(t, err)
++	raw, err = json.Marshal(fullFileCrashReceipt{sp.Id(), input, spec, prepared})
++	require.NoError(t, err)
++	f, err := os.OpenFile(filepath.Join(dir, "prepared.json"), os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
++	require.NoError(t, err)
++	_, err = f.Write(raw)
++	require.NoError(t, err)
++	require.NoError(t, f.Sync())
++	require.NoError(t, f.Close())
++	select {} // Parent kills this process without SDK.Close or database teardown.
++}
++
++func TestPreparedFullFileActualProcessCrashKeepsCARAndOriginalIntent(t *testing.T) {
++	dir := t.TempDir()
++	seeds := newSeeds(t)
++	setup := fullFileCrashSetup{filepath.Join(dir, "sdk"), localNetwork(t), seeds.account, seeds.device}
++	raw, err := json.Marshal(setup)
++	require.NoError(t, err)
++	require.NoError(t, os.WriteFile(filepath.Join(dir, "setup.json"), raw, 0600))
++	exe, err := os.Executable()
++	require.NoError(t, err)
++	cmd := exec.Command(exe, "-test.run=^TestPreparedFullFileCrashChild$", "-test.count=1", "-test.timeout=120s")
++	cmd.Env = append(os.Environ(), "PINKHA_PREPARED_FULLFILE_CHILD="+dir)
++	log, err := os.OpenFile(filepath.Join(dir, "child.log"), os.O_CREATE|os.O_WRONLY, 0600)
++	require.NoError(t, err)
++	defer log.Close()
++	cmd.Stdout, cmd.Stderr = log, log
++	require.NoError(t, cmd.Start())
++	defer func() {
++		if cmd.Process != nil {
++			_ = cmd.Process.Kill()
++		}
++	}()
++	require.Eventually(t, func() bool {
++		raw, err := os.ReadFile(filepath.Join(dir, "prepared.json"))
++		return err == nil && json.Valid(raw)
++	}, 60*time.Second, 50*time.Millisecond)
++	require.NoError(t, cmd.Process.Kill())
++	require.Error(t, cmd.Wait())
++	require.False(t, cmd.ProcessState.Success())
++	raw, err = os.ReadFile(filepath.Join(dir, "prepared.json"))
++	require.NoError(t, err)
++	var saved fullFileCrashReceipt
++	require.NoError(t, json.Unmarshal(raw, &saved))
++	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
++	defer cancel()
++	sdk, err := anysyncsdk.Open(ctx, nativeConfig(setup.Directory, setup.Network), seeds)
++	require.NoError(t, err)
++	defer sdk.Close()
++	sp, err := sdk.Spaces().Get(ctx, saved.SpaceID)
++	require.NoError(t, err)
++	native := sp.Files().(space.PreparedFileService)
++	status, err := native.MigrationFileStatus(ctx, saved.Input.IntentID)
++	require.NoError(t, err)
++	require.Equal(t, saved.Receipt, status)
++	commit := commitOf(saved.Input, saved.Receipt.MigrationReceipt)
++	_, err = native.CommitMigrationFile(ctx, commit)
++	require.NoError(t, err)
++	complete, err := native.CommitMigrationFile(ctx, commit)
++	require.NoError(t, err)
++	require.True(t, complete.LocalFileComplete)
++	require.Equal(t, saved.Receipt.RootCID, complete.RootCID)
++	require.Equal(t, saved.Receipt.ChangeID, complete.ChangeID)
++	readFullFile(t, ctx, sp, complete, saved.Spec)
++	t.Log("full_file_crash actual_process_killed=true graceful_sdk_close=false original_car_and_signed_intent_recovered=true bytes=2097152")
++}
+diff --git a/internal/server/handlers_pinkha_migration.go b/internal/server/handlers_pinkha_migration.go
+index 5f9858a..25c7867 100644
+--- a/internal/server/handlers_pinkha_migration.go
++++ b/internal/server/handlers_pinkha_migration.go
+@@ -26,6 +26,7 @@ const migrationWireLimit = 2 << 20
+ 
+ func registerPinkhaMigrationRoutes(v1 *echo.Group, d *deps) {
+ 	registerPinkhaMigrationInlineFileRoutes(v1, d)
++	registerPinkhaMigrationFileRoutes(v1, d)
+ 	v1.GET("/spaces/:spaceId/pinkha/migration/capabilities", d.pinkhaMigrationCapabilities)
+ 	v1.PUT("/spaces/:spaceId/pinkha/migration/intents/:intentId/object/prepare", d.pinkhaMigrationObjectPrepare)
+ 	v1.PUT("/spaces/:spaceId/pinkha/migration/intents/:intentId/block/prepare", d.pinkhaMigrationBlockPrepare)
+diff --git a/internal/server/handlers_pinkha_migration_file.go b/internal/server/handlers_pinkha_migration_file.go
+new file mode 100644
+index 0000000..167e6cf
+--- /dev/null
++++ b/internal/server/handlers_pinkha_migration_file.go
+@@ -0,0 +1,158 @@
++package server
++
++import (
++	"crypto/sha256"
++	"encoding/base64"
++	"encoding/hex"
++	"errors"
++	"fmt"
++	"net/http"
++	"strings"
++	"unicode/utf8"
++
++	"github.com/anyproto/any-sync-sdk/space"
++	"github.com/anyproto/any/internal/api"
++	"github.com/labstack/echo/v4"
++)
++
++func registerPinkhaMigrationFileRoutes(v1 *echo.Group, d *deps) {
++	v1.GET("/spaces/:spaceId/pinkha/migration/file/capabilities", d.pinkhaMigrationFileCapabilities)
++	v1.PUT("/spaces/:spaceId/pinkha/migration/intents/:intentId/file/prepare", d.pinkhaMigrationFilePrepare)
++	v1.GET("/spaces/:spaceId/pinkha/migration/intents/:intentId/file", d.pinkhaMigrationFileStatus)
++	v1.POST("/spaces/:spaceId/pinkha/migration/intents/:intentId/file/commit", d.pinkhaMigrationFileCommit)
++}
++
++func migrationFileService(sp space.Space) (space.PreparedFileService, error) {
++	native, ok := sp.Files().(space.PreparedFileService)
++	if !ok {
++		return nil, space.ErrCurrentWriterUnavailable
++	}
++	return native, nil
++}
++
++func (d *deps) pinkhaMigrationFileCapabilities(c echo.Context) error {
++	sp, response, done := d.resolveSpace(c)
++	if done {
++		return response
++	}
++	if _, err := migrationFileService(sp); err != nil {
++		return migrationError(c, err)
++	}
++	native, err := migrationService(sp)
++	if err != nil {
++		return migrationError(c, err)
++	}
++	base, err := native.MigrationCapabilities(c.Request().Context())
++	if err != nil {
++		return migrationError(c, err)
++	}
++	return c.JSON(http.StatusOK, api.MigrationFileCapabilities{
++		Contract: base.Contract, StoreID: base.StoreID, AccountID: base.AccountID, SpaceID: base.SpaceID,
++		PreparedFile: 1, MaximumBytes: api.MigrationFileMaximumBytes, File: 0, NetworkVerified: false,
++	})
++}
++
++// Only the small typed metadata uses JSON; the declared file bytes remain a
++// bounded stream. The header is canonical base64 and cannot contain duplicate
++// headers, duplicate JSON keys, omitted fields or a rewritten source digest.
++func migrationFileInput(c echo.Context) (space.MigrationInput, space.MigrationFileSpec, error) {
++	bad := func() (space.MigrationInput, space.MigrationFileSpec, error) {
++		return space.MigrationInput{}, space.MigrationFileSpec{}, fmt.Errorf("prepared file metadata, digest or body bounds differ")
++	}
++	values := c.Request().Header.Values(api.MigrationFileMetadataHeader)
++	if len(values) != 1 || len(values[0]) == 0 || len(values[0]) > api.MigrationFileMetadataMaximumBytes {
++		return bad()
++	}
++	raw, err := base64.StdEncoding.Strict().DecodeString(values[0])
++	if err != nil || base64.StdEncoding.EncodeToString(raw) != values[0] {
++		return bad()
++	}
++	var request api.MigrationPrepareRequest
++	if strictMigrationJSON(raw, &request) != nil {
++		return bad()
++	}
++	encoded, err := base64.StdEncoding.Strict().DecodeString(request.SpecBase64)
++	if err != nil || len(encoded) == 0 || len(encoded) > 8<<10 || base64.StdEncoding.EncodeToString(encoded) != request.SpecBase64 {
++		return bad()
++	}
++	hash := sha256.Sum256(encoded)
++	if request.Contract != space.PreparedMigrationContract || hex.EncodeToString(hash[:]) != request.SpecSHA256 {
++		return bad()
++	}
++	var wire api.MigrationFileSpec
++	if strictMigrationJSON(encoded, &wire) != nil || wire.OwnerObjectID == nil || wire.Name == nil || wire.Mime == nil || wire.Size == nil || wire.ContentSHA256 == nil {
++		return bad()
++	}
++	digest, err := hex.DecodeString(*wire.ContentSHA256)
++	if err != nil || len(digest) != 32 || hex.EncodeToString(digest) != *wire.ContentSHA256 ||
++		*wire.Size < 4096 || *wire.Size > api.MigrationFileMaximumBytes || c.Request().ContentLength != *wire.Size ||
++		bareType(c.Request().Header.Get(echo.HeaderContentType)) != "application/octet-stream" ||
++		*wire.OwnerObjectID == "" || len(*wire.OwnerObjectID) > 256 ||
++		!utf8.ValidString(*wire.Name) || !utf8.ValidString(*wire.Mime) || len(*wire.Name) > 1024 || len(*wire.Mime) > 255 ||
++		strings.ContainsRune(*wire.Name, 0) || strings.ContainsRune(*wire.Mime, 0) {
++		return bad()
++	}
++	input := space.MigrationInput{Contract: request.Contract, StoreID: request.StoreID, PlanID: request.PlanID, PlanSHA256: request.PlanSHA256, IntentID: c.Param("intentId"), SourceKey: request.SourceKey, SpecSHA256: request.SpecSHA256, SourceSpec: encoded}
++	spec := space.MigrationFileSpec{OwnerObjectID: *wire.OwnerObjectID, Name: *wire.Name, Mime: *wire.Mime, Size: *wire.Size, ContentSHA256: *wire.ContentSHA256}
++	return input, spec, nil
++}
++
++func (d *deps) pinkhaMigrationFilePrepare(c echo.Context) error {
++	input, spec, err := migrationFileInput(c)
++	if err != nil {
++		return writeError(c, http.StatusBadRequest, "request.invalid_field", err.Error(), nil)
++	}
++	sp, response, done := d.resolveSpace(c)
++	if done {
++		return response
++	}
++	native, err := migrationFileService(sp)
++	if err != nil {
++		return migrationError(c, err)
++	}
++	result, err := native.PrepareMigrationFile(c.Request().Context(), input, spec, c.Request().Body)
++	if err != nil {
++		if errors.Is(err, space.ErrMigrationFileContent) {
++			return writeError(c, http.StatusBadRequest, "request.invalid_field", "file content length or SHA-256 differs", nil)
++		}
++		return migrationError(c, err)
++	}
++	return c.JSON(http.StatusOK, result)
++}
++
++func (d *deps) pinkhaMigrationFileStatus(c echo.Context) error {
++	sp, response, done := d.resolveSpace(c)
++	if done {
++		return response
++	}
++	native, err := migrationFileService(sp)
++	if err != nil {
++		return migrationError(c, err)
++	}
++	result, err := native.MigrationFileStatus(c.Request().Context(), c.Param("intentId"))
++	if err != nil {
++		return migrationError(c, err)
++	}
++	return c.JSON(http.StatusOK, result)
++}
++
++func (d *deps) pinkhaMigrationFileCommit(c echo.Context) error {
++	var request space.MigrationCommit
++	if err := readMigrationJSON(c, &request); err != nil {
++		return writeError(c, http.StatusBadRequest, "request.invalid_field", err.Error(), nil)
++	}
++	request.IntentID = c.Param("intentId")
++	sp, response, done := d.resolveSpace(c)
++	if done {
++		return response
++	}
++	native, err := migrationFileService(sp)
++	if err != nil {
++		return migrationError(c, err)
++	}
++	result, err := native.CommitMigrationFile(c.Request().Context(), request)
++	if err != nil {
++		return migrationError(c, err)
++	}
++	return c.JSON(http.StatusOK, result)
++}
+diff --git a/internal/server/handlers_pinkha_migration_file_test.go b/internal/server/handlers_pinkha_migration_file_test.go
+new file mode 100644
+index 0000000..5c12f29
+--- /dev/null
++++ b/internal/server/handlers_pinkha_migration_file_test.go
+@@ -0,0 +1,126 @@
++package server
++
++import (
++	"bytes"
++	"context"
++	"encoding/base64"
++	"encoding/json"
++	"io"
++	"net/http"
++	"net/http/httptest"
++	"strings"
++	"testing"
++
++	"github.com/anyproto/any-sync-sdk/space"
++	"github.com/anyproto/any/internal/api"
++	"github.com/labstack/echo/v4"
++	"github.com/stretchr/testify/require"
++)
++
++type fullHTTPBodyCounter struct{ reads int }
++
++func (b *fullHTTPBodyCounter) Read([]byte) (int, error) { b.reads++; return 0, io.EOF }
++
++func fullHTTPHeader(t *testing.T, cap api.MigrationInlineFileCapabilities, source string, spec space.MigrationFileSpec) (string, string) {
++	t.Helper()
++	raw, err := json.Marshal(spec)
++	require.NoError(t, err)
++	id, body := inlineHTTPRequest(t, cap, source, raw)
++	return id, base64.StdEncoding.EncodeToString([]byte(body))
++}
++
++func TestPreparedFullFileHTTPStrictMetadataBeforeBodyRead(t *testing.T) {
++	spec := space.MigrationFileSpec{OwnerObjectID: "owner", Name: "", Mime: "", Size: 4096, ContentSHA256: strings.Repeat("d", 64)}
++	cap := api.MigrationInlineFileCapabilities{Contract: space.PreparedMigrationContract, StoreID: "store"}
++	id, header := fullHTTPHeader(t, cap, "source", spec)
++	for _, bad := range []string{"none", "missing", "duplicate", "length", "media", "noncanonical", "unknown"} {
++		t.Run(bad, func(t *testing.T) {
++			body := &fullHTTPBodyCounter{}
++			r := httptest.NewRequest(http.MethodPut, "/", body)
++			r.ContentLength = spec.Size
++			r.Header.Set(echo.HeaderContentType, "application/octet-stream")
++			r.Header.Set(api.MigrationFileMetadataHeader, header)
++			switch bad {
++			case "missing":
++				r.Header.Del(api.MigrationFileMetadataHeader)
++			case "duplicate":
++				r.Header.Add(api.MigrationFileMetadataHeader, header)
++			case "length":
++				r.ContentLength++
++			case "media":
++				r.Header.Set(echo.HeaderContentType, "application/json")
++			case "noncanonical":
++				r.Header.Set(api.MigrationFileMetadataHeader, header+"\n")
++			case "unknown":
++				r.Header.Set(api.MigrationFileMetadataHeader, base64.StdEncoding.EncodeToString([]byte(`{"unknown":true}`)))
++			}
++			c := echo.New().NewContext(r, httptest.NewRecorder())
++			c.SetParamNames("intentId")
++			c.SetParamValues(id)
++			input, got, err := migrationFileInput(c)
++			if bad == "none" {
++				require.NoError(t, err)
++				require.Equal(t, spec, got)
++				require.Equal(t, id, input.IntentID)
++			} else {
++				require.Error(t, err)
++			}
++			require.Zero(t, body.reads)
++		})
++	}
++}
++
++func TestPreparedFullFileHTTPNativeStreamingBeyondJSONCap(t *testing.T) {
++	_, router, sp, owner, cap := inlineHTTPFixture(t)
++	base := "/v1/spaces/" + sp.Id() + "/pinkha/migration"
++	response := doJSON(t, router, http.MethodGet, base+"/file/capabilities", "")
++	require.Equal(t, http.StatusOK, response.Code, response.Body.String())
++	var capability api.MigrationFileCapabilities
++	require.NoError(t, json.Unmarshal(response.Body.Bytes(), &capability))
++	require.Equal(t, 1, capability.PreparedFile)
++	body := inlineHTTPBytes(2 << 20)
++	spec := space.MigrationFileSpec{OwnerObjectID: owner, Name: "large-שלום.bin", Mime: "application/octet-stream", Size: int64(len(body)), ContentSHA256: inlineHTTPHash(body)}
++	id, header := fullHTTPHeader(t, cap, "source/full/http", spec)
++	prepare := func(content []byte) *httptest.ResponseRecorder {
++		r := httptest.NewRequest(http.MethodPut, base+"/intents/"+id+"/file/prepare", bytes.NewReader(content))
++		r.Header.Set(echo.HeaderContentType, "application/octet-stream")
++		r.Header.Set(api.MigrationFileMetadataHeader, header)
++		w := httptest.NewRecorder()
++		router.ServeHTTP(w, r)
++		return w
++	}
++	bad := bytes.Clone(body)
++	bad[0] ^= 0xff
++	response = prepare(bad)
++	require.Equal(t, http.StatusBadRequest, response.Code, response.Body.String())
++	response = prepare(body)
++	require.Equal(t, http.StatusOK, response.Code, response.Body.String())
++	var prepared space.MigrationFileReceipt
++	require.NoError(t, json.Unmarshal(response.Body.Bytes(), &prepared))
++	require.Equal(t, "file-prepared", prepared.Stage)
++	commitBytes, err := json.Marshal(space.MigrationCommit{Contract: prepared.Contract, StoreID: prepared.StoreID, PlanID: prepared.PlanID, PlanSHA256: prepared.PlanSHA256, Fingerprint: prepared.Fingerprint})
++	require.NoError(t, err)
++	var complete space.MigrationFileReceipt
++	for range 2 {
++		response = doJSON(t, router, http.MethodPost, base+"/intents/"+id+"/file/commit", string(commitBytes))
++		require.Equal(t, http.StatusOK, response.Code, response.Body.String())
++		require.NoError(t, json.Unmarshal(response.Body.Bytes(), &complete))
++	}
++	require.Equal(t, "complete", complete.Stage)
++	require.True(t, complete.LocalFileComplete)
++	require.False(t, complete.NetworkVerified)
++	require.Equal(t, prepared.RootCID, complete.RootCID)
++	require.Equal(t, prepared.ChangeID, complete.ChangeID)
++	reader, err := sp.Files().Open(context.Background(), complete.FileID, space.VariantOriginal)
++	require.NoError(t, err)
++	actual, err := io.ReadAll(reader)
++	require.NoError(t, err)
++	require.NoError(t, reader.Close())
++	require.Equal(t, body, actual)
++	response = doJSON(t, router, http.MethodGet, base+"/intents/"+id+"/file", "")
++	require.Equal(t, http.StatusOK, response.Code, response.Body.String())
++	var recovered space.MigrationFileReceipt
++	require.NoError(t, json.Unmarshal(response.Body.Bytes(), &recovered))
++	require.Equal(t, complete, recovered)
++	t.Log("full_file_http raw_stream_bytes=2097152 json_cap_bypassed_only_for_named_route=true bad_sha_refused=true exact_native_row_and_plaintext=true")
++}
+diff --git a/internal/server/routes.go b/internal/server/routes.go
+index 18818f9..28217e3 100644
+--- a/internal/server/routes.go
++++ b/internal/server/routes.go
+@@ -32,7 +32,7 @@ var recoverLog = logger.NewNamed("recover")
+ // attach, the account avatar and the local store import.
+ func isRawBodyRoute(path string) bool {
+ 	switch path {
+-	case "/v1/spaces/:spaceId/objects/:objectId/files", "/v1/account/icon", "/v1/local/import":
++	case "/v1/spaces/:spaceId/objects/:objectId/files", "/v1/account/icon", "/v1/local/import", "/v1/spaces/:spaceId/pinkha/migration/intents/:intentId/file/prepare":
+ 		return true
+ 	}
+ 	return false
+@@ -112,7 +112,7 @@ func buildEcho(d *deps) *echo.Echo {
+ 		// (GET /v1/spaces/:spaceId/files/:fileId/content); the control
+ 		// token is what the shell's webview logs a managed server in
+ 		// with (docs/08-clients.md § 14).
+-		AllowHeaders: []string{echo.HeaderContentType, echo.HeaderAccept, "Range", api.ControlTokenHeader},
++		AllowHeaders: []string{echo.HeaderContentType, echo.HeaderAccept, "Range", api.ControlTokenHeader, api.MigrationFileMetadataHeader},
+ 	}))
+ 	// Global body cap for the JSON API. A raw body streams without
+ 	// buffering, so a byte cap would truncate it.
+-- 
+2.43.0
+

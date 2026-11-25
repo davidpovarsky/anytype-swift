@@ -1,0 +1,35 @@
+{
+  "started": "2026-11-24T17:14:04.455908+00:00",
+  "command": [
+    "runuser",
+    "-u",
+    "ubuntu",
+    "--",
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-migration-coordinator-20261124/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/mnt/development/projects/worktrees/anytype-semantic-migration-20261124/Modules/PinkhaAnyHost/.build",
+    "--jobs",
+    "1",
+    "--filter",
+    "NativePreparedDefinitionMigrationTests.testNativePartRecordLimitPreservesAll2048OrderedIdentities"
+  ],
+  "sourceBefore": {
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedDefinitionMigration.swift": "8d44ac127127a59dc1826f3716b41948ee89f846c42221e35e4f7171476af925",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativePreparedDefinitionMigrationTests.swift": "c5d3a695f682f0eb27597b8c08dacf3707621020dcf256e0825a7237da521419"
+  },
+  "priorEightCommit": "eda51b21bc154e71244b06582302b67c9ed1000f",
+  "oldTestsReplayed": 0,
+  "pid": 3623576,
+  "exitCode": 0,
+  "finished": "2026-11-24T17:14:14.810665+00:00",
+  "sourceAfter": {
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedDefinitionMigration.swift": "8d44ac127127a59dc1826f3716b41948ee89f846c42221e35e4f7171476af925",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativePreparedDefinitionMigrationTests.swift": "c5d3a695f682f0eb27597b8c08dacf3707621020dcf256e0825a7237da521419"
+  },
+  "sourceStable": true,
+  "logSHA256": "fbf326034d31dfe2b33a17637928b8c8afc97ea403ae7337eb9b142355432fe2",
+  "tail": "Building for debugging...\n[Computing dependencies]\n[Provisioning 1\u2009/\u200919]\n[Using on-disk description]\n[1\u2009/\u20093] PinkhaAnyHost\n[2\u2009/\u20094] PinkhaAnyHost\n[6\u2009/\u20098] PinkhaAnyHostTests-product\n[7\u2009/\u20099] PinkhaAnyHostTests-product\n[11\u2009/\u200913] PinkhaAnyHost\n[15\u2009/\u200917] pinkha-any-host-probe-product\n[16\u2009/\u200919] pinkha-any-host-probe-product\n[19\u2009/\u200919] pinkha-any-host-probe-product\n[22\u2009/\u200927] pinkha-any-host-probe-product\n[22\u2009/\u200929]\n[26\u2009/\u200931] PinkhaAnyHostTests-product\n[28\u2009/\u200935] PinkhaAnyHostTests-test-runner\n[30\u2009/\u200937] PinkhaAnyHostTests-test-runner\n[33\u2009/\u200936] PinkhaAnyHostTests-test-runner\n[36\u2009/\u200936] PinkhaAnyHostTests-test-runner\nBuild complete! (8.70 secs)\nTest Suite 'Selected tests' started at 2026-11-24 17:14:14.713\nTest Suite 'NativePreparedDefinitionMigrationTests' started at 2026-11-24 17:14:14.715\nTest Case 'NativePreparedDefinitionMigrationTests.testNativePartRecordLimitPreservesAll2048OrderedIdentities' started at 2026-11-24 17:14:14.715\nTest Case 'NativePreparedDefinitionMigrationTests.testNativePartRecordLimitPreservesAll2048OrderedIdentities' passed (0.019 seconds)\nTest Suite 'NativePreparedDefinitionMigrationTests' passed at 2026-11-24 17:14:14.734\n\t Executed 1 test, with 0 failures (0 unexpected) in 0.019 (0.019) seconds\nTest Suite 'Selected tests' passed at 2026-11-24 17:14:14.734\n\t Executed 1 test, with 0 failures (0 unexpected) in 0.019 (0.019) seconds"
+}

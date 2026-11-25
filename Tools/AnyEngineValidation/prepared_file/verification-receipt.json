@@ -1,0 +1,99 @@
+{
+  "schema": "prepared-full-file-local-acceptance-v1",
+  "date": "2026-11-24",
+  "status": "PASS",
+  "scope": "local prepared full-tier file route and Swift components",
+  "maximum_file_bytes": 536870912,
+  "native_payload_bytes_tested": 2097152,
+  "networkVerified": false,
+  "appleArtifactIncluded": false,
+  "wholeSpaceComplete": false,
+  "source_manifest_sha256": "2b222584204952731347a60c53b2f9c1d0fdf71a9c349a7e1ded38eaf6c6be00",
+  "checks": [
+    {
+      "name": "sdk_components",
+      "top_level_tests_passed": 4,
+      "toolchain": "Go 1.26.5",
+      "source": "new controls",
+      "log_file": "full-compile2.log",
+      "log_bytes": 1282,
+      "log_sha256": "4dc2262bb8241a22ae195f0a2781989880f872861f05ef5af53414115f0ce3a7",
+      "terminal_events": [
+        "--- PASS: TestMigrationPreparedFileStagesActualCARWithoutPublishingAndPinsBytes (0.09s)",
+        "--- PASS: TestMigrationPreparedFileRejectsBoundsHashAndCancellationBeforePublication (0.01s)",
+        "--- PASS: TestMigrationPreparedFileSurvivesActualStoreCloseAndReopen (0.02s)",
+        "--- PASS: TestMigrationPreparedFileKeepsPinThroughFailedAdoptionAndRetriesSameRoot (0.02s)"
+      ]
+    },
+    {
+      "name": "production_native",
+      "top_level_tests_passed": 3,
+      "toolchain": "Go 1.27.4",
+      "source": "new controls",
+      "log_file": "native-fullfile.log",
+      "log_bytes": 125308,
+      "log_sha256": "a8d376397fce22ca9102b3bd7d3678c6591c3f0d16ae98fb769961e58b0b1bb1",
+      "terminal_events": [
+        "--- PASS: TestPreparedFullFileNativeStageRestartConcurrentCommitAndReadback (0.54s)",
+        "--- PASS: TestPreparedFullFileNativeBadBodyCollisionAndOwnerFence (0.18s)",
+        "--- PASS: TestPreparedFullFileActualProcessCrashKeepsCARAndOriginalIntent (0.37s)"
+      ]
+    },
+    {
+      "name": "production_http",
+      "top_level_tests_passed": 2,
+      "toolchain": "Go 1.27.4",
+      "source": "new controls",
+      "log_file": "http-fullfile.log",
+      "log_bytes": 11297,
+      "log_sha256": "fa6bf0ab1e81dff6ff7ebecd4c2b635ca3ecbf2fedab58703d1fc83165f76c0d",
+      "terminal_events": [
+        "--- PASS: TestPreparedFullFileHTTPStrictMetadataBeforeBodyRead (0.00s)",
+        "--- PASS: TestPreparedFullFileHTTPNativeStreamingBeyondJSONCap (0.36s)"
+      ]
+    },
+    {
+      "name": "swift_host",
+      "top_level_tests_passed": 4,
+      "toolchain": "Swift 6.4.3",
+      "source": "new controls",
+      "log_file": "swift-host-attempt2.log",
+      "log_bytes": 3257,
+      "log_sha256": "e43d46bff3f126d8c48c79b86be974b8908c83e17404c19d875ca79611d1f57d",
+      "terminal_events": [
+        "Test Case 'NativePreparedFileMigrationTests.testFullFileIntentPreservesStableIdentityAndStreamsPayloadSeparately' passed (0.024 seconds)",
+        "Test Case 'NativePreparedFileMigrationTests.testFullFileKnownPreparationSkipsUploadAndAdvancesExactNativeStages' passed (0.006 seconds)",
+        "Test Case 'NativePreparedFileMigrationTests.testFullFileLostCommitAcknowledgementReconcilesWithoutAnotherWrite' passed (0.003 seconds)",
+        "Test Case 'NativePreparedFileMigrationTests.testFullFileReceiptSeparatesNativeRowFromLocalFileCompletion' passed (0.002 seconds)"
+      ]
+    },
+    {
+      "name": "swift_engine",
+      "top_level_tests_passed": 1,
+      "toolchain": "Swift 6.4.3",
+      "source": "new controls",
+      "log_file": "swift-engine.log",
+      "log_bytes": 1349,
+      "log_sha256": "905e545b9768467c0ae22a67e09fd975bda220e4946601bd835aacedf37857ef",
+      "terminal_events": [
+        "Test Case 'AnyHTTPPreparedFileTests.testVerifiedPrivateSnapshotStreamsExactBytesAndDoesNotFollowSourceSymlink' passed (0.06 seconds)"
+      ]
+    },
+    {
+      "name": "inline_regression",
+      "top_level_tests_passed": 1,
+      "toolchain": "Go 1.27.4",
+      "source": "one existing regression for changed native guard",
+      "log_file": "inline-regression.log",
+      "log_bytes": 98781,
+      "log_sha256": "3e10f4004b1fa3e2ff43e13c71fd4aff4564d308e7ecc51403e60ae494b7e4a8",
+      "terminal_events": [
+        "--- PASS: TestPreparedInlineFileProductionSDKStageRestartReadbackAndDelete (0.49s)"
+      ]
+    }
+  ],
+  "retained_failed_attempts": [
+    "swift-host.log: scratch lock ownership failure before compilation",
+    "Initial SDK import cycle compile attempt; repaired before native tests"
+  ]
+}

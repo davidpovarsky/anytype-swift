@@ -1,0 +1,119 @@
+{
+  "schema": "prepared-full-file-source-v1",
+  "repositories": [
+    {
+      "name": "any-sync-sdk",
+      "base": "7dbab79b5c607077c0f4eebce942dcecd710551a",
+      "commit": "ccb0339d8640a1c890ddf6e224a839d702ec6a3c",
+      "tree": "5aacee069af827096718fb24adc7d5debea3f8d7",
+      "patch": "sdk.patch",
+      "patch_bytes": 67575,
+      "patch_sha256": "e41c1bc7907ece3e8b03824265c8e5385d2db692d9c5947125e2711189c753bd",
+      "replay_reproduced_exact_tree": true,
+      "files": [
+        {
+          "path": "internal/commitguard/guard.go",
+          "bytes": 10669,
+          "sha256": "7c1599c8af423ed00661f6f0eb02d429f6313fdf50c1770e1b9546140a00a258"
+        },
+        {
+          "path": "internal/commitguard/prepared_file.go",
+          "bytes": 6714,
+          "sha256": "da752998d430e5498d6976bf035ddea0a68b8eee3e80fa6b80e8be86037864ef"
+        },
+        {
+          "path": "internal/files/store/migration_prepared_pin.go",
+          "bytes": 5909,
+          "sha256": "b2f8399ea157b5f51bdf836b52285ad5c2628f0a8c30d3320da6c0cf42203e91"
+        },
+        {
+          "path": "internal/files/store/store.go",
+          "bytes": 21664,
+          "sha256": "08286ec9170ebbe2ad534bf93635b34d17b105d8bb7f8fddcd5f3b0a77127cac"
+        },
+        {
+          "path": "internal/files/upload/migration_prepared.go",
+          "bytes": 6996,
+          "sha256": "5c462dab0b59813991358b2215be76261e0996e35d090c68c94233f7ef4128db"
+        },
+        {
+          "path": "internal/files/upload/migration_prepared_test.go",
+          "bytes": 6195,
+          "sha256": "81845511355df20495e198aa9805c24b150357fa232fdd0dc61429906000e6ab"
+        },
+        {
+          "path": "internal/migrationintent/file.go",
+          "bytes": 8001,
+          "sha256": "da86fe4aff406aac7d9bbe9ab773e2ca4e618c0a1a2eca3963b4db444e87c964"
+        },
+        {
+          "path": "internal/migrationintent/file_payload.go",
+          "bytes": 1016,
+          "sha256": "23b611a4a407a9b2fb0db3a2056580881d386a01f2131f072bb60561d11770af"
+        },
+        {
+          "path": "internal/object/migration_file.go",
+          "bytes": 7826,
+          "sha256": "c1f6374801e3ea5208ebc6f0e849df2ee30401403fb9ce309f71a971f949d8e3"
+        },
+        {
+          "path": "internal/spaceimpl/migration_file.go",
+          "bytes": 7084,
+          "sha256": "cd074c3d842f78f7cdc58794b667ca4e76bdbe0d748d2fd2b575fd8663421678"
+        },
+        {
+          "path": "internal/spaceobjects/migration_file.go",
+          "bytes": 6717,
+          "sha256": "252551f791f58dac0ae98b5cfa58c421f80afca7cc43712f5ab068ccefa84169"
+        },
+        {
+          "path": "space/migration_file.go",
+          "bytes": 1685,
+          "sha256": "0f5a79dbe7a0286e961d96be3b9484e9314fe115bab73b3cb96eb4fa423d0a4b"
+        }
+      ]
+    },
+    {
+      "name": "any",
+      "base": "b2cebd7ddf7f62379e59427b2f0f64d980b8fd9e",
+      "commit": "4e91d6327c298a0b0218b0a5125d9fc91cabd29a",
+      "tree": "09b536c8df3ba401df2eea11d47d103d788127de",
+      "patch": "any.patch",
+      "patch_bytes": 28385,
+      "patch_sha256": "89632369d76db25d3a7fb342fc89d2ba821692f8be64ec880d316bd7cfe09925",
+      "replay_reproduced_exact_tree": true,
+      "files": [
+        {
+          "path": "internal/api/pinkha_migration_file.go",
+          "bytes": 971,
+          "sha256": "265831eb7f829456c1100e6de79b4e5df024d7682aa4ea6d5fd87118d57fb6bd"
+        },
+        {
+          "path": "internal/pinkha/migrationnative/file_test.go",
+          "bytes": 11445,
+          "sha256": "c6c01205838b9cab9cfaab69ed90693fbd759d8fba9edd5d5b3cdc6b974c1adc"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_migration.go",
+          "bytes": 9749,
+          "sha256": "fc7af93b9e7607d9b1d317f391577d69a81b322a7ece15821519884508e1ef93"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_migration_file.go",
+          "bytes": 6093,
+          "sha256": "b1a51f8d7447ec88e295a51fbe8b35db01d45ffb82eb818d6bc5a1aed54cfbe2"
+        },
+        {
+          "path": "internal/server/handlers_pinkha_migration_file_test.go",
+          "bytes": 5401,
+          "sha256": "21cbaf4920b68e7d6fdf9b45a4062701a4c9b64429bb495eb3228c3ea11b15ed"
+        },
+        {
+          "path": "internal/server/routes.go",
+          "bytes": 12135,
+          "sha256": "66d5fcae45a26c8b3fec976c993827ed546971d6b69f8dd8167f9add633a2edd"
+        }
+      ]
+    }
+  ]
+}
