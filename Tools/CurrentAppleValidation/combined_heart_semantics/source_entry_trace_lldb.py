@@ -31,10 +31,14 @@ POINTS = {
     0x347920: ("source-session-admitted", None),
     0x34b94c: ("source-task-entry", None),
     0x347d08: ("present-message-entry", None),
+    0x99f4cc: ("selected-input-resign-super-result", "w0"),
+    0x99f028: ("selected-input-reload-gestures-entry", None),
+    0x9a3728: ("selected-input-long-press-enabled-from-first-responder", "w0"),
 }
 STATE = None
 OUTPUT = None
 LABELS = {}
+SOURCE_INPUT = None
 
 
 def save():
@@ -46,13 +50,36 @@ def save():
 
 
 def observe(frame, location, internal_dict):
+    global SOURCE_INPUT
     started = time.monotonic()
     try:
         label, register = LABELS[location.GetBreakpoint().GetID()]
+        if label == "source-action-built-entry":
+            SOURCE_INPUT = frame.FindRegister("x0").GetValueAsUnsigned()
+            if not SOURCE_INPUT:
+                raise ValueError("Original source input register is empty")
+        selected_input = label.startswith("selected-input-")
+        if selected_input:
+            if SOURCE_INPUT is None:
+                return False
+            if label == "selected-input-long-press-enabled-from-first-responder":
+                # Exact original disassembly stores the text view capture at
+                # sp+0x10 before isFirstResponder; read only that pointer value.
+                error = lldb.SBError()
+                pointer = frame.GetThread().GetProcess().ReadPointerFromMemory(
+                    frame.FindRegister("sp").GetValueAsUnsigned() + 0x10, error)
+                if error.Fail():
+                    raise ValueError("Original input capture unavailable: " + str(error))
+            else:
+                pointer = frame.FindRegister("x20").GetValueAsUnsigned()
+            if pointer != SOURCE_INPUT:
+                return False
         if len(STATE["events"]) >= 128:
             STATE["capacityReached"] = True
             return False
         row = {"stage": label, "at": time.time(), "threadID": frame.GetThread().GetThreadID()}
+        if selected_input:
+            row["sameOriginalSourceInput"] = True
         if register:
             value = frame.FindRegister(register)
             if not value.IsValid() or value.GetError().Fail():
