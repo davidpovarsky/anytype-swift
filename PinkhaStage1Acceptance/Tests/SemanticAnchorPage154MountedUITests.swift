@@ -723,6 +723,7 @@ extension SemanticAnchorPage154MountedUITests {
                 throw LinkOpeningFailure.admission("exact-existing-semantic-source-sheet-not-ready")
             }
             XCTAssertTrue(app.staticTexts["Sources for anchored text"].exists)
+            trace["admittedElapsedSeconds"] = ProcessInfo.processInfo.systemUptime - started
             trace["status"] = "OPENED_EXISTING_SEMANTIC_LINK"
             let hierarchy = XCTAttachment(string: app.debugDescription)
             hierarchy.name = "semantic-source-existing-link-opening-ax"
