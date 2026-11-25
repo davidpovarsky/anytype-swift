@@ -54,11 +54,19 @@ internal enum OriginalEditorLocalAnnotationNativeBody {
                 == OriginalAnnotationNativeMetadata.protocolValue,
               string(details, OriginalAnnotationMetadataField.classification.rawValue) == "annotation",
               string(details, OriginalAnnotationMetadataField.namespace.rawValue) == "otzaria.local.annotation",
-              string(details, OriginalAnnotationMetadataField.annotationUUID.rawValue) == source.annotationUUID.uuidString,
+              annotationUUIDMatches(string(details, OriginalAnnotationMetadataField.annotationUUID.rawValue),
+                                    expected: source.annotationUUID),
               string(details, OriginalAnnotationMetadataField.creationDestination.rawValue)
                 == "otzaria.local.draft:" + origin else {
             throw AnytypeOriginalEditorLocalAnnotationError.wrongNativeIdentity
         }
+    }
+
+    /// UUID identity is case-independent across the original Go and Swift
+    /// clients. Stored native bytes remain untouched; other markers remain exact.
+    static func annotationUUIDMatches(_ raw: String?, expected: UUID) -> Bool {
+        guard let raw, let actual = UUID(uuidString: raw) else { return false }
+        return actual == expected
     }
 
     static func string(_ details: Google_Protobuf_Struct, _ key: String) -> String? {

@@ -103,7 +103,7 @@ public final class AnytypeOriginalAnnotationImportSourceLifetime {
         Task { @MainActor in deliver() }
     }
 
-    fileprivate func claim() throws {
+    internal func claim() throws {
         guard isCurrent else { throw AnytypeOriginalAnnotationImportError.retiredSource }
         guard !claimed else { throw AnytypeOriginalAnnotationImportError.sourceAlreadyUsed }
         claimed = true
@@ -222,7 +222,7 @@ public struct AnytypeOriginalAnnotationImportHistory: Sendable {
         }
     }
 
-    private static func copy<MessageType: Message & Sendable>(
+    internal static func copy<MessageType: Message & Sendable>(
         _ message: MessageType?,
         failure: OriginalAnnotationImportHistoryError?
     ) -> (Data?, CopyError?) {
@@ -403,19 +403,25 @@ extension AnytypeOriginalEditorAccountSession {
 
 /// A read of an existing Annotation through the SAME authenticated original
 /// account/Space and original document Owner. This cannot be constructed or
-/// decoded by the Host. Exported heads/digest are observations, not native CAS
-/// or server/device acknowledgements. The Host must still commit using its own
+/// decoded by the Host. Exported log-heads remain historical observations;
+/// the separate closed revision token comes from the actual locked native read.
+/// Neither is a server/device acknowledgement. The Host must still commit using its own
 /// captured SQLite source/revision, and explicitly stage conflicting changes.
 public struct AnytypeOriginalAnnotationReadReceipt: Sendable {
     public let capture: AnytypeOriginalEditorLocalAnnotationCapture
     public let originHostProfileID: String
     public let nativeRootLogHeads: [String: String]
     public let observedNativeRevisionSHA256: String
+    public let revisionToken: AnytypeOriginalAnnotationRevisionToken
+    public let nativeResponseBytes: Data
+    public let nativeResponseSHA256: String
 
     @MainActor
-    fileprivate init(actual: AnytypeOriginalEditorSnapshotCapture,
-                     binding: AnytypeOriginalEditorBinding,
-                     maximumBodyBytes: Int) throws {
+    internal init(actual: AnytypeOriginalEditorSnapshotCapture,
+                  binding: AnytypeOriginalEditorBinding,
+                  maximumBodyBytes: Int,
+                  revisionToken: AnytypeOriginalAnnotationRevisionToken,
+                  nativeResponseBytes: Data) throws {
         guard actual.snapshot.provenance.matchesCaptureBinding(binding) else {
             throw AnytypeOriginalAnnotationImportError.savedBodyMismatch
         }
@@ -453,46 +459,9 @@ public struct AnytypeOriginalAnnotationReadReceipt: Sendable {
             textPreview: preview)
         originHostProfileID = origin
         nativeRootLogHeads = native.rootLogHeads
-        observedNativeRevisionSHA256 = OriginalEditorLocalAnnotationValidation.sha256(native.canonicalRootBytes)
-    }
-}
-
-extension AnytypeOriginalEditorAccountSession {
-    /// Read an already mapped original Annotation, with this actual selected
-    /// account/Space and the Host source captured BEFORE the first await.
-    /// No editable remote controller is mounted, so unsaved local UI changes
-    /// cannot reach a synchronizing account through this route.
-    public func readOriginalAnnotation(
-        binding: AnytypeOriginalEditorBinding,
-        sourceLifetime: AnytypeOriginalEditorSourceLifetime,
-        maximumBodyBytes: Int,
-        sourceIsCurrent: @escaping @MainActor (AnytypeOriginalEditorBinding) -> Bool
-    ) async throws -> AnytypeOriginalAnnotationReadReceipt {
-        try validateCurrent()
-        guard identity.accountID.utf8.elementsEqual(binding.accountID.utf8),
-              identity.spaceID.utf8.elementsEqual(binding.spaceID.utf8) else {
-            throw AnytypeOriginalAnnotationImportError.wrongSelectedSpace
-        }
-        try sourceLifetime.claim(for: binding)
-        do {
-            try Task.checkCancellation()
-            let frozen = try originalAnnotationImportSourceBinding(
-                lifetime: sourceLifetime.lifetime,
-                sourceIsCurrent: { sourceLifetime.isCurrent && sourceIsCurrent(binding) })
-            let host = try await AnytypeOriginalEditorModule.makeHost(
-                binding: binding, sourceLifetime: sourceLifetime,
-                sourceBinding: frozen, accountManager: Container.shared.accountManager())
-            defer { host.retire() }
-            let actual = try await host.captureNativeSnapshot(maximumBodyBytes: maximumBodyBytes)
-            // Original capture drained and terminally retired its own source.
-            // The authenticated account/selection must still be the same one;
-            // current Host SQLite ownership is checked by its later CAS.
-            try validateCurrent()
-            return try AnytypeOriginalAnnotationReadReceipt(
-                actual: actual, binding: binding, maximumBodyBytes: maximumBodyBytes)
-        } catch {
-            sourceLifetime.retire()
-            throw error
-        }
+        observedNativeRevisionSHA256 = revisionToken.nativeRootSHA256
+        self.revisionToken = revisionToken
+        self.nativeResponseBytes = nativeResponseBytes
+        nativeResponseSHA256 = OriginalEditorLocalAnnotationValidation.sha256(nativeResponseBytes)
     }
 }

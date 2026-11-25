@@ -29,9 +29,9 @@ class HostFrameworkContractControls(unittest.TestCase):
 
     def test_all_reviewed_public_and_spi_paths_are_required_without_ui_credit(self):
         result = self.verify(self.graph())
-        self.assertEqual(result['reviewed_host_and_spi_requirements_observed'], 134)
+        self.assertEqual(result['reviewed_host_and_spi_requirements_observed'], 175)
         self.assertEqual(result['editable_mount_api'], 'EXPOSED_COMPILED_NATIVE_EDITOR_NOT_RUN')
-        self.assertEqual(len(result['own_public_symbols']), 134)
+        self.assertEqual(len(result['own_public_symbols']), 175)
         self.assertTrue(result['qualification_spi_scope_verified'])
         self.assertTrue(result['public_host_scope_verified'])
         self.assertEqual(sum(symbol['spi'] for symbol in result['own_public_symbols']), 22)
@@ -132,7 +132,8 @@ class HostFrameworkContractControls(unittest.TestCase):
     def test_every_account_and_import_public_boundary_is_required(self):
         added = {'OriginalEditorFramework/AnytypeOriginalEditorAccountSession.swift',
                  'OriginalEditorFramework/AnytypeOriginalAnnotationImport.swift',
-                 'OriginalEditorFramework/AnytypeOriginalEditorLocalAnnotation.swift'}
+                 'OriginalEditorFramework/AnytypeOriginalEditorLocalAnnotation.swift',
+                 'OriginalEditorFramework/AnytypeOriginalAnnotationRevision.swift'}
         original = self.graph()
         for index, symbol in enumerate(original['symbols']):
             if not any(symbol['location']['uri'] == (ROOT / path).as_uri() for path in added):
@@ -152,6 +153,10 @@ class HostFrameworkContractControls(unittest.TestCase):
             ('AnytypeOriginalAnnotationImport.swift', ['AnytypeOriginalAnnotationImportAttempt']),
             ('AnytypeOriginalAnnotationImport.swift', ['AnytypeOriginalAnnotationImportReceipt']),
             ('AnytypeOriginalAnnotationImport.swift', ['AnytypeOriginalAnnotationReadReceipt']),
+            ('AnytypeOriginalAnnotationRevision.swift', ['AnytypeOriginalAnnotationRevisionToken']),
+            ('AnytypeOriginalAnnotationRevision.swift', ['AnytypeOriginalAnnotationRevisionReceipt']),
+            ('AnytypeOriginalAnnotationRevision.swift', ['AnytypeOriginalAnnotationRevisionHistory']),
+            ('AnytypeOriginalAnnotationRevision.swift', ['AnytypeOriginalAnnotationRevisionAttempt']),
             ('AnytypeOriginalAnnotationImport.swift', ['AnytypeOriginalAnnotationImportReceipt', 'ObjectMapping']),
         ]:
             with self.subTest(path=components):
