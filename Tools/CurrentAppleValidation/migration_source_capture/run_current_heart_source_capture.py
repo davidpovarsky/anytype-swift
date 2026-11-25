@@ -55,7 +55,7 @@ def load_handoff(c, path, expected):
     prior = Path(value["executionRoot"])
     c.require(prior.is_absolute() and prior.resolve() == prior and prior.is_dir()
               and prior.parent == Path("/Users/m1/builds/e-combined-current-20261125")
-              and prior.name.startswith("fresh-6f"), "Exact newly owned E run root required")
+              and prior.name == "fresh-header6f-attempt1", "Exact newly owned E run root required")
     for key in ("executionSHA256", "backupSHA256", "devicePlistSHA256", "containerLogSHA256",
                 "containerCommandSHA256", "fixtureSHA256"):
         c.require(isinstance(value[key], str) and re.fullmatch(r"[0-9a-f]{64}", value[key]),
