@@ -470,7 +470,7 @@ extension SemanticAnchorPage154MountedUITests {
         let hierarchy = XCTAttachment(string: app.debugDescription)
         hierarchy.name = "heart-semantic-source-replacement-selection-ax"
         hierarchy.lifetime = .keepAlways; add(hierarchy)
-        attach("heart-semantic-source-replacement-selection")
+        attach("heart-semantic-source-replacement-selection-visual")
         let selection: [String: Any] = [
             "protocol": "heart-semantic-source-real-replacement-selection-v1",
             "sourceSHA": fixture.sourceSHA, "runID": fixture.runID,
