@@ -18,8 +18,8 @@ import sys
 import uuid
 
 NATIVE_SOURCE = "fbb7b19c3b6c7cbdff8343b0397693a762bc1da2"
-PRIOR_SOURCE = "4b87e0389162015088d21d71a489e22075dd3769"
-SOURCE = "d5ed7221a3df349d37834631fd79bd9179c78520"
+PRIOR_SOURCE = "d5ed7221a3df349d37834631fd79bd9179c78520"
+SOURCE = "1a772ed78ce2adbebabd867168307eedaa882740"
 BASE_CONTROLLER = "ad9db960f9db5440be19774c95e89cbbc3deac67"
 BASE_CONTROLLER_SHA = "341f28c617c1ada9d30b77cc682f652fe2207fff630e6f0ad1ec95685594e59d"
 
@@ -41,7 +41,7 @@ def main():
     spec.loader.exec_module(base)
     require, write = base.require, base.write
     require(str(original) == "/Users/m1/builds/any-semantic-20261125/attempt3"
-            and str(prior_ui) == "/Users/m1/builds/any-semantic-20261125/ui-recheck-menu3"
+            and str(prior_ui) == "/Users/m1/builds/any-semantic-20261125/ui-reselect1"
             and str(root).startswith("/Users/m1/builds/any-semantic-20261125/")
             and not root.exists(), "exact_original_and_fresh_owned_root_required")
     require(shutil.disk_usage(root.parent).free >= 4 * 1024**3, "incremental_ui_capacity")
@@ -83,14 +83,14 @@ def main():
         native_before = json.loads((original / "evidence/source-before.json").read_text())
         prior_before = base.source_state(source, PRIOR_SOURCE)
         require(base.sha(prior_ui / "evidence/source-after.json") ==
-                "f81b0d869231d7e165fa2c2fa6b73d8281491be22dacbf3115035a30c28cc9eb",
+                "566c76104527b024c72b0bf2787f1edac5aee4f38f2ffcfba38de7e91f8c58bf",
                 "prior_ui_source_receipt_changed")
         require(base.sha(prior_ui / "evidence/execution.json") ==
-                "ee7def349c7f0d38b950a28290a3cdf8c78c71634aa6a3fb045e0b60437df2df"
+                "25685c092d3a10607f07016aa584823a0a320d07168bfcbd1abc3ee6c57a0d33"
                 and base.sha(prior_ui / "evidence/summary.json") ==
-                "ec3933c29b6fa4a414cd65d16086ade69a50d3990e3c2a26cc0e9e030a3523f5"
+                "b70b63962f9e415d1ce14e189eb9c5fb6c98f88d7bd10fd000ac598f1b16c7c4"
                 and base.sha(prior_ui / "evidence/cleanup.json") ==
-                "c49b9c53431515d5fbe6e632b5e2cce302f3065550680148abfb78f61170957c",
+                "b192fb322376f4454f51abd4b4273c90d698ebd6a481a6ef49af1894d4bf255c",
                 "original_failed_ui_identity_changed")
         require(prior_before == json.loads((prior_ui / "evidence/source-after.json").read_text()),
                 "original_ui_source_not_exact")
@@ -138,8 +138,7 @@ def main():
         # controller records. All product files and all original acceptance
         # outcome assertions are unchanged from the prior UI run.
         changes = set(base.git(source, "diff", "--name-only", PRIOR_SOURCE, SOURCE).splitlines())
-        allowed_changes = {changed_path, "Tools/AnySemanticAnchorValidation/recheck_ui.py",
-                           "Tools/AnySemanticAnchorValidation/README.md"}
+        allowed_changes = {changed_path, "Tools/AnySemanticAnchorValidation/recheck_ui.py"}
         require(changes == allowed_changes, "unexpected_changes_since_native_acceptance")
         commands.run(["git", "checkout", "--detach", SOURCE], "checkout-reviewed-ui-fix")
         before = base.source_state(source, SOURCE)
@@ -160,7 +159,7 @@ def main():
                                   "after": before["files"].get(name)} for name in sorted(file_changes)},
             "unchangedNativeModelControlsReused": prior["stages"]["native"],
             "originalUITestWithDocumentedRealSelectionSetup": base.STAGES["ui"]["methods"],
-            "priorUIProductCommit": PRIOR_SOURCE, "productFilesChangedSincePriorUI": [],
+            "priorUISourceCommit": PRIOR_SOURCE, "productFilesChangedSincePriorUI": [],
             "originalFailedUIResultPreserved": True})
         originals = Path("/Users/m1/builds/_retained-anytype/45539471031-1/build/"
                          "current-apple-native-ui-failed-45539471031-1/work/native-originals")
