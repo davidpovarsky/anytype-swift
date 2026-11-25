@@ -54,7 +54,8 @@
   "release_signing.py": {
     "changes": [
       "Reuse unchanged exact Amplitude FAT Simulator executable preservation function only for its original artifact",
-      "New generated arm64 comparison separately validates actual device or Simulator identity and exact signature-only changes"
+      "New generated arm64 comparison separately validates actual device or Simulator identity and exact signature-only changes",
+      "Admit only exact upstream AmplitudeCore device BEFORE bytes e9f364292f48570d7ceda63ab3ec553631e1c775cd48f8a431887492b13f5fb1 for arm64 LC_VERSION_MIN_IPHONEOS 11.0/sdk18.1; signed AFTER still requires complete unchanged nonsignature bytes."
     ],
     "original_path": "Tools/OriginalEditor/amplitude_simulator_signing.py",
     "original_sha256": "ea222037b349d6266ea6a7a8fba43e155b0eefb4afa9295bf2508e11837744f9",

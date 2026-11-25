@@ -8,7 +8,14 @@ from release_contract import require
 from product_inventory import inventory
 
 
-def thin_layout(raw, executable, platform_name):
+# Original pinned AmplitudeCore device slice from its upstream XCFramework.
+# It predates LC_BUILD_VERSION. Only this exact BEFORE input can authorize the
+# legacy decoder for either side of a full non-signature-byte comparison.
+LEGACY_AMPLITUDE_DEVICE_SHA256 = 'e9f364292f48570d7ceda63ab3ec553631e1c775cd48f8a431887492b13f5fb1'
+LEGACY_AMPLITUDE_DEVICE_BYTES = 312544
+
+
+def thin_layout(raw, executable, platform_name, *, original_legacy_bytes=None):
     require(len(raw) >= 32, 'Truncated Release image')
     header = struct.unpack_from('<8I', raw)
     magic, cpu, subtype, kind, count, size, flags, reserved = header
@@ -54,8 +61,18 @@ def thin_layout(raw, executable, platform_name):
             offset, allocated = struct.unpack_from('<II', raw, cursor + 8)
             signature = {'command': cursor, 'offset': offset, 'allocated': allocated}
         elif code in {0x24, 0x25, 0x2f, 0x30, 0x32}:
-            require(code == 0x32 and length >= 24, 'Unreviewed Release build platform command')
-            platforms.append(struct.unpack_from('<I', raw, cursor + 8)[0])
+            if code == 0x25:
+                require(executable == 'AmplitudeCore' and platform_name == 'iphoneos'
+                        and length == 16
+                        and struct.unpack_from('<2I', raw, cursor + 8) == (0x000b0000, 0x00120100)
+                        and isinstance(original_legacy_bytes, bytes)
+                        and len(original_legacy_bytes) == LEGACY_AMPLITUDE_DEVICE_BYTES
+                        and hashlib.sha256(original_legacy_bytes).hexdigest() == LEGACY_AMPLITUDE_DEVICE_SHA256,
+                        'Legacy iOS platform requires the exact original AmplitudeCore device input')
+                platforms.append(2)
+            else:
+                require(code == 0x32 and length >= 24, 'Unreviewed Release build platform command')
+                platforms.append(struct.unpack_from('<I', raw, cursor + 8)[0])
         elif code == 0xd:
             start = struct.unpack_from('<I', raw, cursor + 8)[0]
             require(length >= 24 and 24 <= start < length, 'Invalid Release install name')
@@ -78,7 +95,13 @@ def thin_layout(raw, executable, platform_name):
 
 
 def preserve_thin(before, after, executable, platform_name):
-    old, new = thin_layout(before, executable, platform_name), thin_layout(after, executable, platform_name)
+    # The same authenticated original input authorizes both parsers. The signed
+    # AFTER image still has to match every original non-signature byte below.
+    legacy = (before if executable == 'AmplitudeCore' and platform_name == 'iphoneos'
+              and len(before) == LEGACY_AMPLITUDE_DEVICE_BYTES
+              and hashlib.sha256(before).hexdigest() == LEGACY_AMPLITUDE_DEVICE_SHA256 else None)
+    old = thin_layout(before, executable, platform_name, original_legacy_bytes=legacy)
+    new = thin_layout(after, executable, platform_name, original_legacy_bytes=legacy)
     require(new['signature'] is not None, 'Owned Release export is still unsigned')
     old_commands = [v for v in old['commands'] if v[0] != 0x1d]
     new_commands = [v for v in new['commands'] if v[0] != 0x1d]
