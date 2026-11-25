@@ -1,0 +1,67 @@
+{
+  "devices": [
+    {
+      "architecture": "arm64",
+      "deviceId": "97F047F9-D54E-45D0-9504-91B815EB66EF",
+      "deviceName": "EAnchorSources-2b2a5611-9d3acf6e",
+      "modelName": "iPad Pro 13-inch (M5)",
+      "osBuildNumber": "24A434",
+      "osVersion": "27.0",
+      "platform": "iOS Simulator"
+    }
+  ],
+  "testNodes": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "name": "XCTAssertEqual failed: (\"XCTWaiterResult(rawValue: 2)\") is not equal to (\"XCTWaiterResult(rawValue: 1)\") - Expected UI state was not reached",
+                      "nodeType": "Failure Message",
+                      "sourceLocation": {
+                        "filePath": "/Users/m1/builds/any-semantic-20261125/source-fbb7b19/NativeApp/UITests/NativeLaunchTests.swift",
+                        "lineNumber": 2683
+                      }
+                    },
+                    {
+                      "name": "Update the Info.plist: Support for all orientations will soon be required.",
+                      "nodeType": "Runtime Warning"
+                    }
+                  ],
+                  "duration": "2m 40s",
+                  "durationInSeconds": 160.3758339881897,
+                  "name": "testSemanticSourceLinkSurvivesEditAndColdReopen()",
+                  "nodeIdentifier": "NativeLaunchTests/testSemanticSourceLinkSurvivesEditAndColdReopen()",
+                  "nodeIdentifierURL": "test://com.apple.xcode/AnyNative/PinkhaAnyNativeUITests/NativeLaunchTests/testSemanticSourceLinkSurvivesEditAndColdReopen",
+                  "nodeType": "Test Case",
+                  "result": "Failed"
+                }
+              ],
+              "name": "NativeLaunchTests",
+              "nodeIdentifierURL": "test://com.apple.xcode/AnyNative/PinkhaAnyNativeUITests/NativeLaunchTests",
+              "nodeType": "Test Suite",
+              "result": "Failed"
+            }
+          ],
+          "name": "PinkhaAnyNativeUITests",
+          "nodeIdentifierURL": "test://com.apple.xcode/AnyNative/PinkhaAnyNativeUITests",
+          "nodeType": "UI test bundle",
+          "result": "Failed"
+        }
+      ],
+      "name": "PinkhaAnyNativeApp",
+      "nodeType": "Test Plan",
+      "result": "Failed"
+    }
+  ],
+  "testPlanConfigurations": [
+    {
+      "configurationId": "1",
+      "configurationName": "Test Scheme Action"
+    }
+  ]
+}
