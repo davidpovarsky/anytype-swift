@@ -54,6 +54,7 @@ public struct AnyHeartNativeSpaceBundle: Sendable {
     public let sourceGaps: [AnyJSON]
     public let resolverUnmapped: [AnyJSON]
     public let bundledDefinitionsUsed: [String]
+    public let bundledDefinitions: [AnyHeartNativeBundledDefinition]
     public let retainedOtherCollections: [AnyJSON]
     public let issues: [Issue]
 
@@ -112,7 +113,7 @@ public struct AnyHeartNativeSpaceBundle: Sendable {
             guard receipt[flag]?.bool == true else { throw AnyHeartNativeSpaceBundleError.invalidManifest }
         }
         let known: Set<String> = ["Contract", "Receipt", "SourceRows", "Trees", "Objects", "Files",
-            "FileReferences", "Gaps", "ResolverUnmapped", "BundledDefinitionsUsed", "RetainedOtherCollections"]
+            "FileReferences", "Gaps", "ResolverUnmapped", "BundledDefinitionsUsed", "BundledDefinitions", "RetainedOtherCollections"]
         var issues = Set(fields.keys).subtracting(known).sorted().map {
             Issue(code: "unknown-manifest-field", sourceID: nil, field: $0)
         }
@@ -242,9 +243,44 @@ public struct AnyHeartNativeSpaceBundle: Sendable {
         let gaps = try Self.array(root["Gaps"], maximum: 100_000)
         let unmapped = try Self.array(root["ResolverUnmapped"], maximum: 100_000)
         let others = try Self.array(root["RetainedOtherCollections"], maximum: 100_000)
+        var definitionIDs = Set<Data>(), definitionNames = Set<String>()
         let definitions = try Self.array(root["BundledDefinitionsUsed"], maximum: 100_000).map { value -> String in
-            guard let id = value.string, Self.validID(id) else { throw AnyHeartNativeSpaceBundleError.invalidManifest }
+            guard let id = value.string, Self.validID(id),
+                  definitionIDs.insert(Data(id.utf8)).inserted, definitionNames.insert(id).inserted else {
+                throw AnyHeartNativeSpaceBundleError.invalidManifest
+            }
             return id
+        }
+        var compiledDefinitions: [AnyHeartNativeBundledDefinition] = []
+        if let declared = root["BundledDefinitions"] {
+            let entries = try Self.array(declared, maximum: 1024)
+            var compiledBytes = 0
+            for row in entries {
+                guard let fields = row.object,
+                      Set(fields.keys) == ["Kind", "Key", "ProtobufMessage", "Protobuf", "JSONView"],
+                      let kind = row["Kind"]?.string, let key = row["Key"]?.string, Self.validID(key),
+                      let message = row["ProtobufMessage"]?.string else {
+                    throw AnyHeartNativeSpaceBundleError.invalidManifest
+                }
+                let identity = kind + ":" + key
+                let name = "compiled-definition-" + AnyContentDigest.sha256(Data(identity.utf8))
+                let raw = try verify(row["Protobuf"], expectedPath: name + ".pb", maximum: 1_048_576)
+                let view = try verify(row["JSONView"], expectedPath: name + ".json", maximum: 4_194_304)
+                compiledBytes += raw.0.byteCount + view.0.byteCount
+                guard compiledBytes <= 16_777_216 else { throw AnyHeartNativeSpaceBundleError.limit }
+                compiledDefinitions.append(try .init(kind: kind, key: key, protobufMessage: message,
+                                                      protobuf: raw.1, jsonView: view.1))
+            }
+            let capturedIDs = compiledDefinitions.map { Data($0.identity.utf8) }
+            guard capturedIDs == definitions.map({ Data($0.utf8) }),
+                  capturedIDs == capturedIDs.sorted(by: { $0.lexicographicallyPrecedes($1) }) else {
+                throw AnyHeartNativeSpaceBundleError.inconsistentInventory
+            }
+        } else if !definitions.isEmpty {
+            // Historical bundles retain their original identities but cannot
+            // invent the compiled descriptors that were not captured with them.
+            issues.append(.init(code: "compiled-definition-descriptors-not-captured",
+                                sourceID: nil, field: "BundledDefinitionsUsed"))
         }
         let counts = ["NativeTrees": trees.count, "CapturedObjects": objects.count, "CapturedFiles": rawFiles.count,
             "FileReferences": references.count, "UnresolvedEntries": gaps.count, "ClosedResolverUnmapped": unmapped.count,
@@ -294,7 +330,8 @@ public struct AnyHeartNativeSpaceBundle: Sendable {
         sourceWitnessSHA256 = witness; manifestBytes = manifest; rawManifest = root; self.receipt = receipt
         sourceRows = rows; self.trees = trees; self.objects = objects; fileVariants = variants
         verifiedMembers = members; fileReferences = references; sourceGaps = gaps
-        resolverUnmapped = unmapped; bundledDefinitionsUsed = definitions; retainedOtherCollections = others
+        resolverUnmapped = unmapped; bundledDefinitionsUsed = definitions
+        bundledDefinitions = compiledDefinitions; retainedOtherCollections = others
         self.issues = issues
     }
 
