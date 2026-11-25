@@ -38,7 +38,8 @@ require = profiles.require
 
 def expected_producer_branch(consumer_branch):
     """The explicit continuation consumes the original shared producer proof."""
-    if consumer_branch == "codex/chatgpt-wave15-acceptance-continuation-20261122":
+    if consumer_branch in {"codex/chatgpt-wave15-acceptance-continuation-20261122",
+                           "codex/anytype-miniapps-bridge-20261123"}:
         return "codex/chatgpt-wave15-shared-20261121"
     return consumer_branch
 

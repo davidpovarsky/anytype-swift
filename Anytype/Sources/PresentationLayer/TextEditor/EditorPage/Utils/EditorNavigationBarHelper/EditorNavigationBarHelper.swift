@@ -73,6 +73,7 @@ final class EditorNavigationBarHelper {
         onSyncStatusTap: @escaping () -> Void,
         torahSession: TorahEditorSession? = nil,
         onHanlinSelectionTap: @escaping () -> Void = {},
+        onMiniAppsTap: @escaping () -> Void = {},
         onWebBannerTap: @escaping () -> Void
     ) {
         self.navigationBarView = navigationBarView
@@ -87,7 +88,10 @@ final class EditorNavigationBarHelper {
                 .foregroundStyle(Color.Text.primary)
                 .accessibilityLabel(Loc.more)
         } additionalMenuItems: {
-            EmptyView()
+            Button(action: onMiniAppsTap) {
+                Label(PinkhaMiniAppsStrings.title, systemImage: "square.grid.2x2")
+            }
+            .accessibilityIdentifier("pinkha.miniapps.menu")
         }
         let hostingController = UIHostingController(rootView: menuContainer)
         // Retain and contain the original SwiftUI menu. Keeping only its view
@@ -135,7 +139,7 @@ final class EditorNavigationBarHelper {
         )
 
         self.onTemplatesButtonTap = onTemplatesButtonTap
-        self.rightContainerForSelection = PinkhaHanlinSelectionControls(doneButton: doneButton, onOpen: onHanlinSelectionTap)
+        self.rightContainerForSelection = PinkhaHanlinSelectionControls(doneButton: doneButton, onOpen: onHanlinSelectionTap, onMiniApps: onMiniAppsTap)
         self.onTitleTap = onTitleTap
 
         self.fakeNavigationBarBackgroundView.backgroundColor = .Background.primary
@@ -185,6 +189,7 @@ final class EditorNavigationBarHelper {
             syncStatus: syncStatusGlassContainerLocal,
             settings: settingsGlassContainerLocal
         )
+        editingControlsStack.insertArrangedSubview(PinkhaMiniAppsEntry.button(action: onMiniAppsTap), at: 1)
         self.rightContanerForEditing.addSubview(editingControlsStack) {
             $0.pinToSuperview()
         }

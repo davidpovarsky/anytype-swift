@@ -38,6 +38,10 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
     private var configuredBlockId: String?
     private var configuredInputOwnerIdentity: ObjectIdentifier?
 
+    /// Read-only identity of the native text component, including nested table cells.
+    /// MiniApps must not infer this from the outer collection view's table block.
+    var pinkhaMiniAppsBlockID: String? { configuredBlockId }
+
 #if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
     private var pinkhaSemanticPendingChanges: (@MainActor () -> Bool)?
     var pinkhaSemanticAnchorContext: (blockID: String, owner: ObjectIdentifier)? {

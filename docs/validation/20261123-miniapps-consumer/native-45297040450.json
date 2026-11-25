@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "run_id": "45297040450",
+  "source_sha": "eeb23f929cf3d84f2ad09a44795c05a49053d36e",
+  "requested_lane": "hanlin-selection",
+  "effective_lane": "miniapps-native",
+  "artifact_id": 14879200003,
+  "artifact_sha256": "dfaa426d593ba063dac105c57faec47ca40ac8b20b5a908403939ae97fa61256",
+  "status": "FAILED_BEFORE_APP_BUILD",
+  "failed_phase": "simulator_boot_readiness",
+  "command": [
+    "xcrun",
+    "simctl",
+    "bootstatus",
+    "1F8C3497-C0E3-4038-9C7C-2F81DB4FEC25",
+    "-b"
+  ],
+  "timeout_seconds": 120,
+  "boot_log_bytes": 0,
+  "underlying_os_boot_cause": "NOT_OBSERVED",
+  "original_heart_admission": "PASS",
+  "actual_app_builds": 0,
+  "actual_selected_test_methods": 0,
+  "disposable_simulators_removed": 2,
+  "producer_revision": "a774de24926ca13d563c45c42917d03b8c04296f",
+  "producer_run_id": "45294462656",
+  "physical_sharing": "NOT_PROVEN_BY_SIMULATOR",
+  "correction": "Start the real disposable simulator before compilation. Keep the same bounded bootstatus gate before installation/tests, after retaining the actual same-run build receipt. Record owned runtime state on readiness success or failure.",
+  "retained_unchanged_tests": {
+    "planner": 13,
+    "materialization": 2,
+    "reexecuted": false
+  }
+}

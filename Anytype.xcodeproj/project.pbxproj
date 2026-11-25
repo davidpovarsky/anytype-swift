@@ -104,6 +104,9 @@
 		FA8301012F111900006805CC /* PinkhaTorahPresentation in Frameworks */ = {isa = PBXBuildFile; productRef = FA8201012F111900006805CC /* PinkhaTorahPresentation */; };
 		FA7500012F111900006805CC /* PinkhaHanlinUI in Frameworks */ = {isa = PBXBuildFile; productRef = FA7400012F111900006805CC /* PinkhaHanlinUI */; };
 		FA7501012F111900006805CC /* PinkhaHanlinUI in Frameworks */ = {isa = PBXBuildFile; productRef = FA7401012F111900006805CC /* PinkhaHanlinUI */; };
+		FAB300012F112300006805CC /* HanlinMiniAppsBridge in Frameworks */ = {isa = PBXBuildFile; productRef = FAB200012F112300006805CC /* HanlinMiniAppsBridge */; };
+		FAB300022F112300006805CC /* HanlinMiniAppsPicker in Frameworks */ = {isa = PBXBuildFile; productRef = FAB200022F112300006805CC /* HanlinMiniAppsPicker */; };
+		FAB301012F112300006805CC /* HanlinMiniAppsBridge in Frameworks */ = {isa = PBXBuildFile; productRef = FAB201012F112300006805CC /* HanlinMiniAppsBridge */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -230,6 +233,7 @@
 		C960DFAF28D88615002898AE /* AnytypeWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnytypeWidget.swift; sourceTree = "<group>"; };
 		C960DFB228D88618002898AE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C960DFB428D88618002898AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FAB410012F112300006805CC /* MiniAppsOwner.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = MiniAppsOwner.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -291,6 +295,8 @@
 				FA8300012F111900006805CC /* PinkhaTorahPresentation in Frameworks */,
 				FA7500012F111900006805CC /* PinkhaHanlinUI in Frameworks */,
 				FA7300012F111900006805CC /* PinkhaHanlinCore in Frameworks */,
+				FAB300012F112300006805CC /* HanlinMiniAppsBridge in Frameworks */,
+				FAB300022F112300006805CC /* HanlinMiniAppsPicker in Frameworks */,
 				FA6300012F111800006805CC /* HanlinHostContracts in Frameworks */,
 				FA6300022F111800006805CC /* HanlinPlatformContracts in Frameworks */,
 				FA6300032F111800006805CC /* HanlinAgentCore in Frameworks */,
@@ -351,6 +357,7 @@
 				FA8301012F111900006805CC /* PinkhaTorahPresentation in Frameworks */,
 				FA7501012F111900006805CC /* PinkhaHanlinUI in Frameworks */,
 				FA7301012F111900006805CC /* PinkhaHanlinCore in Frameworks */,
+				FAB301012F112300006805CC /* HanlinMiniAppsBridge in Frameworks */,
 				FA6301012F111800006805CC /* HanlinHostContracts in Frameworks */,
 				FA6301022F111800006805CC /* HanlinPlatformContracts in Frameworks */,
 				FA6301032F111800006805CC /* HanlinAgentCore in Frameworks */,
@@ -404,6 +411,7 @@
 		0303ECF222D8EDAA005C552B = {
 			isa = PBXGroup;
 			children = (
+				FAB410022F112300006805CC /* Owner Signing */,
 				7424EFB92D79C71B00E51377 /* Modules */,
 				0303ECFD22D8EDAA005C552B /* Anytype */,
 				3D0DC0E12DFC9BC000E555FD /* AnytypeTests */,
@@ -493,6 +501,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		FAB410022F112300006805CC /* Owner Signing */ = {
+			isa = PBXGroup;
+			children = (
+				FAB410012F112300006805CC /* MiniAppsOwner.xcconfig */,
+			);
+			name = "Owner Signing";
+			path = Config/Signing;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -525,6 +542,8 @@
 				FA8200012F111900006805CC /* PinkhaTorahPresentation */,
 				FA7400012F111900006805CC /* PinkhaHanlinUI */,
 				FA7200012F111900006805CC /* PinkhaHanlinCore */,
+				FAB200012F112300006805CC /* HanlinMiniAppsBridge */,
+				FAB200022F112300006805CC /* HanlinMiniAppsPicker */,
 				FA6200012F111800006805CC /* HanlinHostContracts */,
 				FA6200022F111800006805CC /* HanlinPlatformContracts */,
 				FA6200032F111800006805CC /* HanlinAgentCore */,
@@ -599,6 +618,7 @@
 				FA8201012F111900006805CC /* PinkhaTorahPresentation */,
 				FA7401012F111900006805CC /* PinkhaHanlinUI */,
 				FA7201012F111900006805CC /* PinkhaHanlinCore */,
+				FAB201012F112300006805CC /* HanlinMiniAppsBridge */,
 				FA6201012F111800006805CC /* HanlinHostContracts */,
 				FA6201022F111800006805CC /* HanlinPlatformContracts */,
 				FA6201032F111800006805CC /* HanlinAgentCore */,
@@ -739,6 +759,7 @@
 				FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinAgentSDK" */,
 				FA6100022F111800006805CC /* XCLocalSwiftPackageReference "HanlinPlatform" */,
 				FA6100032F111800006805CC /* XCLocalSwiftPackageReference "HanlinPresentationSDK" */,
+				FAB100012F112300006805CC /* XCLocalSwiftPackageReference "HanlinMiniAppsBridge" */,
 				5333421A262E249100238121 /* XCRemoteSwiftPackageReference "FloatingPanel" */,
 				1259300326F3A5C500B115CD /* XCRemoteSwiftPackageReference "Highlightr" */,
 				1259300C26F3A6AE00B115CD /* XCRemoteSwiftPackageReference "Kingfisher" */,
@@ -2038,6 +2059,574 @@
 			};
 			name = "Release-Nightly";
 		};
+		FAB400012F112300006805CC /* Debug-MiniAppsOwner */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = FAB410012F112300006805CC /* MiniAppsOwner.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMPILATION_CONDITION = DEBUG;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_BITCODE = NO;
+				ENABLE_NS_ASSERTIONS = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_SWIFT_FLAGS = "-Xfrontend -warn-long-expression-type-checking=120 -Xfrontend -warn-long-function-bodies=120";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_UPCOMING_FEATURE_CONCISE_MAGIC_FILE = YES;
+				SWIFT_UPCOMING_FEATURE_DEPRECATE_APPLICATION_MAIN = YES;
+				SWIFT_UPCOMING_FEATURE_DISABLE_OUTWARD_ACTOR_ISOLATION = YES;
+				SWIFT_UPCOMING_FEATURE_DYNAMIC_ACTOR_ISOLATION = NO;
+				SWIFT_UPCOMING_FEATURE_EXISTENTIAL_ANY = YES;
+				SWIFT_UPCOMING_FEATURE_FORWARD_TRAILING_CLOSURES = YES;
+				SWIFT_UPCOMING_FEATURE_GLOBAL_ACTOR_ISOLATED_TYPES_USABILITY = YES;
+				SWIFT_UPCOMING_FEATURE_GLOBAL_CONCURRENCY = YES;
+				SWIFT_UPCOMING_FEATURE_IMPLICIT_OPEN_EXISTENTIALS = YES;
+				SWIFT_UPCOMING_FEATURE_IMPORT_OBJC_FORWARD_DECLS = YES;
+				SWIFT_UPCOMING_FEATURE_INFER_SENDABLE_FROM_CAPTURES = YES;
+				SWIFT_UPCOMING_FEATURE_ISOLATED_DEFAULT_VALUES = YES;
+				SWIFT_UPCOMING_FEATURE_NONFROZEN_ENUM_EXHAUSTIVITY = YES;
+				SWIFT_UPCOMING_FEATURE_REGION_BASED_ISOLATION = YES;
+				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = NO;
+			};
+			name = "Debug-MiniAppsOwner";
+		};
+		FAB400022F112300006805CC /* Debug-MiniAppsOwner */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				BUILD_APP_URL_SCHEME = "prod-anytype";
+				BUNDLE_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_ENTITLEMENTS = Config/Signing/AnytypeOwner.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 0;
+				DEVELOPMENT_ASSET_PATHS = "Anytype/Resources/Preview\\ Content";
+				DEVELOPMENT_TEAM = "$(PINKHA_OWNER_TEAM_ID)";
+				ENABLE_BITCODE = NO;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_TESTING_SEARCH_PATHS = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Dependencies/Middleware",
+				);
+				GOOGLE_SERVICE_INFO_PLIST = "$(SRCROOT)/$(PROJECT_NAME)/Supporting files/GoogleServices/GoogleService-Info-Anytype-Release.plist";
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = "Anytype/Supporting files/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.49.0;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PINKHA_OWNER_APP_BUNDLE_ID)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = NO;
+				SWIFT_USE_INTEGRATED_DRIVER = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = "Debug-MiniAppsOwner";
+		};
+		FAB400032F112300006805CC /* Debug-MiniAppsOwner */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = AnytypeTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.49.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.AnytypeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Anytype.app/Anytype";
+			};
+			name = "Debug-MiniAppsOwner";
+		};
+		FAB400042F112300006805CC /* Debug-MiniAppsOwner */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 0;
+				DEVELOPMENT_TEAM = "$(PINKHA_OWNER_TEAM_ID)";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AnytypeWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AnytypeWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Anytype. All rights reserved.";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.49.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PINKHA_OWNER_WIDGET_BUNDLE_ID)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = "Debug-MiniAppsOwner";
+		};
+		FAB400052F112300006805CC /* Debug-MiniAppsOwner */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = Config/Signing/AnytypeShareOwner.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 0;
+				DEVELOPMENT_TEAM = "$(PINKHA_OWNER_TEAM_ID)";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = "$(PINKHA_OWNER_TEAM_ID)";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AnytypeShareExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AnytypeShareExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 Anytype. All rights reserved.";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.49.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PINKHA_OWNER_SHARE_BUNDLE_ID)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = "Debug-MiniAppsOwner";
+		};
+		FAB400062F112300006805CC /* Debug-MiniAppsOwner */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = Config/Signing/AnytypeNotificationOwner.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 0;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "$(PINKHA_OWNER_TEAM_ID)";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = "$(PINKHA_OWNER_TEAM_ID)";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AnytypeNotificationServiceExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AnytypeNotificationServiceExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Anytype. All rights reserved.";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 0.49.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PINKHA_OWNER_NOTIFICATION_BUNDLE_ID)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = "Debug-MiniAppsOwner";
+		};
+		FAB500012F112300006805CC /* Release-MiniAppsOwner */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = FAB410012F112300006805CC /* MiniAppsOwner.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMPILATION_CONDITION = RELEASE_ANYTYPE;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				OTHER_SWIFT_FLAGS = "-Xfrontend -warn-long-expression-type-checking=120 -Xfrontend -warn-long-function-bodies=120";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = RELEASE_ANYTYPE;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_UPCOMING_FEATURE_CONCISE_MAGIC_FILE = YES;
+				SWIFT_UPCOMING_FEATURE_DEPRECATE_APPLICATION_MAIN = YES;
+				SWIFT_UPCOMING_FEATURE_DISABLE_OUTWARD_ACTOR_ISOLATION = YES;
+				SWIFT_UPCOMING_FEATURE_DYNAMIC_ACTOR_ISOLATION = NO;
+				SWIFT_UPCOMING_FEATURE_EXISTENTIAL_ANY = YES;
+				SWIFT_UPCOMING_FEATURE_FORWARD_TRAILING_CLOSURES = YES;
+				SWIFT_UPCOMING_FEATURE_GLOBAL_ACTOR_ISOLATED_TYPES_USABILITY = YES;
+				SWIFT_UPCOMING_FEATURE_GLOBAL_CONCURRENCY = YES;
+				SWIFT_UPCOMING_FEATURE_IMPLICIT_OPEN_EXISTENTIALS = YES;
+				SWIFT_UPCOMING_FEATURE_IMPORT_OBJC_FORWARD_DECLS = YES;
+				SWIFT_UPCOMING_FEATURE_INFER_SENDABLE_FROM_CAPTURES = YES;
+				SWIFT_UPCOMING_FEATURE_ISOLATED_DEFAULT_VALUES = YES;
+				SWIFT_UPCOMING_FEATURE_NONFROZEN_ENUM_EXHAUSTIVITY = YES;
+				SWIFT_UPCOMING_FEATURE_REGION_BASED_ISOLATION = YES;
+				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = "Release-MiniAppsOwner";
+		};
+		FAB500022F112300006805CC /* Release-MiniAppsOwner */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				BUILD_APP_URL_SCHEME = "prod-anytype";
+				BUNDLE_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_ENTITLEMENTS = Config/Signing/AnytypeOwner.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 0;
+				DEVELOPMENT_ASSET_PATHS = "Anytype/Resources/Preview\\ Content";
+				DEVELOPMENT_TEAM = "$(PINKHA_OWNER_TEAM_ID)";
+				ENABLE_BITCODE = NO;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_TESTING_SEARCH_PATHS = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Dependencies/Middleware",
+				);
+				GOOGLE_SERVICE_INFO_PLIST = "$(SRCROOT)/$(PROJECT_NAME)/Supporting files/GoogleServices/GoogleService-Info-Anytype-Release.plist";
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = "Anytype/Supporting files/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.49.0;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PINKHA_OWNER_APP_BUNDLE_ID)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SENTRY_ENV = production;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = NO;
+				SWIFT_USE_INTEGRATED_DRIVER = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = "Release-MiniAppsOwner";
+		};
+		FAB500032F112300006805CC /* Release-MiniAppsOwner */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = AnytypeTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.49.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.AnytypeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Anytype.app/Anytype";
+			};
+			name = "Release-MiniAppsOwner";
+		};
+		FAB500042F112300006805CC /* Release-MiniAppsOwner */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = Config/Signing/AnytypeNotificationOwner.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 0;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "$(PINKHA_OWNER_TEAM_ID)";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AnytypeNotificationServiceExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AnytypeNotificationServiceExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Anytype. All rights reserved.";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 0.49.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PINKHA_OWNER_NOTIFICATION_BUNDLE_ID)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = "Release-MiniAppsOwner";
+		};
+		FAB500052F112300006805CC /* Release-MiniAppsOwner */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = Config/Signing/AnytypeShareOwner.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 0;
+				DEVELOPMENT_TEAM = "$(PINKHA_OWNER_TEAM_ID)";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AnytypeShareExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AnytypeShareExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 Anytype. All rights reserved.";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.49.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PINKHA_OWNER_SHARE_BUNDLE_ID)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = "Release-MiniAppsOwner";
+		};
+		FAB500062F112300006805CC /* Release-MiniAppsOwner */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 0;
+				DEVELOPMENT_TEAM = "$(PINKHA_OWNER_TEAM_ID)";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AnytypeWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AnytypeWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Anytype. All rights reserved.";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.49.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PINKHA_OWNER_WIDGET_BUNDLE_ID)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = "Release-MiniAppsOwner";
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2046,7 +2635,9 @@
 			buildConfigurations = (
 				0303ED0D22D8EDAD005C552B /* Debug */,
 				0303ED0E22D8EDAD005C552B /* Release-Anytype */,
+				FAB500012F112300006805CC /* Release-MiniAppsOwner */,
 				7458588B2DD73A4F00895687 /* Debug-Anytype */,
+				FAB400012F112300006805CC /* Debug-MiniAppsOwner */,
 				1267458B2696FEC1002132F3 /* Release-Nightly */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -2057,7 +2648,9 @@
 			buildConfigurations = (
 				0303ED1022D8EDAD005C552B /* Debug */,
 				0303ED1122D8EDAD005C552B /* Release-Anytype */,
+				FAB500022F112300006805CC /* Release-MiniAppsOwner */,
 				7458588C2DD73A4F00895687 /* Debug-Anytype */,
+				FAB400022F112300006805CC /* Debug-MiniAppsOwner */,
 				1267458C2696FEC1002132F3 /* Release-Nightly */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -2068,7 +2661,9 @@
 			buildConfigurations = (
 				03C5C54822DFD90C00DD91DE /* Debug */,
 				03C5C54922DFD90C00DD91DE /* Release-Anytype */,
+				FAB500032F112300006805CC /* Release-MiniAppsOwner */,
 				7458588D2DD73A4F00895687 /* Debug-Anytype */,
+				FAB400032F112300006805CC /* Debug-MiniAppsOwner */,
 				1267458D2696FEC1002132F3 /* Release-Nightly */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -2079,7 +2674,9 @@
 			buildConfigurations = (
 				2E3058152D81DF7F00BF4F25 /* Debug */,
 				2E3058162D81DF7F00BF4F25 /* Release-Anytype */,
+				FAB500042F112300006805CC /* Release-MiniAppsOwner */,
 				745858902DD73A4F00895687 /* Debug-Anytype */,
+				FAB400062F112300006805CC /* Debug-MiniAppsOwner */,
 				2E3058182D81DF7F00BF4F25 /* Release-Nightly */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -2090,7 +2687,9 @@
 			buildConfigurations = (
 				862D559B2A8F78340018103F /* Debug */,
 				862D559C2A8F78340018103F /* Release-Anytype */,
+				FAB500052F112300006805CC /* Release-MiniAppsOwner */,
 				7458588F2DD73A4F00895687 /* Debug-Anytype */,
+				FAB400052F112300006805CC /* Debug-MiniAppsOwner */,
 				862D559D2A8F78340018103F /* Release-Nightly */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -2101,7 +2700,9 @@
 			buildConfigurations = (
 				C960DFBB28D88618002898AE /* Debug */,
 				C960DFBC28D88618002898AE /* Release-Anytype */,
+				FAB500062F112300006805CC /* Release-MiniAppsOwner */,
 				7458588E2DD73A4F00895687 /* Debug-Anytype */,
+				FAB400042F112300006805CC /* Debug-MiniAppsOwner */,
 				C960DFBD28D88618002898AE /* Release-Nightly */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -2129,6 +2730,10 @@
 		FA8100012F111900006805CC /* XCLocalSwiftPackageReference "PinkhaTorahPresentation" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Modules/PinkhaTorahPresentation;
+		};
+		FAB100012F112300006805CC /* XCLocalSwiftPackageReference "HanlinMiniAppsBridge" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Dependencies/Hanlin/Packages/HanlinMiniAppsBridge;
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -2625,6 +3230,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FA7100012F111900006805CC /* XCLocalSwiftPackageReference "PinkhaAnyHanlin" */;
 			productName = PinkhaHanlinUI;
+		};
+		FAB200012F112300006805CC /* HanlinMiniAppsBridge */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB100012F112300006805CC /* XCLocalSwiftPackageReference "HanlinMiniAppsBridge" */;
+			productName = HanlinMiniAppsBridge;
+		};
+		FAB200022F112300006805CC /* HanlinMiniAppsPicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB100012F112300006805CC /* XCLocalSwiftPackageReference "HanlinMiniAppsBridge" */;
+			productName = HanlinMiniAppsPicker;
+		};
+		FAB201012F112300006805CC /* HanlinMiniAppsBridge */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FAB100012F112300006805CC /* XCLocalSwiftPackageReference "HanlinMiniAppsBridge" */;
+			productName = HanlinMiniAppsBridge;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
