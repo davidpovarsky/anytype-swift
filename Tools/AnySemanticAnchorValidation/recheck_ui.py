@@ -103,9 +103,17 @@ def main():
         old_ui_products = json.loads((prior_ui / "evidence/original-products.json").read_text())
         require(base.inventory(products) == old_ui_products, "original_failed_ui_products_changed")
         saved_ui = prior_ui / "evidence/retained-original/Build/Products"
-        require(not saved_ui.exists(), "original_failed_ui_products_already_retained")
-        saved_ui.parent.mkdir(parents=True)
-        commands.run(["/bin/cp", "-cR", str(products), str(saved_ui)], "retain-original-failed-ui-products", 300)
+        if not saved_ui.exists():
+            saved_ui.parent.mkdir(parents=True)
+            commands.run(["/bin/cp", "-cR", str(products), str(saved_ui)], "retain-original-failed-ui-products", 300)
+        else:
+            retained = json.loads((prior_ui / "evidence/products-retention.json").read_text())
+            require(retained["retainedProducts"] == str(saved_ui)
+                    and retained["sourceCommit"] == NATIVE_SOURCE
+                    and retained["originalUIResult"] == "FAIL_1_OF_1"
+                    and retained["originalProductsReceiptSHA256"] ==
+                        base.sha(prior_ui / "evidence/original-products.json"),
+                    "existing_failed_ui_retention_not_exact")
         require(base.inventory(saved_ui) == old_ui_products and base.inventory(products) == old_ui_products,
                 "failed_ui_preservation_changed_bytes")
         write(prior_ui / "evidence/products-retention.json", {
@@ -123,7 +131,8 @@ def main():
         # application UI test, source adapters, SDK and native libraries are exact.
         changes = set(base.git(source, "diff", "--name-only", NATIVE_SOURCE, SOURCE).splitlines())
         allowed_changes = {changed_path, "Tools/AnySemanticAnchorValidation/run_apple.py",
-                           "Tools/AnySemanticAnchorValidation/continue_ui.py"}
+                           "Tools/AnySemanticAnchorValidation/continue_ui.py",
+                           "Tools/AnySemanticAnchorValidation/README.md"}
         require(changes == allowed_changes, "unexpected_changes_since_native_acceptance")
         commands.run(["git", "checkout", "--detach", SOURCE], "checkout-reviewed-ui-fix")
         before = base.source_state(source, SOURCE)
