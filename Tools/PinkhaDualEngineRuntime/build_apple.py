@@ -130,6 +130,7 @@ def main():
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--controller-sha", required=True)
     parser.add_argument("--slice", choices=("simulator", "device"), required=True)
+    parser.add_argument("--resume-disk-stop", action="store_true")
     args = parser.parse_args()
     root = args.root
     require(platform.system() == "Darwin" and platform.machine() == "arm64",
@@ -142,7 +143,35 @@ def main():
     manifest_path = Path(__file__).with_name("source-manifest.json")
     require(digest(manifest_path) == MANIFEST_SHA, "controller_manifest_mismatch")
     manifest = json.loads(manifest_path.read_text())
-    evidence = root / "evidence"
+    prior = None
+    if args.resume_disk_stop:
+        original = root / "evidence/receipt.json"
+        prior = json.loads(original.read_text())
+        require(prior.get("sourceManifestSHA256") == MANIFEST_SHA
+                and prior.get("slicePhase") == args.slice and prior.get("status") == "FAIL",
+                "exact_failed_slice_required")
+        commands = prior.get("commands", [])
+        require(commands and commands[-1]["name"] == "combined-gomobile-bind"
+                and commands[-1].get("exitCode") == -signal.SIGTERM
+                and commands[-1].get("stopReason") == "time_or_disk_limit"
+                and commands[-1]["minimumFreeBytes"] < EMERGENCY_FREE_BYTES
+                and commands[-1]["elapsedSeconds"] < commands[-1]["timeoutSeconds"],
+                "only_original_disk_guard_may_resume")
+        require(all(item.get("exitCode") == 0 for item in commands[:-1]),
+                "failed_preparation_cannot_be_reused")
+        for item in commands:
+            require(digest(root / "evidence" / (item["name"] + ".log")) == item["logSHA256"],
+                    "original_command_log_changed")
+            try:
+                os.killpg(item["pgid"], 0)
+            except ProcessLookupError:
+                pass
+            else:
+                require(False, "original_owned_group_still_exists")
+        require(not (root / "Lib.xcframework").exists()
+                and not (root / "Lib.xcframework.zip").exists(),
+                "no_existing_product_may_be_overwritten")
+    evidence = root / ("evidence-resume-1" if prior else "evidence")
     evidence.mkdir(mode=0o700)
     receipt = {"status": "FAIL", "executionKind": "local-mac", "executionUUID": str(uuid.uuid4()),
                "controllerCommit": args.controller_sha, "controllerSHA256": digest(__file__),
@@ -189,7 +218,12 @@ def main():
         require(receipt["freeBytesBefore"] > receipt["phaseSpaceEstimate"]["estimatedAdditionalBytes"]
                 + EMERGENCY_FREE_BYTES, "native_slice_estimated_space_unavailable")
         source = root / "source"
-        extract(root / "native-source.tar.gz", source, manifest)
+        if prior:
+            require(digest(root / "native-source.tar.gz") == ARCHIVE_SHA, "original_source_archive_changed")
+            receipt["originalDiskStopReceiptSHA256"] = digest(root / "evidence/receipt.json")
+            receipt["reusedPreparationCommands"] = prior["commands"][:-1]
+        else:
+            extract(root / "native-source.tar.gz", source, manifest)
         receipt["sourceFilesVerified"] = len(manifest["files"])
         receipt["goVersion"] = run([GO_ROOT / "bin/go", "version"], "go-version", timeout=30).read_text().strip()
         require(receipt["goVersion"] == "go version go1.27.4 darwin/arm64", "pinned_go_toolchain_required")
@@ -198,18 +232,31 @@ def main():
         for sdk in ("iphoneos", "iphonesimulator"):
             receipt[sdk] = run(["xcrun", "--sdk", sdk, "--show-sdk-version"], sdk + "-version", timeout=30).read_text().strip()
         tools = root / "tools"
-        tools.mkdir(mode=0o700)
-        (root / "tmp").mkdir(mode=0o700)
-        shutil.copyfile(Path(__file__).with_name("runtime_go.py"), tools / "go")
-        (tools / "go").chmod(0o755)
+        if prior:
+            require(tools.is_dir() and tools.resolve() == tools
+                    and digest(tools / "go") == prior["generatedModuleLauncherSHA256"]
+                    and digest(tools / "go") == digest(Path(__file__).with_name("runtime_go.py")),
+                    "original_generated_go_launcher_changed")
+            require((root / "tmp").is_dir() and not any((root / "tmp").iterdir()),
+                    "retired_private_compiler_temporary_required")
+        else:
+            tools.mkdir(mode=0o700)
+            (root / "tmp").mkdir(mode=0o700)
+            shutil.copyfile(Path(__file__).with_name("runtime_go.py"), tools / "go")
+            (tools / "go").chmod(0o755)
         receipt["generatedModuleLauncherSHA256"] = digest(tools / "go")
         workspace = root / "workspace"
-        workspace.mkdir(mode=0o700)
+        if not prior: workspace.mkdir(mode=0o700)
         native_roots = [source / name for name in
                         ("sync", "heart", "any", "any/.runtime-artifacts/sdk-source")]
-        (workspace / "go.work").write_text("go 1.27.4\n\nuse (\n"
-            + "".join("\t" + str(path) + "\n" for path in native_roots) + ")\n")
-        shutil.copyfile(source / "go.work.sum", workspace / "go.work.sum")
+        expected_workspace = "go 1.27.4\n\nuse (\n" + "".join("\t" + str(path) + "\n" for path in native_roots) + ")\n"
+        if prior:
+            require((workspace / "go.work").read_text() == expected_workspace
+                    and digest(workspace / "go.work") == prior["effectiveWorkspaceSHA256"],
+                    "original_workspace_changed")
+        else:
+            (workspace / "go.work").write_text(expected_workspace)
+            shutil.copyfile(source / "go.work.sum", workspace / "go.work.sum")
         receipt["effectiveWorkspaceSHA256"] = digest(workspace / "go.work")
         environment = {**os.environ, "GOROOT": str(GO_ROOT), "GOTOOLCHAIN": "local",
                        "CGO_ENABLED": "1", "GOWORK": str(workspace / "go.work"), "GOBIN": str(tools),
@@ -222,13 +269,28 @@ def main():
                        "GOMODCACHE": "/Users/m1/caches/anytapy-go-mod", "GOFLAGS": "-mod=readonly -p=2",
                        "GOMAXPROCS": "2", "GOMEMLIMIT": "3GiB", "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer",
                        "PATH": str(tools) + ":" + str(GO_ROOT / "bin") + ":" + os.environ.get("PATH", "")}
-        native_files, receipt["nativeDependencies"] = native_dependencies.prepare(root, source, run, environment)
+        if prior:
+            receipt["nativeDependencies"] = prior["nativeDependencies"]
+            native_files = {}
+            for library in receipt["nativeDependencies"]["libraries"]:
+                name = "heart/deps/libs/" + library["platform"] + "/libtantivy_go.a"
+                path = source / name
+                native_files[name] = {"sha256": library["nativeLibrarySHA256"], "bytes": path.stat().st_size}
+            require(len(native_files) == 2, "two_original_native_dependencies_required")
+        else:
+            native_files, receipt["nativeDependencies"] = native_dependencies.prepare(root, source, run, environment)
         check_source(source, manifest, native_files)
         graph = run([GO_ROOT / "bin/go", "list", "-m", "-json", "all"], "module-graph", source, environment, 180)
         receipt["actualModuleGraphSHA256"] = digest(graph)
-        run([GO_ROOT / "bin/go", "install", "golang.org/x/mobile/cmd/gomobile",
-             "golang.org/x/mobile/cmd/gobind"], "install-bind-tools", source, environment, 600)
-        run([tools / "gomobile", "init"], "gomobile-init", source, environment, 300)
+        if prior:
+            require(digest(graph) == prior["actualModuleGraphSHA256"], "resumed_module_graph_changed")
+            for name in ("gomobile", "gobind"):
+                require((tools / name).is_file() and not (tools / name).is_symlink(),
+                        "original_binding_tool_missing")
+        else:
+            run([GO_ROOT / "bin/go", "install", "golang.org/x/mobile/cmd/gomobile",
+                 "golang.org/x/mobile/cmd/gobind"], "install-bind-tools", source, environment, 600)
+            run([tools / "gomobile", "init"], "gomobile-init", source, environment, 300)
         heart_version = "pinkha-dual-runtime-v1-" + MANIFEST_SHA
         any_version = "v0.5.0-pinkha.dual.1-" + MANIFEST_SHA
         flags = "-X github.com/anyproto/anytype-heart/util/vcs.GitSummary=" + heart_version
