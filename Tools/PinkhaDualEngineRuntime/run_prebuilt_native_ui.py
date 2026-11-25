@@ -279,7 +279,7 @@ def main():
         require(len(runtimes) == 1, "one_available_original_ios27_runtime_required")
         _, raw = run(["xcrun", "simctl", "list", "devicetypes", "--json"], out, "device-types")
         types = [x for x in json.loads(raw)["devicetypes"] if
-                 "iPad Pro" in x.get("name", "") and "13" in x["name"] and "M5" in x["name"]]
+                 x.get("identifier") == "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB"]
         require(len(types) == 1, "one_available_ipad_pro_m5_device_type_required")
         runtime = runtimes[0]
         name = "PinkhaUnifiedD-" + args.stage + "-" + str(uuid.uuid4())

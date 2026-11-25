@@ -1,0 +1,42 @@
+{
+  "build1": {
+    "error": "app FAIL_BUILD",
+    "freeBytes": 5659832320,
+    "sourceCommit": "39f0076780412c77f55c675d69bf7ca1ee35ea89",
+    "status": "FAIL",
+    "time": 1795594074.532109,
+    "traceback": "Traceback (most recent call last):\n  File \"/Users/m1/builds/pinkha-dual-main-20261125/main-build-controller-39f.py\", line 75, in <module>\n    appresult=run_phase(\"app\",app)\n  File \"/Users/m1/builds/pinkha-dual-main-20261125/main-build-controller-39f.py\", line 58, in run_phase\n    if code or stop:raise RuntimeError(name+\" \"+result[\"status\"])\nRuntimeError: app FAIL_BUILD\n"
+  },
+  "build2": {
+    "error": "app FAIL_BUILD",
+    "freeBytes": 3106205696,
+    "sourceCommit": "c1c85267ec841d3bf0cab40e3e9aa6f27e72aef2",
+    "status": "FAIL",
+    "time": 1795594312.315093,
+    "traceback": "Traceback (most recent call last):\n  File \"/Users/m1/builds/pinkha-dual-main-20261125/main-build-controller-c1c.py\", line 75, in <module>\n    appresult=run_phase(\"app\",app)\n  File \"/Users/m1/builds/pinkha-dual-main-20261125/main-build-controller-c1c.py\", line 58, in run_phase\n    if code or stop:raise RuntimeError(name+\" \"+result[\"status\"])\nRuntimeError: app FAIL_BUILD\n"
+  },
+  "build3": {
+    "error": "app FAIL_BUILD",
+    "freeBytes": 4693266432,
+    "sourceCommit": "a33b941439a4abfedd55defa4cc2f56164123daf",
+    "status": "FAIL",
+    "time": 1795594678.257667,
+    "traceback": "Traceback (most recent call last):\n  File \"/Users/m1/builds/pinkha-dual-main-20261125/main-build-controller-a33.py\", line 75, in <module>\n    appresult=run_phase(\"app\",app)\n  File \"/Users/m1/builds/pinkha-dual-main-20261125/main-build-controller-a33.py\", line 58, in run_phase\n    if code or stop:raise RuntimeError(name+\" \"+result[\"status\"])\nRuntimeError: app FAIL_BUILD\n"
+  },
+  "build4": {
+    "error": "Actual free capacity below 2 GiB emergency floor",
+    "freeBytes": 510832640,
+    "sourceCommit": "ed28491255414c4aae719205e6a3e97ec01ff05a",
+    "status": "FAIL",
+    "time": 1795595456.780777,
+    "traceback": "Traceback (most recent call last):\n  File \"/Users/m1/builds/pinkha-dual-main-20261125/main-build-controller-ed2.py\", line 75, in <module>\n    appresult=run_phase(\"app\",app)\n  File \"/Users/m1/builds/pinkha-dual-main-20261125/main-build-controller-ed2.py\", line 32, in run_phase\n    if minfree<FLOOR:raise RuntimeError(\"Actual free capacity below 2 GiB emergency floor\")\nRuntimeError: Actual free capacity below 2 GiB emergency floor\n"
+  },
+  "build5": {
+    "error": "Unexpected UI configurations",
+    "freeBytes": 9915146240,
+    "sourceCommit": "6db4d065e007dc6c39ae510a77053f33b7de8247",
+    "status": "FAIL",
+    "time": 1795596381.8714108,
+    "traceback": "Traceback (most recent call last):\n  File \"/Users/m1/builds/pinkha-dual-main-20261125/main-build-controller-6db.py\", line 92, in <module>\n    ui_project=namespace[\"ui_only_project\"](ui_source)\n  File \"/Users/m1/builds/pinkha-dual-main-20261125/source/Tools/PinkhaNativeDerived/rerun_original_ui.py\", line 15, in ui_only_project\n    import xml.etree.ElementTree as ET\nRuntimeError: Unexpected UI configurations\n"
+  }
+}
