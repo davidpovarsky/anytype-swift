@@ -1,5 +1,12 @@
 {
-  "controllerSHA256": "c40e81781a1878d2baa8e974f107a072459b7727f6f9d86e57978b7428956163",
+  "cloneOnlyCorrection": {
+    "bytesDifferences": 0,
+    "cause": "private umask077 made cp-cR copied directories700 instead of original755",
+    "invariants": "full original inventory/mode equality unchanged; account operations retain umask077",
+    "observedModeOnlyDifferences": 1275,
+    "originalSourceEntries": 6307
+  },
+  "controllerSHA256": "acf88cd6905b30a440c033a909dc161e9e5e0d4f5cb61807ffcd6916669dac34",
   "negativeCases": [
     "truncated",
     "trailing",
@@ -31,7 +38,15 @@
     "verifiedBytes": 1279333,
     "verifiedMembers": 313
   },
+  "originalReviewedControllerSHA256": "c40e81781a1878d2baa8e974f107a072459b7727f6f9d86e57978b7428956163",
   "protocol": "pinkha-source-ui-independent-controller-controls-v1",
   "scope": "read-only original156 verifier and negative guards; zero XCTest/native calls",
-  "status": "PASS"
+  "status": "PASS",
+  "unchangedQualifiedFunctionASTs": [
+    "verify_bundle",
+    "witness_heads",
+    "original_handoff",
+    "observation",
+    "source_stage"
+  ]
 }

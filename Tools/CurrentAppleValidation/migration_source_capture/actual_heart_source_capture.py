@@ -335,7 +335,15 @@ def main():
         c.require(c.digest(admission_path) == ADMISSION_SHA, "Exact qualified ca7/8aa admission required")
         admission = c.decode(c.raw(admission_path))
         c.require(admission["controllerSHA256"] == CONTROL_SHA, "Original product authority differs")
-        result["sourceAdmission"], built, app = c.admit_and_clone_products(admission, args.root, evidence, commands)
+        # cp -cR must preserve the already-admitted directory modes. The
+        # enclosing continuation root is 0700; no account data is read until the
+        # private umask is restored. Exact source/product mode checks remain.
+        private_mask = os.umask(0)
+        try:
+            result["sourceAdmission"], built, app = c.admit_and_clone_products(admission, args.root, evidence, commands)
+        finally:
+            os.umask(private_mask)
+        result["productCloneModePolicy"] = "exact-original-modes-within-private-0700-root"
         for name in ("Tools/CurrentAppleValidation", "Tools/PinkhaSemanticAnchorWire/apple_consumer", "Tools/PinkhaSemanticAnchorWire/apple_mounted"):
             sys.path.insert(0, str(args.root / "helpers" / name))
         c.common = importlib.import_module("contracts")
