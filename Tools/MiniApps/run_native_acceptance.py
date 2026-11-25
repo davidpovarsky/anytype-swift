@@ -26,6 +26,7 @@ from resolved_dependencies import ACTIVATION_ARGUMENTS, record_resolution, verif
 from export_products import export_built_products, product_closure
 from simulator_admission import verify_built_entitlements
 from selection import configure_tests, selector, validate_enumeration
+from consumer_runtime_boundary import inspect as inspect_runtime_boundary
 
 def require(condition, message):
     if not condition:
@@ -195,6 +196,7 @@ def build_consumer(args, receipt):
     verify_recorded_resolution(app, evidence, derived, context.head, receipt["run_id"], receipt["run_attempt"])
     receipt["final_entitlement_admission"] = verify_built_entitlements(
         app, built, app_executable, owner, evidence, "built-final")
+    receipt["standalone_runtime_boundary"] = inspect_runtime_boundary(app, built, evidence)
     receipt.update(status="BUILD_PASS_TESTS_NOT_RUN", native_configuration=str(native_configuration),
                    ui_configuration=str(ui_configuration), built_app=str(built),
                    product_inventory=product_inventory(native_configuration, ui_configuration),
