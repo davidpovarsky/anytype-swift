@@ -1,0 +1,25 @@
+/Users/m1/builds/anytype-account-bootstrap-f8a3984-20261125/source/OriginalEditorFramework/AnytypeOriginalEditorAccountSession.swift:482:59: warning: use of protocol 'Error' as a type must be written 'any Error'; this will be an error in a future Swift language mode [#ExistentialAny]
+480 |     @ObservationIgnored private var spacesTask: Task<Void, Never>?
+481 |     @ObservationIgnored private var selectionTask: Task<Void, Never>?
+482 |     @ObservationIgnored private var closeTask: Task<Void, Error>?
+    |                                                           `- warning: use of protocol 'Error' as a type must be written 'any Error'; this will be an error in a future Swift language mode [#ExistentialAny]
+483 |     @ObservationIgnored private var authenticationClose: OriginalEditorAuthCloseReceipt?
+484 |     @ObservationIgnored private var schemaOperation: OriginalEditorAccountSchemaOperation?
+
+/Users/m1/builds/anytype-account-bootstrap-f8a3984-20261125/source/OriginalEditorFramework/AnytypeOriginalEditorAccountSession.swift:883:59: warning: use of protocol 'Error' as a type must be written 'any Error'; this will be an error in a future Swift language mode [#ExistentialAny]
+881 |     }
+882 | 
+883 |     private func beginClose(retrying: Bool) -> Task<Void, Error> {
+    |                                                           `- warning: use of protocol 'Error' as a type must be written 'any Error'; this will be an error in a future Swift language mode [#ExistentialAny]
+884 |         retireFacade()
+885 |         isClosing = true
+
+/Users/m1/builds/anytype-account-bootstrap-f8a3984-20261125/source/OriginalEditorFramework/AnytypeOriginalEditorAccountSession.swift:871:30: warning: use of protocol 'Error' as a type must be written 'any Error'; this will be an error in a future Swift language mode [#ExistentialAny]
+869 |         retireFacade()
+870 |         if isClosed { return }
+871 |         let task: Task<Void, Error>
+    |                              `- warning: use of protocol 'Error' as a type must be written 'any Error'; this will be an error in a future Swift language mode [#ExistentialAny]
+872 |         if let closeTask, isClosing || !retrying {
+873 |             task = closeTask
+
+[#ExistentialAny]: <https://docs.swift.org/compiler/documentation/diagnostics/existential-any>
