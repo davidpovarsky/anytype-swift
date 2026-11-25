@@ -3,6 +3,8 @@ import argparse, base64, threading, ast, datetime, hashlib, importlib.util, json
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--recovery-root", type=pathlib.Path, required=True)
+parser.add_argument("--retry-package-resolution", action="store_true",
+                    help="Reuse only the cache from the preserved pre-compilation exit-74 attempt.")
 args = parser.parse_args()
 RECOVERY = args.recovery_root
 assert RECOVERY.parent == pathlib.Path("/Users/m1/development/anytype-root-active-20261125")
@@ -10,8 +12,31 @@ assert RECOVERY.resolve() == RECOVERY and RECOVERY.is_dir()
 ROOT = RECOVERY / "source"
 SOURCE = "86a6dde354947be9329fe1e8f4d45a433fe488c4"
 DERIVED = RECOVERY / "derived-producer1"
-assert not DERIVED.exists(), "A fresh owned DerivedData avoids historical stale artifacts"
-EVIDENCE = RECOVERY / "producer1"
+if args.retry_package_resolution:
+    EVIDENCE = RECOVERY / "producer2"
+    failed = RECOVERY / "producer1"
+    original_failure = json.loads((failed / "build.command.json").read_bytes())
+    original_log = (failed / "build.log").read_bytes()
+    assert original_failure["returncode"] == 74 and original_failure["owned_group_drained"] is True
+    assert hashlib.sha256(original_log).hexdigest() == original_failure["log_sha256"]
+    assert b"Could not resolve package dependencies" in original_log
+    assert b"NodeMobile.xcframework" in original_log and b"Python.xcframework" in original_log
+    assert not any(marker in original_log for marker in
+                   (b"SwiftCompile ", b"CompileC ", b"CompileSwift ", b"PrecompileModule ", b"\nLd "))
+    assert DERIVED.is_dir()
+    products = DERIVED / "Build/Products"
+    assert not products.exists() or not any(p.is_file() or p.is_symlink() for p in products.rglob("*"))
+    runtime_preparation = json.loads((RECOVERY / "runtime-preparation1/FINALIZATION.json").read_bytes())
+    assert runtime_preparation["status"] == "ORIGINAL_RUNTIME_CORE_PREPARED_AND_PREFLIGHT_PASS_BUILD_NOT_RUN"
+    assert runtime_preparation["sourceAndOriginalDiffUnchanged"] is True
+    assert runtime_preparation["sourceFilesVerified"] == 7693
+    assert runtime_preparation["appBuilds"] == runtime_preparation["nativeTestsExecuted"] == 0
+    assert runtime_preparation["hostPreparationTests"] == {"tests": 178, "pass": 177, "fail": 0, "skipped": 1}
+    assert len(runtime_preparation["commands"]) == 3
+    assert all(command["returncode"] == 0 for command in runtime_preparation["commands"])
+else:
+    assert not DERIVED.exists(), "Initial producer requires an owned cache without historical artifacts"
+    EVIDENCE = RECOVERY / "producer1"
 PREPARATION = RECOVERY / "preparation"
 CONTROLS = pathlib.Path(__file__).resolve().parent
 HOST_SHA = "540507770659f00b8424b394c0c3857f52001cd13a0dc2bc3b38f313b385303a"
@@ -28,6 +53,19 @@ def save(name, value):
 
 assert not EVIDENCE.exists()
 EVIDENCE.mkdir()
+if args.retry_package_resolution:
+    save("preserved-package-resolution-failure.json", {
+        "originalAttempt": str(failed),
+        "originalBuildCommandSHA256": digest(failed / "build.command.json"),
+        "originalBuildLogSHA256": digest(failed / "build.log"),
+        "originalFailureUnchanged": True,
+        "reusedCache": str(DERIVED),
+        "originalCompilerActions": 0,
+        "originalAppProducts": 0,
+        "runtimePreparationSHA256": digest(RECOVERY / "runtime-preparation1/FINALIZATION.json"),
+        "newActualBuildRequired": True,
+        "nativeTestCredit": 0,
+    })
 os.environ.update(
     PATH="/Users/m1/builds/_preflight/native-owned-node245-20261125/node-v24.5.0-darwin-arm64/bin:/opt/homebrew/opt/python@3.12/libexec/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
     DEVELOPER_DIR="/Applications/Xcode.app/Contents/Developer",
