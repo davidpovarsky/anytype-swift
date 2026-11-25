@@ -1,0 +1,51 @@
+{
+  "devicesAndConfigurations": [
+    {
+      "device": {
+        "architecture": "arm64",
+        "deviceId": "A8BCEF42-17B0-4B0B-A667-83B1A33DB726",
+        "deviceName": "EAnchorSources-40655e02-037990db",
+        "modelName": "iPad Pro 13-inch (M5)",
+        "osBuildNumber": "24A434",
+        "osVersion": "27.0",
+        "platform": "iOS Simulator"
+      },
+      "expectedFailures": 0,
+      "failedTests": 1,
+      "passedTests": 0,
+      "skippedTests": 0,
+      "testPlanConfiguration": {
+        "configurationId": "1",
+        "configurationName": "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription": "PinkhaAnyNativeApp \u00b7 Built with macOS 27.0",
+  "expectedFailures": 0,
+  "failedTests": 1,
+  "finishTime": 1795592356.008,
+  "passedTests": 0,
+  "result": "Failed",
+  "runtimeWarnings": [
+    {
+      "issueType": "Runtime Warning",
+      "message": "Update the Info.plist: Support for all orientations will soon be required."
+    }
+  ],
+  "skippedTests": 0,
+  "startTime": 1795591947.91,
+  "statistics": [],
+  "testFailures": [
+    {
+      "failureText": "Failed to failed to scroll to visible (by AX action) Button, {{258.0, 621.0}, {0.0, 0.0}}, identifier: 'any-native-source-unlink-1A326224-A2A9-4349-8D91-634E3EF6A436', label: '\u05d4\u05e1\u05e8\u05ea \u05e7\u05d9\u05e9\u05d5\u05e8 \u05d1\u05e8\u05d0\u05e9\u05d9\u05ea \u05d0\u05f3:\u05d0\u05f3', error: Error kAXErrorFailure performing AXAction kAXScrollToVisibleAction on element AX element pid: 88464, elementOrHash.elementID: 5404552448.480. (Underlying Error: Error kAXErrorFailure performing AXAction kAXScrollToVisibleAction on element AX element pid: 88464, elementOrHash.elementID: 5404552448.480)",
+      "targetName": "PinkhaAnyNativeUITests",
+      "testIdentifier": 1,
+      "testIdentifierString": "NativeLaunchTests/testSemanticSourceLinkSurvivesEditAndColdReopen()",
+      "testIdentifierURL": "test://com.apple.xcode/AnyNative/PinkhaAnyNativeUITests/NativeLaunchTests/testSemanticSourceLinkSurvivesEditAndColdReopen",
+      "testName": "testSemanticSourceLinkSurvivesEditAndColdReopen()"
+    }
+  ],
+  "title": "Test - PinkhaAnyNativeApp",
+  "topInsights": [],
+  "totalTestCount": 1
+}

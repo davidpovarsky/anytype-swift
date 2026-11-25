@@ -1,0 +1,23 @@
+warning: '--skip-update' option is deprecated and will be removed in a future release
+Building for debugging...
+[Computing dependencies]
+[Using on-disk description]
+[1 / 6] PinkhaAnyHostTests-product
+[3 / 8] PinkhaAnyHostTests-product
+[5 / 11] CCryptoBoringSSL
+[7 / 10] PinkhaAnyHostTests-product
+[12 / 14] PinkhaAnyHostTests-test-runner
+[14 / 16] PinkhaAnyHostTests-test-runner
+[17 / 17] PinkhaAnyHostTests-test-runner
+Build complete! (5.81 secs)
+Test Suite 'Selected tests' started at 2026-11-25 07:26:55.458
+Test Suite 'AnyDestinationNativeContentTests' started at 2026-11-25 07:26:55.460
+Test Case 'AnyDestinationNativeContentTests.testActualNativeExecutionAndColdReadback' started at 2026-11-25 07:26:55.460
+<EXPR>:0: error: AnyDestinationNativeContentTests.testActualNativeExecutionAndColdReadback : threw error "Error Domain=NSURLErrorDomain Code=-1001 "(null)""
+Test Case 'AnyDestinationNativeContentTests.testActualNativeExecutionAndColdReadback' failed (305.873 seconds)
+Test Suite 'AnyDestinationNativeContentTests' failed at 2026-11-25 07:32:01.333
+	 Executed 1 test, with 1 failure (1 unexpected) in 305.873 (305.873) seconds
+Test Suite 'Selected tests' failed at 2026-11-25 07:32:01.343
+	 Executed 1 test, with 1 failure (1 unexpected) in 305.873 (305.873) seconds
+Note: Some test targets reported failures:
+  - PinkhaAnyHostTests (XCTest)

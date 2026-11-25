@@ -2684,7 +2684,7 @@ extension NativeLaunchTests {
         let identity = try XCTUnwrap(captured.blocks.first?.nativeMarks.first?.identitySHA256)
 
         try semanticSelectAll(app, editor: editor, length: firstText.utf16.count)
-        tapWhenEnabled(app.buttons["pinkha.semanticAnchor.sources"])
+        try semanticOpenSelectedSources(app)
         let search = app.searchFields.firstMatch
         waitUntilEnabled(search)
         XCTAssertTrue(app.navigationBars.matching(NSPredicate(format: "identifier IN %@ OR label IN %@", [
@@ -2737,11 +2737,15 @@ extension NativeLaunchTests {
         XCTAssertEqual(reopened.blocks[0].nativeMarks, edited.blocks[0].nativeMarks)
 
         try semanticSelectAll(app, editor: editor, length: editedText.utf16.count)
-        tapWhenEnabled(app.buttons["pinkha.semanticAnchor.sources"])
+        try semanticOpenSelectedSources(app)
         waitUntilEnabled(app.buttons[linkedID], timeout: 60)
         XCTAssertEqual(app.buttons[linkedID].value as? String, reference)
         let associationID = String(linkedID.dropFirst("any-native-linked-source-".count))
-        tapWhenEnabled(app.buttons["any-native-source-unlink-" + associationID])
+        let unlink = app.buttons["any-native-source-unlink-" + associationID]
+        waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"), object: unlink, timeout: 30)
+        XCTAssertGreaterThanOrEqual(unlink.frame.width, 44)
+        XCTAssertGreaterThanOrEqual(unlink.frame.height, 44)
+        tapWhenEnabled(unlink)
         waitFor(NSPredicate(format: "exists == false"), object: app.buttons[linkedID], timeout: 60)
         tapWhenEnabled(app.buttons["any-native-source-search-done"])
         let unlinked = try semanticObservation(app, phase: "source-unlink-keeps-native-text-and-marker") {
@@ -2763,6 +2767,30 @@ extension NativeLaunchTests {
         screenshot.name = "native-semantic-source-link-and-unlink-cold-reopen"
         screenshot.lifetime = .keepAlways
         add(screenshot)
+    }
+
+    private func semanticOpenSelectedSources(_ app: XCUIApplication) throws {
+        // The retained original UIKit link-menu hierarchy contains this exact
+        // action as a native Button, but does not expose UIAction.identifier.
+        // Require one real, enabled, hittable action; never replace the complete
+        // native selection witness or invoke the application through a hook.
+        let labels = ["Sources for anchored text", "מקורות לטקסט המעוגן"]
+        let predicate = NSPredicate(format: "label IN %@", labels)
+        var selected: XCUIElement?
+        let ready = NSPredicate { _, _ in
+            let matches = app.buttons.matching(predicate).allElementsBoundByIndex
+                + app.descendants(matching: .menuItem).matching(predicate).allElementsBoundByIndex
+            let actions = matches.filter { $0.exists && $0.isEnabled && $0.isHittable }
+            guard actions.count == 1 else { return false }
+            selected = actions[0]
+            return true
+        }
+        let result = XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: ready, object: app)], timeout: 30)
+        XCTAssertEqual(result, .completed, "The selected anchor must expose one real Sources menu action")
+        guard result == .completed, let selected else { throw SemanticAnchorUIError.originalComparisonUnavailable }
+        XCTAssertTrue(selected.exists && selected.isEnabled && selected.isHittable)
+        XCTAssertTrue(labels.contains(selected.label))
+        selected.tap()
     }
 
     private func semanticCommit(_ app: XCUIApplication, editor: XCUIElement, text: String) {
