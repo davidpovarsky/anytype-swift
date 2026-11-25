@@ -49,6 +49,7 @@ public final class AnyMiniAppsReturnRouter {
 final class AnyNativeMiniAppsCoordinator {
     static let shared = AnyNativeMiniAppsCoordinator()
 
+    @MainActor
     private final class Registration {
         weak var document: AnyDocumentPresentation?
         let owner: UUID
