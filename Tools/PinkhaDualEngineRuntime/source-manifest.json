@@ -6534,8 +6534,8 @@
       "sha256": "3114dc30a3bde541ae66ce6bb0caf3c0b07963492f28c215da78ef07cf7fd671"
     },
     "heart/clientlibrary/service/pinkha_native_source_capture.go": {
-      "bytes": 1485,
-      "sha256": "c696c465e555269b2af73ee16b4fe7daa865463318f8c849b493a671fc9626df"
+      "bytes": 2990,
+      "sha256": "9140f3c9c524bd6f414db65ce181139930864d4644a578980969cd27d7b87f48"
     },
     "heart/clientlibrary/service/pinkha_semantic_anchor.go": {
       "bytes": 2392,
@@ -8624,6 +8624,14 @@
     "heart/core/application/loaded_snapshot_json_test.go": {
       "bytes": 5859,
       "sha256": "b3d9586de97c86c2e9e7c60416d834b9da9ee0e1b449db75d12ee679fbc655e8"
+    },
+    "heart/core/application/loaded_source_checkpoint.go": {
+      "bytes": 2761,
+      "sha256": "9e9f9e222db408781093fffe8efb58179ae048ba1eefd0fed9b17920f5358cdc"
+    },
+    "heart/core/application/loaded_source_checkpoint_test.go": {
+      "bytes": 3093,
+      "sha256": "5a7f165dc34672c8d1af3df5b5d0fe91d528d3c313548a9635ababd5d30de26d"
     },
     "heart/core/application/loaded_space_bundle.go": {
       "bytes": 6106,
@@ -13458,8 +13466,12 @@
       "sha256": "aa07483e974039638b290591e2f73157303560a977ab82b968d4dcfd6a943df5"
     },
     "heart/core/pinkha_native_source_capture.go": {
-      "bytes": 4412,
-      "sha256": "471970c43579a5808a806bf83c5e263c01ee8436544490fc3aa0d7338ef0bba8"
+      "bytes": 4793,
+      "sha256": "a13cda8ffbb5cbf5fe994bbfda1403b26e33f27ec50c2d52e8f4bb915d21985e"
+    },
+    "heart/core/pinkha_native_source_checkpoint.go": {
+      "bytes": 1486,
+      "sha256": "4da3e5abdfc2e080defbb2c5c4d613b8fc95374bd7a0e9d7f898a56434e9af75"
     },
     "heart/core/pinkha_semantic_anchor.go": {
       "bytes": 2652,
@@ -15400,6 +15412,14 @@
     "heart/pkg/lib/pb/storage/protos/file.proto": {
       "bytes": 1211,
       "sha256": "3b83f17395c41c6d0514b92e74a47ae3985e3406ca3f04b6025be89acd01a56d"
+    },
+    "heart/pkg/lib/pinkha/capturecontrol/bindings.go": {
+      "bytes": 3736,
+      "sha256": "8f88b52ad2313ced5455fb5e310ea8da852f051c7610cb13eba41e9cfe24db0b"
+    },
+    "heart/pkg/lib/pinkha/capturecontrol/bindings_test.go": {
+      "bytes": 3619,
+      "sha256": "afc4140302197288bad7ecdee80c5d80658845c59418f18093d12042403a3a56"
     },
     "heart/pkg/lib/pinkha/capturecontrol/manifest.go": {
       "bytes": 2263,
@@ -19392,8 +19412,9 @@
   },
   "gomobileModule": "golang.org/x/mobile",
   "gomobileVersion": "v0.0.0-20260508232728-bebd421c7fa8",
-  "heartCaptureBridgeCommit": "7796b2a4c8e7d80aae82606ca0bcb83acf84506d",
+  "heartCaptureBridgeCommit": "169b39b3e76f89a76b23bd8e3f4515d6ae3150ca",
   "heartPage154ManifestSHA256": "2f76212f9fcd749aeb9e806b941e0fd0b54eba17e5cc842adb81c7eb3bae0f38",
+  "nativeSourceAuthorityStatus": "CANDIDATE_HELPER_RACE_TESTED_NATIVE_BODY_ACCEPTANCE_PENDING",
   "packages": [
     "github.com/anyproto/anytype-heart/clientlibrary/service",
     "github.com/anyproto/anytype-heart/core",

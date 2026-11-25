@@ -15,9 +15,10 @@ import tarfile
 import time
 import uuid
 import zipfile
+import native_dependencies
 
-MANIFEST_SHA = "26d53623e1344fc07711229b3a72fc5e3adc38b5b7682461d16072e20a80c264"
-ARCHIVE_SHA = "bf3c6bd86e6abd78e05fde81411ec5919bad402330206d482a6aa7468be62826"
+MANIFEST_SHA = "3a8c9db276aa039b281c6fbcb10cd23f78fbaf38fef453874d0d9e128bf597c1"
+ARCHIVE_SHA = "465b0ff08519f88d1c35f2f9de23d29ed0fb376897f84ff8df92368dc7a2de13"
 GO_ROOT = Path("/Users/m1/toolchains/anytapy-go1.27.4/go")
 
 def require(value, why):
@@ -39,10 +40,13 @@ def write(path, value):
         stream.flush()
         os.fsync(stream.fileno())
 
-def check_source(root, manifest):
+def check_source(root, manifest, native_files=None):
+    native_files = native_files or {}
+    require(not (set(native_files) & set(manifest["files"])), "native_dependency_overwrites_source")
+    expected_files = {**manifest["files"], **native_files}
     actual = {str(p.relative_to(root)) for p in root.rglob("*") if p.is_file() or p.is_symlink()}
-    require(actual == set(manifest["files"]) | {"source-manifest.json"}, "source_file_inventory_changed")
-    for name, expected in manifest["files"].items():
+    require(actual == set(expected_files) | {"source-manifest.json"}, "source_file_inventory_changed")
+    for name, expected in expected_files.items():
         path = root / name
         require(path.resolve() == path and stat.S_ISREG(path.lstat().st_mode)
                 and path.stat().st_size == expected["bytes"] and digest(path) == expected["sha256"],
@@ -142,8 +146,16 @@ def main():
         shutil.copyfile(Path(__file__).with_name("runtime_go.py"), tools / "go")
         (tools / "go").chmod(0o755)
         receipt["generatedModuleLauncherSHA256"] = digest(tools / "go")
+        workspace = root / "workspace"
+        workspace.mkdir(mode=0o700)
+        native_roots = [source / name for name in
+                        ("sync", "heart", "any", "any/.runtime-artifacts/sdk-source")]
+        (workspace / "go.work").write_text("go 1.27.4\n\nuse (\n"
+            + "".join("\t" + str(path) + "\n" for path in native_roots) + ")\n")
+        shutil.copyfile(source / "go.work.sum", workspace / "go.work.sum")
+        receipt["effectiveWorkspaceSHA256"] = digest(workspace / "go.work")
         environment = {**os.environ, "GOROOT": str(GO_ROOT), "GOTOOLCHAIN": "local",
-                       "GOWORK": str(source / "go.work"), "GOBIN": str(tools),
+                       "CGO_ENABLED": "1", "GOWORK": str(workspace / "go.work"), "GOBIN": str(tools),
                        "TMPDIR": str(root / "tmp"), "GOTMPDIR": str(root / "tmp"),
                        "PINKHA_DUAL_REAL_GO": str(GO_ROOT / "bin/go"),
                        "PINKHA_DUAL_SOURCE": str(source), "PINKHA_DUAL_BUILD": str(root),
@@ -153,6 +165,8 @@ def main():
                        "GOMODCACHE": "/Users/m1/caches/anytapy-go-mod", "GOFLAGS": "-mod=readonly -p=4",
                        "GOMAXPROCS": "4", "GOMEMLIMIT": "6GiB", "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer",
                        "PATH": str(tools) + ":" + str(GO_ROOT / "bin") + ":" + os.environ.get("PATH", "")}
+        native_files, receipt["nativeDependencies"] = native_dependencies.prepare(root, source, run, environment)
+        check_source(source, manifest, native_files)
         graph = run([GO_ROOT / "bin/go", "list", "-m", "-json", "all"], "module-graph", source, environment, 180)
         receipt["actualModuleGraphSHA256"] = digest(graph)
         run([GO_ROOT / "bin/go", "install", "golang.org/x/mobile/cmd/gomobile",
@@ -169,7 +183,7 @@ def main():
         run([tools / "gomobile", "bind", "-tags", " ".join(manifest["tags"]), "-ldflags", flags,
              "-target=ios/arm64,iossimulator/arm64", "-iosversion=" + manifest["deploymentTarget"],
              "-o", output, *manifest["packages"]], "combined-gomobile-bind", source, environment, 3600)
-        check_source(source, manifest)
+        check_source(source, manifest, native_files)
         info = plistlib.loads((output / "Info.plist").read_bytes())
         libraries = info["AvailableLibraries"]
         require(len(libraries) == 2 and all(x["SupportedArchitectures"] == ["arm64"]
@@ -181,11 +195,47 @@ def main():
             directory = output / library["LibraryIdentifier"] / library["LibraryPath"]
             binary = directory / "Lib"
             require(binary.is_file(), "combined_binary_missing")
-            symbols = run(["nm", "-gU", binary], "symbols-" + library["LibraryIdentifier"], timeout=120).read_text()
+            raw_sha = digest(binary)
+            platform = "ios-arm64-sim" if library.get("SupportedPlatformVariant") == "simulator" else "ios-arm64"
+            packed = root / ("Lib-with-tantivy-" + platform + ".a")
+            run(["xcrun", "libtool", "-static", "-o", packed, binary,
+                 source / "heart/deps/libs" / platform / "libtantivy_go.a"],
+                "tantivy-repack-" + platform, environment=environment, timeout=180)
+            shutil.copyfile(packed, binary)
+            symbols = run(["xcrun", "nm", "--no-llvm-bc", "-gU", binary], "symbols-" + library["LibraryIdentifier"], timeout=120).read_text()
             for required in ("ServicePinkhaCaptureLoadedAccountSource", "ServicePinkhaCancelLoadedAccountSourceCapture",
-                             "ServicePinkhaSemanticAnchorCapture", "MobileStartWithResult", "MobileStopNow", "MobileVersion"):
+                             "ServicePinkhaValidateLoadedAccountSourceCapture", "ServicePinkhaReleaseLoadedAccountSourceCapture",
+                             "ServicePinkhaTorahAuthorizedOperationRead", "ServicePinkhaSemanticAnchorCapture",
+                             "MobileStartWithResult", "MobileStopNow", "MobileVersion"):
                 require("_" + required in symbols, "combined_export_missing:" + required)
-            artifacts[library["LibraryIdentifier"]] = {"binarySHA256": digest(binary), "binaryBytes": binary.stat().st_size}
+            # Exactly one Go runtime's exported initialization symbols may exist.
+            for symbol in ("_crosscall2", "__cgo_wait_runtime_init_done"):
+                matches = [line for line in symbols.splitlines() if line.split() and line.split()[-1] == symbol]
+                require(len(matches) == 1, "combined_go_runtime_symbol_count:" + symbol)
+            artifacts[library["LibraryIdentifier"]] = {
+                "rawGoArchiveSHA256": raw_sha, "binarySHA256": digest(binary),
+                "binaryBytes": binary.stat().st_size, "tantivyPlatform": platform}
+        generated = root / "generated-entry.swift"
+        generated.write_text("import Foundation\nimport Lib\n"
+            "func checkGeneratedEntries() throws {\n"
+            "  let version: String = Lib.MobileVersion()\n"
+            "  let result = Lib.MobileStartWithResult(\"\", \"\", \"\", \"\", \"\", \"\", \"\")\n"
+            "  if let result { let _: Int32 = result.code; let _: String = result.address; let _: String = result.message }\n"
+            "  try Lib.MobileStop()\n  Lib.MobileStopNow()\n"
+            "  let _ = Lib.ServicePinkhaCaptureLoadedAccountSource\n"
+            "  let _ = Lib.ServicePinkhaCancelLoadedAccountSourceCapture\n"
+            "  let _ = Lib.ServicePinkhaValidateLoadedAccountSourceCapture\n"
+            "  let _ = Lib.ServicePinkhaReleaseLoadedAccountSourceCapture\n"
+            "  let _ = Lib.ServicePinkhaTorahAuthorizedOperationRead\n"
+            "  let _ = Lib.ServicePinkhaSemanticAnchorCapture\n"
+            "  _ = version\n}\n")
+        simulator = next(item for item in libraries if item.get("SupportedPlatformVariant") == "simulator")
+        sdk = run(["xcrun", "--sdk", "iphonesimulator", "--show-sdk-path"], "simulator-sdk-path", timeout=30).read_text().strip()
+        run(["xcrun", "swiftc", "-typecheck", "-target", "arm64-apple-ios27.0-simulator",
+             "-sdk", sdk, "-F", output / simulator["LibraryIdentifier"],
+             "-module-cache-path", root / "swift-module-cache", generated],
+            "generated-actual-swift-entry-typecheck", environment=environment, timeout=180)
+        receipt["generatedSwiftEntryCheckSHA256"] = digest(generated)
         receipt.update(status="SOURCE_VERIFIED_SINGLE_GO_RUNTIME_APPLE_LIBRARY_BUILT_NOT_ACCEPTED",
                        heartRuntimeVersion=heart_version, anyRuntimeVersion=any_version,
                        slices=artifacts, nativeLibraryBuildInvocations=1, sourceUnchanged=True)
