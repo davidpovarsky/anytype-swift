@@ -26,7 +26,7 @@
     "Tools/Hanlin/original_editor_profile.py": "3e84bee3d28f180e122da480d0a779820508097d",
     "Tools/Hanlin/prepare_original_editor_heart.py": "14ee9e553a883872a08526e1196f61d3dd3049f0",
     "Tools/Hanlin/prepare_sdk.py": "99e1286268f7aacb5f5638cfe14633d37c04bccc",
-    "Tools/Hanlin/source.json": "09331dd1e225860e5fdf2d4d6055bb9e58a2cc1d",
+    "Tools/Hanlin/source.json": "df324454a8f884d94c4078103d2e517d7fe341eb",
     "Tools/PinkhaNativeDerived/build_custom_heart.py": "e32c935fedce5fc732240bf9b2ada21764b5add1",
     "Tools/PinkhaNativeDerived/package_evidence.py": "e55d2a959296630686a60aa5d927a3b4c34401f9",
     "Tools/PinkhaSimulatorGate/preflight.py": "2628b345d5743bbe1ddc0d1afaeef9fb410f3daf"
@@ -38,6 +38,139 @@
     "path": "Tools/OriginalEditor/complete_source_continuation.json",
     "reviewed_source_sha": "cbe25cb467f989a1d40ed564d833616346a7d9b6",
     "sha256": "2cab1264401b0e339fb23c346382e2e2a6b36e9e9d4b7d1567ffa45ec12f1ca2"
+  },
+  "final_shared_dependency_adoption": {
+    "added_pins": [
+      {
+        "identity": "opentelemetry-swift-core",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/open-telemetry/opentelemetry-swift-core.git",
+        "state": {
+          "revision": "c6fcee77cfc21ba400366f12475217c7b6e1d605",
+          "version": "2.6.0"
+        }
+      },
+      {
+        "identity": "swift-atomics",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/apple/swift-atomics.git",
+        "state": {
+          "revision": "0442cb5a3f98ab802acb777929fdb446bda11a34",
+          "version": "1.3.1"
+        }
+      }
+    ],
+    "authentic_parallel_source": "30e5f09f8494d913fa36e75f877b541020c92ee0",
+    "changed_existing_pins": [
+      {
+        "after": {
+          "identity": "swift-ai-sdk",
+          "kind": "remoteSourceControl",
+          "location": "https://github.com/davidpovarsky/swift-ai-sdk.git",
+          "state": {
+            "revision": "abf0921c6e89e6521cc2b510ff11016b45a0ef08"
+          }
+        },
+        "before": {
+          "identity": "swift-ai-sdk",
+          "kind": "remoteSourceControl",
+          "location": "https://github.com/davidpovarsky/swift-ai-sdk.git",
+          "state": {
+            "revision": "3f38f1302764635c9991d0d00fd7b12471a5373c"
+          }
+        },
+        "identity": "swift-ai-sdk"
+      }
+    ],
+    "changed_shared_paths": [
+      "Packages/HanlinAgentSDK/Package.resolved",
+      "Packages/HanlinAgentSDK/Package.swift",
+      "Packages/HanlinAgentSDK/Sources/HanlinAgentCore/HanlinAgentSession.swift",
+      "Packages/HanlinPlatform/Package.resolved",
+      "Packages/HanlinPlatform/Package.swift",
+      "Packages/HanlinPlatform/Sources/HanlinChatCore/HanlinAISDKAgentEngine.swift",
+      "Packages/HanlinPlatform/Sources/HanlinChatCore/HanlinAISDKJSONOutput.swift",
+      "Packages/HanlinPlatform/Sources/HanlinChatCore/HanlinAISDKModels.swift",
+      "Packages/HanlinPlatform/Sources/HanlinChatCore/HanlinAISDKProviderFactory.swift",
+      "Packages/HanlinPlatform/Sources/HanlinChatCore/HanlinChatEngine.swift",
+      "Packages/HanlinPlatform/Sources/HanlinChatCore/HanlinChatModelConfiguration.swift",
+      "Packages/HanlinPlatform/Sources/HanlinChatCore/HanlinChatProviderSession.swift",
+      "Packages/HanlinPlatform/Sources/HanlinChatCore/HanlinChatRequestBuilder.swift",
+      "Packages/HanlinPlatform/Sources/HanlinChatCore/HanlinChatStreamParser.swift",
+      "Packages/HanlinPlatform/Sources/HanlinChatCore/HanlinGoogleCachedContent.swift",
+      "Packages/HanlinPlatform/Sources/HanlinChatCore/HanlinOpenTelemetryTracer.swift",
+      "Packages/HanlinPlatform/Sources/HanlinChatCore/HanlinPromptCachePolicy.swift",
+      "Packages/HanlinPlatform/Sources/HanlinChatCore/HanlinPromptCachePolicyMutation.swift",
+      "Packages/HanlinPlatform/Sources/HanlinChatCore/HanlinPromptCachePreset.swift",
+      "Packages/HanlinPlatform/Sources/HanlinMiniAppCore/HanlinCanonicalMiniAppCatalog.swift",
+      "Packages/HanlinPlatform/Sources/HanlinPlatformContracts/HanlinAssistantToolDeclaration.swift",
+      "Packages/HanlinPlatform/Sources/HanlinPlatformContracts/HanlinCapabilityAttachment.swift",
+      "Packages/HanlinPlatform/Sources/HanlinPlatformContracts/HanlinComposerConfiguration.swift",
+      "Packages/HanlinPlatform/Sources/HanlinPlatformContracts/HanlinDescriptors.swift",
+      "Packages/HanlinPlatform/Sources/HanlinPlatformContracts/HanlinManifestJSONValue.swift",
+      "Packages/HanlinPlatform/Sources/HanlinPlatformContracts/Resources/HanlinAppManifest.schema.json",
+      "Packages/HanlinPlatform/Sources/HanlinScriptCompiler/HanlinScriptAnalyzer.swift",
+      "Packages/HanlinPlatform/Sources/HanlinScriptCompiler/HanlinWidgetPackagePreparation.swift",
+      "Packages/HanlinPlatform/Sources/HanlinScriptContracts/HanlinInstallContracts.swift",
+      "Packages/HanlinPlatform/Sources/HanlinScriptExtensions/HanlinCompactAgentContracts.swift",
+      "Packages/HanlinPlatform/Sources/HanlinScriptStore/HanlinStoredPackageSnapshot+MiniAppRegistration.swift",
+      "Packages/HanlinPlatform/Tests/HanlinChatCoreTests/HanlinAISDKJSONOutputTests.swift",
+      "Packages/HanlinPlatform/Tests/HanlinChatCoreTests/HanlinChatCoreTests.swift",
+      "Packages/HanlinPlatform/Tests/HanlinChatCoreTests/HanlinCompactResponsesTests.swift",
+      "Packages/HanlinPlatform/Tests/HanlinChatCoreTests/HanlinGoogleCachedContentTests.swift",
+      "Packages/HanlinPlatform/Tests/HanlinChatCoreTests/HanlinOpenTelemetryTracerTests.swift",
+      "Packages/HanlinPlatform/Tests/HanlinChatCoreTests/HanlinPromptCachePolicyMutationTests.swift",
+      "Packages/HanlinPlatform/Tests/HanlinChatCoreTests/HanlinPromptCachePresetTests.swift",
+      "Packages/HanlinPlatform/Tests/HanlinChatCoreTests/HanlinPromptCacheTests.swift",
+      "Packages/HanlinPlatform/Tests/HanlinChatCoreTests/ProviderConformance/ProviderRoutingTests.swift",
+      "Packages/HanlinPlatform/Tests/HanlinPlatformContractsTests/HanlinCapabilityAttachmentTests.swift",
+      "Packages/HanlinPlatform/Tests/HanlinScriptCompilerTests/HanlinScriptAnalyzerTests.swift",
+      "Packages/HanlinPlatform/Tests/HanlinScriptStoreTests/HanlinScriptMiniAppRegistrationTests.swift",
+      "Packages/HanlinPresentationSDK/Package.swift",
+      "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/Composer/HanlinCapabilityAttachmentChips.swift",
+      "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/Composer/HanlinCapabilityConfigurationView.swift",
+      "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/Composer/HanlinCapabilityCustomPanelProvider.swift",
+      "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/Composer/HanlinCapabilityLocationField.swift",
+      "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/Composer/HanlinCapabilityPicker.swift",
+      "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/Composer/HanlinComposerCapabilityQuery.swift",
+      "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/Composer/HanlinComposerDraft.swift",
+      "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/Composer/HanlinComposerFieldFocus.swift",
+      "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/Composer/NativeMultilineTextEditor.swift",
+      "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/Motion/HanlinAnimatedDisclosure.swift",
+      "Packages/HanlinPresentationSDK/Sources/HanlinLocalization/Resources/Localizable.xcstrings",
+      "Packages/HanlinPresentationSDK/Sources/HanlinRichUI/Resources/OpenUI/bridge.js",
+      "Packages/HanlinPresentationSDK/Tests/HanlinChatUITests/HanlinCapabilityCustomPanelProviderTests.swift",
+      "Packages/HanlinPresentationSDK/Tests/HanlinChatUITests/HanlinCapabilityNumberInputTests.swift",
+      "Packages/HanlinPresentationSDK/Tests/HanlinChatUITests/HanlinComposerCapabilityTests.swift"
+    ],
+    "core": "abf0921c6e89e6521cc2b510ff11016b45a0ef08",
+    "current_framework_status": "NOT_RUN",
+    "hanlin": "6f447bfc62d6bcf1043b92e12c026b321543e370",
+    "identical_shared_package_trees": {
+      "Packages/HanlinAgentSDK": "498032fa42a1bccbbbfcd0335ee61533af3ad086",
+      "Packages/HanlinMiniAppsBridge": "98ef5d2b47c03f4ea98319a851abae183f500a40",
+      "Packages/HanlinPlatform": "b2407238ee930a0808ad393a264cb4f9660e78eb",
+      "Packages/HanlinPresentationSDK": "b695125356df74b9d31974583d605c381555ad58"
+    },
+    "lock_after_blob": "2fbd40926c2947e0bd8142d89290dcb27bdff1b6",
+    "lock_before_blob": "80165cce61ca11e52f03db40f128e56c33cd705c",
+    "miniapps_runtime_packages_added": [],
+    "original_native_abi": "SEPARATE_FRESH_QUALIFICATION_REQUIRED",
+    "pin_count": 58,
+    "pin_source": {
+      "commit": "6f447bfc62d6bcf1043b92e12c026b321543e370",
+      "git_blob": "2b7ba99b77a93905bd2cee70069cb5a7dcfcbc57",
+      "path": "Packages/HanlinAgentSDK/Package.resolved",
+      "sha256": "543da4b8e9fe589c8d071fa3599d30034cb39bd57e839ba6130f754cdad701ca"
+    },
+    "previous_core": "3f38f1302764635c9991d0d00fd7b12471a5373c",
+    "previous_hanlin": "68dee3512bd92ad733b5204cb69c710e2708ae84",
+    "prior_framework_evidence_retained": true,
+    "schema": "miniapps.final-shared-source/1",
+    "source_json_after_blob": "df324454a8f884d94c4078103d2e517d7fe341eb",
+    "source_json_before_blob": "09331dd1e225860e5fdf2d4d6055bb9e58a2cc1d",
+    "source_json_sha256": "1f61261623b7fdd6cfb3ef2e11fc23c5fc60a2dcbd81b7947d3c06a9e6cf19b1",
+    "unchanged_existing_pins": 55
   },
   "framework_facade_sources": [
     "OriginalEditorFramework/AnytypeOriginalAnnotationImport.swift",
@@ -305,8 +438,8 @@
     },
     "strict_resolver_status": "PENDING_NATIVE_RESOLVER"
   },
-  "package_pin_count": 56,
-  "package_resolved_blob": "80165cce61ca11e52f03db40f128e56c33cd705c",
+  "package_pin_count": 58,
+  "package_resolved_blob": "2fbd40926c2947e0bd8142d89290dcb27bdff1b6",
   "package_resolved_path": "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
   "platform_continuation_adoption": {
     "changed_shared_files": [
