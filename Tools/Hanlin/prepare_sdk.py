@@ -2,8 +2,9 @@
 """Materialize immutable canonical Hanlin packages without touching a producer checkout.
 
 Usage: python3 Tools/Hanlin/prepare_sdk.py --source /path/to/hanlin-ai
-The source must already contain the pinned commit. This script never fetches,
-checks out, resets, stages, commits or changes that repository's working files.
+The supplied source is read-only. If its shallow history lacks the exact pin,
+a private temporary bare repository fetches that commit. This script never
+checks out, resets, stages, commits or changes the supplied repository.
 Run before Xcode resolves Anytype.xcodeproj's nested local package references.
 """
 
@@ -51,7 +52,18 @@ def verify(directory):
 
 
 def materialize(source):
-    resolved = git(source, "rev-parse", PIN["revision"] + "^{commit}").decode().strip()
+    try:
+        resolved = git(source, "rev-parse", PIN["revision"] + "^{commit}").decode().strip()
+    except subprocess.CalledProcessError:
+        # A workflow can retain an older shallow checkout. Fetch only the exact
+        # new pin into an owned temporary bare repository; never mutate source.
+        with tempfile.TemporaryDirectory(prefix="hanlin-pinned-source-") as temporary:
+            bare = Path(temporary) / "source.git"
+            subprocess.run(["git", "init", "--bare", str(bare)], check=True,
+                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            git(bare, "fetch", "--no-tags", "--depth=1", PIN["repository"], PIN["revision"])
+            materialize(bare)
+        return
     if resolved != PIN["revision"]:
         raise ValueError("Unexpected Hanlin source revision")
     if DESTINATION.exists():

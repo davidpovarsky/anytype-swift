@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "run_id": "45302082712",
+  "source_sha": "011248e17dd4d96408b23eff6f13efbcb4d78391",
+  "status": "FAILED_DEPENDENCY_GRAPH_BEFORE_APP_COMPILATION",
+  "actual_xcodebuild_build_invocations": 1,
+  "actual_app_compilations": 0,
+  "actual_selected_test_methods": 0,
+  "artifact_id": 14881155756,
+  "artifact_sha256": "09b215c33d75e9b47bd725f854c72af13675928d437015d92839606154753aeb",
+  "failed_command": "ComputeTargetDependencyGraph",
+  "diagnostic": "Macro EquatableMacros from package Equatable must be enabled before it can be used",
+  "original_equatable_version": "1.4.1",
+  "authoritative_equatable_revision": "597c2bb34af0c51331eb3b5e705f942d8ee20daa",
+  "disposable_simulators_removed": 2,
+  "producer_revision": "a774de24926ca13d563c45c42917d03b8c04296f",
+  "producer_run_id": "45294462656",
+  "correction": "Resolve explicitly, validate the actual original macro checkout, use only command-local -skipMacroValidation, retain original/resolved lock bytes and source/run/attempt binding, and verify the declared generated source delta before executing the exact compiled products.",
+  "physical_sharing": "NOT_PROVEN_BY_SIMULATOR"
+}

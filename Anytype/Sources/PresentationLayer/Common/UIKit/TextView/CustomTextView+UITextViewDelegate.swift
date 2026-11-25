@@ -63,11 +63,16 @@ extension CustomTextView: UITextViewDelegate {
         // Keep only standard edit menu to avoid iOS 26 floating issue with "more" button
         let standardEdit = suggestedActions.first { ($0 as? UIMenu)?.identifier == .standardEdit }
         let ordinaryActions = standardEdit.map { [$0] } ?? suggestedActions
+        var additionalActions: [UIMenuElement] = []
+        if let action = PinkhaMiniAppsEntry.selectionAction(textView: textView, range: range) {
+            additionalActions.append(action)
+        }
 #if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
         if let action = (textView as? TextViewWithPlaceholder)?.pinkhaSemanticAnchorAction?(range) {
-            return UIMenu(children: ordinaryActions + [UIMenu(options: .displayInline, children: [action])])
+            additionalActions.append(action)
         }
 #endif
-        return UIMenu(children: ordinaryActions)
+        return UIMenu(children: ordinaryActions + (additionalActions.isEmpty ? [] :
+            [UIMenu(options: .displayInline, children: additionalActions)]))
     }
 }

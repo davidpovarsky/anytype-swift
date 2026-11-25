@@ -27,6 +27,9 @@ struct EditorPageView: View {
     var body: some View {
         EditorSwiftUIViewContainer(viewController: stateModel.viewController)
             .anytypeStatusBar(style: .default)
+            .onDisappear {
+                PinkhaMiniAppsCoordinator.shared.detach(editor: stateModel.viewController)
+            }
             .homeBottomPanelHidden(model.bottomPanelHidden, animated: model.bottomPanelHiddenAnimated)
             .onChange(of: model.dismiss) {
                 dismiss()

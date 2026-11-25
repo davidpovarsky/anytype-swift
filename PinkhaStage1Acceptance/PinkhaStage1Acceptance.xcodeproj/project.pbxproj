@@ -14,6 +14,7 @@
 		B80000000000000000000001 /* PinkhaTorahQuoteAcceptanceUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80000000000000000000002 /* PinkhaTorahQuoteAcceptanceUITests.swift */; };
 		B90000000000000000000001 /* PinkhaT5NativeAcceptanceUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90000000000000000000002 /* PinkhaT5NativeAcceptanceUITests.swift */; };
 		B91000000000000000000001 /* SemanticAnchorPage154MountedUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91000000000000000000002 /* SemanticAnchorPage154MountedUITests.swift */; };
+		B93000000000000000000001 /* MiniAppsNativeAcceptanceUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93000000000000000000002 /* MiniAppsNativeAcceptanceUITests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +37,7 @@
 		B80000000000000000000002 /* PinkhaTorahQuoteAcceptanceUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinkhaTorahQuoteAcceptanceUITests.swift; sourceTree = "<group>"; };
 		B90000000000000000000002 /* PinkhaT5NativeAcceptanceUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinkhaT5NativeAcceptanceUITests.swift; sourceTree = "<group>"; };
 		B91000000000000000000002 /* SemanticAnchorPage154MountedUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SemanticAnchorPage154MountedUITests.swift; sourceTree = "<group>"; };
+		B93000000000000000000002 /* MiniAppsNativeAcceptanceUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniAppsNativeAcceptanceUITests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 				B80000000000000000000002 /* PinkhaTorahQuoteAcceptanceUITests.swift */,
 				B90000000000000000000002 /* PinkhaT5NativeAcceptanceUITests.swift */,
 				B91000000000000000000002 /* SemanticAnchorPage154MountedUITests.swift */,
+				B93000000000000000000002 /* MiniAppsNativeAcceptanceUITests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -157,6 +160,7 @@
 				B80000000000000000000001 /* PinkhaTorahQuoteAcceptanceUITests.swift in Sources */,
 				B90000000000000000000001 /* PinkhaT5NativeAcceptanceUITests.swift in Sources */,
 				B91000000000000000000001 /* SemanticAnchorPage154MountedUITests.swift in Sources */,
+				B93000000000000000000001 /* MiniAppsNativeAcceptanceUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -275,6 +279,58 @@
 			};
 			name = "Release-Anytype";
 		};
+		B94000000000000000000001 /* Debug-MiniAppsOwner */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gloiiire.PinkhaStage1AcceptanceUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Anytype;
+			};
+			name = "Debug-MiniAppsOwner";
+		};
+		B94000000000000000000002 /* Debug-MiniAppsOwner */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+			};
+			name = "Debug-MiniAppsOwner";
+		};
+		B95000000000000000000001 /* Release-MiniAppsOwner */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gloiiire.PinkhaStage1AcceptanceUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Anytype;
+			};
+			name = "Release-MiniAppsOwner";
+		};
+		B95000000000000000000002 /* Release-MiniAppsOwner */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+			};
+			name = "Release-MiniAppsOwner";
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -284,7 +340,9 @@
 				A10000000000000000000011 /* Debug */,
 				A10000000000000000000012 /* Release */,
 				A10000000000000000000015 /* Debug-Anytype */,
+				B94000000000000000000001 /* Debug-MiniAppsOwner */,
 				A10000000000000000000016 /* Release-Anytype */,
+				B95000000000000000000001 /* Release-MiniAppsOwner */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -295,7 +353,9 @@
 				A10000000000000000000013 /* Debug */,
 				A10000000000000000000014 /* Release */,
 				A10000000000000000000017 /* Debug-Anytype */,
+				B94000000000000000000002 /* Debug-MiniAppsOwner */,
 				A10000000000000000000018 /* Release-Anytype */,
+				B95000000000000000000002 /* Release-MiniAppsOwner */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

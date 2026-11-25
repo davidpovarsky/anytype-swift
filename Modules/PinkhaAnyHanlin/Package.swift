@@ -18,6 +18,7 @@ let package = Package(
         .package(path: "../../Dependencies/Hanlin/Packages/HanlinAgentSDK"),
         .package(path: "../../Dependencies/Hanlin/Packages/HanlinPlatform"),
         .package(path: "../../Dependencies/Hanlin/Packages/HanlinPresentationSDK"),
+        .package(path: "../../Dependencies/Hanlin/Packages/HanlinMiniAppsBridge"),
         .package(path: "../PinkhaAnyHost"),
         .package(path: "../PinkhaAnyEngine"),
         .package(path: "../PinkhaAnyIntegration"),
@@ -45,7 +46,9 @@ let package = Package(
             .product(name: "HanlinChatCore", package: "HanlinPlatform", condition: .when(platforms: [.iOS])),
             .product(name: "HanlinScriptUI", package: "HanlinPlatform", condition: .when(platforms: [.iOS])),
             .product(name: "HanlinChatUI", package: "HanlinPresentationSDK", condition: .when(platforms: [.iOS])),
-            .product(name: "HanlinPresentationKit", package: "HanlinPresentationSDK", condition: .when(platforms: [.iOS]))
+            .product(name: "HanlinPresentationKit", package: "HanlinPresentationSDK", condition: .when(platforms: [.iOS])),
+            .product(name: "HanlinMiniAppsBridge", package: "HanlinMiniAppsBridge", condition: .when(platforms: [.iOS])),
+            .product(name: "HanlinMiniAppsPicker", package: "HanlinMiniAppsBridge", condition: .when(platforms: [.iOS]))
         ], resources: [.process("Resources")]),
         .executableTarget(name: "PinkhaAnyHanlinProbe", dependencies: [
             "PinkhaAnyHanlin", "PinkhaHanlinCore", "PinkhaAnyHost", "PinkhaAnyEngine", "PinkhaAnyIntegration",
