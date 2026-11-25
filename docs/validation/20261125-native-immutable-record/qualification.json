@@ -1,0 +1,220 @@
+{
+  "schema": "pinkha-native-immutable-record-qualification-v1",
+  "status": "PASS_NATIVE_IMMUTABLE_RECORD_TWO_METHODS_AND_REUSED_ELEVEN_NOT_FULL_MIGRATION",
+  "scope": {
+    "sourceAdmission": false,
+    "wholeSpaceMigration": false,
+    "appCapture": false,
+    "appleBinary": false,
+    "networkVerified": false,
+    "osDeniedColdProcess": false,
+    "actualSDKReopens": 2,
+    "actualNativeRouter": true
+  },
+  "sources": {
+    "any": "41c07bd32e95a54824a3d3c5d592accf5074ab68",
+    "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9",
+    "anyBase": "cf87c43ff0100c2dc43c3c105c82b1b070b3a7a3",
+    "sdkBase": "e195f6c07a053c6588e39ffe72ee4fc44cf3d953",
+    "files": 1588,
+    "archiveSHA256": "fb74ee838a75a214d0ea0d774a0b5354b69f93f1a219f67fa8a0b19f736fc54c",
+    "manifestSHA256": "39f4ee580af8f2897b2f794f872327b7391828a3a57355cf0235dae7d1626e72",
+    "sourceBefore": {
+      "commits": {
+        "any": "41c07bd32e95a54824a3d3c5d592accf5074ab68",
+        "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+      },
+      "contentSHA256": "aec2db03447ec771e85161c881cb9cb590d8328517ce612a262791166826888c",
+      "files": 1589
+    },
+    "sourceAfter": {
+      "commits": {
+        "any": "41c07bd32e95a54824a3d3c5d592accf5074ab68",
+        "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+      },
+      "contentSHA256": "aec2db03447ec771e85161c881cb9cb590d8328517ce612a262791166826888c",
+      "files": 1589
+    }
+  },
+  "qualification": {
+    "actualResultSHA256": "c37de86daf19dedf13aa1f6ba5d3a4c0ee8f304074894bf8992651832a62ee34",
+    "controllerCommit": "20ed685b18f9597cc86503eda70d89fd0425e002",
+    "controllerSHA256": "8bad85f2232e959932322aa8a9f43df24e8811311e6d3ce68eed973eea4801a7",
+    "actualCommand": {
+      "argv": [
+        "/Users/m1/toolchains/anytapy-go1.27.4/go/bin/go",
+        "test",
+        "-mod=readonly",
+        "-buildvcs=false",
+        "-json",
+        "-count=1",
+        "-p",
+        "2",
+        "-timeout",
+        "5m",
+        "-run",
+        "^(TestPreparedImmutableRecordHTTPNativeCycleAndStrictInput|TestPreparedImmutableRecordNativeRestartRefusalsAndPinnedMutability)$",
+        "./internal/pinkha/migrationnative",
+        "./internal/server"
+      ],
+      "cwd": "/Users/m1/development/anytype-c-active-20261125/native-immutable-c1fd-41c07-retry1/source",
+      "elapsedSeconds": 16.147619247436523,
+      "errors": [],
+      "exitCode": 0,
+      "finished": 1795642397.111146,
+      "freeBytesAfter": 150677098496,
+      "freeBytesBefore": 150878576640,
+      "minimumFreeBytes": 150327808000,
+      "originalLogBytes": 209301,
+      "originalLogSHA256": "ec22299ce2acb90272d576e2f6e7f9e1d7e63cef1b8e39b4d6d8d94537c3ce75",
+      "ownedGroupAbsent": true,
+      "pgid": 67517,
+      "pid": 67517,
+      "started": 1795642380.9635289,
+      "status": "PASS_ORIGINAL_COMMAND",
+      "timeoutSeconds": 1800
+    },
+    "actualMethods": {
+      "TestPreparedImmutableRecordHTTPNativeCycleAndStrictInput": {
+        "Action": "pass",
+        "Elapsed": 0.14,
+        "Package": "github.com/anyproto/any/internal/server",
+        "Test": "TestPreparedImmutableRecordHTTPNativeCycleAndStrictInput",
+        "Time": "2026-11-25T22:33:16.061524+01:00"
+      },
+      "TestPreparedImmutableRecordNativeRestartRefusalsAndPinnedMutability": {
+        "Action": "pass",
+        "Elapsed": 0.13,
+        "Package": "github.com/anyproto/any/internal/pinkha/migrationnative",
+        "Test": "TestPreparedImmutableRecordNativeRestartRefusalsAndPinnedMutability",
+        "Time": "2026-11-25T22:33:09.767579+01:00"
+      }
+    },
+    "markers": [
+      "immutable_record_test.go:183: immutable_record_native two_sdk_reopens=true original_signed_change_reused=true write_once_and_no_delete_enforced=true derived_stamp_forgery_refused=true stale_native_owner_refused=true network_verified=false whole_space_migration=false",
+      "handlers_pinkha_migration_immutable_record_test.go:96: immutable_record_http actual_router=true native_schema_and_row=true replay_same_change=true malformed_input_refused=true legacy_route_isolated=true"
+    ],
+    "reusedSDKQualification": {
+      "changedSourcePaths": [
+        "internal/pinkha/migrationnative/immutable_record_test.go"
+      ],
+      "methods": {
+        "TestImmutableRecordDeclarationRejectsWritableOrUnownedShapes": {
+          "Action": "pass",
+          "Elapsed": 0,
+          "Package": "github.com/anyproto/any-sync-sdk/internal/spaceimpl",
+          "Test": "TestImmutableRecordDeclarationRejectsWritableOrUnownedShapes",
+          "Time": "2026-11-25T22:24:27.467356+01:00"
+        },
+        "TestImmutableRecordIntentRestartAndCrossRouteCollision": {
+          "Action": "pass",
+          "Elapsed": 0.05,
+          "Package": "github.com/anyproto/any-sync-sdk/internal/migrationintent",
+          "Test": "TestImmutableRecordIntentRestartAndCrossRouteCollision",
+          "Time": "2026-11-25T22:24:21.060894+01:00"
+        },
+        "TestImmutableRecordValuesRejectNativeStampAndMissingRequiredInput": {
+          "Action": "pass",
+          "Elapsed": 0,
+          "Package": "github.com/anyproto/any-sync-sdk/internal/spaceimpl",
+          "Test": "TestImmutableRecordValuesRejectNativeStampAndMissingRequiredInput",
+          "Time": "2026-11-25T22:24:27.467378+01:00"
+        },
+        "TestPreparedIntentConcurrentReservationSelectsOneEnvelope": {
+          "Action": "pass",
+          "Elapsed": 0.02,
+          "Package": "github.com/anyproto/any-sync-sdk/internal/migrationintent",
+          "Test": "TestPreparedIntentConcurrentReservationSelectsOneEnvelope",
+          "Time": "2026-11-25T22:24:21.091737+01:00"
+        },
+        "TestPreparedIntentEntityCannotAcquireAnAlternateIntentID": {
+          "Action": "pass",
+          "Elapsed": 0.03,
+          "Package": "github.com/anyproto/any-sync-sdk/internal/migrationintent",
+          "Test": "TestPreparedIntentEntityCannotAcquireAnAlternateIntentID",
+          "Time": "2026-11-25T22:24:21.148124+01:00"
+        },
+        "TestPreparedIntentExactBytesSurviveLostAckAndRestart": {
+          "Action": "pass",
+          "Elapsed": 0.01,
+          "Package": "github.com/anyproto/any-sync-sdk/internal/migrationintent",
+          "Test": "TestPreparedIntentExactBytesSurviveLostAckAndRestart",
+          "Time": "2026-11-25T22:24:21.075213+01:00"
+        },
+        "TestPreparedIntentRefusesWithoutDurabilityBarrier": {
+          "Action": "pass",
+          "Elapsed": 0.01,
+          "Package": "github.com/anyproto/any-sync-sdk/internal/migrationintent",
+          "Test": "TestPreparedIntentRefusesWithoutDurabilityBarrier",
+          "Time": "2026-11-25T22:24:21.199857+01:00"
+        },
+        "TestPreparedIntentRejectsChangedPlanBeforeNewEntity": {
+          "Action": "pass",
+          "Elapsed": 0.01,
+          "Package": "github.com/anyproto/any-sync-sdk/internal/migrationintent",
+          "Test": "TestPreparedIntentRejectsChangedPlanBeforeNewEntity",
+          "Time": "2026-11-25T22:24:21.103946+01:00"
+        },
+        "TestPreparedIntentRejectsChangedSpecOrCrossKind": {
+          "Action": "pass",
+          "Elapsed": 0.02,
+          "Package": "github.com/anyproto/any-sync-sdk/internal/migrationintent",
+          "Test": "TestPreparedIntentRejectsChangedSpecOrCrossKind",
+          "Time": "2026-11-25T22:24:21.119878+01:00"
+        },
+        "TestPreparedIntentRejectsWrongOrReplacedStore": {
+          "Action": "pass",
+          "Elapsed": 0.03,
+          "Package": "github.com/anyproto/any-sync-sdk/internal/migrationintent",
+          "Test": "TestPreparedIntentRejectsWrongOrReplacedStore",
+          "Time": "2026-11-25T22:24:21.175155+01:00"
+        },
+        "TestPreparedIntentSpacesShareProjectionDBWithoutSharingLedger": {
+          "Action": "pass",
+          "Elapsed": 0.01,
+          "Package": "github.com/anyproto/any-sync-sdk/internal/migrationintent",
+          "Test": "TestPreparedIntentSpacesShareProjectionDBWithoutSharingLedger",
+          "Time": "2026-11-25T22:24:21.189941+01:00"
+        }
+      },
+      "originalFailedMethods": [
+        "TestPreparedImmutableRecordHTTPNativeCycleAndStrictInput",
+        "TestPreparedImmutableRecordNativeRestartRefusalsAndPinnedMutability"
+      ],
+      "originalFailureSHA256": "f34444835d889f052bfbca0e740af245d5092e86fff8106aad3cd8b71538e16e",
+      "originalLogSHA256": "7e9382baaa4f68028146e253912145dbd119cd3f5258cbc160b945067355a249",
+      "status": "REUSED_ELEVEN_SOURCE_UNCHANGED_SDK_METHODS_ONLY",
+      "unchangedSDKCommit": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "fixtureConfiguration": {
+      "networkVerified": false,
+      "path": "staging.yml",
+      "sha256": "a3fe3c21144c2c82afa03b58014752c6bca6e5a9f3e69a1bc1b2b38415434756",
+      "source": "internal/pinkha/migrationnative/testdata/local.yml"
+    }
+  },
+  "retention": {
+    "originalFailureResultSHA256": "f34444835d889f052bfbca0e740af245d5092e86fff8106aad3cd8b71538e16e",
+    "originalFailureCounts": {
+      "pass": 11,
+      "fail": 2,
+      "skip": 0
+    },
+    "failedOriginalsArchiveSHA256": "8f62e8034c1bebf3935d6421e4a1be60e3582519f0e6876d9f9985dad8b11d47",
+    "passedOriginalsArchiveSHA256": "f545b2000ef4eae79f512251e10cca3b492b4b354b147f8a98ce8f5ddb5f87ae",
+    "passedOriginalsEntries": 16,
+    "rawOriginalsPrivate": true,
+    "testTemporaryAccountsCleanedByOriginalFixture": true,
+    "originalFixtureFailures": [
+      "Native type declaration rejected camelCase part key; corrected to original snake_case contract",
+      "HTTP fixture refused missing exact staging.yml; controller now copies and hashes original isolated local.yml without claiming live network"
+    ]
+  },
+  "remaining": [
+    "Shared Swift intent/HTTP/executor and verified readback integration",
+    "Historical readonly projection versus current native-derived semantics",
+    "Full original156 source admission/semantic migration",
+    "Fresh original-app capture on unified410b",
+    "Cross-process cold/offline immutable record proof"
+  ]
+}
