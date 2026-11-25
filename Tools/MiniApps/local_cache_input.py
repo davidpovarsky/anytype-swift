@@ -1,4 +1,4 @@
-"""Admit only the completed owned 9225 cache for a source-equivalent continuation.
+"""Admit only the completed owned 36a recovery cache for a source-equivalent continuation.
 
 This preserves the original immutable product export and compiler identity.
 The caller must still run both original xcodebuild commands and every postgate.
@@ -16,15 +16,15 @@ import sys
 
 from local_execution import PRIVATE_ROOT, digest, write, require
 
-SOURCE = '9225c41ce4e8a1c853d525a330c003b744035f6f'
+SOURCE = '36a138dda50d2fb0b874f0b1635a80bb4b33fe5c'
 APP = PRIVATE_ROOT / 'source'
-DERIVED = PRIVATE_ROOT / 'DerivedData-9225c41c-01'
-PREVIOUS = PRIVATE_ROOT / 'evidence/acceptance-9225c41c-01'
-DESCRIPTOR_SHA256 = '077408b037542f04be4d51264566f7739ece439fb5db39ec4bfdd4a249b2ad4d'
-BUILD_SHA256 = '25b799c375ff4417c7043fe580a3693d756bd744d962be2652780db2c538ff4c'
-RESULT_SHA256 = '673d4e1a220c80ef33fedef10c8d07bd917343184d45118eb6a92aa4f73b5d58'
-MANIFEST_SHA256 = 'c985d08f650475172452bb96eb54dc68ddc5dc1910723571d1113d0a7d44cd4c'
-ARCHIVE_SHA256 = 'c00d765bc218df25e3d31632982164363d885cf986477d6bbcac03aa87880562'
+DERIVED = PRIVATE_ROOT / 'DerivedData-36a138dd-01'
+PREVIOUS = PRIVATE_ROOT / 'evidence/build-36a138dd-01'
+DESCRIPTOR_SHA256 = '5f06e1778bef72b54ddf9e2a0d8ac3f76f8887b0498c9772b248588594ff7cf2'
+BUILD_SHA256 = '21ef0b6799dc6689f65d4f2aba211c335afc3e768dfc07cfe1b6199abf31290f'
+RESULT_SHA256 = 'a2674db8e8adaef3d06661223a9dbb7bd3958b3a6157273e37ab06e15055fdfb'
+MANIFEST_SHA256 = 'd21f19741add2c02198651581176fce314959764ea116c23cdee6a64203bf28c'
+ARCHIVE_SHA256 = 'b05ff68134fc410d59419c17676faa12b3b9d8e6b1f34fb328ed78171a55af6c'
 CACHE_PATHS = ('Build', 'MiniAppsCurrentModuleCache.noindex')
 # These are downstream execution metadata/controllers, never app source or tests.
 CONTROL_ONLY_PATHS = {
@@ -36,6 +36,9 @@ CONTROL_ONLY_PATHS = {
     'Tools/MiniApps/test_local_runtime_selection.py',
     'docs/miniapps-cross-app/evidence/20261125-cache-continuation/CONTRACT.json',
     'docs/miniapps-cross-app/evidence/20261125-fe3-producer-source/REVIEW.json',
+    'docs/miniapps-cross-app/CUSTOM_RESULTS_AND_RECEIPT_BOUNDARY_20261125.md',
+    'docs/miniapps-cross-app/evidence/20261125-recovered-producer04/REVIEW.json',
+    'docs/miniapps-cross-app/evidence/20261125-recovered36-cache/CONTRACT.json',
 }
 
 
