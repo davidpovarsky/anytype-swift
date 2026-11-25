@@ -409,6 +409,29 @@ final class SemanticAnchorPage154MountedUITests: XCTestCase {
 // Cancel/Create/cold-open method above is byte-for-byte unchanged. The controller
 // must supply its original passed receipts; this test never creates another anchor.
 extension SemanticAnchorPage154MountedUITests {
+    /// Preparation diagnostic only. It changes no content or association and
+    /// cannot stand in for the original link/edit/cold-open acceptance method.
+    func testDiagnoseExistingSemanticAnchorFocusAfterSourceDismissal() throws {
+        _ = try admitSemanticSourceContinuation(phase: "linked")
+        try launchSemanticSourceContinuation(expectedText: "Anchor")
+        try openSelectedSemanticSources(text: "Anchor")
+        try requireHittable(semanticSourceAssociation("Genesis 1:1"))
+        XCTAssertEqual(semanticSourceAssociations("Genesis 1:1").count, 1)
+        try dismissSemanticSourceSheet()
+        let input = semanticText("Anchor")
+        try requireHittable(input)
+        input.doubleTap()
+        let beforeKey = XCTAttachment(string: app.debugDescription)
+        beforeKey.name = "heart-semantic-focus-before-real-key-ax"
+        beforeKey.lifetime = .keepAlways; add(beforeKey)
+        attach("heart-semantic-focus-before-real-key")
+        input.typeKey(.rightArrow, modifierFlags: [])
+        input.doubleTap()
+        XCTAssertEqual(input.value as? String, "Anchor")
+        XCTAssertFalse(semanticSourceSearch.exists)
+        attach("heart-semantic-focus-after-real-reselection")
+    }
+
     func testExistingSemanticAnchorSourceLinkEditAndColdReopen() throws {
         let capture = try admitSemanticSourceContinuation(phase: "linked")
         try launchSemanticSourceContinuation(expectedText: "Anchor")
@@ -435,10 +458,11 @@ extension SemanticAnchorPage154MountedUITests {
         try dismissSemanticSourceSheet()
 
         let input = semanticText("Anchor")
-        // Dismissing the source sheet restores this selected editor as first responder.
-        // Tapping its existing semantic link would intentionally reopen Sources.
-        // The real keyboard arrow below must succeed on the restored input.
+        // A single tap on the marked link navigates to Sources. Use the native
+        // double tap to regain text focus before the original caret collapse
+        // and word selection. Every keyboard/edit assertion remains real.
         try requireHittable(input)
+        input.doubleTap()
         input.typeKey(.rightArrow, modifierFlags: [])
         input.doubleTap()
         input.typeText("Changed")
