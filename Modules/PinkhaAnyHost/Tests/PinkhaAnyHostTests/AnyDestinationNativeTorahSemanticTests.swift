@@ -108,7 +108,12 @@ final class AnyDestinationNativeTorahSemanticTests: XCTestCase, @unchecked Senda
             let documents = try AnyEditorDocumentStore(client: client, workspace: workspace, allowedTypeIDs: ["page"])
             let ordinaryAccess = try AnyHTTPTorahTargetAccess(client: client, workspace: workspace, allowedTypeIDs: ["page"])
             let access = try AnyNativeTorahMigrationTargetAccess(access: ordinaryAccess, documents: documents, session: session)
-            let store = try AnyNativeTorahOperationStore(client: client, workspace: workspace)
+            let store = try AnyGuardedTorahOperationStore(client: client, workspace: workspace)
+            if phase == "execute" {
+                // Explicit native module provisioning is fixture preparation.
+                // Cold reopen only reads the already installed signed module.
+                try await store.repository.install(authorize: authorization)
+            }
             let migrated = try AnyTorahMigrationPlan(sourceBytes: canonical, sourceSpaceID: sourceLocation.spaceId,
                 sourceObjectID: sourceLocation.target.objectId, workspace: workspace, targetObjectID: document,
                 blockIDMap: [:], migrationKey: plan.binding.planID)
