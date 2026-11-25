@@ -348,6 +348,71 @@ final class PinkhaHeartSemanticAnchorClientTests: XCTestCase {
         XCTAssertTrue(probe.calls.isEmpty)
     }
 
+    func testFreshSemanticDocumentReadUsesOriginalNativeTreeWithoutCaptureOrPublication() async throws {
+        let probe = try HeartCaptureProbe()
+        probe.publicationAvailable = false // Read-only sources need no event publisher.
+        let request = probe.plan.request
+        let read = try await probe.client().readCurrentDocument(spaceID: request.spaceID,
+            objectID: request.objectID, lease: probe.lease)
+        XCTAssertEqual(read.spaceID, request.spaceID)
+        XCTAssertEqual(read.objectID, request.objectID)
+        XCTAssertEqual(read.blocks.first(where: { $0.id == request.blockID })?.text, request.expected)
+        XCTAssertEqual(Set(read.blocks.map(\.id)).count, read.blocks.count)
+        XCTAssertEqual(probe.calls, ["version", "read-before"])
+        XCTAssertTrue(probe.requests.isEmpty)
+        XCTAssertTrue(probe.published.isEmpty)
+        for filename in ["capture-after-object-show.pb", "cold-reopen-object-show.pb"] {
+            let response = try Anytype_Rpc.Object.Show.Response(serializedBytes: HeartCaptureFixture.data(filename))
+            let current = try PinkhaHeartSemanticAnchorDocument(response: response,
+                spaceID: request.spaceID, objectID: request.objectID)
+            XCTAssertEqual(current.blocks.first(where: { $0.id == request.blockID })?.text,
+                           try request.plannedSnapshot())
+        }
+    }
+
+    func testSemanticDocumentReadRejectsRetiredForeignIncompleteAndAmbiguousNativeTrees() async throws {
+        for variant in ["retired", "foreign-space", "wrong-root", "root-kind", "wrong-details", "duplicate",
+                        "missing-child", "cycle", "unreachable", "runtime", "cancelled"] {
+            let probe = try HeartCaptureProbe(), request = probe.plan.request
+            switch variant {
+            case "retired": probe.retireInBeforeRead = true
+            case "wrong-root": probe.before.objectView.rootID += "-foreign"
+            case "root-kind":
+                let index = try XCTUnwrap(probe.before.objectView.blocks.firstIndex { $0.id == request.objectID })
+                probe.before.objectView.blocks[index].text = .init()
+            case "wrong-details":
+                let index = try XCTUnwrap(probe.before.objectView.details.firstIndex { $0.id == request.objectID })
+                probe.before.objectView.details[index].details.fields["spaceId"] = .with { $0.stringValue = "other" }
+            case "duplicate": probe.before.objectView.blocks.append(try XCTUnwrap(probe.before.objectView.blocks.first))
+            case "missing-child", "cycle":
+                let index = try XCTUnwrap(probe.before.objectView.blocks.firstIndex { $0.id == request.objectID })
+                probe.before.objectView.blocks[index].childrenIds.append(variant == "cycle" ? request.objectID : "missing-native-child")
+            case "unreachable":
+                var extra = try XCTUnwrap(probe.before.objectView.blocks.first { $0.id == request.blockID })
+                extra.id = "unreachable-native-copy"; extra.childrenIds = []
+                probe.before.objectView.blocks.append(extra)
+            case "runtime": probe.version = "unsupported-runtime"
+            default: break
+            }
+            let work = Task { @MainActor in
+                try await probe.client().readCurrentDocument(
+                    spaceID: variant == "foreign-space" ? "foreign" : request.spaceID,
+                    objectID: request.objectID, lease: probe.lease)
+            }
+            if variant == "cancelled" { work.cancel() }
+            do { _ = try await work.value; XCTFail("Invalid semantic read accepted: " + variant) }
+            catch {
+                if variant == "cancelled" { XCTAssertTrue(error is CancellationError) }
+                else if variant == "runtime" { XCTAssertEqual(error as? PinkhaHeartSemanticAnchorError, .unsupportedRuntime) }
+                else if ["retired", "foreign-space"].contains(variant) {
+                    XCTAssertEqual(error as? PinkhaHeartSemanticAnchorError, .retiredOwner)
+                } else { XCTAssertEqual(error as? PinkhaHeartSemanticAnchorError, .changedDocument) }
+            }
+            XCTAssertTrue(probe.requests.isEmpty)
+            XCTAssertTrue(probe.published.isEmpty)
+        }
+    }
+
     func testVisibleSelectionPreparationRequiresExplicitApply() async throws {
         let probe = try HeartCaptureProbe()
         let client = probe.client()

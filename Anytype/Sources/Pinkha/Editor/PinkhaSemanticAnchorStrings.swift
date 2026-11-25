@@ -2,6 +2,7 @@
 import Foundation
 import ProtobufMessages
 import PinkhaKit
+import PinkhaTorahPresentation
 
 enum PinkhaSemanticAnchorStrings {
     private static func text(_ key: PinkhaSemanticAnchorUI.Text) -> String {
@@ -16,6 +17,12 @@ enum PinkhaSemanticAnchorStrings {
     static var created: String { text(.created) }
 
     static func message(for error: Error) -> String {
+        if let semantic = error as? PinkhaSemanticTextAnchorError {
+            return PinkhaSemanticAnchorUI.message(for: semantic)
+        }
+        if let semantic = error as? TorahSemanticAnchorResolutionError {
+            return semantic.localizedDescription
+        }
         guard let value = error as? PinkhaHeartSemanticAnchorError else {
             return text(.unavailable)
         }

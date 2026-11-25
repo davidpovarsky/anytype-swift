@@ -6,6 +6,7 @@ import PinkhaAnyEngine
 import PinkhaAnyHost
 import PinkhaAnyIntegration
 import PinkhaAnyRuntime
+import PinkhaTorahPresentation
 @testable import PinkhaAnyUI
 @testable import PinkhaAnyNative
 
@@ -303,6 +304,136 @@ final class NativeDocumentPublicationTests: XCTestCase {
         }
     }
 
+    /// Real AnyLib persistence and the production Sefaria resolver. This is a
+    /// mounted-model test; the separate UIKit test owns physical selection and
+    /// cold-process reopening.
+    func testSemanticSourceLinksPersistCanonicalIdentityAndRejectMissingOrForeignTargets() async throws {
+        try await withDocument { fixture in
+            let model = fixture.model, blockID = fixture.blockID
+            let firstRange = NSRange(location: 0, length: 4)
+            model.select(blockIDs: [blockID], focusedBlockID: blockID, range: firstRange)
+            let firstIntent = try await model.prepareSemanticAnchor(
+                blockID: blockID, range: firstRange, visibleText: "מקור א")
+            let first = try await model.applySemanticAnchor(firstIntent)
+            try await fixture.settleDeferredReads()
+            let initial = try await fixture.read()
+            try await model.torah.presentSemanticAnchorSources(first)
+            let opened = try await fixture.read()
+            XCTAssertEqual(initial.nativeVersion, opened.nativeVersion,
+                           "Opening anchored sources is read-only.")
+            let firstContext = TorahAssociationContext(spaceId: model.workspace.spaceID,
+                objectId: model.objectID, scope: .semantic(first))
+            XCTAssertEqual(model.torah.associationContext, firstContext)
+
+            let result = TorahEditorSession.SearchResult(id: "semantic-native-source",
+                scope: .references, providerValue: "Genesis 1:1", labelHe: nil, labelEn: nil,
+                fallbackTitle: "Genesis 1:1", fallbackSubtitle: nil)
+            let values = try await model.torah.link(result, to: firstContext, rawQuery: "Genesis 1:1")
+            XCTAssertEqual(model.torah.persistenceState, .saved)
+            XCTAssertEqual(values.count, 1)
+            let storedFirst = try XCTUnwrap(values.first)
+            XCTAssertEqual(storedFirst.canonicalKey, "Genesis 1:1")
+            XCTAssertEqual(storedFirst.providerID, "sefaria")
+            let location = TorahAssociationLocation(spaceId: model.workspace.spaceID,
+                                                     target: .object(objectId: model.objectID))
+            XCTAssertEqual(try TorahSemanticAnchorAssociation.decoding(storedFirst,
+                location: location)?.anchor, first)
+            let canonical = TorahAssociationPayloadCodec()
+            let storedWire = try canonical.encodeDocument(.init(items: [storedFirst]))
+            let independentFirst = try await fixture.associationRecords()
+            XCTAssertEqual(independentFirst.count, 1)
+            XCTAssertNil(independentFirst.first?.blockId)
+            XCTAssertEqual(try canonical.encodeDocument(.init(items: independentFirst.map(\.item))), storedWire)
+
+            let repeated = try await model.torah.link(result, to: firstContext, rawQuery: "Genesis 1:1")
+            XCTAssertEqual(repeated.count, 1, "A retry of the same canonical source cannot create a second link.")
+            XCTAssertEqual(repeated.first?.id, storedFirst.id)
+            let ordinaryContext = TorahAssociationContext(spaceId: model.workspace.spaceID,
+                                                           objectId: model.objectID, scope: .document)
+            XCTAssertTrue(model.torah.cachedAssociations(for: ordinaryContext).isEmpty,
+                          "An anchored source is never presented as a whole-document association.")
+
+            await model.load()
+            let secondRange = NSRange(location: 5, length: 1)
+            model.select(blockIDs: [blockID], focusedBlockID: blockID, range: secondRange)
+            let secondIntent = try await model.prepareSemanticAnchor(
+                blockID: blockID, range: secondRange, visibleText: "מקור א")
+            let second = try await model.applySemanticAnchor(secondIntent)
+            try await fixture.settleDeferredReads()
+            XCTAssertNotEqual(first, second)
+            let secondContext = TorahAssociationContext(spaceId: model.workspace.spaceID,
+                objectId: model.objectID, scope: .semantic(second))
+            let secondValues = try await model.torah.link(result, to: secondContext, rawQuery: "Genesis 1:1")
+            let storedSecond = try XCTUnwrap(secondValues.first)
+            XCTAssertEqual(secondValues.count, 1)
+            XCTAssertNotEqual(storedFirst.id, storedSecond.id,
+                              "The same verse linked to two distinct text anchors has two canonical identities.")
+            let independentBoth = try await fixture.associationRecords()
+            XCTAssertEqual(independentBoth.count, 2)
+            XCTAssertEqual(Set(try independentBoth.compactMap {
+                try TorahSemanticAnchorAssociation.decoding($0.item, location: $0.location)?.anchor
+            }), Set([first, second]))
+
+            let prefix = "חדש "
+            let prefixed = try AnyInlineMarkdown(try fixture.block().text)
+                .replacing(displayRange: .init(location: 0, length: 0), withLiteral: prefix)
+            try model.changeText(blockID: blockID, source: prefixed,
+                displaySelection: .init(location: prefix.utf16.count, length: 0), renderedBlock: fixture.block())
+            await model.flush()
+            try await fixture.settleDeferredReads()
+            guard case .resolved(let moved) = try await model.inspectSemanticAnchor(first) else {
+                return XCTFail("The canonical source must remain attached to its actual edited native marker.")
+            }
+            XCTAssertEqual(moved.first?.range, .init(location: prefix.utf16.count, length: 4))
+            XCTAssertEqual(moved.first?.text, "מקור")
+            let retainedValues = try await model.torah.associationSnapshot(for: firstContext)
+            XCTAssertEqual(retainedValues.count, 1)
+            XCTAssertEqual(retainedValues.first?.id, storedFirst.id)
+
+            let foreign = try PinkhaSemanticTextAnchor(spaceID: model.workspace.spaceID,
+                objectID: model.objectID + "-foreign", id: first.id)
+            do {
+                try await model.torah.presentSemanticAnchorSources(foreign)
+                XCTFail("A foreign document marker opened this document's source UI.")
+            } catch PinkhaSemanticTextAnchorError.wrongDocument {}
+            let beforeDenied = try await fixture.associationRecords()
+            do {
+                _ = try await model.torah.link(result, to: firstContext, rawQuery: "Genesis 1:1",
+                                               isCurrentRequest: { false })
+                XCTFail("A retired request wrote a source.")
+            } catch is CancellationError {}
+            let afterDenied = try await fixture.associationRecords()
+            XCTAssertEqual(try canonical.encodeDocument(.init(items: beforeDenied.map(\.item))),
+                           try canonical.encodeDocument(.init(items: afterDenied.map(\.item))))
+
+            // Remove the actual marker through the ordinary editor write path.
+            // Retain its canonical source until the user explicitly unlinks it.
+            let removed = try AnyInlineMarkdown(try fixture.block().text)
+                .replacing(displayRange: try XCTUnwrap(moved.first?.range), withLiteral: "")
+            try model.changeText(blockID: blockID, source: removed,
+                displaySelection: .init(location: prefix.utf16.count, length: 0), renderedBlock: fixture.block())
+            await model.flush()
+            try await fixture.settleDeferredReads()
+            let missing = try await model.inspectSemanticAnchor(first)
+            XCTAssertEqual(missing, .missing)
+            let beforeMissing = try await fixture.associationRecords()
+            do {
+                _ = try await model.torah.link(result, to: firstContext, rawQuery: "Genesis 1:1")
+                XCTFail("A missing anchor was recreated or silently retargeted.")
+            } catch TorahSemanticAnchorResolutionError.missing {}
+            let afterMissing = try await fixture.associationRecords()
+            XCTAssertEqual(try canonical.encodeDocument(.init(items: beforeMissing.map(\.item))),
+                           try canonical.encodeDocument(.init(items: afterMissing.map(\.item))))
+            let removedLinks = try await model.torah.unlinkAssociation(storedFirst, from: firstContext)
+            XCTAssertTrue(removedLinks.isEmpty)
+            let finalRecords = try await fixture.associationRecords()
+            XCTAssertEqual(finalRecords.map(\.item.id), [storedSecond.id])
+            XCTAssertEqual(try TorahSemanticAnchorAssociation.decoding(finalRecords[0].item,
+                location: finalRecords[0].location)?.anchor, second)
+            XCTAssertEqual(model.torah.persistenceState, .saved)
+        }
+    }
+
     private func withDocument(_ body: @MainActor (NativePublicationFixture) async throws -> Void) async throws {
         XCTAssertEqual(AnyEmbeddedBuild.linked, .pinkhaNativeV1)
         let directory = FileManager.default.temporaryDirectory
@@ -349,8 +480,14 @@ final class NativeDocumentPublicationTests: XCTestCase {
             model.editorReadOperation = { purpose, documents, objectID, lease in
                 try await gate.read(purpose, documents: documents, objectID: objectID, lease: lease)
             }
+            let access = try AnyHTTPTorahTargetAccess(client: owner.client, workspace: owner.workspace,
+                allowedTypeIDs: owner.capabilities.allowedTargetTypes, documentTypePolicy: .nativeCanonicalEditorV1)
+            let canonicalReader = try AnyTorahAssociationRepository(workspace: owner.workspace,
+                store: operations, access: access)
+            let associationReader = try AnySessionTorahAssociationRepository(session: owner.session,
+                repository: canonicalReader, operations: operations)
             let value = NativePublicationFixture(owner: owner, model: model, gate: gate,
-                                                  lifetime: lifetime, blockID: blockID)
+                lifetime: lifetime, blockID: blockID, associationReader: associationReader)
             fixture = value
             model.mount(surface: value.surface)
             await model.load()
@@ -392,13 +529,19 @@ private final class NativePublicationFixture {
     let gate: NativePublicationReadGate
     let lifetime: AnyUIPresentationLifetime
     let blockID: String
+    private let associationReader: AnySessionTorahAssociationRepository
     let surface = NativePublicationSurface()
     private var tasks: [Task<Void, Never>] = []
 
     init(owner: AnyNativeWorkspaceOwner, model: AnyDocumentPresentation, gate: NativePublicationReadGate,
-         lifetime: AnyUIPresentationLifetime, blockID: String) {
+         lifetime: AnyUIPresentationLifetime, blockID: String,
+         associationReader: AnySessionTorahAssociationRepository) {
         self.owner = owner; self.model = model; self.gate = gate
-        self.lifetime = lifetime; self.blockID = blockID
+        self.lifetime = lifetime; self.blockID = blockID; self.associationReader = associationReader
+    }
+
+    func associationRecords() async throws -> [TorahStoredAssociationRecord] {
+        try await associationReader.listAssociationRecords(objectId: model.objectID, spaceId: owner.workspace.spaceID)
     }
 
     func block() throws -> AnyEditorBlock {

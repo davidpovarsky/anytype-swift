@@ -424,6 +424,15 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
     }
 
     private func semanticAnchorAction(_ input: AnyNativeTextView, range: NSRange) -> UIAction? {
+        if presentation.isMounted, !presentation.hasPendingEdits, semanticAnchorInteractionID == nil,
+           presentedViewController == nil, input.window === viewIfLoaded?.window,
+           input.isFirstResponder, !input.isComposingMarkedText, input.markedTextRange == nil,
+           let id = input.blockID, let block = blockByID[id],
+           presentation.projection(for: block).display.utf8.elementsEqual(input.textStorage.string.utf8),
+           let anchor = PinkhaSemanticAnchorUI.selectedAnchor(in: input.attributedText, range: range,
+                spaceID: presentation.workspace.spaceID, objectID: presentation.objectID) {
+            return semanticAnchorSourcesAction(anchor)
+        }
         guard presentation.canMutate, !presentation.hasPendingEdits, semanticAnchorInteractionID == nil,
               presentedViewController == nil, input.window === viewIfLoaded?.window,
               input.isFirstResponder, !input.isComposingMarkedText, input.markedTextRange == nil,
@@ -537,6 +546,9 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
 
     private static func semanticAnchorMessage(_ error: Error) -> String {
         if let anchor = error as? PinkhaSemanticTextAnchorError { return PinkhaSemanticAnchorUI.message(for: anchor) }
+        if let source = error as? TorahSemanticAnchorResolutionError {
+            return source.errorDescription ?? PinkhaSemanticAnchorUI.text(.unavailable)
+        }
         switch error {
         case AnyHostError.invalidSelection: return PinkhaSemanticAnchorUI.text(.invalidSelection)
         case AnyHostError.changedDocument: return PinkhaSemanticAnchorUI.text(.changed)
@@ -569,7 +581,24 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
                             image: UIImage(systemName: "link")) { _ in
             UIPasteboard.general.url = url
         }
-        return UITextItem.MenuConfiguration(menu: UIMenu(children: [navigate, copy]))
+        let sources = semanticAnchorSourcesAction(anchor)
+        return UITextItem.MenuConfiguration(menu: UIMenu(children: [navigate, sources, copy]))
+    }
+
+    private func semanticAnchorSourcesAction(_ anchor: PinkhaSemanticTextAnchor) -> UIAction {
+        UIAction(title: PinkhaSemanticAnchorUI.text(.sources), image: UIImage(systemName: "books.vertical"),
+                 identifier: .init("pinkha.semanticAnchor.sources")) { [weak self] _ in
+            guard let self else { return }
+            let owner = presentation.mountedOwnerID
+            Task { @MainActor [weak self] in
+                guard let self, presentation.mountedOwnerID == owner, presentation.isMounted else { return }
+                do { try await presentation.torah.presentSemanticAnchorSources(anchor) }
+                catch {
+                    guard presentation.mountedOwnerID == owner else { return }
+                    showSemanticAnchorMessage(Self.semanticAnchorMessage(error))
+                }
+            }
+        }
     }
 
     private func semanticAnchorNavigationAction(_ url: URL) -> UIAction {

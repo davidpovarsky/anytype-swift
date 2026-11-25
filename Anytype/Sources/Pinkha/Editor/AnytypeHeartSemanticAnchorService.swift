@@ -33,6 +33,27 @@ final class AnytypeHeartSemanticAnchorService {
         return pending
     }
 
+    func resolve(_ anchor: PinkhaSemanticTextAnchor, lease: PinkhaNativeReadLease) async throws
+        -> PinkhaSemanticTextAnchorResolver.Resolution {
+        let current = try await client.readCurrentDocument(spaceID: anchor.spaceID,
+            objectID: anchor.objectID, lease: lease)
+        let blocks = try current.blocks.map { block -> PinkhaSemanticTextAnchorResolver.Block in
+            guard let native = block.text else {
+                return .init(id: block.id, content: try .init(text: ""))
+            }
+            let marks = try native.marks.compactMap { mark -> PinkhaSemanticText.Mark? in
+                guard mark.kind == 5, let url = URL(string: mark.param),
+                      PinkhaSemanticTextAnchor.isReservedMarkerURL(url) else { return nil }
+                return .init(anchor: try .init(markerURL: url),
+                    range: .init(location: Int(mark.from), length: Int(mark.to - mark.from)))
+            }
+            return .init(id: block.id, content: try .init(text: native.text, marks: marks))
+        }
+        try lease.validate()
+        return try PinkhaSemanticTextAnchorResolver.resolve(anchor,
+            spaceID: current.spaceID, objectID: current.objectID, blocks: blocks)
+    }
+
     func apply(_ pending: PinkhaHeartSemanticAnchorPending) async throws
         -> PinkhaHeartSemanticAnchorVerifiedCapture {
         try await client.apply(pending)

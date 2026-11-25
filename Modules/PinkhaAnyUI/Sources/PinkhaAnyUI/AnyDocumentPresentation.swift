@@ -189,6 +189,10 @@ public final class AnyDocumentPresentation: Sendable {
             self?.requestOpenObject(id, blockID: blockID)
         }
         torah.installAssociationSnapshotHandler { [weak self] _ in self?.contentRevision &+= 1 }
+        torah.installSemanticAnchorResolver { [weak self] anchor in
+            guard let self else { throw AnyHostError.sessionClosed }
+            return try await self.inspectSemanticAnchor(anchor)
+        }
         registration = try lifetime.register(revoke: { [weak self] in self?.revoke() },
                                               drain: { [weak self] in await self?.drain() })
     }
@@ -538,6 +542,26 @@ public final class AnyDocumentPresentation: Sendable {
               drafts.isEmpty, unmappedDrafts.isEmpty, !isComposing, !requiresDraftReview else {
             throw AnyHostError.changedDocument
         }
+    }
+
+    /// Read-only source linking validation. It cannot publish a display read,
+    /// navigate, change selection, write a marker, or retry any native mutation.
+    public func inspectSemanticAnchor(_ anchor: PinkhaSemanticTextAnchor) async throws
+        -> PinkhaSemanticTextAnchorResolver.Resolution {
+        let owner = epoch
+        try requireMounted(owner)
+        guard !hasPendingEdits, !isLoading, !isCreatingTextAnchor else { throw AnyHostError.changedDocument }
+        guard anchor.belongsTo(spaceID: workspace.spaceID, objectID: objectID) else {
+            throw PinkhaSemanticTextAnchorError.wrongDocument
+        }
+        let documents = documents, objectID = objectID
+        let current = try await nativeSession.perform {
+            try await documents.read(objectID: objectID, lease: $0)
+        }
+        try Task.checkCancellation()
+        try requireMounted(owner)
+        guard !hasPendingEdits, !isLoading, !isCreatingTextAnchor else { throw AnyHostError.changedDocument }
+        return try AnySemanticAnchorDocument.resolve(anchor, read: current)
     }
 
     /// Resolve only from a newly authorized full native document. The shared

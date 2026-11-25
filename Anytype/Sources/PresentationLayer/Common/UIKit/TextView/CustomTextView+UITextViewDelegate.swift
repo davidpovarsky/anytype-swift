@@ -1,4 +1,7 @@
 import UIKit
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+import PinkhaKit
+#endif
 
 extension CustomTextView: UITextViewDelegate {    
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
@@ -48,6 +51,14 @@ extension CustomTextView: UITextViewDelegate {
         in characterRange: NSRange,
         interaction: UITextItemInteraction
     ) -> Bool {
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        if PinkhaSemanticTextAnchor.isReservedMarkerURL(URL) {
+            if interaction == .invokeDefaultAction {
+                (textView as? TextViewWithPlaceholder)?.pinkhaSemanticAnchorOpenURL?(URL)
+            }
+            return false
+        }
+#endif
         if !textView.isFirstResponder && interaction == .invokeDefaultAction {
             delegate?.openURL(URL)
         }
