@@ -18,6 +18,9 @@ struct TorahT5UIAcceptancePreparationTests {
         let objectID: String
         let typeKey: String
         let title: String
+        let nativeName: String
+        let nativeSnippet: String
+        let nativeLayout: Int
         let blockID: String?
         let blockText: String?
         let firstBlockID: String?
@@ -304,8 +307,9 @@ struct TorahT5UIAcceptancePreparationTests {
                 guard case .text(let content) = nativeBlock.content else { throw Failure.invariant("presentation-probe-not-text") }
                 try require(content.text == probe.text, "presentation-probe-readback-differs")
             }
-            targets.append(.init(role: role, objectID: object.id, typeKey: type.value, title: value.objectName, blockID: blockID,
-                blockText: blockText, firstBlockID: firstID, firstBlockText: firstText, associationID: saved.id,
+            targets.append(.init(role: role, objectID: object.id, typeKey: type.value, title: value.objectName,
+                nativeName: value.name, nativeSnippet: value.snippet, nativeLayout: value.resolvedLayoutValue.rawValue,
+                blockID: blockID, blockText: blockText, firstBlockID: firstID, firstBlockText: firstText, associationID: saved.id,
                 canonicalSHA256: hash(Data(canonical.utf8)), resultID: nil))
         }
         try require(Set(targets.map(\.objectID)).count == 5, "native-positive-objects-not-distinct")

@@ -51,6 +51,9 @@ def fixture():
     for role in gates.TARGET_ROLES:
         block = "block-" + role if role in {"block", "quote"} else None
         value["targets"].append({"role": role, "objectID": "object-" + role, "title": gates.presentation_title(role, TOKEN),
+            "nativeName": "" if role == "note" else gates.presentation_title(role, TOKEN),
+            "nativeSnippet": "T5 UI note\nT5 existing Note " + TOKEN if role == "note" else "",
+            "nativeLayout": 9 if role == "note" else 0,
             "typeKey": "note" if role == "note" else "writing" if role == "writing" else "page", "blockID": block,
             "blockText": "T5 native " + role + " target " + TOKEN if block else None,
             "firstBlockID": "first-" + role if block else None, "firstBlockText": "First actual paragraph" if block else None,

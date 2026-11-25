@@ -51,6 +51,26 @@ def graph_nodes(readback):
     return graph, reachable
 
 
+def display_title(value, obj):
+    # These are independent ObjectShow details, not the production result row.
+    # Keep the raw name even though Native Note display derives from its snippet.
+    layout, snippet = value.get("nativeLayout"), value.get("nativeSnippet")
+    require(type(layout) is int and layout >= 0
+            and (layout == 9) == (obj["role"] == "note"),
+            "Native presentation layout differs from the fixture role")
+    require(isinstance(snippet, str) and len(snippet) <= 4096,
+            "Independent native snippet readback is absent")
+    raw = value.get("title")
+    require(isinstance(raw, str) and (raw == "" if obj["role"] == "note" else bool(raw)),
+            "Raw native Note name or document name differs")
+    chosen = snippet if layout == 9 else raw
+    # Foundation CharacterSet.newlines, used by objectName, replaces each member.
+    expected = re.sub(r"[\n\v\f\r\x85\u2028\u2029]", " ", chosen)
+    require(nonempty(expected) and value.get("displayTitle") == expected,
+            "Display title is not the exact native layout/name/snippet derivation")
+    return expected
+
+
 def validate_readback(value, obj, *, archived=False):
     require(isinstance(value, dict) and value.get("objectID") == obj["objectID"]
             and value.get("rootID") == obj["objectID"] and value.get("spaceID") == obj["spaceID"],
@@ -58,6 +78,7 @@ def validate_readback(value, obj, *, archived=False):
     title = value.get("title")
     require(isinstance(title, str) and len(title) <= 4096 and (bool(title) or obj["role"] == "note")
             and nonempty(value.get("typeID")), "Actual title and native type required; only the Note may have an empty name")
+    display_title(value, obj)
     for field in ["isArchived", "isDeleted", "isReadonly", "detailsRestricted", "projectionReady"]:
         require(type(value.get(field)) is bool, "Native readback boolean missing")
     require(value["isArchived"] is archived and value["isDeleted"] is False
@@ -207,8 +228,9 @@ def validate_observations(receipt, fixtures):
             archived = name == "note_archive" and obj["role"] == "note"
             root, graph, reachable = validate_readback(current, obj, archived=archived)
             original = obj["original"]
-            require(current["title"] == original["title"] and current["typeID"] == original["typeID"],
-                    "Native mutation changed unrelated document metadata")
+            require(all(current[key] == original[key] for key in ("title", "typeID", "nativeLayout", "displayTitle"))
+                    and (obj["role"] != "note" or current["nativeSnippet"] == original["nativeSnippet"]),
+                    "Native mutation changed unrelated document metadata or Note presentation")
             if name == "page_unlink" and obj["role"] == "page_a":
                 expected_canonical = json.loads(original["canonicalRaw"])
                 expected_canonical["records"] = []
@@ -229,7 +251,7 @@ def validate_observations(receipt, fixtures):
                     continue
                 require(block is None or block in reachable, "Expected target disappeared from native graph")
                 expected_rows.append(dict(id=target_id(space, obj["objectID"], block), spaceID=space, objectID=obj["objectID"],
-                    blockID=block, title=current["title"], typeID=current["typeID"], sourceReference=SOURCE[1],
+                    blockID=block, title=display_title(current, obj), typeID=current["typeID"], sourceReference=SOURCE[1],
                     canUnlink=target["role"] == "document", kind="note" if obj["role"] == "note" else "document",
                     updatedAt=current["updatedAt"]))
         expected_rows.sort(key=lambda row: (-row["updatedAt"], row["id"]))

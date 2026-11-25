@@ -126,6 +126,14 @@ class PendingAccountRetryControls(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 pending.validate_retained_source(app)
 
+    def test_observation_inverse_rejects_changed_native_value_or_original_assertion(self):
+        root = Path(__file__).resolve().parents[2]
+        raw = (root / "AnyTypeTests/Pinkha/TorahT5NativePaginationTests.swift").read_bytes()
+        for changed in [raw.replace(b"nativeSnippet: value.snippet", b"nativeSnippet: value.name"),
+                        b"X" + raw[1:]]:
+            with self.assertRaises(RuntimeError):
+                pending.restore_original_pagination_source(changed)
+
     def test_actual_controller_selects_one_pending_suite_and_disables_old_suites(self):
         helper = original.NativeAccountRetryControllerControls()
         counts, record, selection, command, config, injected = helper.execute_synthetic_phase(
@@ -200,8 +208,14 @@ class CorrectedPendingRuntimeControls(unittest.TestCase):
         root = Path(__file__).resolve().parents[2]
         source = (root / "AnyTypeTests/Pinkha/TorahT5NativePaginationTests.swift").read_text(encoding="utf8")
         fixture = source.split("fileprivate func prepareStoppedAccountRetryFixture()", 1)[1]
-        self.assertIn(pending.heart_profiles.select(pending.RUNTIME_PROFILE).patch_sha256, fixture)
-        self.assertIn('"-pinkha-torah-attachment-v1-" + patch', fixture)
+        selected = fixture.split('case "r15-attachment-v1":', 1)[1].split('case ', 1)[0]
+        self.assertIn("expectedVersion = T5NativeRelatedLookupCapability.correctedRuntimeVersion", selected)
+        capability = (root / "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NativeRelatedLookupCapability.swift").read_text()
+        self.assertIn('public static let correctedPatchSHA256 = "' +
+                      pending.heart_profiles.select(pending.RUNTIME_PROFILE).patch_sha256 + '"', capability)
+        version = capability.split("public static let correctedRuntimeVersion =", 1)[1].split("///", 1)[0]
+        self.assertIn('"-pinkha-torah-attachment-v1-" + correctedPatchSHA256', version)
+        self.assertIn('"-pinkha-native-t5-lookup-v1-" + correctedPatchSHA256', version)
         workflow = (root / ".github/workflows/pinkha-t5-native-pagination.yml").read_text(encoding="utf8")
         step = workflow.split("      - name: Reuse the qualified corrected r15 artifact", 1)[1].split("      - name:", 1)[0]
         self.assertIn('test "$HEART_SOURCE_RUN_ID" = "' + pending.RUNTIME_RUN + '"', step)
