@@ -1,0 +1,195 @@
+{
+  "sourceManifestSHA256": "cbfb3aa1fd89707138adeccbce7389c40dc0a993f2285f6e517120e4e4239ed4",
+  "used": [
+    "property:analyticsSpaceId",
+    "property:apiObjectKey",
+    "property:headerRelationsLayout",
+    "property:homepage",
+    "property:migrationObjectContext",
+    "property:orderId",
+    "property:relationFormatIncludeTime"
+  ],
+  "keyUsage": {
+    "analyticsSpaceId": {
+      "presentDetailsByNativeType": {
+        "518": 1
+      },
+      "relationLinksByNativeType": {
+        "518": 1
+      },
+      "currentValueKinds": {
+        "str": 1
+      }
+    },
+    "apiObjectKey": {
+      "presentDetailsByNativeType": {
+        "521": 126,
+        "528": 20,
+        "529": 4
+      },
+      "relationLinksByNativeType": {
+        "521": 126,
+        "528": 20,
+        "529": 4
+      },
+      "currentValueKinds": {
+        "str": 150
+      }
+    },
+    "headerRelationsLayout": {
+      "presentDetailsByNativeType": {
+        "528": 1
+      },
+      "relationLinksByNativeType": {
+        "528": 20
+      },
+      "currentValueKinds": {
+        "int": 1
+      }
+    },
+    "homepage": {
+      "presentDetailsByNativeType": {
+        "518": 1
+      },
+      "relationLinksByNativeType": {
+        "518": 1
+      },
+      "currentValueKinds": {
+        "str": 1
+      }
+    },
+    "migrationObjectContext": {
+      "presentDetailsByNativeType": {
+        "518": 1
+      },
+      "relationLinksByNativeType": {
+        "518": 1
+      },
+      "currentValueKinds": {
+        "int": 1
+      }
+    },
+    "orderId": {
+      "presentDetailsByNativeType": {
+        "529": 4,
+        "528": 1
+      },
+      "relationLinksByNativeType": {
+        "529": 4,
+        "528": 1
+      },
+      "currentValueKinds": {
+        "str": 5
+      }
+    },
+    "relationFormatIncludeTime": {
+      "presentDetailsByNativeType": {
+        "521": 120
+      },
+      "relationLinksByNativeType": {
+        "521": 120
+      },
+      "currentValueKinds": {
+        "bool": 120
+      }
+    }
+  },
+  "actualCompiledDefinitions": [
+    {
+      "key": "analyticsSpaceId",
+      "protobufSHA256": "0b9e3ffbe7c619f45d4e60a01c2c8900fff7543e3d637455b4f6f36e525fc83c",
+      "jsonViewSHA256": "42dd073f3998bf1f45bf660220ddb73418b490e33fccd609679e92bc9b98a7d7",
+      "definition": {
+        "description": "Anonymous space analytics id",
+        "hidden": true,
+        "id": "_branalyticsSpaceId",
+        "key": "analyticsSpaceId",
+        "maxCount": 1,
+        "name": "Analytics space id",
+        "readOnly": true,
+        "readOnlyRelation": true,
+        "scope": 1
+      }
+    },
+    {
+      "key": "apiObjectKey",
+      "protobufSHA256": "c426dc53f57e5c5c37901a9379e373cff5c0b1cb3a62d4c0448c2fa15fe85802",
+      "jsonViewSHA256": "74ce9977cc666bb9d3f2e03c8d684129404e512dbcc6eb8bed23febfc681b993",
+      "definition": {
+        "description": "Identifier to use in intergrations with Anytype API",
+        "hidden": true,
+        "id": "_brapiObjectKey",
+        "key": "apiObjectKey",
+        "maxCount": 1,
+        "name": "API Object Key",
+        "readOnlyRelation": true,
+        "scope": 1
+      }
+    },
+    {
+      "key": "headerRelationsLayout",
+      "protobufSHA256": "556d7d08a11ba49325e6e201c0beeaca903ab45cd720405d8d48ba42b683955f",
+      "jsonViewSHA256": "edf1a9d3f2ac509a76611c7333b9a2d2a377ac80caad860f9b91e2d3f0a56244",
+      "definition": {
+        "description": "Layout of header relations. Line or column",
+        "format": 2,
+        "hidden": true,
+        "id": "_brheaderRelationsLayout",
+        "key": "headerRelationsLayout",
+        "maxCount": 1,
+        "name": "Header properties layout",
+        "readOnlyRelation": true,
+        "revision": "1",
+        "scope": 1
+      }
+    },
+    {
+      "key": "homepage",
+      "protobufSHA256": "cc980612549d9d710e5248794c3aae183187c9a39c0634acf0535ec0d5a1e6d9",
+      "jsonViewSHA256": "1cd33d123c3385b83643c7b616f74236bbbec9e8285daecdd2e6d01b8284c88e",
+      "definition": {
+        "description": "Homepage of regular spaces. Could handle either object id or special constant",
+        "hidden": true,
+        "id": "_brhomepage",
+        "key": "homepage",
+        "maxCount": 1,
+        "name": "Home page",
+        "readOnlyRelation": true,
+        "scope": 1
+      }
+    },
+    {
+      "key": "migrationObjectContext",
+      "protobufSHA256": "25f378b4c714ba1a438d7ffbbf91467376d97071c11ec1df9eb532a20baf30bc",
+      "jsonViewSHA256": "ffcba1cf9a305afaeaf74576fb81dc004e10e262492a303580d60e4e7af2fc18",
+      "definition": {
+        "description": "Version of file context migration completed for this space",
+        "format": 2,
+        "hidden": true,
+        "id": "_brmigrationObjectContext",
+        "key": "migrationObjectContext",
+        "maxCount": 1,
+        "name": "Object Context Migration Version",
+        "readOnly": true,
+        "readOnlyRelation": true,
+        "scope": 1
+      }
+    },
+    {
+      "key": "relationFormatIncludeTime",
+      "protobufSHA256": "de78817303469799bc06b5ea049972fa4e9ca7f1df14d6e3d3dcebe1fbbd7a35",
+      "jsonViewSHA256": "5efdc88899b977389ab0c26c2c6295afa1e075e6f8c1583ecf706d1f458db1ff",
+      "definition": {
+        "description": "Should time be shown for relation values with date format",
+        "format": 6,
+        "hidden": true,
+        "id": "_brrelationFormatIncludeTime",
+        "key": "relationFormatIncludeTime",
+        "name": "IncludeTime",
+        "readOnly": true,
+        "readOnlyRelation": true,
+        "scope": 1
+      }
+    }
+  ]
+}
