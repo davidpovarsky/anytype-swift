@@ -38,3 +38,20 @@ changed source, foreign scopes, incorrect build counts, Boolean count aliases,
 and unbound producer identities. These are pure admission controls, not Apple
 functional acceptance. The subsequent actual original xcresults remain the
 authority for UI outcomes.
+
+## Exact pager and retained-account continuation
+
+The original f022 run preserved full accessibility hierarchies. They prove the
+actual pager label is `Next Page`; `More` is the unrelated document toolbar.
+Commit `a3dae22646d1e3e9110229288f90fc9dc1190375` narrows both pager lookups
+to that observed exact label. The f022 failure remains an actual failed test,
+with zero source-action taps and no completed source association operation.
+
+`resume_combined_heart_sources.py` admits only the exact original failed
+execution receipt `21ecaa2c4f2d83e70212773e8c28c07acb691fdfba730cb5072e85bc00c12bbc`.
+It rechecks the original successful setup xcresults/stdout, the zero-source-action
+failure, the owned shutdown device, live unchanged private witnesses and all
+original native boundary predicates. The original two-hour fixture freshness
+limit is unchanged. It executes only the four remaining original methods;
+preparation, account creation and semantic capture are not reexecuted. The
+retained simulator is kept on failure or incomplete evidence retention.
