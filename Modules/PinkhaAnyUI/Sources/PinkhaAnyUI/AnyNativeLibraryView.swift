@@ -309,18 +309,16 @@ public struct AnyNativeLibraryView: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("any-native-hierarchy-row-\(item.objectID)")
-                .contextMenu {
-                    Button(AnyUIErrorText.text("שינוי שם", "Rename"), systemImage: "pencil") {
-                        beginNaming(.init(item: item.native, kind: item.kind, parentID: item.parentID, isNote: false))
-                    }.disabled(!model.canWrite)
-                    Button(AnyUIErrorText.text("העברה", "Move"), systemImage: "folder") { moveItem = item.native }
-                        .disabled(!model.canWrite)
-                        .accessibilityIdentifier("any-native-hierarchy-move")
-                    Button(AnyUIErrorText.text("העברה לסל המחזור", "Move to Bin"), systemImage: "trash", role: .destructive) {
-                        removeItem = item.native
-                    }.disabled(!model.canWrite)
-                        .accessibilityIdentifier("any-native-hierarchy-archive")
+                .contextMenu { hierarchyActions(item) }
+
+                Menu { hierarchyActions(item) } label: {
+                    Image(systemName: "ellipsis")
+                        .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
                 }
+                .buttonStyle(.borderless)
+                .accessibilityLabel(AnyUIErrorText.text("פעולות פריט", "Item actions"))
+                .accessibilityIdentifier("any-native-hierarchy-actions-\(item.objectID)")
 
                 if model.canWrite && !editMode.isEditing {
                     AnyNativeHierarchyDragHandle(session: model.session, objectID: item.objectID,
@@ -331,6 +329,20 @@ public struct AnyNativeLibraryView: View {
                 }
             }
         }
+    }
+
+    @ViewBuilder
+    private func hierarchyActions(_ item: AnyHierarchyPresentationItem) -> some View {
+        Button(AnyUIErrorText.text("שינוי שם", "Rename"), systemImage: "pencil") {
+            beginNaming(.init(item: item.native, kind: item.kind, parentID: item.parentID, isNote: false))
+        }.disabled(!model.canWrite)
+        Button(AnyUIErrorText.text("העברה", "Move"), systemImage: "folder") { moveItem = item.native }
+            .disabled(!model.canWrite)
+            .accessibilityIdentifier("any-native-hierarchy-move")
+        Button(AnyUIErrorText.text("העברה לסל המחזור", "Move to Bin"), systemImage: "trash", role: .destructive) {
+            removeItem = item.native
+        }.disabled(!model.canWrite)
+            .accessibilityIdentifier("any-native-hierarchy-archive")
     }
 
     private func canDropHierarchy(_ sourceID: String, onto destinationID: String) -> Bool {

@@ -2330,8 +2330,8 @@ final class NativeLaunchTests: XCTestCase {
         reopenOwnedWorkspace(app, spaceName: spaceName)
         let row = app.buttons[title].firstMatch
         // The cold-open navigation must expose the actual Library before this
-        // context gesture. An enabled row in a retained navigation view is not
-        // evidence that it can receive this real long press.
+        // actions menu. An enabled row in a retained navigation view is not
+        // evidence that the visible row can receive this real menu tap.
         let libraryToolbar = app.buttons["any-native-create-menu"]
         var binRowFrame: CGRect?
         var binRowReadySince: TimeInterval?
@@ -2360,14 +2360,17 @@ final class NativeLaunchTests: XCTestCase {
         guard XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: binRowReady, object: app)],
                             timeout: 60) == .completed else {
             recordNativeCreateTransition(app, phase: "bin_library_row_not_hittable")
-            XCTFail("The original Bin row and Library toolbar must be stably hittable before the context gesture")
+            XCTFail("The original Bin row and Library toolbar must be stably hittable before opening its actions menu")
             return
         }
         recordNativeCreateTransition(app, phase: "bin_library_row_hittable")
         let rowID = row.identifier
         XCTAssertTrue(rowID.hasPrefix("any-native-hierarchy-row-"))
         let objectID = String(rowID.dropFirst("any-native-hierarchy-row-".count))
-        row.press(forDuration: 1.1)
+        let actions = app.buttons["any-native-hierarchy-actions-" + objectID]
+        waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
+                object: actions, timeout: 30)
+        actions.tap()
         tapWhenEnabled(app.buttons["any-native-hierarchy-archive"])
         tapWhenEnabled(app.buttons["any-native-bin-confirm-remove"])
         waitFor(NSPredicate(format: "exists == false"), object: app.buttons[rowID], timeout: 45)
