@@ -29,8 +29,17 @@ final class AnySemanticAnchorObservation {
     static func makeIfEnabled() -> AnySemanticAnchorObservation? {
         let process = ProcessInfo.processInfo
         let arguments = process.arguments
+        // A real cold callback uses normal App storage. This separate simulator
+        // opt-in observes that owned account without changing its storage mode.
+        let normalStorageObservation: Bool
+        #if targetEnvironment(simulator)
+        normalStorageObservation = process.environment["PINKHA_NATIVE_ANCHOR_OBSERVATION_NORMAL_STORAGE"] == "1"
+            && process.environment["PINKHA_SIMULATOR_UI_DISPOSABLE"] == "1"
+        #else
+        normalStorageObservation = false
+        #endif
         guard process.environment["PINKHA_NATIVE_ANCHOR_OBSERVATION"] == "1",
-              arguments.contains("--native-ui-tests"),
+              arguments.contains("--native-ui-tests") || normalStorageObservation,
               let index = arguments.firstIndex(of: "--native-ui-test-scope"),
               index + 1 < arguments.count, UUID(uuidString: arguments[index + 1]) != nil else { return nil }
         return AnySemanticAnchorObservation()
