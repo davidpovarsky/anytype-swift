@@ -32,3 +32,10 @@ At the source checkpoint this is NOT_RUN on Apple. Heart Page154's earlier
 change requires its own affected Heart UI requalification. This does not close
 broader Task E, final combined-runtime, multi-peer sync, cross-document navigation,
 or physical-device acceptance.
+
+Attempt1 stopped before any Xcode build or test: the nine copied SwiftPM Git
+alternates still referred to the former D3 runner directory after its atomic
+retention move. The controller now verifies the copied object databases against
+the retained originals and rewrites only the owned copies' alternate paths.
+All nine dependency HEADs must still match D3 exactly. The original D3 cache is
+untouched; attempt1's failure and successful owned-device cleanup remain retained.

@@ -162,6 +162,41 @@ class Commands:
     def json(self, argv, name, timeout=180):
         return json.loads(self.run(argv, name, timeout).read_text())
 
+def relocate_owned_alternates(original, derived, evidence):
+    # SwiftPM shared clones record absolute Git object paths. Retaining D3 by
+    # atomic rename leaves those paths pointing at the old runner root. Relocate
+    # only our copied metadata after proving the corresponding copied object
+    # database equals the original retained one byte for byte.
+    old = Path("/Users/m1/builds/actions-anytype/anytype-swift/anytype-swift/"
+               "build/current-apple-native-ui-failed-45539471031-1/work/derived/SourcePackages")
+    original_packages = original / "work/derived/SourcePackages"
+    packages = derived / "SourcePackages"
+    records = []
+    for path in sorted((packages / "checkouts").glob("*/.git/objects/info/alternates")):
+        require(not path.is_symlink(), "alternate_metadata_symlink")
+        lines = path.read_text().splitlines()
+        require(len(lines) == 1, "unexpected_alternate_count")
+        previous = Path(lines[0])
+        require(previous.is_relative_to(old / "repositories") and previous.name == "objects",
+                "foreign_alternate_path")
+        relative = previous.relative_to(old)
+        retained = original_packages / relative
+        replacement = packages / relative
+        require(retained.is_dir() and replacement.is_dir()
+                and retained.resolve() == retained and replacement.resolve() == replacement,
+                "retained_object_database_missing")
+        original_objects = inventory(retained)
+        require(original_objects == inventory(replacement), "copied_object_database_changed")
+        path.write_text(str(replacement) + "\n")
+        records.append({"metadata": str(path.relative_to(derived)),
+                        "original": str(previous), "replacement": str(replacement),
+                        "retainedObjectFiles": len(original_objects),
+                        "objectInventorySHA256": hashlib.sha256(
+                            json.dumps(original_objects, sort_keys=True).encode()).hexdigest()})
+    require(len(records) == 9, "expected_nine_original_swiftpm_shared_clones")
+    write(evidence / "cache-relocation.json", {"scope": "owned-copy-only", "entries": records,
+          "originalInputsModified": False, "sourceOrResultRelabeled": False})
+
 def dependency_state(packages):
     roots = packages / "checkouts"
     require(roots.is_dir(), "package_checkouts_missing")
@@ -285,7 +320,11 @@ def main():
         # copied descriptors so each selected scheme must produce a new original.
         for old in (derived / "Build/Products").glob("*.xctestrun"):
             old.unlink()
+        relocate_owned_alternates(original, derived, evidence)
         dependencies_before = dependency_state(derived / "SourcePackages")
+        old_dependencies = json.loads((original / "evidence/actual-dependencies.json").read_text())
+        require({name: entry["commit"] for name, entry in dependencies_before.items()}
+                == old_dependencies["actualPackageCommits"], "original_dependency_pins_changed")
         write(evidence / "dependencies-before.json", dependencies_before)
         flags = ["ARCHS=arm64", "ONLY_ACTIVE_ARCH=YES", "CODE_SIGNING_ALLOWED=YES",
                  "CODE_SIGNING_REQUIRED=YES", "CODE_SIGN_IDENTITY=-", "PROVISIONING_PROFILE_SPECIFIER="]
