@@ -168,6 +168,19 @@ def main():
         code = process.wait()
     require(all(digest(output / name) == row["sha256"] for name, row in sources.items()),
             "native_ui_source_mutated_during_build")
+    products = output / "derived/Build/Products"
+    rows = []
+    for path in sorted(products.rglob("*")):
+        if path.is_symlink():
+            rows.append({"path": str(path.relative_to(products)), "kind": "symlink",
+                         "target": os.readlink(path)})
+        elif path.is_file():
+            rows.append({"path": str(path.relative_to(products)), "kind": "file",
+                         "bytes": path.stat().st_size, "sha256": digest(path)})
+    write(output / "products-all.json", rows)
+    record["completeProductsInventory"] = {
+        "path": str(output / "products-all.json"),
+        "sha256": digest(output / "products-all.json"), "entries": len(rows)}
     record.update(exitCode=code, elapsedSeconds=time.time() - started,
                   minimumFreeBytes=minimum, logSHA256=digest(log),
                   status=stopped or ("PASS_UI_RUNNER_BUILD_NOT_ACCEPTANCE" if code == 0 else "FAIL_BUILD"),
