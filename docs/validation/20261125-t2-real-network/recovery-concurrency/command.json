@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "/Users/m1/toolchains/anytapy-go1.27.4/go/bin/go",
+    "test",
+    "-mod=readonly",
+    "-count=1",
+    "-p=2",
+    "-timeout=1500s",
+    "-json",
+    "-run",
+    "^(TestE2E_MultipeerInviteRefusals|TestE2E_MultipeerCancelJoin|TestE2E_MultipeerOverviewConcurrentEdits|TestE2E_MultipeerP2P|TestE2E_MultipeerP2PColdRestore|TestE2E_MultipeerJoinerMarkdownWrite|TestE2E_MultipeerJoinerDeletePropagation|TestE2E_MultipeerRealtimeSync)$",
+    "./internal/e2e"
+  ],
+  "cwd": "/Users/m1/builds/pinkha-t2-network-20261125/source-any548-sdk195",
+  "source_commit": "548f5cd0430a723bd26ea724daeb99991f68b9c9",
+  "sdk_commit": "e195f6c07a053c6588e39ffe72ee4fc44cf3d953",
+  "original_tests_unchanged": true,
+  "test_environment_flags": {
+    "ANY_E2E_P2P": "1"
+  },
+  "network_config_sha256": "08b54369643aede09a12ce2710abb0a11375f265bb85c5c3363f0526a4b766f9",
+  "scope": "real independent native processes/accounts against private live AnySync network",
+  "admission_bytes": 4294967296,
+  "emergency_bytes": 2147483648
+}
