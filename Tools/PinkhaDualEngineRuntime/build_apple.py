@@ -213,8 +213,11 @@ def main():
     parser.add_argument("--slice", choices=("simulator", "device"), required=True)
     parser.add_argument("--resume-disk-stop", action="store_true")
     parser.add_argument("--resume-reviewed-metadata", action="store_true")
+    parser.add_argument("--resume-generated-metadata", action="store_true")
     args = parser.parse_args()
     root = args.root
+    require(not args.resume_generated_metadata or args.resume_reviewed_metadata,
+            "generated_metadata_resume_requires_reviewed_metadata")
     require(not args.resume_reviewed_metadata or (args.resume_disk_stop and args.slice == "device"),
             "reviewed_metadata_resume_requires_original_device_disk_stop")
     require(platform.system() == "Darwin" and platform.machine() == "arm64",
@@ -255,7 +258,28 @@ def main():
         require(not (root / "Lib.xcframework").exists()
                 and not (root / "Lib.xcframework.zip").exists(),
                 "no_existing_product_may_be_overwritten")
-    evidence = root / ("evidence-resume-2" if args.resume_reviewed_metadata else
+    if args.resume_generated_metadata:
+        failed_path = root / "evidence-resume-2/receipt.json"
+        failed = json.loads(failed_path.read_text())
+        require(failed["sourceManifestSHA256"] == MANIFEST_SHA and failed["status"] == "FAIL"
+                and failed["failure"]["message"] == "actual_command_failed:combined-gomobile-bind"
+                and failed["commands"][-1]["name"] == "combined-gomobile-bind"
+                and failed["commands"][-1]["exitCode"] == 1
+                and failed["commands"][-1]["logSHA256"] ==
+                    "6e45723fcae8e0ccf0af1f60fb2ce39d56eb8107a7bd0c8257841ba80e5d69ca"
+                and all(item["exitCode"] == 0 for item in failed["commands"][:-1]),
+                "exact_generated_metadata_failure_required")
+        for item in failed["commands"]:
+            require(digest(root / "evidence-resume-2" / (item["name"] + ".log")) == item["logSHA256"],
+                    "generated_metadata_failure_evidence_changed")
+            try:
+                os.killpg(item["pgid"], 0)
+            except ProcessLookupError:
+                pass
+            else:
+                require(False, "previous_generated_metadata_group_still_exists")
+    evidence = root / ("evidence-resume-3" if args.resume_generated_metadata else
+                       "evidence-resume-2" if args.resume_reviewed_metadata else
                        "evidence-resume-1" if prior else "evidence")
     evidence.mkdir(mode=0o700)
     receipt = {"status": "FAIL", "executionKind": "local-mac", "executionUUID": str(uuid.uuid4()),
@@ -319,9 +343,22 @@ def main():
         tools = root / "tools"
         if prior:
             require(tools.is_dir() and tools.resolve() == tools
-                    and digest(tools / "go") == prior["generatedModuleLauncherSHA256"]
-                    and digest(tools / "go") == digest(Path(__file__).with_name("runtime_go.py")),
+                    and digest(tools / "go") == prior["generatedModuleLauncherSHA256"],
                     "original_generated_go_launcher_changed")
+            if args.resume_generated_metadata:
+                backup = tools / "go-before-reviewed-checksum-hydration"
+                require(not backup.exists(), "generated_launcher_replacement_replay")
+                (tools / "go").rename(backup)
+                shutil.copyfile(Path(__file__).with_name("runtime_go.py"), tools / "go")
+                (tools / "go").chmod(0o755)
+                shutil.copyfile(Path(__file__).with_name("module-metadata-hydration.json"),
+                                tools / "module-metadata-hydration.json")
+                receipt["replacedGeneratedLauncher"] = {
+                    "originalSHA256": digest(backup), "updatedSHA256": digest(tools / "go"),
+                    "previousFailureReceiptSHA256": digest(failed_path)}
+            else:
+                require(digest(tools / "go") == digest(Path(__file__).with_name("runtime_go.py")),
+                        "unreviewed_generated_go_launcher_change")
             require((root / "tmp").is_dir() and not any((root / "tmp").iterdir()),
                     "retired_private_compiler_temporary_required")
         else:
@@ -350,6 +387,7 @@ def main():
                        "PINKHA_DUAL_SOURCE": str(source), "PINKHA_DUAL_BUILD": str(root),
                        "PINKHA_DUAL_MANIFEST": MANIFEST_SHA,
                        "PINKHA_DUAL_GRAPH": str(evidence / "module-graph.log"),
+                       "PINKHA_DUAL_GENERATED_AUDIT": str(evidence / "generated-modules"),
                        "GOPATH": str(root / "go-state"), "GOCACHE": "/Users/m1/caches/anytapy-go1.27.4-build",
                        "GOMODCACHE": "/Users/m1/caches/anytapy-go-mod", "GOFLAGS": "-mod=readonly -p=2",
                        "GOMAXPROCS": "2", "GOMEMLIMIT": "3GiB", "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer",

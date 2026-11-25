@@ -27,6 +27,34 @@ def stream_json(raw):
 def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
+def qualify_omitted_checksum(build, name, expected, actual):
+    # Go's JSON metadata is lazy: an authenticated cached go.mod can be
+    # present without a recorded GoModSum in a freshly derived workspace.
+    # Admit only the eight separately reviewed metadata omissions, checking
+    # the real bytes at the identical original module-cache path.
+    review_path = build / "tools/module-metadata-hydration.json"
+    require(digest(review_path) == "69b2f056688a2c009becbcac53f4c546648ab415e2e32ec5545cd295cb5dc863",
+            "unreviewed_generated_checksum_hydration")
+    review = json.loads(review_path.read_text())
+    proof = build / "module-checksum-verification-2/receipt.json"
+    require(digest(proof) == review["proofReceiptSHA256"],
+            "authenticated_checksum_evidence_changed")
+    rows = {row["path"]: row for row in review["modules"]}
+    require(name in rows, "unknown_missing_generated_checksum")
+    row = rows[name]
+    require(expected["Path"] == actual["Path"] == row["path"]
+            and expected["Version"] == actual["Version"] == row["version"]
+            and expected.get("GoModSum") == row["goModSum"]
+            and actual.get("GoModSum") is None
+            and expected.get("GoMod") == actual.get("GoMod")
+            and expected.get("GoMod") is not None,
+            "generated_checksum_identity_changed")
+    require(digest(actual["GoMod"]) == row["goModSHA256"],
+            "generated_actual_module_metadata_changed")
+    return {"path": name, "version": row["version"], "goModSum": row["goModSum"],
+            "goModSHA256": row["goModSHA256"], "proofReceiptSHA256": digest(proof)}
+
+
 def main():
     real = Path(os.environ["PINKHA_DUAL_REAL_GO"])
     source = Path(os.environ["PINKHA_DUAL_SOURCE"])
@@ -58,7 +86,10 @@ def main():
                       + "".join("\t" + str(p) + "\n" for p in native.values())
                       + "\t" + str(cwd) + "\n)\n")
     work = cwd / ".pinkha-runtime.work"
-    audit = build / "evidence/generated-modules" / uuid.uuid4().hex
+    audit_root = Path(env.get("PINKHA_DUAL_GENERATED_AUDIT", str(build / "evidence/generated-modules")))
+    require(audit_root.resolve() == audit_root and audit_root.is_relative_to(build)
+            and audit_root.name == "generated-modules", "owned_generated_audit_required")
+    audit = audit_root / uuid.uuid4().hex
     audit.mkdir(mode=0o700, parents=True)
     (audit / "gomobile-go.mod").write_bytes(mod.read_bytes())
     receipt = {"status": "FAIL", "cwd": str(cwd), "argv": argv,
@@ -112,6 +143,10 @@ def main():
                      for key in ("Path", "Version", "Sum", "GoModSum", "Dir")
                      if (key in ("Path", "Version") or expected.get(key) is not None)
                      and actual.get(key) != expected.get(key)}
+            if "GoModSum" in delta and actual.get("GoModSum") is None:
+                receipt.setdefault("authenticatedMetadataOmissions", []).append(
+                    qualify_omitted_checksum(build, name, expected, actual))
+                del delta["GoModSum"]
             require(not delta, "actual_generated_dependency_changed:" + name + ":" + json.dumps(delta))
         receipt.update(status="ORIGINAL_NATIVE_GRAPH_VERIFIED_WITH_OWNED_GENERATED_BRIDGE",
                        checkedModuleCount=len(pins),
