@@ -1,0 +1,50 @@
+{
+  "appleCompilation": false,
+  "checks": [
+    {
+      "argv": [
+        "plutil",
+        "-lint",
+        "-"
+      ],
+      "exitCode": 0,
+      "inputSHA256": "21dc471fd3626c8514a195dc578a339e59794f422d3f00da187d3b9b09f84bfe",
+      "name": "pbx-plutil",
+      "stderr": "",
+      "stdout": "<stdin>: OK\n"
+    },
+    {
+      "argv": [
+        "xcrun",
+        "swiftc",
+        "-frontend",
+        "-parse",
+        "-D",
+        "PINKHA_DUAL_ENGINE_RUNTIME",
+        "-"
+      ],
+      "exitCode": 0,
+      "inputSHA256": "5d5dd3ab7eaa0ce54980edba6fb152859354baff7063ba6403d30e1ed52be3f8",
+      "name": "swift-dual-grammar",
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "xcrun",
+        "swiftc",
+        "-frontend",
+        "-parse",
+        "-"
+      ],
+      "exitCode": 0,
+      "inputSHA256": "5d5dd3ab7eaa0ce54980edba6fb152859354baff7063ba6403d30e1ed52be3f8",
+      "name": "swift-original-grammar",
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "status": "PASS_GRAMMAR_ONLY_NOT_TYPECHECK",
+  "testsExecuted": 0,
+  "utc": "2026-11-25T10:08:58.822215+00:00"
+}

@@ -109,7 +109,10 @@ final class NativeSpaceBundleTests: XCTestCase {
         XCTAssertEqual(bundle.objects.map(\.sourceObjectID), ["doc"])
         XCTAssertEqual(bundle.fileVariants[0].payload.byteCount, 4)
         XCTAssertEqual(bundle.fileVariants[0].name, "מקור.bin")
-        XCTAssertEqual(bundle.issues.map(\.code), ["retained-collection-requires-semantic-mapping"])
+        XCTAssertEqual(bundle.issues.map(\.code),
+                       ["compiled-definition-descriptors-not-captured", "retained-collection-requires-semantic-mapping"])
+        XCTAssertTrue(bundle.bundledDefinitions.isEmpty)
+        XCTAssertEqual(bundle.bundledDefinitionsUsed, ["ot-page"])
         XCTAssertEqual(bundle.receipt["HasNativeSourceAdmission"]?.bool, false)
         XCTAssertEqual(bundle.receipt["HistorySemanticsValidated"]?.bool, false)
         XCTAssertEqual(bundle.rawManifest["RetainedOtherCollections"], f.manifest["RetainedOtherCollections"])
@@ -216,5 +219,159 @@ final class NativeSpaceBundleTests: XCTestCase {
             f.manifest["Receipt"] = changed(f.manifest["Receipt"]!, path: path[...], to: value)
             XCTAssertThrowsError(try f.read(), path.joined(separator: "."))
         }
+    }
+
+    private func addingCompiledDefinitions(to input: Fixture) throws -> Fixture {
+        var result = input
+        var entries: [AnyJSON] = []
+        for (kind, key, message, definition) in [
+            ("property", "componentField", "anytype.model.Relation",
+             AnyJSON.object(["id": .string("_brcomponentField"), "key": .string("componentField"),
+                             "name": .string("Explicit synthetic descriptor"), "format": .integer(0),
+                             "futureSourceField": .object(["preserved": .bool(true)])])),
+            ("type", "page", "anytype.model.ObjectType",
+             AnyJSON.object(["key": .string("page"), "name": .string("Page"), "layout": .integer(0)]))
+        ] {
+            // Byte-membership control only. Native protobuf/JSON equivalence is
+            // separately exercised against the actual generated Go descriptors.
+            let raw = Data(("synthetic-protobuf-component-only:" + kind + ":" + key).utf8)
+            let view: AnyJSON = .object(["Contract": .string("pinkha-native-bundled-definition-json-v1"),
+                "Kind": .string(kind), "Key": .string(key), "ProtobufMessage": .string(message),
+                "ProtobufSHA256": .string(AnyContentDigest.sha256(raw)), "ProtobufBytes": .integer(Int64(raw.count)),
+                "Definition": definition])
+            let json = try JSONEncoder().encode(view)
+            let base = "compiled-definition-" + AnyContentDigest.sha256(Data((kind + ":" + key).utf8))
+            func add(_ name: String, _ data: Data) -> AnyJSON {
+                result.members[name] = data
+                return .object(["Path": .string(name), "Bytes": .integer(Int64(data.count)),
+                                "SHA256": .string(AnyContentDigest.sha256(data))])
+            }
+            entries.append(.object(["Kind": .string(kind), "Key": .string(key), "ProtobufMessage": .string(message),
+                "Protobuf": add(base + ".pb", raw), "JSONView": add(base + ".json", json)]))
+        }
+        result.manifest["BundledDefinitionsUsed"] = .array([.string("property:componentField"), .string("type:page")])
+        result.manifest["BundledDefinitions"] = .array(entries)
+        return result
+    }
+
+    func testCompiledDescriptorsRetainExactMembersWithoutBecomingSourceObjects() throws {
+        let f = try addingCompiledDefinitions(to: fixture()), bundle = try f.read()
+        XCTAssertEqual(bundle.verifiedMembers.count, 9)
+        XCTAssertEqual(Set(bundle.verifiedMembers.map(\.path)), Set(f.members.keys))
+        XCTAssertEqual(bundle.objects.map(\.sourceObjectID), ["doc"])
+        XCTAssertEqual(bundle.trees.count, 3)
+        XCTAssertEqual(bundle.bundledDefinitions.map(\.identity), ["property:componentField", "type:page"])
+        XCTAssertEqual(bundle.bundledDefinitions[0].definition["futureSourceField"], .object(["preserved": .bool(true)]))
+        for descriptor in bundle.bundledDefinitions {
+            XCTAssertEqual(AnyContentDigest.sha256(descriptor.protobufBytes), descriptor.protobufSHA256)
+            XCTAssertEqual(AnyContentDigest.sha256(descriptor.jsonViewBytes), descriptor.jsonViewSHA256)
+        }
+        XCTAssertFalse(bundle.issues.contains { $0.code == "compiled-definition-descriptors-not-captured" })
+        XCTAssertEqual(bundle.receipt["HasNativeSourceAdmission"], .bool(false))
+        XCTAssertEqual(bundle.receipt["PermitsDestinationWrites"], .bool(false))
+    }
+
+    func testCompiledDescriptorMembershipRejectsMissingChangedReorderedAndDuplicateEntries() throws {
+        let original = try addingCompiledDefinitions(to: fixture())
+        let entries = try XCTUnwrap(original.manifest["BundledDefinitions"]?.array)
+        for entry in entries {
+            for field in ["Protobuf", "JSONView"] {
+                let path = try XCTUnwrap(entry[field]?["Path"]?.string)
+                var changed = original; changed.members[path] = nil
+                XCTAssertThrowsError(try changed.read())
+                changed = original; changed.members[path]! += Data([1])
+                XCTAssertThrowsError(try changed.read())
+            }
+        }
+        for replacement in [AnyJSON.null, .array([]), .array(Array(entries.reversed())), .array(entries + [entries[0]])] {
+            var changed = original; changed.manifest["BundledDefinitions"] = replacement
+            XCTAssertThrowsError(try changed.read())
+        }
+        for replacement in [AnyJSON.null, .array([.string("type:page")]),
+                                     .array([.string("property:componentField"), .string("property:componentField")])] {
+            var changed = original; changed.manifest["BundledDefinitionsUsed"] = replacement
+            XCTAssertThrowsError(try changed.read())
+        }
+    }
+
+    func testCompiledDescriptorViewMustMatchProtobufBindingAndExactNativeIdentity() throws {
+        let original = try addingCompiledDefinitions(to: fixture())
+        let entries = try XCTUnwrap(original.manifest["BundledDefinitions"]?.array)
+        let originalEntry = try XCTUnwrap(entries.first?.object)
+        let originalMember = try XCTUnwrap(originalEntry["JSONView"]?.object)
+        let path = try XCTUnwrap(originalMember["Path"]?.string)
+        let raw = try XCTUnwrap(original.members[path])
+        let view = try XCTUnwrap(JSONDecoder().decode(AnyJSON.self, from: raw).object)
+        for (field, value) in [
+            ("Contract", AnyJSON.string("future-unqualified-contract")),
+            ("Key", .string("foreign-key")), ("Kind", .string("type")),
+            ("ProtobufMessage", .string("anytype.model.ObjectType")),
+            ("ProtobufSHA256", .string(String(repeating: "0", count: 64))),
+            ("ProtobufBytes", .integer(1)),
+            ("Definition", .object(["key": .string("componentField"), "id": .string("_brforeign-key")]))
+        ] {
+            var changed = original, newView = view; newView[field] = value
+            let bytes = try JSONEncoder().encode(AnyJSON.object(newView))
+            changed.members[path] = bytes
+            var member = originalMember; member["SHA256"] = .string(AnyContentDigest.sha256(bytes))
+            member["Bytes"] = .integer(Int64(bytes.count))
+            var entry = originalEntry; entry["JSONView"] = .object(member)
+            changed.manifest["BundledDefinitions"] = .array([.object(entry), entries[1]])
+            XCTAssertThrowsError(try changed.read(), field)
+        }
+    }
+
+    func testActualNativeCompiledRegistryCaptureRetainsCompleteOriginalMembers() throws {
+        guard let path = ProcessInfo.processInfo.environment["PINKHA_NATIVE_COMPILED_CAPTURE_FIXTURE"] else {
+            throw XCTSkip("Requires the retained exact native compiled-descriptor capture.")
+        }
+        let root = URL(fileURLWithPath: path, isDirectory: true).resolvingSymlinksInPath().standardizedFileURL
+        func bytes(_ relative: String, under directory: URL) throws -> Data {
+            let pieces = relative.split(separator: "/", omittingEmptySubsequences: false)
+            guard !relative.hasPrefix("/"), !relative.contains("\\"), !relative.contains("\0"),
+                  pieces.allSatisfy({ !$0.isEmpty && $0 != "." && $0 != ".." }) else {
+                throw AnyHeartNativeSpaceBundleError.invalidManifest
+            }
+            let file = directory.appendingPathComponent(relative).resolvingSymlinksInPath().standardizedFileURL
+            guard file.path.hasPrefix(directory.path + "/"),
+                  try file.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile == true else {
+                throw AnyHeartNativeSpaceBundleError.invalidMember(relative)
+            }
+            return try Data(contentsOf: file, options: [.mappedIfSafe])
+        }
+        let contextBytes = try bytes("fixture-context.json", under: root)
+        XCTAssertEqual(AnyContentDigest.sha256(contextBytes), "f68679409eaf93676b346eed7e2e9bd31146674956c634081268f36303f527b9")
+        let context = try JSONDecoder().decode(AnyJSON.self, from: contextBytes)
+        XCTAssertEqual(context["nativeSource"], .string("5e8f9ce4ec789c1cd775b148a6cc49d4a28f56b5"))
+        XCTAssertEqual(context["nativeMethodResult"], .string("PASS"))
+        XCTAssertEqual(context["sourceAdmissionPromoted"], .bool(false))
+        let directory = root.appendingPathComponent("bundle", isDirectory: true)
+        let manifest = try bytes("manifest.json", under: directory)
+        XCTAssertEqual(AnyContentDigest.sha256(manifest), "04b9309e1b96918c47d1b00eed6b1a76b2e13432636a0aba77706f2f69082994")
+        let bundle = try AnyHeartNativeSpaceBundle(manifest: manifest,
+            sourceAccountID: XCTUnwrap(context["sourceAccountID"]?.string),
+            sourceSpaceID: XCTUnwrap(context["sourceSpaceID"]?.string)) { try bytes($0.path, under: directory) }
+        XCTAssertEqual(bundle.objects.count, 143)
+        XCTAssertEqual(bundle.trees.count, 144)
+        XCTAssertEqual(bundle.verifiedMembers.count, 299)
+        XCTAssertEqual(bundle.bundledDefinitions.map(\.identity), [
+            "property:analyticsSpaceId", "property:apiObjectKey", "property:headerRelationsLayout",
+            "property:homepage", "property:migrationObjectContext", "property:relationFormatIncludeTime"
+        ])
+        XCTAssertEqual(bundle.bundledDefinitionsUsed, bundle.bundledDefinitions.map(\.identity))
+        XCTAssertFalse(bundle.issues.contains { $0.code == "compiled-definition-descriptors-not-captured" })
+        XCTAssertFalse(bundle.issues.contains { $0.code == "unknown-manifest-field" && $0.field == "BundledDefinitions" })
+        for definition in bundle.bundledDefinitions {
+            XCTAssertEqual(definition.kind, .property)
+            XCTAssertEqual(definition.protobufMessage, "anytype.model.Relation")
+            XCTAssertNil(definition.definition["defaultValue"], "Actual native absent Value must remain absent in its JSON view")
+            XCTAssertEqual(definition.definition["key"], .string(definition.key))
+            XCTAssertEqual(definition.definition["id"], .string("_br" + definition.key))
+        }
+        XCTAssertEqual(bundle.receipt["HasNativeSourceAdmission"], .bool(false))
+        XCTAssertEqual(bundle.receipt["PermitsDestinationWrites"], .bool(false))
+        XCTAssertFalse(try AnyHeartNativeDefinitionCatalog(bundle: bundle).permitsDestinationWrites)
+        XCTAssertEqual(try bytes("manifest.json", under: directory), manifest)
+        print("ACTUAL_NATIVE_COMPILED_CAPTURE snapshots=143 trees=144 descriptors=6 original_members=299 destination_admission=false")
     }
 }

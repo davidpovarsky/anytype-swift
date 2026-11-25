@@ -35,7 +35,8 @@ public struct AnyHeartNativePageComposition: Sendable {
 
     public init(bundle: AnyHeartNativeSpaceBundle, sourceObjectID: String,
                 definitions: AnyHeartNativeDefinitionPlan,
-                objects: [AnyHeartNativeDefinitionPlan.ObjectBinding]) throws {
+                objects: [AnyHeartNativeDefinitionPlan.ObjectBinding],
+                files: [AnyHeartNativeFileBinding] = []) throws {
         let catalog = definitions.catalog
         guard Data(bundle.sourceAccountID.utf8) == Data(catalog.sourceAccountID.utf8),
               Data(bundle.sourceSpaceID.utf8) == Data(catalog.sourceSpaceID.utf8),
@@ -60,15 +61,18 @@ public struct AnyHeartNativePageComposition: Sendable {
         if !bundle.sourceGaps.isEmpty { sourceIssues.append("source-gaps") }
         if !bundle.resolverUnmapped.isEmpty { sourceIssues.append("resolver-unmapped") }
         if !bundle.bundledDefinitionsUsed.isEmpty { sourceIssues.append("bundled-definition-fallback") }
-        if !bundle.retainedOtherCollections.isEmpty { sourceIssues.append("unmapped-native-collections") }
+        if !bundle.retainedOtherCollections.isEmpty, bundle.nativeStoreContext?.unmappedCollectionNames.isEmpty != true {
+            sourceIssues.append("unmapped-native-collections")
+        }
         try self.init(snapshot: snapshot, definitions: definitions, objects: objects,
-                      sourceIssues: sourceIssues)
+                      files: files, sourceIssues: sourceIssues)
     }
 
     /// Internal pure semantic control boundary; detached fixtures cannot be
     /// presented as an admitted native bundle by production callers.
     init(snapshot: AnyHeartNativeSnapshotView, definitions: AnyHeartNativeDefinitionPlan,
          objects: [AnyHeartNativeDefinitionPlan.ObjectBinding],
+         files: [AnyHeartNativeFileBinding] = [],
          sourceIssues: [String] = ["detached-semantic-control"]) throws {
         let catalog = definitions.catalog
         guard Data(snapshot.sourceSpaceID.utf8) == Data(catalog.sourceSpaceID.utf8) else {
@@ -127,7 +131,7 @@ public struct AnyHeartNativePageComposition: Sendable {
         }) else { throw AnyHeartNativePageCompositionError.objectBindings }
         let detailKeys = snapshot.details.keys.sorted { Data($0.utf8).lexicographicallyPrecedes(Data($1.utf8)) }
         // Every present detail is consumed; there is no caller-selected subset.
-        let values = try definitions.values(snapshot: snapshot, relationKeys: detailKeys, objects: objects)
+        let values = try definitions.values(snapshot: snapshot, relationKeys: detailKeys, objects: objects, files: files)
         guard Set(values.initialRelationKeys + values.deferredRelationKeys) == Set(detailKeys) else {
             throw AnyHeartNativePageCompositionError.sourceBinding
         }

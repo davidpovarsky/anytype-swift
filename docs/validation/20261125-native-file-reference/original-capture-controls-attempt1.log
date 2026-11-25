@@ -1,0 +1,24 @@
+warning: '--skip-update' option is deprecated and will be removed in a future release
+Building for debugging...
+[Computing dependencies]
+[Provisioning 6 / 19]
+[Using on-disk description]
+Build complete! (2.37 secs)
+Test Suite 'Selected tests' started at 2026-11-25 10:03:15.638
+Test Suite 'NativeDefinitionPlanTests' started at 2026-11-25 10:03:15.640
+Test Case 'NativeDefinitionPlanTests.testOriginalNativeCaptureProvidesAllCurrentDefinitionRowsWithoutBundledSubstitution' started at 2026-11-25 10:03:15.640
+CAPTURED_NATIVE_DEFINITION_CATALOG types=19 relations=119 options=0 originals_unchanged=true destination_writes=false
+Test Case 'NativeDefinitionPlanTests.testOriginalNativeCaptureProvidesAllCurrentDefinitionRowsWithoutBundledSubstitution' passed (1.747 seconds)
+Test Suite 'NativeDefinitionPlanTests' passed at 2026-11-25 10:03:17.387
+	 Executed 1 test, with 0 failures (0 unexpected) in 1.747 (1.747) seconds
+Test Suite 'NativePageCompositionTests' started at 2026-11-25 10:03:17.387
+Test Case 'NativePageCompositionTests.testOriginalCapturedPageComposesCurrentStateAndRetainsSourceBlockers' started at 2026-11-25 10:03:17.387
+NATIVE_PAGE_COMPOSITION originalPages=1 objects=144 currentItems=2 originalSchemaAndSourceBlockersRetained=true destinationWrites=false digest=458c3ae70ee5c2587e41e4353d6e8bd2e14fcd9fd122b821653b3100dce599e9
+Test Case 'NativePageCompositionTests.testOriginalCapturedPageComposesCurrentStateAndRetainsSourceBlockers' passed (1.345 seconds)
+Test Case 'NativePageCompositionTests.testOriginalCustomCapturePreservesBothPagesAllValuesAndDistinctIdentities' started at 2026-11-25 10:03:18.732
+NATIVE_CUSTOM_PAGE_COMPOSITION pages=2 details=16 bodyBlocks=2 distinctObjectIdentities=true completeCaptureObjects=156 originalCustomAcceptanceFailureRetained=true destinationWrites=false
+Test Case 'NativePageCompositionTests.testOriginalCustomCapturePreservesBothPagesAllValuesAndDistinctIdentities' passed (1.456 seconds)
+Test Suite 'NativePageCompositionTests' passed at 2026-11-25 10:03:20.187
+	 Executed 2 tests, with 0 failures (0 unexpected) in 2.8 (2.8) seconds
+Test Suite 'Selected tests' passed at 2026-11-25 10:03:20.187
+	 Executed 3 tests, with 0 failures (0 unexpected) in 4.547 (4.547) seconds

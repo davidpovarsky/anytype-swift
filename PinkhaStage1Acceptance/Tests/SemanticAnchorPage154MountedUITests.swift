@@ -553,17 +553,85 @@ extension SemanticAnchorPage154MountedUITests {
         try tap(input)
         input.typeKey(.rightArrow, modifierFlags: [])
         input.doubleTap()
-        let label = NSPredicate(format: "label == %@", "Sources for anchored text")
-        var action: XCUIElement?
-        let ready = NSPredicate { _, _ in
-            let matches = self.app.buttons.matching(label).allElementsBoundByIndex
-                + self.app.descendants(matching: .menuItem).matching(label).allElementsBoundByIndex
-            let visible = matches.filter { $0.exists && $0.isEnabled && $0.isHittable }
-            guard visible.count == 1 else { return false }
-            action = visible[0]; return true
+        let started = ProcessInfo.processInfo.systemUptime
+        let deadline = started + 20
+        enum MenuFailure: Error { case admission(String) }
+        var trace: [String: Any] = ["protocol": "pinkha-semantic-source-menu-v1",
+            "budgetSeconds": 20, "sourceSHA": fixture.sourceSHA, "runID": fixture.runID,
+            "runAttempt": fixture.runAttempt, "nonce": fixture.nonce, "nextPageTaps": 0,
+            "sourceActionTaps": 0, "status": "STARTED"]
+        func remaining() throws -> TimeInterval {
+            let value = deadline - ProcessInfo.processInfo.systemUptime
+            guard value > 0 else { throw MenuFailure.admission("menu-deadline") }
+            return value
         }
-        XCTAssertEqual(XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: ready, object: app)], timeout: 20), .completed)
-        try tap(XCTUnwrap(action))
+        func visible(_ labels: [String]) -> [XCUIElement] {
+            let predicate = NSPredicate(format: "label IN[c] %@", labels)
+            return (app.buttons.matching(predicate).allElementsBoundByIndex
+                + app.descendants(matching: .menuItem).matching(predicate).allElementsBoundByIndex)
+                .filter { $0.exists && $0.isEnabled && $0.isHittable }
+        }
+        func attachMenu(_ phase: String) {
+            let hierarchy = XCTAttachment(string: app.debugDescription)
+            hierarchy.name = "semantic-source-menu-" + phase + "-ax"
+            hierarchy.lifetime = .keepAlways
+            add(hierarchy)
+            attach("semantic-source-menu-" + phase)
+        }
+        defer {
+            trace["elapsedSeconds"] = ProcessInfo.processInfo.systemUptime - started
+            if let data = try? JSONSerialization.data(withJSONObject: trace, options: [.sortedKeys]) {
+                let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
+                attachment.name = "semantic-source-menu-navigation"
+                attachment.lifetime = .keepAlways
+                add(attachment)
+            }
+        }
+        var action: XCUIElement?
+        do {
+            var pages = 0
+            while action == nil {
+                _ = try remaining()
+                let sources = visible(["Sources for anchored text"])
+                guard sources.count <= 1 else { throw MenuFailure.admission("source-action-ambiguous") }
+                if let selected = sources.first { action = selected; break }
+                // MiniApps and standard editing actions can occupy the first
+                // native menu page. Use the real accessible UIKit next-page
+                // control, observed as "Next Page" in the original AX witness.
+                // The document toolbar's "More" is unrelated to menu paging.
+                let next = visible(["Next Page"])
+                guard next.count <= 1 else { throw MenuFailure.admission("next-page-ambiguous") }
+                if let button = next.first {
+                    guard pages < 3 else { throw MenuFailure.admission("source-action-not-found-in-menu") }
+                    attachMenu("page-" + String(pages))
+                    _ = try remaining()
+                    button.tap()
+                    pages += 1
+                    trace["nextPageTaps"] = pages
+                } else {
+                    let ready = NSPredicate { _, _ in
+                        !visible(["Sources for anchored text"]).isEmpty
+                            || !visible(["Next Page"]).isEmpty
+                    }
+                    let wait = XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: ready, object: app)],
+                                             timeout: try remaining())
+                    guard wait == .completed else { throw MenuFailure.admission("source-menu-not-ready") }
+                }
+            }
+            attachMenu("source-action")
+            _ = try remaining()
+            let admitted = visible(["Sources for anchored text"])
+            guard admitted.count == 1 else { throw MenuFailure.admission("source-action-no-longer-unique") }
+            action = admitted[0]
+            trace["sourceActionTaps"] = 1
+            try tap(XCTUnwrap(action))
+            trace["status"] = "TAPPED_ORIGINAL_SOURCE_ACTION"
+        } catch {
+            trace["status"] = "FAIL"
+            trace["firstError"] = String(describing: error)
+            attachMenu("failure")
+            throw error
+        }
         try requireHittable(semanticSourceSearch, timeout: 45)
         XCTAssertTrue(app.staticTexts["Sources for anchored text"].exists)
     }

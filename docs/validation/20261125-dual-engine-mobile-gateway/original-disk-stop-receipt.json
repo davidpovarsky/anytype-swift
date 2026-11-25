@@ -1,0 +1,119 @@
+{
+  "actualModuleGraphSHA256": "fb509a9127bfb6461382099f16588f6a4a61d2f5d5bdd7d4f87b711dae5eede9",
+  "appleBuilds": 0,
+  "appleTestsExecuted": 0,
+  "applicationAcceptanceClaimed": false,
+  "commands": [
+    {
+      "argv": [
+        "/Users/m1/toolchains/anytapy-go1.27.4/go/bin/go",
+        "version"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-gateway",
+      "elapsedSeconds": 1.0211730003356934,
+      "exitCode": 0,
+      "logSHA256": "c6f1c8d54aedc3afa72560d934397ad6c33b28f1b4d3546ec53176439b2397d5",
+      "minimumFreeBytes": 3136065536,
+      "name": "go-version",
+      "pgid": 63658,
+      "pid": 63658,
+      "started": 1795601605.268638,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 30
+    },
+    {
+      "argv": [
+        "/Users/m1/toolchains/anytapy-go1.27.4/go/bin/go",
+        "list",
+        "-m",
+        "-json",
+        "all"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-gateway/source",
+      "elapsedSeconds": 1.0073049068450928,
+      "exitCode": 0,
+      "logSHA256": "fb509a9127bfb6461382099f16588f6a4a61d2f5d5bdd7d4f87b711dae5eede9",
+      "minimumFreeBytes": 3136036864,
+      "name": "module-graph",
+      "pgid": 63659,
+      "pid": 63659,
+      "started": 1795601606.292279,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 180
+    },
+    {
+      "argv": [
+        "/Users/m1/toolchains/anytapy-go1.27.4/go/bin/go",
+        "test",
+        "-mod=readonly",
+        "-p=2",
+        "-tags",
+        "mobile nogrpcserver gomobile nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg pinkha_loaded_account_witness",
+        "-c",
+        "-o",
+        "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-gateway/mobile-gateway.test",
+        "./internal/server"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-gateway/source/any",
+      "elapsedSeconds": 25.16250991821289,
+      "exitCode": -15,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "minimumFreeBytes": 2122731520,
+      "name": "mobile-gateway-build",
+      "pgid": 63660,
+      "pid": 63660,
+      "started": 1795601607.304477,
+      "status": "FAIL",
+      "stopReason": "time_or_disk_limit",
+      "timeoutSeconds": 900
+    }
+  ],
+  "controllerCommit": "2e0dce01a78bd0332755975e52481ec97e629ad2",
+  "controllerSHA256": "9d054455e9e527e3215813daa778a9b04565063dad00588bb81fdb8ee07ca094",
+  "effectiveWorkspaceSHA256": "7de3b0a292319dd17932cfbf420a2a444d787552cbb964ab8ae09ab93721eea2",
+  "executionKind": "local-mac",
+  "executionUUID": "acc55e2c-7de3-43f2-9dd0-6673b460dfd6",
+  "failure": {
+    "message": "actual_command_failed:mobile-gateway-build",
+    "type": "ValueError"
+  },
+  "freeBytesAfter": 2122706944,
+  "freeBytesBefore": 3239329792,
+  "goVersion": "go version go1.27.4 darwin/arm64",
+  "phaseSpaceEstimate": {
+    "components": {
+      "compilerTemporaryAllowanceBytes": 161829668,
+      "incrementalCacheAllowanceBytes": 161829668,
+      "sourceBytes": 89574399,
+      "testBinaryAllowanceBytes": 161829668,
+      "workspaceEvidenceAllowanceBytes": 16777216
+    },
+    "emergencyFreeBytes": 2147483648,
+    "estimatedAdditionalBytes": 591840619,
+    "phase": "original-mobile-gateway-host-components",
+    "referenceBytes": 80914834,
+    "referencePath": "/Users/m1/builds/pinkha-c-native-file-peer-20261125/any548",
+    "referenceSHA256": "bc73441d05a502e3e77df479f54279540489869b00ca1aecf4e1e9f681fa0f49"
+  },
+  "sourceArchiveSHA256": "9197ea5c9f8a832430fce44b36aeeeb27099fff6e745ec6197e9a3493ffd51db",
+  "sourceManifestSHA256": "70f0b2a66286ae87afdc5a8d5becb267fd1aa5c5110e54381a3b0384afd69a72",
+  "sourcePins": {
+    "any": "cf87c43ff0100c2dc43c3c105c82b1b070b3a7a3",
+    "heart": "ea796999d648e27dcb7ad23a0bbd849d35fadc5a",
+    "sdk": "e195f6c07a053c6588e39ffe72ee4fc44cf3d953",
+    "sync": "c005bd6cde8d8f8a6007c35f06894f3d89f9f07c"
+  },
+  "status": "FAIL",
+  "tags": [
+    "mobile",
+    "nogrpcserver",
+    "gomobile",
+    "nowatchdog",
+    "nosigar",
+    "nomutexdeadlockdetector",
+    "timetzdata",
+    "rasterizesvg",
+    "pinkha_loaded_account_witness"
+  ],
+  "testsExecuted": null
+}

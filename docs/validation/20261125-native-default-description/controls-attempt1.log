@@ -1,0 +1,46 @@
+warning: '--skip-update' option is deprecated and will be removed in a future release
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 392]
+[Planning 170 / 392]
+[Planning 354 / 392]
+[Planning deferred tasks]
+[Constructing 301 / 1199]
+[Starting]
+[3 / 10] PinkhaAnyHost
+[4 / 11] PinkhaAnyHost
+[9 / 14] PinkhaAnyHostTests-product
+[12 / 17] PinkhaAnyHostTests-product
+[14 / 23] CCryptoBoringSSL
+[17 / 23] PinkhaAnyHost
+[18 / 25] PinkhaAnyHost
+[21 / 25] PinkhaAnyHost
+[23 / 26] PinkhaAnyHostTests-product
+[28 / 30] PinkhaAnyHostTests-test-runner
+[30 / 32] PinkhaAnyHostTests-test-runner
+[34 / 34] PinkhaAnyHostTests-test-runner
+[39 / 43] pinkha-any-host-probe-product
+[40 / 43] PinkhaAnyHostTests-test-runner
+[41 / 43] PinkhaAnyHostTests-test-runner
+[42 / 45] pinkha-any-host-probe-product
+[46 / 46] pinkha-any-host-probe-product
+Build complete! (28.87 secs)
+Test Suite 'Selected tests' started at 2026-11-25 08:11:18.932
+Test Suite 'NativeDefinitionPlanTests' started at 2026-11-25 08:11:18.940
+Test Case 'NativeDefinitionPlanTests.testImportedDefaultContractRejectsChangedValueIdentityAndBehavior' started at 2026-11-25 08:11:18.940
+<EXPR>:0: error: NativeDefinitionPlanTests.testImportedDefaultContractRejectsChangedValueIdentityAndBehavior : threw error "invalidDefinition("text-default", "UniqueKey")"
+Test Case 'NativeDefinitionPlanTests.testImportedDefaultContractRejectsChangedValueIdentityAndBehavior' failed (0.018 seconds)
+Test Case 'NativeDefinitionPlanTests.testOriginalCustomCaptureMapsCurrentChoicesAndValuesWithoutPromotingSourceAcceptance' started at 2026-11-25 08:11:18.959
+NATIVE_CUSTOM_CAPTURE_DIAGNOSTIC snapshots=156 types=20 relations=126 options=4 source_method=FAIL destination_writes=false originals_unchanged=true
+Test Case 'NativeDefinitionPlanTests.testOriginalCustomCaptureMapsCurrentChoicesAndValuesWithoutPromotingSourceAcceptance' passed (1.949 seconds)
+Test Case 'NativeDefinitionPlanTests.testQualifiedDefaultMetadataPreservesAbsentEmptyAndExplicitCurrentValues' started at 2026-11-25 08:11:20.908
+<EXPR>:0: error: NativeDefinitionPlanTests.testQualifiedDefaultMetadataPreservesAbsentEmptyAndExplicitCurrentValues : threw error "invalidDefinition("text-default", "UniqueKey")"
+Test Case 'NativeDefinitionPlanTests.testQualifiedDefaultMetadataPreservesAbsentEmptyAndExplicitCurrentValues' failed (0.003 seconds)
+Test Case 'NativeDefinitionPlanTests.testUnqualifiedDefaultKindsCardinalityAndReadonlyRemainBlocked' started at 2026-11-25 08:11:20.911
+Test Case 'NativeDefinitionPlanTests.testUnqualifiedDefaultKindsCardinalityAndReadonlyRemainBlocked' passed (0.022 seconds)
+Test Suite 'NativeDefinitionPlanTests' failed at 2026-11-25 08:11:20.933
+	 Executed 4 tests, with 2 failures (2 unexpected) in 1.993 (1.993) seconds
+Test Suite 'Selected tests' failed at 2026-11-25 08:11:20.933
+	 Executed 4 tests, with 2 failures (2 unexpected) in 1.993 (1.993) seconds
+Note: Some test targets reported failures:
+  - PinkhaAnyHostTests (XCTest)

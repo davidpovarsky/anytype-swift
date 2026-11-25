@@ -43,6 +43,7 @@ def main():
     parser.add_argument("--main-root", type=Path, required=True)
     parser.add_argument("--main-evidence", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--runner-source-commit")
     args = parser.parse_args()
     root, evidence, output = args.main_root, args.main_evidence, args.output
     for path in (root, evidence, output):
@@ -82,6 +83,28 @@ def main():
     for relative in inputs:
         require(digest(source / relative) == before["files"][relative]["sha256"],
                 "original_native_ui_source_changed:" + relative)
+    runner_origin = args.runner_source_commit or origin
+    require(len(runner_origin) == 40 and all(x in "0123456789abcdef" for x in runner_origin),
+            "explicit_runner_source_commit_required")
+    runner_launch = (source / inputs[2]).read_bytes()
+    if runner_origin != origin:
+        subprocess.run(["git", "-C", str(source), "merge-base", "--is-ancestor",
+                        origin, runner_origin], check=True, capture_output=True)
+        changed = subprocess.run(["git", "-C", str(source), "diff", "--name-only",
+            origin, runner_origin], check=True, capture_output=True, text=True).stdout.splitlines()
+        require(all(name == inputs[2] or name.startswith(("Tools/", "docs/validation/"))
+                    for name in changed), "runner_overlay_must_not_change_application_source")
+        candidate = subprocess.run(["git", "-C", str(source), "show",
+            runner_origin + ":" + inputs[2]], check=True, capture_output=True).stdout
+        start = b"/// The existing native flows may run against the standalone acceptance app or\n"
+        end = b"// Test-runner-only fixture protocol. These types never enter the app target.\n"
+        require(runner_launch.count(start) == candidate.count(start) == 1
+                and runner_launch.count(end) == candidate.count(end) == 1,
+                "one_explicit_unified_launch_adapter_required")
+        require(runner_launch.split(start)[0] == candidate.split(start)[0]
+                and runner_launch.split(end)[1] == candidate.split(end)[1],
+                "all_original_test_methods_and_fixture_contract_must_remain_byte_identical")
+        runner_launch = candidate
     helper = source / "Tools/AnyEnginePort/native_ui_transition_project.py"
     original_helper = subprocess.run(["git", "-C", str(source), "show",
         origin + ":Tools/AnyEnginePort/native_ui_transition_project.py"],
@@ -101,7 +124,7 @@ def main():
         "source/" + projection.PROJECT_NAME + "/project.pbxproj": project_bytes,
         "source/" + projection.PROJECT_NAME + "/xcshareddata/xcschemes/"
         + projection.SCHEME_NAME + ".xcscheme": scheme_bytes,
-        "source/UITests/NativeLaunchTests.swift": (source / inputs[2]).read_bytes(),
+        "source/UITests/NativeLaunchTests.swift": runner_launch,
         "source/UITests/NativeHistoryTests.swift": (source / inputs[3]).read_bytes(),
     }
     for name, raw in files.items():
@@ -112,7 +135,8 @@ def main():
     sources = {name: {"bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}
                for name, raw in files.items()}
     write(output / "projection.json", {
-        "mainSourceCommit": origin, "mainReceiptSHA256": digest(evidence / "receipt.json"),
+        "mainSourceCommit": origin, "runnerSourceCommit": runner_origin,
+        "mainReceiptSHA256": digest(evidence / "receipt.json"),
         "exactOriginalProjectAndScheme": transformation, "sourceFiles": sources,
         "applicationBuildTargets": 0, "nativeLibraryBuilds": 0,
         "allOriginalNativeUITestMethodsCompiled": True,
@@ -139,7 +163,8 @@ def main():
     with log.open("wb") as stream:
         process = subprocess.Popen(argv, cwd=source, env=environment, stdout=stream,
                                    stderr=subprocess.STDOUT, start_new_session=True)
-        record = {"sourceCommit": origin, "argv": argv, "pid": process.pid,
+        record = {"sourceCommit": origin, "runnerSourceCommit": runner_origin,
+                  "argv": argv, "pid": process.pid,
                   "pgid": process.pid, "started": started, "freeBytesBefore": free}
         write(output / "launch.json", record)
         stopped = None
@@ -168,6 +193,19 @@ def main():
         code = process.wait()
     require(all(digest(output / name) == row["sha256"] for name, row in sources.items()),
             "native_ui_source_mutated_during_build")
+    products = output / "derived/Build/Products"
+    rows = []
+    for path in sorted(products.rglob("*")):
+        if path.is_symlink():
+            rows.append({"path": str(path.relative_to(products)), "kind": "symlink",
+                         "target": os.readlink(path)})
+        elif path.is_file():
+            rows.append({"path": str(path.relative_to(products)), "kind": "file",
+                         "bytes": path.stat().st_size, "sha256": digest(path)})
+    write(output / "products-all.json", rows)
+    record["completeProductsInventory"] = {
+        "path": str(output / "products-all.json"),
+        "sha256": digest(output / "products-all.json"), "entries": len(rows)}
     record.update(exitCode=code, elapsedSeconds=time.time() - started,
                   minimumFreeBytes=minimum, logSHA256=digest(log),
                   status=stopped or ("PASS_UI_RUNNER_BUILD_NOT_ACCEPTANCE" if code == 0 else "FAIL_BUILD"),

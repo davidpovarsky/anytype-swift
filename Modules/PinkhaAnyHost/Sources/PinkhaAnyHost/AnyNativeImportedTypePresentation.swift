@@ -49,7 +49,8 @@ public struct AnyNativeImportedTypePresentation: Sendable {
                     throw AnyNativePropertyError.invalidCatalog
                 }
                 if owner == "any" {
-                    guard property == "name", definition.kind == .string, definition.scope == "synced" else {
+                    guard ["name", "description"].contains(property), definition.kind == .string,
+                          definition.scope == "synced" else {
                         throw AnyNativePropertyError.invalidCatalog
                     }
                 } else {

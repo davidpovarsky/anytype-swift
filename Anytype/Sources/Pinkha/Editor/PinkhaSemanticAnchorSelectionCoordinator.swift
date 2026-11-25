@@ -34,6 +34,9 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
     }
 
     func invalidate() {
+#if DEBUG && targetEnvironment(simulator)
+        observeSourceEntry("coordinator-invalidate")
+#endif
         epoch = UUID()
         activeID = nil
         preparation?.cancel()
@@ -94,26 +97,83 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
               range.length <= textView.attributedText.length - range.location else { return nil }
         guard let anchor = PinkhaSemanticAnchorUI.selectedAnchor(in: textView.attributedText, range: range,
             spaceID: model.document.spaceId, objectID: model.document.objectId) else { return nil }
+#if DEBUG && targetEnvironment(simulator)
+        observeSourceEntry("source-menu-built")
+#endif
         return UIAction(title: PinkhaSemanticAnchorUI.text(.sources), image: UIImage(systemName: "books.vertical"),
             identifier: .init("pinkha.semanticAnchor.sources")) { [weak self] _ in
+#if DEBUG && targetEnvironment(simulator)
+                PinkhaSemanticSourceEntryDiagnostics.record("source-menu-handler", state: ["coordinatorPresent": self != nil])
+#endif
                 self?.openSources(anchor)
             }
     }
 
     private func openSources(_ anchor: PinkhaSemanticTextAnchor) {
+#if DEBUG && targetEnvironment(simulator)
+        observeSourceEntry("open-sources-guard")
+#endif
         guard activeID == nil, let editor, let model = editor.viewModel,
               editor.presentedViewController == nil, editor.viewIfLoaded?.window != nil,
               model.document.mode.isHandling, model.document.isOpened,
               let session = model.torahSession else { return }
+#if DEBUG && targetEnvironment(simulator)
+        observeSourceEntry("open-sources-guard-admitted")
+#endif
         Task { @MainActor [weak self, weak editor] in
-            do { try await session.presentSemanticAnchorSources(anchor) }
+            do {
+#if DEBUG && targetEnvironment(simulator)
+                self?.observeSourceEntry("shared-source-session-enter")
+#endif
+                try await session.presentSemanticAnchorSources(anchor)
+#if DEBUG && targetEnvironment(simulator)
+                self?.observeSourceEntry("shared-source-session-return")
+#endif
+            }
             catch {
+#if DEBUG && targetEnvironment(simulator)
+                self?.observeSourceEntry("shared-source-session-error", error: error)
+#endif
                 guard let self, let editor, editor.viewModel === model,
                       editor.viewIfLoaded?.window != nil else { return }
                 presentMessage(PinkhaSemanticAnchorStrings.message(for: error))
             }
         }
     }
+
+#if DEBUG && targetEnvironment(simulator)
+    /// Read-only UI state for the owned source continuation. It does not acquire
+    /// a lease, issue an engine call, change selection, dismiss a menu or retry.
+    private func observeSourceEntry(_ stage: String, error: Error? = nil) {
+        guard PinkhaSemanticSourceEntryDiagnostics.isEnabled else { return }
+        let editor = self.editor
+        let model = editor?.viewModel
+        let presented = editor?.presentedViewController
+        var state: [String: Any] = [
+            "captureActive": activeID != nil,
+            "epoch": epoch.uuidString.lowercased(),
+            "editorPresent": editor != nil,
+            "modelPresent": model != nil,
+            "windowPresent": editor?.viewIfLoaded?.window != nil,
+            "presentedControllerPresent": presented != nil,
+            "documentIsHandling": model?.document.mode.isHandling ?? false,
+            "documentIsOpened": model?.document.isOpened ?? false,
+            "sessionPresent": model?.torahSession != nil,
+            "searchPresented": model?.torahSession?.isSearchPresented ?? false
+        ]
+        if let editor { state["editorIdentity"] = String(describing: ObjectIdentifier(editor)) }
+        if let model { state["modelIdentity"] = String(describing: ObjectIdentifier(model)) }
+        if let session = model?.torahSession { state["sessionIdentity"] = String(describing: ObjectIdentifier(session)) }
+        if let presented { state["presentedControllerType"] = String(reflecting: type(of: presented)) }
+        if let error {
+            state["errorType"] = String(reflecting: type(of: error))
+            state["errorDomain"] = (error as NSError).domain
+            state["errorCode"] = (error as NSError).code
+            state["errorDescription"] = String(String(reflecting: error).prefix(256))
+        }
+        PinkhaSemanticSourceEntryDiagnostics.record(stage, state: state)
+    }
+#endif
 
     private func prepare(_ selection: Selection) {
         guard activeID == nil, owns(selection, focused: true), let editor,
@@ -290,4 +350,59 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
         }
     }
 }
+
+#if DEBUG && targetEnvironment(simulator)
+/// Private diagnostics only. The original mounted observer remains disabled in
+/// this continuation, and no original fixture/capture/readback file is touched.
+@MainActor
+private enum PinkhaSemanticSourceEntryDiagnostics {
+    private static let context: [String: String]? = {
+        let env = ProcessInfo.processInfo.environment
+        guard env["PINKHA_SIMULATOR_UI_DISPOSABLE"] == "1",
+              env["PINKHA_SEMANTIC_MOUNTED_UI"] == "0" else { return nil }
+        var binding: [String: String] = [:]
+        for (key, suffix, pattern) in [
+            ("sourceSHA", "SOURCE_SHA", "^[0-9a-f]{40}$"),
+            ("runID", "RUN_ID", "^[0-9]+$"),
+            ("runAttempt", "RUN_ATTEMPT", "^[1-9][0-9]*$"),
+            ("nonce", "NONCE", "^[0-9a-f]{32}$")
+        ] {
+            guard let value = env["PINKHA_SEMANTIC_MOUNTED_" + suffix],
+                  value.range(of: pattern, options: .regularExpression) != nil else { return nil }
+            binding[key] = value
+        }
+        return binding
+    }()
+    private static var events: [[String: Any]] = []
+    static var isEnabled: Bool { context != nil }
+
+    static func record(_ stage: String, state: [String: Any]) {
+        guard let context, events.count < 64 else { return }
+        let event: [String: Any] = ["stage": stage, "uptime": ProcessInfo.processInfo.systemUptime, "state": state]
+        events.append(event)
+        let processID = ProcessInfo.processInfo.processIdentifier
+        var value: [String: Any] = [
+            "protocol": "pinkha-heart-semantic-source-entry-observation-v1",
+            "processID": processID, "events": events,
+            "maximumEvents": 64, "capacityReached": events.count == 64,
+            "extraEngineCalls": 0, "selectionChanges": 0, "menuDismissals": 0,
+            "automaticRetries": 0, "originalMountedObserverEnabled": false
+        ]
+        for (key, entry) in context { value[key] = entry }
+        guard JSONSerialization.isValidJSONObject(value),
+              let bytes = try? JSONSerialization.data(withJSONObject: value, options: [.sortedKeys]),
+              bytes.count <= 65_536,
+              let directory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else { return }
+        let file = directory.appendingPathComponent("pinkha-semantic-source-entry-\(processID).json")
+        do {
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            try bytes.write(to: file, options: .atomic)
+            try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: file.path)
+        } catch {
+            // Observation failure must not become a product retry or success.
+            // The collector requires the original file before making a claim.
+        }
+    }
+}
+#endif
 #endif

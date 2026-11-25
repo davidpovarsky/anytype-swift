@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA9A00022F112500006805CC /* NativeDocumentPublicationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9A00012F112500006805CC /* NativeDocumentPublicationTests.swift */; };
+		FA9B02012F112500006805CC /* PinkhaAnyNative in Frameworks */ = {isa = PBXBuildFile; productRef = FA9B01012F112500006805CC /* PinkhaAnyNative */; };
+		FA9B02022F112500006805CC /* PinkhaAnyUI in Frameworks */ = {isa = PBXBuildFile; productRef = FA9B01022F112500006805CC /* PinkhaAnyUI */; };
+		FA9B02032F112500006805CC /* PinkhaAnyRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = FA9B01032F112500006805CC /* PinkhaAnyRuntime */; };
+		FA9B02042F112500006805CC /* PinkhaAnyEngine in Frameworks */ = {isa = PBXBuildFile; productRef = FA9B01042F112500006805CC /* PinkhaAnyEngine */; };
+		FA9B02052F112500006805CC /* PinkhaAnyIntegration in Frameworks */ = {isa = PBXBuildFile; productRef = FA9B01052F112500006805CC /* PinkhaAnyIntegration */; };
 		FA9502012F112500006805CC /* PinkhaSharing in Frameworks */ = {isa = PBXBuildFile; productRef = FA9501012F112500006805CC /* PinkhaSharing */; };
 		FA9602012F112500006805CC /* PinkhaEngineHost in Frameworks */ = {isa = PBXBuildFile; productRef = FA9601012F112500006805CC /* PinkhaEngineHost */; };
 		FA9702012F112500006805CC /* PinkhaAnyHost in Frameworks */ = {isa = PBXBuildFile; productRef = FA9701012F112500006805CC /* PinkhaAnyHost */; };
@@ -202,6 +208,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		FA9A00012F112500006805CC /* NativeDocumentPublicationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NativeDocumentPublicationTests.swift; path = Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeDocumentPublicationTests.swift; sourceTree = SOURCE_ROOT; };
 		0303ECFB22D8EDAA005C552B /* Anytype.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Anytype.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0303ED0422D8EDAD005C552B /* SystemAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = SystemAssets.xcassets; path = Anytype/Resources/SystemAssets.xcassets; sourceTree = SOURCE_ROOT; };
 		0318D575230186CA000527B1 /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
@@ -360,6 +367,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA9B02012F112500006805CC /* PinkhaAnyNative in Frameworks */,
+				FA9B02022F112500006805CC /* PinkhaAnyUI in Frameworks */,
+				FA9B02032F112500006805CC /* PinkhaAnyRuntime in Frameworks */,
+				FA9B02042F112500006805CC /* PinkhaAnyEngine in Frameworks */,
+				FA9B02052F112500006805CC /* PinkhaAnyIntegration in Frameworks */,
 				FA9102012F112100006805CC /* PinkhaKit in Frameworks */,
 				FA9102022F112100006805CC /* Loc in Frameworks */,
 				FA9102032F112100006805CC /* TorahInspectorUI in Frameworks */,
@@ -423,6 +435,7 @@
 		0303ECF222D8EDAA005C552B = {
 			isa = PBXGroup;
 			children = (
+				FA9A00012F112500006805CC /* NativeDocumentPublicationTests.swift */,
 				FAB410022F112300006805CC /* Owner Signing */,
 				7424EFB92D79C71B00E51377 /* Modules */,
 				0303ECFD22D8EDAA005C552B /* Anytype */,
@@ -627,6 +640,11 @@
 			);
 			name = AnytypeTests;
 			packageProductDependencies = (
+				FA9B01012F112500006805CC /* PinkhaAnyNative */,
+				FA9B01022F112500006805CC /* PinkhaAnyUI */,
+				FA9B01032F112500006805CC /* PinkhaAnyRuntime */,
+				FA9B01042F112500006805CC /* PinkhaAnyEngine */,
+				FA9B01052F112500006805CC /* PinkhaAnyIntegration */,
 				FA9101012F112100006805CC /* PinkhaKit */,
 				FA9101022F112100006805CC /* Loc */,
 				FA9101032F112100006805CC /* TorahInspectorUI */,
@@ -772,6 +790,11 @@
 			);
 			mainGroup = 0303ECF222D8EDAA005C552B;
 			packageReferences = (
+				FA9B00012F112500006805CC /* XCLocalSwiftPackageReference "PinkhaAnyNative" */,
+				FA9B00022F112500006805CC /* XCLocalSwiftPackageReference "PinkhaAnyUI" */,
+				FA9B00032F112500006805CC /* XCLocalSwiftPackageReference "PinkhaAnyRuntime" */,
+				FA9B00042F112500006805CC /* XCLocalSwiftPackageReference "PinkhaAnyEngine" */,
+				FA9B00052F112500006805CC /* XCLocalSwiftPackageReference "PinkhaAnyIntegration" */,
 				FA9500012F112500006805CC /* XCLocalSwiftPackageReference "PinkhaSharing" */,
 				FA9600012F112500006805CC /* XCLocalSwiftPackageReference "PinkhaEngineHost" */,
 				FA9700012F112500006805CC /* XCLocalSwiftPackageReference "PinkhaAnyHost" */,
@@ -911,6 +934,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA9A00022F112500006805CC /* NativeDocumentPublicationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2734,6 +2758,11 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
+		FA9B00012F112500006805CC /* XCLocalSwiftPackageReference "PinkhaAnyNative" */ = {isa = XCLocalSwiftPackageReference; relativePath = Modules/PinkhaAnyNative; };
+		FA9B00022F112500006805CC /* XCLocalSwiftPackageReference "PinkhaAnyUI" */ = {isa = XCLocalSwiftPackageReference; relativePath = Modules/PinkhaAnyUI; };
+		FA9B00032F112500006805CC /* XCLocalSwiftPackageReference "PinkhaAnyRuntime" */ = {isa = XCLocalSwiftPackageReference; relativePath = Modules/PinkhaAnyRuntime; };
+		FA9B00042F112500006805CC /* XCLocalSwiftPackageReference "PinkhaAnyEngine" */ = {isa = XCLocalSwiftPackageReference; relativePath = Modules/PinkhaAnyEngine; };
+		FA9B00052F112500006805CC /* XCLocalSwiftPackageReference "PinkhaAnyIntegration" */ = {isa = XCLocalSwiftPackageReference; relativePath = Modules/PinkhaAnyIntegration; };
 		FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinAgentSDK" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Dependencies/Hanlin/Packages/HanlinAgentSDK;
@@ -2928,6 +2957,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		FA9B01012F112500006805CC /* PinkhaAnyNative */ = {isa = XCSwiftPackageProductDependency; package = FA9B00012F112500006805CC /* XCLocalSwiftPackageReference "PinkhaAnyNative" */; productName = PinkhaAnyNative; };
+		FA9B01022F112500006805CC /* PinkhaAnyUI */ = {isa = XCSwiftPackageProductDependency; package = FA9B00022F112500006805CC /* XCLocalSwiftPackageReference "PinkhaAnyUI" */; productName = PinkhaAnyUI; };
+		FA9B01032F112500006805CC /* PinkhaAnyRuntime */ = {isa = XCSwiftPackageProductDependency; package = FA9B00032F112500006805CC /* XCLocalSwiftPackageReference "PinkhaAnyRuntime" */; productName = PinkhaAnyRuntime; };
+		FA9B01042F112500006805CC /* PinkhaAnyEngine */ = {isa = XCSwiftPackageProductDependency; package = FA9B00042F112500006805CC /* XCLocalSwiftPackageReference "PinkhaAnyEngine" */; productName = PinkhaAnyEngine; };
+		FA9B01052F112500006805CC /* PinkhaAnyIntegration */ = {isa = XCSwiftPackageProductDependency; package = FA9B00052F112500006805CC /* XCLocalSwiftPackageReference "PinkhaAnyIntegration" */; productName = PinkhaAnyIntegration; };
 		FA9101012F112100006805CC /* PinkhaKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PinkhaKit;

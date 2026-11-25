@@ -58,14 +58,15 @@ public struct AnyDestinationDefinitionEvidence: Codable, Equatable, Sendable {
 /// relation to Any's existing synced string name. It never creates or patches
 /// the native schema. Other builtin-looking keys are ordinary source data.
 public struct AnyDestinationCanonicalPropertyBinding: Codable, Equatable, Sendable {
+    /// Existing serialized name bindings retain their original contract.
     public static let contract = "pinkha-native-any-name-v1"
+    public static let descriptionContract = "pinkha-native-any-description-v1"
     public let evidence: AnyDestinationDefinitionEvidence
     public let ownerID: String
     public let propertyID: String
     public let nativeContract: String
     public let nativeDescriptorSHA256: String
-    /// Visibility is retained independently of the native title value. The
-    /// imported type's definitionHidden addresses carry this display default.
+    /// Source visibility remains independent of the canonical content value.
     public var sourceHidden: Bool? { evidence.snapshot.details["isHidden"]?.bool }
 
     // SDK e195f6/internal/types/any/any.go, admitted again through native HTTP
@@ -75,29 +76,51 @@ public struct AnyDestinationCanonicalPropertyBinding: Codable, Equatable, Sendab
         "kind": .string("string"), "scope": .string("synced"),
         "xFormat": .object(["type": .string("text")]),
     ])
+    public static let nativeDescriptionDescriptor: AnyJSON = .object([
+        "id": .string("description"), "name": .string("Description"), "description": .string("Display description."),
+        "kind": .string("string"), "scope": .string("synced"),
+        "xFormat": .object(["type": .string("longtext")]),
+    ])
 
     public init(evidence: AnyDestinationDefinitionEvidence) throws {
-        self.evidence = evidence; ownerID = "any"; propertyID = "name"; nativeContract = Self.contract
-        nativeDescriptorSHA256 = try AnyDestinationDefinitionChecks.digest(Self.nativeDescriptor)
+        self.evidence = evidence; ownerID = "any"
+        switch Data(evidence.snapshot.uniqueKey.utf8) {
+        case Data("rel-name".utf8): propertyID = "name"
+        case Data("rel-description".utf8): propertyID = "description"
+        default: throw AnyDestinationMigrationError.invalidPlan("unknown canonical property identity")
+        }
+        let required = try Self.specification(propertyID)
+        nativeContract = required.contract
+        nativeDescriptorSHA256 = try AnyDestinationDefinitionChecks.digest(required.descriptor)
         try validate()
     }
+    var expectedNativeDescriptor: AnyJSON { get throws { try Self.specification(propertyID).descriptor } }
+
+    private static func specification(_ propertyID: String) throws ->
+        (contract: String, descriptor: AnyJSON, sourceFormat: Int64, sourceName: String, sourceDescription: String) {
+        switch propertyID {
+        case "name": return (contract, nativeDescriptor, 1, "Name", "Name of the object")
+        case "description": return (descriptionContract, nativeDescriptionDescriptor, 0, "Description", "")
+        default: throw AnyDestinationMigrationError.invalidPlan("unknown canonical property identity")
+        }
+    }
     func validate() throws {
-        let row = evidence.snapshot, d = row.details
-        guard ownerID == "any", propertyID == "name", nativeContract == Self.contract,
-              nativeDescriptorSHA256 == (try AnyDestinationDefinitionChecks.digest(Self.nativeDescriptor)),
-              row.nativeType == 521, Data(row.uniqueKey.utf8) == Data("rel-name".utf8),
-              d["relationKey"] == .string("name"), d["relationFormat"] == .integer(1),
+        let row = evidence.snapshot, d = row.details, required = try Self.specification(propertyID)
+        guard ownerID == "any", nativeContract == required.contract,
+              nativeDescriptorSHA256 == (try AnyDestinationDefinitionChecks.digest(required.descriptor)),
+              row.nativeType == 521, Data(row.uniqueKey.utf8) == Data(("rel-" + propertyID).utf8),
+              d["relationKey"] == .string(propertyID), d["relationFormat"] == .integer(required.sourceFormat),
               d["relationMaxCount"] == .integer(1), d["relationReadonlyValue"] == .bool(false),
               d["relationDefaultValue"] == .null, d["relationFormatIncludeTime"] == .bool(false),
               d["relationFormatObjectTypes"] == .array([]),
-              d["name"] == .string("Name"), d["description"] == .string("Name of the object"),
+              d["name"] == .string(required.sourceName), d["description"] == .string(required.sourceDescription),
               d["isArchived"] == nil || d["isArchived"] == .bool(false),
               d["isHidden"] == nil || d["isHidden"]?.bool != nil,
               d["isReadonly"] == nil || d["isReadonly"] == .bool(false), row.issues.isEmpty else {
-            throw AnyDestinationMigrationError.invalidPlan("canonical native name contract")
+            throw AnyDestinationMigrationError.invalidPlan("canonical native property contract")
         }
         guard Set(d.keys).isSubset(of: AnyDestinationDefinitionChecks.nameDetailFields) else {
-            throw AnyDestinationMigrationError.invalidPlan("unknown canonical native name semantics")
+            throw AnyDestinationMigrationError.invalidPlan("unknown canonical native property semantics")
         }
     }
     private enum CodingKeys: String, CodingKey {
@@ -265,16 +288,26 @@ enum AnyDestinationDefinitionChecks {
         let value = try await client.requestJSON(method: "GET",
             path: ["v1", "spaces", workspace.spaceID, "types", "any", "properties"],
             maximumResponseBytes: 1_048_576, authorize: authorize)
-        try verifyNativeNameProperties(value)
+        try verifyNativeCanonicalProperties(value, bindings: bindings)
         try await authorize(); try Task.checkCancellation()
     }
-    static func verifyNativeNameProperties(_ value: AnyJSON) throws {
-        guard let properties = value["properties"]?.array, properties.count <= 512 else {
-            throw AnyDestinationMigrationError.unsupportedCapability("canonical any.name descriptor")
+    static func verifyNativeCanonicalProperties(_ value: AnyJSON,
+                                                bindings: [AnyDestinationCanonicalPropertyBinding]) throws {
+        for binding in bindings {
+            try binding.validate()
+            try verifyNativeProperty(value, propertyID: binding.propertyID, expected: binding.expectedNativeDescriptor)
         }
-        let names = properties.filter { $0["id"]?.string.map { Data($0.utf8) } == Data("name".utf8) }
-        guard names.count == 1, try bytes(names[0]) == bytes(AnyDestinationCanonicalPropertyBinding.nativeDescriptor) else {
-            throw AnyDestinationMigrationError.unsupportedCapability("canonical any.name descriptor")
+    }
+    static func verifyNativeNameProperties(_ value: AnyJSON) throws {
+        try verifyNativeProperty(value, propertyID: "name", expected: AnyDestinationCanonicalPropertyBinding.nativeDescriptor)
+    }
+    private static func verifyNativeProperty(_ value: AnyJSON, propertyID: String, expected: AnyJSON) throws {
+        guard let properties = value["properties"]?.array, properties.count <= 512 else {
+            throw AnyDestinationMigrationError.unsupportedCapability("canonical any." + propertyID + " descriptor")
+        }
+        let matches = properties.filter { $0["id"]?.string.map { Data($0.utf8) } == Data(propertyID.utf8) }
+        guard matches.count == 1, try bytes(matches[0]) == bytes(expected) else {
+            throw AnyDestinationMigrationError.unsupportedCapability("canonical any." + propertyID + " descriptor")
         }
     }
 }

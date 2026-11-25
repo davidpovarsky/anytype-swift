@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/Users/m1/builds/pinkha-c-destination-content-20261125/native_file_property_phase-v2.py", line 3, in <module>
+    r.mkdir(mode=0o700,exist_ok=False);os.umask(0o077)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py", line 1313, in mkdir
+    self._accessor.mkdir(self, mode)
+FileExistsError: [Errno 17] File exists: '/Users/m1/builds/pinkha-c-destination-content-20261125/file-property-execute-attempt1'
