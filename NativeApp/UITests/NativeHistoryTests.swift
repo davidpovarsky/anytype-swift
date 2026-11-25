@@ -42,10 +42,8 @@ final class NativeHistoryTests: XCTestCase {
         XCTAssertEqual(editor.value as? String, firstText)
         XCTAssertEqual(editor.identifier, blockIdentifier)
 
-        editor.tap(); editor.press(forDuration: 1.2)
-        let selectAll = app.descendants(matching: .any).matching(NSPredicate(
-            format: "label IN %@", ["Select All", "בחר הכל", "בחר הכול", "בחירת הכול"])).firstMatch
-        tapWhenEnabled(selectAll)
+        try selectEntireHistoryTextWithKeyboard(app, editor: editor, text: firstText,
+                                                blockIdentifier: blockIdentifier)
         editor.typeText(secondText)
         commitAndRequireText(app, editor: editor, text: secondText)
         XCTAssertEqual(blocks.count, 1)
@@ -121,6 +119,65 @@ final class NativeHistoryTests: XCTestCase {
             "physicalDevice": "NOT_RUN",
             "wholeAppParity": "NOT_PROVEN"
         ], name: "native-history-mounted-receipt")
+    }
+
+
+    // The retained original iOS 27 recording showed the long press moving a
+    // collapsed caret without opening an edit menu. Use the real keyboard
+    // Select All shortcut for this replace-all setup. This is not menu coverage.
+    // The existing observer reads the native snapshot and actual UIKit range;
+    // it cannot select, edit, issue native calls, or publish acknowledgements.
+    private func selectEntireHistoryTextWithKeyboard(_ app: XCUIApplication,
+        editor: XCUIElement, text: String, blockIdentifier: String) throws {
+        editor.tap()
+        editor.typeKey(.rightArrow, modifierFlags: [])
+        let before = try historySelectionWitness(app, text: text,
+            blockIdentifier: blockIdentifier, selectedLength: 0, phase: "caret-before-keyboard-select-all")
+        editor.typeKey("a", modifierFlags: .command)
+        let selected = try historySelectionWitness(app, text: text,
+            blockIdentifier: blockIdentifier, selectedLength: text.utf16.count,
+            phase: "keyboard-selected-entire-original-text")
+        for key in ["spaceSHA256", "objectSHA256", "nativeVersionSHA256", "generation"] {
+            XCTAssertEqual(before[key] as? String, selected[key] as? String,
+                           "Keyboard selection must not change the native document or its owner")
+        }
+    }
+
+    private func historySelectionWitness(_ app: XCUIApplication, text: String,
+        blockIdentifier: String, selectedLength: Int, phase: String) throws -> [String: Any] {
+        let prefix = "any-native-block-"
+        guard blockIdentifier.hasPrefix(prefix) else { throw HistoryFailure.actualSelectionUnavailable }
+        let blockHash = digest(String(blockIdentifier.dropFirst(prefix.count)))
+        let textHash = digest(text)
+        let element = app.descendants(matching: .any)
+            .matching(identifier: "any-native-semantic-anchor-observation").firstMatch
+        var matched: [String: Any]?
+        let predicate = NSPredicate { _, _ in
+            guard element.exists, let raw = element.value as? String,
+                  let bytes = raw.data(using: .utf8), bytes.count <= 24_576,
+                  let value = try? JSONSerialization.jsonObject(with: bytes) as? [String: Any],
+                  value["schema"] as? String == "any-semantic-anchor-native-rendered/v1",
+                  value["state"] as? String == "MATCHED", value["mode"] as? String == "read-only",
+                  value["engineCalls"] as? Int == 0, value["mutations"] as? Int == 0,
+                  value["selectionChanges"] as? Int == 0,
+                  value["nativeMarkCount"] as? Int == value["renderedMarkCount"] as? Int,
+                  let blocks = value["blocks"] as? [[String: Any]], blocks.count == 1,
+                  let block = blocks.first, block["blockSHA256"] as? String == blockHash,
+                  block["textSHA256"] as? String == textHash,
+                  block["sourceSHA256"] as? String == textHash,
+                  block["utf16Length"] as? Int == text.utf16.count,
+                  block["isFirstResponder"] as? Bool == true,
+                  block["selectionLength"] as? Int == selectedLength,
+                  selectedLength == 0 || block["selectionLocation"] as? Int == 0 else { return false }
+            matched = value
+            return true
+        }
+        let result = XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: predicate, object: element)], timeout: 30)
+        XCTAssertEqual(result, .completed, "Actual native/UIKit History selection was not established")
+        guard result == .completed, let matched else { throw HistoryFailure.actualSelectionUnavailable }
+        try attachJSON(["phase": phase, "input": "real-keyboard", "longPressMenuAccepted": false,
+                        "originalNativeAndUIKit": matched], name: "native-history-" + phase)
+        return matched
     }
 
     private struct LocatedVersion {
@@ -252,6 +309,7 @@ final class NativeHistoryTests: XCTestCase {
         let app = NativeApplicationUnderTest()
         app.launchArguments = ["--native-ui-tests", "--native-ui-test-scope", scope.uuidString,
                                "-AppleLanguages", "(he,en)", "-AppleLocale", "he_IL"]
+        app.launchEnvironment["PINKHA_NATIVE_ANCHOR_OBSERVATION"] = "1"
         return app
     }
 
@@ -283,6 +341,6 @@ final class NativeHistoryTests: XCTestCase {
     }
 
     private enum HistoryFailure: Error {
-        case noVersions, savedTextNotFound, relevantVersionNotVisible
+        case noVersions, savedTextNotFound, relevantVersionNotVisible, actualSelectionUnavailable
     }
 }
