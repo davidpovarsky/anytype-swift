@@ -126,5 +126,50 @@ class FailedIntervalControls(unittest.TestCase):
                 failed.admit(failed.APP, Path(temporary), Path(temporary), None, None)
 
 
+class ModuleCacheAdmissionControls(unittest.TestCase):
+    """Exercise the actual later runner guard that previously blocked this route."""
+    def setUp(self):
+        import ast
+        source = Path(__file__).with_name("run_native_acceptance.py")
+        tree = ast.parse(source.read_text())
+        calls = [n for n in ast.walk(tree) if isinstance(n, ast.Call)
+                 and isinstance(n.func, ast.Name) and n.func.id == "require"
+                 and len(n.args) == 2 and isinstance(n.args[1], ast.Constant)
+                 and isinstance(n.args[1].value, str)
+                 and n.args[1].value.startswith("Existing module cache must")]
+        self.assertEqual(len(calls), 1)
+        self.expression = compile(ast.Expression(calls[0].args[0]), str(source), "eval")
+        self.temporary = tempfile.TemporaryDirectory(); self.addCleanup(self.temporary.cleanup)
+        self.module_cache = Path(self.temporary.name)
+
+    def admitted(self, cache):
+        return eval(self.expression, {}, {"module_cache": self.module_cache, "cache": cache})
+
+    def row(self, status="ADMITTED_FAILED_OWN_CACHE_FOR_ACTUAL_REBUILD_ONLY"):
+        return dict(status=status, module_cache=str(self.module_cache), new_native_or_ui_credit=0,
+                    both_actual_compiler_commands_and_postgates_required=True)
+
+    def test_both_verified_same_path_origins_pass_the_actual_guard(self):
+        for status in ("ADMITTED_FAILED_OWN_CACHE_FOR_ACTUAL_REBUILD_ONLY",
+                       "ADMITTED_SAME_PATH_SOURCE_IDENTICAL_OWNED_COMPILER_CACHE"):
+            self.assertTrue(self.admitted(self.row(status)))
+
+    def test_unknown_origin_or_foreign_module_path_is_refused(self):
+        self.assertFalse(self.admitted(self.row("PASS")))
+        value = self.row(); value["module_cache"] = "/foreign"
+        self.assertFalse(self.admitted(value))
+        self.assertFalse(self.admitted(None))
+
+    def test_test_credit_or_missing_actual_rebuild_gate_is_refused(self):
+        value = self.row(); value["new_native_or_ui_credit"] = 5
+        self.assertFalse(self.admitted(value))
+        value = self.row(); value["both_actual_compiler_commands_and_postgates_required"] = False
+        self.assertFalse(self.admitted(value))
+
+    def test_fresh_empty_cache_needs_no_reuse_claim(self):
+        self.module_cache = self.module_cache / "not-created"
+        self.assertTrue(self.admitted(None))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

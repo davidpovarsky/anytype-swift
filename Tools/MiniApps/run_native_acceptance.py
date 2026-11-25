@@ -198,9 +198,13 @@ def build_consumer(args, receipt):
         cache = receipt.get("compiler_cache_input")
         require(not module_cache.exists() or
                 (cache is not None
-                 and cache["status"] == "ADMITTED_SAME_PATH_SOURCE_IDENTICAL_OWNED_COMPILER_CACHE"
-                 and cache["module_cache"] == str(module_cache)),
-                "Existing module cache must be the exact admitted same-path completed cache")
+                 and cache["status"] in {
+                     "ADMITTED_SAME_PATH_SOURCE_IDENTICAL_OWNED_COMPILER_CACHE",
+                     "ADMITTED_FAILED_OWN_CACHE_FOR_ACTUAL_REBUILD_ONLY"}
+                 and cache["module_cache"] == str(module_cache)
+                 and cache.get("new_native_or_ui_credit") == 0
+                 and cache.get("both_actual_compiler_commands_and_postgates_required") is True),
+                "Existing module cache must be the exact admitted same-path cache with actual rebuild gates")
         flags += ["ARCHS=arm64", "CLANG_MODULE_CACHE_PATH=" + str(module_cache),
                   "SWIFT_MODULE_CACHE_PATH=" + str(module_cache)]
     scheduling = ["-jobs", "2"] if context.local else []
