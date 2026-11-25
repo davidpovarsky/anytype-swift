@@ -53,6 +53,8 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
     private var focusContext: EditorCursorManager?
     private var pendingFocus: (id: UUID, position: BlockFocusPosition, requestId: UUID?)?
     private var focusLifetimeId = UUID()
+    private var scheduledFocusId: UUID?
+    private var pendingInputWasVisible: Bool?
     private var focusReadinessSubscriptions = [AnyCancellable]()
     private var torahAccessoryAction: (() -> Void)?
     
@@ -90,6 +92,32 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         schedulePendingFocus()
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        guard pendingFocus != nil else { return }
+        let visible = inputIsVisible
+        let becameVisible = visible && pendingInputWasVisible != true
+        pendingInputWasVisible = visible
+        // An inserted row can join an already-key window while its cell is still
+        // hidden. Resume its current request after the real presentation changes.
+        // Unchanged layout after a native delegate refusal must not start a loop.
+        if becameVisible { schedulePendingFocus() }
+    }
+
+    private var inputIsVisible: Bool {
+        let input = textView.textView
+        guard let window, input.window === window,
+              input.bounds.width.isFinite, input.bounds.height.isFinite,
+              input.bounds.width > 0, input.bounds.height > 0 else { return false }
+        var ancestor: UIView? = input
+        while let current = ancestor {
+            guard !current.isHidden, current.alpha > 0 else { return false }
+            if current === window { return true }
+            ancestor = current.superview
+        }
+        return false
+    }
+
     func update(with state: UICellConfigurationState) {
         textView.textView.isLockedForEditing = state.isLocked
         createEmptyBlockButton.isEnabled = !state.isLocked
@@ -203,6 +231,7 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         let pendingId = UUID()
         focusLifetimeId = pendingId
         pendingFocus = (pendingId, position, requestId)
+        pendingInputWasVisible = nil
         recordFocus(.retained, requestId: requestId)
         observeFocusReadiness()
         return pendingId
@@ -213,11 +242,15 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
     }
 
     private func schedulePendingFocus() {
-        guard window != nil, let pendingId = pendingFocus?.id else { return }
+        guard window != nil, let pendingId = pendingFocus?.id,
+              scheduledFocusId != pendingId else { return }
+        scheduledFocusId = pendingId
         recordFocus(.scheduled, requestId: pendingFocus?.requestId)
         // Attachment can occur during dequeue too; delegate side effects must wait for its return.
         DispatchQueue.main.async { [weak self] in
-            self?.applyPendingFocus(id: pendingId)
+            guard let self, self.scheduledFocusId == pendingId else { return }
+            self.scheduledFocusId = nil
+            self.applyPendingFocus(id: pendingId)
         }
     }
 
@@ -227,6 +260,8 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         }
         focusLifetimeId = UUID()
         pendingFocus = nil
+        scheduledFocusId = nil
+        pendingInputWasVisible = nil
         focusReadinessSubscriptions.removeAll()
     }
 
@@ -255,6 +290,9 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         }
         guard let window, textView.textView.window === window, window.isKeyWindow,
               window.windowScene?.activationState == .foregroundActive else { return }
+        let visible = inputIsVisible
+        pendingInputWasVisible = visible
+        guard visible else { return }
         recordFocus(.nativeAttempted, requestId: pendingFocus.requestId)
         // Consume before UIKit delegates run, so its successful begin-editing cannot replay a caret.
         self.pendingFocus = nil

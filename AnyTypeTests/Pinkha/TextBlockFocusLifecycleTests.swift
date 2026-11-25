@@ -323,6 +323,67 @@ struct TextBlockFocusLifecycleTests {
         #expect(textView.text == "abc אבג!")
     }
 
+    @Test("A hidden row resumes its current focus on visible layout without stealing a newer request",
+          arguments: [false, true])
+    func pendingFocusWaitsForVisibleLayout(superseded: Bool) async throws {
+        let fixture = try TextBlockFocusWindow()
+        defer { fixture.close() }
+        let subjects = FocusSubjectsHolder()
+        let cursor = EditorCursorManager(focusSubjectHolder: subjects)
+        let keeper = TextBlockContentView(frame: .zero)
+        keeper.update(with: configuration("visible-keeper", cursor: cursor, subjects: subjects))
+        fixture.attach(keeper, y: 80)
+        let parent = UIView()
+        parent.isHidden = true
+        let row = TextBlockContentView(frame: CGRect(x: 0, y: 0, width: 320, height: 100))
+        row.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        parent.addSubview(row)
+        row.update(with: configuration("hidden-pending", cursor: cursor, subjects: subjects, initial: .end))
+        row.update(with: editingState())
+        fixture.attach(parent, y: 240)
+        await finishMainQueueTurn()
+        try #require(row.window === fixture.window && fixture.window.isKeyWindow)
+        #expect(!row.textView.textView.isFirstResponder)
+        if superseded {
+            keeper.takeFocus(at: .end)
+            try #require(keeper.textView.textView.isFirstResponder)
+        }
+        parent.isHidden = false
+        row.setNeedsLayout()
+        fixture.controller.view.layoutIfNeeded()
+        await finishMainQueueTurn()
+        #expect(row.textView.textView.isFirstResponder == !superseded)
+        if superseded {
+            #expect(keeper.textView.textView.isFirstResponder)
+        } else {
+            #expect(row.textView.textView.selectedRange == NSRange(location: row.textView.textView.text.utf16.count, length: 0))
+            row.textView.textView.insertText("!")
+            #expect(row.textView.textView.text == "abc אבג!")
+        }
+    }
+
+    @Test("Repeated visible layouts do not replay a native focus refusal")
+    func visibleLayoutsDoNotRetryNativeRefusal() async throws {
+        let fixture = try TextBlockFocusWindow()
+        defer { fixture.close() }
+        let subjects = FocusSubjectsHolder()
+        let cursor = EditorCursorManager(focusSubjectHolder: subjects)
+        let row = TextBlockContentView(frame: .zero)
+        row.update(with: configuration("visible-refusal", cursor: cursor, subjects: subjects, initial: .end))
+        let refusal = TextBlockFocusRefusingDelegate()
+        row.textView.textView.delegate = refusal
+        fixture.attach(row)
+        await finishMainQueueTurn()
+        try #require(refusal.beginAttempts == 1 && !row.textView.textView.isFirstResponder)
+        for _ in 0..<3 {
+            row.setNeedsLayout()
+            fixture.controller.view.layoutIfNeeded()
+            await finishMainQueueTurn()
+        }
+        #expect(refusal.beginAttempts == 1)
+        #expect(!row.textView.textView.isFirstResponder)
+    }
+
     @Test("An attached request waits for its actual key window")
     func pendingFocusWaitsForKeyWindow() async throws {
         let fixture = try TextBlockFocusWindow(makeKey: false)
