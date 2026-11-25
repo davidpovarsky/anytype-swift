@@ -488,16 +488,29 @@ extension EditorPageController: EditorPageViewInput {
         }
         if let textView = firstResponderView as? TextViewWithPlaceholder {
 #if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
-            if pinkhaSemanticSelection == nil {
-                pinkhaSemanticSelection = PinkhaSemanticAnchorSelectionCoordinator(editor: self)
-            }
-            pinkhaSemanticSelection?.bind(textView)
+            bindSemanticAnchorInput(textView)
 #endif
             textView.onSelectionHandlePan = { [weak self] recognizer in
                 self?.handleSelectionEscalationPan(recognizer)
             }
         }
     }
+
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+    /// Install navigation when a text block is displayed or reconfigured. This
+    /// does not request focus, change selection, acquire a lease or call native.
+    func configureSemanticAnchorInput(in cell: UICollectionViewCell) {
+        guard let content = firstTextBlockContentView(in: cell) else { return }
+        bindSemanticAnchorInput(content.textView.textView)
+    }
+
+    private func bindSemanticAnchorInput(_ textView: TextViewWithPlaceholder) {
+        if pinkhaSemanticSelection == nil {
+            pinkhaSemanticSelection = PinkhaSemanticAnchorSelectionCoordinator(editor: self)
+        }
+        pinkhaSemanticSelection?.bind(textView)
+    }
+#endif
 
     func itemDidChangeFrame(item: EditorItem) {
         DispatchQueue.main.async { [weak self] in
@@ -695,6 +708,9 @@ private extension EditorPageController {
         }
         
         cell.contentConfiguration = newConfiguration
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        configureSemanticAnchorInput(in: cell)
+#endif
     }
 
     func dataSourceItem(for blockId: String) -> EditorItem? {
@@ -818,6 +834,9 @@ private extension EditorPageController {
             isLocked: collectionView.isLocked
         )
         cell.contentView.isUserInteractionEnabled = true
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        configureSemanticAnchorInput(in: cell)
+#endif
         configureTorahAccessory(in: cell, blockId: item.blockId)
         
         cell.backgroundConfiguration = UIBackgroundConfiguration.clear()

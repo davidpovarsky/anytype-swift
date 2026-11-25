@@ -22,15 +22,32 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
     init(editor: EditorPageController) { self.editor = editor }
 
     func bind(_ textView: TextViewWithPlaceholder) {
-        textView.pinkhaSemanticAnchorAction = { [weak self, weak textView] range in
-            guard let self, let textView else { return nil }
+        guard let model = editor?.viewModel else {
+            textView.pinkhaSemanticAnchorAction = nil
+            textView.pinkhaSemanticAnchorOpenURL = nil
+            return
+        }
+        // Displayed links must work before this input has ever become first
+        // responder. Reused inputs may not dispatch into a retired editor model.
+        textView.pinkhaSemanticAnchorAction = { [weak self, weak textView, weak model] range in
+            guard let self, let textView, let model,
+                  self.ownsDisplayedInput(textView, model: model) else { return nil }
             return self.action(in: textView, range: range)
         }
-        textView.pinkhaSemanticAnchorOpenURL = { [weak self] url in
-            guard let self else { return }
+        textView.pinkhaSemanticAnchorOpenURL = { [weak self, weak textView, weak model] url in
+            guard let self, let textView, let model,
+                  self.ownsDisplayedInput(textView, model: model) else { return }
             do { openSources(try PinkhaSemanticTextAnchor(markerURL: url)) }
             catch { presentMessage(PinkhaSemanticAnchorStrings.message(for: error)) }
         }
+    }
+
+    private func ownsDisplayedInput(_ textView: TextViewWithPlaceholder,
+                                    model: any EditorPageViewModelProtocol) -> Bool {
+        guard let editor, editor.viewModel === model, let view = editor.viewIfLoaded,
+              let window = view.window, textView.window === window,
+              textView.isDescendant(of: view) else { return false }
+        return true
     }
 
     func invalidate() {
