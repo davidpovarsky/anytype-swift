@@ -72,30 +72,65 @@ def target(value):
     c.require(isinstance(configurations, list) and len(configurations) == 1
               and configurations[0].get("IsEnabled", True) is True, "focus_single_configuration")
     targets = configurations[0].get("TestTargets")
-    c.require(isinstance(targets, list) and len(targets) == 1
-              and targets[0].get("BlueprintName") == "AnytypeTests"
-              and targets[0].get("IsEnabled", True) is True, "focus_exact_native_target")
-    return targets[0]
+    c.require(isinstance(targets, list) and all(isinstance(item, dict) for item in targets),
+              "focus_exact_native_target")
+    selected = [item for item in targets if item.get("BlueprintName") == "AnytypeTests"]
+    c.require(len(selected) == 1 and selected[0].get("IsEnabled", True) is True,
+              "focus_exact_native_target")
+    return selected[0]
 
 
-def scope_descriptor(raw, stage, products):
-    """Admit the exact coherent union, then reuse the unchanged F path checks."""
+def validate_build_selection(build):
+    """Bind omitted Xcode filters to the actual, successful nine-suite build."""
+    c.require(isinstance(build, dict)
+              and build.get("status") == "SAME_JOB_SUCCESSFUL_BUILD_WITH_FROZEN_PRODUCTS"
+              and build.get("profile") == batch.COHERENT_HEART_PROFILE,
+              "focus_original_build_receipt_required")
+    suites = build.get("native_preparation_suites_built", []) + build.get("native_postflight_suites_built", [])
+    c.require(len(suites) == len(UNION) and set(suites) == UNION
+              and build.get("build_flags") == batch.profile_flags(batch.COHERENT_HEART_PROFILE)
+              and build.get("app_builds") == build.get("ui_runner_builds") == 1,
+              "focus_original_build_selection_differs")
+
+
+def scope_descriptor(raw, stage, products, *, build_receipt=None):
+    """Select the native target; preserve all original nonselection values.
+
+    Xcode 27 can emit all scheme targets and omit OnlyTestIdentifiers after an
+    explicitly filtered build-for-testing. That omission requires the original
+    successful frozen-build receipt. An explicit, foreign filter is never
+    treated as an omission.
+    """
     original = plistlib.loads(raw)
     original_target = target(original)
+    selection_present = "OnlyTestIdentifiers" in original_target
     selected = original_target.get("OnlyTestIdentifiers")
-    c.require(isinstance(selected, list) and len(selected) == len(UNION)
-              and set(selected) == UNION and not original_target.get("SkipTestIdentifiers", []),
-              "focus_original_union_not_exact")
+    if selection_present:
+        c.require(isinstance(selected, list) and len(selected) == len(UNION)
+                  and set(selected) == UNION, "focus_original_union_not_exact")
+    else:
+        validate_build_selection(build_receipt)
+    c.require(not original_target.get("SkipTestIdentifiers", []), "focus_original_union_not_exact")
     normalized = copy.deepcopy(original)
     target(normalized)["OnlyTestIdentifiers"] = c.selected_identifiers(PROFILE)
     raw_scoped, proof = c.scope_descriptor(plistlib.dumps(normalized, sort_keys=False),
                                           PROFILE, stage, products)
     scoped = plistlib.loads(raw_scoped)
     inverse = copy.deepcopy(scoped)
-    target(inverse)["OnlyTestIdentifiers"] = list(selected)
+    copied_target = target(inverse)
+    if selection_present:
+        copied_target["OnlyTestIdentifiers"] = list(selected)
+    else:
+        copied_target.pop("OnlyTestIdentifiers")
+    c.require(copied_target == original_target, "focus_nonselection_target_delta")
+    inverse["TestConfigurations"][0]["TestTargets"] = copy.deepcopy(
+        original["TestConfigurations"][0]["TestTargets"])
     c.require(inverse == original, "focus_nonselection_descriptor_delta")
     proof.update(originalSHA256=c.sha(raw), originalCoherentUnion=sorted(UNION),
-                 originalUnionCount=len(UNION), exactInverse=True)
+                 originalUnionCount=len(UNION), exactInverse=True,
+                 originalTargetCount=len(original["TestConfigurations"][0]["TestTargets"]),
+                 originalSelectionPresent=selection_present,
+                 unionAuthority="descriptor" if selection_present else "frozen_build_receipt")
     return raw_scoped, proof
 
 
@@ -145,7 +180,14 @@ def run_stage(args, frozen, ownership, intent, stage, receipt):
         ready = True
         context.confirm_empty_container(udid, directory)
         products = frozen.derived / "Build/Products"
-        raw, binding = scope_descriptor(frozen.native_configuration.read_bytes(), stage, products)
+        build_path = args.evidence.resolve() / "batch-build/same-job-build.json"
+        batch.require(batch.digest(build_path) == receipt["build_receipt_sha256"],
+                      "Original F build receipt changed before selection")
+        build = read(build_path)
+        validate_build_selection(build)
+        raw, binding = scope_descriptor(frozen.native_configuration.read_bytes(), stage, products,
+                                        build_receipt=build)
+        binding["sameJobBuildReceiptSHA256"] = receipt["build_receipt_sha256"]
         selected = products / ("UI27-Coherent-F4-" + key + ".xctestrun")
         batch.require(not selected.exists(), "Focus descriptor replay forbidden")
         with selected.open("xb") as stream:
@@ -224,12 +266,10 @@ def execute(args, frozen, receipt, intent):
                   "F4 requires the fresh same-job coherent frozen build")
     planned = intent.get("focus_devices", [])
     batch.require([d.get("lane") for d in planned] == list(KEYS), "Exact F4 ownership intent missing")
-    build = read(args.evidence.resolve() / "batch-build/same-job-build.json")
-    batch.require(set(build["native_preparation_suites_built"] + build["native_postflight_suites_built"]) == UNION
-                  and len(build["native_preparation_suites_built"]) + len(build["native_postflight_suites_built"]) == len(UNION)
-                  and build["build_flags"] == batch.profile_flags(batch.COHERENT_HEART_PROFILE)
-                  and build["app_builds"] == build["ui_runner_builds"] == 1,
-                  "Coherent original build selection or flags differ")
+    build_path = args.evidence.resolve() / "batch-build/same-job-build.json"
+    batch.require(batch.digest(build_path) == receipt["build_receipt_sha256"],
+                  "Original F build receipt differs from its frozen worker")
+    validate_build_selection(read(build_path))
     proof = args.evidence.resolve() / "coherent-focus"
     proof.mkdir(exist_ok=False)
     result = dict(status="RUNNING", source_sha=intent["source_sha"], run_id=intent["run_id"],
