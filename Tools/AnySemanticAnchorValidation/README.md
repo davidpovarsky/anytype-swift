@@ -52,3 +52,17 @@ infrastructure repair can run against the existing clean, frozen product checkou
 without duplicating that entire checkout or changing its native consumer binding.
 The launch verifies the exported controller bytes against the exact Git revision,
 and the execution receipt records the loaded controller SHA256.
+
+
+The original `ui-continuation1` failure exposed a row context-menu collision;
+product commit `4b87e0389162015088d21d71a489e22075dd3769` moves the same three
+block actions to an explicit menu button. In `ui-recheck-menu3` the real
+confirmation and Cancel completed with the original native version, zero marks,
+and an actual UIKit selection of 0/6. Its original recording confirms that
+Cancel preserved the whole selection. The later Select All lookup failed because
+that action is redundant for an already selected one-word paragraph. The setup
+now uses a real tap to collapse that selection, requires an observed caret, then
+reselects with real UIKit gestures. The complete selection witness and every
+Cancel/Create/native/readback/edit/cold-reopen assertion remain unchanged. A
+missing menu cannot pass unless the actual complete range is independently
+observed. No product selection semantics or observer actions are changed.

@@ -2650,10 +2650,26 @@ extension NativeLaunchTests {
 
     private func semanticSelectAll(_ app: XCUIApplication, editor: XCUIElement, length: Int) throws {
         editor.tap()
+        let focused = try semanticObservation(app, phase: "actual-uikit-selection-before-reselection") {
+            $0.blocks.count == 1 && $0.blocks[0].isFirstResponder
+        }
+        if focused.blocks[0].selectionLength > 0 {
+            // Cancel correctly preserves UIKit's selection. The first tap can
+            // reactivate that selection; a separate real tap places a caret.
+            // No selection is set through the observer or an app test hook.
+            editor.tap()
+            _ = try semanticObservation(app, phase: "actual-uikit-caret-before-reselection") {
+                $0.blocks.count == 1 && $0.blocks[0].isFirstResponder &&
+                $0.blocks[0].selectionLength == 0
+            }
+        }
         editor.press(forDuration: 1.2)
         let action = app.descendants(matching: .any).matching(NSPredicate(
             format: "label IN %@", ["Select All", "בחר הכל", "בחר הכול", "בחירת הכול"])).firstMatch
-        tapWhenEnabled(action)
+        // A native long press can itself select this entire one-word paragraph;
+        // UIKit then omits the redundant Select All item. Either path must still
+        // satisfy the same complete, actual UIKit range witness below.
+        if action.waitForExistence(timeout: 3) { tapWhenEnabled(action) }
         _ = try semanticObservation(app, phase: "actual-uikit-selected-range") {
             $0.blocks.count == 1 && $0.blocks[0].isFirstResponder &&
             $0.blocks[0].selectionLocation == 0 && $0.blocks[0].selectionLength == length
