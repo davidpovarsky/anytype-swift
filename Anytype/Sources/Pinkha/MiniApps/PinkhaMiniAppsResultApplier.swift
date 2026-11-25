@@ -140,6 +140,18 @@ enum PinkhaMiniAppsResultApplier {
                         ? "Attachment." + (type?.preferredFilenameExtension ?? "bin") : suppliedName
                     let upload = directory.appendingPathComponent(name)
                     try FileManager.default.copyItem(at: sharedFile, to: upload)
+                    let uploadWitnesses = try await PinkhaMiniAppsContext.fileWitnesses(at: [upload, sharedFile])
+                    try validateContext()
+                    guard uploadWitnesses[0] == expectedBytes, uploadWitnesses[1] == expectedBytes else {
+                        throw PinkhaMiniAppsError.sourceChanged
+                    }
+                    let beforeUpload = try await PinkhaMiniAppsContext.nativeBlocks(document: document)
+                    try validateContext()
+                    guard let currentBlock = beforeUpload.first(where: { $0.id == inserted }),
+                          currentBlock.fields[receiptField]?.stringValue == key,
+                          case .file(let currentFile) = currentBlock.content, currentFile == beforeFile else {
+                        throw PinkhaMiniAppsError.sourceChanged
+                    }
                     try await model.blockActionService.upload(blockId: inserted, filePath: upload.path)
                     let uploaded = try await PinkhaMiniAppsContext.nativeBlocks(document: document)
                     try validateContext()

@@ -248,8 +248,12 @@ struct PinkhaMiniAppsContext {
         let indexed = Dictionary(uniqueKeysWithValues: blocks.map { ($0.id, $0) })
         var pending = selected, included = Set<String>()
         while let id = pending.popLast() {
+            guard let block = indexed[id] else {
+                // A stale selection must never become the whole-document fallback.
+                throw PinkhaMiniAppsError.sourceChanged
+            }
             guard included.insert(id).inserted else { continue }
-            if let block = indexed[id] { pending.append(contentsOf: block.childrenIds) }
+            pending.append(contentsOf: block.childrenIds)
         }
         return blocks.filter { included.contains($0.id) }.map(\.id)
     }
