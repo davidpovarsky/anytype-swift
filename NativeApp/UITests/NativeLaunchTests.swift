@@ -1056,27 +1056,25 @@ final class NativeLaunchTests: XCTestCase {
     }
 
     private func selectHanlinBlockFromNativeMenu(_ app: XCUIApplication, textView: XCUIElement) throws {
+        let prefix = "any-native-block-"
+        guard textView.identifier.hasPrefix(prefix) else {
+            throw HanlinMountedFixtureError.unavailableBlockMenu
+        }
+        let nativeID = String(textView.identifier.dropFirst(prefix.count))
+        guard !nativeID.isEmpty else { throw HanlinMountedFixtureError.unavailableBlockMenu }
         let cells = app.cells.containing(.textView, identifier: textView.identifier)
         let cell = cells.firstMatch
         waitUntilEnabled(cell)
         XCTAssertEqual(cells.count, 1)
-        XCTAssertTrue(cell.isHittable)
-        let row = cell.frame, text = textView.frame
-        guard row.width.isFinite, row.height.isFinite, row.height >= 8,
-              row.contains(text), !text.isEmpty else {
-            throw HanlinMountedFixtureError.unavailableBlockGutter
-        }
-        let left = text.minX - row.minX, right = row.maxX - text.maxX
-        guard max(left, right) >= 4 else { throw HanlinMountedFixtureError.unavailableBlockGutter }
-        let x = left >= right ? row.minX + left / 2 : text.maxX + right / 2
-        let point = CGPoint(x: x, y: text.midY)
-        guard row.contains(point), !text.contains(point), app.frame.contains(point) else {
-            throw HanlinMountedFixtureError.unavailableBlockGutter
-        }
-        // The existing cell's physical gutter is outside UITextView, so this
-        // exercises UITableView's real context menu instead of the edit menu.
-        cell.coordinate(withNormalizedOffset: .zero).withOffset(
-            CGVector(dx: point.x - row.minX, dy: point.y - row.minY)).press(forDuration: 1.2)
+        let menus = cell.buttons.matching(identifier: "any-native-block-menu-" + nativeID)
+        XCTAssertEqual(menus.count, 1)
+        let menu = menus.firstMatch
+        waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
+                object: menu, timeout: 30)
+        XCTAssertTrue(cell.frame.intersects(menu.frame))
+        // The actual explicit row menu preserves native UITextView selection.
+        // No coordinate or programmatic selection bypass is used.
+        menu.tap()
         tapWhenEnabled(app.buttons.matching(NSPredicate(
             format: "label == %@ OR label == %@", "בחירת בלוק", "Select block")).firstMatch)
     }
@@ -2300,7 +2298,7 @@ final class NativeLaunchTests: XCTestCase {
     // END_NATIVE_CUSTOM_TYPE_UI_V1
 
     private func makeApplication(scope: UUID = UUID()) -> XCUIApplication {
-        let app = XCUIApplication()
+        let app = NativeApplicationUnderTest()
         app.launchArguments = [
             "--native-ui-tests", "--native-ui-test-scope", scope.uuidString,
             "-AppleLanguages", "(he,en)", "-AppleLocale", "he_IL"
@@ -2328,11 +2326,48 @@ final class NativeLaunchTests: XCTestCase {
     }
 }
 
+
+/// The existing native flows may run against the standalone acceptance app or
+/// the original combined app. The latter uses its real, visible engine selector.
+@MainActor
+final class NativeApplicationUnderTest: XCUIApplication {
+    override func launch() {
+        super.launch()
+        guard ProcessInfo.processInfo.environment["PINKHA_NATIVE_UI_UNIFIED_HOST"] == "1" else { return }
+        let selector = buttons["pinkha.engine.selector"]
+        guard selector.waitForExistence(timeout: 60) else {
+            XCTFail("The real combined-host engine selector did not appear.")
+            return
+        }
+        if selector.value as? String != "Any" {
+            let ready = XCTNSPredicateExpectation(
+                predicate: NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
+                object: selector)
+            guard XCTWaiter.wait(for: [ready], timeout: 60) == .completed else {
+                XCTFail("The real combined-host engine selector is not ready.")
+                return
+            }
+            selector.tap()
+            let chooseAny = buttons["pinkha.engine.select.any"]
+            guard chooseAny.waitForExistence(timeout: 15), chooseAny.isHittable else {
+                XCTFail("The actual Any engine menu item is unavailable.")
+                return
+            }
+            chooseAny.tap()
+        }
+        let selected = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "exists == true AND value == %@", "Any"),
+            object: selector)
+        XCTAssertEqual(XCTWaiter.wait(for: [selected], timeout: 60), .completed,
+                       "The original host did not complete the actual Any engine transition.")
+    }
+}
+
 // Test-runner-only fixture protocol. These types never enter the app target.
 private enum HanlinMountedFixtureError: Error {
     case missingConfiguration, invalidConfiguration, invalidResponse
     case wrongFixtureContract, fixtureFailed(String), phaseDeadline(Int), unexpectedPhase(Int)
-    case unavailableBlockGutter, invalidCreatePrompt, unavailableReceipt, incompleteProof
+    case unavailableBlockMenu, invalidCreatePrompt, unavailableReceipt, incompleteProof
 }
 
 private struct HanlinMountedFixtureScenario: Encodable, Sendable {
