@@ -1,0 +1,14 @@
+{
+  "addedBytes": "        let input = semanticText(text)\n        if viaExistingLink {\n            // The text view can include blank space outside its actual link.\n            // Target the unique accessible semantic Link, including after a\n            // cold launch; tapping the container is not a link activation.\n            let links = input.links.matching(NSPredicate(format: \"label == %@\", text))\n            guard links.count == 1 else { throw Failure.invalidFixture }\n            let link = links.firstMatch\n            try requireHittable(link)\n            guard link.exists, link.isHittable, link.elementType == .link,\n                  link.label == text else { throw Failure.invalidFixture }\n            let target = XCTAttachment(string: link.debugDescription)\n            target.name = \"semantic-source-existing-link-target-ax\"\n            target.lifetime = .keepAlways; add(target)\n            link.tap()\n            try admitExistingSemanticLinkOpening()\n            return\n        }\n        try tap(input)\n",
+  "afterSHA256": "935d722957539a1499816295cac97d369618a77fe33e27b9f9e42d90fbb8cff8",
+  "appChanges": 0,
+  "baseAppCommit": "e540cd7e01b497f1b3173ae2e68b43ade0b00b6f",
+  "beforeSHA256": "089ac381f0f394671d3990cd1b519bbdb2ac46668baa701ca0d4a7bbe46cb1e9",
+  "file": "PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift",
+  "firstOriginalMenuRoutePreserved": true,
+  "nativeChanges": 0,
+  "originalOutcomeAssertionsChanged": false,
+  "removedBytes": "        let input = semanticText(text)\n        try tap(input)\n        if viaExistingLink {\n            try admitExistingSemanticLinkOpening()\n            return\n        }\n",
+  "schema": "pinkha-exact-semantic-link-target-delta-v1",
+  "uiChangeCommit": "453a0b2ac9797bee2527571a08bb36e3be6b87b2"
+}

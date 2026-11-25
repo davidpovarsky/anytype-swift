@@ -1,5 +1,5 @@
 {
-  "afterSHA256": "089ac381f0f394671d3990cd1b519bbdb2ac46668baa701ca0d4a7bbe46cb1e9",
+  "afterSHA256": "935d722957539a1499816295cac97d369618a77fe33e27b9f9e42d90fbb8cff8",
   "allFourLaterOpeningsUseRealPersistedLinkTap": true,
   "appChanges": 0,
   "beforeSHA256": "062b9d76498da7e5d49d0dbd05442d84f5aa7e7353234fe4d27eb88645b203bd",
@@ -13,7 +13,7 @@
       "count": 4
     },
     {
-      "after": "    private func openSelectedSemanticSources(text: String, viaExistingLink: Bool = false) throws {\n        let input = semanticText(text)\n        try tap(input)\n        if viaExistingLink {\n            try admitExistingSemanticLinkOpening()\n            return\n        }\n",
+      "after": "    private func openSelectedSemanticSources(text: String, viaExistingLink: Bool = false) throws {\n        let input = semanticText(text)\n        if viaExistingLink {\n            // The text view can include blank space outside its actual link.\n            // Target the unique accessible semantic Link, including after a\n            // cold launch; tapping the container is not a link activation.\n            let links = input.links.matching(NSPredicate(format: \"label == %@\", text))\n            guard links.count == 1 else { throw Failure.invalidFixture }\n            let link = links.firstMatch\n            try requireHittable(link)\n            guard link.exists, link.isHittable, link.elementType == .link,\n                  link.label == text else { throw Failure.invalidFixture }\n            let target = XCTAttachment(string: link.debugDescription)\n            target.name = \"semantic-source-existing-link-target-ax\"\n            target.lifetime = .keepAlways; add(target)\n            link.tap()\n            try admitExistingSemanticLinkOpening()\n            return\n        }\n        try tap(input)\n",
       "before": "    private func openSelectedSemanticSources(text: String) throws {\n        let input = semanticText(text)\n        try tap(input)\n",
       "count": 1
     },
@@ -25,6 +25,7 @@
   ],
   "originalOutcomeAssertionsChanged": false,
   "parentUIChangeCommit": "5fcc6d9b996166028ccf844ef95a5a873b3c9028",
+  "realAccessibleLinkElementRequired": true,
   "schema": "pinkha-existing-semantic-link-navigation-source-v1",
   "wholeFileInverseVerified": true
 }
