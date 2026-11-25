@@ -1,0 +1,7 @@
+# Exact App13 E/F shared admission
+
+This is source/product admission work, not Apple acceptance. The actual sole combined producer is e540cd7e01b497f1b3173ae2e68b43ade0b00b6f, native410b, SDK86, and its exact56-pin lock. A complete immutable source/App/UI/proof copy is retained under /Users/m1/development/anytype-e-active-20261125/main13/frozen. All4,472 producer compiler inputs and4,602 original product files were verified before/after copying.
+
+The shared admission core pins that exact original producer, source manifest, native binary, SDK receipt and lock, then checks complete producer product entries. Original F uses the full original UI. E uses one explicit full UI-only derivative, whose inverse restores every byte of the original App13 semantic UI file. Only the target of later real link taps changes; the first native menu route and all original assertions remain. No older product/UI profile is admitted as this producer.
+
+All original result, fixture, native observation and lifecycle function ASTs remain unchanged. The host controller comes from the actual compiled source and updates only its exact changed T5 fixture source hash. All71 original helper pins are unchanged. The28 original host negative controls and exact source inverse/foreign-byte refusal checks pass without simulator, native, or App execution. Actual UI derivative build, admission and acceptance remain separate.
