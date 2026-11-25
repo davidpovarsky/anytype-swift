@@ -83,3 +83,18 @@ app/UI acceptance before final signing. Production shipping must retain the
 dual-engine, T2, T5 and Page154 feature definitions while excluding DEBUG-only
 launch fixtures. A successful native producer or app build alone is not
 migration acceptance or a signed TestFlight release.
+
+## Bounded original mobile gateway phase
+
+`qualify_mobile_gateway.py` runs only the three unchanged original Any server
+methods against the complete current four-module workspace, before Apple binding.
+Its next-phase estimate uses the retained native Any host binary size, source byte
+count, temporary/cache allowances and the existing 2 GiB emergency floor. It
+retains original JSON test events, binary, source and complete module graph.
+
+The Apple producer accepts `--gateway-proof-root` only for a completed same-manifest
+phase. It rechecks all 4,855 source files, original outcomes and command logs, then
+requires all 760 module records to be identical after only source-root relocation.
+This reuses component evidence; it never substitutes for either Apple slice build
+or application acceptance. The initial phase remains unqualified until actual
+original test execution succeeds.

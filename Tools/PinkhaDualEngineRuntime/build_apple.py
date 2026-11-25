@@ -274,6 +274,7 @@ def main():
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--controller-sha", required=True)
     parser.add_argument("--slice", choices=("simulator", "device"), required=True)
+    parser.add_argument("--gateway-proof-root", type=Path)
     parser.add_argument("--resume-disk-stop", action="store_true")
     parser.add_argument("--resume-reviewed-metadata", action="store_true")
     parser.add_argument("--resume-generated-metadata", action="store_true")
@@ -482,8 +483,12 @@ def main():
             run([GO_ROOT / "bin/go", "install", "golang.org/x/mobile/cmd/gomobile",
                  "golang.org/x/mobile/cmd/gobind"], "install-bind-tools", source, environment, 600)
             run([tools / "gomobile", "init"], "gomobile-init", source, environment, 300)
-        receipt["mobileGatewayQualification"] = native_gateway.qualify(
-            root, source, manifest, MANIFEST_SHA, args.slice, run, environment, GO_ROOT / "bin/go")
+        if args.gateway_proof_root is not None:
+            receipt["mobileGatewayQualification"] = native_gateway.reuse_standalone(
+                args.gateway_proof_root, source, manifest, MANIFEST_SHA, graph)
+        else:
+            receipt["mobileGatewayQualification"] = native_gateway.qualify(
+                root, source, manifest, MANIFEST_SHA, args.slice, run, environment, GO_ROOT / "bin/go")
         check_source(source, manifest, native_files)
         heart_version = "pinkha-dual-runtime-v1-" + MANIFEST_SHA
         any_version = "v0.5.0-pinkha.dual.1-" + MANIFEST_SHA

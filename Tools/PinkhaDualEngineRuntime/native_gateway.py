@@ -99,3 +99,99 @@ def qualify(root, source, manifest, manifest_sha, phase, run, environment, go):
               "sourceFilesModified": False, "applicationAcceptanceClaimed": False}
     write(root / "mobile-gateway-receipt.json", result)
     return result
+
+
+def reuse_standalone(proof_root, source, manifest, manifest_sha, current_graph):
+    """Reuse only original execution with the identical complete module graph."""
+    proof_root = Path(proof_root)
+    require(proof_root.resolve() == proof_root and proof_root.is_dir()
+            and proof_root.parent == Path("/Users/m1/builds")
+            and proof_root.name == "pinkha-dual-native-v1-" + manifest_sha[:12] + "-gateway",
+            "exact_owned_gateway_proof_root_required")
+    receipt_path = proof_root / "evidence/receipt.json"
+    outer = json.loads(receipt_path.read_text())
+    require(outer["status"] == "PASS_STANDALONE_ORIGINAL_GATEWAY_COMPONENTS_ONLY"
+            and outer["sourceManifestSHA256"] == manifest_sha
+            and outer["tags"] == manifest["tags"]
+            and outer["goVersion"] == "go version go1.27.4 darwin/arm64"
+            and outer["sourceUnchanged"] is True
+            and outer["sourceFilesVerified"] == len(manifest["files"])
+            and outer["testsExecuted"] == 3 and outer["skippedTests"] == 0,
+            "actual_original_gateway_phase_not_qualified")
+    expected_names = ["go-version", "module-graph", "mobile-gateway-build",
+                      "mobile-gateway-original-json"]
+    require([x["name"] for x in outer["commands"]] == expected_names
+            and all(x["exitCode"] == 0 for x in outer["commands"]),
+            "complete_original_gateway_commands_required")
+    for item in outer["commands"]:
+        log = proof_root / "evidence" / (item["name"] + ".log")
+        require(log.resolve() == log and log.is_file()
+                and digest(log) == item["logSHA256"], "gateway_original_command_changed")
+        try:
+            os.killpg(item["pgid"], 0)
+        except ProcessLookupError:
+            pass
+        else:
+            require(False, "original_gateway_process_still_exists")
+    original_source = proof_root / "source"
+    require(digest(original_source / "source-manifest.json") == manifest_sha,
+            "original_gateway_manifest_changed")
+    files = {str(p.relative_to(original_source)) for p in original_source.rglob("*")
+             if p.is_file() or p.is_symlink()}
+    require(files == set(manifest["files"]) | {"source-manifest.json"},
+            "original_gateway_source_inventory_changed")
+    for name, expected in manifest["files"].items():
+        path = original_source / name
+        require(path.resolve() == path and stat.S_ISREG(path.lstat().st_mode)
+                and path.stat().st_size == expected["bytes"] and digest(path) == expected["sha256"],
+                "original_gateway_source_changed:" + name)
+    original = proof_root / "mobile-gateway-receipt.json"
+    require(digest(original) == outer["originalGatewayReceiptSHA256"],
+            "original_gateway_receipt_changed")
+    proof = json.loads(original.read_text())
+    require(proof["status"] == STATUS and proof["sourceManifestSHA256"] == manifest_sha
+            and proof["tags"] == manifest["tags"]
+            and proof["cases"] == {name: "pass" for name in CASES}
+            and proof["testsExecuted"] == 3 and proof["skippedTests"] == 0
+            and digest(proof_root / "mobile-gateway.test") == proof["testBinarySHA256"],
+            "original_gateway_execution_changed")
+    log = proof_root / "evidence/mobile-gateway-original-json.log"
+    require(digest(log) == proof["originalLogSHA256"], "original_gateway_log_changed")
+    events = [json.loads(line) for line in log.read_text().splitlines() if line.strip()]
+    cases = {x["Test"]: x["Action"] for x in events
+             if "Test" in x and x.get("Action") in ("pass", "fail", "skip")}
+    require(cases == {name: "pass" for name in CASES}
+            and all(x.get("Package") == PACKAGE for x in events)
+            and not any(x.get("Action") in ("fail", "skip") for x in events)
+            and sum(x.get("Action") == "pass" and "Test" not in x for x in events) == 1,
+            "all_original_gateway_outcomes_required")
+    def normalized_graph(path, source_root):
+        raw, decoder, rows = path.read_text(), json.JSONDecoder(), {}
+        def normalize(value):
+            if isinstance(value, dict):
+                return {key: normalize(item) for key, item in value.items()}
+            if isinstance(value, list):
+                return [normalize(item) for item in value]
+            if isinstance(value, str) and (value == str(source_root)
+                                           or value.startswith(str(source_root) + "/")):
+                return "$SOURCE" + value[len(str(source_root)):]
+            return value
+        while raw.strip():
+            row, end = decoder.raw_decode(raw.lstrip())
+            require(row["Path"] not in rows, "duplicate_original_graph_module")
+            rows[row["Path"]] = normalize(row)
+            raw = raw.lstrip()[end:]
+        require(len(rows) == 760, "complete_original_module_graph_required")
+        return rows
+    original_graph = proof_root / "evidence/module-graph.log"
+    require(digest(original_graph) == outer["actualModuleGraphSHA256"],
+            "gateway_original_module_graph_changed")
+    before = normalized_graph(original_graph, original_source)
+    after = normalized_graph(Path(current_graph), source)
+    require(before == after, "gateway_and_apple_native_module_graphs_differ")
+    return {"status": STATUS, "sourceManifestSHA256": manifest_sha,
+            "originalReceipt": str(receipt_path), "originalReceiptSHA256": digest(receipt_path),
+            "originalGatewayReceiptSHA256": digest(original),
+            "originalLogSHA256": digest(log), "originalGraphSHA256": digest(original_graph),
+            "currentGraphSHA256": digest(current_graph), "identicalModuleIdentities": len(before),
+            "testsExecutedNow": 0, "reusedActualMethods": 3, "applicationAcceptanceClaimed": False}
