@@ -14,6 +14,7 @@ import json
 import os
 from pathlib import Path
 import shutil
+import signal
 import sys
 import uuid
 
@@ -205,6 +206,10 @@ def main():
                    phase='ACTUAL_RELEASE_POSTBUILD_CONTINUATION', reused_original_controls=reused)
     result = {'status': 'FAIL', 'started_at': timestamp(), 'build_run_id': previous['run_id'],
               'continuation_id': continuation['execution_id']}
+    def interrupt(signum, frame):
+        raise InterruptedError('Owned Release continuation signal ' + str(signum))
+    signal.signal(signal.SIGTERM, interrupt)
+    signal.signal(signal.SIGINT, interrupt)
     try:
         checked = driver.preflight(root, evidence, execution, 'iphoneos')
         require(checked == previous['preflight'], 'Actual Release toolchain changed after compilation')
@@ -249,6 +254,7 @@ def main():
             write(work / 'distribution/QUALIFICATION.json', receipt)
         raise
     finally:
+        result['owned_command_groups_drained'] = all(not group_alive(group) for group in GROUPS)
         result['finished_at'] = timestamp()
         write(evidence / 'RESULT.json', result)
         print(json.dumps(result, indent=2))
