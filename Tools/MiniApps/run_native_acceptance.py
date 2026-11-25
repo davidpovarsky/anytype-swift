@@ -153,9 +153,14 @@ def build_consumer(args, receipt):
     context = source_context(args, receipt)
     app, evidence, owner, derived = context.app, context.evidence, context.owner, context.derived
     if context.local and derived.exists():
-        from local_cache_input import admit
-        receipt["compiler_cache_input"] = admit(app, derived, evidence, args.local_cache_snapshot,
-                                                args.local_cache_snapshot_sha256)
+        if getattr(args, "local_failed_cache_snapshot", None) is not None:
+            from local_failed_cache_input import admit
+            receipt["compiler_cache_input"] = admit(app, derived, evidence,
+                args.local_failed_cache_snapshot, args.local_failed_cache_snapshot_sha256)
+        else:
+            from local_cache_input import admit
+            receipt["compiler_cache_input"] = admit(app, derived, evidence, args.local_cache_snapshot,
+                                                    args.local_cache_snapshot_sha256)
     else:
         require(not derived.exists(), "This focused build requires fresh products")
     def save(phase):
