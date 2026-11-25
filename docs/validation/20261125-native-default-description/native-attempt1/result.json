@@ -1,0 +1,17 @@
+{
+  "scope": "five-operation explicit component default/description actual-native roundtrip",
+  "result": "FAIL",
+  "phases": [
+    {
+      "phase": "execute",
+      "result": "RUNNING",
+      "nativeControllerExitCode": 1,
+      "nativeResultError": "rks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py\", line 1242, in open\n    return io.open(self, mode, buffering, encoding, errors, newline,\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py\", line 1110, in _opener\n    return self._accessor.open(self, flags, mode)\nFileNotFoundError: [Errno 2] No such file or directory: '/Users/m1/builds/pinkha-c-destination-content-20261125/default-execute-attempt1/result.json'\n",
+      "seconds": 3.23
+    }
+  ],
+  "wholeSpaceMigration": false,
+  "seconds": 3.23,
+  "errorType": "AssertionError",
+  "error": "native controller ended before ready"
+}

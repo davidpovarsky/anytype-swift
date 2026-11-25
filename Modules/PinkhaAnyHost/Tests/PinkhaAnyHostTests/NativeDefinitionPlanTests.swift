@@ -74,6 +74,97 @@ final class NativeDefinitionPlanTests: XCTestCase {
         ]))
     }
 
+
+    func testQualifiedDefaultMetadataPreservesAbsentEmptyAndExplicitCurrentValues() throws {
+        let original = "native default e\u{301} — ברירת מחדל"
+        let field = try relation("defaultText", key: "defaultText", format: 0,
+            extra: ["relationMaxCount": .integer(1), "relationDefaultValue": .string(original)])
+        let plan = try AnyHeartNativeDefinitionPlan(catalog: catalog([field, type()]))
+        XCTAssertFalse(plan.issues.contains { $0.field == "relationDefaultValue" })
+        let binding = try XCTUnwrap(plan.property(sourceKey: "defaultText"))
+        let raw = try defaultProperty(plan, binding: binding)
+        let definition = try AnyNativePropertyDefinition(ownerID: "namespace", raw: raw)
+        let metadata = try XCTUnwrap(definition.importedDefaultMetadata)
+        XCTAssertEqual(Data(try XCTUnwrap(metadata.value.string).utf8), Data(original.utf8))
+        XCTAssertEqual(metadata.sourceObjectID, field.sourceObjectID)
+        XCTAssertEqual(metadata.sourceSnapshotSHA256, field.snapshotSHA256)
+        XCTAssertEqual(metadata.sourceJSONViewSHA256, field.viewSHA256)
+        let rawDefinition = try JSONDecoder().decode(AnyJSON.self, from: Data(metadata.definitionJSON.utf8))
+        XCTAssertEqual(try AnyDestinationDefinitionChecks.bytes(rawDefinition),
+                       try AnyDestinationDefinitionChecks.bytes(.object(field.details)))
+        for details: [String: AnyJSON] in [[:], ["defaultText": .string("")],
+                                             ["defaultText": .string("explicit e\u{301}")]] {
+            let row = try snapshot("page", type: 16, key: "", details: details)
+            let values = try plan.values(snapshot: row, relationKeys: Array(details.keys), objects: [])
+            if details.isEmpty {
+                XCTAssertTrue(values.initialGroups.isEmpty)
+                XCTAssertThrowsError(try plan.values(snapshot: row, relationKeys: ["defaultText"], objects: []))
+            } else {
+                let actual = try XCTUnwrap(values.initialGroups.first).fields.resolved(AnyDestinationPlanChecks.placeholder)
+                let key = try AnyDestinationPlanChecks.placeholder(binding.record)
+                XCTAssertEqual(try AnyDestinationDefinitionChecks.bytes(XCTUnwrap(actual[key])),
+                               try AnyDestinationDefinitionChecks.bytes(XCTUnwrap(details["defaultText"])))
+            }
+        }
+        XCTAssertFalse(plan.permitsDestinationWrites)
+    }
+
+    func testUnqualifiedDefaultKindsCardinalityAndReadonlyRemainBlocked() throws {
+        for (format, overrides): (Int64, [String: AnyJSON]) in [
+            (1, [:]), (2, [:]), (0, ["relationMaxCount": .integer(0)]),
+            (0, ["relationMaxCount": .integer(2)]), (0, ["relationReadonlyValue": .bool(true)]),
+            (0, ["relationDefaultValue": .integer(7)])] {
+            var fields: [String: AnyJSON] = ["relationMaxCount": .integer(1),
+                                           "relationDefaultValue": .string("source default")]
+            fields.merge(overrides) { _, new in new }
+            let source = try relation("default", key: "default", format: format, extra: fields)
+            let plan = try AnyHeartNativeDefinitionPlan(catalog: catalog([source, type()]))
+            XCTAssertTrue(plan.issues.contains { $0.field == "relationDefaultValue" })
+            XCTAssertThrowsError(try plan.admittedSchemaItems())
+        }
+    }
+
+    func testImportedDefaultContractRejectsChangedValueIdentityAndBehavior() throws {
+        let field = try relation("defaultText", key: "defaultText", format: 0,
+            extra: ["relationMaxCount": .integer(1), "relationDefaultValue": .string("e\u{301}")])
+        let plan = try AnyHeartNativeDefinitionPlan(catalog: catalog([field, type()]))
+        let raw = try defaultProperty(plan, binding: XCTUnwrap(plan.property(sourceKey: "defaultText")))
+        func changedSource(_ key: String, _ value: AnyJSON) throws -> AnyJSON {
+            var result = try XCTUnwrap(raw.object)
+            var format = try XCTUnwrap(result["xFormat"]?.object)
+            var source = try XCTUnwrap(format["pinkhaHeart"]?.object)
+            source[key] = value; format["pinkhaHeart"] = .object(source); result["xFormat"] = .object(format)
+            return .object(result)
+        }
+        for changed in [
+            try changedSource("defaultValueJSON", .string("\"é\"")),
+            try changedSource("defaultBehaviorContract", .string("future-auto-fill")),
+            try changedSource("sourceUniqueKey", .string("rel-other")),
+            try changedSource("snapshotSHA256", .string("not-a-digest"))] {
+            XCTAssertThrowsError(try AnyNativePropertyDefinition(ownerID: "namespace", raw: changed))
+        }
+        var foreign = try XCTUnwrap(raw.object); foreign["scope"] = .string("local")
+        XCTAssertThrowsError(try AnyNativePropertyDefinition(ownerID: "namespace", raw: .object(foreign)))
+        // Older metadata remains available as raw source data without claiming
+        // the new behavior contract. It does not create a default-value action.
+        var old = try XCTUnwrap(raw.object), format = try XCTUnwrap(raw["xFormat"]?.object)
+        var metadata = try XCTUnwrap(format["pinkhaHeart"]?.object)
+        metadata.removeValue(forKey: "defaultBehaviorContract")
+        format["pinkhaHeart"] = .object(metadata); old["xFormat"] = .object(format)
+        XCTAssertNil(try AnyNativePropertyDefinition(ownerID: "namespace", raw: .object(old)).importedDefaultMetadata)
+    }
+
+    private func defaultProperty(_ plan: AnyHeartNativeDefinitionPlan,
+                                 binding: AnyHeartNativeDefinitionPlan.PropertyBinding) throws -> AnyJSON {
+        let item = try XCTUnwrap(plan.schemaItems.first { $0.sourceKey == binding.sourceKey })
+        guard case .propertyDefinition(_, let kind, let name, let xKey, let description, let scope,
+                                       .literal(let format)?, _) = item.operation else {
+            throw AnyHeartNativeDefinitionPlanError.invalidValue(binding.sourceKey, "property definition required")
+        }
+        return .object(["id": .string("allocated-property"), "kind": .string(kind), "name": .string(name),
+            "xKey": .string(xKey), "description": .string(description), "scope": .string(scope), "xFormat": format])
+    }
+
     func testCapturedOverridesIdentityNamespacesAndOrderedRecommendationsAreExact() throws {
         let decomposed = "e\u{301}", composed = "é"
         let text = try relation("native-text", key: decomposed, format: 0,
@@ -222,6 +313,82 @@ final class NativeDefinitionPlanTests: XCTestCase {
             "relationMaxCount": .integer(1), "relationFormatIncludeTime": .bool(false)]
         fields.merge(overrides) { _, value in value }
         return try relation(id, key: "name", format: 1, extra: fields)
+    }
+
+
+    private func nativeDescription(_ id: String = "native-description",
+                                   overrides: [String: AnyJSON] = [:]) throws -> AnyHeartNativeSnapshotView {
+        var fields: [String: AnyJSON] = ["name": .string("Description"), "description": .string(""),
+            "relationMaxCount": .integer(1), "relationFormatIncludeTime": .bool(false)]
+        fields.merge(overrides) { _, value in value }
+        return try relation(id, key: "description", format: 0, extra: fields)
+    }
+
+    func testCanonicalDescriptionSharesNativeNamespaceWithoutChangingTitleIdentity() throws {
+        let name = try nativeName(), description = try nativeDescription()
+        let sourceType = try type(extra: ["recommendedRelations": .array([.string(description.sourceObjectID), .string(name.sourceObjectID)])])
+        let rows = [name, description, sourceType]
+        let mapper = try AnyHeartNativeDefinitionPlan(catalog: catalog(rows))
+        let binding = try XCTUnwrap(mapper.property(sourceKey: "description"))
+        XCTAssertFalse(binding.isCanonicalName)
+        XCTAssertTrue(try XCTUnwrap(mapper.property(sourceKey: "name")).isCanonicalName)
+        XCTAssertEqual(binding.owner, .native("any")); XCTAssertEqual(binding.record, .native("description"))
+        XCTAssertEqual(binding.kind, "string"); XCTAssertEqual(binding.format, "longtext")
+        XCTAssertNil(mapper.propertyOwner)
+        XCTAssertFalse(mapper.schemaItems.contains { $0.sourceObjectID == description.sourceObjectID })
+        let plan = try boundPlan(rows: rows, mapper: mapper)
+        XCTAssertEqual(try AnyDestinationMigrationPlan.decode(JSONEncoder().encode(plan)).binding.planSHA256, plan.binding.planSHA256)
+        for details: [String: AnyJSON] in [
+            ["name": .string("title")],
+            ["name": .string("title"), "description": .string("")],
+            ["name": .string("title"), "description": .string("e\u{301} — תיאור\nsecond line")]] {
+            let source = try snapshot("page", type: 16, key: "", details: details)
+            let values = try mapper.values(snapshot: source, relationKeys: details.keys.sorted(), objects: [])
+            let actual = try values.initialProperties.resolved(AnyDestinationPlanChecks.placeholder)
+            XCTAssertEqual(try AnyDestinationDefinitionChecks.bytes(XCTUnwrap(actual["any"])),
+                           try AnyDestinationDefinitionChecks.bytes(.object(details)))
+            XCTAssertEqual(values.initialGroups.count, 1)
+        }
+        let item = try XCTUnwrap(mapper.schemaItems.first { $0.sourceKey == mapper.types[0].sourceKey })
+        guard case .typeDefinition(let seed) = item.operation else { return XCTFail("type") }
+        let layout = try XCTUnwrap(seed.layout).resolved(AnyDestinationPlanChecks.placeholder)
+        XCTAssertEqual(layout["config"]?["pinkhaHeart"]?["recommended"], .array([
+            .object(["ownerId": .string("any"), "propertyId": .string("description")]),
+            .object(["ownerId": .string("any"), "propertyId": .string("name")])]))
+    }
+
+    func testCanonicalDescriptionRefusesOverridesAndRequiresExactLiveDescriptor() throws {
+        let original = try nativeDescription()
+        let binding = try AnyDestinationCanonicalPropertyBinding(evidence: .init(snapshot: original))
+        XCTAssertEqual(binding.nativeContract, AnyDestinationCanonicalPropertyBinding.descriptionContract)
+        for override: [String: AnyJSON] in [
+            ["relationDefaultValue": .string("override")], ["relationReadonlyValue": .bool(true)],
+            ["relationMaxCount": .integer(2)], ["relationFormat": .integer(1)],
+            ["name": .string("Another caption")], ["description": .string("Changed semantics")],
+            ["futureSemantics": .bool(true)]] {
+            let changed = try nativeDescription(overrides: override)
+            let mapper = try AnyHeartNativeDefinitionPlan(catalog: catalog([changed, type()]))
+            XCTAssertNil(mapper.property(sourceKey: "description"))
+            XCTAssertTrue(mapper.issues.contains { $0.field == "canonical-description" })
+            XCTAssertFalse(mapper.schemaItems.contains { $0.sourceObjectID == changed.sourceObjectID })
+            XCTAssertThrowsError(try mapper.admittedSchemaItems())
+        }
+        let expected = AnyDestinationCanonicalPropertyBinding.nativeDescriptionDescriptor
+        XCTAssertNoThrow(try AnyDestinationDefinitionChecks.verifyNativeCanonicalProperties(
+            .object(["properties": .array([expected])]), bindings: [binding]))
+        for key in ["id", "name", "description", "kind", "scope", "xFormat"] {
+            var changed = try XCTUnwrap(expected.object); changed[key] = .string("changed")
+            XCTAssertThrowsError(try AnyDestinationDefinitionChecks.verifyNativeCanonicalProperties(
+                .object(["properties": .array([.object(changed)])]), bindings: [binding]))
+        }
+        XCTAssertThrowsError(try AnyDestinationDefinitionChecks.verifyNativeCanonicalProperties(
+            .object(["properties": .array([expected, expected])]), bindings: [binding]))
+        XCTAssertThrowsError(try AnyDestinationDefinitionChecks.verifyNativeCanonicalProperties(
+            .object(["properties": .array([AnyDestinationCanonicalPropertyBinding.nativeDescriptor])]), bindings: [binding]))
+        var encoded = try XCTUnwrap(JSONDecoder().decode(AnyJSON.self, from: JSONEncoder().encode(binding)).object)
+        encoded["propertyID"] = .string("name")
+        XCTAssertThrowsError(try JSONDecoder().decode(AnyDestinationCanonicalPropertyBinding.self,
+            from: AnyDestinationDefinitionChecks.bytes(.object(encoded))))
     }
 
     func testCanonicalNameHasOneNativeAddressAndMixedOwnerValuesPreserveAbsence() throws {
@@ -502,6 +669,13 @@ final class NativeDefinitionPlanTests: XCTestCase {
         XCTAssertEqual(custom.hiddenRelations, [try XCTUnwrap(labels["checkbox"]).objectID])
         XCTAssertEqual(try XCTUnwrap(labels["object"]).targetTypeIDs, [custom.objectID])
         let mapper = try AnyHeartNativeDefinitionPlan(catalog: c)
+        let canonicalDescription = try XCTUnwrap(mapper.property(sourceKey: "description"))
+        XCTAssertFalse(canonicalDescription.isCanonicalName)
+        XCTAssertEqual(canonicalDescription.owner, .native("any"))
+        XCTAssertEqual(canonicalDescription.record, .native("description"))
+        XCTAssertEqual(canonicalDescription.canonicalBinding?.evidence.jsonViewBytes,
+                       canonicalDescription.relation.snapshot.jsonViewBytes)
+        XCTAssertFalse(mapper.schemaItems.contains { $0.sourceObjectID == canonicalDescription.relation.objectID })
         let binding = try AnyDestinationSourceBinding(bundle: bundle, semanticPlanSHA256: c.contentSHA256,
             sourceObjectIDs: bundle.objects.map(\.sourceObjectID))
         XCTAssertEqual(mapper.definitionCoverage.filter { if case .embeddedOption = $0.disposition { return true }; return false }.count, 4)
@@ -548,7 +722,15 @@ final class NativeDefinitionPlanTests: XCTestCase {
             XCTAssertEqual(scalar[dateAddress], .object(["$date": .integer(try XCTUnwrap(doc.details[dateKey]?.integer) * 1_000)]))
             XCTAssertEqual(values.deferredRelationKeys, [try XCTUnwrap(labels["object"]).relationKey])
         }
-        XCTAssertTrue(mapper.issues.contains { $0.sourceObjectID == labels["text"]?.objectID && $0.field == "relationDefaultValue" })
+        let capturedText = try XCTUnwrap(labels["text"])
+        let textBinding = try XCTUnwrap(mapper.property(sourceKey: capturedText.relationKey))
+        let defaultMetadata = try XCTUnwrap(AnyNativePropertyDefinition(ownerID: "allocated-namespace",
+            raw: defaultProperty(mapper, binding: textBinding)).importedDefaultMetadata)
+        XCTAssertEqual(try AnyDestinationDefinitionChecks.bytes(defaultMetadata.value),
+                       try AnyDestinationDefinitionChecks.bytes(XCTUnwrap(capturedText.defaultValue)))
+        XCTAssertEqual(Data(defaultMetadata.definitionJSON.utf8),
+                       try AnyDestinationDefinitionChecks.bytes(.object(capturedText.snapshot.details)))
+        XCTAssertFalse(mapper.issues.contains { $0.sourceObjectID == capturedText.objectID && $0.field == "relationDefaultValue" })
         XCTAssertThrowsError(try mapper.admittedSchemaItems())
         XCTAssertFalse(mapper.permitsDestinationWrites)
         XCTAssertEqual(AnyContentDigest.sha256(try bytes("manifest.json", under: directory)), bundle.manifestSHA256)
