@@ -47,6 +47,7 @@ def main():
     parser.add_argument("--history-source-commit", choices=["6c398307682073f31f9fb59af59f34c96003d542"])
     parser.add_argument("--archive-source-commit", choices=["658f4af4380dffc55c65559ca9e0cc6d5ed9c931"])
     parser.add_argument("--miniapps-source-commit", choices=["53eec4a2289f969979bc301760ce152088ebc2f7"])
+    parser.add_argument("--bin-source-commit", choices=["36401a8e49189465ad89e395d962695e3a76e67a"])
     args = parser.parse_args()
     root, evidence, output = args.main_root, args.main_evidence, args.output
     for path in (root, evidence, output):
@@ -84,7 +85,8 @@ def main():
     }
     profile = profiles.get(original["inputs"]["nativeSourceManifestSHA256"])
     require(profile is not None, "explicit_reviewed_unified_profile_required")
-    if origin == "5c05a612e4054a4adfa7f812343be6a15871cc89":
+    if origin in {"5c05a612e4054a4adfa7f812343be6a15871cc89",
+                  "5ffff121e696044b0d1955524b7a69baf453b4b1"}:
         require(original["inputs"]["nativeSourceManifestSHA256"] ==
                 "70f0b2a66286ae87afdc5a8d5becb267fd1aa5c5110e54381a3b0384afd69a72",
                 "reviewed5c_native_runtime_required")
@@ -268,6 +270,75 @@ def main():
             "ordinaryAccountSelectionAfterColdCallback": True,
         }
         runner_origin, runner_launch = args.miniapps_source_commit, candidate
+    integrated_miniapps_binding = None
+    bin_binding = None
+    bin_review = None
+    if origin == "5ffff121e696044b0d1955524b7a69baf453b4b1":
+        require(runner_origin == origin and args.miniapps_source_commit is None
+                and args.archive_source_commit is None and args.history_source_commit is None,
+                "current_integrated_UI_requires_its_original_source")
+        marker = b"// BEGIN_NATIVE_MINIAPPS_CROSS_APP_UI_V1\n"
+        require(hashlib.sha256(runner_launch).hexdigest() ==
+                    "61a981863f52c18f5b2f73125209b39df8e6b7b5e9aabf6bb4cc09cfb703e687"
+                and runner_launch.count(marker) == 1
+                and hashlib.sha256(runner_launch.split(marker)[1]).hexdigest() ==
+                    "3a4b0995b8a37f10521a4c6355c3830a2c152ea44f56d77a787c27b534b98465",
+                "exact_normal_storage_observer_fixture_required")
+        integrated_miniapps_binding = {
+            "sourceCommit": origin,
+            "originalSHA256": hashlib.sha256(runner_launch).hexdigest(),
+            "methodSectionSHA256": "3a4b0995b8a37f10521a4c6355c3830a2c152ea44f56d77a787c27b534b98465",
+            "sourceAlreadyIntegrated": True,
+            "allMiniAppsMethodBytesUnchanged": True,
+            "testStorageOverrides": False,
+            "disposableSimulatorObserverOptIn": True,
+            "actualCompanionRequired": True,
+            "ordinaryAccountSelectionAfterColdCallback": True,
+        }
+    if args.bin_source_commit is not None:
+        require(integrated_miniapps_binding is not None and runner_origin == origin,
+                "reviewed_Bin_preparation_requires_current_original_App")
+        subprocess.run(["git", "-C", str(source), "merge-base", "--is-ancestor",
+                        origin, args.bin_source_commit], check=True, capture_output=True)
+        changed = subprocess.run(["git", "-C", str(source), "diff", "--name-only",
+            origin, args.bin_source_commit], check=True, capture_output=True, text=True).stdout.splitlines()
+        require(all(name == inputs[2] or name.startswith(("Tools/", "docs/validation/"))
+                    for name in changed), "Bin_preparation_must_not_change_application_source")
+        candidate = subprocess.run(["git", "-C", str(source), "show",
+            args.bin_source_commit + ":" + inputs[2]], check=True, capture_output=True).stdout
+        bin_review = subprocess.run(["git", "-C", str(source), "show", args.bin_source_commit +
+            ":docs/validation/20261125-native-bin-row-readiness/source-review.json"],
+            check=True, capture_output=True).stdout
+        require(hashlib.sha256(bin_review).hexdigest() ==
+                    "31b047c1fa07be8a86fbb078d1b6ae73dbcb8c7b48bb7d9457fdeee05a1606dc"
+                and hashlib.sha256(candidate).hexdigest() ==
+                    "0b01a8f35eea248f2bbd7727e60c6a2bf95fdcd9af74674b58437d75d0b62eae",
+                "exact_reviewed_Bin_context_preparation_required")
+        method = b"    func testNativeBinRestoreKeepsIdentityAndBodyAcrossColdReopen() {\n"
+        start = b"        let row = app.buttons[title].firstMatch\n"
+        end = b"        let rowID = row.identifier\n"
+        a = runner_launch.index(start, runner_launch.index(method))
+        b = runner_launch.index(end, a)
+        c = candidate.index(start, candidate.index(method))
+        d = candidate.index(end, c)
+        require(candidate[:c] + runner_launch[a:b] + candidate[d:] == runner_launch,
+                "Bin_inverse_must_restore_complete_original_UI_file")
+        require(candidate.split(marker)[1] == runner_launch.split(marker)[1],
+                "MiniApps_method_must_be_byte_identical_after_Bin_preparation")
+        reviewed = json.loads(bin_review)
+        require(reviewed["inverseDeltaRestoresCompleteOriginalFile"] is True
+                and reviewed["allOriginalIdentityBodyBinRestoreColdReopenAssertionsUnchanged"] is True
+                and reviewed["timeoutSeconds"] == 60 and reviewed["gestureDurationSeconds"] == 1.1
+                and reviewed["establishedProductRootCause"] is False,
+                "Bin_preparation_must_not_claim_unproven_product_acceptance")
+        bin_binding = {"sourceCommit": args.bin_source_commit,
+            "originalSHA256": hashlib.sha256(runner_launch).hexdigest(),
+            "compiledSHA256": hashlib.sha256(candidate).hexdigest(),
+            "reviewSHA256": hashlib.sha256(bin_review).hexdigest(),
+            "inverseDeltaRestoresCompleteOriginalFile": True,
+            "allOriginalIdentityBodyBinRestoreColdReopenAssertionsUnchanged": True,
+            "timeoutSeconds": 60, "gestureDurationSeconds": 1.1}
+        runner_origin, runner_launch = args.bin_source_commit, candidate
     helper = source / "Tools/AnyEnginePort/native_ui_transition_project.py"
     original_helper = subprocess.run(["git", "-C", str(source), "show",
         origin + ":Tools/AnyEnginePort/native_ui_transition_project.py"],
@@ -290,6 +361,8 @@ def main():
         "source/UITests/NativeLaunchTests.swift": runner_launch,
         "source/UITests/NativeHistoryTests.swift": runner_history,
     }
+    if bin_review is not None:
+        files["bin-preparation-source-review.json"] = bin_review
     for name, raw in files.items():
         path = output / name
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -302,6 +375,8 @@ def main():
         "historyKeyboardPreparation": history_binding,
         "archiveGrabberPreparation": archive_binding,
         "miniAppsCrossAppFixture": miniapps_binding,
+        "integratedMiniAppsFixture": integrated_miniapps_binding,
+        "binContextPreparation": bin_binding,
         "mainReceiptSHA256": digest(evidence / "receipt.json"),
         "reviewedInputProfile": profile,
         "exactOriginalProjectAndScheme": transformation, "sourceFiles": sources,
@@ -334,6 +409,8 @@ def main():
                   "historyKeyboardPreparation": history_binding,
                   "archiveGrabberPreparation": archive_binding,
         "miniAppsCrossAppFixture": miniapps_binding,
+        "integratedMiniAppsFixture": integrated_miniapps_binding,
+        "binContextPreparation": bin_binding,
                   "mainReceiptSHA256": digest(evidence / "receipt.json"),
                   "reviewedInputProfile": profile,
                   "argv": argv, "pid": process.pid,

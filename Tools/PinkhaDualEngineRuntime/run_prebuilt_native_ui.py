@@ -243,6 +243,67 @@ def admit_miniapps_runner(source, main_record, ui_build, ui_record):
     return expected
 
 
+def admit_current_runner(source, main_record, ui_build, ui_record):
+    require(main_record["sourceCommit"] == "5ffff121e696044b0d1955524b7a69baf453b4b1",
+            "exact_current_normal_storage_App_required")
+    expected = {
+        "sourceCommit": "5ffff121e696044b0d1955524b7a69baf453b4b1",
+        "originalSHA256": "61a981863f52c18f5b2f73125209b39df8e6b7b5e9aabf6bb4cc09cfb703e687",
+        "methodSectionSHA256": "3a4b0995b8a37f10521a4c6355c3830a2c152ea44f56d77a787c27b534b98465",
+        "sourceAlreadyIntegrated": True,
+        "allMiniAppsMethodBytesUnchanged": True,
+        "testStorageOverrides": False,
+        "disposableSimulatorObserverOptIn": True,
+        "actualCompanionRequired": True,
+        "ordinaryAccountSelectionAfterColdCallback": True,
+    }
+    projection = json.loads((ui_build / "projection.json").read_bytes())
+    require(ui_record.get("integratedMiniAppsFixture") == projection.get("integratedMiniAppsFixture") == expected
+            and projection["mainSourceCommit"] == main_record["sourceCommit"]
+            and projection["runnerSourceCommit"] == ui_record["runnerSourceCommit"]
+            and projection["changedOriginalMethodAssertions"] == 0
+            and projection["applicationBuildTargets"] == 0 and projection["nativeLibraryBuilds"] == 0,
+            "current_fixture_original_build_and_assertions_required")
+    for name, row in projection["sourceFiles"].items():
+        path = ui_build / name
+        require(path.is_file() and not path.is_symlink() and ui_build in path.resolve().parents
+                and path.stat().st_size == row["bytes"] and digest(path) == row["sha256"],
+                "compiled_current_UI_source_changed:" + name)
+    original = (source / "NativeApp/UITests/NativeLaunchTests.swift").read_bytes()
+    compiled = (ui_build / "source/UITests/NativeLaunchTests.swift").read_bytes()
+    marker = b"// BEGIN_NATIVE_MINIAPPS_CROSS_APP_UI_V1\n"
+    require(hashlib.sha256(original).hexdigest() == expected["originalSHA256"]
+            and original.count(marker) == compiled.count(marker) == 1
+            and hashlib.sha256(original.split(marker)[1]).hexdigest() == expected["methodSectionSHA256"]
+            and original.split(marker)[1] == compiled.split(marker)[1],
+            "original_actual_MiniApps_method_and_cold_storage_must_remain_identical")
+    binding = ui_record.get("binContextPreparation")
+    require(binding == projection.get("binContextPreparation"), "Bin_binding_changed")
+    if binding is None:
+        require(compiled == original and ui_record["runnerSourceCommit"] == main_record["sourceCommit"],
+                "same_source_current_runner_required")
+    else:
+        wanted = {"sourceCommit": "36401a8e49189465ad89e395d962695e3a76e67a",
+            "originalSHA256": expected["originalSHA256"],
+            "compiledSHA256": "0b01a8f35eea248f2bbd7727e60c6a2bf95fdcd9af74674b58437d75d0b62eae",
+            "reviewSHA256": "31b047c1fa07be8a86fbb078d1b6ae73dbcb8c7b48bb7d9457fdeee05a1606dc",
+            "inverseDeltaRestoresCompleteOriginalFile": True,
+            "allOriginalIdentityBodyBinRestoreColdReopenAssertionsUnchanged": True,
+            "timeoutSeconds": 60, "gestureDurationSeconds": 1.1}
+        require(binding == wanted and ui_record["runnerSourceCommit"] == wanted["sourceCommit"]
+                and hashlib.sha256(compiled).hexdigest() == wanted["compiledSHA256"]
+                and digest(ui_build / "bin-preparation-source-review.json") == wanted["reviewSHA256"],
+                "exact_reviewed_Bin_preparation_required")
+        method = b"    func testNativeBinRestoreKeepsIdentityAndBodyAcrossColdReopen() {\n"
+        start = b"        let row = app.buttons[title].firstMatch\n"
+        end = b"        let rowID = row.identifier\n"
+        a = original.index(start, original.index(method)); b = original.index(end, a)
+        c = compiled.index(start, compiled.index(method)); d = compiled.index(end, c)
+        require(compiled[:c] + original[a:b] + compiled[d:] == original,
+                "Bin_inverse_must_restore_complete_original_file")
+    return {"integratedMiniAppsFixture": expected, "binContextPreparation": binding}
+
+
 def admit_real_companion(source, manifest_path, out, app):
     require(manifest_path is not None and manifest_path.is_absolute()
             and manifest_path.resolve() == manifest_path and not manifest_path.is_symlink()
@@ -378,8 +439,12 @@ def main():
                 "same_source_exact_main_receipt_ui_runner_build_required")
         if ui_record.get("miniAppsCrossAppFixture") is not None:
             receipt["miniAppsCrossAppFixture"] = admit_miniapps_runner(source, main_record, args.ui_build, ui_record)
+        if ui_record.get("integratedMiniAppsFixture") is not None:
+            receipt.update(admit_current_runner(source, main_record, args.ui_build, ui_record))
         if args.stage == "miniapps":
-            require(receipt.get("miniAppsCrossAppFixture") is not None and args.companion_manifest is not None,
+            require((receipt.get("miniAppsCrossAppFixture") is not None
+                     or receipt.get("integratedMiniAppsFixture") is not None)
+                    and args.companion_manifest is not None,
                     "real_companion_and_new_compiled_method_required")
         else:
             require(args.companion_manifest is None, "companion_is_only_needed_for_its_scoped_stage")
