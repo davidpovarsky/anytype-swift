@@ -28,7 +28,27 @@ public struct AnyHeartNativeSourceReviewView: View {
                     "Moving this space still requires mapping and verification. The captured source is retained in the app; no destination data has been written."
                 ))
                 .font(.callout).foregroundStyle(.secondary)
+                .accessibilityIdentifier("heart-source-review-pending-migration")
                 if !spaceName.isEmpty { LabeledContent(t("מרחב", "Space"), value: spaceName) }
+            }
+
+            Section(t("פרטי אימות המקור", "Source verification details")) {
+                DisclosureGroup(t("זהות המקור והצילום", "Source and capture identity")) {
+                    identity(t("חשבון", "Account"), review.descriptor.sourceAccountID, id: "account")
+                    identity(t("מרחב", "Space ID"), review.descriptor.sourceSpaceID, id: "space")
+                    identity(t("מזהה צילום", "Capture ID"), review.descriptor.requestID, id: "capture-id")
+                    identity(t("טביעת אצבע של הצילום", "Capture fingerprint"), review.descriptor.manifestSHA256, id: "fingerprint")
+                    count(t("עצים מקוריים", "Native trees"), review.descriptor.nativeTrees, id: "trees")
+                    if let census = review.bundle.nativeStoreContext?.headCensus {
+                        count(t("רשומות מקור, לרבות הגדרות והרשאות", "Source identities, including settings and permissions"),
+                              census.sourceHeadIDs.count, id: "native-heads")
+                    }
+                }
+                .accessibilityIdentifier("heart-source-review-identity")
+                Text(t(
+                    "שינוי בחשבון, במרחב או בתוכן מחייב בדיקה חוזרת של המקור לפני העברה.",
+                    "An account, space or content change requires the source to be checked again before transfer."
+                )).font(.footnote).foregroundStyle(.secondary)
             }
 
             Section(t("התוכן שנלכד", "Captured content")) {
@@ -49,24 +69,6 @@ public struct AnyHeartNativeSourceReviewView: View {
             definitions
             currentPages
             unmappedObjects
-
-            Section(t("פרטי אימות המקור", "Source verification details")) {
-                DisclosureGroup(t("זהות המקור והצילום", "Source and capture identity")) {
-                    identity(t("חשבון", "Account"), review.descriptor.sourceAccountID)
-                    identity(t("מרחב", "Space ID"), review.descriptor.sourceSpaceID)
-                    identity(t("מזהה צילום", "Capture ID"), review.descriptor.requestID)
-                    identity(t("טביעת אצבע של הצילום", "Capture fingerprint"), review.descriptor.manifestSHA256)
-                    count(t("עצים מקוריים", "Native trees"), review.descriptor.nativeTrees, id: "trees")
-                    if let census = review.bundle.nativeStoreContext?.headCensus {
-                        count(t("רשומות מקור, לרבות הגדרות והרשאות", "Source identities, including settings and permissions"),
-                              census.sourceHeadIDs.count, id: "native-heads")
-                    }
-                }
-                Text(t(
-                    "שינוי בחשבון, במרחב או בתוכן מחייב בדיקה חוזרת של המקור לפני העברה.",
-                    "An account, space or content change requires the source to be checked again before transfer."
-                )).font(.footnote).foregroundStyle(.secondary)
-            }
         }
         .navigationTitle(t("בדיקת מרחב Heart", "Review Heart space"))
         .accessibilityIdentifier("heart-source-review")
@@ -74,6 +76,12 @@ public struct AnyHeartNativeSourceReviewView: View {
 
     private var sourceLimits: some View {
         Section(t("השלמות נדרשות במקור", "Source requirements")) {
+            count(t("פערים בהתאמת סוגים ומאפיינים", "Type and property mapping requirements"),
+                  review.definitionPlan.issues.count, id: "definition-issues")
+            count(t("דפים עם התאמת תוכן נוכחי", "Pages with current content mapping"),
+                  review.currentPagePlans.count, id: "page-plans")
+            count(t("אובייקטים ללא התאמה מלאה", "Objects without a complete mapping"),
+                  review.unmappedObjects.count, id: "unmapped")
             if !review.bundle.sourceGaps.isEmpty {
                 count(t("פערים בצילום המקור", "Capture gaps"), review.bundle.sourceGaps.count, id: "capture-gaps")
             }
@@ -126,8 +134,6 @@ public struct AnyHeartNativeSourceReviewView: View {
                     }
                 }
             }
-            count(t("פערים בהתאמת סוגים ומאפיינים", "Type and property mapping requirements"),
-                  review.definitionPlan.issues.count, id: "definition-issues")
             ForEach(Array(review.definitionPlan.issues.enumerated()), id: \.offset) { index, issue in
                 DisclosureGroup {
                     identity(t("אובייקט מקור", "Source object"), issue.sourceObjectID)
@@ -146,8 +152,6 @@ public struct AnyHeartNativeSourceReviewView: View {
 
     private var currentPages: some View {
         Section(t("טיוטות התאמת דפים", "Draft page mappings")) {
-            count(t("דפים עם התאמת תוכן נוכחי", "Pages with current content mapping"),
-                  review.currentPagePlans.count, id: "page-plans")
             Text(t(
                 "הטיוטות כוללות כותרת, ערכי מאפיינים ותוכן נתמכים. הן ממתינות להשלמת כל דרישות המרחב.",
                 "These drafts include supported titles, property values and body content. They remain pending until every space requirement is met."
@@ -168,8 +172,6 @@ public struct AnyHeartNativeSourceReviewView: View {
 
     private var unmappedObjects: some View {
         Section(t("אובייקטים שעדיין דורשים התאמה", "Objects still requiring mapping")) {
-            count(t("אובייקטים ללא התאמה מלאה", "Objects without a complete mapping"),
-                  review.unmappedObjects.count, id: "unmapped")
             ForEach(Array(review.unmappedObjects.enumerated()), id: \.offset) { index, object in
                 DisclosureGroup(objectName(object.sourceObjectID)) {
                     identity(t("אובייקט מקור", "Source object"), object.sourceObjectID)
@@ -201,15 +203,22 @@ public struct AnyHeartNativeSourceReviewView: View {
 
     private func count(_ label: String, _ value: Int, id: String) -> some View {
         LabeledContent(label, value: value.formatted())
+            .accessibilityElement(children: .combine)
             .accessibilityIdentifier("heart-source-review-" + id)
             .accessibilityValue(String(value))
     }
 
-    private func identity(_ label: String, _ value: String) -> some View {
+    private func identity(_ label: String, _ value: String, id: String? = nil) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(label).font(.caption).foregroundStyle(.secondary)
-            Text(value).font(.footnote.monospaced()).textSelection(.enabled)
-                .fixedSize(horizontal: false, vertical: true)
+            if let id {
+                Text(value).font(.footnote.monospaced()).textSelection(.enabled)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityIdentifier("heart-source-review-" + id)
+            } else {
+                Text(value).font(.footnote.monospaced()).textSelection(.enabled)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
     }
 
