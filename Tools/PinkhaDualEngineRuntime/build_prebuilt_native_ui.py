@@ -48,6 +48,7 @@ def main():
     parser.add_argument("--archive-source-commit", choices=["658f4af4380dffc55c65559ca9e0cc6d5ed9c931"])
     parser.add_argument("--miniapps-source-commit", choices=["53eec4a2289f969979bc301760ce152088ebc2f7"])
     parser.add_argument("--bin-source-commit", choices=["36401a8e49189465ad89e395d962695e3a76e67a", "06a3d5b83caf656f2b9a28618cd186c6794ab27e"])
+    parser.add_argument("--miniapps-menu-source-commit", choices=["9b7f0df07ad4b9f81829ee834ac30c5c4c8588fd"])
     args = parser.parse_args()
     root, evidence, output = args.main_root, args.main_evidence, args.output
     for path in (root, evidence, output):
@@ -86,7 +87,8 @@ def main():
     profile = profiles.get(original["inputs"]["nativeSourceManifestSHA256"])
     require(profile is not None, "explicit_reviewed_unified_profile_required")
     if origin in {"5c05a612e4054a4adfa7f812343be6a15871cc89",
-                  "5ffff121e696044b0d1955524b7a69baf453b4b1"}:
+                  "5ffff121e696044b0d1955524b7a69baf453b4b1",
+                  "0c5ffc51cdeb480194fdd4d5e396a602d04d5d78"}:
         require(original["inputs"]["nativeSourceManifestSHA256"] ==
                 "70f0b2a66286ae87afdc5a8d5becb267fd1aa5c5110e54381a3b0384afd69a72",
                 "reviewed5c_native_runtime_required")
@@ -354,6 +356,44 @@ def main():
                     "existing_typed_field_preparation_must_retain_original_UI_budget")
             bin_binding["creationPreparation"] = "existing-createNamedItemWithObservedTransition"
         runner_origin, runner_launch = args.bin_source_commit, candidate
+    current_menu_binding = None
+    current_menu_review = None
+    if args.miniapps_menu_source_commit is not None:
+        require(origin == "0c5ffc51cdeb480194fdd4d5e396a602d04d5d78"
+                and runner_origin == origin and args.archive_source_commit is None
+                and args.history_source_commit is None and args.miniapps_source_commit is None
+                and args.bin_source_commit is None,
+                "one_exact_menu_preparation_on_original_build12_required")
+        expected = {'mainSourceCommit': '0c5ffc51cdeb480194fdd4d5e396a602d04d5d78', 'sourceCommit': '9b7f0df07ad4b9f81829ee834ac30c5c4c8588fd', 'originalSHA256': '989af328bd04926cbef2f7e3fc529e13012b784d1c72fd90ac47a37c444254b3', 'compiledSHA256': 'de36d8508963db5e31554e88078a60cbf2273ba8ae67a8d53c597647f97a4b97', 'originalMethodSectionSHA256': '3a4b0995b8a37f10521a4c6355c3830a2c152ea44f56d77a787c27b534b98465', 'compiledMethodSectionSHA256': 'cef7734232b8f12ff432a97b435a5c6e0801d2cd77a30ce097e83f5e1cf40a63', 'reviewSHA256': 'f5811451e908f601be5ea6005912b13b759e9e288afdd4231e478c8d51ed062f', 'inverseDeltaRestoresCompleteOriginalFile': True, 'allOriginalCrossAppNativeColdAssertionsUnchanged': True, 'testStorageOverrides': False, 'actualCompanionRequired': True, 'ordinaryAccountSelectionAfterColdCallback': True, 'nativeCallsAdded': 0, 'timeoutsChanged': 0, 'productChanges': 0}
+        parents = subprocess.run(["git", "-C", str(source), "rev-list", "--parents", "-n", "1",
+            args.miniapps_menu_source_commit], check=True, capture_output=True, text=True).stdout.split()
+        require(parents == [expected["sourceCommit"], origin], "exact_UI_only_parent_required")
+        changed = subprocess.run(["git", "-C", str(source), "diff", "--name-only", origin,
+            args.miniapps_menu_source_commit], check=True, capture_output=True, text=True).stdout.splitlines()
+        require(inputs[2] in changed and all(name == inputs[2] or
+            name.startswith("docs/validation/20261125-miniapps-document-menu-preparation/")
+            for name in changed), "menu_preparation_must_not_change_App_or_other_tests")
+        candidate = subprocess.run(["git", "-C", str(source), "show",
+            args.miniapps_menu_source_commit + ":" + inputs[2]], check=True, capture_output=True).stdout
+        current_menu_review = subprocess.run(["git", "-C", str(source), "show",
+            args.miniapps_menu_source_commit +
+            ":docs/validation/20261125-miniapps-document-menu-preparation/source-review.json"],
+            check=True, capture_output=True).stdout
+        previous = b'        func roundTrip(_ text: String, cold: Bool) {\n            tapReady(app.buttons["any-native-miniapps"])'
+        replacement = b'        func roundTrip(_ text: String, cold: Bool) {\n            tapReady(app.buttons["any-native-document-options"])\n            tapReady(app.buttons["any-native-miniapps"])'
+        require(hashlib.sha256(runner_launch).hexdigest() == expected["originalSHA256"]
+                and hashlib.sha256(candidate).hexdigest() == expected["compiledSHA256"]
+                and hashlib.sha256(current_menu_review).hexdigest() == expected["reviewSHA256"]
+                and runner_launch.count(previous) == candidate.count(replacement) == 1
+                and candidate.replace(replacement, previous) == runner_launch,
+                "one_real_menu_tap_must_restore_complete_original_UI_file")
+        marker = b"// BEGIN_NATIVE_MINIAPPS_CROSS_APP_UI_V1\n"
+        require(hashlib.sha256(runner_launch.split(marker)[1]).hexdigest() ==
+                    expected["originalMethodSectionSHA256"]
+                and hashlib.sha256(candidate.split(marker)[1]).hexdigest() ==
+                    expected["compiledMethodSectionSHA256"], "original_cross_app_assertions_required")
+        current_menu_binding = expected
+        runner_origin, runner_launch = args.miniapps_menu_source_commit, candidate
     helper = source / "Tools/AnyEnginePort/native_ui_transition_project.py"
     original_helper = subprocess.run(["git", "-C", str(source), "show",
         origin + ":Tools/AnyEnginePort/native_ui_transition_project.py"],
@@ -376,6 +416,8 @@ def main():
         "source/UITests/NativeLaunchTests.swift": runner_launch,
         "source/UITests/NativeHistoryTests.swift": runner_history,
     }
+    if current_menu_review is not None:
+        files["miniapps-menu-source-review.json"] = current_menu_review
     if bin_review is not None:
         files["bin-preparation-source-review.json"] = bin_review
     for name, raw in files.items():
@@ -392,6 +434,7 @@ def main():
         "miniAppsCrossAppFixture": miniapps_binding,
         "integratedMiniAppsFixture": integrated_miniapps_binding,
         "binContextPreparation": bin_binding,
+        "currentMiniAppsMenuFixture": current_menu_binding,
         "mainReceiptSHA256": digest(evidence / "receipt.json"),
         "reviewedInputProfile": profile,
         "exactOriginalProjectAndScheme": transformation, "sourceFiles": sources,
@@ -426,6 +469,7 @@ def main():
         "miniAppsCrossAppFixture": miniapps_binding,
         "integratedMiniAppsFixture": integrated_miniapps_binding,
         "binContextPreparation": bin_binding,
+        "currentMiniAppsMenuFixture": current_menu_binding,
                   "mainReceiptSHA256": digest(evidence / "receipt.json"),
                   "reviewedInputProfile": profile,
                   "argv": argv, "pid": process.pid,

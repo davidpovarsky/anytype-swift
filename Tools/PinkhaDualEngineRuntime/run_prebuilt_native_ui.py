@@ -320,6 +320,42 @@ def admit_current_runner(source, main_record, ui_build, ui_record):
     return {"integratedMiniAppsFixture": expected, "binContextPreparation": binding}
 
 
+def admit_current_menu_runner(source, main_record, ui_build, ui_record):
+    expected = {'mainSourceCommit': '0c5ffc51cdeb480194fdd4d5e396a602d04d5d78', 'sourceCommit': '9b7f0df07ad4b9f81829ee834ac30c5c4c8588fd', 'originalSHA256': '989af328bd04926cbef2f7e3fc529e13012b784d1c72fd90ac47a37c444254b3', 'compiledSHA256': 'de36d8508963db5e31554e88078a60cbf2273ba8ae67a8d53c597647f97a4b97', 'originalMethodSectionSHA256': '3a4b0995b8a37f10521a4c6355c3830a2c152ea44f56d77a787c27b534b98465', 'compiledMethodSectionSHA256': 'cef7734232b8f12ff432a97b435a5c6e0801d2cd77a30ce097e83f5e1cf40a63', 'reviewSHA256': 'f5811451e908f601be5ea6005912b13b759e9e288afdd4231e478c8d51ed062f', 'inverseDeltaRestoresCompleteOriginalFile': True, 'allOriginalCrossAppNativeColdAssertionsUnchanged': True, 'testStorageOverrides': False, 'actualCompanionRequired': True, 'ordinaryAccountSelectionAfterColdCallback': True, 'nativeCallsAdded': 0, 'timeoutsChanged': 0, 'productChanges': 0}
+    require(main_record["sourceCommit"] == expected["mainSourceCommit"],
+            "exact_build12_menu_preparation_App_required")
+    projection = json.loads((ui_build / "projection.json").read_bytes())
+    require(ui_record.get("currentMiniAppsMenuFixture") ==
+                projection.get("currentMiniAppsMenuFixture") == expected
+            and projection["mainSourceCommit"] == main_record["sourceCommit"]
+            and projection["runnerSourceCommit"] == ui_record["runnerSourceCommit"] == expected["sourceCommit"]
+            and projection["changedOriginalMethodAssertions"] == 0
+            and projection["applicationBuildTargets"] == 0 and projection["nativeLibraryBuilds"] == 0
+            and projection.get("binContextPreparation") is None
+            and projection.get("integratedMiniAppsFixture") is None,
+            "exact_menu_UI_projection_and_original_assertions_required")
+    for name, row in projection["sourceFiles"].items():
+        path = ui_build / name
+        require(path.is_file() and not path.is_symlink() and ui_build in path.resolve().parents
+                and path.stat().st_size == row["bytes"] and digest(path) == row["sha256"],
+                "compiled_menu_UI_source_changed:" + name)
+    original = (source / "NativeApp/UITests/NativeLaunchTests.swift").read_bytes()
+    compiled = (ui_build / "source/UITests/NativeLaunchTests.swift").read_bytes()
+    previous = b'        func roundTrip(_ text: String, cold: Bool) {\n            tapReady(app.buttons["any-native-miniapps"])'
+    replacement = b'        func roundTrip(_ text: String, cold: Bool) {\n            tapReady(app.buttons["any-native-document-options"])\n            tapReady(app.buttons["any-native-miniapps"])'
+    require(hashlib.sha256(original).hexdigest() == expected["originalSHA256"]
+            and hashlib.sha256(compiled).hexdigest() == expected["compiledSHA256"]
+            and digest(ui_build / "miniapps-menu-source-review.json") == expected["reviewSHA256"]
+            and original.count(previous) == compiled.count(replacement) == 1
+            and compiled.replace(replacement, previous) == original,
+            "one_actual_menu_tap_must_restore_complete_original_UI_file")
+    marker = b"// BEGIN_NATIVE_MINIAPPS_CROSS_APP_UI_V1\n"
+    require(hashlib.sha256(original.split(marker)[1]).hexdigest() == expected["originalMethodSectionSHA256"]
+            and hashlib.sha256(compiled.split(marker)[1]).hexdigest() == expected["compiledMethodSectionSHA256"],
+            "every_original_cross_app_native_cold_assertion_required")
+    return expected
+
+
 def admit_real_companion(source, manifest_path, out, app):
     require(manifest_path is not None and manifest_path.is_absolute()
             and manifest_path.resolve() == manifest_path and not manifest_path.is_symlink()
@@ -457,6 +493,8 @@ def main():
             receipt["miniAppsCrossAppFixture"] = admit_miniapps_runner(source, main_record, args.ui_build, ui_record)
         if ui_record.get("integratedMiniAppsFixture") is not None:
             receipt.update(admit_current_runner(source, main_record, args.ui_build, ui_record))
+        if ui_record.get("currentMiniAppsMenuFixture") is not None:
+            receipt["currentMiniAppsMenuFixture"] = admit_current_menu_runner(source, main_record, args.ui_build, ui_record)
         if args.stage == "archive-picker-observe":
             require(main_record["sourceCommit"] == "5ffff121e696044b0d1955524b7a69baf453b4b1",
                     "exact_observation_app_source_required")
@@ -481,7 +519,8 @@ def main():
                     "733b210f79f5b31cb07772e104f6dfd43285d0e11dd818346fa28eb537131d94"}
         if args.stage == "miniapps":
             require((receipt.get("miniAppsCrossAppFixture") is not None
-                     or receipt.get("integratedMiniAppsFixture") is not None)
+                     or receipt.get("integratedMiniAppsFixture") is not None
+                     or receipt.get("currentMiniAppsMenuFixture") is not None)
                     and args.companion_manifest is not None,
                     "real_companion_and_new_compiled_method_required")
         else:
