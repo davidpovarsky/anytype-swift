@@ -146,10 +146,32 @@ def run(debugger, config_path):
                     STATE["processEndedAt"] = time.time()
                     break
                 if state == lldb.eStateStopped and process.GetState() == lldb.eStateStopped:
-                    # Unexpected stops are not inspected or resumed by guessing.
-                    STATE["observationErrors"].append("Unexpected process stop")
-                    break
-        STATE["status"] = "OBSERVATION_FINISHED_NOT_ACCEPTANCE"
+                    # LLDB can publish the stop event before its automatic
+                    # callback continuation completes. Resume only a positively
+                    # identified breakpoint owned by this observer; never an
+                    # exception, signal or unknown debugger stop.
+                    reasons = []
+                    stop_rows = []
+                    for thread in process:
+                        reason = thread.GetStopReason()
+                        if reason in (lldb.eStopReasonNone, lldb.eStopReasonInvalid):
+                            continue
+                        ids = [thread.GetStopReasonDataAtIndex(i)
+                               for i in range(0, thread.GetStopReasonDataCount(), 2)]
+                        reasons.append(reason == lldb.eStopReasonBreakpoint and ids and all(i in LABELS for i in ids))
+                        stop_rows.append({"threadID": thread.GetThreadID(), "reason": reason,
+                                          "ownedBreakpointIDs": ids if reason == lldb.eStopReasonBreakpoint else []})
+                    STATE.setdefault("stopNotifications", []).append({"at": time.time(), "threads": stop_rows})
+                    if reasons and all(reasons):
+                        error = process.Continue()
+                        if error.Fail() and process.GetState() != lldb.eStateRunning:
+                            STATE["observationErrors"].append("Owned breakpoint continuation failed: " + str(error))
+                            break
+                    elif process.GetState() == lldb.eStateStopped:
+                        STATE["observationErrors"].append("Unowned process stop; detached without inspection")
+                        break
+        STATE["status"] = ("OBSERVER_FAILED_NOT_PRODUCT_RESULT" if STATE["observationErrors"]
+                           else "OBSERVATION_FINISHED_NOT_ACCEPTANCE")
     except BaseException as exc:
         STATE["status"] = "OBSERVER_FAILED_NOT_PRODUCT_RESULT"
         STATE["observationErrors"].append(type(exc).__name__ + ": " + str(exc))
