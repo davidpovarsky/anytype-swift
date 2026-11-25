@@ -1,0 +1,11 @@
+# Shared immutable association policy — component qualification
+
+The production PinkhaKit policy and all 12 original new component methods passed on Linux Swift 6.4.3 against the complete current PinkhaKit source and the exact eight TorahInspectorCore files from 9058b489e9acc271b4f8ef69e2ed24648f93b4ed. The source manifest before and after execution is identical. No engine calls or application build occurred.
+
+The default policy preserves the existing Any behavior: every live variant remains visible, and semantic or stable-ID conflicts refuse writes. An explicit optional equality policy coalesces only complete equal canonical payload bytes, including unknown envelope, record and item fields. Every original claim and raw payload remains retained. Replacement and removal observe all claims in the equal group, and exceeding the native observed bound refuses instead of dropping a claim. Native operation-ID conflicts and missing predecessors remain conflicts under either policy.
+
+Other controls prove stable identity/provenance preservation, exact owner/provider binding, unknown-number and duplicate-JSON refusal, different quote instances, missing-update versus missing-remove semantics, and the existing Any raw-byte no-op behavior. Native signatures, ACL, target existence, current session lifetime, operation IDs and durable retry remain engine-adapter responsibilities. No new constructor is represented as native verification.
+
+Two original failed attempts are preserved: attempt1 refused before compilation because its previous Torah worktree had disappeared; the exact Git commit remained in the common repository and was exported there for attempt2. Attempt2 compiled production successfully but found two missing try expressions inside newly added Swift Testing require macros. The successor changes only those explicit throwing-call markers, retaining all assertions and the identical production source. Attempt3 actually passed all 12 methods with no failures or skips.
+
+This checkpoint does not activate the Heart immutable repository, perform legacy cutover, prove concurrent native writers, or claim Apple/UI acceptance. A dedicated verified native cutover contract and actual two-writer/cold/UI qualification remain required. Original receipts, logs and source inventory are retained alongside this receipt.
