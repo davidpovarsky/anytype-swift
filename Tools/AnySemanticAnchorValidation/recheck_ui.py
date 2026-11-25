@@ -154,8 +154,18 @@ def main():
         write(evidence / "source-before.json", before)
         file_changes = {name for name in set(before["files"]) | set(prior_before["files"])
                         if before["files"].get(name) != prior_before["files"].get(name)}
-        require(file_changes == allowed_changes and before["hanlinSourceFiles"] == native_before["hanlinSourceFiles"],
+        # source_state deliberately inventories product/tool roots, not docs.
+        # Verify that exact projection, then independently verify each new proof
+        # file against the frozen Git blob and retain its SHA256.
+        require(file_changes == allowed_changes - proof_changes
+                and before["hanlinSourceFiles"] == native_before["hanlinSourceFiles"],
                 "unreviewed_source_changed")
+        proof_files = {}
+        for name in sorted(proof_changes):
+            require(base.git(source, "hash-object", name) == base.git(source, "rev-parse", SOURCE + ":" + name),
+                    "unreviewed_proof_changed:" + name)
+            proof_files[name] = base.sha(source / name)
+        write(evidence / "source-bound-proof-files.json", proof_files)
         native_scope_changes = {name for name in set(before["files"]) | set(native_before["files"])
                                 if before["files"].get(name) != native_before["files"].get(name)
                                 and not name.startswith("Tools/AnySemanticAnchorValidation/")
@@ -259,6 +269,8 @@ def main():
         require(packages == packages_after and base.inventory(saved) == native_products
                 and base.inventory(saved_ui) == old_ui_products,
                 "original_native_or_dependencies_changed")
+        require(proof_files == {name: base.sha(source / name) for name in proof_files},
+                "source_bound_proof_changed")
         outcome["ui"] = qualified
         outcome["originalNative"] = prior["stages"]["native"]
         outcome["status"] = "PASS"
