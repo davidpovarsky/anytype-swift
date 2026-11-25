@@ -27,7 +27,8 @@ from release_process import GROUPS, group_alive
 
 SOURCE = '8ae85a6490c4fb763fcd01d5f93345f7e071db92'
 ORIGINAL_CONTROL = 'bd41da08b26aac66bbbee96ab753ebab624f2f2c'
-ORIGINAL_DRIVER_SHA256 = '4c15b5e8c8bfb2a32540fd3bb2166bbc3388bc3096dcef693a96bb916eae435b'
+ORIGINAL_COMPILER_DRIVER_SHA256 = '4c15b5e8c8bfb2a32540fd3bb2166bbc3388bc3096dcef693a96bb916eae435b'
+REVIEWED_POSTBUILD_DRIVER_SHA256 = '9e5f74b4c5cb039747bdbc98712961403fafe10a62e34f7991c20aff49d667fd'
 FAILURE = 'Unreviewed Release build platform command'
 REQUIRED_COMMANDS = {'actual-sdk', 'actual-sdk-path', 'actual-swift', 'actual-xcode',
     'exact-package-resolution', 'framework-build', 'framework-header-0',
@@ -80,8 +81,8 @@ def verify_commands(evidence, root, work):
 
 
 def original_postbuild(driver_path):
-    require(digest(driver_path) == ORIGINAL_DRIVER_SHA256,
-            'The complete reviewed original Release driver changed')
+    require(digest(driver_path) == REVIEWED_POSTBUILD_DRIVER_SHA256,
+            'The complete reviewed platform-aware Release postbuild driver changed')
     tree = ast.parse(driver_path.read_text(), filename=str(driver_path))
     functions = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == 'execute']
     require(len(functions) == 1, 'Ambiguous original execute body')
@@ -128,6 +129,8 @@ def main():
     execution = json.loads(descriptor.read_text())
     original_control = controller_observation(Path(execution['control_root']))
     validate_execution(execution, root, original_control, 'iphoneos')
+    require(digest(Path(execution['control_root']) / 'Tools/OriginalEditor/DeviceRelease/run_release.py')
+            == ORIGINAL_COMPILER_DRIVER_SHA256, 'Original compiler driver changed')
     require(original_control['sha'] == ORIGINAL_CONTROL
             and previous['execution_identity']['local_execution_sha256'] == digest(descriptor)
             and previous['run_id'] == execution['execution_id']
@@ -172,6 +175,8 @@ def main():
         'previous_execution_sha256': digest(receipt_path), 'previous_descriptor_sha256': digest(descriptor),
         'original_terminal_status': 'FAIL', 'original_failure': FAILURE,
         'reused_command_receipts': command_receipts, 'original_postbuild_ast_sha256': ast_sha,
+        'original_compiler_driver_sha256': ORIGINAL_COMPILER_DRIVER_SHA256,
+        'reviewed_postbuild_driver_sha256': REVIEWED_POSTBUILD_DRIVER_SHA256,
         'compiler_executions': 0, 'native_editor_ui_tests': 0, 'physical_device_tests': 0,
         'compiled_inputs_unchanged': True}
     evidence.mkdir(); work.mkdir()

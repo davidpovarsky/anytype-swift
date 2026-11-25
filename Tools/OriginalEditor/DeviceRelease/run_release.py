@@ -78,7 +78,7 @@ def original_notices(root, derived, exported, profile, before, dependencies):
 
 def verify_frameworks(root, work, evidence, proof, platform_name):
     from framework_profile import TARGET
-    from framework_install_names import verify_framework_install_name
+    from release_install_names import verify_framework_install_name
     from release_signing import seal_framework
     exported = work / 'distribution'
     dynamic, seals = [], []
@@ -95,7 +95,7 @@ def verify_frameworks(root, work, evidence, proof, platform_name):
             command(['otool', '-L', str(binary)], root, evidence, 'framework-loads-' + str(index), 30)
     require(TARGET + '.framework' in dynamic, 'Missing real original Release dynamic framework')
     binary = exported / 'Frameworks' / (TARGET + '.framework') / TARGET
-    install = verify_framework_install_name(binary)
+    install = verify_framework_install_name(binary, platform_name, source_root=root)
     require(command(['lipo', '-archs', str(binary)], root, evidence, 'framework-architecture', 30).strip() == 'arm64',
             'Wrong actual Release target architecture')
     platform_output = command(['xcrun', 'vtool', '-show-build', str(binary)], root, evidence, 'framework-platform', 30)
@@ -157,7 +157,7 @@ def execute(args, receipt, execution, descriptor, control):
     root, work, evidence = args.root, args.work, args.evidence
     from framework_profile import read_manifest, source_observation
     from framework_products import export_products, inventory, original_oracles
-    from framework_install_names import verify_consumer_install_name
+    from release_install_names import verify_consumer_install_name
     from run_framework_acceptance import source_file_proof, dependency_proof
     from collect_release_graphs import collect
     from release_surface import verify_public_surface
@@ -265,7 +265,7 @@ def execute(args, receipt, execution, descriptor, control):
     for name in dynamic:
         require(inventory(app / 'Frameworks' / name) == inventory(exported / 'Frameworks' / name),
                 'External Release consumer did not embed exact original product: ' + name)
-    receipt['actual_consumer_install_names'] = verify_consumer_install_name(app)
+    receipt['actual_consumer_install_names'] = verify_consumer_install_name(app, args.platform, source_root=root)
     receipt.update(external_consumer_build='PASS', public_host_api='EXPOSED_COMPILED_NATIVE_EDITOR_NOT_RUN',
                    compiled_consumer_api_probe_sha256=digest(consumer_source))
     if args.platform == 'iphonesimulator':
