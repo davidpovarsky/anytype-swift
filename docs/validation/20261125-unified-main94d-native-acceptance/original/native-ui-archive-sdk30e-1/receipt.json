@@ -1,0 +1,75 @@
+{
+  "actualCases": {
+    "NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies()": "Failed"
+  },
+  "applicationBuilds": 0,
+  "counts": {
+    "failedTests": 1,
+    "passedTests": 0,
+    "skippedTests": 0,
+    "totalTestCount": 1
+  },
+  "diagnosticFailures": [
+    {
+      "phase": "original-results",
+      "reason": "exact_original_method_did_not_pass"
+    }
+  ],
+  "finished": 1795608062.020779,
+  "firstFailure": {
+    "reason": "actual_original_ui_execution_failed",
+    "type": "RuntimeError"
+  },
+  "frozenInputReceiptSHA256": "e1050adcff75f25c61e97eae1bf2746b0aa477279cdb8c602289ef2707ffbef1",
+  "mainReceiptSHA256": "bb94a61f3a86b60eb92c791c59d2f739a1af414a583766f7163b14b15cd8d01d",
+  "nativeLibraryBuilds": 0,
+  "originalAppFileCount": 2499,
+  "ownedSimulator": "43F53CEF-CC77-4C9D-BFCD-B32D64BB471F",
+  "runnerReceiptSHA256": "26fd4002485448c633e406dd60691300fc7f412d7dabc68a18eef2926c97c105",
+  "sourceCommit": "94d8f58fa9aedc994beaedd36fd184dd341ee955",
+  "stage": "archive",
+  "status": "FAIL",
+  "testCommand": {
+    "argv": [
+      "xcodebuild",
+      "test-without-building",
+      "-xctestrun",
+      "/Users/m1/builds/pinkha-dual-main-20261125/native-ui-archive-sdk30e-1/Selected.xctestrun",
+      "-destination",
+      "platform=iOS Simulator,id=43F53CEF-CC77-4C9D-BFCD-B32D64BB471F",
+      "-parallel-testing-enabled",
+      "NO",
+      "-test-timeouts-enabled",
+      "YES",
+      "-default-test-execution-time-allowance",
+      "1800",
+      "-maximum-test-execution-time-allowance",
+      "1800",
+      "-only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies",
+      "-collect-test-diagnostics",
+      "never",
+      "ARCHS=arm64",
+      "ONLY_ACTIVE_ARCH=YES",
+      "CODE_SIGN_IDENTITY=-",
+      "CODE_SIGNING_ALLOWED=YES",
+      "CODE_SIGNING_REQUIRED=YES",
+      "-resultBundlePath",
+      "/Users/m1/builds/pinkha-dual-main-20261125/native-ui-archive-sdk30e-1/Original.xcresult"
+    ],
+    "elapsedSeconds": 345.7497489452362,
+    "exitCode": 65,
+    "freeBytesBefore": 129313878016,
+    "logSHA256": "3b494523ac5c060ae1bb09ae9d59ea08e8c09b2e45895d6495e6307fe33c49fd",
+    "minimumFreeBytes": 125645959168,
+    "ownedProcessGroup": "ABSENT_ESRCH",
+    "pgid": 21538,
+    "pid": 21538,
+    "started": 1795607693.1198342,
+    "status": "FAIL",
+    "stopped": null
+  },
+  "testCommandIssued": true,
+  "testResultAvailability": "ORIGINAL_XCRESULT",
+  "testsExecuted": 1,
+  "uiRunnerBuilds": 0
+}
