@@ -1,7 +1,7 @@
 """Genuine local execution and immutable dual-engine native input.
 
-The retained producer failed its original Swift probe. Its unchanged binary was
-subsequently qualified against the actual generated and production wrappers.
+The current producer retains its original failed graph preparation and its
+actual successful native build plus current production-wrapper qualification.
 Both original receipts are retained; neither grants original app acceptance.
 """
 from __future__ import annotations
@@ -88,87 +88,8 @@ def identity(app, descriptor_path, expected_sha256):
 
 
 def native_input(app, evidence):
-    app, evidence = Path(app).resolve(), Path(evidence).resolve()
-    policy = json.loads(POLICY.read_text())
-    require(policy["schema"] == "miniapps.original-local-native/1", "Unknown local native policy")
-    root = Path(policy["root"])
-    require(root.resolve() == root, "Local native producer root aliases another path")
-    abi = read_exact(root, policy["abi_receipt"])
-    original = read_exact(root, policy["original_build_receipt"])
-    files = read_exact(root, policy["framework_inventory"])
-    require(abi["status"] == "SOURCE_VERIFIED_SINGLE_GO_RUNTIME_APPLE_SLICE_BUILT_NOT_ACCEPTED"
-            and abi["frameworkUnchanged"] is True and abi["sourceUnchanged"] is True
-            and abi["originalProducerFailurePreserved"] is True
-            and abi["originalProducerReceiptSHA256"] == policy["original_build_receipt"]["sha256"],
-            "The actual corrected ABI evidence lost its original producer")
-    require(original["status"] == "FAIL"
-            and original["failure"]["message"] == "actual_command_failed:generated-actual-swift-entry-typecheck",
-            "The original failed probe must retain its true outcome")
-    require(abi["sourceManifestSHA256"] == original["sourceManifestSHA256"]
-            == policy["source_manifest_sha256"]
-            and abi["sourcePins"] == original["sourcePins"] == policy["source_pins"]
-            and abi["independentGoRuntimeCount"] == original["independentGoRuntimeCount"] == 1
-            and original["sourceFilesVerified"] == 4852,
-            "Original combined native source or Go ownership differs")
-    require(digest(root / "source/source-manifest.json") == policy["source_manifest_sha256"]
-            and digest(root / "native-source.tar.gz") == policy["source_archive_sha256"]
-            and original["sourceArchiveSHA256"] == policy["source_archive_sha256"],
-            "Native source archive/manifest bytes changed")
-    require(digest(root / "Lib.xcframework.zip") == policy["archive_sha256"]
-            and abi["archiveSHA256"] == policy["archive_sha256"]
-            and abi["binarySHA256"] == policy["binary_sha256"]
-            and abi["frameworkInventorySHA256"] == policy["framework_inventory"]["sha256"],
-            "Native binary/archive provenance differs")
-    bind = [row for row in abi["originalNativeCommands"] if row["name"] == "combined-gomobile-bind"]
-    require(len(bind) == 1 and bind[0]["exitCode"] == 0
-            and bind[0]["status"] == "PASS_EXIT_0"
-            and "-target=iossimulator/arm64" in bind[0]["argv"],
-            "No successful original arm64 simulator native build")
-    probes = {row["name"]: row for row in abi["commands"]}
-    require(set(probes) == {"sdk", "generated-actual-swift-entry-typecheck",
-                            "actual-production-protobuf-wrapper-typecheck"}
-            and all(row["exitCode"] == 0 for row in probes.values()),
-            "The actual generated and production Swift ABI probes did not pass")
-    for name, row in probes.items():
-        log = root / "swift-abi-qualification" / (name + ".log")
-        require(log.is_file() and digest(log) == row["logSHA256"],
-                "Original ABI compiler log changed: " + name)
-    framework = app / "Dependencies/Middleware/Lib.xcframework"
-    require(framework.is_dir() and framework.resolve().is_relative_to(app),
-            "The original application must own its exact native artifact copy")
-    actual = {}
-    for path in sorted(framework.rglob("*")):
-        require(not path.is_symlink(), "Native framework contains an unreviewed alias")
-        if path.is_file():
-            actual[str(path.relative_to(framework))] = {
-                "bytes": path.stat().st_size, "sha256": digest(path)}
-    require(actual == files, "The installed native framework differs from all original qualified members")
-    for name, row in abi["productionWrapperInputs"]["files"].items():
-        path = app / "Modules/ProtobufMessages/Sources" / name
-        require(path.is_file() and path.stat().st_size == row["bytes"]
-                and digest(path) == row["sha256"], "Actual original native wrapper changed: " + name)
-    require(not os.environ.get("PINKHA_NATIVE_T2_AUTHORIZED_READ_FIXTURE"),
-            "The production combined runtime cannot use a fixture library")
-    heart_marker = "pinkha-dual-runtime-v1-" + policy["source_manifest_sha256"]
-    require(abi["heartRuntimeVersion"] == heart_marker
-            and abi["anyRuntimeVersion"] == "v0.5.0-pinkha.dual.1-" + policy["source_manifest_sha256"],
-            "Combined engine runtime identities differ")
-    installation = {
-        "status": "VERIFIED_EXACT_NATIVE_INPUT_APP_ACCEPTANCE_PENDING",
-        "execution_origin": "local-mac", "github_run_id": None,
-        "source_sha": git(app, "rev-parse", "HEAD"),
-        "policy_sha256": digest(POLICY), "native_source_manifest_sha256": policy["source_manifest_sha256"],
-        "abi_receipt_sha256": policy["abi_receipt"]["sha256"],
-        "original_failed_receipt_sha256": policy["original_build_receipt"]["sha256"],
-        "native_framework_files": actual, "original_native_acceptance_tests": 0,
-        "current_native_tests_executed": 0, "original_editor_sdk_abi_reused": False}
-    binding = {"runtime_profile": policy["runtime_profile"], "native_marker": heart_marker,
-               "native_source_manifest_sha256": policy["source_manifest_sha256"],
-               "native_binary_sha256": policy["binary_sha256"],
-               "native_abi_receipt_sha256": policy["abi_receipt"]["sha256"],
-               "independent_go_runtime_count": 1, "execution_origin": "local-mac"}
-    write(evidence / "local-native-input.json", installation)
-    return installation, binding
+    from local_native_input import admit
+    return admit(Path(app), Path(evidence), json.loads(POLICY.read_text()), digest(POLICY))
 
 
 def test_environment(receipt):
