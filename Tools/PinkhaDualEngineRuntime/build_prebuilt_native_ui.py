@@ -84,6 +84,17 @@ def main():
             "lockSHA256": "ffc47556534ee279d01bb771c6d49637766e8828bd872cce739e541d8ce4f124",
         },
     }
+    profiles["410b441e5726b4a2ff7b259e296ad2ba819a5751cd46732945f62259ace42cc9"] = {
+        "name": "qualified-mobile410b-sdk86-torah9058",
+        "nativeSHA256": "48905b7312d7228fe88a60517ec90c1c23d73f2ada762877c05ace9752103342",
+        "sdkReceiptSHA256": "bad0afa285da6bd023235b15f82329f9d7b32ec50bf9194d63b9ee96730324a5",
+        "lockSHA256": "e22368e522ac795253935b0a31e39d1b36bd9043ef2ed1014845927914527ccd",
+    }
+    if original["inputs"]["nativeSourceManifestSHA256"] == "410b441e5726b4a2ff7b259e296ad2ba819a5751cd46732945f62259ace42cc9":
+        require(origin == "e540cd7e01b497f1b3173ae2e68b43ade0b00b6f"
+                and original.get("assemblyReceiptSHA256") ==
+                    "8556b47a6a7e523bd5ad4c58ae292501acda1038b0d1f827e268cef15a542797",
+                "exact_reviewed_build13_source_and_original_assembly_required")
     profile = profiles.get(original["inputs"]["nativeSourceManifestSHA256"])
     require(profile is not None, "explicit_reviewed_unified_profile_required")
     if origin in {"5c05a612e4054a4adfa7f812343be6a15871cc89",
@@ -394,6 +405,19 @@ def main():
                     expected["compiledMethodSectionSHA256"], "original_cross_app_assertions_required")
         current_menu_binding = expected
         runner_origin, runner_launch = args.miniapps_menu_source_commit, candidate
+    current410b_binding = None
+    if origin == "e540cd7e01b497f1b3173ae2e68b43ade0b00b6f":
+        require(runner_origin == origin and args.history_source_commit is None
+                and args.archive_source_commit is None and args.miniapps_source_commit is None
+                and args.bin_source_commit is None and args.miniapps_menu_source_commit is None,
+                "complete_same_source_build13_native_UI_required")
+        current410b_binding = {'sourceCommit': 'e540cd7e01b497f1b3173ae2e68b43ade0b00b6f', 'originalSHA256': '6fbcd0173351597af99dd6d79e7869ac72077c0b9ad2ff464d9c02e60d096d02', 'compiledSHA256': '6fbcd0173351597af99dd6d79e7869ac72077c0b9ad2ff464d9c02e60d096d02', 'miniAppsMethodSectionSHA256': 'cef7734232b8f12ff432a97b435a5c6e0801d2cd77a30ce097e83f5e1cf40a63', 'sourceAlreadyIntegrated': True, 'allOriginalMethodAssertionsUnchanged': True, 'testStorageOverrides': False, 'actualCompanionRequired': True, 'ordinaryAccountSelectionAfterColdCallback': True, 'binPreparation': 'real-accessible-native-row-menu', 'nativeSourceManifestSHA256': '410b441e5726b4a2ff7b259e296ad2ba819a5751cd46732945f62259ace42cc9'}
+        marker = b"// BEGIN_NATIVE_MINIAPPS_CROSS_APP_UI_V1\n"
+        require(hashlib.sha256(runner_launch).hexdigest() == current410b_binding["originalSHA256"]
+                and runner_launch.count(marker) == 1
+                and hashlib.sha256(runner_launch.split(marker)[1]).hexdigest() ==
+                    current410b_binding["miniAppsMethodSectionSHA256"],
+                "exact_integrated_document_menu_Bin_and_original_assertions_required")
     helper = source / "Tools/AnyEnginePort/native_ui_transition_project.py"
     original_helper = subprocess.run(["git", "-C", str(source), "show",
         origin + ":Tools/AnyEnginePort/native_ui_transition_project.py"],
@@ -435,6 +459,7 @@ def main():
         "integratedMiniAppsFixture": integrated_miniapps_binding,
         "binContextPreparation": bin_binding,
         "currentMiniAppsMenuFixture": current_menu_binding,
+        "current410bFixture": current410b_binding,
         "mainReceiptSHA256": digest(evidence / "receipt.json"),
         "reviewedInputProfile": profile,
         "exactOriginalProjectAndScheme": transformation, "sourceFiles": sources,
@@ -470,6 +495,7 @@ def main():
         "integratedMiniAppsFixture": integrated_miniapps_binding,
         "binContextPreparation": bin_binding,
         "currentMiniAppsMenuFixture": current_menu_binding,
+        "current410bFixture": current410b_binding,
                   "mainReceiptSHA256": digest(evidence / "receipt.json"),
                   "reviewedInputProfile": profile,
                   "argv": argv, "pid": process.pid,
