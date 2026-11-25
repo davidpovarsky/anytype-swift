@@ -31,6 +31,38 @@ def read_exact(root, row):
 def git(root, *args):
     return subprocess.check_output(["git", "-C", str(root), *args], text=True).strip()
 
+def verify_facade_records(current, original, policy):
+    """Permit only the three reviewed source files; never reuse their old API proof."""
+    delta = policy.get("native_files_continuation")
+    require(isinstance(delta, dict), "Missing reviewed native-file compiler continuation")
+    names = current["framework_facade_sources"]
+    require(names == original["framework_facade_sources"] and len(names) == 23,
+            "Original facade source membership changed")
+    require(current["original_trees"] == original["original_trees"],
+            "Original application, generated or resource trees changed")
+    from native_files_source import FILES, REVIEWED
+    rows = delta.get("files", [])
+    require([row.get("path") for row in rows] == list(FILES),
+            "Unreviewed native-file compiler delta")
+    expected = {row["path"]: row for row in rows}
+    for name in names:
+        old, new = original["source_inputs"][name], current["source_inputs"][name]
+        if name in expected:
+            require(old == expected[name].get("before") and new == expected[name].get("after"),
+                    "Reviewed native-file source record differs: " + name)
+        else:
+            require(old == new, "Unreviewed original facade changed: " + name)
+    require(original["public_host_contract_sha256"] == delta.get("previous_contract_sha256")
+            and current["public_host_contract_sha256"] == delta.get("current_contract_sha256"),
+            "Original/public native-file compiler contract differs")
+    observed = current["generated_import_source"]["annotation_exchange"]["miniapps"]["lifecycle_batch"].get("native_files", {})
+    require(observed.get("reviewed_source") == REVIEWED == delta.get("reviewed_source")
+            and observed.get("adoption_sha256") == delta.get("adoption_sha256")
+            and observed.get("native_acceptance_reused_by_this_document") is False,
+            "Current native-file source continuation was not admitted")
+    return list(expected)
+
+
 def verify(root, seed, before, installation, evidence):
     root, seed, evidence = map(lambda p: Path(p).resolve(), (root, seed, evidence))
     policy = json.loads(POLICY.read_text())
@@ -78,11 +110,13 @@ def verify(root, seed, before, installation, evidence):
     actual_original = json.loads(subprocess.check_output(
         [os.sys.executable, "-B", "-c", probe, str(donor)], env=env, text=True))
     require(actual_original == original, "Frozen original source no longer matches qualification")
-    for key in ("original_trees", "framework_facade_sources", "public_host_contract_sha256"):
-        require(before[key] == original[key], "New current framework changed beyond reviewed shared packages: " + key)
+    changed_facades = verify_facade_records(before, original, policy)
+    facade_delta = policy["native_files_continuation"]
+    require(git(root, "rev-parse", "HEAD:OriginalEditorFramework") == facade_delta["current_tree"]
+            and git(donor, "rev-parse", "HEAD:OriginalEditorFramework") == facade_delta["previous_tree"],
+            "Reviewed original facade tree differs")
     for relative in ("Anytype.xcodeproj/project.pbxproj",
-                     "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
-                     "OriginalEditorFramework"):
+                     "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"):
         require(git(root, "rev-parse", "HEAD:" + relative)
                 == git(donor, "rev-parse", "HEAD:" + relative),
                 "Original project, lock or facade changed beyond cache reuse scope")
@@ -109,6 +143,8 @@ def verify(root, seed, before, installation, evidence):
               "source_sha": policy["source_sha"], "seed": str(seed),
               "policy_sha256": sha(POLICY), "proofs": policy["proofs"],
               "current_source_sha": before["head_sha"], "shared_files_to_recompile": changed,
+              "facade_files_to_recompile": changed_facades,
+              "current_contract_sha256": before["public_host_contract_sha256"],
               "native_abi_source_sha": policy["native_abi_source_sha"],
               "new_sdk_acceptance_granted": False, "native_tests_rerun": False}
     (evidence / "qualified-cache-input.json").write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")

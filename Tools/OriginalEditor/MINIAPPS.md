@@ -28,7 +28,35 @@ ObjectShow/protobuf export remain authoritative. No engine or Picker is embedded
 applyMiniAppsResult(requestID:context:action:text:maximumBodyBytes:) uses original
 owned services, verifies native readback and returns the complete terminal rich
 capture. It preserves block identity/tree, non-text content and unaffected marks.
-The current result facade accepts text; display/custom actions stay in Host UI.
+The text-only overload remains available. The attachment overload accepts bounded
+Data/name/type values. It creates original native file blocks through the owned
+file service, verifies FileDownload bytes and the final native export, and never
+turns a private file URL into document text. display/custom actions stay in Host UI.
+
+Before terminal launch capture, exportMiniAppsFiles(context:maximumBytes:) reads
+selected file blocks (including selected descendants), or the captured document's
+files when no selection exists. The Host registers these bytes in the shared
+Bridge. No private app URL is exposed across applications.
+
+## File cancellation and replay boundary
+
+Native upload, terminal archive capture and the Host SQLite transaction are
+separate operations. File blocks carry the request UUID and file index before
+upload; those fields are observations, not an atomic native receipt. Explicit
+cancellation checks run around native reads and mutations. Any failure after
+attempting a mutation retires that private draft. The caller must not retry it.
+
+A retry reopens the unchanged canonical SQLite archive. The original runtime
+creates a new UUID draft journal and a fresh private Space/materialization, so
+an uncertain old native draft is never attached to the canonical document.
+Unknown old native effects are retained for original lifecycle recovery. If the
+SQLite archive+receipt commit succeeded, its receipt suppresses replay before
+native apply. A crash/file journey in the actual Maktabah editor remains required.
+
+The original 1 MiB compressed and 8 MiB expanded archive limits remain unchanged.
+Returned attachment bytes remain bounded by the original 8 MiB budget; a terminal archive
+that exceeds its compressed limit fails without committing or acknowledging the
+result. The existing 64 KiB native qualification reader retains its old bound.
 
 Commit the opaque body AND exact Bridge request/result receipt in the SAME
 original SQLite CAS transaction before ACK. Native read/check/write is not an
@@ -47,8 +75,10 @@ The MiniApps continuation binds exactly eight Swift changes to reviewed source
 e2582894e9141f4a136823d4c7b4a011d1edbd80 after the original revision
 continuation a91d572. Source admission verifies all original 733 generated files,
 every product tree and each changed byte; its old receipts are retained unchanged.
-The full public compiler contract now requires 198 declarations, including all
-23 new MiniApps boundaries; it preserves every original public/SPI requirement.
+The lifecycle/batch continuation and reviewed native-file continuation now require
+292 public/SPI declarations, including 10 file boundaries and the original 22
+qualification SPI members. All earlier requirements remain. Source provenance
+alone grants no native or current framework acceptance.
 
 The existing local producer can run on the explicitly owned MiniApps facade
 branch with its own real Mac execution UUID. The actual source/tree/path/branch

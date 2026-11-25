@@ -170,3 +170,28 @@ private nonisolated func readOriginalLocalSource(
     lifetime.retire()
     return source
 }
+
+/// Compile/link the new file API only against the exported binary. This function
+/// is never invoked by the resource probe and grants no native-file/UI credit.
+@MainActor
+private func compileOriginalMiniAppsFileAPI(
+    session: AnytypeOriginalEditorLocalAnnotationSession,
+    context: AnytypeOriginalEditorMiniAppsContext,
+    requestID: UUID
+) async throws {
+    let files: [AnytypeOriginalEditorMiniAppsFile] = try await session.exportMiniAppsFiles(
+        context: context, maximumBytes: 65_536)
+    for file in files {
+        _ = file.blockID
+        _ = file.attachment.data
+        _ = file.attachment.name
+        _ = file.attachment.typeIdentifier
+    }
+    let attachment = try AnytypeOriginalEditorMiniAppsAttachment(
+        data: Data([0, 1, 2, 255]), name: "original-miniapps.bin",
+        typeIdentifier: "public.data")
+    _ = try await session.applyMiniAppsResult(requestID: requestID, context: context,
+        action: .insert, text: "", attachments: [attachment], maximumBodyBytes: 65_536)
+    _ = try await session.applyMiniAppsResult(requestID: requestID, context: context,
+        action: .insert, text: "", maximumBodyBytes: 65_536)
+}

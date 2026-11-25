@@ -77,21 +77,31 @@ def observe(root, profile, historical_trees):
     require(git(root, "diff", "--name-status", BASE, REVIEWED, "--", *products).splitlines()
             == [("A\t" if name in ADDED else "M\t") + name for name in FILES],
             "Unreviewed lifecycle/batch source delta")
-    require({key: git(root, "rev-parse", "HEAD:" + key) for key in products} == reviewed,
+    from native_files_source import observe as observe_native_files
+    native_files = observe_native_files(root, profile, reviewed)
+    current = native_files["reviewed_product_trees"] if native_files else reviewed
+    changed_files = set(native_files["all_changed_paths"]) if native_files else set()
+    require({key: git(root, "rev-parse", "HEAD:" + key) for key in products} == current,
             "Current product source differs from reviewed lifecycle/batch continuation")
     for row in rows:
         source = root / row["path"]
         require(source.is_file() and not source.is_symlink() and source.resolve() == source,
                 "Missing or aliased lifecycle/batch source")
-        data = source.read_bytes()
+        data = (subprocess.check_output(["git", "-C", str(root), "show", REVIEWED + ":" + row["path"]])
+                if row["path"] in changed_files else source.read_bytes())
+        observed_blob = (git(root, "rev-parse", REVIEWED + ":" + row["path"])
+                         if row["path"] in changed_files else git(root, "hash-object", "--", row["path"]))
         before = None if row["path"] in ADDED else git(root, "rev-parse", BASE + ":" + row["path"])
         require(row["before_blob"] == before
                 and row["after_blob"] == git(root, "rev-parse", REVIEWED + ":" + row["path"])
-                and git(root, "hash-object", "--", row["path"]) == row["after_blob"]
+                and observed_blob == row["after_blob"]
                 and len(data) == row["bytes"] and hashlib.sha256(data).hexdigest() == row["sha256"],
                 "Current lifecycle/batch source bytes differ: " + row["path"])
     return {"schema": value["schema"], "status": "EXACT_ORIGINAL_LIFECYCLE_BATCH_SWIFT_SOURCE_OBSERVED",
             "base_source": BASE, "reviewed_source": REVIEWED,
-            "adoption_sha256": binding["sha256"], "reviewed_product_trees": reviewed,
+            "adoption_sha256": binding["sha256"], "reviewed_product_trees": current,
+            "historical_lifecycle_product_trees": reviewed,
+            **({"native_files": native_files} if native_files else {}),
+            "all_changed_paths": sorted(set(FILES) | changed_files),
             "changed_files": rows, "native_acceptance_reused_by_this_document": False,
             "sdk_compiler_and_runtime_acceptance": "NOT_GRANTED_BY_SOURCE_OBSERVATION"}

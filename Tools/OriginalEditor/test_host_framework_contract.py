@@ -29,9 +29,9 @@ class HostFrameworkContractControls(unittest.TestCase):
 
     def test_all_reviewed_public_and_spi_paths_are_required_without_ui_credit(self):
         result = self.verify(self.graph())
-        self.assertEqual(result['reviewed_host_and_spi_requirements_observed'], 282)
+        self.assertEqual(result['reviewed_host_and_spi_requirements_observed'], 292)
         self.assertEqual(result['editable_mount_api'], 'EXPOSED_COMPILED_NATIVE_EDITOR_NOT_RUN')
-        self.assertEqual(len(result['own_public_symbols']), 282)
+        self.assertEqual(len(result['own_public_symbols']), 292)
         self.assertTrue(result['qualification_spi_scope_verified'])
         self.assertTrue(result['public_host_scope_verified'])
         self.assertEqual(sum(symbol['spi'] for symbol in result['own_public_symbols']), 22)
@@ -91,7 +91,7 @@ class HostFrameworkContractControls(unittest.TestCase):
     def test_local_session_and_capture_cannot_be_publicly_fabricated(self):
         path = ROOT / 'OriginalEditorFramework/AnytypeOriginalEditorLocalAnnotation.swift'
         for name in ['AnytypeOriginalEditorLocalAnnotationSession',
-                     'AnytypeOriginalEditorLocalAnnotationCapture']:
+                     'AnytypeOriginalEditorLocalAnnotationCapture', 'AnytypeOriginalEditorMiniAppsFile']:
             with self.subTest(name=name):
                 graph = self.graph()
                 graph['symbols'].append({'accessLevel': 'public',

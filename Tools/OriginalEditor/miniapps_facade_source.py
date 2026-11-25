@@ -72,7 +72,7 @@ def observe(root, profile, historical_trees):
     from lifecycle_batch_source import observe as observe_lifecycle_batch
     lifecycle = observe_lifecycle_batch(root, profile, reviewed)
     current = lifecycle["reviewed_product_trees"] if lifecycle else reviewed
-    changed_lifecycle = {row["path"] for row in lifecycle["changed_files"]} if lifecycle else set()
+    changed_lifecycle = set(lifecycle["all_changed_paths"]) if lifecycle else set()
     require({key: git(root, "rev-parse", "HEAD:" + key) for key in products} == current,
             "Current product source differs from the reviewed MiniApps continuation")
     for row in rows:
@@ -93,5 +93,6 @@ def observe(root, profile, historical_trees):
             "adoption_sha256": binding["sha256"], "reviewed_product_trees": current,
             "historical_miniapps_product_trees": reviewed,
             **({"lifecycle_batch": lifecycle} if lifecycle else {}),
-            "changed_files": rows, "native_acceptance_reused_by_this_document": False,
+            "changed_files": rows, "all_changed_paths": sorted(set(FILES) | changed_lifecycle),
+            "native_acceptance_reused_by_this_document": False,
             "sdk_compiler_and_runtime_acceptance": "NOT_GRANTED_BY_SOURCE_OBSERVATION"}
