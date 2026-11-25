@@ -15,10 +15,18 @@ from local_execution import require, sha, git
 SCHEMA = "otzaria.original-import-donor-sdk-input/1"
 POLICY = "Tools/OriginalEditor/AnnotationExchange/abi_donor_policy.json"
 DONOR = "34b8a7c5ddb34e9287acdb5c189849eeac8cff86"
+FRESH_DONOR = "1f90175b006be0a19a4e1804f858caaf59d6c174"
+FRESH_POLICY = "Tools/OriginalEditor/MiniApps/abi_donor_1f90175b.json"
 CLOSURE = ("Anytype/Sources", "Anytype/Resources", "Modules", "Dependencies/Middleware",
            "Tools/OriginalEditor/ABIPinnedWrapper", "Tools/OriginalEditor/GeneratedImport",
            "Tools/PinkhaNativeDerived",
            "Tools/OriginalEditor/build_local_import_abi.py")
+
+FRESH_CLOSURE = CLOSURE + (
+    "OriginalEditorFramework", "Tools/OriginalEditor/ImportRPC",
+    "Tools/OriginalEditor/NativeRegeneration", "Tools/OriginalEditor/fresh_swift_input.py",
+    "Tools/OriginalEditor/reused_abi_history.py", "Tools/OriginalEditor/import_abi_input.py",
+)
 
 # A fresh interpreter imports only the original owner's unchanged verifiers.
 # This reads the original retained evidence; it neither reruns a generator/test
@@ -40,24 +48,39 @@ print(json.dumps({'source':before,'installation':result}))
 """
 
 
-def read_policy(root):
-    path = root / POLICY
-    require(path.is_file() and not path.is_symlink() and path.resolve() == path,
-            "Missing or aliased native ABI donor policy")
-    profile = json.loads((root / "Tools/OriginalEditor/framework_profile.json").read_text())
-    binding = profile.get("native_abi_donor")
-    require(binding == {"path": POLICY, "sha256": sha(path), "source_sha": DONOR}
-            and git(root, "hash-object", "--", POLICY) == git(root, "rev-parse", "HEAD:" + POLICY),
-            "Committed native ABI donor policy differs")
-    policy = json.loads(path.read_text())
-    require(policy.get("schema") == "otzaria.native-abi-donor-policy/1"
-            and policy.get("source_sha") == DONOR
-            and set(policy.get("unchanged_git_inputs", {})) == set(CLOSURE)
+def validate_policy(policy, binding):
+    expected = {
+        (POLICY, DONOR): ("otzaria.native-abi-donor-policy/1", CLOSURE),
+        (FRESH_POLICY, FRESH_DONOR): ("otzaria.native-abi-donor-policy/2", FRESH_CLOSURE),
+    }
+    key = (binding.get("path"), binding.get("source_sha"))
+    require(key in expected, "Unreviewed exact native donor policy identity")
+    schema, closure = expected[key]
+    require(policy.get("schema") == schema
+            and policy.get("source_sha") == key[1]
+            and set(policy.get("unchanged_git_inputs", {})) == set(closure)
             and set(policy.get("receipts", {})) == {"execution", "source_before", "abi", "debug_qualification"}
             and policy.get("native_tests_rerun") is False
             and policy.get("new_sdk_acceptance_granted") is False,
             "Unreviewed native ABI donor scope")
-    return policy, path
+    return policy
+
+
+def read_policy(root):
+    profile = json.loads((root / "Tools/OriginalEditor/framework_profile.json").read_text())
+    binding = profile.get("native_abi_donor", {})
+    require(isinstance(binding, dict) and
+            (binding.get("path"), binding.get("source_sha")) in {
+                (POLICY, DONOR), (FRESH_POLICY, FRESH_DONOR)},
+            "Unreviewed exact native donor policy binding")
+    relative = binding["path"]
+    path = root / relative
+    require(path.is_file() and not path.is_symlink() and path.resolve() == path,
+            "Missing or aliased native ABI donor policy")
+    require(binding == {"path": relative, "sha256": sha(path), "source_sha": binding["source_sha"]}
+            and git(root, "hash-object", "--", relative) == git(root, "rev-parse", "HEAD:" + relative),
+            "Committed native ABI donor policy differs")
+    return validate_policy(json.loads(path.read_text()), binding), path
 
 
 def validate_reference(value, source, policy_sha):
@@ -81,12 +104,13 @@ def verify(root, path, digest, source, value=None):
             "Exact owned native donor reference is required")
     value = json.loads(path.read_text()) if value is None else value
     policy, policy_path = read_policy(root)
+    donor_sha = policy["source_sha"]
     validate_reference(value, source, sha(policy_path))
     require(git(root, "rev-parse", "HEAD") == source["head_sha"],
             "Consumer source changed during native donor admission")
     donor = Path(value["donor_root"])
     require(donor.is_absolute() and donor.resolve() == donor and donor != root
-            and git(donor, "rev-parse", "HEAD") == DONOR,
+            and git(donor, "rev-parse", "HEAD") == donor_sha,
             "Native ABI donor is not its actual original checkout")
     for role, row in policy["receipts"].items():
         p = donor / row["path"]
@@ -97,7 +121,7 @@ def verify(root, path, digest, source, value=None):
         [sys.executable, "-I", "-B", "-c", ORIGINAL_VERIFY, str(donor), str(policy_path)],
         text=True, timeout=600))
     before, installation = observed["source"], observed["installation"]
-    require(before["head_sha"] == installation["app_source_sha"] == DONOR
+    require(before["head_sha"] == installation["app_source_sha"] == donor_sha
             and installation["status"] == "PASS"
             and installation["full_sdk_accepted"] is False
             and installation["editor_ui_accepted"] is False,
@@ -105,8 +129,18 @@ def verify(root, path, digest, source, value=None):
     qualification = json.loads((donor / policy["receipts"]["debug_qualification"]["path"]).read_text())
     require(qualification.get("status") == "ACTUAL_ORIGINAL_FRAMEWORK_EXTERNAL_IMPORT_LINK_RESOURCES_PASS"
             and qualification.get("phase") == "COMPLETE"
-            and qualification.get("source_sha") == DONOR,
+            and qualification.get("source_sha") == donor_sha,
             "Original donor Debug qualification is not terminal actual acceptance")
+    if donor_sha == FRESH_DONOR:
+        require(installation.get("schema") == "otzaria.original-import-local-sdk-input/3"
+                and qualification.get("execution_identity") == before["execution_identity"]
+                and qualification.get("heart") == installation
+                and qualification.get("shared_runtime_ownership", {}).get("status")
+                    == "PASS_OBSERVED_SINGLE_SHARED_IMPLEMENTATIONS"
+                and {row.get("language") for row in qualification.get("verified_runtime_observations", [])}
+                    == {"en", "he"}
+                and len(qualification.get("verified_runtime_observations", [])) == 2,
+                "The fresh native ABI donor lost its exact schema3/compiler/runtime owner")
     trees = policy["unchanged_git_inputs"]
     require(all(git(donor, "rev-parse", "HEAD:" + p) == expected
                 for p, expected in trees.items()),
@@ -123,7 +157,7 @@ def verify(root, path, digest, source, value=None):
         actual = git(root, "rev-parse", "HEAD:" + relative)
         if relative == "Anytype/Sources" and actual != expected:
             continuation = current_source.get("annotation_exchange", {})
-            require(continuation.get("base_source") == DONOR
+            require(donor_sha == DONOR and continuation.get("base_source") == DONOR
                     and continuation.get("native_acceptance_reused_by_this_document") is False
                     and continuation.get("sdk_compiler_and_runtime_acceptance")
                         == "NOT_GRANTED_BY_SOURCE_OBSERVATION"
@@ -153,7 +187,7 @@ def verify(root, path, digest, source, value=None):
             "pinned_wrapper": installation.get("pinned_wrapper"),
             "original_abi_producer_identity": before["execution_identity"],
             "abi_reuse": {"status": "EXACT_NATIVE_INPUT_AND_ARTIFACT_EQUIVALENCE",
-                         "donor_source_sha": DONOR, "donor_root": str(donor),
+                         "donor_source_sha": donor_sha, "donor_root": str(donor),
                          "donor_receipts": policy["receipts"], "unchanged_git_inputs": trees,
                          "original_abi_installation": installation,
                          "native_tests_rerun": False, "new_sdk_acceptance_granted": False}}

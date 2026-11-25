@@ -15,7 +15,8 @@ import uuid
 SCHEMA = 'otzaria.original-editor.local-execution/1'
 REPOSITORY = 'davidpovarsky/anytype-swift'
 LOCAL_BRANCH = 'codex/otzaria-annotation-sdk-requalification-20261125'
-LOCAL_BRANCHES = (LOCAL_BRANCH, 'codex/anytype-original-miniapps-facade-20261125')
+LOCAL_BRANCHES = (LOCAL_BRANCH, 'codex/anytype-original-miniapps-facade-20261125',
+                  'codex/anytype-original-sdk-collections13-20261125')
 
 
 def require(value, message):
