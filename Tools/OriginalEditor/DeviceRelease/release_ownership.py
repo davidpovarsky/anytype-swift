@@ -36,7 +36,7 @@ def verify_ownership(root, evidence, work, qualification, source, before, platfo
         require(name not in binaries and binary.is_file() and not binary.is_symlink(), 'Aliased or duplicate framework')
         binaries[name] = {'path': str(binary.relative_to(distribution)), 'sha256': sha256(binary)}
         raw = command(['xcrun', 'nm', '-gjU', str(binary)], root, evidence,
-                      'shared-provider-definitions-' + name, 60)
+                      'shared-provider-definitions-' + name, 600)
         symbols[name] = set(raw.splitlines())
     consumer = work / ('consumer-derived/Build/Products/Release-' + platform_name + '/OriginalEditorConsumer.app')
     require(consumer.is_dir(), 'Actual independently built original consumer is missing')
@@ -48,7 +48,7 @@ def verify_ownership(root, evidence, work, qualification, source, before, platfo
         key = 'external-consumer-' + str(number)
         binaries[key] = {'path': str(binary.relative_to(work)), 'sha256': sha256(binary)}
         symbols[key] = set(command(['xcrun', 'nm', '-gjU', str(binary)], root, evidence,
-                                   'shared-provider-definitions-' + key, 60).splitlines())
+                                   'shared-provider-definitions-' + key, 600).splitlines())
     definitions = verify_definitions(symbols)
     loads = command(['xcrun', 'otool', '-L', str(distribution / 'Frameworks' / (EDITOR + '.framework') / EDITOR)],
                     root, evidence, 'shared-provider-original-loads', 30)
