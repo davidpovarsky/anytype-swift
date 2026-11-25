@@ -176,7 +176,9 @@ def admit_prior(core,host,retainer,evidence):
         require(identity(p)==identities[label],"original private root replaced during admission")
         manifests[label]=row["manifestSHA256"]
     require(state()==live and identity(device_root)==identity_before and identity(plist)==plist_identity and
-            core.digest(plist)==custody["devicePlistSHA256"],"original device custody changed during admission")
+            core.digest(plist)==custody["devicePlistSHA256"] and
+            all(identity(path)==identities[label] for label,path in roots.items()),
+            "original device or any of its four private roots changed during admission")
     fixture=json.loads(raw(app/"Library/Application Support/miniapps-native-fixture.json"))
     require(fixture==json.loads(raw(PRIOR/"evidence/private-native-fixture.json")) and
             fixture["sourceSHA"]==SOURCE and fixture["runID"]==previous["localExecutionID"],
