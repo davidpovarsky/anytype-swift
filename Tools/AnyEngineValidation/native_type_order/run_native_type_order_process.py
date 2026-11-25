@@ -205,7 +205,9 @@ def main():
         runtime = {"baseURL": base, "accountID": account, "spaceID": space_id, "binarySHA256": BINARY_SHA,
                    "sourceManifestSHA256": SOURCE_MANIFEST_SHA,
                    "processID": process.pid, "phase": "execute", "wholeSpaceMigration": False}
-        (args.output / "runtime.json").write_text(json.dumps(runtime, indent=2) + "\n")
+        pending_runtime = args.output / "runtime.pending.json"
+        pending_runtime.write_text(json.dumps(runtime, indent=2) + "\n")
+        pending_runtime.replace(args.output / "runtime.json")
         result["accountID"] = account; result["spaceID"] = space_id
         phase = "external native execute/readback"
         await_signal("execute-complete")
@@ -240,7 +242,9 @@ def main():
         result["coldSyncStatus"] = {k: sync.get(k) for k in ("state", "networkPeers", "localPeers", "globalPeers", "p2p")}
         assert sync["networkPeers"] == 0 and sync["localPeers"] == 0 and sync["globalPeers"] == 0
         runtime.update(phase="cold-offline", processID=process.pid, outboundDeniedByOS=True, networkPeerCount=0)
-        (args.output / "runtime.json").write_text(json.dumps(runtime, indent=2) + "\n")
+        pending_runtime = args.output / "runtime.pending.json"
+        pending_runtime.write_text(json.dumps(runtime, indent=2) + "\n")
+        pending_runtime.replace(args.output / "runtime.json")
         phase = "external cold native catalog order readback"
         await_signal("finish")
         stop()
