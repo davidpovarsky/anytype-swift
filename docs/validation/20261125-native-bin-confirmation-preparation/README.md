@@ -1,0 +1,5 @@
+# Original Bin confirmation preparation
+
+The exact App13 original Bin method failed waiting for the SwiftUI confirmation button identifier. Its original video shows the native confirmation, but failed query snapshots are the unchanged pre-menu Library snapshot; the real popover accessibility identifier is not established. The corrected preparation requires one exact localized title, one enabled and hittable Move to Bin action, and absence of the initiating menu action. It records fresh full accessibility/screen/control witnesses before a real tap. No coordinate tap, native invocation, timeout increase, storage override, or App change is introduced.
+
+The inverse removes only the new helper and restores the original one-line tap. It reconstructs the complete original test file byte for byte, preserving all remove, restore, object identity, block identity, body, count and cold-reopen assertions, plus every unrelated original method. This is an unexecuted UI candidate; original failure remains FAIL.

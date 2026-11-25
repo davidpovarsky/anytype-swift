@@ -2372,7 +2372,7 @@ final class NativeLaunchTests: XCTestCase {
                 object: actions, timeout: 30)
         actions.tap()
         tapWhenEnabled(app.buttons["any-native-hierarchy-archive"])
-        tapWhenEnabled(app.buttons["any-native-bin-confirm-remove"])
+        confirmNativeBinRemoval(app)
         waitFor(NSPredicate(format: "exists == false"), object: app.buttons[rowID], timeout: 45)
 
         reopenOwnedWorkspace(app, spaceName: spaceName)
@@ -2396,6 +2396,51 @@ final class NativeLaunchTests: XCTestCase {
                 object: app.textViews[blockID], timeout: 60)
         XCTAssertEqual(blocks.count, 1)
     }
+
+    // BEGIN_NATIVE_BIN_CONFIRMATION_AX_PREPARATION_V1
+    /// The original identifier-only query did not locate the rendered dialog.
+    /// Require its unique title and real action after the initiating menu closed.
+    private func confirmNativeBinRemoval(_ app: XCUIApplication,
+                                         file: StaticString = #filePath, line: UInt = #line) {
+        let labels = ["העברה לסל המחזור", "Move to Bin"]
+        let titles = app.staticTexts.matching(NSPredicate(format: "label IN %@", labels))
+        let actions = app.buttons.matching(NSPredicate(format: "label IN %@", labels))
+        let menuAction = app.buttons["any-native-hierarchy-archive"]
+        let ready = NSPredicate { _, _ in
+            guard !menuAction.exists, titles.count == 1, actions.count == 1 else { return false }
+            let action = actions.firstMatch
+            return action.isEnabled && action.isHittable && !action.frame.isEmpty
+        }
+        let result = XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: ready, object: app)],
+                                   timeout: 30)
+        let ax = XCTAttachment(string: String(decoding: Data(app.debugDescription.utf8).prefix(131_072),
+                                              as: UTF8.self))
+        ax.name = "NATIVE_BIN_CONFIRMATION_private_AX"; ax.lifetime = .keepAlways; add(ax)
+        let screen = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        screen.name = "NATIVE_BIN_CONFIRMATION_private_screen"; screen.lifetime = .keepAlways; add(screen)
+        let observed: [String: Any] = [
+            "titleCount": titles.count, "actionCount": actions.count,
+            "initiatingMenuActionPresent": menuAction.exists,
+            "waitCompleted": result == .completed,
+            "actionLabel": actions.count == 1 ? actions.firstMatch.label : "",
+            "actionIdentifier": actions.count == 1 ? actions.firstMatch.identifier : "",
+            "actionEnabled": actions.count == 1 && actions.firstMatch.isEnabled,
+            "actionHittable": actions.count == 1 && actions.firstMatch.isHittable,
+            "actionFrame": actions.count == 1 ? String(describing: actions.firstMatch.frame) : ""
+        ]
+        if let data = try? JSONSerialization.data(withJSONObject: observed, options: [.sortedKeys]),
+           let text = String(data: data, encoding: .utf8) {
+            let control = XCTAttachment(string: text)
+            control.name = "NATIVE_BIN_CONFIRMATION_control"; control.lifetime = .keepAlways; add(control)
+        }
+        XCTAssertEqual(result, .completed, "The unique native Bin confirmation was not ready.",
+                       file: file, line: line)
+        guard result == .completed, !menuAction.exists, titles.count == 1, actions.count == 1,
+              actions.firstMatch.isEnabled, actions.firstMatch.isHittable,
+              !actions.firstMatch.frame.isEmpty else { return }
+        actions.firstMatch.tap()
+    }
+    // END_NATIVE_BIN_CONFIRMATION_AX_PREPARATION_V1
 
     private func makeApplication(scope: UUID = UUID()) -> XCUIApplication {
         let app = NativeApplicationUnderTest()
