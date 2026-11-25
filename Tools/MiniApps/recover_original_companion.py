@@ -61,15 +61,15 @@ def main():
     config = args.restored_source / "Config.xcconfig"
     host = args.restored_source / "build/runtime-host/RuntimeHostResources.zip"
     require(digest(config) == CONFIG_SHA and digest(host) == HOST_SHA, "Actual canonical configuration/host differs")
-    source_head = subprocess.check_output(["git", "-C", str(args.restored_source), "rev-parse", "HEAD"], text=True).strip()
+    source_head = subprocess.check_output(["git", "-C", str(args.restored_source), "rev-parse", "HEAD"], text=True, timeout=20).strip()
     require(source_head == SOURCE, "Restored original source HEAD changed")
-    original_status = subprocess.check_output(["git", "-C", str(args.restored_source), "status", "--porcelain=v1", "-z"])
+    original_status = subprocess.check_output(["git", "-C", str(args.restored_source), "status", "--porcelain=v1", "-z"], timeout=20)
     node = Path("/Users/m1/builds/_preflight/native-owned-node245-20261125/node-v24.5.0-darwin-arm64/bin")
     require((node / "node").is_file(), "Original qualified Node toolchain unavailable")
     os.environ.update(PATH=str(node) + ":/opt/homebrew/opt/python@3.12/libexec/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
                       PYTHONDONTWRITEBYTECODE="1",
                       DEVELOPER_DIR="/Applications/Xcode.app/Contents/Developer")
-    require(subprocess.check_output(["node", "--version"], text=True).strip() == "v24.5.0", "Node version differs")
+    require(subprocess.check_output(["node", "--version"], text=True, timeout=20).strip() == "v24.5.0", "Node version differs")
     args.root.mkdir(mode=0o700)
     evidence = args.root / "preparation"; evidence.mkdir(mode=0o700)
     source = args.root / "source"
@@ -96,7 +96,7 @@ def main():
             if not path.is_file() or digest(path) != wanted:
                 mismatches.append(name)
         require(not mismatches, "Original prepared source differs: " + repr(mismatches[:12]))
-        require(subprocess.check_output(["git", "-C", str(source), "diff", "--binary", "HEAD"]) == args.prepared_diff.read_bytes(),
+        require(subprocess.check_output(["git", "-C", str(source), "diff", "--binary", "HEAD"], timeout=20) == args.prepared_diff.read_bytes(),
                 "Prepared tracked diff changed")
         require(digest(source / "Scripts/ProductSplit/run_native_acceptance.py") == ORIGINAL_DRIVER_SHA,
                 "Original producer acceptance driver changed")
@@ -134,10 +134,22 @@ def main():
         state["error"] = {"type": type(error).__name__, "message": str(error)}
         raise
     finally:
-        same = source_head == subprocess.check_output(["git", "-C", str(args.restored_source), "rev-parse", "HEAD"], text=True).strip()
-        same = same and original_status == subprocess.check_output(["git", "-C", str(args.restored_source), "status", "--porcelain=v1", "-z"])
-        state["existingCheckoutUnchanged"] = same
-        if not same: state["status"] = "FAILED_EXISTING_CHECKOUT_CHANGED"
+        state["existingCheckoutUnchanged"] = False
+        try:
+            final_head = subprocess.check_output(
+                ["git", "-C", str(args.restored_source), "rev-parse", "HEAD"],
+                text=True, timeout=20).strip()
+            final_status = subprocess.check_output(
+                ["git", "-C", str(args.restored_source), "status", "--porcelain=v1", "-z"],
+                timeout=20)
+            state["existingCheckoutUnchanged"] = (
+                source_head == final_head and original_status == final_status)
+            if not state["existingCheckoutUnchanged"]:
+                state["status"] = "FAILED_EXISTING_CHECKOUT_CHANGED"
+        except BaseException as observation_error:
+            state["existingCheckoutObservationError"] = {
+                "type": type(observation_error).__name__, "message": str(observation_error)}
+            state["status"] = "FAILED_EXISTING_CHECKOUT_OBSERVATION"
         state["finishedAt"] = datetime.now(timezone.utc).isoformat()
         save(evidence / "RESULT.json", state)
         print(json.dumps({key: state[key] for key in ("status", "source", "appBuilds", "nativeTests", "existingCheckoutUnchanged")}), flush=True)
