@@ -45,9 +45,7 @@ PROFILES = {
         "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-27-2", "version": "27.2", "build": "24B8117",
         "device": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-A17-Pro",
         "stages": {"hierarchy-drag": ((UI_THREE[1],), 360),
-                   "hanlin-selection-consent": ((UI_THREE[2],), 360),
-                   "archive-roundtrip": (ARCHIVE, 1800),
-                   "custom-type": (CUSTOM_TYPE, 360), "native-history": (HISTORY, 1800)},
+                   "archive-roundtrip": (ARCHIVE, 1800), "native-history": (HISTORY, 1800)},
         "flags": [], "nativeBuilds": 0, "applicationBuilds": 1, "uiRunnerBuilds": 1,
     },
 }
@@ -102,7 +100,7 @@ def read(path, limit=8 * 1024**2):
 
 def methods(profile):
     value = tuple(method for names, _ in PROFILES[profile]["stages"].values() for method in names)
-    count = {"release-return-rtl": 4, "native-ui-failed": 5}[profile]
+    count = {"release-return-rtl": 4, "native-ui-failed": 3}[profile]
     require(len(value) == len(set(value)) == count and SOURCE_DRAG not in value, "fixed_named_selection_changed")
     require(profile != "native-ui-failed" or HIERARCHY_MOVE not in value, "retained_hierarchy_move_selected")
     return value

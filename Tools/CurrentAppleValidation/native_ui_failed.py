@@ -1,4 +1,4 @@
-"""One current NativeApp build: five independent unresolved UI journeys."""
+"""One current NativeApp build: three remaining independent UI journeys."""
 from __future__ import annotations
 import importlib
 import os

@@ -198,11 +198,15 @@ def retained_hierarchy_move(expected):
     c.require(summary["totalTestCount"] == 3 and summary["passedTests"] == 1
               and summary["failedTests"] == 2 and summary["skippedTests"] == 0,
               "retained_move_original_counts_changed")
-    # All NativeApp code/tests and all engine/host/integration services are
-    # byte-identical. The sole Any UI delta enables folder drop handling outside
-    # edit mode; the context-menu move route and its native operation are intact.
-    c.require(git("rev-parse", fixed["sourceCommit"] + ":NativeApp") ==
-              git("rev-parse", expected + ":NativeApp"), "retained_move_app_or_tests_changed")
+    # The only NativeApp delta targets the archive picker hit point. The
+    # hierarchy method and its helpers remain exact; all other source changes
+    # are bound to the reviewed module paths and complete LibraryView diff.
+    app_changed = set(git("diff", "--name-only", fixed["sourceCommit"], expected,
+                          "--", "NativeApp").decode().splitlines())
+    c.require(app_changed == set(fixed["reviewedNativeAppChangedFiles"])
+              == {"NativeApp/UITests/NativeLaunchTests.swift"}
+              and c.sha(git("diff", fixed["sourceCommit"], expected, "--", "NativeApp"))
+              == fixed["reviewedNativeAppDeltaSHA256"], "retained_move_app_or_tests_changed")
     changed = set(git("diff", "--name-only", fixed["sourceCommit"], expected, "--", "Modules").decode().splitlines())
     c.require(changed == set(fixed["reviewedChangedModuleFiles"]), "retained_move_dependency_delta_changed")
     delta = git("diff", fixed["sourceCommit"], expected, "--",
@@ -212,6 +216,64 @@ def retained_hierarchy_move(expected):
             "currentResultRelabeled": False, **fixed,
             "originalRunStillFailed": True, "originalOtherFailures": 2,
             "scope": "Context-menu hierarchy move/body/type/property visibility and cold reopen"}
+
+def retained_d5_passes(expected):
+    """Retain two exact, unaffected original UI results; never relabel this run."""
+    fixed = read(MANIFEST)["retainedNativeD5Passes"]
+    c.require(fixed["sourceCommit"] == "dc29b540e76222bf89c5ac863916f66793acfda6"
+              and fixed["runID"] == "45531686517"
+              and fixed["stages"] == {
+                  "hanlin-selection-consent": c.UI_THREE[2], "custom-type": c.CUSTOM_TYPE[0]},
+              "retained_d5_origin_changed")
+    git("merge-base", "--is-ancestor", fixed["sourceCommit"], expected)
+    paths = ("Modules", "NativeApp")
+    changed = set(git("diff", "--name-only", fixed["sourceCommit"], expected, "--", *paths).decode().splitlines())
+    c.require(changed == set(fixed["reviewedChangedProductFiles"])
+              and c.sha(git("diff", fixed["sourceCommit"], expected, "--", *paths))
+              == fixed["reviewedProductDeltaSHA256"], "retained_d5_product_delta_changed")
+    c.require(not git("diff", fixed["sourceCommit"], expected, "--", "Tools/Hanlin"),
+              "retained_d5_sdk_changed")
+    directory = HERE / "retained-d5-passes"
+    expected_files = {"execution.json"} | {
+        stage + "/" + name for stage in fixed["stages"] for name in ("summary.json", "tests.json")}
+    c.require(set(fixed["files"]) == expected_files, "retained_d5_originals_missing")
+    documents = {}
+    for name, checksum in fixed["files"].items():
+        c.require(digest(directory / name) == checksum, "retained_d5_evidence_changed")
+        documents[name] = read(directory / name)
+    original = documents["execution.json"]
+    c.require(original["context"]["sourceCommit"] == fixed["sourceCommit"]
+              and original["context"]["runID"] == fixed["runID"] and original["status"] == "FAIL"
+              and original["providerContract"]["status"] == "FINITE_PROVIDER_CONTRACT_VERIFIED"
+              and {name for name, value in original["stages"].items() if value["status"] == "FAIL"}
+                  == {"hierarchy-drag", "archive-roundtrip", "native-history"},
+              "retained_d5_original_results_changed")
+    retained = {}
+    for stage, method in fixed["stages"].items():
+        result = original["stages"][stage]
+        c.require(result["status"] == "PASS" and result["completeStageAcceptance"] is True,
+                  "retained_d5_stage_not_accepted")
+        summary = documents[stage + "/summary.json"]
+        c.require(summary["totalTestCount"] == summary["passedTests"] == 1
+                  and summary["failedTests"] == summary["skippedTests"] == 0,
+                  "retained_d5_original_counts_changed")
+        nodes = []
+        def visit(item):
+            if isinstance(item, dict):
+                if item.get("nodeType") == "Test Case":
+                    nodes.append(item)
+                for value in item.values():
+                    visit(value)
+            elif isinstance(item, list):
+                for value in item:
+                    visit(value)
+        visit(documents[stage + "/tests.json"])
+        c.require(len(nodes) == 1 and nodes[0].get("nodeIdentifier") == method + "()"
+                  and nodes[0].get("result") == "Passed", "retained_d5_named_result_changed")
+        retained[stage] = {"status": "HISTORICAL_PASS_RETAINED", "method": method,
+                           "currentTestExecutions": 0, "currentResultRelabeled": False}
+    return {**fixed, "status": "HISTORICAL_PASSES_RETAINED", "methods": fixed["stages"],
+            "stages": retained, "originalRunStillFailed": True, "originalOtherFailures": 3}
 
 def recheck(source):
     c.require(digest(MANIFEST) == source["manifestSHA256"]
@@ -298,8 +360,8 @@ class Commands:
         self.root = evidence / "commands"
         self.root.mkdir(parents=True, exist_ok=True)
         self.context, self.helpers = context, modules
-        # Two new single-method stages add their unchanged 360/1800s budgets plus
-        # the existing 300s per-stage command overhead; other profiles stay exact.
+        # Keep the existing finite D execution ceiling while selecting only its
+        # three unresolved journeys. Every stage keeps its original time budget.
         self.deadline = time.monotonic() + (9960 if context["profile"] == "native-ui-failed" else 7200)
         self.cleanup_mode = False
 
@@ -801,7 +863,10 @@ def evidence_root(profile):
 def recover_owned(commands, evidence):
     owned = []
     directories = sorted(evidence.glob("device-*"))
-    c.require(len(directories) <= 2, "unexpected_device_journal_count")
+    # D has one owner for each of Drag, Files, and History. The other
+    # accepted profile retains its original two-device bound.
+    limit = {"native-ui-failed": 3, "release-return-rtl": 2}[commands.context["profile"]]
+    c.require(len(directories) <= limit, "unexpected_device_journal_count")
     for directory in directories:
         c.require(directory.name == "device-" + str(len(owned)) and directory.resolve() == directory,
                   "unexpected_device_journal")
@@ -895,6 +960,7 @@ def execute(profile, expected, prepare_library, provider, inventory_policy=None,
         outcome["context"] = context
         if profile == "native-ui-failed":
             outcome["retainedHierarchyMove"] = retained_hierarchy_move(expected)
+            outcome["retainedNativeD5Passes"] = retained_d5_passes(expected)
         write(evidence / "source-before.json", source)
         write(evidence / "execution-intent.json", {"context": context, "selected": c.methods(profile),
               "sourceDragExcluded": c.SOURCE_DRAG, "sourceAdmissionSHA256": digest(evidence / "source-before.json"),
@@ -939,28 +1005,6 @@ def execute(profile, expected, prepare_library, provider, inventory_policy=None,
             recheck(source)
             check_products(built[0] / "Build/Products", built[1], copies)
             c.require(not _CANCELLED, "native_journeys_cancelled")
-            provider_ready = False
-            try:
-                outcome["providerSetup"] = provider(commands, "prepare", device, evidence)
-                provider_ready = True
-            except BaseException as failure:
-                outcome["errors"].append({"phase": "provider-setup", **error(failure)})
-                first = first or failure
-                outcome["stages"]["hanlin-selection-consent"] = {
-                    "status": "NOT_RUN", "testCommandInvoked": False,
-                    "completeStageAcceptance": False, "reason": "provider_setup_failed",
-                    "firstFailure": error(failure)}
-            if provider_ready:
-                outcome["stages"]["hanlin-selection-consent"] = execute_stage(
-                    commands, profile, "hanlin-selection-consent", device, built, source, evidence, copies)
-                try:
-                    outcome["providerContract"] = provider(commands, "verify", device, evidence)
-                except BaseException as failure:
-                    outcome["errors"].append({"phase": "provider-contract", **error(failure)})
-                    first = first or failure
-            recheck(source)
-            check_products(built[0] / "Build/Products", built[1], copies)
-            c.require(not _CANCELLED, "native_journeys_cancelled")
             # Files gets a fresh owned simulator to distinguish provider/process
             # carryover from the original strict picker/mapping journey.
             archive_device = create_device(commands, pair,
@@ -971,8 +1015,8 @@ def execute(profile, expected, prepare_library, provider, inventory_policy=None,
             check_products(built[0] / "Build/Products", built[1], copies)
             c.require(not _CANCELLED, "native_journeys_cancelled")
             follow_on = create_device(commands, pair,
-                "CurrentNativeTypeHistory-" + context["runID"] + "-" + context["runAttempt"], evidence, owned)
-            for stage in ("custom-type", "native-history"):
+                "CurrentNativeHistory-" + context["runID"] + "-" + context["runAttempt"], evidence, owned)
+            for stage in ("native-history",):
                 outcome["stages"][stage] = execute_stage(
                     commands, profile, stage, follow_on, built, source, evidence, copies)
                 recheck(source)

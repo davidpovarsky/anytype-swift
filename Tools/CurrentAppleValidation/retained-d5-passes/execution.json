@@ -1,0 +1,672 @@
+{
+  "applicationBuilds": 1,
+  "cSemanticAdmission": false,
+  "cancellationObserved": false,
+  "context": {
+    "profile": "native-ui-failed",
+    "repository": "davidpovarsky/anytype-swift",
+    "runAttempt": "1",
+    "runID": "45531686517",
+    "sourceCommit": "dc29b540e76222bf89c5ac863916f66793acfda6"
+  },
+  "errors": [],
+  "firstFailure": {
+    "message": "Command '['xcodebuild', 'test-without-building', '-xctestrun', '/Users/m1/builds/actions-anytype/anytype-swift/anytype-swift/build/current-apple-native-ui-failed-45531686517-1/work/derived/Build/Products/Current-hierarchy-drag.xctestrun', '-destination', 'platform=iOS Simulator,id=A61700F5-C358-4E43-AE82-8A30342A116E', '-parallel-testing-enabled', 'NO', '-test-timeouts-enabled', 'YES', '-default-test-execution-time-allowance', '360', '-maximum-test-execution-time-allowance', '360', '-only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen', '-resultBundlePath', '/Users/m1/builds/actions-anytype/anytype-swift/anytype-swift/build/current-apple-native-ui-failed-45531686517-1/evidence/hierarchy-drag/original.xcresult', 'ARCHS=arm64', 'ONLY_ACTIVE_ARCH=YES', 'CODE_SIGNING_ALLOWED=YES', 'CODE_SIGNING_REQUIRED=YES', 'CODE_SIGN_IDENTITY=-', 'PROVISIONING_PROFILE_SPECIFIER=', '-collect-test-diagnostics', 'never']' returned non-zero exit status 65.",
+    "type": "CalledProcessError"
+  },
+  "fullAcceptance": false,
+  "groups": [],
+  "historical22Executions": 0,
+  "historicalSourceDragExecutions": 0,
+  "integrity": {
+    "dependenciesUnchanged": true,
+    "loadedAfter": {
+      "Tools/AnyEnginePort/continue_native_acceptance.py": "befa4f7974aaed9b8b936c0457a6acec5454c2d48c8f483740ca9810c14d2098",
+      "Tools/AnyEnginePort/hanlin_fixture_ci.py": "b48b79324d9076d235449510ed5499556d2b16c14aa1cc2a3397db5861132d14",
+      "Tools/AnyEnginePort/native_continuation_sources.py": "fe74ca6ed78f26f008c79da674e87f6a51b9f5f82bfe2e697bbb1d90e9002465",
+      "Tools/AnyEnginePort/native_ui_transition_contract.py": "42d56e2193643fde5ae6f329b63a123fee89a2ef22d858e3bea8aeb94cd0d3d5",
+      "Tools/AnyEnginePort/reuse_uikit_execution.py": "1d0f2c7b821cc80bc2d2309605bf0b7bd0c835fed6c699541d4f7a87922f9f8b",
+      "Tools/AnyEnginePort/reuse_uikit_unaffected_eight.py": "56596559359b60c27e8302785720f8f456ce384ad375c8ee3a038002694baecc",
+      "Tools/AnyEnginePort/verify_archive_roundtrip.py": "5573eefcbf9eae9eea905210d15726ce7684f5529766531d4926eda39c7e2f29",
+      "Tools/AnyEnginePort/verify_custom_type.py": "6322e8f63d7c5864359c2a10f7b4f30773c96855c461840c5238f87211ddc864",
+      "Tools/AnyEnginePort/verify_focus_handoff_execution.py": "3b6799f003a1e526e66b6c35dbe34a727f0b2a736cc7a6690d8575805642bc1c",
+      "Tools/AnyEnginePort/verify_native_test_execution.py": "af126a59d47fec07b0d465c0077c812fb5f52cfcadf71a2da22cebb969e21b91",
+      "Tools/CurrentAppleValidation/cleanup_policy.py": "d4b6b6df0df5c94b4aeeabef0c6716d097be27fd2a6739298f9d186092bea291",
+      "Tools/CurrentAppleValidation/contracts.py": "8f3292431bf06095427e17327ca120dc1ba50273a010c08a4e90ec507c9b277d",
+      "Tools/CurrentAppleValidation/current_execution.py": "b8bcf70c5ebbe19f3ed88cd01df17f66344983e1c5c9626d82cb90bc086e3c37",
+      "Tools/CurrentAppleValidation/native_ui_failed.py": "e3b300ec31246ee1cde298dd48ccc443144dccc3048bba82e3c8e0c0be03f755",
+      "Tools/CurrentAppleValidation/owned_inventory_recovery.py": "ece048eee69c4866dd5bd6037e635077e804cfaaf0135764b54777dd3541a2ee",
+      "Tools/PinkhaSimulatorGate/destination_artifacts.py": "55c076f86990e74c2b3908a1474f1bb224c7ca52f00d1f9fe162f40be8814280",
+      "Tools/PinkhaSimulatorGate/run_owned_single_lane.py": "5d976901b73b5bc5e519ead3a89952220d8149e710561d92acc9f36e46247414",
+      "Tools/PinkhaSimulatorGate/simulator_selection.py": "2309bb55b3752774bffc588a7c489392daa7ceb3b7279f6a9ec870899a1f1d5f",
+      "Tools/PinkhaSimulatorGate/type_preservation.py": "602a91987a6995f0218840744af0d88c2ea5c65d34c4edba7f030808c5007b44",
+      "Tools/PinkhaSimulatorGate/wave15_batch.py": "6015b878eabc5688f253552c8b5c647922ee25c4fdd885d296ab0dfdee967936",
+      "Tools/PinkhaSimulatorGate/wave15_diagnostics.py": "c1ca1fe8857e6ce71b91ffb49ff54627815cbfe44beaa1bbb7328c9bb7a55397"
+    },
+    "nativeLibraryUnchanged": true,
+    "products": {
+      "complete": true,
+      "newDescriptors": {
+        "Current-archive-roundtrip.xctestrun": {
+          "bytes": 5506,
+          "kind": "file",
+          "mode": 384,
+          "sha256": "3ca9d28b1c35dfc178065238e95d1c299a59bad5a6878d4a1bf19440556d8870"
+        },
+        "Current-custom-type.xctestrun": {
+          "bytes": 5519,
+          "kind": "file",
+          "mode": 384,
+          "sha256": "bdec16fe7935b01de2f7cad1df6e43d62806c87d5c1143d92bdf2c57fed6093d"
+        },
+        "Current-hanlin-selection-consent.xctestrun": {
+          "bytes": 5513,
+          "kind": "file",
+          "mode": 384,
+          "sha256": "9d1bc67a7602466c7dfab8ae2dea0d16250c3e30a76b379b4290e802c8217dba"
+        },
+        "Current-hierarchy-drag.xctestrun": {
+          "bytes": 5497,
+          "kind": "file",
+          "mode": 384,
+          "sha256": "7b8a70e33dbe31b205b517342621da963733caac89611387ebf23889a359ff8d"
+        },
+        "Current-native-history.xctestrun": {
+          "bytes": 5519,
+          "kind": "file",
+          "mode": 384,
+          "sha256": "94997a66008677ea3ce34bd235cf53fdb123f6118beb9b727093fe12ac1e45c4"
+        }
+      },
+      "originalEntries": 828
+    }
+  },
+  "inventoryRecovery": {
+    "observations": [],
+    "originalTimeoutFailures": 0,
+    "policy": "owned-inventory-timeout-v1",
+    "recovered": 0
+  },
+  "nativeLibraryBuilds": 0,
+  "profile": "native-ui-failed",
+  "providerCleanup": {
+    "finishedAt": "2026-11-25T02:36:55.235880+00:00",
+    "githubRunID": "45531686517",
+    "hostTrustModified": false,
+    "operation": "cleanup",
+    "schemaVersion": 1,
+    "scope": "owned_hanlin_provider_ci_setup_not_product_acceptance",
+    "simulatorTrustRemoval": "OWNED_SIMULATOR_DELETION_FOLLOWS",
+    "sourceCommit": "dc29b540e76222bf89c5ac863916f66793acfda6",
+    "startedAt": "2026-11-25T02:36:54.862860+00:00",
+    "status": "OWNED_FIXTURE_STOPPED_AND_PRIVATE_MATERIAL_REMOVED"
+  },
+  "providerContract": {
+    "finishedAt": "2026-11-25T02:26:35.402792+00:00",
+    "githubRunID": "45531686517",
+    "nativeCreationProof": "REQUIRED_IN_NAMED_UI_TEST_AND_NATIVE_READBACK",
+    "operation": "verify",
+    "schemaVersion": 1,
+    "scope": "owned_hanlin_provider_ci_setup_not_product_acceptance",
+    "sourceCommit": "dc29b540e76222bf89c5ac863916f66793acfda6",
+    "startedAt": "2026-11-25T02:26:35.306398+00:00",
+    "status": "FINITE_PROVIDER_CONTRACT_VERIFIED",
+    "transcriptSHA256": "1a298ea17f2374482eb943c9000e2a7d26ddc6ccb866eca3447c1eafadf6d550"
+  },
+  "providerSetup": {
+    "defaultURLSessionSimulatorReadiness": "REQUIRED_IN_UI_TEST",
+    "finishedAt": "2026-11-25T02:23:09.762845+00:00",
+    "fixtureRunID": "a3d21079-0974-474f-a258-b1d203be5443",
+    "fixtureSourceSHA256": "d0ca3d250d2dba3555b8cc65c48d0ffc8d95ae9b015b9da30e094f3bbb1e0d81",
+    "githubRunID": "45531686517",
+    "hostTLSReadiness": true,
+    "operation": "prepare",
+    "ownedSimulatorUDID": "A61700F5-C358-4E43-AE82-8A30342A116E",
+    "privateMaterialUploaded": false,
+    "publicRootFingerprintSHA256": "1a968b88636f075509bb4f86b8158a586552b2439765c2a7b20e9ecbc2df0623",
+    "schemaVersion": 1,
+    "scope": "owned_hanlin_provider_ci_setup_not_product_acceptance",
+    "simulatorBootRequested": false,
+    "simulatorInitialState": "Booted",
+    "simulatorReadyState": "Booted",
+    "simulatorRuntime": "com.apple.CoreSimulator.SimRuntime.iOS-27-2",
+    "sourceCommit": "dc29b540e76222bf89c5ac863916f66793acfda6",
+    "startedAt": "2026-11-25T02:23:08.278663+00:00",
+    "status": "HOST_TLS_READY_SIMULATOR_ROOT_INSTALLED_UI_EXECUTION_PENDING"
+  },
+  "retainedHierarchyMove": {
+    "currentResultRelabeled": false,
+    "currentTestExecutions": 0,
+    "files": {
+      "execution.json": "d2d91e2cdaba5a9283cb53e080eab639593d1e07352f065aa7aec346cf1247c6",
+      "summary.json": "3dcb21e9c47ead714d5e4b425e285e35456265e9e5f5a47437d9054ab6b8bba0",
+      "tests.json": "7f9c374aabe24dcdc7a70024110aee7d3dca8b3a69fc1cbd62e1b956dd370dff"
+    },
+    "method": "NativeLaunchTests/testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType",
+    "originalOtherFailures": 2,
+    "originalRunStillFailed": true,
+    "reviewedChangedModuleFiles": [
+      "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorClient.swift",
+      "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorProtobuf.swift",
+      "Modules/ProtobufMessages/Tests/ProtobufMessagesTests/PinkhaHeartSemanticAnchorClientTests.swift",
+      "Modules/ProtobufMessages/Tests/ProtobufMessagesTests/PinkhaHeartSemanticAnchorWireTests.swift"
+    ],
+    "reviewedLibraryDeltaSHA256": "cc8a2028e183a6827264d37e6106e19f99dfa27fb8b48e8f58e1eedf18bd691e",
+    "runID": "45472843335",
+    "scope": "Context-menu hierarchy move/body/type/property visibility and cold reopen",
+    "sourceCommit": "fb5b40a5e91c68520d0f2921600a9f04b1e25439",
+    "status": "HISTORICAL_PASS_RETAINED"
+  },
+  "simulatorCleanup": [
+    {
+      "context": {
+        "profile": "native-ui-failed",
+        "repository": "davidpovarsky/anytype-swift",
+        "runAttempt": "1",
+        "runID": "45531686517",
+        "sourceCommit": "dc29b540e76222bf89c5ac863916f66793acfda6"
+      },
+      "createReceiptSHA256": "920b69e3c2b8485b607c8bafbc5e79fdb683ac3ac04f79d606c73ee6fb074f13",
+      "inventoryRecovery": {
+        "observations": [],
+        "originalTimeoutFailures": 0,
+        "policy": "owned-inventory-timeout-v1",
+        "recovered": 0
+      },
+      "owned_simulator": {
+        "udid": "A61700F5-C358-4E43-AE82-8A30342A116E"
+      },
+      "owned_simulator_cleanup": {
+        "delete": {
+          "status": "PASS_EXIT_0"
+        },
+        "shutdown": {
+          "status": "PASS_EXIT_0"
+        }
+      },
+      "owned_simulator_cleanup_budget": {
+        "elapsed_seconds": 3.555455958005041,
+        "total_seconds": 60.0,
+        "within_budget": true
+      },
+      "owned_simulator_cleanup_status": "COMPLETE"
+    },
+    {
+      "context": {
+        "profile": "native-ui-failed",
+        "repository": "davidpovarsky/anytype-swift",
+        "runAttempt": "1",
+        "runID": "45531686517",
+        "sourceCommit": "dc29b540e76222bf89c5ac863916f66793acfda6"
+      },
+      "createReceiptSHA256": "c85496ddfe31500c2ee99bfb1fea938836969967066889419fae52af71da6036",
+      "inventoryRecovery": {
+        "observations": [],
+        "originalTimeoutFailures": 0,
+        "policy": "owned-inventory-timeout-v1",
+        "recovered": 0
+      },
+      "owned_simulator": {
+        "udid": "0ACE135F-FA8C-4696-9A58-6E861F8E7F66"
+      },
+      "owned_simulator_cleanup": {
+        "delete": {
+          "status": "PASS_EXIT_0"
+        },
+        "shutdown": {
+          "status": "PASS_EXIT_0"
+        }
+      },
+      "owned_simulator_cleanup_budget": {
+        "elapsed_seconds": 3.5598538749982254,
+        "total_seconds": 60.0,
+        "within_budget": true
+      },
+      "owned_simulator_cleanup_status": "COMPLETE"
+    },
+    {
+      "context": {
+        "profile": "native-ui-failed",
+        "repository": "davidpovarsky/anytype-swift",
+        "runAttempt": "1",
+        "runID": "45531686517",
+        "sourceCommit": "dc29b540e76222bf89c5ac863916f66793acfda6"
+      },
+      "createReceiptSHA256": "6cb3c3b56d062239192b17eb29e986c62b11459ad9313f0220ff24f3c52300c0",
+      "inventoryRecovery": {
+        "observations": [],
+        "originalTimeoutFailures": 0,
+        "policy": "owned-inventory-timeout-v1",
+        "recovered": 0
+      },
+      "owned_simulator": {
+        "udid": "7E278BA3-A198-4558-B7ED-EB663FB6BBF1"
+      },
+      "owned_simulator_cleanup": {
+        "delete": {
+          "status": "PASS_EXIT_0"
+        },
+        "shutdown": {
+          "status": "PASS_EXIT_0"
+        }
+      },
+      "owned_simulator_cleanup_budget": {
+        "elapsed_seconds": 3.477098124996701,
+        "total_seconds": 60.0,
+        "within_budget": true
+      },
+      "owned_simulator_cleanup_status": "COMPLETE"
+    }
+  ],
+  "stages": {
+    "archive-roundtrip": {
+      "completeStageAcceptance": false,
+      "context": {
+        "profile": "native-ui-failed",
+        "repository": "davidpovarsky/anytype-swift",
+        "runAttempt": "1",
+        "runID": "45531686517",
+        "sourceCommit": "dc29b540e76222bf89c5ac863916f66793acfda6"
+      },
+      "enumeration": {
+        "disabledCount": 13,
+        "enabled": [
+          "PinkhaAnyNativeUITests/NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies()"
+        ],
+        "observedTestPlan": "PinkhaAnyNativeApp"
+      },
+      "errors": [],
+      "firstFailure": {
+        "message": "Command '['xcodebuild', 'test-without-building', '-xctestrun', '/Users/m1/builds/actions-anytype/anytype-swift/anytype-swift/build/current-apple-native-ui-failed-45531686517-1/work/derived/Build/Products/Current-archive-roundtrip.xctestrun', '-destination', 'platform=iOS Simulator,id=0ACE135F-FA8C-4696-9A58-6E861F8E7F66', '-parallel-testing-enabled', 'NO', '-test-timeouts-enabled', 'YES', '-default-test-execution-time-allowance', '1800', '-maximum-test-execution-time-allowance', '1800', '-only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies', '-resultBundlePath', '/Users/m1/builds/actions-anytype/anytype-swift/anytype-swift/build/current-apple-native-ui-failed-45531686517-1/evidence/archive-roundtrip/original.xcresult', 'ARCHS=arm64', 'ONLY_ACTIVE_ARCH=YES', 'CODE_SIGNING_ALLOWED=YES', 'CODE_SIGNING_REQUIRED=YES', 'CODE_SIGN_IDENTITY=-', 'PROVISIONING_PROFILE_SPECIFIER=', '-collect-test-diagnostics', 'never']' returned non-zero exit status 65.",
+        "type": "CalledProcessError"
+      },
+      "integrity": {
+        "complete": true,
+        "newDescriptors": {
+          "Current-archive-roundtrip.xctestrun": {
+            "bytes": 5506,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "3ca9d28b1c35dfc178065238e95d1c299a59bad5a6878d4a1bf19440556d8870"
+          },
+          "Current-custom-type.xctestrun": {
+            "bytes": 5519,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "bdec16fe7935b01de2f7cad1df6e43d62806c87d5c1143d92bdf2c57fed6093d"
+          },
+          "Current-hanlin-selection-consent.xctestrun": {
+            "bytes": 5513,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "9d1bc67a7602466c7dfab8ae2dea0d16250c3e30a76b379b4290e802c8217dba"
+          },
+          "Current-hierarchy-drag.xctestrun": {
+            "bytes": 5497,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "7b8a70e33dbe31b205b517342621da963733caac89611387ebf23889a359ff8d"
+          },
+          "Current-native-history.xctestrun": {
+            "bytes": 5519,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "94997a66008677ea3ce34bd235cf53fdb123f6118beb9b727093fe12ac1e45c4"
+          }
+        },
+        "originalEntries": 828
+      },
+      "partialNamed": {
+        "NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies()": "Failed"
+      },
+      "stage": "archive-roundtrip",
+      "status": "FAIL",
+      "testCommandInvoked": true
+    },
+    "custom-type": {
+      "actual": {
+        "actualCases": {
+          "NativeLaunchTests/testCustomCanonicalTypeTransitionPreservesNativeDocumentAcrossColdReopen()": "Passed"
+        },
+        "counts": {
+          "failedTests": 0,
+          "passedTests": 1,
+          "skippedTests": 0,
+          "totalTestCount": 1
+        },
+        "device": {
+          "architecture": "arm64",
+          "deviceId": "7E278BA3-A198-4558-B7ED-EB663FB6BBF1",
+          "deviceName": "CurrentNativeTypeHistory-45531686517-1",
+          "modelName": "iPad mini (A17 Pro)",
+          "osBuildNumber": "24B8117",
+          "osVersion": "27.2",
+          "platform": "iOS Simulator"
+        },
+        "methods": [
+          "NativeLaunchTests/testCustomCanonicalTypeTransitionPreservesNativeDocumentAcrossColdReopen"
+        ]
+      },
+      "completeStageAcceptance": true,
+      "context": {
+        "profile": "native-ui-failed",
+        "repository": "davidpovarsky/anytype-swift",
+        "runAttempt": "1",
+        "runID": "45531686517",
+        "sourceCommit": "dc29b540e76222bf89c5ac863916f66793acfda6"
+      },
+      "customType": {
+        "newApplicationBuilds": 0,
+        "originalReceiptSHA256": "750bacd17d89056d960d0dea57969393e967ce5dcd839e409ff2123b765e8585",
+        "proof": {
+          "coldBodySHA256": "1152bd1ded649ba78f3f21f8b66c96c4f18404aed853cae66690a8fa01f46a56",
+          "coldFixtureNativeWrites": 0,
+          "fixtureNativeWrites": 3,
+          "freshIOSProcessReopen": true,
+          "initialBodySHA256": "fe47b8fa9614e4eaca70f60b09f4c5d41ee9226d1a331ff82dbed182537227de",
+          "nativeBlockID": "iDmzbnigZS3",
+          "nativeCanonicalTypeEligible": true,
+          "nativeTypeID": "bafyreigi3gpgq7qekpkmhnuinqab47mduax4qecnsql3wf2v5zuzj6xel4",
+          "objectID": "bafyreibiznoazdjlu2cgywat33ro6uxuh6zknxg3tjtxnuedvaba6hdaye",
+          "propertyID": "51umD7wvhyn"
+        },
+        "sameCurrentProducts": true,
+        "validatorSHA256": "6322e8f63d7c5864359c2a10f7b4f30773c96855c461840c5238f87211ddc864"
+      },
+      "enumeration": {
+        "disabledCount": 13,
+        "enabled": [
+          "PinkhaAnyNativeUITests/NativeLaunchTests/testCustomCanonicalTypeTransitionPreservesNativeDocumentAcrossColdReopen()"
+        ],
+        "observedTestPlan": "PinkhaAnyNativeApp"
+      },
+      "errors": [],
+      "installedCurrentApplication": {
+        "codeCarriers": {
+          "PinkhaAnyNative": "b79f43983ce3ccab0ba42ed3f60c856d73e95cdf8b0d8519bec901c97bd0b62f",
+          "PinkhaAnyNative.debug.dylib": "d35ab2a9c662627c3a68e4867ba24724c176a10f1570020dbf20bc9661f31d25",
+          "__preview.dylib": "974db15e6d0268822f18a5ecac9c69f1f8394e949e5e5486808dbcace891f41f"
+        },
+        "originalLogSHA256": "e09b365afa6ffb580a33150bf4914b044c8cd4d1c6134ec898d1449075517fd9",
+        "path": "/Users/m1/Library/Developer/CoreSimulator/Devices/7E278BA3-A198-4558-B7ED-EB663FB6BBF1/data/Containers/Bundle/Application/196E0A77-39A7-4E06-B32E-8C39578E47D1/PinkhaAnyNative.app"
+      },
+      "integrity": {
+        "complete": true,
+        "newDescriptors": {
+          "Current-archive-roundtrip.xctestrun": {
+            "bytes": 5506,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "3ca9d28b1c35dfc178065238e95d1c299a59bad5a6878d4a1bf19440556d8870"
+          },
+          "Current-custom-type.xctestrun": {
+            "bytes": 5519,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "bdec16fe7935b01de2f7cad1df6e43d62806c87d5c1143d92bdf2c57fed6093d"
+          },
+          "Current-hanlin-selection-consent.xctestrun": {
+            "bytes": 5513,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "9d1bc67a7602466c7dfab8ae2dea0d16250c3e30a76b379b4290e802c8217dba"
+          },
+          "Current-hierarchy-drag.xctestrun": {
+            "bytes": 5497,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "7b8a70e33dbe31b205b517342621da963733caac89611387ebf23889a359ff8d"
+          },
+          "Current-native-history.xctestrun": {
+            "bytes": 5519,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "94997a66008677ea3ce34bd235cf53fdb123f6118beb9b727093fe12ac1e45c4"
+          }
+        },
+        "originalEntries": 828
+      },
+      "partialNamed": {
+        "NativeLaunchTests/testCustomCanonicalTypeTransitionPreservesNativeDocumentAcrossColdReopen()": "Passed"
+      },
+      "rawNamed": {
+        "cases": {
+          "NativeLaunchTests/testCustomCanonicalTypeTransitionPreservesNativeDocumentAcrossColdReopen()": "Passed"
+        },
+        "parser": "unchanged_original_xctest_log"
+      },
+      "stage": "custom-type",
+      "status": "PASS",
+      "testCommandInvoked": true
+    },
+    "hanlin-selection-consent": {
+      "actual": {
+        "actualCases": {
+          "NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen()": "Passed"
+        },
+        "counts": {
+          "failedTests": 0,
+          "passedTests": 1,
+          "skippedTests": 0,
+          "totalTestCount": 1
+        },
+        "device": {
+          "architecture": "arm64",
+          "deviceId": "A61700F5-C358-4E43-AE82-8A30342A116E",
+          "deviceName": "AnyNativePort-45531686517",
+          "modelName": "iPad mini (A17 Pro)",
+          "osBuildNumber": "24B8117",
+          "osVersion": "27.2",
+          "platform": "iOS Simulator"
+        },
+        "methods": [
+          "NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen"
+        ]
+      },
+      "completeStageAcceptance": true,
+      "context": {
+        "profile": "native-ui-failed",
+        "repository": "davidpovarsky/anytype-swift",
+        "runAttempt": "1",
+        "runID": "45531686517",
+        "sourceCommit": "dc29b540e76222bf89c5ac863916f66793acfda6"
+      },
+      "enumeration": {
+        "disabledCount": 13,
+        "enabled": [
+          "PinkhaAnyNativeUITests/NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen()"
+        ],
+        "observedTestPlan": "PinkhaAnyNativeApp"
+      },
+      "errors": [],
+      "installedCurrentApplication": {
+        "codeCarriers": {
+          "PinkhaAnyNative": "b79f43983ce3ccab0ba42ed3f60c856d73e95cdf8b0d8519bec901c97bd0b62f",
+          "PinkhaAnyNative.debug.dylib": "d35ab2a9c662627c3a68e4867ba24724c176a10f1570020dbf20bc9661f31d25",
+          "__preview.dylib": "974db15e6d0268822f18a5ecac9c69f1f8394e949e5e5486808dbcace891f41f"
+        },
+        "originalLogSHA256": "c7c86c6f6b5cf9a2ac11b34a91a23d4dd5a98d351df3dc185a563e48bfffe4e6",
+        "path": "/Users/m1/Library/Developer/CoreSimulator/Devices/A61700F5-C358-4E43-AE82-8A30342A116E/data/Containers/Bundle/Application/0567B883-FEFF-4081-9345-0D2A6D9808C0/PinkhaAnyNative.app"
+      },
+      "integrity": {
+        "complete": true,
+        "newDescriptors": {
+          "Current-archive-roundtrip.xctestrun": {
+            "bytes": 5506,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "3ca9d28b1c35dfc178065238e95d1c299a59bad5a6878d4a1bf19440556d8870"
+          },
+          "Current-custom-type.xctestrun": {
+            "bytes": 5519,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "bdec16fe7935b01de2f7cad1df6e43d62806c87d5c1143d92bdf2c57fed6093d"
+          },
+          "Current-hanlin-selection-consent.xctestrun": {
+            "bytes": 5513,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "9d1bc67a7602466c7dfab8ae2dea0d16250c3e30a76b379b4290e802c8217dba"
+          },
+          "Current-hierarchy-drag.xctestrun": {
+            "bytes": 5497,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "7b8a70e33dbe31b205b517342621da963733caac89611387ebf23889a359ff8d"
+          },
+          "Current-native-history.xctestrun": {
+            "bytes": 5519,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "94997a66008677ea3ce34bd235cf53fdb123f6118beb9b727093fe12ac1e45c4"
+          }
+        },
+        "originalEntries": 828
+      },
+      "partialNamed": {
+        "NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen()": "Passed"
+      },
+      "rawNamed": {
+        "cases": {
+          "NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen()": "Passed"
+        },
+        "parser": "unchanged_original_xctest_log"
+      },
+      "stage": "hanlin-selection-consent",
+      "status": "PASS",
+      "testCommandInvoked": true
+    },
+    "hierarchy-drag": {
+      "completeStageAcceptance": false,
+      "context": {
+        "profile": "native-ui-failed",
+        "repository": "davidpovarsky/anytype-swift",
+        "runAttempt": "1",
+        "runID": "45531686517",
+        "sourceCommit": "dc29b540e76222bf89c5ac863916f66793acfda6"
+      },
+      "enumeration": {
+        "disabledCount": 13,
+        "enabled": [
+          "PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen()"
+        ],
+        "observedTestPlan": "PinkhaAnyNativeApp"
+      },
+      "errors": [],
+      "firstFailure": {
+        "message": "Command '['xcodebuild', 'test-without-building', '-xctestrun', '/Users/m1/builds/actions-anytype/anytype-swift/anytype-swift/build/current-apple-native-ui-failed-45531686517-1/work/derived/Build/Products/Current-hierarchy-drag.xctestrun', '-destination', 'platform=iOS Simulator,id=A61700F5-C358-4E43-AE82-8A30342A116E', '-parallel-testing-enabled', 'NO', '-test-timeouts-enabled', 'YES', '-default-test-execution-time-allowance', '360', '-maximum-test-execution-time-allowance', '360', '-only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen', '-resultBundlePath', '/Users/m1/builds/actions-anytype/anytype-swift/anytype-swift/build/current-apple-native-ui-failed-45531686517-1/evidence/hierarchy-drag/original.xcresult', 'ARCHS=arm64', 'ONLY_ACTIVE_ARCH=YES', 'CODE_SIGNING_ALLOWED=YES', 'CODE_SIGNING_REQUIRED=YES', 'CODE_SIGN_IDENTITY=-', 'PROVISIONING_PROFILE_SPECIFIER=', '-collect-test-diagnostics', 'never']' returned non-zero exit status 65.",
+        "type": "CalledProcessError"
+      },
+      "integrity": {
+        "complete": true,
+        "newDescriptors": {
+          "Current-archive-roundtrip.xctestrun": {
+            "bytes": 5506,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "3ca9d28b1c35dfc178065238e95d1c299a59bad5a6878d4a1bf19440556d8870"
+          },
+          "Current-custom-type.xctestrun": {
+            "bytes": 5519,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "bdec16fe7935b01de2f7cad1df6e43d62806c87d5c1143d92bdf2c57fed6093d"
+          },
+          "Current-hanlin-selection-consent.xctestrun": {
+            "bytes": 5513,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "9d1bc67a7602466c7dfab8ae2dea0d16250c3e30a76b379b4290e802c8217dba"
+          },
+          "Current-hierarchy-drag.xctestrun": {
+            "bytes": 5497,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "7b8a70e33dbe31b205b517342621da963733caac89611387ebf23889a359ff8d"
+          },
+          "Current-native-history.xctestrun": {
+            "bytes": 5519,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "94997a66008677ea3ce34bd235cf53fdb123f6118beb9b727093fe12ac1e45c4"
+          }
+        },
+        "originalEntries": 828
+      },
+      "partialNamed": {
+        "NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen()": "Failed"
+      },
+      "stage": "hierarchy-drag",
+      "status": "FAIL",
+      "testCommandInvoked": true
+    },
+    "native-history": {
+      "completeStageAcceptance": false,
+      "context": {
+        "profile": "native-ui-failed",
+        "repository": "davidpovarsky/anytype-swift",
+        "runAttempt": "1",
+        "runID": "45531686517",
+        "sourceCommit": "dc29b540e76222bf89c5ac863916f66793acfda6"
+      },
+      "enumeration": {
+        "disabledCount": 13,
+        "enabled": [
+          "PinkhaAnyNativeUITests/NativeHistoryTests/testSavedHebrewVersionsRemainReadOnlyAcrossCloseBackgroundAndColdReopen()"
+        ],
+        "observedTestPlan": "PinkhaAnyNativeApp"
+      },
+      "errors": [],
+      "firstFailure": {
+        "message": "Command '['xcodebuild', 'test-without-building', '-xctestrun', '/Users/m1/builds/actions-anytype/anytype-swift/anytype-swift/build/current-apple-native-ui-failed-45531686517-1/work/derived/Build/Products/Current-native-history.xctestrun', '-destination', 'platform=iOS Simulator,id=7E278BA3-A198-4558-B7ED-EB663FB6BBF1', '-parallel-testing-enabled', 'NO', '-test-timeouts-enabled', 'YES', '-default-test-execution-time-allowance', '1800', '-maximum-test-execution-time-allowance', '1800', '-only-testing:PinkhaAnyNativeUITests/NativeHistoryTests/testSavedHebrewVersionsRemainReadOnlyAcrossCloseBackgroundAndColdReopen', '-resultBundlePath', '/Users/m1/builds/actions-anytype/anytype-swift/anytype-swift/build/current-apple-native-ui-failed-45531686517-1/evidence/native-history/original.xcresult', 'ARCHS=arm64', 'ONLY_ACTIVE_ARCH=YES', 'CODE_SIGNING_ALLOWED=YES', 'CODE_SIGNING_REQUIRED=YES', 'CODE_SIGN_IDENTITY=-', 'PROVISIONING_PROFILE_SPECIFIER=', '-collect-test-diagnostics', 'never']' returned non-zero exit status 65.",
+        "type": "CalledProcessError"
+      },
+      "integrity": {
+        "complete": true,
+        "newDescriptors": {
+          "Current-archive-roundtrip.xctestrun": {
+            "bytes": 5506,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "3ca9d28b1c35dfc178065238e95d1c299a59bad5a6878d4a1bf19440556d8870"
+          },
+          "Current-custom-type.xctestrun": {
+            "bytes": 5519,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "bdec16fe7935b01de2f7cad1df6e43d62806c87d5c1143d92bdf2c57fed6093d"
+          },
+          "Current-hanlin-selection-consent.xctestrun": {
+            "bytes": 5513,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "9d1bc67a7602466c7dfab8ae2dea0d16250c3e30a76b379b4290e802c8217dba"
+          },
+          "Current-hierarchy-drag.xctestrun": {
+            "bytes": 5497,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "7b8a70e33dbe31b205b517342621da963733caac89611387ebf23889a359ff8d"
+          },
+          "Current-native-history.xctestrun": {
+            "bytes": 5519,
+            "kind": "file",
+            "mode": 384,
+            "sha256": "94997a66008677ea3ce34bd235cf53fdb123f6118beb9b727093fe12ac1e45c4"
+          }
+        },
+        "originalEntries": 828
+      },
+      "partialNamed": {
+        "NativeHistoryTests/testSavedHebrewVersionsRemainReadOnlyAcrossCloseBackgroundAndColdReopen()": "Failed"
+      },
+      "stage": "native-history",
+      "status": "FAIL",
+      "testCommandInvoked": true
+    }
+  },
+  "status": "FAIL",
+  "uiRunnerBuilds": 1
+}

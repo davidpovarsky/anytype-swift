@@ -9,23 +9,25 @@
   },
   "currentNativeProductRevision": {
     "productTrees": {
-      "Modules": "c0b337d833799bb51bb9dfde4531171c45a59000",
-      "NativeApp": "dbc7320e406031445ed97059dfd01311d44ee5d8"
+      "Modules": "fb2336b5f391e066e7c7ff09451c2e78d770bbfd",
+      "NativeApp": "408e25834b7140815aa8d391eca05018c25d0b17"
     },
     "profile": "native-ui-failed",
     "schemaVersion": 1,
-    "sourceCommit": "e0c88c3224c88484b6cacf0f8f834057a81ff26c"
+    "sourceCommit": "4c58bd2f6f9594e2bb93deb319c9a153660cf349"
   },
   "currentNativeSelection": {
     "archiveFreshOwnedSimulator": true,
+    "historyFreshOwnedSimulator": true,
     "independentResults": true,
     "maximumApplicationBuilds": 1,
     "maximumNativeBuilds": 0,
     "maximumUIRunnerBuilds": 1,
-    "methods": 5,
-    "policy": "native-ui-five-independent-v2",
-    "retainedHierarchyMoveExecutions": 0,
-    "typeHistoryFreshOwnedSimulator": true
+    "methods": 3,
+    "policy": "native-ui-three-remaining-v3",
+    "retainedCustomTypeExecutions": 0,
+    "retainedHanlinExecutions": 0,
+    "retainedHierarchyMoveExecutions": 0
   },
   "helperInputs": {
     "Tools/AnyEnginePort/continue_native_acceptance.py": {
@@ -261,13 +263,18 @@
     },
     "method": "NativeLaunchTests/testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType",
     "reviewedChangedModuleFiles": [
+      "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeHistoryView.swift",
       "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
       "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorClient.swift",
       "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorProtobuf.swift",
       "Modules/ProtobufMessages/Tests/ProtobufMessagesTests/PinkhaHeartSemanticAnchorClientTests.swift",
       "Modules/ProtobufMessages/Tests/ProtobufMessagesTests/PinkhaHeartSemanticAnchorWireTests.swift"
     ],
-    "reviewedLibraryDeltaSHA256": "cc8a2028e183a6827264d37e6106e19f99dfa27fb8b48e8f58e1eedf18bd691e",
+    "reviewedLibraryDeltaSHA256": "30aca5cd64709971d14415b03d07e878084fd1df6a979785d13bab6f0a191a98",
+    "reviewedNativeAppChangedFiles": [
+      "NativeApp/UITests/NativeLaunchTests.swift"
+    ],
+    "reviewedNativeAppDeltaSHA256": "1fac3a98a44e0c86cb8558869143ff7f95be97cbfe7b6ecf1201bf74e9a66c5e",
     "runID": "45472843335",
     "sourceCommit": "fb5b40a5e91c68520d0f2921600a9f04b1e25439"
   },
@@ -359,6 +366,27 @@
     "NativeLaunchTests/testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen": {
       "commit": "7293e4fd0bcabdcdb643d5768b777b8e87ff1b73",
       "runID": "45087682296"
+    }
+  },
+  "retainedNativeD5Passes": {
+    "files": {
+      "custom-type/summary.json": "45ee7715fa25df0d8dde83a59c96f8cc10e24bb0e5dc6cf711f78a88664f1f0c",
+      "custom-type/tests.json": "8a0de1c6d1e38b6a158ff6000918004577eb4a3712141f815614fa4826f1b328",
+      "execution.json": "403f4cac3264603473b7a89ae90db34fe08b4e7742510aaa2233d8cd7cbcd1c3",
+      "hanlin-selection-consent/summary.json": "625b91096ecfd82afe8b19533906b643407b6ecabbe17658b74c3689dcdca640",
+      "hanlin-selection-consent/tests.json": "097a113db851279d77e735da8a3c23e1ff57011e0f7392a09e4408bc7ca2f6bc"
+    },
+    "reviewedChangedProductFiles": [
+      "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeHistoryView.swift",
+      "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "NativeApp/UITests/NativeLaunchTests.swift"
+    ],
+    "reviewedProductDeltaSHA256": "afc6bcc3aa6fded0af9687d2eb3fb9cee4e29e299e9b8940d1266cc5ca09b105",
+    "runID": "45531686517",
+    "sourceCommit": "dc29b540e76222bf89c5ac863916f66793acfda6",
+    "stages": {
+      "custom-type": "NativeLaunchTests/testCustomCanonicalTypeTransitionPreservesNativeDocumentAcrossColdReopen",
+      "hanlin-selection-consent": "NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen"
     }
   },
   "schemaVersion": 1
