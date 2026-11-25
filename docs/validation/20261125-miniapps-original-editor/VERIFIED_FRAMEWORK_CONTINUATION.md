@@ -71,3 +71,17 @@ control, original E7 binding, exact successful command/log hashes and unchanged
 current product inventory before reusing it. This separates measured compiler
 growth from export and external consumer growth without executing either phase
 twice or promoting the bounded result to complete SDK acceptance.
+
+## Retaining the original Clang export ownership rule
+
+The actual compiler graph admission now observes all 282 reviewed declarations.
+The next original gate requires producer-derived and distribution to be siblings.
+Continuation 5 used a separate output parent and was correctly rejected.
+
+The final continuation uses the original W7 parent only after checking its
+entire current membership is exactly producer-derived plus the two preserved
+seed metadata/cache directories. Distribution, consumer source/derived data and
+producer quarantine must not exist. Original Clang ownership validation remains
+unchanged. New evidence remains in a fresh separate directory. This writes only
+previously unused owned output paths and preserves every prior attempt; it does
+not rerun the compiler or admit any previously failed export as successful.

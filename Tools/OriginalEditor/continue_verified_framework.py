@@ -51,6 +51,7 @@ def main():
     parser.add_argument("--refresh-compiler-graphs", action="store_true")
     parser.add_argument("--stop-after-compiler-refresh", action="store_true")
     parser.add_argument("--reuse-compiler-refresh-evidence", type=Path)
+    parser.add_argument("--use-original-work", action="store_true")
     parser.add_argument("--incremental-budget-bytes", type=int, required=True)
     parser.add_argument("--concurrent-budget-bytes", type=int, required=True)
     args = parser.parse_args()
@@ -69,9 +70,17 @@ def main():
     require(git(root, "show", args.control_commit + ":" + COLLECTOR_PATH)
             == collector_control.read_bytes(), "Collector binding differs from committed control")
     require(all(p.is_relative_to(root / "build") for p in (prior, prior_work, evidence, work))
-            and len({prior, prior_work, evidence, work}) == 4
-            and not evidence.exists() and not work.exists(),
-            "Fresh disjoint owned continuation paths required")
+            and not evidence.exists() and evidence not in (prior, prior_work, work),
+            "Fresh owned continuation evidence required")
+    if args.use_original_work:
+        require(work == prior_work and args.reuse_compiler_refresh_evidence is not None
+                and not args.refresh_compiler_graphs and not work.is_symlink()
+                and {p.name for p in work.iterdir()} == {
+                    "producer-derived", "retained-seed-build-metadata", "retained-seed-clang-caches"},
+                "Original compiler work has unreviewed or already-used export/consumer outputs")
+    else:
+        require(len({prior, prior_work, evidence, work}) == 4 and not work.exists(),
+                "Fresh disjoint owned continuation work required")
     identity_path = prior / "local-execution.json"
     identity = json.loads(identity_path.read_bytes())
     require(identity["source_sha"] == SOURCE
@@ -163,7 +172,8 @@ def main():
             args.incremental_budget_bytes + args.concurrent_budget_bytes + capacity["os_margin_bytes"],
             "Current remaining continuation phase does not fit")
     evidence.mkdir()
-    work.mkdir()
+    if not args.use_original_work:
+        work.mkdir()
     write(evidence / "phase-capacity-estimate.json", capacity)
     for name in ("framework-build.command.json", "framework-build.stdout.log", "framework-build.stderr.log",
                  "source-before.json", "source-after.json", "original-hanlin-snapshot.json", "import-abi-before.json"):
@@ -187,6 +197,7 @@ def main():
     receipt.pop("error", None)
     receipt.pop("error_type", None)
     receipt.pop("finished_at", None)
+    receipt["status"] = "POSTBUILD_CONTINUATION_RUNNING"
     receipt["continuation"] = {
         "control_commit": args.control_commit, "control_sha256": sha(Path(__file__)),
         "compiled_source_sha": SOURCE, "original_evidence": str(prior),
@@ -196,6 +207,7 @@ def main():
         "original_driver_sha256": sha(driver_path),
         "git_metadata_repair_sha256": sha(repair_path),
         "framework_build_reexecuted": False,
+        "original_work_namespace_reused": args.use_original_work,
         "started_at": datetime.now(timezone.utc).isoformat(),
     }
     if refresh_input is not None:
