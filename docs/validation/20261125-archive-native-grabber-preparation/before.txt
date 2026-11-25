@@ -1,0 +1,4 @@
+        if peek.exists {
+            peek.swipeDown()
+            waitFor(NSPredicate(format: "exists == false"), object: peek, timeout: 15)
+        }
