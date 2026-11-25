@@ -1,0 +1,16 @@
+warning: '--skip-update' option is deprecated and will be removed in a future release
+Building for debugging...
+[Computing dependencies]
+[Using on-disk description]
+Build complete! (2.06 secs)
+Test Suite 'Selected tests' started at 2026-11-25 10:34:49.814
+Test Suite 'AnyDestinationNativeFileReferenceTests' started at 2026-11-25 10:34:49.815
+Test Case 'AnyDestinationNativeFileReferenceTests.testActualNativeFilePropertyLinksAndColdReadback' started at 2026-11-25 10:34:49.815
+<EXPR>:0: error: AnyDestinationNativeFileReferenceTests.testActualNativeFilePropertyLinksAndColdReadback : threw error "http(status: 409, code: "type.xkey_conflict")"
+Test Case 'AnyDestinationNativeFileReferenceTests.testActualNativeFilePropertyLinksAndColdReadback' failed (5.949 seconds)
+Test Suite 'AnyDestinationNativeFileReferenceTests' failed at 2026-11-25 10:34:55.764
+	 Executed 1 test, with 1 failure (1 unexpected) in 5.949 (5.949) seconds
+Test Suite 'Selected tests' failed at 2026-11-25 10:34:55.764
+	 Executed 1 test, with 1 failure (1 unexpected) in 5.949 (5.949) seconds
+Note: Some test targets reported failures:
+  - PinkhaAnyHostTests (XCTest)
