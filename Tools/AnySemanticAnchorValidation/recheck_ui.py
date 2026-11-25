@@ -153,6 +153,15 @@ def main():
         require(base.sha(originals / "any.xcframework.zip") == base.NATIVE_ARCHIVE
                 and base.sha(originals / "native-artifact.json") == base.NATIVE_RECEIPT,
                 "retained_native_origin_changed")
+        retained_vendor = prior_ui / "evidence/native-original/Vendor"
+        require(not retained_vendor.exists(), "prior_ui_native_already_retired")
+        retained_vendor.parent.mkdir(parents=True)
+        vendor.rename(retained_vendor)
+        require(base.inventory(retained_vendor) == native_files, "original_native_retirement_changed_bytes")
+        write(evidence / "native-retention.json", {
+            "retainedOriginalVendor": str(retained_vendor),
+            "originalConsumerCommit": NATIVE_SOURCE,
+            "originalFiles": native_files})
         commands.run([sys.executable, "-B", str(source / "Tools/AnyEnginePort/prepare_native_runtime.py"),
                       "install", "--artifact", str(originals), "--producer-commit", base.NATIVE_PRODUCER],
                      "bind-source-identical-any", 300)
